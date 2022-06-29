@@ -2,13 +2,14 @@
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace SonOfRobin
 {
     public class Scheduler
     {
-        public enum TaskName { Empty, CreateNewWorld, CreateNewWorldNow, QuitGame, OpenMainMenu, OpenCreateMenu, OpenIslandTemplateMenu, OpenSetSeedMenu, OpenOptionsMenu, OpenTutorialsMenu, OpenLoadMenu, OpenSaveMenu, OpenDebugMenu, OpenConfirmationMenu, OpenCreateAnyPieceMenu, OpenGameOverMenu, SaveGame, LoadGame, LoadGameNow, ReturnToMainMenu, SavePrefs, ProcessConfirmation, OpenCraftMenu, Craft, Hit, CreateNewPiece, CreateDebugPieces, OpenContainer, DeleteObsoleteSaves, DropFruit, GetEaten, ExecuteTaskWithDelay, AddWorldEvent, OpenTextWindow, SleepInsideShelter, SleepOutside, TempoFastForward, TempoStop, TempoPlay, CameraTrackPiece, CameraTrackCoords, CameraSetZoom, ShowCookingProgress, RestoreHints, OpenMainMenuIfSpecialKeysArePressed, CheckForPieceHints, ShowHint, ExecuteTaskList, ExecuteTaskChain, ShowTutorial, RemoveScene, ChangeSceneInputType, SetCineMode, AddTransition }
+        public enum TaskName { Empty, CreateNewWorld, CreateNewWorldNow, QuitGame, OpenMainMenu, OpenCreateMenu, OpenIslandTemplateMenu, OpenSetSeedMenu, OpenOptionsMenu, OpenTutorialsMenu, OpenLoadMenu, OpenSaveMenu, OpenDebugMenu, OpenConfirmationMenu, OpenCreateAnyPieceMenu, OpenGameOverMenu, SaveGame, LoadGame, LoadGameNow, ReturnToMainMenu, SavePrefs, ProcessConfirmation, OpenCraftMenu, Craft, Hit, CreateNewPiece, CreateDebugPieces, OpenContainer, DeleteObsoleteSaves, DropFruit, GetEaten, ExecuteTaskWithDelay, AddWorldEvent, OpenTextWindow, SleepInsideShelter, SleepOutside, TempoFastForward, TempoStop, TempoPlay, CameraTrackPiece, CameraTrackCoords, CameraSetZoom, ShowCookingProgress, RestoreHints, OpenMainMenuIfSpecialKeysArePressed, CheckForPieceHints, ShowHint, ExecuteTaskList, ExecuteTaskChain, ShowTutorial, RemoveScene, ChangeSceneInputType, SetCineMode, AddTransition, SkipCinematics, DeleteTemplates }
 
         private readonly static Dictionary<int, List<Task>> queue = new Dictionary<int, List<Task>>();
 
@@ -44,6 +45,15 @@ namespace SonOfRobin
             private readonly bool turnOffInput;
             private bool rebuildsMenu;
 
+            public string TaskText
+            {
+                get
+                {
+                    string turnOffInputText = this.turnOffInput ? "(input off)" : "";
+                    return $"{this.taskName} {turnOffInputText}";
+                }
+            }
+
             public Task(Menu menu, TaskName taskName, Object executeHelper, bool turnOffInput = false, int delay = 0, bool rebuildsMenu = false, bool storeForLaterUse = false)
             {
                 this.taskName = taskName;
@@ -65,6 +75,8 @@ namespace SonOfRobin
 
             public void Process()
             {
+                // MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"{SonOfRobinGame.currentUpdate} processing task {this.TaskText}", color: Color.LightYellow);
+
                 if (this.delay <= 0) this.Execute();
                 else this.AddToQueue();
             }
@@ -309,7 +321,7 @@ namespace SonOfRobin
                         {
                             var recipe = (Craft.Recipe)executeHelper;
 
-                            recipe.TryToProducePieces(storage: World.GetTopWorld().player.pieceStorage);
+                            recipe.TryToProducePieces(player: World.GetTopWorld().player);
                         }
                         return;
 
@@ -322,17 +334,57 @@ namespace SonOfRobin
                             int offsetX = (int)executeData["offsetX"];
                             int offsetY = (int)executeData["offsetY"];
                             bool highlightOnly = (bool)executeData["highlightOnly"];
+                            world = player.world;
 
-                            if (activeTool.shootsProjectile) activeTool.Use(shootingPower: shootingPower, targetPiece: null);
+                            if (activeTool.shootsProjectile)
+                            {
+                                activeTool.Use(shootingPower: shootingPower, targets: null);
+                                return;
+                            }
+
+                            var targets = new List<BoardPiece> { };
+                            if (activeTool.range == 0)
+                            {
+                                var nearbyPieces = world.grid.GetPiecesWithinDistance(groupName: Cell.Group.All, mainSprite: player.sprite, distance: 60, offsetX: offsetX, offsetY: offsetY, compareWithBottom: true);
+                                nearbyPieces = nearbyPieces.Where(piece => piece.yield != null).ToList();
+
+                                var animals = nearbyPieces.Where(piece => piece.GetType() == typeof(Animal)).ToList();
+                                if (animals.Count > 0) nearbyPieces = animals;
+
+                                BoardPiece targetPiece = BoardPiece.FindClosestPiece(sprite: player.sprite, pieceList: nearbyPieces, offsetX: offsetX, offsetY: offsetY);
+                                if (targetPiece == null) return;
+                                targets.Add(targetPiece);
+                            }
                             else
                             {
-                                var nearbyPieces = player.world.grid.GetPiecesWithinDistance(groupName: Cell.Group.All, mainSprite: player.sprite, distance: 42, offsetX: offsetX, offsetY: offsetY, compareWithBottom: true);
-                                var piecesToHit = nearbyPieces.Where(piece => piece.yield != null).ToList();
-                                BoardPiece targetPiece = BoardPiece.FindClosestPiece(sprite: player.sprite, pieceList: piecesToHit, offsetX: offsetX, offsetY: offsetY);
-                                if (targetPiece == null) return;
+                                float aimingAngle = player.sprite.GetAngleFromOrientation();
 
-                                activeTool.Use(shootingPower: shootingPower, targetPiece: targetPiece, highlightOnly: highlightOnly);
+                                //  MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"aimingAngle {aimingAngle}."); // for testing
+
+                                Point playerPoint = new Point((int)player.sprite.position.X, (int)player.sprite.position.Y);
+
+                                int aidDistance = activeTool.range;
+
+                                float angleLeft = aimingAngle - 0.7f;
+                                float angleRight = aimingAngle + 0.7f;
+
+                                int leftPointX = (int)Math.Round(aidDistance * Math.Cos(angleLeft));
+                                int leftPointY = (int)Math.Round(aidDistance * Math.Sin(angleLeft));
+
+                                int rightPointX = (int)Math.Round(aidDistance * Math.Cos(angleRight));
+                                int rightPointY = (int)Math.Round(aidDistance * Math.Sin(angleRight));
+
+                                Point leftPoint = new Point((int)(leftPointX + player.sprite.position.X), (int)(leftPointY + player.sprite.position.Y));
+                                Point rightPoint = new Point((int)(rightPointX + player.sprite.position.X), (int)(rightPointY + player.sprite.position.Y));
+
+                                var piecesInsideTriangle = world.grid.GetPiecesInsideTriangle(groupName: Cell.Group.All, point1: playerPoint, point2: leftPoint, point3: rightPoint);
+
+                                piecesInsideTriangle = piecesInsideTriangle.Where(piece => piece.yield != null).ToList();
+                                targets.AddRange(piecesInsideTriangle);
                             }
+
+                            activeTool.Use(shootingPower: shootingPower, targets: targets, highlightOnly: highlightOnly);
+
                             return;
                         }
 
@@ -728,7 +780,7 @@ namespace SonOfRobin
                             world = World.GetTopWorld();
                             if (world == null || world.demoMode) return;
 
-                            world.cineMode = (bool)executeHelper;
+                            world.CineMode = (bool)executeHelper;
                             return;
                         }
 
@@ -743,6 +795,91 @@ namespace SonOfRobin
                             Transition transition = (Transition)transData["transition"];
 
                             scene.transManager.AddTransition(transition);
+                            return;
+                        }
+
+                    case TaskName.SkipCinematics:
+                        {
+                            world = World.GetTopWorld();
+                            if (world == null) return;
+
+                            MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: "Skipping cinematics", color: Color.White);
+
+                            var textWindows = Scene.GetAllScenesOfType(typeof(TextWindow));
+                            foreach (var scene in textWindows)
+                            {
+                                TextWindow textWindow = (TextWindow)scene;
+                                textWindow.RemoveWithoutExecutingTask(); // every cine task will be tied to text window
+                            }
+                            world.CineMode = false;
+
+                            return;
+                        }
+
+                    case TaskName.DeleteTemplates:
+                        {
+                            Dictionary<string, Object> deleteData;
+                            List<string> pathsToDelete;
+                            int pathCount;
+
+                            bool firstRun = executeHelper == null;
+
+                            if (firstRun)
+                            {
+                                var templatePaths = Directory.GetDirectories(SonOfRobinGame.worldTemplatesPath);
+                                var correctSaves = SaveHeaderManager.CorrectSaves;
+                                var pathsToKeep = new List<string>();
+
+                                foreach (string path in templatePaths)
+                                {
+                                    string folderName = Path.GetFileName(path);
+                                    Helpers.TemplateData templateData = new Helpers.TemplateData(folderName);
+
+                                    if (correctSaves.Where(saveHeader =>
+                                    saveHeader.seed == templateData.seed &&
+                                    saveHeader.width == templateData.width &&
+                                    saveHeader.height == templateData.height
+                                    ).ToList().Count > 0) pathsToKeep.Add(path);
+                                }
+
+                                pathsToDelete = templatePaths.Where(path => !pathsToKeep.Contains(path)).ToList();
+
+                                if (pathsToDelete.Count == 0)
+                                {
+                                    new TextWindow(text: "No obsolete templates were found.", textColor: Color.White, bgColor: Color.Blue, useTransition: true, animate: true);
+                                    return;
+                                }
+
+                                executeHelper = new Dictionary<string, Object> { { "pathsToDelete", pathsToDelete }, { "pathCount", pathsToDelete.Count } };
+                            }
+
+                            SonOfRobinGame.game.IsFixedTimeStep = false;
+
+                            deleteData = (Dictionary<string, Object>)executeHelper;
+                            pathsToDelete = (List<string>)deleteData["pathsToDelete"];
+                            pathCount = (int)deleteData["pathCount"];
+
+                            string currentPath = pathsToDelete[0];
+
+                            SonOfRobinGame.progressBar.TurnOn(curVal: pathCount - pathsToDelete.Count + 1, maxVal: pathCount, text: $"Deleting templates...\n{Path.GetFileName(currentPath)}", addTransition: false);
+
+                            if (!firstRun)
+                            {
+                                // first run should only turn on progress bar                              
+                                pathsToDelete.RemoveAt(0);
+                                Directory.Delete(path: currentPath, recursive: true);
+                            }
+
+                            if (pathsToDelete.Count == 0)
+                            {
+                                if (Preferences.FrameSkip) SonOfRobinGame.game.IsFixedTimeStep = true;
+                                SonOfRobinGame.progressBar.TurnOff();
+                                return;
+                            }
+
+                            var newDeleteData = new Dictionary<string, Object> { { "pathsToDelete", pathsToDelete }, { "pathCount", pathCount } };
+                            new Task(menu: null, taskName: TaskName.DeleteTemplates, turnOffInput: true, delay: 1, executeHelper: newDeleteData);
+
                             return;
                         }
 

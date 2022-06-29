@@ -553,6 +553,18 @@
 /processorParam:TextureFormat=Color
 /build:gfx/gems__rpg_maker_mv__by_petschko-d9euoxr.png
 
+#begin gfx/grass_blade.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/grass_blade.png
+
 #begin gfx/greatsling.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -960,6 +972,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:gfx/recolor_pt2.png
+
+#begin gfx/scythe.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/scythe.png
 
 #begin gfx/sling.png
 /importer:TextureImporter
@@ -1380,6 +1404,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:gfx/tent_medium.jpg
+
+#begin gfx/tiger.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/tiger.png
 
 #begin gfx/tile_19ba32a6.png
 /importer:TextureImporter

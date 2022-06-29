@@ -10,9 +10,9 @@ namespace SonOfRobin
         public readonly string folderName;
         public readonly string fullPath;
         public bool autoSave;
-        private readonly int seed;
-        private readonly int width;
-        private readonly int height;
+        public readonly int seed;
+        public readonly int width;
+        public readonly int height;
         private readonly int currentUpdate;
         private readonly TimeSpan elapsedTime;
         public readonly DateTime saveDate;

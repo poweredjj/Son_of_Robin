@@ -8,8 +8,8 @@ namespace SonOfRobin
 {
     public class Animal : BoardPiece
     {
-        public static readonly int maxAnimalsPerName = 45; // 45
-        public static readonly int attackDistanceDynamic = 18;
+        public static readonly int maxAnimalsPerName = 45;
+        public static readonly int attackDistanceDynamic = 15;
         public static readonly int attackDistanceStatic = 5;
 
         private readonly bool female;
@@ -21,6 +21,7 @@ namespace SonOfRobin
         private readonly byte maxChildren;
         private uint pregnancyMass;
         private int attackCooldown;
+        private int regenCooldown;
         private readonly int maxFedLevel;
         private int fedLevel;
         private readonly float maxStamina;
@@ -39,9 +40,10 @@ namespace SonOfRobin
 
         public float MaxMassPercentage { get { return this.Mass / this.maxMass; } }
 
-        public Animal(World world, Vector2 position, AnimPkg animPackage, PieceTemplate.Name name, AllowedFields allowedFields, Dictionary<byte, int> maxMassBySize, int mass, int maxMass, byte awareness, bool female, int maxAge, int matureAge, uint pregnancyDuration, byte maxChildren, float maxStamina, int maxHitPoints, ushort sightRange, string readableName, string description, List<PieceTemplate.Name> eats, int strength, float massBurnedMultiplier, byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = false, int generation = 0, Yield yield = null, bool fadeInAnim = true) :
+        public Animal(World world, Vector2 position, AnimPkg animPackage, PieceTemplate.Name name, AllowedFields allowedFields, Dictionary<byte, int> maxMassBySize, int mass, int maxMass, byte awareness, bool female, int maxAge, int matureAge, uint pregnancyDuration, byte maxChildren, float maxStamina, int maxHitPoints, ushort sightRange, string readableName, string description, List<PieceTemplate.Name> eats, int strength, float massBurnedMultiplier,
+            byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = false, int generation = 0, Yield yield = null, bool fadeInAnim = true) :
 
-            base(world: world, position: position, animPackage: animPackage, mass: mass, animSize: animSize, animName: animName, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedFields: allowedFields, floatsOnWater: floatsOnWater, maxMassBySize: maxMassBySize, generation: generation, speed: speed, maxAge: maxAge, maxHitPoints: maxHitPoints, yield: yield, fadeInAnim: fadeInAnim, isShownOnMiniMap: true, readableName: readableName, description: description, staysAfterDeath: 30 * 60, strength: strength)
+            base(world: world, position: position, animPackage: animPackage, mass: mass, animSize: animSize, animName: animName, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedFields: allowedFields, floatsOnWater: floatsOnWater, maxMassBySize: maxMassBySize, generation: generation, speed: speed, maxAge: maxAge, maxHitPoints: maxHitPoints, yield: yield, fadeInAnim: fadeInAnim, isShownOnMiniMap: true, readableName: readableName, description: description, staysAfterDeath: 30 * 60, strength: strength, category: Category.Animal)
         {
             this.activeState = State.AnimalAssessSituation;
             this.target = null;
@@ -54,6 +56,7 @@ namespace SonOfRobin
             this.pregnancyMass = 0;
             this.maxChildren = maxChildren;
             this.attackCooldown = 0; // earliest world.currentUpdate, when attacking will be possible
+            this.regenCooldown = 0; // earliest world.currentUpdate, when increasing hit points will be possible
             this.maxFedLevel = 1000;
             this.fedLevel = maxFedLevel;
             this.maxStamina = maxStamina;
@@ -73,6 +76,7 @@ namespace SonOfRobin
 
             pieceData["animal_female"] = this.female; // used in PieceTemplate, to create animal of correct sex
             pieceData["animal_attackCooldown"] = this.attackCooldown;
+            pieceData["animal_regenCooldown"] = this.regenCooldown;
             pieceData["animal_fedLevel"] = this.fedLevel;
             pieceData["animal_pregnancyMass"] = this.pregnancyMass;
             pieceData["animal_aiData"] = this.aiData;
@@ -86,6 +90,7 @@ namespace SonOfRobin
             base.Deserialize(pieceData);
 
             this.attackCooldown = (int)pieceData["animal_attackCooldown"];
+            this.regenCooldown = (int)pieceData["animal_regenCooldown"];
             this.fedLevel = (int)pieceData["animal_fedLevel"];
             this.pregnancyMass = (uint)pieceData["animal_pregnancyMass"];
             this.aiData = (AiData)pieceData["animal_aiData"];
@@ -137,7 +142,7 @@ namespace SonOfRobin
             energyAmount *= this.efficiency;
             int massGained = Math.Max(Convert.ToInt32(energyAmount / 4), 1);
 
-            this.hitPoints = Math.Min(this.hitPoints + (energyAmount / 3), this.maxHitPoints);
+            if (this.world.currentUpdate >= this.regenCooldown) this.hitPoints = Math.Min(this.hitPoints + (energyAmount / 3), this.maxHitPoints);
             this.fedLevel = Math.Min(this.fedLevel + Convert.ToInt16(energyAmount * 2), this.maxFedLevel);
             this.stamina = Math.Min(this.stamina + 1, this.maxStamina);
 
@@ -168,6 +173,16 @@ namespace SonOfRobin
 
         public List<BoardPiece> GetSeenPieces()
         { return world.grid.GetPiecesWithinDistance(groupName: Cell.Group.Visible, mainSprite: this.sprite, distance: this.sightRange); }
+
+        private void UpdateAttackCooldown()
+        {
+            this.attackCooldown = this.world.currentUpdate + 20;
+        }
+
+        public void UpdateRegenCooldown()
+        {
+            this.regenCooldown = this.world.currentUpdate + (60 * 60);
+        }
 
         public override void SM_AnimalAssessSituation()
         {
@@ -296,7 +311,9 @@ namespace SonOfRobin
                         {
                             animalTarget.target = this;
                             animalTarget.aiData.Reset(this);
-                            animalTarget.activeState = State.AnimalFlee;
+
+                            animalTarget.activeState = (animalTarget.pregnancyMass > 0 || (animalTarget.HitPointsPercent > 0.4f && world.random.Next(0, 5) == 0)) ?
+                                State.AnimalChaseTarget : State.AnimalFlee; // sometimes the target will attack the predator
                         }
                     }
 
@@ -305,7 +322,7 @@ namespace SonOfRobin
                         this.visualAid = PieceTemplate.CreateOnBoard(world: world, position: this.sprite.position, templateName: PieceTemplate.Name.Exclamation);
                         new Tracking(world: world, targetSprite: this.sprite, followingSprite: this.visualAid.sprite, targetYAlign: YAlign.Top, targetXAlign: XAlign.Left, followingYAlign: YAlign.Bottom, offsetX: 0, offsetY: 5);
 
-                        this.world.hintEngine.CheckForPieceHintToShow(forcedMode: true, typesToCheckOnly: new List<PieceHint.Type> { PieceHint.Type.RedExclamation});
+                        this.world.hintEngine.CheckForPieceHintToShow(forcedMode: true, typesToCheckOnly: new List<PieceHint.Type> { PieceHint.Type.RedExclamation });
                     }
 
                     this.activeState = State.AnimalChaseTarget;
@@ -470,7 +487,7 @@ namespace SonOfRobin
             }
 
             if (this.world.currentUpdate < this.attackCooldown) return;
-            this.attackCooldown = this.world.currentUpdate + 20;
+            this.UpdateAttackCooldown();
 
             float targetSpeed;
 

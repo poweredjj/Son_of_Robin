@@ -7,6 +7,22 @@ namespace SonOfRobin
 {
     public class Helpers
     {
+        public struct TemplateData
+        {
+            public readonly int seed;
+            public readonly int width;
+            public readonly int height;
+
+            public TemplateData(string folderName)
+            {
+                this.seed = Convert.ToInt32(folderName.Split('_')[1]);
+                string widthHeight = folderName.Split('_')[2];
+                this.width = Convert.ToInt32(widthHeight.Split('x')[0]);
+                this.height = Convert.ToInt32(widthHeight.Split('x')[1]);
+            }
+        }
+
+
         public const double Rad2Deg = 180.0 / Math.PI;
         public const double Deg2Rad = Math.PI / 180.0;
 
@@ -79,6 +95,20 @@ namespace SonOfRobin
 
             return vector;
         }
+
+        public static bool IsPointInsideTriangle(Point point, Point triangleA, Point triangleB, Point triangleC)
+        {
+            var s = (triangleA.X - triangleC.X) * (point.Y - triangleC.Y) - (triangleA.Y - triangleC.Y) * (point.X - triangleC.X);
+            var t = (triangleB.X - triangleA.X) * (point.Y - triangleA.Y) - (triangleB.Y - triangleA.Y) * (point.X - triangleA.X);
+
+            if ((s < 0) != (t < 0) && s != 0 && t != 0)
+                return false;
+
+            var d = (triangleC.X - triangleB.X) * (point.Y - triangleB.Y) - (triangleC.Y - triangleB.Y) * (point.X - triangleB.X);
+            return d == 0 || (d < 0) == (s + t <= 0);
+        }
+
+
 
     }
 }

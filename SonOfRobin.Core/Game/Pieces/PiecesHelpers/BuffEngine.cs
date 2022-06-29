@@ -6,7 +6,7 @@ namespace SonOfRobin
 {
     public class BuffEngine
     {
-        public enum BuffType { InvWidth, InvHeight, ToolbarWidth, ToolbarHeight, Speed, Strength, MaxHp, EnableMap };
+        public enum BuffType { InvWidth, InvHeight, ToolbarWidth, ToolbarHeight, Speed, Strength, MaxHp, EnableMap, Tired };
 
         [Serializable]
         public class Buff
@@ -84,6 +84,10 @@ namespace SonOfRobin
                             description = "Shows map of visited places.";
                             break;
 
+                        case BuffType.Tired:
+                            description = "Decreases multiple stats.";
+                            break;
+
                         default:
                             throw new DivideByZeroException($"Unsupported buff type - {this.type}.");
                     }
@@ -126,6 +130,9 @@ namespace SonOfRobin
 
                         case BuffType.EnableMap:
                             return null;
+
+                        case BuffType.Tired:
+                            return "tired";
 
                         default:
                             throw new DivideByZeroException($"Unsupported buff type - {this.type}.");
@@ -198,6 +205,14 @@ namespace SonOfRobin
             if (buff.autoRemoveDelay > 0) new WorldEvent(eventName: WorldEvent.EventName.RemoveBuff, world: this.piece.world, delay: buff.autoRemoveDelay, boardPiece: this.piece, eventHelper: buff.id);
 
             MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"Buff added - id {buff.id} type {buff.type} value {buff.value}.");
+        }
+
+        public void RemoveEveryBuffOfType(BuffType buffType)
+        {
+            foreach (var buffId in buffDict.Keys.ToList())
+            {
+                if (this.buffDict[buffId].type == buffType) this.buffDict.Remove(buffId);
+            }
         }
 
         public void RemoveBuff(int buffId)
@@ -311,6 +326,12 @@ namespace SonOfRobin
                             }
                         }
 
+                        break;
+                    }
+
+                case BuffType.Tired:
+                    {
+                        // this buff exists only to show negative status icon
                         break;
                     }
 

@@ -47,7 +47,7 @@ namespace SonOfRobin
             }
         }
 
-        public TextWindow(string text, Color textColor, Color bgColor, bool animate = true, int framesPerChar = 0, bool useTransition = true, bool checkForDuplicate = false, bool blocksUpdatesBelow = false, int blockInputDuration = 0, Scheduler.TaskName closingTask = Scheduler.TaskName.Empty, Object closingTaskHelper = null, bool useTransitionOpen = false, bool useTransitionClose = false, bool autoClose = false, InputTypes inputType = InputTypes.Normal, int priority = 0) : base(inputType: inputType, priority: priority, blocksUpdatesBelow: blocksUpdatesBelow, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: blockInputDuration > 0 ? ControlTips.TipsLayout.Empty : ControlTips.TipsLayout.TextWindow)
+        public TextWindow(string text, Color textColor, Color bgColor, bool animate = true, int framesPerChar = 0, bool useTransition = true, bool checkForDuplicate = false, bool blocksUpdatesBelow = false, int blockInputDuration = 0, Scheduler.TaskName closingTask = Scheduler.TaskName.Empty, Object closingTaskHelper = null, bool useTransitionOpen = false, bool useTransitionClose = false, bool autoClose = false, InputTypes inputType = InputTypes.Normal, int priority = 0) : base(inputType: inputType, priority: priority, blocksUpdatesBelow: blocksUpdatesBelow, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty)
         {
             this.text = SplitText(text: text, maxWidth: maxWidth);
             Vector2 textSize = font.MeasureString(this.text);
@@ -70,6 +70,8 @@ namespace SonOfRobin
             this.closingTask = closingTask;
             this.closingTaskHelper = closingTaskHelper;
 
+            this.SetTipsAndTouchLayout();
+
             if (checkForDuplicate && this.IsADuplicate)
             {
                 this.Remove();
@@ -78,6 +80,42 @@ namespace SonOfRobin
 
             this.UpdateViewParams();
             if (this.useTransition || this.useTransitionOpen) this.AddInOutTransition(inTrans: true);
+        }
+
+        private void SetTipsAndTouchLayout()
+        {
+            World world = World.GetTopWorld();
+            bool addOkButton = this.blockingFramesLeft == 0;
+            bool addCancelButton = world != null && world.CineMode;
+
+
+            if (addOkButton && addCancelButton)
+            {
+                this.tipsLayout = ControlTips.TipsLayout.TextWindowOkCancel;
+                this.touchLayout = TouchLayout.TextWindowOkCancel;
+            }
+            else if (addOkButton && !addCancelButton)
+            {
+                this.tipsLayout = ControlTips.TipsLayout.TextWindowOk;
+                this.touchLayout = TouchLayout.TextWindowOk;
+            }
+            else if (!addOkButton && addCancelButton)
+            {
+                this.tipsLayout = ControlTips.TipsLayout.TextWindowCancel;
+                this.touchLayout = TouchLayout.TextWindowCancel;
+            }
+            else
+            {
+                this.tipsLayout = ControlTips.TipsLayout.Empty;
+                this.touchLayout = TouchLayout.Empty;
+            }
+        }
+
+        public void RemoveWithoutExecutingTask()
+        {
+            // Useful for skipping scenes - task chains are stored in closingTaskHelper, so disabling closing task throws away any leftover "cinematics" tasks.
+            this.closingTask = Scheduler.TaskName.Empty;
+            this.Remove();
         }
 
         public override void Remove()
@@ -165,15 +203,27 @@ namespace SonOfRobin
             if (this.blockingFramesLeft > 0 && this.animationFinished)
             {
                 this.blockingFramesLeft--;
-                if (this.blockingFramesLeft == 0) this.tipsLayout = ControlTips.TipsLayout.TextWindow;
+                if (this.blockingFramesLeft == 0) this.SetTipsAndTouchLayout();
             }
 
             this.Animate();
             this.UpdateViewParams();
 
-            bool anyButtonPressed = this.CheckForAnyInput();
+            bool okButtonPressed = false;
+            bool cancelButtonPressed = this.CheckForInputCancel();
+            if (cancelButtonPressed)
+            {
+                if (this.tipsLayout == ControlTips.TipsLayout.TextWindowCancel || this.tipsLayout == ControlTips.TipsLayout.TextWindowOkCancel)
+                {
+                    var confirmationData = new Dictionary<string, Object> { { "question", "Do you want to skip?" }, { "taskName", Scheduler.TaskName.SkipCinematics }, { "executeHelper", null } };
+                    new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.OpenConfirmationMenu, executeHelper: confirmationData);
+                    return;
+                }
+                else okButtonPressed = cancelButtonPressed; // if there is no cancel button, cancel button can be used as "ok"
+            }
 
-            if (anyButtonPressed)
+            if (!okButtonPressed) okButtonPressed = this.CheckForInputOk();
+            if (okButtonPressed)
             {
                 if (this.animationFinished) this.Remove();
                 else
@@ -184,24 +234,27 @@ namespace SonOfRobin
             }
 
             if (this.autoClose && this.animationFinished && this.blockingFramesLeft == 0) this.Remove();
-
         }
-        public bool CheckForAnyInput()
+        public bool CheckForInputOk()
         {
             if (this.blockingFramesLeft > 0) return false;
 
             if (Keyboard.HasBeenPressed(Keys.Space) ||
-                Keyboard.HasBeenPressed(Keys.RightShift) ||
                 Keyboard.HasBeenPressed(Keys.Enter) ||
-                Keyboard.HasBeenPressed(Keys.Escape)) return true;
-
-            if (GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.A) ||
-                GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.B) ||
-                GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.X) ||
-                GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.Y)) return true;
+                GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.A) ||
+                VirtButton.IsButtonDown(VButName.Interact)) return true;
 
             foreach (TouchLocation touch in TouchInput.TouchPanelState)
-            { if (touch.State == TouchLocationState.Pressed) return true; }
+            { if (touch.State == TouchLocationState.Pressed) return true; } // the whole screen area is one big "OK" button
+
+            return false;
+        }
+
+        public bool CheckForInputCancel()
+        {
+            if (Keyboard.HasBeenPressed(Keys.Escape)) return true;
+            if (GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.B)) return true;
+            if (VirtButton.IsButtonDown(VButName.Return)) return true;
 
             return false;
         }

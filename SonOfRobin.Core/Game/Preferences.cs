@@ -7,7 +7,7 @@ namespace SonOfRobin
 {
     public class Preferences
     {
-        public enum WorldSize { small, medium, large, gigantic, outrageous } // lower case, for proper display in menu
+        public enum WorldSize { small, medium, large, gigantic } // lower case, for proper display in menu
 
         public static int newWorldWidth;
         public static int newWorldHeight;
@@ -74,7 +74,6 @@ namespace SonOfRobin
         public static bool debugCreateMissingPieces = true;
         public static bool debugShowWholeMap = false;
         public static bool debugShowAllMapPieces = false;
-        public static bool debugIgnoreCinematics = false;
 
         private static WorldSize selectedWorldSize = WorldSize.medium;
         public static WorldSize SelectedWorldSize
@@ -106,10 +105,6 @@ namespace SonOfRobin
                         newWorldHeight = 60000;
                         break;
 
-                    case WorldSize.outrageous:
-                        newWorldWidth = 80000;
-                        newWorldHeight = 80000;
-                        break;
 
                     default:
                         throw new ArgumentException($"Unsupported worldSize - {selectedWorldSize}.");

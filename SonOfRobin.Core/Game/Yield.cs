@@ -6,7 +6,7 @@ namespace SonOfRobin
 {
     public class Yield
     {
-        public enum DebrisType { None, Stone, Wood, Blood }
+        public enum DebrisType { None, Stone, Wood, Blood, Plant }
 
         public static Dictionary<PieceTemplate.Name, Yield> antiCraft = new Dictionary<PieceTemplate.Name, Yield> { };
 
@@ -74,6 +74,10 @@ namespace SonOfRobin
 
                 case DebrisType.Wood:
                     debrisList.Add(new DroppedPiece(pieceName: PieceTemplate.Name.DebrisWood, chanceToDrop: 100, maxNumberToDrop: 30));
+                    break;
+
+                case DebrisType.Plant:
+                    debrisList.Add(new DroppedPiece(pieceName: PieceTemplate.Name.DebrisPlant, chanceToDrop: 100, maxNumberToDrop: 15));
                     break;
 
                 case DebrisType.Blood:

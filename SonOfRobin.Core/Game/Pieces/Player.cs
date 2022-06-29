@@ -24,6 +24,7 @@ namespace SonOfRobin
         public byte toolbarWidth;
         public byte toolbarHeight;
         public int wentToSleepFrame;
+        public List<PieceStorage> CraftStorages { get { return new List<PieceStorage> { this.pieceStorage, this.toolStorage, this.equipStorage }; } }
 
         public BoardPiece ActiveToolbarPiece
         { get { return this.toolStorage?.lastUsedSlot?.TopPiece; } }
@@ -98,9 +99,17 @@ namespace SonOfRobin
 
                 this.fatigue = Math.Min(Math.Max(value, 0), this.maxFatigue);
 
+                if (this.IsVeryTired)
+                {
+                    if (!this.buffEngine.HasBuff(BuffEngine.BuffType.Tired)) this.buffEngine.AddBuff(world: this.world, buff: new BuffEngine.Buff(world: world, type: BuffEngine.BuffType.Tired, value: 0, autoRemoveDelay: 0, isPositive: false));
+                }
+                else
+                {
+                    if (this.buffEngine.HasBuff(BuffEngine.BuffType.Tired)) this.buffEngine.RemoveEveryBuffOfType(BuffEngine.BuffType.Tired);
+                }
+
                 if (this.IsVeryTired) this.world.hintEngine.ShowGeneralHint(HintEngine.Type.Tired);
                 if (this.FatiguePercent < 0.2f) this.world.hintEngine.Enable(HintEngine.Type.Tired);
-
                 if (this.FatiguePercent > 0.95f) this.world.hintEngine.ShowGeneralHint(HintEngine.Type.VeryTired);
                 if (this.FatiguePercent < 0.8f) this.world.hintEngine.Enable(HintEngine.Type.VeryTired);
 
@@ -128,7 +137,7 @@ namespace SonOfRobin
         public Player(World world, Vector2 position, AnimPkg animPackage, PieceTemplate.Name name, AllowedFields allowedFields, byte invWidth, byte invHeight, byte toolbarWidth, byte toolbarHeight, string readableName, string description,
             byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = false, int generation = 0, Yield yield = null) :
 
-            base(world: world, position: position, animPackage: animPackage, animSize: animSize, animName: animName, speed: speed, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedFields: allowedFields, floatsOnWater: floatsOnWater, mass: 50000, maxMassBySize: null, generation: generation, canBePickedUp: false, maxHitPoints: 400, fadeInAnim: false, placeAtBeachEdge: true, isShownOnMiniMap: true, readableName: readableName, description: description, yield: yield, strength: 1)
+            base(world: world, position: position, animPackage: animPackage, animSize: animSize, animName: animName, speed: speed, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedFields: allowedFields, floatsOnWater: floatsOnWater, mass: 50000, maxMassBySize: null, generation: generation, canBePickedUp: false, maxHitPoints: 400, fadeInAnim: false, placeAtBeachEdge: true, isShownOnMiniMap: true, readableName: readableName, description: description, yield: yield, strength: 1, category: Category.Indestructible)
         {
             this.maxFedLevel = 40000;
             this.fedLevel = maxFedLevel;
@@ -520,7 +529,7 @@ namespace SonOfRobin
             MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: "Waking up.");
         }
 
-        private Vector2 CalculateMovementFromInput(bool horizontalPriority = true)
+        public Vector2 CalculateMovementFromInput(bool horizontalPriority = true)
         {
             Vector2 movement = new Vector2(0f, 0f);
 
@@ -596,8 +605,6 @@ namespace SonOfRobin
             if (closestPiece == null) return;
 
             this.world.hintEngine.Disable(Tutorials.Type.PickUp);
-
-            Tutorials.ShowTutorial(type: Tutorials.Type.Interact, ignoreIfShown: true, ignoreDelay: false);
 
             bool piecePickedUp = this.PickUpPiece(piece: closestPiece);
             if (piecePickedUp)

@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 
 namespace SonOfRobin
@@ -31,38 +32,91 @@ namespace SonOfRobin
                     { finalDroppedPieces.Add(new Yield.DroppedPiece(pieceName: kvp.Key, chanceToDrop: 70, maxNumberToDrop: 1)); }
                 }
 
-                Yield.antiCraft[this.pieceToCreate] = new Yield(firstDroppedPieces: new List<Yield.DroppedPiece> { }, finalDroppedPieces: finalDroppedPieces);
-            }
-            public bool CheckIfStorageContainsAllIngredients(PieceStorage storage)
-            { return storage.CheckIfContainsSpecifiedPieces(quantityByPiece: this.ingredients); }
+                BoardPiece.Category category = PieceInfo.info[pieceToCreate].category;
+                Yield.DebrisType debrisType;
 
-            public bool TryToProducePieces(PieceStorage storage)
+                switch (category)
+                {
+                    case BoardPiece.Category.Wood:
+                        debrisType = Yield.DebrisType.Wood;
+                        break;
+
+                    case BoardPiece.Category.Stone:
+                        debrisType = Yield.DebrisType.Stone;
+                        break;
+
+                    case BoardPiece.Category.Metal:
+                        debrisType = Yield.DebrisType.Wood;
+                        break;
+
+                    case BoardPiece.Category.SmallPlant:
+                        debrisType = Yield.DebrisType.Plant;
+                        break;
+
+                    case BoardPiece.Category.Animal:
+                        debrisType = Yield.DebrisType.Blood;
+                        break;
+
+                    case BoardPiece.Category.Indestructible:
+                        debrisType = Yield.DebrisType.None;
+                        break;
+
+                    default:
+                        throw new ArgumentException($"Unsupported category - '{category}'.");
+                }
+
+                Yield.antiCraft[this.pieceToCreate] = new Yield(firstDroppedPieces: new List<Yield.DroppedPiece> { }, finalDroppedPieces: finalDroppedPieces, debrisType: debrisType);
+            }
+
+            public bool CheckIfStorageContainsAllIngredients(PieceStorage storage)
             {
-                if (!this.CheckIfStorageContainsAllIngredients(storage))
+                return PieceStorage.CheckMultipleStoragesForSpecifiedPieces(storageList: new List<PieceStorage> { storage }, quantityByPiece: this.ingredients);
+            }
+
+            public bool CheckIfStorageContainsAllIngredients(List<PieceStorage> storageList)
+            {
+                return PieceStorage.CheckMultipleStoragesForSpecifiedPieces(storageList: storageList, quantityByPiece: this.ingredients);
+            }
+
+            public bool TryToProducePieces(Player player)
+            {
+                World world = player.world;
+                Vector2 position = player.sprite.position;
+
+                var storagesToUse = player.CraftStorages;
+
+                if (!this.CheckIfStorageContainsAllIngredients(storageList: storagesToUse))
                 {
                     new TextWindow(text: "Not enough ingredients.", textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false, blockInputDuration: 30);
                     MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"Not enough ingredients to craft '{this.pieceToCreate}'.");
                     return false;
                 }
 
-                storage.DestroySpecifiedPieces(this.ingredients);
+                PieceStorage.DestroySpecifiedPiecesInMultipleStorages(storageList: storagesToUse, quantityByPiece: this.ingredients);
 
                 for (int i = 0; i < this.amountToCreate; i++)
                 {
-                    BoardPiece piece = PieceTemplate.CreateOnBoard(templateName: this.pieceToCreate, world: storage.world, position: storage.storagePiece.sprite.position);
+                    BoardPiece piece = PieceTemplate.CreateOnBoard(templateName: this.pieceToCreate, world: world, position: position);
 
                     if (piece.sprite.placedCorrectly)
                     {
-                        piece.sprite.MoveToClosestFreeSpot(storage.storagePiece.sprite.position);
-                        if (storage.CanFitThisPiece(piece)) storage.AddPiece(piece: piece);
+                        piece.sprite.MoveToClosestFreeSpot(position);
+                        foreach (PieceStorage storage in storagesToUse)
+                        {
+                            if (storage.CanFitThisPiece(piece))
+                            {
+                                storage.AddPiece(piece: piece);
+                                break;
+                            }
+                        }
                     }
                     else
                     {
                         MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"Could not create '{piece.name}' on the board. Attempting to craft directly to storage.");
-                        piece = PieceTemplate.CreateOffBoard(templateName: this.pieceToCreate, world: storage.world);
+                        piece = PieceTemplate.CreateOffBoard(templateName: this.pieceToCreate, world: world);
                         if (piece.sprite.placedCorrectly)
                         {
-                            storage.AddPiece(piece: PieceTemplate.CreateOffBoard(templateName: this.pieceToCreate, world: storage.world), dropIfDoesNotFit: true);
+                            player.pieceStorage.AddPiece(piece: PieceTemplate.CreateOffBoard(templateName: this.pieceToCreate, world: world), dropIfDoesNotFit: true);
                         }
                         else
                         {
@@ -79,7 +133,7 @@ namespace SonOfRobin
                 new TextWindow(text: message, textColor: Color.White, bgColor: Color.Green, useTransition: true, animate: false, closingTask: Scheduler.TaskName.CheckForPieceHints);
                 MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: message);
 
-                HintEngine hintEngine = storage.world.hintEngine;
+                HintEngine hintEngine = world.hintEngine;
 
                 hintEngine.Disable(Tutorials.Type.Craft);
                 if (this.pieceToCreate == PieceTemplate.Name.Map) hintEngine.Disable(PieceHint.Type.MapCanMake);
@@ -126,7 +180,7 @@ namespace SonOfRobin
 
                 new Recipe(pieceToCreate: PieceTemplate.Name.ChestWooden, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodPlank, 16 },  { PieceTemplate.Name.Nail, 40 } }, isReversible: true),
 
-                new Recipe(pieceToCreate: PieceTemplate.Name.ChestIron, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.IronBar, 2 },{ PieceTemplate.Name.WoodPlank, 4 }, { PieceTemplate.Name.Nail, 30 } }, isReversible: true),
+                new Recipe(pieceToCreate: PieceTemplate.Name.ChestIron, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.IronBar, 1 },{ PieceTemplate.Name.WoodPlank, 4 }, { PieceTemplate.Name.Nail, 30 } }, isReversible: true),
 
                 new Recipe(pieceToCreate: PieceTemplate.Name.Furnace, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stone, 20 }, { PieceTemplate.Name.WoodLog, 4 }, { PieceTemplate.Name.Coal, 4 } }, isReversible: true),
 
@@ -138,7 +192,7 @@ namespace SonOfRobin
             // workshop
 
             recipeList = new List<Recipe> {
-                new Recipe(pieceToCreate: PieceTemplate.Name.Map, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Leather, 1 }}, isReversible: false),
+                new Recipe(pieceToCreate: PieceTemplate.Name.Map, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Leather, 1 }}, isReversible: true),
 
                 new Recipe(pieceToCreate: PieceTemplate.Name.BackpackMedium, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Leather, 5 }}, isReversible: true),
 
@@ -173,6 +227,8 @@ namespace SonOfRobin
                 new Recipe(pieceToCreate: PieceTemplate.Name.AxeStone, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stick, 2 }, { PieceTemplate.Name.WoodLog, 1 }, { PieceTemplate.Name.Stone, 2 }}, isReversible: true),
 
                 new Recipe(pieceToCreate: PieceTemplate.Name.AxeIron, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stick, 2 }, { PieceTemplate.Name.WoodLog, 1 }, { PieceTemplate.Name.IronBar, 2 }}, isReversible: true),
+
+                new Recipe(pieceToCreate: PieceTemplate.Name.Scythe, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stick, 2 }, { PieceTemplate.Name.WoodLog, 1 }, { PieceTemplate.Name.IronBar, 2 }}, isReversible: true),
 
             };
             AddCategory(category: Category.Workshop, recipeList: recipeList);

@@ -63,9 +63,10 @@ namespace SonOfRobin
             var messageList = tutorials[type].MessagesToDisplay;
             var taskChain = HintMessage.ConvertToTasks(messageList: messageList);
 
-            taskChain.Insert(0, new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.TempoStop, delay: 1, executeHelper: null, storeForLaterUse: true));
+            taskChain.Insert(0, new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.SetCineMode, delay: 1, executeHelper: true, storeForLaterUse: true));
+            taskChain.Add(new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.SetCineMode, delay: 0, executeHelper: false, storeForLaterUse: true));
+
             new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.ExecuteTaskChain, turnOffInput: true, executeHelper: taskChain);
-            taskChain.Add(new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.TempoPlay, delay: 0, executeHelper: null, storeForLaterUse: true));
 
             if (hintEngine != null) hintEngine.shownTutorials.Add(type);
         }

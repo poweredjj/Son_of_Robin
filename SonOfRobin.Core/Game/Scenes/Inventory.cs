@@ -31,7 +31,7 @@ namespace SonOfRobin
         {
             get
             {
-                if (this.piece.world.mapMode == World.MapMode.Big || this.piece.world.cineMode) return true;
+                if (this.piece.world.mapMode == World.MapMode.Big || this.piece.world.CineMode) return true;
                 Scene topScene = sceneStack[sceneStack.Count - 1];
 
                 if (topScene.GetType() == typeof(TextWindow)) topScene = sceneStack[sceneStack.Count - 2];

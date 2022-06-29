@@ -225,7 +225,6 @@ namespace SonOfRobin
         {
             bool normalInputSet = false;
 
-
             for (int i = sceneStack.Count - 1; i >= 0; i--)
             {
                 Scene scene = sceneStack[i];

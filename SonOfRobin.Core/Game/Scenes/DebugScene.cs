@@ -77,7 +77,7 @@ namespace SonOfRobin
 
             if (Keyboard.HasBeenPressed(Keys.D1))
             {
-                BoardPiece piece = PieceTemplate.CreateOnBoard(world: world, position: world.player.sprite.position, templateName: PieceTemplate.Name.Fox);
+                BoardPiece piece = PieceTemplate.CreateOnBoard(world: world, position: world.player.sprite.position, templateName: PieceTemplate.Name.Scythe);
                 if (piece.sprite.placedCorrectly) piece.sprite.MoveToClosestFreeSpot(world.player.sprite.position);
             }
 
@@ -151,7 +151,7 @@ namespace SonOfRobin
 
                 Player player = world.player;
 
-                player.sprite.SetOrientationByMovement(new Vector2(0,-5));
+                player.sprite.SetOrientationByMovement(new Vector2(0, -5));
             }
 
 
@@ -228,6 +228,26 @@ namespace SonOfRobin
                 }
             }
 
+            if (Keyboard.HasBeenPressed(Keys.OemComma))
+            {
+                if (world == null) return;
+                Player player = world.player;
+
+                Point point1 = new Point((int)player.sprite.position.X, (int)player.sprite.position.Y);
+                Point point2 = new Point((int)player.sprite.position.X + 200, (int)player.sprite.position.Y - 100);
+                Point point3 = new Point((int)player.sprite.position.X + 200, (int)player.sprite.position.Y + 100);
+
+                PieceTemplate.CreateOnBoard(world: world, position: new Vector2(point1.X, point1.Y), templateName: PieceTemplate.Name.Heart);
+                PieceTemplate.CreateOnBoard(world: world, position: new Vector2(point2.X, point2.Y), templateName: PieceTemplate.Name.Heart);
+                PieceTemplate.CreateOnBoard(world: world, position: new Vector2(point3.X, point3.Y), templateName: PieceTemplate.Name.Heart);
+
+                var piecesInsideTriangle = world.grid.GetPiecesInsideTriangle(groupName: Cell.Group.All, point1: point1, point2: point2, point3: point3);
+                foreach (BoardPiece piece in piecesInsideTriangle)
+                {
+                    piece.sprite.effectCol.AddEffect(new BorderInstance(outlineColor: Color.Red, textureSize: piece.sprite.frame.originalTextureSize, priority: 0, framesLeft: 60));
+                    PieceTemplate.CreateOnBoard(world: world, position: piece.sprite.position, templateName: PieceTemplate.Name.Backlight);
+                }
+            }
 
             if (Keyboard.HasBeenPressed(Keys.Q) || VirtButton.HasButtonBeenPressed(VButName.DebugClear))
             {
@@ -266,9 +286,11 @@ namespace SonOfRobin
 
             if (Keyboard.HasBeenPressed(Keys.F4))
             {
+                if (world == null) return;
+
                 Craft.PopulateAllCategories();
                 Craft.Recipe recipe = new Craft.Recipe(pieceToCreate: PieceTemplate.Name.MineralsSmall, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Shell, 4 } });
-                recipe.TryToProducePieces(storage: world.player.pieceStorage);
+                recipe.TryToProducePieces(player: world.player);
             }
 
             if (Keyboard.HasBeenPressed(Keys.F5)) SonOfRobinGame.progressBar.TurnOn(curVal: 2, maxVal: 5, text: $"Loading game - replacing save slot data...              ...");
@@ -352,7 +374,7 @@ namespace SonOfRobin
 
                 while (true)
                 {
-                    var packageNames = new List<AnimPkg> { AnimPkg.DemonMaidPink, AnimPkg.DemonMaidYellow, AnimPkg.Blonde, AnimPkg.Sailor, AnimPkg.FoxGinger, AnimPkg.Frog1, AnimPkg.CrabGreen };
+                    var packageNames = new List<AnimPkg> { AnimPkg.Blonde, AnimPkg.Sailor, AnimPkg.FoxGinger, AnimPkg.Frog1, AnimPkg.CrabGreen, AnimPkg.TigerWhite };
                     var packageName = packageNames[SonOfRobinGame.random.Next(0, packageNames.Count)];
                     if (packageName != currentPackageName)
                     {

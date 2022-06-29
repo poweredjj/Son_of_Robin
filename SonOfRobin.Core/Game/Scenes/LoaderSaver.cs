@@ -338,7 +338,16 @@ namespace SonOfRobin
             }
 
             if (Directory.Exists(this.savePath)) Directory.Delete(path: this.savePath, recursive: true);
-            Directory.Move(this.saveTempPath, this.savePath);
+
+            try
+            {
+                Directory.Move(this.saveTempPath, this.savePath);
+            }
+            catch (IOException)
+            {
+                new TextWindow(text: "An error occured during renaming temp save directory.", textColor: Color.White, bgColor: Color.DarkRed, useTransition: true, animate: true, closingTask: this.TextWindowTask);
+                return;
+            }
 
             if (this.showSavedMessage) new TextWindow(text: "Game has been saved.", textColor: Color.White, bgColor: Color.DarkGreen, useTransition: false, animate: false);
             MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.User, message: $"Game saved in slot {saveSlotName}.", color: Color.LightBlue);

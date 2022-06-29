@@ -16,7 +16,7 @@ namespace SonOfRobin
 
             string question = (string)confirmationDict["question"];
 
-            var menu = new Menu(templateName: Name.GenericConfirm, name: question, blocksUpdatesBelow: false, canBeClosedManually: true);
+            var menu = new Menu(templateName: Name.GenericConfirm, name: question, blocksUpdatesBelow: false, canBeClosedManually: true, priority: 0);
             new Separator(menu: menu, name: "", isEmpty: true);
             new Invoker(menu: menu, name: "no", closesMenu: true, taskName: Scheduler.TaskName.Empty);
             new Invoker(menu: menu, name: "yes", closesMenu: true, taskName: Scheduler.TaskName.ProcessConfirmation, executeHelper: confirmationData);
@@ -64,8 +64,10 @@ namespace SonOfRobin
                         if (Preferences.FullScreenMode) new Selector(menu: menu, name: "resolution", valueList: Preferences.AvailableScreenModes, targetObj: new Preferences(), propertyName: "FullScreenResolution");
                     }
 
+                    new Invoker(menu: menu, name: "delete old island templates", taskName: Scheduler.TaskName.DeleteTemplates);
+
                     new Selector(menu: menu, name: "show gamepad tips", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: new Preferences(), propertyName: "showControlTips", rebuildsMenu: true);
-                    new Selector(menu: menu, name: "gamepad type", valueDict: new Dictionary<object, object> { { ButtonScheme.Type.M, "M" }, { ButtonScheme.Type.S, "S" }, { ButtonScheme.Type.N, "N" } }, targetObj: new Preferences(), propertyName: "ControlTipsScheme");
+                    if (Preferences.showControlTips) new Selector(menu: menu, name: "gamepad type", valueDict: new Dictionary<object, object> { { ButtonScheme.Type.M, "M" }, { ButtonScheme.Type.S, "S" }, { ButtonScheme.Type.N, "N" } }, targetObj: new Preferences(), propertyName: "ControlTipsScheme");
 
                     new Selector(menu: menu, name: "show hints", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: new Preferences(), propertyName: "showHints");
                     new Selector(menu: menu, name: "frameskip", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: new Preferences(), propertyName: "FrameSkip");
@@ -89,10 +91,9 @@ namespace SonOfRobin
                         {
                             List<Object> sizeList;
                             if (SonOfRobinGame.platform == Platform.Desktop)
-                            { sizeList = new List<Object> { 1000, 2000, 4000, 8000, 10000, 15000, 20000, 30000, 40000, 50000, 60000, 80000 }; }
+                            { sizeList = new List<Object> { 1000, 2000, 4000, 8000, 10000, 15000, 20000, 30000, 40000, 50000, 60000 }; }
                             else
                             { sizeList = new List<Object> { 1000, 2000, 4000, 8000, 10000, 15000, 20000, 30000, 40000 }; }
-
 
                             new Selector(menu: menu, name: "width", valueList: sizeList, targetObj: new Preferences(), propertyName: "newWorldWidth", rebuildsMenu: true);
                             new Selector(menu: menu, name: "height", valueList: sizeList, targetObj: new Preferences(), propertyName: "newWorldHeight", rebuildsMenu: true);
@@ -104,11 +105,7 @@ namespace SonOfRobin
                         else
                         {
                             List<Object> sizeList = new List<Object> { Preferences.WorldSize.small, Preferences.WorldSize.medium, Preferences.WorldSize.large };
-                            if (SonOfRobinGame.platform == Platform.Desktop)
-                            {
-                                sizeList.Add(Preferences.WorldSize.gigantic);
-                                sizeList.Add(Preferences.WorldSize.outrageous);
-                            }
+                            if (SonOfRobinGame.platform == Platform.Desktop) sizeList.Add(Preferences.WorldSize.gigantic);
 
                             new Selector(menu: menu, name: "size", valueList: sizeList, targetObj: new Preferences(), propertyName: "SelectedWorldSize", rebuildsMenu: true, infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: $"{Preferences.newWorldWidth}x{Preferences.newWorldHeight}", color: Color.White, scale: 1f) });
                         }
@@ -152,20 +149,15 @@ namespace SonOfRobin
 
                         var templatePaths = Directory.GetDirectories(SonOfRobinGame.worldTemplatesPath);
 
-                        string widthHeight, folderName;
-                        int width, height, seed;
+                        string folderName;
+                        Helpers.TemplateData templateData;
 
                         foreach (string path in templatePaths)
                         {
                             folderName = Path.GetFileName(path);
+                            templateData = new Helpers.TemplateData(folderName);
 
-                            seed = Convert.ToInt32(folderName.Split('_')[1]);
-
-                            widthHeight = folderName.Split('_')[2];
-                            width = Convert.ToInt32(widthHeight.Split('x')[0]);
-                            height = Convert.ToInt32(widthHeight.Split('x')[1]);
-
-                            new Invoker(menu: menu, name: $"{width}x{height} seed {seed}", closesMenu: true, taskName: Scheduler.TaskName.CreateNewWorld, executeHelper: new Dictionary<string, Object> { { "width", width }, { "height", height }, { "seed", seed } });
+                            new Invoker(menu: menu, name: $"{templateData.width}x{templateData.height} seed {templateData.seed}", closesMenu: true, taskName: Scheduler.TaskName.CreateNewWorld, executeHelper: new Dictionary<string, Object> { { "width", templateData.width }, { "height", templateData.height }, { "seed", templateData.seed } });
                         }
 
                         new Separator(menu: menu, name: "", isEmpty: true);
@@ -257,14 +249,12 @@ namespace SonOfRobin
 
                 case Name.Debug:
                     menu = new Menu(templateName: templateName, name: "DEBUG MENU", blocksUpdatesBelow: false, canBeClosedManually: true);
-                    new Invoker(menu: menu, name: "delete obsolete saves", taskName: Scheduler.TaskName.DeleteObsoleteSaves);
 
                     world = World.GetTopWorld();
 
                     if (world != null && !world.demoMode) new Invoker(menu: menu, name: "create any piece", taskName: Scheduler.TaskName.OpenCreateAnyPieceMenu);
                     new Selector(menu: menu, name: "create missing pieces", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: new Preferences(), propertyName: "debugCreateMissingPieces");
                     new Selector(menu: menu, name: "god mode", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: new Preferences(), propertyName: "DebugGodMode");
-                    new Selector(menu: menu, name: "ignore cinematics", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: new Preferences(), propertyName: "debugIgnoreCinematics");
                     new Selector(menu: menu, name: "show whole map", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: new Preferences(), propertyName: "debugShowWholeMap");
                     new Selector(menu: menu, name: "show all items on map", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: new Preferences(), propertyName: "debugShowAllMapPieces");
                     new Invoker(menu: menu, name: "restore all hints", taskName: Scheduler.TaskName.RestoreHints);
@@ -314,7 +304,8 @@ namespace SonOfRobin
         {
             Tutorials.ShowTutorial(type: Tutorials.Type.Craft, ignoreIfShown: true, ignoreDelay: true);
 
-            PieceStorage storage = World.GetTopWorld().player.pieceStorage;
+            Player player = World.GetTopWorld().player;
+            List<PieceStorage> storageList = player.CraftStorages;
 
             Menu menu = new Menu(templateName: templateName, name: label, blocksUpdatesBelow: true, canBeClosedManually: true, layout: SonOfRobinGame.platform == Platform.Mobile ? Menu.Layout.Right : Menu.Layout.Left, alwaysShowSelectedEntry: true);
             menu.bgColor = Color.LemonChiffon * 0.5f;
@@ -322,7 +313,7 @@ namespace SonOfRobin
             var recipeList = Craft.recipesByCategory[category];
             foreach (Craft.Recipe recipe in recipeList)
             {
-                new CraftInvoker(menu: menu, name: recipe.pieceToCreate.ToString(), closesMenu: false, taskName: Scheduler.TaskName.Craft, rebuildsMenu: true, executeHelper: recipe, recipe: recipe, storage: storage);
+                new CraftInvoker(menu: menu, name: recipe.pieceToCreate.ToString(), closesMenu: false, taskName: Scheduler.TaskName.Craft, rebuildsMenu: true, executeHelper: recipe, recipe: recipe, storageList: storageList);
             }
 
             menu.EntriesRectColor = Color.SaddleBrown;

@@ -20,7 +20,10 @@ namespace SonOfRobin
         Inventory,
         Map,
         QuitLoading,
-        HiddenStart
+        HiddenStart,
+        TextWindowOk,
+        TextWindowCancel,
+        TextWindowOkCancel,
     }
     public class TouchInput
     {
@@ -115,46 +118,46 @@ namespace SonOfRobin
                     xPos = 0.76f;
                     yPos = 0.12f;
 
-                    new VirtButton(name: VButName.Map, label: "MAP", colorPressed: Color.CornflowerBlue, colorReleased: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size, highlightCoupledObj: world, highlightCoupledVarName: "mapEnabled");
+                    new VirtButton(name: VButName.Map, label: "MAP", bgColorPressed: Color.CornflowerBlue, bgColorReleased: Color.White, textColor: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size, highlightCoupledObj: world, highlightCoupledVarName: "mapEnabled");
                     xPos += xShift;
-                    new VirtButton(name: VButName.ZoomOut, label: "ZOOM\nOUT", colorPressed: Color.Orange, colorReleased: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size, switchButton: true, activeCoupledObj: preferences, activeCoupledVarName: "zoomedOut");
+                    new VirtButton(name: VButName.ZoomOut, label: "ZOOM\nOUT", bgColorPressed: Color.Orange, bgColorReleased: Color.White, textColor: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size, switchButton: true, activeCoupledObj: preferences, activeCoupledVarName: "zoomedOut");
                     xPos += xShift;
-                    new VirtButton(name: VButName.Run, label: "RUN", colorPressed: Color.Red, colorReleased: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
+                    new VirtButton(name: VButName.Run, label: "RUN", bgColorPressed: Color.Red, bgColorReleased: Color.White, textColor: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
                     yPos += yShift;
-                    new VirtButton(name: VButName.Interact, label: "INTERACT", colorPressed: Color.LightGreen, colorReleased: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size, isHighlighted: false);
+                    new VirtButton(name: VButName.Interact, label: "INTERACT", bgColorPressed: Color.LightGreen, bgColorReleased: Color.White, textColor: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size, isHighlighted: false);
                     xPos -= xShift;
-                    new VirtButton(name: VButName.UseTool, label: "USE\nITEM", colorPressed: Color.CornflowerBlue, colorReleased: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size, isHighlighted: false);
+                    new VirtButton(name: VButName.UseTool, label: "USE\nITEM", bgColorPressed: Color.CornflowerBlue, bgColorReleased: Color.White, textColor: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size, isHighlighted: false);
                     xPos -= xShift;
-                    new VirtButton(name: VButName.PickUp, label: "PICK\nUP", colorPressed: Color.LightBlue, colorReleased: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size, isHighlighted: false);
+                    new VirtButton(name: VButName.PickUp, label: "PICK\nUP", bgColorPressed: Color.LightBlue, bgColorReleased: Color.White, textColor: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size, isHighlighted: false);
 
                     // left side
 
                     xPos = 0.06f;
                     yPos = 0.12f;
 
-                    new VirtButton(name: VButName.Inventory, label: "ITEMS", colorPressed: Color.CornflowerBlue, colorReleased: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
+                    new VirtButton(name: VButName.Inventory, label: "ITEMS", bgColorPressed: Color.CornflowerBlue, bgColorReleased: Color.White, textColor: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
                     xPos += xShift;
-                    new VirtButton(name: VButName.FieldCraft, label: "FIELD\nCRAFT", colorPressed: Color.CornflowerBlue, colorReleased: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
+                    new VirtButton(name: VButName.FieldCraft, label: "FIELD\nCRAFT", bgColorPressed: Color.CornflowerBlue, bgColorReleased: Color.White, textColor: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
                     xPos += xShift;
-                    new VirtButton(name: VButName.PauseMenu, label: "MENU", colorPressed: Color.Yellow, colorReleased: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
+                    new VirtButton(name: VButName.PauseMenu, label: "MENU", bgColorPressed: Color.Yellow, bgColorReleased: Color.White, textColor: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
 
                     xPos = 0.06f;
                     yPos += yShift;
-                    new VirtButton(name: VButName.Equip, label: "EQUIP", colorPressed: Color.Yellow, colorReleased: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
+                    new VirtButton(name: VButName.Equip, label: "EQUIP", bgColorPressed: Color.Yellow, bgColorReleased: Color.White, textColor: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
 
                     return;
 
                 case TouchLayout.WorldShoot:
                     showSticks = true;
 
-                    new VirtButton(name: VButName.Shoot, label: "SHOOT", colorPressed: Color.CornflowerBlue, colorReleased: Color.White, posX0to1: 0.06f, posY0to1: 0.32f, width0to1: size, height0to1: size);
+                    new VirtButton(name: VButName.Shoot, label: "SHOOT", bgColorPressed: Color.CornflowerBlue, bgColorReleased: Color.White, textColor: Color.White, posX0to1: 0.06f, posY0to1: 0.32f, width0to1: size, height0to1: size);
 
                     return;
 
                 case TouchLayout.WorldSleep:
                     showSticks = false;
 
-                    new VirtButton(name: VButName.Interact, label: "WAKE UP", colorPressed: Color.CornflowerBlue, colorReleased: Color.White, posX0to1: 0.94f, posY0to1: 0.32f, width0to1: size, height0to1: size, highlightCoupledObj: world.player, highlightCoupledVarName: "CanWakeNow");
+                    new VirtButton(name: VButName.Interact, label: "WAKE UP", bgColorPressed: Color.CornflowerBlue, bgColorReleased: Color.White, textColor: Color.White, posX0to1: 0.94f, posY0to1: 0.32f, width0to1: size, height0to1: size, highlightCoupledObj: world.player, highlightCoupledVarName: "CanWakeNow");
 
                     return;
 
@@ -164,7 +167,7 @@ namespace SonOfRobin
                     xPos = 0.76f;
                     yPos = 0.12f;
 
-                    new VirtButton(name: VButName.Return, label: "RETURN", colorPressed: Color.CornflowerBlue, colorReleased: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
+                    new VirtButton(name: VButName.Return, label: "RETURN", bgColorPressed: Color.CornflowerBlue, bgColorReleased: Color.White, textColor: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
 
                     return;
 
@@ -173,8 +176,8 @@ namespace SonOfRobin
 
                     size = 0.07f;
                     xPos = 0.04f;
-                    new VirtButton(name: VButName.Return, label: "RETURN", colorPressed: Color.LightGreen, colorReleased: Color.White, posX0to1: xPos, posY0to1: 0.12f, width0to1: size, height0to1: size);
-                    new VirtButton(name: VButName.DragSingle, label: "DRAG\nSINGLE", colorPressed: Color.LightGreen, colorReleased: Color.White, posX0to1: xPos, posY0to1: 0.88f, width0to1: size, height0to1: size, switchButton: true);
+                    new VirtButton(name: VButName.Return, label: "RETURN", bgColorPressed: Color.LightGreen, bgColorReleased: Color.White, textColor: Color.White, posX0to1: xPos, posY0to1: 0.12f, width0to1: size, height0to1: size);
+                    new VirtButton(name: VButName.DragSingle, label: "DRAG\nSINGLE", bgColorPressed: Color.LightGreen, bgColorReleased: Color.White, textColor: Color.White, posX0to1: xPos, posY0to1: 0.88f, width0to1: size, height0to1: size, switchButton: true);
                     return;
 
                 case TouchLayout.MenuLeftReturn:
@@ -182,7 +185,7 @@ namespace SonOfRobin
 
                     xPos = 0.65f;
                     yPos = 0.85f;
-                    new VirtButton(name: VButName.Return, label: "RETURN", colorPressed: Color.LightGreen, colorReleased: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
+                    new VirtButton(name: VButName.Return, label: "RETURN", bgColorPressed: Color.LightGreen, bgColorReleased: Color.White, textColor: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
 
                     return;
 
@@ -191,7 +194,7 @@ namespace SonOfRobin
 
                     xPos = 0.06f;
                     yPos = 0.85f;
-                    new VirtButton(name: VButName.Return, label: "RETURN", colorPressed: Color.LightGreen, colorReleased: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
+                    new VirtButton(name: VButName.Return, label: "RETURN", bgColorPressed: Color.LightGreen, bgColorReleased: Color.White, textColor: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
 
                     return;
 
@@ -200,7 +203,35 @@ namespace SonOfRobin
 
                     xPos = 0.06f;
                     yPos = 0.85f;
-                    new VirtButton(name: VButName.Return, label: "CANCEL", colorPressed: Color.LightGreen, colorReleased: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
+                    new VirtButton(name: VButName.Return, label: "CANCEL", bgColorPressed: Color.LightGreen, bgColorReleased: Color.White, textColor: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
+
+                    return;
+
+                case TouchLayout.TextWindowOk:
+                    showSticks = false;
+
+                    xPos = 0.94f;
+                    yPos = 0.85f;
+                    new VirtButton(name: VButName.Interact, label: "CONFIRM", bgColorPressed: Color.LightGreen, bgColorReleased: Color.White, textColor: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
+
+                    return;
+
+                case TouchLayout.TextWindowCancel:
+                    showSticks = false;
+
+                    xPos = 0.06f;
+                    yPos = 0.85f;
+                    new VirtButton(name: VButName.Return, label: "SKIP", bgColorPressed: Color.LightGreen, bgColorReleased: Color.White, textColor: new Color(206, 235, 253), posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
+
+                    return;
+
+                case TouchLayout.TextWindowOkCancel:
+                    showSticks = false;
+
+                    yPos = 0.85f;
+
+                    new VirtButton(name: VButName.Return, label: "SKIP", bgColorPressed: Color.LightGreen, bgColorReleased: Color.White, textColor: new Color(206, 235, 253), posX0to1: 0.06f, posY0to1: yPos, width0to1: size, height0to1: size);
+                    new VirtButton(name: VButName.Interact, label: "CONFIRM", bgColorPressed: Color.LightGreen, bgColorReleased: Color.White, textColor: new Color(206, 235, 253), posX0to1: 0.94f, posY0to1: yPos, width0to1: size, height0to1: size);
 
                     return;
 
@@ -210,7 +241,7 @@ namespace SonOfRobin
                     size = 0.07f;
                     xPos = 0.04f;
                     yPos = 0.15f;
-                    new VirtButton(name: VButName.Return, label: "RETURN", colorPressed: Color.LightGreen, colorReleased: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
+                    new VirtButton(name: VButName.Return, label: "RETURN", bgColorPressed: Color.LightGreen, bgColorReleased: Color.White, textColor: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
 
                     return;
 
@@ -219,7 +250,7 @@ namespace SonOfRobin
 
                     size = 0.07f;
 
-                    new VirtButton(name: VButName.Interact, label: "main\nmenu", colorPressed: Color.LightGreen, colorReleased: Color.White, posX0to1: 0.05f, posY0to1: 0.05f, width0to1: size, height0to1: size, hidden: true);
+                    new VirtButton(name: VButName.Interact, label: "main\nmenu", bgColorPressed: Color.LightGreen, bgColorReleased: Color.White, textColor: Color.White, posX0to1: 0.05f, posY0to1: 0.05f, width0to1: size, height0to1: size, hidden: true);
 
                     return;
 
@@ -237,13 +268,13 @@ namespace SonOfRobin
             float xShift = 0.07f;
             float yShift = 0.15f;
 
-            new VirtButton(name: VButName.DebugPause, label: "||", colorPressed: Color.Violet, colorReleased: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: width, height0to1: height);
+            new VirtButton(name: VButName.DebugPause, label: "||", bgColorPressed: Color.Violet, bgColorReleased: Color.White, textColor: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: width, height0to1: height);
             xPos += xShift;
-            new VirtButton(name: VButName.DebugPlay, label: "|>", colorPressed: Color.Violet, colorReleased: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: width, height0to1: height);
+            new VirtButton(name: VButName.DebugPlay, label: "|>", bgColorPressed: Color.Violet, bgColorReleased: Color.White, textColor: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: width, height0to1: height);
             xPos += xShift;
-            new VirtButton(name: VButName.DebugFastForward, label: ">>", colorPressed: Color.Violet, colorReleased: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: width, height0to1: height);
+            new VirtButton(name: VButName.DebugFastForward, label: ">>", bgColorPressed: Color.Violet, bgColorReleased: Color.White, textColor: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: width, height0to1: height);
             xPos += xShift;
-            new VirtButton(name: VButName.DebugClear, label: "clear", colorPressed: Color.Violet, colorReleased: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: width, height0to1: height);
+            new VirtButton(name: VButName.DebugClear, label: "clear", bgColorPressed: Color.Violet, bgColorReleased: Color.White, textColor: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: width, height0to1: height);
         }
 
 

@@ -28,11 +28,14 @@ namespace SonOfRobin
             AnimalFlee,
         }
 
+        public enum Category { Wood, Stone, Metal, SmallPlant, Animal, Indestructible }
+
         protected static readonly float passiveMovementMultiplier = 100f;
 
         public readonly World world;
         public readonly string id;
         public readonly PieceTemplate.Name name;
+        public readonly Category category;
         public Sprite sprite;
         public State activeState;
         public float speed;
@@ -109,11 +112,12 @@ namespace SonOfRobin
             }
         }
 
-        public BoardPiece(World world, Vector2 position, AnimPkg animPackage, PieceTemplate.Name name, AllowedFields allowedFields, Dictionary<byte, int> maxMassBySize, string readableName, string description,
+        public BoardPiece(World world, Vector2 position, AnimPkg animPackage, PieceTemplate.Name name, AllowedFields allowedFields, Dictionary<byte, int> maxMassBySize, string readableName, string description, Category category,
             byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, bool visible = true, ushort minDistance = 0, ushort maxDistance = 100, bool ignoresCollisions = false, int destructionDelay = 0, int maxAge = 0, bool floatsOnWater = false, bool checksFullCollisions = false, int generation = 0, int mass = 1, int staysAfterDeath = 800, float maxHitPoints = 1, byte stackSize = 1, Scheduler.TaskName boardTask = Scheduler.TaskName.Empty, Scheduler.TaskName toolbarTask = Scheduler.TaskName.Empty, bool canBePickedUp = false, Yield yield = null, bool indestructible = false, bool rotatesWhenDropped = false, bool fadeInAnim = false, bool serialize = true, bool placeAtBeachEdge = false, bool isShownOnMiniMap = false, List<BuffEngine.Buff> buffList = null, AllowedDensity allowedDensity = null, int strength = 0)
         {
             this.world = world;
             this.name = name;
+            this.category = category;
             this.id = $"{this.world.currentPieceId}_{this.name}_{this.world.random.Next(0, 1000000)}";
             this.sprite = new Sprite(boardPiece: this, id: this.id, position: position, world: this.world, animPackage: animPackage, animSize: animSize, animName: animName, blocksMovement: blocksMovement, visible: visible, minDistance: minDistance, maxDistance: maxDistance, ignoresCollisions: ignoresCollisions, allowedFields: allowedFields, floatsOnWater: floatsOnWater, checksFullCollisions: checksFullCollisions, fadeInAnim: fadeInAnim, placeAtBeachEdge: placeAtBeachEdge, isShownOnMiniMap: isShownOnMiniMap, allowedDensity: allowedDensity);
 
@@ -283,6 +287,7 @@ namespace SonOfRobin
             if (this.alive) this.Kill();
 
             this.sprite.Destroy();
+            if (this.visualAid != null && this.visualAid.exists) this.visualAid.Destroy();
             this.exists = false;
             this.RemoveFromPieceCount();
         }

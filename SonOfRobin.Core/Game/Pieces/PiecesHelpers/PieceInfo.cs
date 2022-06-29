@@ -12,6 +12,7 @@ namespace SonOfRobin
             public readonly PieceTemplate.Name name;
             public readonly string readableName;
             public readonly string description;
+            public readonly BoardPiece.Category category;
             public List<BuffEngine.Buff> buffList;
             public AnimFrame frame;
             public List<PieceTemplate.Name> eats;
@@ -35,6 +36,7 @@ namespace SonOfRobin
             public Info(BoardPiece piece)
             {
                 this.name = piece.name;
+                this.category = piece.category;
                 this.readableName = piece.readableName;
                 this.description = piece.description;
                 this.buffList = piece.buffList;

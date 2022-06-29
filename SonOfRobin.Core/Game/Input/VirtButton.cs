@@ -39,8 +39,9 @@ namespace SonOfRobin
 
         private readonly string label;
 
-        private readonly Color colorPressed;
-        private readonly Color colorReleased;
+        private readonly Color bgColorPressed;
+        private readonly Color bgColorReleased;
+        private readonly Color textColor;
         private readonly Texture2D textureReleased;
         private readonly Texture2D texturePressed;
         private bool isDown;
@@ -79,14 +80,15 @@ namespace SonOfRobin
             }
         }
 
-        public VirtButton(VButName name, string label, float posX0to1, float posY0to1, float width0to1, float height0to1, Color colorPressed, Color colorReleased,
-            bool switchButton = false, bool hidden = false,
+        public VirtButton(VButName name, string label, float posX0to1, float posY0to1, float width0to1, float height0to1, Color bgColorPressed, Color bgColorReleased, Color textColor, bool switchButton = false, bool hidden = false,
             Object activeCoupledObj = null, string activeCoupledVarName = "",
             bool isHighlighted = true, string highlightCoupledVarName = null, Object highlightCoupledObj = null)
         {
             this.label = label;
-            this.colorPressed = colorPressed;
-            this.colorReleased = colorReleased;
+            this.bgColorPressed = bgColorPressed;
+            this.bgColorReleased = bgColorReleased;
+            this.textColor = textColor;
+
             this.textureReleased = SonOfRobinGame.textureByName["virtual_button"];
             this.texturePressed = SonOfRobinGame.textureByName["virtual_button_pressed"];
 
@@ -200,14 +202,14 @@ namespace SonOfRobin
             if (this.IsActive)
             {
                 sourceRectangle = new Rectangle(0, 0, this.texturePressed.Width, this.texturePressed.Height);
-                SonOfRobinGame.spriteBatch.Draw(this.texturePressed, gfxRect, sourceRectangle, this.colorPressed * opacityMultiplier);
+                SonOfRobinGame.spriteBatch.Draw(this.texturePressed, gfxRect, sourceRectangle, this.bgColorPressed * opacityMultiplier);
             }
 
             Vector2 posCenter = this.PosCenter;
 
             sourceRectangle = new Rectangle(0, 0, this.textureReleased.Width, this.textureReleased.Height);
 
-            SonOfRobinGame.spriteBatch.Draw(this.textureReleased, gfxRect, sourceRectangle, this.colorReleased * opacityMultiplier);
+            SonOfRobinGame.spriteBatch.Draw(this.textureReleased, gfxRect, sourceRectangle, this.bgColorReleased * opacityMultiplier);
 
             var labelSize = font.MeasureString(this.label);
             float targetTextWidth = this.Width * 0.85f;
@@ -215,7 +217,7 @@ namespace SonOfRobin
 
             Vector2 posLabelUpperLeft = posCenter - new Vector2(labelSize.X / 2 * textScale, labelSize.Y / 2 * textScale);
 
-            SonOfRobinGame.spriteBatch.DrawString(font, this.label, position: posLabelUpperLeft, color: Color.White * opacityMultiplier, origin: Vector2.Zero, scale: textScale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
+            SonOfRobinGame.spriteBatch.DrawString(font, this.label, position: posLabelUpperLeft, color: this.textColor * opacityMultiplier, origin: Vector2.Zero, scale: textScale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
         }
 
     }

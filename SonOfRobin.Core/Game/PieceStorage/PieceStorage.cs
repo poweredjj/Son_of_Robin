@@ -286,21 +286,29 @@ namespace SonOfRobin
 
         public void DestroySpecifiedPieces(Dictionary<PieceTemplate.Name, byte> quantityByPiece)
         {
+            DestroySpecifiedPiecesInMultipleStorages(storageList: new List<PieceStorage> { this }, quantityByPiece: quantityByPiece);
+        }
+
+        public static void DestroySpecifiedPiecesInMultipleStorages(List<PieceStorage> storageList, Dictionary<PieceTemplate.Name, byte> quantityByPiece)
+        {
             // this method does not check if all pieces are present
 
             var quantityLeft = quantityByPiece.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 
-            foreach (StorageSlot slot in this.OccupiedSlots)
+            foreach (PieceStorage storage in storageList)
             {
-                PieceTemplate.Name pieceName = slot.PieceName;
-
-                if (quantityLeft.ContainsKey(pieceName) && quantityLeft[pieceName] > 0)
+                foreach (StorageSlot slot in storage.OccupiedSlots)
                 {
-                    while (true)
+                    PieceTemplate.Name pieceName = slot.PieceName;
+
+                    if (quantityLeft.ContainsKey(pieceName) && quantityLeft[pieceName] > 0)
                     {
-                        slot.RemoveTopPiece();
-                        quantityLeft[pieceName] -= 1;
-                        if (quantityLeft[pieceName] == 0 || slot.pieceList.Count == 0) break;
+                        while (true)
+                        {
+                            slot.RemoveTopPiece();
+                            quantityLeft[pieceName] -= 1;
+                            if (quantityLeft[pieceName] == 0 || slot.pieceList.Count == 0) break;
+                        }
                     }
                 }
             }
@@ -308,18 +316,21 @@ namespace SonOfRobin
             Debug.Assert(quantityLeft.Where(kvp => kvp.Value > 0).ToList().Count == 0);
         }
 
-        public bool CheckIfContainsSpecifiedPieces(Dictionary<PieceTemplate.Name, byte> quantityByPiece)
+        public static bool CheckMultipleStoragesForSpecifiedPieces(List<PieceStorage> storageList, Dictionary<PieceTemplate.Name, byte> quantityByPiece)
         {
             var quantityLeft = quantityByPiece.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 
             foreach (PieceTemplate.Name name in quantityLeft.Keys.ToList())
             {
-                foreach (StorageSlot slot in this.OccupiedSlots)
+                foreach (PieceStorage storage in storageList)
                 {
-                    foreach (BoardPiece piece in slot.pieceList)
+                    foreach (StorageSlot slot in storage.OccupiedSlots)
                     {
-                        if (piece.name != name || quantityLeft[name] == 0) break;
-                        if (quantityLeft[name] > 0) quantityLeft[name] -= 1;
+                        foreach (BoardPiece piece in slot.pieceList)
+                        {
+                            if (piece.name != name || quantityLeft[name] == 0) break;
+                            if (quantityLeft[name] > 0) quantityLeft[name] -= 1;
+                        }
                     }
                 }
             }
@@ -363,12 +374,20 @@ namespace SonOfRobin
 
         public int CountPieceOccurences(PieceTemplate.Name pieceName)
         {
+            return CountPieceOccurencesInMultipleStorages(storageList: new List<PieceStorage> { this }, pieceName: pieceName);
+        }
+
+        public static int CountPieceOccurencesInMultipleStorages(List<PieceStorage> storageList, PieceTemplate.Name pieceName)
+        {
             int occurences = 0;
 
-            foreach (StorageSlot slot in this.OccupiedSlots)
+            foreach (PieceStorage storage in storageList)
             {
-                foreach (BoardPiece piece in slot.pieceList)
-                { if (piece.name == pieceName) occurences++; }
+                foreach (StorageSlot slot in storage.OccupiedSlots)
+                {
+                    foreach (BoardPiece piece in slot.pieceList)
+                    { if (piece.name == pieceName) occurences++; }
+                }
             }
 
             return occurences;

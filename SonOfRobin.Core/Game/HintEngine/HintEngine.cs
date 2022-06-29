@@ -20,6 +20,7 @@ namespace SonOfRobin
         private int waitUntilFrame;
         public bool WaitFrameReached { get { return this.world.currentUpdate >= this.waitUntilFrame; } }
 
+
         public HintEngine(World world)
         {
             this.world = world;
@@ -64,7 +65,6 @@ namespace SonOfRobin
         public bool ShowGeneralHint(Type type, bool ignoreDelay = false)
         {
             if (!Preferences.showHints && !typesThatIgnoreShowHintSetting.Contains(type)) return false;
-            if (Preferences.debugIgnoreCinematics && typesThatIgnoreShowHintSetting.Contains(type)) return false;
 
             if (!ignoreDelay)
             {
@@ -172,12 +172,35 @@ namespace SonOfRobin
                     {
                         this.Disable(type: type, delay: 0);
 
-                        this.world.cineMode = true;
-                        this.world.InputType = Scene.InputTypes.None;
+                        this.world.CineMode = true;
 
                         this.world.camera.SetZoom(zoom: 3f, setInstantly: true);
 
+                        SolidColor colorOverlay = this.world.colorOverlay;
+                        colorOverlay.color = Color.White;
+                        colorOverlay.viewParams.Opacity = 1f;
+
                         Player player = this.world.player;
+                        var dialogue = HintMessage.BoxType.Dialogue;
+
+                        // HintMessage.ConvertToTasks() could be used here, but adding one by one makes it easier to add other task types between text.
+                        var taskChain = new List<Object>();
+
+                        taskChain.Add(new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.TempoStop, delay: 0, executeHelper: null, storeForLaterUse: true));
+
+                        taskChain.Add(new HintMessage(text: "Where am I?", boxType: dialogue, delay: 80).ConvertToTask());
+                        taskChain.Add(new HintMessage(text: "    ...    ", boxType: dialogue, delay: 120).ConvertToTask());
+
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.AddTransition, delay: 30, executeHelper: new Dictionary<string, Object> {
+                            { "scene", colorOverlay },
+                            { "transition", new Transition(transManager: colorOverlay.transManager, outTrans: true, baseParamName: "Opacity", targetVal: 0f, duration: 700, endCopyToBase: true, storeForLaterUse: true) } },
+                            menu: null, storeForLaterUse: true));
+
+                        taskChain.Add(new HintMessage(text: "The last thing I remember...?", boxType: dialogue, delay: 60).ConvertToTask());
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetZoom, delay: 30, executeHelper: new Dictionary<string, Object> { { "zoom", 1f }, { "zoomSpeedMultiplier", 0.1f } }, menu: null, storeForLaterUse: true));
+                        taskChain.Add(new HintMessage(text: "Hmm...\n...\n...", boxType: dialogue, delay: 60).ConvertToTask());
+                        taskChain.Add(new HintMessage(text: "There was... a terrible storm....", boxType: dialogue, delay: 90).ConvertToTask());
+
                         Vector2 seaOffset = new Vector2(SonOfRobinGame.VirtualWidth * 0.7f, SonOfRobinGame.VirtualHeight * 0.7f);
 
                         int edgeDistLeft = (int)player.sprite.position.X;
@@ -192,53 +215,16 @@ namespace SonOfRobin
                         else seaOffset.X = 0;
                         Vector2 seaPos = player.sprite.position + seaOffset;
 
-                        SolidColor colorOverlay = this.world.colorOverlay;
-                        colorOverlay.color = Color.White;
-                        colorOverlay.viewParams.Opacity = 1f;
-
-                        var dialogue = HintMessage.BoxType.Dialogue;
-
-                        // HintMessage.ConvertToTasks() could be used here, but adding one by one makes it easier to add other task types between text.
-                        var taskChain = new List<Object>();
-
-                        taskChain.Add(new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.TempoStop, delay: 0, executeHelper: null, storeForLaterUse: true));
-
-                        taskChain.Add(new HintMessage(text: "Where am I?", boxType: dialogue, delay: 80).ConvertToTask());
-                        taskChain.Add(new HintMessage(text: "...", boxType: dialogue, delay: 120).ConvertToTask());
-
-                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.AddTransition, delay: 30, executeHelper: new Dictionary<string, Object> {
-                            { "scene", colorOverlay },
-                            { "transition", new Transition(transManager: colorOverlay.transManager, outTrans: true, baseParamName: "Opacity", targetVal: 0f, duration: 700, endCopyToBase: true, storeForLaterUse: true) } },
-                            menu: null, storeForLaterUse: true));
-
-                        taskChain.Add(new HintMessage(text: "The last thing I remember...?", boxType: dialogue, delay: 60).ConvertToTask());
-
-                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetZoom, delay: 30, executeHelper: new Dictionary<string, Object> { { "zoom", 1f }, { "zoomSpeedMultiplier", 0.1f } }, menu: null, storeForLaterUse: true));
-
-                        taskChain.Add(new HintMessage(text: "Hmm...\n...\n...", boxType: dialogue, delay: 60).ConvertToTask());
-
-                        taskChain.Add(new HintMessage(text: "There was... a terrible storm....", boxType: dialogue, delay: 90).ConvertToTask());
-
                         taskChain.Add(new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.CameraTrackCoords, delay: 170, executeHelper: seaPos, storeForLaterUse: true));
                         taskChain.Add(new HintMessage(text: "What happened to the ship?", boxType: dialogue, delay: 0).ConvertToTask());
-
                         taskChain.Add(new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.CameraTrackPiece, delay: 60, executeHelper: world.player, storeForLaterUse: true));
                         taskChain.Add(new HintMessage(text: "I can't see it anywhere...", boxType: dialogue, delay: 0).ConvertToTask());
-
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetZoom, delay: 60, executeHelper: new Dictionary<string, Object> { { "zoom", 0.55f }, { "zoomSpeedMultiplier", 3f } }, menu: null, storeForLaterUse: true));
-
                         taskChain.Add(new HintMessage(text: "I guess I'm stranded here.", boxType: dialogue, delay: 0).ConvertToTask());
-
-                        taskChain.Add(new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.ChangeSceneInputType, delay: 0, executeHelper: new Dictionary<string, Object> { { "scene", this.world }, { "inputType", Scene.InputTypes.Normal } }, storeForLaterUse: true));
-
-                        taskChain.Add(new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.TempoPlay, delay: 60 * 2, executeHelper: null, storeForLaterUse: true));
                         taskChain.Add(new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.SetCineMode, delay: 0, executeHelper: false, storeForLaterUse: true));
-
-                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CheckForPieceHints, delay: 0, executeHelper: new List<PieceHint.Type> { PieceHint.Type.CrateStarting }, menu: null, storeForLaterUse: true));
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CheckForPieceHints, delay: 60, executeHelper: new List<PieceHint.Type> { PieceHint.Type.CrateStarting }, menu: null, storeForLaterUse: true));
 
                         new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.ExecuteTaskChain, turnOffInput: true, executeHelper: taskChain);
-
-                        this.UpdateWaitFrame();
 
                         break;
                     }
@@ -249,6 +235,7 @@ namespace SonOfRobin
 
             return true;
         }
+
 
         public void CheckForPieceHintToShow(bool forcedMode = false, bool ignoreInputActive = false, List<PieceHint.Type> typesToCheckOnly = null)
         {
@@ -263,8 +250,8 @@ namespace SonOfRobin
         {
             var taskChain = HintMessage.ConvertToTasks(messageList: messageList);
 
-            taskChain.Insert(0, new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.TempoStop, delay: 0, executeHelper: null, storeForLaterUse: true));
-            taskChain.Add(new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.TempoPlay, delay: 0, executeHelper: null, storeForLaterUse: true));
+            taskChain.Insert(0, new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.SetCineMode, delay: 1, executeHelper: true, storeForLaterUse: true));
+            taskChain.Add(new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.SetCineMode, delay: 0, executeHelper: false, storeForLaterUse: true));
 
             new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.ExecuteTaskChain, turnOffInput: true, executeHelper: taskChain);
         }
@@ -278,16 +265,21 @@ namespace SonOfRobin
 
             var taskChain = HintMessage.ConvertToTasks(messageList: messageList);
 
-            taskChain.Insert(0, new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.CameraSetZoom, delay: 0, executeHelper: new Dictionary<string, Object> { { "zoom", 2f } }, storeForLaterUse: true));
-            taskChain.Insert(0, new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.TempoStop, delay: 0, executeHelper: null, storeForLaterUse: true));
-            taskChain.Add(new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.TempoPlay, delay: 0, executeHelper: null, storeForLaterUse: true));
+            // tasks before the messages - inserted at 0, so the last go first
 
-            taskChain.Add(new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.CameraTrackPiece, delay: 0, executeHelper: world.player, storeForLaterUse: true));
-            taskChain.Add(new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.TempoPlay, delay: 0, executeHelper: null, storeForLaterUse: true));
-            taskChain.Add(new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.CameraSetZoom, delay: 0, executeHelper: new Dictionary<string, Object> { { "zoom", 1f } }, storeForLaterUse: true));
+            taskChain.Insert(0, new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.CameraSetZoom, delay: 0, executeHelper: new Dictionary<string, Object> { { "zoom", 2f } }, storeForLaterUse: true));
+
+            taskChain.Insert(0, new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.SetCineMode, delay: 1, executeHelper: true, storeForLaterUse: true));
 
             var worldEventData = new Dictionary<string, object> { { "boardPiece", crossHair }, { "delay", 60 }, { "eventName", WorldEvent.EventName.Destruction } };
-            taskChain.Add(new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.AddWorldEvent, delay: 0, executeHelper: worldEventData, storeForLaterUse: true));
+            taskChain.Insert(0, new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.AddWorldEvent, delay: 0, executeHelper: worldEventData, storeForLaterUse: true));
+
+            // task after the messages - added at the end, ordered normally
+
+            taskChain.Add(new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.CameraTrackPiece, delay: 0, executeHelper: world.player, storeForLaterUse: true));
+            taskChain.Add(new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.CameraSetZoom, delay: 0, executeHelper: new Dictionary<string, Object> { { "zoom", 1f } }, storeForLaterUse: true));
+
+            taskChain.Add(new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.SetCineMode, delay: 0, executeHelper: false, storeForLaterUse: true));
 
             new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.ExecuteTaskChain, turnOffInput: true, executeHelper: taskChain);
         }

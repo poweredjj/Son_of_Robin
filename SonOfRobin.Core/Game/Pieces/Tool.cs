@@ -7,111 +7,28 @@ namespace SonOfRobin
 {
     public class Tool : BoardPiece
     {
-        public enum TargetCategory { Wood, Stone, Metal, SmallPlant, Animal }
-
         public readonly bool shootsProjectile;
         private readonly int hitPower;
+        public readonly int range;
         public int hitCooldown;
-        private readonly Dictionary<TargetCategory, float> multiplierByCategory;
+        private readonly Dictionary<Category, float> multiplierByCategory;
         private readonly List<PieceTemplate.Name> compatibleAmmo;
 
-        private static readonly Dictionary<TargetCategory, List<PieceTemplate.Name>> targetsByCategory = new Dictionary<TargetCategory, List<PieceTemplate.Name>>
-        {{TargetCategory.Wood, new List<PieceTemplate.Name> {
-            PieceTemplate.Name.TreeSmall,
-            PieceTemplate.Name.TreeBig,
-            PieceTemplate.Name.AppleTree,
-            PieceTemplate.Name.CherryTree,
-            PieceTemplate.Name.BananaTree,
-            PieceTemplate.Name.Cactus,
-            PieceTemplate.Name.PalmTree,
-            PieceTemplate.Name.RegularWorkshop,
-            PieceTemplate.Name.ChestWooden,
-            PieceTemplate.Name.CrateRegular,
-            PieceTemplate.Name.CrateStarting,
-            PieceTemplate.Name.PickaxeWood,
-            PieceTemplate.Name.AxeWood,
-            PieceTemplate.Name.WoodLog,
-            PieceTemplate.Name.BatWood,
-            PieceTemplate.Name.TentMedium,
-            PieceTemplate.Name.TentBig,
-            PieceTemplate.Name.WoodPlank,
-        } },
+        public Tool(World world, Vector2 position, AnimPkg animPackage, PieceTemplate.Name name, AllowedFields allowedFields, Dictionary<byte, int> maxMassBySize, int hitPower, Dictionary<Category, float> multiplierByCategory, int maxHitPoints, string readableName, string description, Category category,
+            byte animSize = 0, string animName = "default", bool blocksMovement = false, ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = true, int generation = 0, bool indestructible = false, Yield yield = null, bool shootsProjectile = false, List<PieceTemplate.Name> compatibleAmmo = null, bool rotatesWhenDropped = true, bool fadeInAnim = false, int range = 0) :
 
-         {TargetCategory.Stone, new List<PieceTemplate.Name> {
-             PieceTemplate.Name.WaterRock,
-             PieceTemplate.Name.MineralsSmall,
-             PieceTemplate.Name.MineralsBig,
-             PieceTemplate.Name.AxeStone,
-             PieceTemplate.Name.PickaxeStone,
-             PieceTemplate.Name.IronDeposit,
-             PieceTemplate.Name.CoalDeposit,
-             PieceTemplate.Name.TentSmall,
-             PieceTemplate.Name.TentMedium,
-             PieceTemplate.Name.TentBig,
-             PieceTemplate.Name.Furnace,
-         } },
-
-         {TargetCategory.Metal, new List<PieceTemplate.Name> {
-             PieceTemplate.Name.ChestIron,
-             PieceTemplate.Name.AxeIron,
-             PieceTemplate.Name.PickaxeIron,
-             PieceTemplate.Name.CookingPot,
-         } },
-
-         {TargetCategory.SmallPlant, new List<PieceTemplate.Name> {
-             PieceTemplate.Name.GrassRegular,
-             PieceTemplate.Name.GrassDesert,
-             PieceTemplate.Name.Rushes,
-             PieceTemplate.Name.WaterLily,
-             PieceTemplate.Name.FlowersPlain,
-             PieceTemplate.Name.FlowersMountain,
-             PieceTemplate.Name.Apple,
-             PieceTemplate.Name.Cherry,
-             PieceTemplate.Name.Banana,
-             PieceTemplate.Name.Tomato,
-             PieceTemplate.Name.TomatoPlant,
-         } },
-
-         {TargetCategory.Animal, new List<PieceTemplate.Name> {
-             PieceTemplate.Name.Rabbit,
-             PieceTemplate.Name.Fox,
-             PieceTemplate.Name.Frog,
-             PieceTemplate.Name.BackpackMedium,
-             PieceTemplate.Name.BeltMedium,
-         } },
-
-        };
-
-        public Tool(World world, Vector2 position, AnimPkg animPackage, PieceTemplate.Name name, AllowedFields allowedFields, Dictionary<byte, int> maxMassBySize, int hitPower, Dictionary<TargetCategory, float> multiplierByCategory, int maxHitPoints, string readableName, string description,
-            byte animSize = 0, string animName = "default", bool blocksMovement = false, ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = true, int generation = 0, bool indestructible = false, Yield yield = null, bool shootsProjectile = false, List<PieceTemplate.Name> compatibleAmmo = null, bool rotatesWhenDropped = true, bool fadeInAnim = false) :
-
-            base(world: world, position: position, animPackage: animPackage, animSize: animSize, animName: animName, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedFields: allowedFields, floatsOnWater: floatsOnWater, maxMassBySize: maxMassBySize, generation: generation, canBePickedUp: true, yield: yield, maxHitPoints: maxHitPoints, indestructible: indestructible, rotatesWhenDropped: rotatesWhenDropped, fadeInAnim: fadeInAnim, isShownOnMiniMap: true, readableName: readableName, description: description)
+            base(world: world, position: position, animPackage: animPackage, animSize: animSize, animName: animName, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedFields: allowedFields, floatsOnWater: floatsOnWater, maxMassBySize: maxMassBySize, generation: generation, canBePickedUp: true, yield: yield, maxHitPoints: maxHitPoints, indestructible: indestructible, rotatesWhenDropped: rotatesWhenDropped, fadeInAnim: fadeInAnim, isShownOnMiniMap: true, readableName: readableName, description: description, category: category)
         {
             this.activeState = State.Empty;
             this.hitPower = hitPower;
             this.hitCooldown = 0; // earliest world.currentUpdate, when hitting will be possible
+            this.range = range;
             this.shootsProjectile = shootsProjectile;
             this.multiplierByCategory = multiplierByCategory;
             this.toolbarTask = Scheduler.TaskName.Hit;
             this.compatibleAmmo = compatibleAmmo == null ? new List<PieceTemplate.Name> { } : compatibleAmmo;
         }
 
-        private static TargetCategory GetTargetCategory(BoardPiece targetPiece)
-        {
-            TargetCategory category;
-            List<PieceTemplate.Name> nameList;
-
-            foreach (var kvp in targetsByCategory)
-            {
-                category = kvp.Key;
-                nameList = kvp.Value;
-
-                foreach (PieceTemplate.Name name in nameList)
-                { if (targetPiece.name == name) return category; }
-            }
-
-            throw new DivideByZeroException($"'{targetPiece.name}' does not belong to any tool category.");
-        }
 
         public Projectile CheckForAmmo(bool removePiece)
         {
@@ -156,7 +73,7 @@ namespace SonOfRobin
         }
 
 
-        public void Use(BoardPiece targetPiece, int shootingPower = 0, bool highlightOnly = false)
+        public void Use(List<BoardPiece> targets, int shootingPower = 0, bool highlightOnly = false)
         {
             Player player = this.world.player;
             bool isVeryTired = player.IsVeryTired;
@@ -168,92 +85,100 @@ namespace SonOfRobin
                 return;
             }
 
-            if (targetPiece == null) return;
-            if (!highlightOnly && this.world.currentUpdate < this.hitCooldown || player.Stamina < 80) return;
+            if (targets.Count == 0 || this.world.currentUpdate < this.hitCooldown || player.Stamina < 80) return;
 
-            float currentMultiplier = 0;
-            TargetCategory targetCategory = GetTargetCategory(targetPiece: targetPiece);
+            bool anyTargetHit = false;
 
-            if (!highlightOnly)
+            foreach (BoardPiece currentTarget in targets)
             {
-                switch (targetCategory)
+                float currentMultiplier = 0;
+                if (this.multiplierByCategory.ContainsKey(currentTarget.category)) currentMultiplier = this.multiplierByCategory[currentTarget.category];
+                if (isVeryTired) currentMultiplier /= 2;
+                if (currentMultiplier == 0) continue;
+
+                if (!highlightOnly)
                 {
-                    case TargetCategory.Wood:
-                        this.world.hintEngine.Disable(PieceHint.Type.WoodNegative);
-                        this.world.hintEngine.Disable(PieceHint.Type.WoodPositive);
-                        this.world.hintEngine.Disable(Tutorials.Type.GetWood);
+                    switch (currentTarget.category)
+                    {
+                        case Category.Wood:
+                            this.world.hintEngine.Disable(PieceHint.Type.WoodNegative);
+                            this.world.hintEngine.Disable(PieceHint.Type.WoodPositive);
+                            this.world.hintEngine.Disable(Tutorials.Type.GetWood);
 
-                        if (targetPiece.name == PieceTemplate.Name.CrateRegular) this.world.hintEngine.Disable(PieceHint.Type.CrateAnother);
+                            if (currentTarget.name == PieceTemplate.Name.CrateRegular) this.world.hintEngine.Disable(PieceHint.Type.CrateAnother);
 
-                        break;
+                            break;
 
-                    case TargetCategory.Stone:
-                        this.world.hintEngine.Disable(PieceHint.Type.StoneNegative);
-                        this.world.hintEngine.Disable(PieceHint.Type.StonePositive);
-                        this.world.hintEngine.Disable(Tutorials.Type.Mine);
-                        break;
+                        case Category.Stone:
+                            this.world.hintEngine.Disable(PieceHint.Type.StoneNegative);
+                            this.world.hintEngine.Disable(PieceHint.Type.StonePositive);
+                            this.world.hintEngine.Disable(Tutorials.Type.Mine);
+                            break;
 
-                    case TargetCategory.Metal:
-                        break;
+                        case Category.Metal:
+                            break;
 
-                    case TargetCategory.SmallPlant:
-                        break;
+                        case Category.SmallPlant:
+                            break;
 
-                    case TargetCategory.Animal:
-                        this.world.hintEngine.Disable(PieceHint.Type.AnimalNegative);
-                        if (this.name == PieceTemplate.Name.BatWood) this.world.hintEngine.Disable(PieceHint.Type.AnimalBat);
-                        if (this.name == PieceTemplate.Name.Sling || this.name == PieceTemplate.Name.GreatSling) this.world.hintEngine.Disable(PieceHint.Type.AnimalSling);
+                        case Category.Animal:
+                            this.world.hintEngine.Disable(PieceHint.Type.AnimalNegative);
+                            if (this.name == PieceTemplate.Name.BatWood) this.world.hintEngine.Disable(PieceHint.Type.AnimalBat);
+                            if (this.name == PieceTemplate.Name.Sling ||
+                                this.name == PieceTemplate.Name.GreatSling) this.world.hintEngine.Disable(PieceHint.Type.AnimalSling);
 
-                        if (this.name == PieceTemplate.Name.AxeWood ||
-                            this.name == PieceTemplate.Name.AxeStone ||
-                            this.name == PieceTemplate.Name.AxeIron)
-                            this.world.hintEngine.Disable(PieceHint.Type.AnimalAxe);
-                        break;
+                            if (this.name == PieceTemplate.Name.AxeWood ||
+                                this.name == PieceTemplate.Name.AxeStone ||
+                                this.name == PieceTemplate.Name.AxeIron)
+                                this.world.hintEngine.Disable(PieceHint.Type.AnimalAxe);
+                            break;
 
-                    default:
-                        throw new ArgumentException($"Unsupported targetCategory - {targetCategory}.");
+                        case Category.Indestructible:
+                            break;
+
+                        default:
+                            throw new ArgumentException($"Unsupported targetCategory - {currentTarget.category}.");
+                    }
+
+                    if (this.name == PieceTemplate.Name.Hand) this.world.hintEngine.Disable(Tutorials.Type.BreakThing);
+                    if (currentTarget.name == PieceTemplate.Name.CoalDeposit)
+                    {
+                        this.world.hintEngine.Disable(PieceHint.Type.CoalDepositNegative);
+                        this.world.hintEngine.Disable(PieceHint.Type.CoalDepositPositive);
+                    }
+                    if (currentTarget.name == PieceTemplate.Name.IronDeposit)
+                    {
+                        this.world.hintEngine.Disable(PieceHint.Type.IronDepositNegative);
+                        this.world.hintEngine.Disable(PieceHint.Type.IronDepositPositive);
+                    }
+                    this.world.hintEngine.Disable(Tutorials.Type.Hit);
                 }
 
-                if (this.name == PieceTemplate.Name.Hand) this.world.hintEngine.Disable(Tutorials.Type.BreakThing);
-                if (targetPiece.name == PieceTemplate.Name.CoalDeposit)
+                if (highlightOnly)
                 {
-                    this.world.hintEngine.Disable(PieceHint.Type.CoalDepositNegative);
-                    this.world.hintEngine.Disable(PieceHint.Type.CoalDepositPositive);
+                    Tutorials.ShowTutorial(type: Tutorials.Type.Hit, ignoreIfShown: true, ignoreDelay: false);
+                    currentTarget.sprite.effectCol.AddEffect(new BorderInstance(outlineColor: Color.Red, textureSize: currentTarget.sprite.frame.originalTextureSize, priority: 0));
+
+                    if (SonOfRobinGame.platform == Platform.Mobile) VirtButton.ButtonHighlightOnNextFrame(VButName.UseTool);
+                    ControlTips.TipHighlightOnNextFrame(tipName: "use item");
                 }
-                if (targetPiece.name == PieceTemplate.Name.IronDeposit)
+                else
                 {
-                    this.world.hintEngine.Disable(PieceHint.Type.IronDepositNegative);
-                    this.world.hintEngine.Disable(PieceHint.Type.IronDepositPositive);
+                    int currentHitPower = (int)Math.Max((this.hitPower + this.world.player.strength) * currentMultiplier, 1);
+                    HitTarget(attacker: player, target: currentTarget, hitPower: currentHitPower, targetPushMultiplier: 1f);
+                    anyTargetHit = true;
                 }
-            }
+            } // target iteration end
 
-            if (this.multiplierByCategory.ContainsKey(targetCategory)) currentMultiplier = this.multiplierByCategory[targetCategory];
-            if (isVeryTired) currentMultiplier /= 2;
-
-            if (currentMultiplier == 0) return;
-
-            if (highlightOnly)
+            if (!highlightOnly && anyTargetHit)
             {
-                Tutorials.ShowTutorial(type: Tutorials.Type.Hit, ignoreIfShown: true, ignoreDelay: false);
-                targetPiece.sprite.effectCol.AddEffect(new BorderInstance(outlineColor: Color.Red, textureSize: targetPiece.sprite.frame.originalTextureSize, priority: 0));
-
-                if (SonOfRobinGame.platform == Platform.Mobile) VirtButton.ButtonHighlightOnNextFrame(VButName.UseTool);
-                ControlTips.TipHighlightOnNextFrame(tipName: "use item");
-
-                return;
-            }
-            else this.world.hintEngine.Disable(Tutorials.Type.Hit);
-
-            player.Stamina = Math.Max(player.Stamina - 50, 0);
-
-            this.hitCooldown = this.world.currentUpdate + 30;
-            int currentHitPower = (int)Math.Max((this.hitPower + this.world.player.strength) * currentMultiplier, 1);
-
-            HitTarget(attacker: player, target: targetPiece, hitPower: currentHitPower, targetPushMultiplier: 1f);
-            if (!this.indestructible)
-            {
-                this.hitPoints -= currentMultiplier == 0 ? 2 : 1;
-                this.hitPoints = Math.Max(0, this.hitPoints);
+                player.Stamina = Math.Max(player.Stamina - 50, 0);
+                this.hitCooldown = this.world.currentUpdate + 30;
+                if (!this.indestructible)
+                {
+                    this.hitPoints -= 1;
+                    this.hitPoints = Math.Max(0, this.hitPoints);
+                }
             }
         }
 
@@ -273,6 +198,7 @@ namespace SonOfRobin
                 target.Destroy();
 
                 int numberOfExplosions = world.random.Next(5, 12);
+                if (target.category == Category.SmallPlant) numberOfExplosions = 0;
                 for (int i = 0; i < numberOfExplosions; i++)
                 {
                     Vector2 posOffset = new Vector2(world.random.Next(0, target.sprite.frame.gfxWidth), world.random.Next(0, target.sprite.frame.gfxHeight));
@@ -293,10 +219,10 @@ namespace SonOfRobin
                     animalTarget.target = attacker;
                     animalTarget.aiData.Reset(animalTarget);
 
-                    animalTarget.activeState = animalTarget.eats.Contains(PieceTemplate.Name.Player) &&
-                        (animalTarget.HitPointsPercent > 0.4f || world.random.Next(0, 8) == 0) ?
+                    animalTarget.activeState = (animalTarget.HitPointsPercent > 0.4f && world.random.Next(0, 4) == 0) ?
                         State.AnimalChaseTarget : State.AnimalFlee;
 
+                    animalTarget.UpdateRegenCooldown(); // animal will not heal for a while
                     animalTarget.AddPassiveMovement(movement: (attacker.sprite.position - animalTarget.sprite.position) * targetPushMultiplier * -0.5f * hitPower);
                     animalTarget.buffEngine.AddBuff(world: attacker.world, buff: new BuffEngine.Buff(world: world, type: BuffEngine.BuffType.Speed, value: -animalTarget.speed / 2, autoRemoveDelay: 180, isPositive: false)); // animal will be slower for a while
                 }

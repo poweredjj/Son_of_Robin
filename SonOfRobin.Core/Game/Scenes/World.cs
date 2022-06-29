@@ -67,7 +67,43 @@ namespace SonOfRobin
         public bool freePiecesPlacingMode; // allows to precisely place pieces during loading a saved game
         public bool createMissinPiecesOutsideCamera;
         public DateTime lastSaved;
-        public bool cineMode;
+        private bool cineMode;
+        public bool CineMode
+        {
+            get { return cineMode; }
+            set
+            {
+                cineMode = value;
+
+                var taskChain = new List<Object>();
+
+                if (cineMode)
+                {
+                    this.touchLayout = TouchLayout.Empty; // CineSkip should not be used here, because World class cannot execute the skip properly
+                    this.tipsLayout = ControlTips.TipsLayout.Empty;
+
+                    taskChain.Add(new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.ChangeSceneInputType, delay: 0, executeHelper: new Dictionary<string, Object> { { "scene", this }, { "inputType", InputTypes.None } }, storeForLaterUse: true));
+                    taskChain.Add(new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.TempoStop, delay: 0, executeHelper: null, storeForLaterUse: true));
+                }
+                else
+                {
+                    this.touchLayout = TouchLayout.WorldMain;
+                    this.tipsLayout = ControlTips.TipsLayout.WorldMain;
+
+                    taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.AddTransition, delay: 0, executeHelper: new Dictionary<string, Object> {
+                            { "scene", this.colorOverlay },
+                            { "transition", new Transition(transManager: this.colorOverlay.transManager, outTrans: true, baseParamName: "Opacity", targetVal: 0f, duration: 10, endCopyToBase: true, storeForLaterUse: true) } }, menu: null, storeForLaterUse: true));
+
+                    taskChain.Add(new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.TempoPlay, delay: 0, executeHelper: null, storeForLaterUse: true));
+                    taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetZoom, delay: 0, executeHelper: new Dictionary<string, Object> { { "zoom", 1f }, { "zoomSpeedMultiplier", 1f } }, menu: null, storeForLaterUse: true));
+                    taskChain.Add(new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.CameraTrackPiece, delay: 0, executeHelper: this.player, storeForLaterUse: true));
+
+                    taskChain.Add(new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.ChangeSceneInputType, delay: 0, executeHelper: new Dictionary<string, Object> { { "scene", this }, { "inputType", Scene.InputTypes.Normal } }, storeForLaterUse: true));
+                }
+
+                new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.ExecuteTaskChain, turnOffInput: true, executeHelper: taskChain);
+            }
+        }
 
         public readonly int seed;
         public FastNoiseLite noise;
@@ -217,8 +253,8 @@ namespace SonOfRobin
                 this.creationInProgress = false;
                 this.creationEnd = DateTime.Now;
                 this.creationDuration = this.creationEnd - this.creationStart;
-                Craft.PopulateAllCategories();
                 PieceInfo.CreateAllInfo(world: this);
+                Craft.PopulateAllCategories();
                 this.lastSaved = DateTime.Now;
 
                 MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"World creation time: {creationDuration:hh\\:mm\\:ss\\.fff}.", color: Color.GreenYellow);
@@ -425,6 +461,7 @@ namespace SonOfRobin
                 new PieceCreationData(name: PieceTemplate.Name.CrateRegular, multiplier: 0.1f, maxAmount: 1),
                 new PieceCreationData(name: PieceTemplate.Name.Rabbit, multiplier: 0.1f, maxAmount: Animal.maxAnimalsPerName),
                 new PieceCreationData(name: PieceTemplate.Name.Fox, multiplier: 0.1f, maxAmount: Animal.maxAnimalsPerName),
+                new PieceCreationData(name: PieceTemplate.Name.Tiger, multiplier: 0.1f, maxAmount: Animal.maxAnimalsPerName),
                 new PieceCreationData(name: PieceTemplate.Name.Frog, multiplier: 0.1f, maxAmount: Animal.maxAnimalsPerName),
             };
 
@@ -676,34 +713,32 @@ namespace SonOfRobin
 
         private void ProcessActionKeyList()
         {
-            if (this.demoMode) return;
+            if (this.demoMode || this.CineMode) return;
 
             if (this.actionKeyList.Contains(ActionKeys.PauseMenu)) MenuTemplate.CreateMenuFromTemplate(templateName: MenuTemplate.Name.Pause);
 
-            if (!this.player.alive) return;
-
-            if (this.player.activeState != BoardPiece.State.PlayerControlledWalking) return;
+            if (!this.player.alive || this.player.activeState != BoardPiece.State.PlayerControlledWalking) return;
 
 
-            if (this.actionKeyList.Contains(World.ActionKeys.FieldCraft))
+            if (this.actionKeyList.Contains(ActionKeys.FieldCraft))
             {
                 MenuTemplate.CreateMenuFromTemplate(templateName: MenuTemplate.Name.CraftBasic);
                 return;
             }
 
-            if (this.actionKeyList.Contains(World.ActionKeys.Inventory))
+            if (this.actionKeyList.Contains(ActionKeys.Inventory))
             {
                 Scene.SetInventoryLayout(Scene.InventoryLayout.InventoryAndToolbar, player: this.player);
                 return;
             }
 
-            if (this.actionKeyList.Contains(World.ActionKeys.Equip))
+            if (this.actionKeyList.Contains(ActionKeys.Equip))
             {
                 Scene.SetInventoryLayout(Scene.InventoryLayout.InventoryAndEquip, player: this.player);
                 return;
             }
 
-            if (this.actionKeyList.Contains(World.ActionKeys.MapToggle)) this.ToggleMapMode();
+            if (this.actionKeyList.Contains(ActionKeys.MapToggle)) this.ToggleMapMode();
         }
 
 
@@ -720,6 +755,8 @@ namespace SonOfRobin
                 if (!this.hintEngine.ShowGeneralHint(HintEngine.Type.MapNegative)) new TextWindow(text: "I don't have map equipped.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: InputTypes.None, blockInputDuration: 45, priority: 1); ;
                 return;
             }
+
+            if (this.mapSmall.transManager.HasAnyTransition || this.mapBig.transManager.HasAnyTransition) return;
 
             this.mapMode = this.NextMapMode;
 

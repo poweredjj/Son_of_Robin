@@ -312,6 +312,27 @@ namespace SonOfRobin
             return cell.GetSpritesFromSurroundingCells(groupName);
         }
 
+        public List<Cell> GetCellsInsideRect(Rectangle viewRect, bool addPadding = true)
+        {
+            // addPadding: +1 cell on each side, to ensure visibility of sprites, that cross their cells' boundaries
+            int padding = addPadding ? 1 : 0;
+
+            int xMinCellNo = Math.Max(FindMatchingCellInSingleAxis(position: viewRect.Left, cellLength: this.cellWidth) - padding, 0);
+            int xMaxCellNo = Math.Min(FindMatchingCellInSingleAxis(position: viewRect.Right, cellLength: this.cellWidth) + padding, this.noOfCellsX - 1);
+            int yMinCellNo = Math.Max(FindMatchingCellInSingleAxis(position: viewRect.Top, cellLength: this.cellHeight) - padding, 0);
+            int yMaxCellNo = Math.Min(FindMatchingCellInSingleAxis(position: viewRect.Bottom, cellLength: this.cellHeight) + padding, this.noOfCellsY - 1);
+
+            List<Cell> cellsInsideRect = new List<Cell>();
+
+            for (int x = xMinCellNo; x <= xMaxCellNo; x++)
+            {
+                for (int y = yMinCellNo; y <= yMaxCellNo; y++)
+                { cellsInsideRect.Add(this.cellGrid[x, y]); }
+            }
+
+            return cellsInsideRect;
+        }
+
         public List<Cell> GetCellsWithinDistance(Vector2 position, ushort distance)
         {
             List<Cell> cellsWithinDistance = new List<Cell>();
@@ -379,23 +400,26 @@ namespace SonOfRobin
             return piecesWithinDistance;
         }
 
-        public List<Cell> GetCellsInsideRect(Rectangle viewRect)
+        public List<BoardPiece> GetPiecesInsideTriangle(Point point1, Point point2, Point point3, Cell.Group groupName)
         {
-            // +1 cell on each side, to ensure visibility of sprites, that cross their cells' boundaries
-            int xMinCellNo = Math.Max(FindMatchingCellInSingleAxis(position: viewRect.Left, cellLength: this.cellWidth) - 1, 0);
-            int xMaxCellNo = Math.Min(FindMatchingCellInSingleAxis(position: viewRect.Right, cellLength: this.cellWidth) + 1, this.noOfCellsX - 1);
-            int yMinCellNo = Math.Max(FindMatchingCellInSingleAxis(position: viewRect.Top, cellLength: this.cellHeight) - 1, 0);
-            int yMaxCellNo = Math.Min(FindMatchingCellInSingleAxis(position: viewRect.Bottom, cellLength: this.cellHeight) + 1, this.noOfCellsY - 1);
+            int xMin = (int)Math.Min(Math.Min(point1.X, point2.X), point3.X);
+            int xMax = (int)Math.Max(Math.Max(point1.X, point2.X), point3.X);
+            int yMin = (int)Math.Min(Math.Min(point1.Y, point2.Y), point3.Y);
+            int yMax = (int)Math.Max(Math.Max(point1.Y, point2.Y), point3.Y);
 
-            List<Cell> visibleCells = new List<Cell>();
+            Rectangle rect = new Rectangle(x: xMin, y: yMin, width: xMax - xMin, height: yMax - yMin);
 
-            for (int x = xMinCellNo; x <= xMaxCellNo; x++)
+            var cellsInsideRect = this.GetCellsInsideRect(rect);
+
+            var spritesInsideTriangle = new List<Sprite>();
+            foreach (Cell cell in cellsInsideRect)
             {
-                for (int y = yMinCellNo; y <= yMaxCellNo; y++)
-                { visibleCells.Add(this.cellGrid[x, y]); }
+                spritesInsideTriangle.AddRange(cell.spriteGroups[groupName].Values.Where(
+                      currentSprite => rect.Contains(currentSprite.position) && Helpers.IsPointInsideTriangle(point: new Point((int)currentSprite.position.X, (int)currentSprite.position.Y), triangleA: point1, triangleB: point2, triangleC: point3)).ToList());
             }
 
-            return visibleCells;
+            var piecesInsideTriangle = spritesInsideTriangle.Select(sprite => sprite.boardPiece).ToList();
+            return piecesInsideTriangle;
         }
 
         public List<Sprite> GetSpritesInCameraView(Camera camera, Cell.Group groupName)

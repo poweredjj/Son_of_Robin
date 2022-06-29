@@ -26,7 +26,7 @@ namespace SonOfRobin
 
         public enum TipsLayout
         {
-            Uninitialized, Empty, Menu, MenuWithoutClosing, Map, InventorySelect, InventoryDrag, PieceContext, TextWindow, WorldMain, WorldShoot, WorldSleep, QuitLoading
+            Uninitialized, Empty, Menu, MenuWithoutClosing, Map, InventorySelect, InventoryDrag, PieceContext, TextWindowOk, TextWindowCancel, TextWindowOkCancel, WorldMain, WorldShoot, WorldSleep, QuitLoading
         }
         public static readonly int tipMargin = 12;
 
@@ -198,8 +198,17 @@ namespace SonOfRobin
                     new ButtonTip(tipCollection: this.tipCollection, text: "return", textures: new List<Texture2D> { ButtonScheme.buttonB });
                     break;
 
-                case TipsLayout.TextWindow:
-                    new ButtonTip(tipCollection: this.tipCollection, text: "confirm", textures: new List<Texture2D> { ButtonScheme.buttonA, ButtonScheme.buttonB, ButtonScheme.buttonX, ButtonScheme.buttonY });
+                case TipsLayout.TextWindowOk:
+                    new ButtonTip(tipCollection: this.tipCollection, text: "confirm", textures: new List<Texture2D> { ButtonScheme.buttonA });
+                    break;
+
+                case TipsLayout.TextWindowCancel:
+                    new ButtonTip(tipCollection: this.tipCollection, text: "skip", textures: new List<Texture2D> { ButtonScheme.buttonB });
+                    break;
+
+                case TipsLayout.TextWindowOkCancel:
+                    new ButtonTip(tipCollection: this.tipCollection, text: "confirm", textures: new List<Texture2D> { ButtonScheme.buttonA });
+                    new ButtonTip(tipCollection: this.tipCollection, text: "skip", textures: new List<Texture2D> { ButtonScheme.buttonB });
                     break;
 
                 case TipsLayout.WorldMain:

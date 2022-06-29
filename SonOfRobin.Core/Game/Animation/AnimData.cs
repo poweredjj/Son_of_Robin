@@ -91,10 +91,18 @@ namespace SonOfRobin
         TomatoPlant,
 
         Hand,
+
         AxeWood,
         AxeStone,
         AxeIron,
         AxeDiamond,
+
+        PickaxeWood,
+        PickaxeStone,
+        PickaxeIron,
+        PickaxeDiamond,
+
+        Scythe,
         BatWood,
 
         Sling,
@@ -104,11 +112,6 @@ namespace SonOfRobin
         ArrowWood,
         ArrowIron,
         StoneSmall,
-
-        PickaxeWood,
-        PickaxeStone,
-        PickaxeIron,
-        PickaxeDiamond,
 
         CoalDeposit,
         IronDeposit,
@@ -126,8 +129,6 @@ namespace SonOfRobin
         CrabLightBlue,
         CrabRed,
         CrabYellow,
-        DemonMaidPink,
-        DemonMaidYellow,
         FoxBlack,
         FoxBrown,
         FoxChocolate,
@@ -152,8 +153,17 @@ namespace SonOfRobin
         RabbitLightBrown,
         RabbitLightGray,
         RabbitWhite,
+        TigerOrangeMedium,
+        TigerOrangeLight,
+        TigerGray,
+        TigerWhite,
+        TigerOrangeDark,
+        TigerBrown,
+        TigerYellow,
+        TigerBlack,
         Sailor,
 
+        DebrisPlant,
         DebrisStone,
         DebrisWood,
         BloodDrop1,
@@ -576,6 +586,10 @@ namespace SonOfRobin
             AddFrameList(animPackage: packageName, animSize: 0, animName: "default",
             frameList: ConvertImageToFrameList(atlasName: "weapons1", layer: 0, x: 494, y: 340, width: 43, height: 42, scale: 0.65f));
 
+            packageName = AnimPkg.Scythe;
+            AddFrameList(animPackage: packageName, animSize: 0, animName: "default",
+            frameList: ConvertImageToFrameList(atlasName: "scythe", layer: 0));
+
             packageName = AnimPkg.BowWood;
             AddFrameList(animPackage: packageName, animSize: 0, animName: "default",
             frameList: ConvertImageToFrameList(atlasName: "bows", layer: 0, x: 522, y: 17, width: 22, height: 50, scale: 0.7f));
@@ -603,6 +617,10 @@ namespace SonOfRobin
             packageName = AnimPkg.DebrisStone;
             AddFrameList(animPackage: packageName, animSize: 0, animName: "default",
             frameList: ConvertImageToFrameList(atlasName: "stone_ammo", layer: 0, scale: 0.25f));
+
+            packageName = AnimPkg.DebrisPlant;
+            AddFrameList(animPackage: packageName, animSize: 0, animName: "default",
+            frameList: ConvertImageToFrameList(atlasName: "grass_blade", layer: 0, scale: 0.25f));
 
             packageName = AnimPkg.DebrisWood;
             AddFrameList(animPackage: packageName, animSize: 0, animName: "default",
@@ -707,69 +725,55 @@ namespace SonOfRobin
 
             // RPGMaker characters
             AddRPGMakerPackageV1(packageName: AnimPkg.Blonde, atlasName: "actor29rec4", setNoX: 0, setNoY: 0, animSize: 0);
-            AddRPGMakerPackageV1(packageName: AnimPkg.DemonMaidPink, atlasName: "demonmaid", setNoX: 0, setNoY: 0, animSize: 0);
-            AddRPGMakerPackageV1(packageName: AnimPkg.DemonMaidYellow, atlasName: "demonmaid2", setNoX: 0, setNoY: 0, animSize: 0);
             AddRPGMakerPackageV1(packageName: AnimPkg.Sailor, atlasName: "recolor_pt2", setNoX: 0, setNoY: 0, animSize: 0);
 
-            scale = 0.6f;
-            AddRPGMakerPackageV2(packageName: AnimPkg.RabbitBrown, atlasName: "rabbits", setNoX: 0, setNoY: 0, animSize: 0, scale: scale);
-            AddRPGMakerPackageV2(packageName: AnimPkg.RabbitDarkBrown, atlasName: "rabbits", setNoX: 1, setNoY: 0, animSize: 0, scale: scale);
-            AddRPGMakerPackageV2(packageName: AnimPkg.RabbitGray, atlasName: "rabbits", setNoX: 2, setNoY: 0, animSize: 0, scale: scale);
-            AddRPGMakerPackageV2(packageName: AnimPkg.RabbitBlack, atlasName: "rabbits", setNoX: 3, setNoY: 0, animSize: 0, scale: scale);
-            AddRPGMakerPackageV2(packageName: AnimPkg.RabbitLightGray, atlasName: "rabbits", setNoX: 0, setNoY: 1, animSize: 0, scale: scale);
-            AddRPGMakerPackageV2(packageName: AnimPkg.RabbitBeige, atlasName: "rabbits", setNoX: 1, setNoY: 1, animSize: 0, scale: scale);
-            AddRPGMakerPackageV2(packageName: AnimPkg.RabbitWhite, atlasName: "rabbits", setNoX: 2, setNoY: 1, animSize: 0, scale: scale);
-            AddRPGMakerPackageV2(packageName: AnimPkg.RabbitLightBrown, atlasName: "rabbits", setNoX: 3, setNoY: 1, animSize: 0, scale: scale);
+            foreach (var kvp in new Dictionary<byte, float> { { 0, 0.6f }, { 1, 0.8f }, { 2, 1.0f } })
+            {
+                string atlasName = "rabbits";
+                byte animSize = kvp.Key;
+                scale = kvp.Value;
 
-            scale = 0.8f;
-            AddRPGMakerPackageV2(packageName: AnimPkg.RabbitBrown, atlasName: "rabbits", setNoX: 0, setNoY: 0, animSize: 1, scale: scale);
-            AddRPGMakerPackageV2(packageName: AnimPkg.RabbitDarkBrown, atlasName: "rabbits", setNoX: 1, setNoY: 0, animSize: 1, scale: scale);
-            AddRPGMakerPackageV2(packageName: AnimPkg.RabbitGray, atlasName: "rabbits", setNoX: 2, setNoY: 0, animSize: 1, scale: scale);
-            AddRPGMakerPackageV2(packageName: AnimPkg.RabbitBlack, atlasName: "rabbits", setNoX: 3, setNoY: 0, animSize: 1, scale: scale);
-            AddRPGMakerPackageV2(packageName: AnimPkg.RabbitLightGray, atlasName: "rabbits", setNoX: 0, setNoY: 1, animSize: 1, scale: scale);
-            AddRPGMakerPackageV2(packageName: AnimPkg.RabbitBeige, atlasName: "rabbits", setNoX: 1, setNoY: 1, animSize: 1, scale: scale);
-            AddRPGMakerPackageV2(packageName: AnimPkg.RabbitWhite, atlasName: "rabbits", setNoX: 2, setNoY: 1, animSize: 1, scale: scale);
-            AddRPGMakerPackageV2(packageName: AnimPkg.RabbitLightBrown, atlasName: "rabbits", setNoX: 3, setNoY: 1, animSize: 1, scale: scale);
+                AddRPGMakerPackageV2(packageName: AnimPkg.RabbitBrown, atlasName: atlasName, setNoX: 0, setNoY: 0, animSize: animSize, scale: scale);
+                AddRPGMakerPackageV2(packageName: AnimPkg.RabbitDarkBrown, atlasName: atlasName, setNoX: 1, setNoY: 0, animSize: animSize, scale: scale);
+                AddRPGMakerPackageV2(packageName: AnimPkg.RabbitGray, atlasName: atlasName, setNoX: 2, setNoY: 0, animSize: animSize, scale: scale);
+                AddRPGMakerPackageV2(packageName: AnimPkg.RabbitBlack, atlasName: atlasName, setNoX: 3, setNoY: 0, animSize: animSize, scale: scale);
+                AddRPGMakerPackageV2(packageName: AnimPkg.RabbitLightGray, atlasName: atlasName, setNoX: 0, setNoY: 1, animSize: animSize, scale: scale);
+                AddRPGMakerPackageV2(packageName: AnimPkg.RabbitBeige, atlasName: atlasName, setNoX: 1, setNoY: 1, animSize: animSize, scale: scale);
+                AddRPGMakerPackageV2(packageName: AnimPkg.RabbitWhite, atlasName: atlasName, setNoX: 2, setNoY: 1, animSize: animSize, scale: scale);
+                AddRPGMakerPackageV2(packageName: AnimPkg.RabbitLightBrown, atlasName: atlasName, setNoX: 3, setNoY: 1, animSize: animSize, scale: scale);
+            }
 
-            scale = 1f;
-            AddRPGMakerPackageV2(packageName: AnimPkg.RabbitBrown, atlasName: "rabbits", setNoX: 0, setNoY: 0, animSize: 2, scale: scale);
-            AddRPGMakerPackageV2(packageName: AnimPkg.RabbitDarkBrown, atlasName: "rabbits", setNoX: 1, setNoY: 0, animSize: 2, scale: scale);
-            AddRPGMakerPackageV2(packageName: AnimPkg.RabbitGray, atlasName: "rabbits", setNoX: 2, setNoY: 0, animSize: 2, scale: scale);
-            AddRPGMakerPackageV2(packageName: AnimPkg.RabbitBlack, atlasName: "rabbits", setNoX: 3, setNoY: 0, animSize: 2, scale: scale);
-            AddRPGMakerPackageV2(packageName: AnimPkg.RabbitLightGray, atlasName: "rabbits", setNoX: 0, setNoY: 1, animSize: 2, scale: scale);
-            AddRPGMakerPackageV2(packageName: AnimPkg.RabbitBeige, atlasName: "rabbits", setNoX: 1, setNoY: 1, animSize: 2, scale: scale);
-            AddRPGMakerPackageV2(packageName: AnimPkg.RabbitWhite, atlasName: "rabbits", setNoX: 2, setNoY: 1, animSize: 2, scale: scale);
-            AddRPGMakerPackageV2(packageName: AnimPkg.RabbitLightBrown, atlasName: "rabbits", setNoX: 3, setNoY: 1, animSize: 2, scale: scale);
+            foreach (var kvp in new Dictionary<byte, float> { { 0, 0.6f }, { 1, 0.8f }, { 2, 1.0f } })
+            {
+                string atlasName = "fox";
+                byte animSize = kvp.Key;
+                scale = kvp.Value;
 
-            scale = 0.6f;
-            AddRPGMakerPackageV2(packageName: AnimPkg.FoxGinger, atlasName: "fox", setNoX: 0, setNoY: 0, animSize: 0, scale: scale);
-            AddRPGMakerPackageV2(packageName: AnimPkg.FoxRed, atlasName: "fox", setNoX: 1, setNoY: 0, animSize: 0, scale: scale);
-            AddRPGMakerPackageV2(packageName: AnimPkg.FoxWhite, atlasName: "fox", setNoX: 2, setNoY: 0, animSize: 0, scale: scale);
-            AddRPGMakerPackageV2(packageName: AnimPkg.FoxGray, atlasName: "fox", setNoX: 3, setNoY: 0, animSize: 0, scale: scale);
-            AddRPGMakerPackageV2(packageName: AnimPkg.FoxBlack, atlasName: "fox", setNoX: 0, setNoY: 1, animSize: 0, scale: scale);
-            AddRPGMakerPackageV2(packageName: AnimPkg.FoxChocolate, atlasName: "fox", setNoX: 1, setNoY: 1, animSize: 0, scale: scale);
-            AddRPGMakerPackageV2(packageName: AnimPkg.FoxBrown, atlasName: "fox", setNoX: 2, setNoY: 1, animSize: 0, scale: scale);
-            AddRPGMakerPackageV2(packageName: AnimPkg.FoxYellow, atlasName: "fox", setNoX: 3, setNoY: 1, animSize: 0, scale: scale);
+                AddRPGMakerPackageV2(packageName: AnimPkg.FoxGinger, atlasName: atlasName, setNoX: 0, setNoY: 0, animSize: animSize, scale: scale);
+                AddRPGMakerPackageV2(packageName: AnimPkg.FoxRed, atlasName: atlasName, setNoX: 1, setNoY: 0, animSize: animSize, scale: scale);
+                AddRPGMakerPackageV2(packageName: AnimPkg.FoxWhite, atlasName: atlasName, setNoX: 2, setNoY: 0, animSize: animSize, scale: scale);
+                AddRPGMakerPackageV2(packageName: AnimPkg.FoxGray, atlasName: atlasName, setNoX: 3, setNoY: 0, animSize: animSize, scale: scale);
+                AddRPGMakerPackageV2(packageName: AnimPkg.FoxBlack, atlasName: atlasName, setNoX: 0, setNoY: 1, animSize: animSize, scale: scale);
+                AddRPGMakerPackageV2(packageName: AnimPkg.FoxChocolate, atlasName: atlasName, setNoX: 1, setNoY: 1, animSize: animSize, scale: scale);
+                AddRPGMakerPackageV2(packageName: AnimPkg.FoxBrown, atlasName: atlasName, setNoX: 2, setNoY: 1, animSize: animSize, scale: scale);
+                AddRPGMakerPackageV2(packageName: AnimPkg.FoxYellow, atlasName: atlasName, setNoX: 3, setNoY: 1, animSize: animSize, scale: scale);
+            }
 
-            scale = 0.8f;
-            AddRPGMakerPackageV2(packageName: AnimPkg.FoxGinger, atlasName: "fox", setNoX: 0, setNoY: 0, animSize: 1, scale: scale);
-            AddRPGMakerPackageV2(packageName: AnimPkg.FoxRed, atlasName: "fox", setNoX: 1, setNoY: 0, animSize: 1, scale: scale);
-            AddRPGMakerPackageV2(packageName: AnimPkg.FoxWhite, atlasName: "fox", setNoX: 2, setNoY: 0, animSize: 1, scale: scale);
-            AddRPGMakerPackageV2(packageName: AnimPkg.FoxGray, atlasName: "fox", setNoX: 3, setNoY: 0, animSize: 1, scale: scale);
-            AddRPGMakerPackageV2(packageName: AnimPkg.FoxBlack, atlasName: "fox", setNoX: 0, setNoY: 1, animSize: 1, scale: scale);
-            AddRPGMakerPackageV2(packageName: AnimPkg.FoxChocolate, atlasName: "fox", setNoX: 1, setNoY: 1, animSize: 1, scale: scale);
-            AddRPGMakerPackageV2(packageName: AnimPkg.FoxBrown, atlasName: "fox", setNoX: 2, setNoY: 1, animSize: 1, scale: scale);
-            AddRPGMakerPackageV2(packageName: AnimPkg.FoxYellow, atlasName: "fox", setNoX: 3, setNoY: 1, animSize: 1, scale: scale);
+            foreach (var kvp in new Dictionary<byte, float> { { 0, 0.6f }, { 1, 1.0f }, { 2, 1.3f } })
+            {
+                string atlasName = "tiger";
+                byte animSize = kvp.Key;
+                scale = kvp.Value;
 
-            scale = 1f;
-            AddRPGMakerPackageV2(packageName: AnimPkg.FoxGinger, atlasName: "fox", setNoX: 0, setNoY: 0, animSize: 2, scale: scale);
-            AddRPGMakerPackageV2(packageName: AnimPkg.FoxRed, atlasName: "fox", setNoX: 1, setNoY: 0, animSize: 2, scale: scale);
-            AddRPGMakerPackageV2(packageName: AnimPkg.FoxWhite, atlasName: "fox", setNoX: 2, setNoY: 0, animSize: 2, scale: scale);
-            AddRPGMakerPackageV2(packageName: AnimPkg.FoxGray, atlasName: "fox", setNoX: 3, setNoY: 0, animSize: 2, scale: scale);
-            AddRPGMakerPackageV2(packageName: AnimPkg.FoxBlack, atlasName: "fox", setNoX: 0, setNoY: 1, animSize: 2, scale: scale);
-            AddRPGMakerPackageV2(packageName: AnimPkg.FoxChocolate, atlasName: "fox", setNoX: 1, setNoY: 1, animSize: 2, scale: scale);
-            AddRPGMakerPackageV2(packageName: AnimPkg.FoxBrown, atlasName: "fox", setNoX: 2, setNoY: 1, animSize: 2, scale: scale);
-            AddRPGMakerPackageV2(packageName: AnimPkg.FoxYellow, atlasName: "fox", setNoX: 3, setNoY: 1, animSize: 2, scale: scale);
+                AddRPGMakerPackageV2(packageName: AnimPkg.TigerOrangeMedium, atlasName: atlasName, setNoX: 0, setNoY: 0, animSize: animSize, scale: scale);
+                AddRPGMakerPackageV2(packageName: AnimPkg.TigerOrangeLight, atlasName: atlasName, setNoX: 1, setNoY: 0, animSize: animSize, scale: scale);
+                AddRPGMakerPackageV2(packageName: AnimPkg.TigerGray, atlasName: atlasName, setNoX: 2, setNoY: 0, animSize: animSize, scale: scale);
+                AddRPGMakerPackageV2(packageName: AnimPkg.TigerWhite, atlasName: atlasName, setNoX: 3, setNoY: 0, animSize: animSize, scale: scale);
+                AddRPGMakerPackageV2(packageName: AnimPkg.TigerOrangeDark, atlasName: atlasName, setNoX: 0, setNoY: 1, animSize: animSize, scale: scale);
+                AddRPGMakerPackageV2(packageName: AnimPkg.TigerBrown, atlasName: atlasName, setNoX: 1, setNoY: 1, animSize: animSize, scale: scale);
+                AddRPGMakerPackageV2(packageName: AnimPkg.TigerYellow, atlasName: atlasName, setNoX: 2, setNoY: 1, animSize: animSize, scale: scale);
+                AddRPGMakerPackageV2(packageName: AnimPkg.TigerBlack, atlasName: atlasName, setNoX: 3, setNoY: 1, animSize: animSize, scale: scale);
+            }
 
             scale = 1f;
             AddRPGMakerPackageV2(packageName: AnimPkg.Frog1, atlasName: "frogs_small", setNoX: 0, setNoY: 0, animSize: 0, scale: scale);
@@ -781,25 +785,21 @@ namespace SonOfRobin
             AddRPGMakerPackageV2(packageName: AnimPkg.Frog7, atlasName: "frogs_small", setNoX: 2, setNoY: 1, animSize: 0, scale: scale);
             AddRPGMakerPackageV2(packageName: AnimPkg.Frog8, atlasName: "frogs_small", setNoX: 3, setNoY: 1, animSize: 0, scale: scale);
 
-            scale = 0.4f;
-            AddRPGMakerPackageV2(packageName: AnimPkg.Frog1, atlasName: "frogs_big", setNoX: 0, setNoY: 0, animSize: 1, scale: scale);
-            AddRPGMakerPackageV2(packageName: AnimPkg.Frog2, atlasName: "frogs_big", setNoX: 1, setNoY: 0, animSize: 1, scale: scale);
-            AddRPGMakerPackageV2(packageName: AnimPkg.Frog3, atlasName: "frogs_big", setNoX: 2, setNoY: 0, animSize: 1, scale: scale);
-            AddRPGMakerPackageV2(packageName: AnimPkg.Frog4, atlasName: "frogs_big", setNoX: 3, setNoY: 0, animSize: 1, scale: scale);
-            AddRPGMakerPackageV2(packageName: AnimPkg.Frog5, atlasName: "frogs_big", setNoX: 0, setNoY: 1, animSize: 1, scale: scale);
-            AddRPGMakerPackageV2(packageName: AnimPkg.Frog6, atlasName: "frogs_big", setNoX: 1, setNoY: 1, animSize: 1, scale: scale);
-            AddRPGMakerPackageV2(packageName: AnimPkg.Frog7, atlasName: "frogs_big", setNoX: 2, setNoY: 1, animSize: 1, scale: scale);
-            AddRPGMakerPackageV2(packageName: AnimPkg.Frog8, atlasName: "frogs_big", setNoX: 3, setNoY: 1, animSize: 1, scale: scale);
+            foreach (var kvp in new Dictionary<byte, float> { { 1, 0.75f }, { 2, 1.3f } })
+            {
+                string atlasName = "frogs_big";
+                byte animSize = kvp.Key;
+                scale = kvp.Value;
 
-            scale = 0.75f;
-            AddRPGMakerPackageV2(packageName: AnimPkg.Frog1, atlasName: "frogs_big", setNoX: 0, setNoY: 0, animSize: 2, scale: scale);
-            AddRPGMakerPackageV2(packageName: AnimPkg.Frog2, atlasName: "frogs_big", setNoX: 1, setNoY: 0, animSize: 2, scale: scale);
-            AddRPGMakerPackageV2(packageName: AnimPkg.Frog3, atlasName: "frogs_big", setNoX: 2, setNoY: 0, animSize: 2, scale: scale);
-            AddRPGMakerPackageV2(packageName: AnimPkg.Frog4, atlasName: "frogs_big", setNoX: 3, setNoY: 0, animSize: 2, scale: scale);
-            AddRPGMakerPackageV2(packageName: AnimPkg.Frog5, atlasName: "frogs_big", setNoX: 0, setNoY: 1, animSize: 2, scale: scale);
-            AddRPGMakerPackageV2(packageName: AnimPkg.Frog6, atlasName: "frogs_big", setNoX: 1, setNoY: 1, animSize: 2, scale: scale);
-            AddRPGMakerPackageV2(packageName: AnimPkg.Frog7, atlasName: "frogs_big", setNoX: 2, setNoY: 1, animSize: 2, scale: scale);
-            AddRPGMakerPackageV2(packageName: AnimPkg.Frog8, atlasName: "frogs_big", setNoX: 3, setNoY: 1, animSize: 2, scale: scale);
+                AddRPGMakerPackageV2(packageName: AnimPkg.Frog1, atlasName: atlasName, setNoX: 0, setNoY: 0, animSize: animSize, scale: scale);
+                AddRPGMakerPackageV2(packageName: AnimPkg.Frog2, atlasName: atlasName, setNoX: 1, setNoY: 0, animSize: animSize, scale: scale);
+                AddRPGMakerPackageV2(packageName: AnimPkg.Frog3, atlasName: atlasName, setNoX: 2, setNoY: 0, animSize: animSize, scale: scale);
+                AddRPGMakerPackageV2(packageName: AnimPkg.Frog4, atlasName: atlasName, setNoX: 3, setNoY: 0, animSize: animSize, scale: scale);
+                AddRPGMakerPackageV2(packageName: AnimPkg.Frog5, atlasName: atlasName, setNoX: 0, setNoY: 1, animSize: animSize, scale: scale);
+                AddRPGMakerPackageV2(packageName: AnimPkg.Frog6, atlasName: atlasName, setNoX: 1, setNoY: 1, animSize: animSize, scale: scale);
+                AddRPGMakerPackageV2(packageName: AnimPkg.Frog7, atlasName: atlasName, setNoX: 2, setNoY: 1, animSize: animSize, scale: scale);
+                AddRPGMakerPackageV2(packageName: AnimPkg.Frog8, atlasName: atlasName, setNoX: 3, setNoY: 1, animSize: animSize, scale: scale);
+            }
 
             AddRPGMakerPackageV2(packageName: AnimPkg.CrabRed, atlasName: "crabs_small", setNoX: 0, setNoY: 0, animSize: 0, crop: true);
             AddRPGMakerPackageV2(packageName: AnimPkg.CrabRed, atlasName: "crabs_big", setNoX: 0, setNoY: 0, animSize: 1);

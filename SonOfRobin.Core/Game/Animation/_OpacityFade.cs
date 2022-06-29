@@ -5,7 +5,7 @@ namespace SonOfRobin
     [Serializable]
     public class OpacityFade
     {
-        public static readonly int defaultDuration = 20;
+        public static readonly int defaultDuration = 30;
 
         [NonSerialized]
         public Sprite sprite; // must be updated manually after deserializing

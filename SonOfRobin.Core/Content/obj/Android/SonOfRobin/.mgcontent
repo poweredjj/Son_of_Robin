@@ -53,6 +53,7 @@
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/frogs_big.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/frogs_small.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/gems__rpg_maker_mv__by_petschko-d9euoxr.png</File>
+    <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/grass_blade.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/greatsling.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/hand.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/heart_16x16.png</File>
@@ -87,6 +88,7 @@
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/qYFvsmq.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/rabbits.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/recolor_pt2.png</File>
+    <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/scythe.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/sling.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/steak_t-bone.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/sticks1.png</File>
@@ -122,6 +124,7 @@
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/Switch/Switch_Y.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/tent_big.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/tent_medium.jpg</File>
+    <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/tiger.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/tile_19ba32a6.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/tile_custom01.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/tileb.png</File>
@@ -157,6 +160,9 @@
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/zzz.png</File>
   </SourceFiles>
   <DestFiles>
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
