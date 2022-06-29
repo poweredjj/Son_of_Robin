@@ -262,7 +262,7 @@ namespace SonOfRobin
                     { "resDivider", this.world.resDivider },
                     { "currentFrame", this.world.currentFrame },
                     { "currentUpdate", this.world.currentUpdate },
-                    { "clockTimeElapsed", this.world.islandClock.elapsedUpdates },
+                    { "clockTimeElapsed", this.world.islandClock.ElapsedUpdates },
                     { "TimePlayed", this.world.TimePlayed },
                     { "MapEnabled", this.world.MapEnabled },
                     { "realDateTime", DateTime.Now },
@@ -270,6 +270,7 @@ namespace SonOfRobin
                     { "discoveredRecipesForPieces", this.world.discoveredRecipesForPieces },
                     { "stateMachineTypesManager", this.world.stateMachineTypesManager.Serialize() },
                     { "craftStats", this.world.craftStats.Serialize() },
+                    { "identifiedPieces", this.world.identifiedPieces },
                     { "saveVersion", SaveHeaderManager.saveVersion },
             };
 

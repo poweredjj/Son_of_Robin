@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input.Touch;
 using System;
 using System.Collections.Generic;
@@ -14,14 +15,15 @@ namespace SonOfRobin
         public readonly int taskDelay;
         public override string DisplayedText { get { return this.name; } }
 
-        public Invoker(Menu menu, string name, Scheduler.TaskName taskName, Object executeHelper = null, int taskDelay = 0, bool closesMenu = false, bool rebuildsMenu = false, List<InfoWindow.TextEntry> infoTextList = null, SoundData.Name sound = SoundData.Name.Empty, bool defaultSound = true) : base(menu: menu, name: name, rebuildsMenu: rebuildsMenu, infoTextList: infoTextList)
+        public Invoker(Menu menu, string name, Scheduler.TaskName taskName, Object executeHelper = null, int taskDelay = 0, bool closesMenu = false, bool rebuildsMenu = false, List<InfoWindow.TextEntry> infoTextList = null, SoundData.Name sound = SoundData.Name.Empty, bool playSound = true) : base(menu: menu, name: name, rebuildsMenu: rebuildsMenu, infoTextList: infoTextList)
         {
             this.taskName = taskName;
             this.taskDelay = taskDelay;
             this.executeHelper = executeHelper;
             this.closesMenu = closesMenu;
             this.rectColor = Color.LightSlateGray;
-            this.soundInvoke = defaultSound || sound != SoundData.Name.Empty ? this.menu.soundInvoke : new Sound(sound);
+            this.soundInvoke = sound == SoundData.Name.Empty ? this.menu.soundInvoke : new Sound(sound);
+            if (!playSound) this.soundInvoke = new Sound(SoundData.Name.Empty);
         }
 
         public override void Invoke()
@@ -33,7 +35,7 @@ namespace SonOfRobin
             if (this.rebuildsMenu) new Scheduler.Task(taskName: Scheduler.TaskName.RebuildMenu, executeHelper: this.menu, delay: this.taskDelay, turnOffInputUntilExecution: true);
         }
 
-        public override void Draw(bool active, string textOverride = null)
+        public override void Draw(bool active, string textOverride = null, List<Texture2D> imageList = null)
         {
             if (active) this.UpdateHintWindow();
             base.Draw(active);

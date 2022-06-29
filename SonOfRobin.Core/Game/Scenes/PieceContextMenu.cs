@@ -279,11 +279,12 @@ namespace SonOfRobin
                         List<BoardPiece> piecesToMove = this.storage.RemoveAllPiecesFromSlot(slot: this.slot);
 
                         if (piecesToMove.Count == 0) return;
-                        bool pieceMoved;
+
+                        piecesToMove[0].soundPack.Play(action: PieceSoundPack.Action.IsDropped, ignore3D: true, ignoreCooldown: true);
 
                         foreach (BoardPiece piece in piecesToMove)
                         {
-                            pieceMoved = secondInventory.storage.AddPiece(piece);
+                            bool pieceMoved = secondInventory.storage.AddPiece(piece);
                             if (!pieceMoved) this.storage.AddPiece(piece);
                         }
 

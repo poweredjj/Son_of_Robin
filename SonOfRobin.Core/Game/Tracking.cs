@@ -34,6 +34,7 @@ namespace SonOfRobin
         private readonly int firstTrackingFrame;
         private readonly int lastTrackingFrame;
         private readonly bool bounceWhenRemoved;
+        private readonly int followSlowDown;
         public bool BothSpritesExistAndOnBoard
         {
             get
@@ -61,13 +62,15 @@ namespace SonOfRobin
         public Tracking(World world, Sprite targetSprite, Sprite followingSprite, int offsetX = 0, int offsetY = 0,
             XAlign followingXAlign = XAlign.Center, YAlign followingYAlign = YAlign.Center,
             XAlign targetXAlign = XAlign.Center, YAlign targetYAlign = YAlign.Center,
-            int turnOffDelay = 0, bool bounceWhenRemoved = false)
+            int turnOffDelay = 0, bool bounceWhenRemoved = false, int followSlowDown = 0)
         {
             this.isCorrect = false;
             this.world = world;
             this.firstTrackingFrame = this.world.currentUpdate;
             this.lastTrackingFrame = turnOffDelay == 0 ? 0 : this.world.currentUpdate + turnOffDelay;
             this.bounceWhenRemoved = bounceWhenRemoved;
+            this.followSlowDown = followSlowDown;
+            if (this.followSlowDown < 0) new ArgumentException($"followSlowDown ({followSlowDown}) cannot be < 0.");
 
             this.followingSprite = followingSprite;
             this.followingXAlign = followingXAlign;
@@ -103,6 +106,8 @@ namespace SonOfRobin
 
                 {"lastTrackingFrame", this.lastTrackingFrame},
                 {"bounceWhenRemoved", this.bounceWhenRemoved},
+                {"followSlowDown", this.followSlowDown},
+
             };
 
             return trackingData;
@@ -126,10 +131,11 @@ namespace SonOfRobin
             int offsetY = (int)trackingData["offsetY"];
 
             bool bounceWhenRemoved = (bool)trackingData["bounceWhenRemoved"];
+            int followSlowDown = (int)trackingData["followSlowDown"];
             int lastTrackingFrame = (int)trackingData["lastTrackingFrame"];
             int delay = Math.Max(world.currentUpdate, lastTrackingFrame - world.currentUpdate);
 
-            new Tracking(world: world, targetSprite: targetSprite, followingSprite: followingSprite, followingXAlign: followingXAlign, followingYAlign: followingYAlign, targetXAlign: targetXAlign, targetYAlign: targetYAlign, offsetX: offsetX, offsetY: offsetY, turnOffDelay: delay, bounceWhenRemoved: bounceWhenRemoved);
+            new Tracking(world: world, targetSprite: targetSprite, followingSprite: followingSprite, followingXAlign: followingXAlign, followingYAlign: followingYAlign, targetXAlign: targetXAlign, targetYAlign: targetYAlign, offsetX: offsetX, offsetY: offsetY, turnOffDelay: delay, bounceWhenRemoved: bounceWhenRemoved, followSlowDown: followSlowDown);
         }
 
         private void AddToTrackingQueue()
@@ -182,7 +188,19 @@ namespace SonOfRobin
             Vector2 targetOffset = GetSpriteOffset(sprite: this.targetSprite, xAlign: this.targetXAlign, yAlign: targetYAlign);
 
             // this.offset - independent offset, used regardless of two previous
-            followingSprite.SetNewPosition(newPos: targetSprite.position + this.offset + targetOffset - followingOffset, ignoreCollisions: true);
+
+            Vector2 targetPos = targetSprite.position + this.offset + targetOffset - followingOffset;
+
+            Vector2 newPos;
+            if (this.followSlowDown == 0) newPos = targetPos;
+            else
+            {
+                Vector2 oldPos = followingSprite.position;
+                newPos.X = oldPos.X + (targetPos.X - oldPos.X) / this.followSlowDown;
+                newPos.Y = oldPos.Y + (targetPos.Y - oldPos.Y) / this.followSlowDown;
+            }
+
+            followingSprite.SetNewPosition(newPos: newPos, ignoreCollisions: true);
         }
 
         private static Vector2 GetSpriteOffset(Sprite sprite, XAlign xAlign, YAlign yAlign)

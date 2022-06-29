@@ -1,0 +1,123 @@
+dairy:
+- butter: https://openclipart.org/detail/292540
+- cheese_wedge: https://openclipart.org/detail/166638
+- cheese_wheel: https://openclipart.org/detail/8104
+
+drink:
+- juice_orange: https://openclipart.org/detail/294552
+- milk_carton: https://openclipart.org/detail/4810
+- soda_bottle: https://openclipart.org/detail/241570
+- soda_can_*: https://openclipart.org/detail/285219
+- soda_glass: https://openclipart.org/detail/311979
+- strawberry_smoothie: https://openclipart.org/detail/3542
+- water_mug: https://openclipart.org/detail/306096
+
+fruit:
+- apple: https://openclipart.org/detail/18315
+- banana: https://openclipart.org/detail/189457
+- blackberries: https://openclipart.org/detail/280789
+- blueberries: https://openclipart.org/detail/280789
+- cherries: https://openclipart.org/detail/168503
+- coconut: https://openclipart.org/detail/280789
+- eggplant: https://openclipart.org/detail/299938
+- grapes: https://openclipart.org/detail/17012
+- kiwi: https://openclipart.org/detail/106411
+- lemon: https://openclipart.org/detail/189589
+- olive: https://openclipart.org/detail/988
+- orange: https://openclipart.org/detail/189548
+- pear: https://openclipart.org/detail/298177
+- pineapple: https://openclipart.org/detail/291093
+- plum: https://openclipart.org/detail/245256
+- raspberries: https://openclipart.org/detail/280304
+- strawberry: https://openclipart.org/detail/233803
+- tomato: https://openclipart.org/detail/4783
+- tomatoes_cherry: https://openclipart.org/detail/312486
+- watermelon: https://openclipart.org/detail/285199
+- watermelon_slice: https://openclipart.org/detail/8533
+
+grain:
+- bread_loaf: https://openclipart.org/detail/306096
+- corn: https://openclipart.org/detail/291350
+
+meat:
+- chicken: https://openclipart.org/detail/311979
+- chicken_drumstick_01: https://openclipart.org/detail/320978
+- chicken_drumstick_02: https://openclipart.org/detail/320977
+- chicken_drumsticks: https://openclipart.org/detail/320977
+- egg: http://openclipart.org/detail/6695
+- egg_fried_01: https://openclipart.org/detail/80419
+- egg_fried_02: https://openclipart.org/detail/19630
+- egg_fried_03: https://openclipart.org/detail/317181
+- egg_hard_boiled: https://openclipart.org/detail/17016
+- ham: https://openclipart.org/detail/211419
+- sashimi: https://openclipart.org/detail/133141
+- steak: https://openclipart.org/detail/295935
+
+pasta:
+- lasagna: https://openclipart.org/detail/9081
+- noodle_fusili: https://openclipart.org/detail/48199
+- noodle_macaroni: https://openclipart.org/detail/105709
+
+sushi:
+- sushi_01_*: https://openclipart.org/detail/316537
+- sushi_02_*: https://openclipart.org/detail/284028
+_ sushi_03_*: https://openclipart.org/detail/320158
+
+treat:
+- cookie_chocolate_chip: https://openclipart.org/detail/320961
+- cupcake: https://openclipart.org/detail/306096
+- doughnut: https://openclipart.org/detail/279100
+- ice_cream_bar_*: https://openclipart.org/detail/318127
+- ice_cream_sandwich_*: https://openclipart.org/detail/318127
+- ice_cream_sundae_01: https://openclipart.org/detail/301401
+- ice_cream_sundae_02: https://openclipart.org/detail/320962
+- popsicle_*: https://openclipart.org/detail/318127
+- shake: https://openclipart.org/detail/311979
+
+vegetable:
+- artichoke: https://openclipart.org/detail/291385
+- bok_choy: https://openclipart.org/detail/312486
+- broccoli: https://openclipart.org/detail/26141
+- cabbage: https://openclipart.org/detail/312486
+- carrot: https://openclipart.org/detail/215799
+- cucumber: https://openclipart.org/detail/320976
+- daikon: https://openclipart.org/detail/312486
+- ginger: https://openclipart.org/detail/312486
+- green_bean: https://openclipart.org/detail/228333
+- lettuce: https://openclipart.org/detail/312486
+- onion_01: https://openclipart.org/detail/4748
+- onion_02: https://openclipart.org/detail/228333
+- parsnip: https://openclipart.org/detail/228333
+- peas: https://openclipart.org/detail/228333
+- pepper_bell_01: https://openclipart.org/detail/312486
+- pepper_bell_02: https://openclipart.org/detail/228333
+- pepper_chili: https://openclipart.org/detail/228333
+- potato: https://openclipart.org/detail/291193
+- radish: https://openclipart.org/detail/33997
+- yam: https://openclipart.org/detail/1028
+- zucchini: https://openclipart.org/detail/291456
+
+misc:
+- burrito: https://openclipart.org/detail/9074
+- french_fries: https://openclipart.org/detail/149623
+- hot_dog_01: https://openclipart.org/detail/69763
+- hot_dog_02: https://openclipart.org/detail/311979
+- ketchup: https://openclipart.org/detail/268371
+- mushroom: https://openclipart.org/detail/24245
+- pizza_01: https://openclipart.org/detail/284543
+- pizza_02: https://openclipart.org/detail/296066
+- pizza_slice_01: https://openclipart.org/detail/150637
+- pizza_slice_02: https://openclipart.org/detail/9086
+- popcorn: https://openclipart.org/detail/148543
+- pretzel: https://openclipart.org/detail/106387
+- ramen_bowl: https://openclipart.org/detail/191828
+- salad: https://openclipart.org/detail/297571
+- sandwich_01: https://openclipart.org/detail/306096
+- sandwich_02: https://openclipart.org/detail/36199
+- sandwich_03: https://openclipart.org/detail/311979
+- sandwich_buger: https://openclipart.org/detail/9079
+- sandwich_grilled: https://openclipart.org/detail/150769
+- sandwich_sub: https://openclipart.org/detail/9111
+- shish_kabob: https://openclipart.org/detail/225152
+- taco_01: https://openclipart.org/detail/151201
+- taco_02: https://openclipart.org/detail/311979

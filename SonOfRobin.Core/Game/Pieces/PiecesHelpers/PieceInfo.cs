@@ -9,6 +9,8 @@ namespace SonOfRobin
     {
         private static readonly Dictionary<PieceTemplate.Name, Info> info = new Dictionary<PieceTemplate.Name, Info> { };
         public static List<Info> AllInfo { get { return info.Values.ToList(); } }
+        private static bool hasBeenInitialized = false;
+        public static bool HasBeenInitialized { get { return hasBeenInitialized; } }
         public class Info
         {
             public readonly PieceTemplate.Name name;
@@ -24,6 +26,8 @@ namespace SonOfRobin
             public List<BuffEngine.Buff> buffList;
             public readonly AnimFrame frame;
             public readonly Texture2D texture;
+            public readonly Scheduler.TaskName toolbarTask;
+            public readonly Scheduler.TaskName boardTask;
             public List<PieceTemplate.Name> eats;
             public List<PieceTemplate.Name> isEatenBy;
             public readonly bool hasFruit;
@@ -57,6 +61,8 @@ namespace SonOfRobin
                 this.buffList = piece.buffList;
                 this.frame = piece.sprite.frame;
                 this.texture = this.frame.texture;
+                this.toolbarTask = piece.toolbarTask;
+                this.boardTask = piece.boardTask;
                 if (piece.GetType() == typeof(Animal)) this.eats = ((Animal)piece).eats;
                 this.convertsWhenUsed = false;
                 if (piece.GetType() == typeof(Potion))
@@ -127,6 +133,8 @@ namespace SonOfRobin
             {
                 info[fruitSpawnerInfo.fruitName].isSpawnedBy = fruitSpawnerInfo.name;
             }
+
+            hasBeenInitialized = true;
         }
 
         public static List<PieceTemplate.Name> GetIsEatenBy(PieceTemplate.Name name)

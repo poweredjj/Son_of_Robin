@@ -61,9 +61,9 @@ namespace SonOfRobin
                      new PieceCreationData(name: PieceTemplate.Name.SoundSeaWaves, multiplier: 0.4f, maxAmount: -1, doNotReplenish: true),
                      new PieceCreationData(name: PieceTemplate.Name.SoundSeaWind, multiplier: 0.4f, maxAmount: -1, doNotReplenish: true),
                      new PieceCreationData(name: PieceTemplate.Name.SoundLakeWaves, multiplier: 1.2f, maxAmount: -1, doNotReplenish: true),
-                     new PieceCreationData(name: PieceTemplate.Name.SoundDesertWind, multiplier: 1.0f, maxAmount: -1, doNotReplenish: true),
-                     new PieceCreationData(name: PieceTemplate.Name.SoundNightCrickets, multiplier: 1.0f, maxAmount: -1, doNotReplenish: true),
-                     new PieceCreationData(name: PieceTemplate.Name.SoundNoonCicadas, multiplier: 1.0f, maxAmount: -1, doNotReplenish: true),
+                     new PieceCreationData(name: PieceTemplate.Name.SoundDesertWind, multiplier: 0.8f, maxAmount: -1, doNotReplenish: true),
+                     new PieceCreationData(name: PieceTemplate.Name.SoundNightCrickets, multiplier: 0.8f, maxAmount: -1, doNotReplenish: true),
+                     new PieceCreationData(name: PieceTemplate.Name.SoundNoonCicadas, multiplier: 0.8f, maxAmount: -1, doNotReplenish: true),
                 };
 
             if (!addAgressiveAnimals) dataList = dataList.Where(data => PieceInfo.GetInfo(data.name).eats == null || !PieceInfo.GetInfo(data.name).eats.Contains(PieceTemplate.Name.Player)).ToList();

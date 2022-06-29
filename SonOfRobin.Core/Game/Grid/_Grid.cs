@@ -218,8 +218,7 @@ namespace SonOfRobin
         {
             if (this.world.demoMode) return;
 
-            TimeSpan timeLeft = CalculateTimeLeft(
-                startTime: this.stageStartTime, completeAmount: this.allCells.Count - this.cellsToProcessOnStart.Count, totalAmount: this.allCells.Count);
+            TimeSpan timeLeft = CalculateTimeLeft(startTime: this.stageStartTime, completeAmount: this.allCells.Count - this.cellsToProcessOnStart.Count, totalAmount: this.allCells.Count);
             string timeLeftString = TimeSpanToString(timeLeft + TimeSpan.FromSeconds(1));
 
             string message;
@@ -607,7 +606,6 @@ namespace SonOfRobin
         {
             foreach (Cell cell in this.allCells)
             { cell.surroundingCells = GetCellsWithinDistance(cell: cell, distance: 1); }
-
         }
 
         private static string TimeSpanToString(TimeSpan timeSpan)

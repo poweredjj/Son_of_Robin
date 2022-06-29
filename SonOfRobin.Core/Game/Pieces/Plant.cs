@@ -90,7 +90,7 @@ namespace SonOfRobin
             var occupiedSlots = this.pieceStorage.OccupiedSlots;
             if (occupiedSlots.Count == 0)
             {
-                new TextWindow(text: "There is nothing left to shake off.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1);
+                new TextWindow(text: "There is nothing left to shake off.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1, animSound: this.world.DialogueSound);
 
                 return;
             }
@@ -98,6 +98,10 @@ namespace SonOfRobin
             if (this.name == PieceTemplate.Name.BananaTree) this.world.hintEngine.Disable(PieceHint.Type.BananaTree);
             if (this.name == PieceTemplate.Name.TomatoPlant) this.world.hintEngine.Disable(PieceHint.Type.TomatoPlant);
             if (this.name == PieceTemplate.Name.CherryTree || this.name == PieceTemplate.Name.AppleTree) this.world.hintEngine.Disable(PieceHint.Type.FruitTree);
+
+            Yield debrisYield = new Yield(boardPiece: this, debrisTypeList: this.yield.DebrisTypeList);
+            debrisYield.DropDebris();
+            Sound.QuickPlay(SoundData.Name.DropPlant);
 
             this.pieceStorage.DropPiecesFromSlot(slot: occupiedSlots[0], addMovement: true);
         }

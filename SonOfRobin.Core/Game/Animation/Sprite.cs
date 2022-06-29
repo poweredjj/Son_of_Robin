@@ -58,13 +58,27 @@ namespace SonOfRobin
 
         public bool IsInCameraRect { get { return this.world.camera.viewRect.Contains(this.position); } }
 
+        public bool IsInLightSourceRange
+        {
+            get
+            {
+                if (this.lightEngine.IsActive) return true;
+
+                foreach (BoardPiece lightPiece in this.world.grid.GetPiecesWithinDistance(groupName: Cell.Group.LightSource, mainSprite: this, distance: 500))
+                {
+                    if (lightPiece.sprite.lightEngine.Rect.Contains(this.position)) return true;
+                }
+
+                return false;
+            }
+        }
+
         private bool visible;
         public bool IsInWater
         { get { return this.GetFieldValue(TerrainName.Height) < Terrain.waterLevelMax; } }
         public bool CanDrownHere { get { return this.GetFieldValue(TerrainName.Height) < Terrain.waterLevelMax - 10; } }
         public bool IsOnSand
         { get { return !this.IsInWater && (this.GetFieldValue(TerrainName.Humidity) <= 80 || this.GetFieldValue(TerrainName.Height) < 105); } }
-
         public bool IsOnRock
         { get { return this.GetFieldValue(TerrainName.Height) > 160; } }
         public bool IsOnLava
@@ -504,7 +518,7 @@ namespace SonOfRobin
             return !collisionDetected;
         }
 
-        public List<Sprite> GetCollidingSpritesAtPosition(Vector2 positionToCheck)
+        public List<Sprite> GetCollidingSpritesAtPosition(Vector2 positionToCheck, List<Cell.Group> cellGroupsToCheck)
         {
             var originalPosition = new Vector2(this.position.X, this.position.Y);
 
@@ -515,13 +529,28 @@ namespace SonOfRobin
             this.UpdateRects();
             this.UpdateBoardLocation();
 
-            List<Sprite> collidingSpritesList = this.GetCollidingSprites();
+            List<Sprite> collidingSpritesList = this.GetCollidingSprites(cellGroupsToCheck);
 
             this.position = originalPosition;
             this.UpdateRects();
             this.UpdateBoardLocation();
 
             return collidingSpritesList;
+        }
+
+        public List<Sprite> GetCollidingSprites(List<Cell.Group> cellGroupsToCheck)
+        {
+            var collidingSprites = new List<Sprite>();
+
+            foreach (Cell.Group group in cellGroupsToCheck)
+            {
+                foreach (Sprite sprite in this.world.grid.GetSpritesFromSurroundingCells(sprite: this, groupName: group))
+                {
+                    if (this.colRect.Intersects(sprite.colRect) && sprite.id != this.id) collidingSprites.Add(sprite);
+                }
+            }
+
+            return collidingSprites;
         }
 
         public bool CheckForCollision(bool ignoreDensity = false)
@@ -555,16 +584,6 @@ namespace SonOfRobin
             rectangle2.Inflate(range, range);
 
             return rectangle1.Intersects(rectangle2);
-        }
-
-        public List<Sprite> GetCollidingSprites()
-        {
-            var collidingSprites = new List<Sprite>();
-
-            foreach (Sprite sprite in this.world.grid.GetSpritesFromSurroundingCells(sprite: this, groupName: Cell.Group.ColPlantGrowth))
-            { if (this.colRect.Intersects(sprite.colRect) && sprite.id != this.id) collidingSprites.Add(sprite); }
-
-            return collidingSprites;
         }
 
         private void UpdateRects()

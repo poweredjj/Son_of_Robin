@@ -484,6 +484,7 @@ namespace SonOfRobin
             prefsData["soundGlobalOn"] = Sound.globalOn;
             prefsData["soundGlobalVolume"] = Sound.globalVolume;
             prefsData["soundMenuOn"] = Sound.menuOn;
+            prefsData["textWindowAnimOn"] = Sound.textWindowAnimOn;
             prefsData["vSync"] = vSync;
 
 
@@ -550,6 +551,7 @@ namespace SonOfRobin
                     Sound.globalOn = (bool)prefsData["soundGlobalOn"];
                     Sound.globalVolume = (float)prefsData["soundGlobalVolume"];
                     Sound.menuOn = (bool)prefsData["soundMenuOn"];
+                    Sound.textWindowAnimOn = (bool)prefsData["textWindowAnimOn"];
                     vSync = (bool)prefsData["vSync"];
 
                     prefsLoaded = true;

@@ -5,7 +5,7 @@ namespace SonOfRobin
 {
     public class PieceSoundPack
     {
-        public enum Action { IsDestroyed, IsHit, IsOn, IsDropped, Cry, Die, Eat, Open, Close, StepGrass, StepWater, StepSand, StepRock, StepLava, SwimShallow, SwimDeep, HasAppeared, ArrowFly, ArrowHit, PlayerBowDraw, TurnOn, TurnOff, PlayerBowRelease, PlayerPulse, PlayerSnore, PlayerYawn, PlayerStomachGrowl, PlayerSprint, PlayerPant, Ambient }
+        public enum Action { IsDestroyed, IsHit, IsOn, IsDropped, Cry, Die, Eat, Open, Close, StepGrass, StepWater, StepSand, StepRock, StepLava, SwimShallow, SwimDeep, HasAppeared, ArrowFly, ArrowHit, PlayerBowDraw, TurnOn, TurnOff, PlayerBowRelease, PlayerPulse, PlayerSnore, PlayerYawn, PlayerStomachGrowl, PlayerSprint, PlayerPant, PlayerSpeak, Ambient }
 
         private readonly Dictionary<Action, Sound> soundDict;
         private BoardPiece boardPiece;
@@ -124,6 +124,11 @@ namespace SonOfRobin
         {
             if (!this.soundDict.ContainsKey(action)) return;
             this.soundDict[action].Stop();
+        }
+
+        public Sound GetSound(Action action)
+        {
+            return this.soundDict.ContainsKey(action) ? this.soundDict[action] : null;
         }
 
         public bool IsPlaying(Action action)
@@ -255,7 +260,8 @@ namespace SonOfRobin
                     break;
 
                 case BoardPiece.Category.Stone:
-                    soundNameList.Add(SoundData.Name.DestroyRock);
+                    soundNameList.Add(SoundData.Name.DestroyRock1);
+                    soundNameList.Add(SoundData.Name.DestroyRock2);
                     break;
 
                 case BoardPiece.Category.Metal:

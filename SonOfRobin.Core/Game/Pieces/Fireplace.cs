@@ -74,8 +74,8 @@ namespace SonOfRobin
             {
                 if (this.isOn == value)
                 {
-                    if (this.isOn) new TextWindow(text: "The fire has already started.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true);
-                    else new TextWindow(text: "It is not burning right now.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true);
+                    if (this.isOn) new TextWindow(text: "The fire has already started.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
+                    else new TextWindow(text: "It is not burning right now.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
 
                     return;
                 }
@@ -114,7 +114,7 @@ namespace SonOfRobin
             var storedFuel = this.StoredFuel;
             if (storedFuel.Count == 0)
             {
-                if (showMessage) new TextWindow(text: "I don't have wood or coal to burn.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true);
+                if (showMessage) new TextWindow(text: "I don't have wood or coal to burn.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
                 else MessageLog.AddMessage(msgType: MsgType.User, message: $"{Helpers.FirstCharToUpperCase(this.readableName)} has burned out.");
                 return false;
             }

@@ -31,7 +31,7 @@ namespace SonOfRobin
         DebugClear,
         DebugBreakAll,
         DebugBreakVisible,
-        DebugPlayManySounds
+        DebugClockAdvance,
     }
 
     public class VirtButton

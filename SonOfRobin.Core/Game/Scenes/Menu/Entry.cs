@@ -12,6 +12,7 @@ namespace SonOfRobin
         public readonly Menu menu;
         public readonly int index;
         public readonly string name;
+        protected TextWithImages textWithImages;
         public Color textColor;
         public Color rectColor;
         public Color outlineColor;
@@ -72,6 +73,7 @@ namespace SonOfRobin
         {
             this.menu = menu;
             this.name = name;
+            this.textWithImages = null;
             this.index = this.menu.entryList.Count;
             this.rebuildsMenu = rebuildsMenu;
             this.rebuildsMenuInstantScroll = rebuildsMenuInstantScroll;
@@ -116,7 +118,7 @@ namespace SonOfRobin
             return opacity;
         }
 
-        public virtual void Draw(bool active, string textOverride = null)
+        public virtual void Draw(bool active, string textOverride = null, List<Texture2D> imageList = null)
         {
             float opacity = this.GetOpacity(active: active);
             float opacityFade = this.OpacityFade;
@@ -124,22 +126,28 @@ namespace SonOfRobin
 
             if (active || opacityFade > 0) SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, rect, this.rectColor * opacityFade * 2);
 
-            string text = textOverride != null ? textOverride : this.DisplayedText;
-
             Helpers.DrawRectangleOutline(rect: this.Rect, color: this.outlineColor, borderWidth: 2);
 
-            Vector2 textSize = font.MeasureString(text);
+            string text = textOverride != null ? textOverride : this.DisplayedText;
+
+            if (this.textWithImages == null || this.textWithImages.TextOriginal != text || !this.textWithImages.ImageListEqual(imageList))
+            {
+                // MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{SonOfRobinGame.currentUpdate} new menu textWithImages '{text}'");
+                this.textWithImages = new TextWithImages(font: font, text: text, imageList: imageList);
+            }
+
+            this.textWithImages.Update();
 
             float maxTextHeight = rect.Height * 0.6f;
             float maxTextWidth = rect.Width * 0.85f;
 
-            float textScale = Math.Min(maxTextWidth / textSize.X, maxTextHeight / textSize.Y);
+            float textScale = Math.Min(maxTextWidth / this.textWithImages.textWidth, maxTextHeight / this.textWithImages.textHeight);
 
             Vector2 textPos = new Vector2(
-                rect.Center.X - (textSize.X / 2 * textScale),
-                rect.Center.Y - (textSize.Y / 2 * textScale));
+                rect.Center.X - (this.textWithImages.textWidth / 2 * textScale),
+                rect.Center.Y - (this.textWithImages.textHeight / 2 * textScale));
 
-            SonOfRobinGame.spriteBatch.DrawString(font, text, position: textPos, color: this.textColor * opacity * menu.viewParams.Opacity, origin: Vector2.Zero, scale: textScale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
+            this.textWithImages.Draw(position: textPos, color: this.textColor * opacity * menu.viewParams.Opacity, textScale: textScale, inflatePercent: 0.3f);
         }
 
         protected void UpdateHintWindow()

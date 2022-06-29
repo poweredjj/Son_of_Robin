@@ -254,5 +254,18 @@ namespace SonOfRobin
         {
             return objectList.GroupBy(x => x).Where(g => g.Count() > 1).Select(y => y.Key).ToList();
         }
+
+        public static List<List<T>> SplitList<T>(List<T> listToSplit, int maxCount)
+        {
+            if (maxCount < 1) throw new ArgumentException($"MaxCount ({maxCount}) cannot be less than 1.");
+
+            var list = new List<List<T>>();
+            for (int i = 0; i < listToSplit.Count; i += maxCount)
+            {
+                list.Add(listToSplit.GetRange(i, Math.Min(maxCount, listToSplit.Count - i)));
+            }
+
+            return list;
+        }
     }
 }

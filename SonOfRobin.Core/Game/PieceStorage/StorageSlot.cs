@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -120,21 +121,35 @@ namespace SonOfRobin
             return allPieces;
         }
 
-        public void Draw(Rectangle destRect, float opacity)
+        public void Draw(Rectangle destRect, float opacity, bool drawNewIcon)
         {
             if (this.hidden || this.IsEmpty) return;
             Sprite sprite = this.TopPiece.sprite;
+            BoardPiece piece = sprite.boardPiece;
+            World world = piece.world;
 
             sprite.UpdateAnimation();
             sprite.DrawAndKeepInRectBounds(destRect: destRect, opacity: opacity);
 
-            if (sprite.boardPiece.hitPoints < sprite.boardPiece.maxHitPoints)
+            if (piece.hitPoints < piece.maxHitPoints)
             {
-                new StatBar(label: "", value: (int)sprite.boardPiece.hitPoints, valueMax: (int)sprite.boardPiece.maxHitPoints, colorMin: new Color(255, 0, 0), colorMax: new Color(0, 255, 0),
+                new StatBar(label: "", value: (int)piece.hitPoints, valueMax: (int)piece.maxHitPoints, colorMin: new Color(255, 0, 0), colorMax: new Color(0, 255, 0),
                     posX: destRect.Center.X, posY: destRect.Y + (int)(destRect.Width * 0.8f), width: (int)(destRect.Width * 0.8f), height: (int)(destRect.Height * 0.1f));
 
                 StatBar.FinishThisBatch();
                 StatBar.DrawAll();
+            }
+
+            // drawing "new" icon
+            if (drawNewIcon && !world.identifiedPieces.Contains(piece.name))
+            {
+                int rectSize = (int)(destRect.Height * 0.6f);
+                int rectOffset = (int)(rectSize * 0.2f);
+
+                Rectangle newRect = new Rectangle(x: destRect.X - rectOffset, y: destRect.Y - rectOffset, width: (int)(destRect.Height * 0.6f), height: (int)(destRect.Height * 0.6f));
+                Texture2D newIconTexture = AnimData.framesForPkgs[AnimData.PkgName.NewIcon].texture;
+
+                Helpers.DrawTextureInsideRect(texture: newIconTexture, rectangle: newRect, color: Color.White * opacity, alignX: Helpers.AlignX.Left, alignY: Helpers.AlignY.Top);
             }
         }
         public void DestroyBrokenPieces()

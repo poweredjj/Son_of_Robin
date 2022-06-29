@@ -226,7 +226,9 @@ namespace SonOfRobin
             Parallel.ForEach(allY, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, y =>
             {
                 for (int x = 0; x < width; x++)
-                { array2D[x, y] = array1D[(y * width) + x]; }
+                {
+                    array2D[x, y] = array1D[(y * width) + x];
+                }
             });
 
             return array2D;

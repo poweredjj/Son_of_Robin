@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/sound/445109__breviceps__mud-splat.ogg</SourceFile>
+  <SourceFile>C:/Users/Marcin/Documents/GitHub/Son_of_Robin/SonOfRobin.Core/Content/sound/445109__breviceps__mud-splat.ogg</SourceFile>
   <SourceTime>2022-06-02T12:32:16.8499574+02:00</SourceTime>
-  <DestFile>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/bin/Android/SonOfRobin/sound/445109__breviceps__mud-splat.xnb</DestFile>
-  <DestTime>2022-06-04T08:58:18.1135674+02:00</DestTime>
+  <DestFile>C:/Users/Marcin/Documents/GitHub/Son_of_Robin/SonOfRobin.Core/Content/bin/Android/SonOfRobin/sound/445109__breviceps__mud-splat.xnb</DestFile>
+  <DestTime>2022-06-29T12:11:15.7475829+02:00</DestTime>
   <Importer>OggImporter</Importer>
   <ImporterTime>2020-08-10T18:17:54+02:00</ImporterTime>
   <Processor>SoundEffectProcessor</Processor>

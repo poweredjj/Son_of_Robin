@@ -53,7 +53,9 @@ namespace SonOfRobin
 
             BoardPiece boardPiece;
 
-            if (eventName == EventName.RestorePieceCreation || eventName == EventName.RestoreHint || eventName == EventName.FinishBuilding) boardPiece = null;
+            var eventsWithoutPieces = new List<EventName> { EventName.RestorePieceCreation, EventName.RestoreHint, EventName.FinishBuilding };
+
+            if (eventsWithoutPieces.Contains(eventName)) boardPiece = null;
             else
             {
                 if (!piecesByID.ContainsKey((string)eventData["piece_id"])) return;

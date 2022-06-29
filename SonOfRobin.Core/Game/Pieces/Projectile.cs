@@ -70,15 +70,15 @@ namespace SonOfRobin
             {
                 this.soundPack.Stop(PieceSoundPack.Action.ArrowFly);
 
-                List<Sprite> collidingSpritesList = this.sprite.GetCollidingSpritesAtPosition(positionToCheck: this.sprite.position + movement);
+                List<Sprite> collidingSpritesList = this.sprite.GetCollidingSpritesAtPosition(positionToCheck: this.sprite.position + movement, cellGroupsToCheck: new List<Cell.Group> { Cell.Group.ColMovement });
                 List<BoardPiece> collidingPiecesList = collidingSpritesList.Select(s => s.boardPiece).ToList();
 
                 var collidingAnimals = collidingPiecesList.Where(piece => piece.GetType() == typeof(Animal)).ToList();
-                BoardPiece closestPiece = FindClosestPiece(sprite: this.sprite, pieceList: collidingAnimals, offsetX: 0, offsetY: 0);
+                BoardPiece closestAnimal = FindClosestPiece(sprite: this.sprite, pieceList: collidingAnimals, offsetX: 0, offsetY: 0);
 
-                if (closestPiece?.GetType() == typeof(Animal))
+                if (closestAnimal != null)
                 {
-                    Animal animal = (Animal)closestPiece;
+                    Animal animal = (Animal)closestAnimal;
                     Tool.HitTarget(attacker: this.world.player, target: animal, hitPower: this.realHitPower, targetPushMultiplier: 0.06f, buffList: this.buffList);
 
                     if (!this.indestructible)

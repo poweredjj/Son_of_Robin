@@ -9,10 +9,31 @@ namespace SonOfRobin
 {
     public class Scheduler
     {
-        public enum TaskName { Empty, CreateNewWorld, CreateNewWorldNow, QuitGame, OpenMenuTemplate, OpenMainMenu, OpenConfirmationMenu, SaveGame, LoadGame, LoadGameNow, ReturnToMainMenu, SavePrefs, ProcessConfirmation, OpenCraftMenu, CraftOnPosition, Craft, Hit, CreateNewPiece, CreateDebugPieces, OpenContainer, DeleteObsoleteSaves, DropFruit, GetEaten, GetDrinked, ExecuteTaskWithDelay, AddWorldEvent, ShowTextWindow, OpenShelterMenu, SleepInsideShelter, SleepOutside, ForceWakeUp, TempoFastForward, TempoStop, TempoPlay, CameraTrackPiece, CameraTrackCoords, CameraSetZoom, ShowCookingProgress, RestoreHints, OpenMainMenuIfSpecialKeysArePressed, CheckForPieceHints, ShowHint, ExecuteTaskList, ExecuteTaskChain, ShowTutorialInMenu, ShowTutorialOnTheField, RemoveScene, ChangeSceneInputType, SetCineMode, AddTransition, SolidColorRemoveAll, SkipCinematics, DeleteTemplates, SetSpectatorMode, SwitchLightSource, ResetControls, SaveControls, CheckForNonSavedControls, RebuildMenu, RebuildAllMenus, CheckForIncorrectPieces, RestartWorld, ResetNewWorldSettings, PlaySound, PlaySoundByName, AllowPieceToBeHit, SetPlayerPointWalkTarget, ShowCraftStats }
+        public enum TaskName { Empty, CreateNewWorld, CreateNewWorldNow, QuitGame, OpenMenuTemplate, OpenMainMenu, OpenConfirmationMenu, SaveGame, LoadGame, LoadGameNow, ReturnToMainMenu, SavePrefs, ProcessConfirmation, OpenCraftMenu, CraftOnPosition, Craft, Hit, CreateNewPiece, CreateDebugPieces, OpenContainer, DeleteObsoleteSaves, DropFruit, GetEaten, GetDrinked, ExecuteTaskWithDelay, AddWorldEvent, ShowTextWindow, OpenShelterMenu, SleepInsideShelter, SleepOutside, ForceWakeUp, TempoFastForward, TempoStop, TempoPlay, CameraTrackPiece, CameraTrackCoords, CameraSetZoom, ShowCookingProgress, RestoreHints, OpenMainMenuIfSpecialKeysArePressed, CheckForPieceHints, ShowHint, ExecuteTaskChain, ShowTutorialInMenu, ShowTutorialOnTheField, RemoveScene, ChangeSceneInputType, SetCineMode, AddTransition, SolidColorRemoveAll, SkipCinematics, DeleteTemplates, SetSpectatorMode, SwitchLightSource, ResetControls, SaveControls, CheckForNonSavedControls, RebuildMenu, RebuildAllMenus, CheckForIncorrectPieces, RestartWorld, ResetNewWorldSettings, PlaySound, PlaySoundByName, AllowPieceToBeHit, SetPlayerPointWalkTarget, ShowCraftStats, StopSound, RemoveAllScenesOfType }
 
         private readonly static Dictionary<int, List<Task>> queue = new Dictionary<int, List<Task>>();
         private static int inputTurnedOffUntilFrame = 0;
+
+        public static bool HasTaskChainInQueue
+        {
+            get
+            {
+                foreach (List<Task> taskList in queue.Values)
+                {
+                    foreach (Task task in taskList)
+                    {
+                        if (task.taskName == TaskName.ExecuteTaskChain) return true;
+                        else if (task.taskName == TaskName.ShowTextWindow)
+                        {
+                            var textWindowData = (Dictionary<string, Object>)task.ExecuteHelper;
+                            if (textWindowData.ContainsKey("closingTask") && (TaskName)textWindowData["closingTask"] == TaskName.ExecuteTaskChain) return true;
+                        }
+                    }
+                }
+
+                return false;
+            }
+        }
 
         public static void ProcessQueue()
         {
@@ -48,6 +69,7 @@ namespace SonOfRobin
         {
             public readonly TaskName taskName;
             private Object executeHelper;
+            public Object ExecuteHelper { get { return executeHelper; } }
             private readonly int delay;
             private int frame;
             private readonly bool turnOffInputUntilExecution;
@@ -359,13 +381,13 @@ namespace SonOfRobin
                             {
                                 if (world.player.AreEnemiesNearby && !world.player.IsActiveFireplaceNearby)
                                 {
-                                    new TextWindow(text: "I can't cook with enemies nearby.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1, closingTask: TaskName.ShowTutorialOnTheField, closingTaskHelper: new Dictionary<string, Object> { { "tutorial", Tutorials.Type.KeepingAnimalsAway }, { "world", world }, { "ignoreDelay", true } });
+                                    new TextWindow(text: "I can't cook with enemies nearby.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1, closingTask: TaskName.ShowTutorialOnTheField, closingTaskHelper: new Dictionary<string, Object> { { "tutorial", Tutorials.Type.KeepingAnimalsAway }, { "world", world }, { "ignoreDelay", true } }, animSound: world.DialogueSound);
                                     return;
                                 }
 
                                 if (world.player.IsVeryTired)
                                 {
-                                    new TextWindow(text: "I'm too tired to cook...", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1);
+                                    new TextWindow(text: "I'm too tired to cook...", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1, animSound: world.DialogueSound);
                                     return;
                                 }
                             }
@@ -467,7 +489,7 @@ namespace SonOfRobin
 
                             if (player.fedLevel >= player.maxFedLevel * 0.95f)
                             {
-                                if (!highlightOnly) new TextWindow(text: "I am full.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1);
+                                if (!highlightOnly) new TextWindow(text: "I am full.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1, animSound: player.world.DialogueSound);
 
                                 return;
                             }
@@ -726,8 +748,11 @@ namespace SonOfRobin
                             int blockInputDuration = 0;
                             if (textWindowData.ContainsKey("blockInputDuration")) blockInputDuration = (int)textWindowData["blockInputDuration"];
 
-                            SoundData.Name sound = SoundData.Name.Empty;
-                            if (textWindowData.ContainsKey("sound")) sound = (SoundData.Name)textWindowData["sound"];
+                            SoundData.Name startingSound = SoundData.Name.Empty;
+                            if (textWindowData.ContainsKey("startingSound")) startingSound = (SoundData.Name)textWindowData["startingSound"];
+
+                            Sound animSound = null;
+                            if (textWindowData.ContainsKey("animSound")) animSound = (Sound)textWindowData["animSound"];
 
                             Color bgColor = Color.DarkBlue;
                             Color textColor = Color.White;
@@ -747,7 +772,7 @@ namespace SonOfRobin
                             int framesPerChar = 0;
                             if (textWindowData.ContainsKey("framesPerChar")) framesPerChar = (int)textWindowData["framesPerChar"];
 
-                            new TextWindow(text: text, imageList: imageList, useTransition: useTransition, useTransitionOpen: useTransitionOpen, useTransitionClose: useTransitionClose, bgColor: bgColor, textColor: textColor, framesPerChar: framesPerChar, animate: animate, checkForDuplicate: checkForDuplicate, closingTask: closingTask, closingTaskHelper: closingTaskHelper, blockInputDuration: blockInputDuration, blocksUpdatesBelow: blocksUpdatesBelow, startingSound: sound);
+                            new TextWindow(text: text, imageList: imageList, useTransition: useTransition, useTransitionOpen: useTransitionOpen, useTransitionClose: useTransitionClose, bgColor: bgColor, textColor: textColor, framesPerChar: framesPerChar, animate: animate, checkForDuplicate: checkForDuplicate, closingTask: closingTask, closingTaskHelper: closingTaskHelper, blockInputDuration: blockInputDuration, blocksUpdatesBelow: blocksUpdatesBelow, startingSound: startingSound, animSound: animSound);
                             return;
                         }
 
@@ -906,18 +931,6 @@ namespace SonOfRobin
                             return;
                         }
 
-                    case TaskName.ExecuteTaskList:
-                        {
-                            List<Object> taskList = (List<Object>)executeHelper;
-                            foreach (Object taskObject in taskList)
-                            {
-                                Task task = (Task)taskObject;
-                                task.Process();
-                            }
-
-                            return;
-                        }
-
                     case TaskName.ExecuteTaskChain:
                         {
                             List<Object> taskChain = (List<Object>)executeHelper;
@@ -969,10 +982,15 @@ namespace SonOfRobin
                             world = World.GetTopWorld();
                             if (world == null) return;
 
-                            List<PieceHint.Type> typesToCheckOnly = null;
-                            if (executeHelper != null) typesToCheckOnly = (List<PieceHint.Type>)executeHelper;
+                            // example executeHelper for this task
+                            //  var pieceHintData = new Dictionary<string, Object> { { "typesToCheckOnly", new List<PieceHint.Type> { PieceHint.Type.CrateStarting } }, { "fieldPiece", PieceTemplate.Name.Acorn }, { "newOwnedPiece", PieceTemplate.Name.Shell } };
 
-                            world.hintEngine.CheckForPieceHintToShow(forcedMode: true, ignoreInputActive: true, typesToCheckOnly: typesToCheckOnly);
+                            var pieceHintData = (Dictionary<string, Object>)executeHelper;
+                            List<PieceHint.Type> typesToCheckOnly = pieceHintData.ContainsKey("typesToCheckOnly") ? (List<PieceHint.Type>)pieceHintData["typesToCheckOnly"] : null;
+                            PieceTemplate.Name fieldPiece = pieceHintData.ContainsKey("fieldPiece") ? (PieceTemplate.Name)pieceHintData["fieldPiece"] : PieceTemplate.Name.Empty;
+                            PieceTemplate.Name newOwnedPiece = pieceHintData.ContainsKey("newOwnedPiece") ? (PieceTemplate.Name)pieceHintData["newOwnedPiece"] : PieceTemplate.Name.Empty;
+
+                            world.hintEngine.CheckForPieceHintToShow(ignoreInputActive: true, typesToCheckOnly: typesToCheckOnly, fieldPieceNameToCheck: fieldPiece, newOwnedPieceNameToCheck: newOwnedPiece);
 
                             return;
                         }
@@ -1116,6 +1134,7 @@ namespace SonOfRobin
                             if (firstRun)
                             {
                                 var templatePaths = Directory.GetDirectories(SonOfRobinGame.worldTemplatesPath);
+                                var existingWorlds = Scene.GetAllScenesOfType(typeof(World)).Select(worldScene => (World)worldScene).ToList();
                                 var correctSaves = SaveHeaderManager.CorrectSaves;
                                 var pathsToKeep = new List<string>();
 
@@ -1128,6 +1147,12 @@ namespace SonOfRobin
                                     saveHeader.seed == gridTemplate.seed &&
                                     saveHeader.width == gridTemplate.width &&
                                     saveHeader.height == gridTemplate.height
+                                    ).ToList().Count > 0) pathsToKeep.Add(templatePath);
+
+                                    if (existingWorlds.Where(currentWorld =>
+                                    currentWorld.seed == gridTemplate.seed &&
+                                    currentWorld.width == gridTemplate.width &&
+                                    currentWorld.height == gridTemplate.height
                                     ).ToList().Count > 0) pathsToKeep.Add(templatePath);
                                 }
 
@@ -1301,6 +1326,24 @@ namespace SonOfRobin
 
                             if (showIngredients) world.craftStats.DisplayUsedIngredientsSummary();
                             else world.craftStats.DisplayCraftedPiecesSummary();
+
+                            return;
+                        }
+
+                    case TaskName.StopSound:
+                        {
+                            Sound sound = (Sound)executeHelper;
+                            sound.Stop(skipFade: true);
+
+                            // MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{sound.Id} {sound.SoundNameList[0]} fade out ended - stopping.");
+
+                            return;
+                        }
+
+                    case TaskName.RemoveAllScenesOfType:
+                        {
+                            Type type = (Type)executeHelper;
+                            Scene.RemoveAllScenesOfType(type);
 
                             return;
                         }

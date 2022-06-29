@@ -6,7 +6,7 @@ namespace SonOfRobin
 {
     public class Tutorials
     {
-        public enum Type { BreakThing, Equip, BuildWorkshop, GetWood, Mine, Interact, PickUp, Hit, Craft, KeepingAnimalsAway, ShootProjectile, Cook, ShakeFruit, AnimalAttacking, DangerZone, Torch, Fireplace }
+        public enum Type { BreakThing, Equip, BuildWorkshop, GetWood, Mine, Interact, PickUp, Hit, Craft, KeepingAnimalsAway, ShootProjectile, Cook, ShakeFruit, AnimalAttacking, DangerZone, Torch, Fireplace, TooDarkToReadMap }
 
         private static readonly HintMessage.BoxType messageHeaderType = HintMessage.BoxType.BlueBox;
         private static readonly HintMessage.BoxType messageTextType = HintMessage.BoxType.LightBlueBox;
@@ -47,7 +47,7 @@ namespace SonOfRobin
             {
                 this.type = type;
                 this.name = name;
-                this.title = new HintMessage(text: title, boxType: messageHeaderType, blockInput: false, sound: SoundData.Name.Notification2);
+                this.title = new HintMessage(text: title, boxType: messageHeaderType, blockInput: false, startingSound: SoundData.Name.Notification2);
                 this.messages = messages;
                 this.isShownInTutorialsMenu = isShownInTutorialsMenu;
 
@@ -69,6 +69,8 @@ namespace SonOfRobin
 
             if (ignoreIfShown && hintEngine.shownTutorials.Contains(type)) return;
 
+            if (Scheduler.HasTaskChainInQueue) return;
+
             if (!ignoreDelay)
             {
                 if (!hintEngine.WaitFrameReached) return;
@@ -78,7 +80,7 @@ namespace SonOfRobin
             var messageList = tutorials[type].MessagesToDisplay;
             var taskChain = HintMessage.ConvertToTasks(messageList: messageList);
 
-            taskChain.Insert(0, new Scheduler.Task(taskName: Scheduler.TaskName.SetCineMode, delay: 1, executeHelper: true, storeForLaterUse: true));
+            taskChain.Insert(0, new Scheduler.Task(taskName: Scheduler.TaskName.SetCineMode, delay: 0, executeHelper: true, storeForLaterUse: true));
             taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetCineMode, delay: 0, executeHelper: false, storeForLaterUse: true));
 
             new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteTaskChain, turnOffInputUntilExecution: true, executeHelper: taskChain);
@@ -155,6 +157,12 @@ namespace SonOfRobin
                 new HintMessage(text: "You can add or remove | | | fuel at any time.",imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.WoodLogRegular), PieceInfo.GetTexture(PieceTemplate.Name.WoodPlank), PieceInfo.GetTexture(PieceTemplate.Name.Coal) }, boxType: messageTextType),
                 new HintMessage(text: "Use | to put out the flame instantly.", imageList: new List<Texture2D> {AnimData.framesForPkgs[AnimData.PkgName.WaterDrop].texture}, boxType: messageTextType)});
 
+            new Tutorial(type: Type.TooDarkToReadMap, name: "reading map at night", title: "Reading map at night.",
+                messages: new List<HintMessage> {
+                new HintMessage(text: "The | map can't be read at night.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Map) }, boxType: messageTextType),
+                new HintMessage(text: "You must use a | torch\nor be near to light source |.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.TorchBig), AnimData.framesForPkgs[AnimData.PkgName.Flame].texture }, boxType: messageTextType)
+                });
+
             new Tutorial(type: Type.Equip, name: "using equipment", title: "Using equipment.",
                  messages: new List<HintMessage> {
                      !Preferences.ShowTouchTips ?
@@ -212,7 +220,14 @@ namespace SonOfRobin
             else
             {
                 if (Input.tipsTypeToShow == Input.TipsTypeToShow.Gamepad) shootingMessage = new HintMessage(text: "3. Tilt the | in desired direction.", imageList: new List<Texture2D> { InputMapper.GetTexture(InputMapper.Action.WorldCameraMove) }, boxType: messageTextType);
-                else shootingMessage = new HintMessage(text: "3. Use | to select direction.", imageList: new List<Texture2D> { InputMapper.GetTexture(InputMapper.Action.WorldWalk) }, boxType: messageTextType);
+                else
+                {
+                    var imageList = InputMapper.GetTextures(InputMapper.Action.WorldWalk);
+                    string markers = "";
+                    for (int i = 0; i < imageList.Count; i++) markers += "|";
+
+                    shootingMessage = new HintMessage(text: $"3. Use {markers} to select direction.", imageList: imageList, boxType: messageTextType);
+                }
             }
 
             new Tutorial(type: Type.ShootProjectile, name: "using projectile weapon", title: "Using a projectile weapon.",

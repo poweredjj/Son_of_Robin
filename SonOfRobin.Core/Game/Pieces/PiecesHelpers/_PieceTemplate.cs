@@ -9,6 +9,8 @@ namespace SonOfRobin
     {
         public enum Name
         {
+            Empty, // to be used instead of null
+
             Player,
             PlayerGhost,
 
@@ -282,8 +284,9 @@ namespace SonOfRobin
                             soundPack.AddAction(action: PieceSoundPack.Action.Die, sound: new Sound(name: SoundData.Name.DeathPlayerFemale));
                         }
 
-                        soundPack.AddAction(action: PieceSoundPack.Action.PlayerPulse, sound: new Sound(name: SoundData.Name.Pulse, isLooped: true, ignore3DAlways: true, volume: 0.7f));
+                        soundPack.AddAction(action: PieceSoundPack.Action.PlayerSpeak, sound: new Sound(name: SoundData.Name.Beep, cooldown: 4, volume: 0.12f, pitchChange: female ? 0.5f : -0.5f, maxPitchVariation: 0.07f, ignore3DAlways: true));
 
+                        soundPack.AddAction(action: PieceSoundPack.Action.PlayerPulse, sound: new Sound(name: SoundData.Name.Pulse, isLooped: true, ignore3DAlways: true, volume: 0.7f));
                         return new Player(name: templateName, world: world, id: id, animPackage: female ? AnimData.PkgName.PlayerFemale : AnimData.PkgName.PlayerMale, speed: 3, allowedFields: allowedFields, minDistance: 0, maxDistance: 65535, generation: generation, invWidth: 4, invHeight: 2, toolbarWidth: 3, toolbarHeight: 1, readableName: "player", description: "This is you.", yield: yield, activeState: BoardPiece.State.PlayerControlledWalking, lightEngine: new LightEngine(size: 300, opacity: 0.9f, colorActive: true, color: Color.Orange * 0.2f, isActive: false, castShadows: true), soundPack: soundPack, female: female);
                     }
 
@@ -766,6 +769,12 @@ namespace SonOfRobin
                         return new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Attack, minDistance: 0, maxDistance: 3, destructionDelay: -1, allowedFields: allowedFields, generation: generation, readableName: "attack", description: "A visual effect.", activeState: BoardPiece.State.Empty, serialize: false);
                     }
 
+                case Name.Empty:
+                    {
+                        var allowedFields = new AllowedFields();
+                        return new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.NoAnim, minDistance: 0, maxDistance: 3, destructionDelay: 0, allowedFields: allowedFields, generation: generation, readableName: "empty", description: "Should not be used.", activeState: BoardPiece.State.Empty, serialize: false);
+                    }
+
                 case Name.Miss:
                     {
                         var allowedFields = new AllowedFields();
@@ -1108,6 +1117,7 @@ namespace SonOfRobin
 
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsOn, sound: new Sound(name: SoundData.Name.FryingPan, isLooped: true));
+                        soundPack.AddAction(action: PieceSoundPack.Action.Open, sound: new Sound(name: SoundData.Name.StoneMove, ignore3DAlways: true));
 
                         var hotPlate = new Cooker(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HotPlate, allowedFields: allowedFields, category: BoardPiece.Category.Stone, floatsOnWater: false, minDistance: 0, maxDistance: 100, maxMassBySize: null, generation: generation, maxHitPoints: 20, foodMassMultiplier: 1.1f, readableName: "hot plate", description: "For cooking.", ingredientSpace: 1, boosterSpace: 1, soundPack: soundPack);
 
@@ -1122,6 +1132,7 @@ namespace SonOfRobin
 
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsOn, sound: new Sound(name: SoundData.Name.Cooking, isLooped: true));
+                        soundPack.AddAction(action: PieceSoundPack.Action.Open, sound: new Sound(name: SoundData.Name.PotLid, ignore3DAlways: true));
 
                         var cookingPot = new Cooker(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CookingPot, allowedFields: allowedFields, category: BoardPiece.Category.Metal, floatsOnWater: false, minDistance: 0, maxDistance: 100, maxMassBySize: null, generation: generation, maxHitPoints: 30, foodMassMultiplier: 1.4f, readableName: "cooking pot", description: "For cooking.", ingredientSpace: 3, boosterSpace: 3, soundPack: soundPack);
 
@@ -2201,7 +2212,7 @@ namespace SonOfRobin
                         var allowedFields = new AllowedFields(rangeDict: new Dictionary<TerrainName, AllowedRange>() {
                             { TerrainName.Height, new AllowedRange(min: Terrain.waterLevelMax, max: Terrain.volcanoEdgeMin) }});
 
-                        SleepEngine sleepEngine = new SleepEngine(minFedPercent: 0.2f, fatigueRegen: 0.28f, hitPointsChange: 0.05f, canBeAttacked: false);
+                        SleepEngine sleepEngine = new SleepEngine(minFedPercent: 0.2f, fatigueRegen: 0.56f, hitPointsChange: 0.05f, islandClockMultiplier: 3, canBeAttacked: false);
 
                         return new Shelter(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.TentSmall, allowedFields: allowedFields, category: BoardPiece.Category.Wood,
                             floatsOnWater: false, minDistance: 0, maxDistance: 500, maxMassBySize: null, maxHitPoints: 120, sleepEngine: sleepEngine, readableName: "small tent", description: "Basic shelter for sleeping.\nProtects against enemies.");
@@ -2212,7 +2223,7 @@ namespace SonOfRobin
                         var allowedFields = new AllowedFields(rangeDict: new Dictionary<TerrainName, AllowedRange>() {
                             { TerrainName.Height, new AllowedRange(min: Terrain.waterLevelMax, max: Terrain.volcanoEdgeMin) }});
 
-                        SleepEngine sleepEngine = new SleepEngine(minFedPercent: 0.3f, fatigueRegen: 0.4f, hitPointsChange: 0.1f, canBeAttacked: false);
+                        SleepEngine sleepEngine = new SleepEngine(minFedPercent: 0.3f, fatigueRegen: 0.8f, hitPointsChange: 0.1f, islandClockMultiplier: 4, canBeAttacked: false);
                         var buffList = new List<BuffEngine.Buff> {
                             new BuffEngine.Buff(type: BuffEngine.BuffType.MaxHP, value: 100f, sleepFrames: 1 * 60 * 60, autoRemoveDelay: 5 * 60 * 60, increaseIDAtEveryUse: true)};
 
@@ -2225,7 +2236,7 @@ namespace SonOfRobin
                         var allowedFields = new AllowedFields(rangeDict: new Dictionary<TerrainName, AllowedRange>() {
                             { TerrainName.Height, new AllowedRange(min: Terrain.waterLevelMax, max: Terrain.volcanoEdgeMin) }});
 
-                        SleepEngine sleepEngine = new SleepEngine(minFedPercent: 0.5f, fatigueRegen: 0.8f, hitPointsChange: 0.25f, canBeAttacked: false);
+                        SleepEngine sleepEngine = new SleepEngine(minFedPercent: 0.5f, fatigueRegen: 1.3f, hitPointsChange: 0.25f, islandClockMultiplier: 4, canBeAttacked: false);
 
                         var buffList = new List<BuffEngine.Buff> {
                             new BuffEngine.Buff(type: BuffEngine.BuffType.MaxHP, value: 100f,sleepFrames: 1 * 60 * 60, autoRemoveDelay: 5 * 60 * 60, increaseIDAtEveryUse: true),
@@ -2363,7 +2374,7 @@ namespace SonOfRobin
                         AllowedFields allowedFields = new AllowedFields(rangeNameList: new List<AllowedFields.RangeName>() { AllowedFields.RangeName.GroundAll });
                         AllowedDensity allowedDensity = new AllowedDensity(radious: 170, maxNoOfPiecesSameName: 1);
 
-                        Sound sound = new Sound(name: SoundData.Name.SeaWind, maxPitchVariation: 0.5f, volume: 0.6f, isLooped: true);
+                        Sound sound = new Sound(name: SoundData.Name.SeaWind, maxPitchVariation: 0.5f, volume: 0.6f, isLooped: true, volumeFadeFrames: 60);
 
                         AmbientSound ambientSound = new AmbientSound(name: templateName, world: world, id: id, allowedFields: allowedFields, allowedDensity: allowedDensity, readableName: "ambient sea wind sound", description: "Ambient sound for sea wind.", sound: sound, playDelay: 0, visible: Preferences.debugShowSounds, placeAtBeachEdge: true);
 
@@ -2380,7 +2391,7 @@ namespace SonOfRobin
 
                         AllowedDensity allowedDensity = new AllowedDensity(radious: 170, maxNoOfPiecesSameName: 0);
 
-                        Sound sound = new Sound(name: SoundData.Name.DesertWind, maxPitchVariation: 0.5f, volume: 0.2f, isLooped: true);
+                        Sound sound = new Sound(name: SoundData.Name.DesertWind, maxPitchVariation: 0.5f, volume: 0.2f, isLooped: true, volumeFadeFrames: 60);
 
                         AmbientSound ambientSound = new AmbientSound(name: templateName, world: world, id: id, allowedFields: allowedFields, allowedDensity: allowedDensity, readableName: "ambient desert wind sound", description: "Ambient sound for desert wind.", sound: sound, playDelay: 0, visible: Preferences.debugShowSounds);
 
@@ -2411,7 +2422,7 @@ namespace SonOfRobin
 
                         AllowedDensity allowedDensity = new AllowedDensity(radious: 200, maxNoOfPiecesSameClass: 0);
 
-                        Sound sound = new Sound(name: SoundData.Name.NightCrickets, maxPitchVariation: 0.3f, volume: 0.2f, isLooped: true);
+                        Sound sound = new Sound(name: SoundData.Name.NightCrickets, maxPitchVariation: 0.3f, volume: 0.2f, isLooped: true, volumeFadeFrames: 60);
 
                         AmbientSound ambientSound = new AmbientSound(name: templateName, world: world, id: id, allowedFields: allowedFields, allowedDensity: allowedDensity, readableName: "ambient night crickets sound", description: "Ambient sound for crickets at night.", sound: sound, playDelay: 0, visible: Preferences.debugShowSounds, partOfDayList: new List<IslandClock.PartOfDay> { IslandClock.PartOfDay.Night });
 
@@ -2428,7 +2439,7 @@ namespace SonOfRobin
 
                         AllowedDensity allowedDensity = new AllowedDensity(radious: 200, maxNoOfPiecesSameClass: 0);
 
-                        Sound sound = new Sound(nameList: new List<SoundData.Name> { SoundData.Name.Cicadas1, SoundData.Name.Cicadas2, SoundData.Name.Cicadas3 }, maxPitchVariation: 0.3f, volume: 0.7f, isLooped: true);
+                        Sound sound = new Sound(nameList: new List<SoundData.Name> { SoundData.Name.Cicadas1, SoundData.Name.Cicadas2, SoundData.Name.Cicadas3 }, maxPitchVariation: 0.3f, volume: 0.7f, isLooped: true, volumeFadeFrames: 60);
 
                         AmbientSound ambientSound = new AmbientSound(name: templateName, world: world, id: id, allowedFields: allowedFields, allowedDensity: allowedDensity, readableName: "ambient noon cicadas sound", description: "Ambient sound for cicadas at noon.", sound: sound, playDelay: 0, visible: Preferences.debugShowSounds, partOfDayList: new List<IslandClock.PartOfDay> { IslandClock.PartOfDay.Noon });
 

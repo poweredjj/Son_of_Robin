@@ -7,6 +7,7 @@ namespace SonOfRobin
     public class LightEngine
     {
         private bool isActive;
+        public bool IsActive { get { return isActive; } }
         private Sprite sprite;
         private int width;
         private int height;

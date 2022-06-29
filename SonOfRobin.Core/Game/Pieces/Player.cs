@@ -25,7 +25,6 @@ namespace SonOfRobin
         public Vector2 pointWalkTarget;
         public Craft.Recipe recipeToBuild;
         public BoardPiece simulatedPieceToBuild;
-
         public override bool ShowStatBars { get { return true; } }
 
         private bool ShootingModeInputPressed
@@ -223,8 +222,26 @@ namespace SonOfRobin
             this.fatigue = 0;
             this.sleepEngine = SleepEngine.OutdoorSleepDry; // to be changed later
 
+            var allowedToolbarPieces = new List<PieceTemplate.Name>();
+
+            if (PieceInfo.HasBeenInitialized)
+            {
+
+                List<Type> typeList = new List<Type> { typeof(Tool), typeof(Fruit), typeof(Tool), typeof(PortableLight), typeof(Projectile) };
+
+                foreach (PieceTemplate.Name pieceName in PieceTemplate.allNames)
+                {
+                    PieceInfo.Info pieceInfo = PieceInfo.GetInfo(pieceName);
+
+                    if (pieceInfo.toolbarTask == Scheduler.TaskName.GetEaten ||
+                        pieceInfo.toolbarTask == Scheduler.TaskName.GetDrinked ||
+                        typeList.Contains(pieceInfo.type)) allowedToolbarPieces.Add(pieceName);
+                }
+            }
+            else allowedToolbarPieces.Add(PieceTemplate.Name.Hand);
+
             this.pieceStorage = new PieceStorage(width: invWidth, height: invHeight, world: this.world, storagePiece: this, storageType: PieceStorage.StorageType.Inventory);
-            this.toolStorage = new PieceStorage(width: toolbarWidth, height: toolbarHeight, world: this.world, storagePiece: this, storageType: PieceStorage.StorageType.Tools);
+            this.toolStorage = new PieceStorage(width: toolbarWidth, height: toolbarHeight, world: this.world, storagePiece: this, storageType: PieceStorage.StorageType.Tools, allowedPieceNames: allowedToolbarPieces);
             this.equipStorage = new PieceStorage(width: 2, height: 2, world: this.world, storagePiece: this, storageType: PieceStorage.StorageType.Equip);
             this.ConfigureEquip();
             this.shootingAngle = -100; // -100 == no real value
@@ -693,6 +710,7 @@ namespace SonOfRobin
             this.sleepingInsideShelter = !sleepEngine.canBeAttacked;
             this.sleepMode = SleepMode.Sleep;
             this.sleepEngine = sleepEngine;
+            this.world.islandClock.multiplier = this.sleepEngine.islandClockMultiplier;
             this.buffList.AddRange(wakeUpBuffs);
 
             if (this.visualAid != null) this.visualAid.Destroy();
@@ -709,7 +727,7 @@ namespace SonOfRobin
             blackOverlay.transManager.AddTransition(new Transition(transManager: blackOverlay.transManager, outTrans: false, baseParamName: "Opacity", targetVal: 0f, duration: 20));
             this.world.solidColorManager.Add(blackOverlay);
 
-            new Scheduler.Task(taskName: Scheduler.TaskName.TempoFastForward, delay: 22, executeHelper: 20, turnOffInputUntilExecution: true);
+            new Scheduler.Task(taskName: Scheduler.TaskName.TempoFastForward, delay: 22, executeHelper: 8, turnOffInputUntilExecution: true);
 
             MessageLog.AddMessage(msgType: MsgType.User, message: "Going to sleep.");
         }
@@ -731,6 +749,7 @@ namespace SonOfRobin
             if (this.visualAid != null) this.visualAid.Destroy();
             this.visualAid = null;
 
+            this.world.islandClock.multiplier = 1;
             this.activeState = State.PlayerControlledWalking;
             this.world.touchLayout = TouchLayout.WorldMain;
             this.world.tipsLayout = ControlTips.TipsLayout.WorldMain;
@@ -782,13 +801,15 @@ namespace SonOfRobin
             bool piecePickedUp = this.PickUpPiece(piece: closestPiece);
             if (piecePickedUp)
             {
+                Sound.QuickPlay(name: SoundData.Name.PickUpItem, volume: 0.6f);
+
                 closestPiece.sprite.rotation = 0f;
                 MessageLog.AddMessage(msgType: MsgType.User, message: $"Picked up {closestPiece.readableName}.");
-                this.world.hintEngine.CheckForPieceHintToShow(forcedMode: true);
+                this.world.hintEngine.CheckForPieceHintToShow(newOwnedPieceNameToCheck: closestPiece.name);
             }
             else
             {
-                new TextWindow(text: "My inventory is full.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1, closingTask: Scheduler.TaskName.ShowHint, closingTaskHelper: HintEngine.Type.SmallInventory);
+                new TextWindow(text: "My inventory is full.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1, closingTask: Scheduler.TaskName.ShowHint, closingTaskHelper: HintEngine.Type.SmallInventory, animSound: this.world.DialogueSound);
 
                 MessageLog.AddMessage(msgType: MsgType.User, message: $"Inventory full - cannot pick up {closestPiece.readableName}.");
             }
@@ -796,11 +817,8 @@ namespace SonOfRobin
 
         public bool PickUpPiece(BoardPiece piece)
         {
-            bool pieceCollected = false;
-
-            if (piece.GetType() == typeof(Tool) || piece.GetType() == typeof(PortableLight)) pieceCollected = this.toolStorage.AddPiece(piece);
+            bool pieceCollected = this.toolStorage.AddPiece(piece);
             if (!pieceCollected) pieceCollected = this.pieceStorage.AddPiece(piece);
-            if (!pieceCollected) pieceCollected = this.toolStorage.AddPiece(piece);
 
             return pieceCollected;
         }
@@ -822,7 +840,7 @@ namespace SonOfRobin
 
                 if (activeTool.CheckForAmmo(removePiece: false) == null)
                 {
-                    new TextWindow(text: $"No ammo for {activeToolbarPiece.readableName}.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1);
+                    new TextWindow(text: $"No ammo for {activeToolbarPiece.readableName}.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1, animSound: this.world.DialogueSound);
 
                     return false;
                 }

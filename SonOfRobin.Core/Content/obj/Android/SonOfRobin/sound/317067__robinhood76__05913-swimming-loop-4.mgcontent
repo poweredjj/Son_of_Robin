@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/sound/317067__robinhood76__05913-swimming-loop-4.ogg</SourceFile>
+  <SourceFile>C:/Users/Marcin/Documents/GitHub/Son_of_Robin/SonOfRobin.Core/Content/sound/317067__robinhood76__05913-swimming-loop-4.ogg</SourceFile>
   <SourceTime>2022-05-30T11:45:42.3757893+02:00</SourceTime>
-  <DestFile>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/bin/Android/SonOfRobin/sound/317067__robinhood76__05913-swimming-loop-4.xnb</DestFile>
-  <DestTime>2022-06-04T08:58:12.1365508+02:00</DestTime>
+  <DestFile>C:/Users/Marcin/Documents/GitHub/Son_of_Robin/SonOfRobin.Core/Content/bin/Android/SonOfRobin/sound/317067__robinhood76__05913-swimming-loop-4.xnb</DestFile>
+  <DestTime>2022-06-29T12:11:06.4662747+02:00</DestTime>
   <Importer>OggImporter</Importer>
   <ImporterTime>2020-08-10T18:17:54+02:00</ImporterTime>
   <Processor>SoundEffectProcessor</Processor>

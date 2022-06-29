@@ -48,15 +48,6 @@ namespace SonOfRobin
             this.waitUntilFrame = (int)hintsData["waitUntilFrame"];
         }
 
-        public bool GeneralHintHasBeenShown(Type type)
-        { return shownGeneralHints.Contains(type); }
-
-        public bool PieceHintHasBeenShown(PieceHint.Type name)
-        { return shownPieceHints.Contains(name); }
-
-        public bool TutorialHasBeenShown(Tutorials.Type type)
-        { return shownTutorials.Contains(type); }
-
         public void UpdateWaitFrame()
         { this.waitUntilFrame = this.world.currentUpdate + hintDelay; }
 
@@ -70,7 +61,7 @@ namespace SonOfRobin
                 if (!this.WaitFrameReached) return false;
             }
 
-            if (this.shownGeneralHints.Contains(type)) return false;
+            if (this.shownGeneralHints.Contains(type) || Scheduler.HasTaskChainInQueue) return false;
 
             this.UpdateWaitFrame();
 
@@ -289,12 +280,15 @@ namespace SonOfRobin
                         taskChain.Add(new HintMessage(text: "What happened to the ship?", boxType: dialogue, delay: 0).ConvertToTask());
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraTrackPiece, delay: 60, executeHelper: world.player, storeForLaterUse: true));
                         taskChain.Add(new HintMessage(text: "I can't see it anywhere...", boxType: dialogue, delay: 0).ConvertToTask());
+
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetPlayerPointWalkTarget, delay: 40, executeHelper: new Dictionary<Player, Vector2> { { this.world.player, player.sprite.position } }, storeForLaterUse: true));
+
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetZoom, delay: 60, executeHelper: new Dictionary<string, Object> { { "zoom", 0.55f }, { "zoomSpeedMultiplier", 3f } }, storeForLaterUse: true));
 
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.PlaySoundByName, delay: 0, executeHelper: SoundData.Name.DunDunDun, storeForLaterUse: true));
                         taskChain.Add(new HintMessage(text: "I guess I'm stranded | here.", imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.PalmTree].texture }, boxType: dialogue, delay: 0).ConvertToTask());
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetCineMode, delay: 0, executeHelper: false, storeForLaterUse: true));
-                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CheckForPieceHints, delay: 100, executeHelper: new List<PieceHint.Type> { PieceHint.Type.CrateStarting }, storeForLaterUse: true));
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CheckForPieceHints, delay: 10, executeHelper: new Dictionary<string, Object> { { "typesToCheckOnly", new List<PieceHint.Type> { PieceHint.Type.CrateStarting } } }, storeForLaterUse: true));
 
                         new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteTaskChain, turnOffInputUntilExecution: true, executeHelper: taskChain);
 
@@ -347,12 +341,12 @@ namespace SonOfRobin
             return true;
         }
 
-        public void CheckForPieceHintToShow(bool forcedMode = false, bool ignoreInputActive = false, List<PieceHint.Type> typesToCheckOnly = null)
+        public void CheckForPieceHintToShow(bool ignoreInputActive = false, List<PieceHint.Type> typesToCheckOnly = null, PieceTemplate.Name fieldPieceNameToCheck = PieceTemplate.Name.Empty, PieceTemplate.Name newOwnedPieceNameToCheck = PieceTemplate.Name.Empty)
         {
             if (!Preferences.showHints || this.world.player.activeState != BoardPiece.State.PlayerControlledWalking || Scene.GetTopSceneOfType(typeof(TextWindow)) != null) return;
-            if (!forcedMode && !this.WaitFrameReached) return;
+            if (!this.WaitFrameReached && typesToCheckOnly == null && fieldPieceNameToCheck == PieceTemplate.Name.Empty && newOwnedPieceNameToCheck == PieceTemplate.Name.Empty) return;
 
-            bool hintShown = PieceHint.CheckForHintToShow(hintEngine: this, player: world.player, forcedMode: forcedMode, ignoreInputActive: ignoreInputActive, typesToCheckOnly: typesToCheckOnly);
+            bool hintShown = PieceHint.CheckForHintToShow(hintEngine: this, player: world.player, ignoreInputActive: ignoreInputActive, typesToCheckOnly: typesToCheckOnly, fieldPieceNameToCheck: fieldPieceNameToCheck, newOwnedPieceNameToCheck: newOwnedPieceNameToCheck);
             if (hintShown) this.UpdateWaitFrame();
         }
 

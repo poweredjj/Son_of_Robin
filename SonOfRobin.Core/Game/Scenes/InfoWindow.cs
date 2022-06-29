@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SonOfRobin
 {
@@ -11,45 +12,52 @@ namespace SonOfRobin
         {
             public enum Justify { Left, Center, Right };
 
+            public int Width { get { return (int)(this.textWithImages.textWidth * this.scale); } }
+            public int Height { get { return (int)(this.textWithImages.textHeight * this.scale); } }
+
             public readonly Color color;
-            public readonly string text;
+            public readonly TextWithImages textWithImages;
             public readonly float scale;
-            public readonly int sizeX;
-            public readonly int sizeY;
-            public readonly AnimFrame imageFrame;
             public readonly int progressCurrentVal;
             public readonly int progressMaxVal;
             public readonly bool progressBarMode;
             public readonly Justify justify;
-            public TextEntry(Color color, float scale = 1f, AnimFrame frame = null, string text = "", int progressCurrentVal = -1, int progressMaxVal = -1, Justify justify = Justify.Left)
+            public TextEntry(Color color, float scale = 1f, string text = "", int progressCurrentVal = -1, int progressMaxVal = -1, Justify justify = Justify.Left, List<Texture2D> imageList = null, bool animate = false, int framesPerChar = 0, int charsPerFrame = 1)
             {
                 this.progressBarMode = progressCurrentVal > -1 && progressMaxVal > -1;
-                this.text = this.progressBarMode ? "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" : text;
+
+                if (this.progressBarMode) text = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
+
+                this.textWithImages = new TextWithImages(font: font, text: text, imageList: imageList, animate: animate, framesPerChar: framesPerChar, charsPerFrame: charsPerFrame);
+
                 this.justify = justify;
                 this.color = color;
                 this.scale = scale;
-                this.imageFrame = frame;
                 this.progressCurrentVal = progressCurrentVal;
                 this.progressMaxVal = progressMaxVal;
 
                 if (this.progressCurrentVal > this.progressMaxVal) throw new ArgumentException($"Progress bar current value ({this.progressCurrentVal}) is greater than maximum value ({this.progressMaxVal}).");
+            }
 
-                Vector2 entrySize = font.MeasureString(this.text) * this.scale;
+            public void Update()
+            {
+                this.textWithImages.Update();
+            }
 
-                this.sizeX = (int)entrySize.X;
-                this.sizeY = (int)entrySize.Y;
+            public void ResetAnim()
+            {
+                this.textWithImages.ResetAnim();
             }
 
             private bool Equals(TextEntry entryToCompare)
             {
-                return entryToCompare.text == this.text &&
-                    entryToCompare.color == this.color &&
-                    entryToCompare.scale == this.scale &&
-                    entryToCompare.imageFrame == this.imageFrame &&
-                    entryToCompare.progressBarMode == this.progressBarMode &&
-                    entryToCompare.progressCurrentVal == this.progressCurrentVal &&
-                    entryToCompare.progressMaxVal == this.progressMaxVal &&
-                    entryToCompare.justify == this.justify;
+                return entryToCompare.color == this.color &&
+                       entryToCompare.scale == this.scale &&
+                       entryToCompare.textWithImages.Equals(this.textWithImages) &&
+                       entryToCompare.progressBarMode == this.progressBarMode &&
+                       entryToCompare.progressCurrentVal == this.progressCurrentVal &&
+                       entryToCompare.progressMaxVal == this.progressMaxVal &&
+                       entryToCompare.justify == this.justify;
             }
 
             public static bool CompareTwoLists(List<TextEntry> list1, List<TextEntry> list2)
@@ -66,35 +74,61 @@ namespace SonOfRobin
         }
 
         private static readonly SpriteFont font = SonOfRobinGame.fontTommy40;
-        private static readonly float marginPercent = 0.018f;
-        private static readonly float entryWidthPercent = 0.35f;
-        private static readonly float entryHeightPercent = 0.045f;
+
+        private static readonly float maxWindowWidthPercent = 0.35f;
+        private static readonly float maxWindowHeightPercent = 0.7f;
+        private static readonly float maxLineHeightPercent = 0.05f;
+
+        private static readonly float marginPercent = 0.025f;
         private static readonly int transDuration = 6; // 6
+        private int Margin
+        {
+            get
+            {
+                int margin = Convert.ToInt32(SonOfRobinGame.VirtualHeight * marginPercent);
+                if (SonOfRobinGame.platform == Platform.Mobile) margin = (int)(margin * 1.2f);
+                return margin;
+            }
+        }
 
         public readonly float bgOpacity;
         public readonly Color bgColor;
         private List<TextEntry> entryList;
         public bool isActive;
 
-        private int Margin { get { return Convert.ToInt32(SonOfRobinGame.VirtualHeight * marginPercent); } }
-        private float GlobalTextScale
+        private float GlobalScale
         {
             get
             {
-                float textScale;
-                float minScale = 9999f;
-                float maxTextWidth = SonOfRobinGame.VirtualWidth * entryWidthPercent;
-                float maxTextHeight = SonOfRobinGame.VirtualHeight * entryHeightPercent;
+                float maxWindowWidth = SonOfRobinGame.VirtualWidth * maxWindowWidthPercent;
+                float maxWindowHeight = SonOfRobinGame.VirtualHeight * maxWindowHeightPercent;
+                float maxLineHeight = SonOfRobinGame.VirtualHeight * maxLineHeightPercent;
+                if (SonOfRobinGame.platform == Platform.Desktop) maxLineHeight *= 0.6f;
+
+                int margin = this.Margin;
+
+                int totalWidth = 0;
+                int totalHeight = margin;
+                int totalHeightWithoutMargins = 0;
+                int lineCount = 0;
 
                 foreach (TextEntry entry in this.entryList)
                 {
-                    textScale = Math.Min(maxTextWidth / entry.sizeX, maxTextHeight / entry.sizeY);
-                    if (textScale < minScale) minScale = textScale;
+                    totalWidth = Math.Max(totalWidth, entry.Width);
+                    totalHeight += entry.Height + margin;
+                    totalHeightWithoutMargins += entry.Height;
+                    lineCount += entry.textWithImages.noOfLines;
                 }
 
-                if (SonOfRobinGame.platform == Platform.Mobile) minScale *= 1.5f;
+                float maxWindowHeightByLines = (int)((maxLineHeight + margin) * lineCount) + margin; // line counting variant - can exceed maximum window height...
+                maxWindowHeight = Math.Min(maxWindowHeight, maxWindowHeightByLines); // ...so it is compared with the "real" maximum window height
 
-                return minScale;
+                float scaleX = maxWindowWidth / totalWidth;
+                float scaleY = maxWindowHeight / totalHeight;
+
+                float scale = Math.Min(scaleX, scaleY);
+
+                return scale;
             }
         }
 
@@ -102,23 +136,20 @@ namespace SonOfRobin
         {
             get
             {
-                float maxEncounteredWidth = 0f;
-                float maxEncounteredHeight = 0f;
-                float globalTextScale = this.GlobalTextScale;
-                float textWidth, textHeight;
+                if (!this.entryList.Any()) return Vector2.Zero;
+
+                float globalScale = this.GlobalScale;
+
+                var widthList = new List<float>();
+                var heightList = new List<float>();
 
                 foreach (TextEntry entry in this.entryList)
                 {
-                    textWidth = entry.sizeX * globalTextScale;
-                    textHeight = entry.sizeY * globalTextScale;
-
-                    if (entry.imageFrame != null) textWidth += Margin + textHeight;
-
-                    if (textWidth > maxEncounteredWidth) maxEncounteredWidth = textWidth;
-                    if (textHeight > maxEncounteredHeight) maxEncounteredHeight = textHeight;
+                    widthList.Add(entry.Width * globalScale);
+                    heightList.Add(entry.Height * globalScale);
                 }
 
-                return new Vector2(maxEncounteredWidth, maxEncounteredHeight);
+                return new Vector2(widthList.Max(), heightList.Max());
             }
         }
 
@@ -128,15 +159,15 @@ namespace SonOfRobin
             {
                 int margin = this.Margin;
                 Vector2 maxEntrySize = this.MaxEntrySize;
-                float globalTextScale = this.GlobalTextScale;
+
+                float globalScale = this.GlobalScale;
 
                 int width = (int)(maxEntrySize.X + (margin * 2));
                 int height = margin;
 
                 foreach (TextEntry entry in this.entryList)
                 {
-                    if (entry.imageFrame == null) height += (int)((entry.sizeY * globalTextScale) + margin);
-                    else height += (int)(maxEntrySize.Y + margin);
+                    height += (int)((entry.Height * globalScale) + margin);
                 }
 
                 return new Rectangle(0, 0, width, height);
@@ -204,7 +235,7 @@ namespace SonOfRobin
                 entryList.Add(new TextEntry(text: $"{curVal}/{maxVal}   {percentage}%", color: Color.White, justify: TextEntry.Justify.Center));
             }
 
-            this.TurnOn(entryList: entryList, newPosX: 0, newPosY: 0, addTransition: addTransition, centerHoriz: true, centerVert: true);
+            this.TurnOn(entryList: entryList, newPosX: 0, newPosY: 0, addTransition: addTransition, centerHoriz: true, centerVert: true, turnOffInput: turnOffInput);
         }
 
         public void TurnOn(List<TextEntry> entryList, int newPosX, int newPosY, bool addTransition = true, bool centerHoriz = false, bool centerVert = false, bool turnOffInput = false)
@@ -220,13 +251,19 @@ namespace SonOfRobin
                 if (centerVert) newPosY = Convert.ToInt32(centerPos.Y);
             }
 
+            bool listsEqual = TextEntry.CompareTwoLists(this.entryList, entryList);
+            if (!listsEqual)
+            {
+                this.entryList = entryList;
+                foreach (TextEntry textEntry in this.entryList) textEntry.ResetAnim();
+            }
+
             if (!addTransition)
             {
                 this.transManager.ClearPreviousTransitions(copyDrawToBase: false);
                 this.viewParams.PosX = newPosX;
                 this.viewParams.PosY = newPosY;
                 this.viewParams.Opacity = 1f;
-                this.entryList = entryList;
                 this.isActive = true;
                 return;
             }
@@ -237,21 +274,15 @@ namespace SonOfRobin
                 int oldPosY = Convert.ToInt32(this.viewParams.PosY);
                 int transPosX = Convert.ToInt32(this.transManager.GetTargetValue("PosX"));
                 int transPosY = Convert.ToInt32(this.transManager.GetTargetValue("PosY"));
-
                 bool posXEqual = oldPosX == newPosX || transPosX == newPosX;
                 bool posYEqual = oldPosY == newPosY || transPosY == newPosY;
-
-                if (posXEqual && posYEqual && TextEntry.CompareTwoLists(this.entryList, entryList)) return;
+                if (posXEqual && posYEqual && listsEqual) return;
             }
 
-            this.entryList = entryList;
             this.UpdateViewSizes();
-
             this.transManager.ClearPreviousTransitions(copyDrawToBase: true);
 
-
             var paramsToChange = new Dictionary<string, float> { };
-
             paramsToChange["Opacity"] = 1f;
             if (this.isActive)
             {
@@ -291,6 +322,7 @@ namespace SonOfRobin
         {
             if (!this.isActive) return;
 
+            foreach (TextEntry textEntry in this.entryList) textEntry.Update();
             this.UpdateViewSizes();
         }
 
@@ -309,25 +341,18 @@ namespace SonOfRobin
             SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, bgRect, this.bgColor * this.bgOpacity * this.viewParams.drawOpacity);
             Helpers.DrawRectangleOutline(rect: bgRect, color: Color.White * this.viewParams.drawOpacity, borderWidth: 2);
 
-            float globalTextScale = this.GlobalTextScale;
-
-            Vector2 basePos, textPos, shadowPos, realEntrySize;
-            float shadowOffset = Math.Max(4f * globalTextScale, 1);
+            float globalScale = this.GlobalScale;
+            float shadowOffset = Math.Max(4f * globalScale, 1);
 
             int posX = margin;
             int posY = margin;
-
-            Vector2 maxEntrySize = this.MaxEntrySize;
-            int frameWidth = (int)maxEntrySize.Y + margin;
 
             foreach (TextEntry entry in this.entryList)
             {
                 // setting positions for current entry
 
-                basePos = new Vector2(posX, posY);
-
-                realEntrySize = new Vector2(entry.sizeX, entry.sizeY) * globalTextScale;
-                if (entry.imageFrame != null) realEntrySize.X += frameWidth;
+                Vector2 basePos = new Vector2(posX, posY);
+                Vector2 realEntrySize = new Vector2(entry.Width, entry.Height) * globalScale;
 
                 switch (entry.justify)
                 {
@@ -346,43 +371,30 @@ namespace SonOfRobin
                         throw new ArgumentException($"Unsupported justify type - '{entry.justify}'.");
                 }
 
-                textPos = new Vector2(basePos.X, basePos.Y);
-                if (entry.imageFrame != null)
-                {
-                    textPos.X += frameWidth;
-                    textPos.Y += (maxEntrySize.Y / 2) - (realEntrySize.Y / 2);
-                }
-                shadowPos = new Vector2(textPos.X + shadowOffset, textPos.Y + shadowOffset);
+                Vector2 textPos = new Vector2(basePos.X, basePos.Y);
 
                 // drawing entry
-
-                if (entry.imageFrame != null)
-                {
-                    Rectangle gfxRect = new Rectangle((int)basePos.X, (int)basePos.Y, (int)maxEntrySize.Y, (int)maxEntrySize.Y);
-                    entry.imageFrame.DrawAndKeepInRectBounds(destBoundsRect: gfxRect, color: Color.White * this.viewParams.drawOpacity);
-                }
 
                 if (entry.progressBarMode)
                 {
                     int currentBarWidth = (int)(realEntrySize.X * ((float)entry.progressCurrentVal / (float)entry.progressMaxVal));
 
                     SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, new Rectangle((int)textPos.X, (int)textPos.Y,
-                        (int)realEntrySize.X, (int)(entry.sizeY * globalTextScale)),
+                        (int)realEntrySize.X, (int)(entry.Height * globalScale)),
                         entry.color * this.viewParams.drawOpacity * 0.4f);
 
                     SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, new Rectangle((int)textPos.X, (int)textPos.Y,
-                    (int)currentBarWidth, (int)(entry.sizeY * globalTextScale)),
+                    currentBarWidth, (int)(entry.Height * globalScale)),
                     entry.color * this.viewParams.drawOpacity);
                 }
                 else
                 {
-                    SonOfRobinGame.spriteBatch.DrawString(font, entry.text, position: shadowPos, color: Color.MidnightBlue * this.viewParams.drawOpacity * 0.7f, origin: Vector2.Zero, scale: globalTextScale * entry.scale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
-
-                    SonOfRobinGame.spriteBatch.DrawString(font, entry.text, position: textPos, color: entry.color * this.viewParams.drawOpacity, origin: Vector2.Zero, scale: globalTextScale * entry.scale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
+                    entry.textWithImages.Draw(position: textPos, color: entry.color * this.viewParams.drawOpacity, imageOpacity: this.viewParams.drawOpacity, shadowColor: Color.MidnightBlue * this.viewParams.drawOpacity * 0.7f, shadowOffset: new Vector2(shadowOffset), textScale: globalScale * entry.scale);
                 }
 
-                if (entry.imageFrame != null) posY += (int)maxEntrySize.Y + margin;
-                else posY += (int)((entry.sizeY * globalTextScale) + margin);
+                // Helpers.DrawRectangleOutline(rect: new Rectangle(x: (int)basePos.X, y: (int)basePos.Y, width: (int)realEntrySize.X, height: (int)realEntrySize.Y), color: Color.White, borderWidth: 1); // for testing
+
+                posY += (int)((entry.Height * globalScale) + margin);
             }
         }
 

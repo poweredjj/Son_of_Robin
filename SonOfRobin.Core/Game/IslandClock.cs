@@ -19,14 +19,13 @@ namespace SonOfRobin
 
         public static readonly TimeSpan startTimeOffset = TimeSpan.FromHours(7); // 7 - to start the game in the morning, not at midnight
         public static readonly DateTime startingDate = new DateTime(year: 2020, month: 1, day: 1, hour: 0, minute: 0, second: 0) + startTimeOffset;
-
-        public int elapsedUpdates;
+        public int ElapsedUpdates { get { return this.elapsedUpdates; } }
+        private int elapsedUpdates;
         private bool isPaused;
-        public TimeSpan IslandTimeElapsed
-        { get { return TimeSpan.FromSeconds(this.elapsedUpdates * 1.5) + startTimeOffset; } }  // * 1.5
-        public DateTime IslandDateTime
-        { get { return startingDate + this.IslandTimeElapsed - startTimeOffset; } }
-
+        private bool initComplete;
+        public int multiplier;
+        public TimeSpan IslandTimeElapsed { get { return TimeSpan.FromSeconds(this.elapsedUpdates * 1.5) + startTimeOffset; } }  // * 1.5
+        public DateTime IslandDateTime { get { return startingDate + this.IslandTimeElapsed - startTimeOffset; } }
         public TimeSpan TimeOfDay { get { return this.IslandDateTime.TimeOfDay; } }
         public int CurrentDayNo
         { get { return (int)this.IslandTimeElapsed.TotalDays + 1; } }
@@ -37,7 +36,9 @@ namespace SonOfRobin
                 TimeSpan timeOfDay = this.TimeOfDay;
 
                 foreach (var kvp in partsOfDayByEndingTime)
-                { if (timeOfDay.Hours < kvp.Key) return kvp.Value; }
+                {
+                    if (timeOfDay.Hours < kvp.Key) return kvp.Value;
+                }
 
                 throw new ArgumentException($"Cannot calculate CurrentPartOfDay for '{this.TimeOfDay}'.");
             }
@@ -72,21 +73,53 @@ namespace SonOfRobin
             }
         }
 
-        public IslandClock(int elapsedUpdates)
+        public IslandClock(int elapsedUpdates = -1)
         {
-            this.elapsedUpdates = 0;
+            if (elapsedUpdates < -1) throw new ArgumentException($"elapsedUpdates ({elapsedUpdates}) cannot be < 0."); // -1 value is used as a "not initialized" value
+
+            if (elapsedUpdates == -1)
+            {
+                this.initComplete = false;
+            }
+            else
+            {
+                this.elapsedUpdates = elapsedUpdates;
+                this.initComplete = true;
+            }
+
+            this.multiplier = 1;
             this.isPaused = false;
         }
 
+        public void Initialize(int elapsedUpdates)
+        {
+            if (this.initComplete) throw new ArgumentException($"Island clock has already been initialized - value {this.elapsedUpdates}.");
+
+            this.elapsedUpdates = elapsedUpdates;
+            this.initComplete = true;
+        }
+
         public void Pause()
-        { this.isPaused = true; }
+        {
+            this.isPaused = true;
+        }
 
         public void Resume()
-        { this.isPaused = false; }
-
-        public void Advance()
         {
-            if (!this.isPaused) this.elapsedUpdates++;
+            this.isPaused = false;
         }
+
+        public void Advance(int amount = 1, bool ignorePause = false, bool ignoreMultiplier = false)
+        {
+            if (amount < 1) throw new ArgumentException($"Advance value ({amount}) has to be >= 1.");
+            if (!this.initComplete) throw new ArgumentException("Island Clock has not been initialized.");
+
+            if (ignorePause || !this.isPaused)
+            {
+                if (ignoreMultiplier) this.elapsedUpdates += amount;
+                else this.elapsedUpdates += amount * this.multiplier;
+            }
+        }
+
     }
 }

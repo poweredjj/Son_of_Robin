@@ -51,7 +51,11 @@ namespace SonOfRobin
         }
         public override void DrawStatBar()
         {
-            new StatBar(label: "", value: this.currentDelay - (this.waitUntilFrame - this.world.currentUpdate), valueMax: this.currentDelay, colorMin: new Color(0, 128, 0), colorMax: new Color(0, 255, 0), posX: this.sprite.gfxRect.Center.X, posY: this.sprite.gfxRect.Bottom, ignoreIfAtMax: false, texture: AnimData.framesForPkgs[AnimData.PkgName.MusicNoteSmall].texture);
+            Sound sound = this.soundPack.GetSound(PieceSoundPack.Action.Ambient);
+            if (sound == null) return;
+
+            if (sound.IsLooped) new StatBar(label: "vol", value: (int)(sound.FadeVolume * 100), valueMax: 100, colorMin: new Color(0, 128, 0), colorMax: new Color(0, 255, 0), posX: this.sprite.gfxRect.Center.X, posY: this.sprite.gfxRect.Bottom, ignoreIfAtMax: false);
+            else new StatBar(label: "", value: this.currentDelay - (this.waitUntilFrame - this.world.currentUpdate), valueMax: this.currentDelay, colorMin: new Color(0, 128, 0), colorMax: new Color(0, 255, 0), posX: this.sprite.gfxRect.Center.X, posY: this.sprite.gfxRect.Bottom, ignoreIfAtMax: false, texture: AnimData.framesForPkgs[AnimData.PkgName.MusicNoteSmall].texture);
 
             StatBar.FinishThisBatch();
         }
@@ -91,6 +95,7 @@ namespace SonOfRobin
             {
                 this.sprite.opacity = visFullOpacity;
                 if (!isLooped) this.sprite.opacityFade = new OpacityFade(sprite: this.sprite, destOpacity: visMinOpacity, duration: 60);
+                else this.showStatBarsTillFrame = 2147483647;
             }
         }
 

@@ -93,6 +93,10 @@ namespace SonOfRobin
         {
             return this.craftedPieces.ContainsKey(name);
         }
+        public int HowManyTimesHasBeenCrafted(Craft.Recipe recipe)
+        {
+            return this.craftedRecipes.ContainsKey(recipe.id) ? this.craftedRecipes[recipe.id] : 0;
+        }
 
         public int HowMuchHasBeenCrafted(PieceTemplate.Name name)
         {
@@ -121,33 +125,50 @@ namespace SonOfRobin
 
         private void DisplaySummary(Dictionary<PieceTemplate.Name, int> collectionToShow, string header)
         {
+            if (collectionToShow.Keys.Count == 0)
+            {
+                new TextWindow(text: "|  No items has been crafted.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Exclamation) }, textColor: Color.White, bgColor: Color.Blue, useTransition: true, animate: true);
+                return;
+            }
+
+            int piecesForPage = 10;
+            var taskChain = new List<Object>();
+
             string piecesText = "";
             List<Texture2D> imageList = new List<Texture2D>();
 
-            if (collectionToShow.Keys.Count == 0)
-            {
-                piecesText += "\n|  No items has been crafted.";
-                imageList.Add(PieceInfo.GetTexture(PieceTemplate.Name.Exclamation));
-            }
-
             List<PieceTemplate.Name> pieceNames = collectionToShow.Keys.OrderBy(n => PieceInfo.GetInfo(n).readableName).ToList();
-            int piecesTotal = 0;
+            int piecesTotal = collectionToShow.Values.Sum();
+
+            int currentPagePiecesCount = 0;
+            int pageNo = 1;
+            int totalPages = (int)Math.Ceiling((float)pieceNames.Count / (float)piecesForPage);
 
             foreach (PieceTemplate.Name pieceName in pieceNames)
             {
                 int pieceCount = collectionToShow[pieceName];
                 PieceInfo.Info pieceInfo = PieceInfo.GetInfo(pieceName);
 
-                piecesTotal += pieceCount;
                 piecesText += $"\n|  x{pieceCount}  {pieceInfo.readableName}";
                 imageList.Add(pieceInfo.texture);
+
+                currentPagePiecesCount++;
+
+                if (currentPagePiecesCount >= piecesForPage || pieceName == pieceNames.Last())
+                {
+                    string pageText = $"{header} ({piecesTotal}):\n{piecesText}";
+                    if (totalPages > 1) pageText += $"\n\npage {pageNo}/{totalPages}";
+
+                    taskChain.Add(new HintMessage(text: pageText, imageList: imageList.ToList(), boxType: HintMessage.BoxType.BlueBox, delay: 0).ConvertToTask());
+
+                    piecesText = "";
+                    imageList.Clear();
+                    currentPagePiecesCount = 0;
+                    pageNo++;
+                }
             }
 
-            string textCounter = piecesTotal > 0 ? $" ({piecesTotal})" : "";
-
-            string summary = $"{header}{textCounter}:\n{piecesText}";
-
-            new TextWindow(text: summary, imageList: imageList, textColor: Color.White, bgColor: Color.Blue, useTransition: true, animate: true);
+            new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteTaskChain, turnOffInputUntilExecution: true, executeHelper: taskChain);
         }
     }
 }

@@ -7,7 +7,7 @@ namespace SonOfRobin
 {
     public class BuffEngine
     {
-        public enum BuffType { InvWidth, InvHeight, ToolbarWidth, ToolbarHeight, Speed, Strength, HP, MaxHP, MaxStamina, EnableMap, Tired, Hungry, LightSource, RegenPoison, Haste, Fatigue, Sprint, LowHP };
+        public enum BuffType { InvWidth, InvHeight, ToolbarWidth, ToolbarHeight, Speed, Strength, HP, MaxHP, MaxStamina, EnableMap, Tired, Hungry, LightSource, RegenPoison, Haste, Fatigue, Sprint, SprintCooldown, LowHP };
 
         [Serializable]
         public class Buff
@@ -109,6 +109,9 @@ namespace SonOfRobin
                     case BuffType.Sprint:
                         return true;
 
+                    case BuffType.SprintCooldown:
+                        return false;
+
                     default:
                         throw new DivideByZeroException($"Unsupported buff type - {this.type}.");
                 }
@@ -193,7 +196,11 @@ namespace SonOfRobin
                         break;
 
                     case BuffType.Sprint:
-                        description = $"Sprint {sign}{this.value}{duration} at the cost of all stamina.";
+                        description = $"Sprint {sign}{this.value}{duration}.";
+                        break;
+
+                    case BuffType.SprintCooldown:
+                        description = $"Cannot sprint for {duration}.";
                         break;
 
                     default:
@@ -264,6 +271,9 @@ namespace SonOfRobin
 
                     case BuffType.Sprint:
                         return $"SPRINT\n{sign}{this.value}";
+
+                    case BuffType.SprintCooldown:
+                        return "CANNOT\nSPRINT";
 
                     default:
                         throw new DivideByZeroException($"Unsupported buff type - {this.type}.");
@@ -655,11 +665,17 @@ namespace SonOfRobin
                         else
                         {
                             player.speed -= (float)buff.value;
-                            player.Stamina = 0;
                             player.sprite.effectCol.RemoveEffectsOfType(effect: SonOfRobinGame.effectBorder);
                             player.soundPack.Play(PieceSoundPack.Action.PlayerPant);
+                            player.buffEngine.AddBuff(buff: new Buff(type: BuffType.SprintCooldown, autoRemoveDelay: 15 * 60, value: null), world: player.world);
                         }
 
+                        return;
+                    }
+
+                case BuffType.SprintCooldown:
+                    {
+                        // this buff exists only to show negative status and prevent sprint
                         return;
                     }
 
@@ -816,6 +832,10 @@ namespace SonOfRobin
 
                 case BuffType.Sprint:
                     value = (float)buff1.value + (float)buff2.value;
+                    break;
+
+                case BuffType.SprintCooldown:
+                    value = null;
                     break;
 
                 default:

@@ -1,0 +1,14 @@
+.vs
+SonOfRobin.Android/bin
+SonOfRobin.Android/obj
+SonOfRobin.Core/bin
+SonOfRobin.Core/Content/bin
+SonOfRobin.Core/Content/obj
+SonOfRobin.DesktopGL/bin
+SonOfRobin.DesktopGL/obj
+SonOfRobin.iOS/bin
+SonOfRobin.iOS/obj
+SonOfRobin.WindowsDX/bin
+SonOfRobin.WindowsDX/obj
+SonOfRobin.WindowsUWP/bin
+SonOfRobin.WindowsUWP/obj

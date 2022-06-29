@@ -302,6 +302,7 @@ namespace SonOfRobin
                 {"base_buffEngine", this.buffEngine.Serialize()},
                 {"base_buffList", this.buffList},
                 {"base_soundPack", this.soundPack.Serialize()},
+                {"base_canBeHit", this.canBeHit},
             };
 
             if (this.pieceStorage != null) pieceData["base_pieceStorage"] = this.pieceStorage.Serialize();
@@ -331,6 +332,7 @@ namespace SonOfRobin
             this.buffEngine = BuffEngine.Deserialize(piece: this, buffEngineData: pieceData["base_buffEngine"]);
             this.buffList = (List<BuffEngine.Buff>)pieceData["base_buffList"];
             this.soundPack.Deserialize(pieceData["base_soundPack"]);
+            this.canBeHit = (bool)pieceData["base_canBeHit"];
 
             this.sprite.Deserialize(pieceData);
 

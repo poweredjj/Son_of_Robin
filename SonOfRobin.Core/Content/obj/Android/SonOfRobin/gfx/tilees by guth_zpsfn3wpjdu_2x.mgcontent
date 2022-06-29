@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/tilees by guth_zpsfn3wpjdu_2x.png</SourceFile>
+  <SourceFile>C:/Users/Marcin/Documents/GitHub/Son_of_Robin/SonOfRobin.Core/Content/gfx/tilees by guth_zpsfn3wpjdu_2x.png</SourceFile>
   <SourceTime>2021-12-03T08:51:07.3380386+01:00</SourceTime>
-  <DestFile>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/bin/Android/SonOfRobin/gfx/tilees by guth_zpsfn3wpjdu_2x.xnb</DestFile>
-  <DestTime>2022-06-04T08:58:06.8327483+02:00</DestTime>
+  <DestFile>C:/Users/Marcin/Documents/GitHub/Son_of_Robin/SonOfRobin.Core/Content/bin/Android/SonOfRobin/gfx/tilees by guth_zpsfn3wpjdu_2x.xnb</DestFile>
+  <DestTime>2022-06-29T12:10:55.9267579+02:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2020-08-10T18:17:54+02:00</ImporterTime>
   <Processor>TextureProcessor</Processor>

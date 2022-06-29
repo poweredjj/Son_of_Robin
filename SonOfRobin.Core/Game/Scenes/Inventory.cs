@@ -18,6 +18,14 @@ namespace SonOfRobin
             InventoryAndEquip
         }
 
+        public enum TransDirection
+        {
+            Up,
+            Down,
+            Left,
+            Right
+        }
+
         public enum Type { SingleCenter, SingleBottom, DualLeft, DualRight, DualTop, DualBottom }
 
         private static readonly int minFramesToDragByTouch = 15;
@@ -30,10 +38,10 @@ namespace SonOfRobin
         private static readonly Sound soundEnterContextMenu = new Sound(SoundData.Name.Invoke);
         private static readonly Sound soundPickUp = new Sound(SoundData.Name.PickUpItem, volume: 0.8f);
 
-
         public static Layout layout = Layout.None;
 
         public readonly Type type;
+        private readonly TransDirection transDirection;
         private readonly BoardPiece piece;
         public readonly PieceStorage storage;
         private int cursorX;
@@ -162,7 +170,7 @@ namespace SonOfRobin
 
                 case Layout.Toolbar:
                     {
-                        new Inventory(piece: player, storage: player.toolStorage, layout: Inventory.Type.SingleBottom, inputType: InputTypes.Always, blocksUpdatesBelow: false);
+                        new Inventory(piece: player, storage: player.toolStorage, layout: Type.SingleBottom, inputType: InputTypes.Always, blocksUpdatesBelow: false, transDirection: TransDirection.Down);
 
                         break;
                     }
@@ -171,8 +179,8 @@ namespace SonOfRobin
                     {
                         soundOpen.Play();
 
-                        Inventory toolbar = new Inventory(piece: player, storage: player.toolStorage, layout: Inventory.Type.DualBottom);
-                        Inventory inventory = new Inventory(piece: player, storage: player.pieceStorage, layout: Inventory.Type.DualTop, otherInventory: toolbar);
+                        Inventory toolbar = new Inventory(piece: player, storage: player.toolStorage, layout: Type.DualBottom, transDirection: TransDirection.Down);
+                        Inventory inventory = new Inventory(piece: player, storage: player.pieceStorage, layout: Type.DualTop, otherInventory: toolbar, transDirection: TransDirection.Up);
                         toolbar.otherInventory = inventory;
 
                         break;
@@ -180,8 +188,8 @@ namespace SonOfRobin
 
                 case Layout.InventoryAndChest:
                     {
-                        Inventory inventoryLeft = new Inventory(piece: player, storage: player.pieceStorage, layout: Inventory.Type.DualLeft);
-                        Inventory inventoryRight = new Inventory(piece: chest, storage: chest.pieceStorage, layout: Inventory.Type.DualRight, otherInventory: inventoryLeft);
+                        Inventory inventoryLeft = new Inventory(piece: player, storage: player.pieceStorage, layout: Type.DualLeft, transDirection: TransDirection.Left);
+                        Inventory inventoryRight = new Inventory(piece: chest, storage: chest.pieceStorage, layout: Type.DualRight, otherInventory: inventoryLeft, transDirection: TransDirection.Right);
                         inventoryLeft.otherInventory = inventoryRight;
 
                         break;
@@ -191,8 +199,8 @@ namespace SonOfRobin
                     {
                         soundOpen.Play();
 
-                        Inventory inventoryLeft = new Inventory(piece: player, storage: player.pieceStorage, layout: Inventory.Type.DualLeft);
-                        Inventory inventoryRight = new Inventory(piece: player, storage: player.equipStorage, layout: Inventory.Type.DualRight, otherInventory: inventoryLeft);
+                        Inventory inventoryLeft = new Inventory(piece: player, storage: player.pieceStorage, layout: Type.DualLeft, transDirection: TransDirection.Left);
+                        Inventory inventoryRight = new Inventory(piece: player, storage: player.equipStorage, layout: Type.DualRight, otherInventory: inventoryLeft, transDirection: TransDirection.Right);
                         inventoryLeft.otherInventory = inventoryRight;
 
                         player.world.hintEngine.Disable(Tutorials.Type.Equip);
@@ -206,11 +214,12 @@ namespace SonOfRobin
             layout = newLayout;
         }
 
-        public Inventory(PieceStorage storage, BoardPiece piece, Type layout = Type.SingleCenter, bool blocksUpdatesBelow = true, Inventory otherInventory = null, InputTypes inputType = InputTypes.Normal) : base(inputType: inputType, priority: 1, blocksUpdatesBelow: blocksUpdatesBelow, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Inventory, tipsLayout: ControlTips.TipsLayout.InventorySelect)
+        public Inventory(PieceStorage storage, BoardPiece piece, TransDirection transDirection, Type layout = Type.SingleCenter, bool blocksUpdatesBelow = true, Inventory otherInventory = null, InputTypes inputType = InputTypes.Normal) : base(inputType: inputType, priority: 1, blocksUpdatesBelow: blocksUpdatesBelow, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Inventory, tipsLayout: ControlTips.TipsLayout.InventorySelect)
         {
             this.storage = storage;
             this.piece = piece;
             this.type = layout;
+            this.transDirection = transDirection;
 
             if (this.storage.lastUsedSlot != null)
             {
@@ -237,11 +246,38 @@ namespace SonOfRobin
                 var container = (Container)piece;
                 container.Open();
             }
+            else this.piece.soundPack.Play(PieceSoundPack.Action.Open);
 
-            if (this.type != Type.SingleBottom && this.type != Type.DualBottom && !this.transManager.HasAnyTransition)
+            if (!this.transManager.HasAnyTransition) this.transManager.AddMultipleTransitions(paramsToChange: this.GetTransitionsParams(), outTrans: false, duration: 12, refreshBaseVal: false);
+        }
+
+        private Dictionary<string, float> GetTransitionsParams()
+        {
+            var paramsToChange = new Dictionary<string, float> { { "Opacity", 0f } };
+
+            switch (this.transDirection)
             {
-                this.transManager.AddMultipleTransitions(paramsToChange: new Dictionary<string, float> { { "PosY", this.viewParams.PosY - SonOfRobinGame.VirtualHeight }, { "Opacity", 0f } }, outTrans: false, duration: 12, refreshBaseVal: false);
+                case TransDirection.Up:
+                    paramsToChange["PosY"] = this.viewParams.PosY - SonOfRobinGame.VirtualHeight;
+                    break;
+
+                case TransDirection.Down:
+                    paramsToChange["PosY"] = SonOfRobinGame.VirtualHeight;
+                    break;
+
+                case TransDirection.Left:
+                    paramsToChange["PosX"] = this.viewParams.PosX - SonOfRobinGame.VirtualWidth;
+                    break;
+
+                case TransDirection.Right:
+                    paramsToChange["PosX"] = SonOfRobinGame.VirtualWidth;
+                    break;
+
+                default:
+                    throw new DivideByZeroException($"Unsupported transDirection - {transDirection}.");
             }
+
+            return paramsToChange;
         }
 
         public override void Remove()
@@ -249,7 +285,7 @@ namespace SonOfRobin
             this.ReleaseHeldPieces(slot: null, forceReleaseAll: true);
             SonOfRobinGame.hintWindow.TurnOff();
 
-            if (!this.transManager.IsEnding && this.type != Type.SingleBottom && this.type != Type.DualBottom)
+            if (!this.transManager.IsEnding)
             {
                 if (this.piece.GetType() == typeof(Container))
                 {
@@ -257,8 +293,7 @@ namespace SonOfRobin
                     container.Close();
                 }
 
-                this.transManager.AddMultipleTransitions(paramsToChange: new Dictionary<string, float> {
-                    { "PosY", this.viewParams.PosY - SonOfRobinGame.VirtualHeight }, { "Opacity", 0f } },
+                this.transManager.AddMultipleTransitions(paramsToChange: this.GetTransitionsParams(),
                     outTrans: true, duration: 12, refreshBaseVal: false, endRemoveScene: true);
 
                 return;
@@ -278,7 +313,7 @@ namespace SonOfRobin
             }
 
             var entryList = new List<InfoWindow.TextEntry> {
-                new InfoWindow.TextEntry(frame:selectedPiece.sprite.frame, text: Helpers.FirstCharToUpperCase(selectedPiece.readableName), color: Color.White, scale: 1.5f),
+                new InfoWindow.TextEntry(imageList: new List<Texture2D> {selectedPiece.sprite.frame.texture}, text: $"| {Helpers.FirstCharToUpperCase(selectedPiece.readableName)}" , color: Color.White, scale: 1.5f),
                 new InfoWindow.TextEntry(text: selectedPiece.description, color: Color.White)
             };
 
@@ -358,7 +393,19 @@ namespace SonOfRobin
             this.UpdateViewParams();
             if (this.type != Type.SingleBottom && this.inputActive) this.UpdateHintWindow();
             this.ProcessInput();
+            this.SetActivePieceAsIdentified();
             this.storage.lastUsedSlot = this.ActiveSlot;
+        }
+
+        private void SetActivePieceAsIdentified()
+        {
+            if (!this.inputActive || this.type == Type.SingleBottom) return;
+            BoardPiece piece = this.ActiveSlot.TopPiece;
+            if (piece == null) return;
+
+            if (piece.world.identifiedPieces.Contains(piece.name)) return;
+
+            piece.world.identifiedPieces.Add(piece.name);
         }
 
         private void UpdateViewParams()
@@ -877,6 +924,8 @@ namespace SonOfRobin
             {
                 foreach (BoardPiece piece in this.draggedPieces)
                 { slot.AddPiece(piece); }
+
+                this.draggedPieces[0].soundPack.Play(action: PieceSoundPack.Action.IsDropped, ignore3D: true, ignoreCooldown: true);
                 this.draggedPieces = slotPieces;
             }
             else
@@ -911,9 +960,7 @@ namespace SonOfRobin
 
                 Vector2 slotPos = this.GetSlotPos(slot: slot, margin: margin, tileSize: tileSize);
 
-                bool isActive = slot.posX == this.CursorX && slot.posY == this.CursorY;
-                if (!this.inputActive) isActive = false;
-
+                bool isActive = this.inputActive && slot.posX == this.CursorX && slot.posY == this.CursorY;
                 Rectangle tileRect = new Rectangle((int)slotPos.X, (int)slotPos.Y, tileSize, tileSize);
 
                 Color outlineColor = isActive ? Color.LawnGreen : Color.White;
@@ -925,7 +972,7 @@ namespace SonOfRobin
                 this.DrawSlotLabel(slot: slot, tileRect: tileRect);
 
                 Rectangle destRect = isActive ? tileRect : new Rectangle((int)slotPos.X + spriteOffset, (int)slotPos.Y + spriteOffset, spriteSize, spriteSize);
-                slot.Draw(destRect: destRect, opacity: this.viewParams.drawOpacity);
+                slot.Draw(destRect: destRect, opacity: this.viewParams.drawOpacity, drawNewIcon: this.type != Type.SingleBottom);
 
                 Rectangle quantityRect = new Rectangle(x: tileRect.X, y: tileRect.Y + (tileRect.Height / 2), width: tileRect.Width, height: tileRect.Height / 2);
                 DrawQuantity(pieceCount: slot.PieceCount, destRect: quantityRect, opacity: this.viewParams.drawOpacity);

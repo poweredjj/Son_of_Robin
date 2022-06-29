@@ -18,9 +18,9 @@ namespace SonOfRobin
         public readonly bool blockInput;
         public readonly bool animate;
         public readonly bool useTransition;
-        public readonly SoundData.Name sound;
+        public readonly SoundData.Name startingSound;
 
-        public HintMessage(string text, int delay = 1, bool fieldOnly = false, bool blockInput = false, List<Texture2D> imageList = null, BoxType boxType = BoxType.Dialogue, bool animate = true, bool useTransition = false, SoundData.Name sound = SoundData.Name.Empty)
+        public HintMessage(string text, int delay = 1, bool fieldOnly = false, bool blockInput = false, List<Texture2D> imageList = null, BoxType boxType = BoxType.Dialogue, bool animate = true, bool useTransition = false, SoundData.Name startingSound = SoundData.Name.Empty)
         {
             this.text = text;
             this.imageList = imageList == null ? new List<Texture2D>() : imageList;
@@ -30,14 +30,14 @@ namespace SonOfRobin
             this.blockInput = blockInput;
             this.animate = animate;
             this.useTransition = useTransition;
-            this.sound = sound;
+            this.startingSound = startingSound;
 
             this.ValidateImagesCount();
         }
 
         private void ValidateImagesCount()
         {
-            MatchCollection matches = Regex.Matches(this.text, $@"\{TextWindow.imageMarkerStart}"); // $@ is needed for "\" character inside interpolated string
+            MatchCollection matches = Regex.Matches(this.text, $@"\{TextWithImages.imageMarker}"); // $@ is needed for "\" character inside interpolated string
 
             if (this.imageList.Count != matches.Count) throw new ArgumentException($"HintMessage - count of markers ({matches.Count}) and images ({this.imageList.Count}) does not match.\n{this.text}");
         }
@@ -77,6 +77,8 @@ namespace SonOfRobin
                     { throw new DivideByZeroException($"Unsupported hint boxType - {boxType}."); }
             }
 
+            Sound animSound = this.boxType == BoxType.Dialogue ? World.GetTopWorld().DialogueSound : null;
+
             var textWindowData = new Dictionary<string, Object> {
                 { "text", this.text },
                 { "imageList", this.imageList },
@@ -88,7 +90,8 @@ namespace SonOfRobin
                 { "useTransitionOpen", useTransitionOpen },
                 { "useTransitionClose", useTransitionClose },
                 { "blocksUpdatesBelow", false },
-                { "sound", this.sound },
+                { "startingSound", this.startingSound },
+                { "animSound", animSound },
                 { "blockInputDuration", this.blockInput ? HintEngine.blockInputDuration : 0}
             };
 

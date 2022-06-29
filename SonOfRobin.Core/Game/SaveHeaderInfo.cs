@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -42,8 +43,8 @@ namespace SonOfRobin
         public string AdditionalInfo
         { get { return $"seed: {String.Format("{0:0000}", this.seed)}   {this.width}x{this.height}"; } }
 
-        public AnimFrame AddInfoFrame
-        { get { return this.playerFemale ? AnimData.framesForPkgs[AnimData.PkgName.PlayerFemale] : AnimData.framesForPkgs[AnimData.PkgName.PlayerMale]; } }
+        public Texture2D AddInfoTexture
+        { get { return this.playerFemale ? AnimData.framesForPkgs[AnimData.PkgName.PlayerFemale].texture : AnimData.framesForPkgs[AnimData.PkgName.PlayerMale].texture; } }
         public SaveHeaderInfo(string folderName)
         {
             this.folderName = folderName;

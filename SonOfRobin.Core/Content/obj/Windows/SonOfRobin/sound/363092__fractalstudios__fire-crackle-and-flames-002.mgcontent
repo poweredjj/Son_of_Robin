@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>C:/Users/msmidowi/Documents/SonOfRobin/SonOfRobin.Core/Content/sound/363092__fractalstudios__fire-crackle-and-flames-002.ogg</SourceFile>
+  <SourceFile>C:/Users/Marcin/Documents/GitHub/Son_of_Robin/SonOfRobin.Core/Content/sound/363092__fractalstudios__fire-crackle-and-flames-002.ogg</SourceFile>
   <SourceTime>2022-05-27T14:35:12.4365203+02:00</SourceTime>
-  <DestFile>C:/Users/msmidowi/Documents/SonOfRobin/SonOfRobin.Core/Content/bin/Windows/SonOfRobin/sound/363092__fractalstudios__fire-crackle-and-flames-002.xnb</DestFile>
-  <DestTime>2022-06-08T14:51:07.4268625+02:00</DestTime>
+  <DestFile>C:/Users/Marcin/Documents/GitHub/Son_of_Robin/SonOfRobin.Core/Content/bin/Windows/SonOfRobin/sound/363092__fractalstudios__fire-crackle-and-flames-002.xnb</DestFile>
+  <DestTime>2022-06-29T12:11:01.8461078+02:00</DestTime>
   <Importer>OggImporter</Importer>
   <ImporterTime>2020-08-10T18:17:54+02:00</ImporterTime>
   <Processor>SoundEffectProcessor</Processor>

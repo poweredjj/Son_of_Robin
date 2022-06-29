@@ -36,7 +36,6 @@ namespace SonOfRobin
         public DateTime lastSaved;
 
         private bool buildMode;
-
         public bool BuildMode { get { return this.buildMode; } }
 
         private bool spectatorMode;
@@ -82,7 +81,7 @@ namespace SonOfRobin
                     };
                     var text = textList[this.random.Next(0, textList.Count)];
 
-                    new TextWindow(text: text, textColor: Color.Black, bgColor: Color.White, useTransition: true, animate: true, checkForDuplicate: true, autoClose: true, inputType: InputTypes.None, blockInputDuration: 60 * 6, priority: 1);
+                    new TextWindow(text: text, textColor: Color.Black, bgColor: Color.White, useTransition: true, animate: true, checkForDuplicate: true, autoClose: true, inputType: InputTypes.None, blockInputDuration: 60 * 6, priority: 1, animSound: this.DialogueSound);
                 }
                 else
                 {
@@ -116,7 +115,7 @@ namespace SonOfRobin
                     this.tipsLayout = ControlTips.TipsLayout.WorldMain;
                     this.touchLayout = TouchLayout.WorldMain;
 
-                    new TextWindow(text: "I live... Again!", textColor: Color.White, bgColor: Color.Black, useTransition: true, animate: true, checkForDuplicate: true, autoClose: true, inputType: InputTypes.None, blockInputDuration: 60 * 3, priority: 1);
+                    new TextWindow(text: "I live... Again!", textColor: Color.White, bgColor: Color.Black, useTransition: true, animate: true, checkForDuplicate: true, autoClose: true, inputType: InputTypes.None, blockInputDuration: 60 * 3, priority: 1, animSound: this.DialogueSound);
                 }
             }
         }
@@ -180,6 +179,7 @@ namespace SonOfRobin
         public readonly SolidColorManager solidColorManager;
         public readonly SMTypesManager stateMachineTypesManager;
         public readonly CraftStats craftStats;
+        public List<PieceTemplate.Name> identifiedPieces; // pieces that were "looked at" in inventory
         private bool mapEnabled;
         public bool MapEnabled
         {
@@ -201,6 +201,8 @@ namespace SonOfRobin
                 }
             }
         }
+
+        public Sound DialogueSound { get { return this.player.soundPack.GetSound(PieceSoundPack.Action.PlayerSpeak); } }
 
         public Player player;
         public HintEngine hintEngine;
@@ -306,7 +308,7 @@ namespace SonOfRobin
             this.createdTime = DateTime.Now;
             this.TimePlayed = TimeSpan.Zero;
             this.updateMultiplier = 1;
-            this.islandClock = new IslandClock(0);
+            this.islandClock = this.saveGameData == null ? new IslandClock(0) : new IslandClock();
 
             this.noise = new FastNoiseLite(this.seed);
 
@@ -356,6 +358,7 @@ namespace SonOfRobin
             this.solidColorManager = new SolidColorManager(this);
             this.stateMachineTypesManager = new SMTypesManager(this);
             this.craftStats = new CraftStats();
+            this.identifiedPieces = new List<PieceTemplate.Name> { PieceTemplate.Name.Hand };
             if (this.demoMode) this.solidColorManager.Add(new SolidColor(color: Color.White, viewOpacity: 0.4f, clearScreen: false, priority: 1));
 
             SonOfRobinGame.game.IsFixedTimeStep = false; // speeds up the creation process
@@ -479,15 +482,16 @@ namespace SonOfRobin
 
             this.currentFrame = (int)headerData["currentFrame"];
             this.currentUpdate = (int)headerData["currentUpdate"];
-            this.islandClock.elapsedUpdates = (int)headerData["clockTimeElapsed"];
+            this.islandClock.Initialize((int)headerData["clockTimeElapsed"]);
             this.TimePlayed = (TimeSpan)headerData["TimePlayed"];
-            this.MapEnabled = (bool)headerData["MapEnabled"];
+            this.mapEnabled = (bool)headerData["MapEnabled"];
             this.maxAnimalsPerName = (int)headerData["maxAnimalsPerName"];
             this.addAgressiveAnimals = (bool)headerData["addAgressiveAnimals"];
             this.doNotCreatePiecesList = (List<PieceTemplate.Name>)headerData["doNotCreatePiecesList"];
             this.discoveredRecipesForPieces = (List<PieceTemplate.Name>)headerData["discoveredRecipesForPieces"];
             this.stateMachineTypesManager.Deserialize((Dictionary<string, Object>)headerData["stateMachineTypesManager"]);
             this.craftStats.Deserialize((Dictionary<string, Object>)headerData["craftStats"]);
+            this.identifiedPieces = (List<PieceTemplate.Name>)headerData["identifiedPieces"];
 
             // deserializing hints
 
@@ -764,11 +768,11 @@ namespace SonOfRobin
 
             if (!this.player.alive || this.player.activeState != BoardPiece.State.PlayerControlledWalking) return;
 
-            if (!this.player.buffEngine.HasBuff(BuffEngine.BuffType.Sprint) && this.player.Stamina > this.player.maxStamina * 0.4f)
+            if (!this.player.buffEngine.HasBuff(BuffEngine.BuffType.Sprint) && !this.player.buffEngine.HasBuff(BuffEngine.BuffType.SprintCooldown))
             {
                 VirtButton.ButtonHighlightOnNextFrame(VButName.Sprint);
                 ControlTips.TipHighlightOnNextFrame(tipName: "sprint");
-                if (InputMapper.HasBeenPressed(InputMapper.Action.WorldSprintToggle)) this.player.buffEngine.AddBuff(buff: new BuffEngine.Buff(type: BuffEngine.BuffType.Sprint, autoRemoveDelay: 5 * 60, value: this.player.speed), world: this);
+                if (InputMapper.HasBeenPressed(InputMapper.Action.WorldSprintToggle)) this.player.buffEngine.AddBuff(buff: new BuffEngine.Buff(type: BuffEngine.BuffType.Sprint, autoRemoveDelay: 3 * 60, value: 2f), world: this);
             }
 
             if (InputMapper.HasBeenPressed(InputMapper.Action.WorldFieldCraft))
@@ -800,7 +804,13 @@ namespace SonOfRobin
         {
             if (!this.MapEnabled)
             {
-                if (!this.hintEngine.ShowGeneralHint(HintEngine.Type.MapNegative)) new TextWindow(text: "I don't have map equipped.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: InputTypes.None, blockInputDuration: 45, priority: 1);
+                if (!this.hintEngine.ShowGeneralHint(HintEngine.Type.MapNegative)) new TextWindow(text: "I don't have map equipped.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: InputTypes.None, blockInputDuration: 45, priority: 1, animSound: this.DialogueSound);
+                return;
+            }
+
+            if (!this.mapSmall.CheckIfCanBeTurnedOn(showMessage: true))
+            {
+                this.mapMode = MapMode.None;
                 return;
             }
 

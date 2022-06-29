@@ -15,6 +15,7 @@ namespace SonOfRobin
 
         public readonly MenuTemplate.Name templateName;
         private readonly string name;
+        private readonly string id; // should not be copied during rebuild
         public readonly bool canBeClosedManually;
         private Scheduler.TaskName closingTask;
         private Object closingTaskHelper;
@@ -29,6 +30,7 @@ namespace SonOfRobin
         private float scrollSpeed;
         public bool instantScrollForOneFrame;
         public readonly Sound soundNavigate;
+        public readonly Sound soundClose;
         public readonly Sound soundSelect;
         public readonly Sound soundInvoke;
         public readonly object templateExecuteHelper; // needed for correct rebuild
@@ -149,7 +151,7 @@ namespace SonOfRobin
                 currentScrollPosition += posDiff / this.scrollSpeed;
             }
         }
-        public Menu(MenuTemplate.Name templateName, bool blocksUpdatesBelow, bool canBeClosedManually, string name, object templateExecuteHelper, bool alwaysShowSelectedEntry = false, Layout layout = Layout.Right, Scheduler.TaskName closingTask = Scheduler.TaskName.Empty, Object closingTaskHelper = null, int priority = 1, SoundData.Name soundNavigate = SoundData.Name.Navigation, SoundData.Name soundSelect = SoundData.Name.Select, SoundData.Name soundInvoke = SoundData.Name.Invoke) : base(inputType: InputTypes.Normal, priority: priority, blocksUpdatesBelow: blocksUpdatesBelow, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, hidesSameScenesBelow: true, touchLayout: TouchLayout.Empty, tipsLayout: canBeClosedManually ? ControlTips.TipsLayout.Menu : ControlTips.TipsLayout.MenuWithoutClosing)
+        public Menu(MenuTemplate.Name templateName, bool blocksUpdatesBelow, bool canBeClosedManually, string name, object templateExecuteHelper, bool alwaysShowSelectedEntry = false, Layout layout = Layout.Right, Scheduler.TaskName closingTask = Scheduler.TaskName.Empty, Object closingTaskHelper = null, int priority = 1, SoundData.Name soundNavigate = SoundData.Name.Navigation, SoundData.Name soundOpen = SoundData.Name.Empty, SoundData.Name soundClose = SoundData.Name.Navigation, SoundData.Name soundSelect = SoundData.Name.Select, SoundData.Name soundInvoke = SoundData.Name.Invoke) : base(inputType: InputTypes.Normal, priority: priority, blocksUpdatesBelow: blocksUpdatesBelow, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, hidesSameScenesBelow: true, touchLayout: TouchLayout.Empty, tipsLayout: canBeClosedManually ? ControlTips.TipsLayout.Menu : ControlTips.TipsLayout.MenuWithoutClosing)
         {
             this.layout = layout;
             this.alwaysShowSelectedEntry = alwaysShowSelectedEntry;
@@ -157,6 +159,7 @@ namespace SonOfRobin
             this.lastTouchedEntry = null;
             this.templateName = templateName;
             this.name = name;
+            this.id = Helpers.GetUniqueHash();
             this.activeIndex = -1; // dummy value, to be changed
             this.currentScrollPosition = 0;
             this.entryList = new List<Entry> { };
@@ -169,6 +172,9 @@ namespace SonOfRobin
             this.instantScrollForOneFrame = false;
             this.templateExecuteHelper = templateExecuteHelper;
 
+            if (Sound.menuOn && soundOpen != SoundData.Name.Empty && !this.ThisMenuIsBeingRebuilt) Sound.QuickPlay(soundOpen);
+
+            this.soundClose = new Sound(soundClose);
             this.soundNavigate = new Sound(soundNavigate);
             this.soundSelect = new Sound(soundSelect);
             this.soundInvoke = new Sound(soundInvoke);
@@ -179,6 +185,22 @@ namespace SonOfRobin
 
             //MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Menu {this.name} - created with closing task '{this.closingTask}'.");
         }
+
+        private bool ThisMenuIsBeingRebuilt
+        {
+            get
+            {
+                List<Menu> menuScenes = GetEveryMenuOfTemplate(this.templateName);
+
+                foreach (Menu menu in menuScenes)
+                {
+                    if (menu.id != this.id && menu.name == this.name) return true;
+                }
+
+                return false;
+            }
+        }
+
 
         protected override void AdaptToNewSize()
         {
@@ -392,6 +414,7 @@ namespace SonOfRobin
             {
                 if (this.canBeClosedManually)
                 {
+                    if (Sound.menuOn) this.soundClose.Play();
                     this.Remove();
                     return;
                 }
@@ -514,6 +537,9 @@ namespace SonOfRobin
 
         public void SetActiveIndex(int index)
         {
+            if (Sound.menuOn) this.soundNavigate.Play();
+
+
             this.touchMode = false;
             this.activeIndex = index;
         }

@@ -26,8 +26,7 @@ namespace SonOfRobin
 
         private void UpdateViewPos()
         {
-            if (this.fullScreen)
-            { this.viewParams.CenterView(); }
+            if (this.fullScreen) this.viewParams.CenterView();
             else
             {
                 var margin = (int)Math.Ceiling(Math.Min(SonOfRobinGame.VirtualWidth / 30f, SonOfRobinGame.VirtualHeight / 30f));
@@ -176,9 +175,14 @@ namespace SonOfRobin
         {
             this.InputType = InputTypes.None;
             this.blocksDrawsBelow = false;
-            if (addTransition) this.AddTransition(inTrans: false);
-
             this.blocksUpdatesBelow = false;
+
+            if (addTransition) this.AddTransition(inTrans: false);
+            else
+            {
+                this.updateActive = false;
+                this.drawActive = false;
+            }
         }
 
         public void AddTransition(bool inTrans)
@@ -213,8 +217,28 @@ namespace SonOfRobin
             }
         }
 
+        public bool CheckIfCanBeTurnedOn(bool showMessage = true)
+        {
+            bool canBeTurnedOn = this.world.islandClock.CurrentPartOfDay != IslandClock.PartOfDay.Night || this.world.player.sprite.IsInLightSourceRange;
+
+            if (!canBeTurnedOn && showMessage && GetTopSceneOfType(typeof(TextWindow)) == null)
+            {
+                if (this.world.hintEngine.shownTutorials.Contains(Tutorials.Type.TooDarkToReadMap)) new TextWindow(text: "It is too dark to read the map.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: InputTypes.None, blockInputDuration: 45, priority: 1, animSound: this.world.DialogueSound);
+                else Tutorials.ShowTutorialOnTheField(type: Tutorials.Type.TooDarkToReadMap, world: this.world, ignoreDelay: true, ignoreHintsSetting: true);
+            }
+
+            return canBeTurnedOn;
+        }
+
         public override void Update(GameTime gameTime)
         {
+            if (!this.CheckIfCanBeTurnedOn(showMessage: true))
+            {
+                this.TurnOff();
+                this.world.mapMode = World.MapMode.None;
+                return;
+            }
+
             this.UpdateBackground(); // it's best to update background graphics in Update() (SetRenderTarget in Draw() must go first)
             this.ProcessInput();
         }
