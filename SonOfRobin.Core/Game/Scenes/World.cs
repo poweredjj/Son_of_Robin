@@ -83,9 +83,7 @@ namespace SonOfRobin
         public bool mapEnabled;
 
         public Player player;
-
         public HintEngine hintEngine;
-
         public Dictionary<PieceTemplate.Name, int> pieceCountByName;
         public Dictionary<Type, int> pieceCountByClass;
         public Dictionary<string, Tracking> trackingQueue;
@@ -686,7 +684,9 @@ namespace SonOfRobin
         {
             if (this.demoMode) return;
 
-            if (this.actionKeyList.Contains(World.ActionKeys.PauseMenu)) MenuTemplate.CreateMenuFromTemplate(templateName: MenuTemplate.Name.Pause);
+            if (this.actionKeyList.Contains(ActionKeys.PauseMenu)) MenuTemplate.CreateMenuFromTemplate(templateName: MenuTemplate.Name.Pause);
+
+            if (!this.player.alive) return;
 
             if (this.player.activeState != BoardPiece.State.PlayerControlledWalking) return;
 
@@ -723,7 +723,7 @@ namespace SonOfRobin
         {
             if (!this.mapEnabled)
             {
-                if (!this.hintEngine.Show(HintEngine.Type.MapNegative)) new TextWindow(text: "I don't have map equipped.", textColor: Color.Black, bgColor: Color.White);
+                if (!this.hintEngine.ShowGeneralHint(HintEngine.Type.MapNegative)) new TextWindow(text: "I don't have map equipped.", textColor: Color.Black, bgColor: Color.White);
                 return;
             }
 
@@ -782,7 +782,7 @@ namespace SonOfRobin
                 else if (sprite.boardPiece.GetType() == typeof(Player))
                 {
                     Player player = (Player)sprite.boardPiece;
-                    if (player.hitPoints <= 0)
+                    if (player.hitPoints <= 0 && player.alive)
                     {
                         player.Kill();
                         continue;

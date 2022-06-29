@@ -29,9 +29,9 @@ namespace SonOfRobin
 
         public Plant(World world, Vector2 position, AnimPkg animPackage, PieceTemplate.Name name, AllowedFields allowedFields, Dictionary<TerrainName, byte> bestEnvironment, Dictionary<byte, int> maxMassBySize, string readableName, string description,
             int maxAge, PlantReproductionData reproduction, byte massToBurn, float massTakenMultiplier,
-            byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = false, int mass = 1, int staysAfterDeath = 800, int generation = 0, Yield yield = null, int maxHitPoints = 1, FruitEngine fruitEngine = null, Scheduler.TaskName boardTask = Scheduler.TaskName.Empty, bool fadeInAnim = true) :
+            byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = false, int mass = 1, int staysAfterDeath = 800, int generation = 0, Yield yield = null, int maxHitPoints = 1, FruitEngine fruitEngine = null, Scheduler.TaskName boardTask = Scheduler.TaskName.Empty, bool fadeInAnim = true, AllowedDensity allowedDensity = null) :
 
-            base(world: world, position: position, animPackage: animPackage, animSize: animSize, animName: animName, speed: speed, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedFields: allowedFields, floatsOnWater: floatsOnWater, checksFullCollisions: true, mass: mass, maxMassBySize: maxMassBySize, staysAfterDeath: staysAfterDeath, maxAge: maxAge, generation: generation, canBePickedUp: false, yield: yield, maxHitPoints: maxHitPoints, boardTask: boardTask, fadeInAnim: fadeInAnim, readableName: readableName, description: description)
+            base(world: world, position: position, animPackage: animPackage, animSize: animSize, animName: animName, speed: speed, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedFields: allowedFields, floatsOnWater: floatsOnWater, checksFullCollisions: true, mass: mass, maxMassBySize: maxMassBySize, staysAfterDeath: staysAfterDeath, maxAge: maxAge, generation: generation, canBePickedUp: false, yield: yield, maxHitPoints: maxHitPoints, boardTask: boardTask, fadeInAnim: fadeInAnim, readableName: readableName, description: description, allowedDensity: allowedDensity)
         {
             this.activeState = State.PlantGrowthAndReproduction;
             this.bestEnvironment = bestEnvironment;
@@ -77,10 +77,14 @@ namespace SonOfRobin
             var occupiedSlots = this.pieceStorage.OccupiedSlots;
             if (occupiedSlots.Count == 0)
             {
-                new TextWindow(text: "There is nothing left to shake off.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true);
+                new TextWindow(text: "There is nothing left to shake off.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1);
 
                 return;
             }
+
+            if (this.name == PieceTemplate.Name.BananaTree) this.world.hintEngine.Disable(PieceHint.Type.BananaTree);
+            if (this.name == PieceTemplate.Name.TomatoPlant) this.world.hintEngine.Disable(PieceHint.Type.TomatoPlant);
+            if (this.name == PieceTemplate.Name.CherryTree || this.name == PieceTemplate.Name.AppleTree) this.world.hintEngine.Disable(PieceHint.Type.FruitTree);
 
             this.pieceStorage.DropPiecesFromSlot(slot: occupiedSlots[0], addMovement: true);
         }

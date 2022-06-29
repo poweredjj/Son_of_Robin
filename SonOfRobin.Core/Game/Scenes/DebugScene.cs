@@ -86,12 +86,10 @@ namespace SonOfRobin
         public void ProcessDebugInput()
         {
             World world = World.GetTopWorld();
-            //if (Keyboard.HasBeenPressed(Keys.Escape)) SonOfRobinGame.quitGame = true;
 
-
-            if (Keyboard.IsPressed(Keys.D1))
+            if (Keyboard.HasBeenPressed(Keys.D1))
             {
-                BoardPiece piece = PieceTemplate.CreateOnBoard(world: world, position: world.player.sprite.position, templateName: PieceTemplate.Name.GrassRegular);
+                BoardPiece piece = PieceTemplate.CreateOnBoard(world: world, position: world.player.sprite.position, templateName: PieceTemplate.Name.Fox);
                 if (piece.sprite.placedCorrectly) piece.sprite.MoveToClosestFreeSpot(world.player.sprite.position);
             }
 

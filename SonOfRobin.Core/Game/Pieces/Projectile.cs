@@ -44,6 +44,11 @@ namespace SonOfRobin
             float distanceMultiplier = Math.Max(shootingPower / 50f, 0.4f);
             movement *= distanceMultiplier;
             this.AddPassiveMovement(movement: movement);
+
+            this.world.hintEngine.Disable(Tutorials.Type.ShootProjectile);
+            this.world.hintEngine.Disable(PieceHint.Type.AnimalNegative);
+            if (this.name == PieceTemplate.Name.StoneAmmo) this.world.hintEngine.Disable(PieceHint.Type.AnimalSling);
+            if (this.name == PieceTemplate.Name.ArrowWood || this.name == PieceTemplate.Name.ArrowIron) this.world.hintEngine.Disable(PieceHint.Type.AnimalBow);
         }
 
         public override bool ProcessPassiveMovement()

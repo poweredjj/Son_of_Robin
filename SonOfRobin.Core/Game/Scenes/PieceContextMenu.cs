@@ -181,13 +181,17 @@ namespace SonOfRobin
                 return;
             }
 
-            if (Keyboard.HasBeenPressed(Keys.W) || Keyboard.HasBeenPressed(Keys.Up) || GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.DPadUp, analogAsDigital: true))
+            if (Keyboard.HasBeenPressed(key: Keys.W, repeat: true) ||
+                Keyboard.HasBeenPressed(key: Keys.Up, repeat: true) ||
+                GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.DPadUp, analogAsDigital: true, repeat: true))
             {
                 this.ActiveEntry -= 1;
                 this.showCursor = true;
             }
 
-            if (Keyboard.HasBeenPressed(Keys.S) || Keyboard.HasBeenPressed(Keys.Down) || GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.DPadDown, analogAsDigital: true))
+            if (Keyboard.HasBeenPressed(key: Keys.S, repeat: true) ||
+                Keyboard.HasBeenPressed(key: Keys.Down, repeat: true) ||
+                GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.DPadDown, analogAsDigital: true, repeat: true))
             {
                 this.ActiveEntry += 1;
                 this.showCursor = true;
@@ -296,6 +300,7 @@ namespace SonOfRobin
 
                     for (int i = 0; i < 35; i += 5)
                     {
+                        Sprite.ignoreDensityOverride = true;
                         Sprite.maxDistanceOverride = i;
                         BoardPiece newPlantPiece = PieceTemplate.CreateOnBoard(world: fruit.world, position: fruit.world.player.sprite.position, templateName: fruit.spawnerName);
                         if (newPlantPiece.sprite.placedCorrectly)

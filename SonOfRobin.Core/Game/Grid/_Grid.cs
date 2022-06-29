@@ -589,8 +589,7 @@ namespace SonOfRobin
 
             foreach (Cell cell in this.GetCellsInsideRect(this.world.camera.viewRect))
             {
-                MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"Processing cell in camera view {cell.cellNoX},{cell.cellNoY}.", color: Color.White);
-
+                // MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"Processing cell in camera view {cell.cellNoX},{cell.cellNoY}.", color: Color.White);
                 cell.boardGraphics.LoadTexture();
             }
         }

@@ -8,11 +8,11 @@ namespace SonOfRobin
     {
         public enum Type { Hungry, VeryHungry, Starving, Tired, VeryTired, CantShootInWater, CantUseToolInDeepWater, SmallInventory, MapNegative }
 
-        private static readonly int hintDelay = 2 * 60 * 60; // 2 * 60 * 60
+        private static readonly int hintDelay = 1 * 60 * 60; // 1 * 60 * 60
         public static readonly int blockInputDuration = 80;
 
         public List<Type> shownGeneralHints = new List<Type> { };
-        public List<PieceHint.Name> shownPieceHints = new List<PieceHint.Name> { };
+        public List<PieceHint.Type> shownPieceHints = new List<PieceHint.Type> { };
         public List<Tutorials.Type> shownTutorials = new List<Tutorials.Type> { };
         public readonly World world;
         private int waitUntilFrame;
@@ -39,7 +39,7 @@ namespace SonOfRobin
         public void Deserialize(Dictionary<string, Object> hintsData)
         {
             this.shownGeneralHints = (List<Type>)hintsData["shownGeneralHints"];
-            this.shownPieceHints = (List<PieceHint.Name>)hintsData["shownPieceHints"];
+            this.shownPieceHints = (List<PieceHint.Type>)hintsData["shownPieceHints"];
             this.shownTutorials = (List<Tutorials.Type>)hintsData["shownTutorials"];
             this.waitUntilFrame = (int)hintsData["waitUntilFrame"];
         }
@@ -47,13 +47,13 @@ namespace SonOfRobin
         public bool GeneralHintHasBeenShown(Type type)
         { return shownGeneralHints.Contains(type); }
 
-        public bool PieceHintHasBeenShown(PieceHint.Name name)
+        public bool PieceHintHasBeenShown(PieceHint.Type name)
         { return shownPieceHints.Contains(name); }
 
         public bool TutorialHasBeenShown(Tutorials.Type type)
         { return shownTutorials.Contains(type); }
 
-        public bool Show(Type type, bool ignoreDelay = false)
+        public bool ShowGeneralHint(Type type, bool ignoreDelay = false)
         {
             if (!Preferences.showHints) return false;
 
@@ -71,74 +71,97 @@ namespace SonOfRobin
             {
                 case Type.Hungry:
                     {
-                        var messageList = new List<string> { "I'm getting hungry.", "Time to look for something to eat.", "It would be a good idea to eat now.", "Hmm... Dinner time?" };
+                        var messageList = new List<string> {
+                            "I'm getting hungry.",
+                            "Time to look for something to eat.",
+                            "It would be a good idea to eat now.",
+                            "Hmm... Dinner time?" };
+
                         var message = messageList[this.world.random.Next(0, messageList.Count)];
-                        this.DisableType(type: type, delay: 0);
+                        this.Disable(type: type, delay: 0);
                         ShowMessageDuringPause(new List<HintMessage> { new HintMessage(text: message) }); ;
                         break;
                     }
 
                 case Type.VeryHungry:
                     {
-                        var messageList = new List<string> { "I'm really hungry.", "I'm getting really hungry." };
+                        var messageList = new List<string> {
+                            "I'm really hungry.",
+                            "I'm getting really hungry." };
+
                         var message = messageList[this.world.random.Next(0, messageList.Count)];
-                        this.DisableType(type: type, delay: 0);
+                        this.Disable(type: type, delay: 0);
                         ShowMessageDuringPause(new List<HintMessage> { new HintMessage(text: message) });
                         break;
                     }
 
                 case Type.Starving:
                     {
-                        var messageList = new List<string> { "I'm starving.\nI need to eat something right now or else I'm gonna die...", "I'm dying from hunger.", "I have to eat right now!" };
+                        var messageList = new List<string> {
+                            "I'm starving.\nI need to eat something right now or else I'm gonna die...",
+                            "I'm dying from hunger.",
+                            "I have to eat right now!" };
+
                         var message = messageList[this.world.random.Next(0, messageList.Count)];
-                        this.DisableType(type: type, delay: 0);
+                        this.Disable(type: type, delay: 0);
                         ShowMessageDuringPause(new List<HintMessage> { new HintMessage(text: message) });
                         break;
                     }
 
                 case Type.Tired:
                     {
-                        var messageList = new List<string> { "I'm tired.", "I'm kinda sleepy.", "I'm exhausted." };
+                        var messageList = new List<string> {
+                            "I'm tired.",
+                            "I'm kinda sleepy.",
+                            "I'm exhausted." };
+
                         var message = messageList[this.world.random.Next(0, messageList.Count)];
-                        this.DisableType(type: type, delay: 0);
+                        this.Disable(type: type, delay: 0);
                         ShowMessageDuringPause(new List<HintMessage> { new HintMessage(text: message) });
                         break;
                     }
 
                 case Type.VeryTired:
                     {
-                        var messageList = new List<string> { "I'm getting very sleepy.", "I'm so sleepy...", "I have to sleep now...", "I'm gonna collapse if I don't go to sleep now." };
+                        var messageList = new List<string> {
+                            "I'm getting very sleepy.",
+                            "I'm so sleepy...",
+                            "I have to sleep now...",
+                            "I'm gonna collapse if I don't go to sleep now." };
+
                         var message = messageList[this.world.random.Next(0, messageList.Count)];
-                        this.DisableType(type: type, delay: 0);
+                        this.Disable(type: type, delay: 0);
                         ShowMessageDuringPause(new List<HintMessage> { new HintMessage(text: message) });
                         break;
                     }
 
                 case Type.CantShootInWater:
                     {
-                        this.DisableType(type: type, delay: 60 * 60 * 10);
+                        this.Disable(type: type, delay: 60 * 60 * 10);
                         ShowMessageDuringPause(new List<HintMessage> { new HintMessage(text: "I cannot shoot while swimming.") });
 
                         break;
                     }
 
                 case Type.CantUseToolInDeepWater:
-                    this.DisableType(type: type, delay: 60 * 60 * 10);
+                    this.Disable(type: type, delay: 60 * 60 * 10);
                     ShowMessageDuringPause(new List<HintMessage> { new HintMessage(text: "I cannot do this while swimming.") });
 
                     break;
 
                 case Type.SmallInventory:
                     {
-                        this.DisableType(type: type, delay: 0);
-                        ShowMessageDuringPause(new List<HintMessage> { new HintMessage(text: "I cannot carry many items right now.\nWith some leather I should be able to make a backpack.") });
+                        this.Disable(type: type, delay: 0);
+                        ShowMessageDuringPause(new List<HintMessage> {
+                            new HintMessage(text: "I cannot carry many items right now.\nWith some leather I should be able to make a backpack.") });
                         break;
                     }
 
                 case Type.MapNegative:
                     {
-                        this.DisableType(type: type, delay: 0);
-                        ShowMessageDuringPause(new List<HintMessage> { new HintMessage(text: "I don't have a map.\nIf I had some leather and a workshop - I could make one.") });
+                        this.Disable(type: type, delay: 0);
+                        ShowMessageDuringPause(new List<HintMessage> {
+                            new HintMessage(text: "I don't have a map.\nIf I had some leather and a workshop - I could make one.") });
                         break;
                     }
 
@@ -155,7 +178,7 @@ namespace SonOfRobin
             if (!Preferences.showHints || this.world.player.activeState != BoardPiece.State.PlayerControlledWalking) return;
             if (!forcedMode && this.world.currentUpdate < this.waitUntilFrame) return;
 
-            bool hintShown = PieceHint.CheckForHintToShow(player: world.player, shownPieceHints: this.shownPieceHints, forcedMode: forcedMode, ignoreInputActive: ignoreInputActive);
+            bool hintShown = PieceHint.CheckForHintToShow(hintEngine: this, player: world.player, forcedMode: forcedMode, ignoreInputActive: ignoreInputActive);
             if (hintShown) this.waitUntilFrame = this.world.currentUpdate + hintDelay;
         }
 
@@ -198,18 +221,24 @@ namespace SonOfRobin
             this.shownTutorials.Clear();
             this.waitUntilFrame = 0;
         }
+        public void Enable(Type type)
+        {
+            this.shownGeneralHints.Remove(type);
+        }
 
-        private void DisableType(Type type, int delay = 0)
+        private void Disable(Type type, int delay = 0)
         {
             if (!this.shownGeneralHints.Contains(type)) this.shownGeneralHints.Add(type);
 
             if (delay != 0) new WorldEvent(eventName: WorldEvent.EventName.RestoreHint, delay: delay, world: this.world, boardPiece: null, eventHelper: type);
         }
 
-        public void EnableType(Type type)
-        {
-            this.shownGeneralHints.Remove(type);
-        }
+        public void Disable(PieceHint.Type type)
+        { if (!this.shownPieceHints.Contains(type)) this.shownPieceHints.Add(type); }
+
+        public void Disable(Tutorials.Type type)
+        { if (!this.shownTutorials.Contains(type)) this.shownTutorials.Add(type); }
+
 
     }
 }

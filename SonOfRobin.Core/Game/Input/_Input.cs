@@ -8,6 +8,9 @@ namespace SonOfRobin
         private static bool globalInputActive = true;
         private static int globalInputReactivateUpdate = 0;
 
+        public static readonly int defaultButtonRepeatThreshold = 35;
+        public static readonly int defaultButtonRepeatFrames = 6;
+
         public static bool InputActive { get { return localInputActive == true && globalInputActive == true; } set { localInputActive = value; } }
         public static bool GlobalInputActive
         {

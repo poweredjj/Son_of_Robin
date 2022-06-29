@@ -27,6 +27,8 @@ namespace SonOfRobin
             Menu menu;
             World world;
 
+            // Range example - valueList: Enumerable.Range(-1, 300).Cast<object>().ToList()
+
             switch (templateName)
             {
                 case Name.Main:
@@ -96,7 +98,7 @@ namespace SonOfRobin
                     menu = new Menu(templateName: templateName, name: "PAUSE", blocksUpdatesBelow: true, canBeClosedManually: true);
                     new Invoker(menu: menu, name: "return to game", closesMenu: true, taskName: Scheduler.TaskName.Empty);
 
-                    if (world?.player?.activeState == BoardPiece.State.PlayerControlledWalking) new Invoker(menu: menu, name: "save game", taskName: Scheduler.TaskName.OpenSaveMenu);
+                    if (world?.player?.activeState == BoardPiece.State.PlayerControlledWalking && world.player.alive) new Invoker(menu: menu, name: "save game", taskName: Scheduler.TaskName.OpenSaveMenu);
                     if (SaveHeaderManager.AnySavesExist) new Invoker(menu: menu, name: "load game", taskName: Scheduler.TaskName.OpenLoadMenu);
                     new Invoker(menu: menu, name: "options", taskName: Scheduler.TaskName.OpenOptionsMenu);
                     if (world.hintEngine.shownTutorials.Count > 0) new Invoker(menu: menu, name: "tutorials", taskName: Scheduler.TaskName.OpenTutorialsMenu);
@@ -109,7 +111,7 @@ namespace SonOfRobin
                     return menu;
 
                 case Name.GameOver:
-                    menu = new Menu(templateName: templateName, name: "GAME OVER", blocksUpdatesBelow: true, canBeClosedManually: false, layout: Menu.Layout.Middle);
+                    menu = new Menu(templateName: templateName, name: "GAME OVER", blocksUpdatesBelow: false, canBeClosedManually: false, layout: Menu.Layout.Middle);
                     if (SaveHeaderManager.AnySavesExist) new Invoker(menu: menu, name: "load game", taskName: Scheduler.TaskName.OpenLoadMenu);
                     new Invoker(menu: menu, name: "return to main menu", closesMenu: true, taskName: Scheduler.TaskName.ReturnToMainMenu);
                     if (SonOfRobinGame.platform != Platform.Mobile)
@@ -179,10 +181,10 @@ namespace SonOfRobin
 
                     if (world != null && !world.demoMode) new Invoker(menu: menu, name: "create any piece", taskName: Scheduler.TaskName.OpenCreateAnyPieceMenu);
                     new Selector(menu: menu, name: "create missing pieces", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: new Preferences(), propertyName: "debugCreateMissingPieces");
+                    new Selector(menu: menu, name: "god mode", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: new Preferences(), propertyName: "DebugGodMode");
                     new Selector(menu: menu, name: "show whole map", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: new Preferences(), propertyName: "debugShowWholeMap");
                     new Selector(menu: menu, name: "show all items on map", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: new Preferences(), propertyName: "debugShowAllMapPieces");
                     new Invoker(menu: menu, name: "restore all hints", taskName: Scheduler.TaskName.RestoreHints);
-                    new Selector(menu: menu, name: "god mode", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: new Preferences(), propertyName: "debugGodMode");
                     new Selector(menu: menu, name: "show fruit rects", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: new Preferences(), propertyName: "debugShowFruitRects");
                     new Selector(menu: menu, name: "show sprite rects", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: new Preferences(), propertyName: "debugShowRects");
                     new Selector(menu: menu, name: "show cells", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: new Preferences(), propertyName: "debugShowCellData");

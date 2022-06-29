@@ -30,7 +30,6 @@ namespace SonOfRobin
 
         // debug variables should not be saved to preferences file
         public static bool debugUseMultipleThreads = true;
-        public static bool debugGodMode = false;
         public static bool debugShowRects = false;
         public static bool debugShowCellData = false;
         public static bool debugShowStates = false;
@@ -39,6 +38,20 @@ namespace SonOfRobin
         public static bool debugCreateMissingPieces = true;
         public static bool debugShowWholeMap = false;
         public static bool debugShowAllMapPieces = false;
+
+        private static bool debugGodMode = false;
+        public static bool DebugGodMode
+        {
+            get { return debugGodMode; }
+            set
+            {
+                debugGodMode = value;
+                debugShowWholeMap = debugGodMode;
+                debugShowAllMapPieces = debugGodMode;
+                World world = World.GetTopWorld();
+                if (world != null) world.mapEnabled = debugGodMode;
+            }
+        }
 
         public static ButtonScheme.Type ControlTipsScheme
         {

@@ -27,7 +27,7 @@ namespace SonOfRobin
         private readonly ushort sightRange;
         public AiData aiData;
         public BoardPiece target;
-        private readonly List<PieceTemplate.Name> eats;
+        public readonly List<PieceTemplate.Name> eats;
         private readonly List<PieceTemplate.Name> isEatenBy;
 
         private float FedPercentage // float 0-1
@@ -38,9 +38,9 @@ namespace SonOfRobin
 
         public float MaxMassPercentage { get { return this.Mass / this.maxMass; } }
 
-        public Animal(World world, Vector2 position, AnimPkg animPackage, PieceTemplate.Name name, AllowedFields allowedFields, Dictionary<byte, int> maxMassBySize, int mass, int maxMass, byte awareness, bool female, int maxAge, int matureAge, uint pregnancyDuration, byte maxChildren, float maxStamina, int maxHitPoints, ushort sightRange, string readableName, string description, List<PieceTemplate.Name> eats, List<PieceTemplate.Name> isEatenBy, int strength, float massBurnedMultiplier, byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = false, int generation = 0, Yield yield = null, bool fadeInAnim = true) :
+        public Animal(World world, Vector2 position, AnimPkg animPackage, PieceTemplate.Name name, AllowedFields allowedFields, Dictionary<byte, int> maxMassBySize, int mass, int maxMass, byte awareness, bool female, int maxAge, int matureAge, uint pregnancyDuration, byte maxChildren, float maxStamina, int maxHitPoints, ushort sightRange, string readableName, string description, List<PieceTemplate.Name> eats, int strength, float massBurnedMultiplier, byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = false, int generation = 0, Yield yield = null, bool fadeInAnim = true) :
 
-            base(world: world, position: position, animPackage: animPackage, mass: mass, animSize: animSize, animName: animName, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedFields: allowedFields, floatsOnWater: floatsOnWater, maxMassBySize: maxMassBySize, generation: generation, speed: speed, maxAge: maxAge, maxHitPoints: maxHitPoints, yield: yield, fadeInAnim: fadeInAnim, isShownOnMiniMap: true, readableName: readableName, description: description)
+            base(world: world, position: position, animPackage: animPackage, mass: mass, animSize: animSize, animName: animName, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedFields: allowedFields, floatsOnWater: floatsOnWater, maxMassBySize: maxMassBySize, generation: generation, speed: speed, maxAge: maxAge, maxHitPoints: maxHitPoints, yield: yield, fadeInAnim: fadeInAnim, isShownOnMiniMap: true, readableName: readableName, description: description, staysAfterDeath: 30 * 60)
         {
             this.activeState = State.AnimalAssessSituation;
             this.target = null;
@@ -59,7 +59,7 @@ namespace SonOfRobin
             this.stamina = maxStamina;
             this.sightRange = sightRange;
             this.eats = eats;
-            this.isEatenBy = isEatenBy;
+            this.isEatenBy = PieceInfo.GetIsEatenBy(this.name);
             this.aiData = new AiData();
             this.strength = strength;
 
@@ -110,6 +110,9 @@ namespace SonOfRobin
 
             StatBar.FinishThisBatch();
         }
+
+        private static bool CanThisFoodRunAway(object food)
+        { return food.GetType() == typeof(Player) || food.GetType() == typeof(Animal); }
 
         public void ExpendEnergy(float energyAmount)
         {
@@ -368,7 +371,8 @@ namespace SonOfRobin
                 return;
             }
 
-            if (this.sprite.CheckIfOtherSpriteIsWithinRange(target: target.sprite, range: this.target.GetType() == typeof(Plant) ? 4 : 10))
+            if (this.sprite.CheckIfOtherSpriteIsWithinRange(target: target.sprite,
+                range: CanThisFoodRunAway(this.target) ? 4 : 10))
             {
                 if (this.eats.Contains(this.target.name))
                 {
@@ -384,7 +388,7 @@ namespace SonOfRobin
                     return;
                 }
 
-                else throw new DivideByZeroException($"Target is not food nor mate.");
+                else throw new DivideByZeroException($"Target '{this.target.name}' is not food nor mate.");
             }
 
             if (this.world.random.Next(0, this.awareness) == 0) // once in a while it is good to look around and assess situation
@@ -421,19 +425,24 @@ namespace SonOfRobin
             if (this.target is null ||
                 !this.target.exists ||
                 this.target.Mass <= 0 ||
-                !this.sprite.CheckIfOtherSpriteIsWithinRange(target: this.target.sprite, range: this.target.GetType() == typeof(Plant) ? 4 : 15))
+                !this.sprite.CheckIfOtherSpriteIsWithinRange(target: this.target.sprite, range: CanThisFoodRunAway(this.target) ? 4 : 15))
             {
                 this.activeState = State.AnimalAssessSituation;
                 this.aiData.Reset();
                 return;
             }
 
-            if (!this.target.alive || this.target.GetType() == typeof(Plant))
+            if (!this.target.alive || !CanThisFoodRunAway(this.target))
             {
                 this.activeState = State.AnimalEat;
                 this.aiData.Reset();
                 return;
             }
+
+            if (this.world.currentUpdate < this.attackCooldown) return;
+            this.attackCooldown = this.world.currentUpdate + 20;
+
+            float targetSpeed;
 
             if (this.target.GetType() == typeof(Animal))
             {
@@ -442,32 +451,36 @@ namespace SonOfRobin
                 animalTarget.aiData.Reset();
                 animalTarget.activeState = State.AnimalFlee;
 
-                if (this.world.currentUpdate < this.attackCooldown) return;
-                this.attackCooldown = this.world.currentUpdate + 20;
+                targetSpeed = (float)animalTarget.RealSpeed;
+            }
+            else if (this.target.GetType() == typeof(Player))
+            {
+                targetSpeed = this.target.speed;
+                this.attackCooldown += this.world.random.Next(0, 40);
+            }
+            else throw new ArgumentException($"Unsupported target class - '{this.target.GetType()}'.");
 
-                int attackChance = Convert.ToInt32(Math.Max(Math.Min((float)animalTarget.RealSpeed / (float)this.RealSpeed, 30), 1)); // 1 == guaranteed hit, higher values == lower chance
-                if (this.world.random.Next(0, attackChance) == 0)
-                {
-                    BoardPiece attackEffect = PieceTemplate.CreateOnBoard(world: this.world, position: animalTarget.sprite.position, templateName: PieceTemplate.Name.Attack);
-                    new Tracking(world: world, targetSprite: animalTarget.sprite, followingSprite: attackEffect.sprite);
+            int attackChance = (int)Math.Max(Math.Min((float)targetSpeed / (float)this.RealSpeed, 30), 1); // 1 == guaranteed hit, higher values == lower chance
 
-                    if (this.world.random.Next(0, 2) == 0) PieceTemplate.CreateOnBoard(world: this.world, position: animalTarget.sprite.position, templateName: PieceTemplate.Name.BloodSplatter);
+            if (this.world.random.Next(0, attackChance) == 0)
+            {
+                BoardPiece attackEffect = PieceTemplate.CreateOnBoard(world: this.world, position: this.target.sprite.position, templateName: PieceTemplate.Name.Attack);
+                new Tracking(world: world, targetSprite: this.target.sprite, followingSprite: attackEffect.sprite);
 
-                    if (animalTarget.yield != null) animalTarget.yield.DropDebris();
+                if (this.world.random.Next(0, 2) == 0) PieceTemplate.CreateOnBoard(world: this.world, position: this.target.sprite.position, templateName: PieceTemplate.Name.BloodSplatter);
 
-                    int attackStrength = Convert.ToInt32(this.world.random.Next(Convert.ToInt32(this.strength * 0.75), Convert.ToInt32(this.strength * 1.5)) * this.efficiency);
-                    animalTarget.hitPoints = Math.Max(0, animalTarget.hitPoints - attackStrength);
-                    if (animalTarget.hitPoints <= 0) animalTarget.Kill();
+                if (this.target.yield != null) this.target.yield.DropDebris();
 
-                    animalTarget.AddPassiveMovement(movement: (this.sprite.position - animalTarget.sprite.position) * -0.3f * attackStrength);
+                int attackStrength = Convert.ToInt32(this.world.random.Next(Convert.ToInt32(this.strength * 0.75), Convert.ToInt32(this.strength * 1.5)) * this.efficiency);
+                this.target.hitPoints = Math.Max(0, this.target.hitPoints - attackStrength);
+                if (this.target.hitPoints <= 0) this.target.Kill();
 
-                }
-
-                else // if attack has missed
-                {
-                    BoardPiece miss = PieceTemplate.CreateOnBoard(world: this.world, position: animalTarget.sprite.position, templateName: PieceTemplate.Name.Miss);
-                    new Tracking(world: world, targetSprite: animalTarget.sprite, followingSprite: miss.sprite);
-                }
+                this.target.AddPassiveMovement(movement: (this.sprite.position - this.target.sprite.position) * -0.3f * attackStrength);
+            }
+            else // if attack has missed
+            {
+                BoardPiece miss = PieceTemplate.CreateOnBoard(world: this.world, position: this.target.sprite.position, templateName: PieceTemplate.Name.Miss);
+                new Tracking(world: world, targetSprite: this.target.sprite, followingSprite: miss.sprite);
             }
         }
 
@@ -482,9 +495,16 @@ namespace SonOfRobin
                 return;
             }
 
-            bool eatingPlant = this.target.GetType() == typeof(Plant);  // meat is more nutricious than plants
-            var bittenMass = Math.Min(eatingPlant ? 25 : 5, this.target.Mass);
-            this.AcquireEnergy(bittenMass * (eatingPlant ? 0.5f : 6f));
+            if (CanThisFoodRunAway(this.target) && this.target.yield != null && this.world.random.Next(0, 30) == 0)
+            {
+                PieceTemplate.CreateOnBoard(world: this.world, position: this.target.sprite.position, templateName: PieceTemplate.Name.Attack);
+                this.target.yield.DropDebris();
+                this.target.AddPassiveMovement(movement: new Vector2(this.world.random.Next(35, 75) * this.world.random.Next(-1, 1), this.world.random.Next(35, 75) * this.world.random.Next(-1, 1)));
+            }
+
+            bool eatingPlantOrFruit = !CanThisFoodRunAway(this.target);  // meat is more nutricious than plants
+            var bittenMass = Math.Min(eatingPlantOrFruit ? 25 : 5, this.target.Mass);
+            this.AcquireEnergy(bittenMass * (eatingPlantOrFruit ? 0.5f : 6f));
 
             this.target.Mass = Math.Max(this.target.Mass - bittenMass, 0);
 

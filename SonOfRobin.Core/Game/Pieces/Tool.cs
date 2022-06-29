@@ -169,18 +169,67 @@ namespace SonOfRobin
             }
 
             if (this.world.currentUpdate < this.hitCooldown || this.world.player.Stamina < 80) return;
-
             if (targetPiece == null) return;
-
 
             float currentMultiplier = 0;
             TargetCategory targetCategory = GetTargetCategory(targetPiece: targetPiece);
+
+            switch (targetCategory)
+            {
+                case TargetCategory.Wood:
+                    this.world.hintEngine.Disable(PieceHint.Type.WoodNegative);
+                    this.world.hintEngine.Disable(PieceHint.Type.WoodPositive);
+                    this.world.hintEngine.Disable(Tutorials.Type.GetWood);
+
+                    if (targetPiece.name == PieceTemplate.Name.CrateRegular) this.world.hintEngine.Disable(PieceHint.Type.CrateAnother);
+
+                    break;
+
+                case TargetCategory.Stone:
+                    this.world.hintEngine.Disable(PieceHint.Type.StoneNegative);
+                    this.world.hintEngine.Disable(PieceHint.Type.StonePositive);
+                    this.world.hintEngine.Disable(Tutorials.Type.Mine);
+                    break;
+
+                case TargetCategory.Metal:
+                    break;
+
+                case TargetCategory.SmallPlant:
+                    break;
+
+                case TargetCategory.Animal:
+                    this.world.hintEngine.Disable(PieceHint.Type.AnimalNegative);
+                    if (this.name == PieceTemplate.Name.BatWood) this.world.hintEngine.Disable(PieceHint.Type.AnimalBat);
+                    if (this.name == PieceTemplate.Name.Sling || this.name == PieceTemplate.Name.GreatSling) this.world.hintEngine.Disable(PieceHint.Type.AnimalSling);
+
+                    if (this.name == PieceTemplate.Name.AxeWood ||
+                        this.name == PieceTemplate.Name.AxeStone ||
+                        this.name == PieceTemplate.Name.AxeIron)
+                        this.world.hintEngine.Disable(PieceHint.Type.AnimalAxe);
+                    break;
+
+                default:
+                    throw new ArgumentException($"Unsupported targetCategory - {targetCategory}.");
+            }
+
+            if (this.name == PieceTemplate.Name.Hand) this.world.hintEngine.Disable(Tutorials.Type.BreakThing);
+            if (targetPiece.name == PieceTemplate.Name.CoalDeposit)
+            {
+                this.world.hintEngine.Disable(PieceHint.Type.CoalDepositNegative);
+                this.world.hintEngine.Disable(PieceHint.Type.CoalDepositPositive);
+            }
+            if (targetPiece.name == PieceTemplate.Name.IronDeposit)
+            {
+                this.world.hintEngine.Disable(PieceHint.Type.IronDepositNegative);
+                this.world.hintEngine.Disable(PieceHint.Type.IronDepositPositive);
+            }
+
             if (this.multiplierByCategory.ContainsKey(targetCategory)) currentMultiplier = this.multiplierByCategory[targetCategory];
             if (isVeryTired) currentMultiplier /= 2;
 
             if (currentMultiplier == 0)
             {
-                new TextWindow(text: $"{this.readableName} is too weak to destroy this.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, blockInputDuration: 45);
+                new TextWindow(text: $"{Helpers.FirstCharToUpperCase(this.readableName)} is too weak to destroy this.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1);
                 return;
             }
 

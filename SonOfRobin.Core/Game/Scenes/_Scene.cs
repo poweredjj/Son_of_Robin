@@ -322,7 +322,6 @@ namespace SonOfRobin
 
         public static void SetInventoryLayout(InventoryLayout newLayout, BoardPiece chest = null, Player player = null)
         {
-
             var invScenes = GetAllScenesOfType(typeof(Inventory));
             foreach (Scene scene in invScenes)
             {
@@ -366,6 +365,7 @@ namespace SonOfRobin
                         Inventory inventoryRight = new Inventory(piece: player, storage: player.equipStorage, layout: Inventory.Layout.DualRight, blocksUpdatesBelow: false, otherInventory: inventoryLeft);
                         inventoryLeft.otherInventory = inventoryRight;
 
+                        player.world.hintEngine.Disable(Tutorials.Type.Equip);
                         break;
                     }
 

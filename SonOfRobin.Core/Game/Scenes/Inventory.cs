@@ -194,7 +194,7 @@ namespace SonOfRobin
             }
 
             var entryList = new List<InfoWindow.TextEntry> {
-                new InfoWindow.TextEntry(frame:selectedPiece.sprite.frame, text: selectedPiece.readableName, color: Color.White, scale: 1.5f),
+                new InfoWindow.TextEntry(frame:selectedPiece.sprite.frame, text: Helpers.FirstCharToUpperCase(selectedPiece.readableName), color: Color.White, scale: 1.5f),
                 new InfoWindow.TextEntry(text: selectedPiece.description, color: Color.White)};
 
             if (selectedPiece.buffList != null)
@@ -507,19 +507,27 @@ namespace SonOfRobin
 
         private void MoveCursorByNormalInput()
         {
-            if (Keyboard.HasBeenPressed(Keys.A) || Keyboard.HasBeenPressed(Keys.Left) || GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.DPadLeft, analogAsDigital: true))
+            if (Keyboard.HasBeenPressed(key: Keys.A, repeat: true) ||
+                Keyboard.HasBeenPressed(key: Keys.Left, repeat: true) ||
+                GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.DPadLeft, analogAsDigital: true, repeat: true))
             {
                 this.CursorX -= 1;
             }
-            if (Keyboard.HasBeenPressed(Keys.D) || Keyboard.HasBeenPressed(Keys.Right) || GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.DPadRight, analogAsDigital: true))
+            if (Keyboard.HasBeenPressed(key: Keys.D, repeat: true) ||
+                Keyboard.HasBeenPressed(key: Keys.Right, repeat: true) ||
+                GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.DPadRight, analogAsDigital: true, repeat: true))
             {
                 this.CursorX += 1;
             }
-            if (Keyboard.HasBeenPressed(Keys.W) || Keyboard.HasBeenPressed(Keys.Up) || GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.DPadUp, analogAsDigital: true))
+            if (Keyboard.HasBeenPressed(key: Keys.W, repeat: true) ||
+                Keyboard.HasBeenPressed(key: Keys.Up, repeat: true) ||
+                GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.DPadUp, analogAsDigital: true, repeat: true))
             {
                 this.CursorY -= 1;
             }
-            if (Keyboard.HasBeenPressed(Keys.S) || Keyboard.HasBeenPressed(Keys.Down) || GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.DPadDown, analogAsDigital: true))
+            if (Keyboard.HasBeenPressed(key: Keys.S, repeat: true) ||
+                Keyboard.HasBeenPressed(key: Keys.Down, repeat: true) ||
+                GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.DPadDown, analogAsDigital: true, repeat: true))
             {
                 this.CursorY += 1;
             }

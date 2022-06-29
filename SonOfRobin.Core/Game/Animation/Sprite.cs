@@ -18,6 +18,7 @@ namespace SonOfRobin
 
         public enum AdditionalMoveType { None, Minimal, Half }
         public static int maxDistanceOverride = -1; // -1 will not affect sprite creation; higher values will override one sprite creation
+        public static bool ignoreDensityOverride = false; // will ignore density for one sprite creation
 
         public readonly string id;
         public readonly BoardPiece boardPiece;
@@ -41,6 +42,7 @@ namespace SonOfRobin
         public readonly bool checksFullCollisions;
         public readonly bool ignoresCollisions;
         public AllowedFields allowedFields;
+        private readonly AllowedDensity allowedDensity;
         private readonly bool floatsOnWater;
         public readonly bool isShownOnMiniMap;
         public bool hasBeenDiscovered;
@@ -89,7 +91,7 @@ namespace SonOfRobin
             }
         }
 
-        public Sprite(World world, string id, BoardPiece boardPiece, Vector2 position, AnimPkg animPackage, byte animSize, string animName, bool ignoresCollisions, AllowedFields allowedFields, bool blocksMovement = true, bool visible = true, bool checksFullCollisions = false, ushort minDistance = 0, ushort maxDistance = 100, bool floatsOnWater = false, bool fadeInAnim = true, bool placeAtBeachEdge = false, bool isShownOnMiniMap = false)
+        public Sprite(World world, string id, BoardPiece boardPiece, Vector2 position, AnimPkg animPackage, byte animSize, string animName, bool ignoresCollisions, AllowedFields allowedFields, bool blocksMovement = true, bool visible = true, bool checksFullCollisions = false, ushort minDistance = 0, ushort maxDistance = 100, bool floatsOnWater = false, bool fadeInAnim = true, bool placeAtBeachEdge = false, bool isShownOnMiniMap = false, AllowedDensity allowedDensity = null)
         {
             this.id = id; // duplicate from BoardPiece class
             this.boardPiece = boardPiece;
@@ -109,6 +111,13 @@ namespace SonOfRobin
             this.checksFullCollisions = checksFullCollisions;
             this.ignoresCollisions = ignoresCollisions;
             this.allowedFields = allowedFields;
+            this.allowedDensity = allowedDensity;
+            if (ignoreDensityOverride)
+            {
+                this.allowedDensity = null;
+                ignoreDensityOverride = false;
+            }
+            if (this.allowedDensity != null) this.allowedDensity.FinishCreation(piece: this.boardPiece, sprite: this);
             this.visible = visible; // initially it is assigned normally
             this.isShownOnMiniMap = isShownOnMiniMap;
             this.effectCol = new EffectCol(sprite: this);
@@ -477,9 +486,9 @@ namespace SonOfRobin
         {
             if (this.world.freePiecesPlacingMode) return false;
 
-            // checking world boundaries
             if (this.gfxRect.Left <= 0 || this.gfxRect.Right >= this.world.width || this.gfxRect.Top <= 0 || this.gfxRect.Bottom >= this.world.height) return true;
             if (this.ignoresCollisions) return false;
+            if (this.allowedDensity != null && !this.allowedDensity.CanBePlacedHere()) return true;
             if (!this.allowedFields.CanStandHere(world: this.world, position: this.position)) return true;
 
             var gridTypeToCheck = this.checksFullCollisions ? Cell.Group.ColAll : Cell.Group.ColBlocking;
@@ -653,27 +662,21 @@ namespace SonOfRobin
             if (Preferences.debugShowRects)
             { SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, new Rectangle(Convert.ToInt32(this.gfxRect.X), Convert.ToInt32(this.gfxRect.Y), this.gfxRect.Width, this.gfxRect.Height), this.gfxRect, Color.White * 0.5f); }
 
-            int submergeCorrection = 0;
-            if (!this.floatsOnWater && this.IsInWater && calculateSubmerge) submergeCorrection = Convert.ToInt32((Terrain.waterLevelMax - this.GetFieldValue(TerrainName.Height)) / 2);
-
             bool effectsShouldBeEnabled = this.effectCol.ThereAreEffectsToRender;
-            bool thereWillBeMoreEffects = false;
-            while (true)
+            if (!effectsShouldBeEnabled) this.DrawRoutine(calculateSubmerge);
+            else
             {
-                if (effectsShouldBeEnabled) thereWillBeMoreEffects = this.effectCol.TurnOnNextEffect(world: this.world);
-
-                if (this.rotation == 0) this.frame.Draw(destRect: this.gfxRect, color: this.color, submergeCorrection: submergeCorrection, opacity: this.opacity);
-                else this.frame.DrawWithRotation(position: new Vector2(this.gfxRect.Center.X, this.gfxRect.Center.Y), color: this.color, rotation: this.rotation, opacity: this.opacity);
-
-                if (this.boardPiece.pieceStorage != null && this.boardPiece.GetType() == typeof(Plant)) this.DrawFruits();
-
-                if (!thereWillBeMoreEffects)
+                bool thereWillBeMoreEffects = false;
+                while (true)
                 {
-                    if (effectsShouldBeEnabled)
+                    if (effectsShouldBeEnabled) thereWillBeMoreEffects = this.effectCol.TurnOnNextEffect(world: this.world);
+                    this.DrawRoutine(calculateSubmerge);
+
+                    if (!thereWillBeMoreEffects)
                     {
                         this.world.StartNewSpriteBatch(enableEffects: false);
+                        break;
                     }
-                    break;
                 }
             }
 
@@ -688,6 +691,24 @@ namespace SonOfRobin
                 this.world.currentUpdate < this.boardPiece.showStatBarsTillFrame ||
                 this.boardPiece.GetType() == typeof(Player))
             { this.boardPiece.DrawStatBar(); }
+        }
+
+        private void DrawRoutine(bool calculateSubmerge)
+        {
+            if (this.rotation == 0)
+            {
+                int submergeCorrection = !this.floatsOnWater && this.IsInWater && calculateSubmerge ?
+                    (Terrain.waterLevelMax - this.GetFieldValue(TerrainName.Height)) / 2 : 0;
+
+                this.frame.Draw(destRect: this.gfxRect, color: this.color, submergeCorrection: submergeCorrection, opacity: this.opacity);
+            }
+            else
+            {
+                this.frame.DrawWithRotation(position: new Vector2(this.gfxRect.Center.X, this.gfxRect.Center.Y), color: this.color, rotation: this.rotation, opacity: this.opacity);
+            }
+
+            if (this.boardPiece.pieceStorage != null && this.boardPiece.GetType() == typeof(Plant)) this.DrawFruits();
+
         }
 
         private void DrawFruits()

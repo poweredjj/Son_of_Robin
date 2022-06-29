@@ -33,7 +33,6 @@ namespace SonOfRobin
 
                 Yield.antiCraft[this.pieceToCreate] = new Yield(firstDroppedPieces: new List<Yield.DroppedPiece> { }, finalDroppedPieces: finalDroppedPieces);
             }
-
             public bool CheckIfStorageContainsAllIngredients(PieceStorage storage)
             { return storage.CheckIfContainsSpecifiedPieces(quantityByPiece: this.ingredients); }
 
@@ -72,9 +71,19 @@ namespace SonOfRobin
                         }
                     }
                 }
-                string message = this.amountToCreate == 1 ? "Item has been crafted." : $"{this.amountToCreate} items has been crafted.";
+
+                string message = this.amountToCreate == 1 ?
+                    $"{Helpers.FirstCharToUpperCase(PieceInfo.info[this.pieceToCreate].readableName)} has been crafted." :
+                    $"{Helpers.FirstCharToUpperCase(PieceInfo.info[this.pieceToCreate].readableName)} x{this.amountToCreate} has been crafted.";
+
                 new TextWindow(text: message, textColor: Color.White, bgColor: Color.Green, useTransition: true, animate: false, closingTask: Scheduler.TaskName.CheckForPieceHints);
-                MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"'{this.pieceToCreate}' has been crafted.");
+                MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: message);
+
+                HintEngine hintEngine = storage.world.hintEngine;
+
+                hintEngine.Disable(Tutorials.Type.Craft);
+                if (this.pieceToCreate == PieceTemplate.Name.Map) hintEngine.Disable(PieceHint.Type.MapCanMake);
+                if (this.pieceToCreate == PieceTemplate.Name.RegularWorkshop) hintEngine.Disable(Tutorials.Type.BuildWorkshop);
 
                 return true;
             }

@@ -60,7 +60,7 @@ namespace SonOfRobin
                 int offsetX = (int)centerOffset.X;
                 int offsetY = (int)centerOffset.Y;
 
-                var nearbyPieces = this.world.grid.GetPiecesWithinDistance(groupName: Cell.Group.All, mainSprite: this.sprite, distance: 25, offsetX: offsetX, offsetY: offsetY);
+                var nearbyPieces = this.world.grid.GetPiecesWithinDistance(groupName: Cell.Group.All, mainSprite: this.sprite, distance: 35, offsetX: offsetX, offsetY: offsetY);
 
                 var interestingPieces = nearbyPieces.Where(piece => piece.boardTask != Scheduler.TaskName.Empty).ToList();
                 if (interestingPieces.Count > 0)
@@ -94,15 +94,15 @@ namespace SonOfRobin
             get { return this.fatigue; }
             set
             {
-                if (Preferences.debugGodMode) return;
+                if (Preferences.DebugGodMode) return;
 
                 this.fatigue = Math.Min(Math.Max(value, 0), this.maxFatigue);
 
-                if (this.IsVeryTired) this.world.hintEngine.Show(HintEngine.Type.Tired);
-                if (this.FatiguePercent < 0.2f) this.world.hintEngine.EnableType(HintEngine.Type.Tired);
+                if (this.IsVeryTired) this.world.hintEngine.ShowGeneralHint(HintEngine.Type.Tired);
+                if (this.FatiguePercent < 0.2f) this.world.hintEngine.Enable(HintEngine.Type.Tired);
 
-                if (this.FatiguePercent > 0.95f) this.world.hintEngine.Show(HintEngine.Type.VeryTired);
-                if (this.FatiguePercent < 0.8f) this.world.hintEngine.EnableType(HintEngine.Type.VeryTired);
+                if (this.FatiguePercent > 0.95f) this.world.hintEngine.ShowGeneralHint(HintEngine.Type.VeryTired);
+                if (this.FatiguePercent < 0.8f) this.world.hintEngine.Enable(HintEngine.Type.VeryTired);
 
                 if (this.fatigue == this.maxFatigue) new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.SleepOutside, delay: 0, executeHelper: null);
             }
@@ -126,9 +126,9 @@ namespace SonOfRobin
         public PieceStorage toolStorage;
         public PieceStorage equipStorage;
         public Player(World world, Vector2 position, AnimPkg animPackage, PieceTemplate.Name name, AllowedFields allowedFields, byte invWidth, byte invHeight, byte toolbarWidth, byte toolbarHeight, string readableName, string description,
-            byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = false, int generation = 0) :
+            byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = false, int generation = 0, Yield yield = null) :
 
-            base(world: world, position: position, animPackage: animPackage, animSize: animSize, animName: animName, speed: speed, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedFields: allowedFields, floatsOnWater: floatsOnWater, mass: 50000, maxMassBySize: null, generation: generation, canBePickedUp: false, maxHitPoints: 200, fadeInAnim: false, placeAtBeachEdge: true, isShownOnMiniMap: true, readableName: readableName, description: description)
+            base(world: world, position: position, animPackage: animPackage, animSize: animSize, animName: animName, speed: speed, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedFields: allowedFields, floatsOnWater: floatsOnWater, mass: 50000, maxMassBySize: null, generation: generation, canBePickedUp: false, maxHitPoints: 400, fadeInAnim: false, placeAtBeachEdge: true, isShownOnMiniMap: true, readableName: readableName, description: description, yield: yield)
         {
             this.maxFedLevel = 40000;
             this.fedLevel = maxFedLevel;
@@ -175,8 +175,17 @@ namespace SonOfRobin
 
         public override void Kill()
         {
+            if (Preferences.DebugGodMode) return;
+
             base.Kill();
-            MenuTemplate.CreateMenuFromTemplate(templateName: MenuTemplate.Name.GameOver);
+
+            SolidColor solidColor = new SolidColor(color: Color.DarkRed, viewOpacity: 0.8f, clearScreen: false);
+            solidColor.AddTransition(new Transition(type: Transition.TransType.From, duration: 250, scene: solidColor, blockInput: false, paramsToChange: new Dictionary<string, float> { { "opacity", 0f } }));
+
+            new Scheduler.Task(taskName: Scheduler.TaskName.CameraZoom, turnOffInput: true, delay: 0, executeHelper: 3f, menu: null);
+            new Scheduler.Task(taskName: Scheduler.TaskName.OpenGameOverMenu, turnOffInput: true, delay: 300, menu: null, executeHelper: null);
+            new Scheduler.Task(taskName: Scheduler.TaskName.RemoveScene, turnOffInput: true, delay: 300, menu: null,
+                executeHelper: new Dictionary<string, Object> { { "scene", solidColor }, { "fadeOut", true }, { "fadeOutDuration", 1500 } });
         }
 
         public override Dictionary<string, Object> Serialize()
@@ -226,15 +235,15 @@ namespace SonOfRobin
 
         public void ExpendEnergy(float energyAmount, bool addFatigue = true)
         {
-            if (Preferences.debugGodMode) return;
+            if (Preferences.DebugGodMode) return;
 
             if (this.fedLevel > 0)
             {
                 this.fedLevel = Convert.ToInt32(Math.Max(this.fedLevel - Math.Max(energyAmount / 2, 1), 0));
 
-                if (this.FedPercent < 0.5f) this.world.hintEngine.Show(HintEngine.Type.Hungry);
-                if (this.FedPercent < 0.2f) this.world.hintEngine.Show(HintEngine.Type.VeryHungry);
-                if (this.FedPercent < 0.01f) this.world.hintEngine.Show(HintEngine.Type.Starving);
+                if (this.FedPercent < 0.5f) this.world.hintEngine.ShowGeneralHint(HintEngine.Type.Hungry);
+                if (this.FedPercent < 0.2f) this.world.hintEngine.ShowGeneralHint(HintEngine.Type.VeryHungry);
+                if (this.FedPercent < 0.01f) this.world.hintEngine.ShowGeneralHint(HintEngine.Type.Starving);
             }
             else this.hitPoints = Math.Max(this.hitPoints - 0.02f, 0);
 
@@ -249,14 +258,14 @@ namespace SonOfRobin
             this.fedLevel = Math.Min(this.fedLevel + Convert.ToInt32(energyAmount * 2), this.maxFedLevel);
             this.Stamina = this.maxStamina;
 
-            if (this.FedPercent > 0.8f) this.world.hintEngine.EnableType(HintEngine.Type.Hungry);
-            if (this.FedPercent > 0.4f) this.world.hintEngine.EnableType(HintEngine.Type.VeryHungry);
-            if (this.FedPercent > 0.1f) this.world.hintEngine.EnableType(HintEngine.Type.Starving);
+            if (this.FedPercent > 0.8f) this.world.hintEngine.Enable(HintEngine.Type.Hungry);
+            if (this.FedPercent > 0.4f) this.world.hintEngine.Enable(HintEngine.Type.VeryHungry);
+            if (this.FedPercent > 0.1f) this.world.hintEngine.Enable(HintEngine.Type.Starving);
         }
 
         public override void SM_PlayerControlledWalking()
         {
-            if (this.world.currentUpdate % 300 == 0) this.world.hintEngine.CheckForPieceHintToShow();
+            if (this.world.currentUpdate % 120 == 0) this.world.hintEngine.CheckForPieceHintToShow();
 
             this.ExpendEnergy(0.1f);
             if (!this.Walk()) this.Stamina = Math.Min(this.Stamina + 1, this.maxStamina);
@@ -635,7 +644,7 @@ namespace SonOfRobin
             {
                 if (this.sprite.CanDrownHere)
                 {
-                    this.world.hintEngine.Show(HintEngine.Type.CantShootInWater);
+                    this.world.hintEngine.ShowGeneralHint(HintEngine.Type.CantShootInWater);
                     return false;
                 }
 
@@ -662,7 +671,7 @@ namespace SonOfRobin
 
             if (this.sprite.CanDrownHere)
             {
-                this.world.hintEngine.Show(HintEngine.Type.CantUseToolInDeepWater);
+                this.world.hintEngine.ShowGeneralHint(HintEngine.Type.CantUseToolInDeepWater);
                 return false;
             }
 

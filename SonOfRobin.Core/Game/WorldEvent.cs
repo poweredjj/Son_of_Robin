@@ -146,7 +146,7 @@ namespace SonOfRobin
 
                 case EventName.RestoreHint:
                     var hintType = (HintEngine.Type)this.eventHelper;
-                    this.world.hintEngine.EnableType(hintType);
+                    this.world.hintEngine.Enable(hintType);
 
                     MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"Hint '{hintType}' restored.");
 

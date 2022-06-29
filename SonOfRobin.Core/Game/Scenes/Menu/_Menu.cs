@@ -370,10 +370,21 @@ namespace SonOfRobin
                 { entry.ProcessTouch(); }
             }
 
-            if (Keyboard.HasBeenPressed(Keys.W) || Keyboard.HasBeenPressed(Keys.Up) || GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.DPadUp, analogAsDigital: true)) this.PreviousItem();
-            if (Keyboard.HasBeenPressed(Keys.S) || Keyboard.HasBeenPressed(Keys.Down) || GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.DPadDown, analogAsDigital: true)) this.NextItem();
-            if (Keyboard.HasBeenPressed(Keys.A) || Keyboard.HasBeenPressed(Keys.Left) || GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.DPadLeft, analogAsDigital: true)) this.ActiveEntry.PreviousValue();
-            if (Keyboard.HasBeenPressed(Keys.D) || Keyboard.HasBeenPressed(Keys.Right) || GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.DPadRight, analogAsDigital: true)) this.ActiveEntry.NextValue();
+            if (Keyboard.HasBeenPressed(key: Keys.W, repeat: true) ||
+                Keyboard.HasBeenPressed(key: Keys.Up, repeat: true) ||
+                GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.DPadUp, analogAsDigital: true, repeat: true)) this.PreviousItem();
+
+            if (Keyboard.HasBeenPressed(key: Keys.S, repeat: true) ||
+                Keyboard.HasBeenPressed(Keys.Down, repeat: true) ||
+                GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.DPadDown, analogAsDigital: true, repeat: true)) this.NextItem();
+
+            if (Keyboard.HasBeenPressed(key: Keys.A, repeat: true) ||
+                Keyboard.HasBeenPressed(key: Keys.Left, repeat: true) ||
+                GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.DPadLeft, analogAsDigital: true, repeat: true)) this.ActiveEntry.PreviousValue();
+
+            if (Keyboard.HasBeenPressed(key: Keys.D, repeat: true) ||
+                Keyboard.HasBeenPressed(key: Keys.Right, repeat: true) ||
+                GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.DPadRight, analogAsDigital: true, repeat: true)) this.ActiveEntry.NextValue();
 
             if (Keyboard.HasBeenPressed(Keys.Enter) || GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.A)) this.ActiveEntry.Invoke();
         }

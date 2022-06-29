@@ -8,7 +8,7 @@ namespace SonOfRobin
 {
     public class Scheduler
     {
-        public enum TaskName { Empty, CreateNewWorld, CreateNewWorldNow, QuitGame, OpenMainMenu, OpenCreateMenu, OpenOptionsMenu, OpenTutorialsMenu, OpenLoadMenu, OpenSaveMenu, OpenDebugMenu, OpenConfirmationMenu, OpenCreateAnyPieceMenu, OpenGameOverMenu, SaveGame, LoadGame, LoadGameNow, ReturnToMainMenu, SavePrefs, ProcessConfirmation, OpenCraftMenu, Craft, Hit, CreateNewPiece, CreateDebugPieces, OpenContainer, DeleteObsoleteSaves, DropFruit, GetEaten, ExecuteTaskWithDelay, AddWorldEvent, OpenTextWindow, SleepInsideShelter, SleepOutside, TempoFastForward, TempoStop, TempoPlay, CameraTrackPiece, CameraTrackPlayer, CameraZoom, ShowCookingProgress, RestoreHints, OpenMainMenuIfSpecialKeysArePressed, CheckForPieceHints, ShowHint, ExecuteTaskList, ExecuteTaskChain, ShowTutorial }
+        public enum TaskName { Empty, CreateNewWorld, CreateNewWorldNow, QuitGame, OpenMainMenu, OpenCreateMenu, OpenOptionsMenu, OpenTutorialsMenu, OpenLoadMenu, OpenSaveMenu, OpenDebugMenu, OpenConfirmationMenu, OpenCreateAnyPieceMenu, OpenGameOverMenu, SaveGame, LoadGame, LoadGameNow, ReturnToMainMenu, SavePrefs, ProcessConfirmation, OpenCraftMenu, Craft, Hit, CreateNewPiece, CreateDebugPieces, OpenContainer, DeleteObsoleteSaves, DropFruit, GetEaten, ExecuteTaskWithDelay, AddWorldEvent, OpenTextWindow, SleepInsideShelter, SleepOutside, TempoFastForward, TempoStop, TempoPlay, CameraTrackPiece, CameraTrackPlayer, CameraZoom, ShowCookingProgress, RestoreHints, OpenMainMenuIfSpecialKeysArePressed, CheckForPieceHints, ShowHint, ExecuteTaskList, ExecuteTaskChain, ShowTutorial, RemoveScene }
 
         private readonly static Dictionary<int, List<Task>> queue = new Dictionary<int, List<Task>>();
 
@@ -242,6 +242,7 @@ namespace SonOfRobin
                         Menu.RemoveEveryMenuOfTemplate(MenuTemplate.Name.Load);
                         Menu.RemoveEveryMenuOfTemplate(MenuTemplate.Name.Main);
                         Menu.RemoveEveryMenuOfTemplate(MenuTemplate.Name.Pause);
+                        Menu.RemoveEveryMenuOfTemplate(MenuTemplate.Name.GameOver);
 
                         new Task(menu: null, taskName: TaskName.LoadGameNow, turnOffInput: true, delay: 17, executeHelper: this.executeHelper);
 
@@ -330,7 +331,8 @@ namespace SonOfRobin
 
                             if (player.hitPoints == player.maxHitPoints && player.fedLevel >= player.maxFedLevel * 0.95)
                             {
-                                new TextWindow(text: "I am full.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: false);
+                                new TextWindow(text: "I am full.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1);
+
                                 return;
                             }
 
@@ -445,10 +447,13 @@ namespace SonOfRobin
                                 if (player.sprite.CanDrownHere)
                                 {
                                     player.hitPoints = 0;
+                                    player.Kill();
 
                                     var bgColor = new List<byte> { Color.DarkRed.R, Color.DarkRed.G, Color.DarkRed.B };
                                     var textWindowData = new Dictionary<string, Object> { { "text", "You have drowned." }, { "bgColor", bgColor } };
-                                    new Task(menu: null, taskName: TaskName.OpenTextWindow, turnOffInput: true, delay: 1, executeHelper: textWindowData);
+
+                                    new TextWindow(text: "You have drowned.", textColor: Color.White, bgColor: Color.DarkRed, useTransition: true, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 220);
+
                                     return;
                                 }
 
@@ -629,7 +634,7 @@ namespace SonOfRobin
                             if (world == null) return;
 
                             var hintType = (HintEngine.Type)executeHelper;
-                            world.hintEngine.Show(type: hintType, ignoreDelay: true);
+                            world.hintEngine.ShowGeneralHint(type: hintType, ignoreDelay: true);
 
                             return;
                         }
@@ -650,6 +655,18 @@ namespace SonOfRobin
                         CloseGame(quitGame: true);
                         return;
 
+                    case TaskName.RemoveScene:
+                        var removeData = (Dictionary<string, Object>)executeHelper;
+                        Scene scene = (Scene)removeData["scene"];
+                        bool fadeOut = (bool)removeData["fadeOut"];
+                        int fadeOutDuration = (int)removeData["fadeOutDuration"];
+                        if (fadeOut) scene.AddTransition(new Transition(type: Transition.TransType.To, duration: fadeOutDuration, scene: scene, blockInput: false, removeScene: true,
+                            paramsToChange: new Dictionary<string, float> { { "opacity", 0f } }));
+                        else scene.Remove();
+
+
+                        return;
+
 
                     default:
                         throw new DivideByZeroException($"Unsupported taskName - {taskName}.");
@@ -661,7 +678,7 @@ namespace SonOfRobin
             {
                 World world = World.GetTopWorld();
 
-                bool autoSave = world != null && !world.demoMode;
+                bool autoSave = world != null && !world.demoMode && world.player.alive;
 
                 var worldScenes = Scene.GetAllScenesOfType(typeof(World));
                 foreach (World currWorld in worldScenes)

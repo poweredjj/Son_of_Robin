@@ -164,6 +164,8 @@ namespace SonOfRobin
             this.showStatBarsTillFrame = this.world.currentUpdate + cookingTime;
 
             new WorldEvent(eventName: WorldEvent.EventName.FinishCooking, world: this.world, delay: cookingTime, boardPiece: this);
+
+            this.world.hintEngine.Disable(PieceHint.Type.Cooker);
         }
 
         public void ShowCookingProgress()
