@@ -14,11 +14,13 @@ namespace SonOfRobin
             public readonly float scale;
             public readonly int sizeX;
             public readonly int sizeY;
-            public TextEntry(Color color, string text, float scale = 1f)
+            public readonly AnimFrame frame;
+            public TextEntry(Color color, string text, float scale = 1f, AnimFrame frame = null)
             {
                 this.color = color;
                 this.text = text;
                 this.scale = scale;
+                this.frame = frame;
                 Vector2 entrySize = font.MeasureString(this.text) * this.scale;
                 this.sizeX = (int)entrySize.X;
                 this.sizeY = (int)entrySize.Y;
@@ -26,7 +28,7 @@ namespace SonOfRobin
 
             private bool Equals(TextEntry entryToCompare)
             {
-                return entryToCompare.text == this.text && entryToCompare.color == this.color && entryToCompare.scale == this.scale;
+                return entryToCompare.text == this.text && entryToCompare.color == this.color && entryToCompare.scale == this.scale && entryToCompare.frame == this.frame;
             }
 
             public static bool CompareTwoLists(List<TextEntry> list1, List<TextEntry> list2)
@@ -36,7 +38,6 @@ namespace SonOfRobin
                 for (int i = 0; i < list1.Count; i++)
                 {
                     if (!list1[i].Equals(list2[i])) return false;
-
                 }
 
                 return true;
@@ -86,6 +87,8 @@ namespace SonOfRobin
                 {
                     textWidth = entry.sizeX * textScale;
                     textHeight = entry.sizeY * textScale;
+
+                    if (entry.frame != null) textWidth += Margin + textHeight;
 
                     if (textWidth > maxEncounteredWidth) maxEncounteredWidth = textWidth;
                     if (textHeight > maxEncounteredHeight) maxEncounteredHeight = textHeight;
@@ -218,15 +221,27 @@ namespace SonOfRobin
 
             float textScale = this.TextScale;
 
-            Vector2 textPos, shadowPos;
+            Vector2 basePos, textPos, shadowPos;
             float shadowOffset = Math.Max(4f * textScale, 1);
 
             int posX = margin;
             int posY = margin;
 
+            Vector2 maxEntrySize = this.MaxEntrySize;
+
             foreach (TextEntry entry in this.entryList)
             {
-                textPos = new Vector2(posX, posY);
+                basePos = new Vector2(posX, posY);
+                textPos = basePos;
+
+                if (entry.frame != null)
+                {
+                    Rectangle gfxRect = new Rectangle((int)basePos.X, (int)basePos.Y, (int)maxEntrySize.Y, (int)maxEntrySize.Y);
+                    entry.frame.DrawAndKeepInRectBounds(destBoundsRect: gfxRect, color: Color.White * this.viewParams.drawOpacity);
+
+                    textPos.X += (int)maxEntrySize.Y + margin;
+                }
+
                 shadowPos = new Vector2(textPos.X + shadowOffset, textPos.Y + shadowOffset);
 
                 SonOfRobinGame.spriteBatch.DrawString(font, entry.text, position: shadowPos, color: Color.MidnightBlue * this.viewParams.drawOpacity * 0.7f, origin: Vector2.Zero, scale: textScale * entry.scale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);

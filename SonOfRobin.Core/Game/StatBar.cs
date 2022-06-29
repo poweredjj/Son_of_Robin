@@ -9,8 +9,10 @@ namespace SonOfRobin
     {
         private static readonly List<StatBar> barsToDraw = new List<StatBar> { };
         private static int currentBatchCount = 0;
-        private static readonly SpriteFont font = SonOfRobinGame.fontSuperSmall;
 
+        private static readonly SpriteFont defaultFont = SonOfRobinGame.fontSuperSmall;
+        private static SpriteFont currentBatchFont = SonOfRobinGame.fontSuperSmall;
+        private readonly SpriteFont font;
         private readonly Color color;
 
         private readonly string label;
@@ -26,11 +28,24 @@ namespace SonOfRobin
 
         private readonly bool centerX;
 
+        public static int BatchHeight
+        {
+            get
+            {
+                int height = 0;
 
-        public StatBar(int value, int valueMax, Color colorMin, Color colorMax, int posX, int posY, string label, int width = 40, int height = 2, bool ignoreIfAtMax = false, bool centerX = true, bool drawFromTop = true, bool labelAtLeft = true)
+                foreach (StatBar bar in barsToDraw)
+                { height = Math.Max(height, bar.posY + bar.fullHeight); }
+
+                return height;
+            }
+        }
+
+        public StatBar(int value, int valueMax, Color colorMin, Color colorMax, int posX, int posY, string label, int width = 40, int height = 2, bool ignoreIfAtMax = false, bool centerX = true, bool drawFromTop = true, bool labelAtLeft = true, int vOffsetCorrection = 0)
         {
             if (ignoreIfAtMax && value == valueMax) return;
 
+            this.font = currentBatchFont;
             this.centerX = centerX;
 
             float lengthPercentage = 0;
@@ -53,8 +68,8 @@ namespace SonOfRobin
             this.valueWidth = Convert.ToInt32(this.fullWidth * lengthPercentage);
 
             this.posX = this.centerX ? (posX - (this.fullWidth / 2)) : posX;
-            int verticalOffset = 3 + (currentBatchCount * (this.fullHeight + 4));
-            this.posY = drawFromTop ? (posY + verticalOffset) : (posY - verticalOffset);
+            int verticalOffset = 3 + (currentBatchCount * (this.fullHeight + 4 + vOffsetCorrection));
+            this.posY = drawFromTop ? posY + verticalOffset : posY - verticalOffset;
 
             this.label = label;
             this.labelSize = font.MeasureString(this.label);
@@ -68,8 +83,18 @@ namespace SonOfRobin
             currentBatchCount++;
         }
 
+        public static void ChangeBatchFont(SpriteFont spriteFont)
+        {
+            // changes font of next declared stat bars
+
+            currentBatchFont = spriteFont;
+        }
+
         public static void FinishThisBatch()
-        { currentBatchCount = 0; }
+        {
+            currentBatchCount = 0;
+            currentBatchFont = defaultFont;
+        }
 
         private void DrawTxtOutline()
         {
@@ -108,7 +133,7 @@ namespace SonOfRobin
                 bar.DrawTxt();
             }
             barsToDraw.Clear();
-            currentBatchCount = 0;
+            FinishThisBatch();
         }
 
     }

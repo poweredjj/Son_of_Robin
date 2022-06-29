@@ -11,6 +11,7 @@ namespace SonOfRobin
         private static readonly List<PieceTemplate.Name> fuelNames = new List<PieceTemplate.Name> { PieceTemplate.Name.WoodLog, PieceTemplate.Name.WoodPlank, PieceTemplate.Name.Coal };
 
         private readonly float foodMassMultiplier;
+        private int cookingStartFrame;
         private int cookingDoneFrame;
 
         private TimeSpan TimeToFinishCooking
@@ -43,6 +44,7 @@ namespace SonOfRobin
         {
             Dictionary<string, Object> pieceData = base.Serialize();
 
+            pieceData["cooker_cookingStartFrame"] = this.cookingStartFrame;
             pieceData["cooker_cookingDoneFrame"] = this.cookingDoneFrame;
 
             return pieceData;
@@ -51,6 +53,7 @@ namespace SonOfRobin
         public override void Deserialize(Dictionary<string, Object> pieceData)
         {
             base.Deserialize(pieceData);
+            this.cookingStartFrame = (int)pieceData["cooker_cookingStartFrame"];
             this.cookingDoneFrame = (int)pieceData["cooker_cookingDoneFrame"];
         }
 
@@ -62,6 +65,20 @@ namespace SonOfRobin
         public void TurnOff()
         {
             this.sprite.AssignNewName(animName: "off");
+        }
+
+        public override void DrawStatBar()
+        {
+            if (this.world.currentUpdate < this.cookingDoneFrame)
+            {
+                int cookingDuration = this.cookingDoneFrame - this.cookingStartFrame;
+                int cookingCurrentFrame = this.world.currentUpdate - this.cookingStartFrame;
+
+                new StatBar(label: "", value: cookingCurrentFrame, valueMax: cookingDuration, colorMin: new Color(255, 0, 0), colorMax: new Color(255, 128, 0), posX: this.sprite.gfxRect.Center.X, posY: this.sprite.gfxRect.Bottom, ignoreIfAtMax: false);
+            }
+
+            base.DrawStatBar();
+            StatBar.FinishThisBatch();
         }
 
         public void Cook()
@@ -130,7 +147,7 @@ namespace SonOfRobin
             {
                 BoardPiece meal = PieceTemplate.CreateOffBoard(templateName: PieceTemplate.Name.Meal, world: this.world);
                 meal.Mass = Math.Min(cookedMass, singleMealMass);
-                if (meal.Mass == singleMealMass) meal.buffList.Add(new BuffEngine.Buff(world: this.world, type: BuffEngine.BuffType.MaxHp, value: (float)20, autoRemoveDelay: 60 * 60));
+                if (meal.Mass == singleMealMass) meal.buffList.Add(new BuffEngine.Buff(world: this.world, type: BuffEngine.BuffType.MaxHp, value: (float)20, autoRemoveDelay: 3 * 60 * 60, isPositive: true));
                 this.pieceStorage.AddPiece(piece: meal, dropIfDoesNotFit: true);
                 cookedMass = Math.Max(cookedMass - meal.Mass, 0);
 
@@ -141,8 +158,10 @@ namespace SonOfRobin
             this.TurnOn();
             new TextWindow(text: "Cooking...", textColor: Color.White, bgColor: Color.Green, useTransition: true, animate: false);
 
+            this.cookingStartFrame = this.world.currentUpdate;
             this.cookingDoneFrame = this.world.currentUpdate + cookingTime;
             this.boardTask = Scheduler.TaskName.ShowCookingProgress;
+            this.showStatBarsTillFrame = this.world.currentUpdate + cookingTime;
 
             new WorldEvent(eventName: WorldEvent.EventName.FinishCooking, world: this.world, delay: cookingTime, boardPiece: this);
         }

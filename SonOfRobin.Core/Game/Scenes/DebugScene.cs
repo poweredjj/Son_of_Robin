@@ -238,7 +238,10 @@ namespace SonOfRobin
             if (Keyboard.HasBeenPressed(Keys.F6)) ProgressBar.ChangeValues(curVal: 1, maxVal: 5, text: "progressbar test\nsecond line\nand third line");
 
             if (Keyboard.HasBeenPressed(Keys.F7))
-            { world.player.buffEngine.AddBuff(buff: new BuffEngine.Buff(world: world, type: BuffEngine.BuffType.Speed, value: 20f, autoRemoveDelay: 180)); }
+            {
+                float value = world.random.Next(-10, 10);
+                world.player.buffEngine.AddBuff(world: world, buff: new BuffEngine.Buff(world: world, type: BuffEngine.BuffType.Speed, value: value, autoRemoveDelay: world.random.Next(120, 600), isPositive: value > 0));
+            }
 
             if (Keyboard.HasBeenPressed(Keys.F8))
             {
@@ -248,7 +251,7 @@ namespace SonOfRobin
                     infoWindow.TurnOn(newPosX: 100, newPosY: 100, entryList: new List<InfoWindow.TextEntry> {
                         new InfoWindow.TextEntry(text: "First line.", color: Color.White),
                         new InfoWindow.TextEntry(text: "Second line.", color: Color.Green),
-                        new InfoWindow.TextEntry(text: "And this is third line.", color: Color.LightBlue),
+                        new InfoWindow.TextEntry(text: "And this is third line.", color: Color.LightBlue, frame: AnimData.frameListById["Blonde-0-default"][0]),
                     });
                 }
             }
@@ -260,7 +263,7 @@ namespace SonOfRobin
                 {
                     infoWindow.TurnOn(newPosX: 0, newPosY: 0,
                         entryList: new List<InfoWindow.TextEntry> {
-                        new InfoWindow.TextEntry(text: "First line.", color: Color.White, scale: 2f),
+                       // new InfoWindow.TextEntry(text: "First line.", color: Color.White, scale: 2f, animframe: AnimData[]),
                         new InfoWindow.TextEntry(text: "Second line.", color: Color.Green),
                         new InfoWindow.TextEntry(text: "And this is third line.", color: Color.LightBlue),
                         new InfoWindow.TextEntry(text: "This window should be at 0,0.", color: Color.Yellow),
@@ -275,7 +278,7 @@ namespace SonOfRobin
             }
 
             if (Keyboard.HasBeenPressed(Keys.F11))
-            { world.player.buffEngine.AddBuff(buff: new BuffEngine.Buff(world: world, type: BuffEngine.BuffType.EnableMap, value: null, autoRemoveDelay: 200)); }
+            { world.player.buffEngine.AddBuff(world: world, buff: new BuffEngine.Buff(world: world, type: BuffEngine.BuffType.EnableMap, value: null, autoRemoveDelay: 600, isPositive: true)); }
 
             if (Keyboard.HasBeenPressed(Keys.F12) || VirtButton.HasButtonBeenPressed(VButName.DebugRemoveTopScene)) RemoveTopScene();
 

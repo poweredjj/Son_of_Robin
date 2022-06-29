@@ -1024,8 +1024,8 @@ namespace SonOfRobin
                             { TerrainName.Height, new AllowedRange(min: Terrain.waterLevelMax, max: Terrain.volcanoLevelMin) }});
 
                         var buffList = new List<BuffEngine.Buff> {
-                            new BuffEngine.Buff(world: world, type: BuffEngine.BuffType.InvWidth, value: (byte)2),
-                            new BuffEngine.Buff(world: world, type: BuffEngine.BuffType.InvHeight, value: (byte)2)};
+                            new BuffEngine.Buff(world: world, type: BuffEngine.BuffType.InvWidth, value: (byte)2, isPositive: true),
+                            new BuffEngine.Buff(world: world, type: BuffEngine.BuffType.InvHeight, value: (byte)2, isPositive: true)};
 
                         return new Equipment(name: templateName, world: world, position: position, animPackage: AnimPkg.BackpackMedium, blocksMovement: true, allowedFields: allowedFields, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 500, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "Medium backpack", description: "Expands inventory space.");
                     }
@@ -1036,7 +1036,7 @@ namespace SonOfRobin
                             { TerrainName.Height, new AllowedRange(min: Terrain.waterLevelMax, max: Terrain.volcanoLevelMin) }});
 
                         var buffList = new List<BuffEngine.Buff> {
-                            new BuffEngine.Buff(world: world, type: BuffEngine.BuffType.ToolbarWidth, value: (byte)3)};
+                            new BuffEngine.Buff(world: world, type: BuffEngine.BuffType.ToolbarWidth, value: (byte)3, isPositive: true)};
 
                         return new Equipment(name: templateName, world: world, position: position, animPackage: AnimPkg.BeltMedium, blocksMovement: true, allowedFields: allowedFields, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 500, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "Medium belt", description: "Expands belt space.");
                     }
@@ -1046,7 +1046,7 @@ namespace SonOfRobin
                         var allowedFields = new AllowedFields(rangeDict: new Dictionary<TerrainName, AllowedRange>() {
                             { TerrainName.Height, new AllowedRange(min: Terrain.waterLevelMax, max: Terrain.volcanoLevelMin) }});
 
-                        var buffList = new List<BuffEngine.Buff> { new BuffEngine.Buff(world: world, type: BuffEngine.BuffType.EnableMap, value: null) };
+                        var buffList = new List<BuffEngine.Buff> { new BuffEngine.Buff(world: world, type: BuffEngine.BuffType.EnableMap, value: null, isPositive: true) };
 
                         return new Equipment(name: templateName, world: world, position: position, animPackage: AnimPkg.Map, blocksMovement: false, allowedFields: allowedFields, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 100, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "Map", description: "Keeps track of visited places.");
                     }

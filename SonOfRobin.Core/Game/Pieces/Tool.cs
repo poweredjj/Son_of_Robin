@@ -54,6 +54,7 @@ namespace SonOfRobin
              PieceTemplate.Name.ChestIron,
              PieceTemplate.Name.AxeIron,
              PieceTemplate.Name.PickaxeIron,
+             PieceTemplate.Name.CookingPot,
          } },
 
          {TargetCategory.SmallPlant, new List<PieceTemplate.Name> {
@@ -226,7 +227,7 @@ namespace SonOfRobin
                     animalTarget.activeState = State.AnimalFlee;
 
                     animalTarget.AddPassiveMovement(movement: (attacker.sprite.position - animalTarget.sprite.position) * targetPushMultiplier * -0.5f * hitPower);
-                    animalTarget.buffEngine.AddBuff(buff: new BuffEngine.Buff(world: world, type: BuffEngine.BuffType.Speed, value: -animalTarget.speed / 2, autoRemoveDelay: 180)); // animal will be slower for a while
+                    animalTarget.buffEngine.AddBuff(world: attacker.world, buff: new BuffEngine.Buff(world: world, type: BuffEngine.BuffType.Speed, value: -animalTarget.speed / 2, autoRemoveDelay: 180, isPositive: false)); // animal will be slower for a while
                 }
             }
         }

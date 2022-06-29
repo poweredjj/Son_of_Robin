@@ -195,7 +195,7 @@ namespace SonOfRobin
             }
 
             var entryList = new List<InfoWindow.TextEntry> {
-                new InfoWindow.TextEntry(text: selectedPiece.readableName, color: Color.White, scale: 1.5f),
+                new InfoWindow.TextEntry(frame:selectedPiece.sprite.frame, text: selectedPiece.readableName, color: Color.White, scale: 1.5f),
                 new InfoWindow.TextEntry(text: selectedPiece.description, color: Color.White)};
 
             if (selectedPiece.buffList != null)

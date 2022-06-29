@@ -359,10 +359,10 @@ namespace SonOfRobin
                                 return;
                             }
 
-                            player.AcquireEnergy(food.Mass * 40f);
-
                             foreach (BuffEngine.Buff buff in food.buffList)
-                            { player.buffEngine.AddBuff(buff); }
+                            { player.buffEngine.AddBuff(buff: buff, world: World.GetTopWorld()); }
+
+                            player.AcquireEnergy(food.Mass * 40f);
 
                             food.hitPoints = 0;
                         }

@@ -68,7 +68,7 @@ namespace SonOfRobin
 
             Equipment equipPiece = (Equipment)piece;
 
-            if (add) this.storage.storagePiece.buffEngine.AddBuffs(equipPiece.buffList);
+            if (add) this.storage.storagePiece.buffEngine.AddBuffs(world: piece.world, equipPiece.buffList);
             else this.storage.storagePiece.buffEngine.RemoveBuffs(equipPiece.buffList);
         }
 

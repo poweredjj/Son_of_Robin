@@ -226,7 +226,7 @@ namespace SonOfRobin
             int posX = this.sprite.gfxRect.Center.X;
             int posY = this.sprite.gfxRect.Bottom;
 
-            new StatBar(label: "", value: (int)this.hitPoints, valueMax: (int)this.maxHitPoints, colorMin: new Color(255, 0, 0), colorMax: new Color(0, 255, 0), posX: posX, posY: posY);
+            new StatBar(label: "", value: (int)this.hitPoints, valueMax: (int)this.maxHitPoints, colorMin: new Color(255, 0, 0), colorMax: new Color(0, 255, 0), posX: posX, posY: posY, ignoreIfAtMax: true);
 
             StatBar.FinishThisBatch();
         }

@@ -9,22 +9,28 @@ namespace SonOfRobin
         public enum BuffType { InvWidth, InvHeight, ToolbarWidth, ToolbarHeight, Speed, MaxHp, EnableMap };
 
         [Serializable]
-        public struct Buff
+        public class Buff
         {
             public readonly int id;
             public readonly BuffType type;
             public readonly object value;
             public readonly int autoRemoveDelay;
-            public Buff(World world, BuffType type, object value, int autoRemoveDelay = 0)
+            public int activationFrame;
+            public int endFrame;
+            public readonly bool isPositive;
+            public Buff(World world, BuffType type, object value, bool isPositive, int autoRemoveDelay = 0)
             {
                 this.id = world.currentBuffId;
                 world.currentBuffId++;
                 this.type = type;
                 this.value = value;
+                this.isPositive = isPositive;
 
                 // AutoRemoveDelay should not be used for equip!
                 // It should only be used for temporary buffs (food, status effects, etc.).
                 this.autoRemoveDelay = autoRemoveDelay;
+                this.endFrame = 0; // to be assigned during activation
+                this.activationFrame = 0; // to be assigned during activation
             }
 
             public string Description
@@ -47,11 +53,11 @@ namespace SonOfRobin
 
                         case BuffType.Speed:
                             if ((float)this.value > 0) return $"Speed +{this.value}.";
-                            else return $"Speed -{this.value}.";
+                            else return $"Speed {this.value}.";
 
                         case BuffType.MaxHp:
                             if ((float)this.value > 0) return $"Max HP +{this.value}.";
-                            else return $"Max HP -{this.value}.";
+                            else return $"Max HP {this.value}.";
 
                         case BuffType.EnableMap:
                             return "Shows map of visited places.";
@@ -62,9 +68,44 @@ namespace SonOfRobin
                 }
             }
 
+            public string IconText
+            {
+                get
+                {
+                    switch (this.type)
+                    {
+                        case BuffType.InvWidth:
+                            return null;
+
+                        case BuffType.InvHeight:
+                            return null;
+
+                        case BuffType.ToolbarWidth:
+                            return null;
+
+                        case BuffType.ToolbarHeight:
+                            return null;
+
+                        case BuffType.Speed:
+                            if ((float)this.value > 0) return $"SPD\n+{this.value}";
+                            else return $"SPD\n{this.value}";
+
+                        case BuffType.MaxHp:
+                            if ((float)this.value > 0) return $"HP\n+{this.value}";
+                            else return $"HP\n{this.value}";
+
+                        case BuffType.EnableMap:
+                            return null;
+
+                        default:
+                            throw new DivideByZeroException($"Unsupported buff type - {this.type}.");
+                    }
+                }
+            }
+
         }
 
-        private readonly Dictionary<int, Buff> buffDict;
+        public readonly Dictionary<int, Buff> buffDict;
         private readonly BoardPiece piece;
 
         public BuffEngine(BoardPiece piece)
@@ -97,10 +138,10 @@ namespace SonOfRobin
             return new BuffEngine(piece: piece, buffDict: buffDict);
         }
 
-        public void AddBuffs(List<Buff> buffList)
+        public void AddBuffs(World world, List<Buff> buffList)
         {
             foreach (Buff buff in buffList)
-            { this.AddBuff(buff: buff); }
+            { this.AddBuff(world: world, buff: buff); }
         }
 
         public void RemoveBuffs(List<Buff> buffList)
@@ -109,13 +150,13 @@ namespace SonOfRobin
             { this.RemoveBuff(buff.id); }
         }
 
-        public void AddBuff(Buff buff)
+        public void AddBuff(Buff buff, World world)
         {
             if (this.buffDict.ContainsKey(buff.id)) throw new DivideByZeroException($"Buff has been added twice - id {buff.id} type {buff.type}.");
 
             bool hadThisBuffBefore = this.HasBuff(buff.type);
             this.buffDict[buff.id] = buff;
-            this.ProcessBuff(buff: buff, add: true, hadThisBuffBefore: hadThisBuffBefore);
+            this.ProcessBuff(world: world, buff: buff, add: true, hadThisBuffBefore: hadThisBuffBefore);
 
             if (buff.autoRemoveDelay > 0) new WorldEvent(eventName: WorldEvent.EventName.RemoveBuff, world: this.piece.world, delay: buff.autoRemoveDelay, boardPiece: this.piece, eventHelper: buff.id);
 
@@ -130,7 +171,7 @@ namespace SonOfRobin
             BuffType typeToCheck = buffDict[buffId].type;
             this.buffDict.Remove(buffId);
             bool stillHasThisBuff = this.HasBuff(typeToCheck);
-            this.ProcessBuff(buff: buffToRemove, add: false, stillHasThisBuff: stillHasThisBuff);
+            this.ProcessBuff(buff: buffToRemove, add: false, stillHasThisBuff: stillHasThisBuff, world: null);
 
             MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"Buff removed - id {buffToRemove.id} type {buffToRemove.type} value {buffToRemove.value}.");
         }
@@ -141,8 +182,14 @@ namespace SonOfRobin
             return buffsOfType.Count > 0;
         }
 
-        private void ProcessBuff(Buff buff, bool add, bool hadThisBuffBefore = false, bool stillHasThisBuff = false)
+        private void ProcessBuff(World world, Buff buff, bool add, bool hadThisBuffBefore = false, bool stillHasThisBuff = false)
         {
+            if (add)
+            {
+                buff.activationFrame = world.currentUpdate;
+                buff.endFrame = world.currentUpdate + buff.autoRemoveDelay;
+            }
+
             switch (buff.type)
             {
                 case BuffType.InvWidth:

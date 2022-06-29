@@ -13,8 +13,8 @@ namespace SonOfRobin
         public int maxFedLevel;
         public int fedLevel;
         public float maxStamina;
-        private float stamina;
-        private float fatigue;
+        public float stamina;
+        public float fatigue;
         public float maxFatigue;
         public float shootingAngle;
         private int shootingPower;
@@ -183,31 +183,13 @@ namespace SonOfRobin
 
         public override void DrawStatBar()
         {
-            if (this.activeState == State.PlayerControlledShooting) // small bar below the player
+            // the rest of stat bars are drawn in PlayerPanel scene
+
+            if (this.activeState == State.PlayerControlledShooting)
             {
                 new StatBar(width: 80, height: 5, label: "power", value: (int)this.shootingPower, valueMax: (int)maxShootingPower, colorMin: new Color(220, 255, 0), colorMax: new Color(255, 0, 0), posX: this.sprite.gfxRect.Center.X, posY: this.sprite.gfxRect.Bottom);
                 StatBar.FinishThisBatch();
             }
-
-            // big bars (top center)
-
-            Rectangle cameraRect = this.world.camera.viewRect;
-
-            float scaleX = this.world.viewParams.scaleX;
-            float scaleY = this.world.viewParams.scaleY;
-
-            int width = (int)(SonOfRobinGame.VirtualWidth * scaleX * 0.25f);
-            int height = (int)(SonOfRobinGame.VirtualHeight * scaleY * 0.015f);
-
-            int posX = (int)(float)cameraRect.Center.X;
-            int posY = (int)(cameraRect.Top + (SonOfRobinGame.VirtualHeight * 0.01f * scaleY));
-
-            new StatBar(width: width, height: height, label: "food", value: (int)this.fedLevel, valueMax: (int)this.maxFedLevel, colorMin: new Color(0, 128, 255), colorMax: new Color(0, 255, 255), posX: posX, posY: posY, ignoreIfAtMax: false, centerX: true, drawFromTop: true, labelAtLeft: false);
-            new StatBar(width: width, height: height, label: "fatigue", value: (int)this.Fatigue, valueMax: (int)this.maxFatigue, colorMin: new Color(255, 255, 0), colorMax: new Color(255, 0, 0), posX: posX, posY: posY, ignoreIfAtMax: false, centerX: true, drawFromTop: true, labelAtLeft: false);
-            new StatBar(width: width, height: height, label: "stamina", value: (int)this.stamina, valueMax: (int)this.maxStamina, colorMin: new Color(100, 100, 100), colorMax: new Color(255, 255, 255), posX: posX, posY: posY, ignoreIfAtMax: true, centerX: true, drawFromTop: true, labelAtLeft: false);
-            new StatBar(width: width, height: height, label: "health", value: (int)this.hitPoints, valueMax: (int)this.maxHitPoints, colorMin: new Color(255, 0, 0), colorMax: new Color(0, 255, 0), posX: posX, posY: posY, ignoreIfAtMax: true, centerX: true, drawFromTop: true, labelAtLeft: false);
-
-            StatBar.FinishThisBatch();
         }
 
         public void ExpendEnergy(float energyAmount, bool addFatigue = true)
@@ -552,13 +534,13 @@ namespace SonOfRobin
             if (piecePickedUp)
             {
                 closestPiece.sprite.rotation = 0f;
-                MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.User, message: $"Picked up {closestPiece.name}.");
+                MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.User, message: $"Picked up {closestPiece.readableName}.");
                 this.world.hintEngine.CheckForPieceHintToShow(forcedMode: true);
             }
             else
             {
                 new TextWindow(text: "My inventory is full.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: false, closingTask: Scheduler.TaskName.ShowHint, closingTaskHelper: HintEngine.Type.SmallInventory);
-                MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.User, message: $"Inventory full - cannot pick up {closestPiece.name}.");
+                MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.User, message: $"Inventory full - cannot pick up {closestPiece.readableName}.");
             }
         }
 

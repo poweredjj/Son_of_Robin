@@ -100,7 +100,7 @@ namespace SonOfRobin
             bool canBeCrafted = recipe.CheckIfStorageContainsAllIngredients(storage);
 
             var entryList = new List<InfoWindow.TextEntry> {
-                new InfoWindow.TextEntry(text: pieceInfo.readableName, color: Color.White, scale: 1.5f),
+                new InfoWindow.TextEntry(frame: PieceInfo.info[recipe.pieceToCreate].frame, text: pieceInfo.readableName, color: Color.White, scale: 1.5f),
                 new InfoWindow.TextEntry(text: pieceInfo.description, color: Color.White)};
 
             if (pieceInfo.buffList != null)
