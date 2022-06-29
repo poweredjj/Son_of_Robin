@@ -120,7 +120,7 @@ namespace SonOfRobin
 
         public override void Remove()
         {
-            //   MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"Removing TextWindow '{this.text}' (frame {SonOfRobinGame.currentUpdate}).");
+            //   MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Removing TextWindow '{this.text}' (frame {SonOfRobinGame.currentUpdate}).");
 
             if (!this.transManager.IsEnding)
             {

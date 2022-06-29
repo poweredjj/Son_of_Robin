@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -6,7 +7,7 @@ namespace SonOfRobin
 {
     public class WorldEvent
     {
-        public enum EventName { Birth, Death, Destruction, TurnOffWorkshop, FinishCooking, RestorePieceCreation, FadeOutSprite, RestoreHint, RemoveBuff }
+        public enum EventName { Birth, Death, Destruction, TurnOffWorkshop, FinishCooking, RestorePieceCreation, FadeOutSprite, RestoreHint, RemoveBuff, BurnOutLightSource }
 
         public readonly World world;
         public readonly BoardPiece boardPiece;
@@ -104,58 +105,112 @@ namespace SonOfRobin
             switch (this.eventName)
             {
                 case EventName.Birth:
-                    Animal motherAnimal = (Animal)this.boardPiece;
-                    if (!motherAnimal.alive) return;
+                    {
+                        Animal motherAnimal = (Animal)this.boardPiece;
+                        if (!motherAnimal.alive) return;
 
-                    motherAnimal.activeState = BoardPiece.State.AnimalGiveBirth;
-                    motherAnimal.aiData.Reset(motherAnimal);
-                    return;
+                        motherAnimal.activeState = BoardPiece.State.AnimalGiveBirth;
+                        motherAnimal.aiData.Reset(motherAnimal);
+                        return;
+                    }
 
                 case EventName.Death:
-                    if (this.boardPiece.alive) this.boardPiece.Kill();
-                    return;
+                    {
+                        if (this.boardPiece.alive) this.boardPiece.Kill();
+                        return;
+                    }
 
                 case EventName.Destruction:
-                    this.boardPiece.Destroy();
-                    return;
+                    {
+                        this.boardPiece.Destroy();
+                        return;
+                    }
 
                 case EventName.TurnOffWorkshop:
-                    Workshop workshop = (Workshop)this.boardPiece;
-                    workshop.TurnOff();
-                    return;
+                    {
+                        Workshop workshop = (Workshop)this.boardPiece;
+                        workshop.TurnOff();
+                        return;
+                    }
 
                 case EventName.FinishCooking:
-                    Cooker cooker = (Cooker)this.boardPiece;
-                    cooker.TurnOff();
-                    cooker.boardTask = Scheduler.TaskName.OpenContainer;
-                    return;
+                    {
+                        Cooker cooker = (Cooker)this.boardPiece;
+                        cooker.TurnOff();
+                        cooker.boardTask = Scheduler.TaskName.OpenContainer;
+                        return;
+                    }
 
                 case EventName.FadeOutSprite:
-                    int fadeDuration = (int)this.eventHelper;
-                    this.boardPiece.sprite.opacityFade = new OpacityFade(sprite: this.boardPiece.sprite, destOpacity: 0f, duration: fadeDuration);
-                    return;
+                    {
+                        int fadeDuration = (int)this.eventHelper;
+                        this.boardPiece.sprite.opacityFade = new OpacityFade(sprite: this.boardPiece.sprite, destOpacity: 0f, duration: fadeDuration);
+                        return;
+                    }
 
                 case EventName.RemoveBuff:
-                    int buffId = (int)this.eventHelper;
-                    this.boardPiece.buffEngine.RemoveBuff(buffId);
+                    {
+                        int buffId = (int)this.eventHelper;
+                        this.boardPiece.buffEngine.RemoveBuff(buffId);
 
-                    return;
+                        return;
+                    }
 
                 case EventName.RestorePieceCreation:
-                    var pieceName = (PieceTemplate.Name)this.eventHelper;
-                    this.world.doNotCreatePiecesList.Remove(pieceName);
+                    {
+                        var pieceName = (PieceTemplate.Name)this.eventHelper;
+                        this.world.doNotCreatePiecesList.Remove(pieceName);
 
-                    MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"'{pieceName}' creation restored.");
+                        MessageLog.AddMessage(msgType: MsgType.Debug, message: $"'{pieceName}' creation restored.");
 
-                    return;
+                        return;
+                    }
 
                 case EventName.RestoreHint:
-                    var hintType = (HintEngine.Type)this.eventHelper;
-                    this.world.hintEngine.Enable(hintType);
+                    {
+                        var hintType = (HintEngine.Type)this.eventHelper;
+                        this.world.hintEngine.Enable(hintType);
 
-                    MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"Hint '{hintType}' restored.");
+                        MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Hint '{hintType}' restored.");
 
-                    return;
+                        return;
+                    }
+
+                case EventName.BurnOutLightSource:
+                    {
+                        // example eventHelper for this task
+                        // var damageData = new Dictionary<string, Object> { { "delay", 60 * 3 }, { "damage", 3 }, { "buffList", this.buffList } };
+
+                        PortableLight portableLight = (PortableLight)this.boardPiece;
+
+                        // breaking damage loop
+
+                        if (this.world.player == null || !this.world.player.alive || !this.world.player.exists || this.world.player.sprite.IsInWater || !portableLight.IsOnPlayersToolbar)
+                        {
+                            portableLight.IsOn = false;
+                            return;
+                        }
+
+                        // inflicting damage
+                        var damageData = (Dictionary<string, Object>)this.eventHelper;
+
+                        int delay = (int)damageData["delay"];
+                        int damage = (int)damageData["damage"];
+
+                        this.boardPiece.hitPoints = Math.Max(this.boardPiece.hitPoints - damage, 0);
+                        if (this.boardPiece.hitPoints <= 0)
+                        {
+                            this.world.hintEngine.ShowGeneralHint(type: HintEngine.Type.BurntOutTorch, ignoreDelay: true, optionalText: portableLight.readableName);
+                            MessageLog.AddMessage(msgType: MsgType.User, message: $"{Helpers.FirstCharToUpperCase(this.boardPiece.readableName)} has burnt out.", color: Color.White);
+
+                            portableLight.IsOn = false;
+                            this.world.player.equipStorage.DestroyBrokenPieces();
+                        }
+
+                        // setting next loop event
+                        new WorldEvent(eventName: EventName.BurnOutLightSource, world: this.world, delay: delay, boardPiece: this.boardPiece, eventHelper: this.eventHelper);
+                        return;
+                    }
 
                 default:
                     throw new DivideByZeroException($"Unsupported eventName - {eventName}.");

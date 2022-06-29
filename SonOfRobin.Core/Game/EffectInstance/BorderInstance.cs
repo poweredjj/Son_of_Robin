@@ -4,7 +4,6 @@ namespace SonOfRobin
 {
     public class BorderInstance : EffInstance
     {
-
         private readonly Vector3 outlineColor;
         private readonly Vector2 textureSize;
 

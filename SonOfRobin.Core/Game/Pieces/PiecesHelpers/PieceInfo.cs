@@ -12,6 +12,8 @@ namespace SonOfRobin
             public readonly PieceTemplate.Name name;
             public readonly string readableName;
             public readonly string description;
+            public readonly Type type;
+            public bool isCarnivorous;
             public readonly BoardPiece.Category category;
             public List<BuffEngine.Buff> buffList;
             public AnimFrame frame;
@@ -37,13 +39,13 @@ namespace SonOfRobin
             {
                 this.name = piece.name;
                 this.category = piece.category;
+                this.type = piece.GetType();
                 this.readableName = piece.readableName;
                 this.description = piece.description;
                 this.buffList = piece.buffList;
                 this.frame = piece.sprite.frame;
                 if (piece.GetType() == typeof(Animal)) this.eats = ((Animal)piece).eats;
                 this.isEatenBy = new List<PieceTemplate.Name> { };
-
             }
         }
 
@@ -69,7 +71,10 @@ namespace SonOfRobin
                     foreach (Info potentialPredator in info.Values)
                     {
                         if (potentialPredator.eats != null && potentialPredator.eats.Contains(potentialPrey.name))
+                        {
                             potentialPrey.isEatenBy.Add(potentialPredator.name);
+                            if (potentialPrey.type == typeof(Animal)) potentialPredator.isCarnivorous = true;
+                        }
                     }
                 }
             }
@@ -81,7 +86,6 @@ namespace SonOfRobin
 
             return new List<PieceTemplate.Name> { };
         }
-
 
     }
 }

@@ -27,7 +27,6 @@ namespace SonOfRobin
         public List<PieceStorage> CraftStorages { get { return new List<PieceStorage> { this.pieceStorage, this.toolStorage, this.equipStorage }; } }
         public List<PieceStorage> CraftStoragesToolbarFirst { get { return new List<PieceStorage> { this.toolStorage, this.pieceStorage, this.equipStorage }; } } // the same as above, changed order
 
-
         public BoardPiece ActiveToolbarPiece
         { get { return this.toolStorage?.lastUsedSlot?.TopPiece; } }
 
@@ -128,7 +127,24 @@ namespace SonOfRobin
                 if (staminaDifference < 0) this.Fatigue -= staminaDifference / 10f;
             }
         }
-        public float FedPercent { get { return (float)this.fedLevel / (float)this.maxFedLevel; } }
+        public float FedPercent
+        {
+            get
+            {
+                float fedPercent = (float)this.fedLevel / (float)this.maxFedLevel;
+
+                if (fedPercent < 0.2f)
+                {
+                    if (!this.buffEngine.HasBuff(BuffEngine.BuffType.Hungry)) this.buffEngine.AddBuff(world: this.world, buff: new BuffEngine.Buff(world: world, type: BuffEngine.BuffType.Hungry, value: 0, autoRemoveDelay: 0, isPositive: false));
+                }
+                else
+                {
+                    if (this.buffEngine.HasBuff(BuffEngine.BuffType.Hungry)) this.buffEngine.RemoveEveryBuffOfType(BuffEngine.BuffType.Hungry);
+                }
+
+                return fedPercent;
+            }
+        }
         public float FatiguePercent { get { return (float)this.Fatigue / (float)this.maxFatigue; } }
         public bool IsVeryTired { get { return this.FatiguePercent > 0.75f; } }
         public bool CanSleepNow { get { return this.FatiguePercent > 0.12f; } }
@@ -139,7 +155,7 @@ namespace SonOfRobin
         public Player(World world, Vector2 position, AnimPkg animPackage, PieceTemplate.Name name, AllowedFields allowedFields, byte invWidth, byte invHeight, byte toolbarWidth, byte toolbarHeight, string readableName, string description,
             byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = false, int generation = 0, Yield yield = null) :
 
-            base(world: world, position: position, animPackage: animPackage, animSize: animSize, animName: animName, speed: speed, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedFields: allowedFields, floatsOnWater: floatsOnWater, mass: 50000, maxMassBySize: null, generation: generation, canBePickedUp: false, maxHitPoints: 400, fadeInAnim: false, placeAtBeachEdge: true, isShownOnMiniMap: true, readableName: readableName, description: description, yield: yield, strength: 1, category: Category.Indestructible)
+            base(world: world, position: position, animPackage: animPackage, animSize: animSize, animName: animName, speed: speed, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedFields: allowedFields, floatsOnWater: floatsOnWater, mass: 50000, maxMassBySize: null, generation: generation, canBePickedUp: false, maxHitPoints: 400, fadeInAnim: false, placeAtBeachEdge: true, isShownOnMiniMap: true, readableName: readableName, description: description, yield: yield, strength: 1, category: Category.Indestructible, lightEngine: new LightEngine(size: 300, opacity: 0.7f, colorActive: true, color: Color.Orange * 0.4f, isActive: false))
         {
             this.maxFedLevel = 40000;
             this.fedLevel = maxFedLevel;
@@ -178,6 +194,7 @@ namespace SonOfRobin
             beltSlot.allowedPieceNames = new List<PieceTemplate.Name> { PieceTemplate.Name.BeltMedium };
             beltSlot.label = "belt";
 
+
             foreach (StorageSlot slot in this.equipStorage.AllSlots.GetRange(2, 2))
             {
                 slot.allowedPieceNames = new List<PieceTemplate.Name> { PieceTemplate.Name.Map };
@@ -189,7 +206,12 @@ namespace SonOfRobin
         {
             if (Preferences.DebugGodMode) return;
 
+            foreach (PieceStorage storage in this.CraftStorages)
+            { storage.DropAllPiecesToTheGround(addMovement: true); }
+
             base.Kill();
+
+            Scene.RemoveAllScenesOfType(typeof(TextWindow));
 
             this.world.colorOverlay.color = Color.DarkRed;
             this.world.colorOverlay.viewParams.Opacity = 0.75f;
@@ -361,7 +383,7 @@ namespace SonOfRobin
                 return false;
             }
 
-            Vector2 movement = this.CalculateMovementFromInput();
+            Vector2 movement = this.world.CalculateMovementFromInput();
 
             var currentSpeed = this.IsVeryTired ? this.speed / 2f : this.speed;
             if (this.world.actionKeyList.Contains(World.ActionKeys.Run))
@@ -394,7 +416,6 @@ namespace SonOfRobin
 
         private void CheckGround()
         {
-            if (this.sprite.IsInDangerZone) this.world.hintEngine.ShowGeneralHint(type: HintEngine.Type.EnteringDangerZone, ignoreDelay: true);
             if (this.sprite.IsDeepInDangerZone) Tutorials.ShowTutorial(type: Tutorials.Type.DangerZone, ignoreDelay: true);
 
             if (this.sprite.IsInLava)
@@ -428,7 +449,7 @@ namespace SonOfRobin
             // shooting angle should be set once at the start
             if (this.shootingAngle == -100) this.shootingAngle = this.sprite.GetAngleFromOrientation();
 
-            Vector2 moving = this.CalculateMovementFromInput();
+            Vector2 moving = this.world.CalculateMovementFromInput();
             Vector2 shooting = this.world.analogMovementRightStick;
 
             Vector2 directionVector = Vector2.Zero;
@@ -504,6 +525,9 @@ namespace SonOfRobin
                 new TextWindow(text: "I cannot sleep right now.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1);
                 return;
             }
+
+            if (this.world.currentUpdate < this.wentToSleepFrame + 60) return; // to prevent going to sleep with max fatigue and with attacking enemies around
+
             this.wentToSleepFrame = this.world.currentUpdate;
             this.sleepEngine = sleepEngine;
             this.buffList.AddRange(wakeUpBuffs);
@@ -528,7 +552,7 @@ namespace SonOfRobin
 
             new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.TempoFastForward, delay: 22, executeHelper: 20, turnOffInputUntilExecution: true);
 
-            MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.User, message: "Going to sleep.");
+            MessageLog.AddMessage(msgType: MsgType.User, message: "Going to sleep.");
         }
 
         public void WakeUp(bool force = false)
@@ -559,52 +583,9 @@ namespace SonOfRobin
 
             this.world.colorOverlay.transManager.AddTransition(new Transition(transManager: this.world.colorOverlay.transManager, outTrans: true, baseParamName: "Opacity", targetVal: 0f, duration: 20, endCopyToBase: true));
 
-            MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: "Waking up.");
+            MessageLog.AddMessage(msgType: MsgType.Debug, message: "Waking up.");
         }
 
-        public Vector2 CalculateMovementFromInput(bool horizontalPriority = true)
-        {
-            Vector2 movement = new Vector2(0f, 0f);
-
-            if (this.world.analogMovementLeftStick == Vector2.Zero)
-            {
-                // movement using keyboard and gamepad buttons
-
-                // X axis movement is bigger than Y, to ensure horizontal orientation priority
-                Dictionary<World.ActionKeys, Vector2> movementByDirection;
-
-                if (horizontalPriority)
-                {
-                    movementByDirection = new Dictionary<World.ActionKeys, Vector2>(){
-                        {World.ActionKeys.Up, new Vector2(0f, -500f)},
-                        {World.ActionKeys.Down, new Vector2(0f, 500f)},
-                        {World.ActionKeys.Left, new Vector2(-500f, 0f)},
-                        {World.ActionKeys.Right, new Vector2(500f, 0f)},
-                        };
-                }
-                else
-                {
-                    movementByDirection = new Dictionary<World.ActionKeys, Vector2>(){
-                        {World.ActionKeys.Up, new Vector2(0f, -500f)},
-                        {World.ActionKeys.Down, new Vector2(0f, 500f)},
-                        {World.ActionKeys.Left, new Vector2(-500f, 0f)},
-                        {World.ActionKeys.Right, new Vector2(500f, 0f)},
-                        };
-                }
-
-                foreach (var kvp in movementByDirection)
-                { if (this.world.actionKeyList.Contains(kvp.Key)) movement += kvp.Value; }
-            }
-            else
-            {
-                // analog movement
-                movement = this.world.analogMovementLeftStick;
-            }
-
-            //MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"movement {movement.X},{movement.Y}", color: Color.Orange); // for testing
-
-            return movement;
-        }
 
         private Vector2 GetCenterOffset()
         {
@@ -643,14 +624,14 @@ namespace SonOfRobin
             if (piecePickedUp)
             {
                 closestPiece.sprite.rotation = 0f;
-                MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.User, message: $"Picked up {closestPiece.readableName}.");
+                MessageLog.AddMessage(msgType: MsgType.User, message: $"Picked up {closestPiece.readableName}.");
                 this.world.hintEngine.CheckForPieceHintToShow(forcedMode: true);
             }
             else
             {
                 new TextWindow(text: "My inventory is full.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1, closingTask: Scheduler.TaskName.ShowHint, closingTaskHelper: HintEngine.Type.SmallInventory);
 
-                MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.User, message: $"Inventory full - cannot pick up {closestPiece.readableName}.");
+                MessageLog.AddMessage(msgType: MsgType.User, message: $"Inventory full - cannot pick up {closestPiece.readableName}.");
             }
         }
 
@@ -658,7 +639,7 @@ namespace SonOfRobin
         {
             bool pieceCollected = false;
 
-            if (piece.GetType() == typeof(Tool)) pieceCollected = this.toolStorage.AddPiece(piece);
+            if (piece.GetType() == typeof(Tool) || piece.GetType() == typeof(PortableLight)) pieceCollected = this.toolStorage.AddPiece(piece);
             if (!pieceCollected) pieceCollected = this.pieceStorage.AddPiece(piece);
             if (!pieceCollected) pieceCollected = this.toolStorage.AddPiece(piece);
 

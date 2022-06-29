@@ -9,7 +9,7 @@ namespace SonOfRobin
 {
     public class Scheduler
     {
-        public enum TaskName { Empty, CreateNewWorld, CreateNewWorldNow, QuitGame, OpenMainMenu, OpenCreateMenu, OpenIslandTemplateMenu, OpenSetSeedMenu, OpenOptionsMenu, OpenTutorialsMenu, OpenLoadMenu, OpenSaveMenu, OpenDebugMenu, OpenConfirmationMenu, OpenCreateAnyPieceMenu, OpenGameOverMenu, SaveGame, LoadGame, LoadGameNow, ReturnToMainMenu, SavePrefs, ProcessConfirmation, OpenCraftMenu, Craft, Hit, CreateNewPiece, CreateDebugPieces, OpenContainer, DeleteObsoleteSaves, DropFruit, GetEaten, ExecuteTaskWithDelay, AddWorldEvent, OpenTextWindow, SleepInsideShelter, SleepOutside, TempoFastForward, TempoStop, TempoPlay, CameraTrackPiece, CameraTrackCoords, CameraSetZoom, ShowCookingProgress, RestoreHints, OpenMainMenuIfSpecialKeysArePressed, CheckForPieceHints, ShowHint, ExecuteTaskList, ExecuteTaskChain, ShowTutorial, RemoveScene, ChangeSceneInputType, SetCineMode, AddTransition, SkipCinematics, DeleteTemplates }
+        public enum TaskName { Empty, CreateNewWorld, CreateNewWorldNow, QuitGame, OpenMainMenu, OpenCreateMenu, OpenIslandTemplateMenu, OpenSetSeedMenu, OpenOptionsMenu, OpenTutorialsMenu, OpenLoadMenu, OpenSaveMenu, OpenDebugMenu, OpenConfirmationMenu, OpenCreateAnyPieceMenu, OpenGameOverMenu, SaveGame, LoadGame, LoadGameNow, ReturnToMainMenu, SavePrefs, ProcessConfirmation, OpenCraftMenu, Craft, Hit, CreateNewPiece, CreateDebugPieces, OpenContainer, DeleteObsoleteSaves, DropFruit, GetEaten, ExecuteTaskWithDelay, AddWorldEvent, OpenTextWindow, SleepInsideShelter, SleepOutside, TempoFastForward, TempoStop, TempoPlay, CameraTrackPiece, CameraTrackCoords, CameraSetZoom, ShowCookingProgress, RestoreHints, OpenMainMenuIfSpecialKeysArePressed, CheckForPieceHints, ShowHint, ExecuteTaskList, ExecuteTaskChain, ShowTutorial, RemoveScene, ChangeSceneInputType, SetCineMode, AddTransition, SkipCinematics, DeleteTemplates, SetSpectatorMode, SwitchLightSource }
 
         private readonly static Dictionary<int, List<Task>> queue = new Dictionary<int, List<Task>>();
         private static int inputTurnedOffUntilFrame = 0;
@@ -85,7 +85,7 @@ namespace SonOfRobin
 
             public void Process()
             {
-                // MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"{SonOfRobinGame.currentUpdate} processing task {this.TaskText}", color: Color.LightYellow);
+                // MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{SonOfRobinGame.currentUpdate} processing task {this.TaskText}", color: Color.LightYellow);
 
                 if (this.delay <= 0) this.Execute();
                 else this.AddToQueue();
@@ -95,7 +95,7 @@ namespace SonOfRobin
             {
                 if (this.delay == 0) throw new ArgumentException($"Tried to add task with delay {this.delay} to queue.");
 
-                //  MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.User, message: $"Adding to queue '{this.taskName}' - delay {this.delay}.", color: Color.White); // for testing
+                //  MessageLog.AddMessage(msgType: MsgType.User, message: $"Adding to queue '{this.taskName}' - delay {this.delay}.", color: Color.White); // for testing
 
                 if (this.turnOffInputUntilExecution) this.TurnOffInput();
                 if (this.frame == -1) this.frame = SonOfRobinGame.currentUpdate + this.delay;
@@ -159,15 +159,19 @@ namespace SonOfRobin
                         return;
 
                     case TaskName.OpenGameOverMenu:
+                        Scene.RemoveAllScenesOfType(typeof(TextWindow));
+
                         OpenMenu(templateName: MenuTemplate.Name.GameOver, executeHelper: executeHelper);
                         return;
 
                     case TaskName.OpenCraftMenu:
                         {
                             Workshop workshop = (Workshop)executeHelper;
-                            workshop.TurnOn();
 
                             Menu menu = MenuTemplate.CreateMenuFromTemplate(templateName: workshop.craftMenuTemplate);
+                            if (menu == null) return; // if crafting was impossible at the moment
+
+                            workshop.TurnOn();
 
                             var worldEventData = new Dictionary<string, object> {
                                 {"boardPiece", workshop },
@@ -224,7 +228,7 @@ namespace SonOfRobin
                         world = World.GetTopWorld();
                         if (world == null)
                         {
-                            MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: "Could not create selected item, because no world was found.");
+                            MessageLog.AddMessage(msgType: MsgType.Debug, message: "Could not create selected item, because no world was found.");
                             return;
                         }
 
@@ -258,12 +262,12 @@ namespace SonOfRobin
                                 attemptNo++;
                                 if (attemptNo == 1000)
                                 {
-                                    MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"Max number of attempts exceeded while trying to create '{templateName}'.");
+                                    MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Max number of attempts exceeded while trying to create '{templateName}'.");
                                     break;
                                 }
                             }
 
-                            MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"{piecesCreated} '{templateName}' pieces created.");
+                            MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{piecesCreated} '{templateName}' pieces created.");
                         }
                         return;
 
@@ -321,7 +325,15 @@ namespace SonOfRobin
                             BoardPiece container = (BoardPiece)executeHelper;
 
                             world = World.GetTopWorld();
-                            if (world != null) Scene.SetInventoryLayout(newLayout: Scene.InventoryLayout.InventoryAndChest, player: world.player, chest: container);
+                            if (world == null) return;
+
+                            if (container.GetType() == typeof(Cooker) && world.player.AreEnemiesNearby)
+                            {
+                                new TextWindow(text: "I can't cook with enemies nearby.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1);
+                                return;
+                            }
+
+                            Scene.SetInventoryLayout(newLayout: Scene.InventoryLayout.InventoryAndChest, player: world.player, chest: container);
                         }
 
                         return;
@@ -438,6 +450,28 @@ namespace SonOfRobin
                             food.hitPoints = 0;
                         }
                         return;
+
+
+                    case TaskName.SwitchLightSource:
+                        {
+                            var executeData = (Dictionary<string, Object>)executeHelper;
+                            PortableLight portableLight = (PortableLight)executeData["toolbarPiece"];
+                            bool highlightOnly = (bool)executeData["highlightOnly"];
+
+                            if (highlightOnly)
+                            {
+                                if (SonOfRobinGame.platform == Platform.Mobile) VirtButton.ButtonHighlightOnNextFrame(VButName.UseTool);
+                                ControlTips.TipHighlightOnNextFrame(tipName: "use item");
+                                return;
+                            }
+
+                            bool buttonHeld = (bool)executeData["buttonHeld"];
+                            if (buttonHeld) return;
+
+                            portableLight.IsOn = !portableLight.IsOn;
+
+                            return;
+                        }
 
                     case TaskName.DropFruit:
                         {
@@ -748,8 +782,10 @@ namespace SonOfRobin
 
                     case TaskName.ShowTutorial:
                         {
+                            // For now ShowTutorial is only used in menus; should this change - menuMode would have to be passed here as well.
+
                             Tutorials.Type type = (Tutorials.Type)executeHelper;
-                            Tutorials.ShowTutorial(type: type, ignoreIfShown: false, checkHintsSettings: false, ignoreDelay: true);
+                            Tutorials.ShowTutorial(type: type, ignoreIfShown: false, checkHintsSettings: false, ignoreDelay: true, menuMode: true);
 
                             return;
                         }
@@ -817,7 +853,7 @@ namespace SonOfRobin
                             world = World.GetTopWorld();
                             if (world == null) return;
 
-                            MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: "Skipping cinematics", color: Color.White);
+                            MessageLog.AddMessage(msgType: MsgType.Debug, message: "Skipping cinematics", color: Color.White);
 
                             var textWindows = Scene.GetAllScenesOfType(typeof(TextWindow));
                             foreach (var scene in textWindows)
@@ -844,16 +880,16 @@ namespace SonOfRobin
                                 var correctSaves = SaveHeaderManager.CorrectSaves;
                                 var pathsToKeep = new List<string>();
 
-                                foreach (string path in templatePaths)
+                                foreach (string templatePath in templatePaths)
                                 {
-                                    string folderName = Path.GetFileName(path);
-                                    Helpers.TemplateData templateData = new Helpers.TemplateData(folderName);
+                                    GridTemplate gridTemplate = GridTemplate.LoadHeader(templatePath);
+                                    if (gridTemplate == null || gridTemplate.IsObsolete) continue;
 
                                     if (correctSaves.Where(saveHeader =>
-                                    saveHeader.seed == templateData.seed &&
-                                    saveHeader.width == templateData.width &&
-                                    saveHeader.height == templateData.height
-                                    ).ToList().Count > 0) pathsToKeep.Add(path);
+                                    saveHeader.seed == gridTemplate.seed &&
+                                    saveHeader.width == gridTemplate.width &&
+                                    saveHeader.height == gridTemplate.height
+                                    ).ToList().Count > 0) pathsToKeep.Add(templatePath);
                                 }
 
                                 pathsToDelete = templatePaths.Where(path => !pathsToKeep.Contains(path)).ToList();
@@ -897,6 +933,16 @@ namespace SonOfRobin
                             return;
                         }
 
+                    case TaskName.SetSpectatorMode:
+                        {
+                            world = World.GetTopWorld();
+                            if (world == null) return;
+
+                            world.SpectatorMode = (bool)executeHelper;
+
+                            return;
+                        }
+
                     default:
                         throw new DivideByZeroException($"Unsupported taskName - {taskName}.");
                 }
@@ -921,6 +967,7 @@ namespace SonOfRobin
                 var worldScenes = Scene.GetAllScenesOfType(typeof(World));
                 foreach (World currWorld in worldScenes)
                 { if (!currWorld.demoMode) world.Remove(); }
+                Scene.RemoveAllScenesOfType(typeof(TextWindow));
                 Scene.RemoveAllScenesOfType(typeof(Menu));
                 Scene.RemoveAllScenesOfType(typeof(Inventory));
                 Scene.RemoveAllScenesOfType(typeof(PieceContextMenu));

@@ -21,7 +21,7 @@ namespace SonOfRobin
             public readonly MsgType msgType;
             private static int lastDeletionFrame = 0;
 
-            public Message(string message, int currentFrame, Color color, MsgType msgType)
+            public Message(string message, Color color, MsgType msgType)
             {
                 Console.WriteLine(message); // additional output
 
@@ -31,7 +31,7 @@ namespace SonOfRobin
 
                 int delay = (MessageLog.messages.Count == 0) ? 180 : 90 / Math.Min(MessageLog.messages.Count, 3);
 
-                this.deletionFrame = Math.Max(lastDeletionFrame, currentFrame) + delay;
+                this.deletionFrame = Math.Max(lastDeletionFrame, SonOfRobinGame.currentUpdate) + delay;
                 lastDeletionFrame = this.deletionFrame;
             }
         }
@@ -98,11 +98,11 @@ namespace SonOfRobin
                 SonOfRobinGame.spriteBatch.DrawString(font, currentLineOfText, txtPos, message.color * textOpacity);
             }
         }
-        public static void AddMessage(int currentFrame, string message, Color color, MsgType msgType)
-        { if (DisplayedLevels.Contains(msgType)) messages.Add(new Message(currentFrame: currentFrame, message: message, color: color, msgType: msgType)); }
+        public static void AddMessage(string message, Color color, MsgType msgType)
+        { if (DisplayedLevels.Contains(msgType)) messages.Add(new Message(message: message, color: color, msgType: msgType)); }
 
-        public static void AddMessage(int currentFrame, string message, MsgType msgType)
-        { if (DisplayedLevels.Contains(msgType)) messages.Add(new Message(currentFrame: currentFrame, message: message, color: Color.White, msgType: msgType)); }
+        public static void AddMessage(string message, MsgType msgType)
+        { if (DisplayedLevels.Contains(msgType)) messages.Add(new Message(message: message, color: Color.White, msgType: msgType)); }
 
         private static void DeleteOldMessages(int currentFrame)
         { messages = messages.Where(message => currentFrame < message.deletionFrame).ToList(); }

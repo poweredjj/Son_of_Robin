@@ -47,7 +47,7 @@ namespace SonOfRobin
 
             }
 
-            //if (!removePiece) MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.User, message: "Out of ammo.");
+            //if (!removePiece) MessageLog.AddMessage(msgType: MsgType.User, message: "Out of ammo.");
 
             return null;
         }
@@ -178,6 +178,9 @@ namespace SonOfRobin
                 {
                     this.hitPoints -= 1;
                     this.hitPoints = Math.Max(0, this.hitPoints);
+
+                    if (this.HitPointsPercent < 0.4f && this.hitPoints > 0) this.world.hintEngine.ShowGeneralHint(type: HintEngine.Type.BreakingItem, ignoreDelay: true, optionalText: this.readableName);
+                    if (this.hitPoints == 0) this.world.hintEngine.ShowGeneralHint(type: HintEngine.Type.BrokenItem, ignoreDelay: true, optionalText: this.readableName);
                 }
             }
         }

@@ -10,6 +10,7 @@ namespace SonOfRobin
         public enum Name
         {
             Player,
+            PlayerGhost,
 
             GrassRegular,
             GrassDesert,
@@ -111,7 +112,8 @@ namespace SonOfRobin
             BackpackMedium,
             BeltMedium,
 
-            Map
+            Map,
+            Torch
         }
 
         public static BoardPiece CreateOnBoard(Name templateName, World world, Vector2 position, bool female, int generation = 0)
@@ -156,6 +158,18 @@ namespace SonOfRobin
                         var allowedFields = new AllowedFields(rangeNameList: new List<AllowedFields.RangeName> { AllowedFields.RangeName.WaterShallow, AllowedFields.RangeName.WaterMedium, AllowedFields.RangeName.GroundAll, AllowedFields.RangeName.Volcano, AllowedFields.RangeName.NoDanger });
 
                         return new Player(name: templateName, world: world, position: position, animPackage: AnimPkg.Blonde, speed: 3, allowedFields: allowedFields, minDistance: 0, maxDistance: 65535, generation: generation, invWidth: 4, invHeight: 2, toolbarWidth: 3, toolbarHeight: 1, readableName: "player", description: "This is you.", yield: yield);
+                    }
+
+                case Name.PlayerGhost:
+                    {
+                        var spectator = new Spectator(name: templateName, fadeInAnim: false, world: world, position: position, animPackage: AnimPkg.Blonde, destructionDelay: 0, minDistance: 0, maxDistance: 0, generation: generation, readableName: "player ghost", description: "A metaphysical representation of player's soul.");
+
+                        spectator.sprite.opacity = 0.5f;
+                        spectator.sprite.color = new Color(150, 255, 255);
+                        spectator.sprite.effectCol.AddEffect(new BorderInstance(outlineColor: Color.SkyBlue * 0.7f, textureSize: spectator.sprite.frame.originalTextureSize, priority: 0, framesLeft: -1));
+
+
+                        return spectator;
                     }
 
                 case Name.GrassRegular:
@@ -257,7 +271,8 @@ namespace SonOfRobin
                 case Name.FlowersMountain:
                     {
                         var allowedFields = new AllowedFields(rangeDict: new Dictionary<TerrainName, AllowedRange>() {
-                            { TerrainName.Height, new AllowedRange(min:160, max: 210) },
+                            { TerrainName.Height, new AllowedRange(min:160, max: 210
+                            ) },
                             { TerrainName.Danger, new AllowedRange(min: Terrain.saveZoneMax, max: 255) }});
 
                         var yield = new Yield(debrisType: Yield.DebrisType.Plant,
@@ -269,7 +284,7 @@ namespace SonOfRobin
                         var reproduction = new PlantReproductionData(massNeeded: 2500, massLost: 2000, bioWear: 0.7f);
 
                         return new Plant(name: templateName, world: world, position: position, blocksMovement: false, animPackage: AnimPkg.FlowersYellow2, allowedFields: allowedFields, category: BoardPiece.Category.SmallPlant,
-                          minDistance: 0, maxDistance: 250, bestEnvironment: bestEnvironment, mass: 1, maxMassBySize: maxMassBySize, maxAge: 4000, reproduction: reproduction, massToBurn: 3, massTakenMultiplier: 0.98f, generation: generation, staysAfterDeath: 300, readableName: "mountain flower", description: "A mountain flower.", allowedDensity: new AllowedDensity(radious: 240, maxNoOfPiecesSameName: 0), yield: yield);
+                          minDistance: 0, maxDistance: 250, bestEnvironment: bestEnvironment, mass: 1, maxMassBySize: maxMassBySize, maxAge: 4000, reproduction: reproduction, massToBurn: 3, massTakenMultiplier: 0.98f, generation: generation, staysAfterDeath: 300, readableName: "mountain flower", description: "A mountain flower.", allowedDensity: new AllowedDensity(radious: 240, maxNoOfPiecesSameName: 0), yield: yield, lightEngine: new LightEngine(size: 0, opacity: 0.3f, colorActive: true, color: Color.Blue * 0.6f, addedGfxRectMultiplier: 4f, isActive: true));
                     }
 
                 case Name.TreeSmall:
@@ -597,7 +612,6 @@ namespace SonOfRobin
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
                             finalDroppedPieces: new List<Yield.DroppedPiece> {
                                 new Yield.DroppedPiece(pieceName: Name.AxeStone, chanceToDrop: 100, maxNumberToDrop: 1),
-                                new Yield.DroppedPiece(pieceName: Name.PickaxeStone, chanceToDrop: 100, maxNumberToDrop: 1),
                                 new Yield.DroppedPiece(pieceName: Name.CookedMeat, chanceToDrop: 100, maxNumberToDrop: 1),
                                 new Yield.DroppedPiece(pieceName: Name.CookedMeat, chanceToDrop: 100, maxNumberToDrop: 1),
                                 new Yield.DroppedPiece(pieceName: Name.CookedMeat, chanceToDrop: 100, maxNumberToDrop: 1),
@@ -654,7 +668,7 @@ namespace SonOfRobin
                         var allowedFields = new AllowedFields(rangeDict: new Dictionary<TerrainName, AllowedRange>() {
                             { TerrainName.Height, new AllowedRange(min: Terrain.waterLevelMax, max: Terrain.volcanoEdgeMin) }});
                         return new Workshop(name: templateName, world: world, position: position, animPackage: AnimPkg.Furnace, allowedFields: allowedFields, category: BoardPiece.Category.Stone,
-                            floatsOnWater: false, minDistance: 0, maxDistance: 100, maxMassBySize: null, generation: generation, craftMenuTemplate: MenuTemplate.Name.CraftFurnace, maxHitPoints: 40, readableName: "furnace", description: "For ore smelting.");
+                            floatsOnWater: false, minDistance: 0, maxDistance: 100, maxMassBySize: null, generation: generation, craftMenuTemplate: MenuTemplate.Name.CraftFurnace, maxHitPoints: 40, readableName: "furnace", description: "For ore smelting.", emitsLightWhenCrafting: true, lightEngine: new LightEngine(size: 0, opacity: 0.7f, colorActive: true, color: Color.Orange * 0.25f, addedGfxRectMultiplier: 8f, isActive: false));
                     }
 
                 case Name.CookingPot:
@@ -843,7 +857,7 @@ namespace SonOfRobin
 
                         return new Collectible(name: templateName, world: world, position: position, animPackage: AnimPkg.Leather, blocksMovement: false, category: BoardPiece.Category.Indestructible,
                             allowedFields: allowedFields,
-                            minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 4, mass: 100, rotatesWhenDropped: true, readableName: "Leather", description: "Crafting material.");
+                            minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 4, mass: 100, rotatesWhenDropped: true, readableName: "leather", description: "Crafting material.");
                     }
 
                 case Name.CookedMeat:
@@ -972,7 +986,7 @@ namespace SonOfRobin
                             { TerrainName.Height, new AllowedRange(min: Terrain.waterLevelMax, max: Terrain.volcanoEdgeMin) }});
 
                         return new Tool(name: templateName, world: world, position: position, animPackage: AnimPkg.AxeStone, allowedFields: allowedFields, category: BoardPiece.Category.Stone,
-                            floatsOnWater: false, minDistance: 0, maxDistance: 100, maxMassBySize: null, generation: generation, hitPower: 1, indestructible: false, multiplierByCategory: multiplierByCategory, maxHitPoints: 150, readableName: "stone axe", description: "Average logging tool.");
+                            floatsOnWater: false, minDistance: 0, maxDistance: 100, maxMassBySize: null, generation: generation, hitPower: 1, indestructible: false, multiplierByCategory: multiplierByCategory, maxHitPoints: 100, readableName: "stone axe", description: "Average logging tool.");
                     }
 
                 case Name.AxeIron:
@@ -983,18 +997,18 @@ namespace SonOfRobin
                             { TerrainName.Height, new AllowedRange(min: Terrain.waterLevelMax, max: Terrain.volcanoEdgeMin) }});
 
                         return new Tool(name: templateName, world: world, position: position, animPackage: AnimPkg.AxeIron, allowedFields: allowedFields, category: BoardPiece.Category.Metal,
-                            floatsOnWater: false, minDistance: 0, maxDistance: 100, maxMassBySize: null, generation: generation, hitPower: 1, indestructible: false, multiplierByCategory: multiplierByCategory, maxHitPoints: 250, readableName: "iron axe", description: "Advanced logging tool.");
+                            floatsOnWater: false, minDistance: 0, maxDistance: 100, maxMassBySize: null, generation: generation, hitPower: 1, indestructible: false, multiplierByCategory: multiplierByCategory, maxHitPoints: 170, readableName: "iron axe", description: "Advanced logging tool.");
                     }
 
                 case Name.BatWood:
                     {
-                        var multiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Animal, 10f } };
+                        var multiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Animal, 8f } };
 
                         var allowedFields = new AllowedFields(rangeDict: new Dictionary<TerrainName, AllowedRange>() {
                             { TerrainName.Height, new AllowedRange(min: Terrain.waterLevelMax, max: Terrain.volcanoEdgeMin) }});
 
                         return new Tool(name: templateName, world: world, position: position, animPackage: AnimPkg.BatWood, allowedFields: allowedFields, category: BoardPiece.Category.Wood,
-                            floatsOnWater: false, minDistance: 0, maxDistance: 100, maxMassBySize: null, generation: generation, hitPower: 5, indestructible: false, multiplierByCategory: multiplierByCategory, maxHitPoints: 150, readableName: "wooden bat", description: "A simple melee weapon.");
+                            floatsOnWater: false, minDistance: 0, maxDistance: 100, maxMassBySize: null, generation: generation, hitPower: 5, indestructible: false, multiplierByCategory: multiplierByCategory, maxHitPoints: 75, readableName: "wooden bat", description: "A simple melee weapon.");
                     }
 
                 case Name.PickaxeWood:
@@ -1015,7 +1029,7 @@ namespace SonOfRobin
                             { TerrainName.Height, new AllowedRange(min: Terrain.waterLevelMax, max: Terrain.volcanoEdgeMin) }});
 
                         return new Tool(name: templateName, world: world, position: position, animPackage: AnimPkg.PickaxeStone, allowedFields: allowedFields, category: BoardPiece.Category.Stone,
-                            floatsOnWater: false, minDistance: 0, maxDistance: 100, maxMassBySize: null, generation: generation, hitPower: 1, indestructible: false, multiplierByCategory: multiplierByCategory, maxHitPoints: 150, readableName: "stone pickaxe", description: "Average mining tool.");
+                            floatsOnWater: false, minDistance: 0, maxDistance: 100, maxMassBySize: null, generation: generation, hitPower: 1, indestructible: false, multiplierByCategory: multiplierByCategory, maxHitPoints: 100, readableName: "stone pickaxe", description: "Average mining tool.");
                     }
 
                 case Name.PickaxeIron:
@@ -1025,7 +1039,7 @@ namespace SonOfRobin
                         var allowedFields = new AllowedFields(rangeDict: new Dictionary<TerrainName, AllowedRange> { { TerrainName.Height, new AllowedRange(min: Terrain.waterLevelMax, max: Terrain.volcanoEdgeMin) } });
 
                         return new Tool(name: templateName, world: world, position: position, animPackage: AnimPkg.PickaxeIron, allowedFields: allowedFields, category: BoardPiece.Category.Metal,
-                            floatsOnWater: false, minDistance: 0, maxDistance: 100, maxMassBySize: null, generation: generation, hitPower: 1, indestructible: false, multiplierByCategory: multiplierByCategory, maxHitPoints: 250, readableName: "iron pickaxe", description: "Advanced mining tool.");
+                            floatsOnWater: false, minDistance: 0, maxDistance: 100, maxMassBySize: null, generation: generation, hitPower: 1, indestructible: false, multiplierByCategory: multiplierByCategory, maxHitPoints: 170, readableName: "iron pickaxe", description: "Advanced mining tool.");
                     }
 
                 case Name.Scythe:
@@ -1034,7 +1048,7 @@ namespace SonOfRobin
 
                         var allowedFields = new AllowedFields(rangeDict: new Dictionary<TerrainName, AllowedRange> { { TerrainName.Height, new AllowedRange(min: Terrain.waterLevelMax, max: Terrain.volcanoEdgeMin) } });
                         return new Tool(name: templateName, world: world, position: position, animPackage: AnimPkg.Scythe, allowedFields: allowedFields, category: BoardPiece.Category.Metal,
-                            floatsOnWater: false, minDistance: 0, maxDistance: 100, maxMassBySize: null, generation: generation, hitPower: 1, indestructible: false, multiplierByCategory: multiplierByCategory, maxHitPoints: 250, readableName: "iron scythe", description: "Can cut down small plants.", range: 40);
+                            floatsOnWater: false, minDistance: 0, maxDistance: 100, maxMassBySize: null, generation: generation, hitPower: 1, indestructible: false, multiplierByCategory: multiplierByCategory, maxHitPoints: 170, readableName: "iron scythe", description: "Can cut down small plants.", range: 40);
                     }
 
                 case Name.Sling:
@@ -1135,7 +1149,7 @@ namespace SonOfRobin
                         var allowedFields = new AllowedFields(rangeDict: new Dictionary<TerrainName, AllowedRange>() {
                             { TerrainName.Height, new AllowedRange(min: Terrain.waterLevelMax, max: Terrain.volcanoEdgeMin) }});
 
-                        SleepEngine sleepEngine = new SleepEngine(minFedPercent: 0.2f, fatigueRegen: 0.14f, canBeAttacked: false);
+                        SleepEngine sleepEngine = new SleepEngine(minFedPercent: 0.2f, fatigueRegen: 0.28f, canBeAttacked: false);
 
                         return new Shelter(name: templateName, world: world, position: position, animPackage: AnimPkg.TentSmall, allowedFields: allowedFields, category: BoardPiece.Category.Wood,
                             floatsOnWater: false, minDistance: 0, maxDistance: 500, maxMassBySize: null, maxHitPoints: 120, sleepEngine: sleepEngine, readableName: "small tent", description: "Basic shelter for sleeping.\nProtects against enemies.");
@@ -1146,12 +1160,12 @@ namespace SonOfRobin
                         var allowedFields = new AllowedFields(rangeDict: new Dictionary<TerrainName, AllowedRange>() {
                             { TerrainName.Height, new AllowedRange(min: Terrain.waterLevelMax, max: Terrain.volcanoEdgeMin) }});
 
-                        SleepEngine sleepEngine = new SleepEngine(minFedPercent: 0.3f, fatigueRegen: 0.2f, canBeAttacked: false);
+                        SleepEngine sleepEngine = new SleepEngine(minFedPercent: 0.3f, fatigueRegen: 0.4f, canBeAttacked: false);
                         var buffList = new List<BuffEngine.Buff> {
                             new BuffEngine.Buff(world: world, type: BuffEngine.BuffType.MaxHp, value: 100f, sleepFrames: 1 * 60 * 60, isPositive: true, autoRemoveDelay: 5 * 60 * 60, increaseIDAtEveryUse: true)};
 
                         return new Shelter(name: templateName, world: world, position: position, animPackage: AnimPkg.TentMedium, allowedFields: allowedFields, category: BoardPiece.Category.Wood,
-                            floatsOnWater: false, minDistance: 0, maxDistance: 500, maxMassBySize: null, maxHitPoints: 120, sleepEngine: sleepEngine, readableName: "medium tent", description: "Average shelter for sleeping.\nProtects against enemies.", buffList: buffList);
+                            floatsOnWater: false, minDistance: 0, maxDistance: 500, maxMassBySize: null, maxHitPoints: 120, sleepEngine: sleepEngine, readableName: "medium tent", description: "Average shelter for sleeping.\nProtects against enemies.", buffList: buffList, lightEngine: new LightEngine(size: 0, opacity: 0.65f, colorActive: false, color: Color.Transparent, addedGfxRectMultiplier: 4f, isActive: true));
                     }
 
                 case Name.TentBig:
@@ -1159,20 +1173,19 @@ namespace SonOfRobin
                         var allowedFields = new AllowedFields(rangeDict: new Dictionary<TerrainName, AllowedRange>() {
                             { TerrainName.Height, new AllowedRange(min: Terrain.waterLevelMax, max: Terrain.volcanoEdgeMin) }});
 
-                        SleepEngine sleepEngine = new SleepEngine(minFedPercent: 0.5f, fatigueRegen: 0.4f, canBeAttacked: false);
+                        SleepEngine sleepEngine = new SleepEngine(minFedPercent: 0.5f, fatigueRegen: 0.8f, canBeAttacked: false);
 
                         var buffList = new List<BuffEngine.Buff> {
                             new BuffEngine.Buff(world: world, type: BuffEngine.BuffType.MaxHp, value: 100f,sleepFrames: 1 * 60 * 60, isPositive: true, autoRemoveDelay: 5 * 60 * 60, increaseIDAtEveryUse: true),
                             new BuffEngine.Buff(world: world, type: BuffEngine.BuffType.Strength, value: 1,sleepFrames: 1 * 60 * 60, isPositive: true, autoRemoveDelay: 5 * 60 * 60, increaseIDAtEveryUse: true)};
 
                         return new Shelter(name: templateName, world: world, position: position, animPackage: AnimPkg.TentBig, allowedFields: allowedFields, category: BoardPiece.Category.Wood,
-                            floatsOnWater: false, minDistance: 0, maxDistance: 500, maxMassBySize: null, maxHitPoints: 200, sleepEngine: sleepEngine, readableName: "big tent", description: "Luxurious shelter for sleeping.\nProtects against enemies.", buffList: buffList);
+                            floatsOnWater: false, minDistance: 0, maxDistance: 500, maxMassBySize: null, maxHitPoints: 200, sleepEngine: sleepEngine, readableName: "big tent", description: "Luxurious shelter for sleeping.\nProtects against enemies.", buffList: buffList, lightEngine: new LightEngine(size: 0, opacity: 0.7f, colorActive: false, color: Color.Transparent, addedGfxRectMultiplier: 4f, isActive: true));
                     }
 
                 case Name.BackpackMedium:
                     {
-                        var allowedFields = new AllowedFields(rangeDict: new Dictionary<TerrainName, AllowedRange>() {
-                            { TerrainName.Height, new AllowedRange(min: Terrain.waterLevelMax, max: Terrain.volcanoEdgeMin) }});
+                        var allowedFields = new AllowedFields(rangeNameList: new List<AllowedFields.RangeName> { AllowedFields.RangeName.WaterShallow, AllowedFields.RangeName.WaterMedium, AllowedFields.RangeName.GroundAll });
 
                         var buffList = new List<BuffEngine.Buff> {
                             new BuffEngine.Buff(world: world, type: BuffEngine.BuffType.InvWidth, value: (byte)2, isPositive: true),
@@ -1184,8 +1197,7 @@ namespace SonOfRobin
 
                 case Name.BeltMedium:
                     {
-                        var allowedFields = new AllowedFields(rangeDict: new Dictionary<TerrainName, AllowedRange>() {
-                            { TerrainName.Height, new AllowedRange(min: Terrain.waterLevelMax, max: Terrain.volcanoEdgeMin) }});
+                        var allowedFields = new AllowedFields(rangeNameList: new List<AllowedFields.RangeName> { AllowedFields.RangeName.WaterShallow, AllowedFields.RangeName.WaterMedium, AllowedFields.RangeName.GroundAll });
 
                         var buffList = new List<BuffEngine.Buff> {
                             new BuffEngine.Buff(world: world, type: BuffEngine.BuffType.ToolbarWidth, value: (byte)3, isPositive: true)};
@@ -1196,13 +1208,22 @@ namespace SonOfRobin
 
                 case Name.Map:
                     {
-                        var allowedFields = new AllowedFields(rangeDict: new Dictionary<TerrainName, AllowedRange>() {
-                            { TerrainName.Height, new AllowedRange(min: Terrain.waterLevelMax, max: Terrain.volcanoEdgeMin) }});
+                        var allowedFields = new AllowedFields(rangeNameList: new List<AllowedFields.RangeName> { AllowedFields.RangeName.WaterShallow, AllowedFields.RangeName.WaterMedium, AllowedFields.RangeName.GroundAll });
 
                         var buffList = new List<BuffEngine.Buff> { new BuffEngine.Buff(world: world, type: BuffEngine.BuffType.EnableMap, value: null, isPositive: true) };
 
                         return new Equipment(name: templateName, world: world, position: position, animPackage: AnimPkg.Map, blocksMovement: false, category: BoardPiece.Category.Animal,
                             allowedFields: allowedFields, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 100, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "map", description: "Keeps track of visited places.");
+                    }
+
+                case Name.Torch:
+                    {
+                        var allowedFields = new AllowedFields(rangeNameList: new List<AllowedFields.RangeName> { AllowedFields.RangeName.WaterShallow, AllowedFields.RangeName.WaterMedium, AllowedFields.RangeName.GroundAll });
+
+                        var buffList = new List<BuffEngine.Buff> { new BuffEngine.Buff(world: world, type: BuffEngine.BuffType.LightSource, value: 10, isPositive: true) };
+
+                        return new PortableLight(name: templateName, world: world, position: position, animPackage: AnimPkg.Torch, blocksMovement: false, category: BoardPiece.Category.Wood,
+                            allowedFields: allowedFields, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 3, mass: 100, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 400, readableName: "torch", description: "A portable light source.");
                     }
 
                 default: { throw new DivideByZeroException($"Unsupported template name - {templateName}."); }

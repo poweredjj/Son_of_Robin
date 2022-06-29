@@ -9,7 +9,7 @@ namespace SonOfRobin
 {
     public class PieceContextMenu : Scene
     {
-        protected enum ContextAction { Drop, DropAll, Move, Eat, Plant, Cook }
+        protected enum ContextAction { Drop, DropAll, Move, Eat, Plant, Cook, Switch }
 
         private static readonly SpriteFont font = SonOfRobinGame.fontTommy40;
         private static readonly float marginPercent = 0.03f;
@@ -137,6 +137,7 @@ namespace SonOfRobin
 
             if (this.piece.toolbarTask == Scheduler.TaskName.GetEaten) contextActionList.Add(ContextAction.Eat);
             if (this.piece.GetType() == typeof(Fruit)) contextActionList.Add(ContextAction.Plant);
+            if (this.piece.GetType() == typeof(PortableLight) && this.piece.IsOnPlayersToolbar) contextActionList.Add(ContextAction.Switch);
             if (addMove) contextActionList.Add(ContextAction.Move);
             if (addDrop) contextActionList.Add(ContextAction.Drop);
             if (addCook) contextActionList.Add(ContextAction.Cook);
@@ -254,76 +255,95 @@ namespace SonOfRobin
             switch (action)
             {
                 case ContextAction.Drop:
-                    this.storage.DropPiecesFromSlot(slot: this.slot, addMovement: true);
-                    return;
+                    {
+                        this.storage.DropPiecesFromSlot(slot: this.slot, addMovement: true);
+                        return;
+                    }
 
                 case ContextAction.DropAll:
-                    this.storage.DropPiecesFromSlot(slot: this.slot, dropAllPieces: true, addMovement: true);
-                    return;
+                    {
+                        this.storage.DropPiecesFromSlot(slot: this.slot, dropAllPieces: true, addMovement: true);
+                        return;
+                    }
 
                 case ContextAction.Move:
-
-                    var invScene = Scene.GetSecondTopSceneOfType(typeof(Inventory));
-                    if (invScene == null) return;
-                    Inventory secondInventory = (Inventory)invScene;
-
-                    List<BoardPiece> piecesToMove = this.storage.RemoveAllPiecesFromSlot(slot: this.slot);
-
-                    if (piecesToMove.Count == 0) return;
-                    bool pieceMoved;
-
-                    foreach (BoardPiece piece in piecesToMove)
                     {
-                        pieceMoved = secondInventory.storage.AddPiece(piece);
-                        if (!pieceMoved) this.storage.AddPiece(piece);
-                    }
+                        var invScene = Scene.GetSecondTopSceneOfType(typeof(Inventory));
+                        if (invScene == null) return;
+                        Inventory secondInventory = (Inventory)invScene;
 
-                    return;
+                        List<BoardPiece> piecesToMove = this.storage.RemoveAllPiecesFromSlot(slot: this.slot);
+
+                        if (piecesToMove.Count == 0) return;
+                        bool pieceMoved;
+
+                        foreach (BoardPiece piece in piecesToMove)
+                        {
+                            pieceMoved = secondInventory.storage.AddPiece(piece);
+                            if (!pieceMoved) this.storage.AddPiece(piece);
+                        }
+
+                        return;
+                    }
 
                 case ContextAction.Eat:
-                    BoardPiece food = (BoardPiece)this.slot.TopPiece;
-                    World world = World.GetTopWorld();
-
-                    var executeHelper = new Dictionary<string, Object> { };
-                    executeHelper["player"] = world.player;
-                    executeHelper["toolbarPiece"] = food;
-                    executeHelper["buttonHeld"] = false;
-                    executeHelper["highlightOnly"] = false;
-
-                    new Scheduler.Task(menu: null, taskName: food.toolbarTask, delay: 0, executeHelper: executeHelper);
-
-                    return;
-
-                case ContextAction.Plant:
-                    Fruit fruit = (Fruit)this.slot.TopPiece;
-
-                    bool plantedWithSuccess = false;
-
-                    for (int i = 0; i < 35; i += 5)
                     {
-                        Sprite.ignoreDensityOverride = true;
-                        Sprite.maxDistanceOverride = i;
-                        BoardPiece newPlantPiece = PieceTemplate.CreateOnBoard(world: fruit.world, position: fruit.world.player.sprite.position, templateName: fruit.spawnerName);
-                        if (newPlantPiece.sprite.placedCorrectly)
-                        {
-                            Plant newPlant = (Plant)newPlantPiece;
-                            newPlant.massTakenMultiplier *= 1.5f; // when the player plants something, it should grow better than normal
+                        BoardPiece food = this.slot.TopPiece;
+                        World world = World.GetTopWorld();
 
-                            this.slot.RemoveTopPiece();
-                            plantedWithSuccess = true;
-                            break;
-                        }
+                        var executeHelper = new Dictionary<string, Object> { };
+                        executeHelper["player"] = world.player;
+                        executeHelper["toolbarPiece"] = food;
+                        executeHelper["buttonHeld"] = false;
+                        executeHelper["highlightOnly"] = false;
+
+                        new Scheduler.Task(menu: null, taskName: food.toolbarTask, delay: 0, executeHelper: executeHelper);
+
+                        return;
                     }
 
-                    if (!plantedWithSuccess) new TextWindow(text: "I cannot plant it here.", textColor: Color.Black, bgColor: Color.White, useTransition: true, animate: true);
+                case ContextAction.Plant:
+                    {
+                        Fruit fruit = (Fruit)this.slot.TopPiece;
 
-                    return;
+                        bool plantedWithSuccess = false;
+
+                        for (int i = 0; i < 35; i += 5)
+                        {
+                            Sprite.ignoreDensityOverride = true;
+                            Sprite.maxDistanceOverride = i;
+                            BoardPiece newPlantPiece = PieceTemplate.CreateOnBoard(world: fruit.world, position: fruit.world.player.sprite.position, templateName: fruit.spawnerName);
+                            if (newPlantPiece.sprite.placedCorrectly)
+                            {
+                                Plant newPlant = (Plant)newPlantPiece;
+                                newPlant.massTakenMultiplier *= 1.5f; // when the player plants something, it should grow better than normal
+
+                                this.slot.RemoveTopPiece();
+                                plantedWithSuccess = true;
+                                break;
+                            }
+                        }
+
+                        if (!plantedWithSuccess) new TextWindow(text: "I cannot plant it here.", textColor: Color.Black, bgColor: Color.White, useTransition: true, animate: true);
+
+                        return;
+                    }
 
                 case ContextAction.Cook:
-                    Cooker cooker = (Cooker)this.storage.storagePiece;
-                    cooker.Cook();
+                    {
+                        Cooker cooker = (Cooker)this.storage.storagePiece;
+                        cooker.Cook();
 
-                    return;
+                        return;
+                    }
+
+                case ContextAction.Switch:
+                    {
+                        PortableLight portableLight = (PortableLight)this.piece;
+                        portableLight.IsOn = !portableLight.IsOn;
+
+                        return;
+                    }
 
                 default:
                     throw new DivideByZeroException($"Unsupported context action - {action}.");

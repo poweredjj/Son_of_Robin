@@ -9,7 +9,10 @@ namespace SonOfRobin
         private readonly World world;
         private TrackingMode trackingMode;
         private Sprite trackedSprite;
+        private bool trackedSpriteReached;
         private Vector2 trackedPos;
+        public Vector2 TrackedPos
+        { get { return this.trackingMode == TrackingMode.Position ? this.trackedPos : this.trackedSprite.position; } }
         private Vector2 currentPos;
         private float targetZoom;
         public float currentZoom;
@@ -20,6 +23,15 @@ namespace SonOfRobin
 
         public Rectangle viewRect;
         public Vector2 viewPos;
+
+        public Rectangle ExtendedViewRect // to be used for whole screen effects, that does not show borders during transformations (position, scale)
+        {
+            get
+            {
+                int screenExtension = 200;
+                return new Rectangle(x: this.viewRect.X - (screenExtension / 2), y: this.viewRect.Y - (screenExtension / 2), width: this.viewRect.Width + screenExtension, height: this.viewRect.Height + screenExtension);
+            }
+        }
 
         public int ScreenWidth
         { get { return Convert.ToInt32(SonOfRobinGame.VirtualWidth * this.world.viewParams.ScaleX); } }
@@ -33,6 +45,24 @@ namespace SonOfRobin
             {
                 if (this.trackingMode != TrackingMode.Sprite || this.trackedSprite == null) return false;
                 return this.trackedSprite.boardPiece.exists;
+            }
+        }
+        public BoardPiece TrackedPiece
+        {
+            get
+            {
+                if (trackedSprite == null) return null;
+                return this.trackedSprite.boardPiece;
+            }
+        }
+        public bool IsTrackingPlayer
+        {
+            get
+            {
+                BoardPiece trackedPiece = this.TrackedPiece;
+                if (trackedPiece == null) return false;
+
+                return trackedPiece.name == PieceTemplate.Name.Player && this.trackedSpriteReached;
             }
         }
         private enum TrackingMode
@@ -54,6 +84,9 @@ namespace SonOfRobin
             this.trackingMode = TrackingMode.Undefined;
             this.targetZoom = 1f;
             this.currentZoom = 1f;
+            this.trackedSprite = null;
+            this.trackedSpriteReached = false;
+            this.trackedPos = Vector2.One;
         }
         public void Update()
         {
@@ -79,6 +112,7 @@ namespace SonOfRobin
                 this.currentZoom = this.targetZoom;
                 viewCenter.X = currentTargetPos.X;
                 viewCenter.Y = currentTargetPos.Y;
+                this.trackedSpriteReached = true;
                 this.currentFluidMotion = true; // only one frame should be displayed with instant scrolling...
             }
 
@@ -107,12 +141,15 @@ namespace SonOfRobin
             this.viewRect.Height = (int)(yMax - yMin);
 
             this.viewPos = new Vector2(-xMin, -yMin);
+
+            if (!this.trackedSpriteReached && Vector2.Distance(this.currentPos, currentTargetPos) < 30) this.trackedSpriteReached = true;
         }
 
         public void TrackPiece(BoardPiece trackedPiece, bool fluidMotion = true)
         {
             this.trackingMode = TrackingMode.Sprite;
             this.trackedSprite = trackedPiece.sprite;
+            this.trackedSpriteReached = false;
             this.currentFluidMotion = fluidMotion;
         }
 
@@ -120,6 +157,7 @@ namespace SonOfRobin
         {
             this.trackingMode = TrackingMode.Position;
             this.trackedSprite = null;
+            this.trackedSpriteReached = false;
             this.trackedPos = new Vector2(position.X, position.Y);
             this.currentFluidMotion = fluidMotion;
         }
@@ -177,14 +215,15 @@ namespace SonOfRobin
             }
         }
 
-        public void TrackLiveAnimal()
+        public void TrackLiveAnimal(bool fluidMotion = true)
         {
             if (this.TrackedSpriteExists) return;
 
             var allSprites = this.world.grid.GetAllSprites(Cell.Group.ColAll);
             var animals = allSprites.Where(sprite => sprite.boardPiece.GetType() == typeof(Animal) && sprite.boardPiece.alive).ToList();
+            if (animals.Count == 0) return;
             var index = SonOfRobinGame.random.Next(0, animals.Count);
-            this.TrackPiece(animals[index].boardPiece);
+            this.TrackPiece(trackedPiece: animals[index].boardPiece, fluidMotion: fluidMotion);
         }
 
     }

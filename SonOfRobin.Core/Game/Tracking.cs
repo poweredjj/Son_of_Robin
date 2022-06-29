@@ -65,9 +65,9 @@ namespace SonOfRobin
         {
             if (!targetSprite.boardPiece.exists || !followingSprite.boardPiece.exists)
             {
-                if (!targetSprite.boardPiece.exists) MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"Tracking cancelled - targetSprite '{targetSprite.boardPiece.name}' does not exist.");
+                if (!targetSprite.boardPiece.exists) MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Tracking cancelled - targetSprite '{targetSprite.boardPiece.name}' does not exist.");
 
-                if (!followingSprite.boardPiece.exists) MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"Tracking cancelled - followingSprite '{followingSprite.boardPiece.name}' does not exist.");
+                if (!followingSprite.boardPiece.exists) MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Tracking cancelled - followingSprite '{followingSprite.boardPiece.name}' does not exist.");
 
                 return false;
             }
@@ -128,7 +128,7 @@ namespace SonOfRobin
             this.world.trackingQueue.Remove(this.followingSprite.id);
             if (this.bounceWhenRemoved && this.followingSprite.boardPiece.exists)
             {
-                MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"'{this.followingSprite.boardPiece.name}' removed from tracking queue - adding bounce.");
+                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"'{this.followingSprite.boardPiece.name}' removed from tracking queue - adding bounce.");
 
                 Vector2 passiveMovement = new Vector2(this.world.random.Next(-700, 700), this.world.random.Next(-700, 700));
                 this.followingSprite.boardPiece.AddPassiveMovement(movement: passiveMovement);

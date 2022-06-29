@@ -257,14 +257,8 @@ namespace SonOfRobin
 
             if (!normalInputSet)
             {
-                try
-                {
-                    TouchInput.SwitchToLayout(TouchLayout.Empty);
-                    SonOfRobinGame.controlTips.AssignScene(scene: null);
-                }
-                catch (NullReferenceException)
-                { }
-
+                TouchInput.SwitchToLayout(TouchLayout.Empty);
+                if (SonOfRobinGame.controlTips != null) SonOfRobinGame.controlTips.AssignScene(scene: null);
             }
         }
 

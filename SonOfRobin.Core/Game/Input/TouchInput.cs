@@ -17,6 +17,7 @@ namespace SonOfRobin
         WorldMain,
         WorldShoot,
         WorldSleep,
+        WorldSpectator,
         Inventory,
         Map,
         QuitLoading,
@@ -72,7 +73,7 @@ namespace SonOfRobin
         {
             if (stickScale == Preferences.globalScale && screenWidth == SonOfRobinGame.graphics.PreferredBackBufferWidth && screenHeight == SonOfRobinGame.graphics.PreferredBackBufferHeight) return;
 
-            MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"Changing touch sticks scale from {stickScale} to {Preferences.globalScale}.", color: Color.White);
+            MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Changing touch sticks scale from {stickScale} to {Preferences.globalScale}.", color: Color.White);
 
             TouchPanel.EnableMouseGestures = SonOfRobinGame.fakeMobileMode;
             TouchPanel.EnableMouseTouchPoint = SonOfRobinGame.fakeMobileMode;
@@ -118,7 +119,7 @@ namespace SonOfRobin
                     xPos = 0.76f;
                     yPos = 0.12f;
 
-                    new VirtButton(name: VButName.Map, label: "MAP", bgColorPressed: Color.CornflowerBlue, bgColorReleased: Color.White, textColor: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size, highlightCoupledObj: world, highlightCoupledVarName: "mapEnabled");
+                    new VirtButton(name: VButName.Map, label: "MAP", bgColorPressed: Color.CornflowerBlue, bgColorReleased: Color.White, textColor: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size, highlightCoupledObj: world, highlightCoupledVarName: "MapEnabled");
                     xPos += xShift;
                     new VirtButton(name: VButName.ZoomOut, label: "ZOOM\nOUT", bgColorPressed: Color.Orange, bgColorReleased: Color.White, textColor: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size, switchButton: true, activeCoupledObj: preferences, activeCoupledVarName: "zoomedOut");
                     xPos += xShift;
@@ -158,6 +159,25 @@ namespace SonOfRobin
                     showSticks = false;
 
                     new VirtButton(name: VButName.Interact, label: "WAKE UP", bgColorPressed: Color.CornflowerBlue, bgColorReleased: Color.White, textColor: Color.White, posX0to1: 0.94f, posY0to1: 0.32f, width0to1: size, height0to1: size, highlightCoupledObj: world.player, highlightCoupledVarName: "CanWakeNow");
+
+                    return;
+
+                case TouchLayout.WorldSpectator:
+                    showSticks = true;
+                    xShift = 0.09f;
+
+                    // right side
+
+                    xPos = 0.76f;
+                    yPos = 0.12f;
+
+                    xPos += xShift;
+                    new VirtButton(name: VButName.Map, label: "MAP", bgColorPressed: Color.CornflowerBlue, bgColorReleased: Color.White, textColor: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size, highlightCoupledObj: world, highlightCoupledVarName: "MapEnabled");
+                    xPos += xShift;
+                    new VirtButton(name: VButName.ZoomOut, label: "ZOOM\nOUT", bgColorPressed: Color.Orange, bgColorReleased: Color.White, textColor: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size, switchButton: true, activeCoupledObj: preferences, activeCoupledVarName: "zoomedOut");
+
+                    // left side
+                    new VirtButton(name: VButName.PauseMenu, label: "MENU", bgColorPressed: Color.Yellow, bgColorReleased: Color.White, textColor: Color.White, posX0to1: 0.06f, posY0to1: 0.12f, width0to1: size, height0to1: size);
 
                     return;
 

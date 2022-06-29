@@ -9,7 +9,7 @@ namespace SonOfRobin
     public class Animal : BoardPiece
     {
         public static readonly int maxAnimalsPerName = 40;
-        public static readonly int attackDistanceDynamic = 13;
+        public static readonly int attackDistanceDynamic = 16;
         public static readonly int attackDistanceStatic = 4;
 
         private readonly bool female;
@@ -686,7 +686,7 @@ namespace SonOfRobin
                 }
             }
 
-            if (childrenBorn > 0) MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"{this.name} has been born ({childrenBorn}).");
+            if (childrenBorn > 0) MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{this.name} has been born ({childrenBorn}).");
 
             if (this.pregnancyMass > this.startingMass)
             { new WorldEvent(world: this.world, delay: 90, boardPiece: this, eventName: WorldEvent.EventName.Birth); }

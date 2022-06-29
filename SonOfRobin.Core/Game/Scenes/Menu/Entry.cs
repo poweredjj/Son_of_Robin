@@ -84,17 +84,17 @@ namespace SonOfRobin
 
         public virtual void NextValue()
         {
-            if (Preferences.DebugMode) MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: "NextValue", color: Color.White);
+            if (Preferences.DebugMode) MessageLog.AddMessage(msgType: MsgType.Debug, message: "NextValue", color: Color.White);
         }
 
         public virtual void PreviousValue()
         {
-            if (Preferences.DebugMode) MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: "PreviousValue", color: Color.White);
+            if (Preferences.DebugMode) MessageLog.AddMessage(msgType: MsgType.Debug, message: "PreviousValue", color: Color.White);
         }
 
         public virtual void Invoke()
         {
-            if (Preferences.DebugMode) MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: "Invoke", color: Color.White);
+            if (Preferences.DebugMode) MessageLog.AddMessage(msgType: MsgType.Debug, message: "Invoke", color: Color.White);
         }
 
         public virtual void ProcessTouch()

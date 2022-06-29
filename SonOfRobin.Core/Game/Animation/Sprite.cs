@@ -30,6 +30,7 @@ namespace SonOfRobin
         public float opacity;
         public AnimFrame frame;
         public Color color;
+        public LightEngine lightEngine;
         public AnimPkg animPackage;
         public byte animSize;
         public string animName;
@@ -94,7 +95,7 @@ namespace SonOfRobin
             }
         }
 
-        public Sprite(World world, string id, BoardPiece boardPiece, Vector2 position, AnimPkg animPackage, byte animSize, string animName, bool ignoresCollisions, AllowedFields allowedFields, bool blocksMovement = true, bool visible = true, bool checksFullCollisions = false, ushort minDistance = 0, ushort maxDistance = 100, bool floatsOnWater = false, bool fadeInAnim = true, bool placeAtBeachEdge = false, bool isShownOnMiniMap = false, AllowedDensity allowedDensity = null)
+        public Sprite(World world, string id, BoardPiece boardPiece, Vector2 position, AnimPkg animPackage, byte animSize, string animName, bool ignoresCollisions, AllowedFields allowedFields, bool blocksMovement = true, bool visible = true, bool checksFullCollisions = false, ushort minDistance = 0, ushort maxDistance = 100, bool floatsOnWater = false, bool fadeInAnim = true, bool placeAtBeachEdge = false, bool isShownOnMiniMap = false, AllowedDensity allowedDensity = null, LightEngine lightEngine = null)
         {
             this.id = id; // duplicate from BoardPiece class
             this.boardPiece = boardPiece;
@@ -123,7 +124,7 @@ namespace SonOfRobin
             if (this.allowedDensity != null) this.allowedDensity.FinishCreation(piece: this.boardPiece, sprite: this);
             this.visible = visible; // initially it is assigned normally
             this.isShownOnMiniMap = isShownOnMiniMap;
-            this.effectCol = new EffectCol(sprite: this);
+            this.effectCol = new EffectCol(world: world);
             this.hasBeenDiscovered = false;
             this.currentCell = null;
             if (fadeInAnim)
@@ -144,6 +145,9 @@ namespace SonOfRobin
                 this.RemoveFromGrid();
                 return;
             }
+
+            this.lightEngine = lightEngine;
+            if (this.lightEngine != null) this.lightEngine.AssignSprite(this);
         }
         public void Serialize(Dictionary<string, Object> pieceData)
         {
@@ -162,6 +166,7 @@ namespace SonOfRobin
             pieceData["sprite_gridGroups"] = this.gridGroups;
             pieceData["sprite_hasBeenDiscovered"] = this.hasBeenDiscovered;
             pieceData["sprite_allowedFields"] = this.allowedFields;
+            pieceData["sprite_lightSource"] = this.lightEngine == null ? null : this.lightEngine.Serialize();
         }
         public void Deserialize(Dictionary<string, Object> pieceData)
         {
@@ -180,6 +185,7 @@ namespace SonOfRobin
             this.gridGroups = (List<Cell.Group>)pieceData["sprite_gridGroups"];
             this.hasBeenDiscovered = (bool)pieceData["sprite_hasBeenDiscovered"];
             this.allowedFields = (AllowedFields)pieceData["sprite_allowedFields"];
+            this.lightEngine = LightEngine.Deserialize(lightData: pieceData["sprite_lightSource"], sprite: this);
         }
         public byte GetFieldValue(TerrainName terrainName)
         {
@@ -222,7 +228,7 @@ namespace SonOfRobin
 
             if (this.FindFreeSpot(startPosition: startPosition, minDistance: 0, maxDistance: 65535)) return true;
 
-            MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"Could not move to closest free spot - {this.boardPiece.name}.", color: Color.Violet);
+            MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Could not move to closest free spot - {this.boardPiece.name}.", color: Color.Violet);
 
             return false;
         }
@@ -658,7 +664,7 @@ namespace SonOfRobin
 
         public void Draw(bool calculateSubmerge = true)
         {
-            if (this.world.mapEnabled && !this.hasBeenDiscovered && this.world.camera.viewRect.Contains(this.gfxRect)) this.hasBeenDiscovered = true;
+            if (!this.hasBeenDiscovered && this.world.MapEnabled && this.world.camera.IsTrackingPlayer && this.world.camera.viewRect.Contains(this.gfxRect)) this.hasBeenDiscovered = true;
 
             if (this.ObstructsPlayer && this.opacityFade == null) this.opacityFade = new OpacityFade(sprite: this, destOpacity: 0.5f, playerObstructMode: true, duration: 10);
             this.opacityFade?.Process();

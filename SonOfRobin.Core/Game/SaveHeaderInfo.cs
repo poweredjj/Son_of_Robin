@@ -13,10 +13,10 @@ namespace SonOfRobin
         public readonly int seed;
         public readonly int width;
         public readonly int height;
-        private readonly int currentUpdate;
-        private readonly TimeSpan elapsedTime;
+        private readonly IslandClock frozenClock;
+        private readonly TimeSpan timePlayed;
         public readonly DateTime saveDate;
-        private string ElapsedTimeString { get { return this.elapsedTime.ToString("hh\\:mm"); } }
+        private string ElapsedTimeString { get { return this.timePlayed.ToString("hh\\:mm"); } }
         private string SaveDateString
         {
             get
@@ -32,8 +32,9 @@ namespace SonOfRobin
             {
                 string autoSaveString = this.autoSave ? " autosave" : "";
 
-                if (SonOfRobinGame.platform == Platform.Mobile) return $"{SaveDateString} time played: {ElapsedTimeString}{autoSaveString} seed: {String.Format("{0:0000}", this.seed)} {this.width}x{this.height}";
-                else return $"{SaveDateString}   time played: {ElapsedTimeString}{autoSaveString}";
+                if (SonOfRobinGame.platform == Platform.Mobile)
+                    return $"{SaveDateString} time played: {this.ElapsedTimeString}{autoSaveString} day {this.frozenClock.CurrentDayNo} seed: {String.Format("{0:0000}", this.seed)} {this.width}x{this.height}";
+                else return $"{SaveDateString}   time played: {this.ElapsedTimeString}{autoSaveString}   day {this.frozenClock.CurrentDayNo}";
             }
         }
 
@@ -55,8 +56,8 @@ namespace SonOfRobin
             this.seed = -1;
             this.width = -1;
             this.height = -1;
-            this.currentUpdate = -1;
-            this.elapsedTime = TimeSpan.FromSeconds(0);
+            this.frozenClock = null;
+            this.timePlayed = TimeSpan.FromSeconds(0);
 
             if (!this.folderName.StartsWith(LoaderSaver.tempPrefix) && headerData != null && headerData.ContainsKey("saveVersion"))
             {
@@ -69,12 +70,11 @@ namespace SonOfRobin
                     this.seed = (int)headerData["seed"];
                     this.width = (int)headerData["width"];
                     this.height = (int)headerData["height"];
-                    this.currentUpdate = (int)headerData["currentUpdate"];
-                    this.elapsedTime = TimeSpan.FromMilliseconds(this.currentUpdate * 16.67);
+                    this.frozenClock = new IslandClock(frozenUpdate: (int)headerData["currentUpdate"]);
+                    this.timePlayed = (TimeSpan)headerData["TimePlayed"];
                 }
             }
         }
-
         public void Delete()
         { Directory.Delete(path: this.fullPath, recursive: true); }
     }

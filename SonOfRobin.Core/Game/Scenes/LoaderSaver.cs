@@ -16,7 +16,7 @@ namespace SonOfRobin
         private readonly static string gridName = "grid.sav";
         public readonly static string tempPrefix = "_save_temp_";
 
-        private readonly static int maxPiecesInPackage = 5000; // using small piece packages lowers ram usage during writing binary files
+        private readonly static int maxPiecesInPackage = 3000; // using small piece packages lowers ram usage during writing binary files
         private string CurrentPiecesName { get { return $"pieces_{this.currentPiecePackageNo}.sav"; } }
         private string CurrentPiecesPath { get { return Path.Combine(this.saveMode ? saveTempPath : savePath, this.CurrentPiecesName); } }
 
@@ -215,6 +215,8 @@ namespace SonOfRobin
         {
             this.processedSteps++;
 
+            this.world.lastSaved = DateTime.Now; // To avoid another autosaving prompt after cancelling saving; will be updated after saving.
+
             // preparing save directory
             if (!this.directoryChecked)
             {
@@ -235,9 +237,10 @@ namespace SonOfRobin
                     {"height", this.world.height },
                     {"currentFrame", this.world.currentFrame },
                     {"currentUpdate", this.world.currentUpdate },
+                    {"TimePlayed", this.world.TimePlayed },
                     {"currentPieceId", this.world.currentPieceId },
                     {"currentBuffId", this.world.currentBuffId },
-                    {"mapEnabled", this.world.mapEnabled },
+                    {"MapEnabled", this.world.MapEnabled },
                     {"realDateTime", DateTime.Now },
                     {"saveVersion", SaveHeaderManager.saveVersion },
             };
@@ -350,7 +353,7 @@ namespace SonOfRobin
             }
 
             if (this.showSavedMessage) new TextWindow(text: "Game has been saved.", textColor: Color.White, bgColor: Color.DarkGreen, useTransition: false, animate: false);
-            MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.User, message: $"Game saved in slot {saveSlotName}.", color: Color.LightBlue);
+            MessageLog.AddMessage(msgType: MsgType.User, message: $"Game saved in slot {saveSlotName}.", color: Color.LightBlue);
 
             this.world.lastSaved = DateTime.Now;
             this.processingComplete = true;
@@ -477,7 +480,7 @@ namespace SonOfRobin
             this.world = new World(width: width, height: height, seed: seed, saveGameData: this.SaveGameData);
             this.MoveToTop();
 
-            MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.User, message: $"Game has been loaded from slot {saveSlotName}.", color: Color.LightBlue);
+            MessageLog.AddMessage(msgType: MsgType.User, message: $"Game has been loaded from slot {saveSlotName}.", color: Color.LightBlue);
 
             // deleting other non-demo worlds
             var existingWorlds = GetAllScenesOfType(typeof(World));

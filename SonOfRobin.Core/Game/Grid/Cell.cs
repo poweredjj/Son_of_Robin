@@ -5,7 +5,6 @@ using System.Linq;
 
 namespace SonOfRobin
 {
-
     public class Cell
     {
         public bool creationInProgress;
@@ -25,6 +24,9 @@ namespace SonOfRobin
         public readonly Vector2 center;
         public readonly int width;
         public readonly int height;
+        public readonly int dividedWidth;
+        public readonly int dividedHeight;
+
         public List<Cell> surroundingCells;
         public bool visitedByPlayer;
 
@@ -38,6 +40,7 @@ namespace SonOfRobin
             ColBlocking,
             ColAll,
             Visible,
+            LightSource,
             MiniMap,
             StateMachinesNonPlants,
             StateMachinesPlants
@@ -56,8 +59,11 @@ namespace SonOfRobin
             this.xMax = xMax;
             this.yMin = yMin;
             this.yMax = yMax;
-            this.width = xMax - xMin + 1;
-            this.height = yMax - yMin + 1;
+            this.width = xMax - xMin + 1; // virtual value, simulated for the outside world
+            this.height = yMax - yMin + 1; // virtual value, simulated for the outside world
+            // Ceiling() to round up in case of odd numbers
+            this.dividedWidth = (int)Math.Ceiling((float)width / (float)Preferences.terrainResDivider);  // real storing data capacity
+            this.dividedHeight = (int)Math.Ceiling((float)height / (float)Preferences.terrainResDivider); // real storing data capacity
             this.rect = new Rectangle(this.xMin, this.yMin, this.width, this.height);
             this.xCenter = this.xMin + (this.width / 2);
             this.yCenter = this.yMin + (this.height / 2);
@@ -115,7 +121,7 @@ namespace SonOfRobin
                 case 3:
                     // different noise settings should not be processed together in parallel
                     this.terrainByName[TerrainName.Danger] = new Terrain(
-                    world: this.world, cell: this, name: TerrainName.Danger, frequency: 2.9f, octaves: 3, persistence: 0.7f, lacunarity: 1.4f, gain: 0.3f);
+                    world: this.world, cell: this, name: TerrainName.Danger, frequency: 2.9f, octaves: 3, persistence: 0.7f, lacunarity: 1.4f, gain: 0.3f, addBorder: true);
 
                     this.UpdateBoardGraphics();
                     this.creationStage++;
@@ -236,7 +242,9 @@ namespace SonOfRobin
             try
             {
                 Rectangle sourceRectangle = new Rectangle(0, 0, this.boardGraphics.texture.Width, this.boardGraphics.texture.Height);
-                Rectangle destinationRectangle = new Rectangle(this.xMin, this.yMin, this.boardGraphics.texture.Width, this.boardGraphics.texture.Height);
+                Rectangle destinationRectangle = new Rectangle(this.xMin, this.yMin,
+                    this.boardGraphics.texture.Width * Preferences.terrainResDivider, this.boardGraphics.texture.Height * Preferences.terrainResDivider);
+
                 SonOfRobinGame.spriteBatch.Draw(this.boardGraphics.texture, destinationRectangle, sourceRectangle, Color.White);
             }
             catch (NullReferenceException)

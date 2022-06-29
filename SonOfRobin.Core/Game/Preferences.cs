@@ -7,7 +7,7 @@ namespace SonOfRobin
 {
     public class Preferences
     {
-        public enum WorldSize { small, medium, large, gigantic } // lower case, for proper display in menu
+        public enum WorldSize { small, medium, large, gigantic, huge } // lower case, for proper display in menu
 
         public static int newWorldWidth;
         public static int newWorldHeight;
@@ -46,6 +46,7 @@ namespace SonOfRobin
         }
 
         private static bool debugMode = false;
+        public static readonly int terrainResDivider = 2;
         public static float globalScale = 1f;
         public static float menuScale = 1f;
         public static float worldScale = 1f;
@@ -72,8 +73,25 @@ namespace SonOfRobin
         public static bool debugShowStatBars = false;
         public static bool debugShowFruitRects = false;
         public static bool debugCreateMissingPieces = true;
-        public static bool debugShowWholeMap = false;
         public static bool debugShowAllMapPieces = false;
+        private static bool debugShowWholeMap = false;
+        public static bool debugTurnOffLighting = false;
+        public static bool DebugShowWholeMap
+        {
+            get { return debugShowWholeMap; }
+            set
+            {
+                if (debugShowWholeMap == value) return;
+                debugShowWholeMap = value;
+
+                World world = World.GetTopWorld();
+                if (world != null)
+                {
+                    world.mapBig.ForceRender();
+                    world.mapSmall.ForceRender();
+                }
+            }
+        }
 
         private static WorldSize selectedWorldSize = WorldSize.medium;
         public static WorldSize SelectedWorldSize
@@ -105,13 +123,18 @@ namespace SonOfRobin
                         newWorldHeight = 60000;
                         break;
 
+                    case WorldSize.huge:
+                        newWorldWidth = 100000;
+                        newWorldHeight = 100000;
+                        break;
+
 
                     default:
                         throw new ArgumentException($"Unsupported worldSize - {selectedWorldSize}.");
 
                 }
 
-                MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"Setting world size to {newWorldWidth}x{newWorldHeight}");
+                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Setting world size to {newWorldWidth}x{newWorldHeight}");
 
             }
         }
@@ -126,7 +149,7 @@ namespace SonOfRobin
                 debugShowWholeMap = debugGodMode;
                 debugShowAllMapPieces = debugGodMode;
                 World world = World.GetTopWorld();
-                if (world != null) world.mapEnabled = debugGodMode;
+                if (world != null) world.MapEnabled = debugGodMode;
             }
         }
 
@@ -269,7 +292,7 @@ namespace SonOfRobin
 
             FileReaderWriter.Save(path: SonOfRobinGame.prefsPath, savedObj: prefsData);
 
-            MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: "Preferences saved.", color: Color.White);
+            MessageLog.AddMessage(msgType: MsgType.Debug, message: "Preferences saved.", color: Color.White);
         }
 
         public static void Load()
@@ -310,7 +333,7 @@ namespace SonOfRobin
                 }
                 catch (KeyNotFoundException)
                 {
-                    MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: "KeyNotFoundException while loading preferences.", color: Color.White);
+                    MessageLog.AddMessage(msgType: MsgType.Debug, message: "KeyNotFoundException while loading preferences.", color: Color.White);
                 }
             }
 
@@ -323,7 +346,7 @@ namespace SonOfRobin
             if (SonOfRobinGame.platform == Platform.Mobile) fullScreenMode = true; // window mode makes no sense on mobile
             if (SonOfRobinGame.fakeMobileMode) fullScreenMode = false; // fakeMobileMode uses mouse (and mouse cursor is not visible in fullscreen mode)
 
-            MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: "Preferences loaded.", color: Color.White);
+            MessageLog.AddMessage(msgType: MsgType.Debug, message: "Preferences loaded.", color: Color.White);
         }
 
         public static void CheckIfResolutionIsSupported()

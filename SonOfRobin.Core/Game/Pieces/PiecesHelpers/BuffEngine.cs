@@ -6,7 +6,7 @@ namespace SonOfRobin
 {
     public class BuffEngine
     {
-        public enum BuffType { InvWidth, InvHeight, ToolbarWidth, ToolbarHeight, Speed, Strength, MaxHp, EnableMap, Tired };
+        public enum BuffType { InvWidth, InvHeight, ToolbarWidth, ToolbarHeight, Speed, Strength, MaxHp, EnableMap, Tired, Hungry, LightSource };
 
         [Serializable]
         public class Buff
@@ -88,6 +88,14 @@ namespace SonOfRobin
                             description = "Decreases multiple stats.";
                             break;
 
+                        case BuffType.Hungry:
+                            description = "Hungry";
+                            break;
+
+                        case BuffType.LightSource:
+                            description = $"Light source {sign}{this.value}.";
+                            break;
+
                         default:
                             throw new DivideByZeroException($"Unsupported buff type - {this.type}.");
                     }
@@ -102,6 +110,9 @@ namespace SonOfRobin
             {
                 get
                 {
+
+                    string sign = $"{this.value}".StartsWith("-") ? "" : "+";
+
                     switch (this.type)
                     {
                         case BuffType.InvWidth:
@@ -117,22 +128,25 @@ namespace SonOfRobin
                             return null;
 
                         case BuffType.Speed:
-                            if ((float)this.value > 0) return $"SPD\n+{this.value}";
-                            else return $"SPD\n{this.value}";
+                            return $"SPD\n{sign}{this.value}";
 
                         case BuffType.Strength:
-                            if ((int)this.value > 0) return $"STR\n+{this.value}";
-                            else return $"STR\n{this.value}";
+                            return $"STR\n{sign}{this.value}";
 
                         case BuffType.MaxHp:
-                            if ((float)this.value > 0) return $"HP\n+{this.value}";
-                            else return $"HP\n{this.value}";
+                            return $"HP\n{sign}{this.value}";
 
                         case BuffType.EnableMap:
                             return null;
 
                         case BuffType.Tired:
                             return "tired";
+
+                        case BuffType.Hungry:
+                            return "hungry";
+
+                        case BuffType.LightSource:
+                            return $"LIGHT\n{sign}{this.value}";
 
                         default:
                             throw new DivideByZeroException($"Unsupported buff type - {this.type}.");
@@ -204,7 +218,7 @@ namespace SonOfRobin
             this.buffDict[buff.id] = buff;
             if (buff.autoRemoveDelay > 0) new WorldEvent(eventName: WorldEvent.EventName.RemoveBuff, world: this.piece.world, delay: buff.autoRemoveDelay, boardPiece: this.piece, eventHelper: buff.id);
 
-            MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"Buff added - id {buff.id} type {buff.type} value {buff.value}.");
+            MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Buff added - id {buff.id} type {buff.type} value {buff.value}.");
         }
 
         public void RemoveEveryBuffOfType(BuffType buffType)
@@ -225,7 +239,7 @@ namespace SonOfRobin
             bool stillHasThisBuff = this.HasBuff(typeToCheck);
             this.ProcessBuff(buff: buffToRemove, add: false, stillHasThisBuff: stillHasThisBuff, world: null);
 
-            MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"Buff removed - id {buffToRemove.id} type {buffToRemove.type} value {buffToRemove.value}.");
+            MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Buff removed - id {buffToRemove.id} type {buffToRemove.type} value {buffToRemove.value}.");
         }
 
         public bool HasBuff(BuffType buffType)
@@ -312,17 +326,12 @@ namespace SonOfRobin
                     {
                         Player player = (Player)this.piece;
 
-                        if (add)
-                        {
-                            player.world.mapEnabled = true;
-                            if (!hadThisBuffBefore && SonOfRobinGame.platform == Platform.Desktop) player.world.ToggleMapMode();
-                        }
+                        if (add) player.world.MapEnabled = true;
                         else
                         {
                             if (!stillHasThisBuff)
                             {
-                                player.world.mapEnabled = false;
-                                player.world.DisableMap();
+                                player.world.MapEnabled = false;
                             }
                         }
 
@@ -335,6 +344,29 @@ namespace SonOfRobin
                         break;
                     }
 
+                case BuffType.Hungry:
+                    {
+                        // this buff exists only to show negative status icon
+                        break;
+                    }
+
+                case BuffType.LightSource:
+                    {
+                        Player player = (Player)this.piece;
+                        LightEngine playerLightSource = player.sprite.lightEngine;
+
+                        if (add)
+                        {
+                            playerLightSource.Size = (int)buff.value * 100;
+                            playerLightSource.Activate();
+                        }
+                        else
+                        {
+                            if (!stillHasThisBuff) playerLightSource.Deactivate();
+                        }
+
+                        break;
+                    }
 
                 case BuffType.Strength:
                     {

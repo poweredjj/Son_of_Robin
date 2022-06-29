@@ -198,7 +198,7 @@ namespace SonOfRobin
                 return slot.RemoveTopPiece();
             }
             catch (IndexOutOfRangeException)
-            { MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"Can't get piece - inventory index out of bounds ({x},{y})", color: Color.White); }
+            { MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Can't get piece - inventory index out of bounds ({x},{y})", color: Color.White); }
 
             return null;
         }
@@ -216,7 +216,7 @@ namespace SonOfRobin
                 this.DropPiecesFromSlot(slot: slot, addMovement: addMovement);
             }
             catch (IndexOutOfRangeException)
-            { MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"Can't drop piece - inventory index out of bounds ({x},{y})", color: Color.White); }
+            { MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Can't drop piece - inventory index out of bounds ({x},{y})", color: Color.White); }
         }
         public void DropPiecesFromSlot(StorageSlot slot, bool destroyIfFreeSpotNotFound = false, bool addMovement = false, bool dropAllPieces = false)
         {
@@ -232,7 +232,7 @@ namespace SonOfRobin
                     return;
                 }
                 else
-                { MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"{piece.name} has been dropped.", color: Color.White); }
+                { MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{piece.name} has been dropped.", color: Color.White); }
 
                 if (!dropAllPieces) return;
             }
@@ -258,7 +258,7 @@ namespace SonOfRobin
 
         public bool DropPieceToTheGround(BoardPiece piece, bool addMovement)
         {
-            if (piece.GetType() == typeof(Player)) MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: "Dropping piece...", color: Color.White);
+            if (piece.GetType() == typeof(Player)) MessageLog.AddMessage(msgType: MsgType.Debug, message: "Dropping piece...", color: Color.White);
 
             // the piece should fall naturally to places, where player can go to
             piece.sprite.allowedFields = new AllowedFields(rangeNameList: new List<AllowedFields.RangeName> { AllowedFields.RangeName.WaterShallow, AllowedFields.RangeName.WaterMedium, AllowedFields.RangeName.GroundAll });
@@ -391,6 +391,24 @@ namespace SonOfRobin
             }
 
             return occurences;
+        }
+
+        public bool ContainsThisPieceID(string pieceID)
+        {
+            return this.FindPieceWithThisID(pieceID) != null;
+        }
+
+        public BoardPiece FindPieceWithThisID(string pieceID)
+        {
+            foreach (StorageSlot slot in this.OccupiedSlots)
+            {
+                foreach (BoardPiece piece in slot.pieceList)
+                {
+                    if (piece.id == pieceID) return piece;
+                }
+            }
+
+            return null;
         }
 
         public Dictionary<string, Object> Serialize()

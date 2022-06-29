@@ -6,7 +6,7 @@ namespace SonOfRobin
 {
     public class HintEngine
     {
-        public enum Type { Hungry, VeryHungry, Starving, Tired, VeryTired, CantShootInWater, SmallInventory, MapNegative, Lava, EnteringDangerZone, CineIntroduction };
+        public enum Type { Hungry, VeryHungry, Starving, Tired, VeryTired, CantShootInWater, SmallInventory, MapNegative, Lava, BreakingItem, BrokenItem, BurntOutTorch, CineIntroduction };
 
         private static readonly List<Type> typesThatIgnoreShowHintSetting = new List<Type> { Type.CineIntroduction };
 
@@ -62,7 +62,7 @@ namespace SonOfRobin
             this.waitUntilFrame = this.world.currentUpdate + hintDelay;
         }
 
-        public bool ShowGeneralHint(Type type, bool ignoreDelay = false)
+        public bool ShowGeneralHint(Type type, bool ignoreDelay = false, string optionalText = "")
         {
             if (!Preferences.showHints && !typesThatIgnoreShowHintSetting.Contains(type)) return false;
 
@@ -176,11 +176,30 @@ namespace SonOfRobin
                         break;
                     }
 
-                case Type.EnteringDangerZone:
+                case Type.BreakingItem:
                     {
                         this.Disable(type: type, delay: 0);
                         ShowMessageDuringPause(new List<HintMessage> {
-                            new HintMessage(text: "This dark area is... strange.\nI have a feeling that it is not safe there.") });
+                            new HintMessage(text: $"My {optionalText} is getting worn out."),
+                            new HintMessage(text: "I should watch my tools durability."),
+                        });
+                        break;
+                    }
+
+                case Type.BrokenItem:
+                    {
+                        this.Disable(type: type, delay: 0);
+                        ShowMessageDuringPause(new List<HintMessage> {
+                            new HintMessage(text: $"My {optionalText} has fell apart."),
+                            new HintMessage(text: "Now I need a new one."),
+                        });
+                        break;
+                    }
+
+                case Type.BurntOutTorch:
+                    {
+                        this.Disable(type: type, delay: 0);
+                        ShowMessageDuringPause(new HintMessage(text: $"My {optionalText} has burnt out."));
                         break;
                     }
 
@@ -260,6 +279,11 @@ namespace SonOfRobin
 
             bool hintShown = PieceHint.CheckForHintToShow(hintEngine: this, player: world.player, forcedMode: forcedMode, ignoreInputActive: ignoreInputActive, typesToCheckOnly: typesToCheckOnly);
             if (hintShown) this.UpdateWaitFrame();
+        }
+
+        public static void ShowMessageDuringPause(HintMessage message)
+        {
+            ShowMessageDuringPause(new List<HintMessage> { message });
         }
 
         public static void ShowMessageDuringPause(List<HintMessage> messageList)

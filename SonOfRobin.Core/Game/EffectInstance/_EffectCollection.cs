@@ -7,7 +7,6 @@ namespace SonOfRobin
     public class EffectCol // collection of effect instances
     {
         private readonly World world;
-        private readonly Sprite sprite;
         private List<EffInstance> effectInstanceList;
         public bool ThereAreEffectsToRender { get { return this.effectInstanceList.Count > 0; } }
 
@@ -19,23 +18,17 @@ namespace SonOfRobin
             }
         }
 
-        public EffectCol(Sprite sprite)
+        public EffectCol(World world)
         {
-            this.sprite = sprite;
-            this.world = sprite.world;
+            this.world = world;
             this.effectInstanceList = new List<EffInstance> { };
         }
 
         public void AddEffect(EffInstance effInstance, bool ignoreIfDuplicated = true)
         {
-            //MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"{this.sprite.boardPiece.id} {effInstance.GetType()} {this.world.currentUpdate}");
-
             // Draw() clears effect list, if draw is missing (frameskip) - duplicates will occur
-            if (ignoreIfDuplicated && this.ThisEffectHasBeenApplied(effect: effInstance.effect))
-            {
-                //MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"duplicated {this.sprite.boardPiece.id} {this.world.currentUpdate}", color: Color.Cyan);
-                return;
-            }
+            if (ignoreIfDuplicated && this.ThisEffectHasBeenApplied(effect: effInstance.effect)) return;
+
             this.effectInstanceList.Add(effInstance);
         }
 

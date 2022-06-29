@@ -89,7 +89,7 @@ namespace SonOfRobin
                 if (!this.CheckIfStorageContainsAllIngredients(storageList: storagesToTakeFrom))
                 {
                     new TextWindow(text: "Not enough ingredients.", textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false, blockInputDuration: 30);
-                    MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"Not enough ingredients to craft '{this.pieceToCreate}'.");
+                    MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Not enough ingredients to craft '{this.pieceToCreate}'.");
                     return false;
                 }
 
@@ -103,7 +103,7 @@ namespace SonOfRobin
                     {
                         piece.sprite.MoveToClosestFreeSpot(position);
 
-                        var storagesToPutInto = piece.GetType() == typeof(Tool) ? player.CraftStoragesToolbarFirst : player.CraftStorages;
+                        var storagesToPutInto = piece.GetType() == typeof(Tool) || piece.GetType() == typeof(PortableLight) ? player.CraftStoragesToolbarFirst : player.CraftStorages;
                         foreach (PieceStorage storage in storagesToPutInto)
                         {
                             if (storage.CanFitThisPiece(piece))
@@ -115,7 +115,7 @@ namespace SonOfRobin
                     }
                     else
                     {
-                        MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"Could not create '{piece.name}' on the board. Attempting to craft directly to storage.");
+                        MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Could not create '{piece.name}' on the board. Attempting to craft directly to storage.");
                         piece = PieceTemplate.CreateOffBoard(templateName: this.pieceToCreate, world: world);
                         if (piece.sprite.placedCorrectly)
                         {
@@ -123,7 +123,7 @@ namespace SonOfRobin
                         }
                         else
                         {
-                            MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"A second attempt to craft '{piece.name}' has failed.");
+                            MessageLog.AddMessage(msgType: MsgType.Debug, message: $"A second attempt to craft '{piece.name}' has failed.");
                             return false;
                         }
                     }
@@ -134,7 +134,7 @@ namespace SonOfRobin
                     $"{Helpers.FirstCharToUpperCase(PieceInfo.info[this.pieceToCreate].readableName)} x{this.amountToCreate} has been crafted.";
 
                 new TextWindow(text: message, textColor: Color.White, bgColor: Color.Green, useTransition: true, animate: false, closingTask: Scheduler.TaskName.CheckForPieceHints);
-                MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: message);
+                MessageLog.AddMessage(msgType: MsgType.Debug, message: message);
 
                 HintEngine hintEngine = world.hintEngine;
 
@@ -196,6 +196,8 @@ namespace SonOfRobin
 
             recipeList = new List<Recipe> {
                 new Recipe(pieceToCreate: PieceTemplate.Name.Map, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Leather, 1 }}, isReversible: true),
+
+                new Recipe(pieceToCreate: PieceTemplate.Name.Torch, amountToCreate: 3, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stick, 3 }, { PieceTemplate.Name.Coal, 1 }}, isReversible: false),
 
                 new Recipe(pieceToCreate: PieceTemplate.Name.BackpackMedium, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Leather, 5 }}, isReversible: true),
 

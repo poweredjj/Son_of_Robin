@@ -154,12 +154,12 @@ namespace SonOfRobin
 
             foreach (TouchLocation touch in TouchInput.TouchPanelState)
             {
-                //MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"Touch position: {touch.Position.X},{touch.Position.Y}.", color: Color.GreenYellow);
+                //MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Touch position: {touch.Position.X},{touch.Position.Y}.", color: Color.GreenYellow);
                 Vector2 position = touch.Position / Preferences.globalScale;
 
                 if (this.Rect.Contains(position))
                 {
-                    // MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"Button {this.label} is down.", color: Color.GreenYellow);
+                    // MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Button {this.label} is down.", color: Color.GreenYellow);
 
                     if (touch.State == TouchLocationState.Pressed || (touch.State == TouchLocationState.Moved && this.wasDownLastFrame))
                     {

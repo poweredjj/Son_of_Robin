@@ -159,6 +159,8 @@ namespace SonOfRobin
             new Separator(menu: this, name: this.name);
             this.SetTouchLayout();
             this.AddStartTransitions();
+
+            //MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Menu {this.name} - created with closing task '{this.closingTask}'.");
         }
 
         protected override void AdaptToNewSize()
@@ -229,6 +231,8 @@ namespace SonOfRobin
             SonOfRobinGame.hintWindow.TurnOff();
             SonOfRobinGame.progressBar.TurnOff();
             base.Remove();
+            // MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Menu {this.name} - executing closing task '{this.closingTask}'.");
+
             new Scheduler.Task(menu: this, taskName: this.closingTask, executeHelper: this.closingTaskHelper);
         }
 
@@ -236,6 +240,7 @@ namespace SonOfRobin
         {
             this.closingTask = closingTask;
             this.closingTaskHelper = closingTaskHelper;
+            //  MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Menu {this.name} - adding closing task '{this.closingTask}'.");
         }
 
         public void Rebuild()
@@ -255,6 +260,7 @@ namespace SonOfRobin
             }
 
             rebuiltMenu.currentScrollPosition = this.currentScrollPosition;
+            rebuiltMenu.AddClosingTask(closingTask: this.closingTask, closingTaskHelper: this.closingTaskHelper);
 
             sceneStack.Remove(rebuiltMenu);
 
@@ -275,7 +281,7 @@ namespace SonOfRobin
 
             Scene sceneBelow = this.GetSceneBelow();
 
-            MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"sceneBelow {sceneBelow}", color: Color.White);
+            //MessageLog.AddMessage(msgType: MsgType.Debug, message: $"sceneBelow {sceneBelow}", color: Color.White);
 
             if (sceneBelow != null && sceneBelow.GetType() != typeof(Menu))
             {
@@ -311,7 +317,7 @@ namespace SonOfRobin
             foreach (Menu menu in GetEveryMenuOfTemplate(templateName: templateName))
             {
                 menu.Remove();
-                MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"Menu '{menu.templateName}' removed.", color: Color.White);
+                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Menu '{menu.templateName}' removed.", color: Color.White);
             }
         }
         public static List<Menu> GetEveryMenuOfTemplate(MenuTemplate.Name templateName)
@@ -394,7 +400,7 @@ namespace SonOfRobin
                 if (scrollWholeRect.Contains(touchPos))
                 {
                     touchMode = true;
-                    this.currentScrollPosition = ((touchPos.Y - (this.ScrollbarWidgetHeight / 2)) / this.ScrollbarMultiplier);
+                    this.currentScrollPosition = (touchPos.Y - (this.ScrollbarWidgetHeight / 2)) / this.ScrollbarMultiplier;
                     this.currentScrollPosition = KeepScrollInBounds(Convert.ToInt32(this.currentScrollPosition));
                     return;
                 }

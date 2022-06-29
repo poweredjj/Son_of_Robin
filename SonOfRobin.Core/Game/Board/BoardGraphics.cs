@@ -44,7 +44,7 @@ namespace SonOfRobin
         public BoardGraphics(Grid grid, Cell cell)
         {
             this.cell = cell;
-            this.templatePath = Path.Combine(grid.templatePath, $"background_{cell.cellNoX}_{cell.cellNoY}.png");
+            this.templatePath = Path.Combine(grid.gridTemplate.templatePath, $"background_{cell.cellNoX}_{cell.cellNoY}.png");
             this.savedToDisk = File.Exists(this.templatePath);
         }
 
@@ -103,19 +103,28 @@ namespace SonOfRobin
         {
             // can be run in parallel, because it does not use graphicsDevice
 
-            var mapDataHeight = this.cell.terrainByName[TerrainName.Height].mapData;
-            var mapDataHumidity = this.cell.terrainByName[TerrainName.Humidity].mapData;
-            var mapDataDanger = this.cell.terrainByName[TerrainName.Danger].mapData;
+            var builder = PngBuilder.Create(width: this.cell.dividedWidth, height: this.cell.dividedHeight, hasAlphaChannel: true);
 
-            var builder = PngBuilder.Create(this.cell.width, this.cell.height, true);
-
+            Terrain heightTerrain = this.cell.terrainByName[TerrainName.Height];
+            Terrain humidityTerrain = this.cell.terrainByName[TerrainName.Humidity];
+            Terrain dangerTerrain = this.cell.terrainByName[TerrainName.Danger];
             Color pixel;
 
-            for (int x = 0; x < this.cell.width; x++)
+            int realX, realY;
+
+            for (int x = 0; x < this.cell.dividedWidth; x++)
             {
-                for (int y = 0; y < this.cell.height; y++)
+                realX = x * Preferences.terrainResDivider;
+
+                for (int y = 0; y < this.cell.dividedHeight; y++)
                 {
-                    pixel = CreatePixel(pixelHeight: mapDataHeight[x, y], pixelHumidity: mapDataHumidity[x, y], pixelDanger: mapDataDanger[x, y]);
+                    realY = y * Preferences.terrainResDivider;
+
+                    pixel = CreatePixel(
+                        pixelHeight: heightTerrain.GetMapData(realX, realY),
+                        pixelHumidity: humidityTerrain.GetMapData(realX, realY),
+                        pixelDanger: dangerTerrain.GetMapData(realX, realY));
+
                     builder.SetPixel(pixel.R, pixel.G, pixel.B, x, y);
                 }
             }
@@ -129,20 +138,26 @@ namespace SonOfRobin
 
         private Color[] CreateColorArrayFromTerrain()
         {
-            var tempColorArray = new Color[this.cell.width * this.cell.height];
+            var tempColorArray = new Color[this.cell.dividedHeight * this.cell.dividedHeight];
 
-            var mapDataHeight = this.cell.terrainByName[TerrainName.Height].mapData;
-            var mapDataHumidity = this.cell.terrainByName[TerrainName.Humidity].mapData;
-            var mapDataDanger = this.cell.terrainByName[TerrainName.Danger].mapData;
+            Terrain heightTerrain = this.cell.terrainByName[TerrainName.Height];
+            Terrain humidityTerrain = this.cell.terrainByName[TerrainName.Humidity];
+            Terrain dangerTerrain = this.cell.terrainByName[TerrainName.Danger];
 
-            Parallel.For(0, this.cell.height, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, y =>
+            int realX, realY;
+
+            Parallel.For(0, this.cell.dividedHeight, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, y =>
                  {
-                     for (int x = 0; x < this.cell.width; x++)
+                     realY = y * Preferences.terrainResDivider;
+
+                     for (int x = 0; x < this.cell.dividedHeight; x++)
                      {
+                         realX = x * Preferences.terrainResDivider;
+
                          tempColorArray[(y * this.cell.width) + x] = CreatePixel(
-                             pixelHeight: mapDataHeight[x, y],
-                             pixelHumidity: mapDataHumidity[x, y],
-                             pixelDanger: mapDataDanger[x, y]);
+                             pixelHeight: heightTerrain.GetMapData(realX, realY),
+                             pixelHumidity: humidityTerrain.GetMapData(realX, realY),
+                             pixelDanger: dangerTerrain.GetMapData(realX, realY));
                      }
                  });
 

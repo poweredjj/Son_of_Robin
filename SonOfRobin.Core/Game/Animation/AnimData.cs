@@ -162,7 +162,6 @@ namespace SonOfRobin
         TigerBrown,
         TigerYellow,
         TigerBlack,
-        Sailor,
 
         DebrisPlant,
         DebrisStone,
@@ -178,7 +177,8 @@ namespace SonOfRobin
         BackpackMedium,
         BeltMedium,
 
-        Map
+        Map,
+        Torch,
     }
 
     public class AnimData
@@ -724,13 +724,17 @@ namespace SonOfRobin
             AddFrameList(animPackage: packageName, animSize: 0, animName: "default",
             frameList: ConvertImageToFrameList(atlasName: "parchment", layer: 0, scale: 0.03f));
 
+            packageName = AnimPkg.Torch;
+            AddFrameList(animPackage: packageName, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "torch_off", layer: 0, scale: 0.1f, crop: false));
+            AddFrameList(animPackage: packageName, animSize: 0, animName: "off", frameList: ConvertImageToFrameList(atlasName: "torch_off", layer: 0, scale: 0.1f, crop: false));
+            AddFrameList(animPackage: packageName, animSize: 0, animName: "on", frameList: ConvertImageToFrameList(atlasName: "torch_on", layer: 0, scale: 0.1f, crop: false));
+
             packageName = AnimPkg.Exclamation;
             AddFrameList(animPackage: packageName, animSize: 0, animName: "default",
             frameList: ConvertImageToFrameList(atlasName: "exclamation", layer: 2, scale: 0.2f));
 
             // RPGMaker characters
             AddRPGMakerPackageV1(packageName: AnimPkg.Blonde, atlasName: "actor29rec4", setNoX: 0, setNoY: 0, animSize: 0);
-            AddRPGMakerPackageV1(packageName: AnimPkg.Sailor, atlasName: "recolor_pt2", setNoX: 0, setNoY: 0, animSize: 0);
 
             foreach (var kvp in new Dictionary<byte, float> { { 0, 0.6f }, { 1, 0.8f }, { 2, 1.0f } })
             {

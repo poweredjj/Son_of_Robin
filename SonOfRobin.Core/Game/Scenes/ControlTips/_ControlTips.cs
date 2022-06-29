@@ -26,7 +26,7 @@ namespace SonOfRobin
 
         public enum TipsLayout
         {
-            Uninitialized, Empty, Menu, MenuWithoutClosing, Map, InventorySelect, InventoryDrag, PieceContext, TextWindowOk, TextWindowCancel, TextWindowOkCancel, WorldMain, WorldShoot, WorldSleep, QuitLoading
+            Uninitialized, Empty, Menu, MenuWithoutClosing, Map, InventorySelect, InventoryDrag, PieceContext, TextWindowOk, TextWindowCancel, TextWindowOkCancel, WorldMain, WorldShoot, WorldSleep, WorldSpectator, QuitLoading
         }
         public static readonly int tipMargin = 12;
 
@@ -46,7 +46,7 @@ namespace SonOfRobin
             var tipsScene = GetTopSceneOfType(typeof(ControlTips));
             if (tipsScene == null)
             {
-                MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: "No tips scene was found.");
+                MessageLog.AddMessage(msgType: MsgType.Debug, message: "No tips scene was found.");
                 return null;
             }
 
@@ -61,7 +61,7 @@ namespace SonOfRobin
 
             if (!topTips.tipCollection.ContainsKey(tipName))
             {
-                MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"No tip named '{tipName}' was found.");
+                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"No tip named '{tipName}' was found.");
                 return;
             }
 
@@ -75,6 +75,7 @@ namespace SonOfRobin
             bool bigMode =
                 this.currentLayout == TipsLayout.WorldMain ||
                 this.currentLayout == TipsLayout.WorldShoot ||
+                this.currentLayout == TipsLayout.WorldSpectator ||
                 this.currentLayout == TipsLayout.InventorySelect ||
                 this.currentLayout == TipsLayout.InventoryDrag;
 
@@ -143,24 +144,19 @@ namespace SonOfRobin
         {
             if (this.currentScene == scene && this.tipsLayout == scene?.tipsLayout) return;
 
-            // MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"Switching tips layout to '{tipsLayout}' with new scene.", color: Color.LightCyan);
+            // MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Switching tips layout to '{tipsLayout}' with new scene.", color: Color.LightCyan);
 
             this.currentScene = scene;
-            try
-            {
-                this.SwitchToLayout(scene.tipsLayout);
-            }
-            catch (NullReferenceException)
-            {
-                this.SwitchToLayout(TipsLayout.Empty);
-            }
+            this.SwitchToLayout(this.currentScene == null ? TipsLayout.Empty : scene.tipsLayout);
+
+
         }
 
         private void SwitchToLayout(TipsLayout tipsLayout, bool force = false)
         {
             if (this.currentLayout == tipsLayout && !force) return;
 
-            // MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"Switching layout: '{this.currentLayout}' to '{tipsLayout}'.", color: Color.LightGreen);
+            // MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Switching layout: '{this.currentLayout}' to '{tipsLayout}'.", color: Color.LightGreen);
 
             World world = World.GetTopWorld();
             this.tipCollection.Clear();
@@ -221,7 +217,7 @@ namespace SonOfRobin
                     new ButtonTip(tipCollection: this.tipCollection, text: "inventory", textures: new List<Texture2D> { ButtonScheme.buttonY });
                     new ButtonTip(tipCollection: this.tipCollection, text: "equip", textures: new List<Texture2D> { ButtonScheme.dpadLeft });
                     new ButtonTip(tipCollection: this.tipCollection, text: "craft", textures: new List<Texture2D> { ButtonScheme.dpadUp });
-                    new ButtonTip(tipCollection: this.tipCollection, text: "map", highlightCoupledObj: world, highlightCoupledVarName: "mapEnabled", textures: new List<Texture2D> { ButtonScheme.dpadRight });
+                    new ButtonTip(tipCollection: this.tipCollection, text: "map", highlightCoupledObj: world, highlightCoupledVarName: "MapEnabled", textures: new List<Texture2D> { ButtonScheme.dpadRight });
                     new ButtonTip(tipCollection: this.tipCollection, text: "prev item", textures: new List<Texture2D> { ButtonScheme.buttonLB });
                     new ButtonTip(tipCollection: this.tipCollection, text: "next item", textures: new List<Texture2D> { ButtonScheme.buttonRB });
                     new ButtonTip(tipCollection: this.tipCollection, text: "menu", textures: new List<Texture2D> { ButtonScheme.buttonStart });
@@ -236,6 +232,13 @@ namespace SonOfRobin
 
                 case TipsLayout.WorldSleep:
                     new ButtonTip(tipCollection: this.tipCollection, text: "wake up", highlightCoupledObj: world.player, highlightCoupledVarName: "CanWakeNow", textures: new List<Texture2D> { ButtonScheme.buttonA, ButtonScheme.buttonB, ButtonScheme.buttonX, ButtonScheme.buttonY });
+                    new ButtonTip(tipCollection: this.tipCollection, text: "menu", textures: new List<Texture2D> { ButtonScheme.buttonStart });
+                    break;
+
+                case TipsLayout.WorldSpectator:
+                    new ButtonTip(tipCollection: this.tipCollection, text: "walk", textures: new List<Texture2D> { ButtonScheme.leftStick });
+                    new ButtonTip(tipCollection: this.tipCollection, text: "camera", textures: new List<Texture2D> { ButtonScheme.rightStick });
+                    new ButtonTip(tipCollection: this.tipCollection, text: "map", highlightCoupledObj: world, highlightCoupledVarName: "MapEnabled", textures: new List<Texture2D> { ButtonScheme.dpadRight });
                     new ButtonTip(tipCollection: this.tipCollection, text: "menu", textures: new List<Texture2D> { ButtonScheme.buttonStart });
                     break;
 

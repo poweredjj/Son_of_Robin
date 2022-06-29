@@ -13,8 +13,8 @@ namespace SonOfRobin
 
     public class SonOfRobinGame : Game
     {
-        public static readonly float version = 7.5f;
-        public static readonly DateTime lastChanged = new DateTime(2022, 03, 24);
+        public static readonly float version = 7.6f;
+        public static readonly DateTime lastChanged = new DateTime(2022, 03, 31);
 
         public static ContentManager content;
 
@@ -41,6 +41,8 @@ namespace SonOfRobin
         public static SpriteFont fontTommy40;
 
         public static Texture2D whiteRectangle;
+        public static Texture2D lightSourceBlack;
+        public static Texture2D lightSourceWhite;
         public static Dictionary<string, Texture2D> textureByName;
 
         public static readonly SimpleFps fps = new SimpleFps();
@@ -176,18 +178,20 @@ namespace SonOfRobin
             fontTommy20 = Content.Load<SpriteFont>("fonts/Tommy20");
             fontTommy40 = Content.Load<SpriteFont>("fonts/Tommy40");
 
-            whiteRectangle = new Texture2D(GraphicsDevice, 1, 1);
-            whiteRectangle.SetData(new[] { Color.White });
-
             textureByName = new Dictionary<string, Texture2D>();
 
-            string[] assetNames = { "no_anim", "recolor_pt2", "fox", "tile_custom01", "actor29rec4", "tileb", "tile_19ba32a6", "backlight_1", "backlight_2", "backlight_3", "backlight_4", "crabs_small", "crabs_big", "frogs_small", "frogs_big", "flowers", "8f296dbbaf43865bc29e99660fe7b5af_2x", "qYFvsmq", "NicePng_pine-tree-clipart-png_1446450", "palmtree_small", "tilees by guth_zpsfn3wpjdu_2x", "attack_effect_sprite_sheets", "miss", "zzz", "heart_16x16", "rabbits", "virtual_joypad_background", "virtual_joypad_stick", "virtual_button", "virtual_button_pressed", "cursor", "chests", "d9ffec650d3104f5c4564c9055787530", "sticks1", "sticks2", "axe_stone", "axe_wooden", "axe_iron", "axe_diamond", "hand", "tools_gravel", "stones", "fancy_food", "fancy_food2", "fancy_food3", "celianna_farmnature_crops_transparent", "weapons1", "steak_t-bone", "Cooked Meat", "big_icons_candacis", "Candacis_flames1", "gems__rpg_maker_mv__by_petschko-d9euoxr", "mv_blacksmith_by_schwarzenacht_dapf6ek", "bows", "arrow_wood", "arrow_iron", "crosshair", "sling", "greatsling", "stone_ammo", "craft_items", "tent_big", "tent_medium", "flames", "bag", "backpack", "belt", "parchment", "exclamation", "scythe", "grass_blade", "tiger", "plus", "acorn" };
+            string[] assetNames = { "no_anim", "fox", "tile_custom01", "actor29rec4", "tileb", "tile_19ba32a6", "backlight_1", "backlight_2", "backlight_3", "backlight_4", "crabs_small", "crabs_big", "frogs_small", "frogs_big", "flowers", "8f296dbbaf43865bc29e99660fe7b5af_2x", "qYFvsmq", "NicePng_pine-tree-clipart-png_1446450", "palmtree_small", "tilees by guth_zpsfn3wpjdu_2x", "attack_effect_sprite_sheets", "miss", "zzz", "heart_16x16", "rabbits", "virtual_joypad_background", "virtual_joypad_stick", "virtual_button", "virtual_button_pressed", "cursor", "chests", "d9ffec650d3104f5c4564c9055787530", "sticks1", "sticks2", "axe_stone", "axe_wooden", "axe_iron", "axe_diamond", "hand", "tools_gravel", "stones", "fancy_food", "fancy_food2", "fancy_food3", "celianna_farmnature_crops_transparent", "weapons1", "steak_t-bone", "Cooked Meat", "big_icons_candacis", "Candacis_flames1", "gems__rpg_maker_mv__by_petschko-d9euoxr", "mv_blacksmith_by_schwarzenacht_dapf6ek", "bows", "arrow_wood", "arrow_iron", "crosshair", "sling", "greatsling", "stone_ammo", "craft_items", "tent_big", "tent_medium", "flames", "bag", "backpack", "belt", "parchment", "exclamation", "scythe", "grass_blade", "tiger", "plus", "acorn", "light_black", "light_white", "torch_on", "torch_off" };
 
             foreach (string assetName in assetNames)
             {
                 Texture2D characterTexture = Content.Load<Texture2D>($"gfx/{assetName}");
                 textureByName[assetName] = characterTexture;
             }
+
+            lightSourceBlack = textureByName["light_black"];
+            lightSourceWhite = textureByName["light_white"];
+            whiteRectangle = new Texture2D(GraphicsDevice, 1, 1);
+            whiteRectangle.SetData(new[] { Color.White });
 
             AnimData.CreateAllAnims();
         }
@@ -201,7 +205,7 @@ namespace SonOfRobin
             base.Update(gameTime);
             fps.Update(gameTime);
 
-            if (lastUpdateDelay >= 20 && IsFixedTimeStep) MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"Update delay {lastUpdateDelay}ms.", color: Color.Orange);
+            if (lastUpdateDelay >= 20 && IsFixedTimeStep) MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Update delay {lastUpdateDelay}ms.", color: Color.Orange);
 
             if (quitGame)
             {
@@ -220,7 +224,7 @@ namespace SonOfRobin
             base.Draw(gameTime);
 
             fps.UpdateFpsCounter();
-            if (lastDrawDelay >= 20 && IsFixedTimeStep) MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"Draw delay {lastDrawDelay}ms.", color: Color.Orange);
+            if (lastDrawDelay >= 20 && IsFixedTimeStep) MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Draw delay {lastDrawDelay}ms.", color: Color.Orange);
         }
 
     }

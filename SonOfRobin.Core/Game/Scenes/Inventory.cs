@@ -31,9 +31,12 @@ namespace SonOfRobin
         {
             get
             {
-                if (this.piece.world.mapMode == World.MapMode.Big || this.piece.world.CineMode) return true;
-                Scene topScene = sceneStack[sceneStack.Count - 1];
+                if (this.piece.world.mapMode == World.MapMode.Big || this.piece.world.CineMode || this.piece.world.demoMode) return true;
 
+                Player player = this.piece.world.player;
+                if (player.activeState == BoardPiece.State.PlayerControlledSleep || !player.alive) return true;
+                
+                Scene topScene = sceneStack[sceneStack.Count - 1];
                 if (topScene.GetType() == typeof(TextWindow)) topScene = sceneStack[sceneStack.Count - 2];
                 return this.layout == Layout.SingleBottom && topScene.GetType() != typeof(Inventory);
             }
@@ -695,7 +698,7 @@ namespace SonOfRobin
         {
             if (this.draggedPieces.Count == 0) return;
 
-            MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"ReleaseHeldPieces");
+            MessageLog.AddMessage(msgType: MsgType.Debug, message: $"ReleaseHeldPieces");
 
             int initialDraggedCount = this.draggedPieces.Count;
             PieceTemplate.Name initialTopPieceName = this.draggedPieces[0].name;
@@ -703,7 +706,7 @@ namespace SonOfRobin
             if (this.draggedByTouch) forceReleaseAll = true;
             var piecesThatDidNotFitIn = new List<BoardPiece> { };
 
-            MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"forceReleaseAll {forceReleaseAll}");
+            MessageLog.AddMessage(msgType: MsgType.Debug, message: $"forceReleaseAll {forceReleaseAll}");
 
             foreach (BoardPiece piece in this.draggedPieces)
             {

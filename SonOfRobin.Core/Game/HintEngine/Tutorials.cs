@@ -5,7 +5,7 @@ namespace SonOfRobin
 {
     public class Tutorials
     {
-        public enum Type { BreakThing, Equip, BuildWorkshop, GetWood, Mine, Interact, PickUp, Hit, Craft, ShootProjectile, Cook, ShakeFruit, AnimalAttacking, DangerZone }
+        public enum Type { BreakThing, Equip, BuildWorkshop, GetWood, Mine, Interact, PickUp, Hit, Craft, ShootProjectile, Cook, ShakeFruit, AnimalAttacking, DangerZone, Torch }
 
         private static readonly HintMessage.BoxType messageHeaderType = HintMessage.BoxType.BlueBox;
         private static readonly HintMessage.BoxType messageTextType = HintMessage.BoxType.LightBlueBox;
@@ -25,9 +25,22 @@ namespace SonOfRobin
                 {
                     var messagesToDisplay = messages.ToList();
                     messagesToDisplay.Insert(0, this.title);
+
+                    messagesToDisplay = messagesToDisplay.OrderBy(message => message.boxType).ToList();
+
+                    var dialogue = messagesToDisplay.Where(message => message.boxType == HintMessage.BoxType.Dialogue).ToList();
+                    var others = messagesToDisplay.Where(message => message.boxType != HintMessage.BoxType.Dialogue).ToList();
+
+                    messagesToDisplay.Clear();
+                    messagesToDisplay.AddRange(dialogue);
+                    messagesToDisplay.AddRange(others);
+
                     return messagesToDisplay;
                 }
             }
+
+            public List<HintMessage> MessagesToDisplayInMenu
+            { get { return this.MessagesToDisplay.Where(message => !message.fieldOnly).ToList(); } }
 
             public Tutorial(Type type, string name, string title, List<HintMessage> messages, bool isShownInTutorialsMenu = true)
             {
@@ -41,7 +54,7 @@ namespace SonOfRobin
             }
         }
 
-        public static void ShowTutorial(Type type, bool ignoreIfShown = true, bool checkHintsSettings = true, bool ignoreDelay = false)
+        public static void ShowTutorial(Type type, bool ignoreIfShown = true, bool checkHintsSettings = true, bool ignoreDelay = false, bool menuMode = false)
         {
             if (checkHintsSettings && !Preferences.showHints) return;
 
@@ -60,7 +73,7 @@ namespace SonOfRobin
                 hintEngine.UpdateWaitFrame();
             }
 
-            var messageList = tutorials[type].MessagesToDisplay;
+            var messageList = menuMode ? tutorials[type].MessagesToDisplayInMenu : tutorials[type].MessagesToDisplay;
             var taskChain = HintMessage.ConvertToTasks(messageList: messageList);
 
             taskChain.Insert(0, new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.SetCineMode, delay: 1, executeHelper: true, storeForLaterUse: true));
@@ -107,6 +120,21 @@ namespace SonOfRobin
                 new HintMessage(text: SonOfRobinGame.platform == Platform.Desktop ?
                     $"4. Walk next to mineral deposit and press '{ButtonScheme.buttonNameRT}' button." :
                     "4. Walk next to mineral deposit and press 'USE ITEM' button.", boxType: messageTextType) });
+
+            new Tutorial(type: Type.Torch, name: "using torch", title: "Using torch.",
+                messages: new List<HintMessage> {
+                new HintMessage(text: "1. Enter inventory and place the torch on toolbar.", boxType: messageTextType),
+                new HintMessage(text: "2. Exit inventory.", boxType: messageTextType),
+                new HintMessage(text: SonOfRobinGame.platform == Platform.Desktop ?
+                    $"3. Select the torch using '{ButtonScheme.buttonNameLB}' and '{ButtonScheme.buttonNameRB}' buttons." :
+                    "3. Touch the torch on toolbar to select it.", boxType: messageTextType),
+                new HintMessage(text: SonOfRobinGame.platform == Platform.Desktop ?
+                    $"4. Set the torch on fire by pressing '{ButtonScheme.buttonNameRT}' button." :
+                    "4. Set the torch on fire by pressing 'USE ITEM' button.", boxType: messageTextType),
+                new HintMessage(text: SonOfRobinGame.platform == Platform.Desktop ?
+                    $"5. To extinguish the fire, press '{ButtonScheme.buttonNameRT}' button again (with torch selected)." :
+                    "5. To extinguish the fire, press 'USE ITEM' button again (with torch selected).", boxType: messageTextType),
+                new HintMessage(text: "Keep in mind, that the torch will burn out after some time.", boxType: messageTextType),});
 
             new Tutorial(type: Type.Equip, name: "using equipment", title: "Using equipment.",
               messages: new List<HintMessage> {
@@ -194,9 +222,10 @@ namespace SonOfRobin
 
             new Tutorial(type: Type.DangerZone, name: "danger zones", title: "Danger zones.",
                 messages: new List<HintMessage>  {
+                    new HintMessage(text: "This dark area is... strange.\nI have a feeling that it is not safe there.", boxType: HintMessage.BoxType.Dialogue, fieldOnly: true),
                     new HintMessage(text: "Darker terrain indicate danger.", boxType: messageTextType),
                     new HintMessage(text: "Some animals will not go outside of these zones.", boxType: messageTextType),
-                    new HintMessage(text: "There are some items and plants, that can only be found here.", boxType: messageTextType),});
+                    new HintMessage(text: "There are some items and plants, that can only be found here.", boxType: messageTextType)});
         }
 
     }

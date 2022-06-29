@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -11,7 +10,7 @@ namespace SonOfRobin
 {
     public class Grid
     {
-        public readonly string templatePath;
+        public readonly GridTemplate gridTemplate;
         public bool creationInProgress;
         private int creationStage;
         private DateTime stageStartTime;
@@ -27,7 +26,6 @@ namespace SonOfRobin
         public int loadedTexturesCount;
 
         private static readonly TimeSpan textureLoadingDelay = TimeSpan.FromMilliseconds(15);
-
         public bool ProcessingStepComplete
         {
             get
@@ -64,8 +62,7 @@ namespace SonOfRobin
             this.allCells = this.GetAllCells();
             this.CalculateSurroundingCells();
 
-            this.templatePath = Path.Combine(SonOfRobinGame.worldTemplatesPath, $"seed_{this.world.seed}_{this.world.width}x{this.world.height}_{this.cellWidth}x{this.cellHeight}");
-            if (!Directory.Exists(this.templatePath)) Directory.CreateDirectory(this.templatePath);
+            this.gridTemplate = new GridTemplate(seed: this.world.seed, width: this.world.width, height: this.world.height, cellWidth: this.cellWidth, cellHeight: this.cellHeight);
 
             this.lastCellProcessedTime = DateTime.Now;
 
@@ -176,7 +173,7 @@ namespace SonOfRobin
         {
             var cellProcessingQueue = new List<Cell> { };
 
-            for (int i = 0; i < 40; i++)
+            for (int i = 0; i < 80; i++)
             {
                 cellProcessingQueue.Add(this.cellsToProcessOnStart[0]);
                 this.cellsToProcessOnStart.RemoveAt(0);
@@ -473,7 +470,7 @@ namespace SonOfRobin
             {
                 cell.DrawBackground();
 
-                if (this.world.mapEnabled && !cell.visitedByPlayer && cameraRect.Intersects(cell.rect))
+                if (this.world.MapEnabled && !cell.visitedByPlayer && cameraRect.Intersects(cell.rect) && camera.IsTrackingPlayer)
                 {
                     cell.visitedByPlayer = true;
                     updateFog = true;
@@ -515,7 +512,7 @@ namespace SonOfRobin
             int posInsideCellX = (int)position.X % cellWidth;
             int posInsideCellY = (int)position.Y % cellHeight;
 
-            return this.cellGrid[cellNoX, cellNoY].terrainByName[terrainName].mapData[posInsideCellX, posInsideCellY];
+            return this.cellGrid[cellNoX, cellNoY].terrainByName[terrainName].GetMapData(posInsideCellX, posInsideCellY);
         }
 
         private Cell FindMatchingCell(Vector2 position)
@@ -630,7 +627,7 @@ namespace SonOfRobin
 
             foreach (Cell cell in this.GetCellsInsideRect(this.world.camera.viewRect))
             {
-                // MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"Processing cell in camera view {cell.cellNoX},{cell.cellNoY}.", color: Color.White);
+                // MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Processing cell in camera view {cell.cellNoX},{cell.cellNoY}.", color: Color.White);
                 cell.boardGraphics.LoadTexture();
             }
         }
@@ -659,7 +656,7 @@ namespace SonOfRobin
             foreach (Cell cell in cellsToUnload)
             {
                 cell.boardGraphics.UnloadTexture();
-                MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"Unloaded texture from cell {cell.cellNoX},{cell.cellNoY}.", color: Color.Pink);
+                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Unloaded texture from cell {cell.cellNoX},{cell.cellNoY}.", color: Color.Pink);
             }
         }
 

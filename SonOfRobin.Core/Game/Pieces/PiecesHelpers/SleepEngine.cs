@@ -7,8 +7,8 @@ namespace SonOfRobin
     [Serializable]
     public struct SleepEngine
     {
-        public static SleepEngine OutdoorSleepDry = new SleepEngine(minFedPercent: 0.2f, fatigueRegen: 0.1f, hitPointsDecrease: 0.1f, canBeAttacked: true);
-        public static SleepEngine OutdoorSleepWet = new SleepEngine(minFedPercent: 0.1f, fatigueRegen: 0.05f, hitPointsDecrease: 0.2f, canBeAttacked: true);
+        public static SleepEngine OutdoorSleepDry = new SleepEngine(minFedPercent: 0.2f, fatigueRegen: 0.2f, hitPointsDecrease: 0.1f, canBeAttacked: true);
+        public static SleepEngine OutdoorSleepWet = new SleepEngine(minFedPercent: 0.1f, fatigueRegen: 0.1f, hitPointsDecrease: 0.2f, canBeAttacked: true);
 
         private readonly float minFedPercent;
         private readonly float fatigueRegen;

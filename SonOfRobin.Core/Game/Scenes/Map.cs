@@ -14,7 +14,7 @@ namespace SonOfRobin
         private bool dirtyBackground;
         private RenderTarget2D terrainGfx;
         public bool dirtyFog;
-        private RenderTarget2D fogGfx;
+        private RenderTarget2D combinedGfx;
 
         // max screen percentage, that minimap may occupy
         private static readonly float minimapMaxPercentWidth = 0.35f;
@@ -26,7 +26,7 @@ namespace SonOfRobin
             { this.viewParams.CenterView(); }
             else
             {
-                var margin = Convert.ToInt32(Math.Ceiling(Math.Min(SonOfRobinGame.VirtualWidth / 30f, SonOfRobinGame.VirtualHeight / 30f)));
+                var margin = (int)Math.Ceiling(Math.Min(SonOfRobinGame.VirtualWidth / 30f, SonOfRobinGame.VirtualHeight / 30f));
 
                 this.viewParams.PosX = SonOfRobinGame.VirtualWidth - this.viewParams.Width - margin;
                 this.viewParams.PosY = SonOfRobinGame.VirtualHeight - this.viewParams.Height - margin;
@@ -64,6 +64,9 @@ namespace SonOfRobin
 
         public void ForceRender()
         {
+            this.dirtyBackground = true;
+            this.dirtyFog = true;
+
             this.UpdateResolution();
             this.UpdateBackground();
         }
@@ -73,17 +76,20 @@ namespace SonOfRobin
             float maxPercentWidth = this.fullScreen ? 1 : minimapMaxPercentWidth;
             float maxPercentHeight = this.fullScreen ? 1 : minimapMaxPercentHeight;
 
-            float multiplierX = ((float)SonOfRobinGame.VirtualWidth / (float)world.width) * maxPercentWidth;
-            float multiplierY = ((float)SonOfRobinGame.VirtualHeight / (float)world.height) * maxPercentHeight;
+            float multiplierX = (float)SonOfRobinGame.VirtualWidth / (float)world.width * maxPercentWidth;
+            float multiplierY = (float)SonOfRobinGame.VirtualHeight / (float)world.height * maxPercentHeight;
             this.multiplier = Math.Min(multiplierX, multiplierY);
 
-            this.viewParams.Width = Convert.ToInt32(world.width * this.multiplier);
-            this.viewParams.Height = Convert.ToInt32(world.height * this.multiplier);
+            this.viewParams.Width = (int)(world.width * this.multiplier);
+            this.viewParams.Height = (int)(world.height * this.multiplier);
+
+            if (!this.fullScreen) this.viewParams.Opacity = 0.7f;
 
             this.UpdateViewPos();
 
             if (this.terrainGfx == null || this.terrainGfx.Width != this.viewParams.Width || this.terrainGfx.Height != this.viewParams.Height)
             {
+                if (this.terrainGfx != null) this.terrainGfx.Dispose();
                 this.terrainGfx = new RenderTarget2D(SonOfRobinGame.graphicsDevice, this.viewParams.Width, this.viewParams.Height, false, SurfaceFormat.Color, DepthFormat.None);
                 this.dirtyBackground = true;
                 this.dirtyFog = true;
@@ -93,55 +99,69 @@ namespace SonOfRobin
 
         public void UpdateBackground()
         {
+            if (this.dirtyBackground)
+            {
+                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{SonOfRobinGame.currentUpdate} updating map background (fullscreen {this.fullScreen})");
+
+                this.StartRenderingToTarget(this.terrainGfx);
+                SonOfRobinGame.graphicsDevice.Clear(Color.Transparent);
+
+                int width = (int)(this.world.width * this.multiplier);
+                int height = (int)(this.world.height * this.multiplier);
+
+                Texture2D mapTexture = BoardGraphics.CreateEntireMapTexture(width: width, height: height, grid: this.world.grid, multiplier: this.multiplier);
+                Rectangle sourceRectangle = new Rectangle(0, 0, width, height);
+                SonOfRobinGame.spriteBatch.Draw(mapTexture, sourceRectangle, sourceRectangle, Color.White);
+
+                this.EndRenderingToTarget();
+
+                this.dirtyBackground = false;
+                this.dirtyFog = true;
+                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{SonOfRobinGame.currentUpdate} map background updated ({this.viewParams.Width}x{this.viewParams.Height}).", color: Color.White);
+            }
+
             this.UpdateFogOfWar();
-
-            if (!this.dirtyBackground) return;
-
-            MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"Updating map background (fullscreen {this.fullScreen})");
-
-            this.StartRenderingToTarget(this.terrainGfx);
-
-            int width = (int)(this.world.width * this.multiplier);
-            int height = (int)(this.world.height * this.multiplier);
-
-            Texture2D mapTexture = BoardGraphics.CreateEntireMapTexture(width: width, height: height, grid: this.world.grid, multiplier: this.multiplier);
-            Rectangle sourceRectangle = new Rectangle(0, 0, width, height);
-            SonOfRobinGame.spriteBatch.Draw(mapTexture, sourceRectangle, sourceRectangle, Color.White);
-
-            this.EndRenderingToTarget();
-
-            this.dirtyBackground = false;
-            MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"Map background updated ({this.viewParams.Width}x{this.viewParams.Height}).", color: Color.White);
         }
 
         private void UpdateFogOfWar()
         {
-            if (this.fogGfx != null && this.dirtyFog == false) return;
+            if (this.combinedGfx != null && this.dirtyFog == false) return;
 
-            MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"Updating map fog (fullscreen {this.fullScreen})");
+            MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{SonOfRobinGame.currentUpdate} updating map fog (fullscreen {this.fullScreen})");
 
-            this.fogGfx = new RenderTarget2D(SonOfRobinGame.graphicsDevice, this.viewParams.Width, this.viewParams.Height, false, SurfaceFormat.Color, DepthFormat.None);
-            this.StartRenderingToTarget(this.fogGfx);
-
-            int cellWidth = this.world.grid.allCells[0].width;
-            int cellHeight = this.world.grid.allCells[0].height;
-            int destCellWidth = Convert.ToInt32(Math.Ceiling(cellWidth * this.multiplier));
-            int destCellHeight = Convert.ToInt32(Math.Ceiling(cellHeight * this.multiplier));
-
-            Rectangle sourceRectangle = new Rectangle(0, 0, cellWidth, cellHeight);
-            SonOfRobinGame.graphicsDevice.Clear(new Color(0, 0, 0, 0));
-
-            foreach (Cell cell in this.world.grid.CellsNotVisitedByPlayer)
+            if (this.combinedGfx == null || this.combinedGfx.Width != this.viewParams.Width || this.combinedGfx.Height != this.viewParams.Height)
             {
-                Rectangle destinationRectangle = new Rectangle(
-                    Convert.ToInt32(Math.Floor(cell.xMin * this.multiplier)),
-                    Convert.ToInt32(Math.Floor(cell.yMin * this.multiplier)),
-                    destCellWidth,
-                    destCellHeight);
-
-                SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, destinationRectangle, sourceRectangle, new Color(50, 50, 50));
+                if (this.combinedGfx != null) this.combinedGfx.Dispose();
+                this.combinedGfx = new RenderTarget2D(SonOfRobinGame.graphicsDevice, this.viewParams.Width, this.viewParams.Height, false, SurfaceFormat.Color, DepthFormat.None);
             }
 
+            this.StartRenderingToTarget(this.combinedGfx);
+            SonOfRobinGame.graphicsDevice.Clear(Color.Transparent);
+            SonOfRobinGame.spriteBatch.Draw(this.terrainGfx, this.terrainGfx.Bounds, Color.White);
+            Rectangle destinationRectangle;
+
+            if (!Preferences.DebugShowWholeMap)
+            {
+                int cellWidth = this.world.grid.allCells[0].width;
+                int cellHeight = this.world.grid.allCells[0].height;
+                int destCellWidth = (int)Math.Ceiling(cellWidth * this.multiplier);
+                int destCellHeight = (int)Math.Ceiling(cellHeight * this.multiplier);
+                Color fogColor = this.fullScreen ? new Color(50, 50, 50) : new Color(80, 80, 80);
+
+                Rectangle sourceRectangle = new Rectangle(0, 0, cellWidth, cellHeight);
+                SonOfRobinGame.graphicsDevice.Clear(new Color(0, 0, 0, 0));
+
+                foreach (Cell cell in this.world.grid.CellsNotVisitedByPlayer)
+                {
+                    destinationRectangle = new Rectangle(
+                        (int)Math.Floor(cell.xMin * this.multiplier),
+                        (int)Math.Floor(cell.yMin * this.multiplier),
+                        destCellWidth,
+                        destCellHeight);
+
+                    SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, destinationRectangle, sourceRectangle, fogColor);
+                }
+            }
             this.EndRenderingToTarget();
 
             this.dirtyFog = false;
@@ -208,8 +228,8 @@ namespace SonOfRobin
             // filling screen with water color
             if (this.fullScreen) SonOfRobinGame.graphicsDevice.Clear(BoardGraphics.colorsByName[BoardGraphics.Colors.WaterDeep]);
 
-            // drawing background (terrain)
-            SonOfRobinGame.spriteBatch.Draw(this.terrainGfx, new Rectangle(0, 0, this.viewParams.Width, this.viewParams.Height), Color.White * this.viewParams.drawOpacity);
+            // drawing terrain and fog of war
+            SonOfRobinGame.spriteBatch.Draw(this.combinedGfx, new Rectangle(0, 0, this.viewParams.Width, this.viewParams.Height), Color.White * this.viewParams.drawOpacity);
 
             // drawing pieces
             var groupName = this.fullScreen ? Cell.Group.Visible : Cell.Group.MiniMap;
@@ -223,7 +243,8 @@ namespace SonOfRobin
             Rectangle cameraRect = this.world.camera.viewRect;
             BoardPiece piece;
 
-            foreach (Sprite sprite in world.grid.GetAllSprites(groupName: groupName, visitedByPlayerOnly: !Preferences.debugShowWholeMap)) // regular "foreach", because spriteBatch is not thread-safe
+            // regular "foreach", because spriteBatch is not thread-safe
+            foreach (Sprite sprite in world.grid.GetAllSprites(groupName: groupName, visitedByPlayerOnly: !Preferences.DebugShowWholeMap))
             {
                 drawOutline = false;
                 showOutsideCamera = false;
@@ -311,7 +332,7 @@ namespace SonOfRobin
 
                 else if (piece.GetType() == typeof(Animal))
                 {
-                    fillColor = piece.name == PieceTemplate.Name.Fox ? Color.Red : Color.Yellow;
+                    fillColor = PieceInfo.info[piece.name].isCarnivorous ? Color.Red : Color.Yellow;
                     fillSize = 3;
                 }
 
@@ -347,7 +368,6 @@ namespace SonOfRobin
                         fillSize = 3;
                         fillColor = Color.Black;
                     }
-
                 }
 
                 else if (piece.GetType() == typeof(Collectible))
@@ -365,16 +385,13 @@ namespace SonOfRobin
                 this.DrawSpriteSquare(sprite: sprite, size: fillSize, color: fillColor);
             }
 
-            // drawing fog of war
-            if (!Preferences.debugShowWholeMap) SonOfRobinGame.spriteBatch.Draw(this.fogGfx, this.fogGfx.Bounds, Color.White * this.viewParams.drawOpacity);
-
             // drawing camera FOV
             var viewRect = this.world.camera.viewRect;
 
-            int fovX = Convert.ToInt32(viewRect.Left * this.multiplier);
-            int fovY = Convert.ToInt32(viewRect.Top * this.multiplier);
-            int fovWidth = Convert.ToInt32(viewRect.Width * this.multiplier);
-            int fovHeight = Convert.ToInt32(viewRect.Height * this.multiplier);
+            int fovX = (int)(viewRect.Left * this.multiplier);
+            int fovY = (int)(viewRect.Top * this.multiplier);
+            int fovWidth = (int)(viewRect.Width * this.multiplier);
+            int fovHeight = (int)(viewRect.Height * this.multiplier);
             int borderWidth = this.fullScreen ? 2 : 1;
 
             Rectangle fovRect = new Rectangle(fovX, fovY, fovWidth, fovHeight);
@@ -384,8 +401,8 @@ namespace SonOfRobin
         private void DrawSpriteSquare(Sprite sprite, byte size, Color color)
         {
             SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, new Rectangle(
-                   Convert.ToInt32((sprite.position.X * this.multiplier) - size / 2),
-                   Convert.ToInt32((sprite.position.Y * this.multiplier) - size / 2),
+                   (int)((sprite.position.X * this.multiplier) - size / 2),
+                   (int)((sprite.position.Y * this.multiplier) - size / 2),
                    size, size), color * this.viewParams.drawOpacity);
         }
 

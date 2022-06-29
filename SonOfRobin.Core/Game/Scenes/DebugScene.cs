@@ -50,8 +50,9 @@ namespace SonOfRobin
                 debugText += $"\nloaded textures {world.grid.loadedTexturesCount}";
                 //if(SonOfRobinGame.platform == Platform.Desktop) debugText += $"\nram free: {SonOfRobinGame.ramCounter.NextValue()}";
 
-                TimeSpan elapsedTime = TimeSpan.FromMilliseconds(world.currentUpdate * 16.67);
-                debugText += $"\ntime {elapsedTime:hh\\:mm\\:ss} (x{world.updateMultiplier})";
+                debugText += $"\nreal time elapsed {world.TimePlayed:hh\\:mm\\:ss}";
+                debugText += $"\nisland time elapsed {world.islandClock.IslandTimeElapsed:hh\\:mm\\:ss} (x{world.updateMultiplier})";
+                debugText += $"\nisland day {world.islandClock.CurrentDayNo} clock {world.islandClock.TimeOfDay:hh\\:mm\\:ss} ({Convert.ToString(world.islandClock.CurrentPartOfDay).ToLower()})";
                 debugText += $"\n{SonOfRobinGame.fps.msg}";
             }
 
@@ -77,7 +78,7 @@ namespace SonOfRobin
 
             if (Keyboard.HasBeenPressed(Keys.D1))
             {
-                BoardPiece piece = PieceTemplate.CreateOnBoard(world: world, position: world.player.sprite.position, templateName: PieceTemplate.Name.Scythe);
+                BoardPiece piece = PieceTemplate.CreateOnBoard(world: world, position: world.player.sprite.position, templateName: PieceTemplate.Name.Torch);
                 if (piece.sprite.placedCorrectly) piece.sprite.MoveToClosestFreeSpot(world.player.sprite.position);
             }
 
@@ -145,8 +146,6 @@ namespace SonOfRobin
                 if (world == null) return;
 
                 world.hintEngine.ShowGeneralHint(type: HintEngine.Type.CineIntroduction, ignoreDelay: true);
-
-                var taskChain = new List<Object>();
             }
 
 
@@ -158,7 +157,6 @@ namespace SonOfRobin
 
                 player.sprite.SetOrientationByMovement(new Vector2(0, -5));
             }
-
 
             if (Keyboard.HasBeenPressed(Keys.G))
             {
@@ -216,7 +214,7 @@ namespace SonOfRobin
             {
                 bool compareWithBottom = Keyboard.HasBeenPressed(Keys.K);
 
-                var piecesWithinDistance = world.grid.GetPiecesWithinDistance(groupName: Cell.Group.ColAll, mainSprite: world.player.sprite, distance: 150, compareWithBottom: compareWithBottom);
+                var piecesWithinDistance = world.grid.GetPiecesWithinDistance(groupName: Cell.Group.ColAll, mainSprite: world.player.sprite, distance: 500, compareWithBottom: compareWithBottom);
                 foreach (BoardPiece piece in piecesWithinDistance)
                 {
                     if (world.player.sprite.CheckIfOtherSpriteIsWithinRange(target: piece.sprite))
@@ -287,7 +285,12 @@ namespace SonOfRobin
                 new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.ExecuteTaskChain, turnOffInputUntilExecution: true, executeHelper: taskChain);
             }
 
-            if (Keyboard.HasBeenPressed(Keys.F3)) world.player.pieceStorage.AddPiece(piece: PieceTemplate.CreateOffBoard(templateName: PieceTemplate.Name.Fox, world: world), dropIfDoesNotFit: true);
+            if (Keyboard.HasBeenPressed(Keys.F3))
+            {
+                if (world == null) return;
+
+                world.SpectatorMode = !world.SpectatorMode;
+            }
 
             if (Keyboard.HasBeenPressed(Keys.F4))
             {
@@ -379,7 +382,7 @@ namespace SonOfRobin
 
                 while (true)
                 {
-                    var packageNames = new List<AnimPkg> { AnimPkg.Blonde, AnimPkg.Sailor, AnimPkg.FoxGinger, AnimPkg.Frog1, AnimPkg.CrabGreen, AnimPkg.TigerWhite };
+                    var packageNames = new List<AnimPkg> { AnimPkg.Blonde, AnimPkg.FoxGinger, AnimPkg.Frog1, AnimPkg.CrabGreen, AnimPkg.TigerWhite };
                     var packageName = packageNames[SonOfRobinGame.random.Next(0, packageNames.Count)];
                     if (packageName != currentPackageName)
                     {

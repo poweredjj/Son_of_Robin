@@ -86,7 +86,7 @@ namespace SonOfRobin
 
             if (startSwapParams) this.SwapBaseTargetParams();
 
-            //  MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.User, message: $"New trans: {this.scene.GetType()} {this.baseParamName} {this.sourceVal} -> {this.targetVal}", color: Color.LightCyan); // for testing
+            //  MessageLog.AddMessage(msgType: MsgType.User, message: $"New trans: {this.scene.GetType()} {this.baseParamName} {this.sourceVal} -> {this.targetVal}", color: Color.LightCyan); // for testing
 
             if (!storeForLaterUse) this.Update();
         }
@@ -160,7 +160,7 @@ namespace SonOfRobin
 
                 if (this.sameAsSourceCount >= 3)
                 {
-                    MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: "Transition removed - target value is the same as source.");
+                    MessageLog.AddMessage(msgType: MsgType.Debug, message: "Transition removed - target value is the same as source.");
                     this.Finish();
                 }
             }

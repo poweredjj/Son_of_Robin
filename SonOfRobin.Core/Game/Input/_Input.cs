@@ -47,7 +47,7 @@ namespace SonOfRobin
             if (SonOfRobinGame.currentUpdate >= globalInputReactivateUpdate)
             {
                 GlobalInputActive = true;
-                MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: "GlobalInputActive had to be restored.", color: Color.White);
+                MessageLog.AddMessage(msgType: MsgType.Debug, message: "GlobalInputActive had to be restored.", color: Color.White);
             }
         }
 
