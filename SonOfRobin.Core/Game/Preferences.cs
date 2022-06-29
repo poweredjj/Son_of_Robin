@@ -86,6 +86,7 @@ namespace SonOfRobin
         private static bool mouseGesturesEmulateTouch = false;
         public static int darknessResolution = 1;
         public static bool drawShadows = true;
+        public static bool drawSunShadows = false; // TODO change to true
         public static bool MouseGesturesEmulateTouch
         {
             get { return mouseGesturesEmulateTouch; }
@@ -367,6 +368,7 @@ namespace SonOfRobin
             prefsData["EnableTouch"] = EnableTouch;
             prefsData["darknessResolution"] = darknessResolution;
             prefsData["drawShadows"] = drawShadows;
+            prefsData["drawSunShadows"] = drawSunShadows;
 
             FileReaderWriter.Save(path: SonOfRobinGame.prefsPath, savedObj: prefsData);
 
@@ -415,6 +417,7 @@ namespace SonOfRobin
                     EnableTouch = (bool)prefsData["EnableTouch"];
                     darknessResolution = (int)prefsData["darknessResolution"];
                     drawShadows = (bool)prefsData["drawShadows"];
+                    drawSunShadows = (bool)prefsData["drawSunShadows"];
 
                     prefsLoaded = true;
                 }

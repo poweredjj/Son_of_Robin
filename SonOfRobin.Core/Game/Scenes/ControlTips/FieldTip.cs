@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SonOfRobin
 {
@@ -75,7 +76,7 @@ namespace SonOfRobin
         private void ChangeOpacityIfObstructsTarget()
         {
             if (this.targetSprite == null) return;
-            if (inAlignment.Contains(this.alignment) && (targetSprite.gfxRect.Width < this.TextureWidth || targetSprite.gfxRect.Height < this.TextureHeight)) this.targetOpacity = 0.6f;
+            if (inAlignment.Contains(this.alignment) && (targetSprite.gfxRect.Width < this.TextureWidth || targetSprite.gfxRect.Height < this.TextureHeight)) this.targetOpacity = 0.5f;
         }
 
         private Rectangle CalculateDestRect(Vector2 position)
@@ -92,7 +93,7 @@ namespace SonOfRobin
                 SonOfRobinGame.spriteBatch.End();
                 SonOfRobinGame.spriteBatch.Begin(transformMatrix: world.TransformMatrix);
 
-                foreach (FieldTip fieldTip in tipsDict.Values)
+                foreach (FieldTip fieldTip in tipsDict.Values.ToList())
                 { fieldTip.UpdateAndDraw(); }
             }
         }
@@ -102,7 +103,7 @@ namespace SonOfRobin
             if (this.targetSprite != null && !this.targetSprite.boardPiece.exists) this.targetSprite = null;
 
             this.targetPos = this.CalculatePosition();
-            this.MoveIfObstructsPlayer();
+            this.MoveIfObstructsPlayerOrOtherTip();
 
             if (this.world.currentUpdate - this.lastFrameActive > maxInactiveDuration) this.targetOpacity = 0f;
             else this.ChangeOpacityIfObstructsTarget();
@@ -125,22 +126,33 @@ namespace SonOfRobin
             SonOfRobinGame.spriteBatch.Draw(this.texture, this.CalculateDestRect(this.currentPos), sourceRectangle, Color.White * this.currentOpacity);
         }
 
-        private void MoveIfObstructsPlayer()
+        private void MoveIfObstructsPlayerOrOtherTip()
         {
-            Rectangle targetRect = this.CalculateDestRect(position: this.targetPos);
+            List<Rectangle> rectsToCheck = new List<Rectangle>();
 
-            if (this.world.player != null && targetRect.Intersects(this.world.player.sprite.gfxRect))
+            if (this.world.player != null) rectsToCheck.Add(this.world.player.sprite.gfxRect);
+            foreach (FieldTip fieldTip in tipsDict.Values)
             {
-                Rectangle playerRect = this.world.player.sprite.gfxRect;
+                if (fieldTip != this) rectsToCheck.Add(fieldTip.CalculateDestRect(fieldTip.currentPos));
+            }
+            if (rectsToCheck.Count == 0) return;
 
-                int newPosX = Math.Abs(targetRect.Left - playerRect.Right) < Math.Abs(targetRect.Right - playerRect.Left) ?
-                    playerRect.Right : playerRect.Left - this.TextureWidth;
+            Vector2 checkPos = this.currentPos + (this.targetPos - this.currentPos) / 2;
+            Rectangle thisTipRect = this.CalculateDestRect(position: checkPos);
 
-                int newPosY = Math.Abs(targetRect.Top - playerRect.Bottom) < Math.Abs(targetRect.Bottom - playerRect.Top) ?
-                    playerRect.Bottom : playerRect.Top - this.TextureHeight;
+            foreach (Rectangle otherTipRect in rectsToCheck)
+            {
+                if (thisTipRect.Intersects(otherTipRect))
+                {
+                    int newPosX = Math.Abs(thisTipRect.Left - otherTipRect.Right) < Math.Abs(thisTipRect.Right - otherTipRect.Left) ?
+                        otherTipRect.Right : otherTipRect.Left - this.TextureWidth;
 
-                if (Math.Abs(this.targetPos.X - newPosX) > Math.Abs(this.targetPos.Y - newPosY)) this.targetPos.Y = newPosY;
-                else this.targetPos.X = newPosX;
+                    int newPosY = Math.Abs(thisTipRect.Top - otherTipRect.Bottom) < Math.Abs(thisTipRect.Bottom - otherTipRect.Top) ?
+                        otherTipRect.Bottom : otherTipRect.Top - this.TextureHeight;
+
+                    if (Math.Abs(this.targetPos.X - newPosX) > Math.Abs(this.targetPos.Y - newPosY)) this.targetPos.Y = newPosY;
+                    else this.targetPos.X = newPosX;
+                }
             }
         }
 

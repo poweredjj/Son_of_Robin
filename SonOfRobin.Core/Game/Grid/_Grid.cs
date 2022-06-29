@@ -492,13 +492,28 @@ namespace SonOfRobin
             if (updateFog) this.world.UpdateFogOfWar();
         }
 
-        public int DrawSprites(Camera camera)
+        public int DrawSprites(Camera camera, List<Sprite> blockingLightSpritesList)
         {
             // Sprites should be drawn all at once, because cell-based drawing causes Y sorting order incorrect
             // in cases of sprites overlapping cell boundaries.
 
             var visibleSprites = this.GetSpritesInCameraView(camera: camera, groupName: Cell.Group.Visible);
-            var sortedSprites = visibleSprites.OrderBy(o => o.frame.layer).ThenBy(o => o.gfxRect.Bottom).ToList();
+            var sortedSprites = visibleSprites.OrderBy(o => o.frame.layer).ThenBy(o => o.gfxRect.Bottom);
+
+            if (Preferences.drawSunShadows)
+            {
+                AmbientLight.SunLightData sunLightData = AmbientLight.SunLightData.CalculateSunLight(this.world.islandClock.IslandDateTime);
+                if (sunLightData.sunShadowsColor != Color.Transparent)
+                {
+                    foreach (Sprite shadowSprite in blockingLightSpritesList)
+                    {
+                        Vector2 sunPos = new Vector2(shadowSprite.gfxRect.Center.X + sunLightData.sunPos.X, shadowSprite.gfxRect.Bottom + sunLightData.sunPos.Y);
+                        float shadowAngle = Helpers.GetAngleBetweenTwoPoints(start: sunPos, end: shadowSprite.position);
+
+                        Sprite.DrawShadow(color: sunLightData.sunShadowsColor, shadowSprite: shadowSprite, lightPos: sunPos, shadowAngle: shadowAngle, yScaleForce: sunLightData.sunShadowsLength);
+                    }
+                }
+            }
 
             foreach (Sprite sprite in sortedSprites)
             { sprite.Draw(); }

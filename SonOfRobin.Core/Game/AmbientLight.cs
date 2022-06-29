@@ -6,11 +6,88 @@ namespace SonOfRobin
 {
     public class AmbientLight
     {
+        public struct SunLightData
+        {
+            private static readonly SunLightData noSun = new SunLightData(timeOfDay: TimeSpan.FromHours(0), sunPos: Vector2.Zero, sunShadowsLength: 0f, sunShadowsColor: Color.Transparent);
+
+            private static readonly List<SunLightData> sunDataList = new List<SunLightData>
+            {
+                new SunLightData(timeOfDay: TimeSpan.FromHours(0), sunPos: Vector2.Zero, sunShadowsLength: 0f, sunShadowsColor: Color.Transparent),
+                new SunLightData(timeOfDay: TimeSpan.FromHours(4), sunPos: new Vector2(400, -400), sunShadowsLength: 3f, sunShadowsColor: Color.Transparent),
+                new SunLightData(timeOfDay: TimeSpan.FromHours(5), sunPos: new Vector2(350, -225), sunShadowsLength: 2.65f, sunShadowsColor: Color.Black * 0.4f),
+                new SunLightData(timeOfDay: TimeSpan.FromHours(6), sunPos: new Vector2(300, -50), sunShadowsLength: 2.3f, sunShadowsColor: Color.Black * 0.4f),
+                new SunLightData(timeOfDay: TimeSpan.FromHours(12), sunPos: new Vector2(0, 1000), sunShadowsLength: 0.2f, sunShadowsColor: Color.Black * 0.6f),
+                new SunLightData(timeOfDay: TimeSpan.FromHours(18), sunPos: new Vector2(-300, -50), sunShadowsLength: 2.3f, sunShadowsColor: Color.Black * 0.4f),
+                new SunLightData(timeOfDay: TimeSpan.FromHours(20), sunPos: new Vector2(-400, -400), sunShadowsLength: 3f, sunShadowsColor: Color.Transparent),
+                new SunLightData(timeOfDay: TimeSpan.FromHours(24), sunPos: Vector2.Zero, sunShadowsLength: 0f, sunShadowsColor: Color.Transparent),
+            };
+
+            public readonly TimeSpan timeOfDay;
+            public readonly Vector2 sunPos;
+            public readonly float sunShadowsLength;
+            public readonly Color sunShadowsColor;
+
+            public SunLightData(TimeSpan timeOfDay, Vector2 sunPos, float sunShadowsLength, Color sunShadowsColor)
+            {
+                this.timeOfDay = timeOfDay;
+                this.sunPos = sunPos;
+                this.sunShadowsLength = sunShadowsLength;
+                this.sunShadowsColor = sunShadowsColor;
+            }
+
+            public static SunLightData CalculateSunLight(DateTime currentDateTime)
+            {
+                TimeSpan currentTimeOfDay = currentDateTime.TimeOfDay;
+
+                if (currentTimeOfDay < TimeSpan.FromHours(4) || currentTimeOfDay > TimeSpan.FromHours(20)) return noSun;  // to avoid checking these ranges
+
+                SunLightData prevLightData, nextLightData;
+
+                for (int i = 1; i <= sunDataList.Count; i++) // from 1 to count of elements, to properly check the whole range
+                {
+                    // setting next and previous light values
+
+                    if (i < lightDataList.Count) nextLightData = sunDataList[i];
+                    else nextLightData = sunDataList[0];
+
+                    prevLightData = sunDataList[i - 1];
+
+                    // checking for time match
+
+                    if (prevLightData.timeOfDay == currentTimeOfDay) return prevLightData;
+                    else if (nextLightData.timeOfDay == currentTimeOfDay) return nextLightData;
+                    else if (prevLightData.timeOfDay < currentTimeOfDay && currentTimeOfDay < nextLightData.timeOfDay)
+                    {
+                        // calculating values
+
+                        float minutesBetween = (float)(nextLightData.timeOfDay.TotalMinutes - prevLightData.timeOfDay.TotalMinutes);
+                        float prevColorOpacity = 1f - (float)((currentTimeOfDay.TotalMinutes - prevLightData.timeOfDay.TotalMinutes) / minutesBetween);
+                        float nextColorOpacity = 1f - (float)((nextLightData.timeOfDay.TotalMinutes - currentTimeOfDay.TotalMinutes) / minutesBetween);
+
+                        Color newSunShadowsColor = new Color(
+                            (byte)((prevLightData.sunShadowsColor.R * prevColorOpacity) + (nextLightData.sunShadowsColor.R * nextColorOpacity)),
+                            (byte)((prevLightData.sunShadowsColor.G * prevColorOpacity) + (nextLightData.sunShadowsColor.G * nextColorOpacity)),
+                            (byte)((prevLightData.sunShadowsColor.B * prevColorOpacity) + (nextLightData.sunShadowsColor.B * nextColorOpacity)),
+                            (byte)((prevLightData.sunShadowsColor.A * prevColorOpacity) + (nextLightData.sunShadowsColor.A * nextColorOpacity))
+                            );
+
+                        float newSunShadowsLength = (prevLightData.sunShadowsLength * prevColorOpacity) + (nextLightData.sunShadowsLength * nextColorOpacity);
+                        Vector2 newSunPos = (prevLightData.sunPos * prevColorOpacity) + (nextLightData.sunPos * nextColorOpacity);
+
+                        return new SunLightData(timeOfDay: currentTimeOfDay, sunPos: newSunPos, sunShadowsLength: newSunShadowsLength, sunShadowsColor: newSunShadowsColor);
+                    }
+                }
+
+                return noSun;
+            }
+        }
+
         public struct AmbientLightData
         {
             public readonly TimeSpan timeOfDay;
             public readonly Color darknessColor;
             public readonly Color lightColor;
+
             public AmbientLightData(TimeSpan timeOfDay, Color darknessColor, Color lightColor)
             {
                 this.timeOfDay = timeOfDay;
@@ -20,7 +97,10 @@ namespace SonOfRobin
 
             public static AmbientLightData MakeCopyPlus24H(AmbientLightData ambientLightData)
             {
-                return new AmbientLightData(timeOfDay: ambientLightData.timeOfDay + TimeSpan.FromDays(1), darknessColor: ambientLightData.darknessColor, lightColor: ambientLightData.lightColor);
+                return new AmbientLightData(
+                    timeOfDay: ambientLightData.timeOfDay + TimeSpan.FromDays(1),
+                    darknessColor: ambientLightData.darknessColor,
+                    lightColor: ambientLightData.lightColor);
             }
         }
 
@@ -93,6 +173,5 @@ namespace SonOfRobin
 
             throw new ArgumentException($"Cannot calculate ambient color for time {currentTimeOfDay}.");
         }
-
     }
 }

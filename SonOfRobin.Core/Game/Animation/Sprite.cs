@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -756,6 +757,56 @@ namespace SonOfRobin
 
             SonOfRobinGame.spriteBatch.DrawString(stateFont, stateTxt, txtPos + new Vector2(1, 1), Color.Black);
             SonOfRobinGame.spriteBatch.DrawString(stateFont, stateTxt, txtPos, Color.White);
+        }
+
+        public static void DrawShadow(Color color, Sprite shadowSprite, Vector2 lightPos, float shadowAngle, int drawOffsetX = 0, int drawOffsetY = 0, float yScaleForce = 0f)
+        {
+            float distance = Vector2.Distance(lightPos, shadowSprite.position);
+            AnimFrame frame = shadowSprite.frame;
+
+            var flatShadowNames = new List<PieceTemplate.Name> { PieceTemplate.Name.WoodLog };
+            var tallShadowNames = new List<PieceTemplate.Name> { PieceTemplate.Name.TentSmall, PieceTemplate.Name.TentMedium, PieceTemplate.Name.TentBig };
+
+            bool flatShadow = (frame.gfxWidth > frame.gfxHeight ||
+                shadowSprite.boardPiece.GetType() == typeof(Animal) ||
+                flatShadowNames.Contains(shadowSprite.boardPiece.name)) &&
+                !tallShadowNames.Contains(shadowSprite.boardPiece.name);
+
+            if (flatShadow)
+            {
+                float xDiff = shadowSprite.position.X - lightPos.X;
+                float yDiff = shadowSprite.position.Y - lightPos.Y;
+
+                float xLimit = shadowSprite.gfxRect.Width / 8;
+                float yLimit = shadowSprite.gfxRect.Height / 8;
+
+                float offsetX = Math.Max(Math.Min(xDiff / 6f, xLimit), -xLimit);
+                float offsetY = Math.Max(Math.Min(yDiff / 6f, yLimit), -yLimit);
+
+                Color originalColor = shadowSprite.color;
+                shadowSprite.color = color;
+                shadowSprite.DrawRoutine(calculateSubmerge: true, offsetX: (int)offsetX + drawOffsetX, offsetY: (int)offsetY + drawOffsetY);
+                shadowSprite.color = originalColor;
+            }
+            else
+            {
+                float xScale = frame.scale;
+                float yScale = Math.Max(frame.scale / distance * 100f, frame.scale * 0.3f);
+                yScale = Math.Min(yScale, frame.scale * 3f);
+                if (yScaleForce != 0) yScale = frame.scale * yScaleForce;
+
+                SonOfRobinGame.spriteBatch.Draw(
+                    frame.texture,
+                    position:
+                    new Vector2(shadowSprite.position.X + drawOffsetX, shadowSprite.position.Y + drawOffsetY),
+                    sourceRectangle: frame.textureRect,
+                    color: color,
+                    rotation: shadowSprite.rotation + shadowAngle + (float)(Math.PI / 2f),
+                    origin: new Vector2(-frame.gfxOffset.X / frame.scale, -(frame.gfxOffset.Y + frame.colOffset.Y) / frame.scale),
+                    scale: new Vector2(xScale, yScale),
+                    effects: SpriteEffects.None,
+                    layerDepth: 0);
+            }
         }
 
     }
