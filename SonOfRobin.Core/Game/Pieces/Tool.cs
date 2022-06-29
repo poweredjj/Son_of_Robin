@@ -123,7 +123,7 @@ namespace SonOfRobin
                         case Category.SmallPlant:
                             break;
 
-                        case Category.Animal:
+                        case Category.Flesh:
                             this.world.hintEngine.Disable(PieceHint.Type.AnimalNegative);
                             if (this.name == PieceTemplate.Name.SpearStone) this.world.hintEngine.Disable(PieceHint.Type.AnimalBat);
 
@@ -216,8 +216,9 @@ namespace SonOfRobin
 
             if (!target.alive || target.hitPoints <= 0)
             {
-                target.world.grid.RemoveFromGroup(sprite: target.sprite, groupName: Cell.Group.ColBlocking); // to ensure proper yield placement
+                target.world.grid.RemoveFromGroup(sprite: target.sprite, groupName: Cell.Group.ColMovement); // to ensure proper yield placement
                 if (target.yield != null && target.exists) target.yield.DropFinalPieces();
+                target.soundPack.Play(PieceSoundPack.Action.IsDestroyed);
                 target.Destroy();
 
                 int numberOfExplosions = world.random.Next(5, 12);
@@ -233,10 +234,13 @@ namespace SonOfRobin
             }
             else
             {
+                target.soundPack.Play(PieceSoundPack.Action.IsHit);
                 target.showStatBarsTillFrame = world.currentUpdate + 1200;
 
                 if (target.GetType() == typeof(Animal))
                 {
+                    if (target.HitPointsPercent < 0.4f || world.random.Next(0, 2) == 0) target.soundPack.Play(PieceSoundPack.Action.Cry);
+
                     Animal animalTarget = (Animal)target;
 
                     animalTarget.target = attacker;

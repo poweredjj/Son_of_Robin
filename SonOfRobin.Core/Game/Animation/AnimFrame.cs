@@ -186,6 +186,8 @@ namespace SonOfRobin
 
         public void DrawWithRotation(Vector2 position, Color color, float rotation, float opacity)
         {
+
+
             // invoke from Sprite class
 
             SonOfRobinGame.spriteBatch.Draw(this.texture, position: position, sourceRectangle: this.textureRect, color: color * opacity, rotation: rotation, origin: this.rotationOrigin, scale: this.scale, effects: SpriteEffects.None, layerDepth: 0);

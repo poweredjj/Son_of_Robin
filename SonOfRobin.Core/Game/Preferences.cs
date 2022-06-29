@@ -9,18 +9,20 @@ namespace SonOfRobin
     {
         public enum WorldSize { small, medium, large, gigantic } // lower case, for proper display in menu
 
-        public static int newWorldWidth;
-        public static int newWorldHeight;
-
-        public static int newWorldMaxAnimalsMultiplier = 50; // max animals per name for 10000x10000 area
-        public static int newWorldResDivider = 2;
-        public static bool newWorldAgressiveAnimals = true;
         public static readonly Dictionary<Object, Object> namesForResDividers = new Dictionary<Object, Object> { { 30, "garbage" }, { 10, "low" }, { 3, "medium" }, { 2, "high" }, { 1, "ultra" } };
         public static readonly Dictionary<Object, Object> namesForDarknessRes = new Dictionary<Object, Object> { { 4, "very low" }, { 3, "low" }, { 2, "medium" }, { 1, "high" } };
         public static readonly Dictionary<Object, Object> namesForFieldControlTipsScale = new Dictionary<Object, Object> { { 0.15f, "micro" }, { 0.25f, "small" }, { 0.4f, "medium" }, { 0.5f, "large" }, { 0.6f, "huge" }, { 0.75f, "gigantic" } };
         public static readonly Dictionary<Object, Object> namesForAnimalsMultiplier = new Dictionary<Object, Object> { { 5, "almost extinct" }, { 20, "few" }, { 50, "within reason" }, { 100, "many" }, { 500, "total invasion" } };
 
-        public static bool randomSeed = true;
+        public static int newWorldWidth;
+        public static int newWorldHeight;
+
+        public static int newWorldMaxAnimalsMultiplier; // max animals per name for 10000x10000 area
+        public static int newWorldResDivider;
+        public static bool newWorldAgressiveAnimals;
+        public static bool newWorldPlayerFemale;
+
+        public static bool randomSeed;
         public static char seedDigit1 = '0';
         public static char seedDigit2 = '0';
         public static char seedDigit3 = '0';
@@ -34,6 +36,7 @@ namespace SonOfRobin
                     Random oneTimeRandom = new Random();
                     return oneTimeRandom.Next(0, 9999);
                 }
+
                 return Convert.ToInt32($"{seedDigit1}{seedDigit2}{seedDigit3}{seedDigit4}");
             }
         }
@@ -69,7 +72,7 @@ namespace SonOfRobin
             }
         }
         public static float menuScale = 0.75f;
-        private static float worldScale = 1f;
+        private static float worldScale = 1.5f;
 
         public static float WorldScale
         {
@@ -84,7 +87,8 @@ namespace SonOfRobin
             }
         }
 
-        private static bool fullScreenMode = true;
+        private static bool fullScreenMode = false;
+        private static bool vSync = true;
         public static bool loadWholeMap = true;
         private static bool frameSkip = true;
         public static bool showDemoWorld = true;
@@ -206,6 +210,8 @@ namespace SonOfRobin
         private static bool debugShowWholeMap = false;
         public static bool debugShowAllRecipes = false;
         public static bool debugSaveEverywhere = false;
+        public static bool debugShowSounds = false;
+        public static bool debugDisablePlayerPanel = false;
         public static bool DebugShowWholeMap
         {
             get { return debugShowWholeMap; }
@@ -223,7 +229,7 @@ namespace SonOfRobin
             }
         }
 
-        private static WorldSize selectedWorldSize = WorldSize.medium;
+        private static WorldSize selectedWorldSize;
         public static WorldSize SelectedWorldSize
         {
             get { return selectedWorldSize; }
@@ -310,6 +316,16 @@ namespace SonOfRobin
             }
         }
 
+        public static bool VSync
+        {
+            get { return vSync; }
+            set
+            {
+                vSync = value;
+                ShowAppliedAfterRestartMessage("Vertical sync");
+            }
+        }
+
         public static List<Object> AvailableScreenModes
         {
             get
@@ -343,6 +359,16 @@ namespace SonOfRobin
                 frameSkip = value;
                 SonOfRobinGame.game.IsFixedTimeStep = value;
             }
+        }
+
+        public static void ResetNewWorldSettings()
+        {
+            newWorldPlayerFemale = false;
+            SelectedWorldSize = WorldSize.medium;
+            newWorldAgressiveAnimals = true;
+            newWorldPlayerFemale = false;
+            newWorldMaxAnimalsMultiplier = 50;
+            CustomizeWorld = false;
         }
 
         private static void ShowAppliedAfterRestartMessage(string settingName)
@@ -379,6 +405,8 @@ namespace SonOfRobin
         public static void Initialize()
         {
             // initial values, that must be set, after setting the platform variable
+
+            ResetNewWorldSettings();
 
             if (SonOfRobinGame.platform == Platform.Mobile)
             {
@@ -419,6 +447,7 @@ namespace SonOfRobin
             prefsData["newWorldHeight"] = newWorldHeight;
             prefsData["newWorldMaxAnimalsMultiplier"] = newWorldMaxAnimalsMultiplier;
             prefsData["newWorldAgressiveAnimals"] = newWorldAgressiveAnimals;
+            prefsData["newWorldPlayerFemale"] = newWorldPlayerFemale;
             prefsData["randomSeed"] = randomSeed;
             prefsData["seedDigit1"] = seedDigit1;
             prefsData["seedDigit2"] = seedDigit2;
@@ -452,6 +481,11 @@ namespace SonOfRobin
             prefsData["pointToInteract"] = pointToInteract;
             prefsData["currentMappingGamepad"] = InputMapper.currentMappingGamepad;
             prefsData["currentMappingKeyboard"] = InputMapper.currentMappingKeyboard;
+            prefsData["soundGlobalOn"] = Sound.globalOn;
+            prefsData["soundGlobalVolume"] = Sound.globalVolume;
+            prefsData["soundMenuOn"] = Sound.menuOn;
+            prefsData["vSync"] = vSync;
+
 
             FileReaderWriter.Save(path: SonOfRobinGame.prefsPath, savedObj: prefsData);
 
@@ -475,6 +509,7 @@ namespace SonOfRobin
                     newWorldHeight = (int)prefsData["newWorldHeight"];
                     newWorldMaxAnimalsMultiplier = (int)prefsData["newWorldMaxAnimalsMultiplier"];
                     newWorldAgressiveAnimals = (bool)prefsData["newWorldAgressiveAnimals"];
+                    newWorldPlayerFemale = (bool)prefsData["newWorldPlayerFemale"];
                     randomSeed = (bool)prefsData["randomSeed"];
                     seedDigit1 = (char)prefsData["seedDigit1"];
                     seedDigit2 = (char)prefsData["seedDigit2"];
@@ -512,6 +547,10 @@ namespace SonOfRobin
                     if (!loadedMappingKeyboard.IsObsolete) InputMapper.currentMappingKeyboard = loadedMappingKeyboard;
                     InputMapper.newMappingGamepad = InputMapper.currentMappingGamepad.MakeCopy();
                     InputMapper.newMappingKeyboard = InputMapper.currentMappingKeyboard.MakeCopy();
+                    Sound.globalOn = (bool)prefsData["soundGlobalOn"];
+                    Sound.globalVolume = (float)prefsData["soundGlobalVolume"];
+                    Sound.menuOn = (bool)prefsData["soundMenuOn"];
+                    vSync = (bool)prefsData["vSync"];
 
                     prefsLoaded = true;
                 }
@@ -524,7 +563,11 @@ namespace SonOfRobin
                 CustomizeWorld = CustomizeWorld; // to refresh world sizes
             }
 
-            if (SonOfRobinGame.platform == Platform.Mobile) fullScreenMode = true; // window mode makes no sense on mobile
+            if (SonOfRobinGame.platform == Platform.Mobile)
+            {
+                fullScreenMode = true; // window mode makes no sense on mobile
+                vSync = true; // vSync cannot be turned off on mobile
+            }
             if (SonOfRobinGame.ThisIsWorkMachine) fullScreenMode = false;
 
             MessageLog.AddMessage(msgType: MsgType.Debug, message: "Preferences loaded.", color: Color.White);

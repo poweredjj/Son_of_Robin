@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SourceFileCollection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Profile>Reach</Profile>
+  <Platform>DesktopGL</Platform>
+  <Config />
+  <SourceFiles>
+    <File>C:/Users/msmidowi/Documents/SonOfRobin/SonOfRobin.Core/Content/sound/139952__ecfike__a-tree-falling-down.ogg</File>
+    <File>C:/Users/msmidowi/Documents/SonOfRobin/SonOfRobin.Core/Content/sound/164882__timsc__squirrel-call-1.ogg</File>
+    <File>C:/Users/msmidowi/Documents/SonOfRobin/SonOfRobin.Core/Content/sound/164882__timsc__squirrel-call-2.ogg</File>
+    <File>C:/Users/msmidowi/Documents/SonOfRobin/SonOfRobin.Core/Content/sound/164882__timsc__squirrel-call-3.ogg</File>
+    <File>C:/Users/msmidowi/Documents/SonOfRobin/SonOfRobin.Core/Content/sound/164882__timsc__squirrel-call-4.ogg</File>
+    <File>C:/Users/msmidowi/Documents/SonOfRobin/SonOfRobin.Core/Content/sound/183450__utsuru__wood-crack-5.ogg</File>
+    <File>C:/Users/msmidowi/Documents/SonOfRobin/SonOfRobin.Core/Content/sound/187809__sonsdebarcelona__low-piano-note.ogg</File>
+    <File>C:/Users/msmidowi/Documents/SonOfRobin/SonOfRobin.Core/Content/sound/257929__kane53126__bat-hit-against-wall.ogg</File>
+    <File>C:/Users/msmidowi/Documents/SonOfRobin/SonOfRobin.Core/Content/sound/367010__tanapistorius__digging_1.ogg</File>
+    <File>C:/Users/msmidowi/Documents/SonOfRobin/SonOfRobin.Core/Content/sound/367010__tanapistorius__digging_2.ogg</File>
+    <File>C:/Users/msmidowi/Documents/SonOfRobin/SonOfRobin.Core/Content/sound/367010__tanapistorius__digging_3.ogg</File>
+    <File>C:/Users/msmidowi/Documents/SonOfRobin/SonOfRobin.Core/Content/sound/391947__ssierra1202__chest-openning-crack.ogg</File>
+    <File>C:/Users/msmidowi/Documents/SonOfRobin/SonOfRobin.Core/Content/sound/411790__inspectorj__door-wooden-close-a-h4n.ogg</File>
+    <File>C:/Users/msmidowi/Documents/SonOfRobin/SonOfRobin.Core/Content/sound/484763__inspectorj__florida-treefrog-close-in-air-vent-01-1.ogg</File>
+    <File>C:/Users/msmidowi/Documents/SonOfRobin/SonOfRobin.Core/Content/sound/484763__inspectorj__florida-treefrog-close-in-air-vent-01-2.ogg</File>
+    <File>C:/Users/msmidowi/Documents/SonOfRobin/SonOfRobin.Core/Content/sound/484763__inspectorj__florida-treefrog-close-in-air-vent-01-3.ogg</File>
+    <File>C:/Users/msmidowi/Documents/SonOfRobin/SonOfRobin.Core/Content/sound/484763__inspectorj__florida-treefrog-close-in-air-vent-01-4.ogg</File>
+    <File>C:/Users/msmidowi/Documents/SonOfRobin/SonOfRobin.Core/Content/sound/521587__fission9__hiking-boot-footsteps-on-grass-1.ogg</File>
+    <File>C:/Users/msmidowi/Documents/SonOfRobin/SonOfRobin.Core/Content/sound/521587__fission9__hiking-boot-footsteps-on-grass-2.ogg</File>
+    <File>C:/Users/msmidowi/Documents/SonOfRobin/SonOfRobin.Core/Content/sound/521587__fission9__hiking-boot-footsteps-on-grass-3.ogg</File>
+    <File>C:/Users/msmidowi/Documents/SonOfRobin/SonOfRobin.Core/Content/sound/521587__fission9__hiking-boot-footsteps-on-grass-4.ogg</File>
+    <File>C:/Users/msmidowi/Documents/SonOfRobin/SonOfRobin.Core/Content/sound/521587__fission9__hiking-boot-footsteps-on-grass-5.ogg</File>
+    <File>C:/Users/msmidowi/Documents/SonOfRobin/SonOfRobin.Core/Content/sound/521587__fission9__hiking-boot-footsteps-on-grass-6.ogg</File>
+    <File>C:/Users/msmidowi/Documents/SonOfRobin/SonOfRobin.Core/Content/sound/524312__bertsz__rock-destroy.ogg</File>
+    <File>C:/Users/msmidowi/Documents/SonOfRobin/SonOfRobin.Core/Content/sound/531852__tissman__menu-click-1.ogg</File>
+    <File>C:/Users/msmidowi/Documents/SonOfRobin/SonOfRobin.Core/Content/sound/563175__gronnie__wooden-box-breaking-sound-effects.ogg</File>
+    <File>C:/Users/msmidowi/Documents/SonOfRobin/SonOfRobin.Core/Content/sound/567204__sergequadrado__announcement-sound-4.ogg</File>
+    <File>C:/Users/msmidowi/Documents/SonOfRobin/SonOfRobin.Core/Content/sound/568992__fission9__inventory-open.ogg</File>
+    <File>C:/Users/msmidowi/Documents/SonOfRobin/SonOfRobin.Core/Content/sound/575542__tissman__menu-move7.ogg</File>
+    <File>C:/Users/msmidowi/Documents/SonOfRobin/SonOfRobin.Core/Content/sound/587904__somehumbleonion__rock-hits-with-hammer-1.ogg</File>
+    <File>C:/Users/msmidowi/Documents/SonOfRobin/SonOfRobin.Core/Content/sound/587904__somehumbleonion__rock-hits-with-hammer-2.ogg</File>
+    <File>C:/Users/msmidowi/Documents/SonOfRobin/SonOfRobin.Core/Content/sound/587904__somehumbleonion__rock-hits-with-hammer-3.ogg</File>
+    <File>C:/Users/msmidowi/Documents/SonOfRobin/SonOfRobin.Core/Content/sound/587904__somehumbleonion__rock-hits-with-hammer-4.ogg</File>
+    <File>C:/Users/msmidowi/Documents/SonOfRobin/SonOfRobin.Core/Content/sound/587904__somehumbleonion__rock-hits-with-hammer-5.ogg</File>
+    <File>C:/Users/msmidowi/Documents/SonOfRobin/SonOfRobin.Core/Content/sound/587904__somehumbleonion__rock-hits-with-hammer-6.ogg</File>
+    <File>C:/Users/msmidowi/Documents/SonOfRobin/SonOfRobin.Core/Content/sound/627927__pandartb3d__smashed-egg.ogg</File>
+    <File>C:/Users/msmidowi/Documents/SonOfRobin/SonOfRobin.Core/Content/sound/628638__el-boss__menu-select-tick.ogg</File>
+    <File>C:/Users/msmidowi/Documents/SonOfRobin/SonOfRobin.Core/Content/sound/79560__robinhood76__01259-wet-sand-digging-1.ogg</File>
+    <File>C:/Users/msmidowi/Documents/SonOfRobin/SonOfRobin.Core/Content/sound/87572__huluvu42__platzender-kopf-nachschlag.ogg</File>
+  </SourceFiles>
+  <DestFiles>
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+  </DestFiles>
+</SourceFileCollection>

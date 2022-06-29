@@ -15,8 +15,8 @@ namespace SonOfRobin
 
     public class SonOfRobinGame : Game
     {
-        public static readonly float version = 8.8f;
-        public static readonly DateTime lastChanged = new DateTime(2022, 05, 25);
+        public static readonly float version = 8.9f;
+        public static readonly DateTime lastChanged = new DateTime(2022, 06, 05);
 
         public static ContentManager content;
 
@@ -47,14 +47,13 @@ namespace SonOfRobin
         public static List<RenderTarget2D> tempShadowMaskList;
         public static Texture2D lightSphere;
         public static Dictionary<string, Texture2D> textureByName = new Dictionary<string, Texture2D>();
-        public static Dictionary<string, SoundEffect> soundByName = new Dictionary<string, SoundEffect>();
 
         public static readonly SimpleFps fps = new SimpleFps();
         public static readonly Random random = new Random();
 
+        public static int currentUpdate = 0;
         public static float lastUpdateDelay = 0;
         public static float lastDrawDelay = 0;
-        public static int currentUpdate = 0;
 
         public static string gameDataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "SonOfRobin_data");
         public static string worldTemplatesPath = Path.Combine(gameDataPath, "world_templates");
@@ -79,7 +78,6 @@ namespace SonOfRobin
                 return false; // for compatibility with mobile
             }
         }
-
         public static bool LicenceValid { get { return DateTime.Now - lastChanged < TimeSpan.FromDays(30) || overrideLicence; } }
         public static bool overrideLicence = false;
 
@@ -132,11 +130,15 @@ namespace SonOfRobin
                 graphics.PreferredBackBufferHeight = initialWindowHeight;
             }
 
+            graphics.SynchronizeWithVerticalRetrace = Preferences.VSync;
+
             graphics.ApplyChanges();
 
             if (ThisIsWorkMachine) this.Window.Position = new Point(-10, 758); // THIS LINE MUST BE COMMENTED OUT WHEN COMPILING FOR ANDROID
             this.Window.AllowUserResizing = true;
             Window.ClientSizeChanged += OnResize;
+
+            SoundEffect.DistanceScale = 1;
 
             AnimData.CreateAllAnims();
             AnimFrame.DeleteUsedAtlases();
@@ -158,13 +160,14 @@ namespace SonOfRobin
 
             if (LicenceValid)
             {
-                if (Preferences.showDemoWorld) new World(seed: 777, width: 1500, height: 1000, resDivider: 2, demoMode: true, initialMaxAnimalsMultiplier: 100, addAgressiveAnimals: true);
+                if (Preferences.showDemoWorld) new World(seed: 777, width: 1500, height: 1000, resDivider: 2, playerFemale: false, demoMode: true, initialMaxAnimalsMultiplier: 100, addAgressiveAnimals: true);
                 MenuTemplate.CreateMenuFromTemplate(templateName: MenuTemplate.Name.Main);
             }
             else
             {
                 var textWindow = new TextWindow(text: "This version of 'Son of Robin' has expired.", textColor: Color.White, bgColor: Color.DarkBlue, useTransition: false, animate: true, blockInputDuration: 60, closingTask: Scheduler.TaskName.OpenMainMenuIfSpecialKeysArePressed);
             }
+            GC.Collect();
         }
 
         public void OnResize(Object sender, EventArgs e)
@@ -196,17 +199,16 @@ namespace SonOfRobin
 
             // sounds
 
-            string[] soundNames = { "575542__tissman__menu-move7" };
-            foreach (string soundName in soundNames)
+            foreach (var kvp in SoundData.soundFilenamesDict)
             {
-                soundByName[soundName] = Content.Load<SoundEffect>($"sound/{soundName}");
+                SoundData.soundsDict[kvp.Key] = Content.Load<SoundEffect>($"sound/{kvp.Value}");
             }
+
+            var sound = SoundData.soundsDict;
 
             // textures
 
-            string[] gfxNames = { "no_anim", "fox", "tile_custom01", "actor29rec4", "tileb", "tile_19ba32a6", "backlight_1", "backlight_2", "backlight_3", "backlight_4", "crabs_small", "crabs_big", "frogs_small", "frogs_big", "flowers", "8f296dbbaf43865bc29e99660fe7b5af_2x", "qYFvsmq", "NicePng_pine-tree-clipart-png_1446450", "palmtree_small", "tilees by guth_zpsfn3wpjdu_2x", "attack", "miss", "zzz", "heart_16x16", "rabbits", "virtual_joypad_background", "virtual_joypad_stick", "virtual_button", "virtual_button_pressed", "cursor", "chests", "d9ffec650d3104f5c4564c9055787530", "sticks1", "sticks2", "axe_wooden", "hand", "tools_gravel", "stones", "fancy_food", "fancy_food2", "celianna_farmnature_crops_transparent", "big_icons_candacis", "Candacis_flames1", "gems__rpg_maker_mv__by_petschko-d9euoxr", "mv_blacksmith_by_schwarzenacht_dapf6ek", "bows", "arrow_wood", "arrow_iron", "crosshair", "stone_small", "craft_items", "tent_big", "tent_medium", "flames", "bag", "bag_outline", "backpack", "belt", "parchment", "exclamation", "scythe_stone", "scythe_iron", "grass_blade", "tiger", "plus", "acorn", "light_white", "small_torch_on", "small_torch_off", "big_torch_on", "big_torch_off", "water_drop", "tile_rtp-addons", "bottle_empty", "herbs_black", "herbs_blue", "herbs_cyan", "herbs_green", "herbs_red", "herbs_violet", "herbs_yellow", "rpg_maker_vx_ace_tilesets_1_by_hishimy_d8e7pjd", "Mouse/Mouse_Left_Key_Light", "Mouse/Mouse_Middle_Key_Light", "Mouse/Mouse_Right_Key_Light", "Mouse/Mouse_Scroll_Up_Light", "Mouse/Mouse_Scroll_Down_Light", "potion_black", "arrow_poison", "spear_wood", "spear_stone", "spear_iron", "spear_poison", "alchemy_lab", "workshop_basic", "workshop_advanced", "workshop_essential", "workshop_master", "piece_of_fat", "bottle_oil", "burger", "biceps", "bed", "leaf_1", "leaf_2", "leaf_3", "crystal_deposit_big", "crystal_deposit_small", "crystal_shard", "crystal", "stone", "axe_crystal", "spear_crystal", "scythe_crystal", "arrow_crystal", "arrow_stone", "anvil", "iron_rod", "iron_plate", "skull_and_bones", "wood_regular", "wood_hard", "dig_site", "shovel_stone", "shovel_iron", "shovel_crystal", "clay", "hole", "meat_raw", "meat_dried", "jar_sealed", "jar_broken", "tree_stump", "debris_ceramic_1", "debris_ceramic_2", "granite", "hot_plate_off", "hot_plate_on_1", "hot_plate_on_2", "hot_plate_on_3" };
-
-            foreach (string gfxName in gfxNames)
+            foreach (string gfxName in AnimData.gfxNames)
             {
                 textureByName[gfxName] = Content.Load<Texture2D>($"gfx/{gfxName}");
             }
@@ -240,6 +242,8 @@ namespace SonOfRobin
         {
             lastDrawDelay = gameTime.ElapsedGameTime.Milliseconds;
 
+            SoundInstanceManager.CleanUpActiveInstances();
+            Sound.UpdateAll();
             Scene.DrawAllScenesInStack();
 
             base.Draw(gameTime);

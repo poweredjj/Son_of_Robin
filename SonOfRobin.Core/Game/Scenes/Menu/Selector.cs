@@ -11,6 +11,7 @@ namespace SonOfRobin
     {
         private readonly Dictionary<object, object> valueDict; // real value : displayed name
         private int activeIndex;
+        private readonly Sound soundSelect;
         private readonly Object targetObj;
         private readonly string propertyName;
         private readonly bool captureInput;
@@ -25,7 +26,7 @@ namespace SonOfRobin
 
         public override string DisplayedText { get { return $"{this.name}   < {this.ActiveName} >"; } }
 
-        public Selector(Menu menu, string name, List<Object> valueList, Object targetObj, string propertyName, bool rebuildsMenu = false, bool rebuildsAllMenus = false, List<InfoWindow.TextEntry> infoTextList = null, bool rebuildsMenuInstantScroll = false, bool captureInput = false, bool captureButtons = false, bool captureKeys = false) : base(menu: menu, name: name, rebuildsMenu: rebuildsMenu, infoTextList: infoTextList, rebuildsAllMenus: rebuildsAllMenus, rebuildsMenuInstantScroll: rebuildsMenuInstantScroll)
+        public Selector(Menu menu, string name, List<Object> valueList, Object targetObj, string propertyName, bool rebuildsMenu = false, bool rebuildsAllMenus = false, List<InfoWindow.TextEntry> infoTextList = null, bool rebuildsMenuInstantScroll = false, bool captureInput = false, bool captureButtons = false, bool captureKeys = false, SoundData.Name sound = SoundData.Name.Empty) : base(menu: menu, name: name, rebuildsMenu: rebuildsMenu, infoTextList: infoTextList, rebuildsAllMenus: rebuildsAllMenus, rebuildsMenuInstantScroll: rebuildsMenuInstantScroll)
         {
             this.targetObj = targetObj;
             this.propertyName = propertyName;
@@ -40,10 +41,12 @@ namespace SonOfRobin
             if (this.captureInput && !this.captureButtons && !this.captureKeys) throw new ArgumentException("No input could be captured.");
             this.captureModeActive = false;
 
+            this.soundSelect = sound == SoundData.Name.Empty ? this.menu.soundSelect : new Sound(sound);
+
             this.CompleteCreation();
         }
 
-        public Selector(Menu menu, string name, Dictionary<object, object> valueDict, Object targetObj, string propertyName, bool rebuildsMenu = false, bool rebuildsMenuInstantScroll = false, bool rebuildsAllMenus = false, List<InfoWindow.TextEntry> infoTextList = null, bool captureInput = false, bool captureButtons = false, bool captureKeys = false) : base(menu: menu, name: name, rebuildsMenu: rebuildsMenu, rebuildsMenuInstantScroll: rebuildsMenuInstantScroll, rebuildsAllMenus: rebuildsAllMenus, infoTextList: infoTextList)
+        public Selector(Menu menu, string name, Dictionary<object, object> valueDict, Object targetObj, string propertyName, bool rebuildsMenu = false, bool rebuildsMenuInstantScroll = false, bool rebuildsAllMenus = false, List<InfoWindow.TextEntry> infoTextList = null, bool captureInput = false, bool captureButtons = false, bool captureKeys = false, SoundData.Name sound = SoundData.Name.Empty) : base(menu: menu, name: name, rebuildsMenu: rebuildsMenu, rebuildsMenuInstantScroll: rebuildsMenuInstantScroll, rebuildsAllMenus: rebuildsAllMenus, infoTextList: infoTextList)
         {
             this.targetObj = targetObj;
             this.propertyName = propertyName;
@@ -55,6 +58,8 @@ namespace SonOfRobin
             this.captureKeys = captureKeys;
             if (this.captureInput && !this.captureButtons && !this.captureKeys) throw new ArgumentException("No input could be captured.");
             this.captureModeActive = false;
+
+            this.soundSelect = sound == SoundData.Name.Empty ? this.menu.soundSelect : new Sound(sound);
 
             this.CompleteCreation();
         }
@@ -98,6 +103,8 @@ namespace SonOfRobin
             if (this.activeIndex >= this.valueDict.ToList().Count) this.activeIndex = 0;
 
             this.SetNewValueToTargetObject();
+
+            if (Sound.menuOn) this.soundSelect.Play();
         }
 
         public override void PreviousValue(bool touchMode)
@@ -108,6 +115,8 @@ namespace SonOfRobin
             if (this.activeIndex < 0) this.activeIndex = this.valueDict.ToList().Count - 1;
 
             this.SetNewValueToTargetObject();
+
+            if (Sound.menuOn) this.soundSelect.Play();
         }
 
         public override void Invoke()

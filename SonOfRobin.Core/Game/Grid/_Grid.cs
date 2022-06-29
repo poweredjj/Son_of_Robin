@@ -270,12 +270,15 @@ namespace SonOfRobin
 
         public void AddToGroup(Sprite sprite, Cell.Group groupName)
         {
+            if (!sprite.gridGroups.Contains(groupName)) sprite.gridGroups.Add(groupName);
             if (sprite.currentCell == null) return;
+
             sprite.currentCell.AddToGroup(sprite: sprite, groupName: groupName);
         }
 
         public void RemoveFromGroup(Sprite sprite, Cell.Group groupName)
         {
+            if (sprite.gridGroups.Contains(groupName)) sprite.gridGroups.Remove(groupName);
             if (sprite.currentCell == null) return;
 
             sprite.currentCell.RemoveFromGroup(sprite: sprite, groupName: groupName);
@@ -369,7 +372,9 @@ namespace SonOfRobin
             foreach (Cell cell in cellsWithinDistance)
             {
                 foreach (Sprite currentSprite in cell.spriteGroups[groupName].Values)
-                { if (Vector2.Distance(currentSprite.position, mainSprite.position) <= distance && currentSprite != mainSprite) spritesWithinDistance.Add(currentSprite); }
+                {
+                    if (Vector2.Distance(currentSprite.position, mainSprite.position) <= distance && currentSprite != mainSprite) spritesWithinDistance.Add(currentSprite);
+                }
             }
 
             return spritesWithinDistance;
@@ -427,27 +432,26 @@ namespace SonOfRobin
             return piecesInsideTriangle;
         }
 
-        public List<Sprite> GetSpritesInCameraView(Camera camera, Cell.Group groupName, bool compareWithCameraRect = false)
+        public void GetSpritesInCameraViewAndPutIntoList(List<Sprite> spriteListToFill, Camera camera, Cell.Group groupName, bool compareWithCameraRect = false)
         {
+            spriteListToFill.Clear();
+
             var visibleCells = this.GetCellsInsideRect(camera.viewRect);
-            List<Sprite> visibleSprites = new List<Sprite>();
 
             if (compareWithCameraRect)
             {
                 foreach (Cell cell in visibleCells) // making sure that every piece is actually inside camera rect
                 {
-                    visibleSprites.AddRange(cell.spriteGroups[groupName].Values.Where(sprite => camera.viewRect.Intersects(sprite.gfxRect)).ToList());
+                    spriteListToFill.AddRange(cell.spriteGroups[groupName].Values.Where(sprite => camera.viewRect.Intersects(sprite.gfxRect)));
                 }
             }
             else
             {
                 foreach (Cell cell in visibleCells) // visibleCells area is larger than camera view
                 {
-                    visibleSprites.AddRange(cell.spriteGroups[groupName].Values.ToList());
+                    spriteListToFill.AddRange(cell.spriteGroups[groupName].Values);
                 }
             }
-
-            return visibleSprites;
         }
 
         private List<Cell> GetAllCells()
@@ -497,12 +501,6 @@ namespace SonOfRobin
 
         public int DrawSprites(Camera camera, List<Sprite> blockingLightSpritesList)
         {
-            // Sprites should be drawn all at once, because cell-based drawing causes Y sorting order incorrect
-            // in cases of sprites overlapping cell boundaries.
-
-            var visibleSprites = this.GetSpritesInCameraView(camera: camera, groupName: Cell.Group.Visible);
-            var sortedSprites = visibleSprites.OrderBy(o => o.frame.layer).ThenBy(o => o.gfxRect.Bottom);
-
             if (Preferences.drawSunShadows)
             {
                 AmbientLight.SunLightData sunLightData = AmbientLight.SunLightData.CalculateSunLight(this.world.islandClock.IslandDateTime);
@@ -518,7 +516,12 @@ namespace SonOfRobin
                 }
             }
 
-            foreach (Sprite sprite in sortedSprites)
+            // Sprites should be drawn all at once, because cell-based drawing causes Y sorting order incorrect
+            // in cases of sprites overlapping cell boundaries.
+
+            var visibleSprites = camera.GetVisibleSprites(groupName: Cell.Group.Visible, compareWithCameraRect: true);
+
+            foreach (Sprite sprite in visibleSprites.OrderBy(o => o.frame.layer).ThenBy(o => o.gfxRect.Bottom))
             { sprite.Draw(); }
 
             StatBar.DrawAll();
@@ -531,7 +534,7 @@ namespace SonOfRobin
             var visibleCells = this.GetCellsInsideRect(this.world.camera.viewRect);
 
             foreach (Cell cell in visibleCells)
-            { cell.DrawDebugData(groupName: Cell.Group.ColBlocking); }
+            { cell.DrawDebugData(groupName: Cell.Group.ColMovement); }
         }
 
         public byte GetFieldValue(TerrainName terrainName, Vector2 position)

@@ -23,6 +23,11 @@ namespace SonOfRobin
             this.baseHitPower = baseHitPower;
             this.realHitPower = 0; // calculated each shooting time
             this.shootMode = false;
+
+            this.soundPack.AddAction(action: PieceSoundPack.Action.ArrowFly, sound: new Sound(name: SoundData.Name.ArrowFly, maxPitchVariation: 0.3f));
+            this.soundPack.AddAction(action: PieceSoundPack.Action.ArrowHit, sound: new Sound(name: SoundData.Name.ArrowHit, maxPitchVariation: 0.3f));
+            this.soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropArrow, maxPitchVariation: 0.3f, cooldown: 20));
+
         }
 
         public void GetThrown(Vector2 startPosition, Vector2 movement, float hitPowerMultiplier, int shootingPower)
@@ -37,6 +42,8 @@ namespace SonOfRobin
                 return;
             }
 
+            this.world.player.soundPack.Play(PieceSoundPack.Action.PlayerBowRelease);
+
             float angle = Helpers.GetAngleBetweenTwoPoints(start: this.sprite.position, end: this.sprite.position + movement);
             this.sprite.rotation = angle + (float)(Math.PI * 2f * 0.375f);
 
@@ -44,9 +51,11 @@ namespace SonOfRobin
             movement *= distanceMultiplier;
             this.AddPassiveMovement(movement: movement);
 
+            this.soundPack.Play(PieceSoundPack.Action.ArrowFly);
+
             this.world.hintEngine.Disable(Tutorials.Type.ShootProjectile);
             this.world.hintEngine.Disable(PieceHint.Type.AnimalNegative);
-            if (this.name == PieceTemplate.Name.ArrowWood || this.name == PieceTemplate.Name.ArrowIron) this.world.hintEngine.Disable(PieceHint.Type.AnimalBow);
+            this.world.hintEngine.Disable(PieceHint.Type.AnimalBow);
         }
 
         public override bool ProcessPassiveMovement()
@@ -59,6 +68,8 @@ namespace SonOfRobin
 
             if (!this.sprite.Move(movement: movement, additionalMoveType: Sprite.AdditionalMoveType.Half))
             {
+                this.soundPack.Stop(PieceSoundPack.Action.ArrowFly);
+
                 List<Sprite> collidingSpritesList = this.sprite.GetCollidingSpritesAtPosition(positionToCheck: this.sprite.position + movement);
                 List<BoardPiece> collidingPiecesList = collidingSpritesList.Select(s => s.boardPiece).ToList();
 
@@ -91,7 +102,7 @@ namespace SonOfRobin
                         }
                     }
                 }
-                else
+                else // target is not animal
                 {
                     if (!this.indestructible)
                     {
@@ -110,24 +121,27 @@ namespace SonOfRobin
 
                 if (attachedToTarget || (this.canBeStuck && this.world.random.Next(0, 2) == 1))
                 {
+                    this.soundPack.Play(PieceSoundPack.Action.ArrowHit);
                     this.passiveMovement = Vector2.Zero;
                     this.passiveRotation = 0;
                 }
                 else
                 {
+                    this.soundPack.Play(PieceSoundPack.Action.IsDropped);
                     this.passiveMovement *= -0.5f;
                     this.passiveMovement.X += (float)((this.world.random.NextDouble() - 0.5f) * 500f);
                     this.passiveMovement.Y += (float)((this.world.random.NextDouble() - 0.5f) * 500f);
                     this.passiveRotation = this.world.random.Next(-70, 70);
                 }
-
             }
 
             if (Math.Abs(this.passiveMovement.X) < (passiveMovementMultiplier * 4.5f) && Math.Abs(this.passiveMovement.Y) < (passiveMovementMultiplier * 4.5f))
             {
+                this.soundPack.Stop(PieceSoundPack.Action.ArrowFly);
                 this.shootMode = false;
                 this.passiveMovement = Vector2.Zero;
                 if (this.sprite.IsInWater) this.Destroy();
+                else this.soundPack.Play(PieceSoundPack.Action.IsDropped);
                 return false;
             }
 

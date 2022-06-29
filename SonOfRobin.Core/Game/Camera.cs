@@ -1,11 +1,60 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace SonOfRobin
 {
     public class Camera
     {
+        public struct BufferedSpriteSearch
+        {
+            // Prevents from repeating the same search in one frame.
+            // Also, prevents from creating multiple List<Sprite> every frame.
+
+            private static Dictionary<string, BufferedSpriteSearch> searchByID = new Dictionary<string, BufferedSpriteSearch>();
+
+            private readonly string id;
+            private readonly bool compareWithCameraRect;
+            private readonly List<Sprite> spriteList;
+            private readonly Cell.Group groupName;
+            private int lastCheckedFrame;
+
+            private BufferedSpriteSearch(string id, Cell.Group groupName, bool compareWithCameraRect)
+            {
+                this.id = id;
+                this.groupName = groupName;
+                this.compareWithCameraRect = compareWithCameraRect;
+                this.spriteList = new List<Sprite>();
+                this.lastCheckedFrame = -1;
+
+                searchByID[this.id] = this;
+            }
+
+            private List<Sprite> GetSprites(Camera camera)
+            {
+                if (this.lastCheckedFrame != camera.world.currentUpdate)
+                {
+                    camera.world.grid.GetSpritesInCameraViewAndPutIntoList(camera: camera, groupName: groupName, spriteListToFill: this.spriteList, compareWithCameraRect: compareWithCameraRect);
+                    this.lastCheckedFrame = camera.world.currentUpdate;
+                }
+                // else MessageLog.AddMessage(msgType: MsgType.User, message: $"{camera.world.currentUpdate} reusing sprite search {groupName} - {compareWithCameraRect}");
+
+                return this.spriteList;
+            }
+
+            public static List<Sprite> SearchSprites(Camera camera, Cell.Group groupName, bool compareWithCameraRect)
+            {
+                string id = $"{groupName}-{compareWithCameraRect}";
+                if (!searchByID.ContainsKey(id)) searchByID[id] = new BufferedSpriteSearch(id: id, groupName: groupName, compareWithCameraRect: compareWithCameraRect);
+
+                BufferedSpriteSearch currentSearch = searchByID[id];
+
+                return currentSearch.GetSprites(camera);
+            }
+        }
+
         private readonly World world;
         private TrackingMode trackingMode;
         private Sprite trackedSprite;
@@ -14,6 +63,7 @@ namespace SonOfRobin
         public Vector2 TrackedPos
         { get { return this.trackingMode == TrackingMode.Position ? this.trackedPos : this.trackedSprite.position; } }
         private Vector2 currentPos;
+        public Vector2 CurrentPos { get { return this.currentPos; } }
         private float targetZoom;
         public float currentZoom;
         private bool currentFluidMotion;
@@ -39,10 +89,10 @@ namespace SonOfRobin
         }
 
         public int ScreenWidth
-        { get { return Convert.ToInt32(SonOfRobinGame.VirtualWidth * this.world.viewParams.ScaleX); } }
+        { get { return (int)(SonOfRobinGame.VirtualWidth * this.world.viewParams.ScaleX); } }
 
         public int ScreenHeight
-        { get { return Convert.ToInt32(SonOfRobinGame.VirtualHeight * this.world.viewParams.ScaleY); } }
+        { get { return (int)(SonOfRobinGame.VirtualHeight * this.world.viewParams.ScaleY); } }
 
         public bool TrackedSpriteExists
         {
@@ -76,7 +126,6 @@ namespace SonOfRobin
             Sprite,
             Position,
         }
-
 
         public Camera(World world)
         {
@@ -146,6 +195,8 @@ namespace SonOfRobin
             this.viewRect.Height = (int)Math.Floor(yMax - yMin);
 
             this.viewPos = new Vector2(-xMin, -yMin);
+
+            SoundEffect.DistanceScale = this.viewRect.Width * 0.065f;
 
             if (!this.trackedSpriteReached && Vector2.Distance(this.currentPos, currentTargetPos) < 30) this.trackedSpriteReached = true;
         }
@@ -224,11 +275,16 @@ namespace SonOfRobin
         {
             if (this.TrackedSpriteExists) return;
 
-            var allSprites = this.world.grid.GetAllSprites(Cell.Group.ColBlocking);
+            var allSprites = this.world.grid.GetAllSprites(Cell.Group.ColMovement);
             var animals = allSprites.Where(sprite => sprite.boardPiece.GetType() == typeof(Animal) && sprite.boardPiece.alive).ToList();
             if (animals.Count == 0) return;
-            var index = SonOfRobinGame.random.Next(0, animals.Count);
+            var index = BoardPiece.Random.Next(0, animals.Count);
             this.TrackPiece(trackedPiece: animals[index].boardPiece, fluidMotion: fluidMotion);
+        }
+
+        public List<Sprite> GetVisibleSprites(Cell.Group groupName, bool compareWithCameraRect = false)
+        {
+            return BufferedSpriteSearch.SearchSprites(camera: this, groupName: groupName, compareWithCameraRect: compareWithCameraRect);
         }
 
     }

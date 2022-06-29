@@ -9,7 +9,7 @@ namespace SonOfRobin
 {
     public class Scheduler
     {
-        public enum TaskName { Empty, CreateNewWorld, CreateNewWorldNow, QuitGame, OpenMenuTemplate, OpenMainMenu, OpenConfirmationMenu, SaveGame, LoadGame, LoadGameNow, ReturnToMainMenu, SavePrefs, ProcessConfirmation, OpenCraftMenu, CraftOnPosition, Craft, Hit, CreateNewPiece, CreateDebugPieces, OpenContainer, DeleteObsoleteSaves, DropFruit, GetEaten, GetDrinked, ExecuteTaskWithDelay, AddWorldEvent, ShowTextWindow, OpenShelterMenu, SleepInsideShelter, SleepOutside, ForceWakeUp, TempoFastForward, TempoStop, TempoPlay, CameraTrackPiece, CameraTrackCoords, CameraSetZoom, ShowCookingProgress, RestoreHints, OpenMainMenuIfSpecialKeysArePressed, CheckForPieceHints, ShowHint, ExecuteTaskList, ExecuteTaskChain, ShowTutorial, RemoveScene, ChangeSceneInputType, SetCineMode, AddTransition, SolidColorRemoveAll, SkipCinematics, DeleteTemplates, SetSpectatorMode, SwitchLightSource, ResetControls, SaveControls, CheckForNonSavedControls, RebuildMenu, RebuildAllMenus, CheckForIncorrectPieces, RestartWorld }
+        public enum TaskName { Empty, CreateNewWorld, CreateNewWorldNow, QuitGame, OpenMenuTemplate, OpenMainMenu, OpenConfirmationMenu, SaveGame, LoadGame, LoadGameNow, ReturnToMainMenu, SavePrefs, ProcessConfirmation, OpenCraftMenu, CraftOnPosition, Craft, Hit, CreateNewPiece, CreateDebugPieces, OpenContainer, DeleteObsoleteSaves, DropFruit, GetEaten, GetDrinked, ExecuteTaskWithDelay, AddWorldEvent, ShowTextWindow, OpenShelterMenu, SleepInsideShelter, SleepOutside, ForceWakeUp, TempoFastForward, TempoStop, TempoPlay, CameraTrackPiece, CameraTrackCoords, CameraSetZoom, ShowCookingProgress, RestoreHints, OpenMainMenuIfSpecialKeysArePressed, CheckForPieceHints, ShowHint, ExecuteTaskList, ExecuteTaskChain, ShowTutorial, RemoveScene, ChangeSceneInputType, SetCineMode, AddTransition, SolidColorRemoveAll, SkipCinematics, DeleteTemplates, SetSpectatorMode, SwitchLightSource, ResetControls, SaveControls, CheckForNonSavedControls, RebuildMenu, RebuildAllMenus, CheckForIncorrectPieces, RestartWorld, ResetNewWorldSettings, PlaySound, PlaySoundByName }
 
         private readonly static Dictionary<int, List<Task>> queue = new Dictionary<int, List<Task>>();
         private static int inputTurnedOffUntilFrame = 0;
@@ -202,7 +202,7 @@ namespace SonOfRobin
                             // var createData = new Dictionary<string, Object> {{ "width", width }, { "height", height }, { "seed", seed }, {"resDivider", resDivider }, {"initialMaxAnimalsMultiplier", initialMaxAnimalsMultiplier}, {"addAgressiveAnimals", true }};                
 
                             int width, height, seed, resDivider, initialMaxAnimalsMultiplier;
-                            bool addAgressiveAnimals;
+                            bool addAgressiveAnimals, playerFemale;
 
                             if (executeHelper == null)
                             {
@@ -212,6 +212,7 @@ namespace SonOfRobin
                                 resDivider = Preferences.newWorldResDivider;
                                 initialMaxAnimalsMultiplier = Preferences.newWorldMaxAnimalsMultiplier;
                                 addAgressiveAnimals = Preferences.newWorldAgressiveAnimals;
+                                playerFemale = Preferences.newWorldPlayerFemale;
                             }
                             else
                             {
@@ -222,9 +223,10 @@ namespace SonOfRobin
                                 resDivider = (int)createData["resDivider"];
                                 initialMaxAnimalsMultiplier = (int)createData["initialMaxAnimalsMultiplier"];
                                 addAgressiveAnimals = (bool)createData["addAgressiveAnimals"];
+                                playerFemale = (bool)createData["playerFemale"];
                             }
 
-                            new World(width: width, height: height, seed: seed, resDivider: resDivider, initialMaxAnimalsMultiplier: initialMaxAnimalsMultiplier, addAgressiveAnimals: addAgressiveAnimals);
+                            new World(width: width, height: height, seed: seed, resDivider: resDivider, playerFemale: playerFemale, initialMaxAnimalsMultiplier: initialMaxAnimalsMultiplier, addAgressiveAnimals: addAgressiveAnimals);
 
                             return;
                         }
@@ -233,9 +235,17 @@ namespace SonOfRobin
                         {
                             Scene.RemoveAllScenesOfType(typeof(Menu));
                             World oldWorld = (World)executeHelper;
-                            new World(width: oldWorld.width, height: oldWorld.height, seed: oldWorld.seed, resDivider: oldWorld.resDivider, initialMaxAnimalsMultiplier: oldWorld.initialMaxAnimalsMultiplier, addAgressiveAnimals: oldWorld.addAgressiveAnimals);
+                            bool playerFemale = oldWorld.playerFemale;
+
+                            new World(width: oldWorld.width, height: oldWorld.height, seed: oldWorld.seed, playerFemale: playerFemale, resDivider: oldWorld.resDivider, initialMaxAnimalsMultiplier: oldWorld.initialMaxAnimalsMultiplier, addAgressiveAnimals: oldWorld.addAgressiveAnimals);
                             oldWorld.Remove();
 
+                            return;
+                        }
+
+                    case TaskName.ResetNewWorldSettings:
+                        {
+                            Preferences.ResetNewWorldSettings();
                             return;
                         }
 
@@ -368,7 +378,7 @@ namespace SonOfRobin
                     case TaskName.Craft:
                         {
                             var recipe = (Craft.Recipe)executeHelper;
-                            recipe.TryToProducePieces(player: World.GetTopWorld().player);
+                            recipe.TryToProducePieces(player: World.GetTopWorld().player, showMessages: true);
                         }
                         return;
 
@@ -471,6 +481,8 @@ namespace SonOfRobin
 
                             world = World.GetTopWorld();
 
+                            player.soundPack.Play(action: PieceSoundPack.Action.Eat, ignore3D: true);
+
                             // adding "generic" regen based on mass (if meal does not contain poison or regen)
                             if (!BuffEngine.BuffListContainsPoisonOrRegen(food.buffList)) food.buffList.Add(new BuffEngine.Buff(type: BuffEngine.BuffType.RegenPoison, value: (int)(food.Mass / 3), autoRemoveDelay: 60 * 60));
                             player.AcquireEnergy(food.Mass * 40f);
@@ -506,6 +518,8 @@ namespace SonOfRobin
 
                             world = World.GetTopWorld();
 
+                            Sound.QuickPlay(SoundData.Name.Drink);
+
                             // all parameters should be increased using buffs
 
                             foreach (BuffEngine.Buff buff in potion.buffList)
@@ -513,6 +527,8 @@ namespace SonOfRobin
 
                             BoardPiece emptyContainter = PieceTemplate.Create(templateName: potion.convertsToWhenUsed, world: world);
                             slot.DestroyPieceAndReplaceWithAnother(emptyContainter);
+
+                            player.CheckLowHP();
 
                             return;
                         }
@@ -709,6 +725,9 @@ namespace SonOfRobin
                             int blockInputDuration = 0;
                             if (textWindowData.ContainsKey("blockInputDuration")) blockInputDuration = (int)textWindowData["blockInputDuration"];
 
+                            SoundData.Name sound = SoundData.Name.Empty;
+                            if (textWindowData.ContainsKey("sound")) sound = (SoundData.Name)textWindowData["sound"];
+
                             Color bgColor = Color.DarkBlue;
                             Color textColor = Color.White;
 
@@ -727,7 +746,7 @@ namespace SonOfRobin
                             int framesPerChar = 0;
                             if (textWindowData.ContainsKey("framesPerChar")) framesPerChar = (int)textWindowData["framesPerChar"];
 
-                            new TextWindow(text: text, imageList: imageList, useTransition: useTransition, useTransitionOpen: useTransitionOpen, useTransitionClose: useTransitionClose, bgColor: bgColor, textColor: textColor, framesPerChar: framesPerChar, animate: animate, checkForDuplicate: checkForDuplicate, closingTask: closingTask, closingTaskHelper: closingTaskHelper, blockInputDuration: blockInputDuration, blocksUpdatesBelow: blocksUpdatesBelow);
+                            new TextWindow(text: text, imageList: imageList, useTransition: useTransition, useTransitionOpen: useTransitionOpen, useTransitionClose: useTransitionClose, bgColor: bgColor, textColor: textColor, framesPerChar: framesPerChar, animate: animate, checkForDuplicate: checkForDuplicate, closingTask: closingTask, closingTaskHelper: closingTaskHelper, blockInputDuration: blockInputDuration, blocksUpdatesBelow: blocksUpdatesBelow, startingSound: sound);
                             return;
                         }
 
@@ -1211,6 +1230,21 @@ namespace SonOfRobin
                             return;
                         }
 
+                    case TaskName.PlaySound:
+                        {
+                            Sound sound = (Sound)executeHelper;
+                            sound.Play();
+
+                            return;
+                        }
+
+                    case TaskName.PlaySoundByName:
+                        {
+                            SoundData.Name soundName = (SoundData.Name)executeHelper;
+                            Sound.QuickPlay(soundName);
+
+                            return;
+                        }
 
                     default:
                         throw new DivideByZeroException($"Unsupported taskName - {taskName}.");
@@ -1235,6 +1269,8 @@ namespace SonOfRobin
 
                 if (quitGame) SonOfRobinGame.quitGame = true;
                 else new Task(taskName: TaskName.OpenMainMenu, turnOffInputUntilExecution: true, delay: 0);
+
+                GC.Collect();
             }
         }
 

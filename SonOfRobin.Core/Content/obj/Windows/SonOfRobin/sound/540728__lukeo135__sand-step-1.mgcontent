@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <SourceFile>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/sound/540728__lukeo135__sand-step-1.ogg</SourceFile>
+  <SourceTime>2022-05-30T12:09:05.3151138+02:00</SourceTime>
+  <DestFile>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/bin/Windows/SonOfRobin/sound/540728__lukeo135__sand-step-1.xnb</DestFile>
+  <DestTime>2022-06-04T07:55:54.5547667+02:00</DestTime>
+  <Importer>OggImporter</Importer>
+  <ImporterTime>2020-08-10T18:17:54+02:00</ImporterTime>
+  <Processor>SoundEffectProcessor</Processor>
+  <ProcessorTime>2020-08-10T18:17:54+02:00</ProcessorTime>
+  <Parameters>
+    <Key>Quality</Key>
+    <Value>Best</Value>
+  </Parameters>
+  <Dependencies />
+  <BuildAsset />
+  <BuildOutput />
+</PipelineBuildEvent>

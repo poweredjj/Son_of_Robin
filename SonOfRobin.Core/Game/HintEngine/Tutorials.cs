@@ -82,6 +82,8 @@ namespace SonOfRobin
 
             new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteTaskChain, turnOffInputUntilExecution: true, executeHelper: taskChain);
 
+            if (!menuMode) Sound.QuickPlay(SoundData.Name.Notification2);
+
             if (hintEngine != null) hintEngine.shownTutorials.Add(type);
         }
 
@@ -192,7 +194,7 @@ namespace SonOfRobin
                     !Preferences.ShowTouchTips ?
                     new HintMessage(text: "2. Activate craft by pressing |.", imageList: new List<Texture2D> {InputMapper.GetTexture(InputMapper.Action.GlobalConfirm)}, boxType: messageTextType):
                     new HintMessage(text: "2. Activate craft by pressing it a second time.", boxType: messageTextType),
-                    new HintMessage(text: "3. If you have ingredients needed, the item will be crafted.", boxType: messageTextType)});
+                    new HintMessage(text: "3. If you have all necessary ingredients and some free space\nthe item will be crafted.", boxType: messageTextType)});
 
             new Tutorial(type: Type.KeepingAnimalsAway, name: "keeping animals away", title: "Keeping animals away.",
                 messages: new List<HintMessage> {
@@ -247,7 +249,7 @@ namespace SonOfRobin
 
             new Tutorial(type: Type.AnimalAttacking, name: "red exclamation mark", title: "Being attacked.",
                 messages: new List<HintMessage>  {
-                    new HintMessage(text: "A | mark means than an animal is attacking | you.", imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.Exclamation].texture, AnimData.framesForPkgs[AnimData.PkgName.Blonde].texture}, boxType: messageTextType),
+                    new HintMessage(text: "A | mark means than an animal is attacking you.", imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.Exclamation].texture }, boxType: messageTextType),
                     new HintMessage(text: "You should run away from it, or try to fight it.", boxType: messageTextType)});
 
             new Tutorial(type: Type.DangerZone, name: "danger zones", title: "Danger zones.",

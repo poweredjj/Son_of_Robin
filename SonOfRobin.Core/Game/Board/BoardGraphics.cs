@@ -108,20 +108,18 @@ namespace SonOfRobin
             Terrain heightTerrain = this.cell.terrainByName[TerrainName.Height];
             Terrain humidityTerrain = this.cell.terrainByName[TerrainName.Humidity];
             Terrain dangerTerrain = this.cell.terrainByName[TerrainName.Danger];
-            Color pixel;
 
-            int realX, realY;
             int resDivider = this.cell.grid.resDivider;
 
             for (int x = 0; x < this.cell.dividedWidth; x++)
             {
-                realX = x * resDivider;
+                int realX = x * resDivider;
 
                 for (int y = 0; y < this.cell.dividedHeight; y++)
                 {
-                    realY = y * resDivider;
+                    int realY = y * resDivider;
 
-                    pixel = CreatePixel(
+                    Color pixel = CreatePixel(
                         pixelHeight: heightTerrain.GetMapData(realX, realY),
                         pixelHumidity: humidityTerrain.GetMapData(realX, realY),
                         pixelDanger: dangerTerrain.GetMapData(realX, realY));
@@ -145,16 +143,15 @@ namespace SonOfRobin
             Terrain humidityTerrain = this.cell.terrainByName[TerrainName.Humidity];
             Terrain dangerTerrain = this.cell.terrainByName[TerrainName.Danger];
 
-            int realX, realY;
             int resDivider = this.cell.grid.resDivider;
 
             Parallel.For(0, this.cell.dividedHeight, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, y =>
                  {
-                     realY = y * resDivider;
+                     int realY = y * resDivider;
 
                      for (int x = 0; x < this.cell.dividedHeight; x++)
                      {
-                         realX = x * resDivider;
+                         int realX = x * resDivider;
 
                          tempColorArray[(y * this.cell.width) + x] = CreatePixel(
                              pixelHeight: heightTerrain.GetMapData(realX, realY),

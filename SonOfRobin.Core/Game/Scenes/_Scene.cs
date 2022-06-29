@@ -24,6 +24,7 @@ namespace SonOfRobin
         public bool blocksDrawsBelow;
         public bool hidesSameScenesBelow;
 
+        public bool soundActive;
         public bool drawActive;
         public bool updateActive;
         public bool inputActive;
@@ -41,7 +42,9 @@ namespace SonOfRobin
 
         private readonly List<Scene> linkedScenes;
 
+        public static Scene currentlyProcessedScene;
         public static bool processingUpdate; // true = update, false = draw
+
         public static DateTime startUpdateTime;
         public static DateTime startDrawTime;
         public static TimeSpan UpdateTimeElapsed { get { return DateTime.Now - startUpdateTime; } }
@@ -54,6 +57,7 @@ namespace SonOfRobin
             get { return inputType; }
             set { this.inputType = value; }
         }
+
         public static List<Scene> UpdateStack
         {
             get
@@ -120,7 +124,7 @@ namespace SonOfRobin
             }
         }
 
-        public Scene(InputTypes inputType, TouchLayout touchLayout, ControlTips.TipsLayout tipsLayout, int priority = 1, bool blocksUpdatesBelow = false, bool blocksDrawsBelow = false, bool alwaysUpdates = false, bool alwaysDraws = false, bool hidesSameScenesBelow = false)
+        public Scene(InputTypes inputType, TouchLayout touchLayout, ControlTips.TipsLayout tipsLayout, int priority = 1, bool blocksUpdatesBelow = false, bool blocksDrawsBelow = false, bool alwaysUpdates = false, bool alwaysDraws = false, bool hidesSameScenesBelow = false, SoundData.Name startingSound = SoundData.Name.Empty)
         {
             this.viewParams = new ViewParams();
             this.transManager = new TransManager(scene: this);
@@ -133,6 +137,7 @@ namespace SonOfRobin
             this.InputType = inputType;
             this.updateActive = true;
             this.drawActive = true;
+            this.soundActive = true;
             this.touchLayout = touchLayout;
             this.tipsLayout = tipsLayout;
 
@@ -141,6 +146,8 @@ namespace SonOfRobin
             this.alwaysDraws = alwaysDraws;
             this.sceneID = sceneIdCounter;
             sceneIdCounter++;
+
+            Sound.QuickPlay(startingSound);
 
             if (this.hidesSameScenesBelow) this.HideSameScenesBelow();
 
@@ -368,9 +375,12 @@ namespace SonOfRobin
             UpdateInputActiveTipsTouch();
             Input.UpdateInput(gameTime: gameTime);
 
+            currentlyProcessedScene = null;
+
             foreach (Scene scene in UpdateStack)
             {
-                Input.InputActive = scene.inputActive;
+                currentlyProcessedScene = scene;
+                Input.InputActive = scene.inputActive && SonOfRobinGame.game.IsActive;
                 scene.Update(gameTime: gameTime);
             }
 
@@ -391,8 +401,12 @@ namespace SonOfRobin
             bool spriteBatchNotEnded = false;
             bool firstSpriteBatchStarted = false;
 
+            currentlyProcessedScene = null;
+
             foreach (Scene scene in DrawStack)
             {
+                currentlyProcessedScene = scene;
+
                 if (scene.viewParams.drawOpacity == 0f) continue;
 
                 bool createNewMatrix = !firstSpriteBatchStarted ||

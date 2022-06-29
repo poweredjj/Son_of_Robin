@@ -16,6 +16,7 @@ namespace SonOfRobin
         private readonly IslandClock frozenClock;
         private readonly TimeSpan timePlayed;
         public readonly DateTime saveDate;
+        public readonly bool playerFemale;
         private string ElapsedTimeString { get { return this.timePlayed.ToString("hh\\:mm"); } }
         private string SaveDateString
         {
@@ -40,6 +41,9 @@ namespace SonOfRobin
 
         public string AdditionalInfo
         { get { return $"seed: {String.Format("{0:0000}", this.seed)}   {this.width}x{this.height}"; } }
+
+        public AnimFrame AddInfoFrame
+        { get { return this.playerFemale ? AnimData.framesForPkgs[AnimData.PkgName.PlayerFemale] : AnimData.framesForPkgs[AnimData.PkgName.PlayerMale]; } }
         public SaveHeaderInfo(string folderName)
         {
             this.folderName = folderName;
@@ -58,6 +62,7 @@ namespace SonOfRobin
             this.height = -1;
             this.frozenClock = null;
             this.timePlayed = TimeSpan.FromSeconds(0);
+            this.playerFemale = false;
 
             if (!this.folderName.StartsWith(LoaderSaver.tempPrefix) && headerData != null && headerData.ContainsKey("saveVersion"))
             {
@@ -72,6 +77,7 @@ namespace SonOfRobin
                     this.height = (int)headerData["height"];
                     this.frozenClock = new IslandClock(frozenUpdate: (int)headerData["currentUpdate"]);
                     this.timePlayed = (TimeSpan)headerData["TimePlayed"];
+                    this.playerFemale = (bool)headerData["playerFemale"];
                 }
             }
         }

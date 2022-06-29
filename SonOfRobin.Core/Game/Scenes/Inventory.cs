@@ -24,6 +24,13 @@ namespace SonOfRobin
         private static readonly float marginPercent = 0.05f;
         private static readonly SpriteFont font = SonOfRobinGame.fontTommy40;
 
+        private static readonly Sound soundOpen = new Sound(SoundData.Name.InventoryOpen);
+        private static readonly Sound soundNavigate = new Sound(SoundData.Name.Navigation);
+        private static readonly Sound soundSwitch = new Sound(SoundData.Name.Select);
+        private static readonly Sound soundEnterContextMenu = new Sound(SoundData.Name.Invoke);
+        private static readonly Sound soundPickUp = new Sound(SoundData.Name.PickUpItem, volume: 0.8f);
+
+
         public static Layout layout = Layout.None;
 
         public readonly Type type;
@@ -162,6 +169,8 @@ namespace SonOfRobin
 
                 case Layout.InventoryAndToolbar:
                     {
+                        soundOpen.Play();
+
                         Inventory toolbar = new Inventory(piece: player, storage: player.toolStorage, layout: Inventory.Type.DualBottom);
                         Inventory inventory = new Inventory(piece: player, storage: player.pieceStorage, layout: Inventory.Type.DualTop, otherInventory: toolbar);
                         toolbar.otherInventory = inventory;
@@ -180,6 +189,8 @@ namespace SonOfRobin
 
                 case Layout.InventoryAndEquip:
                     {
+                        soundOpen.Play();
+
                         Inventory inventoryLeft = new Inventory(piece: player, storage: player.pieceStorage, layout: Inventory.Type.DualLeft);
                         Inventory inventoryRight = new Inventory(piece: player, storage: player.equipStorage, layout: Inventory.Type.DualRight, otherInventory: inventoryLeft);
                         inventoryLeft.otherInventory = inventoryRight;
@@ -533,8 +544,11 @@ namespace SonOfRobin
                             if (this.CursorX == slot.posX && this.CursorY == slot.posY) this.touchHeldFrames++;
                             else this.touchHeldFrames = 0;
 
+                            if (slot.posX != this.CursorX || slot.posY != this.CursorY) soundNavigate.Play();
+
                             this.CursorX = slot.posX;
                             this.CursorY = slot.posY;
+
                             return;
                         }
                         else if (
@@ -557,23 +571,57 @@ namespace SonOfRobin
 
         private void MoveCursorByNormalInput()
         {
-            if (InputMapper.HasBeenPressed(InputMapper.Action.GlobalLeft)) this.CursorX -= 1;
-            if (InputMapper.HasBeenPressed(InputMapper.Action.GlobalRight)) this.CursorX += 1;
-            if (InputMapper.HasBeenPressed(InputMapper.Action.GlobalUp)) this.CursorY -= 1;
-            if (InputMapper.HasBeenPressed(InputMapper.Action.GlobalDown)) this.CursorY += 1;
+            bool playSound = false;
+
+            if (InputMapper.HasBeenPressed(InputMapper.Action.GlobalLeft))
+            {
+                this.CursorX -= 1;
+                playSound = true;
+            }
+            if (InputMapper.HasBeenPressed(InputMapper.Action.GlobalRight))
+            {
+                this.CursorX += 1;
+                playSound = true;
+            }
+            if (InputMapper.HasBeenPressed(InputMapper.Action.GlobalUp))
+            {
+                this.CursorY -= 1;
+                playSound = true;
+            }
+            if (InputMapper.HasBeenPressed(InputMapper.Action.GlobalDown))
+            {
+                this.CursorY += 1;
+                playSound = true;
+            }
+
+            if (playSound) soundNavigate.Play();
         }
 
         private void MoveCursorByBumpers()
         {
             World world = World.GetTopWorld();
-            if (world?.player.activeState == BoardPiece.State.PlayerControlledShooting) return;
+            if (world?.player?.activeState == BoardPiece.State.PlayerControlledShooting) return;
 
-            if (InputMapper.HasBeenPressed(InputMapper.Action.ToolbarPrev)) this.CursorX -= 1;
-            if (InputMapper.HasBeenPressed(InputMapper.Action.ToolbarNext)) this.CursorX += 1;
+            bool playSound = false;
+
+            if (InputMapper.HasBeenPressed(InputMapper.Action.ToolbarPrev))
+            {
+                this.CursorX -= 1;
+                playSound = true;
+            }
+            if (InputMapper.HasBeenPressed(InputMapper.Action.ToolbarNext))
+            {
+                this.CursorX += 1;
+                playSound = true;
+            }
+
+            if (playSound) soundNavigate.Play();
         }
 
         private void OpenPieceContextMenu()
         {
+            soundEnterContextMenu.Play();
+
             StorageSlot slot = this.ActiveSlot;
             if (slot == null) return;
             BoardPiece piece = this.storage.GetTopPiece(slot: slot);
@@ -598,7 +646,11 @@ namespace SonOfRobin
         }
         private void MoveOtherInventoryToTop()
         {
-            if (this.otherInventory != null) this.otherInventory.MoveToTop();
+            if (this.otherInventory != null)
+            {
+                soundSwitch.Play();
+                this.otherInventory.MoveToTop();
+            }
         }
 
         private void ProcessPieceSelectMode()
@@ -617,6 +669,7 @@ namespace SonOfRobin
 
             if (InputMapper.HasBeenPressed(InputMapper.Action.InvSort))
             {
+                soundNavigate.Play();
                 this.storage.Sort();
                 return;
             }
@@ -656,7 +709,11 @@ namespace SonOfRobin
                     if (pickedUpPiece != null) pickedUpPieces.Add(pickedUpPiece);
                 }
 
-                if (pickedUpPieces.Count > 0) this.draggedPieces = pickedUpPieces;
+                if (pickedUpPieces.Count > 0)
+                {
+                    soundPickUp.Play();
+                    this.draggedPieces = pickedUpPieces;
+                }
             }
         }
 
@@ -766,6 +823,8 @@ namespace SonOfRobin
         {
             if (this.draggedPieces.Count == 0) return;
 
+            this.draggedPieces[0].soundPack.Play(action: PieceSoundPack.Action.IsDropped, ignore3D: true, ignoreCooldown: true);
+
             //MessageLog.AddMessage(msgType: MsgType.Debug, message: $"ReleaseHeldPieces");
 
             int initialDraggedCount = this.draggedPieces.Count;
@@ -781,7 +840,9 @@ namespace SonOfRobin
                 else
                 {
                     if (forceReleaseAll)
-                    { if (!this.storage.AddPiece(piece)) piecesThatDidNotFitIn.Add(piece); }
+                    {
+                        if (!this.storage.AddPiece(piece)) piecesThatDidNotFitIn.Add(piece);
+                    }
                     else piecesThatDidNotFitIn.Add(piece);
                 }
             }

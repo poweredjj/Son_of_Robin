@@ -8,22 +8,25 @@ namespace SonOfRobin
     class Invoker : Entry
     {
         private readonly bool closesMenu;
+        private readonly Sound soundInvoke;
         public readonly Scheduler.TaskName taskName;
         public readonly Object executeHelper; // misc variables used in execution stage
         public readonly int taskDelay;
         public override string DisplayedText { get { return this.name; } }
 
-        public Invoker(Menu menu, string name, Scheduler.TaskName taskName, Object executeHelper = null, int taskDelay = 0, bool closesMenu = false, bool rebuildsMenu = false, List<InfoWindow.TextEntry> infoTextList = null) : base(menu: menu, name: name, rebuildsMenu: rebuildsMenu, infoTextList: infoTextList)
+        public Invoker(Menu menu, string name, Scheduler.TaskName taskName, Object executeHelper = null, int taskDelay = 0, bool closesMenu = false, bool rebuildsMenu = false, List<InfoWindow.TextEntry> infoTextList = null, SoundData.Name sound = SoundData.Name.Empty) : base(menu: menu, name: name, rebuildsMenu: rebuildsMenu, infoTextList: infoTextList)
         {
             this.taskName = taskName;
             this.taskDelay = taskDelay;
             this.executeHelper = executeHelper;
             this.closesMenu = closesMenu;
             this.rectColor = Color.LightSlateGray;
+            this.soundInvoke = sound == SoundData.Name.Empty ? this.menu.soundInvoke : new Sound(sound);
         }
 
         public override void Invoke()
         {
+            if (Sound.menuOn) this.soundInvoke.Play();
             if (this.closesMenu) this.menu.Remove();
             this.menu.ChangeActiveItem(this);
             new Scheduler.Task(taskName: this.taskName, executeHelper: this.executeHelper, delay: this.taskDelay, turnOffInputUntilExecution: true);

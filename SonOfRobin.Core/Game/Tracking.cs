@@ -34,14 +34,23 @@ namespace SonOfRobin
         private readonly int firstTrackingFrame;
         private readonly int lastTrackingFrame;
         private readonly bool bounceWhenRemoved;
-        public bool BothSpritesExist { get { return this.targetSprite.boardPiece.exists && this.followingSprite.boardPiece.exists; } }
+        public bool BothSpritesExistAndOnBoard
+        {
+            get
+            {
+                return this.targetSprite.boardPiece.exists &&
+                    this.targetSprite.boardPiece.sprite.IsOnBoard &&
+                    this.followingSprite.boardPiece.exists &&
+                    this.followingSprite.boardPiece.sprite.IsOnBoard;
+            }
+        }
         public bool ShouldBeRemoved
         {
             get
             {
                 // tracking queue could bloat over time - it may be helpful to add more "remove exceptions" in the future
 
-                return !this.BothSpritesExist ||
+                return !this.BothSpritesExistAndOnBoard ||
                     (this.followingSprite.boardPiece.serialize == false &&
                     this.followingSprite.opacity < 0.05f &&
                     this.followingSprite.opacityFade != null &&
@@ -70,7 +79,7 @@ namespace SonOfRobin
 
             this.offset = new Vector2(offsetX, offsetY);
 
-            if (!this.BothSpritesExist) return;
+            if (!this.BothSpritesExistAndOnBoard) return;
 
             this.isCorrect = true;
 

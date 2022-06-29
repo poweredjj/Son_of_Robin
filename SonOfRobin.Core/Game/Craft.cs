@@ -61,7 +61,7 @@ namespace SonOfRobin
                         debrisTypeList = new List<Yield.DebrisType> { Yield.DebrisType.Plant };
                         break;
 
-                    case BoardPiece.Category.Animal:
+                    case BoardPiece.Category.Flesh:
                         debrisTypeList = new List<Yield.DebrisType> { Yield.DebrisType.Blood };
                         break;
 
@@ -93,9 +93,11 @@ namespace SonOfRobin
                 return quantityLeft.Count == 0;
             }
 
-            public void TryToProducePieces(Player player)
+            public List<BoardPiece> TryToProducePieces(Player player, bool showMessages)
             {
                 // checking if crafting is possible
+
+                var craftedPieces = new List<BoardPiece>();
 
                 var storagesToTakeFrom = player.CraftStorages;
 
@@ -103,7 +105,7 @@ namespace SonOfRobin
                 {
                     new TextWindow(text: "Not enough ingredients.", textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false);
                     MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Not enough ingredients to craft '{this.pieceToCreate}'.");
-                    return;
+                    return craftedPieces;
                 }
 
                 PieceInfo.Info pieceInfo = PieceInfo.GetInfo(this.pieceToCreate);
@@ -119,7 +121,7 @@ namespace SonOfRobin
                     if (!PieceStorage.StorageListCanFitSpecifiedPieces(storageList: storagesToTakeFrom, pieceName: this.pieceToCreate, quantity: this.amountToCreate))
                     {
                         new TextWindow(text: "Not enough inventory space to craft.", textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false);
-                        return;
+                        return craftedPieces;
                     }
                 }
 
@@ -130,12 +132,10 @@ namespace SonOfRobin
                 if (!canBePickedUp && !world.BuildMode)
                 {
                     world.EnterBuildMode(recipe: this);
-                    return;
+                    return craftedPieces;
                 }
 
                 // crafting
-
-                bool craftedPlant = false;
 
                 PieceStorage.DestroySpecifiedPiecesInMultipleStorages(storageList: storagesToTakeFrom, quantityByPiece: this.ingredients);
 
@@ -146,6 +146,7 @@ namespace SonOfRobin
                     for (int i = 0; i < this.amountToCreate; i++)
                     {
                         BoardPiece piece = PieceTemplate.Create(templateName: this.pieceToCreate, world: world);
+                        craftedPieces.Add(piece);
                         bool pieceInserted = false;
 
                         foreach (PieceStorage storage in storagesToPutInto)
@@ -163,34 +164,40 @@ namespace SonOfRobin
                 }
                 else // !canBePickedUp
                 {
-                    if (!world.BuildMode) throw new ArgumentException($"World is not in BuildMode.");
+                    if (!world.BuildMode) throw new ArgumentException("World is not in BuildMode.");
 
-                    BoardPiece piece = PieceTemplate.CreateAndPlaceOnBoard(templateName: this.pieceToCreate, world: world, position: player.pieceToBuild.sprite.position, ignoreCollisions: true);
-                    piece.sprite.opacity = 0.15f;
-                    piece.sprite.opacityFade = new OpacityFade(sprite: piece.sprite, destOpacity: 1f, duration: 60 * 6);
+                    BoardPiece piece = PieceTemplate.CreateAndPlaceOnBoard(templateName: this.pieceToCreate, world: world, position: player.simulatedPieceToBuild.sprite.position, ignoreCollisions: true);
+                    craftedPieces.Add(piece);
 
                     if (!piece.sprite.IsOnBoard) throw new ArgumentException($"Piece has not been placed correctly on the board - {piece.name}.");
 
                     if (piece.GetType() == typeof(Plant))
                     {
-                        craftedPlant = true;
                         ((Plant)piece).massTakenMultiplier *= 1.5f; // when the player plants something, it should grow better than normal
                     }
                 }
 
                 // unlocking other recipes and showing messages          
 
-                string creationType = craftedPlant ? "planted" : "crafted";
+                if (showMessages) this.UnlockNewRecipesAndShowSummary(world);
+
+                return craftedPieces;
+            }
+
+            public void UnlockNewRecipesAndShowSummary(World world)
+            {
+                PieceInfo.Info pieceInfo = PieceInfo.GetInfo(this.pieceToCreate);
+
+                string creationType = pieceInfo.type == typeof(Plant) ? "planted" : "crafted";
 
                 string message = this.amountToCreate == 1 ?
                     $"|  {Helpers.FirstCharToUpperCase(PieceInfo.GetInfo(this.pieceToCreate).readableName)} has been {creationType}." :
                     $"|  {Helpers.FirstCharToUpperCase(PieceInfo.GetInfo(this.pieceToCreate).readableName)} x{this.amountToCreate} has been {creationType}.";
 
                 var taskChain = new List<Object>();
-                taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.TempoStop, delay: 0, executeHelper: null, storeForLaterUse: true)); // needed to pause the gameplay in planting mode, when the crafting message is being displayed
+
                 taskChain.Add(new HintMessage(text: message, boxType: HintMessage.BoxType.GreenBox, delay: 0, blockInput: false, useTransition: true,
-                    imageList: new List<Texture2D> { PieceInfo.GetInfo(this.pieceToCreate).frame.texture }).ConvertToTask());
-                taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.TempoPlay, delay: 0, executeHelper: null, storeForLaterUse: true));
+                    imageList: new List<Texture2D> { PieceInfo.GetInfo(this.pieceToCreate).frame.texture }, sound: SoundData.Name.Ding).ConvertToTask());
 
                 HintEngine hintEngine = world.hintEngine;
 
@@ -211,9 +218,9 @@ namespace SonOfRobin
 
                 if (unlockedPieces.Count > 0)
                 {
-                    if (!canBePickedUp) Menu.RebuildAllMenus();
+                    if (!pieceInfo.canBePickedUp) Menu.RebuildAllMenus();
 
-                    string unlockedRecipesMessage = unlockedPieces.Count == 1 ? "New recipe unlocked\n" : "New recipes unlocked:\n";
+                    string unlockedRecipesMessage = unlockedPieces.Count == 1 ? "New recipe unlocked" : "New recipes unlocked:\n";
                     var imageList = new List<Texture2D>();
 
                     foreach (PieceTemplate.Name name in unlockedPieces)
@@ -223,11 +230,12 @@ namespace SonOfRobin
                         imageList.Add(unlockedPieceInfo.frame.texture);
                     }
 
-                    taskChain.Add(new HintMessage(text: unlockedRecipesMessage, imageList: imageList, boxType: HintMessage.BoxType.LightBlueBox, delay: 0, blockInput: false, animate: true, useTransition: true).ConvertToTask());
+                    taskChain.Add(new HintMessage(text: unlockedRecipesMessage, imageList: imageList, boxType: HintMessage.BoxType.LightBlueBox, delay: 0, blockInput: false, animate: true, useTransition: true, sound: SoundData.Name.Notification1).ConvertToTask());
                 }
 
-                taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CheckForPieceHints, delay: 0, storeForLaterUse: true));
-                new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteTaskChain, turnOffInputUntilExecution: true, executeHelper: taskChain);
+                if (pieceInfo.canBePickedUp) taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CheckForPieceHints, delay: 0, storeForLaterUse: true));
+
+                new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteTaskChain, executeHelper: taskChain);
             }
         }
 

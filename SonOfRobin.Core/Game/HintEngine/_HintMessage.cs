@@ -18,8 +18,9 @@ namespace SonOfRobin
         public readonly bool blockInput;
         public readonly bool animate;
         public readonly bool useTransition;
+        public readonly SoundData.Name sound;
 
-        public HintMessage(string text, int delay = 1, bool fieldOnly = false, bool blockInput = false, List<Texture2D> imageList = null, BoxType boxType = BoxType.Dialogue, bool animate = true, bool useTransition = false)
+        public HintMessage(string text, int delay = 1, bool fieldOnly = false, bool blockInput = false, List<Texture2D> imageList = null, BoxType boxType = BoxType.Dialogue, bool animate = true, bool useTransition = false, SoundData.Name sound = SoundData.Name.Empty)
         {
             this.text = text;
             this.imageList = imageList == null ? new List<Texture2D>() : imageList;
@@ -29,6 +30,7 @@ namespace SonOfRobin
             this.blockInput = blockInput;
             this.animate = animate;
             this.useTransition = useTransition;
+            this.sound = sound;
 
             this.ValidateImagesCount();
         }
@@ -86,6 +88,7 @@ namespace SonOfRobin
                 { "useTransitionOpen", useTransitionOpen },
                 { "useTransitionClose", useTransitionClose },
                 { "blocksUpdatesBelow", false },
+                { "sound", this.sound },
                 { "blockInputDuration", this.blockInput ? HintEngine.blockInputDuration : 0}
             };
 

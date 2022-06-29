@@ -47,9 +47,9 @@ namespace SonOfRobin
             else
             {
                 this.sprite.opacity += this.fadePerFrame;
-                if (this.currentFrame > this.duration) this.sprite.opacity = this.destOpacity;
-                if (this.sprite.opacity == this.destOpacity)
+                if (this.currentFrame > this.duration)
                 {
+                    this.sprite.opacity = this.destOpacity;
                     this.sprite.opacityFade = null;
                     if (this.destroyPiece) this.sprite.boardPiece.Destroy();
                 }

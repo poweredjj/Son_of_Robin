@@ -31,6 +31,9 @@ namespace SonOfRobin
             base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedFields: allowedFields, floatsOnWater: floatsOnWater, maxMassBySize: maxMassBySize, generation: generation, canBePickedUp: false, yield: yield, maxHitPoints: maxHitPoints, fadeInAnim: fadeInAnim, isShownOnMiniMap: true, readableName: readableName, description: description, category: category, lightEngine: lightEngine, activeState: State.Empty)
         {
             this.boardTask = Scheduler.TaskName.OpenContainer;
+            this.soundPack.AddAction(action: PieceSoundPack.Action.IsOn, sound: new Sound(name: SoundData.Name.Bonfire, maxPitchVariation: 0.5f, isLooped: true));
+            this.soundPack.AddAction(action: PieceSoundPack.Action.TurnOn, sound: new Sound(name: SoundData.Name.StartFireBig));
+            this.soundPack.AddAction(action: PieceSoundPack.Action.TurnOff, sound: new Sound(name: SoundData.Name.EndFire));
 
             this.scareRange = scareRange;
             this.isOn = false;
@@ -38,7 +41,7 @@ namespace SonOfRobin
             this.currentCycleBurningFramesLeft = 0;
             this.burnAllFuelEndFrame = 0;
 
-            this.pieceStorage = new PieceStorage(width: storageWidth, height: storageHeight, world: this.world, storagePiece: this, storageType: PieceStorage.StorageType.Fireplace);
+            this.pieceStorage = new PieceStorage(width: storageWidth, height: (byte)(storageHeight + 1), world: this.world, storagePiece: this, storageType: PieceStorage.StorageType.Fireplace);
 
             var allowedPieceNames = new List<PieceTemplate.Name>(fuelNames);
             allowedPieceNames.Add(PieceTemplate.Name.FireplaceTriggerOn);
@@ -46,14 +49,22 @@ namespace SonOfRobin
             this.pieceStorage.AssignAllowedPieceNames(allowedPieceNames);
 
             BoardPiece flameTrigger = PieceTemplate.Create(templateName: PieceTemplate.Name.FireplaceTriggerOn, world: this.world);
-            StorageSlot flameSlot = this.pieceStorage.FindCorrectSlot(flameTrigger);
+
+            StorageSlot flameSlot = this.pieceStorage.GetSlot(0, 0);
             this.pieceStorage.AddPiece(flameTrigger);
             flameSlot.locked = true;
 
             BoardPiece waterTrigger = PieceTemplate.Create(templateName: PieceTemplate.Name.FireplaceTriggerOff, world: this.world);
-            StorageSlot waterSlot = this.pieceStorage.FindCorrectSlot(waterTrigger);
+            StorageSlot waterSlot = this.pieceStorage.GetSlot(1, 0);
             this.pieceStorage.AddPiece(waterTrigger);
             waterSlot.locked = true;
+
+            for (int x = 2; x < storageWidth; x++) // locking and hiding the rest of the slots in first row
+            {
+                StorageSlot slot = this.pieceStorage.GetSlot(x, 0);
+                slot.hidden = true;
+                slot.locked = true;
+            }
         }
 
         public bool IsOn
@@ -79,13 +90,17 @@ namespace SonOfRobin
                     this.sprite.AssignNewName(animName: "on");
                     this.sprite.lightEngine.Activate();
                     this.world.hintEngine.Disable(Tutorials.Type.KeepingAnimalsAway);
+                    this.soundPack.Play(PieceSoundPack.Action.IsOn);
                 }
                 else
                 {
                     this.activeState = State.Empty;
                     this.showStatBarsTillFrame = 0;
+                    this.burnAllFuelEndFrame = 0;
                     this.sprite.AssignNewName(animName: "off");
                     this.sprite.lightEngine.Deactivate();
+                    this.soundPack.Stop(PieceSoundPack.Action.IsOn);
+                    this.soundPack.Play(PieceSoundPack.Action.TurnOff);
                 }
 
                 if (Inventory.layout == Inventory.Layout.InventoryAndChest) Inventory.SetLayout(newLayout: Inventory.Layout.Toolbar, player: this.world.player);
@@ -111,6 +126,7 @@ namespace SonOfRobin
 
             this.pieceStorage.DestroyOneSpecifiedPiece(fuel.name);
             this.currentCycleBurningFramesLeft = fuelFramesByName[fuel.name];
+            this.soundPack.Play(PieceSoundPack.Action.TurnOn);
 
             this.UpdateEndFrame(storedFuel);
 
@@ -144,7 +160,7 @@ namespace SonOfRobin
             if (this.world.currentUpdate % 10 != 0) return;
             this.UpdateEndFrame();
 
-            var nearbyPieces = this.world.grid.GetPiecesWithinDistance(groupName: Cell.Group.ColBlocking, mainSprite: this.sprite, distance: this.scareRange, compareWithBottom: true);
+            var nearbyPieces = this.world.grid.GetPiecesWithinDistance(groupName: Cell.Group.ColMovement, mainSprite: this.sprite, distance: this.scareRange, compareWithBottom: true);
             var animalPieces = nearbyPieces.Where(piece => piece.GetType() == typeof(Animal));
 
             foreach (BoardPiece piece in animalPieces)

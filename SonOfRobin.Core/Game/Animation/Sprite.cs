@@ -38,7 +38,7 @@ namespace SonOfRobin
         public Rectangle gfxRect;
         public Rectangle colRect;
         public readonly bool blocksMovement;
-        public readonly bool checksFullCollisions;
+        public readonly bool blocksPlantGrowth;
         public readonly bool ignoresCollisions;
         public AllowedFields allowedFields;
         private readonly AllowedDensity allowedDensity;
@@ -56,17 +56,43 @@ namespace SonOfRobin
         public string CompleteAnimID
         { get { return GetCompleteAnimId(animPackage: this.animPackage, animSize: this.animSize, animName: this.animName); } }
 
+        public bool IsInCameraRect { get { return this.world.camera.viewRect.Contains(this.position); } }
+
         private bool visible;
         public bool IsInWater
         { get { return this.GetFieldValue(TerrainName.Height) < Terrain.waterLevelMax; } }
-        public bool IsInLava
+        public bool CanDrownHere { get { return this.GetFieldValue(TerrainName.Height) < Terrain.waterLevelMax - 10; } }
+        public bool IsOnSand
+        { get { return !this.IsInWater && (this.GetFieldValue(TerrainName.Humidity) <= 80 || this.GetFieldValue(TerrainName.Height) < 105); } }
+
+        public bool IsOnRock
+        { get { return this.GetFieldValue(TerrainName.Height) > 160; } }
+        public bool IsOnLava
         { get { return this.GetFieldValue(TerrainName.Height) >= Terrain.lavaMin; } }
         public bool IsInDangerZone
         { get { return this.GetFieldValue(TerrainName.Danger) > Terrain.safeZoneMax; } }
         public bool IsDeepInDangerZone
         { get { return this.GetFieldValue(TerrainName.Danger) > Terrain.safeZoneMax * 1.3; } }
 
-        public bool CanDrownHere { get { return this.GetFieldValue(TerrainName.Height) < (Terrain.waterLevelMax - 10); } }
+        public PieceSoundPack.Action WalkSoundAction
+        {
+            get
+            {
+                if (this.IsOnLava) return PieceSoundPack.Action.StepLava;
+                if (this.IsOnRock) return PieceSoundPack.Action.StepRock;
+                if (this.IsInWater)
+                {
+                    if (this.CanDrownHere) return PieceSoundPack.Action.SwimDeep;
+                    else if (this.GetFieldValue(TerrainName.Height) < Terrain.waterLevelMax - 5) return PieceSoundPack.Action.SwimShallow;
+                    else return PieceSoundPack.Action.StepWater;
+                }
+
+                if (this.IsOnSand) return PieceSoundPack.Action.StepSand;
+
+                return PieceSoundPack.Action.StepGrass;
+            }
+        }
+
         public bool Visible
         {
             get { return this.visible; }
@@ -94,7 +120,7 @@ namespace SonOfRobin
             }
         }
 
-        public Sprite(World world, string id, BoardPiece boardPiece, AnimData.PkgName animPackage, byte animSize, string animName, bool ignoresCollisions, AllowedFields allowedFields, bool blocksMovement = true, bool visible = true, bool checksFullCollisions = false, bool floatsOnWater = false, bool fadeInAnim = true, bool isShownOnMiniMap = false, AllowedDensity allowedDensity = null, LightEngine lightEngine = null, int minDistance = 0, int maxDistance = 100, bool placeAtBeachEdge = false)
+        public Sprite(World world, string id, BoardPiece boardPiece, AnimData.PkgName animPackage, byte animSize, string animName, bool ignoresCollisions, AllowedFields allowedFields, bool blocksMovement = true, bool visible = true, bool floatsOnWater = false, bool fadeInAnim = true, bool isShownOnMiniMap = false, AllowedDensity allowedDensity = null, LightEngine lightEngine = null, int minDistance = 0, int maxDistance = 100, bool placeAtBeachEdge = false, bool blocksPlantGrowth = false)
         {
             this.id = id; // duplicate from BoardPiece class
             this.boardPiece = boardPiece;
@@ -111,8 +137,8 @@ namespace SonOfRobin
             this.gfxRect = Rectangle.Empty;
             this.colRect = Rectangle.Empty;
             this.blocksMovement = blocksMovement;
-            this.checksFullCollisions = checksFullCollisions;
             this.ignoresCollisions = ignoresCollisions;
+            this.blocksPlantGrowth = blocksPlantGrowth;
             this.allowedFields = allowedFields;
             this.allowedDensity = allowedDensity;
             this.minDistance = minDistance;
@@ -416,8 +442,8 @@ namespace SonOfRobin
 
             if (!this.ignoresCollisions)
             {
-                groupNames.Add(Cell.Group.ColAll);
-                if (this.blocksMovement) groupNames.Add(Cell.Group.ColBlocking);
+                if (this.blocksPlantGrowth) groupNames.Add(Cell.Group.ColPlantGrowth);
+                if (this.blocksMovement) groupNames.Add(Cell.Group.ColMovement);
             }
             if (this.visible) groupNames.Add(Cell.Group.Visible);
             if (this.isShownOnMiniMap) groupNames.Add(Cell.Group.MiniMap);
@@ -506,7 +532,7 @@ namespace SonOfRobin
             if (this.allowedDensity != null && !ignoreDensity && !this.allowedDensity.CanBePlacedHere()) return true;
             if (!this.allowedFields.CanStandHere(world: this.world, position: this.position)) return true;
 
-            var gridTypeToCheck = this.checksFullCollisions ? Cell.Group.ColAll : Cell.Group.ColBlocking;
+            var gridTypeToCheck = this.boardPiece.GetType() == typeof(Plant) ? Cell.Group.ColPlantGrowth : Cell.Group.ColMovement;
 
             foreach (Sprite sprite in this.world.grid.GetSpritesFromSurroundingCells(sprite: this, groupName: gridTypeToCheck))
             {
@@ -535,7 +561,7 @@ namespace SonOfRobin
         {
             var collidingSprites = new List<Sprite>();
 
-            foreach (Sprite sprite in this.world.grid.GetSpritesFromSurroundingCells(sprite: this, groupName: Cell.Group.ColAll))
+            foreach (Sprite sprite in this.world.grid.GetSpritesFromSurroundingCells(sprite: this, groupName: Cell.Group.ColPlantGrowth))
             { if (this.colRect.Intersects(sprite.colRect) && sprite.id != this.id) collidingSprites.Add(sprite); }
 
             return collidingSprites;
@@ -768,7 +794,7 @@ namespace SonOfRobin
             AnimFrame frame = shadowSprite.frame;
 
             var flatShadowNames = new List<AnimData.PkgName> {
-                AnimData.PkgName.WoodLogRegular, AnimData.PkgName.WoodLogHard, AnimData.PkgName.MineralsBig1, AnimData.PkgName.MineralsBig4, AnimData.PkgName.MineralsSmall1, AnimData.PkgName.Stone, AnimData.PkgName.WaterRock5, AnimData.PkgName.WoodPlank, AnimData.PkgName.IronBar, AnimData.PkgName.Clay, AnimData.PkgName.Hole, AnimData.PkgName.Granite };
+                AnimData.PkgName.WoodLogRegular, AnimData.PkgName.WoodLogHard, AnimData.PkgName.MineralsBig1, AnimData.PkgName.MineralsBig4, AnimData.PkgName.MineralsSmall1, AnimData.PkgName.Stone, AnimData.PkgName.WaterRock5, AnimData.PkgName.WoodPlank, AnimData.PkgName.IronBar, AnimData.PkgName.Clay, AnimData.PkgName.Hole, AnimData.PkgName.Granite, AnimData.PkgName.BeltMedium };
 
             bool flatShadow = flatShadowNames.Contains(shadowSprite.boardPiece.sprite.animPackage);
 

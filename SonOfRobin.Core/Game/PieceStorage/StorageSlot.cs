@@ -197,10 +197,10 @@ namespace SonOfRobin
                 bool female = false;
                 bool randomSex = true;
 
-                if (pieceData.ContainsKey("animal_female"))
+                if (pieceData.ContainsKey("base_female"))
                 {
                     randomSex = false;
-                    female = (bool)pieceData["animal_female"];
+                    female = (bool)pieceData["base_female"];
                 }
 
                 var newBoardPiece = PieceTemplate.Create(world: this.storage.world, templateName: templateName, randomSex: randomSex, female: female);

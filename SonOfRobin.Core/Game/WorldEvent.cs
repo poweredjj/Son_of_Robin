@@ -7,7 +7,7 @@ namespace SonOfRobin
 {
     public class WorldEvent
     {
-        public enum EventName { Birth, Death, Destruction, TurnOffWorkshop, FinishCooking, RestorePieceCreation, FadeOutSprite, RestoreHint, RemoveBuff, BurnOutLightSource, RegenPoison }
+        public enum EventName { Birth, Death, Destruction, TurnOffWorkshop, FinishCooking, RestorePieceCreation, FadeOutSprite, RestoreHint, RemoveBuff, BurnOutLightSource, RegenPoison, ChangeActiveState, FinishBuilding, PlaySoundByName, YieldDropDebris }
 
         public readonly World world;
         public readonly BoardPiece boardPiece;
@@ -53,7 +53,7 @@ namespace SonOfRobin
 
             BoardPiece boardPiece;
 
-            if (eventName == EventName.RestorePieceCreation || eventName == EventName.RestoreHint) boardPiece = null;
+            if (eventName == EventName.RestorePieceCreation || eventName == EventName.RestoreHint || eventName == EventName.FinishBuilding) boardPiece = null;
             else
             {
                 if (!piecesByID.ContainsKey((string)eventData["piece_id"])) return;
@@ -265,6 +265,41 @@ namespace SonOfRobin
                         regenPoisonData["charges"] = charges; // updating charges counter (the rest should stay the same)
 
                         new WorldEvent(eventName: EventName.RegenPoison, world: world, delay: delay, boardPiece: this.boardPiece, eventHelper: regenPoisonData);
+
+                        return;
+                    }
+
+                case EventName.ChangeActiveState:
+                    {
+                        // example eventHelper for this task
+                        // var changeStateData = new Dictionary<string, Object> { { "piece", piece }, { "state", state } };
+
+                        var changeStateData = (Dictionary<string, Object>)this.eventHelper;
+
+                        BoardPiece piece = (BoardPiece)changeStateData["piece"];
+                        BoardPiece.State state = (BoardPiece.State)changeStateData["state"];
+
+                        piece.activeState = state;
+
+                        return;
+                    }
+
+                case EventName.FinishBuilding:
+                    {
+                        this.world.ExitBuildMode(restoreCraftMenu: false, showCraftMessages: true);
+                        return;
+                    }
+
+                case EventName.PlaySoundByName:
+                    {
+                        Sound.QuickPlay((SoundData.Name)this.eventHelper);
+                        return;
+                    }
+
+                case EventName.YieldDropDebris:
+                    {
+                        Yield yield = (Yield)this.eventHelper;
+                        yield.DropDebris(ignoreProcessingTime: true);
 
                         return;
                     }

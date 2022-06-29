@@ -24,7 +24,7 @@ namespace SonOfRobin
         public SleepEngine sleepEngine;
         private Vector2 pointWalkTarget;
         public Craft.Recipe recipeToBuild;
-        public BoardPiece pieceToBuild;
+        public BoardPiece simulatedPieceToBuild;
 
         public override bool ShowStatBars { get { return true; } }
 
@@ -210,10 +210,10 @@ namespace SonOfRobin
 
         public PieceStorage toolStorage;
         public PieceStorage equipStorage;
-        public Player(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedFields allowedFields, byte invWidth, byte invHeight, byte toolbarWidth, byte toolbarHeight, string readableName, string description, State activeState,
-            byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, bool ignoresCollisions = false, int destructionDelay = 0, bool floatsOnWater = false, int generation = 0, Yield yield = null, int minDistance = 0, int maxDistance = 100, bool placeAtBeachEdge = true, LightEngine lightEngine = null) :
+        public Player(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedFields allowedFields, byte invWidth, byte invHeight, byte toolbarWidth, byte toolbarHeight, string readableName, string description, State activeState, bool female,
+            byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, bool ignoresCollisions = false, int destructionDelay = 0, bool floatsOnWater = false, int generation = 0, Yield yield = null, int minDistance = 0, int maxDistance = 100, bool placeAtBeachEdge = true, LightEngine lightEngine = null, PieceSoundPack soundPack = null) :
 
-            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, speed: speed, blocksMovement: blocksMovement, name: name, destructionDelay: destructionDelay, allowedFields: allowedFields, floatsOnWater: floatsOnWater, mass: 50000, maxMassBySize: null, generation: generation, canBePickedUp: false, maxHitPoints: 400, fadeInAnim: false, isShownOnMiniMap: true, readableName: readableName, description: description, yield: yield, strength: 1, category: Category.Indestructible, lightEngine: lightEngine, ignoresCollisions: ignoresCollisions, minDistance: minDistance, maxDistance: maxDistance, placeAtBeachEdge: placeAtBeachEdge, activeState: activeState)
+            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, speed: speed, blocksMovement: blocksMovement, name: name, destructionDelay: destructionDelay, allowedFields: allowedFields, floatsOnWater: floatsOnWater, mass: 50000, maxMassBySize: null, generation: generation, canBePickedUp: false, maxHitPoints: 400, fadeInAnim: false, isShownOnMiniMap: true, readableName: readableName, description: description, yield: yield, strength: 1, category: Category.Flesh, lightEngine: lightEngine, ignoresCollisions: ignoresCollisions, minDistance: minDistance, maxDistance: maxDistance, placeAtBeachEdge: placeAtBeachEdge, activeState: activeState, soundPack: soundPack, female: female)
         {
             this.maxFedLevel = 40000;
             this.fedLevel = maxFedLevel;
@@ -233,7 +233,7 @@ namespace SonOfRobin
             this.sleepingInsideShelter = false;
             this.sleepMode = SleepMode.Sleep;
             this.recipeToBuild = null;
-            this.pieceToBuild = null;
+            this.simulatedPieceToBuild = null;
 
             BoardPiece handTool = PieceTemplate.Create(templateName: PieceTemplate.Name.Hand, world: this.world);
 
@@ -267,12 +267,16 @@ namespace SonOfRobin
             foreach (PieceStorage storage in this.CraftStorages)
             { storage.DropAllPiecesToTheGround(addMovement: true); }
 
+            if (this.buffEngine.HasBuff(BuffEngine.BuffType.LowHP)) this.buffEngine.RemoveEveryBuffOfType(BuffEngine.BuffType.LowHP);
+
             base.Kill();
 
             Scene.RemoveAllScenesOfType(typeof(TextWindow));
 
             SolidColor redOverlay = new SolidColor(color: Color.DarkRed, viewOpacity: 0.65f);
             this.world.solidColorManager.Add(redOverlay);
+
+            Sound.QuickPlay(SoundData.Name.GameOver);
 
             new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetZoom, turnOffInputUntilExecution: true, delay: 0, executeHelper: new Dictionary<string, Object> { { "zoom", 3f } });
             new Scheduler.Task(taskName: Scheduler.TaskName.OpenMenuTemplate, turnOffInputUntilExecution: true, delay: 300, executeHelper: new Dictionary<string, Object> { { "templateName", MenuTemplate.Name.GameOver } });
@@ -350,7 +354,7 @@ namespace SonOfRobin
 
         public override void SM_PlayerControlledBuilding()
         {
-            Vector2 newPos = this.pieceToBuild.sprite.position + this.world.analogMovementLeftStick;
+            Vector2 newPos = this.simulatedPieceToBuild.sprite.position + this.world.analogMovementLeftStick;
 
             if (this.world.analogMovementLeftStick != Vector2.Zero) newPos += this.world.analogMovementLeftStick;
             else
@@ -369,12 +373,12 @@ namespace SonOfRobin
                 }
             }
 
-            int pieceSize = Math.Max(this.pieceToBuild.sprite.frame.colWidth, this.pieceToBuild.sprite.frame.colHeight);
+            int pieceSize = Math.Max(this.simulatedPieceToBuild.sprite.frame.colWidth, this.simulatedPieceToBuild.sprite.frame.colHeight);
 
             float buildDistance = Vector2.Distance(this.sprite.position, newPos);
-            if (buildDistance <= 200 + pieceSize) this.pieceToBuild.sprite.SetNewPosition(newPos: newPos, ignoreCollisions: true);
+            if (buildDistance <= 200 + pieceSize) this.simulatedPieceToBuild.sprite.SetNewPosition(newPos: newPos, ignoreCollisions: true);
 
-            bool canBuildHere = buildDistance <= 80 + pieceSize && !this.pieceToBuild.sprite.CheckForCollision(ignoreDensity: true);
+            bool canBuildHere = buildDistance <= 80 + pieceSize && !this.simulatedPieceToBuild.sprite.CheckForCollision(ignoreDensity: true);
             if (canBuildHere)
             {
                 VirtButton.ButtonHighlightOnNextFrame(VButName.Confirm);
@@ -383,19 +387,19 @@ namespace SonOfRobin
 
             Color color = canBuildHere ? Color.Green : Color.Red;
 
-            this.pieceToBuild.sprite.effectCol.AddEffect(new ColorizeInstance(color: color));
-            this.pieceToBuild.sprite.effectCol.AddEffect(new BorderInstance(outlineColor: Color.White, textureSize: this.pieceToBuild.sprite.frame.textureSize, priority: 0));
+            this.simulatedPieceToBuild.sprite.effectCol.AddEffect(new ColorizeInstance(color: color));
+            this.simulatedPieceToBuild.sprite.effectCol.AddEffect(new BorderInstance(outlineColor: Color.White, textureSize: this.simulatedPieceToBuild.sprite.frame.textureSize, priority: 0));
 
             if (InputMapper.HasBeenPressed(InputMapper.Action.GlobalCancelReturnSkip))
             {
-                this.world.ExitBuildMode(craftPiece: false);
+                this.world.ExitBuildMode(restoreCraftMenu: true);
                 return;
             }
 
             if (InputMapper.HasBeenPressed(InputMapper.Action.GlobalConfirm))
             {
-                if (canBuildHere) this.world.ExitBuildMode(craftPiece: true);
-                else new TextWindow(text: $"|  {Helpers.FirstCharToUpperCase(this.pieceToBuild.readableName)} can't be placed here.", imageList: new List<Texture2D> { this.pieceToBuild.sprite.frame.texture }, textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false, checkForDuplicate: true, autoClose: false, inputType: Scene.InputTypes.Normal, priority: 1, blocksUpdatesBelow: true);
+                if (canBuildHere) this.world.BuildPiece();
+                else new TextWindow(text: $"|  {Helpers.FirstCharToUpperCase(this.simulatedPieceToBuild.readableName)} can't be placed here.", imageList: new List<Texture2D> { this.simulatedPieceToBuild.sprite.frame.texture }, textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false, checkForDuplicate: true, autoClose: false, inputType: Scene.InputTypes.Normal, priority: 1, blocksUpdatesBelow: false);
             }
         }
 
@@ -412,6 +416,7 @@ namespace SonOfRobin
             if (!this.Walk()) this.Stamina = Math.Min(this.Stamina + 1, this.maxStamina);
 
             this.CheckGround();
+            this.CheckLowHP();
 
             // highlighting pieces to interact with and corresponding interface elements
 
@@ -549,13 +554,15 @@ namespace SonOfRobin
         {
             if (this.sprite.IsDeepInDangerZone && this.world.addAgressiveAnimals) Tutorials.ShowTutorial(type: Tutorials.Type.DangerZone, ignoreDelay: true);
 
-            if (this.sprite.IsInLava)
+            if (this.sprite.IsOnLava)
             {
                 this.world.hintEngine.ShowGeneralHint(type: HintEngine.Type.Lava, ignoreDelay: true);
                 this.hitPoints -= 1;
                 if (!this.world.solidColorManager.AnySolidColorPresent)
                 {
                     Vector2 screenShake = new Vector2(world.random.Next(-20, 20), world.random.Next(-20, 20));
+
+                    this.soundPack.Play(PieceSoundPack.Action.Cry);
 
                     world.transManager.AddMultipleTransitions(outTrans: true, duration: world.random.Next(4, 10), playCount: -1, replaceBaseValue: false, stageTransform: Transition.Transform.Sinus, pingPongCycles: false, cycleMultiplier: 0.02f, paramsToChange: new Dictionary<string, float> { { "PosX", screenShake.X }, { "PosY", screenShake.Y } });
 
@@ -566,10 +573,23 @@ namespace SonOfRobin
                 }
             }
         }
+        public void CheckLowHP()
+        {
+            if (this.HitPointsPercent < 0.15f)
+            {
+                if (!this.buffEngine.HasBuff(BuffEngine.BuffType.LowHP)) this.buffEngine.AddBuff(world: this.world, buff: new BuffEngine.Buff(type: BuffEngine.BuffType.LowHP, value: 0, autoRemoveDelay: 0));
+            }
+            else
+            {
+                if (this.buffEngine.HasBuff(BuffEngine.BuffType.LowHP)) this.buffEngine.RemoveEveryBuffOfType(BuffEngine.BuffType.LowHP);
+            }
+        }
 
         public override void SM_PlayerControlledShooting()
         {
             this.ExpendEnergy(0.1f);
+            this.CheckLowHP();
+
             this.shootingPower = Math.Min(this.shootingPower + 1, maxShootingPower);
 
             this.Stamina = Math.Max(this.Stamina - 1, 0);
@@ -608,6 +628,8 @@ namespace SonOfRobin
             {
                 this.UseToolbarPiece(isInShootingMode: true, buttonHeld: false);
                 this.shootingPower = 0;
+                this.soundPack.Stop(PieceSoundPack.Action.PlayerBowDraw);
+                this.soundPack.Play(PieceSoundPack.Action.PlayerBowDraw);
             }
 
             if (!this.ShootingModeInputPressed || !this.ActiveToolbarWeaponHasAmmo || this.sprite.CanDrownHere)
@@ -619,11 +641,14 @@ namespace SonOfRobin
                 this.activeState = State.PlayerControlledWalking;
                 this.shootingAngle = -100;
                 this.shootingPower = 0;
+                this.soundPack.Stop(PieceSoundPack.Action.PlayerBowDraw);
             }
         }
 
         public override void SM_PlayerControlledSleep()
         {
+            this.CheckLowHP();
+
             if (InputMapper.HasBeenPressed(InputMapper.Action.GlobalCancelReturnSkip))
             {
                 this.WakeUp();
@@ -633,6 +658,7 @@ namespace SonOfRobin
             if (this.sleepMode == SleepMode.Sleep && this.Fatigue == 0)
             {
                 this.sleepMode = SleepMode.Waiting;
+                this.soundPack.Stop(PieceSoundPack.Action.PlayerSnore);
 
                 var confirmationData = new Dictionary<string, Object> { { "blocksUpdatesBelow", true }, { "question", "You are fully rested." }, { "labelYes", "go out" }, { "labelNo", "stay inside" }, { "taskName", Scheduler.TaskName.ForceWakeUp }, { "executeHelper", this } };
 
@@ -663,6 +689,7 @@ namespace SonOfRobin
             this.world.tipsLayout = ControlTips.TipsLayout.WorldSleep;
             this.sprite.CharacterStand();
             this.activeState = State.PlayerControlledSleep;
+            this.soundPack.Play(PieceSoundPack.Action.PlayerSnore);
 
             SolidColor blackOverlay = new SolidColor(color: Color.Black, viewOpacity: 0.75f);
             blackOverlay.transManager.AddTransition(new Transition(transManager: blackOverlay.transManager, outTrans: false, baseParamName: "Opacity", targetVal: 0f, duration: 20));
@@ -694,6 +721,7 @@ namespace SonOfRobin
             this.world.touchLayout = TouchLayout.WorldMain;
             this.world.tipsLayout = ControlTips.TipsLayout.WorldMain;
             this.sprite.Visible = true;
+            this.soundPack.Stop(PieceSoundPack.Action.PlayerSnore);
 
             world.updateMultiplier = 1;
             SonOfRobinGame.game.IsFixedTimeStep = Preferences.FrameSkip;
@@ -788,6 +816,7 @@ namespace SonOfRobin
                 this.world.touchLayout = TouchLayout.WorldShoot;
                 this.world.tipsLayout = ControlTips.TipsLayout.WorldShoot;
                 this.activeState = State.PlayerControlledShooting;
+                this.soundPack.Play(PieceSoundPack.Action.PlayerBowDraw);
                 return true;
             }
 

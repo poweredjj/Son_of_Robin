@@ -11,7 +11,6 @@ namespace SonOfRobin
         public static readonly int attackDistanceDynamic = 16;
         public static readonly int attackDistanceStatic = 4;
 
-        private readonly bool female;
         private readonly int maxMass;
         private readonly float massBurnedMultiplier;
         private readonly byte awareness;
@@ -42,15 +41,14 @@ namespace SonOfRobin
         public float MaxMassPercentage { get { return this.Mass / this.maxMass; } }
 
         public Animal(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedFields allowedFields, Dictionary<byte, int> maxMassBySize, int mass, int maxMass, byte awareness, bool female, int maxAge, int matureAge, uint pregnancyDuration, byte maxChildren, float maxStamina, int maxHitPoints, ushort sightRange, string readableName, string description, List<PieceTemplate.Name> eats, int strength, float massBurnedMultiplier,
-            byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = false, int generation = 0, Yield yield = null, bool fadeInAnim = true) :
+            byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = false, int generation = 0, Yield yield = null, bool fadeInAnim = true, PieceSoundPack soundPack = null) :
 
-            base(world: world, id: id, animPackage: animPackage, mass: mass, animSize: animSize, animName: animName, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedFields: allowedFields, floatsOnWater: floatsOnWater, maxMassBySize: maxMassBySize, generation: generation, speed: speed, maxAge: maxAge, maxHitPoints: maxHitPoints, yield: yield, fadeInAnim: fadeInAnim, isShownOnMiniMap: true, readableName: readableName, description: description, staysAfterDeath: 30 * 60, strength: strength, category: Category.Animal, activeState: State.AnimalAssessSituation)
+            base(world: world, id: id, animPackage: animPackage, mass: mass, animSize: animSize, animName: animName, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedFields: allowedFields, floatsOnWater: floatsOnWater, maxMassBySize: maxMassBySize, generation: generation, speed: speed, maxAge: maxAge, maxHitPoints: maxHitPoints, yield: yield, fadeInAnim: fadeInAnim, isShownOnMiniMap: true, readableName: readableName, description: description, staysAfterDeath: 30 * 60, strength: strength, category: Category.Flesh, activeState: State.AnimalAssessSituation, soundPack: soundPack, female: female)
         {
             this.target = null;
             this.maxMass = maxMass;
             this.massBurnedMultiplier = massBurnedMultiplier;
             this.awareness = awareness;
-            this.female = female;
             this.matureAge = matureAge;
             this.pregnancyDuration = pregnancyDuration;
             this.pregnancyMass = 0;
@@ -74,7 +72,6 @@ namespace SonOfRobin
         {
             Dictionary<string, Object> pieceData = base.Serialize();
 
-            pieceData["animal_female"] = this.female; // used in PieceTemplate, to create animal of correct sex
             pieceData["animal_attackCooldown"] = this.attackCooldown;
             pieceData["animal_regenCooldown"] = this.regenCooldown;
             pieceData["animal_fedLevel"] = this.fedLevel;
@@ -112,8 +109,8 @@ namespace SonOfRobin
 
             if (Preferences.debugShowStatBars)
             {
-                new StatBar(label: "stam", value: (int)this.stamina, valueMax: (int)this.maxStamina, colorMin: new Color(100, 100, 100), colorMax: new Color(255, 255, 255), posX: posX, posY: posY);
-                new StatBar(label: "food", value: (int)this.fedLevel, valueMax: (int)this.maxFedLevel, colorMin: new Color(0, 128, 255), colorMax: new Color(0, 255, 255), posX: posX, posY: posY);
+                new StatBar(label: "stam", value: (int)this.stamina, valueMax: (int)this.maxStamina, colorMin: new Color(100, 100, 100), colorMax: new Color(255, 255, 255), posX: posX, posY: posY, texture: AnimData.framesForPkgs[AnimData.PkgName.Biceps].texture);
+                new StatBar(label: "food", value: (int)this.fedLevel, valueMax: (int)this.maxFedLevel, colorMin: new Color(0, 128, 255), colorMax: new Color(0, 255, 255), posX: posX, posY: posY, texture: AnimData.framesForPkgs[AnimData.PkgName.Burger].texture);
                 new StatBar(label: "age", value: (int)this.currentAge, valueMax: (int)this.maxAge, colorMin: new Color(180, 0, 0), colorMax: new Color(255, 0, 0), posX: posX, posY: posY);
                 new StatBar(label: "weight", value: (int)this.Mass, valueMax: (int)this.maxMass, colorMin: new Color(0, 128, 255), colorMax: new Color(0, 255, 255), posX: posX, posY: posY);
             }
@@ -541,6 +538,11 @@ namespace SonOfRobin
 
                 if (this.target.yield != null) this.target.yield.DropDebris();
 
+                this.soundPack.Play(PieceSoundPack.Action.Cry);
+
+                target.soundPack.Play(PieceSoundPack.Action.IsHit);
+                if (target.HitPointsPercent < 0.4f || world.random.Next(0, 2) == 0) target.soundPack.Play(PieceSoundPack.Action.Cry);
+
                 int attackStrength = Convert.ToInt32(this.world.random.Next(Convert.ToInt32(this.strength * 0.75), Convert.ToInt32(this.strength * 1.5)) * this.efficiency);
                 this.target.hitPoints = Math.Max(0, this.target.hitPoints - attackStrength);
                 if (this.target.hitPoints <= 0) this.target.Kill();
@@ -559,7 +561,6 @@ namespace SonOfRobin
 
                     if (this.target.hitPoints > 0) // red screen flash if player is still alive
                     {
-
                         SolidColor redOverlay = new SolidColor(color: Color.DarkRed, viewOpacity: 0.0f);
                         redOverlay.transManager.AddTransition(new Transition(transManager: redOverlay.transManager, outTrans: true, duration: 20, playCount: 1, stageTransform: Transition.Transform.Sinus, baseParamName: "Opacity", targetVal: 0.5f, endRemoveScene: true));
                         this.world.solidColorManager.Add(redOverlay);
@@ -585,6 +586,8 @@ namespace SonOfRobin
                 this.aiData.Reset(this);
                 return;
             }
+
+            this.soundPack.Play(PieceSoundPack.Action.Eat);
 
             if (this.target.IsAnimalOrPlayer && this.target.yield != null && this.world.random.Next(0, 25) == 0)
             {
@@ -612,6 +615,8 @@ namespace SonOfRobin
 
                 if (this.target.IsAnimalOrPlayer && this.target.yield != null)
                 {
+                    target.soundPack.Play(PieceSoundPack.Action.IsHit);
+
                     PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: this.target.sprite.position, templateName: PieceTemplate.Name.BloodSplatter);
                     this.target.yield.DropDebris();
                 }

@@ -10,8 +10,12 @@ namespace SonOfRobin
         public PortableLight(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedFields allowedFields, List<BuffEngine.Buff> buffList, string readableName, string description, Category category,
             byte animSize = 0, string animName = "off", bool blocksMovement = false, ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = false, int generation = 0, byte stackSize = 1, Yield yield = null, int maxHitPoints = 1, int mass = 1, Scheduler.TaskName toolbarTask = Scheduler.TaskName.SwitchLightSource, Scheduler.TaskName boardTask = Scheduler.TaskName.Empty, bool rotatesWhenDropped = false, bool fadeInAnim = false, bool placeAtBeachEdge = false) :
 
-            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedFields: allowedFields, floatsOnWater: floatsOnWater, maxMassBySize: null, generation: generation, stackSize: stackSize, checksFullCollisions: false, canBePickedUp: true, yield: yield, maxHitPoints: maxHitPoints, mass: mass, toolbarTask: toolbarTask, boardTask: boardTask, rotatesWhenDropped: rotatesWhenDropped, fadeInAnim: fadeInAnim, placeAtBeachEdge: placeAtBeachEdge, isShownOnMiniMap: true, buffList: buffList, readableName: readableName, description: description, category: category, activeState: State.Empty)
+            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedFields: allowedFields, floatsOnWater: floatsOnWater, maxMassBySize: null, generation: generation, stackSize: stackSize, canBePickedUp: true, yield: yield, maxHitPoints: maxHitPoints, mass: mass, toolbarTask: toolbarTask, boardTask: boardTask, rotatesWhenDropped: rotatesWhenDropped, fadeInAnim: fadeInAnim, placeAtBeachEdge: placeAtBeachEdge, isShownOnMiniMap: true, buffList: buffList, readableName: readableName, description: description, category: category, activeState: State.Empty)
         {
+            this.soundPack.AddAction(action: PieceSoundPack.Action.TurnOn, sound: new Sound(name: SoundData.Name.StartFireSmall, ignore3DAlways: true));
+            this.soundPack.AddAction(action: PieceSoundPack.Action.TurnOff, sound: new Sound(name: SoundData.Name.EndFire, ignore3DAlways: true));
+            this.soundPack.AddAction(action: PieceSoundPack.Action.IsOn, sound: new Sound(name: SoundData.Name.Torch, maxPitchVariation: 0.5f, isLooped: true, ignore3DAlways: true));
+
             this.isOn = false;
         }
 
@@ -39,14 +43,19 @@ namespace SonOfRobin
                     // turning on this piece
                     this.sprite.AssignNewName(animName: "on");
                     this.world.player.buffEngine.AddBuffs(world: this.world, this.buffList);
+                    this.soundPack.Play(PieceSoundPack.Action.TurnOn);
+                    this.soundPack.Play(action: PieceSoundPack.Action.IsOn);
 
                     var damageData = new Dictionary<string, Object> { { "delay", 60 * 3 }, { "damage", 3 } };
                     new WorldEvent(eventName: WorldEvent.EventName.BurnOutLightSource, world: world, delay: 60, boardPiece: this, eventHelper: damageData);
+
                 }
                 else
                 {
                     this.sprite.AssignNewName(animName: "off");
                     this.world.player.buffEngine.RemoveBuffs(this.buffList);
+                    this.soundPack.Stop(PieceSoundPack.Action.IsOn);
+                    this.soundPack.Play(PieceSoundPack.Action.TurnOff);
                 }
             }
         }

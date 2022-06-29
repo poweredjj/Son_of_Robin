@@ -7,7 +7,7 @@ namespace SonOfRobin
 {
     public class BuffEngine
     {
-        public enum BuffType { InvWidth, InvHeight, ToolbarWidth, ToolbarHeight, Speed, Strength, HP, MaxHP, MaxStamina, EnableMap, Tired, Hungry, LightSource, RegenPoison, Haste, Fatigue, Sprint };
+        public enum BuffType { InvWidth, InvHeight, ToolbarWidth, ToolbarHeight, Speed, Strength, HP, MaxHP, MaxStamina, EnableMap, Tired, Hungry, LightSource, RegenPoison, Haste, Fatigue, Sprint, LowHP };
 
         [Serializable]
         public class Buff
@@ -100,6 +100,9 @@ namespace SonOfRobin
                     case BuffType.Tired:
                         return false;
 
+                    case BuffType.LowHP:
+                        return false;
+
                     case BuffType.Hungry:
                         return false;
 
@@ -165,8 +168,12 @@ namespace SonOfRobin
                         description = "Decreases multiple stats.";
                         break;
 
+                    case BuffType.LowHP:
+                        description = "Near death.";
+                        break;
+
                     case BuffType.Hungry:
-                        description = "Hungry";
+                        description = "Hungry.";
                         break;
 
                     case BuffType.LightSource:
@@ -236,6 +243,9 @@ namespace SonOfRobin
 
                     case BuffType.Tired:
                         return "TIRED";
+
+                    case BuffType.LowHP:
+                        return "LOW\nHEALTH";
 
                     case BuffType.Hungry:
                         return "HUNGRY";
@@ -522,6 +532,24 @@ namespace SonOfRobin
                         return;
                     }
 
+                case BuffType.LowHP:
+                    {
+                        if (!this.CheckIfPieceIsPlayer(buff)) return;
+
+                        Player player = (Player)this.piece;
+
+                        if (add)
+                        {
+                            player.soundPack.Play(PieceSoundPack.Action.PlayerPulse);
+                        }
+                        else
+                        {
+                            player.soundPack.Stop(PieceSoundPack.Action.PlayerPulse);
+                        }
+
+                        return;
+                    }
+
                 case BuffType.LightSource:
                     {
                         if (!this.CheckIfPieceIsPlayer(buff)) return;
@@ -615,6 +643,7 @@ namespace SonOfRobin
                             if (hadThisBuffBefore) this.RemoveEveryBuffOfType(buff.type);
                             player.speed += (float)buff.value;
                             player.sprite.effectCol.AddEffect(new BorderInstance(outlineColor: Color.Cyan, textureSize: player.sprite.frame.textureSize, priority: 0, framesLeft: -1));
+                            player.soundPack.Play(PieceSoundPack.Action.PlayerSprint);
                         }
                         else
                         {

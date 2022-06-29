@@ -83,7 +83,6 @@ namespace SonOfRobin
             this.isActive = true;
 
             if (!this.sprite.gridGroups.Contains(Cell.Group.LightSource)) this.sprite.gridGroups.Add(Cell.Group.LightSource);
-
             if (this.sprite.IsOnBoard) this.sprite.currentCell.UpdateGroups(sprite: this.sprite, groupNames: this.sprite.gridGroups);
         }
 

@@ -35,27 +35,32 @@ namespace SonOfRobin
             debugText = "";
 
             World world = World.GetTopWorld();
-            if (world != null && !world.worldCreationInProgress)
+
+            bool worldActive = world != null && !world.worldCreationInProgress;
+
+            if (worldActive)
             {
-                if (world.mapMode == World.MapMode.Big) debugText += $"objects {world.PieceCount}";
+                if (world.mapMode == World.MapMode.Big) debugText += $"\nobjects {world.PieceCount}";
                 else debugText += $"{world.debugText}";
-
-                debugText += "\n";
-
-                if (world.pieceCountByClass.ContainsKey(typeof(Plant))) debugText += $"plants {world.pieceCountByClass[typeof(Plant)]}";
-                if (world.pieceCountByClass.ContainsKey(typeof(Animal))) debugText += $", animals {world.pieceCountByClass[typeof(Animal)]}";
-                debugText += $"\nproc. animals {world.processedAnimalsCount}";
-                debugText += $"\nproc. plants {world.processedPlantsCount}";
-                debugText += $"\nloaded textures {world.grid.loadedTexturesCount}";
-                debugText += $"\ntracking count {world.trackingQueue.Count}";
-                if (world.trackingQueue.Count > 5000) debugText += " <--- WARNING, CHECK IF CORRECT!";
-                //if(SonOfRobinGame.platform == Platform.Desktop) debugText += $"\nram free: {SonOfRobinGame.ramCounter.NextValue()}";
-
-                debugText += $"\nreal time elapsed {world.TimePlayed:hh\\:mm\\:ss}";
-                debugText += $"\nisland time elapsed {world.islandClock.IslandTimeElapsed:hh\\:mm\\:ss} (x{world.updateMultiplier})";
-                debugText += $"\nisland day {world.islandClock.CurrentDayNo} clock {world.islandClock.TimeOfDay:hh\\:mm\\:ss} ({Convert.ToString(world.islandClock.CurrentPartOfDay).ToLower()})";
-                debugText += $"\n{SonOfRobinGame.fps.msg}";
             }
+
+            debugText += "\n";
+
+            if (worldActive && world.pieceCountByClass.ContainsKey(typeof(Plant))) debugText += $"plants {world.pieceCountByClass[typeof(Plant)]}";
+            if (worldActive && world.pieceCountByClass.ContainsKey(typeof(Animal))) debugText += $", animals {world.pieceCountByClass[typeof(Animal)]}";
+            if (worldActive) debugText += $"\nproc. animals: {world.processedNonPlantsCount} plants: {world.processedPlantsCount}";
+            if (worldActive) debugText += $"\nloaded textures {world.grid.loadedTexturesCount}";
+            if (worldActive) debugText += $"\ntracking count {world.trackingQueue.Count}";
+            if (worldActive && world.trackingQueue.Count > 5000) debugText += " <--- WARNING, CHECK IF CORRECT!";
+            debugText += $"\nsnd inst. total: {SoundInstanceManager.CreatedInstancesCount} act: {SoundInstanceManager.ActiveInstancesCount} inact: {SoundInstanceManager.InactiveInstancesCount} inact. names: {SoundInstanceManager.InactiveNamesCount}";
+
+            debugText += $"\nGC {GC.CollectionCount(0)} {GC.CollectionCount(1)} {GC.CollectionCount(2)}";
+
+            //if(SonOfRobinGame.platform == Platform.Desktop) debugText += $"\nram free: {SonOfRobinGame.ramCounter.NextValue()}";
+            if (worldActive) debugText += $"\nreal time elapsed {world.TimePlayed:hh\\:mm\\:ss}";
+            if (worldActive) debugText += $"\nisland time elapsed {world.islandClock.IslandTimeElapsed:hh\\:mm\\:ss} (x{world.updateMultiplier})";
+            if (worldActive) debugText += $"\nisland day {world.islandClock.CurrentDayNo} clock {world.islandClock.TimeOfDay:hh\\:mm\\:ss} ({Convert.ToString(world.islandClock.CurrentPartOfDay).ToLower()})";
+            debugText += $"\n{SonOfRobinGame.fps.msg}";
 
             Vector2 txtSize = font.MeasureString(debugText);
             this.viewParams.Width = (int)txtSize.X;
@@ -79,7 +84,7 @@ namespace SonOfRobin
 
             if (Keyboard.HasBeenPressed(Keys.D1))
             {
-                BoardPiece piece = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: world.player.sprite.position, templateName: PieceTemplate.Name.ShovelStone, closestFreeSpot: true);
+                BoardPiece piece = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: world.player.sprite.position, templateName: PieceTemplate.Name.Campfire, closestFreeSpot: true);
             }
 
             if (Keyboard.HasBeenPressed(Keys.D2))
@@ -89,7 +94,7 @@ namespace SonOfRobin
 
             if (Keyboard.HasBeenPressed(Keys.D3))
             {
-                BoardPiece piece = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: world.player.sprite.position, templateName: PieceTemplate.Name.WoodLogRegular, closestFreeSpot: true);
+                BoardPiece piece = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: world.player.sprite.position, templateName: PieceTemplate.Name.ChestTreasureBig, closestFreeSpot: true);
             }
 
             if (Keyboard.HasBeenPressed(Keys.D4))
@@ -120,7 +125,7 @@ namespace SonOfRobin
                 new Tracking(world: world, targetSprite: world.player.sprite, followingSprite: backlight.sprite, offsetX: 0, offsetY: 0, targetXAlign: XAlign.Center, targetYAlign: YAlign.Bottom);
             }
 
-            if (Keyboard.HasBeenPressed(Keys.D9)) world.CreateMissingPieces(outsideCamera: false, multiplier: 1.0f, clearDoNotCreateList: true, addFruits: true);
+            if (Keyboard.HasBeenPressed(Keys.D9)) world.CreateMissingPieces(initialCreation: true, outsideCamera: false, multiplier: 1.0f, clearDoNotCreateList: true);
 
             if (Keyboard.HasBeenPressed(Keys.D0))
             {
@@ -139,7 +144,7 @@ namespace SonOfRobin
             {
                 if (world == null) return;
 
-                foreach (var sprite in world.grid.GetSpritesInCameraView(camera: world.camera, groupName: Cell.Group.All))
+                foreach (var sprite in world.camera.GetVisibleSprites(groupName: Cell.Group.All))
                 {
                     if (sprite.boardPiece != world.player) Tool.HitTarget(attacker: world.player, target: sprite.boardPiece, hitPower: 99999, targetPushMultiplier: 1f);
                 }
@@ -167,7 +172,7 @@ namespace SonOfRobin
             {
                 while (true)
                 {
-                    bool hasBeenMoved = world.player.sprite.SetNewPosition(new Vector2(SonOfRobinGame.random.Next(0, world.width), SonOfRobinGame.random.Next(0, world.height)));
+                    bool hasBeenMoved = world.player.sprite.SetNewPosition(new Vector2(BoardPiece.Random.Next(0, world.width), BoardPiece.Random.Next(0, world.height)));
                     if (hasBeenMoved) break;
                 }
             }
@@ -178,6 +183,14 @@ namespace SonOfRobin
 
                 if (world.bulletTimeMultiplier == 1) world.bulletTimeMultiplier = 3;
                 else world.bulletTimeMultiplier = 1;
+            }
+
+            if (Keyboard.HasBeenPressed(Keys.B) || VirtButton.HasButtonBeenPressed(VButName.DebugPlayManySounds))
+            {
+                for (int i = 0; i < 256; i++)
+                {
+                    Sound.QuickPlay(SoundData.Name.ArrowFly);
+                }
             }
 
             if (Keyboard.HasBeenPressed(Keys.U))
@@ -261,7 +274,9 @@ namespace SonOfRobin
 
             if (Keyboard.HasBeenPressed(Keys.Z) || VirtButton.HasButtonBeenPressed(VButName.DebugBreakVisible))
             {
-                foreach (var sprite in world.grid.GetSpritesInCameraView(camera: world.camera, groupName: Cell.Group.All))
+                if (world == null) return;
+
+                foreach (var sprite in world.camera.GetVisibleSprites(groupName: Cell.Group.All))
                 {
                     if (sprite.boardPiece != world.player)
                     {
@@ -317,8 +332,8 @@ namespace SonOfRobin
 
             if (Keyboard.HasBeenPressed(Keys.F4))
             {
-                if (world == null) return;
-                new Scheduler.Task(taskName: Scheduler.TaskName.CheckForIncorrectPieces);
+                Sound sound = new Sound(name: SoundData.Name.Navigation);
+                sound.Play();
             }
 
             if (Keyboard.HasBeenPressed(Keys.F5)) SonOfRobinGame.progressBar.TurnOn(curVal: 2, maxVal: 5, text: $"Loading game - replacing save slot data...              ...");
@@ -366,7 +381,7 @@ namespace SonOfRobin
 
             if (Keyboard.HasBeenPressed(Keys.F11)) SonOfRobinGame.progressBar.TurnOff();
 
-            if (Keyboard.HasBeenPressed(Keys.F12) || VirtButton.HasButtonBeenPressed(VButName.DebugRemoveTopScene)) RemoveTopScene();
+            if (Keyboard.HasBeenPressed(Keys.F12)) RemoveTopScene();
 
             if (Keyboard.HasBeenPressed(Keys.LeftAlt) || VirtButton.HasButtonBeenPressed(VButName.DebugFastForward))
             {
@@ -398,11 +413,11 @@ namespace SonOfRobin
 
             if (Keyboard.HasBeenPressed(Keys.OemOpenBrackets))
             {
-                var allSprites = world.grid.GetAllSprites(Cell.Group.ColBlocking).Where(sprite => sprite.boardPiece.GetType() == typeof(Animal) && sprite.boardPiece.alive).ToList();
+                var allSprites = world.grid.GetAllSprites(Cell.Group.ColMovement).Where(sprite => sprite.boardPiece.GetType() == typeof(Animal) && sprite.boardPiece.alive).ToList();
 
                 if (!allSprites.Any()) return;
 
-                var index = SonOfRobinGame.random.Next(0, allSprites.Count);
+                var index = BoardPiece.Random.Next(0, allSprites.Count);
                 world.camera.TrackPiece(allSprites.ToArray()[index].boardPiece);
             }
 
@@ -414,8 +429,8 @@ namespace SonOfRobin
 
                 while (true)
                 {
-                    var packageNames = new List<AnimData.PkgName> { AnimData.PkgName.Blonde, AnimData.PkgName.FoxGinger, AnimData.PkgName.Frog1, AnimData.PkgName.CrabGreen, AnimData.PkgName.TigerWhite };
-                    var packageName = packageNames[SonOfRobinGame.random.Next(0, packageNames.Count)];
+                    var packageNames = new List<AnimData.PkgName> { AnimData.PkgName.PlayerMale, AnimData.PkgName.PlayerFemale, AnimData.PkgName.FoxGinger, AnimData.PkgName.Frog1, AnimData.PkgName.CrabGreen, AnimData.PkgName.TigerWhite };
+                    var packageName = packageNames[BoardPiece.Random.Next(0, packageNames.Count)];
                     if (packageName != currentPackageName)
                     {
                         world.player.sprite.AssignNewPackage(animPackage: packageName, setEvenIfMissing: false);

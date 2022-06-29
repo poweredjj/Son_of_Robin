@@ -8,10 +8,13 @@ namespace SonOfRobin
     public class Container : BoardPiece
     {
         public Container(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedFields allowedFields, Dictionary<byte, int> maxMassBySize, byte storageWidth, byte storageHeight, string readableName, string description, Category category,
-            byte animSize = 0, string animName = "open", bool blocksMovement = true, ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = false, int generation = 0, Yield yield = null, int maxHitPoints = 1, bool fadeInAnim = false) :
+            byte animSize = 0, string animName = "open", bool blocksMovement = true, ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = false, int generation = 0, Yield yield = null, Yield appearDebris = null, int maxHitPoints = 1, bool fadeInAnim = false, PieceSoundPack soundPack = null) :
 
-            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedFields: allowedFields, floatsOnWater: floatsOnWater, maxMassBySize: maxMassBySize, generation: generation, canBePickedUp: false, yield: yield, maxHitPoints: maxHitPoints, fadeInAnim: fadeInAnim, isShownOnMiniMap: true, readableName: readableName, description: description, category: category, activeState: State.Empty, movesWhenDropped: false)
+            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedFields: allowedFields, floatsOnWater: floatsOnWater, maxMassBySize: maxMassBySize, generation: generation, canBePickedUp: false, yield: yield, maxHitPoints: maxHitPoints, fadeInAnim: fadeInAnim, isShownOnMiniMap: true, readableName: readableName, description: description, category: category, activeState: State.Empty, movesWhenDropped: false, soundPack: soundPack, appearDebris: appearDebris)
         {
+            this.soundPack.AddAction(action: PieceSoundPack.Action.Open, sound: new Sound(name: SoundData.Name.ChestOpen));
+            this.soundPack.AddAction(action: PieceSoundPack.Action.Close, sound: new Sound(name: SoundData.Name.ChestClose));
+
             this.boardTask = Scheduler.TaskName.OpenContainer;
             this.pieceStorage = new PieceStorage(width: storageWidth, height: storageHeight, world: this.world, storagePiece: this, storageType: PieceStorage.StorageType.Chest);
         }
@@ -46,12 +49,14 @@ namespace SonOfRobin
         public void Open()
         {
             if (this.sprite.animName == "open" || this.sprite.animName == "opening") return;
+            this.soundPack.Play(PieceSoundPack.Action.Open);
             this.sprite.AssignNewName(animName: "opening");
         }
 
         public void Close()
         {
             if (this.pieceStorage.OccupiedSlots.Count == 0 || this.sprite.animName == "closing") return;
+            this.soundPack.Play(PieceSoundPack.Action.Close);
             this.sprite.AssignNewName(animName: "closing");
         }
     }

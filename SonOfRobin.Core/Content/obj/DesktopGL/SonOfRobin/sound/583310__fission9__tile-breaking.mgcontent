@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <SourceFile>C:/Users/msmidowi/Documents/SonOfRobin/SonOfRobin.Core/Content/sound/583310__fission9__tile-breaking.ogg</SourceFile>
+  <SourceTime>2022-05-30T11:01:15.0684349+02:00</SourceTime>
+  <DestFile>C:/Users/msmidowi/Documents/SonOfRobin/SonOfRobin.Core/Content/bin/DesktopGL/SonOfRobin/sound/583310__fission9__tile-breaking.xnb</DestFile>
+  <DestTime>2022-06-02T14:46:09.2480578+02:00</DestTime>
+  <Importer>OggImporter</Importer>
+  <ImporterTime>2020-08-10T18:17:54+02:00</ImporterTime>
+  <Processor>SoundEffectProcessor</Processor>
+  <ProcessorTime>2020-08-10T18:17:54+02:00</ProcessorTime>
+  <Parameters>
+    <Key>Quality</Key>
+    <Value>Best</Value>
+  </Parameters>
+  <Dependencies />
+  <BuildAsset />
+  <BuildOutput />
+</PipelineBuildEvent>

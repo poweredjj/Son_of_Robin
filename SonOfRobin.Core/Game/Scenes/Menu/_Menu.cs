@@ -28,6 +28,9 @@ namespace SonOfRobin
         public Entry lastTouchedEntry;
         private float scrollSpeed;
         public bool instantScrollForOneFrame;
+        public readonly Sound soundNavigate;
+        public readonly Sound soundSelect;
+        public readonly Sound soundInvoke;
         public readonly object templateExecuteHelper; // needed for correct rebuild
 
         public int EntryBgWidth
@@ -85,7 +88,6 @@ namespace SonOfRobin
                 }
             }
         }
-
         public bool ScrollActive { get { return this.FullyVisibleEntries.Count < this.entryList.Count || this.PartiallyVisibleEntries.Count > 0; } }
         private float ScrollbarVisiblePercent { get { return (float)this.viewParams.Height / (((float)this.EntryHeight + (float)this.EntryMargin) * (float)this.entryList.Count); } }
         private int ScrollbarWidgetHeight { get { return (int)(this.ScrollbarVisiblePercent * this.viewParams.Height); } }
@@ -147,7 +149,7 @@ namespace SonOfRobin
                 currentScrollPosition += posDiff / this.scrollSpeed;
             }
         }
-        public Menu(MenuTemplate.Name templateName, bool blocksUpdatesBelow, bool canBeClosedManually, string name, object templateExecuteHelper, bool alwaysShowSelectedEntry = false, Layout layout = Layout.Right, Scheduler.TaskName closingTask = Scheduler.TaskName.Empty, Object closingTaskHelper = null, int priority = 1) : base(inputType: InputTypes.Normal, priority: priority, blocksUpdatesBelow: blocksUpdatesBelow, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, hidesSameScenesBelow: true, touchLayout: TouchLayout.Empty, tipsLayout: canBeClosedManually ? ControlTips.TipsLayout.Menu : ControlTips.TipsLayout.MenuWithoutClosing)
+        public Menu(MenuTemplate.Name templateName, bool blocksUpdatesBelow, bool canBeClosedManually, string name, object templateExecuteHelper, bool alwaysShowSelectedEntry = false, Layout layout = Layout.Right, Scheduler.TaskName closingTask = Scheduler.TaskName.Empty, Object closingTaskHelper = null, int priority = 1, SoundData.Name soundNavigate = SoundData.Name.Navigation, SoundData.Name soundSelect = SoundData.Name.Select, SoundData.Name soundInvoke = SoundData.Name.Invoke) : base(inputType: InputTypes.Normal, priority: priority, blocksUpdatesBelow: blocksUpdatesBelow, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, hidesSameScenesBelow: true, touchLayout: TouchLayout.Empty, tipsLayout: canBeClosedManually ? ControlTips.TipsLayout.Menu : ControlTips.TipsLayout.MenuWithoutClosing)
         {
             this.layout = layout;
             this.alwaysShowSelectedEntry = alwaysShowSelectedEntry;
@@ -166,6 +168,10 @@ namespace SonOfRobin
             this.scrollSpeed = baseScrollSpeed;
             this.instantScrollForOneFrame = false;
             this.templateExecuteHelper = templateExecuteHelper;
+
+            this.soundNavigate = new Sound(soundNavigate);
+            this.soundSelect = new Sound(soundSelect);
+            this.soundInvoke = new Sound(soundInvoke);
 
             new Separator(menu: this, name: this.name);
             this.SetTouchLayout();
@@ -468,6 +474,8 @@ namespace SonOfRobin
 
         private void ChangeActiveItem(bool add)
         {
+            if (Sound.menuOn) this.soundNavigate.Play();
+
             this.touchMode = false;
 
             int valueToAdd = add ? 1 : -1;

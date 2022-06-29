@@ -21,41 +21,48 @@ namespace SonOfRobin
         private int cookingStartFrame;
         private int cookingDoneFrame;
 
-        private readonly StorageSlot mealSlot;
-
         private TimeSpan TimeToFinishCooking
         { get { return TimeSpan.FromSeconds((int)(Math.Ceiling((float)(this.cookingDoneFrame - (float)this.world.currentUpdate) / 60f))); } }
 
         public Cooker(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedFields allowedFields, Dictionary<byte, int> maxMassBySize, float foodMassMultiplier, string readableName, string description, Category category, int ingredientSpace, int boosterSpace,
-            byte animSize = 0, string animName = "off", bool blocksMovement = true, ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = false, int generation = 0, Yield yield = null, int maxHitPoints = 1, bool fadeInAnim = false) :
+            byte animSize = 0, string animName = "off", bool blocksMovement = true, ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = false, int generation = 0, Yield yield = null, int maxHitPoints = 1, bool fadeInAnim = false, PieceSoundPack soundPack = null) :
 
-            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedFields: allowedFields, floatsOnWater: floatsOnWater, maxMassBySize: maxMassBySize, generation: generation, canBePickedUp: false, yield: yield, maxHitPoints: maxHitPoints, fadeInAnim: fadeInAnim, isShownOnMiniMap: true, readableName: readableName, description: description, category: category, lightEngine: new LightEngine(size: 0, opacity: 0.7f, colorActive: true, color: Color.Orange * 0.25f, addedGfxRectMultiplier: 8f, isActive: false, castShadows: true), activeState: State.Empty)
+            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedFields: allowedFields, floatsOnWater: floatsOnWater, maxMassBySize: maxMassBySize, generation: generation, canBePickedUp: false, yield: yield, maxHitPoints: maxHitPoints, fadeInAnim: fadeInAnim, isShownOnMiniMap: true, readableName: readableName, description: description, category: category, lightEngine: new LightEngine(size: 0, opacity: 0.7f, colorActive: true, color: Color.Orange * 0.25f, addedGfxRectMultiplier: 8f, isActive: false, castShadows: true), activeState: State.Empty, soundPack: soundPack)
         {
             this.boardTask = Scheduler.TaskName.OpenContainer;
+
+            this.soundPack.AddAction(action: PieceSoundPack.Action.TurnOn, sound: new Sound(name: SoundData.Name.StartFireBig));
+            this.soundPack.AddAction(action: PieceSoundPack.Action.TurnOff, sound: new Sound(name: SoundData.Name.EndFire));
+
             this.cookingDoneFrame = 0;
             this.foodMassMultiplier = foodMassMultiplier;
             this.ingredientSpace = ingredientSpace;
             this.boosterSpace = boosterSpace;
 
-            this.pieceStorage = this.CreateAndConfigureStorage();
-            this.mealSlot = this.pieceStorage.GetSlot(1, 0);
+            this.CreateAndConfigureStorage();
         }
 
-        private PieceStorage CreateAndConfigureStorage()
+        private StorageSlot FlameTriggerSlot { get { return this.pieceStorage.GetSlot(0, 0); } }
+        private StorageSlot MealSlot { get { return this.pieceStorage.GetSlot(1, 0); } }
+        private StorageSlot FuelSlot { get { return this.pieceStorage.GetSlot(2, 0); } }
+
+
+        private void CreateAndConfigureStorage()
         {
             byte storageWidth = (byte)Math.Max(this.ingredientSpace, this.boosterSpace);
             storageWidth = Math.Max(storageWidth, (byte)3);
             byte storageHeight = 3;
 
-            var storage = new PieceStorage(width: storageWidth, height: storageHeight, world: this.world, storagePiece: this, storageType: PieceStorage.StorageType.Cooking, stackLimit: 1);
+            this.pieceStorage = new PieceStorage(width: storageWidth, height: storageHeight, world: this.world, storagePiece: this, storageType: PieceStorage.StorageType.Cooking, stackLimit: 1);
 
-            foreach (StorageSlot slot in storage.AllSlots)
+            foreach (StorageSlot slot in this.pieceStorage.AllSlots)
             {
                 slot.locked = true;
                 slot.hidden = true;
             }
 
-            StorageSlot flameTriggerSlot = storage.GetSlot(0, 0);
+            StorageSlot flameTriggerSlot = this.FlameTriggerSlot;
+
             flameTriggerSlot.locked = false;
             flameTriggerSlot.hidden = false;
             flameTriggerSlot.allowedPieceNames = new List<PieceTemplate.Name> { PieceTemplate.Name.CookingTrigger };
@@ -63,13 +70,13 @@ namespace SonOfRobin
             flameTriggerSlot.AddPiece(flameTrigger);
             flameTriggerSlot.locked = true;
 
-            StorageSlot mealSlot = storage.GetSlot(1, 0);
+            StorageSlot mealSlot = this.MealSlot;
             mealSlot.locked = false;
             mealSlot.hidden = false;
             mealSlot.allowedPieceNames = new List<PieceTemplate.Name> { PieceTemplate.Name.Meal };
             mealSlot.label = "meal";
 
-            StorageSlot fuelSlot = storage.GetSlot(2, 0);
+            StorageSlot fuelSlot = this.FuelSlot;
             fuelSlot.locked = false;
             fuelSlot.hidden = false;
             fuelSlot.allowedPieceNames = fuelNames;
@@ -77,7 +84,7 @@ namespace SonOfRobin
 
             for (int x = 0; x < this.ingredientSpace; x++)
             {
-                StorageSlot ingredientSlot = storage.GetSlot(x, 1);
+                StorageSlot ingredientSlot = this.pieceStorage.GetSlot(x, 1);
                 ingredientSlot.locked = false;
                 ingredientSlot.hidden = false;
                 ingredientSlot.label = "ingredient";
@@ -86,14 +93,12 @@ namespace SonOfRobin
 
             for (int x = 0; x < this.boosterSpace; x++)
             {
-                StorageSlot boosterSlot = storage.GetSlot(x, 2);
+                StorageSlot boosterSlot = this.pieceStorage.GetSlot(x, 2);
                 boosterSlot.locked = false;
                 boosterSlot.hidden = false;
                 boosterSlot.label = "booster";
                 boosterSlot.allowedPieceNames = boosterNames;
             }
-
-            return storage;
         }
 
         public override Dictionary<string, Object> Serialize()
@@ -117,12 +122,16 @@ namespace SonOfRobin
         {
             this.sprite.AssignNewName(animName: "on");
             this.sprite.lightEngine.Activate();
+            this.soundPack.Play(PieceSoundPack.Action.TurnOn);
+            this.soundPack.Play(PieceSoundPack.Action.IsOn);
         }
 
         public void TurnOff()
         {
             this.sprite.AssignNewName(animName: "off");
             this.sprite.lightEngine.Deactivate();
+            this.soundPack.Stop(PieceSoundPack.Action.IsOn);
+            this.soundPack.Play(PieceSoundPack.Action.TurnOff);
         }
 
         public override void DrawStatBar()
@@ -143,9 +152,9 @@ namespace SonOfRobin
         {
             // checking stored pieces
 
-            if (!this.mealSlot.IsEmpty)
+            if (!MealSlot.IsEmpty)
             {
-                BoardPiece mealLeftInside = this.mealSlot.TopPiece;
+                BoardPiece mealLeftInside = MealSlot.TopPiece;
 
                 new TextWindow(text: "I have to take out previously cooked | meal first.", imageList: new List<Texture2D> { mealLeftInside.sprite.frame.texture }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true);
                 return;
@@ -199,7 +208,7 @@ namespace SonOfRobin
             {
                 cookedMass += ingredient.Mass;
             }
-            int cookingTime = (int)(cookedMass * 3);
+            int cookingTime = (int)(cookedMass * 6);
             cookedMass *= foodMassMultiplier;
 
             // getting all buffs from boosters

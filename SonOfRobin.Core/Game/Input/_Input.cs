@@ -27,6 +27,7 @@ namespace SonOfRobin
         {
             bool savedGlobalInput = globalInputActive;
             bool savedLocalInput = localInputActive;
+
             InputActive = true; // must be true, to capture all input correctly at the start
 
             Mouse.GetState();

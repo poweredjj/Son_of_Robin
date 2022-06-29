@@ -37,8 +37,8 @@ namespace SonOfRobin
         public enum Group
         {
             All,
-            ColBlocking,
-            ColAll,
+            ColMovement,
+            ColPlantGrowth,
             Visible,
             LightSource,
             MiniMap,
@@ -175,6 +175,8 @@ namespace SonOfRobin
 
         public void UpdateGroups(Sprite sprite, List<Group> groupNames)
         {
+            // MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{this.world.currentUpdate} '{sprite.boardPiece.readableName}' - updating group names.");
+
             foreach (Group currentGroupName in (Group[])Enum.GetValues(typeof(Group)))
             {
                 if (groupNames.Contains(currentGroupName))
@@ -189,17 +191,27 @@ namespace SonOfRobin
         }
 
         public void AddToGroup(Sprite sprite, Group groupName)
-        { this.spriteGroups[groupName][sprite.id] = sprite; }
+        {
+            // MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{this.world.currentUpdate} '{sprite.boardPiece.readableName}' - adding to group {groupName}.");
+
+            this.spriteGroups[groupName][sprite.id] = sprite;
+        }
 
         public void RemoveFromGroup(Sprite sprite, Group groupName)
-        { this.spriteGroups[groupName].Remove(sprite.id); }
+        {
+            // MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{this.world.currentUpdate} '{sprite.boardPiece.readableName}' - removing from group {groupName}.");
+
+            this.spriteGroups[groupName].Remove(sprite.id);
+        }
 
         public List<Sprite> GetSpritesFromSurroundingCells(Group groupName)
         {
             List<Sprite> surroundingSprites = new List<Sprite>();
 
             foreach (Cell cell in this.surroundingCells)
-            { surroundingSprites.AddRange(cell.spriteGroups[groupName].Values.ToList()); }
+            {
+                surroundingSprites.AddRange(cell.spriteGroups[groupName].Values.ToList());
+            }
 
             return surroundingSprites;
         }
@@ -213,8 +225,8 @@ namespace SonOfRobin
         public void DrawDebugData(Group groupName)
         {
             SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, new Rectangle(
-                Convert.ToInt32(this.xMin),
-                Convert.ToInt32(this.yMin),
+                this.xMin,
+                this.yMin,
                 this.width,
                 this.height),
                 this.color * 0.3f);

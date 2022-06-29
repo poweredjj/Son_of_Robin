@@ -15,6 +15,11 @@ namespace SonOfRobin
         private static readonly float entryWidthPercent = 0.8f;
         private static readonly float entryHeightPercent = 0.1f;
 
+        private static readonly Sound soundOpen = new Sound(SoundData.Name.Invoke);
+        private static readonly Sound soundNavigate = new Sound(SoundData.Name.Navigation);
+        private static readonly Sound soundReturn = new Sound(SoundData.Name.Navigation);
+
+
         private readonly BoardPiece piece;
         private readonly PieceStorage storage;
         private readonly StorageSlot slot;
@@ -181,24 +186,28 @@ namespace SonOfRobin
         {
             if (InputMapper.HasBeenPressed(InputMapper.Action.GlobalCancelReturnSkip))
             {
+                soundReturn.Play();
                 this.Remove();
                 return;
             }
 
             if (InputMapper.HasBeenPressed(InputMapper.Action.GlobalUp))
             {
+                soundNavigate.Play();
                 this.ActiveEntry -= 1;
                 this.showCursor = true;
             }
 
             if (InputMapper.HasBeenPressed(InputMapper.Action.GlobalDown))
             {
+                soundNavigate.Play();
                 this.ActiveEntry += 1;
                 this.showCursor = true;
             }
 
             if (InputMapper.HasBeenPressed(InputMapper.Action.GlobalConfirm))
             {
+                soundOpen.Play();
                 this.ExecuteAction();
                 this.Remove();
                 return;
@@ -325,7 +334,7 @@ namespace SonOfRobin
                         Craft.Recipe plantRecipe = new Craft.Recipe(pieceToCreate: PieceInfo.GetInfo(fruit.name).isSpawnedBy, ingredients: new Dictionary<PieceTemplate.Name, byte> { { fruit.name, 1 } }, isReversible: false);
 
                         Inventory.SetLayout(newLayout: Inventory.Layout.Toolbar, player: player);
-                        plantRecipe.TryToProducePieces(player: player);
+                        plantRecipe.TryToProducePieces(player: player, showMessages: false);
 
                         return;
                     }
@@ -357,6 +366,7 @@ namespace SonOfRobin
                 case ContextAction.Extinguish:
                     {
                         Fireplace fireplace = (Fireplace)this.storage.storagePiece;
+                        Sound.QuickPlay(SoundData.Name.WaterSplash);
                         fireplace.IsOn = false;
 
                         return;

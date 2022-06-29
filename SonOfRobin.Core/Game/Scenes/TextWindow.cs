@@ -50,7 +50,9 @@ namespace SonOfRobin
             }
         }
 
-        public TextWindow(string text, Color textColor, Color bgColor, bool animate = true, int framesPerChar = 0, bool useTransition = true, bool checkForDuplicate = false, bool blocksUpdatesBelow = false, int blockInputDuration = 0, Scheduler.TaskName closingTask = Scheduler.TaskName.Empty, Object closingTaskHelper = null, bool useTransitionOpen = false, bool useTransitionClose = false, bool autoClose = false, InputTypes inputType = InputTypes.Normal, int priority = 0, List<Texture2D> imageList = null) : base(inputType: inputType, priority: priority, blocksUpdatesBelow: blocksUpdatesBelow, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty)
+        public TextWindow(string text, Color textColor, Color bgColor, bool animate = true, int framesPerChar = 0, bool useTransition = true, bool checkForDuplicate = false, bool blocksUpdatesBelow = false, int blockInputDuration = 0, Scheduler.TaskName closingTask = Scheduler.TaskName.Empty, Object closingTaskHelper = null, bool useTransitionOpen = false, bool useTransitionClose = false, bool autoClose = false, InputTypes inputType = InputTypes.Normal, int priority = 0, List<Texture2D> imageList = null, SoundData.Name startingSound = SoundData.Name.Empty) :
+
+            base(inputType: inputType, priority: priority, blocksUpdatesBelow: blocksUpdatesBelow, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty, startingSound: startingSound)
         {
             this.imageList = imageList == null ? new List<Texture2D>() : imageList;
             this.text = SplitTextAndResizeMarkers(text: text, maxWidth: maxWidth, imageList: this.imageList);

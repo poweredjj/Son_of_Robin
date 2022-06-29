@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <SourceFile>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/sound/522091__magnuswaker__pound-of-flesh-1.ogg</SourceFile>
+  <SourceTime>2022-05-26T13:57:38.2818367+02:00</SourceTime>
+  <DestFile>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/bin/Windows/SonOfRobin/sound/522091__magnuswaker__pound-of-flesh-1.xnb</DestFile>
+  <DestTime>2022-06-04T07:55:52.5076338+02:00</DestTime>
+  <Importer>OggImporter</Importer>
+  <ImporterTime>2020-08-10T18:17:54+02:00</ImporterTime>
+  <Processor>SoundEffectProcessor</Processor>
+  <ProcessorTime>2020-08-10T18:17:54+02:00</ProcessorTime>
+  <Parameters>
+    <Key>Quality</Key>
+    <Value>Best</Value>
+  </Parameters>
+  <Dependencies />
+  <BuildAsset />
+  <BuildOutput />
+</PipelineBuildEvent>

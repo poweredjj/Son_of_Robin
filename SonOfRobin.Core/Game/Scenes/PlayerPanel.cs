@@ -52,6 +52,7 @@ namespace SonOfRobin
         {
             get
             {
+                if (Preferences.debugDisablePlayerPanel) return true;
 
                 Scene menuScene = GetTopSceneOfType(typeof(Menu));
                 if (menuScene != null && !menuScene.transManager.HasAnyTransition) return true;
