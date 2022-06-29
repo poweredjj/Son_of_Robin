@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -6,7 +7,7 @@ namespace SonOfRobin
 {
     public class BuffEngine
     {
-        public enum BuffType { InvWidth, InvHeight, ToolbarWidth, ToolbarHeight, Speed, Strength, MaxHp, EnableMap, Tired, Hungry, LightSource };
+        public enum BuffType { InvWidth, InvHeight, ToolbarWidth, ToolbarHeight, Speed, Strength, HP, MaxHp, EnableMap, Tired, Hungry, LightSource, RegenPoison };
 
         [Serializable]
         public class Buff
@@ -15,19 +16,23 @@ namespace SonOfRobin
             public readonly bool increaseIDAtEveryUse;
             public readonly BuffType type;
             public readonly object value;
+            public readonly bool canKill;
             public readonly int autoRemoveDelay;
             public int activationFrame;
             public int endFrame;
             public readonly bool isPositive;
+            public readonly bool isPermanent;
             public readonly int sleepFrames;
-            public Buff(World world, BuffType type, object value, bool isPositive, int autoRemoveDelay = 0, int sleepFrames = 0, bool increaseIDAtEveryUse = false)
+            public Buff(World world, BuffType type, object value, bool isPositive, int autoRemoveDelay = 0, int sleepFrames = 0, bool isPermanent = false, bool canKill = false, bool increaseIDAtEveryUse = false)
             {
                 this.increaseIDAtEveryUse = increaseIDAtEveryUse; // for buffs that could stack (like sleeping buffs)
                 this.id = world.currentBuffId;
                 world.currentBuffId++;
                 this.type = type;
                 this.value = value;
+                this.canKill = canKill;
                 this.isPositive = isPositive;
+                this.isPermanent = isPermanent;
                 this.sleepFrames = sleepFrames;
 
                 // AutoRemoveDelay should not be used for equip!
@@ -76,6 +81,10 @@ namespace SonOfRobin
                             description = $"Strength {sign}{this.value}.";
                             break;
 
+                        case BuffType.HP:
+                            description = $"HP {sign}{this.value}.";
+                            break;
+
                         case BuffType.MaxHp:
                             description = $"Max HP {sign}{this.value}.";
                             break;
@@ -94,6 +103,10 @@ namespace SonOfRobin
 
                         case BuffType.LightSource:
                             description = $"Light source {sign}{this.value}.";
+                            break;
+
+                        case BuffType.RegenPoison:
+                            description = this.isPositive ? $"Regen {sign}{this.value}" : $"Poison {sign}{this.value}";
                             break;
 
                         default:
@@ -127,17 +140,20 @@ namespace SonOfRobin
                         case BuffType.ToolbarHeight:
                             return null;
 
+                        case BuffType.EnableMap:
+                            return null;
+
                         case BuffType.Speed:
                             return $"SPD\n{sign}{this.value}";
 
                         case BuffType.Strength:
                             return $"STR\n{sign}{this.value}";
 
-                        case BuffType.MaxHp:
+                        case BuffType.HP:
                             return $"HP\n{sign}{this.value}";
 
-                        case BuffType.EnableMap:
-                            return null;
+                        case BuffType.MaxHp:
+                            return $"MAX HP\n{sign}{this.value}";
 
                         case BuffType.Tired:
                             return "tired";
@@ -147,6 +163,9 @@ namespace SonOfRobin
 
                         case BuffType.LightSource:
                             return $"LIGHT\n{sign}{this.value}";
+
+                        case BuffType.RegenPoison:
+                            return this.isPositive ? $"REGEN\n{sign}{this.value}" : $"POISON\n{sign}{this.value}";
 
                         default:
                             throw new DivideByZeroException($"Unsupported buff type - {this.type}.");
@@ -219,6 +238,8 @@ namespace SonOfRobin
             if (buff.autoRemoveDelay > 0) new WorldEvent(eventName: WorldEvent.EventName.RemoveBuff, world: this.piece.world, delay: buff.autoRemoveDelay, boardPiece: this.piece, eventHelper: buff.id);
 
             MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Buff added - id {buff.id} type {buff.type} value {buff.value}.");
+
+            if (buff.isPermanent) this.RemoveBuff(buff.id); // permanent buff should only change value and not be stored and displayed
         }
 
         public void RemoveEveryBuffOfType(BuffType buffType)
@@ -229,23 +250,47 @@ namespace SonOfRobin
             }
         }
 
-        public void RemoveBuff(int buffId)
+        public void RemoveBuff(int buffId, bool checkIfHasThisBuff = true)
         {
-            if (!this.buffDict.ContainsKey(buffId)) throw new DivideByZeroException($"Buff not found during removal - id {buffId}.");
+            if (!this.buffDict.ContainsKey(buffId))
+            {
+                if (checkIfHasThisBuff) throw new DivideByZeroException($"Buff not found during removal - id {buffId}.");
+                else return;
+            }
+
             Buff buffToRemove = this.buffDict[buffId];
 
             BuffType typeToCheck = buffDict[buffId].type;
             this.buffDict.Remove(buffId);
             bool stillHasThisBuff = this.HasBuff(typeToCheck);
-            this.ProcessBuff(buff: buffToRemove, add: false, stillHasThisBuff: stillHasThisBuff, world: null);
+            if (!buffToRemove.isPermanent) this.ProcessBuff(buff: buffToRemove, add: false, stillHasThisBuff: stillHasThisBuff, world: null);
 
             MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Buff removed - id {buffToRemove.id} type {buffToRemove.type} value {buffToRemove.value}.");
         }
 
+        private List<Buff> FindBuffsOfType(BuffType buffType)
+        {
+            return this.buffDict.Values.Where(buff => buff.type == buffType).ToList();
+        }
+
         public bool HasBuff(BuffType buffType)
         {
-            var buffsOfType = this.buffDict.Values.Where(buff => buff.type == buffType).ToList();
-            return buffsOfType.Count > 0;
+            foreach (Buff buff in this.buffDict.Values)
+            {
+                if (buff.type == buffType) return true;
+            }
+
+            return false;
+        }
+
+        public bool HasBuff(int buffID)
+        {
+            foreach (Buff buff in this.buffDict.Values)
+            {
+                if (buff.id == buffID) return true;
+            }
+
+            return false;
         }
 
         private void ProcessBuff(World world, Buff buff, bool add, bool hadThisBuffBefore = false, bool stillHasThisBuff = false)
@@ -302,6 +347,15 @@ namespace SonOfRobin
                         break;
                     }
 
+                case BuffType.Strength:
+                    {
+                        int value = (int)buff.value;
+                        if (!add) value *= -1;
+                        this.piece.strength += value;
+
+                        break;
+                    }
+
                 case BuffType.MaxHp:
                     {
                         if (add) this.piece.maxHitPoints += (float)buff.value;
@@ -310,6 +364,17 @@ namespace SonOfRobin
                             this.piece.maxHitPoints -= (float)buff.value;
                             this.piece.hitPoints = Math.Min(this.piece.hitPoints, this.piece.maxHitPoints);
                         }
+
+                        break;
+                    }
+
+                case BuffType.HP:
+                    {
+                        if (add) this.piece.hitPoints += (float)buff.value;
+                        else this.piece.hitPoints -= (float)buff.value;
+
+                        this.piece.hitPoints = Math.Min(this.piece.hitPoints, this.piece.maxHitPoints);
+                        this.piece.hitPoints = Math.Max(this.piece.hitPoints, 0);
 
                         break;
                     }
@@ -360,11 +425,32 @@ namespace SonOfRobin
                         break;
                     }
 
-                case BuffType.Strength:
+                case BuffType.RegenPoison:
                     {
-                        int value = (int)buff.value;
-                        if (!add) value *= -1;
-                        this.piece.strength += value;
+                        if (add)
+                        {
+                            int delay = 60 * 5;
+
+                            var regenPoisonData = new Dictionary<string, Object> {
+                            { "buffID", buff.id }, { "charges", buff.autoRemoveDelay / delay }, { "delay", delay }, { "hpChange", buff.value }, { "canKill", buff.canKill } };
+                            new WorldEvent(eventName: WorldEvent.EventName.RegenPoison, world: world, delay: delay, boardPiece: this.piece, eventHelper: regenPoisonData);
+
+                            if ((int)buff.value < 0) this.piece.sprite.color = Color.Chartreuse;
+                        }
+                        else
+                        {
+                            bool hasPoisonBuff = false;
+                            foreach (Buff regenPoisonBuff in this.FindBuffsOfType(buff.type))
+                            {
+                                if ((int)regenPoisonBuff.value < 0)
+                                {
+                                    hasPoisonBuff = true;
+                                    break;
+                                }
+                            }
+
+                            if (!hasPoisonBuff) this.piece.sprite.color = Color.White;
+                        }
 
                         break;
                     }
@@ -373,7 +459,6 @@ namespace SonOfRobin
                     throw new DivideByZeroException($"Unsupported buff type - {buff.type}.");
             }
         }
-
 
     }
 }

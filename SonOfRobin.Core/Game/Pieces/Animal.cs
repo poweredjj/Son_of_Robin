@@ -686,7 +686,6 @@ namespace SonOfRobin
             for (int i = 0; i < noOfChildren; i++)
             {
                 if (this.world.pieceCountByName[this.name] >= maxAnimalsPerName)
-                // to avoid processing too many animals, which are heavy on CPU
                 {
                     var fat = this.pregnancyMass;
                     this.Mass = Math.Min(this.Mass + fat, this.maxMass);

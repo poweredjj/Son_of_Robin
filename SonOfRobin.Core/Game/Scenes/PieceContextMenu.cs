@@ -8,7 +8,7 @@ namespace SonOfRobin
 {
     public class PieceContextMenu : Scene
     {
-        protected enum ContextAction { Drop, DropAll, Move, Eat, Plant, Cook, Switch, Ignite, Extinguish }
+        protected enum ContextAction { Drop, DropAll, Move, Eat, Drink, Plant, Cook, Switch, Ignite, Extinguish }
 
         private static readonly SpriteFont font = SonOfRobinGame.fontTommy40;
         private static readonly float marginPercent = 0.03f;
@@ -135,6 +135,7 @@ namespace SonOfRobin
             var contextActionList = new List<ContextAction> { };
 
             if (this.piece.toolbarTask == Scheduler.TaskName.GetEaten) contextActionList.Add(ContextAction.Eat);
+            if (this.piece.toolbarTask == Scheduler.TaskName.GetDrinked) contextActionList.Add(ContextAction.Drink);
             if (this.piece.GetType() == typeof(Fruit)) contextActionList.Add(ContextAction.Plant);
             if (this.piece.GetType() == typeof(PortableLight) && this.piece.IsOnPlayersToolbar) contextActionList.Add(ContextAction.Switch);
             if (addMove) contextActionList.Add(ContextAction.Move);
@@ -208,8 +209,6 @@ namespace SonOfRobin
 
         private void ProcessTouch()
         {
-            if (!Preferences.EnableTouch) return;
-
             Rectangle bgRect = this.BgRect;
 
             foreach (TouchLocation touch in TouchInput.TouchPanelState)
@@ -289,11 +288,29 @@ namespace SonOfRobin
 
                         var executeHelper = new Dictionary<string, Object> { };
                         executeHelper["player"] = world.player;
+                        executeHelper["slot"] = this.slot;
                         executeHelper["toolbarPiece"] = food;
                         executeHelper["buttonHeld"] = false;
                         executeHelper["highlightOnly"] = false;
 
                         new Scheduler.Task(taskName: food.toolbarTask, delay: 0, executeHelper: executeHelper);
+
+                        return;
+                    }
+
+                case ContextAction.Drink:
+                    {
+                        BoardPiece potion = this.slot.TopPiece;
+                        World world = World.GetTopWorld();
+
+                        var executeHelper = new Dictionary<string, Object> { };
+                        executeHelper["player"] = world.player;
+                        executeHelper["slot"] = this.slot;
+                        executeHelper["toolbarPiece"] = potion;
+                        executeHelper["buttonHeld"] = false;
+                        executeHelper["highlightOnly"] = false;
+
+                        new Scheduler.Task(taskName: potion.toolbarTask, delay: 0, executeHelper: executeHelper);
 
                         return;
                     }

@@ -71,11 +71,11 @@ namespace SonOfRobin
                         break;
 
                     case RangeName.NoDanger:
-                        this.AddRange(terrainName: TerrainName.Danger, min: 0, max: Terrain.saveZoneMax);
+                        this.AddRange(terrainName: TerrainName.Danger, min: 0, max: Terrain.safeZoneMax);
                         break;
 
                     case RangeName.Danger:
-                        this.AddRange(terrainName: TerrainName.Danger, min: (byte)(Terrain.saveZoneMax + 1), max: 255);
+                        this.AddRange(terrainName: TerrainName.Danger, min: (byte)(Terrain.safeZoneMax + 1), max: 255);
                         break;
 
                     default:

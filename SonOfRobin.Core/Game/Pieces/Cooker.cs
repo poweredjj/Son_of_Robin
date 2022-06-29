@@ -7,7 +7,7 @@ namespace SonOfRobin
 {
     public class Cooker : BoardPiece
     {
-        private static readonly List<PieceTemplate.Name> ingredientNames = new List<PieceTemplate.Name> { PieceTemplate.Name.RawMeat, PieceTemplate.Name.Apple, PieceTemplate.Name.Cherry, PieceTemplate.Name.Banana, PieceTemplate.Name.Tomato, PieceTemplate.Name.Acorn, PieceTemplate.Name.Herbs };
+        private static readonly List<PieceTemplate.Name> ingredientNames = new List<PieceTemplate.Name> { PieceTemplate.Name.RawMeat, PieceTemplate.Name.Apple, PieceTemplate.Name.Cherry, PieceTemplate.Name.Banana, PieceTemplate.Name.Tomato, PieceTemplate.Name.Acorn, PieceTemplate.Name.Clam };
 
         private static readonly List<PieceTemplate.Name> fuelNames = new List<PieceTemplate.Name> { PieceTemplate.Name.WoodLog, PieceTemplate.Name.WoodPlank, PieceTemplate.Name.Coal };
 
@@ -162,9 +162,9 @@ namespace SonOfRobin
                 if (cookedMass == 0) break;
             }
 
-            Scene.SetInventoryLayout(newLayout: Scene.InventoryLayout.Toolbar, player: this.world.player);
+            Inventory.SetLayout(newLayout: Inventory.Layout.Toolbar, player: this.world.player);
             this.TurnOn();
-            new TextWindow(text: "Cooking...", textColor: Color.White, bgColor: Color.Green, useTransition: true, animate: false);
+            new TextWindow(text: "Cooking...", textColor: Color.Green, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1);
 
             this.cookingStartFrame = this.world.currentUpdate;
             this.cookingDoneFrame = this.world.currentUpdate + cookingTime;
@@ -178,7 +178,7 @@ namespace SonOfRobin
 
         public void ShowCookingProgress()
         {
-            new TextWindow(text: $"Cooking will be done in {TimeSpanToString(this.TimeToFinishCooking)}.", textColor: Color.White, bgColor: Color.Green, useTransition: true, animate: false);
+            new TextWindow(text: $"Cooking will be done in {TimeSpanToString(this.TimeToFinishCooking)}.", textColor: Color.White, bgColor: Color.Green, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1);
         }
 
         private static string TimeSpanToString(TimeSpan timeSpan)

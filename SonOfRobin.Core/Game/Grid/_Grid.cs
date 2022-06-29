@@ -175,7 +175,7 @@ namespace SonOfRobin
         {
             var cellProcessingQueue = new List<Cell> { };
 
-            for (int i = 0; i < 70 * Preferences.newWorldResDivider; i++)
+            for (int i = 0; i < 50 * Preferences.newWorldResDivider; i++)
             {
                 cellProcessingQueue.Add(this.cellsToProcessOnStart[0]);
                 this.cellsToProcessOnStart.RemoveAt(0);
@@ -200,7 +200,7 @@ namespace SonOfRobin
         // cannot be processed using parallel (textures don't work in parallel processing)
         {
             // when whole map is not loaded, processing cells will be very fast (and drawing progress bar is slowing down the whole process)
-            int maxCellsToProcess = Preferences.loadWholeMap ? 75 * Preferences.newWorldResDivider : 9999999;
+            int maxCellsToProcess = Preferences.loadWholeMap ? 50 * Preferences.newWorldResDivider : 9999999;
 
             for (int i = 0; i < maxCellsToProcess; i++)
             {

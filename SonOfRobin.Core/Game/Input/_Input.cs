@@ -77,7 +77,6 @@ namespace SonOfRobin
                 MessageLog.AddMessage(msgType: MsgType.Debug, message: "GlobalInputActive had to be restored.", color: Color.White);
             }
         }
-
     }
 
 }

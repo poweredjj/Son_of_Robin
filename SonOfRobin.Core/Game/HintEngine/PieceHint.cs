@@ -9,7 +9,7 @@ namespace SonOfRobin
 
     public struct PieceHint
     {
-        public enum Type { CrateStarting, CrateAnother, WoodNegative, WoodPositive, StoneNegative, StonePositive, AnimalNegative, AnimalSling, AnimalBow, AnimalBat, AnimalAxe, SlingNoAmmo, BowNoAmmo, ShellIsNotUseful, FruitTree, BananaTree, TomatoPlant, IronDepositNegative, IronDepositPositive, CoalDepositNegative, CoalDepositPositive, Cooker, LeatherPositive, BackpackPositive, BeltPositive, MapCanMake, MapPositive, RedExclamation, Acorn, TorchNegative, TorchPositive, Fireplace }
+        public enum Type { CrateStarting, CrateAnother, WoodNegative, WoodPositive, StoneNegative, StonePositive, AnimalNegative, AnimalSling, AnimalBow, AnimalBat, AnimalAxe, SlingNoAmmo, BowNoAmmo, ShellIsNotUseful, Clam, FruitTree, BananaTree, TomatoPlant, IronDepositNegative, IronDepositPositive, CoalDepositNegative, CoalDepositPositive, Cooker, LeatherPositive, BackpackPositive, BeltPositive, MapCanMake, MapPositive, RedExclamation, Acorn, TorchNegative, TorchPositive, Fireplace, HerbsRed, GlassSand }
 
         public static List<PieceHint> pieceHintList;
 
@@ -32,6 +32,21 @@ namespace SonOfRobin
                     message: "This | shell is pretty, but I don't think it will be useful.",
                     imageList: new List<Texture2D>{ AnimData.framesForPkgs[AnimData.PkgName.Shell1].texture},
                     playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.Shell}),
+
+                new PieceHint(type: Type.HerbsRed, canBeForced: true,
+                    message: "I think I could use this | herbs to make a healing potion.",
+                    imageList: new List<Texture2D>{ AnimData.framesForPkgs[AnimData.PkgName.HerbsRed].texture},
+                    playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.HerbsRed}),
+
+                new PieceHint(type: Type.GlassSand, canBeForced: true,
+                    message: "This | is no ordinary sand!\nIt can be used to make glass.",
+                    imageList: new List<Texture2D>{ AnimData.framesForPkgs[AnimData.PkgName.GlassSand].texture},
+                    playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.GlassSand}),
+
+                new PieceHint(type: Type.Clam,
+                    message: "This | clam should be edible after cooking.",
+                    imageList: new List<Texture2D>{ AnimData.framesForPkgs[AnimData.PkgName.Clam].texture},
+                    fieldPieces: new List<PieceTemplate.Name> {PieceTemplate.Name.Clam}),
 
                 new PieceHint(type: Type.Acorn, canBeForced: true,
                     message: "After cooking, this | acorn should be edible.",

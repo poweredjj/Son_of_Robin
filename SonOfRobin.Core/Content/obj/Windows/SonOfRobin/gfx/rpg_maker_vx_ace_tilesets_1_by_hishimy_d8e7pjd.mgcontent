@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/Keyboard/arrows_light.png</SourceFile>
-  <SourceTime>2022-04-20T11:26:23.8888341+02:00</SourceTime>
-  <DestFile>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/bin/Android/SonOfRobin/gfx/Keyboard/arrows_light.xnb</DestFile>
-  <DestTime>2022-04-22T07:16:45.4253492+02:00</DestTime>
+  <SourceFile>C:/Users/msmidowi/Documents/SonOfRobin/SonOfRobin.Core/Content/gfx/rpg_maker_vx_ace_tilesets_1_by_hishimy_d8e7pjd.png</SourceFile>
+  <SourceTime>2022-04-29T13:54:13.5984105+02:00</SourceTime>
+  <DestFile>C:/Users/msmidowi/Documents/SonOfRobin/SonOfRobin.Core/Content/bin/Windows/SonOfRobin/gfx/rpg_maker_vx_ace_tilesets_1_by_hishimy_d8e7pjd.xnb</DestFile>
+  <DestTime>2022-04-29T14:04:07.6523625+02:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2020-08-10T18:17:54+02:00</ImporterTime>
   <Processor>TextureProcessor</Processor>

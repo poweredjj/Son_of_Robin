@@ -13,8 +13,8 @@ namespace SonOfRobin
 
     public class SonOfRobinGame : Game
     {
-        public static readonly float version = 8.2f;
-        public static readonly DateTime lastChanged = new DateTime(2022, 04, 26);
+        public static readonly float version = 8.3f;
+        public static readonly DateTime lastChanged = new DateTime(2022, 04, 29);
 
         public static ContentManager content;
 
@@ -186,7 +186,7 @@ namespace SonOfRobin
 
             textureByName = new Dictionary<string, Texture2D>();
 
-            string[] assetNames = { "no_anim", "fox", "tile_custom01", "actor29rec4", "tileb", "tile_19ba32a6", "backlight_1", "backlight_2", "backlight_3", "backlight_4", "crabs_small", "crabs_big", "frogs_small", "frogs_big", "flowers", "8f296dbbaf43865bc29e99660fe7b5af_2x", "qYFvsmq", "NicePng_pine-tree-clipart-png_1446450", "palmtree_small", "tilees by guth_zpsfn3wpjdu_2x", "attack", "miss", "zzz", "heart_16x16", "rabbits", "virtual_joypad_background", "virtual_joypad_stick", "virtual_button", "virtual_button_pressed", "cursor", "chests", "d9ffec650d3104f5c4564c9055787530", "sticks1", "sticks2", "axe_wooden", "hand", "tools_gravel", "stones", "fancy_food", "fancy_food2", "celianna_farmnature_crops_transparent", "weapons1", "steak_t-bone", "Cooked Meat", "big_icons_candacis", "Candacis_flames1", "gems__rpg_maker_mv__by_petschko-d9euoxr", "mv_blacksmith_by_schwarzenacht_dapf6ek", "bows", "arrow_wood", "arrow_iron", "crosshair", "sling", "greatsling", "stone_ammo", "craft_items", "tent_big", "tent_medium", "flames", "bag", "bag_outline", "backpack", "belt", "parchment", "exclamation", "scythe", "grass_blade", "tiger", "plus", "acorn", "light_white", "torch_on", "torch_off", "water_drop", "tile_rtp-addons" };
+            string[] assetNames = { "no_anim", "fox", "tile_custom01", "actor29rec4", "tileb", "tile_19ba32a6", "backlight_1", "backlight_2", "backlight_3", "backlight_4", "crabs_small", "crabs_big", "frogs_small", "frogs_big", "flowers", "8f296dbbaf43865bc29e99660fe7b5af_2x", "qYFvsmq", "NicePng_pine-tree-clipart-png_1446450", "palmtree_small", "tilees by guth_zpsfn3wpjdu_2x", "attack", "miss", "zzz", "heart_16x16", "rabbits", "virtual_joypad_background", "virtual_joypad_stick", "virtual_button", "virtual_button_pressed", "cursor", "chests", "d9ffec650d3104f5c4564c9055787530", "sticks1", "sticks2", "axe_wooden", "hand", "tools_gravel", "stones", "fancy_food", "fancy_food2", "celianna_farmnature_crops_transparent", "weapons1", "steak_t-bone", "Cooked Meat", "big_icons_candacis", "Candacis_flames1", "gems__rpg_maker_mv__by_petschko-d9euoxr", "mv_blacksmith_by_schwarzenacht_dapf6ek", "bows", "arrow_wood", "arrow_iron", "crosshair", "sling", "greatsling", "stone_ammo", "craft_items", "tent_big", "tent_medium", "flames", "bag", "bag_outline", "backpack", "belt", "parchment", "exclamation", "scythe", "grass_blade", "tiger", "plus", "acorn", "light_white", "torch_on", "torch_off", "water_drop", "tile_rtp-addons", "bottle_empty", "herbs_black", "herbs_blue", "herbs_green", "herbs_red", "herbs_violet", "herbs_yellow", "rpg_maker_vx_ace_tilesets_1_by_hishimy_d8e7pjd" };
 
             foreach (string assetName in assetNames)
             {

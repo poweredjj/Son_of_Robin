@@ -9,7 +9,7 @@ namespace SonOfRobin
 {
     public class Scheduler
     {
-        public enum TaskName { Empty, CreateNewWorld, CreateNewWorldNow, QuitGame, OpenMenuTemplate, OpenMainMenu, OpenConfirmationMenu, SaveGame, LoadGame, LoadGameNow, ReturnToMainMenu, SavePrefs, ProcessConfirmation, OpenCraftMenu, Craft, Hit, CreateNewPiece, CreateDebugPieces, OpenContainer, DeleteObsoleteSaves, DropFruit, GetEaten, ExecuteTaskWithDelay, AddWorldEvent, OpenTextWindow, SleepInsideShelter, SleepOutside, TempoFastForward, TempoStop, TempoPlay, CameraTrackPiece, CameraTrackCoords, CameraSetZoom, ShowCookingProgress, RestoreHints, OpenMainMenuIfSpecialKeysArePressed, CheckForPieceHints, ShowHint, ExecuteTaskList, ExecuteTaskChain, ShowTutorial, RemoveScene, ChangeSceneInputType, SetCineMode, AddTransition, SkipCinematics, DeleteTemplates, SetSpectatorMode, SwitchLightSource, ResetControls, SaveControls }
+        public enum TaskName { Empty, CreateNewWorld, CreateNewWorldNow, QuitGame, OpenMenuTemplate, OpenMainMenu, OpenConfirmationMenu, SaveGame, LoadGame, LoadGameNow, ReturnToMainMenu, SavePrefs, ProcessConfirmation, OpenCraftMenu, Craft, Hit, CreateNewPiece, CreateDebugPieces, OpenContainer, DeleteObsoleteSaves, DropFruit, GetEaten, GetDrinked, ExecuteTaskWithDelay, AddWorldEvent, OpenTextWindow, SleepInsideShelter, SleepOutside, TempoFastForward, TempoStop, TempoPlay, CameraTrackPiece, CameraTrackCoords, CameraSetZoom, ShowCookingProgress, RestoreHints, OpenMainMenuIfSpecialKeysArePressed, CheckForPieceHints, ShowHint, ExecuteTaskList, ExecuteTaskChain, ShowTutorial, RemoveScene, ChangeSceneInputType, SetCineMode, AddTransition, SkipCinematics, DeleteTemplates, SetSpectatorMode, SwitchLightSource, ResetControls, SaveControls }
 
         private readonly static Dictionary<int, List<Task>> queue = new Dictionary<int, List<Task>>();
         private static int inputTurnedOffUntilFrame = 0;
@@ -201,16 +201,18 @@ namespace SonOfRobin
                         }
 
                     case TaskName.CreateNewPiece:
-                        world = World.GetTopWorld();
-                        if (world != null)
                         {
-                            var executeData = (Dictionary<string, Object>)executeHelper;
-                            Vector2 position = (Vector2)executeData["position"];
-                            PieceTemplate.Name templateName = (PieceTemplate.Name)executeData["templateName"];
-                            BoardPiece piece = PieceTemplate.CreateOnBoard(world: world, position: position, templateName: templateName);
-                            if (piece.sprite.placedCorrectly) piece.sprite.MoveToClosestFreeSpot(position);
+                            world = World.GetTopWorld();
+                            if (world != null)
+                            {
+                                var executeData = (Dictionary<string, Object>)executeHelper;
+                                Vector2 position = (Vector2)executeData["position"];
+                                PieceTemplate.Name templateName = (PieceTemplate.Name)executeData["templateName"];
+                                BoardPiece piece = PieceTemplate.CreateOnBoard(world: world, position: position, templateName: templateName);
+                                if (piece.sprite.placedCorrectly) piece.sprite.MoveToClosestFreeSpot(position);
+                            }
+                            return;
                         }
-                        return;
 
                     case TaskName.CreateDebugPieces:
                         world = World.GetTopWorld();
@@ -321,7 +323,7 @@ namespace SonOfRobin
                                 return;
                             }
 
-                            Scene.SetInventoryLayout(newLayout: Scene.InventoryLayout.InventoryAndChest, player: world.player, chest: container);
+                            Inventory.SetLayout(newLayout: Inventory.Layout.InventoryAndChest, player: world.player, chest: container);
                         }
 
                         return;
@@ -416,7 +418,7 @@ namespace SonOfRobin
                                 if (buttonHeld) return;
                             }
 
-                            if (player.hitPoints == player.maxHitPoints && player.fedLevel >= player.maxFedLevel * 0.95)
+                            if (player.fedLevel >= player.maxFedLevel * 0.95f)
                             {
                                 if (!highlightOnly) new TextWindow(text: "I am full.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1);
 
@@ -430,15 +432,52 @@ namespace SonOfRobin
                                 return;
                             }
 
+                            world = World.GetTopWorld();
+
                             foreach (BuffEngine.Buff buff in food.buffList)
-                            { player.buffEngine.AddBuff(buff: buff, world: World.GetTopWorld()); }
+                            { player.buffEngine.AddBuff(buff: buff, world: world); }
 
                             player.AcquireEnergy(food.Mass * 40f);
+                            player.buffEngine.AddBuff(world: world, buff: new BuffEngine.Buff(world: world, type: BuffEngine.BuffType.RegenPoison, value: (int)(food.Mass / 3), autoRemoveDelay: 60 * 60, isPositive: true));
 
                             food.hitPoints = 0;
                         }
                         return;
 
+                    case TaskName.GetDrinked:
+                        {
+                            var executeData = (Dictionary<string, Object>)executeHelper;
+                            Player player = (Player)executeData["player"];
+                            Potion potion = (Potion)executeData["toolbarPiece"];
+                            StorageSlot slot = (StorageSlot)executeData["slot"];
+                            bool highlightOnly = false;
+                            if (executeData.ContainsKey("highlightOnly")) highlightOnly = (bool)executeData["highlightOnly"];
+
+                            if (executeData.ContainsKey("buttonHeld"))
+                            {
+                                bool buttonHeld = (bool)executeData["buttonHeld"];
+                                if (buttonHeld) return;
+                            }
+
+                            if (highlightOnly)
+                            {
+                                VirtButton.ButtonHighlightOnNextFrame(VButName.UseTool);
+                                ControlTips.TipHighlightOnNextFrame(tipName: "use item");
+                                return;
+                            }
+
+                            world = World.GetTopWorld();
+
+                            // all parameters should be increased using buffs
+
+                            foreach (BuffEngine.Buff buff in potion.buffList)
+                            { player.buffEngine.AddBuff(buff: buff, world: world); }
+
+                            BoardPiece emptyBottle = PieceTemplate.CreateOffBoard(templateName: potion.convertsToWhenDrinked, world: world);
+                            slot.DestroyPieceAndReplaceWithAnother(emptyBottle);
+
+                            return;
+                        }
 
                     case TaskName.SwitchLightSource:
                         {
@@ -476,6 +515,7 @@ namespace SonOfRobin
                             }
 
                             InputMapper.RebuildMappings();
+                            Preferences.ControlTipsScheme = Preferences.ControlTipsScheme; // to refresh tutorials, etc.
                             new Task(taskName: TaskName.SavePrefs);
 
                             string type = gamepad ? "Gamepad" : "Keyboard";
@@ -496,6 +536,7 @@ namespace SonOfRobin
                             else InputMapper.currentMappingKeyboard = InputMapper.newMappingKeyboard.MakeCopy();
 
                             InputMapper.RebuildMappings();
+                            Preferences.ControlTipsScheme = Preferences.ControlTipsScheme; // to refresh tutorials, etc.
                             new Task(taskName: TaskName.SavePrefs);
 
                             string type = gamepad ? "Gamepad" : "Keyboard";

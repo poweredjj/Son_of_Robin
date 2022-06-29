@@ -7,7 +7,7 @@ namespace SonOfRobin
 {
     public class WorldEvent
     {
-        public enum EventName { Birth, Death, Destruction, TurnOffWorkshop, FinishCooking, RestorePieceCreation, FadeOutSprite, RestoreHint, RemoveBuff, BurnOutLightSource }
+        public enum EventName { Birth, Death, Destruction, TurnOffWorkshop, FinishCooking, RestorePieceCreation, FadeOutSprite, RestoreHint, RemoveBuff, BurnOutLightSource, RegenPoison }
 
         public readonly World world;
         public readonly BoardPiece boardPiece;
@@ -150,8 +150,8 @@ namespace SonOfRobin
 
                 case EventName.RemoveBuff:
                     {
-                        int buffId = (int)this.eventHelper;
-                        this.boardPiece.buffEngine.RemoveBuff(buffId);
+                        int buffID = (int)this.eventHelper;
+                        this.boardPiece.buffEngine.RemoveBuff(buffID);
 
                         return;
                     }
@@ -179,7 +179,7 @@ namespace SonOfRobin
                 case EventName.BurnOutLightSource:
                     {
                         // example eventHelper for this task
-                        // var damageData = new Dictionary<string, Object> { { "delay", 60 * 3 }, { "damage", 3 }, { "buffList", this.buffList } };
+                        // var damageData = new Dictionary<string, Object> { { "delay", 60 * 3 }, { "damage", 3 } };
 
                         PortableLight portableLight = (PortableLight)this.boardPiece;
 
@@ -191,11 +191,14 @@ namespace SonOfRobin
                             return;
                         }
 
-                        // inflicting damage
+                        // reading damage data
+
                         var damageData = (Dictionary<string, Object>)this.eventHelper;
 
                         int delay = (int)damageData["delay"];
                         int damage = (int)damageData["damage"];
+
+                        // inflicting damage
 
                         this.boardPiece.hitPoints = Math.Max(this.boardPiece.hitPoints - damage, 0);
                         if (this.boardPiece.hitPoints <= 0)
@@ -208,7 +211,62 @@ namespace SonOfRobin
                         }
 
                         // setting next loop event
+
                         new WorldEvent(eventName: EventName.BurnOutLightSource, world: this.world, delay: delay, boardPiece: this.boardPiece, eventHelper: this.eventHelper);
+                        return;
+                    }
+
+                case EventName.RegenPoison:
+                    {
+                        // example eventHelper for this task
+                        // var regenPoisonData = new Dictionary<string, Object> { { "buffID", buff.id }, { "charges", buff.autoRemoveDelay / delay }, { "delay", delay }, { "hpChange", buff.value }, { "canKill", buff.canKill }};
+
+                        // reading regen / poison data
+
+                        var regenPoisonData = (Dictionary<string, Object>)this.eventHelper;
+
+                        int buffID = (int)regenPoisonData["buffID"];
+                        int delay = (int)regenPoisonData["delay"];
+                        int charges = (int)regenPoisonData["charges"];
+                        int hpChange = (int)regenPoisonData["hpChange"];
+                        bool canKill = (bool)regenPoisonData["canKill"];
+
+                        // breaking the loop
+
+                        if (charges <= 0 || !this.boardPiece.alive || !this.boardPiece.exists || !this.boardPiece.buffEngine.HasBuff(buffID))
+                        {
+                            // no need to remove the buff - autoRemoveDelay will remove it
+                            return;
+                        }
+
+                        // flashing the screen red if reducing player's hit points
+
+                        if (hpChange < 0 && this.boardPiece.GetType() == typeof(Player))
+                        {
+                            this.world.colorOverlay.color = Color.Red * 0.8f;
+                            this.world.colorOverlay.viewParams.Opacity = 0f;
+                            this.world.colorOverlay.transManager.AddTransition(new Transition(transManager: this.world.colorOverlay.transManager, outTrans: true, duration: 12, playCount: 1, stageTransform: Transition.Transform.Sinus, baseParamName: "Opacity", targetVal: 0.5f));
+                        }
+
+                        // changing target hit points
+
+                        int minValue = canKill ? 0 : 1;
+
+                        this.boardPiece.hitPoints = Math.Min(this.boardPiece.hitPoints + hpChange, this.boardPiece.maxHitPoints);
+                        this.boardPiece.hitPoints = Math.Max(this.boardPiece.hitPoints, minValue);
+                        if (this.boardPiece.hitPoints == 0)
+                        {
+                            this.boardPiece.Kill();
+                            return;
+                        }
+
+                        // setting next loop event
+
+                        charges--;
+                        regenPoisonData["charges"] = charges; // updating charges counter (the rest should stay the same)
+
+                        new WorldEvent(eventName: EventName.RegenPoison, world: world, delay: delay, boardPiece: this.boardPiece, eventHelper: regenPoisonData);
+
                         return;
                     }
 

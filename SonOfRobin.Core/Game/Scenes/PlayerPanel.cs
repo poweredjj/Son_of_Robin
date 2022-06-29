@@ -1,17 +1,49 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input.Touch;
 using System;
+using System.Linq;
 
 namespace SonOfRobin
 {
     public class PlayerPanel : Scene
     {
-        World world;
-
         private static readonly SpriteFont itemCounterFont = SonOfRobinGame.fontTommy40;
         private static readonly SpriteFont buffFont = SonOfRobinGame.fontTommy40;
+        private static readonly int posY = 4;
+
+        private readonly World world;
 
         private int CounterSize { get { return (int)(SonOfRobinGame.VirtualWidth * 0.05f); } }
+        public Rectangle CounterRect
+        {
+            get
+            {
+                int counterSize = this.CounterSize;
+                Rectangle counterRect = new Rectangle(x: this.BarWidth + (int)(counterSize * 0.25f), y: posY, width: counterSize, height: counterSize);
+                return counterRect;
+            }
+        }
+
+        public bool IsCounterActivatedByTouch
+        {
+            get
+            {
+                var pressTouches = TouchInput.TouchPanelState.Where(touch => touch.State == TouchLocationState.Pressed).ToList();
+                if (pressTouches.Count == 0) return false;
+
+                Rectangle counterRect = this.CounterRect;
+                counterRect.X += (int)this.viewParams.drawPosX;
+                counterRect.Y += (int)this.viewParams.drawPosY;
+
+                foreach (TouchLocation touch in pressTouches)
+                {
+                    if (counterRect.Contains(touch.Position / Preferences.GlobalScale)) return true;
+                }
+
+                return false;
+            }
+        }
         private int BarWidth { get { return (int)(SonOfRobinGame.VirtualWidth * 0.27f); } }
         private int BarHeight { get { return (int)(BarWidth * 0.03f); } }
         private int IconWidthHeight { get { return (int)(BarWidth * 0.1f); } }
@@ -46,7 +78,7 @@ namespace SonOfRobin
             int width = this.BarWidth;
             int height = this.BarHeight;
             int barsHeight;
-            int posY = 4;
+            int posY = PlayerPanel.posY;
 
             // drawing stat bars
             {
@@ -70,7 +102,7 @@ namespace SonOfRobin
             // drawing stored items counter
             {
                 int counterSize = this.CounterSize;
-                Rectangle counterRect = new Rectangle(x: width + (int)(counterSize * 0.25f), y: posY, width: counterSize, height: counterSize);
+                Rectangle counterRect = this.CounterRect;
 
                 AnimData.framesForPkgs[AnimData.PkgName.BagOutline].DrawAndKeepInRectBounds(destBoundsRect: counterRect, color: Color.White * this.viewParams.drawOpacity, opacity: 0.85f);
 

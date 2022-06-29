@@ -41,7 +41,7 @@ namespace SonOfRobin
                     this.sprite.AssignNewName(animName: "on");
                     this.world.player.buffEngine.AddBuffs(world: this.world, this.buffList);
 
-                    var damageData = new Dictionary<string, Object> { { "delay", 60 * 3 }, { "damage", 3 }, { "buffList", this.buffList } };
+                    var damageData = new Dictionary<string, Object> { { "delay", 60 * 3 }, { "damage", 3 } };
                     new WorldEvent(eventName: WorldEvent.EventName.BurnOutLightSource, world: world, delay: 60, boardPiece: this, eventHelper: damageData);
                 }
                 else

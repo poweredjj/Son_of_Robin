@@ -21,6 +21,9 @@ namespace SonOfRobin
         private static readonly float minimapMaxPercentWidth = 0.35f;
         private static readonly float minimapMaxPercentHeight = 0.5f;
 
+        private static readonly List<PieceTemplate.Name> depositList = new List<PieceTemplate.Name> {
+            PieceTemplate.Name.CoalDeposit, PieceTemplate.Name.IronDeposit, PieceTemplate.Name.GlassDeposit };
+
         private void UpdateViewPos()
         {
             if (this.fullScreen)
@@ -354,7 +357,7 @@ namespace SonOfRobin
                         outlineColor = Color.Maroon;
                         drawOutline = true;
                     }
-                    else if (piece.name == PieceTemplate.Name.CoalDeposit || piece.name == PieceTemplate.Name.IronDeposit)
+                    else if (depositList.Contains(piece.name))
                     {
                         showOutsideCamera = sprite.hasBeenDiscovered;
                         fillSize = 4;

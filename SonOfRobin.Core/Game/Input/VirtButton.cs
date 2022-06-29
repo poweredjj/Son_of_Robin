@@ -58,12 +58,9 @@ namespace SonOfRobin
         public static Dictionary<VButName, VirtButton> buttonsByName = new Dictionary<VButName, VirtButton> { };
         private bool HasBeenPressed { get { return this.IsActive && !this.wasDownLastFrame; } }
         private bool HasBeenReleased { get { return !this.IsActive && this.wasDownLastFrame; } }
-        private bool IsActive
-        { get { return this.switchButton ? this.switchedState : this.isDown; } }
-
+        private bool IsActive { get { return this.switchButton ? this.switchedState : this.isDown; } }
         private int Width { get { return Convert.ToInt32(SonOfRobinGame.VirtualWidth * this.width0to1); } }
         private int Height { get { return Convert.ToInt32(SonOfRobinGame.VirtualWidth * this.height0to1); } }  // VirtualWidth is repeated to maintain button proportions
-
         private Vector2 PosCenter { get { return new Vector2(SonOfRobinGame.VirtualWidth * this.posX0to1, SonOfRobinGame.VirtualHeight * this.posY0to1); } }
 
         private Rectangle Rect
@@ -78,6 +75,19 @@ namespace SonOfRobin
                     x: Convert.ToInt32(posUpperLeft.X),
                     y: Convert.ToInt32(posUpperLeft.Y),
                     width: Width, height: Height);
+            }
+        }
+
+        public static List<Rectangle> AllButtonRects
+        {
+            get
+            {
+                var rectList = new List<Rectangle>();
+
+                foreach (VirtButton button in buttonsByName.Values)
+                { rectList.Add(button.Rect); }
+
+                return rectList;
             }
         }
 

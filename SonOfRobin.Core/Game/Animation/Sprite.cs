@@ -62,9 +62,9 @@ namespace SonOfRobin
         public bool IsInLava
         { get { return this.GetFieldValue(TerrainName.Height) >= Terrain.lavaMin; } }
         public bool IsInDangerZone
-        { get { return this.GetFieldValue(TerrainName.Danger) > Terrain.saveZoneMax; } }
+        { get { return this.GetFieldValue(TerrainName.Danger) > Terrain.safeZoneMax; } }
         public bool IsDeepInDangerZone
-        { get { return this.GetFieldValue(TerrainName.Danger) > Terrain.saveZoneMax * 1.3; } }
+        { get { return this.GetFieldValue(TerrainName.Danger) > Terrain.safeZoneMax * 1.3; } }
 
         public bool CanDrownHere { get { return this.GetFieldValue(TerrainName.Height) < (Terrain.waterLevelMax - 10); } }
         public bool Visible
@@ -168,6 +168,7 @@ namespace SonOfRobin
             pieceData["sprite_hasBeenDiscovered"] = this.hasBeenDiscovered;
             pieceData["sprite_allowedFields"] = this.allowedFields;
             pieceData["sprite_lightSource"] = this.lightEngine == null ? null : this.lightEngine.Serialize();
+            pieceData["sprite_color"] = new byte[] { this.color.R, this.color.G, this.color.B, this.color.A };
         }
         public void Deserialize(Dictionary<string, Object> pieceData)
         {
@@ -187,6 +188,8 @@ namespace SonOfRobin
             this.hasBeenDiscovered = (bool)pieceData["sprite_hasBeenDiscovered"];
             this.allowedFields = (AllowedFields)pieceData["sprite_allowedFields"];
             this.lightEngine = LightEngine.Deserialize(lightData: pieceData["sprite_lightSource"], sprite: this);
+            var colorArray = (byte[])pieceData["sprite_color"];
+            this.color = new Color(r: colorArray[0], g: colorArray[1], b: colorArray[2], alpha: colorArray[3]);
         }
         public byte GetFieldValue(TerrainName terrainName)
         {

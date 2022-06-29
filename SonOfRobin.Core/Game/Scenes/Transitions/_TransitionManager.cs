@@ -32,13 +32,13 @@ namespace SonOfRobin
             this.transitions.Add(transToAdd);
         }
 
-        public void AddMultipleTransitions(Dictionary<string, float> paramsToChange, bool outTrans, int duration, int playCount = 1, bool requireInputActiveAtRepeats = false, bool startSwapParams = false, bool endTurnOffUpdate = false, bool endTurnOffDraw = false, bool endRemoveScene = false, bool endCopyToBase = false, bool pingPongCycles = true, bool refreshBaseVal = true, int startDelay = 0, int cycleDelay = 0, bool replaceBaseValue = true, Transition.Transform stageTransform = Transition.Transform.Linear, float cycleMultiplier = 1f, bool storeForLaterUse = false)
+        public void AddMultipleTransitions(Dictionary<string, float> paramsToChange, bool outTrans, int duration, int playCount = 1, bool requireInputActiveAtRepeats = false, Scene inputActiveAtRepeatsScene = null, bool startSwapParams = false, bool endTurnOffUpdate = false, bool endTurnOffDraw = false, bool endRemoveScene = false, bool endCopyToBase = false, bool pingPongCycles = true, bool refreshBaseVal = true, int startDelay = 0, int cycleDelay = 0, bool replaceBaseValue = true, Transition.Transform stageTransform = Transition.Transform.Linear, float cycleMultiplier = 1f, bool storeForLaterUse = false)
         {
             // This method parameters should be kept up to date with Transition() constructor
 
             foreach (var kvp in paramsToChange)
             {
-                Transition transition = new Transition(transManager: this, outTrans: outTrans, baseParamName: kvp.Key, targetVal: kvp.Value, duration: duration, playCount: playCount, requireInputActiveAtRepeats: requireInputActiveAtRepeats, startSwapParams: startSwapParams, endTurnOffUpdate: endTurnOffUpdate, endTurnOffDraw: endTurnOffDraw, endRemoveScene: endRemoveScene, endCopyToBase: endCopyToBase, pingPongCycles: pingPongCycles, refreshBaseVal: refreshBaseVal, startDelay: startDelay, cycleDelay: cycleDelay, replaceBaseValue: replaceBaseValue, stageTransform: stageTransform, cycleMultiplier: cycleMultiplier, storeForLaterUse: storeForLaterUse);
+                Transition transition = new Transition(transManager: this, outTrans: outTrans, baseParamName: kvp.Key, targetVal: kvp.Value, duration: duration, playCount: playCount, requireInputActiveAtRepeats: requireInputActiveAtRepeats, inputActiveAtRepeatsScene: inputActiveAtRepeatsScene, startSwapParams: startSwapParams, endTurnOffUpdate: endTurnOffUpdate, endTurnOffDraw: endTurnOffDraw, endRemoveScene: endRemoveScene, endCopyToBase: endCopyToBase, pingPongCycles: pingPongCycles, refreshBaseVal: refreshBaseVal, startDelay: startDelay, cycleDelay: cycleDelay, replaceBaseValue: replaceBaseValue, stageTransform: stageTransform, cycleMultiplier: cycleMultiplier, storeForLaterUse: storeForLaterUse);
 
                 this.AddTransition(transition);
             }

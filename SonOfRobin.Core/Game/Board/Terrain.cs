@@ -26,7 +26,7 @@ namespace SonOfRobin
         public static byte waterLevelMax = 84;
         public static byte volcanoEdgeMin = 210;
         public static byte lavaMin = 225;
-        public static byte saveZoneMax = 150;
+        public static byte safeZoneMax = 150;
 
         private static int gradientWidth;
         private static int gradientHeight;

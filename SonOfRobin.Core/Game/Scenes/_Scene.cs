@@ -15,17 +15,7 @@ namespace SonOfRobin
             Normal
         }
 
-        public enum InventoryLayout
-        {
-            None,
-            Toolbar,
-            InventoryAndToolbar,
-            InventoryAndChest,
-            InventoryAndEquip
-        }
-
         public static List<Scene> sceneStack = new List<Scene> { };
-        public static InventoryLayout inventoryLayout = InventoryLayout.None;
 
         public readonly int priority;
         public bool blocksUpdatesBelow;
@@ -330,62 +320,6 @@ namespace SonOfRobin
 
             sceneStack = sceneStack.Where(scene => scene != this).ToList();
             sceneStack.Insert(previousItemIndex, this);
-        }
-
-        public static void SetInventoryLayout(InventoryLayout newLayout, BoardPiece chest = null, Player player = null)
-        {
-            var invScenes = GetAllScenesOfType(typeof(Inventory));
-            foreach (Scene scene in invScenes)
-            {
-                Inventory invScene = (Inventory)scene;
-                invScene.Remove();
-            }
-
-            switch (newLayout)
-            {
-                case InventoryLayout.None:
-                    break;
-
-                case InventoryLayout.Toolbar:
-                    {
-                        new Inventory(piece: player, storage: player.toolStorage, layout: Inventory.Layout.SingleBottom, inputType: InputTypes.Always, blocksUpdatesBelow: false);
-
-                        break;
-                    }
-
-                case InventoryLayout.InventoryAndToolbar:
-                    {
-                        Inventory toolbar = new Inventory(piece: player, storage: player.toolStorage, layout: Inventory.Layout.DualBottom);
-                        Inventory inventory = new Inventory(piece: player, storage: player.pieceStorage, layout: Inventory.Layout.DualTop, otherInventory: toolbar);
-                        toolbar.otherInventory = inventory;
-
-                        break;
-                    }
-
-                case InventoryLayout.InventoryAndChest:
-                    {
-                        Inventory inventoryLeft = new Inventory(piece: player, storage: player.pieceStorage, layout: Inventory.Layout.DualLeft);
-                        Inventory inventoryRight = new Inventory(piece: chest, storage: chest.pieceStorage, layout: Inventory.Layout.DualRight, otherInventory: inventoryLeft);
-                        inventoryLeft.otherInventory = inventoryRight;
-
-                        break;
-                    }
-
-                case InventoryLayout.InventoryAndEquip:
-                    {
-                        Inventory inventoryLeft = new Inventory(piece: player, storage: player.pieceStorage, layout: Inventory.Layout.DualLeft);
-                        Inventory inventoryRight = new Inventory(piece: player, storage: player.equipStorage, layout: Inventory.Layout.DualRight, otherInventory: inventoryLeft);
-                        inventoryLeft.otherInventory = inventoryRight;
-
-                        player.world.hintEngine.Disable(Tutorials.Type.Equip);
-                        break;
-                    }
-
-                default:
-                    throw new DivideByZeroException($"Unknown inventory layout '{newLayout}'.");
-            }
-
-            inventoryLayout = newLayout;
         }
 
         public virtual void Update(GameTime gameTime)

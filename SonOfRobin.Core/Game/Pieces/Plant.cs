@@ -24,12 +24,13 @@ namespace SonOfRobin
         private readonly PlantReproductionData reproduction;
         private readonly byte massToBurn;
         public float massTakenMultiplier;
+        private readonly int maxExistingNumber;
         private readonly float occupiedFieldWealth;
         public readonly FruitEngine fruitEngine;
 
         public Plant(World world, Vector2 position, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedFields allowedFields, Dictionary<TerrainName, byte> bestEnvironment, Dictionary<byte, int> maxMassBySize, string readableName, string description, Category category,
             int maxAge, PlantReproductionData reproduction, byte massToBurn, float massTakenMultiplier,
-            byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = false, int mass = 1, int staysAfterDeath = 800, int generation = 0, Yield yield = null, int maxHitPoints = 1, FruitEngine fruitEngine = null, Scheduler.TaskName boardTask = Scheduler.TaskName.Empty, bool fadeInAnim = true, AllowedDensity allowedDensity = null, LightEngine lightEngine = null) :
+            byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = false, int mass = 1, int staysAfterDeath = 800, int generation = 0, Yield yield = null, int maxHitPoints = 1, FruitEngine fruitEngine = null, Scheduler.TaskName boardTask = Scheduler.TaskName.Empty, bool fadeInAnim = true, AllowedDensity allowedDensity = null, LightEngine lightEngine = null, int maxExistingNumber = 0) :
 
             base(world: world, position: position, animPackage: animPackage, animSize: animSize, animName: animName, speed: speed, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedFields: allowedFields, floatsOnWater: floatsOnWater, checksFullCollisions: true, mass: mass, maxMassBySize: maxMassBySize, staysAfterDeath: staysAfterDeath, maxAge: maxAge, generation: generation, canBePickedUp: false, yield: yield, maxHitPoints: maxHitPoints, boardTask: boardTask, fadeInAnim: fadeInAnim, readableName: readableName, description: description, allowedDensity: allowedDensity, category: category, lightEngine: lightEngine)
         {
@@ -38,6 +39,7 @@ namespace SonOfRobin
             this.reproduction = reproduction;
             this.massToBurn = massToBurn;
             this.massTakenMultiplier = massTakenMultiplier;
+            this.maxExistingNumber = maxExistingNumber;
             this.occupiedFieldWealth = this.GetOccupiedFieldWealth(); // calculated once, because a field value doesn't change
             this.fruitEngine = fruitEngine;
             if (this.fruitEngine != null)
@@ -104,9 +106,12 @@ namespace SonOfRobin
                 }
             }
 
+
             this.Mass += -this.massToBurn + massTaken;
 
-            if (this.Mass > this.reproduction.massNeeded + this.startingMass)
+            bool canReproduce = this.maxExistingNumber == 0 || this.world.pieceCountByName[this.name] < this.maxExistingNumber;
+
+            if (canReproduce && this.Mass > this.reproduction.massNeeded + this.startingMass)
             {
                 BoardPiece newPlant = PieceTemplate.CreateOnBoard(world: this.world, position: this.sprite.position, templateName: this.name, generation: this.generation + 1);
                 if (newPlant.sprite.placedCorrectly)

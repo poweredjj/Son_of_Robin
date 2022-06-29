@@ -191,9 +191,9 @@ namespace SonOfRobin
                 }
             }
 
-            if (pixelDanger >= Terrain.saveZoneMax)
+            if (pixelDanger >= Terrain.safeZoneMax)
             {
-                byte dangerAlpha = (byte)(((float)(pixelDanger - Terrain.saveZoneMax + 20) / (255 - Terrain.saveZoneMax)) * 150); // last value is max possible alpha
+                byte dangerAlpha = (byte)(((float)(pixelDanger - Terrain.safeZoneMax + 20) / (255 - Terrain.safeZoneMax)) * 150); // last value is max possible alpha
                 dangerAlpha = (byte)((int)(dangerAlpha / 15) * 15); // converting gradient to discrete shades
 
                 pixel = Blend2Colors(bottomColor: pixel, topColor: new Color((byte)40, (byte)0, (byte)0, dangerAlpha));

@@ -33,6 +33,7 @@ namespace SonOfRobin
         private int cycleDelay;
 
         private readonly bool requireInputActiveAtRepeats;
+        private readonly Scene inputActiveAtRepeatsScene;
 
         private readonly bool endTurnOffUpdate;
         private readonly bool endTurnOffDraw;
@@ -45,7 +46,7 @@ namespace SonOfRobin
             set { this.sourceVal = value; }
         }
 
-        public Transition(TransManager transManager, bool outTrans, string baseParamName, float targetVal, int duration, int playCount = 1, bool requireInputActiveAtRepeats = false, bool startSwapParams = false, bool endTurnOffUpdate = false, bool endTurnOffDraw = false, bool endRemoveScene = false, bool endCopyToBase = false, bool pingPongCycles = true, bool refreshBaseVal = true, int startDelay = 0, int cycleDelay = 0, bool replaceBaseValue = true, Transform stageTransform = Transform.Linear, float cycleMultiplier = 1f, bool storeForLaterUse = false)
+        public Transition(TransManager transManager, bool outTrans, string baseParamName, float targetVal, int duration, int playCount = 1, bool requireInputActiveAtRepeats = false, Scene inputActiveAtRepeatsScene = null, bool startSwapParams = false, bool endTurnOffUpdate = false, bool endTurnOffDraw = false, bool endRemoveScene = false, bool endCopyToBase = false, bool pingPongCycles = true, bool refreshBaseVal = true, int startDelay = 0, int cycleDelay = 0, bool replaceBaseValue = true, Transform stageTransform = Transform.Linear, float cycleMultiplier = 1f, bool storeForLaterUse = false)
         // Every parameter above should be put into TransManager.AddMultipleTransitions() method.
 
         {
@@ -68,6 +69,7 @@ namespace SonOfRobin
             this.duration = duration;
             this.cyclesLeft = playCount; // -1 == infinite
             this.requireInputActiveAtRepeats = requireInputActiveAtRepeats; // will pause at the end of every cycle, waiting for user input to be active
+            this.inputActiveAtRepeatsScene = inputActiveAtRepeatsScene; // if null, base scene will be used
             this.pingPongCycles = pingPongCycles; // every second cycle will be backwards
 
             this.endTurnOffUpdate = endTurnOffUpdate;
@@ -135,8 +137,11 @@ namespace SonOfRobin
 
         private void StartNextCycle()
         {
-            bool paused = this.requireInputActiveAtRepeats && !this.scene.inputActive;
-            if (paused) return;
+            if (this.requireInputActiveAtRepeats)
+            {
+                bool sceneInputActive = this.inputActiveAtRepeatsScene == null ? this.scene.inputActive : this.inputActiveAtRepeatsScene.inputActive;
+                if (!sceneInputActive) return;
+            }
 
             this.cycleStartFrame = SonOfRobinGame.currentUpdate + this.cycleDelay + 1;
 

@@ -37,6 +37,7 @@ namespace SonOfRobin
         public bool freePiecesPlacingMode; // allows to precisely place pieces during loading a saved game
         public bool createMissinPiecesOutsideCamera;
         public DateTime lastSaved;
+
         private bool spectatorMode;
         public bool SpectatorMode
         {
@@ -155,6 +156,7 @@ namespace SonOfRobin
         public List<MapMode> mapCycle;
         public readonly Map mapBig;
         public readonly Map mapSmall;
+        public readonly PlayerPanel playerPanel;
         public readonly SolidColor colorOverlay;
         private bool mapEnabled;
         public bool MapEnabled
@@ -205,7 +207,6 @@ namespace SonOfRobin
             { return timePlayed + (DateTime.Now - createdTime); }
             set { timePlayed = value; }
         }
-
         public bool CanProcessMoreCameraRectPiecesNow { get { return UpdateTimeElapsed.Milliseconds <= 4 * this.updateMultiplier; } }
         public bool CanProcessMoreAnimalsNow { get { return UpdateTimeElapsed.Milliseconds <= 6 * this.updateMultiplier; } }
         public bool CanProcessMorePlantsNow { get { return UpdateTimeElapsed.Milliseconds <= 9 * this.updateMultiplier; } }
@@ -295,12 +296,13 @@ namespace SonOfRobin
             this.mapCycle = SonOfRobinGame.platform == Platform.Mobile ? new List<MapMode> { MapMode.None, MapMode.Big } : new List<MapMode> { MapMode.None, MapMode.Small, MapMode.Big };
             this.mapBig = new Map(world: this, fullScreen: true, touchLayout: TouchLayout.Map);
             this.mapSmall = new Map(world: this, fullScreen: false, touchLayout: TouchLayout.Empty);
+            this.playerPanel = new PlayerPanel(world: this);
             if (saveGameData == null) this.grid = new Grid(world: this, resDivider: resDivider);
             else { this.Deserialize(gridOnly: true); }
 
             this.AddLinkedScene(this.mapBig);
             this.AddLinkedScene(this.mapSmall);
-            this.AddLinkedScene(new PlayerPanel(world: this));
+            this.AddLinkedScene(this.playerPanel);
 
             this.colorOverlay = new SolidColor(color: Color.White, viewOpacity: this.demoMode ? 0.4f : 0f, clearScreen: false, priority: 1);
             this.AddLinkedScene(colorOverlay);
@@ -390,7 +392,7 @@ namespace SonOfRobin
                 this.camera.TrackPiece(trackedPiece: this.player, fluidMotion: false);
                 this.UpdateViewParams(manualScale: 1f);
                 this.camera.Update(); // to render cells in camera view correctly
-                SetInventoryLayout(newLayout: InventoryLayout.Toolbar, player: this.player);
+                Inventory.SetLayout(newLayout: Inventory.Layout.Toolbar, player: this.player);
             }
 
             this.grid.LoadAllTexturesInCameraView();
@@ -498,7 +500,7 @@ namespace SonOfRobin
             if (invScene != null)
             {
                 Inventory inventory = (Inventory)invScene;
-                if (inventory.layout != Inventory.Layout.SingleBottom) return;
+                if (inventory.type != Inventory.Type.SingleBottom) return;
             }
 
             string timeElapsedTxt = timeSinceLastSave.ToString("mm\\:ss");
@@ -565,10 +567,12 @@ namespace SonOfRobin
                 new PieceCreationData(name: PieceTemplate.Name.WaterRock, multiplier: 0.5f, maxAmount: 0),
                 new PieceCreationData(name: PieceTemplate.Name.MineralsSmall, multiplier: 0.5f, maxAmount: 0),
                 new PieceCreationData(name: PieceTemplate.Name.MineralsBig, multiplier: 0.3f, maxAmount: 0),
-                new PieceCreationData(name: PieceTemplate.Name.IronDeposit, multiplier: 0.01f, maxAmount: 80),
-                new PieceCreationData(name: PieceTemplate.Name.CoalDeposit, multiplier: 0.01f, maxAmount: 80),
-                new PieceCreationData(name: PieceTemplate.Name.Shell, multiplier: 1f, maxAmount: 50),
-                new PieceCreationData(name: PieceTemplate.Name.CrateRegular, multiplier: 0.1f, maxAmount: 1),
+                new PieceCreationData(name: PieceTemplate.Name.IronDeposit, multiplier: 0.05f, maxAmount: 50),
+                new PieceCreationData(name: PieceTemplate.Name.CoalDeposit, multiplier: 0.05f, maxAmount: 50),
+                new PieceCreationData(name: PieceTemplate.Name.GlassDeposit, multiplier: 0.05f, maxAmount: 50),
+                new PieceCreationData(name: PieceTemplate.Name.Shell, multiplier: 1f, maxAmount: 25),
+                new PieceCreationData(name: PieceTemplate.Name.Clam, multiplier: 1f, maxAmount: 25),
+                new PieceCreationData(name: PieceTemplate.Name.CrateRegular, multiplier: 0.1f, maxAmount: 2),
                 new PieceCreationData(name: PieceTemplate.Name.Rabbit, multiplier: 0.2f, maxAmount: Animal.maxAnimalsPerName),
                 new PieceCreationData(name: PieceTemplate.Name.Fox, multiplier: 0.2f, maxAmount: Animal.maxAnimalsPerName),
                 new PieceCreationData(name: PieceTemplate.Name.Tiger, multiplier: 0.2f, maxAmount: Animal.maxAnimalsPerName),
@@ -728,19 +732,19 @@ namespace SonOfRobin
 
             if (InputMapper.HasBeenPressed(InputMapper.Action.WorldFieldCraft))
             {
-                MenuTemplate.CreateMenuFromTemplate(templateName: MenuTemplate.Name.CraftBasic);
+                MenuTemplate.CreateMenuFromTemplate(templateName: MenuTemplate.Name.CraftField);
                 return;
             }
 
-            if (InputMapper.HasBeenPressed(InputMapper.Action.WorldInventory))
+            if (InputMapper.HasBeenPressed(InputMapper.Action.WorldInventory) || this.playerPanel.IsCounterActivatedByTouch)
             {
-                SetInventoryLayout(InventoryLayout.InventoryAndToolbar, player: this.player);
+                Inventory.SetLayout(Inventory.Layout.InventoryAndToolbar, player: this.player);
                 return;
             }
 
             if (InputMapper.HasBeenPressed(InputMapper.Action.WorldEquip))
             {
-                SetInventoryLayout(InventoryLayout.InventoryAndEquip, player: this.player);
+                Inventory.SetLayout(Inventory.Layout.InventoryAndEquip, player: this.player);
                 return;
             }
 
@@ -953,14 +957,19 @@ namespace SonOfRobin
         {
             if (this.demoMode) return;
 
-            float zoomScale = 0.7f;
+            this.colorOverlay.color = Color.Black;
+            this.colorOverlay.viewParams.Opacity = 0f;
 
-            this.transManager.AddMultipleTransitions(paramsToChange: new Dictionary<string, float> {
-                { "PosX", this.viewParams.PosX - (this.camera.ScreenWidth * zoomScale * 0.25f) },
-                { "PosY", this.viewParams.PosY - (this.camera.ScreenHeight * zoomScale * 0.25f) },
-                { "ScaleX", this.viewParams.ScaleX * zoomScale },
-                { "ScaleY", this.viewParams.ScaleY * zoomScale }},
-               duration: 20, outTrans: true, requireInputActiveAtRepeats: true, playCount: 2, refreshBaseVal: true);
+            this.colorOverlay.transManager.AddMultipleTransitions(paramsToChange: new Dictionary<string, float> {
+                { "Opacity", 0.4f }},
+                duration: 20, outTrans: true, requireInputActiveAtRepeats: true, inputActiveAtRepeatsScene: this, playCount: 2, refreshBaseVal: false);
+        }
+
+        public Vector2 TranslateScreenToWorldPos(Vector2 screenPos)
+        {
+            return new Vector2(
+                x: (screenPos.X / Preferences.GlobalScale * this.viewParams.ScaleX) - this.viewParams.DrawPos.X,
+                y: (screenPos.Y / Preferences.GlobalScale * this.viewParams.ScaleY) - this.viewParams.DrawPos.Y);
         }
 
         public override void Draw()

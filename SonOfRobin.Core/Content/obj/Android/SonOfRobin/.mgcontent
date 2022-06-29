@@ -67,20 +67,20 @@
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/Keyboard/8_Key_Light.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/Keyboard/9_Key_Light.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/Keyboard/A_Key_Light.png</File>
-    <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/Keyboard/Alt_Key_Light.png</File>
+    <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/Keyboard/Alt_Key_L_Light.png</File>
+    <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/Keyboard/Alt_Key_R_Light.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/Keyboard/Arrow_Down_Key_Light.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/Keyboard/Arrow_Left_Key_Light.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/Keyboard/Arrow_Right_Key_Light.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/Keyboard/Arrow_Up_Key_Light.png</File>
-    <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/Keyboard/arrows_light.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/Keyboard/Asterisk_Key_Light.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/Keyboard/B_Key_Light.png</File>
+    <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/Keyboard/Backslash_Key_Light.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/Keyboard/Backspace_Alt_Key_Light.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/Keyboard/Bracket_Left_Key_Light.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/Keyboard/Bracket_Right_Key_Light.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/Keyboard/C_Key_Light.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/Keyboard/Caps_Lock_Key_Light.png</File>
-    <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/Keyboard/Command_Key_Light.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/Keyboard/Ctrl_Key_Light_L.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/Keyboard/Ctrl_Key_Light_R.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/Keyboard/D_Key_Light.png</File>
@@ -104,6 +104,7 @@
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/Keyboard/F9_Key_Light.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/Keyboard/G_Key_Light.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/Keyboard/H_Key_Light.png</File>
+    <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/Keyboard/Hash_Key_Light.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/Keyboard/Home_Key_Light.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/Keyboard/I_Key_Light.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/Keyboard/Insert_Key_Light.png</File>
@@ -116,7 +117,6 @@
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/Keyboard/Minus_Key_Light.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/Keyboard/N_Key_Light.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/Keyboard/Num_Lock_Key_Light.png</File>
-    <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/Keyboard/numpad_light.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/Keyboard/O_Key_Light.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/Keyboard/P_Key_Light.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/Keyboard/Page_Down_Key_Light.png</File>
@@ -130,8 +130,8 @@
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/Keyboard/R_Key_Light.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/Keyboard/S_Key_Light.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/Keyboard/Semicolon_Key_Light.png</File>
-    <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/Keyboard/Shift_Alt_Key_Light.png</File>
-    <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/Keyboard/Shift_Key_Light.png</File>
+    <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/Keyboard/Shift_Key_L_Light.png</File>
+    <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/Keyboard/Shift_Key_R_Light.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/Keyboard/Slash_Key_Light.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/Keyboard/Space_Key_Light.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/Keyboard/T_Key_Light.png</File>
@@ -140,7 +140,6 @@
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/Keyboard/U_Key_Light.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/Keyboard/V_Key_Light.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/Keyboard/W_Key_Light.png</File>
-    <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/Keyboard/wasd_light.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/Keyboard/Win_Key_Light.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/Keyboard/X_Key_Light.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/Keyboard/Y_Key_Light.png</File>
@@ -253,7 +252,6 @@
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/zzz.png</File>
   </SourceFiles>
   <DestFiles>
-    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />

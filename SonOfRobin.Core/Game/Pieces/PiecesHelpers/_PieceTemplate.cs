@@ -56,7 +56,9 @@ namespace SonOfRobin
             CrateStarting,
             CrateRegular,
 
-            RegularWorkshop,
+            WorkshopBasic,
+            WorkshopAlchemy,
+
             Furnace,
             CookingPot,
 
@@ -66,11 +68,16 @@ namespace SonOfRobin
             WoodPlank,
             Nail,
             Shell,
+            Clam,
+
             CoalDeposit,
             IronDeposit,
+            GlassDeposit,
+
             Coal,
             IronOre,
             IronBar,
+            GlassSand,
 
             Backlight,
             BloodSplatter,
@@ -118,7 +125,17 @@ namespace SonOfRobin
 
             Torch,
             Campfire,
-            Herbs
+
+            HerbsBlack,
+            HerbsBlue,
+            HerbsGreen,
+            HerbsYellow,
+            HerbsRed,
+            HerbsViolet,
+
+            EmptyBottle,
+            PotionHealing,
+            PotionStrength,
         }
 
         public static BoardPiece CreateOnBoard(Name templateName, World world, Vector2 position, bool female, int generation = 0)
@@ -152,6 +169,9 @@ namespace SonOfRobin
 
         private static BoardPiece CreatePiece(Name templateName, World world, Vector2 position, bool female, int generation = 0)
         {
+            var shallowWaterToVolcano = new AllowedFields(rangeDict: new Dictionary<TerrainName, AllowedRange>() {
+                { TerrainName.Height, new AllowedRange(min: (byte)(Terrain.waterLevelMax - 20), max: Terrain.volcanoEdgeMin) }});
+
             switch (templateName)
             {
                 case Name.Player:
@@ -184,7 +204,7 @@ namespace SonOfRobin
 
                         var yield = new Yield(debrisType: Yield.DebrisType.Plant,
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
-                            finalDroppedPieces: new List<Yield.DroppedPiece> { new Yield.DroppedPiece(pieceName: Name.Herbs, chanceToDrop: 3, maxNumberToDrop: 1) });
+                            finalDroppedPieces: new List<Yield.DroppedPiece> { new Yield.DroppedPiece(pieceName: Name.HerbsRed, chanceToDrop: 3, maxNumberToDrop: 1) });
 
                         var bestEnvironment = new Dictionary<TerrainName, byte>() { { TerrainName.Humidity, 150 } };
                         var maxMassBySize = new Dictionary<byte, int>() { { 0, 150 }, { 1, 65535 } };
@@ -202,14 +222,14 @@ namespace SonOfRobin
 
                         var yield = new Yield(debrisType: Yield.DebrisType.Plant,
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
-                            finalDroppedPieces: new List<Yield.DroppedPiece> { new Yield.DroppedPiece(pieceName: Name.Herbs, chanceToDrop: 100, maxNumberToDrop: 1) });
+                            finalDroppedPieces: new List<Yield.DroppedPiece> { new Yield.DroppedPiece(pieceName: Name.HerbsRed, chanceToDrop: 100, maxNumberToDrop: 1) });
 
                         var bestEnvironment = new Dictionary<TerrainName, byte>() { { TerrainName.Humidity, 150 } };
                         var maxMassBySize = new Dictionary<byte, int>() { { 0, 150 }, { 1, 65535 } };
                         var reproduction = new PlantReproductionData(massNeeded: 650, massLost: 180, bioWear: 0.3f);
 
                         return new Plant(name: templateName, world: world, position: position, blocksMovement: false, animPackage: AnimData.PkgName.GrassRegular, allowedFields: allowedFields, category: BoardPiece.Category.SmallPlant,
-                            minDistance: 0, maxDistance: 400, bestEnvironment: bestEnvironment, mass: 1, maxMassBySize: maxMassBySize, maxAge: 1000, reproduction: reproduction, massToBurn: 5, massTakenMultiplier: 0.49f, generation: generation, staysAfterDeath: 300, readableName: "glow grass", description: "A special type of grass.", allowedDensity: new AllowedDensity(radious: 350, maxNoOfPiecesSameName: 1), yield: yield, lightEngine: new LightEngine(size: 0, opacity: 0.3f, colorActive: true, color: Color.Blue * 3f, addedGfxRectMultiplier: 4f, isActive: true, glowOnlyAtNight: true, castShadows: false));
+                            minDistance: 0, maxDistance: 400, bestEnvironment: bestEnvironment, mass: 1, maxMassBySize: maxMassBySize, maxAge: 1000, reproduction: reproduction, massToBurn: 5, massTakenMultiplier: 0.49f, generation: generation, staysAfterDeath: 300, readableName: "glow grass", description: "A special type of grass.", allowedDensity: new AllowedDensity(radious: 350, maxNoOfPiecesSameName: 1), yield: yield, lightEngine: new LightEngine(size: 0, opacity: 0.3f, colorActive: true, color: Color.Blue * 3f, addedGfxRectMultiplier: 4f, isActive: true, glowOnlyAtNight: true, castShadows: false), maxExistingNumber: 300);
                     }
 
                 case Name.GrassDesert:
@@ -220,7 +240,7 @@ namespace SonOfRobin
 
                         var yield = new Yield(debrisType: Yield.DebrisType.Plant,
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
-                            finalDroppedPieces: new List<Yield.DroppedPiece> { new Yield.DroppedPiece(pieceName: Name.Herbs, chanceToDrop: 3, maxNumberToDrop: 1) });
+                            finalDroppedPieces: new List<Yield.DroppedPiece> { new Yield.DroppedPiece(pieceName: Name.HerbsRed, chanceToDrop: 3, maxNumberToDrop: 1) });
 
                         var bestEnvironment = new Dictionary<TerrainName, byte>() { { TerrainName.Humidity, 40 } };
                         var maxMassBySize = new Dictionary<byte, int>() { { 0, 250 }, { 1, 65535 } };
@@ -295,11 +315,11 @@ namespace SonOfRobin
                         var allowedFields = new AllowedFields(rangeDict: new Dictionary<TerrainName, AllowedRange>() {
                             { TerrainName.Height, new AllowedRange(min:160, max: 210
                             ) },
-                            { TerrainName.Danger, new AllowedRange(min: Terrain.saveZoneMax, max: 255) }});
+                            { TerrainName.Danger, new AllowedRange(min: Terrain.safeZoneMax, max: 255) }});
 
                         var yield = new Yield(debrisType: Yield.DebrisType.Plant,
-                            firstDroppedPieces: new List<Yield.DroppedPiece> { }, // TODO add some drops
-                            finalDroppedPieces: new List<Yield.DroppedPiece> { });
+                            firstDroppedPieces: new List<Yield.DroppedPiece> { },
+                            finalDroppedPieces: new List<Yield.DroppedPiece> { new Yield.DroppedPiece(pieceName: Name.HerbsYellow, chanceToDrop: 40, maxNumberToDrop: 1) });
 
                         var bestEnvironment = new Dictionary<TerrainName, byte>() { { TerrainName.Height, 175 } };
                         var maxMassBySize = new Dictionary<byte, int>() { { 0, 500 }, { 1, 65535 } };
@@ -361,7 +381,7 @@ namespace SonOfRobin
                         var allowedFields = new AllowedFields(rangeDict: new Dictionary<TerrainName, AllowedRange>() {
                             { TerrainName.Height, new AllowedRange(min: 115, max: 150) },
                             { TerrainName.Humidity, new AllowedRange(min: 120, max: 255) },
-                            { TerrainName.Danger, new AllowedRange(min: Terrain.saveZoneMax, max: 255) }});
+                            { TerrainName.Danger, new AllowedRange(min: Terrain.safeZoneMax, max: 255) }});
 
                         var bestEnvironment = new Dictionary<TerrainName, byte>() { { TerrainName.Humidity, 210 } };
                         var maxMassBySize = new Dictionary<byte, int>() { { 0, 2500 }, { 1, 65535 } };
@@ -666,6 +686,7 @@ namespace SonOfRobin
                                 new Yield.DroppedPiece(pieceName: Name.AxeStone, chanceToDrop: 50, maxNumberToDrop: 1),
                                 new Yield.DroppedPiece(pieceName: Name.PickaxeStone, chanceToDrop: 50, maxNumberToDrop: 1),
                                 new Yield.DroppedPiece(pieceName: Name.CookedMeat, chanceToDrop: 100, maxNumberToDrop: 3),
+                                new Yield.DroppedPiece(pieceName: Name.EmptyBottle, chanceToDrop: 30, maxNumberToDrop: 1),
                        });
 
                         return new Decoration(name: templateName, world: world, position: position, animPackage: AnimData.PkgName.Crate, allowedFields: allowedFields, category: BoardPiece.Category.Wood,
@@ -678,7 +699,7 @@ namespace SonOfRobin
                             { TerrainName.Height, new AllowedRange(min: Terrain.waterLevelMax, max: Terrain.volcanoEdgeMin) }});
 
                         return new Container(name: templateName, world: world, position: position, animPackage: AnimData.PkgName.ChestWooden, allowedFields: allowedFields, category: BoardPiece.Category.Wood,
-                            floatsOnWater: false, minDistance: 0, maxDistance: 100, maxMassBySize: null, generation: generation, storageWidth: 3, storageHeight: 3, maxHitPoints: 40, readableName: "wooden chest", description: "can store items.");
+                            floatsOnWater: false, minDistance: 0, maxDistance: 100, maxMassBySize: null, generation: generation, storageWidth: 3, storageHeight: 2, maxHitPoints: 40, readableName: "wooden chest", description: "can store items.");
                     }
 
                 case Name.ChestIron:
@@ -686,15 +707,23 @@ namespace SonOfRobin
                         var allowedFields = new AllowedFields(rangeDict: new Dictionary<TerrainName, AllowedRange>() {
                             { TerrainName.Height, new AllowedRange(min: Terrain.waterLevelMax, max: Terrain.volcanoEdgeMin) }});
 
-                        return new Container(name: templateName, world: world, position: position, animPackage: AnimData.PkgName.ChestMetal, allowedFields: allowedFields, category: BoardPiece.Category.Metal, floatsOnWater: false, minDistance: 0, maxDistance: 100, maxMassBySize: null, generation: generation, storageWidth: 4, storageHeight: 3, maxHitPoints: 50, readableName: "iron chest", description: "Can store items.");
+                        return new Container(name: templateName, world: world, position: position, animPackage: AnimData.PkgName.ChestMetal, allowedFields: allowedFields, category: BoardPiece.Category.Metal, floatsOnWater: false, minDistance: 0, maxDistance: 100, maxMassBySize: null, generation: generation, storageWidth: 6, storageHeight: 4, maxHitPoints: 50, readableName: "iron chest", description: "Can store items.");
                     }
 
-                case Name.RegularWorkshop:
+                case Name.WorkshopBasic:
                     {
                         var allowedFields = new AllowedFields(rangeDict: new Dictionary<TerrainName, AllowedRange>() {
                             { TerrainName.Height, new AllowedRange(min: Terrain.waterLevelMax, max: Terrain.volcanoEdgeMin) }});
                         return new Workshop(name: templateName, world: world, position: position, animPackage: AnimData.PkgName.WoodenTable, allowedFields: allowedFields, category: BoardPiece.Category.Wood,
-                            floatsOnWater: false, minDistance: 0, maxDistance: 100, maxMassBySize: null, generation: generation, craftMenuTemplate: MenuTemplate.Name.CraftNormal, maxHitPoints: 30, readableName: "crafting workshop", description: "For advanced item crafting.");
+                            floatsOnWater: false, minDistance: 0, maxDistance: 100, maxMassBySize: null, generation: generation, craftMenuTemplate: MenuTemplate.Name.CraftBasic, maxHitPoints: 30, readableName: "basic workshop", description: "Basic crafting workshop.");
+                    }
+
+                case Name.WorkshopAlchemy:
+                    {
+                        var allowedFields = new AllowedFields(rangeDict: new Dictionary<TerrainName, AllowedRange>() {
+                            { TerrainName.Height, new AllowedRange(min: Terrain.waterLevelMax, max: Terrain.volcanoEdgeMin) }});
+                        return new Workshop(name: templateName, world: world, position: position, animPackage: AnimData.PkgName.WorkshopAlchemy, allowedFields: allowedFields, category: BoardPiece.Category.Wood,
+                            floatsOnWater: false, minDistance: 0, maxDistance: 100, maxMassBySize: null, generation: generation, craftMenuTemplate: MenuTemplate.Name.CraftAlchemy, maxHitPoints: 30, readableName: "alchemy lab", description: "For potion making.");
                     }
 
                 case Name.Furnace:
@@ -715,9 +744,19 @@ namespace SonOfRobin
                         return cookingPot;
                     }
 
+                case Name.Clam:
+                    {
+                        var allowedFields = new AllowedFields(rangeNameList: new List<AllowedFields.RangeName> { AllowedFields.RangeName.GroundAll });
+
+                        return new Collectible(name: templateName, world: world, position: position, animPackage: AnimData.PkgName.Clam, blocksMovement: false, allowedFields: allowedFields,
+                            category: BoardPiece.Category.Indestructible,
+                            minDistance: 0, maxDistance: 200, generation: generation, mass: 100, stackSize: 6, rotatesWhenDropped: true, placeAtBeachEdge: true, readableName: "clam", description: "Have to be cooked before eating.");
+                    }
+
                 case Name.Shell:
                     {
-                        var packageNames = new List<AnimData.PkgName> { AnimData.PkgName.Shell1, AnimData.PkgName.Shell2, AnimData.PkgName.Shell3, AnimData.PkgName.Shell4, AnimData.PkgName.Shell5, AnimData.PkgName.Shell6, AnimData.PkgName.Shell7 };
+                        var packageNames = new List<AnimData.PkgName> { AnimData.PkgName.Shell1, AnimData.PkgName.Shell2, AnimData.PkgName.Shell3, AnimData.PkgName.Shell4 };
+
                         var animPkg = packageNames[world.random.Next(0, packageNames.Count)];
 
                         var allowedFields = new AllowedFields(rangeNameList: new List<AllowedFields.RangeName> { AllowedFields.RangeName.GroundAll });
@@ -780,29 +819,45 @@ namespace SonOfRobin
                     {
                         var allowedFields = new AllowedFields(rangeDict: new Dictionary<TerrainName, AllowedRange>() {
                             { TerrainName.Height, new AllowedRange(min: 165, max: 210) },
-                            { TerrainName.Danger, new AllowedRange(min: Terrain.saveZoneMax, max: 255) }});
+                            { TerrainName.Danger, new AllowedRange(min: Terrain.safeZoneMax, max: 255) }});
 
                         var yield = new Yield(debrisType: Yield.DebrisType.Stone,
                             firstDroppedPieces: new List<Yield.DroppedPiece> {
-                                new Yield.DroppedPiece(pieceName: Name.IronOre, chanceToDrop: 100, maxNumberToDrop: 1)},
+                                new Yield.DroppedPiece(pieceName: Name.IronOre, chanceToDrop: 100, maxNumberToDrop: 2)},
                             finalDroppedPieces: new List<Yield.DroppedPiece> {
-                                new Yield.DroppedPiece(pieceName: Name.IronOre, chanceToDrop: 100, maxNumberToDrop: 3)});
+                                new Yield.DroppedPiece(pieceName: Name.IronOre, chanceToDrop: 100, maxNumberToDrop: 6)});
 
                         return new Decoration(name: templateName, world: world, position: position, animPackage: AnimData.PkgName.IronDeposit, allowedFields: allowedFields, category: BoardPiece.Category.Stone,
                           minDistance: 0, maxDistance: 1000, maxMassBySize: null, generation: generation, yield: yield, maxHitPoints: 300, isShownOnMiniMap: true, readableName: "iron deposit", description: "Can be mined for iron.");
+                    }
+
+                case Name.GlassDeposit:
+                    {
+                        var allowedFields = new AllowedFields(rangeDict: new Dictionary<TerrainName, AllowedRange>() {
+                            { TerrainName.Height, new AllowedRange(min: 165, max: 210) },
+                            { TerrainName.Danger, new AllowedRange(min: Terrain.safeZoneMax, max: 255) }});
+
+                        var yield = new Yield(debrisType: Yield.DebrisType.Stone,
+                            firstDroppedPieces: new List<Yield.DroppedPiece> {
+                                new Yield.DroppedPiece(pieceName: Name.GlassSand, chanceToDrop: 100, maxNumberToDrop: 1)},
+                            finalDroppedPieces: new List<Yield.DroppedPiece> {
+                                new Yield.DroppedPiece(pieceName: Name.GlassSand, chanceToDrop: 100, maxNumberToDrop: 3)});
+
+                        return new Decoration(name: templateName, world: world, position: position, animPackage: AnimData.PkgName.GlassDeposit, allowedFields: allowedFields, category: BoardPiece.Category.Stone,
+                          minDistance: 0, maxDistance: 1000, maxMassBySize: null, generation: generation, yield: yield, maxHitPoints: 300, isShownOnMiniMap: true, readableName: "glass sand deposit", description: "Can be mined for glass sand.");
                     }
 
                 case Name.CoalDeposit:
                     {
                         var allowedFields = new AllowedFields(rangeDict: new Dictionary<TerrainName, AllowedRange>() {
                             { TerrainName.Height, new AllowedRange(min: 165, max: 210) },
-                            { TerrainName.Danger, new AllowedRange(min: Terrain.saveZoneMax, max: 255) }});
+                            { TerrainName.Danger, new AllowedRange(min: Terrain.safeZoneMax, max: 255) }});
 
                         var yield = new Yield(debrisType: Yield.DebrisType.Stone,
                             firstDroppedPieces: new List<Yield.DroppedPiece> {
-                                new Yield.DroppedPiece(pieceName: Name.Coal, chanceToDrop: 100, maxNumberToDrop: 1)},
+                                new Yield.DroppedPiece(pieceName: Name.Coal, chanceToDrop: 100, maxNumberToDrop: 2)},
                             finalDroppedPieces: new List<Yield.DroppedPiece> {
-                                new Yield.DroppedPiece(pieceName: Name.Coal, chanceToDrop: 100, maxNumberToDrop: 3)});
+                                new Yield.DroppedPiece(pieceName: Name.Coal, chanceToDrop: 100, maxNumberToDrop: 6)});
 
                         return new Decoration(name: templateName, world: world, position: position, animPackage: AnimData.PkgName.CoalDeposit, allowedFields: allowedFields, category: BoardPiece.Category.Stone,
                           minDistance: 0, maxDistance: 1000, maxMassBySize: null, generation: generation, yield: yield, maxHitPoints: 300, isShownOnMiniMap: true, readableName: "coal deposit", description: "Can be mined for coal.");
@@ -827,6 +882,15 @@ namespace SonOfRobin
                             minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 8, floatsOnWater: false, readableName: "iron ore", description: "Can be used to make iron bars.");
                     }
 
+                case Name.GlassSand:
+                    {
+                        var allowedFields = new AllowedFields(rangeDict: new Dictionary<TerrainName, AllowedRange>() {
+                            { TerrainName.Height, new AllowedRange(min: Terrain.waterLevelMax, max: Terrain.volcanoEdgeMin) }});
+
+                        return new Collectible(name: templateName, world: world, position: position, animPackage: AnimData.PkgName.GlassSand, blocksMovement: false, allowedFields: allowedFields, category: BoardPiece.Category.Indestructible,
+                            minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 8, floatsOnWater: false, readableName: "glass sand", description: "Can be used to make glass.");
+                    }
+
                 case Name.IronBar:
                     {
                         var allowedFields = new AllowedFields(rangeDict: new Dictionary<TerrainName, AllowedRange>() {
@@ -838,52 +902,97 @@ namespace SonOfRobin
 
                 case Name.Apple:
                     {
-                        var allowedFields = new AllowedFields(rangeDict: new Dictionary<TerrainName, AllowedRange>() {
-                            { TerrainName.Height, new AllowedRange(min: (byte)(Terrain.waterLevelMax - 20), max: Terrain.volcanoEdgeMin) }});
-                        return new Fruit(name: templateName, world: world, position: position, animPackage: AnimData.PkgName.Apple, blocksMovement: false, allowedFields: allowedFields,
+                        return new Fruit(name: templateName, world: world, position: position, animPackage: AnimData.PkgName.Apple, blocksMovement: false, allowedFields: shallowWaterToVolcano,
                             minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 10, mass: 70, readableName: "apple", description: "Can be eaten or cooked.");
                     }
 
                 case Name.Cherry:
                     {
-                        var allowedFields = new AllowedFields(rangeDict: new Dictionary<TerrainName, AllowedRange>() {
-                            { TerrainName.Height, new AllowedRange(min: (byte)(Terrain.waterLevelMax - 20), max: Terrain.volcanoEdgeMin) }});
-                        return new Fruit(name: templateName, world: world, position: position, animPackage: AnimData.PkgName.Cherry, blocksMovement: false, allowedFields: allowedFields,
+                        return new Fruit(name: templateName, world: world, position: position, animPackage: AnimData.PkgName.Cherry, blocksMovement: false, allowedFields: shallowWaterToVolcano,
                             minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 16, mass: 40, readableName: "cherry", description: "Can be eaten or cooked.");
                     }
 
                 case Name.Banana:
                     {
-                        var allowedFields = new AllowedFields(rangeDict: new Dictionary<TerrainName, AllowedRange>() {
-                            { TerrainName.Height, new AllowedRange(min: (byte)(Terrain.waterLevelMax - 20), max: Terrain.volcanoEdgeMin) }});
-                        return new Fruit(name: templateName, world: world, position: position, animPackage: AnimData.PkgName.Banana, blocksMovement: false, allowedFields: allowedFields,
+                        return new Fruit(name: templateName, world: world, position: position, animPackage: AnimData.PkgName.Banana, blocksMovement: false, allowedFields: shallowWaterToVolcano,
                             minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 10, mass: 80, readableName: "banana", description: "Can be eaten or cooked.");
                     }
 
                 case Name.Tomato:
                     {
-                        var allowedFields = new AllowedFields(rangeDict: new Dictionary<TerrainName, AllowedRange>() {
-                            { TerrainName.Height, new AllowedRange(min: (byte)(Terrain.waterLevelMax - 20), max: Terrain.volcanoEdgeMin) }});
-                        return new Fruit(name: templateName, world: world, position: position, animPackage: AnimData.PkgName.Tomato, blocksMovement: false, allowedFields: allowedFields,
+                        return new Fruit(name: templateName, world: world, position: position, animPackage: AnimData.PkgName.Tomato, blocksMovement: false, allowedFields: shallowWaterToVolcano,
                             minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 10, mass: 20, readableName: "tomato", description: "Can be eaten or cooked.");
                     }
 
                 case Name.Acorn:
                     {
-                        var allowedFields = new AllowedFields(rangeDict: new Dictionary<TerrainName, AllowedRange>() {
-                            { TerrainName.Height, new AllowedRange(min: (byte)(Terrain.waterLevelMax - 20), max: Terrain.volcanoEdgeMin) }});
-                        return new Fruit(name: templateName, world: world, position: position, animPackage: AnimData.PkgName.Acorn, blocksMovement: false, allowedFields: allowedFields,
+                        return new Fruit(name: templateName, world: world, position: position, animPackage: AnimData.PkgName.Acorn, blocksMovement: false, allowedFields: shallowWaterToVolcano,
                             minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 10, mass: 100, readableName: "acorn", description: "Have to be cooked before eating.", canBeEatenRaw: false);
                     }
 
-                case Name.Herbs:
+                case Name.HerbsGreen:
                     {
-                        var allowedFields = new AllowedFields(rangeDict: new Dictionary<TerrainName, AllowedRange>() {
-                            { TerrainName.Height, new AllowedRange(min: (byte)(Terrain.waterLevelMax - 20), max: Terrain.volcanoEdgeMin) }});
-
-                        return new Collectible(name: templateName, world: world, position: position, animPackage: AnimData.PkgName.Herbs, blocksMovement: false, allowedFields: allowedFields,
+                        return new Collectible(name: templateName, world: world, position: position, animPackage: AnimData.PkgName.HerbsGreen, blocksMovement: false, allowedFields: shallowWaterToVolcano,
                             category: BoardPiece.Category.SmallPlant,
-                            minDistance: 0, maxDistance: 200, generation: generation, stackSize: 10, rotatesWhenDropped: true, readableName: "herbs", description: "Have to be cooked before eating.", mass: 30);
+                            minDistance: 0, maxDistance: 200, generation: generation, stackSize: 10, rotatesWhenDropped: true, readableName: "green herbs", description: "Potion ingredient.", mass: 30);
+                    }
+
+                case Name.HerbsBlack:
+                    {
+                        return new Collectible(name: templateName, world: world, position: position, animPackage: AnimData.PkgName.HerbsBlack, blocksMovement: false, allowedFields: shallowWaterToVolcano,
+                            category: BoardPiece.Category.SmallPlant,
+                            minDistance: 0, maxDistance: 200, generation: generation, stackSize: 10, rotatesWhenDropped: true, readableName: "black herbs", description: "Potion ingredient.", mass: 30);
+                    }
+
+                case Name.HerbsBlue:
+                    {
+                        return new Collectible(name: templateName, world: world, position: position, animPackage: AnimData.PkgName.HerbsBlue, blocksMovement: false, allowedFields: shallowWaterToVolcano,
+                            category: BoardPiece.Category.SmallPlant,
+                            minDistance: 0, maxDistance: 200, generation: generation, stackSize: 10, rotatesWhenDropped: true, readableName: "blue herbs", description: "Potion ingredient.", mass: 30);
+                    }
+
+                case Name.HerbsRed:
+                    {
+                        return new Collectible(name: templateName, world: world, position: position, animPackage: AnimData.PkgName.HerbsRed, blocksMovement: false, allowedFields: shallowWaterToVolcano,
+                            category: BoardPiece.Category.SmallPlant,
+                            minDistance: 0, maxDistance: 200, generation: generation, stackSize: 10, rotatesWhenDropped: true, readableName: "red herbs", description: "Potion ingredient.", mass: 30);
+                    }
+
+                case Name.HerbsViolet:
+                    {
+                        return new Collectible(name: templateName, world: world, position: position, animPackage: AnimData.PkgName.HerbsViolet, blocksMovement: false, allowedFields: shallowWaterToVolcano,
+                            category: BoardPiece.Category.SmallPlant,
+                            minDistance: 0, maxDistance: 200, generation: generation, stackSize: 10, rotatesWhenDropped: true, readableName: "violet herbs", description: "Potion ingredient.", mass: 30);
+                    }
+
+                case Name.HerbsYellow:
+                    {
+                        return new Collectible(name: templateName, world: world, position: position, animPackage: AnimData.PkgName.HerbsYellow, blocksMovement: false, allowedFields: shallowWaterToVolcano, category: BoardPiece.Category.SmallPlant,
+                            minDistance: 0, maxDistance: 200, generation: generation, stackSize: 10, rotatesWhenDropped: true, readableName: "yellow herbs", description: "Potion ingredient.", mass: 30);
+                    }
+
+                case Name.EmptyBottle:
+                    {
+                        return new Collectible(name: templateName, world: world, position: position, animPackage: AnimData.PkgName.EmptyBottle, blocksMovement: false, category: BoardPiece.Category.Indestructible, allowedFields: shallowWaterToVolcano,
+                            minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 100, rotatesWhenDropped: true, floatsOnWater: false, readableName: "empty bottle", description: "Can be used to make a potion.");
+                    }
+
+                case Name.PotionHealing:
+                    {
+                        var buffList = new List<BuffEngine.Buff> {
+                             new BuffEngine.Buff(world: world, type: BuffEngine.BuffType.HP, value: (float)200, isPositive: true, isPermanent: true)};
+
+                        return new Potion(name: templateName, world: world, position: position, animPackage: AnimData.PkgName.PotionRed, blocksMovement: false, category: BoardPiece.Category.Indestructible, allowedFields: shallowWaterToVolcano,
+                            minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 200, toolbarTask: Scheduler.TaskName.GetDrinked, rotatesWhenDropped: true, floatsOnWater: false, readableName: "healing potion", description: "Restores hit points.", buffList: buffList, convertsToWhenDrinked: Name.EmptyBottle);
+                    }
+
+                case Name.PotionStrength:
+                    {
+                        var buffList = new List<BuffEngine.Buff> {
+                             new BuffEngine.Buff(world: world, type: BuffEngine.BuffType.Strength, value: (int)5, isPositive: true, autoRemoveDelay: 60 * 60 * 3)};
+
+                        return new Potion(name: templateName, world: world, position: position, animPackage: AnimData.PkgName.PotionYellow, blocksMovement: false, category: BoardPiece.Category.Indestructible, allowedFields: shallowWaterToVolcano,
+                            minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 200, toolbarTask: Scheduler.TaskName.GetDrinked, rotatesWhenDropped: true, floatsOnWater: false, readableName: "strength potion", description: "Increases strength for a short while.", buffList: buffList, convertsToWhenDrinked: Name.EmptyBottle);
                     }
 
                 case Name.RawMeat:
@@ -897,11 +1006,8 @@ namespace SonOfRobin
 
                 case Name.Leather:
                     {
-                        var allowedFields = new AllowedFields(rangeDict: new Dictionary<TerrainName, AllowedRange>() {
-                            { TerrainName.Height, new AllowedRange(min: (byte)(Terrain.waterLevelMax - 20), max: Terrain.volcanoEdgeMin) }});
-
                         return new Collectible(name: templateName, world: world, position: position, animPackage: AnimData.PkgName.Leather, blocksMovement: false, category: BoardPiece.Category.Indestructible,
-                            allowedFields: allowedFields,
+                            allowedFields: shallowWaterToVolcano,
                             minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 4, mass: 100, rotatesWhenDropped: true, readableName: "leather", description: "Crafting material.");
                     }
 

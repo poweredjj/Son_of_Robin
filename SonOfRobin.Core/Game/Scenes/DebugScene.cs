@@ -79,7 +79,7 @@ namespace SonOfRobin
 
             if (Keyboard.HasBeenPressed(Keys.D1))
             {
-                BoardPiece piece = PieceTemplate.CreateOnBoard(world: world, position: world.player.sprite.position, templateName: PieceTemplate.Name.CrateStarting);
+                BoardPiece piece = PieceTemplate.CreateOnBoard(world: world, position: world.player.sprite.position, templateName: PieceTemplate.Name.Shell);
                 if (piece.sprite.placedCorrectly) piece.sprite.MoveToClosestFreeSpot(world.player.sprite.position);
             }
 
@@ -305,8 +305,10 @@ namespace SonOfRobin
 
             if (Keyboard.HasBeenPressed(Keys.F7))
             {
-                int value = world.random.Next(1, 5);
-                world.player.buffEngine.AddBuff(world: world, buff: new BuffEngine.Buff(world: world, type: BuffEngine.BuffType.Strength, value: value, autoRemoveDelay: world.random.Next(100, 500), isPositive: value > 0));
+                int value = world.random.Next(-30, 30);
+                //  world.player.buffEngine.AddBuff(world: world, buff: new BuffEngine.Buff(world: world, type: BuffEngine.BuffType.Strength, value: value, autoRemoveDelay: world.random.Next(100, 500), isPositive: value > 0));
+
+                world.player.buffEngine.AddBuff(world: world, buff: new BuffEngine.Buff(world: world, type: BuffEngine.BuffType.RegenPoison, value: value, autoRemoveDelay: world.random.Next(600, 1200), isPositive: value > 0, canKill: true));
             }
 
             if (Keyboard.HasBeenPressed(Keys.F8))

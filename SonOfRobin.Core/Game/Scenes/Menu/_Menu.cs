@@ -97,6 +97,7 @@ namespace SonOfRobin
         public int EntryWidth { get { return Convert.ToInt32(EntryBgWidth * 0.8f); } }
         public int EntryHeight { get { return Convert.ToInt32(SonOfRobinGame.VirtualHeight * 0.08f * Preferences.menuScale); } }
         public int EntryMargin { get { return Convert.ToInt32(SonOfRobinGame.VirtualHeight * 0.025f * Preferences.menuScale); } }
+        private Rectangle BgRect { get { return new Rectangle(0, 0, this.EntryBgWidth, SonOfRobinGame.VirtualHeight); } }
         public Entry ActiveEntry { get { return this.entryList[activeIndex]; } }
         public List<Entry> VisibleEntries { get { return this.entryList.Where(entry => entry.IsVisible).ToList(); } }
         public List<Entry> PartiallyVisibleEntries { get { return this.entryList.Where(entry => entry.IsPartiallyVisible).ToList(); } }
@@ -356,7 +357,7 @@ namespace SonOfRobin
 
         private void ProcessInput()
         {
-            if (InputMapper.HasBeenPressed(InputMapper.Action.GlobalCancelReturnSkip))
+            if (InputMapper.HasBeenPressed(InputMapper.Action.GlobalCancelReturnSkip) || this.CanExitByTouch())
             {
                 if (this.canBeClosedManually)
                 {
@@ -365,21 +366,36 @@ namespace SonOfRobin
                 }
             }
 
-            if (Preferences.EnableTouch)
-            {
-                if (this.ScrollActive) this.ScrollByTouch();
+            if (this.ScrollActive) this.ScrollByTouch();
 
-                var visibleEntries = this.VisibleEntries;
-                foreach (Entry entry in visibleEntries)
-                { entry.ProcessTouch(); }
-            }
+            var visibleEntries = this.VisibleEntries;
+            foreach (Entry entry in visibleEntries)
+            { entry.ProcessTouch(); }
 
             if (InputMapper.HasBeenPressed(InputMapper.Action.GlobalUp)) this.PreviousItem();
             if (InputMapper.HasBeenPressed(InputMapper.Action.GlobalDown)) this.NextItem();
             if (InputMapper.HasBeenPressed(InputMapper.Action.GlobalLeft)) this.ActiveEntry.PreviousValue(touchMode: false);
             if (InputMapper.HasBeenPressed(InputMapper.Action.GlobalRight)) this.ActiveEntry.NextValue(touchMode: false);
-
             if (InputMapper.HasBeenPressed(InputMapper.Action.GlobalConfirm)) this.ActiveEntry.Invoke();
+        }
+
+        private bool CanExitByTouch()
+        {
+            if (Preferences.EnableTouchButtons) return false;
+
+            var pressTouches = TouchInput.TouchPanelState.Where(touch => touch.State == TouchLocationState.Pressed).ToList();
+            if (pressTouches.Count == 0) return false;
+
+            Rectangle menuRect = this.BgRect;
+            menuRect.X += (int)this.viewParams.drawPosX;
+            menuRect.Y += (int)this.viewParams.drawPosY;
+
+            foreach (TouchLocation touch in pressTouches)
+            {
+                if (!menuRect.Contains(touch.Position / Preferences.GlobalScale)) return true;
+            }
+
+            return false;
         }
 
         private void ScrollByTouch()
@@ -440,8 +456,7 @@ namespace SonOfRobin
 
         public override void Draw()
         {
-            Rectangle rect = new Rectangle(0, 0, this.EntryBgWidth, SonOfRobinGame.VirtualHeight);
-            SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, rect, this.bgColor);
+            SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, this.BgRect, this.bgColor);
 
             var visibleEntries = VisibleEntries;
             for (int i = 0; i < visibleEntries.Count; i++)

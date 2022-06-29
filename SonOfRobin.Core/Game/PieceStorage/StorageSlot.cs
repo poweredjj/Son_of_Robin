@@ -133,6 +133,15 @@ namespace SonOfRobin
             this.pieceList = this.pieceList.Where(piece => piece.hitPoints > 0).ToList();
         }
 
+        public void DestroyPieceAndReplaceWithAnother(BoardPiece piece)
+        {
+            // target piece stack size should be 1; otherwise it makes no sense
+            if (this.pieceList.Count > 1) throw new ArgumentException($"Cannot replace {this.storage.storageType} slot (current stack size {this.pieceList.Count}) contents with {piece.name}.");
+
+            this.pieceList.Clear();
+            this.pieceList.Add(piece);
+        }
+
         public Object Serialize()
         {
             var pieceList = new List<Object> { };

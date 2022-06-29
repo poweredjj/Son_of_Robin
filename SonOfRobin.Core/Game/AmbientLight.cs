@@ -106,9 +106,9 @@ namespace SonOfRobin
 
         private static readonly List<AmbientLightData> lightDataList = new List<AmbientLightData>
         {
-            new AmbientLightData(timeOfDay: TimeSpan.FromHours(0), darknessColor: Color.Black * 0.8f, lightColor: Color.Transparent),
-            new AmbientLightData(timeOfDay: TimeSpan.FromHours(3), darknessColor: Color.Black * 0.75f, lightColor: Color.Transparent),
-            new AmbientLightData(timeOfDay: TimeSpan.FromHours(4), darknessColor: Color.DarkBlue * 0.7f, lightColor: Color.Transparent),
+            new AmbientLightData(timeOfDay: TimeSpan.FromHours(0), darknessColor: Color.Black * 0.9f, lightColor: Color.Transparent),
+            new AmbientLightData(timeOfDay: TimeSpan.FromHours(3), darknessColor: Color.Black * 0.8f, lightColor: Color.Transparent),
+            new AmbientLightData(timeOfDay: TimeSpan.FromHours(4), darknessColor: Color.DarkBlue * 0.75f, lightColor: Color.Transparent),
             new AmbientLightData(timeOfDay: TimeSpan.FromHours(5), darknessColor: Color.Brown * 0.6f, lightColor: Color.Orange * 0.4f),
             new AmbientLightData(timeOfDay: TimeSpan.FromHours(6), darknessColor: Color.Transparent, lightColor: Color.Gold * 0.25f),
             new AmbientLightData(timeOfDay: TimeSpan.FromHours(6.5), darknessColor: Color.Transparent, lightColor: Color.White * 0.1f),
@@ -116,8 +116,8 @@ namespace SonOfRobin
             new AmbientLightData(timeOfDay: TimeSpan.FromHours(15), darknessColor: Color.Transparent, lightColor: Color.White * 0.1f),
             new AmbientLightData(timeOfDay: TimeSpan.FromHours(16.5), darknessColor: Color.Transparent, lightColor: Color.Gold * 0.25f),
             new AmbientLightData(timeOfDay: TimeSpan.FromHours(18), darknessColor:Color.Brown * 0.6f, lightColor: Color.Orange * 0.4f),
-            new AmbientLightData(timeOfDay: TimeSpan.FromHours(19), darknessColor: Color.DarkBlue * 0.7f, lightColor: Color.Transparent),
-            new AmbientLightData(timeOfDay: TimeSpan.FromHours(20), darknessColor: Color.Black * 0.75f, lightColor: Color.Transparent),
+            new AmbientLightData(timeOfDay: TimeSpan.FromHours(19), darknessColor: Color.DarkBlue * 0.75f, lightColor: Color.Transparent),
+            new AmbientLightData(timeOfDay: TimeSpan.FromHours(20), darknessColor: Color.Black * 0.8f, lightColor: Color.Transparent),
         };
 
         public static AmbientLightData CalculateLightAndDarknessColors(DateTime currentDateTime)

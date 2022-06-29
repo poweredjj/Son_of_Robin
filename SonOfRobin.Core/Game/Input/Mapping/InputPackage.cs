@@ -9,6 +9,8 @@ namespace SonOfRobin
     [Serializable]
     public class InputPackage
     {
+        public static readonly float version = 1.01f;
+
         private static readonly Dictionary<string, string> readablePropertyNames = new Dictionary<string, string>
             {
                 {"left", "left"},
@@ -28,11 +30,14 @@ namespace SonOfRobin
                 {"craft", "open craft"},
                 {"equip", "open equip"},
                 {"inventory", "open inventory"},
+                {"invSwitch", "switch active inventory"},
                 {"pickOne", "pick item"},
                 {"pickStack", "pick stack"},
                 {"toolbarPrev", "previous item"},
                 {"toolbarNext", "next item"}
             };
+
+        public readonly float packageVersion;
 
         public InputMapper.AnalogType leftStick;
         public InputMapper.AnalogType rightStick;
@@ -55,10 +60,15 @@ namespace SonOfRobin
         public object zoomOut;
         public object toolbarPrev;
         public object toolbarNext;
+        public object invSwitch;
         public object pickOne;
         public object pickStack;
-        public InputPackage(InputMapper.AnalogType leftStick, InputMapper.AnalogType rightStick, object confirm, object cancel, object pauseMenu, object run, object equip, object inventory, object pickUp, object craft, object interact, object map, object useTool, object zoomOut, object toolbarPrev, object toolbarNext, object pickOne, object pickStack, object left = null, object right = null, object up = null, object down = null)
+
+        public bool IsObsolete { get { return this.packageVersion != version; } }
+        public InputPackage(float packageVersion, InputMapper.AnalogType leftStick, InputMapper.AnalogType rightStick, object confirm, object cancel, object pauseMenu, object run, object equip, object inventory, object pickUp, object craft, object interact, object map, object useTool, object zoomOut, object toolbarPrev, object invSwitch, object toolbarNext, object pickOne, object pickStack, object left = null, object right = null, object up = null, object down = null)
         {
+            this.packageVersion = version;
+
             this.leftStick = leftStick;
             this.rightStick = rightStick;
 
@@ -79,6 +89,7 @@ namespace SonOfRobin
             this.zoomOut = zoomOut;
             this.toolbarPrev = toolbarPrev;
             this.toolbarNext = toolbarNext;
+            this.invSwitch = invSwitch;
             this.pickOne = pickOne;
             this.pickStack = pickStack;
             this.interact = interact;
@@ -91,7 +102,7 @@ namespace SonOfRobin
 
         public InputPackage MakeCopy()
         {
-            return new InputPackage(leftStick: this.leftStick, rightStick: this.rightStick, confirm: this.confirm, cancel: this.cancel, pauseMenu: this.pauseMenu, run: this.run, equip: this.equip, inventory: this.inventory, pickUp: this.pickUp, craft: this.craft, interact: this.interact, map: this.map, useTool: this.useTool, zoomOut: this.zoomOut, toolbarPrev: this.toolbarPrev, toolbarNext: this.toolbarNext, pickOne: this.pickOne, pickStack: this.pickStack, left: left, right: right, up: up, down: down);
+            return new InputPackage(packageVersion: this.packageVersion, leftStick: this.leftStick, rightStick: this.rightStick, confirm: this.confirm, cancel: this.cancel, pauseMenu: this.pauseMenu, run: this.run, equip: this.equip, inventory: this.inventory, pickUp: this.pickUp, craft: this.craft, interact: this.interact, map: this.map, useTool: this.useTool, zoomOut: this.zoomOut, toolbarPrev: this.toolbarPrev, toolbarNext: this.toolbarNext, invSwitch: this.invSwitch, pickOne: this.pickOne, pickStack: this.pickStack, left: left, right: right, up: up, down: down);
         }
 
         public bool Validate(bool gamepad)
@@ -102,7 +113,7 @@ namespace SonOfRobin
                 { new List<string> { "leftStick", "rightStick" } }, // sticks
                 { new List<string> { "confirm", "cancel", "left", "right", "up", "down", "pauseMenu"} }, // general
                 { new List<string> { "interact", "pickUp", "run", "useTool", "zoomOut", "toolbarPrev", "toolbarNext", "pauseMenu", "equip", "inventory", "craft", "map" } }, // field
-                { new List<string> { "pickOne", "pickStack", "confirm", "cancel", "left", "right", "up", "down" } }, // inventory
+                { new List<string> { "invSwitch", "pickOne", "pickStack", "confirm", "cancel", "left", "right", "up", "down" } }, // inventory
             };
 
             // searching for duplicates and making a dictionary of found duplicates (texture: property list)

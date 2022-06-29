@@ -9,7 +9,7 @@ namespace SonOfRobin
         static MouseState currentMouseState;
         static MouseState previousMouseState;
 
-        public static bool LeftIsPressed { get { return Input.InputActive && currentMouseState.LeftButton == ButtonState.Pressed; } }
+        public static bool LeftIsDown { get { return Input.InputActive && currentMouseState.LeftButton == ButtonState.Pressed; } }
         public static bool LeftHasBeenPressed { get { return Input.InputActive && currentMouseState.LeftButton == ButtonState.Pressed && previousMouseState.LeftButton == ButtonState.Released; } }
         public static bool LeftHasBeenReleased
         {
@@ -19,10 +19,10 @@ namespace SonOfRobin
                 return Input.InputActive && currentMouseState.LeftButton == ButtonState.Released && previousMouseState.LeftButton == ButtonState.Pressed;
             }
         }
-        public static bool MiddleIsPressed { get { return Input.InputActive && currentMouseState.MiddleButton == ButtonState.Pressed; } }
+        public static bool MiddleIsDown { get { return Input.InputActive && currentMouseState.MiddleButton == ButtonState.Pressed; } }
         public static bool MiddleHasBeenPressed { get { return Input.InputActive && currentMouseState.MiddleButton == ButtonState.Pressed && previousMouseState.MiddleButton == ButtonState.Released; } }
         public static bool MiddleHasBeenReleased { get { return Input.InputActive && currentMouseState.MiddleButton == ButtonState.Released && previousMouseState.MiddleButton == ButtonState.Pressed; } }
-        public static bool RightIsPressed { get { return Input.InputActive && currentMouseState.RightButton == ButtonState.Pressed; } }
+        public static bool RightIsDown { get { return Input.InputActive && currentMouseState.RightButton == ButtonState.Pressed; } }
         public static bool RightHasBeenPressed { get { return Input.InputActive && currentMouseState.RightButton == ButtonState.Pressed && previousMouseState.RightButton == ButtonState.Released; } }
         public static bool RightHasBeenReleased { get { return Input.InputActive && currentMouseState.RightButton == ButtonState.Released && previousMouseState.RightButton == ButtonState.Pressed; } }
         public static int ScrollWheelValue { get { return Input.InputActive ? currentMouseState.ScrollWheelValue : 0; } }

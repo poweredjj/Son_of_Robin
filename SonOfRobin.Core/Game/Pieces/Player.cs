@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input.Touch;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,13 +19,14 @@ namespace SonOfRobin
         public float shootingAngle;
         private int shootingPower;
         public SleepEngine sleepEngine;
+        private Vector2 pointWalkTarget;
 
         private bool ShootingModeInputPressed
         {
             get
             {
                 if (TouchInput.IsBeingTouchedInAnyWay) return Math.Abs(this.world.analogCameraCorrection.X) > 0.05f || Math.Abs(this.world.analogCameraCorrection.Y) > 0.05f;
-                else return InputMapper.IsPressed(InputMapper.Action.WorldUseToolbarPiece);
+                else return InputMapper.IsPressed(InputMapper.Action.WorldUseToolbarPiece) || Mouse.RightIsDown;
             }
         }
 
@@ -71,8 +73,11 @@ namespace SonOfRobin
         public List<PieceStorage> CraftStorages { get { return new List<PieceStorage> { this.pieceStorage, this.toolStorage, this.equipStorage }; } }
         public List<PieceStorage> CraftStoragesToolbarFirst { get { return new List<PieceStorage> { this.toolStorage, this.pieceStorage, this.equipStorage }; } } // the same as above, changed order
 
+        public StorageSlot ActiveSlot
+        { get { return this.toolStorage?.lastUsedSlot; } }
+
         public BoardPiece ActiveToolbarPiece
-        { get { return this.toolStorage?.lastUsedSlot?.TopPiece; } }
+        { get { return this.ActiveSlot?.TopPiece; } }
 
         private bool CanUseActiveToolbarPiece
         {
@@ -323,7 +328,6 @@ namespace SonOfRobin
         {
             energyAmount *= this.efficiency;
 
-            this.hitPoints = Math.Min(this.hitPoints + (energyAmount * 2), this.maxHitPoints);
             this.fedLevel = Math.Min(this.fedLevel + Convert.ToInt32(energyAmount * 2), this.maxFedLevel);
             this.Stamina = this.maxStamina;
 
@@ -379,26 +383,34 @@ namespace SonOfRobin
                 if (this.TryToEnterShootingMode()) return;
             }
 
-            if (InputMapper.HasBeenPressed(InputMapper.Action.WorldUseToolbarPiece))
+            if (InputMapper.HasBeenPressed(InputMapper.Action.WorldUseToolbarPiece) || Mouse.RightHasBeenPressed)
             {
                 if (this.UseToolbarPiece(isInShootingMode: false, buttonHeld: false, highlightOnly: false)) return;
             }
 
-            if (InputMapper.IsPressed(InputMapper.Action.WorldUseToolbarPiece))
+            if (InputMapper.IsPressed(InputMapper.Action.WorldUseToolbarPiece) || Mouse.RightIsDown)
             {
                 if (this.UseToolbarPiece(isInShootingMode: false, buttonHeld: true, highlightOnly: false)) return;
             }
 
-            if (InputMapper.HasBeenPressed(InputMapper.Action.WorldPickUp))
+            bool pickUp = InputMapper.HasBeenPressed(InputMapper.Action.WorldPickUp) ||
+                (Preferences.pointToInteract && pieceToPickUp != null && pieceToPickUp.sprite.gfxRect.Contains(this.pointWalkTarget));
+
+            if (pickUp)
             {
+                this.pointWalkTarget = Vector2.Zero; // to avoid picking up indefinitely
                 this.PickUpClosestPiece(closestPiece: pieceToPickUp);
                 return;
             }
 
-            if (InputMapper.HasBeenPressed(InputMapper.Action.WorldInteract))
+            bool interact = !pickUp && (InputMapper.HasBeenPressed(InputMapper.Action.WorldInteract) ||
+                (Preferences.pointToInteract && pieceToInteract != null && pieceToInteract.sprite.gfxRect.Contains(this.pointWalkTarget)));
+
+            if (interact)
             {
                 if (pieceToInteract != null)
                 {
+                    this.pointWalkTarget = Vector2.Zero; // to avoid interacting indefinitely
                     this.world.hintEngine.Disable(Tutorials.Type.Interact);
                     new Scheduler.Task(taskName: pieceToInteract.boardTask, delay: 0, executeHelper: pieceToInteract);
                 }
@@ -407,22 +419,47 @@ namespace SonOfRobin
 
         private bool Walk(bool setOrientation = true)
         {
-            if (this.world.analogMovementLeftStick == Vector2.Zero)
+            Vector2 movement = this.world.analogMovementLeftStick;
+            if (movement != Vector2.Zero) this.pointWalkTarget = Vector2.Zero;
+
+            //  bool inputActive = Input.InputActive;
+            bool layoutChangedRecently = TouchInput.FramesSinceLayoutChanged < 5;
+
+            if (movement == Vector2.Zero && Preferences.pointToWalk && !layoutChangedRecently)
+            {
+                foreach (TouchLocation touch in TouchInput.TouchPanelState)
+                {
+                    if (touch.State == TouchLocationState.Pressed && !TouchInput.IsPointActivatingAnyTouchInterface(touch.Position))
+                    {
+                        Vector2 worldTouchPos = this.world.TranslateScreenToWorldPos(touch.Position);
+                        //  var crosshair = PieceTemplate.CreateOnBoard(world: world, position: worldTouchPos, templateName: PieceTemplate.Name.Crosshair); // for testing
+                        //  new WorldEvent(eventName: WorldEvent.EventName.Destruction, world: this.world, delay: 60, boardPiece: crosshair); // for testing
+
+                        this.pointWalkTarget = worldTouchPos;
+                        break;
+                    }
+                }
+
+                if (this.pointWalkTarget != Vector2.Zero)
+                {
+                    movement = this.pointWalkTarget - this.sprite.position;
+
+                    if (Math.Abs(movement.X) < 3) movement.X = 0; // to avoid animation flickering
+                    if (Math.Abs(movement.Y) < 3) movement.Y = 0; // to avoid animation flickering
+
+                    if (movement.X == 0 && movement.Y == 0) this.pointWalkTarget = Vector2.Zero;
+                }
+            }
+            else this.pointWalkTarget = Vector2.Zero;
+
+            if (movement == Vector2.Zero)
             {
                 this.sprite.CharacterStand();
                 return false;
             }
 
-            Vector2 movement = this.world.analogMovementLeftStick;
-
             var currentSpeed = this.IsVeryTired ? this.speed / 2f : this.speed;
-            if (InputMapper.IsPressed(InputMapper.Action.WorldRun))
-            {
-                if (this.Stamina > 0)
-                {
-                    currentSpeed *= 2;
-                }
-            }
+            if (InputMapper.IsPressed(InputMapper.Action.WorldRun) && (this.Stamina > 0)) currentSpeed *= 2;
 
             movement *= currentSpeed;
 
@@ -481,6 +518,7 @@ namespace SonOfRobin
 
             Vector2 moving = this.world.analogMovementLeftStick;
             Vector2 shooting = this.world.analogMovementRightStick;
+            if (Mouse.RightIsDown) shooting = (this.world.TranslateScreenToWorldPos(Mouse.Position) - this.sprite.position) / 20;
 
             Vector2 directionVector = Vector2.Zero;
             if (moving != Vector2.Zero) directionVector = moving;
@@ -501,9 +539,8 @@ namespace SonOfRobin
             Vector2 aidPos = this.sprite.position + new Vector2(aidOffsetX, aidOffsetY);
             this.visualAid.sprite.SetNewPosition(aidPos);
 
-
             if (TouchInput.IsBeingTouchedInAnyWay && VirtButton.HasButtonBeenPressed(VButName.Shoot) ||
-                InputMapper.HasBeenReleased(InputMapper.Action.WorldUseToolbarPiece)) // virtual button has to be checked separately here
+                InputMapper.HasBeenReleased(InputMapper.Action.WorldUseToolbarPiece) || Mouse.RightHasBeenReleased) // virtual button has to be checked separately here
             {
                 this.UseToolbarPiece(isInShootingMode: true, buttonHeld: false);
                 this.shootingPower = 0;
@@ -697,6 +734,7 @@ namespace SonOfRobin
         {
             if (!this.CanUseActiveToolbarPiece) return false;
 
+            StorageSlot activeSlot = this.ActiveSlot;
             BoardPiece activeToolbarPiece = this.ActiveToolbarPiece;
 
             Vector2 centerOffset = this.GetCenterOffset();
@@ -713,6 +751,7 @@ namespace SonOfRobin
 
             var executeHelper = new Dictionary<string, Object> {
                     {"player", this},
+                    {"slot", activeSlot},
                     {"toolbarPiece", activeToolbarPiece},
                     {"shootingPower", this.shootingPower},
                     {"offsetX", offsetX},

@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Input.Touch;
 using SonOfRobin;
 using Studies.Joystick.Abstract;
 using System;
+using System.Collections.Generic;
 
 namespace Studies.Joystick.Input
 {
@@ -167,27 +168,33 @@ namespace Studies.Joystick.Input
             LeftStick.Update(state, leftTouch, dt);
             RightStick.Update(state, rightTouch, dt);
         }
-        public void Draw(SpriteBatch spriteBatch)
+
+        public List<Rectangle> Draw(SpriteBatch spriteBatch = null, bool getBGRectsOnly = false)
         {
             Texture2D backgroundTx = SonOfRobinGame.textureByName["virtual_joypad_background"];
             Texture2D stickTx = SonOfRobinGame.textureByName["virtual_joypad_stick"];
 
             float scale = Preferences.GlobalScale;
-
             float backgroundSize = aliveZoneSize / scale * 2;
             float stickSize = aliveZoneSize * 0.6f / scale;
 
+            Rectangle leftRect = DrawTextureCentered(texture: backgroundTx, position: LeftStick.StartLocation / scale, spriteBatch: spriteBatch, width: backgroundSize, height: backgroundSize, getRectOnly: getBGRectsOnly);
+            Rectangle rightRect = DrawTextureCentered(texture: backgroundTx, position: RightStick.StartLocation / scale, spriteBatch: spriteBatch, width: backgroundSize, height: backgroundSize, getRectOnly: getBGRectsOnly);
 
-            DrawGraphicsCentered(texture: backgroundTx, position: LeftStick.StartLocation / scale, spriteBatch: spriteBatch, width: backgroundSize, height: backgroundSize);
-            DrawGraphicsCentered(texture: backgroundTx, position: RightStick.StartLocation / scale, spriteBatch: spriteBatch, width: backgroundSize, height: backgroundSize);
+            var rectList = new List<Rectangle> { leftRect, rightRect };
 
-            DrawGraphicsCentered(texture: stickTx, position: LeftStick.GetPositionVector(aliveZoneSize) / scale, spriteBatch: spriteBatch, width: stickSize, height: stickSize);
-            DrawGraphicsCentered(texture: stickTx, position: RightStick.GetPositionVector(aliveZoneSize) / scale, spriteBatch: spriteBatch, width: stickSize, height: stickSize);
+            if (!getBGRectsOnly)
+            {
+                DrawTextureCentered(texture: stickTx, position: LeftStick.GetPositionVector(aliveZoneSize) / scale, spriteBatch: spriteBatch, width: stickSize, height: stickSize);
+                DrawTextureCentered(texture: stickTx, position: RightStick.GetPositionVector(aliveZoneSize) / scale, spriteBatch: spriteBatch, width: stickSize, height: stickSize);
+            }
+
+            return rectList;
         }
 
-        private void DrawGraphicsCentered(Texture2D texture, Vector2 position, SpriteBatch spriteBatch, float width, float height)
+        private static Rectangle DrawTextureCentered(Texture2D texture, Vector2 position, SpriteBatch spriteBatch, float width, float height, bool getRectOnly = false)
         {
-            if (position.X == 0 && position.Y == 0) return;
+            if (position.X == 0 && position.Y == 0) return new Rectangle();
 
             Vector2 posCentered = position - new Vector2(width / 2, height / 2);
 
@@ -198,7 +205,9 @@ namespace Studies.Joystick.Input
                 Convert.ToInt32((float)width),
                 Convert.ToInt32((float)height));
 
-            spriteBatch.Draw(texture, destinationRectangle, sourceRectangle, Color.White);
+            if (!getRectOnly) spriteBatch.Draw(texture, destinationRectangle, sourceRectangle, Color.White);
+
+            return destinationRectangle;
         }
 
     }

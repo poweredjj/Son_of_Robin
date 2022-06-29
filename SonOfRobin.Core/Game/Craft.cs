@@ -6,7 +6,7 @@ namespace SonOfRobin
 {
     public class Craft
     {
-        public enum Category { Field, Workshop, Furnace }
+        public enum Category { Field, Basic, Alchemy, Furnace }
 
         public class Recipe
         {
@@ -141,7 +141,7 @@ namespace SonOfRobin
 
                 hintEngine.Disable(Tutorials.Type.Craft);
                 if (this.pieceToCreate == PieceTemplate.Name.Map) hintEngine.Disable(PieceHint.Type.MapCanMake);
-                if (this.pieceToCreate == PieceTemplate.Name.RegularWorkshop) hintEngine.Disable(Tutorials.Type.BuildWorkshop);
+                if (this.pieceToCreate == PieceTemplate.Name.WorkshopBasic) hintEngine.Disable(Tutorials.Type.BuildWorkshop);
 
                 return true;
             }
@@ -168,14 +168,14 @@ namespace SonOfRobin
         {
             if (categoriesCreated) return;
 
-            List<Recipe> recipeList;
-
-            // field craft
-
-            recipeList = new List<Recipe> {
+            // field
+            {
+                List<Recipe> fieldRecipes = new List<Recipe> {
                 new Recipe(pieceToCreate: PieceTemplate.Name.AxeWood, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stick, 2 }, { PieceTemplate.Name.WoodLog, 1 }}, isReversible: true),
 
-                new Recipe(pieceToCreate: PieceTemplate.Name.RegularWorkshop, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodLog, 4 } }, isReversible: true),
+                new Recipe(pieceToCreate: PieceTemplate.Name.WorkshopBasic, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodLog, 4 } }, isReversible: true),
+
+                new Recipe(pieceToCreate: PieceTemplate.Name.WorkshopAlchemy, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stone, 8 },  { PieceTemplate.Name.WoodPlank, 4 }, { PieceTemplate.Name.EmptyBottle, 2 } }, isReversible: true),
 
                 new Recipe(pieceToCreate: PieceTemplate.Name.Campfire, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stone, 8 }}, isReversible: true),
 
@@ -185,20 +185,21 @@ namespace SonOfRobin
 
                 new Recipe(pieceToCreate: PieceTemplate.Name.TentBig, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Leather, 20 }, { PieceTemplate.Name.Stick, 60 }, { PieceTemplate.Name.Nail, 100 }, { PieceTemplate.Name.WoodPlank, 30 }}, isReversible: true),
 
-                new Recipe(pieceToCreate: PieceTemplate.Name.ChestWooden, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodPlank, 16 },  { PieceTemplate.Name.Nail, 40 } }, isReversible: true),
+                new Recipe(pieceToCreate: PieceTemplate.Name.ChestWooden, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodPlank, 24 }}, isReversible: true),
 
-                new Recipe(pieceToCreate: PieceTemplate.Name.ChestIron, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.IronBar, 1 },{ PieceTemplate.Name.WoodPlank, 4 }, { PieceTemplate.Name.Nail, 30 } }, isReversible: true),
+                new Recipe(pieceToCreate: PieceTemplate.Name.ChestIron, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.IronBar, 1 },{ PieceTemplate.Name.WoodPlank, 4 }, { PieceTemplate.Name.Nail, 10 } }, isReversible: true),
 
                 new Recipe(pieceToCreate: PieceTemplate.Name.Furnace, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stone, 20 }, { PieceTemplate.Name.WoodLog, 4 }, { PieceTemplate.Name.Coal, 4 } }, isReversible: true),
 
                new Recipe(pieceToCreate: PieceTemplate.Name.CookingPot, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.IronBar, 5 } }, isReversible: true),
+                };
 
-            };
-            AddCategory(category: Category.Field, recipeList: recipeList);
+                AddCategory(category: Category.Field, recipeList: fieldRecipes);
+            }
 
-            // workshop
-
-            recipeList = new List<Recipe> {
+            // basic workshop
+            {
+                List<Recipe> basicWorkshopRecipes = new List<Recipe> {
                 new Recipe(pieceToCreate: PieceTemplate.Name.Map, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Leather, 1 }}, isReversible: true),
 
                 new Recipe(pieceToCreate: PieceTemplate.Name.Torch, amountToCreate: 3, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stick, 3 }, { PieceTemplate.Name.Coal, 1 }}, isReversible: false),
@@ -238,16 +239,36 @@ namespace SonOfRobin
                 new Recipe(pieceToCreate: PieceTemplate.Name.AxeIron, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stick, 2 }, { PieceTemplate.Name.WoodLog, 1 }, { PieceTemplate.Name.IronBar, 2 }}, isReversible: true),
 
                 new Recipe(pieceToCreate: PieceTemplate.Name.Scythe, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stick, 2 }, { PieceTemplate.Name.WoodLog, 1 }, { PieceTemplate.Name.IronBar, 2 }}, isReversible: true),
+                };
 
-            };
-            AddCategory(category: Category.Workshop, recipeList: recipeList);
+                AddCategory(category: Category.Basic, recipeList: basicWorkshopRecipes);
+            }
+
+            // alchemy
+            {
+                var alchemyRecipes = new List<Recipe>
+                {
+                    new Recipe(pieceToCreate: PieceTemplate.Name.PotionHealing, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.EmptyBottle, 1 }, { PieceTemplate.Name.Tomato, 4 }, { PieceTemplate.Name.HerbsRed, 3 }}, isReversible: false),
+
+                    new Recipe(pieceToCreate: PieceTemplate.Name.PotionStrength, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.EmptyBottle, 1 }, { PieceTemplate.Name.Banana, 2 }, { PieceTemplate.Name.HerbsYellow, 3 }}, isReversible: false),
+                };
+
+                AddCategory(category: Category.Alchemy, recipeList: alchemyRecipes);
+            }
 
             // furnace
+            {
+                var furnaceRecipes = new List<Recipe> {
 
-            var furnaceRecipeList = new List<Recipe> {
-                new Recipe(pieceToCreate: PieceTemplate.Name.IronBar, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.IronOre, 1 }, { PieceTemplate.Name.Coal, 1 }}, isReversible: false),
-            };
-            AddCategory(category: Category.Furnace, recipeList: furnaceRecipeList);
+                    new Recipe(pieceToCreate: PieceTemplate.Name.IronBar, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.IronOre, 1 }, { PieceTemplate.Name.Coal, 1 }}, isReversible: false),
+
+                    new Recipe(pieceToCreate: PieceTemplate.Name.EmptyBottle, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.GlassSand, 3 }, { PieceTemplate.Name.Coal, 1 }}, isReversible: false),
+
+                    new Recipe(pieceToCreate: PieceTemplate.Name.EmptyBottle, amountToCreate: 3, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.GlassSand, 8 }, { PieceTemplate.Name.Coal, 2 }}, isReversible: false),
+                };
+
+                AddCategory(category: Category.Furnace, recipeList: furnaceRecipes);
+            }
 
             categoriesCreated = true;
         }

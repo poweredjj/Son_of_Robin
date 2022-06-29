@@ -91,7 +91,7 @@ namespace SonOfRobin
                     this.sprite.lightEngine.Deactivate();
                 }
 
-                if (Scene.inventoryLayout == Scene.InventoryLayout.InventoryAndChest) Scene.SetInventoryLayout(newLayout: Scene.InventoryLayout.Toolbar, player: this.world.player);
+                if (Inventory.layout == Inventory.Layout.InventoryAndChest) Inventory.SetLayout(newLayout: Inventory.Layout.Toolbar, player: this.world.player);
             }
         }
 

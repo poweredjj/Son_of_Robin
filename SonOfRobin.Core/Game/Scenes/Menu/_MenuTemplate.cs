@@ -8,7 +8,7 @@ namespace SonOfRobin
 {
     public class MenuTemplate
     {
-        public enum Name { Main, Options, Performance, Controls, Gamepad, Keyboard, Scale, OtherOptions, CreateNewIsland, SetSeed, OpenIslandTemplate, Pause, Load, Save, Tutorials, GameOver, Debug, CreateAnyPiece, GenericConfirm, CraftBasic, CraftNormal, CraftCooking, CraftFurnace }
+        public enum Name { Main, Options, Performance, Controls, Gamepad, Keyboard, Scale, OtherOptions, CreateNewIsland, SetSeed, OpenIslandTemplate, Pause, Load, Save, Tutorials, GameOver, Debug, CreateAnyPiece, GenericConfirm, CraftField, CraftBasic, CraftAlchemy, CraftFurnace }
 
         public static Menu CreateConfirmationMenu(Object confirmationData)
         {
@@ -28,6 +28,7 @@ namespace SonOfRobin
         {
             Menu menu;
             World world;
+            Preferences preferences = new Preferences();
 
             // Range example - valueList: Enumerable.Range(-1, 300).Cast<object>().ToList()
 
@@ -79,9 +80,9 @@ namespace SonOfRobin
                     {
                         menu = new Menu(templateName: templateName, name: "SCALE", blocksUpdatesBelow: false, canBeClosedManually: true, closingTask: Scheduler.TaskName.SavePrefs);
 
-                        new Selector(menu: menu, name: "world scale", valueList: new List<Object> { 0.125f, 0.25f, 0.5f, 0.75f, 1f, 1.25f, 1.5f, 2f, 2.5f, 3f, 3.5f }, targetObj: new Preferences(), propertyName: "worldScale");
-                        new Selector(menu: menu, name: "global scale", valueList: new List<Object> { 1f, 1.5f, 2f, 2.5f, 3f, 3.5f, 4f }, targetObj: new Preferences(), propertyName: "GlobalScale", rebuildsMenu: true, rebuildsMenuInstantScroll: true);
-                        new Selector(menu: menu, name: "menu scale", valueList: new List<Object> { 0.5f, 0.75f, 1f, 1.25f, 1.5f, 2f, 2.5f, 3f, 3.5f, 4f, 4.5f, 5f }, targetObj: new Preferences(), propertyName: "menuScale", rebuildsMenu: true, rebuildsMenuInstantScroll: true);
+                        new Selector(menu: menu, name: "world scale", valueList: new List<Object> { 0.125f, 0.25f, 0.5f, 0.75f, 1f, 1.25f, 1.5f, 2f, 2.5f, 3f, 3.5f }, targetObj: preferences, propertyName: "worldScale");
+                        new Selector(menu: menu, name: "global scale", valueList: new List<Object> { 1f, 1.5f, 2f, 2.5f, 3f, 3.5f, 4f }, targetObj: preferences, propertyName: "GlobalScale", rebuildsMenu: true, rebuildsMenuInstantScroll: true);
+                        new Selector(menu: menu, name: "menu scale", valueList: new List<Object> { 0.5f, 0.75f, 1f, 1.25f, 1.5f, 2f, 2.5f, 3f, 3.5f, 4f, 4.5f, 5f }, targetObj: preferences, propertyName: "menuScale", rebuildsMenu: true, rebuildsMenuInstantScroll: true);
 
                         new Separator(menu: menu, name: "", isEmpty: true);
                         new Invoker(menu: menu, name: "return", closesMenu: true, taskName: Scheduler.TaskName.SavePrefs);
@@ -96,19 +97,19 @@ namespace SonOfRobin
                         menu = new Menu(templateName: templateName, name: "OTHER OPTIONS", blocksUpdatesBelow: false, canBeClosedManually: true, closingTask: Scheduler.TaskName.SavePrefs);
 
 
-                        new Selector(menu: menu, name: "show hints", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: new Preferences(), propertyName: "showHints");
+                        new Selector(menu: menu, name: "show hints", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "showHints");
 
                         if (SonOfRobinGame.platform != Platform.Mobile)
                         {
-                            new Selector(menu: menu, name: "fullscreen mode", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: new Preferences(), propertyName: "FullScreenMode", rebuildsMenu: true);
-                            if (Preferences.FullScreenMode) new Selector(menu: menu, name: "resolution", valueList: Preferences.AvailableScreenModes, targetObj: new Preferences(), propertyName: "FullScreenResolution");
+                            new Selector(menu: menu, name: "fullscreen mode", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "FullScreenMode", rebuildsMenu: true);
+                            if (Preferences.FullScreenMode) new Selector(menu: menu, name: "resolution", valueList: Preferences.AvailableScreenModes, targetObj: preferences, propertyName: "FullScreenResolution");
                         }
 
-                        if (world == null || world.demoMode) new Selector(menu: menu, name: "load whole map", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: new Preferences(), propertyName: "loadWholeMap", rebuildsMenu: true);
-                        if (SonOfRobinGame.platform == Platform.Mobile && !Preferences.loadWholeMap) new Selector(menu: menu, name: "max buffered map blocks", valueList: new List<Object> { 100, 500, 1000, 2000, 4000 }, targetObj: new Preferences(), propertyName: "mobileMaxLoadedTextures");
+                        if (world == null || world.demoMode) new Selector(menu: menu, name: "load whole map", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "loadWholeMap", rebuildsMenu: true);
+                        if (SonOfRobinGame.platform == Platform.Mobile && !Preferences.loadWholeMap) new Selector(menu: menu, name: "max buffered map blocks", valueList: new List<Object> { 100, 500, 1000, 2000, 4000 }, targetObj: preferences, propertyName: "mobileMaxLoadedTextures");
 
-                        new Selector(menu: menu, name: "show demo world", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: new Preferences(), propertyName: "showDemoWorld");
-                        new Selector(menu: menu, name: "autosave delay (minutes)", valueList: new List<Object> { 5, 10, 15, 30, 60 }, targetObj: new Preferences(), propertyName: "autoSaveDelayMins");
+                        new Selector(menu: menu, name: "show demo world", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "showDemoWorld");
+                        new Selector(menu: menu, name: "autosave delay (minutes)", valueList: new List<Object> { 5, 10, 15, 30, 60 }, targetObj: preferences, propertyName: "autoSaveDelayMins");
                         new Invoker(menu: menu, name: "delete old island templates", taskName: Scheduler.TaskName.DeleteTemplates);
 
                         new Separator(menu: menu, name: "", isEmpty: true);
@@ -121,21 +122,21 @@ namespace SonOfRobin
                     {
                         menu = new Menu(templateName: templateName, name: "DETAILS", blocksUpdatesBelow: false, canBeClosedManually: true, closingTask: Scheduler.TaskName.SavePrefs);
 
-                        new Selector(menu: menu, name: "sun shadows", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: new Preferences(), propertyName: "drawSunShadows");
+                        new Selector(menu: menu, name: "sun shadows", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "drawSunShadows");
 
-                        new Selector(menu: menu, name: "light and darkness", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: new Preferences(), propertyName: "showLighting", infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: "draw light and darkness", color: Color.White, scale: 1f) }, rebuildsMenu: true);
+                        new Selector(menu: menu, name: "light and darkness", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "showLighting", infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: "draw light and darkness", color: Color.White, scale: 1f) }, rebuildsMenu: true);
 
                         if (Preferences.showLighting)
                         {
-                            new Selector(menu: menu, name: "darkness resolution", valueDict: Preferences.namesForDarknessRes, targetObj: new Preferences(), propertyName: "darknessResolution");
-                            new Selector(menu: menu, name: "shadows", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: new Preferences(), propertyName: "drawShadows", rebuildsMenu: true);
+                            new Selector(menu: menu, name: "darkness resolution", valueDict: Preferences.namesForDarknessRes, targetObj: preferences, propertyName: "darknessResolution");
+                            new Selector(menu: menu, name: "shadows", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "drawShadows", rebuildsMenu: true);
                         }
 
-                        new Selector(menu: menu, name: "debris", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: new Preferences(), propertyName: "showDebris", infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: "show small debris when hitting objects", color: Color.White, scale: 1f) });
+                        new Selector(menu: menu, name: "debris", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "showDebris", infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: "show small debris when hitting objects", color: Color.White, scale: 1f) });
 
-                        new Selector(menu: menu, name: "frameskip", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: new Preferences(), propertyName: "FrameSkip", infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: "skip frames to maintain speed", color: Color.White, scale: 1f) });
+                        new Selector(menu: menu, name: "frameskip", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "FrameSkip", infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: "skip frames to maintain speed", color: Color.White, scale: 1f) });
 
-                        new Selector(menu: menu, name: "use multiple CPU cores", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: new Preferences(), propertyName: "useMultipleThreads", infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: "use all available CPU cores for some operations", color: Color.White, scale: 1f) });
+                        new Selector(menu: menu, name: "use multiple CPU cores", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "useMultipleThreads", infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: "use all available CPU cores for some operations", color: Color.White, scale: 1f) });
 
                         new Separator(menu: menu, name: "", isEmpty: true);
                         new Invoker(menu: menu, name: "return", closesMenu: true, taskName: Scheduler.TaskName.SavePrefs);
@@ -152,15 +153,23 @@ namespace SonOfRobin
 
                         new Separator(menu: menu, name: "", isEmpty: true);
 
-                        if (SonOfRobinGame.platform != Platform.Mobile) new Selector(menu: menu, name: "on screen controls", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: new Preferences(), propertyName: "EnableTouch", rebuildsMenu: true);
+                        if (SonOfRobinGame.platform != Platform.Mobile) new Selector(menu: menu, name: "on screen buttons", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "EnableTouchButtons", rebuildsMenu: true);
 
-                        new Selector(menu: menu, name: "gamepad type", valueDict: new Dictionary<object, object> { { ButtonScheme.Type.M, "M" }, { ButtonScheme.Type.S, "S" }, { ButtonScheme.Type.N, "N" } }, targetObj: new Preferences(), propertyName: "ControlTipsScheme");
+                        if (Preferences.EnableTouchButtons)
+                        {
+                            new Selector(menu: menu, name: "on screen joysticks", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "enableTouchJoysticks");
+                        }
 
-                        new Selector(menu: menu, name: "show control tips", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: new Preferences(), propertyName: "ShowControlTips", rebuildsMenu: true);
+                        new Selector(menu: menu, name: SonOfRobinGame.platform == Platform.Mobile ? "touch to walk" : "point to walk", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "pointToWalk");
+                        new Selector(menu: menu, name: SonOfRobinGame.platform == Platform.Mobile ? "touch to interact" : "point to interact", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "pointToInteract");
+
+                        new Selector(menu: menu, name: "gamepad type", valueDict: new Dictionary<object, object> { { ButtonScheme.Type.M, "M" }, { ButtonScheme.Type.S, "S" }, { ButtonScheme.Type.N, "N" } }, targetObj: preferences, propertyName: "ControlTipsScheme");
+
+                        new Selector(menu: menu, name: "show control tips", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "ShowControlTips", rebuildsMenu: true);
                         if (Preferences.ShowControlTips)
                         {
-                            new Selector(menu: menu, name: "show control tips on field", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: new Preferences(), propertyName: "showFieldControlTips", rebuildsMenu: true);
-                            if (Preferences.showFieldControlTips) new Selector(menu: menu, name: "field tips scale", valueDict: Preferences.namesForFieldControlTipsScale, targetObj: new Preferences(), propertyName: "fieldControlTipsScale");
+                            new Selector(menu: menu, name: "show control tips on field", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "showFieldControlTips", rebuildsMenu: true);
+                            if (Preferences.showFieldControlTips) new Selector(menu: menu, name: "field tips scale", valueDict: Preferences.namesForFieldControlTipsScale, targetObj: preferences, propertyName: "fieldControlTipsScale");
                         }
 
                         new Separator(menu: menu, name: "", isEmpty: true);
@@ -207,7 +216,7 @@ namespace SonOfRobin
                         new Invoker(menu: menu, name: "start game", closesMenu: true, taskName: Scheduler.TaskName.CreateNewWorld, executeHelper: new Dictionary<string, Object> { { "width", Preferences.newWorldWidth }, { "height", Preferences.newWorldHeight }, { "seed", Preferences.NewWorldSeed }, { "resDivider", Preferences.newWorldResDivider } });
 
                         new Separator(menu: menu, name: "", isEmpty: true);
-                        new Selector(menu: menu, name: "customize", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: new Preferences(), propertyName: "CustomizeWorld", rebuildsMenu: true);
+                        new Selector(menu: menu, name: "customize", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "CustomizeWorld", rebuildsMenu: true);
 
                         if (Preferences.CustomizeWorld)
                         {
@@ -217,12 +226,12 @@ namespace SonOfRobin
                             else
                             { sizeList = new List<Object> { 1000, 2000, 4000, 8000, 10000, 15000, 20000, 30000, 40000, 50000 }; }
 
-                            new Selector(menu: menu, name: "width", valueList: sizeList, targetObj: new Preferences(), propertyName: "newWorldWidth", rebuildsMenu: true);
-                            new Selector(menu: menu, name: "height", valueList: sizeList, targetObj: new Preferences(), propertyName: "newWorldHeight", rebuildsMenu: true);
+                            new Selector(menu: menu, name: "width", valueList: sizeList, targetObj: preferences, propertyName: "newWorldWidth", rebuildsMenu: true);
+                            new Selector(menu: menu, name: "height", valueList: sizeList, targetObj: preferences, propertyName: "newWorldHeight", rebuildsMenu: true);
 
-                            new Selector(menu: menu, name: "terrain detail", valueDict: Preferences.namesForResDividers, targetObj: new Preferences(), propertyName: "newWorldResDivider");
+                            new Selector(menu: menu, name: "terrain detail", valueDict: Preferences.namesForResDividers, targetObj: preferences, propertyName: "newWorldResDivider");
 
-                            new Selector(menu: menu, name: "random seed", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: new Preferences(), propertyName: "randomSeed", rebuildsMenu: true);
+                            new Selector(menu: menu, name: "random seed", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "randomSeed", rebuildsMenu: true);
 
                             if (!Preferences.randomSeed) new Invoker(menu: menu, name: "set seed", taskName: Scheduler.TaskName.OpenMenuTemplate, executeHelper: new Dictionary<string, Object> { { "templateName", Name.SetSeed } });
                         }
@@ -234,7 +243,7 @@ namespace SonOfRobin
                                 sizeList.Add(Preferences.WorldSize.gigantic);
                             }
 
-                            new Selector(menu: menu, name: "size", valueList: sizeList, targetObj: new Preferences(), propertyName: "SelectedWorldSize", rebuildsMenu: true, infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: $"{Preferences.newWorldWidth}x{Preferences.newWorldHeight}", color: Color.White, scale: 1f) });
+                            new Selector(menu: menu, name: "size", valueList: sizeList, targetObj: preferences, propertyName: "SelectedWorldSize", rebuildsMenu: true, infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: $"{Preferences.newWorldWidth}x{Preferences.newWorldHeight}", color: Color.White, scale: 1f) });
                         }
 
                         new Separator(menu: menu, name: "", isEmpty: true);
@@ -261,7 +270,7 @@ namespace SonOfRobin
 
                         for (int i = 0; i < 4; i++)
                         {
-                            new Selector(menu: menu, name: $"digit {i + 1}", valueList: digitList, targetObj: new Preferences(), propertyName: $"seedDigit{i + 1}", rebuildsMenu: true);
+                            new Selector(menu: menu, name: $"digit {i + 1}", valueList: digitList, targetObj: preferences, propertyName: $"seedDigit{i + 1}", rebuildsMenu: true);
                         }
 
                         new Separator(menu: menu, name: "", isEmpty: true);
@@ -368,6 +377,8 @@ namespace SonOfRobin
 
                         foreach (PieceTemplate.Name pieceName in (PieceTemplate.Name[])Enum.GetValues(typeof(PieceTemplate.Name)))
                         {
+                            if (pieceName == PieceTemplate.Name.Player || pieceName == PieceTemplate.Name.PlayerGhost) continue;
+
                             createData = new Dictionary<string, Object> { { "position", world.player.sprite.position }, { "templateName", pieceName } };
 
                             new Invoker(menu: menu, name: $"{PieceInfo.info[pieceName].readableName}", taskName: Scheduler.TaskName.CreateDebugPieces, createData);
@@ -385,20 +396,20 @@ namespace SonOfRobin
 
                         world = World.GetTopWorld();
 
-                        new Selector(menu: menu, name: "debug mode", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: new Preferences(), propertyName: "DebugMode", rebuildsMenu: true);
+                        new Selector(menu: menu, name: "debug mode", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "DebugMode", rebuildsMenu: true);
 
                         if (world != null && !world.demoMode) new Invoker(menu: menu, name: "create any piece", taskName: Scheduler.TaskName.OpenMenuTemplate, executeHelper: new Dictionary<string, Object> { { "templateName", Name.CreateAnyPiece } });
-                        new Selector(menu: menu, name: "create missing pieces", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: new Preferences(), propertyName: "debugCreateMissingPieces");
-                        new Selector(menu: menu, name: "god mode", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: new Preferences(), propertyName: "DebugGodMode", rebuildsMenu: true);
-                        new Selector(menu: menu, name: "show whole map", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: new Preferences(), propertyName: "DebugShowWholeMap");
-                        new Selector(menu: menu, name: "show all items on map", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: new Preferences(), propertyName: "debugShowAllMapPieces");
+                        new Selector(menu: menu, name: "create missing pieces", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugCreateMissingPieces");
+                        new Selector(menu: menu, name: "god mode", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "DebugGodMode", rebuildsMenu: true);
+                        new Selector(menu: menu, name: "show whole map", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "DebugShowWholeMap");
+                        new Selector(menu: menu, name: "show all items on map", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugShowAllMapPieces");
                         new Invoker(menu: menu, name: "restore all hints", taskName: Scheduler.TaskName.RestoreHints);
-                        new Selector(menu: menu, name: "show fruit rects", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: new Preferences(), propertyName: "debugShowFruitRects");
-                        new Selector(menu: menu, name: "show sprite rects", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: new Preferences(), propertyName: "debugShowRects");
-                        new Selector(menu: menu, name: "show cells", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: new Preferences(), propertyName: "debugShowCellData");
-                        new Selector(menu: menu, name: "show animal targets", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: new Preferences(), propertyName: "debugShowAnimalTargets");
-                        new Selector(menu: menu, name: "show all stat bars", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: new Preferences(), propertyName: "debugShowStatBars");
-                        new Selector(menu: menu, name: "show states", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: new Preferences(), propertyName: "debugShowStates");
+                        new Selector(menu: menu, name: "show fruit rects", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugShowFruitRects");
+                        new Selector(menu: menu, name: "show sprite rects", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugShowRects");
+                        new Selector(menu: menu, name: "show cells", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugShowCellData");
+                        new Selector(menu: menu, name: "show animal targets", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugShowAnimalTargets");
+                        new Selector(menu: menu, name: "show all stat bars", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugShowStatBars");
+                        new Selector(menu: menu, name: "show states", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugShowStates");
 
                         new Separator(menu: menu, name: "", isEmpty: true);
                         new Invoker(menu: menu, name: "return", closesMenu: true, taskName: Scheduler.TaskName.Empty);
@@ -406,11 +417,14 @@ namespace SonOfRobin
                         return menu;
                     }
 
-                case Name.CraftBasic:
+                case Name.CraftField:
                     return CreateCraftMenu(templateName: templateName, category: Craft.Category.Field, label: "FIELD CRAFT");
 
-                case Name.CraftNormal:
-                    return CreateCraftMenu(templateName: templateName, category: Craft.Category.Workshop, label: "WORKSHOP");
+                case Name.CraftBasic:
+                    return CreateCraftMenu(templateName: templateName, category: Craft.Category.Basic, label: "WORKSHOP");
+
+                case Name.CraftAlchemy:
+                    return CreateCraftMenu(templateName: templateName, category: Craft.Category.Alchemy, label: "ALCHEMY");
 
                 case Name.CraftFurnace:
                     return CreateCraftMenu(templateName: templateName, category: Craft.Category.Furnace, label: "FURNACE");
@@ -433,7 +447,6 @@ namespace SonOfRobin
 
                         return menu;
                     }
-
 
                 default:
                     throw new DivideByZeroException($"Unsupported menu templateName - {templateName}.");
@@ -507,12 +520,12 @@ namespace SonOfRobin
 
             new Separator(menu: menu, name: "", isEmpty: true);
             new Separator(menu: menu, name: "inventory");
-            foreach (string propertyName in new List<string> { "pickOne", "pickStack", })
+            foreach (string propertyName in new List<string> { "invSwitch", "pickOne", "pickStack" })
             { new Selector(menu: menu, name: newMapping.GetReadablePropertyName(propertyName), valueDict: keysOrButtonsDict, targetObj: newMapping, propertyName: propertyName, captureInput: true, captureKeys: captureKeys, captureButtons: captureButtons); }
 
             new Separator(menu: menu, name: "", isEmpty: true);
             new Separator(menu: menu, name: "toolbar");
-            foreach (string propertyName in new List<string> { "toolbarPrev", "toolbarNext", })
+            foreach (string propertyName in new List<string> { "toolbarPrev", "toolbarNext" })
             { new Selector(menu: menu, name: newMapping.GetReadablePropertyName(propertyName), valueDict: keysOrButtonsDict, targetObj: newMapping, propertyName: propertyName, captureInput: true, captureKeys: captureKeys, captureButtons: captureButtons); }
 
             new Separator(menu: menu, name: "", isEmpty: true);

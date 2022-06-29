@@ -50,9 +50,9 @@ namespace SonOfRobin
 
         protected readonly static Dictionary<Action, Mapping> detailedMappings = new Dictionary<Action, Mapping>();
 
-        public static readonly InputPackage defaultMappingGamepad = new InputPackage(leftStick: AnalogType.PadLeft, rightStick: AnalogType.PadRight, confirm: Buttons.A, cancel: Buttons.B, pauseMenu: Buttons.Start, run: Buttons.B, equip: Buttons.DPadLeft, inventory: Buttons.Y, pickUp: Buttons.X, craft: Buttons.DPadUp, interact: Buttons.A, map: Buttons.DPadRight, useTool: Buttons.RightTrigger, zoomOut: Buttons.LeftTrigger, toolbarPrev: Buttons.LeftShoulder, toolbarNext: Buttons.RightShoulder, pickOne: Buttons.Y, pickStack: Buttons.X);
+        public static readonly InputPackage defaultMappingGamepad = new InputPackage(packageVersion: InputPackage.version, leftStick: AnalogType.PadLeft, rightStick: AnalogType.PadRight, confirm: Buttons.A, cancel: Buttons.B, pauseMenu: Buttons.Start, run: Buttons.B, equip: Buttons.DPadLeft, inventory: Buttons.Y, pickUp: Buttons.X, craft: Buttons.DPadUp, interact: Buttons.A, map: Buttons.DPadRight, useTool: Buttons.RightTrigger, zoomOut: Buttons.LeftTrigger, toolbarPrev: Buttons.LeftShoulder, toolbarNext: Buttons.RightShoulder, invSwitch: Buttons.LeftStick, pickOne: Buttons.Y, pickStack: Buttons.X);
 
-        public static readonly InputPackage defaultMappingKeyboard = new InputPackage(leftStick: AnalogType.FromKeys, rightStick: AnalogType.Empty, confirm: Keys.Enter, cancel: Keys.Escape, pauseMenu: Keys.Back, run: Keys.NumPad0, equip: Keys.E, inventory: Keys.Enter, pickUp: Keys.RightControl, craft: Keys.NumPad5, interact: Keys.RightShift, map: Keys.M, useTool: Keys.Space, zoomOut: Keys.NumPad1, toolbarPrev: Keys.OemOpenBrackets, toolbarNext: Keys.OemCloseBrackets, pickOne: Keys.RightShift, pickStack: Keys.Space, left: Keys.Left, right: Keys.Right, up: Keys.Up, down: Keys.Down);
+        public static readonly InputPackage defaultMappingKeyboard = new InputPackage(packageVersion: InputPackage.version, leftStick: AnalogType.FromKeys, rightStick: AnalogType.Empty, confirm: Keys.Enter, cancel: Keys.Escape, pauseMenu: Keys.Back, run: Keys.NumPad0, equip: Keys.E, inventory: Keys.Enter, pickUp: Keys.RightControl, craft: Keys.NumPad5, interact: Keys.RightShift, map: Keys.M, useTool: Keys.Space, zoomOut: Keys.NumPad1, toolbarPrev: Keys.OemOpenBrackets, toolbarNext: Keys.OemCloseBrackets, invSwitch: Keys.Tab, pickOne: Keys.RightShift, pickStack: Keys.Space, left: Keys.Left, right: Keys.Right, up: Keys.Up, down: Keys.Down);
 
         public static InputPackage currentMappingGamepad = defaultMappingGamepad.MakeCopy();
         public static InputPackage currentMappingKeyboard = defaultMappingKeyboard.MakeCopy();
@@ -94,7 +94,7 @@ namespace SonOfRobin
             new Mapping(action: Action.InvPickStack, anyInputList: new List<object> { keybMap.pickStack, padMap.pickStack });
             new Mapping(action: Action.InvPickOne, anyInputList: new List<object> { keybMap.pickOne, padMap.pickOne });
             new Mapping(action: Action.InvRelease, anyInputList: new List<object> { keybMap.confirm, padMap.confirm, keybMap.pickStack, padMap.pickStack, keybMap.pickOne, padMap.pickOne });
-            new Mapping(action: Action.InvSwitch, anyInputList: new List<object> { keybMap.toolbarPrev, padMap.toolbarNext, padMap.toolbarPrev, padMap.toolbarNext });
+            new Mapping(action: Action.InvSwitch, anyInputList: new List<object> { keybMap.invSwitch, padMap.invSwitch, keybMap.toolbarPrev, keybMap.toolbarNext, padMap.toolbarPrev, padMap.toolbarNext, });
             new Mapping(action: Action.ToolbarPrev, anyInputList: new List<object> { keybMap.toolbarPrev, padMap.toolbarPrev }, repeat: true);
             new Mapping(action: Action.ToolbarNext, anyInputList: new List<object> { keybMap.toolbarNext, padMap.toolbarNext }, repeat: true);
 
@@ -209,6 +209,8 @@ namespace SonOfRobin
 
                 foreach (Object input in anyInputList)
                 {
+                    if (input == null) continue; // if obsolete mapping was loaded
+
                     var inputType = input.GetType();
 
                     if (inputType == typeof(Keys)) this.keyboardKeys.Add((Keys)input);

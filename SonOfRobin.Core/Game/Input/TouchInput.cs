@@ -41,8 +41,8 @@ namespace SonOfRobin
         private static Vector2 rightStick = new Vector2(0, 0);
 
         private static Vector2 emptyStick = new Vector2(0, 0);
-        public static Vector2 LeftStick { get { return Input.InputActive ? leftStick : emptyStick; } }
-        public static Vector2 RightStick { get { return Input.InputActive ? rightStick : emptyStick; } }
+        public static Vector2 LeftStick { get { return Input.InputActive && Preferences.enableTouchJoysticks ? leftStick : emptyStick; } }
+        public static Vector2 RightStick { get { return Input.InputActive && Preferences.enableTouchJoysticks ? rightStick : emptyStick; } }
 
         private static TouchCollection touchPanelState = new TouchCollection { };
         private static readonly TouchCollection emptyTouchList = new TouchCollection { };
@@ -54,13 +54,15 @@ namespace SonOfRobin
             var matchingTypes = TouchPanelState.Where(touch => touch.State == state).ToList();
             return matchingTypes.Count > 0;
         }
+        private static int lastFrameLayoutChanged = 0;
+        public static int FramesSinceLayoutChanged { get { return SonOfRobinGame.currentUpdate - lastFrameLayoutChanged; } }
 
         public static void GetState(GameTime gameTime)
         {
-            if (!Preferences.EnableTouch) return;
-            Refresh();
-
             touchPanelState = TouchPanel.GetState();
+
+            if (!Preferences.EnableTouchButtons) return;
+            Refresh();
 
             dualStick.Update(gameTime);
 
@@ -68,6 +70,57 @@ namespace SonOfRobin
             rightStick = dualStick.RightStick.GetRelativeVector(dualStick.aliveZoneSize) / dualStick.aliveZoneSize;
 
             VirtButton.UpdateAll();
+        }
+
+        public static bool IsPointActivatingAnyTouchInterface(Vector2 point)
+        {
+            Vector2 scaledPoint = point / Preferences.GlobalScale;
+
+            if (Preferences.enableTouchJoysticks && IsPointInsideSticks(scaledPoint)) return true;
+
+            foreach (Rectangle virtButtonRect in VirtButton.AllButtonRects)
+            {
+                if (virtButtonRect.Contains(scaledPoint)) return true;
+            }
+
+
+            foreach (Inventory inventory in Scene.GetAllScenesOfType(typeof(Inventory)))
+            {
+                Rectangle invRect = inventory.BgRect;
+                invRect.X += (int)inventory.viewParams.drawPosX;
+                invRect.Y += (int)inventory.viewParams.drawPosY;
+
+                invRect.Inflate(2, 2);
+
+                if (invRect.Contains(scaledPoint)) return true;
+            }
+
+            foreach (PlayerPanel playerPanel in Scene.GetAllScenesOfType(typeof(PlayerPanel)))
+            {
+                Rectangle counterRect = playerPanel.CounterRect;
+                counterRect.X += (int)playerPanel.viewParams.drawPosX;
+                counterRect.Y += (int)playerPanel.viewParams.drawPosY;
+
+                counterRect.Inflate(2, 2);
+
+                if (counterRect.Contains(scaledPoint)) return true;
+            }
+
+            return false;
+        }
+
+        public static bool IsPointInsideSticks(Vector2 point)
+        {
+            if (!Preferences.EnableTouchButtons || !showSticks) return false;
+
+            foreach (Rectangle stickRect in dualStick.Draw(getBGRectsOnly: true))
+            {
+                stickRect.Inflate(8, 8); // to add some margin around the stick
+
+                if (stickRect.Contains(point)) return true;
+            }
+
+            return false;
         }
 
         private static void Refresh()
@@ -91,17 +144,18 @@ namespace SonOfRobin
         {
             TouchPanel.EnableMouseGestures = Preferences.MouseGesturesEmulateTouch;
             TouchPanel.EnableMouseTouchPoint = Preferences.MouseGesturesEmulateTouch;
-            if (!Preferences.EnableTouch) touchPanelState = new TouchCollection { };
+            if (!Preferences.EnableTouchButtons) touchPanelState = new TouchCollection { };
         }
 
         public static void SwitchToLayout(TouchLayout touchLayout)
         {
+            if (!Preferences.EnableTouchButtons || touchLayout == currentLayout) return;
+
             World world = World.GetTopWorld();
             Preferences preferences = new Preferences();
 
-            if (!Preferences.EnableTouch || touchLayout == currentLayout) return;
-
             currentLayout = touchLayout;
+            lastFrameLayoutChanged = SonOfRobinGame.currentUpdate;
 
             VirtButton.RemoveAll();
 
@@ -158,6 +212,17 @@ namespace SonOfRobin
                         return;
                     }
 
+                case TouchLayout.Inventory:
+                    {
+                        showSticks = false;
+
+                        float yPos = 0.12f;
+
+                        new VirtButton(name: VButName.Return, label: "RETURN", bgColorPressed: Color.LightGreen, bgColorReleased: Color.White, textColor: Color.White, posX0to1: 0.06f, posY0to1: yPos, width0to1: size, height0to1: size);
+                        new VirtButton(name: VButName.DragSingle, label: "DRAG\nSINGLE", bgColorPressed: Color.LightGreen, bgColorReleased: Color.White, textColor: Color.White, posX0to1: 0.94f, posY0to1: yPos, width0to1: size, height0to1: size, switchButton: true);
+                        return;
+                    }
+
                 case TouchLayout.WorldShoot:
                     {
                         showSticks = true;
@@ -202,23 +267,8 @@ namespace SonOfRobin
                     {
                         showSticks = false;
 
-                        float xPos = 0.76f;
-                        float yPos = 0.12f;
+                        new VirtButton(name: VButName.Return, label: "RETURN", bgColorPressed: Color.CornflowerBlue, bgColorReleased: Color.White, textColor: Color.White, posX0to1: 0.76f, posY0to1: 0.12f, width0to1: size, height0to1: size);
 
-                        new VirtButton(name: VButName.Return, label: "RETURN", bgColorPressed: Color.CornflowerBlue, bgColorReleased: Color.White, textColor: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
-
-                        return;
-                    }
-
-                case TouchLayout.Inventory:
-                    {
-                        showSticks = false;
-
-                        size = 0.07f;
-                        float yPos = 0.12f;
-
-                        new VirtButton(name: VButName.Return, label: "RETURN", bgColorPressed: Color.LightGreen, bgColorReleased: Color.White, textColor: Color.White, posX0to1: 0.04f, posY0to1: yPos, width0to1: size, height0to1: size);
-                        new VirtButton(name: VButName.DragSingle, label: "DRAG\nSINGLE", bgColorPressed: Color.LightGreen, bgColorReleased: Color.White, textColor: Color.White, posX0to1: 0.93f, posY0to1: yPos, width0to1: size, height0to1: size, switchButton: true);
                         return;
                     }
 
@@ -226,9 +276,7 @@ namespace SonOfRobin
                     {
                         showSticks = false;
 
-                        float xPos = 0.7f;
-                        float yPos = 0.85f;
-                        new VirtButton(name: VButName.Return, label: "RETURN", bgColorPressed: Color.LightGreen, bgColorReleased: Color.White, textColor: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
+                        new VirtButton(name: VButName.Return, label: "RETURN", bgColorPressed: Color.LightGreen, bgColorReleased: Color.White, textColor: Color.White, posX0to1: 0.7f, posY0to1: 0.85f, width0to1: size, height0to1: size);
 
                         return;
                     }
@@ -237,9 +285,7 @@ namespace SonOfRobin
                     {
                         showSticks = false;
 
-                        float xPos = 0.06f;
-                        float yPos = 0.85f;
-                        new VirtButton(name: VButName.Return, label: "RETURN", bgColorPressed: Color.LightGreen, bgColorReleased: Color.White, textColor: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
+                        new VirtButton(name: VButName.Return, label: "RETURN", bgColorPressed: Color.LightGreen, bgColorReleased: Color.White, textColor: Color.White, posX0to1: 0.06f, posY0to1: 0.85f, width0to1: size, height0to1: size);
 
                         return;
                     }
@@ -335,7 +381,5 @@ namespace SonOfRobin
             xPos += xShift;
             new VirtButton(name: VButName.DebugClear, label: "clear", bgColorPressed: Color.Violet, bgColorReleased: Color.White, textColor: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: width, height0to1: height);
         }
-
-
     }
 }

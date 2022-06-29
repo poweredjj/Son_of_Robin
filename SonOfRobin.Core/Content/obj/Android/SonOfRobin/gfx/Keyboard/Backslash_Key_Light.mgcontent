@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/Keyboard/wasd_light.png</SourceFile>
-  <SourceTime>2022-04-20T11:26:03.3175275+02:00</SourceTime>
-  <DestFile>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/bin/Android/SonOfRobin/gfx/Keyboard/wasd_light.xnb</DestFile>
-  <DestTime>2022-04-22T07:16:45.9976934+02:00</DestTime>
+  <SourceFile>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/Keyboard/Backslash_Key_Light.png</SourceFile>
+  <SourceTime>2014-02-26T21:08:34+01:00</SourceTime>
+  <DestFile>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/bin/Android/SonOfRobin/gfx/Keyboard/Backslash_Key_Light.xnb</DestFile>
+  <DestTime>2022-04-28T16:27:46.5751321+02:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2020-08-10T18:17:54+02:00</ImporterTime>
   <Processor>TextureProcessor</Processor>

@@ -71,6 +71,8 @@ namespace SonOfRobin
         public static bool loadWholeMap = true;
         private static bool frameSkip = true;
         public static bool showDemoWorld = true;
+        public static bool pointToWalk = false;
+        public static bool pointToInteract = false;
         public static int autoSaveDelayMins = 5;
         public static int mobileMaxLoadedTextures = 1000;
         public static int displayResX = 1920;
@@ -82,7 +84,6 @@ namespace SonOfRobin
         public static bool showLighting = true;
         public static bool showDebris = true;
         public static bool useMultipleThreads = true;
-        private static bool mouseGesturesEmulateTouch = false;
         public static int darknessResolution = 1;
         public static bool drawShadows = true;
         public static bool drawSunShadows = true;
@@ -97,6 +98,8 @@ namespace SonOfRobin
                 ControlTipsScheme = ControlTipsScheme; // to refresh data
             }
         }
+
+        private static bool mouseGesturesEmulateTouch = false;
         public static bool MouseGesturesEmulateTouch
         {
             get { return mouseGesturesEmulateTouch; }
@@ -114,19 +117,20 @@ namespace SonOfRobin
         public static bool ShowTouchTips
         { get { return SonOfRobinGame.platform == Platform.Mobile && !showControlTips; } }
 
-        private static bool enableTouch = false;
-        public static bool EnableTouch
+        public static bool enableTouchJoysticks = false;
+
+        private static bool enableTouchButtons = false;
+        public static bool EnableTouchButtons
         {
-            get { return enableTouch; }
+            get { return enableTouchButtons; }
             set
             {
-                if (SonOfRobinGame.platform == Platform.Mobile) value = true; // mobile should always have touch enabled
-                enableTouch = value;
+                if (SonOfRobinGame.platform == Platform.Mobile) value = true; // mobile should always have touch buttons enabled
+                enableTouchButtons = value;
 
-                if (enableTouch)
+                if (enableTouchButtons)
                 {
                     if (SonOfRobinGame.touchOverlay == null) SonOfRobinGame.touchOverlay = new TouchOverlay();
-                    if (SonOfRobinGame.platform != Platform.Mobile) MouseGesturesEmulateTouch = true;
                 }
                 else
                 {
@@ -135,7 +139,6 @@ namespace SonOfRobin
                         SonOfRobinGame.touchOverlay.Remove();
                         SonOfRobinGame.touchOverlay = null;
                     }
-                    MouseGesturesEmulateTouch = false;
                 }
             }
         }
@@ -336,6 +339,7 @@ namespace SonOfRobin
                 loadWholeMap = false;
                 showControlTips = false;
                 showFieldControlTips = false;
+                enableTouchJoysticks = true;
             }
             else
             {
@@ -344,8 +348,8 @@ namespace SonOfRobin
                 showFieldControlTips = true;
             }
 
-            EnableTouch = SonOfRobinGame.platform == Platform.Mobile;
-            MouseGesturesEmulateTouch = SonOfRobinGame.fakeMobileMode;
+            EnableTouchButtons = SonOfRobinGame.platform == Platform.Mobile;
+            MouseGesturesEmulateTouch = true; // mouse input is used through touch emulation
         }
 
         public static void Save()
@@ -381,11 +385,14 @@ namespace SonOfRobin
             prefsData["showLighting"] = showLighting;
             prefsData["showDebris"] = showDebris;
             prefsData["useMultipleThreads"] = useMultipleThreads;
-            prefsData["controlTipsScheme"] = ControlTipsScheme;
-            prefsData["EnableTouch"] = EnableTouch;
             prefsData["darknessResolution"] = darknessResolution;
             prefsData["drawShadows"] = drawShadows;
             prefsData["drawSunShadows"] = drawSunShadows;
+            prefsData["controlTipsScheme"] = ControlTipsScheme;
+            prefsData["EnableTouchButtons"] = EnableTouchButtons;
+            prefsData["enableTouchJoysticks"] = enableTouchJoysticks;
+            prefsData["pointToWalk"] = pointToWalk;
+            prefsData["pointToInteract"] = pointToInteract;
             prefsData["currentMappingGamepad"] = InputMapper.currentMappingGamepad;
             prefsData["currentMappingKeyboard"] = InputMapper.currentMappingKeyboard;
 
@@ -432,13 +439,18 @@ namespace SonOfRobin
                     showLighting = (bool)prefsData["showLighting"];
                     showDebris = (bool)prefsData["showDebris"];
                     useMultipleThreads = (bool)prefsData["useMultipleThreads"];
-                    controlTipsScheme = (ButtonScheme.Type)prefsData["controlTipsScheme"];
-                    EnableTouch = (bool)prefsData["EnableTouch"];
                     darknessResolution = (int)prefsData["darknessResolution"];
                     drawShadows = (bool)prefsData["drawShadows"];
                     drawSunShadows = (bool)prefsData["drawSunShadows"];
-                    InputMapper.currentMappingGamepad = (InputPackage)prefsData["currentMappingGamepad"];
-                    InputMapper.currentMappingKeyboard = (InputPackage)prefsData["currentMappingKeyboard"];
+                    controlTipsScheme = (ButtonScheme.Type)prefsData["controlTipsScheme"];
+                    EnableTouchButtons = (bool)prefsData["EnableTouchButtons"];
+                    enableTouchJoysticks = (bool)prefsData["enableTouchJoysticks"];
+                    pointToWalk = (bool)prefsData["pointToWalk"];
+                    pointToInteract = (bool)prefsData["pointToInteract"];
+                    InputPackage loadedMappingGamepad = (InputPackage)prefsData["currentMappingGamepad"];
+                    InputPackage loadedMappingKeyboard = (InputPackage)prefsData["currentMappingKeyboard"];
+                    if (!loadedMappingGamepad.IsObsolete) InputMapper.currentMappingGamepad = loadedMappingGamepad;
+                    if (!loadedMappingKeyboard.IsObsolete) InputMapper.currentMappingKeyboard = loadedMappingKeyboard;
                     InputMapper.newMappingGamepad = InputMapper.currentMappingGamepad.MakeCopy();
                     InputMapper.newMappingKeyboard = InputMapper.currentMappingKeyboard.MakeCopy();
 
