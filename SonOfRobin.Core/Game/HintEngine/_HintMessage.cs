@@ -42,7 +42,7 @@ namespace SonOfRobin
             if (this.imageList.Count != matches.Count) throw new ArgumentException($"HintMessage - count of markers ({matches.Count}) and images ({this.imageList.Count}) does not match.\n{this.text}");
         }
 
-        public Scheduler.Task ConvertToTask(bool useTransitionOpen = false, bool useTransitionClose = false)
+        public Scheduler.Task ConvertToTask(bool useTransitionOpen = false, bool useTransitionClose = false, bool playSound = true)
         {
             Color bgColor, textColor;
 
@@ -92,21 +92,24 @@ namespace SonOfRobin
                 { "blockInputDuration", this.blockInput ? HintEngine.blockInputDuration : 0}
             };
 
+            if (!playSound) textWindowData.Remove("sound");
+
             return new Scheduler.Task(taskName: Scheduler.TaskName.ShowTextWindow, turnOffInputUntilExecution: true, delay: this.delay, executeHelper: textWindowData, storeForLaterUse: true);
         }
 
-        public static List<Object> ConvertToTasks(List<HintMessage> messageList)
+        public static List<Object> ConvertToTasks(List<HintMessage> messageList, bool playSounds = true)
         {
             var taskChain = new List<Object> { };
 
             int counter = 0;
             bool useTransitionOpen, useTransitionClose;
+
             foreach (HintMessage message in messageList)
             {
                 useTransitionOpen = counter == 0;
                 useTransitionClose = counter + 1 == messageList.Count;
 
-                taskChain.Add(message.ConvertToTask(useTransitionOpen: useTransitionOpen, useTransitionClose: useTransitionClose));
+                taskChain.Add(message.ConvertToTask(useTransitionOpen: useTransitionOpen, useTransitionClose: useTransitionClose, playSound: playSounds));
 
                 counter++;
             }

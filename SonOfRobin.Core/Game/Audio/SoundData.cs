@@ -17,6 +17,9 @@ namespace SonOfRobin
             Notification1,
             Notification2,
             DunDunDun,
+            Ding1,
+            Ding2,
+            Chime,
 
             NewGameStart,
 
@@ -146,6 +149,9 @@ namespace SonOfRobin
             DeathPlayerMale,
             DeathPlayerFemale,
 
+            PantMale,
+            PantFemale,
+
             CryFrog1,
             CryFrog2,
             CryFrog3,
@@ -184,9 +190,6 @@ namespace SonOfRobin
 
             StepGhost,
 
-            Ding,
-            Chime,
-
             AngelChorus,
 
             SeaWave1,
@@ -211,7 +214,12 @@ namespace SonOfRobin
             LakeWave6,
             LakeWave7,
 
+            Cicadas1,
+            Cicadas2,
+            Cicadas3,
+
             SeaWind,
+            DesertWind,
             NightCrickets,
         }
 
@@ -265,7 +273,7 @@ namespace SonOfRobin
             { Name.Bonfire, "195586__scott-snailham__bonfire-fx-with-whoosh-basic-with-some-crackle-cd-quality" },
             { Name.Torch, "363092__fractalstudios__fire-crackle-and-flames-002" },
             { Name.HitCeramic, "615308__fractanimal__ceramic-cup-hit" },
-            { Name.Ding, "320655__rhodesmas__level-up-01" },
+            { Name.Ding1, "320655__rhodesmas__level-up-01" },
             { Name.Chime, "321263__rhodesmas__coins-purchase-01" },
             { Name.DestroyWood, "66778__kevinkace__crate-break-2" },
             { Name.SwimShallow, "317067__robinhood76__05913-swimming-loop-shallow_1" },
@@ -383,6 +391,13 @@ namespace SonOfRobin
             { Name.LakeWave7, "530699__szegvari__water-wave-beach-field-recording-200815-0036-7" },
             { Name.SeaWind, "465739__arnaud-coutancier__wind-waves-splashing" },
             { Name.NightCrickets, "60968__ifartinurgeneraldirection__night-sounds" },
+            { Name.DesertWind, "135193__felix-blume__wind-blowing-in-the-bush-on-the-top-of-kitt-peak-mountain" },
+            { Name.PantFemale, "95567__kuroseishin__breathing-female" },
+            { Name.PantMale, "489917__falcospizaetus__gasps02" },
+            { Name.Ding2, "406243__stubb__typewriter-ding-near-mono" },
+            { Name.Cicadas1, "400096__harrietniamh__cicadas" },
+            { Name.Cicadas2, "486628__nanisia__japanese-summer-cicadas" },
+            { Name.Cicadas3, "321591__macdaddyno1__japanese-cicada" },
             };
     }
 }

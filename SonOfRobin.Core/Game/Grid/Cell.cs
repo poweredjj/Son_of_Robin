@@ -34,6 +34,9 @@ namespace SonOfRobin
         public readonly Dictionary<TerrainName, Terrain> terrainByName;
         public BoardGraphics boardGraphics;
 
+        public static readonly Group[] allGroups = (Group[])Enum.GetValues(typeof(Group));
+        public static readonly TerrainName[] allTerrains = (TerrainName[])Enum.GetValues(typeof(TerrainName));
+
         public enum Group
         {
             All,
@@ -73,8 +76,10 @@ namespace SonOfRobin
             this.visitedByPlayer = false;
 
             this.spriteGroups = new Dictionary<Group, Dictionary<string, Sprite>> { };
-            foreach (Group groupName in (Group[])Enum.GetValues(typeof(Group)))
-            { this.spriteGroups[groupName] = new Dictionary<string, Sprite> { }; }
+            foreach (Group groupName in allGroups)
+            {
+                this.spriteGroups[groupName] = new Dictionary<string, Sprite> { };
+            }
 
             this.terrainByName = new Dictionary<TerrainName, Terrain>();
 
@@ -140,8 +145,10 @@ namespace SonOfRobin
 
         public void CopyFromTemplate(Cell templateCell)
         {
-            foreach (TerrainName terainName in (Group[])Enum.GetValues(typeof(TerrainName)))
-            { this.terrainByName[terainName] = templateCell.terrainByName[terainName]; }
+            foreach (TerrainName terainName in allTerrains)
+            {
+                this.terrainByName[terainName] = templateCell.terrainByName[terainName];
+            }
 
             this.boardGraphics = new BoardGraphics(grid: this.grid, cell: this);
             this.boardGraphics.texture = templateCell.boardGraphics.texture;
@@ -155,7 +162,7 @@ namespace SonOfRobin
 
         public void RemoveSprite(Sprite sprite)
         {
-            foreach (Group currentGroupName in (Group[])Enum.GetValues(typeof(Group)))
+            foreach (Group currentGroupName in allGroups)
             { this.spriteGroups[currentGroupName].Remove(sprite.id); }
 
             sprite.currentCell = null;
@@ -163,7 +170,7 @@ namespace SonOfRobin
 
         public void MoveSpriteToOtherCell(Sprite sprite, Cell newCell)
         {
-            foreach (Group currentGroupName in (Group[])Enum.GetValues(typeof(Group)))
+            foreach (Group currentGroupName in allGroups)
             {
                 if (this.spriteGroups[currentGroupName].ContainsKey(sprite.id))
                 {
@@ -177,7 +184,7 @@ namespace SonOfRobin
         {
             // MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{this.world.currentUpdate} '{sprite.boardPiece.readableName}' - updating group names.");
 
-            foreach (Group currentGroupName in (Group[])Enum.GetValues(typeof(Group)))
+            foreach (Group currentGroupName in allGroups)
             {
                 if (groupNames.Contains(currentGroupName))
                 {

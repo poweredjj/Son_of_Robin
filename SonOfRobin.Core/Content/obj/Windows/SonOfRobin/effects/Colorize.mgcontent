@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/effects/Colorize.fx</SourceFile>
+  <SourceFile>C:/Users/msmidowi/Documents/SonOfRobin/SonOfRobin.Core/Content/effects/Colorize.fx</SourceFile>
   <SourceTime>2022-03-04T14:11:27.3836669+01:00</SourceTime>
-  <DestFile>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/bin/Windows/SonOfRobin/effects/Colorize.xnb</DestFile>
-  <DestTime>2022-06-04T07:55:34.9754077+02:00</DestTime>
+  <DestFile>C:/Users/msmidowi/Documents/SonOfRobin/SonOfRobin.Core/Content/bin/Windows/SonOfRobin/effects/Colorize.xnb</DestFile>
+  <DestTime>2022-06-08T14:50:51.4600651+02:00</DestTime>
   <Importer>EffectImporter</Importer>
   <ImporterTime>2020-08-10T18:17:54+02:00</ImporterTime>
   <Processor>EffectProcessor</Processor>

@@ -9,6 +9,8 @@ namespace SonOfRobin
     {
         public enum RangeName { All, WaterAll, WaterShallow, WaterMedium, WaterDeep, GroundSand, GroundAll, Volcano, NoDanger, Danger };
 
+        public static readonly TerrainName[] allTerrains = (TerrainName[])Enum.GetValues(typeof(TerrainName));
+
         private Dictionary<TerrainName, AllowedRange> rangesByTerrainName;
 
         public AllowedFields()
@@ -38,7 +40,7 @@ namespace SonOfRobin
                 switch (rangeName)
                 {
                     case RangeName.All:
-                        foreach (TerrainName terrainName in (TerrainName[])Enum.GetValues(typeof(TerrainName)))
+                        foreach (TerrainName terrainName in allTerrains)
                         { this.AddRange(terrainName: terrainName, min: 0, max: 255); }
                         break;
 

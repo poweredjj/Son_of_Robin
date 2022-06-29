@@ -614,9 +614,16 @@ namespace SonOfRobin
                         if (add)
                         {
                             if (hadThisBuffBefore) this.RemoveEveryBuffOfType(buff.type);
-                            player.world.bulletTimeMultiplier = (int)buff.value;
+                            player.world.stateMachineTypesManager.EnableMultiplier((int)buff.value);
+                            player.world.stateMachineTypesManager.EnableAllTypes(nthFrame: true);
+                            player.world.stateMachineTypesManager.RemoveTheseTypes(typesToRemove: new List<Type> { typeof(Animal) }, everyFrame: true);
+
                         }
-                        else player.world.bulletTimeMultiplier = 1;
+                        else
+                        {
+                            player.world.stateMachineTypesManager.DisableMultiplier();
+                            player.world.stateMachineTypesManager.EnableAllTypes(everyFrame: true, nthFrame: true);
+                        }
 
                         return;
                     }
@@ -650,6 +657,7 @@ namespace SonOfRobin
                             player.speed -= (float)buff.value;
                             player.Stamina = 0;
                             player.sprite.effectCol.RemoveEffectsOfType(effect: SonOfRobinGame.effectBorder);
+                            player.soundPack.Play(PieceSoundPack.Action.PlayerPant);
                         }
 
                         return;

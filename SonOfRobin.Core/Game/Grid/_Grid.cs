@@ -26,12 +26,8 @@ namespace SonOfRobin
         private DateTime lastCellProcessedTime;
         public int loadedTexturesCount;
 
-        private static readonly TimeSpan textureLoadingDelay = TimeSpan.FromMilliseconds(15);
-        public bool ProcessingStepComplete
-        {
-            get
-            { return this.cellsToProcessOnStart.Count == 0; }
-        }
+        private static readonly TimeSpan textureLoadingDelay = TimeSpan.FromMilliseconds(5);
+        public bool ProcessingStepComplete { get { return this.cellsToProcessOnStart.Count == 0; } }
 
         public List<Cell> CellsVisitedByPlayer { get { return this.allCells.Where(cell => cell.visitedByPlayer).ToList(); } }
 
@@ -473,10 +469,38 @@ namespace SonOfRobin
             Parallel.ForEach(visitedByPlayerOnly ? this.CellsVisitedByPlayer : this.allCells, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, cell =>
             {
                 foreach (Sprite sprite in cell.spriteGroups[groupName].Values)
-                { allSprites.Add(sprite); }
+                {
+                    allSprites.Add(sprite);
+                }
             });
 
             return allSprites;
+        }
+
+        public bool SpecifiedPiecesCountIsMet(Dictionary<PieceTemplate.Name, int> piecesToCount)
+        {
+            var countByName = this.CountSpecifiedPieces(piecesToCount.Keys.ToList());
+
+            foreach (var kvp in piecesToCount)
+            {
+                PieceTemplate.Name pieceName = kvp.Key;
+                if (countByName[pieceName] < kvp.Value) return false;
+            }
+
+            return true;
+        }
+
+        public Dictionary<PieceTemplate.Name, int> CountSpecifiedPieces(List<PieceTemplate.Name> nameList)
+        {
+            var countByName = new Dictionary<PieceTemplate.Name, int>();
+            foreach (PieceTemplate.Name name in nameList) countByName[name] = 0;
+
+            foreach (var sprite in this.GetAllSprites(Cell.Group.All))
+            {
+                if (nameList.Contains(sprite.boardPiece.name) && sprite.boardPiece.exists) countByName[sprite.boardPiece.name]++;
+            }
+
+            return countByName;
         }
 
         public void DrawBackground(Camera camera)

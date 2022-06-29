@@ -22,7 +22,7 @@ namespace SonOfRobin
         public float shootingAngle;
         private int shootingPower;
         public SleepEngine sleepEngine;
-        private Vector2 pointWalkTarget;
+        public Vector2 pointWalkTarget;
         public Craft.Recipe recipeToBuild;
         public BoardPiece simulatedPieceToBuild;
 
@@ -408,9 +408,22 @@ namespace SonOfRobin
             this.Walk(slowDownInWater: false);
         }
 
+        public override void SM_PlayerControlledByCinematic()
+        {
+            if (this.pointWalkTarget != Vector2.Zero)
+            {
+                this.GoOneStepTowardsGoal(this.pointWalkTarget, splitXY: true, walkSpeed: this.speed);
+                if (Vector2.Distance(this.sprite.position, this.pointWalkTarget) < 2f)
+                {
+                    this.sprite.CharacterStand();
+                    this.pointWalkTarget = Vector2.Zero;
+                }
+            }
+        }
+
         public override void SM_PlayerControlledWalking()
         {
-            if (this.world.currentUpdate % 120 == 0) this.world.hintEngine.CheckForPieceHintToShow();
+            if (this.world.currentUpdate % 121 == 0) this.world.hintEngine.CheckForPieceHintToShow();
 
             this.ExpendEnergy(0.1f);
             if (!this.Walk()) this.Stamina = Math.Min(this.Stamina + 1, this.maxStamina);
@@ -428,7 +441,7 @@ namespace SonOfRobin
                 if (this.world.inputActive)
                 {
                     pieceToInteract.sprite.effectCol.AddEffect(new ColorizeInstance(color: Color.Green));
-                    Tutorials.ShowTutorial(type: Tutorials.Type.Interact, ignoreIfShown: true, ignoreDelay: false);
+                    Tutorials.ShowTutorialOnTheField(type: Tutorials.Type.Interact, world: this.world);
                     VirtButton.ButtonHighlightOnNextFrame(VButName.Interact);
                     ControlTips.TipHighlightOnNextFrame(tipName: "interact");
                     FieldTip.AddUpdateTip(world: this.world, texture: InputMapper.GetTexture(InputMapper.Action.WorldInteract), targetSprite: pieceToInteract.sprite, alignment: FieldTip.Alignment.LeftIn);
@@ -440,7 +453,7 @@ namespace SonOfRobin
             {
                 if (this.world.inputActive)
                 {
-                    Tutorials.ShowTutorial(type: Tutorials.Type.PickUp, ignoreIfShown: true, ignoreDelay: false);
+                    Tutorials.ShowTutorialOnTheField(type: Tutorials.Type.PickUp, world: this.world);
                     pieceToPickUp.sprite.effectCol.AddEffect(new ColorizeInstance(color: Color.DodgerBlue));
                     pieceToPickUp.sprite.effectCol.AddEffect(new BorderInstance(outlineColor: Color.White, textureSize: pieceToPickUp.sprite.frame.textureSize, priority: 0));
                     VirtButton.ButtonHighlightOnNextFrame(VButName.PickUp);
@@ -552,7 +565,7 @@ namespace SonOfRobin
 
         private void CheckGround()
         {
-            if (this.sprite.IsDeepInDangerZone && this.world.addAgressiveAnimals) Tutorials.ShowTutorial(type: Tutorials.Type.DangerZone, ignoreDelay: true);
+            if (this.sprite.IsDeepInDangerZone && this.world.addAgressiveAnimals) Tutorials.ShowTutorialOnTheField(type: Tutorials.Type.DangerZone, world: this.world, ignoreDelay: true);
 
             if (this.sprite.IsOnLava)
             {
@@ -563,6 +576,7 @@ namespace SonOfRobin
                     Vector2 screenShake = new Vector2(world.random.Next(-20, 20), world.random.Next(-20, 20));
 
                     this.soundPack.Play(PieceSoundPack.Action.Cry);
+                    this.soundPack.Play(PieceSoundPack.Action.StepLava);
 
                     world.transManager.AddMultipleTransitions(outTrans: true, duration: world.random.Next(4, 10), playCount: -1, replaceBaseValue: false, stageTransform: Transition.Transform.Sinus, pingPongCycles: false, cycleMultiplier: 0.02f, paramsToChange: new Dictionary<string, float> { { "PosX", screenShake.X }, { "PosY", screenShake.Y } });
 

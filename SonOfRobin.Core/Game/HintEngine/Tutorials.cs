@@ -47,7 +47,7 @@ namespace SonOfRobin
             {
                 this.type = type;
                 this.name = name;
-                this.title = new HintMessage(text: title, boxType: messageHeaderType, blockInput: false);
+                this.title = new HintMessage(text: title, boxType: messageHeaderType, blockInput: false, sound: SoundData.Name.Notification2);
                 this.messages = messages;
                 this.isShownInTutorialsMenu = isShownInTutorialsMenu;
 
@@ -55,26 +55,27 @@ namespace SonOfRobin
             }
         }
 
-        public static void ShowTutorial(Type type, bool ignoreIfShown = true, bool checkHintsSettings = true, bool ignoreDelay = false, bool menuMode = false)
+        public static void ShowTutorialInMenu(Type type)
         {
-            if (checkHintsSettings && !Preferences.showHints) return;
+            var taskChain = HintMessage.ConvertToTasks(messageList: tutorials[type].MessagesToDisplayInMenu, playSounds: false);
+            new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteTaskChain, turnOffInputUntilExecution: true, executeHelper: taskChain);
+        }
 
-            World world = World.GetTopWorld();
-            HintEngine hintEngine = null;
-            if (world != null) hintEngine = world.hintEngine;
+        public static void ShowTutorialOnTheField(Type type, World world, bool ignoreHintsSetting = false, bool ignoreDelay = false, bool ignoreIfShown = true)
+        {
+            if (!ignoreHintsSetting && !Preferences.showHints) return;
 
-            if (ignoreIfShown)
-            {
-                if (hintEngine != null && hintEngine.shownTutorials.Contains(type)) return;
-            }
+            HintEngine hintEngine = world.hintEngine;
 
-            if (!ignoreDelay && hintEngine != null)
+            if (ignoreIfShown && hintEngine.shownTutorials.Contains(type)) return;
+
+            if (!ignoreDelay)
             {
                 if (!hintEngine.WaitFrameReached) return;
                 hintEngine.UpdateWaitFrame();
             }
 
-            var messageList = menuMode ? tutorials[type].MessagesToDisplayInMenu : tutorials[type].MessagesToDisplay;
+            var messageList = tutorials[type].MessagesToDisplay;
             var taskChain = HintMessage.ConvertToTasks(messageList: messageList);
 
             taskChain.Insert(0, new Scheduler.Task(taskName: Scheduler.TaskName.SetCineMode, delay: 1, executeHelper: true, storeForLaterUse: true));
@@ -82,11 +83,8 @@ namespace SonOfRobin
 
             new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteTaskChain, turnOffInputUntilExecution: true, executeHelper: taskChain);
 
-            if (!menuMode) Sound.QuickPlay(SoundData.Name.Notification2);
-
-            if (hintEngine != null) hintEngine.shownTutorials.Add(type);
+            hintEngine.shownTutorials.Add(type);
         }
-
 
         public static List<Tutorial> TutorialsInMenu
         { get { return tutorials.Values.Where(tutorial => tutorial.isShownInTutorialsMenu).ToList(); } }
@@ -99,62 +97,62 @@ namespace SonOfRobin
             new Tutorial(type: Type.BreakThing, name: "destroying items without tools", title: "How to destroy field item without any tools.",
                 messages: new List<HintMessage> {
                 new HintMessage(text: "1. Make sure that the | hand tool is selected on toolbar.",
-                imageList: new List<Texture2D>{ AnimData.framesForPkgs[AnimData.PkgName.Hand].texture }, boxType: messageTextType),
+                imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.Hand) }, boxType: messageTextType),
                 !Preferences.ShowTouchTips ?
                 new HintMessage(text:"2. Walk next to the item and press |.", imageList: new List<Texture2D> {InputMapper.GetTexture(InputMapper.Action.WorldUseToolbarPiece)}, boxType: messageTextType) :
                 new HintMessage(text:"2. Walk next to the item and press 'USE ITEM' button.", boxType: messageTextType)});
 
             new Tutorial(type: Type.GetWood, name: "acquiring wood", title: "How to acquire wood.",
               messages: new List<HintMessage> {
-                new HintMessage(text: "1. Enter inventory and place the | axe on toolbar.", imageList: new List<Texture2D>{ AnimData.framesForPkgs[AnimData.PkgName.AxeStone].texture}, boxType: messageTextType),
+                new HintMessage(text: "1. Enter inventory and place the | axe on toolbar.", imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.AxeStone)}, boxType: messageTextType),
                 !Preferences.ShowTouchTips ?
                 new HintMessage(text: "2. Exit inventory by pressing |.", imageList: new List<Texture2D> {InputMapper.GetTexture(InputMapper.Action.GlobalCancelReturnSkip)}, boxType: messageTextType):
                 new HintMessage(text: "2. Exit inventory.", boxType: messageTextType),
                 !Preferences.ShowTouchTips ?
-                new HintMessage(text:"3. Select the | axe using | and |.", imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.AxeStone].texture, InputMapper.GetTexture(InputMapper.Action.ToolbarPrev), InputMapper.GetTexture(InputMapper.Action.ToolbarNext)}, boxType: messageTextType) :
-                new HintMessage(text:"3. Touch the | axe on toolbar to select it.", imageList: new List<Texture2D> {AnimData.framesForPkgs[AnimData.PkgName.AxeStone].texture}, boxType: messageTextType),
+                new HintMessage(text:"3. Select the | axe using | and |.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.AxeStone), InputMapper.GetTexture(InputMapper.Action.ToolbarPrev), InputMapper.GetTexture(InputMapper.Action.ToolbarNext)}, boxType: messageTextType) :
+                new HintMessage(text:"3. Touch the | axe on toolbar to select it.", imageList: new List<Texture2D> {PieceInfo.GetTexture(PieceTemplate.Name.AxeStone)}, boxType: messageTextType),
                 !Preferences.ShowTouchTips ?
-                new HintMessage(text:"4. Walk next to the | tree and press |.", imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.TreeBig].texture, InputMapper.GetTexture(InputMapper.Action.WorldUseToolbarPiece)}, boxType: messageTextType) :
-                new HintMessage(text:"4. Walk next to the | tree and press 'USE ITEM' button.", imageList: new List<Texture2D> {AnimData.framesForPkgs[AnimData.PkgName.TreeBig].texture}, boxType: messageTextType)});
+                new HintMessage(text:"4. Walk next to the | tree and press |.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.TreeBig), InputMapper.GetTexture(InputMapper.Action.WorldUseToolbarPiece)}, boxType: messageTextType) :
+                new HintMessage(text:"4. Walk next to the | tree and press 'USE ITEM' button.", imageList: new List<Texture2D> {PieceInfo.GetTexture(PieceTemplate.Name.TreeBig)}, boxType: messageTextType)});
 
             new Tutorial(type: Type.Mine, name: "mining", title: "How to mine.",
                 messages: new List<HintMessage> {
-                new HintMessage(text: "1. Enter inventory and place the | pickaxe on toolbar.", imageList: new List<Texture2D>{AnimData.framesForPkgs[AnimData.PkgName.PickaxeStone].texture}, boxType: messageTextType),
+                new HintMessage(text: "1. Enter inventory and place the | pickaxe on toolbar.", imageList: new List<Texture2D>{PieceInfo.GetTexture(PieceTemplate.Name.PickaxeStone)}, boxType: messageTextType),
                 !Preferences.ShowTouchTips ?
                 new HintMessage(text: "2. Exit inventory by pressing |.", imageList: new List<Texture2D> {InputMapper.GetTexture(InputMapper.Action.GlobalCancelReturnSkip)}, boxType: messageTextType):
                 new HintMessage(text: "2. Exit inventory.", boxType: messageTextType),
                 !Preferences.ShowTouchTips ?
-                new HintMessage(text:"3. Select the | pickaxe using | and |.", imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.PickaxeStone].texture, InputMapper.GetTexture(InputMapper.Action.ToolbarPrev), InputMapper.GetTexture(InputMapper.Action.ToolbarNext)}, boxType: messageTextType) :
-                new HintMessage(text:"3. Touch the | pickaxe on toolbar to select it.", imageList: new List<Texture2D> {AnimData.framesForPkgs[AnimData.PkgName.PickaxeStone].texture}, boxType: messageTextType),
+                new HintMessage(text:"3. Select the | pickaxe using | and |.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.PickaxeStone), InputMapper.GetTexture(InputMapper.Action.ToolbarPrev), InputMapper.GetTexture(InputMapper.Action.ToolbarNext)}, boxType: messageTextType) :
+                new HintMessage(text:"3. Touch the | pickaxe on toolbar to select it.", imageList: new List<Texture2D> {PieceInfo.GetTexture(PieceTemplate.Name.PickaxeStone)}, boxType: messageTextType),
                 !Preferences.ShowTouchTips ?
-                new HintMessage(text:"4. Walk next to the | mineral deposit and press |.", imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.IronDeposit].texture, InputMapper.GetTexture(InputMapper.Action.WorldUseToolbarPiece)}, boxType: messageTextType) :
-                new HintMessage(text:"4. Walk next to | mineral deposit and press 'USE ITEM' button.", imageList: new List<Texture2D> {AnimData.framesForPkgs[AnimData.PkgName.IronDeposit].texture}, boxType: messageTextType) });
+                new HintMessage(text:"4. Walk next to the | mineral deposit and press |.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.IronDeposit), InputMapper.GetTexture(InputMapper.Action.WorldUseToolbarPiece)}, boxType: messageTextType) :
+                new HintMessage(text:"4. Walk next to | mineral deposit and press 'USE ITEM' button.", imageList: new List<Texture2D> {PieceInfo.GetTexture(PieceTemplate.Name.IronDeposit)}, boxType: messageTextType) });
 
             new Tutorial(type: Type.Torch, name: "using torch", title: "Using torch.",
                 messages: new List<HintMessage> {
-                new HintMessage(text: "1. Enter inventory and place the | torch on toolbar.", imageList: new List<Texture2D>{AnimData.framesForPkgs[AnimData.PkgName.SmallTorch].texture}, boxType: messageTextType),
+                new HintMessage(text: "1. Enter inventory and place the | torch on toolbar.", imageList: new List<Texture2D>{PieceInfo.GetTexture(PieceTemplate.Name.TorchSmall)}, boxType: messageTextType),
                 !Preferences.ShowTouchTips ?
                 new HintMessage(text: "2. Exit inventory by pressing |.", imageList: new List<Texture2D> {InputMapper.GetTexture(InputMapper.Action.GlobalCancelReturnSkip)}, boxType: messageTextType):
                 new HintMessage(text: "2. Exit inventory.", boxType: messageTextType),
                 !Preferences.ShowTouchTips ?
-                new HintMessage(text:"3. Select the | torch using | and |.", imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.SmallTorch].texture, InputMapper.GetTexture(InputMapper.Action.ToolbarPrev), InputMapper.GetTexture(InputMapper.Action.ToolbarNext)}, boxType: messageTextType) :
-                new HintMessage(text:"3. Touch the | torch on toolbar to select it.", imageList: new List<Texture2D> {AnimData.framesForPkgs[AnimData.PkgName.SmallTorch].texture}, boxType: messageTextType),
+                new HintMessage(text:"3. Select the | torch using | and |.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.TorchSmall), InputMapper.GetTexture(InputMapper.Action.ToolbarPrev), InputMapper.GetTexture(InputMapper.Action.ToolbarNext)}, boxType: messageTextType) :
+                new HintMessage(text:"3. Touch the | torch on toolbar to select it.", imageList: new List<Texture2D> {PieceInfo.GetTexture(PieceTemplate.Name.TorchSmall)}, boxType: messageTextType),
                 !Preferences.ShowTouchTips ?
-                new HintMessage(text:"4. Set the | torch on | fire by pressing |.", imageList: new List<Texture2D> {AnimData.framesForPkgs[AnimData.PkgName.SmallTorch].texture, AnimData.framesForPkgs[AnimData.PkgName.Flame].texture, InputMapper.GetTexture(InputMapper.Action.WorldUseToolbarPiece)}, boxType: messageTextType) :
-                new HintMessage(text:"4. Set the | torch on | fire by pressing 'USE ITEM' button.", imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.Flame].texture, AnimData.framesForPkgs[AnimData.PkgName.SmallTorch].texture}, boxType: messageTextType),
+                new HintMessage(text:"4. Set the | torch on | fire by pressing |.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.TorchSmall), AnimData.framesForPkgs[AnimData.PkgName.Flame].texture, InputMapper.GetTexture(InputMapper.Action.WorldUseToolbarPiece)}, boxType: messageTextType) :
+                new HintMessage(text:"4. Set the | torch on | fire by pressing 'USE ITEM' button.", imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.Flame].texture, PieceInfo.GetTexture(PieceTemplate.Name.TorchSmall)}, boxType: messageTextType),
                 !Preferences.ShowTouchTips ?
-                new HintMessage(text:"5. To extinguish the | fire, press | again (with | torch selected).", imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.Flame].texture, InputMapper.GetTexture(InputMapper.Action.WorldUseToolbarPiece), AnimData.framesForPkgs[AnimData.PkgName.SmallTorch].texture}, boxType: messageTextType) :
-                new HintMessage(text:"5. To extinguish the | fire, press 'USE ITEM' button again (with | torch selected).", imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.Flame].texture, AnimData.framesForPkgs[AnimData.PkgName.SmallTorch].texture}, boxType: messageTextType),
-                new HintMessage(text: "Keep in mind, that the | torch will burn out after some time.", imageList: new List<Texture2D> {AnimData.framesForPkgs[AnimData.PkgName.SmallTorch].texture}, boxType: messageTextType)});
+                new HintMessage(text:"5. To extinguish the | fire,\npress | again (with | torch selected).", imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.Flame].texture, InputMapper.GetTexture(InputMapper.Action.WorldUseToolbarPiece), PieceInfo.GetTexture(PieceTemplate.Name.TorchSmall)}, boxType: messageTextType) :
+                new HintMessage(text:"5. To extinguish the | fire,\npress 'USE ITEM' button again (with | torch selected).", imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.Flame].texture, PieceInfo.GetTexture(PieceTemplate.Name.TorchSmall)}, boxType: messageTextType),
+                new HintMessage(text: "Keep in mind, that the | torch\nwill burn out after some time.", imageList: new List<Texture2D> {PieceInfo.GetTexture(PieceTemplate.Name.TorchSmall)}, boxType: messageTextType)});
 
             new Tutorial(type: Type.Fireplace, name: "using fireplace", title: "Using fireplace.",
                 messages: new List<HintMessage> {
                 !Preferences.ShowTouchTips ?
-                new HintMessage(text: "1. Walk next to the | fireplace and press |.", imageList: new List<Texture2D> {AnimData.framesForPkgs[AnimData.PkgName.Campfire].texture, InputMapper.GetTexture(InputMapper.Action.WorldInteract)}, boxType: messageTextType):
-                new HintMessage(text: "1. Walk next to the | fireplace and activate it.", imageList: new List<Texture2D> {AnimData.framesForPkgs[AnimData.PkgName.Campfire].texture}, boxType: messageTextType),
-                new HintMessage(text: "2. Put some | | | fuel inside.\nThe more fuel is inside, the longer it will | burn.", imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.WoodLogRegular].texture, AnimData.framesForPkgs[AnimData.PkgName.WoodPlank].texture, AnimData.framesForPkgs[AnimData.PkgName.Coal].texture, AnimData.framesForPkgs[AnimData.PkgName.Flame].texture}, boxType: messageTextType),
+                new HintMessage(text: "1. Walk next to the | fireplace and press |.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Campfire), InputMapper.GetTexture(InputMapper.Action.WorldInteract)}, boxType: messageTextType):
+                new HintMessage(text: "1. Walk next to the | fireplace and activate it.", imageList: new List<Texture2D> {PieceInfo.GetTexture(PieceTemplate.Name.Campfire)}, boxType: messageTextType),
+                new HintMessage(text: "2. Put some | | | fuel inside.\nThe more fuel is inside, the longer it will | burn.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.WoodLogRegular), PieceInfo.GetTexture(PieceTemplate.Name.WoodPlank), PieceInfo.GetTexture(PieceTemplate.Name.Coal), AnimData.framesForPkgs[AnimData.PkgName.Flame].texture}, boxType: messageTextType),
                 new HintMessage(text: "3. Use | to start the fire.", imageList: new List<Texture2D> {AnimData.framesForPkgs[AnimData.PkgName.Flame].texture}, boxType: messageTextType),
-                new HintMessage(text: "You can add or remove | | | fuel at any time.",imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.WoodLogRegular].texture, AnimData.framesForPkgs[AnimData.PkgName.WoodPlank].texture, AnimData.framesForPkgs[AnimData.PkgName.Coal].texture }, boxType: messageTextType),
+                new HintMessage(text: "You can add or remove | | | fuel at any time.",imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.WoodLogRegular), PieceInfo.GetTexture(PieceTemplate.Name.WoodPlank), PieceInfo.GetTexture(PieceTemplate.Name.Coal) }, boxType: messageTextType),
                 new HintMessage(text: "Use | to put out the flame instantly.", imageList: new List<Texture2D> {AnimData.framesForPkgs[AnimData.PkgName.WaterDrop].texture}, boxType: messageTextType)});
 
             new Tutorial(type: Type.Equip, name: "using equipment", title: "Using equipment.",
@@ -199,14 +197,14 @@ namespace SonOfRobin
             new Tutorial(type: Type.KeepingAnimalsAway, name: "keeping animals away", title: "Keeping animals away.",
                 messages: new List<HintMessage> {
 
-                    new HintMessage(text: "When | | enemies are nearby,\nyou cannot | craft, | cook or do some other things.", imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.TigerOrangeMedium].texture, AnimData.framesForPkgs[AnimData.PkgName.FoxRed].texture, AnimData.framesForPkgs[AnimData.PkgName.WorkshopAdvanced].texture, AnimData.framesForPkgs[AnimData.PkgName.CookingPot].texture}, boxType: messageTextType),
+                    new HintMessage(text: "When | | enemies are nearby,\nyou cannot | craft, | cook or do some other things.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Tiger), PieceInfo.GetTexture(PieceTemplate.Name.Fox), PieceInfo.GetTexture(PieceTemplate.Name.WorkshopAdvanced), PieceInfo.GetTexture(PieceTemplate.Name.CookingPot)}, boxType: messageTextType),
 
-                    new HintMessage(text: "To scare off enemies, it is best to build a | campfire\nand | make sure the | fire is burning.", imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.Campfire].texture, AnimData.framesForPkgs[AnimData.PkgName.WoodLogRegular].texture, AnimData.framesForPkgs[AnimData.PkgName.Flame].texture}, boxType: messageTextType),
+                    new HintMessage(text: "To scare off enemies, it is best to build a | campfire\nand | make sure the | fire is burning.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Campfire), PieceInfo.GetTexture(PieceTemplate.Name.WoodLogRegular), AnimData.framesForPkgs[AnimData.PkgName.Flame].texture}, boxType: messageTextType),
                    });
 
             new Tutorial(type: Type.BuildWorkshop, name: "building a workshop", title: "Building a workshop.",
              messages: new List<HintMessage>  {
-                new HintMessage(text: "To build a | workshop,\nenter craft menu and select | 'essential workshop'.\nTo make it, you will need some | wood.",  imageList: new List<Texture2D>{ AnimData.framesForPkgs[AnimData.PkgName.WorkshopEssential].texture, AnimData.framesForPkgs[AnimData.PkgName.WorkshopEssential].texture, AnimData.framesForPkgs[AnimData.PkgName.WoodLogRegular].texture}, boxType: messageTextType)
+                new HintMessage(text: "To build a | workshop,\nenter craft menu and select | 'essential workshop'.\nTo make it, you will need some | wood.",  imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.WorkshopEssential), PieceInfo.GetTexture(PieceTemplate.Name.WorkshopEssential), PieceInfo.GetTexture(PieceTemplate.Name.WoodLogRegular)}, boxType: messageTextType)
             });
 
             HintMessage shootingMessage;
@@ -219,10 +217,10 @@ namespace SonOfRobin
 
             new Tutorial(type: Type.ShootProjectile, name: "using projectile weapon", title: "Using a projectile weapon.",
                 messages: new List<HintMessage>  {
-                    new HintMessage(text: "1. Enter inventory and place the | projectile weapon on toolbar.",imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.BowWood].texture}, boxType: messageTextType),
+                    new HintMessage(text: "1. Enter inventory and place the | projectile weapon on toolbar.",imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.BowWood)}, boxType: messageTextType),
                     !Preferences.ShowTouchTips ?
-                    new HintMessage(text:"3. Select the | projectile weapon using | and |.", imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.BowWood].texture, InputMapper.GetTexture(InputMapper.Action.ToolbarPrev), InputMapper.GetTexture(InputMapper.Action.ToolbarNext)}, boxType: messageTextType) :
-                    new HintMessage(text:"2. Touch the | projectile weapon on toolbar to select it.", imageList: new List<Texture2D> {AnimData.framesForPkgs[AnimData.PkgName.BowWood].texture}, boxType: messageTextType),
+                    new HintMessage(text:"3. Select the | projectile weapon using | and |.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.BowWood), InputMapper.GetTexture(InputMapper.Action.ToolbarPrev), InputMapper.GetTexture(InputMapper.Action.ToolbarNext)}, boxType: messageTextType) :
+                    new HintMessage(text:"2. Touch the | projectile weapon on toolbar to select it.", imageList: new List<Texture2D> {PieceInfo.GetTexture(PieceTemplate.Name.BowWood)}, boxType: messageTextType),
                     shootingMessage,
                     !Preferences.ShowTouchTips ?
                     new HintMessage(text:"4. Press | to start shooting.\nRelease | to shoot.", imageList: new List<Texture2D> {InputMapper.GetTexture(InputMapper.Action.WorldUseToolbarPiece), InputMapper.GetTexture(InputMapper.Action.WorldUseToolbarPiece)}, boxType: messageTextType) :
@@ -231,25 +229,25 @@ namespace SonOfRobin
             new Tutorial(type: Type.Cook, name: "cooking", title: "How to cook.",
                 messages: new List<HintMessage>  {
                     !Preferences.ShowTouchTips ?
-                    new HintMessage(text:"1. Stand next to the | cooking site and press |.", imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.CookingPot].texture, InputMapper.GetTexture(InputMapper.Action.WorldInteract)}, boxType: messageTextType) :
-                    new HintMessage(text:"1. Stand next to the | cooking site and press 'INTERACT' button.", imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.CookingPot].texture}, boxType: messageTextType),
-                    new HintMessage(text:"2. Place some | | | ingredients into | the cooking site.", imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.MeatRaw].texture, AnimData.framesForPkgs[AnimData.PkgName.Tomato].texture, AnimData.framesForPkgs[AnimData.PkgName.Clam].texture, AnimData.framesForPkgs[AnimData.PkgName.CookingPot].texture}, boxType: messageTextType),
-                    new HintMessage(text: "3. You will also need to place some | | fuel\ninto | the cooking site.", imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.WoodLogRegular].texture, AnimData.framesForPkgs[AnimData.PkgName.WoodPlank].texture, AnimData.framesForPkgs[AnimData.PkgName.CookingPot].texture}, boxType: messageTextType),
-                    new HintMessage(text:"4. You can also put some | | | boosters\ninto | the cooking site, if you like.", imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.HerbsRed].texture, AnimData.framesForPkgs[AnimData.PkgName.HerbsYellow].texture, AnimData.framesForPkgs[AnimData.PkgName.HerbsBlue].texture, AnimData.framesForPkgs[AnimData.PkgName.CookingPot].texture}, boxType: messageTextType),
-                    new HintMessage(text: "5. Use the | flame to start cooking |.", imageList: new List<Texture2D> {AnimData.framesForPkgs[AnimData.PkgName.Flame].texture, AnimData.framesForPkgs[AnimData.PkgName.MealStandard].texture}, boxType: messageTextType),
+                    new HintMessage(text:"1. Stand next to the | cooking site and press |.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.CookingPot), InputMapper.GetTexture(InputMapper.Action.WorldInteract)}, boxType: messageTextType) :
+                    new HintMessage(text:"1. Stand next to the | cooking site and press 'INTERACT' button.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.CookingPot)}, boxType: messageTextType),
+                    new HintMessage(text:"2. Place some | | | ingredients into | the cooking site.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.MeatRaw), PieceInfo.GetTexture(PieceTemplate.Name.Tomato), PieceInfo.GetTexture(PieceTemplate.Name.Clam), PieceInfo.GetTexture(PieceTemplate.Name.CookingPot)}, boxType: messageTextType),
+                    new HintMessage(text: "3. You will also need to place some | | fuel\ninto | the cooking site.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.WoodLogRegular), PieceInfo.GetTexture(PieceTemplate.Name.WoodPlank), PieceInfo.GetTexture(PieceTemplate.Name.CookingPot)}, boxType: messageTextType),
+                    new HintMessage(text:"4. You can also put some | | | boosters\ninto | the cooking site, if you like.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.HerbsRed), PieceInfo.GetTexture(PieceTemplate.Name.HerbsYellow), PieceInfo.GetTexture(PieceTemplate.Name.HerbsBlue), PieceInfo.GetTexture(PieceTemplate.Name.CookingPot)}, boxType: messageTextType),
+                    new HintMessage(text: "5. Use the | flame to start cooking |.", imageList: new List<Texture2D> {AnimData.framesForPkgs[AnimData.PkgName.Flame].texture, PieceInfo.GetTexture(PieceTemplate.Name.Meal)}, boxType: messageTextType),
               });
 
             new Tutorial(type: Type.ShakeFruit, name: "getting fruits and vegetables", title: "How to get fruits or vegetables.",
                 messages: new List<HintMessage>  {
                      !Preferences.ShowTouchTips ?
-                    new HintMessage(text:"1. Stand next to the | | | plant,\nthat | | fruits (or | vegetables) grow on and press |.", imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.TreeBig].texture, AnimData.framesForPkgs[AnimData.PkgName.PalmTree].texture, AnimData.framesForPkgs[AnimData.PkgName.TomatoPlant].texture, AnimData.framesForPkgs[AnimData.PkgName.Apple].texture, AnimData.framesForPkgs[AnimData.PkgName.Banana].texture, AnimData.framesForPkgs[AnimData.PkgName.Tomato].texture, InputMapper.GetTexture(InputMapper.Action.WorldInteract)}, boxType: messageTextType) :
-                    new HintMessage(text:"1. Stand next to the | | | plant,\nthat | | fruits (or | vegetables) grow on and press 'INTERACT' button.", imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.TreeBig].texture, AnimData.framesForPkgs[AnimData.PkgName.PalmTree].texture, AnimData.framesForPkgs[AnimData.PkgName.TomatoPlant].texture, AnimData.framesForPkgs[AnimData.PkgName.Apple].texture, AnimData.framesForPkgs[AnimData.PkgName.Banana].texture, AnimData.framesForPkgs[AnimData.PkgName.Tomato].texture}, boxType: messageTextType),
+                    new HintMessage(text:"1. Stand next to the | | | plant,\nthat | | fruits (or | vegetables) grow on and press |.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.TreeBig), PieceInfo.GetTexture(PieceTemplate.Name.BananaTree), PieceInfo.GetTexture(PieceTemplate.Name.TomatoPlant), PieceInfo.GetTexture(PieceTemplate.Name.Apple), PieceInfo.GetTexture(PieceTemplate.Name.Banana), PieceInfo.GetTexture(PieceTemplate.Name.Tomato), InputMapper.GetTexture(InputMapper.Action.WorldInteract)}, boxType: messageTextType) :
+                    new HintMessage(text:"1. Stand next to the | | | plant,\nthat | | fruits (or | vegetables) grow on\nand press 'INTERACT' button.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.TreeBig), PieceInfo.GetTexture(PieceTemplate.Name.BananaTree), PieceInfo.GetTexture(PieceTemplate.Name.TomatoPlant), PieceInfo.GetTexture(PieceTemplate.Name.Apple), PieceInfo.GetTexture(PieceTemplate.Name.Banana), PieceInfo.GetTexture(PieceTemplate.Name.Tomato)}, boxType: messageTextType),
                     new HintMessage(text: "2. It will fall nearby.", boxType: messageTextType),
              });
 
             new Tutorial(type: Type.AnimalAttacking, name: "red exclamation mark", title: "Being attacked.",
                 messages: new List<HintMessage>  {
-                    new HintMessage(text: "A | mark means than an animal is attacking you.", imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.Exclamation].texture }, boxType: messageTextType),
+                    new HintMessage(text: "A | mark means than an animal is attacking you.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Exclamation) }, boxType: messageTextType),
                     new HintMessage(text: "You should run away from it, or try to fight it.", boxType: messageTextType)});
 
             new Tutorial(type: Type.DangerZone, name: "danger zones", title: "Danger zones.",

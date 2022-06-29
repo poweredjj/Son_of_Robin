@@ -111,87 +111,6 @@
           "lib/netstandard2.0/Xamarin.Essentials.dll": {}
         }
       }
-    },
-    ".NETStandard,Version=v2.0/win-x64": {
-      "BigGustave/1.0.6": {
-        "type": "package",
-        "compile": {
-          "lib/netstandard2.0/BigGustave.dll": {}
-        },
-        "runtime": {
-          "lib/netstandard2.0/BigGustave.dll": {}
-        }
-      },
-      "Microsoft.NETCore.Platforms/1.1.0": {
-        "type": "package",
-        "compile": {
-          "lib/netstandard1.0/_._": {}
-        },
-        "runtime": {
-          "lib/netstandard1.0/_._": {}
-        }
-      },
-      "MonoGame.Framework.DesktopGL/3.8.0.1641": {
-        "type": "package",
-        "compile": {
-          "lib/netstandard2.0/MonoGame.Framework.dll": {}
-        },
-        "runtime": {
-          "lib/netstandard2.0/MonoGame.Framework.dll": {}
-        },
-        "native": {
-          "runtimes/win-x64/native/SDL2.dll": {},
-          "runtimes/win-x64/native/soft_oal.dll": {}
-        },
-        "build": {
-          "build/MonoGame.Framework.DesktopGL.targets": {}
-        }
-      },
-      "NETStandard.Library/2.0.3": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.NETCore.Platforms": "1.1.0"
-        },
-        "compile": {
-          "lib/netstandard1.0/_._": {}
-        },
-        "runtime": {
-          "lib/netstandard1.0/_._": {}
-        },
-        "build": {
-          "build/netstandard2.0/NETStandard.Library.targets": {}
-        }
-      },
-      "System.Diagnostics.PerformanceCounter/6.0.0": {
-        "type": "package",
-        "compile": {
-          "lib/netstandard2.0/System.Diagnostics.PerformanceCounter.dll": {}
-        },
-        "runtime": {
-          "lib/netstandard2.0/System.Diagnostics.PerformanceCounter.dll": {}
-        }
-      },
-      "System.Numerics.Vectors/4.5.0": {
-        "type": "package",
-        "compile": {
-          "ref/netstandard2.0/System.Numerics.Vectors.dll": {}
-        },
-        "runtime": {
-          "lib/netstandard2.0/System.Numerics.Vectors.dll": {}
-        }
-      },
-      "Xamarin.Essentials/1.7.0": {
-        "type": "package",
-        "dependencies": {
-          "System.Numerics.Vectors": "4.5.0"
-        },
-        "compile": {
-          "lib/netstandard2.0/Xamarin.Essentials.dll": {}
-        },
-        "runtime": {
-          "lib/netstandard2.0/Xamarin.Essentials.dll": {}
-        }
-      }
     }
   },
   "libraries": {
@@ -506,28 +425,20 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Marcin\\.nuget\\packages\\": {},
-    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {},
-    "C:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet\\": {}
+    "C:\\Users\\msmidowi\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Marcin\\source\\repos\\SonOfRobin\\SonOfRobin.Core\\SonOfRobin.Core.csproj",
+      "projectUniqueName": "C:\\Users\\msmidowi\\Documents\\SonOfRobin\\SonOfRobin.Core\\SonOfRobin.Core.csproj",
       "projectName": "SonOfRobin.Core",
-      "projectPath": "C:\\Users\\Marcin\\source\\repos\\SonOfRobin\\SonOfRobin.Core\\SonOfRobin.Core.csproj",
-      "packagesPath": "C:\\Users\\Marcin\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Marcin\\source\\repos\\SonOfRobin\\SonOfRobin.Core\\obj\\",
+      "projectPath": "C:\\Users\\msmidowi\\Documents\\SonOfRobin\\SonOfRobin.Core\\SonOfRobin.Core.csproj",
+      "packagesPath": "C:\\Users\\msmidowi\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\msmidowi\\Documents\\SonOfRobin\\SonOfRobin.Core\\obj\\",
       "projectStyle": "PackageReference",
-      "fallbackFolders": [
-        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
-        "C:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet\\"
-      ],
       "configFilePaths": [
-        "C:\\Users\\Marcin\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
+        "C:\\Users\\msmidowi\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
         "netstandard2.0"
@@ -586,12 +497,7 @@
         ],
         "assetTargetFallback": true,
         "warn": true,
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.404\\RuntimeIdentifierGraph.json"
-      }
-    },
-    "runtimes": {
-      "win-x64": {
-        "#import": []
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.200-preview.21617.4\\RuntimeIdentifierGraph.json"
       }
     }
   }

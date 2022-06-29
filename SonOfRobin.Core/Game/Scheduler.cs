@@ -9,7 +9,7 @@ namespace SonOfRobin
 {
     public class Scheduler
     {
-        public enum TaskName { Empty, CreateNewWorld, CreateNewWorldNow, QuitGame, OpenMenuTemplate, OpenMainMenu, OpenConfirmationMenu, SaveGame, LoadGame, LoadGameNow, ReturnToMainMenu, SavePrefs, ProcessConfirmation, OpenCraftMenu, CraftOnPosition, Craft, Hit, CreateNewPiece, CreateDebugPieces, OpenContainer, DeleteObsoleteSaves, DropFruit, GetEaten, GetDrinked, ExecuteTaskWithDelay, AddWorldEvent, ShowTextWindow, OpenShelterMenu, SleepInsideShelter, SleepOutside, ForceWakeUp, TempoFastForward, TempoStop, TempoPlay, CameraTrackPiece, CameraTrackCoords, CameraSetZoom, ShowCookingProgress, RestoreHints, OpenMainMenuIfSpecialKeysArePressed, CheckForPieceHints, ShowHint, ExecuteTaskList, ExecuteTaskChain, ShowTutorial, RemoveScene, ChangeSceneInputType, SetCineMode, AddTransition, SolidColorRemoveAll, SkipCinematics, DeleteTemplates, SetSpectatorMode, SwitchLightSource, ResetControls, SaveControls, CheckForNonSavedControls, RebuildMenu, RebuildAllMenus, CheckForIncorrectPieces, RestartWorld, ResetNewWorldSettings, PlaySound, PlaySoundByName }
+        public enum TaskName { Empty, CreateNewWorld, CreateNewWorldNow, QuitGame, OpenMenuTemplate, OpenMainMenu, OpenConfirmationMenu, SaveGame, LoadGame, LoadGameNow, ReturnToMainMenu, SavePrefs, ProcessConfirmation, OpenCraftMenu, CraftOnPosition, Craft, Hit, CreateNewPiece, CreateDebugPieces, OpenContainer, DeleteObsoleteSaves, DropFruit, GetEaten, GetDrinked, ExecuteTaskWithDelay, AddWorldEvent, ShowTextWindow, OpenShelterMenu, SleepInsideShelter, SleepOutside, ForceWakeUp, TempoFastForward, TempoStop, TempoPlay, CameraTrackPiece, CameraTrackCoords, CameraSetZoom, ShowCookingProgress, RestoreHints, OpenMainMenuIfSpecialKeysArePressed, CheckForPieceHints, ShowHint, ExecuteTaskList, ExecuteTaskChain, ShowTutorialInMenu, ShowTutorialOnTheField, RemoveScene, ChangeSceneInputType, SetCineMode, AddTransition, SolidColorRemoveAll, SkipCinematics, DeleteTemplates, SetSpectatorMode, SwitchLightSource, ResetControls, SaveControls, CheckForNonSavedControls, RebuildMenu, RebuildAllMenus, CheckForIncorrectPieces, RestartWorld, ResetNewWorldSettings, PlaySound, PlaySoundByName, AllowPieceToBeHit, SetPlayerPointWalkTarget, ShowCraftStats }
 
         private readonly static Dictionary<int, List<Task>> queue = new Dictionary<int, List<Task>>();
         private static int inputTurnedOffUntilFrame = 0;
@@ -359,7 +359,7 @@ namespace SonOfRobin
                             {
                                 if (world.player.AreEnemiesNearby && !world.player.IsActiveFireplaceNearby)
                                 {
-                                    new TextWindow(text: "I can't cook with enemies nearby.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1, closingTask: TaskName.ShowTutorial, closingTaskHelper: new Dictionary<string, Object> { { "tutorial", Tutorials.Type.KeepingAnimalsAway }, { "menuMode", false } });
+                                    new TextWindow(text: "I can't cook with enemies nearby.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1, closingTask: TaskName.ShowTutorialOnTheField, closingTaskHelper: new Dictionary<string, Object> { { "tutorial", Tutorials.Type.KeepingAnimalsAway }, { "world", world }, { "ignoreDelay", true } });
                                     return;
                                 }
 
@@ -619,6 +619,7 @@ namespace SonOfRobin
 
                             string type = gamepad ? "Gamepad" : "Keyboard";
                             new TextWindow(text: $"{type} controls has been saved.", textColor: Color.White, bgColor: Color.DarkBlue, useTransition: false, animate: false);
+                            Sound.QuickPlay(name: SoundData.Name.Ding2, volume: 1f);
 
                             return;
                         }
@@ -802,23 +803,19 @@ namespace SonOfRobin
                             return;
                         }
 
-                    case TaskName.TempoFastForward:
-                        {
-                            world = World.GetTopWorld();
-                            if (world == null) return;
-
-                            SonOfRobinGame.game.IsFixedTimeStep = false;
-                            world.updateMultiplier = (int)executeHelper;
-
-                            return;
-                        }
-
                     case TaskName.TempoStop:
                         {
                             world = World.GetTopWorld();
                             if (world == null || world.demoMode) return;
+
                             if (Preferences.FrameSkip) SonOfRobinGame.game.IsFixedTimeStep = true;
-                            world.updateMultiplier = 0;
+
+                            // world.updateMultiplier = 0 is not used here, to allow for playing ambient sounds
+
+                            world.stateMachineTypesManager.DisableMultiplier();
+                            world.stateMachineTypesManager.SetOnlyTheseTypes(enabledTypes: new List<Type> { typeof(AmbientSound) }, everyFrame: true, nthFrame: true);
+
+                            world.islandClock.Pause();
 
                             return;
                         }
@@ -829,7 +826,26 @@ namespace SonOfRobin
                             if (world == null || world.demoMode) return;
 
                             if (Preferences.FrameSkip) SonOfRobinGame.game.IsFixedTimeStep = true;
+
                             world.updateMultiplier = 1;
+                            world.stateMachineTypesManager.DisableMultiplier();
+                            world.stateMachineTypesManager.EnableAllTypes(everyFrame: true, nthFrame: true);
+                            world.islandClock.Resume();
+
+                            return;
+                        }
+
+                    case TaskName.TempoFastForward:
+                        {
+                            world = World.GetTopWorld();
+                            if (world == null) return;
+
+                            SonOfRobinGame.game.IsFixedTimeStep = false;
+
+                            world.updateMultiplier = (int)executeHelper;
+                            world.stateMachineTypesManager.DisableMultiplier();
+                            world.stateMachineTypesManager.EnableAllTypes(everyFrame: true, nthFrame: true);
+                            world.islandClock.Resume();
 
                             return;
                         }
@@ -972,18 +988,28 @@ namespace SonOfRobin
                             return;
                         }
 
-                    case TaskName.ShowTutorial:
+                    case TaskName.ShowTutorialInMenu:
                         {
-                            // example executeHelper for this task
-                            // var tutorialData = new Dictionary<string, Object> { { "tutorial", Tutorials.Type.KeepingAnimalsAway }, { "menuMode", true } };
+                            Tutorials.ShowTutorialInMenu(type: (Tutorials.Type)executeHelper);
 
+                            return;
+                        }
+
+                    case TaskName.ShowTutorialOnTheField:
+                        {
                             var tutorialData = (Dictionary<string, Object>)executeHelper;
 
-                            bool menuMode = (bool)tutorialData["menuMode"];
-                            bool ignoreIfShown = !menuMode;
-                            Tutorials.Type tutorial = (Tutorials.Type)tutorialData["tutorial"];
+                            // example executeHelper for this task
+                            // var tutorialData = new Dictionary<string, Object> { { "tutorial", Tutorials.Type.KeepingAnimalsAway }, { "world", world }, { "ignoreHintsSetting", false }, { "ignoreDelay", false }, { "ignoreIfShown", false } };
 
-                            Tutorials.ShowTutorial(type: tutorial, ignoreIfShown: ignoreIfShown, checkHintsSettings: false, ignoreDelay: true, menuMode: menuMode);
+                            Tutorials.Type type = (Tutorials.Type)tutorialData["tutorial"];
+                            World worldToUse = (World)tutorialData["world"];
+
+                            bool ignoreHintsSetting = tutorialData.ContainsKey("ignoreHintsSetting") ? (bool)tutorialData["ignoreHintsSetting"] : false;
+                            bool ignoreDelay = tutorialData.ContainsKey("ignoreDelay") ? (bool)tutorialData["ignoreDelay"] : false;
+                            bool ignoreIfShown = tutorialData.ContainsKey("ignoreIfShown") ? (bool)tutorialData["ignoreIfShown"] : true;
+
+                            Tutorials.ShowTutorialOnTheField(type: type, world: worldToUse, ignoreHintsSetting: ignoreHintsSetting, ignoreDelay: ignoreDelay, ignoreIfShown: ignoreIfShown);
 
                             return;
                         }
@@ -1225,7 +1251,7 @@ namespace SonOfRobin
 
                             // showing message
 
-                            new TextWindow(text: message, animate: false, useTransition: false, bgColor: isCorrect ? Color.Green : Color.DarkRed, textColor: Color.White, blocksUpdatesBelow: true);
+                            new TextWindow(text: message, animate: true, useTransition: true, bgColor: isCorrect ? Color.Green : Color.DarkRed, textColor: Color.White);
 
                             return;
                         }
@@ -1246,11 +1272,43 @@ namespace SonOfRobin
                             return;
                         }
 
+                    case TaskName.AllowPieceToBeHit:
+                        {
+                            BoardPiece piece = (BoardPiece)executeHelper;
+                            piece.canBeHit = true;
+
+                            return;
+                        }
+
+                    case TaskName.SetPlayerPointWalkTarget:
+                        {
+                            var setData = (Dictionary<Player, Vector2>)executeHelper;
+
+                            foreach (var kvp in setData)
+                            {
+                                kvp.Key.pointWalkTarget = kvp.Value;
+                            }
+
+                            return;
+                        }
+
+                    case TaskName.ShowCraftStats:
+                        {
+                            world = World.GetTopWorld();
+                            if (world == null) return;
+
+                            bool showIngredients = (bool)executeHelper;
+
+                            if (showIngredients) world.craftStats.DisplayUsedIngredientsSummary();
+                            else world.craftStats.DisplayCraftedPiecesSummary();
+
+                            return;
+                        }
+
                     default:
                         throw new DivideByZeroException($"Unsupported taskName - {taskName}.");
                 }
             }
-
 
             private static void CloseGame(bool quitGame)
             {

@@ -49,7 +49,6 @@ namespace SonOfRobin
             DrawTextInsideRect(font: font, rectangle: rectangle, text: text, color: color, alignX: alignX, alignY: alignY, drawTestRect: drawTestRect);
         }
 
-
         public static void DrawTextInsideRectWithShadow(SpriteFont font, Rectangle rectangle, string text, Color color, Color shadowColor, AlignX alignX = AlignX.Center, AlignY alignY = AlignY.Center, int shadowOffsetX = 0, int shadowOffsetY = 0, int shadowOffset = 0, bool drawTestRect = false)
         {
             if (shadowOffset != 0)

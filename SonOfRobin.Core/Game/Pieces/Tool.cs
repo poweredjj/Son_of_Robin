@@ -86,6 +86,20 @@ namespace SonOfRobin
             bool anyTargetHit = false;
             bool fieldTipShown = false;
 
+            if (!highlightOnly)
+            {
+                foreach (BoardPiece currentTarget in targets)
+                {
+                    if (!currentTarget.canBeHit)
+                    {
+                        var confirmationData = new Dictionary<string, Object> { { "question", $"Do you really want to hit {currentTarget.readableName}?" }, { "taskName", Scheduler.TaskName.AllowPieceToBeHit }, { "executeHelper", currentTarget }, { "blocksUpdatesBelow", true } };
+                        MenuTemplate.CreateConfirmationMenu(confirmationData: confirmationData);
+
+                        return;
+                    }
+                }
+            }
+
             foreach (BoardPiece currentTarget in targets)
             {
                 float currentMultiplier = 0;
@@ -161,7 +175,7 @@ namespace SonOfRobin
 
                 if (highlightOnly)
                 {
-                    Tutorials.ShowTutorial(type: Tutorials.Type.Hit, ignoreIfShown: true, ignoreDelay: false);
+                    Tutorials.ShowTutorialOnTheField(type: Tutorials.Type.Hit, world: this.world);
                     currentTarget.sprite.effectCol.AddEffect(new BorderInstance(outlineColor: Color.Red, textureSize: currentTarget.sprite.frame.textureSize, priority: 0));
 
                     VirtButton.ButtonHighlightOnNextFrame(VButName.UseTool);

@@ -204,8 +204,12 @@ namespace SonOfRobin
             SoundSeaWaves,
             SoundLakeWaves,
             SoundSeaWind,
-            SoundNightCrickets
+            SoundDesertWind,
+            SoundNightCrickets,
+            SoundNoonCicadas,
         }
+
+        public static readonly Name[] allNames = (Name[])Enum.GetValues(typeof(Name));
 
         public static BoardPiece Create(Name templateName, World world, int generation = 0, bool randomSex = true, bool female = false, string id = null)
         {
@@ -265,6 +269,8 @@ namespace SonOfRobin
 
                         soundPack.AddAction(action: PieceSoundPack.Action.PlayerSprint, sound: new Sound(name: SoundData.Name.Sprint, maxPitchVariation: 0.3f, ignore3DAlways: true, volume: 0.5f));
 
+                        soundPack.AddAction(action: PieceSoundPack.Action.PlayerPant, sound: new Sound(name: female ? SoundData.Name.PantFemale : SoundData.Name.PantMale, maxPitchVariation: 0.3f, ignore3DAlways: true, volume: 0.8f));
+
                         if (!female)
                         {
                             soundPack.AddAction(action: PieceSoundPack.Action.Cry, sound: new Sound(nameList: new List<SoundData.Name> { SoundData.Name.CryPlayerMale1, SoundData.Name.CryPlayerMale2, SoundData.Name.CryPlayerMale3, SoundData.Name.CryPlayerMale4 }, maxPitchVariation: 0.2f));
@@ -285,7 +291,7 @@ namespace SonOfRobin
                     {
                         var soundPack = new PieceSoundPack();
 
-                        foreach (PieceSoundPack.Action action in new List<PieceSoundPack.Action> { PieceSoundPack.Action.StepGrass, PieceSoundPack.Action.StepWater, PieceSoundPack.Action.StepSand, PieceSoundPack.Action.StepRock, PieceSoundPack.Action.SwimShallow, PieceSoundPack.Action.SwimDeep })
+                        foreach (PieceSoundPack.Action action in new List<PieceSoundPack.Action> { PieceSoundPack.Action.StepGrass, PieceSoundPack.Action.StepWater, PieceSoundPack.Action.StepSand, PieceSoundPack.Action.StepRock, PieceSoundPack.Action.SwimShallow, PieceSoundPack.Action.SwimDeep, PieceSoundPack.Action.StepLava })
                         {
                             soundPack.AddAction(action: action, sound: new Sound(name: SoundData.Name.StepGhost, cooldown: 30, ignore3DAlways: true, volume: 0.8f, maxPitchVariation: 0.2f));
                         }
@@ -1015,7 +1021,7 @@ namespace SonOfRobin
                                 });
 
                         var soundPack = new PieceSoundPack();
-                        soundPack.AddAction(action: PieceSoundPack.Action.HasAppeared, sound: new Sound(name: SoundData.Name.Ding));
+                        soundPack.AddAction(action: PieceSoundPack.Action.HasAppeared, sound: new Sound(name: SoundData.Name.Ding1));
                         soundPack.AddAction(action: PieceSoundPack.Action.IsHit, sound: new Sound(name: SoundData.Name.HitCeramic, maxPitchVariation: 0.5f));
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(name: SoundData.Name.DestroyCeramic3, maxPitchVariation: 0.5f));
 
@@ -1910,7 +1916,7 @@ namespace SonOfRobin
                             { TerrainName.Height, new AllowedRange(min: Terrain.waterLevelMax, max: Terrain.volcanoEdgeMin) }});
 
                         return new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ShovelStone, allowedFields: allowedFields, category: BoardPiece.Category.Wood,
-                            floatsOnWater: false, minDistance: 0, maxDistance: 100, maxMassBySize: null, generation: generation, hitPower: 3, indestructible: false, multiplierByCategory: multiplierByCategory, maxHitPoints: 50, readableName: "stone shovel", description: "Basic shovel.");
+                            floatsOnWater: false, minDistance: 0, maxDistance: 100, maxMassBySize: null, generation: generation, hitPower: 3, indestructible: false, multiplierByCategory: multiplierByCategory, maxHitPoints: 80, readableName: "stone shovel", description: "Basic shovel.");
                     }
 
                 case Name.ShovelIron:
@@ -2345,7 +2351,7 @@ namespace SonOfRobin
 
                         Sound sound = new Sound(nameList: new List<SoundData.Name> { SoundData.Name.SeaWave1, SoundData.Name.SeaWave2, SoundData.Name.SeaWave3, SoundData.Name.SeaWave4, SoundData.Name.SeaWave5, SoundData.Name.SeaWave6, SoundData.Name.SeaWave7, SoundData.Name.SeaWave8, SoundData.Name.SeaWave9, SoundData.Name.SeaWave10, SoundData.Name.SeaWave11, SoundData.Name.SeaWave12, SoundData.Name.SeaWave13 }, maxPitchVariation: 0.8f, volume: 0.7f);
 
-                        AmbientSound ambientSound = new AmbientSound(name: templateName, world: world, id: id, allowedFields: allowedFields, allowedDensity: allowedDensity, readableName: "Ambient sea waves sound", description: "Ambient sound for sea waves.", sound: sound, playDelay: 300, playDelayMaxVariation: 200, visible: Preferences.debugShowSounds, placeAtBeachEdge: true);
+                        AmbientSound ambientSound = new AmbientSound(name: templateName, world: world, id: id, allowedFields: allowedFields, allowedDensity: allowedDensity, readableName: "ambient sea waves sound", description: "Ambient sound for sea waves.", sound: sound, playDelay: 300, playDelayMaxVariation: 200, visible: Preferences.debugShowSounds, placeAtBeachEdge: true);
 
                         ambientSound.sprite.color = Color.Cyan;
 
@@ -2359,9 +2365,26 @@ namespace SonOfRobin
 
                         Sound sound = new Sound(name: SoundData.Name.SeaWind, maxPitchVariation: 0.5f, volume: 0.6f, isLooped: true);
 
-                        AmbientSound ambientSound = new AmbientSound(name: templateName, world: world, id: id, allowedFields: allowedFields, allowedDensity: allowedDensity, readableName: "Ambient sea wind sound", description: "Ambient sound for sea wind.", sound: sound, playDelay: 0, visible: Preferences.debugShowSounds, placeAtBeachEdge: true);
+                        AmbientSound ambientSound = new AmbientSound(name: templateName, world: world, id: id, allowedFields: allowedFields, allowedDensity: allowedDensity, readableName: "ambient sea wind sound", description: "Ambient sound for sea wind.", sound: sound, playDelay: 0, visible: Preferences.debugShowSounds, placeAtBeachEdge: true);
 
                         ambientSound.sprite.color = Color.White;
+
+                        return ambientSound;
+                    }
+
+                case Name.SoundDesertWind:
+                    {
+                        var allowedFields = new AllowedFields(rangeDict: new Dictionary<TerrainName, AllowedRange>() {
+                            { TerrainName.Height, new AllowedRange(min: 105, max: 160) },
+                            { TerrainName.Humidity, new AllowedRange(min: 0, max: 115) }});
+
+                        AllowedDensity allowedDensity = new AllowedDensity(radious: 170, maxNoOfPiecesSameName: 0);
+
+                        Sound sound = new Sound(name: SoundData.Name.DesertWind, maxPitchVariation: 0.5f, volume: 0.2f, isLooped: true);
+
+                        AmbientSound ambientSound = new AmbientSound(name: templateName, world: world, id: id, allowedFields: allowedFields, allowedDensity: allowedDensity, readableName: "ambient desert wind sound", description: "Ambient sound for desert wind.", sound: sound, playDelay: 0, visible: Preferences.debugShowSounds);
+
+                        ambientSound.sprite.color = Color.Orange;
 
                         return ambientSound;
                     }
@@ -2373,7 +2396,7 @@ namespace SonOfRobin
 
                         Sound sound = new Sound(nameList: new List<SoundData.Name> { SoundData.Name.LakeWave1, SoundData.Name.LakeWave2, SoundData.Name.LakeWave3, SoundData.Name.LakeWave4, SoundData.Name.LakeWave5, SoundData.Name.LakeWave6, SoundData.Name.LakeWave7 }, maxPitchVariation: 0.8f, volume: 0.7f);
 
-                        AmbientSound ambientSound = new AmbientSound(name: templateName, world: world, id: id, allowedFields: allowedFields, allowedDensity: allowedDensity, readableName: "Ambient lake waves sound", description: "Ambient sound for lake waves.", sound: sound, playDelay: 300, playDelayMaxVariation: 200, visible: Preferences.debugShowSounds);
+                        AmbientSound ambientSound = new AmbientSound(name: templateName, world: world, id: id, allowedFields: allowedFields, allowedDensity: allowedDensity, readableName: "ambient lake waves sound", description: "Ambient sound for lake waves.", sound: sound, playDelay: 300, playDelayMaxVariation: 200, visible: Preferences.debugShowSounds);
 
                         ambientSound.sprite.color = Color.Blue;
 
@@ -2390,9 +2413,26 @@ namespace SonOfRobin
 
                         Sound sound = new Sound(name: SoundData.Name.NightCrickets, maxPitchVariation: 0.3f, volume: 0.2f, isLooped: true);
 
-                        AmbientSound ambientSound = new AmbientSound(name: templateName, world: world, id: id, allowedFields: allowedFields, allowedDensity: allowedDensity, readableName: "Ambient night crickets sound", description: "Ambient sound for crickets at night.", sound: sound, playDelay: 0, visible: Preferences.debugShowSounds, partOfDayList: new List<IslandClock.PartOfDay> { IslandClock.PartOfDay.Night });
+                        AmbientSound ambientSound = new AmbientSound(name: templateName, world: world, id: id, allowedFields: allowedFields, allowedDensity: allowedDensity, readableName: "ambient night crickets sound", description: "Ambient sound for crickets at night.", sound: sound, playDelay: 0, visible: Preferences.debugShowSounds, partOfDayList: new List<IslandClock.PartOfDay> { IslandClock.PartOfDay.Night });
 
                         ambientSound.sprite.color = Color.Black;
+
+                        return ambientSound;
+                    }
+
+                case Name.SoundNoonCicadas:
+                    {
+                        var allowedFields = new AllowedFields(rangeDict: new Dictionary<TerrainName, AllowedRange>() {
+                            { TerrainName.Height, new AllowedRange(min: 115, max: 150) },
+                            { TerrainName.Humidity, new AllowedRange(min: 120, max: 255) }});
+
+                        AllowedDensity allowedDensity = new AllowedDensity(radious: 200, maxNoOfPiecesSameClass: 0);
+
+                        Sound sound = new Sound(nameList: new List<SoundData.Name> { SoundData.Name.Cicadas1, SoundData.Name.Cicadas2, SoundData.Name.Cicadas3 }, maxPitchVariation: 0.3f, volume: 0.7f, isLooped: true);
+
+                        AmbientSound ambientSound = new AmbientSound(name: templateName, world: world, id: id, allowedFields: allowedFields, allowedDensity: allowedDensity, readableName: "ambient noon cicadas sound", description: "Ambient sound for cicadas at noon.", sound: sound, playDelay: 0, visible: Preferences.debugShowSounds, partOfDayList: new List<IslandClock.PartOfDay> { IslandClock.PartOfDay.Noon });
+
+                        ambientSound.sprite.color = Color.Green;
 
                         return ambientSound;
                     }

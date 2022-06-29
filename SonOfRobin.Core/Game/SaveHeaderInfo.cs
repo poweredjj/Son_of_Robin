@@ -75,7 +75,7 @@ namespace SonOfRobin
                     this.seed = (int)headerData["seed"];
                     this.width = (int)headerData["width"];
                     this.height = (int)headerData["height"];
-                    this.frozenClock = new IslandClock(frozenUpdate: (int)headerData["currentUpdate"]);
+                    this.frozenClock = new IslandClock(elapsedUpdates: (int)headerData["clockTimeElapsed"]);
                     this.timePlayed = (TimeSpan)headerData["TimePlayed"];
                     this.playerFemale = (bool)headerData["playerFemale"];
                 }

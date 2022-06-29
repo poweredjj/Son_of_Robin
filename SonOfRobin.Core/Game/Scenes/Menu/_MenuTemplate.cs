@@ -375,12 +375,12 @@ namespace SonOfRobin
                         var restartConfirmationData = new Dictionary<string, Object> { { "question", "Restart this island?" }, { "taskName", Scheduler.TaskName.RestartWorld }, { "executeHelper", World.GetTopWorld() } };
                         new Invoker(menu: menu, name: "restart this island", taskName: Scheduler.TaskName.OpenConfirmationMenu, executeHelper: restartConfirmationData);
 
-                        var returnConfirmationData = new Dictionary<string, Object> { { "question", "Do you really want to exit?" }, { "taskName", Scheduler.TaskName.ReturnToMainMenu }, { "executeHelper", null } };
+                        var returnConfirmationData = new Dictionary<string, Object> { { "question", "Do you really want to exit? You will lose unsaved progress." }, { "taskName", Scheduler.TaskName.ReturnToMainMenu }, { "executeHelper", null } };
                         new Invoker(menu: menu, name: "return to main menu", taskName: Scheduler.TaskName.OpenConfirmationMenu, executeHelper: returnConfirmationData);
 
                         if (SonOfRobinGame.platform != Platform.Mobile)
                         {
-                            var quitConfirmationData = new Dictionary<string, Object> { { "question", "Do you really want to quit?" }, { "taskName", Scheduler.TaskName.QuitGame }, { "executeHelper", null } };
+                            var quitConfirmationData = new Dictionary<string, Object> { { "question", "Do you really want to quit? You will lose unsaved progress." }, { "taskName", Scheduler.TaskName.QuitGame }, { "executeHelper", null } };
                             new Invoker(menu: menu, name: "quit game", taskName: Scheduler.TaskName.OpenConfirmationMenu, executeHelper: quitConfirmationData);
                         }
                         return menu;
@@ -448,7 +448,7 @@ namespace SonOfRobin
                         if (world == null) return menu;
                         var pieceCounterDict = new Dictionary<PieceTemplate.Name, int> { };
 
-                        foreach (PieceTemplate.Name pieceName in (PieceTemplate.Name[])Enum.GetValues(typeof(PieceTemplate.Name)))
+                        foreach (PieceTemplate.Name pieceName in PieceTemplate.allNames)
                         { pieceCounterDict[pieceName] = 0; }
 
                         foreach (Sprite sprite in world.grid.GetAllSprites(Cell.Group.All))
@@ -493,7 +493,12 @@ namespace SonOfRobin
                         new Selector(menu: menu, name: "disable player panel", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugDisablePlayerPanel");
                         new Selector(menu: menu, name: "show all stat bars", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugShowStatBars");
                         new Selector(menu: menu, name: "show states", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugShowStates");
-                        if (world != null) new Invoker(menu: menu, name: "check incorrect pieces", taskName: Scheduler.TaskName.CheckForIncorrectPieces);
+                        if (world != null)
+                        {
+                            new Invoker(menu: menu, name: "show crafted pieces", taskName: Scheduler.TaskName.ShowCraftStats, executeHelper: false);
+                            new Invoker(menu: menu, name: "show used ingredients", taskName: Scheduler.TaskName.ShowCraftStats, executeHelper: true);
+                            new Invoker(menu: menu, name: "check incorrect pieces", taskName: Scheduler.TaskName.CheckForIncorrectPieces);
+                        }
 
                         new Separator(menu: menu, name: "", isEmpty: true);
                         new Invoker(menu: menu, name: "return", closesMenu: true, taskName: Scheduler.TaskName.Empty);
@@ -553,8 +558,7 @@ namespace SonOfRobin
                         {
                             if (world.hintEngine.shownTutorials.Contains(tutorial.type))
                             {
-                                var tutorialData = new Dictionary<string, Object> { { "tutorial", tutorial.type }, { "menuMode", true } };
-                                new Invoker(menu: menu, name: tutorial.name, taskName: Scheduler.TaskName.ShowTutorial, executeHelper: tutorialData);
+                                new Invoker(menu: menu, name: tutorial.name, taskName: Scheduler.TaskName.ShowTutorialInMenu, executeHelper: tutorial.type);
                             }
                         }
 
@@ -577,7 +581,7 @@ namespace SonOfRobin
 
             if (player.AreEnemiesNearby && !player.IsActiveFireplaceNearby)
             {
-                new TextWindow(text: "I can't craft with enemies nearby.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1, closingTask: Scheduler.TaskName.ShowTutorial, closingTaskHelper: new Dictionary<string, Object> { { "tutorial", Tutorials.Type.KeepingAnimalsAway }, { "menuMode", false } });
+                new TextWindow(text: "I can't craft with enemies nearby.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1, closingTask: Scheduler.TaskName.ShowTutorialOnTheField, closingTaskHelper: new Dictionary<string, Object> { { "tutorial", Tutorials.Type.KeepingAnimalsAway }, { "world", world }, { "ignoreDelay", true } });
 
                 return null;
             }
@@ -588,7 +592,7 @@ namespace SonOfRobin
                 return null;
             }
 
-            Tutorials.ShowTutorial(type: Tutorials.Type.Craft, ignoreIfShown: true, ignoreDelay: true, menuMode: true);
+            Tutorials.ShowTutorialOnTheField(type: Tutorials.Type.Craft, world: World.GetTopWorld(), ignoreDelay: true);
 
             Menu menu = new Menu(templateName: templateName, name: label, blocksUpdatesBelow: true, canBeClosedManually: true, layout: SonOfRobinGame.platform == Platform.Mobile ? Menu.Layout.Right : Menu.Layout.Left, alwaysShowSelectedEntry: true, templateExecuteHelper: null);
             menu.bgColor = Color.LemonChiffon * 0.5f;
@@ -655,7 +659,7 @@ namespace SonOfRobin
             new Separator(menu: menu, name: "", isEmpty: true);
 
             var saveData = new Dictionary<string, Object> { { "gamepad", gamepad }, { "openMenuIfNotValid", false } };
-            new Invoker(menu: menu, name: "save", taskName: Scheduler.TaskName.SaveControls, executeHelper: saveData, rebuildsMenu: true);
+            new Invoker(menu: menu, name: "save", taskName: Scheduler.TaskName.SaveControls, executeHelper: saveData, rebuildsMenu: true, sound: SoundData.Name.Empty, defaultSound: false);
             var resetData = new Dictionary<string, Object> { { "gamepad", gamepad }, { "useDefault", true } };
             new Invoker(menu: menu, name: "reset", taskName: Scheduler.TaskName.ResetControls, executeHelper: resetData, rebuildsMenu: true, infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: "set all controls to default", color: Color.White, scale: 1f) });
 

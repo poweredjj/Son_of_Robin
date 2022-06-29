@@ -15,8 +15,8 @@ namespace SonOfRobin
 
     public class SonOfRobinGame : Game
     {
-        public static readonly float version = 8.9f;
-        public static readonly DateTime lastChanged = new DateTime(2022, 06, 05);
+        public static readonly float version = 9.0f;
+        public static readonly DateTime lastChanged = new DateTime(2022, 06, 09);
 
         public static ContentManager content;
 
@@ -146,8 +146,6 @@ namespace SonOfRobin
             KeyboardScheme.LoadAllKeys();
             InputMapper.RebuildMappings();
 
-            Preferences.ControlTipsScheme = Preferences.ControlTipsScheme; // to load default control tips
-
             new SolidColor(color: Color.RoyalBlue, viewOpacity: 1f, clearScreen: true);
             new MessageLog();
             Preferences.DebugMode = Preferences.DebugMode; // to create debugMode scenes
@@ -155,6 +153,8 @@ namespace SonOfRobin
             progressBar = new InfoWindow(bgColor: Color.SeaGreen, bgOpacity: 0.85f);
             PieceInfo.CreateAllInfo();
             Craft.PopulateAllCategories();
+
+            Preferences.ControlTipsScheme = Preferences.ControlTipsScheme; // to load default control tips
 
             KeepScreenOn = true;
 

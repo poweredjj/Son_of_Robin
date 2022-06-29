@@ -166,7 +166,7 @@ namespace SonOfRobin
 
             if (storedIngredients.Count == 0 && storedFuel.Count == 0)
             {
-                new TextWindow(text: "I need at least one | | | ingredient and | fuel to cook.", imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.MeatRaw].texture, AnimData.framesForPkgs[AnimData.PkgName.Tomato].texture, AnimData.framesForPkgs[AnimData.PkgName.Clam].texture, AnimData.framesForPkgs[AnimData.PkgName.WoodLogRegular].texture }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true);
+                new TextWindow(text: "I need at least one | | | ingredient and | fuel to cook.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.MeatRaw), PieceInfo.GetTexture(PieceTemplate.Name.Tomato), PieceInfo.GetTexture(PieceTemplate.Name.Clam), PieceInfo.GetTexture(PieceTemplate.Name.WoodLogRegular) }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true);
                 return;
             }
 
@@ -178,7 +178,7 @@ namespace SonOfRobin
                 foreach (PieceTemplate.Name fuel in fuelNames)
                 {
                     fuelMarkers += "| ";
-                    imageList.Add(PieceInfo.GetInfo(fuel).frame.texture);
+                    imageList.Add(PieceInfo.GetInfo(fuel).texture);
                 }
 
                 new TextWindow(text: $"I don't have any {fuelMarkers} fuel.", imageList: imageList, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true);
@@ -193,7 +193,7 @@ namespace SonOfRobin
                 foreach (PieceTemplate.Name ingredient in ingredientNames)
                 {
                     ingredientMarkers += "| ";
-                    imageList.Add(PieceInfo.GetInfo(ingredient).frame.texture);
+                    imageList.Add(PieceInfo.GetInfo(ingredient).texture);
                 }
 
                 new TextWindow(text: $"I don't have any {ingredientMarkers} ingredients.", imageList: imageList, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true);

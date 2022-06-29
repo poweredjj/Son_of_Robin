@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -7,6 +8,7 @@ namespace SonOfRobin
     public class PieceInfo
     {
         private static readonly Dictionary<PieceTemplate.Name, Info> info = new Dictionary<PieceTemplate.Name, Info> { };
+        public static List<Info> AllInfo { get { return info.Values.ToList(); } }
         public class Info
         {
             public readonly PieceTemplate.Name name;
@@ -21,6 +23,7 @@ namespace SonOfRobin
             public readonly bool canBePickedUp;
             public List<BuffEngine.Buff> buffList;
             public readonly AnimFrame frame;
+            public readonly Texture2D texture;
             public List<PieceTemplate.Name> eats;
             public List<PieceTemplate.Name> isEatenBy;
             public readonly bool hasFruit;
@@ -53,6 +56,7 @@ namespace SonOfRobin
                 this.stackSize = piece.stackSize;
                 this.buffList = piece.buffList;
                 this.frame = piece.sprite.frame;
+                this.texture = this.frame.texture;
                 if (piece.GetType() == typeof(Animal)) this.eats = ((Animal)piece).eats;
                 this.convertsWhenUsed = false;
                 if (piece.GetType() == typeof(Potion))
@@ -80,11 +84,18 @@ namespace SonOfRobin
             return info[pieceName];
         }
 
+        public static Texture2D GetTexture(PieceTemplate.Name pieceName)
+        {
+            // to simplify frequently used query
+
+            return info[pieceName].texture;
+        }
+
         public static void CreateAllInfo()
         {
             // creates one instance of every piece type - to get required info out of it
 
-            foreach (PieceTemplate.Name name in (PieceTemplate.Name[])Enum.GetValues(typeof(PieceTemplate.Name)))
+            foreach (PieceTemplate.Name name in PieceTemplate.allNames)
             {
                 BoardPiece piece = PieceTemplate.Create(templateName: name, world: null);
                 info[name] = new Info(piece: piece);

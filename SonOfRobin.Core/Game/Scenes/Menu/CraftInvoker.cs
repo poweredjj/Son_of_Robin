@@ -59,6 +59,7 @@ namespace SonOfRobin
         public override void Draw(bool active, string textOverride = null)
         {
             bool canBeCrafted = recipe.CheckIfStorageContainsAllIngredients(storageList);
+            bool hasBeenCrafted = World.GetTopWorld().craftStats.HasBeenCrafted(recipe);
 
             if (active)
             {
@@ -155,6 +156,18 @@ namespace SonOfRobin
                 Inventory.DrawQuantity(pieceCount: drawParams.counter, destRect: quantityRect, opacity: this.menu.viewParams.drawOpacity, ignoreSingle: false);
 
                 rectX += rectWidth + margin;
+
+                // drawing "new" icon
+                if (!hasBeenCrafted)
+                {
+                    int rectSize = (int)(outerEntryRect.Height * 0.6f);
+                    int rectOffset = (int)(rectSize * 0.2f);
+
+                    Rectangle newRect = new Rectangle(x: outerEntryRect.X - rectOffset, y: outerEntryRect.Y - rectOffset, width: (int)(outerEntryRect.Height * 0.6f), height: (int)(outerEntryRect.Height * 0.6f));
+                    Texture2D newIconTexture = AnimData.framesForPkgs[AnimData.PkgName.NewIcon].texture;
+
+                    Helpers.DrawTextureInsideRect(texture: newIconTexture, rectangle: newRect, color: Color.White * this.menu.viewParams.Opacity, alignX: Helpers.AlignX.Left, alignY: Helpers.AlignY.Top);
+                }
             }
         }
         private void UpdateInfoText()

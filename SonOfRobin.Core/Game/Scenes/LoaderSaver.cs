@@ -262,11 +262,14 @@ namespace SonOfRobin
                     { "resDivider", this.world.resDivider },
                     { "currentFrame", this.world.currentFrame },
                     { "currentUpdate", this.world.currentUpdate },
+                    { "clockTimeElapsed", this.world.islandClock.elapsedUpdates },
                     { "TimePlayed", this.world.TimePlayed },
                     { "MapEnabled", this.world.MapEnabled },
                     { "realDateTime", DateTime.Now },
                     { "doNotCreatePiecesList", this.world.doNotCreatePiecesList },
                     { "discoveredRecipesForPieces", this.world.discoveredRecipesForPieces },
+                    { "stateMachineTypesManager", this.world.stateMachineTypesManager.Serialize() },
+                    { "craftStats", this.world.craftStats.Serialize() },
                     { "saveVersion", SaveHeaderManager.saveVersion },
             };
 
@@ -395,7 +398,11 @@ namespace SonOfRobin
                 return;
             }
 
-            if (this.showSavedMessage) new TextWindow(text: "Game has been saved.", textColor: Color.White, bgColor: Color.DarkGreen, useTransition: false, animate: false);
+            if (this.showSavedMessage)
+            {
+                new TextWindow(text: "Game has been saved.", textColor: Color.White, bgColor: Color.DarkGreen, useTransition: false, animate: false);
+                Sound.QuickPlay(name: SoundData.Name.Ding2, volume: 1f);
+            }
             MessageLog.AddMessage(msgType: MsgType.User, message: $"Game saved in slot {saveSlotName} (time elapsed {this.TimeElapsed}s).", color: Color.LightBlue);
 
             this.world.lastSaved = DateTime.Now;

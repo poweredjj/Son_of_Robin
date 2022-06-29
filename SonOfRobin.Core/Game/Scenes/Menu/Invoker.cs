@@ -14,14 +14,14 @@ namespace SonOfRobin
         public readonly int taskDelay;
         public override string DisplayedText { get { return this.name; } }
 
-        public Invoker(Menu menu, string name, Scheduler.TaskName taskName, Object executeHelper = null, int taskDelay = 0, bool closesMenu = false, bool rebuildsMenu = false, List<InfoWindow.TextEntry> infoTextList = null, SoundData.Name sound = SoundData.Name.Empty) : base(menu: menu, name: name, rebuildsMenu: rebuildsMenu, infoTextList: infoTextList)
+        public Invoker(Menu menu, string name, Scheduler.TaskName taskName, Object executeHelper = null, int taskDelay = 0, bool closesMenu = false, bool rebuildsMenu = false, List<InfoWindow.TextEntry> infoTextList = null, SoundData.Name sound = SoundData.Name.Empty, bool defaultSound = true) : base(menu: menu, name: name, rebuildsMenu: rebuildsMenu, infoTextList: infoTextList)
         {
             this.taskName = taskName;
             this.taskDelay = taskDelay;
             this.executeHelper = executeHelper;
             this.closesMenu = closesMenu;
             this.rectColor = Color.LightSlateGray;
-            this.soundInvoke = sound == SoundData.Name.Empty ? this.menu.soundInvoke : new Sound(sound);
+            this.soundInvoke = defaultSound || sound != SoundData.Name.Empty ? this.menu.soundInvoke : new Sound(sound);
         }
 
         public override void Invoke()

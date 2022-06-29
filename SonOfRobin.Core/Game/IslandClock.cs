@@ -10,20 +10,20 @@ namespace SonOfRobin
         public static readonly Dictionary<int, PartOfDay> partsOfDayByEndingTime = new Dictionary<int, PartOfDay>
         {
             // must be sorted from lowest to highest values
-            {4, PartOfDay.Night},
-            {11, PartOfDay.Morning},
-            {14, PartOfDay.Noon},
-            {19, PartOfDay.Evening},
-            {24, PartOfDay.Night},
+            { 4, PartOfDay.Night },
+            { 11, PartOfDay.Morning },
+            { 14, PartOfDay.Noon },
+            { 19, PartOfDay.Evening },
+            { 24, PartOfDay.Night },
         };
 
         public static readonly TimeSpan startTimeOffset = TimeSpan.FromHours(7); // 7 - to start the game in the morning, not at midnight
         public static readonly DateTime startingDate = new DateTime(year: 2020, month: 1, day: 1, hour: 0, minute: 0, second: 0) + startTimeOffset;
-        private readonly World world;
-        private readonly int frozenUpdate;
-        private int CurrentUpdate { get { return this.world != null ? this.world.currentUpdate : this.frozenUpdate; } }
+
+        public int elapsedUpdates;
+        private bool isPaused;
         public TimeSpan IslandTimeElapsed
-        { get { return TimeSpan.FromSeconds(this.CurrentUpdate * 1.5) + startTimeOffset; } }  // * 1.5
+        { get { return TimeSpan.FromSeconds(this.elapsedUpdates * 1.5) + startTimeOffset; } }  // * 1.5
         public DateTime IslandDateTime
         { get { return startingDate + this.IslandTimeElapsed - startTimeOffset; } }
 
@@ -72,15 +72,21 @@ namespace SonOfRobin
             }
         }
 
-        public IslandClock(World world)
+        public IslandClock(int elapsedUpdates)
         {
-            // Normal use - for continous time tracking.
-            this.world = world;
+            this.elapsedUpdates = 0;
+            this.isPaused = false;
         }
-        public IslandClock(int frozenUpdate)
+
+        public void Pause()
+        { this.isPaused = true; }
+
+        public void Resume()
+        { this.isPaused = false; }
+
+        public void Advance()
         {
-            // Alternative use - to convert a single currentUpdate value.
-            this.frozenUpdate = frozenUpdate;
+            if (!this.isPaused) this.elapsedUpdates++;
         }
     }
 }

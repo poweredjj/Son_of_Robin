@@ -2246,6 +2246,18 @@
 /processorParam:TextureFormat=Color
 /build:gfx/mv_blacksmith_by_schwarzenacht_dapf6ek.png
 
+#begin gfx/new.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/new.png
+
 #begin gfx/NicePng_pine-tree-clipart-png_1446450.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -3752,6 +3764,12 @@
 /processorParam:Quality=Best
 /build:sound/114201__edgardedition__glassthud9.ogg
 
+#begin sound/135193__felix-blume__wind-blowing-in-the-bush-on-the-top-of-kitt-peak-mountain.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sound/135193__felix-blume__wind-blowing-in-the-bush-on-the-top-of-kitt-peak-mountain.ogg
+
 #begin sound/139952__ecfike__a-tree-falling-down.ogg
 /importer:OggImporter
 /processor:SoundEffectProcessor
@@ -3974,6 +3992,12 @@
 /processorParam:Quality=Best
 /build:sound/321263__rhodesmas__coins-purchase-01.ogg
 
+#begin sound/321591__macdaddyno1__japanese-cicada.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sound/321591__macdaddyno1__japanese-cicada.ogg
+
 #begin sound/342749__rhodesmas__notification-01.ogg
 /importer:OggImporter
 /processor:SoundEffectProcessor
@@ -4070,6 +4094,12 @@
 /processorParam:Quality=Best
 /build:sound/391947__ssierra1202__chest-openning-crack.ogg
 
+#begin sound/400096__harrietniamh__cicadas.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sound/400096__harrietniamh__cicadas.ogg
+
 #begin sound/400641__lampeight__bush-weed-grass-cut-prune-move-1.ogg
 /importer:OggImporter
 /processor:SoundEffectProcessor
@@ -4117,6 +4147,12 @@
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:sound/406048__inspectorj__hammering-nails-close-a.ogg
+
+#begin sound/406243__stubb__typewriter-ding-near-mono.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sound/406243__stubb__typewriter-ding-near-mono.ogg
 
 #begin sound/411790__inspectorj__door-wooden-close-a-h4n.ogg
 /importer:OggImporter
@@ -4262,6 +4298,12 @@
 /processorParam:Quality=Best
 /build:sound/485076__inspectorj__heartbeat-regular-single-01-01-loop.ogg
 
+#begin sound/486628__nanisia__japanese-summer-cicadas.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sound/486628__nanisia__japanese-summer-cicadas.ogg
+
 #begin sound/488378__wobesound__harvest-sounds-1.ogg
 /importer:OggImporter
 /processor:SoundEffectProcessor
@@ -4285,6 +4327,12 @@
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:sound/488393__wobesound__planting-sounds.ogg
+
+#begin sound/489917__falcospizaetus__gasps02.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sound/489917__falcospizaetus__gasps02.ogg
 
 #begin sound/490556__paveroux__bow-drawn.ogg
 /importer:OggImporter
@@ -4747,4 +4795,10 @@
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:sound/87572__huluvu42__platzender-kopf-nachschlag.ogg
+
+#begin sound/95567__kuroseishin__breathing-female.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sound/95567__kuroseishin__breathing-female.ogg
 

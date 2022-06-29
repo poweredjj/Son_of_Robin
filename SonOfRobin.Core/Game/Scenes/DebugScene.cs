@@ -177,14 +177,6 @@ namespace SonOfRobin
                 }
             }
 
-            if (Keyboard.HasBeenPressed(Keys.C))
-            {
-                if (world == null) return;
-
-                if (world.bulletTimeMultiplier == 1) world.bulletTimeMultiplier = 3;
-                else world.bulletTimeMultiplier = 1;
-            }
-
             if (Keyboard.HasBeenPressed(Keys.B) || VirtButton.HasButtonBeenPressed(VButName.DebugPlayManySounds))
             {
                 for (int i = 0; i < 256; i++)

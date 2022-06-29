@@ -17,6 +17,8 @@ namespace SonOfRobin
             PlayerControlledSleep,
             PlayerControlledBuilding,
             PlayerControlledGhosting,
+            PlayerControlledByCinematic,
+
             PlantGrowthAndReproduction,
 
             AnimalWalkAround,
@@ -83,6 +85,7 @@ namespace SonOfRobin
         public readonly string readableName;
         public readonly string description;
         public readonly bool serialize;
+        public bool canBeHit;
 
         public virtual bool ShowStatBars { get { return this.world.currentUpdate < this.showStatBarsTillFrame; } }
         public bool AreEnemiesNearby
@@ -240,6 +243,7 @@ namespace SonOfRobin
             if (this.yield == null && Yield.antiCraftRecipes.ContainsKey(this.name)) this.yield = Yield.antiCraftRecipes[this.name].ConvertToYield();
             if (this.yield != null) this.yield.AddPiece(this);
             if (this.appearDebris != null) this.appearDebris.AddPiece(this);
+            this.canBeHit = true;
         }
 
         public bool PlaceOnBoard(Vector2 position, bool addPlannedDestruction = true, bool addToStateMachines = true, bool ignoreCollisions = false, bool precisePlacement = false, bool closestFreeSpot = false, int minDistanceOverride = -1, int maxDistanceOverride = -1, bool ignoreDensity = false)
@@ -444,6 +448,8 @@ namespace SonOfRobin
 
             if (this.ProcessPassiveMovement()) return; // passive movement blocks the state machine until the movement stops
 
+            if (!this.world.stateMachineTypesManager.CanBeProcessed(this)) return;
+
             if (!this.alive)
             {
                 this.RemoveFromStateMachines();
@@ -548,6 +554,12 @@ namespace SonOfRobin
                         return;
                     }
 
+                case State.PlayerControlledByCinematic:
+                    {
+                        this.SM_PlayerControlledByCinematic();
+                        return;
+                    }
+
                 case State.FireplaceBurn:
                     {
                         this.SM_FireplaceBurn();
@@ -636,6 +648,8 @@ namespace SonOfRobin
         public virtual void SM_PlayerControlledBuilding()
         { throw new DivideByZeroException("This method should not be executed."); }
         public virtual void SM_PlayerControlledGhosting()
+        { throw new DivideByZeroException("This method should not be executed."); }
+        public virtual void SM_PlayerControlledByCinematic()
         { throw new DivideByZeroException("This method should not be executed."); }
         public virtual void SM_FireplaceBurn()
         { throw new DivideByZeroException("This method should not be executed."); }

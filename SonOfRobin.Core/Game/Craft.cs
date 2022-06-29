@@ -12,6 +12,9 @@ namespace SonOfRobin
 
         public class Recipe
         {
+            private static readonly Dictionary<string, Recipe> recipeByID = new Dictionary<string, Recipe>();
+
+            public readonly string id;
             public readonly PieceTemplate.Name pieceToCreate;
             public readonly int amountToCreate;
             public readonly Dictionary<PieceTemplate.Name, byte> ingredients;
@@ -23,11 +26,20 @@ namespace SonOfRobin
             {
                 this.pieceToCreate = pieceToCreate;
                 this.amountToCreate = amountToCreate;
+                this.id = $"{this.pieceToCreate}_{this.amountToCreate}";
                 this.ingredients = ingredients;
                 this.isHidden = isHidden;
                 this.unlocksWhenCrafted = unlocksWhenCrafted == null ? new List<PieceTemplate.Name> { } : unlocksWhenCrafted;
                 this.isReversible = isReversible;
                 if (this.isReversible) Yield.antiCraftRecipes[this.pieceToCreate] = this;
+
+                if (recipeByID.ContainsKey(this.id)) throw new ArgumentException($"Recipe with ID {this.id} has already been added.");
+                recipeByID[this.id] = this;
+            }
+
+            public static Recipe GetRecipeByID(string id)
+            {
+                return recipeByID[id];
             }
 
             public Yield ConvertToYield()
@@ -137,6 +149,8 @@ namespace SonOfRobin
 
                 // crafting
 
+                world.craftStats.AddRecipe(recipe: this, craftCount: 1);
+
                 PieceStorage.DestroySpecifiedPiecesInMultipleStorages(storageList: storagesToTakeFrom, quantityByPiece: this.ingredients);
 
                 if (canBePickedUp)
@@ -169,6 +183,8 @@ namespace SonOfRobin
                     BoardPiece piece = PieceTemplate.CreateAndPlaceOnBoard(templateName: this.pieceToCreate, world: world, position: player.simulatedPieceToBuild.sprite.position, ignoreCollisions: true);
                     craftedPieces.Add(piece);
 
+                    piece.canBeHit = false; // to protect crafted item from accidental player hit
+
                     if (!piece.sprite.IsOnBoard) throw new ArgumentException($"Piece has not been placed correctly on the board - {piece.name}.");
 
                     if (piece.GetType() == typeof(Plant))
@@ -196,8 +212,10 @@ namespace SonOfRobin
 
                 var taskChain = new List<Object>();
 
+                SoundData.Name soundName = !pieceInfo.canBePickedUp && pieceInfo.type != typeof(Plant) ? SoundData.Name.Ding1 : SoundData.Name.Invoke;
+
                 taskChain.Add(new HintMessage(text: message, boxType: HintMessage.BoxType.GreenBox, delay: 0, blockInput: false, useTransition: true,
-                    imageList: new List<Texture2D> { PieceInfo.GetInfo(this.pieceToCreate).frame.texture }, sound: SoundData.Name.Ding).ConvertToTask());
+                    imageList: new List<Texture2D> { PieceInfo.GetInfo(this.pieceToCreate).texture }, sound: soundName).ConvertToTask());
 
                 HintEngine hintEngine = world.hintEngine;
 
@@ -227,13 +245,19 @@ namespace SonOfRobin
                     {
                         PieceInfo.Info unlockedPieceInfo = PieceInfo.GetInfo(name);
                         unlockedRecipesMessage += $"\n|  {unlockedPieceInfo.readableName}";
-                        imageList.Add(unlockedPieceInfo.frame.texture);
+                        imageList.Add(unlockedPieceInfo.texture);
                     }
 
                     taskChain.Add(new HintMessage(text: unlockedRecipesMessage, imageList: imageList, boxType: HintMessage.BoxType.LightBlueBox, delay: 0, blockInput: false, animate: true, useTransition: true, sound: SoundData.Name.Notification1).ConvertToTask());
                 }
 
-                if (pieceInfo.canBePickedUp) taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CheckForPieceHints, delay: 0, storeForLaterUse: true));
+                if (!pieceInfo.canBePickedUp)
+                {
+                    taskChain.Insert(0, new Scheduler.Task(taskName: Scheduler.TaskName.TempoStop, delay: 0, executeHelper: null, storeForLaterUse: true));
+                    taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.TempoPlay, delay: 0, executeHelper: null, storeForLaterUse: true));
+                }
+
+                taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CheckForPieceHints, delay: 0, storeForLaterUse: true));
 
                 new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteTaskChain, executeHelper: taskChain);
             }
@@ -289,7 +313,7 @@ namespace SonOfRobin
 
                     new Recipe(pieceToCreate: PieceTemplate.Name.WorkshopEssential, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodLogRegular, 6 } }, isReversible: true, unlocksWhenCrafted: new List<PieceTemplate.Name> {PieceTemplate.Name.WorkshopBasic }),
 
-                    new Recipe(pieceToCreate: PieceTemplate.Name.WorkshopBasic, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodPlank, 40 }, { PieceTemplate.Name.WoodLogHard, 2 }, { PieceTemplate.Name.Stone, 10 }, { PieceTemplate.Name.Granite, 2 } }, isReversible: true, isHidden: true, unlocksWhenCrafted: new List<PieceTemplate.Name> { PieceTemplate.Name.WorkshopAdvanced, PieceTemplate.Name.Furnace, PieceTemplate.Name.HotPlate }),
+                    new Recipe(pieceToCreate: PieceTemplate.Name.WorkshopBasic, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodPlank, 20 }, { PieceTemplate.Name.WoodLogHard, 4 }, { PieceTemplate.Name.Stone, 5 }, { PieceTemplate.Name.Granite, 2 } }, isReversible: true, isHidden: true, unlocksWhenCrafted: new List<PieceTemplate.Name> { PieceTemplate.Name.WorkshopAdvanced, PieceTemplate.Name.Furnace, PieceTemplate.Name.HotPlate }),
 
                     new Recipe(pieceToCreate: PieceTemplate.Name.WorkshopAdvanced, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodPlank, 12 },  { PieceTemplate.Name.Nail, 30 },  { PieceTemplate.Name.IronPlate, 2 } }, isReversible: true, isHidden: true, unlocksWhenCrafted: new List<PieceTemplate.Name> {PieceTemplate.Name.WorkshopMaster, PieceTemplate.Name.WorkshopAlchemy }),
 

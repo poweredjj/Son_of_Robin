@@ -129,31 +129,35 @@ namespace SonOfRobin
             {
                 cineMode = value;
 
-                var taskChain = new List<Object>();
-
                 if (cineMode)
                 {
                     this.touchLayout = TouchLayout.Empty; // CineSkip should not be used here, because World class cannot execute the skip properly
                     this.tipsLayout = ControlTips.TipsLayout.Empty;
+                    this.InputType = InputTypes.None;
 
-                    taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ChangeSceneInputType, delay: 0, executeHelper: new Dictionary<string, Object> { { "scene", this }, { "inputType", InputTypes.None } }, storeForLaterUse: true));
-                    taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.TempoStop, delay: 0, executeHelper: null, storeForLaterUse: true));
+                    new Scheduler.Task(taskName: Scheduler.TaskName.TempoStop, delay: 0, executeHelper: null);
+                    this.stateMachineTypesManager.SetOnlyTheseTypes(enabledTypes: new List<Type> { typeof(Player), typeof(AmbientSound) }, everyFrame: true, nthFrame: true);
+
+                    this.player.activeState = BoardPiece.State.PlayerControlledByCinematic;
+                    this.player.pointWalkTarget = Vector2.Zero;
+                    this.player.sprite.CharacterStand(); // to avoid playing walk animation while standing
                 }
                 else
                 {
                     this.touchLayout = TouchLayout.WorldMain;
                     this.tipsLayout = ControlTips.TipsLayout.WorldMain;
+                    this.InputType = InputTypes.Normal;
 
-                    taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SolidColorRemoveAll, delay: 0, executeHelper: new Dictionary<string, Object> { { "manager", this.solidColorManager }, { "delay", 10 } }, storeForLaterUse: true));
+                    this.player.activeState = BoardPiece.State.PlayerControlledWalking;
+                    this.player.pointWalkTarget = Vector2.Zero;
 
-                    taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.TempoPlay, delay: 0, executeHelper: null, storeForLaterUse: true));
-                    taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetZoom, delay: 0, executeHelper: new Dictionary<string, Object> { { "zoom", 1f }, { "zoomSpeedMultiplier", 1f } }, storeForLaterUse: true));
-                    taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraTrackPiece, delay: 0, executeHelper: this.player, storeForLaterUse: true));
+                    this.solidColorManager.RemoveAll(0);
 
-                    taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ChangeSceneInputType, delay: 0, executeHelper: new Dictionary<string, Object> { { "scene", this }, { "inputType", Scene.InputTypes.Normal } }, storeForLaterUse: true));
+                    this.camera.SetZoom(zoom: 1f, zoomSpeedMultiplier: 1f);
+                    this.camera.TrackPiece(this.player);
+
+                    new Scheduler.Task(taskName: Scheduler.TaskName.TempoPlay, delay: 0, executeHelper: null);
                 }
-
-                new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteTaskChain, turnOffInputUntilExecution: true, executeHelper: taskChain);
             }
         }
 
@@ -174,6 +178,8 @@ namespace SonOfRobin
         public readonly Map mapSmall;
         public readonly PlayerPanel playerPanel;
         public readonly SolidColorManager solidColorManager;
+        public readonly SMTypesManager stateMachineTypesManager;
+        public readonly CraftStats craftStats;
         private bool mapEnabled;
         public bool MapEnabled
         {
@@ -210,7 +216,6 @@ namespace SonOfRobin
         public int currentFrame;
         public int currentUpdate; // can be used to measure time elapsed on island
         public int updateMultiplier;
-        public int bulletTimeMultiplier; // 1: normal tempo, more: world is slowed down
         public readonly IslandClock islandClock;
         public string debugText;
         public int processedNonPlantsCount;
@@ -250,8 +255,10 @@ namespace SonOfRobin
             get
             {
                 int pieceCount = 0;
-                foreach (PieceTemplate.Name templateName in (PieceTemplate.Name[])Enum.GetValues(typeof(PieceTemplate.Name)))
-                { pieceCount += this.pieceCountByName[templateName]; }
+                foreach (PieceTemplate.Name templateName in PieceTemplate.allNames)
+                {
+                    pieceCount += this.pieceCountByName[templateName];
+                }
                 return pieceCount;
             }
         }
@@ -299,8 +306,7 @@ namespace SonOfRobin
             this.createdTime = DateTime.Now;
             this.TimePlayed = TimeSpan.Zero;
             this.updateMultiplier = 1;
-            this.bulletTimeMultiplier = 1;
-            this.islandClock = new IslandClock(world: this);
+            this.islandClock = new IslandClock(0);
 
             this.noise = new FastNoiseLite(this.seed);
 
@@ -316,8 +322,7 @@ namespace SonOfRobin
             this.creationDataList = PieceCreationData.CreateDataList(addAgressiveAnimals: this.addAgressiveAnimals, maxAnimalsPerName: this.maxAnimalsPerName);
 
             this.pieceCountByName = new Dictionary<PieceTemplate.Name, int>();
-            foreach (PieceTemplate.Name templateName in (PieceTemplate.Name[])Enum.GetValues(typeof(PieceTemplate.Name)))
-            { this.pieceCountByName[templateName] = 0; }
+            foreach (PieceTemplate.Name templateName in PieceTemplate.allNames) this.pieceCountByName[templateName] = 0;
             this.pieceCountByClass = new Dictionary<Type, int> { };
 
             this.trackingQueue = new Dictionary<string, Tracking>();
@@ -349,6 +354,8 @@ namespace SonOfRobin
             this.AddLinkedScene(this.playerPanel);
 
             this.solidColorManager = new SolidColorManager(this);
+            this.stateMachineTypesManager = new SMTypesManager(this);
+            this.craftStats = new CraftStats();
             if (this.demoMode) this.solidColorManager.Add(new SolidColor(color: Color.White, viewOpacity: 0.4f, clearScreen: false, priority: 1));
 
             SonOfRobinGame.game.IsFixedTimeStep = false; // speeds up the creation process
@@ -472,12 +479,15 @@ namespace SonOfRobin
 
             this.currentFrame = (int)headerData["currentFrame"];
             this.currentUpdate = (int)headerData["currentUpdate"];
+            this.islandClock.elapsedUpdates = (int)headerData["clockTimeElapsed"];
             this.TimePlayed = (TimeSpan)headerData["TimePlayed"];
             this.MapEnabled = (bool)headerData["MapEnabled"];
             this.maxAnimalsPerName = (int)headerData["maxAnimalsPerName"];
             this.addAgressiveAnimals = (bool)headerData["addAgressiveAnimals"];
             this.doNotCreatePiecesList = (List<PieceTemplate.Name>)headerData["doNotCreatePiecesList"];
             this.discoveredRecipesForPieces = (List<PieceTemplate.Name>)headerData["discoveredRecipesForPieces"];
+            this.stateMachineTypesManager.Deserialize((Dictionary<string, Object>)headerData["stateMachineTypesManager"]);
+            this.craftStats.Deserialize((Dictionary<string, Object>)headerData["craftStats"]);
 
             // deserializing hints
 
@@ -593,6 +603,8 @@ namespace SonOfRobin
         {
             if (clearDoNotCreateList) doNotCreatePiecesList.Clear();
 
+            if (!initialCreation && !this.CanProcessMorePlantsNow) return false;
+
             Vector2 notReallyUsedPosition = new Vector2(-100, -100); // -100, -100 will be converted to a random position on the map - needed for effective creation of new sprites 
             int minPieceAmount = Math.Max(Convert.ToInt32((long)width * (long)height / 300000 * multiplier), 0); // 300000
 
@@ -623,6 +635,8 @@ namespace SonOfRobin
 
                 for (int i = 0; i < kvp.Value * 5; i++)
                 {
+                    if (!initialCreation && !this.CanProcessMorePlantsNow) return false;
+
                     var newBoardPiece = PieceTemplate.CreateAndPlaceOnBoard(world: this, position: notReallyUsedPosition, templateName: pieceName);
                     if (newBoardPiece.sprite.IsOnBoard)
                     {
@@ -704,19 +718,18 @@ namespace SonOfRobin
 
                 if (this.player != null) this.ProcessOneNonPlant(this.player);
 
-                if (this.currentUpdate % this.bulletTimeMultiplier == 0 && !this.BuildMode)
-                {
-                    this.StateMachinesProcessCameraView();
+                this.StateMachinesProcessCameraView();
 
-                    if (!createMissingPieces)
-                    {
-                        this.StateMachinesProcessNonPlantQueue();
-                        this.plantsProcessing = true;
-                        this.StateMachinesProcessPlantQueue();
-                        this.plantsProcessing = false;
-                    }
+                if (!createMissingPieces)
+                {
+                    this.StateMachinesProcessNonPlantQueue();
+                    this.plantsProcessing = true;
+                    this.StateMachinesProcessPlantQueue();
+                    this.plantsProcessing = false;
                 }
+
                 this.currentUpdate++;
+                this.islandClock.Advance();
             }
         }
 
@@ -971,6 +984,10 @@ namespace SonOfRobin
             this.tipsLayout = ControlTips.TipsLayout.WorldBuild;
             this.player.activeState = BoardPiece.State.PlayerControlledBuilding;
 
+            player.world.stateMachineTypesManager.DisableMultiplier();
+            player.world.stateMachineTypesManager.SetOnlyTheseTypes(enabledTypes: new List<Type> { typeof(Player) }, everyFrame: true, nthFrame: true);
+            this.islandClock.Pause();
+
             Scene craftMenu = GetTopSceneOfType(typeof(Menu));
             craftMenu?.MoveToBottom(); // there is no craft menu if planting
             SonOfRobinGame.hintWindow.TurnOff();
@@ -1025,6 +1042,10 @@ namespace SonOfRobin
             this.tipsLayout = ControlTips.TipsLayout.WorldMain;
             this.player.activeState = BoardPiece.State.PlayerControlledWalking;
 
+            player.world.stateMachineTypesManager.DisableMultiplier();
+            player.world.stateMachineTypesManager.EnableAllTypes(everyFrame: true, nthFrame: true);
+            this.islandClock.Resume();
+
             Scene craftMenu = GetBottomSceneOfType(typeof(Menu));
             if (restoreCraftMenu) craftMenu?.MoveToTop(); // there is no craft menu if planting
             else craftMenu?.Remove();
@@ -1044,7 +1065,9 @@ namespace SonOfRobin
         public void UpdateAllAnims()
         {
             foreach (var sprite in this.camera.GetVisibleSprites(groupName: Cell.Group.Visible, compareWithCameraRect: true))
-            { sprite.UpdateAnimation(); }
+            {
+                if (this.stateMachineTypesManager.CanBeProcessed(sprite.boardPiece)) sprite.UpdateAnimation();
+            }
         }
 
         public void UpdateFogOfWar()
@@ -1093,7 +1116,7 @@ namespace SonOfRobin
 
             if (this.worldCreationInProgress) return;
 
-            // drawing background and sprites
+            // drawing background
             this.grid.DrawBackground(camera: this.camera);
 
             // drawing sprites
