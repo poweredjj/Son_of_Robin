@@ -23,7 +23,7 @@ namespace SonOfRobin
                 this.isEmpty = isEmpty;
                 this.name = name;
                 this.text = text;
-                this.frame = PieceInfo.info[name].frame;
+                this.frame = PieceInfo.GetInfo(name).frame;
                 this.bgColor = bgColor;
                 this.counter = counter;
             }
@@ -34,7 +34,7 @@ namespace SonOfRobin
                 this.isMain = false;
                 this.isEmpty = true;
                 this.name = PieceTemplate.Name.Player;
-                this.frame = PieceInfo.info[name].frame;
+                this.frame = PieceInfo.GetInfo(name).frame;
                 this.text = "";
                 this.bgColor = Color.White;
                 this.counter = 0;
@@ -158,11 +158,11 @@ namespace SonOfRobin
         }
         private void UpdateInfoText()
         {
-            PieceInfo.Info pieceInfo = PieceInfo.info[recipe.pieceToCreate];
+            PieceInfo.Info pieceInfo = PieceInfo.GetInfo(recipe.pieceToCreate);
             bool canBeCrafted = recipe.CheckIfStorageContainsAllIngredients(this.storageList);
 
             var entryList = new List<InfoWindow.TextEntry> {
-                new InfoWindow.TextEntry(frame: PieceInfo.info[recipe.pieceToCreate].frame, text: pieceInfo.readableName, color: Color.White, scale: 1.5f),
+                new InfoWindow.TextEntry(frame: PieceInfo.GetInfo(recipe.pieceToCreate).frame, text: pieceInfo.readableName, color: Color.White, scale: 1.5f),
                 new InfoWindow.TextEntry(text: pieceInfo.description, color: Color.White)};
 
             if (pieceInfo.buffList != null)

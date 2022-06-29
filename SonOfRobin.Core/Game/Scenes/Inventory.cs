@@ -615,6 +615,12 @@ namespace SonOfRobin
             if (this.SwitchToSecondInventoryByTouch()) return;
             if (this.ExitByOutsideTouch()) return;
 
+            if (InputMapper.HasBeenPressed(InputMapper.Action.InvSort))
+            {
+                this.storage.Sort();
+                return;
+            }
+
             if (InputMapper.HasBeenPressed(InputMapper.Action.GlobalConfirm))
             {
                 this.OpenPieceContextMenu();
@@ -638,7 +644,7 @@ namespace SonOfRobin
 
                 List<BoardPiece> pickedUpPieces;
 
-                if ((this.draggedByTouch && !VirtButton.IsButtonDown(VButName.DragSingle)) ||
+                if ((this.draggedByTouch && !VirtButton.IsButtonDown(VButName.InvDragSingle)) ||
                     InputMapper.HasBeenPressed(InputMapper.Action.InvPickStack))
                 {
                     pickedUpPieces = this.storage.RemoveAllPiecesFromSlot(slot: activeSlot);

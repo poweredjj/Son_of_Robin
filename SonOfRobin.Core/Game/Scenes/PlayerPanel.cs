@@ -49,7 +49,22 @@ namespace SonOfRobin
         private int IconWidthHeight { get { return (int)(BarWidth * 0.1f); } }
         private int IconMargin { get { return (int)(BarWidth * 0.03f); } }
         private bool IgnoreUpdateAndDraw
-        { get { return this.world.mapMode == World.MapMode.Big || this.world.CineMode || this.world.SpectatorMode || this.world.player == null; } }
+        {
+            get
+            {
+
+                Scene menuScene = GetTopSceneOfType(typeof(Menu));
+                if (menuScene != null && !menuScene.transManager.HasAnyTransition) return true;
+
+                Scene inventoryScene = GetTopSceneOfType(typeof(Inventory));
+                if (inventoryScene != null && ((Inventory)inventoryScene).type != Inventory.Type.SingleBottom && !inventoryScene.transManager.HasAnyTransition) return true;
+
+                return this.world.mapMode == World.MapMode.Big ||
+                    this.world.CineMode ||
+                    this.world.SpectatorMode ||
+                    this.world.player == null;
+            }
+        }
 
         public PlayerPanel(World world) : base(inputType: InputTypes.None, priority: 1, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty)
         {

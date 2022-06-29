@@ -25,7 +25,7 @@ namespace SonOfRobin
 
         public enum TipsLayout
         {
-            Uninitialized, Empty, Menu, MenuWithoutClosing, Map, InventorySelect, InventoryDrag, PieceContext, TextWindowOk, TextWindowCancel, TextWindowOkCancel, WorldMain, WorldShoot, WorldSleep, WorldSpectator, QuitLoading
+            Uninitialized, Empty, Menu, MenuWithoutClosing, Map, InventorySelect, InventoryDrag, PieceContext, TextWindowOk, TextWindowCancel, TextWindowOkCancel, WorldMain, WorldShoot, WorldSleep, WorldBuild, WorldSpectator, QuitLoading
         }
         public static readonly int tipMargin = 12;
 
@@ -75,6 +75,7 @@ namespace SonOfRobin
                 this.currentLayout == TipsLayout.WorldMain ||
                 this.currentLayout == TipsLayout.WorldShoot ||
                 this.currentLayout == TipsLayout.WorldSpectator ||
+                this.currentLayout == TipsLayout.WorldBuild ||
                 this.currentLayout == TipsLayout.InventorySelect ||
                 this.currentLayout == TipsLayout.InventoryDrag;
 
@@ -236,18 +237,29 @@ namespace SonOfRobin
 
                 case TipsLayout.WorldShoot:
                     {
-                        new ButtonTip(tipCollection: this.tipCollection, text: "menu", textures: InputMapper.GetTextures(InputMapper.Action.WorldPauseMenu));
                         new ButtonTip(tipCollection: this.tipCollection, text: "walk", textures: InputMapper.GetTextures(InputMapper.Action.WorldWalk));
                         var cameraTextures = InputMapper.GetTextures(InputMapper.Action.WorldCameraMove); // there is no camera mapping for keyboard
                         if (cameraTextures.Count > 0) new ButtonTip(tipCollection: this.tipCollection, text: "aim", textures: cameraTextures);
                         new ButtonTip(tipCollection: this.tipCollection, text: "zoom out", textures: InputMapper.GetTextures(InputMapper.Action.WorldCameraZoomOut));
                         new ButtonTip(tipCollection: this.tipCollection, text: "shoot", textures: InputMapper.GetTextures(InputMapper.Action.WorldUseToolbarPiece));
+                        new ButtonTip(tipCollection: this.tipCollection, text: "menu", textures: InputMapper.GetTextures(InputMapper.Action.WorldPauseMenu));
                         break;
                     }
 
                 case TipsLayout.WorldSleep:
                     {
                         new ButtonTip(tipCollection: this.tipCollection, text: "wake up", highlightCoupledObj: world.player, highlightCoupledVarName: "CanWakeNow", textures: InputMapper.GetTextures(InputMapper.Action.GlobalCancelReturnSkip));
+                        break;
+                    }
+
+                case TipsLayout.WorldBuild:
+                    {
+                        new ButtonTip(tipCollection: this.tipCollection, text: "move", textures: InputMapper.GetTextures(InputMapper.Action.WorldWalk));
+                        new ButtonTip(tipCollection: this.tipCollection, text: "zoom out", textures: InputMapper.GetTextures(InputMapper.Action.WorldCameraZoomOut));
+                        new ButtonTip(tipCollection: this.tipCollection, text: "build", textures: InputMapper.GetTextures(InputMapper.Action.GlobalConfirm), isHighlighted: false);
+                        new ButtonTip(tipCollection: this.tipCollection, text: "cancel", textures: InputMapper.GetTextures(InputMapper.Action.GlobalCancelReturnSkip));
+                        new ButtonTip(tipCollection: this.tipCollection, text: "menu", textures: InputMapper.GetTextures(InputMapper.Action.WorldPauseMenu));
+
                         break;
                     }
 
@@ -273,6 +285,7 @@ namespace SonOfRobin
                         new ButtonTip(tipCollection: this.tipCollection, text: "switch", textures: InputMapper.GetTextures(InputMapper.Action.InvSwitch));
                         new ButtonTip(tipCollection: this.tipCollection, text: "pick stack", textures: InputMapper.GetTextures(InputMapper.Action.InvPickStack));
                         new ButtonTip(tipCollection: this.tipCollection, text: "pick one", textures: InputMapper.GetTextures(InputMapper.Action.InvPickOne));
+                        new ButtonTip(tipCollection: this.tipCollection, text: "sort", textures: InputMapper.GetTextures(InputMapper.Action.InvSort));
                         new ButtonTip(tipCollection: this.tipCollection, text: "use", textures: InputMapper.GetTextures(InputMapper.Action.GlobalConfirm));
                         break;
                     }

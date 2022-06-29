@@ -359,7 +359,7 @@ namespace SonOfRobin
                 {
                     if (this.fieldPieces.Contains(piece.name))
                     {
-                        if (!this.fieldPieceHasNotEmptyStorage || piece.pieceStorage?.NotEmptySlotsCount > 0)
+                        if (!this.fieldPieceHasNotEmptyStorage || piece.pieceStorage?.OccupiedSlotsCount > 0)
                         {
                             fieldPieceFound = true;
                             break;

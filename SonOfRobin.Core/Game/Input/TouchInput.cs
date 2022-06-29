@@ -18,6 +18,7 @@ namespace SonOfRobin
         WorldMain,
         WorldShoot,
         WorldSleep,
+        WorldBuild,
         WorldSpectator,
         Inventory,
         Map,
@@ -238,7 +239,8 @@ namespace SonOfRobin
                         float yPos = 0.12f;
 
                         new VirtButton(name: VButName.Return, label: "RETURN", bgColorPressed: Color.LightGreen, bgColorReleased: Color.White, textColor: Color.White, posX0to1: 0.06f, posY0to1: yPos, width0to1: size, height0to1: size);
-                        new VirtButton(name: VButName.DragSingle, label: "DRAG\nSINGLE", bgColorPressed: Color.LightGreen, bgColorReleased: Color.White, textColor: Color.White, posX0to1: 0.94f, posY0to1: yPos, width0to1: size, height0to1: size, switchButton: true);
+                        new VirtButton(name: VButName.InvDragSingle, label: "DRAG\nSINGLE", bgColorPressed: Color.LightGreen, bgColorReleased: Color.White, textColor: Color.White, posX0to1: 0.94f, posY0to1: yPos, width0to1: size, height0to1: size, switchButton: true);
+                        new VirtButton(name: VButName.InvSort, label: "SORT", bgColorPressed: Color.CornflowerBlue, bgColorReleased: Color.White, textColor: Color.White, posX0to1: 0.94f, posY0to1: 0.89f, width0to1: size, height0to1: size);
                         return;
                     }
 
@@ -247,6 +249,28 @@ namespace SonOfRobin
                         showSticks = false;
 
                         new VirtButton(name: VButName.Return, label: "STOP\nREST", bgColorPressed: Color.CornflowerBlue, bgColorReleased: Color.White, textColor: Color.White, posX0to1: 0.94f, posY0to1: 0.32f, width0to1: size, height0to1: size, highlightCoupledObj: world.player, highlightCoupledVarName: "CanWakeNow");
+
+                        return;
+                    }
+
+                case TouchLayout.WorldBuild:
+                    {
+                        showSticks = true;
+
+                        float xShift = 0.09f;
+
+                        float xPos = 0.94f;
+                        float yPos = 0.32f;
+
+                        new VirtButton(name: VButName.ZoomOut, label: "ZOOM\nOUT", bgColorPressed: Color.Orange, bgColorReleased: Color.White, textColor: Color.White, posX0to1: 0.85f, posY0to1: 0.12f, width0to1: size, height0to1: size, switchButton: true, activeCoupledObj: preferences, activeCoupledVarName: "zoomedOut");
+
+                        new VirtButton(name: VButName.Return, label: "CANCEL", bgColorPressed: Color.Red, bgColorReleased: Color.White, textColor: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
+
+                        xPos -= xShift;
+
+                        new VirtButton(name: VButName.Confirm, label: "BUILD", bgColorPressed: Color.LightGreen, bgColorReleased: Color.White, textColor: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size, isHighlighted: false);
+
+                        new VirtButton(name: VButName.PauseMenu, label: "MENU", bgColorPressed: Color.Yellow, bgColorReleased: Color.White, textColor: Color.White, posX0to1: 0.06f, posY0to1: 0.12f, width0to1: size, height0to1: size);
 
                         return;
                     }

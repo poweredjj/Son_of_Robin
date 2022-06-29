@@ -74,7 +74,7 @@ namespace SonOfRobin
 
             if (this.plant.pieceStorage.FindCorrectSlot(piece: fruit) == null)
             {
-                List<StorageSlot> notEmptySlots = this.plant.pieceStorage.NotEmptySlots;
+                List<StorageSlot> notEmptySlots = this.plant.pieceStorage.OccupiedSlots;
                 StorageSlot slot = notEmptySlots[this.plant.world.random.Next(0, notEmptySlots.Count)];
                 this.plant.pieceStorage.RemoveAllPiecesFromSlot(slot: slot, dropToTheGround: true);
             }

@@ -22,14 +22,13 @@ namespace SonOfRobin
         private readonly byte stackLimit;
         public List<PieceTemplate.Name> allowedPieceNames;
         public StorageSlot lastUsedSlot; // last used by Inventory class
-
         public int AllSlotsCount { get { return this.width * this.height; } }
         public int EmptySlotsCount { get { return this.EmptySlots.Count; } }
         public List<StorageSlot> EmptySlots { get { return AllSlots.Where(slot => slot.IsEmpty).ToList(); } }
-        public int NotEmptySlotsCount { get { return this.NotEmptySlots.Count; } }
-        public List<StorageSlot> NotEmptySlots { get { return AllSlots.Where(slot => !slot.IsEmpty).ToList(); } }
         public int FullSlotsCount { get { return this.FullSlots.Count; } }
         public List<StorageSlot> FullSlots { get { return AllSlots.Where(slot => slot.IsFull).ToList(); } }
+        public int NotFullSlotsCount { get { return this.NotFullSlots.Count; } }
+        public List<StorageSlot> NotFullSlots { get { return AllSlots.Where(slot => !slot.IsFull).ToList(); } }
         public int OccupiedSlotsCount { get { return this.OccupiedSlots.Count; } }
         public List<StorageSlot> OccupiedSlots { get { return AllSlots.Where(slot => !slot.IsEmpty).ToList(); } }
 
@@ -247,8 +246,7 @@ namespace SonOfRobin
                     if (!destroyIfFreeSpotNotFound) slot.AddPiece(piece);
                     return;
                 }
-                else
-                { MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{piece.name} has been dropped.", color: Color.White); }
+                else MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{piece.name} has been dropped.", color: Color.White);
 
                 if (!dropAllPieces) return;
             }
@@ -310,10 +308,23 @@ namespace SonOfRobin
             DestroySpecifiedPiecesInMultipleStorages(storageList: new List<PieceStorage> { this }, quantityByPiece: quantityByPiece);
         }
 
+        public static bool StorageListCanFitSpecifiedPieces(List<PieceStorage> storageList, PieceTemplate.Name pieceName, int quantity)
+        {
+            foreach (PieceStorage storage in storageList)
+            {
+                foreach (StorageSlot slot in storage.NotFullSlots)
+                {
+                    quantity -= slot.HowManyPiecesOfNameCanFit(pieceName: pieceName);
+                    if (quantity <= 0) return true;
+                }
+            }
+
+            return false;
+        }
+
         public static void DestroySpecifiedPiecesInMultipleStorages(List<PieceStorage> storageList, Dictionary<PieceTemplate.Name, byte> quantityByPiece, bool keepContainers = true)
         {
             // this method does not check if all pieces are present
-
 
             var quantityLeft = quantityByPiece.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 
@@ -327,10 +338,9 @@ namespace SonOfRobin
                     {
                         while (true)
                         {
-
-                            if (keepContainers && PieceInfo.info[pieceName].convertsWhenUsed)
+                            if (keepContainers && PieceInfo.GetInfo(pieceName).convertsWhenUsed)
                             {
-                                BoardPiece emptyContainter = PieceTemplate.CreateOffBoard(templateName: PieceInfo.info[pieceName].convertsToWhenUsed, world: storage.world);
+                                BoardPiece emptyContainter = PieceTemplate.CreateOffBoard(templateName: PieceInfo.GetInfo(pieceName).convertsToWhenUsed, world: storage.world);
                                 slot.DestroyPieceAndReplaceWithAnother(emptyContainter);
                                 break; // this slot should not contain more items of this kind
                             }
@@ -339,7 +349,6 @@ namespace SonOfRobin
                                 slot.RemoveTopPiece();
                             }
 
-
                             quantityLeft[pieceName] -= 1;
                             if (quantityLeft[pieceName] == 0 || slot.pieceList.Count == 0) break;
                         }
@@ -347,7 +356,7 @@ namespace SonOfRobin
                 }
             }
 
-            Debug.Assert(quantityLeft.Where(kvp => kvp.Value > 0).ToList().Count == 0);
+            if (quantityLeft.Where(kvp => kvp.Value > 0).ToList().Count != 0) throw new ArgumentException("Not all pieces to destroy were found in multiple storages.");
         }
 
         public static bool CheckMultipleStoragesForSpecifiedPieces(List<PieceStorage> storageList, Dictionary<PieceTemplate.Name, byte> quantityByPiece)
@@ -443,6 +452,29 @@ namespace SonOfRobin
             }
 
             return null;
+        }
+
+        public void Sort()
+        {
+            if (this.storageType == StorageType.Equip) return; // equip should not be sorted, to avoid removing and adding buffs
+
+            int pieceCountInitial = this.StoredPiecesCount;
+
+            var allPieces = new List<BoardPiece> { };
+            foreach (StorageSlot slot in this.AllSlots)
+            {
+                allPieces.AddRange(this.RemoveAllPiecesFromSlot(slot: slot, dropToTheGround: false));
+            }
+
+            allPieces = allPieces.OrderBy(piece => piece.readableName).ToList();
+            foreach (BoardPiece piece in allPieces)
+            {
+                this.AddPiece(piece: piece, dropIfDoesNotFit: true, addMovement: true);
+            }
+
+            int pieceCountAfterSort = this.StoredPiecesCount;
+
+            if (pieceCountInitial != pieceCountAfterSort) throw new ArgumentException($"Initial piece count ({pieceCountInitial}) has changed after sorting ({pieceCountAfterSort}).");
         }
 
         public Dictionary<string, Object> Serialize()

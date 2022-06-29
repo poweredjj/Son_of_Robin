@@ -200,7 +200,7 @@ namespace SonOfRobin
 
         private void ShowTopSceneOfSameType()
         {
-            var scene = (Menu)GetTopSceneOfType(this.GetType());
+            var scene = GetTopSceneOfType(this.GetType());
             if (scene != null) scene.drawActive = true;
         }
 
@@ -301,6 +301,13 @@ namespace SonOfRobin
             sceneStack = sceneStack.Where(scene => scene != this).ToList();
             sceneStack.Add(this);
         }
+
+        public void MoveToBottom()
+        {
+            sceneStack = sceneStack.Where(scene => scene != this).ToList();
+            sceneStack.Insert(0, this);
+        }
+
         public void MoveDown()
         { this.MoveUpOrDown(down: true); }
 

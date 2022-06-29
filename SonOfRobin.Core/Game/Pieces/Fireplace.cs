@@ -157,7 +157,7 @@ namespace SonOfRobin
                 animal.aiData.Reset(animal);
                 animal.activeState = State.AnimalFlee;
 
-                if (PieceInfo.info[animal.name].isCarnivorous) this.world.hintEngine.ShowGeneralHint(type: HintEngine.Type.AnimalScaredOfFire, ignoreDelay: true, piece: animal);
+                if (PieceInfo.GetInfo(animal.name).isCarnivorous) this.world.hintEngine.ShowGeneralHint(type: HintEngine.Type.AnimalScaredOfFire, ignoreDelay: true, piece: animal);
             }
         }
 

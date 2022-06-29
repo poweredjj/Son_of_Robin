@@ -38,7 +38,7 @@ namespace SonOfRobin
                     { finalDroppedPieces.Add(new Yield.DroppedPiece(pieceName: kvp.Key, chanceToDrop: 70, maxNumberToDrop: 1)); }
                 }
 
-                BoardPiece.Category category = PieceInfo.info[pieceToCreate].category;
+                BoardPiece.Category category = PieceInfo.GetInfo(pieceToCreate).category;
                 List<Yield.DebrisType> debrisTypeList;
 
                 switch (category)
@@ -85,70 +85,97 @@ namespace SonOfRobin
                 return PieceStorage.CheckMultipleStoragesForSpecifiedPieces(storageList: storageList, quantityByPiece: this.ingredients);
             }
 
-            public bool TryToProducePieces(Player player)
+
+            public void TryToProducePieces(Player player)
             {
-                World world = player.world;
-                Vector2 position = player.sprite.position;
+                // checking if crafting is possible
 
                 var storagesToTakeFrom = player.CraftStorages;
 
                 if (!this.CheckIfStorageContainsAllIngredients(storageList: storagesToTakeFrom))
                 {
-                    new TextWindow(text: "Not enough ingredients.", textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false, blockInputDuration: 30);
+                    new TextWindow(text: "Not enough ingredients.", textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false);
                     MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Not enough ingredients to craft '{this.pieceToCreate}'.");
-                    return false;
+                    return;
                 }
+
+                PieceInfo.Info pieceInfo = PieceInfo.GetInfo(this.pieceToCreate);
+                bool canBePickedUp = pieceInfo.canBePickedUp;
+
+                if (canBePickedUp && !PieceStorage.StorageListCanFitSpecifiedPieces(storageList: storagesToTakeFrom, pieceName: this.pieceToCreate, quantity: this.amountToCreate))
+                {
+                    foreach (PieceStorage storage in storagesToTakeFrom)
+                    {
+                        storage.Sort();
+                    }
+
+                    if (!PieceStorage.StorageListCanFitSpecifiedPieces(storageList: storagesToTakeFrom, pieceName: this.pieceToCreate, quantity: this.amountToCreate))
+                    {
+                        new TextWindow(text: "Not enough inventory space to craft.", textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false);
+                        return;
+                    }
+                }
+
+                // preparing to craft
+
+                World world = player.world;
+
+                if (!canBePickedUp && !world.BuildMode)
+                {
+                    world.EnterBuildMode(recipe: this);
+                    return;
+                }
+
+                // crafting
 
                 PieceStorage.DestroySpecifiedPiecesInMultipleStorages(storageList: storagesToTakeFrom, quantityByPiece: this.ingredients);
 
-                for (int i = 0; i < this.amountToCreate; i++)
+                if (canBePickedUp)
                 {
-                    BoardPiece piece = PieceTemplate.CreateOnBoard(templateName: this.pieceToCreate, world: world, position: position);
-                    if (!piece.canBePickedUp)
-                    {
-                        piece.sprite.opacity = 0.15f;
-                        piece.sprite.opacityFade = new OpacityFade(sprite: piece.sprite, destOpacity: 1f, duration: 60 * 6);
-                    }
+                    var storagesToPutInto = pieceInfo.type == typeof(Tool) || pieceInfo.type == typeof(PortableLight) ? player.CraftStoragesToolbarFirst : player.CraftStorages;
 
-                    if (piece.sprite.placedCorrectly)
+                    for (int i = 0; i < this.amountToCreate; i++)
                     {
-                        piece.sprite.MoveToClosestFreeSpot(position);
+                        BoardPiece piece = PieceTemplate.CreateOffBoard(templateName: this.pieceToCreate, world: world);
+                        bool pieceInserted = false;
 
-                        var storagesToPutInto = piece.GetType() == typeof(Tool) || piece.GetType() == typeof(PortableLight) ? player.CraftStoragesToolbarFirst : player.CraftStorages;
                         foreach (PieceStorage storage in storagesToPutInto)
                         {
                             if (storage.CanFitThisPiece(piece))
                             {
                                 storage.AddPiece(piece: piece);
+                                pieceInserted = true;
                                 break;
                             }
                         }
-                    }
-                    else
-                    {
-                        MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Could not create '{piece.name}' on the board. Attempting to craft directly to storage.");
-                        piece = PieceTemplate.CreateOffBoard(templateName: this.pieceToCreate, world: world);
-                        if (piece.sprite.placedCorrectly)
-                        {
-                            player.pieceStorage.AddPiece(piece: PieceTemplate.CreateOffBoard(templateName: this.pieceToCreate, world: world), dropIfDoesNotFit: true);
-                        }
-                        else
-                        {
-                            MessageLog.AddMessage(msgType: MsgType.Debug, message: $"A second attempt to craft '{piece.name}' has failed.");
-                            return false;
-                        }
+
+                        if (!pieceInserted) throw new ArgumentException($"{pieceInfo.name} could not fit into any storage.");
                     }
                 }
+                else // !canBePickedUp
+                {
+                    if (!world.BuildMode) throw new ArgumentException($"World is not in BuildMode.");
+
+                    BoardPiece piece = PieceTemplate.CreateOffBoard(templateName: this.pieceToCreate, world: world);
+                    piece.sprite.SetNewPosition(newPos: player.pieceToBuild.sprite.position, ignoreCollisions: true);
+                    piece.AddToStateMachines();
+                    piece.AddPlannedDestruction();
+
+                    piece.sprite.opacity = 0.15f;
+                    piece.sprite.opacityFade = new OpacityFade(sprite: piece.sprite, destOpacity: 1f, duration: 60 * 6);
+
+                    if (!piece.sprite.placedCorrectly) throw new ArgumentException($"Piece has not been placed correctly on the board - {piece.name}.");
+                }
+
+                // unlocking other recipes and showing messages
 
                 string message = this.amountToCreate == 1 ?
-                    $"{Helpers.FirstCharToUpperCase(PieceInfo.info[this.pieceToCreate].readableName)} has been crafted." :
-                    $"{Helpers.FirstCharToUpperCase(PieceInfo.info[this.pieceToCreate].readableName)} x{this.amountToCreate} has been crafted.";
+                    $"|  {Helpers.FirstCharToUpperCase(PieceInfo.GetInfo(this.pieceToCreate).readableName)} has been crafted." :
+                    $"|  {Helpers.FirstCharToUpperCase(PieceInfo.GetInfo(this.pieceToCreate).readableName)} x{this.amountToCreate} has been crafted.";
 
                 var taskChain = new List<Object>();
-                taskChain.Add(new HintMessage(text: message, boxType: HintMessage.BoxType.GreenBox, delay: 0, blockInput: false, useTransition: true).ConvertToTask());
-
-                //new TextWindow(text: message, textColor: Color.White, bgColor: Color.Green, useTransition: true, animate: false, closingTask: Scheduler.TaskName.CheckForPieceHints);
-                //MessageLog.AddMessage(msgType: MsgType.Debug, message: message);
+                taskChain.Add(new HintMessage(text: message, boxType: HintMessage.BoxType.GreenBox, delay: 0, blockInput: false, useTransition: true,
+                    imageList: new List<Texture2D> { PieceInfo.GetInfo(this.pieceToCreate).frame.texture }).ConvertToTask());
 
                 HintEngine hintEngine = world.hintEngine;
 
@@ -169,15 +196,16 @@ namespace SonOfRobin
 
                 if (unlockedPieces.Count > 0)
                 {
+                    if (!canBePickedUp) Menu.RebuildAllMenus();
+
                     string unlockedRecipesMessage = unlockedPieces.Count == 1 ? "New recipe unlocked\n" : "New recipes unlocked:\n";
                     var imageList = new List<Texture2D>();
 
                     foreach (PieceTemplate.Name name in unlockedPieces)
                     {
-                        PieceInfo.Info pieceInfo = PieceInfo.info[name];
-
-                        unlockedRecipesMessage += $"\n|  {pieceInfo.readableName}";
-                        imageList.Add(pieceInfo.frame.texture);
+                        PieceInfo.Info unlockedPieceInfo = PieceInfo.GetInfo(name);
+                        unlockedRecipesMessage += $"\n|  {unlockedPieceInfo.readableName}";
+                        imageList.Add(unlockedPieceInfo.frame.texture);
                     }
 
                     taskChain.Add(new HintMessage(text: unlockedRecipesMessage, imageList: imageList, boxType: HintMessage.BoxType.LightBlueBox, delay: 0, blockInput: false, animate: true, useTransition: true).ConvertToTask());
@@ -185,8 +213,6 @@ namespace SonOfRobin
 
                 taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CheckForPieceHints, delay: 0, storeForLaterUse: true));
                 new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteTaskChain, turnOffInputUntilExecution: true, executeHelper: taskChain);
-
-                return true;
             }
         }
 
@@ -377,9 +403,21 @@ namespace SonOfRobin
             }
 
             categoriesCreated = true;
-            CheckIfAllRecipesCanBeUnlocked();
+            CheckIfRecipesAreCorrect();
         }
 
+        private static void CheckIfRecipesAreCorrect()
+        {
+            foreach (List<Recipe> recipeList in recipesByCategory.Values)
+            {
+                foreach (Recipe recipe in recipeList)
+                {
+                    if (!PieceInfo.GetInfo(recipe.pieceToCreate).canBePickedUp && recipe.amountToCreate > 1) throw new ArgumentException($"Cannot create multiple pieces in the field - {recipe.pieceToCreate}.");
+                }
+            }
+
+            CheckIfAllRecipesCanBeUnlocked();
+        }
         private static void CheckIfAllRecipesCanBeUnlocked()
         {
             List<Recipe> allRecipes = AllRecipes;

@@ -174,15 +174,16 @@ namespace SonOfRobin
         {
             // BoardPiece will have to be created on board first and then removed from it.
 
-            bool piecesLoadingMode = world.freePiecesPlacingMode;
+            bool freePiecesPlacingMode = world.freePiecesPlacingMode;
             world.freePiecesPlacingMode = true;
 
             if (randomSex) female = SonOfRobinGame.random.Next(2) == 1;
             BoardPiece piece = CreatePiece(templateName: templateName, world: world, position: new Vector2(0, 0), female: female, generation: generation);
             piece.sprite.RemoveFromGrid();
             WorldEvent.RemovePieceFromQueue(world: world, pieceToRemove: piece);
+            Tracking.RemoveFromTrackingQueue(world: world, pieceToRemove: piece);
 
-            world.freePiecesPlacingMode = piecesLoadingMode;
+            world.freePiecesPlacingMode = freePiecesPlacingMode;
 
             if (!addToPieceCount) piece.RemoveFromPieceCount();
             return piece;

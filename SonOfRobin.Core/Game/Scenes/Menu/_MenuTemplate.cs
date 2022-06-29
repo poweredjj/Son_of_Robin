@@ -412,7 +412,7 @@ namespace SonOfRobin
 
                             Dictionary<string, Object> createData = new Dictionary<string, Object> { { "position", world.player.sprite.position }, { "templateName", pieceName } };
 
-                            new Invoker(menu: menu, name: $"{PieceInfo.info[pieceName].readableName} ({pieceCounterDict[pieceName]})", taskName: Scheduler.TaskName.CreateDebugPieces, createData, rebuildsMenu: true);
+                            new Invoker(menu: menu, name: $"{PieceInfo.GetInfo(pieceName).readableName} ({pieceCounterDict[pieceName]})", taskName: Scheduler.TaskName.CreateDebugPieces, createData, rebuildsMenu: true);
                         }
 
                         new Separator(menu: menu, name: "", isEmpty: true);
@@ -587,7 +587,7 @@ namespace SonOfRobin
 
             new Separator(menu: menu, name: "", isEmpty: true);
             new Separator(menu: menu, name: "inventory");
-            foreach (string propertyName in new List<string> { "invSwitch", "pickOne", "pickStack" })
+            foreach (string propertyName in new List<string> { "invSwitch", "invPickOne", "invPickStack", "invSort" })
             { new Selector(menu: menu, name: newMapping.GetReadablePropertyName(propertyName), valueDict: keysOrButtonsDict, targetObj: newMapping, propertyName: propertyName, captureInput: true, captureKeys: captureKeys, captureButtons: captureButtons); }
 
             new Separator(menu: menu, name: "", isEmpty: true);

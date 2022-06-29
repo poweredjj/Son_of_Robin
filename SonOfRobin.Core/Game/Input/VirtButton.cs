@@ -22,7 +22,8 @@ namespace SonOfRobin
         ZoomOut,
         PauseMenu,
         Return,
-        DragSingle,
+        InvDragSingle,
+        InvSort,
 
         DebugPause,
         DebugPlay,

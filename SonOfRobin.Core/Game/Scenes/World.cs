@@ -55,27 +55,7 @@ namespace SonOfRobin
 
         private bool buildMode;
 
-        public bool BuildMode
-        {
-            get { return this.buildMode; }
-            set
-            {
-                if (this.buildMode == value) return;
-
-                this.buildMode = value;
-
-                if (this.buildMode)
-                {
-
-
-                }
-                else
-                {
-
-
-                }
-            }
-        }
+        public bool BuildMode { get { return this.buildMode; } }
 
         private bool spectatorMode;
         public bool SpectatorMode
@@ -610,7 +590,7 @@ namespace SonOfRobin
             {
                 this.name = name;
                 this.multiplier = multiplier;
-                this.maxAmount = maxAmount; // 0 == no limit
+                this.maxAmount = maxAmount; // -1 == no limit
             }
         }
 
@@ -624,24 +604,24 @@ namespace SonOfRobin
             {
                 new PieceCreationData(name: PieceTemplate.Name.GrassRegular, multiplier: 2.0f, maxAmount: 1000),
                 new PieceCreationData(name: PieceTemplate.Name.GrassGlow, multiplier: 0.1f, maxAmount: 40),
-                new PieceCreationData(name: PieceTemplate.Name.GrassDesert, multiplier: 2.0f, maxAmount: 0),
-                new PieceCreationData(name: PieceTemplate.Name.Rushes, multiplier: 2.0f, maxAmount: 0),
-                new PieceCreationData(name: PieceTemplate.Name.WaterLily, multiplier: 1.0f, maxAmount: 0),
-                new PieceCreationData(name: PieceTemplate.Name.FlowersPlain, multiplier: 0.4f, maxAmount: 0),
-                new PieceCreationData(name: PieceTemplate.Name.FlowersRed, multiplier: 0.1f, maxAmount: 0),
-                new PieceCreationData(name: PieceTemplate.Name.FlowersMountain, multiplier: 0.1f, maxAmount: 0),
-                new PieceCreationData(name: PieceTemplate.Name.TreeSmall, multiplier: 1.0f, maxAmount: 0),
-                new PieceCreationData(name: PieceTemplate.Name.TreeBig, multiplier: 1.0f, maxAmount: 0),
-                new PieceCreationData(name: PieceTemplate.Name.AcornTree, multiplier: 0.03f, maxAmount: 0),
-                new PieceCreationData(name: PieceTemplate.Name.AppleTree, multiplier: 0.03f, maxAmount: 0),
-                new PieceCreationData(name: PieceTemplate.Name.CherryTree, multiplier: 0.03f, maxAmount: 0),
-                new PieceCreationData(name: PieceTemplate.Name.BananaTree, multiplier: 0.03f, maxAmount: 0),
-                new PieceCreationData(name: PieceTemplate.Name.TomatoPlant, multiplier: 0.03f, maxAmount: 0),
-                new PieceCreationData(name: PieceTemplate.Name.PalmTree, multiplier: 1.0f, maxAmount: 0),
-                new PieceCreationData(name: PieceTemplate.Name.Cactus, multiplier: 0.2f, maxAmount: 0),
-                new PieceCreationData(name: PieceTemplate.Name.WaterRock, multiplier: 0.5f, maxAmount: 0),
-                new PieceCreationData(name: PieceTemplate.Name.MineralsSmall, multiplier: 0.5f, maxAmount: 0),
-                new PieceCreationData(name: PieceTemplate.Name.MineralsBig, multiplier: 0.3f, maxAmount: 0),
+                new PieceCreationData(name: PieceTemplate.Name.GrassDesert, multiplier: 2.0f, maxAmount: -1),
+                new PieceCreationData(name: PieceTemplate.Name.Rushes, multiplier: 2.0f, maxAmount: -1),
+                new PieceCreationData(name: PieceTemplate.Name.WaterLily, multiplier: 1.0f, maxAmount: -1),
+                new PieceCreationData(name: PieceTemplate.Name.FlowersPlain, multiplier: 0.4f, maxAmount: -1),
+                new PieceCreationData(name: PieceTemplate.Name.FlowersRed, multiplier: 0.1f, maxAmount: -1),
+                new PieceCreationData(name: PieceTemplate.Name.FlowersMountain, multiplier: 0.1f, maxAmount: -1),
+                new PieceCreationData(name: PieceTemplate.Name.TreeSmall, multiplier: 1.0f, maxAmount: -1),
+                new PieceCreationData(name: PieceTemplate.Name.TreeBig, multiplier: 1.0f, maxAmount: -1),
+                new PieceCreationData(name: PieceTemplate.Name.AcornTree, multiplier: 0.03f, maxAmount: -1),
+                new PieceCreationData(name: PieceTemplate.Name.AppleTree, multiplier: 0.03f, maxAmount: -1),
+                new PieceCreationData(name: PieceTemplate.Name.CherryTree, multiplier: 0.03f, maxAmount: -1),
+                new PieceCreationData(name: PieceTemplate.Name.BananaTree, multiplier: 0.03f, maxAmount: -1),
+                new PieceCreationData(name: PieceTemplate.Name.TomatoPlant, multiplier: 0.03f, maxAmount: -1),
+                new PieceCreationData(name: PieceTemplate.Name.PalmTree, multiplier: 1.0f, maxAmount: -1),
+                new PieceCreationData(name: PieceTemplate.Name.Cactus, multiplier: 0.2f, maxAmount: -1),
+                new PieceCreationData(name: PieceTemplate.Name.WaterRock, multiplier: 0.5f, maxAmount: -1),
+                new PieceCreationData(name: PieceTemplate.Name.MineralsSmall, multiplier: 0.5f, maxAmount: -1),
+                new PieceCreationData(name: PieceTemplate.Name.MineralsBig, multiplier: 0.3f, maxAmount: -1),
                 new PieceCreationData(name: PieceTemplate.Name.IronDeposit, multiplier: 0.02f, maxAmount: 30),
                 new PieceCreationData(name: PieceTemplate.Name.CoalDeposit, multiplier: 0.02f, maxAmount: 30),
                 new PieceCreationData(name: PieceTemplate.Name.GlassDeposit, multiplier: 0.02f, maxAmount: 30),
@@ -658,15 +638,14 @@ namespace SonOfRobin
             Vector2 notReallyUsedPosition = new Vector2(-100, -100); // -100, -100 will be converted to a random position on the map - needed for effective creation of new sprites 
             int minPieceAmount = Math.Max(Convert.ToInt32((long)width * (long)height / 300000 * multiplier), 0); // 300000
 
-            int minAmount;
             var amountToCreateByName = new Dictionary<PieceTemplate.Name, int> { };
 
             foreach (PieceCreationData creationData in creationDataList)
             {
                 if (doNotCreatePiecesList.Contains(creationData.name)) continue;
 
-                minAmount = Math.Max((int)(minPieceAmount * creationData.multiplier), 4);
-                if (creationData.maxAmount > 0) minAmount = Math.Min(minAmount, creationData.maxAmount);
+                int minAmount = Math.Max((int)(minPieceAmount * creationData.multiplier), 4);
+                if (creationData.maxAmount > -1) minAmount = Math.Min(minAmount, creationData.maxAmount);
 
                 int amountToCreate = Math.Max(minAmount - this.pieceCountByName[creationData.name], 0);
                 if (amountToCreate > 0) amountToCreateByName[creationData.name] = amountToCreate;
@@ -692,7 +671,11 @@ namespace SonOfRobin
                         if (addFruits && newBoardPiece.GetType() == typeof(Plant) && this.random.Next(2) == 0)
                         {
                             Plant newPlant = (Plant)newBoardPiece;
-                            if (newPlant.fruitEngine != null) newPlant.fruitEngine.AddFruit();
+                            if (newPlant.fruitEngine != null)
+                            {
+                                newPlant.fruitEngine.AddFruit();
+                                newPlant.Mass = newPlant.reproduction.massNeeded / 2;
+                            }
                         }
 
                         piecesCreated++;
@@ -759,11 +742,11 @@ namespace SonOfRobin
             {
                 Tracking.ProcessTrackingQueue(this);
                 WorldEvent.ProcessQueue(this);
-                this.UpdateAllAnims();
+                if (!this.BuildMode) this.UpdateAllAnims();
 
                 if (this.player != null) this.ProcessOneNonPlant(this.player);
 
-                if (this.currentUpdate % this.bulletTimeMultiplier == 0)
+                if (this.currentUpdate % this.bulletTimeMultiplier == 0 && !this.BuildMode)
                 {
                     this.StateMachinesProcessCameraView();
 
@@ -804,7 +787,7 @@ namespace SonOfRobin
                 this.analogCameraCorrection *= 10;
             }
 
-            // camera zoom control
+            // camera zoom control (to keep the current zoom level, when other scene is above the world, that scene must block updates below)
             float leftTrigger = InputMapper.TriggerForce(InputMapper.Action.WorldCameraZoomOut);
             this.manualScale = 1f + leftTrigger;
 
@@ -1016,6 +999,43 @@ namespace SonOfRobin
                 }
             }
         }
+        public void EnterBuildMode(Craft.Recipe recipe)
+        {
+            this.buildMode = true;
+
+            this.touchLayout = TouchLayout.WorldBuild;
+            this.tipsLayout = ControlTips.TipsLayout.WorldBuild;
+
+            Scene craftMenu = GetTopSceneOfType(typeof(Menu));
+            craftMenu.MoveToBottom();
+            SonOfRobinGame.hintWindow.TurnOff();
+
+            this.player.recipeToBuild = recipe;
+            this.freePiecesPlacingMode = true;
+            this.player.pieceToBuild = PieceTemplate.CreateOnBoard(templateName: recipe.pieceToCreate, world: this, position: this.player.sprite.position);
+            this.freePiecesPlacingMode = false;
+            this.player.pieceToBuild.sprite.MoveToClosestFreeSpot(this.player.pieceToBuild.sprite.position);
+            this.player.activeState = BoardPiece.State.PlayerControlledBuilding;
+        }
+
+        public void ExitBuildMode(bool craftPiece)
+        {
+            this.touchLayout = TouchLayout.WorldMain;
+            this.tipsLayout = ControlTips.TipsLayout.WorldMain;
+
+            this.player.activeState = BoardPiece.State.PlayerControlledWalking;
+
+            Scene craftMenu = GetBottomSceneOfType(typeof(Menu));
+            craftMenu.MoveToTop();
+
+            if (craftPiece) this.player.recipeToBuild.TryToProducePieces(player: this.player);
+
+            this.player.recipeToBuild = null;
+            this.player.pieceToBuild.Destroy();
+            this.player.pieceToBuild = null;
+            this.buildMode = false;
+        }
+
         public void UpdateAllAnims()
         {
             var visibleSpritesList = this.grid.GetSpritesInCameraView(camera: this.camera, groupName: Cell.Group.Visible, compareWithCameraRect: true);
@@ -1337,6 +1357,5 @@ namespace SonOfRobin
                 SonOfRobinGame.spriteBatch.Draw(this.darknessMask, new Rectangle(x: extendedViewRect.X, y: extendedViewRect.Y, width: (int)(this.darknessMask.Width * darknessMaskScale.X), height: (int)(this.darknessMask.Height * darknessMaskScale.Y)), Color.White);
             }
         }
-
     }
 }

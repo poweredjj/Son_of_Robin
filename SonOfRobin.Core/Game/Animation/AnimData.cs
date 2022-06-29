@@ -353,41 +353,41 @@ namespace SonOfRobin
             {
                 PkgName packageName = PkgName.ChestWooden;
                 AddFrameList(animPackage: packageName, animSize: 0, animName: "open",
-                frameList: ConvertImageToFrameList(atlasName: "chests", layer: 0, x: 0, y: 144, width: 32, height: 48));
+                frameList: ConvertImageToFrameList(atlasName: "chests", layer: 1, x: 0, y: 144, width: 32, height: 48));
                 var frameList = new List<AnimFrame>();
-                frameList.Add(ConvertImageToFrame(atlasName: "chests", layer: 0, x: 0, y: 48, width: 32, height: 48, duration: 6));
-                frameList.Add(ConvertImageToFrame(atlasName: "chests", layer: 0, x: 0, y: 96, width: 32, height: 48, duration: 6));
-                frameList.Add(ConvertImageToFrame(atlasName: "chests", layer: 0, x: 0, y: 144, width: 32, height: 48, duration: 0));
+                frameList.Add(ConvertImageToFrame(atlasName: "chests", layer: 1, x: 0, y: 48, width: 32, height: 48, duration: 6));
+                frameList.Add(ConvertImageToFrame(atlasName: "chests", layer: 1, x: 0, y: 96, width: 32, height: 48, duration: 6));
+                frameList.Add(ConvertImageToFrame(atlasName: "chests", layer: 1, x: 0, y: 144, width: 32, height: 48, duration: 0));
                 AddFrameList(animPackage: packageName, animSize: 0, animName: "opening", frameList: frameList);
                 frameList = new List<AnimFrame>();
-                frameList.Add(ConvertImageToFrame(atlasName: "chests", layer: 0, x: 0, y: 96, width: 32, height: 48, duration: 6));
-                frameList.Add(ConvertImageToFrame(atlasName: "chests", layer: 0, x: 0, y: 48, width: 32, height: 48, duration: 6));
-                frameList.Add(ConvertImageToFrame(atlasName: "chests", layer: 0, x: 0, y: 0, width: 32, height: 48, duration: 0));
+                frameList.Add(ConvertImageToFrame(atlasName: "chests", layer: 1, x: 0, y: 96, width: 32, height: 48, duration: 6));
+                frameList.Add(ConvertImageToFrame(atlasName: "chests", layer: 1, x: 0, y: 48, width: 32, height: 48, duration: 6));
+                frameList.Add(ConvertImageToFrame(atlasName: "chests", layer: 1, x: 0, y: 0, width: 32, height: 48, duration: 0));
                 AddFrameList(animPackage: packageName, animSize: 0, animName: "closing", frameList: frameList);
             }
             {
                 PkgName packageName = PkgName.ChestMetal;
                 AddFrameList(animPackage: packageName, animSize: 0, animName: "open",
-                frameList: ConvertImageToFrameList(atlasName: "chests", layer: 0, x: 32, y: 144, width: 32, height: 48));
+                frameList: ConvertImageToFrameList(atlasName: "chests", layer: 1, x: 32, y: 144, width: 32, height: 48));
                 var frameList = new List<AnimFrame>();
-                frameList.Add(ConvertImageToFrame(atlasName: "chests", layer: 0, x: 32, y: 48, width: 32, height: 48, duration: 6));
-                frameList.Add(ConvertImageToFrame(atlasName: "chests", layer: 0, x: 32, y: 96, width: 32, height: 48, duration: 6));
-                frameList.Add(ConvertImageToFrame(atlasName: "chests", layer: 0, x: 32, y: 144, width: 32, height: 48, duration: 0));
+                frameList.Add(ConvertImageToFrame(atlasName: "chests", layer: 1, x: 32, y: 48, width: 32, height: 48, duration: 6));
+                frameList.Add(ConvertImageToFrame(atlasName: "chests", layer: 1, x: 32, y: 96, width: 32, height: 48, duration: 6));
+                frameList.Add(ConvertImageToFrame(atlasName: "chests", layer: 1, x: 32, y: 144, width: 32, height: 48, duration: 0));
                 AddFrameList(animPackage: packageName, animSize: 0, animName: "opening", frameList: frameList);
                 frameList = new List<AnimFrame>();
-                frameList.Add(ConvertImageToFrame(atlasName: "chests", layer: 0, x: 32, y: 96, width: 32, height: 48, duration: 6));
-                frameList.Add(ConvertImageToFrame(atlasName: "chests", layer: 0, x: 32, y: 48, width: 32, height: 48, duration: 6));
-                frameList.Add(ConvertImageToFrame(atlasName: "chests", layer: 0, x: 32, y: 0, width: 32, height: 48, duration: 0));
+                frameList.Add(ConvertImageToFrame(atlasName: "chests", layer: 1, x: 32, y: 96, width: 32, height: 48, duration: 6));
+                frameList.Add(ConvertImageToFrame(atlasName: "chests", layer: 1, x: 32, y: 48, width: 32, height: 48, duration: 6));
+                frameList.Add(ConvertImageToFrame(atlasName: "chests", layer: 1, x: 32, y: 0, width: 32, height: 48, duration: 0));
                 AddFrameList(animPackage: packageName, animSize: 0, animName: "closing", frameList: frameList);
             }
             {
                 PkgName packageName = PkgName.Crate;
                 AddFrameList(animPackage: packageName, animSize: 0, animName: "default",
-                frameList: ConvertImageToFrameList(atlasName: "chests", layer: 0, x: 128, y: 0, width: 32, height: 48));
+                frameList: ConvertImageToFrameList(atlasName: "chests", layer: 1, x: 128, y: 0, width: 32, height: 48));
                 var frameList = new List<AnimFrame>();
-                frameList.Add(ConvertImageToFrame(atlasName: "chests", layer: 0, x: 0, y: 96, width: 32, height: 48, duration: 6));
-                frameList.Add(ConvertImageToFrame(atlasName: "chests", layer: 0, x: 0, y: 48, width: 32, height: 48, duration: 6));
-                frameList.Add(ConvertImageToFrame(atlasName: "chests", layer: 0, x: 0, y: 0, width: 32, height: 48, duration: 0));
+                frameList.Add(ConvertImageToFrame(atlasName: "chests", layer: 1, x: 0, y: 96, width: 32, height: 48, duration: 6));
+                frameList.Add(ConvertImageToFrame(atlasName: "chests", layer: 1, x: 0, y: 48, width: 32, height: 48, duration: 6));
+                frameList.Add(ConvertImageToFrame(atlasName: "chests", layer: 1, x: 0, y: 0, width: 32, height: 48, duration: 0));
                 AddFrameList(animPackage: packageName, animSize: 0, animName: "closing", frameList: frameList);
             }
             {
@@ -581,7 +581,7 @@ namespace SonOfRobin
                 frameList: ConvertImageToFrameList(atlasName: "tile_custom01", layer: 0, x: 467, y: 336, width: 7, height: 6));
 
             AddFrameList(animPackage: PkgName.WoodLog, animSize: 0, animName: "default",
-                frameList: ConvertImageToFrameList(atlasName: "big_icons_candacis", layer: 0, x: 98, y: 48, width: 45, height: 46, scale: 0.5f));
+                frameList: ConvertImageToFrameList(atlasName: "big_icons_candacis", layer: 1, x: 98, y: 48, width: 45, height: 46, scale: 0.5f));
 
             AddFrameList(animPackage: PkgName.WoodPlank, animSize: 0, animName: "default",
                 frameList: ConvertImageToFrameList(atlasName: "craft_items", layer: 0, x: 32, y: 0, width: 32, height: 32, scale: 1f));

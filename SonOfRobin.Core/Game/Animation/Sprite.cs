@@ -56,7 +56,6 @@ namespace SonOfRobin
         { get { return GetCompleteAnimId(animPackage: this.animPackage, animSize: this.animSize, animName: this.animName); } }
 
         private bool visible;
-
         public bool IsInWater
         { get { return this.GetFieldValue(TerrainName.Height) < Terrain.waterLevelMax; } }
         public bool IsInLava
@@ -733,7 +732,7 @@ namespace SonOfRobin
             Plant plant = (Plant)this.boardPiece;
             if (Preferences.debugShowFruitRects) SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, plant.fruitEngine.FruitAreaRect, Color.Cyan * 0.4f);
 
-            if (plant.pieceStorage.NotEmptySlotsCount == 0) return;
+            if (plant.pieceStorage.OccupiedSlotsCount == 0) return;
             var fruitList = plant.pieceStorage.GetAllPieces();
             foreach (BoardPiece fruit in fruitList)
             { fruit.sprite.Draw(calculateSubmerge: false); }

@@ -21,7 +21,7 @@ namespace SonOfRobin
     public class Plant : BoardPiece
     {
         private readonly Dictionary<TerrainName, byte> bestEnvironment;
-        private readonly PlantReproductionData reproduction;
+        public readonly PlantReproductionData reproduction;
         private readonly byte massToBurn;
         public float massTakenMultiplier;
         private readonly int maxExistingNumber;

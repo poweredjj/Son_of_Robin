@@ -14,6 +14,7 @@ namespace SonOfRobin
             PlayerControlledWalking,
             PlayerControlledShooting,
             PlayerControlledSleep,
+            PlayerControlledBuilding,
             PlayerControlledGhosting,
 
             PlantGrowthAndReproduction,
@@ -479,6 +480,12 @@ namespace SonOfRobin
                         return;
                     }
 
+                case State.PlayerControlledBuilding:
+                    {
+                        this.SM_PlayerControlledBuilding();
+                        return;
+                    }
+
                 case State.PlayerControlledGhosting:
                     {
                         this.SM_PlayerControlledGhosting();
@@ -544,6 +551,8 @@ namespace SonOfRobin
         { throw new DivideByZeroException("This method should not be executed."); }
         public virtual void SM_PlayerControlledSleep()
         { throw new DivideByZeroException("This method should not be executed."); }
+        public virtual void SM_PlayerControlledBuilding()
+        { throw new DivideByZeroException("This method should not be executed."); }
         public virtual void SM_PlayerControlledGhosting()
         { throw new DivideByZeroException("This method should not be executed."); }
         public virtual void SM_FireplaceBurn()
@@ -579,7 +588,7 @@ namespace SonOfRobin
             }
 
             float realSpeed = walkSpeed;
-            if (this.sprite.IsInWater && slowDownInWater) realSpeed = Math.Max(1, this.speed * 0.75f);
+            if (this.sprite.IsInWater && slowDownInWater) realSpeed = Math.Max(1, walkSpeed * 0.75f);
 
             Vector2 positionDifference = goalPosition - this.sprite.position;
             if (runFrom) positionDifference = new Vector2(-positionDifference.X, -positionDifference.Y);

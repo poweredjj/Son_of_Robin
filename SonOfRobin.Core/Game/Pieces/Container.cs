@@ -21,7 +21,7 @@ namespace SonOfRobin
 
         public override void DrawStatBar()
         {
-            int notEmptySlotsCount = this.pieceStorage.NotEmptySlotsCount;
+            int notEmptySlotsCount = this.pieceStorage.OccupiedSlotsCount;
 
             if (notEmptySlotsCount > 0)
             {

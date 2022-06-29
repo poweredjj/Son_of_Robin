@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input.Touch;
 using System;
 using System.Collections.Generic;
@@ -22,6 +23,8 @@ namespace SonOfRobin
         private int shootingPower;
         public SleepEngine sleepEngine;
         private Vector2 pointWalkTarget;
+        public Craft.Recipe recipeToBuild;
+        public BoardPiece pieceToBuild;
 
         public override bool ShowStatBars { get { return true; } }
 
@@ -230,6 +233,8 @@ namespace SonOfRobin
             this.wentToSleepFrame = 0;
             this.sleepingInsideShelter = false;
             this.sleepMode = SleepMode.Sleep;
+            this.recipeToBuild = null;
+            this.pieceToBuild = null;
 
             BoardPiece handTool = PieceTemplate.CreateOffBoard(templateName: PieceTemplate.Name.Hand, world: this.world);
 
@@ -344,9 +349,60 @@ namespace SonOfRobin
             if (this.FedPercent > 0.1f) this.world.hintEngine.Enable(HintEngine.Type.Starving);
         }
 
+        public override void SM_PlayerControlledBuilding()
+        {
+            Vector2 newPos = this.pieceToBuild.sprite.position + this.world.analogMovementLeftStick;
+
+            if (this.world.analogMovementLeftStick != Vector2.Zero) newPos += this.world.analogMovementLeftStick;
+            else
+            {
+                if (Preferences.PointToWalk)
+                {
+                    foreach (TouchLocation touch in TouchInput.TouchPanelState)
+                    {
+                        if (touch.State == TouchLocationState.Moved && !TouchInput.IsPointActivatingAnyTouchInterface(touch.Position))
+                        {
+                            Vector2 worldTouchPos = this.world.TranslateScreenToWorldPos(touch.Position);
+                            newPos = worldTouchPos;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            int pieceSize = Math.Max(this.pieceToBuild.sprite.frame.colWidth, this.pieceToBuild.sprite.frame.colHeight);
+
+            float buildDistance = Vector2.Distance(this.sprite.position, newPos);
+            if (buildDistance <= 200 + pieceSize) this.pieceToBuild.sprite.SetNewPosition(newPos: newPos, ignoreCollisions: true);
+
+            bool canBuildHere = buildDistance <= 80 + pieceSize && !this.pieceToBuild.sprite.CheckForCollision();
+            if (canBuildHere)
+            {
+                VirtButton.ButtonHighlightOnNextFrame(VButName.Confirm);
+                ControlTips.TipHighlightOnNextFrame(tipName: "build");
+            }
+
+            Color color = canBuildHere ? Color.Green : Color.Red;
+
+            this.pieceToBuild.sprite.effectCol.AddEffect(new ColorizeInstance(color: color));
+            this.pieceToBuild.sprite.effectCol.AddEffect(new BorderInstance(outlineColor: Color.White, textureSize: this.pieceToBuild.sprite.frame.textureSize, priority: 0));
+
+            if (InputMapper.HasBeenPressed(InputMapper.Action.GlobalCancelReturnSkip))
+            {
+                this.world.ExitBuildMode(craftPiece: false);
+                return;
+            }
+
+            if (InputMapper.HasBeenPressed(InputMapper.Action.GlobalConfirm))
+            {
+                if (canBuildHere) this.world.ExitBuildMode(craftPiece: true);
+                else new TextWindow(text: $"|  {Helpers.FirstCharToUpperCase(this.pieceToBuild.readableName)} can't be built here.", imageList: new List<Texture2D> { this.pieceToBuild.sprite.frame.texture }, textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false, checkForDuplicate: true, autoClose: false, inputType: Scene.InputTypes.Normal, priority: 1, blocksUpdatesBelow: true);
+            }
+        }
+
         public override void SM_PlayerControlledGhosting()
         {
-            this.Walk();
+            this.Walk(slowDownInWater: false);
         }
 
         public override void SM_PlayerControlledWalking()
@@ -430,7 +486,7 @@ namespace SonOfRobin
             }
         }
 
-        private bool Walk(bool setOrientation = true)
+        private bool Walk(bool setOrientation = true, bool slowDownInWater = true)
         {
             Vector2 movement = this.world.analogMovementLeftStick;
             if (movement != Vector2.Zero) this.pointWalkTarget = Vector2.Zero;
@@ -481,7 +537,7 @@ namespace SonOfRobin
             movement *= currentSpeed;
 
             Vector2 goalPosition = this.sprite.position + movement;
-            bool hasBeenMoved = this.GoOneStepTowardsGoal(goalPosition, splitXY: true, walkSpeed: currentSpeed, setOrientation: setOrientation);
+            bool hasBeenMoved = this.GoOneStepTowardsGoal(goalPosition, splitXY: true, walkSpeed: currentSpeed, setOrientation: setOrientation, slowDownInWater: slowDownInWater);
 
             if (hasBeenMoved)
             {

@@ -25,7 +25,7 @@ namespace SonOfRobin
             }
         }
         public int PieceCount { get { return this.pieceList.Count; } }
-        public bool IsEmpty { get { return this.pieceList.Count == 0; } }
+        public bool IsEmpty { get { return this.PieceCount == 0; } }
         public bool IsFull
         {
             get
@@ -55,7 +55,7 @@ namespace SonOfRobin
 
             if (!this.CanFitThisPiece(piece)) throw new ArgumentException($"This piece '{piece.name}' cannot fit in this slot.");
 
-            if (piece?.pieceStorage?.NotEmptySlotsCount > 0)
+            if (piece?.pieceStorage?.OccupiedSlotsCount > 0)
             { piece.pieceStorage.DropAllPiecesToTheGround(addMovement: true); }
 
             this.pieceList.Add(piece);
@@ -79,6 +79,19 @@ namespace SonOfRobin
 
             if (this.IsEmpty) return pieceCount <= Math.Min(piece.stackSize, this.stackLimit);
             else return piece.name == this.PieceName && this.pieceList.Count + pieceCount <= Math.Min(this.pieceList[0].stackSize, this.stackLimit);
+        }
+
+
+        public int HowManyPiecesOfNameCanFit(PieceTemplate.Name pieceName)
+        {
+            PieceInfo.Info pieceInfo = PieceInfo.GetInfo(pieceName);
+
+            if (this.locked || !pieceInfo.canBePickedUp) return 0;
+            if (this.allowedPieceNames != null && !this.allowedPieceNames.Contains(pieceName)) return 0;
+            if (this.IsEmpty) return Math.Min(pieceInfo.stackSize, this.stackLimit);
+            if (pieceName == this.PieceName) return Math.Min(this.pieceList[0].stackSize, this.stackLimit) - this.pieceList.Count;
+
+            return 0;
         }
 
         public BoardPiece RemoveTopPiece()

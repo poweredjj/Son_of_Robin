@@ -33,6 +33,7 @@ namespace SonOfRobin
             WorldPauseMenu,
 
             InvSwitch,
+            InvSort,
             InvPickOne,
             InvPickStack,
             InvRelease,
@@ -53,9 +54,9 @@ namespace SonOfRobin
 
         protected readonly static Dictionary<Action, Mapping> detailedMappings = new Dictionary<Action, Mapping>();
 
-        public static readonly InputPackage defaultMappingGamepad = new InputPackage(packageVersion: InputPackage.version, leftStick: AnalogType.PadLeft, rightStick: AnalogType.PadRight, confirm: Buttons.A, cancel: Buttons.B, pauseMenu: Buttons.Start, sprint: Buttons.LeftStick, equip: Buttons.DPadLeft, inventory: Buttons.Y, pickUp: Buttons.X, craft: Buttons.DPadUp, interact: Buttons.A, map: Buttons.DPadRight, useTool: Buttons.RightTrigger, zoomOut: Buttons.LeftTrigger, toolbarPrev: Buttons.LeftShoulder, toolbarNext: Buttons.RightShoulder, invSwitch: Buttons.LeftStick, pickOne: Buttons.Y, pickStack: Buttons.X);
+        public static readonly InputPackage defaultMappingGamepad = new InputPackage(packageVersion: InputPackage.version, leftStick: AnalogType.PadLeft, rightStick: AnalogType.PadRight, confirm: Buttons.A, cancel: Buttons.B, pauseMenu: Buttons.Start, sprint: Buttons.LeftStick, equip: Buttons.DPadLeft, inventory: Buttons.Y, pickUp: Buttons.X, craft: Buttons.DPadUp, interact: Buttons.A, map: Buttons.DPadRight, useTool: Buttons.RightTrigger, zoomOut: Buttons.LeftTrigger, toolbarPrev: Buttons.LeftShoulder, toolbarNext: Buttons.RightShoulder, invSwitch: Buttons.LeftStick, invPickOne: Buttons.Y, invPickStack: Buttons.X, invSort: Buttons.LeftStick);
 
-        public static readonly InputPackage defaultMappingKeyboard = new InputPackage(packageVersion: InputPackage.version, leftStick: AnalogType.FromKeys, rightStick: AnalogType.Empty, confirm: Keys.Enter, cancel: Keys.Escape, pauseMenu: Keys.Back, sprint: Keys.NumPad0, equip: Keys.E, inventory: Keys.Enter, pickUp: Keys.RightControl, craft: Keys.NumPad5, interact: Keys.RightShift, map: Keys.M, useTool: Keys.Space, zoomOut: Keys.NumPad1, toolbarPrev: Keys.OemOpenBrackets, toolbarNext: Keys.OemCloseBrackets, invSwitch: Keys.Tab, pickOne: Keys.RightShift, pickStack: Keys.Space, left: Keys.Left, right: Keys.Right, up: Keys.Up, down: Keys.Down);
+        public static readonly InputPackage defaultMappingKeyboard = new InputPackage(packageVersion: InputPackage.version, leftStick: AnalogType.FromKeys, rightStick: AnalogType.Empty, confirm: Keys.Enter, cancel: Keys.Escape, pauseMenu: Keys.Back, sprint: Keys.NumPad0, equip: Keys.E, inventory: Keys.Enter, pickUp: Keys.RightControl, craft: Keys.NumPad5, interact: Keys.RightShift, map: Keys.M, useTool: Keys.Space, zoomOut: Keys.NumPad1, toolbarPrev: Keys.OemOpenBrackets, toolbarNext: Keys.OemCloseBrackets, invSwitch: Keys.Tab, invPickOne: Keys.RightShift, invPickStack: Keys.Space, invSort: Keys.LeftShift, left: Keys.Left, right: Keys.Right, up: Keys.Up, down: Keys.Down);
 
         public static InputPackage currentMappingGamepad = defaultMappingGamepad.MakeCopy();
         public static InputPackage currentMappingKeyboard = defaultMappingKeyboard.MakeCopy();
@@ -73,7 +74,7 @@ namespace SonOfRobin
 
             // global
             new Mapping(action: Action.GlobalConfirm, anyInputList: new List<object> { keybMap.confirm, MouseAction.LeftButtonVisOnly, padMap.confirm, VButName.Confirm });
-            new Mapping(action: Action.GlobalCancelReturnSkip, anyInputList: new List<object> { keybMap.cancel, padMap.cancel, VButName.Return });
+            new Mapping(action: Action.GlobalCancelReturnSkip, anyInputList: new List<object> { keybMap.cancel, padMap.cancel, VButName.Return, MouseAction.RightButton });
             new Mapping(action: Action.GlobalLeft, anyInputList: new List<object> { keybMap.left, Buttons.DPadLeft }, gamepadAnalogAsDigital: true, repeat: true);
             new Mapping(action: Action.GlobalRight, anyInputList: new List<object> { keybMap.right, Buttons.DPadRight }, gamepadAnalogAsDigital: true, repeat: true);
             new Mapping(action: Action.GlobalUp, anyInputList: new List<object> { keybMap.up, Buttons.DPadUp }, gamepadAnalogAsDigital: true, repeat: true);
@@ -106,10 +107,11 @@ namespace SonOfRobin
             new Mapping(action: Action.WorldCameraZoomOut, anyInputList: new List<object> { keybMap.zoomOut, padMap.zoomOut, VButName.ZoomOut });
 
             // inventory
-            new Mapping(action: Action.InvPickStack, anyInputList: new List<object> { keybMap.pickStack, padMap.pickStack });
-            new Mapping(action: Action.InvPickOne, anyInputList: new List<object> { keybMap.pickOne, padMap.pickOne });
-            new Mapping(action: Action.InvRelease, anyInputList: new List<object> { keybMap.confirm, padMap.confirm, keybMap.pickStack, padMap.pickStack, keybMap.pickOne, padMap.pickOne });
+            new Mapping(action: Action.InvPickStack, anyInputList: new List<object> { keybMap.invPickStack, padMap.invPickStack });
+            new Mapping(action: Action.InvPickOne, anyInputList: new List<object> { keybMap.invPickOne, padMap.invPickOne });
+            new Mapping(action: Action.InvRelease, anyInputList: new List<object> { keybMap.confirm, padMap.confirm, keybMap.invPickStack, padMap.invPickStack, keybMap.invPickOne, padMap.invPickOne });
             new Mapping(action: Action.InvSwitch, anyInputList: new List<object> { keybMap.invSwitch, padMap.invSwitch, keybMap.toolbarPrev, keybMap.toolbarNext, padMap.toolbarPrev, padMap.toolbarNext, MouseAction.ScrollUp, MouseAction.ScrollDown });
+            new Mapping(action: Action.InvSort, anyInputList: new List<object> { keybMap.invSort, padMap.invSort, VButName.InvSort });
             new Mapping(action: Action.ToolbarPrev, anyInputList: new List<object> { keybMap.toolbarPrev, padMap.toolbarPrev, MouseAction.ScrollUp }, repeat: true);
             new Mapping(action: Action.ToolbarNext, anyInputList: new List<object> { keybMap.toolbarNext, padMap.toolbarNext, MouseAction.ScrollDown }, repeat: true);
 

@@ -9,7 +9,7 @@ namespace SonOfRobin
     [Serializable]
     public class InputPackage
     {
-        public static readonly float version = 1.02f;
+        public static readonly float version = 1.04f;
 
         private static readonly Dictionary<string, string> readablePropertyNames = new Dictionary<string, string>
             {
@@ -31,8 +31,9 @@ namespace SonOfRobin
                 {"equip", "open equip"},
                 {"inventory", "open inventory"},
                 {"invSwitch", "switch active inventory"},
-                {"pickOne", "pick item"},
-                {"pickStack", "pick stack"},
+                {"invPickOne", "pick item"},
+                {"invPickStack", "pick stack"},
+                {"invSort", "sort"},
                 {"toolbarPrev", "previous item"},
                 {"toolbarNext", "next item"}
             };
@@ -61,17 +62,17 @@ namespace SonOfRobin
         public object toolbarPrev;
         public object toolbarNext;
         public object invSwitch;
-        public object pickOne;
-        public object pickStack;
+        public object invPickOne;
+        public object invPickStack;
+        public object invSort;
 
         public bool IsObsolete { get { return this.packageVersion != version; } }
-        public InputPackage(float packageVersion, InputMapper.AnalogType leftStick, InputMapper.AnalogType rightStick, object confirm, object cancel, object pauseMenu, object sprint, object equip, object inventory, object pickUp, object craft, object interact, object map, object useTool, object zoomOut, object toolbarPrev, object invSwitch, object toolbarNext, object pickOne, object pickStack, object left = null, object right = null, object up = null, object down = null)
+        public InputPackage(float packageVersion, InputMapper.AnalogType leftStick, InputMapper.AnalogType rightStick, object confirm, object cancel, object pauseMenu, object sprint, object equip, object inventory, object pickUp, object craft, object interact, object map, object useTool, object zoomOut, object toolbarPrev, object invSwitch, object invSort, object toolbarNext, object invPickOne, object invPickStack, object left = null, object right = null, object up = null, object down = null)
         {
-            this.packageVersion = version;
+            this.packageVersion = packageVersion;
 
             this.leftStick = leftStick;
             this.rightStick = rightStick;
-
             this.left = left;
             this.right = right;
             this.up = up;
@@ -89,9 +90,10 @@ namespace SonOfRobin
             this.zoomOut = zoomOut;
             this.toolbarPrev = toolbarPrev;
             this.toolbarNext = toolbarNext;
+            this.invSort = invSort;
             this.invSwitch = invSwitch;
-            this.pickOne = pickOne;
-            this.pickStack = pickStack;
+            this.invPickOne = invPickOne;
+            this.invPickStack = invPickStack;
             this.interact = interact;
         }
 
@@ -121,8 +123,9 @@ namespace SonOfRobin
                 toolbarPrev: this.toolbarPrev,
                 toolbarNext: this.toolbarNext,
                 invSwitch: this.invSwitch,
-                pickOne: this.pickOne,
-                pickStack: this.pickStack,
+                invPickOne: this.invPickOne,
+                invPickStack: this.invPickStack,
+                invSort: this.invSort,
                 left: this.left,
                 right: this.right,
                 up: this.up,
@@ -150,8 +153,9 @@ namespace SonOfRobin
                 this.toolbarPrev == inputPackage.toolbarPrev &&
                 this.toolbarNext == inputPackage.toolbarNext &&
                 this.invSwitch == inputPackage.invSwitch &&
-                this.pickOne == inputPackage.pickOne &&
-                this.pickStack == inputPackage.pickStack &&
+                this.invPickOne == inputPackage.invPickOne &&
+                this.invPickStack == inputPackage.invPickStack &&
+                this.invSort == inputPackage.invSort &&
                 this.left == inputPackage.left &&
                 this.right == inputPackage.right &&
                 this.up == inputPackage.up &&
@@ -166,7 +170,7 @@ namespace SonOfRobin
                 { new List<string> { "leftStick", "rightStick" } }, // sticks
                 { new List<string> { "confirm", "cancel", "left", "right", "up", "down", "pauseMenu"} }, // general
                 { new List<string> { "interact", "pickUp", "sprint", "useTool", "zoomOut", "toolbarPrev", "toolbarNext", "pauseMenu", "equip", "inventory", "craft", "map" } }, // field
-                { new List<string> { "invSwitch", "pickOne", "pickStack", "confirm", "cancel", "left", "right", "up", "down" } }, // inventory
+                { new List<string> { "invSwitch", "invPickOne", "invPickStack", "invSort", "confirm", "cancel", "left", "right", "up", "down" } }, // inventory
             };
 
             // searching for duplicates and making a dictionary of found duplicates (texture: property list)

@@ -170,7 +170,7 @@ namespace SonOfRobin
                 foreach (PieceTemplate.Name fuel in fuelNames)
                 {
                     fuelMarkers += "| ";
-                    imageList.Add(PieceInfo.info[fuel].frame.texture);
+                    imageList.Add(PieceInfo.GetInfo(fuel).frame.texture);
                 }
 
                 new TextWindow(text: $"I don't have any {fuelMarkers} fuel.", imageList: imageList, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true);
@@ -185,7 +185,7 @@ namespace SonOfRobin
                 foreach (PieceTemplate.Name ingredient in ingredientNames)
                 {
                     ingredientMarkers += "| ";
-                    imageList.Add(PieceInfo.info[ingredient].frame.texture);
+                    imageList.Add(PieceInfo.GetInfo(ingredient).frame.texture);
                 }
 
                 new TextWindow(text: $"I don't have any {ingredientMarkers} ingredients.", imageList: imageList, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true);

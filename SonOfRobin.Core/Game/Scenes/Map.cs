@@ -336,7 +336,7 @@ namespace SonOfRobin
 
                 else if (piece.GetType() == typeof(Animal))
                 {
-                    fillColor = PieceInfo.info[piece.name].isCarnivorous ? Color.Red : Color.Yellow;
+                    fillColor = PieceInfo.GetInfo(piece.name).isCarnivorous ? Color.Red : Color.Yellow;
                     fillSize = 3;
                 }
 

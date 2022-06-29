@@ -9,7 +9,7 @@ namespace SonOfRobin
     {
         public enum Type { Hungry, VeryHungry, Starving, Tired, VeryTired, CantShootInWater, SmallInventory, MapNegative, Lava, BreakingItem, BrokenItem, BurntOutTorch, CineIntroduction, AnimalScaredOfFire, AnimalCounters };
 
-        private static readonly List<Type> typesThatIgnoreShowHintSetting = new List<Type> { Type.CineIntroduction };
+        private static readonly List<Type> typesThatIgnoreShowHintSetting = new List<Type> { Type.CineIntroduction, Type.VeryTired, Type.Starving };
 
         private static readonly int hintDelay = 1 * 60 * 60; // 1 * 60 * 60
         public static readonly int blockInputDuration = 80;

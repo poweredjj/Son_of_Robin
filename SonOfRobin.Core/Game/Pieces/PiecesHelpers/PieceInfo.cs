@@ -5,18 +5,19 @@ namespace SonOfRobin
 {
     public class PieceInfo
     {
-        public static readonly Dictionary<PieceTemplate.Name, Info> info = new Dictionary<PieceTemplate.Name, Info> { };
-
+        private static readonly Dictionary<PieceTemplate.Name, Info> info = new Dictionary<PieceTemplate.Name, Info> { };
         public class Info
         {
             public readonly PieceTemplate.Name name;
             public readonly string readableName;
             public readonly string description;
+            public readonly int stackSize;
             public readonly Type type;
             public readonly bool convertsWhenUsed;
             public readonly PieceTemplate.Name convertsToWhenUsed;
             public bool isCarnivorous;
             public readonly BoardPiece.Category category;
+            public readonly bool canBePickedUp;
             public List<BuffEngine.Buff> buffList;
             public readonly AnimFrame frame;
             public List<PieceTemplate.Name> eats;
@@ -41,9 +42,11 @@ namespace SonOfRobin
             {
                 this.name = piece.name;
                 this.category = piece.category;
+                this.canBePickedUp = piece.canBePickedUp;
                 this.type = piece.GetType();
                 this.readableName = piece.readableName;
                 this.description = piece.description;
+                this.stackSize = piece.stackSize;
                 this.buffList = piece.buffList;
                 this.frame = piece.sprite.frame;
                 if (piece.GetType() == typeof(Animal)) this.eats = ((Animal)piece).eats;
@@ -55,6 +58,11 @@ namespace SonOfRobin
                 }
                 this.isEatenBy = new List<PieceTemplate.Name> { };
             }
+        }
+
+        public static Info GetInfo(PieceTemplate.Name pieceName)
+        {
+            return info[pieceName];
         }
 
         public static void CreateAllInfo(World world)
