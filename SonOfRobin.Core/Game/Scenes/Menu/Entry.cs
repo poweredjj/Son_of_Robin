@@ -7,7 +7,7 @@ namespace SonOfRobin
 {
     public abstract class Entry
     {
-        public static readonly SpriteFont font = SonOfRobinGame.fontHuge;
+        public static readonly SpriteFont font = SonOfRobinGame.fontTommy40;
 
         public readonly Menu menu;
         public readonly int index;

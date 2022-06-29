@@ -56,10 +56,13 @@ namespace SonOfRobin
         private bool visible;
 
         public bool IsInWater
-        {
-            get
-            { return this.GetFieldValue(TerrainName.Height) < Terrain.waterLevelMax; }
-        }
+        { get { return this.GetFieldValue(TerrainName.Height) < Terrain.waterLevelMax; } }
+        public bool IsInLava
+        { get { return this.GetFieldValue(TerrainName.Height) >= Terrain.lavaMin; } }
+        public bool IsInDangerZone
+        { get { return this.GetFieldValue(TerrainName.Danger) > Terrain.saveZoneMax; } }
+        public bool IsDeepInDangerZone
+        { get { return this.GetFieldValue(TerrainName.Danger) > Terrain.saveZoneMax * 1.3; } }
 
         public bool CanDrownHere { get { return this.GetFieldValue(TerrainName.Height) < (Terrain.waterLevelMax - 10); } }
         public bool Visible
@@ -158,6 +161,7 @@ namespace SonOfRobin
             pieceData["sprite_orientation"] = this.orientation;
             pieceData["sprite_gridGroups"] = this.gridGroups;
             pieceData["sprite_hasBeenDiscovered"] = this.hasBeenDiscovered;
+            pieceData["sprite_allowedFields"] = this.allowedFields;
         }
         public void Deserialize(Dictionary<string, Object> pieceData)
         {
@@ -175,6 +179,7 @@ namespace SonOfRobin
             this.AssignFrameById((string)pieceData["sprite_frame_id"]);
             this.gridGroups = (List<Cell.Group>)pieceData["sprite_gridGroups"];
             this.hasBeenDiscovered = (bool)pieceData["sprite_hasBeenDiscovered"];
+            this.allowedFields = (AllowedFields)pieceData["sprite_allowedFields"];
         }
         public byte GetFieldValue(TerrainName terrainName)
         {
@@ -728,7 +733,7 @@ namespace SonOfRobin
         private void DrawState()
         {
             string stateTxt = $"{this.boardPiece.activeState}".Replace("Player", "").Replace("Animal", "");
-            var stateFont = SonOfRobinGame.fontSmall;
+            var stateFont = SonOfRobinGame.fontPressStart2P5;
 
             Vector2 textSize = stateFont.MeasureString(stateTxt);
             // text position should be integer, otherwise it would get blurry

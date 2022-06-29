@@ -109,11 +109,19 @@ namespace SonOfRobin
                     this.terrainByName[TerrainName.Humidity] = new Terrain(
                     world: this.world, cell: this, name: TerrainName.Humidity, frequency: 4.3f, octaves: 9, persistence: 0.6f, lacunarity: 1.7f, gain: 0.6f);
 
-                    this.UpdateBoardGraphics();
                     this.creationStage++;
                     return;
 
                 case 3:
+                    // different noise settings should not be processed together in parallel
+                    this.terrainByName[TerrainName.Danger] = new Terrain(
+                    world: this.world, cell: this, name: TerrainName.Danger, frequency: 2.9f, octaves: 3, persistence: 0.7f, lacunarity: 1.4f, gain: 0.3f);
+
+                    this.UpdateBoardGraphics();
+                    this.creationStage++;
+                    return;
+
+                case 4:
                     // cannot be run in parallel
                     if (Preferences.loadWholeMap) this.boardGraphics.LoadTexture();
                     this.creationInProgress = false;
@@ -205,7 +213,7 @@ namespace SonOfRobin
                 this.height),
                 this.color * 0.3f);
 
-            var posFont = SonOfRobinGame.fontSmall;
+            var posFont = SonOfRobinGame.fontPressStart2P5;
 
             Vector2 txtPos = new Vector2(this.xMin, this.yMin);
             string txtString = $"{this.cellNoX},{this.cellNoY}\n{this.xMin},{this.yMin}";

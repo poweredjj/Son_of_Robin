@@ -8,7 +8,7 @@ namespace SonOfRobin
     {
         World world;
 
-        private static readonly SpriteFont font = SonOfRobinGame.fontHuge;
+        private static readonly SpriteFont font = SonOfRobinGame.fontTommy40;
 
         private int BarWidth { get { return (int)(SonOfRobinGame.VirtualWidth * 0.35f); } }
         private int BarHeight { get { return (int)(BarWidth * 0.03f); } }
@@ -51,7 +51,7 @@ namespace SonOfRobin
 
             int vOffsetCorrection = 3;
 
-            StatBar.ChangeBatchFont(spriteFont: SonOfRobinGame.fontMedium);
+            StatBar.ChangeBatchFont(spriteFont: SonOfRobinGame.fontFreeSansBold12);
 
             new StatBar(width: width, height: height, label: "food", value: (int)player.fedLevel, valueMax: (int)player.maxFedLevel, colorMin: new Color(0, 128, 255), colorMax: new Color(0, 255, 255), posX: posX, posY: posY, ignoreIfAtMax: false, centerX: false, drawFromTop: true, labelAtLeft: true, vOffsetCorrection: vOffsetCorrection);
             new StatBar(width: width, height: height, label: "fatigue", value: (int)player.Fatigue, valueMax: (int)player.maxFatigue, colorMin: new Color(255, 255, 0), colorMax: new Color(255, 0, 0), posX: posX, posY: posY, ignoreIfAtMax: false, centerX: false, drawFromTop: true, labelAtLeft: true, vOffsetCorrection: vOffsetCorrection);

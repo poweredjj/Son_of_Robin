@@ -13,7 +13,7 @@ namespace SonOfRobin
 
         private static readonly int minFramesToDragByTouch = 15;
         private static readonly float marginPercent = 0.05f;
-        private static readonly SpriteFont font = SonOfRobinGame.fontHuge;
+        private static readonly SpriteFont font = SonOfRobinGame.fontTommy40;
 
         public readonly Layout layout;
         private readonly BoardPiece piece;
@@ -341,6 +341,8 @@ namespace SonOfRobin
                     {
                         this.cursorX = this.storage.Width - 1;
                         switchToSecondaryInv = true;
+                        this.otherInventory.cursorX = 0;
+                        this.otherInventory.cursorY = Math.Min(this.cursorY, this.otherInventory.storage.Height - 1);
                     }
 
                     break;
@@ -353,6 +355,8 @@ namespace SonOfRobin
                     {
                         this.cursorX = 0;
                         switchToSecondaryInv = true;
+                        this.otherInventory.cursorX = this.otherInventory.storage.Width - 1;
+                        this.otherInventory.cursorY = Math.Min(this.cursorY, this.otherInventory.storage.Height - 1);
                     }
                     if (this.cursorX >= this.storage.Width) this.cursorX = this.storage.Width - 1;
 
@@ -368,6 +372,8 @@ namespace SonOfRobin
                     {
                         this.cursorY = this.storage.Height - 1;
                         switchToSecondaryInv = true;
+                        this.otherInventory.cursorX = Math.Min(this.cursorX, this.otherInventory.storage.Width - 1);
+                        this.otherInventory.cursorY = 0;
                     }
 
                     break;
@@ -380,6 +386,8 @@ namespace SonOfRobin
                     {
                         this.cursorY = 0;
                         switchToSecondaryInv = true;
+                        this.otherInventory.cursorX = Math.Min(this.cursorX, this.otherInventory.storage.Width - 1);
+                        this.otherInventory.cursorY = this.otherInventory.storage.Height - 1;
                     }
                     if (this.cursorY >= this.storage.Height) this.cursorY = this.storage.Height - 1;
 
@@ -411,7 +419,6 @@ namespace SonOfRobin
             {
                 this.MoveOtherInventoryToTop();
                 this.MoveDraggedPiecesToOtherInv();
-
             }
         }
 
@@ -424,10 +431,8 @@ namespace SonOfRobin
             else
             {
                 this.MoveCursorByNormalInput();
-                if (this.draggedPieces.Count == 0)
-                { this.ProcessPieceSelectMode(); }
-                else
-                { this.ProcessPieceDragMode(); }
+                if (this.draggedPieces.Count == 0) this.ProcessPieceSelectMode();
+                else this.ProcessPieceDragMode();
             }
         }
 

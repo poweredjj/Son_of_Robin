@@ -6,7 +6,7 @@ namespace SonOfRobin
 {
     public class HintEngine
     {
-        public enum Type { Hungry, VeryHungry, Starving, Tired, VeryTired, CantShootInWater, SmallInventory, MapNegative, CineIntroduction };
+        public enum Type { Hungry, VeryHungry, Starving, Tired, VeryTired, CantShootInWater, SmallInventory, MapNegative, Lava, EnteringDangerZone, CineIntroduction };
 
         private static readonly List<Type> typesThatIgnoreShowHintSetting = new List<Type> { Type.CineIntroduction };
 
@@ -168,6 +168,22 @@ namespace SonOfRobin
                         break;
                     }
 
+                case Type.Lava:
+                    {
+                        this.Disable(type: type, delay: 0);
+                        ShowMessageDuringPause(new List<HintMessage> {
+                            new HintMessage(text: "Ouch! This is lava!") });
+                        break;
+                    }
+
+                case Type.EnteringDangerZone:
+                    {
+                        this.Disable(type: type, delay: 0);
+                        ShowMessageDuringPause(new List<HintMessage> {
+                            new HintMessage(text: "This dark area is... strange.\nI have a feeling that it is not safe there.") });
+                        break;
+                    }
+
                 case Type.CineIntroduction:
                     {
                         this.Disable(type: type, delay: 0);
@@ -224,7 +240,7 @@ namespace SonOfRobin
                         taskChain.Add(new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.SetCineMode, delay: 0, executeHelper: false, storeForLaterUse: true));
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CheckForPieceHints, delay: 60, executeHelper: new List<PieceHint.Type> { PieceHint.Type.CrateStarting }, menu: null, storeForLaterUse: true));
 
-                        new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.ExecuteTaskChain, turnOffInput: true, executeHelper: taskChain);
+                        new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.ExecuteTaskChain, turnOffInputUntilExecution: true, executeHelper: taskChain);
 
                         break;
                     }
@@ -253,7 +269,7 @@ namespace SonOfRobin
             taskChain.Insert(0, new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.SetCineMode, delay: 1, executeHelper: true, storeForLaterUse: true));
             taskChain.Add(new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.SetCineMode, delay: 0, executeHelper: false, storeForLaterUse: true));
 
-            new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.ExecuteTaskChain, turnOffInput: true, executeHelper: taskChain);
+            new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.ExecuteTaskChain, turnOffInputUntilExecution: true, executeHelper: taskChain);
         }
 
         public static void ShowPieceDuringPause(World world, BoardPiece pieceToShow, List<HintMessage> messageList)
@@ -281,7 +297,7 @@ namespace SonOfRobin
 
             taskChain.Add(new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.SetCineMode, delay: 0, executeHelper: false, storeForLaterUse: true));
 
-            new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.ExecuteTaskChain, turnOffInput: true, executeHelper: taskChain);
+            new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.ExecuteTaskChain, turnOffInputUntilExecution: true, executeHelper: taskChain);
         }
         public void RestoreAllHints()
         {

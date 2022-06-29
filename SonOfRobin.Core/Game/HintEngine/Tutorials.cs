@@ -5,7 +5,7 @@ namespace SonOfRobin
 {
     public class Tutorials
     {
-        public enum Type { BreakThing, Equip, BuildWorkshop, GetWood, Mine, Interact, PickUp, Hit, Craft, ShootProjectile, Cook, ShakeFruit, AnimalAttacking }
+        public enum Type { BreakThing, Equip, BuildWorkshop, GetWood, Mine, Interact, PickUp, Hit, Craft, ShootProjectile, Cook, ShakeFruit, AnimalAttacking, DangerZone }
 
         private static readonly HintMessage.BoxType messageHeaderType = HintMessage.BoxType.BlueBox;
         private static readonly HintMessage.BoxType messageTextType = HintMessage.BoxType.LightBlueBox;
@@ -66,7 +66,7 @@ namespace SonOfRobin
             taskChain.Insert(0, new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.SetCineMode, delay: 1, executeHelper: true, storeForLaterUse: true));
             taskChain.Add(new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.SetCineMode, delay: 0, executeHelper: false, storeForLaterUse: true));
 
-            new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.ExecuteTaskChain, turnOffInput: true, executeHelper: taskChain);
+            new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.ExecuteTaskChain, turnOffInputUntilExecution: true, executeHelper: taskChain);
 
             if (hintEngine != null) hintEngine.shownTutorials.Add(type);
         }
@@ -191,6 +191,12 @@ namespace SonOfRobin
                 messages: new List<HintMessage>  {
                     new HintMessage(text: "A red exclamation mark means than an animal is attacking you.", boxType: messageTextType),
                     new HintMessage(text: "You should run away from it, or try to fight it.", boxType: messageTextType)});
+
+            new Tutorial(type: Type.DangerZone, name: "danger zones", title: "Danger zones.",
+                messages: new List<HintMessage>  {
+                    new HintMessage(text: "Darker terrain indicate danger.", boxType: messageTextType),
+                    new HintMessage(text: "Some animals will not go outside of these zones.", boxType: messageTextType),
+                    new HintMessage(text: "There are some items and plants, that can only be found here.", boxType: messageTextType),});
         }
 
     }

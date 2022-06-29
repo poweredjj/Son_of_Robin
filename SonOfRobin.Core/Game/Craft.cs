@@ -83,16 +83,17 @@ namespace SonOfRobin
                 World world = player.world;
                 Vector2 position = player.sprite.position;
 
-                var storagesToUse = player.CraftStorages;
 
-                if (!this.CheckIfStorageContainsAllIngredients(storageList: storagesToUse))
+                var storagesToTakeFrom = player.CraftStorages;
+
+                if (!this.CheckIfStorageContainsAllIngredients(storageList: storagesToTakeFrom))
                 {
                     new TextWindow(text: "Not enough ingredients.", textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false, blockInputDuration: 30);
                     MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"Not enough ingredients to craft '{this.pieceToCreate}'.");
                     return false;
                 }
 
-                PieceStorage.DestroySpecifiedPiecesInMultipleStorages(storageList: storagesToUse, quantityByPiece: this.ingredients);
+                PieceStorage.DestroySpecifiedPiecesInMultipleStorages(storageList: storagesToTakeFrom, quantityByPiece: this.ingredients);
 
                 for (int i = 0; i < this.amountToCreate; i++)
                 {
@@ -101,7 +102,9 @@ namespace SonOfRobin
                     if (piece.sprite.placedCorrectly)
                     {
                         piece.sprite.MoveToClosestFreeSpot(position);
-                        foreach (PieceStorage storage in storagesToUse)
+
+                        var storagesToPutInto = piece.GetType() == typeof(Tool) ? player.CraftStoragesToolbarFirst : player.CraftStorages;
+                        foreach (PieceStorage storage in storagesToPutInto)
                         {
                             if (storage.CanFitThisPiece(piece))
                             {

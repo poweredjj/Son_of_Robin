@@ -4,9 +4,10 @@ using System.Collections.Generic;
 
 namespace SonOfRobin
 {
+    [Serializable]
     public class AllowedFields
     {
-        public enum RangeName { All, WaterAll, WaterShallow, WaterMedium, WaterDeep, GroundSand, GroundAll, Volcano };
+        public enum RangeName { All, WaterAll, WaterShallow, WaterMedium, WaterDeep, GroundSand, GroundAll, Volcano, NoDanger, Danger };
 
         private Dictionary<TerrainName, AllowedRange> rangesByTerrainName;
 
@@ -62,11 +63,19 @@ namespace SonOfRobin
                         break;
 
                     case RangeName.GroundAll:
-                        this.AddRange(terrainName: TerrainName.Height, min: (byte)(Terrain.waterLevelMax + 1), max: (byte)(Terrain.volcanoLevelMin - 1));
+                        this.AddRange(terrainName: TerrainName.Height, min: (byte)(Terrain.waterLevelMax + 1), max: (byte)(Terrain.volcanoEdgeMin - 1));
                         break;
 
                     case RangeName.Volcano:
-                        this.AddRange(terrainName: TerrainName.Height, min: (byte)(Terrain.volcanoLevelMin - 1), max: 255);
+                        this.AddRange(terrainName: TerrainName.Height, min: (byte)(Terrain.volcanoEdgeMin - 1), max: 255);
+                        break;
+
+                    case RangeName.NoDanger:
+                        this.AddRange(terrainName: TerrainName.Danger, min: 0, max: Terrain.saveZoneMax);
+                        break;
+
+                    case RangeName.Danger:
+                        this.AddRange(terrainName: TerrainName.Danger, min: (byte)(Terrain.saveZoneMax + 1), max: 255);
                         break;
 
                     default:
@@ -76,13 +85,18 @@ namespace SonOfRobin
             }
         }
 
-        private void AddRange(TerrainName terrainName, byte min, byte max)
+        public void AddRange(TerrainName terrainName, byte min, byte max)
         {
             if (!this.rangesByTerrainName.ContainsKey(terrainName))
             { this.rangesByTerrainName[terrainName] = new AllowedRange(min: min, max: max); }
 
             else
             { this.rangesByTerrainName[terrainName].ExpandRange(expandedMin: min, expandedMax: max); }
+        }
+
+        public void RemoveTerrain(TerrainName terrainName)
+        {
+            this.rangesByTerrainName.Remove(terrainName);
         }
 
         public bool CanStandHere(Vector2 position, World world)

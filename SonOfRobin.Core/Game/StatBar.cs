@@ -10,8 +10,8 @@ namespace SonOfRobin
         private static readonly List<StatBar> barsToDraw = new List<StatBar> { };
         private static int currentBatchCount = 0;
 
-        private static readonly SpriteFont defaultFont = SonOfRobinGame.fontSuperSmall;
-        private static SpriteFont currentBatchFont = SonOfRobinGame.fontSuperSmall;
+        private static readonly SpriteFont defaultFont = SonOfRobinGame.fontPixelMix5;
+        private static SpriteFont currentBatchFont = SonOfRobinGame.fontPixelMix5;
         private readonly SpriteFont font;
         private readonly Color color;
 

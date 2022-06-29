@@ -103,7 +103,6 @@ namespace SonOfRobin
             }
         }
 
-
         public Matrix TransformMatrix
         {
             get

@@ -65,7 +65,7 @@ namespace SonOfRobin
             }
         }
 
-        private static readonly SpriteFont font = SonOfRobinGame.fontHuge;
+        private static readonly SpriteFont font = SonOfRobinGame.fontTommy40;
         private static readonly float marginPercent = 0.02f;
         private static readonly float entryWidthPercent = 0.35f;
         private static readonly float entryHeightPercent = 0.045f;
@@ -178,7 +178,7 @@ namespace SonOfRobin
             return centerPos;
         }
 
-        public void TurnOn(int curVal, int maxVal, string text, bool addNumbers = true, bool addTransition = false)
+        public void TurnOn(int curVal, int maxVal, string text, bool addNumbers = true, bool addTransition = false, bool turnOffInput = false)
         {
             // simple progress bar usage
 
@@ -207,9 +207,10 @@ namespace SonOfRobin
             this.TurnOn(entryList: entryList, newPosX: 0, newPosY: 0, addTransition: addTransition, centerHoriz: true, centerVert: true);
         }
 
-        public void TurnOn(List<TextEntry> entryList, int newPosX, int newPosY, bool addTransition = true, bool centerHoriz = false, bool centerVert = false)
+        public void TurnOn(List<TextEntry> entryList, int newPosX, int newPosY, bool addTransition = true, bool centerHoriz = false, bool centerVert = false, bool turnOffInput = false)
         {
             // normal usage
+            if (turnOffInput) this.InputType = InputTypes.Normal; // captures input and deactivates normal input in the scenes below
 
             if (centerHoriz || centerVert)
             {
@@ -271,6 +272,8 @@ namespace SonOfRobin
 
         public void TurnOff(bool addTransition = true)
         {
+            this.InputType = InputTypes.None; // restores input 
+
             if (!this.isActive) return;
 
             this.transManager.ClearPreviousTransitions(copyDrawToBase: true);

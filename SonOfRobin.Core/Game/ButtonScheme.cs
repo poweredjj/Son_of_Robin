@@ -9,6 +9,8 @@ namespace SonOfRobin
 
         private static Type currentType;
 
+        public static Texture2D plus; // for buttons that need to be pressed together
+
         public static Texture2D buttonA;
         public static Texture2D buttonB;
         public static Texture2D buttonX;
@@ -49,6 +51,8 @@ namespace SonOfRobin
         public static void ChangeType(Type type)
         {
             currentType = type;
+
+            plus = SonOfRobinGame.content.Load<Texture2D>("gfx/plus");
 
             switch (currentType)
             {

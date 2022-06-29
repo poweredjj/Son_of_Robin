@@ -192,9 +192,9 @@ namespace SonOfRobin
             if (target.yield != null) target.yield.DropFirstPieces(hitPower: hitPower);
             if (target.GetType() == typeof(Animal) && world.random.Next(0, 2) == 0) PieceTemplate.CreateOnBoard(world: world, position: target.sprite.position, templateName: PieceTemplate.Name.BloodSplatter);
 
-            if (target.hitPoints <= 0)
+            if (!target.alive || target.hitPoints <= 0)
             {
-                if (target.yield != null) target.yield.DropFinalPieces();
+                if (target.yield != null && target.exists) target.yield.DropFinalPieces();
                 target.Destroy();
 
                 int numberOfExplosions = world.random.Next(5, 12);
@@ -223,7 +223,10 @@ namespace SonOfRobin
                         State.AnimalChaseTarget : State.AnimalFlee;
 
                     animalTarget.UpdateRegenCooldown(); // animal will not heal for a while
-                    animalTarget.AddPassiveMovement(movement: (attacker.sprite.position - animalTarget.sprite.position) * targetPushMultiplier * -0.5f * hitPower);
+
+                    var movement = (attacker.sprite.position - animalTarget.sprite.position) * targetPushMultiplier * -0.5f * hitPower;
+                    animalTarget.AddPassiveMovement(movement: Helpers.VectorAbsMax(vector: movement, maxVal: 400f));
+
                     animalTarget.buffEngine.AddBuff(world: attacker.world, buff: new BuffEngine.Buff(world: world, type: BuffEngine.BuffType.Speed, value: -animalTarget.speed / 2, autoRemoveDelay: 180, isPositive: false)); // animal will be slower for a while
                 }
             }

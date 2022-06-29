@@ -12,9 +12,12 @@ namespace SonOfRobin
         public enum TaskName { Empty, CreateNewWorld, CreateNewWorldNow, QuitGame, OpenMainMenu, OpenCreateMenu, OpenIslandTemplateMenu, OpenSetSeedMenu, OpenOptionsMenu, OpenTutorialsMenu, OpenLoadMenu, OpenSaveMenu, OpenDebugMenu, OpenConfirmationMenu, OpenCreateAnyPieceMenu, OpenGameOverMenu, SaveGame, LoadGame, LoadGameNow, ReturnToMainMenu, SavePrefs, ProcessConfirmation, OpenCraftMenu, Craft, Hit, CreateNewPiece, CreateDebugPieces, OpenContainer, DeleteObsoleteSaves, DropFruit, GetEaten, ExecuteTaskWithDelay, AddWorldEvent, OpenTextWindow, SleepInsideShelter, SleepOutside, TempoFastForward, TempoStop, TempoPlay, CameraTrackPiece, CameraTrackCoords, CameraSetZoom, ShowCookingProgress, RestoreHints, OpenMainMenuIfSpecialKeysArePressed, CheckForPieceHints, ShowHint, ExecuteTaskList, ExecuteTaskChain, ShowTutorial, RemoveScene, ChangeSceneInputType, SetCineMode, AddTransition, SkipCinematics, DeleteTemplates }
 
         private readonly static Dictionary<int, List<Task>> queue = new Dictionary<int, List<Task>>();
+        private static int inputTurnedOffUntilFrame = 0;
 
         public static void ProcessQueue()
         {
+            if (SonOfRobinGame.currentUpdate >= inputTurnedOffUntilFrame) Input.GlobalInputActive = true;
+
             var framesToProcess = queue.Keys.Where(frameNo => SonOfRobinGame.currentUpdate >= frameNo).ToList();
             if (framesToProcess.Count == 0) return;
 
@@ -42,35 +45,42 @@ namespace SonOfRobin
             private Object executeHelper;
             private readonly int delay;
             private int frame;
-            private readonly bool turnOffInput;
+            private readonly bool turnOffInputUntilExecution;
             private bool rebuildsMenu;
 
             public string TaskText
             {
                 get
                 {
-                    string turnOffInputText = this.turnOffInput ? "(input off)" : "";
+                    string turnOffInputText = this.turnOffInputUntilExecution ? "(input off)" : "";
                     return $"{this.taskName} {turnOffInputText}";
                 }
             }
 
-            public Task(Menu menu, TaskName taskName, Object executeHelper, bool turnOffInput = false, int delay = 0, bool rebuildsMenu = false, bool storeForLaterUse = false)
+            public Task(Menu menu, TaskName taskName, Object executeHelper, bool turnOffInputUntilExecution = false, int delay = 0, bool rebuildsMenu = false, bool storeForLaterUse = false)
             {
                 this.taskName = taskName;
                 this.executeHelper = executeHelper;
                 this.menu = menu;
-                this.turnOffInput = turnOffInput;
+                this.turnOffInputUntilExecution = turnOffInputUntilExecution;
                 this.delay = delay;
                 this.rebuildsMenu = rebuildsMenu;
 
                 if (!storeForLaterUse)
                 {
-                    if (this.turnOffInput) Input.GlobalInputActive = false;
-
                     this.frame = SonOfRobinGame.currentUpdate + this.delay;
+
+                    if (this.turnOffInputUntilExecution) this.TurnOffInput();
+
                     this.Process();
                 }
                 else this.frame = -1;
+            }
+
+            private void TurnOffInput()
+            {
+                Input.GlobalInputActive = false;
+                inputTurnedOffUntilFrame = Math.Max(this.frame, inputTurnedOffUntilFrame);
             }
 
             public void Process()
@@ -87,7 +97,7 @@ namespace SonOfRobin
 
                 //  MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.User, message: $"Adding to queue '{this.taskName}' - delay {this.delay}.", color: Color.White); // for testing
 
-                if (this.turnOffInput) Input.GlobalInputActive = false;
+                if (this.turnOffInputUntilExecution) this.TurnOffInput();
                 if (this.frame == -1) this.frame = SonOfRobinGame.currentUpdate + this.delay;
                 if (!queue.ContainsKey(this.frame)) queue[this.frame] = new List<Task>();
                 queue[this.frame].Add(this);
@@ -96,7 +106,6 @@ namespace SonOfRobin
             public void Execute()
             {
                 this.RunTask();
-                if (this.turnOffInput && this.taskName != TaskName.ExecuteTaskChain) Input.GlobalInputActive = true;
                 if (this.rebuildsMenu) this.menu.Rebuild();
             }
 
@@ -179,7 +188,7 @@ namespace SonOfRobin
 
                         Scene.RemoveAllScenesOfType(typeof(Menu));
 
-                        new Task(menu: null, taskName: TaskName.CreateNewWorldNow, turnOffInput: true, delay: 13, executeHelper: executeHelper);
+                        new Task(menu: null, taskName: TaskName.CreateNewWorldNow, turnOffInputUntilExecution: true, delay: 13, executeHelper: executeHelper);
 
                         return;
 
@@ -264,7 +273,7 @@ namespace SonOfRobin
 
                         if (this.rebuildsMenu)
                         {// menu should be rebuilt after the game has been saved
-                            new Task(menu: this.menu, taskName: TaskName.Empty, turnOffInput: false, delay: 12, executeHelper: null, rebuildsMenu: true);
+                            new Task(menu: this.menu, taskName: TaskName.Empty, turnOffInputUntilExecution: false, delay: 12, executeHelper: null, rebuildsMenu: true);
                             this.rebuildsMenu = false;
                         }
 ;
@@ -288,7 +297,7 @@ namespace SonOfRobin
                         Menu.RemoveEveryMenuOfTemplate(MenuTemplate.Name.Pause);
                         Menu.RemoveEveryMenuOfTemplate(MenuTemplate.Name.GameOver);
 
-                        new Task(menu: null, taskName: TaskName.LoadGameNow, turnOffInput: true, delay: 17, executeHelper: this.executeHelper);
+                        new Task(menu: null, taskName: TaskName.LoadGameNow, turnOffInputUntilExecution: true, delay: 17, executeHelper: this.executeHelper);
 
                         return;
 
@@ -343,11 +352,13 @@ namespace SonOfRobin
                             }
 
                             var targets = new List<BoardPiece> { };
+
+                            var nearbyPieces = world.grid.GetPiecesWithinDistance(groupName: Cell.Group.All, mainSprite: player.sprite, distance: activeTool.range == 0 ? (ushort)60 : (ushort)activeTool.range, offsetX: offsetX, offsetY: offsetY, compareWithBottom: true);
+
+                            nearbyPieces = nearbyPieces.Where(piece => piece.yield != null && piece.exists).ToList();
+
                             if (activeTool.range == 0)
                             {
-                                var nearbyPieces = world.grid.GetPiecesWithinDistance(groupName: Cell.Group.All, mainSprite: player.sprite, distance: 60, offsetX: offsetX, offsetY: offsetY, compareWithBottom: true);
-                                nearbyPieces = nearbyPieces.Where(piece => piece.yield != null).ToList();
-
                                 var animals = nearbyPieces.Where(piece => piece.GetType() == typeof(Animal)).ToList();
                                 if (animals.Count > 0) nearbyPieces = animals;
 
@@ -357,30 +368,33 @@ namespace SonOfRobin
                             }
                             else
                             {
-                                float aimingAngle = player.sprite.GetAngleFromOrientation();
+                                Rectangle areaRect = new Rectangle(x: 0, y: 0, width: world.width, height: world.height);
 
-                                //  MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"aimingAngle {aimingAngle}."); // for testing
+                                switch (player.sprite.orientation)
+                                {
+                                    case Sprite.Orientation.left:
+                                        areaRect.Width = player.sprite.gfxRect.Left;
+                                        break;
 
-                                Point playerPoint = new Point((int)player.sprite.position.X, (int)player.sprite.position.Y);
+                                    case Sprite.Orientation.right:
+                                        areaRect.X = player.sprite.gfxRect.Center.X;
+                                        areaRect.Width = world.width - player.sprite.gfxRect.Center.X;
+                                        break;
 
-                                int aidDistance = activeTool.range;
+                                    case Sprite.Orientation.up:
+                                        areaRect.Height = player.sprite.gfxRect.Center.Y;
+                                        break;
 
-                                float angleLeft = aimingAngle - 0.7f;
-                                float angleRight = aimingAngle + 0.7f;
+                                    case Sprite.Orientation.down:
+                                        areaRect.Y = player.sprite.gfxRect.Center.Y;
+                                        areaRect.Height = world.height - player.sprite.gfxRect.Center.Y;
+                                        break;
 
-                                int leftPointX = (int)Math.Round(aidDistance * Math.Cos(angleLeft));
-                                int leftPointY = (int)Math.Round(aidDistance * Math.Sin(angleLeft));
+                                    default:
+                                        throw new ArgumentException($"Unsupported orientation - {player.sprite.orientation}.");
+                                }
 
-                                int rightPointX = (int)Math.Round(aidDistance * Math.Cos(angleRight));
-                                int rightPointY = (int)Math.Round(aidDistance * Math.Sin(angleRight));
-
-                                Point leftPoint = new Point((int)(leftPointX + player.sprite.position.X), (int)(leftPointY + player.sprite.position.Y));
-                                Point rightPoint = new Point((int)(rightPointX + player.sprite.position.X), (int)(rightPointY + player.sprite.position.Y));
-
-                                var piecesInsideTriangle = world.grid.GetPiecesInsideTriangle(groupName: Cell.Group.All, point1: playerPoint, point2: leftPoint, point3: rightPoint);
-
-                                piecesInsideTriangle = piecesInsideTriangle.Where(piece => piece.yield != null).ToList();
-                                targets.AddRange(piecesInsideTriangle);
+                                targets = nearbyPieces.Where(piece => areaRect.Contains(piece.sprite.position)).ToList();
                             }
 
                             activeTool.Use(shootingPower: shootingPower, targets: targets, highlightOnly: highlightOnly);
@@ -683,7 +697,7 @@ namespace SonOfRobin
 
                                 currentTask.Process(); // must go before new Task(), to maintain correct execute order
 
-                                if (taskChain.Count > 0) new Task(menu: null, taskName: TaskName.ExecuteTaskChain, executeHelper: taskChain, delay: currentTask.delay, turnOffInput: true);
+                                if (taskChain.Count > 0) new Task(menu: null, taskName: TaskName.ExecuteTaskChain, executeHelper: taskChain, delay: currentTask.delay, turnOffInputUntilExecution: true);
                             }
 
                             if (taskChain.Count == 0) Input.GlobalInputActive = true; // to ensure that input will be active at the end
@@ -861,7 +875,7 @@ namespace SonOfRobin
 
                             string currentPath = pathsToDelete[0];
 
-                            SonOfRobinGame.progressBar.TurnOn(curVal: pathCount - pathsToDelete.Count + 1, maxVal: pathCount, text: $"Deleting templates...\n{Path.GetFileName(currentPath)}", addTransition: false);
+                            SonOfRobinGame.progressBar.TurnOn(curVal: pathCount - pathsToDelete.Count + 1, maxVal: pathCount, text: $"Deleting templates...\n{Path.GetFileName(currentPath)}", addTransition: false, turnOffInput: true);
 
                             if (!firstRun)
                             {
@@ -878,7 +892,7 @@ namespace SonOfRobin
                             }
 
                             var newDeleteData = new Dictionary<string, Object> { { "pathsToDelete", pathsToDelete }, { "pathCount", pathCount } };
-                            new Task(menu: null, taskName: TaskName.DeleteTemplates, turnOffInput: true, delay: 1, executeHelper: newDeleteData);
+                            new Task(menu: null, taskName: TaskName.DeleteTemplates, turnOffInputUntilExecution: true, delay: 1, executeHelper: newDeleteData);
 
                             return;
                         }
@@ -886,7 +900,6 @@ namespace SonOfRobin
                     default:
                         throw new DivideByZeroException($"Unsupported taskName - {taskName}.");
                 }
-
             }
 
             private static void OpenMenu(MenuTemplate.Name templateName, Object executeHelper)
@@ -919,7 +932,7 @@ namespace SonOfRobin
                 }
 
                 if (!autoSave && quitGame) SonOfRobinGame.quitGame = true;
-                if (!quitGame) new Task(menu: null, taskName: TaskName.OpenMainMenu, turnOffInput: true, delay: autoSave ? 30 : 0, executeHelper: null);
+                if (!quitGame) new Task(menu: null, taskName: TaskName.OpenMainMenu, turnOffInputUntilExecution: true, delay: autoSave ? 30 : 0, executeHelper: null);
             }
         }
 

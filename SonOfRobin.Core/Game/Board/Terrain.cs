@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.IO;
 
 namespace SonOfRobin
@@ -9,7 +7,8 @@ namespace SonOfRobin
     public enum TerrainName
     {
         Height,
-        Humidity
+        Humidity,
+        Danger
     }
     public class Terrain
     {
@@ -26,7 +25,9 @@ namespace SonOfRobin
         public Byte[,] mapData;
 
         public static byte waterLevelMax = 84;
-        public static byte volcanoLevelMin = 210;
+        public static byte volcanoEdgeMin = 210;
+        public static byte lavaMin = 225;
+        public static byte saveZoneMax = 150;
 
         private static int gradientWidth;
         private static int gradientHeight;
@@ -94,16 +95,12 @@ namespace SonOfRobin
 
                     double rawNoiseValue = noise.GetNoise(globalX, globalY) + 1; // 0-2 range
 
-                    if (addBorder)
-                    {
-                        rawNoiseValue = Math.Max(rawNoiseValue - Math.Max(gradientLineX[globalX], gradientLineY[globalY]), 0);
-                    }
+                    if (addBorder) rawNoiseValue = Math.Max(rawNoiseValue - Math.Max(gradientLineX[globalX], gradientLineY[globalY]), 0);
 
-                    byte mapValue = Convert.ToByte((rawNoiseValue) * 128); // 0-255 range
+                    byte mapValue = Convert.ToByte(rawNoiseValue * 128); // 0-255 range
                     this.mapData[x, y] = mapValue;
                 }
             }
-
         }
 
         private void CreateGradientLines()

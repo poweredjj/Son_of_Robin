@@ -55,6 +55,21 @@ namespace SonOfRobin
             this.drawActive = true;
             this.blocksDrawsBelow = this.fullScreen;
 
+            this.UpdateResolution();
+
+            if (addTransition) this.AddTransition(inTrans: true);
+
+            this.blocksUpdatesBelow = this.fullScreen && !Preferences.DebugMode; // fullscreen map should only be "live animated" in debug mode
+        }
+
+        public void ForceRender()
+        {
+            this.UpdateResolution();
+            this.UpdateBackground();
+        }
+
+        public void UpdateResolution() // main rendering code
+        {
             float maxPercentWidth = this.fullScreen ? 1 : minimapMaxPercentWidth;
             float maxPercentHeight = this.fullScreen ? 1 : minimapMaxPercentHeight;
 
@@ -66,7 +81,6 @@ namespace SonOfRobin
             this.viewParams.Height = Convert.ToInt32(world.height * this.multiplier);
 
             this.UpdateViewPos();
-            if (addTransition) this.AddTransition(inTrans: true);
 
             if (this.terrainGfx == null || this.terrainGfx.Width != this.viewParams.Width || this.terrainGfx.Height != this.viewParams.Height)
             {
@@ -75,12 +89,36 @@ namespace SonOfRobin
                 this.dirtyFog = true;
             }
             this.UpdateFogOfWar();
-            this.blocksUpdatesBelow = this.fullScreen && !Preferences.DebugMode; // fullscreen map should only be "animated" in debug mode
+        }
+
+        public void UpdateBackground()
+        {
+            this.UpdateFogOfWar();
+
+            if (!this.dirtyBackground) return;
+
+            MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"Updating map background (fullscreen {this.fullScreen})");
+
+            this.StartRenderingToTarget(this.terrainGfx);
+
+            int width = (int)(this.world.width * this.multiplier);
+            int height = (int)(this.world.height * this.multiplier);
+
+            Texture2D mapTexture = BoardGraphics.CreateEntireMapTexture(width: width, height: height, grid: this.world.grid, multiplier: this.multiplier);
+            Rectangle sourceRectangle = new Rectangle(0, 0, width, height);
+            SonOfRobinGame.spriteBatch.Draw(mapTexture, sourceRectangle, sourceRectangle, Color.White);
+
+            this.EndRenderingToTarget();
+
+            this.dirtyBackground = false;
+            MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"Map background updated ({this.viewParams.Width}x{this.viewParams.Height}).", color: Color.White);
         }
 
         private void UpdateFogOfWar()
         {
             if (this.fogGfx != null && this.dirtyFog == false) return;
+
+            MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"Updating map fog (fullscreen {this.fullScreen})");
 
             this.fogGfx = new RenderTarget2D(SonOfRobinGame.graphicsDevice, this.viewParams.Width, this.viewParams.Height, false, SurfaceFormat.Color, DepthFormat.None);
             this.StartRenderingToTarget(this.fogGfx);
@@ -148,31 +186,6 @@ namespace SonOfRobin
                 this.transManager.AddMultipleTransitions(outTrans: !inTrans, duration: 8, endTurnOffDraw: turnOffDraw, endTurnOffUpdate: turnOffUpdate,
                     paramsToChange: new Dictionary<string, float> { { "PosY", this.viewParams.PosY + this.viewParams.Height } });
             }
-        }
-
-
-        public void UpdateResolution()
-        { if (this.updateActive) this.TurnOn(addTransition: false); }
-
-        public void UpdateBackground()
-        {
-            this.UpdateFogOfWar();
-
-            if (!this.dirtyBackground) return;
-
-            this.StartRenderingToTarget(this.terrainGfx);
-
-            int width = (int)(this.world.width * this.multiplier);
-            int height = (int)(this.world.height * this.multiplier);
-
-            Texture2D mapTexture = BoardGraphics.CreateEntireMapTexture(width: width, height: height, grid: this.world.grid, multiplier: this.multiplier);
-            Rectangle sourceRectangle = new Rectangle(0, 0, width, height);
-            SonOfRobinGame.spriteBatch.Draw(mapTexture, sourceRectangle, sourceRectangle, Color.White);
-
-            this.EndRenderingToTarget();
-
-            this.dirtyBackground = false;
-            MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"Map background updated ({this.viewParams.Width}x{this.viewParams.Height}).", color: Color.White);
         }
 
         public override void Update(GameTime gameTime)

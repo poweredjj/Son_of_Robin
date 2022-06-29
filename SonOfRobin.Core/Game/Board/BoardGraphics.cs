@@ -77,7 +77,7 @@ namespace SonOfRobin
         public static Texture2D CreateEntireMapTexture(int width, int height, Grid grid, float multiplier)
         {
             var colorArray = new Color[width * height];
-            byte pixelHeight, pixelHumidity;
+            byte pixelHeight, pixelHumidity, pixelDanger;
             int pixelX, pixelY;
 
             for (int y = 0; y < height; y++)
@@ -89,7 +89,8 @@ namespace SonOfRobin
 
                     pixelHeight = grid.GetFieldValue(position: new Vector2(pixelX, pixelY), terrainName: TerrainName.Height);
                     pixelHumidity = grid.GetFieldValue(position: new Vector2(pixelX, pixelY), terrainName: TerrainName.Humidity);
-                    colorArray[(y * width) + x] = CreatePixel(pixelHeight: pixelHeight, pixelHumidity: pixelHumidity);
+                    pixelDanger = grid.GetFieldValue(position: new Vector2(pixelX, pixelY), terrainName: TerrainName.Danger);
+                    colorArray[(y * width) + x] = CreatePixel(pixelHeight: pixelHeight, pixelHumidity: pixelHumidity, pixelDanger: pixelDanger);
                 }
             }
 
@@ -104,6 +105,7 @@ namespace SonOfRobin
 
             var mapDataHeight = this.cell.terrainByName[TerrainName.Height].mapData;
             var mapDataHumidity = this.cell.terrainByName[TerrainName.Humidity].mapData;
+            var mapDataDanger = this.cell.terrainByName[TerrainName.Danger].mapData;
 
             var builder = PngBuilder.Create(this.cell.width, this.cell.height, true);
 
@@ -113,18 +115,16 @@ namespace SonOfRobin
             {
                 for (int y = 0; y < this.cell.height; y++)
                 {
-                    pixel = CreatePixel(pixelHeight: mapDataHeight[x, y], pixelHumidity: mapDataHumidity[x, y]);
+                    pixel = CreatePixel(pixelHeight: mapDataHeight[x, y], pixelHumidity: mapDataHumidity[x, y], pixelDanger: mapDataDanger[x, y]);
                     builder.SetPixel(pixel.R, pixel.G, pixel.B, x, y);
                 }
             }
-
 
             using (var memoryStream = new MemoryStream())
             {
                 builder.Save(memoryStream);
                 FileReaderWriter.SaveMemoryStream(memoryStream: memoryStream, this.templatePath);
             }
-
         }
 
         private Color[] CreateColorArrayFromTerrain()
@@ -133,19 +133,23 @@ namespace SonOfRobin
 
             var mapDataHeight = this.cell.terrainByName[TerrainName.Height].mapData;
             var mapDataHumidity = this.cell.terrainByName[TerrainName.Humidity].mapData;
+            var mapDataDanger = this.cell.terrainByName[TerrainName.Danger].mapData;
 
             Parallel.For(0, this.cell.height, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, y =>
                  {
                      for (int x = 0; x < this.cell.width; x++)
                      {
-                         tempColorArray[(y * this.cell.width) + x] = CreatePixel(pixelHeight: mapDataHeight[x, y], pixelHumidity: mapDataHumidity[x, y]);
+                         tempColorArray[(y * this.cell.width) + x] = CreatePixel(
+                             pixelHeight: mapDataHeight[x, y],
+                             pixelHumidity: mapDataHumidity[x, y],
+                             pixelDanger: mapDataDanger[x, y]);
                      }
                  });
 
             return tempColorArray;
         }
 
-        private static Color CreatePixel(byte pixelHeight, byte pixelHumidity)
+        private static Color CreatePixel(byte pixelHeight, byte pixelHumidity, byte pixelDanger)
         {
             Color pixel = new Color();
 
@@ -164,10 +168,18 @@ namespace SonOfRobin
                 {
                     if (kvp.Value[1] >= pixelHumidity && pixelHumidity >= kvp.Value[0])
                     {
-                        pixel = Blend2Colors(colorsByName[kvp.Key], pixel);
+                        pixel = Blend2Colors(bottomColor: colorsByName[kvp.Key], topColor: pixel);
                         break;
                     }
                 }
+            }
+
+            if (pixelDanger >= Terrain.saveZoneMax)
+            {
+                byte dangerAlpha = (byte)(((float)(pixelDanger - Terrain.saveZoneMax + 20) / (255 - Terrain.saveZoneMax)) * 150); // last value is max possible alpha
+                dangerAlpha = (byte)((int)(dangerAlpha / 15) * 15); // converting gradient to discrete shades
+
+                pixel = Blend2Colors(bottomColor: pixel, topColor: new Color((byte)40, (byte)0, (byte)0, dangerAlpha));
             }
 
             return pixel;
@@ -180,20 +192,18 @@ namespace SonOfRobin
             this.texture.SetData(tempColorArray);
         }
 
-        public static Color Blend2Colors(Color color1, Color color2)
+        public static Color Blend2Colors(Color bottomColor, Color topColor)
         {
-            if (color1.A == 0) return color2;
+            if (topColor.A == 255) return topColor;
 
-            var alpha2 = Convert.ToSingle(color2.A) / 255;
-            var alpha1 = 1 - alpha2;
+            float topAlpha = Convert.ToSingle(topColor.A) / 255;
+            float bottomAlpha = 1f - topAlpha;
 
-            var newColor = new Color(
-                Convert.ToByte((((float)color1.R * alpha1) + (float)color2.R * alpha2)),
-                Convert.ToByte((((float)color1.G * alpha1) + (float)color2.G * alpha2)),
-                Convert.ToByte((((float)color1.B * alpha1) + (float)color2.B * alpha2)),
+            return new Color(
+                (byte)((bottomColor.R * bottomAlpha) + (topColor.R * topAlpha)),
+                (byte)((bottomColor.G * bottomAlpha) + (topColor.G * topAlpha)),
+                (byte)((bottomColor.B * bottomAlpha) + (topColor.B * topAlpha)),
                 (byte)255);
-
-            return newColor;
         }
 
         private static Dictionary<Colors, Color> GetColorsByName()
@@ -238,9 +248,9 @@ namespace SonOfRobin
                 {Colors.Mountains1, new List<byte>(){160, 163}},
                 {Colors.Mountains2, new List<byte>(){163, 178}},
                 {Colors.Mountains3, new List<byte>(){178, 194}},
-                {Colors.Mountains4, new List<byte>(){194, Terrain.volcanoLevelMin}},
-                {Colors.VolcanoEdge, new List<byte>(){Terrain.volcanoLevelMin, 215}},
-                {Colors.VolcanoInside1, new List<byte>(){215, 225}},
+                {Colors.Mountains4, new List<byte>(){194, Terrain.volcanoEdgeMin}},
+                {Colors.VolcanoEdge, new List<byte>(){Terrain.volcanoEdgeMin, Terrain.lavaMin}},
+                {Colors.VolcanoInside1, new List<byte>(){Terrain.lavaMin, 225}},
                 {Colors.VolcanoInside2, new List<byte>(){225, 255}},
             };
         }

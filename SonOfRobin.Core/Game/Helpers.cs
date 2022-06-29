@@ -108,7 +108,5 @@ namespace SonOfRobin
             return d == 0 || (d < 0) == (s + t <= 0);
         }
 
-
-
     }
 }

@@ -14,7 +14,7 @@ namespace SonOfRobin
         public int fedLevel;
         public float maxStamina;
         public float stamina;
-        public float fatigue;
+        private float fatigue;
         public float maxFatigue;
         public float shootingAngle;
         private int shootingPower;
@@ -25,6 +25,8 @@ namespace SonOfRobin
         public byte toolbarHeight;
         public int wentToSleepFrame;
         public List<PieceStorage> CraftStorages { get { return new List<PieceStorage> { this.pieceStorage, this.toolStorage, this.equipStorage }; } }
+        public List<PieceStorage> CraftStoragesToolbarFirst { get { return new List<PieceStorage> { this.toolStorage, this.pieceStorage, this.equipStorage }; } } // the same as above, changed order
+
 
         public BoardPiece ActiveToolbarPiece
         { get { return this.toolStorage?.lastUsedSlot?.TopPiece; } }
@@ -192,8 +194,8 @@ namespace SonOfRobin
             this.world.colorOverlay.color = Color.DarkRed;
             this.world.colorOverlay.viewParams.Opacity = 0.75f;
             this.world.colorOverlay.transManager.AddTransition(new Transition(transManager: this.world.colorOverlay.transManager, outTrans: false, baseParamName: "Opacity", targetVal: 0f, duration: 200));
-            new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetZoom, turnOffInput: true, delay: 0, executeHelper: new Dictionary<string, Object> { { "zoom", 3f } }, menu: null);
-            new Scheduler.Task(taskName: Scheduler.TaskName.OpenGameOverMenu, turnOffInput: true, delay: 300, menu: null, executeHelper: null);
+            new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetZoom, turnOffInputUntilExecution: true, delay: 0, executeHelper: new Dictionary<string, Object> { { "zoom", 3f } }, menu: null);
+            new Scheduler.Task(taskName: Scheduler.TaskName.OpenGameOverMenu, turnOffInputUntilExecution: true, delay: 300, menu: null, executeHelper: null);
         }
 
         public override Dictionary<string, Object> Serialize()
@@ -278,6 +280,8 @@ namespace SonOfRobin
             this.ExpendEnergy(0.1f);
             if (!this.Walk()) this.Stamina = Math.Min(this.Stamina + 1, this.maxStamina);
 
+            this.CheckGround();
+
             // highlighting pieces to interact with and corresponding interface elements
 
             if (this.world.inputActive) this.UseToolbarPiece(isInShootingMode: false, buttonHeld: false, highlightOnly: true); // only to highlight pieces that will be hit
@@ -293,6 +297,13 @@ namespace SonOfRobin
                     if (SonOfRobinGame.platform == Platform.Mobile) VirtButton.ButtonHighlightOnNextFrame(VButName.Interact);
                     ControlTips.TipHighlightOnNextFrame(tipName: "interact");
                 }
+            }
+
+            var activeToolbarPiece = this.ActiveToolbarPiece;
+            if (activeToolbarPiece != null && activeToolbarPiece.GetType() == typeof(Tool))
+            {
+                var toolPiece = (Tool)activeToolbarPiece;
+                if (toolPiece.shootsProjectile) ControlTips.TipHighlightOnNextFrame(tipName: "aim");
             }
 
             BoardPiece pieceToPickUp = this.ClosestPieceToPickUp;
@@ -379,6 +390,28 @@ namespace SonOfRobin
             }
 
             return hasBeenMoved;
+        }
+
+        private void CheckGround()
+        {
+            if (this.sprite.IsInDangerZone) this.world.hintEngine.ShowGeneralHint(type: HintEngine.Type.EnteringDangerZone, ignoreDelay: true);
+            if (this.sprite.IsDeepInDangerZone) Tutorials.ShowTutorial(type: Tutorials.Type.DangerZone, ignoreDelay: true);
+
+            if (this.sprite.IsInLava)
+            {
+                this.world.hintEngine.ShowGeneralHint(type: HintEngine.Type.Lava, ignoreDelay: true);
+                this.hitPoints -= 1;
+                if (!this.world.colorOverlay.transManager.HasAnyTransition)
+                {
+                    Vector2 screenShake = new Vector2(world.random.Next(-20, 20), world.random.Next(-20, 20));
+
+                    world.transManager.AddMultipleTransitions(outTrans: true, duration: world.random.Next(4, 10), playCount: -1, replaceBaseValue: false, stageTransform: Transition.Transform.Sinus, pingPongCycles: false, cycleMultiplier: 0.02f, paramsToChange: new Dictionary<string, float> { { "PosX", screenShake.X }, { "PosY", screenShake.Y } });
+
+                    this.world.colorOverlay.color = Color.Red;
+                    this.world.colorOverlay.viewParams.Opacity = 0f;
+                    this.world.colorOverlay.transManager.AddTransition(new Transition(transManager: this.world.colorOverlay.transManager, outTrans: true, duration: 20, playCount: 1, stageTransform: Transition.Transform.Sinus, baseParamName: "Opacity", targetVal: 0.5f));
+                }
+            }
         }
 
         public override void SM_PlayerControlledShooting()
@@ -493,7 +526,7 @@ namespace SonOfRobin
             this.world.colorOverlay.viewParams.Opacity = 0.75f;
             this.world.colorOverlay.transManager.AddTransition(new Transition(transManager: this.world.colorOverlay.transManager, outTrans: false, baseParamName: "Opacity", targetVal: 0f, duration: 20));
 
-            new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.TempoFastForward, delay: 22, executeHelper: 20, turnOffInput: true);
+            new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.TempoFastForward, delay: 22, executeHelper: 20, turnOffInputUntilExecution: true);
 
             MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.User, message: "Going to sleep.");
         }

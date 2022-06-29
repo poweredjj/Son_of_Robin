@@ -32,6 +32,13 @@
 /processorParam:TextureFormat=Compressed
 /build:fonts/FreeSansBold12.spritefont
 
+#begin fonts/FreeSansBold24.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:fonts/FreeSansBold24.spritefont
+
 #begin fonts/FreeSansBold9.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
@@ -78,6 +85,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:gfx/8f296dbbaf43865bc29e99660fe7b5af_2x.png
+
+#begin gfx/acorn.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/acorn.png
 
 #begin gfx/actor29rec4.png
 /importer:TextureImporter
@@ -672,6 +691,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:gfx/parchment.png
+
+#begin gfx/plus.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/plus.png
 
 #begin gfx/PS4/PS4_Circle.png
 /importer:TextureImporter

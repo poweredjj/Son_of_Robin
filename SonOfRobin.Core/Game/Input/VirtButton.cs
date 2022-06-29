@@ -52,7 +52,7 @@ namespace SonOfRobin
         private readonly bool switchButton;
         private readonly Object activeCoupledObj;
         private readonly string activeCoupledVarName;
-        private readonly static SpriteFont font = SonOfRobinGame.fontSmall;
+        private readonly static SpriteFont font = SonOfRobinGame.fontPressStart2P5;
 
         public static Dictionary<VButName, VirtButton> buttonsByName = new Dictionary<VButName, VirtButton> { };
         private bool HasBeenPressed { get { return this.IsActive && !this.wasDownLastFrame; } }

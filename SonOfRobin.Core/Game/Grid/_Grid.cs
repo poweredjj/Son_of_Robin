@@ -189,6 +189,9 @@ namespace SonOfRobin
             Parallel.ForEach(cellProcessingQueue, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, cell =>
             { cell.RunNextCreationStage(); });
 
+            Parallel.ForEach(cellProcessingQueue, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, cell =>
+            { cell.RunNextCreationStage(); });
+
             this.UpdateProgressBar();
 
             if (this.ProcessingStepComplete) this.PrepareNextCreationStage();

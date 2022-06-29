@@ -8,9 +8,9 @@ namespace SonOfRobin
 {
     public class Animal : BoardPiece
     {
-        public static readonly int maxAnimalsPerName = 45;
-        public static readonly int attackDistanceDynamic = 15;
-        public static readonly int attackDistanceStatic = 5;
+        public static readonly int maxAnimalsPerName = 40;
+        public static readonly int attackDistanceDynamic = 13;
+        public static readonly int attackDistanceStatic = 4;
 
         private readonly bool female;
         private readonly int maxMass;
@@ -155,9 +155,9 @@ namespace SonOfRobin
         public List<BoardPiece> AssessAsMatingPartners(List<BoardPiece> pieces)
         {
             var sameSpecies = pieces.Where(piece =>
-                piece.GetType() == typeof(Animal) &&
+                piece.name == this.name &&
                 piece.alive &&
-                piece.name == this.name
+                piece.exists
                 ).ToList();
 
             List<Animal> matingPartners = sameSpecies.Cast<Animal>().ToList();
@@ -199,7 +199,7 @@ namespace SonOfRobin
 
             // looking around
 
-            List<BoardPiece> seenPieces = this.GetSeenPieces();
+            List<BoardPiece> seenPieces = this.GetSeenPieces().Where(piece => piece.exists).ToList();
 
             if (seenPieces.Count == 0)
             {
@@ -224,7 +224,7 @@ namespace SonOfRobin
 
             // looking for food
 
-            var foodList = seenPieces.Where(piece => this.eats.Contains(piece.name) && piece.exists && piece.Mass > 0 && this.sprite.allowedFields.CanStandHere(world: this.world, position: piece.sprite.position)).ToList();
+            var foodList = seenPieces.Where(piece => this.eats.Contains(piece.name) && piece.Mass > 0 && this.sprite.allowedFields.CanStandHere(world: this.world, position: piece.sprite.position)).ToList();
 
             BoardPiece foodPiece = null;
 
@@ -421,21 +421,18 @@ namespace SonOfRobin
 
             if (this.sprite.CheckIfOtherSpriteIsWithinRange(target: target.sprite, range: this.target.IsAnimalOrPlayer ? attackDistanceDynamic : attackDistanceStatic))
             {
-                if (this.eats.Contains(this.target.name))
-                {
-                    this.activeState = State.AnimalAttack;
-                    this.aiData.Reset(this);
-                    return;
-                }
-
-                else if (this.AssessAsMatingPartners(new List<BoardPiece> { this.target }) != null)
+                if (this.name == target.name && this.AssessAsMatingPartners(new List<BoardPiece> { this.target }) != null)
                 {
                     this.activeState = State.AnimalMate;
                     this.aiData.Reset(this);
                     return;
                 }
-
-                else throw new DivideByZeroException($"Target '{this.target.name}' is not food nor mate.");
+                else // attacking everything else, that is not mate (because it can retaliate against an enemy, that is not food)
+                {
+                    this.activeState = State.AnimalAttack;
+                    this.aiData.Reset(this);
+                    return;
+                }
             }
 
             if (this.world.random.Next(0, this.awareness) == 0) // once in a while it is good to look around and assess situation
@@ -478,6 +475,8 @@ namespace SonOfRobin
                 this.aiData.Reset(this);
                 return;
             }
+
+            this.sprite.SetOrientationByMovement(this.target.sprite.position - this.sprite.position);
 
             if (!this.target.alive || !this.target.IsAnimalOrPlayer)
             {
@@ -532,16 +531,24 @@ namespace SonOfRobin
                 if (this.target.hitPoints <= 0) this.target.Kill();
 
                 Vector2 movement = (this.sprite.position - this.target.sprite.position) * -0.3f * attackStrength;
-
-                this.target.AddPassiveMovement(movement: movement);
+                this.target.AddPassiveMovement(movement: Helpers.VectorAbsMax(vector: movement, maxVal: 400f));
 
                 if (this.target.GetType() == typeof(Player))
                 {
+                    Player playerTarget = (Player)this.target;
+                    playerTarget.Fatigue += 15f;
+
                     Vector2 screenShake = movement * 0.02f;
 
                     this.world.transManager.AddMultipleTransitions(outTrans: true, duration: this.world.random.Next(4, 10), playCount: -1, replaceBaseValue: false, stageTransform: Transition.Transform.Sinus, pingPongCycles: false, cycleMultiplier: 0.02f, paramsToChange: new Dictionary<string, float> { { "PosX", screenShake.X }, { "PosY", screenShake.Y } });
-                }
 
+                    if (this.target.hitPoints > 0) // red screen flash if player is still alive
+                    {
+                        this.world.colorOverlay.color = Color.Red;
+                        this.world.colorOverlay.viewParams.Opacity = 0f;
+                        this.world.colorOverlay.transManager.AddTransition(new Transition(transManager: this.world.colorOverlay.transManager, outTrans: true, duration: 20, playCount: 1, stageTransform: Transition.Transform.Sinus, baseParamName: "Opacity", targetVal: 0.5f));
+                    }
+                }
             }
             else // if attack had missed
             {

@@ -13,8 +13,8 @@ namespace SonOfRobin
 
     public class SonOfRobinGame : Game
     {
-        public static readonly float version = 7.4f;
-        public static readonly DateTime lastChanged = new DateTime(2022, 03, 22);
+        public static readonly float version = 7.5f;
+        public static readonly DateTime lastChanged = new DateTime(2022, 03, 24);
 
         public static ContentManager content;
 
@@ -33,11 +33,12 @@ namespace SonOfRobin
         public static ControlTips controlTips;
         public static TouchOverlay touchOverlay;
 
-        public static SpriteFont fontSuperSmall;
-        public static SpriteFont fontSmall;
-        public static SpriteFont fontMedium;
-        public static SpriteFont fontBig;
-        public static SpriteFont fontHuge;
+        public static SpriteFont fontPixelMix5;
+        public static SpriteFont fontPressStart2P5;
+        public static SpriteFont fontFreeSansBold12;
+        public static SpriteFont fontFreeSansBold24;
+        public static SpriteFont fontTommy20;
+        public static SpriteFont fontTommy40;
 
         public static Texture2D whiteRectangle;
         public static Dictionary<string, Texture2D> textureByName;
@@ -138,7 +139,7 @@ namespace SonOfRobin
             progressBar = new InfoWindow(bgColor: Color.SeaGreen, bgOpacity: 0.85f);
             if (platform == Platform.Mobile) touchOverlay = new TouchOverlay();
 
-            KeepScreenOn = false;
+            KeepScreenOn = true;
 
             if (LicenceValid)
             {
@@ -168,18 +169,19 @@ namespace SonOfRobin
             effectColorize = Content.Load<Effect>("effects/Colorize");
             effectBorder = Content.Load<Effect>("effects/Border");
 
-            fontSuperSmall = Content.Load<SpriteFont>("fonts/PixelMix");
-            fontSmall = Content.Load<SpriteFont>("fonts/PressStart2P");
-            fontMedium = Content.Load<SpriteFont>("fonts/FreeSansBold12");
-            fontBig = Content.Load<SpriteFont>("fonts/Tommy20");
-            fontHuge = Content.Load<SpriteFont>("fonts/Tommy40");
+            fontPixelMix5 = Content.Load<SpriteFont>("fonts/PixelMix");
+            fontPressStart2P5 = Content.Load<SpriteFont>("fonts/PressStart2P");
+            fontFreeSansBold12 = Content.Load<SpriteFont>("fonts/FreeSansBold12");
+            fontFreeSansBold24 = Content.Load<SpriteFont>("fonts/FreeSansBold24");
+            fontTommy20 = Content.Load<SpriteFont>("fonts/Tommy20");
+            fontTommy40 = Content.Load<SpriteFont>("fonts/Tommy40");
 
             whiteRectangle = new Texture2D(GraphicsDevice, 1, 1);
             whiteRectangle.SetData(new[] { Color.White });
 
             textureByName = new Dictionary<string, Texture2D>();
 
-            string[] assetNames = { "no_anim", "recolor_pt2", "fox", "tile_custom01", "actor29rec4", "tileb", "tile_19ba32a6", "backlight_1", "backlight_2", "backlight_3", "backlight_4", "crabs_small", "crabs_big", "frogs_small", "frogs_big", "flowers", "8f296dbbaf43865bc29e99660fe7b5af_2x", "qYFvsmq", "NicePng_pine-tree-clipart-png_1446450", "palmtree_small", "tilees by guth_zpsfn3wpjdu_2x", "attack_effect_sprite_sheets", "miss", "zzz", "heart_16x16", "rabbits", "virtual_joypad_background", "virtual_joypad_stick", "virtual_button", "virtual_button_pressed", "cursor", "chests", "d9ffec650d3104f5c4564c9055787530", "sticks1", "sticks2", "axe_stone", "axe_wooden", "axe_iron", "axe_diamond", "hand", "tools_gravel", "stones", "fancy_food", "fancy_food2", "fancy_food3", "celianna_farmnature_crops_transparent", "weapons1", "steak_t-bone", "Cooked Meat", "big_icons_candacis", "Candacis_flames1", "gems__rpg_maker_mv__by_petschko-d9euoxr", "mv_blacksmith_by_schwarzenacht_dapf6ek", "bows", "arrow_wood", "arrow_iron", "crosshair", "sling", "greatsling", "stone_ammo", "craft_items", "tent_big", "tent_medium", "flames", "bag", "backpack", "belt", "parchment", "exclamation", "scythe", "grass_blade", "tiger" };
+            string[] assetNames = { "no_anim", "recolor_pt2", "fox", "tile_custom01", "actor29rec4", "tileb", "tile_19ba32a6", "backlight_1", "backlight_2", "backlight_3", "backlight_4", "crabs_small", "crabs_big", "frogs_small", "frogs_big", "flowers", "8f296dbbaf43865bc29e99660fe7b5af_2x", "qYFvsmq", "NicePng_pine-tree-clipart-png_1446450", "palmtree_small", "tilees by guth_zpsfn3wpjdu_2x", "attack_effect_sprite_sheets", "miss", "zzz", "heart_16x16", "rabbits", "virtual_joypad_background", "virtual_joypad_stick", "virtual_button", "virtual_button_pressed", "cursor", "chests", "d9ffec650d3104f5c4564c9055787530", "sticks1", "sticks2", "axe_stone", "axe_wooden", "axe_iron", "axe_diamond", "hand", "tools_gravel", "stones", "fancy_food", "fancy_food2", "fancy_food3", "celianna_farmnature_crops_transparent", "weapons1", "steak_t-bone", "Cooked Meat", "big_icons_candacis", "Candacis_flames1", "gems__rpg_maker_mv__by_petschko-d9euoxr", "mv_blacksmith_by_schwarzenacht_dapf6ek", "bows", "arrow_wood", "arrow_iron", "crosshair", "sling", "greatsling", "stone_ammo", "craft_items", "tent_big", "tent_medium", "flames", "bag", "backpack", "belt", "parchment", "exclamation", "scythe", "grass_blade", "tiger", "plus", "acorn" };
 
             foreach (string assetName in assetNames)
             {
@@ -205,7 +207,7 @@ namespace SonOfRobin
             {
                 Preferences.Save();
                 this.Exit();
-                System.Environment.Exit(0);
+                Environment.Exit(0);
             }
         }
 

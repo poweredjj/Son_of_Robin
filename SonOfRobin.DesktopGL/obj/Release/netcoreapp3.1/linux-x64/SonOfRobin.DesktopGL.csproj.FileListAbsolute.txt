@@ -734,4 +734,7 @@ C:\Users\msmidowi\Documents\SonOfRobin\SonOfRobin.DesktopGL\obj\Release\netcorea
 C:\Users\msmidowi\Documents\SonOfRobin\SonOfRobin.DesktopGL\obj\Release\netcoreapp3.1\linux-x64\SonOfRobin.DesktopGL.dll
 C:\Users\msmidowi\Documents\SonOfRobin\SonOfRobin.DesktopGL\obj\Release\netcoreapp3.1\linux-x64\SonOfRobin.DesktopGL.pdb
 C:\Users\msmidowi\Documents\SonOfRobin\SonOfRobin.DesktopGL\obj\Release\netcoreapp3.1\linux-x64\SonOfRobin.DesktopGL.genruntimeconfig.cache
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\linux-x64\Content\fonts\FreeSansBold24.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\linux-x64\Content\gfx\acorn.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\linux-x64\Content\gfx\plus.xnb
 C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\linux-x64\Content\gfx\tiger.xnb

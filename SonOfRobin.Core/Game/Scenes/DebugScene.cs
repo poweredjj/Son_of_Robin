@@ -9,7 +9,7 @@ namespace SonOfRobin
 {
     public class DebugScene : Scene
     {
-        public static readonly SpriteFont font = SonOfRobinGame.fontMedium;
+        public static readonly SpriteFont font = SonOfRobinGame.fontFreeSansBold12;
         public static string debugText = "";
 
         public DebugScene() : base(inputType: InputTypes.Always, tipsLayout: ControlTips.TipsLayout.Empty, priority: -1, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: true, alwaysDraws: true, touchLayout: TouchLayout.Empty)
@@ -83,7 +83,7 @@ namespace SonOfRobin
 
             if (Keyboard.HasBeenPressed(Keys.D2))
             {
-                BoardPiece piece = PieceTemplate.CreateOnBoard(world: world, position: world.player.sprite.position, templateName: PieceTemplate.Name.Rabbit);
+                BoardPiece piece = PieceTemplate.CreateOnBoard(world: world, position: world.player.sprite.position, templateName: PieceTemplate.Name.Acorn);
                 if (piece.sprite.placedCorrectly) piece.sprite.MoveToClosestFreeSpot(world.player.sprite.position);
             }
 
@@ -133,6 +133,11 @@ namespace SonOfRobin
                 Vector2 motion = new Vector2(world.random.Next(-20, 20), world.random.Next(-20, 20));
 
                 world.transManager.AddMultipleTransitions(outTrans: true, duration: world.random.Next(4, 10), playCount: -1, replaceBaseValue: false, stageTransform: Transition.Transform.Sinus, pingPongCycles: false, cycleMultiplier: 0.02f, paramsToChange: new Dictionary<string, float> { { "PosX", motion.X }, { "PosY", motion.Y } });
+
+                world.colorOverlay.color = Color.Red;
+                world.colorOverlay.viewParams.Opacity = 0f;
+                world.colorOverlay.transManager.AddTransition(new Transition(transManager: world.colorOverlay.transManager, outTrans: true, duration: 20, playCount: 1, stageTransform: Transition.Transform.Sinus, baseParamName: "Opacity", targetVal: 0.5f, refreshBaseVal: false));
+
             }
 
             if (Keyboard.HasBeenPressed(Keys.OemMinus))
@@ -271,15 +276,15 @@ namespace SonOfRobin
 
                 var bgColor1 = new List<byte> { Color.DarkRed.R, Color.DarkRed.G, Color.DarkRed.B };
                 var textWindowData1 = new Dictionary<string, Object> { { "text", "Message 1" }, { "bgColor", bgColor1 } };
-                taskChain.Add(new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.OpenTextWindow, turnOffInput: true, delay: 1, executeHelper: textWindowData1, storeForLaterUse: true));
+                taskChain.Add(new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.OpenTextWindow, turnOffInputUntilExecution: true, delay: 1, executeHelper: textWindowData1, storeForLaterUse: true));
 
                 var bgColor2 = new List<byte> { Color.DarkCyan.R, Color.DarkCyan.G, Color.DarkCyan.B };
                 var textWindowData2 = new Dictionary<string, Object> { { "text", "Message 2" }, { "bgColor", bgColor2 } };
-                taskChain.Add(new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.OpenTextWindow, turnOffInput: true, delay: 60, executeHelper: textWindowData2, storeForLaterUse: true));
+                taskChain.Add(new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.OpenTextWindow, turnOffInputUntilExecution: true, delay: 60, executeHelper: textWindowData2, storeForLaterUse: true));
 
                 taskChain.Add(new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.TempoPlay, delay: 0, executeHelper: null, storeForLaterUse: true));
 
-                new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.ExecuteTaskChain, turnOffInput: true, executeHelper: taskChain);
+                new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.ExecuteTaskChain, turnOffInputUntilExecution: true, executeHelper: taskChain);
             }
 
             if (Keyboard.HasBeenPressed(Keys.F3)) world.player.pieceStorage.AddPiece(piece: PieceTemplate.CreateOffBoard(templateName: PieceTemplate.Name.Fox, world: world), dropIfDoesNotFit: true);

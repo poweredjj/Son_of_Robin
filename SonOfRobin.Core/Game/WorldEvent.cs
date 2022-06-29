@@ -25,7 +25,12 @@ namespace SonOfRobin
 
             this.AddToQueue();
 
-            if (this.eventName == EventName.Destruction) new WorldEvent(eventName: EventName.FadeOutSprite, delay: delay - OpacityFade.defaultDuration, world: world, boardPiece: boardPiece);
+            if (this.eventName == EventName.Destruction)
+            {
+                int fadeDuration = this.boardPiece.GetType() == typeof(Animal) ? delay - 1 : OpacityFade.defaultDuration;
+
+                new WorldEvent(eventName: EventName.FadeOutSprite, delay: delay - fadeDuration, world: world, boardPiece: boardPiece, eventHelper: fadeDuration);
+            }
         }
 
         public Dictionary<string, Object> Serialize()
@@ -125,9 +130,9 @@ namespace SonOfRobin
                     cooker.boardTask = Scheduler.TaskName.OpenContainer;
                     return;
 
-
                 case EventName.FadeOutSprite:
-                    this.boardPiece.sprite.opacityFade = new OpacityFade(sprite: this.boardPiece.sprite, destOpacity: 0f);
+                    int fadeDuration = (int)this.eventHelper;
+                    this.boardPiece.sprite.opacityFade = new OpacityFade(sprite: this.boardPiece.sprite, destOpacity: 0f, duration: fadeDuration);
                     return;
 
                 case EventName.RemoveBuff:

@@ -82,6 +82,7 @@ namespace SonOfRobin
         Banana,
         Cherry,
         Tomato,
+        Acorn,
 
         RawMeat,
         CookedMeat,
@@ -534,6 +535,10 @@ namespace SonOfRobin
             packageName = AnimPkg.Tomato;
             AddFrameList(animPackage: packageName, animSize: 0, animName: "default",
             frameList: ConvertImageToFrameList(atlasName: "fancy_food", layer: 0, x: 232, y: 207, width: 18, height: 18, scale: 0.5f));
+
+            packageName = AnimPkg.Acorn;
+            AddFrameList(animPackage: packageName, animSize: 0, animName: "default",
+            frameList: ConvertImageToFrameList(atlasName: "acorn", layer: 0, scale: 0.5f));
 
             packageName = AnimPkg.RawMeat;
             AddFrameList(animPackage: packageName, animSize: 0, animName: "default",

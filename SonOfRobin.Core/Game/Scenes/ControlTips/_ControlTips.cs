@@ -131,7 +131,7 @@ namespace SonOfRobin
                 drawOffsetX += tip.width + tipMargin;
             }
 
-            if (Preferences.DebugMode) SonOfRobinGame.spriteBatch.DrawString(SonOfRobinGame.fontSmall, $"{this.currentLayout}", Vector2.Zero, Color.White);
+            if (Preferences.DebugMode) SonOfRobinGame.spriteBatch.DrawString(SonOfRobinGame.fontPressStart2P5, $"{this.currentLayout}", Vector2.Zero, Color.White);
         }
 
         public void RefreshLayout()
@@ -154,7 +154,6 @@ namespace SonOfRobin
             {
                 this.SwitchToLayout(TipsLayout.Empty);
             }
-
         }
 
         private void SwitchToLayout(TipsLayout tipsLayout, bool force = false)
@@ -215,7 +214,7 @@ namespace SonOfRobin
                     new ButtonTip(tipCollection: this.tipCollection, text: "walk", textures: new List<Texture2D> { ButtonScheme.leftStick });
                     new ButtonTip(tipCollection: this.tipCollection, text: "camera", textures: new List<Texture2D> { ButtonScheme.rightStick });
                     new ButtonTip(tipCollection: this.tipCollection, text: "interact", isHighlighted: false, textures: new List<Texture2D> { ButtonScheme.buttonA });
-                    new ButtonTip(tipCollection: this.tipCollection, text: "aim", textures: new List<Texture2D> { ButtonScheme.buttonLT, ButtonScheme.rightStick });
+                    new ButtonTip(tipCollection: this.tipCollection, text: "aim", isHighlighted: false, textures: new List<Texture2D> { ButtonScheme.buttonLT });
                     new ButtonTip(tipCollection: this.tipCollection, text: "use item", isHighlighted: false, textures: new List<Texture2D> { ButtonScheme.buttonRT });
                     new ButtonTip(tipCollection: this.tipCollection, text: "run", textures: new List<Texture2D> { ButtonScheme.buttonB });
                     new ButtonTip(tipCollection: this.tipCollection, text: "pick up", isHighlighted: false, textures: new List<Texture2D> { ButtonScheme.buttonX });
@@ -230,7 +229,7 @@ namespace SonOfRobin
 
                 case TipsLayout.WorldShoot:
                     new ButtonTip(tipCollection: this.tipCollection, text: "walk", textures: new List<Texture2D> { ButtonScheme.leftStick });
-                    new ButtonTip(tipCollection: this.tipCollection, text: "aim", textures: new List<Texture2D> { ButtonScheme.buttonLT, ButtonScheme.rightStick });
+                    new ButtonTip(tipCollection: this.tipCollection, text: "aim", textures: new List<Texture2D> { ButtonScheme.buttonLT, ButtonScheme.plus, ButtonScheme.rightStick });
                     new ButtonTip(tipCollection: this.tipCollection, text: "shoot", textures: new List<Texture2D> { ButtonScheme.buttonRT });
                     new ButtonTip(tipCollection: this.tipCollection, text: "menu", textures: new List<Texture2D> { ButtonScheme.buttonStart });
                     break;

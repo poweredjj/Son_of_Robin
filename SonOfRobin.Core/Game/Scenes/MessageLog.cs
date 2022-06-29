@@ -36,13 +36,12 @@ namespace SonOfRobin
             }
         }
 
-        private static readonly SpriteFont font = SonOfRobinGame.fontSmall;
+        private static readonly SpriteFont font = SonOfRobinGame.fontPressStart2P5;
         private static readonly int txtSeparator = 3;
         private static readonly int freePixelsAboveMessages = 140;
 
         private static readonly List<MsgType> displayedLevelsTemplateDebug = new List<MsgType> { MsgType.User, MsgType.Debug };
         private static readonly List<MsgType> displayedLevelsTemplateUser = new List<MsgType> { MsgType.User };
-
         private static List<MsgType> DisplayedLevels { get { return Preferences.DebugMode ? displayedLevelsTemplateDebug : displayedLevelsTemplateUser; } }
 
         private static List<Message> messages = new List<Message> { };

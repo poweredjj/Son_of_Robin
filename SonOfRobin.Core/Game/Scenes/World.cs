@@ -101,7 +101,7 @@ namespace SonOfRobin
                     taskChain.Add(new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.ChangeSceneInputType, delay: 0, executeHelper: new Dictionary<string, Object> { { "scene", this }, { "inputType", Scene.InputTypes.Normal } }, storeForLaterUse: true));
                 }
 
-                new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.ExecuteTaskChain, turnOffInput: true, executeHelper: taskChain);
+                new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.ExecuteTaskChain, turnOffInputUntilExecution: true, executeHelper: taskChain);
             }
         }
 
@@ -243,56 +243,59 @@ namespace SonOfRobin
 
                 SonOfRobinGame.game.IsFixedTimeStep = false; // speeds up the creation process
                 this.grid.RunNextCreationStage();
+                return;
             }
 
-            else
+            SonOfRobinGame.progressBar.TurnOff(addTransition: true);
+            this.touchLayout = TouchLayout.WorldMain;
+            this.tipsLayout = ControlTips.TipsLayout.WorldMain;
+            this.creationInProgress = false;
+            this.creationEnd = DateTime.Now;
+            this.creationDuration = this.creationEnd - this.creationStart;
+            PieceInfo.CreateAllInfo(world: this);
+            Craft.PopulateAllCategories();
+            this.lastSaved = DateTime.Now;
+
+            MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"World creation time: {creationDuration:hh\\:mm\\:ss\\.fff}.", color: Color.GreenYellow);
+
+            bool newGameStarted = this.saveGameData == null;
+
+            if (newGameStarted)
             {
-                SonOfRobinGame.progressBar.TurnOff(addTransition: true);
-                this.touchLayout = TouchLayout.WorldMain;
-                this.tipsLayout = ControlTips.TipsLayout.WorldMain;
-                this.creationInProgress = false;
-                this.creationEnd = DateTime.Now;
-                this.creationDuration = this.creationEnd - this.creationStart;
-                PieceInfo.CreateAllInfo(world: this);
-                Craft.PopulateAllCategories();
-                this.lastSaved = DateTime.Now;
+                CreateMissingPieces(outsideCamera: false, multiplier: 1.0f);
 
-                MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"World creation time: {creationDuration:hh\\:mm\\:ss\\.fff}.", color: Color.GreenYellow);
+                this.currentFrame = 0;
+                this.currentUpdate = 0;
 
-                bool newGameStarted = this.saveGameData == null;
-
-                if (newGameStarted)
-                {
-                    CreateMissingPieces(outsideCamera: false, multiplier: 1.0f);
-
-                    this.currentFrame = 0;
-                    this.currentUpdate = 0;
-
-                    if (this.demoMode) this.camera.TrackLiveAnimal();
-                    else
-                    {
-                        this.player = (Player)this.PlacePlayer();
-
-                        BoardPiece crate = PieceTemplate.CreateOnBoard(world: this, position: this.player.sprite.position, templateName: PieceTemplate.Name.CrateStarting);
-                        if (crate.sprite.placedCorrectly) crate.sprite.MoveToClosestFreeSpot(this.player.sprite.position);
-                    }
-                }
-
+                if (this.demoMode) this.camera.TrackLiveAnimal();
                 else
-                { this.Deserialize(gridOnly: false); }
-
-                if (!this.demoMode)
                 {
-                    this.camera.TrackPiece(trackedPiece: this.player, fluidMotion: false);
-                    this.UpdateViewParams(manualScale: 1f);
-                    this.camera.Update(); // to render cells in camera view correctly
-                    SetInventoryLayout(newLayout: InventoryLayout.Toolbar, player: this.player);
-                }
+                    this.player = (Player)this.PlacePlayer();
 
-                this.grid.LoadAllTexturesInCameraView();
-                SonOfRobinGame.game.IsFixedTimeStep = Preferences.FrameSkip;
-                if (!this.demoMode && newGameStarted) this.hintEngine.ShowGeneralHint(type: HintEngine.Type.CineIntroduction, ignoreDelay: true);
+                    BoardPiece crate = PieceTemplate.CreateOnBoard(world: this, position: this.player.sprite.position, templateName: PieceTemplate.Name.CrateStarting);
+                    if (crate.sprite.placedCorrectly) crate.sprite.MoveToClosestFreeSpot(this.player.sprite.position);
+                }
             }
+            else
+            { this.Deserialize(gridOnly: false); }
+
+            if (!this.demoMode)
+            {
+                this.camera.TrackPiece(trackedPiece: this.player, fluidMotion: false);
+                this.UpdateViewParams(manualScale: 1f);
+                this.camera.Update(); // to render cells in camera view correctly
+                SetInventoryLayout(newLayout: InventoryLayout.Toolbar, player: this.player);
+            }
+
+            this.grid.LoadAllTexturesInCameraView();
+            if (!this.demoMode)
+            {
+                this.mapBig.ForceRender();
+                this.mapSmall.ForceRender();
+            }
+            SonOfRobinGame.game.IsFixedTimeStep = Preferences.FrameSkip;
+            if (!this.demoMode && newGameStarted) this.hintEngine.ShowGeneralHint(type: HintEngine.Type.CineIntroduction, ignoreDelay: true);
+
         }
 
         private void Deserialize(bool gridOnly)
@@ -410,6 +413,7 @@ namespace SonOfRobin
                 {
                     player.sprite.orientation = Sprite.Orientation.up;
                     player.sprite.CharacterStand();
+                    player.sprite.allowedFields.RemoveTerrain(TerrainName.Danger); // player should be spawned in a safe place, but able to go everywhere afterwards
                     return player;
                 }
             }
@@ -446,6 +450,7 @@ namespace SonOfRobin
                 new PieceCreationData(name: PieceTemplate.Name.FlowersMountain, multiplier: 0.1f, maxAmount: 0),
                 new PieceCreationData(name: PieceTemplate.Name.TreeSmall, multiplier: 1.0f, maxAmount: 0),
                 new PieceCreationData(name: PieceTemplate.Name.TreeBig, multiplier: 1.0f, maxAmount: 0),
+                new PieceCreationData(name: PieceTemplate.Name.AcornTree, multiplier: 0.03f, maxAmount: 0),
                 new PieceCreationData(name: PieceTemplate.Name.AppleTree, multiplier: 0.03f, maxAmount: 0),
                 new PieceCreationData(name: PieceTemplate.Name.CherryTree, multiplier: 0.03f, maxAmount: 0),
                 new PieceCreationData(name: PieceTemplate.Name.BananaTree, multiplier: 0.03f, maxAmount: 0),

@@ -9,7 +9,7 @@ namespace SonOfRobin
 {
     public class TextWindow : Scene
     {
-        public static readonly SpriteFont font = SonOfRobinGame.fontHuge;
+        public static readonly SpriteFont font = SonOfRobinGame.fontTommy40;
         public static readonly int maxWidth = 90;
 
         private readonly bool autoClose;
@@ -134,7 +134,7 @@ namespace SonOfRobin
             }
 
             base.Remove();
-            if (this.closingTask != Scheduler.TaskName.Empty) new Scheduler.Task(menu: null, taskName: this.closingTask, executeHelper: this.closingTaskHelper, delay: 0, turnOffInput: true);
+            if (this.closingTask != Scheduler.TaskName.Empty) new Scheduler.Task(menu: null, taskName: this.closingTask, executeHelper: this.closingTaskHelper, delay: 0, turnOffInputUntilExecution: true);
         }
 
         public void AddClosingTask(Scheduler.TaskName closingTask, Object closingTaskHelper)

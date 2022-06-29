@@ -11,7 +11,7 @@ namespace SonOfRobin
     {
         protected enum ContextAction { Drop, DropAll, Move, Eat, Plant, Cook }
 
-        private static readonly SpriteFont font = SonOfRobinGame.fontHuge;
+        private static readonly SpriteFont font = SonOfRobinGame.fontTommy40;
         private static readonly float marginPercent = 0.03f;
         private static readonly float entryWidthPercent = 0.8f;
         private static readonly float entryHeightPercent = 0.1f;
