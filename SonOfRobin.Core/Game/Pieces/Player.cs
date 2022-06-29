@@ -161,7 +161,7 @@ namespace SonOfRobin
 
                 if (this.IsVeryTired)
                 {
-                    if (!this.buffEngine.HasBuff(BuffEngine.BuffType.Tired)) this.buffEngine.AddBuff(world: this.world, buff: new BuffEngine.Buff(world: world, type: BuffEngine.BuffType.Tired, value: 0, autoRemoveDelay: 0));
+                    if (!this.buffEngine.HasBuff(BuffEngine.BuffType.Tired)) this.buffEngine.AddBuff(world: this.world, buff: new BuffEngine.Buff(type: BuffEngine.BuffType.Tired, value: 0, autoRemoveDelay: 0));
                 }
                 else
                 {
@@ -194,7 +194,7 @@ namespace SonOfRobin
 
                 if (fedPercent < 0.2f)
                 {
-                    if (!this.buffEngine.HasBuff(BuffEngine.BuffType.Hungry)) this.buffEngine.AddBuff(world: this.world, buff: new BuffEngine.Buff(world: world, type: BuffEngine.BuffType.Hungry, value: 0, autoRemoveDelay: 0));
+                    if (!this.buffEngine.HasBuff(BuffEngine.BuffType.Hungry)) this.buffEngine.AddBuff(world: this.world, buff: new BuffEngine.Buff(type: BuffEngine.BuffType.Hungry, value: 0, autoRemoveDelay: 0));
                 }
                 else
                 {
@@ -210,10 +210,10 @@ namespace SonOfRobin
 
         public PieceStorage toolStorage;
         public PieceStorage equipStorage;
-        public Player(World world, Vector2 position, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedFields allowedFields, byte invWidth, byte invHeight, byte toolbarWidth, byte toolbarHeight, string readableName, string description, State activeState,
-            byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, bool ignoresCollisions = false, ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = false, int generation = 0, Yield yield = null) :
+        public Player(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedFields allowedFields, byte invWidth, byte invHeight, byte toolbarWidth, byte toolbarHeight, string readableName, string description, State activeState,
+            byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, bool ignoresCollisions = false, int destructionDelay = 0, bool floatsOnWater = false, int generation = 0, Yield yield = null, int minDistance = 0, int maxDistance = 100, bool placeAtBeachEdge = true, LightEngine lightEngine = null) :
 
-            base(world: world, position: position, animPackage: animPackage, animSize: animSize, animName: animName, speed: speed, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedFields: allowedFields, floatsOnWater: floatsOnWater, mass: 50000, maxMassBySize: null, generation: generation, canBePickedUp: false, maxHitPoints: 400, fadeInAnim: false, placeAtBeachEdge: true, isShownOnMiniMap: true, readableName: readableName, description: description, yield: yield, strength: 1, category: Category.Indestructible, lightEngine: new LightEngine(size: 300, opacity: 0.9f, colorActive: true, color: Color.Orange * 0.2f, isActive: false, castShadows: true), ignoresCollisions: ignoresCollisions)
+            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, speed: speed, blocksMovement: blocksMovement, name: name, destructionDelay: destructionDelay, allowedFields: allowedFields, floatsOnWater: floatsOnWater, mass: 50000, maxMassBySize: null, generation: generation, canBePickedUp: false, maxHitPoints: 400, fadeInAnim: false, isShownOnMiniMap: true, readableName: readableName, description: description, yield: yield, strength: 1, category: Category.Indestructible, lightEngine: lightEngine, ignoresCollisions: ignoresCollisions, minDistance: minDistance, maxDistance: maxDistance, placeAtBeachEdge: placeAtBeachEdge, activeState: activeState)
         {
             this.maxFedLevel = 40000;
             this.fedLevel = maxFedLevel;
@@ -222,7 +222,6 @@ namespace SonOfRobin
             this.maxFatigue = 2000;
             this.fatigue = 0;
             this.sleepEngine = SleepEngine.OutdoorSleepDry; // to be changed later
-            this.activeState = activeState;
 
             this.pieceStorage = new PieceStorage(width: invWidth, height: invHeight, world: this.world, storagePiece: this, storageType: PieceStorage.StorageType.Inventory);
             this.toolStorage = new PieceStorage(width: toolbarWidth, height: toolbarHeight, world: this.world, storagePiece: this, storageType: PieceStorage.StorageType.Tools);
@@ -236,7 +235,7 @@ namespace SonOfRobin
             this.recipeToBuild = null;
             this.pieceToBuild = null;
 
-            BoardPiece handTool = PieceTemplate.CreateOffBoard(templateName: PieceTemplate.Name.Hand, world: this.world);
+            BoardPiece handTool = PieceTemplate.Create(templateName: PieceTemplate.Name.Hand, world: this.world);
 
             StorageSlot slotToLock = this.toolStorage.FindCorrectSlot(handTool);
             this.toolStorage.AddPiece(handTool);
@@ -375,7 +374,7 @@ namespace SonOfRobin
             float buildDistance = Vector2.Distance(this.sprite.position, newPos);
             if (buildDistance <= 200 + pieceSize) this.pieceToBuild.sprite.SetNewPosition(newPos: newPos, ignoreCollisions: true);
 
-            bool canBuildHere = buildDistance <= 80 + pieceSize && !this.pieceToBuild.sprite.CheckForCollision();
+            bool canBuildHere = buildDistance <= 80 + pieceSize && !this.pieceToBuild.sprite.CheckForCollision(ignoreDensity: true);
             if (canBuildHere)
             {
                 VirtButton.ButtonHighlightOnNextFrame(VButName.Confirm);
@@ -396,7 +395,7 @@ namespace SonOfRobin
             if (InputMapper.HasBeenPressed(InputMapper.Action.GlobalConfirm))
             {
                 if (canBuildHere) this.world.ExitBuildMode(craftPiece: true);
-                else new TextWindow(text: $"|  {Helpers.FirstCharToUpperCase(this.pieceToBuild.readableName)} can't be built here.", imageList: new List<Texture2D> { this.pieceToBuild.sprite.frame.texture }, textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false, checkForDuplicate: true, autoClose: false, inputType: Scene.InputTypes.Normal, priority: 1, blocksUpdatesBelow: true);
+                else new TextWindow(text: $"|  {Helpers.FirstCharToUpperCase(this.pieceToBuild.readableName)} can't be placed here.", imageList: new List<Texture2D> { this.pieceToBuild.sprite.frame.texture }, textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false, checkForDuplicate: true, autoClose: false, inputType: Scene.InputTypes.Normal, priority: 1, blocksUpdatesBelow: true);
             }
         }
 
@@ -528,12 +527,6 @@ namespace SonOfRobin
 
             var currentSpeed = this.IsVeryTired ? this.speed / 2f : this.speed;
 
-            if (this.world.SprintMode)
-            {
-                if (this.Stamina > 0) currentSpeed *= 2;
-                else this.world.SprintMode = false;
-            }
-
             movement *= currentSpeed;
 
             Vector2 goalPosition = this.sprite.position + movement;
@@ -546,8 +539,6 @@ namespace SonOfRobin
                 int staminaUsed = 0;
 
                 if (this.sprite.IsInWater) staminaUsed = 1;
-                if (this.world.SprintMode) staminaUsed += 2;
-
                 if (staminaUsed > 0) this.Stamina = Math.Max(this.Stamina - staminaUsed, 0);
             }
 
@@ -556,7 +547,7 @@ namespace SonOfRobin
 
         private void CheckGround()
         {
-            if (this.sprite.IsDeepInDangerZone) Tutorials.ShowTutorial(type: Tutorials.Type.DangerZone, ignoreDelay: true);
+            if (this.sprite.IsDeepInDangerZone && this.world.addAgressiveAnimals) Tutorials.ShowTutorial(type: Tutorials.Type.DangerZone, ignoreDelay: true);
 
             if (this.sprite.IsInLava)
             {
@@ -583,7 +574,7 @@ namespace SonOfRobin
 
             this.Stamina = Math.Max(this.Stamina - 1, 0);
 
-            if (this.visualAid == null) this.visualAid = PieceTemplate.CreateOnBoard(world: world, position: this.sprite.position, templateName: PieceTemplate.Name.Crosshair);
+            if (this.visualAid == null) this.visualAid = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: this.sprite.position, templateName: PieceTemplate.Name.Crosshair);
 
             this.Walk(setOrientation: false);
 
@@ -665,7 +656,7 @@ namespace SonOfRobin
             this.buffList.AddRange(wakeUpBuffs);
 
             if (this.visualAid != null) this.visualAid.Destroy();
-            this.visualAid = PieceTemplate.CreateOnBoard(world: world, position: zzzPos, templateName: PieceTemplate.Name.Zzz);
+            this.visualAid = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: zzzPos, templateName: PieceTemplate.Name.Zzz);
 
             if (!this.sleepEngine.canBeAttacked) this.sprite.Visible = false;
             this.world.touchLayout = TouchLayout.WorldSleep;
@@ -674,7 +665,7 @@ namespace SonOfRobin
             this.activeState = State.PlayerControlledSleep;
 
             SolidColor blackOverlay = new SolidColor(color: Color.Black, viewOpacity: 0.75f);
-            blackOverlay.transManager.AddTransition(new Transition(transManager: blackOverlay.transManager, outTrans: false, baseParamName: "Opacity", targetVal: 0f, duration: 20, endRemoveScene: true));
+            blackOverlay.transManager.AddTransition(new Transition(transManager: blackOverlay.transManager, outTrans: false, baseParamName: "Opacity", targetVal: 0f, duration: 20));
             this.world.solidColorManager.Add(blackOverlay);
 
             new Scheduler.Task(taskName: Scheduler.TaskName.TempoFastForward, delay: 22, executeHelper: 20, turnOffInputUntilExecution: true);
@@ -769,13 +760,7 @@ namespace SonOfRobin
             if (!pieceCollected) pieceCollected = this.pieceStorage.AddPiece(piece);
             if (!pieceCollected) pieceCollected = this.toolStorage.AddPiece(piece);
 
-            if (pieceCollected)
-            {
-                WorldEvent.RemovePieceFromQueue(world: this.world, pieceToRemove: piece);
-                Tracking.RemoveFromTrackingQueue(world: this.world, pieceToRemove: piece);
-                return true;
-            }
-            else return false;
+            return pieceCollected;
         }
 
         private bool TryToEnterShootingMode()

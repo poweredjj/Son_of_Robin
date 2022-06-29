@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/fonts/PixelMix.spritefont</SourceFile>
+  <SourceFile>C:/Users/msmidowi/Documents/SonOfRobin/SonOfRobin.Core/Content/fonts/PixelMix.spritefont</SourceFile>
   <SourceTime>2021-10-22T11:49:14+02:00</SourceTime>
-  <DestFile>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/bin/DesktopGL/SonOfRobin/fonts/PixelMix.xnb</DestFile>
-  <DestTime>2022-05-14T08:42:19.2193209+02:00</DestTime>
+  <DestFile>C:/Users/msmidowi/Documents/SonOfRobin/SonOfRobin.Core/Content/bin/DesktopGL/SonOfRobin/fonts/PixelMix.xnb</DestFile>
+  <DestTime>2022-05-21T12:09:20.6342985+02:00</DestTime>
   <Importer>FontDescriptionImporter</Importer>
   <ImporterTime>2020-08-10T18:17:54+02:00</ImporterTime>
   <Processor>FontDescriptionProcessor</Processor>

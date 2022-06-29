@@ -29,10 +29,12 @@ namespace SonOfRobin
             AnimalGiveBirth,
             AnimalFlee,
 
-            FireplaceBurn
+            FireplaceBurn,
+
+            ScareAnimalsAway
         }
 
-        public enum Category { Wood, Stone, Metal, SmallPlant, Animal, Crystal, Indestructible }
+        public enum Category { Wood, Stone, Metal, SmallPlant, Animal, Dirt, Crystal, Indestructible }
 
         protected static readonly float passiveMovementMultiplier = 100f;
 
@@ -71,6 +73,7 @@ namespace SonOfRobin
         protected Vector2 passiveMovement;
         protected int passiveRotation;
         public bool rotatesWhenDropped;
+        public readonly bool movesWhenDropped;
         private readonly int destructionDelay;
         public BoardPiece visualAid;
         public readonly string readableName;
@@ -78,7 +81,6 @@ namespace SonOfRobin
         public readonly bool serialize;
 
         public virtual bool ShowStatBars { get { return this.world.currentUpdate < this.showStatBarsTillFrame; } }
-
         public bool AreEnemiesNearby
         {
             get
@@ -172,22 +174,21 @@ namespace SonOfRobin
             }
         }
 
-        public BoardPiece(World world, Vector2 position, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedFields allowedFields, Dictionary<byte, int> maxMassBySize, string readableName, string description, Category category,
-            byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, bool visible = true, ushort minDistance = 0, ushort maxDistance = 100, bool ignoresCollisions = false, int destructionDelay = 0, int maxAge = 0, bool floatsOnWater = false, bool checksFullCollisions = false, int generation = 0, int mass = 1, int staysAfterDeath = 800, float maxHitPoints = 1, byte stackSize = 1, Scheduler.TaskName boardTask = Scheduler.TaskName.Empty, Scheduler.TaskName toolbarTask = Scheduler.TaskName.Empty, bool canBePickedUp = false, Yield yield = null, bool indestructible = false, bool rotatesWhenDropped = false, bool fadeInAnim = false, bool serialize = true, bool placeAtBeachEdge = false, bool isShownOnMiniMap = false, List<BuffEngine.Buff> buffList = null, AllowedDensity allowedDensity = null, int strength = 0, LightEngine lightEngine = null)
+        private Random Random { get { return this.world == null ? SonOfRobinGame.random : this.world.random; } }
+
+        public BoardPiece(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedFields allowedFields, Dictionary<byte, int> maxMassBySize, string readableName, string description, Category category, State activeState,
+            byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, bool visible = true, bool ignoresCollisions = false, int destructionDelay = 0, int maxAge = 0, bool floatsOnWater = false, bool checksFullCollisions = false, int generation = 0, int mass = 1, int staysAfterDeath = 800, float maxHitPoints = 1, byte stackSize = 1, Scheduler.TaskName boardTask = Scheduler.TaskName.Empty, Scheduler.TaskName toolbarTask = Scheduler.TaskName.Empty, bool canBePickedUp = false, Yield yield = null, bool indestructible = false, bool rotatesWhenDropped = false, bool movesWhenDropped = true, bool fadeInAnim = false, bool serialize = true, bool isShownOnMiniMap = false, List<BuffEngine.Buff> buffList = null, AllowedDensity allowedDensity = null, int strength = 0, LightEngine lightEngine = null, int minDistance = 0, int maxDistance = 100, bool placeAtBeachEdge = false)
         {
             this.world = world;
             this.name = name;
             this.category = category;
-            this.id = $"{this.world.currentPieceId}_{this.name}_{this.world.random.Next(0, 1000000)}";
-            this.sprite = new Sprite(boardPiece: this, id: this.id, position: position, world: this.world, animPackage: animPackage, animSize: animSize, animName: animName, blocksMovement: blocksMovement, visible: visible, minDistance: minDistance, maxDistance: maxDistance, ignoresCollisions: ignoresCollisions, allowedFields: allowedFields, floatsOnWater: floatsOnWater, checksFullCollisions: checksFullCollisions, fadeInAnim: fadeInAnim, placeAtBeachEdge: placeAtBeachEdge, isShownOnMiniMap: isShownOnMiniMap, allowedDensity: allowedDensity, lightEngine: lightEngine);
+            this.id = id;
+
+            this.sprite = new Sprite(boardPiece: this, id: this.id, world: this.world, animPackage: animPackage, animSize: animSize, animName: animName, blocksMovement: blocksMovement, visible: visible, ignoresCollisions: ignoresCollisions, allowedFields: allowedFields, floatsOnWater: floatsOnWater, checksFullCollisions: checksFullCollisions, fadeInAnim: fadeInAnim, isShownOnMiniMap: isShownOnMiniMap, allowedDensity: allowedDensity, lightEngine: lightEngine, minDistance: minDistance, maxDistance: maxDistance, placeAtBeachEdge: placeAtBeachEdge);
 
             this.stackSize = stackSize;
-            if (!this.sprite.placedCorrectly) return;
-
-            AddToPieceCount();
-            this.world.currentPieceId++;
             this.destructionDelay = destructionDelay;
-            this.activeState = State.Empty;
+            this.activeState = activeState;
             this.lastFrameSMProcessed = 0;
             this.indestructible = indestructible;
             this.maxHitPoints = maxHitPoints;
@@ -198,11 +199,11 @@ namespace SonOfRobin
             this.maxMassBySize = maxMassBySize;
             this.mass = mass;
             this.startingMass = mass;
-            this.staysAfterDeath = staysAfterDeath + this.world.random.Next(0, 300);
+            this.staysAfterDeath = staysAfterDeath + this.Random.Next(0, 300);
             this.generation = generation;
             this.exists = true;
             this.alive = true;
-            this.maxAge = (maxAge == 0) ? 0 : this.world.random.Next(Convert.ToInt32(maxAge * 0.4), Convert.ToInt32(maxAge * 1.6));
+            this.maxAge = maxAge == 0 ? 0 : this.Random.Next((int)(maxAge * 0.4), (int)(maxAge * 1.6));
             this.currentAge = 0;
             this.bioWear = 0; // 0 - 1 valid range
             this.efficiency = 1; // 0 - 1 valid range
@@ -216,14 +217,33 @@ namespace SonOfRobin
             this.passiveMovement = Vector2.Zero;
             this.passiveRotation = 0;
             this.rotatesWhenDropped = rotatesWhenDropped;
+            this.movesWhenDropped = movesWhenDropped;
             this.canBePickedUp = canBePickedUp;
             this.serialize = serialize;
             this.yield = yield;
             if (this.yield == null && Yield.antiCraftRecipes.ContainsKey(this.name)) this.yield = Yield.antiCraftRecipes[this.name].ConvertToYield();
             if (this.yield != null) this.yield.AddPiece(this);
+        }
 
-            this.AddPlannedDestruction();
-            this.AddToStateMachines();
+        public bool PlaceOnBoard(Vector2 position, bool addPlannedDestruction = true, bool addToStateMachines = true, bool ignoreCollisions = false, bool precisePlacement = false, bool closestFreeSpot = false, int minDistanceOverride = -1, int maxDistanceOverride = -1, bool ignoreDensity = false)
+        {
+            if (!this.sprite.PlaceOnBoard(position: position, ignoreCollisions: ignoreCollisions, precisePlacement: precisePlacement, closestFreeSpot: closestFreeSpot, minDistanceOverride: minDistanceOverride, maxDistanceOverride: maxDistanceOverride, ignoreDensity: ignoreDensity)) return false;
+
+            if (addPlannedDestruction) this.AddPlannedDestruction();
+            if (addToStateMachines) this.AddToStateMachines();
+            this.AddToPieceCount();
+
+            return true;
+        }
+
+        public void RemoveFromBoard()
+        {
+            if (!this.sprite.IsOnBoard) return;
+
+            this.sprite.RemoveFromBoard();
+            WorldEvent.RemovePieceFromQueue(world: this.world, pieceToRemove: this);
+            Tracking.RemoveFromTrackingQueue(world: this.world, pieceToRemove: this);
+            this.RemoveFromPieceCount();
         }
 
         public void AddPlannedDestruction()
@@ -238,7 +258,7 @@ namespace SonOfRobin
         {
             var pieceData = new Dictionary<string, Object>
             {
-                {"base_old_id", this.id}, // will be changed after loading, used to identify piece in other contexts
+                {"base_id", this.id},
                 {"base_name", this.name},
                 {"base_speed", this.speed},
                 {"base_hitPoints", this.hitPoints},
@@ -291,8 +311,6 @@ namespace SonOfRobin
             this.sprite.Deserialize(pieceData);
 
             if (!(bool)pieceData["base_alive"]) this.Kill();
-
-            this.world.piecesByOldId[(string)pieceData["base_old_id"]] = this;
         }
 
         public virtual void DrawStatBar()
@@ -338,7 +356,7 @@ namespace SonOfRobin
             if (this.IsAnimalOrPlayer)
             {
                 this.rotatesWhenDropped = true; // so it can be tossed around with rotation
-                this.sprite.rotation = (float)(this.world.random.NextDouble() * Math.PI);
+                this.sprite.rotation = (float)(this.Random.NextDouble() * Math.PI);
             }
             if (this.visualAid != null) this.visualAid.Destroy();
             this.alive = false;
@@ -353,10 +371,9 @@ namespace SonOfRobin
             if (!this.exists) return;
             if (this.alive) this.Kill();
 
-            this.sprite.Destroy();
+            this.RemoveFromBoard();
             if (this.visualAid != null) this.visualAid.Destroy();
             this.exists = false;
-            this.RemoveFromPieceCount();
         }
 
         public void AddToStateMachines()
@@ -389,7 +406,17 @@ namespace SonOfRobin
 
         public void StateMachineWork()
         {
+            // checking if state machine can be processed
+
             if (this.lastFrameSMProcessed == this.world.currentUpdate) return; // to avoid processing the same state machine multiple times in one frame
+            if (!this.exists || !this.sprite.IsOnBoard)
+            {
+                this.RemoveFromStateMachines();
+                return;
+            }
+
+            // processing state machine
+
             this.lastFrameSMProcessed = this.world.currentUpdate;
 
             if (this.ProcessPassiveMovement()) return; // passive movement blocks the state machine until the movement stops
@@ -498,6 +525,12 @@ namespace SonOfRobin
                         return;
                     }
 
+                case State.ScareAnimalsAway:
+                    {
+                        this.SM_ScarePredatorsAway();
+                        return;
+                    }
+
                 case State.Empty: // this state should be removed from execution (for performance reasons)
                     {
                         this.RemoveFromStateMachines();
@@ -510,19 +543,23 @@ namespace SonOfRobin
 
         public void AddPassiveMovement(Vector2 movement)
         {
+            if (!this.movesWhenDropped) return;
+
             // activeState should not be changed ("empty" will be removed from state machines, other states will run after the movement stops)
             this.passiveMovement += movement;
 
             int maxRotation = (int)(Math.Max(Math.Abs(movement.X), Math.Abs(movement.Y)) * 1);
             maxRotation = Math.Min(maxRotation, 120);
 
-            if (this.rotatesWhenDropped) this.passiveRotation = this.world.random.Next(-maxRotation, maxRotation);
+            if (this.rotatesWhenDropped) this.passiveRotation = this.Random.Next(-maxRotation, maxRotation);
             this.AddToStateMachines();
         }
 
         public virtual bool ProcessPassiveMovement()
         {
-            if (this.passiveMovement == Vector2.Zero) return false;
+            if (this.passiveMovement == Vector2.Zero && this.passiveRotation == 0) return false;
+
+            //  MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{this.world.currentUpdate} processing passive movement for {this.readableName}.");
 
             if (Math.Abs(this.passiveMovement.X) < (passiveMovementMultiplier / 2f) && Math.Abs(this.passiveMovement.Y) < (passiveMovementMultiplier / 2f))
             {
@@ -556,6 +593,8 @@ namespace SonOfRobin
         public virtual void SM_PlayerControlledGhosting()
         { throw new DivideByZeroException("This method should not be executed."); }
         public virtual void SM_FireplaceBurn()
+        { throw new DivideByZeroException("This method should not be executed."); }
+        public virtual void SM_ScarePredatorsAway()
         { throw new DivideByZeroException("This method should not be executed."); }
         public virtual void SM_GrowthAndReproduction()
         { throw new DivideByZeroException("This method should not be executed."); }

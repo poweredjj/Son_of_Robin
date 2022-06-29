@@ -9,7 +9,7 @@ namespace SonOfRobin
     {
         public enum Type { Hungry, VeryHungry, Starving, Tired, VeryTired, CantShootInWater, SmallInventory, MapNegative, Lava, BreakingItem, BrokenItem, BurntOutTorch, CineIntroduction, AnimalScaredOfFire, AnimalCounters };
 
-        private static readonly List<Type> typesThatIgnoreShowHintSetting = new List<Type> { Type.CineIntroduction, Type.VeryTired, Type.Starving };
+        private static readonly List<Type> typesThatIgnoreShowHintSetting = new List<Type> { Type.CineIntroduction, Type.VeryTired, Type.Starving, Type.BrokenItem, Type.BurntOutTorch };
 
         private static readonly int hintDelay = 1 * 60 * 60; // 1 * 60 * 60
         public static readonly int blockInputDuration = 80;
@@ -107,8 +107,8 @@ namespace SonOfRobin
                 case Type.Starving:
                     {
                         var hintMessages = new List<HintMessage> {
-                            new HintMessage(text: "I'm starving.\nI need to eat | | | something right now or else I'm gonna | die...", imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.Apple].texture, AnimData.framesForPkgs[AnimData.PkgName.Banana].texture, AnimData.framesForPkgs[AnimData.PkgName.RawMeat].texture,AnimData.framesForPkgs[AnimData.PkgName.Skeleton].texture}, blockInput: true),
-                            new HintMessage(text: "I'm | dying from | hunger.", imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.Skeleton].texture, AnimData.framesForPkgs[AnimData.PkgName.MealStandard].texture}, blockInput: true),
+                            new HintMessage(text: "I'm starving.\nI need to eat | | | something right now or else I'm gonna | die...", imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.Apple].texture, AnimData.framesForPkgs[AnimData.PkgName.Banana].texture, AnimData.framesForPkgs[AnimData.PkgName.MeatRaw].texture,AnimData.framesForPkgs[AnimData.PkgName.SkullAndBones].texture}, blockInput: true),
+                            new HintMessage(text: "I'm | dying from | hunger.", imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.SkullAndBones].texture, AnimData.framesForPkgs[AnimData.PkgName.MealStandard].texture}, blockInput: true),
                             new HintMessage(text: "| I have to | eat right now!", imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.Exclamation].texture, AnimData.framesForPkgs[AnimData.PkgName.MealStandard].texture}, blockInput: true),
                         };
 
@@ -317,7 +317,7 @@ namespace SonOfRobin
         {
             world.camera.TrackPiece(pieceToShow);
 
-            BoardPiece crossHair = PieceTemplate.CreateOnBoard(world: world, position: new Vector2(pieceToShow.sprite.gfxRect.Center.X, pieceToShow.sprite.gfxRect.Center.Y), templateName: PieceTemplate.Name.Crosshair);
+            BoardPiece crossHair = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: new Vector2(pieceToShow.sprite.gfxRect.Center.X, pieceToShow.sprite.gfxRect.Center.Y), templateName: PieceTemplate.Name.Crosshair);
             new Tracking(world: world, targetSprite: pieceToShow.sprite, followingSprite: crossHair.sprite);
 
             var taskChain = HintMessage.ConvertToTasks(messageList: messageList);

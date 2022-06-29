@@ -81,11 +81,11 @@ namespace SonOfRobin
         public Dictionary<string, Object> Serialize()
         {
             var trackingData = new Dictionary<string, Object> {
-                {"followingSprite_old_id", this.followingSprite.id},
+                {"followingSprite_id", this.followingSprite.id},
                 {"followingXAlign", this.followingXAlign},
                 {"followingYAlign", this.followingYAlign},
 
-                {"targetSprite_old_id", this.targetSprite.id},
+                {"targetSprite_id", this.targetSprite.id},
                 {"targetXAlign", this.targetXAlign},
                 {"targetYAlign", this.targetYAlign},
 
@@ -99,17 +99,17 @@ namespace SonOfRobin
             return trackingData;
         }
 
-        public static void Deserialize(World world, Dictionary<string, Object> trackingData, Dictionary<string, BoardPiece> piecesByOldId)
+        public static void Deserialize(World world, Dictionary<string, Object> trackingData, Dictionary<string, BoardPiece> piecesByID)
         // deserialize
         {
             // if object was destroyed, it will no longer be available after loading
-            if (!piecesByOldId.ContainsKey((string)trackingData["followingSprite_old_id"]) || !piecesByOldId.ContainsKey((string)trackingData["targetSprite_old_id"])) return;
+            if (!piecesByID.ContainsKey((string)trackingData["followingSprite_id"]) || !piecesByID.ContainsKey((string)trackingData["targetSprite_id"])) return;
 
-            Sprite followingSprite = piecesByOldId[(string)trackingData["followingSprite_old_id"]].sprite;
+            Sprite followingSprite = piecesByID[(string)trackingData["followingSprite_id"]].sprite;
             XAlign followingXAlign = (XAlign)trackingData["followingXAlign"];
             YAlign followingYAlign = (YAlign)trackingData["followingYAlign"];
 
-            Sprite targetSprite = piecesByOldId[(string)trackingData["targetSprite_old_id"]].sprite;
+            Sprite targetSprite = piecesByID[(string)trackingData["targetSprite_id"]].sprite;
             XAlign targetXAlign = (XAlign)trackingData["targetXAlign"];
             YAlign targetYAlign = (YAlign)trackingData["targetYAlign"];
 

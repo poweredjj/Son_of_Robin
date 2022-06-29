@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/mv_blacksmith_by_schwarzenacht_dapf6ek.png</SourceFile>
+  <SourceFile>C:/Users/msmidowi/Documents/SonOfRobin/SonOfRobin.Core/Content/gfx/mv_blacksmith_by_schwarzenacht_dapf6ek.png</SourceFile>
   <SourceTime>2021-12-08T11:48:04.3938472+01:00</SourceTime>
-  <DestFile>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/bin/DesktopGL/SonOfRobin/gfx/mv_blacksmith_by_schwarzenacht_dapf6ek.xnb</DestFile>
-  <DestTime>2022-05-14T08:42:21.2405324+02:00</DestTime>
+  <DestFile>C:/Users/msmidowi/Documents/SonOfRobin/SonOfRobin.Core/Content/bin/DesktopGL/SonOfRobin/gfx/mv_blacksmith_by_schwarzenacht_dapf6ek.xnb</DestFile>
+  <DestTime>2022-05-21T12:09:21.8919252+02:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2020-08-10T18:17:54+02:00</ImporterTime>
   <Processor>TextureProcessor</Processor>

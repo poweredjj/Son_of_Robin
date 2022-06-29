@@ -30,28 +30,9 @@ namespace SonOfRobin
         public TimeSpan creationDuration;
         public readonly bool demoMode;
 
-        public int currentPieceId;
-        public int currentBuffId;
-
         private Object saveGameData;
-        public Dictionary<string, BoardPiece> piecesByOldId; // lookup table for deserializing
-        public bool freePiecesPlacingMode; // allows to precisely place pieces during loading a saved game
         public bool createMissinPiecesOutsideCamera;
         public DateTime lastSaved;
-        private bool sprintMode;
-
-        public bool SprintMode
-        {
-            get { return this.sprintMode; }
-            set
-            {
-                if (this.sprintMode == value) return;
-
-                this.sprintMode = value;
-                if (this.sprintMode) this.player.sprite.effectCol.AddEffect(new BorderInstance(outlineColor: Color.Cyan, textureSize: this.player.sprite.frame.textureSize, priority: 0, framesLeft: -1));
-                else this.player.sprite.effectCol.RemoveEffectsOfType(effect: SonOfRobinGame.effectBorder);
-            }
-        }
 
         private bool buildMode;
 
@@ -72,8 +53,7 @@ namespace SonOfRobin
                 {
                     this.player.RemoveFromStateMachines();
 
-                    BoardPiece spectator = PieceTemplate.CreateOnBoard(world: this, position: this.camera.TrackedPos, templateName: PieceTemplate.Name.PlayerGhost);
-                    spectator.sprite.MoveToClosestFreeSpot(this.camera.TrackedPos);
+                    BoardPiece spectator = PieceTemplate.CreateAndPlaceOnBoard(world: this, position: this.camera.TrackedPos, templateName: PieceTemplate.Name.PlayerGhost, closestFreeSpot: true);
                     spectator.sprite.orientation = this.player != null ? this.player.sprite.orientation : Sprite.Orientation.right;
 
                     this.player = (Player)spectator;
@@ -105,7 +85,7 @@ namespace SonOfRobin
                     BoardPiece spectator = this.player;
 
                     bool playerFound = false;
-                    foreach (Sprite sprite in this.grid.GetAllSprites(Cell.Group.ColAll))
+                    foreach (Sprite sprite in this.grid.GetAllSprites(Cell.Group.All))
                     {
                         if (sprite.boardPiece.name == PieceTemplate.Name.Player && sprite.boardPiece.alive)
                         {
@@ -175,7 +155,9 @@ namespace SonOfRobin
 
         public readonly int seed;
         public readonly int resDivider;
+        public readonly int initialMaxAnimalsMultiplier;
         public int maxAnimalsPerName;
+        public bool addAgressiveAnimals;
         public FastNoiseLite noise;
         public readonly Random random;
         public readonly int width;
@@ -214,6 +196,7 @@ namespace SonOfRobin
         public HintEngine hintEngine;
         public Dictionary<PieceTemplate.Name, int> pieceCountByName;
         public Dictionary<Type, int> pieceCountByClass;
+        private List<PieceCreationData> creationDataList;
         public Dictionary<string, Tracking> trackingQueue;
         public List<Cell> plantCellsQueue;
         public List<Sprite> plantSpritesQueue;
@@ -280,17 +263,16 @@ namespace SonOfRobin
             }
         }
 
-        public World(int width, int height, int seed, int resDivider, Object saveGameData = null, bool demoMode = false) :
+
+        public World(int width, int height, int seed, int resDivider, bool addAgressiveAnimals, int initialMaxAnimalsMultiplier, Object saveGameData = null, bool demoMode = false) :
               base(inputType: InputTypes.Normal, priority: 1, blocksUpdatesBelow: true, blocksDrawsBelow: true, touchLayout: TouchLayout.QuitLoading, tipsLayout: ControlTips.TipsLayout.QuitLoading)
         {
             this.demoMode = demoMode;
             this.cineMode = false;
             this.buildMode = false;
             this.spectatorMode = false;
-            this.sprintMode = false;
             if (this.demoMode) this.InputType = InputTypes.None;
             this.saveGameData = saveGameData;
-            this.freePiecesPlacingMode = saveGameData != null;
             this.createMissinPiecesOutsideCamera = false;
             this.lastSaved = DateTime.Now;
             this.worldCreationInProgress = true;
@@ -311,9 +293,6 @@ namespace SonOfRobin
             this.bulletTimeMultiplier = 1;
             this.islandClock = new IslandClock(world: this);
 
-            this.currentPieceId = 0;
-            this.currentBuffId = 0;
-
             this.noise = new FastNoiseLite(this.seed);
 
             this.width = width;
@@ -321,8 +300,11 @@ namespace SonOfRobin
             this.viewParams.Width = width; // it does not need to be updated, because world size is constant
             this.viewParams.Height = height; // it does not need to be updated, because world size is constant
 
-            this.maxAnimalsPerName = (int)(this.width * this.height * 0.00000001 * Preferences.newWorldMaxAnimalsMultiplier);
+            this.initialMaxAnimalsMultiplier = initialMaxAnimalsMultiplier;
+            this.maxAnimalsPerName = (int)(this.width * this.height * 0.00000001 * initialMaxAnimalsMultiplier);
+            this.addAgressiveAnimals = addAgressiveAnimals;
             MessageLog.AddMessage(msgType: MsgType.Debug, message: $"maxAnimalsPerName {maxAnimalsPerName}");
+            this.creationDataList = PieceCreationData.CreateDataList(addAgressiveAnimals: this.addAgressiveAnimals, maxAnimalsPerName: this.maxAnimalsPerName);
 
             this.pieceCountByName = new Dictionary<PieceTemplate.Name, int>();
             foreach (PieceTemplate.Name templateName in (PieceTemplate.Name[])Enum.GetValues(typeof(PieceTemplate.Name)))
@@ -350,7 +332,7 @@ namespace SonOfRobin
             this.playerPanel = new PlayerPanel(world: this);
             this.debugText = "";
             if (saveGameData == null) this.grid = new Grid(world: this, resDivider: resDivider);
-            else { this.Deserialize(gridOnly: true); }
+            else this.Deserialize(gridOnly: true);
 
             this.AddLinkedScene(this.mapBig);
             this.AddLinkedScene(this.mapSmall);
@@ -364,20 +346,20 @@ namespace SonOfRobin
 
         public void CompleteCreation()
         {
+            if (InputMapper.IsPressed(InputMapper.Action.GlobalCancelReturnSkip))
+            {
+                SonOfRobinGame.game.IsFixedTimeStep = Preferences.FrameSkip;
+
+                SonOfRobinGame.progressBar.TurnOff(addTransition: true);
+                bool menuFound = GetTopSceneOfType(typeof(Menu)) != null;
+
+                this.Remove();
+                new TextWindow(text: "Entering the island has been cancelled.", textColor: Color.White, bgColor: Color.DarkRed, useTransition: true, animate: true, closingTask: menuFound ? Scheduler.TaskName.Empty : Scheduler.TaskName.OpenMainMenu);
+                return;
+            };
+
             if (this.grid.creationInProgress)
             {
-                if (InputMapper.IsPressed(InputMapper.Action.GlobalCancelReturnSkip))
-                {
-                    SonOfRobinGame.game.IsFixedTimeStep = Preferences.FrameSkip;
-
-                    SonOfRobinGame.progressBar.TurnOff(addTransition: true);
-                    bool menuFound = GetTopSceneOfType(typeof(Menu)) != null;
-
-                    this.Remove();
-                    new TextWindow(text: $"Entering the island has been cancelled.", textColor: Color.White, bgColor: Color.DarkRed, useTransition: true, animate: true, closingTask: menuFound ? Scheduler.TaskName.Empty : Scheduler.TaskName.OpenMainMenu);
-                    return;
-                };
-
                 SonOfRobinGame.game.IsFixedTimeStep = false; // speeds up the creation process
                 this.grid.RunNextCreationStage();
                 return;
@@ -412,8 +394,6 @@ namespace SonOfRobin
             this.worldCreationInProgress = false;
             this.creationEnd = DateTime.Now;
             this.creationDuration = this.creationEnd - this.creationStart;
-            PieceInfo.CreateAllInfo(world: this);
-            Craft.PopulateAllCategories();
             this.lastSaved = DateTime.Now;
 
             MessageLog.AddMessage(msgType: MsgType.Debug, message: $"World creation time: {creationDuration:hh\\:mm\\:ss\\.fff}.", color: Color.GreenYellow);
@@ -429,13 +409,11 @@ namespace SonOfRobin
                 else
                 {
                     this.player = (Player)this.PlacePlayer();
-
-                    BoardPiece crate = PieceTemplate.CreateOnBoard(world: this, position: this.player.sprite.position, templateName: PieceTemplate.Name.CrateStarting);
-                    if (crate.sprite.placedCorrectly) crate.sprite.MoveToClosestFreeSpot(this.player.sprite.position);
+                    PieceTemplate.CreateAndPlaceOnBoard(world: this, position: this.player.sprite.position, templateName: PieceTemplate.Name.CrateStarting, closestFreeSpot: true);
+                    PieceTemplate.CreateAndPlaceOnBoard(world: this, position: this.player.sprite.position, templateName: PieceTemplate.Name.PredatorRepellant, closestFreeSpot: true);
                 }
             }
-            else
-            { this.Deserialize(gridOnly: false); }
+            else this.Deserialize(gridOnly: false);
 
             if (!this.demoMode)
             {
@@ -476,10 +454,9 @@ namespace SonOfRobin
             this.currentFrame = (int)headerData["currentFrame"];
             this.currentUpdate = (int)headerData["currentUpdate"];
             this.TimePlayed = (TimeSpan)headerData["TimePlayed"];
-            this.currentPieceId = (int)headerData["currentPieceId"];
-            this.currentBuffId = (int)headerData["currentBuffId"];
             this.MapEnabled = (bool)headerData["MapEnabled"];
             this.maxAnimalsPerName = (int)headerData["maxAnimalsPerName"];
+            this.addAgressiveAnimals = (bool)headerData["addAgressiveAnimals"];
             this.doNotCreatePiecesList = (List<PieceTemplate.Name>)headerData["doNotCreatePiecesList"];
             this.discoveredRecipesForPieces = (List<PieceTemplate.Name>)headerData["discoveredRecipesForPieces"];
 
@@ -490,9 +467,9 @@ namespace SonOfRobin
 
             // deserializing pieces
 
-            this.piecesByOldId = new Dictionary<string, BoardPiece> { }; // needed to match old IDs to new pieces (with new, different IDs)
             var pieceDataBag = (ConcurrentBag<Object>)saveGameDataDict["pieces"];
-            var newPiecesByOldTargetIds = new Dictionary<string, BoardPiece> { };
+            var piecesByID = new Dictionary<string, BoardPiece> { };
+            var animalsByTargetID = new Dictionary<string, BoardPiece> { };
 
             foreach (Dictionary<string, Object> pieceData in pieceDataBag)
             {
@@ -502,7 +479,9 @@ namespace SonOfRobin
 
                 bool female = pieceData.ContainsKey("animal_female") && (bool)pieceData["animal_female"];
 
-                var newBoardPiece = PieceTemplate.CreateOnBoard(world: this, position: new Vector2((float)pieceData["sprite_positionX"], (float)pieceData["sprite_positionY"]), templateName: templateName, female: female);
+                var newBoardPiece = PieceTemplate.CreateAndPlaceOnBoard(world: this, position: new Vector2((float)pieceData["sprite_positionX"], (float)pieceData["sprite_positionY"]), templateName: templateName, female: female, ignoreCollisions: true, id: (string)pieceData["base_id"]);
+                if (!newBoardPiece.sprite.IsOnBoard) throw new ArgumentException($"{newBoardPiece.name} could not be placed correctly.");
+
                 newBoardPiece.Deserialize(pieceData: pieceData);
 
                 if (templateName == PieceTemplate.Name.Player)
@@ -511,33 +490,37 @@ namespace SonOfRobin
                     this.camera.TrackPiece(trackedPiece: this.player, fluidMotion: false);
                 }
 
-                if (newBoardPiece.GetType() == typeof(Animal) && pieceData["animal_target_old_id"] != null)
-                { newPiecesByOldTargetIds[(string)pieceData["animal_target_old_id"]] = newBoardPiece; }
+                piecesByID[newBoardPiece.id] = newBoardPiece;
+
+                if (newBoardPiece.GetType() == typeof(Animal) && pieceData["animal_target_id"] != null)
+                { animalsByTargetID[(string)pieceData["animal_target_id"]] = newBoardPiece; }
             }
 
-            foreach (var kvp in newPiecesByOldTargetIds)
+            foreach (var kvp in animalsByTargetID)
             {
                 Animal newAnimal = (Animal)kvp.Value;
-                if (this.piecesByOldId.ContainsKey(kvp.Key)) newAnimal.target = this.piecesByOldId[kvp.Key];
+                if (piecesByID.ContainsKey(kvp.Key)) newAnimal.target = piecesByID[kvp.Key];
             }
 
             // deserializing tracking
 
             var trackingDataList = (List<Object>)saveGameDataDict["tracking"];
             foreach (Dictionary<string, Object> trackingData in trackingDataList)
-            { Tracking.Deserialize(world: this, trackingData: trackingData, piecesByOldId: this.piecesByOldId); }
+            {
+                Tracking.Deserialize(world: this, trackingData: trackingData, piecesByID: piecesByID);
+            }
 
             // deserializing planned events
 
             var eventDataList = (List<Object>)saveGameDataDict["events"];
             foreach (Dictionary<string, Object> eventData in eventDataList)
-            { WorldEvent.Deserialize(world: this, eventData: eventData, piecesByOldId: this.piecesByOldId); }
+            {
+                WorldEvent.Deserialize(world: this, eventData: eventData, piecesByID: piecesByID);
+            }
 
             // finalizing
 
-            this.piecesByOldId = null;
             this.saveGameData = null;
-            this.freePiecesPlacingMode = false;
 
             MessageLog.AddMessage(msgType: MsgType.User, message: "Game has been loaded.", color: Color.Cyan);
         }
@@ -568,8 +551,8 @@ namespace SonOfRobin
         {
             for (int tryIndex = 0; tryIndex < 65535; tryIndex++)
             {
-                player = (Player)PieceTemplate.CreateOnBoard(world: this, position: new Vector2(random.Next(0, this.width), random.Next(0, this.height)), templateName: PieceTemplate.Name.Player);
-                if (player.sprite.placedCorrectly)
+                player = (Player)PieceTemplate.CreateAndPlaceOnBoard(world: this, position: new Vector2(random.Next(0, this.width), random.Next(0, this.height)), templateName: PieceTemplate.Name.Player);
+                if (player.sprite.IsOnBoard)
                 {
                     player.sprite.orientation = Sprite.Orientation.up;
                     player.sprite.CharacterStand();
@@ -592,48 +575,57 @@ namespace SonOfRobin
                 this.multiplier = multiplier;
                 this.maxAmount = maxAmount; // -1 == no limit
             }
+
+            public static List<PieceCreationData> CreateDataList(bool addAgressiveAnimals, int maxAnimalsPerName)
+            {
+                var dataList = new List<PieceCreationData>
+                {
+                     new PieceCreationData(name: PieceTemplate.Name.GrassRegular, multiplier: 2.0f, maxAmount: 1000),
+                     new PieceCreationData(name: PieceTemplate.Name.GrassGlow, multiplier: 0.1f, maxAmount: 40),
+                     new PieceCreationData(name: PieceTemplate.Name.GrassDesert, multiplier: 2.0f, maxAmount: -1),
+                     new PieceCreationData(name: PieceTemplate.Name.Rushes, multiplier: 2.0f, maxAmount: -1),
+                     new PieceCreationData(name: PieceTemplate.Name.WaterLily, multiplier: 1.0f, maxAmount: -1),
+                     new PieceCreationData(name: PieceTemplate.Name.FlowersPlain, multiplier: 0.4f, maxAmount: -1),
+                     new PieceCreationData(name: PieceTemplate.Name.FlowersRed, multiplier: 0.1f, maxAmount: -1),
+                     new PieceCreationData(name: PieceTemplate.Name.FlowersMountain, multiplier: 0.1f, maxAmount: -1),
+                     new PieceCreationData(name: PieceTemplate.Name.TreeSmall, multiplier: 1.0f, maxAmount: -1),
+                     new PieceCreationData(name: PieceTemplate.Name.TreeBig, multiplier: 1.0f, maxAmount: -1),
+                     new PieceCreationData(name: PieceTemplate.Name.AcornTree, multiplier: 0.03f, maxAmount: -1),
+                     new PieceCreationData(name: PieceTemplate.Name.AppleTree, multiplier: 0.03f, maxAmount: -1),
+                     new PieceCreationData(name: PieceTemplate.Name.CherryTree, multiplier: 0.03f, maxAmount: -1),
+                     new PieceCreationData(name: PieceTemplate.Name.BananaTree, multiplier: 0.03f, maxAmount: -1),
+                     new PieceCreationData(name: PieceTemplate.Name.TomatoPlant, multiplier: 0.03f, maxAmount: -1),
+                     new PieceCreationData(name: PieceTemplate.Name.PalmTree, multiplier: 1.0f, maxAmount: -1),
+                     new PieceCreationData(name: PieceTemplate.Name.Cactus, multiplier: 0.2f, maxAmount: -1),
+                     new PieceCreationData(name: PieceTemplate.Name.WaterRock, multiplier: 0.5f, maxAmount: -1),
+                     new PieceCreationData(name: PieceTemplate.Name.MineralsSmall, multiplier: 0.5f, maxAmount: -1),
+                     new PieceCreationData(name: PieceTemplate.Name.MineralsBig, multiplier: 0.3f, maxAmount: -1),
+                     new PieceCreationData(name: PieceTemplate.Name.IronDeposit, multiplier: 0.02f, maxAmount: 30),
+                     new PieceCreationData(name: PieceTemplate.Name.CoalDeposit, multiplier: 0.02f, maxAmount: 30),
+                     new PieceCreationData(name: PieceTemplate.Name.CrystalDepositBig, multiplier: 0.01f, maxAmount: 10),
+                     new PieceCreationData(name: PieceTemplate.Name.Shell, multiplier: 1f, maxAmount: 25),
+                     new PieceCreationData(name: PieceTemplate.Name.Clam, multiplier: 1f, maxAmount: 25),
+                     new PieceCreationData(name: PieceTemplate.Name.BeachDigSite, multiplier: 0.8f, maxAmount: -1),
+                     new PieceCreationData(name: PieceTemplate.Name.ForestDigSite, multiplier: 0.3f, maxAmount: -1),
+                     new PieceCreationData(name: PieceTemplate.Name.DesertDigSite, multiplier: 0.2f, maxAmount: -1),
+                     new PieceCreationData(name: PieceTemplate.Name.GlassDigSite, multiplier: 0.1f, maxAmount: 200),
+                     new PieceCreationData(name: PieceTemplate.Name.DangerDigSite, multiplier: 0.15f, maxAmount: -1),
+                     new PieceCreationData(name: PieceTemplate.Name.CrateRegular, multiplier: 0.1f, maxAmount: 2),
+                     new PieceCreationData(name: PieceTemplate.Name.Rabbit, multiplier: 0.6f, maxAmount: maxAnimalsPerName),
+                     new PieceCreationData(name: PieceTemplate.Name.Fox, multiplier: 0.4f, maxAmount: maxAnimalsPerName),
+                     new PieceCreationData(name: PieceTemplate.Name.Tiger, multiplier: 0.4f, maxAmount: maxAnimalsPerName),
+                     new PieceCreationData(name: PieceTemplate.Name.Frog, multiplier: 0.2f, maxAmount: maxAnimalsPerName),
+                };
+
+                if (!addAgressiveAnimals) dataList = dataList.Where(data => PieceInfo.GetInfo(data.name).eats == null || !PieceInfo.GetInfo(data.name).eats.Contains(PieceTemplate.Name.Player)).ToList();
+
+                return dataList;
+            }
         }
 
         public bool CreateMissingPieces(uint maxAmountToCreateAtOnce = 300000, bool outsideCamera = false, float multiplier = 1.0f, bool clearDoNotCreateList = false, bool addToDoNotCreateList = true, bool addFruits = false)
         {
             if (clearDoNotCreateList) doNotCreatePiecesList.Clear();
-
-            // preparing a dictionary of pieces to create
-
-            var creationDataList = new List<PieceCreationData>
-            {
-                new PieceCreationData(name: PieceTemplate.Name.GrassRegular, multiplier: 2.0f, maxAmount: 1000),
-                new PieceCreationData(name: PieceTemplate.Name.GrassGlow, multiplier: 0.1f, maxAmount: 40),
-                new PieceCreationData(name: PieceTemplate.Name.GrassDesert, multiplier: 2.0f, maxAmount: -1),
-                new PieceCreationData(name: PieceTemplate.Name.Rushes, multiplier: 2.0f, maxAmount: -1),
-                new PieceCreationData(name: PieceTemplate.Name.WaterLily, multiplier: 1.0f, maxAmount: -1),
-                new PieceCreationData(name: PieceTemplate.Name.FlowersPlain, multiplier: 0.4f, maxAmount: -1),
-                new PieceCreationData(name: PieceTemplate.Name.FlowersRed, multiplier: 0.1f, maxAmount: -1),
-                new PieceCreationData(name: PieceTemplate.Name.FlowersMountain, multiplier: 0.1f, maxAmount: -1),
-                new PieceCreationData(name: PieceTemplate.Name.TreeSmall, multiplier: 1.0f, maxAmount: -1),
-                new PieceCreationData(name: PieceTemplate.Name.TreeBig, multiplier: 1.0f, maxAmount: -1),
-                new PieceCreationData(name: PieceTemplate.Name.AcornTree, multiplier: 0.03f, maxAmount: -1),
-                new PieceCreationData(name: PieceTemplate.Name.AppleTree, multiplier: 0.03f, maxAmount: -1),
-                new PieceCreationData(name: PieceTemplate.Name.CherryTree, multiplier: 0.03f, maxAmount: -1),
-                new PieceCreationData(name: PieceTemplate.Name.BananaTree, multiplier: 0.03f, maxAmount: -1),
-                new PieceCreationData(name: PieceTemplate.Name.TomatoPlant, multiplier: 0.03f, maxAmount: -1),
-                new PieceCreationData(name: PieceTemplate.Name.PalmTree, multiplier: 1.0f, maxAmount: -1),
-                new PieceCreationData(name: PieceTemplate.Name.Cactus, multiplier: 0.2f, maxAmount: -1),
-                new PieceCreationData(name: PieceTemplate.Name.WaterRock, multiplier: 0.5f, maxAmount: -1),
-                new PieceCreationData(name: PieceTemplate.Name.MineralsSmall, multiplier: 0.5f, maxAmount: -1),
-                new PieceCreationData(name: PieceTemplate.Name.MineralsBig, multiplier: 0.3f, maxAmount: -1),
-                new PieceCreationData(name: PieceTemplate.Name.IronDeposit, multiplier: 0.02f, maxAmount: 30),
-                new PieceCreationData(name: PieceTemplate.Name.CoalDeposit, multiplier: 0.02f, maxAmount: 30),
-                new PieceCreationData(name: PieceTemplate.Name.GlassDeposit, multiplier: 0.02f, maxAmount: 30),
-                new PieceCreationData(name: PieceTemplate.Name.CrystalDepositBig, multiplier: 0.01f, maxAmount: 25),
-                new PieceCreationData(name: PieceTemplate.Name.Shell, multiplier: 1f, maxAmount: 25),
-                new PieceCreationData(name: PieceTemplate.Name.Clam, multiplier: 1f, maxAmount: 25),
-                new PieceCreationData(name: PieceTemplate.Name.CrateRegular, multiplier: 0.1f, maxAmount: 2),
-                new PieceCreationData(name: PieceTemplate.Name.Rabbit, multiplier: 0.6f, maxAmount: this.maxAnimalsPerName),
-                new PieceCreationData(name: PieceTemplate.Name.Fox, multiplier: 0.4f, maxAmount: this.maxAnimalsPerName),
-                new PieceCreationData(name: PieceTemplate.Name.Tiger, multiplier: 0.4f, maxAmount: this.maxAnimalsPerName),
-                new PieceCreationData(name: PieceTemplate.Name.Frog, multiplier: 0.2f, maxAmount: this.maxAnimalsPerName),
-            };
 
             Vector2 notReallyUsedPosition = new Vector2(-100, -100); // -100, -100 will be converted to a random position on the map - needed for effective creation of new sprites 
             int minPieceAmount = Math.Max(Convert.ToInt32((long)width * (long)height / 300000 * multiplier), 0); // 300000
@@ -661,12 +653,12 @@ namespace SonOfRobin
             foreach (var kvp in amountToCreateByName)
             {
                 PieceTemplate.Name pieceName = kvp.Key;
-                int amountLeftToCreate = Convert.ToInt32(kvp.Value); // separate from the iterator below (needs to be modified)
+                int amountLeftToCreate = kvp.Value; // separate from the iterator below (needs to be modified)
 
                 for (int i = 0; i < kvp.Value * 5; i++)
                 {
-                    var newBoardPiece = PieceTemplate.CreateOnBoard(world: this, position: notReallyUsedPosition, templateName: pieceName);
-                    if (newBoardPiece.sprite.placedCorrectly)
+                    var newBoardPiece = PieceTemplate.CreateAndPlaceOnBoard(world: this, position: notReallyUsedPosition, templateName: pieceName);
+                    if (newBoardPiece.sprite.IsOnBoard)
                     {
                         if (addFruits && newBoardPiece.GetType() == typeof(Plant) && this.random.Next(2) == 0)
                         {
@@ -793,7 +785,12 @@ namespace SonOfRobin
 
             if (!this.player.alive || this.player.activeState != BoardPiece.State.PlayerControlledWalking) return;
 
-            if (InputMapper.HasBeenPressed(InputMapper.Action.WorldSprintToggle)) this.SprintMode = true;
+            if (!this.player.buffEngine.HasBuff(BuffEngine.BuffType.Sprint) && this.player.Stamina > this.player.maxStamina * 0.4f)
+            {
+                VirtButton.ButtonHighlightOnNextFrame(VButName.Sprint);
+                ControlTips.TipHighlightOnNextFrame(tipName: "sprint");
+                if (InputMapper.HasBeenPressed(InputMapper.Action.WorldSprintToggle)) this.player.buffEngine.AddBuff(buff: new BuffEngine.Buff(type: BuffEngine.BuffType.Sprint, autoRemoveDelay: 5 * 60, value: this.player.speed), world: this);
+            }
 
             if (InputMapper.HasBeenPressed(InputMapper.Action.WorldFieldCraft))
             {
@@ -1007,14 +1004,12 @@ namespace SonOfRobin
             this.tipsLayout = ControlTips.TipsLayout.WorldBuild;
 
             Scene craftMenu = GetTopSceneOfType(typeof(Menu));
-            craftMenu.MoveToBottom();
+            craftMenu?.MoveToBottom(); // there is no craft menu if planting
             SonOfRobinGame.hintWindow.TurnOff();
 
             this.player.recipeToBuild = recipe;
-            this.freePiecesPlacingMode = true;
-            this.player.pieceToBuild = PieceTemplate.CreateOnBoard(templateName: recipe.pieceToCreate, world: this, position: this.player.sprite.position);
-            this.freePiecesPlacingMode = false;
-            this.player.pieceToBuild.sprite.MoveToClosestFreeSpot(this.player.pieceToBuild.sprite.position);
+            this.player.pieceToBuild = PieceTemplate.CreateAndPlaceOnBoard(templateName: recipe.pieceToCreate, world: this, position: this.player.sprite.position, ignoreCollisions: true); // "template" piece should be placed - collisions doesn't matter...
+            this.player.pieceToBuild.sprite.MoveToClosestFreeSpot(this.player.sprite.position); // ...but the starting position should be correct for building, if possible
             this.player.activeState = BoardPiece.State.PlayerControlledBuilding;
         }
 
@@ -1026,7 +1021,7 @@ namespace SonOfRobin
             this.player.activeState = BoardPiece.State.PlayerControlledWalking;
 
             Scene craftMenu = GetBottomSceneOfType(typeof(Menu));
-            craftMenu.MoveToTop();
+            craftMenu?.MoveToTop(); // there is no craft menu if planting
 
             if (craftPiece) this.player.recipeToBuild.TryToProducePieces(player: this.player);
 

@@ -38,7 +38,7 @@ namespace SonOfRobin
         {
             var eventData = new Dictionary<string, Object> {
                 {"eventName", this.eventName},
-                {"pieceOldId", this.boardPiece?.id},
+                {"piece_id", this.boardPiece?.id},
                 {"startUpdateNo", this.startUpdateNo},
                 {"eventHelper", this.eventHelper},
             };
@@ -46,19 +46,18 @@ namespace SonOfRobin
             return eventData;
         }
 
-        public static void Deserialize(World world, Dictionary<string, Object> eventData, Dictionary<string, BoardPiece> piecesByOldId)
+        public static void Deserialize(World world, Dictionary<string, Object> eventData, Dictionary<string, BoardPiece> piecesByID)
         {
             // for events that target a piece, that was already destroyed (and will not be present in saved data)
             EventName eventName = (EventName)eventData["eventName"];
 
             BoardPiece boardPiece;
 
-            if (eventName == EventName.RestorePieceCreation || eventName == EventName.RestoreHint)
-            { boardPiece = null; }
+            if (eventName == EventName.RestorePieceCreation || eventName == EventName.RestoreHint) boardPiece = null;
             else
             {
-                if (!piecesByOldId.ContainsKey((string)eventData["pieceOldId"])) return;
-                boardPiece = piecesByOldId[(string)eventData["pieceOldId"]];
+                if (!piecesByID.ContainsKey((string)eventData["piece_id"])) return;
+                boardPiece = piecesByID[(string)eventData["piece_id"]];
             }
 
             int startUpdateNo = (int)eventData["startUpdateNo"];
@@ -150,7 +149,7 @@ namespace SonOfRobin
 
                 case EventName.RemoveBuff:
                     {
-                        int buffID = (int)this.eventHelper;
+                        string buffID = (string)this.eventHelper;
                         this.boardPiece.buffEngine.RemoveBuff(buffID: buffID, checkIfHasThisBuff: false);
 
                         return;
@@ -225,7 +224,7 @@ namespace SonOfRobin
 
                         var regenPoisonData = (Dictionary<string, Object>)this.eventHelper;
 
-                        int buffID = (int)regenPoisonData["buffID"];
+                        string buffID = (string)regenPoisonData["buffID"];
                         int delay = (int)regenPoisonData["delay"];
                         int charges = (int)regenPoisonData["charges"];
                         int hpChange = (int)regenPoisonData["hpChange"];

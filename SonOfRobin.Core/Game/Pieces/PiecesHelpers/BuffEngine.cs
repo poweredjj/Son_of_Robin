@@ -7,12 +7,12 @@ namespace SonOfRobin
 {
     public class BuffEngine
     {
-        public enum BuffType { InvWidth, InvHeight, ToolbarWidth, ToolbarHeight, Speed, Strength, HP, MaxHP, MaxStamina, EnableMap, Tired, Hungry, LightSource, RegenPoison, Haste, Fatigue };
+        public enum BuffType { InvWidth, InvHeight, ToolbarWidth, ToolbarHeight, Speed, Strength, HP, MaxHP, MaxStamina, EnableMap, Tired, Hungry, LightSource, RegenPoison, Haste, Fatigue, Sprint };
 
         [Serializable]
         public class Buff
         {
-            public int id;
+            public string id;
             public readonly bool increaseIDAtEveryUse;
             public readonly BuffType type;
             public readonly bool isPositive;
@@ -25,11 +25,10 @@ namespace SonOfRobin
             public int endFrame;
             public readonly bool isPermanent;
             public readonly int sleepFrames;
-            public Buff(World world, BuffType type, object value, int autoRemoveDelay = 0, int sleepFrames = 0, bool isPermanent = false, bool canKill = false, bool increaseIDAtEveryUse = false)
+            public Buff(BuffType type, object value, int autoRemoveDelay = 0, int sleepFrames = 0, bool isPermanent = false, bool canKill = false, bool increaseIDAtEveryUse = false)
             {
                 this.increaseIDAtEveryUse = increaseIDAtEveryUse; // for buffs that could stack (like sleeping buffs)
-                this.id = world.currentBuffId;
-                world.currentBuffId++;
+                this.id = Helpers.GetUniqueHash();
                 this.type = type;
                 this.value = value;
                 this.canKill = canKill;
@@ -103,6 +102,9 @@ namespace SonOfRobin
 
                     case BuffType.Hungry:
                         return false;
+
+                    case BuffType.Sprint:
+                        return true;
 
                     default:
                         throw new DivideByZeroException($"Unsupported buff type - {this.type}.");
@@ -183,6 +185,10 @@ namespace SonOfRobin
                         description = $"Fatigue {sign}{this.value}.";
                         break;
 
+                    case BuffType.Sprint:
+                        description = $"Sprint {sign}{this.value}{duration} at the cost of all stamina.";
+                        break;
+
                     default:
                         throw new DivideByZeroException($"Unsupported buff type - {this.type}.");
                 }
@@ -246,22 +252,25 @@ namespace SonOfRobin
                     case BuffType.Fatigue:
                         return $"FATIGUE\n{sign}{this.value}";
 
+                    case BuffType.Sprint:
+                        return $"SPRINT\n{sign}{this.value}";
+
                     default:
                         throw new DivideByZeroException($"Unsupported buff type - {this.type}.");
                 }
             }
         }
 
-        public readonly Dictionary<int, Buff> buffDict;
+        public readonly Dictionary<string, Buff> buffDict;
         private readonly BoardPiece piece;
 
         public BuffEngine(BoardPiece piece)
         {
             this.piece = piece;
-            this.buffDict = new Dictionary<int, Buff> { };
+            this.buffDict = new Dictionary<string, Buff> { };
         }
 
-        public BuffEngine(BoardPiece piece, Dictionary<int, Buff> buffDict)
+        public BuffEngine(BoardPiece piece, Dictionary<string, Buff> buffDict)
         {
             this.piece = piece;
             this.buffDict = buffDict;
@@ -280,7 +289,7 @@ namespace SonOfRobin
         public static BuffEngine Deserialize(BoardPiece piece, Object buffEngineData)
         {
             var buffDataDict = (Dictionary<string, Object>)buffEngineData;
-            var buffDict = (Dictionary<int, Buff>)buffDataDict["buffDict"];
+            var buffDict = (Dictionary<string, Buff>)buffDataDict["buffDict"];
 
             return new BuffEngine(piece: piece, buffDict: buffDict);
         }
@@ -301,8 +310,7 @@ namespace SonOfRobin
         {
             if (buff.increaseIDAtEveryUse)
             {
-                buff.id = world.currentBuffId;
-                world.currentBuffId++;
+                buff.id = Helpers.GetUniqueHash();
             }
 
             if (this.buffDict.ContainsKey(buff.id)) throw new DivideByZeroException($"Buff has been added twice - id {buff.id} type {buff.type}.");
@@ -323,11 +331,11 @@ namespace SonOfRobin
         {
             foreach (var buffId in buffDict.Keys.ToList())
             {
-                if (this.buffDict[buffId].type == buffType) this.buffDict.Remove(buffId);
+                if (this.buffDict[buffId].type == buffType) this.RemoveBuff(buffId);
             }
         }
 
-        public void RemoveBuff(int buffID, bool checkIfHasThisBuff = true)
+        public void RemoveBuff(string buffID, bool checkIfHasThisBuff = true)
         {
             if (!this.buffDict.ContainsKey(buffID))
             {
@@ -360,7 +368,7 @@ namespace SonOfRobin
             return false;
         }
 
-        public bool HasBuff(int buffID)
+        public bool HasBuff(string buffID)
         {
             foreach (Buff buff in this.buffDict.Values)
             {
@@ -573,7 +581,6 @@ namespace SonOfRobin
                 case BuffType.Haste:
                     {
                         if (!this.CheckIfPieceIsPlayer(buff)) return;
-
                         Player player = (Player)this.piece;
 
                         if (add)
@@ -594,6 +601,27 @@ namespace SonOfRobin
 
                         if (add) player.Fatigue = Math.Max(0, player.Fatigue + (float)buff.value);
                         else player.Fatigue = Math.Min(player.maxFatigue, player.Fatigue - (float)buff.value);
+
+                        return;
+                    }
+
+                case BuffType.Sprint:
+                    {
+                        if (!this.CheckIfPieceIsPlayer(buff)) return;
+                        Player player = (Player)this.piece;
+
+                        if (add)
+                        {
+                            if (hadThisBuffBefore) this.RemoveEveryBuffOfType(buff.type);
+                            player.speed += (float)buff.value;
+                            player.sprite.effectCol.AddEffect(new BorderInstance(outlineColor: Color.Cyan, textureSize: player.sprite.frame.textureSize, priority: 0, framesLeft: -1));
+                        }
+                        else
+                        {
+                            player.speed -= (float)buff.value;
+                            player.Stamina = 0;
+                            player.sprite.effectCol.RemoveEffectsOfType(effect: SonOfRobinGame.effectBorder);
+                        }
 
                         return;
                     }
@@ -749,11 +777,15 @@ namespace SonOfRobin
                     value = null;
                     break;
 
+                case BuffType.Sprint:
+                    value = (float)buff1.value + (float)buff2.value;
+                    break;
+
                 default:
                     throw new DivideByZeroException($"Unsupported buff type - {buffType}.");
             }
 
-            return new Buff(world: world, type: buffType, value: value, autoRemoveDelay: autoRemoveDelay, isPermanent: buff1.isPermanent, sleepFrames: sleepFrames, canKill: canKill, increaseIDAtEveryUse: increaseIDAtEveryUse);
+            return new Buff(type: buffType, value: value, autoRemoveDelay: autoRemoveDelay, isPermanent: buff1.isPermanent, sleepFrames: sleepFrames, canKill: canKill, increaseIDAtEveryUse: increaseIDAtEveryUse);
         }
 
     }

@@ -30,6 +30,7 @@ namespace SonOfRobin
         DebugFastForward,
         DebugClear,
         DebugBreakAll,
+        DebugBreakVisible,
         DebugRemoveTopScene,
     }
 

@@ -154,7 +154,7 @@ namespace SonOfRobin
 
             foreach (Sprite sprite in this.world.grid.GetAllSprites(Cell.Group.All))
             {
-                if (sprite.boardPiece.exists && sprite.boardPiece.serialize)
+                if (sprite.boardPiece.exists && sprite.IsOnBoard && sprite.boardPiece.serialize)
                 {
                     currentPieceList.Add(sprite.boardPiece);
                     if (currentPieceList.Count >= maxPiecesInPackage)
@@ -192,6 +192,7 @@ namespace SonOfRobin
             if (this.saveMode) SonOfRobinGame.progressBar.TurnOff(addTransition: false);
             base.Remove();
             if (this.saveMode && this.quitGameAfterSaving) SonOfRobinGame.quitGame = true;
+            Menu.RebuildAllMenus();
         }
 
         public override void Update(GameTime gameTime)
@@ -251,21 +252,21 @@ namespace SonOfRobin
             {
                 var headerData = new Dictionary<string, Object>
                 {
-                    {"seed", this.world.seed },
-                    {"width", this.world.width },
-                    {"height", this.world.height },
-                    {"maxAnimalsPerName", this.world.maxAnimalsPerName },
-                    {"resDivider", this.world.resDivider },
-                    {"currentFrame", this.world.currentFrame },
-                    {"currentUpdate", this.world.currentUpdate },
-                    {"TimePlayed", this.world.TimePlayed },
-                    {"currentPieceId", this.world.currentPieceId },
-                    {"currentBuffId", this.world.currentBuffId },
-                    {"MapEnabled", this.world.MapEnabled },
-                    {"realDateTime", DateTime.Now },
-                    {"doNotCreatePiecesList", this.world.doNotCreatePiecesList },
-                    {"discoveredRecipesForPieces", this.world.discoveredRecipesForPieces },
-                    {"saveVersion", SaveHeaderManager.saveVersion },
+                    { "seed", this.world.seed },
+                    { "width", this.world.width },
+                    { "height", this.world.height },
+                    { "maxAnimalsPerName", this.world.maxAnimalsPerName },
+                    { "addAgressiveAnimals", this.world.addAgressiveAnimals },
+                    { "initialMaxAnimalsMultiplier", this.world.initialMaxAnimalsMultiplier },
+                    { "resDivider", this.world.resDivider },
+                    { "currentFrame", this.world.currentFrame },
+                    { "currentUpdate", this.world.currentUpdate },
+                    { "TimePlayed", this.world.TimePlayed },
+                    { "MapEnabled", this.world.MapEnabled },
+                    { "realDateTime", DateTime.Now },
+                    { "doNotCreatePiecesList", this.world.doNotCreatePiecesList },
+                    { "discoveredRecipesForPieces", this.world.discoveredRecipesForPieces },
+                    { "saveVersion", SaveHeaderManager.saveVersion },
             };
 
                 string headerPath = Path.Combine(this.saveTempPath, headerName);
@@ -532,8 +533,10 @@ namespace SonOfRobin
             int width = (int)this.headerData["width"];
             int height = (int)this.headerData["height"];
             int resDivider = (int)this.headerData["resDivider"];
+            int initialMaxAnimalsMultiplier = (int)this.headerData["initialMaxAnimalsMultiplier"];
+            bool addAgressiveAnimals = (bool)this.headerData["addAgressiveAnimals"];
 
-            this.world = new World(width: width, height: height, seed: seed, saveGameData: this.SaveGameData, resDivider: resDivider);
+            this.world = new World(width: width, height: height, seed: seed, saveGameData: this.SaveGameData, resDivider: resDivider, initialMaxAnimalsMultiplier: initialMaxAnimalsMultiplier, addAgressiveAnimals: addAgressiveAnimals);
             this.MoveToTop();
 
             MessageLog.AddMessage(msgType: MsgType.User, message: $"Game has been loaded from slot {saveSlotName} (time elapsed {this.TimeElapsed}s).", color: Color.LightBlue);
@@ -541,7 +544,9 @@ namespace SonOfRobin
             // deleting other non-demo worlds
             var existingWorlds = GetAllScenesOfType(typeof(World));
             foreach (World currWorld in existingWorlds)
-            { if (currWorld != this.world && !currWorld.demoMode) currWorld.Remove(); }
+            {
+                if (currWorld != this.world && !currWorld.demoMode) currWorld.Remove();
+            }
 
             this.processingComplete = true;
         }

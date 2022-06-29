@@ -1,4 +1,5 @@
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -10,16 +11,18 @@ using Xamarin.Essentials;
 namespace SonOfRobin
 {
     public enum Platform { Desktop, Mobile }
+    public enum OS { Windows, Linux, OSX, Android, iOS }
 
     public class SonOfRobinGame : Game
     {
-        public static readonly float version = 8.7f;
-        public static readonly DateTime lastChanged = new DateTime(2022, 05, 18);
+        public static readonly float version = 8.8f;
+        public static readonly DateTime lastChanged = new DateTime(2022, 05, 25);
 
         public static ContentManager content;
 
         public static Game game;
         public static Platform platform;
+        public static OS os;
         public static bool fakeMobileMode = false;
 
         public static GraphicsDeviceManager graphics;
@@ -43,7 +46,8 @@ namespace SonOfRobin
         public static Texture2D whiteRectangle;
         public static List<RenderTarget2D> tempShadowMaskList;
         public static Texture2D lightSphere;
-        public static Dictionary<string, Texture2D> textureByName;
+        public static Dictionary<string, Texture2D> textureByName = new Dictionary<string, Texture2D>();
+        public static Dictionary<string, SoundEffect> soundByName = new Dictionary<string, SoundEffect>();
 
         public static readonly SimpleFps fps = new SimpleFps();
         public static readonly Random random = new Random();
@@ -147,12 +151,14 @@ namespace SonOfRobin
             Preferences.DebugMode = Preferences.DebugMode; // to create debugMode scenes
             hintWindow = new InfoWindow(bgColor: Color.RoyalBlue, bgOpacity: 0.85f);
             progressBar = new InfoWindow(bgColor: Color.SeaGreen, bgOpacity: 0.85f);
+            PieceInfo.CreateAllInfo();
+            Craft.PopulateAllCategories();
 
             KeepScreenOn = true;
 
             if (LicenceValid)
             {
-                if (Preferences.showDemoWorld) new World(seed: 777, width: 1500, height: 1000, resDivider: 2, demoMode: true);
+                if (Preferences.showDemoWorld) new World(seed: 777, width: 1500, height: 1000, resDivider: 2, demoMode: true, initialMaxAnimalsMultiplier: 100, addAgressiveAnimals: true);
                 MenuTemplate.CreateMenuFromTemplate(templateName: MenuTemplate.Name.Main);
             }
             else
@@ -174,8 +180,12 @@ namespace SonOfRobin
             spriteBatch = new SpriteBatch(GraphicsDevice);
             content = Content;
 
+            // effects
+
             effectColorize = Content.Load<Effect>("effects/Colorize");
             effectBorder = Content.Load<Effect>("effects/Border");
+
+            // fonts
 
             fontPixelMix5 = Content.Load<SpriteFont>("fonts/PixelMix");
             fontPressStart2P5 = Content.Load<SpriteFont>("fonts/PressStart2P");
@@ -184,13 +194,21 @@ namespace SonOfRobin
             fontTommy20 = Content.Load<SpriteFont>("fonts/Tommy20");
             fontTommy40 = Content.Load<SpriteFont>("fonts/Tommy40");
 
-            textureByName = new Dictionary<string, Texture2D>();
+            // sounds
 
-            string[] assetNames = { "no_anim", "fox", "tile_custom01", "actor29rec4", "tileb", "tile_19ba32a6", "backlight_1", "backlight_2", "backlight_3", "backlight_4", "crabs_small", "crabs_big", "frogs_small", "frogs_big", "flowers", "8f296dbbaf43865bc29e99660fe7b5af_2x", "qYFvsmq", "NicePng_pine-tree-clipart-png_1446450", "palmtree_small", "tilees by guth_zpsfn3wpjdu_2x", "attack", "miss", "zzz", "heart_16x16", "rabbits", "virtual_joypad_background", "virtual_joypad_stick", "virtual_button", "virtual_button_pressed", "cursor", "chests", "d9ffec650d3104f5c4564c9055787530", "sticks1", "sticks2", "axe_wooden", "hand", "tools_gravel", "stones", "fancy_food", "fancy_food2", "celianna_farmnature_crops_transparent", "steak_t-bone", "big_icons_candacis", "Candacis_flames1", "gems__rpg_maker_mv__by_petschko-d9euoxr", "mv_blacksmith_by_schwarzenacht_dapf6ek", "bows", "arrow_wood", "arrow_iron", "crosshair", "stone_small", "craft_items", "tent_big", "tent_medium", "flames", "bag", "bag_outline", "backpack", "belt", "parchment", "exclamation", "scythe_stone", "scythe_iron", "grass_blade", "tiger", "plus", "acorn", "light_white", "small_torch_on", "small_torch_off", "big_torch_on", "big_torch_off", "water_drop", "tile_rtp-addons", "bottle_empty", "herbs_black", "herbs_blue", "herbs_cyan", "herbs_green", "herbs_red", "herbs_violet", "herbs_yellow", "rpg_maker_vx_ace_tilesets_1_by_hishimy_d8e7pjd", "Mouse/Mouse_Left_Key_Light", "Mouse/Mouse_Middle_Key_Light", "Mouse/Mouse_Right_Key_Light", "Mouse/Mouse_Scroll_Up_Light", "Mouse/Mouse_Scroll_Down_Light", "potion_black", "arrow_poison", "spear_wood", "spear_stone", "spear_iron", "spear_poison", "alchemy_lab", "workshop_basic", "workshop_advanced", "workshop_essential", "piece_of_fat", "bottle_oil", "burger", "biceps", "bed", "leaf_1", "leaf_2", "leaf_3", "crystal_deposit_big", "crystal_deposit_small", "crystal_shard", "crystal" };
-
-            foreach (string assetName in assetNames)
+            string[] soundNames = { "575542__tissman__menu-move7" };
+            foreach (string soundName in soundNames)
             {
-                textureByName[assetName] = Content.Load<Texture2D>($"gfx/{assetName}");
+                soundByName[soundName] = Content.Load<SoundEffect>($"sound/{soundName}");
+            }
+
+            // textures
+
+            string[] gfxNames = { "no_anim", "fox", "tile_custom01", "actor29rec4", "tileb", "tile_19ba32a6", "backlight_1", "backlight_2", "backlight_3", "backlight_4", "crabs_small", "crabs_big", "frogs_small", "frogs_big", "flowers", "8f296dbbaf43865bc29e99660fe7b5af_2x", "qYFvsmq", "NicePng_pine-tree-clipart-png_1446450", "palmtree_small", "tilees by guth_zpsfn3wpjdu_2x", "attack", "miss", "zzz", "heart_16x16", "rabbits", "virtual_joypad_background", "virtual_joypad_stick", "virtual_button", "virtual_button_pressed", "cursor", "chests", "d9ffec650d3104f5c4564c9055787530", "sticks1", "sticks2", "axe_wooden", "hand", "tools_gravel", "stones", "fancy_food", "fancy_food2", "celianna_farmnature_crops_transparent", "big_icons_candacis", "Candacis_flames1", "gems__rpg_maker_mv__by_petschko-d9euoxr", "mv_blacksmith_by_schwarzenacht_dapf6ek", "bows", "arrow_wood", "arrow_iron", "crosshair", "stone_small", "craft_items", "tent_big", "tent_medium", "flames", "bag", "bag_outline", "backpack", "belt", "parchment", "exclamation", "scythe_stone", "scythe_iron", "grass_blade", "tiger", "plus", "acorn", "light_white", "small_torch_on", "small_torch_off", "big_torch_on", "big_torch_off", "water_drop", "tile_rtp-addons", "bottle_empty", "herbs_black", "herbs_blue", "herbs_cyan", "herbs_green", "herbs_red", "herbs_violet", "herbs_yellow", "rpg_maker_vx_ace_tilesets_1_by_hishimy_d8e7pjd", "Mouse/Mouse_Left_Key_Light", "Mouse/Mouse_Middle_Key_Light", "Mouse/Mouse_Right_Key_Light", "Mouse/Mouse_Scroll_Up_Light", "Mouse/Mouse_Scroll_Down_Light", "potion_black", "arrow_poison", "spear_wood", "spear_stone", "spear_iron", "spear_poison", "alchemy_lab", "workshop_basic", "workshop_advanced", "workshop_essential", "workshop_master", "piece_of_fat", "bottle_oil", "burger", "biceps", "bed", "leaf_1", "leaf_2", "leaf_3", "crystal_deposit_big", "crystal_deposit_small", "crystal_shard", "crystal", "stone", "axe_crystal", "spear_crystal", "scythe_crystal", "arrow_crystal", "arrow_stone", "anvil", "iron_rod", "iron_plate", "skull_and_bones", "wood_regular", "wood_hard", "dig_site", "shovel_stone", "shovel_iron", "shovel_crystal", "clay", "hole", "meat_raw", "meat_dried", "jar_sealed", "jar_broken", "tree_stump", "debris_ceramic_1", "debris_ceramic_2", "granite", "hot_plate_off", "hot_plate_on_1", "hot_plate_on_2", "hot_plate_on_3" };
+
+            foreach (string gfxName in gfxNames)
+            {
+                textureByName[gfxName] = Content.Load<Texture2D>($"gfx/{gfxName}");
             }
 
             lightSphere = textureByName["light_white"];

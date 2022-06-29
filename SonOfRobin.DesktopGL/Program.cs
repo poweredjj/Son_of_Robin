@@ -10,6 +10,7 @@ namespace SonOfRobin.DesktopGL
             using (var game = new SonOfRobinGame())
             {
                 SonOfRobinGame.platform = Platform.Desktop;
+                SonOfRobinGame.os = OS.Linux;
                 game.Run();
             }
         }

@@ -16,6 +16,14 @@ namespace SonOfRobin
         public enum AlignX { Left, Center, Right };
         public enum AlignY { Top, Center, Bottom };
 
+        private static int hashCounter = 0;
+
+        public static string GetUniqueHash()
+        {
+            hashCounter++;
+            return $"{Math.Abs(DateTime.Now.GetHashCode())}_{hashCounter}";
+        }
+
         public static void DrawTextInsideRectWithOutline(SpriteFont font, Rectangle rectangle, string text, Color color, Color outlineColor, AlignX alignX = AlignX.Center, AlignY alignY = AlignY.Center, int outlineSize = 0, bool drawTestRect = false)
         {
             var outlineRectList = new List<Rectangle>();

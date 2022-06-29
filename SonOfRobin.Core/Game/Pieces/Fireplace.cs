@@ -11,13 +11,13 @@ namespace SonOfRobin
         {
             // number of frames each piece will burn for
             {PieceTemplate.Name.Stick, 60 * 20},
-            {PieceTemplate.Name.WoodLog, 60 * 60 * 1},
+            {PieceTemplate.Name.WoodLogRegular, 60 * 60 * 1},
+            {PieceTemplate.Name.WoodLogHard, 60 * 60 * 3},
             {PieceTemplate.Name.WoodPlank, 60 * 60 * 1},
             {PieceTemplate.Name.Coal, 60 * 60 * 5},
         };
 
         private static readonly List<PieceTemplate.Name> fuelNames = fuelFramesByName.Keys.ToList();
-        private static readonly List<IslandClock.PartOfDay> whenCanBurnPartsOfDay = new List<IslandClock.PartOfDay> { IslandClock.PartOfDay.Evening, IslandClock.PartOfDay.Night };
 
         private readonly ushort scareRange;
         private bool isOn;
@@ -25,12 +25,11 @@ namespace SonOfRobin
         private int burnStartFrame;
         private int burnAllFuelEndFrame;
 
-        public Fireplace(World world, Vector2 position, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedFields allowedFields, Dictionary<byte, int> maxMassBySize, byte storageWidth, byte storageHeight, string readableName, string description, Category category, ushort scareRange,
+        public Fireplace(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedFields allowedFields, Dictionary<byte, int> maxMassBySize, byte storageWidth, byte storageHeight, string readableName, string description, Category category, ushort scareRange,
             byte animSize = 0, string animName = "off", bool blocksMovement = true, ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = false, int generation = 0, Yield yield = null, int maxHitPoints = 1, bool fadeInAnim = false, LightEngine lightEngine = null) :
 
-            base(world: world, position: position, animPackage: animPackage, animSize: animSize, animName: animName, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedFields: allowedFields, floatsOnWater: floatsOnWater, maxMassBySize: maxMassBySize, generation: generation, canBePickedUp: false, yield: yield, maxHitPoints: maxHitPoints, fadeInAnim: fadeInAnim, isShownOnMiniMap: true, readableName: readableName, description: description, category: category, lightEngine: lightEngine)
+            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedFields: allowedFields, floatsOnWater: floatsOnWater, maxMassBySize: maxMassBySize, generation: generation, canBePickedUp: false, yield: yield, maxHitPoints: maxHitPoints, fadeInAnim: fadeInAnim, isShownOnMiniMap: true, readableName: readableName, description: description, category: category, lightEngine: lightEngine, activeState: State.Empty)
         {
-            this.activeState = State.Empty;
             this.boardTask = Scheduler.TaskName.OpenContainer;
 
             this.scareRange = scareRange;
@@ -46,12 +45,12 @@ namespace SonOfRobin
             allowedPieceNames.Add(PieceTemplate.Name.FireplaceTriggerOff);
             this.pieceStorage.AssignAllowedPieceNames(allowedPieceNames);
 
-            BoardPiece flameTrigger = PieceTemplate.CreateOffBoard(templateName: PieceTemplate.Name.FireplaceTriggerOn, world: this.world);
+            BoardPiece flameTrigger = PieceTemplate.Create(templateName: PieceTemplate.Name.FireplaceTriggerOn, world: this.world);
             StorageSlot flameSlot = this.pieceStorage.FindCorrectSlot(flameTrigger);
             this.pieceStorage.AddPiece(flameTrigger);
             flameSlot.locked = true;
 
-            BoardPiece waterTrigger = PieceTemplate.CreateOffBoard(templateName: PieceTemplate.Name.FireplaceTriggerOff, world: this.world);
+            BoardPiece waterTrigger = PieceTemplate.Create(templateName: PieceTemplate.Name.FireplaceTriggerOff, world: this.world);
             StorageSlot waterSlot = this.pieceStorage.FindCorrectSlot(waterTrigger);
             this.pieceStorage.AddPiece(waterTrigger);
             waterSlot.locked = true;
@@ -150,7 +149,7 @@ namespace SonOfRobin
 
             foreach (BoardPiece piece in animalPieces)
             {
-                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Scaring off {piece.readableName}.");
+                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{Helpers.FirstCharToUpperCase(this.readableName)} - scaring off {piece.readableName}.");
 
                 Animal animal = (Animal)piece;
                 animal.target = this;
@@ -168,7 +167,7 @@ namespace SonOfRobin
                 int burningDuration = this.burnAllFuelEndFrame - this.burnStartFrame;
                 int burningCurrentFrame = burningDuration - (this.world.currentUpdate - this.burnStartFrame);
 
-                new StatBar(label: "", value: burningCurrentFrame, valueMax: burningDuration, colorMin: new Color(255, 0, 0), colorMax: new Color(255, 255, 0), posX: this.sprite.gfxRect.Center.X, posY: this.sprite.gfxRect.Bottom, ignoreIfAtMax: false, texture: AnimData.framesForPkgs[AnimData.PkgName.WoodLog].texture);
+                new StatBar(label: "", value: burningCurrentFrame, valueMax: burningDuration, colorMin: new Color(255, 0, 0), colorMax: new Color(255, 255, 0), posX: this.sprite.gfxRect.Center.X, posY: this.sprite.gfxRect.Bottom, ignoreIfAtMax: false, texture: AnimData.framesForPkgs[AnimData.PkgName.WoodLogRegular].texture);
             }
 
             base.DrawStatBar();

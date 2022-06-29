@@ -26,7 +26,8 @@ namespace SonOfRobin
         {
             if (this.closesMenu) this.menu.Remove();
             this.menu.ChangeActiveItem(this);
-            new Scheduler.Task(menu: this.menu, taskName: this.taskName, executeHelper: this.executeHelper, rebuildsMenu: rebuildsMenu, delay: this.taskDelay, turnOffInputUntilExecution: true);
+            new Scheduler.Task(taskName: this.taskName, executeHelper: this.executeHelper, delay: this.taskDelay, turnOffInputUntilExecution: true);
+            if (this.rebuildsMenu) new Scheduler.Task(taskName: Scheduler.TaskName.RebuildMenu, executeHelper: this.menu, delay: this.taskDelay, turnOffInputUntilExecution: true);
         }
 
         public override void Draw(bool active, string textOverride = null)

@@ -9,7 +9,7 @@ namespace SonOfRobin
 
     public struct PieceHint
     {
-        public enum Type { CrateStarting, CrateAnother, WoodNegative, WoodPositive, StoneNegative, StonePositive, CrystalNegative, CrystalPositive, AnimalNegative, AnimalBow, AnimalBat, AnimalAxe, BowNoAmmo, ShellIsNotUseful, Clam, FruitTree, BananaTree, TomatoPlant, IronDepositNegative, IronDepositPositive, CoalDepositNegative, CoalDepositPositive, Cooker, LeatherPositive, BackpackPositive, BeltPositive, MapCanMake, MapPositive, RedExclamation, Acorn, TorchNegative, TorchPositive, Fireplace, HerbsRed, HerbsYellow, HerbsViolet, HerbsCyan, HerbsBlue, HerbsBlack, GlassSand, CanBuildWorkshop }
+        public enum Type { CrateStarting, CrateAnother, WoodNegative, WoodPositive, DigSiteNegative, DigSitePositive, StoneNegative, StonePositive, CrystalNegative, CrystalPositive, AnimalNegative, AnimalBow, AnimalBat, AnimalAxe, BowNoAmmo, ShellIsNotUseful, Clam, FruitTree, BananaTree, TomatoPlant, IronDepositNegative, IronDepositPositive, CoalDepositNegative, CoalDepositPositive, Cooker, LeatherPositive, BackpackPositive, BeltPositive, MapCanMake, MapPositive, RedExclamation, Acorn, TorchNegative, TorchPositive, Fireplace, HerbsRed, HerbsYellow, HerbsViolet, HerbsCyan, HerbsBlue, HerbsBlack, GlassSand, CanBuildWorkshop }
 
         public static List<PieceHint> pieceHintList;
 
@@ -90,8 +90,8 @@ namespace SonOfRobin
                     playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.Leather}),
 
                 new PieceHint(type: Type.MapCanMake, canBeForced: true,
-                    message: "I can use this | leather to make a | map.\nBut I need a | workshop to make it.",
-                    imageList: new List<Texture2D>{ AnimData.framesForPkgs[AnimData.PkgName.Leather].texture, AnimData.framesForPkgs[AnimData.PkgName.Map].texture,  AnimData.framesForPkgs[AnimData.PkgName.WorkshopEssential].texture},
+                    message: "I can use this | leather to make a | map.\nBut I need a | basic workshop to make it.",
+                    imageList: new List<Texture2D>{ AnimData.framesForPkgs[AnimData.PkgName.Leather].texture, AnimData.framesForPkgs[AnimData.PkgName.Map].texture,  AnimData.framesForPkgs[AnimData.PkgName.WorkshopBasic].texture},
                     playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.Leather}),
 
                 new PieceHint(type: Type.MapPositive, canBeForced: true,
@@ -129,7 +129,7 @@ namespace SonOfRobin
                     message: "I could try to use my | axe to hunt this animal.",
                     imageList: new List<Texture2D>{ AnimData.framesForPkgs[AnimData.PkgName.AxeStone].texture},
                     alsoDisables: new List<Type> {Type.AnimalNegative},
-                    playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.AxeWood, PieceTemplate.Name.AxeStone, PieceTemplate.Name.AxeIron}),
+                    playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.AxeWood, PieceTemplate.Name.AxeStone, PieceTemplate.Name.AxeIron, PieceTemplate.Name.AxeCrystal}),
 
                 new PieceHint(type: Type.AnimalBat,
                     fieldPieces: new List<PieceTemplate.Name> {PieceTemplate.Name.Frog, PieceTemplate.Name.Rabbit, PieceTemplate.Name.Fox},
@@ -144,28 +144,39 @@ namespace SonOfRobin
                     alsoDisables: new List<Type> {Type.AnimalNegative},
                     playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.BowWood}),
 
+                new PieceHint(type: Type.DigSiteNegative, fieldPieces: new List<PieceTemplate.Name> { PieceTemplate.Name.BeachDigSite, PieceTemplate.Name.ForestDigSite, PieceTemplate.Name.DangerDigSite },
+                    message: "I think that something could be buried | here.\nIf I had a | shovel, I could dig here.",
+                    imageList: new List<Texture2D>{ AnimData.framesForPkgs[AnimData.PkgName.DigSite].texture,  AnimData.framesForPkgs[AnimData.PkgName.ShovelStone].texture},
+                    playerDoesNotOwnAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.ShovelStone, PieceTemplate.Name.ShovelIron, PieceTemplate.Name.ShovelCrystal }),
+
+                new PieceHint(type: Type.DigSitePositive,  fieldPieces: new List<PieceTemplate.Name> { PieceTemplate.Name.ForestDigSite },
+                    message: "I could use my | shovel to dig | here.",
+                    imageList: new List<Texture2D>{ AnimData.framesForPkgs[AnimData.PkgName.ShovelStone].texture, AnimData.framesForPkgs[AnimData.PkgName.DigSite].texture },
+                    alsoDisables: new List<Type> { Type.DigSiteNegative },
+                    playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.ShovelStone, PieceTemplate.Name.ShovelIron, PieceTemplate.Name.ShovelCrystal }),
+
                 new PieceHint(type: Type.WoodNegative, fieldPieces: new List<PieceTemplate.Name> {PieceTemplate.Name.TreeBig, PieceTemplate.Name.TreeSmall},
                     message: "I could get some wood using my | bare hands,\nbut an | axe would be better.",
                     imageList: new List<Texture2D>{ AnimData.framesForPkgs[AnimData.PkgName.Hand].texture,  AnimData.framesForPkgs[AnimData.PkgName.AxeStone].texture},
-                    playerDoesNotOwnAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.AxeWood, PieceTemplate.Name.AxeStone, PieceTemplate.Name.AxeIron }),
+                    playerDoesNotOwnAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.AxeWood, PieceTemplate.Name.AxeStone, PieceTemplate.Name.AxeIron, PieceTemplate.Name.AxeCrystal }),
 
                 new PieceHint(type: Type.WoodPositive,  fieldPieces: new List<PieceTemplate.Name> {PieceTemplate.Name.TreeBig, PieceTemplate.Name.TreeSmall},
                     message: "I could use my | axe to get some wood.",
                     imageList: new List<Texture2D>{ AnimData.framesForPkgs[AnimData.PkgName.AxeStone].texture},
                     tutorialsToActivate: new List<Tutorials.Type> {Tutorials.Type.GetWood},
-                    playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.AxeWood, PieceTemplate.Name.AxeStone, PieceTemplate.Name.AxeIron }),
+                    playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.AxeWood, PieceTemplate.Name.AxeStone, PieceTemplate.Name.AxeIron, PieceTemplate.Name.AxeCrystal }),
 
                 new PieceHint(type: Type.StoneNegative, fieldPieces: new List<PieceTemplate.Name> {PieceTemplate.Name.MineralsSmall, PieceTemplate.Name.MineralsBig, PieceTemplate.Name.WaterRock},
                     message: "If I had a | pickaxe, I could mine stones from this | mineral.\nRegular | axe could work too, but not as effective.",
                     imageList: new List<Texture2D>{ AnimData.framesForPkgs[AnimData.PkgName.PickaxeStone].texture, AnimData.framesForPkgs[AnimData.PkgName.MineralsSmall1].texture, AnimData.framesForPkgs[AnimData.PkgName.AxeStone].texture},
-                    playerDoesNotOwnAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.PickaxeWood, PieceTemplate.Name.PickaxeStone, PieceTemplate.Name.PickaxeIron }),
+                    playerDoesNotOwnAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.PickaxeWood, PieceTemplate.Name.PickaxeStone, PieceTemplate.Name.PickaxeIron, PieceTemplate.Name.PickaxeCrystal }),
 
                 new PieceHint(type: Type.StonePositive, fieldPieces: new List<PieceTemplate.Name> {PieceTemplate.Name.MineralsSmall, PieceTemplate.Name.MineralsBig, PieceTemplate.Name.WaterRock},
                     message: "I could use my | pickaxe to mine | stones.",
                     imageList: new List<Texture2D>{ AnimData.framesForPkgs[AnimData.PkgName.PickaxeStone].texture, AnimData.framesForPkgs[AnimData.PkgName.MineralsSmall1].texture},
                     alsoDisables: new List<Type> {Type.StoneNegative},
                     tutorialsToActivate: new List<Tutorials.Type> {Tutorials.Type.Mine},
-                    playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.PickaxeWood, PieceTemplate.Name.PickaxeStone, PieceTemplate.Name.PickaxeIron }),
+                    playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.PickaxeWood, PieceTemplate.Name.PickaxeStone, PieceTemplate.Name.PickaxeIron, PieceTemplate.Name.PickaxeCrystal }),
 
                 new PieceHint(type: Type.CrystalNegative, fieldPieces: new List<PieceTemplate.Name> { PieceTemplate.Name.CrystalDepositBig },
                     message: "Wow, this | crystal looks very strong.\nI think that a low level pickaxe would be too weak to break it.\nMaybe an | iron pickaxe could work, though?",
@@ -181,26 +192,26 @@ namespace SonOfRobin
                 new PieceHint(type: Type.CoalDepositNegative, fieldPieces: new List<PieceTemplate.Name> {PieceTemplate.Name.CoalDeposit},
                     message: "I think this | is a coal deposit.\nIf I had a | pickaxe, I could get | coal.",
                     imageList: new List<Texture2D>{ AnimData.framesForPkgs[AnimData.PkgName.CoalDeposit].texture, AnimData.framesForPkgs[AnimData.PkgName.PickaxeStone].texture,  AnimData.framesForPkgs[AnimData.PkgName.Coal].texture},
-                    playerDoesNotOwnAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.PickaxeWood, PieceTemplate.Name.PickaxeStone, PieceTemplate.Name.PickaxeIron }),
+                    playerDoesNotOwnAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.PickaxeWood, PieceTemplate.Name.PickaxeStone, PieceTemplate.Name.PickaxeIron, PieceTemplate.Name.PickaxeCrystal }),
 
                 new PieceHint(type: Type.CoalDepositPositive,  fieldPieces: new List<PieceTemplate.Name> {PieceTemplate.Name.CoalDeposit},
                     message: "I could use my | pickaxe to mine | coal here |.",
                     imageList: new List<Texture2D>{ AnimData.framesForPkgs[AnimData.PkgName.PickaxeStone].texture,  AnimData.framesForPkgs[AnimData.PkgName.Coal].texture, AnimData.framesForPkgs[AnimData.PkgName.CoalDeposit].texture},
                     alsoDisables: new List<Type> {Type.CoalDepositNegative },
                     tutorialsToActivate: new List<Tutorials.Type> {Tutorials.Type.Mine},
-                    playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.PickaxeWood, PieceTemplate.Name.PickaxeStone, PieceTemplate.Name.PickaxeIron }),
+                    playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.PickaxeWood, PieceTemplate.Name.PickaxeStone, PieceTemplate.Name.PickaxeIron, PieceTemplate.Name.PickaxeCrystal }),
 
                 new PieceHint(type: Type.IronDepositNegative, fieldPieces: new List<PieceTemplate.Name> {PieceTemplate.Name.IronDeposit},
                     message: "I think this is an | iron deposit.\nIf I had a | pickaxe, I could mine | iron ore.",
                     imageList: new List<Texture2D>{ AnimData.framesForPkgs[AnimData.PkgName.IronDeposit].texture, AnimData.framesForPkgs[AnimData.PkgName.PickaxeStone].texture,  AnimData.framesForPkgs[AnimData.PkgName.IronOre].texture},
-                    playerDoesNotOwnAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.PickaxeWood, PieceTemplate.Name.PickaxeStone, PieceTemplate.Name.PickaxeIron }),
+                    playerDoesNotOwnAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.PickaxeWood, PieceTemplate.Name.PickaxeStone, PieceTemplate.Name.PickaxeIron, PieceTemplate.Name.PickaxeCrystal }),
 
                 new PieceHint(type: Type.IronDepositPositive,  fieldPieces: new List<PieceTemplate.Name> {PieceTemplate.Name.IronDeposit},
                     message: "I could use my | pickaxe to mine | iron ore here |.",
                     imageList: new List<Texture2D>{ AnimData.framesForPkgs[AnimData.PkgName.PickaxeStone].texture,   AnimData.framesForPkgs[AnimData.PkgName.IronOre].texture, AnimData.framesForPkgs[AnimData.PkgName.IronDeposit].texture},
                     alsoDisables: new List<Type> {Type.IronDepositNegative },
                     tutorialsToActivate: new List<Tutorials.Type> {Tutorials.Type.Mine},
-                    playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.PickaxeWood, PieceTemplate.Name.PickaxeStone, PieceTemplate.Name.PickaxeIron }),
+                    playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.PickaxeWood, PieceTemplate.Name.PickaxeStone, PieceTemplate.Name.PickaxeIron, PieceTemplate.Name.PickaxeCrystal }),
 
                 new PieceHint(type: Type.FruitTree, fieldPieces: new List<PieceTemplate.Name> {PieceTemplate.Name.AppleTree, PieceTemplate.Name.CherryTree},
                     message: "This fruit looks edible. I should shake it off this | tree.",
@@ -240,15 +251,15 @@ namespace SonOfRobin
 
                 new PieceHint(type: Type.Fireplace, canBeForced: true,
                     message: "This | bonfire looks ok.\nAll I need now is some | | wood...\nOr | coal?",
-                    imageList: new List<Texture2D>{ AnimData.framesForPkgs[AnimData.PkgName.Campfire].texture, AnimData.framesForPkgs[AnimData.PkgName.WoodLog].texture, AnimData.framesForPkgs[AnimData.PkgName.WoodPlank].texture, AnimData.framesForPkgs[AnimData.PkgName.Coal].texture},
+                    imageList: new List<Texture2D>{ AnimData.framesForPkgs[AnimData.PkgName.Campfire].texture, AnimData.framesForPkgs[AnimData.PkgName.WoodLogRegular].texture, AnimData.framesForPkgs[AnimData.PkgName.WoodPlank].texture, AnimData.framesForPkgs[AnimData.PkgName.Coal].texture},
                     tutorialsToActivate: new List<Tutorials.Type> {Tutorials.Type.Fireplace},
                     fieldPieces: new List<PieceTemplate.Name> {PieceTemplate.Name.Campfire}),
 
                 new PieceHint(type: Type.CanBuildWorkshop, canBeForced: true,
                     message: "If I had more | wood, I could build a | workshop.",
-                    imageList: new List<Texture2D>{ AnimData.framesForPkgs[AnimData.PkgName.WoodLog].texture, AnimData.framesForPkgs[AnimData.PkgName.WorkshopEssential].texture},
+                    imageList: new List<Texture2D>{ AnimData.framesForPkgs[AnimData.PkgName.WoodLogRegular].texture, AnimData.framesForPkgs[AnimData.PkgName.WorkshopEssential].texture},
                     tutorialsToActivate: new List<Tutorials.Type> {Tutorials.Type.BuildWorkshop},
-                    playerOwnsAllOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.WoodLog}),
+                    playerOwnsAllOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.WoodLogRegular}),
                 };
         }
 

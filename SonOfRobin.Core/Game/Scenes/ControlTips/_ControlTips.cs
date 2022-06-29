@@ -221,7 +221,7 @@ namespace SonOfRobin
                         new ButtonTip(tipCollection: this.tipCollection, text: "walk", textures: InputMapper.GetTextures(InputMapper.Action.WorldWalk));
                         var cameraTextures = InputMapper.GetTextures(InputMapper.Action.WorldCameraMove); // there is no camera mapping for keyboard
                         if (cameraTextures.Count > 0) new ButtonTip(tipCollection: this.tipCollection, text: "camera", textures: cameraTextures);
-                        new ButtonTip(tipCollection: this.tipCollection, text: "sprint", textures: InputMapper.GetTextures(InputMapper.Action.WorldSprintToggle));
+                        new ButtonTip(tipCollection: this.tipCollection, text: "sprint", isHighlighted: false, textures: InputMapper.GetTextures(InputMapper.Action.WorldSprintToggle));
                         new ButtonTip(tipCollection: this.tipCollection, text: "equip", textures: InputMapper.GetTextures(InputMapper.Action.WorldEquip));
                         new ButtonTip(tipCollection: this.tipCollection, text: "inventory", textures: InputMapper.GetTextures(InputMapper.Action.WorldInventory));
                         new ButtonTip(tipCollection: this.tipCollection, text: "pick up", isHighlighted: false, textures: InputMapper.GetTextures(InputMapper.Action.WorldPickUp));
@@ -256,7 +256,7 @@ namespace SonOfRobin
                     {
                         new ButtonTip(tipCollection: this.tipCollection, text: "move", textures: InputMapper.GetTextures(InputMapper.Action.WorldWalk));
                         new ButtonTip(tipCollection: this.tipCollection, text: "zoom out", textures: InputMapper.GetTextures(InputMapper.Action.WorldCameraZoomOut));
-                        new ButtonTip(tipCollection: this.tipCollection, text: "build", textures: InputMapper.GetTextures(InputMapper.Action.GlobalConfirm), isHighlighted: false);
+                        new ButtonTip(tipCollection: this.tipCollection, text: "place", textures: InputMapper.GetTextures(InputMapper.Action.GlobalConfirm), isHighlighted: false);
                         new ButtonTip(tipCollection: this.tipCollection, text: "cancel", textures: InputMapper.GetTextures(InputMapper.Action.GlobalCancelReturnSkip));
                         new ButtonTip(tipCollection: this.tipCollection, text: "menu", textures: InputMapper.GetTextures(InputMapper.Action.WorldPauseMenu));
 

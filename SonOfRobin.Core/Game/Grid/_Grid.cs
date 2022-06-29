@@ -265,11 +265,14 @@ namespace SonOfRobin
                 return timeLeft;
             }
             catch (OverflowException)
-            { return TimeSpan.FromHours(1); }
+            { return TimeSpan.FromMinutes(30); }
         }
 
         public void AddToGroup(Sprite sprite, Cell.Group groupName)
-        { sprite.currentCell.AddToGroup(sprite: sprite, groupName: groupName); }
+        {
+            if (sprite.currentCell == null) return;
+            sprite.currentCell.AddToGroup(sprite: sprite, groupName: groupName);
+        }
 
         public void RemoveFromGroup(Sprite sprite, Cell.Group groupName)
         {
@@ -310,7 +313,7 @@ namespace SonOfRobin
 
         public List<Sprite> GetSpritesFromSurroundingCells(Sprite sprite, Cell.Group groupName)
         {
-            Cell cell = (sprite.currentCell == null) ? this.FindMatchingCell(sprite.position) : sprite.currentCell;
+            Cell cell = sprite.currentCell == null ? this.FindMatchingCell(sprite.position) : sprite.currentCell;
             return cell.GetSpritesFromSurroundingCells(groupName);
         }
 
@@ -533,8 +536,8 @@ namespace SonOfRobin
 
         public byte GetFieldValue(TerrainName terrainName, Vector2 position)
         {
-            int cellNoX = Convert.ToInt32(Math.Floor(position.X / cellWidth));
-            int cellNoY = Convert.ToInt32(Math.Floor(position.Y / cellHeight));
+            int cellNoX = (int)Math.Floor(position.X / cellWidth);
+            int cellNoY = (int)Math.Floor(position.Y / cellHeight);
 
             int posInsideCellX = (int)position.X % cellWidth;
             int posInsideCellY = (int)position.Y % cellHeight;

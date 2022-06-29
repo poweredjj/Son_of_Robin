@@ -11,6 +11,8 @@ namespace SonOfRobin.iOS
 
         internal static void RunGame()
         {
+			SonOfRobinGame.platform = Platform.Desktop;
+			SonOfRobinGame.os = OS.OSX;
             game = new SonOfRobinGame();
             game.Run();
         }

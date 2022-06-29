@@ -34,6 +34,7 @@ namespace SonOfRobin.Android
             _game = new SonOfRobinGame();
 
             SonOfRobinGame.platform = Platform.Mobile;
+			SonOfRobinGame.os = OS.Android;
             SonOfRobinGame.fakeMobileMode = false;
 
             _view = _game.Services.GetService(typeof(View)) as View;

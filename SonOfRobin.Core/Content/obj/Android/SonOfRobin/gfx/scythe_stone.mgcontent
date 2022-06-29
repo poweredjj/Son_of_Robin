@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <SourceFile>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/scythe_stone.png</SourceFile>
-  <SourceTime>2021-04-11T01:24:54+02:00</SourceTime>
+  <SourceTime>2022-05-21T12:43:58.5743575+02:00</SourceTime>
   <DestFile>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/bin/Android/SonOfRobin/gfx/scythe_stone.xnb</DestFile>
-  <DestTime>2022-05-18T11:02:58.8434048+02:00</DestTime>
+  <DestTime>2022-05-24T17:37:05.3436978+02:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2020-08-10T18:17:54+02:00</ImporterTime>
   <Processor>TextureProcessor</Processor>

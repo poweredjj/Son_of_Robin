@@ -14,13 +14,12 @@ namespace SonOfRobin
         private bool shootMode; // true == shoot (can damage target), false == bounce (can't damage anything)
         private readonly bool canBeStuck;
 
-        public Projectile(World world, Vector2 position, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedFields allowedFields, Dictionary<byte, int> maxMassBySize, int baseHitPower, int maxHitPoints, byte stackSize, bool canBeStuck, string readableName, string description,
+        public Projectile(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedFields allowedFields, Dictionary<byte, int> maxMassBySize, int baseHitPower, int maxHitPoints, byte stackSize, bool canBeStuck, string readableName, string description,
             byte animSize = 0, string animName = "default", bool blocksMovement = false, ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = true, int generation = 0, bool indestructible = false, Yield yield = null, bool rotatesWhenDropped = true, bool fadeInAnim = false, List<BuffEngine.Buff> buffList = null) :
 
-            base(world: world, position: position, animPackage: animPackage, animSize: animSize, animName: animName, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedFields: allowedFields, floatsOnWater: floatsOnWater, maxMassBySize: maxMassBySize, generation: generation, canBePickedUp: true, yield: yield, maxHitPoints: maxHitPoints, stackSize: stackSize, indestructible: indestructible, rotatesWhenDropped: rotatesWhenDropped, fadeInAnim: fadeInAnim, readableName: readableName, description: description, category: Category.Indestructible, buffList: buffList)
+            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedFields: allowedFields, floatsOnWater: floatsOnWater, maxMassBySize: maxMassBySize, generation: generation, canBePickedUp: true, yield: yield, maxHitPoints: maxHitPoints, stackSize: stackSize, indestructible: indestructible, rotatesWhenDropped: rotatesWhenDropped, fadeInAnim: fadeInAnim, readableName: readableName, description: description, category: Category.Indestructible, buffList: buffList, activeState: State.Empty)
         {
             this.canBeStuck = canBeStuck;
-            this.activeState = State.Empty;
             this.baseHitPower = baseHitPower;
             this.realHitPower = 0; // calculated each shooting time
             this.shootMode = false;
@@ -31,7 +30,7 @@ namespace SonOfRobin
             this.realHitPower = (int)(this.baseHitPower * hitPowerMultiplier);
             this.shootMode = true;
 
-            bool shotPossible = this.sprite.SetNewPosition(newPos: startPosition);
+            bool shotPossible = this.PlaceOnBoard(position: startPosition, precisePlacement: true);
             if (!shotPossible)
             {
                 this.world.player.toolStorage.AddPiece(this);
@@ -75,7 +74,11 @@ namespace SonOfRobin
                     {
                         this.hitPoints = Math.Max(0, this.hitPoints - this.world.random.Next(10, 35));
                         this.showStatBarsTillFrame = world.currentUpdate + 1200;
-                        if (this.hitPoints == 0) this.Destroy();
+                        if (this.hitPoints == 0)
+                        {
+                            this.Destroy();
+                            return true;
+                        }
                     }
 
                     if (this.canBeStuck && this.exists)
@@ -96,8 +99,9 @@ namespace SonOfRobin
                         this.showStatBarsTillFrame = world.currentUpdate + 1200;
                         if (this.hitPoints == 0)
                         {
-                            PieceTemplate.CreateOnBoard(world: world, position: this.sprite.position, templateName: PieceTemplate.Name.Attack);
+                            PieceTemplate.CreateAndPlaceOnBoard(world: world, position: this.sprite.position, templateName: PieceTemplate.Name.Attack);
                             this.Destroy();
+                            return true;
                         }
                     }
                 }

@@ -13,12 +13,12 @@ namespace SonOfRobin
         public static int newWorldHeight;
 
         public static int newWorldMaxAnimalsMultiplier = 50; // max animals per name for 10000x10000 area
-
         public static int newWorldResDivider = 2;
+        public static bool newWorldAgressiveAnimals = true;
         public static readonly Dictionary<Object, Object> namesForResDividers = new Dictionary<Object, Object> { { 30, "garbage" }, { 10, "low" }, { 3, "medium" }, { 2, "high" }, { 1, "ultra" } };
         public static readonly Dictionary<Object, Object> namesForDarknessRes = new Dictionary<Object, Object> { { 4, "very low" }, { 3, "low" }, { 2, "medium" }, { 1, "high" } };
         public static readonly Dictionary<Object, Object> namesForFieldControlTipsScale = new Dictionary<Object, Object> { { 0.15f, "micro" }, { 0.25f, "small" }, { 0.4f, "medium" }, { 0.5f, "large" }, { 0.6f, "huge" }, { 0.75f, "gigantic" } };
-        public static readonly Dictionary<Object, Object> namesForAnimalsMultiplier = new Dictionary<Object, Object> { { 0, "no animals" }, { 5, "almost extinct" }, { 20, "few" }, { 50, "within reason" }, { 100, "many" }, { 500, "total invasion" } };
+        public static readonly Dictionary<Object, Object> namesForAnimalsMultiplier = new Dictionary<Object, Object> { { 5, "almost extinct" }, { 20, "few" }, { 50, "within reason" }, { 100, "many" }, { 500, "total invasion" } };
 
         public static bool randomSeed = true;
         public static char seedDigit1 = '0';
@@ -255,11 +255,9 @@ namespace SonOfRobin
 
                     default:
                         throw new ArgumentException($"Unsupported worldSize - {selectedWorldSize}.");
-
                 }
 
                 //MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Setting world size to {newWorldWidth}x{newWorldHeight}");
-
             }
         }
 
@@ -399,6 +397,12 @@ namespace SonOfRobin
                 showFieldControlTips = true;
             }
 
+            if (SonOfRobinGame.os == OS.Linux || SonOfRobinGame.os == OS.OSX)
+            {
+                pointToInteract = false;
+                pointToWalk = false;
+            }
+
             EnableTouchButtons = SonOfRobinGame.platform == Platform.Mobile;
             MouseGesturesEmulateTouch = true; // mouse input is used through touch emulation
         }
@@ -414,6 +418,7 @@ namespace SonOfRobin
             prefsData["newWorldWidth"] = newWorldWidth;
             prefsData["newWorldHeight"] = newWorldHeight;
             prefsData["newWorldMaxAnimalsMultiplier"] = newWorldMaxAnimalsMultiplier;
+            prefsData["newWorldAgressiveAnimals"] = newWorldAgressiveAnimals;
             prefsData["randomSeed"] = randomSeed;
             prefsData["seedDigit1"] = seedDigit1;
             prefsData["seedDigit2"] = seedDigit2;
@@ -469,6 +474,7 @@ namespace SonOfRobin
                     newWorldWidth = (int)prefsData["newWorldWidth"];
                     newWorldHeight = (int)prefsData["newWorldHeight"];
                     newWorldMaxAnimalsMultiplier = (int)prefsData["newWorldMaxAnimalsMultiplier"];
+                    newWorldAgressiveAnimals = (bool)prefsData["newWorldAgressiveAnimals"];
                     randomSeed = (bool)prefsData["randomSeed"];
                     seedDigit1 = (char)prefsData["seedDigit1"];
                     seedDigit2 = (char)prefsData["seedDigit2"];

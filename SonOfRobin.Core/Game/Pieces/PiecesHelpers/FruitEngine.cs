@@ -56,6 +56,7 @@ namespace SonOfRobin
         public void Deserialize(Dictionary<string, Object> pieceData)
         {
             this.currentMass = (float)pieceData["fruitEngine_currentMass"];
+            this.PutAllFruitsOnBoardAgain();
         }
 
         public void AddMass(float mass)
@@ -69,8 +70,7 @@ namespace SonOfRobin
 
         public void AddFruit()
         {
-            Fruit fruit = (Fruit)PieceTemplate.CreateOffBoard(templateName: this.fruitName, world: this.plant.world);
-            fruit.spawnerName = this.plant.name;
+            Fruit fruit = (Fruit)PieceTemplate.Create(templateName: this.fruitName, world: this.plant.world);
 
             if (this.plant.pieceStorage.FindCorrectSlot(piece: fruit) == null)
             {
@@ -83,6 +83,7 @@ namespace SonOfRobin
             this.SetFruitPos(fruit: fruit);
             this.currentMass = 0;
         }
+
         public void SetFruitPos(BoardPiece fruit)
         {
             int maxAreaWidth = this.MaxAreaWidth;
@@ -92,14 +93,31 @@ namespace SonOfRobin
             fruitPos.X += plant.world.random.Next(-maxAreaWidth, maxAreaWidth);
             fruitPos.Y += plant.world.random.Next(-maxAreaHeight, maxAreaHeight);
 
-            // grid location should not be updated, because it would put the fruit on the board
-            fruit.sprite.SetNewPosition(newPos: fruitPos, ignoreCollisions: true, updateGridLocation: false);
+            this.PutFruitOnBoard(fruit: fruit, position: fruitPos);
+        }
+
+        private void PutAllFruitsOnBoardAgain()
+        {
+            foreach (BoardPiece fruit in this.plant.pieceStorage.GetAllPieces())
+            {
+                this.PutFruitOnBoard(fruit: fruit, position: fruit.sprite.position);
+            }
+        }
+
+        private void PutFruitOnBoard(BoardPiece fruit, Vector2 position)
+        {
+            // Placing the fruit on board (to allow drawing), but not on the grid (to prevent direct interaction).
+
+            fruit.sprite.PlaceOnBoard(position: position, ignoreCollisions: true);
+            fruit.world.grid.RemoveSprite(fruit.sprite); // the fruit should be on board, but not on the grid itself (to prevent direct interaction)
         }
 
         public void SetAllFruitPosAgain()
         {
             foreach (BoardPiece fruit in this.plant.pieceStorage.GetAllPieces())
-            { this.SetFruitPos(fruit: fruit); }
+            {
+                this.SetFruitPos(fruit: fruit);
+            }
         }
 
     }

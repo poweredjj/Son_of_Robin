@@ -28,6 +28,7 @@ namespace SonOfRobin
         public Entry lastTouchedEntry;
         private float scrollSpeed;
         public bool instantScrollForOneFrame;
+        public readonly object templateExecuteHelper; // needed for correct rebuild
 
         public int EntryBgWidth
         {
@@ -146,7 +147,7 @@ namespace SonOfRobin
                 currentScrollPosition += posDiff / this.scrollSpeed;
             }
         }
-        public Menu(MenuTemplate.Name templateName, bool blocksUpdatesBelow, bool canBeClosedManually, string name, bool alwaysShowSelectedEntry = false, Layout layout = Layout.Right, Scheduler.TaskName closingTask = Scheduler.TaskName.Empty, Object closingTaskHelper = null, int priority = 1) : base(inputType: InputTypes.Normal, priority: priority, blocksUpdatesBelow: blocksUpdatesBelow, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, hidesSameScenesBelow: true, touchLayout: TouchLayout.Empty, tipsLayout: canBeClosedManually ? ControlTips.TipsLayout.Menu : ControlTips.TipsLayout.MenuWithoutClosing)
+        public Menu(MenuTemplate.Name templateName, bool blocksUpdatesBelow, bool canBeClosedManually, string name, object templateExecuteHelper, bool alwaysShowSelectedEntry = false, Layout layout = Layout.Right, Scheduler.TaskName closingTask = Scheduler.TaskName.Empty, Object closingTaskHelper = null, int priority = 1) : base(inputType: InputTypes.Normal, priority: priority, blocksUpdatesBelow: blocksUpdatesBelow, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, hidesSameScenesBelow: true, touchLayout: TouchLayout.Empty, tipsLayout: canBeClosedManually ? ControlTips.TipsLayout.Menu : ControlTips.TipsLayout.MenuWithoutClosing)
         {
             this.layout = layout;
             this.alwaysShowSelectedEntry = alwaysShowSelectedEntry;
@@ -164,6 +165,7 @@ namespace SonOfRobin
             this.bgColor = Color.Black * 0.6f;
             this.scrollSpeed = baseScrollSpeed;
             this.instantScrollForOneFrame = false;
+            this.templateExecuteHelper = templateExecuteHelper;
 
             new Separator(menu: this, name: this.name);
             this.SetTouchLayout();
@@ -242,7 +244,7 @@ namespace SonOfRobin
             base.Remove();
             // MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Menu {this.name} - executing closing task '{this.closingTask}'.");
 
-            new Scheduler.Task(menu: this, taskName: this.closingTask, executeHelper: this.closingTaskHelper);
+            new Scheduler.Task(taskName: this.closingTask, executeHelper: this.closingTaskHelper);
         }
 
         public void AddClosingTask(Scheduler.TaskName closingTask, Object closingTaskHelper)
@@ -265,7 +267,7 @@ namespace SonOfRobin
         public void Rebuild(bool instantScroll)
         {
             nextMenuNoStartTransition = true;
-            Menu rebuiltMenu = MenuTemplate.CreateMenuFromTemplate(templateName: this.templateName);
+            Menu rebuiltMenu = MenuTemplate.CreateMenuFromTemplate(templateName: this.templateName, executeHelper: this.templateExecuteHelper);
 
             Entry activeEntry = this.ActiveEntry;
             for (int i = 0; i < rebuiltMenu.entryList.Count; i++)
@@ -340,14 +342,29 @@ namespace SonOfRobin
                 MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Menu '{menu.templateName}' removed.", color: Color.White);
             }
         }
+
+        public static void RemoveEveryMenuWithTemplateOtherThan(MenuTemplate.Name templateName)
+        {
+            foreach (Menu menu in GetAllScenesOfType(typeof(Menu)))
+            {
+                if (menu.templateName != templateName)
+                {
+                    menu.Remove();
+                    MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Menu '{menu.templateName}' removed.", color: Color.White);
+                }
+            }
+        }
+
         public static List<Menu> GetEveryMenuOfTemplate(MenuTemplate.Name templateName)
         {
             var menuListOfTemplate = new List<Menu> { };
 
-            foreach (Scene scene in sceneStack)
-            { if (scene.GetType() == typeof(Menu)) menuListOfTemplate.Add((Menu)scene); }
+            foreach (Menu menu in GetAllScenesOfType(typeof(Menu)))
+            {
+                if (menu.templateName == templateName) menuListOfTemplate.Add(menu);
+            }
 
-            return menuListOfTemplate.Where(menu => menu.templateName == templateName).ToList();
+            return menuListOfTemplate;
         }
 
         public override void Update(GameTime gameTime)

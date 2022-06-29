@@ -35,7 +35,7 @@ namespace SonOfRobin
 
             if (this.playerObstructMode)
             {
-                if (!this.sprite.ObstructsPlayer)
+                if (!this.sprite.ObstructsCameraTarget)
                 {
                     this.sprite.opacityFade = new OpacityFade(sprite: this.sprite, duration: this.duration, destOpacity: 1f);
                     return;

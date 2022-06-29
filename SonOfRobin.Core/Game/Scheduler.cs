@@ -9,7 +9,7 @@ namespace SonOfRobin
 {
     public class Scheduler
     {
-        public enum TaskName { Empty, CreateNewWorld, CreateNewWorldNow, QuitGame, OpenMenuTemplate, OpenMainMenu, OpenConfirmationMenu, SaveGame, LoadGame, LoadGameNow, ReturnToMainMenu, SavePrefs, ProcessConfirmation, OpenCraftMenu, CraftOnPosition, Craft, Hit, CreateNewPiece, CreateDebugPieces, OpenContainer, DeleteObsoleteSaves, DropFruit, GetEaten, GetDrinked, ExecuteTaskWithDelay, AddWorldEvent, OpenTextWindow, OpenShelterMenu, SleepInsideShelter, SleepOutside, ForceWakeUp, TempoFastForward, TempoStop, TempoPlay, CameraTrackPiece, CameraTrackCoords, CameraSetZoom, ShowCookingProgress, RestoreHints, OpenMainMenuIfSpecialKeysArePressed, CheckForPieceHints, ShowHint, ExecuteTaskList, ExecuteTaskChain, ShowTutorial, RemoveScene, ChangeSceneInputType, SetCineMode, AddTransition, SolidColorRemoveAll, SkipCinematics, DeleteTemplates, SetSpectatorMode, SwitchLightSource, ResetControls, SaveControls, CheckForNonSavedControls }
+        public enum TaskName { Empty, CreateNewWorld, CreateNewWorldNow, QuitGame, OpenMenuTemplate, OpenMainMenu, OpenConfirmationMenu, SaveGame, LoadGame, LoadGameNow, ReturnToMainMenu, SavePrefs, ProcessConfirmation, OpenCraftMenu, CraftOnPosition, Craft, Hit, CreateNewPiece, CreateDebugPieces, OpenContainer, DeleteObsoleteSaves, DropFruit, GetEaten, GetDrinked, ExecuteTaskWithDelay, AddWorldEvent, ShowTextWindow, OpenShelterMenu, SleepInsideShelter, SleepOutside, ForceWakeUp, TempoFastForward, TempoStop, TempoPlay, CameraTrackPiece, CameraTrackCoords, CameraSetZoom, ShowCookingProgress, RestoreHints, OpenMainMenuIfSpecialKeysArePressed, CheckForPieceHints, ShowHint, ExecuteTaskList, ExecuteTaskChain, ShowTutorial, RemoveScene, ChangeSceneInputType, SetCineMode, AddTransition, SolidColorRemoveAll, SkipCinematics, DeleteTemplates, SetSpectatorMode, SwitchLightSource, ResetControls, SaveControls, CheckForNonSavedControls, RebuildMenu, RebuildAllMenus, CheckForIncorrectPieces, RestartWorld }
 
         private readonly static Dictionary<int, List<Task>> queue = new Dictionary<int, List<Task>>();
         private static int inputTurnedOffUntilFrame = 0;
@@ -46,13 +46,11 @@ namespace SonOfRobin
 
         public struct Task
         {
-            private readonly Menu menu;
             public readonly TaskName taskName;
             private Object executeHelper;
             private readonly int delay;
             private int frame;
             private readonly bool turnOffInputUntilExecution;
-            private bool rebuildsMenu;
 
             public string TaskText
             {
@@ -63,14 +61,12 @@ namespace SonOfRobin
                 }
             }
 
-            public Task(TaskName taskName, Menu menu = null, Object executeHelper = null, bool turnOffInputUntilExecution = false, int delay = 0, bool rebuildsMenu = false, bool storeForLaterUse = false)
+            public Task(TaskName taskName, Object executeHelper = null, bool turnOffInputUntilExecution = false, int delay = 0, bool storeForLaterUse = false)
             {
                 this.taskName = taskName;
                 this.executeHelper = executeHelper;
-                this.menu = menu;
                 this.turnOffInputUntilExecution = turnOffInputUntilExecution;
                 this.delay = delay;
-                this.rebuildsMenu = rebuildsMenu;
 
                 if (!storeForLaterUse)
                 {
@@ -111,18 +107,25 @@ namespace SonOfRobin
 
             public void Execute()
             {
-                this.RunTask();
-                if (this.rebuildsMenu) this.menu.Rebuild(instantScroll: false);
-            }
-
-            private void RunTask()
-            {
                 World world;
 
                 switch (taskName)
                 {
                     case TaskName.Empty:
                         return;
+
+                    case TaskName.RebuildMenu:
+                        {
+                            Menu menu = (Menu)executeHelper;
+                            menu.Rebuild(instantScroll: false);
+                            return;
+                        }
+
+                    case TaskName.RebuildAllMenus:
+                        {
+                            Menu.RebuildAllMenus();
+                            return;
+                        }
 
                     case TaskName.OpenMenuTemplate:
                         {
@@ -187,10 +190,7 @@ namespace SonOfRobin
 
                     case TaskName.CreateNewWorld:
                         {
-                            if (menu != null) menu.MoveToTop();
-
                             Scene.RemoveAllScenesOfType(typeof(Menu));
-
                             new Task(taskName: TaskName.CreateNewWorldNow, turnOffInputUntilExecution: true, delay: 13, executeHelper: executeHelper);
 
                             return;
@@ -199,9 +199,10 @@ namespace SonOfRobin
                     case TaskName.CreateNewWorldNow:
                         {
                             // example executeHelper for this task
-                            // var createData = new Dictionary<string, Object> {{ "width", width }, { "height", height }, { "seed", seed }, {"resDivider", resDivider }};                
+                            // var createData = new Dictionary<string, Object> {{ "width", width }, { "height", height }, { "seed", seed }, {"resDivider", resDivider }, {"initialMaxAnimalsMultiplier", initialMaxAnimalsMultiplier}, {"addAgressiveAnimals", true }};                
 
-                            int width, height, seed, resDivider;
+                            int width, height, seed, resDivider, initialMaxAnimalsMultiplier;
+                            bool addAgressiveAnimals;
 
                             if (executeHelper == null)
                             {
@@ -209,6 +210,8 @@ namespace SonOfRobin
                                 height = Preferences.newWorldHeight;
                                 seed = Preferences.NewWorldSeed;
                                 resDivider = Preferences.newWorldResDivider;
+                                initialMaxAnimalsMultiplier = Preferences.newWorldMaxAnimalsMultiplier;
+                                addAgressiveAnimals = Preferences.newWorldAgressiveAnimals;
                             }
                             else
                             {
@@ -217,9 +220,21 @@ namespace SonOfRobin
                                 height = (int)createData["height"];
                                 seed = (int)createData["seed"];
                                 resDivider = (int)createData["resDivider"];
+                                initialMaxAnimalsMultiplier = (int)createData["initialMaxAnimalsMultiplier"];
+                                addAgressiveAnimals = (bool)createData["addAgressiveAnimals"];
                             }
 
-                            new World(width: width, height: height, seed: seed, resDivider: resDivider);
+                            new World(width: width, height: height, seed: seed, resDivider: resDivider, initialMaxAnimalsMultiplier: initialMaxAnimalsMultiplier, addAgressiveAnimals: addAgressiveAnimals);
+
+                            return;
+                        }
+
+                    case TaskName.RestartWorld:
+                        {
+                            Scene.RemoveAllScenesOfType(typeof(Menu));
+                            World oldWorld = (World)executeHelper;
+                            new World(width: oldWorld.width, height: oldWorld.height, seed: oldWorld.seed, resDivider: oldWorld.resDivider, initialMaxAnimalsMultiplier: oldWorld.initialMaxAnimalsMultiplier, addAgressiveAnimals: oldWorld.addAgressiveAnimals);
+                            oldWorld.Remove();
 
                             return;
                         }
@@ -232,8 +247,8 @@ namespace SonOfRobin
                                 var executeData = (Dictionary<string, Object>)executeHelper;
                                 Vector2 position = (Vector2)executeData["position"];
                                 PieceTemplate.Name templateName = (PieceTemplate.Name)executeData["templateName"];
-                                BoardPiece piece = PieceTemplate.CreateOnBoard(world: world, position: position, templateName: templateName);
-                                if (piece.sprite.placedCorrectly) piece.sprite.MoveToClosestFreeSpot(position);
+                                BoardPiece piece = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: position, templateName: templateName);
+                                if (piece.sprite.IsOnBoard) piece.sprite.MoveToClosestFreeSpot(position);
                             }
                             return;
                         }
@@ -243,47 +258,42 @@ namespace SonOfRobin
                             world = World.GetTopWorld();
                             if (world == null)
                             {
-                                MessageLog.AddMessage(msgType: MsgType.Debug, message: "Could not create selected item, because no world was found.");
+                                MessageLog.AddMessage(msgType: MsgType.User, message: "Could not create selected item, because no world was found.");
                                 return;
                             }
 
+                            Player player = world.player;
+
+                            var executeData = (Dictionary<string, Object>)executeHelper;
+                            Vector2 position = (Vector2)executeData["position"];
+                            PieceTemplate.Name templateName = (PieceTemplate.Name)executeData["templateName"];
+
+                            int piecesCreated = 0;
+                            int attemptNo = 0;
+
+                            while (true)
                             {
-                                Player player = world.player;
+                                BoardPiece piece = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: position, templateName: templateName, closestFreeSpot: true);
+                                int amountToCreate = piece.stackSize;
 
-                                var executeData = (Dictionary<string, Object>)executeHelper;
-                                Vector2 position = (Vector2)executeData["position"];
-                                PieceTemplate.Name templateName = (PieceTemplate.Name)executeData["templateName"];
-
-                                int piecesCreated = 0;
-                                int amountToCreate = 0;
-                                int attemptNo = 0;
-                                BoardPiece piece;
-
-                                while (true)
+                                if (piece.sprite.IsOnBoard)
                                 {
-                                    piece = PieceTemplate.CreateOnBoard(world: world, position: position, templateName: templateName);
-                                    amountToCreate = piece.stackSize;
-
-                                    if (piece.sprite.placedCorrectly)
-                                    {
-                                        bool piecePickedUp = player.PickUpPiece(piece);
-
-                                        if (!piecePickedUp) piece.sprite.MoveToClosestFreeSpot(position);
-                                        piecesCreated++;
-                                    }
-
-                                    if (piecesCreated >= amountToCreate) break;
-
-                                    attemptNo++;
-                                    if (attemptNo == 1000)
-                                    {
-                                        MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Max number of attempts exceeded while trying to create '{templateName}'.");
-                                        break;
-                                    }
+                                    player.PickUpPiece(piece);
+                                    piecesCreated++;
                                 }
 
-                                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{piecesCreated} '{templateName}' pieces created.");
+                                if (piecesCreated >= amountToCreate) break;
+
+                                attemptNo++;
+                                if (attemptNo == 1000)
+                                {
+                                    MessageLog.AddMessage(msgType: MsgType.User, message: $"Max number of attempts exceeded while trying to create '{templateName}'.");
+                                    break;
+                                }
                             }
+
+                            MessageLog.AddMessage(msgType: MsgType.User, message: $"{piecesCreated} '{templateName}' pieces created.");
+
                             return;
                         }
 
@@ -292,12 +302,6 @@ namespace SonOfRobin
                             // example executeHelper for this task
                             // var saveParams = new Dictionary<string, Object> { { "world", world }, { "saveSlotName", "1" }, { "showMessage", false }, {"quitGameAfterSaving", false} };
 
-                            if (this.rebuildsMenu)
-                            {// menu should be rebuilt after the game has been saved
-                                new Task(menu: this.menu, taskName: TaskName.Empty, turnOffInputUntilExecution: false, delay: 12, rebuildsMenu: true);
-                                this.rebuildsMenu = false;
-                            }
-;
                             var saveParams = (Dictionary<string, Object>)executeHelper;
                             world = (World)saveParams["world"];
                             string saveSlotName = (string)saveParams["saveSlotName"];
@@ -313,12 +317,7 @@ namespace SonOfRobin
 
                     case TaskName.LoadGame:
                         {
-                            if (menu != null) menu.MoveToTop();
-
-                            Menu.RemoveEveryMenuOfTemplate(MenuTemplate.Name.Load);
-                            Menu.RemoveEveryMenuOfTemplate(MenuTemplate.Name.Main);
-                            Menu.RemoveEveryMenuOfTemplate(MenuTemplate.Name.Pause);
-                            Menu.RemoveEveryMenuOfTemplate(MenuTemplate.Name.GameOver);
+                            Scene.RemoveAllScenesOfType(typeof(Menu));
                             Scene.RemoveAllScenesOfType(typeof(TextWindow));
 
                             new Task(taskName: TaskName.LoadGameNow, turnOffInputUntilExecution: true, delay: 17, executeHelper: this.executeHelper);
@@ -473,7 +472,7 @@ namespace SonOfRobin
                             world = World.GetTopWorld();
 
                             // adding "generic" regen based on mass (if meal does not contain poison or regen)
-                            if (!BuffEngine.BuffListContainsPoisonOrRegen(food.buffList)) food.buffList.Add(new BuffEngine.Buff(world: world, type: BuffEngine.BuffType.RegenPoison, value: (int)(food.Mass / 3), autoRemoveDelay: 60 * 60));
+                            if (!BuffEngine.BuffListContainsPoisonOrRegen(food.buffList)) food.buffList.Add(new BuffEngine.Buff(type: BuffEngine.BuffType.RegenPoison, value: (int)(food.Mass / 3), autoRemoveDelay: 60 * 60));
                             player.AcquireEnergy(food.Mass * 40f);
 
                             foreach (BuffEngine.Buff buff in food.buffList)
@@ -512,7 +511,7 @@ namespace SonOfRobin
                             foreach (BuffEngine.Buff buff in potion.buffList)
                             { player.buffEngine.AddBuff(buff: buff, world: world); }
 
-                            BoardPiece emptyContainter = PieceTemplate.CreateOffBoard(templateName: potion.convertsToWhenUsed, world: world);
+                            BoardPiece emptyContainter = PieceTemplate.Create(templateName: potion.convertsToWhenUsed, world: world);
                             slot.DestroyPieceAndReplaceWithAnother(emptyContainter);
 
                             return;
@@ -673,7 +672,7 @@ namespace SonOfRobin
                             return;
                         }
 
-                    case TaskName.OpenTextWindow:
+                    case TaskName.ShowTextWindow:
                         {
                             var textWindowData = (Dictionary<string, Object>)executeHelper;
 
@@ -891,7 +890,7 @@ namespace SonOfRobin
                             Task currentTask = (Task)taskChain[0];
                             taskChain.RemoveAt(0);
 
-                            if (currentTask.taskName == TaskName.OpenTextWindow)
+                            if (currentTask.taskName == TaskName.ShowTextWindow)
                             {
                                 // If text window will be opened, the delay will depend on the player, so it is unknown.
                                 // So, the next task should be run after closing this text window.
@@ -1137,6 +1136,81 @@ namespace SonOfRobin
 
                             return;
                         }
+
+                    case TaskName.CheckForIncorrectPieces:
+                        {
+                            world = World.GetTopWorld();
+                            if (world == null) return;
+
+                            // counting incorrect pieces
+
+                            var incorrectBoardPieces = new List<BoardPiece>();
+                            var incorrectStoragePieces = new List<BoardPiece>();
+                            var piecesByID = new Dictionary<string, List<BoardPiece>>();
+                            var duplicatedPiecesByID = new Dictionary<string, List<BoardPiece>>();
+
+                            foreach (Sprite sprite in world.grid.GetAllSprites(Cell.Group.All))
+                            {
+                                if (sprite.boardPiece.exists && !sprite.IsOnBoard) incorrectBoardPieces.Add(sprite.boardPiece);
+                                if (piecesByID.ContainsKey(sprite.id)) piecesByID[sprite.id].Add(sprite.boardPiece);
+                                else piecesByID[sprite.id] = new List<BoardPiece> { sprite.boardPiece };
+
+                                var storageList = new List<PieceStorage> { sprite.boardPiece.pieceStorage };
+
+                                if (sprite.boardPiece.GetType() == typeof(Player)) // need to be updated with new classes using storages other than "this.pieceStorage"
+                                {
+                                    Player player = (Player)sprite.boardPiece;
+                                    storageList.Add(player.toolStorage);
+                                    storageList.Add(player.equipStorage);
+                                }
+
+                                foreach (PieceStorage currentStorage in storageList)
+                                {
+                                    if (currentStorage == null) continue;
+                                    foreach (BoardPiece storedPiece in currentStorage.GetAllPieces())
+                                    {
+                                        if (piecesByID.ContainsKey(storedPiece.id)) piecesByID[storedPiece.id].Add(storedPiece);
+                                        else piecesByID[storedPiece.id] = new List<BoardPiece> { storedPiece };
+
+                                        // fruits are in storage, but on board at the same time (but not on the grid) - to display correctly
+                                        if (storedPiece.sprite.IsOnBoard && storedPiece.GetType() != typeof(Fruit)) incorrectStoragePieces.Add(storedPiece);
+                                    }
+                                }
+                            }
+
+                            foreach (List<BoardPiece> pieceList in piecesByID.Values)
+                            {
+                                if (pieceList.Count > 1)
+                                {
+                                    duplicatedPiecesByID[pieceList[0].id] = pieceList;
+                                }
+                            }
+
+                            // building error list
+
+                            var errorsFound = new List<string>();
+                            if (incorrectBoardPieces.Any()) errorsFound.Add($"Pieces placed incorrectly on the field: {incorrectBoardPieces.Count}.");
+                            if (incorrectStoragePieces.Any()) errorsFound.Add($"Pieces placed incorrectly in the storage: {incorrectStoragePieces.Count}.");
+                            if (duplicatedPiecesByID.Any())
+                            {
+                                errorsFound.Add($"Duplicated pieces ({duplicatedPiecesByID.Count}):");
+
+                                foreach (List<BoardPiece> duplicatedPieceList in duplicatedPiecesByID.Values)
+                                {
+                                    errorsFound.Add($"- {duplicatedPieceList[0].readableName} ID {duplicatedPieceList[0].id} x{duplicatedPieceList.Count}");
+                                }
+                            }
+
+                            bool isCorrect = !errorsFound.Any();
+                            string message = errorsFound.Any() ? String.Join("\n", errorsFound) : "No incorrect pieces found.";
+
+                            // showing message
+
+                            new TextWindow(text: message, animate: false, useTransition: false, bgColor: isCorrect ? Color.Green : Color.DarkRed, textColor: Color.White, blocksUpdatesBelow: true);
+
+                            return;
+                        }
+
 
                     default:
                         throw new DivideByZeroException($"Unsupported taskName - {taskName}.");

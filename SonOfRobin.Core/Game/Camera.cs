@@ -224,7 +224,7 @@ namespace SonOfRobin
         {
             if (this.TrackedSpriteExists) return;
 
-            var allSprites = this.world.grid.GetAllSprites(Cell.Group.ColAll);
+            var allSprites = this.world.grid.GetAllSprites(Cell.Group.ColBlocking);
             var animals = allSprites.Where(sprite => sprite.boardPiece.GetType() == typeof(Animal) && sprite.boardPiece.alive).ToList();
             if (animals.Count == 0) return;
             var index = SonOfRobinGame.random.Next(0, animals.Count);

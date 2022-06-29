@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SonOfRobin
 {
@@ -22,6 +23,9 @@ namespace SonOfRobin
             public readonly AnimFrame frame;
             public List<PieceTemplate.Name> eats;
             public List<PieceTemplate.Name> isEatenBy;
+            public readonly bool hasFruit;
+            public readonly PieceTemplate.Name fruitName;
+            public PieceTemplate.Name isSpawnedBy;
 
             public List<string> BuffDescList
             {
@@ -57,6 +61,17 @@ namespace SonOfRobin
                     this.convertsToWhenUsed = ((Potion)piece).convertsToWhenUsed;
                 }
                 this.isEatenBy = new List<PieceTemplate.Name> { };
+
+                this.hasFruit = false;
+                if (piece.GetType() == typeof(Plant))
+                {
+                    Plant plant = (Plant)piece;
+                    if (plant.fruitEngine != null)
+                    {
+                        this.fruitName = plant.fruitEngine.fruitName;
+                        this.hasFruit = true;
+                    }
+                }
             }
         }
 
@@ -65,13 +80,13 @@ namespace SonOfRobin
             return info[pieceName];
         }
 
-        public static void CreateAllInfo(World world)
+        public static void CreateAllInfo()
         {
             // creates one instance of every piece type - to get required info out of it
 
             foreach (PieceTemplate.Name name in (PieceTemplate.Name[])Enum.GetValues(typeof(PieceTemplate.Name)))
             {
-                BoardPiece piece = PieceTemplate.CreateOffBoard(templateName: name, world: world);
+                BoardPiece piece = PieceTemplate.Create(templateName: name, world: null);
                 info[name] = new Info(piece: piece);
             }
 
@@ -93,6 +108,13 @@ namespace SonOfRobin
                         }
                     }
                 }
+            }
+
+            // getting fruitSpawner data
+
+            foreach (Info fruitSpawnerInfo in info.Values.Where(info => info.hasFruit))
+            {
+                info[fruitSpawnerInfo.fruitName].isSpawnedBy = fruitSpawnerInfo.name;
             }
         }
 

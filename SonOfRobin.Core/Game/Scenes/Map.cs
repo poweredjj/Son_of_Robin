@@ -22,7 +22,7 @@ namespace SonOfRobin
         private static readonly float minimapMaxPercentHeight = 0.5f;
 
         private static readonly List<PieceTemplate.Name> depositList = new List<PieceTemplate.Name> {
-            PieceTemplate.Name.CoalDeposit, PieceTemplate.Name.IronDeposit, PieceTemplate.Name.GlassDeposit, PieceTemplate.Name.CrystalDepositSmall, PieceTemplate.Name.CrystalDepositBig };
+            PieceTemplate.Name.CoalDeposit, PieceTemplate.Name.IronDeposit, PieceTemplate.Name.CrystalDepositSmall, PieceTemplate.Name.CrystalDepositBig };
 
         private void UpdateViewPos()
         {

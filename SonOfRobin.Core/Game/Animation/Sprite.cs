@@ -18,14 +18,11 @@ namespace SonOfRobin
         }
 
         public enum AdditionalMoveType { None, Minimal, Half }
-        public static int maxDistanceOverride = -1; // -1 will not affect sprite creation; higher values will override one sprite creation
-        public static bool ignoreDensityOverride = false; // will ignore density for one sprite creation
 
         public readonly string id;
         public readonly BoardPiece boardPiece;
         public readonly World world;
         public Vector2 position;
-        public bool placedCorrectly;
         public Orientation orientation;
         public float rotation;
         public float opacity;
@@ -45,13 +42,17 @@ namespace SonOfRobin
         public readonly bool ignoresCollisions;
         public AllowedFields allowedFields;
         private readonly AllowedDensity allowedDensity;
+        private readonly int minDistance;
+        private readonly int maxDistance;
+        private readonly bool placeAtBeachEdge;
         private readonly bool floatsOnWater;
         public readonly bool isShownOnMiniMap;
         public bool hasBeenDiscovered;
         public readonly EffectCol effectCol;
-        public Cell currentCell; // current cell, that is containing the sprite 
         public List<Cell.Group> gridGroups;
-
+        public Cell currentCell; // current cell, that is containing the sprite 
+        private bool isOnBoard;
+        public bool IsOnBoard { get { return isOnBoard; } }
         public string CompleteAnimID
         { get { return GetCompleteAnimId(animPackage: this.animPackage, animSize: this.animSize, animName: this.animName); } }
 
@@ -74,28 +75,26 @@ namespace SonOfRobin
                 if (this.visible == value) return;
 
                 this.visible = value;
-                if (value)
-                { this.world.grid.AddToGroup(sprite: this, groupName: Cell.Group.Visible); }
-                else
-                { this.world.grid.RemoveFromGroup(sprite: this, groupName: Cell.Group.Visible); }
+                if (value) this.world.grid.AddToGroup(sprite: this, groupName: Cell.Group.Visible);
+                else this.world.grid.RemoveFromGroup(sprite: this, groupName: Cell.Group.Visible);
             }
         }
 
-        public bool ObstructsPlayer
+        public bool ObstructsCameraTarget
         {
             get
             {
-                try
-                {
-                    if (!this.blocksMovement || this.position.Y < this.boardPiece.world.player.sprite.position.Y || this.boardPiece.name == PieceTemplate.Name.Player) return false;
-                    return this.gfxRect.Contains(this.boardPiece.world.player.sprite.position);
-                }
-                catch (NullReferenceException)
-                { return false; }
+                if (!this.IsOnBoard) return false;
+
+                BoardPiece trackedPiece = this.world.camera.TrackedPiece;
+                if (trackedPiece == null) return false;
+
+                if (!this.blocksMovement || this.position.Y < trackedPiece.sprite.position.Y || this.boardPiece.id == trackedPiece.id) return false;
+                return this.gfxRect.Contains(trackedPiece.sprite.position);
             }
         }
 
-        public Sprite(World world, string id, BoardPiece boardPiece, Vector2 position, AnimData.PkgName animPackage, byte animSize, string animName, bool ignoresCollisions, AllowedFields allowedFields, bool blocksMovement = true, bool visible = true, bool checksFullCollisions = false, ushort minDistance = 0, ushort maxDistance = 100, bool floatsOnWater = false, bool fadeInAnim = true, bool placeAtBeachEdge = false, bool isShownOnMiniMap = false, AllowedDensity allowedDensity = null, LightEngine lightEngine = null)
+        public Sprite(World world, string id, BoardPiece boardPiece, AnimData.PkgName animPackage, byte animSize, string animName, bool ignoresCollisions, AllowedFields allowedFields, bool blocksMovement = true, bool visible = true, bool checksFullCollisions = false, bool floatsOnWater = false, bool fadeInAnim = true, bool isShownOnMiniMap = false, AllowedDensity allowedDensity = null, LightEngine lightEngine = null, int minDistance = 0, int maxDistance = 100, bool placeAtBeachEdge = false)
         {
             this.id = id; // duplicate from BoardPiece class
             this.boardPiece = boardPiece;
@@ -116,39 +115,59 @@ namespace SonOfRobin
             this.ignoresCollisions = ignoresCollisions;
             this.allowedFields = allowedFields;
             this.allowedDensity = allowedDensity;
-            if (ignoreDensityOverride)
-            {
-                this.allowedDensity = null;
-                ignoreDensityOverride = false;
-            }
+            this.minDistance = minDistance;
+            this.maxDistance = maxDistance;
+            this.placeAtBeachEdge = placeAtBeachEdge;
             if (this.allowedDensity != null) this.allowedDensity.FinishCreation(piece: this.boardPiece, sprite: this);
             this.visible = visible; // initially it is assigned normally
             this.isShownOnMiniMap = isShownOnMiniMap;
             this.effectCol = new EffectCol(world: world);
             this.hasBeenDiscovered = false;
             this.currentCell = null;
+            this.isOnBoard = false;
             if (fadeInAnim)
             {
                 this.opacity = 0f;
                 this.opacityFade = new OpacityFade(sprite: this, destOpacity: 1f);
             }
-            else
-            { this.opacity = 1f; }
+            else this.opacity = 1f;
 
-            AssignFrame(); // frame needs to be set before checking for free spot
-
+            this.AssignFrame(checkForCollision: false);
             this.gridGroups = this.GetGridGroups();
-
-            this.placedCorrectly = this.FindFreeSpot(position, minDistance: minDistance, maxDistance: maxDistance, findAtBeachEdge: placeAtBeachEdge); // this.position is set here
-            if (!this.placedCorrectly)
-            {
-                this.RemoveFromGrid();
-                return;
-            }
 
             this.lightEngine = lightEngine;
             if (this.lightEngine != null) this.lightEngine.AssignSprite(this);
         }
+
+        public bool PlaceOnBoard(Vector2 position, bool ignoreCollisions = false, bool precisePlacement = false, bool closestFreeSpot = false, int minDistanceOverride = -1, int maxDistanceOverride = -1, bool ignoreDensity = false)
+        {
+            this.position = Vector2.Zero; // needed for placement purposes
+
+            int minDistance = minDistanceOverride == -1 ? this.minDistance : minDistanceOverride;
+            int maxDistance = maxDistanceOverride == -1 ? this.maxDistance : maxDistanceOverride;
+
+            bool placedCorrectly = closestFreeSpot ?
+                this.MoveToClosestFreeSpot(startPosition: position, checkIsOnBoard: false, ignoreDensity: ignoreDensity) :
+                this.FindFreeSpot(position, minDistance: minDistance, maxDistance: maxDistance, findAtBeachEdge: this.placeAtBeachEdge, ignoreCollisions: ignoreCollisions, precisePlacement: precisePlacement, ignoreDensity: ignoreDensity);
+
+            if (placedCorrectly) this.isOnBoard = true;
+            else this.RemoveFromBoard();
+
+            return placedCorrectly;
+        }
+
+        public void RemoveFromBoard()
+        {
+            this.world.grid.RemoveSprite(this);
+            this.position = new Vector2(-500, -500);  // to fail if trying to use in the future
+            this.isOnBoard = false;
+        }
+
+        public void UpdateBoardLocation()
+        {
+            this.world.grid.UpdateLocation(this);
+        }
+
         public void Serialize(Dictionary<string, Object> pieceData)
         {
             pieceData["sprite_frame_id"] = this.frame.id;
@@ -192,6 +211,7 @@ namespace SonOfRobin
         }
         public byte GetFieldValue(TerrainName terrainName)
         {
+            if (!this.IsOnBoard) throw new ArgumentException($"Trying to get a field value of '{this.boardPiece.name}' that is not on board.");
             return this.world.grid.GetFieldValue(position: this.position, terrainName: terrainName);
         }
 
@@ -210,71 +230,68 @@ namespace SonOfRobin
 
             return duration;
         }
-        public bool MoveToClosestFreeSpot(Vector2 startPosition, bool extensiveSearch = false)
+
+        public bool MoveToClosestFreeSpot(Vector2 startPosition, bool checkIsOnBoard = true, bool ignoreDensity = false, int maxDistance = 170)
         {
-            if (!this.placedCorrectly) throw new DivideByZeroException($"Trying to move '{this.boardPiece.name}' that was not placed correctly.");
+            if (!this.IsOnBoard && checkIsOnBoard) throw new ArgumentException($"Trying to move '{this.boardPiece.name}' that is not on board.");
 
-            int threshold = extensiveSearch ? 10000 : 450;
-            ushort maxDistance = 0;
+            if (this.SetNewPosition(newPos: startPosition, ignoreDensity: ignoreDensity, checkIsOnBoard: checkIsOnBoard)) return true; // checking the center first
 
-            for (int i = 0; i < threshold; i++)
+            int initialDistance = 4;
+            int distanceStep = 6;
+            int iterationStepsMultiplier = 3;
+
+            for (int currentDistance = initialDistance; currentDistance < maxDistance; currentDistance += distanceStep)
             {
-                for (int j = 0; j < 20; j++)
+                for (int tryCounter = 0; tryCounter < iterationStepsMultiplier * currentDistance; tryCounter++)
                 {
-                    Vector2 movement = startPosition + new Vector2(this.world.random.Next(-maxDistance, maxDistance), this.world.random.Next(-maxDistance, maxDistance));
+                    double angle = this.world.random.NextDouble() * Math.PI * 2;
 
-                    if (this.SetNewPosition(newPos: movement)) return true;
+                    double offsetX = Math.Round(currentDistance * Math.Cos(angle));
+                    double offsetY = Math.Round(currentDistance * Math.Sin(angle));
+                    Vector2 newPos = startPosition + new Vector2((float)offsetX, (float)offsetY);
+
+                    if (this.SetNewPosition(newPos: newPos, ignoreDensity: ignoreDensity, checkIsOnBoard: checkIsOnBoard)) return true;
                 }
-
-                maxDistance += 2;
             }
-
-            if (this.FindFreeSpot(startPosition: startPosition, minDistance: 0, maxDistance: 65535)) return true;
 
             MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Could not move to closest free spot - {this.boardPiece.name}.", color: Color.Violet);
 
             return false;
         }
 
-        private bool FindFreeSpot(Vector2 startPosition, ushort minDistance, ushort maxDistance, bool findAtBeachEdge = false)
+        private bool FindFreeSpot(Vector2 startPosition, int minDistance, int maxDistance, bool findAtBeachEdge = false, bool ignoreCollisions = false, bool precisePlacement = false, bool ignoreDensity = false)
         {
-            if (this.world.freePiecesPlacingMode)
+            if (ignoreCollisions)
             {
-                this.SetNewPosition(newPos: new Vector2(startPosition.X, startPosition.Y));
+                this.SetNewPosition(newPos: new Vector2(startPosition.X, startPosition.Y), ignoreCollisions: ignoreCollisions, ignoreDensity: ignoreDensity, checkIsOnBoard: false);
                 return true;
-            }
-            if (maxDistanceOverride != -1)
-            {
-                minDistance = 0;
-                maxDistance = (ushort)maxDistanceOverride;
-                maxDistanceOverride = -1;
             }
 
             if (findAtBeachEdge)
             {
                 for (int i = 0; i < 4; i++)
                 {
-                    if (this.FindFreeSpotAtBeachEdge()) return true;
+                    if (this.FindFreeSpotAtBeachEdge(ignoreCollisions: ignoreCollisions, ignoreDensity: ignoreDensity)) return true;
                 }
 
                 return false; // if no free spot at the edge was found
             }
 
+            if (precisePlacement) return this.SetNewPosition(newPos: startPosition, ignoreCollisions: ignoreCollisions, ignoreDensity: ignoreDensity, checkIsOnBoard: false);
+
             if (!this.world.CanProcessAnyStateMachineNow) return false;
 
             int numberOfTries = (minDistance == 0 && maxDistance == 0) ? 1 : 4;
             Vector2 newPosition;
-
             if (startPosition.X == -100 && startPosition.Y == -100) // -100, -100 will be converted to any position on the map - needed for effective creation of new sprites 
             {
                 for (int tryIndex = 0; tryIndex < numberOfTries; tryIndex++)
                 {
-                    if (this.world.createMissinPiecesOutsideCamera)
-                    { newPosition = this.world.camera.GetRandomPositionOutsideCameraView(); }
-                    else
-                    { newPosition = new Vector2(this.world.random.Next(0, this.world.width - 1), this.world.random.Next(0, this.world.height - 1)); }
+                    if (this.world.createMissinPiecesOutsideCamera) newPosition = this.world.camera.GetRandomPositionOutsideCameraView();
+                    else newPosition = new Vector2(this.world.random.Next(0, this.world.width - 1), this.world.random.Next(0, this.world.height - 1));
 
-                    bool hasBeenMoved = this.SetNewPosition(newPos: newPosition);
+                    bool hasBeenMoved = this.SetNewPosition(newPos: newPosition, ignoreCollisions: ignoreCollisions, ignoreDensity: ignoreDensity, checkIsOnBoard: false);
                     if (hasBeenMoved) return true;
                 }
             }
@@ -293,7 +310,7 @@ namespace SonOfRobin
                     newPosition.Y = Math.Max(newPosition.Y, 0);
                     newPosition.Y = Math.Min(newPosition.Y, this.world.height - 1);
 
-                    bool hasBeenMoved = this.SetNewPosition(newPos: newPosition);
+                    bool hasBeenMoved = this.SetNewPosition(newPos: newPosition, ignoreCollisions: ignoreCollisions, ignoreDensity: ignoreDensity, checkIsOnBoard: false);
                     if (hasBeenMoved) return true;
                 }
             }
@@ -301,16 +318,14 @@ namespace SonOfRobin
             return false;
         }
 
-        private bool FindFreeSpotAtBeachEdge()
+        private bool FindFreeSpotAtBeachEdge(bool ignoreCollisions = false, bool ignoreDensity = false)
         {
             bool useWidth = this.world.random.Next(0, 2) == 0;
             bool minMax = this.world.random.Next(0, 2) == 0;
-            Vector2 startPos;
 
-            if (useWidth)
-            { startPos = new Vector2(this.world.random.Next((int)(this.world.width * 0.05f), (int)(this.world.width * 0.95f)), minMax ? this.world.height : 0); }
-            else
-            { startPos = new Vector2(minMax ? this.world.width : 0, this.world.random.Next((int)(this.world.height * 0.05f), (int)(this.world.height * 0.95f))); }
+            Vector2 startPos;
+            if (useWidth) startPos = new Vector2(this.world.random.Next((int)(this.world.width * 0.05f), (int)(this.world.width * 0.95f)), minMax ? this.world.height : 0);
+            else startPos = new Vector2(minMax ? this.world.width : 0, this.world.random.Next((int)(this.world.height * 0.05f), (int)(this.world.height * 0.95f)));
 
             int stepWidth = 3;
             if (minMax) stepWidth *= -1;
@@ -327,7 +342,7 @@ namespace SonOfRobin
                 int height = this.world.grid.GetFieldValue(terrainName: TerrainName.Height, position: currentPos);
                 if (height > Terrain.waterLevelMax + 10) return false;
 
-                if (height >= Terrain.waterLevelMax + 1 && this.SetNewPosition(newPos: currentPos)) return true;
+                if (height >= Terrain.waterLevelMax + 1 && this.SetNewPosition(newPos: currentPos, ignoreCollisions: ignoreCollisions, ignoreDensity: ignoreDensity, checkIsOnBoard: false)) return true;
             }
         }
 
@@ -389,16 +404,11 @@ namespace SonOfRobin
         {
             this.CharacterStand(setEvenIfMissing: false);
 
-            if (CheckIFAnimNameExists("dead"))
-            { this.AssignNewName("dead"); }
-            else
-            { this.color = Color.LightCoral; }
+            if (CheckIFAnimNameExists("dead")) this.AssignNewName("dead");
+            else this.color = Color.LightCoral;
 
-            if (this.boardPiece.GetType() == typeof(Animal)) PieceTemplate.CreateOnBoard(world: this.world, position: this.position, templateName: PieceTemplate.Name.BloodSplatter);
+            if (this.boardPiece.GetType() == typeof(Animal)) PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: this.position, templateName: PieceTemplate.Name.BloodSplatter);
         }
-
-        public void Destroy()
-        { this.RemoveFromGrid(); }
 
         private List<Cell.Group> GetGridGroups()
         {
@@ -414,12 +424,6 @@ namespace SonOfRobin
 
             return groupNames;
         }
-
-        public void RemoveFromGrid()
-        { this.world.grid.RemoveSprite(this); }
-
-        public void UpdateGridLocation()
-        { this.world.grid.UpdateLocation(this); }
 
         public bool Move(Vector2 movement, AdditionalMoveType additionalMoveType = AdditionalMoveType.Minimal)
         {
@@ -449,8 +453,10 @@ namespace SonOfRobin
             return false;
         }
 
-        public bool SetNewPosition(Vector2 newPos, bool ignoreCollisions = false, bool updateGridLocation = true)
+        public bool SetNewPosition(Vector2 newPos, bool ignoreCollisions = false, bool updateGridLocation = true, bool ignoreDensity = false, bool checkIsOnBoard = true)
         {
+            if (!this.IsOnBoard && checkIsOnBoard) throw new ArgumentException($"Trying to move '{this.boardPiece.name}' that is not on board.");
+
             var originalPosition = new Vector2(this.position.X, this.position.Y);
 
             this.position = new Vector2((int)newPos.X, (int)newPos.Y); // to ensure integer values
@@ -458,15 +464,15 @@ namespace SonOfRobin
             this.position.Y = Math.Min(Math.Max(this.position.Y, 0), this.world.height - 1);
 
             this.UpdateRects();
-            if (updateGridLocation) this.UpdateGridLocation();
+            if (updateGridLocation) this.UpdateBoardLocation();
             if (ignoreCollisions) return true;
 
-            bool collisionDetected = this.CheckForCollision();
+            bool collisionDetected = this.CheckForCollision(ignoreDensity: ignoreDensity);
             if (collisionDetected)
             {
                 this.position = originalPosition;
                 this.UpdateRects();
-                if (updateGridLocation) this.UpdateGridLocation();
+                if (updateGridLocation) this.UpdateBoardLocation();
             }
 
             return !collisionDetected;
@@ -481,24 +487,23 @@ namespace SonOfRobin
             this.position.Y = Math.Min(Math.Max(this.position.Y, 0), this.world.height - 1);
 
             this.UpdateRects();
-            this.UpdateGridLocation();
+            this.UpdateBoardLocation();
 
             List<Sprite> collidingSpritesList = this.GetCollidingSprites();
 
             this.position = originalPosition;
             this.UpdateRects();
-            this.UpdateGridLocation();
+            this.UpdateBoardLocation();
 
             return collidingSpritesList;
         }
 
-        public bool CheckForCollision()
+        public bool CheckForCollision(bool ignoreDensity = false)
         {
-            if (this.world.freePiecesPlacingMode) return false;
-
+            if (this.world == null) return false;
             if (this.gfxRect.Left <= 0 || this.gfxRect.Right >= this.world.width || this.gfxRect.Top <= 0 || this.gfxRect.Bottom >= this.world.height) return true;
             if (this.ignoresCollisions) return false;
-            if (this.allowedDensity != null && !this.allowedDensity.CanBePlacedHere()) return true;
+            if (this.allowedDensity != null && !ignoreDensity && !this.allowedDensity.CanBePlacedHere()) return true;
             if (!this.allowedFields.CanStandHere(world: this.world, position: this.position)) return true;
 
             var gridTypeToCheck = this.checksFullCollisions ? Cell.Group.ColAll : Cell.Group.ColBlocking;
@@ -603,7 +608,7 @@ namespace SonOfRobin
             return AnimData.frameListById.ContainsKey(newCompleteAnimID);
         }
 
-        public bool AssignFrame(bool forceRewind = false)
+        public bool AssignFrame(bool forceRewind = false, bool checkForCollision = true)
         {
             AnimFrame frameCopy = this.frame;
 
@@ -621,7 +626,7 @@ namespace SonOfRobin
             if (!blocksMovement) return true;
 
             // in case of collision - reverting to a previous, non-colliding frame
-            if (this.CheckForCollision() && frameCopy != null)
+            if (checkForCollision && this.CheckForCollision() && frameCopy != null)
             {
                 this.frame = frameCopy;
                 this.currentFrameTimeLeft = this.frame.duration;
@@ -668,7 +673,7 @@ namespace SonOfRobin
         {
             if (!this.hasBeenDiscovered && this.world.MapEnabled && this.world.camera.IsTrackingPlayer && this.world.camera.viewRect.Contains(this.gfxRect)) this.hasBeenDiscovered = true;
 
-            if (this.ObstructsPlayer && this.opacityFade == null) this.opacityFade = new OpacityFade(sprite: this, destOpacity: 0.5f, playerObstructMode: true, duration: 10);
+            if (this.ObstructsCameraTarget && this.opacityFade == null) this.opacityFade = new OpacityFade(sprite: this, destOpacity: 0.5f, playerObstructMode: true, duration: 10);
             if (Scene.UpdateStack.Contains(this.world)) this.opacityFade?.Process();
 
             if (Preferences.debugShowRects)
@@ -763,7 +768,7 @@ namespace SonOfRobin
             AnimFrame frame = shadowSprite.frame;
 
             var flatShadowNames = new List<AnimData.PkgName> {
-                AnimData.PkgName.WoodLog, AnimData.PkgName.MineralsBig1, AnimData.PkgName.MineralsBig4, AnimData.PkgName.MineralsSmall1, AnimData.PkgName.Stone1, AnimData.PkgName.Stone2, AnimData.PkgName.WaterRock5, AnimData.PkgName.WoodPlank };
+                AnimData.PkgName.WoodLogRegular, AnimData.PkgName.WoodLogHard, AnimData.PkgName.MineralsBig1, AnimData.PkgName.MineralsBig4, AnimData.PkgName.MineralsSmall1, AnimData.PkgName.Stone, AnimData.PkgName.WaterRock5, AnimData.PkgName.WoodPlank, AnimData.PkgName.IronBar, AnimData.PkgName.Clay, AnimData.PkgName.Hole, AnimData.PkgName.Granite };
 
             bool flatShadow = flatShadowNames.Contains(shadowSprite.boardPiece.sprite.animPackage);
 

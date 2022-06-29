@@ -81,13 +81,18 @@ namespace SonOfRobin
         public void Activate()
         {
             this.isActive = true;
-            this.sprite.currentCell.AddToGroup(sprite: this.sprite, groupName: Cell.Group.LightSource);
+
+            if (!this.sprite.gridGroups.Contains(Cell.Group.LightSource)) this.sprite.gridGroups.Add(Cell.Group.LightSource);
+
+            if (this.sprite.IsOnBoard) this.sprite.currentCell.UpdateGroups(sprite: this.sprite, groupNames: this.sprite.gridGroups);
         }
 
         public void Deactivate()
         {
             this.isActive = false;
-            this.sprite.currentCell.RemoveFromGroup(sprite: this.sprite, groupName: Cell.Group.LightSource);
+
+            if (this.sprite.gridGroups.Contains(Cell.Group.LightSource)) this.sprite.gridGroups.Remove(Cell.Group.LightSource);
+            if (this.sprite.IsOnBoard) this.sprite.currentCell.UpdateGroups(sprite: this.sprite, groupNames: this.sprite.gridGroups);
         }
 
         public Dictionary<string, Object> Serialize()

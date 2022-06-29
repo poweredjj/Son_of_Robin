@@ -161,8 +161,7 @@ namespace SonOfRobin
                 return false;
             }
 
-            piece.sprite.RemoveFromGrid();
-            WorldEvent.RemovePieceFromQueue(world: this.world, pieceToRemove: piece);
+            if (piece.sprite.IsOnBoard) piece.RemoveFromBoard();
             slot.AddPiece(piece);
 
             return true;
@@ -277,20 +276,15 @@ namespace SonOfRobin
             // the piece should fall naturally to places, where player can go to
             piece.sprite.allowedFields = new AllowedFields(rangeNameList: new List<AllowedFields.RangeName> { AllowedFields.RangeName.WaterShallow, AllowedFields.RangeName.WaterMedium, AllowedFields.RangeName.GroundAll });
 
-            bool freeSpotFound = piece.sprite.MoveToClosestFreeSpot(startPosition: this.storagePiece.sprite.position);
-            if (freeSpotFound)
-            {
-                piece.AddToStateMachines();
-                piece.AddPlannedDestruction();
+            piece.PlaceOnBoard(position: this.storagePiece.sprite.position, closestFreeSpot: true);
 
-                if (addMovement)
-                {
-                    Vector2 passiveMovement = (this.storagePiece.sprite.position - piece.sprite.position) * -1 * this.world.random.Next(3, 25);
-                    piece.AddPassiveMovement(movement: passiveMovement);
-                }
+            if (addMovement && piece.sprite.IsOnBoard)
+            {
+                Vector2 passiveMovement = (this.storagePiece.sprite.position - piece.sprite.position) * -1 * this.world.random.Next(3, 25);
+                piece.AddPassiveMovement(movement: passiveMovement);
             }
 
-            return freeSpotFound;
+            return piece.sprite.IsOnBoard;
         }
         public void DestroyBrokenPieces()
         {
@@ -340,7 +334,7 @@ namespace SonOfRobin
                         {
                             if (keepContainers && PieceInfo.GetInfo(pieceName).convertsWhenUsed)
                             {
-                                BoardPiece emptyContainter = PieceTemplate.CreateOffBoard(templateName: PieceInfo.GetInfo(pieceName).convertsToWhenUsed, world: storage.world);
+                                BoardPiece emptyContainter = PieceTemplate.Create(templateName: PieceInfo.GetInfo(pieceName).convertsToWhenUsed, world: storage.world);
                                 slot.DestroyPieceAndReplaceWithAnother(emptyContainter);
                                 break; // this slot should not contain more items of this kind
                             }
@@ -359,7 +353,7 @@ namespace SonOfRobin
             if (quantityLeft.Where(kvp => kvp.Value > 0).ToList().Count != 0) throw new ArgumentException("Not all pieces to destroy were found in multiple storages.");
         }
 
-        public static bool CheckMultipleStoragesForSpecifiedPieces(List<PieceStorage> storageList, Dictionary<PieceTemplate.Name, byte> quantityByPiece)
+        public static Dictionary<PieceTemplate.Name, byte> CheckMultipleStoragesForSpecifiedPieces(List<PieceStorage> storageList, Dictionary<PieceTemplate.Name, byte> quantityByPiece)
         {
             var quantityLeft = quantityByPiece.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 
@@ -378,7 +372,7 @@ namespace SonOfRobin
                 }
             }
 
-            return quantityLeft.Where(kvp => kvp.Value > 0).ToList().Count == 0;
+            return quantityLeft.Where(kvp => kvp.Value > 0).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
         }
 
         public BoardPiece GetFirstPieceOfType(Type type, bool removePiece = false)

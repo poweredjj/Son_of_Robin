@@ -7,10 +7,10 @@ namespace SonOfRobin.WindowsDX
         [STAThread]
         static void Main()
         {
-
             using (var game = new SonOfRobinGame())
             {
                 SonOfRobinGame.platform = Platform.Desktop;
+                SonOfRobinGame.os = OS.Windows;
                 game.Run();
             }
         }

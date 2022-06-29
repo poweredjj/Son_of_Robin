@@ -41,12 +41,11 @@ namespace SonOfRobin
 
         public float MaxMassPercentage { get { return this.Mass / this.maxMass; } }
 
-        public Animal(World world, Vector2 position, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedFields allowedFields, Dictionary<byte, int> maxMassBySize, int mass, int maxMass, byte awareness, bool female, int maxAge, int matureAge, uint pregnancyDuration, byte maxChildren, float maxStamina, int maxHitPoints, ushort sightRange, string readableName, string description, List<PieceTemplate.Name> eats, int strength, float massBurnedMultiplier,
+        public Animal(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedFields allowedFields, Dictionary<byte, int> maxMassBySize, int mass, int maxMass, byte awareness, bool female, int maxAge, int matureAge, uint pregnancyDuration, byte maxChildren, float maxStamina, int maxHitPoints, ushort sightRange, string readableName, string description, List<PieceTemplate.Name> eats, int strength, float massBurnedMultiplier,
             byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = false, int generation = 0, Yield yield = null, bool fadeInAnim = true) :
 
-            base(world: world, position: position, animPackage: animPackage, mass: mass, animSize: animSize, animName: animName, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedFields: allowedFields, floatsOnWater: floatsOnWater, maxMassBySize: maxMassBySize, generation: generation, speed: speed, maxAge: maxAge, maxHitPoints: maxHitPoints, yield: yield, fadeInAnim: fadeInAnim, isShownOnMiniMap: true, readableName: readableName, description: description, staysAfterDeath: 30 * 60, strength: strength, category: Category.Animal)
+            base(world: world, id: id, animPackage: animPackage, mass: mass, animSize: animSize, animName: animName, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedFields: allowedFields, floatsOnWater: floatsOnWater, maxMassBySize: maxMassBySize, generation: generation, speed: speed, maxAge: maxAge, maxHitPoints: maxHitPoints, yield: yield, fadeInAnim: fadeInAnim, isShownOnMiniMap: true, readableName: readableName, description: description, staysAfterDeath: 30 * 60, strength: strength, category: Category.Animal, activeState: State.AnimalAssessSituation)
         {
-            this.activeState = State.AnimalAssessSituation;
             this.target = null;
             this.maxMass = maxMass;
             this.massBurnedMultiplier = massBurnedMultiplier;
@@ -83,7 +82,7 @@ namespace SonOfRobin
             pieceData["animal_pregnancyFramesLeft"] = this.pregnancyFramesLeft;
             pieceData["animal_isPregnant"] = this.isPregnant;
             pieceData["animal_aiData"] = this.aiData;
-            pieceData["animal_target_old_id"] = this.target?.id;
+            pieceData["animal_target_id"] = this.target?.id;
 
             return pieceData;
         }
@@ -287,8 +286,8 @@ namespace SonOfRobin
 
             if (Preferences.debugShowAnimalTargets)
             {
-                BoardPiece crossHair = PieceTemplate.CreateOnBoard(world: world, position: this.target.sprite.position, templateName: PieceTemplate.Name.Crosshair);
-                BoardPiece backlight = PieceTemplate.CreateOnBoard(world: world, position: this.sprite.position, templateName: PieceTemplate.Name.Backlight);
+                BoardPiece crossHair = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: this.target.sprite.position, templateName: PieceTemplate.Name.Crosshair);
+                BoardPiece backlight = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: this.sprite.position, templateName: PieceTemplate.Name.Backlight);
 
                 new Tracking(world: world, targetSprite: this.target.sprite, followingSprite: crossHair.sprite);
                 new Tracking(world: world, targetSprite: this.sprite, followingSprite: backlight.sprite, targetYAlign: YAlign.Bottom);
@@ -334,7 +333,7 @@ namespace SonOfRobin
                     if (this.target.GetType().Equals(typeof(Player)))
                     {
                         if (this.visualAid != null) this.visualAid.Destroy();
-                        this.visualAid = PieceTemplate.CreateOnBoard(world: world, position: this.sprite.position, templateName: PieceTemplate.Name.Exclamation);
+                        this.visualAid = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: this.sprite.position, templateName: PieceTemplate.Name.Exclamation);
                         new Tracking(world: world, targetSprite: this.sprite, followingSprite: this.visualAid.sprite, targetYAlign: YAlign.Top, targetXAlign: XAlign.Left, followingYAlign: YAlign.Bottom, offsetX: 0, offsetY: 5);
 
                         this.world.hintEngine.CheckForPieceHintToShow(forcedMode: true, typesToCheckOnly: new List<PieceHint.Type> { PieceHint.Type.RedExclamation });
@@ -411,7 +410,7 @@ namespace SonOfRobin
             if (this.visualAid == null || this.visualAid.name != PieceTemplate.Name.Zzz)
             {
                 if (this.visualAid != null) this.visualAid.Destroy();
-                this.visualAid = PieceTemplate.CreateOnBoard(world: world, position: this.sprite.position, templateName: PieceTemplate.Name.Zzz);
+                this.visualAid = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: this.sprite.position, templateName: PieceTemplate.Name.Zzz);
                 new Tracking(world: world, targetSprite: this.sprite, followingSprite: this.visualAid.sprite);
             }
 
@@ -535,10 +534,10 @@ namespace SonOfRobin
 
             if (this.world.random.Next(0, attackChance) == 0)
             {
-                BoardPiece attackEffect = PieceTemplate.CreateOnBoard(world: this.world, position: this.target.sprite.position, templateName: PieceTemplate.Name.Attack);
+                BoardPiece attackEffect = PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: this.target.sprite.position, templateName: PieceTemplate.Name.Attack);
                 new Tracking(world: world, targetSprite: this.target.sprite, followingSprite: attackEffect.sprite);
 
-                if (this.world.random.Next(0, 2) == 0) PieceTemplate.CreateOnBoard(world: this.world, position: this.target.sprite.position, templateName: PieceTemplate.Name.BloodSplatter);
+                if (this.world.random.Next(0, 2) == 0) PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: this.target.sprite.position, templateName: PieceTemplate.Name.BloodSplatter);
 
                 if (this.target.yield != null) this.target.yield.DropDebris();
 
@@ -571,7 +570,7 @@ namespace SonOfRobin
             }
             else // if attack had missed
             {
-                BoardPiece miss = PieceTemplate.CreateOnBoard(world: this.world, position: this.target.sprite.position, templateName: PieceTemplate.Name.Miss);
+                BoardPiece miss = PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: this.target.sprite.position, templateName: PieceTemplate.Name.Miss);
                 new Tracking(world: world, targetSprite: this.target.sprite, followingSprite: miss.sprite);
             }
         }
@@ -589,7 +588,7 @@ namespace SonOfRobin
 
             if (this.target.IsAnimalOrPlayer && this.target.yield != null && this.world.random.Next(0, 25) == 0)
             {
-                BoardPiece attackEffect = PieceTemplate.CreateOnBoard(world: this.world, position: this.target.sprite.position, templateName: PieceTemplate.Name.Attack);
+                BoardPiece attackEffect = PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: this.target.sprite.position, templateName: PieceTemplate.Name.Attack);
                 new Tracking(world: this.world, targetSprite: this.target.sprite, followingSprite: attackEffect.sprite);
 
                 this.target.yield.DropDebris();
@@ -613,7 +612,7 @@ namespace SonOfRobin
 
                 if (this.target.IsAnimalOrPlayer && this.target.yield != null)
                 {
-                    PieceTemplate.CreateOnBoard(world: this.world, position: this.target.sprite.position, templateName: PieceTemplate.Name.BloodSplatter);
+                    PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: this.target.sprite.position, templateName: PieceTemplate.Name.BloodSplatter);
                     this.target.yield.DropDebris();
                 }
                 this.target.Destroy();
@@ -650,8 +649,8 @@ namespace SonOfRobin
                 return;
             }
 
-            var heart1 = PieceTemplate.CreateOnBoard(world: world, position: this.sprite.position, templateName: PieceTemplate.Name.Heart);
-            var heart2 = PieceTemplate.CreateOnBoard(world: world, position: animalMate.sprite.position, templateName: PieceTemplate.Name.Heart);
+            var heart1 = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: this.sprite.position, templateName: PieceTemplate.Name.Heart);
+            var heart2 = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: animalMate.sprite.position, templateName: PieceTemplate.Name.Heart);
             new Tracking(world: world, targetSprite: this.sprite, followingSprite: heart1.sprite);
             new Tracking(world: world, targetSprite: animalMate.sprite, followingSprite: heart2.sprite);
 
@@ -688,7 +687,7 @@ namespace SonOfRobin
                 this.pregnancyMass += (uint)convertedFat;
             }
 
-            uint noOfChildren = Convert.ToUInt32(Math.Min(Math.Floor(this.pregnancyMass / this.startingMass), this.maxChildren));
+            uint noOfChildren = (uint)Math.Min(Math.Floor(this.pregnancyMass / this.startingMass), this.maxChildren);
             uint childrenBorn = 0;
 
             for (int i = 0; i < noOfChildren; i++)
@@ -704,13 +703,13 @@ namespace SonOfRobin
                     return;
                 }
 
-                BoardPiece child = PieceTemplate.CreateOnBoard(world: world, position: this.sprite.position, templateName: this.name, generation: this.generation + 1);
-                if (child.sprite.placedCorrectly)
+                BoardPiece child = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: this.sprite.position, templateName: this.name, generation: this.generation + 1);
+                if (child.sprite.IsOnBoard)
                 {
                     childrenBorn++;
                     this.pregnancyMass -= (uint)this.startingMass;
 
-                    var backlight = PieceTemplate.CreateOnBoard(world: world, position: child.sprite.position, templateName: PieceTemplate.Name.Backlight);
+                    var backlight = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: child.sprite.position, templateName: PieceTemplate.Name.Backlight);
                     new Tracking(world: world, targetSprite: child.sprite, followingSprite: backlight.sprite, targetXAlign: XAlign.Center, targetYAlign: YAlign.Center);
                 }
             }

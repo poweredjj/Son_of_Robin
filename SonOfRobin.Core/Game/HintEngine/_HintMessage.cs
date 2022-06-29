@@ -89,7 +89,7 @@ namespace SonOfRobin
                 { "blockInputDuration", this.blockInput ? HintEngine.blockInputDuration : 0}
             };
 
-            return new Scheduler.Task(taskName: Scheduler.TaskName.OpenTextWindow, turnOffInputUntilExecution: true, delay: this.delay, executeHelper: textWindowData, storeForLaterUse: true);
+            return new Scheduler.Task(taskName: Scheduler.TaskName.ShowTextWindow, turnOffInputUntilExecution: true, delay: this.delay, executeHelper: textWindowData, storeForLaterUse: true);
         }
 
         public static List<Object> ConvertToTasks(List<HintMessage> messageList)

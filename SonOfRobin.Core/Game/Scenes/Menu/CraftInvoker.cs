@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SonOfRobin
 {
@@ -159,7 +160,8 @@ namespace SonOfRobin
         private void UpdateInfoText()
         {
             PieceInfo.Info pieceInfo = PieceInfo.GetInfo(recipe.pieceToCreate);
-            bool canBeCrafted = recipe.CheckIfStorageContainsAllIngredients(this.storageList);
+
+            bool canBeCrafted = recipe.CheckIfStorageContainsAllIngredients(storageList);
 
             var entryList = new List<InfoWindow.TextEntry> {
                 new InfoWindow.TextEntry(frame: PieceInfo.GetInfo(recipe.pieceToCreate).frame, text: pieceInfo.readableName, color: Color.White, scale: 1.5f),
@@ -170,7 +172,35 @@ namespace SonOfRobin
                 foreach (BuffEngine.Buff buff in pieceInfo.buffList)
                 { entryList.Add(new InfoWindow.TextEntry(text: buff.description, color: Color.Cyan, scale: 1f)); }
             }
-            if (!canBeCrafted) entryList.Add(new InfoWindow.TextEntry(text: "Not enough ingredients.", color: Color.OrangeRed, scale: 1f));
+            if (!canBeCrafted)
+            {
+                var missingIngredientsList = new List<string>();
+                var quantityMissing = PieceStorage.CheckMultipleStoragesForSpecifiedPieces(storageList: this.storageList, quantityByPiece: recipe.ingredients);
+
+                foreach (var kvp in quantityMissing)
+                {
+                    PieceInfo.Info missingPieceInfo = PieceInfo.GetInfo(kvp.Key);
+                    missingIngredientsList.Add($"{missingPieceInfo.readableName} x{kvp.Value}");
+                }
+
+                var ingredientsLines = new List<string>();
+
+                while (true)
+                {
+                    int messagesAmount = Math.Min(missingIngredientsList.Count, 3);
+                    var tempList = new List<string>();
+                    for (int i = 0; i < messagesAmount; i++)
+                    {
+                        tempList.Add(missingIngredientsList[0]);
+                        missingIngredientsList.RemoveAt(0);
+                    }
+
+                    ingredientsLines.Add(String.Join(", ", tempList));
+                    if (!missingIngredientsList.Any()) break;
+                }
+
+                entryList.Add(new InfoWindow.TextEntry(text: "Missing ingredients:\n" + String.Join(",\n", ingredientsLines), color: Color.DarkOrange, scale: 1f));
+            }
 
             this.infoTextList = entryList;
         }

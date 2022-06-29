@@ -7,7 +7,7 @@ namespace SonOfRobin
 {
     public class Yield
     {
-        public enum DebrisType { Stone, Wood, Leaf, Blood, Plant, Crystal }
+        public enum DebrisType { Stone, Wood, Leaf, Blood, Plant, Crystal, Ceramic }
         public static Dictionary<PieceTemplate.Name, Craft.Recipe> antiCraftRecipes = new Dictionary<PieceTemplate.Name, Craft.Recipe> { };
         public struct DroppedPiece
         {
@@ -64,10 +64,19 @@ namespace SonOfRobin
             this.DropDebris();
         }
 
+        public List<BoardPiece> GetAllPieces()
+        {
+            var firstPieces = this.GetPieces(multiplier: 1f, droppedPieceList: this.firstDroppedPieces);
+            var finalPieces = this.GetPieces(multiplier: 1f, droppedPieceList: this.finalDroppedPieces);
+            return firstPieces.Concat(finalPieces).ToList();
+        }
+
         public void DropDebris()
         {
             if (!this.debrisTypeList.Any()) return; // to speed up
-            if (!Preferences.showDebris || !this.mainPiece.world.camera.viewRect.Contains(this.mainPiece.sprite.position)) return; // debris should not be created off-screen
+
+            // debris should not be created off-screen, or when there is no CPU time left during this update
+            if (!Preferences.showDebris || !this.mainPiece.world.camera.viewRect.Contains(this.mainPiece.sprite.position) || !this.mainPiece.world.CanProcessMoreAnimalsNow) return;
 
             var debrisList = new List<DroppedPiece> { };
 
@@ -95,6 +104,10 @@ namespace SonOfRobin
                         debrisList.Add(new DroppedPiece(pieceName: PieceTemplate.Name.DebrisCrystal, chanceToDrop: 100, maxNumberToDrop: 20));
                         break;
 
+                    case DebrisType.Ceramic:
+                        debrisList.Add(new DroppedPiece(pieceName: PieceTemplate.Name.DebrisCeramic, chanceToDrop: 100, maxNumberToDrop: 20));
+                        break;
+
                     case DebrisType.Blood:
                         debrisList.Add(new DroppedPiece(pieceName: PieceTemplate.Name.BloodDrop, chanceToDrop: 100, maxNumberToDrop: 35));
                         break;
@@ -107,46 +120,60 @@ namespace SonOfRobin
             this.DropPieces(multiplier: 1f, droppedPieceList: debrisList);
         }
 
-        private void DropPieces(float multiplier, List<DroppedPiece> droppedPieceList)
+        private List<BoardPiece> GetPieces(float multiplier, List<DroppedPiece> droppedPieceList)
         {
             int extraDroppedPieces = 0;
-            if (this.mainPiece.GetType() == typeof(Animal))
+            if (this.mainPiece?.GetType() == typeof(Animal))
             {
                 Animal animal = (Animal)this.mainPiece;
                 extraDroppedPieces = (int)(animal.MaxMassPercentage * 2);
             }
 
             World world = World.GetTopWorld(); // do not store world, check it every time (otherwise changing world will make creating pieces impossible)
+            Random random = world == null ? SonOfRobinGame.random : world.random;
 
-            int noOfTries = 10;
+            var piecesList = new List<BoardPiece>();
 
             foreach (DroppedPiece droppedPiece in droppedPieceList)
             {
-                if (world.random.Next(0, 100) <= droppedPiece.chanceToDrop * multiplier)
+                if (random.Next(0, 100) <= droppedPiece.chanceToDrop * multiplier)
                 {
-                    int numberToDrop = world.random.Next(1, droppedPiece.maxNumberToDrop + extraDroppedPieces + 1);
+                    int numberToDrop = random.Next(1, droppedPiece.maxNumberToDrop + extraDroppedPieces + 1);
 
                     for (int i = 0; i < numberToDrop; i++)
                     {
-                        for (int j = 0; j < noOfTries; j++)
-                        {
-                            Sprite.maxDistanceOverride = (j + 1) * 5;
-
-                            BoardPiece yieldPiece = PieceTemplate.CreateOnBoard(world: world, position: this.mainPiece.sprite.position, templateName: droppedPiece.pieceName);
-
-                            if (yieldPiece.sprite.placedCorrectly)
-                            {
-                                yieldPiece.sprite.allowedFields = new AllowedFields(rangeNameList: new List<AllowedFields.RangeName> { AllowedFields.RangeName.WaterShallow, AllowedFields.RangeName.WaterMedium, AllowedFields.RangeName.GroundAll }); // where player can go
-
-                                Vector2 posDiff = Helpers.VectorAbsMax(vector: this.mainPiece.sprite.position - yieldPiece.sprite.position, maxVal: 3f);
-                                yieldPiece.AddPassiveMovement(movement: posDiff * world.random.Next(-100, -20));
-                                break;
-                            }
-                        }
+                        piecesList.Add(PieceTemplate.Create(world: world, templateName: droppedPiece.pieceName));
                     }
                 }
             }
 
+            return piecesList;
+        }
+
+        private void DropPieces(float multiplier, List<DroppedPiece> droppedPieceList)
+        {
+            var piecesToDrop = this.GetPieces(multiplier: multiplier, droppedPieceList: droppedPieceList);
+            int noOfTries = 10;
+
+            foreach (BoardPiece yieldPiece in piecesToDrop)
+            {
+                for (int j = 0; j < noOfTries; j++)
+                {
+                    yieldPiece.PlaceOnBoard(position: this.mainPiece.sprite.position, closestFreeSpot: true);
+
+                    if (yieldPiece.sprite.IsOnBoard)
+                    {
+                        //  MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Yield - {yieldPiece.readableName} ID {yieldPiece.id} dropped.");
+
+                        yieldPiece.sprite.allowedFields = new AllowedFields(rangeNameList: new List<AllowedFields.RangeName> { AllowedFields.RangeName.WaterShallow, AllowedFields.RangeName.WaterMedium, AllowedFields.RangeName.GroundAll }); // where player can go
+
+                        Vector2 posDiff = Helpers.VectorAbsMax(vector: this.mainPiece.sprite.position - yieldPiece.sprite.position, maxVal: 4f);
+                        posDiff += new Vector2(yieldPiece.world.random.Next(-8, 8), yieldPiece.world.random.Next(-8, 8)); // to add a lot of variation
+                        yieldPiece.AddPassiveMovement(movement: posDiff * -1 * yieldPiece.world.random.Next(20, 80));
+                        break;
+                    }
+                }
+            }
         }
 
     }

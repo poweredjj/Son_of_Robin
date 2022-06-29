@@ -203,7 +203,7 @@ namespace SonOfRobin
                     female = (bool)pieceData["animal_female"];
                 }
 
-                var newBoardPiece = PieceTemplate.CreateOffBoard(world: this.storage.world, templateName: templateName, randomSex: randomSex, female: female);
+                var newBoardPiece = PieceTemplate.Create(world: this.storage.world, templateName: templateName, randomSex: randomSex, female: female);
                 newBoardPiece.Deserialize(pieceData);
                 this.pieceList.Add(newBoardPiece);
             }

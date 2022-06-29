@@ -317,27 +317,15 @@ namespace SonOfRobin
 
                 case ContextAction.Plant:
                     {
+                        // plant is "crafted" to allow for planning its position
+
                         Fruit fruit = (Fruit)this.slot.TopPiece;
+                        Player player = fruit.world.player;
 
-                        bool plantedWithSuccess = false;
+                        Craft.Recipe plantRecipe = new Craft.Recipe(pieceToCreate: PieceInfo.GetInfo(fruit.name).isSpawnedBy, ingredients: new Dictionary<PieceTemplate.Name, byte> { { fruit.name, 1 } }, isReversible: false);
 
-                        for (int i = 0; i < 35; i += 5)
-                        {
-                            Sprite.ignoreDensityOverride = true;
-                            Sprite.maxDistanceOverride = i;
-                            BoardPiece newPlantPiece = PieceTemplate.CreateOnBoard(world: fruit.world, position: fruit.world.player.sprite.position, templateName: fruit.spawnerName);
-                            if (newPlantPiece.sprite.placedCorrectly)
-                            {
-                                Plant newPlant = (Plant)newPlantPiece;
-                                newPlant.massTakenMultiplier *= 1.5f; // when the player plants something, it should grow better than normal
-
-                                this.slot.RemoveTopPiece();
-                                plantedWithSuccess = true;
-                                break;
-                            }
-                        }
-
-                        if (!plantedWithSuccess) new TextWindow(text: "I cannot plant it here.", textColor: Color.Black, bgColor: Color.White, useTransition: true, animate: true);
+                        Inventory.SetLayout(newLayout: Inventory.Layout.Toolbar, player: player);
+                        plantRecipe.TryToProducePieces(player: player);
 
                         return;
                     }
