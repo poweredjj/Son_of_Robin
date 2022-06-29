@@ -46,73 +46,38 @@ namespace SonOfRobin
         public static readonly int defaultRepeatThreshold = 35;
         public static readonly int defaultRepeatFrames = 6;
 
-        public enum AnalogType { Empty, PadLeft, PadRight, WASD, Arrows, Numpad, VirtLeft, VirtRight }
+        public enum AnalogType { Empty, PadLeft, PadRight, VirtLeft, VirtRight, FromKeys }
 
         protected readonly static Dictionary<Action, Mapping> detailedMappings = new Dictionary<Action, Mapping>();
 
-        public static readonly MappingPackage defaultMappingGamepad = new MappingPackage(leftStick: AnalogType.PadLeft, rightStick: AnalogType.PadRight, confirm: Buttons.A, cancel: Buttons.B, pauseMenu: Buttons.Start, run: Buttons.B, equip: Buttons.DPadLeft, inventory: Buttons.Y, pickUp: Buttons.X, craft: Buttons.DPadUp, interact: Buttons.A, map: Buttons.DPadRight, useTool: Buttons.RightTrigger, zoomOut: Buttons.LeftTrigger, toolbarPrev: Buttons.LeftShoulder, toolbarNext: Buttons.RightShoulder, pickOne: Buttons.Y, pickStack: Buttons.X);
+        public static readonly InputPackage defaultMappingGamepad = new InputPackage(leftStick: AnalogType.PadLeft, rightStick: AnalogType.PadRight, confirm: Buttons.A, cancel: Buttons.B, pauseMenu: Buttons.Start, run: Buttons.B, equip: Buttons.DPadLeft, inventory: Buttons.Y, pickUp: Buttons.X, craft: Buttons.DPadUp, interact: Buttons.A, map: Buttons.DPadRight, useTool: Buttons.RightTrigger, zoomOut: Buttons.LeftTrigger, toolbarPrev: Buttons.LeftShoulder, toolbarNext: Buttons.RightShoulder, pickOne: Buttons.Y, pickStack: Buttons.X);
 
-        public static readonly MappingPackage defaultMappingKeyboard = new MappingPackage(leftStick: AnalogType.Arrows, rightStick: AnalogType.Empty, confirm: Keys.Enter, cancel: Keys.Escape, pauseMenu: Keys.Back, run: Keys.NumPad0, equip: Keys.E, inventory: Keys.Enter, pickUp: Keys.RightControl, craft: Keys.NumPad5, interact: Keys.RightShift, map: Keys.M, useTool: Keys.Space, zoomOut: Keys.NumPad1, toolbarPrev: Keys.OemOpenBrackets, toolbarNext: Keys.OemCloseBrackets, pickOne: Keys.RightShift, pickStack: Keys.Space);
+        public static readonly InputPackage defaultMappingKeyboard = new InputPackage(leftStick: AnalogType.FromKeys, rightStick: AnalogType.Empty, confirm: Keys.Enter, cancel: Keys.Escape, pauseMenu: Keys.Back, run: Keys.NumPad0, equip: Keys.E, inventory: Keys.Enter, pickUp: Keys.RightControl, craft: Keys.NumPad5, interact: Keys.RightShift, map: Keys.M, useTool: Keys.Space, zoomOut: Keys.NumPad1, toolbarPrev: Keys.OemOpenBrackets, toolbarNext: Keys.OemCloseBrackets, pickOne: Keys.RightShift, pickStack: Keys.Space, left: Keys.Left, right: Keys.Right, up: Keys.Up, down: Keys.Down);
 
-        public static MappingPackage currentMappingGamepad = defaultMappingGamepad.MakeCopy();
-        public static MappingPackage currentMappingKeyboard = defaultMappingKeyboard.MakeCopy();
+        public static InputPackage currentMappingGamepad = defaultMappingGamepad.MakeCopy();
+        public static InputPackage currentMappingKeyboard = defaultMappingKeyboard.MakeCopy();
 
-        public static MappingPackage newMappingGamepad = currentMappingGamepad.MakeCopy();
-        public static MappingPackage newMappingKeyboard = currentMappingKeyboard.MakeCopy();
-
-        public static List<Keys> SplitKeySet(AnalogType analogTypeKeySet)
-        {
-            List<Keys> keyList = new List<Keys>();
-
-            switch (analogTypeKeySet)
-            {
-                case AnalogType.Empty: break;
-                case AnalogType.PadLeft: break;
-                case AnalogType.PadRight: break;
-                case AnalogType.VirtLeft: break;
-                case AnalogType.VirtRight: break;
-
-                case AnalogType.WASD:
-                    keyList = new List<Keys> { Keys.A, Keys.D, Keys.W, Keys.S };
-                    break;
-
-                case AnalogType.Arrows:
-                    keyList = new List<Keys> { Keys.Left, Keys.Right, Keys.Up, Keys.Down };
-                    break;
-
-                case AnalogType.Numpad:
-                    keyList = new List<Keys> { Keys.NumPad4, Keys.NumPad6, Keys.NumPad8, Keys.NumPad2 };
-                    break;
-
-                default: throw new ArgumentException($"Unsupported analogTypeKeySet - '{analogTypeKeySet}'.");
-            }
-
-            return keyList;
-        }
+        public static InputPackage newMappingGamepad = currentMappingGamepad.MakeCopy();
+        public static InputPackage newMappingKeyboard = currentMappingKeyboard.MakeCopy();
 
         public static void RebuildMappings()
         {
             detailedMappings.Clear();
 
-            MappingPackage padMap = currentMappingGamepad;
-            MappingPackage keybMap = currentMappingKeyboard;
-
-            var keySet = SplitKeySet(keybMap.leftStick);
-            Keys keyLeft = keySet[0];
-            Keys keyRight = keySet[1];
-            Keys keyUp = keySet[2];
-            Keys keyDown = keySet[3];
+            InputPackage padMap = currentMappingGamepad;
+            InputPackage keybMap = currentMappingKeyboard;
+            var keysToAnalog = new List<Keys> { (Keys)keybMap.left, (Keys)keybMap.right, (Keys)keybMap.up, (Keys)keybMap.down };
 
             // global
             new Mapping(action: Action.GlobalConfirm, anyInputList: new List<object> { keybMap.confirm, padMap.confirm, VButName.Confirm });
             new Mapping(action: Action.GlobalCancelReturnSkip, anyInputList: new List<object> { keybMap.cancel, padMap.cancel, VButName.Return });
-            new Mapping(action: Action.GlobalLeft, anyInputList: new List<object> { keyLeft, Buttons.DPadLeft }, gamepadAnalogAsDigital: true, repeat: true);
-            new Mapping(action: Action.GlobalRight, anyInputList: new List<object> { keyRight, Buttons.DPadRight }, gamepadAnalogAsDigital: true, repeat: true);
-            new Mapping(action: Action.GlobalUp, anyInputList: new List<object> { keyUp, Buttons.DPadUp }, gamepadAnalogAsDigital: true, repeat: true);
-            new Mapping(action: Action.GlobalDown, anyInputList: new List<object> { keyDown, Buttons.DPadDown }, gamepadAnalogAsDigital: true, repeat: true);
+            new Mapping(action: Action.GlobalLeft, anyInputList: new List<object> { keybMap.left, Buttons.DPadLeft }, gamepadAnalogAsDigital: true, repeat: true);
+            new Mapping(action: Action.GlobalRight, anyInputList: new List<object> { keybMap.right, Buttons.DPadRight }, gamepadAnalogAsDigital: true, repeat: true);
+            new Mapping(action: Action.GlobalUp, anyInputList: new List<object> { keybMap.up, Buttons.DPadUp }, gamepadAnalogAsDigital: true, repeat: true);
+            new Mapping(action: Action.GlobalDown, anyInputList: new List<object> { keybMap.down, Buttons.DPadDown }, gamepadAnalogAsDigital: true, repeat: true);
 
             // world
-            new Mapping(action: Action.WorldWalk, anyInputList: new List<object> { AnalogType.VirtLeft, keybMap.leftStick, padMap.leftStick });
+            new Mapping(action: Action.WorldWalk, anyInputList: new List<object> { AnalogType.VirtLeft, keybMap.leftStick, padMap.leftStick }, keysToAnalog: keysToAnalog);
             new Mapping(action: Action.WorldCameraMove, anyInputList: new List<object> { AnalogType.VirtRight, padMap.rightStick });
             new Mapping(action: Action.WorldPauseMenu, anyInputList: new List<object> { keybMap.pauseMenu, padMap.pauseMenu, VButName.PauseMenu });
             new Mapping(action: Action.WorldRun, anyInputList: new List<object> { keybMap.run, padMap.run, VButName.Run });
@@ -160,7 +125,9 @@ namespace SonOfRobin
             }
 
             if (detailedMappings.Count == 0) return SonOfRobinGame.whiteRectangle;
-            return detailedMappings[action].TextureList[0];
+            var textureList = detailedMappings[action].TextureList;
+            if (textureList.Count == 0) return SonOfRobinGame.whiteRectangle;
+            return textureList[0];
         }
 
         public static bool IsPressed(Action action)
@@ -224,6 +191,7 @@ namespace SonOfRobin
             private readonly List<Buttons> gamepadButtons;
             private readonly List<VButName> virtualButtons;
             private readonly List<AnalogType> analogTypes;
+            private readonly List<Keys> keysToAnalog;
             private readonly Dictionary<int, float> triggerStateForFrame;
             private readonly bool gamepadAnalogAsDigital;
             private readonly bool repeat;
@@ -231,12 +199,13 @@ namespace SonOfRobin
             private readonly int repeatFrames;
             private int buttonHeldCounter;
             private int buttonHeldCurrentFrame; // to avoid multiple increments in one frame
-            public Mapping(Action action, List<Object> anyInputList, bool gamepadAnalogAsDigital = false, bool repeat = false, int repeatThreshold = 0, int repeatFrames = 0)
+            public Mapping(Action action, List<Object> anyInputList, List<Keys> keysToAnalog = null, bool gamepadAnalogAsDigital = false, bool repeat = false, int repeatThreshold = 0, int repeatFrames = 0)
             {
                 this.keyboardKeys = new List<Keys>();
                 this.gamepadButtons = new List<Buttons>();
                 this.virtualButtons = new List<VButName>();
                 this.analogTypes = new List<AnalogType>();
+                this.keysToAnalog = keysToAnalog == null ? new List<Keys>() : keysToAnalog;
 
                 foreach (Object input in anyInputList)
                 {
@@ -361,17 +330,10 @@ namespace SonOfRobin
                                 analogState = TouchInput.RightStick;
                                 break;
 
-                            case AnalogType.Arrows:
-                                analogState = ConvertKeysToAnalog(left: Keys.Left, right: Keys.Right, up: Keys.Up, down: Keys.Down);
+                            case AnalogType.FromKeys:
+                                analogState = ConvertKeysToAnalog(left: this.keysToAnalog[0], right: this.keysToAnalog[1], up: this.keysToAnalog[2], down: this.keysToAnalog[3]);
                                 break;
 
-                            case AnalogType.WASD:
-                                analogState = ConvertKeysToAnalog(left: Keys.A, right: Keys.D, up: Keys.W, down: Keys.S);
-                                break;
-
-                            case AnalogType.Numpad:
-                                analogState = ConvertKeysToAnalog(left: Keys.NumPad4, right: Keys.NumPad6, up: Keys.NumPad8, down: Keys.NumPad2);
-                                break;
 
                             default:
                                 throw new ArgumentException($"Unsupported analogType - '{analogType}'.");
@@ -439,9 +401,7 @@ namespace SonOfRobin
                             foreach (AnalogType analogType in this.analogTypes)
                             {
                                 if (!padAnalogList.Contains(analogType)) continue;
-
-                                Texture2D texture = InputVis.GetTexture(analogType);
-                                if (texture != null) textureList.Add(texture);
+                                textureList.AddRange(InputVis.GetAnalogTextureList(analogType));
                             }
 
                             break;
@@ -450,13 +410,11 @@ namespace SonOfRobin
                             foreach (Keys key in keyboardKeys)
                             { textureList.Add(InputVis.GetTexture(key)); }
 
-                            var keybAnalogList = new List<AnalogType> { AnalogType.WASD, AnalogType.Arrows, AnalogType.Numpad };
+                            var keyboardAnalogList = new List<AnalogType> { AnalogType.FromKeys };
                             foreach (AnalogType analogType in this.analogTypes)
                             {
-                                if (!keybAnalogList.Contains(analogType)) continue;
-
-                                Texture2D texture = InputVis.GetTexture(analogType);
-                                if (texture != null) textureList.Add(texture);
+                                if (!keyboardAnalogList.Contains(analogType)) continue;
+                                textureList.AddRange(InputVis.GetAnalogTextureList(analogType));
                             }
 
                             break;

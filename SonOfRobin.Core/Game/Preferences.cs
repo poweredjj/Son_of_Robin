@@ -437,17 +437,15 @@ namespace SonOfRobin
                     darknessResolution = (int)prefsData["darknessResolution"];
                     drawShadows = (bool)prefsData["drawShadows"];
                     drawSunShadows = (bool)prefsData["drawSunShadows"];
-                    InputMapper.currentMappingGamepad = (MappingPackage)prefsData["currentMappingGamepad"];
-                    InputMapper.currentMappingKeyboard = (MappingPackage)prefsData["currentMappingKeyboard"];
+                    InputMapper.currentMappingGamepad = (InputPackage)prefsData["currentMappingGamepad"];
+                    InputMapper.currentMappingKeyboard = (InputPackage)prefsData["currentMappingKeyboard"];
                     InputMapper.newMappingGamepad = InputMapper.currentMappingGamepad.MakeCopy();
                     InputMapper.newMappingKeyboard = InputMapper.currentMappingKeyboard.MakeCopy();
 
-        prefsLoaded = true;
+                    prefsLoaded = true;
                 }
-                catch (KeyNotFoundException)
-                {
-                    MessageLog.AddMessage(msgType: MsgType.Debug, message: "KeyNotFoundException while loading preferences.", color: Color.White);
-                }
+                catch (KeyNotFoundException) { MessageLog.AddMessage(msgType: MsgType.Debug, message: "KeyNotFoundException while loading preferences.", color: Color.White); }
+                catch (InvalidCastException) { MessageLog.AddMessage(msgType: MsgType.Debug, message: "InvalidCastException while loading preferences.", color: Color.White); }
             }
 
             if (!prefsLoaded)

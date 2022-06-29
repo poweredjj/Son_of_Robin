@@ -722,7 +722,7 @@
 /processorParam:TextureFormat=Color
 /build:gfx/Keyboard/A_Key_Light.png
 
-#begin gfx/Keyboard/Alt_Key_Light.png
+#begin gfx/Keyboard/Alt_Key_L_Light.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -732,7 +732,19 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/Keyboard/Alt_Key_Light.png
+/build:gfx/Keyboard/Alt_Key_L_Light.png
+
+#begin gfx/Keyboard/Alt_Key_R_Light.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/Keyboard/Alt_Key_R_Light.png
 
 #begin gfx/Keyboard/Arrow_Down_Key_Light.png
 /importer:TextureImporter
@@ -782,18 +794,6 @@
 /processorParam:TextureFormat=Color
 /build:gfx/Keyboard/Arrow_Up_Key_Light.png
 
-#begin gfx/Keyboard/arrows_light.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/Keyboard/arrows_light.png
-
 #begin gfx/Keyboard/Asterisk_Key_Light.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -817,6 +817,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:gfx/Keyboard/B_Key_Light.png
+
+#begin gfx/Keyboard/Backslash_Key_Light.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/Keyboard/Backslash_Key_Light.png
 
 #begin gfx/Keyboard/Backspace_Alt_Key_Light.png
 /importer:TextureImporter
@@ -877,18 +889,6 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:gfx/Keyboard/Caps_Lock_Key_Light.png
-
-#begin gfx/Keyboard/Command_Key_Light.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/Keyboard/Command_Key_Light.png
 
 #begin gfx/Keyboard/Ctrl_Key_Light_L.png
 /importer:TextureImporter
@@ -1166,6 +1166,18 @@
 /processorParam:TextureFormat=Color
 /build:gfx/Keyboard/H_Key_Light.png
 
+#begin gfx/Keyboard/Hash_Key_Light.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/Keyboard/Hash_Key_Light.png
+
 #begin gfx/Keyboard/Home_Key_Light.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -1309,18 +1321,6 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:gfx/Keyboard/Num_Lock_Key_Light.png
-
-#begin gfx/Keyboard/numpad_light.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/Keyboard/numpad_light.png
 
 #begin gfx/Keyboard/O_Key_Light.png
 /importer:TextureImporter
@@ -1478,7 +1478,7 @@
 /processorParam:TextureFormat=Color
 /build:gfx/Keyboard/Semicolon_Key_Light.png
 
-#begin gfx/Keyboard/Shift_Alt_Key_Light.png
+#begin gfx/Keyboard/Shift_Key_L_Light.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -1488,9 +1488,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/Keyboard/Shift_Alt_Key_Light.png
+/build:gfx/Keyboard/Shift_Key_L_Light.png
 
-#begin gfx/Keyboard/Shift_Key_Light.png
+#begin gfx/Keyboard/Shift_Key_R_Light.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -1500,7 +1500,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/Keyboard/Shift_Key_Light.png
+/build:gfx/Keyboard/Shift_Key_R_Light.png
 
 #begin gfx/Keyboard/Slash_Key_Light.png
 /importer:TextureImporter
@@ -1597,18 +1597,6 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:gfx/Keyboard/W_Key_Light.png
-
-#begin gfx/Keyboard/wasd_light.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/Keyboard/wasd_light.png
 
 #begin gfx/Keyboard/Win_Key_Light.png
 /importer:TextureImporter

@@ -195,13 +195,7 @@ namespace SonOfRobin
                         menu = new Menu(templateName: templateName, name: "CONFIGURE KEYBOARD", blocksUpdatesBelow: false, canBeClosedManually: true, closingTask: Scheduler.TaskName.SavePrefs);
 
                         Dictionary<object, object> allKeysDict = KeyboardScheme.KeyTextures.ToDictionary(k => (object)k.Key, k => (object)k.Value);
-
-                        var analogSticksList = new List<InputMapper.AnalogType> { InputMapper.AnalogType.Arrows, InputMapper.AnalogType.WASD, InputMapper.AnalogType.Numpad };
-                        var analogSticksDict = new Dictionary<object, object>();
-                        foreach (InputMapper.AnalogType analog in analogSticksList)
-                        { analogSticksDict[analog] = InputVis.GetTexture(analog); }
-
-                        CreateControlsMappingEntries(menu: menu, gamepad: false, analogSticksDict: analogSticksDict, keysOrButtonsDict: allKeysDict);
+                        CreateControlsMappingEntries(menu: menu, gamepad: false, analogSticksDict: null, keysOrButtonsDict: allKeysDict);
 
                         return menu;
                     }
@@ -477,38 +471,49 @@ namespace SonOfRobin
 
         private static void CreateControlsMappingEntries(Menu menu, bool gamepad, Dictionary<object, object> analogSticksDict, Dictionary<object, object> keysOrButtonsDict)
         {
-            MappingPackage newMapping = gamepad ? InputMapper.newMappingGamepad : InputMapper.newMappingKeyboard;
+            InputPackage newMapping = gamepad ? InputMapper.newMappingGamepad : InputMapper.newMappingKeyboard;
 
             new Separator(menu: menu, name: "", isEmpty: true);
             new Separator(menu: menu, name: "general");
-            foreach (string propertyName in new List<string> { "leftStick", "rightStick", })
+
+            bool captureButtons = gamepad;
+            bool captureKeys = !gamepad;
+
+            if (gamepad)
             {
-                if (!gamepad && propertyName == "rightStick") continue;
-                new Selector(menu: menu, name: newMapping.GetReadablePropertyName(propertyName), valueDict: analogSticksDict, targetObj: newMapping, propertyName: propertyName);
+                foreach (string propertyName in new List<string> { "leftStick", "rightStick", })
+                {
+                    new Selector(menu: menu, name: newMapping.GetReadablePropertyName(propertyName), valueDict: analogSticksDict, targetObj: newMapping, propertyName: propertyName);
+                }
+            }
+            else
+            {
+                foreach (string propertyName in new List<string> { "left", "right", "up", "down" })
+                { new Selector(menu: menu, name: newMapping.GetReadablePropertyName(propertyName), valueDict: keysOrButtonsDict, targetObj: newMapping, propertyName: propertyName, captureInput: true, captureKeys: captureKeys, captureButtons: captureButtons); }
             }
 
             foreach (string propertyName in new List<string> { "confirm", "cancel" })
-            { new Selector(menu: menu, name: newMapping.GetReadablePropertyName(propertyName), valueDict: keysOrButtonsDict, targetObj: newMapping, propertyName: propertyName); }
+            { new Selector(menu: menu, name: newMapping.GetReadablePropertyName(propertyName), valueDict: keysOrButtonsDict, targetObj: newMapping, propertyName: propertyName, captureInput: true, captureKeys: captureKeys, captureButtons: captureButtons); }
 
             new Separator(menu: menu, name: "", isEmpty: true);
             new Separator(menu: menu, name: "field");
             foreach (string propertyName in new List<string> { "interact", "useTool", "pickUp", "run", "zoomOut" })
-            { new Selector(menu: menu, name: newMapping.GetReadablePropertyName(propertyName), valueDict: keysOrButtonsDict, targetObj: newMapping, propertyName: propertyName); }
+            { new Selector(menu: menu, name: newMapping.GetReadablePropertyName(propertyName), valueDict: keysOrButtonsDict, targetObj: newMapping, propertyName: propertyName, captureInput: true, captureKeys: captureKeys, captureButtons: captureButtons); }
 
             new Separator(menu: menu, name: "", isEmpty: true);
             new Separator(menu: menu, name: "menus");
             foreach (string propertyName in new List<string> { "pauseMenu", "craft", "equip", "inventory" })
-            { new Selector(menu: menu, name: newMapping.GetReadablePropertyName(propertyName), valueDict: keysOrButtonsDict, targetObj: newMapping, propertyName: propertyName); }
+            { new Selector(menu: menu, name: newMapping.GetReadablePropertyName(propertyName), valueDict: keysOrButtonsDict, targetObj: newMapping, propertyName: propertyName, captureInput: true, captureKeys: captureKeys, captureButtons: captureButtons); }
 
             new Separator(menu: menu, name: "", isEmpty: true);
             new Separator(menu: menu, name: "inventory");
             foreach (string propertyName in new List<string> { "pickOne", "pickStack", })
-            { new Selector(menu: menu, name: newMapping.GetReadablePropertyName(propertyName), valueDict: keysOrButtonsDict, targetObj: newMapping, propertyName: propertyName); }
+            { new Selector(menu: menu, name: newMapping.GetReadablePropertyName(propertyName), valueDict: keysOrButtonsDict, targetObj: newMapping, propertyName: propertyName, captureInput: true, captureKeys: captureKeys, captureButtons: captureButtons); }
 
             new Separator(menu: menu, name: "", isEmpty: true);
             new Separator(menu: menu, name: "toolbar");
             foreach (string propertyName in new List<string> { "toolbarPrev", "toolbarNext", })
-            { new Selector(menu: menu, name: newMapping.GetReadablePropertyName(propertyName), valueDict: keysOrButtonsDict, targetObj: newMapping, propertyName: propertyName); }
+            { new Selector(menu: menu, name: newMapping.GetReadablePropertyName(propertyName), valueDict: keysOrButtonsDict, targetObj: newMapping, propertyName: propertyName, captureInput: true, captureKeys: captureKeys, captureButtons: captureButtons); }
 
             new Separator(menu: menu, name: "", isEmpty: true);
 

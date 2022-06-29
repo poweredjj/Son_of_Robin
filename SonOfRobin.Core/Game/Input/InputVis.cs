@@ -13,100 +13,85 @@ namespace SonOfRobin
         public static Texture2D leftStick = null;
         public static Texture2D rightStick = null;
         public static Texture2D dPad = null;
-        public static readonly Texture2D wasd = SonOfRobinGame.content.Load<Texture2D>("gfx/Keyboard/wasd_light");
-        public static readonly Texture2D arrows = SonOfRobinGame.content.Load<Texture2D>("gfx/Keyboard/arrows_light");
-        public static readonly Texture2D numpad = SonOfRobinGame.content.Load<Texture2D>("gfx/Keyboard/numpad_light");
 
         public static List<Texture2D> LeftStickTextureList
         {
             get
             {
-                var leftStickTexture = LeftStickTexture;
-                if (leftStickTexture == null) return new List<Texture2D>();
-                return new List<Texture2D> { LeftStickTexture };
+                switch (Input.tipsTypeToShow)
+                {
+                    case Input.TipsTypeToShow.Gamepad:
+                        return GetAnalogTextureList(InputMapper.currentMappingGamepad.leftStick);
+                    case Input.TipsTypeToShow.Keyboard:
+                        return GetAnalogTextureList(InputMapper.currentMappingKeyboard.leftStick);
+                    default:
+                        throw new ArgumentException($"Unsupported tipsTypeToShow - '{Input.tipsTypeToShow}'.");
+                }
             }
         }
-
         public static List<Texture2D> RightStickTextureList
         {
             get
             {
-                var rightStickTexture = RightStickTexture;
-                if (rightStickTexture == null) return new List<Texture2D>();
-                return new List<Texture2D> { RightStickTexture };
-            }
-        }
-
-        public static Texture2D LeftStickTexture
-        {
-            get
-            {
                 switch (Input.tipsTypeToShow)
                 {
                     case Input.TipsTypeToShow.Gamepad:
-                        return GetTexture(InputMapper.currentMappingGamepad.leftStick);
+                        return GetAnalogTextureList(InputMapper.currentMappingGamepad.rightStick);
                     case Input.TipsTypeToShow.Keyboard:
-                        return GetTexture(InputMapper.currentMappingKeyboard.leftStick);
-                    default:
-                        throw new ArgumentException($"Unsupported tipsTypeToShow - '{Input.tipsTypeToShow}'.");
-                }
-            }
-        }
-        public static Texture2D RightStickTexture
-        {
-            get
-            {
-                switch (Input.tipsTypeToShow)
-                {
-                    case Input.TipsTypeToShow.Gamepad:
-                        return GetTexture(InputMapper.currentMappingGamepad.rightStick);
-                    case Input.TipsTypeToShow.Keyboard:
-                        return GetTexture(InputMapper.currentMappingGamepad.rightStick);
+                        return GetAnalogTextureList(InputMapper.currentMappingKeyboard.rightStick);
                     default:
                         throw new ArgumentException($"Unsupported tipsTypeToShow - '{Input.tipsTypeToShow}'.");
                 }
             }
         }
 
-        public static Texture2D GetTexture(object freeType)
+        public static Texture2D GetTexture(object anyType)
         {
-            if (freeType.GetType() == typeof(InputMapper.AnalogType)) return GetTexture((InputMapper.AnalogType)freeType);
-            else if (freeType.GetType() == typeof(Keys)) return GetTexture((Keys)freeType);
-            else if (freeType.GetType() == typeof(Buttons)) return GetTexture((Buttons)freeType);
-            else throw new ArgumentException($"Unsupported freeType - '{freeType.GetType()}'.");
+            if (anyType.GetType() == typeof(InputMapper.AnalogType))
+            {
+                var analogTextureList = GetAnalogTextureList((InputMapper.AnalogType)anyType);
+                return analogTextureList.Count == 0 ? null : analogTextureList[0];
+            }
+            else if (anyType.GetType() == typeof(Keys)) return GetTexture((Keys)anyType);
+            else if (anyType.GetType() == typeof(Buttons)) return GetTexture((Buttons)anyType);
+            else throw new ArgumentException($"Unsupported anyType - '{anyType.GetType()}'.");
         }
 
-        public static Texture2D GetTexture(InputMapper.AnalogType analogType)
+        public static List<Texture2D> GetAnalogTextureList(InputMapper.AnalogType analogType)
         {
+            var textureList = new List<Texture2D>();
+
             switch (analogType)
             {
                 case InputMapper.AnalogType.Empty:
-                    return null;
+                    break;
 
                 case InputMapper.AnalogType.PadLeft:
-                    return leftStick;
+                    textureList.Add(leftStick);
+                    break;
 
                 case InputMapper.AnalogType.PadRight:
-                    return rightStick;
-
-                case InputMapper.AnalogType.WASD:
-                    return wasd;
-
-                case InputMapper.AnalogType.Arrows:
-                    return arrows;
-
-                case InputMapper.AnalogType.Numpad:
-                    return numpad;
+                    textureList.Add(rightStick);
+                    break;
 
                 case InputMapper.AnalogType.VirtLeft:
-                    return null;
+                    break;
 
                 case InputMapper.AnalogType.VirtRight:
-                    return null;
+                    break;
+
+                case InputMapper.AnalogType.FromKeys:
+                    textureList.Add(GetTexture(InputMapper.currentMappingKeyboard.left));
+                    textureList.Add(GetTexture(InputMapper.currentMappingKeyboard.right));
+                    textureList.Add(GetTexture(InputMapper.currentMappingKeyboard.up));
+                    textureList.Add(GetTexture(InputMapper.currentMappingKeyboard.down));
+                    break;
 
                 default:
                     throw new ArgumentException($"Unsupported analogType - '{analogType}'.");
             }
+
+            return textureList;
         }
 
         public static Texture2D GetTexture(Keys key)

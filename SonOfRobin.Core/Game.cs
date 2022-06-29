@@ -13,7 +13,7 @@ namespace SonOfRobin
 
     public class SonOfRobinGame : Game
     {
-        public static readonly float version = 8.1f;
+        public static readonly float version = 8.2f;
         public static readonly DateTime lastChanged = new DateTime(2022, 04, 26);
 
         public static ContentManager content;

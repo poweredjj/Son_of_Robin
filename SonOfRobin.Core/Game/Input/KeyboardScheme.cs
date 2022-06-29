@@ -78,7 +78,9 @@ namespace SonOfRobin
             {Keys.NumPad8, "8_Key_Light"},
             {Keys.NumPad9, "9_Key_Light"},
             {Keys.Multiply, "Asterisk_Key_Light"},
-            {Keys.Add, "Plus_Key_Light"},
+            {Keys.Divide, "Slash_Key_Light"},
+            {Keys.OemPipe, "Hash_Key_Light"},
+            {Keys.Add, "Plus_Tall_Key_Light"},
             {Keys.Subtract, "Minus_Key_Light"},
             {Keys.F1, "F1_Key_Light"},
             {Keys.F2, "F2_Key_Light"},
@@ -93,14 +95,14 @@ namespace SonOfRobin
             {Keys.F11, "F11_Key_Light"},
             {Keys.F12, "F12_Key_Light"},
             {Keys.NumLock, "Num_Lock_Key_Light"},
-            {Keys.LeftShift, "Shift_Key_Light"},
-            {Keys.RightShift, "Shift_Alt_Key_Light"},
+            {Keys.LeftShift, "Shift_Key_L_Light"},
+            {Keys.RightShift, "Shift_Key_R_Light"},
             {Keys.LeftControl, "Ctrl_Key_Light_L"},
             {Keys.RightControl, "Ctrl_Key_Light_R"},
-            {Keys.LeftAlt, "Alt_Key_Light"},
-            {Keys.RightAlt, "Alt_Key_Light"},
+            {Keys.LeftAlt, "Alt_Key_L_Light"},
+            {Keys.RightAlt, "Alt_Key_R_Light"}, // under Windows, right alt is being recognized as left control + left alt
             {Keys.OemSemicolon, "Semicolon_Key_Light"},
-            {Keys.OemPlus, "Plus_Tall_Key_Light"},
+            {Keys.OemPlus, "Plus_Key_Light"},
             {Keys.OemComma, "Mark_Left_Key_Light"},
             {Keys.OemPeriod, "Mark_Right_Key_Light"},
             {Keys.OemMinus, "Minus_Key_Light"},
@@ -109,7 +111,7 @@ namespace SonOfRobin
             {Keys.OemOpenBrackets, "Bracket_Left_Key_Light"},
             {Keys.OemCloseBrackets, "Bracket_Right_Key_Light"},
             {Keys.OemQuotes, "Quote_Key_Light"},
-            {Keys.OemBackslash, "Slash_Key_Light"}
+            {Keys.OemBackslash, "Backslash_Key_Light"}
         };
 
         public static void LoadAllKeys()

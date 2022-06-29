@@ -26,7 +26,7 @@ namespace SonOfRobin
             new Scheduler.Task(menu: this.menu, taskName: this.taskName, executeHelper: this.executeHelper, rebuildsMenu: rebuildsMenu, delay: 0);
         }
 
-        public override void Draw(bool active)
+        public override void Draw(bool active, string textOverride = null)
         {
             if (active) this.UpdateHintWindow();
             base.Draw(active);

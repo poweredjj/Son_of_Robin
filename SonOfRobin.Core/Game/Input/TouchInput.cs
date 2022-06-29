@@ -14,6 +14,7 @@ namespace SonOfRobin
         MenuRightReturn,
         MenuMiddleReturn,
         MenuLeftReturn,
+        CaptureInputCancel,
         WorldMain,
         WorldShoot,
         WorldSleep,
@@ -239,6 +240,17 @@ namespace SonOfRobin
                         float xPos = 0.06f;
                         float yPos = 0.85f;
                         new VirtButton(name: VButName.Return, label: "RETURN", bgColorPressed: Color.LightGreen, bgColorReleased: Color.White, textColor: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
+
+                        return;
+                    }
+
+                case TouchLayout.CaptureInputCancel:
+                    {
+                        showSticks = false;
+
+                        float xPos = 0.06f;
+                        float yPos = 0.85f;
+                        new VirtButton(name: VButName.Return, label: "CANCEL\nINPUT", bgColorPressed: Color.LightGreen, bgColorReleased: Color.White, textColor: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
 
                         return;
                     }

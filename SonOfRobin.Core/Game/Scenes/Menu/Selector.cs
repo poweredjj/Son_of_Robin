@@ -13,7 +13,11 @@ namespace SonOfRobin
         private int activeIndex;
         private readonly Object targetObj;
         private readonly string propertyName;
+        private readonly bool captureInput;
+        private readonly bool captureButtons;
+        private readonly bool captureKeys;
 
+        private bool captureModeActive;
         private Object ActiveName
         { get { return valueDict.Values.ToList()[activeIndex]; } }
         private Object ActiveValue { get { return valueDict.Keys.ToList()[activeIndex]; } }
@@ -21,7 +25,7 @@ namespace SonOfRobin
 
         public override string DisplayedText { get { return $"{this.name}   < {this.ActiveName} >"; } }
 
-        public Selector(Menu menu, string name, List<Object> valueList, Object targetObj, string propertyName, bool rebuildsMenu = false, List<InfoWindow.TextEntry> infoTextList = null, bool rebuildsMenuInstantScroll = false) : base(menu: menu, name: name, rebuildsMenu: rebuildsMenu, infoTextList: infoTextList, rebuildsMenuInstantScroll: rebuildsMenuInstantScroll)
+        public Selector(Menu menu, string name, List<Object> valueList, Object targetObj, string propertyName, bool rebuildsMenu = false, List<InfoWindow.TextEntry> infoTextList = null, bool rebuildsMenuInstantScroll = false, bool captureInput = false, bool captureButtons = false, bool captureKeys = false) : base(menu: menu, name: name, rebuildsMenu: rebuildsMenu, infoTextList: infoTextList, rebuildsMenuInstantScroll: rebuildsMenuInstantScroll)
         {
             this.targetObj = targetObj;
             this.propertyName = propertyName;
@@ -30,15 +34,27 @@ namespace SonOfRobin
             foreach (var value in valueList)
             { valueDict[value] = value; }
 
+            this.captureInput = captureInput;
+            this.captureButtons = captureButtons;
+            this.captureKeys = captureKeys;
+            if (this.captureInput && !this.captureButtons && !this.captureKeys) throw new ArgumentException("No input could be captured.");
+            this.captureModeActive = false;
+
             this.CompleteCreation();
         }
 
-        public Selector(Menu menu, string name, Dictionary<object, object> valueDict, Object targetObj, string propertyName, bool rebuildsMenu = false, bool rebuildsMenuInstantScroll = false, List<InfoWindow.TextEntry> infoTextList = null) : base(menu: menu, name: name, rebuildsMenu: rebuildsMenu, rebuildsMenuInstantScroll: rebuildsMenuInstantScroll, infoTextList: infoTextList)
+        public Selector(Menu menu, string name, Dictionary<object, object> valueDict, Object targetObj, string propertyName, bool rebuildsMenu = false, bool rebuildsMenuInstantScroll = false, List<InfoWindow.TextEntry> infoTextList = null, bool captureInput = false, bool captureButtons = false, bool captureKeys = false) : base(menu: menu, name: name, rebuildsMenu: rebuildsMenu, rebuildsMenuInstantScroll: rebuildsMenuInstantScroll, infoTextList: infoTextList)
         {
             this.targetObj = targetObj;
             this.propertyName = propertyName;
 
             this.valueDict = valueDict;
+
+            this.captureInput = captureInput;
+            this.captureButtons = captureButtons;
+            this.captureKeys = captureKeys;
+            if (this.captureInput && !this.captureButtons && !this.captureKeys) throw new ArgumentException("No input could be captured.");
+            this.captureModeActive = false;
 
             this.CompleteCreation();
         }
@@ -91,8 +107,30 @@ namespace SonOfRobin
             this.SetNewValueToTargetObject();
         }
 
-        public override void Draw(bool active)
+        public override void Invoke()
         {
+            if (!this.captureInput) return;
+            this.captureModeActive = true;
+            new InputGrabber(targetObj: this.targetObj, targetPropertyName: this.propertyName, grabButtons: this.captureButtons, grabKeys: this.captureKeys);
+        }
+
+        public override void Draw(bool active, string textOverride = null)
+        {
+            if (this.captureModeActive)
+            {
+                if (InputGrabber.GrabberIsActive)
+                {
+                    string buttonOrKey = this.captureKeys ? "KEY" : "BUTTON";
+                    base.Draw(active: active, textOverride: $"{this.name}   < PRESS {buttonOrKey} >");
+                    return;
+                }
+                else
+                {
+                    this.menu.Rebuild(instantScroll: false);
+                    return;
+                }
+            }
+
             if (active) this.UpdateHintWindow();
 
             if (!this.ActiveNameIsTexture)
@@ -138,7 +176,6 @@ namespace SonOfRobin
 
             float textureHeightAfterScale = (float)texture.Height * textureScale;
             float textHeightAfterScale = Math.Max(textLeftSize.Y * textScale, textRightSize.Y * textScale);
-
 
             Vector2 leftTextPos = new Vector2(
                 rect.Center.X - (fullWidthAfterScale / 2),
@@ -189,6 +226,5 @@ namespace SonOfRobin
                 }
             }
         }
-
     }
 }

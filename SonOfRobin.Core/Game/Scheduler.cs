@@ -487,7 +487,7 @@ namespace SonOfRobin
                         {
                             bool gamepad = (bool)executeHelper;
 
-                            MappingPackage newMapping = gamepad ? InputMapper.newMappingGamepad : InputMapper.newMappingKeyboard;
+                            InputPackage newMapping = gamepad ? InputMapper.newMappingGamepad : InputMapper.newMappingKeyboard;
 
                             bool isValid = newMapping.Validate(gamepad: gamepad);
                             if (!isValid) return;

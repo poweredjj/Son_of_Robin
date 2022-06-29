@@ -114,7 +114,7 @@ namespace SonOfRobin
             return opacity;
         }
 
-        public virtual void Draw(bool active)
+        public virtual void Draw(bool active, string textOverride = null)
         {
             float opacity = this.GetOpacity(active: active);
             float opacityFade = this.OpacityFade;
@@ -122,9 +122,11 @@ namespace SonOfRobin
 
             if (active || opacityFade > 0) SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, rect, this.rectColor * opacityFade * 2);
 
+            string text = textOverride != null ? textOverride : this.DisplayedText;
+
             Helpers.DrawRectangleOutline(rect: this.Rect, color: this.outlineColor, borderWidth: 2);
 
-            Vector2 textSize = font.MeasureString(this.DisplayedText);
+            Vector2 textSize = font.MeasureString(text);
 
             float maxTextHeight = rect.Height * 0.6f;
             float maxTextWidth = rect.Width * 0.85f;
@@ -135,7 +137,7 @@ namespace SonOfRobin
                 rect.Center.X - (textSize.X / 2 * textScale),
                 rect.Center.Y - (textSize.Y / 2 * textScale));
 
-            SonOfRobinGame.spriteBatch.DrawString(font, this.DisplayedText, position: textPos, color: this.textColor * opacity * menu.viewParams.Opacity, origin: Vector2.Zero, scale: textScale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
+            SonOfRobinGame.spriteBatch.DrawString(font, text, position: textPos, color: this.textColor * opacity * menu.viewParams.Opacity, origin: Vector2.Zero, scale: textScale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
         }
 
         protected void UpdateHintWindow()

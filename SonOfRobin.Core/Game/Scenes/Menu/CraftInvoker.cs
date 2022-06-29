@@ -55,7 +55,7 @@ namespace SonOfRobin
             base.Invoke();
         }
 
-        public override void Draw(bool active)
+        public override void Draw(bool active, string textOverride = null)
         {
             bool canBeCrafted = recipe.CheckIfStorageContainsAllIngredients(storageList);
 

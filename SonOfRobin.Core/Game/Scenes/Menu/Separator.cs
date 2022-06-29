@@ -14,7 +14,7 @@ namespace SonOfRobin
             this.isEmpty = isEmpty;
         }
 
-        public override void Draw(bool active)
+        public override void Draw(bool active, string textOverride = null)
         {
             if (!isEmpty) base.Draw(active: true);
         }

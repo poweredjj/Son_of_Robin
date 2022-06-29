@@ -7,7 +7,7 @@ using System.Linq;
 namespace SonOfRobin
 {
     [Serializable]
-    public class MappingPackage
+    public class InputPackage
     {
         private static readonly Dictionary<string, string> readablePropertyNames = new Dictionary<string, string>
             {
@@ -37,10 +37,10 @@ namespace SonOfRobin
         public InputMapper.AnalogType leftStick;
         public InputMapper.AnalogType rightStick;
 
-        public object left; // used only for validation
-        public object right; // used only for validation
-        public object up; // used only for validation
-        public object down; // used only for validation
+        public object left;
+        public object right;
+        public object up;
+        public object down;
         public object confirm;
         public object cancel;
         public object pauseMenu;
@@ -57,19 +57,15 @@ namespace SonOfRobin
         public object toolbarNext;
         public object pickOne;
         public object pickStack;
-        public MappingPackage(InputMapper.AnalogType leftStick, InputMapper.AnalogType rightStick, object confirm, object cancel, object pauseMenu, object run, object equip, object inventory, object pickUp, object craft, object interact, object map, object useTool, object zoomOut, object toolbarPrev, object toolbarNext, object pickOne, object pickStack)
+        public InputPackage(InputMapper.AnalogType leftStick, InputMapper.AnalogType rightStick, object confirm, object cancel, object pauseMenu, object run, object equip, object inventory, object pickUp, object craft, object interact, object map, object useTool, object zoomOut, object toolbarPrev, object toolbarNext, object pickOne, object pickStack, object left = null, object right = null, object up = null, object down = null)
         {
             this.leftStick = leftStick;
             this.rightStick = rightStick;
 
-            var directionKeys = InputMapper.SplitKeySet(this.leftStick);
-            if (directionKeys.Count > 0)
-            {
-                this.left = directionKeys[0];
-                this.right = directionKeys[1];
-                this.up = directionKeys[2];
-                this.down = directionKeys[3];
-            }
+            this.left = left;
+            this.right = right;
+            this.up = up;
+            this.down = down;
             this.confirm = confirm;
             this.cancel = cancel;
             this.pauseMenu = pauseMenu;
@@ -93,9 +89,9 @@ namespace SonOfRobin
             return readablePropertyNames[propertyName];
         }
 
-        public MappingPackage MakeCopy()
+        public InputPackage MakeCopy()
         {
-            return new MappingPackage(leftStick: this.leftStick, rightStick: this.rightStick, confirm: this.confirm, cancel: this.cancel, pauseMenu: this.pauseMenu, run: this.run, equip: this.equip, inventory: this.inventory, pickUp: this.pickUp, craft: this.craft, interact: this.interact, map: this.map, useTool: this.useTool, zoomOut: this.zoomOut, toolbarPrev: this.toolbarPrev, toolbarNext: this.toolbarNext, pickOne: this.pickOne, pickStack: this.pickStack);
+            return new InputPackage(leftStick: this.leftStick, rightStick: this.rightStick, confirm: this.confirm, cancel: this.cancel, pauseMenu: this.pauseMenu, run: this.run, equip: this.equip, inventory: this.inventory, pickUp: this.pickUp, craft: this.craft, interact: this.interact, map: this.map, useTool: this.useTool, zoomOut: this.zoomOut, toolbarPrev: this.toolbarPrev, toolbarNext: this.toolbarNext, pickOne: this.pickOne, pickStack: this.pickStack, left: left, right: right, up: up, down: down);
         }
 
         public bool Validate(bool gamepad)
