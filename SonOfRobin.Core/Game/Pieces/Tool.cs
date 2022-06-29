@@ -112,6 +112,11 @@ namespace SonOfRobin
                             this.world.hintEngine.Disable(Tutorials.Type.Mine);
                             break;
 
+                        case Category.Crystal:
+                            this.world.hintEngine.Disable(PieceHint.Type.CrystalNegative);
+                            this.world.hintEngine.Disable(PieceHint.Type.CrystalPositive);
+                            break;
+
                         case Category.Metal:
                             break;
 
@@ -239,7 +244,7 @@ namespace SonOfRobin
                     var movement = (attacker.sprite.position - animalTarget.sprite.position) * targetPushMultiplier * -0.5f * hitPower;
                     animalTarget.AddPassiveMovement(movement: Helpers.VectorAbsMax(vector: movement, maxVal: 400f));
 
-                    animalTarget.buffEngine.AddBuff(world: attacker.world, buff: new BuffEngine.Buff(world: world, type: BuffEngine.BuffType.Speed, value: -animalTarget.speed / 2, autoRemoveDelay: 180, isPositive: false)); // animal will be slower for a while
+                    animalTarget.buffEngine.AddBuff(world: attacker.world, buff: new BuffEngine.Buff(world: world, type: BuffEngine.BuffType.Speed, value: -animalTarget.speed / 2, autoRemoveDelay: 180)); // animal will be slower for a while
                 }
             }
         }

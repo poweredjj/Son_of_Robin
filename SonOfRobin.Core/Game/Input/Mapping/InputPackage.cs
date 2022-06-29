@@ -9,7 +9,7 @@ namespace SonOfRobin
     [Serializable]
     public class InputPackage
     {
-        public static readonly float version = 1.01f;
+        public static readonly float version = 1.02f;
 
         private static readonly Dictionary<string, string> readablePropertyNames = new Dictionary<string, string>
             {
@@ -24,7 +24,7 @@ namespace SonOfRobin
                 {"interact", "interact"},
                 {"useTool", "use tool"},
                 {"pickUp", "pick up"},
-                {"run", "run"},
+                {"sprint", "sprint"},
                 {"zoomOut", "zoom out"},
                 {"pauseMenu", "open pause"},
                 {"craft", "open craft"},
@@ -49,7 +49,7 @@ namespace SonOfRobin
         public object confirm;
         public object cancel;
         public object pauseMenu;
-        public object run;
+        public object sprint;
         public object equip;
         public object inventory;
         public object pickUp;
@@ -65,7 +65,7 @@ namespace SonOfRobin
         public object pickStack;
 
         public bool IsObsolete { get { return this.packageVersion != version; } }
-        public InputPackage(float packageVersion, InputMapper.AnalogType leftStick, InputMapper.AnalogType rightStick, object confirm, object cancel, object pauseMenu, object run, object equip, object inventory, object pickUp, object craft, object interact, object map, object useTool, object zoomOut, object toolbarPrev, object invSwitch, object toolbarNext, object pickOne, object pickStack, object left = null, object right = null, object up = null, object down = null)
+        public InputPackage(float packageVersion, InputMapper.AnalogType leftStick, InputMapper.AnalogType rightStick, object confirm, object cancel, object pauseMenu, object sprint, object equip, object inventory, object pickUp, object craft, object interact, object map, object useTool, object zoomOut, object toolbarPrev, object invSwitch, object toolbarNext, object pickOne, object pickStack, object left = null, object right = null, object up = null, object down = null)
         {
             this.packageVersion = version;
 
@@ -79,7 +79,7 @@ namespace SonOfRobin
             this.confirm = confirm;
             this.cancel = cancel;
             this.pauseMenu = pauseMenu;
-            this.run = run;
+            this.sprint = sprint;
             this.equip = equip;
             this.inventory = inventory;
             this.craft = craft;
@@ -109,7 +109,7 @@ namespace SonOfRobin
                 confirm: this.confirm,
                 cancel: this.cancel,
                 pauseMenu: this.pauseMenu,
-                run: this.run,
+                sprint: this.sprint,
                 equip: this.equip,
                 inventory: this.inventory,
                 pickUp: this.pickUp,
@@ -138,7 +138,7 @@ namespace SonOfRobin
                 this.confirm == inputPackage.confirm &&
                 this.cancel == inputPackage.cancel &&
                 this.pauseMenu == inputPackage.pauseMenu &&
-                this.run == inputPackage.run &&
+                this.sprint == inputPackage.sprint &&
                 this.equip == inputPackage.equip &&
                 this.inventory == inputPackage.inventory &&
                 this.pickUp == inputPackage.pickUp &&
@@ -165,7 +165,7 @@ namespace SonOfRobin
             List<List<string>> groupsToCheck = new List<List<string>> {
                 { new List<string> { "leftStick", "rightStick" } }, // sticks
                 { new List<string> { "confirm", "cancel", "left", "right", "up", "down", "pauseMenu"} }, // general
-                { new List<string> { "interact", "pickUp", "run", "useTool", "zoomOut", "toolbarPrev", "toolbarNext", "pauseMenu", "equip", "inventory", "craft", "map" } }, // field
+                { new List<string> { "interact", "pickUp", "sprint", "useTool", "zoomOut", "toolbarPrev", "toolbarNext", "pauseMenu", "equip", "inventory", "craft", "map" } }, // field
                 { new List<string> { "invSwitch", "pickOne", "pickStack", "confirm", "cancel", "left", "right", "up", "down" } }, // inventory
             };
 

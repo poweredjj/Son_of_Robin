@@ -398,14 +398,21 @@ namespace SonOfRobin
                         Menu menu = new Menu(templateName: templateName, name: "CREATE ANY ITEM", blocksUpdatesBelow: false, canBeClosedManually: true);
                         World world = World.GetTopWorld();
                         if (world == null) return menu;
+                        var pieceCounterDict = new Dictionary<PieceTemplate.Name, int> { };
 
                         foreach (PieceTemplate.Name pieceName in (PieceTemplate.Name[])Enum.GetValues(typeof(PieceTemplate.Name)))
+                        { pieceCounterDict[pieceName] = 0; }
+
+                        foreach (Sprite sprite in world.grid.GetAllSprites(Cell.Group.ColAll))
+                        { pieceCounterDict[sprite.boardPiece.name]++; }
+
+                        foreach (PieceTemplate.Name pieceName in pieceCounterDict.Keys)
                         {
                             if (pieceName == PieceTemplate.Name.Player || pieceName == PieceTemplate.Name.PlayerGhost) continue;
 
                             Dictionary<string, Object> createData = new Dictionary<string, Object> { { "position", world.player.sprite.position }, { "templateName", pieceName } };
 
-                            new Invoker(menu: menu, name: $"{PieceInfo.info[pieceName].readableName}", taskName: Scheduler.TaskName.CreateDebugPieces, createData);
+                            new Invoker(menu: menu, name: $"{PieceInfo.info[pieceName].readableName} ({pieceCounterDict[pieceName]})", taskName: Scheduler.TaskName.CreateDebugPieces, createData, rebuildsMenu: true);
                         }
 
                         new Separator(menu: menu, name: "", isEmpty: true);
@@ -420,7 +427,7 @@ namespace SonOfRobin
 
                         World world = World.GetTopWorld();
 
-                        new Selector(menu: menu, name: "debug mode", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "DebugMode", rebuildsMenu: true);
+                        new Selector(menu: menu, name: "debug mode", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "DebugMode", rebuildsAllMenus: true);
 
                         if (world != null && !world.demoMode) new Invoker(menu: menu, name: "create any piece", taskName: Scheduler.TaskName.OpenMenuTemplate, executeHelper: new Dictionary<string, Object> { { "templateName", Name.CreateAnyPiece } });
                         new Selector(menu: menu, name: "save everywhere", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugSaveEverywhere", rebuildsAllMenus: true);
@@ -570,7 +577,7 @@ namespace SonOfRobin
 
             new Separator(menu: menu, name: "", isEmpty: true);
             new Separator(menu: menu, name: "field");
-            foreach (string propertyName in new List<string> { "interact", "useTool", "pickUp", "run", "zoomOut" })
+            foreach (string propertyName in new List<string> { "interact", "useTool", "pickUp", "sprint", "zoomOut" })
             { new Selector(menu: menu, name: newMapping.GetReadablePropertyName(propertyName), valueDict: keysOrButtonsDict, targetObj: newMapping, propertyName: propertyName, captureInput: true, captureKeys: captureKeys, captureButtons: captureButtons); }
 
             new Separator(menu: menu, name: "", isEmpty: true);

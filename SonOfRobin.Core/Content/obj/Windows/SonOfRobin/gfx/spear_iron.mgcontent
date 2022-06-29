@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/spear_iron.png</SourceFile>
+  <SourceFile>C:/Users/msmidowi/Documents/SonOfRobin/SonOfRobin.Core/Content/gfx/spear_iron.png</SourceFile>
   <SourceTime>2022-05-06T11:29:30.0231405+02:00</SourceTime>
-  <DestFile>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/bin/Windows/SonOfRobin/gfx/spear_iron.xnb</DestFile>
-  <DestTime>2022-05-11T15:48:29.8773831+02:00</DestTime>
+  <DestFile>C:/Users/msmidowi/Documents/SonOfRobin/SonOfRobin.Core/Content/bin/Windows/SonOfRobin/gfx/spear_iron.xnb</DestFile>
+  <DestTime>2022-05-17T06:49:56.7163164+02:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2020-08-10T18:17:54+02:00</ImporterTime>
   <Processor>TextureProcessor</Processor>

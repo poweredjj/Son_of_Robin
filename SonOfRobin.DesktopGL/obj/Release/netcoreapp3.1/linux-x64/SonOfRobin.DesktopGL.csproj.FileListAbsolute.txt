@@ -27,7 +27,6 @@ C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcore
 C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\linux-x64\Content\gfx\Candacis_flames1.xnb
 C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\linux-x64\Content\gfx\celianna_farmnature_crops_transparent.xnb
 C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\linux-x64\Content\gfx\chests.xnb
-C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\linux-x64\Content\gfx\Cooked Meat.xnb
 C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\linux-x64\Content\gfx\crabs_big.xnb
 C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\linux-x64\Content\gfx\crabs_small.xnb
 C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\linux-x64\Content\gfx\craft_items.xnb
@@ -485,3 +484,6 @@ C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcore
 C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\linux-x64\Content\gfx\workshop_essential.xnb
 C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\linux-x64\Content\gfx\scythe_iron.xnb
 C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\linux-x64\Content\gfx\scythe_stone.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\linux-x64\Content\gfx\bed.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\linux-x64\Content\gfx\biceps.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\linux-x64\Content\gfx\burger.xnb

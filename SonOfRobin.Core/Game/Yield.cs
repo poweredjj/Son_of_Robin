@@ -1,12 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SonOfRobin
 {
     public class Yield
     {
-        public enum DebrisType { None, Stone, Wood, Blood, Plant }
+        public enum DebrisType { Stone, Wood, Leaf, Blood, Plant, Crystal }
         public static Dictionary<PieceTemplate.Name, Craft.Recipe> antiCraftRecipes = new Dictionary<PieceTemplate.Name, Craft.Recipe> { };
         public struct DroppedPiece
         {
@@ -24,15 +25,22 @@ namespace SonOfRobin
 
         private BoardPiece mainPiece;
         private float firstPiecesDivider;
-        private readonly DebrisType debrisType;
+        private readonly List<DebrisType> debrisTypeList;
         private readonly List<DroppedPiece> firstDroppedPieces; // during hitting the piece
         private readonly List<DroppedPiece> finalDroppedPieces; // after destroying the piece
 
-        public Yield(List<DroppedPiece> firstDroppedPieces, List<DroppedPiece> finalDroppedPieces, DebrisType debrisType = DebrisType.None)
+        public Yield(List<DroppedPiece> firstDroppedPieces, List<DroppedPiece> finalDroppedPieces, List<DebrisType> debrisTypeList)
         {
             this.firstDroppedPieces = firstDroppedPieces;
             this.finalDroppedPieces = finalDroppedPieces;
-            this.debrisType = debrisType;
+            this.debrisTypeList = debrisTypeList == null ? new List<DebrisType>() : debrisTypeList;
+        }
+
+        public Yield(List<DroppedPiece> firstDroppedPieces, List<DroppedPiece> finalDroppedPieces, DebrisType debrisType)
+        {
+            this.firstDroppedPieces = firstDroppedPieces;
+            this.finalDroppedPieces = finalDroppedPieces;
+            this.debrisTypeList = new List<DebrisType> { debrisType };
         }
 
         public void AddPiece(BoardPiece mainPiece)
@@ -58,34 +66,42 @@ namespace SonOfRobin
 
         public void DropDebris()
         {
-            if (this.debrisType == DebrisType.None) return; // to speed up
+            if (!this.debrisTypeList.Any()) return; // to speed up
             if (!Preferences.showDebris || !this.mainPiece.world.camera.viewRect.Contains(this.mainPiece.sprite.position)) return; // debris should not be created off-screen
 
             var debrisList = new List<DroppedPiece> { };
 
-            switch (this.debrisType)
+            foreach (DebrisType debrisType in this.debrisTypeList)
             {
-                case DebrisType.None:
-                    return;
+                switch (debrisType)
+                {
+                    case DebrisType.Stone:
+                        debrisList.Add(new DroppedPiece(pieceName: PieceTemplate.Name.DebrisStone, chanceToDrop: 100, maxNumberToDrop: 60));
+                        break;
 
-                case DebrisType.Stone:
-                    debrisList.Add(new DroppedPiece(pieceName: PieceTemplate.Name.DebrisStone, chanceToDrop: 100, maxNumberToDrop: 60));
-                    break;
+                    case DebrisType.Wood:
+                        debrisList.Add(new DroppedPiece(pieceName: PieceTemplate.Name.DebrisWood, chanceToDrop: 100, maxNumberToDrop: 30));
+                        break;
 
-                case DebrisType.Wood:
-                    debrisList.Add(new DroppedPiece(pieceName: PieceTemplate.Name.DebrisWood, chanceToDrop: 100, maxNumberToDrop: 30));
-                    break;
+                    case DebrisType.Leaf:
+                        debrisList.Add(new DroppedPiece(pieceName: PieceTemplate.Name.DebrisLeaf, chanceToDrop: 100, maxNumberToDrop: 30));
+                        break;
 
-                case DebrisType.Plant:
-                    debrisList.Add(new DroppedPiece(pieceName: PieceTemplate.Name.DebrisPlant, chanceToDrop: 100, maxNumberToDrop: 15));
-                    break;
+                    case DebrisType.Plant:
+                        debrisList.Add(new DroppedPiece(pieceName: PieceTemplate.Name.DebrisPlant, chanceToDrop: 100, maxNumberToDrop: 15));
+                        break;
 
-                case DebrisType.Blood:
-                    debrisList.Add(new DroppedPiece(pieceName: PieceTemplate.Name.BloodDrop, chanceToDrop: 100, maxNumberToDrop: 35));
-                    break;
+                    case DebrisType.Crystal:
+                        debrisList.Add(new DroppedPiece(pieceName: PieceTemplate.Name.DebrisCrystal, chanceToDrop: 100, maxNumberToDrop: 20));
+                        break;
 
-                default:
-                    throw new DivideByZeroException($"Unsupported debris type - {debrisType}.");
+                    case DebrisType.Blood:
+                        debrisList.Add(new DroppedPiece(pieceName: PieceTemplate.Name.BloodDrop, chanceToDrop: 100, maxNumberToDrop: 35));
+                        break;
+
+                    default:
+                        throw new DivideByZeroException($"Unsupported debris type - {debrisTypeList}.");
+                }
             }
 
             this.DropPieces(multiplier: 1f, droppedPieceList: debrisList);

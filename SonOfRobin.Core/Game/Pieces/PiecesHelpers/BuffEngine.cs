@@ -7,7 +7,7 @@ namespace SonOfRobin
 {
     public class BuffEngine
     {
-        public enum BuffType { InvWidth, InvHeight, ToolbarWidth, ToolbarHeight, Speed, Strength, HP, MaxHp, MaxStamina, EnableMap, Tired, Hungry, LightSource, RegenPoison, Haste };
+        public enum BuffType { InvWidth, InvHeight, ToolbarWidth, ToolbarHeight, Speed, Strength, HP, MaxHP, MaxStamina, EnableMap, Tired, Hungry, LightSource, RegenPoison, Haste, Fatigue };
 
         [Serializable]
         public class Buff
@@ -15,15 +15,17 @@ namespace SonOfRobin
             public int id;
             public readonly bool increaseIDAtEveryUse;
             public readonly BuffType type;
+            public readonly bool isPositive;
+            public readonly string description;
+            public readonly string iconText;
             public readonly object value;
             public readonly bool canKill;
             public readonly int autoRemoveDelay;
             public int activationFrame;
             public int endFrame;
-            public readonly bool isPositive;
             public readonly bool isPermanent;
             public readonly int sleepFrames;
-            public Buff(World world, BuffType type, object value, bool isPositive, int autoRemoveDelay = 0, int sleepFrames = 0, bool isPermanent = false, bool canKill = false, bool increaseIDAtEveryUse = false)
+            public Buff(World world, BuffType type, object value, int autoRemoveDelay = 0, int sleepFrames = 0, bool isPermanent = false, bool canKill = false, bool increaseIDAtEveryUse = false)
             {
                 this.increaseIDAtEveryUse = increaseIDAtEveryUse; // for buffs that could stack (like sleeping buffs)
                 this.id = world.currentBuffId;
@@ -31,9 +33,11 @@ namespace SonOfRobin
                 this.type = type;
                 this.value = value;
                 this.canKill = canKill;
-                this.isPositive = isPositive;
                 this.isPermanent = isPermanent;
                 this.sleepFrames = sleepFrames;
+                this.isPositive = this.GetIsPositive();
+                this.description = this.GetDescription();
+                this.iconText = this.GetIconText();
 
                 // AutoRemoveDelay should not be used for equip!
                 // It should only be used for temporary buffs (food, status effects, etc.).
@@ -48,147 +52,204 @@ namespace SonOfRobin
                 return framesSlept >= this.sleepFrames;
             }
 
+            private bool GetIsPositive()
+            {
+                switch (this.type)
+                {
+                    case BuffType.InvWidth:
+                        return (byte)this.value >= 0;
+
+                    case BuffType.InvHeight:
+                        return (byte)this.value >= 0;
+
+                    case BuffType.ToolbarWidth:
+                        return (byte)this.value >= 0;
+
+                    case BuffType.ToolbarHeight:
+                        return (byte)this.value >= 0;
+
+                    case BuffType.Speed:
+                        return (float)this.value >= 0;
+
+                    case BuffType.Strength:
+                        return (int)this.value >= 0;
+
+                    case BuffType.HP:
+                        return (float)this.value >= 0;
+
+                    case BuffType.MaxHP:
+                        return (float)this.value >= 0;
+
+                    case BuffType.MaxStamina:
+                        return (float)this.value >= 0;
+
+                    case BuffType.LightSource:
+                        return (int)this.value >= 0;
+
+                    case BuffType.RegenPoison:
+                        return (int)this.value >= 0;
+
+                    case BuffType.Haste:
+                        return (int)this.value >= 0;
+
+                    case BuffType.Fatigue:
+                        return (float)this.value <= 0; // reversed, because fatigue is a "negative" stat
+
+                    case BuffType.EnableMap:
+                        return true;
+
+                    case BuffType.Tired:
+                        return false;
+
+                    case BuffType.Hungry:
+                        return false;
+
+                    default:
+                        throw new DivideByZeroException($"Unsupported buff type - {this.type}.");
+                }
+            }
+
             private string SignString { get { return $"{this.value}".StartsWith("-") ? "" : "+"; } }
 
-            public string Description
+            private string GetDescription()
             {
-                get
+                string description;
+                string sign = this.SignString;
+                string duration = this.autoRemoveDelay == 0 ? "" : $" for {Math.Round(this.autoRemoveDelay / 60f)}s";
+
+                switch (this.type)
                 {
-                    string description;
-                    string sign = this.SignString;
-                    string duration = this.autoRemoveDelay == 0 ? "" : $" for {Math.Round(this.autoRemoveDelay / 60f)}s";
+                    case BuffType.InvWidth:
+                        description = $"Inventory width {sign}{this.value}.";
+                        break;
 
-                    switch (this.type)
-                    {
-                        case BuffType.InvWidth:
-                            description = $"Inventory width {sign}{this.value}.";
-                            break;
+                    case BuffType.InvHeight:
+                        description = $"Inventory height {sign}{this.value}.";
+                        break;
 
-                        case BuffType.InvHeight:
-                            description = $"Inventory height {sign}{this.value}.";
-                            break;
+                    case BuffType.ToolbarWidth:
+                        description = $"Toolbar width {sign}{this.value}.";
+                        break;
 
-                        case BuffType.ToolbarWidth:
-                            description = $"Toolbar width {sign}{this.value}.";
-                            break;
+                    case BuffType.ToolbarHeight:
+                        description = $"Toolbar height {sign}{this.value}.";
+                        break;
 
-                        case BuffType.ToolbarHeight:
-                            description = $"Toolbar height {sign}{this.value}.";
-                            break;
+                    case BuffType.Speed:
+                        description = $"Speed {sign}{this.value}{duration}.";
+                        break;
 
-                        case BuffType.Speed:
-                            description = $"Speed {sign}{this.value}{duration}.";
-                            break;
+                    case BuffType.Strength:
+                        description = $"Strength {sign}{this.value}{duration}.";
+                        break;
 
-                        case BuffType.Strength:
-                            description = $"Strength {sign}{this.value}{duration}.";
-                            break;
+                    case BuffType.HP:
+                        description = $"Health {sign}{this.value}.";
+                        break;
 
-                        case BuffType.HP:
-                            description = $"HP {sign}{this.value}.";
-                            break;
+                    case BuffType.MaxHP:
+                        description = $"Max health {sign}{this.value}{duration}.";
+                        break;
 
-                        case BuffType.MaxHp:
-                            description = $"Max HP {sign}{this.value}{duration}.";
-                            break;
+                    case BuffType.MaxStamina:
+                        description = $"Max stamina {sign}{this.value}{duration}.";
+                        break;
 
-                        case BuffType.MaxStamina:
-                            description = $"Max stamina {sign}{this.value}{duration}.";
-                            break;
+                    case BuffType.EnableMap:
+                        description = "Shows map of visited places.";
+                        break;
 
-                        case BuffType.EnableMap:
-                            description = "Shows map of visited places.";
-                            break;
+                    case BuffType.Tired:
+                        description = "Decreases multiple stats.";
+                        break;
 
-                        case BuffType.Tired:
-                            description = "Decreases multiple stats.";
-                            break;
+                    case BuffType.Hungry:
+                        description = "Hungry";
+                        break;
 
-                        case BuffType.Hungry:
-                            description = "Hungry";
-                            break;
+                    case BuffType.LightSource:
+                        description = $"Light source {sign}{this.value}.";
+                        break;
 
-                        case BuffType.LightSource:
-                            description = $"Light source {sign}{this.value}.";
-                            break;
+                    case BuffType.RegenPoison:
+                        description = this.isPositive ? $"Regen {sign}{this.value}{duration}." : $"Poison {sign}{this.value}{duration}.";
+                        break;
 
-                        case BuffType.RegenPoison:
-                            description = this.isPositive ? $"Regen {sign}{this.value}{duration}." : $"Poison {sign}{this.value}{duration}.";
-                            break;
+                    case BuffType.Haste:
+                        description = $"Haste {sign}{this.value}{duration}.";
+                        break;
 
-                        case BuffType.Haste:
-                            description = $"Haste {sign}{this.value}{duration}.";
-                            break;
+                    case BuffType.Fatigue:
+                        description = $"Fatigue {sign}{this.value}.";
+                        break;
 
-                        default:
-                            throw new DivideByZeroException($"Unsupported buff type - {this.type}.");
-                    }
-
-                    if (this.sleepFrames > 0) description = $"After a long sleep: {Helpers.FirstCharToLowerCase(description)}";
-
-                    return description;
+                    default:
+                        throw new DivideByZeroException($"Unsupported buff type - {this.type}.");
                 }
+
+                if (this.sleepFrames > 0) description = $"After a long sleep: {Helpers.FirstCharToLowerCase(description)}";
+
+                return description;
             }
 
-            public string IconText
+            private string GetIconText()
             {
-                get
+                string sign = this.SignString;
+
+                switch (this.type)
                 {
-                    string sign = this.SignString;
+                    case BuffType.InvWidth:
+                        return null;
 
-                    switch (this.type)
-                    {
-                        case BuffType.InvWidth:
-                            return null;
+                    case BuffType.InvHeight:
+                        return null;
 
-                        case BuffType.InvHeight:
-                            return null;
+                    case BuffType.ToolbarWidth:
+                        return null;
 
-                        case BuffType.ToolbarWidth:
-                            return null;
+                    case BuffType.ToolbarHeight:
+                        return null;
 
-                        case BuffType.ToolbarHeight:
-                            return null;
+                    case BuffType.EnableMap:
+                        return null;
 
-                        case BuffType.EnableMap:
-                            return null;
+                    case BuffType.Speed:
+                        return $"SPD\n{sign}{this.value}";
 
-                        case BuffType.Speed:
-                            return $"SPD\n{sign}{this.value}";
+                    case BuffType.Strength:
+                        return $"STR\n{sign}{this.value}";
 
-                        case BuffType.Strength:
-                            return $"STR\n{sign}{this.value}";
+                    case BuffType.HP:
+                        return $"HP\n{sign}{this.value}";
 
-                        case BuffType.HP:
-                            return $"HP\n{sign}{this.value}";
+                    case BuffType.MaxHP:
+                        return $"MAX HP\n{sign}{this.value}";
 
-                        case BuffType.MaxHp:
-                            return $"MAX HP\n{sign}{this.value}";
+                    case BuffType.MaxStamina:
+                        return $"STAMINA\n{sign}{this.value}";
 
-                        case BuffType.MaxStamina:
-                            return $"STAMINA\n{sign}{this.value}";
+                    case BuffType.Tired:
+                        return "TIRED";
 
-                        case BuffType.Tired:
-                            return "TIRED";
+                    case BuffType.Hungry:
+                        return "HUNGRY";
 
-                        case BuffType.Hungry:
-                            return "HUNGRY";
+                    case BuffType.LightSource:
+                        return $"LIGHT\n{sign}{this.value}";
 
-                        case BuffType.LightSource:
-                            return $"LIGHT\n{sign}{this.value}";
+                    case BuffType.RegenPoison:
+                        return this.isPositive ? $"REGEN\n{sign}{this.value}" : $"POISON\n{sign}{this.value}";
 
-                        case BuffType.RegenPoison:
-                            return this.isPositive ? $"REGEN\n{sign}{this.value}" : $"POISON\n{sign}{this.value}";
+                    case BuffType.Haste:
+                        return $"HASTE\n{sign}{this.value}";
 
-                        case BuffType.Haste:
-                            return $"HASTE\n{sign}{this.value}";
+                    case BuffType.Fatigue:
+                        return $"FATIGUE\n{sign}{this.value}";
 
-                        default:
-                            throw new DivideByZeroException($"Unsupported buff type - {this.type}.");
-                    }
+                    default:
+                        throw new DivideByZeroException($"Unsupported buff type - {this.type}.");
                 }
             }
-
         }
 
         public readonly Dictionary<int, Buff> buffDict;
@@ -321,38 +382,46 @@ namespace SonOfRobin
             {
                 case BuffType.InvWidth:
                     {
+                        if (!this.CheckIfPieceIsPlayer(buff)) return;
+
                         Player player = (Player)this.piece;
                         if (add) player.InvWidth += (byte)buff.value;
                         else player.InvWidth -= (byte)buff.value;
 
-                        break;
+                        return;
                     }
 
                 case BuffType.InvHeight:
                     {
+                        if (!this.CheckIfPieceIsPlayer(buff)) return;
+
                         Player player = (Player)this.piece;
                         if (add) player.InvHeight += (byte)buff.value;
                         else player.InvHeight -= (byte)buff.value;
 
-                        break;
+                        return;
                     }
 
                 case BuffType.ToolbarWidth:
                     {
+                        if (!this.CheckIfPieceIsPlayer(buff)) return;
+
                         Player player = (Player)this.piece;
                         if (add) player.ToolbarWidth += (byte)buff.value;
                         else player.ToolbarWidth -= (byte)buff.value;
 
-                        break;
+                        return;
                     }
 
                 case BuffType.ToolbarHeight:
                     {
+                        if (!this.CheckIfPieceIsPlayer(buff)) return;
+
                         Player player = (Player)this.piece;
                         if (add) player.ToolbarHeight += (byte)buff.value;
                         else player.ToolbarHeight -= (byte)buff.value;
 
-                        break;
+                        return;
                     }
 
                 case BuffType.Speed:
@@ -360,7 +429,7 @@ namespace SonOfRobin
                         if (add) this.piece.speed += (float)buff.value;
                         else this.piece.speed -= (float)buff.value;
 
-                        break;
+                        return;
                     }
 
                 case BuffType.Strength:
@@ -369,10 +438,21 @@ namespace SonOfRobin
                         if (!add) value *= -1;
                         this.piece.strength += value;
 
-                        break;
+                        return;
                     }
 
-                case BuffType.MaxHp:
+                case BuffType.HP:
+                    {
+                        if (add) this.piece.hitPoints += (float)buff.value;
+                        else this.piece.hitPoints -= (float)buff.value;
+
+                        this.piece.hitPoints = Math.Min(this.piece.hitPoints, this.piece.maxHitPoints);
+                        this.piece.hitPoints = Math.Max(this.piece.hitPoints, 0);
+
+                        return;
+                    }
+
+                case BuffType.MaxHP:
                     {
                         if (add) this.piece.maxHitPoints += (float)buff.value;
                         else
@@ -381,11 +461,13 @@ namespace SonOfRobin
                             this.piece.hitPoints = Math.Min(this.piece.hitPoints, this.piece.maxHitPoints);
                         }
 
-                        break;
+                        return;
                     }
 
                 case BuffType.MaxStamina:
                     {
+                        if (!this.CheckIfPieceIsPlayer(buff)) return;
+
                         Player player = (Player)this.piece;
 
                         if (add)
@@ -399,22 +481,13 @@ namespace SonOfRobin
                             player.stamina = Math.Min(player.stamina, player.maxStamina);
                         }
 
-                        break;
-                    }
-
-                case BuffType.HP:
-                    {
-                        if (add) this.piece.hitPoints += (float)buff.value;
-                        else this.piece.hitPoints -= (float)buff.value;
-
-                        this.piece.hitPoints = Math.Min(this.piece.hitPoints, this.piece.maxHitPoints);
-                        this.piece.hitPoints = Math.Max(this.piece.hitPoints, 0);
-
-                        break;
+                        return;
                     }
 
                 case BuffType.EnableMap:
                     {
+                        if (!this.CheckIfPieceIsPlayer(buff)) return;
+
                         Player player = (Player)this.piece;
 
                         if (add) player.world.MapEnabled = true;
@@ -426,23 +499,25 @@ namespace SonOfRobin
                             }
                         }
 
-                        break;
+                        return;
                     }
 
                 case BuffType.Tired:
                     {
                         // this buff exists only to show negative status icon
-                        break;
+                        return;
                     }
 
                 case BuffType.Hungry:
                     {
                         // this buff exists only to show negative status icon
-                        break;
+                        return;
                     }
 
                 case BuffType.LightSource:
                     {
+                        if (!this.CheckIfPieceIsPlayer(buff)) return;
+
                         Player player = (Player)this.piece;
                         LightEngine playerLightSource = player.sprite.lightEngine;
 
@@ -456,7 +531,7 @@ namespace SonOfRobin
                             if (!stillHasThisBuff) playerLightSource.Deactivate();
                         }
 
-                        break;
+                        return;
                     }
 
                 case BuffType.RegenPoison:
@@ -471,7 +546,11 @@ namespace SonOfRobin
                             { "buffID", buff.id }, { "charges", buff.autoRemoveDelay / delay }, { "delay", delay }, { "hpChange", buff.value }, { "canKill", buff.canKill } };
                             new WorldEvent(eventName: WorldEvent.EventName.RegenPoison, world: world, delay: delay, boardPiece: this.piece, eventHelper: regenPoisonData);
 
-                            if ((int)buff.value < 0) this.piece.sprite.color = Color.Chartreuse;
+                            if ((int)buff.value < 0)
+                            {
+                                this.piece.sprite.color = Color.Chartreuse;
+                                this.piece.showStatBarsTillFrame = world.currentUpdate + buff.autoRemoveDelay;
+                            }
                         }
                         else
                         {
@@ -488,11 +567,13 @@ namespace SonOfRobin
                             if (!hasPoisonBuff) this.piece.sprite.color = Color.White;
                         }
 
-                        break;
+                        return;
                     }
 
                 case BuffType.Haste:
                     {
+                        if (!this.CheckIfPieceIsPlayer(buff)) return;
+
                         Player player = (Player)this.piece;
 
                         if (add)
@@ -502,12 +583,177 @@ namespace SonOfRobin
                         }
                         else player.world.bulletTimeMultiplier = 1;
 
-                        break;
+                        return;
+                    }
+
+                case BuffType.Fatigue:
+                    {
+                        if (!this.CheckIfPieceIsPlayer(buff)) return;
+
+                        Player player = (Player)this.piece;
+
+                        if (add) player.Fatigue = Math.Max(0, player.Fatigue + (float)buff.value);
+                        else player.Fatigue = Math.Min(player.maxFatigue, player.Fatigue - (float)buff.value);
+
+                        return;
                     }
 
                 default:
                     throw new DivideByZeroException($"Unsupported buff type - {buff.type}.");
             }
+        }
+
+        private bool CheckIfPieceIsPlayer(Buff buff)
+        {
+            if (this.piece.GetType() != typeof(Player))
+            {
+                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Buff '{buff.type}' cannot target {this.piece.GetType()} - ignoring.");
+                return false;
+            }
+
+            return true;
+        }
+
+        public static bool BuffListContainsPoison(List<Buff> buffList)
+        {
+            int regenValue = 0;
+
+            foreach (Buff buff in buffList)
+            {
+                if (buff.type == BuffType.RegenPoison) regenValue += (int)buff.value;
+            }
+
+            return regenValue < 0;
+        }
+
+        public static bool BuffListContainsPoisonOrRegen(List<Buff> buffList)
+        {
+            int regenValue = 0;
+
+            foreach (Buff buff in buffList)
+            {
+                if (buff.type == BuffType.RegenPoison) regenValue += (int)buff.value;
+            }
+
+            return regenValue != 0;
+        }
+
+        public static List<Buff> MergeSameTypeBuffsInList(World world, List<Buff> buffList)
+        {
+            var buffsListsByType = new Dictionary<BuffType, List<Buff>>();
+
+            foreach (Buff buff in buffList)
+            {
+                if (buffsListsByType.ContainsKey(buff.type)) buffsListsByType[buff.type].Add(buff);
+                else buffsListsByType[buff.type] = new List<Buff> { buff };
+            }
+
+            var mergedBuffList = new List<Buff>();
+
+            foreach (List<Buff> sameTypeBuffList in buffsListsByType.Values)
+            {
+                if (sameTypeBuffList.Count == 1) mergedBuffList.Add(sameTypeBuffList[0]);
+                else
+                {
+                    Buff newBuff = null;
+                    foreach (Buff buff in sameTypeBuffList)
+                    {
+                        newBuff = MergeTwoSameTypeBuffs(world: world, buff1: newBuff, buff2: buff);
+                    }
+                    mergedBuffList.Add(newBuff);
+                }
+            }
+
+            return mergedBuffList;
+        }
+
+        public static Buff MergeTwoSameTypeBuffs(World world, Buff buff1, Buff buff2)
+        {
+            if (buff1 == null && buff2 != null) return buff2;
+            if (buff2 == null && buff1 != null) return buff1;
+
+            if (buff1.type != buff2.type) throw new ArgumentException($"Buffs' types ({buff1.type}, {buff2.type}) are not the same.");
+            if (buff1.isPermanent != buff2.isPermanent) throw new ArgumentException($"Buffs' 'isPermanent' ({buff1.type}, {buff2.type}) are not the same.");
+
+            BuffType buffType = buff1.type;
+
+            object value;
+            int autoRemoveDelay = Math.Max(buff1.autoRemoveDelay, buff2.autoRemoveDelay);
+            int sleepFrames = Math.Max(buff1.sleepFrames, buff2.sleepFrames);
+            bool canKill = buff1.canKill || buff2.canKill;
+            bool increaseIDAtEveryUse = buff1.increaseIDAtEveryUse || buff2.increaseIDAtEveryUse;
+
+            switch (buffType)
+            {
+                case BuffType.InvWidth:
+                    value = (byte)buff1.value + (byte)buff2.value;
+                    break;
+
+                case BuffType.InvHeight:
+                    value = (byte)buff1.value + (byte)buff2.value;
+                    break;
+
+                case BuffType.ToolbarWidth:
+                    value = (byte)buff1.value + (byte)buff2.value;
+                    break;
+
+                case BuffType.ToolbarHeight:
+                    value = (byte)buff1.value + (byte)buff2.value;
+                    break;
+
+                case BuffType.Speed:
+                    value = (float)buff1.value + (float)buff2.value;
+                    break;
+
+                case BuffType.Strength:
+                    value = (int)buff1.value + (int)buff2.value;
+                    break;
+
+                case BuffType.HP:
+                    value = (float)buff1.value + (float)buff2.value;
+                    break;
+
+                case BuffType.MaxHP:
+                    value = (float)buff1.value + (float)buff2.value;
+                    break;
+
+                case BuffType.MaxStamina:
+                    value = (float)buff1.value + (float)buff2.value;
+                    break;
+
+                case BuffType.LightSource:
+                    value = (int)buff1.value + (int)buff2.value;
+                    break;
+
+                case BuffType.RegenPoison:
+                    value = (int)buff1.value + (int)buff2.value;
+                    break;
+
+                case BuffType.Haste:
+                    value = (int)buff1.value + (int)buff2.value;
+                    break;
+
+                case BuffType.Fatigue:
+                    value = (float)buff1.value + (float)buff2.value;
+                    break;
+
+                case BuffType.EnableMap:
+                    value = null;
+                    break;
+
+                case BuffType.Tired:
+                    value = null;
+                    break;
+
+                case BuffType.Hungry:
+                    value = null;
+                    break;
+
+                default:
+                    throw new DivideByZeroException($"Unsupported buff type - {buffType}.");
+            }
+
+            return new Buff(world: world, type: buffType, value: value, autoRemoveDelay: autoRemoveDelay, isPermanent: buff1.isPermanent, sleepFrames: sleepFrames, canKill: canKill, increaseIDAtEveryUse: increaseIDAtEveryUse);
         }
 
     }

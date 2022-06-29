@@ -25,6 +25,7 @@ namespace SonOfRobin
         public override void Invoke()
         {
             if (this.closesMenu) this.menu.Remove();
+            this.menu.ChangeActiveItem(this);
             new Scheduler.Task(menu: this.menu, taskName: this.taskName, executeHelper: this.executeHelper, rebuildsMenu: rebuildsMenu, delay: this.taskDelay, turnOffInputUntilExecution: true);
         }
 

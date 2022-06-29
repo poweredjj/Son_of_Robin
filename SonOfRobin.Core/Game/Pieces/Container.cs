@@ -25,7 +25,7 @@ namespace SonOfRobin
 
             if (notEmptySlotsCount > 0)
             {
-                new StatBar(label: "", value: notEmptySlotsCount, valueMax: this.pieceStorage.AllSlotsCount, colorMin: new Color(0, 255, 255), colorMax: new Color(0, 128, 255), posX: this.sprite.gfxRect.Center.X, posY: this.sprite.gfxRect.Bottom, ignoreIfAtMax: false);
+                new StatBar(label: "", value: notEmptySlotsCount, valueMax: this.pieceStorage.AllSlotsCount, colorMin: new Color(0, 255, 255), colorMax: new Color(0, 128, 255), posX: this.sprite.gfxRect.Center.X, posY: this.sprite.gfxRect.Bottom, ignoreIfAtMax: false, texture: AnimData.framesForPkgs[AnimData.PkgName.ChestMetal].texture);
             }
 
             base.DrawStatBar();

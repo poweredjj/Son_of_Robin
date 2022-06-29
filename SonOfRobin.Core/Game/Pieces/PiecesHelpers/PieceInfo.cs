@@ -31,7 +31,7 @@ namespace SonOfRobin
 
                     foreach (var buff in buffList)
                     {
-                        buffDescList.Add(buff.Description);
+                        buffDescList.Add(buff.description);
                     }
                     return buffDescList;
                 }

@@ -15,6 +15,7 @@ namespace SonOfRobin
         private static readonly int opacitySlowdown = 6;
 
         private static readonly Dictionary<Texture2D, FieldTip> tipsDict = new Dictionary<Texture2D, FieldTip>();
+        private static readonly List<Sprite> thisFrameSpritesShown = new List<Sprite>();
 
         private readonly World world;
         private readonly Texture2D texture;
@@ -90,13 +91,17 @@ namespace SonOfRobin
 
         public static void DrawFieldTips(World world)
         {
+            thisFrameSpritesShown.Clear();
+
             if (Preferences.ShowControlTips && Preferences.showFieldControlTips)
             {
                 SonOfRobinGame.spriteBatch.End();
                 SonOfRobinGame.spriteBatch.Begin(transformMatrix: world.TransformMatrix);
 
                 foreach (FieldTip fieldTip in tipsDict.Values.ToList())
-                { fieldTip.UpdateAndDraw(world); }
+                {
+                    fieldTip.UpdateAndDraw(world);
+                }
             }
         }
 
@@ -137,9 +142,11 @@ namespace SonOfRobin
 
             // drawing piece name label
 
-            if (this.targetSprite != null)
+            if (this.targetSprite != null && !thisFrameSpritesShown.Contains(this.targetSprite))
             {
                 // Helpers.DrawRectangleOutline(rect: destRect, color: Color.LightBlue, borderWidth: 1); // for testing
+
+                thisFrameSpritesShown.Add(this.targetSprite); // to avoid drawing the same label multiple times
 
                 int textWidth = destRect.Width;
                 int textHeight = destRect.Height;

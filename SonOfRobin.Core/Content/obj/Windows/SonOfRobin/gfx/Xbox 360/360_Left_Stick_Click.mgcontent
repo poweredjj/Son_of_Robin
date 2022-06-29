@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/Xbox 360/360_Left_Stick_Click.png</SourceFile>
+  <SourceFile>C:/Users/msmidowi/Documents/SonOfRobin/SonOfRobin.Core/Content/gfx/Xbox 360/360_Left_Stick_Click.png</SourceFile>
   <SourceTime>2020-08-05T11:00:07+02:00</SourceTime>
-  <DestFile>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/bin/Windows/SonOfRobin/gfx/Xbox 360/360_Left_Stick_Click.xnb</DestFile>
-  <DestTime>2022-05-11T15:48:30.7024201+02:00</DestTime>
+  <DestFile>C:/Users/msmidowi/Documents/SonOfRobin/SonOfRobin.Core/Content/bin/Windows/SonOfRobin/gfx/Xbox 360/360_Left_Stick_Click.xnb</DestFile>
+  <DestTime>2022-05-17T06:49:57.4962306+02:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2020-08-10T18:17:54+02:00</ImporterTime>
   <Processor>TextureProcessor</Processor>

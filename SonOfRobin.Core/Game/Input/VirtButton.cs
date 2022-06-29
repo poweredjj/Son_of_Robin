@@ -18,7 +18,7 @@ namespace SonOfRobin
         Equip,
         FieldCraft,
         Map,
-        Run,
+        Sprint,
         ZoomOut,
         PauseMenu,
         Return,
@@ -28,6 +28,7 @@ namespace SonOfRobin
         DebugPlay,
         DebugFastForward,
         DebugClear,
+        DebugBreakAll,
         DebugRemoveTopScene,
     }
 
@@ -65,7 +66,6 @@ namespace SonOfRobin
         private int Width { get { return Convert.ToInt32(SonOfRobinGame.VirtualWidth * this.width0to1); } }
         private int Height { get { return Convert.ToInt32(SonOfRobinGame.VirtualWidth * this.height0to1); } }  // VirtualWidth is repeated to maintain button proportions
         private Vector2 PosCenter { get { return new Vector2(SonOfRobinGame.VirtualWidth * this.posX0to1, SonOfRobinGame.VirtualHeight * this.posY0to1); } }
-
         private Rectangle Rect
         {
             get
@@ -75,9 +75,9 @@ namespace SonOfRobin
 
                 Vector2 posUpperLeft = PosCenter - (new Vector2(width, height) / 2);
                 return new Rectangle(
-                    x: Convert.ToInt32(posUpperLeft.X),
-                    y: Convert.ToInt32(posUpperLeft.Y),
-                    width: Width, height: Height);
+                    x: (int)posUpperLeft.X,
+                    y: (int)posUpperLeft.Y,
+                    width: width, height: height);
             }
         }
 
@@ -120,8 +120,7 @@ namespace SonOfRobin
 
             this.activeCoupledObj = activeCoupledObj;
             this.activeCoupledVarName = activeCoupledVarName;
-            bool initialValue = false;
-            if (this.activeCoupledVarName != "") initialValue = (bool)Helpers.GetProperty(targetObj: this.activeCoupledObj, propertyName: this.activeCoupledVarName);
+            bool initialValue = this.activeCoupledVarName != "" ? this.GetCoupledVar() : false;
 
             this.isDown = initialValue;
             this.highlighter = new Highlighter(isOn: isHighlighted, coupledObj: highlightCoupledObj, coupledVarName: highlightCoupledVarName);
@@ -169,8 +168,36 @@ namespace SonOfRobin
             buttonsByName.Clear();
         }
 
+        private bool UpdateFromCoupledVar()
+        {
+            if (this.activeCoupledVarName == "") return false;
+
+            bool coupledVar = this.GetCoupledVar();
+
+            if (this.switchButton)
+            {
+                if (coupledVar != this.switchedState)
+                {
+                    this.switchedState = coupledVar;
+                    return true;
+                }
+            }
+            else
+            {
+                if (coupledVar != this.isDown)
+                {
+                    this.isDown = coupledVar;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         private void Update()
         {
+            if (this.UpdateFromCoupledVar()) return;
+
             this.wasDownLastFrame = this.isDown;
 
             foreach (TouchLocation touch in TouchInput.TouchPanelState)
@@ -182,13 +209,14 @@ namespace SonOfRobin
                 {
                     // MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Button {this.label} is down.", color: Color.GreenYellow);
 
-                    if (touch.State == TouchLocationState.Pressed || (touch.State == TouchLocationState.Moved && (this.wasDownLastFrame || (this.checksTouchFromPrevLayout && this.JustCreated))))
+                    if (touch.State == TouchLocationState.Pressed ||
+                        (touch.State == TouchLocationState.Moved && (this.wasDownLastFrame || (this.checksTouchFromPrevLayout && this.JustCreated))))
                     {
                         this.isDown = true;
                         if (!this.wasDownLastFrame)
                         {
                             this.switchedState = !this.switchedState;
-                            this.SetCoupledPref();
+                            this.SetCoupledVar();
                         }
 
                         return;
@@ -199,12 +227,19 @@ namespace SonOfRobin
             if (this.isDown)
             {
                 this.isDown = false;
-                this.SetCoupledPref();
+                this.SetCoupledVar();
             }
         }
 
-        private void SetCoupledPref()
-        { if (this.activeCoupledVarName != "") Helpers.SetProperty(targetObj: new Preferences(), propertyName: this.activeCoupledVarName, newValue: this.IsActive); }
+        private bool GetCoupledVar()
+        {
+            return (bool)Helpers.GetProperty(targetObj: this.activeCoupledObj, propertyName: this.activeCoupledVarName);
+        }
+
+        private void SetCoupledVar()
+        {
+            if (this.activeCoupledVarName != "") Helpers.SetProperty(targetObj: this.activeCoupledObj, propertyName: this.activeCoupledVarName, newValue: this.IsActive);
+        }
 
         public static void DrawAll()
         {
@@ -229,7 +264,6 @@ namespace SonOfRobin
             Vector2 posCenter = this.PosCenter;
 
             sourceRectangle = new Rectangle(0, 0, this.textureReleased.Width, this.textureReleased.Height);
-
             SonOfRobinGame.spriteBatch.Draw(this.textureReleased, gfxRect, sourceRectangle, this.bgColorReleased * opacityMultiplier);
 
             var labelSize = font.MeasureString(this.label);

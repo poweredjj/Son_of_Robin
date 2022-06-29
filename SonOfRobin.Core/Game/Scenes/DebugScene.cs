@@ -79,7 +79,7 @@ namespace SonOfRobin
 
             if (Keyboard.HasBeenPressed(Keys.D1))
             {
-                BoardPiece piece = PieceTemplate.CreateOnBoard(world: world, position: world.player.sprite.position, templateName: PieceTemplate.Name.Shell);
+                BoardPiece piece = PieceTemplate.CreateOnBoard(world: world, position: world.player.sprite.position, templateName: PieceTemplate.Name.FlowersRed);
                 if (piece.sprite.placedCorrectly) piece.sprite.MoveToClosestFreeSpot(world.player.sprite.position);
             }
 
@@ -251,10 +251,26 @@ namespace SonOfRobin
                 }
             }
 
+            if (Keyboard.HasBeenPressed(Keys.A) || VirtButton.HasButtonBeenPressed(VButName.DebugBreakAll))
+            {
+                foreach (var sprite in world.grid.GetAllSprites(Cell.Group.All))
+                {
+                    if (sprite.boardPiece != world.player)
+                    {
+                        BoardPiece boardPiece = sprite.boardPiece;
+
+                        if (boardPiece != null && boardPiece.exists && boardPiece.yield != null) boardPiece.yield.DropFinalPieces();
+                        boardPiece.Destroy();
+                    }
+                }
+            }
+
             if (Keyboard.HasBeenPressed(Keys.Q) || VirtButton.HasButtonBeenPressed(VButName.DebugClear))
             {
                 foreach (var sprite in world.grid.GetAllSprites(Cell.Group.All))
-                { if (sprite.boardPiece != world.player) sprite.boardPiece.Destroy(); }
+                {
+                    if (sprite.boardPiece != world.player) sprite.boardPiece.Destroy();
+                }
             }
 
             if (Keyboard.HasBeenPressed(Keys.W))
@@ -314,11 +330,11 @@ namespace SonOfRobin
                 int value = world.random.Next(-30, 30);
                 //  world.player.buffEngine.AddBuff(world: world, buff: new BuffEngine.Buff(world: world, type: BuffEngine.BuffType.Strength, value: value, autoRemoveDelay: world.random.Next(100, 500), isPositive: value > 0));
 
-                world.player.buffEngine.AddBuff(world: world, buff: new BuffEngine.Buff(world: world, type: BuffEngine.BuffType.RegenPoison, value: value, autoRemoveDelay: world.random.Next(600, 1200), isPositive: value > 0, canKill: true));
+                world.player.buffEngine.AddBuff(world: world, buff: new BuffEngine.Buff(world: world, type: BuffEngine.BuffType.RegenPoison, value: value, autoRemoveDelay: world.random.Next(600, 1200), canKill: true));
             }
 
             if (Keyboard.HasBeenPressed(Keys.F8))
-            { world.player.buffEngine.AddBuff(world: world, buff: new BuffEngine.Buff(world: world, type: BuffEngine.BuffType.Haste, value: 2, autoRemoveDelay: 300, isPositive: true)); }
+            { world.player.buffEngine.AddBuff(world: world, buff: new BuffEngine.Buff(world: world, type: BuffEngine.BuffType.Haste, value: 2, autoRemoveDelay: 300)); }
 
             if (Keyboard.HasBeenPressed(Keys.F9))
             {

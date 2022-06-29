@@ -109,7 +109,7 @@ namespace SonOfRobin
             int posX = this.sprite.gfxRect.Center.X;
             int posY = this.sprite.gfxRect.Bottom;
 
-            new StatBar(label: "hp", value: (int)this.hitPoints, valueMax: (int)this.maxHitPoints, colorMin: new Color(255, 0, 0), colorMax: new Color(0, 255, 0), posX: posX, posY: posY);
+            new StatBar(label: "hp", value: (int)this.hitPoints, valueMax: (int)this.maxHitPoints, colorMin: new Color(255, 0, 0), colorMax: new Color(0, 255, 0), posX: posX, posY: posY, texture: AnimData.framesForPkgs[AnimData.PkgName.Heart].texture);
 
             if (Preferences.debugShowStatBars)
             {
@@ -596,7 +596,7 @@ namespace SonOfRobin
                 this.target.AddPassiveMovement(movement: new Vector2(this.world.random.Next(60, 130) * this.world.random.Next(-1, 1), this.world.random.Next(60, 130) * this.world.random.Next(-1, 1)));
             }
 
-            bool eatingPlantOrFruit = !this.target.IsAnimalOrPlayer;  // meat is more nutricious than plants
+            bool eatingPlantOrFruit = this.target.IsPlantOrFruit;  // meat is more nutricious than plants
 
             var bittenMass = Math.Min(2, this.target.Mass);
             this.AcquireEnergy(bittenMass * (eatingPlantOrFruit ? 0.5f : 6f));
@@ -607,6 +607,10 @@ namespace SonOfRobin
 
             if (this.target.Mass <= 0)
             {
+                foreach (BuffEngine.Buff buff in this.target.buffList)
+                { this.buffEngine.AddBuff(buff: buff, world: world); }
+                this.target.buffList.Clear();
+
                 if (this.target.IsAnimalOrPlayer && this.target.yield != null)
                 {
                     PieceTemplate.CreateOnBoard(world: this.world, position: this.target.sprite.position, templateName: PieceTemplate.Name.BloodSplatter);

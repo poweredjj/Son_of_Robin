@@ -378,7 +378,9 @@ namespace SonOfRobin
 
             var visibleEntries = this.VisibleEntries;
             foreach (Entry entry in visibleEntries)
-            { entry.ProcessTouch(); }
+            {
+                entry.ProcessTouch();
+            }
 
             if (InputMapper.HasBeenPressed(InputMapper.Action.GlobalUp)) this.PreviousItem();
             if (InputMapper.HasBeenPressed(InputMapper.Action.GlobalDown)) this.NextItem();
@@ -469,6 +471,20 @@ namespace SonOfRobin
                 Entry activeItem = this.ActiveEntry;
                 if (activeItem.GetType() != typeof(Separator)) return;
             }
+        }
+
+        public void ChangeActiveItem(Entry entry)
+        {
+            for (int i = 0; i < this.entryList.Count; i++)
+            {
+                if (entry == this.entryList[i])
+                {
+                    this.activeIndex = i;
+                    return;
+                }
+            }
+
+            throw new ArgumentException($"Entry {entry.name} not found when trying to set as active.");
         }
 
         public void SetActiveIndex(int index)

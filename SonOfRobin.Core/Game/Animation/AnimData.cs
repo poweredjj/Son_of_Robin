@@ -20,6 +20,7 @@ namespace SonOfRobin
             FlowersWhite,
             FlowersYellow1,
             FlowersYellow2,
+            FlowersRed,
             GrassDesert,
             GrassRegular,
             MineralsBig1,
@@ -55,6 +56,8 @@ namespace SonOfRobin
 
             Zzz,
             Heart,
+            Biceps,
+            Bed,
             Miss,
             Attack,
             Backlight,
@@ -97,7 +100,7 @@ namespace SonOfRobin
 
             RawMeat,
             Fat,
-            CookedMeat,
+            Burger,
             MealStandard,
             Leather,
 
@@ -132,10 +135,14 @@ namespace SonOfRobin
             IronDeposit,
             GlassDeposit,
 
+            CrystalDepositSmall,
+            CrystalDepositBig,
+
             Coal,
             IronOre,
             IronBar,
             GlassSand,
+            Crystal,
 
             Blonde,
             CrabBeige,
@@ -182,6 +189,7 @@ namespace SonOfRobin
             DebrisPlant,
             DebrisStone,
             DebrisWood,
+            DebrisCrystal,
             BloodDrop1,
             BloodDrop2,
             BloodDrop3,
@@ -213,10 +221,16 @@ namespace SonOfRobin
             EmptyBottle,
             PotionRed,
             PotionBlue,
+            PotionViolet,
             PotionYellow,
             PotionCyan,
+            PotionGreen,
             PotionBlack,
-            PotionLightYellow
+            PotionLightYellow,
+
+            Leaf1,
+            Leaf2,
+            Leaf3,
         }
 
         public static void AddFrameList(PkgName animPackage, byte animSize, string animName, List<AnimFrame> frameList)
@@ -256,6 +270,13 @@ namespace SonOfRobin
                 frameList: ConvertImageToFrameList(atlasName: "8f296dbbaf43865bc29e99660fe7b5af_2x", layer: 0, x: 832, y: 128, width: 64, height: 64, scale: 0.5f));
                 AddFrameList(animPackage: packageName, animSize: 1, animName: "default",
                 frameList: ConvertImageToFrameList(atlasName: "8f296dbbaf43865bc29e99660fe7b5af_2x", layer: 1, x: 768, y: 0, width: 64, height: 64, scale: 0.5f));
+            }
+            {
+                PkgName packageName = PkgName.FlowersRed;
+                AddFrameList(animPackage: packageName, animSize: 0, animName: "default",
+                frameList: ConvertImageToFrameList(atlasName: "tile_custom01", layer: 0, x: 0, y: 320, width: 32, height: 32));
+                AddFrameList(animPackage: packageName, animSize: 1, animName: "default",
+                frameList: ConvertImageToFrameList(atlasName: "tile_custom01", layer: 0, x: 64, y: 352, width: 32, height: 32));
             }
             {
                 PkgName packageName = PkgName.FlowersWhite;
@@ -677,16 +698,27 @@ namespace SonOfRobin
                 frameList: ConvertImageToFrameList(atlasName: "d9ffec650d3104f5c4564c9055787530", layer: 1, x: 384, y: 128, width: 32, height: 32, scale: 0.5f));
             AddFrameList(animPackage: PkgName.PotionBlue, animSize: 0, animName: "default",
                 frameList: ConvertImageToFrameList(atlasName: "d9ffec650d3104f5c4564c9055787530", layer: 1, x: 448, y: 128, width: 32, height: 32, scale: 0.5f));
+            AddFrameList(animPackage: PkgName.PotionViolet, animSize: 0, animName: "default",
+                frameList: ConvertImageToFrameList(atlasName: "d9ffec650d3104f5c4564c9055787530", layer: 1, x: 416, y: 128, width: 32, height: 32, scale: 0.5f));
             AddFrameList(animPackage: PkgName.PotionYellow, animSize: 0, animName: "default",
                 frameList: ConvertImageToFrameList(atlasName: "d9ffec650d3104f5c4564c9055787530", layer: 1, x: 352, y: 128, width: 32, height: 32, scale: 0.5f));
             AddFrameList(animPackage: PkgName.PotionCyan, animSize: 0, animName: "default",
                 frameList: ConvertImageToFrameList(atlasName: "d9ffec650d3104f5c4564c9055787530", layer: 1, x: 288, y: 128, width: 32, height: 32, scale: 0.5f));
+            AddFrameList(animPackage: PkgName.PotionGreen, animSize: 0, animName: "default",
+                frameList: ConvertImageToFrameList(atlasName: "d9ffec650d3104f5c4564c9055787530", layer: 1, x: 320, y: 128, width: 32, height: 32, scale: 0.5f));
 
             // "one-liners"
 
+            AddFrameList(animPackage: PkgName.Crystal, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "crystal", layer: 1, scale: 0.5f));
+            AddFrameList(animPackage: PkgName.CrystalDepositSmall, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "crystal_deposit_small", layer: 1));
+            AddFrameList(animPackage: PkgName.CrystalDepositBig, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "crystal_deposit_big", layer: 1));
+            AddFrameList(animPackage: PkgName.DebrisCrystal, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "crystal_shard", layer: 0, scale: 0.5f));
+            AddFrameList(animPackage: PkgName.Leaf1, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "leaf_1", layer: 0, scale: 0.25f));
+            AddFrameList(animPackage: PkgName.Leaf2, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "leaf_2", layer: 0, scale: 0.25f));
+            AddFrameList(animPackage: PkgName.Leaf3, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "leaf_3", layer: 0, scale: 0.25f));
+            AddFrameList(animPackage: PkgName.Burger, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "burger", layer: 0, scale: 0.5f));
             AddFrameList(animPackage: PkgName.PotionBlack, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "potion_black", layer: 0, scale: 0.5f));
             AddFrameList(animPackage: PkgName.PotionLightYellow, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "bottle_oil", layer: 0, scale: 0.5f));
-            AddFrameList(animPackage: PkgName.CookedMeat, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "Cooked Meat", layer: 0, scale: 0.17f));
             AddFrameList(animPackage: PkgName.WaterDrop, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "water_drop", layer: 0, scale: 0.5f));
             AddFrameList(animPackage: PkgName.Exclamation, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "exclamation", layer: 2, scale: 0.2f));
             AddFrameList(animPackage: PkgName.Map, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "parchment", layer: 0, scale: 0.03f));
@@ -696,6 +728,8 @@ namespace SonOfRobin
             AddFrameList(animPackage: PkgName.Miss, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "miss", layer: 2));
             AddFrameList(animPackage: PkgName.Zzz, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "zzz", layer: 2));
             AddFrameList(animPackage: PkgName.Heart, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "heart_16x16", layer: 2));
+            AddFrameList(animPackage: PkgName.Biceps, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "biceps", layer: 2));
+            AddFrameList(animPackage: PkgName.Bed, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "bed", layer: 2));
             AddFrameList(animPackage: PkgName.Crosshair, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "crosshair", layer: 2));
             AddFrameList(animPackage: PkgName.ScytheStone, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "scythe_stone", layer: 0));
             AddFrameList(animPackage: PkgName.ScytheIron, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "scythe_iron", layer: 0));

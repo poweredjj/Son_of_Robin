@@ -168,7 +168,7 @@ namespace SonOfRobin
             if (pieceInfo.buffList != null)
             {
                 foreach (BuffEngine.Buff buff in pieceInfo.buffList)
-                { entryList.Add(new InfoWindow.TextEntry(text: buff.Description, color: Color.Cyan, scale: 1f)); }
+                { entryList.Add(new InfoWindow.TextEntry(text: buff.description, color: Color.Cyan, scale: 1f)); }
             }
             if (!canBeCrafted) entryList.Add(new InfoWindow.TextEntry(text: "Not enough ingredients.", color: Color.OrangeRed, scale: 1f));
 

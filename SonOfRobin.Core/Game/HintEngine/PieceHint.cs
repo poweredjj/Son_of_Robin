@@ -9,7 +9,7 @@ namespace SonOfRobin
 
     public struct PieceHint
     {
-        public enum Type { CrateStarting, CrateAnother, WoodNegative, WoodPositive, StoneNegative, StonePositive, AnimalNegative, AnimalBow, AnimalBat, AnimalAxe, BowNoAmmo, ShellIsNotUseful, Clam, FruitTree, BananaTree, TomatoPlant, IronDepositNegative, IronDepositPositive, CoalDepositNegative, CoalDepositPositive, Cooker, LeatherPositive, BackpackPositive, BeltPositive, MapCanMake, MapPositive, RedExclamation, Acorn, TorchNegative, TorchPositive, Fireplace, HerbsRed, GlassSand, CanBuildWorkshop }
+        public enum Type { CrateStarting, CrateAnother, WoodNegative, WoodPositive, StoneNegative, StonePositive, CrystalNegative, CrystalPositive, AnimalNegative, AnimalBow, AnimalBat, AnimalAxe, BowNoAmmo, ShellIsNotUseful, Clam, FruitTree, BananaTree, TomatoPlant, IronDepositNegative, IronDepositPositive, CoalDepositNegative, CoalDepositPositive, Cooker, LeatherPositive, BackpackPositive, BeltPositive, MapCanMake, MapPositive, RedExclamation, Acorn, TorchNegative, TorchPositive, Fireplace, HerbsRed, HerbsYellow, HerbsViolet, HerbsCyan, HerbsBlue, HerbsBlack, GlassSand, CanBuildWorkshop }
 
         public static List<PieceHint> pieceHintList;
 
@@ -34,9 +34,34 @@ namespace SonOfRobin
                     playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.Shell}),
 
                 new PieceHint(type: Type.HerbsRed, canBeForced: true,
-                    message: "I think I could use this | herbs to make a healing potion.",
+                    message: "I think I could use these | herbs to make a healing potion.",
                     imageList: new List<Texture2D>{ AnimData.framesForPkgs[AnimData.PkgName.HerbsRed].texture},
                     playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.HerbsRed}),
+
+                new PieceHint(type: Type.HerbsYellow, canBeForced: true,
+                    message: "These | herbs could be used to make a strength potion.",
+                    imageList: new List<Texture2D>{ AnimData.framesForPkgs[AnimData.PkgName.HerbsYellow].texture},
+                    playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.HerbsYellow}),
+
+                new PieceHint(type: Type.HerbsCyan, canBeForced: true,
+                    message: "Hmm... These | herbs sure look interesting.",
+                    imageList: new List<Texture2D>{ AnimData.framesForPkgs[AnimData.PkgName.HerbsCyan].texture},
+                    playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.HerbsCyan}),
+
+                new PieceHint(type: Type.HerbsBlue, canBeForced: true,
+                    message: "These | herbs could be used to make a stamina potion.",
+                    imageList: new List<Texture2D>{ AnimData.framesForPkgs[AnimData.PkgName.HerbsBlue].texture},
+                    playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.HerbsBlue}),
+
+                new PieceHint(type: Type.HerbsViolet, canBeForced: true,
+                    message: "Hmm... These | herbs should make my fatigue go away.",
+                    imageList: new List<Texture2D>{ AnimData.framesForPkgs[AnimData.PkgName.HerbsViolet].texture},
+                    playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.HerbsViolet}),
+
+                new PieceHint(type: Type.HerbsBlack, canBeForced: true,
+                    message: "These | herbs look poisonous.\nIt could be useful.",
+                    imageList: new List<Texture2D>{ AnimData.framesForPkgs[AnimData.PkgName.HerbsBlack].texture},
+                    playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.HerbsBlack}),
 
                 new PieceHint(type: Type.GlassSand, canBeForced: true,
                     message: "This | is no ordinary sand!\nIt can be used to make glass.",
@@ -141,6 +166,17 @@ namespace SonOfRobin
                     alsoDisables: new List<Type> {Type.StoneNegative},
                     tutorialsToActivate: new List<Tutorials.Type> {Tutorials.Type.Mine},
                     playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.PickaxeWood, PieceTemplate.Name.PickaxeStone, PieceTemplate.Name.PickaxeIron }),
+
+                new PieceHint(type: Type.CrystalNegative, fieldPieces: new List<PieceTemplate.Name> { PieceTemplate.Name.CrystalDepositBig },
+                    message: "Wow, this | crystal looks very strong.\nI think that a low level pickaxe would be too weak to break it.\nMaybe an | iron pickaxe could work, though?",
+                    imageList: new List<Texture2D>{ AnimData.framesForPkgs[AnimData.PkgName.CrystalDepositBig].texture, AnimData.framesForPkgs[AnimData.PkgName.PickaxeIron].texture },
+                    playerDoesNotOwnAnyOfThesePieces: new List<PieceTemplate.Name> { PieceTemplate.Name.PickaxeIron }),
+
+                new PieceHint(type: Type.CrystalPositive, fieldPieces: new List<PieceTemplate.Name> { PieceTemplate.Name.CrystalDepositBig },
+                    message: "My | iron pickaxe should be enough to break this | crystal.",
+                    imageList: new List<Texture2D>{ AnimData.framesForPkgs[AnimData.PkgName.PickaxeIron].texture , AnimData.framesForPkgs[AnimData.PkgName.CrystalDepositBig].texture },
+                    alsoDisables: new List<Type> {Type.CrystalNegative},
+                    playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> { PieceTemplate.Name.PickaxeIron }),
 
                 new PieceHint(type: Type.CoalDepositNegative, fieldPieces: new List<PieceTemplate.Name> {PieceTemplate.Name.CoalDeposit},
                     message: "I think this | is a coal deposit.\nIf I had a | pickaxe, I could get | coal.",

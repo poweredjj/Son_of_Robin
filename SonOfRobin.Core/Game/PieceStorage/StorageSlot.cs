@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 
 namespace SonOfRobin
@@ -53,7 +52,8 @@ namespace SonOfRobin
         public void AddPiece(BoardPiece piece)
         {
             if (this.locked) return;
-            Debug.Assert(this.CanFitThisPiece(piece));
+
+            if (!this.CanFitThisPiece(piece)) throw new ArgumentException($"This piece '{piece.name}' cannot fit in this slot.");
 
             if (piece?.pieceStorage?.NotEmptySlotsCount > 0)
             { piece.pieceStorage.DropAllPiecesToTheGround(addMovement: true); }
@@ -72,11 +72,13 @@ namespace SonOfRobin
             else this.storage.storagePiece.buffEngine.RemoveBuffs(equipPiece.buffList);
         }
 
-        public bool CanFitThisPiece(BoardPiece piece)
+        public bool CanFitThisPiece(BoardPiece piece, int pieceCount = 1)
         {
             if (this.locked || !piece.canBePickedUp) return false;
             if (this.allowedPieceNames != null && !this.allowedPieceNames.Contains(piece.name)) return false;
-            return this.IsEmpty || (piece.name == this.PieceName && this.pieceList.Count < Math.Min(this.pieceList[0].stackSize, this.stackLimit));
+
+            if (this.IsEmpty) return pieceCount <= Math.Min(piece.stackSize, this.stackLimit);
+            else return piece.name == this.PieceName && this.pieceList.Count + pieceCount <= Math.Min(this.pieceList[0].stackSize, this.stackLimit);
         }
 
         public BoardPiece RemoveTopPiece()

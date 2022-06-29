@@ -93,6 +93,7 @@ namespace SonOfRobin
         public override void NextValue(bool touchMode)
         {
             base.NextValue(touchMode: touchMode);
+            this.menu.ChangeActiveItem(this);
             this.activeIndex++;
             if (this.activeIndex >= this.valueDict.ToList().Count) this.activeIndex = 0;
 
@@ -102,6 +103,7 @@ namespace SonOfRobin
         public override void PreviousValue(bool touchMode)
         {
             base.PreviousValue(touchMode: touchMode);
+            this.menu.ChangeActiveItem(this);
             this.activeIndex--;
             if (this.activeIndex < 0) this.activeIndex = this.valueDict.ToList().Count - 1;
 
@@ -111,6 +113,7 @@ namespace SonOfRobin
         public override void Invoke()
         {
             if (!this.captureInput) return;
+            this.menu.ChangeActiveItem(this);
             this.captureModeActive = true;
             new InputGrabber(targetObj: this.targetObj, targetPropertyName: this.propertyName, grabButtons: this.captureButtons, grabKeys: this.captureKeys);
         }

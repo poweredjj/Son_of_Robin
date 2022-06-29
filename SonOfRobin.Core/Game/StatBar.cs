@@ -15,7 +15,10 @@ namespace SonOfRobin
         private readonly SpriteFont font;
         private readonly Color color;
 
+        private readonly bool labelAtLeft;
+
         private readonly string label;
+        private readonly Texture2D texture;
         private readonly Vector2 labelSize;
         private readonly Vector2 labelPos;
 
@@ -41,9 +44,11 @@ namespace SonOfRobin
             }
         }
 
-        public StatBar(int value, int valueMax, Color colorMin, Color colorMax, int posX, int posY, string label, int width = 40, int height = 2, bool ignoreIfAtMax = false, bool centerX = true, bool drawFromTop = true, bool labelAtLeft = true, int vOffsetCorrection = 0)
+        public StatBar(int value, int valueMax, Color colorMin, Color colorMax, int posX, int posY, string label = "", Texture2D texture = null, int width = 50, int height = 6, bool ignoreIfAtMax = false, bool centerX = true, bool drawFromTop = true, bool labelAtLeft = true, int vOffsetCorrection = 0)
         {
             if (ignoreIfAtMax && value == valueMax) return;
+
+            this.labelAtLeft = labelAtLeft;
 
             this.font = currentBatchFont;
             this.centerX = centerX;
@@ -65,7 +70,7 @@ namespace SonOfRobin
 
             this.fullWidth = width;
             this.fullHeight = height;
-            this.valueWidth = Convert.ToInt32(this.fullWidth * lengthPercentage);
+            this.valueWidth = (int)(this.fullWidth * lengthPercentage);
 
             this.posX = this.centerX ? (posX - (this.fullWidth / 2)) : posX;
             int verticalOffset = 3 + (currentBatchCount * (this.fullHeight + 4 + vOffsetCorrection));
@@ -73,8 +78,9 @@ namespace SonOfRobin
 
             this.label = label;
             this.labelSize = font.MeasureString(this.label);
+            this.texture = texture;
 
-            float labelPosX = labelAtLeft ? this.posX - (labelSize.X + 4) : this.posX + this.fullWidth + 4;
+            float labelPosX = this.labelAtLeft ? this.posX - (labelSize.X + 4) : this.posX + this.fullWidth + 4;
             float labelPosY = drawFromTop ? this.posY + (this.fullHeight / 2f) - (labelSize.Y / 2f) : this.posY + (this.fullHeight / 2f) + (labelSize.Y / 2f);
 
             this.labelPos = new Vector2((int)labelPosX, (int)labelPosY);
@@ -100,20 +106,40 @@ namespace SonOfRobin
 
         private void DrawTxtOutline()
         {
+            if (this.texture != null) return;
+
             for (int x = -1; x < 2; x++)
             {
                 for (int y = -1; y < 2; y++)
-                { SonOfRobinGame.spriteBatch.DrawString(font, this.label, this.labelPos + new Vector2(x, y), Color.Black); }
+                {
+                    if (x == 0 && y == 0) continue;
+                    SonOfRobinGame.spriteBatch.DrawString(font, this.label, this.labelPos + new Vector2(x, y), Color.Black);
+                }
             }
         }
 
         private void DrawTxt()
-        { SonOfRobinGame.spriteBatch.DrawString(font, this.label, this.labelPos, Color.White); }
-
+        {
+            if (this.texture != null) return;
+            SonOfRobinGame.spriteBatch.DrawString(font, this.label, this.labelPos, Color.White);
+        }
 
         private void DrawBarOutline()
         {
             SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, new Rectangle(this.posX - 1, this.posY - 1, this.fullWidth + 2, this.fullHeight + 2), Color.Black);
+        }
+
+        private void DrawTexture()
+        {
+            if (this.texture == null) return;
+
+            int rectWidth = this.fullWidth * 3;
+            int margin = (int)(this.fullHeight * 1.2);
+
+            Rectangle destRect = new Rectangle(x: this.labelAtLeft ? this.posX - rectWidth - margin : this.posX + this.fullWidth + margin, y: this.posY, width: rectWidth, height: this.fullHeight);
+            destRect.Inflate(0, 2);
+
+            Helpers.DrawTextureInsideRect(texture: this.texture, rectangle: destRect, color: Color.White, alignX: labelAtLeft ? Helpers.AlignX.Right : Helpers.AlignX.Left, drawTestRect: false);
         }
 
         private void DrawBar()
@@ -133,10 +159,11 @@ namespace SonOfRobin
             {
                 bar.DrawBar();
                 bar.DrawTxt();
+                bar.DrawTexture();
             }
+
             barsToDraw.Clear();
             FinishThisBatch();
         }
-
     }
 }

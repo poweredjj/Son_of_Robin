@@ -29,21 +29,26 @@
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/backpack.jpg</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/bag.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/bag_outline.png</File>
+    <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/bed.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/belt.png</File>
+    <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/biceps.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/big_icons_candacis.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/big_torch_off.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/big_torch_on.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/bottle_empty.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/bottle_oil.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/bows.png</File>
+    <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/burger.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/Candacis_flames1.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/celianna_farmnature_crops_transparent.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/chests.png</File>
-    <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/Cooked Meat.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/crabs_big.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/crabs_small.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/craft_items.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/crosshair.png</File>
+    <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/crystal_deposit_big.png</File>
+    <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/crystal_deposit_small.png</File>
+    <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/crystal_shard.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/cursor.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/d9ffec650d3104f5c4564c9055787530.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/exclamation.png</File>
@@ -156,6 +161,9 @@
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/Keyboard/X_Key_Light.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/Keyboard/Y_Key_Light.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/Keyboard/Z_Key_Light.png</File>
+    <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/leaf_1.png</File>
+    <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/leaf_2.png</File>
+    <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/leaf_3.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/light_white.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/miss.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/Mouse/Mouse_Left_Key_Light.png</File>
@@ -278,6 +286,14 @@
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/zzz.png</File>
   </SourceFiles>
   <DestFiles>
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />

@@ -18,7 +18,6 @@ namespace SonOfRobin
             public readonly List<PieceTemplate.Name> unlocksWhenCrafted;
             public readonly bool isHidden;
 
-
             public Recipe(PieceTemplate.Name pieceToCreate, Dictionary<PieceTemplate.Name, byte> ingredients, bool isReversible = false, int amountToCreate = 1, bool isHidden = false, List<PieceTemplate.Name> unlocksWhenCrafted = null)
             {
                 this.pieceToCreate = pieceToCreate;
@@ -40,32 +39,32 @@ namespace SonOfRobin
                 }
 
                 BoardPiece.Category category = PieceInfo.info[pieceToCreate].category;
-                Yield.DebrisType debrisType;
+                List<Yield.DebrisType> debrisTypeList;
 
                 switch (category)
                 {
                     case BoardPiece.Category.Wood:
-                        debrisType = Yield.DebrisType.Wood;
+                        debrisTypeList = new List<Yield.DebrisType> { Yield.DebrisType.Wood };
                         break;
 
                     case BoardPiece.Category.Stone:
-                        debrisType = Yield.DebrisType.Stone;
+                        debrisTypeList = new List<Yield.DebrisType> { Yield.DebrisType.Stone };
                         break;
 
                     case BoardPiece.Category.Metal:
-                        debrisType = Yield.DebrisType.Wood;
+                        debrisTypeList = new List<Yield.DebrisType> { Yield.DebrisType.Wood };
                         break;
 
                     case BoardPiece.Category.SmallPlant:
-                        debrisType = Yield.DebrisType.Plant;
+                        debrisTypeList = new List<Yield.DebrisType> { Yield.DebrisType.Plant };
                         break;
 
                     case BoardPiece.Category.Animal:
-                        debrisType = Yield.DebrisType.Blood;
+                        debrisTypeList = new List<Yield.DebrisType> { Yield.DebrisType.Blood };
                         break;
 
                     case BoardPiece.Category.Indestructible:
-                        debrisType = Yield.DebrisType.None;
+                        debrisTypeList = new List<Yield.DebrisType>();
                         break;
 
                     default:
@@ -73,7 +72,7 @@ namespace SonOfRobin
                 }
 
                 Yield.antiCraftRecipes[this.pieceToCreate] = this;
-                return new Yield(firstDroppedPieces: new List<Yield.DroppedPiece> { }, finalDroppedPieces: finalDroppedPieces, debrisType: debrisType);
+                return new Yield(firstDroppedPieces: new List<Yield.DroppedPiece> { }, finalDroppedPieces: finalDroppedPieces, debrisTypeList: debrisTypeList);
             }
 
             public bool CheckIfStorageContainsAllIngredients(PieceStorage storage)
@@ -343,17 +342,21 @@ namespace SonOfRobin
             {
                 var alchemyRecipes = new List<Recipe>
                 {
-                    new Recipe(pieceToCreate: PieceTemplate.Name.PotionHealing, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.EmptyBottle, 1 }, { PieceTemplate.Name.Tomato, 4 }, { PieceTemplate.Name.HerbsRed, 3 }}, isReversible: false),
+                    new Recipe(pieceToCreate: PieceTemplate.Name.PotionHealing, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.EmptyBottle, 1 }, { PieceTemplate.Name.Tomato, 4 }, { PieceTemplate.Name.HerbsRed, 3 }}, isReversible: false, unlocksWhenCrafted: new List<PieceTemplate.Name> {PieceTemplate.Name.PotionStrength } ),
 
-                    new Recipe(pieceToCreate: PieceTemplate.Name.PotionStrength, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.EmptyBottle, 1 }, { PieceTemplate.Name.Banana, 2 }, { PieceTemplate.Name.HerbsYellow, 3 }}, isReversible: false),
+                    new Recipe(pieceToCreate: PieceTemplate.Name.PotionMaxHP, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.EmptyBottle, 1 }, { PieceTemplate.Name.Apple, 2 }, { PieceTemplate.Name.HerbsGreen, 3 }}, isReversible: false),
 
-                    new Recipe(pieceToCreate: PieceTemplate.Name.PotionHaste, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.EmptyBottle, 1 }, { PieceTemplate.Name.Acorn, 2 }, { PieceTemplate.Name.HerbsCyan, 3 }}, isReversible: false),
+                    new Recipe(pieceToCreate: PieceTemplate.Name.PotionStrength, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.EmptyBottle, 1 }, { PieceTemplate.Name.Banana, 2 }, { PieceTemplate.Name.HerbsYellow, 3 }}, isReversible: false, isHidden: true, unlocksWhenCrafted: new List<PieceTemplate.Name> {PieceTemplate.Name.PotionHaste } ),
 
-                    new Recipe(pieceToCreate: PieceTemplate.Name.PotionMaxStamina, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.EmptyBottle, 1 }, { PieceTemplate.Name.Apple, 2 }, { PieceTemplate.Name.HerbsBlue, 2 }}, isReversible: false),
+                    new Recipe(pieceToCreate: PieceTemplate.Name.PotionHaste, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.EmptyBottle, 1 }, { PieceTemplate.Name.Acorn, 2 }, { PieceTemplate.Name.HerbsCyan, 3 }}, isReversible: false, isHidden: true),
+
+                    new Recipe(pieceToCreate: PieceTemplate.Name.PotionMaxStamina, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.EmptyBottle, 1 }, { PieceTemplate.Name.Apple, 2 }, { PieceTemplate.Name.HerbsBlue, 2 }}, isReversible: false,  unlocksWhenCrafted: new List<PieceTemplate.Name> {PieceTemplate.Name.PotionFatigue } ),
+
+                    new Recipe(pieceToCreate: PieceTemplate.Name.PotionFatigue, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.EmptyBottle, 1 }, { PieceTemplate.Name.Cherry, 2 }, { PieceTemplate.Name.HerbsViolet, 2 }}, isReversible: false, isHidden: true),
 
                     new Recipe(pieceToCreate: PieceTemplate.Name.BottleOfOil, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.EmptyBottle, 1 }, { PieceTemplate.Name.Fat, 2 }}, isReversible: false, unlocksWhenCrafted: new List<PieceTemplate.Name> { PieceTemplate.Name.TorchBig }),
 
-                    new Recipe(pieceToCreate: PieceTemplate.Name.BottleOfPoison, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.EmptyBottle, 1 }, { PieceTemplate.Name.HerbsBlack, 2 }}, isReversible: false, unlocksWhenCrafted: new List<PieceTemplate.Name> {PieceTemplate.Name.SpearPoisoned, PieceTemplate.Name.ArrowPoisoned }),
+                    new Recipe(pieceToCreate: PieceTemplate.Name.BottleOfPoison, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.EmptyBottle, 1 }, { PieceTemplate.Name.HerbsBlack, 2 }}, isReversible: false, unlocksWhenCrafted: new List<PieceTemplate.Name> { PieceTemplate.Name.SpearPoisoned, PieceTemplate.Name.ArrowPoisoned }),
                 };
 
                 AddCategory(category: Category.Alchemy, recipeList: alchemyRecipes);
@@ -381,9 +384,20 @@ namespace SonOfRobin
         {
             List<Recipe> allRecipes = AllRecipes;
 
+            var recipesThatAreUnlocked = new List<PieceTemplate.Name>();
+
             foreach (Recipe recipe in allRecipes)
             {
                 if (recipe.unlocksWhenCrafted.Contains(recipe.pieceToCreate)) throw new ArgumentException($"Recipe for '{recipe.pieceToCreate}' unlocks itself.");
+                foreach (PieceTemplate.Name pieceName in recipe.unlocksWhenCrafted)
+                {
+                    recipesThatAreUnlocked.Add(pieceName);
+                }
+            }
+
+            foreach (Recipe recipe in allRecipes)
+            {
+                if (!recipe.isHidden && recipesThatAreUnlocked.Contains(recipe.pieceToCreate)) throw new ArgumentException($"Recipe for '{recipe.pieceToCreate}' cannot be unlocked, because it is not hidden.");
             }
 
             List<Recipe> notUnlockableRecipes = new List<Recipe>();

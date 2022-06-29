@@ -24,17 +24,19 @@ C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcore
 C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\osx-x64\publish\Content/gfx\backpack.xnb
 C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\osx-x64\publish\Content/gfx\bag.xnb
 C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\osx-x64\publish\Content/gfx\bag_outline.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\osx-x64\publish\Content/gfx\bed.xnb
 C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\osx-x64\publish\Content/gfx\belt.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\osx-x64\publish\Content/gfx\biceps.xnb
 C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\osx-x64\publish\Content/gfx\big_icons_candacis.xnb
 C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\osx-x64\publish\Content/gfx\big_torch_off.xnb
 C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\osx-x64\publish\Content/gfx\big_torch_on.xnb
 C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\osx-x64\publish\Content/gfx\bottle_empty.xnb
 C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\osx-x64\publish\Content/gfx\bottle_oil.xnb
 C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\osx-x64\publish\Content/gfx\bows.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\osx-x64\publish\Content/gfx\burger.xnb
 C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\osx-x64\publish\Content/gfx\Candacis_flames1.xnb
 C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\osx-x64\publish\Content/gfx\celianna_farmnature_crops_transparent.xnb
 C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\osx-x64\publish\Content/gfx\chests.xnb
-C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\osx-x64\publish\Content/gfx\Cooked Meat.xnb
 C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\osx-x64\publish\Content/gfx\crabs_big.xnb
 C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\osx-x64\publish\Content/gfx\crabs_small.xnb
 C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\osx-x64\publish\Content/gfx\craft_items.xnb

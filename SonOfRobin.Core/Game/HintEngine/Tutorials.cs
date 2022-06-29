@@ -97,7 +97,7 @@ namespace SonOfRobin
             new Tutorial(type: Type.BreakThing, name: "destroying items without tools", title: "How to destroy field item without any tools.",
                 messages: new List<HintMessage> {
                 new HintMessage(text: "1. Make sure that the | hand tool is selected on toolbar.",
-                imageList: new List<Texture2D>{ AnimData.framesForPkgs[AnimData.PkgName.Hand].texture}, boxType: messageTextType),
+                imageList: new List<Texture2D>{ AnimData.framesForPkgs[AnimData.PkgName.Hand].texture }, boxType: messageTextType),
                 !Preferences.ShowTouchTips ?
                 new HintMessage(text:"2. Walk next to the item and press |.", imageList: new List<Texture2D> {InputMapper.GetTexture(InputMapper.Action.WorldUseToolbarPiece)}, boxType: messageTextType) :
                 new HintMessage(text:"2. Walk next to the item and press 'USE ITEM' button.", boxType: messageTextType)});
@@ -231,9 +231,10 @@ namespace SonOfRobin
                     !Preferences.ShowTouchTips ?
                     new HintMessage(text:"1. Stand next to the | cooking site and press |.", imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.CookingPot].texture, InputMapper.GetTexture(InputMapper.Action.WorldInteract)}, boxType: messageTextType) :
                     new HintMessage(text:"1. Stand next to the | cooking site and press 'INTERACT' button.", imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.CookingPot].texture}, boxType: messageTextType),
-                    new HintMessage(text:"2. Place some | | | ingredients in | storage.", imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.RawMeat].texture, AnimData.framesForPkgs[AnimData.PkgName.Tomato].texture, AnimData.framesForPkgs[AnimData.PkgName.Clam].texture, AnimData.framesForPkgs[AnimData.PkgName.CookingPot].texture}, boxType: messageTextType),
-                    new HintMessage(text: "3. You will also need to place some | | | fuel\ninto | the cooking site.", imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.WoodLog].texture, AnimData.framesForPkgs[AnimData.PkgName.WoodPlank].texture, AnimData.framesForPkgs[AnimData.PkgName.Coal].texture, AnimData.framesForPkgs[AnimData.PkgName.CookingPot].texture}, boxType: messageTextType),
-                    new HintMessage(text: "4. Use the | flame to start cooking |.", imageList: new List<Texture2D> {AnimData.framesForPkgs[AnimData.PkgName.Flame].texture, AnimData.framesForPkgs[AnimData.PkgName.MealStandard].texture}, boxType: messageTextType),
+                    new HintMessage(text:"2. Place some | | | ingredients into | the cooking site.", imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.RawMeat].texture, AnimData.framesForPkgs[AnimData.PkgName.Tomato].texture, AnimData.framesForPkgs[AnimData.PkgName.Clam].texture, AnimData.framesForPkgs[AnimData.PkgName.CookingPot].texture}, boxType: messageTextType),
+                    new HintMessage(text: "3. You will also need to place some | | fuel\ninto | the cooking site.", imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.WoodLog].texture, AnimData.framesForPkgs[AnimData.PkgName.WoodPlank].texture, AnimData.framesForPkgs[AnimData.PkgName.CookingPot].texture}, boxType: messageTextType),
+                    new HintMessage(text:"4. You can also put some | | | boosters\ninto | the cooking site, if you like.", imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.HerbsRed].texture, AnimData.framesForPkgs[AnimData.PkgName.HerbsYellow].texture, AnimData.framesForPkgs[AnimData.PkgName.HerbsBlue].texture, AnimData.framesForPkgs[AnimData.PkgName.CookingPot].texture}, boxType: messageTextType),
+                    new HintMessage(text: "5. Use the | flame to start cooking |.", imageList: new List<Texture2D> {AnimData.framesForPkgs[AnimData.PkgName.Flame].texture, AnimData.framesForPkgs[AnimData.PkgName.MealStandard].texture}, boxType: messageTextType),
               });
 
             new Tutorial(type: Type.ShakeFruit, name: "getting fruits and vegetables", title: "How to get fruits or vegetables.",

@@ -276,7 +276,7 @@ namespace SonOfRobin
             if (selectedPiece.buffList != null)
             {
                 foreach (BuffEngine.Buff buff in selectedPiece.buffList)
-                { entryList.Add(new InfoWindow.TextEntry(text: buff.Description, color: Color.Cyan, scale: 1f)); }
+                { entryList.Add(new InfoWindow.TextEntry(text: buff.description, color: buff.isPositive ? Color.Cyan : new Color(255, 120, 70), scale: 1f)); }
             }
 
             int margin = this.Margin;
@@ -771,14 +771,12 @@ namespace SonOfRobin
 
             foreach (BoardPiece piece in this.draggedPieces)
             {
-                if (slot != null && slot.CanFitThisPiece(piece))
-                { slot.AddPiece(piece); }
+                if (slot != null && slot.CanFitThisPiece(piece)) slot.AddPiece(piece);
                 else
                 {
                     if (forceReleaseAll)
                     { if (!this.storage.AddPiece(piece)) piecesThatDidNotFitIn.Add(piece); }
-                    else
-                    { piecesThatDidNotFitIn.Add(piece); }
+                    else piecesThatDidNotFitIn.Add(piece);
                 }
             }
 
@@ -796,7 +794,6 @@ namespace SonOfRobin
 
             if (this.draggedPieces.Count == initialDraggedCount && this.draggedPieces[0].name == initialTopPieceName) this.SwapDraggedAndSlotPieces(slot: slot);
 
-
             if (this.draggedByTouch)
             {
                 this.ReleaseHeldPieces(slot: slot, forceReleaseAll: true); // in case of touch (or mouse) drag, dragged pieces should be released after swap
@@ -808,16 +805,7 @@ namespace SonOfRobin
         {
             var slotPieces = this.storage.RemoveAllPiecesFromSlot(slot: slot);
 
-            bool swapPossible = true;
-            foreach (BoardPiece piece in this.draggedPieces)
-            {
-                if (!slot.CanFitThisPiece(piece))
-                {
-                    swapPossible = false;
-                    break;
-                }
-            }
-
+            bool swapPossible = slot.CanFitThisPiece(piece: this.draggedPieces[0], pieceCount: this.draggedPieces.Count);
             if (swapPossible)
             {
                 foreach (BoardPiece piece in this.draggedPieces)
@@ -883,28 +871,10 @@ namespace SonOfRobin
         {
             if (slot.label == "" || !slot.IsEmpty) return;
 
-            //Helpers.DrawRectangleOutline(rect: tileRect, color: Color.Red, borderWidth: 2); // for testing
+            Rectangle labelRect = tileRect;
+            labelRect.Inflate(-(int)(tileRect.Width * 0.1), -(int)(tileRect.Height * 0.4));
 
-            Vector2 labelSize = font.MeasureString(slot.label);
-
-            float maxTextWidth = tileRect.Width * 0.6f;
-            float maxTextHeight = tileRect.Height * 0.18f;
-            float textScale = Math.Min(maxTextWidth / labelSize.X, maxTextHeight / labelSize.Y);
-
-            float textWidth = labelSize.X * textScale;
-            float textHeight = labelSize.Y * textScale;
-
-            Vector2 labelPos = new Vector2(tileRect.X + ((tileRect.Width - textWidth) / 2),
-                                           tileRect.Y + (tileRect.Height - textHeight) / 2);
-
-            //  Helpers.DrawRectangleOutline(rect: new Rectangle((int)labelPos.X, (int)labelPos.Y, (int)textWidth, (int)textHeight), color: Color.Green, borderWidth: 2); // for testing
-
-            float shadowOffset = textHeight * 0.06f;
-
-            Vector2 shadowPos = labelPos + new Vector2(shadowOffset, shadowOffset);
-
-            SonOfRobinGame.spriteBatch.DrawString(font, slot.label, position: shadowPos, color: Color.Black * 0.5f * this.viewParams.drawOpacity, origin: Vector2.Zero, scale: textScale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
-            SonOfRobinGame.spriteBatch.DrawString(font, slot.label, position: labelPos, color: Color.White * this.viewParams.drawOpacity, origin: Vector2.Zero, scale: textScale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
+            Helpers.DrawTextInsideRectWithOutline(font: font, text: slot.label, rectangle: labelRect, color: Color.White, outlineColor: new Color(50, 50, 50), outlineSize: 1, alignX: Helpers.AlignX.Center, alignY: Helpers.AlignY.Center, drawTestRect: false);
         }
 
         private void DrawMainLabel()
@@ -923,11 +893,8 @@ namespace SonOfRobin
             float textWidth = labelSize.X * textScale;
             float textHeight = labelSize.Y * textScale;
 
-            Vector2 labelPos = new Vector2((bgRect.Width - textWidth) / 2,
-                                            bgRect.Top - textHeight);
-
+            Vector2 labelPos = new Vector2((bgRect.Width - textWidth) / 2, bgRect.Top - textHeight);
             float shadowOffset = textHeight * 0.06f;
-
             Vector2 shadowPos = labelPos + new Vector2(shadowOffset, shadowOffset);
 
             SonOfRobinGame.spriteBatch.DrawString(font, label, position: shadowPos, color: Color.Black * 0.5f * this.viewParams.drawOpacity, origin: Vector2.Zero, scale: textScale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);

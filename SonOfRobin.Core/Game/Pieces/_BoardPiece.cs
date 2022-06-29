@@ -14,6 +14,7 @@ namespace SonOfRobin
             PlayerControlledWalking,
             PlayerControlledShooting,
             PlayerControlledSleep,
+            PlayerControlledGhosting,
 
             PlantGrowthAndReproduction,
 
@@ -27,11 +28,10 @@ namespace SonOfRobin
             AnimalGiveBirth,
             AnimalFlee,
 
-            SpectatorFloatAround,
             FireplaceBurn
         }
 
-        public enum Category { Wood, Stone, Metal, SmallPlant, Animal, Indestructible }
+        public enum Category { Wood, Stone, Metal, SmallPlant, Animal, Crystal, Indestructible }
 
         protected static readonly float passiveMovementMultiplier = 100f;
 
@@ -118,6 +118,9 @@ namespace SonOfRobin
 
         public bool IsAnimalOrPlayer { get { return this.GetType() == typeof(Animal) || this.GetType() == typeof(Player); } }
 
+        public bool IsPlantOrFruit { get { return this.GetType() == typeof(Plant) || this.GetType() == typeof(Fruit); } }
+
+
         public bool IsEquippedByPlayer
         {
             get
@@ -158,14 +161,12 @@ namespace SonOfRobin
         {
             get
             {
-                try
+                if (this.maxMassBySize == null) return 0;
+
+                foreach (var kvp in this.maxMassBySize)
                 {
-                    foreach (var kvp in this.maxMassBySize)
-                    {
-                        if (this.Mass < kvp.Value) return kvp.Key;
-                    }
+                    if (this.Mass < kvp.Value) return kvp.Key;
                 }
-                catch (NullReferenceException) { }
                 return 0;
             }
         }
@@ -298,7 +299,7 @@ namespace SonOfRobin
             int posX = this.sprite.gfxRect.Center.X;
             int posY = this.sprite.gfxRect.Bottom;
 
-            new StatBar(label: "", value: (int)this.hitPoints, valueMax: (int)this.maxHitPoints, colorMin: new Color(255, 0, 0), colorMax: new Color(0, 255, 0), posX: posX, posY: posY, ignoreIfAtMax: true);
+            new StatBar(label: "", value: (int)this.hitPoints, valueMax: (int)this.maxHitPoints, colorMin: new Color(255, 0, 0), colorMax: new Color(0, 255, 0), posX: posX, posY: posY, ignoreIfAtMax: true, texture: AnimData.framesForPkgs[AnimData.PkgName.Heart].texture);
 
             StatBar.FinishThisBatch();
         }
@@ -478,9 +479,9 @@ namespace SonOfRobin
                         return;
                     }
 
-                case State.SpectatorFloatAround:
+                case State.PlayerControlledGhosting:
                     {
-                        this.SM_SpectatorFloatAround();
+                        this.SM_PlayerControlledGhosting();
                         return;
                     }
 
@@ -543,7 +544,7 @@ namespace SonOfRobin
         { throw new DivideByZeroException("This method should not be executed."); }
         public virtual void SM_PlayerControlledSleep()
         { throw new DivideByZeroException("This method should not be executed."); }
-        public virtual void SM_SpectatorFloatAround()
+        public virtual void SM_PlayerControlledGhosting()
         { throw new DivideByZeroException("This method should not be executed."); }
         public virtual void SM_FireplaceBurn()
         { throw new DivideByZeroException("This method should not be executed."); }

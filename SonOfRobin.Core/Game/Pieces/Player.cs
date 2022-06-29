@@ -158,7 +158,7 @@ namespace SonOfRobin
 
                 if (this.IsVeryTired)
                 {
-                    if (!this.buffEngine.HasBuff(BuffEngine.BuffType.Tired)) this.buffEngine.AddBuff(world: this.world, buff: new BuffEngine.Buff(world: world, type: BuffEngine.BuffType.Tired, value: 0, autoRemoveDelay: 0, isPositive: false));
+                    if (!this.buffEngine.HasBuff(BuffEngine.BuffType.Tired)) this.buffEngine.AddBuff(world: this.world, buff: new BuffEngine.Buff(world: world, type: BuffEngine.BuffType.Tired, value: 0, autoRemoveDelay: 0));
                 }
                 else
                 {
@@ -191,7 +191,7 @@ namespace SonOfRobin
 
                 if (fedPercent < 0.2f)
                 {
-                    if (!this.buffEngine.HasBuff(BuffEngine.BuffType.Hungry)) this.buffEngine.AddBuff(world: this.world, buff: new BuffEngine.Buff(world: world, type: BuffEngine.BuffType.Hungry, value: 0, autoRemoveDelay: 0, isPositive: false));
+                    if (!this.buffEngine.HasBuff(BuffEngine.BuffType.Hungry)) this.buffEngine.AddBuff(world: this.world, buff: new BuffEngine.Buff(world: world, type: BuffEngine.BuffType.Hungry, value: 0, autoRemoveDelay: 0));
                 }
                 else
                 {
@@ -207,10 +207,10 @@ namespace SonOfRobin
 
         public PieceStorage toolStorage;
         public PieceStorage equipStorage;
-        public Player(World world, Vector2 position, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedFields allowedFields, byte invWidth, byte invHeight, byte toolbarWidth, byte toolbarHeight, string readableName, string description,
-            byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = false, int generation = 0, Yield yield = null) :
+        public Player(World world, Vector2 position, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedFields allowedFields, byte invWidth, byte invHeight, byte toolbarWidth, byte toolbarHeight, string readableName, string description, State activeState,
+            byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, bool ignoresCollisions = false, ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = false, int generation = 0, Yield yield = null) :
 
-            base(world: world, position: position, animPackage: animPackage, animSize: animSize, animName: animName, speed: speed, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedFields: allowedFields, floatsOnWater: floatsOnWater, mass: 50000, maxMassBySize: null, generation: generation, canBePickedUp: false, maxHitPoints: 400, fadeInAnim: false, placeAtBeachEdge: true, isShownOnMiniMap: true, readableName: readableName, description: description, yield: yield, strength: 1, category: Category.Indestructible, lightEngine: new LightEngine(size: 300, opacity: 0.9f, colorActive: true, color: Color.Orange * 0.2f, isActive: false, castShadows: true))
+            base(world: world, position: position, animPackage: animPackage, animSize: animSize, animName: animName, speed: speed, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedFields: allowedFields, floatsOnWater: floatsOnWater, mass: 50000, maxMassBySize: null, generation: generation, canBePickedUp: false, maxHitPoints: 400, fadeInAnim: false, placeAtBeachEdge: true, isShownOnMiniMap: true, readableName: readableName, description: description, yield: yield, strength: 1, category: Category.Indestructible, lightEngine: new LightEngine(size: 300, opacity: 0.9f, colorActive: true, color: Color.Orange * 0.2f, isActive: false, castShadows: true), ignoresCollisions: ignoresCollisions)
         {
             this.maxFedLevel = 40000;
             this.fedLevel = maxFedLevel;
@@ -219,7 +219,7 @@ namespace SonOfRobin
             this.maxFatigue = 2000;
             this.fatigue = 0;
             this.sleepEngine = SleepEngine.OutdoorSleepDry; // to be changed later
-            this.activeState = State.PlayerControlledWalking;
+            this.activeState = activeState;
 
             this.pieceStorage = new PieceStorage(width: invWidth, height: invHeight, world: this.world, storagePiece: this, storageType: PieceStorage.StorageType.Inventory);
             this.toolStorage = new PieceStorage(width: toolbarWidth, height: toolbarHeight, world: this.world, storagePiece: this, storageType: PieceStorage.StorageType.Tools);
@@ -258,7 +258,7 @@ namespace SonOfRobin
 
         public override void Kill()
         {
-            if (Preferences.DebugGodMode) return;
+            if (Preferences.DebugGodMode || this.name != PieceTemplate.Name.Player) return;
 
             foreach (PieceStorage storage in this.CraftStorages)
             { storage.DropAllPiecesToTheGround(addMovement: true); }
@@ -267,8 +267,7 @@ namespace SonOfRobin
 
             Scene.RemoveAllScenesOfType(typeof(TextWindow));
 
-            SolidColor redOverlay = new SolidColor(color: Color.DarkRed, viewOpacity: 0.75f);
-            redOverlay.transManager.AddTransition(new Transition(transManager: redOverlay.transManager, outTrans: true, baseParamName: "Opacity", targetVal: 0f, duration: 200, endRemoveScene: true));
+            SolidColor redOverlay = new SolidColor(color: Color.DarkRed, viewOpacity: 0.65f);
             this.world.solidColorManager.Add(redOverlay);
 
             new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetZoom, turnOffInputUntilExecution: true, delay: 0, executeHelper: new Dictionary<string, Object> { { "zoom", 3f } });
@@ -343,6 +342,11 @@ namespace SonOfRobin
             if (this.FedPercent > 0.8f) this.world.hintEngine.Enable(HintEngine.Type.Hungry);
             if (this.FedPercent > 0.4f) this.world.hintEngine.Enable(HintEngine.Type.VeryHungry);
             if (this.FedPercent > 0.1f) this.world.hintEngine.Enable(HintEngine.Type.Starving);
+        }
+
+        public override void SM_PlayerControlledGhosting()
+        {
+            this.Walk();
         }
 
         public override void SM_PlayerControlledWalking()
@@ -467,7 +471,12 @@ namespace SonOfRobin
             }
 
             var currentSpeed = this.IsVeryTired ? this.speed / 2f : this.speed;
-            if (InputMapper.IsPressed(InputMapper.Action.WorldRun) && (this.Stamina > 0)) currentSpeed *= 2;
+
+            if (this.world.SprintMode)
+            {
+                if (this.Stamina > 0) currentSpeed *= 2;
+                else this.world.SprintMode = false;
+            }
 
             movement *= currentSpeed;
 
@@ -481,7 +490,7 @@ namespace SonOfRobin
                 int staminaUsed = 0;
 
                 if (this.sprite.IsInWater) staminaUsed = 1;
-                if (InputMapper.IsPressed(InputMapper.Action.WorldRun)) staminaUsed += 2;
+                if (this.world.SprintMode) staminaUsed += 2;
 
                 if (staminaUsed > 0) this.Stamina = Math.Max(this.Stamina - staminaUsed, 0);
             }

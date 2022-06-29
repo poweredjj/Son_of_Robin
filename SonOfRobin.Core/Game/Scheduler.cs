@@ -472,11 +472,12 @@ namespace SonOfRobin
 
                             world = World.GetTopWorld();
 
+                            // adding "generic" regen based on mass (if meal does not contain poison or regen)
+                            if (!BuffEngine.BuffListContainsPoisonOrRegen(food.buffList)) food.buffList.Add(new BuffEngine.Buff(world: world, type: BuffEngine.BuffType.RegenPoison, value: (int)(food.Mass / 3), autoRemoveDelay: 60 * 60));
+                            player.AcquireEnergy(food.Mass * 40f);
+
                             foreach (BuffEngine.Buff buff in food.buffList)
                             { player.buffEngine.AddBuff(buff: buff, world: world); }
-
-                            player.AcquireEnergy(food.Mass * 40f);
-                            player.buffEngine.AddBuff(world: world, buff: new BuffEngine.Buff(world: world, type: BuffEngine.BuffType.RegenPoison, value: (int)(food.Mass / 3), autoRemoveDelay: 60 * 60, isPositive: true));
 
                             food.hitPoints = 0;
                         }

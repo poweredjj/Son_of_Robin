@@ -195,21 +195,7 @@ namespace SonOfRobin
         {
             // general use
 
-            int destBoundsShorterSide = Math.Min(destBoundsRect.Width, destBoundsRect.Height);
-            int sourceLongerSide = Math.Max(this.texture.Width, this.texture.Height);
-            float sourceScale = (float)destBoundsShorterSide / (float)sourceLongerSide;
-
-            int destWidth = (int)((float)this.texture.Width * (float)sourceScale);
-            int destHeight = (int)((float)this.texture.Height * (float)sourceScale);
-
-            Rectangle destRect = new Rectangle(destBoundsRect.X, destBoundsRect.Y, destWidth, destHeight);
-
-            destRect.X += (int)(((float)destBoundsRect.Width - (float)destRect.Width) / 2f);
-            destRect.Y += (int)(((float)destBoundsRect.Height - (float)destRect.Height) / 2f);
-
-            // Helpers.DrawRectangleOutline(rect: destRect, color: Color.YellowGreen, borderWidth: 2); // testing rect size
-
-            SonOfRobinGame.spriteBatch.Draw(texture: this.texture, destinationRectangle: destRect, sourceRectangle: this.textureRect, color: color * opacity);
+            Helpers.DrawTextureInsideRect(texture: this.texture, rectangle: destBoundsRect, color: color * opacity);
         }
 
     }
