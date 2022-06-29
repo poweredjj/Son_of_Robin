@@ -29,7 +29,6 @@ namespace SonOfRobin
         }
 
         protected static readonly float passiveMovementMultiplier = 100f;
-        private static int idCounter;
 
         public readonly World world;
         public readonly string id;
@@ -54,9 +53,10 @@ namespace SonOfRobin
         public readonly bool indestructible;
         public readonly byte stackSize;
         public PieceStorage pieceStorage;
+        public BuffEngine buffEngine;
         public readonly Yield yield;
-        public Scheduler.ActionName boardAction;
-        public Scheduler.ActionName toolbarAction;
+        public Scheduler.TaskName boardTask;
+        public Scheduler.TaskName toolbarTask;
         public readonly bool canBePickedUp;
         protected Vector2 passiveMovement;
         protected int passiveRotation;
@@ -103,17 +103,18 @@ namespace SonOfRobin
         }
 
         public BoardPiece(World world, Vector2 position, AnimPkg animPackage, PieceTemplate.Name name, AllowedFields allowedFields, Dictionary<byte, int> maxMassBySize,
-            byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, bool visible = true, ushort minDistance = 0, ushort maxDistance = 100, bool ignoresCollisions = false, int destructionDelay = 0, int maxAge = 0, bool floatsOnWater = false, bool checksFullCollisions = false, int generation = 0, int mass = 1, int staysAfterDeath = 800, float maxHitPoints = 1, byte stackSize = 1, byte storageWidth = 0, byte storageHeight = 0, Scheduler.ActionName boardAction = Scheduler.ActionName.Empty, Scheduler.ActionName toolbarAction = Scheduler.ActionName.Empty, bool canBePickedUp = false, Yield yield = null, bool indestructible = false, bool rotatesWhenDropped = false, bool fadeInAnim = false, bool serialize = true)
+            byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, bool visible = true, ushort minDistance = 0, ushort maxDistance = 100, bool ignoresCollisions = false, int destructionDelay = 0, int maxAge = 0, bool floatsOnWater = false, bool checksFullCollisions = false, int generation = 0, int mass = 1, int staysAfterDeath = 800, float maxHitPoints = 1, byte stackSize = 1, Scheduler.TaskName boardTask = Scheduler.TaskName.Empty, Scheduler.TaskName toolbarTask = Scheduler.TaskName.Empty, bool canBePickedUp = false, Yield yield = null, bool indestructible = false, bool rotatesWhenDropped = false, bool fadeInAnim = false, bool serialize = true, bool placeAtBeachEdge = false, bool isShownOnMiniMap = false)
         {
             this.world = world;
             this.name = name;
-            this.id = $"{idCounter}_{this.name}_{this.world.random.Next(0, 1000000)}";
-            this.sprite = new Sprite(boardPiece: this, id: this.id, position: position, world: this.world, animPackage: animPackage, animSize: animSize, animName: animName, blocksMovement: blocksMovement, visible: visible, minDistance: minDistance, maxDistance: maxDistance, ignoresCollisions: ignoresCollisions, allowedFields: allowedFields, floatsOnWater: floatsOnWater, checksFullCollisions: checksFullCollisions, fadeInAnim: fadeInAnim);
+            this.id = $"{this.world.currentPieceId}_{this.name}_{this.world.random.Next(0, 1000000)}";
+            this.sprite = new Sprite(boardPiece: this, id: this.id, position: position, world: this.world, animPackage: animPackage, animSize: animSize, animName: animName, blocksMovement: blocksMovement, visible: visible, minDistance: minDistance, maxDistance: maxDistance, ignoresCollisions: ignoresCollisions, allowedFields: allowedFields, floatsOnWater: floatsOnWater, checksFullCollisions: checksFullCollisions, fadeInAnim: fadeInAnim, placeAtBeachEdge: placeAtBeachEdge, isShownOnMiniMap: isShownOnMiniMap);
 
+            this.stackSize = stackSize;
             if (!this.sprite.placedCorrectly) return;
 
             AddToPieceCount();
-            idCounter++;
+            this.world.currentPieceId++;
             this.destructionDelay = destructionDelay;
             this.activeState = State.Empty;
             this.indestructible = indestructible;
@@ -132,10 +133,10 @@ namespace SonOfRobin
             this.currentAge = 0;
             this.bioWear = 0; // 0 - 1 valid range
             this.efficiency = 1; // 0 - 1 valid range
-            this.stackSize = stackSize;
-            this.pieceStorage = storageWidth > 0 && storageHeight > 0 ? new PieceStorage(width: storageWidth, height: storageHeight, world: this.world, storagePiece: this, storageType: this.name == PieceTemplate.Name.Player ? PieceStorage.StorageType.Inventory : PieceStorage.StorageType.Chest) : null;
-            this.boardAction = boardAction;
-            this.toolbarAction = toolbarAction;
+            this.pieceStorage = null; // updated in child classes - if needed
+            this.buffEngine = new BuffEngine(piece: this);
+            this.boardTask = boardTask;
+            this.toolbarTask = toolbarTask;
             this.passiveMovement = Vector2.Zero;
             this.passiveRotation = 0;
             this.rotatesWhenDropped = rotatesWhenDropped;
@@ -151,7 +152,7 @@ namespace SonOfRobin
 
         public void AddPlannedDestruction()
         {
-            if (destructionDelay == 0) return;
+            if (this.destructionDelay == 0) return;
 
             // duration value "-1" should be replaced with animation duration
             new WorldEvent(eventName: WorldEvent.EventName.Destruction, world: this.world, delay: this.destructionDelay == -1 ? this.sprite.GetAnimDuration() - 1 : this.destructionDelay, boardPiece: this);
@@ -163,6 +164,7 @@ namespace SonOfRobin
             {
                 {"base_old_id", this.id}, // will be changed after loading, used to identify piece in other contexts
                 {"base_name", this.name},
+                {"base_speed", this.speed},
                 {"base_hitPoints", this.hitPoints},
                 {"base_maxHitPoints", this.maxHitPoints},
                 {"base_showStatBarsTillFrame", this.showStatBarsTillFrame},
@@ -173,11 +175,12 @@ namespace SonOfRobin
                 {"base_efficiency", this.efficiency},
                 {"base_activeState", this.activeState},
                 {"base_pieceStorage", this.pieceStorage},
-                {"base_boardAction", this.boardAction},
-                {"base_toolbarAction", this.toolbarAction},
+                {"base_boardTask", this.boardTask},
+                {"base_toolbarTask", this.toolbarTask},
                 {"base_passiveMovementX", this.passiveMovement.X},
                 {"base_passiveMovementY", this.passiveMovement.Y},
                 {"base_passiveRotation", this.passiveRotation},
+                {"base_buffEngine", this.buffEngine.Serialize()},
             };
 
             if (this.pieceStorage != null) pieceData["base_pieceStorage"] = this.pieceStorage.Serialize();
@@ -191,6 +194,7 @@ namespace SonOfRobin
         {
             this.mass = (float)pieceData["base_mass"];
             this.hitPoints = (float)pieceData["base_hitPoints"];
+            this.speed = (float)pieceData["base_speed"];
             this.maxHitPoints = (float)pieceData["base_maxHitPoints"];
             this.showStatBarsTillFrame = (int)pieceData["base_showStatBarsTillFrame"];
             this.bioWear = (float)pieceData["base_bioWear"];
@@ -198,10 +202,11 @@ namespace SonOfRobin
             this.activeState = (State)pieceData["base_activeState"];
             this.maxAge = (int)pieceData["base_maxAge"];
             this.pieceStorage = PieceStorage.Deserialize(storageData: pieceData["base_pieceStorage"], world: this.world, storagePiece: this);
-            this.boardAction = (Scheduler.ActionName)pieceData["base_boardAction"];
-            this.toolbarAction = (Scheduler.ActionName)pieceData["base_toolbarAction"];
+            this.boardTask = (Scheduler.TaskName)pieceData["base_boardTask"];
+            this.toolbarTask = (Scheduler.TaskName)pieceData["base_toolbarTask"];
             this.passiveMovement = new Vector2((float)pieceData["base_passiveMovementX"], (float)pieceData["base_passiveMovementY"]);
             this.passiveRotation = (int)pieceData["base_passiveRotation"];
+            this.buffEngine = BuffEngine.Deserialize(piece: this, buffEngineData: pieceData["base_buffEngine"]);
 
             this.sprite.Deserialize(pieceData);
 

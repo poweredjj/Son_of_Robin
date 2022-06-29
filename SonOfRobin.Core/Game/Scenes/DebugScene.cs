@@ -50,6 +50,7 @@ namespace SonOfRobin
                 if (world.pieceCountByClass.ContainsKey(typeof(Animal))) debugText += $", animals {world.pieceCountByClass[typeof(Animal)]}";
                 debugText += $"\nproc. plants {world.processedPlantsCount}";
                 debugText += $"\nloaded textures {world.grid.loadedTexturesCount}";
+                //if(SonOfRobinGame.platform == Platform.Desktop) debugText += $"\nram free: {SonOfRobinGame.ramCounter.NextValue()}";
 
                 TimeSpan elapsedTime = TimeSpan.FromMilliseconds(world.currentUpdate * 16.67);
                 debugText += $"\ntime {elapsedTime:hh\\:mm\\:ss} (x{world.updateMultiplier})";
@@ -90,31 +91,31 @@ namespace SonOfRobin
 
             if (Keyboard.HasBeenPressed(Keys.D1))
             {
-                BoardPiece piece = PieceTemplate.CreateOnBoard(world: world, position: world.player.sprite.position, templateName: PieceTemplate.Name.TentSmall);
+                BoardPiece piece = PieceTemplate.CreateOnBoard(world: world, position: world.player.sprite.position, templateName: PieceTemplate.Name.Map);
                 if (piece.sprite.placedCorrectly) piece.sprite.MoveToClosestFreeSpot(world.player.sprite.position);
             }
 
             if (Keyboard.HasBeenPressed(Keys.D2))
             {
-                BoardPiece piece = PieceTemplate.CreateOnBoard(world: world, position: world.player.sprite.position, templateName: PieceTemplate.Name.TentMedium);
+                BoardPiece piece = PieceTemplate.CreateOnBoard(world: world, position: world.player.sprite.position, templateName: PieceTemplate.Name.ChestWooden);
                 if (piece.sprite.placedCorrectly) piece.sprite.MoveToClosestFreeSpot(world.player.sprite.position);
             }
 
             if (Keyboard.HasBeenPressed(Keys.D3))
             {
-                BoardPiece piece = PieceTemplate.CreateOnBoard(world: world, position: world.player.sprite.position, templateName: PieceTemplate.Name.TentBig);
+                BoardPiece piece = PieceTemplate.CreateOnBoard(world: world, position: world.player.sprite.position, templateName: PieceTemplate.Name.ChestIron);
                 if (piece.sprite.placedCorrectly) piece.sprite.MoveToClosestFreeSpot(world.player.sprite.position);
             }
 
             if (Keyboard.HasBeenPressed(Keys.D4))
             {
-                BoardPiece piece = PieceTemplate.CreateOnBoard(world: world, position: world.player.sprite.position, templateName: PieceTemplate.Name.AxeIron);
+                BoardPiece piece = PieceTemplate.CreateOnBoard(world: world, position: world.player.sprite.position, templateName: PieceTemplate.Name.BackpackMedium);
                 if (piece.sprite.placedCorrectly) piece.sprite.MoveToClosestFreeSpot(world.player.sprite.position);
             }
 
             if (Keyboard.HasBeenPressed(Keys.D5))
             {
-                BoardPiece piece = PieceTemplate.CreateOnBoard(world: world, position: world.player.sprite.position, templateName: PieceTemplate.Name.PickaxeIron);
+                BoardPiece piece = PieceTemplate.CreateOnBoard(world: world, position: world.player.sprite.position, templateName: PieceTemplate.Name.BeltMedium);
                 if (piece.sprite.placedCorrectly) piece.sprite.MoveToClosestFreeSpot(world.player.sprite.position);
             }
 
@@ -137,7 +138,7 @@ namespace SonOfRobin
                 new Tracking(world: world, targetSprite: world.player.sprite, followingSprite: backlight.sprite, offsetX: 0, offsetY: 0, targetXAlign: XAlign.Center, targetYAlign: YAlign.Bottom);
             }
 
-            if (Keyboard.IsPressed(Keys.D9)) world.CreateMissingPieces(outsideCamera: false, multiplier: 1.0f, clearDoNotCreateList: true);
+            if (Keyboard.HasBeenPressed(Keys.D9)) world.CreateMissingPieces(outsideCamera: false, multiplier: 1.0f, clearDoNotCreateList: true);
 
             if (Keyboard.HasBeenPressed(Keys.G))
             {
@@ -191,7 +192,6 @@ namespace SonOfRobin
                 world.AutoSave(force: true);
             }
 
-
             if (Keyboard.HasBeenPressed(Keys.K))
             {
                 var piecesWithinDistance = world.grid.GetPiecesWithinDistance(groupName: Cell.Group.ColAll, mainSprite: world.player.sprite, distance: 150);
@@ -236,8 +236,17 @@ namespace SonOfRobin
 
             if (Keyboard.HasBeenPressed(Keys.F5)) MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: "Test message.");
             if (Keyboard.HasBeenPressed(Keys.F6)) ProgressBar.ChangeValues(curVal: 1, maxVal: 5, text: "progressbar test\nsecond line\nand third line");
-            if (Keyboard.HasBeenPressed(Keys.F12) || VirtButton.HasButtonBeenPressed(VButName.DebugRemoveTopScene)) RemoveTopScene();
 
+            if (Keyboard.HasBeenPressed(Keys.F7))
+            { world.player.pieceStorage.Resize(newWidth: 3, newHeight: 3); }
+
+            if (Keyboard.HasBeenPressed(Keys.F8))
+            { world.player.pieceStorage.Resize(newWidth: 8, newHeight: 6); }
+
+            if (Keyboard.HasBeenPressed(Keys.F9))
+            { world.player.buffEngine.AddBuff(buff: new BuffEngine.Buff(world: world, type: BuffEngine.BuffType.Speed, value: 20f), autoRemoveDelay: 180); }
+
+            if (Keyboard.HasBeenPressed(Keys.F12) || VirtButton.HasButtonBeenPressed(VButName.DebugRemoveTopScene)) RemoveTopScene();
 
             if (Keyboard.HasBeenPressed(Keys.LeftAlt) || VirtButton.HasButtonBeenPressed(VButName.DebugFastForward))
             {

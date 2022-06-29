@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Linq;
 
 namespace SonOfRobin
 {
     public class WorldEvent
     {
-        public enum EventName { Birth, Death, Destruction, TurnOffWorkshop, RestorePieceCreation, FadeOutSprite, RestoreHint }
+        public enum EventName { Birth, Death, Destruction, TurnOffWorkshop, FinishCooking, RestorePieceCreation, FadeOutSprite, RestoreHint, RemoveBuff }
 
         public readonly World world;
         public readonly BoardPiece boardPiece;
@@ -120,6 +119,12 @@ namespace SonOfRobin
                     workshop.TurnOff();
                     return;
 
+                case EventName.FinishCooking:
+                    Cooker cooker = (Cooker)this.boardPiece;
+                    cooker.TurnOff();
+                    cooker.boardTask = Scheduler.TaskName.OpenContainer;
+                    return;
+
                 case EventName.RestorePieceCreation:
                     var pieceName = (PieceTemplate.Name)this.eventHelper;
                     this.world.doNotCreatePiecesList.Remove(pieceName);
@@ -138,6 +143,12 @@ namespace SonOfRobin
 
                 case EventName.FadeOutSprite:
                     this.boardPiece.sprite.opacityFade = new OpacityFade(sprite: this.boardPiece.sprite, destOpacity: 0f);
+                    return;
+
+                case EventName.RemoveBuff:
+                    int buffId = (int)this.eventHelper;
+                    this.boardPiece.buffEngine.RemoveBuff(buffId);
+
                     return;
 
                 default:

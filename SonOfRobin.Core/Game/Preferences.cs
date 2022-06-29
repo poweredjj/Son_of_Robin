@@ -23,6 +23,10 @@ namespace SonOfRobin
         public static int displayResX = 1920;
         public static int displayResY = 1080;
         public static bool showControlTips = true;
+        private static ButtonScheme.Type controlTipsScheme;
+        public static bool showHints = true;
+
+        public static bool zoomedOut = false; // used to store virtual button value
 
         // debug variables should not be saved to preferences file
         public static bool debugUseMultipleThreads = true;
@@ -33,6 +37,18 @@ namespace SonOfRobin
         public static bool debugShowStatBars = false;
         public static bool debugShowFruitRects = false;
         public static bool debugCreateMissingPieces = true;
+        public static bool debugShowWholeMap = false;
+        public static bool debugShowAllMapPieces = false;
+
+        public static ButtonScheme.Type ControlTipsScheme
+        {
+            get { return controlTipsScheme; }
+            set
+            {
+                controlTipsScheme = value;
+                ButtonScheme.ChangeType(value);
+            }
+        }
 
         public static int MaxThreadsToUse
         { get { return debugUseMultipleThreads ? Environment.ProcessorCount : 1; } }
@@ -152,6 +168,8 @@ namespace SonOfRobin
             prefsData["displayResX"] = displayResX;
             prefsData["displayResY"] = displayResY;
             prefsData["showControlTips"] = showControlTips;
+            prefsData["showHints"] = showHints;
+            prefsData["controlTipsScheme"] = controlTipsScheme;
 
             LoaderSaver.Save(path: SonOfRobinGame.prefsPath, savedObj: prefsData);
 
@@ -181,6 +199,8 @@ namespace SonOfRobin
                     displayResX = (int)prefsData["displayResX"];
                     displayResY = (int)prefsData["displayResY"];
                     showControlTips = (bool)prefsData["showControlTips"];
+                    showHints = (bool)prefsData["showHints"];
+                    controlTipsScheme = (ButtonScheme.Type)prefsData["controlTipsScheme"];
                 }
                 catch (KeyNotFoundException)
                 { MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: "KeyNotFoundException while loading preferences.", color: Color.White); }
@@ -188,6 +208,7 @@ namespace SonOfRobin
 
             if (SonOfRobinGame.platform == Platform.Mobile) fullScreenMode = true; // window mode makes no sense on mobile
             if (SonOfRobinGame.fakeMobileMode) fullScreenMode = false; // fakeMobileMode uses mouse (and mouse cursor is not visible in fullscreen mode)
+            ButtonScheme.ChangeType(controlTipsScheme);
 
 
             MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: "Preferences loaded.", color: Color.White);

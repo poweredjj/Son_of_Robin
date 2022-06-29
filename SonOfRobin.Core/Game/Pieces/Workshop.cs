@@ -16,7 +16,7 @@ namespace SonOfRobin
             base(world: world, position: position, animPackage: animPackage, animSize: animSize, animName: animName, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedFields: allowedFields, floatsOnWater: floatsOnWater, maxMassBySize: maxMassBySize, generation: generation, canBePickedUp: false, yield: yield, maxHitPoints: maxHitPoints, fadeInAnim: fadeInAnim)
         {
             this.activeState = State.Empty;
-            this.boardAction = Scheduler.ActionName.OpenCraftMenu;
+            this.boardTask = Scheduler.TaskName.OpenCraftMenu;
             this.craftMenuTemplate = craftMenuTemplate;
         }
 

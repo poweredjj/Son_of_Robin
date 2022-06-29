@@ -17,8 +17,8 @@ namespace SonOfRobin
         public readonly MenuTemplate.Name templateName;
         private readonly string name;
         public readonly bool canBeClosedManually;
-        private Scheduler.ActionName closingAction;
-        private Object closingActionHelper;
+        private Scheduler.TaskName closingTask;
+        private Object closingTaskHelper;
         public List<Entry> entryList;
         public int activeIndex;
         private float currentScrollPosition;
@@ -135,7 +135,7 @@ namespace SonOfRobin
                 currentScrollPosition += posDiff / 20f;
             }
         }
-        public Menu(MenuTemplate.Name templateName, bool blocksUpdatesBelow, bool canBeClosedManually, string name, Layout layout = Layout.Right, Scheduler.ActionName closingAction = Scheduler.ActionName.Empty, Object closingActionHelper = null) : base(inputType: InputTypes.Normal, priority: 1, blocksUpdatesBelow: blocksUpdatesBelow, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, hidesSameScenesBelow: true, touchLayout: TouchLayout.Empty, tipsLayout: canBeClosedManually ? ControlTips.TipsLayout.Menu : ControlTips.TipsLayout.MenuWithoutClosing)
+        public Menu(MenuTemplate.Name templateName, bool blocksUpdatesBelow, bool canBeClosedManually, string name, Layout layout = Layout.Right, Scheduler.TaskName closingTask = Scheduler.TaskName.Empty, Object closingTaskHelper = null) : base(inputType: InputTypes.Normal, priority: 1, blocksUpdatesBelow: blocksUpdatesBelow, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, hidesSameScenesBelow: true, touchLayout: TouchLayout.Empty, tipsLayout: canBeClosedManually ? ControlTips.TipsLayout.Menu : ControlTips.TipsLayout.MenuWithoutClosing)
         {
             this.layout = layout;
             this.touchMode = SonOfRobinGame.platform == Platform.Mobile;
@@ -145,8 +145,8 @@ namespace SonOfRobin
             this.currentScrollPosition = 0;
             this.entryList = new List<Entry> { };
             this.canBeClosedManually = canBeClosedManually;
-            this.closingAction = closingAction;
-            this.closingActionHelper = closingActionHelper;
+            this.closingTask = closingTask;
+            this.closingTaskHelper = closingTaskHelper;
             this.SetViewPosAndSize();
             this.bgColor = Color.Black * 0.6f;
 
@@ -216,13 +216,13 @@ namespace SonOfRobin
             }
 
             base.Remove();
-            new Scheduler.Task(menu: this, actionName: this.closingAction, executeHelper: this.closingActionHelper);
+            new Scheduler.Task(menu: this, taskName: this.closingTask, executeHelper: this.closingTaskHelper);
         }
 
-        public void AddClosingAction(Scheduler.ActionName closingAction, Object closingActionHelper)
+        public void AddClosingTask(Scheduler.TaskName closingTask, Object closingTaskHelper)
         {
-            this.closingAction = closingAction;
-            this.closingActionHelper = closingActionHelper;
+            this.closingTask = closingTask;
+            this.closingTaskHelper = closingTaskHelper;
         }
 
         public void Rebuild()

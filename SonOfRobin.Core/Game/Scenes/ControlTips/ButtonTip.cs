@@ -2,7 +2,6 @@
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace SonOfRobin
 {
@@ -13,25 +12,14 @@ namespace SonOfRobin
         private static readonly SpriteFont font = SonOfRobinGame.fontMedium;
 
         public readonly string text;
-        public readonly List<string> textureNames;
         public readonly List<Texture2D> textures;
         public readonly int width;
         public readonly int height;
 
-        public ButtonTip(string text, string textureName)
+        public ButtonTip(string text, List<Texture2D> textures)
         {
             this.text = text;
-            this.textureNames = new List<string> { textureName };
-            this.textures = this.GetTextures();
-            Vector2 size = this.WholeSize;
-            this.width = (int)size.X;
-            this.height = (int)size.Y;
-        }
-        public ButtonTip(string text, List<string> textureNames)
-        {
-            this.text = text;
-            this.textureNames = textureNames;
-            this.textures = this.GetTextures();
+            this.textures = textures;
             Vector2 size = this.WholeSize;
             this.width = (int)size.X;
             this.height = (int)size.Y;
@@ -58,15 +46,6 @@ namespace SonOfRobin
 
                 return new Vector2(sumWidth, sumHeight);
             }
-        }
-        private List<Texture2D> GetTextures()
-        {
-            var textures = new List<Texture2D> { };
-
-            foreach (string textureName in this.textureNames)
-            { textures.Add(SonOfRobinGame.textureByName[textureName]); }
-
-            return textures;
         }
         public void Draw(ControlTips controlTips, int drawOffsetX)
         {

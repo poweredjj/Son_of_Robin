@@ -10,7 +10,7 @@ namespace SonOfRobin
 
         private readonly Craft.Recipe recipe;
         private readonly PieceStorage storage;
-        public CraftInvoker(Menu menu, string name, Scheduler.ActionName actionName, Craft.Recipe recipe, PieceStorage storage, Object executeHelper = null, bool closesMenu = false, bool rebuildsMenu = false) : base(menu: menu, name: name, actionName: actionName, executeHelper: executeHelper, closesMenu: closesMenu, rebuildsMenu: rebuildsMenu)
+        public CraftInvoker(Menu menu, string name, Scheduler.TaskName taskName, Craft.Recipe recipe, PieceStorage storage, Object executeHelper = null, bool closesMenu = false, bool rebuildsMenu = false) : base(menu: menu, name: name, taskName: taskName, executeHelper: executeHelper, closesMenu: closesMenu, rebuildsMenu: rebuildsMenu)
         {
             this.recipe = recipe;
             this.storage = storage;

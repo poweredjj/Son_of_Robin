@@ -12,6 +12,7 @@ namespace SonOfRobin
         public static readonly SpriteFont font = SonOfRobinGame.fontHuge;
         public static readonly int maxWidth = 90;
 
+        private int blockingFramesLeft;
         public readonly string text;
         private readonly int textWidth;
         private readonly int textHeight;
@@ -23,6 +24,8 @@ namespace SonOfRobin
         private int currentCharFramesLeft;
         private bool animationFinished;
         private readonly int framesPerChar;
+        private Scheduler.TaskName closingTask;
+        private Object closingTaskHelper;
 
         private string AnimatedText { get { return this.text.Substring(0, this.charCounter); } }
         private int MaxWindowWidth { get { return Convert.ToInt32(SonOfRobinGame.VirtualWidth * 0.8f); } }
@@ -41,7 +44,7 @@ namespace SonOfRobin
             }
         }
 
-        public TextWindow(string text, Color textColor, Color bgColor, bool animate = true, int framesPerChar = 0, bool useTransition = true, bool checkForDuplicate = false) : base(inputType: InputTypes.Normal, priority: 1, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.TextWindow)
+        public TextWindow(string text, Color textColor, Color bgColor, bool animate = true, int framesPerChar = 0, bool useTransition = true, bool checkForDuplicate = false, bool blocksUpdatesBelow = false, int blockInputDuration = 0, Scheduler.TaskName closingTask = Scheduler.TaskName.Empty, Object closingTaskHelper = null) : base(inputType: InputTypes.Normal, priority: 1, blocksUpdatesBelow: blocksUpdatesBelow, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: blockInputDuration > 0 ? ControlTips.TipsLayout.Empty : ControlTips.TipsLayout.TextWindow)
         {
             this.text = SplitText(text: text, maxWidth: maxWidth);
             Vector2 textSize = font.MeasureString(this.text);
@@ -51,11 +54,15 @@ namespace SonOfRobin
             this.textColor = textColor;
             this.bgColor = bgColor;
             this.useTransition = useTransition;
+            this.blockingFramesLeft = blockInputDuration;
 
             this.charCounter = animate ? 0 : text.Length;
             this.currentCharFramesLeft = framesPerChar;
             this.animationFinished = !animate;
             this.framesPerChar = framesPerChar;
+
+            this.closingTask = closingTask;
+            this.closingTaskHelper = closingTaskHelper;
 
             if (checkForDuplicate && this.IsADuplicate)
             {
@@ -79,6 +86,13 @@ namespace SonOfRobin
             }
 
             base.Remove();
+            new Scheduler.Task(menu: null, taskName: this.closingTask, executeHelper: this.closingTaskHelper, delay: 0);
+        }
+
+        public void AddClosingTask(Scheduler.TaskName closingTask, Object closingTaskHelper)
+        {
+            this.closingTask = closingTask;
+            this.closingTaskHelper = closingTaskHelper;
         }
 
         private void AddInOutTransition(bool inTrans)
@@ -136,6 +150,12 @@ namespace SonOfRobin
 
         public override void Update(GameTime gameTime)
         {
+            if (this.blockingFramesLeft > 0 && this.animationFinished)
+            {
+                this.blockingFramesLeft--;
+                if (this.blockingFramesLeft == 0) this.tipsLayout = ControlTips.TipsLayout.TextWindow;
+            }
+
             this.Animate();
             this.UpdateViewParams();
 
@@ -152,9 +172,10 @@ namespace SonOfRobin
                 }
             }
         }
-
         public bool CheckForAnyInput()
         {
+            if (this.blockingFramesLeft > 0) return false;
+
             if (Keyboard.HasBeenPressed(Keys.Space) ||
                 Keyboard.HasBeenPressed(Keys.RightShift) ||
                 Keyboard.HasBeenPressed(Keys.Enter) ||
@@ -213,7 +234,7 @@ namespace SonOfRobin
         {
             int margin = this.Margin;
             int bgShadowOffset = (int)(SonOfRobinGame.VirtualHeight * 0.02f);
-            int textShadowOffset = (int)(SonOfRobinGame.VirtualHeight * 0.004f);
+            int textShadowOffset = (int)(SonOfRobinGame.VirtualHeight * 0.003f);
 
             Rectangle bgShadowRect = new Rectangle(bgShadowOffset, bgShadowOffset, this.viewParams.width, this.viewParams.height);
             Rectangle bgRect = new Rectangle(0, 0, this.viewParams.width, this.viewParams.height);

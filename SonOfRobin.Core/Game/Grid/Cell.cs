@@ -1,11 +1,7 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
-using System.Text;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using System.Threading.Tasks;
 using System.Linq;
-using System.Collections.Concurrent;
 
 namespace SonOfRobin
 {
@@ -25,10 +21,12 @@ namespace SonOfRobin
         public readonly int yMin;
         public readonly int yCenter;
         public readonly int yMax;
+        public readonly Rectangle rect;
         public readonly Vector2 center;
         public readonly int width;
         public readonly int height;
         public List<Cell> surroundingCells;
+        public bool visitedByPlayer;
 
         public readonly Dictionary<Group, Dictionary<string, Sprite>> spriteGroups;
         public readonly Dictionary<TerrainName, Terrain> terrainByName;
@@ -40,6 +38,7 @@ namespace SonOfRobin
             ColBlocking,
             ColAll,
             Visible,
+            MiniMap,
             StateMachinesNonPlants,
             StateMachinesPlants
         }
@@ -59,11 +58,13 @@ namespace SonOfRobin
             this.yMax = yMax;
             this.width = xMax - xMin + 1;
             this.height = yMax - yMin + 1;
+            this.rect = new Rectangle(this.xMin, this.yMin, this.width, this.height);
             this.xCenter = this.xMin + (this.width / 2);
             this.yCenter = this.yMin + (this.height / 2);
             this.center = new Vector2(this.xCenter, this.yCenter);
             this.color = new Color(random.Next(0, 255), random.Next(0, 255), random.Next(0, 255));
             this.surroundingCells = new List<Cell>();
+            this.visitedByPlayer = false;
 
             this.spriteGroups = new Dictionary<Group, Dictionary<string, Sprite>> { };
             foreach (Group groupName in (Group[])Enum.GetValues(typeof(Group)))
@@ -72,6 +73,23 @@ namespace SonOfRobin
             this.terrainByName = new Dictionary<TerrainName, Terrain>();
 
             this.creationStage++;
+        }
+
+        public Object Serialize()
+        {
+            var cellData = new Dictionary<string, object>
+            {
+                { "visitedByPlayer", this.visitedByPlayer},
+            };
+
+            return cellData;
+        }
+
+        public void Deserialize(Object cellData)
+        {
+            var cellDict = (Dictionary<string, object>)cellData;
+
+            this.visitedByPlayer = (bool)cellDict["visitedByPlayer"];
         }
 
         public void RunNextCreationStage()
@@ -116,10 +134,10 @@ namespace SonOfRobin
         }
 
         public void UpdateBoardGraphics()
-        { 
+        {
             this.boardGraphics = new BoardGraphics(grid: this.grid, cell: this);
             this.boardGraphics.CreateAndSavePngTemplate();
-    }
+        }
 
         public void RemoveSprite(Sprite sprite)
         {

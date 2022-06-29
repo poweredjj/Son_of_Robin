@@ -11,11 +11,10 @@ namespace SonOfRobin
     {
         public enum Layout { SingleCenter, SingleBottom, DualLeft, DualRight, DualTop, DualBottom }
 
-        private static readonly int minFramesToDragByTouch = 4;
+        private static readonly int minFramesToDragByTouch = 15;
         private static readonly float marginPercent = 0.05f;
         private static readonly SpriteFont font = SonOfRobinGame.fontHuge;
 
-        public readonly string label;
         public readonly Layout layout;
         private readonly BoardPiece piece;
         public readonly PieceStorage storage;
@@ -78,7 +77,7 @@ namespace SonOfRobin
         {
             get
             {
-                if (this.layout == Layout.SingleBottom || this.layout == Layout.DualBottom) return SonOfRobinGame.VirtualHeight * 0.25f;
+                if (this.layout == Layout.SingleBottom || this.layout == Layout.DualBottom) return SonOfRobinGame.VirtualHeight * 0.15f;
                 if (this.layout == Layout.DualTop) return SonOfRobinGame.VirtualHeight * 0.5f;
 
                 return SonOfRobinGame.VirtualHeight * 0.75f;
@@ -92,8 +91,8 @@ namespace SonOfRobin
             get
             {
                 int margin = this.Margin;
-                float maxTileWidth = (BgMaxWidth / this.storage.width) - margin;
-                float maxTileHeight = (BgMaxHeight / this.storage.height) - margin;
+                float maxTileWidth = (BgMaxWidth / this.storage.Width) - margin;
+                float maxTileHeight = (BgMaxHeight / this.storage.Height) - margin;
                 return Convert.ToInt32(Math.Min(maxTileWidth, maxTileHeight));
             }
         }
@@ -105,18 +104,17 @@ namespace SonOfRobin
                 int margin = this.Margin;
                 int tileSize = this.TileSize;
 
-                int width = ((tileSize + margin) * this.storage.width) + margin;
-                int height = ((tileSize + margin) * this.storage.height) + margin;
+                int width = ((tileSize + margin) * this.storage.Width) + margin;
+                int height = ((tileSize + margin) * this.storage.Height) + margin;
 
                 return new Rectangle(0, 0, width, height);
             }
         }
 
-        public Inventory(PieceStorage storage, BoardPiece piece, string label, Layout layout = Layout.SingleCenter, bool blocksUpdatesBelow = false, Inventory otherInventory = null, InputTypes inputType = InputTypes.Normal) : base(inputType: inputType, priority: 1, blocksUpdatesBelow: blocksUpdatesBelow, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Inventory, tipsLayout: ControlTips.TipsLayout.InventorySelect)
+        public Inventory(PieceStorage storage, BoardPiece piece, Layout layout = Layout.SingleCenter, bool blocksUpdatesBelow = false, Inventory otherInventory = null, InputTypes inputType = InputTypes.Normal) : base(inputType: inputType, priority: 1, blocksUpdatesBelow: blocksUpdatesBelow, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Inventory, tipsLayout: ControlTips.TipsLayout.InventorySelect)
         {
             this.storage = storage;
             this.piece = piece;
-            this.label = label;
             this.layout = layout;
 
             if (this.storage.lastUsedSlot != null)
@@ -146,7 +144,7 @@ namespace SonOfRobin
 
             if (this.layout != Layout.SingleBottom && this.layout != Layout.DualBottom)
             {
-                var paramsToChange = new Dictionary<string, float> { { "posY", this.viewParams.posY + SonOfRobinGame.VirtualHeight }, { "opacity", 0f } };
+                var paramsToChange = new Dictionary<string, float> { { "posY", this.viewParams.posY - SonOfRobinGame.VirtualHeight }, { "opacity", 0f } };
                 this.AddTransition(new Transition(type: Transition.TransType.In, duration: 12, scene: this, blockInput: false, paramsToChange: paramsToChange));
             }
         }
@@ -163,7 +161,7 @@ namespace SonOfRobin
                     container.Close();
                 }
 
-                var paramsToChange = new Dictionary<string, float> { { "posY", this.viewParams.posY + SonOfRobinGame.VirtualHeight }, { "opacity", 0f } };
+                var paramsToChange = new Dictionary<string, float> { { "posY", this.viewParams.posY - SonOfRobinGame.VirtualHeight }, { "opacity", 0f } };
                 this.AddTransition(new Transition(type: Transition.TransType.Out, duration: 12, scene: this, blockInput: true, paramsToChange: paramsToChange, removeScene: true));
 
                 return;
@@ -176,6 +174,8 @@ namespace SonOfRobin
         {
             if (this.IgnoreUpdateAndDraw) return;
 
+            if (this.CursorX >= this.storage.Width) this.CursorX = this.storage.Width - 1; // in case storage was resized
+            if (this.CursorY >= this.storage.Height) this.CursorY = this.storage.Height - 1; // in case storage was resized
             this.storage.DestroyBrokenPieces();
             this.UpdateViewParams();
             this.ProcessInput();
@@ -228,70 +228,69 @@ namespace SonOfRobin
         }
         private void KeepCursorInBoundsAndSwitchInv()
         {
-
             bool switchToSecondaryInv = false;
 
             switch (this.layout)
             {
                 case Layout.SingleCenter:
-                    if (this.cursorY <= -1) this.cursorY = this.storage.height - 1;
-                    if (this.cursorY >= this.storage.height) this.cursorY = 0;
+                    if (this.cursorY <= -1) this.cursorY = this.storage.Height - 1;
+                    if (this.cursorY >= this.storage.Height) this.cursorY = 0;
 
-                    if (this.cursorX <= -1) this.cursorX = this.storage.width - 1;
-                    if (this.cursorX >= this.storage.width) this.cursorX = 0;
+                    if (this.cursorX <= -1) this.cursorX = this.storage.Width - 1;
+                    if (this.cursorX >= this.storage.Width) this.cursorX = 0;
                     break;
 
 
                 case Layout.DualLeft:
-                    if (this.cursorY <= -1) this.cursorY = this.storage.height - 1;
-                    if (this.cursorY >= this.storage.height) this.cursorY = 0;
+                    if (this.cursorY <= -1) this.cursorY = this.storage.Height - 1;
+                    if (this.cursorY >= this.storage.Height) this.cursorY = 0;
 
                     if (this.cursorX <= -1) this.cursorX = 0;
-                    if (this.cursorX >= this.storage.width)
+                    if (this.cursorX >= this.storage.Width)
                     {
-                        this.cursorX = this.storage.width - 1;
+                        this.cursorX = this.storage.Width - 1;
                         switchToSecondaryInv = true;
                     }
 
                     break;
 
                 case Layout.DualRight:
-                    if (this.cursorY <= -1) this.cursorY = this.storage.height - 1;
-                    if (this.cursorY >= this.storage.height) this.cursorY = 0;
+                    if (this.cursorY <= -1) this.cursorY = this.storage.Height - 1;
+                    if (this.cursorY >= this.storage.Height) this.cursorY = 0;
 
                     if (this.cursorX <= -1)
                     {
                         this.cursorX = 0;
                         switchToSecondaryInv = true;
                     }
-                    if (this.cursorX >= this.storage.width) this.cursorX = this.storage.width - 1;
+                    if (this.cursorX >= this.storage.Width) this.cursorX = this.storage.Width - 1;
 
                     break;
 
                 case Layout.DualTop:
-                    if (this.cursorX <= -1) this.cursorX = this.storage.width - 1;
-                    if (this.cursorX >= this.storage.width) this.cursorX = 0;
+                    if (this.cursorX <= -1) this.cursorX = this.storage.Width - 1;
+                    if (this.cursorX >= this.storage.Width) this.cursorX = 0;
 
                     if (this.cursorY <= -1) this.cursorY = 0;
 
-                    if (this.cursorY >= this.storage.height)
+                    if (this.cursorY >= this.storage.Height)
                     {
-                        this.cursorY = this.storage.height - 1;
+                        this.cursorY = this.storage.Height - 1;
                         switchToSecondaryInv = true;
                     }
 
                     break;
 
                 case Layout.DualBottom:
-                    if (this.cursorX <= -1) this.cursorX = this.storage.width - 1;
-                    if (this.cursorX >= this.storage.width) this.cursorX = 0;
+                    if (this.cursorX <= -1) this.cursorX = this.storage.Width - 1;
+                    if (this.cursorX >= this.storage.Width) this.cursorX = 0;
 
                     if (this.cursorY <= -1)
                     {
                         this.cursorY = 0;
                         switchToSecondaryInv = true;
                     }
-                    if (this.cursorY >= this.storage.height) this.cursorY = this.storage.height - 1;
+                    if (this.cursorY >= this.storage.Height) this.cursorY = this.storage.Height - 1;
 
                     break;
 
@@ -299,17 +298,17 @@ namespace SonOfRobin
 
                     if (this.cursorX <= -1)
                     {
-                        this.cursorX = this.storage.width - 1;
+                        this.cursorX = this.storage.Width - 1;
                         this.cursorY -= 1;
                     }
-                    if (this.cursorX >= this.storage.width)
+                    if (this.cursorX >= this.storage.Width)
                     {
                         this.cursorX = 0;
                         this.cursorY += 1;
                     }
 
-                    if (this.cursorY <= -1) this.cursorY = this.storage.height - 1;
-                    if (this.cursorY >= this.storage.height) this.cursorY = 0;
+                    if (this.cursorY <= -1) this.cursorY = this.storage.Height - 1;
+                    if (this.cursorY >= this.storage.Height) this.cursorY = 0;
 
                     break;
 
@@ -319,16 +318,19 @@ namespace SonOfRobin
 
             if (switchToSecondaryInv)
             {
-                this.MoveOtherInventoryToTop();
-                this.MoveDraggedPiecesToOtherInv();
+                if (this.draggedPieces.Count == 0 || this.otherInventory.storage.CanFitThisPiece(this.draggedPieces[0]))
+                {
+                    this.MoveOtherInventoryToTop();
+                    this.MoveDraggedPiecesToOtherInv();
+                }
             }
-
         }
+
 
         private void ProcessInput()
         {
             this.SetCursorByTouch();
-            if (this.layout == Layout.SingleBottom) { this.MoveCursorByBumpers(); }
+            if (this.layout == Layout.SingleBottom) this.MoveCursorByBumpers();
             else
             {
                 this.MoveCursorByNormalInput();
@@ -337,7 +339,6 @@ namespace SonOfRobin
                 else
                 { this.ProcessPieceDragMode(); }
             }
-
         }
 
         public void SetCursorByTouch()
@@ -454,22 +455,26 @@ namespace SonOfRobin
                 this.CursorX += 1;
                 this.showEmptyCursor = true;
             }
-
         }
 
         private void OpenPieceContextMenu()
         {
             StorageSlot slot = this.ActiveSlot;
-            if (slot == null || slot.locked) return;
+            if (slot == null) return;
             BoardPiece piece = this.storage.GetTopPiece(slot: slot);
             if (piece == null) return;
+            if (slot.locked && piece.name != PieceTemplate.Name.FlameTrigger) return;
 
             Vector2 slotPos = this.GetSlotPos(slot: slot, margin: this.Margin, tileSize: this.TileSize);
-            slotPos += new Vector2(this.viewParams.drawPosX, this.viewParams.drawPosY);
+            slotPos += new Vector2(this.viewParams.posX, this.viewParams.posY);
             slotPos.X += this.Margin + this.TileSize;
             Vector2 percentPos = new Vector2(slotPos.X / SonOfRobinGame.VirtualWidth, slotPos.Y / SonOfRobinGame.VirtualHeight);
 
-            new PieceContextMenu(piece: piece, storage: this.storage, slot: slot, percentPosX: percentPos.X, percentPosY: percentPos.Y, addMove: this.layout != Layout.SingleCenter);
+            bool addMove = this.layout != Layout.SingleCenter && !slot.locked && this.otherInventory.storage.CanFitThisPiece(piece);
+            bool addDrop = !slot.locked;
+            bool addCook = piece.name == PieceTemplate.Name.FlameTrigger;
+
+            new PieceContextMenu(piece: piece, storage: this.storage, slot: slot, percentPosX: percentPos.X, percentPosY: percentPos.Y, addMove: addMove, addDrop: addDrop, addCook: addCook);
             return;
         }
         private void MoveOtherInventoryToTop()
@@ -537,7 +542,7 @@ namespace SonOfRobin
 
         private void MoveDraggedPiecesToOtherInv()
         {
-            if (this.otherInventory == null)
+            if (this.otherInventory == null || (this.draggedPieces.Count > 0 && !this.otherInventory.storage.CanFitThisPiece(this.draggedPieces[0])))
             { this.ReleaseHeldPieces(slot: null, forceReleaseAll: true); }
             else
             {
@@ -564,8 +569,11 @@ namespace SonOfRobin
                GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.LeftShoulder) ||
                GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.RightShoulder))
             {
-                this.MoveOtherInventoryToTop();
-                this.MoveDraggedPiecesToOtherInv();
+                if (this.draggedPieces.Count == 0 || this.otherInventory.storage.CanFitThisPiece(this.draggedPieces[0]))
+                {
+                    this.MoveOtherInventoryToTop();
+                    this.MoveDraggedPiecesToOtherInv();
+                }
                 return;
             }
 
@@ -577,6 +585,7 @@ namespace SonOfRobin
 
             if (Keyboard.HasBeenPressed(Keys.Space) ||
                 Keyboard.HasBeenPressed(Keys.RightAlt) ||
+                GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.A) ||
                 GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.X) ||
                 GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.Y) ||
                 TouchInput.IsStateAvailable(TouchLocationState.Released))
@@ -630,7 +639,7 @@ namespace SonOfRobin
             Color outlineColor;
             Color fillColor;
 
-            this.DrawLabel();
+            this.DrawMainLabel();
 
             Rectangle bgRect = this.BgRect;
 
@@ -642,10 +651,12 @@ namespace SonOfRobin
 
             foreach (StorageSlot slot in this.storage.AllSlots)
             {
+                if (slot.hidden) continue;
+
                 slotPos = this.GetSlotPos(slot: slot, margin: margin, tileSize: tileSize);
 
                 isActive = slot.posX == this.CursorX && slot.posY == this.CursorY;
-                if ((this.draggedByTouch || !this.inputActive)) isActive = false;
+                if (this.draggedByTouch || !this.inputActive) isActive = false;
 
                 tileRect = new Rectangle((int)slotPos.X, (int)slotPos.Y, tileSize, tileSize);
 
@@ -654,6 +665,8 @@ namespace SonOfRobin
 
                 SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, tileRect, fillColor * 0.35f * this.viewParams.drawOpacity);
                 Helpers.DrawRectangleOutline(rect: tileRect, color: outlineColor * this.viewParams.drawOpacity * 0.8f, borderWidth: 2);
+
+                this.DrawSlotLabel(slot: slot, tileRect: tileRect);
 
                 Rectangle destRect = isActive && this.showEmptyCursor ? tileRect : new Rectangle((int)slotPos.X + spriteOffset, (int)slotPos.Y + spriteOffset, spriteSize, spriteSize);
                 slot.Draw(destRect: destRect, opacity: this.viewParams.drawOpacity);
@@ -664,13 +677,43 @@ namespace SonOfRobin
             if (this.InputType != InputTypes.Always) this.DrawCursor();
         }
 
-        private void DrawLabel()
+        private void DrawSlotLabel(StorageSlot slot, Rectangle tileRect)
+        {
+            if (slot.label == "" || !slot.IsEmpty) return;
+
+            //Helpers.DrawRectangleOutline(rect: tileRect, color: Color.Red, borderWidth: 2); // for testing
+
+            Vector2 labelSize = font.MeasureString(slot.label);
+
+            float maxTextWidth = tileRect.Width * 0.6f;
+            float maxTextHeight = tileRect.Height * 0.18f;
+            float textScale = Math.Min(maxTextWidth / labelSize.X, maxTextHeight / labelSize.Y);
+
+            float textWidth = labelSize.X * textScale;
+            float textHeight = labelSize.Y * textScale;
+
+            Vector2 labelPos = new Vector2(tileRect.X + ((tileRect.Width - textWidth) / 2),
+                                           tileRect.Y + (tileRect.Height - textHeight) / 2);
+
+            //Helpers.DrawRectangleOutline(rect: new Rectangle((int)labelPos.X, (int)labelPos.Y, (int)textWidth, (int)textHeight), color: Color.Green, borderWidth: 2); // for testing
+
+            float shadowOffset = textHeight * 0.06f;
+
+            Vector2 shadowPos = labelPos + new Vector2(shadowOffset, shadowOffset);
+
+            SonOfRobinGame.spriteBatch.DrawString(font, slot.label, position: shadowPos, color: Color.Black * 0.5f * this.viewParams.drawOpacity, origin: Vector2.Zero, scale: textScale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
+            SonOfRobinGame.spriteBatch.DrawString(font, slot.label, position: labelPos, color: Color.White * this.viewParams.drawOpacity, origin: Vector2.Zero, scale: textScale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
+        }
+
+        private void DrawMainLabel()
         {
             if (this.layout == Layout.SingleBottom) return;
 
             Rectangle bgRect = this.BgRect;
 
-            Vector2 labelSize = font.MeasureString(this.label);
+            string label = Convert.ToString(this.storage.storageType);
+
+            Vector2 labelSize = font.MeasureString(label);
             float maxTextWidth = bgRect.Width * 0.3f;
             float maxTextHeight = bgRect.Height * 0.1f;
             float textScale = Math.Min(maxTextWidth / labelSize.X, maxTextHeight / labelSize.Y);
@@ -685,8 +728,8 @@ namespace SonOfRobin
 
             Vector2 shadowPos = labelPos + new Vector2(shadowOffset, shadowOffset);
 
-            SonOfRobinGame.spriteBatch.DrawString(font, this.label, position: shadowPos, color: Color.Black * 0.5f * this.viewParams.drawOpacity, origin: Vector2.Zero, scale: textScale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
-            SonOfRobinGame.spriteBatch.DrawString(font, this.label, position: labelPos, color: Color.White * this.viewParams.drawOpacity, origin: Vector2.Zero, scale: textScale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
+            SonOfRobinGame.spriteBatch.DrawString(font, label, position: shadowPos, color: Color.Black * 0.5f * this.viewParams.drawOpacity, origin: Vector2.Zero, scale: textScale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
+            SonOfRobinGame.spriteBatch.DrawString(font, label, position: labelPos, color: Color.White * this.viewParams.drawOpacity, origin: Vector2.Zero, scale: textScale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
         }
 
         public static void DrawQuantity(int pieceCount, Rectangle destRect, float opacity, bool ignoreSingle = true)

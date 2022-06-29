@@ -6,7 +6,7 @@ namespace SonOfRobin
 {
     public class Craft
     {
-        public enum Category { Basic, Field, Furnace, Cooking }
+        public enum Category { Field, Workshop, Furnace }
 
         public class Recipe
         {
@@ -59,7 +59,7 @@ namespace SonOfRobin
             {
                 if (!this.CheckIfStorageContainsAllIngredients(storage))
                 {
-                    new TextWindow(text: "Not enough ingredients.", textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false);
+                    new TextWindow(text: "Not enough ingredients.", textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false, blockInputDuration: 30);
                     MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"Not enough ingredients to craft '{this.pieceToCreate}'.");
                     return false;
                 }
@@ -81,13 +81,16 @@ namespace SonOfRobin
                         piece = PieceTemplate.CreateOffBoard(templateName: this.pieceToCreate, world: storage.world);
                         if (piece.sprite.placedCorrectly) { storage.AddPiece(piece: PieceTemplate.CreateOffBoard(templateName: this.pieceToCreate, world: storage.world), dropIfDoesNotFit: true); }
                         else
-                        { MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"Second attempt to craft '{piece.name}' has failed."); }
+                        {
+                            MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"A second attempt to craft '{piece.name}' has failed.");
+                            return false;
+                        }
                     }
                 }
-
                 string message = this.amountToCreate == 1 ? "Item has been crafted." : $"{this.amountToCreate} items has been crafted.";
-                new TextWindow(text: message, textColor: Color.White, bgColor: Color.Green, useTransition: true, animate: false);
+                new TextWindow(text: message, textColor: Color.White, bgColor: Color.Green, useTransition: true, animate: false, closingTask: Scheduler.TaskName.CheckForPieceHints);
                 MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"'{this.pieceToCreate}' has been crafted.");
+
                 return true;
             }
         }
@@ -135,12 +138,19 @@ namespace SonOfRobin
 
                 new Recipe(pieceToCreate: PieceTemplate.Name.Furnace, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stone, 20 }, { PieceTemplate.Name.WoodLog, 4 }, { PieceTemplate.Name.Coal, 4 } }, isReversible: true),
 
-            };
-            AddCategory(category: Category.Basic, recipeList: recipeList);
+               new Recipe(pieceToCreate: PieceTemplate.Name.CookingPot, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.IronBar, 5 } }),
 
-            // normal craft
+            };
+            AddCategory(category: Category.Field, recipeList: recipeList);
+
+            // workshop
 
             recipeList = new List<Recipe> {
+                new Recipe(pieceToCreate: PieceTemplate.Name.Map, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Leather, 1 }}, isReversible: false),
+
+                new Recipe(pieceToCreate: PieceTemplate.Name.BackpackMedium, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Leather, 5 }}, isReversible: true),
+
+                new Recipe(pieceToCreate: PieceTemplate.Name.BeltMedium, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Leather, 3 }}, isReversible: true),
 
                 new Recipe(pieceToCreate: PieceTemplate.Name.WoodPlank, amountToCreate: 3, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodLog, 1 }}),
 
@@ -172,10 +182,8 @@ namespace SonOfRobin
 
                 new Recipe(pieceToCreate: PieceTemplate.Name.AxeIron, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stick, 2 }, { PieceTemplate.Name.WoodLog, 1 }, { PieceTemplate.Name.IronBar, 2 }}, isReversible: true),
 
-                new Recipe(pieceToCreate: PieceTemplate.Name.CookingPot, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.IronBar, 5 } }),
-
             };
-            AddCategory(category: Category.Field, recipeList: recipeList);
+            AddCategory(category: Category.Workshop, recipeList: recipeList);
 
             // furnace
 
@@ -183,13 +191,6 @@ namespace SonOfRobin
                 new Recipe(pieceToCreate: PieceTemplate.Name.IronBar, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.IronOre, 1 }, { PieceTemplate.Name.Coal, 1 }}, isReversible: false),
             };
             AddCategory(category: Category.Furnace, recipeList: furnaceRecipeList);
-
-            // cooking
-
-            var cookingRecipeList = new List<Recipe> {
-                new Recipe(pieceToCreate: PieceTemplate.Name.CookedMeat, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.RawMeat, 1 }, { PieceTemplate.Name.WoodLog, 1 }}, isReversible: false),
-            };
-            AddCategory(category: Category.Cooking, recipeList: cookingRecipeList);
 
             categoriesCreated = true;
         }

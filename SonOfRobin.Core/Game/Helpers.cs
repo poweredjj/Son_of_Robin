@@ -1,8 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
-using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace SonOfRobin
@@ -40,8 +38,7 @@ namespace SonOfRobin
         {
             Type type = targetObj.GetType();
             FieldInfo field = type.GetField(propertyName);
-            if (field != null)
-            { field.SetValue(targetObj, newValue); }
+            if (field != null) field.SetValue(targetObj, newValue);
             else
             {
                 var property = type.GetProperty(propertyName);
@@ -54,8 +51,7 @@ namespace SonOfRobin
             Type type = targetObj.GetType();
 
             FieldInfo field = type.GetField(propertyName);
-            if (field != null)
-            { return field.GetValue(targetObj); }
+            if (field != null) return field.GetValue(targetObj);
             else
             {
                 var property = type.GetProperty(propertyName);
@@ -72,6 +68,7 @@ namespace SonOfRobin
         {
             return Regex.Replace(str, "[a-z][A-Z]", m => $"{m.Value[0]} {char.ToLower(m.Value[1])}");
         }
+
 
 
     }

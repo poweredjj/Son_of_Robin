@@ -13,7 +13,8 @@ namespace SonOfRobin
         private float multiplier;
         private bool dirtyBackground;
         private RenderTarget2D terrainGfx;
-        private bool initialized;
+        public bool dirtyFog;
+        private RenderTarget2D fogGfx;
 
         // max screen percentage, that minimap may occupy
         private static readonly float minimapMaxPercentWidth = 0.35f;
@@ -44,7 +45,7 @@ namespace SonOfRobin
             this.updateActive = false;
             this.world = world;
             this.fullScreen = fullScreen;
-            this.initialized = false;
+            this.dirtyFog = true;
         }
 
         public void TurnOn(bool addTransition = true)
@@ -55,8 +56,8 @@ namespace SonOfRobin
             this.drawActive = true;
             this.blocksDrawsBelow = this.fullScreen;
 
-            float maxPercentWidth = (this.fullScreen) ? 1 : minimapMaxPercentWidth;
-            float maxPercentHeight = (this.fullScreen) ? 1 : minimapMaxPercentHeight;
+            float maxPercentWidth = this.fullScreen ? 1 : minimapMaxPercentWidth;
+            float maxPercentHeight = this.fullScreen ? 1 : minimapMaxPercentHeight;
 
             float multiplierX = ((float)SonOfRobinGame.VirtualWidth / (float)world.width) * maxPercentWidth;
             float multiplierY = ((float)SonOfRobinGame.VirtualHeight / (float)world.height) * maxPercentHeight;
@@ -72,7 +73,40 @@ namespace SonOfRobin
             {
                 this.terrainGfx = new RenderTarget2D(SonOfRobinGame.graphicsDevice, this.viewParams.width, this.viewParams.height, false, SurfaceFormat.Color, DepthFormat.None);
                 this.dirtyBackground = true;
+                this.dirtyFog = true;
             }
+            this.UpdateFogOfWar();
+        }
+
+        private void UpdateFogOfWar()
+        {
+            if (this.fogGfx != null && this.dirtyFog == false) return;
+
+            this.fogGfx = new RenderTarget2D(SonOfRobinGame.graphicsDevice, this.viewParams.width, this.viewParams.height, false, SurfaceFormat.Color, DepthFormat.None);
+            this.StartRenderingToTarget(this.fogGfx);
+
+            int cellWidth = this.world.grid.allCells[0].width;
+            int cellHeight = this.world.grid.allCells[0].height;
+            int destCellWidth = Convert.ToInt32(Math.Ceiling(cellWidth * this.multiplier));
+            int destCellHeight = Convert.ToInt32(Math.Ceiling(cellHeight * this.multiplier));
+
+            Rectangle sourceRectangle = new Rectangle(0, 0, cellWidth, cellHeight);
+            SonOfRobinGame.graphicsDevice.Clear(new Color(0, 0, 0, 0));
+
+            foreach (Cell cell in this.world.grid.CellsNotVisitedByPlayer)
+            {
+                Rectangle destinationRectangle = new Rectangle(
+                    Convert.ToInt32(Math.Floor(cell.xMin * this.multiplier)),
+                    Convert.ToInt32(Math.Floor(cell.yMin * this.multiplier)),
+                    destCellWidth,
+                    destCellHeight);
+
+                SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, destinationRectangle, sourceRectangle, new Color(50, 50, 50));
+            }
+
+            this.EndRenderingToTarget();
+
+            this.dirtyFog = false;
         }
 
         public void TurnOff(bool addTransition = true)
@@ -115,6 +149,8 @@ namespace SonOfRobin
 
         public void UpdateBackground()
         {
+            this.UpdateFogOfWar();
+
             if (!this.dirtyBackground) return;
 
             this.StartRenderingToTarget(this.terrainGfx);
@@ -134,13 +170,6 @@ namespace SonOfRobin
 
         public override void Update(GameTime gameTime)
         {
-            if (!this.initialized && !this.world.creationInProgress)
-            {
-                // to avoid lag when opening the map for the first time
-                this.TurnOn(addTransition: false);
-                this.TurnOff(addTransition: false);
-            }
-
             this.UpdateBackground(); // it's best to update background graphics in Update() (SetRenderTarget in Draw() must go first)
             this.ProcessInput();
         }
@@ -163,82 +192,161 @@ namespace SonOfRobin
             SonOfRobinGame.spriteBatch.Draw(this.terrainGfx, new Rectangle(0, 0, this.viewParams.width, this.viewParams.height), Color.White * this.viewParams.drawOpacity);
 
             // drawing pieces
-            if (this.fullScreen)
+            var groupName = this.fullScreen ? Cell.Group.Visible : Cell.Group.MiniMap;
+
+            byte fillSize;
+            byte outlineSize = 1;
+            Color fillColor;
+            Color outlineColor = new Color(0, 0, 0);
+            bool drawOutline;
+            bool showOutsideCamera;
+            Rectangle cameraRect = this.world.camera.viewRect;
+            BoardPiece piece;
+
+            foreach (Sprite sprite in world.grid.GetAllSprites(groupName: groupName, visitedByPlayerOnly: !Preferences.debugShowWholeMap)) // regular "foreach", because spriteBatch is not thread-safe
             {
-                var groupName = (this.fullScreen) ? Cell.Group.Visible : Cell.Group.ColBlocking;
+                drawOutline = false;
+                showOutsideCamera = false;
+                piece = sprite.boardPiece;
 
-                foreach (Sprite sprite in world.grid.GetAllSprites(groupName)) // regular "foreach", because spriteBatch is not thread-safe
+                if (piece.GetType() == typeof(Player))
                 {
-                    byte size;
-                    Color color;
+                    showOutsideCamera = true;
+                    fillSize = 4;
+                    fillColor = Color.White;
+                    outlineSize = 8;
+                    outlineColor = Color.Black;
+                    drawOutline = true;
+                }
 
-                    if (sprite.boardPiece.GetType() == typeof(Player))
+                else if (piece.GetType() == typeof(Workshop))
+                {
+                    showOutsideCamera = sprite.hasBeenDiscovered;
+                    fillSize = 4;
+                    fillColor = Color.Aqua;
+                    outlineSize = 8;
+                    outlineColor = Color.Blue;
+                    drawOutline = true;
+                }
+
+                else if (piece.GetType() == typeof(Cooker))
+                {
+                    showOutsideCamera = true;
+                    fillSize = 4;
+                    fillColor = new Color(255, 0, 0);
+                    outlineSize = 8;
+                    outlineColor = new Color(128, 0, 0);
+                    drawOutline = true;
+                }
+
+                else if (piece.GetType() == typeof(Shelter))
+                {
+                    showOutsideCamera = true;
+                    fillSize = 4;
+                    fillColor = Color.Chartreuse;
+                    outlineSize = 8;
+                    outlineColor = Color.SeaGreen;
+                    drawOutline = true;
+                }
+
+                else if (piece.GetType() == typeof(Container))
+                {
+                    showOutsideCamera = true;
+                    fillSize = 4;
+                    fillColor = Color.Fuchsia;
+                    outlineSize = 8;
+                    outlineColor = Color.DarkOrchid;
+                    drawOutline = true;
+                }
+
+                else if (piece.GetType() == typeof(Tool))
+                {
+                    showOutsideCamera = true;
+                    fillSize = 4;
+                    fillColor = Color.LightCyan;
+                    outlineSize = 8;
+                    outlineColor = Color.Teal;
+                    drawOutline = true;
+                }
+
+                else if (piece.GetType() == typeof(Equipment))
+                {
+                    showOutsideCamera = true;
+                    fillSize = 4;
+                    fillColor = Color.Gold;
+                    outlineSize = 8;
+                    outlineColor = Color.Chocolate;
+                    drawOutline = true;
+                }
+
+                else if (piece.GetType() == typeof(Fruit))
+                {
+                    showOutsideCamera = sprite.hasBeenDiscovered;
+                    fillSize = 2;
+                    fillColor = Color.Lime;
+                    outlineSize = 4;
+                    outlineColor = Color.DarkGreen;
+                    drawOutline = true;
+                }
+
+                else if (piece.GetType() == typeof(Animal))
+                {
+                    fillColor = piece.name == PieceTemplate.Name.Fox ? Color.Red : Color.Yellow;
+                    fillSize = 3;
+                }
+
+                else if (piece.GetType() == typeof(Plant))
+                {
+                    fillSize = 2;
+                    fillColor = piece.alive ? Color.Green : Color.DarkGreen;
+                }
+
+                else if (piece.GetType() == typeof(Decoration))
+                {
+                    if (piece.name == PieceTemplate.Name.CrateStarting || piece.name == PieceTemplate.Name.CrateRegular)
                     {
-                        size = 3;
-                        color = Color.Black;
+                        showOutsideCamera = sprite.hasBeenDiscovered;
+                        fillSize = 4;
+                        fillColor = Color.BurlyWood;
+                        outlineSize = 8;
+                        outlineColor = Color.Maroon;
+                        drawOutline = true;
                     }
-
-                    else if (sprite.boardPiece.GetType() == typeof(Plant))
+                    else if (piece.name == PieceTemplate.Name.CoalDeposit || piece.name == PieceTemplate.Name.IronDeposit)
                     {
-                        size = 2;
-                        color = sprite.boardPiece.alive ? Color.Green : Color.DarkGreen;
-                    }
-
-                    else if (sprite.boardPiece.GetType() == typeof(Decoration))
-                    {
-                        size = 2;
-                        color = Color.Gray;
-                    }
-
-                    else if (sprite.boardPiece.GetType() == typeof(Animal))
-                    {
-                        if (sprite.boardPiece.name == PieceTemplate.Name.Fox)
-                        { color = Color.Red; }
-                        else
-                        { color = Color.Yellow; }
-
-                        size = 3;
-                    }
-
-                    else if (sprite.boardPiece.GetType() == typeof(Collectible))
-                    {
-                        size = 2;
-                        color = Color.Blue;
-                    }
-
-                    else if (sprite.boardPiece.GetType() == typeof(Workshop))
-                    {
-                        size = 2;
-                        color = Color.Brown;
-                    }
-
-                    else if (sprite.boardPiece.GetType() == typeof(Container))
-                    {
-                        size = 2;
-                        color = Color.Orange;
+                        showOutsideCamera = sprite.hasBeenDiscovered;
+                        fillSize = 4;
+                        fillColor = Color.Yellow;
+                        outlineSize = 8;
+                        outlineColor = Color.Red;
+                        drawOutline = true;
                     }
 
                     else
-                    { continue; }
+                    {
+                        fillSize = 3;
+                        fillColor = Color.Black;
+                    }
 
-                    SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, new Rectangle(
-                       Convert.ToInt32((sprite.position.X * this.multiplier) - size / 2),
-                       Convert.ToInt32((sprite.position.Y * this.multiplier) - size / 2),
-                       size, size), color * this.viewParams.drawOpacity);
                 }
 
-            }
-            else // this.fullScreen == false
-            {
-                Sprite sprite = this.world.player.sprite;
-                int size = 3;
-                Color color = Color.Black;
+                else if (piece.GetType() == typeof(Collectible))
+                {
+                    fillSize = 2;
+                    fillColor = Color.Gray;
+                }
 
-                SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, new Rectangle(
-                      Convert.ToInt32((sprite.position.X * this.multiplier) - size / 2),
-                      Convert.ToInt32((sprite.position.Y * this.multiplier) - size / 2),
-                      size, size), color * this.viewParams.drawOpacity);
+                else
+                { continue; }
+
+                if (!showOutsideCamera && !cameraRect.Contains(sprite.gfxRect) && !Preferences.debugShowAllMapPieces) continue;
+
+                if (drawOutline) this.DrawSpriteSquare(sprite: sprite, size: outlineSize, color: outlineColor);
+                this.DrawSpriteSquare(sprite: sprite, size: fillSize, color: fillColor);
             }
+
+            // drawing fog of war
+            if (!Preferences.debugShowWholeMap) SonOfRobinGame.spriteBatch.Draw(this.fogGfx, this.fogGfx.Bounds, Color.White * this.viewParams.drawOpacity);
 
             // drawing camera FOV
             var viewRect = this.world.camera.viewRect;
@@ -247,15 +355,29 @@ namespace SonOfRobin
             int fovY = Convert.ToInt32(viewRect.Top * this.multiplier);
             int fovWidth = Convert.ToInt32(viewRect.Width * this.multiplier);
             int fovHeight = Convert.ToInt32(viewRect.Height * this.multiplier);
-            int borderWidth = (this.fullScreen) ? 2 : 1;
+            int borderWidth = this.fullScreen ? 2 : 1;
 
             Rectangle fovRect = new Rectangle(fovX, fovY, fovWidth, fovHeight);
             Helpers.DrawRectangleOutline(rect: fovRect, color: Color.White * this.viewParams.drawOpacity, borderWidth: borderWidth);
         }
 
+        private void DrawSpriteSquare(Sprite sprite, byte size, Color color)
+        {
+            SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, new Rectangle(
+                   Convert.ToInt32((sprite.position.X * this.multiplier) - size / 2),
+                   Convert.ToInt32((sprite.position.Y * this.multiplier) - size / 2),
+                   size, size), color * this.viewParams.drawOpacity);
+        }
+
         public void StartRenderingToTarget(RenderTarget2D newRenderTarget)
         {
             SonOfRobinGame.spriteBatch.Begin();
+            SonOfRobinGame.graphicsDevice.SetRenderTarget(newRenderTarget);
+        }
+
+        public void StartRenderingToTarget(RenderTarget2D newRenderTarget, BlendState blendState)
+        {
+            SonOfRobinGame.spriteBatch.Begin(blendState: blendState);
             SonOfRobinGame.graphicsDevice.SetRenderTarget(newRenderTarget);
         }
 

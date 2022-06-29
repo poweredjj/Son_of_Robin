@@ -23,15 +23,15 @@ namespace SonOfRobin
         private readonly Dictionary<TerrainName, byte> bestEnvironment;
         private readonly PlantReproductionData reproduction;
         private readonly byte massToBurn;
-        private readonly float massTakenMultiplier;
+        public float massTakenMultiplier;
         private readonly float occupiedFieldWealth;
         public readonly FruitEngine fruitEngine;
 
         public Plant(World world, Vector2 position, AnimPkg animPackage, PieceTemplate.Name name, AllowedFields allowedFields, Dictionary<TerrainName, byte> bestEnvironment, Dictionary<byte, int> maxMassBySize,
             int maxAge, PlantReproductionData reproduction, byte massToBurn, float massTakenMultiplier,
-            byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = false, int mass = 1, int staysAfterDeath = 800, int generation = 0, Yield yield = null, int maxHitPoints = 1, FruitEngine fruitEngine = null, Scheduler.ActionName boardAction = Scheduler.ActionName.Empty, bool fadeInAnim = true) :
+            byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = false, int mass = 1, int staysAfterDeath = 800, int generation = 0, Yield yield = null, int maxHitPoints = 1, FruitEngine fruitEngine = null, Scheduler.TaskName boardTask = Scheduler.TaskName.Empty, bool fadeInAnim = true) :
 
-            base(world: world, position: position, animPackage: animPackage, animSize: animSize, animName: animName, speed: speed, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedFields: allowedFields, floatsOnWater: floatsOnWater, checksFullCollisions: true, mass: mass, maxMassBySize: maxMassBySize, staysAfterDeath: staysAfterDeath, maxAge: maxAge, generation: generation, canBePickedUp: false, yield: yield, maxHitPoints: maxHitPoints, boardAction: boardAction, fadeInAnim: fadeInAnim)
+            base(world: world, position: position, animPackage: animPackage, animSize: animSize, animName: animName, speed: speed, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedFields: allowedFields, floatsOnWater: floatsOnWater, checksFullCollisions: true, mass: mass, maxMassBySize: maxMassBySize, staysAfterDeath: staysAfterDeath, maxAge: maxAge, generation: generation, canBePickedUp: false, yield: yield, maxHitPoints: maxHitPoints, boardTask: boardTask, fadeInAnim: fadeInAnim)
         {
             this.activeState = State.PlantGrowthAndReproduction;
             this.bestEnvironment = bestEnvironment;
@@ -51,13 +51,16 @@ namespace SonOfRobin
         {
             Dictionary<string, Object> pieceData = base.Serialize();
 
+            pieceData["plant_massTakenMultiplier"] = this.massTakenMultiplier;
             if (this.fruitEngine != null) this.fruitEngine.Serialize(pieceData);
+
             return pieceData;
         }
 
         public override void Deserialize(Dictionary<string, Object> pieceData)
         {
             base.Deserialize(pieceData);
+            this.massTakenMultiplier = (float)pieceData["plant_massTakenMultiplier"];
             if (this.fruitEngine != null) this.fruitEngine.Deserialize(pieceData);
         }
 

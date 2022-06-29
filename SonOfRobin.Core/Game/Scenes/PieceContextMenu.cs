@@ -9,7 +9,7 @@ namespace SonOfRobin
 {
     public class PieceContextMenu : Scene
     {
-        protected enum ContextAction { Drop, DropAll, Move, Eat, Plant }
+        protected enum ContextAction { Drop, DropAll, Move, Eat, Plant, Cook }
 
         private static readonly SpriteFont font = SonOfRobinGame.fontHuge;
         private static readonly float marginPercent = 0.03f;
@@ -110,12 +110,12 @@ namespace SonOfRobin
             }
         }
 
-        public PieceContextMenu(BoardPiece piece, PieceStorage storage, StorageSlot slot, float percentPosX, float percentPosY, bool addMove = false) : base(inputType: InputTypes.Normal, priority: 1, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.PieceContext)
+        public PieceContextMenu(BoardPiece piece, PieceStorage storage, StorageSlot slot, float percentPosX, float percentPosY, bool addMove = false, bool addDrop = true, bool addCook = false) : base(inputType: InputTypes.Normal, priority: 1, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.PieceContext)
         {
             this.piece = piece;
             this.storage = storage;
             this.slot = slot;
-            this.actionList = this.GetContextActionList(addMove: addMove);
+            this.actionList = this.GetContextActionList(addMove: addMove, addDrop: addDrop, addCook: addCook);
             this.percentPosX = percentPosX;
             this.percentPosY = percentPosY;
             this.activeEntry = 0;
@@ -126,14 +126,15 @@ namespace SonOfRobin
             this.AddTransition(new Transition(type: Transition.TransType.In, duration: 8, scene: this, blockInput: false, paramsToChange: new Dictionary<string, float> { { "posY", this.viewParams.posY + SonOfRobinGame.VirtualHeight }, { "opacity", 0f } }));
         }
 
-        private List<ContextAction> GetContextActionList(bool addMove = false)
+        private List<ContextAction> GetContextActionList(bool addMove = false, bool addDrop = false, bool addCook = false)
         {
             var contextActionList = new List<ContextAction> { };
 
-            if (this.piece.toolbarAction == Scheduler.ActionName.GetEaten) contextActionList.Add(ContextAction.Eat);
+            if (this.piece.toolbarTask == Scheduler.TaskName.GetEaten) contextActionList.Add(ContextAction.Eat);
             if (this.piece.GetType() == typeof(Fruit)) contextActionList.Add(ContextAction.Plant);
             if (addMove) contextActionList.Add(ContextAction.Move);
-            contextActionList.Add(ContextAction.Drop);
+            if (addDrop) contextActionList.Add(ContextAction.Drop);
+            if (addCook) contextActionList.Add(ContextAction.Cook);
             if (this.slot.PieceCount > 1) contextActionList.Add(ContextAction.DropAll);
 
             return contextActionList;
@@ -270,7 +271,7 @@ namespace SonOfRobin
                     return;
 
                 case ContextAction.Eat:
-                    BoardPiece food = (BoardPiece)this.slot.GetTopPiece();
+                    BoardPiece food = (BoardPiece)this.slot.TopPiece;
                     World world = World.GetTopWorld();
 
                     var executeHelper = new Dictionary<string, Object> { };
@@ -278,35 +279,48 @@ namespace SonOfRobin
                     executeHelper["toolbarPiece"] = food;
                     executeHelper["buttonHeld"] = false;
 
-                    new Scheduler.Task(menu: null, actionName: food.toolbarAction, delay: 0, executeHelper: executeHelper);
+                    new Scheduler.Task(menu: null, taskName: food.toolbarTask, delay: 0, executeHelper: executeHelper);
 
                     return;
 
                 case ContextAction.Plant:
-                    Fruit fruit = (Fruit)this.slot.GetTopPiece();
+                    Fruit fruit = (Fruit)this.slot.TopPiece;
 
-                    for (int i = 0; i < 170; i += 15)
+                    bool plantedWithSuccess = false;
+
+                    for (int i = 0; i < 35; i += 5)
                     {
                         Sprite.maxDistanceOverride = i;
-                        BoardPiece newPlant = PieceTemplate.CreateOnBoard(world: fruit.world, position: fruit.world.player.sprite.position, templateName: fruit.spawnerName);
-                        if (newPlant.sprite.placedCorrectly)
+                        BoardPiece newPlantPiece = PieceTemplate.CreateOnBoard(world: fruit.world, position: fruit.world.player.sprite.position, templateName: fruit.spawnerName);
+                        if (newPlantPiece.sprite.placedCorrectly)
                         {
+                            Plant newPlant = (Plant)newPlantPiece;
+                            newPlant.massTakenMultiplier *= 1.5f; // when the player plants something, it should grow better than normal
+
                             this.slot.RemoveTopPiece();
+                            plantedWithSuccess = true;
                             break;
                         }
                     }
+
+                    if (!plantedWithSuccess) new TextWindow(text: "I cannot plant it here.", textColor: Color.Black, bgColor: Color.White, useTransition: true, animate: true);
+
+                    return;
+
+                case ContextAction.Cook:
+                    Cooker cooker = (Cooker)this.storage.storagePiece;
+                    cooker.Cook();
 
                     return;
 
                 default:
                     throw new DivideByZeroException($"Unsupported context action - {action}.");
             }
-
         }
 
         private string GetActionLabel(ContextAction action)
         {
-           return Helpers.ToSentenceCase(Convert.ToString(action));
+            return Helpers.ToSentenceCase(Convert.ToString(action));
         }
 
         public override void Draw()

@@ -42,6 +42,8 @@ namespace SonOfRobin
         public readonly bool ignoresCollisions;
         public AllowedFields allowedFields;
         private readonly bool floatsOnWater;
+        public readonly bool isShownOnMiniMap;
+        public bool hasBeenDiscovered;
         public Cell currentCell; // current cell, that is containing the sprite 
         public List<Cell.Group> gridGroups;
 
@@ -86,7 +88,7 @@ namespace SonOfRobin
             }
         }
 
-        public Sprite(World world, string id, BoardPiece boardPiece, Vector2 position, AnimPkg animPackage, byte animSize, string animName, bool ignoresCollisions, AllowedFields allowedFields, bool blocksMovement = true, bool visible = true, bool checksFullCollisions = false, ushort minDistance = 0, ushort maxDistance = 100, bool floatsOnWater = false, bool fadeInAnim = true)
+        public Sprite(World world, string id, BoardPiece boardPiece, Vector2 position, AnimPkg animPackage, byte animSize, string animName, bool ignoresCollisions, AllowedFields allowedFields, bool blocksMovement = true, bool visible = true, bool checksFullCollisions = false, ushort minDistance = 0, ushort maxDistance = 100, bool floatsOnWater = false, bool fadeInAnim = true, bool placeAtBeachEdge = false, bool isShownOnMiniMap = false)
         {
             this.id = id; // duplicate from BoardPiece class
             this.boardPiece = boardPiece;
@@ -107,6 +109,8 @@ namespace SonOfRobin
             this.ignoresCollisions = ignoresCollisions;
             this.allowedFields = allowedFields;
             this.visible = visible; // initially it is assigned normally
+            this.isShownOnMiniMap = isShownOnMiniMap;
+            this.hasBeenDiscovered = false;
             this.currentCell = null;
             if (fadeInAnim)
             {
@@ -120,7 +124,7 @@ namespace SonOfRobin
 
             this.gridGroups = this.GetGridGroups();
 
-            this.placedCorrectly = this.FindFreeSpot(position, minDistance: minDistance, maxDistance: maxDistance); // this.position is set here
+            this.placedCorrectly = this.FindFreeSpot(position, minDistance: minDistance, maxDistance: maxDistance, findAtBeachEdge: placeAtBeachEdge); // this.position is set here
             if (!this.placedCorrectly)
             {
                 this.RemoveFromGrid();
@@ -143,6 +147,7 @@ namespace SonOfRobin
             pieceData["sprite_opacityFade"] = this.opacityFade;
             pieceData["sprite_orientation"] = this.orientation;
             pieceData["sprite_gridGroups"] = this.gridGroups;
+            pieceData["sprite_hasBeenDiscovered"] = this.hasBeenDiscovered;
         }
         public void Deserialize(Dictionary<string, Object> pieceData)
         {
@@ -159,6 +164,7 @@ namespace SonOfRobin
             this.currentFrameTimeLeft = (ushort)pieceData["sprite_currentFrameTimeLeft"];
             this.AssignFrameById((string)pieceData["sprite_frame_id"]);
             this.gridGroups = (List<Cell.Group>)pieceData["sprite_gridGroups"];
+            this.hasBeenDiscovered = (bool)pieceData["sprite_hasBeenDiscovered"];
         }
         public byte GetFieldValue(TerrainName terrainName)
         {
@@ -204,9 +210,10 @@ namespace SonOfRobin
 
             return false;
         }
-        private bool FindFreeSpot(Vector2 startPosition, ushort minDistance, ushort maxDistance)
+
+        private bool FindFreeSpot(Vector2 startPosition, ushort minDistance, ushort maxDistance, bool findAtBeachEdge = false)
         {
-            if (this.world.piecesLoadingMode)
+            if (this.world.freePiecesPlacingMode)
             {
                 this.SetNewPosition(newPos: new Vector2(startPosition.X, startPosition.Y));
                 return true;
@@ -216,6 +223,16 @@ namespace SonOfRobin
                 minDistance = 0;
                 maxDistance = (ushort)maxDistanceOverride;
                 maxDistanceOverride = -1;
+            }
+
+            if (findAtBeachEdge)
+            {
+                for (int i = 0; i < 4; i++)
+                {
+                    if (this.FindFreeSpotAtBeachEdge()) return true;
+                }
+
+                return false; // if no free spot at the edge was found
             }
 
             int numberOfTries = (minDistance == 0 && maxDistance == 0) ? 1 : 4;
@@ -251,12 +268,44 @@ namespace SonOfRobin
                     newPosition.Y = Math.Min(newPosition.Y, this.world.height - 1);
 
                     bool hasBeenMoved = this.SetNewPosition(newPos: newPosition);
-                    if (hasBeenMoved) { return true; }
+                    if (hasBeenMoved) return true;
                 }
             }
 
             return false;
         }
+
+        private bool FindFreeSpotAtBeachEdge()
+        {
+            bool useWidth = this.world.random.Next(0, 2) == 0;
+            bool minMax = this.world.random.Next(0, 2) == 0;
+            Vector2 startPos;
+
+            if (useWidth)
+            { startPos = new Vector2(this.world.random.Next((int)(this.world.width * 0.05f), (int)(this.world.width * 0.95f)), minMax ? this.world.height : 0); }
+            else
+            { startPos = new Vector2(minMax ? this.world.width : 0, this.world.random.Next((int)(this.world.height * 0.05f), (int)(this.world.height * 0.95f))); }
+
+            int stepWidth = 3;
+            if (minMax) stepWidth *= -1;
+            Vector2 step = useWidth ? new Vector2(0, stepWidth) : new Vector2(stepWidth, 0);
+
+            Rectangle worldRect = new Rectangle(0, 0, this.world.width, this.world.height);
+            Vector2 currentPos = startPos;
+            int height;
+
+            while (true)
+            {
+                currentPos += step;
+                if (!worldRect.Contains(currentPos)) return false;
+
+                height = this.world.grid.GetFieldValue(terrainName: TerrainName.Height, position: currentPos);
+                if (height > Terrain.waterLevelMax + 10) return false;
+
+                if (height >= Terrain.waterLevelMax + 1 && this.SetNewPosition(newPos: currentPos)) return true;
+            }
+        }
+
         public void SetOrientationByMovement(Vector2 movement)
         {
             if (Math.Abs(movement.X) > Math.Abs(movement.Y))
@@ -337,6 +386,7 @@ namespace SonOfRobin
                 if (this.blocksMovement) groupNames.Add(Cell.Group.ColBlocking);
             }
             if (this.visible) groupNames.Add(Cell.Group.Visible);
+            if (this.isShownOnMiniMap) groupNames.Add(Cell.Group.MiniMap);
 
             return groupNames;
         }
@@ -396,7 +446,10 @@ namespace SonOfRobin
                 if (updateGridLocation) this.UpdateGridLocation();
             }
 
-            return !collisionDetected; // negated "collisionDetected" == "hasBeenMoved"
+            if (collisionDetected) return false;
+
+            Vector2 realMove = originalPosition - this.position;
+            return Math.Abs(realMove.X) >= 1 || Math.Abs(realMove.Y) >= 1;
         }
 
         public List<Sprite> GetCollidingSpritesAtPosition(Vector2 positionToCheck)
@@ -421,7 +474,7 @@ namespace SonOfRobin
 
         public bool CheckForCollision()
         {
-            if (this.world.piecesLoadingMode) return false;
+            if (this.world.freePiecesPlacingMode) return false;
 
             // checking world boundaries
             if (this.gfxRect.Left <= 0 || this.gfxRect.Right >= this.world.width || this.gfxRect.Top <= 0 || this.gfxRect.Bottom >= this.world.height) return true;
@@ -591,6 +644,8 @@ namespace SonOfRobin
 
         public void Draw(bool calculateSubmerge = true)
         {
+            if (this.world.mapEnabled && !this.hasBeenDiscovered && this.world.camera.viewRect.Contains(this.gfxRect)) this.hasBeenDiscovered = true;
+
             if (this.ObstructsPlayer && this.opacityFade == null) this.opacityFade = new OpacityFade(sprite: this, destOpacity: 0.5f, playerObstructMode: true, duration: 10);
             this.opacityFade?.Process();
 
@@ -600,9 +655,8 @@ namespace SonOfRobin
             int submergeCorrection = 0;
             if (!this.floatsOnWater && this.IsInWater && calculateSubmerge) submergeCorrection = Convert.ToInt32((Terrain.waterLevelMax - this.GetFieldValue(TerrainName.Height)) / 2);
 
-            if (this.rotation == 0) { this.frame.Draw(destRect: this.gfxRect, color: this.color, submergeCorrection: submergeCorrection, opacity: this.opacity); }
-            else
-            { this.frame.DrawWithRotation(position: new Vector2(this.gfxRect.Center.X, this.gfxRect.Center.Y), color: this.color, rotation: this.rotation, opacity: this.opacity); }
+            if (this.rotation == 0) this.frame.Draw(destRect: this.gfxRect, color: this.color, submergeCorrection: submergeCorrection, opacity: this.opacity);
+            else this.frame.DrawWithRotation(position: new Vector2(this.gfxRect.Center.X, this.gfxRect.Center.Y), color: this.color, rotation: this.rotation, opacity: this.opacity);
 
             if (this.boardPiece.pieceStorage != null && this.boardPiece.GetType() == typeof(Plant)) this.DrawFruits();
 

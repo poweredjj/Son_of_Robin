@@ -8,15 +8,19 @@ namespace SonOfRobin
 {
     public class PieceStorage
     {
-        public enum StorageType { Inventory, Chest, Toolbar, Fruits }
+        public enum StorageType { Inventory, Cooking, Chest, Tools, Equip, Fruits }
 
         public readonly World world;
         public readonly StorageType storageType;
         public readonly BoardPiece storagePiece;
-        public readonly byte width;
-        public readonly byte height;
-        private readonly StorageSlot[,] slots;
+        private byte width;
+        private byte height;
+        public byte Width { get { return width; } }
+        public byte Height { get { return height; } }
+
+        private StorageSlot[,] slots;
         private readonly byte stackLimit;
+        public List<PieceTemplate.Name> allowedPieceNames;
         public StorageSlot lastUsedSlot; // last used by Inventory class
         public int EmptySlotsCount { get { return this.EmptySlots.Count; } }
         public List<StorageSlot> EmptySlots { get { return AllSlots.Where(slot => slot.IsEmpty).ToList(); } }
@@ -47,13 +51,12 @@ namespace SonOfRobin
                 {
                     for (int x = 0; x < width; x++)
                     { allSlots.Add(slots[x, y]); }
-
                 }
                 return allSlots;
             }
         }
 
-        public PieceStorage(byte width, byte height, World world, BoardPiece storagePiece, StorageType storageType, byte stackLimit = 255)
+        public PieceStorage(byte width, byte height, World world, BoardPiece storagePiece, StorageType storageType, byte stackLimit = 255, List<PieceTemplate.Name> allowedPieceNames = null)
         {
             Debug.Assert(width > 0 && height > 0);
 
@@ -63,7 +66,14 @@ namespace SonOfRobin
             this.world = world;
             this.width = width;
             this.height = height;
+            this.allowedPieceNames = allowedPieceNames;
             this.slots = this.MakeEmptySlots();
+        }
+
+        public void AssignAllowedPieceNames(List<PieceTemplate.Name> allowedPieceNames)
+        {
+            foreach (StorageSlot slot in this.AllSlots)
+            { slot.allowedPieceNames = allowedPieceNames; }
         }
 
         private StorageSlot[,] MakeEmptySlots()
@@ -73,10 +83,49 @@ namespace SonOfRobin
             for (int x = 0; x < this.width; x++)
             {
                 for (int y = 0; y < this.height; y++)
-                { emptySlots[x, y] = new StorageSlot(storage: this, posX: (byte)x, posY: (byte)y, stackLimit: this.stackLimit); }
+                { emptySlots[x, y] = new StorageSlot(storage: this, posX: (byte)x, posY: (byte)y, stackLimit: this.stackLimit, allowedPieceNames: allowedPieceNames); }
             }
 
             return emptySlots;
+        }
+
+        public void Resize(byte newWidth, byte newHeight)
+        {
+            if (this.width == newWidth && this.height == newHeight) return;
+
+            // dropping pieces from excess slots
+            if (this.width > newWidth || this.height > newHeight)
+            {
+                for (int x = 0; x < this.width; x++)
+                {
+                    for (int y = 0; y < this.height; y++)
+                    {
+                        if (x >= newWidth || y >= newHeight) this.DropPiecesFromSlot(slot: this.slots[x, y], dropAllPieces: true, addMovement: true);
+                    }
+                }
+            }
+
+            // creating new slots array
+            var newSlots = new StorageSlot[newWidth, newHeight];
+
+            for (int x = 0; x < newWidth; x++)
+            {
+                for (int y = 0; y < newHeight; y++)
+                {
+                    if (x >= this.width || y >= this.height)
+                    {
+                        newSlots[x, y] = new StorageSlot(storage: this, posX: (byte)x, posY: (byte)y, stackLimit: this.stackLimit, allowedPieceNames: allowedPieceNames);
+                    }
+                    else
+                    {
+                        newSlots[x, y] = this.slots[x, y];
+                    }
+                }
+            }
+
+            this.width = newWidth;
+            this.height = newHeight;
+            this.slots = newSlots;
         }
 
         public bool AddPiece(BoardPiece piece, bool dropIfDoesNotFit = false, bool addMovement = false)
@@ -99,12 +148,11 @@ namespace SonOfRobin
             return this.FindCorrectSlot(piece) != null;
         }
 
-
         public StorageSlot FindCorrectSlot(BoardPiece piece)
         {
             // trying to find existing stack
             foreach (StorageSlot slot in AllSlots)
-            { if (!slot.IsEmpty && slot.PieceName == piece.name && slot.HasSpaceLeft) return slot; }
+            { if (!slot.IsEmpty && slot.PieceName == piece.name && slot.CanFitThisPiece(piece)) return slot; }
 
             foreach (StorageSlot slot in AllSlots)
             { if (slot.CanFitThisPiece(piece)) return slot; }
@@ -132,7 +180,6 @@ namespace SonOfRobin
 
             return pieceList;
         }
-
         public BoardPiece RemoveTopPiece(int x, int y)
         {
             try
@@ -145,9 +192,8 @@ namespace SonOfRobin
 
             return null;
         }
-
         public BoardPiece GetTopPiece(StorageSlot slot)
-        { return slot.GetTopPiece(); }
+        { return slot.TopPiece; }
 
         public BoardPiece RemoveTopPiece(StorageSlot slot)
         { return slot.RemoveTopPiece(); }
@@ -162,12 +208,8 @@ namespace SonOfRobin
             catch (IndexOutOfRangeException)
             { MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"Can't drop piece - inventory index out of bounds ({x},{y})", color: Color.White); }
         }
-
-
         public void DropPiecesFromSlot(StorageSlot slot, bool destroyIfFreeSpotNotFound = false, bool addMovement = false, bool dropAllPieces = false)
         {
-            MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: "Dropping piece...", color: Color.White);
-
             while (true)
             {
                 BoardPiece piece = slot.RemoveTopPiece();
@@ -195,7 +237,6 @@ namespace SonOfRobin
             return pieceList;
         }
 
-
         public void DropAllPiecesToTheGround(bool addMovement = false)
         {
             foreach (StorageSlot slot in this.AllSlots)
@@ -207,11 +248,10 @@ namespace SonOfRobin
 
         public bool DropPieceToTheGround(BoardPiece piece, bool addMovement)
         {
-            if (this.storagePiece.GetType() == typeof(Player))
-            {
-                // item should fall naturally to places, where player can go to
-                piece.sprite.allowedFields = this.storagePiece.sprite.allowedFields;
-            }
+            if (piece.GetType() == typeof(Player)) MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: "Dropping piece...", color: Color.White);
+
+            // the piece should fall naturally to places, where player can go to
+            piece.sprite.allowedFields = new AllowedFields(world: world, rangeNameList: new List<AllowedFields.RangeName> { AllowedFields.RangeName.WaterShallow, AllowedFields.RangeName.WaterMedium, AllowedFields.RangeName.GroundAll });
 
             bool freeSpotFound = piece.sprite.MoveToClosestFreeSpot(startPosition: this.storagePiece.sprite.position);
             if (freeSpotFound)
@@ -283,7 +323,7 @@ namespace SonOfRobin
 
             foreach (StorageSlot slot in this.OccupiedSlots)
             {
-                piece = slot.GetTopPiece();
+                piece = slot.TopPiece;
                 if (piece.GetType() == type)
                 {
                     if (removePiece) return slot.RemoveTopPiece();
@@ -300,7 +340,7 @@ namespace SonOfRobin
 
             foreach (StorageSlot slot in this.OccupiedSlots)
             {
-                piece = slot.GetTopPiece();
+                piece = slot.TopPiece;
                 if (piece.name == name)
                 {
                     if (removePiece) return slot.RemoveTopPiece();
@@ -331,14 +371,6 @@ namespace SonOfRobin
             foreach (StorageSlot slot in this.AllSlots)
             { slotData.Add(slot.Serialize()); }
 
-            var lockedSlots = new List<int> { };
-            int slotNo = 0;
-            foreach (StorageSlot slot in this.AllSlots)
-            {
-                if (slot.locked) lockedSlots.Add(slotNo);
-                slotNo++;
-            }
-
             var storageDict = new Dictionary<string, Object>
             {
               {"width", this.width},
@@ -346,7 +378,6 @@ namespace SonOfRobin
               {"stackLimit", this.stackLimit},
               {"slotData", slotData},
               {"storageType", storageType},
-              {"lockedSlots", lockedSlots},
             };
 
             if (this.lastUsedSlot != null)
@@ -355,7 +386,7 @@ namespace SonOfRobin
                 storageDict["lastUsedSlotY"] = this.lastUsedSlot.posY;
             }
 
-                return storageDict;
+            return storageDict;
         }
 
         public static PieceStorage Deserialize(Object storageData, World world, BoardPiece storagePiece)
@@ -369,8 +400,7 @@ namespace SonOfRobin
             byte stackLimit = (byte)storageDict["stackLimit"];
             var slotData = (List<Object>)storageDict["slotData"];
             StorageType storageType = (StorageType)storageDict["storageType"];
-            var lockedSlots = (List<int>)storageDict["lockedSlots"];
-          
+
             PieceStorage storage = new PieceStorage(width: width, height: height, world: world, storagePiece: storagePiece, storageType: storageType, stackLimit: stackLimit);
             if (storageDict.ContainsKey("lastUsedSlotX") && storageDict.ContainsKey("lastUsedSlotY"))
             {
@@ -387,14 +417,6 @@ namespace SonOfRobin
                     storage.slots[x, y].Deserialize(slotData[slotNo]);
                     slotNo++;
                 }
-            }
-
-            slotNo = 0;
-            foreach (StorageSlot slot in storage.AllSlots)
-            {
-                if (lockedSlots.Contains(slotNo)) slot.locked = true;
-
-                slotNo++;
             }
 
             return storage;

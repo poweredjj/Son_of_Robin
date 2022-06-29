@@ -26,6 +26,8 @@ namespace SonOfRobin
             PieceTemplate.Name.PalmTree,
             PieceTemplate.Name.RegularWorkshop,
             PieceTemplate.Name.ChestWooden,
+            PieceTemplate.Name.CrateRegular,
+            PieceTemplate.Name.CrateStarting,
             PieceTemplate.Name.PickaxeWood,
             PieceTemplate.Name.AxeWood,
             PieceTemplate.Name.WoodLog,
@@ -43,6 +45,9 @@ namespace SonOfRobin
              PieceTemplate.Name.PickaxeStone,
              PieceTemplate.Name.IronDeposit,
              PieceTemplate.Name.CoalDeposit,
+             PieceTemplate.Name.TentSmall,
+             PieceTemplate.Name.TentMedium,
+             PieceTemplate.Name.TentBig,
          } },
 
          {TargetCategory.Metal, new List<PieceTemplate.Name> {
@@ -69,6 +74,8 @@ namespace SonOfRobin
              PieceTemplate.Name.Rabbit,
              PieceTemplate.Name.Fox,
              PieceTemplate.Name.Frog,
+             PieceTemplate.Name.BackpackMedium,
+             PieceTemplate.Name.BeltMedium,
          } },
 
         };
@@ -76,14 +83,14 @@ namespace SonOfRobin
         public Tool(World world, Vector2 position, AnimPkg animPackage, PieceTemplate.Name name, AllowedFields allowedFields, Dictionary<byte, int> maxMassBySize, int hitPower, Dictionary<TargetCategory, float> multiplierByCategory, int maxHitPoints,
             byte animSize = 0, string animName = "default", bool blocksMovement = false, ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = true, int generation = 0, bool indestructible = false, Yield yield = null, bool shootsProjectile = false, List<PieceTemplate.Name> compatibleAmmo = null, bool rotatesWhenDropped = true, bool fadeInAnim = false) :
 
-            base(world: world, position: position, animPackage: animPackage, animSize: animSize, animName: animName, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedFields: allowedFields, floatsOnWater: floatsOnWater, maxMassBySize: maxMassBySize, generation: generation, canBePickedUp: true, yield: yield, maxHitPoints: maxHitPoints, indestructible: indestructible, rotatesWhenDropped: rotatesWhenDropped, fadeInAnim: fadeInAnim)
+            base(world: world, position: position, animPackage: animPackage, animSize: animSize, animName: animName, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedFields: allowedFields, floatsOnWater: floatsOnWater, maxMassBySize: maxMassBySize, generation: generation, canBePickedUp: true, yield: yield, maxHitPoints: maxHitPoints, indestructible: indestructible, rotatesWhenDropped: rotatesWhenDropped, fadeInAnim: fadeInAnim, isShownOnMiniMap: true)
         {
             this.activeState = State.Empty;
             this.hitPower = hitPower;
             this.hitCooldown = 0; // earliest world.currentUpdate, when hitting will be possible
             this.shootsProjectile = shootsProjectile;
             this.multiplierByCategory = multiplierByCategory;
-            this.toolbarAction = Scheduler.ActionName.Hit;
+            this.toolbarTask = Scheduler.TaskName.Hit;
             this.compatibleAmmo = compatibleAmmo == null ? new List<PieceTemplate.Name> { } : compatibleAmmo;
         }
 
@@ -169,7 +176,7 @@ namespace SonOfRobin
             if (currentMultiplier == 0) return;
             if (isVeryTired) currentMultiplier /= 2;
 
-           player.Stamina = Math.Max(player.Stamina - 50, 0);
+            player.Stamina = Math.Max(player.Stamina - 50, 0);
 
             this.hitCooldown = this.world.currentUpdate + 30;
             int currentHitPower = (int)Math.Max(this.hitPower * currentMultiplier, 1);
@@ -218,7 +225,8 @@ namespace SonOfRobin
                     animalTarget.aiData.Reset();
                     animalTarget.activeState = State.AnimalFlee;
 
-                    animalTarget.AddPassiveMovement(movement: (attacker.sprite.position - animalTarget.sprite.position) * targetPushMultiplier * -1f * hitPower);
+                    animalTarget.AddPassiveMovement(movement: (attacker.sprite.position - animalTarget.sprite.position) * targetPushMultiplier * -0.5f * hitPower);
+                    animalTarget.buffEngine.AddBuff(buff: new BuffEngine.Buff(world: world, type: BuffEngine.BuffType.Speed, value: -animalTarget.speed / 2), autoRemoveDelay: 180); // animal will be slower for a while
                 }
             }
         }

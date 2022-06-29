@@ -54,11 +54,13 @@ namespace SonOfRobin
         Attack,
         Backlight,
         Crosshair,
+        Flame,
 
         ChestWooden,
         ChestMetal,
         WoodLog,
         WoodPlank,
+        Crate,
 
         WoodenTable,
         CookingPot,
@@ -82,6 +84,7 @@ namespace SonOfRobin
 
         RawMeat,
         CookedMeat,
+        MealStandard,
         Leather,
 
         TomatoPlant,
@@ -158,7 +161,12 @@ namespace SonOfRobin
 
         TentSmall,
         TentMedium,
-        TentBig
+        TentBig,
+
+        BackpackMedium,
+        BeltMedium,
+
+        Map
     }
 
     public class AnimData
@@ -401,6 +409,7 @@ namespace SonOfRobin
             frameList.Add(ConvertImageToFrame(atlasName: "chests", layer: 0, x: 0, y: 96, width: 32, height: 48, duration: 6));
             frameList.Add(ConvertImageToFrame(atlasName: "chests", layer: 0, x: 0, y: 144, width: 32, height: 48, duration: 0));
             AddFrameList(animPackage: packageName, animSize: 0, animName: "opening", frameList: frameList);
+
             frameList = new List<AnimFrame>();
             frameList.Add(ConvertImageToFrame(atlasName: "chests", layer: 0, x: 0, y: 96, width: 32, height: 48, duration: 6));
             frameList.Add(ConvertImageToFrame(atlasName: "chests", layer: 0, x: 0, y: 48, width: 32, height: 48, duration: 6));
@@ -419,6 +428,16 @@ namespace SonOfRobin
             frameList.Add(ConvertImageToFrame(atlasName: "chests", layer: 0, x: 32, y: 96, width: 32, height: 48, duration: 6));
             frameList.Add(ConvertImageToFrame(atlasName: "chests", layer: 0, x: 32, y: 48, width: 32, height: 48, duration: 6));
             frameList.Add(ConvertImageToFrame(atlasName: "chests", layer: 0, x: 32, y: 0, width: 32, height: 48, duration: 0));
+            AddFrameList(animPackage: packageName, animSize: 0, animName: "closing", frameList: frameList);
+
+            packageName = AnimPkg.Crate;
+            AddFrameList(animPackage: packageName, animSize: 0, animName: "default",
+            frameList: ConvertImageToFrameList(atlasName: "chests", layer: 0, x: 128, y: 0, width: 32, height: 48));
+
+            frameList = new List<AnimFrame>();
+            frameList.Add(ConvertImageToFrame(atlasName: "chests", layer: 0, x: 0, y: 96, width: 32, height: 48, duration: 6));
+            frameList.Add(ConvertImageToFrame(atlasName: "chests", layer: 0, x: 0, y: 48, width: 32, height: 48, duration: 6));
+            frameList.Add(ConvertImageToFrame(atlasName: "chests", layer: 0, x: 0, y: 0, width: 32, height: 48, duration: 0));
             AddFrameList(animPackage: packageName, animSize: 0, animName: "closing", frameList: frameList);
 
             packageName = AnimPkg.WoodenTable;
@@ -512,6 +531,10 @@ namespace SonOfRobin
             packageName = AnimPkg.CookedMeat;
             AddFrameList(animPackage: packageName, animSize: 0, animName: "default",
             frameList: ConvertImageToFrameList(atlasName: "Cooked Meat", layer: 0, scale: 0.17f));
+
+            packageName = AnimPkg.MealStandard;
+            AddFrameList(animPackage: packageName, animSize: 0, animName: "default",
+            frameList: ConvertImageToFrameList(atlasName: "fancy_food2", layer: 0, x: 288, y: 64, width: 32, height: 32, scale: 0.5f));
 
             packageName = AnimPkg.Hand;
             AddFrameList(animPackage: packageName, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "hand", layer: 1));
@@ -638,6 +661,13 @@ namespace SonOfRobin
             AddFrameList(animPackage: packageName, animSize: 0, animName: "default",
             frameList: ConvertImageToFrameList(atlasName: "crosshair", layer: 2));
 
+            packageName = AnimPkg.Flame;
+            frameList = new List<AnimFrame>();
+            frameList.Add(ConvertImageToFrame(atlasName: "flames", layer: 1, duration: 6, x: 432, y: 48, width: 48, height: 48));
+            frameList.Add(ConvertImageToFrame(atlasName: "flames", layer: 1, duration: 6, x: 480, y: 48, width: 48, height: 48));
+            frameList.Add(ConvertImageToFrame(atlasName: "flames", layer: 1, duration: 6, x: 528, y: 48, width: 48, height: 48));
+            AddFrameList(animPackage: packageName, animSize: 0, animName: "default", frameList: frameList);
+
             packageName = AnimPkg.Leather;
             AddFrameList(animPackage: packageName, animSize: 0, animName: "default",
             frameList: ConvertImageToFrameList(atlasName: "craft_items", layer: 0, x: 96, y: 96, width: 32, height: 32, scale: 0.75f));
@@ -657,6 +687,18 @@ namespace SonOfRobin
             packageName = AnimPkg.TentBig;
             AddFrameList(animPackage: packageName, animSize: 0, animName: "default",
             frameList: ConvertImageToFrameList(atlasName: "tent_big", layer: 1, x: 15, y: 0, width: 191, height: 162, scale: 1f, depthPercent: 0.6f));
+
+            packageName = AnimPkg.BackpackMedium;
+            AddFrameList(animPackage: packageName, animSize: 0, animName: "default",
+            frameList: ConvertImageToFrameList(atlasName: "backpack", layer: 1, scale: 0.5f));
+
+            packageName = AnimPkg.BeltMedium;
+            AddFrameList(animPackage: packageName, animSize: 0, animName: "default",
+            frameList: ConvertImageToFrameList(atlasName: "belt", layer: 1, scale: 0.06f));
+
+            packageName = AnimPkg.Map;
+            AddFrameList(animPackage: packageName, animSize: 0, animName: "default",
+            frameList: ConvertImageToFrameList(atlasName: "parchment", layer: 0, scale: 0.03f));
 
             // RPGMaker characters
             AddRPGMakerPackageV1(packageName: AnimPkg.Blonde, atlasName: "actor29rec4", setNoX: 0, setNoY: 0, animSize: 0);

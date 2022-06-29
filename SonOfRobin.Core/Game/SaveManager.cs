@@ -23,9 +23,9 @@ namespace SonOfRobin
         {
             get
             {
-                if (this.saveDate.Date == DateTime.Today) { return this.saveDate.ToString("TODAY HH:mm"); }
-                else if (this.saveDate.Date == DateTime.Today - TimeSpan.FromDays(1)) { return this.saveDate.ToString("YESTERDAY HH:mm"); }
-                else { return this.saveDate.ToString("yyyy/MM/dd HH:mm"); }
+                if (this.saveDate.Date == DateTime.Today) return this.saveDate.ToString("TODAY HH:mm");
+                else if (this.saveDate.Date == DateTime.Today - TimeSpan.FromDays(1)) return this.saveDate.ToString("YESTERDAY HH:mm");
+                else return this.saveDate.ToString("yyyy/MM/dd HH:mm");
             }
         }
         public string FullDescription
@@ -78,7 +78,7 @@ namespace SonOfRobin
 
     public class SaveManager
     {
-        public readonly static float saveVersion = 1.198f;
+        public readonly static float saveVersion = 1.227f;
 
         public static bool AnySavesExist
         { get { return Directory.GetDirectories(SonOfRobinGame.saveGamesPath).ToList().Count > 0; } }

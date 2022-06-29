@@ -11,6 +11,8 @@ namespace SonOfRobin
         private Sprite trackedSprite;
         private Vector2 trackedPos;
         private Vector2 currentPos;
+        private float targetZoom;
+        public float currentZoom;
         private bool currentFluidMotion;
         public bool fluidMotionDisabled;
         private static readonly int movementSlowdown = 20;
@@ -49,8 +51,9 @@ namespace SonOfRobin
             this.currentFluidMotion = false;
             this.fluidMotionDisabled = false;
             this.trackingMode = TrackingMode.Undefined;
+            this.targetZoom = 1f;
+            this.currentZoom = 1f;
         }
-
         public void Update()
         {
             // Update should not be called more than once per frame - this causes jerky motion.
@@ -64,11 +67,13 @@ namespace SonOfRobin
 
             if (this.currentFluidMotion)
             {
+                this.currentZoom += (this.targetZoom - this.currentZoom) / movementSlowdown;
                 viewCenter.X = this.currentPos.X + ((currentTargetPos.X - this.currentPos.X) / movementSlowdown);
                 viewCenter.Y = this.currentPos.Y + ((currentTargetPos.Y - this.currentPos.Y) / movementSlowdown);
             }
             else
             {
+                this.currentZoom = this.targetZoom;
                 viewCenter.X = currentTargetPos.X;
                 viewCenter.Y = currentTargetPos.Y;
                 this.currentFluidMotion = true; // only one frame should be displayed with instant scrolling...
@@ -115,6 +120,12 @@ namespace SonOfRobin
             this.trackedPos = new Vector2(position.X, position.Y);
             this.currentFluidMotion = fluidMotion;
         }
+
+        public void SetZoom(float zoom)
+        { this.targetZoom = zoom; }
+
+        public void ResetZoom()
+        { this.targetZoom = 1f; }
 
         public Vector2 GetRandomPositionOutsideCameraView()
         {

@@ -20,6 +20,7 @@ namespace SonOfRobin
             Toolbar,
             InventoryAndToolbar,
             InventoryAndChest,
+            InventoryAndEquip
         }
 
         public static List<Scene> sceneStack = new List<Scene> { };
@@ -310,23 +311,38 @@ namespace SonOfRobin
                     break;
 
                 case InventoryLayout.Toolbar:
-                    new Inventory(piece: player, storage: player.toolStorage, label: "Tools", layout: Inventory.Layout.SingleBottom, inputType: InputTypes.Always);
+                    {
+                        new Inventory(piece: player, storage: player.toolStorage, layout: Inventory.Layout.SingleBottom, inputType: InputTypes.Always);
 
-                    break;
+                        break;
+                    }
 
                 case InventoryLayout.InventoryAndToolbar:
-                    Inventory toolbar = new Inventory(piece: player, storage: player.toolStorage, label: "Tools", layout: Inventory.Layout.DualBottom);
-                    Inventory inventory = new Inventory(piece: player, storage: player.pieceStorage, label: "Inventory", layout: Inventory.Layout.DualTop, otherInventory: toolbar);
-                    toolbar.otherInventory = inventory;
+                    {
+                        Inventory toolbar = new Inventory(piece: player, storage: player.toolStorage, layout: Inventory.Layout.DualBottom);
+                        Inventory inventory = new Inventory(piece: player, storage: player.pieceStorage, layout: Inventory.Layout.DualTop, otherInventory: toolbar);
+                        toolbar.otherInventory = inventory;
 
-                    break;
+                        break;
+                    }
 
                 case InventoryLayout.InventoryAndChest:
-                    Inventory inventoryLeft = new Inventory(piece: player, storage: player.pieceStorage, label: "Inventory", layout: Inventory.Layout.DualLeft, blocksUpdatesBelow: false);
-                    Inventory inventoryRight = new Inventory(piece: chest, storage: chest.pieceStorage, label: "Chest", layout: Inventory.Layout.DualRight, blocksUpdatesBelow: false, otherInventory: inventoryLeft);
-                    inventoryLeft.otherInventory = inventoryRight;
+                    {
+                        Inventory inventoryLeft = new Inventory(piece: player, storage: player.pieceStorage, layout: Inventory.Layout.DualLeft, blocksUpdatesBelow: false);
+                        Inventory inventoryRight = new Inventory(piece: chest, storage: chest.pieceStorage, layout: Inventory.Layout.DualRight, blocksUpdatesBelow: false, otherInventory: inventoryLeft);
+                        inventoryLeft.otherInventory = inventoryRight;
 
-                    break;
+                        break;
+                    }
+
+                case InventoryLayout.InventoryAndEquip:
+                    {
+                        Inventory inventoryLeft = new Inventory(piece: player, storage: player.pieceStorage, layout: Inventory.Layout.DualLeft, blocksUpdatesBelow: false);
+                        Inventory inventoryRight = new Inventory(piece: player, storage: player.equipStorage, layout: Inventory.Layout.DualRight, blocksUpdatesBelow: false, otherInventory: inventoryLeft);
+                        inventoryLeft.otherInventory = inventoryRight;
+
+                        break;
+                    }
 
                 default:
                     throw new DivideByZeroException($"Unknown inventory layout '{newLayout}'.");

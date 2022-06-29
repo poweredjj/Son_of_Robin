@@ -14,6 +14,7 @@ namespace SonOfRobin
         Shoot,
         PickUp,
         Inventory,
+        Equip,
         FieldCraft,
         Map,
         Run,
@@ -47,18 +48,33 @@ namespace SonOfRobin
         private bool switchedState;
         private readonly bool hidden;
         private readonly bool switchButton;
+        private readonly string coupledPrefName;
         private readonly static SpriteFont font = SonOfRobinGame.fontSmall;
 
-
         public static Dictionary<VButName, VirtButton> buttonsByName = new Dictionary<VButName, VirtButton> { };
-        private bool HasBeenPressed { get { return this.isDown && !this.wasDownLastFrame; } }
-        private bool HasBeenReleased { get { return !this.isDown && this.wasDownLastFrame; } }
-        private bool IsDown { get { return this.switchButton ? this.switchedState : this.isDown; } }
+        private bool HasBeenPressed { get { return this.IsDown && !this.wasDownLastFrame; } }
+        private bool HasBeenReleased { get { return !this.IsDown && this.wasDownLastFrame; } }
+        private bool IsDown
+        {
+            get
+            {
+                return this.switchButton ? this.switchedState : this.isDown;
+            }
+
+            set
+            {
+                this.isDown = value;
+
+                if (this.coupledPrefName != "") Helpers.SetProperty(targetObj: new Preferences(), propertyName: this.coupledPrefName, newValue: this.IsDown);
+            }
+        }
+
 
         private int Width { get { return Convert.ToInt32(SonOfRobinGame.VirtualWidth * this.width0to1); } }
         private int Height { get { return Convert.ToInt32(SonOfRobinGame.VirtualWidth * this.height0to1); } }  // VirtualWidth is repeated to maintain button proportions
 
         private Vector2 PosCenter { get { return new Vector2(SonOfRobinGame.VirtualWidth * this.posX0to1, SonOfRobinGame.VirtualHeight * this.posY0to1); } }
+
 
         private Rectangle Rect
         {
@@ -75,7 +91,7 @@ namespace SonOfRobin
             }
         }
 
-        public VirtButton(VButName name, string label, float posX0to1, float posY0to1, float width0to1, float height0to1, Color colorPressed, Color colorReleased, bool switchButton = false, bool hidden = false)
+        public VirtButton(VButName name, string label, float posX0to1, float posY0to1, float width0to1, float height0to1, Color colorPressed, Color colorReleased, bool switchButton = false, bool hidden = false, string coupledPrefName = "")
         {
             this.label = label;
             this.colorPressed = colorPressed;
@@ -90,9 +106,13 @@ namespace SonOfRobin
             this.width0to1 = width0to1;
             this.height0to1 = height0to1;
 
-            this.isDown = false;
+            this.coupledPrefName = coupledPrefName;
+            bool initialValue = false;
+            if (this.coupledPrefName != "") initialValue = (bool)Helpers.GetProperty(targetObj: new Preferences(), propertyName: this.coupledPrefName);
+
+            this.isDown = initialValue;
+            this.switchedState = initialValue;
             this.wasDownLastFrame = false;
-            this.switchedState = false;
 
             this.switchButton = switchButton;
 
@@ -140,19 +160,19 @@ namespace SonOfRobin
 
                 if (this.Rect.Contains(position))
                 {
-                    //MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"Button {this.label} is down.", color: Color.GreenYellow);
+                   // MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"Button {this.label} is down.", color: Color.GreenYellow);
 
                     if (touch.State == TouchLocationState.Pressed || (touch.State == TouchLocationState.Moved && this.wasDownLastFrame))
                     {
                         if (!this.wasDownLastFrame) this.switchedState = !this.switchedState;
 
-                        this.isDown = true;
+                        this.IsDown = true;
                         return;
                     }
                 }
             }
 
-            this.isDown = false;
+            this.IsDown = false;
         }
 
         public static void DrawAll()

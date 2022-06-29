@@ -20,6 +20,7 @@ namespace SonOfRobin
             Interact,
             PickUp,
             Inventory,
+            Equip,
             FieldCraft,
             Run,
             MapToggle,
@@ -61,8 +62,11 @@ namespace SonOfRobin
         public readonly bool demoMode;
         public bool inTransitionPlayed;
 
+        public int currentPieceId;
+        public int currentBuffId;
+
         private Object saveGameData;
-        public bool piecesLoadingMode; // allows to precisely place pieces during loading a saved game
+        public bool freePiecesPlacingMode; // allows to precisely place pieces during loading a saved game
         public bool createMissinPiecesOutsideCamera;
         private DateTime lastSaved;
 
@@ -76,6 +80,7 @@ namespace SonOfRobin
         public List<MapMode> mapCycle;
         public readonly Map mapBig;
         public readonly Map mapSmall;
+        public bool mapEnabled;
 
         public Player player;
 
@@ -120,13 +125,13 @@ namespace SonOfRobin
             }
         }
         public World(int width, int height, int seed = -1, Object saveGameData = null, bool demoMode = false) :
-              base(inputType: InputTypes.Normal, priority: 1, blocksUpdatesBelow: true, blocksDrawsBelow: true, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.WorldMain)
+              base(inputType: InputTypes.Normal, priority: 1, blocksUpdatesBelow: true, blocksDrawsBelow: true, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty)
         {
             this.demoMode = demoMode;
             if (this.demoMode) this.InputType = InputTypes.None;
             this.inTransitionPlayed = false;
             this.saveGameData = saveGameData;
-            this.piecesLoadingMode = saveGameData != null;
+            this.freePiecesPlacingMode = saveGameData != null;
             this.createMissinPiecesOutsideCamera = false;
             this.lastSaved = DateTime.Now;
             this.creationInProgress = true;
@@ -144,6 +149,9 @@ namespace SonOfRobin
             this.currentFrame = 0;
             this.currentUpdate = 0;
             this.updateMultiplier = 1;
+
+            this.currentPieceId = 0;
+            this.currentBuffId = 0;
 
             this.noise = new FastNoiseLite(this.seed);
 
@@ -165,11 +173,13 @@ namespace SonOfRobin
             this.doNotCreatePiecesList = new List<PieceTemplate.Name> { };
             this.camera = new Camera(this);
             this.camera.TrackCoords(new Vector2(0, 0));
+            this.mapEnabled = false;
             this.mapMode = MapMode.None;
             this.mapCycle = SonOfRobinGame.platform == Platform.Mobile ? new List<MapMode> { MapMode.None, MapMode.Big } : new List<MapMode> { MapMode.None, MapMode.Small, MapMode.Big };
             this.mapBig = new Map(world: this, fullScreen: true, touchLayout: TouchLayout.Map);
             this.mapSmall = new Map(world: this, fullScreen: false, touchLayout: TouchLayout.Empty);
-            this.grid = new Grid(this);
+            if (saveGameData == null) this.grid = new Grid(this);
+            else { this.Deserialize(gridOnly: true); }
             this.rightTriggerPreviousFrame = 0f;
 
             SonOfRobinGame.game.IsFixedTimeStep = false; // speeds up the creation process
@@ -194,6 +204,7 @@ namespace SonOfRobin
             {
                 ProgressBar.Hide();
                 this.touchLayout = TouchLayout.WorldMain;
+                this.tipsLayout = ControlTips.TipsLayout.WorldMain;
                 this.creationInProgress = false;
                 if (SonOfRobinGame.platform == Platform.Mobile) SonOfRobinGame.KeepScreenOn = false;
                 this.creationEnd = DateTime.Now;
@@ -208,12 +219,18 @@ namespace SonOfRobin
 
                     this.currentFrame = 0;
                     this.currentUpdate = 0;
-                    if (!this.demoMode) this.player = (Player)this.PlacePlayer();
+                    if (!this.demoMode)
+                    {
+                        this.player = (Player)this.PlacePlayer();
+
+                        BoardPiece crate = PieceTemplate.CreateOnBoard(world: this, position: this.player.sprite.position, templateName: PieceTemplate.Name.CrateStarting);
+                        if (crate.sprite.placedCorrectly) crate.sprite.MoveToClosestFreeSpot(this.player.sprite.position);
+                    }
                     if (this.demoMode) this.camera.TrackLiveAnimal();
                 }
 
                 else
-                { this.Deserialize(); }
+                { this.Deserialize(gridOnly: false); }
 
                 if (!this.demoMode)
                 {
@@ -229,9 +246,18 @@ namespace SonOfRobin
 
         }
 
-        private void Deserialize()
+        private void Deserialize(bool gridOnly)
         {
             var saveGameDataDict = (Dictionary<string, Object>)this.saveGameData;
+
+            // deserializing grid
+
+            if (gridOnly) // grid has to be deserialized first
+            {
+                var gridData = (Dictionary<string, Object>)saveGameDataDict["grid"];
+                this.grid = Grid.Deserialize(world: this, gridData: gridData);
+                return;
+            }
 
             // deserializing header
 
@@ -239,7 +265,14 @@ namespace SonOfRobin
 
             this.currentFrame = (int)headerData["currentFrame"];
             this.currentUpdate = (int)headerData["currentUpdate"];
-            this.hintEngine.disabledHints = (List<HintEngine.Type>)headerData["disabledHints"];
+            this.currentPieceId = (int)headerData["currentPieceId"];
+            this.currentBuffId = (int)headerData["currentBuffId"];
+            this.mapEnabled = (bool)headerData["mapEnabled"];
+
+            // deserializing hints
+
+            var hintsData = (Dictionary<string, Object>)saveGameDataDict["hints"];
+            this.hintEngine.Deserialize(hintsData);
 
             // deserializing pieces
 
@@ -248,7 +281,6 @@ namespace SonOfRobin
             var pieceDataList = (List<Object>)saveGameDataDict["pieces"];
 
             var newPiecesByOldTargetIds = new Dictionary<string, BoardPiece> { };
-
 
             foreach (Dictionary<string, Object> pieceData in pieceDataList)
             {
@@ -293,7 +325,7 @@ namespace SonOfRobin
             // finalizing
 
             this.saveGameData = null;
-            this.piecesLoadingMode = false;
+            this.freePiecesPlacingMode = false;
 
             MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.User, message: $"Game has been loaded.", color: Color.Cyan);
         }
@@ -325,7 +357,7 @@ namespace SonOfRobin
             else
             {
                 var saveParams = new Dictionary<string, Object> { { "saveSlotName", saveSlotName }, { "showMessage", false } };
-                new Scheduler.Task(menu: null, actionName: Scheduler.ActionName.SaveGame, executeHelper: saveParams);
+                new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.SaveGame, executeHelper: saveParams);
             }
         }
 
@@ -352,7 +384,9 @@ namespace SonOfRobin
                 {"height", this.height },
                 {"currentFrame", this.currentFrame },
                 {"currentUpdate", this.currentUpdate },
-                {"disabledHints", this.hintEngine.disabledHints },
+                {"currentPieceId", this.currentPieceId },
+                {"currentBuffId", this.currentBuffId },
+                {"mapEnabled", this.mapEnabled },
                 {"realDateTime", DateTime.Now },
                 {"saveVersion", SaveManager.saveVersion },
             };
@@ -360,7 +394,20 @@ namespace SonOfRobin
             string headerPath = Path.Combine(saveDir, "header.sav");
             LoaderSaver.Save(path: headerPath, savedObj: headerData);
 
+            // saving hints data
+
+            string hintsPath = Path.Combine(saveDir, "hints.sav");
+            var hintsData = this.hintEngine.Serialize();
+            LoaderSaver.Save(path: hintsPath, savedObj: hintsData);
+
+            // saving grid data
+
+            string gridPath = Path.Combine(saveDir, "grid.sav");
+            var gridData = this.grid.Serialize();
+            LoaderSaver.Save(path: gridPath, savedObj: gridData);
+
             // saving pieces data
+
             uint maxPiecesInPackage = 10000; // using small piece packages lowers ram usage during writing binary files
             var pieceDataPackages = new Dictionary<int, List<Object>> { };
             int currentPackageNo = 0;
@@ -395,7 +442,7 @@ namespace SonOfRobin
             string trackingPath = Path.Combine(saveDir, "tracking.sav");
             LoaderSaver.Save(path: trackingPath, savedObj: trackingData);
 
-            // saving planned event data
+            // saving world event data
 
             var eventData = new List<Object> { };
             foreach (var eventList in this.eventQueue.Values)
@@ -438,6 +485,28 @@ namespace SonOfRobin
             int seed = (int)headerData["seed"];
             int width = (int)headerData["width"];
             int height = (int)headerData["height"];
+
+            // loading grid
+
+            string gridPath = Path.Combine(saveDir, "grid.sav");
+            var gridData = (Dictionary<string, Object>)LoaderSaver.Load(path: gridPath);
+
+            if (gridData is null)
+            {
+                new TextWindow(text: $"Error while reading grid for slot {saveSlotName}.", textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false);
+                return null;
+            }
+
+            // loading hints
+
+            string hintsPath = Path.Combine(saveDir, "hints.sav");
+            var hintsData = (Dictionary<string, Object>)LoaderSaver.Load(path: hintsPath);
+
+            if (hintsData is null)
+            {
+                new TextWindow(text: $"Error while reading hints for slot {saveSlotName}.", textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false);
+                return null;
+            }
 
             // loading pieces
 
@@ -484,6 +553,8 @@ namespace SonOfRobin
             // packing all loaded data into dictionary
             var saveGameData = new Dictionary<string, Object> {
                 {"header", headerData},
+                {"hints", hintsData},
+                {"grid", gridData},
                 {"pieces", piecesData},
                 {"tracking", trackingData},
                 {"events", eventData},
@@ -549,7 +620,8 @@ namespace SonOfRobin
                 new PieceCreationData(name: PieceTemplate.Name.MineralsBig, multiplier: 0.3f, maxAmount: 0),
                 new PieceCreationData(name: PieceTemplate.Name.IronDeposit, multiplier: 0.01f, maxAmount: 80),
                 new PieceCreationData(name: PieceTemplate.Name.CoalDeposit, multiplier: 0.01f, maxAmount: 80),
-                new PieceCreationData(name: PieceTemplate.Name.Shell, multiplier: 1.5f, maxAmount: 0),
+                new PieceCreationData(name: PieceTemplate.Name.Shell, multiplier: 1f, maxAmount: 50),
+                new PieceCreationData(name: PieceTemplate.Name.CrateRegular, multiplier: 0.1f, maxAmount: 1),
                 new PieceCreationData(name: PieceTemplate.Name.Rabbit, multiplier: 0.1f, maxAmount: Animal.maxAnimalsPerName),
                 new PieceCreationData(name: PieceTemplate.Name.Fox, multiplier: 0.1f, maxAmount: Animal.maxAnimalsPerName),
                 new PieceCreationData(name: PieceTemplate.Name.Frog, multiplier: 0.1f, maxAmount: Animal.maxAnimalsPerName),
@@ -565,9 +637,11 @@ namespace SonOfRobin
             {
                 if (doNotCreatePiecesList.Contains(creationData.name)) continue;
 
+
                 minAmount = Math.Max((int)(minPieceAmount * creationData.multiplier), 4);
+                if (creationData.maxAmount > 0) minAmount = Math.Min(minAmount, creationData.maxAmount);
+
                 int amountToCreate = Math.Max(minAmount - this.pieceCountByName[creationData.name], 0);
-                if (creationData.maxAmount > 0) amountToCreate = Math.Min(amountToCreate, creationData.maxAmount);
                 if (amountToCreate > 0) amountToCreateByName[creationData.name] = amountToCreate;
             }
 
@@ -583,10 +657,11 @@ namespace SonOfRobin
             foreach (var kvp in amountToCreateByName)
             {
                 pieceName = kvp.Key;
-                amountLeftToCreate = kvp.Value; // separate from the iterator below (needs to be modified)
+                amountLeftToCreate = Convert.ToInt32(kvp.Value); // separate from the iterator below (needs to be modified)
 
                 for (int i = 0; i < kvp.Value * 5; i++)
                 {
+
                     var newBoardPiece = PieceTemplate.CreateOnBoard(world: this, position: notReallyUsedPosition, templateName: pieceName);
                     if (newBoardPiece.sprite.placedCorrectly)
                     {
@@ -605,7 +680,7 @@ namespace SonOfRobin
                     }
                 }
 
-                if (piecesCreated > maxAmountToCreateAtOnce) break;
+                if (piecesCreated >= maxAmountToCreateAtOnce) break;
             }
 
             if (piecesCreated > 0) MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"Created {piecesCreated} new pieces.");
@@ -617,7 +692,7 @@ namespace SonOfRobin
             this.viewParams.scaleX = manualScale;
             this.viewParams.scaleY = manualScale;
 
-            float scaleMultiplier = this.demoMode ? 2f : 1f;
+            float scaleMultiplier = this.demoMode ? 2f : this.camera.currentZoom;
             this.viewParams.scaleX *= 1 / (Preferences.worldScale * scaleMultiplier);
             this.viewParams.scaleY *= 1 / (Preferences.worldScale * scaleMultiplier);
 
@@ -751,6 +826,13 @@ namespace SonOfRobin
                 VirtButton.HasButtonBeenPressed(VButName.Inventory)
                 ) actionKeyList.Add(ActionKeys.Inventory);
 
+            // equip
+
+            if (Keyboard.HasBeenPressed(Keys.Back) ||
+                GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.DPadLeft) ||
+                VirtButton.HasButtonBeenPressed(VButName.Equip)
+                ) actionKeyList.Add(ActionKeys.Equip);
+
             // basic craft 
 
             if (Keyboard.HasBeenPressed(Keys.NumPad4) ||
@@ -772,7 +854,6 @@ namespace SonOfRobin
                 VirtButton.HasButtonBeenPressed(VButName.Map)
                 ) actionKeyList.Add(ActionKeys.MapToggle);
 
-
             rightTriggerPreviousFrame = rightTrigger;
             ProcessActionKeyList();
 
@@ -781,7 +862,7 @@ namespace SonOfRobin
             float leftTrigger = GamePad.GetState(index: (int)PlayerIndex.One, deadZoneMode: GamePadDeadZone.IndependentAxes).Triggers.Left;
 
             float manualScale = 1 - (leftTrigger * 0.15f);
-            if (VirtButton.IsButtonDown(VButName.ZoomOut) || Keyboard.IsPressed(Keys.NumPad1)) manualScale = 2f;
+            if (Preferences.zoomedOut || Keyboard.IsPressed(Keys.NumPad1)) manualScale = 2f;
 
             // shooting mode
 
@@ -806,7 +887,7 @@ namespace SonOfRobin
 
             if (this.actionKeyList.Contains(World.ActionKeys.PauseMenu)) MenuTemplate.CreateMenuFromTemplate(templateName: MenuTemplate.Name.Pause);
 
-            if (this.player.activeState == BoardPiece.State.PlayerControlledSleep) return;
+            if (this.player.activeState != BoardPiece.State.PlayerControlledWalking) return;
 
 
             if (this.actionKeyList.Contains(World.ActionKeys.FieldCraft))
@@ -821,12 +902,29 @@ namespace SonOfRobin
                 return;
             }
 
-            if (this.actionKeyList.Contains(World.ActionKeys.MapToggle)) this.ToggleMapMode();
+            if (this.actionKeyList.Contains(World.ActionKeys.Equip))
+            {
+                Scene.SetInventoryLayout(Scene.InventoryLayout.InventoryAndEquip, player: this.player);
+                return;
+            }
 
+            if (this.actionKeyList.Contains(World.ActionKeys.MapToggle)) this.ToggleMapMode();
         }
 
+
+        public void DisableMap()
+        {
+            this.mapSmall.TurnOff();
+            this.mapBig.TurnOff();
+            this.mapMode = MapMode.None;
+        }
         public void ToggleMapMode()
         {
+            if (!this.mapEnabled)
+            {
+                if (!this.hintEngine.Show(HintEngine.Type.MapNegative)) new TextWindow(text: "I don't have map equipped.", textColor: Color.Black, bgColor: Color.White);
+                return;
+            }
 
             this.mapMode = this.NextMapMode;
 
@@ -958,6 +1056,11 @@ namespace SonOfRobin
         public List<Sprite> GetVisibleSprites()
         { return this.grid.GetSpritesInCameraView(camera: this.camera, groupName: Cell.Group.Visible); }
 
+        public void UpdateFogOfWar()
+        {
+            this.mapBig.dirtyFog = true;
+            this.mapSmall.dirtyFog = true;
+        }
 
         public override void Draw()
         {

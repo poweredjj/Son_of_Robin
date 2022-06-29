@@ -20,6 +20,10 @@ namespace SonOfRobin
         private int shootingPower;
         public SleepEngine sleepEngine;
         public BoardPiece visualAid;
+        public byte invWidth;
+        public byte invHeight;
+        public byte toolbarWidth;
+        public byte toolbarHeight;
 
         public BoardPiece ActiveToolbarPiece
         {
@@ -33,7 +37,7 @@ namespace SonOfRobin
                     {
                         StorageSlot activeSlot = invScene.ActiveSlot;
                         if (activeSlot == null) return null;
-                        return activeSlot.GetTopPiece();
+                        return activeSlot.TopPiece;
                     }
                 }
                 return null;
@@ -64,13 +68,15 @@ namespace SonOfRobin
 
                 this.fatigue = Math.Min(Math.Max(value, 0), this.maxFatigue);
 
-                if (this.FatiguePercent > 0.5f) this.world.hintEngine.Show(HintEngine.Type.Tired);
+                if (this.IsVeryTired) this.world.hintEngine.Show(HintEngine.Type.Tired);
                 if (this.FatiguePercent < 0.2f) this.world.hintEngine.EnableType(HintEngine.Type.Tired);
 
-                if (this.fatigue == this.maxFatigue) new Scheduler.Task(menu: null, actionName: Scheduler.ActionName.SleepOutside, delay: 0, executeHelper: null);
+                if (this.FatiguePercent > 0.95f) this.world.hintEngine.Show(HintEngine.Type.VeryTired);
+                if (this.FatiguePercent < 0.8f) this.world.hintEngine.EnableType(HintEngine.Type.VeryTired);
+
+                if (this.fatigue == this.maxFatigue) new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.SleepOutside, delay: 0, executeHelper: null);
             }
         }
-
         public float Stamina
         {
             get { return this.stamina; }
@@ -88,9 +94,10 @@ namespace SonOfRobin
         public bool CanWakeNow { get { return this.FatiguePercent < 0.85f; } }
 
         public PieceStorage toolStorage;
-        public Player(World world, Vector2 position, AnimPkg animPackage, PieceTemplate.Name name, AllowedFields allowedFields, byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = false, int generation = 0, byte storageWidth = 0, byte storageHeight = 0) :
+        public PieceStorage equipStorage;
+        public Player(World world, Vector2 position, AnimPkg animPackage, PieceTemplate.Name name, AllowedFields allowedFields, byte invWidth, byte invHeight, byte toolbarWidth, byte toolbarHeight, byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = false, int generation = 0) :
 
-            base(world: world, position: position, animPackage: animPackage, animSize: animSize, animName: animName, speed: speed, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedFields: allowedFields, floatsOnWater: floatsOnWater, mass: 50000, maxMassBySize: null, generation: generation, storageWidth: storageWidth, storageHeight: storageHeight, canBePickedUp: false, maxHitPoints: 200, fadeInAnim: false)
+            base(world: world, position: position, animPackage: animPackage, animSize: animSize, animName: animName, speed: speed, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedFields: allowedFields, floatsOnWater: floatsOnWater, mass: 50000, maxMassBySize: null, generation: generation, canBePickedUp: false, maxHitPoints: 200, fadeInAnim: false, placeAtBeachEdge: true, isShownOnMiniMap: true)
         {
             this.maxFedLevel = 40000;
             this.fedLevel = maxFedLevel;
@@ -100,7 +107,14 @@ namespace SonOfRobin
             this.fatigue = 0;
             this.sleepEngine = SleepEngine.OutdoorSleepDry; // to be changed later
             this.activeState = State.PlayerControlledWalking;
-            this.toolStorage = new PieceStorage(width: 6, height: 1, world: this.world, storagePiece: this, storageType: PieceStorage.StorageType.Toolbar);
+            this.invWidth = invWidth;
+            this.invHeight = invHeight;
+            this.toolbarWidth = toolbarWidth;
+            this.toolbarHeight = toolbarHeight;
+            this.pieceStorage = new PieceStorage(width: this.invWidth, height: this.invHeight, world: this.world, storagePiece: this, storageType: PieceStorage.StorageType.Inventory);
+            this.toolStorage = new PieceStorage(width: this.toolbarWidth, height: this.toolbarHeight, world: this.world, storagePiece: this, storageType: PieceStorage.StorageType.Tools);
+            this.equipStorage = new PieceStorage(width: 2, height: 2, world: this.world, storagePiece: this, storageType: PieceStorage.StorageType.Equip);
+            this.ConfigureEquip();
             this.shootingAngle = -100; // -100 == no real value
             this.shootingPower = 0;
 
@@ -109,6 +123,23 @@ namespace SonOfRobin
             StorageSlot slotToLock = this.toolStorage.FindCorrectSlot(handTool);
             this.toolStorage.AddPiece(handTool);
             slotToLock.locked = true;
+        }
+
+        private void ConfigureEquip()
+        {
+            StorageSlot backpackSlot = this.equipStorage.AllSlots[0];
+            backpackSlot.allowedPieceNames = new List<PieceTemplate.Name> { PieceTemplate.Name.BackpackMedium };
+            backpackSlot.label = "backpack";
+
+            StorageSlot beltSlot = this.equipStorage.AllSlots[1];
+            beltSlot.allowedPieceNames = new List<PieceTemplate.Name> { PieceTemplate.Name.BeltMedium };
+            beltSlot.label = "belt";
+
+            foreach (StorageSlot slot in this.equipStorage.AllSlots.GetRange(2, 2))
+            {
+                slot.allowedPieceNames = new List<PieceTemplate.Name> { PieceTemplate.Name.Map };
+                slot.label = "accessory";
+            }
         }
 
         public override void Kill()
@@ -121,6 +152,7 @@ namespace SonOfRobin
         {
             Dictionary<string, Object> pieceData = base.Serialize();
             pieceData["player_toolStorage"] = this.toolStorage.Serialize();
+            pieceData["player_equipStorage"] = this.equipStorage.Serialize();
             pieceData["player_fedLevel"] = this.fedLevel;
             pieceData["player_maxFedLevel"] = this.maxFedLevel;
             pieceData["player_stamina"] = this.stamina;
@@ -128,6 +160,8 @@ namespace SonOfRobin
             pieceData["player_fatigue"] = this.fatigue;
             pieceData["player_maxFatigue"] = this.maxFatigue;
             pieceData["player_sleepEngine"] = this.sleepEngine;
+            pieceData["player_invWidth"] = this.invWidth;
+            pieceData["player_invHeight"] = this.invHeight;
 
             return pieceData;
         }
@@ -136,6 +170,7 @@ namespace SonOfRobin
         {
             base.Deserialize(pieceData);
             this.toolStorage = PieceStorage.Deserialize(storageData: pieceData["player_toolStorage"], world: this.world, storagePiece: this);
+            this.equipStorage = PieceStorage.Deserialize(storageData: pieceData["player_equipStorage"], world: this.world, storagePiece: this);
             this.fedLevel = (int)pieceData["player_fedLevel"];
             this.maxFedLevel = (int)pieceData["player_maxFedLevel"];
             this.stamina = (float)pieceData["player_stamina"];
@@ -143,6 +178,8 @@ namespace SonOfRobin
             this.fatigue = (float)pieceData["player_fatigue"];
             this.maxFatigue = (float)pieceData["player_maxFatigue"];
             this.sleepEngine = (SleepEngine)pieceData["player_sleepEngine"];
+            this.invWidth = (byte)pieceData["player_invWidth"];
+            this.invHeight = (byte)pieceData["player_invHeight"];
         }
 
         public override void DrawStatBar()
@@ -178,8 +215,15 @@ namespace SonOfRobin
         {
             if (Preferences.debugGodMode) return;
 
-            if (this.fedLevel > 0) { this.fedLevel = Convert.ToInt32(Math.Max(this.fedLevel - Math.Max(energyAmount / 2, 1), 0)); }
-            else { this.hitPoints = Math.Max(this.hitPoints - 0.05f, 0); }
+            if (this.fedLevel > 0)
+            {
+                this.fedLevel = Convert.ToInt32(Math.Max(this.fedLevel - Math.Max(energyAmount / 2, 1), 0));
+
+                if (this.FedPercent < 0.5f) this.world.hintEngine.Show(HintEngine.Type.Hungry);
+                if (this.FedPercent < 0.2f) this.world.hintEngine.Show(HintEngine.Type.VeryHungry);
+                if (this.FedPercent < 0.01f) this.world.hintEngine.Show(HintEngine.Type.Starving);
+            }
+            else this.hitPoints = Math.Max(this.hitPoints - 0.02f, 0);
 
             if (addFatigue) this.Fatigue += 0.01f;
         }
@@ -191,11 +235,17 @@ namespace SonOfRobin
             this.hitPoints = Math.Min(this.hitPoints + (energyAmount * 2), this.maxHitPoints);
             this.fedLevel = Math.Min(this.fedLevel + Convert.ToInt32(energyAmount * 2), this.maxFedLevel);
             this.Stamina = this.maxStamina;
+
+            if (this.FedPercent > 0.8f) this.world.hintEngine.EnableType(HintEngine.Type.Hungry);
+            if (this.FedPercent > 0.4f) this.world.hintEngine.EnableType(HintEngine.Type.VeryHungry);
+            if (this.FedPercent > 0.1f) this.world.hintEngine.EnableType(HintEngine.Type.Starving);
         }
 
         public override void SM_PlayerControlledWalking()
         {
             this.ExpendEnergy(0.1f);
+
+            if (this.world.currentUpdate % 300 == 0) this.world.hintEngine.CheckForPieceHintToShow();
 
             if (!this.Walk()) this.Stamina = Math.Min(this.Stamina + 1, this.maxStamina);
 
@@ -244,9 +294,10 @@ namespace SonOfRobin
                 if (this.Stamina > 0)
                 {
                     currentSpeed *= 2;
-                    movement *= 2;
                 }
             }
+
+            movement *= currentSpeed;
 
             Vector2 goalPosition = this.sprite.position + movement;
             bool hasBeenMoved = this.GoOneStepTowardsGoal(goalPosition, splitXY: true, walkSpeed: currentSpeed, setOrientation: setOrientation);
@@ -314,7 +365,7 @@ namespace SonOfRobin
 
             bool cancelPressed = !this.world.actionKeyList.Contains(World.ActionKeys.UseToolbarPieceHold) && !this.world.actionKeyList.Contains(World.ActionKeys.ShootingMode) && !Keyboard.IsPressed(Keys.Space);
 
-            if (cancelPressed || !this.ActiveToolbarWeaponHasAmmo)
+            if (cancelPressed || !this.ActiveToolbarWeaponHasAmmo || this.sprite.CanDrownHere)
             {
                 this.visualAid.Destroy();
                 this.visualAid = null;
@@ -328,7 +379,7 @@ namespace SonOfRobin
 
         public override void SM_PlayerControlledSleep()
         {
-            var sleepInterruptActions = new List<World.ActionKeys> { World.ActionKeys.UseToolbarPiecePress, World.ActionKeys.Inventory, World.ActionKeys.MapToggle, World.ActionKeys.PickUp, World.ActionKeys.FieldCraft, World.ActionKeys.Run };
+            var sleepInterruptActions = new List<World.ActionKeys> { World.ActionKeys.Interact, World.ActionKeys.Run, World.ActionKeys.PickUp, World.ActionKeys.PickUp, World.ActionKeys.MapToggle };
 
             bool wakeUp = false;
 
@@ -353,7 +404,7 @@ namespace SonOfRobin
         {
             if (!this.CanSleepNow)
             {
-                new TextWindow(text: "You cannot sleep right now.", textColor: Color.White, bgColor: Color.DarkBlue, useTransition: false, animate: true, checkForDuplicate: true);
+                new TextWindow(text: "I cannot sleep right now.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true);
                 return;
             }
 
@@ -371,13 +422,15 @@ namespace SonOfRobin
             if (!this.sleepEngine.canBeAttacked) this.sprite.Visible = false;
             this.world.touchLayout = TouchLayout.WorldSleep;
             this.world.tipsLayout = ControlTips.TipsLayout.WorldSleep;
+            this.sprite.CharacterStand();
+            if (SonOfRobinGame.platform == Platform.Mobile) SonOfRobinGame.KeepScreenOn = true;
             this.activeState = State.PlayerControlledSleep;
 
             SolidColor solidColor = new SolidColor(color: Color.Black, viewOpacity: 0.75f, clearScreen: false);
             solidColor.AddTransition(new Transition(type: Transition.TransType.In, duration: 20, scene: solidColor, blockInput: false, paramsToChange: new Dictionary<string, float> { { "opacity", 0f } }));
 
             int fastForwardSpeed = 20;
-            new Scheduler.Task(menu: null, actionName: Scheduler.ActionName.EnableFastForward, delay: 20, executeHelper: fastForwardSpeed);
+            new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.TempoFastForward, delay: 20, executeHelper: fastForwardSpeed, turnOffInput: true);
 
             MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.User, message: "Going to sleep.");
         }
@@ -399,6 +452,7 @@ namespace SonOfRobin
             this.world.touchLayout = TouchLayout.WorldMain;
             this.world.tipsLayout = ControlTips.TipsLayout.WorldMain;
             this.sprite.Visible = true;
+            if (SonOfRobinGame.platform == Platform.Mobile) SonOfRobinGame.KeepScreenOn = false;
 
             world.updateMultiplier = 1;
             SonOfRobinGame.game.IsFixedTimeStep = Preferences.FrameSkip;
@@ -426,19 +480,19 @@ namespace SonOfRobin
                 if (horizontalPriority)
                 {
                     movementByDirection = new Dictionary<World.ActionKeys, Vector2>(){
-                        {World.ActionKeys.Up, new Vector2(0f, -20f)},
-                        {World.ActionKeys.Down, new Vector2(0f, 20f)},
-                        {World.ActionKeys.Left, new Vector2(-40f, 0f)},
-                        {World.ActionKeys.Right, new Vector2(40f, 0f)},
+                        {World.ActionKeys.Up, new Vector2(0f, -500f)},
+                        {World.ActionKeys.Down, new Vector2(0f, 500f)},
+                        {World.ActionKeys.Left, new Vector2(-500f, 0f)},
+                        {World.ActionKeys.Right, new Vector2(500f, 0f)},
                         };
                 }
                 else
                 {
                     movementByDirection = new Dictionary<World.ActionKeys, Vector2>(){
-                        {World.ActionKeys.Up, new Vector2(0f, -20f)},
-                        {World.ActionKeys.Down, new Vector2(0f, 20f)},
-                        {World.ActionKeys.Left, new Vector2(-20f, 0f)},
-                        {World.ActionKeys.Right, new Vector2(20f, 0f)},
+                        {World.ActionKeys.Up, new Vector2(0f, -500f)},
+                        {World.ActionKeys.Down, new Vector2(0f, 500f)},
+                        {World.ActionKeys.Left, new Vector2(-500f, 0f)},
+                        {World.ActionKeys.Right, new Vector2(500f, 0f)},
                         };
                 }
 
@@ -450,6 +504,8 @@ namespace SonOfRobin
                 // analog movement
                 movement = this.world.analogMovementLeftStick;
             }
+
+            //MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"movement {movement.X},{movement.Y}", color: Color.Orange); // for testing
 
             return movement;
         }
@@ -481,8 +537,6 @@ namespace SonOfRobin
             return new Vector2(offsetX, offsetY);
         }
 
-
-
         private void PickUpNearestPiece()
         {
             Vector2 centerOffset = this.GetCenterOffset();
@@ -494,19 +548,17 @@ namespace SonOfRobin
             if (interestingPieces.Count == 0) return;
 
             BoardPiece closestPiece = FindClosestPiece(sprite: this.sprite, pieceList: interestingPieces, offsetX: offsetX, offsetY: offsetY);
-            closestPiece.sprite.rotation = 0f;
-
-            if (closestPiece.GetType() == typeof(Container))
-            {
-                Container container = (Container)closestPiece;
-                container.pieceStorage.DropAllPiecesToTheGround(addMovement: true);
-            }
 
             bool piecePickedUp = this.PickUpPiece(piece: closestPiece);
-            if (piecePickedUp) { MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.User, message: $"Picked up {closestPiece.name}."); }
+            if (piecePickedUp)
+            {
+                closestPiece.sprite.rotation = 0f;
+                MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.User, message: $"Picked up {closestPiece.name}.");
+                this.world.hintEngine.CheckForPieceHintToShow(forcedMode: true);
+            }
             else
             {
-                new TextWindow(text: "Inventory full.", textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false);
+                new TextWindow(text: "My inventory is full.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: false, closingTask: Scheduler.TaskName.ShowHint, closingTaskHelper: HintEngine.Type.SmallInventory);
                 MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.User, message: $"Inventory full - cannot pick up {closestPiece.name}.");
             }
         }
@@ -514,6 +566,8 @@ namespace SonOfRobin
         public bool PickUpPiece(BoardPiece piece)
         {
             bool pieceCollected = this.pieceStorage.AddPiece(piece);
+            if (!pieceCollected) pieceCollected = this.toolStorage.AddPiece(piece);
+
             if (pieceCollected)
             {
                 WorldEvent.RemovePieceFromQueue(world: this.world, pieceToRemove: piece);
@@ -534,11 +588,11 @@ namespace SonOfRobin
 
             var nearbyPieces = this.world.grid.GetPiecesWithinDistance(groupName: Cell.Group.All, mainSprite: this.sprite, distance: 47, offsetX: offsetX, offsetY: offsetY);
 
-            var interestingPieces = nearbyPieces.Where(piece => piece.boardAction != Scheduler.ActionName.Empty).ToList();
+            var interestingPieces = nearbyPieces.Where(piece => piece.boardTask != Scheduler.TaskName.Empty).ToList();
             if (interestingPieces.Count > 0)
             {
                 BoardPiece closestPiece = FindClosestPiece(sprite: this.sprite, pieceList: interestingPieces, offsetX: offsetX, offsetY: offsetY);
-                new Scheduler.Task(menu: null, actionName: closestPiece.boardAction, delay: 0, executeHelper: closestPiece);
+                new Scheduler.Task(menu: null, taskName: closestPiece.boardTask, delay: 0, executeHelper: closestPiece);
             }
         }
 
@@ -551,6 +605,12 @@ namespace SonOfRobin
             Tool activeTool = (Tool)activeToolbarPiece;
             if (activeTool.shootsProjectile)
             {
+                if (this.sprite.CanDrownHere)
+                {
+                    this.world.hintEngine.Show(HintEngine.Type.CantShootInWater);
+                    return false;
+                }
+
                 if (activeTool.CheckForAmmo(removePiece: false) == null) return false;
 
                 this.world.touchLayout = TouchLayout.WorldShoot;
@@ -570,8 +630,14 @@ namespace SonOfRobin
             int offsetX = (int)centerOffset.X;
             int offsetY = (int)centerOffset.Y;
 
-            if (activeToolbarPiece != null && activeToolbarPiece.toolbarAction != Scheduler.ActionName.Empty)
+            if (activeToolbarPiece != null && activeToolbarPiece.toolbarTask != Scheduler.TaskName.Empty)
             {
+                if (this.sprite.CanDrownHere)
+                {
+                    this.world.hintEngine.Show(HintEngine.Type.CantUseToolInDeepWater);
+                    return false;
+                }
+
                 if (activeToolbarPiece?.GetType() == typeof(Tool))
                 {
                     Tool activeTool = (Tool)activeToolbarPiece;
@@ -587,7 +653,7 @@ namespace SonOfRobin
                     {"buttonHeld", buttonHeld },
                 };
 
-                new Scheduler.Task(menu: null, actionName: activeToolbarPiece.toolbarAction, delay: 0, executeHelper: executeHelper);
+                new Scheduler.Task(menu: null, taskName: activeToolbarPiece.toolbarTask, delay: 0, executeHelper: executeHelper);
                 return true;
             }
 

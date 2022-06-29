@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ namespace SonOfRobin
 {
     public class Scheduler
     {
-        public enum ActionName { Empty, CreateNewWorld, CreateNewWorldNow, QuitGame, OpenMainMenu, OpenCreateMenu, OpenOptionsMenu, OpenLoadMenu, OpenSaveMenu, OpenDebugMenu, OpenConfirmationMenu, OpenCreateAnyPieceMenu, OpenGameOverMenu, SaveGame, SaveGameNow, LoadGame, LoadGameNow, ReturnToMainMenu, SavePrefs, ProcessConfirmation, OpenCraftMenu, Craft, Hit, CreateNewPiece, CreateDebugPieces, OpenContainer, DeleteObsoleteSaves, DropFruit, GetEaten, ExecuteActionWithDelay, AddWorldEvent, OpenTextWindow, SleepInsideShelter, SleepOutside, EnableFastForward }
+        public enum TaskName { Empty, CreateNewWorld, CreateNewWorldNow, QuitGame, OpenMainMenu, OpenCreateMenu, OpenOptionsMenu, OpenLoadMenu, OpenSaveMenu, OpenDebugMenu, OpenConfirmationMenu, OpenCreateAnyPieceMenu, OpenGameOverMenu, SaveGame, SaveGameNow, LoadGame, LoadGameNow, ReturnToMainMenu, SavePrefs, ProcessConfirmation, OpenCraftMenu, Craft, Hit, CreateNewPiece, CreateDebugPieces, OpenContainer, DeleteObsoleteSaves, DropFruit, GetEaten, ExecuteTaskWithDelay, ExecuteTaskList, AddWorldEvent, OpenTextWindow, SleepInsideShelter, SleepOutside, TempoFastForward, TempoStop, TempoPlay, CameraTrackPiece, CameraTrackPlayer, CameraZoom, ShowCookingProgress, RestoreHints, OpenMainMenuIfSpecialKeysArePressed, CheckForPieceHints, ShowHint }
 
         private readonly static Dictionary<int, List<Task>> queue = new Dictionary<int, List<Task>>();
 
@@ -28,84 +29,93 @@ namespace SonOfRobin
         public struct Task
         {
             private readonly Menu menu;
-            private readonly ActionName actionName;
+            private readonly TaskName taskName;
             private readonly Object executeHelper;
-            private readonly int frame;
+            private readonly int delay;
+            private int frame;
             private readonly bool turnedOffInput;
             private bool rebuildsMenu;
 
-            public Task(Menu menu, ActionName actionName, Object executeHelper, bool turnOffInput = false, int delay = 0, bool rebuildsMenu = false)
+            public Task(Menu menu, TaskName taskName, Object executeHelper, bool turnOffInput = false, int delay = 0, bool rebuildsMenu = false, bool storeForLaterUse = false)
             {
-                this.actionName = actionName;
+                this.taskName = taskName;
                 this.executeHelper = executeHelper;
                 this.menu = menu;
                 this.turnedOffInput = turnOffInput;
-                this.frame = SonOfRobinGame.currentUpdate + (int)delay;
+                this.delay = delay;
                 this.rebuildsMenu = rebuildsMenu;
 
                 if (turnOffInput) Input.GlobalInputActive = false;
 
-                if (delay == 0)
-                { this.Execute(); }
+                if (!storeForLaterUse)
+                {
+                    this.frame = SonOfRobinGame.currentUpdate + this.delay;
+
+                    if (this.delay == 0)
+                    { this.Execute(); }
+                    else
+                    { this.AddToQueue(); }
+                }
                 else
-                { this.AddToQueue(); }
+                { this.frame = -1; }
             }
 
             private void AddToQueue()
             {
+                if (this.frame == -1) this.frame = SonOfRobinGame.currentUpdate + this.delay;
                 if (!queue.ContainsKey(this.frame)) queue[this.frame] = new List<Task>();
                 queue[this.frame].Add(this);
             }
 
             public void Execute()
             {
-                this.RunAction();
+                this.RunTask();
                 if (this.turnedOffInput) Input.GlobalInputActive = true;
                 if (this.rebuildsMenu) this.menu.Rebuild();
             }
 
-            private void RunAction()
+            private void RunTask()
             {
                 World world;
 
-                switch (actionName)
+                switch (taskName)
                 {
-                    case ActionName.Empty:
+                    case TaskName.Empty:
                         return;
 
-                    case ActionName.OpenMainMenu:
+                    case TaskName.OpenMainMenu:
                         MenuTemplate.CreateMenuFromTemplate(templateName: MenuTemplate.Name.Main);
                         return;
 
-                    case ActionName.OpenCreateMenu:
+                    case TaskName.OpenCreateMenu:
                         MenuTemplate.CreateMenuFromTemplate(templateName: MenuTemplate.Name.CreateNewIsland);
                         return;
 
-                    case ActionName.OpenLoadMenu:
+                    case TaskName.OpenLoadMenu:
                         MenuTemplate.CreateMenuFromTemplate(templateName: MenuTemplate.Name.Load);
                         return;
 
-                    case ActionName.OpenSaveMenu:
+                    case TaskName.OpenSaveMenu:
                         MenuTemplate.CreateMenuFromTemplate(templateName: MenuTemplate.Name.Save);
                         return;
 
-                    case ActionName.OpenOptionsMenu:
+                    case TaskName.OpenOptionsMenu:
                         MenuTemplate.CreateMenuFromTemplate(templateName: MenuTemplate.Name.Options);
                         return;
 
-                    case ActionName.OpenDebugMenu:
+                    case TaskName.OpenDebugMenu:
                         MenuTemplate.CreateMenuFromTemplate(templateName: MenuTemplate.Name.Debug);
                         return;
 
-                    case ActionName.OpenCreateAnyPieceMenu:
+                    case TaskName.OpenCreateAnyPieceMenu:
                         MenuTemplate.CreateMenuFromTemplate(templateName: MenuTemplate.Name.CreateAnyPiece);
                         return;
 
-                    case ActionName.OpenGameOverMenu:
+                    case TaskName.OpenGameOverMenu:
                         MenuTemplate.CreateMenuFromTemplate(templateName: MenuTemplate.Name.GameOver);
                         return;
 
-                    case ActionName.OpenCraftMenu:
+                    case TaskName.OpenCraftMenu:
                         {
                             Workshop workshop = (Workshop)executeHelper;
                             workshop.TurnOn();
@@ -118,15 +128,15 @@ namespace SonOfRobin
                                 {"eventName", WorldEvent.EventName.TurnOffWorkshop },
                             };
 
-                            menu.AddClosingAction(closingAction: ActionName.AddWorldEvent, closingActionHelper: worldEventData);
+                            menu.AddClosingTask(closingTask: TaskName.AddWorldEvent, closingTaskHelper: worldEventData);
                             return;
                         }
 
-                    case ActionName.OpenConfirmationMenu:
+                    case TaskName.OpenConfirmationMenu:
                         MenuTemplate.CreateConfirmationMenu(confirmationData: executeHelper);
                         return;
 
-                    case ActionName.CreateNewWorld:
+                    case TaskName.CreateNewWorld:
                         ProgressBar.TurnOnBgColor();
                         ProgressBar.ChangeValues(curVal: 0, maxVal: 5, text: "Creating new island...");
 
@@ -136,23 +146,23 @@ namespace SonOfRobin
                         Menu.RemoveEveryMenuOfTemplate(MenuTemplate.Name.Load);
                         Menu.RemoveEveryMenuOfTemplate(MenuTemplate.Name.Main);
 
-                        new Task(menu: null, actionName: ActionName.CreateNewWorldNow, turnOffInput: true, delay: 13, executeHelper: null);
+                        new Task(menu: null, taskName: TaskName.CreateNewWorldNow, turnOffInput: true, delay: 13, executeHelper: null);
 
                         return;
 
-                    case ActionName.CreateNewWorldNow:
+                    case TaskName.CreateNewWorldNow:
                         new World(width: Preferences.newWorldWidth, height: Preferences.newWorldHeight, seed: Preferences.newWorldSeed);
 
                         return;
 
-                    case ActionName.QuitGame:
+                    case TaskName.QuitGame:
                         world = World.GetTopWorld();
                         if (world != null && !world.demoMode) world.AutoSave(force: true);
 
                         SonOfRobinGame.quitGame = true;
                         return;
 
-                    case ActionName.CreateNewPiece:
+                    case TaskName.CreateNewPiece:
                         world = World.GetTopWorld();
                         if (world != null)
                         {
@@ -164,9 +174,14 @@ namespace SonOfRobin
                         }
                         return;
 
-                    case ActionName.CreateDebugPieces:
+                    case TaskName.CreateDebugPieces:
                         world = World.GetTopWorld();
-                        if (world != null)
+                        if (world == null)
+                        {
+                            MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: "Could not create selected item, because no world was found.");
+                            return;
+                        }
+
                         {
                             Player player = world.player;
 
@@ -182,11 +197,13 @@ namespace SonOfRobin
                             while (true)
                             {
                                 piece = PieceTemplate.CreateOnBoard(world: world, position: position, templateName: templateName);
+                                amountToCreate = piece.stackSize;
+
                                 if (piece.sprite.placedCorrectly)
                                 {
                                     bool piecePickedUp = player.PickUpPiece(piece);
+
                                     if (!piecePickedUp) piece.sprite.MoveToClosestFreeSpot(position);
-                                    amountToCreate = piece.stackSize;
                                     piecesCreated++;
                                 }
 
@@ -199,26 +216,28 @@ namespace SonOfRobin
                                     break;
                                 }
                             }
+
+                            MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"{piecesCreated} '{templateName}' pieces created.");
                         }
                         return;
 
-                    case ActionName.SaveGame:
+                    case TaskName.SaveGame:
                         if (this.rebuildsMenu)
                         {// menu should be rebuilt after the game has been saved
-                            new Task(menu: this.menu, actionName: ActionName.Empty, turnOffInput: true, delay: 2, executeHelper: this.executeHelper, rebuildsMenu: true);
+                            new Task(menu: this.menu, taskName: TaskName.Empty, turnOffInput: true, delay: 2, executeHelper: this.executeHelper, rebuildsMenu: true);
                             this.rebuildsMenu = false;
                         }
 
                         ProgressBar.ChangeValues(curVal: 1, maxVal: 2, text: "Saving game...");
-                        new Task(menu: null, actionName: ActionName.SaveGameNow, turnOffInput: true, delay: 1, executeHelper: this.executeHelper);
+                        new Task(menu: null, taskName: TaskName.SaveGameNow, turnOffInput: true, delay: 1, executeHelper: this.executeHelper);
 
                         return;
 
-                    case ActionName.SaveGameNow:
+                    case TaskName.SaveGameNow:
                         world = (World)Scene.GetTopSceneOfType(typeof(World));
                         if (world != null)
                         {
-                            // example executeHelper for this action
+                            // example executeHelper for this task
                             // var saveParams = new Dictionary<string, Object> { { "saveSlotName", "1" }, { "showMessage", false } };
 
                             var saveParams = (Dictionary<string, Object>)executeHelper;
@@ -231,7 +250,7 @@ namespace SonOfRobin
                         ProgressBar.Hide();
                         return;
 
-                    case ActionName.LoadGame:
+                    case TaskName.LoadGame:
                         ProgressBar.TurnOnBgColor();
                         ProgressBar.ChangeValues(curVal: 0, maxVal: 5, text: "Loading game...");
 
@@ -241,11 +260,11 @@ namespace SonOfRobin
                         Menu.RemoveEveryMenuOfTemplate(MenuTemplate.Name.Main);
                         Menu.RemoveEveryMenuOfTemplate(MenuTemplate.Name.Pause);
 
-                        new Task(menu: null, actionName: ActionName.LoadGameNow, turnOffInput: true, delay: 13, executeHelper: this.executeHelper);
+                        new Task(menu: null, taskName: TaskName.LoadGameNow, turnOffInput: true, delay: 13, executeHelper: this.executeHelper);
 
                         return;
 
-                    case ActionName.LoadGameNow:
+                    case TaskName.LoadGameNow:
                         World loadedWorld = World.Load(saveSlotName: (string)executeHelper);
 
                         if (loadedWorld == null)
@@ -253,7 +272,7 @@ namespace SonOfRobin
                             ProgressBar.Hide();
 
                             world = World.GetTopWorld();
-                            if (world != null && world.demoMode) new Task(menu: null, actionName: ActionName.OpenMainMenu, turnOffInput: false, delay: 1, executeHelper: this.executeHelper);
+                            if (world != null && world.demoMode) new Task(menu: null, taskName: TaskName.OpenMainMenu, turnOffInput: false, delay: 1, executeHelper: this.executeHelper);
                             return;
                         }
 
@@ -263,7 +282,7 @@ namespace SonOfRobin
 
                         return;
 
-                    case ActionName.ReturnToMainMenu:
+                    case TaskName.ReturnToMainMenu:
                         world = World.GetTopWorld();
                         if (world != null && !world.demoMode) world.AutoSave(force: true);
 
@@ -277,17 +296,17 @@ namespace SonOfRobin
 
                         return;
 
-                    case ActionName.SavePrefs:
+                    case TaskName.SavePrefs:
                         Preferences.Save();
                         return;
 
-                    case ActionName.ProcessConfirmation:
+                    case TaskName.ProcessConfirmation:
                         var confirmationData = (Dictionary<string, Object>)executeHelper;
-                        new Task(menu: null, actionName: (ActionName)confirmationData["actionName"], executeHelper: confirmationData["executeHelper"]);
+                        new Task(menu: null, taskName: (TaskName)confirmationData["taskName"], executeHelper: confirmationData["executeHelper"]);
 
                         return;
 
-                    case ActionName.OpenContainer:
+                    case TaskName.OpenContainer:
                         {
                             BoardPiece container = (BoardPiece)executeHelper;
 
@@ -297,7 +316,7 @@ namespace SonOfRobin
 
                         return;
 
-                    case ActionName.Craft:
+                    case TaskName.Craft:
                         {
                             var recipe = (Craft.Recipe)executeHelper;
 
@@ -305,7 +324,7 @@ namespace SonOfRobin
                         }
                         return;
 
-                    case ActionName.Hit:
+                    case TaskName.Hit:
                         {
                             var executeData = (Dictionary<string, Object>)executeHelper;
                             Player player = (Player)executeData["player"];
@@ -322,7 +341,7 @@ namespace SonOfRobin
 
                         return;
 
-                    case ActionName.GetEaten:
+                    case TaskName.GetEaten:
                         {
                             var executeData = (Dictionary<string, Object>)executeHelper;
                             Player player = (Player)executeData["player"];
@@ -336,7 +355,7 @@ namespace SonOfRobin
 
                             if (player.hitPoints == player.maxHitPoints && player.fedLevel >= player.maxFedLevel * 0.95)
                             {
-                                new TextWindow(text: "You are full.", textColor: Color.White, bgColor: Color.DarkGreen, useTransition: false, animate: false);
+                                new TextWindow(text: "I am full.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: false);
                                 return;
                             }
 
@@ -346,29 +365,29 @@ namespace SonOfRobin
                         }
                         return;
 
-                    case ActionName.DropFruit:
+                    case TaskName.DropFruit:
                         {
                             Plant fruitPlant = (Plant)executeHelper;
                             fruitPlant.DropFruit();
                         }
                         return;
 
-                    case ActionName.DeleteObsoleteSaves:
+                    case TaskName.DeleteObsoleteSaves:
                         SaveManager.DeleteObsoleteSaves();
                         return;
 
-                    case ActionName.ExecuteActionWithDelay:
+                    case TaskName.ExecuteTaskWithDelay:
                         {
-                            // example executeHelper for this action
-                            // var delayData = new Dictionary<string, Object> { { "actionName", ActionName.TurnOffWorkshop }, { "executeHelper", workshop }, { "delay", 300 } };
+                            // example executeHelper for this task
+                            // var delayData = new Dictionary<string, Object> { { "taskName", TaskName.TurnOffWorkshop }, { "executeHelper", workshop }, { "delay", 300 } };
 
                             var delayData = (Dictionary<string, Object>)executeHelper;
-                            new Task(menu: null, actionName: (ActionName)delayData["actionName"], executeHelper: delayData["executeHelper"], delay: (int)delayData["delay"]);
+                            new Task(menu: null, taskName: (TaskName)delayData["taskName"], executeHelper: delayData["executeHelper"], delay: (int)delayData["delay"]);
 
                             return;
                         }
 
-                    case ActionName.AddWorldEvent:
+                    case TaskName.AddWorldEvent:
                         {
                             world = (World)Scene.GetTopSceneOfType(typeof(World));
                             if (world == null) return;
@@ -384,7 +403,7 @@ namespace SonOfRobin
                             return;
                         }
 
-                    case ActionName.OpenTextWindow:
+                    case TaskName.OpenTextWindow:
                         {
                             var textWindowData = (Dictionary<string, Object>)executeHelper;
 
@@ -421,7 +440,7 @@ namespace SonOfRobin
                             return;
                         }
 
-                    case ActionName.SleepOutside:
+                    case TaskName.SleepOutside:
                         {
                             Player player = World.GetTopWorld()?.player;
                             if (player == null) return;
@@ -435,8 +454,8 @@ namespace SonOfRobin
                                     player.hitPoints = 0;
 
                                     var bgColor = new List<byte> { Color.DarkRed.R, Color.DarkRed.G, Color.DarkRed.B };
-                                    var textWindowData = new Dictionary<string, Object> { { "text", "You have drowned." }, { "bgColor", bgColor }};
-                                    new Task(menu: null, actionName: ActionName.OpenTextWindow, turnOffInput: true, delay: 1, executeHelper: textWindowData);
+                                    var textWindowData = new Dictionary<string, Object> { { "text", "You have drowned." }, { "bgColor", bgColor } };
+                                    new Task(menu: null, taskName: TaskName.OpenTextWindow, turnOffInput: true, delay: 1, executeHelper: textWindowData);
                                     return;
                                 }
 
@@ -448,7 +467,7 @@ namespace SonOfRobin
                             return;
                         }
 
-                    case ActionName.SleepInsideShelter:
+                    case TaskName.SleepInsideShelter:
                         {
                             Shelter shelterPiece = (Shelter)executeHelper;
                             SleepEngine sleepEngine = shelterPiece.sleepEngine;
@@ -457,7 +476,7 @@ namespace SonOfRobin
                             return;
                         }
 
-                    case ActionName.EnableFastForward:
+                    case TaskName.TempoFastForward:
                         {
                             world = World.GetTopWorld();
                             if (world == null) return;
@@ -468,8 +487,128 @@ namespace SonOfRobin
                             return;
                         }
 
+                    case TaskName.TempoStop:
+                        {
+                            world = World.GetTopWorld();
+                            if (world == null) return;
+
+                            SonOfRobinGame.game.IsFixedTimeStep = true;
+                            world.updateMultiplier = 0;
+
+                            return;
+                        }
+
+                    case TaskName.TempoPlay:
+                        {
+                            world = World.GetTopWorld();
+                            if (world == null) return;
+
+                            SonOfRobinGame.game.IsFixedTimeStep = true;
+                            world.updateMultiplier = 1;
+
+                            return;
+                        }
+
+                    case TaskName.CameraTrackPiece:
+                        {
+                            world = World.GetTopWorld();
+                            if (world == null) return;
+
+                            BoardPiece piece = (BoardPiece)executeHelper;
+                            world.camera.TrackPiece(piece);
+
+                            return;
+                        }
+
+                    case TaskName.CameraTrackPlayer:
+                        {
+                            world = World.GetTopWorld();
+                            if (world == null) return;
+
+                            world.camera.TrackPiece(world.player);
+
+                            return;
+                        }
+
+                    case TaskName.CameraZoom:
+                        {
+                            world = World.GetTopWorld();
+                            if (world == null) return;
+
+                            float zoom = (float)executeHelper;
+                            world.camera.SetZoom(zoom);
+
+                            return;
+                        }
+
+                    case TaskName.ShowCookingProgress:
+                        {
+                            Cooker cooker = (Cooker)executeHelper;
+                            cooker.ShowCookingProgress();
+
+                            return;
+                        }
+
+                    case TaskName.RestoreHints:
+                        {
+                            world = World.GetTopWorld();
+                            if (world == null) return;
+                            world.hintEngine.RestoreAllHints();
+
+                            return;
+                        }
+
+                    case TaskName.ExecuteTaskList:
+                        {
+                            List<Object> taskList = (List<Object>)executeHelper;
+                            foreach (Object taskObject in taskList)
+                            {
+                                Task task = (Task)taskObject;
+                                task.AddToQueue();
+                            }
+
+                            return;
+                        }
+
+                    case TaskName.OpenMainMenuIfSpecialKeysArePressed:
+                        {
+                            if (Keyboard.IsPressed(Keys.LeftControl) ||
+                                GamePad.IsPressed(playerIndex: PlayerIndex.One, button: Buttons.Start) ||
+                                VirtButton.IsButtonDown(VButName.Interact))
+                            {
+                                new Task(menu: null, taskName: TaskName.OpenMainMenu, executeHelper: null);
+                            }
+                            else
+                            {
+                                new Task(menu: null, taskName: TaskName.QuitGame, executeHelper: null);
+                            }
+
+                            return;
+                        }
+
+                    case TaskName.CheckForPieceHints:
+                        {
+                            world = World.GetTopWorld();
+                            if (world == null) return;
+
+                            world.hintEngine.CheckForPieceHintToShow(forcedMode: true, ignoreInputActive: true);
+
+                            return;
+                        }
+
+                    case TaskName.ShowHint:
+                        {
+                            world = World.GetTopWorld();
+                            if (world == null) return;
+
+                            var hintType = (HintEngine.Type)executeHelper;
+                            world.hintEngine.Show(type: hintType, ignoreDelay: true);
+
+                            return;
+                        }
+
                     default:
-                        throw new DivideByZeroException($"Unsupported actionName - {actionName}.");
+                        throw new DivideByZeroException($"Unsupported taskName - {taskName}.");
                 }
 
             }

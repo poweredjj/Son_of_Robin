@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>C:/Users/msmidowi/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/tile_custom01.png</SourceFile>
+  <SourceFile>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/tile_custom01.png</SourceFile>
   <SourceTime>2018-09-26T17:19:12+02:00</SourceTime>
-  <DestFile>C:/Users/msmidowi/source/repos/SonOfRobin/SonOfRobin.Core/Content/bin/Windows/SonOfRobin/gfx/tile_custom01.xnb</DestFile>
-  <DestTime>2021-12-20T07:41:09.470396+01:00</DestTime>
+  <DestFile>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/bin/Windows/SonOfRobin/gfx/tile_custom01.xnb</DestFile>
+  <DestTime>2022-02-11T14:00:23.1540862+01:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2020-08-10T18:17:54+02:00</ImporterTime>
   <Processor>TextureProcessor</Processor>

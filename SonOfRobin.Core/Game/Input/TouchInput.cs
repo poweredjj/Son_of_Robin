@@ -19,6 +19,7 @@ namespace SonOfRobin
         WorldSleep,
         Inventory,
         Map,
+        HiddenStart
     }
     public class TouchInput
     {
@@ -113,7 +114,7 @@ namespace SonOfRobin
 
                     new VirtButton(name: VButName.Map, label: "MAP", colorPressed: Color.CornflowerBlue, colorReleased: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
                     xPos += xShift;
-                    new VirtButton(name: VButName.ZoomOut, label: "ZOOM\nOUT", colorPressed: Color.Orange, colorReleased: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size, switchButton: true);
+                    new VirtButton(name: VButName.ZoomOut, label: "ZOOM\nOUT", colorPressed: Color.Orange, colorReleased: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size, switchButton: true, coupledPrefName: "zoomedOut");
                     xPos += xShift;
                     new VirtButton(name: VButName.Run, label: "RUN", colorPressed: Color.Red, colorReleased: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
                     yPos += yShift;
@@ -134,6 +135,10 @@ namespace SonOfRobin
                     xPos += xShift;
                     new VirtButton(name: VButName.PauseMenu, label: "MENU", colorPressed: Color.Yellow, colorReleased: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
 
+                    xPos = 0.06f;
+                    yPos += yShift;
+                    new VirtButton(name: VButName.Equip, label: "EQUIP", colorPressed: Color.Yellow, colorReleased: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
+
                     return;
 
                 case TouchLayout.WorldShoot:
@@ -146,7 +151,7 @@ namespace SonOfRobin
                 case TouchLayout.WorldSleep:
                     showSticks = false;
 
-                    new VirtButton(name: VButName.UseTool, label: "WAKE UP", colorPressed: Color.CornflowerBlue, colorReleased: Color.White, posX0to1: 0.94f, posY0to1: 0.32f, width0to1: size, height0to1: size);
+                    new VirtButton(name: VButName.Interact, label: "WAKE UP", colorPressed: Color.CornflowerBlue, colorReleased: Color.White, posX0to1: 0.94f, posY0to1: 0.32f, width0to1: size, height0to1: size);
 
                     return;
 
@@ -197,6 +202,15 @@ namespace SonOfRobin
 
                     return;
 
+                case TouchLayout.HiddenStart:
+                    showSticks = false;
+
+                    size = 0.07f;
+
+                    new VirtButton(name: VButName.Interact, label: "main\nmenu", colorPressed: Color.LightGreen, colorReleased: Color.White, posX0to1: 0.05f, posY0to1: 0.05f, width0to1: size, height0to1: size, hidden: true);
+
+                    return;
+
                 default:
                     throw new DivideByZeroException($"Unsupported touch layout - {touchLayout}.");
             }
@@ -217,7 +231,7 @@ namespace SonOfRobin
             xPos += xShift;
             new VirtButton(name: VButName.DebugFastForward, label: ">>", colorPressed: Color.Violet, colorReleased: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: width, height0to1: height);
             xPos += xShift;
-            new VirtButton(name: VButName.DebugClear, label: "clear", colorPressed: Color.Violet, colorReleased: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: width, height0to1: height);                 
+            new VirtButton(name: VButName.DebugClear, label: "clear", colorPressed: Color.Violet, colorReleased: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: width, height0to1: height);
         }
 
 

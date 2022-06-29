@@ -8,13 +8,13 @@ namespace SonOfRobin
     class Invoker : Entry
     {
         private readonly bool closesMenu;
-        public readonly Scheduler.ActionName actionName;
+        public readonly Scheduler.TaskName taskName;
         public readonly Object executeHelper; // misc variables used in execution stage
         public override string DisplayedText { get { return this.name; } }
 
-        public Invoker(Menu menu, string name, Scheduler.ActionName actionName, Object executeHelper = null, bool closesMenu = false, bool rebuildsMenu = false) : base(menu: menu, name: name, rebuildsMenu: rebuildsMenu)
+        public Invoker(Menu menu, string name, Scheduler.TaskName taskName, Object executeHelper = null, bool closesMenu = false, bool rebuildsMenu = false) : base(menu: menu, name: name, rebuildsMenu: rebuildsMenu)
         {
-            this.actionName = actionName;
+            this.taskName = taskName;
             this.closesMenu = closesMenu;
             this.rectColor = Color.LightSlateGray;
             this.executeHelper = executeHelper;
@@ -23,7 +23,7 @@ namespace SonOfRobin
         public override void Invoke()
         {
             if (this.closesMenu) this.menu.Remove();
-            new Scheduler.Task(menu: this.menu, actionName: this.actionName, executeHelper: this.executeHelper, rebuildsMenu: rebuildsMenu, delay: 0);
+            new Scheduler.Task(menu: this.menu, taskName: this.taskName, executeHelper: this.executeHelper, rebuildsMenu: rebuildsMenu, delay: 0);
         }
 
         public override void ProcessTouch()

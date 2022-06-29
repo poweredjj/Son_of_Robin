@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace SonOfRobin
 {
@@ -75,8 +74,6 @@ namespace SonOfRobin
             this.SetFruitPos(fruit: fruit);
             this.currentMass = 0;
         }
-
-
         public void SetFruitPos(BoardPiece fruit)
         {
             int maxAreaWidth = this.MaxAreaWidth;
@@ -95,7 +92,6 @@ namespace SonOfRobin
             foreach (BoardPiece fruit in this.plant.pieceStorage.GetAllPieces())
             { this.SetFruitPos(fruit: fruit); }
         }
-
 
     }
 }

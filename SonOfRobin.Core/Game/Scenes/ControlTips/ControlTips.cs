@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 
@@ -25,7 +26,7 @@ namespace SonOfRobin
 
         public enum TipsLayout
         {
-            Empty, Menu, MenuWithoutClosing, Map, InventorySelect, InventoryDrag, PieceContext, TextWindow, WorldMain, WorldShoot, WorldSleep,
+            Uninitialized, Empty, Menu, MenuWithoutClosing, Map, InventorySelect, InventoryDrag, PieceContext, TextWindow, WorldMain, WorldShoot, WorldSleep,
         }
         public static readonly int tipMargin = 12;
 
@@ -33,20 +34,20 @@ namespace SonOfRobin
         public List<ButtonTip> tipList;
         public Scene currentScene;
 
-        public ControlTips() : base(inputType: InputTypes.None, tipsLayout: TipsLayout.Empty, priority: 0, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: true, alwaysDraws: true, touchLayout: TouchLayout.Empty)
+        public ControlTips() : base(inputType: InputTypes.None, tipsLayout: TipsLayout.Uninitialized, priority: 0, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: true, alwaysDraws: true, touchLayout: TouchLayout.Empty)
         {
             this.SwitchToLayout(tipsLayout: TipsLayout.Empty);
         }
 
         public override void Update(GameTime gameTime)
         {
-            bool worldMode = this.currentLayout == TipsLayout.WorldMain || this.currentLayout == TipsLayout.WorldShoot || this.currentLayout == TipsLayout.WorldSleep;
+            bool bigMode = this.currentLayout == TipsLayout.WorldMain || this.currentLayout == TipsLayout.WorldShoot || this.currentLayout == TipsLayout.WorldSleep || this.currentLayout == TipsLayout.InventorySelect || this.currentLayout == TipsLayout.InventoryDrag;
             ViewParams sceneViewParams = this.currentScene.viewParams;
 
             float scale = 1f / ((float)SonOfRobinGame.VirtualHeight * 0.04f / (float)this.viewParams.height);
             //scale = 1f; // testing
 
-            if (worldMode)
+            if (bigMode)
             { if (this.viewParams.width / scale > SonOfRobinGame.VirtualWidth) scale = 1f / (SonOfRobinGame.VirtualWidth / (float)this.viewParams.width); }
             else
             { if (this.viewParams.width / scale > sceneViewParams.width / sceneViewParams.scaleX) scale = 1f / (sceneViewParams.width / sceneViewParams.scaleX / (float)this.viewParams.width); }
@@ -54,7 +55,7 @@ namespace SonOfRobin
             this.viewParams.scaleX = scale;
             this.viewParams.scaleY = scale;
 
-            if (worldMode)
+            if (bigMode)
             {
                 this.viewParams.CenterView(horizontally: true, vertically: false);
                 this.viewParams.PutViewAtTheBottom();
@@ -91,6 +92,13 @@ namespace SonOfRobin
             return controlTips;
         }
 
+        public void RefreshLayout()
+        {
+            TipsLayout currentLayout = this.currentLayout;
+            this.SwitchToLayout(TipsLayout.Empty);
+            this.SwitchToLayout(currentLayout);
+        }
+
         public void SwitchToLayout(TipsLayout tipsLayout)
         {
             if (this.currentLayout == tipsLayout) return;
@@ -103,74 +111,74 @@ namespace SonOfRobin
                     break;
 
                 case TipsLayout.Map:
-                    this.tipList.Add(new ButtonTip(text: "return", textureNames: new List<string> { "Xbox 360/360_B", "Xbox 360/360_Dpad_Right" }));
+                    this.tipList.Add(new ButtonTip(text: "return", textures: new List<Texture2D> { ButtonScheme.buttonB, ButtonScheme.dpadRight }));
                     break;
 
                 case TipsLayout.InventorySelect:
-                    this.tipList.Add(new ButtonTip(text: "navigation", textureNames: new List<string> { "Xbox 360/360_Dpad", "Xbox 360/360_Left_Stick" }));
-                    this.tipList.Add(new ButtonTip(text: "switch", textureNames: new List<string> { "Xbox 360/360_LB", "Xbox 360/360_RB" }));
-                    this.tipList.Add(new ButtonTip(text: "pick one", textureName: "Xbox 360/360_X"));
-                    this.tipList.Add(new ButtonTip(text: "pick stack", textureName: "Xbox 360/360_Y"));
-                    this.tipList.Add(new ButtonTip(text: "use", textureName: "Xbox 360/360_A"));
-                    this.tipList.Add(new ButtonTip(text: "return", textureName: "Xbox 360/360_B"));
+                    this.tipList.Add(new ButtonTip(text: "navigation", textures: new List<Texture2D> { ButtonScheme.dpad, ButtonScheme.leftStick }));
+                    this.tipList.Add(new ButtonTip(text: "switch", textures: new List<Texture2D> { ButtonScheme.buttonLB, ButtonScheme.buttonRB }));
+                    this.tipList.Add(new ButtonTip(text: "pick stack", textures: new List<Texture2D> { ButtonScheme.buttonX }));
+                    this.tipList.Add(new ButtonTip(text: "pick one", textures: new List<Texture2D> { ButtonScheme.buttonY }));
+                    this.tipList.Add(new ButtonTip(text: "use", textures: new List<Texture2D> { ButtonScheme.buttonA }));
+                    this.tipList.Add(new ButtonTip(text: "return", textures: new List<Texture2D> { ButtonScheme.buttonB }));
                     break;
 
                 case TipsLayout.InventoryDrag:
-                    this.tipList.Add(new ButtonTip(text: "navigation", textureNames: new List<string> { "Xbox 360/360_Dpad", "Xbox 360/360_Left_Stick" }));
-                    this.tipList.Add(new ButtonTip(text: "switch", textureNames: new List<string> { "Xbox 360/360_LB", "Xbox 360/360_RB" }));
-                    this.tipList.Add(new ButtonTip(text: "release", textureNames: new List<string> { "Xbox 360/360_X", "Xbox 360/360_Y" }));
-                    this.tipList.Add(new ButtonTip(text: "return", textureName: "Xbox 360/360_B"));
+                    this.tipList.Add(new ButtonTip(text: "navigation", textures: new List<Texture2D> { ButtonScheme.dpad, ButtonScheme.leftStick }));
+                    this.tipList.Add(new ButtonTip(text: "switch", textures: new List<Texture2D> { ButtonScheme.buttonLB, ButtonScheme.buttonRB }));
+                    this.tipList.Add(new ButtonTip(text: "release", textures: new List<Texture2D> { ButtonScheme.buttonX, ButtonScheme.buttonY, ButtonScheme.buttonA }));
+                    this.tipList.Add(new ButtonTip(text: "return", textures: new List<Texture2D> { ButtonScheme.buttonB }));
 
                     break;
 
                 case TipsLayout.PieceContext:
-                    this.tipList.Add(new ButtonTip(text: "navigation", textureNames: new List<string> { "Xbox 360/360_Dpad", "Xbox 360/360_Left_Stick" }));
-                    this.tipList.Add(new ButtonTip(text: "confirm", textureName: "Xbox 360/360_A"));
-                    this.tipList.Add(new ButtonTip(text: "return", textureNames: new List<string> { "Xbox 360/360_B", "Xbox 360/360_Start" }));
+                    this.tipList.Add(new ButtonTip(text: "navigation", textures: new List<Texture2D> { ButtonScheme.dpad, ButtonScheme.leftStick }));
+                    this.tipList.Add(new ButtonTip(text: "confirm", textures: new List<Texture2D> { ButtonScheme.buttonA }));
+                    this.tipList.Add(new ButtonTip(text: "return", textures: new List<Texture2D> { ButtonScheme.buttonB }));
                     break;
 
                 case TipsLayout.TextWindow:
-                    this.tipList.Add(new ButtonTip(text: "confirm", textureNames: new List<string> { "Xbox 360/360_A", "Xbox 360/360_B", "Xbox 360/360_X", "Xbox 360/360_Y" }));
-                    this.tipList.Add(new ButtonTip(text: "menu", textureName: "Xbox 360/360_Start"));
+                    this.tipList.Add(new ButtonTip(text: "confirm", textures: new List<Texture2D> { ButtonScheme.buttonA, ButtonScheme.buttonB, ButtonScheme.buttonX, ButtonScheme.buttonY }));
                     break;
 
                 case TipsLayout.WorldMain:
-                    this.tipList.Add(new ButtonTip(text: "walk", textureName: "Xbox 360/360_Left_Stick"));
-                    this.tipList.Add(new ButtonTip(text: "camera", textureName: "Xbox 360/360_Right_Stick"));
-                    this.tipList.Add(new ButtonTip(text: "interact", textureName: "Xbox 360/360_A"));
-                    this.tipList.Add(new ButtonTip(text: "aim", textureNames: new List<string> { "Xbox 360/360_LT", "Xbox 360/360_Right_Stick" }));
-                    this.tipList.Add(new ButtonTip(text: "use tool", textureName: "Xbox 360/360_RT"));
-                    this.tipList.Add(new ButtonTip(text: "run", textureName: "Xbox 360/360_B"));
-                    this.tipList.Add(new ButtonTip(text: "pick up", textureName: "Xbox 360/360_X"));
-                    this.tipList.Add(new ButtonTip(text: "inventory", textureName: "Xbox 360/360_Y"));
-                    this.tipList.Add(new ButtonTip(text: "craft", textureName: "Xbox 360/360_Dpad_Up"));
-                    this.tipList.Add(new ButtonTip(text: "map", textureName: "Xbox 360/360_Dpad_Right"));
-                    this.tipList.Add(new ButtonTip(text: "prev item", textureName: "Xbox 360/360_LB"));
-                    this.tipList.Add(new ButtonTip(text: "next item", textureName: "Xbox 360/360_RB"));
-                    this.tipList.Add(new ButtonTip(text: "menu", textureName: "Xbox 360/360_Start"));
+                    this.tipList.Add(new ButtonTip(text: "walk", textures: new List<Texture2D> { ButtonScheme.leftStick }));
+                    this.tipList.Add(new ButtonTip(text: "camera", textures: new List<Texture2D> { ButtonScheme.rightStick }));
+                    this.tipList.Add(new ButtonTip(text: "interact", textures: new List<Texture2D> { ButtonScheme.buttonA }));
+                    this.tipList.Add(new ButtonTip(text: "aim", textures: new List<Texture2D> { ButtonScheme.buttonLT, ButtonScheme.rightStick }));
+                    this.tipList.Add(new ButtonTip(text: "use tool", textures: new List<Texture2D> { ButtonScheme.buttonRT }));
+                    this.tipList.Add(new ButtonTip(text: "run", textures: new List<Texture2D> { ButtonScheme.buttonB }));
+                    this.tipList.Add(new ButtonTip(text: "pick up", textures: new List<Texture2D> { ButtonScheme.buttonX }));
+                    this.tipList.Add(new ButtonTip(text: "inventory", textures: new List<Texture2D> { ButtonScheme.buttonY }));
+                    this.tipList.Add(new ButtonTip(text: "equip", textures: new List<Texture2D> { ButtonScheme.dpadLeft }));
+                    this.tipList.Add(new ButtonTip(text: "craft", textures: new List<Texture2D> { ButtonScheme.dpadUp }));
+                    this.tipList.Add(new ButtonTip(text: "map", textures: new List<Texture2D> { ButtonScheme.dpadRight }));
+                    this.tipList.Add(new ButtonTip(text: "prev item", textures: new List<Texture2D> { ButtonScheme.buttonLB }));
+                    this.tipList.Add(new ButtonTip(text: "next item", textures: new List<Texture2D> { ButtonScheme.buttonRB }));
+                    this.tipList.Add(new ButtonTip(text: "menu", textures: new List<Texture2D> { ButtonScheme.buttonStart }));
                     break;
 
                 case TipsLayout.WorldShoot:
-                    this.tipList.Add(new ButtonTip(text: "walk", textureName: "Xbox 360/360_Left_Stick"));
-                    this.tipList.Add(new ButtonTip(text: "aim", textureNames: new List<string> { "Xbox 360/360_LT", "Xbox 360/360_Right_Stick" }));
-                    this.tipList.Add(new ButtonTip(text: "shoot", textureName: "Xbox 360/360_RT"));
-                    this.tipList.Add(new ButtonTip(text: "menu", textureName: "Xbox 360/360_Start"));
+                    this.tipList.Add(new ButtonTip(text: "walk", textures: new List<Texture2D> { ButtonScheme.leftStick }));
+                    this.tipList.Add(new ButtonTip(text: "aim", textures: new List<Texture2D> { ButtonScheme.buttonLT, ButtonScheme.rightStick }));
+                    this.tipList.Add(new ButtonTip(text: "shoot", textures: new List<Texture2D> { ButtonScheme.buttonRT }));
+                    this.tipList.Add(new ButtonTip(text: "menu", textures: new List<Texture2D> { ButtonScheme.buttonStart }));
                     break;
 
                 case TipsLayout.WorldSleep:
-                    this.tipList.Add(new ButtonTip(text: "wake up", textureNames: new List<string> { "Xbox 360/360_A", "Xbox 360/360_B", "Xbox 360/360_X", "Xbox 360/360_Y" }));
-                    this.tipList.Add(new ButtonTip(text: "menu", textureName: "Xbox 360/360_Start"));
+                    this.tipList.Add(new ButtonTip(text: "wake up", textures: new List<Texture2D> { ButtonScheme.buttonA, ButtonScheme.buttonB, ButtonScheme.buttonX, ButtonScheme.buttonY }));
+                    this.tipList.Add(new ButtonTip(text: "menu", textures: new List<Texture2D> { ButtonScheme.buttonStart }));
                     break;
 
                 case TipsLayout.Menu:
-                    this.tipList.Add(new ButtonTip(text: "navigation", textureNames: new List<string> { "Xbox 360/360_Dpad", "Xbox 360/360_Left_Stick" }));
-                    this.tipList.Add(new ButtonTip(text: "confirm", textureName: "Xbox 360/360_A"));
-                    this.tipList.Add(new ButtonTip(text: "return", textureNames: new List<string> { "Xbox 360/360_B", "Xbox 360/360_Start" }));
+                    this.tipList.Add(new ButtonTip(text: "navigation", textures: new List<Texture2D> { ButtonScheme.dpad, ButtonScheme.leftStick }));
+                    this.tipList.Add(new ButtonTip(text: "confirm", textures: new List<Texture2D> { ButtonScheme.buttonA }));
+                    this.tipList.Add(new ButtonTip(text: "return", textures: new List<Texture2D> { ButtonScheme.buttonB, ButtonScheme.buttonStart }));
                     break;
 
                 case TipsLayout.MenuWithoutClosing:
-                    this.tipList.Add(new ButtonTip(text: "navigation", textureNames: new List<string> { "Xbox 360/360_Dpad", "Xbox 360/360_Left_Stick" }));
-                    this.tipList.Add(new ButtonTip(text: "confirm", textureName: "Xbox 360/360_A"));
+                    this.tipList.Add(new ButtonTip(text: "navigation", textures: new List<Texture2D> { ButtonScheme.dpad, ButtonScheme.leftStick }));
+                    this.tipList.Add(new ButtonTip(text: "confirm", textures: new List<Texture2D> { ButtonScheme.buttonA }));
                     break;
 
                 default:

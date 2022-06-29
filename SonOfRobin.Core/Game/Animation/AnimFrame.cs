@@ -32,7 +32,7 @@ namespace SonOfRobin
         {
             this.depthPercent = depthPercent;
 
-            this.id = $"{atlasName}_{atlasX},{atlasY}_{width}x{height}_{layer}_{duration}_{crop}";
+            this.id = $"{atlasName}_{atlasX},{atlasY}_{width}x{height}_{layer}_{duration}_{crop}_{scale}_{depthPercent}";
             frameById[this.id] = this;
 
             this.atlasTexture = SonOfRobinGame.textureByName[atlasName];
@@ -199,7 +199,7 @@ namespace SonOfRobin
             Rectangle sourceRectangle = new Rectangle(this.atlasX, this.atlasY, this.sourceWidth, correctedSourceHeight);
             Rectangle destinationRectangle = new Rectangle(destRect.X, destRect.Y, destRect.Width, destRect.Height);
 
-           // Helpers.DrawRectangleOutline(rect: destinationRectangle, color: Color.YellowGreen, borderWidth: 2); // testing rect size
+            // Helpers.DrawRectangleOutline(rect: destinationRectangle, color: Color.YellowGreen, borderWidth: 2); // testing rect size
 
             SonOfRobinGame.spriteBatch.Draw(this.atlasTexture, destinationRectangle, sourceRectangle, color * opacity);
         }

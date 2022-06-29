@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -35,19 +34,31 @@ namespace SonOfRobin
             { return this.cellsToProcessOnStart.Count == 0; }
         }
 
-        public Grid(World world)
+        public List<Cell> CellsVisitedByPlayer { get { return this.allCells.Where(cell => cell.visitedByPlayer).ToList(); } }
+
+        public List<Cell> CellsNotVisitedByPlayer { get { return this.allCells.Where(cell => !cell.visitedByPlayer).ToList(); } }
+
+        public Grid(World world, int cellWidth = 0, int cellHeight = 0)
         {
             this.creationInProgress = true;
             this.creationStage = 0;
 
             this.world = world;
 
-            Vector2 maxFrameSize = CalculateMaxFrameSize();
-            this.cellWidth = Convert.ToInt32(maxFrameSize.X * 1.3);
-            this.cellHeight = Convert.ToInt32(maxFrameSize.Y * 1.3);
+            if (cellWidth == 0 && cellHeight == 0)
+            {
+                Vector2 maxFrameSize = CalculateMaxFrameSize();
+                this.cellWidth = Convert.ToInt32(maxFrameSize.X * 1.3);
+                this.cellHeight = Convert.ToInt32(maxFrameSize.Y * 1.3);
+            }
+            else
+            {
+                this.cellWidth = cellWidth;
+                this.cellHeight = cellHeight;
+            }
 
-            this.noOfCellsX = (int)Math.Ceiling((float)this.world.width / (float)cellWidth);
-            this.noOfCellsY = (int)Math.Ceiling((float)this.world.height / (float)cellHeight);
+            this.noOfCellsX = (int)Math.Ceiling((float)this.world.width / (float)this.cellWidth);
+            this.noOfCellsY = (int)Math.Ceiling((float)this.world.height / (float)this.cellHeight);
 
             this.cellGrid = this.MakeGrid();
             this.allCells = this.GetAllCells();
@@ -65,6 +76,42 @@ namespace SonOfRobin
             }
 
             this.PrepareNextCreationStage();
+        }
+
+        public Dictionary<string, Object> Serialize()
+        {
+            var cellData = new List<Object> { };
+
+            foreach (Cell cell in this.allCells)
+            {
+                cellData.Add(cell.Serialize());
+            }
+
+            Dictionary<string, Object> gridData = new Dictionary<string, object>
+            {
+                {"cellWidth", this.cellWidth },
+                {"cellHeight", this.cellHeight },
+                {"cellData", cellData },
+            };
+
+            return gridData;
+        }
+
+        public static Grid Deserialize(Dictionary<string, Object> gridData, World world)
+        {
+            int cellWidth = (int)gridData["cellWidth"];
+            int cellHeight = (int)gridData["cellHeight"];
+            var cellData = (List<Object>)gridData["cellData"];
+
+            Grid grid = new Grid(world: world, cellWidth: cellWidth, cellHeight: cellHeight);
+
+            for (int i = 0; i < grid.allCells.Count; i++)
+            {
+                Cell cell = grid.allCells[i];
+                cell.Deserialize(cellData[i]);
+            }
+
+            return grid;
         }
 
         public bool CopyBoardFromTemplate()
@@ -166,7 +213,7 @@ namespace SonOfRobin
 
             TimeSpan timeLeft = CalculateTimeLeft(
                 startTime: this.stageStartTime, completeAmount: this.allCells.Count - this.cellsToProcessOnStart.Count, totalAmount: this.allCells.Count);
-            string timeLeftString = FormatTimeSpanString(timeLeft + TimeSpan.FromSeconds(1));
+            string timeLeftString = TimeSpanToString(timeLeft + TimeSpan.FromSeconds(1));
 
             string message;
 
@@ -192,21 +239,6 @@ namespace SonOfRobin
                             text: message);
         }
 
-        private static string FormatTimeSpanString(TimeSpan timeSpan)
-        {
-            string timeLeftString;
-
-            if (timeSpan < TimeSpan.FromMinutes(1))
-            { timeLeftString = timeSpan.ToString("ss"); }
-            else if (timeSpan < TimeSpan.FromHours(1))
-            { timeLeftString = timeSpan.ToString("mm\\:ss"); }
-            else if (timeSpan < TimeSpan.FromDays(1))
-            { timeLeftString = timeSpan.ToString("hh\\:mm\\:ss"); }
-            else
-            { timeLeftString = timeSpan.ToString("dd\\:hh\\:mm\\:ss"); }
-
-            return timeLeftString;
-        }
 
         private static TimeSpan CalculateTimeLeft(DateTime startTime, int completeAmount, int totalAmount)
         {
@@ -321,11 +353,9 @@ namespace SonOfRobin
             return piecesWithinDistance;
         }
 
-        public List<Cell> GetCellsInCameraView(Camera camera)
+        public List<Cell> GetCellsInsideRect(Rectangle viewRect)
         {
-            Rectangle viewRect = camera.viewRect;
-
-            // +1 cell on each side, to ensure visibility of sprites, that cross their cell's boundaries
+            // +1 cell on each side, to ensure visibility of sprites, that cross their cells' boundaries
             int xMinCellNo = Math.Max(FindMatchingCellInSingleAxis(position: viewRect.Left, cellLength: this.cellWidth) - 1, 0);
             int xMaxCellNo = Math.Min(FindMatchingCellInSingleAxis(position: viewRect.Right, cellLength: this.cellWidth) + 1, this.noOfCellsX - 1);
             int yMinCellNo = Math.Max(FindMatchingCellInSingleAxis(position: viewRect.Top, cellLength: this.cellHeight) - 1, 0);
@@ -344,7 +374,7 @@ namespace SonOfRobin
 
         public List<Sprite> GetSpritesInCameraView(Camera camera, Cell.Group groupName)
         {
-            var visibleCells = this.GetCellsInCameraView(camera: camera);
+            var visibleCells = this.GetCellsInsideRect(camera.viewRect);
             List<Sprite> visibleSprites = new List<Sprite>();
 
             foreach (Cell cell in visibleCells)
@@ -367,11 +397,11 @@ namespace SonOfRobin
             return allCells;
         }
 
-        public ConcurrentBag<Sprite> GetAllSprites(Cell.Group groupName)
+        public ConcurrentBag<Sprite> GetAllSprites(Cell.Group groupName, bool visitedByPlayerOnly = false)
         {
             var allSprites = new ConcurrentBag<Sprite> { };
 
-            Parallel.ForEach(this.allCells, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, cell =>
+            Parallel.ForEach(visitedByPlayerOnly ? this.CellsVisitedByPlayer : this.allCells, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, cell =>
             {
                 foreach (Sprite sprite in cell.spriteGroups[groupName].Values)
                 { allSprites.Add(sprite); }
@@ -382,9 +412,22 @@ namespace SonOfRobin
 
         public void DrawBackground(Camera camera)
         {
-            var visibleCells = this.GetCellsInCameraView(camera: camera).OrderBy(o => o.cellNoY);
+            bool updateFog = false;
+            Rectangle cameraRect = camera.viewRect;
+
+            var visibleCells = this.GetCellsInsideRect(camera.viewRect).OrderBy(o => o.cellNoY);
             foreach (Cell cell in visibleCells)
-            { cell.DrawBackground(); }
+            {
+                cell.DrawBackground();
+
+                if (this.world.mapEnabled && !cell.visitedByPlayer && cameraRect.Intersects(cell.rect))
+                {
+                    cell.visitedByPlayer = true;
+                    updateFog = true;
+                }
+            }
+
+            if (updateFog) this.world.UpdateFogOfWar();
         }
 
         public int DrawSprites(Camera camera)
@@ -405,7 +448,7 @@ namespace SonOfRobin
 
         public void DrawDebugData()
         {
-            var visibleCells = this.GetCellsInCameraView(camera: this.world.camera);
+            var visibleCells = this.GetCellsInsideRect(this.world.camera.viewRect);
 
             foreach (Cell cell in visibleCells)
             { cell.DrawDebugData(groupName: Cell.Group.ColBlocking); }
@@ -460,6 +503,22 @@ namespace SonOfRobin
 
         }
 
+        private static string TimeSpanToString(TimeSpan timeSpan)
+        {
+            string timeLeftString;
+
+            if (timeSpan < TimeSpan.FromMinutes(1))
+            { timeLeftString = timeSpan.ToString("ss"); }
+            else if (timeSpan < TimeSpan.FromHours(1))
+            { timeLeftString = timeSpan.ToString("mm\\:ss"); }
+            else if (timeSpan < TimeSpan.FromDays(1))
+            { timeLeftString = timeSpan.ToString("hh\\:mm\\:ss"); }
+            else
+            { timeLeftString = timeSpan.ToString("dd\\:hh\\:mm\\:ss"); }
+
+            return timeLeftString;
+        }
+
         private List<Cell> GetCellsWithinDistance(Cell cell, int distance)
         {
             List<Cell> cellsWithinDistance = new List<Cell>();
@@ -499,7 +558,7 @@ namespace SonOfRobin
         {
             if (Preferences.loadWholeMap || DateTime.Now - this.lastCellProcessedTime < textureLoadingDelay) return;
 
-            var cellsInCameraView = this.GetCellsInCameraView(this.world.camera).Where(cell => cell.boardGraphics.texture == null).ToList();
+            var cellsInCameraView = this.GetCellsInsideRect(this.world.camera.viewRect).Where(cell => cell.boardGraphics.texture == null).ToList();
             if (cellsInCameraView.Count == 0) return;
 
             var viewRect = this.world.camera.viewRect;
@@ -516,7 +575,7 @@ namespace SonOfRobin
 
             if (Preferences.loadWholeMap) return;
 
-            foreach (Cell cell in this.GetCellsInCameraView(this.world.camera))
+            foreach (Cell cell in this.GetCellsInsideRect(this.world.camera.viewRect))
             {
                 MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"Processing cell in camera view {cell.cellNoX},{cell.cellNoY}.", color: Color.White);
 
@@ -542,7 +601,7 @@ namespace SonOfRobin
                     throw new ArgumentException($"Textures unloading - unsupported platform {SonOfRobinGame.platform}."); ;
             }
 
-            var cellsInCameraView = this.GetCellsInCameraView(this.world.camera);
+            var cellsInCameraView = this.GetCellsInsideRect(this.world.camera.viewRect);
             var cellsToUnload = this.allCells.Where(cell => !cellsInCameraView.Contains(cell) && cell.boardGraphics.texture != null).ToList();
 
             foreach (Cell cell in cellsToUnload)
