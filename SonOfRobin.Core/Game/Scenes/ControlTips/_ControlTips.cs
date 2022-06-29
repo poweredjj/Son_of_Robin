@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 
@@ -80,7 +79,7 @@ namespace SonOfRobin
                 this.currentLayout == TipsLayout.InventoryDrag;
 
             // To take original scene transition into account:
-            // 1. Scene transformations have to be applied manually (because normally it would be invoked after all scenes Update().
+            // 1. Scene transformations have to be applied manually (because normally it would be invoked after all scenes Update()).
             // 2. Draw parameters have to be used.
 
             ViewParams sceneViewParams;
@@ -122,7 +121,7 @@ namespace SonOfRobin
 
         public override void Draw()
         {
-            if (!Preferences.showControlTips) return;
+            if (!Preferences.ShowControlTips) return;
 
             int drawOffsetX = 0;
 
@@ -133,6 +132,12 @@ namespace SonOfRobin
             }
 
             if (Preferences.DebugMode) SonOfRobinGame.spriteBatch.DrawString(SonOfRobinGame.fontPressStart2P5, $"{this.currentLayout}", Vector2.Zero, Color.White);
+        }
+
+        public static void RefreshTopTipsLayout()
+        {
+            ControlTips topTips = GetTopTips();
+            if (topTips != null) topTips.RefreshLayout();
         }
 
         public void RefreshLayout()
@@ -166,95 +171,123 @@ namespace SonOfRobin
                 case TipsLayout.Empty:
                     break;
 
-                case TipsLayout.Map:
-                    new ButtonTip(tipCollection: this.tipCollection, text: "return", textures: new List<Texture2D> { ButtonScheme.buttonB, ButtonScheme.dpadRight });
-                    break;
+                case TipsLayout.Menu:
+                    {
+                        new ButtonTip(tipCollection: this.tipCollection, text: "navigation", textures: InputVis.LeftStickTextureList);
+                        new ButtonTip(tipCollection: this.tipCollection, text: "confirm", textures: InputMapper.GetTextures(InputMapper.Action.GlobalConfirm));
+                        new ButtonTip(tipCollection: this.tipCollection, text: "return", textures: InputMapper.GetTextures(InputMapper.Action.GlobalCancelReturnSkip));
+                        break;
+                    }
 
-                case TipsLayout.InventorySelect:
-                    new ButtonTip(tipCollection: this.tipCollection, text: "navigation", textures: new List<Texture2D> { ButtonScheme.dpad, ButtonScheme.leftStick });
-                    new ButtonTip(tipCollection: this.tipCollection, text: "switch", textures: new List<Texture2D> { ButtonScheme.buttonLB, ButtonScheme.buttonRB });
-                    new ButtonTip(tipCollection: this.tipCollection, text: "pick stack", textures: new List<Texture2D> { ButtonScheme.buttonX });
-                    new ButtonTip(tipCollection: this.tipCollection, text: "pick one", textures: new List<Texture2D> { ButtonScheme.buttonY });
-                    new ButtonTip(tipCollection: this.tipCollection, text: "use", textures: new List<Texture2D> { ButtonScheme.buttonA });
-                    new ButtonTip(tipCollection: this.tipCollection, text: "return", textures: new List<Texture2D> { ButtonScheme.buttonB });
-                    break;
-
-                case TipsLayout.InventoryDrag:
-                    new ButtonTip(tipCollection: this.tipCollection, text: "navigation", textures: new List<Texture2D> { ButtonScheme.dpad, ButtonScheme.leftStick });
-                    new ButtonTip(tipCollection: this.tipCollection, text: "switch", textures: new List<Texture2D> { ButtonScheme.buttonLB, ButtonScheme.buttonRB });
-                    new ButtonTip(tipCollection: this.tipCollection, text: "release", textures: new List<Texture2D> { ButtonScheme.buttonX, ButtonScheme.buttonY, ButtonScheme.buttonA });
-                    new ButtonTip(tipCollection: this.tipCollection, text: "return", textures: new List<Texture2D> { ButtonScheme.buttonB });
-
-                    break;
-
-                case TipsLayout.PieceContext:
-                    new ButtonTip(tipCollection: this.tipCollection, text: "navigation", textures: new List<Texture2D> { ButtonScheme.dpad, ButtonScheme.leftStick });
-                    new ButtonTip(tipCollection: this.tipCollection, text: "confirm", textures: new List<Texture2D> { ButtonScheme.buttonA });
-                    new ButtonTip(tipCollection: this.tipCollection, text: "return", textures: new List<Texture2D> { ButtonScheme.buttonB });
-                    break;
+                case TipsLayout.MenuWithoutClosing:
+                    {
+                        new ButtonTip(tipCollection: this.tipCollection, text: "navigation", textures: InputVis.LeftStickTextureList);
+                        new ButtonTip(tipCollection: this.tipCollection, text: "confirm", textures: InputMapper.GetTextures(InputMapper.Action.GlobalConfirm));
+                        break;
+                    }
 
                 case TipsLayout.TextWindowOk:
-                    new ButtonTip(tipCollection: this.tipCollection, text: "confirm", textures: new List<Texture2D> { ButtonScheme.buttonA });
+                    new ButtonTip(tipCollection: this.tipCollection, text: "confirm", textures: InputMapper.GetTextures(InputMapper.Action.GlobalConfirm));
                     break;
 
                 case TipsLayout.TextWindowCancel:
-                    new ButtonTip(tipCollection: this.tipCollection, text: "skip", textures: new List<Texture2D> { ButtonScheme.buttonB });
-                    break;
+                    {
+                        new ButtonTip(tipCollection: this.tipCollection, text: "skip", textures: InputMapper.GetTextures(InputMapper.Action.GlobalCancelReturnSkip));
+                        break;
+                    }
 
                 case TipsLayout.TextWindowOkCancel:
-                    new ButtonTip(tipCollection: this.tipCollection, text: "confirm", textures: new List<Texture2D> { ButtonScheme.buttonA });
-                    new ButtonTip(tipCollection: this.tipCollection, text: "skip", textures: new List<Texture2D> { ButtonScheme.buttonB });
-                    break;
-
-                case TipsLayout.WorldMain:
-                    new ButtonTip(tipCollection: this.tipCollection, text: "walk", textures: new List<Texture2D> { ButtonScheme.leftStick });
-                    new ButtonTip(tipCollection: this.tipCollection, text: "camera", textures: new List<Texture2D> { ButtonScheme.rightStick });
-                    new ButtonTip(tipCollection: this.tipCollection, text: "interact", isHighlighted: false, textures: new List<Texture2D> { ButtonScheme.buttonA });
-                    new ButtonTip(tipCollection: this.tipCollection, text: "aim", isHighlighted: false, textures: new List<Texture2D> { ButtonScheme.buttonLT });
-                    new ButtonTip(tipCollection: this.tipCollection, text: "use item", isHighlighted: false, textures: new List<Texture2D> { ButtonScheme.buttonRT });
-                    new ButtonTip(tipCollection: this.tipCollection, text: "run", textures: new List<Texture2D> { ButtonScheme.buttonB });
-                    new ButtonTip(tipCollection: this.tipCollection, text: "pick up", isHighlighted: false, textures: new List<Texture2D> { ButtonScheme.buttonX });
-                    new ButtonTip(tipCollection: this.tipCollection, text: "inventory", textures: new List<Texture2D> { ButtonScheme.buttonY });
-                    new ButtonTip(tipCollection: this.tipCollection, text: "equip", textures: new List<Texture2D> { ButtonScheme.dpadLeft });
-                    new ButtonTip(tipCollection: this.tipCollection, text: "craft", textures: new List<Texture2D> { ButtonScheme.dpadUp });
-                    new ButtonTip(tipCollection: this.tipCollection, text: "map", highlightCoupledObj: world, highlightCoupledVarName: "MapEnabled", textures: new List<Texture2D> { ButtonScheme.dpadRight });
-                    new ButtonTip(tipCollection: this.tipCollection, text: "prev item", textures: new List<Texture2D> { ButtonScheme.buttonLB });
-                    new ButtonTip(tipCollection: this.tipCollection, text: "next item", textures: new List<Texture2D> { ButtonScheme.buttonRB });
-                    new ButtonTip(tipCollection: this.tipCollection, text: "menu", textures: new List<Texture2D> { ButtonScheme.buttonStart });
-                    break;
-
-                case TipsLayout.WorldShoot:
-                    new ButtonTip(tipCollection: this.tipCollection, text: "walk", textures: new List<Texture2D> { ButtonScheme.leftStick });
-                    new ButtonTip(tipCollection: this.tipCollection, text: "aim", textures: new List<Texture2D> { ButtonScheme.buttonLT, ButtonScheme.plus, ButtonScheme.rightStick });
-                    new ButtonTip(tipCollection: this.tipCollection, text: "shoot", textures: new List<Texture2D> { ButtonScheme.buttonRT });
-                    new ButtonTip(tipCollection: this.tipCollection, text: "menu", textures: new List<Texture2D> { ButtonScheme.buttonStart });
-                    break;
-
-                case TipsLayout.WorldSleep:
-                    new ButtonTip(tipCollection: this.tipCollection, text: "wake up", highlightCoupledObj: world.player, highlightCoupledVarName: "CanWakeNow", textures: new List<Texture2D> { ButtonScheme.buttonA, ButtonScheme.buttonB, ButtonScheme.buttonX, ButtonScheme.buttonY });
-                    new ButtonTip(tipCollection: this.tipCollection, text: "menu", textures: new List<Texture2D> { ButtonScheme.buttonStart });
-                    break;
-
-                case TipsLayout.WorldSpectator:
-                    new ButtonTip(tipCollection: this.tipCollection, text: "walk", textures: new List<Texture2D> { ButtonScheme.leftStick });
-                    new ButtonTip(tipCollection: this.tipCollection, text: "camera", textures: new List<Texture2D> { ButtonScheme.rightStick });
-                    new ButtonTip(tipCollection: this.tipCollection, text: "menu", textures: new List<Texture2D> { ButtonScheme.buttonStart });
-                    break;
-
-                case TipsLayout.Menu:
-                    new ButtonTip(tipCollection: this.tipCollection, text: "navigation", textures: new List<Texture2D> { ButtonScheme.dpad, ButtonScheme.leftStick });
-                    new ButtonTip(tipCollection: this.tipCollection, text: "confirm", textures: new List<Texture2D> { ButtonScheme.buttonA });
-                    new ButtonTip(tipCollection: this.tipCollection, text: "return", textures: new List<Texture2D> { ButtonScheme.buttonB, ButtonScheme.buttonStart });
-                    break;
-
-                case TipsLayout.MenuWithoutClosing:
-                    new ButtonTip(tipCollection: this.tipCollection, text: "navigation", textures: new List<Texture2D> { ButtonScheme.dpad, ButtonScheme.leftStick });
-                    new ButtonTip(tipCollection: this.tipCollection, text: "confirm", textures: new List<Texture2D> { ButtonScheme.buttonA });
-                    break;
+                    {
+                        new ButtonTip(tipCollection: this.tipCollection, text: "confirm", textures: InputMapper.GetTextures(InputMapper.Action.GlobalConfirm));
+                        new ButtonTip(tipCollection: this.tipCollection, text: "skip", textures: InputMapper.GetTextures(InputMapper.Action.GlobalCancelReturnSkip));
+                        break;
+                    }
 
                 case TipsLayout.QuitLoading:
-                    new ButtonTip(tipCollection: this.tipCollection, text: "cancel", textures: new List<Texture2D> { ButtonScheme.buttonB });
-                    break;
+                    {
+                        new ButtonTip(tipCollection: this.tipCollection, text: "cancel", textures: InputMapper.GetTextures(InputMapper.Action.GlobalCancelReturnSkip));
+                        break;
+                    }
+
+                case TipsLayout.WorldMain:
+                    {
+                        new ButtonTip(tipCollection: this.tipCollection, text: "menu", textures: InputMapper.GetTextures(InputMapper.Action.WorldPauseMenu));
+                        new ButtonTip(tipCollection: this.tipCollection, text: "walk", textures: InputMapper.GetTextures(InputMapper.Action.WorldWalk));
+                        var cameraTextures = InputMapper.GetTextures(InputMapper.Action.WorldCameraMove); // there is no camera mapping for keyboard
+                        if (cameraTextures.Count > 0) new ButtonTip(tipCollection: this.tipCollection, text: "camera", textures: cameraTextures);
+                        new ButtonTip(tipCollection: this.tipCollection, text: "run", textures: InputMapper.GetTextures(InputMapper.Action.WorldRun));
+                        new ButtonTip(tipCollection: this.tipCollection, text: "equip", textures: InputMapper.GetTextures(InputMapper.Action.WorldEquip));
+                        new ButtonTip(tipCollection: this.tipCollection, text: "inventory", textures: InputMapper.GetTextures(InputMapper.Action.WorldInventory));
+                        new ButtonTip(tipCollection: this.tipCollection, text: "pick up", isHighlighted: false, textures: InputMapper.GetTextures(InputMapper.Action.WorldPickUp));
+                        new ButtonTip(tipCollection: this.tipCollection, text: "craft", textures: InputMapper.GetTextures(InputMapper.Action.WorldFieldCraft));
+                        new ButtonTip(tipCollection: this.tipCollection, text: "interact", isHighlighted: false, textures: InputMapper.GetTextures(InputMapper.Action.WorldInteract));
+                        new ButtonTip(tipCollection: this.tipCollection, text: "map", highlightCoupledObj: world, highlightCoupledVarName: "MapEnabled", textures: InputMapper.GetTextures(InputMapper.Action.WorldMapToggle));
+                        new ButtonTip(tipCollection: this.tipCollection, text: "zoom out", textures: InputMapper.GetTextures(InputMapper.Action.WorldCameraZoomOut));
+                        new ButtonTip(tipCollection: this.tipCollection, text: "use item", isHighlighted: false, textures: InputMapper.GetTextures(InputMapper.Action.WorldUseToolbarPiece));
+                        new ButtonTip(tipCollection: this.tipCollection, text: "prev item", textures: InputMapper.GetTextures(InputMapper.Action.ToolbarPrev));
+                        new ButtonTip(tipCollection: this.tipCollection, text: "next item", textures: InputMapper.GetTextures(InputMapper.Action.ToolbarNext));
+                        break;
+                    }
+
+                case TipsLayout.WorldShoot:
+                    {
+                        new ButtonTip(tipCollection: this.tipCollection, text: "menu", textures: InputMapper.GetTextures(InputMapper.Action.WorldPauseMenu));
+                        new ButtonTip(tipCollection: this.tipCollection, text: "walk", textures: InputMapper.GetTextures(InputMapper.Action.WorldWalk));
+                        var cameraTextures = InputMapper.GetTextures(InputMapper.Action.WorldCameraMove); // there is no camera mapping for keyboard
+                        if (cameraTextures.Count > 0) new ButtonTip(tipCollection: this.tipCollection, text: "aim", textures: cameraTextures);
+                        new ButtonTip(tipCollection: this.tipCollection, text: "zoom out", textures: InputMapper.GetTextures(InputMapper.Action.WorldCameraZoomOut));
+                        new ButtonTip(tipCollection: this.tipCollection, text: "shoot", textures: InputMapper.GetTextures(InputMapper.Action.WorldUseToolbarPiece));
+                        break;
+                    }
+
+                case TipsLayout.WorldSleep:
+                    {
+                        new ButtonTip(tipCollection: this.tipCollection, text: "wake up", highlightCoupledObj: world.player, highlightCoupledVarName: "CanWakeNow", textures: InputMapper.GetTextures(InputMapper.Action.GlobalCancelReturnSkip));
+                        break;
+                    }
+
+                case TipsLayout.WorldSpectator:
+                    {
+                        new ButtonTip(tipCollection: this.tipCollection, text: "menu", textures: InputMapper.GetTextures(InputMapper.Action.WorldPauseMenu));
+                        new ButtonTip(tipCollection: this.tipCollection, text: "walk", textures: InputMapper.GetTextures(InputMapper.Action.WorldWalk));
+                        var cameraTextures = InputMapper.GetTextures(InputMapper.Action.WorldCameraMove); // there is no camera mapping for keyboard
+                        if (cameraTextures.Count > 0) new ButtonTip(tipCollection: this.tipCollection, text: "camera", textures: cameraTextures);
+                        break;
+                    }
+
+                case TipsLayout.Map:
+                    {
+                        new ButtonTip(tipCollection: this.tipCollection, text: "return", textures: InputMapper.GetTextures(InputMapper.Action.MapSwitch));
+                        break;
+                    }
+
+                case TipsLayout.InventorySelect:
+                    {
+                        new ButtonTip(tipCollection: this.tipCollection, text: "navigation", textures: InputVis.LeftStickTextureList);
+                        new ButtonTip(tipCollection: this.tipCollection, text: "return", textures: InputMapper.GetTextures(InputMapper.Action.GlobalCancelReturnSkip));
+                        new ButtonTip(tipCollection: this.tipCollection, text: "switch", textures: InputMapper.GetTextures(InputMapper.Action.InvSwitch));
+                        new ButtonTip(tipCollection: this.tipCollection, text: "pick stack", textures: InputMapper.GetTextures(InputMapper.Action.InvPickStack));
+                        new ButtonTip(tipCollection: this.tipCollection, text: "pick one", textures: InputMapper.GetTextures(InputMapper.Action.InvPickOne));
+                        new ButtonTip(tipCollection: this.tipCollection, text: "use", textures: InputMapper.GetTextures(InputMapper.Action.GlobalConfirm));
+                        break;
+                    }
+
+                case TipsLayout.InventoryDrag:
+                    {
+                        new ButtonTip(tipCollection: this.tipCollection, text: "navigation", textures: InputVis.LeftStickTextureList);
+                        new ButtonTip(tipCollection: this.tipCollection, text: "return", textures: InputMapper.GetTextures(InputMapper.Action.GlobalCancelReturnSkip));
+                        new ButtonTip(tipCollection: this.tipCollection, text: "switch", textures: InputMapper.GetTextures(InputMapper.Action.InvSwitch));
+                        new ButtonTip(tipCollection: this.tipCollection, text: "release", textures: InputMapper.GetTextures(InputMapper.Action.InvRelease));
+                        break;
+                    }
+
+                case TipsLayout.PieceContext:
+                    {
+                        new ButtonTip(tipCollection: this.tipCollection, text: "navigation", textures: InputVis.LeftStickTextureList);
+                        new ButtonTip(tipCollection: this.tipCollection, text: "confirm", textures: InputMapper.GetTextures(InputMapper.Action.GlobalConfirm));
+                        new ButtonTip(tipCollection: this.tipCollection, text: "return", textures: InputMapper.GetTextures(InputMapper.Action.GlobalCancelReturnSkip));
+                        break;
+                    }
 
                 default:
                     throw new DivideByZeroException($"Unsupported tipsLayout - {tipsLayout}.");

@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Input.Touch;
 using System;
 using System.Collections.Generic;
@@ -179,29 +178,25 @@ namespace SonOfRobin
 
         private void ProcessInput()
         {
-            if (Keyboard.HasBeenPressed(Keys.Escape) || GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.B))
+            if (InputMapper.HasBeenPressed(InputMapper.Action.GlobalCancelReturnSkip))
             {
                 this.Remove();
                 return;
             }
 
-            if (Keyboard.HasBeenPressed(key: Keys.W, repeat: true) ||
-                Keyboard.HasBeenPressed(key: Keys.Up, repeat: true) ||
-                GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.DPadUp, analogAsDigital: true, repeat: true))
+            if (InputMapper.HasBeenPressed(InputMapper.Action.GlobalUp))
             {
                 this.ActiveEntry -= 1;
                 this.showCursor = true;
             }
 
-            if (Keyboard.HasBeenPressed(key: Keys.S, repeat: true) ||
-                Keyboard.HasBeenPressed(key: Keys.Down, repeat: true) ||
-                GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.DPadDown, analogAsDigital: true, repeat: true))
+            if (InputMapper.HasBeenPressed(InputMapper.Action.GlobalDown))
             {
                 this.ActiveEntry += 1;
                 this.showCursor = true;
             }
 
-            if (Keyboard.HasBeenPressed(Keys.Enter) || GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.A))
+            if (InputMapper.HasBeenPressed(InputMapper.Action.GlobalConfirm))
             {
                 this.ExecuteAction();
                 this.Remove();
@@ -238,7 +233,6 @@ namespace SonOfRobin
                                 return;
                             }
                         }
-
                     }
                     else
                     {
@@ -299,7 +293,7 @@ namespace SonOfRobin
                         executeHelper["buttonHeld"] = false;
                         executeHelper["highlightOnly"] = false;
 
-                        new Scheduler.Task(menu: null, taskName: food.toolbarTask, delay: 0, executeHelper: executeHelper);
+                        new Scheduler.Task(taskName: food.toolbarTask, delay: 0, executeHelper: executeHelper);
 
                         return;
                     }

@@ -126,7 +126,7 @@ namespace SonOfRobin
 
             Vector2 textSize = font.MeasureString(this.DisplayedText);
 
-            float maxTextHeight = rect.Height * 0.5f;
+            float maxTextHeight = rect.Height * 0.6f;
             float maxTextWidth = rect.Width * 0.85f;
 
             float textScale = Math.Min(maxTextWidth / textSize.X, maxTextHeight / textSize.Y);

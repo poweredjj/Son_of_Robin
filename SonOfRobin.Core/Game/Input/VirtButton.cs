@@ -9,6 +9,7 @@ namespace SonOfRobin
 {
     public enum VButName
     {
+        Confirm,
         Interact,
         UseTool,
         Shoot,

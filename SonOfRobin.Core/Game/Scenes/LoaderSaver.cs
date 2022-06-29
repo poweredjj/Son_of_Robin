@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -73,16 +72,6 @@ namespace SonOfRobin
             }
         }
 
-        private bool CancelPressed
-        {
-            get
-            {
-                return
-                    Keyboard.IsPressed(Keys.Escape) ||
-                    GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.B) ||
-                    VirtButton.IsButtonDown(VButName.Return);
-            }
-        }
 
         private bool errorOccured;
         private bool ErrorOccured
@@ -184,7 +173,7 @@ namespace SonOfRobin
                 return;
             }
 
-            if (this.CancelPressed)
+            if (InputMapper.IsPressed(InputMapper.Action.GlobalCancelReturnSkip))
             {
                 if (this.saveMode) DeleteAllSaveTemps();
                 SonOfRobinGame.progressBar.TurnOff(addTransition: true);

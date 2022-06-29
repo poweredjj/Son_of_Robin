@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Input.Touch;
 using System;
 using System.Collections.Generic;
@@ -357,12 +356,7 @@ namespace SonOfRobin
 
         private void ProcessInput()
         {
-            if (
-                Keyboard.HasBeenPressed(Keys.Escape) ||
-                GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.Start) ||
-                VirtButton.HasButtonBeenPressed(VButName.Return) ||
-                GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.B)
-                )
+            if (InputMapper.HasBeenPressed(InputMapper.Action.GlobalCancelReturnSkip))
             {
                 if (this.canBeClosedManually)
                 {
@@ -380,23 +374,12 @@ namespace SonOfRobin
                 { entry.ProcessTouch(); }
             }
 
-            if (Keyboard.HasBeenPressed(key: Keys.W, repeat: true) ||
-                Keyboard.HasBeenPressed(key: Keys.Up, repeat: true) ||
-                GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.DPadUp, analogAsDigital: true, repeat: true)) this.PreviousItem();
+            if (InputMapper.HasBeenPressed(InputMapper.Action.GlobalUp)) this.PreviousItem();
+            if (InputMapper.HasBeenPressed(InputMapper.Action.GlobalDown)) this.NextItem();
+            if (InputMapper.HasBeenPressed(InputMapper.Action.GlobalLeft)) this.ActiveEntry.PreviousValue(touchMode: false);
+            if (InputMapper.HasBeenPressed(InputMapper.Action.GlobalRight)) this.ActiveEntry.NextValue(touchMode: false);
 
-            if (Keyboard.HasBeenPressed(key: Keys.S, repeat: true) ||
-                Keyboard.HasBeenPressed(Keys.Down, repeat: true) ||
-                GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.DPadDown, analogAsDigital: true, repeat: true)) this.NextItem();
-
-            if (Keyboard.HasBeenPressed(key: Keys.A, repeat: true) ||
-                Keyboard.HasBeenPressed(key: Keys.Left, repeat: true) ||
-                GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.DPadLeft, analogAsDigital: true, repeat: true)) this.ActiveEntry.PreviousValue(touchMode: false);
-
-            if (Keyboard.HasBeenPressed(key: Keys.D, repeat: true) ||
-                Keyboard.HasBeenPressed(key: Keys.Right, repeat: true) ||
-                GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.DPadRight, analogAsDigital: true, repeat: true)) this.ActiveEntry.NextValue(touchMode: false);
-
-            if (Keyboard.HasBeenPressed(Keys.Enter) || GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.A)) this.ActiveEntry.Invoke();
+            if (InputMapper.HasBeenPressed(InputMapper.Action.GlobalConfirm)) this.ActiveEntry.Invoke();
         }
 
         private void ScrollByTouch()
@@ -471,7 +454,6 @@ namespace SonOfRobin
 
             this.DrawScrollbar();
         }
-
 
         private void DrawScrollbar()
         {

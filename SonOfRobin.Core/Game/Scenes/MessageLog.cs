@@ -59,7 +59,7 @@ namespace SonOfRobin
         {
             int currentFrame = SonOfRobinGame.currentUpdate;
             DeleteOldMessages(currentFrame);
-            this.screenHeight = Preferences.showControlTips ? (int)(SonOfRobinGame.VirtualHeight * 0.94f) : (int)(SonOfRobinGame.VirtualHeight * 1f);
+            this.screenHeight = Preferences.ShowControlTips ? (int)(SonOfRobinGame.VirtualHeight * 0.94f) : (int)(SonOfRobinGame.VirtualHeight * 1f);
         }
 
         public override void Draw()

@@ -481,9 +481,9 @@ namespace SonOfRobin
                         var yield = new Yield(debrisType: Yield.DebrisType.Wood,
                            firstDroppedPieces: new List<Yield.DroppedPiece> {
                                 new Yield.DroppedPiece(pieceName: Name.Stick, chanceToDrop: 100, maxNumberToDrop: 1),
-                                new Yield.DroppedPiece(pieceName: Name.WoodLog, chanceToDrop: 80, maxNumberToDrop: 2) },
+                                new Yield.DroppedPiece(pieceName: Name.WoodLog, chanceToDrop: 80, maxNumberToDrop: 1) },
                            finalDroppedPieces: new List<Yield.DroppedPiece> {
-                                new Yield.DroppedPiece(pieceName: Name.WoodLog, chanceToDrop: 100, maxNumberToDrop: 4),
+                                new Yield.DroppedPiece(pieceName: Name.WoodLog, chanceToDrop: 100, maxNumberToDrop: 2),
                                 new Yield.DroppedPiece(pieceName: Name.Stick, chanceToDrop: 100, maxNumberToDrop: 3),});
 
                         return new Plant(name: templateName, world: world, position: position, blocksMovement: true, animPackage: AnimData.PkgName.PalmTree, allowedFields: allowedFields, category: BoardPiece.Category.Wood,

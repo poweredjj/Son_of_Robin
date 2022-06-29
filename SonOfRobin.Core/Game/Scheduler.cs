@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -10,7 +9,7 @@ namespace SonOfRobin
 {
     public class Scheduler
     {
-        public enum TaskName { Empty, CreateNewWorld, CreateNewWorldNow, QuitGame, OpenMenuTemplate, OpenMainMenu, OpenConfirmationMenu, SaveGame, LoadGame, LoadGameNow, ReturnToMainMenu, SavePrefs, ProcessConfirmation, OpenCraftMenu, Craft, Hit, CreateNewPiece, CreateDebugPieces, OpenContainer, DeleteObsoleteSaves, DropFruit, GetEaten, ExecuteTaskWithDelay, AddWorldEvent, OpenTextWindow, SleepInsideShelter, SleepOutside, TempoFastForward, TempoStop, TempoPlay, CameraTrackPiece, CameraTrackCoords, CameraSetZoom, ShowCookingProgress, RestoreHints, OpenMainMenuIfSpecialKeysArePressed, CheckForPieceHints, ShowHint, ExecuteTaskList, ExecuteTaskChain, ShowTutorial, RemoveScene, ChangeSceneInputType, SetCineMode, AddTransition, SkipCinematics, DeleteTemplates, SetSpectatorMode, SwitchLightSource }
+        public enum TaskName { Empty, CreateNewWorld, CreateNewWorldNow, QuitGame, OpenMenuTemplate, OpenMainMenu, OpenConfirmationMenu, SaveGame, LoadGame, LoadGameNow, ReturnToMainMenu, SavePrefs, ProcessConfirmation, OpenCraftMenu, Craft, Hit, CreateNewPiece, CreateDebugPieces, OpenContainer, DeleteObsoleteSaves, DropFruit, GetEaten, ExecuteTaskWithDelay, AddWorldEvent, OpenTextWindow, SleepInsideShelter, SleepOutside, TempoFastForward, TempoStop, TempoPlay, CameraTrackPiece, CameraTrackCoords, CameraSetZoom, ShowCookingProgress, RestoreHints, OpenMainMenuIfSpecialKeysArePressed, CheckForPieceHints, ShowHint, ExecuteTaskList, ExecuteTaskChain, ShowTutorial, RemoveScene, ChangeSceneInputType, SetCineMode, AddTransition, SkipCinematics, DeleteTemplates, SetSpectatorMode, SwitchLightSource, ResetControls, SaveControls }
 
         private readonly static Dictionary<int, List<Task>> queue = new Dictionary<int, List<Task>>();
         private static int inputTurnedOffUntilFrame = 0;
@@ -64,7 +63,7 @@ namespace SonOfRobin
                 }
             }
 
-            public Task(Menu menu, TaskName taskName, Object executeHelper, bool turnOffInputUntilExecution = false, int delay = 0, bool rebuildsMenu = false, bool storeForLaterUse = false)
+            public Task(TaskName taskName, Menu menu = null, Object executeHelper = null, bool turnOffInputUntilExecution = false, int delay = 0, bool rebuildsMenu = false, bool storeForLaterUse = false)
             {
                 this.taskName = taskName;
                 this.executeHelper = executeHelper;
@@ -148,7 +147,7 @@ namespace SonOfRobin
 
                     case TaskName.OpenMainMenu:
                         {
-                            new Task(menu: null, taskName: TaskName.OpenMenuTemplate, turnOffInputUntilExecution: true, delay: 0, executeHelper: new Dictionary<string, Object> { { "templateName", MenuTemplate.Name.Main } });
+                            new Task(taskName: TaskName.OpenMenuTemplate, turnOffInputUntilExecution: true, delay: 0, executeHelper: new Dictionary<string, Object> { { "templateName", MenuTemplate.Name.Main } });
 
                             return;
                         }
@@ -181,12 +180,11 @@ namespace SonOfRobin
 
                         Scene.RemoveAllScenesOfType(typeof(Menu));
 
-                        new Task(menu: null, taskName: TaskName.CreateNewWorldNow, turnOffInputUntilExecution: true, delay: 13, executeHelper: executeHelper);
+                        new Task(taskName: TaskName.CreateNewWorldNow, turnOffInputUntilExecution: true, delay: 13, executeHelper: executeHelper);
 
                         return;
 
                     case TaskName.CreateNewWorldNow:
-
                         {
                             // example executeHelper for this task
                             // var createData = new Dictionary<string, Object> { { "width", width }, { "height", height }, { "seed", seed }};
@@ -267,7 +265,7 @@ namespace SonOfRobin
 
                         if (this.rebuildsMenu)
                         {// menu should be rebuilt after the game has been saved
-                            new Task(menu: this.menu, taskName: TaskName.Empty, turnOffInputUntilExecution: false, delay: 12, executeHelper: null, rebuildsMenu: true);
+                            new Task(menu: this.menu, taskName: TaskName.Empty, turnOffInputUntilExecution: false, delay: 12, rebuildsMenu: true);
                             this.rebuildsMenu = false;
                         }
 ;
@@ -291,7 +289,7 @@ namespace SonOfRobin
                         Menu.RemoveEveryMenuOfTemplate(MenuTemplate.Name.Pause);
                         Menu.RemoveEveryMenuOfTemplate(MenuTemplate.Name.GameOver);
 
-                        new Task(menu: null, taskName: TaskName.LoadGameNow, turnOffInputUntilExecution: true, delay: 17, executeHelper: this.executeHelper);
+                        new Task(taskName: TaskName.LoadGameNow, turnOffInputUntilExecution: true, delay: 17, executeHelper: this.executeHelper);
 
                         return;
 
@@ -306,7 +304,7 @@ namespace SonOfRobin
 
                     case TaskName.ProcessConfirmation:
                         var confirmationData = (Dictionary<string, Object>)executeHelper;
-                        new Task(menu: null, taskName: (TaskName)confirmationData["taskName"], executeHelper: confirmationData["executeHelper"]);
+                        new Task(taskName: (TaskName)confirmationData["taskName"], executeHelper: confirmationData["executeHelper"]);
 
                         return;
 
@@ -463,6 +461,49 @@ namespace SonOfRobin
                             return;
                         }
 
+                    case TaskName.ResetControls:
+                        {
+                            bool gamepad = (bool)executeHelper;
+                            if (gamepad)
+                            {
+                                InputMapper.currentMappingGamepad = InputMapper.defaultMappingGamepad.MakeCopy();
+                                InputMapper.newMappingGamepad = InputMapper.defaultMappingGamepad.MakeCopy();
+                            }
+                            else
+                            {
+                                InputMapper.currentMappingKeyboard = InputMapper.defaultMappingKeyboard.MakeCopy();
+                                InputMapper.newMappingKeyboard = InputMapper.defaultMappingKeyboard.MakeCopy();
+                            }
+
+                            InputMapper.RebuildMappings();
+                            new Task(taskName: TaskName.SavePrefs);
+
+                            string type = gamepad ? "Gamepad" : "Keyboard";
+                            new TextWindow(text: $"{type} controls has been reset.", textColor: Color.White, bgColor: Color.DarkBlue, useTransition: false, animate: false);
+                            return;
+                        }
+
+                    case TaskName.SaveControls:
+                        {
+                            bool gamepad = (bool)executeHelper;
+
+                            MappingPackage newMapping = gamepad ? InputMapper.newMappingGamepad : InputMapper.newMappingKeyboard;
+
+                            bool isValid = newMapping.Validate(gamepad: gamepad);
+                            if (!isValid) return;
+
+                            if (gamepad) InputMapper.currentMappingGamepad = InputMapper.newMappingGamepad.MakeCopy();
+                            else InputMapper.currentMappingKeyboard = InputMapper.newMappingKeyboard.MakeCopy();
+
+                            InputMapper.RebuildMappings();
+                            new Task(taskName: TaskName.SavePrefs);
+
+                            string type = gamepad ? "Gamepad" : "Keyboard";
+                            new TextWindow(text: $"{type} controls has been saved.", textColor: Color.White, bgColor: Color.DarkBlue, useTransition: false, animate: false);
+
+                            return;
+                        }
+
                     case TaskName.DropFruit:
                         {
                             Plant fruitPlant = (Plant)executeHelper;
@@ -480,7 +521,7 @@ namespace SonOfRobin
                             // var delayData = new Dictionary<string, Object> { { "taskName", TaskName.TurnOffWorkshop }, { "executeHelper", workshop }, { "delay", 300 } };
 
                             var delayData = (Dictionary<string, Object>)executeHelper;
-                            new Task(menu: null, taskName: (TaskName)delayData["taskName"], executeHelper: delayData["executeHelper"], delay: (int)delayData["delay"]);
+                            new Task(taskName: (TaskName)delayData["taskName"], executeHelper: delayData["executeHelper"], delay: (int)delayData["delay"]);
 
                             return;
                         }
@@ -506,7 +547,10 @@ namespace SonOfRobin
                             var textWindowData = (Dictionary<string, Object>)executeHelper;
 
                             string text = (string)textWindowData["text"];
-                            var imageList = (List<Texture2D>)textWindowData["imageList"];
+
+                            List<Texture2D> imageList;
+                            if (textWindowData.ContainsKey("imageList")) imageList = (List<Texture2D>)textWindowData["imageList"];
+                            else imageList = new List<Texture2D>();
 
                             bool checkForDuplicate = false;
                             if (textWindowData.ContainsKey("checkForDuplicate")) checkForDuplicate = (bool)textWindowData["checkForDuplicate"];
@@ -722,7 +766,7 @@ namespace SonOfRobin
 
                                 currentTask.Process(); // must go before new Task(), to maintain correct execute order
 
-                                if (taskChain.Count > 0) new Task(menu: null, taskName: TaskName.ExecuteTaskChain, executeHelper: taskChain, delay: currentTask.delay, turnOffInputUntilExecution: true);
+                                if (taskChain.Count > 0) new Task(taskName: TaskName.ExecuteTaskChain, executeHelper: taskChain, delay: currentTask.delay, turnOffInputUntilExecution: true);
                             }
 
                             if (taskChain.Count == 0) Input.GlobalInputActive = true; // to ensure that input will be active at the end
@@ -733,16 +777,9 @@ namespace SonOfRobin
 
                     case TaskName.OpenMainMenuIfSpecialKeysArePressed:
                         {
-                            if (Keyboard.IsPressed(Keys.LeftControl) ||
-                                GamePad.IsPressed(playerIndex: PlayerIndex.One, button: Buttons.Start) ||
-                                VirtButton.IsButtonDown(VButName.Interact))
-                            {
-                                new Task(menu: null, taskName: TaskName.OpenMainMenu, executeHelper: null);
-                            }
-                            else
-                            {
-                                new Task(menu: null, taskName: TaskName.QuitGame, executeHelper: null);
-                            }
+                            Input.GlobalInputActive = true;
+                            if (InputMapper.IsPressed(InputMapper.Action.SecretLicenceBypass)) new Task(taskName: TaskName.OpenMainMenu);
+                            else new Task(taskName: TaskName.QuitGame);
 
                             return;
                         }
@@ -920,7 +957,7 @@ namespace SonOfRobin
                             }
 
                             var newDeleteData = new Dictionary<string, Object> { { "pathsToDelete", pathsToDelete }, { "pathCount", pathCount } };
-                            new Task(menu: null, taskName: TaskName.DeleteTemplates, turnOffInputUntilExecution: true, delay: 1, executeHelper: newDeleteData);
+                            new Task(taskName: TaskName.DeleteTemplates, turnOffInputUntilExecution: true, delay: 1, executeHelper: newDeleteData);
 
                             return;
                         }
@@ -958,11 +995,11 @@ namespace SonOfRobin
                 if (autoSave)
                 {
                     var saveParams = new Dictionary<string, Object> { { "world", world }, { "saveSlotName", "0" }, { "showMessage", false }, { "quitGameAfterSaving", quitGame } };
-                    new Task(menu: null, taskName: TaskName.SaveGame, executeHelper: saveParams, delay: 17);
+                    new Task(taskName: TaskName.SaveGame, executeHelper: saveParams, delay: 17);
                 }
 
                 if (!autoSave && quitGame) SonOfRobinGame.quitGame = true;
-                if (!quitGame) new Task(menu: null, taskName: TaskName.OpenMainMenu, turnOffInputUntilExecution: true, delay: autoSave ? 30 : 0, executeHelper: null);
+                if (!quitGame) new Task(taskName: TaskName.OpenMainMenu, turnOffInputUntilExecution: true, delay: autoSave ? 30 : 0);
             }
         }
 

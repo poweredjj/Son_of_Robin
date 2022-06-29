@@ -63,7 +63,7 @@ namespace SonOfRobin
 
                 new PieceHint(type: Type.BackpackPositive, canBeForced: true,
                     messageList: new List<HintMessage> {
-                    new HintMessage(text: "This backpack | has a lot of free space.\nI should equip it now.", imageList: new List<Texture2D>{ AnimData.framesForPkgs[AnimData.PkgName.BackpackMedium].texture}, boxType: HintMessage.BoxType.Dialogue)},
+                    new HintMessage(text: "This backpack | has a lot of free space.\nI should equip it now.", imageList: new List<Texture2D>{ AnimData.framesForPkgs[AnimData.PkgName.BackpackMedium].texture}, boxType: HintMessage.BoxType.Dialogue, blockInput: true)},
                     imageList: new List<Texture2D>{ AnimData.framesForPkgs[AnimData.PkgName.BackpackMedium].texture},
                     tutorialsToActivate: new List<Tutorials.Type> {Tutorials.Type.Equip},
                     playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.BackpackMedium}),
@@ -190,8 +190,8 @@ namespace SonOfRobin
 
                 new PieceHint(type: Type.TorchNegative,
                     messageList: new List<HintMessage> {
-                        new HintMessage("It's getting dark."),
-                        new HintMessage(text: "I need some light. A | torch, maybe?", imageList: new List<Texture2D> {AnimData.framesForPkgs[AnimData.PkgName.Torch].texture })},
+                        new HintMessage("It's getting dark.", blockInput: true),
+                        new HintMessage(text: "I need some light. A | torch, maybe?", imageList: new List<Texture2D> {AnimData.framesForPkgs[AnimData.PkgName.Torch].texture }, blockInput: true)},
                     playerDoesNotOwnAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.Torch},
                     partsOfDay: new List<IslandClock.PartOfDay> {IslandClock.PartOfDay.Evening, IslandClock.PartOfDay.Night}),
 
@@ -234,7 +234,7 @@ namespace SonOfRobin
             this.playerDoesNotOwnAnyOfThesePieces = playerDoesNotOwnAnyOfThesePieces;
             this.partsOfDay = partsOfDay;
             this.messageList = messageList;
-            if (message != null) this.messageList = new List<HintMessage> { new HintMessage(text: message, imageList: imageList) };
+            if (message != null) this.messageList = new List<HintMessage> { new HintMessage(text: message, imageList: imageList, blockInput: true) };
             this.tutorialsToActivate = tutorialsToActivate;
         }
 

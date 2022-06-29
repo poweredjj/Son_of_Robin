@@ -1,12 +1,14 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SonOfRobin
 {
     public class MenuTemplate
     {
-        public enum Name { Main, Options, CreateNewIsland, SetSeed, Performance, OpenIslandTemplate, Pause, Load, Save, Tutorials, GameOver, Debug, CreateAnyPiece, GenericConfirm, CraftBasic, CraftNormal, CraftCooking, CraftFurnace }
+        public enum Name { Main, Options, Performance, Controls, Gamepad, Keyboard, Scale, OtherOptions, CreateNewIsland, SetSeed, OpenIslandTemplate, Pause, Load, Save, Tutorials, GameOver, Debug, CreateAnyPiece, GenericConfirm, CraftBasic, CraftNormal, CraftCooking, CraftFurnace }
 
         public static Menu CreateConfirmationMenu(Object confirmationData)
         {
@@ -55,13 +57,44 @@ namespace SonOfRobin
 
                 case Name.Options:
                     {
-                        world = World.GetTopWorld();
-
                         menu = new Menu(templateName: templateName, name: "OPTIONS", blocksUpdatesBelow: false, canBeClosedManually: true, closingTask: Scheduler.TaskName.SavePrefs);
-                        new Selector(menu: menu, name: "debug mode", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: new Preferences(), propertyName: "DebugMode", rebuildsMenu: true);
-                        if (Preferences.DebugMode) new Invoker(menu: menu, name: "debug menu", taskName: Scheduler.TaskName.OpenMenuTemplate, executeHelper: new Dictionary<string, Object> { { "templateName", Name.Debug } });
+
+                        new Invoker(menu: menu, name: "controls", taskName: Scheduler.TaskName.OpenMenuTemplate, executeHelper: new Dictionary<string, Object> { { "templateName", Name.Controls } }, infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: "controls settings", color: Color.White, scale: 1f) });
 
                         new Invoker(menu: menu, name: "performance", taskName: Scheduler.TaskName.OpenMenuTemplate, executeHelper: new Dictionary<string, Object> { { "templateName", Name.Performance } }, infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: "performance settings", color: Color.White, scale: 1f) });
+
+                        new Invoker(menu: menu, name: "scale", taskName: Scheduler.TaskName.OpenMenuTemplate, executeHelper: new Dictionary<string, Object> { { "templateName", Name.Scale } }, infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: "scale settings", color: Color.White, scale: 1f) });
+
+                        new Invoker(menu: menu, name: "other", taskName: Scheduler.TaskName.OpenMenuTemplate, executeHelper: new Dictionary<string, Object> { { "templateName", Name.OtherOptions } }, infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: "misc. settings", color: Color.White, scale: 1f) });
+
+                        new Invoker(menu: menu, name: "debug", taskName: Scheduler.TaskName.OpenMenuTemplate, executeHelper: new Dictionary<string, Object> { { "templateName", Name.Debug } }, infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: "only for the brave ones ;)", color: Color.White, scale: 1f) });
+
+                        new Separator(menu: menu, name: "", isEmpty: true);
+                        new Invoker(menu: menu, name: "return", closesMenu: true, taskName: Scheduler.TaskName.SavePrefs);
+
+                        return menu;
+                    }
+
+                case Name.Scale:
+                    {
+                        menu = new Menu(templateName: templateName, name: "SCALE", blocksUpdatesBelow: false, canBeClosedManually: true, closingTask: Scheduler.TaskName.SavePrefs);
+
+                        new Selector(menu: menu, name: "world scale", valueList: new List<Object> { 0.125f, 0.25f, 0.5f, 0.75f, 1f, 1.25f, 1.5f, 2f, 2.5f, 3f, 3.5f }, targetObj: new Preferences(), propertyName: "worldScale");
+                        new Selector(menu: menu, name: "global scale", valueList: new List<Object> { 1f, 1.5f, 2f, 2.5f, 3f, 3.5f, 4f }, targetObj: new Preferences(), propertyName: "GlobalScale", rebuildsMenu: true, rebuildsMenuInstantScroll: true);
+                        new Selector(menu: menu, name: "menu scale", valueList: new List<Object> { 0.5f, 0.75f, 1f, 1.25f, 1.5f, 2f, 2.5f, 3f, 3.5f, 4f, 4.5f, 5f }, targetObj: new Preferences(), propertyName: "menuScale", rebuildsMenu: true, rebuildsMenuInstantScroll: true);
+
+                        new Separator(menu: menu, name: "", isEmpty: true);
+                        new Invoker(menu: menu, name: "return", closesMenu: true, taskName: Scheduler.TaskName.SavePrefs);
+
+                        return menu;
+                    }
+
+                case Name.OtherOptions:
+                    {
+                        world = World.GetTopWorld();
+
+                        menu = new Menu(templateName: templateName, name: "OTHER OPTIONS", blocksUpdatesBelow: false, canBeClosedManually: true, closingTask: Scheduler.TaskName.SavePrefs);
+
 
                         new Selector(menu: menu, name: "show hints", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: new Preferences(), propertyName: "showHints");
 
@@ -69,27 +102,18 @@ namespace SonOfRobin
                         {
                             new Selector(menu: menu, name: "fullscreen mode", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: new Preferences(), propertyName: "FullScreenMode", rebuildsMenu: true);
                             if (Preferences.FullScreenMode) new Selector(menu: menu, name: "resolution", valueList: Preferences.AvailableScreenModes, targetObj: new Preferences(), propertyName: "FullScreenResolution");
-
-                            new Selector(menu: menu, name: "on screen controls", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: new Preferences(), propertyName: "EnableTouch", rebuildsMenu: true);
-                        }
-
-                        new Selector(menu: menu, name: "show gamepad tips", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: new Preferences(), propertyName: "showControlTips", rebuildsMenu: true);
-                        if (Preferences.showControlTips)
-                        {
-                            new Selector(menu: menu, name: "gamepad type", valueDict: new Dictionary<object, object> { { ButtonScheme.Type.M, "M" }, { ButtonScheme.Type.S, "S" }, { ButtonScheme.Type.N, "N" } }, targetObj: new Preferences(), propertyName: "ControlTipsScheme");
-                            new Selector(menu: menu, name: "show gamepad tips on field", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: new Preferences(), propertyName: "showFieldControlTips", rebuildsMenu: true);
-                            if (Preferences.showFieldControlTips) new Selector(menu: menu, name: "field tips scale", valueDict: Preferences.namesForFieldControlTipsScale, targetObj: new Preferences(), propertyName: "fieldControlTipsScale");
                         }
 
                         if (world == null || world.demoMode) new Selector(menu: menu, name: "load whole map", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: new Preferences(), propertyName: "loadWholeMap", rebuildsMenu: true);
                         if (SonOfRobinGame.platform == Platform.Mobile && !Preferences.loadWholeMap) new Selector(menu: menu, name: "max buffered map blocks", valueList: new List<Object> { 100, 500, 1000, 2000, 4000 }, targetObj: new Preferences(), propertyName: "mobileMaxLoadedTextures");
-                        new Selector(menu: menu, name: "world scale", valueList: new List<Object> { 0.125f, 0.25f, 0.5f, 0.75f, 1f, 1.25f, 1.5f, 2f, 2.5f, 3f, 3.5f }, targetObj: new Preferences(), propertyName: "worldScale");
-                        new Selector(menu: menu, name: "global scale", valueList: new List<Object> { 1f, 1.5f, 2f, 2.5f, 3f, 3.5f, 4f }, targetObj: new Preferences(), propertyName: "GlobalScale", rebuildsMenu: true, rebuildsMenuInstantScroll: true);
-                        new Selector(menu: menu, name: "menu scale", valueList: new List<Object> { 0.5f, 1f, 1.25f, 1.5f, 2f, 2.5f, 3f, 3.5f, 4f, 4.5f, 5f }, targetObj: new Preferences(), propertyName: "menuScale", rebuildsMenu: true, rebuildsMenuInstantScroll: true);
+
                         new Selector(menu: menu, name: "show demo world", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: new Preferences(), propertyName: "showDemoWorld");
                         new Selector(menu: menu, name: "autosave delay (minutes)", valueList: new List<Object> { 5, 10, 15, 30, 60 }, targetObj: new Preferences(), propertyName: "autoSaveDelayMins");
                         new Invoker(menu: menu, name: "delete old island templates", taskName: Scheduler.TaskName.DeleteTemplates);
+
                         new Separator(menu: menu, name: "", isEmpty: true);
+                        new Invoker(menu: menu, name: "return", closesMenu: true, taskName: Scheduler.TaskName.SavePrefs);
+
                         return menu;
                     }
 
@@ -115,6 +139,69 @@ namespace SonOfRobin
 
                         new Separator(menu: menu, name: "", isEmpty: true);
                         new Invoker(menu: menu, name: "return", closesMenu: true, taskName: Scheduler.TaskName.SavePrefs);
+
+                        return menu;
+                    }
+
+                case Name.Controls:
+                    {
+                        menu = new Menu(templateName: templateName, name: "CONTROLS", blocksUpdatesBelow: false, canBeClosedManually: true, closingTask: Scheduler.TaskName.SavePrefs);
+
+                        new Invoker(menu: menu, name: "configure gamepad", taskName: Scheduler.TaskName.OpenMenuTemplate, executeHelper: new Dictionary<string, Object> { { "templateName", Name.Gamepad } }, infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: "set all gamepad controls", color: Color.White, scale: 1f) });
+                        new Invoker(menu: menu, name: "configure keyboard", taskName: Scheduler.TaskName.OpenMenuTemplate, executeHelper: new Dictionary<string, Object> { { "templateName", Name.Keyboard } }, infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: "set all keyboard controls", color: Color.White, scale: 1f) });
+
+                        new Separator(menu: menu, name: "", isEmpty: true);
+
+                        if (SonOfRobinGame.platform != Platform.Mobile) new Selector(menu: menu, name: "on screen controls", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: new Preferences(), propertyName: "EnableTouch", rebuildsMenu: true);
+
+                        new Selector(menu: menu, name: "gamepad type", valueDict: new Dictionary<object, object> { { ButtonScheme.Type.M, "M" }, { ButtonScheme.Type.S, "S" }, { ButtonScheme.Type.N, "N" } }, targetObj: new Preferences(), propertyName: "ControlTipsScheme");
+
+                        new Selector(menu: menu, name: "show control tips", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: new Preferences(), propertyName: "ShowControlTips", rebuildsMenu: true);
+                        if (Preferences.ShowControlTips)
+                        {
+                            new Selector(menu: menu, name: "show control tips on field", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: new Preferences(), propertyName: "showFieldControlTips", rebuildsMenu: true);
+                            if (Preferences.showFieldControlTips) new Selector(menu: menu, name: "field tips scale", valueDict: Preferences.namesForFieldControlTipsScale, targetObj: new Preferences(), propertyName: "fieldControlTipsScale");
+                        }
+
+                        new Separator(menu: menu, name: "", isEmpty: true);
+                        new Invoker(menu: menu, name: "return", closesMenu: true, taskName: Scheduler.TaskName.SavePrefs);
+
+                        return menu;
+                    }
+
+
+                case Name.Gamepad:
+                    {
+                        menu = new Menu(templateName: templateName, name: "CONFIGURE GAMEPAD", blocksUpdatesBelow: false, canBeClosedManually: true, closingTask: Scheduler.TaskName.SavePrefs);
+
+                        var allButtonsList = new List<Buttons> { Buttons.A, Buttons.B, Buttons.X, Buttons.Y, Buttons.LeftShoulder, Buttons.RightShoulder, Buttons.LeftTrigger, Buttons.RightTrigger, Buttons.Start, Buttons.Back, Buttons.LeftStick, Buttons.RightStick, Buttons.DPadLeft, Buttons.DPadRight, Buttons.DPadUp, Buttons.DPadDown };
+                        var allButtonsDict = new Dictionary<object, object>();
+
+                        foreach (Buttons button in allButtonsList)
+                        { allButtonsDict[button] = InputVis.GetTexture(button); }
+
+                        var analogSticksList = new List<InputMapper.AnalogType> { InputMapper.AnalogType.PadLeft, InputMapper.AnalogType.PadRight };
+                        var analogSticksDict = new Dictionary<object, object>();
+                        foreach (InputMapper.AnalogType analog in analogSticksList)
+                        { analogSticksDict[analog] = InputVis.GetTexture(analog); }
+
+                        CreateControlsMappingEntries(menu: menu, gamepad: true, analogSticksDict: analogSticksDict, keysOrButtonsDict: allButtonsDict);
+
+                        return menu;
+                    }
+
+                case Name.Keyboard:
+                    {
+                        menu = new Menu(templateName: templateName, name: "CONFIGURE KEYBOARD", blocksUpdatesBelow: false, canBeClosedManually: true, closingTask: Scheduler.TaskName.SavePrefs);
+
+                        Dictionary<object, object> allKeysDict = KeyboardScheme.KeyTextures.ToDictionary(k => (object)k.Key, k => (object)k.Value);
+
+                        var analogSticksList = new List<InputMapper.AnalogType> { InputMapper.AnalogType.Arrows, InputMapper.AnalogType.WASD, InputMapper.AnalogType.Numpad };
+                        var analogSticksDict = new Dictionary<object, object>();
+                        foreach (InputMapper.AnalogType analog in analogSticksList)
+                        { analogSticksDict[analog] = InputVis.GetTexture(analog); }
+
+                        CreateControlsMappingEntries(menu: menu, gamepad: false, analogSticksDict: analogSticksDict, keysOrButtonsDict: allKeysDict);
 
                         return menu;
                     }
@@ -304,6 +391,8 @@ namespace SonOfRobin
 
                         world = World.GetTopWorld();
 
+                        new Selector(menu: menu, name: "debug mode", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: new Preferences(), propertyName: "DebugMode", rebuildsMenu: true);
+
                         if (world != null && !world.demoMode) new Invoker(menu: menu, name: "create any piece", taskName: Scheduler.TaskName.OpenMenuTemplate, executeHelper: new Dictionary<string, Object> { { "templateName", Name.CreateAnyPiece } });
                         new Selector(menu: menu, name: "create missing pieces", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: new Preferences(), propertyName: "debugCreateMissingPieces");
                         new Selector(menu: menu, name: "god mode", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: new Preferences(), propertyName: "DebugGodMode", rebuildsMenu: true);
@@ -384,6 +473,50 @@ namespace SonOfRobin
             menu.EntriesOutlineColor = Color.SaddleBrown;
 
             return menu;
+        }
+
+        private static void CreateControlsMappingEntries(Menu menu, bool gamepad, Dictionary<object, object> analogSticksDict, Dictionary<object, object> keysOrButtonsDict)
+        {
+            MappingPackage newMapping = gamepad ? InputMapper.newMappingGamepad : InputMapper.newMappingKeyboard;
+
+            new Separator(menu: menu, name: "", isEmpty: true);
+            new Separator(menu: menu, name: "general");
+            foreach (string propertyName in new List<string> { "leftStick", "rightStick", })
+            {
+                if (!gamepad && propertyName == "rightStick") continue;
+                new Selector(menu: menu, name: newMapping.GetReadablePropertyName(propertyName), valueDict: analogSticksDict, targetObj: newMapping, propertyName: propertyName);
+            }
+
+            foreach (string propertyName in new List<string> { "confirm", "cancel" })
+            { new Selector(menu: menu, name: newMapping.GetReadablePropertyName(propertyName), valueDict: keysOrButtonsDict, targetObj: newMapping, propertyName: propertyName); }
+
+            new Separator(menu: menu, name: "", isEmpty: true);
+            new Separator(menu: menu, name: "field");
+            foreach (string propertyName in new List<string> { "interact", "useTool", "pickUp", "run", "zoomOut" })
+            { new Selector(menu: menu, name: newMapping.GetReadablePropertyName(propertyName), valueDict: keysOrButtonsDict, targetObj: newMapping, propertyName: propertyName); }
+
+            new Separator(menu: menu, name: "", isEmpty: true);
+            new Separator(menu: menu, name: "menus");
+            foreach (string propertyName in new List<string> { "pauseMenu", "craft", "equip", "inventory" })
+            { new Selector(menu: menu, name: newMapping.GetReadablePropertyName(propertyName), valueDict: keysOrButtonsDict, targetObj: newMapping, propertyName: propertyName); }
+
+            new Separator(menu: menu, name: "", isEmpty: true);
+            new Separator(menu: menu, name: "inventory");
+            foreach (string propertyName in new List<string> { "pickOne", "pickStack", })
+            { new Selector(menu: menu, name: newMapping.GetReadablePropertyName(propertyName), valueDict: keysOrButtonsDict, targetObj: newMapping, propertyName: propertyName); }
+
+            new Separator(menu: menu, name: "", isEmpty: true);
+            new Separator(menu: menu, name: "toolbar");
+            foreach (string propertyName in new List<string> { "toolbarPrev", "toolbarNext", })
+            { new Selector(menu: menu, name: newMapping.GetReadablePropertyName(propertyName), valueDict: keysOrButtonsDict, targetObj: newMapping, propertyName: propertyName); }
+
+            new Separator(menu: menu, name: "", isEmpty: true);
+
+            new Invoker(menu: menu, name: "save", taskName: Scheduler.TaskName.SaveControls, executeHelper: gamepad, rebuildsMenu: true);
+            new Invoker(menu: menu, name: "reset", taskName: Scheduler.TaskName.ResetControls, executeHelper: gamepad, rebuildsMenu: true, infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: "set all controls to default", color: Color.White, scale: 1f) });
+
+            new Separator(menu: menu, name: "", isEmpty: true);
+            new Invoker(menu: menu, name: "return without saving", closesMenu: true, taskName: Scheduler.TaskName.SavePrefs);
         }
 
     }

@@ -522,7 +522,7 @@ namespace SonOfRobin
                 {
                     playerTarget.WakeUp(force: true);
                     HintEngine.ShowPieceDuringPause(world: world, pieceToShow: this,
-                        messageList: new List<HintMessage> { new HintMessage(text: $"{Helpers.FirstCharToUpperCase(this.readableName)} is attacking me!", boxType: HintMessage.BoxType.Dialogue) });
+                        messageList: new List<HintMessage> { new HintMessage(text: $"{Helpers.FirstCharToUpperCase(this.readableName)} is attacking me!", boxType: HintMessage.BoxType.Dialogue, blockInput: true) });
                 }
 
                 targetSpeed = playerTarget.speed;

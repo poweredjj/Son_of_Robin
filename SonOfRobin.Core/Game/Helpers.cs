@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 
@@ -213,6 +215,11 @@ namespace SonOfRobin
 
             var d = (triangleC.X - triangleB.X) * (point.Y - triangleB.Y) - (triangleC.Y - triangleB.Y) * (point.X - triangleB.X);
             return d == 0 || (d < 0) == (s + t <= 0);
+        }
+
+        public static List<object> GetDuplicates(List<object> objectList)
+        {
+            return objectList.GroupBy(x => x).Where(g => g.Count() > 1).Select(y => y.Key).ToList();
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,6 +18,15 @@ namespace SonOfRobin
         public float shootingAngle;
         private int shootingPower;
         public SleepEngine sleepEngine;
+
+        private bool ShootingModeInputPressed
+        {
+            get
+            {
+                if (TouchInput.IsBeingTouchedInAnyWay) return Math.Abs(this.world.analogCameraCorrection.X) > 0.05f || Math.Abs(this.world.analogCameraCorrection.Y) > 0.05f;
+                else return InputMapper.IsPressed(InputMapper.Action.WorldUseToolbarPiece);
+            }
+        }
 
         public byte InvWidth
         {
@@ -150,7 +158,7 @@ namespace SonOfRobin
                 if (this.FatiguePercent > 0.95f) this.world.hintEngine.ShowGeneralHint(HintEngine.Type.VeryTired);
                 if (this.FatiguePercent < 0.8f) this.world.hintEngine.Enable(HintEngine.Type.VeryTired);
 
-                if (this.fatigue == this.maxFatigue) new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.SleepOutside, delay: 0, executeHelper: null);
+                if (this.fatigue == this.maxFatigue) new Scheduler.Task(taskName: Scheduler.TaskName.SleepOutside, delay: 0, executeHelper: null);
             }
         }
         public float Stamina
@@ -346,15 +354,8 @@ namespace SonOfRobin
                     Tutorials.ShowTutorial(type: Tutorials.Type.Interact, ignoreIfShown: true, ignoreDelay: false);
                     VirtButton.ButtonHighlightOnNextFrame(VButName.Interact);
                     ControlTips.TipHighlightOnNextFrame(tipName: "interact");
-                    FieldTip.AddUpdateTip(world: this.world, texture: ButtonScheme.buttonA, targetSprite: pieceToInteract.sprite, alignment: FieldTip.Alignment.LeftIn);
+                    FieldTip.AddUpdateTip(world: this.world, texture: InputMapper.GetTexture(InputMapper.Action.WorldInteract), targetSprite: pieceToInteract.sprite, alignment: FieldTip.Alignment.LeftIn);
                 }
-            }
-
-            var activeToolbarPiece = this.ActiveToolbarPiece;
-            if (activeToolbarPiece != null && activeToolbarPiece.GetType() == typeof(Tool))
-            {
-                var toolPiece = (Tool)activeToolbarPiece;
-                if (toolPiece.shootsProjectile) ControlTips.TipHighlightOnNextFrame(tipName: "aim");
             }
 
             BoardPiece pieceToPickUp = this.ClosestPieceToPickUp;
@@ -367,55 +368,55 @@ namespace SonOfRobin
                     pieceToPickUp.sprite.effectCol.AddEffect(new BorderInstance(outlineColor: Color.White, textureSize: pieceToPickUp.sprite.frame.textureSize, priority: 0));
                     VirtButton.ButtonHighlightOnNextFrame(VButName.PickUp);
                     ControlTips.TipHighlightOnNextFrame(tipName: "pick up");
-                    FieldTip.AddUpdateTip(world: this.world, texture: ButtonScheme.buttonX, targetSprite: pieceToPickUp.sprite, alignment: this.sprite.position.Y > pieceToPickUp.sprite.position.Y ? FieldTip.Alignment.TopOut : FieldTip.Alignment.BottomOut);
+                    FieldTip.AddUpdateTip(world: this.world, texture: InputMapper.GetTexture(InputMapper.Action.WorldPickUp), targetSprite: pieceToPickUp.sprite, alignment: this.sprite.position.Y > pieceToPickUp.sprite.position.Y ? FieldTip.Alignment.TopOut : FieldTip.Alignment.BottomOut);
                 }
             }
 
             // checking pressed buttons
 
-            if (this.world.actionKeyList.Contains(World.ActionKeys.ShootingMode))
+            if (this.ShootingModeInputPressed)
             {
                 if (this.TryToEnterShootingMode()) return;
             }
 
-            if (this.world.actionKeyList.Contains(World.ActionKeys.UseToolbarPiecePress))
+            if (InputMapper.HasBeenPressed(InputMapper.Action.WorldUseToolbarPiece))
             {
                 if (this.UseToolbarPiece(isInShootingMode: false, buttonHeld: false, highlightOnly: false)) return;
             }
 
-            if (this.world.actionKeyList.Contains(World.ActionKeys.UseToolbarPieceHold))
+            if (InputMapper.IsPressed(InputMapper.Action.WorldUseToolbarPiece))
             {
                 if (this.UseToolbarPiece(isInShootingMode: false, buttonHeld: true, highlightOnly: false)) return;
             }
 
-            if (this.world.actionKeyList.Contains(World.ActionKeys.PickUp))
+            if (InputMapper.HasBeenPressed(InputMapper.Action.WorldPickUp))
             {
                 this.PickUpClosestPiece(closestPiece: pieceToPickUp);
                 return;
             }
 
-            if (this.world.actionKeyList.Contains(World.ActionKeys.Interact))
+            if (InputMapper.HasBeenPressed(InputMapper.Action.WorldInteract))
             {
                 if (pieceToInteract != null)
                 {
                     this.world.hintEngine.Disable(Tutorials.Type.Interact);
-                    new Scheduler.Task(menu: null, taskName: pieceToInteract.boardTask, delay: 0, executeHelper: pieceToInteract);
+                    new Scheduler.Task(taskName: pieceToInteract.boardTask, delay: 0, executeHelper: pieceToInteract);
                 }
             }
         }
 
         private bool Walk(bool setOrientation = true)
         {
-            if (!this.world.ActionKeysContainDirection && this.world.analogMovementLeftStick == Vector2.Zero)
+            if (this.world.analogMovementLeftStick == Vector2.Zero)
             {
                 this.sprite.CharacterStand();
                 return false;
             }
 
-            Vector2 movement = this.world.CalculateMovementFromInput();
+            Vector2 movement = this.world.analogMovementLeftStick;
 
             var currentSpeed = this.IsVeryTired ? this.speed / 2f : this.speed;
-            if (this.world.actionKeyList.Contains(World.ActionKeys.Run))
+            if (InputMapper.IsPressed(InputMapper.Action.WorldRun))
             {
                 if (this.Stamina > 0)
                 {
@@ -435,7 +436,7 @@ namespace SonOfRobin
                 int staminaUsed = 0;
 
                 if (this.sprite.IsInWater) staminaUsed = 1;
-                if (this.world.actionKeyList.Contains(World.ActionKeys.Run)) staminaUsed += 2;
+                if (InputMapper.IsPressed(InputMapper.Action.WorldRun)) staminaUsed += 2;
 
                 if (staminaUsed > 0) this.Stamina = Math.Max(this.Stamina - staminaUsed, 0);
             }
@@ -478,14 +479,14 @@ namespace SonOfRobin
             // shooting angle should be set once at the start
             if (this.shootingAngle == -100) this.shootingAngle = this.sprite.GetAngleFromOrientation();
 
-            Vector2 moving = this.world.CalculateMovementFromInput();
+            Vector2 moving = this.world.analogMovementLeftStick;
             Vector2 shooting = this.world.analogMovementRightStick;
 
             Vector2 directionVector = Vector2.Zero;
             if (moving != Vector2.Zero) directionVector = moving;
             if (shooting != Vector2.Zero) directionVector = shooting;
 
-            this.visualAid.sprite.opacity = shooting == Vector2.Zero && !Keyboard.IsPressed(Keys.Space) ? 0f : 1f;
+            this.visualAid.sprite.opacity = !this.ShootingModeInputPressed ? 0f : 1f;
 
             if (directionVector != Vector2.Zero)
             {
@@ -500,19 +501,15 @@ namespace SonOfRobin
             Vector2 aidPos = this.sprite.position + new Vector2(aidOffsetX, aidOffsetY);
             this.visualAid.sprite.SetNewPosition(aidPos);
 
-            bool shootPressed = this.world.actionKeyList.Contains(World.ActionKeys.UseToolbarPiecePress) ||
-                VirtButton.HasButtonBeenPressed(VButName.Shoot) ||
-                Keyboard.HasBeenReleased(Keys.Space);
 
-            if (shootPressed)
+            if (TouchInput.IsBeingTouchedInAnyWay && VirtButton.HasButtonBeenPressed(VButName.Shoot) ||
+                InputMapper.HasBeenReleased(InputMapper.Action.WorldUseToolbarPiece)) // virtual button has to be checked separately here
             {
                 this.UseToolbarPiece(isInShootingMode: true, buttonHeld: false);
                 this.shootingPower = 0;
             }
 
-            bool cancelPressed = !this.world.actionKeyList.Contains(World.ActionKeys.UseToolbarPieceHold) && !this.world.actionKeyList.Contains(World.ActionKeys.ShootingMode) && !Keyboard.IsPressed(Keys.Space);
-
-            if (cancelPressed || !this.ActiveToolbarWeaponHasAmmo || this.sprite.CanDrownHere)
+            if (!this.ShootingModeInputPressed || !this.ActiveToolbarWeaponHasAmmo || this.sprite.CanDrownHere)
             {
                 this.visualAid.Destroy();
                 this.visualAid = null;
@@ -526,18 +523,7 @@ namespace SonOfRobin
 
         public override void SM_PlayerControlledSleep()
         {
-            var sleepInterruptActions = new List<World.ActionKeys> { World.ActionKeys.Interact, World.ActionKeys.Run, World.ActionKeys.PickUp, World.ActionKeys.PickUp, World.ActionKeys.MapToggle };
-
-            bool wakeUp = false;
-
-            foreach (World.ActionKeys interruptAction in sleepInterruptActions)
-            {
-                if (this.world.actionKeyList.Contains(interruptAction)) wakeUp = true;
-            }
-
-            if (this.Fatigue == 0) wakeUp = true;
-
-            if (wakeUp)
+            if (InputMapper.HasBeenPressed(InputMapper.Action.GlobalCancelReturnSkip) || this.Fatigue == 0)
             {
                 this.WakeUp();
                 return;
@@ -579,7 +565,7 @@ namespace SonOfRobin
             this.world.colorOverlay.viewParams.Opacity = 0.75f;
             this.world.colorOverlay.transManager.AddTransition(new Transition(transManager: this.world.colorOverlay.transManager, outTrans: false, baseParamName: "Opacity", targetVal: 0f, duration: 20));
 
-            new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.TempoFastForward, delay: 22, executeHelper: 20, turnOffInputUntilExecution: true);
+            new Scheduler.Task(taskName: Scheduler.TaskName.TempoFastForward, delay: 22, executeHelper: 20, turnOffInputUntilExecution: true);
 
             MessageLog.AddMessage(msgType: MsgType.User, message: "Going to sleep.");
         }
@@ -735,7 +721,7 @@ namespace SonOfRobin
                     {"highlightOnly", highlightOnly },
                 };
 
-            new Scheduler.Task(menu: null, taskName: activeToolbarPiece.toolbarTask, delay: 0, executeHelper: executeHelper);
+            new Scheduler.Task(taskName: activeToolbarPiece.toolbarTask, delay: 0, executeHelper: executeHelper);
             return true;
         }
 

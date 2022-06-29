@@ -162,7 +162,7 @@ namespace SonOfRobin
                     ControlTips.TipHighlightOnNextFrame(tipName: "use item");
                     if (!fieldTipShown)
                     {
-                        FieldTip.AddUpdateTip(world: this.world, texture: ButtonScheme.buttonRT, targetSprite: currentTarget.sprite, alignment: FieldTip.Alignment.RightIn);
+                        FieldTip.AddUpdateTip(world: this.world, texture: InputMapper.GetTexture(InputMapper.Action.WorldUseToolbarPiece), targetSprite: currentTarget.sprite, alignment: FieldTip.Alignment.RightIn);
                         fieldTipShown = true;
                     }
                 }
@@ -183,7 +183,7 @@ namespace SonOfRobin
                     this.hitPoints -= 1;
                     this.hitPoints = Math.Max(0, this.hitPoints);
 
-                    if (this.HitPointsPercent < 0.4f && this.hitPoints > 0) this.world.hintEngine.ShowGeneralHint(type: HintEngine.Type.BreakingItem, ignoreDelay: true, text: this.readableName);
+                    if (this.HitPointsPercent < 0.4f && this.hitPoints > 0) this.world.hintEngine.ShowGeneralHint(type: HintEngine.Type.BreakingItem, ignoreDelay: true, text: this.readableName, texture: this.sprite.frame.texture);
                     if (this.hitPoints == 0) this.world.hintEngine.ShowGeneralHint(type: HintEngine.Type.BrokenItem, ignoreDelay: true, text: this.readableName, texture: this.sprite.frame.texture);
                 }
             }

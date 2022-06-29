@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,25 +8,6 @@ namespace SonOfRobin
 {
     public class World : Scene
     {
-        public enum ActionKeys
-        {
-            Left,
-            Right,
-            Up,
-            Down,
-            UseToolbarPiecePress,
-            UseToolbarPieceHold,
-            Interact,
-            PickUp,
-            Inventory,
-            Equip,
-            FieldCraft,
-            Run,
-            MapToggle,
-            PauseMenu,
-            ShootingMode,
-        }
-
         public enum MapMode
         {
             None,
@@ -35,26 +15,11 @@ namespace SonOfRobin
             Big
         }
 
-        public static readonly List<ActionKeys> DirectionKeys = new List<ActionKeys> { ActionKeys.Left, ActionKeys.Right, ActionKeys.Up, ActionKeys.Down };
-        public static readonly List<ActionKeys> InteractKeys = new List<ActionKeys> { ActionKeys.Interact, ActionKeys.PickUp, ActionKeys.Inventory, ActionKeys.FieldCraft, ActionKeys.Run, ActionKeys.MapToggle, ActionKeys.PauseMenu };
-
-        public bool ActionKeysContainDirection
-        {
-            get
-            {
-                foreach (ActionKeys actionKey in this.actionKeyList)
-                { if (DirectionKeys.Contains(actionKey)) return true; }
-
-                return false;
-            }
-        }
-
-        public List<ActionKeys> actionKeyList = new List<ActionKeys> { };
         public Vector2 analogMovementLeftStick;
         public Vector2 analogMovementRightStick;
         public Vector2 analogCameraCorrection;
-        public float rightTriggerPreviousFrame;
 
+        private float manualScale;
         public bool worldCreationInProgress;
         private bool plantsProcessing;
         private readonly static int initialPiecesCreationFramesTotal = 15;
@@ -154,8 +119,8 @@ namespace SonOfRobin
                     this.touchLayout = TouchLayout.Empty; // CineSkip should not be used here, because World class cannot execute the skip properly
                     this.tipsLayout = ControlTips.TipsLayout.Empty;
 
-                    taskChain.Add(new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.ChangeSceneInputType, delay: 0, executeHelper: new Dictionary<string, Object> { { "scene", this }, { "inputType", InputTypes.None } }, storeForLaterUse: true));
-                    taskChain.Add(new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.TempoStop, delay: 0, executeHelper: null, storeForLaterUse: true));
+                    taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ChangeSceneInputType, delay: 0, executeHelper: new Dictionary<string, Object> { { "scene", this }, { "inputType", InputTypes.None } }, storeForLaterUse: true));
+                    taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.TempoStop, delay: 0, executeHelper: null, storeForLaterUse: true));
                 }
                 else
                 {
@@ -166,14 +131,14 @@ namespace SonOfRobin
                             { "scene", this.colorOverlay },
                             { "transition", new Transition(transManager: this.colorOverlay.transManager, outTrans: true, baseParamName: "Opacity", targetVal: 0f, duration: 10, endCopyToBase: true, storeForLaterUse: true) } }, menu: null, storeForLaterUse: true));
 
-                    taskChain.Add(new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.TempoPlay, delay: 0, executeHelper: null, storeForLaterUse: true));
+                    taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.TempoPlay, delay: 0, executeHelper: null, storeForLaterUse: true));
                     taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetZoom, delay: 0, executeHelper: new Dictionary<string, Object> { { "zoom", 1f }, { "zoomSpeedMultiplier", 1f } }, menu: null, storeForLaterUse: true));
-                    taskChain.Add(new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.CameraTrackPiece, delay: 0, executeHelper: this.player, storeForLaterUse: true));
+                    taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraTrackPiece, delay: 0, executeHelper: this.player, storeForLaterUse: true));
 
-                    taskChain.Add(new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.ChangeSceneInputType, delay: 0, executeHelper: new Dictionary<string, Object> { { "scene", this }, { "inputType", Scene.InputTypes.Normal } }, storeForLaterUse: true));
+                    taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ChangeSceneInputType, delay: 0, executeHelper: new Dictionary<string, Object> { { "scene", this }, { "inputType", Scene.InputTypes.Normal } }, storeForLaterUse: true));
                 }
 
-                new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.ExecuteTaskChain, turnOffInputUntilExecution: true, executeHelper: taskChain);
+                new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteTaskChain, turnOffInputUntilExecution: true, executeHelper: taskChain);
             }
         }
 
@@ -332,7 +297,6 @@ namespace SonOfRobin
             this.mapSmall = new Map(world: this, fullScreen: false, touchLayout: TouchLayout.Empty);
             if (saveGameData == null) this.grid = new Grid(world: this, resDivider: resDivider);
             else { this.Deserialize(gridOnly: true); }
-            this.rightTriggerPreviousFrame = 0f;
 
             this.AddLinkedScene(this.mapBig);
             this.AddLinkedScene(this.mapSmall);
@@ -348,9 +312,7 @@ namespace SonOfRobin
         {
             if (this.grid.creationInProgress)
             {
-                if (Keyboard.IsPressed(Keys.Escape) ||
-                    GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.B) ||
-                    VirtButton.IsButtonDown(VButName.Return))
+                if (InputMapper.IsPressed(InputMapper.Action.GlobalCancelReturnSkip))
                 {
                     SonOfRobinGame.game.IsFixedTimeStep = Preferences.FrameSkip;
 
@@ -543,7 +505,7 @@ namespace SonOfRobin
             MessageLog.AddMessage(msgType: MsgType.User, message: $"{timeElapsedTxt} elapsed - autosaving...", color: Color.LightBlue);
 
             var saveParams = new Dictionary<string, Object> { { "world", this }, { "saveSlotName", "0" }, { "showMessage", false } };
-            new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.SaveGame, executeHelper: saveParams);
+            new Scheduler.Task(taskName: Scheduler.TaskName.SaveGame, executeHelper: saveParams);
         }
 
         private BoardPiece PlacePlayer()
@@ -696,8 +658,9 @@ namespace SonOfRobin
                 return;
             }
 
-            float manualScale = this.ProcessInput();
-            this.UpdateViewParams(manualScale: manualScale);
+            this.manualScale = 1f;
+            this.ProcessInput();
+            this.UpdateViewParams(manualScale: this.manualScale);
 
             this.grid.UnloadTexturesIfMemoryLow();
             this.grid.LoadClosestTextureInCameraView();
@@ -732,220 +695,61 @@ namespace SonOfRobin
             }
         }
 
-        private float ProcessInput()
-        {
-            actionKeyList.Clear();
-
-            // pause menu
-
-            if (GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.Start) || Keyboard.HasBeenPressed(Keys.Escape) || VirtButton.HasButtonBeenPressed(VButName.PauseMenu)) actionKeyList.Add(ActionKeys.PauseMenu);
-
-            // directional movement
-
-            if (Keyboard.IsPressed(Keys.W) || Keyboard.IsPressed(Keys.Up)) actionKeyList.Add(ActionKeys.Up);
-            if (Keyboard.IsPressed(Keys.S) || Keyboard.IsPressed(Keys.Down)) actionKeyList.Add(ActionKeys.Down);
-            if (Keyboard.IsPressed(Keys.A) || Keyboard.IsPressed(Keys.Left)) actionKeyList.Add(ActionKeys.Left);
-            if (Keyboard.IsPressed(Keys.D) || Keyboard.IsPressed(Keys.Right)) actionKeyList.Add(ActionKeys.Right);
-
-            // analog movement (left stick)
-
-            if (TouchInput.LeftStick.X != 0 || TouchInput.LeftStick.Y != 0)
-            { this.analogMovementLeftStick = TouchInput.LeftStick / 15; }
-            else
-            {
-                this.analogMovementLeftStick = GamePad.GetState(index: (int)PlayerIndex.One, deadZoneMode: GamePadDeadZone.Circular).ThumbSticks.Left;
-                this.analogMovementLeftStick = new Vector2(analogMovementLeftStick.X * 4, analogMovementLeftStick.Y * -4);
-            }
-
-            // analog movement (right stick)
-
-            if (TouchInput.RightStick.X != 0 || TouchInput.RightStick.Y != 0)
-            { this.analogMovementRightStick = TouchInput.RightStick / 15; }
-            else
-            {
-                this.analogMovementRightStick = GamePad.GetState(index: (int)PlayerIndex.One, deadZoneMode: GamePadDeadZone.Circular).ThumbSticks.Right;
-                this.analogMovementRightStick = new Vector2(analogMovementRightStick.X * 4, analogMovementRightStick.Y * -4);
-            }
-
-            // analog camera control
-
-            if (!this.demoMode && this.player.activeState != BoardPiece.State.PlayerControlledSleep)
-            {
-                if (TouchInput.RightStick.X != 0 || TouchInput.RightStick.Y != 0)
-                { this.analogCameraCorrection = new Vector2(TouchInput.RightStick.X / 30, TouchInput.RightStick.Y / 60); }
-                else
-                {
-                    this.analogCameraCorrection = GamePad.GetState(index: (int)PlayerIndex.One, deadZoneMode: GamePadDeadZone.Circular).ThumbSticks.Right;
-                    this.analogCameraCorrection = new Vector2(analogCameraCorrection.X * 10, analogCameraCorrection.Y * -10);
-                }
-            }
-
-            // interact
-
-            if (Keyboard.HasBeenPressed(Keys.RightShift) ||
-            GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.A) ||
-            VirtButton.HasButtonBeenPressed(VButName.Interact)
-           ) actionKeyList.Add(ActionKeys.Interact);
-
-            // use tool
-
-            float rightTrigger = GamePad.GetState(index: (int)PlayerIndex.One, deadZoneMode: GamePadDeadZone.IndependentAxes).Triggers.Right;
-            if (rightTrigger > 0.5f) actionKeyList.Add(ActionKeys.UseToolbarPieceHold);
-            if (rightTriggerPreviousFrame <= 0.5f && rightTrigger > 0.5f) actionKeyList.Add(ActionKeys.UseToolbarPiecePress);
-
-            if (Keyboard.HasBeenPressed(Keys.Space) ||
-                VirtButton.HasButtonBeenPressed(VButName.UseTool)
-               ) actionKeyList.Add(ActionKeys.UseToolbarPiecePress);
-
-
-            if (Keyboard.IsPressed(Keys.Space) ||
-               VirtButton.IsButtonDown(VButName.UseTool)
-              ) actionKeyList.Add(ActionKeys.UseToolbarPieceHold);
-
-            // pick up
-
-            if (Keyboard.HasBeenPressed(Keys.RightControl) ||
-                GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.X) ||
-                VirtButton.HasButtonBeenPressed(VButName.PickUp)
-                ) actionKeyList.Add(ActionKeys.PickUp);
-
-            // inventory
-
-            if (Keyboard.HasBeenPressed(Keys.Enter) ||
-                GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.Y) ||
-                VirtButton.HasButtonBeenPressed(VButName.Inventory)
-                ) actionKeyList.Add(ActionKeys.Inventory);
-
-            // equip
-
-            if (Keyboard.HasBeenPressed(Keys.Back) ||
-                GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.DPadLeft) ||
-                VirtButton.HasButtonBeenPressed(VButName.Equip)
-                ) actionKeyList.Add(ActionKeys.Equip);
-
-            // basic craft 
-
-            if (Keyboard.HasBeenPressed(Keys.NumPad4) ||
-                GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.DPadUp) ||
-                VirtButton.HasButtonBeenPressed(VButName.FieldCraft)
-               ) actionKeyList.Add(ActionKeys.FieldCraft);
-
-            // run
-
-            if (Keyboard.IsPressed(Keys.NumPad0) ||
-                GamePad.IsPressed(playerIndex: PlayerIndex.One, button: Buttons.B) ||
-                VirtButton.IsButtonDown(VButName.Run)
-                ) actionKeyList.Add(ActionKeys.Run);
-
-            // map
-
-            if (Keyboard.HasBeenPressed(Keys.M) ||
-                GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.DPadRight) ||
-                VirtButton.HasButtonBeenPressed(VButName.Map)
-                ) actionKeyList.Add(ActionKeys.MapToggle);
-
-            rightTriggerPreviousFrame = rightTrigger;
-            ProcessActionKeyList();
-
-            // camera zoom control
-
-            float leftTrigger = GamePad.GetState(index: (int)PlayerIndex.One, deadZoneMode: GamePadDeadZone.IndependentAxes).Triggers.Left;
-
-            float manualScale = 1 - (leftTrigger * 0.15f);
-            if (Preferences.zoomedOut || Keyboard.IsPressed(Keys.NumPad1)) manualScale = 2f;
-
-            // shooting mode
-
-            bool triggerPressed = leftTrigger > 0.4f;
-            bool rightStickTilted = Math.Abs(analogCameraCorrection.X) > 0.05f || Math.Abs(analogCameraCorrection.Y) > 0.05f;
-
-            if (Preferences.EnableTouch)
-            {
-                if (rightStickTilted) actionKeyList.Add(ActionKeys.ShootingMode);
-            }
-            else
-            {
-                if ((triggerPressed && rightStickTilted) || Keyboard.IsPressed(Keys.Space)) actionKeyList.Add(ActionKeys.ShootingMode);
-            }
-
-            return manualScale;
-        }
-
-        public Vector2 CalculateMovementFromInput(bool horizontalPriority = true)
-        {
-            Vector2 movement = new Vector2(0f, 0f);
-
-            if (this.analogMovementLeftStick == Vector2.Zero)
-            {
-                // movement using keyboard and gamepad buttons
-
-                // X axis movement is bigger than Y, to ensure horizontal orientation priority
-                Dictionary<World.ActionKeys, Vector2> movementByDirection;
-
-                if (horizontalPriority)
-                {
-                    movementByDirection = new Dictionary<World.ActionKeys, Vector2>(){
-                        {World.ActionKeys.Up, new Vector2(0f, -500f)},
-                        {World.ActionKeys.Down, new Vector2(0f, 500f)},
-                        {World.ActionKeys.Left, new Vector2(-500f, 0f)},
-                        {World.ActionKeys.Right, new Vector2(500f, 0f)},
-                        };
-                }
-                else
-                {
-                    movementByDirection = new Dictionary<World.ActionKeys, Vector2>(){
-                        {World.ActionKeys.Up, new Vector2(0f, -500f)},
-                        {World.ActionKeys.Down, new Vector2(0f, 500f)},
-                        {World.ActionKeys.Left, new Vector2(-500f, 0f)},
-                        {World.ActionKeys.Right, new Vector2(500f, 0f)},
-                        };
-                }
-
-                foreach (var kvp in movementByDirection)
-                { if (this.actionKeyList.Contains(kvp.Key)) movement += kvp.Value; }
-            }
-            else
-            {
-                // analog movement
-                movement = this.analogMovementLeftStick;
-            }
-
-            //MessageLog.AddMessage(msgType: MsgType.Debug, message: $"movement {movement.X},{movement.Y}", color: Color.Orange); // for testing
-
-            return movement;
-        }
-
-        private void ProcessActionKeyList()
+        private void ProcessInput()
         {
             if (this.demoMode || this.CineMode) return;
 
-            if (this.actionKeyList.Contains(ActionKeys.PauseMenu)) MenuTemplate.CreateMenuFromTemplate(templateName: MenuTemplate.Name.Pause);
-            if (this.SpectatorMode) return;
+            if (InputMapper.HasBeenPressed(InputMapper.Action.WorldPauseMenu))
+            {
+                MenuTemplate.CreateMenuFromTemplate(templateName: MenuTemplate.Name.Pause);
+                return;
+            }
 
-            if (!this.player.alive || this.player.activeState != BoardPiece.State.PlayerControlledWalking) return;
+            // analog movement (left stick)
+            this.analogMovementLeftStick = InputMapper.Analog(InputMapper.Action.WorldWalk);
+            this.analogMovementLeftStick *= 4;
 
+            // analog movement (right stick)
+            this.analogMovementRightStick = InputMapper.Analog(InputMapper.Action.WorldCameraMove);
+            this.analogMovementRightStick *= 4;
 
-            if (this.actionKeyList.Contains(ActionKeys.FieldCraft))
+            // analog camera control
+            if (this.player.activeState != BoardPiece.State.PlayerControlledSleep)
+            {
+                this.analogCameraCorrection = InputMapper.Analog(InputMapper.Action.WorldCameraMove);
+                this.analogCameraCorrection *= 10;
+            }
+
+            // camera zoom control
+            float leftTrigger = InputMapper.TriggerForce(InputMapper.Action.WorldCameraZoomOut);
+            this.manualScale = 1f + leftTrigger;
+
+            if (this.SpectatorMode || this.player == null || !this.player.alive || this.player.activeState != BoardPiece.State.PlayerControlledWalking) return;
+
+            if (InputMapper.HasBeenPressed(InputMapper.Action.WorldFieldCraft))
             {
                 MenuTemplate.CreateMenuFromTemplate(templateName: MenuTemplate.Name.CraftBasic);
                 return;
             }
 
-            if (this.actionKeyList.Contains(ActionKeys.Inventory))
+            if (InputMapper.HasBeenPressed(InputMapper.Action.WorldInventory))
             {
-                Scene.SetInventoryLayout(Scene.InventoryLayout.InventoryAndToolbar, player: this.player);
+                SetInventoryLayout(InventoryLayout.InventoryAndToolbar, player: this.player);
                 return;
             }
 
-            if (this.actionKeyList.Contains(ActionKeys.Equip))
+            if (InputMapper.HasBeenPressed(InputMapper.Action.WorldEquip))
             {
-                Scene.SetInventoryLayout(Scene.InventoryLayout.InventoryAndEquip, player: this.player);
+                SetInventoryLayout(InventoryLayout.InventoryAndEquip, player: this.player);
                 return;
             }
 
-            if (this.actionKeyList.Contains(ActionKeys.MapToggle)) this.ToggleMapMode();
+            if (InputMapper.HasBeenPressed(InputMapper.Action.WorldMapToggle))
+            {
+                this.ToggleMapMode();
+                return;
+            }
         }
-
 
         public void ToggleMapMode()
         {

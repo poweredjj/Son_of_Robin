@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Input.Touch;
 using System;
 using System.Collections.Generic;
@@ -102,7 +101,6 @@ namespace SonOfRobin
             bool addOkButton = this.blockingFramesLeft == 0;
             bool addCancelButton = world != null && world.CineMode;
 
-
             if (addOkButton && addCancelButton)
             {
                 this.tipsLayout = ControlTips.TipsLayout.TextWindowOkCancel;
@@ -148,7 +146,7 @@ namespace SonOfRobin
             }
 
             base.Remove();
-            if (this.closingTask != Scheduler.TaskName.Empty) new Scheduler.Task(menu: null, taskName: this.closingTask, executeHelper: this.closingTaskHelper, delay: 0, turnOffInputUntilExecution: true);
+            if (this.closingTask != Scheduler.TaskName.Empty) new Scheduler.Task(taskName: this.closingTask, executeHelper: this.closingTaskHelper, delay: 0, turnOffInputUntilExecution: true);
         }
 
         public void AddClosingTask(Scheduler.TaskName closingTask, Object closingTaskHelper)
@@ -266,7 +264,7 @@ namespace SonOfRobin
                 if (this.tipsLayout == ControlTips.TipsLayout.TextWindowCancel || this.tipsLayout == ControlTips.TipsLayout.TextWindowOkCancel)
                 {
                     var confirmationData = new Dictionary<string, Object> { { "question", "Do you want to skip?" }, { "taskName", Scheduler.TaskName.SkipCinematics }, { "executeHelper", null } };
-                    new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.OpenConfirmationMenu, executeHelper: confirmationData);
+                    new Scheduler.Task(taskName: Scheduler.TaskName.OpenConfirmationMenu, executeHelper: confirmationData);
                     return;
                 }
                 else okButtonPressed = cancelButtonPressed; // if there is no cancel button, cancel button can be used as "ok"
@@ -289,10 +287,7 @@ namespace SonOfRobin
         {
             if (this.blockingFramesLeft > 0) return false;
 
-            if (Keyboard.HasBeenPressed(Keys.Space) ||
-                Keyboard.HasBeenPressed(Keys.Enter) ||
-                GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.A) ||
-                VirtButton.IsButtonDown(VButName.Interact)) return true;
+            if (InputMapper.HasBeenPressed(InputMapper.Action.GlobalConfirm)) return true;
 
             foreach (TouchLocation touch in TouchInput.TouchPanelState)
             { if (touch.State == TouchLocationState.Pressed) return true; } // the whole screen area is one big "OK" button
@@ -302,11 +297,7 @@ namespace SonOfRobin
 
         public bool CheckForInputCancel()
         {
-            if (Keyboard.HasBeenPressed(Keys.Escape)) return true;
-            if (GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.B)) return true;
-            if (VirtButton.IsButtonDown(VButName.Return)) return true;
-
-            return false;
+            return InputMapper.HasBeenPressed(InputMapper.Action.GlobalCancelReturnSkip);
         }
 
         private void Animate()

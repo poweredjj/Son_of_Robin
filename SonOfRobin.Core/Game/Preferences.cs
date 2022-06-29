@@ -65,7 +65,7 @@ namespace SonOfRobin
                 Scene.ResizeAllScenes();
             }
         }
-        public static float menuScale = 1f;
+        public static float menuScale = 0.75f;
         public static float worldScale = 1f;
         private static bool fullScreenMode = true;
         public static bool loadWholeMap = true;
@@ -75,7 +75,6 @@ namespace SonOfRobin
         public static int mobileMaxLoadedTextures = 1000;
         public static int displayResX = 1920;
         public static int displayResY = 1080;
-        public static bool showControlTips = true;
         public static bool showFieldControlTips = true;
         public static float fieldControlTipsScale = 0.25f;
         private static ButtonScheme.Type controlTipsScheme = ButtonScheme.Type.M;
@@ -86,7 +85,18 @@ namespace SonOfRobin
         private static bool mouseGesturesEmulateTouch = false;
         public static int darknessResolution = 1;
         public static bool drawShadows = true;
-        public static bool drawSunShadows = false; // TODO change to true
+        public static bool drawSunShadows = true;
+        private static bool showControlTips = true;
+        public static bool ShowControlTips
+        {
+            get { return showControlTips; }
+            set
+            {
+                if (showControlTips == value) return;
+                showControlTips = value;
+                ControlTipsScheme = ControlTipsScheme; // to refresh data
+            }
+        }
         public static bool MouseGesturesEmulateTouch
         {
             get { return mouseGesturesEmulateTouch; }
@@ -97,8 +107,12 @@ namespace SonOfRobin
 
                 if (mouseGesturesEmulateTouch) SonOfRobinGame.game.IsMouseVisible = true;
                 if (!mouseGesturesEmulateTouch && FullScreenMode) SonOfRobinGame.game.IsMouseVisible = false;
+
+                TouchInput.SetEmulationByMouse();
             }
         }
+        public static bool ShowTouchTips
+        { get { return SonOfRobinGame.platform == Platform.Mobile && !showControlTips; } }
 
         private static bool enableTouch = false;
         public static bool EnableTouch
@@ -106,6 +120,7 @@ namespace SonOfRobin
             get { return enableTouch; }
             set
             {
+                if (SonOfRobinGame.platform == Platform.Mobile) value = true; // mobile should always have touch enabled
                 enableTouch = value;
 
                 if (enableTouch)
@@ -223,8 +238,10 @@ namespace SonOfRobin
             {
                 controlTipsScheme = value;
                 ButtonScheme.ChangeType(value);
+                InputVis.Refresh();
                 Tutorials.RefreshData();
                 PieceHint.RefreshData();
+                ControlTips.RefreshTopTipsLayout();
             }
         }
 
@@ -369,6 +386,8 @@ namespace SonOfRobin
             prefsData["darknessResolution"] = darknessResolution;
             prefsData["drawShadows"] = drawShadows;
             prefsData["drawSunShadows"] = drawSunShadows;
+            prefsData["currentMappingGamepad"] = InputMapper.currentMappingGamepad;
+            prefsData["currentMappingKeyboard"] = InputMapper.currentMappingKeyboard;
 
             FileReaderWriter.Save(path: SonOfRobinGame.prefsPath, savedObj: prefsData);
 
@@ -418,8 +437,12 @@ namespace SonOfRobin
                     darknessResolution = (int)prefsData["darknessResolution"];
                     drawShadows = (bool)prefsData["drawShadows"];
                     drawSunShadows = (bool)prefsData["drawSunShadows"];
+                    InputMapper.currentMappingGamepad = (MappingPackage)prefsData["currentMappingGamepad"];
+                    InputMapper.currentMappingKeyboard = (MappingPackage)prefsData["currentMappingKeyboard"];
+                    InputMapper.newMappingGamepad = InputMapper.currentMappingGamepad.MakeCopy();
+                    InputMapper.newMappingKeyboard = InputMapper.currentMappingKeyboard.MakeCopy();
 
-                    prefsLoaded = true;
+        prefsLoaded = true;
                 }
                 catch (KeyNotFoundException)
                 {

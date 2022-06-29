@@ -188,7 +188,7 @@ namespace SonOfRobin
                 player.Fatigue = player.maxFatigue;
             }
 
-            if (Keyboard.HasBeenPressed(Keys.I))
+            if (Keyboard.HasBeenPressed(Keys.J))
             {
                 if (world == null) return;
 
@@ -263,19 +263,19 @@ namespace SonOfRobin
             {
                 var taskChain = new List<Object> { };
 
-                taskChain.Add(new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.TempoStop, delay: 0, executeHelper: null, storeForLaterUse: true));
+                taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.TempoStop, delay: 0, executeHelper: null, storeForLaterUse: true));
 
                 var bgColor1 = new List<byte> { Color.DarkRed.R, Color.DarkRed.G, Color.DarkRed.B };
                 var textWindowData1 = new Dictionary<string, Object> { { "text", "Message 1" }, { "bgColor", bgColor1 } };
-                taskChain.Add(new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.OpenTextWindow, turnOffInputUntilExecution: true, delay: 1, executeHelper: textWindowData1, storeForLaterUse: true));
+                taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.OpenTextWindow, turnOffInputUntilExecution: true, delay: 1, executeHelper: textWindowData1, storeForLaterUse: true));
 
                 var bgColor2 = new List<byte> { Color.DarkCyan.R, Color.DarkCyan.G, Color.DarkCyan.B };
                 var textWindowData2 = new Dictionary<string, Object> { { "text", "Message 2" }, { "bgColor", bgColor2 } };
-                taskChain.Add(new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.OpenTextWindow, turnOffInputUntilExecution: true, delay: 60, executeHelper: textWindowData2, storeForLaterUse: true));
+                taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.OpenTextWindow, turnOffInputUntilExecution: true, delay: 60, executeHelper: textWindowData2, storeForLaterUse: true));
 
-                taskChain.Add(new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.TempoPlay, delay: 0, executeHelper: null, storeForLaterUse: true));
+                taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.TempoPlay, delay: 0, executeHelper: null, storeForLaterUse: true));
 
-                new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.ExecuteTaskChain, turnOffInputUntilExecution: true, executeHelper: taskChain);
+                new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteTaskChain, turnOffInputUntilExecution: true, executeHelper: taskChain);
             }
 
             if (Keyboard.HasBeenPressed(Keys.F3))

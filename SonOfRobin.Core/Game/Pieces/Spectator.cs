@@ -29,16 +29,13 @@ namespace SonOfRobin
 
         public override void SM_SpectatorFloatAround()
         {
-            this.world.CalculateMovementFromInput();
-            Vector2 movement = this.world.CalculateMovementFromInput();
+            Vector2 movement = this.world.analogMovementLeftStick;
 
             var currentSpeed = 3f;
             movement *= currentSpeed;
 
             Vector2 goalPosition = this.sprite.position + movement;
             this.GoOneStepTowardsGoal(goalPosition, splitXY: false, walkSpeed: currentSpeed, setOrientation: true, slowDownInWater: false);
-
-            if (this.world.actionKeyList.Contains(World.ActionKeys.MapToggle)) this.world.ToggleMapMode();
         }
 
     }

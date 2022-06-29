@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
 namespace SonOfRobin
@@ -14,9 +11,14 @@ namespace SonOfRobin
 
         public static bool LeftIsPressed { get { return Input.InputActive && currentMouseState.LeftButton == ButtonState.Pressed; } }
         public static bool LeftHasBeenPressed { get { return Input.InputActive && currentMouseState.LeftButton == ButtonState.Pressed && previousMouseState.LeftButton == ButtonState.Released; } }
-        public static bool LeftHasBeenReleased { get {
+        public static bool LeftHasBeenReleased
+        {
+            get
+            {
                 MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Left mouse button has been released (position {Position}).", color: Color.Orange);
-                return Input.InputActive && currentMouseState.LeftButton == ButtonState.Released && previousMouseState.LeftButton == ButtonState.Pressed; } }
+                return Input.InputActive && currentMouseState.LeftButton == ButtonState.Released && previousMouseState.LeftButton == ButtonState.Pressed;
+            }
+        }
         public static bool MiddleIsPressed { get { return Input.InputActive && currentMouseState.MiddleButton == ButtonState.Pressed; } }
         public static bool MiddleHasBeenPressed { get { return Input.InputActive && currentMouseState.MiddleButton == ButtonState.Pressed && previousMouseState.MiddleButton == ButtonState.Released; } }
         public static bool MiddleHasBeenReleased { get { return Input.InputActive && currentMouseState.MiddleButton == ButtonState.Released && previousMouseState.MiddleButton == ButtonState.Pressed; } }

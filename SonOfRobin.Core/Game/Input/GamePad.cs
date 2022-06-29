@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using System;
 using System.Collections.Generic;
 
 namespace SonOfRobin
@@ -13,9 +12,6 @@ namespace SonOfRobin
         private static readonly Dictionary<PlayerIndex, GamePadState> previousPadStateByIndex = new Dictionary<PlayerIndex, GamePadState> { };
         private static readonly Dictionary<PlayerIndex, List<Buttons>> currentDigitalFromAnalogByIndex = new Dictionary<PlayerIndex, List<Buttons>> { };
         private static readonly Dictionary<PlayerIndex, List<Buttons>> previousDigitalFromAnalogByIndex = new Dictionary<PlayerIndex, List<Buttons>> { };
-        static PlayerIndex buttonsHeldGamepadIndex = 0;
-        static Dictionary<Buttons, int> buttonsHeld = new Dictionary<Buttons, int> { };
-        static Dictionary<Buttons, int> buttonsHeldDigitalFromAnalog = new Dictionary<Buttons, int> { };
 
         public static void GetPreviousState(PlayerIndex playerIndex)
         {
@@ -32,8 +28,6 @@ namespace SonOfRobin
 
             currentPadStateByIndex[playerIndex] = Microsoft.Xna.Framework.Input.GamePad.GetState(playerIndex);
             currentDigitalFromAnalogByIndex[playerIndex] = ConvertAnalogToDigital(playerIndex);
-
-            UpdateButtonsHeld(playerIndex);
         }
 
         public static GamePadState GetState(int index, GamePadDeadZone deadZoneMode)
@@ -41,37 +35,6 @@ namespace SonOfRobin
             if (!Input.InputActive) return GamePadState.Default;
 
             return Microsoft.Xna.Framework.Input.GamePad.GetState(index: index, deadZoneMode: deadZoneMode);
-        }
-
-        private static void UpdateButtonsHeld(PlayerIndex playerIndex)
-        {
-            if (buttonsHeldGamepadIndex != playerIndex)
-            {
-                buttonsHeld.Clear();
-                buttonsHeldDigitalFromAnalog.Clear();
-            }
-            buttonsHeldGamepadIndex = playerIndex;
-
-            var buttonList = (Buttons[])Enum.GetValues(typeof(Buttons));
-            foreach (var button in buttonList)
-            {
-                if (currentPadStateByIndex[playerIndex].IsButtonDown(button))
-                {
-                    if (!buttonsHeld.ContainsKey(button)) buttonsHeld[button] = 1;
-                    else buttonsHeld[button]++;
-                }
-                else buttonsHeld.Remove(button);
-            }
-
-            foreach (var button in new List<Buttons> { Buttons.DPadLeft, Buttons.DPadRight, Buttons.DPadUp, Buttons.DPadDown })
-            {
-                if (currentDigitalFromAnalogByIndex[playerIndex].Contains(button))
-                {
-                    if (!buttonsHeldDigitalFromAnalog.ContainsKey(button)) buttonsHeldDigitalFromAnalog[button] = 1;
-                    else buttonsHeldDigitalFromAnalog[button]++;
-                }
-                else buttonsHeldDigitalFromAnalog.Remove(button);
-            }
         }
 
         private static List<Buttons> ConvertAnalogToDigital(PlayerIndex playerIndex)
@@ -98,32 +61,10 @@ namespace SonOfRobin
             return Input.InputActive && currentPadStateByIndex[playerIndex].IsButtonDown(button);
         }
 
-        public static bool HasBeenPressed(PlayerIndex playerIndex, Buttons button, bool analogAsDigital = false, bool repeat = false, int repeatThreshold = 0, int repeatFrames = 0)
+        public static bool HasBeenPressed(PlayerIndex playerIndex, Buttons button, bool analogAsDigital = false)
         {
-            if (!Input.InputActive) return false;
-
-            if (repeat)
-            {
-                if (repeatThreshold == 0) repeatThreshold = Input.defaultButtonRepeatThreshold;
-                if (repeatFrames == 0) repeatFrames = Input.defaultButtonRepeatFrames;
-            }
-
-            if (repeat && buttonsHeld.ContainsKey(button) && buttonsHeld[button] >= repeatThreshold + repeatFrames)
-            {
-                buttonsHeld[button] = Math.Max(buttonsHeld[button] - repeatFrames, 0);
-                return true;
-            }
-
-            if (repeat && analogAsDigital && buttonsHeldDigitalFromAnalog.ContainsKey(button) &&
-                buttonsHeldDigitalFromAnalog[button] >= repeatThreshold + repeatFrames)
-            {
-                buttonsHeldDigitalFromAnalog[button] = Math.Max(buttonsHeldDigitalFromAnalog[button] - repeatFrames, 0);
-                return true;
-            }
-
-            if (analogAsDigital && currentDigitalFromAnalogByIndex[playerIndex].Contains(button) && !previousDigitalFromAnalogByIndex[playerIndex].Contains(button)) return true;
-
-            return currentPadStateByIndex[playerIndex].IsButtonDown(button) && previousPadStateByIndex[playerIndex].IsButtonUp(button);
+            if (Input.InputActive && analogAsDigital && currentDigitalFromAnalogByIndex[playerIndex].Contains(button) && !previousDigitalFromAnalogByIndex[playerIndex].Contains(button)) return true;
+            return Input.InputActive && currentPadStateByIndex[playerIndex].IsButtonDown(button) && previousPadStateByIndex[playerIndex].IsButtonUp(button);
         }
 
         public static bool HasBeenReleased(PlayerIndex playerIndex, Buttons button, bool analogAsDigital = false)

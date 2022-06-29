@@ -88,18 +88,24 @@ namespace SonOfRobin
 
         public static void DrawFieldTips(World world)
         {
-            if (Preferences.showControlTips && Preferences.showFieldControlTips)
+            if (Preferences.ShowControlTips && Preferences.showFieldControlTips)
             {
                 SonOfRobinGame.spriteBatch.End();
                 SonOfRobinGame.spriteBatch.Begin(transformMatrix: world.TransformMatrix);
 
                 foreach (FieldTip fieldTip in tipsDict.Values.ToList())
-                { fieldTip.UpdateAndDraw(); }
+                { fieldTip.UpdateAndDraw(world); }
             }
         }
 
-        public void UpdateAndDraw()
+        public void UpdateAndDraw(World world)
         {
+            if (this.world != world)
+            {
+                this.Remove();
+                return;
+            }
+
             if (this.targetSprite != null && !this.targetSprite.boardPiece.exists) this.targetSprite = null;
 
             this.targetPos = this.CalculatePosition();

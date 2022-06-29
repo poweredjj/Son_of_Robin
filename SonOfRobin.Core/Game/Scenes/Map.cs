@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -219,11 +218,7 @@ namespace SonOfRobin
 
         private void ProcessInput()
         {
-            if (GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.B) ||
-                GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.DPadRight) ||
-                Keyboard.HasBeenPressed(Keys.Escape) ||
-                Keyboard.HasBeenPressed(Keys.M) ||
-                VirtButton.HasButtonBeenPressed(VButName.Return)) this.world.ToggleMapMode();
+            if (InputMapper.HasBeenPressed(InputMapper.Action.MapSwitch)) this.world.ToggleMapMode();
         }
 
         public override void Draw()

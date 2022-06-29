@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Input.Touch;
 using System;
 using System.Collections.Generic;
@@ -307,12 +306,12 @@ namespace SonOfRobin
                     break;
 
                 case Layout.SingleBottom:
-                    posY = Preferences.showControlTips ? 0.95f : 1f; // little margin for ControlTips at the bottom
+                    posY = Preferences.ShowControlTips ? 0.95f : 1f; // little margin for ControlTips at the bottom
                     this.viewParams.PosY = (SonOfRobinGame.VirtualHeight * posY) - this.viewParams.Height;
                     break;
 
                 case Layout.DualBottom:
-                    posY = Preferences.showControlTips ? 0.95f : 1f; // little margin for ControlTips at the bottom
+                    posY = Preferences.ShowControlTips ? 0.95f : 1f; // little margin for ControlTips at the bottom
                     this.viewParams.PosY = (SonOfRobinGame.VirtualHeight * posY) - this.viewParams.Height;
                     break;
 
@@ -516,30 +515,10 @@ namespace SonOfRobin
 
         private void MoveCursorByNormalInput()
         {
-            if (Keyboard.HasBeenPressed(key: Keys.A, repeat: true) ||
-                Keyboard.HasBeenPressed(key: Keys.Left, repeat: true) ||
-                GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.DPadLeft, analogAsDigital: true, repeat: true))
-            {
-                this.CursorX -= 1;
-            }
-            if (Keyboard.HasBeenPressed(key: Keys.D, repeat: true) ||
-                Keyboard.HasBeenPressed(key: Keys.Right, repeat: true) ||
-                GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.DPadRight, analogAsDigital: true, repeat: true))
-            {
-                this.CursorX += 1;
-            }
-            if (Keyboard.HasBeenPressed(key: Keys.W, repeat: true) ||
-                Keyboard.HasBeenPressed(key: Keys.Up, repeat: true) ||
-                GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.DPadUp, analogAsDigital: true, repeat: true))
-            {
-                this.CursorY -= 1;
-            }
-            if (Keyboard.HasBeenPressed(key: Keys.S, repeat: true) ||
-                Keyboard.HasBeenPressed(key: Keys.Down, repeat: true) ||
-                GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.DPadDown, analogAsDigital: true, repeat: true))
-            {
-                this.CursorY += 1;
-            }
+            if (InputMapper.HasBeenPressed(InputMapper.Action.GlobalLeft)) this.CursorX -= 1;
+            if (InputMapper.HasBeenPressed(InputMapper.Action.GlobalRight)) this.CursorX += 1;
+            if (InputMapper.HasBeenPressed(InputMapper.Action.GlobalUp)) this.CursorY -= 1;
+            if (InputMapper.HasBeenPressed(InputMapper.Action.GlobalDown)) this.CursorY += 1;
         }
 
         private void MoveCursorByBumpers()
@@ -547,14 +526,8 @@ namespace SonOfRobin
             World world = World.GetTopWorld();
             if (world?.player.activeState == BoardPiece.State.PlayerControlledShooting) return;
 
-            if (Keyboard.HasBeenPressed(Keys.OemOpenBrackets) || GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.LeftShoulder))
-            {
-                this.CursorX -= 1;
-            }
-            if (Keyboard.HasBeenPressed(Keys.OemCloseBrackets) || GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.RightShoulder))
-            {
-                this.CursorX += 1;
-            }
+            if (InputMapper.HasBeenPressed(InputMapper.Action.ToolbarPrev)) this.CursorX -= 1;
+            if (InputMapper.HasBeenPressed(InputMapper.Action.ToolbarNext)) this.CursorX += 1;
         }
 
         private void OpenPieceContextMenu()
@@ -590,9 +563,7 @@ namespace SonOfRobin
         {
             this.tipsLayout = ControlTips.TipsLayout.InventorySelect;
 
-            if (Keyboard.HasBeenPressed(Keys.Escape) ||
-                VirtButton.HasButtonBeenPressed(VButName.Return) ||
-                GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.B))
+            if (InputMapper.HasBeenPressed(InputMapper.Action.GlobalCancelReturnSkip))
             {
                 // must go first, to read touch return button!
                 SetInventoryLayout(newLayout: InventoryLayout.Toolbar, player: this.storage.world.player);
@@ -601,38 +572,34 @@ namespace SonOfRobin
 
             if (this.SwitchToSecondInventoryByTouch()) return;
 
-            if (Keyboard.HasBeenPressed(Keys.Enter) || GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.A))
+            if (InputMapper.HasBeenPressed(InputMapper.Action.GlobalConfirm))
             {
                 this.OpenPieceContextMenu();
                 return;
             }
 
-            if (Keyboard.HasBeenPressed(Keys.Tab) ||
-                GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.LeftShoulder) ||
-                GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.RightShoulder))
+            if (InputMapper.HasBeenPressed(InputMapper.Action.InvSwitch))
             {
                 this.MoveOtherInventoryToTop();
                 return;
             }
 
-            if (Keyboard.HasBeenPressed(Keys.Space) ||
-                Keyboard.HasBeenPressed(Keys.RightAlt) ||
-                GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.X) ||
-                GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.Y) ||
-                this.touchHeldFrames >= minFramesToDragByTouch)
-            {
-                this.draggedByTouch = this.touchHeldFrames >= minFramesToDragByTouch;
+            this.draggedByTouch = this.touchHeldFrames >= minFramesToDragByTouch;
 
+            if (this.draggedByTouch ||
+                InputMapper.HasBeenPressed(InputMapper.Action.InvPickOne) ||
+                InputMapper.HasBeenPressed(InputMapper.Action.InvPickStack))
+            {
                 StorageSlot activeSlot = this.ActiveSlot;
                 if (activeSlot == null) return;
 
                 List<BoardPiece> pickedUpPieces;
 
-                if ((!VirtButton.IsButtonDown(VButName.DragSingle) && this.draggedByTouch) ||
-                    GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.X) ||
-                    Keyboard.HasBeenPressed(Keys.Space))
-                { pickedUpPieces = this.storage.RemoveAllPiecesFromSlot(slot: activeSlot); }
-
+                if ((this.draggedByTouch && !VirtButton.IsButtonDown(VButName.DragSingle)) ||
+                    InputMapper.HasBeenPressed(InputMapper.Action.InvPickStack))
+                {
+                    pickedUpPieces = this.storage.RemoveAllPiecesFromSlot(slot: activeSlot);
+                }
                 else
                 {
                     pickedUpPieces = new List<BoardPiece> { };
@@ -662,15 +629,13 @@ namespace SonOfRobin
         {
             this.tipsLayout = ControlTips.TipsLayout.InventoryDrag;
 
-            if (Keyboard.HasBeenPressed(Keys.Escape) || VirtButton.HasButtonBeenPressed(VButName.Return) || GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.B))
+            if (InputMapper.HasBeenPressed(InputMapper.Action.GlobalCancelReturnSkip))
             {
                 SetInventoryLayout(newLayout: InventoryLayout.Toolbar, player: this.storage.world.player);
                 return;
             }
 
-            if (Keyboard.HasBeenPressed(Keys.Tab) ||
-               GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.LeftShoulder) ||
-               GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.RightShoulder))
+            if (InputMapper.HasBeenPressed(InputMapper.Action.InvSwitch))
             {
                 this.MoveOtherInventoryToTop();
                 this.MoveDraggedPiecesToOtherInv();
@@ -684,15 +649,11 @@ namespace SonOfRobin
                 return;
             }
 
-            if (Keyboard.HasBeenPressed(Keys.Space) ||
-                Keyboard.HasBeenPressed(Keys.RightAlt) ||
-                GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.A) ||
-                GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.X) ||
-                GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.Y) ||
-                TouchInput.IsStateAvailable(TouchLocationState.Released))
-            {
-                if (TouchInput.IsStateAvailable(TouchLocationState.Released)) this.draggedByTouch = true;
+            this.draggedByTouch = TouchInput.IsStateAvailable(TouchLocationState.Released);
 
+            if (InputMapper.HasBeenPressed(InputMapper.Action.InvRelease) ||
+                this.draggedByTouch)
+            {
                 this.ReleaseHeldPieces(slot: this.ActiveSlot);
                 return;
             }

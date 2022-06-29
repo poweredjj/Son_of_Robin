@@ -13,8 +13,8 @@ namespace SonOfRobin
 
     public class SonOfRobinGame : Game
     {
-        public static readonly float version = 8.0f;
-        public static readonly DateTime lastChanged = new DateTime(2022, 04, 15);
+        public static readonly float version = 8.1f;
+        public static readonly DateTime lastChanged = new DateTime(2022, 04, 26);
 
         public static ContentManager content;
 
@@ -97,7 +97,7 @@ namespace SonOfRobin
             if (!Directory.Exists(gameDataPath)) Directory.CreateDirectory(gameDataPath);
             if (!Directory.Exists(worldTemplatesPath)) Directory.CreateDirectory(worldTemplatesPath);
             if (!Directory.Exists(saveGamesPath)) Directory.CreateDirectory(saveGamesPath);
-            new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.DeleteObsoleteSaves, executeHelper: null, delay: 0);
+            new Scheduler.Task(taskName: Scheduler.TaskName.DeleteObsoleteSaves, executeHelper: null, delay: 0);
 
             controlTips = new ControlTips();
             Preferences.Initialize(); // to set some default values
@@ -137,6 +137,9 @@ namespace SonOfRobin
             AnimData.CreateAllAnims();
             AnimFrame.DeleteUsedAtlases();
 
+            KeyboardScheme.LoadAllKeys();
+            InputMapper.RebuildMappings();
+
             Preferences.ControlTipsScheme = Preferences.ControlTipsScheme; // to load default control tips
 
             new SolidColor(color: Color.RoyalBlue, viewOpacity: 1f, clearScreen: true);
@@ -155,7 +158,6 @@ namespace SonOfRobin
             else
             {
                 var textWindow = new TextWindow(text: "This version of 'Son of Robin' has expired.", textColor: Color.White, bgColor: Color.DarkBlue, useTransition: false, animate: true, blockInputDuration: 60, closingTask: Scheduler.TaskName.OpenMainMenuIfSpecialKeysArePressed);
-                textWindow.touchLayout = TouchLayout.HiddenStart;
             }
         }
 
@@ -174,7 +176,6 @@ namespace SonOfRobin
 
             effectColorize = Content.Load<Effect>("effects/Colorize");
             effectBorder = Content.Load<Effect>("effects/Border");
-
 
             fontPixelMix5 = Content.Load<SpriteFont>("fonts/PixelMix");
             fontPressStart2P5 = Content.Load<SpriteFont>("fonts/PressStart2P");

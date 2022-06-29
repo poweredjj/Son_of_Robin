@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input.Touch;
 using System;
 using System.Collections.Generic;
@@ -13,10 +14,12 @@ namespace SonOfRobin
         private readonly Object targetObj;
         private readonly string propertyName;
 
-        private Object ActiveName { get { return valueDict.Values.ToList()[activeIndex]; } }
+        private Object ActiveName
+        { get { return valueDict.Values.ToList()[activeIndex]; } }
         private Object ActiveValue { get { return valueDict.Keys.ToList()[activeIndex]; } }
+        private bool ActiveNameIsTexture { get { return this.ActiveName.GetType() == typeof(Texture2D); } }
 
-        public override string DisplayedText { get { return $"{this.name}: < {this.ActiveName} >"; } }
+        public override string DisplayedText { get { return $"{this.name}   < {this.ActiveName} >"; } }
 
         public Selector(Menu menu, string name, List<Object> valueList, Object targetObj, string propertyName, bool rebuildsMenu = false, List<InfoWindow.TextEntry> infoTextList = null, bool rebuildsMenuInstantScroll = false) : base(menu: menu, name: name, rebuildsMenu: rebuildsMenu, infoTextList: infoTextList, rebuildsMenuInstantScroll: rebuildsMenuInstantScroll)
         {
@@ -91,9 +94,74 @@ namespace SonOfRobin
         public override void Draw(bool active)
         {
             if (active) this.UpdateHintWindow();
-            base.Draw(active);
-        }
 
+            if (!this.ActiveNameIsTexture)
+            {
+                base.Draw(active);
+                return;
+            }
+
+            Rectangle rect = this.Rect;
+
+            float opacity = this.GetOpacity(active: active);
+            float opacityFade = this.OpacityFade;
+            if (active || opacityFade > 0) SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, rect, this.rectColor * opacityFade * 2);
+
+            string textLeft = $"{this.name}   < ";
+            string textRight = " >";
+
+            float maxWidth = rect.Width * 0.85f;
+            float maxTextHeight = rect.Height * 0.6f;
+            float maxTextureHeight = rect.Height * 0.9f;
+
+            Texture2D texture = (Texture2D)this.ActiveName;
+            float textureScale = maxTextureHeight / (float)texture.Height;
+
+            Vector2 textLeftSize = font.MeasureString(textLeft);
+            Vector2 textRightSize = font.MeasureString(textRight);
+            float textScale = Math.Min(maxWidth / (textLeftSize.X + textRightSize.X), maxTextHeight / Math.Max(textLeftSize.Y, textRightSize.Y));
+
+            float textureWidthAfterScale, fullWidthAfterScale;
+
+            while (true)
+            {
+                textureWidthAfterScale = (float)texture.Width * textureScale;
+                fullWidthAfterScale = ((textLeftSize.X + textRightSize.X) * textScale) + textureWidthAfterScale;
+
+                if (fullWidthAfterScale <= maxWidth) break;
+                else
+                {
+                    textureScale *= maxWidth / fullWidthAfterScale;
+                    textScale *= maxWidth / fullWidthAfterScale;
+                }
+            }
+
+            float textureHeightAfterScale = (float)texture.Height * textureScale;
+            float textHeightAfterScale = Math.Max(textLeftSize.Y * textScale, textRightSize.Y * textScale);
+
+
+            Vector2 leftTextPos = new Vector2(
+                rect.Center.X - (fullWidthAfterScale / 2),
+                rect.Center.Y - (textHeightAfterScale / 2));
+
+            SonOfRobinGame.spriteBatch.DrawString(font, textLeft, position: leftTextPos, color: this.textColor * opacity * menu.viewParams.Opacity, origin: Vector2.Zero, scale: textScale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
+
+            Vector2 rightTextPos = new Vector2(
+                rect.Center.X - (fullWidthAfterScale / 2) + (textLeftSize.X * textScale) + textureWidthAfterScale,
+                rect.Center.Y - (textHeightAfterScale / 2));
+
+            SonOfRobinGame.spriteBatch.DrawString(font, textRight, position: rightTextPos, color: this.textColor * opacity * menu.viewParams.Opacity, origin: Vector2.Zero, scale: textScale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
+
+            Rectangle textureRect = new Rectangle(
+                x: (int)(rect.Center.X - (fullWidthAfterScale / 2) + (textLeftSize.X * textScale)),
+                y: (int)(rect.Center.Y - (textureHeightAfterScale / 2)),
+                width: (int)textureWidthAfterScale,
+                height: (int)textureHeightAfterScale);
+
+            Helpers.DrawTextureInsideRect(texture: texture, rectangle: textureRect, color: Color.White * opacity, drawTestRect: false);
+
+            Helpers.DrawRectangleOutline(rect: this.Rect, color: this.outlineColor, borderWidth: 2);
+        }
 
         public override void ProcessTouch()
         {
@@ -101,10 +169,8 @@ namespace SonOfRobin
             rect.X += (int)this.menu.viewParams.PosX;
             rect.Y += (int)this.menu.viewParams.PosY;
 
-
             Rectangle leftHalfRect = new Rectangle(rect.Left, rect.Top, rect.Width / 2, rect.Height);
             Rectangle rightHalfRect = new Rectangle(rect.Left + rect.Width / 2, rect.Top, rect.Width / 2, rect.Height);
-
 
             foreach (TouchLocation touch in TouchInput.TouchPanelState)
             {
@@ -121,10 +187,8 @@ namespace SonOfRobin
                     this.NextValue(touchMode: true);
                     return;
                 }
-
             }
         }
-
 
     }
 }
