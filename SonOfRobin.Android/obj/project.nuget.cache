@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "QJwPDrRf+1QfVZm2QG+R4KWgew5hVdx8TWmvujRjHqoh4fw88EpOKUN33IrVBdEpYd2v3l2ENZi4FrbQCEP8XA==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\Marcin\\source\\repos\\SonOfRobin\\SonOfRobin.Android\\SonOfRobin.Android.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Marcin\\.nuget\\packages\\monogame.content.builder.task\\3.8.0.1641\\monogame.content.builder.task.3.8.0.1641.nupkg.sha512",
+    "C:\\Users\\Marcin\\.nuget\\packages\\monogame.framework.android\\3.8.0.1641\\monogame.framework.android.3.8.0.1641.nupkg.sha512"
+  ],
+  "logs": []
+}

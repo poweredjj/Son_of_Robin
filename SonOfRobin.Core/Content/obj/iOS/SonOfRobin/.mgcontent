@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SourceFileCollection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Profile>Reach</Profile>
+  <Platform>iOS</Platform>
+  <Config />
+  <SourceFiles>
+    <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/fonts/FreeSansBold12.spritefont</File>
+    <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/fonts/FreeSansBold9.spritefont</File>
+    <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/fonts/PixelMix.spritefont</File>
+    <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/fonts/PressStart2P.spritefont</File>
+    <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/fonts/PressStart2P_big.spritefont</File>
+    <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/8f296dbbaf43865bc29e99660fe7b5af.png</File>
+    <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/actor29rec4.png</File>
+    <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/attack_effect_sprite_sheets.png</File>
+    <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/backlight_1.png</File>
+    <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/backlight_2.png</File>
+    <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/backlight_3.png</File>
+    <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/backlight_4.png</File>
+    <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/crabs_big.png</File>
+    <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/crabs_small.png</File>
+    <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/demonmaid.png</File>
+    <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/demonmaid2.png</File>
+    <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/flowers.png</File>
+    <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/fox.png</File>
+    <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/frogs_big.png</File>
+    <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/frogs_small.png</File>
+    <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/heart_16x16.png</File>
+    <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/miss.png</File>
+    <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/NicePng_pine-tree-clipart-png_1446450.png</File>
+    <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/no_anim.png</File>
+    <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/palmtree_small.png</File>
+    <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/qYFvsmq.png</File>
+    <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/rabbits.png</File>
+    <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/recolor_pt2.png</File>
+    <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/tile_19ba32a6.png</File>
+    <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/tile_custom01.png</File>
+    <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/tileb.png</File>
+    <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/tilees by guth_zpsfn3wpjdu.png</File>
+    <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/virtual_button.png</File>
+    <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/virtual_button_pressed.png</File>
+    <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/virtual_joypad_background.png</File>
+    <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/virtual_joypad_stick.png</File>
+    <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/zzz.png</File>
+  </SourceFiles>
+  <DestFiles>
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+  </DestFiles>
+</SourceFileCollection>

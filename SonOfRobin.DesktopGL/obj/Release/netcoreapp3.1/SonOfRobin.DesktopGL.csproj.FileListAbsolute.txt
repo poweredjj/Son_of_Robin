@@ -1,0 +1,178 @@
+C:\Users\Marcin\Downloads\MonoGame.Samples-develop\SampleTemplate — kopia\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\fonts\FreeSansBold12.xnb
+C:\Users\Marcin\Downloads\MonoGame.Samples-develop\SampleTemplate — kopia\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\fonts\FreeSansBold9.xnb
+C:\Users\Marcin\Downloads\MonoGame.Samples-develop\SampleTemplate — kopia\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\fonts\PixelMix.xnb
+C:\Users\Marcin\Downloads\MonoGame.Samples-develop\SampleTemplate — kopia\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\fonts\PressStart2P.xnb
+C:\Users\Marcin\Downloads\MonoGame.Samples-develop\SampleTemplate — kopia\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\8f296dbbaf43865bc29e99660fe7b5af.xnb
+C:\Users\Marcin\Downloads\MonoGame.Samples-develop\SampleTemplate — kopia\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\actor29rec4.xnb
+C:\Users\Marcin\Downloads\MonoGame.Samples-develop\SampleTemplate — kopia\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\attack_effect_sprite_sheets.xnb
+C:\Users\Marcin\Downloads\MonoGame.Samples-develop\SampleTemplate — kopia\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\backlight_1.xnb
+C:\Users\Marcin\Downloads\MonoGame.Samples-develop\SampleTemplate — kopia\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\backlight_2.xnb
+C:\Users\Marcin\Downloads\MonoGame.Samples-develop\SampleTemplate — kopia\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\backlight_3.xnb
+C:\Users\Marcin\Downloads\MonoGame.Samples-develop\SampleTemplate — kopia\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\backlight_4.xnb
+C:\Users\Marcin\Downloads\MonoGame.Samples-develop\SampleTemplate — kopia\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\crabs_big.xnb
+C:\Users\Marcin\Downloads\MonoGame.Samples-develop\SampleTemplate — kopia\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\crabs_small.xnb
+C:\Users\Marcin\Downloads\MonoGame.Samples-develop\SampleTemplate — kopia\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\demonmaid.xnb
+C:\Users\Marcin\Downloads\MonoGame.Samples-develop\SampleTemplate — kopia\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\demonmaid2.xnb
+C:\Users\Marcin\Downloads\MonoGame.Samples-develop\SampleTemplate — kopia\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\flowers.xnb
+C:\Users\Marcin\Downloads\MonoGame.Samples-develop\SampleTemplate — kopia\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\fox.xnb
+C:\Users\Marcin\Downloads\MonoGame.Samples-develop\SampleTemplate — kopia\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\frogs_big.xnb
+C:\Users\Marcin\Downloads\MonoGame.Samples-develop\SampleTemplate — kopia\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\frogs_small.xnb
+C:\Users\Marcin\Downloads\MonoGame.Samples-develop\SampleTemplate — kopia\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\heart_16x16.xnb
+C:\Users\Marcin\Downloads\MonoGame.Samples-develop\SampleTemplate — kopia\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\miss.xnb
+C:\Users\Marcin\Downloads\MonoGame.Samples-develop\SampleTemplate — kopia\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\NicePng_pine-tree-clipart-png_1446450.xnb
+C:\Users\Marcin\Downloads\MonoGame.Samples-develop\SampleTemplate — kopia\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\no_anim.xnb
+C:\Users\Marcin\Downloads\MonoGame.Samples-develop\SampleTemplate — kopia\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\palmtree_small.xnb
+C:\Users\Marcin\Downloads\MonoGame.Samples-develop\SampleTemplate — kopia\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\qYFvsmq.xnb
+C:\Users\Marcin\Downloads\MonoGame.Samples-develop\SampleTemplate — kopia\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\rabbits.xnb
+C:\Users\Marcin\Downloads\MonoGame.Samples-develop\SampleTemplate — kopia\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\recolor_pt2.xnb
+C:\Users\Marcin\Downloads\MonoGame.Samples-develop\SampleTemplate — kopia\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\tileb.xnb
+C:\Users\Marcin\Downloads\MonoGame.Samples-develop\SampleTemplate — kopia\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\tilees by guth_zpsfn3wpjdu.xnb
+C:\Users\Marcin\Downloads\MonoGame.Samples-develop\SampleTemplate — kopia\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\tile_19ba32a6.xnb
+C:\Users\Marcin\Downloads\MonoGame.Samples-develop\SampleTemplate — kopia\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\tile_custom01.xnb
+C:\Users\Marcin\Downloads\MonoGame.Samples-develop\SampleTemplate — kopia\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\zzz.xnb
+C:\Users\Marcin\Downloads\MonoGame.Samples-develop\SampleTemplate — kopia\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\SonOfRobin.DesktopGL.exe
+C:\Users\Marcin\Downloads\MonoGame.Samples-develop\SampleTemplate — kopia\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\SonOfRobin.DesktopGL.deps.json
+C:\Users\Marcin\Downloads\MonoGame.Samples-develop\SampleTemplate — kopia\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\SonOfRobin.DesktopGL.runtimeconfig.json
+C:\Users\Marcin\Downloads\MonoGame.Samples-develop\SampleTemplate — kopia\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\SonOfRobin.DesktopGL.runtimeconfig.dev.json
+C:\Users\Marcin\Downloads\MonoGame.Samples-develop\SampleTemplate — kopia\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\SonOfRobin.DesktopGL.dll
+C:\Users\Marcin\Downloads\MonoGame.Samples-develop\SampleTemplate — kopia\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\SonOfRobin.DesktopGL.pdb
+C:\Users\Marcin\Downloads\MonoGame.Samples-develop\SampleTemplate — kopia\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\MonoGame.Framework.dll
+C:\Users\Marcin\Downloads\MonoGame.Samples-develop\SampleTemplate — kopia\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\runtimes\linux-x64\native\libSDL2-2.0.so.0
+C:\Users\Marcin\Downloads\MonoGame.Samples-develop\SampleTemplate — kopia\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\runtimes\linux-x64\native\libopenal.so.1
+C:\Users\Marcin\Downloads\MonoGame.Samples-develop\SampleTemplate — kopia\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\runtimes\osx\native\libSDL2-2.0.0.dylib
+C:\Users\Marcin\Downloads\MonoGame.Samples-develop\SampleTemplate — kopia\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\runtimes\osx\native\libopenal.1.dylib
+C:\Users\Marcin\Downloads\MonoGame.Samples-develop\SampleTemplate — kopia\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\runtimes\win-x64\native\SDL2.dll
+C:\Users\Marcin\Downloads\MonoGame.Samples-develop\SampleTemplate — kopia\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\runtimes\win-x64\native\soft_oal.dll
+C:\Users\Marcin\Downloads\MonoGame.Samples-develop\SampleTemplate — kopia\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\runtimes\win-x86\native\SDL2.dll
+C:\Users\Marcin\Downloads\MonoGame.Samples-develop\SampleTemplate — kopia\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\runtimes\win-x86\native\soft_oal.dll
+C:\Users\Marcin\Downloads\MonoGame.Samples-develop\SampleTemplate — kopia\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\SonOfRobin.Core.dll
+C:\Users\Marcin\Downloads\MonoGame.Samples-develop\SampleTemplate — kopia\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\SonOfRobin.Core.pdb
+C:\Users\Marcin\Downloads\MonoGame.Samples-develop\SampleTemplate — kopia\SonOfRobin.DesktopGL\obj\Release\netcoreapp3.1\SonOfRobin.DesktopGL.csproj.AssemblyReference.cache
+C:\Users\Marcin\Downloads\MonoGame.Samples-develop\SampleTemplate — kopia\SonOfRobin.DesktopGL\obj\Release\netcoreapp3.1\SonOfRobin.DesktopGL.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Marcin\Downloads\MonoGame.Samples-develop\SampleTemplate — kopia\SonOfRobin.DesktopGL\obj\Release\netcoreapp3.1\SonOfRobin.DesktopGL.AssemblyInfoInputs.cache
+C:\Users\Marcin\Downloads\MonoGame.Samples-develop\SampleTemplate — kopia\SonOfRobin.DesktopGL\obj\Release\netcoreapp3.1\SonOfRobin.DesktopGL.AssemblyInfo.cs
+C:\Users\Marcin\Downloads\MonoGame.Samples-develop\SampleTemplate — kopia\SonOfRobin.DesktopGL\obj\Release\netcoreapp3.1\SonOfRobin.DesktopGL.csproj.CoreCompileInputs.cache
+C:\Users\Marcin\Downloads\MonoGame.Samples-develop\SampleTemplate — kopia\SonOfRobin.DesktopGL\obj\Release\netcoreapp3.1\SonOfRobin.DesktopGL.csproj.CopyComplete
+C:\Users\Marcin\Downloads\MonoGame.Samples-develop\SampleTemplate — kopia\SonOfRobin.DesktopGL\obj\Release\netcoreapp3.1\SonOfRobin.DesktopGL.dll
+C:\Users\Marcin\Downloads\MonoGame.Samples-develop\SampleTemplate — kopia\SonOfRobin.DesktopGL\obj\Release\netcoreapp3.1\SonOfRobin.DesktopGL.pdb
+C:\Users\Marcin\Downloads\MonoGame.Samples-develop\SampleTemplate — kopia\SonOfRobin.DesktopGL\obj\Release\netcoreapp3.1\SonOfRobin.DesktopGL.genruntimeconfig.cache
+C:\Users\glonf\Downloads\SonOfRobin_multiplatform\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\fonts\FreeSansBold12.xnb
+C:\Users\glonf\Downloads\SonOfRobin_multiplatform\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\fonts\FreeSansBold9.xnb
+C:\Users\glonf\Downloads\SonOfRobin_multiplatform\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\fonts\PixelMix.xnb
+C:\Users\glonf\Downloads\SonOfRobin_multiplatform\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\fonts\PressStart2P.xnb
+C:\Users\glonf\Downloads\SonOfRobin_multiplatform\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\8f296dbbaf43865bc29e99660fe7b5af.xnb
+C:\Users\glonf\Downloads\SonOfRobin_multiplatform\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\actor29rec4.xnb
+C:\Users\glonf\Downloads\SonOfRobin_multiplatform\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\attack_effect_sprite_sheets.xnb
+C:\Users\glonf\Downloads\SonOfRobin_multiplatform\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\backlight_1.xnb
+C:\Users\glonf\Downloads\SonOfRobin_multiplatform\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\backlight_2.xnb
+C:\Users\glonf\Downloads\SonOfRobin_multiplatform\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\backlight_3.xnb
+C:\Users\glonf\Downloads\SonOfRobin_multiplatform\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\backlight_4.xnb
+C:\Users\glonf\Downloads\SonOfRobin_multiplatform\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\crabs_big.xnb
+C:\Users\glonf\Downloads\SonOfRobin_multiplatform\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\crabs_small.xnb
+C:\Users\glonf\Downloads\SonOfRobin_multiplatform\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\demonmaid.xnb
+C:\Users\glonf\Downloads\SonOfRobin_multiplatform\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\demonmaid2.xnb
+C:\Users\glonf\Downloads\SonOfRobin_multiplatform\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\flowers.xnb
+C:\Users\glonf\Downloads\SonOfRobin_multiplatform\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\fox.xnb
+C:\Users\glonf\Downloads\SonOfRobin_multiplatform\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\frogs_big.xnb
+C:\Users\glonf\Downloads\SonOfRobin_multiplatform\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\frogs_small.xnb
+C:\Users\glonf\Downloads\SonOfRobin_multiplatform\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\heart_16x16.xnb
+C:\Users\glonf\Downloads\SonOfRobin_multiplatform\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\miss.xnb
+C:\Users\glonf\Downloads\SonOfRobin_multiplatform\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\NicePng_pine-tree-clipart-png_1446450.xnb
+C:\Users\glonf\Downloads\SonOfRobin_multiplatform\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\no_anim.xnb
+C:\Users\glonf\Downloads\SonOfRobin_multiplatform\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\palmtree_small.xnb
+C:\Users\glonf\Downloads\SonOfRobin_multiplatform\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\qYFvsmq.xnb
+C:\Users\glonf\Downloads\SonOfRobin_multiplatform\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\rabbits.xnb
+C:\Users\glonf\Downloads\SonOfRobin_multiplatform\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\recolor_pt2.xnb
+C:\Users\glonf\Downloads\SonOfRobin_multiplatform\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\tileb.xnb
+C:\Users\glonf\Downloads\SonOfRobin_multiplatform\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\tilees by guth_zpsfn3wpjdu.xnb
+C:\Users\glonf\Downloads\SonOfRobin_multiplatform\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\tile_19ba32a6.xnb
+C:\Users\glonf\Downloads\SonOfRobin_multiplatform\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\tile_custom01.xnb
+C:\Users\glonf\Downloads\SonOfRobin_multiplatform\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\zzz.xnb
+C:\Users\glonf\Downloads\SonOfRobin_multiplatform\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\SonOfRobin.DesktopGL.exe
+C:\Users\glonf\Downloads\SonOfRobin_multiplatform\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\SonOfRobin.DesktopGL.deps.json
+C:\Users\glonf\Downloads\SonOfRobin_multiplatform\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\SonOfRobin.DesktopGL.runtimeconfig.json
+C:\Users\glonf\Downloads\SonOfRobin_multiplatform\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\SonOfRobin.DesktopGL.runtimeconfig.dev.json
+C:\Users\glonf\Downloads\SonOfRobin_multiplatform\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\SonOfRobin.DesktopGL.dll
+C:\Users\glonf\Downloads\SonOfRobin_multiplatform\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\SonOfRobin.DesktopGL.pdb
+C:\Users\glonf\Downloads\SonOfRobin_multiplatform\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\MonoGame.Framework.dll
+C:\Users\glonf\Downloads\SonOfRobin_multiplatform\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\runtimes\linux-x64\native\libSDL2-2.0.so.0
+C:\Users\glonf\Downloads\SonOfRobin_multiplatform\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\runtimes\linux-x64\native\libopenal.so.1
+C:\Users\glonf\Downloads\SonOfRobin_multiplatform\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\runtimes\osx\native\libSDL2-2.0.0.dylib
+C:\Users\glonf\Downloads\SonOfRobin_multiplatform\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\runtimes\osx\native\libopenal.1.dylib
+C:\Users\glonf\Downloads\SonOfRobin_multiplatform\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\runtimes\win-x64\native\SDL2.dll
+C:\Users\glonf\Downloads\SonOfRobin_multiplatform\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\runtimes\win-x64\native\soft_oal.dll
+C:\Users\glonf\Downloads\SonOfRobin_multiplatform\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\runtimes\win-x86\native\SDL2.dll
+C:\Users\glonf\Downloads\SonOfRobin_multiplatform\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\runtimes\win-x86\native\soft_oal.dll
+C:\Users\glonf\Downloads\SonOfRobin_multiplatform\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\SonOfRobin.Core.dll
+C:\Users\glonf\Downloads\SonOfRobin_multiplatform\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\SonOfRobin.Core.pdb
+C:\Users\glonf\Downloads\SonOfRobin_multiplatform\SonOfRobin\SonOfRobin.DesktopGL\obj\Release\netcoreapp3.1\SonOfRobin.DesktopGL.csproj.AssemblyReference.cache
+C:\Users\glonf\Downloads\SonOfRobin_multiplatform\SonOfRobin\SonOfRobin.DesktopGL\obj\Release\netcoreapp3.1\SonOfRobin.DesktopGL.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\glonf\Downloads\SonOfRobin_multiplatform\SonOfRobin\SonOfRobin.DesktopGL\obj\Release\netcoreapp3.1\SonOfRobin.DesktopGL.AssemblyInfoInputs.cache
+C:\Users\glonf\Downloads\SonOfRobin_multiplatform\SonOfRobin\SonOfRobin.DesktopGL\obj\Release\netcoreapp3.1\SonOfRobin.DesktopGL.AssemblyInfo.cs
+C:\Users\glonf\Downloads\SonOfRobin_multiplatform\SonOfRobin\SonOfRobin.DesktopGL\obj\Release\netcoreapp3.1\SonOfRobin.DesktopGL.csproj.CoreCompileInputs.cache
+C:\Users\glonf\Downloads\SonOfRobin_multiplatform\SonOfRobin\SonOfRobin.DesktopGL\obj\Release\netcoreapp3.1\SonOfRobin.DesktopGL.dll
+C:\Users\glonf\Downloads\SonOfRobin_multiplatform\SonOfRobin\SonOfRobin.DesktopGL\obj\Release\netcoreapp3.1\SonOfRobin.DesktopGL.pdb
+C:\Users\glonf\Downloads\SonOfRobin_multiplatform\SonOfRobin\SonOfRobin.DesktopGL\obj\Release\netcoreapp3.1\SonOfRobin.DesktopGL.genruntimeconfig.cache
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\fonts\FreeSansBold12.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\fonts\FreeSansBold9.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\fonts\PixelMix.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\fonts\PressStart2P.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\fonts\Ubiquitous.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\8f296dbbaf43865bc29e99660fe7b5af.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\actor29rec4.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\attack_effect_sprite_sheets.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\backlight_1.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\backlight_2.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\backlight_3.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\backlight_4.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\crabs_big.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\crabs_small.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\demonmaid.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\demonmaid2.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\flowers.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\fox.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\frogs_big.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\frogs_small.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\heart_16x16.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\miss.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\NicePng_pine-tree-clipart-png_1446450.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\no_anim.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\palmtree_small.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\qYFvsmq.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\rabbits.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\recolor_pt2.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\tileb.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\tilees by guth_zpsfn3wpjdu.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\tile_19ba32a6.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\tile_custom01.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\virtual_button.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\virtual_button_pressed.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\virtual_joypad_background.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\virtual_joypad_stick.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\Content\gfx\zzz.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\SonOfRobin.DesktopGL.exe
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\SonOfRobin.DesktopGL.deps.json
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\SonOfRobin.DesktopGL.runtimeconfig.json
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\SonOfRobin.DesktopGL.runtimeconfig.dev.json
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\SonOfRobin.DesktopGL.dll
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\SonOfRobin.DesktopGL.pdb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\MonoGame.Framework.dll
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\runtimes\linux-x64\native\libSDL2-2.0.so.0
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\runtimes\linux-x64\native\libopenal.so.1
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\runtimes\osx\native\libSDL2-2.0.0.dylib
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\runtimes\osx\native\libopenal.1.dylib
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\runtimes\win-x64\native\SDL2.dll
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\runtimes\win-x64\native\soft_oal.dll
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\runtimes\win-x86\native\SDL2.dll
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\runtimes\win-x86\native\soft_oal.dll
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\SonOfRobin.Core.dll
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\SonOfRobin.Core.pdb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\obj\Release\netcoreapp3.1\SonOfRobin.DesktopGL.csproj.AssemblyReference.cache
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\obj\Release\netcoreapp3.1\SonOfRobin.DesktopGL.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\obj\Release\netcoreapp3.1\SonOfRobin.DesktopGL.AssemblyInfoInputs.cache
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\obj\Release\netcoreapp3.1\SonOfRobin.DesktopGL.AssemblyInfo.cs
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\obj\Release\netcoreapp3.1\SonOfRobin.DesktopGL.csproj.CoreCompileInputs.cache
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\obj\Release\netcoreapp3.1\SonOfRobin.DesktopGL.csproj.CopyComplete
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\obj\Release\netcoreapp3.1\SonOfRobin.DesktopGL.dll
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\obj\Release\netcoreapp3.1\SonOfRobin.DesktopGL.pdb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\obj\Release\netcoreapp3.1\SonOfRobin.DesktopGL.genruntimeconfig.cache

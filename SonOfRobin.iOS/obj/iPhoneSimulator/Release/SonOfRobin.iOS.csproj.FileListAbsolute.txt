@@ -1,0 +1,14 @@
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.iOS\bin\iPhoneSimulator\Release\SonOfRobin.iOS.exe
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.iOS\bin\iPhoneSimulator\Release\MonoGame.Framework.dll
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.iOS\bin\iPhoneSimulator\Release\SonOfRobin.Core.dll
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.iOS\bin\iPhoneSimulator\Release\SonOfRobin.Core.pdb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.iOS\obj\iPhoneSimulator\Release\actool\_PartialAppManifest.items
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.iOS\obj\iPhoneSimulator\Release\actool\_BundleResourceWithLogicalName.items
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.iOS\obj\iPhoneSimulator\Release\ibtool\_BundleResourceWithLogicalName.items
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.iOS\obj\iPhoneSimulator\Release\coremlc\_PartialAppManifest.items
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.iOS\obj\iPhoneSimulator\Release\coremlc\_BundleResourceWithLogicalName.items
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.iOS\obj\iPhoneSimulator\Release\optimized\
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.iOS\obj\iPhoneSimulator\Release\SonOfRobin.iOS.csproj.AssemblyReference.cache
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.iOS\obj\iPhoneSimulator\Release\SonOfRobin.iOS.csproj.CoreCompileInputs.cache
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.iOS\obj\iPhoneSimulator\Release\SonOfRobin.iOS.csproj.CopyComplete
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.iOS\obj\iPhoneSimulator\Release\SonOfRobin.iOS.exe

@@ -1,0 +1,2 @@
+MainPackage=C:\Users\glonf\Downloads\SonOfRobin_multiplatform\SonOfRobin\SonOfRobin.WindowsUWP\bin\WindowsUniversal\x64\Release\SonOfRobin.WindowsUWP_1.0.2.0_x64.appx
+SymbolPackage=C:\Users\glonf\Downloads\SonOfRobin_multiplatform\SonOfRobin\SonOfRobin.WindowsUWP\obj\x64\Release\Symbols\SonOfRobin.WindowsUWP_1.0.2.0_x64.appxsym

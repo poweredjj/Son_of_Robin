@@ -1,0 +1,27 @@
+﻿using Microsoft.Xna.Framework;
+
+namespace SonOfRobin
+
+{
+    public class TouchOverlay : Scene
+    {
+        public TouchOverlay() : base(inputType: InputTypes.Always, priority: 0, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: true, alwaysDraws: true, touchLayout: TouchLayout.Uninitialized)
+        { }
+
+        public override void Remove()
+        {
+            base.Remove();
+            VirtButton.RemoveAll();
+        }
+
+        public override void Update(GameTime gameTime)
+        { }
+
+        public override void Draw()
+        {
+            if (TouchInput.showSticks) TouchInput.dualStick.Draw(SonOfRobinGame.spriteBatch);
+            VirtButton.DrawAll();
+        }
+
+    }
+}

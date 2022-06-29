@@ -1,0 +1,16 @@
+{
+  "Version": 1,
+  "ProjectMap": {
+    "33f2b484-5c3e-4724-b7b9-79fb4009e952": {
+      "ProjectGuid": "33f2b484-5c3e-4724-b7b9-79fb4009e952",
+      "DisplayName": "SonOfRobin.Core",
+      "ColorIndex": 0
+    },
+    "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3": {
+      "ProjectGuid": "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3",
+      "DisplayName": "Różne pliki",
+      "ColorIndex": -1
+    }
+  },
+  "NextColorIndex": 1
+}
