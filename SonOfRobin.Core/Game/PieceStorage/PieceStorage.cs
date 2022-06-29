@@ -251,7 +251,7 @@ namespace SonOfRobin
             if (piece.GetType() == typeof(Player)) MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: "Dropping piece...", color: Color.White);
 
             // the piece should fall naturally to places, where player can go to
-            piece.sprite.allowedFields = new AllowedFields(world: world, rangeNameList: new List<AllowedFields.RangeName> { AllowedFields.RangeName.WaterShallow, AllowedFields.RangeName.WaterMedium, AllowedFields.RangeName.GroundAll });
+            piece.sprite.allowedFields = new AllowedFields(rangeNameList: new List<AllowedFields.RangeName> { AllowedFields.RangeName.WaterShallow, AllowedFields.RangeName.WaterMedium, AllowedFields.RangeName.GroundAll });
 
             bool freeSpotFound = piece.sprite.MoveToClosestFreeSpot(startPosition: this.storagePiece.sprite.position);
             if (freeSpotFound)

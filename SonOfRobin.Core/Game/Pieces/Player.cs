@@ -35,9 +35,7 @@ namespace SonOfRobin
                     Inventory invScene = (Inventory)scene;
                     if (invScene.layout == Inventory.Layout.SingleBottom || invScene.layout == Inventory.Layout.DualBottom)
                     {
-                        StorageSlot activeSlot = invScene.ActiveSlot;
-                        if (activeSlot == null) return null;
-                        return activeSlot.TopPiece;
+                        return invScene.SelectedPiece;
                     }
                 }
                 return null;
@@ -95,9 +93,10 @@ namespace SonOfRobin
 
         public PieceStorage toolStorage;
         public PieceStorage equipStorage;
-        public Player(World world, Vector2 position, AnimPkg animPackage, PieceTemplate.Name name, AllowedFields allowedFields, byte invWidth, byte invHeight, byte toolbarWidth, byte toolbarHeight, byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = false, int generation = 0) :
+        public Player(World world, Vector2 position, AnimPkg animPackage, PieceTemplate.Name name, AllowedFields allowedFields, byte invWidth, byte invHeight, byte toolbarWidth, byte toolbarHeight, string readableName, string description,
+            byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = false, int generation = 0) :
 
-            base(world: world, position: position, animPackage: animPackage, animSize: animSize, animName: animName, speed: speed, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedFields: allowedFields, floatsOnWater: floatsOnWater, mass: 50000, maxMassBySize: null, generation: generation, canBePickedUp: false, maxHitPoints: 200, fadeInAnim: false, placeAtBeachEdge: true, isShownOnMiniMap: true)
+            base(world: world, position: position, animPackage: animPackage, animSize: animSize, animName: animName, speed: speed, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedFields: allowedFields, floatsOnWater: floatsOnWater, mass: 50000, maxMassBySize: null, generation: generation, canBePickedUp: false, maxHitPoints: 200, fadeInAnim: false, placeAtBeachEdge: true, isShownOnMiniMap: true, readableName: readableName, description: description)
         {
             this.maxFedLevel = 40000;
             this.fedLevel = maxFedLevel;
@@ -427,7 +426,7 @@ namespace SonOfRobin
             this.activeState = State.PlayerControlledSleep;
 
             SolidColor solidColor = new SolidColor(color: Color.Black, viewOpacity: 0.75f, clearScreen: false);
-            solidColor.AddTransition(new Transition(type: Transition.TransType.In, duration: 20, scene: solidColor, blockInput: false, paramsToChange: new Dictionary<string, float> { { "opacity", 0f } }));
+            solidColor.AddTransition(new Transition(type: Transition.TransType.From, duration: 20, scene: solidColor, blockInput: false, paramsToChange: new Dictionary<string, float> { { "opacity", 0f } }));
 
             int fastForwardSpeed = 20;
             new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.TempoFastForward, delay: 20, executeHelper: fastForwardSpeed, turnOffInput: true);
@@ -460,7 +459,7 @@ namespace SonOfRobin
             Scene existingSolidColor = Scene.GetTopSceneOfType(typeof(SolidColor));
             if (existingSolidColor != null)
             {
-                existingSolidColor.AddTransition(new Transition(type: Transition.TransType.Out, duration: 20, scene: existingSolidColor, blockInput: false, paramsToChange: new Dictionary<string, float> { { "opacity", 0f } }, removeScene: true));
+                existingSolidColor.AddTransition(new Transition(type: Transition.TransType.To, duration: 20, scene: existingSolidColor, blockInput: false, paramsToChange: new Dictionary<string, float> { { "opacity", 0f } }, removeScene: true));
             }
 
             MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: "Waking up.");

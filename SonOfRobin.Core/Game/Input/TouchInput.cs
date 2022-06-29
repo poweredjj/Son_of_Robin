@@ -177,7 +177,7 @@ namespace SonOfRobin
                 case TouchLayout.MenuLeftReturn:
                     showSticks = false;
 
-                    xPos = 0.55f;
+                    xPos = 0.65f;
                     yPos = 0.85f;
                     new VirtButton(name: VButName.Return, label: "RETURN", colorPressed: Color.LightGreen, colorReleased: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
 
@@ -186,7 +186,7 @@ namespace SonOfRobin
                 case TouchLayout.MenuRightReturn:
                     showSticks = false;
 
-                    xPos = 0.45f;
+                    xPos = 0.06f;
                     yPos = 0.85f;
                     new VirtButton(name: VButName.Return, label: "RETURN", colorPressed: Color.LightGreen, colorReleased: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
 

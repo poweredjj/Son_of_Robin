@@ -18,7 +18,7 @@ namespace SonOfRobin
 
         public override string DisplayedText { get { return $"{this.name}: < {this.ActiveName} >"; } }
 
-        public Selector(Menu menu, string name, List<Object> valueList, Object targetObj, string propertyName, bool rebuildsMenu = false) : base(menu: menu, name: name, rebuildsMenu: rebuildsMenu)
+        public Selector(Menu menu, string name, List<Object> valueList, Object targetObj, string propertyName, bool rebuildsMenu = false, List<InfoWindow.TextEntry> infoTextList = null) : base(menu: menu, name: name, rebuildsMenu: rebuildsMenu, infoTextList: infoTextList)
         {
             this.targetObj = targetObj;
             this.propertyName = propertyName;
@@ -76,6 +76,12 @@ namespace SonOfRobin
             if (this.activeIndex >= this.valueDict.ToList().Count) this.activeIndex = 0;
 
             this.SetNewValueToTargetObject();
+        }
+
+        public override void Draw(bool active)
+        {
+            if (active) this.UpdateInfoWindow();
+            base.Draw(active);
         }
 
         public override void PreviousValue()

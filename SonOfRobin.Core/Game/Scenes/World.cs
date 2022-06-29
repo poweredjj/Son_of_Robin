@@ -210,6 +210,7 @@ namespace SonOfRobin
                 this.creationEnd = DateTime.Now;
                 this.creationDuration = this.creationEnd - this.creationStart;
                 Craft.PopulateAllCategories();
+                PieceInfo.CreateAllInfo(world: this);
 
                 MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"World creation time: {creationDuration:hh\\:mm\\:ss\\.fff}.", color: Color.GreenYellow);
 
@@ -719,7 +720,7 @@ namespace SonOfRobin
             {
                 float zoomScale = 0.7f;
 
-                this.AddTransition(new Transition(type: Transition.TransType.In, duration: 30, scene: this, blockInput: false, paramsToChange: new Dictionary<string, float> {
+                this.AddTransition(new Transition(type: Transition.TransType.From, duration: 30, scene: this, blockInput: false, paramsToChange: new Dictionary<string, float> {
                     { "posX", this.viewParams.posX - (this.camera.ScreenWidth * zoomScale * 0.25f) },
                     { "posY", this.viewParams.posY - (this.camera.ScreenHeight * zoomScale * 0.25f) },
                     { "scaleX", this.viewParams.scaleX * zoomScale },
@@ -782,12 +783,15 @@ namespace SonOfRobin
 
             // analog camera control
 
-            if (TouchInput.RightStick.X != 0 || TouchInput.RightStick.Y != 0)
-            { this.analogCameraCorrection = new Vector2(TouchInput.RightStick.X / 30, TouchInput.RightStick.Y / 60); }
-            else
+            if (!this.demoMode && this.player.activeState != BoardPiece.State.PlayerControlledSleep)
             {
-                this.analogCameraCorrection = GamePad.GetState(index: (int)PlayerIndex.One, deadZoneMode: GamePadDeadZone.Circular).ThumbSticks.Right;
-                this.analogCameraCorrection = new Vector2(analogCameraCorrection.X * 10, analogCameraCorrection.Y * -10);
+                if (TouchInput.RightStick.X != 0 || TouchInput.RightStick.Y != 0)
+                { this.analogCameraCorrection = new Vector2(TouchInput.RightStick.X / 30, TouchInput.RightStick.Y / 60); }
+                else
+                {
+                    this.analogCameraCorrection = GamePad.GetState(index: (int)PlayerIndex.One, deadZoneMode: GamePadDeadZone.Circular).ThumbSticks.Right;
+                    this.analogCameraCorrection = new Vector2(analogCameraCorrection.X * 10, analogCameraCorrection.Y * -10);
+                }
             }
 
             // interact

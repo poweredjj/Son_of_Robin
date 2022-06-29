@@ -14,7 +14,7 @@ namespace SonOfRobin
             this.viewParams.opacity = viewOpacity;
             this.clearScreen = clearScreen;
 
-            if (inTrans) this.AddTransition(new Transition(type: Transition.TransType.In, duration: 30, scene: this, blockInput: false, paramsToChange: new Dictionary<string, float> { { "opacity", 0f } }, removeScene: true));
+            if (inTrans) this.AddTransition(new Transition(type: Transition.TransType.From, duration: 30, scene: this, blockInput: false, paramsToChange: new Dictionary<string, float> { { "opacity", 0f } }, removeScene: true));
         }
 
         public override void Update(GameTime gameTime)

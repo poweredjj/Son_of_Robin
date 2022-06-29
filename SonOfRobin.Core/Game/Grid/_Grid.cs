@@ -436,7 +436,7 @@ namespace SonOfRobin
             // in cases of sprites overlapping cell boundaries.
 
             var visibleSprites = this.GetSpritesInCameraView(camera: camera, groupName: Cell.Group.Visible);
-            var sortedSprites = visibleSprites.OrderBy(o => o.frame.layer).ThenBy(o => o.position.Y).ToList();
+            var sortedSprites = visibleSprites.OrderBy(o => o.frame.layer).ThenBy(o => o.gfxRect.Bottom).ToList();
 
             foreach (Sprite sprite in sortedSprites)
             { sprite.Draw(); }

@@ -33,6 +33,25 @@ namespace SonOfRobin
         }
         public Vector2 DrawPos { get { return new Vector2(this.drawPosX, this.drawPosY); } }
 
+        public bool IsInTheLeftHalf
+        {
+            get
+            {
+                float sceneCenter = this.posX + (this.width / 2f);
+                float screenCenter = SonOfRobinGame.VirtualWidth * this.scaleX / 2f;
+                return sceneCenter < screenCenter;
+            }
+        }
+        public bool IsIntTheTopHalf
+        {
+            get
+            {
+                float sceneCenter = this.posY + (this.height / 2f);
+                float screenCenter = SonOfRobinGame.VirtualHeight * this.scaleY / 2f;
+                return sceneCenter < screenCenter;
+            }
+        }
+
         public ViewParams()
         { this.ResetValues(); }
 

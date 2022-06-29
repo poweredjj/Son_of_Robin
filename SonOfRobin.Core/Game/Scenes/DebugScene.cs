@@ -75,7 +75,7 @@ namespace SonOfRobin
 
         public Transition GetTransition(bool inTrans)
         {
-            Transition.TransType transType = inTrans ? Transition.TransType.In : Transition.TransType.Out;
+            Transition.TransType transType = inTrans ? Transition.TransType.From : Transition.TransType.To;
             bool removeScene = !inTrans;
 
             int width = this.viewParams.width == SonOfRobinGame.VirtualWidth ? 300 : this.viewParams.width;
@@ -89,15 +89,15 @@ namespace SonOfRobin
             //if (Keyboard.HasBeenPressed(Keys.Escape)) SonOfRobinGame.quitGame = true;
 
 
-            if (Keyboard.HasBeenPressed(Keys.D1))
+            if (Keyboard.IsPressed(Keys.D1))
             {
-                BoardPiece piece = PieceTemplate.CreateOnBoard(world: world, position: world.player.sprite.position, templateName: PieceTemplate.Name.CookingPot);
+                BoardPiece piece = PieceTemplate.CreateOnBoard(world: world, position: world.player.sprite.position, templateName: PieceTemplate.Name.GrassRegular);
                 if (piece.sprite.placedCorrectly) piece.sprite.MoveToClosestFreeSpot(world.player.sprite.position);
             }
 
             if (Keyboard.HasBeenPressed(Keys.D2))
             {
-                BoardPiece piece = PieceTemplate.CreateOnBoard(world: world, position: world.player.sprite.position, templateName: PieceTemplate.Name.RawMeat);
+                BoardPiece piece = PieceTemplate.CreateOnBoard(world: world, position: world.player.sprite.position, templateName: PieceTemplate.Name.TentBig);
                 if (piece.sprite.placedCorrectly) piece.sprite.MoveToClosestFreeSpot(world.player.sprite.position);
             }
 
@@ -238,16 +238,41 @@ namespace SonOfRobin
             if (Keyboard.HasBeenPressed(Keys.F6)) ProgressBar.ChangeValues(curVal: 1, maxVal: 5, text: "progressbar test\nsecond line\nand third line");
 
             if (Keyboard.HasBeenPressed(Keys.F7))
-            { world.player.pieceStorage.Resize(newWidth: 3, newHeight: 3); }
-
-            if (Keyboard.HasBeenPressed(Keys.F8))
-            { world.player.pieceStorage.Resize(newWidth: 8, newHeight: 6); }
-
-            if (Keyboard.HasBeenPressed(Keys.F9))
             { world.player.buffEngine.AddBuff(buff: new BuffEngine.Buff(world: world, type: BuffEngine.BuffType.Speed, value: 20f, autoRemoveDelay: 180)); }
 
+            if (Keyboard.HasBeenPressed(Keys.F8))
+            {
+                InfoWindow infoWindow = InfoWindow.GetTopInfoWindow();
+                if (infoWindow != null)
+                {
+                    infoWindow.TurnOn(newPosX: 100, newPosY: 100, entryList: new List<InfoWindow.TextEntry> {
+                        new InfoWindow.TextEntry(text: "First line.", color: Color.White),
+                        new InfoWindow.TextEntry(text: "Second line.", color: Color.Green),
+                        new InfoWindow.TextEntry(text: "And this is third line.", color: Color.LightBlue),
+                    });
+                }
+            }
+
+            if (Keyboard.HasBeenPressed(Keys.F9))
+            {
+                InfoWindow infoWindow = InfoWindow.GetTopInfoWindow();
+                if (infoWindow != null)
+                {
+                    infoWindow.TurnOn(newPosX: 0, newPosY: 0,
+                        entryList: new List<InfoWindow.TextEntry> {
+                        new InfoWindow.TextEntry(text: "First line.", color: Color.White, scale: 2f),
+                        new InfoWindow.TextEntry(text: "Second line.", color: Color.Green),
+                        new InfoWindow.TextEntry(text: "And this is third line.", color: Color.LightBlue),
+                        new InfoWindow.TextEntry(text: "This window should be at 0,0.", color: Color.Yellow),
+                    });
+                }
+            }
+
             if (Keyboard.HasBeenPressed(Keys.F10))
-            { world.player.buffEngine.AddBuff(buff: new BuffEngine.Buff(world: world, type: BuffEngine.BuffType.MaxHp, value: 20f, autoRemoveDelay: 300)); }
+            {
+                InfoWindow infoWindow = InfoWindow.GetTopInfoWindow();
+                if (infoWindow != null) infoWindow.TurnOff();
+            }
 
             if (Keyboard.HasBeenPressed(Keys.F11))
             { world.player.buffEngine.AddBuff(buff: new BuffEngine.Buff(world: world, type: BuffEngine.BuffType.EnableMap, value: null, autoRemoveDelay: 200)); }

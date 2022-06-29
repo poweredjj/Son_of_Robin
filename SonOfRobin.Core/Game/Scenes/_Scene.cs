@@ -268,7 +268,6 @@ namespace SonOfRobin
             sceneStack = sceneStack.Where(scene => scene != this).ToList();
             sceneStack.Add(this);
         }
-
         public void MoveDown()
         { this.MoveUpOrDown(down: true); }
 
@@ -402,6 +401,8 @@ namespace SonOfRobin
 
             foreach (Scene scene in DrawStack)
             {
+                if (scene.viewParams.opacity == 0f) continue;
+
                 bool createNewMatrix = !firstSpriteBatchStarted ||
                                       (!(scene.viewParams.DrawPos == previousScene.viewParams.DrawPos &&
                                          scene.viewParams.drawRot == previousScene.viewParams.drawRot &&

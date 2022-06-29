@@ -7,7 +7,6 @@ namespace SonOfRobin
 {
     class CraftInvoker : Invoker
     {
-
         private readonly Craft.Recipe recipe;
         private readonly PieceStorage storage;
         public CraftInvoker(Menu menu, string name, Scheduler.TaskName taskName, Craft.Recipe recipe, PieceStorage storage, Object executeHelper = null, bool closesMenu = false, bool rebuildsMenu = false) : base(menu: menu, name: name, taskName: taskName, executeHelper: executeHelper, closesMenu: closesMenu, rebuildsMenu: rebuildsMenu)
@@ -25,12 +24,16 @@ namespace SonOfRobin
         {
             bool canBeCrafted = recipe.CheckIfStorageContainsAllIngredients(storage);
 
-            Color notAvailableColor = Color.Black;
+            if (active)
+            {
+                this.UpdateInfoText();
+                this.UpdateInfoWindow();
+            }
+
             this.GetOpacity(active: active);
             float opacityFade = this.OpacityFade;
             Rectangle outerEntryRect = this.Rect;
             if (active || opacityFade > 0) SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, outerEntryRect, this.rectColor * opacityFade * 2);
-            Color txtCol = active ? this.textColor : this.rectColor;
 
             float innerMargin = outerEntryRect.Height * 0.1f;
             Rectangle innerEntryRect = new Rectangle(outerEntryRect.X + (int)innerMargin, outerEntryRect.Y + (int)innerMargin, outerEntryRect.Width - (int)(innerMargin * 2), outerEntryRect.Height - (int)(innerMargin * 2));
@@ -80,7 +83,7 @@ namespace SonOfRobin
                 string pieceTxt = pieceTxts[i];
                 int pieceCounter = pieceCounters[i];
                 bgColor = bgColors[i];
-                frame = Craft.framesToDisplay[pieceName];
+                frame = PieceInfo.info[pieceName].frame;
 
                 pieceRect = new Rectangle(innerEntryRect.X + ((rectWidth + margin) * i), innerEntryRect.Y, rectWidth, innerEntryRect.Height);
 
@@ -90,6 +93,24 @@ namespace SonOfRobin
                 this.DrawFrameAndText(frame: frame, cellRect: pieceRect, gfxCol: Color.White, txtCol: Color.White, text: pieceTxt);
                 Inventory.DrawQuantity(pieceCount: pieceCounter, destRect: pieceRect, opacity: this.menu.viewParams.drawOpacity, ignoreSingle: false);
             }
+        }
+        private void UpdateInfoText()
+        {
+            PieceInfo.Info pieceInfo = PieceInfo.info[recipe.pieceToCreate];
+            bool canBeCrafted = recipe.CheckIfStorageContainsAllIngredients(storage);
+
+            var entryList = new List<InfoWindow.TextEntry> {
+                new InfoWindow.TextEntry(text: pieceInfo.readableName, color: Color.White, scale: 1.5f),
+                new InfoWindow.TextEntry(text: pieceInfo.description, color: Color.White)};
+
+            if (pieceInfo.buffList != null)
+            {
+                foreach (BuffEngine.Buff buff in pieceInfo.buffList)
+                { entryList.Add(new InfoWindow.TextEntry(text: buff.Description, color: Color.Cyan, scale: 1f)); }
+            }
+            if (!canBeCrafted) entryList.Add(new InfoWindow.TextEntry(text: "Not enough ingredients.", color: Color.OrangeRed, scale: 1f));
+
+            this.infoTextList = entryList;
         }
 
         private void DrawFrameAndText(AnimFrame frame, Rectangle cellRect, string text, Color txtCol, Color gfxCol)
@@ -113,13 +134,11 @@ namespace SonOfRobin
             float textScale = Math.Min(maxTextWidth / textSize.X, maxTextHeight / textSize.Y);
 
             Vector2 textPos = new Vector2(
-                              containingRect.Center.X - (textSize.X / 2 * textScale),
-                              containingRect.Center.Y - (textSize.Y / 2 * textScale));
+                containingRect.Center.X - (textSize.X / 2 * textScale),
+                containingRect.Center.Y - (textSize.Y / 2 * textScale));
 
             SonOfRobinGame.spriteBatch.DrawString(font, text, position: textPos, color: txtCol * menu.viewParams.opacity, origin: Vector2.Zero, scale: textScale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
-
         }
-
 
     }
 }

@@ -38,9 +38,9 @@ namespace SonOfRobin
 
         public float MaxMassPercentage { get { return this.Mass / this.maxMass; } }
 
-        public Animal(World world, Vector2 position, AnimPkg animPackage, PieceTemplate.Name name, AllowedFields allowedFields, Dictionary<byte, int> maxMassBySize, int mass, int maxMass, byte awareness, bool female, int maxAge, int matureAge, uint pregnancyDuration, byte maxChildren, float maxStamina, int maxHitPoints, ushort sightRange, List<PieceTemplate.Name> eats, List<PieceTemplate.Name> isEatenBy, int strength, float massBurnedMultiplier, byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = false, int generation = 0, Yield yield = null, bool fadeInAnim = true) :
+        public Animal(World world, Vector2 position, AnimPkg animPackage, PieceTemplate.Name name, AllowedFields allowedFields, Dictionary<byte, int> maxMassBySize, int mass, int maxMass, byte awareness, bool female, int maxAge, int matureAge, uint pregnancyDuration, byte maxChildren, float maxStamina, int maxHitPoints, ushort sightRange, string readableName, string description, List<PieceTemplate.Name> eats, List<PieceTemplate.Name> isEatenBy, int strength, float massBurnedMultiplier, byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = false, int generation = 0, Yield yield = null, bool fadeInAnim = true) :
 
-            base(world: world, position: position, animPackage: animPackage, mass: mass, animSize: animSize, animName: animName, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedFields: allowedFields, floatsOnWater: floatsOnWater, maxMassBySize: maxMassBySize, generation: generation, speed: speed, maxAge: maxAge, maxHitPoints: maxHitPoints, yield: yield, fadeInAnim: fadeInAnim, isShownOnMiniMap: true)
+            base(world: world, position: position, animPackage: animPackage, mass: mass, animSize: animSize, animName: animName, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedFields: allowedFields, floatsOnWater: floatsOnWater, maxMassBySize: maxMassBySize, generation: generation, speed: speed, maxAge: maxAge, maxHitPoints: maxHitPoints, yield: yield, fadeInAnim: fadeInAnim, isShownOnMiniMap: true, readableName: readableName, description: description)
         {
             this.activeState = State.AnimalAssessSituation;
             this.target = null;
@@ -207,7 +207,7 @@ namespace SonOfRobin
 
             // looking for food
 
-            var foodList = seenPieces.Where(piece => this.eats.Contains(piece.name) && piece.exists && piece.Mass > 0 && this.sprite.allowedFields.CanStandHere(position: piece.sprite.position)).ToList();
+            var foodList = seenPieces.Where(piece => this.eats.Contains(piece.name) && piece.exists && piece.Mass > 0 && this.sprite.allowedFields.CanStandHere(world: this.world, position: piece.sprite.position)).ToList();
 
             BoardPiece foodPiece = null;
 
@@ -310,7 +310,7 @@ namespace SonOfRobin
                         Math.Min(Math.Max((int)this.sprite.position.X + this.world.random.Next(-2000, 2000), 0), this.world.width - 1),
                         Math.Min(Math.Max((int)this.sprite.position.Y + this.world.random.Next(-2000, 2000), 0), this.world.height - 1)
                     };
-                    if (this.sprite.allowedFields.CanStandHere(position: new Vector2(coordinates[0], coordinates[1])))
+                    if (this.sprite.allowedFields.CanStandHere(world: this.world, position: new Vector2(coordinates[0], coordinates[1])))
                     {
                         this.aiData.SetCoordinates(coordinates);
                         break;

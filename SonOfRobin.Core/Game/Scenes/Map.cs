@@ -118,7 +118,7 @@ namespace SonOfRobin
 
         public Transition GetTransition(bool inTrans)
         {
-            Transition.TransType transType = inTrans ? Transition.TransType.In : Transition.TransType.Out;
+            Transition.TransType transType = inTrans ? Transition.TransType.From : Transition.TransType.To;
             bool turnOffDraw = !inTrans;
             bool turnOffUpdate = !inTrans;
 

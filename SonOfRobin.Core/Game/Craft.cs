@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace SonOfRobin
 {
@@ -19,7 +18,6 @@ namespace SonOfRobin
                 this.pieceToCreate = pieceToCreate;
                 this.amountToCreate = amountToCreate;
                 this.ingredients = ingredients;
-                this.AddFramesToDisplay();
                 if (isReversible) this.ConvertToYield();
             }
 
@@ -36,22 +34,6 @@ namespace SonOfRobin
                 Yield.antiCraft[this.pieceToCreate] = new Yield(firstDroppedPieces: new List<Yield.DroppedPiece> { }, finalDroppedPieces: finalDroppedPieces);
             }
 
-            private void AddFramesToDisplay()
-            {
-                var namesToBeAdded = new List<PieceTemplate.Name> { };
-                namesToBeAdded.AddRange(this.ingredients.Keys.ToList());
-                namesToBeAdded.Add(this.pieceToCreate);
-
-                World world = World.GetTopWorld();
-
-                foreach (PieceTemplate.Name name in namesToBeAdded)
-                {
-                    if (framesToDisplay.ContainsKey(name)) continue;
-
-                    BoardPiece piece = PieceTemplate.CreateOffBoard(templateName: name, world: world);
-                    framesToDisplay[name] = piece.sprite.frame;
-                }
-            }
             public bool CheckIfStorageContainsAllIngredients(PieceStorage storage)
             { return storage.CheckIfContainsSpecifiedPieces(quantityByPiece: this.ingredients); }
 
@@ -79,7 +61,10 @@ namespace SonOfRobin
                     {
                         MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"Could not create '{piece.name}' on the board. Attempting to craft directly to storage.");
                         piece = PieceTemplate.CreateOffBoard(templateName: this.pieceToCreate, world: storage.world);
-                        if (piece.sprite.placedCorrectly) { storage.AddPiece(piece: PieceTemplate.CreateOffBoard(templateName: this.pieceToCreate, world: storage.world), dropIfDoesNotFit: true); }
+                        if (piece.sprite.placedCorrectly)
+                        {
+                            storage.AddPiece(piece: PieceTemplate.CreateOffBoard(templateName: this.pieceToCreate, world: storage.world), dropIfDoesNotFit: true);
+                        }
                         else
                         {
                             MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"A second attempt to craft '{piece.name}' has failed.");
@@ -97,8 +82,6 @@ namespace SonOfRobin
 
         public static bool categoriesCreated = false;
         public static Dictionary<Category, List<Recipe>> recipesByCategory = new Dictionary<Category, List<Recipe>> { };
-
-        public static Dictionary<PieceTemplate.Name, AnimFrame> framesToDisplay = new Dictionary<PieceTemplate.Name, AnimFrame> { }; // used to draw images of ingredients and pieces to craft
 
         public static Recipe GetRecipe(PieceTemplate.Name templateName)
         {

@@ -57,16 +57,20 @@ namespace SonOfRobin
         {
             get
             {
+                float maxTextWidth = SonOfRobinGame.VirtualWidth * entryWidthPercent;
+                float maxTextHeight = SonOfRobinGame.VirtualHeight * entryHeightPercent;
+                Vector2 labelSize;
+                float textScale;
                 float minScale = 9999f;
 
                 foreach (ContextAction action in this.actionList)
                 {
-                    Vector2 labelSize = font.MeasureString(this.GetActionLabel(action));
-                    float maxTextWidth = SonOfRobinGame.VirtualWidth * entryWidthPercent;
-                    float maxTextHeight = SonOfRobinGame.VirtualHeight * entryHeightPercent;
-                    float textScale = Math.Min(maxTextWidth / labelSize.X, maxTextHeight / labelSize.Y);
+                    labelSize = font.MeasureString(this.GetActionLabel(action));
+                    textScale = Math.Min(maxTextWidth / labelSize.X, maxTextHeight / labelSize.Y);
                     if (textScale < minScale) minScale = textScale;
                 }
+
+                if (SonOfRobinGame.platform == Platform.Desktop) minScale *= 0.7f;
 
                 return minScale;
             }
@@ -76,8 +80,8 @@ namespace SonOfRobin
         {
             get
             {
-                float maxEncounteredtWidth = 0f;
-                float maxEncounteredtHeight = 0f;
+                float maxEncounteredWidth = 0f;
+                float maxEncounteredHeight = 0f;
                 float textScale = this.TextScale;
                 float textWidth, textHeight;
 
@@ -87,11 +91,11 @@ namespace SonOfRobin
                     textWidth = labelSize.X * textScale;
                     textHeight = labelSize.Y * textScale;
 
-                    if (textWidth > maxEncounteredtWidth) maxEncounteredtWidth = textWidth;
-                    if (textHeight > maxEncounteredtHeight) maxEncounteredtHeight = textHeight;
+                    if (textWidth > maxEncounteredWidth) maxEncounteredWidth = textWidth;
+                    if (textHeight > maxEncounteredHeight) maxEncounteredHeight = textHeight;
                 }
 
-                return new Vector2(maxEncounteredtWidth, maxEncounteredtHeight);
+                return new Vector2(maxEncounteredWidth, maxEncounteredHeight);
             }
         }
 
@@ -110,7 +114,7 @@ namespace SonOfRobin
             }
         }
 
-        public PieceContextMenu(BoardPiece piece, PieceStorage storage, StorageSlot slot, float percentPosX, float percentPosY, bool addMove = false, bool addDrop = true, bool addCook = false) : base(inputType: InputTypes.Normal, priority: 1, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.PieceContext)
+        public PieceContextMenu(BoardPiece piece, PieceStorage storage, StorageSlot slot, float percentPosX, float percentPosY, bool addMove = false, bool addDrop = true, bool addCook = false) : base(inputType: InputTypes.Normal, priority: 0, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.PieceContext)
         {
             this.piece = piece;
             this.storage = storage;
@@ -123,7 +127,8 @@ namespace SonOfRobin
 
             this.UpdateViewSizes();
 
-            this.AddTransition(new Transition(type: Transition.TransType.In, duration: 8, scene: this, blockInput: false, paramsToChange: new Dictionary<string, float> { { "posY", this.viewParams.posY + SonOfRobinGame.VirtualHeight }, { "opacity", 0f } }));
+            this.AddTransition(new Transition(type: Transition.TransType.From, duration: 8, scene: this, blockInput: false, paramsToChange: new Dictionary<string, float> { { "posY", this.viewParams.posY + SonOfRobinGame.VirtualHeight }, { "opacity", 0f } }));
+
         }
 
         private List<ContextAction> GetContextActionList(bool addMove = false, bool addDrop = false, bool addCook = false)
@@ -144,7 +149,7 @@ namespace SonOfRobin
         {
             if (this.transition == null)
             {
-                this.AddTransition(new Transition(type: Transition.TransType.Out, duration: 8, scene: this, blockInput: true, paramsToChange: new Dictionary<string, float> { { "posY", this.viewParams.posY + SonOfRobinGame.VirtualHeight }, { "opacity", 0f } }, removeScene: true));
+                this.AddTransition(new Transition(type: Transition.TransType.To, duration: 8, scene: this, blockInput: true, paramsToChange: new Dictionary<string, float> { { "posY", this.viewParams.posY + SonOfRobinGame.VirtualHeight }, { "opacity", 0f } }, removeScene: true));
                 return;
             }
 
@@ -329,7 +334,7 @@ namespace SonOfRobin
             float margin = this.Margin;
             Vector2 maxEntrySize = this.MaxEntrySize;
 
-            SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, bgRect, Color.DodgerBlue * 1f * this.viewParams.drawOpacity);
+            SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, bgRect, Color.DodgerBlue * 0.9f * this.viewParams.drawOpacity);
             Helpers.DrawRectangleOutline(rect: bgRect, color: Color.White * this.viewParams.drawOpacity, borderWidth: 2);
 
             float textScale = this.TextScale;

@@ -30,7 +30,7 @@ namespace SonOfRobin
 
         public static void TurnOffBgColor()
         {
-            backgroundScene.AddTransition(new Transition(type: Transition.TransType.In, duration: 40, scene: backgroundScene, blockInput: false, paramsToChange: new Dictionary<string, float> { { "opacity", 0f } }, removeScene: true));
+            backgroundScene.AddTransition(new Transition(type: Transition.TransType.From, duration: 40, scene: backgroundScene, blockInput: false, paramsToChange: new Dictionary<string, float> { { "opacity", 0f } }, removeScene: true));
         }
 
         public static void TurnOnBgColor()
@@ -48,7 +48,7 @@ namespace SonOfRobin
         {
             active = false;
 
-            if (backgroundScene != null) backgroundScene.AddTransition(new Transition(type: Transition.TransType.Out, duration: 30, scene: backgroundScene, blockInput: false, paramsToChange: new Dictionary<string, float> { { "opacity", 0f } }, removeScene: true));
+            if (backgroundScene != null) backgroundScene.AddTransition(new Transition(type: Transition.TransType.To, duration: 30, scene: backgroundScene, blockInput: false, paramsToChange: new Dictionary<string, float> { { "opacity", 0f } }, removeScene: true));
         }
 
         public override void Update(GameTime gameTime)

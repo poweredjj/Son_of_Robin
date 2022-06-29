@@ -33,13 +33,16 @@ namespace SonOfRobin
                     new Separator(menu: menu, name: "", isEmpty: true);
 
                     if (SaveManager.AnySavesExist) new Invoker(menu: menu, name: "load game", taskName: Scheduler.TaskName.OpenLoadMenu);
-                    new Invoker(menu: menu, name: "create new island", taskName: Scheduler.TaskName.OpenCreateMenu);
-                    new Invoker(menu: menu, name: "options", taskName: Scheduler.TaskName.OpenOptionsMenu);
+                    new Invoker(menu: menu, name: "create new island", taskName: Scheduler.TaskName.OpenCreateMenu,
+                           infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: "start new game", color: Color.White, scale: 1f) });
+                    new Invoker(menu: menu, name: "options", taskName: Scheduler.TaskName.OpenOptionsMenu,
+                        infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: "options, settings, etc.", color: Color.White, scale: 1f) });
 
                     string text = $"Son of Robin {SonOfRobinGame.version.ToString().Replace(",", ".")}\nLast updated: {SonOfRobinGame.lastChanged:yyyy-MM-dd.}\n\nThis is a very early alpha version of the game.\nCode by Marcin Smidowicz.\nFastNoiseLite by Jordan Peck.\nStudies.Joystick by Luiz Ossinho.\nPNG library 'Big Gustave' by Eliot Jones.\nVarious free assets used.";
 
                     var textWindowData = new Dictionary<string, Object> { { "text", text }, };
-                    new Invoker(menu: menu, name: "about", taskName: Scheduler.TaskName.OpenTextWindow, executeHelper: textWindowData);
+                    new Invoker(menu: menu, name: "about", taskName: Scheduler.TaskName.OpenTextWindow, executeHelper: textWindowData,
+                        infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: "information about the game", color: Color.White, scale: 1f) });
 
                     if (SonOfRobinGame.platform != Platform.Mobile) new Invoker(menu: menu, name: "quit game", closesMenu: true, taskName: Scheduler.TaskName.QuitGame);
 
@@ -114,7 +117,10 @@ namespace SonOfRobin
                 case Name.Load:
                     menu = new Menu(templateName: templateName, name: "LOAD GAME", blocksUpdatesBelow: false, canBeClosedManually: true);
                     foreach (SaveInfo saveInfo in SaveManager.CorrectSaves)
-                    { new Invoker(menu: menu, name: saveInfo.FullDescription, closesMenu: true, taskName: Scheduler.TaskName.LoadGame, executeHelper: saveInfo.folderName); }
+                    {
+                        new Invoker(menu: menu, name: saveInfo.FullDescription, closesMenu: true, taskName: Scheduler.TaskName.LoadGame, executeHelper: saveInfo.folderName,
+                             infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: saveInfo.AdditionalInfo, color: Color.White, scale: 1f) });
+                    }
                     new Separator(menu: menu, name: "", isEmpty: true);
                     new Invoker(menu: menu, name: "return", closesMenu: true, taskName: Scheduler.TaskName.Empty);
                     return menu;
@@ -123,7 +129,8 @@ namespace SonOfRobin
                     menu = new Menu(templateName: templateName, name: "SAVE GAME", blocksUpdatesBelow: false, canBeClosedManually: true);
 
                     var saveParams = new Dictionary<string, Object> { { "saveSlotName", SaveManager.NewSaveSlotName }, { "showMessage", true } };
-                    new Invoker(menu: menu, name: "new save", taskName: Scheduler.TaskName.SaveGame, executeHelper: saveParams, rebuildsMenu: true);
+                    new Invoker(menu: menu, name: "new save", taskName: Scheduler.TaskName.SaveGame, executeHelper: saveParams, rebuildsMenu: true,
+                        infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: "make new save", color: Color.White, scale: 1f) });
                     new Separator(menu: menu, name: "", isEmpty: true);
 
                     foreach (SaveInfo saveInfo in SaveManager.CorrectSaves)
@@ -132,7 +139,8 @@ namespace SonOfRobin
                         {
                             saveParams = new Dictionary<string, Object> { { "saveSlotName", saveInfo.folderName }, { "showMessage", true } };
                             var confirmationData = new Dictionary<string, Object> { { "question", "The save will be overwritten. Continue?" }, { "taskName", Scheduler.TaskName.SaveGame }, { "executeHelper", saveParams } };
-                            new Invoker(menu: menu, name: saveInfo.FullDescription, taskName: Scheduler.TaskName.OpenConfirmationMenu, executeHelper: confirmationData, closesMenu: true);
+                            new Invoker(menu: menu, name: saveInfo.FullDescription, taskName: Scheduler.TaskName.OpenConfirmationMenu, executeHelper: confirmationData, closesMenu: true,
+                             infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: saveInfo.AdditionalInfo, color: Color.White, scale: 1f) });
                         }
                     }
 
@@ -164,7 +172,7 @@ namespace SonOfRobin
 
                     if (world != null && !world.demoMode) new Invoker(menu: menu, name: "create any piece", taskName: Scheduler.TaskName.OpenCreateAnyPieceMenu);
                     new Selector(menu: menu, name: "create missing pieces", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: new Preferences(), propertyName: "debugCreateMissingPieces");
-                    new Selector(menu: menu, name: "show whole map", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: new Preferences(), propertyName: "debugShowWholeMap");                 
+                    new Selector(menu: menu, name: "show whole map", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: new Preferences(), propertyName: "debugShowWholeMap");
                     new Selector(menu: menu, name: "show all items on map", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: new Preferences(), propertyName: "debugShowAllMapPieces");
                     new Invoker(menu: menu, name: "restore all hints", taskName: Scheduler.TaskName.RestoreHints);
                     new Selector(menu: menu, name: "god mode", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: new Preferences(), propertyName: "debugGodMode");
@@ -197,7 +205,7 @@ namespace SonOfRobin
         {
             PieceStorage storage = World.GetTopWorld().player.pieceStorage;
 
-            Menu menu = new Menu(templateName: templateName, name: label, blocksUpdatesBelow: false, canBeClosedManually: true, layout: Menu.Layout.Middle);
+            Menu menu = new Menu(templateName: templateName, name: label, blocksUpdatesBelow: false, canBeClosedManually: true, layout: SonOfRobinGame.platform == Platform.Mobile ? Menu.Layout.Right : Menu.Layout.Left, alwaysShowSelectedEntry: true);
             menu.bgColor = Color.LemonChiffon * 0.5f;
 
             var recipeList = Craft.recipesByCategory[category];

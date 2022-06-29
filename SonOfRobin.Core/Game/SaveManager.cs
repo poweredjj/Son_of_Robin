@@ -33,9 +33,14 @@ namespace SonOfRobin
             get
             {
                 string autoSaveString = this.autoSave ? " autosave" : "";
-                return $"{SaveDateString} time played: {ElapsedTimeString} seed: {this.seed} {this.width}x{this.height}{autoSaveString}";
+
+                if (SonOfRobinGame.platform == Platform.Mobile) return $"{SaveDateString} time played: {ElapsedTimeString}{autoSaveString} seed: {this.seed} {this.width}x{this.height}";
+                else return $"{SaveDateString}   time played: {ElapsedTimeString}{autoSaveString}";
             }
         }
+
+        public string AdditionalInfo
+        { get { return $"seed: {this.seed}   {this.width}x{this.height}"; } }
         public SaveInfo(string folderName)
         {
             this.folderName = folderName;

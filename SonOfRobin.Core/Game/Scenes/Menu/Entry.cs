@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Collections.Generic;
 
 namespace SonOfRobin
 {
@@ -16,7 +17,7 @@ namespace SonOfRobin
         public Color outlineColor;
         protected int lastFlashFrame = 0;
         protected readonly bool rebuildsMenu;
-
+        public List<InfoWindow.TextEntry> infoTextList;
         public virtual string DisplayedText { get { return this.name; } }
 
         public Vector2 Position
@@ -63,10 +64,9 @@ namespace SonOfRobin
                 return new Rectangle(x: (int)position.X, y: (int)position.Y - this.menu.CurrentScrollPosition, width: menu.EntryWidth, height: menu.EntryHeight);
             }
         }
-
         protected float OpacityFade { get { return Math.Max((float)this.lastFlashFrame - (float)SonOfRobinGame.currentUpdate, 0) * 0.015f; } }
 
-        public Entry(Menu menu, string name, bool rebuildsMenu = false)
+        public Entry(Menu menu, string name, bool rebuildsMenu = false, List<InfoWindow.TextEntry> infoTextList = null)
         {
             this.menu = menu;
             this.name = name;
@@ -75,6 +75,7 @@ namespace SonOfRobin
             this.textColor = Color.White;
             this.rectColor = Color.Black;
             this.outlineColor = Color.White;
+            this.infoTextList = infoTextList;
 
             this.menu.entryList.Add(this);
 
@@ -109,7 +110,6 @@ namespace SonOfRobin
             return opacity;
         }
 
-
         public virtual void Draw(bool active)
         {
             float opacity = this.GetOpacity(active: active);
@@ -128,10 +128,63 @@ namespace SonOfRobin
             float textScale = Math.Min(maxTextWidth / textSize.X, maxTextHeight / textSize.Y);
 
             Vector2 textPos = new Vector2(
-                              rect.Center.X - (textSize.X / 2 * textScale),
-                              rect.Center.Y - (textSize.Y / 2 * textScale));
+                rect.Center.X - (textSize.X / 2 * textScale),
+                rect.Center.Y - (textSize.Y / 2 * textScale));
 
             SonOfRobinGame.spriteBatch.DrawString(font, this.DisplayedText, position: textPos, color: this.textColor * opacity * menu.viewParams.opacity, origin: Vector2.Zero, scale: textScale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
+        }
+
+        protected void UpdateInfoWindow()
+        {
+            if (this.infoTextList == null || !this.menu.inputActive)
+            {
+                InfoWindow.TurnOffTopWindow();
+                return;
+            }
+
+            InfoWindow infoWindow = InfoWindow.GetTopInfoWindow();
+            if (infoWindow == null) return;
+
+            Vector2 windowPos;
+            Vector2 infoWindowSize = infoWindow.MeasureEntries(this.infoTextList);
+
+            Vector2 entryPos = this.Position;
+            ViewParams menuViewParams = this.menu.viewParams;
+            float margin = this.menu.EntryMargin;
+
+            switch (this.menu.layout)
+            {
+                case Menu.Layout.Middle:
+                    windowPos = new Vector2(
+                       menuViewParams.posX + menuViewParams.width - this.menu.ScrollbarWidth,
+                       menuViewParams.posY + entryPos.Y - this.menu.CurrentScrollPosition + (this.menu.EntryHeight / 2) - (infoWindowSize.Y / 2));
+                    break;
+
+                case Menu.Layout.Left:
+                    windowPos = new Vector2(
+                       menuViewParams.posX + menuViewParams.width - this.menu.ScrollbarWidth,
+                       menuViewParams.posY + entryPos.Y - this.menu.CurrentScrollPosition + (this.menu.EntryHeight / 2) - (infoWindowSize.Y / 2));
+                    break;
+
+                case Menu.Layout.Right:
+                    windowPos = new Vector2(
+                       menuViewParams.posX - infoWindowSize.X + this.menu.ScrollbarWidth,
+                       menuViewParams.posY + entryPos.Y - this.menu.CurrentScrollPosition + (this.menu.EntryHeight / 2) - (infoWindowSize.Y / 2));
+                    break;
+
+                default:
+                    throw new DivideByZeroException($"Unsupported layout - {this.menu.layout}.");
+            }
+
+            // keeping the window inside screen bounds
+            windowPos.X = Math.Max(windowPos.X, 0);
+            windowPos.Y = Math.Max(windowPos.Y, 0);
+            int maxX = (int)((SonOfRobinGame.VirtualWidth * infoWindow.viewParams.scaleX) - infoWindowSize.X);
+            int maxY = (int)((SonOfRobinGame.VirtualHeight * infoWindow.viewParams.scaleY) - infoWindowSize.Y);
+            windowPos.X = Math.Min(windowPos.X, maxX);
+            windowPos.Y = Math.Min(windowPos.Y, maxY);
+
+            infoWindow.TurnOn(newPosX: (int)windowPos.X, newPosY: (int)windowPos.Y, entryList: this.infoTextList, addTransition: true);
         }
 
     }

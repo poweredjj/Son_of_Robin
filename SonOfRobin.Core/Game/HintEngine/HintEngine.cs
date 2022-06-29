@@ -8,7 +8,7 @@ namespace SonOfRobin
     {
         public enum Type { Hungry, VeryHungry, Starving, Tired, VeryTired, CantShootInWater, CantUseToolInDeepWater, SmallInventory, MapNegative }
 
-        private static readonly int hintDelay = 60 * 60; // 60 * 60
+        private static readonly int hintDelay = 2 * 60 * 60; // 2 * 60 * 60
         private static readonly int blockInputDuration = 80;
 
         public List<Type> shownGeneralHints = new List<Type> { };

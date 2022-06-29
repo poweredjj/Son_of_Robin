@@ -11,7 +11,6 @@ namespace SonOfRobin
     public class Menu : Scene
     {
         public static bool nextMenuNoStartTransition = false;
-
         public enum Layout { Middle, Left, Right }
 
         public readonly MenuTemplate.Name templateName;
@@ -23,8 +22,10 @@ namespace SonOfRobin
         public int activeIndex;
         private float currentScrollPosition;
         private bool touchMode;
+        private readonly bool alwaysShowSelectedEntry;
         public readonly Layout layout;
         public Color bgColor;
+        public Entry lastTouchedEntry;
 
         public int EntryBgWidth
         {
@@ -33,13 +34,13 @@ namespace SonOfRobin
                 switch (this.layout)
                 {
                     case Layout.Middle:
-                        return Convert.ToInt32(SonOfRobinGame.VirtualWidth * 0.65f);
+                        return Convert.ToInt32(SonOfRobinGame.VirtualWidth * 0.7f);
 
                     case Layout.Left:
-                        return Convert.ToInt32(SonOfRobinGame.VirtualWidth * 0.5f);
+                        return Convert.ToInt32(SonOfRobinGame.VirtualWidth * 0.65f);
 
                     case Layout.Right:
-                        return Convert.ToInt32(SonOfRobinGame.VirtualWidth * 0.5f);
+                        return Convert.ToInt32(SonOfRobinGame.VirtualWidth * 0.65f);
 
                     default:
                         throw new DivideByZeroException($"Unsupported menu layout - {this.layout}.");
@@ -135,10 +136,12 @@ namespace SonOfRobin
                 currentScrollPosition += posDiff / 20f;
             }
         }
-        public Menu(MenuTemplate.Name templateName, bool blocksUpdatesBelow, bool canBeClosedManually, string name, Layout layout = Layout.Right, Scheduler.TaskName closingTask = Scheduler.TaskName.Empty, Object closingTaskHelper = null) : base(inputType: InputTypes.Normal, priority: 1, blocksUpdatesBelow: blocksUpdatesBelow, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, hidesSameScenesBelow: true, touchLayout: TouchLayout.Empty, tipsLayout: canBeClosedManually ? ControlTips.TipsLayout.Menu : ControlTips.TipsLayout.MenuWithoutClosing)
+        public Menu(MenuTemplate.Name templateName, bool blocksUpdatesBelow, bool canBeClosedManually, string name, bool alwaysShowSelectedEntry = false, Layout layout = Layout.Right, Scheduler.TaskName closingTask = Scheduler.TaskName.Empty, Object closingTaskHelper = null) : base(inputType: InputTypes.Normal, priority: 1, blocksUpdatesBelow: blocksUpdatesBelow, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, hidesSameScenesBelow: true, touchLayout: TouchLayout.Empty, tipsLayout: canBeClosedManually ? ControlTips.TipsLayout.Menu : ControlTips.TipsLayout.MenuWithoutClosing)
         {
             this.layout = layout;
+            this.alwaysShowSelectedEntry = alwaysShowSelectedEntry;
             this.touchMode = SonOfRobinGame.platform == Platform.Mobile;
+            this.lastTouchedEntry = null;
             this.templateName = templateName;
             this.name = name;
             this.activeIndex = -1; // dummy value, to be changed
@@ -184,6 +187,8 @@ namespace SonOfRobin
 
         public override void Remove()
         {
+            InfoWindow.TurnOffTopWindow();
+
             if (this.transition == null)
             {
                 Scene sceneBelow = this.GetSceneBelow();
@@ -210,7 +215,7 @@ namespace SonOfRobin
                             throw new DivideByZeroException($"Unsupported menu layout - {this.layout}.");
                     }
 
-                    this.AddTransition(new Transition(type: Transition.TransType.Out, duration: 12, scene: this, blockInput: false, paramsToChange: paramsToChange, removeScene: true));
+                    this.AddTransition(new Transition(type: Transition.TransType.To, duration: 12, scene: this, blockInput: true, paramsToChange: paramsToChange, removeScene: true));
                     return;
                 }
             }
@@ -286,7 +291,7 @@ namespace SonOfRobin
                         throw new DivideByZeroException($"Unsupported menu layout - {this.layout}.");
                 }
 
-                this.AddTransition(new Transition(type: Transition.TransType.In, duration: 12, scene: this, blockInput: false, paramsToChange: paramsToChange));
+                this.AddTransition(new Transition(type: Transition.TransType.From, duration: 12, scene: this, blockInput: false, paramsToChange: paramsToChange));
 
                 World topWorld = World.GetTopWorld();
                 if (topWorld != null && !topWorld.demoMode)
@@ -328,6 +333,9 @@ namespace SonOfRobin
             if (this.activeIndex == -1) this.NextItem(); // searching for first non-separator menu item
             this.CurrentScrollPosition = this.TargetScrollPosition;
             this.SetViewPosAndSize();
+
+            var activeEntry = this.ActiveEntry;
+            if (activeEntry.infoTextList != null && !activeEntry.IsVisible) InfoWindow.TurnOffTopWindow();
 
             this.ProcessInput();
         }
@@ -412,18 +420,22 @@ namespace SonOfRobin
             }
         }
 
+        public void SetActiveIndex(int index)
+        {
+            this.touchMode = false;
+            this.activeIndex = index;
+        }
+
         public override void Draw()
         {
             Rectangle rect = new Rectangle(0, 0, this.EntryBgWidth, SonOfRobinGame.VirtualHeight);
-
             SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, rect, this.bgColor);
 
             var visibleEntries = VisibleEntries;
-
             for (int i = 0; i < visibleEntries.Count; i++)
             {
                 Entry menuItem = visibleEntries[i];
-                bool itemActive = menuItem == this.ActiveEntry && !this.touchMode;
+                bool itemActive = menuItem == this.ActiveEntry && (this.alwaysShowSelectedEntry || !this.touchMode);
 
                 menuItem.Draw(active: itemActive);
             }

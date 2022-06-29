@@ -12,7 +12,7 @@ namespace SonOfRobin
         public List<BoardPiece> pieceList;
         public readonly byte posX;
         public readonly byte posY;
-        private readonly byte stackLimit;
+        public readonly byte stackLimit;
         public string label;
         public bool locked;
         public bool hidden;

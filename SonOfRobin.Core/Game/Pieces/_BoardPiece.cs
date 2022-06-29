@@ -63,6 +63,8 @@ namespace SonOfRobin
         protected int passiveRotation;
         protected readonly bool rotatesWhenDropped;
         private readonly int destructionDelay;
+        public readonly string readableName;
+        public readonly string description;
         public readonly bool serialize;
 
         public float Mass
@@ -103,7 +105,7 @@ namespace SonOfRobin
             }
         }
 
-        public BoardPiece(World world, Vector2 position, AnimPkg animPackage, PieceTemplate.Name name, AllowedFields allowedFields, Dictionary<byte, int> maxMassBySize,
+        public BoardPiece(World world, Vector2 position, AnimPkg animPackage, PieceTemplate.Name name, AllowedFields allowedFields, Dictionary<byte, int> maxMassBySize, string readableName, string description,
             byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, bool visible = true, ushort minDistance = 0, ushort maxDistance = 100, bool ignoresCollisions = false, int destructionDelay = 0, int maxAge = 0, bool floatsOnWater = false, bool checksFullCollisions = false, int generation = 0, int mass = 1, int staysAfterDeath = 800, float maxHitPoints = 1, byte stackSize = 1, Scheduler.TaskName boardTask = Scheduler.TaskName.Empty, Scheduler.TaskName toolbarTask = Scheduler.TaskName.Empty, bool canBePickedUp = false, Yield yield = null, bool indestructible = false, bool rotatesWhenDropped = false, bool fadeInAnim = false, bool serialize = true, bool placeAtBeachEdge = false, bool isShownOnMiniMap = false, List<BuffEngine.Buff> buffList = null)
         {
             this.world = world;
@@ -134,6 +136,8 @@ namespace SonOfRobin
             this.currentAge = 0;
             this.bioWear = 0; // 0 - 1 valid range
             this.efficiency = 1; // 0 - 1 valid range
+            this.readableName = readableName;
+            this.description = description;
             this.pieceStorage = null; // updated in child classes - if needed
             this.buffEngine = new BuffEngine(piece: this);
             this.buffList = buffList == null ? new List<BuffEngine.Buff> { } : buffList;

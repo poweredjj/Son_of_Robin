@@ -116,7 +116,7 @@ namespace SonOfRobin
 
                             if (yieldPiece.sprite.placedCorrectly)
                             {
-                                yieldPiece.sprite.allowedFields = new AllowedFields(world: world, rangeNameList: new List<AllowedFields.RangeName> { AllowedFields.RangeName.WaterShallow, AllowedFields.RangeName.WaterMedium, AllowedFields.RangeName.GroundAll }); // where player can go
+                                yieldPiece.sprite.allowedFields = new AllowedFields( rangeNameList: new List<AllowedFields.RangeName> { AllowedFields.RangeName.WaterShallow, AllowedFields.RangeName.WaterMedium, AllowedFields.RangeName.GroundAll }); // where player can go
 
                                 yieldPiece.sprite.MoveToClosestFreeSpot(startPosition: this.mainPiece.sprite.position);
 

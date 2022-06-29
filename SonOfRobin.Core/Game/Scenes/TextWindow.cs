@@ -98,7 +98,7 @@ namespace SonOfRobin
         private void AddInOutTransition(bool inTrans)
         {
             float zoomScale = 8f;
-            Transition.TransType transType = inTrans ? Transition.TransType.In : Transition.TransType.Out;
+            Transition.TransType transType = inTrans ? Transition.TransType.From : Transition.TransType.To;
             bool removeScene = !inTrans;
 
             this.AddTransition(new Transition(type: transType, duration: 10, scene: this, blockInput: false, removeScene: removeScene, paramsToChange: new Dictionary<string, float> {

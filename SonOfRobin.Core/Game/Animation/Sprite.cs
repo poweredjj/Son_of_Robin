@@ -479,7 +479,7 @@ namespace SonOfRobin
             // checking world boundaries
             if (this.gfxRect.Left <= 0 || this.gfxRect.Right >= this.world.width || this.gfxRect.Top <= 0 || this.gfxRect.Bottom >= this.world.height) return true;
             if (this.ignoresCollisions) return false;
-            if (!this.allowedFields.CanStandHere(position: this.position)) return true;
+            if (!this.allowedFields.CanStandHere(world: this.world, position: this.position)) return true;
 
             var gridTypeToCheck = this.checksFullCollisions ? Cell.Group.ColAll : Cell.Group.ColBlocking;
 
