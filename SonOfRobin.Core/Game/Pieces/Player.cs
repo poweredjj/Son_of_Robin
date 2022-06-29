@@ -181,10 +181,9 @@ namespace SonOfRobin
             base.Kill();
 
             this.world.colorOverlay.color = Color.DarkRed;
-            this.world.colorOverlay.viewParams.opacity = 0.75f;
-            this.world.colorOverlay.AddTransition(new Transition(type: Transition.TransType.From, duration: 200, scene: this.world.colorOverlay, blockInput: false, paramsToChange: new Dictionary<string, float> { { "opacity", 0f } }));
-
-            new Scheduler.Task(taskName: Scheduler.TaskName.CameraZoom, turnOffInput: true, delay: 0, executeHelper: 3f, menu: null);
+            this.world.colorOverlay.viewParams.Opacity = 0.75f;
+            this.world.colorOverlay.transManager.AddTransition(new Transition(transManager: this.world.colorOverlay.transManager, outTrans: false, baseParamName: "Opacity", targetVal: 0f, duration: 200));
+            new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetZoom, turnOffInput: true, delay: 0, executeHelper: new Dictionary<string, Object> { { "zoom", 3f } }, menu: null);
             new Scheduler.Task(taskName: Scheduler.TaskName.OpenGameOverMenu, turnOffInput: true, delay: 300, menu: null, executeHelper: null);
         }
 
@@ -281,7 +280,7 @@ namespace SonOfRobin
 
                 if (this.world.inputActive)
                 {
-                    Tutorials.ShowTutorial(type: Tutorials.Type.Interact, ignoreIfShown: true);
+                    Tutorials.ShowTutorial(type: Tutorials.Type.Interact, ignoreIfShown: true, ignoreDelay: false);
                     if (SonOfRobinGame.platform == Platform.Mobile) VirtButton.ButtonHighlightOnNextFrame(VButName.Interact);
                     ControlTips.TipHighlightOnNextFrame(tipName: "interact");
                 }
@@ -290,7 +289,7 @@ namespace SonOfRobin
             BoardPiece pieceToPickUp = this.ClosestPieceToPickUp;
             if (pieceToPickUp != null)
             {
-                if (this.world.inputActive) Tutorials.ShowTutorial(type: Tutorials.Type.PickUp, ignoreIfShown: true);
+                if (this.world.inputActive) Tutorials.ShowTutorial(type: Tutorials.Type.PickUp, ignoreIfShown: true, ignoreDelay: false);
                 pieceToPickUp.sprite.effectCol.AddEffect(new ColorizeInstance(color: Color.DodgerBlue));
                 pieceToPickUp.sprite.effectCol.AddEffect(new BorderInstance(outlineColor: Color.White, textureSize: pieceToPickUp.sprite.frame.originalTextureSize, priority: 0));
 
@@ -326,7 +325,11 @@ namespace SonOfRobin
 
             if (this.world.actionKeyList.Contains(World.ActionKeys.Interact))
             {
-                if (pieceToInteract != null) new Scheduler.Task(menu: null, taskName: pieceToInteract.boardTask, delay: 0, executeHelper: pieceToInteract);
+                if (pieceToInteract != null)
+                {
+                    this.world.hintEngine.Disable(Tutorials.Type.Interact);
+                    new Scheduler.Task(menu: null, taskName: pieceToInteract.boardTask, delay: 0, executeHelper: pieceToInteract);
+                }
             }
         }
 
@@ -456,7 +459,7 @@ namespace SonOfRobin
         {
             if (!this.CanSleepNow)
             {
-                new TextWindow(text: "I cannot sleep right now.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true);
+                new TextWindow(text: "I cannot sleep right now.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1);
                 return;
             }
             this.wentToSleepFrame = this.world.currentUpdate;
@@ -478,8 +481,8 @@ namespace SonOfRobin
             this.activeState = State.PlayerControlledSleep;
 
             this.world.colorOverlay.color = Color.Black;
-            this.world.colorOverlay.viewParams.opacity = 0.75f;
-            this.world.colorOverlay.AddTransition(new Transition(type: Transition.TransType.From, duration: 20, scene: this.world.colorOverlay, blockInput: false, paramsToChange: new Dictionary<string, float> { { "opacity", 0f } }));
+            this.world.colorOverlay.viewParams.Opacity = 0.75f;
+            this.world.colorOverlay.transManager.AddTransition(new Transition(transManager: this.world.colorOverlay.transManager, outTrans: false, baseParamName: "Opacity", targetVal: 0f, duration: 20));
 
             new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.TempoFastForward, delay: 22, executeHelper: 20, turnOffInput: true);
 
@@ -490,7 +493,7 @@ namespace SonOfRobin
         {
             if (!this.CanWakeNow && !force)
             {
-                new TextWindow(text: "You are too tired to wake up now.", textColor: Color.White, bgColor: Color.Red, useTransition: false, animate: false, checkForDuplicate: true);
+                new TextWindow(text: "You are too tired to wake up now.", textColor: Color.White, bgColor: Color.Red, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1);
                 return;
             }
 
@@ -512,7 +515,7 @@ namespace SonOfRobin
             SonOfRobinGame.game.IsFixedTimeStep = Preferences.FrameSkip;
             Scheduler.RemoveAllTasksOfName(Scheduler.TaskName.TempoFastForward); // to prevent fast forward, when waking up before this task was executed
 
-            this.world.colorOverlay.AddTransition(new Transition(type: Transition.TransType.To, duration: 20, scene: this.world.colorOverlay, blockInput: false, copyToBaseAtTheEnd: true, paramsToChange: new Dictionary<string, float> { { "opacity", 0f } }));
+            this.world.colorOverlay.transManager.AddTransition(new Transition(transManager: this.world.colorOverlay.transManager, outTrans: true, baseParamName: "Opacity", targetVal: 0f, duration: 20, endCopyToBase: true));
 
             MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: "Waking up.");
         }
@@ -592,6 +595,10 @@ namespace SonOfRobin
         {
             if (closestPiece == null) return;
 
+            this.world.hintEngine.Disable(Tutorials.Type.PickUp);
+
+            Tutorials.ShowTutorial(type: Tutorials.Type.Interact, ignoreIfShown: true, ignoreDelay: false);
+
             bool piecePickedUp = this.PickUpPiece(piece: closestPiece);
             if (piecePickedUp)
             {
@@ -602,6 +609,7 @@ namespace SonOfRobin
             else
             {
                 new TextWindow(text: "My inventory is full.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1, closingTask: Scheduler.TaskName.ShowHint, closingTaskHelper: HintEngine.Type.SmallInventory);
+
                 MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.User, message: $"Inventory full - cannot pick up {closestPiece.readableName}.");
             }
         }

@@ -7,9 +7,44 @@ namespace SonOfRobin
 {
     public class Preferences
     {
-        public static int newWorldWidth = 8000;
-        public static int newWorldHeight = 8000;
-        public static int newWorldSeed = -1;
+        public enum WorldSize { small, medium, large, gigantic, outrageous } // lower case, for proper display in menu
+
+        public static int newWorldWidth;
+        public static int newWorldHeight;
+
+        public static bool randomSeed = true;
+        public static char seedDigit1 = '0';
+        public static char seedDigit2 = '0';
+        public static char seedDigit3 = '0';
+        public static char seedDigit4 = '0';
+        public static int NewWorldSeed
+        {
+            get
+            {
+                if (randomSeed)
+                {
+                    Random oneTimeRandom = new Random();
+                    return oneTimeRandom.Next(0, 9999);
+                }
+                return Convert.ToInt32($"{seedDigit1}{seedDigit2}{seedDigit3}{seedDigit4}");
+            }
+        }
+
+        private static bool customizeWorld = false;
+        public static bool CustomizeWorld
+        {
+            get { return customizeWorld; }
+            set
+            {
+                customizeWorld = value;
+                if (!customizeWorld)
+                {
+                    SelectedWorldSize = selectedWorldSize;  // to restore base values
+                    randomSeed = true;
+                }
+            }
+        }
+
         private static bool debugMode = false;
         public static float globalScale = 1f;
         public static float menuScale = 1f;
@@ -23,7 +58,7 @@ namespace SonOfRobin
         public static int displayResX = 1920;
         public static int displayResY = 1080;
         public static bool showControlTips = true;
-        private static ButtonScheme.Type controlTipsScheme;
+        private static ButtonScheme.Type controlTipsScheme = ButtonScheme.Type.M;
         public static bool showHints = true;
 
         public static bool zoomedOut = false; // used to store virtual button value
@@ -32,12 +67,59 @@ namespace SonOfRobin
         public static bool debugUseMultipleThreads = true;
         public static bool debugShowRects = false;
         public static bool debugShowCellData = false;
+        public static bool debugShowAnimalTargets = false;
         public static bool debugShowStates = false;
         public static bool debugShowStatBars = false;
         public static bool debugShowFruitRects = false;
         public static bool debugCreateMissingPieces = true;
         public static bool debugShowWholeMap = false;
         public static bool debugShowAllMapPieces = false;
+        public static bool debugIgnoreCinematics = false;
+
+        private static WorldSize selectedWorldSize = WorldSize.medium;
+        public static WorldSize SelectedWorldSize
+        {
+            get { return selectedWorldSize; }
+            set
+            {
+                selectedWorldSize = value;
+
+                switch (selectedWorldSize)
+                {
+                    case WorldSize.small:
+                        newWorldWidth = 10000;
+                        newWorldHeight = 10000;
+                        break;
+
+                    case WorldSize.medium:
+                        newWorldWidth = 30000;
+                        newWorldHeight = 30000;
+                        break;
+
+                    case WorldSize.large:
+                        newWorldWidth = 40000;
+                        newWorldHeight = 40000;
+                        break;
+
+                    case WorldSize.gigantic:
+                        newWorldWidth = 60000;
+                        newWorldHeight = 60000;
+                        break;
+
+                    case WorldSize.outrageous:
+                        newWorldWidth = 80000;
+                        newWorldHeight = 80000;
+                        break;
+
+                    default:
+                        throw new ArgumentException($"Unsupported worldSize - {selectedWorldSize}.");
+
+                }
+
+                MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"Setting world size to {newWorldWidth}x{newWorldHeight}");
+
+            }
+        }
 
         private static bool debugGodMode = false;
         public static bool DebugGodMode
@@ -159,17 +241,22 @@ namespace SonOfRobin
                 loadWholeMap = true;
                 showControlTips = true;
             }
-
         }
 
         public static void Save()
         {
             var prefsData = new Dictionary<string, Object> { };
 
+            prefsData["debugMode"] = debugMode;
+            prefsData["customizeWorld"] = customizeWorld;
+            prefsData["selectedWorldSize"] = SelectedWorldSize;
             prefsData["newWorldWidth"] = newWorldWidth;
             prefsData["newWorldHeight"] = newWorldHeight;
-            prefsData["newWorldSeed"] = newWorldSeed;
-            prefsData["debugMode"] = debugMode;
+            prefsData["randomSeed"] = randomSeed;
+            prefsData["seedDigit1"] = seedDigit1;
+            prefsData["seedDigit2"] = seedDigit2;
+            prefsData["seedDigit3"] = seedDigit3;
+            prefsData["seedDigit4"] = seedDigit4;
             prefsData["globalScale"] = globalScale;
             prefsData["menuScale"] = menuScale;
             prefsData["worldScale"] = worldScale;
@@ -192,15 +279,23 @@ namespace SonOfRobin
 
         public static void Load()
         {
+            bool prefsLoaded = false;
+
             var prefsData = (Dictionary<string, Object>)FileReaderWriter.Load(path: SonOfRobinGame.prefsPath);
             if (prefsData != null)
             {
                 try
                 {
+                    debugMode = (bool)prefsData["debugMode"];
+                    CustomizeWorld = (bool)prefsData["customizeWorld"];
+                    SelectedWorldSize = (WorldSize)prefsData["selectedWorldSize"];
                     newWorldWidth = (int)prefsData["newWorldWidth"];
                     newWorldHeight = (int)prefsData["newWorldHeight"];
-                    newWorldSeed = (int)prefsData["newWorldSeed"];
-                    debugMode = (bool)prefsData["debugMode"];
+                    randomSeed = (bool)prefsData["randomSeed"];
+                    seedDigit1 = (char)prefsData["seedDigit1"];
+                    seedDigit2 = (char)prefsData["seedDigit2"];
+                    seedDigit3 = (char)prefsData["seedDigit3"];
+                    seedDigit4 = (char)prefsData["seedDigit4"];
                     globalScale = (float)prefsData["globalScale"];
                     menuScale = (float)prefsData["menuScale"];
                     worldScale = (float)prefsData["worldScale"];
@@ -215,9 +310,19 @@ namespace SonOfRobin
                     showControlTips = (bool)prefsData["showControlTips"];
                     showHints = (bool)prefsData["showHints"];
                     ControlTipsScheme = (ButtonScheme.Type)prefsData["controlTipsScheme"];
+
+                    prefsLoaded = true;
                 }
                 catch (KeyNotFoundException)
-                { MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: "KeyNotFoundException while loading preferences.", color: Color.White); }
+                {
+                    MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: "KeyNotFoundException while loading preferences.", color: Color.White);
+                }
+            }
+
+            if (!prefsLoaded)
+            {
+                CustomizeWorld = CustomizeWorld; // to refresh world sizes
+                ControlTipsScheme = ControlTipsScheme; // to load default control tips
             }
 
             if (SonOfRobinGame.platform == Platform.Mobile) fullScreenMode = true; // window mode makes no sense on mobile
@@ -245,6 +350,7 @@ namespace SonOfRobin
             }
 
         }
+
 
     }
 }

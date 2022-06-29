@@ -234,7 +234,7 @@ namespace SonOfRobin
 
             if (highlightOnly)
             {
-                Tutorials.ShowTutorial(type: Tutorials.Type.Hit, ignoreIfShown: true);
+                Tutorials.ShowTutorial(type: Tutorials.Type.Hit, ignoreIfShown: true, ignoreDelay: false);
                 targetPiece.sprite.effectCol.AddEffect(new BorderInstance(outlineColor: Color.Red, textureSize: targetPiece.sprite.frame.originalTextureSize, priority: 0));
 
                 if (SonOfRobinGame.platform == Platform.Mobile) VirtButton.ButtonHighlightOnNextFrame(VButName.UseTool);
@@ -242,6 +242,7 @@ namespace SonOfRobin
 
                 return;
             }
+            else this.world.hintEngine.Disable(Tutorials.Type.Hit);
 
             player.Stamina = Math.Max(player.Stamina - 50, 0);
 

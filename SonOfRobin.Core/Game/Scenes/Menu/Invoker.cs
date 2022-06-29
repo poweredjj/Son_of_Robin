@@ -35,8 +35,8 @@ namespace SonOfRobin
         public override void ProcessTouch()
         {
             Rectangle rect = this.Rect;
-            rect.X += (int)this.menu.viewParams.posX;
-            rect.Y += (int)this.menu.viewParams.posY;
+            rect.X += (int)this.menu.viewParams.PosX;
+            rect.Y += (int)this.menu.viewParams.PosY;
 
             foreach (TouchLocation touch in TouchInput.TouchPanelState)
             {

@@ -42,8 +42,7 @@ namespace SonOfRobin
         private readonly bool alwaysDraws;
 
         public ViewParams viewParams;
-        protected Transition transition;
-        public Transition Transition { get { return transition; } }
+        public readonly TransManager transManager;
 
         private readonly int sceneID;
         private static int sceneIdCounter = 0;
@@ -104,17 +103,6 @@ namespace SonOfRobin
             }
         }
 
-        public static List<Scene> TransitionStack
-        {
-            get
-            {
-                var createdStack = new List<Scene> { };
-                foreach (Scene scene in sceneStack)
-                { if (scene.transition != null) createdStack.Add(scene); }
-
-                return createdStack;
-            }
-        }
 
         public Matrix TransformMatrix
         {
@@ -141,6 +129,7 @@ namespace SonOfRobin
         public Scene(InputTypes inputType, TouchLayout touchLayout, ControlTips.TipsLayout tipsLayout, int priority = 1, bool blocksUpdatesBelow = false, bool blocksDrawsBelow = false, bool alwaysUpdates = false, bool alwaysDraws = false, bool hidesSameScenesBelow = false)
         {
             this.viewParams = new ViewParams();
+            this.transManager = new TransManager(scene: this);
             this.priority = priority;
             this.blocksUpdatesBelow = blocksUpdatesBelow;
             this.blocksDrawsBelow = blocksDrawsBelow;
@@ -163,6 +152,17 @@ namespace SonOfRobin
             sceneStack.Add(this);
 
             UpdateInputActiveTipsTouch(); // to avoid one frame delay in updating tips and touch overlay
+        }
+
+        public static void ResizeAllScenes()
+        {
+            foreach (Scene currentScene in sceneStack)
+            { currentScene.AdaptToNewSize(); }
+        }
+
+        protected virtual void AdaptToNewSize()
+        {
+            // Every scene should have its code that adapts to new screen size.
         }
 
         public virtual void Remove()
@@ -192,16 +192,6 @@ namespace SonOfRobin
         public void AddLinkedScenes(List<Scene> sceneList)
         { this.linkedScenes.AddRange(sceneList); }
 
-        public void AddTransition(Transition transition)
-        {
-            this.transition = transition;
-            transition.Update();
-        }
-
-        public void RemoveTransition()
-        { this.transition = null; }
-
-
         private void HideSameScenesBelow()
         {
             var existingScenesOfSameType = Scene.GetAllScenesOfType(this.GetType());
@@ -222,7 +212,7 @@ namespace SonOfRobin
             Scene previousScene = null;
             foreach (Scene scene in sceneStack)
             {
-                if (scene.transition != null && scene.transition.removeScene) continue;
+                if (scene.transManager.IsEnding) continue;
                 if (scene.priority < 1 && ignorePriorityLessThan1) continue;
                 if (scene == this) return previousScene;
                 previousScene = scene;
@@ -281,7 +271,7 @@ namespace SonOfRobin
         }
 
         public static List<Scene> GetAllScenesOfType(Type type)
-        { return sceneStack.Where(scene => scene.GetType().Name == type.Name && (scene.transition == null || !scene.transition.removeScene)).ToList(); }
+        { return sceneStack.Where(scene => scene.GetType().Name == type.Name && !scene.transManager.IsEnding).ToList(); }
 
         public static void RemoveAllScenesOfType(Type type)
         {
@@ -412,10 +402,9 @@ namespace SonOfRobin
             // transitions are updated independently from scene updates - to keep the transitions going even when scene.Update() is not processed
 
             foreach (Scene scene in sceneStack)
-            { scene.viewParams.CopyBaseToDrawParams(); } // all draw params should be reset at the start
-
-            foreach (Scene scene in TransitionStack)
-            { scene.transition.Update(); }
+            {
+                scene.transManager.Update();
+            }
         }
 
         public static void UpdateAllScenesInStack(GameTime gameTime)
@@ -452,7 +441,7 @@ namespace SonOfRobin
 
             foreach (Scene scene in DrawStack)
             {
-                if (scene.viewParams.opacity == 0f) continue;
+                if (scene.viewParams.drawOpacity == 0f) continue;
 
                 bool createNewMatrix = !firstSpriteBatchStarted ||
                                       (!(scene.viewParams.DrawPos == previousScene.viewParams.DrawPos &&

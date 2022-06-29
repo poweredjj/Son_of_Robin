@@ -11,17 +11,20 @@ namespace SonOfRobin
 
         public readonly string text;
         public readonly BoxType boxType;
+        public readonly int delay;
 
-        public HintMessage(string text, BoxType boxType)
+        public HintMessage(string text, BoxType boxType, int delay = 1)
         {
             this.text = text;
             this.boxType = boxType;
+            this.delay = delay;
         }
 
-        public HintMessage(string text)
+        public HintMessage(string text, int delay = 1)
         {
             this.text = text;
             this.boxType = BoxType.Dialogue;
+            this.delay = delay;
         }
 
         public Scheduler.Task ConvertToTask(bool useTransitionOpen = false, bool useTransitionClose = false)
@@ -67,11 +70,11 @@ namespace SonOfRobin
                 { "useTransition", false },
                 { "useTransitionOpen", useTransitionOpen },
                 { "useTransitionClose", useTransitionClose },
-                { "blocksUpdatesBelow", true },
+                { "blocksUpdatesBelow", false },
                 { "blockInputDuration", HintEngine.blockInputDuration }
             };
 
-            return new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.OpenTextWindow, turnOffInput: true, delay: 1, executeHelper: textWindowData, storeForLaterUse: true);
+            return new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.OpenTextWindow, turnOffInput: true, delay: this.delay, executeHelper: textWindowData, storeForLaterUse: true);
         }
 
         public static List<Object> ConvertToTasks(List<HintMessage> messageList)
@@ -100,7 +103,7 @@ namespace SonOfRobin
 
         public static readonly List<PieceHint> pieceHintList = new List<PieceHint>
         {
-                new PieceHint(type: Type.CrateStarting, fieldPieces: new List<PieceTemplate.Name> {PieceTemplate.Name.CrateStarting},
+                new PieceHint(type: Type.CrateStarting, fieldPieces: new List<PieceTemplate.Name> {PieceTemplate.Name.CrateStarting}, canBeForced: true,
                 messageList: new List<HintMessage> {
                     new HintMessage(text: "I've seen crates like this on the ship.\nIt could contain valuable supplies.\nI should try to break it open.", boxType: HintMessage.BoxType.Dialogue)},
                 tutorialsToActivate: new List<Tutorials.Type> {Tutorials.Type.BreakThing}),
@@ -290,17 +293,20 @@ namespace SonOfRobin
             else HintEngine.ShowMessageDuringPause(messagesToDisplay);
         }
 
-        public static bool CheckForHintToShow(HintEngine hintEngine, Player player, bool forcedMode = false, bool ignoreInputActive = false)
+        public static bool CheckForHintToShow(HintEngine hintEngine, Player player, bool forcedMode = false, bool ignoreInputActive = false, List<Type> typesToCheckOnly = null)
         {
             if (!player.world.inputActive && !ignoreInputActive) return false;
 
             MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: "Checking piece hints.");
+
 
             var fieldPiecesNearby = player.world.grid.GetPiecesWithinDistance(groupName: Cell.Group.All, mainSprite: player.sprite, distance: 200);
             fieldPiecesNearby = fieldPiecesNearby.OrderBy(piece => Vector2.Distance(player.sprite.position, piece.sprite.position)).ToList();
 
             foreach (PieceHint hint in pieceHintList)
             {
+                if (typesToCheckOnly != null && !typesToCheckOnly.Contains(hint.type)) continue;
+
                 if (!hintEngine.shownPieceHints.Contains(hint.type) && hint.CheckIfConditionsAreMet(player: player, fieldPiecesNearby: fieldPiecesNearby))
                 {
                     if (!forcedMode || hint.canBeForced)

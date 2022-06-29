@@ -16,20 +16,23 @@ namespace SonOfRobin
         private int IconMargin { get { return (int)(BarWidth * 0.03f); } }
 
         private bool IgnoreUpdateAndDraw
-        { get { return this.world.mapMode == World.MapMode.Big || this.world.player == null; } }
+        { get { return this.world.mapMode == World.MapMode.Big || this.world.cineMode || this.world.player == null; } }
 
 
         public PlayerPanel(World world) : base(inputType: InputTypes.None, priority: 1, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty)
         {
             this.world = world;
-
+            this.AdaptToNewSize();
         }
 
         public override void Update(GameTime gameTime)
         {
             if (this.IgnoreUpdateAndDraw) return;
+        }
 
-            this.viewParams.width = (int)this.BarWidth;
+        protected override void AdaptToNewSize()
+        {
+            this.viewParams.Width = (int)this.BarWidth;
             this.viewParams.CenterView(horizontally: true, vertically: false);
         }
 

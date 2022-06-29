@@ -59,7 +59,6 @@ namespace SonOfRobin
         public DateTime creationEnd;
         public TimeSpan creationDuration;
         public readonly bool demoMode;
-        public bool inTransitionPlayed;
 
         public int currentPieceId;
         public int currentBuffId;
@@ -68,6 +67,7 @@ namespace SonOfRobin
         public bool freePiecesPlacingMode; // allows to precisely place pieces during loading a saved game
         public bool createMissinPiecesOutsideCamera;
         public DateTime lastSaved;
+        public bool cineMode;
 
         public readonly int seed;
         public FastNoiseLite noise;
@@ -122,12 +122,12 @@ namespace SonOfRobin
                 return pieceCount;
             }
         }
-        public World(int width, int height, int seed = -1, Object saveGameData = null, bool demoMode = false) :
+        public World(int width, int height, int seed, Object saveGameData = null, bool demoMode = false) :
               base(inputType: InputTypes.Normal, priority: 1, blocksUpdatesBelow: true, blocksDrawsBelow: true, touchLayout: TouchLayout.QuitLoading, tipsLayout: ControlTips.TipsLayout.QuitLoading)
         {
             this.demoMode = demoMode;
+            this.cineMode = false;
             if (this.demoMode) this.InputType = InputTypes.None;
-            this.inTransitionPlayed = false;
             this.saveGameData = saveGameData;
             this.freePiecesPlacingMode = saveGameData != null;
             this.createMissinPiecesOutsideCamera = false;
@@ -135,11 +135,7 @@ namespace SonOfRobin
             this.creationInProgress = true;
             this.creationStart = DateTime.Now;
 
-            if (seed == -1)
-            {
-                Random oneTimeRandom = new Random();
-                seed = oneTimeRandom.Next(1, 100000);
-            }
+            if (seed < 0) throw new ArgumentException($"Seed value cannot be negative - {seed}.");
 
             this.seed = seed;
             this.random = new Random(seed);
@@ -154,6 +150,8 @@ namespace SonOfRobin
 
             this.width = width;
             this.height = height;
+            this.viewParams.Width = width; // it does not need to be updated, because world size is constant
+            this.viewParams.Height = height; // it does not need to be updated, because world size is constant
 
             this.pieceCountByName = new Dictionary<PieceTemplate.Name, int>();
             foreach (PieceTemplate.Name templateName in (PieceTemplate.Name[])Enum.GetValues(typeof(PieceTemplate.Name)))
@@ -182,7 +180,8 @@ namespace SonOfRobin
             this.AddLinkedScene(this.mapBig);
             this.AddLinkedScene(this.mapSmall);
             this.AddLinkedScene(new PlayerPanel(world: this));
-            this.colorOverlay = new SolidColor(color: this.demoMode ? Color.White : Color.Black, viewOpacity: this.demoMode ? 0.4f : 0.0f, clearScreen: false, priority: 1);
+
+            this.colorOverlay = new SolidColor(color: Color.White, viewOpacity: this.demoMode ? 0.4f : 0f, clearScreen: false, priority: 1);
             this.AddLinkedScene(colorOverlay);
 
             SonOfRobinGame.game.IsFixedTimeStep = false; // speeds up the creation process
@@ -212,7 +211,7 @@ namespace SonOfRobin
 
             else
             {
-                SonOfRobinGame.progressBar.TurnOff();
+                SonOfRobinGame.progressBar.TurnOff(addTransition: true);
                 this.touchLayout = TouchLayout.WorldMain;
                 this.tipsLayout = ControlTips.TipsLayout.WorldMain;
                 this.creationInProgress = false;
@@ -224,20 +223,23 @@ namespace SonOfRobin
 
                 MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"World creation time: {creationDuration:hh\\:mm\\:ss\\.fff}.", color: Color.GreenYellow);
 
-                if (this.saveGameData is null)
+                bool newGameStarted = this.saveGameData == null;
+
+                if (newGameStarted)
                 {
                     CreateMissingPieces(outsideCamera: false, multiplier: 1.0f);
 
                     this.currentFrame = 0;
                     this.currentUpdate = 0;
-                    if (!this.demoMode)
+
+                    if (this.demoMode) this.camera.TrackLiveAnimal();
+                    else
                     {
                         this.player = (Player)this.PlacePlayer();
 
                         BoardPiece crate = PieceTemplate.CreateOnBoard(world: this, position: this.player.sprite.position, templateName: PieceTemplate.Name.CrateStarting);
                         if (crate.sprite.placedCorrectly) crate.sprite.MoveToClosestFreeSpot(this.player.sprite.position);
                     }
-                    if (this.demoMode) this.camera.TrackLiveAnimal();
                 }
 
                 else
@@ -253,6 +255,7 @@ namespace SonOfRobin
 
                 this.grid.LoadAllTexturesInCameraView();
                 SonOfRobinGame.game.IsFixedTimeStep = Preferences.FrameSkip;
+                if (!this.demoMode && newGameStarted) this.hintEngine.ShowGeneralHint(type: HintEngine.Type.CineIntroduction, ignoreDelay: true);
             }
         }
 
@@ -367,7 +370,12 @@ namespace SonOfRobin
             for (int tryIndex = 0; tryIndex < 65535; tryIndex++)
             {
                 player = (Player)PieceTemplate.CreateOnBoard(world: this, position: new Vector2(random.Next(0, this.width), random.Next(0, this.height)), templateName: PieceTemplate.Name.Player);
-                if (player.sprite.placedCorrectly) return player;
+                if (player.sprite.placedCorrectly)
+                {
+                    player.sprite.orientation = Sprite.Orientation.up;
+                    player.sprite.CharacterStand();
+                    return player;
+                }
             }
 
             throw new DivideByZeroException("Cannot place player sprite.");
@@ -482,16 +490,18 @@ namespace SonOfRobin
 
         public void UpdateViewParams(float manualScale = 1f)
         {
-            this.viewParams.scaleX = manualScale;
-            this.viewParams.scaleY = manualScale;
+            this.viewParams.ScaleX = manualScale;
+            this.viewParams.ScaleY = manualScale;
 
             float scaleMultiplier = this.demoMode ? 2f : this.camera.currentZoom;
-            this.viewParams.scaleX *= 1 / (Preferences.worldScale * scaleMultiplier);
-            this.viewParams.scaleY *= 1 / (Preferences.worldScale * scaleMultiplier);
+            this.viewParams.ScaleX *= 1 / (Preferences.worldScale * scaleMultiplier);
+            this.viewParams.ScaleY *= 1 / (Preferences.worldScale * scaleMultiplier);
 
             this.camera.Update();
-            this.viewParams.posX = this.camera.viewPos.X;
-            this.viewParams.posY = this.camera.viewPos.Y;
+            this.viewParams.PosX = this.camera.viewPos.X;
+            this.viewParams.PosY = this.camera.viewPos.Y;
+
+            // width and height are set once in constructor
         }
 
         public override void Update(GameTime gameTime)
@@ -507,19 +517,6 @@ namespace SonOfRobin
 
             this.grid.UnloadTexturesIfMemoryLow();
             this.grid.LoadClosestTextureInCameraView();
-
-            if (!this.demoMode && !this.inTransitionPlayed)
-            {
-                float zoomScale = 0.7f;
-
-                this.AddTransition(new Transition(type: Transition.TransType.From, duration: 30, scene: this, blockInput: false, paramsToChange: new Dictionary<string, float> {
-                    { "posX", this.viewParams.posX - (this.camera.ScreenWidth * zoomScale * 0.25f) },
-                    { "posY", this.viewParams.posY - (this.camera.ScreenHeight * zoomScale * 0.25f) },
-                    { "scaleX", this.viewParams.scaleX * zoomScale },
-                    { "scaleY", this.viewParams.scaleY * zoomScale } },
-                    pingPongPause: true));
-                this.inTransitionPlayed = true;
-            }
 
             if (this.currentUpdate % 100 == 0 && Preferences.debugCreateMissingPieces) this.CreateMissingPieces(maxAmountToCreateAtOnce: 500, outsideCamera: true, multiplier: 0.05f);
             if (this.demoMode) this.camera.TrackLiveAnimal();
@@ -720,7 +717,7 @@ namespace SonOfRobin
         {
             if (!this.mapEnabled)
             {
-                if (!this.hintEngine.ShowGeneralHint(HintEngine.Type.MapNegative)) new TextWindow(text: "I don't have map equipped.", textColor: Color.Black, bgColor: Color.White);
+                if (!this.hintEngine.ShowGeneralHint(HintEngine.Type.MapNegative)) new TextWindow(text: "I don't have map equipped.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: InputTypes.None, blockInputDuration: 45, priority: 1); ;
                 return;
             }
 
@@ -858,6 +855,20 @@ namespace SonOfRobin
         {
             this.mapBig.dirtyFog = true;
             this.mapSmall.dirtyFog = true;
+        }
+
+        public void AddPauseMenuTransitions()
+        {
+            if (this.demoMode) return;
+
+            float zoomScale = 0.7f;
+
+            this.transManager.AddMultipleTransitions(paramsToChange: new Dictionary<string, float> {
+                { "PosX", this.viewParams.PosX - (this.camera.ScreenWidth * zoomScale * 0.25f) },
+                { "PosY", this.viewParams.PosY - (this.camera.ScreenHeight * zoomScale * 0.25f) },
+                { "ScaleX", this.viewParams.ScaleX * zoomScale },
+                { "ScaleY", this.viewParams.ScaleY * zoomScale }},
+               duration: 20, outTrans: true, requireInputActiveAtRepeats: true, playCount: 2, refreshBaseVal: true);
         }
 
         public override void Draw()

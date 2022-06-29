@@ -60,39 +60,38 @@ namespace SonOfRobin
 
         public StackView() : base(inputType: InputTypes.None, priority: -1, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: true, alwaysDraws: true, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty)
         {
-            this.AddTransition(this.GetTransition(inTrans: true));
+            this.transManager.AddTransition(this.GetTransition(inTrans: true));
+        }
+
+        protected override void AdaptToNewSize()
+        {
+            this.UpdateView();
         }
 
         public override void Remove()
         {
-            if (this.transition == null)
-            {
-                this.AddTransition(this.GetTransition(inTrans: false));
-                return;
-            }
-
-            base.Remove();
+            if (!this.transManager.IsEnding) this.transManager.AddTransition(this.GetTransition(inTrans: false));
+            else base.Remove();
         }
+
 
         public Transition GetTransition(bool inTrans)
         {
-            Transition.TransType transType = inTrans ? Transition.TransType.From : Transition.TransType.To;
-            bool removeScene = !inTrans;
             this.UpdateView();
 
-            return new Transition(type: transType, removeScene: removeScene, duration: 12, scene: this, paramsToChange: new Dictionary<string, float> { { "posX", this.viewParams.posX + this.viewParams.width } });
+            return new Transition(transManager: this.transManager, outTrans: !inTrans, baseParamName: "PosX", targetVal: this.viewParams.PosX + this.viewParams.Width, duration: 12, endRemoveScene: !inTrans);
         }
 
         public override void Update(GameTime gameTime)
-        { this.UpdateView(); }
+        { }
 
-        private void UpdateView()
+        public void UpdateView()
         {
             Vector2 textBlockSize = TextBlockSize;
-            this.viewParams.width = (int)textBlockSize.X;
-            this.viewParams.height = (int)textBlockSize.Y;
-            this.viewParams.posX = SonOfRobinGame.VirtualWidth - textBlockSize.X - margin;
-            this.viewParams.posY = margin;
+            this.viewParams.Width = (int)textBlockSize.X;
+            this.viewParams.Height = (int)textBlockSize.Y;
+            this.viewParams.PosX = SonOfRobinGame.VirtualWidth - textBlockSize.X - margin;
+            this.viewParams.PosY = margin;
         }
 
         public override void Draw()

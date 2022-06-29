@@ -78,22 +78,33 @@ namespace SonOfRobin
                 this.currentLayout == TipsLayout.InventorySelect ||
                 this.currentLayout == TipsLayout.InventoryDrag;
 
-            ViewParams sceneViewParams = this.currentScene.viewParams;
+            // To take original scene transition into account:
+            // 1. Scene transformations have to be applied manually (because normally it would be invoked after all scenes Update().
+            // 2. Draw parameters have to be used.
+
+            ViewParams sceneViewParams;
+
             if (this.currentLayout == TipsLayout.QuitLoading || this.currentLayout == TipsLayout.WorldSleep)
             {
                 // in this case, tips should be aligned with progress bar
                 sceneViewParams = SonOfRobinGame.progressBar.viewParams;
+                SonOfRobinGame.progressBar.transManager.Update();
+            }
+            else
+            {
+                sceneViewParams = this.currentScene.viewParams;
+                this.currentScene.transManager.Update();
             }
 
-            float scale = 1f / ((float)SonOfRobinGame.VirtualHeight * 0.04f / (float)this.viewParams.height);
+            float scale = 1f / ((float)SonOfRobinGame.VirtualHeight * 0.04f / (float)this.viewParams.Height);
 
             if (bigMode)
-            { if (this.viewParams.width / scale > SonOfRobinGame.VirtualWidth) scale = 1f / (SonOfRobinGame.VirtualWidth / (float)this.viewParams.width); }
+            { if (this.viewParams.Width / scale > SonOfRobinGame.VirtualWidth) scale = 1f / (SonOfRobinGame.VirtualWidth / (float)this.viewParams.Width); }
             else
-            { if (this.viewParams.width / scale > sceneViewParams.width / sceneViewParams.scaleX) scale = 1f / (sceneViewParams.width / sceneViewParams.scaleX / (float)this.viewParams.width); }
+            { if (this.viewParams.Width / scale > sceneViewParams.Width / sceneViewParams.ScaleX) scale = 1f / (sceneViewParams.Width / sceneViewParams.ScaleX / (float)this.viewParams.Width); }
 
-            this.viewParams.scaleX = scale;
-            this.viewParams.scaleY = scale;
+            this.viewParams.ScaleX = scale;
+            this.viewParams.ScaleY = scale;
 
             if (bigMode)
             {
@@ -102,9 +113,9 @@ namespace SonOfRobin
             }
             else
             {
-                this.viewParams.posX = (sceneViewParams.posX * scale) + ((sceneViewParams.width / 2f * scale) - (this.viewParams.width / 2f));
-                this.viewParams.posY = (sceneViewParams.posY + sceneViewParams.height) * scale;
-                this.viewParams.posY = Math.Min(this.viewParams.posY, (SonOfRobinGame.VirtualHeight - (this.viewParams.height / scale)) * scale);
+                this.viewParams.PosX = (sceneViewParams.PosX * scale) + ((sceneViewParams.Width / 2f * scale) - (this.viewParams.Width / 2f));
+                this.viewParams.PosY = (sceneViewParams.drawPosY + sceneViewParams.drawHeight) * scale / sceneViewParams.drawScaleY;
+                this.viewParams.PosY = Math.Min(this.viewParams.drawPosY, (SonOfRobinGame.VirtualHeight - (this.viewParams.Height / scale)) * scale);
             }
         }
 
@@ -240,8 +251,8 @@ namespace SonOfRobin
             }
 
             Vector2 wholeSize = this.WholeSize;
-            this.viewParams.width = (int)wholeSize.X;
-            this.viewParams.height = (int)wholeSize.Y;
+            this.viewParams.Width = (int)wholeSize.X;
+            this.viewParams.Height = (int)wholeSize.Y;
 
             this.currentLayout = tipsLayout;
         }

@@ -67,7 +67,7 @@ namespace SonOfRobin
                 textureHeight = (int)(texture.Height * textureScale);
                 textureMaxHeight = Math.Max(textureHeight, textureMaxHeight);
 
-                DrawTexture(texture: texture, pos: basePos + new Vector2(textureOffsetX, 0), opacity: controlTips.viewParams.opacity * opacityMultiplier);
+                DrawTexture(texture: texture, pos: basePos + new Vector2(textureOffsetX, 0), opacity: controlTips.viewParams.Opacity * opacityMultiplier);
                 textureOffsetX += textureWidth + margin;
             }
 

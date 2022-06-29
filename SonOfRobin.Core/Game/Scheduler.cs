@@ -8,7 +8,7 @@ namespace SonOfRobin
 {
     public class Scheduler
     {
-        public enum TaskName { Empty, CreateNewWorld, CreateNewWorldNow, QuitGame, OpenMainMenu, OpenCreateMenu, OpenOptionsMenu, OpenTutorialsMenu, OpenLoadMenu, OpenSaveMenu, OpenDebugMenu, OpenConfirmationMenu, OpenCreateAnyPieceMenu, OpenGameOverMenu, SaveGame, LoadGame, LoadGameNow, ReturnToMainMenu, SavePrefs, ProcessConfirmation, OpenCraftMenu, Craft, Hit, CreateNewPiece, CreateDebugPieces, OpenContainer, DeleteObsoleteSaves, DropFruit, GetEaten, ExecuteTaskWithDelay, AddWorldEvent, OpenTextWindow, SleepInsideShelter, SleepOutside, TempoFastForward, TempoStop, TempoPlay, CameraTrackPiece, CameraTrackPlayer, CameraZoom, ShowCookingProgress, RestoreHints, OpenMainMenuIfSpecialKeysArePressed, CheckForPieceHints, ShowHint, ExecuteTaskList, ExecuteTaskChain, ShowTutorial, RemoveScene }
+        public enum TaskName { Empty, CreateNewWorld, CreateNewWorldNow, QuitGame, OpenMainMenu, OpenCreateMenu, OpenIslandTemplateMenu, OpenSetSeedMenu, OpenOptionsMenu, OpenTutorialsMenu, OpenLoadMenu, OpenSaveMenu, OpenDebugMenu, OpenConfirmationMenu, OpenCreateAnyPieceMenu, OpenGameOverMenu, SaveGame, LoadGame, LoadGameNow, ReturnToMainMenu, SavePrefs, ProcessConfirmation, OpenCraftMenu, Craft, Hit, CreateNewPiece, CreateDebugPieces, OpenContainer, DeleteObsoleteSaves, DropFruit, GetEaten, ExecuteTaskWithDelay, AddWorldEvent, OpenTextWindow, SleepInsideShelter, SleepOutside, TempoFastForward, TempoStop, TempoPlay, CameraTrackPiece, CameraTrackCoords, CameraSetZoom, ShowCookingProgress, RestoreHints, OpenMainMenuIfSpecialKeysArePressed, CheckForPieceHints, ShowHint, ExecuteTaskList, ExecuteTaskChain, ShowTutorial, RemoveScene, ChangeSceneInputType, SetCineMode, AddTransition }
 
         private readonly static Dictionary<int, List<Task>> queue = new Dictionary<int, List<Task>>();
 
@@ -19,7 +19,7 @@ namespace SonOfRobin
 
             foreach (int frameNo in framesToProcess)
             {
-                foreach (Task task in queue[frameNo])
+                foreach (Task task in queue[frameNo]) // if System.InvalidOperationException occurs, most likely some task has been added to current frame queue
                 { task.Execute(); }
 
                 queue.Remove(frameNo);
@@ -58,16 +58,23 @@ namespace SonOfRobin
                     if (this.turnOffInput) Input.GlobalInputActive = false;
 
                     this.frame = SonOfRobinGame.currentUpdate + this.delay;
-
-                    if (this.delay == 0) this.Execute();
-                    else this.AddToQueue();
+                    this.Process();
                 }
-                else
-                { this.frame = -1; }
+                else this.frame = -1;
+            }
+
+            public void Process()
+            {
+                if (this.delay <= 0) this.Execute();
+                else this.AddToQueue();
             }
 
             private void AddToQueue()
             {
+                if (this.delay == 0) throw new ArgumentException($"Tried to add task with delay {this.delay} to queue.");
+
+                //  MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.User, message: $"Adding to queue '{this.taskName}' - delay {this.delay}.", color: Color.White); // for testing
+
                 if (this.turnOffInput) Input.GlobalInputActive = false;
                 if (this.frame == -1) this.frame = SonOfRobinGame.currentUpdate + this.delay;
                 if (!queue.ContainsKey(this.frame)) queue[this.frame] = new List<Task>();
@@ -96,6 +103,14 @@ namespace SonOfRobin
 
                     case TaskName.OpenCreateMenu:
                         OpenMenu(templateName: MenuTemplate.Name.CreateNewIsland, executeHelper: executeHelper);
+                        return;
+
+                    case TaskName.OpenIslandTemplateMenu:
+                        OpenMenu(templateName: MenuTemplate.Name.OpenIslandTemplate, executeHelper: executeHelper);
+                        return;
+
+                    case TaskName.OpenSetSeedMenu:
+                        OpenMenu(templateName: MenuTemplate.Name.SetSeed, executeHelper: executeHelper);
                         return;
 
                     case TaskName.OpenLoadMenu:
@@ -150,18 +165,27 @@ namespace SonOfRobin
                     case TaskName.CreateNewWorld:
                         if (menu != null) menu.MoveToTop();
 
-                        Menu.RemoveEveryMenuOfTemplate(MenuTemplate.Name.CreateNewIsland);
-                        Menu.RemoveEveryMenuOfTemplate(MenuTemplate.Name.Load);
-                        Menu.RemoveEveryMenuOfTemplate(MenuTemplate.Name.Main);
+                        Scene.RemoveAllScenesOfType(typeof(Menu));
 
-                        new Task(menu: null, taskName: TaskName.CreateNewWorldNow, turnOffInput: true, delay: 13, executeHelper: null);
+                        new Task(menu: null, taskName: TaskName.CreateNewWorldNow, turnOffInput: true, delay: 13, executeHelper: executeHelper);
 
                         return;
 
                     case TaskName.CreateNewWorldNow:
-                        new World(width: Preferences.newWorldWidth, height: Preferences.newWorldHeight, seed: Preferences.newWorldSeed);
 
-                        return;
+                        {
+                            // example executeHelper for this task
+                            // var createData = new Dictionary<string, Object> { { "width", width }, { "height", height }, { "seed", seed }};
+
+                            var createData = (Dictionary<string, Object>)executeHelper;
+                            int width = (int)createData["width"];
+                            int height = (int)createData["height"];
+                            int seed = (int)createData["seed"];
+
+                            new World(width: width, height: height, seed: seed);
+
+                            return;
+                        }
 
                     case TaskName.CreateNewPiece:
                         world = World.GetTopWorld();
@@ -319,7 +343,6 @@ namespace SonOfRobin
                             BoardPiece food = (BoardPiece)executeData["toolbarPiece"];
                             bool highlightOnly = false;
                             if (executeData.ContainsKey("highlightOnly")) highlightOnly = (bool)executeData["highlightOnly"];
-                            if (highlightOnly) return;
 
                             if (executeData.ContainsKey("buttonHeld"))
                             {
@@ -329,8 +352,15 @@ namespace SonOfRobin
 
                             if (player.hitPoints == player.maxHitPoints && player.fedLevel >= player.maxFedLevel * 0.95)
                             {
-                                new TextWindow(text: "I am full.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1);
+                                if (!highlightOnly) new TextWindow(text: "I am full.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1);
 
+                                return;
+                            }
+
+                            if (highlightOnly)
+                            {
+                                if (SonOfRobinGame.platform == Platform.Mobile) VirtButton.ButtonHighlightOnNextFrame(VButName.UseTool);
+                                ControlTips.TipHighlightOnNextFrame(tipName: "use item");
                                 return;
                             }
 
@@ -487,7 +517,7 @@ namespace SonOfRobin
                     case TaskName.TempoStop:
                         {
                             world = World.GetTopWorld();
-                            if (world == null) return;
+                            if (world == null || world.demoMode) return;
                             if (Preferences.FrameSkip) SonOfRobinGame.game.IsFixedTimeStep = true;
                             world.updateMultiplier = 0;
 
@@ -497,7 +527,7 @@ namespace SonOfRobin
                     case TaskName.TempoPlay:
                         {
                             world = World.GetTopWorld();
-                            if (world == null) return;
+                            if (world == null || world.demoMode) return;
 
                             if (Preferences.FrameSkip) SonOfRobinGame.game.IsFixedTimeStep = true;
                             world.updateMultiplier = 1;
@@ -516,23 +546,30 @@ namespace SonOfRobin
                             return;
                         }
 
-                    case TaskName.CameraTrackPlayer:
+                    case TaskName.CameraTrackCoords:
                         {
                             world = World.GetTopWorld();
                             if (world == null) return;
 
-                            world.camera.TrackPiece(world.player);
+                            world.camera.TrackCoords(position: (Vector2)executeHelper);
 
                             return;
                         }
 
-                    case TaskName.CameraZoom:
+                    case TaskName.CameraSetZoom:
                         {
+                            // example executeHelper for this task
+                            // var saveParams = new Dictionary<string, Object> { { "zoom", 2f }, { "zoomSpeedMultiplier", 2f }};
+
                             world = World.GetTopWorld();
                             if (world == null) return;
 
-                            float zoom = (float)executeHelper;
-                            world.camera.SetZoom(zoom);
+                            var zoomData = (Dictionary<string, Object>)executeHelper;
+                            float zoom = (float)zoomData["zoom"];
+                            float zoomSpeedMultiplier = 1f;
+                            if (zoomData.ContainsKey("zoomSpeedMultiplier")) zoomSpeedMultiplier = (float)zoomData["zoomSpeedMultiplier"];
+
+                            world.camera.SetZoom(zoom: zoom, zoomSpeedMultiplier: zoomSpeedMultiplier);
 
                             return;
                         }
@@ -560,7 +597,7 @@ namespace SonOfRobin
                             foreach (Object taskObject in taskList)
                             {
                                 Task task = (Task)taskObject;
-                                task.AddToQueue();
+                                task.Process();
                             }
 
                             return;
@@ -570,36 +607,38 @@ namespace SonOfRobin
                         {
                             List<Object> taskChain = (List<Object>)executeHelper;
 
-                            Task task = (Task)taskChain[0];
+                            Task currentTask = (Task)taskChain[0];
                             taskChain.RemoveAt(0);
-                            task.AddToQueue();
-                            if (taskChain.Count == 0)
-                            {
-                                Input.GlobalInputActive = true; // to ensure that input will be active at the end
-                                return;
-                            }
 
-                            if (task.taskName == TaskName.OpenTextWindow)
+                            if (currentTask.taskName == TaskName.OpenTextWindow)
                             {
                                 // If text window will be opened, the delay will depend on the player, so it is unknown.
                                 // So, the next task should be run after closing this text window.
 
-                                var executeHelper = task.executeHelper;
-                                var textWindowData = (Dictionary<string, Object>)executeHelper;
-                                textWindowData["closingTask"] = TaskName.ExecuteTaskChain;
-                                textWindowData["closingTaskHelper"] = taskChain;
-
-                                task.executeHelper = textWindowData;
+                                if (taskChain.Count > 0)
+                                {
+                                    var executeHelper = currentTask.executeHelper;
+                                    var textWindowData = (Dictionary<string, Object>)executeHelper;
+                                    textWindowData["closingTask"] = TaskName.ExecuteTaskChain;
+                                    textWindowData["closingTaskHelper"] = taskChain;
+                                    currentTask.executeHelper = textWindowData;
+                                }
+                                currentTask.Process();
                             }
                             else
                             {
                                 // in other cases, the delay should be known
-                                new Task(menu: null, taskName: TaskName.ExecuteTaskChain, executeHelper: taskChain, delay: task.delay, turnOffInput: true);
+
+                                currentTask.Process(); // must go before new Task(), to maintain correct execute order
+
+                                if (taskChain.Count > 0) new Task(menu: null, taskName: TaskName.ExecuteTaskChain, executeHelper: taskChain, delay: currentTask.delay, turnOffInput: true);
                             }
+
+                            if (taskChain.Count == 0) Input.GlobalInputActive = true; // to ensure that input will be active at the end
+
+
+                            return;
                         }
-
-                        return;
-
 
                     case TaskName.OpenMainMenuIfSpecialKeysArePressed:
                         {
@@ -622,7 +661,10 @@ namespace SonOfRobin
                             world = World.GetTopWorld();
                             if (world == null) return;
 
-                            world.hintEngine.CheckForPieceHintToShow(forcedMode: true, ignoreInputActive: true);
+                            List<PieceHint.Type> typesToCheckOnly = null;
+                            if (executeHelper != null) typesToCheckOnly = (List<PieceHint.Type>)executeHelper;
+
+                            world.hintEngine.CheckForPieceHintToShow(forcedMode: true, ignoreInputActive: true, typesToCheckOnly: typesToCheckOnly);
 
                             return;
                         }
@@ -641,7 +683,7 @@ namespace SonOfRobin
                     case TaskName.ShowTutorial:
                         {
                             Tutorials.Type type = (Tutorials.Type)executeHelper;
-                            Tutorials.ShowTutorial(type: type, ignoreIfShown: false, checkHintsSettings: false);
+                            Tutorials.ShowTutorial(type: type, ignoreIfShown: false, checkHintsSettings: false, ignoreDelay: true);
 
                             return;
                         }
@@ -655,17 +697,54 @@ namespace SonOfRobin
                         return;
 
                     case TaskName.RemoveScene:
-                        var removeData = (Dictionary<string, Object>)executeHelper;
-                        Scene scene = (Scene)removeData["scene"];
-                        bool fadeOut = (bool)removeData["fadeOut"];
-                        int fadeOutDuration = (int)removeData["fadeOutDuration"];
-                        if (fadeOut) scene.AddTransition(new Transition(type: Transition.TransType.To, duration: fadeOutDuration, scene: scene, blockInput: false, removeScene: true,
-                            paramsToChange: new Dictionary<string, float> { { "opacity", 0f } }));
-                        else scene.Remove();
+                        {
+                            var removeData = (Dictionary<string, Object>)executeHelper;
+                            Scene scene = (Scene)removeData["scene"];
+                            bool fadeOut = (bool)removeData["fadeOut"];
+                            int fadeOutDuration = (int)removeData["fadeOutDuration"];
 
+                            if (fadeOut) scene.transManager.AddTransition(new Transition(transManager: scene.transManager, outTrans: false, baseParamName: "Opacity", targetVal: 0f, duration: fadeOutDuration, endRemoveScene: true, startSwapParams: true)); // TODO verify if this works correctly
+                            else scene.Remove();
 
-                        return;
+                            return;
+                        }
 
+                    case TaskName.ChangeSceneInputType:
+                        {
+                            // example executeHelper for this task
+                            // var inputData = new Dictionary<string, Object> { { "scene", world }, { "inputType",  Scene.InputTypes.Normal }};
+
+                            var inputData = (Dictionary<string, Object>)executeHelper;
+
+                            Scene scene = (Scene)inputData["scene"];
+                            Scene.InputTypes inputType = (Scene.InputTypes)inputData["inputType"];
+
+                            scene.InputType = inputType;
+                            return;
+                        }
+
+                    case TaskName.SetCineMode:
+                        {
+                            world = World.GetTopWorld();
+                            if (world == null || world.demoMode) return;
+
+                            world.cineMode = (bool)executeHelper;
+                            return;
+                        }
+
+                    case TaskName.AddTransition:
+                        {
+                            // example executeHelper for this task
+                            // var transData = new Dictionary<string, Object> { { "scene", scene }, { "transition",  transition }};
+
+                            var transData = (Dictionary<string, Object>)executeHelper;
+
+                            Scene scene = (Scene)transData["scene"];
+                            Transition transition = (Transition)transData["transition"];
+
+                            scene.transManager.AddTransition(transition);
+                            return;
+                        }
 
                     default:
                         throw new DivideByZeroException($"Unsupported taskName - {taskName}.");

@@ -87,7 +87,7 @@ namespace SonOfRobin
 
                 pieceRect = new Rectangle(innerEntryRect.X + ((rectWidth + margin) * i), innerEntryRect.Y, rectWidth, innerEntryRect.Height);
 
-                SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, pieceRect, bgColor * 0.4f * this.menu.viewParams.opacity);
+                SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, pieceRect, bgColor * 0.4f * this.menu.viewParams.Opacity);
 
                 //Helpers.DrawRectangleOutline(rect: pieceRect, color: Color.YellowGreen, borderWidth: 2); // testing rect size
                 this.DrawFrameAndText(frame: frame, cellRect: pieceRect, gfxCol: Color.White, txtCol: Color.White, text: pieceTxt);
@@ -120,7 +120,7 @@ namespace SonOfRobin
             Rectangle leftRect = new Rectangle(cellRect.X, cellRect.Y, (cellRect.Width / 2) - middleMargin, cellRect.Height);
             Rectangle rightRect = new Rectangle(cellRect.X + (cellRect.Width / 2) + middleMargin, cellRect.Y, (cellRect.Width / 2) - middleMargin, cellRect.Height);
 
-            frame.DrawAndKeepInRectBounds(destBoundsRect: leftRect, color: gfxCol * this.menu.viewParams.opacity);
+            frame.DrawAndKeepInRectBounds(destBoundsRect: leftRect, color: gfxCol * this.menu.viewParams.Opacity);
             this.DrawText(text: text, containingRect: rightRect, txtCol: txtCol);
         }
 
@@ -137,7 +137,7 @@ namespace SonOfRobin
                 containingRect.Center.X - (textSize.X / 2 * textScale),
                 containingRect.Center.Y - (textSize.Y / 2 * textScale));
 
-            SonOfRobinGame.spriteBatch.DrawString(font, text, position: textPos, color: txtCol * menu.viewParams.opacity, origin: Vector2.Zero, scale: textScale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
+            SonOfRobinGame.spriteBatch.DrawString(font, text, position: textPos, color: txtCol * menu.viewParams.Opacity, origin: Vector2.Zero, scale: textScale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
         }
 
     }

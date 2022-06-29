@@ -226,18 +226,20 @@ namespace SonOfRobin
 
             string message;
 
+            string seedText = String.Format("{0:0000}", this.world.seed);
+
             switch (this.creationStage)
             {
                 case 0:
-                    message = $"preparing island\nseed {this.world.seed}\n{this.world.width} x {this.world.height}\npreparation time left {timeLeftString}";
+                    message = $"preparing island\nseed {seedText}\n{this.world.width} x {this.world.height}\npreparation time left {timeLeftString}";
                     break;
 
                 case 1:
-                    message = $"preparing island\nseed {this.world.seed}\n{this.world.width} x {this.world.height}\npreparation time left {timeLeftString}";
+                    message = $"preparing island\nseed {seedText}\n{this.world.width} x {this.world.height}\npreparation time left {timeLeftString}";
                     break;
 
                 case 2:
-                    message = $"preparing island\nseed {this.world.seed}\n{this.world.width} x {this.world.height}\nstarting in {timeLeftString}";
+                    message = $"preparing island\nseed {seedText}\n{this.world.width} x {this.world.height}\nstarting in {timeLeftString}";
                     break;
 
                 default:

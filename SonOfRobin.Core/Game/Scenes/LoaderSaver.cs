@@ -170,7 +170,7 @@ namespace SonOfRobin
         public override void Remove()
         {
             if (Preferences.FrameSkip) SonOfRobinGame.game.IsFixedTimeStep = true;
-            SonOfRobinGame.progressBar.TurnOff(addTransition: false);
+            if (this.saveMode) SonOfRobinGame.progressBar.TurnOff(addTransition: false);
             base.Remove();
             if (this.saveMode && this.quitGameAfterSaving) SonOfRobinGame.quitGame = true;
         }
@@ -186,6 +186,7 @@ namespace SonOfRobin
             if (this.CancelPressed)
             {
                 if (this.saveMode) DeleteAllSaveTemps();
+                SonOfRobinGame.progressBar.TurnOff(addTransition: true);
                 this.Remove();
 
                 new TextWindow(text: $"{this.modeText} has been cancelled.", textColor: Color.White, bgColor: Color.DarkRed, useTransition: true, animate: true, closingTask: this.TextWindowTask);

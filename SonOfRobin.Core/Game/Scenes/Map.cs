@@ -28,16 +28,10 @@ namespace SonOfRobin
             {
                 var margin = Convert.ToInt32(Math.Ceiling(Math.Min(SonOfRobinGame.VirtualWidth / 30f, SonOfRobinGame.VirtualHeight / 30f)));
 
-                this.viewParams.posX = SonOfRobinGame.VirtualWidth - this.viewParams.width - margin;
-                this.viewParams.posY = SonOfRobinGame.VirtualHeight - this.viewParams.height - margin;
+                this.viewParams.PosX = SonOfRobinGame.VirtualWidth - this.viewParams.Width - margin;
+                this.viewParams.PosY = SonOfRobinGame.VirtualHeight - this.viewParams.Height - margin;
             }
         }
-
-        private Transition InTransition
-        { get { return this.GetTransition(inTrans: true); } }
-
-        private Transition OutTransition
-        { get { return this.GetTransition(inTrans: false); } }
 
         public Map(World world, bool fullScreen, TouchLayout touchLayout) : base(inputType: InputTypes.None, priority: 1, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: false, touchLayout: touchLayout, tipsLayout: ControlTips.TipsLayout.Map)
         {
@@ -46,6 +40,11 @@ namespace SonOfRobin
             this.world = world;
             this.fullScreen = fullScreen;
             this.dirtyFog = true;
+        }
+
+        protected override void AdaptToNewSize()
+        {
+            this.UpdateResolution();
         }
 
         public void TurnOn(bool addTransition = true)
@@ -63,15 +62,15 @@ namespace SonOfRobin
             float multiplierY = ((float)SonOfRobinGame.VirtualHeight / (float)world.height) * maxPercentHeight;
             this.multiplier = Math.Min(multiplierX, multiplierY);
 
-            this.viewParams.width = Convert.ToInt32(world.width * this.multiplier);
-            this.viewParams.height = Convert.ToInt32(world.height * this.multiplier);
+            this.viewParams.Width = Convert.ToInt32(world.width * this.multiplier);
+            this.viewParams.Height = Convert.ToInt32(world.height * this.multiplier);
 
             this.UpdateViewPos();
-            if (addTransition) this.AddTransition(this.InTransition);
+            if (addTransition) this.AddTransition(inTrans: true);
 
-            if (this.terrainGfx == null || this.terrainGfx.Width != this.viewParams.width || this.terrainGfx.Height != this.viewParams.height)
+            if (this.terrainGfx == null || this.terrainGfx.Width != this.viewParams.Width || this.terrainGfx.Height != this.viewParams.Height)
             {
-                this.terrainGfx = new RenderTarget2D(SonOfRobinGame.graphicsDevice, this.viewParams.width, this.viewParams.height, false, SurfaceFormat.Color, DepthFormat.None);
+                this.terrainGfx = new RenderTarget2D(SonOfRobinGame.graphicsDevice, this.viewParams.Width, this.viewParams.Height, false, SurfaceFormat.Color, DepthFormat.None);
                 this.dirtyBackground = true;
                 this.dirtyFog = true;
             }
@@ -83,7 +82,7 @@ namespace SonOfRobin
         {
             if (this.fogGfx != null && this.dirtyFog == false) return;
 
-            this.fogGfx = new RenderTarget2D(SonOfRobinGame.graphicsDevice, this.viewParams.width, this.viewParams.height, false, SurfaceFormat.Color, DepthFormat.None);
+            this.fogGfx = new RenderTarget2D(SonOfRobinGame.graphicsDevice, this.viewParams.Width, this.viewParams.Height, false, SurfaceFormat.Color, DepthFormat.None);
             this.StartRenderingToTarget(this.fogGfx);
 
             int cellWidth = this.world.grid.allCells[0].width;
@@ -114,14 +113,13 @@ namespace SonOfRobin
         {
             this.InputType = InputTypes.None;
             this.blocksDrawsBelow = false;
-            if (addTransition) this.AddTransition(this.OutTransition);
+            if (addTransition) this.AddTransition(inTrans: false);
 
             this.blocksUpdatesBelow = false;
         }
 
-        public Transition GetTransition(bool inTrans)
+        public void AddTransition(bool inTrans)
         {
-            Transition.TransType transType = inTrans ? Transition.TransType.From : Transition.TransType.To;
             bool turnOffDraw = !inTrans;
             bool turnOffUpdate = !inTrans;
 
@@ -130,22 +128,28 @@ namespace SonOfRobin
             if (this.fullScreen)
             {
                 Rectangle viewRect = this.world.camera.viewRect;
-                float transScaleX = SonOfRobinGame.VirtualWidth / (float)this.world.width * this.world.viewParams.scaleX;
-                float transScaleY = SonOfRobinGame.VirtualHeight / (float)this.world.height * this.world.viewParams.scaleY;
+                float transScaleX = SonOfRobinGame.VirtualWidth / (float)this.world.width * this.world.viewParams.ScaleX;
+                float transScaleY = SonOfRobinGame.VirtualHeight / (float)this.world.height * this.world.viewParams.ScaleY;
                 float transScale = Math.Min(transScaleX, transScaleY);
 
                 float transPosX = 1f / (float)this.world.width * SonOfRobinGame.VirtualWidth;
                 float transPosY = 1f / (float)this.world.height * SonOfRobinGame.VirtualHeight;
                 float transPos = Math.Min(transPosX, transPosY);
 
-                return new Transition(type: transType, duration: 15, scene: this, blockInput: false, paramsToChange: new Dictionary<string, float> { { "posX", -viewRect.Left * transPos }, { "posY", -viewRect.Top * transPos }, { "scaleX", transScale }, { "scaleY", transScale } }, turnOffDraw: turnOffDraw, turnOffUpdate: turnOffUpdate);
+                this.transManager.AddMultipleTransitions(outTrans: !inTrans, duration: 15, endTurnOffDraw: turnOffDraw, endTurnOffUpdate: turnOffUpdate,
+                    paramsToChange: new Dictionary<string, float> {
+                        { "PosX", -viewRect.Left * transPos },
+                        { "PosY", -viewRect.Top * transPos },
+                        { "ScaleX", transScale },
+                        { "ScaleY", transScale } });
             }
             else
             {
-                return new Transition(type: transType, duration: 8, scene: this, blockInput: false,
-                    paramsToChange: new Dictionary<string, float> { { "posY", this.viewParams.posY + this.viewParams.height } }, turnOffDraw: turnOffDraw, turnOffUpdate: turnOffUpdate);
+                this.transManager.AddMultipleTransitions(outTrans: !inTrans, duration: 8, endTurnOffDraw: turnOffDraw, endTurnOffUpdate: turnOffUpdate,
+                    paramsToChange: new Dictionary<string, float> { { "PosY", this.viewParams.PosY + this.viewParams.Height } });
             }
         }
+
 
         public void UpdateResolution()
         { if (this.updateActive) this.TurnOn(addTransition: false); }
@@ -168,7 +172,7 @@ namespace SonOfRobin
             this.EndRenderingToTarget();
 
             this.dirtyBackground = false;
-            MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"Map background updated ({this.viewParams.width}x{this.viewParams.height}).", color: Color.White);
+            MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"Map background updated ({this.viewParams.Width}x{this.viewParams.Height}).", color: Color.White);
         }
 
         public override void Update(GameTime gameTime)
@@ -192,7 +196,7 @@ namespace SonOfRobin
             if (this.fullScreen) SonOfRobinGame.graphicsDevice.Clear(BoardGraphics.colorsByName[BoardGraphics.Colors.WaterDeep]);
 
             // drawing background (terrain)
-            SonOfRobinGame.spriteBatch.Draw(this.terrainGfx, new Rectangle(0, 0, this.viewParams.width, this.viewParams.height), Color.White * this.viewParams.drawOpacity);
+            SonOfRobinGame.spriteBatch.Draw(this.terrainGfx, new Rectangle(0, 0, this.viewParams.Width, this.viewParams.Height), Color.White * this.viewParams.drawOpacity);
 
             // drawing pieces
             var groupName = this.fullScreen ? Cell.Group.Visible : Cell.Group.MiniMap;

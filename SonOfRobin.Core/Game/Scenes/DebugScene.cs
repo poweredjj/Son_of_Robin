@@ -14,20 +14,18 @@ namespace SonOfRobin
 
         public DebugScene() : base(inputType: InputTypes.Always, tipsLayout: ControlTips.TipsLayout.Empty, priority: -1, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: true, alwaysDraws: true, touchLayout: TouchLayout.Empty)
         {
-            this.viewParams.posX = 5;
-            this.viewParams.posY = 5;
-            this.AddTransition(this.GetTransition(inTrans: true));
+            this.transManager.AddTransition(this.GetTransition(inTrans: true));
         }
 
         public override void Remove()
         {
-            if (this.transition == null)
-            {
-                this.AddTransition(this.GetTransition(inTrans: false));
-                return;
-            }
+            if (!this.transManager.IsEnding) this.transManager.AddTransition(this.GetTransition(inTrans: false));
+            else base.Remove();
+        }
 
-            base.Remove();
+        public Transition GetTransition(bool inTrans)
+        {
+            return new Transition(transManager: this.transManager, outTrans: !inTrans, baseParamName: "PosX", targetVal: this.viewParams.PosX - 700, duration: 12, endRemoveScene: !inTrans);
         }
 
         public override void Update(GameTime gameTime)
@@ -58,8 +56,8 @@ namespace SonOfRobin
             }
 
             Vector2 txtSize = font.MeasureString(debugText);
-            this.viewParams.width = (int)txtSize.X;
-            this.viewParams.height = (int)txtSize.Y;
+            this.viewParams.Width = (int)txtSize.X;
+            this.viewParams.Height = (int)txtSize.Y;
         }
 
         public override void Draw()
@@ -71,16 +69,6 @@ namespace SonOfRobin
             }
 
             SonOfRobinGame.spriteBatch.DrawString(font, debugText, Vector2.Zero, Color.White);
-        }
-
-        public Transition GetTransition(bool inTrans)
-        {
-            Transition.TransType transType = inTrans ? Transition.TransType.From : Transition.TransType.To;
-            bool removeScene = !inTrans;
-
-            int width = this.viewParams.width == SonOfRobinGame.VirtualWidth ? 300 : this.viewParams.width;
-
-            return new Transition(type: transType, duration: 12, scene: this, removeScene: removeScene, paramsToChange: new Dictionary<string, float> { { "posX", this.viewParams.posX - width } });
         }
 
         public void ProcessDebugInput()
@@ -137,6 +125,35 @@ namespace SonOfRobin
             }
 
             if (Keyboard.HasBeenPressed(Keys.D9)) world.CreateMissingPieces(outsideCamera: false, multiplier: 1.0f, clearDoNotCreateList: true);
+
+            if (Keyboard.HasBeenPressed(Keys.D0))
+            {
+                if (world == null) return;
+
+                Vector2 motion = new Vector2(world.random.Next(-20, 20), world.random.Next(-20, 20));
+
+                world.transManager.AddMultipleTransitions(outTrans: true, duration: world.random.Next(4, 10), playCount: -1, replaceBaseValue: false, stageTransform: Transition.Transform.Sinus, pingPongCycles: false, cycleMultiplier: 0.02f, paramsToChange: new Dictionary<string, float> { { "PosX", motion.X }, { "PosY", motion.Y } });
+            }
+
+            if (Keyboard.HasBeenPressed(Keys.OemMinus))
+            {
+                if (world == null) return;
+
+                world.hintEngine.ShowGeneralHint(type: HintEngine.Type.CineIntroduction, ignoreDelay: true);
+
+                var taskChain = new List<Object>();
+            }
+
+
+            if (Keyboard.HasBeenPressed(Keys.OemPlus))
+            {
+                if (world == null) return;
+
+                Player player = world.player;
+
+                player.sprite.SetOrientationByMovement(new Vector2(0,-5));
+            }
+
 
             if (Keyboard.HasBeenPressed(Keys.G))
             {
@@ -264,17 +281,20 @@ namespace SonOfRobin
             }
 
             if (Keyboard.HasBeenPressed(Keys.F8))
+            { world.player.buffEngine.AddBuff(world: world, buff: new BuffEngine.Buff(world: world, type: BuffEngine.BuffType.EnableMap, value: null, autoRemoveDelay: 600, isPositive: true)); }
+
+            if (Keyboard.HasBeenPressed(Keys.F9))
             {
-                SonOfRobinGame.progressBar.TurnOn(newPosX: -1, newPosY: -1, centerHoriz: true, centerVert: true, entryList: new List<InfoWindow.TextEntry> {
+                SonOfRobinGame.progressBar.TurnOn(newPosX: 0, newPosY: 0, centerHoriz: true, centerVert: true, entryList: new List<InfoWindow.TextEntry> {
                         new InfoWindow.TextEntry(text: "First line.", color: Color.White, frame: AnimData.frameListById["Blonde-0-default"][0]),
                         new InfoWindow.TextEntry(text: "Second line.", color: Color.Green, scale: 1.5f, frame: AnimData.frameListById["Blonde-0-default"][0]),
                         new InfoWindow.TextEntry(color: Color.White, progressCurrentVal: 2, progressMaxVal: 5),
                         new InfoWindow.TextEntry(text: "And this is fourth line.", color: Color.LightBlue, frame: AnimData.frameListById["Blonde-0-default"][0]),
-                        new InfoWindow.TextEntry(text: "This is the last line.", color: Color.YellowGreen, frame: AnimData.frameListById["Blonde-0-default"][0]),
+                        new InfoWindow.TextEntry(text: "This window should be centered.", color: Color.YellowGreen, frame: AnimData.frameListById["Blonde-0-default"][0]),
                     });
             }
 
-            if (Keyboard.HasBeenPressed(Keys.F9))
+            if (Keyboard.HasBeenPressed(Keys.F10))
             {
                 SonOfRobinGame.progressBar.TurnOn(newPosX: 0, newPosY: 0,
                     entryList: new List<InfoWindow.TextEntry> {
@@ -284,10 +304,7 @@ namespace SonOfRobin
                 });
             }
 
-            if (Keyboard.HasBeenPressed(Keys.F10)) SonOfRobinGame.hintWindow.TurnOff();
-
-            if (Keyboard.HasBeenPressed(Keys.F11))
-            { world.player.buffEngine.AddBuff(world: world, buff: new BuffEngine.Buff(world: world, type: BuffEngine.BuffType.EnableMap, value: null, autoRemoveDelay: 600, isPositive: true)); }
+            if (Keyboard.HasBeenPressed(Keys.F11)) SonOfRobinGame.progressBar.TurnOff();
 
             if (Keyboard.HasBeenPressed(Keys.F12) || VirtButton.HasButtonBeenPressed(VButName.DebugRemoveTopScene)) RemoveTopScene();
 

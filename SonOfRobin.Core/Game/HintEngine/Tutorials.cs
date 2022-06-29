@@ -41,22 +41,33 @@ namespace SonOfRobin
             }
         }
 
-        public static void ShowTutorial(Type type, bool ignoreIfShown = true, bool checkHintsSettings = true)
+        public static void ShowTutorial(Type type, bool ignoreIfShown = true, bool checkHintsSettings = true, bool ignoreDelay = false)
         {
             if (checkHintsSettings && !Preferences.showHints) return;
 
             World world = World.GetTopWorld();
+            HintEngine hintEngine = null;
+            if (world != null) hintEngine = world.hintEngine;
 
             if (ignoreIfShown)
             {
-                if (world != null && world.hintEngine.shownTutorials.Contains(type)) return;
+                if (hintEngine != null && hintEngine.shownTutorials.Contains(type)) return;
+            }
+
+            if (!ignoreDelay && hintEngine != null)
+            {
+                if (!hintEngine.WaitFrameReached) return;
+                hintEngine.UpdateWaitFrame();
             }
 
             var messageList = tutorials[type].MessagesToDisplay;
             var taskChain = HintMessage.ConvertToTasks(messageList: messageList);
-            new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.ExecuteTaskChain, turnOffInput: true, executeHelper: taskChain);
 
-            if (world != null) world.hintEngine.shownTutorials.Add(type);
+            taskChain.Insert(0, new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.TempoStop, delay: 1, executeHelper: null, storeForLaterUse: true));
+            new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.ExecuteTaskChain, turnOffInput: true, executeHelper: taskChain);
+            taskChain.Add(new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.TempoPlay, delay: 0, executeHelper: null, storeForLaterUse: true));
+
+            if (hintEngine != null) hintEngine.shownTutorials.Add(type);
         }
 
 

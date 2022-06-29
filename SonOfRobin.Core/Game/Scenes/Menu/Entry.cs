@@ -131,7 +131,7 @@ namespace SonOfRobin
                 rect.Center.X - (textSize.X / 2 * textScale),
                 rect.Center.Y - (textSize.Y / 2 * textScale));
 
-            SonOfRobinGame.spriteBatch.DrawString(font, this.DisplayedText, position: textPos, color: this.textColor * opacity * menu.viewParams.opacity, origin: Vector2.Zero, scale: textScale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
+            SonOfRobinGame.spriteBatch.DrawString(font, this.DisplayedText, position: textPos, color: this.textColor * opacity * menu.viewParams.Opacity, origin: Vector2.Zero, scale: textScale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
         }
 
         protected void UpdateHintWindow()
@@ -154,20 +154,20 @@ namespace SonOfRobin
             {
                 case Menu.Layout.Middle:
                     windowPos = new Vector2(
-                       menuViewParams.posX + menuViewParams.width - this.menu.ScrollbarWidth,
-                       menuViewParams.posY + entryPos.Y - this.menu.CurrentScrollPosition + (this.menu.EntryHeight / 2) - (infoWindowSize.Y / 2));
+                       menuViewParams.PosX + menuViewParams.Width - this.menu.ScrollbarWidth,
+                       menuViewParams.PosY + entryPos.Y - this.menu.CurrentScrollPosition + (this.menu.EntryHeight / 2) - (infoWindowSize.Y / 2));
                     break;
 
                 case Menu.Layout.Left:
                     windowPos = new Vector2(
-                       menuViewParams.posX + menuViewParams.width - this.menu.ScrollbarWidth,
-                       menuViewParams.posY + entryPos.Y - this.menu.CurrentScrollPosition + (this.menu.EntryHeight / 2) - (infoWindowSize.Y / 2));
+                       menuViewParams.PosX + menuViewParams.Width - this.menu.ScrollbarWidth,
+                       menuViewParams.PosY + entryPos.Y - this.menu.CurrentScrollPosition + (this.menu.EntryHeight / 2) - (infoWindowSize.Y / 2));
                     break;
 
                 case Menu.Layout.Right:
                     windowPos = new Vector2(
-                       menuViewParams.posX - infoWindowSize.X + this.menu.ScrollbarWidth,
-                       menuViewParams.posY + entryPos.Y - this.menu.CurrentScrollPosition + (this.menu.EntryHeight / 2) - (infoWindowSize.Y / 2));
+                       menuViewParams.PosX - infoWindowSize.X + this.menu.ScrollbarWidth,
+                       menuViewParams.PosY + entryPos.Y - this.menu.CurrentScrollPosition + (this.menu.EntryHeight / 2) - (infoWindowSize.Y / 2));
                     break;
 
                 default:
@@ -177,8 +177,8 @@ namespace SonOfRobin
             // keeping the window inside screen bounds
             windowPos.X = Math.Max(windowPos.X, 0);
             windowPos.Y = Math.Max(windowPos.Y, 0);
-            int maxX = (int)((SonOfRobinGame.VirtualWidth * hintWindow.viewParams.scaleX) - infoWindowSize.X);
-            int maxY = (int)((SonOfRobinGame.VirtualHeight * hintWindow.viewParams.scaleY) - infoWindowSize.Y);
+            int maxX = (int)((SonOfRobinGame.VirtualWidth * hintWindow.viewParams.ScaleX) - infoWindowSize.X);
+            int maxY = (int)((SonOfRobinGame.VirtualHeight * hintWindow.viewParams.ScaleY) - infoWindowSize.Y);
             windowPos.X = Math.Min(windowPos.X, maxX);
             windowPos.Y = Math.Min(windowPos.Y, maxY);
 

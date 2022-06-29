@@ -13,8 +13,8 @@ namespace SonOfRobin
 
     public class SonOfRobinGame : Game
     {
-        public static readonly float version = 7.2f;
-        public static readonly DateTime lastChanged = new DateTime(2022, 03, 11);
+        public static readonly float version = 7.3f;
+        public static readonly DateTime lastChanged = new DateTime(2022, 03, 19);
 
         public static ContentManager content;
 
@@ -63,12 +63,12 @@ namespace SonOfRobin
         public static int VirtualWidth { get { return Convert.ToInt32(graphics.PreferredBackBufferWidth / Preferences.globalScale); } }
         public static int VirtualHeight { get { return Convert.ToInt32(graphics.PreferredBackBufferHeight / Preferences.globalScale); } }
 
-       // public static PerformanceCounter ramCounter = new PerformanceCounter("Memory", "Available MBytes"); // THIS LINE MUST BE COMMENTED OUT WHEN COMPILING FOR ANDROID AND LINUX
+        public static PerformanceCounter ramCounter = new PerformanceCounter("Memory", "Available MBytes"); // THIS LINE MUST BE COMMENTED OUT WHEN COMPILING FOR ANDROID AND LINUX
         public static bool DesktopMemoryLow
         {
             get
             {
-                //if (platform == Platform.Desktop) return ramCounter.NextValue() < 800; // THIS LINE MUST BE COMMENTED OUT WHEN COMPILING FOR ANDROID AND LINUX
+                if (platform == Platform.Desktop) return ramCounter.NextValue() < 800; // THIS LINE MUST BE COMMENTED OUT WHEN COMPILING FOR ANDROID AND LINUX
                 return false; // for compatibility with mobile
             }
         }
@@ -126,7 +126,7 @@ namespace SonOfRobin
 
             graphics.ApplyChanges();
 
-            //if (ThisIsWorkMachine) this.Window.Position = new Point(-10, 758); // THIS LINE MUST BE COMMENTED OUT WHEN COMPILING FOR ANDROID
+            if (ThisIsWorkMachine) this.Window.Position = new Point(-10, 758); // THIS LINE MUST BE COMMENTED OUT WHEN COMPILING FOR ANDROID
             this.Window.AllowUserResizing = true;
             Window.ClientSizeChanged += OnResize;
 
@@ -156,12 +156,7 @@ namespace SonOfRobin
             graphics.PreferredBackBufferWidth = Window.ClientBounds.Width < 100 ? 100 : Window.ClientBounds.Width;
             graphics.PreferredBackBufferHeight = Window.ClientBounds.Height < 100 ? 100 : Window.ClientBounds.Height;
 
-            var mapScenes = Scene.GetAllScenesOfType(typeof(Map));
-            foreach (Scene scene in mapScenes)
-            {
-                Map mapScene = (Map)scene;
-                mapScene.UpdateResolution();
-            }
+            Scene.ResizeAllScenes();
         }
 
         protected override void LoadContent()

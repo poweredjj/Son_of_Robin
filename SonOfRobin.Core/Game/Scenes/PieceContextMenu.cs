@@ -127,8 +127,8 @@ namespace SonOfRobin
 
             this.UpdateViewSizes();
 
-            this.AddTransition(new Transition(type: Transition.TransType.From, duration: 8, scene: this, blockInput: false, paramsToChange: new Dictionary<string, float> { { "posY", this.viewParams.posY + SonOfRobinGame.VirtualHeight }, { "opacity", 0f } }));
-
+            this.transManager.AddMultipleTransitions(outTrans: false, duration: 8, paramsToChange:
+                new Dictionary<string, float> { { "PosY", this.viewParams.PosY + SonOfRobinGame.VirtualHeight }, { "Opacity", 0f } });
         }
 
         private List<ContextAction> GetContextActionList(bool addMove = false, bool addDrop = false, bool addCook = false)
@@ -147,9 +147,10 @@ namespace SonOfRobin
 
         public override void Remove()
         {
-            if (this.transition == null)
+            if (!this.transManager.IsEnding)
             {
-                this.AddTransition(new Transition(type: Transition.TransType.To, duration: 8, scene: this, blockInput: true, paramsToChange: new Dictionary<string, float> { { "posY", this.viewParams.posY + SonOfRobinGame.VirtualHeight }, { "opacity", 0f } }, removeScene: true));
+                this.transManager.AddMultipleTransitions(outTrans: true, duration: 8, endRemoveScene: true, paramsToChange:
+                    new Dictionary<string, float> { { "PosY", this.viewParams.PosY + SonOfRobinGame.VirtualHeight }, { "Opacity", 0f } });
                 return;
             }
 
@@ -165,12 +166,12 @@ namespace SonOfRobin
         private void UpdateViewSizes()
         {
             Rectangle bgRect = this.BgRect;
-            this.viewParams.width = bgRect.Width;
-            this.viewParams.height = bgRect.Height;
+            this.viewParams.Width = bgRect.Width;
+            this.viewParams.Height = bgRect.Height;
 
             Vector2 menuPos = this.MenuPos;
-            this.viewParams.posX = menuPos.X;
-            this.viewParams.posY = menuPos.Y;
+            this.viewParams.PosX = menuPos.X;
+            this.viewParams.PosY = menuPos.Y;
         }
 
         private void ProcessInput()

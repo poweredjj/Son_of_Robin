@@ -32,13 +32,13 @@ namespace SonOfRobin
             {
                 string autoSaveString = this.autoSave ? " autosave" : "";
 
-                if (SonOfRobinGame.platform == Platform.Mobile) return $"{SaveDateString} time played: {ElapsedTimeString}{autoSaveString} seed: {this.seed} {this.width}x{this.height}";
+                if (SonOfRobinGame.platform == Platform.Mobile) return $"{SaveDateString} time played: {ElapsedTimeString}{autoSaveString} seed: {String.Format("{0:0000}", this.seed)} {this.width}x{this.height}";
                 else return $"{SaveDateString}   time played: {ElapsedTimeString}{autoSaveString}";
             }
         }
 
         public string AdditionalInfo
-        { get { return $"seed: {this.seed}   {this.width}x{this.height}"; } }
+        { get { return $"seed: {String.Format("{0:0000}", this.seed)}   {this.width}x{this.height}"; } }
         public SaveHeaderInfo(string folderName)
         {
             this.folderName = folderName;

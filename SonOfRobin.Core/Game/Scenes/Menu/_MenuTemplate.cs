@@ -1,12 +1,14 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
 namespace SonOfRobin
 {
     public class MenuTemplate
     {
-        public enum Name { Main, Options, CreateNewIsland, Pause, Load, Save, Tutorials, GameOver, Debug, CreateAnyPiece, GenericConfirm, CraftBasic, CraftNormal, CraftCooking, CraftFurnace }
+        public enum Name { Main, Options, CreateNewIsland, SetSeed, OpenIslandTemplate, Pause, Load, Save, Tutorials, GameOver, Debug, CreateAnyPiece, GenericConfirm, CraftBasic, CraftNormal, CraftCooking, CraftFurnace }
 
         public static Menu CreateConfirmationMenu(Object confirmationData)
         {
@@ -78,19 +80,99 @@ namespace SonOfRobin
                     return menu;
 
                 case Name.CreateNewIsland:
-                    menu = new Menu(templateName: templateName, name: "CREATE NEW ISLAND", blocksUpdatesBelow: false, canBeClosedManually: true, closingTask: Scheduler.TaskName.SavePrefs);
-                    new Invoker(menu: menu, name: "start game", closesMenu: true, taskName: Scheduler.TaskName.CreateNewWorld);
+                    {
+                        menu = new Menu(templateName: templateName, name: "CREATE NEW ISLAND", blocksUpdatesBelow: false, canBeClosedManually: true, closingTask: Scheduler.TaskName.SavePrefs);
 
-                    List<Object> sizeList;
-                    if (SonOfRobinGame.platform == Platform.Desktop)
-                    { sizeList = new List<Object> { 1000, 2000, 4000, 8000, 15000, 20000, 25000, 30000, 40000, 50000, 60000 }; }
-                    else
-                    { sizeList = new List<Object> { 1000, 2000, 4000, 8000, 15000, 20000, 25000, 30000 }; }
+                        new Selector(menu: menu, name: "customize", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: new Preferences(), propertyName: "CustomizeWorld", rebuildsMenu: true);
 
-                    new Selector(menu: menu, name: "width", valueList: sizeList, targetObj: new Preferences(), propertyName: "newWorldWidth");
-                    new Selector(menu: menu, name: "height", valueList: sizeList, targetObj: new Preferences(), propertyName: "newWorldHeight");
-                    new Invoker(menu: menu, name: "return", closesMenu: true, taskName: Scheduler.TaskName.SavePrefs);
-                    return menu;
+                        if (Preferences.CustomizeWorld)
+                        {
+                            List<Object> sizeList;
+                            if (SonOfRobinGame.platform == Platform.Desktop)
+                            { sizeList = new List<Object> { 1000, 2000, 4000, 8000, 10000, 15000, 20000, 30000, 40000, 50000, 60000, 80000 }; }
+                            else
+                            { sizeList = new List<Object> { 1000, 2000, 4000, 8000, 10000, 15000, 20000, 30000, 40000 }; }
+
+
+                            new Selector(menu: menu, name: "width", valueList: sizeList, targetObj: new Preferences(), propertyName: "newWorldWidth", rebuildsMenu: true);
+                            new Selector(menu: menu, name: "height", valueList: sizeList, targetObj: new Preferences(), propertyName: "newWorldHeight", rebuildsMenu: true);
+
+                            new Selector(menu: menu, name: "random seed", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: new Preferences(), propertyName: "randomSeed", rebuildsMenu: true);
+
+                            if (!Preferences.randomSeed) new Invoker(menu: menu, name: "set seed", taskName: Scheduler.TaskName.OpenSetSeedMenu);
+                        }
+                        else
+                        {
+                            List<Object> sizeList = new List<Object> { Preferences.WorldSize.small, Preferences.WorldSize.medium, Preferences.WorldSize.large };
+                            if (SonOfRobinGame.platform == Platform.Desktop)
+                            {
+                                sizeList.Add(Preferences.WorldSize.gigantic);
+                                sizeList.Add(Preferences.WorldSize.outrageous);
+                            }
+
+                            new Selector(menu: menu, name: "size", valueList: sizeList, targetObj: new Preferences(), propertyName: "SelectedWorldSize", rebuildsMenu: true, infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: $"{Preferences.newWorldWidth}x{Preferences.newWorldHeight}", color: Color.White, scale: 1f) });
+                        }
+
+                        new Invoker(menu: menu, name: "start game", closesMenu: true, taskName: Scheduler.TaskName.CreateNewWorld, executeHelper: new Dictionary<string, Object> { { "width", Preferences.newWorldWidth }, { "height", Preferences.newWorldHeight }, { "seed", Preferences.NewWorldSeed } });
+
+                        new Separator(menu: menu, name: "", isEmpty: true);
+
+                        if (Directory.GetDirectories(SonOfRobinGame.worldTemplatesPath).ToList().Count > 0) new Invoker(menu: menu, name: "open previous island", taskName: Scheduler.TaskName.OpenIslandTemplateMenu,
+                        infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: "enter a fresh instance of a previously visited island", color: Color.White, scale: 1f) });
+
+                        new Separator(menu: menu, name: "", isEmpty: true);
+
+                        new Invoker(menu: menu, name: "return", closesMenu: true, taskName: Scheduler.TaskName.SavePrefs);
+                        return menu;
+                    }
+
+                case Name.SetSeed:
+                    {
+                        menu = new Menu(templateName: templateName, name: "ENTER SEED", blocksUpdatesBelow: false, canBeClosedManually: true);
+                        new Separator(menu: menu, name: "", isEmpty: true);
+
+                        var digitList = new List<Object> { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
+
+                        new Separator(menu: menu, name: $"current seed: {String.Format("{0:0000}", Preferences.NewWorldSeed)}");
+
+                        for (int i = 0; i < 4; i++)
+                        {
+                            new Selector(menu: menu, name: $"digit {i + 1}", valueList: digitList, targetObj: new Preferences(), propertyName: $"seedDigit{i + 1}", rebuildsMenu: true);
+                        }
+
+                        new Separator(menu: menu, name: "", isEmpty: true);
+
+                        new Invoker(menu: menu, name: "return", closesMenu: true, taskName: Scheduler.TaskName.SavePrefs);
+                        return menu;
+                    }
+
+                case Name.OpenIslandTemplate:
+                    {
+                        menu = new Menu(templateName: templateName, name: "CREATE ISLAND FROM TEMPLATE", blocksUpdatesBelow: false, canBeClosedManually: true);
+
+                        var templatePaths = Directory.GetDirectories(SonOfRobinGame.worldTemplatesPath);
+
+                        string widthHeight, folderName;
+                        int width, height, seed;
+
+                        foreach (string path in templatePaths)
+                        {
+                            folderName = Path.GetFileName(path);
+
+                            seed = Convert.ToInt32(folderName.Split('_')[1]);
+
+                            widthHeight = folderName.Split('_')[2];
+                            width = Convert.ToInt32(widthHeight.Split('x')[0]);
+                            height = Convert.ToInt32(widthHeight.Split('x')[1]);
+
+                            new Invoker(menu: menu, name: $"{width}x{height} seed {seed}", closesMenu: true, taskName: Scheduler.TaskName.CreateNewWorld, executeHelper: new Dictionary<string, Object> { { "width", width }, { "height", height }, { "seed", seed } });
+                        }
+
+                        new Separator(menu: menu, name: "", isEmpty: true);
+
+                        new Invoker(menu: menu, name: "return", closesMenu: true, taskName: Scheduler.TaskName.SavePrefs);
+                        return menu;
+                    }
 
                 case Name.Pause:
                     world = World.GetTopWorld();
@@ -182,12 +264,14 @@ namespace SonOfRobin
                     if (world != null && !world.demoMode) new Invoker(menu: menu, name: "create any piece", taskName: Scheduler.TaskName.OpenCreateAnyPieceMenu);
                     new Selector(menu: menu, name: "create missing pieces", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: new Preferences(), propertyName: "debugCreateMissingPieces");
                     new Selector(menu: menu, name: "god mode", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: new Preferences(), propertyName: "DebugGodMode");
+                    new Selector(menu: menu, name: "ignore cinematics", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: new Preferences(), propertyName: "debugIgnoreCinematics");
                     new Selector(menu: menu, name: "show whole map", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: new Preferences(), propertyName: "debugShowWholeMap");
                     new Selector(menu: menu, name: "show all items on map", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: new Preferences(), propertyName: "debugShowAllMapPieces");
                     new Invoker(menu: menu, name: "restore all hints", taskName: Scheduler.TaskName.RestoreHints);
                     new Selector(menu: menu, name: "show fruit rects", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: new Preferences(), propertyName: "debugShowFruitRects");
                     new Selector(menu: menu, name: "show sprite rects", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: new Preferences(), propertyName: "debugShowRects");
                     new Selector(menu: menu, name: "show cells", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: new Preferences(), propertyName: "debugShowCellData");
+                    new Selector(menu: menu, name: "show animal targets", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: new Preferences(), propertyName: "debugShowAnimalTargets");
                     new Selector(menu: menu, name: "show all stat bars", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: new Preferences(), propertyName: "debugShowStatBars");
                     new Selector(menu: menu, name: "show states", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: new Preferences(), propertyName: "debugShowStates");
                     new Selector(menu: menu, name: "use multiple threads", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: new Preferences(), propertyName: "debugUseMultipleThreads");
@@ -228,7 +312,7 @@ namespace SonOfRobin
 
         private static Menu CreateCraftMenu(Name templateName, Craft.Category category, string label)
         {
-            Tutorials.ShowTutorial(type: Tutorials.Type.Craft, ignoreIfShown: true);
+            Tutorials.ShowTutorial(type: Tutorials.Type.Craft, ignoreIfShown: true, ignoreDelay: true);
 
             PieceStorage storage = World.GetTopWorld().player.pieceStorage;
 

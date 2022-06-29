@@ -148,7 +148,7 @@ namespace SonOfRobin
             this.isActive = false;
             this.bgOpacity = bgOpacity;
             this.bgColor = bgColor;
-            this.viewParams.opacity = 0f;
+            this.viewParams.Opacity = 0f;
             this.entryList = new List<TextEntry> { };
         }
 
@@ -157,14 +157,28 @@ namespace SonOfRobin
             List<TextEntry> savedEntryList = this.entryList;
             this.entryList = entryList;
             this.UpdateViewSizes();
-            Vector2 windowSize = new Vector2(this.viewParams.width, this.viewParams.height);
+            Vector2 windowSize = new Vector2(this.viewParams.Width, this.viewParams.Height);
 
             this.entryList = savedEntryList;
 
             return windowSize;
         }
 
-        public void TurnOn(int curVal, int maxVal, string text, bool addNumbers = true)
+        private Vector2 GetCenterPosForEntryList(List<TextEntry> entryList)
+        {
+            var previousList = this.entryList;
+            this.entryList = entryList;
+            this.UpdateViewSizes();
+
+            Vector2 centerPos = new Vector2(this.viewParams.CenterPosX, this.viewParams.CenterPosY);
+
+            this.entryList = previousList;
+            this.UpdateViewSizes();
+
+            return centerPos;
+        }
+
+        public void TurnOn(int curVal, int maxVal, string text, bool addNumbers = true, bool addTransition = false)
         {
             // simple progress bar usage
 
@@ -190,59 +204,82 @@ namespace SonOfRobin
                 entryList.Add(new TextEntry(text: $"{curVal}/{maxVal}   {percentage}%", color: Color.White, justify: TextEntry.Justify.Center));
             }
 
-            this.TurnOn(entryList: entryList, newPosX: 0, newPosY: 0, addTransition: false, centerHoriz: true, centerVert: true);
+            this.TurnOn(entryList: entryList, newPosX: 0, newPosY: 0, addTransition: addTransition, centerHoriz: true, centerVert: true);
         }
 
         public void TurnOn(List<TextEntry> entryList, int newPosX, int newPosY, bool addTransition = true, bool centerHoriz = false, bool centerVert = false)
         {
             // normal usage
 
-            if (this.isActive &&
-                this.viewParams.posX == newPosX &&
-                this.viewParams.posY == newPosY &&
-                TextEntry.CompareTwoLists(this.entryList, entryList))
+            if (centerHoriz || centerVert)
+            {
+                Vector2 centerPos = this.GetCenterPosForEntryList(entryList);
+
+                if (centerHoriz) newPosX = Convert.ToInt32(centerPos.X);
+                if (centerVert) newPosY = Convert.ToInt32(centerPos.Y);
+            }
+
+            if (!addTransition)
+            {
+                this.transManager.ClearPreviousTransitions(copyDrawToBase: false);
+                this.viewParams.PosX = newPosX;
+                this.viewParams.PosY = newPosY;
+                this.viewParams.Opacity = 1f;
+                this.entryList = entryList;
+                this.isActive = true;
                 return;
-
-            this.entryList = entryList;
-
-            var paramsToChange = new Dictionary<string, float> { };
+            }
 
             if (this.isActive)
             {
-                if (newPosX != this.viewParams.posX) paramsToChange["posX"] = this.viewParams.posX;
-                if (newPosY != this.viewParams.posY) paramsToChange["posY"] = this.viewParams.posY;
+                int oldPosX = Convert.ToInt32(this.viewParams.PosX);
+                int oldPosY = Convert.ToInt32(this.viewParams.PosY);
+                int transPosX = Convert.ToInt32(this.transManager.GetTargetValue("PosX"));
+                int transPosY = Convert.ToInt32(this.transManager.GetTargetValue("PosY"));
+
+                bool posXEqual = oldPosX == newPosX || transPosX == newPosX;
+                bool posYEqual = oldPosY == newPosY || transPosY == newPosY;
+
+                if (posXEqual && posYEqual && TextEntry.CompareTwoLists(this.entryList, entryList)) return;
             }
-            else paramsToChange["opacity"] = this.viewParams.drawOpacity;
 
-            this.viewParams.posX = newPosX;
-            this.viewParams.posY = newPosY;
-
+            this.entryList = entryList;
             this.UpdateViewSizes();
-            if (centerHoriz || centerVert) this.viewParams.CenterView(horizontally: centerHoriz, vertically: centerVert);
 
-            if (addTransition) this.AddTransition(new Transition(type: Transition.TransType.From, duration: transDuration, scene: this, blockInput: false, paramsToChange: paramsToChange));
+            this.transManager.ClearPreviousTransitions(copyDrawToBase: true);
+
+
+            var paramsToChange = new Dictionary<string, float> { };
+
+            paramsToChange["Opacity"] = 1f;
+            if (this.isActive)
+            {
+                paramsToChange["PosX"] = newPosX;
+                paramsToChange["PosY"] = newPosY;
+            }
             else
             {
-                this.RemoveTransition();
-                this.viewParams.drawOpacity = 1f;
+                this.viewParams.PosX = newPosX;
+                this.viewParams.PosY = newPosY;
             }
 
+            this.transManager.ClearPreviousTransitions(copyDrawToBase: true);
+            this.transManager.AddMultipleTransitions(paramsToChange: paramsToChange, outTrans: false, duration: transDuration, endCopyToBase: false, startSwapParams: true);
+
             this.isActive = true;
-            this.viewParams.opacity = 1f;
         }
 
         public void TurnOff(bool addTransition = true)
         {
             if (!this.isActive) return;
 
-            this.viewParams.opacity = this.viewParams.drawOpacity;
+            this.transManager.ClearPreviousTransitions(copyDrawToBase: true);
 
-            if (addTransition) this.AddTransition(new Transition(type: Transition.TransType.To, duration: transDuration, scene: this, blockInput: false, copyToBaseAtTheEnd: true, paramsToChange: new Dictionary<string, float> { { "opacity", 0f } }));
-            else
+            if (addTransition)
             {
-                this.viewParams.opacity = 0f;
-                this.viewParams.drawOpacity = 0f;
+                this.transManager.AddTransition(new Transition(transManager: this.transManager, outTrans: true, baseParamName: "Opacity", targetVal: 0f, duration: transDuration, endCopyToBase: true));
             }
+            else this.viewParams.Opacity = 0f;
 
             this.isActive = false;
         }
@@ -257,8 +294,8 @@ namespace SonOfRobin
         public void UpdateViewSizes()
         {
             Rectangle bgRect = this.BgRect;
-            this.viewParams.width = bgRect.Width;
-            this.viewParams.height = bgRect.Height;
+            this.viewParams.Width = bgRect.Width;
+            this.viewParams.Height = bgRect.Height;
         }
 
         public override void Draw()

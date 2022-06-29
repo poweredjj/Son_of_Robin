@@ -88,12 +88,12 @@ namespace SonOfRobin
         }
 
         public bool ScrollActive { get { return this.FullyVisibleEntries.Count < this.entryList.Count || this.PartiallyVisibleEntries.Count > 0; } }
-        private float ScrollbarVisiblePercent { get { return (float)this.viewParams.height / (((float)this.EntryHeight + (float)this.EntryMargin) * (float)this.entryList.Count); } }
-        private int ScrollbarWidgetHeight { get { return (int)(this.ScrollbarVisiblePercent * this.viewParams.height); } }
+        private float ScrollbarVisiblePercent { get { return (float)this.viewParams.Height / (((float)this.EntryHeight + (float)this.EntryMargin) * (float)this.entryList.Count); } }
+        private int ScrollbarWidgetHeight { get { return (int)(this.ScrollbarVisiblePercent * this.viewParams.Height); } }
         public int ScrollbarPosX { get { return this.EntryBgWidth - this.ScrollbarWidth; } }
         public int ScrollbarWidth { get { return this.ScrollActive ? Convert.ToInt32(EntryBgWidth * 0.08f) : 0; } }
-        public float ScrollbarMultiplier { get { return (float)this.viewParams.height / ((float)this.MaxScrollPos + (float)this.viewParams.height); } }
-        private Rectangle ScrollWholeRect { get { return new Rectangle(this.ScrollbarPosX, 0, this.ScrollbarWidth, this.viewParams.height); } }
+        public float ScrollbarMultiplier { get { return (float)this.viewParams.Height / ((float)this.MaxScrollPos + (float)this.viewParams.Height); } }
+        private Rectangle ScrollWholeRect { get { return new Rectangle(this.ScrollbarPosX, 0, this.ScrollbarWidth, this.viewParams.Height); } }
         public int EntryWidth { get { return Convert.ToInt32(EntryBgWidth * 0.8f); } }
         public int EntryHeight { get { return Convert.ToInt32(SonOfRobinGame.VirtualHeight * 0.08f * Preferences.menuScale); } }
         public int EntryMargin { get { return Convert.ToInt32(SonOfRobinGame.VirtualHeight * 0.025f * Preferences.menuScale); } }
@@ -161,6 +161,11 @@ namespace SonOfRobin
             this.AddStartTransitions();
         }
 
+        protected override void AdaptToNewSize()
+        {
+            this.SetViewPosAndSize();
+        }
+
         private void SetTouchLayout()
         {
             if (!this.canBeClosedManually)
@@ -190,33 +195,33 @@ namespace SonOfRobin
 
         public override void Remove()
         {
-            if (this.transition == null)
+            if (!this.transManager.IsEnding)
             {
                 Scene sceneBelow = this.GetSceneBelow();
                 if (sceneBelow != null && sceneBelow.GetType() != typeof(Menu))
                 {
-
                     Dictionary<string, float> paramsToChange;
 
                     switch (this.layout)
                     {
                         case Layout.Middle:
-                            paramsToChange = new Dictionary<string, float> { { "posY", this.viewParams.posY + this.viewParams.height } };
+                            paramsToChange = new Dictionary<string, float> { { "PosY", this.viewParams.PosY + this.viewParams.Height } };
                             break;
 
                         case Layout.Left:
-                            paramsToChange = new Dictionary<string, float> { { "posX", this.viewParams.posX - this.viewParams.width } };
+                            paramsToChange = new Dictionary<string, float> { { "PosX", this.viewParams.PosX - this.viewParams.Width } };
                             break;
 
                         case Layout.Right:
-                            paramsToChange = new Dictionary<string, float> { { "posX", this.viewParams.posX + this.viewParams.width } };
+                            paramsToChange = new Dictionary<string, float> { { "PosX", this.viewParams.PosX + this.viewParams.Width } };
                             break;
 
                         default:
                             throw new DivideByZeroException($"Unsupported menu layout - {this.layout}.");
                     }
 
-                    this.AddTransition(new Transition(type: Transition.TransType.To, duration: 12, scene: this, blockInput: true, paramsToChange: paramsToChange, removeScene: true));
+                    this.transManager.AddMultipleTransitions(paramsToChange: paramsToChange, outTrans: true, duration: 12, endRemoveScene: true);
+
                     return;
                 }
             }
@@ -279,37 +284,25 @@ namespace SonOfRobin
                 switch (this.layout)
                 {
                     case Layout.Middle:
-                        paramsToChange = new Dictionary<string, float> { { "posY", this.viewParams.posY + this.viewParams.height } };
+                        paramsToChange = new Dictionary<string, float> { { "PosY", this.viewParams.PosY + this.viewParams.Height } };
                         break;
 
                     case Layout.Left:
-                        paramsToChange = new Dictionary<string, float> { { "posX", this.viewParams.posX - this.viewParams.width } };
+                        paramsToChange = new Dictionary<string, float> { { "PosX", this.viewParams.PosX - this.viewParams.Width } };
                         break;
 
                     case Layout.Right:
-                        paramsToChange = new Dictionary<string, float> { { "posX", this.viewParams.posX + this.viewParams.width } };
+                        paramsToChange = new Dictionary<string, float> { { "PosX", this.viewParams.PosX + this.viewParams.Width } };
                         break;
 
                     default:
                         throw new DivideByZeroException($"Unsupported menu layout - {this.layout}.");
                 }
 
-                this.AddTransition(new Transition(type: Transition.TransType.From, duration: 12, scene: this, blockInput: false, paramsToChange: paramsToChange));
+                this.transManager.AddMultipleTransitions(paramsToChange: paramsToChange, outTrans: false, duration: 12);
 
                 World topWorld = World.GetTopWorld();
-                if (topWorld != null && !topWorld.demoMode)
-                {
-                    topWorld.UpdateViewParams();
-                    float zoomScale = 0.7f;
-
-                    topWorld.AddTransition(new Transition(type: Transition.TransType.PingPong, duration: 20, scene: topWorld, blockInput: false, paramsToChange: new Dictionary<string, float> {
-                    { "posX", topWorld.viewParams.posX - (topWorld.camera.ScreenWidth * zoomScale * 0.25f) },
-                    { "posY", topWorld.viewParams.posY - (topWorld.camera.ScreenHeight * zoomScale * 0.25f) },
-                    { "scaleX", topWorld.viewParams.scaleX * zoomScale },
-                    { "scaleY", topWorld.viewParams.scaleY * zoomScale } },
-
-                    pingPongPause: true));
-                }
+                if (topWorld != null) topWorld.AddPauseMenuTransitions();
             }
         }
 
@@ -337,7 +330,6 @@ namespace SonOfRobin
 
             if (this.activeIndex == -1) this.NextItem(); // searching for first non-separator menu item
             this.CurrentScrollPosition = this.TargetScrollPosition;
-            this.SetViewPosAndSize();
 
             var activeEntry = this.ActiveEntry;
             if (activeEntry.infoTextList != null && !activeEntry.IsFullyVisible) SonOfRobinGame.hintWindow.TurnOff();
@@ -392,8 +384,8 @@ namespace SonOfRobin
         private void ScrollByTouch()
         {
             Rectangle scrollWholeRect = this.ScrollWholeRect;
-            scrollWholeRect.X += (int)this.viewParams.posX;
-            scrollWholeRect.Y += (int)this.viewParams.posY;
+            scrollWholeRect.X += (int)this.viewParams.PosX;
+            scrollWholeRect.Y += (int)this.viewParams.PosY;
 
             foreach (TouchLocation touch in TouchInput.TouchPanelState)
             {
@@ -468,40 +460,40 @@ namespace SonOfRobin
             if (!this.ScrollActive) return;
 
             Rectangle scrollWholeRect = this.ScrollWholeRect;
-            SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, scrollWholeRect, this.bgColor * 0.5f * this.viewParams.opacity);
-            Helpers.DrawRectangleOutline(rect: scrollWholeRect, color: this.entryList[0].outlineColor * 0.5f * this.viewParams.opacity, borderWidth: 2);
+            SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, scrollWholeRect, this.bgColor * 0.5f * this.viewParams.Opacity);
+            Helpers.DrawRectangleOutline(rect: scrollWholeRect, color: this.entryList[0].outlineColor * 0.5f * this.viewParams.Opacity, borderWidth: 2);
 
             int scrollPos = (int)(this.CurrentScrollPosition * this.ScrollbarMultiplier);
 
             Rectangle widgetRect = new Rectangle(this.ScrollbarPosX, scrollPos, this.ScrollbarWidth, this.ScrollbarWidgetHeight);
-            SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, widgetRect, this.entryList[0].outlineColor * 0.75f * this.viewParams.opacity);
-            Helpers.DrawRectangleOutline(rect: widgetRect, color: this.entryList[0].textColor * this.viewParams.opacity, borderWidth: 2);
+            SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, widgetRect, this.entryList[0].outlineColor * 0.75f * this.viewParams.Opacity);
+            Helpers.DrawRectangleOutline(rect: widgetRect, color: this.entryList[0].textColor * this.viewParams.Opacity, borderWidth: 2);
         }
 
-        private void SetViewPosAndSize()
+        public void SetViewPosAndSize()
         {
-            this.viewParams.width = this.EntryBgWidth;
-            this.viewParams.height = SonOfRobinGame.VirtualHeight;
+            this.viewParams.Width = this.EntryBgWidth;
+            this.viewParams.Height = SonOfRobinGame.VirtualHeight;
 
             switch (this.layout)
             {
                 case Menu.Layout.Middle:
-                    this.viewParams.posX = (SonOfRobinGame.VirtualWidth / 2) - (this.viewParams.width / 2);
+                    this.viewParams.PosX = (SonOfRobinGame.VirtualWidth / 2) - (this.viewParams.Width / 2);
                     break;
 
                 case Menu.Layout.Left:
-                    this.viewParams.posX = 0;
+                    this.viewParams.PosX = 0;
                     break;
 
                 case Menu.Layout.Right:
-                    this.viewParams.posX = SonOfRobinGame.VirtualWidth - this.viewParams.width;
+                    this.viewParams.PosX = SonOfRobinGame.VirtualWidth - this.viewParams.Width;
                     break;
 
                 default:
                     throw new DivideByZeroException($"Unsupported menu layout - {this.layout}.");
             }
 
-            this.viewParams.posY = 0;
+            this.viewParams.PosY = 0;
         }
     }
 }

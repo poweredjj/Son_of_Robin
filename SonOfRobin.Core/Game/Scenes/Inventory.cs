@@ -31,7 +31,7 @@ namespace SonOfRobin
         {
             get
             {
-                if (this.piece.world.mapMode == World.MapMode.Big) return true;
+                if (this.piece.world.mapMode == World.MapMode.Big || this.piece.world.cineMode) return true;
                 Scene topScene = sceneStack[sceneStack.Count - 1];
 
                 if (topScene.GetType() == typeof(TextWindow)) topScene = sceneStack[sceneStack.Count - 2];
@@ -154,10 +154,9 @@ namespace SonOfRobin
                 container.Open();
             }
 
-            if (this.layout != Layout.SingleBottom && this.layout != Layout.DualBottom)
+            if (this.layout != Layout.SingleBottom && this.layout != Layout.DualBottom && !this.transManager.HasAnyTransition)
             {
-                var paramsToChange = new Dictionary<string, float> { { "posY", this.viewParams.posY - SonOfRobinGame.VirtualHeight }, { "opacity", 0f } };
-                this.AddTransition(new Transition(type: Transition.TransType.From, duration: 12, scene: this, blockInput: false, paramsToChange: paramsToChange));
+                this.transManager.AddMultipleTransitions(paramsToChange: new Dictionary<string, float> { { "PosY", this.viewParams.PosY - SonOfRobinGame.VirtualHeight }, { "Opacity", 0f } }, outTrans: false, duration: 12, refreshBaseVal: false);
             }
         }
 
@@ -166,7 +165,7 @@ namespace SonOfRobin
             this.ReleaseHeldPieces(slot: null, forceReleaseAll: true);
             SonOfRobinGame.hintWindow.TurnOff();
 
-            if (this.transition == null && this.layout != Layout.SingleBottom && this.layout != Layout.DualBottom)
+            if (!this.transManager.IsEnding && this.layout != Layout.SingleBottom && this.layout != Layout.DualBottom)
             {
                 if (this.piece.GetType() == typeof(Container))
                 {
@@ -174,8 +173,9 @@ namespace SonOfRobin
                     container.Close();
                 }
 
-                var paramsToChange = new Dictionary<string, float> { { "posY", this.viewParams.posY - SonOfRobinGame.VirtualHeight }, { "opacity", 0f } };
-                this.AddTransition(new Transition(type: Transition.TransType.To, duration: 12, scene: this, blockInput: true, paramsToChange: paramsToChange, removeScene: true));
+                this.transManager.AddMultipleTransitions(paramsToChange: new Dictionary<string, float> {
+                    { "PosY", this.viewParams.PosY - SonOfRobinGame.VirtualHeight }, { "Opacity", 0f } },
+                    outTrans: true, duration: 12, refreshBaseVal: false, endRemoveScene: true);
 
                 return;
             }
@@ -207,7 +207,7 @@ namespace SonOfRobin
             int tileSize = this.TileSize;
             InfoWindow hintWindow = SonOfRobinGame.hintWindow;
 
-            Vector2 slotPos = this.GetSlotPos(slot: slot, margin: margin, tileSize: tileSize) + new Vector2(this.viewParams.posX, this.viewParams.posY);
+            Vector2 slotPos = this.GetSlotPos(slot: slot, margin: margin, tileSize: tileSize) + new Vector2(this.viewParams.PosX, this.viewParams.PosY);
             Vector2 windowPos;
             Vector2 infoWindowSize = hintWindow.MeasureEntries(entryList);
 
@@ -215,7 +215,7 @@ namespace SonOfRobin
             {
                 case Layout.SingleCenter:
                     windowPos = new Vector2(
-                        this.viewParams.posX + this.viewParams.width + margin,
+                        this.viewParams.PosX + this.viewParams.Width + margin,
                         slotPos.Y + (tileSize / 2) - (infoWindowSize.Y / 2));
                     break;
 
@@ -224,20 +224,20 @@ namespace SonOfRobin
 
                 case Layout.DualLeft:
                     windowPos = new Vector2(
-                        this.viewParams.posX + this.viewParams.width + margin,
+                        this.viewParams.PosX + this.viewParams.Width + margin,
                         slotPos.Y + (tileSize / 2) - (infoWindowSize.Y / 2));
                     break;
 
                 case Layout.DualRight:
                     windowPos = new Vector2(
-                        this.viewParams.posX - margin - infoWindowSize.X,
+                        this.viewParams.PosX - margin - infoWindowSize.X,
                         slotPos.Y + (tileSize / 2) - (infoWindowSize.Y / 2));
                     break;
 
                 case Layout.DualTop:
                     windowPos = new Vector2(
                         slotPos.X + (tileSize / 2) - (infoWindowSize.X / 2),
-                        this.viewParams.posY + this.viewParams.height + margin);
+                        this.viewParams.PosY + this.viewParams.Height + margin);
                     break;
 
                 case Layout.DualBottom:
@@ -253,8 +253,8 @@ namespace SonOfRobin
             // keeping the window inside screen bounds
             windowPos.X = Math.Max(windowPos.X, 0);
             windowPos.Y = Math.Max(windowPos.Y, 0);
-            int maxX = (int)((SonOfRobinGame.VirtualWidth * hintWindow.viewParams.scaleX) - infoWindowSize.X);
-            int maxY = (int)((SonOfRobinGame.VirtualHeight * hintWindow.viewParams.scaleY) - infoWindowSize.Y);
+            int maxX = (int)((SonOfRobinGame.VirtualWidth * hintWindow.viewParams.ScaleX) - infoWindowSize.X);
+            int maxY = (int)((SonOfRobinGame.VirtualHeight * hintWindow.viewParams.ScaleY) - infoWindowSize.Y);
             windowPos.X = Math.Min(windowPos.X, maxX);
             windowPos.Y = Math.Min(windowPos.Y, maxY);
 
@@ -277,14 +277,13 @@ namespace SonOfRobin
         private void UpdateViewParams()
         {
             Rectangle bgRect = this.BgRect;
-            this.viewParams.width = bgRect.Width;
-            this.viewParams.height = bgRect.Height;
+            this.viewParams.Width = bgRect.Width;
+            this.viewParams.Height = bgRect.Height;
 
             this.viewParams.CenterView();
+            this.viewParams.Opacity = this.inputActive && this.layout != Layout.SingleBottom ? 1f : 0.75f;
 
-            this.viewParams.opacity = this.inputActive && this.layout != Layout.SingleBottom ? 1f : 0.75f;
             int centerX = SonOfRobinGame.VirtualWidth / 2;
-
             float posY;
 
             switch (this.layout)
@@ -293,25 +292,25 @@ namespace SonOfRobin
                     break;
 
                 case Layout.DualLeft:
-                    this.viewParams.posX = centerX - (SonOfRobinGame.VirtualWidth / 25) - this.viewParams.posX;
+                    this.viewParams.PosX = centerX - (SonOfRobinGame.VirtualWidth / 25) - this.viewParams.PosX;
                     break;
 
                 case Layout.DualRight:
-                    this.viewParams.posX = centerX + (SonOfRobinGame.VirtualWidth / 25);
+                    this.viewParams.PosX = centerX + (SonOfRobinGame.VirtualWidth / 25);
                     break;
 
                 case Layout.DualTop:
-                    this.viewParams.posY = SonOfRobinGame.VirtualHeight * 0.1f;
+                    this.viewParams.PosY = SonOfRobinGame.VirtualHeight * 0.1f;
                     break;
 
                 case Layout.SingleBottom:
                     posY = Preferences.showControlTips ? 0.95f : 1f; // little margin for ControlTips at the bottom
-                    this.viewParams.posY = (SonOfRobinGame.VirtualHeight * posY) - this.viewParams.height;
+                    this.viewParams.PosY = (SonOfRobinGame.VirtualHeight * posY) - this.viewParams.Height;
                     break;
 
                 case Layout.DualBottom:
                     posY = Preferences.showControlTips ? 0.95f : 1f; // little margin for ControlTips at the bottom
-                    this.viewParams.posY = (SonOfRobinGame.VirtualHeight * posY) - this.viewParams.height;
+                    this.viewParams.PosY = (SonOfRobinGame.VirtualHeight * posY) - this.viewParams.Height;
                     break;
 
                 default:
@@ -490,8 +489,8 @@ namespace SonOfRobin
             Vector2 touchPos;
 
             Rectangle otherInvBgRect = this.otherInventory.BgRect;
-            otherInvBgRect.X += (int)this.otherInventory.viewParams.posX;
-            otherInvBgRect.Y += (int)this.otherInventory.viewParams.posY;
+            otherInvBgRect.X += (int)this.otherInventory.viewParams.PosX;
+            otherInvBgRect.Y += (int)this.otherInventory.viewParams.PosY;
 
             foreach (TouchLocation touch in TouchInput.TouchPanelState)
             {
@@ -559,7 +558,7 @@ namespace SonOfRobin
             if (slot.locked && piece.name != PieceTemplate.Name.FlameTrigger) return;
 
             Vector2 slotPos = this.GetSlotPos(slot: slot, margin: this.Margin, tileSize: this.TileSize);
-            slotPos += new Vector2(this.viewParams.posX, this.viewParams.posY);
+            slotPos += new Vector2(this.viewParams.PosX, this.viewParams.PosY);
             slotPos.X += this.Margin + this.TileSize;
             Vector2 percentPos = new Vector2(slotPos.X / SonOfRobinGame.VirtualWidth, slotPos.Y / SonOfRobinGame.VirtualHeight);
 

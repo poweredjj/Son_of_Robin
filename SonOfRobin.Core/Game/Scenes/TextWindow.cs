@@ -82,7 +82,9 @@ namespace SonOfRobin
 
         public override void Remove()
         {
-            if (this.transition == null)
+            //   MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"Removing TextWindow '{this.text}' (frame {SonOfRobinGame.currentUpdate}).");
+
+            if (!this.transManager.IsEnding)
             {
                 if (this.useTransition || this.useTransitionClose)
                 {
@@ -106,16 +108,18 @@ namespace SonOfRobin
         private void AddInOutTransition(bool inTrans)
         {
             float zoomScale = 8f;
-            Transition.TransType transType = inTrans ? Transition.TransType.From : Transition.TransType.To;
             bool removeScene = !inTrans;
 
-            this.AddTransition(new Transition(type: transType, duration: 10, scene: this, blockInput: false, removeScene: removeScene, paramsToChange: new Dictionary<string, float> {
-                    { "opacity", 0f },
-                    { "posX", (SonOfRobinGame.VirtualWidth * 0.5f * zoomScale) - ((float)this.viewParams.width / zoomScale)},
-                    { "posY", (SonOfRobinGame.VirtualHeight * 0.6f * zoomScale) - ((float)this.viewParams.height / zoomScale)},
-                    { "scaleX", zoomScale },
-                    { "scaleY", zoomScale }
-            }));
+            this.transManager.AddMultipleTransitions(outTrans: !inTrans, duration: 10, endRemoveScene: removeScene, paramsToChange:
+                 new Dictionary<string, float> {
+                    { "Opacity", 0f },
+                    { "PosX", (SonOfRobinGame.VirtualWidth * 0.5f * zoomScale) - ((float)this.viewParams.Width / zoomScale)},
+                    { "PosY", (SonOfRobinGame.VirtualHeight * 0.6f * zoomScale) - ((float)this.viewParams.Height / zoomScale)},
+                    { "ScaleX", zoomScale },
+                    { "ScaleY", zoomScale }}
+                );
+
+            if (inTrans) this.transManager.AddTransition(new Transition(transManager: this.transManager, outTrans: true, duration: 15, playCount: -1, replaceBaseValue: false, baseParamName: "Rot", targetVal: 0.13f, stageTransform: Transition.Transform.Sinus, pingPongCycles: false, cycleMultiplier: 0.17f));
         }
 
         private static string SplitText(string text, int maxWidth)
@@ -233,11 +237,11 @@ namespace SonOfRobin
             int scaledTextWidth = (int)(this.textWidth * this.textScale);
             int scaledTextHeight = (int)(this.textHeight * this.textScale);
 
-            this.viewParams.width = scaledTextWidth + (this.Margin * 2);
-            this.viewParams.height = scaledTextHeight + (this.Margin * 2);
+            this.viewParams.Width = scaledTextWidth + (this.Margin * 2);
+            this.viewParams.Height = scaledTextHeight + (this.Margin * 2);
 
-            this.viewParams.posX = (SonOfRobinGame.VirtualWidth / 2) - (this.viewParams.width / 2);
-            this.viewParams.posY = (SonOfRobinGame.VirtualHeight * 0.8f) - this.viewParams.height;
+            this.viewParams.PosX = (SonOfRobinGame.VirtualWidth / 2) - (this.viewParams.Width / 2);
+            this.viewParams.PosY = (SonOfRobinGame.VirtualHeight * 0.8f) - this.viewParams.Height;
         }
 
         public override void Draw()
@@ -246,8 +250,8 @@ namespace SonOfRobin
             int bgShadowOffset = (int)(SonOfRobinGame.VirtualHeight * 0.02f);
             int textShadowOffset = (int)(SonOfRobinGame.VirtualHeight * 0.003f);
 
-            Rectangle bgShadowRect = new Rectangle(bgShadowOffset, bgShadowOffset, this.viewParams.width, this.viewParams.height);
-            Rectangle bgRect = new Rectangle(0, 0, this.viewParams.width, this.viewParams.height);
+            Rectangle bgShadowRect = new Rectangle(bgShadowOffset, bgShadowOffset, this.viewParams.Width, this.viewParams.Height);
+            Rectangle bgRect = new Rectangle(0, 0, this.viewParams.Width, this.viewParams.Height);
             Vector2 textPos = new Vector2(margin, margin);
             Vector2 textShadowPos = new Vector2(textPos.X + textShadowOffset, textPos.Y + textShadowOffset);
 

@@ -256,7 +256,7 @@ namespace SonOfRobin
             this.aiData.Reset(this);
             this.target = bestChoice.piece;
 
-            if (Preferences.DebugMode)
+            if (Preferences.debugShowAnimalTargets)
             {
                 BoardPiece crossHair = PieceTemplate.CreateOnBoard(world: world, position: this.target.sprite.position, templateName: PieceTemplate.Name.Crosshair);
                 BoardPiece backlight = PieceTemplate.CreateOnBoard(world: world, position: this.sprite.position, templateName: PieceTemplate.Name.Backlight);
@@ -305,7 +305,7 @@ namespace SonOfRobin
                         this.visualAid = PieceTemplate.CreateOnBoard(world: world, position: this.sprite.position, templateName: PieceTemplate.Name.Exclamation);
                         new Tracking(world: world, targetSprite: this.sprite, followingSprite: this.visualAid.sprite, targetYAlign: YAlign.Top, targetXAlign: XAlign.Left, followingYAlign: YAlign.Bottom, offsetX: 0, offsetY: 5);
 
-                        if (!this.world.hintEngine.shownPieceHints.Contains(PieceHint.Type.RedExclamation)) this.world.hintEngine.CheckForPieceHintToShow(forcedMode: true);
+                        this.world.hintEngine.CheckForPieceHintToShow(forcedMode: true, typesToCheckOnly: new List<PieceHint.Type> { PieceHint.Type.RedExclamation});
                     }
 
                     this.activeState = State.AnimalChaseTarget;
@@ -495,7 +495,7 @@ namespace SonOfRobin
                 }
 
                 targetSpeed = playerTarget.speed;
-                this.attackCooldown += this.world.random.Next(0, 40);
+                this.attackCooldown += this.world.random.Next(0, 40); // additional cooldown after attacking player
             }
             else throw new ArgumentException($"Unsupported target class - '{this.target.GetType()}'.");
 
@@ -514,7 +514,17 @@ namespace SonOfRobin
                 this.target.hitPoints = Math.Max(0, this.target.hitPoints - attackStrength);
                 if (this.target.hitPoints <= 0) this.target.Kill();
 
-                this.target.AddPassiveMovement(movement: (this.sprite.position - this.target.sprite.position) * -0.3f * attackStrength);
+                Vector2 movement = (this.sprite.position - this.target.sprite.position) * -0.3f * attackStrength;
+
+                this.target.AddPassiveMovement(movement: movement);
+
+                if (this.target.GetType() == typeof(Player))
+                {
+                    Vector2 screenShake = movement * 0.02f;
+
+                    this.world.transManager.AddMultipleTransitions(outTrans: true, duration: this.world.random.Next(4, 10), playCount: -1, replaceBaseValue: false, stageTransform: Transition.Transform.Sinus, pingPongCycles: false, cycleMultiplier: 0.02f, paramsToChange: new Dictionary<string, float> { { "PosX", screenShake.X }, { "PosY", screenShake.Y } });
+                }
+
             }
             else // if attack had missed
             {
@@ -547,6 +557,8 @@ namespace SonOfRobin
             this.AcquireEnergy(bittenMass * (eatingPlantOrFruit ? 0.5f : 6f));
 
             this.target.Mass = Math.Max(this.target.Mass - bittenMass, 0);
+
+            this.sprite.SetOrientationByMovement(this.target.sprite.position - this.sprite.position);
 
             if (this.target.Mass <= 0)
             {

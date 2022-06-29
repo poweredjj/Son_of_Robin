@@ -16,15 +16,16 @@ namespace SonOfRobin
         private bool currentFluidMotion;
         public bool fluidMotionDisabled;
         private static readonly int movementSlowdown = 20;
+        private int zoomSlowdown = 20;
 
         public Rectangle viewRect;
         public Vector2 viewPos;
 
         public int ScreenWidth
-        { get { return Convert.ToInt32(SonOfRobinGame.VirtualWidth * this.world.viewParams.scaleX); } }
+        { get { return Convert.ToInt32(SonOfRobinGame.VirtualWidth * this.world.viewParams.ScaleX); } }
 
         public int ScreenHeight
-        { get { return Convert.ToInt32(SonOfRobinGame.VirtualHeight * this.world.viewParams.scaleY); } }
+        { get { return Convert.ToInt32(SonOfRobinGame.VirtualHeight * this.world.viewParams.ScaleY); } }
 
         public bool TrackedSpriteExists
         {
@@ -61,13 +62,15 @@ namespace SonOfRobin
 
             if (!Scene.processingUpdate) return;
 
-            int xMin; int xMax; int yMin; int yMax;
+            float xMin; float xMax; float yMin; float yMax;
             Vector2 currentTargetPos = this.GetTargetCoords();
             Vector2 viewCenter = new Vector2(0, 0); // to be updated below
 
             if (this.currentFluidMotion)
             {
-                this.currentZoom += (this.targetZoom - this.currentZoom) / movementSlowdown;
+                this.currentZoom += (this.targetZoom - this.currentZoom) / this.zoomSlowdown;
+                if (this.currentZoom == this.targetZoom) this.zoomSlowdown = movementSlowdown; // resetting to default zoom speed, after reaching target value
+
                 viewCenter.X = this.currentPos.X + ((currentTargetPos.X - this.currentPos.X) / movementSlowdown);
                 viewCenter.Y = this.currentPos.Y + ((currentTargetPos.Y - this.currentPos.Y) / movementSlowdown);
             }
@@ -83,13 +86,13 @@ namespace SonOfRobin
 
             viewCenter += this.world.analogCameraCorrection;
 
-            int screenWidth = this.ScreenWidth;
-            int screenHeight = this.ScreenHeight;
+            float screenWidth = this.ScreenWidth;
+            float screenHeight = this.ScreenHeight;
 
-            int widthDivider = this.world.demoMode ? 4 : 2;
+            float widthDivider = this.world.demoMode ? 5 : 2; // to put the camera center on the left side of the screen during demo (there is menu on the right)
 
-            xMin = Convert.ToInt32(Math.Min(Math.Max(viewCenter.X - (screenWidth / widthDivider), 0), this.world.width - screenWidth - 1));
-            yMin = Convert.ToInt32(Math.Min(Math.Max(viewCenter.Y - (screenHeight / 2), 0), this.world.height - screenHeight - 1));
+            xMin = Math.Min(Math.Max(viewCenter.X - (screenWidth / widthDivider), 0), (float)this.world.width - screenWidth - 1f);
+            yMin = Math.Min(Math.Max(viewCenter.Y - (screenHeight / 2f), 0), (float)this.world.height - screenHeight - 1f);
 
             xMin = Math.Max(xMin, 0);
             yMin = Math.Max(yMin, 0);
@@ -98,12 +101,12 @@ namespace SonOfRobin
 
             this.currentPos = viewCenter;
 
-            this.viewRect.X = xMin;
-            this.viewRect.Y = yMin;
-            this.viewRect.Width = xMax - xMin;
-            this.viewRect.Height = yMax - yMin;
+            this.viewRect.X = (int)xMin;
+            this.viewRect.Y = (int)yMin;
+            this.viewRect.Width = (int)(xMax - xMin);
+            this.viewRect.Height = (int)(yMax - yMin);
 
-            this.viewPos = new Vector2(Convert.ToInt32(-this.viewRect.Left), Convert.ToInt32(-this.viewRect.Top));
+            this.viewPos = new Vector2(-xMin, -yMin);
         }
 
         public void TrackPiece(BoardPiece trackedPiece, bool fluidMotion = true)
@@ -120,12 +123,17 @@ namespace SonOfRobin
             this.trackedPos = new Vector2(position.X, position.Y);
             this.currentFluidMotion = fluidMotion;
         }
+        public void ResetZoom(bool setInstantly = false, float zoomSpeedMultiplier = 1f)
+        {
+            this.SetZoom(zoom: 1f, setInstantly: setInstantly, zoomSpeedMultiplier: zoomSpeedMultiplier);
+        }
 
-        public void SetZoom(float zoom)
-        { this.targetZoom = zoom; }
-
-        public void ResetZoom()
-        { this.targetZoom = 1f; }
+        public void SetZoom(float zoom, bool setInstantly = false, float zoomSpeedMultiplier = 1f)
+        {
+            this.zoomSlowdown = (int)(movementSlowdown / zoomSpeedMultiplier);
+            this.targetZoom = zoom;
+            if (setInstantly) this.currentZoom = zoom;
+        }
 
         public Vector2 GetRandomPositionOutsideCameraView()
         {

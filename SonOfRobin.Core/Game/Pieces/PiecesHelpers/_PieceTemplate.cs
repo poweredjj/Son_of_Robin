@@ -454,13 +454,10 @@ namespace SonOfRobin
                             { TerrainName.Height, new AllowedRange(min: 165, max: 210) }});
 
                         var yield = new Yield(debrisType: Yield.DebrisType.Stone,
-                       firstDroppedPieces: new List<Yield.DroppedPiece> {
-                           new Yield.DroppedPiece(pieceName: Name.Stone, chanceToDrop: 100, maxNumberToDrop: 1),
-                           new Yield.DroppedPiece(pieceName: Name.StoneAmmo, chanceToDrop: 100, maxNumberToDrop: 1),
-                       },
+                       firstDroppedPieces: new List<Yield.DroppedPiece> { },
                        finalDroppedPieces: new List<Yield.DroppedPiece> {
-                           new Yield.DroppedPiece(pieceName: Name.Stone, chanceToDrop: 100, maxNumberToDrop: 4),
-                           new Yield.DroppedPiece(pieceName: Name.StoneAmmo, chanceToDrop: 100, maxNumberToDrop: 3),
+                           new Yield.DroppedPiece(pieceName: Name.MineralsSmall, chanceToDrop: 100, maxNumberToDrop: 1),
+                           new Yield.DroppedPiece(pieceName: Name.MineralsSmall, chanceToDrop: 100, maxNumberToDrop: 2),
                        });
 
                         return new Decoration(name: templateName, world: world, position: position, animPackage: animPkg, allowedFields: allowedFields,

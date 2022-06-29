@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using System.Collections.Generic;
 
 namespace SonOfRobin
 {
@@ -8,13 +7,11 @@ namespace SonOfRobin
         public Color color;
         public readonly bool clearScreen;
 
-        public SolidColor(Color color, float viewOpacity, bool clearScreen, bool inTrans = false, int priority = 1) : base(inputType: InputTypes.None, priority: priority, blocksUpdatesBelow: false, blocksDrawsBelow: clearScreen, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty)
+        public SolidColor(Color color, float viewOpacity, bool clearScreen, int priority = 1) : base(inputType: InputTypes.None, priority: priority, blocksUpdatesBelow: false, blocksDrawsBelow: clearScreen, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty)
         {
             this.color = color;
-            this.viewParams.opacity = viewOpacity;
+            this.viewParams.Opacity = viewOpacity;
             this.clearScreen = clearScreen;
-
-            if (inTrans) this.AddTransition(new Transition(type: Transition.TransType.From, duration: 30, scene: this, blockInput: false, paramsToChange: new Dictionary<string, float> { { "opacity", 0f } }, removeScene: true));
         }
 
         public override void Update(GameTime gameTime)
