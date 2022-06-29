@@ -66,7 +66,7 @@ namespace SonOfRobin
 
                 new PieceHint(type: Type.MapCanMake, canBeForced: true,
                     message: "I can use this | leather to make a | map.\nBut I need a | workshop to make it.",
-                    imageList: new List<Texture2D>{ AnimData.framesForPkgs[AnimData.PkgName.Leather].texture, AnimData.framesForPkgs[AnimData.PkgName.Map].texture,  AnimData.framesForPkgs[AnimData.PkgName.WorkshopBasic].texture},
+                    imageList: new List<Texture2D>{ AnimData.framesForPkgs[AnimData.PkgName.Leather].texture, AnimData.framesForPkgs[AnimData.PkgName.Map].texture,  AnimData.framesForPkgs[AnimData.PkgName.WorkshopEssential].texture},
                     playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.Leather}),
 
                 new PieceHint(type: Type.MapPositive, canBeForced: true,
@@ -203,14 +203,14 @@ namespace SonOfRobin
                     playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.TorchSmall}),
 
                 new PieceHint(type: Type.Fireplace, canBeForced: true,
-                    message: "This | looks ok.\nAll I need now is some | | wood...\nOr | coal?",
+                    message: "This | bonfire looks ok.\nAll I need now is some | | wood...\nOr | coal?",
                     imageList: new List<Texture2D>{ AnimData.framesForPkgs[AnimData.PkgName.Campfire].texture, AnimData.framesForPkgs[AnimData.PkgName.WoodLog].texture, AnimData.framesForPkgs[AnimData.PkgName.WoodPlank].texture, AnimData.framesForPkgs[AnimData.PkgName.Coal].texture},
                     tutorialsToActivate: new List<Tutorials.Type> {Tutorials.Type.Fireplace},
                     fieldPieces: new List<PieceTemplate.Name> {PieceTemplate.Name.Campfire}),
 
                 new PieceHint(type: Type.CanBuildWorkshop, canBeForced: true,
-                    message: "If I had more | wood, I could build a | basic workshop.",
-                    imageList: new List<Texture2D>{ AnimData.framesForPkgs[AnimData.PkgName.WoodLog].texture, AnimData.framesForPkgs[AnimData.PkgName.WorkshopBasic].texture},
+                    message: "If I had more | wood, I could build a | workshop.",
+                    imageList: new List<Texture2D>{ AnimData.framesForPkgs[AnimData.PkgName.WoodLog].texture, AnimData.framesForPkgs[AnimData.PkgName.WorkshopEssential].texture},
                     tutorialsToActivate: new List<Tutorials.Type> {Tutorials.Type.BuildWorkshop},
                     playerOwnsAllOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.WoodLog}),
                 };

@@ -102,7 +102,60 @@ namespace SonOfRobin
 
         public InputPackage MakeCopy()
         {
-            return new InputPackage(packageVersion: this.packageVersion, leftStick: this.leftStick, rightStick: this.rightStick, confirm: this.confirm, cancel: this.cancel, pauseMenu: this.pauseMenu, run: this.run, equip: this.equip, inventory: this.inventory, pickUp: this.pickUp, craft: this.craft, interact: this.interact, map: this.map, useTool: this.useTool, zoomOut: this.zoomOut, toolbarPrev: this.toolbarPrev, toolbarNext: this.toolbarNext, invSwitch: this.invSwitch, pickOne: this.pickOne, pickStack: this.pickStack, left: left, right: right, up: up, down: down);
+            return new InputPackage(
+                packageVersion: this.packageVersion,
+                leftStick: this.leftStick,
+                rightStick: this.rightStick,
+                confirm: this.confirm,
+                cancel: this.cancel,
+                pauseMenu: this.pauseMenu,
+                run: this.run,
+                equip: this.equip,
+                inventory: this.inventory,
+                pickUp: this.pickUp,
+                craft: this.craft,
+                interact: this.interact,
+                map: this.map,
+                useTool: this.useTool,
+                zoomOut: this.zoomOut,
+                toolbarPrev: this.toolbarPrev,
+                toolbarNext: this.toolbarNext,
+                invSwitch: this.invSwitch,
+                pickOne: this.pickOne,
+                pickStack: this.pickStack,
+                left: this.left,
+                right: this.right,
+                up: this.up,
+                down: this.down);
+        }
+
+        public bool Equals(InputPackage inputPackage)
+        {
+            return
+                this.packageVersion == inputPackage.packageVersion &&
+                this.leftStick == inputPackage.leftStick &&
+                this.rightStick == inputPackage.rightStick &&
+                this.confirm == inputPackage.confirm &&
+                this.cancel == inputPackage.cancel &&
+                this.pauseMenu == inputPackage.pauseMenu &&
+                this.run == inputPackage.run &&
+                this.equip == inputPackage.equip &&
+                this.inventory == inputPackage.inventory &&
+                this.pickUp == inputPackage.pickUp &&
+                this.craft == inputPackage.craft &&
+                this.interact == inputPackage.interact &&
+                this.map == inputPackage.map &&
+                this.useTool == inputPackage.useTool &&
+                this.zoomOut == inputPackage.zoomOut &&
+                this.toolbarPrev == inputPackage.toolbarPrev &&
+                this.toolbarNext == inputPackage.toolbarNext &&
+                this.invSwitch == inputPackage.invSwitch &&
+                this.pickOne == inputPackage.pickOne &&
+                this.pickStack == inputPackage.pickStack &&
+                this.left == inputPackage.left &&
+                this.right == inputPackage.right &&
+                this.up == inputPackage.up &&
+                this.down == inputPackage.down;
         }
 
         public bool Validate(bool gamepad)

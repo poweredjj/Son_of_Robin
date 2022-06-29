@@ -16,8 +16,10 @@ namespace SonOfRobin
         public readonly int delay;
         public readonly bool fieldOnly;
         public readonly bool blockInput;
+        public readonly bool animate;
+        public readonly bool useTransition;
 
-        public HintMessage(string text, int delay = 1, bool fieldOnly = false, bool blockInput = false, List<Texture2D> imageList = null, BoxType boxType = BoxType.Dialogue)
+        public HintMessage(string text, int delay = 1, bool fieldOnly = false, bool blockInput = false, List<Texture2D> imageList = null, BoxType boxType = BoxType.Dialogue, bool animate = true, bool useTransition = false)
         {
             this.text = text;
             this.imageList = imageList == null ? new List<Texture2D>() : imageList;
@@ -25,6 +27,8 @@ namespace SonOfRobin
             this.delay = delay;
             this.fieldOnly = fieldOnly;
             this.blockInput = blockInput;
+            this.animate = animate;
+            this.useTransition = useTransition;
 
             this.ValidateImagesCount();
         }
@@ -77,7 +81,8 @@ namespace SonOfRobin
                 { "bgColor", new List<byte> {bgColor.R, bgColor.G, bgColor.B } },
                 { "textColor", new List<byte> {textColor.R, textColor.G, textColor.B }  },
                 { "checkForDuplicate", true },
-                { "useTransition", false },
+                { "animate", this.animate },
+                { "useTransition", this.useTransition },
                 { "useTransitionOpen", useTransitionOpen },
                 { "useTransitionClose", useTransitionClose },
                 { "blocksUpdatesBelow", false },

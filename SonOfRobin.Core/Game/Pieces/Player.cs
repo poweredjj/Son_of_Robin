@@ -8,6 +8,8 @@ namespace SonOfRobin
 {
     public class Player : BoardPiece
     {
+        public enum SleepMode { Sleep, Waiting };
+
         private static readonly int maxShootingPower = 90;
 
         public int maxFedLevel;
@@ -20,6 +22,8 @@ namespace SonOfRobin
         private int shootingPower;
         public SleepEngine sleepEngine;
         private Vector2 pointWalkTarget;
+
+        public override bool ShowStatBars { get { return true; } }
 
         private bool ShootingModeInputPressed
         {
@@ -71,6 +75,8 @@ namespace SonOfRobin
         }
 
         public int wentToSleepFrame;
+        public bool sleepingInsideShelter;
+        public SleepMode sleepMode;
         public List<PieceStorage> CraftStorages { get { return new List<PieceStorage> { this.pieceStorage, this.toolStorage, this.equipStorage }; } }
         public List<PieceStorage> CraftStoragesToolbarFirst { get { return new List<PieceStorage> { this.toolStorage, this.pieceStorage, this.equipStorage }; } } // the same as above, changed order
 
@@ -197,8 +203,7 @@ namespace SonOfRobin
         }
         public float FatiguePercent { get { return (float)this.Fatigue / (float)this.maxFatigue; } }
         public bool IsVeryTired { get { return this.FatiguePercent > 0.75f; } }
-        public bool CanSleepNow { get { return this.FatiguePercent > 0.12f; } }
-        public bool CanWakeNow { get { return this.FatiguePercent < 0.85f; } }
+        public bool CanWakeNow { get { return this.sleepingInsideShelter || this.FatiguePercent < 0.85f; } }
 
         public PieceStorage toolStorage;
         public PieceStorage equipStorage;
@@ -223,6 +228,8 @@ namespace SonOfRobin
             this.shootingAngle = -100; // -100 == no real value
             this.shootingPower = 0;
             this.wentToSleepFrame = 0;
+            this.sleepingInsideShelter = false;
+            this.sleepMode = SleepMode.Sleep;
 
             BoardPiece handTool = PieceTemplate.CreateOffBoard(templateName: PieceTemplate.Name.Hand, world: this.world);
 
@@ -260,11 +267,12 @@ namespace SonOfRobin
 
             Scene.RemoveAllScenesOfType(typeof(TextWindow));
 
-            this.world.colorOverlay.color = Color.DarkRed;
-            this.world.colorOverlay.viewParams.Opacity = 0.75f;
-            this.world.colorOverlay.transManager.AddTransition(new Transition(transManager: this.world.colorOverlay.transManager, outTrans: false, baseParamName: "Opacity", targetVal: 0f, duration: 200));
-            new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetZoom, turnOffInputUntilExecution: true, delay: 0, executeHelper: new Dictionary<string, Object> { { "zoom", 3f } }, menu: null);
-            new Scheduler.Task(taskName: Scheduler.TaskName.OpenMenuTemplate, turnOffInputUntilExecution: true, delay: 300, menu: null, executeHelper: new Dictionary<string, Object> { { "templateName", MenuTemplate.Name.GameOver } });
+            SolidColor redOverlay = new SolidColor(color: Color.DarkRed, viewOpacity: 0.75f);
+            redOverlay.transManager.AddTransition(new Transition(transManager: redOverlay.transManager, outTrans: true, baseParamName: "Opacity", targetVal: 0f, duration: 200, endRemoveScene: true));
+            this.world.solidColorManager.Add(redOverlay);
+
+            new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetZoom, turnOffInputUntilExecution: true, delay: 0, executeHelper: new Dictionary<string, Object> { { "zoom", 3f } });
+            new Scheduler.Task(taskName: Scheduler.TaskName.OpenMenuTemplate, turnOffInputUntilExecution: true, delay: 300, executeHelper: new Dictionary<string, Object> { { "templateName", MenuTemplate.Name.GameOver } });
         }
 
         public override Dictionary<string, Object> Serialize()
@@ -489,15 +497,16 @@ namespace SonOfRobin
             {
                 this.world.hintEngine.ShowGeneralHint(type: HintEngine.Type.Lava, ignoreDelay: true);
                 this.hitPoints -= 1;
-                if (!this.world.colorOverlay.transManager.HasAnyTransition)
+                if (!this.world.solidColorManager.AnySolidColorPresent)
                 {
                     Vector2 screenShake = new Vector2(world.random.Next(-20, 20), world.random.Next(-20, 20));
 
                     world.transManager.AddMultipleTransitions(outTrans: true, duration: world.random.Next(4, 10), playCount: -1, replaceBaseValue: false, stageTransform: Transition.Transform.Sinus, pingPongCycles: false, cycleMultiplier: 0.02f, paramsToChange: new Dictionary<string, float> { { "PosX", screenShake.X }, { "PosY", screenShake.Y } });
 
-                    this.world.colorOverlay.color = Color.Red;
-                    this.world.colorOverlay.viewParams.Opacity = 0f;
-                    this.world.colorOverlay.transManager.AddTransition(new Transition(transManager: this.world.colorOverlay.transManager, outTrans: true, duration: 20, playCount: 1, stageTransform: Transition.Transform.Sinus, baseParamName: "Opacity", targetVal: 0.5f));
+                    SolidColor redOverlay = new SolidColor(color: Color.Red, viewOpacity: 0.0f);
+                    redOverlay.transManager.AddTransition(new Transition(transManager: redOverlay.transManager, outTrans: true, duration: 20, playCount: 1, stageTransform: Transition.Transform.Sinus, baseParamName: "Opacity", targetVal: 0.5f, endRemoveScene: true));
+
+                    this.world.solidColorManager.Add(redOverlay);
                 }
             }
         }
@@ -559,36 +568,38 @@ namespace SonOfRobin
 
         public override void SM_PlayerControlledSleep()
         {
-            if (InputMapper.HasBeenPressed(InputMapper.Action.GlobalCancelReturnSkip) || this.Fatigue == 0)
+            if (InputMapper.HasBeenPressed(InputMapper.Action.GlobalCancelReturnSkip))
             {
                 this.WakeUp();
                 return;
             }
 
+            if (this.sleepMode == SleepMode.Sleep && this.Fatigue == 0)
+            {
+                this.sleepMode = SleepMode.Waiting;
+
+                var confirmationData = new Dictionary<string, Object> { { "blocksUpdatesBelow", true }, { "question", "You are fully rested." }, { "labelYes", "go out" }, { "labelNo", "stay inside" }, { "taskName", Scheduler.TaskName.ForceWakeUp }, { "executeHelper", this } };
+
+                new Scheduler.Task(taskName: Scheduler.TaskName.OpenConfirmationMenu, executeHelper: confirmationData);
+
+                return;
+            }
+
             this.sleepEngine.Execute(player: this);
-            if (this.world.currentUpdate % 10 == 0) SonOfRobinGame.progressBar.TurnOn(curVal: (int)(this.maxFatigue - this.Fatigue), maxVal: (int)this.maxFatigue, text: "Sleeping...");
+            if (this.world.currentUpdate % 10 == 0) SonOfRobinGame.progressBar.TurnOn(curVal: (int)(this.maxFatigue - this.Fatigue), maxVal: (int)this.maxFatigue, text: this.sleepMode == SleepMode.Sleep ? "Sleeping..." : "Waiting...");
         }
 
         public void GoToSleep(SleepEngine sleepEngine, Vector2 zzzPos, List<BuffEngine.Buff> wakeUpBuffs)
         {
-            if (!this.CanSleepNow)
-            {
-                new TextWindow(text: "I cannot sleep right now.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1);
-                return;
-            }
-
             if (this.world.currentUpdate < this.wentToSleepFrame + 60) return; // to prevent going to sleep with max fatigue and with attacking enemies around
 
             this.wentToSleepFrame = this.world.currentUpdate;
+            this.sleepingInsideShelter = !sleepEngine.canBeAttacked;
+            this.sleepMode = SleepMode.Sleep;
             this.sleepEngine = sleepEngine;
             this.buffList.AddRange(wakeUpBuffs);
 
-            if (this.visualAid != null)
-            {
-                this?.visualAid.Destroy();
-                this.visualAid = null;
-            }
-
+            if (this.visualAid != null) this.visualAid.Destroy();
             this.visualAid = PieceTemplate.CreateOnBoard(world: world, position: zzzPos, templateName: PieceTemplate.Name.Zzz);
 
             if (!this.sleepEngine.canBeAttacked) this.sprite.Visible = false;
@@ -597,9 +608,9 @@ namespace SonOfRobin
             this.sprite.CharacterStand();
             this.activeState = State.PlayerControlledSleep;
 
-            this.world.colorOverlay.color = Color.Black;
-            this.world.colorOverlay.viewParams.Opacity = 0.75f;
-            this.world.colorOverlay.transManager.AddTransition(new Transition(transManager: this.world.colorOverlay.transManager, outTrans: false, baseParamName: "Opacity", targetVal: 0f, duration: 20));
+            SolidColor blackOverlay = new SolidColor(color: Color.Black, viewOpacity: 0.75f);
+            blackOverlay.transManager.AddTransition(new Transition(transManager: blackOverlay.transManager, outTrans: false, baseParamName: "Opacity", targetVal: 0f, duration: 20, endRemoveScene: true));
+            this.world.solidColorManager.Add(blackOverlay);
 
             new Scheduler.Task(taskName: Scheduler.TaskName.TempoFastForward, delay: 22, executeHelper: 20, turnOffInputUntilExecution: true);
 
@@ -610,7 +621,7 @@ namespace SonOfRobin
         {
             if (!this.CanWakeNow && !force)
             {
-                new TextWindow(text: "You are too tired to wake up now.", textColor: Color.White, bgColor: Color.Red, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1);
+                new TextWindow(text: "You are too tired to wake up now.", textColor: Color.White, bgColor: Color.Red, useTransition: false, animate: false, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 8, priority: 1);
                 return;
             }
 
@@ -620,7 +631,7 @@ namespace SonOfRobin
             { this.buffEngine.AddBuff(buff: buff, world: this.world); }
             this.buffList.Clear();
 
-            this?.visualAid.Destroy();
+            if (this.visualAid != null) this.visualAid.Destroy();
             this.visualAid = null;
 
             this.activeState = State.PlayerControlledWalking;
@@ -632,7 +643,7 @@ namespace SonOfRobin
             SonOfRobinGame.game.IsFixedTimeStep = Preferences.FrameSkip;
             Scheduler.RemoveAllTasksOfName(Scheduler.TaskName.TempoFastForward); // to prevent fast forward, when waking up before this task was executed
 
-            this.world.colorOverlay.transManager.AddTransition(new Transition(transManager: this.world.colorOverlay.transManager, outTrans: true, baseParamName: "Opacity", targetVal: 0f, duration: 20, endCopyToBase: true));
+            this.world.solidColorManager.RemoveAll(fadeOutDuration: 20);
 
             MessageLog.AddMessage(msgType: MsgType.Debug, message: "Waking up.");
         }

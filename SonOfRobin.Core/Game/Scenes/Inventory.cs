@@ -34,6 +34,7 @@ namespace SonOfRobin
 
         public List<BoardPiece> draggedPieces;
         private int touchHeldFrames;
+        private int disableTouchContextMenuUntilFrame;
         private bool draggedByTouch;
         private StorageSlot lastTouchedSlot;
 
@@ -213,6 +214,7 @@ namespace SonOfRobin
 
             this.draggedPieces = new List<BoardPiece> { };
             this.touchHeldFrames = 0;
+            this.disableTouchContextMenuUntilFrame = 0;
             this.draggedByTouch = false;
             this.lastTouchedSlot = null;
             this.otherInventory = otherInventory;
@@ -266,7 +268,10 @@ namespace SonOfRobin
 
             var entryList = new List<InfoWindow.TextEntry> {
                 new InfoWindow.TextEntry(frame:selectedPiece.sprite.frame, text: Helpers.FirstCharToUpperCase(selectedPiece.readableName), color: Color.White, scale: 1.5f),
-                new InfoWindow.TextEntry(text: selectedPiece.description, color: Color.White)};
+                new InfoWindow.TextEntry(text: selectedPiece.description, color: Color.White)
+            };
+
+            if (!slot.locked) entryList.Add(new InfoWindow.TextEntry(text: $"Max stack size: {selectedPiece.stackSize}.", color: Color.White));
 
             if (selectedPiece.buffList != null)
             {
@@ -525,26 +530,23 @@ namespace SonOfRobin
                     {
                         if (touch.State == TouchLocationState.Pressed || touch.State == TouchLocationState.Moved)
                         {
-                            if (this.CursorX == slot.posX && this.CursorY == slot.posY)
-                            { this.touchHeldFrames++; }
-                            else
-                            { this.touchHeldFrames = 0; }
+                            if (this.CursorX == slot.posX && this.CursorY == slot.posY) this.touchHeldFrames++;
+                            else this.touchHeldFrames = 0;
 
                             this.CursorX = slot.posX;
                             this.CursorY = slot.posY;
                             return;
                         }
-                        else if (touch.State == TouchLocationState.Released && this.touchHeldFrames < minFramesToDragByTouch)
+                        else if (
+                            touch.State == TouchLocationState.Released &&
+                            this.touchHeldFrames < minFramesToDragByTouch &&
+                            SonOfRobinGame.currentUpdate >= this.disableTouchContextMenuUntilFrame &&
+                            this.type != Type.SingleBottom)
                         {
-                            if (this.type != Type.SingleBottom)
-                            {
-                                if (this.lastTouchedSlot == this.ActiveSlot) this.OpenPieceContextMenu();
-                                else this.lastTouchedSlot = this.ActiveSlot;
-                                return;
-                            }
-
+                            if (this.lastTouchedSlot == this.ActiveSlot) this.OpenPieceContextMenu();
+                            else this.lastTouchedSlot = this.ActiveSlot;
+                            return;
                         }
-
                     }
                 }
 
@@ -552,8 +554,6 @@ namespace SonOfRobin
 
             this.touchHeldFrames = 0; // if no touch was registered
         }
-
-
 
         private void MoveCursorByNormalInput()
         {
@@ -765,7 +765,6 @@ namespace SonOfRobin
             int initialDraggedCount = this.draggedPieces.Count;
             PieceTemplate.Name initialTopPieceName = this.draggedPieces[0].name;
 
-            if (this.draggedByTouch) forceReleaseAll = true;
             var piecesThatDidNotFitIn = new List<BoardPiece> { };
 
             //MessageLog.AddMessage(msgType: MsgType.Debug, message: $"forceReleaseAll {forceReleaseAll}");
@@ -796,6 +795,13 @@ namespace SonOfRobin
             this.draggedPieces = piecesThatDidNotFitIn;
 
             if (this.draggedPieces.Count == initialDraggedCount && this.draggedPieces[0].name == initialTopPieceName) this.SwapDraggedAndSlotPieces(slot: slot);
+
+
+            if (this.draggedByTouch)
+            {
+                this.ReleaseHeldPieces(slot: slot, forceReleaseAll: true); // in case of touch (or mouse) drag, dragged pieces should be released after swap
+                this.disableTouchContextMenuUntilFrame = SonOfRobinGame.currentUpdate + 15;
+            }
         }
 
         private void SwapDraggedAndSlotPieces(StorageSlot slot)

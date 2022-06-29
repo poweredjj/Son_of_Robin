@@ -8,7 +8,6 @@ namespace SonOfRobin
 {
     public class Animal : BoardPiece
     {
-        public static readonly int maxAnimalsPerName = 100; // was 40 before unlocking the limit
         public static readonly int attackDistanceDynamic = 16;
         public static readonly int attackDistanceStatic = 4;
 
@@ -334,6 +333,7 @@ namespace SonOfRobin
 
                     if (this.target.GetType().Equals(typeof(Player)))
                     {
+                        if (this.visualAid != null) this.visualAid.Destroy();
                         this.visualAid = PieceTemplate.CreateOnBoard(world: world, position: this.sprite.position, templateName: PieceTemplate.Name.Exclamation);
                         new Tracking(world: world, targetSprite: this.sprite, followingSprite: this.visualAid.sprite, targetYAlign: YAlign.Top, targetXAlign: XAlign.Left, followingYAlign: YAlign.Bottom, offsetX: 0, offsetY: 5);
 
@@ -410,6 +410,7 @@ namespace SonOfRobin
         {
             if (this.visualAid == null || this.visualAid.name != PieceTemplate.Name.Zzz)
             {
+                if (this.visualAid != null) this.visualAid.Destroy();
                 this.visualAid = PieceTemplate.CreateOnBoard(world: world, position: this.sprite.position, templateName: PieceTemplate.Name.Zzz);
                 new Tracking(world: world, targetSprite: this.sprite, followingSprite: this.visualAid.sprite);
             }
@@ -559,9 +560,10 @@ namespace SonOfRobin
 
                     if (this.target.hitPoints > 0) // red screen flash if player is still alive
                     {
-                        this.world.colorOverlay.color = Color.Red;
-                        this.world.colorOverlay.viewParams.Opacity = 0f;
-                        this.world.colorOverlay.transManager.AddTransition(new Transition(transManager: this.world.colorOverlay.transManager, outTrans: true, duration: 20, playCount: 1, stageTransform: Transition.Transform.Sinus, baseParamName: "Opacity", targetVal: 0.5f));
+
+                        SolidColor redOverlay = new SolidColor(color: Color.DarkRed, viewOpacity: 0.0f);
+                        redOverlay.transManager.AddTransition(new Transition(transManager: redOverlay.transManager, outTrans: true, duration: 20, playCount: 1, stageTransform: Transition.Transform.Sinus, baseParamName: "Opacity", targetVal: 0.5f, endRemoveScene: true));
+                        this.world.solidColorManager.Add(redOverlay);
 
                         if (!this.eats.Contains(PieceTemplate.Name.Player)) this.world.hintEngine.ShowGeneralHint(type: HintEngine.Type.AnimalCounters, ignoreDelay: true, piece: this);
                     }
@@ -587,7 +589,9 @@ namespace SonOfRobin
 
             if (this.target.IsAnimalOrPlayer && this.target.yield != null && this.world.random.Next(0, 25) == 0)
             {
-                PieceTemplate.CreateOnBoard(world: this.world, position: this.target.sprite.position, templateName: PieceTemplate.Name.Attack);
+                BoardPiece attackEffect = PieceTemplate.CreateOnBoard(world: this.world, position: this.target.sprite.position, templateName: PieceTemplate.Name.Attack);
+                new Tracking(world: this.world, targetSprite: this.target.sprite, followingSprite: attackEffect.sprite);
+
                 this.target.yield.DropDebris();
                 this.target.AddPassiveMovement(movement: new Vector2(this.world.random.Next(60, 130) * this.world.random.Next(-1, 1), this.world.random.Next(60, 130) * this.world.random.Next(-1, 1)));
             }
@@ -685,7 +689,7 @@ namespace SonOfRobin
 
             for (int i = 0; i < noOfChildren; i++)
             {
-                if (this.world.pieceCountByName[this.name] >= maxAnimalsPerName)
+                if (this.world.pieceCountByName[this.name] >= this.world.maxAnimalsPerName)
                 {
                     var fat = this.pregnancyMass;
                     this.Mass = Math.Min(this.Mass + fat, this.maxMass);

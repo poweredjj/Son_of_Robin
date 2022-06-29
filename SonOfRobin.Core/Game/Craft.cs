@@ -1,24 +1,31 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SonOfRobin
 {
     public class Craft
     {
-        public enum Category { Field, Basic, Advanced, Alchemy, Furnace }
+        public enum Category { Field, Essential, Basic, Advanced, Alchemy, Furnace }
 
         public class Recipe
         {
             public readonly PieceTemplate.Name pieceToCreate;
             public readonly int amountToCreate;
             public readonly Dictionary<PieceTemplate.Name, byte> ingredients;
+            public readonly List<PieceTemplate.Name> unlocksWhenCrafted;
+            public readonly bool isHidden;
 
-            public Recipe(PieceTemplate.Name pieceToCreate, Dictionary<PieceTemplate.Name, byte> ingredients, bool isReversible = false, int amountToCreate = 1)
+
+            public Recipe(PieceTemplate.Name pieceToCreate, Dictionary<PieceTemplate.Name, byte> ingredients, bool isReversible = false, int amountToCreate = 1, bool isHidden = false, List<PieceTemplate.Name> unlocksWhenCrafted = null)
             {
                 this.pieceToCreate = pieceToCreate;
                 this.amountToCreate = amountToCreate;
                 this.ingredients = ingredients;
+                this.isHidden = isHidden;
+                this.unlocksWhenCrafted = unlocksWhenCrafted == null ? new List<PieceTemplate.Name> { } : unlocksWhenCrafted;
                 if (isReversible) Yield.antiCraftRecipes[this.pieceToCreate] = this;
             }
 
@@ -138,21 +145,76 @@ namespace SonOfRobin
                     $"{Helpers.FirstCharToUpperCase(PieceInfo.info[this.pieceToCreate].readableName)} has been crafted." :
                     $"{Helpers.FirstCharToUpperCase(PieceInfo.info[this.pieceToCreate].readableName)} x{this.amountToCreate} has been crafted.";
 
-                new TextWindow(text: message, textColor: Color.White, bgColor: Color.Green, useTransition: true, animate: false, closingTask: Scheduler.TaskName.CheckForPieceHints);
-                MessageLog.AddMessage(msgType: MsgType.Debug, message: message);
+                var taskChain = new List<Object>();
+                taskChain.Add(new HintMessage(text: message, boxType: HintMessage.BoxType.GreenBox, delay: 0, blockInput: false, useTransition: true).ConvertToTask());
+
+                //new TextWindow(text: message, textColor: Color.White, bgColor: Color.Green, useTransition: true, animate: false, closingTask: Scheduler.TaskName.CheckForPieceHints);
+                //MessageLog.AddMessage(msgType: MsgType.Debug, message: message);
 
                 HintEngine hintEngine = world.hintEngine;
 
                 hintEngine.Disable(Tutorials.Type.Craft);
                 if (this.pieceToCreate == PieceTemplate.Name.Map) hintEngine.Disable(PieceHint.Type.MapCanMake);
-                if (this.pieceToCreate == PieceTemplate.Name.WorkshopBasic) hintEngine.Disable(Tutorials.Type.BuildWorkshop);
+                if (this.pieceToCreate == PieceTemplate.Name.WorkshopEssential) hintEngine.Disable(Tutorials.Type.BuildWorkshop);
+
+                var unlockedPieces = new List<PieceTemplate.Name>();
+
+                foreach (PieceTemplate.Name newUnlockedPiece in this.unlocksWhenCrafted)
+                {
+                    if (!world.discoveredRecipesForPieces.Contains(newUnlockedPiece))
+                    {
+                        unlockedPieces.Add(newUnlockedPiece);
+                        world.discoveredRecipesForPieces.Add(newUnlockedPiece);
+                    }
+                }
+
+                if (unlockedPieces.Count > 0)
+                {
+                    string unlockedRecipesMessage = unlockedPieces.Count == 1 ? "New recipe unlocked\n" : "New recipes unlocked:\n";
+                    var imageList = new List<Texture2D>();
+
+                    foreach (PieceTemplate.Name name in unlockedPieces)
+                    {
+                        PieceInfo.Info pieceInfo = PieceInfo.info[name];
+
+                        unlockedRecipesMessage += $"\n|  {pieceInfo.readableName}";
+                        imageList.Add(pieceInfo.frame.texture);
+                    }
+
+                    taskChain.Add(new HintMessage(text: unlockedRecipesMessage, imageList: imageList, boxType: HintMessage.BoxType.LightBlueBox, delay: 0, blockInput: false, animate: true, useTransition: true).ConvertToTask());
+                }
+
+                taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CheckForPieceHints, delay: 0, storeForLaterUse: true));
+                new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteTaskChain, turnOffInputUntilExecution: true, executeHelper: taskChain);
 
                 return true;
             }
         }
 
         public static bool categoriesCreated = false;
-        public static Dictionary<Category, List<Recipe>> recipesByCategory = new Dictionary<Category, List<Recipe>> { };
+        private static Dictionary<Category, List<Recipe>> recipesByCategory = new Dictionary<Category, List<Recipe>> { };
+
+        private static List<Recipe> AllRecipes
+        {
+            get
+            {
+                var allRecipes = new List<Recipe>();
+                foreach (List<Recipe> recipeList in recipesByCategory.Values)
+                {
+                    allRecipes.AddRange(recipeList);
+                }
+
+                return allRecipes;
+            }
+        }
+
+        private static List<Recipe> HiddenRecipes { get { return AllRecipes.Where(recipe => recipe.isHidden).ToList(); } }
+
+        public static List<Recipe> GetRecipesForCategory(Category category, bool includeHidden = false, List<PieceTemplate.Name> discoveredRecipes = null)
+        {
+            if (includeHidden || Preferences.debugShowAllRecipes) return recipesByCategory[category];
+            else return recipesByCategory[category].Where(recipe => !recipe.isHidden || discoveredRecipes.Contains(recipe.pieceToCreate)).ToList();
+        }
 
         public static Recipe GetRecipe(PieceTemplate.Name templateName)
         {
@@ -167,7 +229,6 @@ namespace SonOfRobin
         private static void AddCategory(Category category, List<Recipe> recipeList)
         { recipesByCategory[category] = recipeList; }
 
-
         public static void PopulateAllCategories()
         {
             if (categoriesCreated) return;
@@ -176,91 +237,104 @@ namespace SonOfRobin
             {
                 List<Recipe> fieldRecipes = new List<Recipe> {
 
-                    new Recipe(pieceToCreate: PieceTemplate.Name.WorkshopBasic, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodLog, 6 } }, isReversible: true),
+                    new Recipe(pieceToCreate: PieceTemplate.Name.WorkshopEssential, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodLog, 6 } }, isReversible: true, unlocksWhenCrafted: new List<PieceTemplate.Name> {PieceTemplate.Name.WorkshopBasic }),
 
-                    new Recipe(pieceToCreate: PieceTemplate.Name.WorkshopAdvanced, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodPlank, 12 },  { PieceTemplate.Name.Nail, 30 },  { PieceTemplate.Name.IronBar, 2 } }, isReversible: true),
+                    new Recipe(pieceToCreate: PieceTemplate.Name.WorkshopBasic, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodPlank, 40 },  { PieceTemplate.Name.Stone, 10 } }, isReversible: true, isHidden: true, unlocksWhenCrafted: new List<PieceTemplate.Name> { PieceTemplate.Name.WorkshopAdvanced, PieceTemplate.Name.WorkshopAlchemy, PieceTemplate.Name.Furnace, PieceTemplate.Name.CookingPot }),
 
-                    new Recipe(pieceToCreate: PieceTemplate.Name.WorkshopAlchemy, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stone, 8 },  { PieceTemplate.Name.WoodPlank, 4 }, { PieceTemplate.Name.EmptyBottle, 2 } }, isReversible: true),
+                    new Recipe(pieceToCreate: PieceTemplate.Name.WorkshopAdvanced, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodPlank, 12 },  { PieceTemplate.Name.Nail, 30 },  { PieceTemplate.Name.IronBar, 2 } }, isReversible: true, isHidden: true),
+
+                    new Recipe(pieceToCreate: PieceTemplate.Name.WorkshopAlchemy, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stone, 8 },  { PieceTemplate.Name.WoodPlank, 4 }, { PieceTemplate.Name.EmptyBottle, 2 } }, isReversible: true, isHidden: true),
 
                     new Recipe(pieceToCreate: PieceTemplate.Name.Campfire, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stone, 8 }}, isReversible: true),
 
-                    new Recipe(pieceToCreate: PieceTemplate.Name.TentSmall, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stick, 20 }, { PieceTemplate.Name.WoodLog, 4 }}, isReversible: true),
+                    new Recipe(pieceToCreate: PieceTemplate.Name.TentSmall, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stick, 20 }, { PieceTemplate.Name.WoodLog, 4 }}, isReversible: true, unlocksWhenCrafted: new List<PieceTemplate.Name> {PieceTemplate.Name.TentMedium }),
 
-                    new Recipe(pieceToCreate: PieceTemplate.Name.TentMedium, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Leather, 10 }, { PieceTemplate.Name.Stick, 25 }}, isReversible: true),
+                    new Recipe(pieceToCreate: PieceTemplate.Name.TentMedium, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Leather, 10 }, { PieceTemplate.Name.Stick, 25 }}, isReversible: true, isHidden: true, unlocksWhenCrafted: new List<PieceTemplate.Name> {PieceTemplate.Name.TentBig }),
 
-                    new Recipe(pieceToCreate: PieceTemplate.Name.TentBig, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Leather, 20 }, { PieceTemplate.Name.Stick, 60 }, { PieceTemplate.Name.Nail, 100 }, { PieceTemplate.Name.WoodPlank, 30 }}, isReversible: true),
+                    new Recipe(pieceToCreate: PieceTemplate.Name.TentBig, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Leather, 20 }, { PieceTemplate.Name.Stick, 60 }, { PieceTemplate.Name.Nail, 100 }, { PieceTemplate.Name.WoodPlank, 30 }}, isReversible: true, isHidden: true),
 
-                    new Recipe(pieceToCreate: PieceTemplate.Name.ChestWooden, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodPlank, 24 }}, isReversible: true),
+                    new Recipe(pieceToCreate: PieceTemplate.Name.ChestWooden, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodPlank, 24 }}, isReversible: true, unlocksWhenCrafted: new List<PieceTemplate.Name> {PieceTemplate.Name.ChestIron }),
 
-                    new Recipe(pieceToCreate: PieceTemplate.Name.ChestIron, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.IronBar, 1 },{ PieceTemplate.Name.WoodPlank, 4 }, { PieceTemplate.Name.Nail, 10 } }, isReversible: true),
+                    new Recipe(pieceToCreate: PieceTemplate.Name.ChestIron, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.IronBar, 1 },{ PieceTemplate.Name.WoodPlank, 4 }, { PieceTemplate.Name.Nail, 10 } }, isReversible: true, isHidden: true),
 
-                    new Recipe(pieceToCreate: PieceTemplate.Name.Furnace, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stone, 20 }, { PieceTemplate.Name.WoodLog, 4 }, { PieceTemplate.Name.Coal, 4 } }, isReversible: true),
+                    new Recipe(pieceToCreate: PieceTemplate.Name.Furnace, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stone, 24 }, { PieceTemplate.Name.WoodPlank, 16 }}, isReversible: true, isHidden: true),
 
-               new Recipe(pieceToCreate: PieceTemplate.Name.CookingPot, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.IronBar, 5 } }, isReversible: true),
+                    new Recipe(pieceToCreate: PieceTemplate.Name.CookingPot, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.IronBar, 5 } }, isReversible: true, isHidden: true),
                 };
 
                 AddCategory(category: Category.Field, recipeList: fieldRecipes);
             }
 
-            // basic workshop
+            // essential workshop
             {
-                List<Recipe> basicWorkshopRecipes = new List<Recipe> {
+                List<Recipe> essentialWorkshopRecipes = new List<Recipe> {
 
-                    new Recipe(pieceToCreate: PieceTemplate.Name.AxeWood, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stick, 2 }, { PieceTemplate.Name.WoodLog, 1 }}, isReversible: true),
+                    new Recipe(pieceToCreate: PieceTemplate.Name.AxeWood, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stick, 2 }, { PieceTemplate.Name.WoodLog, 1 }}, isReversible: true, unlocksWhenCrafted: new List<PieceTemplate.Name> {PieceTemplate.Name.AxeStone }),
 
-                    new Recipe(pieceToCreate: PieceTemplate.Name.PickaxeWood, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stick, 3 }, { PieceTemplate.Name.WoodLog, 3 }}, isReversible: true),
+                    new Recipe(pieceToCreate: PieceTemplate.Name.PickaxeWood, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stick, 3 }, { PieceTemplate.Name.WoodLog, 3 }}, isReversible: true, unlocksWhenCrafted: new List<PieceTemplate.Name> {PieceTemplate.Name.PickaxeStone }),
+
+                    new Recipe(pieceToCreate: PieceTemplate.Name.SpearWood, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stick, 3 }, { PieceTemplate.Name.WoodLog, 4 }}, isReversible: true, unlocksWhenCrafted: new List<PieceTemplate.Name> {PieceTemplate.Name.SpearStone }),
 
                     new Recipe(pieceToCreate: PieceTemplate.Name.TorchSmall, amountToCreate: 1, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stick, 1 }, { PieceTemplate.Name.Fat, 1 }}),
 
                     new Recipe(pieceToCreate: PieceTemplate.Name.WoodPlank, amountToCreate: 3, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodLog, 1 }}),
 
                     new Recipe(pieceToCreate: PieceTemplate.Name.Nail, amountToCreate: 20, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.IronBar, 1 }}),
-
                 };
 
-                AddCategory(category: Category.Basic, recipeList: basicWorkshopRecipes);
+                AddCategory(category: Category.Essential, recipeList: essentialWorkshopRecipes);
 
+                // basic workshop
+
+                List<Recipe> basicWorkshopRecipes = new List<Recipe> {
+
+                    new Recipe(pieceToCreate: PieceTemplate.Name.AxeStone, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stick, 2 }, { PieceTemplate.Name.WoodLog, 1 }, { PieceTemplate.Name.Stone, 2 }}, isReversible: true, isHidden: true, unlocksWhenCrafted: new List<PieceTemplate.Name> {PieceTemplate.Name.AxeIron }),
+
+                    new Recipe(pieceToCreate: PieceTemplate.Name.PickaxeStone, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stick, 2 }, { PieceTemplate.Name.WoodLog, 1 }, { PieceTemplate.Name.Stone, 2 }}, isReversible: true, isHidden: true, unlocksWhenCrafted: new List<PieceTemplate.Name> {PieceTemplate.Name.PickaxeIron }),
+
+                    new Recipe(pieceToCreate: PieceTemplate.Name.ScytheStone, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stick, 2 }, { PieceTemplate.Name.WoodPlank, 6 }, { PieceTemplate.Name.Stone, 6 }}, isReversible: true, unlocksWhenCrafted: new List<PieceTemplate.Name> {PieceTemplate.Name.ScytheIron } ),
+
+                    new Recipe(pieceToCreate: PieceTemplate.Name.SpearStone, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stick, 3 }, { PieceTemplate.Name.WoodLog, 2 }, { PieceTemplate.Name.Stone, 2 }}, isReversible: true, isHidden: true, unlocksWhenCrafted: new List<PieceTemplate.Name> {PieceTemplate.Name.SpearIron }),
+
+                    new Recipe(pieceToCreate: PieceTemplate.Name.BowWood, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stick, 2 }, { PieceTemplate.Name.WoodLog, 1 }}, isReversible: true),
+
+                    new Recipe(pieceToCreate: PieceTemplate.Name.ArrowWood, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stick, 1 }}, isReversible: false, unlocksWhenCrafted: new List<PieceTemplate.Name> {PieceTemplate.Name.ArrowIron }),
+
+                    new Recipe(pieceToCreate: PieceTemplate.Name.ArrowWood, amountToCreate: 5, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stick, 3 }}, isReversible: false, unlocksWhenCrafted: new List<PieceTemplate.Name> {PieceTemplate.Name.ArrowIron}),
+
+                    new Recipe(pieceToCreate: PieceTemplate.Name.Map, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Leather, 1 }}, isReversible: true),
+
+                    new Recipe(pieceToCreate: PieceTemplate.Name.BeltMedium, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Leather, 3 }}, isReversible: true),
+                };
+
+                basicWorkshopRecipes.InsertRange(0, essentialWorkshopRecipes);
+
+                AddCategory(category: Category.Basic, recipeList: basicWorkshopRecipes);
 
                 // advanced workshop
 
                 var advancedRecipes = new List<Recipe>
                 {
-                    new Recipe(pieceToCreate: PieceTemplate.Name.AxeStone, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stick, 2 }, { PieceTemplate.Name.WoodLog, 1 }, { PieceTemplate.Name.Stone, 2 }}, isReversible: true),
+                    new Recipe(pieceToCreate: PieceTemplate.Name.AxeIron, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stick, 2 }, { PieceTemplate.Name.WoodLog, 1 }, { PieceTemplate.Name.IronBar, 2 }}, isReversible: true, isHidden: true),
 
-                    new Recipe(pieceToCreate: PieceTemplate.Name.AxeIron, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stick, 2 }, { PieceTemplate.Name.WoodLog, 1 }, { PieceTemplate.Name.IronBar, 2 }}, isReversible: true),
+                    new Recipe(pieceToCreate: PieceTemplate.Name.PickaxeIron, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stick, 2 }, { PieceTemplate.Name.WoodLog, 1 }, { PieceTemplate.Name.IronBar, 2 }}, isReversible: true, isHidden: true),
 
-                    new Recipe(pieceToCreate: PieceTemplate.Name.PickaxeStone, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stick, 2 }, { PieceTemplate.Name.WoodLog, 1 }, { PieceTemplate.Name.Stone, 2 }}, isReversible: true),
+                    new Recipe(pieceToCreate: PieceTemplate.Name.ScytheIron, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stick, 2 }, { PieceTemplate.Name.WoodLog, 1 }, { PieceTemplate.Name.IronBar, 2 }}, isReversible: true, isHidden: true),
 
-                    new Recipe(pieceToCreate: PieceTemplate.Name.PickaxeIron, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stick, 2 }, { PieceTemplate.Name.WoodLog, 1 }, { PieceTemplate.Name.IronBar, 2 }}, isReversible: true),
+                    new Recipe(pieceToCreate: PieceTemplate.Name.SpearPoisoned, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stick, 3 }, { PieceTemplate.Name.WoodLog, 2 }, { PieceTemplate.Name.Stone, 2 }, { PieceTemplate.Name.BottleOfPoison, 3 }}, isReversible: false, isHidden: true),
 
-                    new Recipe(pieceToCreate: PieceTemplate.Name.Scythe, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stick, 2 }, { PieceTemplate.Name.WoodLog, 1 }, { PieceTemplate.Name.IronBar, 2 }}, isReversible: true),
+                    new Recipe(pieceToCreate: PieceTemplate.Name.SpearIron, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stick, 3 }, { PieceTemplate.Name.WoodLog, 2 }, { PieceTemplate.Name.IronBar, 1 }}, isReversible: false, isHidden: true),
 
-                    new Recipe(pieceToCreate: PieceTemplate.Name.SpearStone, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stick, 3 }, { PieceTemplate.Name.WoodLog, 2 }, { PieceTemplate.Name.Stone, 2 }}, isReversible: true),
+                    new Recipe(pieceToCreate: PieceTemplate.Name.TorchBig, amountToCreate: 1, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodPlank, 1 }, { PieceTemplate.Name.BottleOfOil, 1 }}, isHidden: true),
 
-                    new Recipe(pieceToCreate: PieceTemplate.Name.SpearPoisoned, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stick, 3 }, { PieceTemplate.Name.WoodLog, 2 }, { PieceTemplate.Name.Stone, 2 }, { PieceTemplate.Name.BottleOfPoison, 3 }}, isReversible: false),
+                    new Recipe(pieceToCreate: PieceTemplate.Name.ArrowPoisoned, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stick, 1 }, { PieceTemplate.Name.BottleOfPoison, 1 }}, isReversible: false, isHidden: true),
 
-                    new Recipe(pieceToCreate: PieceTemplate.Name.SpearIron, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stick, 3 }, { PieceTemplate.Name.WoodLog, 2 }, { PieceTemplate.Name.IronBar, 1 }}, isReversible: false),
-
-                    new Recipe(pieceToCreate: PieceTemplate.Name.TorchBig, amountToCreate: 1, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodPlank, 1 }, { PieceTemplate.Name.BottleOfOil, 1 }}),
-
-                    new Recipe(pieceToCreate: PieceTemplate.Name.BowWood, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stick, 2 }, { PieceTemplate.Name.WoodLog, 1 }}, isReversible: true),
-
-                    new Recipe(pieceToCreate: PieceTemplate.Name.ArrowWood, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stick, 1 }}, isReversible: false),
-
-                    new Recipe(pieceToCreate: PieceTemplate.Name.ArrowWood, amountToCreate: 5, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stick, 3 }}, isReversible: false),
-
-                    new Recipe(pieceToCreate: PieceTemplate.Name.ArrowPoisoned, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stick, 1 }, { PieceTemplate.Name.BottleOfPoison, 1 }}, isReversible: false),
-
-                    new Recipe(pieceToCreate: PieceTemplate.Name.ArrowIron, amountToCreate: 5, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodLog, 1 }, { PieceTemplate.Name.IronBar, 1 }}, isReversible: false),
-
-                    new Recipe(pieceToCreate: PieceTemplate.Name.Map, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Leather, 1 }}, isReversible: true),
+                    new Recipe(pieceToCreate: PieceTemplate.Name.ArrowIron, amountToCreate: 5, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodLog, 1 }, { PieceTemplate.Name.IronBar, 1 }}, isReversible: false, isHidden: true),
 
                     new Recipe(pieceToCreate: PieceTemplate.Name.BackpackMedium, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Leather, 5 }}, isReversible: true),
-
-                    new Recipe(pieceToCreate: PieceTemplate.Name.BeltMedium, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Leather, 3 }}, isReversible: true),
                 };
 
-                advancedRecipes.InsertRange(0, basicWorkshopRecipes); // advanced workshop should also contain basic recipes
+                advancedRecipes.InsertRange(0, basicWorkshopRecipes);
 
                 AddCategory(category: Category.Advanced, recipeList: advancedRecipes);
             }
@@ -277,9 +351,9 @@ namespace SonOfRobin
 
                     new Recipe(pieceToCreate: PieceTemplate.Name.PotionMaxStamina, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.EmptyBottle, 1 }, { PieceTemplate.Name.Apple, 2 }, { PieceTemplate.Name.HerbsBlue, 2 }}, isReversible: false),
 
-                    new Recipe(pieceToCreate: PieceTemplate.Name.BottleOfOil, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.EmptyBottle, 1 }, { PieceTemplate.Name.Fat, 2 }}, isReversible: false),
+                    new Recipe(pieceToCreate: PieceTemplate.Name.BottleOfOil, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.EmptyBottle, 1 }, { PieceTemplate.Name.Fat, 2 }}, isReversible: false, unlocksWhenCrafted: new List<PieceTemplate.Name> { PieceTemplate.Name.TorchBig }),
 
-                    new Recipe(pieceToCreate: PieceTemplate.Name.BottleOfPoison, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.EmptyBottle, 1 }, { PieceTemplate.Name.HerbsBlack, 2 }}, isReversible: false),
+                    new Recipe(pieceToCreate: PieceTemplate.Name.BottleOfPoison, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.EmptyBottle, 1 }, { PieceTemplate.Name.HerbsBlack, 2 }}, isReversible: false, unlocksWhenCrafted: new List<PieceTemplate.Name> {PieceTemplate.Name.SpearPoisoned, PieceTemplate.Name.ArrowPoisoned }),
                 };
 
                 AddCategory(category: Category.Alchemy, recipeList: alchemyRecipes);
@@ -300,6 +374,56 @@ namespace SonOfRobin
             }
 
             categoriesCreated = true;
+            CheckIfAllRecipesCanBeUnlocked();
+        }
+
+        private static void CheckIfAllRecipesCanBeUnlocked()
+        {
+            List<Recipe> allRecipes = AllRecipes;
+
+            foreach (Recipe recipe in allRecipes)
+            {
+                if (recipe.unlocksWhenCrafted.Contains(recipe.pieceToCreate)) throw new ArgumentException($"Recipe for '{recipe.pieceToCreate}' unlocks itself.");
+            }
+
+            List<Recipe> notUnlockableRecipes = new List<Recipe>();
+
+            foreach (Recipe initialHiddenRecipe in HiddenRecipes)
+            {
+                Recipe currentHiddenRecipe = initialHiddenRecipe;
+
+                bool nextLevelRecipeFound = false; // found next level in a "chain" of hidden recipes unlocking each other
+                bool recipeCanBeUnlocked = false;
+
+                while (true)
+                {
+                    nextLevelRecipeFound = false;
+                    foreach (Recipe recipe in allRecipes)
+                    {
+                        if (recipe.unlocksWhenCrafted.Contains(currentHiddenRecipe.pieceToCreate))
+                        {
+                            if (recipe.isHidden)
+                            {
+                                currentHiddenRecipe = recipe;
+                                nextLevelRecipeFound = true;
+                            }
+                            else
+                            {
+                                recipeCanBeUnlocked = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (!nextLevelRecipeFound) break;
+                }
+                if (!recipeCanBeUnlocked) notUnlockableRecipes.Add(initialHiddenRecipe);
+            }
+
+            if (notUnlockableRecipes.Count > 0)
+            {
+                throw new ArgumentException("Not unlockable recipes found: " + String.Join(", ", notUnlockableRecipes.Select(recipe => recipe.pieceToCreate).ToList()));
+            }
         }
 
     }

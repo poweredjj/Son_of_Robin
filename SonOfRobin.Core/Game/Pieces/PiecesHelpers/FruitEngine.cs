@@ -14,8 +14,8 @@ namespace SonOfRobin
         private readonly float areaHeightPercent; // 0 to 1
         public readonly PieceTemplate.Name fruitName;
         public Plant plant;
-        public float currentMass;
-
+        private float currentMass;
+        private bool FruitCanBeAdded { get { return this.currentMass > this.oneFruitTargetMass; } }
         public int MaxAreaWidth { get { return (int)((float)this.plant.sprite.gfxRect.Width * (float)this.areaWidthPercent * 0.5f); } }
         public int MaxAreaHeight { get { return (int)((float)this.plant.sprite.gfxRect.Height * (float)this.areaHeightPercent * 0.5f); } }
         public float XOffset { get { return (float)this.plant.sprite.gfxRect.Width * (float)this.xOffsetPercent; } }
@@ -56,6 +56,15 @@ namespace SonOfRobin
         public void Deserialize(Dictionary<string, Object> pieceData)
         {
             this.currentMass = (float)pieceData["fruitEngine_currentMass"];
+        }
+
+        public void AddMass(float mass)
+        {
+            this.currentMass += mass;
+        }
+        public void TryToConvertMassIntoFruit()
+        {
+            if (this.FruitCanBeAdded) this.AddFruit();
         }
 
         public void AddFruit()

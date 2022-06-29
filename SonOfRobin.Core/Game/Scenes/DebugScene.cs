@@ -37,10 +37,8 @@ namespace SonOfRobin
             World world = World.GetTopWorld();
             if (world != null && !world.worldCreationInProgress)
             {
-                if (world.mapMode == World.MapMode.Big)
-                { debugText += $"objects {world.PieceCount}"; }
-                else
-                { debugText += $"{world.debugText}"; }
+                if (world.mapMode == World.MapMode.Big) debugText += $"objects {world.PieceCount}";
+                else debugText += $"{world.debugText}";
 
                 debugText += "\n";
 
@@ -49,6 +47,8 @@ namespace SonOfRobin
                 debugText += $"\nproc. animals {world.processedAnimalsCount}";
                 debugText += $"\nproc. plants {world.processedPlantsCount}";
                 debugText += $"\nloaded textures {world.grid.loadedTexturesCount}";
+                debugText += $"\ntracking count {world.trackingQueue.Count}";
+                if (world.trackingQueue.Count > 5000) debugText += " <--- WARNING, CHECK IF CORRECT!";
                 //if(SonOfRobinGame.platform == Platform.Desktop) debugText += $"\nram free: {SonOfRobinGame.ramCounter.NextValue()}";
 
                 debugText += $"\nreal time elapsed {world.TimePlayed:hh\\:mm\\:ss}";
@@ -126,7 +126,7 @@ namespace SonOfRobin
                 new Tracking(world: world, targetSprite: world.player.sprite, followingSprite: backlight.sprite, offsetX: 0, offsetY: 0, targetXAlign: XAlign.Center, targetYAlign: YAlign.Bottom);
             }
 
-            if (Keyboard.HasBeenPressed(Keys.D9)) world.CreateMissingPieces(outsideCamera: false, multiplier: 1.0f, clearDoNotCreateList: true);
+            if (Keyboard.HasBeenPressed(Keys.D9)) world.CreateMissingPieces(outsideCamera: false, multiplier: 1.0f, clearDoNotCreateList: true, addFruits: true);
 
             if (Keyboard.HasBeenPressed(Keys.D0))
             {
@@ -136,9 +136,9 @@ namespace SonOfRobin
 
                 world.transManager.AddMultipleTransitions(outTrans: true, duration: world.random.Next(4, 10), playCount: -1, replaceBaseValue: false, stageTransform: Transition.Transform.Sinus, pingPongCycles: false, cycleMultiplier: 0.02f, paramsToChange: new Dictionary<string, float> { { "PosX", motion.X }, { "PosY", motion.Y } });
 
-                world.colorOverlay.color = Color.Red;
-                world.colorOverlay.viewParams.Opacity = 0f;
-                world.colorOverlay.transManager.AddTransition(new Transition(transManager: world.colorOverlay.transManager, outTrans: true, duration: 20, playCount: 1, stageTransform: Transition.Transform.Sinus, baseParamName: "Opacity", targetVal: 0.5f, refreshBaseVal: false));
+                SolidColor redOverlay = new SolidColor(color: Color.DarkRed, viewOpacity: 0.0f);
+                redOverlay.transManager.AddTransition(new Transition(transManager: redOverlay.transManager, outTrans: true, duration: 20, playCount: 1, stageTransform: Transition.Transform.Sinus, baseParamName: "Opacity", targetVal: 0.5f, endRemoveScene: true));
+                world.solidColorManager.Add(redOverlay);
             }
 
             if (Keyboard.HasBeenPressed(Keys.OemMinus))

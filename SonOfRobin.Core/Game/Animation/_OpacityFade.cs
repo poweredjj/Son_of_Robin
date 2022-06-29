@@ -33,33 +33,27 @@ namespace SonOfRobin
         {
             this.currentFrame++;
 
-            switch (this.playerObstructMode)
+            if (this.playerObstructMode)
             {
-                case true:
-
-                    if (!this.sprite.ObstructsPlayer)
-                    {
-                        this.sprite.opacityFade = new OpacityFade(sprite: this.sprite, duration: this.duration, destOpacity: 1f);
-                        return;
-                    }
-
-                    if (this.currentFrame <= this.duration) { this.sprite.opacity += this.fadePerFrame; }
-                    else { this.sprite.opacity = this.destOpacity; }
-
+                if (!this.sprite.ObstructsPlayer)
+                {
+                    this.sprite.opacityFade = new OpacityFade(sprite: this.sprite, duration: this.duration, destOpacity: 1f);
                     return;
+                }
 
-                case false:
-                    this.sprite.opacity += this.fadePerFrame;
-                    if (this.currentFrame > this.duration) this.sprite.opacity = this.destOpacity;
-                    if (this.sprite.opacity == this.destOpacity)
-                    {
-                        this.sprite.opacityFade = null;
-                        if (this.destroyPiece) this.sprite.boardPiece.Destroy();
-                    }
-
-                    return;
+                if (this.currentFrame <= this.duration) this.sprite.opacity += this.fadePerFrame;
+                else this.sprite.opacity = this.destOpacity;
             }
-
+            else
+            {
+                this.sprite.opacity += this.fadePerFrame;
+                if (this.currentFrame > this.duration) this.sprite.opacity = this.destOpacity;
+                if (this.sprite.opacity == this.destOpacity)
+                {
+                    this.sprite.opacityFade = null;
+                    if (this.destroyPiece) this.sprite.boardPiece.Destroy();
+                }
+            }
         }
 
     }

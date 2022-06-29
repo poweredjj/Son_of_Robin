@@ -56,10 +56,8 @@ namespace SonOfRobin
             {
                 foreach (Entry entry in this.entryList)
                 {
-                    if (entry.GetType() != typeof(Separator))
-                    { entry.textColor = value; }
-                    else
-                    { entry.rectColor = value; }
+                    if (entry.GetType() != typeof(Separator)) entry.textColor = value;
+                    else entry.rectColor = value;
                 }
             }
         }
@@ -70,10 +68,8 @@ namespace SonOfRobin
             {
                 foreach (Entry entry in this.entryList)
                 {
-                    if (entry.GetType() != typeof(Separator))
-                    { entry.rectColor = value; }
-                    else
-                    { entry.textColor = value; }
+                    if (entry.GetType() != typeof(Separator)) entry.rectColor = value;
+                    else entry.textColor = value;
                 }
             }
         }
@@ -83,7 +79,9 @@ namespace SonOfRobin
             set
             {
                 foreach (Entry entry in this.entryList)
-                { entry.outlineColor = value; }
+                {
+                    entry.outlineColor = value;
+                }
             }
         }
 
@@ -254,6 +252,16 @@ namespace SonOfRobin
             //  MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Menu {this.name} - adding closing task '{this.closingTask}'.");
         }
 
+        public static void RebuildAllMenus()
+        {
+            var existingMenus = GetAllScenesOfType(typeof(Menu));
+            foreach (Scene menuScene in existingMenus)
+            {
+                Menu menu = (Menu)menuScene;
+                menu.Rebuild(instantScroll: false);
+            }
+        }
+
         public void Rebuild(bool instantScroll)
         {
             nextMenuNoStartTransition = true;
@@ -293,7 +301,7 @@ namespace SonOfRobin
 
             Scene sceneBelow = this.GetSceneBelow();
 
-            //MessageLog.AddMessage(msgType: MsgType.Debug, message: $"sceneBelow {sceneBelow}", color: Color.White);
+            //  MessageLog.AddMessage(msgType: MsgType.User, message: $"sceneBelow {sceneBelow}", color: Color.White);
 
             if (sceneBelow != null && sceneBelow.GetType() != typeof(Menu))
             {

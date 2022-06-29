@@ -25,9 +25,6 @@ namespace SonOfRobin
         private int burnStartFrame;
         private int burnAllFuelEndFrame;
 
-        private bool CanBurnAtThisTimeOfDay
-        { get { return whenCanBurnPartsOfDay.Contains(this.world.islandClock.CurrentPartOfDay); } }
-
         public Fireplace(World world, Vector2 position, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedFields allowedFields, Dictionary<byte, int> maxMassBySize, byte storageWidth, byte storageHeight, string readableName, string description, Category category, ushort scareRange,
             byte animSize = 0, string animName = "off", bool blocksMovement = true, ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = false, int generation = 0, Yield yield = null, int maxHitPoints = 1, bool fadeInAnim = false, LightEngine lightEngine = null) :
 
@@ -82,6 +79,7 @@ namespace SonOfRobin
                     this.AddToStateMachines();
                     this.sprite.AssignNewName(animName: "on");
                     this.sprite.lightEngine.Activate();
+                    this.world.hintEngine.Disable(Tutorials.Type.KeepingAnimalsAway);
                 }
                 else
                 {
@@ -99,12 +97,6 @@ namespace SonOfRobin
 
         private bool StartFire(bool showMessage)
         {
-            if (!this.CanBurnAtThisTimeOfDay)
-            {
-                if (showMessage) new TextWindow(text: $"There is no point of burning it {this.world.islandClock.CurrentPartOfDaySentence}.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true);
-                return false;
-            }
-
             var storedFuel = this.StoredFuel;
             if (storedFuel.Count == 0)
             {
@@ -143,9 +135,7 @@ namespace SonOfRobin
         {
             this.currentCycleBurningFramesLeft--;
 
-            bool stopBurning = !this.CanBurnAtThisTimeOfDay;
-            if (!stopBurning && this.currentCycleBurningFramesLeft <= 0 && !this.StartFire(showMessage: false)) stopBurning = true;
-
+            bool stopBurning = this.currentCycleBurningFramesLeft <= 0 && !this.StartFire(showMessage: false);
             if (stopBurning)
             {
                 this.IsOn = false;
@@ -158,12 +148,11 @@ namespace SonOfRobin
             var nearbyPieces = this.world.grid.GetPiecesWithinDistance(groupName: Cell.Group.ColBlocking, mainSprite: this.sprite, distance: this.scareRange, compareWithBottom: true);
             var animalPieces = nearbyPieces.Where(piece => piece.GetType() == typeof(Animal));
 
-            Animal animal;
             foreach (BoardPiece piece in animalPieces)
             {
                 MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Scaring off {piece.readableName}.");
 
-                animal = (Animal)piece;
+                Animal animal = (Animal)piece;
                 animal.target = this;
                 animal.aiData.Reset(animal);
                 animal.activeState = State.AnimalFlee;
@@ -183,7 +172,6 @@ namespace SonOfRobin
             }
 
             base.DrawStatBar();
-            StatBar.FinishThisBatch();
         }
 
         public override Dictionary<string, Object> Serialize()

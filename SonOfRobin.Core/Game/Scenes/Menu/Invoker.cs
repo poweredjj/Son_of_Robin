@@ -10,20 +10,22 @@ namespace SonOfRobin
         private readonly bool closesMenu;
         public readonly Scheduler.TaskName taskName;
         public readonly Object executeHelper; // misc variables used in execution stage
+        public readonly int taskDelay;
         public override string DisplayedText { get { return this.name; } }
 
-        public Invoker(Menu menu, string name, Scheduler.TaskName taskName, Object executeHelper = null, bool closesMenu = false, bool rebuildsMenu = false, List<InfoWindow.TextEntry> infoTextList = null) : base(menu: menu, name: name, rebuildsMenu: rebuildsMenu, infoTextList: infoTextList)
+        public Invoker(Menu menu, string name, Scheduler.TaskName taskName, Object executeHelper = null, int taskDelay = 0, bool closesMenu = false, bool rebuildsMenu = false, List<InfoWindow.TextEntry> infoTextList = null) : base(menu: menu, name: name, rebuildsMenu: rebuildsMenu, infoTextList: infoTextList)
         {
             this.taskName = taskName;
+            this.taskDelay = taskDelay;
+            this.executeHelper = executeHelper;
             this.closesMenu = closesMenu;
             this.rectColor = Color.LightSlateGray;
-            this.executeHelper = executeHelper;
         }
 
         public override void Invoke()
         {
             if (this.closesMenu) this.menu.Remove();
-            new Scheduler.Task(menu: this.menu, taskName: this.taskName, executeHelper: this.executeHelper, rebuildsMenu: rebuildsMenu, delay: 0);
+            new Scheduler.Task(menu: this.menu, taskName: this.taskName, executeHelper: this.executeHelper, rebuildsMenu: rebuildsMenu, delay: this.taskDelay, turnOffInputUntilExecution: true);
         }
 
         public override void Draw(bool active, string textOverride = null)

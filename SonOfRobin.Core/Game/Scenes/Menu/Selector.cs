@@ -25,7 +25,7 @@ namespace SonOfRobin
 
         public override string DisplayedText { get { return $"{this.name}   < {this.ActiveName} >"; } }
 
-        public Selector(Menu menu, string name, List<Object> valueList, Object targetObj, string propertyName, bool rebuildsMenu = false, List<InfoWindow.TextEntry> infoTextList = null, bool rebuildsMenuInstantScroll = false, bool captureInput = false, bool captureButtons = false, bool captureKeys = false) : base(menu: menu, name: name, rebuildsMenu: rebuildsMenu, infoTextList: infoTextList, rebuildsMenuInstantScroll: rebuildsMenuInstantScroll)
+        public Selector(Menu menu, string name, List<Object> valueList, Object targetObj, string propertyName, bool rebuildsMenu = false, bool rebuildsAllMenus = false, List<InfoWindow.TextEntry> infoTextList = null, bool rebuildsMenuInstantScroll = false, bool captureInput = false, bool captureButtons = false, bool captureKeys = false) : base(menu: menu, name: name, rebuildsMenu: rebuildsMenu, infoTextList: infoTextList, rebuildsAllMenus: rebuildsAllMenus, rebuildsMenuInstantScroll: rebuildsMenuInstantScroll)
         {
             this.targetObj = targetObj;
             this.propertyName = propertyName;
@@ -43,7 +43,7 @@ namespace SonOfRobin
             this.CompleteCreation();
         }
 
-        public Selector(Menu menu, string name, Dictionary<object, object> valueDict, Object targetObj, string propertyName, bool rebuildsMenu = false, bool rebuildsMenuInstantScroll = false, List<InfoWindow.TextEntry> infoTextList = null, bool captureInput = false, bool captureButtons = false, bool captureKeys = false) : base(menu: menu, name: name, rebuildsMenu: rebuildsMenu, rebuildsMenuInstantScroll: rebuildsMenuInstantScroll, infoTextList: infoTextList)
+        public Selector(Menu menu, string name, Dictionary<object, object> valueDict, Object targetObj, string propertyName, bool rebuildsMenu = false, bool rebuildsMenuInstantScroll = false, bool rebuildsAllMenus = false, List<InfoWindow.TextEntry> infoTextList = null, bool captureInput = false, bool captureButtons = false, bool captureKeys = false) : base(menu: menu, name: name, rebuildsMenu: rebuildsMenu, rebuildsMenuInstantScroll: rebuildsMenuInstantScroll, rebuildsAllMenus: rebuildsAllMenus, infoTextList: infoTextList)
         {
             this.targetObj = targetObj;
             this.propertyName = propertyName;
@@ -87,6 +87,7 @@ namespace SonOfRobin
         {
             Helpers.SetProperty(targetObj: this.targetObj, propertyName: this.propertyName, newValue: this.ActiveValue);
             if (this.rebuildsMenu) this.menu.Rebuild(instantScroll: this.rebuildsMenuInstantScroll);
+            if (this.rebuildsAllMenus) Menu.RebuildAllMenus();
         }
 
         public override void NextValue(bool touchMode)
@@ -206,20 +207,43 @@ namespace SonOfRobin
             rect.X += (int)this.menu.viewParams.PosX;
             rect.Y += (int)this.menu.viewParams.PosY;
 
-            Rectangle leftHalfRect = new Rectangle(rect.Left, rect.Top, rect.Width / 2, rect.Height);
-            Rectangle rightHalfRect = new Rectangle(rect.Left + rect.Width / 2, rect.Top, rect.Width / 2, rect.Height);
+            Rectangle leftRect, middleRect, rightRect;
+
+            if (this.captureInput)
+            {
+                int width = rect.Width / 3;
+                int xPos = 0;
+
+                leftRect = new Rectangle(x: rect.Left + xPos, y: rect.Top, width: width, height: rect.Height);
+                xPos += width;
+                middleRect = new Rectangle(x: rect.Left + xPos, y: rect.Top, width: width, height: rect.Height);
+                xPos += width;
+                rightRect = new Rectangle(x: rect.Left + xPos, y: rect.Top, width: width, height: rect.Height);
+            }
+            else
+            {
+                leftRect = new Rectangle(x: rect.Left, y: rect.Top, width: rect.Width / 2, height: rect.Height);
+                middleRect = new Rectangle(0, 0, 0, 0);
+                rightRect = new Rectangle(x: rect.Left + rect.Width / 2, y: rect.Top, width: rect.Width / 2, height: rect.Height);
+            }
 
             foreach (TouchLocation touch in TouchInput.TouchPanelState)
             {
                 Vector2 position = touch.Position / Preferences.GlobalScale;
 
-                if (leftHalfRect.Contains(position) && touch.State == TouchLocationState.Pressed)
+                if (leftRect.Contains(position) && touch.State == TouchLocationState.Pressed)
                 {
                     this.PreviousValue(touchMode: true);
                     return;
                 }
 
-                if (rightHalfRect.Contains(position) && touch.State == TouchLocationState.Pressed)
+                if (middleRect.Contains(position) && touch.State == TouchLocationState.Pressed)
+                {
+                    this.Invoke();
+                    return;
+                }
+
+                if (rightRect.Contains(position) && touch.State == TouchLocationState.Pressed)
                 {
                     this.NextValue(touchMode: true);
                     return;

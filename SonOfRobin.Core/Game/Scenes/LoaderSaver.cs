@@ -254,6 +254,7 @@ namespace SonOfRobin
                     {"seed", this.world.seed },
                     {"width", this.world.width },
                     {"height", this.world.height },
+                    {"maxAnimalsPerName", this.world.maxAnimalsPerName },
                     {"resDivider", this.world.resDivider },
                     {"currentFrame", this.world.currentFrame },
                     {"currentUpdate", this.world.currentUpdate },
@@ -262,6 +263,8 @@ namespace SonOfRobin
                     {"currentBuffId", this.world.currentBuffId },
                     {"MapEnabled", this.world.MapEnabled },
                     {"realDateTime", DateTime.Now },
+                    {"doNotCreatePiecesList", this.world.doNotCreatePiecesList },
+                    {"discoveredRecipesForPieces", this.world.discoveredRecipesForPieces },
                     {"saveVersion", SaveHeaderManager.saveVersion },
             };
 

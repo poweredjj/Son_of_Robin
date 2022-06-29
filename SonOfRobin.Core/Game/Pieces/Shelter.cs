@@ -15,7 +15,7 @@ namespace SonOfRobin
             base(world: world, position: position, animPackage: animPackage, animSize: animSize, animName: animName, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedFields: allowedFields, floatsOnWater: floatsOnWater, maxMassBySize: maxMassBySize, generation: generation, stackSize: stackSize, canBePickedUp: canBePickedUp, yield: yield, maxHitPoints: maxHitPoints, fadeInAnim: fadeInAnim, rotatesWhenDropped: false, isShownOnMiniMap: true, readableName: readableName, description: description, buffList: buffList, category: category, lightEngine: lightEngine)
         {
             this.activeState = State.Empty;
-            this.boardTask = Scheduler.TaskName.SleepInsideShelter;
+            this.boardTask = Scheduler.TaskName.OpenShelterMenu;
             this.sleepEngine = sleepEngine;
         }
 

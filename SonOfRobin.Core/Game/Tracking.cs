@@ -31,8 +31,23 @@ namespace SonOfRobin
         private readonly YAlign followingYAlign;
         private readonly XAlign targetXAlign;
         private readonly YAlign targetYAlign;
+        private readonly int firstTrackingFrame;
         private readonly int lastTrackingFrame;
         private readonly bool bounceWhenRemoved;
+        public bool BothSpritesExist { get { return this.targetSprite.boardPiece.exists && this.followingSprite.boardPiece.exists; } }
+        public bool ShouldBeRemoved
+        {
+            get
+            {
+                // tracking queue could bloat over time - it may be helpful to add more "remove exceptions" in the future
+
+                return !this.BothSpritesExist ||
+                    (this.followingSprite.boardPiece.serialize == false &&
+                    this.followingSprite.opacity < 0.05f &&
+                    this.followingSprite.opacityFade != null &&
+                    this.world.currentUpdate > this.firstTrackingFrame + 100);
+            }
+        }
 
         public Tracking(World world, Sprite targetSprite, Sprite followingSprite, int offsetX = 0, int offsetY = 0,
             XAlign followingXAlign = XAlign.Center, YAlign followingYAlign = YAlign.Center,
@@ -41,6 +56,7 @@ namespace SonOfRobin
         {
             this.isCorrect = false;
             this.world = world;
+            this.firstTrackingFrame = this.world.currentUpdate;
             this.lastTrackingFrame = turnOffDelay == 0 ? 0 : this.world.currentUpdate + turnOffDelay;
             this.bounceWhenRemoved = bounceWhenRemoved;
 
@@ -54,26 +70,13 @@ namespace SonOfRobin
 
             this.offset = new Vector2(offsetX, offsetY);
 
-            if (!this.BothSpritesExist()) return;
+            if (!this.BothSpritesExist) return;
 
             this.isCorrect = true;
 
             this.AddToTrackingQueue();
         }
 
-        private bool BothSpritesExist()
-        {
-            if (!targetSprite.boardPiece.exists || !followingSprite.boardPiece.exists)
-            {
-                if (!targetSprite.boardPiece.exists) MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Tracking cancelled - targetSprite '{targetSprite.boardPiece.name}' does not exist.");
-
-                if (!followingSprite.boardPiece.exists) MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Tracking cancelled - followingSprite '{followingSprite.boardPiece.name}' does not exist.");
-
-                return false;
-            }
-
-            return true;
-        }
 
         public Dictionary<string, Object> Serialize()
         {
@@ -121,7 +124,9 @@ namespace SonOfRobin
         }
 
         private void AddToTrackingQueue()
-        { this.world.trackingQueue[this.followingSprite.id] = this; }
+        {
+            this.world.trackingQueue[this.followingSprite.id] = this;
+        }
 
         private void RemoveFromTrackingQueue()
         {
@@ -145,9 +150,11 @@ namespace SonOfRobin
             // parallel processing causes data corruption and crashes
             foreach (var tracking in world.trackingQueue.Values.ToList())
             {
-                tracking.SetPosition();
+                if (tracking.ShouldBeRemoved) tracking.RemoveFromTrackingQueue();
+                else tracking.SetPosition();
             }
         }
+
 
         private void SetPosition()
         {

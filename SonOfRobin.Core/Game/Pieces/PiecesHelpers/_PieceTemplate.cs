@@ -13,7 +13,7 @@ namespace SonOfRobin
             PlayerGhost,
 
             GrassRegular,
-            GlowGrass,
+            GrassGlow,
             GrassDesert,
             Rushes,
             WaterLily,
@@ -57,6 +57,7 @@ namespace SonOfRobin
             CrateStarting,
             CrateRegular,
 
+            WorkshopEssential,
             WorkshopBasic,
             WorkshopAdvanced,
             WorkshopAlchemy,
@@ -101,10 +102,12 @@ namespace SonOfRobin
             PickaxeWood,
             PickaxeStone,
             PickaxeIron,
+            SpearWood,
             SpearStone,
             SpearPoisoned,
             SpearIron,
-            Scythe,
+            ScytheStone,
+            ScytheIron,
 
             BowWood,
 
@@ -223,7 +226,7 @@ namespace SonOfRobin
                             minDistance: 0, maxDistance: 35, bestEnvironment: bestEnvironment, mass: 1, maxMassBySize: maxMassBySize, maxAge: 600, reproduction: reproduction, massToBurn: 5, massTakenMultiplier: 0.53f, generation: generation, staysAfterDeath: 300, readableName: "regular grass", description: "A regular grass.", allowedDensity: new AllowedDensity(radious: 50, maxNoOfPiecesTotal: 25), yield: yield);
                     }
 
-                case Name.GlowGrass:
+                case Name.GrassGlow:
                     {
                         var allowedFields = new AllowedFields(rangeDict: new Dictionary<TerrainName, AllowedRange>() {
                             { TerrainName.Height, new AllowedRange(min: Terrain.waterLevelMax, max: Terrain.volcanoEdgeMin) },
@@ -237,8 +240,10 @@ namespace SonOfRobin
                         var maxMassBySize = new Dictionary<byte, int>() { { 0, 150 }, { 1, 65535 } };
                         var reproduction = new PlantReproductionData(massNeeded: 650, massLost: 180, bioWear: 0.3f);
 
+                        // readableName is the same as "regular grass", to make it appear identical to the regular grass
+
                         return new Plant(name: templateName, world: world, position: position, blocksMovement: false, animPackage: AnimData.PkgName.GrassRegular, allowedFields: allowedFields, category: BoardPiece.Category.SmallPlant,
-                            minDistance: 0, maxDistance: 400, bestEnvironment: bestEnvironment, mass: 1, maxMassBySize: maxMassBySize, maxAge: 1000, reproduction: reproduction, massToBurn: 5, massTakenMultiplier: 0.49f, generation: generation, staysAfterDeath: 300, readableName: "glow grass", description: "A special type of grass.", allowedDensity: new AllowedDensity(radious: 350, maxNoOfPiecesSameName: 1), yield: yield, lightEngine: new LightEngine(size: 0, opacity: 0.3f, colorActive: true, color: Color.Blue * 3f, addedGfxRectMultiplier: 4f, isActive: true, glowOnlyAtNight: true, castShadows: false), maxExistingNumber: 300);
+                            minDistance: 0, maxDistance: 400, bestEnvironment: bestEnvironment, mass: 1, maxMassBySize: maxMassBySize, maxAge: 1000, reproduction: reproduction, massToBurn: 5, massTakenMultiplier: 0.49f, generation: generation, staysAfterDeath: 300, readableName: "regular grass", description: "A special type of grass.", allowedDensity: new AllowedDensity(radious: 350, maxNoOfPiecesSameName: 1), yield: yield, lightEngine: new LightEngine(size: 0, opacity: 0.3f, colorActive: true, color: Color.Blue * 3f, addedGfxRectMultiplier: 4f, isActive: true, glowOnlyAtNight: true, castShadows: false), maxExistingNumber: 300);
                     }
 
                 case Name.GrassDesert:
@@ -714,6 +719,14 @@ namespace SonOfRobin
                             { TerrainName.Height, new AllowedRange(min: Terrain.waterLevelMax, max: Terrain.volcanoEdgeMin) }});
 
                         return new Container(name: templateName, world: world, position: position, animPackage: AnimData.PkgName.ChestMetal, allowedFields: allowedFields, category: BoardPiece.Category.Metal, floatsOnWater: false, minDistance: 0, maxDistance: 100, maxMassBySize: null, generation: generation, storageWidth: 6, storageHeight: 4, maxHitPoints: 50, readableName: "iron chest", description: "Can store items.");
+                    }
+
+                case Name.WorkshopEssential:
+                    {
+                        var allowedFields = new AllowedFields(rangeDict: new Dictionary<TerrainName, AllowedRange>() {
+                            { TerrainName.Height, new AllowedRange(min: Terrain.waterLevelMax, max: Terrain.volcanoEdgeMin) }});
+                        return new Workshop(name: templateName, world: world, position: position, animPackage: AnimData.PkgName.WorkshopEssential, allowedFields: allowedFields, category: BoardPiece.Category.Wood,
+                            floatsOnWater: false, minDistance: 0, maxDistance: 100, maxMassBySize: null, generation: generation, craftMenuTemplate: MenuTemplate.Name.CraftEssential, maxHitPoints: 30, readableName: "essential workshop", description: "Essential crafting workshop.");
                     }
 
                 case Name.WorkshopBasic:
@@ -1212,6 +1225,17 @@ namespace SonOfRobin
                             floatsOnWater: false, minDistance: 0, maxDistance: 100, maxMassBySize: null, generation: generation, hitPower: 1, indestructible: false, multiplierByCategory: multiplierByCategory, maxHitPoints: 170, readableName: "iron axe", description: "Advanced logging tool.");
                     }
 
+                case Name.SpearWood:
+                    {
+                        var multiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Animal, 7f } };
+
+                        var allowedFields = new AllowedFields(rangeDict: new Dictionary<TerrainName, AllowedRange>() {
+                            { TerrainName.Height, new AllowedRange(min: Terrain.waterLevelMax, max: Terrain.volcanoEdgeMin) }});
+
+                        return new Tool(name: templateName, world: world, position: position, animPackage: AnimData.PkgName.SpearWood, allowedFields: allowedFields, category: BoardPiece.Category.Wood,
+                            floatsOnWater: false, minDistance: 0, maxDistance: 100, maxMassBySize: null, generation: generation, hitPower: 3, indestructible: false, multiplierByCategory: multiplierByCategory, maxHitPoints: 50, readableName: "wooden spear", description: "Essential melee weapon.");
+                    }
+
                 case Name.SpearStone:
                     {
                         var multiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Animal, 8f } };
@@ -1279,13 +1303,22 @@ namespace SonOfRobin
                             floatsOnWater: false, minDistance: 0, maxDistance: 100, maxMassBySize: null, generation: generation, hitPower: 1, indestructible: false, multiplierByCategory: multiplierByCategory, maxHitPoints: 170, readableName: "iron pickaxe", description: "Advanced mining tool.");
                     }
 
-                case Name.Scythe:
+                case Name.ScytheStone:
+                    {
+                        var multiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.SmallPlant, 2f } };
+
+                        var allowedFields = new AllowedFields(rangeDict: new Dictionary<TerrainName, AllowedRange> { { TerrainName.Height, new AllowedRange(min: Terrain.waterLevelMax, max: Terrain.volcanoEdgeMin) } });
+                        return new Tool(name: templateName, world: world, position: position, animPackage: AnimData.PkgName.ScytheStone, allowedFields: allowedFields, category: BoardPiece.Category.Metal,
+                            floatsOnWater: false, minDistance: 0, maxDistance: 100, maxMassBySize: null, generation: generation, hitPower: 1, indestructible: false, multiplierByCategory: multiplierByCategory, maxHitPoints: 120, readableName: "stone scythe", description: "Can cut down small plants.", range: 20);
+                    }
+
+                case Name.ScytheIron:
                     {
                         var multiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.SmallPlant, 3f } };
 
                         var allowedFields = new AllowedFields(rangeDict: new Dictionary<TerrainName, AllowedRange> { { TerrainName.Height, new AllowedRange(min: Terrain.waterLevelMax, max: Terrain.volcanoEdgeMin) } });
-                        return new Tool(name: templateName, world: world, position: position, animPackage: AnimData.PkgName.Scythe, allowedFields: allowedFields, category: BoardPiece.Category.Metal,
-                            floatsOnWater: false, minDistance: 0, maxDistance: 100, maxMassBySize: null, generation: generation, hitPower: 1, indestructible: false, multiplierByCategory: multiplierByCategory, maxHitPoints: 170, readableName: "iron scythe", description: "Can cut down small plants.", range: 40);
+                        return new Tool(name: templateName, world: world, position: position, animPackage: AnimData.PkgName.ScytheIron, allowedFields: allowedFields, category: BoardPiece.Category.Metal,
+                            floatsOnWater: false, minDistance: 0, maxDistance: 100, maxMassBySize: null, generation: generation, hitPower: 1, indestructible: false, multiplierByCategory: multiplierByCategory, maxHitPoints: 200, readableName: "iron scythe", description: "Can cut down small plants easily.", range: 40);
                     }
 
                 case Name.BowWood:
@@ -1437,7 +1470,7 @@ namespace SonOfRobin
                         var buffList = new List<BuffEngine.Buff> { new BuffEngine.Buff(world: world, type: BuffEngine.BuffType.LightSource, value: 4, isPositive: true) };
 
                         return new PortableLight(name: templateName, world: world, position: position, animPackage: AnimData.PkgName.SmallTorch, blocksMovement: false, category: BoardPiece.Category.Wood,
-                            allowedFields: allowedFields, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 3, mass: 100, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 150, readableName: "small torch", description: "A portable light source.");
+                            allowedFields: allowedFields, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 3, mass: 100, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 250, readableName: "small torch", description: "A portable light source.");
                     }
 
                 case Name.TorchBig:
@@ -1447,7 +1480,7 @@ namespace SonOfRobin
                         var buffList = new List<BuffEngine.Buff> { new BuffEngine.Buff(world: world, type: BuffEngine.BuffType.LightSource, value: 6, isPositive: true) };
 
                         return new PortableLight(name: templateName, world: world, position: position, animPackage: AnimData.PkgName.BigTorch, blocksMovement: false, category: BoardPiece.Category.Wood,
-                            allowedFields: allowedFields, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 3, mass: 100, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 500, readableName: "big torch", description: "A portable light source. Burns for a long time.");
+                            allowedFields: allowedFields, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 3, mass: 100, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 600, readableName: "big torch", description: "A portable light source. Burns for a long time.");
                     }
 
                 case Name.Campfire:

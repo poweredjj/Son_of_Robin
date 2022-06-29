@@ -700,10 +700,8 @@ namespace SonOfRobin
             }
 
             if (Preferences.debugShowStates && this.boardPiece.GetType() == typeof(Animal) && this.boardPiece.alive) this.DrawState();
-            if (Preferences.debugShowStatBars ||
-                this.world.currentUpdate < this.boardPiece.showStatBarsTillFrame ||
-                this.boardPiece.GetType() == typeof(Player))
-            { this.boardPiece.DrawStatBar(); }
+
+            if (Preferences.debugShowStatBars || this.boardPiece.ShowStatBars) this.boardPiece.DrawStatBar();
         }
 
         public void DrawRoutine(bool calculateSubmerge, int offsetX = 0, int offsetY = 0)
@@ -766,7 +764,7 @@ namespace SonOfRobin
             AnimFrame frame = shadowSprite.frame;
 
             var flatShadowNames = new List<AnimData.PkgName> {
-                AnimData.PkgName.WoodLog, AnimData.PkgName.MineralsBig1, AnimData.PkgName.MineralsBig4, AnimData.PkgName.MineralsSmall1, AnimData.PkgName.Stone1, AnimData.PkgName.Stone2, AnimData.PkgName.WaterRock5 };
+                AnimData.PkgName.WoodLog, AnimData.PkgName.MineralsBig1, AnimData.PkgName.MineralsBig4, AnimData.PkgName.MineralsSmall1, AnimData.PkgName.Stone1, AnimData.PkgName.Stone2, AnimData.PkgName.WaterRock5, AnimData.PkgName.WoodPlank };
 
             bool flatShadow = flatShadowNames.Contains(shadowSprite.boardPiece.sprite.animPackage);
 

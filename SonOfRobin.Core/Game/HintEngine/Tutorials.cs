@@ -6,7 +6,7 @@ namespace SonOfRobin
 {
     public class Tutorials
     {
-        public enum Type { BreakThing, Equip, BuildWorkshop, GetWood, Mine, Interact, PickUp, Hit, Craft, ShootProjectile, Cook, ShakeFruit, AnimalAttacking, DangerZone, Torch, Fireplace }
+        public enum Type { BreakThing, Equip, BuildWorkshop, GetWood, Mine, Interact, PickUp, Hit, Craft, KeepingAnimalsAway, ShootProjectile, Cook, ShakeFruit, AnimalAttacking, DangerZone, Torch, Fireplace }
 
         private static readonly HintMessage.BoxType messageHeaderType = HintMessage.BoxType.BlueBox;
         private static readonly HintMessage.BoxType messageTextType = HintMessage.BoxType.LightBlueBox;
@@ -194,9 +194,17 @@ namespace SonOfRobin
                     new HintMessage(text: "2. Activate craft by pressing it a second time.", boxType: messageTextType),
                     new HintMessage(text: "3. If you have ingredients needed, the item will be crafted.", boxType: messageTextType)});
 
+            new Tutorial(type: Type.KeepingAnimalsAway, name: "keeping animals away", title: "Keeping animals away.",
+                messages: new List<HintMessage> {
+
+                    new HintMessage(text: "When | | enemies are nearby,\nyou cannot | craft, | cook or do some other things.", imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.TigerOrangeMedium].texture, AnimData.framesForPkgs[AnimData.PkgName.FoxRed].texture, AnimData.framesForPkgs[AnimData.PkgName.WorkshopAdvanced].texture, AnimData.framesForPkgs[AnimData.PkgName.CookingPot].texture}, boxType: messageTextType),
+
+                    new HintMessage(text: "To scare off enemies, it is best to build a | campfire\nand | make sure the | fire is burning.", imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.Campfire].texture, AnimData.framesForPkgs[AnimData.PkgName.WoodLog].texture, AnimData.framesForPkgs[AnimData.PkgName.Flame].texture}, boxType: messageTextType),
+                   });
+
             new Tutorial(type: Type.BuildWorkshop, name: "building a workshop", title: "Building a workshop.",
              messages: new List<HintMessage>  {
-                new HintMessage(text: "To build a | basic workshop,\nenter craft menu and select | 'basic workshop'.\nTo make it, you will need some | wood.",  imageList: new List<Texture2D>{ AnimData.framesForPkgs[AnimData.PkgName.WorkshopBasic].texture, AnimData.framesForPkgs[AnimData.PkgName.WorkshopBasic].texture, AnimData.framesForPkgs[AnimData.PkgName.WoodLog].texture}, boxType: messageTextType)
+                new HintMessage(text: "To build a | workshop,\nenter craft menu and select | 'essential workshop'.\nTo make it, you will need some | wood.",  imageList: new List<Texture2D>{ AnimData.framesForPkgs[AnimData.PkgName.WorkshopEssential].texture, AnimData.framesForPkgs[AnimData.PkgName.WorkshopEssential].texture, AnimData.framesForPkgs[AnimData.PkgName.WoodLog].texture}, boxType: messageTextType)
             });
 
             HintMessage shootingMessage;

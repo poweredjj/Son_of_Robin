@@ -17,6 +17,20 @@ namespace SonOfRobin
             this.pieceStorage = new PieceStorage(width: storageWidth, height: storageHeight, world: this.world, storagePiece: this, storageType: PieceStorage.StorageType.Chest);
         }
 
+        public override bool ShowStatBars { get { return true; } }
+
+        public override void DrawStatBar()
+        {
+            int notEmptySlotsCount = this.pieceStorage.NotEmptySlotsCount;
+
+            if (notEmptySlotsCount > 0)
+            {
+                new StatBar(label: "", value: notEmptySlotsCount, valueMax: this.pieceStorage.AllSlotsCount, colorMin: new Color(0, 255, 255), colorMax: new Color(0, 128, 255), posX: this.sprite.gfxRect.Center.X, posY: this.sprite.gfxRect.Bottom, ignoreIfAtMax: false);
+            }
+
+            base.DrawStatBar();
+        }
+
         public override Dictionary<string, Object> Serialize()
         {
             Dictionary<string, Object> pieceData = base.Serialize();
@@ -41,7 +55,6 @@ namespace SonOfRobin
             if (this.pieceStorage.OccupiedSlots.Count == 0 || this.sprite.animName == "closing") return;
             this.sprite.AssignNewName(animName: "closing");
         }
-
 
     }
 }

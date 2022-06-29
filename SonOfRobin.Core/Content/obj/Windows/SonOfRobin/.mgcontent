@@ -196,12 +196,14 @@
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/qYFvsmq.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/rabbits.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/rpg_maker_vx_ace_tilesets_1_by_hishimy_d8e7pjd.png</File>
-    <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/scythe.png</File>
+    <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/scythe_iron.png</File>
+    <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/scythe_stone.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/small_torch_off.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/small_torch_on.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/spear_iron.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/spear_poison.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/spear_stone.png</File>
+    <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/spear_wood.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/steak_t-bone.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/sticks1.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/sticks2.png</File>
@@ -251,6 +253,7 @@
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/water_drop.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/workshop_advanced.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/workshop_basic.png</File>
+    <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/workshop_essential.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/Xbox 360/360_A.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/Xbox 360/360_B.png</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/Xbox 360/360_Back.png</File>
@@ -275,6 +278,9 @@
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/zzz.png</File>
   </SourceFiles>
   <DestFiles>
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />

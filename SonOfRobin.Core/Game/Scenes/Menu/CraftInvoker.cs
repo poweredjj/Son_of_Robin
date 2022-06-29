@@ -113,13 +113,12 @@ namespace SonOfRobin
             int mainPiecePixelsToAddWidth, mainPiecePixelsToAddHeight;
 
             // drawing entries
-            InvokerDrawParams drawParams;
 
             int rectX = 0;
 
             for (int i = 0; i < drawParamsList.Count; i++)
             {
-                drawParams = drawParamsList[i];
+                InvokerDrawParams drawParams = drawParamsList[i];
                 if (drawParams.isEmpty)
                 {
                     rectX += (int)(rectWidth * 0.5f);

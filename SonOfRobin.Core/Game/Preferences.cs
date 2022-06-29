@@ -12,10 +12,13 @@ namespace SonOfRobin
         public static int newWorldWidth;
         public static int newWorldHeight;
 
+        public static int newWorldMaxAnimalsMultiplier = 50; // max animals per name for 10000x10000 area
+
         public static int newWorldResDivider = 2;
         public static readonly Dictionary<Object, Object> namesForResDividers = new Dictionary<Object, Object> { { 30, "garbage" }, { 10, "low" }, { 3, "medium" }, { 2, "high" }, { 1, "ultra" } };
         public static readonly Dictionary<Object, Object> namesForDarknessRes = new Dictionary<Object, Object> { { 4, "very low" }, { 3, "low" }, { 2, "medium" }, { 1, "high" } };
         public static readonly Dictionary<Object, Object> namesForFieldControlTipsScale = new Dictionary<Object, Object> { { 0.15f, "micro" }, { 0.25f, "small" }, { 0.4f, "medium" }, { 0.5f, "large" }, { 0.6f, "huge" }, { 0.75f, "gigantic" } };
+        public static readonly Dictionary<Object, Object> namesForAnimalsMultiplier = new Dictionary<Object, Object> { { 5, "almost extinct" }, { 20, "few" }, { 50, "within reason" }, { 100, "many" }, { 500, "total invasion" } };
 
         public static bool randomSeed = true;
         public static char seedDigit1 = '0';
@@ -112,7 +115,7 @@ namespace SonOfRobin
         public static int displayResX = 1920;
         public static int displayResY = 1080;
         public static bool showFieldControlTips = true;
-        public static float fieldControlTipsScale = 0.25f;
+        public static float fieldControlTipsScale = 0.4f;
         private static ButtonScheme.Type controlTipsScheme = ButtonScheme.Type.M;
         public static bool showHints = true;
         public static bool showLighting = true;
@@ -201,6 +204,8 @@ namespace SonOfRobin
         public static bool debugCreateMissingPieces = true;
         public static bool debugShowAllMapPieces = false;
         private static bool debugShowWholeMap = false;
+        public static bool debugShowAllRecipes = false;
+        public static bool debugSaveEverywhere = false;
         public static bool DebugShowWholeMap
         {
             get { return debugShowWholeMap; }
@@ -408,6 +413,7 @@ namespace SonOfRobin
             prefsData["selectedWorldSize"] = SelectedWorldSize;
             prefsData["newWorldWidth"] = newWorldWidth;
             prefsData["newWorldHeight"] = newWorldHeight;
+            prefsData["newWorldMaxAnimalsMultiplier"] = newWorldMaxAnimalsMultiplier;
             prefsData["randomSeed"] = randomSeed;
             prefsData["seedDigit1"] = seedDigit1;
             prefsData["seedDigit2"] = seedDigit2;
@@ -462,6 +468,7 @@ namespace SonOfRobin
                     newWorldResDivider = (int)prefsData["newWorldResDivider"];
                     newWorldWidth = (int)prefsData["newWorldWidth"];
                     newWorldHeight = (int)prefsData["newWorldHeight"];
+                    newWorldMaxAnimalsMultiplier = (int)prefsData["newWorldMaxAnimalsMultiplier"];
                     randomSeed = (bool)prefsData["randomSeed"];
                     seedDigit1 = (char)prefsData["seedDigit1"];
                     seedDigit2 = (char)prefsData["seedDigit2"];

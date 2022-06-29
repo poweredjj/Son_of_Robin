@@ -243,9 +243,9 @@ namespace SonOfRobin
 
                         if (hpChange < 0 && this.boardPiece.GetType() == typeof(Player))
                         {
-                            this.world.colorOverlay.color = Color.Red * 0.8f;
-                            this.world.colorOverlay.viewParams.Opacity = 0f;
-                            this.world.colorOverlay.transManager.AddTransition(new Transition(transManager: this.world.colorOverlay.transManager, outTrans: true, duration: 12, playCount: 1, stageTransform: Transition.Transform.Sinus, baseParamName: "Opacity", targetVal: 0.5f));
+                            SolidColor redOverlay = new SolidColor(color: Color.Red * 0.8f, viewOpacity: 0.0f);
+                            redOverlay.transManager.AddTransition(new Transition(transManager: redOverlay.transManager, outTrans: true, duration: 12, playCount: 1, stageTransform: Transition.Transform.Sinus, baseParamName: "Opacity", targetVal: 0.5f, endRemoveScene: true));
+                            this.world.solidColorManager.Add(redOverlay);
                         }
 
                         // changing target hit points

@@ -69,6 +69,8 @@ namespace SonOfRobin
             WoodPlank,
             Crate,
 
+
+            WorkshopEssential,
             WorkshopBasic,
             WorkshopAdvanced,
             WorkshopAlchemy,
@@ -111,7 +113,9 @@ namespace SonOfRobin
             PickaxeStone,
             PickaxeIron,
 
-            Scythe,
+            ScytheStone,
+            ScytheIron,
+            SpearWood,
             SpearStone,
             SpearPoisoned,
             SpearIron,
@@ -364,6 +368,13 @@ namespace SonOfRobin
                 frameList.Add(ConvertImageToFrame(atlasName: "chests", layer: 0, x: 0, y: 48, width: 32, height: 48, duration: 6));
                 frameList.Add(ConvertImageToFrame(atlasName: "chests", layer: 0, x: 0, y: 0, width: 32, height: 48, duration: 0));
                 AddFrameList(animPackage: packageName, animSize: 0, animName: "closing", frameList: frameList);
+            }
+            {
+                PkgName packageName = PkgName.WorkshopEssential;
+                AddFrameList(animPackage: packageName, animSize: 0, animName: "off",
+                frameList: ConvertImageToFrameList(atlasName: "workshop_essential", layer: 1, scale: 0.5f));
+                AddFrameList(animPackage: packageName, animSize: 0, animName: "on",
+                frameList: ConvertImageToFrameList(atlasName: "workshop_essential", layer: 1, scale: 0.5f)); ; // the same as "off"
             }
             {
                 PkgName packageName = PkgName.WorkshopBasic;
@@ -686,7 +697,8 @@ namespace SonOfRobin
             AddFrameList(animPackage: PkgName.Zzz, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "zzz", layer: 2));
             AddFrameList(animPackage: PkgName.Heart, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "heart_16x16", layer: 2));
             AddFrameList(animPackage: PkgName.Crosshair, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "crosshair", layer: 2));
-            AddFrameList(animPackage: PkgName.Scythe, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "scythe", layer: 0));
+            AddFrameList(animPackage: PkgName.ScytheStone, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "scythe_stone", layer: 0));
+            AddFrameList(animPackage: PkgName.ScytheIron, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "scythe_iron", layer: 0));
             AddFrameList(animPackage: PkgName.EmptyBottle, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "bottle_empty", layer: 0, scale: 0.5f));
             AddFrameList(animPackage: PkgName.Acorn, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "acorn", layer: 0, scale: 0.5f));
             AddFrameList(animPackage: PkgName.ArrowWood, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "arrow_wood", layer: 0, scale: 0.75f));
@@ -703,6 +715,7 @@ namespace SonOfRobin
             AddFrameList(animPackage: PkgName.HerbsYellow, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "herbs_yellow", layer: 0));
             AddFrameList(animPackage: PkgName.HerbsRed, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "herbs_red", layer: 0));
             AddFrameList(animPackage: PkgName.HerbsViolet, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "herbs_violet", layer: 0));
+            AddFrameList(animPackage: PkgName.SpearWood, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "spear_wood", layer: 0, scale: 0.5f));
             AddFrameList(animPackage: PkgName.SpearStone, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "spear_stone", layer: 0, scale: 0.5f));
             AddFrameList(animPackage: PkgName.SpearPoisoned, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "spear_poison", layer: 0, scale: 0.5f));
             AddFrameList(animPackage: PkgName.SpearIron, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "spear_iron", layer: 0, scale: 0.5f));

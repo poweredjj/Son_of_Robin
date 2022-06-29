@@ -189,7 +189,8 @@ namespace SonOfRobin
         {
             World world = attacker.world;
 
-            PieceTemplate.CreateOnBoard(world: world, position: target.sprite.position, templateName: PieceTemplate.Name.Attack);
+            BoardPiece attackEffect = PieceTemplate.CreateOnBoard(world: world, position: target.sprite.position, templateName: PieceTemplate.Name.Attack);
+            new Tracking(world: world, targetSprite: target.sprite, followingSprite: attackEffect.sprite);
 
             target.hitPoints -= hitPower;
             if (buffList != null)

@@ -48,7 +48,7 @@ namespace SonOfRobin
                 if (this.spectatorMode == value) return;
                 this.spectatorMode = value;
 
-                this.colorOverlay.transManager.AddTransition(new Transition(transManager: this.colorOverlay.transManager, outTrans: true, duration: 30, playCount: 1, stageTransform: Transition.Transform.Linear, baseParamName: "Opacity", targetVal: 0.0f));
+                this.solidColorManager.RemoveAll(fadeOutDuration: 30);
 
                 if (this.spectatorMode)
                 {
@@ -129,12 +129,10 @@ namespace SonOfRobin
                     this.touchLayout = TouchLayout.WorldMain;
                     this.tipsLayout = ControlTips.TipsLayout.WorldMain;
 
-                    taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.AddTransition, delay: 0, executeHelper: new Dictionary<string, Object> {
-                            { "scene", this.colorOverlay },
-                            { "transition", new Transition(transManager: this.colorOverlay.transManager, outTrans: true, baseParamName: "Opacity", targetVal: 0f, duration: 10, endCopyToBase: true, storeForLaterUse: true) } }, menu: null, storeForLaterUse: true));
+                    taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SolidColorRemoveAll, delay: 0, executeHelper: new Dictionary<string, Object> { { "manager", this.solidColorManager }, { "delay", 10 } }, storeForLaterUse: true));
 
                     taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.TempoPlay, delay: 0, executeHelper: null, storeForLaterUse: true));
-                    taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetZoom, delay: 0, executeHelper: new Dictionary<string, Object> { { "zoom", 1f }, { "zoomSpeedMultiplier", 1f } }, menu: null, storeForLaterUse: true));
+                    taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetZoom, delay: 0, executeHelper: new Dictionary<string, Object> { { "zoom", 1f }, { "zoomSpeedMultiplier", 1f } }, storeForLaterUse: true));
                     taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraTrackPiece, delay: 0, executeHelper: this.player, storeForLaterUse: true));
 
                     taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ChangeSceneInputType, delay: 0, executeHelper: new Dictionary<string, Object> { { "scene", this }, { "inputType", Scene.InputTypes.Normal } }, storeForLaterUse: true));
@@ -146,6 +144,7 @@ namespace SonOfRobin
 
         public readonly int seed;
         public readonly int resDivider;
+        public int maxAnimalsPerName;
         public FastNoiseLite noise;
         public readonly Random random;
         public readonly int width;
@@ -157,7 +156,7 @@ namespace SonOfRobin
         public readonly Map mapBig;
         public readonly Map mapSmall;
         public readonly PlayerPanel playerPanel;
-        public readonly SolidColor colorOverlay;
+        public readonly SolidColorManager solidColorManager;
         private bool mapEnabled;
         public bool MapEnabled
         {
@@ -199,7 +198,8 @@ namespace SonOfRobin
         public string debugText;
         public int processedAnimalsCount;
         public int processedPlantsCount;
-        public readonly List<PieceTemplate.Name> doNotCreatePiecesList;
+        public List<PieceTemplate.Name> doNotCreatePiecesList;
+        public List<PieceTemplate.Name> discoveredRecipesForPieces;
         public readonly DateTime createdTime; // for calculating time spent in game
         private TimeSpan timePlayed; // real time spent while playing (differs from currentUpdate because of island time compression via updateMultiplier)
         public TimeSpan TimePlayed
@@ -208,8 +208,8 @@ namespace SonOfRobin
             { return timePlayed + (DateTime.Now - this.createdTime); }
             set { timePlayed = value; }
         }
-        public bool CanProcessMoreCameraRectPiecesNow { get { return UpdateTimeElapsed.Milliseconds <= 4 * this.updateMultiplier; } }
-        public bool CanProcessMoreAnimalsNow { get { return UpdateTimeElapsed.Milliseconds <= 6 * this.updateMultiplier; } }
+        public bool CanProcessMoreCameraRectPiecesNow { get { return UpdateTimeElapsed.Milliseconds <= 30 * this.updateMultiplier; } }
+        public bool CanProcessMoreAnimalsNow { get { return UpdateTimeElapsed.Milliseconds <= 7 * this.updateMultiplier; } }
         public bool CanProcessMorePlantsNow { get { return UpdateTimeElapsed.Milliseconds <= 9 * this.updateMultiplier; } }
         public bool CanProcessAnyStateMachineNow { get { return !this.plantsProcessing || UpdateTimeElapsed.Milliseconds <= 9 * this.updateMultiplier; } }
 
@@ -289,6 +289,9 @@ namespace SonOfRobin
             this.viewParams.Width = width; // it does not need to be updated, because world size is constant
             this.viewParams.Height = height; // it does not need to be updated, because world size is constant
 
+            this.maxAnimalsPerName = (int)(this.width * this.height * 0.00000001 * Preferences.newWorldMaxAnimalsMultiplier);
+            MessageLog.AddMessage(msgType: MsgType.Debug, message: $"maxAnimalsPerName {maxAnimalsPerName}");
+
             this.pieceCountByName = new Dictionary<PieceTemplate.Name, int>();
             foreach (PieceTemplate.Name templateName in (PieceTemplate.Name[])Enum.GetValues(typeof(PieceTemplate.Name)))
             { this.pieceCountByName[templateName] = 0; }
@@ -304,6 +307,7 @@ namespace SonOfRobin
             this.processedAnimalsCount = 0;
             this.processedPlantsCount = 0;
             this.doNotCreatePiecesList = new List<PieceTemplate.Name> { };
+            this.discoveredRecipesForPieces = new List<PieceTemplate.Name> { };
             this.camera = new Camera(this);
             this.camera.TrackCoords(new Vector2(0, 0));
             this.MapEnabled = false;
@@ -312,6 +316,7 @@ namespace SonOfRobin
             this.mapBig = new Map(world: this, fullScreen: true, touchLayout: TouchLayout.Map);
             this.mapSmall = new Map(world: this, fullScreen: false, touchLayout: TouchLayout.Empty);
             this.playerPanel = new PlayerPanel(world: this);
+            this.debugText = "";
             if (saveGameData == null) this.grid = new Grid(world: this, resDivider: resDivider);
             else { this.Deserialize(gridOnly: true); }
 
@@ -319,8 +324,8 @@ namespace SonOfRobin
             this.AddLinkedScene(this.mapSmall);
             this.AddLinkedScene(this.playerPanel);
 
-            this.colorOverlay = new SolidColor(color: Color.White, viewOpacity: this.demoMode ? 0.4f : 0f, clearScreen: false, priority: 1);
-            this.AddLinkedScene(colorOverlay);
+            this.solidColorManager = new SolidColorManager(this);
+            if (this.demoMode) this.solidColorManager.Add(new SolidColor(color: Color.White, viewOpacity: 0.4f, clearScreen: false, priority: 1));
 
             SonOfRobinGame.game.IsFixedTimeStep = false; // speeds up the creation process
         }
@@ -348,7 +353,7 @@ namespace SonOfRobin
 
             if (this.saveGameData == null && this.initialPiecesCreationFramesLeft > 0)
             {
-                if (this.demoMode) CreateMissingPieces(outsideCamera: false, multiplier: 1f);
+                if (this.demoMode) CreateMissingPieces(outsideCamera: false, multiplier: 1f, addFruits: true);
                 else
                 {
                     string seedText = String.Format("{0:0000}", this.seed);
@@ -360,7 +365,7 @@ namespace SonOfRobin
 
                     if (this.initialPiecesCreationFramesLeft != initialPiecesCreationFramesTotal)
                     { // first iteration should only display progress bar
-                        bool piecesCreated = CreateMissingPieces(maxAmountToCreateAtOnce: (uint)(300000 / initialPiecesCreationFramesTotal), outsideCamera: false, multiplier: 1f, addToDoNotCreateList: false);
+                        bool piecesCreated = CreateMissingPieces(maxAmountToCreateAtOnce: (uint)(300000 / initialPiecesCreationFramesTotal), outsideCamera: false, multiplier: 1f, addToDoNotCreateList: false, addFruits: true);
                         if (!piecesCreated) this.initialPiecesCreationFramesLeft = 0;
                     }
                     this.initialPiecesCreationFramesLeft--;
@@ -443,6 +448,9 @@ namespace SonOfRobin
             this.currentPieceId = (int)headerData["currentPieceId"];
             this.currentBuffId = (int)headerData["currentBuffId"];
             this.MapEnabled = (bool)headerData["MapEnabled"];
+            this.maxAnimalsPerName = (int)headerData["maxAnimalsPerName"];
+            this.doNotCreatePiecesList = (List<PieceTemplate.Name>)headerData["doNotCreatePiecesList"];
+            this.discoveredRecipesForPieces = (List<PieceTemplate.Name>)headerData["discoveredRecipesForPieces"];
 
             // deserializing hints
 
@@ -555,7 +563,7 @@ namespace SonOfRobin
             }
         }
 
-        public bool CreateMissingPieces(uint maxAmountToCreateAtOnce = 300000, bool outsideCamera = false, float multiplier = 1.0f, bool clearDoNotCreateList = false, bool addToDoNotCreateList = true)
+        public bool CreateMissingPieces(uint maxAmountToCreateAtOnce = 300000, bool outsideCamera = false, float multiplier = 1.0f, bool clearDoNotCreateList = false, bool addToDoNotCreateList = true, bool addFruits = false)
         {
             if (clearDoNotCreateList) doNotCreatePiecesList.Clear();
 
@@ -564,7 +572,7 @@ namespace SonOfRobin
             var creationDataList = new List<PieceCreationData>
             {
                 new PieceCreationData(name: PieceTemplate.Name.GrassRegular, multiplier: 2.0f, maxAmount: 1000),
-                new PieceCreationData(name: PieceTemplate.Name.GlowGrass, multiplier: 0.1f, maxAmount: 40),
+                new PieceCreationData(name: PieceTemplate.Name.GrassGlow, multiplier: 0.1f, maxAmount: 40),
                 new PieceCreationData(name: PieceTemplate.Name.GrassDesert, multiplier: 2.0f, maxAmount: 0),
                 new PieceCreationData(name: PieceTemplate.Name.Rushes, multiplier: 2.0f, maxAmount: 0),
                 new PieceCreationData(name: PieceTemplate.Name.WaterLily, multiplier: 1.0f, maxAmount: 0),
@@ -588,10 +596,10 @@ namespace SonOfRobin
                 new PieceCreationData(name: PieceTemplate.Name.Shell, multiplier: 1f, maxAmount: 25),
                 new PieceCreationData(name: PieceTemplate.Name.Clam, multiplier: 1f, maxAmount: 25),
                 new PieceCreationData(name: PieceTemplate.Name.CrateRegular, multiplier: 0.1f, maxAmount: 2),
-                new PieceCreationData(name: PieceTemplate.Name.Rabbit, multiplier: 0.2f, maxAmount: Animal.maxAnimalsPerName),
-                new PieceCreationData(name: PieceTemplate.Name.Fox, multiplier: 0.2f, maxAmount: Animal.maxAnimalsPerName),
-                new PieceCreationData(name: PieceTemplate.Name.Tiger, multiplier: 0.2f, maxAmount: Animal.maxAnimalsPerName),
-                new PieceCreationData(name: PieceTemplate.Name.Frog, multiplier: 0.2f, maxAmount: Animal.maxAnimalsPerName),
+                new PieceCreationData(name: PieceTemplate.Name.Rabbit, multiplier: 0.6f, maxAmount: this.maxAnimalsPerName),
+                new PieceCreationData(name: PieceTemplate.Name.Fox, multiplier: 0.4f, maxAmount: this.maxAnimalsPerName),
+                new PieceCreationData(name: PieceTemplate.Name.Tiger, multiplier: 0.4f, maxAmount: this.maxAnimalsPerName),
+                new PieceCreationData(name: PieceTemplate.Name.Frog, multiplier: 0.2f, maxAmount: this.maxAnimalsPerName),
             };
 
             Vector2 notReallyUsedPosition = new Vector2(-100, -100); // -100, -100 will be converted to a random position on the map - needed for effective creation of new sprites 
@@ -617,19 +625,23 @@ namespace SonOfRobin
 
             this.createMissinPiecesOutsideCamera = outsideCamera;
             int piecesCreated = 0;
-            int amountLeftToCreate;
-            PieceTemplate.Name pieceName;
 
             foreach (var kvp in amountToCreateByName)
             {
-                pieceName = kvp.Key;
-                amountLeftToCreate = Convert.ToInt32(kvp.Value); // separate from the iterator below (needs to be modified)
+                PieceTemplate.Name pieceName = kvp.Key;
+                int amountLeftToCreate = Convert.ToInt32(kvp.Value); // separate from the iterator below (needs to be modified)
 
                 for (int i = 0; i < kvp.Value * 5; i++)
                 {
                     var newBoardPiece = PieceTemplate.CreateOnBoard(world: this, position: notReallyUsedPosition, templateName: pieceName);
                     if (newBoardPiece.sprite.placedCorrectly)
                     {
+                        if (addFruits && newBoardPiece.GetType() == typeof(Plant) && this.random.Next(2) == 0)
+                        {
+                            Plant newPlant = (Plant)newBoardPiece;
+                            if (newPlant.fruitEngine != null) newPlant.fruitEngine.AddFruit();
+                        }
+
                         piecesCreated++;
                         amountLeftToCreate--;
                     }
@@ -685,7 +697,7 @@ namespace SonOfRobin
             this.grid.LoadClosestTextureInCameraView();
 
             if (this.demoMode) this.camera.TrackLiveAnimal(fluidMotion: true);
-            this.AutoSave();
+            // this.AutoSave(); // autosave is not needed anymore
 
             bool createMissingPieces = this.currentUpdate % 200 == 0 && Preferences.debugCreateMissingPieces;
             if (createMissingPieces) this.CreateMissingPieces(maxAmountToCreateAtOnce: 100, outsideCamera: true, multiplier: 0.1f);
@@ -969,12 +981,14 @@ namespace SonOfRobin
         {
             if (this.demoMode) return;
 
-            this.colorOverlay.color = Color.Black;
-            this.colorOverlay.viewParams.Opacity = 0f;
+            SolidColor blackOverlay = new SolidColor(color: Color.Black, viewOpacity: 0f);
+            blackOverlay.viewParams.Opacity = 0f;
 
-            this.colorOverlay.transManager.AddMultipleTransitions(paramsToChange: new Dictionary<string, float> {
+            blackOverlay.transManager.AddMultipleTransitions(paramsToChange: new Dictionary<string, float> {
                 { "Opacity", 0.4f }},
-                duration: 20, outTrans: true, requireInputActiveAtRepeats: true, inputActiveAtRepeatsScene: this, playCount: 2, refreshBaseVal: false);
+                duration: 20, outTrans: true, requireInputActiveAtRepeats: true, inputActiveAtRepeatsScene: this, playCount: 2, refreshBaseVal: false, endRemoveScene: true);
+
+            this.solidColorManager.Add(blackOverlay);
         }
 
         public Vector2 TranslateScreenToWorldPos(Vector2 screenPos)
@@ -1019,7 +1033,7 @@ namespace SonOfRobin
             FieldTip.DrawFieldTips(world: this);
 
             // updating debugText
-            this.debugText = $"objects {this.PieceCount}, visible {noOfDisplayedSprites}";
+            if (Preferences.DebugMode) this.debugText = $"objects {this.PieceCount}, visible {noOfDisplayedSprites}";
 
             this.currentFrame++;
         }

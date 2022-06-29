@@ -18,6 +18,8 @@ namespace SonOfRobin
         public static List<Scene> sceneStack = new List<Scene> { };
 
         public readonly int priority;
+        private bool hasBeenRemoved;
+        public bool HasBeenRemoved { get { return this.hasBeenRemoved; } }
         public bool blocksUpdatesBelow;
         public bool blocksDrawsBelow;
         public bool hidesSameScenesBelow;
@@ -123,6 +125,7 @@ namespace SonOfRobin
             this.viewParams = new ViewParams();
             this.transManager = new TransManager(scene: this);
             this.priority = priority;
+            this.hasBeenRemoved = false;
             this.blocksUpdatesBelow = blocksUpdatesBelow;
             this.blocksDrawsBelow = blocksDrawsBelow;
             this.hidesSameScenesBelow = hidesSameScenesBelow;
@@ -176,6 +179,8 @@ namespace SonOfRobin
 
             // showing hidden scene (if any)
             if (this.hidesSameScenesBelow) this.ShowTopSceneOfSameType();
+
+            this.hasBeenRemoved = true;
         }
 
         public void AddLinkedScene(Scene scene)
@@ -205,7 +210,7 @@ namespace SonOfRobin
             foreach (Scene scene in sceneStack)
             {
                 if (scene.transManager.IsEnding) continue;
-                if (scene.priority < 1 && ignorePriorityLessThan1) continue;
+                if (scene.priority < 1 && ignorePriorityLessThan1 && scene != this) continue;
                 if (scene == this) return previousScene;
                 previousScene = scene;
             }
@@ -310,16 +315,24 @@ namespace SonOfRobin
             {
                 Scene scene = sceneStack[i];
 
-                if (scene != this)
-                { previousItemIndex = i; }
-                else
-                { break; }
+                if (scene != this) previousItemIndex = i;
+                else break;
             }
 
             if (!down) previousItemIndex = Math.Min(previousItemIndex + 1, sceneStack.Count - 1);
 
             sceneStack = sceneStack.Where(scene => scene != this).ToList();
             sceneStack.Insert(previousItemIndex, this);
+        }
+
+        public void MoveAboveScene(Scene masterScene)
+        {
+            sceneStack = sceneStack.Where(scene => scene != this).ToList();
+
+            int masterSceneIndex = sceneStack.FindIndex(scene => scene == masterScene);
+            if (masterSceneIndex == -1) throw new ArgumentException($"Cannot find master scene '{masterScene.GetType()}'.");
+
+            sceneStack.Insert(masterSceneIndex + 1, this);
         }
 
         public virtual void Update(GameTime gameTime)

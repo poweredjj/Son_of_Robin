@@ -92,6 +92,8 @@ namespace SonOfRobin
 
         public static void FinishThisBatch()
         {
+            //  if (currentBatchCount == 0) MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Finished empty stat bar batch"); // for testing
+
             currentBatchCount = 0;
             currentBatchFont = defaultFont;
         }

@@ -76,19 +76,39 @@ namespace SonOfRobin
         public readonly string description;
         public readonly bool serialize;
 
+        public virtual bool ShowStatBars { get { return this.world.currentUpdate < this.showStatBarsTillFrame; } }
+
         public bool AreEnemiesNearby
         {
             get
             {
                 var nearbyPieces = this.world.grid.GetPiecesWithinDistance(groupName: Cell.Group.ColBlocking, mainSprite: this.sprite, distance: 450, compareWithBottom: true);
 
-                Animal animal;
                 foreach (BoardPiece piece in nearbyPieces)
                 {
                     if (piece.GetType() == typeof(Animal))
                     {
-                        animal = (Animal)piece;
+                        Animal animal = (Animal)piece;
                         if (animal.eats.Contains(this.name)) return true;
+                    }
+                }
+
+                return false;
+            }
+        }
+
+        public bool IsActiveFireplaceNearby
+        {
+            get
+            {
+                var nearbyPieces = this.world.grid.GetPiecesWithinDistance(groupName: Cell.Group.ColBlocking, mainSprite: this.sprite, distance: 450, compareWithBottom: true);
+
+                foreach (BoardPiece piece in nearbyPieces)
+                {
+                    if (piece.GetType() == typeof(Fireplace))
+                    {
+                        Fireplace fireplace = (Fireplace)piece;
+                        if (fireplace.IsOn) return true;
                     }
                 }
 
@@ -332,7 +352,7 @@ namespace SonOfRobin
             if (this.alive) this.Kill();
 
             this.sprite.Destroy();
-            if (this.visualAid != null && this.visualAid.exists) this.visualAid.Destroy();
+            if (this.visualAid != null) this.visualAid.Destroy();
             this.exists = false;
             this.RemoveFromPieceCount();
         }
@@ -364,7 +384,6 @@ namespace SonOfRobin
 
             return null;
         }
-
 
         public void StateMachineWork()
         {

@@ -18,6 +18,7 @@ namespace SonOfRobin
 
         private readonly World world;
         private readonly Texture2D texture;
+        private readonly Rectangle textureSourceRect;
 
         private Alignment alignment;
 
@@ -37,6 +38,7 @@ namespace SonOfRobin
         {
             this.world = world;
             this.texture = texture;
+            this.textureSourceRect = new Rectangle(0, 0, this.texture.Width, this.texture.Height);
 
             this.currentOpacity = 0f;
             this.targetOpacity = 1f;
@@ -128,8 +130,31 @@ namespace SonOfRobin
                 return;
             }
 
-            Rectangle sourceRectangle = new Rectangle(0, 0, this.texture.Width, this.texture.Height);
-            SonOfRobinGame.spriteBatch.Draw(this.texture, this.CalculateDestRect(this.currentPos), sourceRectangle, Color.White * this.currentOpacity);
+            // drawing button hint
+
+            Rectangle destRect = this.CalculateDestRect(this.currentPos);
+            SonOfRobinGame.spriteBatch.Draw(this.texture, this.CalculateDestRect(this.currentPos), this.textureSourceRect, Color.White * this.currentOpacity);
+
+            // drawing piece name label
+
+            if (this.targetSprite != null)
+            {
+                // Helpers.DrawRectangleOutline(rect: destRect, color: Color.LightBlue, borderWidth: 1); // for testing
+
+                int textWidth = destRect.Width;
+                int textHeight = destRect.Height;
+                int margin = 0;
+
+                bool topSide = this.world.player.sprite.position.Y > destRect.Y;
+
+                int textPosY = topSide ? (int)(destRect.Y - textHeight - margin) : (int)(destRect.Y + destRect.Height + margin);
+
+                float textOpacity = this.targetOpacity == 0.5f ? this.currentOpacity * 2f : this.currentOpacity;
+
+                Rectangle pieceNameRect = new Rectangle(x: destRect.X + ((destRect.Width - textWidth) / 2), y: textPosY, width: textWidth, height: textHeight);
+
+                Helpers.DrawTextInsideRectWithShadow(font: SonOfRobinGame.fontTommy40, text: this.targetSprite.boardPiece.readableName.Replace(" ", "\n"), rectangle: pieceNameRect, color: Color.White * textOpacity, shadowColor: Color.Black * textOpacity, alignX: Helpers.AlignX.Center, alignY: topSide ? Helpers.AlignY.Bottom : Helpers.AlignY.Top, shadowOffset: 1, drawTestRect: false);
+            }
         }
 
         private void MoveIfObstructsPlayerOrOtherTip()

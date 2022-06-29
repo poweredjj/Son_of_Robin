@@ -98,19 +98,14 @@ namespace SonOfRobin
             {
                 if (this.pieceStorage.EmptySlotsCount > 0 || this.world.random.Next(0, 100) == 0)
                 {
-                    this.fruitEngine.currentMass += massTaken / 90; // some mass is "copied" to fruit
-                    if (this.Mass > this.reproduction.massNeeded / 2 && this.fruitEngine.currentMass > this.fruitEngine.oneFruitTargetMass)
-                    {
-                        this.fruitEngine.AddFruit();
-                    }
+                    this.fruitEngine.AddMass(massTaken / 90); // some mass is "copied" to fruit
+                    if (this.Mass > this.reproduction.massNeeded / 2) this.fruitEngine.TryToConvertMassIntoFruit();
                 }
             }
-
 
             this.Mass += -this.massToBurn + massTaken;
 
             bool canReproduce = this.maxExistingNumber == 0 || this.world.pieceCountByName[this.name] < this.maxExistingNumber;
-
             if (canReproduce && this.Mass > this.reproduction.massNeeded + this.startingMass)
             {
                 BoardPiece newPlant = PieceTemplate.CreateOnBoard(world: this.world, position: this.sprite.position, templateName: this.name, generation: this.generation + 1);

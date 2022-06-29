@@ -22,6 +22,8 @@ namespace SonOfRobin
         private readonly byte stackLimit;
         public List<PieceTemplate.Name> allowedPieceNames;
         public StorageSlot lastUsedSlot; // last used by Inventory class
+
+        public int AllSlotsCount { get { return this.width * this.height; } }
         public int EmptySlotsCount { get { return this.EmptySlots.Count; } }
         public List<StorageSlot> EmptySlots { get { return AllSlots.Where(slot => slot.IsEmpty).ToList(); } }
         public int NotEmptySlotsCount { get { return this.NotEmptySlots.Count; } }

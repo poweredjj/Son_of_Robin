@@ -9,7 +9,7 @@ namespace SonOfRobin
 {
     public class Scheduler
     {
-        public enum TaskName { Empty, CreateNewWorld, CreateNewWorldNow, QuitGame, OpenMenuTemplate, OpenMainMenu, OpenConfirmationMenu, SaveGame, LoadGame, LoadGameNow, ReturnToMainMenu, SavePrefs, ProcessConfirmation, OpenCraftMenu, Craft, Hit, CreateNewPiece, CreateDebugPieces, OpenContainer, DeleteObsoleteSaves, DropFruit, GetEaten, GetDrinked, ExecuteTaskWithDelay, AddWorldEvent, OpenTextWindow, SleepInsideShelter, SleepOutside, TempoFastForward, TempoStop, TempoPlay, CameraTrackPiece, CameraTrackCoords, CameraSetZoom, ShowCookingProgress, RestoreHints, OpenMainMenuIfSpecialKeysArePressed, CheckForPieceHints, ShowHint, ExecuteTaskList, ExecuteTaskChain, ShowTutorial, RemoveScene, ChangeSceneInputType, SetCineMode, AddTransition, SkipCinematics, DeleteTemplates, SetSpectatorMode, SwitchLightSource, ResetControls, SaveControls }
+        public enum TaskName { Empty, CreateNewWorld, CreateNewWorldNow, QuitGame, OpenMenuTemplate, OpenMainMenu, OpenConfirmationMenu, SaveGame, LoadGame, LoadGameNow, ReturnToMainMenu, SavePrefs, ProcessConfirmation, OpenCraftMenu, Craft, Hit, CreateNewPiece, CreateDebugPieces, OpenContainer, DeleteObsoleteSaves, DropFruit, GetEaten, GetDrinked, ExecuteTaskWithDelay, AddWorldEvent, OpenTextWindow, OpenShelterMenu, SleepInsideShelter, SleepOutside, ForceWakeUp, TempoFastForward, TempoStop, TempoPlay, CameraTrackPiece, CameraTrackCoords, CameraSetZoom, ShowCookingProgress, RestoreHints, OpenMainMenuIfSpecialKeysArePressed, CheckForPieceHints, ShowHint, ExecuteTaskList, ExecuteTaskChain, ShowTutorial, RemoveScene, ChangeSceneInputType, SetCineMode, AddTransition, SolidColorRemoveAll, SkipCinematics, DeleteTemplates, SetSpectatorMode, SwitchLightSource, ResetControls, SaveControls, CheckForNonSavedControls }
 
         private readonly static Dictionary<int, List<Task>> queue = new Dictionary<int, List<Task>>();
         private static int inputTurnedOffUntilFrame = 0;
@@ -172,28 +172,52 @@ namespace SonOfRobin
                         }
 
                     case TaskName.OpenConfirmationMenu:
-                        MenuTemplate.CreateConfirmationMenu(confirmationData: executeHelper);
-                        return;
+                        {
+                            MenuTemplate.CreateConfirmationMenu(confirmationData: executeHelper);
+                            return;
+                        }
+
+                    case TaskName.ProcessConfirmation:
+                        {
+                            var confirmationData = (Dictionary<string, Object>)executeHelper;
+                            new Task(taskName: (TaskName)confirmationData["taskName"], executeHelper: confirmationData["executeHelper"]);
+
+                            return;
+                        }
 
                     case TaskName.CreateNewWorld:
-                        if (menu != null) menu.MoveToTop();
+                        {
+                            if (menu != null) menu.MoveToTop();
 
-                        Scene.RemoveAllScenesOfType(typeof(Menu));
+                            Scene.RemoveAllScenesOfType(typeof(Menu));
 
-                        new Task(taskName: TaskName.CreateNewWorldNow, turnOffInputUntilExecution: true, delay: 13, executeHelper: executeHelper);
+                            new Task(taskName: TaskName.CreateNewWorldNow, turnOffInputUntilExecution: true, delay: 13, executeHelper: executeHelper);
 
-                        return;
+                            return;
+                        }
 
                     case TaskName.CreateNewWorldNow:
                         {
                             // example executeHelper for this task
-                            // var createData = new Dictionary<string, Object> { { "width", width }, { "height", height }, { "seed", seed }};
+                            // var createData = new Dictionary<string, Object> {{ "width", width }, { "height", height }, { "seed", seed }, {"resDivider", resDivider }};                
 
-                            var createData = (Dictionary<string, Object>)executeHelper;
-                            int width = (int)createData["width"];
-                            int height = (int)createData["height"];
-                            int seed = (int)createData["seed"];
-                            int resDivider = (int)createData["resDivider"];
+                            int width, height, seed, resDivider;
+
+                            if (executeHelper == null)
+                            {
+                                width = Preferences.newWorldWidth;
+                                height = Preferences.newWorldHeight;
+                                seed = Preferences.NewWorldSeed;
+                                resDivider = Preferences.newWorldResDivider;
+                            }
+                            else
+                            {
+                                var createData = (Dictionary<string, Object>)executeHelper;
+                                width = (int)createData["width"];
+                                height = (int)createData["height"];
+                                seed = (int)createData["seed"];
+                                resDivider = (int)createData["resDivider"];
+                            }
 
                             new World(width: width, height: height, seed: seed, resDivider: resDivider);
 
@@ -215,100 +239,105 @@ namespace SonOfRobin
                         }
 
                     case TaskName.CreateDebugPieces:
-                        world = World.GetTopWorld();
-                        if (world == null)
                         {
-                            MessageLog.AddMessage(msgType: MsgType.Debug, message: "Could not create selected item, because no world was found.");
+                            world = World.GetTopWorld();
+                            if (world == null)
+                            {
+                                MessageLog.AddMessage(msgType: MsgType.Debug, message: "Could not create selected item, because no world was found.");
+                                return;
+                            }
+
+                            {
+                                Player player = world.player;
+
+                                var executeData = (Dictionary<string, Object>)executeHelper;
+                                Vector2 position = (Vector2)executeData["position"];
+                                PieceTemplate.Name templateName = (PieceTemplate.Name)executeData["templateName"];
+
+                                int piecesCreated = 0;
+                                int amountToCreate = 0;
+                                int attemptNo = 0;
+                                BoardPiece piece;
+
+                                while (true)
+                                {
+                                    piece = PieceTemplate.CreateOnBoard(world: world, position: position, templateName: templateName);
+                                    amountToCreate = piece.stackSize;
+
+                                    if (piece.sprite.placedCorrectly)
+                                    {
+                                        bool piecePickedUp = player.PickUpPiece(piece);
+
+                                        if (!piecePickedUp) piece.sprite.MoveToClosestFreeSpot(position);
+                                        piecesCreated++;
+                                    }
+
+                                    if (piecesCreated >= amountToCreate) break;
+
+                                    attemptNo++;
+                                    if (attemptNo == 1000)
+                                    {
+                                        MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Max number of attempts exceeded while trying to create '{templateName}'.");
+                                        break;
+                                    }
+                                }
+
+                                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{piecesCreated} '{templateName}' pieces created.");
+                            }
                             return;
                         }
 
-                        {
-                            Player player = world.player;
-
-                            var executeData = (Dictionary<string, Object>)executeHelper;
-                            Vector2 position = (Vector2)executeData["position"];
-                            PieceTemplate.Name templateName = (PieceTemplate.Name)executeData["templateName"];
-
-                            int piecesCreated = 0;
-                            int amountToCreate = 0;
-                            int attemptNo = 0;
-                            BoardPiece piece;
-
-                            while (true)
-                            {
-                                piece = PieceTemplate.CreateOnBoard(world: world, position: position, templateName: templateName);
-                                amountToCreate = piece.stackSize;
-
-                                if (piece.sprite.placedCorrectly)
-                                {
-                                    bool piecePickedUp = player.PickUpPiece(piece);
-
-                                    if (!piecePickedUp) piece.sprite.MoveToClosestFreeSpot(position);
-                                    piecesCreated++;
-                                }
-
-                                if (piecesCreated >= amountToCreate) break;
-
-                                attemptNo++;
-                                if (attemptNo == 1000)
-                                {
-                                    MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Max number of attempts exceeded while trying to create '{templateName}'.");
-                                    break;
-                                }
-                            }
-
-                            MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{piecesCreated} '{templateName}' pieces created.");
-                        }
-                        return;
-
                     case TaskName.SaveGame:
-                        // example executeHelper for this task
-                        // var saveParams = new Dictionary<string, Object> { { "world", world }, { "saveSlotName", "1" }, { "showMessage", false }, {"quitGameAfterSaving", false} };
+                        {
+                            // example executeHelper for this task
+                            // var saveParams = new Dictionary<string, Object> { { "world", world }, { "saveSlotName", "1" }, { "showMessage", false }, {"quitGameAfterSaving", false} };
 
-                        if (this.rebuildsMenu)
-                        {// menu should be rebuilt after the game has been saved
-                            new Task(menu: this.menu, taskName: TaskName.Empty, turnOffInputUntilExecution: false, delay: 12, rebuildsMenu: true);
-                            this.rebuildsMenu = false;
-                        }
+                            if (this.rebuildsMenu)
+                            {// menu should be rebuilt after the game has been saved
+                                new Task(menu: this.menu, taskName: TaskName.Empty, turnOffInputUntilExecution: false, delay: 12, rebuildsMenu: true);
+                                this.rebuildsMenu = false;
+                            }
 ;
-                        var saveParams = (Dictionary<string, Object>)executeHelper;
-                        world = (World)saveParams["world"];
-                        string saveSlotName = (string)saveParams["saveSlotName"];
-                        bool showMessage = false;
-                        if (saveParams.ContainsKey("showMessage")) showMessage = (bool)saveParams["showMessage"];
-                        bool quitGameAfterSaving = false;
-                        if (saveParams.ContainsKey("quitGameAfterSaving")) quitGameAfterSaving = (bool)saveParams["quitGameAfterSaving"];
+                            var saveParams = (Dictionary<string, Object>)executeHelper;
+                            world = (World)saveParams["world"];
+                            string saveSlotName = (string)saveParams["saveSlotName"];
+                            bool showMessage = false;
+                            if (saveParams.ContainsKey("showMessage")) showMessage = (bool)saveParams["showMessage"];
+                            bool quitGameAfterSaving = false;
+                            if (saveParams.ContainsKey("quitGameAfterSaving")) quitGameAfterSaving = (bool)saveParams["quitGameAfterSaving"];
 
-                        new LoaderSaver(saveMode: true, saveSlotName: saveSlotName, world: world, showSavedMessage: showMessage, quitGameAfterSaving: quitGameAfterSaving);
+                            new LoaderSaver(saveMode: true, saveSlotName: saveSlotName, world: world, showSavedMessage: showMessage, quitGameAfterSaving: quitGameAfterSaving);
 
-                        return;
+                            return;
+                        }
 
                     case TaskName.LoadGame:
-                        if (menu != null) menu.MoveToTop();
+                        {
+                            if (menu != null) menu.MoveToTop();
 
-                        Menu.RemoveEveryMenuOfTemplate(MenuTemplate.Name.Load);
-                        Menu.RemoveEveryMenuOfTemplate(MenuTemplate.Name.Main);
-                        Menu.RemoveEveryMenuOfTemplate(MenuTemplate.Name.Pause);
-                        Menu.RemoveEveryMenuOfTemplate(MenuTemplate.Name.GameOver);
+                            Menu.RemoveEveryMenuOfTemplate(MenuTemplate.Name.Load);
+                            Menu.RemoveEveryMenuOfTemplate(MenuTemplate.Name.Main);
+                            Menu.RemoveEveryMenuOfTemplate(MenuTemplate.Name.Pause);
+                            Menu.RemoveEveryMenuOfTemplate(MenuTemplate.Name.GameOver);
+                            Scene.RemoveAllScenesOfType(typeof(TextWindow));
 
-                        new Task(taskName: TaskName.LoadGameNow, turnOffInputUntilExecution: true, delay: 17, executeHelper: this.executeHelper);
+                            new Task(taskName: TaskName.LoadGameNow, turnOffInputUntilExecution: true, delay: 17, executeHelper: this.executeHelper);
 
-                        return;
+                            return;
+                        }
 
                     case TaskName.LoadGameNow:
-                        new LoaderSaver(saveMode: false, saveSlotName: (string)executeHelper);
+                        {
+                            new LoaderSaver(saveMode: false, saveSlotName: (string)executeHelper);
 
-                        return;
+                            return;
+                        }
 
                     case TaskName.SavePrefs:
-                        Preferences.Save();
-                        return;
-
-                    case TaskName.ProcessConfirmation:
-                        var confirmationData = (Dictionary<string, Object>)executeHelper;
-                        new Task(taskName: (TaskName)confirmationData["taskName"], executeHelper: confirmationData["executeHelper"]);
-
-                        return;
+                        {
+                            Preferences.Save();
+                            return;
+                        }
 
                     case TaskName.OpenContainer:
                         {
@@ -319,9 +348,9 @@ namespace SonOfRobin
 
                             if (container.GetType() == typeof(Cooker))
                             {
-                                if (world.player.AreEnemiesNearby)
+                                if (world.player.AreEnemiesNearby && !world.player.IsActiveFireplaceNearby)
                                 {
-                                    new TextWindow(text: "I can't cook with enemies nearby.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1);
+                                    new TextWindow(text: "I can't cook with enemies nearby.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1, closingTask: TaskName.ShowTutorial, closingTaskHelper: new Dictionary<string, Object> { { "tutorial", Tutorials.Type.KeepingAnimalsAway }, { "menuMode", false } });
                                     return;
                                 }
 
@@ -511,35 +540,59 @@ namespace SonOfRobin
 
                     case TaskName.ResetControls:
                         {
-                            bool gamepad = (bool)executeHelper;
+                            // example executeHelper for this task
+                            // var resetData = new Dictionary<string, Object> { { "gamepad", gamepad }, { "useDefault", true } };
+
+                            var resetData = (Dictionary<string, Object>)executeHelper;
+                            bool gamepad = (bool)resetData["gamepad"];
+                            bool useDefault = (bool)resetData["useDefault"];
+                            bool showMessage = resetData.ContainsKey("showMessage") ? (bool)resetData["showMessage"] : true;
+
                             if (gamepad)
                             {
-                                InputMapper.currentMappingGamepad = InputMapper.defaultMappingGamepad.MakeCopy();
-                                InputMapper.newMappingGamepad = InputMapper.defaultMappingGamepad.MakeCopy();
+                                InputPackage sourcePackage = useDefault ? InputMapper.defaultMappingGamepad : InputMapper.currentMappingGamepad;
+
+                                InputMapper.currentMappingGamepad = sourcePackage.MakeCopy();
+                                InputMapper.newMappingGamepad = sourcePackage.MakeCopy();
                             }
                             else
                             {
-                                InputMapper.currentMappingKeyboard = InputMapper.defaultMappingKeyboard.MakeCopy();
-                                InputMapper.newMappingKeyboard = InputMapper.defaultMappingKeyboard.MakeCopy();
+                                InputPackage sourcePackage = useDefault ? InputMapper.defaultMappingKeyboard : InputMapper.currentMappingKeyboard;
+
+                                InputMapper.currentMappingKeyboard = sourcePackage.MakeCopy();
+                                InputMapper.newMappingKeyboard = sourcePackage.MakeCopy();
                             }
 
                             InputMapper.RebuildMappings();
                             Preferences.ControlTipsScheme = Preferences.ControlTipsScheme; // to refresh tutorials, etc.
                             new Task(taskName: TaskName.SavePrefs);
 
-                            string type = gamepad ? "Gamepad" : "Keyboard";
-                            new TextWindow(text: $"{type} controls has been reset.", textColor: Color.White, bgColor: Color.DarkBlue, useTransition: false, animate: false);
+                            if (showMessage)
+                            {
+                                string type = gamepad ? "Gamepad" : "Keyboard";
+                                new TextWindow(text: $"{type} controls has been reset.", textColor: Color.White, bgColor: Color.DarkBlue, useTransition: false, animate: false);
+                            }
+
                             return;
                         }
 
                     case TaskName.SaveControls:
                         {
-                            bool gamepad = (bool)executeHelper;
+                            // example executeHelper for this task
+                            // var saveData = new Dictionary<string, Object> { { "gamepad", gamepad }, { "openMenuIfNotValid", true } };
+
+                            var saveData = (Dictionary<string, Object>)executeHelper;
+                            bool gamepad = (bool)saveData["gamepad"];
+                            bool openMenuIfNotValid = (bool)saveData["openMenuIfNotValid"];
 
                             InputPackage newMapping = gamepad ? InputMapper.newMappingGamepad : InputMapper.newMappingKeyboard;
 
                             bool isValid = newMapping.Validate(gamepad: gamepad);
-                            if (!isValid) return;
+                            if (!isValid)
+                            {
+                                if (openMenuIfNotValid) MenuTemplate.CreateMenuFromTemplate(templateName: gamepad ? MenuTemplate.Name.Gamepad : MenuTemplate.Name.Keyboard);
+                                return;
+                            }
 
                             if (gamepad) InputMapper.currentMappingGamepad = InputMapper.newMappingGamepad.MakeCopy();
                             else InputMapper.currentMappingKeyboard = InputMapper.newMappingKeyboard.MakeCopy();
@@ -554,16 +607,43 @@ namespace SonOfRobin
                             return;
                         }
 
+                    case TaskName.CheckForNonSavedControls:
+                        {
+                            var gamepad = (bool)executeHelper;
+
+                            InputPackage newControls = gamepad ? InputMapper.newMappingGamepad : InputMapper.newMappingKeyboard;
+                            InputPackage currentControls = gamepad ? InputMapper.currentMappingGamepad : InputMapper.currentMappingKeyboard;
+
+                            if (!currentControls.Equals(newControls))
+                            {
+                                var optionList = new List<object>();
+
+                                var saveData = new Dictionary<string, Object> { { "gamepad", gamepad }, { "openMenuIfNotValid", true } };
+                                optionList.Add(new Dictionary<string, object> { { "label", "save controls" }, { "taskName", TaskName.SaveControls }, { "executeHelper", saveData } });
+                                var resetData = new Dictionary<string, Object> { { "gamepad", gamepad }, { "useDefault", false }, { "showMessage", false } };
+                                optionList.Add(new Dictionary<string, object> { { "label", "undo changes" }, { "taskName", TaskName.ResetControls }, { "executeHelper", resetData } });
+
+                                var confirmationData = new Dictionary<string, Object> { { "blocksUpdatesBelow", true }, { "question", "There are unsaved changes." }, { "customOptionList", optionList } };
+
+                                new Task(taskName: TaskName.OpenConfirmationMenu, executeHelper: confirmationData);
+                            }
+
+                            return;
+                        }
+
                     case TaskName.DropFruit:
                         {
                             Plant fruitPlant = (Plant)executeHelper;
                             fruitPlant.DropFruit();
+
+                            return;
                         }
-                        return;
 
                     case TaskName.DeleteObsoleteSaves:
-                        SaveHeaderManager.DeleteObsoleteSaves();
-                        return;
+                        {
+                            SaveHeaderManager.DeleteObsoleteSaves();
+                            return;
+                        }
 
                     case TaskName.ExecuteTaskWithDelay:
                         {
@@ -615,7 +695,7 @@ namespace SonOfRobin
                             if (textWindowData.ContainsKey("useTransitionClose")) useTransitionClose = (bool)textWindowData["useTransitionClose"];
 
                             bool animate = true;
-                            if (textWindowData.ContainsKey("animate")) useTransition = (bool)textWindowData["animate"];
+                            if (textWindowData.ContainsKey("animate")) animate = (bool)textWindowData["animate"];
 
                             TaskName closingTask = TaskName.Empty;
                             if (textWindowData.ContainsKey("closingTask")) closingTask = (TaskName)textWindowData["closingTask"];
@@ -673,9 +753,17 @@ namespace SonOfRobin
 
                                 sleepEngine = SleepEngine.OutdoorSleepWet;
                             }
-                            else { sleepEngine = SleepEngine.OutdoorSleepDry; }
+                            else sleepEngine = SleepEngine.OutdoorSleepDry;
 
                             player.GoToSleep(sleepEngine: sleepEngine, zzzPos: player.sprite.position, wakeUpBuffs: new List<BuffEngine.Buff> { });
+                            return;
+                        }
+
+
+                    case TaskName.OpenShelterMenu:
+                        {
+                            // executeHelper will go through menu - to "SleepInsideShelter" case
+                            MenuTemplate.CreateMenuFromTemplate(templateName: MenuTemplate.Name.Shelter, executeHelper: this.executeHelper);
                             return;
                         }
 
@@ -685,6 +773,13 @@ namespace SonOfRobin
                             SleepEngine sleepEngine = shelterPiece.sleepEngine;
                             World.GetTopWorld()?.player.GoToSleep(sleepEngine: sleepEngine, zzzPos: new Vector2(shelterPiece.sprite.gfxRect.Center.X, shelterPiece.sprite.gfxRect.Center.Y), wakeUpBuffs: shelterPiece.buffList);
 
+                            return;
+                        }
+
+                    case TaskName.ForceWakeUp:
+                        {
+                            Player player = (Player)executeHelper;
+                            player.WakeUp(force: true);
                             return;
                         }
 
@@ -860,10 +955,16 @@ namespace SonOfRobin
 
                     case TaskName.ShowTutorial:
                         {
-                            // For now ShowTutorial is only used in menus; should this change - menuMode would have to be passed here as well.
+                            // example executeHelper for this task
+                            // var tutorialData = new Dictionary<string, Object> { { "tutorial", Tutorials.Type.KeepingAnimalsAway }, { "menuMode", true } };
 
-                            Tutorials.Type type = (Tutorials.Type)executeHelper;
-                            Tutorials.ShowTutorial(type: type, ignoreIfShown: false, checkHintsSettings: false, ignoreDelay: true, menuMode: true);
+                            var tutorialData = (Dictionary<string, Object>)executeHelper;
+
+                            bool menuMode = (bool)tutorialData["menuMode"];
+                            bool ignoreIfShown = !menuMode;
+                            Tutorials.Type tutorial = (Tutorials.Type)tutorialData["tutorial"];
+
+                            Tutorials.ShowTutorial(type: tutorial, ignoreIfShown: ignoreIfShown, checkHintsSettings: false, ignoreDelay: true, menuMode: menuMode);
 
                             return;
                         }
@@ -923,6 +1024,20 @@ namespace SonOfRobin
                             Transition transition = (Transition)transData["transition"];
 
                             scene.transManager.AddTransition(transition);
+                            return;
+                        }
+
+                    case TaskName.SolidColorRemoveAll:
+                        {
+                            // example executeHelper for this task
+                            // var removeData = new Dictionary<string, Object> { { "manager", this.solidColorManager }, { "delay", 10 } }
+
+                            var removeData = (Dictionary<string, Object>)executeHelper;
+                            SolidColorManager solidColorManager = (SolidColorManager)removeData["manager"];
+                            int delay = removeData.ContainsKey("delay") ? (int)removeData["delay"] : 0;
+
+                            solidColorManager.RemoveAll(delay);
+
                             return;
                         }
 
