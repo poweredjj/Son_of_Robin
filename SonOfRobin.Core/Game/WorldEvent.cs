@@ -104,7 +104,7 @@ namespace SonOfRobin
         {
             switch (this.eventName)
             {
-                case EventName.Birth:
+                case EventName.Birth:  // should only be used for pieces, that are processed every frame
                     {
                         Animal motherAnimal = (Animal)this.boardPiece;
                         if (!motherAnimal.alive) return;
@@ -114,7 +114,7 @@ namespace SonOfRobin
                         return;
                     }
 
-                case EventName.Death:
+                case EventName.Death: // should only be used for pieces, that are processed every frame
                     {
                         if (this.boardPiece.alive) this.boardPiece.Kill();
                         return;
@@ -185,7 +185,7 @@ namespace SonOfRobin
 
                         // breaking damage loop
 
-                        if (this.world.player == null || !this.world.player.alive || !this.world.player.exists || this.world.player.sprite.IsInWater || !portableLight.IsOnPlayersToolbar)
+                        if (this.world.player == null || !this.world.player.alive || !this.world.player.exists || this.world.player.sprite.IsInWater || !portableLight.IsOnPlayersToolbar || !portableLight.IsOn)
                         {
                             portableLight.IsOn = false;
                             return;
@@ -200,7 +200,7 @@ namespace SonOfRobin
                         this.boardPiece.hitPoints = Math.Max(this.boardPiece.hitPoints - damage, 0);
                         if (this.boardPiece.hitPoints <= 0)
                         {
-                            this.world.hintEngine.ShowGeneralHint(type: HintEngine.Type.BurntOutTorch, ignoreDelay: true, optionalText: portableLight.readableName);
+                            this.world.hintEngine.ShowGeneralHint(type: HintEngine.Type.BurntOutTorch, ignoreDelay: true, text: portableLight.readableName);
                             MessageLog.AddMessage(msgType: MsgType.User, message: $"{Helpers.FirstCharToUpperCase(this.boardPiece.readableName)} has burnt out.", color: Color.White);
 
                             portableLight.IsOn = false;

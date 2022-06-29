@@ -157,9 +157,9 @@ namespace SonOfRobin
                 if (highlightOnly)
                 {
                     Tutorials.ShowTutorial(type: Tutorials.Type.Hit, ignoreIfShown: true, ignoreDelay: false);
-                    currentTarget.sprite.effectCol.AddEffect(new BorderInstance(outlineColor: Color.Red, textureSize: currentTarget.sprite.frame.originalTextureSize, priority: 0));
+                    currentTarget.sprite.effectCol.AddEffect(new BorderInstance(outlineColor: Color.Red, textureSize: currentTarget.sprite.frame.textureSize, priority: 0));
 
-                    if (SonOfRobinGame.platform == Platform.Mobile) VirtButton.ButtonHighlightOnNextFrame(VButName.UseTool);
+                    VirtButton.ButtonHighlightOnNextFrame(VButName.UseTool);
                     ControlTips.TipHighlightOnNextFrame(tipName: "use item");
                 }
                 else
@@ -179,8 +179,8 @@ namespace SonOfRobin
                     this.hitPoints -= 1;
                     this.hitPoints = Math.Max(0, this.hitPoints);
 
-                    if (this.HitPointsPercent < 0.4f && this.hitPoints > 0) this.world.hintEngine.ShowGeneralHint(type: HintEngine.Type.BreakingItem, ignoreDelay: true, optionalText: this.readableName);
-                    if (this.hitPoints == 0) this.world.hintEngine.ShowGeneralHint(type: HintEngine.Type.BrokenItem, ignoreDelay: true, optionalText: this.readableName);
+                    if (this.HitPointsPercent < 0.4f && this.hitPoints > 0) this.world.hintEngine.ShowGeneralHint(type: HintEngine.Type.BreakingItem, ignoreDelay: true, text: this.readableName);
+                    if (this.hitPoints == 0) this.world.hintEngine.ShowGeneralHint(type: HintEngine.Type.BrokenItem, ignoreDelay: true, text: this.readableName);
                 }
             }
         }

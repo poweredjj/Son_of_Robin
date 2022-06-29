@@ -7,9 +7,7 @@ namespace SonOfRobin
     public class Yield
     {
         public enum DebrisType { None, Stone, Wood, Blood, Plant }
-
-        public static Dictionary<PieceTemplate.Name, Yield> antiCraft = new Dictionary<PieceTemplate.Name, Yield> { };
-
+        public static Dictionary<PieceTemplate.Name, Craft.Recipe> antiCraftRecipes = new Dictionary<PieceTemplate.Name, Craft.Recipe> { };
         public struct DroppedPiece
         {
             public readonly PieceTemplate.Name pieceName;
@@ -40,6 +38,8 @@ namespace SonOfRobin
         public void AddPiece(BoardPiece mainPiece)
         {
             // must be added after creating main piece
+            if (this.mainPiece != null) throw new ArgumentException($"Cannot add another piece ('{mainPiece.readableName}') to yield.");
+
             this.mainPiece = mainPiece;
             this.firstPiecesDivider = mainPiece.maxHitPoints;
         }
@@ -59,7 +59,7 @@ namespace SonOfRobin
         public void DropDebris()
         {
             if (this.debrisType == DebrisType.None) return; // to speed up
-            if (!this.mainPiece.world.camera.viewRect.Contains(this.mainPiece.sprite.position)) return; // debris should not be created off-screen
+            if (!Preferences.showDebris || !this.mainPiece.world.camera.viewRect.Contains(this.mainPiece.sprite.position)) return; // debris should not be created off-screen
 
             var debrisList = new List<DroppedPiece> { };
 

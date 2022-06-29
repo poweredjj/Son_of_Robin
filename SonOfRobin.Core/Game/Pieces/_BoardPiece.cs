@@ -27,7 +27,8 @@ namespace SonOfRobin
             AnimalGiveBirth,
             AnimalFlee,
 
-            SpectatorFloatAround
+            SpectatorFloatAround,
+            FireplaceBurn
         }
 
         public enum Category { Wood, Stone, Metal, SmallPlant, Animal, Indestructible }
@@ -40,6 +41,7 @@ namespace SonOfRobin
         public readonly Category category;
         public Sprite sprite;
         public State activeState;
+        public int lastFrameSMProcessed;
         public float speed;
         private float mass;
         public readonly float startingMass;
@@ -164,6 +166,7 @@ namespace SonOfRobin
             this.world.currentPieceId++;
             this.destructionDelay = destructionDelay;
             this.activeState = State.Empty;
+            this.lastFrameSMProcessed = 0;
             this.indestructible = indestructible;
             this.maxHitPoints = maxHitPoints;
             this.hitPoints = maxHitPoints;
@@ -194,13 +197,12 @@ namespace SonOfRobin
             this.canBePickedUp = canBePickedUp;
             this.serialize = serialize;
             this.yield = yield;
-            if (this.yield == null && Yield.antiCraft.ContainsKey(this.name)) this.yield = Yield.antiCraft[this.name];
+            if (this.yield == null && Yield.antiCraftRecipes.ContainsKey(this.name)) this.yield = Yield.antiCraftRecipes[this.name].ConvertToYield();
             if (this.yield != null) this.yield.AddPiece(this);
 
             this.AddPlannedDestruction();
             this.AddToStateMachines();
         }
-
 
         public void AddPlannedDestruction()
         {
@@ -372,6 +374,9 @@ namespace SonOfRobin
 
         public void StateMachineWork()
         {
+            if (this.lastFrameSMProcessed == this.world.currentUpdate) return; // to avoid processing the same state machine multiple times in one frame
+            this.lastFrameSMProcessed = this.world.currentUpdate;
+
             if (this.ProcessPassiveMovement()) return; // passive movement blocks the state machine until the movement stops
 
             if (!this.alive)
@@ -466,6 +471,12 @@ namespace SonOfRobin
                         return;
                     }
 
+                case State.FireplaceBurn:
+                    {
+                        this.SM_FireplaceBurn();
+                        return;
+                    }
+
                 case State.Empty: // this state should be removed from execution (for performance reasons)
                     {
                         this.RemoveFromStateMachines();
@@ -520,6 +531,8 @@ namespace SonOfRobin
         public virtual void SM_PlayerControlledSleep()
         { throw new DivideByZeroException("This method should not be executed."); }
         public virtual void SM_SpectatorFloatAround()
+        { throw new DivideByZeroException("This method should not be executed."); }
+        public virtual void SM_FireplaceBurn()
         { throw new DivideByZeroException("This method should not be executed."); }
         public virtual void SM_GrowthAndReproduction()
         { throw new DivideByZeroException("This method should not be executed."); }

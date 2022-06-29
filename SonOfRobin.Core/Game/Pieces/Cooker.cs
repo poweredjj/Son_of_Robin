@@ -7,7 +7,7 @@ namespace SonOfRobin
 {
     public class Cooker : BoardPiece
     {
-        private static readonly List<PieceTemplate.Name> ingredientNames = new List<PieceTemplate.Name> { PieceTemplate.Name.RawMeat, PieceTemplate.Name.Apple, PieceTemplate.Name.Cherry, PieceTemplate.Name.Banana, PieceTemplate.Name.Tomato, PieceTemplate.Name.Acorn };
+        private static readonly List<PieceTemplate.Name> ingredientNames = new List<PieceTemplate.Name> { PieceTemplate.Name.RawMeat, PieceTemplate.Name.Apple, PieceTemplate.Name.Cherry, PieceTemplate.Name.Banana, PieceTemplate.Name.Tomato, PieceTemplate.Name.Acorn, PieceTemplate.Name.Herbs };
 
         private static readonly List<PieceTemplate.Name> fuelNames = new List<PieceTemplate.Name> { PieceTemplate.Name.WoodLog, PieceTemplate.Name.WoodPlank, PieceTemplate.Name.Coal };
 
@@ -31,12 +31,12 @@ namespace SonOfRobin
 
             var allowedPieceNames = new List<PieceTemplate.Name>(ingredientNames);
             allowedPieceNames.AddRange(fuelNames);
-            allowedPieceNames.Add(PieceTemplate.Name.FlameTrigger);
+            allowedPieceNames.Add(PieceTemplate.Name.CookingTrigger);
             allowedPieceNames.Add(PieceTemplate.Name.Meal);
 
             this.pieceStorage.AssignAllowedPieceNames(allowedPieceNames);
 
-            BoardPiece flameTrigger = PieceTemplate.CreateOffBoard(templateName: PieceTemplate.Name.FlameTrigger, world: this.world);
+            BoardPiece flameTrigger = PieceTemplate.CreateOffBoard(templateName: PieceTemplate.Name.CookingTrigger, world: this.world);
             StorageSlot flameSlot = this.pieceStorage.FindCorrectSlot(flameTrigger);
             this.pieceStorage.AddPiece(flameTrigger);
             flameSlot.locked = true;

@@ -13,8 +13,8 @@ namespace SonOfRobin
 
     public class SonOfRobinGame : Game
     {
-        public static readonly float version = 7.6f;
-        public static readonly DateTime lastChanged = new DateTime(2022, 03, 31);
+        public static readonly float version = 7.7f;
+        public static readonly DateTime lastChanged = new DateTime(2022, 04, 07);
 
         public static ContentManager content;
 
@@ -63,8 +63,8 @@ namespace SonOfRobin
 
         public static readonly int initialWindowWidth = ThisIsWorkMachine ? 700 : 1280;
         public static readonly int initialWindowHeight = ThisIsWorkMachine ? 250 : 720;
-        public static int VirtualWidth { get { return Convert.ToInt32(graphics.PreferredBackBufferWidth / Preferences.globalScale); } }
-        public static int VirtualHeight { get { return Convert.ToInt32(graphics.PreferredBackBufferHeight / Preferences.globalScale); } }
+        public static int VirtualWidth { get { return Convert.ToInt32(graphics.PreferredBackBufferWidth / Preferences.GlobalScale); } }
+        public static int VirtualHeight { get { return Convert.ToInt32(graphics.PreferredBackBufferHeight / Preferences.GlobalScale); } }
 
         public static PerformanceCounter ramCounter = new PerformanceCounter("Memory", "Available MBytes"); // THIS LINE MUST BE COMMENTED OUT WHEN COMPILING FOR ANDROID AND LINUX
         public static bool DesktopMemoryLow
@@ -75,6 +75,7 @@ namespace SonOfRobin
                 return false; // for compatibility with mobile
             }
         }
+
         public static bool LicenceValid { get { return DateTime.Now - lastChanged < TimeSpan.FromDays(30) || overrideLicence; } }
         public static bool overrideLicence = false;
 
@@ -91,7 +92,6 @@ namespace SonOfRobin
             if (fakeMobileMode) platform = Platform.Mobile;
 
             base.Initialize();
-
             game = this;
 
             if (!Directory.Exists(gameDataPath)) Directory.CreateDirectory(gameDataPath);
@@ -106,7 +106,7 @@ namespace SonOfRobin
             if (Preferences.FullScreenMode)
             {
                 graphics.IsFullScreen = true;
-                IsMouseVisible = false;
+                IsMouseVisible = Preferences.MouseGesturesEmulateTouch;
             }
             else
             {
@@ -134,18 +134,20 @@ namespace SonOfRobin
             this.Window.AllowUserResizing = true;
             Window.ClientSizeChanged += OnResize;
 
+            AnimData.CreateAllAnims();
+            AnimFrame.DeleteUsedAtlases();
+
             new SolidColor(color: Color.RoyalBlue, viewOpacity: 1f, clearScreen: true);
             new MessageLog();
             Preferences.DebugMode = Preferences.DebugMode; // to create debugMode scenes
             hintWindow = new InfoWindow(bgColor: Color.RoyalBlue, bgOpacity: 0.85f);
             progressBar = new InfoWindow(bgColor: Color.SeaGreen, bgOpacity: 0.85f);
-            if (platform == Platform.Mobile) touchOverlay = new TouchOverlay();
 
             KeepScreenOn = true;
 
             if (LicenceValid)
             {
-                if (Preferences.showDemoWorld) new World(seed: 777, width: 1500, height: 1000, demoMode: true);
+                if (Preferences.showDemoWorld) new World(seed: 777, width: 1500, height: 1000, resDivider: 2, demoMode: true);
                 MenuTemplate.CreateMenuFromTemplate(templateName: MenuTemplate.Name.Main);
             }
             else
@@ -180,20 +182,17 @@ namespace SonOfRobin
 
             textureByName = new Dictionary<string, Texture2D>();
 
-            string[] assetNames = { "no_anim", "fox", "tile_custom01", "actor29rec4", "tileb", "tile_19ba32a6", "backlight_1", "backlight_2", "backlight_3", "backlight_4", "crabs_small", "crabs_big", "frogs_small", "frogs_big", "flowers", "8f296dbbaf43865bc29e99660fe7b5af_2x", "qYFvsmq", "NicePng_pine-tree-clipart-png_1446450", "palmtree_small", "tilees by guth_zpsfn3wpjdu_2x", "attack_effect_sprite_sheets", "miss", "zzz", "heart_16x16", "rabbits", "virtual_joypad_background", "virtual_joypad_stick", "virtual_button", "virtual_button_pressed", "cursor", "chests", "d9ffec650d3104f5c4564c9055787530", "sticks1", "sticks2", "axe_stone", "axe_wooden", "axe_iron", "axe_diamond", "hand", "tools_gravel", "stones", "fancy_food", "fancy_food2", "fancy_food3", "celianna_farmnature_crops_transparent", "weapons1", "steak_t-bone", "Cooked Meat", "big_icons_candacis", "Candacis_flames1", "gems__rpg_maker_mv__by_petschko-d9euoxr", "mv_blacksmith_by_schwarzenacht_dapf6ek", "bows", "arrow_wood", "arrow_iron", "crosshair", "sling", "greatsling", "stone_ammo", "craft_items", "tent_big", "tent_medium", "flames", "bag", "backpack", "belt", "parchment", "exclamation", "scythe", "grass_blade", "tiger", "plus", "acorn", "light_black", "light_white", "torch_on", "torch_off" };
+            string[] assetNames = { "no_anim", "fox", "tile_custom01", "actor29rec4", "tileb", "tile_19ba32a6", "backlight_1", "backlight_2", "backlight_3", "backlight_4", "crabs_small", "crabs_big", "frogs_small", "frogs_big", "flowers", "8f296dbbaf43865bc29e99660fe7b5af_2x", "qYFvsmq", "NicePng_pine-tree-clipart-png_1446450", "palmtree_small", "tilees by guth_zpsfn3wpjdu_2x", "attack", "miss", "zzz", "heart_16x16", "rabbits", "virtual_joypad_background", "virtual_joypad_stick", "virtual_button", "virtual_button_pressed", "cursor", "chests", "d9ffec650d3104f5c4564c9055787530", "sticks1", "sticks2", "axe_wooden", "axe_diamond", "hand", "tools_gravel", "stones", "fancy_food", "fancy_food2", "celianna_farmnature_crops_transparent", "weapons1", "steak_t-bone", "Cooked Meat", "big_icons_candacis", "Candacis_flames1", "gems__rpg_maker_mv__by_petschko-d9euoxr", "mv_blacksmith_by_schwarzenacht_dapf6ek", "bows", "arrow_wood", "arrow_iron", "crosshair", "sling", "greatsling", "stone_ammo", "craft_items", "tent_big", "tent_medium", "flames", "bag", "bag_outline", "backpack", "belt", "parchment", "exclamation", "scythe", "grass_blade", "tiger", "plus", "acorn", "light_black", "light_white", "torch_on", "torch_off", "water_drop" };
 
             foreach (string assetName in assetNames)
             {
-                Texture2D characterTexture = Content.Load<Texture2D>($"gfx/{assetName}");
-                textureByName[assetName] = characterTexture;
+                textureByName[assetName] = Content.Load<Texture2D>($"gfx/{assetName}");
             }
 
             lightSourceBlack = textureByName["light_black"];
             lightSourceWhite = textureByName["light_white"];
             whiteRectangle = new Texture2D(GraphicsDevice, 1, 1);
             whiteRectangle.SetData(new[] { Color.White });
-
-            AnimData.CreateAllAnims();
         }
         protected override void Update(GameTime gameTime)
         {

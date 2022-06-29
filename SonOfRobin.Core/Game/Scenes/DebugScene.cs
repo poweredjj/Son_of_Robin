@@ -35,7 +35,7 @@ namespace SonOfRobin
             debugText = "";
 
             World world = World.GetTopWorld();
-            if (world != null && !world.creationInProgress)
+            if (world != null && !world.worldCreationInProgress)
             {
                 if (world.mapMode == World.MapMode.Big)
                 { debugText += $"objects {world.PieceCount}"; }
@@ -46,6 +46,7 @@ namespace SonOfRobin
 
                 if (world.pieceCountByClass.ContainsKey(typeof(Plant))) debugText += $"plants {world.pieceCountByClass[typeof(Plant)]}";
                 if (world.pieceCountByClass.ContainsKey(typeof(Animal))) debugText += $", animals {world.pieceCountByClass[typeof(Animal)]}";
+                debugText += $"\nproc. animals {world.processedAnimalsCount}";
                 debugText += $"\nproc. plants {world.processedPlantsCount}";
                 debugText += $"\nloaded textures {world.grid.loadedTexturesCount}";
                 //if(SonOfRobinGame.platform == Platform.Desktop) debugText += $"\nram free: {SonOfRobinGame.ramCounter.NextValue()}";
@@ -78,13 +79,13 @@ namespace SonOfRobin
 
             if (Keyboard.HasBeenPressed(Keys.D1))
             {
-                BoardPiece piece = PieceTemplate.CreateOnBoard(world: world, position: world.player.sprite.position, templateName: PieceTemplate.Name.Torch);
+                BoardPiece piece = PieceTemplate.CreateOnBoard(world: world, position: world.player.sprite.position, templateName: PieceTemplate.Name.CrateStarting);
                 if (piece.sprite.placedCorrectly) piece.sprite.MoveToClosestFreeSpot(world.player.sprite.position);
             }
 
             if (Keyboard.HasBeenPressed(Keys.D2))
             {
-                BoardPiece piece = PieceTemplate.CreateOnBoard(world: world, position: world.player.sprite.position, templateName: PieceTemplate.Name.Acorn);
+                BoardPiece piece = PieceTemplate.CreateOnBoard(world: world, position: world.player.sprite.position, templateName: PieceTemplate.Name.Campfire);
                 if (piece.sprite.placedCorrectly) piece.sprite.MoveToClosestFreeSpot(world.player.sprite.position);
             }
 
@@ -145,9 +146,11 @@ namespace SonOfRobin
             {
                 if (world == null) return;
 
-                world.hintEngine.ShowGeneralHint(type: HintEngine.Type.CineIntroduction, ignoreDelay: true);
+                foreach (var sprite in world.grid.GetSpritesInCameraView(camera: world.camera, groupName: Cell.Group.All))
+                {
+                    if (sprite.boardPiece != world.player) Tool.HitTarget(attacker: world.player, target: sprite.boardPiece, hitPower: 99999, targetPushMultiplier: 1f);
+                }
             }
-
 
             if (Keyboard.HasBeenPressed(Keys.OemPlus))
             {
@@ -214,7 +217,7 @@ namespace SonOfRobin
             {
                 bool compareWithBottom = Keyboard.HasBeenPressed(Keys.K);
 
-                var piecesWithinDistance = world.grid.GetPiecesWithinDistance(groupName: Cell.Group.ColAll, mainSprite: world.player.sprite, distance: 500, compareWithBottom: compareWithBottom);
+                var piecesWithinDistance = world.grid.GetPiecesWithinDistance(groupName: Cell.Group.ColAll, mainSprite: world.player.sprite, distance: 100, compareWithBottom: compareWithBottom);
                 foreach (BoardPiece piece in piecesWithinDistance)
                 {
                     if (world.player.sprite.CheckIfOtherSpriteIsWithinRange(target: piece.sprite))
@@ -247,7 +250,7 @@ namespace SonOfRobin
                 var piecesInsideTriangle = world.grid.GetPiecesInsideTriangle(groupName: Cell.Group.All, point1: point1, point2: point2, point3: point3);
                 foreach (BoardPiece piece in piecesInsideTriangle)
                 {
-                    piece.sprite.effectCol.AddEffect(new BorderInstance(outlineColor: Color.Red, textureSize: piece.sprite.frame.originalTextureSize, priority: 0, framesLeft: 60));
+                    piece.sprite.effectCol.AddEffect(new BorderInstance(outlineColor: Color.Red, textureSize: piece.sprite.frame.textureSize, priority: 0, framesLeft: 60));
                     PieceTemplate.CreateOnBoard(world: world, position: piece.sprite.position, templateName: PieceTemplate.Name.Backlight);
                 }
             }
@@ -398,7 +401,7 @@ namespace SonOfRobin
             if (Keyboard.HasBeenPressed(Keys.PageUp) || GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.LeftStick)) Preferences.debugShowStates = !Preferences.debugShowStates;
             if (Keyboard.HasBeenPressed(Keys.PageDown) || GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.RightStick)) Preferences.debugShowStatBars = !Preferences.debugShowStatBars;
             if (Keyboard.HasBeenPressed(Keys.End)) Preferences.debugShowCellData = !Preferences.debugShowCellData;
-            if (Keyboard.HasBeenPressed(Keys.Delete)) Preferences.debugUseMultipleThreads = !Preferences.debugUseMultipleThreads;
+            if (Keyboard.HasBeenPressed(Keys.Delete)) Preferences.useMultipleThreads = !Preferences.useMultipleThreads;
         }
     }
 }

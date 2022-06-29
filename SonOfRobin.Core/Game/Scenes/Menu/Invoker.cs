@@ -40,7 +40,7 @@ namespace SonOfRobin
 
             foreach (TouchLocation touch in TouchInput.TouchPanelState)
             {
-                Vector2 position = touch.Position / Preferences.globalScale;
+                Vector2 position = touch.Position / Preferences.GlobalScale;
 
                 if (rect.Contains(position) && touch.State == TouchLocationState.Pressed)
                 {

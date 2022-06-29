@@ -8,7 +8,7 @@ namespace SonOfRobin
 {
     public class Animal : BoardPiece
     {
-        public static readonly int maxAnimalsPerName = 40;
+        public static readonly int maxAnimalsPerName = 100; // was 40 before unlocking the limit
         public static readonly int attackDistanceDynamic = 16;
         public static readonly int attackDistanceStatic = 4;
 
@@ -20,6 +20,8 @@ namespace SonOfRobin
         private readonly uint pregnancyDuration;
         private readonly byte maxChildren;
         private uint pregnancyMass;
+        public int pregnancyFramesLeft;
+        public bool isPregnant;
         private int attackCooldown;
         private int regenCooldown;
         private readonly int maxFedLevel;
@@ -54,6 +56,8 @@ namespace SonOfRobin
             this.matureAge = matureAge;
             this.pregnancyDuration = pregnancyDuration;
             this.pregnancyMass = 0;
+            this.pregnancyFramesLeft = 0;
+            this.isPregnant = false;
             this.maxChildren = maxChildren;
             this.attackCooldown = 0; // earliest world.currentUpdate, when attacking will be possible
             this.regenCooldown = 0; // earliest world.currentUpdate, when increasing hit points will be possible
@@ -66,8 +70,6 @@ namespace SonOfRobin
             this.isEatenBy = PieceInfo.GetIsEatenBy(this.name);
             this.aiData = new AiData();
             this.strength = strength;
-
-            new WorldEvent(eventName: WorldEvent.EventName.Death, world: this.world, delay: this.maxAge, boardPiece: this);
         }
 
         public override Dictionary<string, Object> Serialize()
@@ -79,6 +81,8 @@ namespace SonOfRobin
             pieceData["animal_regenCooldown"] = this.regenCooldown;
             pieceData["animal_fedLevel"] = this.fedLevel;
             pieceData["animal_pregnancyMass"] = this.pregnancyMass;
+            pieceData["animal_pregnancyFramesLeft"] = this.pregnancyFramesLeft;
+            pieceData["animal_isPregnant"] = this.isPregnant;
             pieceData["animal_aiData"] = this.aiData;
             pieceData["animal_target_old_id"] = this.target?.id;
 
@@ -93,6 +97,8 @@ namespace SonOfRobin
             this.regenCooldown = (int)pieceData["animal_regenCooldown"];
             this.fedLevel = (int)pieceData["animal_fedLevel"];
             this.pregnancyMass = (uint)pieceData["animal_pregnancyMass"];
+            this.pregnancyFramesLeft = (int)pieceData["animal_pregnancyFramesLeft"];
+            this.isPregnant = (bool)pieceData["animal_isPregnant"];
             this.aiData = (AiData)pieceData["animal_aiData"];
             this.aiData.UpdatePosition(); // needed to update Vector2
         }
@@ -189,6 +195,15 @@ namespace SonOfRobin
             this.target = null;
             this.sprite.CharacterStand();
 
+            if (this.world.random.Next(0, 5) != 0) return; // to avoid processing this (very heavy) state every frame
+
+            if (this.isPregnant && this.pregnancyFramesLeft <= 0)
+            {
+                this.activeState = State.AnimalGiveBirth;
+                this.aiData.Reset(this);
+                return;
+            }
+
             if (this.world.random.Next(0, 30) == 0) // to avoid getting blocked
             {
                 this.activeState = State.AnimalWalkAround;
@@ -244,7 +259,7 @@ namespace SonOfRobin
                 if (matingPartners.Count > 0)
                 {
                     if (this.world.random.Next(0, 8) != 0)
-                    { matingPartner = BoardPiece.FindClosestPiece(sprite: this.sprite, pieceList: matingPartners); }
+                    { matingPartner = FindClosestPiece(sprite: this.sprite, pieceList: matingPartners); }
                     else
                     { matingPartner = matingPartners[world.random.Next(0, matingPartners.Count)]; }
 
@@ -259,7 +274,7 @@ namespace SonOfRobin
             decisionEngine.AddChoice(action: DecisionEngine.Action.Mate, piece: matingPartner, priority: 1f);
             var bestChoice = decisionEngine.GetBestChoice();
 
-            if (bestChoice is null)
+            if (bestChoice == null)
             {
                 this.activeState = State.AnimalWalkAround;
                 this.aiData.Reset(this);
@@ -466,7 +481,7 @@ namespace SonOfRobin
         {
             this.sprite.CharacterStand();
 
-            if (this.target is null ||
+            if (this.target == null ||
                 !this.target.exists ||
                 this.target.Mass <= 0 ||
                 !this.sprite.CheckIfOtherSpriteIsWithinRange(target: this.target.sprite, range: this.target.IsAnimalOrPlayer ? attackDistanceDynamic : attackDistanceStatic))
@@ -547,6 +562,8 @@ namespace SonOfRobin
                         this.world.colorOverlay.color = Color.Red;
                         this.world.colorOverlay.viewParams.Opacity = 0f;
                         this.world.colorOverlay.transManager.AddTransition(new Transition(transManager: this.world.colorOverlay.transManager, outTrans: true, duration: 20, playCount: 1, stageTransform: Transition.Transform.Sinus, baseParamName: "Opacity", targetVal: 0.5f));
+
+                        if (!this.eats.Contains(PieceTemplate.Name.Player)) this.world.hintEngine.ShowGeneralHint(type: HintEngine.Type.AnimalCounters, ignoreDelay: true, piece: this);
                     }
                 }
             }
@@ -633,6 +650,8 @@ namespace SonOfRobin
             Animal female = this.female ? this : animalMate;
             female.pregnancyMass = 1; // starting mass should be greater than 0
 
+            female.pregnancyFramesLeft = (int)female.pregnancyDuration;
+
             new WorldEvent(world: this.world, delay: (int)female.pregnancyDuration, boardPiece: female, eventName: WorldEvent.EventName.Birth);
 
             this.stamina = 0;
@@ -647,6 +666,9 @@ namespace SonOfRobin
 
         public override void SM_AnimalGiveBirth()
         {
+            this.isPregnant = false;
+            this.pregnancyFramesLeft = 0;
+
             this.sprite.CharacterStand();
 
             // excess fat cam be converted to pregnancy
@@ -689,7 +711,10 @@ namespace SonOfRobin
             if (childrenBorn > 0) MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{this.name} has been born ({childrenBorn}).");
 
             if (this.pregnancyMass > this.startingMass)
-            { new WorldEvent(world: this.world, delay: 90, boardPiece: this, eventName: WorldEvent.EventName.Birth); }
+            {
+                this.isPregnant = true;
+                this.pregnancyFramesLeft = 90;
+            }
             else
             {
                 this.Mass = Math.Min(this.Mass + this.pregnancyMass, this.maxMass);

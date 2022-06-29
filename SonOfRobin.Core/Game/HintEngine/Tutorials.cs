@@ -5,7 +5,7 @@ namespace SonOfRobin
 {
     public class Tutorials
     {
-        public enum Type { BreakThing, Equip, BuildWorkshop, GetWood, Mine, Interact, PickUp, Hit, Craft, ShootProjectile, Cook, ShakeFruit, AnimalAttacking, DangerZone, Torch }
+        public enum Type { BreakThing, Equip, BuildWorkshop, GetWood, Mine, Interact, PickUp, Hit, Craft, ShootProjectile, Cook, ShakeFruit, AnimalAttacking, DangerZone, Torch, Fireplace }
 
         private static readonly HintMessage.BoxType messageHeaderType = HintMessage.BoxType.BlueBox;
         private static readonly HintMessage.BoxType messageTextType = HintMessage.BoxType.LightBlueBox;
@@ -134,7 +134,15 @@ namespace SonOfRobin
                 new HintMessage(text: SonOfRobinGame.platform == Platform.Desktop ?
                     $"5. To extinguish the fire, press '{ButtonScheme.buttonNameRT}' button again (with torch selected)." :
                     "5. To extinguish the fire, press 'USE ITEM' button again (with torch selected).", boxType: messageTextType),
-                new HintMessage(text: "Keep in mind, that the torch will burn out after some time.", boxType: messageTextType),});
+                new HintMessage(text: "Keep in mind, that the torch will burn out after some time.", boxType: messageTextType)});
+
+            new Tutorial(type: Type.Fireplace, name: "using fireplace", title: "Using fireplace.",
+                messages: new List<HintMessage> {
+                new HintMessage(text: "1. Walk next to the fireplace and activate it.", boxType: messageTextType),
+                new HintMessage(text: "2. Put some fuel (sticks, wood or coal) inside.\nThe more fuel is inside, the longer it will burn.", boxType: messageTextType),
+                new HintMessage(text: "3. Use the flame to start the fire.", boxType: messageTextType),
+                new HintMessage(text: "You can add or remove fuel at any time.", boxType: messageTextType),
+                new HintMessage(text: "Use the water to put out the flame instantly.", boxType: messageTextType)});
 
             new Tutorial(type: Type.Equip, name: "using equipment", title: "Using equipment.",
               messages: new List<HintMessage> {

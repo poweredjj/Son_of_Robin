@@ -35,7 +35,7 @@ namespace SonOfRobin
 
                 Player player = this.piece.world.player;
                 if (player.activeState == BoardPiece.State.PlayerControlledSleep || !player.alive) return true;
-                
+
                 Scene topScene = sceneStack[sceneStack.Count - 1];
                 if (topScene.GetType() == typeof(TextWindow)) topScene = sceneStack[sceneStack.Count - 2];
                 return this.layout == Layout.SingleBottom && topScene.GetType() != typeof(Inventory);
@@ -441,7 +441,7 @@ namespace SonOfRobin
 
         public void SetCursorByTouch()
         {
-            if (SonOfRobinGame.platform != Platform.Mobile) return;
+            if (!Preferences.EnableTouch) return;
 
             int margin = this.Margin;
             int tileSize = this.TileSize;
@@ -451,7 +451,7 @@ namespace SonOfRobin
 
             foreach (TouchLocation touch in TouchInput.TouchPanelState)
             {
-                touchPos = (touch.Position / Preferences.globalScale) - this.viewParams.DrawPos;
+                touchPos = (touch.Position / Preferences.GlobalScale) - this.viewParams.DrawPos;
 
                 foreach (StorageSlot slot in this.storage.AllSlots)
                 {
@@ -492,7 +492,7 @@ namespace SonOfRobin
 
         private bool SwitchToSecondInventoryByTouch()
         {
-            if (SonOfRobinGame.platform != Platform.Mobile || this.otherInventory == null) return false;
+            if (!Preferences.EnableTouch || this.otherInventory == null) return false;
 
             Vector2 touchPos;
 
@@ -502,7 +502,7 @@ namespace SonOfRobin
 
             foreach (TouchLocation touch in TouchInput.TouchPanelState)
             {
-                touchPos = touch.Position / Preferences.globalScale;
+                touchPos = touch.Position / Preferences.GlobalScale;
                 if (otherInvBgRect.Contains(touchPos))
                 {
                     this.lastTouchedSlot = null;
@@ -563,7 +563,9 @@ namespace SonOfRobin
             if (slot == null) return;
             BoardPiece piece = this.storage.GetTopPiece(slot: slot);
             if (piece == null) return;
-            if (slot.locked && piece.name != PieceTemplate.Name.FlameTrigger) return;
+
+            var lockedButWorking = new List<PieceTemplate.Name> { PieceTemplate.Name.CookingTrigger, PieceTemplate.Name.FireplaceTriggerOn, PieceTemplate.Name.FireplaceTriggerOff };
+            if (slot.locked && !lockedButWorking.Contains(piece.name)) return;
 
             Vector2 slotPos = this.GetSlotPos(slot: slot, margin: this.Margin, tileSize: this.TileSize);
             slotPos += new Vector2(this.viewParams.PosX, this.viewParams.PosY);
@@ -572,9 +574,11 @@ namespace SonOfRobin
 
             bool addMove = this.layout != Layout.SingleCenter && !slot.locked && this.otherInventory.storage.CanFitThisPiece(piece);
             bool addDrop = !slot.locked;
-            bool addCook = piece.name == PieceTemplate.Name.FlameTrigger;
+            bool addCook = piece.name == PieceTemplate.Name.CookingTrigger;
+            bool addIgnite = piece.name == PieceTemplate.Name.FireplaceTriggerOn;
+            bool addExtinguish = piece.name == PieceTemplate.Name.FireplaceTriggerOff;
 
-            new PieceContextMenu(piece: piece, storage: this.storage, slot: slot, percentPosX: percentPos.X, percentPosY: percentPos.Y, addMove: addMove, addDrop: addDrop, addCook: addCook);
+            new PieceContextMenu(piece: piece, storage: this.storage, slot: slot, percentPosX: percentPos.X, percentPosY: percentPos.Y, addMove: addMove, addDrop: addDrop, addCook: addCook, addIgnite: addIgnite, addExtinguish: addExtinguish);
             return;
         }
         private void MoveOtherInventoryToTop()

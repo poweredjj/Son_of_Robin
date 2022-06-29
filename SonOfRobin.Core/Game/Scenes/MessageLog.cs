@@ -38,7 +38,7 @@ namespace SonOfRobin
 
         private static readonly SpriteFont font = SonOfRobinGame.fontPressStart2P5;
         private static readonly int txtSeparator = 3;
-        private static readonly int freePixelsAboveMessages = 140;
+        private static readonly int freePixelsAboveMessages = 160;
 
         private static readonly List<MsgType> displayedLevelsTemplateDebug = new List<MsgType> { MsgType.User, MsgType.Debug };
         private static readonly List<MsgType> displayedLevelsTemplateUser = new List<MsgType> { MsgType.User };
@@ -51,8 +51,8 @@ namespace SonOfRobin
 
         public MessageLog() : base(inputType: InputTypes.None, priority: -1, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: true, alwaysDraws: true, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty)
         {
-            this.marginX = SonOfRobinGame.platform == Platform.Desktop ? 5 : 20;
-            this.marginY = SonOfRobinGame.platform == Platform.Desktop ? 0 : 5;
+            this.marginX = SonOfRobinGame.platform == Platform.Desktop ? 7 : 20;
+            this.marginY = SonOfRobinGame.platform == Platform.Desktop ? 2 : 5;
         }
 
         public override void Update(GameTime gameTime)

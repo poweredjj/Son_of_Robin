@@ -47,7 +47,7 @@ namespace SonOfRobin
         private static TouchCollection touchPanelState = new TouchCollection { };
         private static readonly TouchCollection emptyTouchList = new TouchCollection { };
         public static TouchCollection TouchPanelState { get { return Input.InputActive ? touchPanelState : emptyTouchList; } }
-        public static bool IsGestureAvailable { get { return Input.InputActive ? TouchPanel.IsGestureAvailable : false; } } // should be used before reading gesture directly
+        public static bool IsGestureAvailable { get { return Input.InputActive && TouchPanel.IsGestureAvailable; } } // should be used before reading gesture directly
         public static bool IsStateAvailable(TouchLocationState state)
         {
             var matchingTypes = TouchPanelState.Where(touch => touch.State == state).ToList();
@@ -56,7 +56,7 @@ namespace SonOfRobin
 
         public static void GetState(GameTime gameTime)
         {
-            if (SonOfRobinGame.platform != Platform.Mobile) return;
+            if (!Preferences.EnableTouch) return;
             Refresh();
 
             touchPanelState = TouchPanel.GetState();
@@ -71,18 +71,18 @@ namespace SonOfRobin
 
         private static void Refresh()
         {
-            if (stickScale == Preferences.globalScale && screenWidth == SonOfRobinGame.graphics.PreferredBackBufferWidth && screenHeight == SonOfRobinGame.graphics.PreferredBackBufferHeight) return;
+            if (stickScale == Preferences.GlobalScale && screenWidth == SonOfRobinGame.graphics.PreferredBackBufferWidth && screenHeight == SonOfRobinGame.graphics.PreferredBackBufferHeight) return;
 
-            MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Changing touch sticks scale from {stickScale} to {Preferences.globalScale}.", color: Color.White);
+            MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Changing touch sticks scale from {stickScale} to {Preferences.GlobalScale}.", color: Color.White);
 
-            TouchPanel.EnableMouseGestures = SonOfRobinGame.fakeMobileMode;
-            TouchPanel.EnableMouseTouchPoint = SonOfRobinGame.fakeMobileMode;
+            TouchPanel.EnableMouseGestures = Preferences.MouseGesturesEmulateTouch;
+            TouchPanel.EnableMouseTouchPoint = Preferences.MouseGesturesEmulateTouch;
 
             dualStick = new DualStick(aliveZoneSize: TouchPanel.DisplayHeight * 0.25f, deadZoneSize: 16f); // DualStick accepts touch panel size values
             dualStick.LeftStick.SetAsFixed();
             dualStick.RightStick.SetAsFixed();
 
-            stickScale = Preferences.globalScale;
+            stickScale = Preferences.GlobalScale;
             screenWidth = SonOfRobinGame.graphics.PreferredBackBufferWidth;
             screenHeight = SonOfRobinGame.graphics.PreferredBackBufferHeight;
         }
@@ -92,7 +92,7 @@ namespace SonOfRobin
             World world = World.GetTopWorld();
             Preferences preferences = new Preferences();
 
-            if (SonOfRobinGame.platform != Platform.Mobile || touchLayout == currentLayout) return;
+            if (!Preferences.EnableTouch || touchLayout == currentLayout) return;
 
             currentLayout = touchLayout;
 
@@ -286,7 +286,7 @@ namespace SonOfRobin
             float width = 0.065f;
             float height = 0.065f;
             float xShift = 0.07f;
-            float yShift = 0.15f;
+            //float yShift = 0.15f;
 
             new VirtButton(name: VButName.DebugPause, label: "||", bgColorPressed: Color.Violet, bgColorReleased: Color.White, textColor: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: width, height0to1: height);
             xPos += xShift;

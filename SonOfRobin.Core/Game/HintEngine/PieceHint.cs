@@ -8,7 +8,7 @@ namespace SonOfRobin
 
     public struct PieceHint
     {
-        public enum Type { CrateStarting, CrateAnother, WoodNegative, WoodPositive, StoneNegative, StonePositive, AnimalNegative, AnimalSling, AnimalBow, AnimalBat, AnimalAxe, SlingNoAmmo, BowNoAmmo, ShellIsNotUseful, FruitTree, BananaTree, TomatoPlant, IronDepositNegative, IronDepositPositive, CoalDepositNegative, CoalDepositPositive, Cooker, LeatherPositive, BackpackPositive, BeltPositive, MapCanMake, MapPositive, RedExclamation, Acorn, TorchNegative, TorchPositive }
+        public enum Type { CrateStarting, CrateAnother, WoodNegative, WoodPositive, StoneNegative, StonePositive, AnimalNegative, AnimalSling, AnimalBow, AnimalBat, AnimalAxe, SlingNoAmmo, BowNoAmmo, ShellIsNotUseful, FruitTree, BananaTree, TomatoPlant, IronDepositNegative, IronDepositPositive, CoalDepositNegative, CoalDepositPositive, Cooker, LeatherPositive, BackpackPositive, BeltPositive, MapCanMake, MapPositive, RedExclamation, Acorn, TorchNegative, TorchPositive, Fireplace }
 
         public static readonly List<PieceHint> pieceHintList = new List<PieceHint>
         {
@@ -161,6 +161,11 @@ namespace SonOfRobin
                     alsoDisables: new List<Type> {Type.TorchNegative },
                     tutorialsToActivate: new List<Tutorials.Type> {Tutorials.Type.Torch},
                     playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.Torch}),
+
+                new PieceHint(type: Type.Fireplace, canBeForced: true,
+                    message: "This looks ok.\nAll I need now is some wood... Or coal?",
+                    tutorialsToActivate: new List<Tutorials.Type> {Tutorials.Type.Fireplace},
+                    fieldPieces: new List<PieceTemplate.Name> {PieceTemplate.Name.Campfire}),
         };
 
         private readonly Type type;

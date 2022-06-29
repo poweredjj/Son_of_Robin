@@ -17,6 +17,7 @@ namespace SonOfRobin
         public Color outlineColor;
         protected int lastFlashFrame = 0;
         protected readonly bool rebuildsMenu;
+        protected readonly bool rebuildsMenuInstantScroll;
         public List<InfoWindow.TextEntry> infoTextList;
         public virtual string DisplayedText { get { return this.name; } }
 
@@ -66,12 +67,13 @@ namespace SonOfRobin
         }
         protected float OpacityFade { get { return Math.Max((float)this.lastFlashFrame - (float)SonOfRobinGame.currentUpdate, 0) * 0.015f; } }
 
-        public Entry(Menu menu, string name, bool rebuildsMenu = false, List<InfoWindow.TextEntry> infoTextList = null)
+        public Entry(Menu menu, string name, bool rebuildsMenu = false, bool rebuildsMenuInstantScroll = false, List<InfoWindow.TextEntry> infoTextList = null)
         {
             this.menu = menu;
             this.name = name;
             this.index = this.menu.entryList.Count;
             this.rebuildsMenu = rebuildsMenu;
+            this.rebuildsMenuInstantScroll = rebuildsMenuInstantScroll;
             this.textColor = Color.White;
             this.rectColor = Color.Black;
             this.outlineColor = Color.White;
@@ -82,13 +84,15 @@ namespace SonOfRobin
             if (this.menu.activeIndex == -1 && this.GetType() != typeof(Separator)) this.menu.activeIndex = this.index;
         }
 
-        public virtual void NextValue()
+        public virtual void NextValue(bool touchMode)
         {
+            this.menu.touchMode = touchMode;
             if (Preferences.DebugMode) MessageLog.AddMessage(msgType: MsgType.Debug, message: "NextValue", color: Color.White);
         }
 
-        public virtual void PreviousValue()
+        public virtual void PreviousValue(bool touchMode)
         {
+            this.menu.touchMode = touchMode;
             if (Preferences.DebugMode) MessageLog.AddMessage(msgType: MsgType.Debug, message: "PreviousValue", color: Color.White);
         }
 

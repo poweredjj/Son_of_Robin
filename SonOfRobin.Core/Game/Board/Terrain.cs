@@ -56,12 +56,12 @@ namespace SonOfRobin
         }
 
         public Byte GetMapData(int x, int y)
-        { return mapData[x / Preferences.terrainResDivider, y / Preferences.terrainResDivider]; }
+        { return mapData[x / this.cell.grid.resDivider, y / this.cell.grid.resDivider]; }
 
         private byte[,] LoadTemplate()
         {
             var loadedData = (byte[,])FileReaderWriter.Load(this.templatePath); ;
-            if (loadedData is null) return null;
+            if (loadedData == null) return null;
 
             return loadedData;
         }
@@ -90,13 +90,14 @@ namespace SonOfRobin
             int globalX, globalY;
             double rawNoiseValue;
             int realX, realY;
+            int resDivider = this.cell.grid.resDivider;
 
             for (int y = 0; y < this.cell.dividedHeight; y++)
             {
-                realY = y * Preferences.terrainResDivider;
+                realY = y * resDivider;
                 for (int x = 0; x < this.cell.dividedWidth; x++)
                 {
-                    realX = x * Preferences.terrainResDivider;
+                    realX = x * resDivider;
 
                     globalX = realX + this.cell.xMin;
                     globalY = realY + this.cell.yMin;

@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 
 namespace SonOfRobin
@@ -15,6 +16,7 @@ namespace SonOfRobin
         private RenderTarget2D terrainGfx;
         public bool dirtyFog;
         private RenderTarget2D combinedGfx;
+        private ConcurrentBag<Sprite> spritesBag;
 
         // max screen percentage, that minimap may occupy
         private static readonly float minimapMaxPercentWidth = 0.35f;
@@ -40,6 +42,7 @@ namespace SonOfRobin
             this.world = world;
             this.fullScreen = fullScreen;
             this.dirtyFog = true;
+            this.spritesBag = new ConcurrentBag<Sprite> { };
         }
 
         protected override void AdaptToNewSize()
@@ -243,8 +246,11 @@ namespace SonOfRobin
             Rectangle cameraRect = this.world.camera.viewRect;
             BoardPiece piece;
 
+            // sprites bag should be only updated once in a while
+            if ((this.world.currentUpdate % 4 == 0 && SonOfRobinGame.lastDrawDelay < 20) || this.world.currentUpdate % 60 != 0) this.spritesBag = world.grid.GetAllSprites(groupName: groupName, visitedByPlayerOnly: !Preferences.DebugShowWholeMap);
+
             // regular "foreach", because spriteBatch is not thread-safe
-            foreach (Sprite sprite in world.grid.GetAllSprites(groupName: groupName, visitedByPlayerOnly: !Preferences.DebugShowWholeMap))
+            foreach (Sprite sprite in this.spritesBag)
             {
                 drawOutline = false;
                 showOutsideCamera = false;

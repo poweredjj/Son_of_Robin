@@ -8,17 +8,17 @@ namespace SonOfRobin
 {
     class Selector : Entry
     {
-        private Dictionary<object, object> valueDict; // real value : displayed name
+        private readonly Dictionary<object, object> valueDict; // real value : displayed name
         private int activeIndex;
-        private Object targetObj;
-        private string propertyName;
+        private readonly Object targetObj;
+        private readonly string propertyName;
 
         private Object ActiveName { get { return valueDict.Values.ToList()[activeIndex]; } }
         private Object ActiveValue { get { return valueDict.Keys.ToList()[activeIndex]; } }
 
         public override string DisplayedText { get { return $"{this.name}: < {this.ActiveName} >"; } }
 
-        public Selector(Menu menu, string name, List<Object> valueList, Object targetObj, string propertyName, bool rebuildsMenu = false, List<InfoWindow.TextEntry> infoTextList = null) : base(menu: menu, name: name, rebuildsMenu: rebuildsMenu, infoTextList: infoTextList)
+        public Selector(Menu menu, string name, List<Object> valueList, Object targetObj, string propertyName, bool rebuildsMenu = false, List<InfoWindow.TextEntry> infoTextList = null, bool rebuildsMenuInstantScroll = false) : base(menu: menu, name: name, rebuildsMenu: rebuildsMenu, infoTextList: infoTextList, rebuildsMenuInstantScroll: rebuildsMenuInstantScroll)
         {
             this.targetObj = targetObj;
             this.propertyName = propertyName;
@@ -67,13 +67,23 @@ namespace SonOfRobin
         private void SetNewValueToTargetObject()
         {
             Helpers.SetProperty(targetObj: this.targetObj, propertyName: this.propertyName, newValue: this.ActiveValue);
-            if (this.rebuildsMenu) this.menu.Rebuild();
+            if (this.rebuildsMenu) this.menu.Rebuild(instantScroll: this.rebuildsMenuInstantScroll);
         }
 
-        public override void NextValue()
+        public override void NextValue(bool touchMode)
         {
+            base.NextValue(touchMode: touchMode);
             this.activeIndex++;
             if (this.activeIndex >= this.valueDict.ToList().Count) this.activeIndex = 0;
+
+            this.SetNewValueToTargetObject();
+        }
+
+        public override void PreviousValue(bool touchMode)
+        {
+            base.PreviousValue(touchMode: touchMode);
+            this.activeIndex--;
+            if (this.activeIndex < 0) this.activeIndex = this.valueDict.ToList().Count - 1;
 
             this.SetNewValueToTargetObject();
         }
@@ -84,13 +94,6 @@ namespace SonOfRobin
             base.Draw(active);
         }
 
-        public override void PreviousValue()
-        {
-            this.activeIndex--;
-            if (this.activeIndex < 0) this.activeIndex = this.valueDict.ToList().Count - 1;
-
-            this.SetNewValueToTargetObject();
-        }
 
         public override void ProcessTouch()
         {
@@ -105,17 +108,17 @@ namespace SonOfRobin
 
             foreach (TouchLocation touch in TouchInput.TouchPanelState)
             {
-                Vector2 position = touch.Position / Preferences.globalScale;
+                Vector2 position = touch.Position / Preferences.GlobalScale;
 
                 if (leftHalfRect.Contains(position) && touch.State == TouchLocationState.Pressed)
                 {
-                    this.PreviousValue();
+                    this.PreviousValue(touchMode: true);
                     return;
                 }
 
                 if (rightHalfRect.Contains(position) && touch.State == TouchLocationState.Pressed)
                 {
-                    this.NextValue();
+                    this.NextValue(touchMode: true);
                     return;
                 }
 

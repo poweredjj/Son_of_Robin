@@ -62,8 +62,8 @@ namespace SonOfRobin
             this.width = xMax - xMin + 1; // virtual value, simulated for the outside world
             this.height = yMax - yMin + 1; // virtual value, simulated for the outside world
             // Ceiling() to round up in case of odd numbers
-            this.dividedWidth = (int)Math.Ceiling((float)width / (float)Preferences.terrainResDivider);  // real storing data capacity
-            this.dividedHeight = (int)Math.Ceiling((float)height / (float)Preferences.terrainResDivider); // real storing data capacity
+            this.dividedWidth = (int)Math.Ceiling((float)width / (float)this.grid.resDivider);  // real storing data capacity
+            this.dividedHeight = (int)Math.Ceiling((float)height / (float)this.grid.resDivider); // real storing data capacity
             this.rect = new Rectangle(this.xMin, this.yMin, this.width, this.height);
             this.xCenter = this.xMin + (this.width / 2);
             this.yCenter = this.yMin + (this.height / 2);
@@ -243,7 +243,7 @@ namespace SonOfRobin
             {
                 Rectangle sourceRectangle = new Rectangle(0, 0, this.boardGraphics.texture.Width, this.boardGraphics.texture.Height);
                 Rectangle destinationRectangle = new Rectangle(this.xMin, this.yMin,
-                    this.boardGraphics.texture.Width * Preferences.terrainResDivider, this.boardGraphics.texture.Height * Preferences.terrainResDivider);
+                    this.boardGraphics.texture.Width * this.grid.resDivider, this.boardGraphics.texture.Height * this.grid.resDivider);
 
                 SonOfRobinGame.spriteBatch.Draw(this.boardGraphics.texture, destinationRectangle, sourceRectangle, Color.White);
             }

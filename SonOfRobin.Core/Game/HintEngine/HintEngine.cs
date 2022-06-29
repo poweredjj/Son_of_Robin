@@ -6,7 +6,7 @@ namespace SonOfRobin
 {
     public class HintEngine
     {
-        public enum Type { Hungry, VeryHungry, Starving, Tired, VeryTired, CantShootInWater, SmallInventory, MapNegative, Lava, BreakingItem, BrokenItem, BurntOutTorch, CineIntroduction };
+        public enum Type { Hungry, VeryHungry, Starving, Tired, VeryTired, CantShootInWater, SmallInventory, MapNegative, Lava, BreakingItem, BrokenItem, BurntOutTorch, CineIntroduction, AnimalScaredOfFire, AnimalCounters };
 
         private static readonly List<Type> typesThatIgnoreShowHintSetting = new List<Type> { Type.CineIntroduction };
 
@@ -62,7 +62,7 @@ namespace SonOfRobin
             this.waitUntilFrame = this.world.currentUpdate + hintDelay;
         }
 
-        public bool ShowGeneralHint(Type type, bool ignoreDelay = false, string optionalText = "")
+        public bool ShowGeneralHint(Type type, bool ignoreDelay = false, string text = "", BoardPiece piece = null)
         {
             if (!Preferences.showHints && !typesThatIgnoreShowHintSetting.Contains(type)) return false;
 
@@ -180,7 +180,7 @@ namespace SonOfRobin
                     {
                         this.Disable(type: type, delay: 0);
                         ShowMessageDuringPause(new List<HintMessage> {
-                            new HintMessage(text: $"My {optionalText} is getting worn out."),
+                            new HintMessage(text: $"My {text} is getting worn out."),
                             new HintMessage(text: "I should watch my tools durability."),
                         });
                         break;
@@ -190,7 +190,7 @@ namespace SonOfRobin
                     {
                         this.Disable(type: type, delay: 0);
                         ShowMessageDuringPause(new List<HintMessage> {
-                            new HintMessage(text: $"My {optionalText} has fell apart."),
+                            new HintMessage(text: $"My {text} has fell apart."),
                             new HintMessage(text: "Now I need a new one."),
                         });
                         break;
@@ -199,7 +199,30 @@ namespace SonOfRobin
                 case Type.BurntOutTorch:
                     {
                         this.Disable(type: type, delay: 0);
-                        ShowMessageDuringPause(new HintMessage(text: $"My {optionalText} has burnt out."));
+                        ShowMessageDuringPause(new HintMessage(text: $"My {text} has burnt out."));
+                        break;
+                    }
+
+                case Type.AnimalScaredOfFire:
+                    {
+                        this.Disable(type: type, delay: 0);
+
+                        ShowPieceDuringPause(world: world, pieceToShow: piece, messageList: new List<HintMessage> {
+                            new HintMessage($"This {piece.readableName} is scared of fire!"),
+                            new HintMessage("I think I'm safe here.")
+                        });
+
+                        break;
+                    }
+
+                case Type.AnimalCounters:
+                    {
+                        this.Disable(type: type, delay: 0);
+
+                        ShowPieceDuringPause(world: world, pieceToShow: piece, messageList: new List<HintMessage> {
+                            new HintMessage($"This {piece.readableName} had just attacked me!\nIt must be because I have attacked it first..."),
+                        });
+
                         break;
                     }
 

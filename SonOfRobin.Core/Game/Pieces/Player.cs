@@ -19,10 +19,46 @@ namespace SonOfRobin
         public float shootingAngle;
         private int shootingPower;
         public SleepEngine sleepEngine;
-        public byte invWidth;
-        public byte invHeight;
-        public byte toolbarWidth;
-        public byte toolbarHeight;
+
+        public byte InvWidth
+        {
+            get { return this.pieceStorage.Width; }
+            set
+            {
+                if (this.pieceStorage.Width == value) return;
+                this.pieceStorage.Resize(value, this.InvHeight);
+            }
+        }
+        public byte InvHeight
+        {
+            get { return this.pieceStorage.Height; }
+            set
+            {
+                if (this.pieceStorage.Height == value) return;
+                this.pieceStorage.Resize(this.InvWidth, value);
+            }
+        }
+
+        public byte ToolbarWidth
+        {
+            get { return this.toolStorage.Width; }
+            set
+            {
+                if (this.toolStorage.Width == value) return;
+                this.toolStorage.Resize(value, this.ToolbarHeight);
+            }
+        }
+
+        public byte ToolbarHeight
+        {
+            get { return this.toolStorage.Height; }
+            set
+            {
+                if (this.toolStorage.Height == value) return;
+                this.toolStorage.Resize(this.ToolbarWidth, value);
+            }
+        }
+
         public int wentToSleepFrame;
         public List<PieceStorage> CraftStorages { get { return new List<PieceStorage> { this.pieceStorage, this.toolStorage, this.equipStorage }; } }
         public List<PieceStorage> CraftStoragesToolbarFirst { get { return new List<PieceStorage> { this.toolStorage, this.pieceStorage, this.equipStorage }; } } // the same as above, changed order
@@ -165,12 +201,9 @@ namespace SonOfRobin
             this.fatigue = 0;
             this.sleepEngine = SleepEngine.OutdoorSleepDry; // to be changed later
             this.activeState = State.PlayerControlledWalking;
-            this.invWidth = invWidth;
-            this.invHeight = invHeight;
-            this.toolbarWidth = toolbarWidth;
-            this.toolbarHeight = toolbarHeight;
-            this.pieceStorage = new PieceStorage(width: this.invWidth, height: this.invHeight, world: this.world, storagePiece: this, storageType: PieceStorage.StorageType.Inventory);
-            this.toolStorage = new PieceStorage(width: this.toolbarWidth, height: this.toolbarHeight, world: this.world, storagePiece: this, storageType: PieceStorage.StorageType.Tools);
+
+            this.pieceStorage = new PieceStorage(width: invWidth, height: invHeight, world: this.world, storagePiece: this, storageType: PieceStorage.StorageType.Inventory);
+            this.toolStorage = new PieceStorage(width: toolbarWidth, height: toolbarHeight, world: this.world, storagePiece: this, storageType: PieceStorage.StorageType.Tools);
             this.equipStorage = new PieceStorage(width: 2, height: 2, world: this.world, storagePiece: this, storageType: PieceStorage.StorageType.Equip);
             this.ConfigureEquip();
             this.shootingAngle = -100; // -100 == no real value
@@ -217,14 +250,12 @@ namespace SonOfRobin
             this.world.colorOverlay.viewParams.Opacity = 0.75f;
             this.world.colorOverlay.transManager.AddTransition(new Transition(transManager: this.world.colorOverlay.transManager, outTrans: false, baseParamName: "Opacity", targetVal: 0f, duration: 200));
             new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetZoom, turnOffInputUntilExecution: true, delay: 0, executeHelper: new Dictionary<string, Object> { { "zoom", 3f } }, menu: null);
-            new Scheduler.Task(taskName: Scheduler.TaskName.OpenGameOverMenu, turnOffInputUntilExecution: true, delay: 300, menu: null, executeHelper: null);
+            new Scheduler.Task(taskName: Scheduler.TaskName.OpenMenuTemplate, turnOffInputUntilExecution: true, delay: 300, menu: null, executeHelper: new Dictionary<string, Object> { { "templateName", MenuTemplate.Name.GameOver } });
         }
 
         public override Dictionary<string, Object> Serialize()
         {
             Dictionary<string, Object> pieceData = base.Serialize();
-            pieceData["player_toolStorage"] = this.toolStorage.Serialize();
-            pieceData["player_equipStorage"] = this.equipStorage.Serialize();
             pieceData["player_fedLevel"] = this.fedLevel;
             pieceData["player_maxFedLevel"] = this.maxFedLevel;
             pieceData["player_stamina"] = this.stamina;
@@ -232,8 +263,8 @@ namespace SonOfRobin
             pieceData["player_fatigue"] = this.fatigue;
             pieceData["player_maxFatigue"] = this.maxFatigue;
             pieceData["player_sleepEngine"] = this.sleepEngine;
-            pieceData["player_invWidth"] = this.invWidth;
-            pieceData["player_invHeight"] = this.invHeight;
+            pieceData["player_toolStorage"] = this.toolStorage.Serialize();
+            pieceData["player_equipStorage"] = this.equipStorage.Serialize();
 
             return pieceData;
         }
@@ -241,8 +272,6 @@ namespace SonOfRobin
         public override void Deserialize(Dictionary<string, Object> pieceData)
         {
             base.Deserialize(pieceData);
-            this.toolStorage = PieceStorage.Deserialize(storageData: pieceData["player_toolStorage"], world: this.world, storagePiece: this);
-            this.equipStorage = PieceStorage.Deserialize(storageData: pieceData["player_equipStorage"], world: this.world, storagePiece: this);
             this.fedLevel = (int)pieceData["player_fedLevel"];
             this.maxFedLevel = (int)pieceData["player_maxFedLevel"];
             this.stamina = (float)pieceData["player_stamina"];
@@ -250,8 +279,8 @@ namespace SonOfRobin
             this.fatigue = (float)pieceData["player_fatigue"];
             this.maxFatigue = (float)pieceData["player_maxFatigue"];
             this.sleepEngine = (SleepEngine)pieceData["player_sleepEngine"];
-            this.invWidth = (byte)pieceData["player_invWidth"];
-            this.invHeight = (byte)pieceData["player_invHeight"];
+            this.toolStorage = PieceStorage.Deserialize(storageData: pieceData["player_toolStorage"], world: this.world, storagePiece: this);
+            this.equipStorage = PieceStorage.Deserialize(storageData: pieceData["player_equipStorage"], world: this.world, storagePiece: this);
         }
 
         public override void DrawStatBar()
@@ -316,7 +345,7 @@ namespace SonOfRobin
                 if (this.world.inputActive)
                 {
                     Tutorials.ShowTutorial(type: Tutorials.Type.Interact, ignoreIfShown: true, ignoreDelay: false);
-                    if (SonOfRobinGame.platform == Platform.Mobile) VirtButton.ButtonHighlightOnNextFrame(VButName.Interact);
+                    VirtButton.ButtonHighlightOnNextFrame(VButName.Interact);
                     ControlTips.TipHighlightOnNextFrame(tipName: "interact");
                 }
             }
@@ -333,11 +362,11 @@ namespace SonOfRobin
             {
                 if (this.world.inputActive) Tutorials.ShowTutorial(type: Tutorials.Type.PickUp, ignoreIfShown: true, ignoreDelay: false);
                 pieceToPickUp.sprite.effectCol.AddEffect(new ColorizeInstance(color: Color.DodgerBlue));
-                pieceToPickUp.sprite.effectCol.AddEffect(new BorderInstance(outlineColor: Color.White, textureSize: pieceToPickUp.sprite.frame.originalTextureSize, priority: 0));
+                pieceToPickUp.sprite.effectCol.AddEffect(new BorderInstance(outlineColor: Color.White, textureSize: pieceToPickUp.sprite.frame.textureSize, priority: 0));
 
                 if (this.world.inputActive)
                 {
-                    if (SonOfRobinGame.platform == Platform.Mobile) VirtButton.ButtonHighlightOnNextFrame(VButName.PickUp);
+                    VirtButton.ButtonHighlightOnNextFrame(VButName.PickUp);
                     ControlTips.TipHighlightOnNextFrame(tipName: "pick up");
                 }
             }

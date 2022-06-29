@@ -22,12 +22,13 @@ namespace SonOfRobin
         public List<Entry> entryList;
         public int activeIndex;
         private float currentScrollPosition;
-        private bool touchMode;
+        public bool touchMode;
         private readonly bool alwaysShowSelectedEntry;
         public readonly Layout layout;
         public Color bgColor;
         public Entry lastTouchedEntry;
         private float scrollSpeed;
+        public bool instantScrollForOneFrame;
 
         public int EntryBgWidth
         {
@@ -128,7 +129,16 @@ namespace SonOfRobin
         }
         public int CurrentScrollPosition
         {
-            get { return (int)currentScrollPosition; }
+            get
+            {
+                if (this.instantScrollForOneFrame)
+                {
+                    currentScrollPosition = this.TargetScrollPosition;
+                    this.instantScrollForOneFrame = false;
+                }
+
+                return (int)currentScrollPosition;
+            }
             set
             {
                 if (this.touchMode) return;
@@ -155,6 +165,7 @@ namespace SonOfRobin
             this.SetViewPosAndSize();
             this.bgColor = Color.Black * 0.6f;
             this.scrollSpeed = baseScrollSpeed;
+            this.instantScrollForOneFrame = false;
 
             new Separator(menu: this, name: this.name);
             this.SetTouchLayout();
@@ -243,7 +254,7 @@ namespace SonOfRobin
             //  MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Menu {this.name} - adding closing task '{this.closingTask}'.");
         }
 
-        public void Rebuild()
+        public void Rebuild(bool instantScroll)
         {
             nextMenuNoStartTransition = true;
             Menu rebuiltMenu = MenuTemplate.CreateMenuFromTemplate(templateName: this.templateName);
@@ -260,6 +271,7 @@ namespace SonOfRobin
             }
 
             rebuiltMenu.currentScrollPosition = this.currentScrollPosition;
+            rebuiltMenu.instantScrollForOneFrame = instantScroll;
             rebuiltMenu.AddClosingTask(closingTask: this.closingTask, closingTaskHelper: this.closingTaskHelper);
 
             sceneStack.Remove(rebuiltMenu);
@@ -359,7 +371,7 @@ namespace SonOfRobin
                 }
             }
 
-            if (SonOfRobinGame.platform == Platform.Mobile)
+            if (Preferences.EnableTouch)
             {
                 if (this.ScrollActive) this.ScrollByTouch();
 
@@ -378,11 +390,11 @@ namespace SonOfRobin
 
             if (Keyboard.HasBeenPressed(key: Keys.A, repeat: true) ||
                 Keyboard.HasBeenPressed(key: Keys.Left, repeat: true) ||
-                GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.DPadLeft, analogAsDigital: true, repeat: true)) this.ActiveEntry.PreviousValue();
+                GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.DPadLeft, analogAsDigital: true, repeat: true)) this.ActiveEntry.PreviousValue(touchMode: false);
 
             if (Keyboard.HasBeenPressed(key: Keys.D, repeat: true) ||
                 Keyboard.HasBeenPressed(key: Keys.Right, repeat: true) ||
-                GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.DPadRight, analogAsDigital: true, repeat: true)) this.ActiveEntry.NextValue();
+                GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.DPadRight, analogAsDigital: true, repeat: true)) this.ActiveEntry.NextValue(touchMode: false);
 
             if (Keyboard.HasBeenPressed(Keys.Enter) || GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.A)) this.ActiveEntry.Invoke();
         }
@@ -395,11 +407,11 @@ namespace SonOfRobin
 
             foreach (TouchLocation touch in TouchInput.TouchPanelState)
             {
-                Vector2 touchPos = touch.Position / Preferences.globalScale;
+                Vector2 touchPos = touch.Position / Preferences.GlobalScale;
 
                 if (scrollWholeRect.Contains(touchPos))
                 {
-                    touchMode = true;
+                    this.touchMode = true;
                     this.currentScrollPosition = (touchPos.Y - (this.ScrollbarWidgetHeight / 2)) / this.ScrollbarMultiplier;
                     this.currentScrollPosition = KeepScrollInBounds(Convert.ToInt32(this.currentScrollPosition));
                     return;

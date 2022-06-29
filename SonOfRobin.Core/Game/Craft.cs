@@ -19,10 +19,10 @@ namespace SonOfRobin
                 this.pieceToCreate = pieceToCreate;
                 this.amountToCreate = amountToCreate;
                 this.ingredients = ingredients;
-                if (isReversible) this.ConvertToYield();
+                if (isReversible) Yield.antiCraftRecipes[this.pieceToCreate] = this;
             }
 
-            private void ConvertToYield()
+            public Yield ConvertToYield()
             {
                 var finalDroppedPieces = new List<Yield.DroppedPiece> { };
 
@@ -65,7 +65,8 @@ namespace SonOfRobin
                         throw new ArgumentException($"Unsupported category - '{category}'.");
                 }
 
-                Yield.antiCraft[this.pieceToCreate] = new Yield(firstDroppedPieces: new List<Yield.DroppedPiece> { }, finalDroppedPieces: finalDroppedPieces, debrisType: debrisType);
+                Yield.antiCraftRecipes[this.pieceToCreate] = this;
+                return new Yield(firstDroppedPieces: new List<Yield.DroppedPiece> { }, finalDroppedPieces: finalDroppedPieces, debrisType: debrisType);
             }
 
             public bool CheckIfStorageContainsAllIngredients(PieceStorage storage)
@@ -173,7 +174,10 @@ namespace SonOfRobin
 
             recipeList = new List<Recipe> {
                 new Recipe(pieceToCreate: PieceTemplate.Name.AxeWood, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stick, 2 }, { PieceTemplate.Name.WoodLog, 1 }}, isReversible: true),
+
                 new Recipe(pieceToCreate: PieceTemplate.Name.RegularWorkshop, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodLog, 4 } }, isReversible: true),
+
+                new Recipe(pieceToCreate: PieceTemplate.Name.Campfire, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stone, 8 }}, isReversible: true),
 
                 new Recipe(pieceToCreate: PieceTemplate.Name.TentSmall, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stick, 20 }, { PieceTemplate.Name.WoodLog, 4 }}, isReversible: true),
 

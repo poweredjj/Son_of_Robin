@@ -155,7 +155,7 @@ namespace SonOfRobin
             foreach (TouchLocation touch in TouchInput.TouchPanelState)
             {
                 //MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Touch position: {touch.Position.X},{touch.Position.Y}.", color: Color.GreenYellow);
-                Vector2 position = touch.Position / Preferences.globalScale;
+                Vector2 position = touch.Position / Preferences.GlobalScale;
 
                 if (this.Rect.Contains(position))
                 {

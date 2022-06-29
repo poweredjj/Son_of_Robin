@@ -172,7 +172,7 @@ namespace Studies.Joystick.Input
             Texture2D backgroundTx = SonOfRobinGame.textureByName["virtual_joypad_background"];
             Texture2D stickTx = SonOfRobinGame.textureByName["virtual_joypad_stick"];
 
-            float scale = Preferences.globalScale;
+            float scale = Preferences.GlobalScale;
 
             float backgroundSize = aliveZoneSize / scale * 2;
             float stickSize = aliveZoneSize * 0.6f / scale;

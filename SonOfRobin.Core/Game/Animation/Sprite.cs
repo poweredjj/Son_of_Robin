@@ -258,6 +258,7 @@ namespace SonOfRobin
             }
 
             int numberOfTries = (minDistance == 0 && maxDistance == 0) ? 1 : 4;
+            if (!this.world.CanProcessAnyStateMachineNow) return false;
             Vector2 newPosition;
 
             if (startPosition.X == -100 && startPosition.Y == -100) // -100, -100 will be converted to any position on the map - needed for effective creation of new sprites 
@@ -280,8 +281,8 @@ namespace SonOfRobin
                 {
                     var offset = new Vector2(this.world.random.Next(minDistance, maxDistance), this.world.random.Next(minDistance, maxDistance));
 
-                    if (this.world.random.Next(2) == 1) { offset.X *= -1; }
-                    if (this.world.random.Next(2) == 1) { offset.Y *= -1; }
+                    if (this.world.random.Next(2) == 1) offset.X *= -1;
+                    if (this.world.random.Next(2) == 1) offset.Y *= -1;
 
                     newPosition = startPosition + offset;
                     newPosition.X = Math.Max(newPosition.X, 0);

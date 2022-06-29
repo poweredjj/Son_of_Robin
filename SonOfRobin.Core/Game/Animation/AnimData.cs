@@ -56,6 +56,7 @@ namespace SonOfRobin
         Crosshair,
         Exclamation,
         Flame,
+        WaterDrop,
 
         ChestWooden,
         ChestMetal,
@@ -174,18 +175,26 @@ namespace SonOfRobin
         TentMedium,
         TentBig,
 
+        Bag,
+        BagOutline,
         BackpackMedium,
         BeltMedium,
-
         Map,
+
         Torch,
+        Campfire,
+
+        Herbs
     }
 
     public class AnimData
     {
-        public static Dictionary<string, List<AnimFrame>> frameListById = new Dictionary<string, List<AnimFrame>>();
+        public static readonly Dictionary<string, List<AnimFrame>> frameListById = new Dictionary<string, List<AnimFrame>>();
+        public static readonly Dictionary<AnimPkg, AnimFrame> defaultFramesForPackages = new Dictionary<AnimPkg, AnimFrame>();
         public static void AddFrameList(AnimPkg animPackage, byte animSize, string animName, List<AnimFrame> frameList)
         {
+            if (!defaultFramesForPackages.ContainsKey(animPackage)) defaultFramesForPackages[animPackage] = frameList[0];
+
             string completeAnimID = $"{animPackage}-{animSize}-{animName}";
             frameListById[completeAnimID] = new List<AnimFrame>(frameList);
         }
@@ -664,9 +673,9 @@ namespace SonOfRobin
 
             packageName = AnimPkg.Attack;
             frameList = new List<AnimFrame>();
-            frameList.Add(ConvertImageToFrame(atlasName: "attack_effect_sprite_sheets", layer: 2, duration: 6, x: 3524, y: 1520, width: 23, height: 23));
-            frameList.Add(ConvertImageToFrame(atlasName: "attack_effect_sprite_sheets", layer: 2, duration: 6, x: 3546, y: 1513, width: 29, height: 33));
-            frameList.Add(ConvertImageToFrame(atlasName: "attack_effect_sprite_sheets", layer: 2, duration: 6, x: 3574, y: 1500, width: 36, height: 65));
+            frameList.Add(ConvertImageToFrame(atlasName: "attack", layer: 2, duration: 6, x: 0, y: 20, width: 23, height: 23));
+            frameList.Add(ConvertImageToFrame(atlasName: "attack", layer: 2, duration: 6, x: 22, y: 13, width: 29, height: 33));
+            frameList.Add(ConvertImageToFrame(atlasName: "attack", layer: 2, duration: 6, x: 50, y: 0, width: 36, height: 65));
             AddFrameList(animPackage: packageName, animSize: 0, animName: "default", frameList: frameList);
 
             packageName = AnimPkg.Miss;
@@ -712,6 +721,14 @@ namespace SonOfRobin
             AddFrameList(animPackage: packageName, animSize: 0, animName: "default",
             frameList: ConvertImageToFrameList(atlasName: "tent_big", layer: 1, x: 15, y: 0, width: 191, height: 162, scale: 1f, depthPercent: 0.6f));
 
+            packageName = AnimPkg.Bag;
+            AddFrameList(animPackage: packageName, animSize: 0, animName: "default",
+            frameList: ConvertImageToFrameList(atlasName: "bag", layer: 1, scale: 0.2f));
+
+            packageName = AnimPkg.BagOutline;
+            AddFrameList(animPackage: packageName, animSize: 0, animName: "default",
+            frameList: ConvertImageToFrameList(atlasName: "bag_outline", layer: 1, scale: 0.2f));
+
             packageName = AnimPkg.BackpackMedium;
             AddFrameList(animPackage: packageName, animSize: 0, animName: "default",
             frameList: ConvertImageToFrameList(atlasName: "backpack", layer: 1, scale: 0.5f));
@@ -732,6 +749,25 @@ namespace SonOfRobin
             packageName = AnimPkg.Exclamation;
             AddFrameList(animPackage: packageName, animSize: 0, animName: "default",
             frameList: ConvertImageToFrameList(atlasName: "exclamation", layer: 2, scale: 0.2f));
+
+            packageName = AnimPkg.Campfire;
+            frameList = new List<AnimFrame>();
+            frameList.Add(ConvertImageToFrame(atlasName: "flames", layer: 1, duration: 6, x: 288, y: 0, width: 48, height: 48, crop: false));
+            frameList.Add(ConvertImageToFrame(atlasName: "flames", layer: 1, duration: 6, x: 336, y: 0, width: 48, height: 48, crop: false));
+            frameList.Add(ConvertImageToFrame(atlasName: "flames", layer: 1, duration: 6, x: 384, y: 0, width: 48, height: 48, crop: false));
+            AddFrameList(animPackage: packageName, animSize: 0, animName: "on", frameList: frameList);
+
+            frameList = ConvertImageToFrameList(atlasName: "flames", layer: 1, x: 288, y: 96, width: 48, height: 48, crop: false);
+            AddFrameList(animPackage: packageName, animSize: 0, animName: "default", frameList);
+            AddFrameList(animPackage: packageName, animSize: 0, animName: "off", frameList);
+
+            packageName = AnimPkg.WaterDrop;
+            AddFrameList(animPackage: packageName, animSize: 0, animName: "default",
+            frameList: ConvertImageToFrameList(atlasName: "water_drop", layer: 0, scale: 0.5f));
+
+            packageName = AnimPkg.Herbs;
+            AddFrameList(animPackage: packageName, animSize: 0, animName: "default",
+            frameList: ConvertImageToFrameList(atlasName: "d9ffec650d3104f5c4564c9055787530", layer: 1, x: 256, y: 224, width: 32, height: 32));
 
             // RPGMaker characters
             AddRPGMakerPackageV1(packageName: AnimPkg.Blonde, atlasName: "actor29rec4", setNoX: 0, setNoY: 0, animSize: 0);

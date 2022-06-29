@@ -7,10 +7,13 @@ namespace SonOfRobin
 {
     public class Preferences
     {
-        public enum WorldSize { small, medium, large, gigantic, huge } // lower case, for proper display in menu
+        public enum WorldSize { small, medium, large, gigantic } // lower case, for proper display in menu
 
         public static int newWorldWidth;
         public static int newWorldHeight;
+
+        public static int newWorldResDivider = 2;
+        public static readonly Dictionary<Object, Object> namesForResDividers = new Dictionary<Object, Object> { { 10, "low" }, { 3, "medium" }, { 2, "high" }, { 1, "ultra" } };
 
         public static bool randomSeed = true;
         public static char seedDigit1 = '0';
@@ -40,14 +43,26 @@ namespace SonOfRobin
                 if (!customizeWorld)
                 {
                     SelectedWorldSize = selectedWorldSize;  // to restore base values
+                    newWorldResDivider = 2;
                     randomSeed = true;
                 }
             }
         }
 
         private static bool debugMode = false;
-        public static readonly int terrainResDivider = 2;
-        public static float globalScale = 1f;
+
+        private static float globalScale = 1f;
+        public static float GlobalScale
+        {
+            get { return globalScale; }
+            set
+            {
+                if (globalScale == value) return;
+
+                globalScale = value;
+                Scene.ResizeAllScenes();
+            }
+        }
         public static float menuScale = 1f;
         public static float worldScale = 1f;
         private static bool fullScreenMode = true;
@@ -61,11 +76,51 @@ namespace SonOfRobin
         public static bool showControlTips = true;
         private static ButtonScheme.Type controlTipsScheme = ButtonScheme.Type.M;
         public static bool showHints = true;
+        public static bool showLighting = true;
+        public static bool showDebris = true;
+        public static bool useMultipleThreads = true;
+        private static bool mouseGesturesEmulateTouch = false;
+        public static bool MouseGesturesEmulateTouch
+        {
+            get { return mouseGesturesEmulateTouch; }
+            set
+            {
+                if (mouseGesturesEmulateTouch == value) return;
+                mouseGesturesEmulateTouch = value;
+
+                if (mouseGesturesEmulateTouch) SonOfRobinGame.game.IsMouseVisible = true;
+                if (!mouseGesturesEmulateTouch && FullScreenMode) SonOfRobinGame.game.IsMouseVisible = false;
+            }
+        }
+
+        private static bool enableTouch = false;
+        public static bool EnableTouch
+        {
+            get { return enableTouch; }
+            set
+            {
+                enableTouch = value;
+
+                if (enableTouch)
+                {
+                    if (SonOfRobinGame.touchOverlay == null) SonOfRobinGame.touchOverlay = new TouchOverlay();
+                    if (SonOfRobinGame.platform != Platform.Mobile) MouseGesturesEmulateTouch = true;
+                }
+                else
+                {
+                    if (SonOfRobinGame.touchOverlay != null)
+                    {
+                        SonOfRobinGame.touchOverlay.Remove();
+                        SonOfRobinGame.touchOverlay = null;
+                    }
+                    MouseGesturesEmulateTouch = false;
+                }
+            }
+        }
 
         public static bool zoomedOut = false; // used to store virtual button value
 
         // debug variables should not be saved to preferences file
-        public static bool debugUseMultipleThreads = true;
         public static bool debugShowRects = false;
         public static bool debugShowCellData = false;
         public static bool debugShowAnimalTargets = false;
@@ -75,7 +130,6 @@ namespace SonOfRobin
         public static bool debugCreateMissingPieces = true;
         public static bool debugShowAllMapPieces = false;
         private static bool debugShowWholeMap = false;
-        public static bool debugTurnOffLighting = false;
         public static bool DebugShowWholeMap
         {
             get { return debugShowWholeMap; }
@@ -123,12 +177,6 @@ namespace SonOfRobin
                         newWorldHeight = 60000;
                         break;
 
-                    case WorldSize.huge:
-                        newWorldWidth = 100000;
-                        newWorldHeight = 100000;
-                        break;
-
-
                     default:
                         throw new ArgumentException($"Unsupported worldSize - {selectedWorldSize}.");
 
@@ -149,7 +197,15 @@ namespace SonOfRobin
                 debugShowWholeMap = debugGodMode;
                 debugShowAllMapPieces = debugGodMode;
                 World world = World.GetTopWorld();
-                if (world != null) world.MapEnabled = debugGodMode;
+                if (world != null)
+                {
+                    world.MapEnabled = debugGodMode;
+                    if (debugGodMode)
+                    {
+                        world.mapBig.ForceRender();
+                        world.mapSmall.ForceRender();
+                    }
+                }
             }
         }
 
@@ -165,7 +221,7 @@ namespace SonOfRobin
         }
 
         public static int MaxThreadsToUse
-        { get { return debugUseMultipleThreads ? Environment.ProcessorCount : 1; } }
+        { get { return useMultipleThreads ? Environment.ProcessorCount : 1; } }
 
         public static bool FullScreenMode
         {
@@ -249,7 +305,8 @@ namespace SonOfRobin
 
             if (SonOfRobinGame.platform == Platform.Mobile)
             {
-                globalScale = 2f;
+                if (SonOfRobinGame.graphics.PreferredBackBufferWidth > 1500) globalScale = 2f;
+
                 menuScale = 1.5f;
                 loadWholeMap = false;
                 showControlTips = false;
@@ -259,6 +316,9 @@ namespace SonOfRobin
                 loadWholeMap = true;
                 showControlTips = true;
             }
+
+            EnableTouch = SonOfRobinGame.platform == Platform.Mobile;
+            MouseGesturesEmulateTouch = SonOfRobinGame.fakeMobileMode;
         }
 
         public static void Save()
@@ -267,6 +327,7 @@ namespace SonOfRobin
 
             prefsData["debugMode"] = debugMode;
             prefsData["customizeWorld"] = customizeWorld;
+            prefsData["newWorldResDivider"] = newWorldResDivider;
             prefsData["selectedWorldSize"] = SelectedWorldSize;
             prefsData["newWorldWidth"] = newWorldWidth;
             prefsData["newWorldHeight"] = newWorldHeight;
@@ -288,7 +349,11 @@ namespace SonOfRobin
             prefsData["displayResY"] = displayResY;
             prefsData["showControlTips"] = showControlTips;
             prefsData["showHints"] = showHints;
+            prefsData["showLighting"] = showLighting;
+            prefsData["showDebris"] = showDebris;
+            prefsData["useMultipleThreads"] = useMultipleThreads;
             prefsData["controlTipsScheme"] = ControlTipsScheme;
+            prefsData["EnableTouch"] = EnableTouch;
 
             FileReaderWriter.Save(path: SonOfRobinGame.prefsPath, savedObj: prefsData);
 
@@ -307,6 +372,7 @@ namespace SonOfRobin
                     debugMode = (bool)prefsData["debugMode"];
                     CustomizeWorld = (bool)prefsData["customizeWorld"];
                     SelectedWorldSize = (WorldSize)prefsData["selectedWorldSize"];
+                    newWorldResDivider = (int)prefsData["newWorldResDivider"];
                     newWorldWidth = (int)prefsData["newWorldWidth"];
                     newWorldHeight = (int)prefsData["newWorldHeight"];
                     randomSeed = (bool)prefsData["randomSeed"];
@@ -327,7 +393,11 @@ namespace SonOfRobin
                     displayResY = (int)prefsData["displayResY"];
                     showControlTips = (bool)prefsData["showControlTips"];
                     showHints = (bool)prefsData["showHints"];
+                    showLighting = (bool)prefsData["showLighting"];
+                    showDebris = (bool)prefsData["showDebris"];
+                    useMultipleThreads = (bool)prefsData["useMultipleThreads"];
                     ControlTipsScheme = (ButtonScheme.Type)prefsData["controlTipsScheme"];
+                    EnableTouch = (bool)prefsData["EnableTouch"];
 
                     prefsLoaded = true;
                 }
@@ -344,7 +414,7 @@ namespace SonOfRobin
             }
 
             if (SonOfRobinGame.platform == Platform.Mobile) fullScreenMode = true; // window mode makes no sense on mobile
-            if (SonOfRobinGame.fakeMobileMode) fullScreenMode = false; // fakeMobileMode uses mouse (and mouse cursor is not visible in fullscreen mode)
+            if (SonOfRobinGame.ThisIsWorkMachine) fullScreenMode = false;
 
             MessageLog.AddMessage(msgType: MsgType.Debug, message: "Preferences loaded.", color: Color.White);
         }
@@ -368,7 +438,6 @@ namespace SonOfRobin
             }
 
         }
-
 
     }
 }

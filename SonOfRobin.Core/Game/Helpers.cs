@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Reflection;
 using System.Text.RegularExpressions;
@@ -9,6 +10,71 @@ namespace SonOfRobin
     {
         public const double Rad2Deg = 180.0 / Math.PI;
         public const double Deg2Rad = Math.PI / 180.0;
+
+        public enum AlignX { Left, Center, Right };
+        public enum AlignY { Top, Center, Bottom };
+
+        public static void DrawTextInsideRect(SpriteFont font, Rectangle rectangle, string text, Color color, Color shadowColor, AlignX alignX = AlignX.Center, AlignY alignY = AlignY.Center, int shadowOffsetX = 0, int shadowOffsetY = 0, int shadowOffset = 0, bool drawTestRect = false)
+        {
+            if (shadowOffset != 0)
+            {
+                shadowOffsetX = shadowOffset;
+                shadowOffsetY = shadowOffset;
+            }
+            Rectangle shadowRect = rectangle;
+            shadowRect.X += shadowOffsetX;
+            shadowRect.Y += shadowOffsetY;
+
+            DrawTextInsideRect(font: font, rectangle: shadowRect, text: text, color: shadowColor, alignX: alignX, alignY: alignY, drawTestRect: drawTestRect);
+            DrawTextInsideRect(font: font, rectangle: rectangle, text: text, color: color, alignX: alignX, alignY: alignY, drawTestRect: drawTestRect);
+        }
+        public static void DrawTextInsideRect(SpriteFont font, Rectangle rectangle, string text, Color color, AlignX alignX = AlignX.Center, AlignY alignY = AlignY.Center, bool drawTestRect = false)
+        {
+            Vector2 textSize = font.MeasureString(text);
+            float scale = Math.Min(rectangle.Width / textSize.X, rectangle.Height / textSize.Y);
+
+            if (drawTestRect) DrawRectangleOutline(rect: rectangle, color: Color.White, borderWidth: 1);
+
+            int xOffset, yOffset;
+            switch (alignX)
+            {
+                case AlignX.Left:
+                    xOffset = 0;
+                    break;
+
+                case AlignX.Center:
+                    xOffset = (int)((rectangle.Width - (textSize.X * scale)) / 2);
+                    break;
+
+                case AlignX.Right:
+                    xOffset = (int)(rectangle.Width - (textSize.X * scale));
+                    break;
+
+                default:
+                    throw new DivideByZeroException($"Unsupported alignX - {alignX}.");
+            }
+
+            switch (alignY)
+            {
+                case AlignY.Top:
+                    yOffset = 0;
+                    break;
+
+                case AlignY.Center:
+                    yOffset = (int)((rectangle.Height - (textSize.Y * scale)) / 2);
+                    break;
+
+                case AlignY.Bottom:
+                    yOffset = (int)(rectangle.Height - (textSize.Y * scale));
+                    break;
+
+                default:
+                    throw new DivideByZeroException($"Unsupported alignY - {alignY}.");
+            }
+
+
+            SonOfRobinGame.spriteBatch.DrawString(font, text, position: new Vector2(rectangle.X + xOffset, rectangle.Y + yOffset), color: color, origin: Vector2.Zero, scale: scale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
+        }
 
         public static void DrawRectangleOutline(Rectangle rect, Color color, int borderWidth)
         {

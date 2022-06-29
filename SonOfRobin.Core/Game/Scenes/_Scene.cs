@@ -51,6 +51,9 @@ namespace SonOfRobin
 
         public static bool processingUpdate; // true = update, false = draw
         public static DateTime startUpdateTime;
+        public static DateTime startDrawTime;
+        public static TimeSpan UpdateTimeElapsed { get { return DateTime.Now - startUpdateTime; } }
+        public static TimeSpan DrawTimeElapsed { get { return DateTime.Now - startDrawTime; } }
 
         private InputTypes inputType;
 
@@ -224,9 +227,11 @@ namespace SonOfRobin
         {
             bool normalInputSet = false;
 
-            for (int i = sceneStack.Count - 1; i >= 0; i--)
+            var inputStack = sceneStack.OrderByDescending(o => o.priority).ToList();
+
+            for (int i = inputStack.Count - 1; i >= 0; i--)
             {
-                Scene scene = sceneStack[i];
+                Scene scene = inputStack[i];
 
                 switch (scene.InputType)
                 {
@@ -401,8 +406,8 @@ namespace SonOfRobin
 
         public static void UpdateAllScenesInStack(GameTime gameTime)
         {
-            processingUpdate = true;
             startUpdateTime = DateTime.Now;
+            processingUpdate = true;
 
             Scheduler.ProcessQueue();
 
@@ -422,6 +427,7 @@ namespace SonOfRobin
 
         public static void DrawAllScenesInStack()
         {
+            startDrawTime = DateTime.Now;
             processingUpdate = false;
 
             SonOfRobinGame.graphicsDevice.SetRenderTarget(null); // setting rendertarget to backbuffer
@@ -456,6 +462,8 @@ namespace SonOfRobin
             }
 
             if (spriteBatchNotEnded) SonOfRobinGame.spriteBatch.End();
+
+            //MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Draw time elapsed {DrawTimeElapsed.Milliseconds}ms.", color: Color.LightCyan);
         }
 
         public void StartNewSpriteBatch(bool end = true, bool enableEffects = false)

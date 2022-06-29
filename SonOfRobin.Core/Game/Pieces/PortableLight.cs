@@ -48,7 +48,6 @@ namespace SonOfRobin
                 {
                     this.sprite.AssignNewName(animName: "off");
                     this.world.player.buffEngine.RemoveBuffs(this.buffList);
-                    WorldEvent.RemovePieceFromQueue(world: world, pieceToRemove: this);
                 }
             }
         }

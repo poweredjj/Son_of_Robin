@@ -7,47 +7,48 @@ namespace SonOfRobin
 {
     public class AnimFrame
     {
+        public readonly static List<byte> allLayers = new List<byte> { }; // needed to draw frames in correct order
+        public readonly static Dictionary<string, AnimFrame> frameById = new Dictionary<string, AnimFrame>(); // needed to access frames directly by id (for loading and saving game)
+        public readonly static List<string> usedAtlasNames = new List<string>(); // for deleting used atlases after creating cropped textures
+
+        public readonly Texture2D texture;
+        public readonly Vector2 textureSize;
+        public readonly Rectangle textureRect;
+        private readonly Vector2 rotationOrigin;
+
         public readonly string id;
-        public readonly Texture2D atlasTexture;
-        public readonly Vector2 originalTextureSize;
-        private readonly ushort atlasX;
-        private readonly ushort atlasY;
         private readonly float depthPercent;
-        public readonly ushort sourceWidth;
-        public readonly ushort sourceHeight;
-        public readonly ushort gfxWidth;
-        public readonly ushort gfxHeight;
-        public readonly ushort colWidth;
-        public readonly ushort colHeight;
-        public readonly byte layer;
-        public readonly byte duration;
+        public readonly int gfxWidth;
+        public readonly int gfxHeight;
+        public readonly int colWidth;
+        public readonly int colHeight;
         public readonly Vector2 gfxOffset;
         public readonly Vector2 colOffset;
-        public readonly float scale;
+        public readonly byte layer;
+        public readonly byte duration;
+        private readonly float scale;
 
-        public static List<byte> allLayers = new List<byte> { }; // needed to draw frames in correct order
-        public static Dictionary<string, AnimFrame> frameById = new Dictionary<string, AnimFrame>(); // needed to access frames directly by id (for loading and saving game)
-
-
-        public AnimFrame(string atlasName, ushort atlasX, ushort atlasY, ushort width, ushort height, byte layer, byte duration, bool crop = false, float scale = 1f, float depthPercent = 0.25f)
+        public AnimFrame(string atlasName, int atlasX, int atlasY, int width, int height, byte layer, byte duration, bool crop = false, float scale = 1f, float depthPercent = 0.25f, int padding = 1)
         {
-            this.depthPercent = depthPercent;
-
             this.id = $"{atlasName}_{atlasX},{atlasY}_{width}x{height}_{layer}_{duration}_{crop}_{scale}_{depthPercent}";
             frameById[this.id] = this;
 
-            this.atlasTexture = SonOfRobinGame.textureByName[atlasName];
-            this.originalTextureSize = new Vector2(this.atlasTexture.Width, this.atlasTexture.Height);
+            if (!usedAtlasNames.Contains(atlasName)) usedAtlasNames.Add(atlasName);
 
-            var cropData = CropFrame(texture: this.atlasTexture, textureX: atlasX, textureY: atlasY, width: width, height: height, crop: crop);
-            atlasX = cropData["croppedAtlasX"];
-            atlasY = cropData["croppedAtlasY"];
-            width = cropData["croppedWidth"];
-            height = cropData["croppedHeight"];
+            this.depthPercent = depthPercent;
+
+            Texture2D atlasTexture = SonOfRobinGame.textureByName[atlasName];
+            Rectangle cropRect = GetCropRect(texture: atlasTexture, textureX: atlasX, textureY: atlasY, width: width, height: height, crop: crop);
+
+            // padding makes the edge texture filtering smooth and allows for border effects outside original texture edges
+            this.texture = GfxConverter.CropTextureAndAddPadding(baseTexture: atlasTexture, cropRect: cropRect, padding: padding);
+
+            this.rotationOrigin = new Vector2(this.texture.Width / 2f, this.texture.Height / 2f);
+
+            this.textureSize = new Vector2(this.texture.Width, this.texture.Height);
+            this.textureRect = new Rectangle(x: 0, y: 0, width: this.texture.Width, height: this.texture.Height);
 
             this.scale = scale;
-            this.atlasX = atlasX;
-            this.atlasY = atlasY;
             this.layer = layer;
             if (!allLayers.Contains(layer))
             {
@@ -55,21 +56,18 @@ namespace SonOfRobin
                 allLayers.Sort();
             }
 
-            var colBounds = this.FindCollisionBounds(croppedAtlasX: atlasX, croppedAtlasY: atlasY, croppedWidth: width, croppedHeight: height);
-            var colXMin = colBounds[0]; var colXMax = colBounds[1]; var colYMin = colBounds[2]; var colYMax = colBounds[3];
+            var colBounds = this.FindCollisionBounds();
 
-            this.colWidth = Convert.ToUInt16((colXMax - colXMin + 1) * scale);
-            this.colHeight = Convert.ToUInt16((colYMax - colYMin + 1) * scale);
-            this.colOffset = new Vector2(-Convert.ToInt32(this.colWidth * 0.5f), -Convert.ToInt32(this.colHeight * 0.5f));
+            this.colWidth = (int)((colBounds.Width + 0) * scale);
+            this.colHeight = (int)((colBounds.Height + 0) * scale);
+            this.colOffset = new Vector2(-(int)(this.colWidth * 0.5f), -(int)(this.colHeight * 0.5f));
 
-            this.sourceWidth = width;
-            this.sourceHeight = height;
-            this.gfxWidth = (ushort)(width * scale);
-            this.gfxHeight = (ushort)(height * scale);
+            this.gfxWidth = (int)(this.texture.Width * scale);
+            this.gfxHeight = (int)(this.texture.Height * scale);
 
             this.gfxOffset = new Vector2(
-                this.colOffset.X - (colXMin - atlasX),
-                this.colOffset.Y - (colYMin - atlasY));
+                this.colOffset.X - colBounds.X,
+                this.colOffset.Y - colBounds.Y);
 
             this.gfxOffset *= scale;
             this.colOffset *= scale;
@@ -77,166 +75,144 @@ namespace SonOfRobin
             this.duration = duration; // duration == 0 will stop the animation
         }
 
+        public static void DeleteUsedAtlases()
+        {
+            // Should be used after loading textures from all atlases.
+            // Deleted textures will not be available for use any longer.
+
+            foreach (string atlasName in usedAtlasNames)
+            {
+                SonOfRobinGame.textureByName[atlasName].Dispose();
+                SonOfRobinGame.textureByName.Remove(atlasName);
+            }
+        }
+
         public static AnimFrame GetFrameById(string frameId)
         { return frameById[frameId]; }
 
-        private ushort[] FindCollisionBounds(ushort croppedAtlasX, ushort croppedAtlasY, ushort croppedWidth, ushort croppedHeight)
+        private Rectangle FindCollisionBounds()
         {
             // checking bottom part of the frame for collision bounds
 
-            ushort bottomPartHeight = Math.Max(Convert.ToUInt16(croppedHeight * this.depthPercent), (ushort)20); // testing
-            bottomPartHeight = Math.Min(bottomPartHeight, croppedHeight);
+            int bottomPartHeight = Math.Max((int)(this.texture.Width * this.depthPercent), 20);
+            bottomPartHeight = Math.Min(bottomPartHeight, this.texture.Height);
 
-            ushort sliceWidth = croppedWidth;
-            ushort sliceHeight = (this.layer == 1) ? bottomPartHeight : croppedHeight;
-            ushort sliceX = croppedAtlasX;
-            ushort sliceY = Convert.ToUInt16(croppedAtlasY + (croppedHeight - sliceHeight));
+            int sliceWidth = this.texture.Width;
+            int sliceHeight = this.layer == 1 ? bottomPartHeight : this.texture.Height;
+            int sliceX = 0;
+            int sliceY = this.texture.Height - sliceHeight;
 
-            var bounds = FindBoundaries(texture: this.atlasTexture, textureX: sliceX, textureY: sliceY, width: sliceWidth, height: sliceHeight, minAlpha: 240);
+            var boundsRect = FindNonTransparentPixelsRect(texture: this.texture, textureX: sliceX, textureY: sliceY, width: sliceWidth, height: sliceHeight, minAlpha: 240); // 240
             // bounds value would be incorrect without adding the base slice value
-            bounds[0] += sliceX;
-            bounds[1] += sliceX;
-            bounds[2] += sliceY;
-            bounds[3] += sliceY;
 
-            return bounds;
+            boundsRect.X += sliceX;
+            boundsRect.Y += sliceY;
+
+            return boundsRect;
         }
 
-        private static ushort[] FindBoundaries(Texture2D texture, ushort textureX, ushort textureY, ushort width, ushort height, int minAlpha)
+        private static Rectangle FindNonTransparentPixelsRect(Texture2D texture, int textureX, int textureY, int width, int height, int minAlpha)
         {
-            var rawDataAsGrid = ConvertTextureToGrid(texture: texture, x: textureX, y: textureY, width: width, height: height);
+            var rawDataAsGrid = GfxConverter.ConvertTextureToGrid(texture: texture, x: textureX, y: textureY, width: width, height: height);
 
-            ushort xMin = (ushort)(width - 1); ushort xMax = 0; ushort yMin = (ushort)(height - 1); ushort yMax = 0;
+            int xMin = width;
+            int xMax = 0;
+            int yMin = height;
+            int yMax = 0;
 
             bool opaquePixelsFound = false;
-
+            Color pixel;
             int[] alphaValues = { minAlpha, 1 }; // if there are no desired alpha values, minimum value is used instead
-            foreach (int currentMinAlpha in alphaValues)
 
+            foreach (int currentMinAlpha in alphaValues)
             {
-                for (int x = 0; x <= width - 1; x++)
+                for (int x = 0; x < width; x++)
                 {
-                    for (int y = 0; y <= height - 1; y++)
+                    for (int y = 0; y < height; y++)
                     {
-                        Color pixel = rawDataAsGrid[y, x];
+                        pixel = rawDataAsGrid[y, x];
                         if (pixel.A >= minAlpha) // looking for non-transparent pixels
                         {
                             opaquePixelsFound = true;
-                            if (x < xMin) xMin = Convert.ToUInt16(x);
-                            if (x > xMax) xMax = Convert.ToUInt16(x);
-                            if (y < yMin) yMin = Convert.ToUInt16(y);
-                            if (y > yMax) yMax = Convert.ToUInt16(y);
+                            if (x < xMin) xMin = x;
+                            if (x > xMax) xMax = x;
+                            if (y < yMin) yMin = y;
+                            if (y > yMax) yMax = y;
                         }
                     }
                 }
 
-                if (opaquePixelsFound) { break; }
+                if (opaquePixelsFound) break;
             }
 
             if (!opaquePixelsFound) // resetting to the whole size, if bounds could not be found
-            { xMin = 0; xMax = Convert.ToUInt16(width - 1); yMin = 0; yMax = Convert.ToUInt16(height - 1); }
+            {
+                xMin = 0;
+                xMax = width;
+                yMin = 0;
+                yMax = height;
+            }
 
-            ushort[] boundsList = { xMin, xMax, yMin, yMax };
-            return boundsList;
+            return new Rectangle(x: xMin, y: yMin, width: xMax - xMin + 1, height: yMax - yMin + 1);
         }
 
-        public static Dictionary<string, ushort> CropFrame(Texture2D texture, ushort textureX, ushort textureY, ushort width, ushort height, bool crop)
+        public static Rectangle GetCropRect(Texture2D texture, int textureX, int textureY, int width, int height, bool crop)
         {
-            var cropData = new Dictionary<string, ushort>() {
-                { "croppedAtlasX", textureX },
-                { "croppedAtlasY", textureY },
-                { "croppedWidth", width },
-                { "croppedHeight", height } };
-
             if (crop)
             {
-                var croppedBounds = FindBoundaries(texture: texture, textureX: textureX, textureY: textureY, width: width, height: height, minAlpha: 1);
-
-                var croppedXMin = croppedBounds[0]; var gfxXMax = croppedBounds[1]; var gfxYMin = croppedBounds[2]; var gfxYMax = croppedBounds[3];
-                var croppedWidth = Convert.ToUInt16(gfxXMax - croppedXMin + 1);
-                var croppedHeight = Convert.ToUInt16(gfxYMax - gfxYMin + 1);
-                var croppedAtlasX = Convert.ToUInt16(textureX + croppedXMin);
-                var croppedAtlasY = Convert.ToUInt16(textureY + gfxYMin);
-
-                cropData = new Dictionary<string, ushort>() {
-                    { "croppedAtlasX", croppedAtlasX },
-                    { "croppedAtlasY", croppedAtlasY },
-                    { "croppedWidth", croppedWidth },
-                    { "croppedHeight", croppedHeight }};
+                var croppedBounds = FindNonTransparentPixelsRect(texture: texture, textureX: textureX, textureY: textureY, width: width, height: height, minAlpha: 1);
+                croppedBounds.X += textureX;
+                croppedBounds.Y += textureY;
+                return croppedBounds;
             }
-
-            return cropData;
-        }
-
-        public static Color[,] ConvertTextureToGrid(Texture2D texture, ushort x, ushort y, ushort width, ushort height)
-        {
-            // getting 1D pixel array
-            Color[] rawData = new Color[width * height];
-            Rectangle extractRegion = new Rectangle(x, y, width, height);
-            texture.GetData<Color>(0, extractRegion, rawData, 0, width * height);
-
-            // getting 2D pixel grid
-            Color[,] rawDataAsGrid = new Color[height, width];
-            for (int row = 0; row < height; row++)
-            {
-                for (int column = 0; column < width; column++)
-                {
-                    // Assumes row major ordering of the array.
-                    rawDataAsGrid[row, column] = rawData[row * width + column];
-                }
-            }
-            return rawDataAsGrid;
+            else return new Rectangle(x: textureX, y: textureY, width: width, height: height);
         }
 
         public void Draw(Rectangle destRect, Color color, float opacity, int submergeCorrection = 0)
         {
-            int correctedSourceHeight = this.sourceHeight;
+            // invoke from Sprite class
+
+            int correctedSourceHeight = this.texture.Height;
             if (submergeCorrection > 0)
             {
-                correctedSourceHeight = Math.Max(sourceHeight / 2, sourceHeight - submergeCorrection);
+                correctedSourceHeight = Math.Max(this.texture.Height / 2, this.texture.Height - submergeCorrection);
                 destRect.Height = (int)(correctedSourceHeight * this.scale);
             }
 
-            // invoke from Sprite class
-            Rectangle sourceRectangle = new Rectangle(this.atlasX, this.atlasY, this.sourceWidth, correctedSourceHeight);
+            Rectangle sourceRectangle = new Rectangle(x: 0, y: 0, width: this.texture.Width, correctedSourceHeight);
             Rectangle destinationRectangle = new Rectangle(destRect.X, destRect.Y, destRect.Width, destRect.Height);
 
             // Helpers.DrawRectangleOutline(rect: destinationRectangle, color: Color.YellowGreen, borderWidth: 2); // testing rect size
 
-            SonOfRobinGame.spriteBatch.Draw(this.atlasTexture, destinationRectangle, sourceRectangle, color * opacity);
+            SonOfRobinGame.spriteBatch.Draw(this.texture, destinationRectangle, sourceRectangle, color * opacity);
         }
 
         public void DrawWithRotation(Vector2 position, Color color, float rotation, float opacity)
         {
             // invoke from Sprite class
-            Rectangle sourceRectangle = new Rectangle(this.atlasX, this.atlasY, this.sourceWidth, this.sourceHeight);
 
-            Vector2 rotationOrigin = new Vector2(this.sourceWidth / 2, this.sourceHeight / 2);
-
-            SonOfRobinGame.spriteBatch.Draw(this.atlasTexture, position: position, sourceRectangle: sourceRectangle, color: color * opacity, rotation: rotation, origin: rotationOrigin, scale: this.scale, effects: SpriteEffects.None, layerDepth: 0);
+            SonOfRobinGame.spriteBatch.Draw(this.texture, position: position, sourceRectangle: this.textureRect, color: color * opacity, rotation: rotation, origin: this.rotationOrigin, scale: this.scale, effects: SpriteEffects.None, layerDepth: 0);
         }
 
         public void DrawAndKeepInRectBounds(Rectangle destBoundsRect, Color color, float opacity = 1f)
         {
             // general use
 
-            Rectangle sourceRect = new Rectangle(this.atlasX, this.atlasY, this.sourceWidth, this.sourceHeight);
-
             int destBoundsShorterSide = Math.Min(destBoundsRect.Width, destBoundsRect.Height);
-            int sourceLongerSide = Math.Max(sourceRect.Width, sourceRect.Height);
+            int sourceLongerSide = Math.Max(this.texture.Width, this.texture.Height);
             float sourceScale = (float)destBoundsShorterSide / (float)sourceLongerSide;
 
-            int destWidth = Convert.ToInt32((float)sourceRect.Width * (float)sourceScale);
-            int destHeight = Convert.ToInt32((float)sourceRect.Height * (float)sourceScale);
+            int destWidth = (int)((float)this.texture.Width * (float)sourceScale);
+            int destHeight = (int)((float)this.texture.Height * (float)sourceScale);
 
             Rectangle destRect = new Rectangle(destBoundsRect.X, destBoundsRect.Y, destWidth, destHeight);
 
-            destRect.X += Convert.ToInt32(((float)destBoundsRect.Width - (float)destRect.Width) / 2f);
-            destRect.Y += Convert.ToInt32(((float)destBoundsRect.Height - (float)destRect.Height) / 2f);
+            destRect.X += (int)(((float)destBoundsRect.Width - (float)destRect.Width) / 2f);
+            destRect.Y += (int)(((float)destBoundsRect.Height - (float)destRect.Height) / 2f);
 
-            //Helpers.DrawRectangleOutline(rect: destRect, color: Color.YellowGreen, borderWidth: 2); // testing rect size
+            // Helpers.DrawRectangleOutline(rect: destRect, color: Color.YellowGreen, borderWidth: 2); // testing rect size
 
-            SonOfRobinGame.spriteBatch.Draw(texture: this.atlasTexture, destinationRectangle: destRect, sourceRectangle: sourceRect, color: color * opacity);
+            SonOfRobinGame.spriteBatch.Draw(texture: this.texture, destinationRectangle: destRect, sourceRectangle: this.textureRect, color: color * opacity);
         }
 
     }

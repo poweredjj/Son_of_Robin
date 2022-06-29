@@ -8,7 +8,7 @@ namespace SonOfRobin
 {
     public class PieceStorage
     {
-        public enum StorageType { Inventory, Cooking, Chest, Tools, Equip, Fruits }
+        public enum StorageType { Inventory, Cooking, Fireplace, Chest, Tools, Equip, Fruits }
 
         public readonly World world;
         public readonly StorageType storageType;
@@ -30,6 +30,19 @@ namespace SonOfRobin
         public List<StorageSlot> FullSlots { get { return AllSlots.Where(slot => slot.IsFull).ToList(); } }
         public int OccupiedSlotsCount { get { return this.OccupiedSlots.Count; } }
         public List<StorageSlot> OccupiedSlots { get { return AllSlots.Where(slot => !slot.IsEmpty).ToList(); } }
+
+        public int StoredPiecesCount
+        {
+            get
+            {
+                int piecesCount = 0;
+
+                foreach (StorageSlot slot in this.OccupiedSlots)
+                { piecesCount += slot.PieceCount; }
+
+                return piecesCount;
+            }
+        }
 
         public StorageSlot LastOccupiedSlot
         {
@@ -282,6 +295,11 @@ namespace SonOfRobin
         {
             foreach (StorageSlot slot in AllSlots)
             { slot.DestroyBrokenPieces(); }
+        }
+
+        public void DestroyOneSpecifiedPiece(PieceTemplate.Name pieceName)
+        {
+            this.DestroySpecifiedPieces(new Dictionary<PieceTemplate.Name, byte> { { pieceName, 1 } });
         }
 
         public void DestroySpecifiedPieces(Dictionary<PieceTemplate.Name, byte> quantityByPiece)

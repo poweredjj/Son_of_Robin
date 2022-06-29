@@ -7,7 +7,7 @@ namespace SonOfRobin
     [Serializable]
     public class GridTemplate
     {
-        private static readonly float currentVersion = 1.01f;
+        private static readonly float currentVersion = 1.02f;
         private static readonly string headerName = "_template_header.dat";
 
         public readonly int seed;
@@ -15,6 +15,8 @@ namespace SonOfRobin
         public readonly int height;
         private readonly int cellWidth;
         private readonly int cellHeight;
+        public readonly int resDivider;
+
         private readonly float version;
         public readonly string templatePath;
         private readonly string headerPath;
@@ -39,13 +41,14 @@ namespace SonOfRobin
             }
         }
 
-        public GridTemplate(int seed, int width, int height, int cellWidth, int cellHeight)
+        public GridTemplate(int seed, int width, int height, int cellWidth, int cellHeight, int resDivider)
         {
             this.seed = seed;
             this.width = width;
             this.height = height;
             this.cellWidth = cellWidth;
             this.cellHeight = cellHeight;
+            this.resDivider = resDivider;
             this.version = currentVersion;
             this.createdDate = DateTime.Now;
 
@@ -63,6 +66,7 @@ namespace SonOfRobin
                 this.height == gridToCompare.height &&
                 this.cellWidth == gridToCompare.cellWidth &&
                 this.cellHeight == gridToCompare.cellHeight &&
+                this.resDivider == gridToCompare.resDivider &&
                 this.version == gridToCompare.version;
         }
 
@@ -95,7 +99,7 @@ namespace SonOfRobin
 
             while (true)
             {
-                folderName = $"seed_{this.seed}_{this.width}x{this.height}_{counter}";
+                folderName = $"seed_{this.seed}_{this.width}x{this.height}_{this.resDivider}_{counter}";
                 templatePath = Path.Combine(SonOfRobinGame.worldTemplatesPath, folderName);
 
                 if (!Directory.Exists(templatePath))

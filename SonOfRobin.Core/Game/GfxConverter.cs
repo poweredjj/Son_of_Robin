@@ -1,17 +1,125 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Microsoft.Xna.Framework.Graphics;
+﻿using BigGustave;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using System.IO;
-
 
 namespace SonOfRobin
 {
     public class GfxConverter
     {
+
+        public static void SaveColorArrayAsPNG(int width, int height, Color[,] colorArray, string pngPath, bool hasAlphaChannel = true)
+        {
+            // TODO test if it works correctly
+
+            var builder = PngBuilder.Create(width: width, height: height, hasAlphaChannel: hasAlphaChannel);
+
+            Color pixel;
+            for (int x = 0; x < width; x++)
+            {
+                for (int y = 0; y < height; y++)
+                {
+                    pixel = colorArray[x, y];
+
+                    builder.SetPixel(pixel.R, pixel.G, pixel.B, x, y);
+                }
+            }
+
+            using (var memoryStream = new MemoryStream())
+            {
+                builder.Save(memoryStream);
+                FileReaderWriter.SaveMemoryStream(memoryStream: memoryStream, path: pngPath);
+            }
+        }
+
+        public static Texture2D CropTexture(Texture2D baseTexture, Rectangle cropRect)
+        {
+            // Copy the data from the cropped region into a buffer, then into the new texture
+            Color[] data = new Color[cropRect.Width * cropRect.Height];
+            baseTexture.GetData(0, cropRect, data, 0, cropRect.Width * cropRect.Height);
+
+            Texture2D croppedTexture = new Texture2D(SonOfRobinGame.graphicsDevice, cropRect.Width, cropRect.Height);
+            croppedTexture.SetData(data);
+
+            return croppedTexture;
+        }
+
+        public static Texture2D CropTextureAndAddPadding(Texture2D baseTexture, Rectangle cropRect, int padding)
+        {
+            Color[] colorData = new Color[cropRect.Width * cropRect.Height];
+            baseTexture.GetData(0, cropRect, colorData, 0, cropRect.Width * cropRect.Height);
+
+            int paddedWidth = cropRect.Width + (padding * 2);
+            int paddedHeight = cropRect.Height + (padding * 2);
+
+            Color[,] colorData2DPadded = new Color[paddedWidth, paddedHeight];
+
+            // filling the padding
+
+            List<int> rowsToFill = new List<int> { };
+            List<int> columnsToFill = new List<int> { };
+            for (int i = 0; i < padding; i++)
+            {
+                columnsToFill.Add(i);
+                columnsToFill.Add(paddedWidth - i - 1);
+                rowsToFill.Add(i);
+                rowsToFill.Add(paddedHeight - i - 1);
+            }
+
+            foreach (int x in columnsToFill)
+            {
+                for (int y = 0; y < paddedHeight; y++)
+                {
+                    colorData2DPadded[x, y] = Color.Transparent;
+                }
+            }
+
+            foreach (int y in rowsToFill)
+            {
+                for (int x = 0; x < paddedWidth; x++)
+                {
+                    colorData2DPadded[x, y] = Color.Transparent;
+                }
+            }
+
+            // copying pixels from original texture data
+
+            for (int x = 0; x < cropRect.Width; x++)
+            {
+                for (int y = 0; y < cropRect.Height; y++)
+                {
+                    colorData2DPadded[x + padding, y + padding] = colorData[(y * cropRect.Width) + x];
+                }
+
+            }
+
+            return Convert2DArrayToTexture(colorData2DPadded);
+        }
+
+        public static Color[,] ConvertTextureToGrid(Texture2D texture, int x, int y, int width, int height)
+        {
+            // getting 1D pixel array
+            Color[] rawData = new Color[width * height];
+            Rectangle extractRegion = new Rectangle(x, y, width, height);
+            texture.GetData<Color>(0, extractRegion, rawData, 0, width * height);
+
+            // getting 2D pixel grid
+            Color[,] rawDataAsGrid = new Color[height, width];
+            for (int row = 0; row < height; row++)
+            {
+                for (int column = 0; column < width; column++)
+                {
+                    // Assumes row major ordering of the array.
+                    rawDataAsGrid[row, column] = rawData[row * width + column];
+                }
+            }
+            return rawDataAsGrid;
+        }
+
 
         public static void SaveTextureAsPNG(string filename, Texture2D texture)
         {
@@ -59,7 +167,7 @@ namespace SonOfRobin
             return texture;
         }
 
-        public static Texture2D Convert2DArrayToTexture(byte[,] inputArray)
+        public static Texture2D Convert2DGreyscaleArrayToTexture(byte[,] inputArray)
         {
             int width = inputArray.GetLength(0);
             int height = inputArray.GetLength(1);
@@ -74,6 +182,30 @@ namespace SonOfRobin
                 {
                     byte brightness = inputArray[x, y];
                     graphics[x, y] = new Color(brightness, brightness, brightness, (byte)255);
+                }
+            });
+
+            var texture = new Texture2D(graphicsDevice: SonOfRobinGame.graphicsDevice, width: width, height: height);
+            var array1D = ConvertArray2DTo1D(width: width, height: height, array2D: graphics);
+            texture.SetData(array1D);
+
+            return texture;
+        }
+
+        public static Texture2D Convert2DArrayToTexture(Color[,] inputArray)
+        {
+            int width = inputArray.GetLength(0);
+            int height = inputArray.GetLength(1);
+
+            Color[,] graphics = new Color[width, height];
+
+            var allY = Enumerable.Range(0, height).ToList();
+
+            Parallel.ForEach(allY, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, y =>
+            {
+                for (int x = 0; x < width; x++)
+                {
+                    graphics[x, y] = inputArray[x, y];
                 }
             });
 

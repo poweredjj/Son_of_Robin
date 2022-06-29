@@ -14,6 +14,7 @@ namespace SonOfRobin
         private readonly Color color;
         private readonly bool colorActive;
         private readonly float addedGfxRectMultiplier;
+        private readonly bool glowOnlyAtNight;
         public int Width { get { return (int)(this.sprite.gfxRect.Width * this.addedGfxRectMultiplier) + width; } set { this.width = value; } }
         public int Height { get { return (int)(this.sprite.gfxRect.Height * this.addedGfxRectMultiplier) + height; } set { this.height = value; } }
         public int Size
@@ -25,9 +26,23 @@ namespace SonOfRobin
                 this.height = value;
             }
         }
-        public float Opacity { get { return this.isActive ? opacity * this.sprite.opacity : 0f; } }
+        public float Opacity
+        {
+            get
+            {
+                if (this.glowOnlyAtNight && this.sprite.world.islandClock.CurrentPartOfDay != IslandClock.PartOfDay.Night) return 0f;
+                return this.isActive ? opacity * this.sprite.opacity : 0f;
+            }
+        }
         public Color Color { get { return this.isActive ? color * this.sprite.opacity : Color.Transparent; } }
-        public bool ColorActive { get { return colorActive; } }
+        public bool ColorActive
+        {
+            get
+            {
+                if (this.colorActive && this.glowOnlyAtNight && this.sprite.world.islandClock.CurrentPartOfDay != IslandClock.PartOfDay.Night) return false;
+                return this.colorActive;
+            }
+        }
 
         public Rectangle Rect
         {
@@ -38,7 +53,7 @@ namespace SonOfRobin
             }
         }
 
-        public LightEngine(float opacity, Color color, bool colorActive, float addedGfxRectMultiplier = 0f, bool isActive = true, Sprite sprite = null, int width = 0, int height = 0, int size = 0)
+        public LightEngine(float opacity, Color color, bool colorActive, float addedGfxRectMultiplier = 0f, bool isActive = true, Sprite sprite = null, int width = 0, int height = 0, int size = 0, bool glowOnlyAtNight = false)
         {
             this.isActive = isActive;
             this.sprite = sprite;
@@ -48,6 +63,7 @@ namespace SonOfRobin
             this.color = color;
             this.colorActive = colorActive;
             this.addedGfxRectMultiplier = addedGfxRectMultiplier;
+            this.glowOnlyAtNight = glowOnlyAtNight;
         }
 
         public void AssignSprite(Sprite newSprite)
@@ -81,6 +97,7 @@ namespace SonOfRobin
                 {"colorActive", this.colorActive },
                 {"addedGfxRectMultiplier", this.addedGfxRectMultiplier },
                 {"isActive", this.isActive },
+                {"glowOnlyAtNight", this.glowOnlyAtNight },
             };
 
             return lightData;
@@ -100,8 +117,9 @@ namespace SonOfRobin
             bool colorActive = (bool)lightDict["colorActive"];
             float addedGfxRectMultiplier = (float)lightDict["addedGfxRectMultiplier"];
             bool isActive = (bool)lightDict["isActive"];
+            bool glowOnlyAtNight = (bool)lightDict["glowOnlyAtNight"];
 
-            LightEngine lightEngine = new LightEngine(sprite: sprite, width: width, height: height, opacity: opacity, color: color, colorActive: colorActive, addedGfxRectMultiplier: addedGfxRectMultiplier, isActive: isActive);
+            LightEngine lightEngine = new LightEngine(sprite: sprite, width: width, height: height, opacity: opacity, color: color, colorActive: colorActive, addedGfxRectMultiplier: addedGfxRectMultiplier, isActive: isActive, glowOnlyAtNight: glowOnlyAtNight);
 
             if (lightEngine.isActive) lightEngine.Activate();
 

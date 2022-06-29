@@ -13,10 +13,8 @@ C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcore
 C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\osx-x64\publish\Content/gfx\actor29rec4.xnb
 C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\osx-x64\publish\Content/gfx\arrow_iron.xnb
 C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\osx-x64\publish\Content/gfx\arrow_wood.xnb
-C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\osx-x64\publish\Content/gfx\attack_effect_sprite_sheets.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\osx-x64\publish\Content/gfx\attack.xnb
 C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\osx-x64\publish\Content/gfx\axe_diamond.xnb
-C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\osx-x64\publish\Content/gfx\axe_iron.xnb
-C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\osx-x64\publish\Content/gfx\axe_stone.xnb
 C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\osx-x64\publish\Content/gfx\axe_wooden.xnb
 C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\osx-x64\publish\Content/gfx\backlight_1.xnb
 C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\osx-x64\publish\Content/gfx\backlight_2.xnb
@@ -42,8 +40,6 @@ C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcore
 C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\osx-x64\publish\Content/gfx\exclamation.xnb
 C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\osx-x64\publish\Content/gfx\fancy_food.xnb
 C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\osx-x64\publish\Content/gfx\fancy_food2.xnb
-C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\osx-x64\publish\Content/gfx\fancy_food3.xnb
-C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\osx-x64\publish\Content/gfx\File.xnb
 C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\osx-x64\publish\Content/gfx\flames.xnb
 C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\osx-x64\publish\Content/gfx\flowers.xnb
 C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\osx-x64\publish\Content/gfx\fox.xnb
@@ -136,6 +132,7 @@ C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcore
 C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\osx-x64\publish\Content/gfx\virtual_button_pressed.xnb
 C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\osx-x64\publish\Content/gfx\virtual_joypad_background.xnb
 C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\osx-x64\publish\Content/gfx\virtual_joypad_stick.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\osx-x64\publish\Content/gfx\water_drop.xnb
 C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\osx-x64\publish\Content/gfx\weapons1.xnb
 C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\osx-x64\publish\Content/gfx\Xbox 360\360_A.xnb
 C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\osx-x64\publish\Content/gfx\Xbox 360\360_B.xnb

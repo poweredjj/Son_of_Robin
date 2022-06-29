@@ -19,6 +19,7 @@ namespace SonOfRobin
         private readonly int noOfCellsY;
         public readonly int cellWidth;
         public readonly int cellHeight;
+        public readonly int resDivider;
         public readonly Cell[,] cellGrid;
         public readonly List<Cell> allCells;
         public List<Cell> cellsToProcessOnStart;
@@ -36,12 +37,13 @@ namespace SonOfRobin
 
         public List<Cell> CellsNotVisitedByPlayer { get { return this.allCells.Where(cell => !cell.visitedByPlayer).ToList(); } }
 
-        public Grid(World world, int cellWidth = 0, int cellHeight = 0)
+        public Grid(World world, int resDivider, int cellWidth = 0, int cellHeight = 0)
         {
             this.creationInProgress = true;
             this.creationStage = -1;
 
             this.world = world;
+            this.resDivider = resDivider;
 
             if (cellWidth == 0 && cellHeight == 0)
             {
@@ -62,7 +64,7 @@ namespace SonOfRobin
             this.allCells = this.GetAllCells();
             this.CalculateSurroundingCells();
 
-            this.gridTemplate = new GridTemplate(seed: this.world.seed, width: this.world.width, height: this.world.height, cellWidth: this.cellWidth, cellHeight: this.cellHeight);
+            this.gridTemplate = new GridTemplate(seed: this.world.seed, width: this.world.width, height: this.world.height, cellWidth: this.cellWidth, cellHeight: this.cellHeight, resDivider: this.resDivider);
 
             this.lastCellProcessedTime = DateTime.Now;
 
@@ -94,13 +96,13 @@ namespace SonOfRobin
             return gridData;
         }
 
-        public static Grid Deserialize(Dictionary<string, Object> gridData, World world)
+        public static Grid Deserialize(Dictionary<string, Object> gridData, World world, int resDivider)
         {
             int cellWidth = (int)gridData["cellWidth"];
             int cellHeight = (int)gridData["cellHeight"];
             var cellData = (List<Object>)gridData["cellData"];
 
-            Grid grid = new Grid(world: world, cellWidth: cellWidth, cellHeight: cellHeight);
+            Grid grid = new Grid(world: world, cellWidth: cellWidth, cellHeight: cellHeight, resDivider: resDivider);
 
             for (int i = 0; i < grid.allCells.Count; i++)
             {
@@ -121,7 +123,7 @@ namespace SonOfRobin
             foreach (Scene scene in existingWorlds)
             {
                 World oldWorld = (World)scene;
-                if (!oldWorld.creationInProgress && oldWorld.grid != null && !oldWorld.grid.creationInProgress && newWorld.seed == oldWorld.seed && newWorld.width == oldWorld.width && newWorld.height == oldWorld.height)
+                if (!oldWorld.worldCreationInProgress && oldWorld.grid != null && !oldWorld.grid.creationInProgress && newWorld.seed == oldWorld.seed && newWorld.width == oldWorld.width && newWorld.height == oldWorld.height)
                 {
                     Grid templateGrid = oldWorld.grid;
 
@@ -173,7 +175,7 @@ namespace SonOfRobin
         {
             var cellProcessingQueue = new List<Cell> { };
 
-            for (int i = 0; i < 80; i++)
+            for (int i = 0; i < 70 * Preferences.newWorldResDivider; i++)
             {
                 cellProcessingQueue.Add(this.cellsToProcessOnStart[0]);
                 this.cellsToProcessOnStart.RemoveAt(0);
@@ -198,7 +200,7 @@ namespace SonOfRobin
         // cannot be processed using parallel (textures don't work in parallel processing)
         {
             // when whole map is not loaded, processing cells will be very fast (and drawing progress bar is slowing down the whole process)
-            int maxCellsToProcess = Preferences.loadWholeMap ? 25 : 9999999;
+            int maxCellsToProcess = Preferences.loadWholeMap ? 75 * Preferences.newWorldResDivider : 9999999;
 
             for (int i = 0; i < maxCellsToProcess; i++)
             {
@@ -231,15 +233,15 @@ namespace SonOfRobin
             switch (this.creationStage)
             {
                 case 0:
-                    message = $"preparing island\nseed {seedText}\n{this.world.width} x {this.world.height}\npreparation time left {timeLeftString}";
+                    message = $"preparing island\nseed {seedText}\n{this.world.width} x {this.world.height}\ngenerating terrain {timeLeftString}";
                     break;
 
                 case 1:
-                    message = $"preparing island\nseed {seedText}\n{this.world.width} x {this.world.height}\npreparation time left {timeLeftString}";
+                    message = $"preparing island\nseed {seedText}\n{this.world.width} x {this.world.height}\ngenerating terrain {timeLeftString}";
                     break;
 
                 case 2:
-                    message = $"preparing island\nseed {seedText}\n{this.world.width} x {this.world.height}\nstarting in {timeLeftString}";
+                    message = $"preparing island\nseed {seedText}\n{this.world.width} x {this.world.height}\nloading textures {timeLeftString}";
                     break;
 
                 default:
@@ -308,7 +310,7 @@ namespace SonOfRobin
 
         public List<Sprite> GetSpritesFromSurroundingCells(Sprite sprite, Cell.Group groupName)
         {
-            Cell cell = (sprite.currentCell is null) ? this.FindMatchingCell(sprite.position) : sprite.currentCell;
+            Cell cell = (sprite.currentCell == null) ? this.FindMatchingCell(sprite.position) : sprite.currentCell;
             return cell.GetSpritesFromSurroundingCells(groupName);
         }
 
@@ -422,14 +424,24 @@ namespace SonOfRobin
             return piecesInsideTriangle;
         }
 
-        public List<Sprite> GetSpritesInCameraView(Camera camera, Cell.Group groupName)
+        public List<Sprite> GetSpritesInCameraView(Camera camera, Cell.Group groupName, bool compareWithCameraRect = false)
         {
             var visibleCells = this.GetCellsInsideRect(camera.viewRect);
             List<Sprite> visibleSprites = new List<Sprite>();
 
-            foreach (Cell cell in visibleCells)
+            if (compareWithCameraRect)
             {
-                visibleSprites.AddRange(cell.spriteGroups[groupName].Values.ToList());
+                foreach (Cell cell in visibleCells) // making sure that every piece is actually inside camera rect
+                {
+                    visibleSprites.AddRange(cell.spriteGroups[groupName].Values.Where(sprite => camera.viewRect.Intersects(sprite.gfxRect)).ToList());
+                }
+            }
+            else
+            {
+                foreach (Cell cell in visibleCells) // visibleCells area is larger than camera view
+                {
+                    visibleSprites.AddRange(cell.spriteGroups[groupName].Values.ToList());
+                }
             }
 
             return visibleSprites;
@@ -647,7 +659,7 @@ namespace SonOfRobin
                     break;
 
                 default:
-                    throw new ArgumentException($"Textures unloading - unsupported platform {SonOfRobinGame.platform}."); ;
+                    throw new ArgumentException($"Textures unloading - unsupported platform {SonOfRobinGame.platform}.");
             }
 
             var cellsInCameraView = this.GetCellsInsideRect(this.world.camera.viewRect);

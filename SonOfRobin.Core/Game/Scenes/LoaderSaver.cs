@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 
 namespace SonOfRobin
 {
@@ -26,7 +27,7 @@ namespace SonOfRobin
         private readonly bool showSavedMessage;
         private bool processingComplete;
         private World world;
-        private List<Sprite> spritesToSave;
+        private readonly List<Sprite> spritesToSave;
         private readonly string saveSlotName;
         private readonly string savePath;
         private readonly string saveTempPath;
@@ -42,7 +43,7 @@ namespace SonOfRobin
         private Dictionary<string, Object> gridData;
         private List<Object> trackingData;
         private List<Object> eventsData;
-        private List<Object> piecesData;
+        private readonly List<Object> piecesData;
 
         // saving mode uses flags instead of data variables - to save ram
         private bool headerSaved;
@@ -54,7 +55,7 @@ namespace SonOfRobin
 
         private string nextStepName;
         private int processedSteps;
-        private int allSteps;
+        private readonly int allSteps;
 
         private int PiecesFilesCount { get { return Directory.GetFiles(this.savePath).Where(file => file.Contains("pieces_")).ToList().Count; } }
 
@@ -235,6 +236,7 @@ namespace SonOfRobin
                     {"seed", this.world.seed },
                     {"width", this.world.width },
                     {"height", this.world.height },
+                    {"resDivider", this.world.resDivider },
                     {"currentFrame", this.world.currentFrame },
                     {"currentUpdate", this.world.currentUpdate },
                     {"TimePlayed", this.world.TimePlayed },
@@ -342,13 +344,24 @@ namespace SonOfRobin
 
             if (Directory.Exists(this.savePath)) Directory.Delete(path: this.savePath, recursive: true);
 
-            try
+            bool movedCorrectly = false;
+            for (int i = 0; i < 15; i++)
             {
-                Directory.Move(this.saveTempPath, this.savePath);
+                try
+                {
+                    Directory.Move(this.saveTempPath, this.savePath);
+                    movedCorrectly = true;
+                }
+                catch (IOException)
+                { Thread.Sleep(200); }
+
+                if (movedCorrectly) break;
             }
-            catch (IOException)
+
+            if (!movedCorrectly)
             {
-                new TextWindow(text: "An error occured during renaming temp save directory.", textColor: Color.White, bgColor: Color.DarkRed, useTransition: true, animate: true, closingTask: this.TextWindowTask);
+                new TextWindow(text: "An error occured during renaming temp save directory.", textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false, closingTask: this.TextWindowTask, priority: -1, inputType: InputTypes.Normal);
+                this.ErrorOccured = true;
                 return;
             }
 
@@ -382,7 +395,7 @@ namespace SonOfRobin
                 string headerPath = Path.Combine(this.savePath, headerName);
                 this.headerData = (Dictionary<string, Object>)FileReaderWriter.Load(path: headerPath);
 
-                if (headerData is null)
+                if (headerData == null)
                 {
                     new TextWindow(text: $"Error while reading save header for slot {saveSlotName}.", textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false, closingTask: this.TextWindowTask);
                     this.ErrorOccured = true;
@@ -412,7 +425,7 @@ namespace SonOfRobin
                 string hintsPath = Path.Combine(this.savePath, hintsName);
                 this.hintsData = (Dictionary<string, Object>)FileReaderWriter.Load(path: hintsPath);
 
-                if (hintsData is null)
+                if (hintsData == null)
                 {
                     new TextWindow(text: $"Error while reading hints for slot {saveSlotName}.", textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false, closingTask: this.TextWindowTask);
                     this.ErrorOccured = true;
@@ -476,8 +489,9 @@ namespace SonOfRobin
             int seed = (int)this.headerData["seed"];
             int width = (int)this.headerData["width"];
             int height = (int)this.headerData["height"];
+            int resDivider = (int)this.headerData["resDivider"];
 
-            this.world = new World(width: width, height: height, seed: seed, saveGameData: this.SaveGameData);
+            this.world = new World(width: width, height: height, seed: seed, saveGameData: this.SaveGameData, resDivider: resDivider);
             this.MoveToTop();
 
             MessageLog.AddMessage(msgType: MsgType.User, message: $"Game has been loaded from slot {saveSlotName}.", color: Color.LightBlue);

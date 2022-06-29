@@ -9,7 +9,7 @@ namespace SonOfRobin
 {
     public class PieceContextMenu : Scene
     {
-        protected enum ContextAction { Drop, DropAll, Move, Eat, Plant, Cook, Switch }
+        protected enum ContextAction { Drop, DropAll, Move, Eat, Plant, Cook, Switch, Ignite, Extinguish }
 
         private static readonly SpriteFont font = SonOfRobinGame.fontTommy40;
         private static readonly float marginPercent = 0.03f;
@@ -114,12 +114,12 @@ namespace SonOfRobin
             }
         }
 
-        public PieceContextMenu(BoardPiece piece, PieceStorage storage, StorageSlot slot, float percentPosX, float percentPosY, bool addMove = false, bool addDrop = true, bool addCook = false) : base(inputType: InputTypes.Normal, priority: 0, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.PieceContext)
+        public PieceContextMenu(BoardPiece piece, PieceStorage storage, StorageSlot slot, float percentPosX, float percentPosY, bool addMove = false, bool addDrop = true, bool addCook = false, bool addIgnite = false, bool addExtinguish = false) : base(inputType: InputTypes.Normal, priority: 0, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.PieceContext)
         {
             this.piece = piece;
             this.storage = storage;
             this.slot = slot;
-            this.actionList = this.GetContextActionList(addMove: addMove, addDrop: addDrop, addCook: addCook);
+            this.actionList = this.GetContextActionList(addMove: addMove, addDrop: addDrop, addCook: addCook, addIgnite: addIgnite, addExtinguish: addExtinguish);
             this.percentPosX = percentPosX;
             this.percentPosY = percentPosY;
             this.activeEntry = 0;
@@ -131,7 +131,7 @@ namespace SonOfRobin
                 new Dictionary<string, float> { { "PosY", this.viewParams.PosY + SonOfRobinGame.VirtualHeight }, { "Opacity", 0f } });
         }
 
-        private List<ContextAction> GetContextActionList(bool addMove = false, bool addDrop = false, bool addCook = false)
+        private List<ContextAction> GetContextActionList(bool addMove = false, bool addDrop = false, bool addCook = false, bool addIgnite = false, bool addExtinguish = false)
         {
             var contextActionList = new List<ContextAction> { };
 
@@ -141,6 +141,8 @@ namespace SonOfRobin
             if (addMove) contextActionList.Add(ContextAction.Move);
             if (addDrop) contextActionList.Add(ContextAction.Drop);
             if (addCook) contextActionList.Add(ContextAction.Cook);
+            if (addIgnite) contextActionList.Add(ContextAction.Ignite);
+            if (addExtinguish) contextActionList.Add(ContextAction.Extinguish);
             if (this.slot.PieceCount > 1) contextActionList.Add(ContextAction.DropAll);
 
             return contextActionList;
@@ -211,13 +213,13 @@ namespace SonOfRobin
 
         private void ProcessTouch()
         {
-            if (SonOfRobinGame.platform != Platform.Mobile) return;
+            if (!Preferences.EnableTouch) return;
 
             Rectangle bgRect = this.BgRect;
 
             foreach (TouchLocation touch in TouchInput.TouchPanelState)
             {
-                Vector2 touchPos = (touch.Position / Preferences.globalScale) - this.viewParams.DrawPos;
+                Vector2 touchPos = (touch.Position / Preferences.GlobalScale) - this.viewParams.DrawPos;
 
                 if (touch.State == TouchLocationState.Released)
                 {
@@ -341,6 +343,22 @@ namespace SonOfRobin
                     {
                         PortableLight portableLight = (PortableLight)this.piece;
                         portableLight.IsOn = !portableLight.IsOn;
+
+                        return;
+                    }
+
+                case ContextAction.Ignite:
+                    {
+                        Fireplace fireplace = (Fireplace)this.storage.storagePiece;
+                        fireplace.IsOn = true;
+
+                        return;
+                    }
+
+                case ContextAction.Extinguish:
+                    {
+                        Fireplace fireplace = (Fireplace)this.storage.storagePiece;
+                        fireplace.IsOn = false;
 
                         return;
                     }

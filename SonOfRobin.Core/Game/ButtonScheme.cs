@@ -50,8 +50,6 @@ namespace SonOfRobin
 
         public static void ChangeType(Type type)
         {
-            ClearPreviousTextures();
-
             currentType = type;
 
             plus = SonOfRobinGame.content.Load<Texture2D>("gfx/plus");
@@ -178,40 +176,6 @@ namespace SonOfRobin
             }
 
             SonOfRobinGame.controlTips.RefreshLayout();
-        }
-
-        private static void ClearPreviousTextures()
-        {
-            try
-            {
-                plus.Dispose();
-
-                buttonA.Dispose();
-                buttonB.Dispose();
-                buttonX.Dispose();
-                buttonY.Dispose();
-
-                buttonBack.Dispose();
-                buttonStart.Dispose();
-
-                dpad.Dispose();
-                dpadDown.Dispose();
-                dpadUp.Dispose();
-                dpadLeft.Dispose();
-                dpadRight.Dispose();
-
-                buttonLB.Dispose();
-                buttonRB.Dispose();
-                buttonLT.Dispose();
-                buttonRT.Dispose();
-
-                leftStick.Dispose();
-                rightStick.Dispose();
-                leftStickClick.Dispose();
-                rightStickClick.Dispose();
-            }
-            catch (NullReferenceException)
-            { return; }
         }
 
     }

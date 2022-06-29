@@ -11,6 +11,12 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
     <StartupObject />
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DefineConstants>TRACE</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>TRACE</DefineConstants>
+  </PropertyGroup>
   <ItemGroup>
     <MonoGameContentReference Include="..\SonOfRobin.Core\Content\SonOfRobin.mgcb">
       <Link>Content\SonOfRobin.mgcb</Link>

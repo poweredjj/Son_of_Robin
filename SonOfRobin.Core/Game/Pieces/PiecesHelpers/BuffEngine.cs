@@ -261,10 +261,8 @@ namespace SonOfRobin
                 case BuffType.InvWidth:
                     {
                         Player player = (Player)this.piece;
-                        if (add) player.invWidth += (byte)buff.value;
-                        else player.invWidth -= (byte)buff.value;
-
-                        player.pieceStorage.Resize(player.invWidth, player.invHeight);
+                        if (add) player.InvWidth += (byte)buff.value;
+                        else player.InvWidth -= (byte)buff.value;
 
                         break;
                     }
@@ -272,10 +270,8 @@ namespace SonOfRobin
                 case BuffType.InvHeight:
                     {
                         Player player = (Player)this.piece;
-                        if (add) player.invHeight += (byte)buff.value;
-                        else player.invHeight -= (byte)buff.value;
-
-                        player.pieceStorage.Resize(player.invWidth, player.invHeight);
+                        if (add) player.InvHeight += (byte)buff.value;
+                        else player.InvHeight -= (byte)buff.value;
 
                         break;
                     }
@@ -283,10 +279,8 @@ namespace SonOfRobin
                 case BuffType.ToolbarWidth:
                     {
                         Player player = (Player)this.piece;
-                        if (add) player.toolbarWidth += (byte)buff.value;
-                        else player.toolbarWidth -= (byte)buff.value;
-
-                        player.toolStorage.Resize(player.toolbarWidth, player.toolbarHeight);
+                        if (add) player.ToolbarWidth += (byte)buff.value;
+                        else player.ToolbarWidth -= (byte)buff.value;
 
                         break;
                     }
@@ -294,10 +288,8 @@ namespace SonOfRobin
                 case BuffType.ToolbarHeight:
                     {
                         Player player = (Player)this.piece;
-                        if (add) player.toolbarHeight += (byte)buff.value;
-                        else player.toolbarHeight -= (byte)buff.value;
-
-                        player.toolStorage.Resize(player.toolbarWidth, player.toolbarHeight);
+                        if (add) player.ToolbarHeight += (byte)buff.value;
+                        else player.ToolbarHeight -= (byte)buff.value;
 
                         break;
                     }

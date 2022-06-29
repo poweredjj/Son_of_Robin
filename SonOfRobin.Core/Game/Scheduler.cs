@@ -9,7 +9,7 @@ namespace SonOfRobin
 {
     public class Scheduler
     {
-        public enum TaskName { Empty, CreateNewWorld, CreateNewWorldNow, QuitGame, OpenMainMenu, OpenCreateMenu, OpenIslandTemplateMenu, OpenSetSeedMenu, OpenOptionsMenu, OpenTutorialsMenu, OpenLoadMenu, OpenSaveMenu, OpenDebugMenu, OpenConfirmationMenu, OpenCreateAnyPieceMenu, OpenGameOverMenu, SaveGame, LoadGame, LoadGameNow, ReturnToMainMenu, SavePrefs, ProcessConfirmation, OpenCraftMenu, Craft, Hit, CreateNewPiece, CreateDebugPieces, OpenContainer, DeleteObsoleteSaves, DropFruit, GetEaten, ExecuteTaskWithDelay, AddWorldEvent, OpenTextWindow, SleepInsideShelter, SleepOutside, TempoFastForward, TempoStop, TempoPlay, CameraTrackPiece, CameraTrackCoords, CameraSetZoom, ShowCookingProgress, RestoreHints, OpenMainMenuIfSpecialKeysArePressed, CheckForPieceHints, ShowHint, ExecuteTaskList, ExecuteTaskChain, ShowTutorial, RemoveScene, ChangeSceneInputType, SetCineMode, AddTransition, SkipCinematics, DeleteTemplates, SetSpectatorMode, SwitchLightSource }
+        public enum TaskName { Empty, CreateNewWorld, CreateNewWorldNow, QuitGame, OpenMenuTemplate, OpenMainMenu, OpenConfirmationMenu, SaveGame, LoadGame, LoadGameNow, ReturnToMainMenu, SavePrefs, ProcessConfirmation, OpenCraftMenu, Craft, Hit, CreateNewPiece, CreateDebugPieces, OpenContainer, DeleteObsoleteSaves, DropFruit, GetEaten, ExecuteTaskWithDelay, AddWorldEvent, OpenTextWindow, SleepInsideShelter, SleepOutside, TempoFastForward, TempoStop, TempoPlay, CameraTrackPiece, CameraTrackCoords, CameraSetZoom, ShowCookingProgress, RestoreHints, OpenMainMenuIfSpecialKeysArePressed, CheckForPieceHints, ShowHint, ExecuteTaskList, ExecuteTaskChain, ShowTutorial, RemoveScene, ChangeSceneInputType, SetCineMode, AddTransition, SkipCinematics, DeleteTemplates, SetSpectatorMode, SwitchLightSource }
 
         private readonly static Dictionary<int, List<Task>> queue = new Dictionary<int, List<Task>>();
         private static int inputTurnedOffUntilFrame = 0;
@@ -106,7 +106,7 @@ namespace SonOfRobin
             public void Execute()
             {
                 this.RunTask();
-                if (this.rebuildsMenu) this.menu.Rebuild();
+                if (this.rebuildsMenu) this.menu.Rebuild(instantScroll: false);
             }
 
             private void RunTask()
@@ -118,51 +118,33 @@ namespace SonOfRobin
                     case TaskName.Empty:
                         return;
 
+                    case TaskName.OpenMenuTemplate:
+                        {
+                            // example executeHelper for this task
+                            // var menuTemplateData = new Dictionary<string, Object> { { "templateName", MenuTemplate.Name.Main }, { "scenesToLink", scenesToLink } };
+
+                            var menuTemplateData = (Dictionary<string, Object>)executeHelper;
+                            MenuTemplate.Name templateName = (MenuTemplate.Name)menuTemplateData["templateName"];
+
+                            Menu menu = MenuTemplate.CreateMenuFromTemplate(templateName: templateName);
+
+                            if (menuTemplateData.ContainsKey("scenesToLink"))
+                            {
+                                List<Scene> scenesToLink = (List<Scene>)menuTemplateData["scenesToLink"];
+                                menu.AddLinkedScenes(scenesToLink);
+                            }
+
+                            if (templateName == MenuTemplate.Name.GameOver) Scene.RemoveAllScenesOfType(typeof(TextWindow));
+
+                            return;
+                        }
+
                     case TaskName.OpenMainMenu:
-                        OpenMenu(templateName: MenuTemplate.Name.Main, executeHelper: executeHelper);
-                        return;
+                        {
+                            new Task(menu: null, taskName: TaskName.OpenMenuTemplate, turnOffInputUntilExecution: true, delay: 0, executeHelper: new Dictionary<string, Object> { { "templateName", MenuTemplate.Name.Main } });
 
-                    case TaskName.OpenCreateMenu:
-                        OpenMenu(templateName: MenuTemplate.Name.CreateNewIsland, executeHelper: executeHelper);
-                        return;
-
-                    case TaskName.OpenIslandTemplateMenu:
-                        OpenMenu(templateName: MenuTemplate.Name.OpenIslandTemplate, executeHelper: executeHelper);
-                        return;
-
-                    case TaskName.OpenSetSeedMenu:
-                        OpenMenu(templateName: MenuTemplate.Name.SetSeed, executeHelper: executeHelper);
-                        return;
-
-                    case TaskName.OpenLoadMenu:
-                        OpenMenu(templateName: MenuTemplate.Name.Load, executeHelper: executeHelper);
-                        return;
-
-                    case TaskName.OpenSaveMenu:
-                        OpenMenu(templateName: MenuTemplate.Name.Save, executeHelper: executeHelper);
-                        return;
-
-                    case TaskName.OpenOptionsMenu:
-                        OpenMenu(templateName: MenuTemplate.Name.Options, executeHelper: executeHelper);
-                        return;
-
-                    case TaskName.OpenTutorialsMenu:
-                        OpenMenu(templateName: MenuTemplate.Name.Tutorials, executeHelper: executeHelper);
-                        return;
-
-                    case TaskName.OpenDebugMenu:
-                        OpenMenu(templateName: MenuTemplate.Name.Debug, executeHelper: executeHelper);
-                        return;
-
-                    case TaskName.OpenCreateAnyPieceMenu:
-                        OpenMenu(templateName: MenuTemplate.Name.CreateAnyPiece, executeHelper: executeHelper);
-                        return;
-
-                    case TaskName.OpenGameOverMenu:
-                        Scene.RemoveAllScenesOfType(typeof(TextWindow));
-
-                        OpenMenu(templateName: MenuTemplate.Name.GameOver, executeHelper: executeHelper);
-                        return;
+                            return;
+                        }
 
                     case TaskName.OpenCraftMenu:
                         {
@@ -206,8 +188,9 @@ namespace SonOfRobin
                             int width = (int)createData["width"];
                             int height = (int)createData["height"];
                             int seed = (int)createData["seed"];
+                            int resDivider = (int)createData["resDivider"];
 
-                            new World(width: width, height: height, seed: seed);
+                            new World(width: width, height: height, seed: seed, resDivider: resDivider);
 
                             return;
                         }
@@ -437,7 +420,7 @@ namespace SonOfRobin
 
                             if (highlightOnly)
                             {
-                                if (SonOfRobinGame.platform == Platform.Mobile) VirtButton.ButtonHighlightOnNextFrame(VButName.UseTool);
+                                VirtButton.ButtonHighlightOnNextFrame(VButName.UseTool);
                                 ControlTips.TipHighlightOnNextFrame(tipName: "use item");
                                 return;
                             }
@@ -460,7 +443,7 @@ namespace SonOfRobin
 
                             if (highlightOnly)
                             {
-                                if (SonOfRobinGame.platform == Platform.Mobile) VirtButton.ButtonHighlightOnNextFrame(VButName.UseTool);
+                                VirtButton.ButtonHighlightOnNextFrame(VButName.UseTool);
                                 ControlTips.TipHighlightOnNextFrame(tipName: "use item");
                                 return;
                             }
@@ -948,15 +931,6 @@ namespace SonOfRobin
                 }
             }
 
-            private static void OpenMenu(MenuTemplate.Name templateName, Object executeHelper)
-            {
-                Menu menu = MenuTemplate.CreateMenuFromTemplate(templateName: templateName);
-                if (executeHelper != null)
-                {
-                    var scenesToLink = (List<Scene>)executeHelper;
-                    menu.AddLinkedScenes(scenesToLink);
-                }
-            }
 
             private static void CloseGame(bool quitGame)
             {
