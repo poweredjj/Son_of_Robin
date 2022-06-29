@@ -44,6 +44,7 @@ namespace SonOfRobin
         private readonly Texture2D textureReleased;
         private readonly Texture2D texturePressed;
         private bool isDown;
+        private bool isHighlighted;
         private bool wasDownLastFrame;
         private bool switchedState;
         private readonly bool hidden;
@@ -98,6 +99,7 @@ namespace SonOfRobin
             if (this.coupledPrefName != "") initialValue = (bool)Helpers.GetProperty(targetObj: new Preferences(), propertyName: this.coupledPrefName);
 
             this.isDown = initialValue;
+            this.isHighlighted = false;
             this.switchedState = initialValue;
             this.wasDownLastFrame = false;
 
@@ -124,6 +126,11 @@ namespace SonOfRobin
             return buttonsByName[buttonName].IsActive;
         }
 
+        public static void HighlightButton(VButName buttonName)
+        {
+            if (!Input.InputActive || !buttonsByName.ContainsKey(buttonName)) return;
+            buttonsByName[buttonName].isHighlighted = true;
+        }
 
         public static void UpdateAll()
         {
@@ -195,7 +202,18 @@ namespace SonOfRobin
             Vector2 posCenter = this.PosCenter;
 
             sourceRectangle = new Rectangle(0, 0, this.textureReleased.Width, this.textureReleased.Height);
-            SonOfRobinGame.spriteBatch.Draw(this.textureReleased, gfxRect, sourceRectangle, this.colorReleased);
+
+            int drawCount = 1;
+            if (this.isHighlighted)
+            {
+                drawCount = 4;
+                this.isHighlighted = false;
+            }
+
+            for (int i = 0; i < drawCount; i++)
+            {
+                SonOfRobinGame.spriteBatch.Draw(this.textureReleased, gfxRect, sourceRectangle, this.colorReleased);
+            }
 
             var labelSize = font.MeasureString(this.label);
             float targetTextWidth = this.Width * 0.85f;

@@ -19,6 +19,7 @@ namespace SonOfRobin
         WorldSleep,
         Inventory,
         Map,
+        QuitLoading,
         HiddenStart
     }
     public class TouchInput
@@ -189,6 +190,15 @@ namespace SonOfRobin
                     xPos = 0.06f;
                     yPos = 0.85f;
                     new VirtButton(name: VButName.Return, label: "RETURN", colorPressed: Color.LightGreen, colorReleased: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
+
+                    return;
+
+                case TouchLayout.QuitLoading:
+                    showSticks = false;
+
+                    xPos = 0.06f;
+                    yPos = 0.85f;
+                    new VirtButton(name: VButName.Return, label: "CANCEL", colorPressed: Color.LightGreen, colorReleased: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
 
                     return;
 

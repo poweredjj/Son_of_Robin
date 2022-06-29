@@ -189,7 +189,7 @@ namespace SonOfRobin
             {
                 if (world == null) return;
 
-                world.AutoSave(force: true);
+                world.AutoSave();
             }
 
             if (Keyboard.HasBeenPressed(Keys.K))
@@ -224,7 +224,26 @@ namespace SonOfRobin
             }
 
             if (Keyboard.HasBeenPressed(Keys.F1)) new TextWindow(text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.", useTransition: true, bgColor: Color.DeepSkyBlue, textColor: Color.White);
-            if (Keyboard.HasBeenPressed(Keys.F2)) ProgressBar.Hide();
+
+            if (Keyboard.HasBeenPressed(Keys.F2))
+            {
+                var taskChain = new List<Object> { };
+
+                taskChain.Add(new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.TempoStop, delay: 0, executeHelper: null, storeForLaterUse: true));
+
+                var bgColor1 = new List<byte> { Color.DarkRed.R, Color.DarkRed.G, Color.DarkRed.B };
+                var textWindowData1 = new Dictionary<string, Object> { { "text", "Message 1" }, { "bgColor", bgColor1 } };
+                taskChain.Add(new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.OpenTextWindow, turnOffInput: true, delay: 1, executeHelper: textWindowData1, storeForLaterUse: true));
+
+                var bgColor2 = new List<byte> { Color.DarkCyan.R, Color.DarkCyan.G, Color.DarkCyan.B };
+                var textWindowData2 = new Dictionary<string, Object> { { "text", "Message 2" }, { "bgColor", bgColor2 } };
+                taskChain.Add(new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.OpenTextWindow, turnOffInput: true, delay: 60, executeHelper: textWindowData2, storeForLaterUse: true));
+
+                taskChain.Add(new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.TempoPlay, delay: 0, executeHelper: null, storeForLaterUse: true));
+
+                new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.ExecuteTaskChain, turnOffInput: true, executeHelper: taskChain);
+            }
+
             if (Keyboard.HasBeenPressed(Keys.F3)) world.player.pieceStorage.AddPiece(piece: PieceTemplate.CreateOffBoard(templateName: PieceTemplate.Name.Fox, world: world), dropIfDoesNotFit: true);
 
             if (Keyboard.HasBeenPressed(Keys.F4))
@@ -234,8 +253,8 @@ namespace SonOfRobin
                 recipe.TryToProducePieces(storage: world.player.pieceStorage);
             }
 
-            if (Keyboard.HasBeenPressed(Keys.F5)) MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: "Test message.");
-            if (Keyboard.HasBeenPressed(Keys.F6)) ProgressBar.ChangeValues(curVal: 1, maxVal: 5, text: "progressbar test\nsecond line\nand third line");
+            if (Keyboard.HasBeenPressed(Keys.F5)) SonOfRobinGame.progressBar.TurnOn(curVal: 2, maxVal: 5, text: $"Loading game - replacing save slot data...              ...");
+            if (Keyboard.HasBeenPressed(Keys.F6)) SonOfRobinGame.progressBar.TurnOn(curVal: 6, maxVal: 6, text: $"Loading game - events...");
 
             if (Keyboard.HasBeenPressed(Keys.F7))
             {
@@ -245,37 +264,26 @@ namespace SonOfRobin
 
             if (Keyboard.HasBeenPressed(Keys.F8))
             {
-                InfoWindow infoWindow = InfoWindow.GetTopInfoWindow();
-                if (infoWindow != null)
-                {
-                    infoWindow.TurnOn(newPosX: 100, newPosY: 100, entryList: new List<InfoWindow.TextEntry> {
-                        new InfoWindow.TextEntry(text: "First line.", color: Color.White),
-                        new InfoWindow.TextEntry(text: "Second line.", color: Color.Green),
-                        new InfoWindow.TextEntry(text: "And this is third line.", color: Color.LightBlue, frame: AnimData.frameListById["Blonde-0-default"][0]),
+                SonOfRobinGame.progressBar.TurnOn(newPosX: -1, newPosY: -1, centerHoriz: true, centerVert: true, entryList: new List<InfoWindow.TextEntry> {
+                        new InfoWindow.TextEntry(text: "First line.", color: Color.White, frame: AnimData.frameListById["Blonde-0-default"][0]),
+                        new InfoWindow.TextEntry(text: "Second line.", color: Color.Green, scale: 1.5f, frame: AnimData.frameListById["Blonde-0-default"][0]),
+                        new InfoWindow.TextEntry(color: Color.White, progressCurrentVal: 2, progressMaxVal: 5),
+                        new InfoWindow.TextEntry(text: "And this is fourth line.", color: Color.LightBlue, frame: AnimData.frameListById["Blonde-0-default"][0]),
+                        new InfoWindow.TextEntry(text: "This is the last line.", color: Color.YellowGreen, frame: AnimData.frameListById["Blonde-0-default"][0]),
                     });
-                }
             }
 
             if (Keyboard.HasBeenPressed(Keys.F9))
             {
-                InfoWindow infoWindow = InfoWindow.GetTopInfoWindow();
-                if (infoWindow != null)
-                {
-                    infoWindow.TurnOn(newPosX: 0, newPosY: 0,
-                        entryList: new List<InfoWindow.TextEntry> {
-                       // new InfoWindow.TextEntry(text: "First line.", color: Color.White, scale: 2f, animframe: AnimData[]),
+                SonOfRobinGame.progressBar.TurnOn(newPosX: 0, newPosY: 0,
+                    entryList: new List<InfoWindow.TextEntry> {
                         new InfoWindow.TextEntry(text: "Second line.", color: Color.Green),
                         new InfoWindow.TextEntry(text: "And this is third line.", color: Color.LightBlue),
                         new InfoWindow.TextEntry(text: "This window should be at 0,0.", color: Color.Yellow),
-                    });
-                }
+                });
             }
 
-            if (Keyboard.HasBeenPressed(Keys.F10))
-            {
-                InfoWindow infoWindow = InfoWindow.GetTopInfoWindow();
-                if (infoWindow != null) infoWindow.TurnOff();
-            }
+            if (Keyboard.HasBeenPressed(Keys.F10)) SonOfRobinGame.hintWindow.TurnOff();
 
             if (Keyboard.HasBeenPressed(Keys.F11))
             { world.player.buffEngine.AddBuff(world: world, buff: new BuffEngine.Buff(world: world, type: BuffEngine.BuffType.EnableMap, value: null, autoRemoveDelay: 600, isPositive: true)); }

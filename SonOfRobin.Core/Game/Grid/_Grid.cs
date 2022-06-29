@@ -41,7 +41,7 @@ namespace SonOfRobin
         public Grid(World world, int cellWidth = 0, int cellHeight = 0)
         {
             this.creationInProgress = true;
-            this.creationStage = 0;
+            this.creationStage = -1;
 
             this.world = world;
 
@@ -151,6 +151,9 @@ namespace SonOfRobin
         {
             switch (this.creationStage)
             {
+                case 0:
+                    CreationStage0();
+                    return;
                 case 1:
                     CreationStage1();
                     return;
@@ -160,6 +163,12 @@ namespace SonOfRobin
                 default:
                     throw new DivideByZeroException($"Unsupported creationStage - {creationStage}.");
             }
+        }
+
+        public void CreationStage0()
+        {
+            this.UpdateProgressBar();
+            this.PrepareNextCreationStage();
         }
 
         public void CreationStage1()
@@ -219,24 +228,32 @@ namespace SonOfRobin
 
             switch (this.creationStage)
             {
+                case 0:
+                    message = $"preparing island\nseed {this.world.seed}\n{this.world.width} x {this.world.height}\npreparation time left {timeLeftString}";
+                    break;
+
                 case 1:
-                    message = $":: preparing island ::\nseed {this.world.seed}\n{this.world.width} x {this.world.height}\npreparation time left {timeLeftString}";
+                    message = $"preparing island\nseed {this.world.seed}\n{this.world.width} x {this.world.height}\npreparation time left {timeLeftString}";
                     break;
 
                 case 2:
-                    message = $":: preparing island ::\nseed {this.world.seed}\n{this.world.width} x {this.world.height}\nstarting in {timeLeftString}";
+                    message = $"preparing island\nseed {this.world.seed}\n{this.world.width} x {this.world.height}\nstarting in {timeLeftString}";
                     break;
 
                 default:
                     throw new DivideByZeroException($"Unsupported creationStage - {creationStage}.");
             }
 
-            ProgressBar.TurnOnBgColor();
-
-            ProgressBar.ChangeValues(
+            SonOfRobinGame.progressBar.TurnOn(
                             curVal: this.allCells.Count - this.cellsToProcessOnStart.Count,
                             maxVal: this.allCells.Count,
                             text: message);
+
+            // for proper ControlTips alignment
+            this.world.viewParams.width = SonOfRobinGame.progressBar.viewParams.width;
+            this.world.viewParams.height = SonOfRobinGame.progressBar.viewParams.height;
+            this.world.viewParams.posX = SonOfRobinGame.progressBar.viewParams.posX;
+            this.world.viewParams.posY = SonOfRobinGame.progressBar.viewParams.posY;
         }
 
 

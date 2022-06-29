@@ -162,7 +162,7 @@ namespace SonOfRobin
         public override void Remove()
         {
             this.ReleaseHeldPieces(slot: null, forceReleaseAll: true);
-            InfoWindow.TurnOffTopWindow();
+            SonOfRobinGame.hintWindow.TurnOff();
 
             if (this.transition == null && this.layout != Layout.SingleBottom && this.layout != Layout.DualBottom)
             {
@@ -181,16 +181,13 @@ namespace SonOfRobin
             base.Remove();
         }
 
-        private void UpdateInfoWindow()
+        private void UpdateHintWindow()
         {
-            InfoWindow infoWindow = InfoWindow.GetTopInfoWindow();
-            if (infoWindow == null) return;
-
             BoardPiece selectedPiece = this.draggedPieces.Count == 0 ? this.SelectedPiece : this.draggedPieces[0];
             StorageSlot slot = this.storage.GetSlot(x: this.CursorX, y: this.CursorY);
             if (selectedPiece == null || slot == null)
             {
-                infoWindow.TurnOff();
+                SonOfRobinGame.hintWindow.TurnOff();
                 return;
             }
 
@@ -206,10 +203,11 @@ namespace SonOfRobin
 
             int margin = this.Margin;
             int tileSize = this.TileSize;
+            InfoWindow hintWindow = SonOfRobinGame.hintWindow;
 
             Vector2 slotPos = this.GetSlotPos(slot: slot, margin: margin, tileSize: tileSize) + new Vector2(this.viewParams.posX, this.viewParams.posY);
             Vector2 windowPos;
-            Vector2 infoWindowSize = infoWindow.MeasureEntries(entryList);
+            Vector2 infoWindowSize = hintWindow.MeasureEntries(entryList);
 
             switch (this.layout)
             {
@@ -253,12 +251,12 @@ namespace SonOfRobin
             // keeping the window inside screen bounds
             windowPos.X = Math.Max(windowPos.X, 0);
             windowPos.Y = Math.Max(windowPos.Y, 0);
-            int maxX = (int)((SonOfRobinGame.VirtualWidth * infoWindow.viewParams.scaleX) - infoWindowSize.X);
-            int maxY = (int)((SonOfRobinGame.VirtualHeight * infoWindow.viewParams.scaleY) - infoWindowSize.Y);
+            int maxX = (int)((SonOfRobinGame.VirtualWidth * hintWindow.viewParams.scaleX) - infoWindowSize.X);
+            int maxY = (int)((SonOfRobinGame.VirtualHeight * hintWindow.viewParams.scaleY) - infoWindowSize.Y);
             windowPos.X = Math.Min(windowPos.X, maxX);
             windowPos.Y = Math.Min(windowPos.Y, maxY);
 
-            infoWindow.TurnOn(newPosX: (int)windowPos.X, newPosY: (int)windowPos.Y, entryList: entryList);
+            hintWindow.TurnOn(newPosX: (int)windowPos.X, newPosY: (int)windowPos.Y, entryList: entryList);
         }
 
         public override void Update(GameTime gameTime)
@@ -269,7 +267,7 @@ namespace SonOfRobin
             if (this.CursorY >= this.storage.Height) this.CursorY = this.storage.Height - 1; // in case storage was resized
             this.storage.DestroyBrokenPieces();
             this.UpdateViewParams();
-            if (this.layout != Layout.SingleBottom && this.inputActive) this.UpdateInfoWindow();
+            if (this.layout != Layout.SingleBottom && this.inputActive) this.UpdateHintWindow();
             this.ProcessInput();
             this.storage.lastUsedSlot = this.ActiveSlot;
         }
@@ -410,11 +408,9 @@ namespace SonOfRobin
 
             if (switchToSecondaryInv)
             {
-                if (this.draggedPieces.Count == 0 || this.otherInventory.storage.CanFitThisPiece(this.draggedPieces[0]))
-                {
-                    this.MoveOtherInventoryToTop();
-                    this.MoveDraggedPiecesToOtherInv();
-                }
+                this.MoveOtherInventoryToTop();
+                this.MoveDraggedPiecesToOtherInv();
+
             }
         }
 
@@ -628,12 +624,11 @@ namespace SonOfRobin
 
         private void MoveDraggedPiecesToOtherInv()
         {
-            if (this.otherInventory == null || (this.draggedPieces.Count > 0 && !this.otherInventory.storage.CanFitThisPiece(this.draggedPieces[0])))
-            { this.ReleaseHeldPieces(slot: null, forceReleaseAll: true); }
+            if (this.otherInventory == null) this.ReleaseHeldPieces(slot: null, forceReleaseAll: true);
             else
             {
-                if (this.draggedPieces.Count > 0) { this.otherInventory.tipsLayout = ControlTips.TipsLayout.InventoryDrag; }
-                else { this.otherInventory.tipsLayout = ControlTips.TipsLayout.InventorySelect; }
+                if (this.draggedPieces.Count > 0) this.otherInventory.tipsLayout = ControlTips.TipsLayout.InventoryDrag;
+                else this.otherInventory.tipsLayout = ControlTips.TipsLayout.InventorySelect;
 
                 foreach (BoardPiece piece in this.draggedPieces)
                 { this.otherInventory.draggedPieces.Add(piece); }
@@ -655,11 +650,9 @@ namespace SonOfRobin
                GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.LeftShoulder) ||
                GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.RightShoulder))
             {
-                if (this.draggedPieces.Count == 0 || this.otherInventory.storage.CanFitThisPiece(this.draggedPieces[0]))
-                {
-                    this.MoveOtherInventoryToTop();
-                    this.MoveDraggedPiecesToOtherInv();
-                }
+                this.MoveOtherInventoryToTop();
+                this.MoveDraggedPiecesToOtherInv();
+
                 return;
             }
 
@@ -676,6 +669,8 @@ namespace SonOfRobin
                 GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.Y) ||
                 TouchInput.IsStateAvailable(TouchLocationState.Released))
             {
+                if (TouchInput.IsStateAvailable(TouchLocationState.Released)) this.draggedByTouch = true;
+
                 this.ReleaseHeldPieces(slot: this.ActiveSlot);
                 return;
             }
@@ -685,11 +680,15 @@ namespace SonOfRobin
         {
             if (this.draggedPieces.Count == 0) return;
 
+            MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"ReleaseHeldPieces");
+
             int initialDraggedCount = this.draggedPieces.Count;
             PieceTemplate.Name initialTopPieceName = this.draggedPieces[0].name;
 
             if (this.draggedByTouch) forceReleaseAll = true;
             var piecesThatDidNotFitIn = new List<BoardPiece> { };
+
+            MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"forceReleaseAll {forceReleaseAll}");
 
             foreach (BoardPiece piece in this.draggedPieces)
             {
@@ -707,7 +706,10 @@ namespace SonOfRobin
             if (forceReleaseAll && piecesThatDidNotFitIn.Count > 0)
             {
                 foreach (BoardPiece piece in piecesThatDidNotFitIn)
-                { this.storage.DropPieceToTheGround(piece: piece, addMovement: false); }
+                {
+                    if (this.otherInventory != null) this.otherInventory.storage.AddPiece(piece, dropIfDoesNotFit: true, addMovement: false);
+                    else this.storage.DropPieceToTheGround(piece: piece, addMovement: false);
+                }
                 piecesThatDidNotFitIn.Clear();
             }
 

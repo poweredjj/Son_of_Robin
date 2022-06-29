@@ -8,7 +8,7 @@ namespace SonOfRobin
 {
     public class Scheduler
     {
-        public enum TaskName { Empty, CreateNewWorld, CreateNewWorldNow, QuitGame, OpenMainMenu, OpenCreateMenu, OpenOptionsMenu, OpenLoadMenu, OpenSaveMenu, OpenDebugMenu, OpenConfirmationMenu, OpenCreateAnyPieceMenu, OpenGameOverMenu, SaveGame, SaveGameNow, LoadGame, LoadGameNow, ReturnToMainMenu, SavePrefs, ProcessConfirmation, OpenCraftMenu, Craft, Hit, CreateNewPiece, CreateDebugPieces, OpenContainer, DeleteObsoleteSaves, DropFruit, GetEaten, ExecuteTaskWithDelay, ExecuteTaskList, AddWorldEvent, OpenTextWindow, SleepInsideShelter, SleepOutside, TempoFastForward, TempoStop, TempoPlay, CameraTrackPiece, CameraTrackPlayer, CameraZoom, ShowCookingProgress, RestoreHints, OpenMainMenuIfSpecialKeysArePressed, CheckForPieceHints, ShowHint }
+        public enum TaskName { Empty, CreateNewWorld, CreateNewWorldNow, QuitGame, OpenMainMenu, OpenCreateMenu, OpenOptionsMenu, OpenTutorialsMenu, OpenLoadMenu, OpenSaveMenu, OpenDebugMenu, OpenConfirmationMenu, OpenCreateAnyPieceMenu, OpenGameOverMenu, SaveGame, LoadGame, LoadGameNow, ReturnToMainMenu, SavePrefs, ProcessConfirmation, OpenCraftMenu, Craft, Hit, CreateNewPiece, CreateDebugPieces, OpenContainer, DeleteObsoleteSaves, DropFruit, GetEaten, ExecuteTaskWithDelay, AddWorldEvent, OpenTextWindow, SleepInsideShelter, SleepOutside, TempoFastForward, TempoStop, TempoPlay, CameraTrackPiece, CameraTrackPlayer, CameraZoom, ShowCookingProgress, RestoreHints, OpenMainMenuIfSpecialKeysArePressed, CheckForPieceHints, ShowHint, ExecuteTaskList, ExecuteTaskChain, ShowTutorial }
 
         private readonly static Dictionary<int, List<Task>> queue = new Dictionary<int, List<Task>>();
 
@@ -30,10 +30,10 @@ namespace SonOfRobin
         {
             private readonly Menu menu;
             private readonly TaskName taskName;
-            private readonly Object executeHelper;
+            private Object executeHelper;
             private readonly int delay;
             private int frame;
-            private readonly bool turnedOffInput;
+            private readonly bool turnOffInput;
             private bool rebuildsMenu;
 
             public Task(Menu menu, TaskName taskName, Object executeHelper, bool turnOffInput = false, int delay = 0, bool rebuildsMenu = false, bool storeForLaterUse = false)
@@ -41,14 +41,14 @@ namespace SonOfRobin
                 this.taskName = taskName;
                 this.executeHelper = executeHelper;
                 this.menu = menu;
-                this.turnedOffInput = turnOffInput;
+                this.turnOffInput = turnOffInput;
                 this.delay = delay;
                 this.rebuildsMenu = rebuildsMenu;
 
-                if (turnOffInput) Input.GlobalInputActive = false;
-
                 if (!storeForLaterUse)
                 {
+                    if (this.turnOffInput) Input.GlobalInputActive = false;
+
                     this.frame = SonOfRobinGame.currentUpdate + this.delay;
 
                     if (this.delay == 0)
@@ -62,6 +62,7 @@ namespace SonOfRobin
 
             private void AddToQueue()
             {
+                if (this.turnOffInput) Input.GlobalInputActive = false;
                 if (this.frame == -1) this.frame = SonOfRobinGame.currentUpdate + this.delay;
                 if (!queue.ContainsKey(this.frame)) queue[this.frame] = new List<Task>();
                 queue[this.frame].Add(this);
@@ -70,7 +71,7 @@ namespace SonOfRobin
             public void Execute()
             {
                 this.RunTask();
-                if (this.turnedOffInput) Input.GlobalInputActive = true;
+                if (this.turnOffInput && this.taskName != TaskName.ExecuteTaskChain) Input.GlobalInputActive = true;
                 if (this.rebuildsMenu) this.menu.Rebuild();
             }
 
@@ -101,6 +102,10 @@ namespace SonOfRobin
 
                     case TaskName.OpenOptionsMenu:
                         MenuTemplate.CreateMenuFromTemplate(templateName: MenuTemplate.Name.Options);
+                        return;
+
+                    case TaskName.OpenTutorialsMenu:
+                        MenuTemplate.CreateMenuFromTemplate(templateName: MenuTemplate.Name.Tutorials);
                         return;
 
                     case TaskName.OpenDebugMenu:
@@ -137,14 +142,13 @@ namespace SonOfRobin
                         return;
 
                     case TaskName.CreateNewWorld:
-                        ProgressBar.TurnOnBgColor();
-                        ProgressBar.ChangeValues(curVal: 0, maxVal: 5, text: "Creating new island...");
-
                         if (menu != null) menu.MoveToTop();
 
                         Menu.RemoveEveryMenuOfTemplate(MenuTemplate.Name.CreateNewIsland);
                         Menu.RemoveEveryMenuOfTemplate(MenuTemplate.Name.Load);
                         Menu.RemoveEveryMenuOfTemplate(MenuTemplate.Name.Main);
+
+                        // SonOfRobinGame.progressBar.TurnOn(curVal: 0, maxVal: 5, text: "Creating new island...");
 
                         new Task(menu: null, taskName: TaskName.CreateNewWorldNow, turnOffInput: true, delay: 13, executeHelper: null);
 
@@ -153,13 +157,6 @@ namespace SonOfRobin
                     case TaskName.CreateNewWorldNow:
                         new World(width: Preferences.newWorldWidth, height: Preferences.newWorldHeight, seed: Preferences.newWorldSeed);
 
-                        return;
-
-                    case TaskName.QuitGame:
-                        world = World.GetTopWorld();
-                        if (world != null && !world.demoMode) world.AutoSave(force: true);
-
-                        SonOfRobinGame.quitGame = true;
                         return;
 
                     case TaskName.CreateNewPiece:
@@ -222,77 +219,40 @@ namespace SonOfRobin
                         return;
 
                     case TaskName.SaveGame:
+                        // example executeHelper for this task
+                        // var saveParams = new Dictionary<string, Object> { { "world", world }, { "saveSlotName", "1" }, { "showMessage", false }, {"quitGameAfterSaving", false} };
+
                         if (this.rebuildsMenu)
                         {// menu should be rebuilt after the game has been saved
-                            new Task(menu: this.menu, taskName: TaskName.Empty, turnOffInput: true, delay: 2, executeHelper: this.executeHelper, rebuildsMenu: true);
+                            new Task(menu: this.menu, taskName: TaskName.Empty, turnOffInput: false, delay: 12, executeHelper: null, rebuildsMenu: true);
                             this.rebuildsMenu = false;
                         }
+;
+                        var saveParams = (Dictionary<string, Object>)executeHelper;
+                        world = (World)saveParams["world"];
+                        string saveSlotName = (string)saveParams["saveSlotName"];
+                        bool showMessage = false;
+                        if (saveParams.ContainsKey("showMessage")) showMessage = (bool)saveParams["showMessage"];
+                        bool quitGameAfterSaving = false;
+                        if (saveParams.ContainsKey("quitGameAfterSaving")) quitGameAfterSaving = (bool)saveParams["quitGameAfterSaving"];
 
-                        ProgressBar.ChangeValues(curVal: 1, maxVal: 2, text: "Saving game...");
-                        new Task(menu: null, taskName: TaskName.SaveGameNow, turnOffInput: true, delay: 1, executeHelper: this.executeHelper);
+                        new LoaderSaver(saveMode: true, saveSlotName: saveSlotName, world: world, showSavedMessage: showMessage, quitGameAfterSaving: quitGameAfterSaving);
 
-                        return;
-
-                    case TaskName.SaveGameNow:
-                        world = (World)Scene.GetTopSceneOfType(typeof(World));
-                        if (world != null)
-                        {
-                            // example executeHelper for this task
-                            // var saveParams = new Dictionary<string, Object> { { "saveSlotName", "1" }, { "showMessage", false } };
-
-                            var saveParams = (Dictionary<string, Object>)executeHelper;
-                            string saveSlotName = (string)saveParams["saveSlotName"];
-                            bool showMessage = false;
-                            if (saveParams.ContainsKey("showMessage")) showMessage = (bool)saveParams["showMessage"];
-
-                            world.Save(saveSlotName: saveSlotName, showMessage: showMessage);
-                        }
-                        ProgressBar.Hide();
                         return;
 
                     case TaskName.LoadGame:
-                        ProgressBar.TurnOnBgColor();
-                        ProgressBar.ChangeValues(curVal: 0, maxVal: 5, text: "Loading game...");
-
                         if (menu != null) menu.MoveToTop();
 
                         Menu.RemoveEveryMenuOfTemplate(MenuTemplate.Name.Load);
                         Menu.RemoveEveryMenuOfTemplate(MenuTemplate.Name.Main);
                         Menu.RemoveEveryMenuOfTemplate(MenuTemplate.Name.Pause);
 
-                        new Task(menu: null, taskName: TaskName.LoadGameNow, turnOffInput: true, delay: 13, executeHelper: this.executeHelper);
+                        new Task(menu: null, taskName: TaskName.LoadGameNow, turnOffInput: true, delay: 17, executeHelper: this.executeHelper);
 
                         return;
 
                     case TaskName.LoadGameNow:
-                        World loadedWorld = World.Load(saveSlotName: (string)executeHelper);
-
-                        if (loadedWorld == null)
-                        {
-                            ProgressBar.Hide();
-
-                            world = World.GetTopWorld();
-                            if (world != null && world.demoMode) new Task(menu: null, taskName: TaskName.OpenMainMenu, turnOffInput: false, delay: 1, executeHelper: this.executeHelper);
-                            return;
-                        }
-
-                        var existingWorlds = Scene.GetAllScenesOfType(typeof(World));
-                        foreach (World currWorld in existingWorlds)
-                        { if (currWorld != loadedWorld && !currWorld.demoMode) currWorld.Remove(); }
-
-                        return;
-
-                    case TaskName.ReturnToMainMenu:
-                        world = World.GetTopWorld();
-                        if (world != null && !world.demoMode) world.AutoSave(force: true);
-
-                        var worldScenes = Scene.GetAllScenesOfType(typeof(World));
-                        foreach (World currWorld in worldScenes)
-                        { if (!currWorld.demoMode) world.Remove(); }
-                        Scene.RemoveAllScenesOfType(typeof(Menu));
-                        Scene.RemoveAllScenesOfType(typeof(Inventory));
-                        Scene.RemoveAllScenesOfType(typeof(PieceContextMenu));
-                        MenuTemplate.CreateMenuFromTemplate(templateName: MenuTemplate.Name.Main);
+                        new LoaderSaver(saveMode: false, saveSlotName: (string)executeHelper);
 
                         return;
 
@@ -376,7 +336,7 @@ namespace SonOfRobin
                         return;
 
                     case TaskName.DeleteObsoleteSaves:
-                        SaveManager.DeleteObsoleteSaves();
+                        SaveHeaderManager.DeleteObsoleteSaves();
                         return;
 
                     case TaskName.ExecuteTaskWithDelay:
@@ -418,8 +378,23 @@ namespace SonOfRobin
                             bool useTransition = true;
                             if (textWindowData.ContainsKey("useTransition")) useTransition = (bool)textWindowData["useTransition"];
 
+                            bool useTransitionOpen = false;
+                            if (textWindowData.ContainsKey("useTransitionOpen")) useTransitionOpen = (bool)textWindowData["useTransitionOpen"];
+
+                            bool useTransitionClose = false;
+                            if (textWindowData.ContainsKey("useTransitionClose")) useTransitionClose = (bool)textWindowData["useTransitionClose"];
+
                             bool animate = true;
                             if (textWindowData.ContainsKey("animate")) useTransition = (bool)textWindowData["animate"];
+
+                            TaskName closingTask = TaskName.Empty;
+                            if (textWindowData.ContainsKey("closingTask")) closingTask = (TaskName)textWindowData["closingTask"];
+
+                            Object closingTaskHelper = null;
+                            if (textWindowData.ContainsKey("closingTaskHelper")) closingTaskHelper = textWindowData["closingTaskHelper"];
+
+                            int blockInputDuration = 0;
+                            if (textWindowData.ContainsKey("blockInputDuration")) blockInputDuration = (int)textWindowData["blockInputDuration"];
 
                             Color bgColor = Color.DarkBlue;
                             Color textColor = Color.White;
@@ -439,7 +414,7 @@ namespace SonOfRobin
                             int framesPerChar = 0;
                             if (textWindowData.ContainsKey("framesPerChar")) framesPerChar = (int)textWindowData["framesPerChar"];
 
-                            new TextWindow(text: text, useTransition: useTransition, bgColor: bgColor, textColor: textColor, framesPerChar: framesPerChar, animate: animate, checkForDuplicate: checkForDuplicate);
+                            new TextWindow(text: text, useTransition: useTransition, useTransitionOpen: useTransitionOpen, useTransitionClose: useTransitionClose, bgColor: bgColor, textColor: textColor, framesPerChar: framesPerChar, animate: animate, checkForDuplicate: checkForDuplicate, closingTask: closingTask, closingTaskHelper: closingTaskHelper, blockInputDuration: blockInputDuration);
                             return;
                         }
 
@@ -494,8 +469,7 @@ namespace SonOfRobin
                         {
                             world = World.GetTopWorld();
                             if (world == null) return;
-
-                            SonOfRobinGame.game.IsFixedTimeStep = true;
+                            if (Preferences.FrameSkip) SonOfRobinGame.game.IsFixedTimeStep = true;
                             world.updateMultiplier = 0;
 
                             return;
@@ -506,7 +480,7 @@ namespace SonOfRobin
                             world = World.GetTopWorld();
                             if (world == null) return;
 
-                            SonOfRobinGame.game.IsFixedTimeStep = true;
+                            if (Preferences.FrameSkip) SonOfRobinGame.game.IsFixedTimeStep = true;
                             world.updateMultiplier = 1;
 
                             return;
@@ -573,6 +547,41 @@ namespace SonOfRobin
                             return;
                         }
 
+                    case TaskName.ExecuteTaskChain:
+                        {
+                            List<Object> taskChain = (List<Object>)executeHelper;
+
+                            Task task = (Task)taskChain[0];
+                            taskChain.RemoveAt(0);
+                            task.AddToQueue();
+                            if (taskChain.Count == 0)
+                            {
+                                Input.GlobalInputActive = true; // to ensure that input will be active at the end
+                                return;
+                            }
+
+                            if (task.taskName == TaskName.OpenTextWindow)
+                            {
+                                // If text window will be opened, the delay will depend on the player, so it is unknown.
+                                // So, the next task should be run after closing this text window.
+
+                                var executeHelper = task.executeHelper;
+                                var textWindowData = (Dictionary<string, Object>)executeHelper;
+                                textWindowData["closingTask"] = TaskName.ExecuteTaskChain;
+                                textWindowData["closingTaskHelper"] = taskChain;
+
+                                task.executeHelper = textWindowData;
+                            }
+                            else
+                            {
+                                // in other cases, the delay should be known
+                                new Task(menu: null, taskName: TaskName.ExecuteTaskChain, executeHelper: taskChain, delay: task.delay, turnOffInput: true);
+                            }
+                        }
+
+                        return;
+
+
                     case TaskName.OpenMainMenuIfSpecialKeysArePressed:
                         {
                             if (Keyboard.IsPressed(Keys.LeftControl) ||
@@ -610,14 +619,53 @@ namespace SonOfRobin
                             return;
                         }
 
+                    case TaskName.ShowTutorial:
+                        {
+                            var messageList = (List<HintMessage>)executeHelper;
+                            var taskChain = HintMessage.ConvertToTasks(messageList: messageList);
+                            new Task(menu: null, taskName: TaskName.ExecuteTaskChain, turnOffInput: true, executeHelper: taskChain);
+
+                            return;
+                        }
+
+                    case TaskName.ReturnToMainMenu:
+                        CloseGame(quitGame: false);
+                        return;
+
+                    case TaskName.QuitGame:
+                        CloseGame(quitGame: true);
+                        return;
+
+
                     default:
                         throw new DivideByZeroException($"Unsupported taskName - {taskName}.");
                 }
 
             }
 
-        }
+            private static void CloseGame(bool quitGame)
+            {
+                World world = World.GetTopWorld();
 
+                bool autoSave = world != null && !world.demoMode;
+
+                var worldScenes = Scene.GetAllScenesOfType(typeof(World));
+                foreach (World currWorld in worldScenes)
+                { if (!currWorld.demoMode) world.Remove(); }
+                Scene.RemoveAllScenesOfType(typeof(Menu));
+                Scene.RemoveAllScenesOfType(typeof(Inventory));
+                Scene.RemoveAllScenesOfType(typeof(PieceContextMenu));
+
+                if (autoSave)
+                {
+                    var saveParams = new Dictionary<string, Object> { { "world", world }, { "saveSlotName", "0" }, { "showMessage", false }, { "quitGameAfterSaving", quitGame } };
+                    new Task(menu: null, taskName: TaskName.SaveGame, executeHelper: saveParams, delay: 17);
+                }
+
+                if (!autoSave && quitGame) SonOfRobinGame.quitGame = true;
+                if (!quitGame) new Task(menu: null, taskName: TaskName.OpenMainMenu, turnOffInput: true, delay: autoSave ? 30 : 0, executeHelper: null);
+            }
+        }
 
     }
 }

@@ -122,7 +122,7 @@ namespace SonOfRobin
             using (var memoryStream = new MemoryStream())
             {
                 builder.Save(memoryStream);
-                LoaderSaver.SaveMemoryStream(memoryStream: memoryStream, this.templatePath);
+                FileReaderWriter.SaveMemoryStream(memoryStream: memoryStream, this.templatePath);
             }
 
         }

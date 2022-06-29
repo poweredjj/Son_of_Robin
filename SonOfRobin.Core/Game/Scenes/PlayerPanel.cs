@@ -10,7 +10,7 @@ namespace SonOfRobin
 
         private static readonly SpriteFont font = SonOfRobinGame.fontHuge;
 
-        private int BarWidth { get { return (int)(SonOfRobinGame.VirtualWidth * 0.4f); } }
+        private int BarWidth { get { return (int)(SonOfRobinGame.VirtualWidth * 0.35f); } }
         private int BarHeight { get { return (int)(BarWidth * 0.03f); } }
         private int IconWidthHeight { get { return (int)(BarWidth * 0.1f); } }
         private int IconMargin { get { return (int)(BarWidth * 0.03f); } }

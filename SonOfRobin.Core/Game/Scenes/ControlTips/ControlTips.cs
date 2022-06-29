@@ -26,7 +26,7 @@ namespace SonOfRobin
 
         public enum TipsLayout
         {
-            Uninitialized, Empty, Menu, MenuWithoutClosing, Map, InventorySelect, InventoryDrag, PieceContext, TextWindow, WorldMain, WorldShoot, WorldSleep,
+            Uninitialized, Empty, Menu, MenuWithoutClosing, Map, InventorySelect, InventoryDrag, PieceContext, TextWindow, WorldMain, WorldShoot, WorldSleep, QuitLoading
         }
         public static readonly int tipMargin = 12;
 
@@ -81,15 +81,6 @@ namespace SonOfRobin
             }
 
             if (Preferences.DebugMode) SonOfRobinGame.spriteBatch.DrawString(SonOfRobinGame.fontSmall, $"{this.currentLayout}", Vector2.Zero, Color.White);
-        }
-
-        public static ControlTips GetTopTips()
-        {
-            ControlTips controlTips;
-            var tipsScene = GetTopSceneOfType(typeof(ControlTips));
-            if (tipsScene == null) return null;
-            controlTips = (ControlTips)tipsScene;
-            return controlTips;
         }
 
         public void RefreshLayout()
@@ -179,6 +170,10 @@ namespace SonOfRobin
                 case TipsLayout.MenuWithoutClosing:
                     this.tipList.Add(new ButtonTip(text: "navigation", textures: new List<Texture2D> { ButtonScheme.dpad, ButtonScheme.leftStick }));
                     this.tipList.Add(new ButtonTip(text: "confirm", textures: new List<Texture2D> { ButtonScheme.buttonA }));
+                    break;
+
+                case TipsLayout.QuitLoading:
+                    this.tipList.Add(new ButtonTip(text: "cancel", textures: new List<Texture2D> { ButtonScheme.buttonB }));
                     break;
 
                 default:

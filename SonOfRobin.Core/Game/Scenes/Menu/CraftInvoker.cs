@@ -27,7 +27,7 @@ namespace SonOfRobin
             if (active)
             {
                 this.UpdateInfoText();
-                this.UpdateInfoWindow();
+                this.UpdateHintWindow();
             }
 
             this.GetOpacity(active: active);

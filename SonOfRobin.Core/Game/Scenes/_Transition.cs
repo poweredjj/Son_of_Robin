@@ -127,6 +127,20 @@ namespace SonOfRobin
             }
         }
 
+        private void CopyBaseToDrawParams()
+        {
+            string sourceParamName, destParamName;
+
+            foreach (var kvp in this.paramsToChange)
+            {
+                sourceParamName = kvp.Key;
+                destParamName = $"draw{Helpers.FirstCharToUpperCase(kvp.Key.ToString())}";
+
+                float sourceValue = (float)Helpers.GetProperty(targetObj: this.viewParams, propertyName: sourceParamName);
+                Helpers.SetProperty(targetObj: this.viewParams, propertyName: destParamName, newValue: sourceValue);
+            }
+        }
+
         private void Finish()
         {
             if (this.type == TransType.PingPong)

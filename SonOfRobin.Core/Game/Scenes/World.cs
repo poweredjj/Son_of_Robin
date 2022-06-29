@@ -2,7 +2,6 @@
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 
 namespace SonOfRobin
@@ -68,7 +67,7 @@ namespace SonOfRobin
         private Object saveGameData;
         public bool freePiecesPlacingMode; // allows to precisely place pieces during loading a saved game
         public bool createMissinPiecesOutsideCamera;
-        private DateTime lastSaved;
+        public DateTime lastSaved;
 
         public readonly int seed;
         public FastNoiseLite noise;
@@ -126,7 +125,7 @@ namespace SonOfRobin
             }
         }
         public World(int width, int height, int seed = -1, Object saveGameData = null, bool demoMode = false) :
-              base(inputType: InputTypes.Normal, priority: 1, blocksUpdatesBelow: true, blocksDrawsBelow: true, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty)
+              base(inputType: InputTypes.Normal, priority: 1, blocksUpdatesBelow: true, blocksDrawsBelow: true, touchLayout: TouchLayout.QuitLoading, tipsLayout: ControlTips.TipsLayout.Empty)
         {
             this.demoMode = demoMode;
             if (this.demoMode) this.InputType = InputTypes.None;
@@ -199,13 +198,30 @@ namespace SonOfRobin
         {
             if (this.grid.creationInProgress)
             {
+                if (Keyboard.IsPressed(Keys.Escape) ||
+                    GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.B) ||
+                    VirtButton.IsButtonDown(VButName.Return))
+                {
+                    if (Preferences.FrameSkip) SonOfRobinGame.game.IsFixedTimeStep = true;
+                    if (SonOfRobinGame.platform == Platform.Mobile) SonOfRobinGame.KeepScreenOn = false;
+
+                    SonOfRobinGame.progressBar.TurnOff(addTransition: true);
+                    bool menuFound = GetTopSceneOfType(typeof(Menu)) != null;
+
+                    this.Remove();
+                    new TextWindow(text: $"Entering the island has been cancelled.", textColor: Color.White, bgColor: Color.DarkRed, useTransition: true, animate: true, closingTask: menuFound ? Scheduler.TaskName.Empty : Scheduler.TaskName.OpenMainMenu);
+                    return;
+                };
+
+                this.tipsLayout = ControlTips.TipsLayout.QuitLoading; // to avoid showing tips at the wrong position
+
                 SonOfRobinGame.game.IsFixedTimeStep = false; // speeds up the creation process
                 this.grid.RunNextCreationStage();
             }
 
             else
             {
-                ProgressBar.Hide();
+                SonOfRobinGame.progressBar.TurnOff();
                 this.touchLayout = TouchLayout.WorldMain;
                 this.tipsLayout = ControlTips.TipsLayout.WorldMain;
                 this.creationInProgress = false;
@@ -214,6 +230,7 @@ namespace SonOfRobin
                 this.creationDuration = this.creationEnd - this.creationStart;
                 Craft.PopulateAllCategories();
                 PieceInfo.CreateAllInfo(world: this);
+                this.lastSaved = DateTime.Now;
 
                 MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"World creation time: {creationDuration:hh\\:mm\\:ss\\.fff}.", color: Color.GreenYellow);
 
@@ -331,12 +348,15 @@ namespace SonOfRobin
             this.saveGameData = null;
             this.freePiecesPlacingMode = false;
 
-            MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.User, message: $"Game has been loaded.", color: Color.Cyan);
+            MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.User, message: "Game has been loaded.", color: Color.Cyan);
         }
 
-        public void AutoSave(bool force = false)
+        public void AutoSave()
         {
-            if (this.demoMode || (!force && this.currentUpdate % 600 != 0) || !this.player.alive) return;
+            if (this.demoMode || this.currentUpdate % 600 != 0 || !this.player.alive) return;
+            TimeSpan timeSinceLastSave = DateTime.Now - this.lastSaved;
+            if (timeSinceLastSave < TimeSpan.FromMinutes(Preferences.autoSaveDelayMins)) return;
+
             if (this.player.activeState != BoardPiece.State.PlayerControlledWalking) return;
             if (GetTopSceneOfType(typeof(Menu)) != null) return;
             Scene invScene = GetTopSceneOfType(typeof(Inventory));
@@ -346,231 +366,11 @@ namespace SonOfRobin
                 if (inventory.layout != Inventory.Layout.SingleBottom) return;
             }
 
-            TimeSpan timeSinceLastSave = DateTime.Now - this.lastSaved;
-            if (!force && timeSinceLastSave < TimeSpan.FromMinutes(Preferences.autoSaveDelayMins)) return;
-
             string timeElapsedTxt = timeSinceLastSave.ToString("mm\\:ss");
-            string message = force ? "Autosaving before returning to menu..." : $"{timeElapsedTxt} elapsed - autosaving...";
+            MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.User, message: $"{timeElapsedTxt} elapsed - autosaving...", color: Color.LightBlue);
 
-            MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.User, message: message, color: Color.LightBlue);
-
-            string saveSlotName = "0";
-
-            if (force)
-            { this.Save(saveSlotName: saveSlotName, showMessage: false); }
-            else
-            {
-                var saveParams = new Dictionary<string, Object> { { "saveSlotName", saveSlotName }, { "showMessage", false } };
-                new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.SaveGame, executeHelper: saveParams);
-            }
-        }
-
-        public void Save(string saveSlotName, bool showMessage = false)
-        {
-            // preparing save directory
-
-            string saveDir = Path.Combine(SonOfRobinGame.saveGamesPath, saveSlotName);
-
-            if (Directory.Exists(saveDir))
-            {
-                System.IO.DirectoryInfo dirInfo = new DirectoryInfo(saveDir);
-                foreach (FileInfo file in dirInfo.GetFiles()) file.Delete();
-            }
-            else
-            { Directory.CreateDirectory(saveDir); }
-
-            // saving header data
-
-            var headerData = new Dictionary<string, Object>
-            {
-                {"seed", this.seed },
-                {"width", this.width },
-                {"height", this.height },
-                {"currentFrame", this.currentFrame },
-                {"currentUpdate", this.currentUpdate },
-                {"currentPieceId", this.currentPieceId },
-                {"currentBuffId", this.currentBuffId },
-                {"mapEnabled", this.mapEnabled },
-                {"realDateTime", DateTime.Now },
-                {"saveVersion", SaveManager.saveVersion },
-            };
-
-            string headerPath = Path.Combine(saveDir, "header.sav");
-            LoaderSaver.Save(path: headerPath, savedObj: headerData);
-
-            // saving hints data
-
-            string hintsPath = Path.Combine(saveDir, "hints.sav");
-            var hintsData = this.hintEngine.Serialize();
-            LoaderSaver.Save(path: hintsPath, savedObj: hintsData);
-
-            // saving grid data
-
-            string gridPath = Path.Combine(saveDir, "grid.sav");
-            var gridData = this.grid.Serialize();
-            LoaderSaver.Save(path: gridPath, savedObj: gridData);
-
-            // saving pieces data
-
-            uint maxPiecesInPackage = 10000; // using small piece packages lowers ram usage during writing binary files
-            var pieceDataPackages = new Dictionary<int, List<Object>> { };
-            int currentPackageNo = 0;
-            pieceDataPackages[currentPackageNo] = new List<object> { };
-
-            var allSprites = this.grid.GetAllSprites(Cell.Group.All);
-            foreach (Sprite sprite in allSprites)
-            {
-                if (sprite.boardPiece.exists && sprite.boardPiece.serialize)
-                {
-                    pieceDataPackages[currentPackageNo].Add(sprite.boardPiece.Serialize());
-                    if (pieceDataPackages[currentPackageNo].Count >= maxPiecesInPackage)
-                    {
-                        currentPackageNo++;
-                        pieceDataPackages[currentPackageNo] = new List<object> { };
-                    }
-                }
-            }
-
-            foreach (var kvp in pieceDataPackages)
-            {
-                string piecesPath = Path.Combine(saveDir, $"pieces_{kvp.Key}.sav");
-                LoaderSaver.Save(path: piecesPath, savedObj: kvp.Value);
-            }
-
-            // saving tracking data
-
-            var trackingData = new List<Object> { };
-            foreach (Tracking tracking in this.trackingQueue.Values)
-            { trackingData.Add(tracking.Serialize()); }
-
-            string trackingPath = Path.Combine(saveDir, "tracking.sav");
-            LoaderSaver.Save(path: trackingPath, savedObj: trackingData);
-
-            // saving world event data
-
-            var eventData = new List<Object> { };
-            foreach (var eventList in this.eventQueue.Values)
-            {
-                foreach (var plannedEvent in eventList)
-                {
-                    eventData.Add(plannedEvent.Serialize());
-                }
-            }
-            string eventPath = Path.Combine(saveDir, "event.sav");
-            LoaderSaver.Save(path: eventPath, savedObj: eventData);
-
-            if (showMessage) new TextWindow(text: "Game has been saved.", textColor: Color.White, bgColor: Color.DarkGreen, useTransition: false, animate: false);
-            MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.User, message: $"Game saved in slot {saveSlotName}.", color: Color.LightBlue);
-
-            this.lastSaved = DateTime.Now;
-        }
-
-        public static World Load(string saveSlotName)
-        {
-            string saveDir = Path.Combine(SonOfRobinGame.saveGamesPath, saveSlotName);
-
-            if (!Directory.Exists(saveDir))
-            {
-                new TextWindow(text: $"Save slot {saveSlotName} is empty.", textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false);
-                return null;
-            }
-
-            // loading header
-
-            string headerPath = Path.Combine(saveDir, "header.sav");
-            var headerData = (Dictionary<string, Object>)LoaderSaver.Load(path: headerPath);
-
-            if (headerData is null)
-            {
-                new TextWindow(text: $"Error while reading save header for slot {saveSlotName}.", textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false);
-                return null;
-            }
-
-            int seed = (int)headerData["seed"];
-            int width = (int)headerData["width"];
-            int height = (int)headerData["height"];
-
-            // loading grid
-
-            string gridPath = Path.Combine(saveDir, "grid.sav");
-            var gridData = (Dictionary<string, Object>)LoaderSaver.Load(path: gridPath);
-
-            if (gridData is null)
-            {
-                new TextWindow(text: $"Error while reading grid for slot {saveSlotName}.", textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false);
-                return null;
-            }
-
-            // loading hints
-
-            string hintsPath = Path.Combine(saveDir, "hints.sav");
-            var hintsData = (Dictionary<string, Object>)LoaderSaver.Load(path: hintsPath);
-
-            if (hintsData is null)
-            {
-                new TextWindow(text: $"Error while reading hints for slot {saveSlotName}.", textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false);
-                return null;
-            }
-
-            // loading pieces
-
-            int currentPackageNo = 0;
-
-            if (!File.Exists(Path.Combine(saveDir, $"pieces_{currentPackageNo}.sav")))
-            {
-                MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.User, message: $"Error while reading saved pieces for slot {saveSlotName}.", color: Color.Orange);
-                return null;
-            }
-
-            var piecesData = new List<Object> { };
-
-            while (true)
-            {
-                if (!File.Exists(Path.Combine(saveDir, $"pieces_{currentPackageNo}.sav"))) break;
-
-                string piecesPath = Path.Combine(saveDir, $"pieces_{currentPackageNo}.sav");
-                var packageData = (List<Object>)LoaderSaver.Load(path: piecesPath);
-                piecesData.AddRange(packageData);
-                currentPackageNo++;
-            }
-
-            // loading tracking
-
-            string trackingPath = Path.Combine(saveDir, "tracking.sav");
-            if (!File.Exists(trackingPath))
-            {
-                MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.User, message: "Error while reading tracking data.", color: Color.Orange);
-                return null;
-            }
-            var trackingData = (List<Object>)LoaderSaver.Load(path: trackingPath);
-
-            // loading planned events
-
-            string eventPath = Path.Combine(saveDir, "event.sav");
-            if (!File.Exists(eventPath))
-            {
-                MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.User, message: "Error while reading event data.", color: Color.Orange);
-                return null;
-            }
-            var eventData = (List<Object>)LoaderSaver.Load(path: eventPath);
-
-            // packing all loaded data into dictionary
-            var saveGameData = new Dictionary<string, Object> {
-                {"header", headerData},
-                {"hints", hintsData},
-                {"grid", gridData},
-                {"pieces", piecesData},
-                {"tracking", trackingData},
-                {"events", eventData},
-            };
-
-            // creating new world (using header data)
-
-            World loadedWorld = new World(width: width, height: height, seed: seed, saveGameData: saveGameData);
-
-            MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.User, message: $"Loading game from slot {saveSlotName} has started...", color: Color.LightBlue);
-
-            return loadedWorld;
+            var saveParams = new Dictionary<string, Object> { { "world", this }, { "saveSlotName", "0" }, { "showMessage", false } };
+            new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.SaveGame, executeHelper: saveParams);
         }
 
         private BoardPiece PlacePlayer()
@@ -1071,10 +871,10 @@ namespace SonOfRobin
 
         public override void Draw()
         {
-            if (this.creationInProgress) return;
-
             // drawing blue background (to ensure drawing even if screen is larger than map)
             SonOfRobinGame.graphicsDevice.Clear(BoardGraphics.colorsByName[BoardGraphics.Colors.WaterDeep]);
+
+            if (this.creationInProgress) return;
 
             // drawing background and sprites
             this.grid.DrawBackground(camera: this.camera);

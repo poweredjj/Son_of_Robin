@@ -1,9 +1,98 @@
 ﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace SonOfRobin
 {
+    public struct HintMessage
+    {
+        public enum Type { Dialogue, GreenBox, BlueBox, LightBlueBox, RedBox }
+
+        public readonly string text;
+        public readonly Type type;
+
+        public HintMessage(string text, Type type)
+        {
+            this.text = text;
+            this.type = type;
+        }
+
+        public HintMessage(string text)
+        {
+            this.text = text;
+            this.type = Type.Dialogue;
+        }
+
+        public Scheduler.Task ConvertToTask(bool useTransitionOpen = false, bool useTransitionClose = false)
+        {
+            Color bgColor, textColor;
+
+            switch (this.type)
+            {
+                case Type.Dialogue:
+                    bgColor = Color.White;
+                    textColor = Color.Black;
+                    break;
+
+                case Type.GreenBox:
+                    bgColor = Color.Green;
+                    textColor = Color.White;
+                    break;
+
+                case Type.BlueBox:
+                    bgColor = Color.Blue;
+                    textColor = Color.White;
+                    break;
+
+                case Type.LightBlueBox:
+                    bgColor = Color.DodgerBlue;
+                    textColor = Color.White;
+                    break;
+
+                case Type.RedBox:
+                    bgColor = Color.DarkRed;
+                    textColor = Color.White;
+                    break;
+
+                default:
+                    { throw new DivideByZeroException($"Unsupported hint type - {type}."); }
+            }
+
+            var textWindowData = new Dictionary<string, Object> {
+                { "text", this.text },
+                { "bgColor", new List<byte> {bgColor.R, bgColor.G, bgColor.B } },
+                { "textColor", new List<byte> {textColor.R, textColor.G, textColor.B }  },
+                { "checkForDuplicate", true },
+                { "useTransition", false },
+                { "useTransitionOpen", useTransitionOpen },
+                { "useTransitionClose", useTransitionClose },
+                { "blockInputDuration", HintEngine.blockInputDuration }
+            };
+
+            return new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.OpenTextWindow, turnOffInput: true, delay: 1, executeHelper: textWindowData, storeForLaterUse: true);
+        }
+
+        public static List<Object> ConvertToTasks(List<HintMessage> messageList)
+        {
+            var taskChain = new List<Object> { };
+
+            int counter = 0;
+            bool useTransitionOpen, useTransitionClose;
+            foreach (HintMessage message in messageList)
+            {
+                useTransitionOpen = counter == 0;
+                useTransitionClose = counter + 1 == messageList.Count;
+
+                taskChain.Add(message.ConvertToTask(useTransitionOpen: useTransitionOpen, useTransitionClose: useTransitionClose));
+
+                counter++;
+            }
+
+            return taskChain;
+        }
+    }
+
     public struct PieceHint
     {
         public enum Name { CrateStarting, CrateAnother, WoodNegative, WoodPositive, StoneNegative, StonePositive, AnimalNegative, AnimalSling, AnimalBow, AnimalBat, AnimalAxe, SlingNoAmmo, BowNoAmmo, ShellIsNotUseful, FruitTree, BananaTree, TomatoPlant, IronDepositNegative, IronDepositPositive, CoalDepositNegative, CoalDepositPositive, Cooker, LeatherPositive, BackpackPositive, BeltPositive, MapCanMake, MapPositive }
@@ -11,10 +100,13 @@ namespace SonOfRobin
         public static readonly List<PieceHint> pieceHintList = new List<PieceHint>
         {
                 new PieceHint(name: Name.CrateStarting, fieldPieces: new List<PieceTemplate.Name> {PieceTemplate.Name.CrateStarting},
-                message: "I've seen crates like this on the ship.\nIt could contain valuable supplies.\nI should try to break it open."),
+                messageList: new List<HintMessage> {
+                    new HintMessage(text: "I've seen crates like this on the ship.\nIt could contain valuable supplies.\nI should try to break it open.", type: HintMessage.Type.Dialogue)},
+                tutorialsToActivate: new List<Tutorials.Type> {Tutorials.Type.BreakThing}),
 
                 new PieceHint(name: Name.CrateAnother, fieldPieces: new List<PieceTemplate.Name> {PieceTemplate.Name.CrateRegular},
-                message: "I should check what's inside this crate.", alsoDisables: new List<Name> {Name.CrateStarting}),
+                message: "I should check what's inside this crate.", alsoDisables: new List<Name> {Name.CrateStarting},
+                tutorialsToActivate: new List<Tutorials.Type> {Tutorials.Type.BreakThing}),
 
                 new PieceHint(name: Name.ShellIsNotUseful, canBeForced: true,
                 message: "This shell is pretty, but I don't think it will be useful.",
@@ -26,19 +118,24 @@ namespace SonOfRobin
 
                 new PieceHint(name: Name.MapCanMake, canBeForced: true,
                 message: "I can use this leather to make a map.\nBut I need a workshop to make it.",
+                tutorialsToActivate: new List<Tutorials.Type> {Tutorials.Type.BuildWorkshop},
                 playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.Leather}),
 
                 new PieceHint(name: Name.MapPositive, canBeForced: true,
                 message: "I should equip this map to use it.",
-                playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.Map}),
+                playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.Map},
+                tutorialsToActivate: new List<Tutorials.Type> {Tutorials.Type.Equip}),
 
                 new PieceHint(name: Name.BackpackPositive, canBeForced: true,
-                message: "This backpack has a lot of free space.\nI should equip it now.",
-                playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.BackpackMedium}),
+                    messageList: new List<HintMessage> {
+                    new HintMessage(text: "This backpack has a lot of free space.\nI should equip it now.", type: HintMessage.Type.Dialogue)},
+                    tutorialsToActivate: new List<Tutorials.Type> {Tutorials.Type.Equip},
+                    playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.BackpackMedium}),
 
                 new PieceHint(name: Name.BeltPositive, canBeForced: true,
                 message: "I should equip my belt now.",
-                playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.BeltMedium}),
+                playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.BeltMedium},
+                tutorialsToActivate: new List<Tutorials.Type> {Tutorials.Type.Equip}),
 
                 new PieceHint(name: Name.SlingNoAmmo, canBeForced: true,
                 message: "My sling is useless without stones...",
@@ -76,6 +173,7 @@ namespace SonOfRobin
 
                 new PieceHint(name: Name.WoodPositive,  fieldPieces: new List<PieceTemplate.Name> {PieceTemplate.Name.TreeBig, PieceTemplate.Name.TreeSmall},
                 message: "I could use my axe to get some wood.",
+                tutorialsToActivate: new List<Tutorials.Type> {Tutorials.Type.GetWood},
                 playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.AxeWood, PieceTemplate.Name.AxeStone, PieceTemplate.Name.AxeIron }),
 
                 new PieceHint(name: Name.StoneNegative, fieldPieces: new List<PieceTemplate.Name> {PieceTemplate.Name.MineralsSmall, PieceTemplate.Name.MineralsBig, PieceTemplate.Name.WaterRock},
@@ -84,6 +182,7 @@ namespace SonOfRobin
 
                 new PieceHint(name: Name.StonePositive, fieldPieces: new List<PieceTemplate.Name> {PieceTemplate.Name.MineralsSmall, PieceTemplate.Name.MineralsBig, PieceTemplate.Name.WaterRock},
                 message: "I could use my pickaxe to mine stones.", alsoDisables: new List<Name> {Name.StoneNegative},
+                tutorialsToActivate: new List<Tutorials.Type> {Tutorials.Type.Mine},
                 playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.PickaxeWood, PieceTemplate.Name.PickaxeStone, PieceTemplate.Name.PickaxeIron }),
 
                 new PieceHint(name: Name.CoalDepositNegative, fieldPieces: new List<PieceTemplate.Name> {PieceTemplate.Name.CoalDeposit},
@@ -92,6 +191,7 @@ namespace SonOfRobin
 
                 new PieceHint(name: Name.CoalDepositPositive,  fieldPieces: new List<PieceTemplate.Name> {PieceTemplate.Name.CoalDeposit},
                 message: "I could use my pickaxe to mine coal here.", alsoDisables: new List<Name> {Name.CoalDepositNegative },
+                tutorialsToActivate: new List<Tutorials.Type> {Tutorials.Type.Mine},
                 playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.PickaxeWood, PieceTemplate.Name.PickaxeStone, PieceTemplate.Name.PickaxeIron }),
 
                 new PieceHint(name: Name.IronDepositNegative, fieldPieces: new List<PieceTemplate.Name> {PieceTemplate.Name.IronDeposit},
@@ -100,6 +200,7 @@ namespace SonOfRobin
 
                 new PieceHint(name: Name.IronDepositPositive,  fieldPieces: new List<PieceTemplate.Name> {PieceTemplate.Name.IronDeposit},
                 message: "I could use my pickaxe to mine iron ore here.", alsoDisables: new List<Name> {Name.IronDepositNegative },
+                tutorialsToActivate: new List<Tutorials.Type> {Tutorials.Type.Mine},
                 playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.PickaxeWood, PieceTemplate.Name.PickaxeStone, PieceTemplate.Name.PickaxeIron }),
 
                 new PieceHint(name: Name.FruitTree, fieldPieces: new List<PieceTemplate.Name> {PieceTemplate.Name.AppleTree, PieceTemplate.Name.CherryTree},
@@ -118,14 +219,15 @@ namespace SonOfRobin
         private readonly Name name;
         private readonly List<Name> alsoDisables;
         private readonly bool canBeForced;
-        private readonly string message;
+        private readonly List<HintMessage> messageList;
         private readonly List<PieceTemplate.Name> fieldPieces;
+        private readonly List<Tutorials.Type> tutorialsToActivate;
         private readonly bool fieldPieceHasNotEmptyStorage;
         private readonly List<PieceTemplate.Name> playerOwnsAnyOfThesePieces;
         private readonly List<PieceTemplate.Name> playerOwnsAllOfThesePieces;
         private readonly List<PieceTemplate.Name> playerDoesNotOwnAnyOfThesePieces;
 
-        public PieceHint(Name name, string message, List<PieceTemplate.Name> fieldPieces = null, List<PieceTemplate.Name> playerOwnsAnyOfThesePieces = null, List<PieceTemplate.Name> playerDoesNotOwnAnyOfThesePieces = null, List<PieceTemplate.Name> playerOwnsAllOfThesePieces = null, List<Name> alsoDisables = null, bool fieldPieceHasNotEmptyStorage = false, bool canBeForced = false)
+        public PieceHint(Name name, List<PieceTemplate.Name> fieldPieces = null, List<PieceTemplate.Name> playerOwnsAnyOfThesePieces = null, List<PieceTemplate.Name> playerDoesNotOwnAnyOfThesePieces = null, List<PieceTemplate.Name> playerOwnsAllOfThesePieces = null, List<Name> alsoDisables = null, bool fieldPieceHasNotEmptyStorage = false, bool canBeForced = false, string message = null, List<HintMessage> messageList = null, List<Tutorials.Type> tutorialsToActivate = null)
         {
             this.name = name;
             this.alsoDisables = alsoDisables == null ? new List<Name> { } : alsoDisables;
@@ -135,27 +237,49 @@ namespace SonOfRobin
             this.playerOwnsAnyOfThesePieces = playerOwnsAnyOfThesePieces;
             this.playerOwnsAllOfThesePieces = playerOwnsAllOfThesePieces;
             this.playerDoesNotOwnAnyOfThesePieces = playerDoesNotOwnAnyOfThesePieces;
-            this.message = message;
+            this.messageList = messageList;
+            if (message != null) this.messageList = new List<HintMessage> { new HintMessage(text: message) };
+            this.tutorialsToActivate = tutorialsToActivate;
         }
 
-        private void Show(Player player, List<BoardPiece> fieldPiecesNearby)
+        private List<HintMessage> GetTutorials(List<Tutorials.Type> shownTutorials)
         {
+            var messageList = new List<HintMessage> { };
+            if (this.tutorialsToActivate == null) return messageList;
+
+            foreach (Tutorials.Type type in this.tutorialsToActivate)
+            {
+                if (!shownTutorials.Contains(type))
+                {
+                    messageList.AddRange(Tutorials.tutorials[type].MessagesToDisplay);
+                    shownTutorials.Add(type);
+                }
+            }
+
+            return messageList;
+        }
+
+        private void Show(World world, List<BoardPiece> fieldPiecesNearby)
+        {
+            var messagesToDisplay = this.messageList.ToList();
+            messagesToDisplay.AddRange(this.GetTutorials(world.hintEngine.shownTutorials));
+
             if (this.fieldPieces != null)
             {
                 foreach (BoardPiece piece in fieldPiecesNearby)
                 {
                     if (this.fieldPieces.Contains(piece.name))
                     {
-                        HintEngine.ShowPieceDuringPause(world: player.world, pieceToShow: piece, message: this.message);
+                        HintEngine.ShowPieceDuringPause(world: world, pieceToShow: piece, messageList: messagesToDisplay);
                         break;
                     }
                 }
             }
             else
-            { HintEngine.ShowMessageDuringPause(this.message); }
+            { HintEngine.ShowMessageDuringPause(messagesToDisplay); }
         }
 
-        public static bool CheckForHintToShow(Player player, List<PieceHint.Name> shownPieceHints, bool forcedMode = false, bool ignoreInputActive = false)
+        public static bool CheckForHintToShow(Player player, List<Name> shownPieceHints, bool forcedMode = false, bool ignoreInputActive = false)
         {
             if (!player.world.inputActive && !ignoreInputActive) return false;
 
@@ -170,7 +294,7 @@ namespace SonOfRobin
                 {
                     if (!forcedMode || hint.canBeForced)
                     {
-                        hint.Show(player: player, fieldPiecesNearby: fieldPiecesNearby);
+                        hint.Show(world: player.world, fieldPiecesNearby: fieldPiecesNearby);
                         shownPieceHints.Add(hint.name);
                         foreach (Name name in hint.alsoDisables)
                         { shownPieceHints.Add(name); }

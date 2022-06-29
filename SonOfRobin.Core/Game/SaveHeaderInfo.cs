@@ -1,12 +1,10 @@
-﻿using Microsoft.Xna.Framework;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 
 namespace SonOfRobin
 {
-    public struct SaveInfo
+    public struct SaveHeaderInfo
     {
         public readonly bool saveIsCorrect;
         public readonly string folderName;
@@ -41,7 +39,7 @@ namespace SonOfRobin
 
         public string AdditionalInfo
         { get { return $"seed: {this.seed}   {this.width}x{this.height}"; } }
-        public SaveInfo(string folderName)
+        public SaveHeaderInfo(string folderName)
         {
             this.folderName = folderName;
 
@@ -49,7 +47,7 @@ namespace SonOfRobin
 
             string headerPath = Path.Combine(this.fullPath, "header.sav");
 
-            var headerData = (Dictionary<string, Object>)LoaderSaver.Load(path: headerPath);
+            var headerData = (Dictionary<string, Object>)FileReaderWriter.Load(path: headerPath);
 
             this.saveIsCorrect = false;
             this.saveDate = DateTime.FromOADate(0d);
@@ -60,10 +58,10 @@ namespace SonOfRobin
             this.currentUpdate = -1;
             this.elapsedTime = TimeSpan.FromSeconds(0);
 
-            if (headerData != null && headerData.ContainsKey("saveVersion"))
+            if (!this.folderName.StartsWith(LoaderSaver.tempPrefix) && headerData != null && headerData.ContainsKey("saveVersion"))
             {
                 float saveVersion = (float)headerData["saveVersion"];
-                if (saveVersion == SaveManager.saveVersion)
+                if (saveVersion == SaveHeaderManager.saveVersion)
                 {
                     this.saveIsCorrect = true;
                     this.saveDate = (DateTime)headerData["realDateTime"];
@@ -81,76 +79,4 @@ namespace SonOfRobin
         { Directory.Delete(path: this.fullPath, recursive: true); }
     }
 
-    public class SaveManager
-    {
-        public readonly static float saveVersion = 1.229f;
-
-        public static bool AnySavesExist
-        { get { return Directory.GetDirectories(SonOfRobinGame.saveGamesPath).ToList().Count > 0; } }
-        public static List<SaveInfo> CorrectSaves
-        {
-            get
-            {
-                var correctSaves = new List<SaveInfo> { };
-
-                var saveFolders = Directory.GetDirectories(SonOfRobinGame.saveGamesPath);
-
-                foreach (string folder in saveFolders)
-                {
-                    var saveInfo = new SaveInfo(Path.GetFileName(folder));
-                    if (saveInfo.saveIsCorrect) correctSaves.Add(saveInfo);
-                }
-
-                correctSaves = correctSaves.OrderByDescending(s => s.saveDate).ToList();
-                return correctSaves;
-            }
-        }
-
-        public static List<SaveInfo> IncorrectSaves
-        {
-            get
-            {
-                var incorrectSaves = new List<SaveInfo> { };
-
-                var saveFolders = Directory.GetDirectories(SonOfRobinGame.saveGamesPath);
-
-                foreach (string folder in saveFolders)
-                {
-                    var saveInfo = new SaveInfo(Path.GetFileName(folder));
-                    if (!saveInfo.saveIsCorrect) incorrectSaves.Add(saveInfo);
-                }
-
-                return incorrectSaves;
-            }
-        }
-
-        public static string NewSaveSlotName
-        {
-            get
-            {
-                int newSaveSlotNo = 1;
-                foreach (SaveInfo saveInfo in CorrectSaves)
-                {
-                    try
-                    {
-                        int saveSlotNo = Convert.ToInt32(saveInfo.folderName);
-                        if (saveSlotNo >= newSaveSlotNo) newSaveSlotNo = saveSlotNo + 1;
-                    }
-                    catch (Exception)
-                    { }
-                }
-                return Convert.ToString(newSaveSlotNo);
-            }
-        }
-
-        public static void DeleteObsoleteSaves()
-        {
-            foreach (SaveInfo saveInfo in IncorrectSaves)
-            {
-                saveInfo.Delete();
-                MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"Deleted obsolete save '{saveInfo.folderName}'.", color: Color.White);
-            }
-        }
-
-    }
 }

@@ -187,8 +187,6 @@ namespace SonOfRobin
 
         public override void Remove()
         {
-            InfoWindow.TurnOffTopWindow();
-
             if (this.transition == null)
             {
                 Scene sceneBelow = this.GetSceneBelow();
@@ -220,6 +218,8 @@ namespace SonOfRobin
                 }
             }
 
+            SonOfRobinGame.hintWindow.TurnOff();
+            SonOfRobinGame.progressBar.TurnOff();
             base.Remove();
             new Scheduler.Task(menu: this, taskName: this.closingTask, executeHelper: this.closingTaskHelper);
         }
@@ -330,12 +330,14 @@ namespace SonOfRobin
 
         public override void Update(GameTime gameTime)
         {
+            SonOfRobinGame.progressBar.TurnOff();
+
             if (this.activeIndex == -1) this.NextItem(); // searching for first non-separator menu item
             this.CurrentScrollPosition = this.TargetScrollPosition;
             this.SetViewPosAndSize();
 
             var activeEntry = this.ActiveEntry;
-            if (activeEntry.infoTextList != null && !activeEntry.IsVisible) InfoWindow.TurnOffTopWindow();
+            if (activeEntry.infoTextList != null && !activeEntry.IsVisible) SonOfRobinGame.hintWindow.TurnOff();
 
             this.ProcessInput();
         }

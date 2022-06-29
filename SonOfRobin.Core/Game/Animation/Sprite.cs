@@ -44,6 +44,7 @@ namespace SonOfRobin
         private readonly bool floatsOnWater;
         public readonly bool isShownOnMiniMap;
         public bool hasBeenDiscovered;
+        public bool isHighlighted;
         public Cell currentCell; // current cell, that is containing the sprite 
         public List<Cell.Group> gridGroups;
 
@@ -111,6 +112,7 @@ namespace SonOfRobin
             this.visible = visible; // initially it is assigned normally
             this.isShownOnMiniMap = isShownOnMiniMap;
             this.hasBeenDiscovered = false;
+            this.isHighlighted = false;
             this.currentCell = null;
             if (fadeInAnim)
             {
@@ -131,7 +133,6 @@ namespace SonOfRobin
                 return;
             }
         }
-
         public void Serialize(Dictionary<string, Object> pieceData)
         {
             pieceData["sprite_frame_id"] = this.frame.id;
@@ -655,15 +656,22 @@ namespace SonOfRobin
             int submergeCorrection = 0;
             if (!this.floatsOnWater && this.IsInWater && calculateSubmerge) submergeCorrection = Convert.ToInt32((Terrain.waterLevelMax - this.GetFieldValue(TerrainName.Height)) / 2);
 
-            if (this.rotation == 0) this.frame.Draw(destRect: this.gfxRect, color: this.color, submergeCorrection: submergeCorrection, opacity: this.opacity);
-            else this.frame.DrawWithRotation(position: new Vector2(this.gfxRect.Center.X, this.gfxRect.Center.Y), color: this.color, rotation: this.rotation, opacity: this.opacity);
+            Color drawColor = this.color;
+            if (this.isHighlighted)
+            {
+                drawColor = Color.LightGreen;
+                this.isHighlighted = false;
+            }
+
+            if (this.rotation == 0) this.frame.Draw(destRect: this.gfxRect, color: drawColor, submergeCorrection: submergeCorrection, opacity: this.opacity);
+            else this.frame.DrawWithRotation(position: new Vector2(this.gfxRect.Center.X, this.gfxRect.Center.Y), color: drawColor, rotation: this.rotation, opacity: this.opacity);
 
             if (this.boardPiece.pieceStorage != null && this.boardPiece.GetType() == typeof(Plant)) this.DrawFruits();
 
             if (Preferences.debugShowRects)
             {
                 SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, new Rectangle(Convert.ToInt32(this.colRect.X), Convert.ToInt32(this.colRect.Y), this.colRect.Width, this.colRect.Height), this.colRect, Color.Red * 0.7f);
-                SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, new Rectangle(Convert.ToInt32((this.position.X) - 1), Convert.ToInt32((this.position.Y) - 1), 2, 2), Color.White);
+                SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, new Rectangle(Convert.ToInt32((this.position.X) - 1), Convert.ToInt32(this.position.Y - 1), 2, 2), Color.White);
             }
 
             if (Preferences.debugShowStates && this.boardPiece.GetType() == typeof(Animal)) this.DrawState();

@@ -57,6 +57,26 @@ namespace SonOfRobin
             }
         }
 
+        private BoardPiece ClosestPieceToInteract
+        {
+            get
+            {
+                Vector2 centerOffset = this.GetCenterOffset();
+                int offsetX = (int)centerOffset.X;
+                int offsetY = (int)centerOffset.Y;
+
+                var nearbyPieces = this.world.grid.GetPiecesWithinDistance(groupName: Cell.Group.All, mainSprite: this.sprite, distance: 47, offsetX: offsetX, offsetY: offsetY);
+
+                var interestingPieces = nearbyPieces.Where(piece => piece.boardTask != Scheduler.TaskName.Empty).ToList();
+                if (interestingPieces.Count > 0)
+                {
+                    BoardPiece closestPiece = FindClosestPiece(sprite: this.sprite, pieceList: interestingPieces, offsetX: offsetX, offsetY: offsetY);
+                    return closestPiece;
+                }
+                else return null;
+            }
+        }
+
         public float Fatigue
         {
             get { return this.fatigue; }
@@ -226,6 +246,14 @@ namespace SonOfRobin
         {
             this.ExpendEnergy(0.1f);
 
+            BoardPiece pieceToInteract = this.ClosestPieceToInteract;
+            if (pieceToInteract != null)
+            {
+                pieceToInteract.sprite.isHighlighted = true;
+                if (SonOfRobinGame.platform == Platform.Mobile && this.world.inputActive) VirtButton.HighlightButton(VButName.Interact);
+            }
+
+
             if (this.world.currentUpdate % 300 == 0) this.world.hintEngine.CheckForPieceHintToShow();
 
             if (!this.Walk()) this.Stamina = Math.Min(this.Stamina + 1, this.maxStamina);
@@ -378,7 +406,7 @@ namespace SonOfRobin
             }
 
             this.sleepEngine.Execute(player: this);
-            if (this.world.currentUpdate % 10 == 0) ProgressBar.ChangeValues(curVal: (int)(this.maxFatigue - this.Fatigue), maxVal: (int)this.maxFatigue, text: "Sleeping...");
+            if (this.world.currentUpdate % 10 == 0) SonOfRobinGame.progressBar.TurnOn(curVal: (int)(this.maxFatigue - this.Fatigue), maxVal: (int)this.maxFatigue, text: "Sleeping...");
         }
 
         public void GoToSleep(SleepEngine sleepEngine, Vector2 zzzPos)
@@ -424,7 +452,7 @@ namespace SonOfRobin
                 return;
             }
 
-            ProgressBar.Hide();
+            SonOfRobinGame.progressBar.TurnOff();
 
             this?.visualAid.Destroy();
             this.visualAid = null;
@@ -563,18 +591,10 @@ namespace SonOfRobin
 
         private void UseBoardPiece()
         {
-            Vector2 centerOffset = this.GetCenterOffset();
-            int offsetX = (int)centerOffset.X;
-            int offsetY = (int)centerOffset.Y;
+            BoardPiece pieceToInteract = this.ClosestPieceToInteract;
+            if (pieceToInteract == null) return;
 
-            var nearbyPieces = this.world.grid.GetPiecesWithinDistance(groupName: Cell.Group.All, mainSprite: this.sprite, distance: 47, offsetX: offsetX, offsetY: offsetY);
-
-            var interestingPieces = nearbyPieces.Where(piece => piece.boardTask != Scheduler.TaskName.Empty).ToList();
-            if (interestingPieces.Count > 0)
-            {
-                BoardPiece closestPiece = FindClosestPiece(sprite: this.sprite, pieceList: interestingPieces, offsetX: offsetX, offsetY: offsetY);
-                new Scheduler.Task(menu: null, taskName: closestPiece.boardTask, delay: 0, executeHelper: closestPiece);
-            }
+            new Scheduler.Task(menu: null, taskName: pieceToInteract.boardTask, delay: 0, executeHelper: pieceToInteract);
         }
 
         private bool TryToEnterShootingMode()

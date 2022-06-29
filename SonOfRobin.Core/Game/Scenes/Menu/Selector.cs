@@ -80,7 +80,7 @@ namespace SonOfRobin
 
         public override void Draw(bool active)
         {
-            if (active) this.UpdateInfoWindow();
+            if (active) this.UpdateHintWindow();
             base.Draw(active);
         }
 

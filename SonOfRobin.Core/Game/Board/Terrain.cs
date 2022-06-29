@@ -56,7 +56,7 @@ namespace SonOfRobin
 
         private bool LoadTemplate()
         {
-            var loadedData = (byte[,])LoaderSaver.Load(this.templatePath); ;
+            var loadedData = (byte[,])FileReaderWriter.Load(this.templatePath); ;
             if (loadedData is null) return false;
 
             this.mapData = loadedData;
@@ -65,7 +65,7 @@ namespace SonOfRobin
 
         public void SaveTemplate()
         {
-            LoaderSaver.Save(path: this.templatePath, savedObj: this.mapData);
+            FileReaderWriter.Save(path: this.templatePath, savedObj: this.mapData);
         }
 
         private void CreateNoiseMap(bool addBorder = false)

@@ -48,6 +48,7 @@ namespace SonOfRobin
              PieceTemplate.Name.TentSmall,
              PieceTemplate.Name.TentMedium,
              PieceTemplate.Name.TentBig,
+             PieceTemplate.Name.Furnace,
          } },
 
          {TargetCategory.Metal, new List<PieceTemplate.Name> {

@@ -20,6 +20,8 @@ namespace SonOfRobin
         private readonly Color bgColor;
         private float textScale;
         private readonly bool useTransition;
+        private readonly bool useTransitionOpen;
+        private readonly bool useTransitionClose;
         private int charCounter;
         private int currentCharFramesLeft;
         private bool animationFinished;
@@ -44,7 +46,7 @@ namespace SonOfRobin
             }
         }
 
-        public TextWindow(string text, Color textColor, Color bgColor, bool animate = true, int framesPerChar = 0, bool useTransition = true, bool checkForDuplicate = false, bool blocksUpdatesBelow = false, int blockInputDuration = 0, Scheduler.TaskName closingTask = Scheduler.TaskName.Empty, Object closingTaskHelper = null) : base(inputType: InputTypes.Normal, priority: 1, blocksUpdatesBelow: blocksUpdatesBelow, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: blockInputDuration > 0 ? ControlTips.TipsLayout.Empty : ControlTips.TipsLayout.TextWindow)
+        public TextWindow(string text, Color textColor, Color bgColor, bool animate = true, int framesPerChar = 0, bool useTransition = true, bool checkForDuplicate = false, bool blocksUpdatesBelow = false, int blockInputDuration = 0, Scheduler.TaskName closingTask = Scheduler.TaskName.Empty, Object closingTaskHelper = null, bool useTransitionOpen = false, bool useTransitionClose = false) : base(inputType: InputTypes.Normal, priority: 1, blocksUpdatesBelow: blocksUpdatesBelow, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: blockInputDuration > 0 ? ControlTips.TipsLayout.Empty : ControlTips.TipsLayout.TextWindow)
         {
             this.text = SplitText(text: text, maxWidth: maxWidth);
             Vector2 textSize = font.MeasureString(this.text);
@@ -54,6 +56,8 @@ namespace SonOfRobin
             this.textColor = textColor;
             this.bgColor = bgColor;
             this.useTransition = useTransition;
+            this.useTransitionOpen = useTransitionOpen;
+            this.useTransitionClose = useTransitionClose;
             this.blockingFramesLeft = blockInputDuration;
 
             this.charCounter = animate ? 0 : text.Length;
@@ -71,22 +75,24 @@ namespace SonOfRobin
             }
 
             this.UpdateViewParams();
-            if (this.useTransition) this.AddInOutTransition(inTrans: true);
+            if (this.useTransition || this.useTransitionOpen) this.AddInOutTransition(inTrans: true);
         }
 
         public override void Remove()
         {
             if (this.transition == null)
             {
-                if (this.useTransition)
+                if (this.useTransition || this.useTransitionClose)
                 {
+                    if (this.closingTask != Scheduler.TaskName.Empty) Input.GlobalInputActive = false; // input should be disabled until closing task is executed
+
                     this.AddInOutTransition(inTrans: false);
                     return;
                 }
             }
 
             base.Remove();
-            new Scheduler.Task(menu: null, taskName: this.closingTask, executeHelper: this.closingTaskHelper, delay: 0);
+            if (this.closingTask != Scheduler.TaskName.Empty) new Scheduler.Task(menu: null, taskName: this.closingTask, executeHelper: this.closingTaskHelper, delay: 0, turnOffInput: true);
         }
 
         public void AddClosingTask(Scheduler.TaskName closingTask, Object closingTaskHelper)

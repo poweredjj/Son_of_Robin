@@ -134,23 +134,21 @@ namespace SonOfRobin
             SonOfRobinGame.spriteBatch.DrawString(font, this.DisplayedText, position: textPos, color: this.textColor * opacity * menu.viewParams.opacity, origin: Vector2.Zero, scale: textScale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
         }
 
-        protected void UpdateInfoWindow()
+        protected void UpdateHintWindow()
         {
             if (this.infoTextList == null || !this.menu.inputActive)
             {
-                InfoWindow.TurnOffTopWindow();
+                SonOfRobinGame.hintWindow.TurnOff();
                 return;
             }
 
-            InfoWindow infoWindow = InfoWindow.GetTopInfoWindow();
-            if (infoWindow == null) return;
+            InfoWindow hintWindow = SonOfRobinGame.hintWindow;
 
             Vector2 windowPos;
-            Vector2 infoWindowSize = infoWindow.MeasureEntries(this.infoTextList);
+            Vector2 infoWindowSize = hintWindow.MeasureEntries(this.infoTextList);
 
             Vector2 entryPos = this.Position;
             ViewParams menuViewParams = this.menu.viewParams;
-            float margin = this.menu.EntryMargin;
 
             switch (this.menu.layout)
             {
@@ -179,12 +177,12 @@ namespace SonOfRobin
             // keeping the window inside screen bounds
             windowPos.X = Math.Max(windowPos.X, 0);
             windowPos.Y = Math.Max(windowPos.Y, 0);
-            int maxX = (int)((SonOfRobinGame.VirtualWidth * infoWindow.viewParams.scaleX) - infoWindowSize.X);
-            int maxY = (int)((SonOfRobinGame.VirtualHeight * infoWindow.viewParams.scaleY) - infoWindowSize.Y);
+            int maxX = (int)((SonOfRobinGame.VirtualWidth * hintWindow.viewParams.scaleX) - infoWindowSize.X);
+            int maxY = (int)((SonOfRobinGame.VirtualHeight * hintWindow.viewParams.scaleY) - infoWindowSize.Y);
             windowPos.X = Math.Min(windowPos.X, maxX);
             windowPos.Y = Math.Min(windowPos.Y, maxY);
 
-            infoWindow.TurnOn(newPosX: (int)windowPos.X, newPosY: (int)windowPos.Y, entryList: this.infoTextList, addTransition: true);
+            SonOfRobinGame.hintWindow.TurnOn(newPosX: (int)windowPos.X, newPosY: (int)windowPos.Y, entryList: this.infoTextList, addTransition: true);
         }
 
     }

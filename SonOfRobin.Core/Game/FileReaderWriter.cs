@@ -3,7 +3,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 
 namespace SonOfRobin
 {
-    class LoaderSaver
+    class FileReaderWriter
     {
         public static void Save(object savedObj, string path)
         {

@@ -47,6 +47,7 @@ namespace SonOfRobin
             {
                 controlTipsScheme = value;
                 ButtonScheme.ChangeType(value);
+                Tutorials.RefreshData();
             }
         }
 
@@ -169,16 +170,16 @@ namespace SonOfRobin
             prefsData["displayResY"] = displayResY;
             prefsData["showControlTips"] = showControlTips;
             prefsData["showHints"] = showHints;
-            prefsData["controlTipsScheme"] = controlTipsScheme;
+            prefsData["controlTipsScheme"] = ControlTipsScheme;
 
-            LoaderSaver.Save(path: SonOfRobinGame.prefsPath, savedObj: prefsData);
+            FileReaderWriter.Save(path: SonOfRobinGame.prefsPath, savedObj: prefsData);
 
             MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: "Preferences saved.", color: Color.White);
         }
 
         public static void Load()
         {
-            var prefsData = (Dictionary<string, Object>)LoaderSaver.Load(path: SonOfRobinGame.prefsPath);
+            var prefsData = (Dictionary<string, Object>)FileReaderWriter.Load(path: SonOfRobinGame.prefsPath);
             if (prefsData != null)
             {
                 try
@@ -200,7 +201,7 @@ namespace SonOfRobin
                     displayResY = (int)prefsData["displayResY"];
                     showControlTips = (bool)prefsData["showControlTips"];
                     showHints = (bool)prefsData["showHints"];
-                    controlTipsScheme = (ButtonScheme.Type)prefsData["controlTipsScheme"];
+                    ControlTipsScheme = (ButtonScheme.Type)prefsData["controlTipsScheme"];
                 }
                 catch (KeyNotFoundException)
                 { MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: "KeyNotFoundException while loading preferences.", color: Color.White); }
@@ -208,8 +209,6 @@ namespace SonOfRobin
 
             if (SonOfRobinGame.platform == Platform.Mobile) fullScreenMode = true; // window mode makes no sense on mobile
             if (SonOfRobinGame.fakeMobileMode) fullScreenMode = false; // fakeMobileMode uses mouse (and mouse cursor is not visible in fullscreen mode)
-            ButtonScheme.ChangeType(controlTipsScheme);
-
 
             MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: "Preferences loaded.", color: Color.White);
         }

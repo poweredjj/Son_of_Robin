@@ -137,6 +137,8 @@ namespace SonOfRobin
 
         public virtual void Remove()
         {
+            SonOfRobinGame.controlTips.SwitchToLayout(ControlTips.TipsLayout.Empty);
+
             sceneStack = sceneStack.Where(scene => scene.sceneID != this.sceneID).ToList();
             if (this.hidesSameScenesBelow) this.ShowTopSceneOfSameType();
         }
@@ -162,7 +164,7 @@ namespace SonOfRobin
 
         private void ShowTopSceneOfSameType()
         {
-            var scene = (Menu)Scene.GetTopSceneOfType(this.GetType());
+            var scene = (Menu)GetTopSceneOfType(this.GetType());
             if (scene != null) scene.drawActive = true;
         }
 
@@ -183,7 +185,7 @@ namespace SonOfRobin
         private static void UpdateInputActive()
         {
             bool normalInputSet = false;
-            ControlTips topTips = ControlTips.GetTopTips();
+
 
             for (int i = sceneStack.Count - 1; i >= 0; i--)
             {
@@ -205,11 +207,9 @@ namespace SonOfRobin
                         {
                             scene.inputActive = true;
                             TouchInput.SwitchToLayout(scene.touchLayout);
-                            if (topTips != null)
-                            {
-                                topTips.SwitchToLayout(scene.tipsLayout);
-                                topTips.currentScene = scene;
-                            }
+
+                            SonOfRobinGame.controlTips.SwitchToLayout(scene.tipsLayout);
+                            SonOfRobinGame.controlTips.currentScene = scene;
 
                             normalInputSet = true;
                         }
@@ -225,7 +225,7 @@ namespace SonOfRobin
             if (!normalInputSet)
             {
                 TouchInput.SwitchToLayout(TouchLayout.Empty);
-                topTips?.SwitchToLayout(ControlTips.TipsLayout.Empty);
+                SonOfRobinGame.controlTips.SwitchToLayout(ControlTips.TipsLayout.Empty);
             }
         }
 

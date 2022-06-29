@@ -13,8 +13,8 @@ namespace SonOfRobin
 
     public class SonOfRobinGame : Game
     {
-        public static readonly float version = 6.8f;
-        public static readonly DateTime lastChanged = new DateTime(2022, 02, 22);
+        public static readonly float version = 6.9f;
+        public static readonly DateTime lastChanged = new DateTime(2022, 03, 03);
 
         public static ContentManager content;
 
@@ -25,6 +25,11 @@ namespace SonOfRobin
         public static GraphicsDeviceManager graphics;
         public static GraphicsDevice graphicsDevice;
         public static SpriteBatch spriteBatch;
+
+        public static InfoWindow hintWindow;
+        public static InfoWindow progressBar;
+        public static ControlTips controlTips;
+        public static TouchOverlay touchOverlay;
 
         public static SpriteFont fontSuperSmall;
         public static SpriteFont fontSmall;
@@ -54,12 +59,12 @@ namespace SonOfRobin
         public static int VirtualWidth { get { return Convert.ToInt32(graphics.PreferredBackBufferWidth / Preferences.globalScale); } }
         public static int VirtualHeight { get { return Convert.ToInt32(graphics.PreferredBackBufferHeight / Preferences.globalScale); } }
 
-       // public static PerformanceCounter ramCounter = new PerformanceCounter("Memory", "Available MBytes"); // THIS LINE MUST BE COMMENTED OUT WHEN COMPILING FOR ANDROID AND LINUX
+        public static PerformanceCounter ramCounter = new PerformanceCounter("Memory", "Available MBytes"); // THIS LINE MUST BE COMMENTED OUT WHEN COMPILING FOR ANDROID AND LINUX
         public static bool DesktopMemoryLow
         {
             get
             {
-               // if (platform == Platform.Desktop) return ramCounter.NextValue() < 800; // THIS LINE MUST BE COMMENTED OUT WHEN COMPILING FOR ANDROID AND LINUX
+                if (platform == Platform.Desktop) return ramCounter.NextValue() < 800; // THIS LINE MUST BE COMMENTED OUT WHEN COMPILING FOR ANDROID AND LINUX
                 return false; // for compatibility with mobile
             }
         }
@@ -86,6 +91,7 @@ namespace SonOfRobin
             if (!Directory.Exists(worldTemplatesPath)) Directory.CreateDirectory(worldTemplatesPath);
             if (!Directory.Exists(saveGamesPath)) Directory.CreateDirectory(saveGamesPath);
 
+            controlTips = new ControlTips();
             Preferences.Initialize(); // to set some default values
             Preferences.Load();
 
@@ -116,17 +122,17 @@ namespace SonOfRobin
 
             graphics.ApplyChanges();
 
-           // this.Window.Position = new Point(-10, 758); // THIS LINE MUST BE COMMENTED OUT WHEN COMPILING FOR ANDROID
+            this.Window.Position = new Point(-10, 758); // THIS LINE MUST BE COMMENTED OUT WHEN COMPILING FOR ANDROID
             this.Window.AllowUserResizing = true;
             Window.ClientSizeChanged += OnResize;
 
             new SolidColor(color: Color.RoyalBlue, viewOpacity: 1f, clearScreen: true);
             new MessageLog();
             Preferences.DebugMode = Preferences.DebugMode; // to create debugMode scenes
-            new InfoWindow();
-            if (platform == Platform.Mobile) new TouchOverlay();
-            new ControlTips();
-            new ProgressBar();
+            hintWindow = new InfoWindow(bgColor: Color.RoyalBlue, bgOpacity: 0.85f);
+            progressBar = new InfoWindow(bgColor: Color.SeaGreen, bgOpacity: 0.85f);
+            if (platform == Platform.Mobile) touchOverlay = new TouchOverlay();
+            controlTips.MoveToTop();
 
             if (LicenceValid)
             {

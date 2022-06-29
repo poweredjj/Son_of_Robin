@@ -93,6 +93,8 @@ namespace SonOfRobin
         {
             if (this.width == newWidth && this.height == newHeight) return;
 
+            var excessPieces = new List<BoardPiece> { };
+
             // dropping pieces from excess slots
             if (this.width > newWidth || this.height > newHeight)
             {
@@ -100,7 +102,10 @@ namespace SonOfRobin
                 {
                     for (int y = 0; y < this.height; y++)
                     {
-                        if (x >= newWidth || y >= newHeight) this.DropPiecesFromSlot(slot: this.slots[x, y], dropAllPieces: true, addMovement: true);
+                        if (x >= newWidth || y >= newHeight)
+                        {
+                            excessPieces.AddRange(this.RemoveAllPiecesFromSlot(slot: this.slots[x, y], dropToTheGround: false));
+                        }
                     }
                 }
             }
@@ -126,6 +131,11 @@ namespace SonOfRobin
             this.width = newWidth;
             this.height = newHeight;
             this.slots = newSlots;
+
+            foreach (BoardPiece piece in excessPieces)
+            {
+                this.AddPiece(piece: piece, dropIfDoesNotFit: true, addMovement: true);
+            }
         }
 
         public bool AddPiece(BoardPiece piece, bool dropIfDoesNotFit = false, bool addMovement = false)
