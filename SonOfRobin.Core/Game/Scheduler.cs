@@ -361,6 +361,9 @@ namespace SonOfRobin
 
                             player.AcquireEnergy(food.Mass * 40f);
 
+                            foreach (BuffEngine.Buff buff in food.buffList)
+                            { player.buffEngine.AddBuff(buff); }
+
                             food.hitPoints = 0;
                         }
                         return;

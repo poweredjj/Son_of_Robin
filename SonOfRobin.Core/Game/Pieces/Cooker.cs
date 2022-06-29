@@ -8,7 +8,7 @@ namespace SonOfRobin
     public class Cooker : BoardPiece
     {
         private static readonly List<PieceTemplate.Name> ingredientNames = new List<PieceTemplate.Name> { PieceTemplate.Name.RawMeat, PieceTemplate.Name.Apple, PieceTemplate.Name.Cherry, PieceTemplate.Name.Banana, PieceTemplate.Name.Tomato };
-        private static readonly List<PieceTemplate.Name> woodNames = new List<PieceTemplate.Name> { PieceTemplate.Name.WoodLog, PieceTemplate.Name.WoodPlank };
+        private static readonly List<PieceTemplate.Name> fuelNames = new List<PieceTemplate.Name> { PieceTemplate.Name.WoodLog, PieceTemplate.Name.WoodPlank, PieceTemplate.Name.Coal };
 
         private readonly float foodMassMultiplier;
         private int cookingDoneFrame;
@@ -27,7 +27,7 @@ namespace SonOfRobin
             this.pieceStorage = new PieceStorage(width: storageWidth, height: storageHeight, world: this.world, storagePiece: this, storageType: PieceStorage.StorageType.Cooking);
 
             var allowedPieceNames = new List<PieceTemplate.Name>(ingredientNames);
-            allowedPieceNames.AddRange(woodNames);
+            allowedPieceNames.AddRange(fuelNames);
             allowedPieceNames.Add(PieceTemplate.Name.FlameTrigger);
             allowedPieceNames.Add(PieceTemplate.Name.Meal);
 
@@ -67,27 +67,27 @@ namespace SonOfRobin
         public void Cook()
         {
             var storedIngredients = this.pieceStorage.GetAllPieces().Where(piece => ingredientNames.Contains(piece.name)).ToList();
-            var storedWood = this.pieceStorage.GetAllPieces().Where(piece => woodNames.Contains(piece.name)).ToList();
+            var storedFuel = this.pieceStorage.GetAllPieces().Where(piece => fuelNames.Contains(piece.name)).ToList();
 
-            if (storedIngredients.Count == 0 && storedWood.Count == 0)
+            if (storedIngredients.Count == 0 && storedFuel.Count == 0)
             {
-                new TextWindow(text: "I need ingredients and wood to cook.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true);
+                new TextWindow(text: "I need ingredients and fuel (wood or coal) to cook.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true);
                 return;
             }
 
-            if (storedWood.Count == 0)
+            if (storedFuel.Count == 0)
             {
-                new TextWindow(text: "I don't have wood.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true);
+                new TextWindow(text: "I don't have wood or coal.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true);
                 return;
             }
 
             if (storedIngredients.Count == 0)
             {
-                new TextWindow(text: "I have wood, but no ingredients.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true);
+                new TextWindow(text: "I have fuel, but no ingredients.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true);
                 return;
             }
 
-            float woodFuelPerPiece = 500f; // food mass cooked with one wood piece (regardless of type)
+            float fuelPerPiece = 500f; // food mass cooked with one fuel piece (regardless of type)
             int singleMealMass = 250;
 
             float cookedMass = 0f;
@@ -98,14 +98,14 @@ namespace SonOfRobin
             {
                 if (fuelLeft == 0)
                 {
-                    if (storedWood.Count > 0)
+                    if (storedFuel.Count > 0)
                     {
-                        BoardPiece wood = storedWood[0];
-                        storedWood.RemoveAt(0);
-                        fuelLeft += woodFuelPerPiece;
+                        BoardPiece fuel = storedFuel[0];
+                        storedFuel.RemoveAt(0);
+                        fuelLeft += fuelPerPiece;
 
-                        if (piecesToDestroy.ContainsKey(wood.name)) piecesToDestroy[wood.name]++;
-                        else piecesToDestroy[wood.name] = 1;
+                        if (piecesToDestroy.ContainsKey(fuel.name)) piecesToDestroy[fuel.name]++;
+                        else piecesToDestroy[fuel.name] = 1;
                     }
                 }
 
@@ -130,6 +130,7 @@ namespace SonOfRobin
             {
                 BoardPiece meal = PieceTemplate.CreateOffBoard(templateName: PieceTemplate.Name.Meal, world: this.world);
                 meal.Mass = Math.Min(cookedMass, singleMealMass);
+                if (meal.Mass == singleMealMass) meal.buffList.Add(new BuffEngine.Buff(world: this.world, type: BuffEngine.BuffType.MaxHp, value: (float)20, autoRemoveDelay: 60 * 60));
                 this.pieceStorage.AddPiece(piece: meal, dropIfDoesNotFit: true);
                 cookedMass = Math.Max(cookedMass - meal.Mass, 0);
 

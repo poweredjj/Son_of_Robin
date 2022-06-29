@@ -226,7 +226,7 @@ namespace SonOfRobin
                     animalTarget.activeState = State.AnimalFlee;
 
                     animalTarget.AddPassiveMovement(movement: (attacker.sprite.position - animalTarget.sprite.position) * targetPushMultiplier * -0.5f * hitPower);
-                    animalTarget.buffEngine.AddBuff(buff: new BuffEngine.Buff(world: world, type: BuffEngine.BuffType.Speed, value: -animalTarget.speed / 2), autoRemoveDelay: 180); // animal will be slower for a while
+                    animalTarget.buffEngine.AddBuff(buff: new BuffEngine.Buff(world: world, type: BuffEngine.BuffType.Speed, value: -animalTarget.speed / 2, autoRemoveDelay: 180)); // animal will be slower for a while
                 }
             }
         }

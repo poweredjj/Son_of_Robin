@@ -52,23 +52,10 @@ namespace SonOfRobin
         private readonly static SpriteFont font = SonOfRobinGame.fontSmall;
 
         public static Dictionary<VButName, VirtButton> buttonsByName = new Dictionary<VButName, VirtButton> { };
-        private bool HasBeenPressed { get { return this.IsDown && !this.wasDownLastFrame; } }
-        private bool HasBeenReleased { get { return !this.IsDown && this.wasDownLastFrame; } }
-        private bool IsDown
-        {
-            get
-            {
-                return this.switchButton ? this.switchedState : this.isDown;
-            }
-
-            set
-            {
-                this.isDown = value;
-
-                if (this.coupledPrefName != "") Helpers.SetProperty(targetObj: new Preferences(), propertyName: this.coupledPrefName, newValue: this.IsDown);
-            }
-        }
-
+        private bool HasBeenPressed { get { return this.IsActive && !this.wasDownLastFrame; } }
+        private bool HasBeenReleased { get { return !this.IsActive && this.wasDownLastFrame; } }
+        private bool IsActive
+        { get { return this.switchButton ? this.switchedState : this.isDown; } }
 
         private int Width { get { return Convert.ToInt32(SonOfRobinGame.VirtualWidth * this.width0to1); } }
         private int Height { get { return Convert.ToInt32(SonOfRobinGame.VirtualWidth * this.height0to1); } }  // VirtualWidth is repeated to maintain button proportions
@@ -134,7 +121,7 @@ namespace SonOfRobin
         public static bool IsButtonDown(VButName buttonName)
         {
             if (!Input.InputActive || !buttonsByName.ContainsKey(buttonName)) return false;
-            return buttonsByName[buttonName].IsDown;
+            return buttonsByName[buttonName].IsActive;
         }
 
 
@@ -160,20 +147,31 @@ namespace SonOfRobin
 
                 if (this.Rect.Contains(position))
                 {
-                   // MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"Button {this.label} is down.", color: Color.GreenYellow);
+                    // MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"Button {this.label} is down.", color: Color.GreenYellow);
 
                     if (touch.State == TouchLocationState.Pressed || (touch.State == TouchLocationState.Moved && this.wasDownLastFrame))
                     {
-                        if (!this.wasDownLastFrame) this.switchedState = !this.switchedState;
+                        this.isDown = true;
+                        if (!this.wasDownLastFrame)
+                        {
+                            this.switchedState = !this.switchedState;
+                            this.SetCoupledPref();
+                        }
 
-                        this.IsDown = true;
                         return;
                     }
                 }
             }
 
-            this.IsDown = false;
+            if (this.isDown)
+            {
+                this.isDown = false;
+                this.SetCoupledPref();
+            }
         }
+
+        private void SetCoupledPref()
+        { if (this.coupledPrefName != "") Helpers.SetProperty(targetObj: new Preferences(), propertyName: this.coupledPrefName, newValue: this.IsActive); }
 
         public static void DrawAll()
         {
@@ -188,7 +186,7 @@ namespace SonOfRobin
             Rectangle gfxRect = this.Rect;
             Rectangle sourceRectangle;
 
-            if (this.IsDown)
+            if (this.IsActive)
             {
                 sourceRectangle = new Rectangle(0, 0, this.texturePressed.Width, this.texturePressed.Height);
                 SonOfRobinGame.spriteBatch.Draw(this.texturePressed, gfxRect, sourceRectangle, this.colorPressed);

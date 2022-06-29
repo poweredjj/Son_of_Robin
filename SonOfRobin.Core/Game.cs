@@ -13,8 +13,8 @@ namespace SonOfRobin
 
     public class SonOfRobinGame : Game
     {
-        public static readonly float version = 6.5f;
-        public static readonly DateTime lastChanged = new DateTime(2022, 02, 11);
+        public static readonly float version = 6.6f;
+        public static readonly DateTime lastChanged = new DateTime(2022, 02, 14);
 
         public static ContentManager content;
 
@@ -49,8 +49,8 @@ namespace SonOfRobin
 
         public static bool quitGame = false;
 
-        public static readonly int initialWindowWidth = 1600; // 900
-        public static readonly int initialWindowHeight = 1200; // 250
+        public static readonly int initialWindowWidth = 900; // 900
+        public static readonly int initialWindowHeight = 250; // 250
         public static int VirtualWidth { get { return Convert.ToInt32(graphics.PreferredBackBufferWidth / Preferences.globalScale); } }
         public static int VirtualHeight { get { return Convert.ToInt32(graphics.PreferredBackBufferHeight / Preferences.globalScale); } }
 
@@ -116,7 +116,7 @@ namespace SonOfRobin
 
             graphics.ApplyChanges();
 
-            //this.Window.Position = new Point(-10, 758); // THIS LINE MUST BE COMMENTED OUT WHEN COMPILING FOR ANDROID
+            this.Window.Position = new Point(-10, 758); // THIS LINE MUST BE COMMENTED OUT WHEN COMPILING FOR ANDROID
             this.Window.AllowUserResizing = true;
             Window.ClientSizeChanged += OnResize;
 

@@ -91,25 +91,25 @@ namespace SonOfRobin
 
             if (Keyboard.HasBeenPressed(Keys.D1))
             {
-                BoardPiece piece = PieceTemplate.CreateOnBoard(world: world, position: world.player.sprite.position, templateName: PieceTemplate.Name.Map);
+                BoardPiece piece = PieceTemplate.CreateOnBoard(world: world, position: world.player.sprite.position, templateName: PieceTemplate.Name.CookingPot);
                 if (piece.sprite.placedCorrectly) piece.sprite.MoveToClosestFreeSpot(world.player.sprite.position);
             }
 
             if (Keyboard.HasBeenPressed(Keys.D2))
             {
-                BoardPiece piece = PieceTemplate.CreateOnBoard(world: world, position: world.player.sprite.position, templateName: PieceTemplate.Name.ChestWooden);
+                BoardPiece piece = PieceTemplate.CreateOnBoard(world: world, position: world.player.sprite.position, templateName: PieceTemplate.Name.RawMeat);
                 if (piece.sprite.placedCorrectly) piece.sprite.MoveToClosestFreeSpot(world.player.sprite.position);
             }
 
             if (Keyboard.HasBeenPressed(Keys.D3))
             {
-                BoardPiece piece = PieceTemplate.CreateOnBoard(world: world, position: world.player.sprite.position, templateName: PieceTemplate.Name.ChestIron);
+                BoardPiece piece = PieceTemplate.CreateOnBoard(world: world, position: world.player.sprite.position, templateName: PieceTemplate.Name.WoodLog);
                 if (piece.sprite.placedCorrectly) piece.sprite.MoveToClosestFreeSpot(world.player.sprite.position);
             }
 
             if (Keyboard.HasBeenPressed(Keys.D4))
             {
-                BoardPiece piece = PieceTemplate.CreateOnBoard(world: world, position: world.player.sprite.position, templateName: PieceTemplate.Name.BackpackMedium);
+                BoardPiece piece = PieceTemplate.CreateOnBoard(world: world, position: world.player.sprite.position, templateName: PieceTemplate.Name.Coal);
                 if (piece.sprite.placedCorrectly) piece.sprite.MoveToClosestFreeSpot(world.player.sprite.position);
             }
 
@@ -244,7 +244,13 @@ namespace SonOfRobin
             { world.player.pieceStorage.Resize(newWidth: 8, newHeight: 6); }
 
             if (Keyboard.HasBeenPressed(Keys.F9))
-            { world.player.buffEngine.AddBuff(buff: new BuffEngine.Buff(world: world, type: BuffEngine.BuffType.Speed, value: 20f), autoRemoveDelay: 180); }
+            { world.player.buffEngine.AddBuff(buff: new BuffEngine.Buff(world: world, type: BuffEngine.BuffType.Speed, value: 20f, autoRemoveDelay: 180)); }
+
+            if (Keyboard.HasBeenPressed(Keys.F10))
+            { world.player.buffEngine.AddBuff(buff: new BuffEngine.Buff(world: world, type: BuffEngine.BuffType.MaxHp, value: 20f, autoRemoveDelay: 300)); }
+
+            if (Keyboard.HasBeenPressed(Keys.F11))
+            { world.player.buffEngine.AddBuff(buff: new BuffEngine.Buff(world: world, type: BuffEngine.BuffType.EnableMap, value: null, autoRemoveDelay: 200)); }
 
             if (Keyboard.HasBeenPressed(Keys.F12) || VirtButton.HasButtonBeenPressed(VButName.DebugRemoveTopScene)) RemoveTopScene();
 

@@ -53,7 +53,8 @@ namespace SonOfRobin
         public readonly bool indestructible;
         public readonly byte stackSize;
         public PieceStorage pieceStorage;
-        public BuffEngine buffEngine;
+        public BuffEngine buffEngine; // active buffs
+        public List<BuffEngine.Buff> buffList; // buff to be activated when this piece (equip, food, etc.) is used by another piece
         public readonly Yield yield;
         public Scheduler.TaskName boardTask;
         public Scheduler.TaskName toolbarTask;
@@ -103,7 +104,7 @@ namespace SonOfRobin
         }
 
         public BoardPiece(World world, Vector2 position, AnimPkg animPackage, PieceTemplate.Name name, AllowedFields allowedFields, Dictionary<byte, int> maxMassBySize,
-            byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, bool visible = true, ushort minDistance = 0, ushort maxDistance = 100, bool ignoresCollisions = false, int destructionDelay = 0, int maxAge = 0, bool floatsOnWater = false, bool checksFullCollisions = false, int generation = 0, int mass = 1, int staysAfterDeath = 800, float maxHitPoints = 1, byte stackSize = 1, Scheduler.TaskName boardTask = Scheduler.TaskName.Empty, Scheduler.TaskName toolbarTask = Scheduler.TaskName.Empty, bool canBePickedUp = false, Yield yield = null, bool indestructible = false, bool rotatesWhenDropped = false, bool fadeInAnim = false, bool serialize = true, bool placeAtBeachEdge = false, bool isShownOnMiniMap = false)
+            byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, bool visible = true, ushort minDistance = 0, ushort maxDistance = 100, bool ignoresCollisions = false, int destructionDelay = 0, int maxAge = 0, bool floatsOnWater = false, bool checksFullCollisions = false, int generation = 0, int mass = 1, int staysAfterDeath = 800, float maxHitPoints = 1, byte stackSize = 1, Scheduler.TaskName boardTask = Scheduler.TaskName.Empty, Scheduler.TaskName toolbarTask = Scheduler.TaskName.Empty, bool canBePickedUp = false, Yield yield = null, bool indestructible = false, bool rotatesWhenDropped = false, bool fadeInAnim = false, bool serialize = true, bool placeAtBeachEdge = false, bool isShownOnMiniMap = false, List<BuffEngine.Buff> buffList = null)
         {
             this.world = world;
             this.name = name;
@@ -135,6 +136,7 @@ namespace SonOfRobin
             this.efficiency = 1; // 0 - 1 valid range
             this.pieceStorage = null; // updated in child classes - if needed
             this.buffEngine = new BuffEngine(piece: this);
+            this.buffList = buffList == null ? new List<BuffEngine.Buff> { } : buffList;
             this.boardTask = boardTask;
             this.toolbarTask = toolbarTask;
             this.passiveMovement = Vector2.Zero;
@@ -181,6 +183,7 @@ namespace SonOfRobin
                 {"base_passiveMovementY", this.passiveMovement.Y},
                 {"base_passiveRotation", this.passiveRotation},
                 {"base_buffEngine", this.buffEngine.Serialize()},
+                {"base_buffList", this.buffList},
             };
 
             if (this.pieceStorage != null) pieceData["base_pieceStorage"] = this.pieceStorage.Serialize();
@@ -207,6 +210,7 @@ namespace SonOfRobin
             this.passiveMovement = new Vector2((float)pieceData["base_passiveMovementX"], (float)pieceData["base_passiveMovementY"]);
             this.passiveRotation = (int)pieceData["base_passiveRotation"];
             this.buffEngine = BuffEngine.Deserialize(piece: this, buffEngineData: pieceData["base_buffEngine"]);
+            this.buffList = (List<BuffEngine.Buff>)pieceData["base_buffList"];
 
             this.sprite.Deserialize(pieceData);
 
