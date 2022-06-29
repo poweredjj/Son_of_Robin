@@ -130,20 +130,20 @@ namespace SonOfRobin
 
             new Tutorial(type: Type.Torch, name: "using torch", title: "Using torch.",
                 messages: new List<HintMessage> {
-                new HintMessage(text: "1. Enter inventory and place the | torch on toolbar.", imageList: new List<Texture2D>{AnimData.framesForPkgs[AnimData.PkgName.Torch].texture}, boxType: messageTextType),
+                new HintMessage(text: "1. Enter inventory and place the | torch on toolbar.", imageList: new List<Texture2D>{AnimData.framesForPkgs[AnimData.PkgName.SmallTorch].texture}, boxType: messageTextType),
                 !Preferences.ShowTouchTips ?
                 new HintMessage(text: "2. Exit inventory by pressing |.", imageList: new List<Texture2D> {InputMapper.GetTexture(InputMapper.Action.GlobalCancelReturnSkip)}, boxType: messageTextType):
                 new HintMessage(text: "2. Exit inventory.", boxType: messageTextType),
                 !Preferences.ShowTouchTips ?
-                new HintMessage(text:"3. Select the | torch using | and |.", imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.Torch].texture, InputMapper.GetTexture(InputMapper.Action.ToolbarPrev), InputMapper.GetTexture(InputMapper.Action.ToolbarNext)}, boxType: messageTextType) :
-                new HintMessage(text:"3. Touch the | torch on toolbar to select it.", imageList: new List<Texture2D> {AnimData.framesForPkgs[AnimData.PkgName.Torch].texture}, boxType: messageTextType),
+                new HintMessage(text:"3. Select the | torch using | and |.", imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.SmallTorch].texture, InputMapper.GetTexture(InputMapper.Action.ToolbarPrev), InputMapper.GetTexture(InputMapper.Action.ToolbarNext)}, boxType: messageTextType) :
+                new HintMessage(text:"3. Touch the | torch on toolbar to select it.", imageList: new List<Texture2D> {AnimData.framesForPkgs[AnimData.PkgName.SmallTorch].texture}, boxType: messageTextType),
                 !Preferences.ShowTouchTips ?
-                new HintMessage(text:"4. Set the | torch on | fire by pressing |.", imageList: new List<Texture2D> {AnimData.framesForPkgs[AnimData.PkgName.Torch].texture, AnimData.framesForPkgs[AnimData.PkgName.Flame].texture, InputMapper.GetTexture(InputMapper.Action.WorldUseToolbarPiece)}, boxType: messageTextType) :
-                new HintMessage(text:"4. Set the | torch on | fire by pressing 'USE ITEM' button.", imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.Flame].texture, AnimData.framesForPkgs[AnimData.PkgName.Torch].texture}, boxType: messageTextType),
+                new HintMessage(text:"4. Set the | torch on | fire by pressing |.", imageList: new List<Texture2D> {AnimData.framesForPkgs[AnimData.PkgName.SmallTorch].texture, AnimData.framesForPkgs[AnimData.PkgName.Flame].texture, InputMapper.GetTexture(InputMapper.Action.WorldUseToolbarPiece)}, boxType: messageTextType) :
+                new HintMessage(text:"4. Set the | torch on | fire by pressing 'USE ITEM' button.", imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.Flame].texture, AnimData.framesForPkgs[AnimData.PkgName.SmallTorch].texture}, boxType: messageTextType),
                 !Preferences.ShowTouchTips ?
-                new HintMessage(text:"5. To extinguish the | fire, press | again (with | torch selected).", imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.Flame].texture, InputMapper.GetTexture(InputMapper.Action.WorldUseToolbarPiece), AnimData.framesForPkgs[AnimData.PkgName.Torch].texture}, boxType: messageTextType) :
-                new HintMessage(text:"5. To extinguish the | fire, press 'USE ITEM' button again (with | torch selected).", imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.Flame].texture, AnimData.framesForPkgs[AnimData.PkgName.Torch].texture}, boxType: messageTextType),
-                new HintMessage(text: "Keep in mind, that the | torch will burn out after some time.", imageList: new List<Texture2D> {AnimData.framesForPkgs[AnimData.PkgName.Torch].texture}, boxType: messageTextType)});
+                new HintMessage(text:"5. To extinguish the | fire, press | again (with | torch selected).", imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.Flame].texture, InputMapper.GetTexture(InputMapper.Action.WorldUseToolbarPiece), AnimData.framesForPkgs[AnimData.PkgName.SmallTorch].texture}, boxType: messageTextType) :
+                new HintMessage(text:"5. To extinguish the | fire, press 'USE ITEM' button again (with | torch selected).", imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.Flame].texture, AnimData.framesForPkgs[AnimData.PkgName.SmallTorch].texture}, boxType: messageTextType),
+                new HintMessage(text: "Keep in mind, that the | torch will burn out after some time.", imageList: new List<Texture2D> {AnimData.framesForPkgs[AnimData.PkgName.SmallTorch].texture}, boxType: messageTextType)});
 
             new Tutorial(type: Type.Fireplace, name: "using fireplace", title: "Using fireplace.",
                 messages: new List<HintMessage> {
@@ -196,7 +196,7 @@ namespace SonOfRobin
 
             new Tutorial(type: Type.BuildWorkshop, name: "building a workshop", title: "Building a workshop.",
              messages: new List<HintMessage>  {
-                new HintMessage(text: "To build a workshop, enter craft menu and select 'crafting workshop'.\nTo make it, you will need some wood.", boxType: messageTextType)
+                new HintMessage(text: "To build a | basic workshop,\nenter craft menu and select | 'basic workshop'.\nTo make it, you will need some | wood.",  imageList: new List<Texture2D>{ AnimData.framesForPkgs[AnimData.PkgName.WorkshopBasic].texture, AnimData.framesForPkgs[AnimData.PkgName.WorkshopBasic].texture, AnimData.framesForPkgs[AnimData.PkgName.WoodLog].texture}, boxType: messageTextType)
             });
 
             HintMessage shootingMessage;
@@ -209,10 +209,10 @@ namespace SonOfRobin
 
             new Tutorial(type: Type.ShootProjectile, name: "using projectile weapon", title: "Using a projectile weapon.",
                 messages: new List<HintMessage>  {
-                    new HintMessage(text: "1. Enter inventory and place the | | projectile weapon on toolbar.",imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.Sling].texture, AnimData.framesForPkgs[AnimData.PkgName.BowWood].texture}, boxType: messageTextType),
+                    new HintMessage(text: "1. Enter inventory and place the | projectile weapon on toolbar.",imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.BowWood].texture}, boxType: messageTextType),
                     !Preferences.ShowTouchTips ?
-                    new HintMessage(text:"3. Select the | | projectile weapon using | and |.", imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.Sling].texture, AnimData.framesForPkgs[AnimData.PkgName.BowWood].texture, InputMapper.GetTexture(InputMapper.Action.ToolbarPrev), InputMapper.GetTexture(InputMapper.Action.ToolbarNext)}, boxType: messageTextType) :
-                    new HintMessage(text:"2. Touch the | | projectile weapon on toolbar to select it.", imageList: new List<Texture2D> {AnimData.framesForPkgs[AnimData.PkgName.Sling].texture, AnimData.framesForPkgs[AnimData.PkgName.BowWood].texture}, boxType: messageTextType),
+                    new HintMessage(text:"3. Select the | projectile weapon using | and |.", imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.BowWood].texture, InputMapper.GetTexture(InputMapper.Action.ToolbarPrev), InputMapper.GetTexture(InputMapper.Action.ToolbarNext)}, boxType: messageTextType) :
+                    new HintMessage(text:"2. Touch the | projectile weapon on toolbar to select it.", imageList: new List<Texture2D> {AnimData.framesForPkgs[AnimData.PkgName.BowWood].texture}, boxType: messageTextType),
                     shootingMessage,
                     !Preferences.ShowTouchTips ?
                     new HintMessage(text:"4. Press | to start shooting.\nRelease | to shoot.", imageList: new List<Texture2D> {InputMapper.GetTexture(InputMapper.Action.WorldUseToolbarPiece), InputMapper.GetTexture(InputMapper.Action.WorldUseToolbarPiece)}, boxType: messageTextType) :

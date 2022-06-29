@@ -9,7 +9,7 @@ namespace SonOfRobin
 
     public struct PieceHint
     {
-        public enum Type { CrateStarting, CrateAnother, WoodNegative, WoodPositive, StoneNegative, StonePositive, AnimalNegative, AnimalSling, AnimalBow, AnimalBat, AnimalAxe, SlingNoAmmo, BowNoAmmo, ShellIsNotUseful, Clam, FruitTree, BananaTree, TomatoPlant, IronDepositNegative, IronDepositPositive, CoalDepositNegative, CoalDepositPositive, Cooker, LeatherPositive, BackpackPositive, BeltPositive, MapCanMake, MapPositive, RedExclamation, Acorn, TorchNegative, TorchPositive, Fireplace, HerbsRed, GlassSand }
+        public enum Type { CrateStarting, CrateAnother, WoodNegative, WoodPositive, StoneNegative, StonePositive, AnimalNegative, AnimalBow, AnimalBat, AnimalAxe, BowNoAmmo, ShellIsNotUseful, Clam, FruitTree, BananaTree, TomatoPlant, IronDepositNegative, IronDepositPositive, CoalDepositNegative, CoalDepositPositive, Cooker, LeatherPositive, BackpackPositive, BeltPositive, MapCanMake, MapPositive, RedExclamation, Acorn, TorchNegative, TorchPositive, Fireplace, HerbsRed, GlassSand, CanBuildWorkshop }
 
         public static List<PieceHint> pieceHintList;
 
@@ -66,8 +66,7 @@ namespace SonOfRobin
 
                 new PieceHint(type: Type.MapCanMake, canBeForced: true,
                     message: "I can use this | leather to make a | map.\nBut I need a | workshop to make it.",
-                    imageList: new List<Texture2D>{ AnimData.framesForPkgs[AnimData.PkgName.Leather].texture, AnimData.framesForPkgs[AnimData.PkgName.Map].texture,  AnimData.framesForPkgs[AnimData.PkgName.WoodenTable].texture},
-                    tutorialsToActivate: new List<Tutorials.Type> {Tutorials.Type.BuildWorkshop},
+                    imageList: new List<Texture2D>{ AnimData.framesForPkgs[AnimData.PkgName.Leather].texture, AnimData.framesForPkgs[AnimData.PkgName.Map].texture,  AnimData.framesForPkgs[AnimData.PkgName.WorkshopBasic].texture},
                     playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.Leather}),
 
                 new PieceHint(type: Type.MapPositive, canBeForced: true,
@@ -89,13 +88,6 @@ namespace SonOfRobin
                     playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.BeltMedium},
                     tutorialsToActivate: new List<Tutorials.Type> {Tutorials.Type.Equip}),
 
-                new PieceHint(type: Type.SlingNoAmmo, canBeForced: true,
-                    message: "My | sling is useless without stones...",
-                    imageList: new List<Texture2D>{ AnimData.framesForPkgs[AnimData.PkgName.Sling].texture},
-                    playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.Sling, PieceTemplate.Name.GreatSling},
-                    playerDoesNotOwnAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.StoneAmmo},
-                    tutorialsToActivate: new List<Tutorials.Type> {Tutorials.Type.ShootProjectile}),
-
                 new PieceHint(type: Type.BowNoAmmo, canBeForced: true,
                     message: "I need | arrows...",
                     imageList: new List<Texture2D>{ AnimData.framesForPkgs[AnimData.PkgName.ArrowWood].texture},
@@ -105,9 +97,8 @@ namespace SonOfRobin
 
                 new PieceHint(type: Type.AnimalNegative, fieldPieces: new List<PieceTemplate.Name> {PieceTemplate.Name.Frog, PieceTemplate.Name.Rabbit, PieceTemplate.Name.Fox},
                     message: "I think I need some | | weapon to hunt this animal.",
-                    imageList: new List<Texture2D>{ AnimData.framesForPkgs[AnimData.PkgName.BatWood].texture, AnimData.framesForPkgs[AnimData.PkgName.BowWood].texture},
-                    playerDoesNotOwnAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.BowWood, PieceTemplate.Name.BatWood, PieceTemplate.Name.Sling,
-                        PieceTemplate.Name.GreatSling}),
+                    imageList: new List<Texture2D>{ AnimData.framesForPkgs[AnimData.PkgName.SpearStone].texture, AnimData.framesForPkgs[AnimData.PkgName.BowWood].texture},
+                    playerDoesNotOwnAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.BowWood, PieceTemplate.Name.SpearStone}),
 
                 new PieceHint(type: Type.AnimalAxe, fieldPieces: new List<PieceTemplate.Name> {PieceTemplate.Name.Frog, PieceTemplate.Name.Rabbit, PieceTemplate.Name.Fox},
                     message: "I could try to use my | axe to hunt this animal.",
@@ -118,15 +109,9 @@ namespace SonOfRobin
                 new PieceHint(type: Type.AnimalBat,
                     fieldPieces: new List<PieceTemplate.Name> {PieceTemplate.Name.Frog, PieceTemplate.Name.Rabbit, PieceTemplate.Name.Fox},
                     message: "My | wooden bat should be great for animal hunting.",
-                    imageList: new List<Texture2D>{ AnimData.framesForPkgs[AnimData.PkgName.BatWood].texture},
+                    imageList: new List<Texture2D>{ AnimData.framesForPkgs[AnimData.PkgName.SpearStone].texture},
                     alsoDisables: new List<Type> {Type.AnimalNegative},
-                    playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.BatWood}),
-
-                new PieceHint(type: Type.AnimalSling, fieldPieces: new List<PieceTemplate.Name> {PieceTemplate.Name.Frog, PieceTemplate.Name.Rabbit, PieceTemplate.Name.Fox},
-                    message: "My | sling should be enough to hunt an animal. Right?",
-                    imageList: new List<Texture2D>{ AnimData.framesForPkgs[AnimData.PkgName.Sling].texture},
-                    alsoDisables: new List<Type> {Type.AnimalNegative},
-                    playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.Sling, PieceTemplate.Name.GreatSling}),
+                    playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.SpearStone}),
 
                 new PieceHint(type: Type.AnimalBow, fieldPieces: new List<PieceTemplate.Name> {PieceTemplate.Name.Frog, PieceTemplate.Name.Rabbit, PieceTemplate.Name.Fox},
                     message: "My | bow should be great for hunting.",
@@ -146,8 +131,8 @@ namespace SonOfRobin
                     playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.AxeWood, PieceTemplate.Name.AxeStone, PieceTemplate.Name.AxeIron }),
 
                 new PieceHint(type: Type.StoneNegative, fieldPieces: new List<PieceTemplate.Name> {PieceTemplate.Name.MineralsSmall, PieceTemplate.Name.MineralsBig, PieceTemplate.Name.WaterRock},
-                    message: "If I had a | pickaxe, I could mine stones from this | mineral.",
-                    imageList: new List<Texture2D>{ AnimData.framesForPkgs[AnimData.PkgName.PickaxeStone].texture, AnimData.framesForPkgs[AnimData.PkgName.MineralsSmall1].texture},
+                    message: "If I had a | pickaxe, I could mine stones from this | mineral.\nRegular | axe could work too, but not as effective.",
+                    imageList: new List<Texture2D>{ AnimData.framesForPkgs[AnimData.PkgName.PickaxeStone].texture, AnimData.framesForPkgs[AnimData.PkgName.MineralsSmall1].texture, AnimData.framesForPkgs[AnimData.PkgName.AxeStone].texture},
                     playerDoesNotOwnAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.PickaxeWood, PieceTemplate.Name.PickaxeStone, PieceTemplate.Name.PickaxeIron }),
 
                 new PieceHint(type: Type.StonePositive, fieldPieces: new List<PieceTemplate.Name> {PieceTemplate.Name.MineralsSmall, PieceTemplate.Name.MineralsBig, PieceTemplate.Name.WaterRock},
@@ -206,22 +191,28 @@ namespace SonOfRobin
                 new PieceHint(type: Type.TorchNegative,
                     messageList: new List<HintMessage> {
                         new HintMessage("It's getting dark.", blockInput: true),
-                        new HintMessage(text: "I need some light. A | torch, maybe?", imageList: new List<Texture2D> {AnimData.framesForPkgs[AnimData.PkgName.Torch].texture }, blockInput: true)},
-                    playerDoesNotOwnAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.Torch},
+                        new HintMessage(text: "I need some light. A | torch, maybe?\nOr a | bonfire?", imageList: new List<Texture2D> {AnimData.framesForPkgs[AnimData.PkgName.SmallTorch].texture, AnimData.framesForPkgs[AnimData.PkgName.Campfire].texture  }, blockInput: true)},
+                    playerDoesNotOwnAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.TorchSmall},
                     partsOfDay: new List<IslandClock.PartOfDay> {IslandClock.PartOfDay.Evening, IslandClock.PartOfDay.Night}),
 
                 new PieceHint(type: Type.TorchPositive, canBeForced: true,
                     message: "This | torch will make navigating at night a lot easier.",
-                    imageList: new List<Texture2D>{ AnimData.framesForPkgs[AnimData.PkgName.Torch].texture},
+                    imageList: new List<Texture2D>{ AnimData.framesForPkgs[AnimData.PkgName.SmallTorch].texture},
                     alsoDisables: new List<Type> {Type.TorchNegative },
                     tutorialsToActivate: new List<Tutorials.Type> {Tutorials.Type.Torch},
-                    playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.Torch}),
+                    playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.TorchSmall}),
 
                 new PieceHint(type: Type.Fireplace, canBeForced: true,
-                    message: "This | looks ok.\nAll I need now is some | | wood... Or | coal?",
+                    message: "This | looks ok.\nAll I need now is some | | wood...\nOr | coal?",
                     imageList: new List<Texture2D>{ AnimData.framesForPkgs[AnimData.PkgName.Campfire].texture, AnimData.framesForPkgs[AnimData.PkgName.WoodLog].texture, AnimData.framesForPkgs[AnimData.PkgName.WoodPlank].texture, AnimData.framesForPkgs[AnimData.PkgName.Coal].texture},
                     tutorialsToActivate: new List<Tutorials.Type> {Tutorials.Type.Fireplace},
                     fieldPieces: new List<PieceTemplate.Name> {PieceTemplate.Name.Campfire}),
+
+                new PieceHint(type: Type.CanBuildWorkshop, canBeForced: true,
+                    message: "If I had more | wood, I could build a | basic workshop.",
+                    imageList: new List<Texture2D>{ AnimData.framesForPkgs[AnimData.PkgName.WoodLog].texture, AnimData.framesForPkgs[AnimData.PkgName.WorkshopBasic].texture},
+                    tutorialsToActivate: new List<Tutorials.Type> {Tutorials.Type.BuildWorkshop},
+                    playerOwnsAllOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.WoodLog}),
                 };
         }
 

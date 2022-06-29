@@ -13,7 +13,7 @@ namespace SonOfRobin
         public static int newWorldHeight;
 
         public static int newWorldResDivider = 2;
-        public static readonly Dictionary<Object, Object> namesForResDividers = new Dictionary<Object, Object> { { 10, "low" }, { 3, "medium" }, { 2, "high" }, { 1, "ultra" } };
+        public static readonly Dictionary<Object, Object> namesForResDividers = new Dictionary<Object, Object> { { 30, "garbage" }, { 10, "low" }, { 3, "medium" }, { 2, "high" }, { 1, "ultra" } };
         public static readonly Dictionary<Object, Object> namesForDarknessRes = new Dictionary<Object, Object> { { 4, "very low" }, { 3, "low" }, { 2, "medium" }, { 1, "high" } };
         public static readonly Dictionary<Object, Object> namesForFieldControlTipsScale = new Dictionary<Object, Object> { { 0.15f, "micro" }, { 0.25f, "small" }, { 0.4f, "medium" }, { 0.5f, "large" }, { 0.6f, "huge" }, { 0.75f, "gigantic" } };
 
@@ -66,14 +66,48 @@ namespace SonOfRobin
             }
         }
         public static float menuScale = 0.75f;
-        public static float worldScale = 1f;
+        private static float worldScale = 1f;
+
+        public static float WorldScale
+        {
+            get { return worldScale; }
+            set
+            {
+                if (worldScale == value) return;
+                worldScale = value;
+
+                World world = World.GetTopWorld();
+                if (world != null) world.CreateNewDarknessMask();
+            }
+        }
+
         private static bool fullScreenMode = true;
         public static bool loadWholeMap = true;
         private static bool frameSkip = true;
         public static bool showDemoWorld = true;
-        public static bool pointToWalk = false;
-        public static bool pointToInteract = false;
-        public static int autoSaveDelayMins = 5;
+        private static bool pointToWalk = false;
+        public static bool PointToWalk
+        {
+            get { return pointToWalk; }
+            set
+            {
+                pointToWalk = value;
+                InputMapper.RebuildMappings();
+            }
+        }
+
+        private static bool pointToInteract = false;
+        public static bool PointToInteract
+        {
+            get { return pointToInteract; }
+            set
+            {
+                pointToInteract = value;
+                InputMapper.RebuildMappings();
+            }
+        }
+
+        public static int autoSaveDelayMins = 10;
         public static int mobileMaxLoadedTextures = 1000;
         public static int displayResX = 1920;
         public static int displayResY = 1080;
@@ -84,7 +118,19 @@ namespace SonOfRobin
         public static bool showLighting = true;
         public static bool showDebris = true;
         public static bool useMultipleThreads = true;
-        public static int darknessResolution = 1;
+        private static int darknessResolution = 1;
+        public static int DarknessResolution
+        {
+            get { return darknessResolution; }
+            set
+            {
+                if (darknessResolution == value) return;
+                darknessResolution = value;
+                World world = World.GetTopWorld();
+                if (world != null) world.CreateNewDarknessMask();
+            }
+        }
+
         public static bool drawShadows = true;
         public static bool drawSunShadows = true;
         private static bool showControlTips = true;

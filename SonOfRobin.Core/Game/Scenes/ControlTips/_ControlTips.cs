@@ -164,6 +164,9 @@ namespace SonOfRobin
             // MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Switching layout: '{this.currentLayout}' to '{tipsLayout}'.", color: Color.LightGreen);
 
             World world = World.GetTopWorld();
+            var scrollTextures = InputMapper.GetTextures(InputMapper.Action.GlobalScrollUp);
+            scrollTextures.AddRange(InputMapper.GetTextures(InputMapper.Action.GlobalScrollDown));
+
             this.tipCollection.Clear();
 
             switch (tipsLayout)
@@ -174,6 +177,7 @@ namespace SonOfRobin
                 case TipsLayout.Menu:
                     {
                         new ButtonTip(tipCollection: this.tipCollection, text: "navigation", textures: InputVis.LeftStickTextureList);
+                        if (Input.tipsTypeToShow == Input.TipsTypeToShow.Keyboard) new ButtonTip(tipCollection: this.tipCollection, text: "scroll", textures: scrollTextures);
                         new ButtonTip(tipCollection: this.tipCollection, text: "confirm", textures: InputMapper.GetTextures(InputMapper.Action.GlobalConfirm));
                         new ButtonTip(tipCollection: this.tipCollection, text: "return", textures: InputMapper.GetTextures(InputMapper.Action.GlobalCancelReturnSkip));
                         break;
@@ -182,6 +186,7 @@ namespace SonOfRobin
                 case TipsLayout.MenuWithoutClosing:
                     {
                         new ButtonTip(tipCollection: this.tipCollection, text: "navigation", textures: InputVis.LeftStickTextureList);
+                        if (Input.tipsTypeToShow == Input.TipsTypeToShow.Keyboard) new ButtonTip(tipCollection: this.tipCollection, text: "scroll", textures: scrollTextures);
                         new ButtonTip(tipCollection: this.tipCollection, text: "confirm", textures: InputMapper.GetTextures(InputMapper.Action.GlobalConfirm));
                         break;
                     }

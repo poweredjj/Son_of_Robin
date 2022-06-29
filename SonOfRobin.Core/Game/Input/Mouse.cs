@@ -26,6 +26,8 @@ namespace SonOfRobin
         public static bool RightHasBeenPressed { get { return Input.InputActive && currentMouseState.RightButton == ButtonState.Pressed && previousMouseState.RightButton == ButtonState.Released; } }
         public static bool RightHasBeenReleased { get { return Input.InputActive && currentMouseState.RightButton == ButtonState.Released && previousMouseState.RightButton == ButtonState.Pressed; } }
         public static int ScrollWheelValue { get { return Input.InputActive ? currentMouseState.ScrollWheelValue : 0; } }
+        public static bool ScrollWheelRolledUp { get { return Input.InputActive && currentMouseState.ScrollWheelValue > previousMouseState.ScrollWheelValue; } }
+        public static bool ScrollWheelRolledDown { get { return Input.InputActive && currentMouseState.ScrollWheelValue < previousMouseState.ScrollWheelValue; } }
         public static int XValue { get { return Input.InputActive ? currentMouseState.X : 0; } }
         public static int YValue { get { return Input.InputActive ? currentMouseState.Y : 0; } }
         public static Vector2 Position { get { return Input.InputActive ? new Vector2(currentMouseState.X, currentMouseState.Y) : Vector2.Zero; } }

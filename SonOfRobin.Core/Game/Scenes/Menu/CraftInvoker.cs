@@ -150,7 +150,9 @@ namespace SonOfRobin
 
                 //Helpers.DrawRectangleOutline(rect: pieceRect, color: Color.YellowGreen, borderWidth: 2); // testing rect size
                 this.DrawFrameAndText(frame: drawParams.frame, cellRect: pieceRect, gfxCol: Color.White, txtCol: Color.White, text: drawParams.text);
-                Inventory.DrawQuantity(pieceCount: drawParams.counter, destRect: pieceRect, opacity: this.menu.viewParams.drawOpacity, ignoreSingle: false);
+
+                Rectangle quantityRect = new Rectangle(x: pieceRect.X, y: pieceRect.Y + (pieceRect.Height / 2), width: (int)(pieceRect.Width * 0.5f), height: pieceRect.Height / 2);
+                Inventory.DrawQuantity(pieceCount: drawParams.counter, destRect: quantityRect, opacity: this.menu.viewParams.drawOpacity, ignoreSingle: false);
 
                 rectX += rectWidth + margin;
             }

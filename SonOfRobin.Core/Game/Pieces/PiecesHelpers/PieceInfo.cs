@@ -13,6 +13,8 @@ namespace SonOfRobin
             public readonly string readableName;
             public readonly string description;
             public readonly Type type;
+            public readonly bool convertsWhenUsed;
+            public readonly PieceTemplate.Name convertsToWhenUsed;
             public bool isCarnivorous;
             public readonly BoardPiece.Category category;
             public List<BuffEngine.Buff> buffList;
@@ -45,6 +47,12 @@ namespace SonOfRobin
                 this.buffList = piece.buffList;
                 this.frame = piece.sprite.frame;
                 if (piece.GetType() == typeof(Animal)) this.eats = ((Animal)piece).eats;
+                this.convertsWhenUsed = false;
+                if (piece.GetType() == typeof(Potion))
+                {
+                    this.convertsWhenUsed = true;
+                    this.convertsToWhenUsed = ((Potion)piece).convertsToWhenUsed;
+                }
                 this.isEatenBy = new List<PieceTemplate.Name> { };
             }
         }

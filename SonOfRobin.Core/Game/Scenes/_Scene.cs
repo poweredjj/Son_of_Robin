@@ -345,8 +345,8 @@ namespace SonOfRobin
 
             Scheduler.ProcessQueue();
 
-            Input.UpdateInput(gameTime: gameTime);
             UpdateInputActiveTipsTouch();
+            Input.UpdateInput(gameTime: gameTime);
 
             foreach (Scene scene in UpdateStack)
             {

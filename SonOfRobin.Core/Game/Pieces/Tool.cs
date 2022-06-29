@@ -15,9 +15,9 @@ namespace SonOfRobin
         private readonly List<PieceTemplate.Name> compatibleAmmo;
 
         public Tool(World world, Vector2 position, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedFields allowedFields, Dictionary<byte, int> maxMassBySize, int hitPower, Dictionary<Category, float> multiplierByCategory, int maxHitPoints, string readableName, string description, Category category,
-            byte animSize = 0, string animName = "default", bool blocksMovement = false, ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = true, int generation = 0, bool indestructible = false, Yield yield = null, bool shootsProjectile = false, List<PieceTemplate.Name> compatibleAmmo = null, bool rotatesWhenDropped = true, bool fadeInAnim = false, int range = 0) :
+            byte animSize = 0, string animName = "default", bool blocksMovement = false, ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = true, int generation = 0, bool indestructible = false, Yield yield = null, bool shootsProjectile = false, List<PieceTemplate.Name> compatibleAmmo = null, bool rotatesWhenDropped = true, bool fadeInAnim = false, int range = 0, List<BuffEngine.Buff> buffList = null) :
 
-            base(world: world, position: position, animPackage: animPackage, animSize: animSize, animName: animName, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedFields: allowedFields, floatsOnWater: floatsOnWater, maxMassBySize: maxMassBySize, generation: generation, canBePickedUp: true, yield: yield, maxHitPoints: maxHitPoints, indestructible: indestructible, rotatesWhenDropped: rotatesWhenDropped, fadeInAnim: fadeInAnim, isShownOnMiniMap: true, readableName: readableName, description: description, category: category)
+            base(world: world, position: position, animPackage: animPackage, animSize: animSize, animName: animName, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedFields: allowedFields, floatsOnWater: floatsOnWater, maxMassBySize: maxMassBySize, generation: generation, canBePickedUp: true, yield: yield, maxHitPoints: maxHitPoints, indestructible: indestructible, rotatesWhenDropped: rotatesWhenDropped, fadeInAnim: fadeInAnim, isShownOnMiniMap: true, readableName: readableName, description: description, category: category, buffList: buffList)
         {
             this.activeState = State.Empty;
             this.hitPower = hitPower;
@@ -45,8 +45,6 @@ namespace SonOfRobin
                 }
 
             }
-
-            //if (!removePiece) MessageLog.AddMessage(msgType: MsgType.User, message: "Out of ammo.");
 
             return null;
         }
@@ -122,9 +120,7 @@ namespace SonOfRobin
 
                         case Category.Animal:
                             this.world.hintEngine.Disable(PieceHint.Type.AnimalNegative);
-                            if (this.name == PieceTemplate.Name.BatWood) this.world.hintEngine.Disable(PieceHint.Type.AnimalBat);
-                            if (this.name == PieceTemplate.Name.Sling ||
-                                this.name == PieceTemplate.Name.GreatSling) this.world.hintEngine.Disable(PieceHint.Type.AnimalSling);
+                            if (this.name == PieceTemplate.Name.SpearStone) this.world.hintEngine.Disable(PieceHint.Type.AnimalBat);
 
                             if (this.name == PieceTemplate.Name.AxeWood ||
                                 this.name == PieceTemplate.Name.AxeStone ||
@@ -169,7 +165,7 @@ namespace SonOfRobin
                 else
                 {
                     int currentHitPower = (int)Math.Max((this.hitPower + this.world.player.strength) * currentMultiplier, 1);
-                    HitTarget(attacker: player, target: currentTarget, hitPower: currentHitPower, targetPushMultiplier: 1f);
+                    HitTarget(attacker: player, target: currentTarget, hitPower: currentHitPower, targetPushMultiplier: 1f, buffList: this.buffList);
                     anyTargetHit = true;
                 }
             } // target iteration end
@@ -189,13 +185,21 @@ namespace SonOfRobin
             }
         }
 
-        public static void HitTarget(BoardPiece attacker, BoardPiece target, int hitPower, float targetPushMultiplier)
+        public static void HitTarget(BoardPiece attacker, BoardPiece target, int hitPower, float targetPushMultiplier, List<BuffEngine.Buff> buffList = null)
         {
             World world = attacker.world;
 
-            PieceTemplate.CreateOnBoard(world: attacker.world, position: target.sprite.position, templateName: PieceTemplate.Name.Attack);
+            PieceTemplate.CreateOnBoard(world: world, position: target.sprite.position, templateName: PieceTemplate.Name.Attack);
 
             target.hitPoints -= hitPower;
+            if (buffList != null)
+            {
+                foreach (BuffEngine.Buff buff in buffList)
+                {
+                    target.buffEngine.AddBuff(buff: buff, world: world);
+                }
+            }
+
             if (target.yield != null) target.yield.DropFirstPieces(hitPower: hitPower);
             if (target.GetType() == typeof(Animal) && world.random.Next(0, 2) == 0) PieceTemplate.CreateOnBoard(world: world, position: target.sprite.position, templateName: PieceTemplate.Name.BloodSplatter);
 

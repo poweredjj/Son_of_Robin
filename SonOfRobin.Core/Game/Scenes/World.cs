@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -151,7 +152,6 @@ namespace SonOfRobin
         public readonly int height;
         public readonly Camera camera;
         private RenderTarget2D darknessMask;
-        private float darknessMaskScale;
         public MapMode mapMode;
         public List<MapMode> mapCycle;
         public readonly Map mapBig;
@@ -194,6 +194,7 @@ namespace SonOfRobin
         public int currentFrame;
         public int currentUpdate; // can be used to measure time elapsed on island
         public int updateMultiplier;
+        public int bulletTimeMultiplier; // 1: normal tempo, more: world is slowed down
         public readonly IslandClock islandClock;
         public string debugText;
         public int processedAnimalsCount;
@@ -204,7 +205,7 @@ namespace SonOfRobin
         public TimeSpan TimePlayed
         {
             get
-            { return timePlayed + (DateTime.Now - createdTime); }
+            { return timePlayed + (DateTime.Now - this.createdTime); }
             set { timePlayed = value; }
         }
         public bool CanProcessMoreCameraRectPiecesNow { get { return UpdateTimeElapsed.Milliseconds <= 4 * this.updateMultiplier; } }
@@ -236,6 +237,19 @@ namespace SonOfRobin
                 return pieceCount;
             }
         }
+        private Vector2 DarknessMaskScale
+        {
+            get
+            {
+                Rectangle extendedViewRect = this.camera.ExtendedViewRect;
+
+                int maxDarknessWidth = Math.Min((int)(SonOfRobinGame.graphics.PreferredBackBufferWidth * 1.2f), 2000) / Preferences.DarknessResolution;
+                int maxDarknessHeight = Math.Min((int)(SonOfRobinGame.graphics.PreferredBackBufferHeight * 1.2f), 1500) / Preferences.DarknessResolution;
+
+                return new Vector2((float)extendedViewRect.Width / (float)maxDarknessWidth, (float)extendedViewRect.Height / (float)maxDarknessHeight);
+            }
+        }
+
         public World(int width, int height, int seed, int resDivider, Object saveGameData = null, bool demoMode = false) :
               base(inputType: InputTypes.Normal, priority: 1, blocksUpdatesBelow: true, blocksDrawsBelow: true, touchLayout: TouchLayout.QuitLoading, tipsLayout: ControlTips.TipsLayout.QuitLoading)
         {
@@ -262,6 +276,7 @@ namespace SonOfRobin
             this.createdTime = DateTime.Now;
             this.TimePlayed = TimeSpan.Zero;
             this.updateMultiplier = 1;
+            this.bulletTimeMultiplier = 1;
             this.islandClock = new IslandClock(world: this);
 
             this.currentPieceId = 0;
@@ -331,7 +346,6 @@ namespace SonOfRobin
                 return;
             }
 
-
             if (this.saveGameData == null && this.initialPiecesCreationFramesLeft > 0)
             {
                 if (this.demoMode) CreateMissingPieces(outsideCamera: false, multiplier: 1f);
@@ -395,6 +409,7 @@ namespace SonOfRobin
                 Inventory.SetLayout(newLayout: Inventory.Layout.Toolbar, player: this.player);
             }
 
+            this.CreateNewDarknessMask();
             this.grid.LoadAllTexturesInCameraView();
             if (!this.demoMode)
             {
@@ -437,10 +452,10 @@ namespace SonOfRobin
             // deserializing pieces
 
             this.piecesByOldId = new Dictionary<string, BoardPiece> { }; // needed to match old IDs to new pieces (with new, different IDs)
-            var pieceDataList = (List<Object>)saveGameDataDict["pieces"];
+            var pieceDataBag = (ConcurrentBag<Object>)saveGameDataDict["pieces"];
             var newPiecesByOldTargetIds = new Dictionary<string, BoardPiece> { };
 
-            foreach (Dictionary<string, Object> pieceData in pieceDataList)
+            foreach (Dictionary<string, Object> pieceData in pieceDataBag)
             {
                 // repeated in StorageSlot
 
@@ -567,9 +582,9 @@ namespace SonOfRobin
                 new PieceCreationData(name: PieceTemplate.Name.WaterRock, multiplier: 0.5f, maxAmount: 0),
                 new PieceCreationData(name: PieceTemplate.Name.MineralsSmall, multiplier: 0.5f, maxAmount: 0),
                 new PieceCreationData(name: PieceTemplate.Name.MineralsBig, multiplier: 0.3f, maxAmount: 0),
-                new PieceCreationData(name: PieceTemplate.Name.IronDeposit, multiplier: 0.05f, maxAmount: 50),
-                new PieceCreationData(name: PieceTemplate.Name.CoalDeposit, multiplier: 0.05f, maxAmount: 50),
-                new PieceCreationData(name: PieceTemplate.Name.GlassDeposit, multiplier: 0.05f, maxAmount: 50),
+                new PieceCreationData(name: PieceTemplate.Name.IronDeposit, multiplier: 0.02f, maxAmount: 30),
+                new PieceCreationData(name: PieceTemplate.Name.CoalDeposit, multiplier: 0.02f, maxAmount: 30),
+                new PieceCreationData(name: PieceTemplate.Name.GlassDeposit, multiplier: 0.02f, maxAmount: 30),
                 new PieceCreationData(name: PieceTemplate.Name.Shell, multiplier: 1f, maxAmount: 25),
                 new PieceCreationData(name: PieceTemplate.Name.Clam, multiplier: 1f, maxAmount: 25),
                 new PieceCreationData(name: PieceTemplate.Name.CrateRegular, multiplier: 0.1f, maxAmount: 2),
@@ -644,8 +659,8 @@ namespace SonOfRobin
             this.viewParams.ScaleY = manualScale;
 
             float scaleMultiplier = this.demoMode ? 2f : this.camera.currentZoom;
-            this.viewParams.ScaleX *= 1 / (Preferences.worldScale * scaleMultiplier);
-            this.viewParams.ScaleY *= 1 / (Preferences.worldScale * scaleMultiplier);
+            this.viewParams.ScaleX *= 1 / (Preferences.WorldScale * scaleMultiplier);
+            this.viewParams.ScaleY *= 1 / (Preferences.WorldScale * scaleMultiplier);
 
             this.camera.Update();
             this.viewParams.PosX = this.camera.viewPos.X;
@@ -673,28 +688,29 @@ namespace SonOfRobin
             this.AutoSave();
 
             bool createMissingPieces = this.currentUpdate % 200 == 0 && Preferences.debugCreateMissingPieces;
+            if (createMissingPieces) this.CreateMissingPieces(maxAmountToCreateAtOnce: 100, outsideCamera: true, multiplier: 0.1f);
 
             for (int i = 0; i < this.updateMultiplier; i++)
             {
+                Tracking.ProcessTrackingQueue(this);
                 WorldEvent.ProcessQueue(this);
                 this.UpdateAllAnims();
 
-                this.StateMachinesProcessCameraView();
+                if (this.player != null) this.ProcessOneNonPlant(this.player);
+                if (this.spectator != null) this.ProcessOneNonPlant(this.spectator);
 
-                if (createMissingPieces)
+                if (this.currentUpdate % this.bulletTimeMultiplier == 0)
                 {
-                    this.CreateMissingPieces(maxAmountToCreateAtOnce: 100, outsideCamera: true, multiplier: 0.1f);
-                    createMissingPieces = false;
-                }
-                else
-                {
-                    this.StateMachinesProcessAnimalQueue();
-                    this.plantsProcessing = true;
-                    this.StateMachinesProcessPlantQueue();
-                    this.plantsProcessing = false;
-                }
+                    this.StateMachinesProcessCameraView();
 
-                Tracking.ProcessTrackingQueue(this);
+                    if (!createMissingPieces)
+                    {
+                        this.StateMachinesProcessAnimalQueue();
+                        this.plantsProcessing = true;
+                        this.StateMachinesProcessPlantQueue();
+                        this.plantsProcessing = false;
+                    }
+                }
                 this.currentUpdate++;
             }
         }
@@ -801,12 +817,9 @@ namespace SonOfRobin
 
         private void StateMachinesProcessCameraView()
         {
-            if (!this.SpectatorMode && this.player != null && this.player.alive) this.ProcessOneNonPlant(this.player); // to ensure processing (even if is outside of camera rect)
-            if (this.SpectatorMode && this.spectator != null) this.ProcessOneNonPlant(this.spectator); // to ensure processing (even if is outside of camera rect)
-
             if (!this.CanProcessMoreCameraRectPiecesNow)
             {
-                // MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Camera view SM: no time to start processing queue - {UpdateTimeElapsed.Milliseconds}ms.");
+                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Camera view SM: no time to start processing queue - {UpdateTimeElapsed.Milliseconds}ms.");
                 return;
             }
 
@@ -818,7 +831,7 @@ namespace SonOfRobin
 
                 if (!this.CanProcessMoreCameraRectPiecesNow)
                 {
-                    //MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Camera view SM: update time exceeded - {UpdateTimeElapsed.Milliseconds}ms.");
+                    MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Camera view SM: update time exceeded - {UpdateTimeElapsed.Milliseconds}ms.");
                     return;
                 }
             }
@@ -830,7 +843,6 @@ namespace SonOfRobin
 
             if (!this.CanProcessMoreAnimalsNow) return;
             if ((SonOfRobinGame.lastUpdateDelay > 20 || SonOfRobinGame.lastDrawDelay > 20) && this.updateMultiplier == 1) return;
-
 
             if (this.animalSpritesQueue.Count == 0)
             {
@@ -1012,34 +1024,25 @@ namespace SonOfRobin
             this.currentFrame++;
         }
 
+        protected override void AdaptToNewSize()
+        {
+            this.CreateNewDarknessMask();
+        }
+
+        public void CreateNewDarknessMask()
+        {
+            Vector2 darknessMaskScale = this.DarknessMaskScale;
+            Rectangle extendedViewRect = this.camera.ExtendedViewRect;
+
+            if (this.darknessMask != null) this.darknessMask.Dispose();
+            this.darknessMask = new RenderTarget2D(SonOfRobinGame.graphicsDevice, (int)(extendedViewRect.Width / darknessMaskScale.X), (int)(extendedViewRect.Height / darknessMaskScale.Y));
+
+            MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Creating new darknessMask - {darknessMask.Width}x{darknessMask.Height}");
+        }
+
         private List<Sprite> UpdateDarknessMask(List<Sprite> blockingLightSpritesList)
         {
             // Has to be called a the beggining, because calling SetRenderTarget() after any draw will wipe the screen black.
-
-            // calculating darkness scale and rectangle
-
-            Rectangle extendedViewRect = this.camera.ExtendedViewRect;
-
-            int maxDarknessWidth = Math.Min((int)(SonOfRobinGame.graphics.PreferredBackBufferWidth * 1.2f), 2000) / Preferences.darknessResolution;
-            int maxDarknessHeight = Math.Min((int)(SonOfRobinGame.graphics.PreferredBackBufferHeight * 1.2f), 1500) / Preferences.darknessResolution;
-
-            this.darknessMaskScale = Math.Max((float)extendedViewRect.Width / (float)maxDarknessWidth, (float)extendedViewRect.Height / (float)maxDarknessHeight);
-
-            Rectangle darknessRect = new Rectangle(x: extendedViewRect.X, y: extendedViewRect.Y,
-              width: (int)(extendedViewRect.Width / this.darknessMaskScale),
-              height: (int)(extendedViewRect.Height / this.darknessMaskScale));
-
-            this.darknessMaskScale = Math.Max((float)extendedViewRect.Width / (float)darknessRect.Width, (float)extendedViewRect.Height / (float)darknessRect.Height);
-
-            // setting RenderTargets
-
-            if (this.darknessMask == null || Math.Abs(this.darknessMask.Width - darknessRect.Width) > 10 || Math.Abs(this.darknessMask.Height - darknessRect.Height) > 10)
-            {
-                if (this.darknessMask != null) this.darknessMask.Dispose();
-
-                this.darknessMask = new RenderTarget2D(SonOfRobinGame.graphicsDevice, darknessRect.Width, darknessRect.Height);
-                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Creating new darknessMask - {darknessMask.Width}x{darknessMask.Height}");
-            }
 
             // searching for light sources
 
@@ -1062,8 +1065,9 @@ namespace SonOfRobin
                 return lightSprites;
             }
 
-            // preparing shadow masks
+            Vector2 darknessMaskScale = this.DarknessMaskScale;
 
+            // preparing shadow masks
 
             // BlendFunction.Min and BlendFunction.Max will not work on Android!
             var shadowBlend = new BlendState
@@ -1180,14 +1184,16 @@ namespace SonOfRobin
             SonOfRobinGame.graphicsDevice.Clear(ambientLightData.darknessColor);
 
             // subtracting shadow masks from darkness
+
+            Rectangle extendedViewRect = this.camera.ExtendedViewRect;
             foreach (var lightSprite in lightSprites)
             {
                 Rectangle lightRect = lightSprite.lightEngine.Rect;
 
-                lightRect.X = (int)(((float)lightRect.X - (float)extendedViewRect.X) / this.darknessMaskScale);
-                lightRect.Y = (int)(((float)lightRect.Y - (float)extendedViewRect.Y) / this.darknessMaskScale);
-                lightRect.Width = (int)((float)lightRect.Width / this.darknessMaskScale);
-                lightRect.Height = (int)((float)lightRect.Height / this.darknessMaskScale);
+                lightRect.X = (int)(((float)lightRect.X - (float)extendedViewRect.X) / darknessMaskScale.X);
+                lightRect.Y = (int)(((float)lightRect.Y - (float)extendedViewRect.Y) / darknessMaskScale.Y);
+                lightRect.Width = (int)((float)lightRect.Width / darknessMaskScale.X);
+                lightRect.Height = (int)((float)lightRect.Height / darknessMaskScale.Y);
 
                 if (Preferences.drawShadows)
                 {
@@ -1213,6 +1219,8 @@ namespace SonOfRobin
         private void DrawLightAndDarkness(List<Sprite> lightSprites)
         {
             if (!Preferences.showLighting) return;
+
+            Vector2 darknessMaskScale = this.DarknessMaskScale;
 
             AmbientLight.AmbientLightData ambientLightData = AmbientLight.CalculateLightAndDarknessColors(this.islandClock.IslandDateTime);
             Rectangle extendedViewRect = this.camera.ExtendedViewRect;
@@ -1259,7 +1267,7 @@ namespace SonOfRobin
                 SonOfRobinGame.spriteBatch.End();
                 SonOfRobinGame.spriteBatch.Begin(transformMatrix: this.TransformMatrix);
 
-                SonOfRobinGame.spriteBatch.Draw(this.darknessMask, new Rectangle(x: extendedViewRect.X, y: extendedViewRect.Y, width: (int)(this.darknessMask.Width * this.darknessMaskScale), height: (int)(this.darknessMask.Height * this.darknessMaskScale)), Color.White);
+                SonOfRobinGame.spriteBatch.Draw(this.darknessMask, new Rectangle(x: extendedViewRect.X, y: extendedViewRect.Y, width: (int)(this.darknessMask.Width * darknessMaskScale.X), height: (int)(this.darknessMask.Height * darknessMaskScale.Y)), Color.White);
             }
         }
 

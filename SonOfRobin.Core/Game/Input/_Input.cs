@@ -29,7 +29,7 @@ namespace SonOfRobin
             bool savedLocalInput = localInputActive;
             InputActive = true; // must be true, to capture all input correctly at the start
 
-            Mouse.GetState(); // not really used
+            Mouse.GetState();
             Keyboard.GetState();
             GamePad.GetPreviousState(PlayerIndex.One);
             TouchInput.GetState(gameTime: gameTime);
@@ -46,7 +46,26 @@ namespace SonOfRobin
             if (SonOfRobinGame.currentUpdate % 30 != 0) return;
 
             TipsTypeToShow prevTipsType = tipsTypeToShow;
-            if (tipsTypeToShow != TipsTypeToShow.Keyboard && Keyboard.CurrentKeyState.GetPressedKeys().Length != 0) tipsTypeToShow = TipsTypeToShow.Keyboard;
+
+            if (tipsTypeToShow != TipsTypeToShow.Keyboard)
+            {
+                bool keyboardOrMousePressed = false;
+
+                if (Keyboard.CurrentKeyState.GetPressedKeys().Length != 0)
+                {
+                    keyboardOrMousePressed = true;
+                }
+                else
+                {
+                    MouseState currentMouseState = Microsoft.Xna.Framework.Input.Mouse.GetState();
+                    if (currentMouseState.LeftButton == ButtonState.Pressed ||
+                        currentMouseState.MiddleButton == ButtonState.Pressed ||
+                        currentMouseState.RightButton == ButtonState.Pressed)
+                        keyboardOrMousePressed = true;
+                }
+
+                if (keyboardOrMousePressed) tipsTypeToShow = TipsTypeToShow.Keyboard;
+            }
 
             if (tipsTypeToShow != TipsTypeToShow.Gamepad)
             {

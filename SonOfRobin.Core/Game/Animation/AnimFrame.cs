@@ -59,17 +59,15 @@ namespace SonOfRobin
 
             this.colWidth = (int)(colBounds.Width * scale);
             this.colHeight = (int)(colBounds.Height * scale);
-            this.colOffset = new Vector2(-(int)(this.colWidth * 0.5f), -(int)(this.colHeight * 0.5f));
 
             this.gfxWidth = (int)(this.texture.Width * scale);
             this.gfxHeight = (int)(this.texture.Height * scale);
 
-            this.gfxOffset = new Vector2(
-                this.colOffset.X - colBounds.X,
-                this.colOffset.Y - colBounds.Y);
+            this.colOffset = new Vector2(-(int)(colBounds.Width * 0.5f), -(int)(colBounds.Height * 0.5f)); // has to go first...
+            this.gfxOffset = new Vector2(this.colOffset.X - colBounds.X, this.colOffset.Y - colBounds.Y); // because it is used here
 
-            this.gfxOffset *= scale;
             this.colOffset *= scale;
+            this.gfxOffset *= scale;
 
             this.duration = duration; // duration == 0 will stop the animation
         }

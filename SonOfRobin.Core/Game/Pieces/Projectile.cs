@@ -15,9 +15,9 @@ namespace SonOfRobin
         private readonly bool canBeStuck;
 
         public Projectile(World world, Vector2 position, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedFields allowedFields, Dictionary<byte, int> maxMassBySize, int baseHitPower, int maxHitPoints, byte stackSize, bool canBeStuck, string readableName, string description,
-            byte animSize = 0, string animName = "default", bool blocksMovement = false, ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = true, int generation = 0, bool indestructible = false, Yield yield = null, bool rotatesWhenDropped = true, bool fadeInAnim = false) :
+            byte animSize = 0, string animName = "default", bool blocksMovement = false, ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = true, int generation = 0, bool indestructible = false, Yield yield = null, bool rotatesWhenDropped = true, bool fadeInAnim = false, List<BuffEngine.Buff> buffList = null) :
 
-            base(world: world, position: position, animPackage: animPackage, animSize: animSize, animName: animName, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedFields: allowedFields, floatsOnWater: floatsOnWater, maxMassBySize: maxMassBySize, generation: generation, canBePickedUp: true, yield: yield, maxHitPoints: maxHitPoints, stackSize: stackSize, indestructible: indestructible, rotatesWhenDropped: rotatesWhenDropped, fadeInAnim: fadeInAnim, readableName: readableName, description: description, category: Category.Indestructible)
+            base(world: world, position: position, animPackage: animPackage, animSize: animSize, animName: animName, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedFields: allowedFields, floatsOnWater: floatsOnWater, maxMassBySize: maxMassBySize, generation: generation, canBePickedUp: true, yield: yield, maxHitPoints: maxHitPoints, stackSize: stackSize, indestructible: indestructible, rotatesWhenDropped: rotatesWhenDropped, fadeInAnim: fadeInAnim, readableName: readableName, description: description, category: Category.Indestructible, buffList: buffList)
         {
             this.canBeStuck = canBeStuck;
             this.activeState = State.Empty;
@@ -47,7 +47,6 @@ namespace SonOfRobin
 
             this.world.hintEngine.Disable(Tutorials.Type.ShootProjectile);
             this.world.hintEngine.Disable(PieceHint.Type.AnimalNegative);
-            if (this.name == PieceTemplate.Name.StoneAmmo) this.world.hintEngine.Disable(PieceHint.Type.AnimalSling);
             if (this.name == PieceTemplate.Name.ArrowWood || this.name == PieceTemplate.Name.ArrowIron) this.world.hintEngine.Disable(PieceHint.Type.AnimalBow);
         }
 
@@ -70,7 +69,7 @@ namespace SonOfRobin
                 if (closestPiece?.GetType() == typeof(Animal))
                 {
                     Animal animal = (Animal)closestPiece;
-                    Tool.HitTarget(attacker: this.world.player, target: animal, hitPower: this.realHitPower, targetPushMultiplier: 0.06f);
+                    Tool.HitTarget(attacker: this.world.player, target: animal, hitPower: this.realHitPower, targetPushMultiplier: 0.06f, buffList: this.buffList);
 
                     if (!this.indestructible)
                     {
@@ -88,7 +87,6 @@ namespace SonOfRobin
                             attachedToTarget = true;
                         }
                     }
-
                 }
                 else
                 {

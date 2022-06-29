@@ -25,8 +25,9 @@ namespace SonOfRobin
         {
             get
             {
-                if (TouchInput.IsBeingTouchedInAnyWay) return Math.Abs(this.world.analogCameraCorrection.X) > 0.05f || Math.Abs(this.world.analogCameraCorrection.Y) > 0.05f;
-                else return InputMapper.IsPressed(InputMapper.Action.WorldUseToolbarPiece) || Mouse.RightIsDown;
+                return
+                    InputMapper.IsPressed(InputMapper.Action.WorldUseToolbarPiece) ||
+                    (TouchInput.IsBeingTouchedInAnyWay && (Math.Abs(this.world.analogCameraCorrection.X) > 0.05f || Math.Abs(this.world.analogCameraCorrection.Y) > 0.05f));
             }
         }
 
@@ -388,13 +389,13 @@ namespace SonOfRobin
                 if (this.UseToolbarPiece(isInShootingMode: false, buttonHeld: false, highlightOnly: false)) return;
             }
 
-            if (InputMapper.IsPressed(InputMapper.Action.WorldUseToolbarPiece) || Mouse.RightIsDown)
+            if (InputMapper.IsPressed(InputMapper.Action.WorldUseToolbarPiece))
             {
                 if (this.UseToolbarPiece(isInShootingMode: false, buttonHeld: true, highlightOnly: false)) return;
             }
 
             bool pickUp = InputMapper.HasBeenPressed(InputMapper.Action.WorldPickUp) ||
-                (Preferences.pointToInteract && pieceToPickUp != null && pieceToPickUp.sprite.gfxRect.Contains(this.pointWalkTarget));
+                (Preferences.PointToInteract && pieceToPickUp != null && pieceToPickUp.sprite.gfxRect.Contains(this.pointWalkTarget));
 
             if (pickUp)
             {
@@ -404,7 +405,7 @@ namespace SonOfRobin
             }
 
             bool interact = !pickUp && (InputMapper.HasBeenPressed(InputMapper.Action.WorldInteract) ||
-                (Preferences.pointToInteract && pieceToInteract != null && pieceToInteract.sprite.gfxRect.Contains(this.pointWalkTarget)));
+                (Preferences.PointToInteract && pieceToInteract != null && pieceToInteract.sprite.gfxRect.Contains(this.pointWalkTarget)));
 
             if (interact)
             {
@@ -422,10 +423,9 @@ namespace SonOfRobin
             Vector2 movement = this.world.analogMovementLeftStick;
             if (movement != Vector2.Zero) this.pointWalkTarget = Vector2.Zero;
 
-            //  bool inputActive = Input.InputActive;
             bool layoutChangedRecently = TouchInput.FramesSinceLayoutChanged < 5;
 
-            if (movement == Vector2.Zero && Preferences.pointToWalk && !layoutChangedRecently)
+            if (movement == Vector2.Zero && Preferences.PointToWalk && !layoutChangedRecently)
             {
                 foreach (TouchLocation touch in TouchInput.TouchPanelState)
                 {
@@ -524,8 +524,6 @@ namespace SonOfRobin
             if (moving != Vector2.Zero) directionVector = moving;
             if (shooting != Vector2.Zero) directionVector = shooting;
 
-            this.visualAid.sprite.opacity = !this.ShootingModeInputPressed ? 0f : 1f;
-
             if (directionVector != Vector2.Zero)
             {
                 this.sprite.SetOrientationByMovement(directionVector);
@@ -539,8 +537,9 @@ namespace SonOfRobin
             Vector2 aidPos = this.sprite.position + new Vector2(aidOffsetX, aidOffsetY);
             this.visualAid.sprite.SetNewPosition(aidPos);
 
-            if (TouchInput.IsBeingTouchedInAnyWay && VirtButton.HasButtonBeenPressed(VButName.Shoot) ||
-                InputMapper.HasBeenReleased(InputMapper.Action.WorldUseToolbarPiece) || Mouse.RightHasBeenReleased) // virtual button has to be checked separately here
+            if (VirtButton.HasButtonBeenPressed(VButName.Shoot) || // virtual button has to be checked separately here
+                InputMapper.HasBeenReleased(InputMapper.Action.WorldUseToolbarPiece) ||
+                Mouse.RightHasBeenReleased)
             {
                 this.UseToolbarPiece(isInShootingMode: true, buttonHeld: false);
                 this.shootingPower = 0;
@@ -638,7 +637,6 @@ namespace SonOfRobin
             MessageLog.AddMessage(msgType: MsgType.Debug, message: "Waking up.");
         }
 
-
         private Vector2 GetCenterOffset()
         {
             int offsetX = 0;
@@ -719,7 +717,12 @@ namespace SonOfRobin
                     return false;
                 }
 
-                if (activeTool.CheckForAmmo(removePiece: false) == null) return false;
+                if (activeTool.CheckForAmmo(removePiece: false) == null)
+                {
+                    new TextWindow(text: $"No ammo for {activeToolbarPiece.readableName}.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1);
+
+                    return false;
+                }
 
                 this.world.touchLayout = TouchLayout.WorldShoot;
                 this.world.tipsLayout = ControlTips.TipsLayout.WorldShoot;
@@ -734,7 +737,6 @@ namespace SonOfRobin
         {
             if (!this.CanUseActiveToolbarPiece) return false;
 
-            StorageSlot activeSlot = this.ActiveSlot;
             BoardPiece activeToolbarPiece = this.ActiveToolbarPiece;
 
             Vector2 centerOffset = this.GetCenterOffset();
@@ -746,18 +748,27 @@ namespace SonOfRobin
             if (activeToolbarPiece?.GetType() == typeof(Tool))
             {
                 Tool activeTool = (Tool)activeToolbarPiece;
-                if (activeTool.shootsProjectile && !isInShootingMode) return false;
+                if (activeTool.shootsProjectile && !isInShootingMode)
+                {
+                    if (highlightOnly && activeTool.CheckForAmmo(removePiece: false) != null)
+                    {
+                        VirtButton.ButtonHighlightOnNextFrame(VButName.UseTool);
+                        ControlTips.TipHighlightOnNextFrame(tipName: "use item");
+                    }
+
+                    return false;
+                }
             }
 
             var executeHelper = new Dictionary<string, Object> {
                     {"player", this},
-                    {"slot", activeSlot},
+                    {"slot", this.ActiveSlot},
                     {"toolbarPiece", activeToolbarPiece},
                     {"shootingPower", this.shootingPower},
                     {"offsetX", offsetX},
                     {"offsetY", offsetY},
-                    {"buttonHeld", buttonHeld },
-                    {"highlightOnly", highlightOnly },
+                    {"buttonHeld", buttonHeld},
+                    {"highlightOnly", highlightOnly},
                 };
 
             new Scheduler.Task(taskName: activeToolbarPiece.toolbarTask, delay: 0, executeHelper: executeHelper);

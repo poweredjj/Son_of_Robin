@@ -33,6 +33,9 @@ namespace SonOfRobin
 
     public class VirtButton
     {
+        private readonly int frameCreated;
+        private readonly bool checksTouchFromPrevLayout;
+
         private readonly float posX0to1;
         private readonly float posY0to1;
         private readonly float width0to1;
@@ -91,10 +94,15 @@ namespace SonOfRobin
             }
         }
 
+        private bool JustCreated { get { return this.frameCreated == SonOfRobinGame.currentUpdate; } }
+
         public VirtButton(VButName name, string label, float posX0to1, float posY0to1, float width0to1, float height0to1, Color bgColorPressed, Color bgColorReleased, Color textColor, bool switchButton = false, bool hidden = false,
             Object activeCoupledObj = null, string activeCoupledVarName = "",
-            bool isHighlighted = true, string highlightCoupledVarName = null, Object highlightCoupledObj = null)
+            bool isHighlighted = true, string highlightCoupledVarName = null, Object highlightCoupledObj = null, bool checksTouchFromPrevLayout = false)
         {
+            this.frameCreated = SonOfRobinGame.currentUpdate;
+            this.checksTouchFromPrevLayout = checksTouchFromPrevLayout;
+
             this.label = label;
             this.bgColorPressed = bgColorPressed;
             this.bgColorReleased = bgColorReleased;
@@ -151,12 +159,14 @@ namespace SonOfRobin
         public static void UpdateAll()
         {
             foreach (VirtButton button in buttonsByName.Values)
-            { button.Update(); }
+            {
+                button.Update();
+            }
         }
 
         public static void RemoveAll()
         {
-            buttonsByName = new Dictionary<VButName, VirtButton> { };
+            buttonsByName.Clear();
         }
 
         private void Update()
@@ -172,7 +182,7 @@ namespace SonOfRobin
                 {
                     // MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Button {this.label} is down.", color: Color.GreenYellow);
 
-                    if (touch.State == TouchLocationState.Pressed || (touch.State == TouchLocationState.Moved && this.wasDownLastFrame))
+                    if (touch.State == TouchLocationState.Pressed || (touch.State == TouchLocationState.Moved && (this.wasDownLastFrame || (this.checksTouchFromPrevLayout && this.JustCreated))))
                     {
                         this.isDown = true;
                         if (!this.wasDownLastFrame)

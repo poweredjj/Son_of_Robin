@@ -1,9 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace SonOfRobin
 {
@@ -16,21 +18,19 @@ namespace SonOfRobin
         private readonly static string gridName = "grid.sav";
         public readonly static string tempPrefix = "_save_temp_";
 
-        private readonly static int maxPiecesInPackage = 3000; // using small piece packages lowers ram usage during writing binary files
-        private string CurrentPiecesName { get { return $"pieces_{this.currentPiecePackageNo}.sav"; } }
-        private string CurrentPiecesPath { get { return Path.Combine(this.saveMode ? saveTempPath : savePath, this.CurrentPiecesName); } }
+        private readonly static int maxPiecesInPackage = 1000; // using small piece packages lowers ram usage during writing binary files
 
+        private readonly DateTime createdTime;
         private readonly bool quitGameAfterSaving;
         private readonly bool saveMode;
         private readonly string modeText;
         private readonly bool showSavedMessage;
         private bool processingComplete;
         private World world;
-        private readonly List<Sprite> spritesToSave;
+        private readonly List<List<BoardPiece>> piecePackagesToSave;
         private readonly string saveSlotName;
         private readonly string savePath;
         private readonly string saveTempPath;
-        private int currentPieceIndex;
         private int currentPiecePackageNo;
         private bool allPiecesProcessed;
 
@@ -42,7 +42,7 @@ namespace SonOfRobin
         private Dictionary<string, Object> gridData;
         private List<Object> trackingData;
         private List<Object> eventsData;
-        private readonly List<Object> piecesData;
+        private readonly ConcurrentBag<Object> piecesData;
 
         // saving mode uses flags instead of data variables - to save ram
         private bool headerSaved;
@@ -72,6 +72,7 @@ namespace SonOfRobin
             }
         }
 
+        private int TimeElapsed { get { return (int)(DateTime.Now - this.createdTime).TotalSeconds; } }
 
         private bool errorOccured;
         private bool ErrorOccured
@@ -112,6 +113,7 @@ namespace SonOfRobin
 
         public LoaderSaver(bool saveMode, string saveSlotName, World world = null, bool showSavedMessage = false, bool quitGameAfterSaving = false) : base(inputType: InputTypes.Normal, priority: 1, blocksUpdatesBelow: true, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.QuitLoading, tipsLayout: ControlTips.TipsLayout.QuitLoading)
         {
+            this.createdTime = DateTime.Now;
             SonOfRobinGame.game.IsFixedTimeStep = false; // if turned on, some screen updates will be missing
             this.drawActive = false;
             this.saveMode = saveMode;
@@ -120,7 +122,8 @@ namespace SonOfRobin
             this.quitGameAfterSaving = quitGameAfterSaving;
             this.processingComplete = false;
             this.world = world;
-            if (this.world != null) this.spritesToSave = this.world.grid.GetAllSprites(Cell.Group.All).ToList();
+            if (this.world != null) this.piecePackagesToSave = this.PreparePiecePackages();
+
             this.processedSteps = 0;
             this.saveSlotName = saveSlotName;
             this.saveTempPath = this.GetSaveTempPath();
@@ -135,12 +138,34 @@ namespace SonOfRobin
             this.eventsSaved = false;
             this.piecesSaved = false;
             this.currentPiecePackageNo = 0;
-            this.currentPieceIndex = 0;
             this.allPiecesProcessed = false;
-            this.piecesData = new List<Object> { };
-            this.allSteps = this.saveMode ? 7 + (this.spritesToSave.Count / maxPiecesInPackage) : 6 + this.PiecesFilesCount;
+            this.piecesData = new ConcurrentBag<object> { };
+            this.allSteps = this.saveMode ? 7 + this.piecePackagesToSave.Count : 6 + this.PiecesFilesCount;
 
             if (this.saveMode) DeleteAllSaveTemps();
+        }
+
+        private List<List<BoardPiece>> PreparePiecePackages()
+        {
+            var piecePackages = new List<List<BoardPiece>>();
+
+            List<BoardPiece> currentPieceList = new List<BoardPiece>();
+            piecePackages.Add(currentPieceList);
+
+            foreach (Sprite sprite in this.world.grid.GetAllSprites(Cell.Group.All))
+            {
+                if (sprite.boardPiece.exists && sprite.boardPiece.serialize)
+                {
+                    currentPieceList.Add(sprite.boardPiece);
+                    if (currentPieceList.Count >= maxPiecesInPackage)
+                    {
+                        currentPieceList = new List<BoardPiece>();
+                        piecePackages.Add(currentPieceList);
+                    }
+                }
+            }
+
+            return piecePackages;
         }
 
         private string GetSaveTempPath()
@@ -155,6 +180,10 @@ namespace SonOfRobin
             }
 
             return currentTempPath;
+        }
+        private string GetCurrentPiecesPath(int packageNo)
+        {
+            return Path.Combine(this.saveMode ? saveTempPath : savePath, $"pieces_{packageNo}.sav");
         }
 
         public override void Remove()
@@ -264,38 +293,45 @@ namespace SonOfRobin
                 FileReaderWriter.Save(path: gridPath, savedObj: gridData);
 
                 this.gridSaved = true;
-                this.nextStepName = "pieces batch 1";
+                this.nextStepName = "pieces 1";
                 return;
             }
 
             // saving pieces data
             if (!this.piecesSaved)
             {
-                var pieceDataPackage = new List<object> { };
-                BoardPiece piece;
+                var packagesToProcess = new List<List<BoardPiece>>();
 
-                while (true)
+                for (int i = 0; i < Preferences.MaxThreadsToUse; i++)
                 {
-                    try
-                    {
-                        piece = this.spritesToSave[this.currentPieceIndex].boardPiece;
-                        if (piece.exists && piece.serialize) pieceDataPackage.Add(piece.Serialize());
+                    packagesToProcess.Add(this.piecePackagesToSave[0]);
+                    this.piecePackagesToSave.RemoveAt(0);
 
-                        this.currentPieceIndex++;
-                        if (pieceDataPackage.Count >= maxPiecesInPackage) break;
-                    }
-                    catch (ArgumentOutOfRangeException)
+                    if (this.piecePackagesToSave.Count == 0)
                     {
                         this.piecesSaved = true;
                         break;
                     }
                 }
 
-                FileReaderWriter.Save(path: this.CurrentPiecesPath, savedObj: pieceDataPackage);
-                this.currentPiecePackageNo++;
-                this.nextStepName = $"pieces batch {currentPiecePackageNo + 1}";
+                Parallel.For(0, packagesToProcess.Count, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, packageIndex =>
+                {
+                    var package = packagesToProcess[packageIndex];
 
-                if (this.piecesSaved) this.nextStepName = "tracking";
+                    var pieceDataPackage = new List<object> { };
+                    foreach (BoardPiece piece in package)
+                    {
+                        pieceDataPackage.Add(piece.Serialize());
+                    }
+
+                    FileReaderWriter.Save(path: this.GetCurrentPiecesPath(this.currentPiecePackageNo + packageIndex), savedObj: pieceDataPackage);
+                });
+
+                this.currentPiecePackageNo = this.currentPiecePackageNo + packagesToProcess.Count;
+                this.processedSteps += packagesToProcess.Count - 1;
+
+                this.nextStepName = this.piecesSaved ? "tracking" : $"pieces {currentPiecePackageNo + 1}";
+
                 return;
             }
 
@@ -355,7 +391,7 @@ namespace SonOfRobin
             }
 
             if (this.showSavedMessage) new TextWindow(text: "Game has been saved.", textColor: Color.White, bgColor: Color.DarkGreen, useTransition: false, animate: false);
-            MessageLog.AddMessage(msgType: MsgType.User, message: $"Game saved in slot {saveSlotName}.", color: Color.LightBlue);
+            MessageLog.AddMessage(msgType: MsgType.User, message: $"Game saved in slot {saveSlotName} (time elapsed {this.TimeElapsed}s).", color: Color.LightBlue);
 
             this.world.lastSaved = DateTime.Now;
             this.processingComplete = true;
@@ -448,29 +484,43 @@ namespace SonOfRobin
                 }
                 else this.eventsData = (List<Object>)FileReaderWriter.Load(path: eventPath);
 
-                this.nextStepName = "pieces batch 1";
+                this.nextStepName = "pieces 1";
                 return;
             }
 
             // loading pieces
             if (!this.allPiecesProcessed)
             {
-                if (!File.Exists(this.CurrentPiecesPath)) // first check - this save file should exist
+                if (this.currentPiecePackageNo == 0 && !File.Exists(this.GetCurrentPiecesPath(this.currentPiecePackageNo))) // first check - this save file should exist
                 {
                     new TextWindow(text: "Error while reading pieces data.", textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false, closingTask: this.TextWindowTask);
                     this.ErrorOccured = true;
                     return;
                 }
 
-                var packageData = (List<Object>)FileReaderWriter.Load(path: this.CurrentPiecesPath);
-                this.piecesData.AddRange(packageData);
-                this.currentPiecePackageNo++;
-                this.nextStepName = $"pieces batch {currentPiecePackageNo + 1}";
+                Parallel.For(0, Preferences.MaxThreadsToUse, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, threadNo =>
+                {
+                    int packageToLoad = this.currentPiecePackageNo + threadNo;
 
-                if (File.Exists(this.CurrentPiecesPath)) return; // second check - if file is missing, then loading is complete
+                    string currentPiecesPath = this.GetCurrentPiecesPath(this.currentPiecePackageNo + threadNo);
+                    if (File.Exists(currentPiecesPath))
+                    {
+                        var packageData = (List<Object>)FileReaderWriter.Load(path: currentPiecesPath);
+                        foreach (var item in packageData)
+                        {
+                            this.piecesData.Add(item);
+                        }
+                    }
+                    else
+                    {
+                        this.allPiecesProcessed = true; // second check - if file is missing, then there are no more packages to load
+                    }
+                });
 
-                this.allPiecesProcessed = true;
-                this.nextStepName = "creating world";
+                this.currentPiecePackageNo += Preferences.MaxThreadsToUse;
+                this.processedSteps = Math.Min(this.processedSteps + Preferences.MaxThreadsToUse - 1, this.allSteps);
+
+                this.nextStepName = this.allPiecesProcessed ? "creating world" : $"pieces {currentPiecePackageNo + 1}";
                 return;
             }
 
@@ -483,7 +533,7 @@ namespace SonOfRobin
             this.world = new World(width: width, height: height, seed: seed, saveGameData: this.SaveGameData, resDivider: resDivider);
             this.MoveToTop();
 
-            MessageLog.AddMessage(msgType: MsgType.User, message: $"Game has been loaded from slot {saveSlotName}.", color: Color.LightBlue);
+            MessageLog.AddMessage(msgType: MsgType.User, message: $"Game has been loaded from slot {saveSlotName} (time elapsed {this.TimeElapsed}s).", color: Color.LightBlue);
 
             // deleting other non-demo worlds
             var existingWorlds = GetAllScenesOfType(typeof(World));
@@ -492,6 +542,5 @@ namespace SonOfRobin
 
             this.processingComplete = true;
         }
-
     }
 }

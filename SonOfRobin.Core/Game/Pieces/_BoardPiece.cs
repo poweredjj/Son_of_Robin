@@ -80,7 +80,7 @@ namespace SonOfRobin
         {
             get
             {
-                var nearbyPieces = this.world.grid.GetPiecesWithinDistance(groupName: Cell.Group.ColBlocking, mainSprite: this.sprite, distance: 500, compareWithBottom: true);
+                var nearbyPieces = this.world.grid.GetPiecesWithinDistance(groupName: Cell.Group.ColBlocking, mainSprite: this.sprite, distance: 450, compareWithBottom: true);
 
                 Animal animal;
                 foreach (BoardPiece piece in nearbyPieces)
@@ -339,20 +339,14 @@ namespace SonOfRobin
 
         public void AddToStateMachines()
         {
-            if (this.GetType() == typeof(Plant))
-            { this.world.grid.AddToGroup(sprite: this.sprite, groupName: Cell.Group.StateMachinesPlants); }
-            else
-            { this.world.grid.AddToGroup(sprite: this.sprite, groupName: Cell.Group.StateMachinesNonPlants); }
+            if (this.GetType() == typeof(Plant)) this.world.grid.AddToGroup(sprite: this.sprite, groupName: Cell.Group.StateMachinesPlants);
+            else this.world.grid.AddToGroup(sprite: this.sprite, groupName: Cell.Group.StateMachinesNonPlants);
         }
 
         public void RemoveFromStateMachines()
         {
-            if (this.GetType() == typeof(Plant))
-            {
-                this.world.grid.RemoveFromGroup(sprite: this.sprite, groupName: Cell.Group.StateMachinesPlants);
-            }
-            else
-            { this.world.grid.RemoveFromGroup(sprite: this.sprite, groupName: Cell.Group.StateMachinesNonPlants); }
+            if (this.GetType() == typeof(Plant)) this.world.grid.RemoveFromGroup(sprite: this.sprite, groupName: Cell.Group.StateMachinesPlants);
+            else this.world.grid.RemoveFromGroup(sprite: this.sprite, groupName: Cell.Group.StateMachinesNonPlants);
         }
 
         public static BoardPiece FindClosestPiece(Sprite sprite, List<BoardPiece> pieceList, int offsetX = 0, int offsetY = 0)

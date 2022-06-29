@@ -16,6 +16,8 @@ namespace SonOfRobin
             GlobalRight,
             GlobalUp,
             GlobalDown,
+            GlobalScrollUp,
+            GlobalScrollDown,
 
             WorldWalk,
             WorldCameraMove,
@@ -47,6 +49,7 @@ namespace SonOfRobin
         public static readonly int defaultRepeatFrames = 6;
 
         public enum AnalogType { Empty, PadLeft, PadRight, VirtLeft, VirtRight, FromKeys }
+        public enum MouseAction { LeftButton, LeftButtonVisOnly, MiddleButton, MiddleButtonVisOnly, RightButton, RightButtonVisOnly, ScrollUp, ScrollDown }
 
         protected readonly static Dictionary<Action, Mapping> detailedMappings = new Dictionary<Action, Mapping>();
 
@@ -69,34 +72,47 @@ namespace SonOfRobin
             var keysToAnalog = new List<Keys> { (Keys)keybMap.left, (Keys)keybMap.right, (Keys)keybMap.up, (Keys)keybMap.down };
 
             // global
-            new Mapping(action: Action.GlobalConfirm, anyInputList: new List<object> { keybMap.confirm, padMap.confirm, VButName.Confirm });
+            new Mapping(action: Action.GlobalConfirm, anyInputList: new List<object> { keybMap.confirm, MouseAction.LeftButtonVisOnly, padMap.confirm, VButName.Confirm });
             new Mapping(action: Action.GlobalCancelReturnSkip, anyInputList: new List<object> { keybMap.cancel, padMap.cancel, VButName.Return });
             new Mapping(action: Action.GlobalLeft, anyInputList: new List<object> { keybMap.left, Buttons.DPadLeft }, gamepadAnalogAsDigital: true, repeat: true);
             new Mapping(action: Action.GlobalRight, anyInputList: new List<object> { keybMap.right, Buttons.DPadRight }, gamepadAnalogAsDigital: true, repeat: true);
             new Mapping(action: Action.GlobalUp, anyInputList: new List<object> { keybMap.up, Buttons.DPadUp }, gamepadAnalogAsDigital: true, repeat: true);
             new Mapping(action: Action.GlobalDown, anyInputList: new List<object> { keybMap.down, Buttons.DPadDown }, gamepadAnalogAsDigital: true, repeat: true);
+            new Mapping(action: Action.GlobalScrollUp, anyInputList: new List<object> { MouseAction.ScrollUp });
+            new Mapping(action: Action.GlobalScrollDown, anyInputList: new List<object> { MouseAction.ScrollDown });
+
 
             // world
-            new Mapping(action: Action.WorldWalk, anyInputList: new List<object> { AnalogType.VirtLeft, keybMap.leftStick, padMap.leftStick }, keysToAnalog: keysToAnalog);
+
+            var walkList = new List<object> { AnalogType.VirtLeft, keybMap.leftStick, padMap.leftStick };
+            if (Preferences.PointToWalk) walkList.Add(MouseAction.LeftButtonVisOnly);
+            new Mapping(action: Action.WorldWalk, anyInputList: walkList, keysToAnalog: keysToAnalog);
             new Mapping(action: Action.WorldCameraMove, anyInputList: new List<object> { AnalogType.VirtRight, padMap.rightStick });
             new Mapping(action: Action.WorldPauseMenu, anyInputList: new List<object> { keybMap.pauseMenu, padMap.pauseMenu, VButName.PauseMenu });
             new Mapping(action: Action.WorldRun, anyInputList: new List<object> { keybMap.run, padMap.run, VButName.Run });
             new Mapping(action: Action.WorldEquip, anyInputList: new List<object> { keybMap.equip, padMap.equip, VButName.Equip });
             new Mapping(action: Action.WorldInventory, anyInputList: new List<object> { keybMap.inventory, padMap.inventory, VButName.Inventory });
-            new Mapping(action: Action.WorldPickUp, anyInputList: new List<object> { keybMap.pickUp, padMap.pickUp, VButName.PickUp });
-            new Mapping(action: Action.WorldInteract, anyInputList: new List<object> { keybMap.interact, padMap.interact, VButName.Interact });
+
+            var pickUpList = new List<object> { keybMap.pickUp, padMap.pickUp, VButName.PickUp };
+            if (Preferences.PointToWalk && Preferences.PointToInteract) pickUpList.Add(MouseAction.LeftButtonVisOnly);
+            new Mapping(action: Action.WorldPickUp, anyInputList: pickUpList);
+
+            var interactList = new List<object> { keybMap.interact, padMap.interact, VButName.Interact };
+            if (Preferences.PointToWalk && Preferences.PointToInteract) interactList.Add(MouseAction.LeftButtonVisOnly);
+            new Mapping(action: Action.WorldInteract, anyInputList: interactList);
+
             new Mapping(action: Action.WorldMapToggle, anyInputList: new List<object> { keybMap.map, padMap.map, VButName.Map });
             new Mapping(action: Action.WorldFieldCraft, anyInputList: new List<object> { keybMap.craft, padMap.craft, VButName.FieldCraft });
-            new Mapping(action: Action.WorldUseToolbarPiece, anyInputList: new List<object> { keybMap.useTool, padMap.useTool, VButName.UseTool });
+            new Mapping(action: Action.WorldUseToolbarPiece, anyInputList: new List<object> { keybMap.useTool, MouseAction.RightButton, padMap.useTool, VButName.UseTool, });
             new Mapping(action: Action.WorldCameraZoomOut, anyInputList: new List<object> { keybMap.zoomOut, padMap.zoomOut, VButName.ZoomOut });
 
             // inventory
             new Mapping(action: Action.InvPickStack, anyInputList: new List<object> { keybMap.pickStack, padMap.pickStack });
             new Mapping(action: Action.InvPickOne, anyInputList: new List<object> { keybMap.pickOne, padMap.pickOne });
             new Mapping(action: Action.InvRelease, anyInputList: new List<object> { keybMap.confirm, padMap.confirm, keybMap.pickStack, padMap.pickStack, keybMap.pickOne, padMap.pickOne });
-            new Mapping(action: Action.InvSwitch, anyInputList: new List<object> { keybMap.invSwitch, padMap.invSwitch, keybMap.toolbarPrev, keybMap.toolbarNext, padMap.toolbarPrev, padMap.toolbarNext, });
-            new Mapping(action: Action.ToolbarPrev, anyInputList: new List<object> { keybMap.toolbarPrev, padMap.toolbarPrev }, repeat: true);
-            new Mapping(action: Action.ToolbarNext, anyInputList: new List<object> { keybMap.toolbarNext, padMap.toolbarNext }, repeat: true);
+            new Mapping(action: Action.InvSwitch, anyInputList: new List<object> { keybMap.invSwitch, padMap.invSwitch, keybMap.toolbarPrev, keybMap.toolbarNext, padMap.toolbarPrev, padMap.toolbarNext, MouseAction.ScrollUp, MouseAction.ScrollDown });
+            new Mapping(action: Action.ToolbarPrev, anyInputList: new List<object> { keybMap.toolbarPrev, padMap.toolbarPrev, MouseAction.ScrollUp }, repeat: true);
+            new Mapping(action: Action.ToolbarNext, anyInputList: new List<object> { keybMap.toolbarNext, padMap.toolbarNext, MouseAction.ScrollDown }, repeat: true);
 
             // map
             new Mapping(action: Action.MapSwitch, anyInputList: new List<object> { keybMap.cancel, keybMap.map, padMap.cancel, padMap.map, VButName.Return });
@@ -188,6 +204,7 @@ namespace SonOfRobin
         public class Mapping
         {
             private readonly List<Keys> keyboardKeys;
+            private readonly List<MouseAction> mouseActions;
             private readonly List<Buttons> gamepadButtons;
             private readonly List<VButName> virtualButtons;
             private readonly List<AnalogType> analogTypes;
@@ -202,6 +219,7 @@ namespace SonOfRobin
             public Mapping(Action action, List<Object> anyInputList, List<Keys> keysToAnalog = null, bool gamepadAnalogAsDigital = false, bool repeat = false, int repeatThreshold = 0, int repeatFrames = 0)
             {
                 this.keyboardKeys = new List<Keys>();
+                this.mouseActions = new List<MouseAction>();
                 this.gamepadButtons = new List<Buttons>();
                 this.virtualButtons = new List<VButName>();
                 this.analogTypes = new List<AnalogType>();
@@ -217,6 +235,7 @@ namespace SonOfRobin
                     else if (inputType == typeof(Buttons)) this.gamepadButtons.Add((Buttons)input);
                     else if (inputType == typeof(VButName)) this.virtualButtons.Add((VButName)input);
                     else if (inputType == typeof(AnalogType)) this.analogTypes.Add((AnalogType)input);
+                    else if (inputType == typeof(MouseAction)) this.mouseActions.Add((MouseAction)input);
                     else throw new DivideByZeroException($"Unsupported inputType - {inputType}.");
                 }
 
@@ -249,6 +268,44 @@ namespace SonOfRobin
                     if (Keyboard.IsPressed(key)) return true;
                 }
 
+                foreach (MouseAction mouseAction in this.mouseActions)
+                {
+                    switch (mouseAction)
+                    {
+                        case MouseAction.LeftButton:
+                            if (Mouse.LeftIsDown) return true;
+                            break;
+
+                        case MouseAction.MiddleButton:
+                            if (Mouse.MiddleIsDown) return true;
+                            break;
+
+                        case MouseAction.RightButton:
+                            if (Mouse.RightIsDown) return true;
+                            break;
+
+                        case MouseAction.ScrollUp:
+                            if (Mouse.ScrollWheelRolledUp) return true;
+                            break;
+
+                        case MouseAction.ScrollDown:
+                            if (Mouse.ScrollWheelRolledDown) return true;
+                            break;
+
+                        case MouseAction.LeftButtonVisOnly:
+                            break;
+
+                        case MouseAction.MiddleButtonVisOnly:
+                            break;
+
+                        case MouseAction.RightButtonVisOnly:
+                            break;
+
+                        default:
+                            throw new ArgumentException($"Unsupported mouseAction - '{mouseAction}'.");
+                    }
+                }
+
                 if (triggerAsButton && this.GetTriggerForce(buttonAsTrigger: false) > 0.5f) return true;
 
                 foreach (VButName vbutton in this.virtualButtons)
@@ -269,10 +326,48 @@ namespace SonOfRobin
                     if (Keyboard.HasBeenPressed(key)) return true;
                 }
 
+                foreach (MouseAction mouseAction in this.mouseActions)
+                {
+                    switch (mouseAction)
+                    {
+                        case MouseAction.LeftButton:
+                            if (Mouse.LeftHasBeenPressed) return true;
+                            break;
+
+                        case MouseAction.MiddleButton:
+                            if (Mouse.MiddleHasBeenPressed) return true;
+                            break;
+
+                        case MouseAction.RightButton:
+                            if (Mouse.RightHasBeenPressed) return true;
+                            break;
+
+                        case MouseAction.ScrollUp:
+                            if (Mouse.ScrollWheelRolledUp) return true;
+                            break;
+
+                        case MouseAction.ScrollDown:
+                            if (Mouse.ScrollWheelRolledDown) return true;
+                            break;
+
+                        case MouseAction.LeftButtonVisOnly:
+                            break;
+
+                        case MouseAction.MiddleButtonVisOnly:
+                            break;
+
+                        case MouseAction.RightButtonVisOnly:
+                            break;
+
+                        default:
+                            throw new ArgumentException($"Unsupported mouseAction - '{mouseAction}'.");
+                    }
+                }
+
                 foreach (VButName vbutton in this.virtualButtons)
                 { if (VirtButton.HasButtonBeenPressed(vbutton)) return true; }
 
-                if (triggerAsButton && this.TriggerStateLastFrame <= 0.5f && this.GetTriggerForce(buttonAsTrigger: false) > 0.5f) return true;
+                if (triggerAsButton && this.TriggerStateLastFrameExists && this.TriggerStateLastFrame <= 0.5f && this.GetTriggerForce(buttonAsTrigger: false) > 0.5f) return true;
 
                 if (this.UpdateAndCheckButtonRepeat()) return true;
 
@@ -291,10 +386,48 @@ namespace SonOfRobin
                     if (Keyboard.HasBeenReleased(key)) return true;
                 }
 
+                foreach (MouseAction mouseAction in this.mouseActions)
+                {
+                    switch (mouseAction)
+                    {
+                        case MouseAction.LeftButton:
+                            if (Mouse.LeftHasBeenReleased) return true;
+                            break;
+
+                        case MouseAction.MiddleButton:
+                            if (Mouse.MiddleHasBeenReleased) return true;
+                            break;
+
+                        case MouseAction.RightButton:
+                            if (Mouse.RightHasBeenReleased) return true;
+                            break;
+
+                        case MouseAction.ScrollUp:
+                            if (Mouse.ScrollWheelRolledUp) return true;
+                            break;
+
+                        case MouseAction.ScrollDown:
+                            if (Mouse.ScrollWheelRolledDown) return true;
+                            break;
+
+                        case MouseAction.LeftButtonVisOnly:
+                            break;
+
+                        case MouseAction.MiddleButtonVisOnly:
+                            break;
+
+                        case MouseAction.RightButtonVisOnly:
+                            break;
+
+                        default:
+                            throw new ArgumentException($"Unsupported mouseAction - '{mouseAction}'.");
+                    }
+                }
+
                 foreach (VButName vbutton in this.virtualButtons)
                 { if (VirtButton.HasButtonBeenReleased(vbutton)) return true; }
 
-                if (triggerAsButton && this.TriggerStateLastFrame > 0.5f && (this.GetTriggerForce(buttonAsTrigger: false) <= 0.5f)) return true;
+                if (triggerAsButton && this.TriggerStateLastFrameExists && this.TriggerStateLastFrame > 0.5f && (this.GetTriggerForce(buttonAsTrigger: false) <= 0.5f)) return true;
 
                 return false;
             }
@@ -335,7 +468,6 @@ namespace SonOfRobin
                             case AnalogType.FromKeys:
                                 analogState = ConvertKeysToAnalog(left: this.keysToAnalog[0], right: this.keysToAnalog[1], up: this.keysToAnalog[2], down: this.keysToAnalog[3]);
                                 break;
-
 
                             default:
                                 throw new ArgumentException($"Unsupported analogType - '{analogType}'.");
@@ -378,12 +510,15 @@ namespace SonOfRobin
                 return triggerVal;
             }
 
+            private bool TriggerStateLastFrameExists { get { return this.triggerStateForFrame.ContainsKey(SonOfRobinGame.currentUpdate - 1); } }
+
             private float TriggerStateLastFrame
             {
                 get
                 {
+                    // TriggerStateLastFrameExists should always be checked first
+
                     int lastFrameNo = SonOfRobinGame.currentUpdate - 1;
-                    if (!this.triggerStateForFrame.ContainsKey(lastFrameNo)) return 0f;
                     return triggerStateForFrame[lastFrameNo];
                 }
             }
@@ -419,6 +554,11 @@ namespace SonOfRobin
                                 textureList.AddRange(InputVis.GetAnalogTextureList(analogType));
                             }
 
+                            foreach (MouseAction mouseAction in this.mouseActions)
+                            {
+                                textureList.Add(InputVis.GetTexture(mouseAction));
+                            }
+
                             break;
 
                         default:
@@ -441,10 +581,13 @@ namespace SonOfRobin
             }
             private void UpdateTriggerLastState(float triggerVal)
             {
-                float triggerStateLastFrame = this.TriggerStateLastFrame;
+                float triggerStateLastFrame = -1f; // initial value, to be changed below
+
+                bool triggerStateLastFrameExists = this.TriggerStateLastFrameExists;
+                if (triggerStateLastFrameExists) triggerStateLastFrame = this.TriggerStateLastFrame;
 
                 this.triggerStateForFrame.Clear();
-                this.triggerStateForFrame[SonOfRobinGame.currentUpdate - 1] = triggerStateLastFrame;
+                if (triggerStateLastFrameExists) this.triggerStateForFrame[SonOfRobinGame.currentUpdate - 1] = triggerStateLastFrame;
                 this.triggerStateForFrame[SonOfRobinGame.currentUpdate] = triggerVal;
             }
 

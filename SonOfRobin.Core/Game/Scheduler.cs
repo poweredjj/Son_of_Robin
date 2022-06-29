@@ -317,10 +317,19 @@ namespace SonOfRobin
                             world = World.GetTopWorld();
                             if (world == null) return;
 
-                            if (container.GetType() == typeof(Cooker) && world.player.AreEnemiesNearby)
+                            if (container.GetType() == typeof(Cooker))
                             {
-                                new TextWindow(text: "I can't cook with enemies nearby.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1);
-                                return;
+                                if (world.player.AreEnemiesNearby)
+                                {
+                                    new TextWindow(text: "I can't cook with enemies nearby.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1);
+                                    return;
+                                }
+
+                                if (world.player.IsVeryTired)
+                                {
+                                    new TextWindow(text: "I'm too tired to cook...", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1);
+                                    return;
+                                }
                             }
 
                             Inventory.SetLayout(newLayout: Inventory.Layout.InventoryAndChest, player: world.player, chest: container);
@@ -473,8 +482,8 @@ namespace SonOfRobin
                             foreach (BuffEngine.Buff buff in potion.buffList)
                             { player.buffEngine.AddBuff(buff: buff, world: world); }
 
-                            BoardPiece emptyBottle = PieceTemplate.CreateOffBoard(templateName: potion.convertsToWhenDrinked, world: world);
-                            slot.DestroyPieceAndReplaceWithAnother(emptyBottle);
+                            BoardPiece emptyContainter = PieceTemplate.CreateOffBoard(templateName: potion.convertsToWhenUsed, world: world);
+                            slot.DestroyPieceAndReplaceWithAnother(emptyContainter);
 
                             return;
                         }
@@ -1023,24 +1032,19 @@ namespace SonOfRobin
             {
                 World world = World.GetTopWorld();
 
-                bool autoSave = world != null && !world.demoMode && world.player.alive;
-
                 var worldScenes = Scene.GetAllScenesOfType(typeof(World));
                 foreach (World currWorld in worldScenes)
-                { if (!currWorld.demoMode) world.Remove(); }
+                {
+                    if (!currWorld.demoMode) world.Remove();
+                }
+
                 Scene.RemoveAllScenesOfType(typeof(TextWindow));
                 Scene.RemoveAllScenesOfType(typeof(Menu));
                 Scene.RemoveAllScenesOfType(typeof(Inventory));
                 Scene.RemoveAllScenesOfType(typeof(PieceContextMenu));
 
-                if (autoSave)
-                {
-                    var saveParams = new Dictionary<string, Object> { { "world", world }, { "saveSlotName", "0" }, { "showMessage", false }, { "quitGameAfterSaving", quitGame } };
-                    new Task(taskName: TaskName.SaveGame, executeHelper: saveParams, delay: 17);
-                }
-
-                if (!autoSave && quitGame) SonOfRobinGame.quitGame = true;
-                if (!quitGame) new Task(taskName: TaskName.OpenMainMenu, turnOffInputUntilExecution: true, delay: autoSave ? 30 : 0);
+                if (quitGame) SonOfRobinGame.quitGame = true;
+                else new Task(taskName: TaskName.OpenMainMenu, turnOffInputUntilExecution: true, delay: 0);
             }
         }
 

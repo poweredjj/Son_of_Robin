@@ -124,7 +124,7 @@ namespace SonOfRobin
         {
             TimeSpan currentTimeOfDay = currentDateTime.TimeOfDay;
 
-            // return new AmbientLightData(timeOfDay: currentTimeOfDay, darknessColor: Color.Black, lightColor: Color.Transparent); // for testing
+            //   return new AmbientLightData(timeOfDay: currentTimeOfDay, darknessColor: Color.Black, lightColor: Color.Transparent); // for testing
 
             AmbientLightData prevLightData, nextLightData;
             float minutesBetween, prevColorOpacity, nextColorOpacity;

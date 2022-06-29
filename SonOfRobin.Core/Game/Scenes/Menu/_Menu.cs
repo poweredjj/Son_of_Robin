@@ -404,6 +404,21 @@ namespace SonOfRobin
             scrollWholeRect.X += (int)this.viewParams.PosX;
             scrollWholeRect.Y += (int)this.viewParams.PosY;
 
+            int mouseScrollValue = (int)(SonOfRobinGame.VirtualHeight * 0.2f);
+
+            int mouseScroll = 0;
+            if (InputMapper.HasBeenPressed(InputMapper.Action.GlobalScrollUp)) mouseScroll = -mouseScrollValue;
+            if (InputMapper.HasBeenPressed(InputMapper.Action.GlobalScrollDown)) mouseScroll = mouseScrollValue;
+
+            if (mouseScroll != 0)
+            {
+                this.touchMode = true;
+                this.currentScrollPosition += mouseScroll;
+                this.currentScrollPosition = KeepScrollInBounds(Convert.ToInt32(this.currentScrollPosition));
+
+                return;
+            }
+
             foreach (TouchLocation touch in TouchInput.TouchPanelState)
             {
                 Vector2 touchPos = touch.Position / Preferences.GlobalScale;

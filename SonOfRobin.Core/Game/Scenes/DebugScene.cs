@@ -178,7 +178,13 @@ namespace SonOfRobin
                 }
             }
 
-            if (Keyboard.HasBeenPressed(Keys.X)) world.grid.UnloadTexturesIfMemoryLow();
+            if (Keyboard.HasBeenPressed(Keys.X))
+            {
+                if (world == null) return;
+
+                if (world.bulletTimeMultiplier == 1) world.bulletTimeMultiplier = 3;
+                else world.bulletTimeMultiplier = 1;
+            }
 
             if (Keyboard.HasBeenPressed(Keys.U))
             {
@@ -312,7 +318,7 @@ namespace SonOfRobin
             }
 
             if (Keyboard.HasBeenPressed(Keys.F8))
-            { world.player.buffEngine.AddBuff(world: world, buff: new BuffEngine.Buff(world: world, type: BuffEngine.BuffType.EnableMap, value: null, autoRemoveDelay: 600, isPositive: true)); }
+            { world.player.buffEngine.AddBuff(world: world, buff: new BuffEngine.Buff(world: world, type: BuffEngine.BuffType.Haste, value: 2, autoRemoveDelay: 300, isPositive: true)); }
 
             if (Keyboard.HasBeenPressed(Keys.F9))
             {

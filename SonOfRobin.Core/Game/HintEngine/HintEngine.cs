@@ -166,7 +166,7 @@ namespace SonOfRobin
                     {
                         this.Disable(type: type, delay: 0);
                         ShowMessageDuringPause(new List<HintMessage> {
-                            new HintMessage(text: "I don't have a map.\nIf I had some | leather and a | workshop - I could make one.", imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.Leather].texture, AnimData.framesForPkgs[AnimData.PkgName.WoodenTable].texture}, blockInput: true) });
+                            new HintMessage(text: "I don't have a map.\nIf I had some | leather and an | advanced workshop - I could make one.", imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.Leather].texture, AnimData.framesForPkgs[AnimData.PkgName.WorkshopAdvanced].texture}, blockInput: true) });
                         break;
                     }
 
@@ -190,10 +190,9 @@ namespace SonOfRobin
 
                 case Type.BrokenItem:
                     {
-                        this.Disable(type: type, delay: 0);
+                        // no Disable(), because this hint should be shown every time
                         ShowMessageDuringPause(new List<HintMessage> {
                             new HintMessage(text: $"My | {text} has fell apart.", imageList: new List<Texture2D>{texture}, blockInput: true),
-                            new HintMessage(text: $"Now I need a new | {text}.",  imageList: new List<Texture2D>{texture}, blockInput: true),
                         });
                         break;
                     }

@@ -151,7 +151,7 @@ namespace SonOfRobin
                 case EventName.RemoveBuff:
                     {
                         int buffID = (int)this.eventHelper;
-                        this.boardPiece.buffEngine.RemoveBuff(buffID);
+                        this.boardPiece.buffEngine.RemoveBuff(buffID: buffID, checkIfHasThisBuff: false);
 
                         return;
                     }

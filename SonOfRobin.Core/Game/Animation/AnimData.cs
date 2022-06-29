@@ -69,7 +69,8 @@ namespace SonOfRobin
             WoodPlank,
             Crate,
 
-            WoodenTable,
+            WorkshopBasic,
+            WorkshopAdvanced,
             WorkshopAlchemy,
 
             CookingPot,
@@ -93,6 +94,7 @@ namespace SonOfRobin
             Acorn,
 
             RawMeat,
+            Fat,
             CookedMeat,
             MealStandard,
             Leather,
@@ -110,13 +112,15 @@ namespace SonOfRobin
             PickaxeIron,
 
             Scythe,
-            BatWood,
+            SpearStone,
+            SpearPoisoned,
+            SpearIron,
 
-            Sling,
-            GreatSling,
+
             BowWood,
 
             ArrowWood,
+            ArrowPoisoned,
             ArrowIron,
             StoneSmall,
 
@@ -188,10 +192,12 @@ namespace SonOfRobin
             BeltMedium,
             Map,
 
-            Torch,
+            SmallTorch,
+            BigTorch,
             Campfire,
 
             HerbsBlack,
+            HerbsCyan,
             HerbsBlue,
             HerbsGreen,
             HerbsYellow,
@@ -202,7 +208,11 @@ namespace SonOfRobin
 
             EmptyBottle,
             PotionRed,
-            PotionYellow
+            PotionBlue,
+            PotionYellow,
+            PotionCyan,
+            PotionBlack,
+            PotionLightYellow
         }
 
         public static void AddFrameList(PkgName animPackage, byte animSize, string animName, List<AnimFrame> frameList)
@@ -356,18 +366,25 @@ namespace SonOfRobin
                 AddFrameList(animPackage: packageName, animSize: 0, animName: "closing", frameList: frameList);
             }
             {
-                PkgName packageName = PkgName.WoodenTable;
+                PkgName packageName = PkgName.WorkshopBasic;
                 AddFrameList(animPackage: packageName, animSize: 0, animName: "off",
-                frameList: ConvertImageToFrameList(atlasName: "d9ffec650d3104f5c4564c9055787530", layer: 1, x: 480, y: 576, width: 32, height: 32));
+                frameList: ConvertImageToFrameList(atlasName: "workshop_basic", layer: 1, scale: 0.5f));
                 AddFrameList(animPackage: packageName, animSize: 0, animName: "on",
-                frameList: ConvertImageToFrameList(atlasName: "d9ffec650d3104f5c4564c9055787530", layer: 1, x: 480, y: 576, width: 32, height: 32)); // the same as "off"
+                frameList: ConvertImageToFrameList(atlasName: "workshop_basic", layer: 1, scale: 0.5f)); ; // the same as "off"
+            }
+            {
+                PkgName packageName = PkgName.WorkshopAdvanced;
+                AddFrameList(animPackage: packageName, animSize: 0, animName: "off",
+                frameList: ConvertImageToFrameList(atlasName: "workshop_advanced", layer: 1, scale: 0.5f));
+                AddFrameList(animPackage: packageName, animSize: 0, animName: "on",
+                frameList: ConvertImageToFrameList(atlasName: "workshop_advanced", layer: 1, scale: 0.5f)); ; // the same as "off"
             }
             {
                 PkgName packageName = PkgName.WorkshopAlchemy;
                 AddFrameList(animPackage: packageName, animSize: 0, animName: "off",
-                frameList: ConvertImageToFrameList(atlasName: "rpg_maker_vx_ace_tilesets_1_by_hishimy_d8e7pjd", layer: 1, x: 0, y: 128, width: 32, height: 32));
+                frameList: ConvertImageToFrameList(atlasName: "alchemy_lab", layer: 1, scale: 0.5f));
                 AddFrameList(animPackage: packageName, animSize: 0, animName: "on",
-                frameList: ConvertImageToFrameList(atlasName: "rpg_maker_vx_ace_tilesets_1_by_hishimy_d8e7pjd", layer: 1, x: 0, y: 128, width: 32, height: 32)); // the same as "off"
+                frameList: ConvertImageToFrameList(atlasName: "alchemy_lab", layer: 1, scale: 0.5f)); ; // the same as "off"
             }
             {
                 PkgName packageName = PkgName.Furnace;
@@ -418,10 +435,16 @@ namespace SonOfRobin
                 AddFrameList(animPackage: packageName, animSize: 0, animName: "default", frameList: frameList);
             }
             {
-                PkgName packageName = PkgName.Torch;
-                AddFrameList(animPackage: packageName, animSize: 0, animName: "on", frameList: ConvertImageToFrameList(atlasName: "torch_on", layer: 0, scale: 0.1f));
-                AddFrameList(animPackage: packageName, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "torch_off", layer: 0, scale: 0.1f));
-                AddFrameList(animPackage: packageName, animSize: 0, animName: "off", frameList: ConvertImageToFrameList(atlasName: "torch_off", layer: 0, scale: 0.1f));
+                PkgName packageName = PkgName.SmallTorch;
+                AddFrameList(animPackage: packageName, animSize: 0, animName: "on", frameList: ConvertImageToFrameList(atlasName: "small_torch_on", layer: 0, scale: 0.07f));
+                AddFrameList(animPackage: packageName, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "small_torch_off", layer: 0, scale: 0.07f));
+                AddFrameList(animPackage: packageName, animSize: 0, animName: "off", frameList: ConvertImageToFrameList(atlasName: "small_torch_off", layer: 0, scale: 0.07f));
+            }
+            {
+                PkgName packageName = PkgName.BigTorch;
+                AddFrameList(animPackage: packageName, animSize: 0, animName: "on", frameList: ConvertImageToFrameList(atlasName: "big_torch_on", layer: 0, scale: 0.1f));
+                AddFrameList(animPackage: packageName, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "big_torch_off", layer: 0, scale: 0.1f));
+                AddFrameList(animPackage: packageName, animSize: 0, animName: "off", frameList: ConvertImageToFrameList(atlasName: "big_torch_off", layer: 0, scale: 0.1f));
             }
             {
                 PkgName packageName = PkgName.Campfire;
@@ -594,9 +617,6 @@ namespace SonOfRobin
             AddFrameList(animPackage: PkgName.PickaxeIron, animSize: 0, animName: "default",
                 frameList: ConvertImageToFrameList(atlasName: "tools_gravel", layer: 0, x: 192, y: 384, width: 48, height: 48, scale: 0.7f));
 
-            AddFrameList(animPackage: PkgName.BatWood, animSize: 0, animName: "default",
-                frameList: ConvertImageToFrameList(atlasName: "weapons1", layer: 0, x: 494, y: 340, width: 43, height: 42, scale: 0.65f));
-
             AddFrameList(animPackage: PkgName.BowWood, animSize: 0, animName: "default",
                 frameList: ConvertImageToFrameList(atlasName: "bows", layer: 0, x: 522, y: 17, width: 22, height: 50, scale: 0.7f));
 
@@ -644,11 +664,17 @@ namespace SonOfRobin
 
             AddFrameList(animPackage: PkgName.PotionRed, animSize: 0, animName: "default",
                 frameList: ConvertImageToFrameList(atlasName: "d9ffec650d3104f5c4564c9055787530", layer: 1, x: 384, y: 128, width: 32, height: 32, scale: 0.5f));
+            AddFrameList(animPackage: PkgName.PotionBlue, animSize: 0, animName: "default",
+                frameList: ConvertImageToFrameList(atlasName: "d9ffec650d3104f5c4564c9055787530", layer: 1, x: 448, y: 128, width: 32, height: 32, scale: 0.5f));
             AddFrameList(animPackage: PkgName.PotionYellow, animSize: 0, animName: "default",
                 frameList: ConvertImageToFrameList(atlasName: "d9ffec650d3104f5c4564c9055787530", layer: 1, x: 352, y: 128, width: 32, height: 32, scale: 0.5f));
+            AddFrameList(animPackage: PkgName.PotionCyan, animSize: 0, animName: "default",
+                frameList: ConvertImageToFrameList(atlasName: "d9ffec650d3104f5c4564c9055787530", layer: 1, x: 288, y: 128, width: 32, height: 32, scale: 0.5f));
 
             // "one-liners"
 
+            AddFrameList(animPackage: PkgName.PotionBlack, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "potion_black", layer: 0, scale: 0.5f));
+            AddFrameList(animPackage: PkgName.PotionLightYellow, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "bottle_oil", layer: 0, scale: 0.5f));
             AddFrameList(animPackage: PkgName.CookedMeat, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "Cooked Meat", layer: 0, scale: 0.17f));
             AddFrameList(animPackage: PkgName.WaterDrop, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "water_drop", layer: 0, scale: 0.5f));
             AddFrameList(animPackage: PkgName.Exclamation, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "exclamation", layer: 2, scale: 0.2f));
@@ -664,20 +690,24 @@ namespace SonOfRobin
             AddFrameList(animPackage: PkgName.EmptyBottle, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "bottle_empty", layer: 0, scale: 0.5f));
             AddFrameList(animPackage: PkgName.Acorn, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "acorn", layer: 0, scale: 0.5f));
             AddFrameList(animPackage: PkgName.ArrowWood, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "arrow_wood", layer: 0, scale: 0.75f));
+            AddFrameList(animPackage: PkgName.ArrowPoisoned, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "arrow_poison", layer: 0, scale: 0.75f));
             AddFrameList(animPackage: PkgName.ArrowIron, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "arrow_iron", layer: 0, scale: 0.75f));
-            AddFrameList(animPackage: PkgName.Sling, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "sling", layer: 0, scale: 0.5f));
-            AddFrameList(animPackage: PkgName.GreatSling, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "greatsling", layer: 0, scale: 0.5f));
-            AddFrameList(animPackage: PkgName.StoneSmall, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "stone_ammo", layer: 0, scale: 0.5f));
-            AddFrameList(animPackage: PkgName.DebrisStone, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "stone_ammo", layer: 0, scale: 0.25f));
+            AddFrameList(animPackage: PkgName.DebrisStone, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "stone_small", layer: 0, scale: 0.25f));
             AddFrameList(animPackage: PkgName.DebrisPlant, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "grass_blade", layer: 0, scale: 0.25f));
             AddFrameList(animPackage: PkgName.Hand, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "hand", layer: 1));
             AddFrameList(animPackage: PkgName.BeltMedium, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "belt", layer: 1, scale: 0.06f));
             AddFrameList(animPackage: PkgName.HerbsGreen, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "herbs_green", layer: 0));
             AddFrameList(animPackage: PkgName.HerbsBlack, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "herbs_black", layer: 0));
             AddFrameList(animPackage: PkgName.HerbsBlue, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "herbs_blue", layer: 0));
+            AddFrameList(animPackage: PkgName.HerbsCyan, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "herbs_cyan", layer: 0));
             AddFrameList(animPackage: PkgName.HerbsYellow, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "herbs_yellow", layer: 0));
             AddFrameList(animPackage: PkgName.HerbsRed, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "herbs_red", layer: 0));
             AddFrameList(animPackage: PkgName.HerbsViolet, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "herbs_violet", layer: 0));
+            AddFrameList(animPackage: PkgName.SpearStone, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "spear_stone", layer: 0, scale: 0.5f));
+            AddFrameList(animPackage: PkgName.SpearPoisoned, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "spear_poison", layer: 0, scale: 0.5f));
+            AddFrameList(animPackage: PkgName.SpearIron, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "spear_iron", layer: 0, scale: 0.5f));
+            AddFrameList(animPackage: PkgName.Fat, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "piece_of_fat", layer: 0, scale: 0.25f));
+
 
             // RPGMaker characters
             AddRPGMakerPackageV1(packageName: PkgName.Blonde, atlasName: "actor29rec4", setNoX: 0, setNoY: 0, animSize: 0);
@@ -741,7 +771,7 @@ namespace SonOfRobin
                 AddRPGMakerPackageV2(packageName: PkgName.Frog8, atlasName: "frogs_small", setNoX: 3, setNoY: 1, animSize: 0, scale: scale);
             }
 
-            foreach (var kvp in new Dictionary<byte, float> { { 1, 0.75f }, { 2, 1.3f } })
+            foreach (var kvp in new Dictionary<byte, float> { { 1, 0.6f }, { 2, 1.0f } })
             {
                 string atlasName = "frogs_big";
                 byte animSize = kvp.Key;

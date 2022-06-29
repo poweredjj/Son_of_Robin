@@ -230,7 +230,7 @@ namespace SonOfRobin
             foreach (Sprite sprite in this.spriteGroups[groupName].Values)
             {
                 txtPos = sprite.position;
-                txtString = $"{sprite.id}\n{this.cellNoX},{this.cellNoY}\n{sprite.position.X},{sprite.position.Y}";
+                txtString = $"{sprite.id}\n{sprite.animPackage}\n{this.cellNoX},{this.cellNoY}\n{sprite.position.X},{sprite.position.Y}";
 
                 SonOfRobinGame.spriteBatch.DrawString(posFont, txtString, txtPos + new Vector2(1, 1), Color.Black);
                 SonOfRobinGame.spriteBatch.DrawString(posFont, txtString, txtPos, Color.White);
@@ -239,16 +239,13 @@ namespace SonOfRobin
 
         public void DrawBackground()
         {
-            try
-            {
-                Rectangle sourceRectangle = new Rectangle(0, 0, this.boardGraphics.texture.Width, this.boardGraphics.texture.Height);
-                Rectangle destinationRectangle = new Rectangle(this.xMin, this.yMin,
-                    this.boardGraphics.texture.Width * this.grid.resDivider, this.boardGraphics.texture.Height * this.grid.resDivider);
+            if (this.boardGraphics.texture == null) return;
 
-                SonOfRobinGame.spriteBatch.Draw(this.boardGraphics.texture, destinationRectangle, sourceRectangle, Color.White);
-            }
-            catch (NullReferenceException)
-            { }
+            Rectangle sourceRectangle = new Rectangle(0, 0, this.boardGraphics.texture.Width, this.boardGraphics.texture.Height);
+            Rectangle destinationRectangle = new Rectangle(this.xMin, this.yMin,
+                this.boardGraphics.texture.Width * this.grid.resDivider, this.boardGraphics.texture.Height * this.grid.resDivider);
+
+            SonOfRobinGame.spriteBatch.Draw(this.boardGraphics.texture, destinationRectangle, sourceRectangle, Color.White);
         }
 
     }

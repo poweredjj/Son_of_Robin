@@ -7,7 +7,7 @@ namespace SonOfRobin
 {
     public class BuffEngine
     {
-        public enum BuffType { InvWidth, InvHeight, ToolbarWidth, ToolbarHeight, Speed, Strength, HP, MaxHp, EnableMap, Tired, Hungry, LightSource, RegenPoison };
+        public enum BuffType { InvWidth, InvHeight, ToolbarWidth, ToolbarHeight, Speed, Strength, HP, MaxHp, MaxStamina, EnableMap, Tired, Hungry, LightSource, RegenPoison, Haste };
 
         [Serializable]
         public class Buff
@@ -48,12 +48,15 @@ namespace SonOfRobin
                 return framesSlept >= this.sleepFrames;
             }
 
+            private string SignString { get { return $"{this.value}".StartsWith("-") ? "" : "+"; } }
+
             public string Description
             {
                 get
                 {
                     string description;
-                    string sign = $"{this.value}".StartsWith("-") ? "" : "+";
+                    string sign = this.SignString;
+                    string duration = this.autoRemoveDelay == 0 ? "" : $" for {Math.Round(this.autoRemoveDelay / 60f)}s";
 
                     switch (this.type)
                     {
@@ -74,11 +77,11 @@ namespace SonOfRobin
                             break;
 
                         case BuffType.Speed:
-                            description = $"Speed {sign}{this.value}.";
+                            description = $"Speed {sign}{this.value}{duration}.";
                             break;
 
                         case BuffType.Strength:
-                            description = $"Strength {sign}{this.value}.";
+                            description = $"Strength {sign}{this.value}{duration}.";
                             break;
 
                         case BuffType.HP:
@@ -86,7 +89,11 @@ namespace SonOfRobin
                             break;
 
                         case BuffType.MaxHp:
-                            description = $"Max HP {sign}{this.value}.";
+                            description = $"Max HP {sign}{this.value}{duration}.";
+                            break;
+
+                        case BuffType.MaxStamina:
+                            description = $"Max stamina {sign}{this.value}{duration}.";
                             break;
 
                         case BuffType.EnableMap:
@@ -106,7 +113,11 @@ namespace SonOfRobin
                             break;
 
                         case BuffType.RegenPoison:
-                            description = this.isPositive ? $"Regen {sign}{this.value}" : $"Poison {sign}{this.value}";
+                            description = this.isPositive ? $"Regen {sign}{this.value}{duration}." : $"Poison {sign}{this.value}{duration}.";
+                            break;
+
+                        case BuffType.Haste:
+                            description = $"Haste {sign}{this.value}{duration}.";
                             break;
 
                         default:
@@ -123,8 +134,7 @@ namespace SonOfRobin
             {
                 get
                 {
-
-                    string sign = $"{this.value}".StartsWith("-") ? "" : "+";
+                    string sign = this.SignString;
 
                     switch (this.type)
                     {
@@ -155,17 +165,23 @@ namespace SonOfRobin
                         case BuffType.MaxHp:
                             return $"MAX HP\n{sign}{this.value}";
 
+                        case BuffType.MaxStamina:
+                            return $"STAMINA\n{sign}{this.value}";
+
                         case BuffType.Tired:
-                            return "tired";
+                            return "TIRED";
 
                         case BuffType.Hungry:
-                            return "hungry";
+                            return "HUNGRY";
 
                         case BuffType.LightSource:
                             return $"LIGHT\n{sign}{this.value}";
 
                         case BuffType.RegenPoison:
                             return this.isPositive ? $"REGEN\n{sign}{this.value}" : $"POISON\n{sign}{this.value}";
+
+                        case BuffType.Haste:
+                            return $"HASTE\n{sign}{this.value}";
 
                         default:
                             throw new DivideByZeroException($"Unsupported buff type - {this.type}.");
@@ -237,7 +253,7 @@ namespace SonOfRobin
             this.buffDict[buff.id] = buff;
             if (buff.autoRemoveDelay > 0) new WorldEvent(eventName: WorldEvent.EventName.RemoveBuff, world: this.piece.world, delay: buff.autoRemoveDelay, boardPiece: this.piece, eventHelper: buff.id);
 
-            MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Buff added - id {buff.id} type {buff.type} value {buff.value}.");
+            MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Buff added for '{this.piece.readableName}' - id {buff.id} type {buff.type} value {buff.value}.");
 
             if (buff.isPermanent) this.RemoveBuff(buff.id); // permanent buff should only change value and not be stored and displayed
         }
@@ -250,18 +266,18 @@ namespace SonOfRobin
             }
         }
 
-        public void RemoveBuff(int buffId, bool checkIfHasThisBuff = true)
+        public void RemoveBuff(int buffID, bool checkIfHasThisBuff = true)
         {
-            if (!this.buffDict.ContainsKey(buffId))
+            if (!this.buffDict.ContainsKey(buffID))
             {
-                if (checkIfHasThisBuff) throw new DivideByZeroException($"Buff not found during removal - id {buffId}.");
+                if (checkIfHasThisBuff) throw new DivideByZeroException($"Buff not found during removal - id {buffID}.");
                 else return;
             }
 
-            Buff buffToRemove = this.buffDict[buffId];
+            Buff buffToRemove = this.buffDict[buffID];
 
-            BuffType typeToCheck = buffDict[buffId].type;
-            this.buffDict.Remove(buffId);
+            BuffType typeToCheck = buffDict[buffID].type;
+            this.buffDict.Remove(buffID);
             bool stillHasThisBuff = this.HasBuff(typeToCheck);
             if (!buffToRemove.isPermanent) this.ProcessBuff(buff: buffToRemove, add: false, stillHasThisBuff: stillHasThisBuff, world: null);
 
@@ -368,6 +384,24 @@ namespace SonOfRobin
                         break;
                     }
 
+                case BuffType.MaxStamina:
+                    {
+                        Player player = (Player)this.piece;
+
+                        if (add)
+                        {
+                            player.maxStamina += (float)buff.value;
+                            player.stamina = player.maxStamina;
+                        }
+                        else
+                        {
+                            player.maxStamina -= (float)buff.value;
+                            player.stamina = Math.Min(player.stamina, player.maxStamina);
+                        }
+
+                        break;
+                    }
+
                 case BuffType.HP:
                     {
                         if (add) this.piece.hitPoints += (float)buff.value;
@@ -429,6 +463,8 @@ namespace SonOfRobin
                     {
                         if (add)
                         {
+                            if (hadThisBuffBefore) this.RemoveEveryBuffOfType(buff.type);
+
                             int delay = 60 * 5;
 
                             var regenPoisonData = new Dictionary<string, Object> {
@@ -451,6 +487,20 @@ namespace SonOfRobin
 
                             if (!hasPoisonBuff) this.piece.sprite.color = Color.White;
                         }
+
+                        break;
+                    }
+
+                case BuffType.Haste:
+                    {
+                        Player player = (Player)this.piece;
+
+                        if (add)
+                        {
+                            if (hadThisBuffBefore) this.RemoveEveryBuffOfType(buff.type);
+                            player.world.bulletTimeMultiplier = (int)buff.value;
+                        }
+                        else player.world.bulletTimeMultiplier = 1;
 
                         break;
                     }

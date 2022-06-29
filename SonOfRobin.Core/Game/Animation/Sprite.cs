@@ -261,8 +261,9 @@ namespace SonOfRobin
                 return false; // if no free spot at the edge was found
             }
 
-            int numberOfTries = (minDistance == 0 && maxDistance == 0) ? 1 : 4;
             if (!this.world.CanProcessAnyStateMachineNow) return false;
+
+            int numberOfTries = (minDistance == 0 && maxDistance == 0) ? 1 : 4;
             Vector2 newPosition;
 
             if (startPosition.X == -100 && startPosition.Y == -100) // -100, -100 will be converted to any position on the map - needed for effective creation of new sprites 
@@ -278,7 +279,6 @@ namespace SonOfRobin
                     if (hasBeenMoved) return true;
                 }
             }
-
             else
             {
                 for (int tryIndex = 0; tryIndex < numberOfTries; tryIndex++)
@@ -319,14 +319,13 @@ namespace SonOfRobin
 
             Rectangle worldRect = new Rectangle(0, 0, this.world.width, this.world.height);
             Vector2 currentPos = startPos;
-            int height;
 
             while (true)
             {
                 currentPos += step;
                 if (!worldRect.Contains(currentPos)) return false;
 
-                height = this.world.grid.GetFieldValue(terrainName: TerrainName.Height, position: currentPos);
+                int height = this.world.grid.GetFieldValue(terrainName: TerrainName.Height, position: currentPos);
                 if (height > Terrain.waterLevelMax + 10) return false;
 
                 if (height >= Terrain.waterLevelMax + 1 && this.SetNewPosition(newPos: currentPos)) return true;
@@ -401,7 +400,6 @@ namespace SonOfRobin
 
         public void Destroy()
         { this.RemoveFromGrid(); }
-
 
         private List<Cell.Group> GetGridGroups()
         {
@@ -672,7 +670,7 @@ namespace SonOfRobin
             if (!this.hasBeenDiscovered && this.world.MapEnabled && this.world.camera.IsTrackingPlayer && this.world.camera.viewRect.Contains(this.gfxRect)) this.hasBeenDiscovered = true;
 
             if (this.ObstructsPlayer && this.opacityFade == null) this.opacityFade = new OpacityFade(sprite: this, destOpacity: 0.5f, playerObstructMode: true, duration: 10);
-            this.opacityFade?.Process();
+            if (Scene.UpdateStack.Contains(this.world)) this.opacityFade?.Process();
 
             if (Preferences.debugShowRects)
             { SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, new Rectangle(Convert.ToInt32(this.gfxRect.X), Convert.ToInt32(this.gfxRect.Y), this.gfxRect.Width, this.gfxRect.Height), this.gfxRect, Color.White * 0.5f); }
@@ -755,8 +753,8 @@ namespace SonOfRobin
             Vector2 textSize = stateFont.MeasureString(stateTxt);
             // text position should be integer, otherwise it would get blurry
             Vector2 txtPos = new Vector2(
-                Convert.ToInt32(this.position.X - (textSize.X / 2)),
-                Convert.ToInt32(this.position.Y - (textSize.Y / 2)));
+                (int)(this.position.X - (textSize.X / 2)),
+                (int)(this.position.Y - (textSize.Y / 2)));
 
             SonOfRobinGame.spriteBatch.DrawString(stateFont, stateTxt, txtPos + new Vector2(1, 1), Color.Black);
             SonOfRobinGame.spriteBatch.DrawString(stateFont, stateTxt, txtPos, Color.White);
@@ -767,13 +765,10 @@ namespace SonOfRobin
             float distance = Vector2.Distance(lightPos, shadowSprite.position);
             AnimFrame frame = shadowSprite.frame;
 
-            var flatShadowNames = new List<PieceTemplate.Name> { PieceTemplate.Name.WoodLog };
-            var tallShadowNames = new List<PieceTemplate.Name> { PieceTemplate.Name.TentSmall, PieceTemplate.Name.TentMedium, PieceTemplate.Name.TentBig };
+            var flatShadowNames = new List<AnimData.PkgName> {
+                AnimData.PkgName.WoodLog, AnimData.PkgName.MineralsBig1, AnimData.PkgName.MineralsBig4, AnimData.PkgName.MineralsSmall1, AnimData.PkgName.Stone1, AnimData.PkgName.Stone2, AnimData.PkgName.WaterRock5 };
 
-            bool flatShadow = (frame.gfxWidth > frame.gfxHeight ||
-                shadowSprite.boardPiece.GetType() == typeof(Animal) ||
-                flatShadowNames.Contains(shadowSprite.boardPiece.name)) &&
-                !tallShadowNames.Contains(shadowSprite.boardPiece.name);
+            bool flatShadow = flatShadowNames.Contains(shadowSprite.boardPiece.sprite.animPackage);
 
             if (flatShadow)
             {
@@ -803,7 +798,7 @@ namespace SonOfRobin
                     position:
                     new Vector2(shadowSprite.position.X + drawOffsetX, shadowSprite.position.Y + drawOffsetY),
                     sourceRectangle: frame.textureRect,
-                    color: color,
+                    color: color * shadowSprite.opacity,
                     rotation: shadowSprite.rotation + shadowAngle + (float)(Math.PI / 2f),
                     origin: new Vector2(-frame.gfxOffset.X / frame.scale, -(frame.gfxOffset.Y + frame.colOffset.Y) / frame.scale),
                     scale: new Vector2(xScale, yScale),

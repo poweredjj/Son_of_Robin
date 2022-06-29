@@ -16,7 +16,33 @@ namespace SonOfRobin
         public enum AlignX { Left, Center, Right };
         public enum AlignY { Top, Center, Bottom };
 
-        public static void DrawTextInsideRect(SpriteFont font, Rectangle rectangle, string text, Color color, Color shadowColor, AlignX alignX = AlignX.Center, AlignY alignY = AlignY.Center, int shadowOffsetX = 0, int shadowOffsetY = 0, int shadowOffset = 0, bool drawTestRect = false)
+        public static void DrawTextInsideRectWithOutline(SpriteFont font, Rectangle rectangle, string text, Color color, Color outlineColor, AlignX alignX = AlignX.Center, AlignY alignY = AlignY.Center, int outlineSize = 0, bool drawTestRect = false)
+        {
+            var outlineRectList = new List<Rectangle>();
+
+            for (int x = -outlineSize; x <= outlineSize; x++)
+            {
+                for (int y = -outlineSize; y <= outlineSize; y++)
+                {
+                    if (x == 0 && y == 0) continue;
+
+                    Rectangle outlineRect = rectangle;
+                    outlineRect.X += x;
+                    outlineRect.Y += y;
+                    outlineRectList.Add(outlineRect);
+                }
+            }
+
+            foreach (Rectangle outlineRect in outlineRectList)
+            {
+                DrawTextInsideRect(font: font, rectangle: outlineRect, text: text, color: outlineColor, alignX: alignX, alignY: alignY, drawTestRect: drawTestRect);
+            }
+
+            DrawTextInsideRect(font: font, rectangle: rectangle, text: text, color: color, alignX: alignX, alignY: alignY, drawTestRect: drawTestRect);
+        }
+
+
+        public static void DrawTextInsideRectWithShadow(SpriteFont font, Rectangle rectangle, string text, Color color, Color shadowColor, AlignX alignX = AlignX.Center, AlignY alignY = AlignY.Center, int shadowOffsetX = 0, int shadowOffsetY = 0, int shadowOffset = 0, bool drawTestRect = false)
         {
             if (shadowOffset != 0)
             {

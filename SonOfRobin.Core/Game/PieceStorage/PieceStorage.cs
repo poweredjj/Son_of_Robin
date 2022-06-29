@@ -161,6 +161,7 @@ namespace SonOfRobin
             }
 
             piece.sprite.RemoveFromGrid();
+            WorldEvent.RemovePieceFromQueue(world: this.world, pieceToRemove: piece);
             slot.AddPiece(piece);
 
             return true;
@@ -307,9 +308,10 @@ namespace SonOfRobin
             DestroySpecifiedPiecesInMultipleStorages(storageList: new List<PieceStorage> { this }, quantityByPiece: quantityByPiece);
         }
 
-        public static void DestroySpecifiedPiecesInMultipleStorages(List<PieceStorage> storageList, Dictionary<PieceTemplate.Name, byte> quantityByPiece)
+        public static void DestroySpecifiedPiecesInMultipleStorages(List<PieceStorage> storageList, Dictionary<PieceTemplate.Name, byte> quantityByPiece, bool keepContainers = true)
         {
             // this method does not check if all pieces are present
+
 
             var quantityLeft = quantityByPiece.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 
@@ -323,7 +325,19 @@ namespace SonOfRobin
                     {
                         while (true)
                         {
-                            slot.RemoveTopPiece();
+
+                            if (keepContainers && PieceInfo.info[pieceName].convertsWhenUsed)
+                            {
+                                BoardPiece emptyContainter = PieceTemplate.CreateOffBoard(templateName: PieceInfo.info[pieceName].convertsToWhenUsed, world: storage.world);
+                                slot.DestroyPieceAndReplaceWithAnother(emptyContainter);
+                                break; // this slot should not contain more items of this kind
+                            }
+                            else
+                            {
+                                slot.RemoveTopPiece();
+                            }
+
+
                             quantityLeft[pieceName] -= 1;
                             if (quantityLeft[pieceName] == 0 || slot.pieceList.Count == 0) break;
                         }
