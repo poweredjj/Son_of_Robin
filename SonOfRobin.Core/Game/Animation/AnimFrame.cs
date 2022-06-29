@@ -11,6 +11,9 @@ namespace SonOfRobin
         private readonly Texture2D atlasTexture;
         private readonly ushort atlasX;
         private readonly ushort atlasY;
+        private readonly float depthPercent;
+        public readonly ushort sourceWidth;
+        public readonly ushort sourceHeight;
         public readonly ushort gfxWidth;
         public readonly ushort gfxHeight;
         public readonly ushort colWidth;
@@ -19,13 +22,16 @@ namespace SonOfRobin
         public readonly byte duration;
         public readonly Vector2 gfxOffset;
         public readonly Vector2 colOffset;
+        public readonly float scale;
 
         public static List<byte> allLayers = new List<byte> { }; // needed to draw frames in correct order
         public static Dictionary<string, AnimFrame> frameById = new Dictionary<string, AnimFrame>(); // needed to access frames directly by id (for loading and saving game)
 
 
-        public AnimFrame(string atlasName, ushort atlasX, ushort atlasY, ushort width, ushort height, byte layer, byte duration, bool crop = false)
+        public AnimFrame(string atlasName, ushort atlasX, ushort atlasY, ushort width, ushort height, byte layer, byte duration, bool crop = false, float scale = 1f, float depthPercent = 0.25f)
         {
+            this.depthPercent = depthPercent;
+
             this.id = $"{atlasName}_{atlasX},{atlasY}_{width}x{height}_{layer}_{duration}_{crop}";
             frameById[this.id] = this;
 
@@ -37,6 +43,7 @@ namespace SonOfRobin
             width = cropData["croppedWidth"];
             height = cropData["croppedHeight"];
 
+            this.scale = scale;
             this.atlasX = atlasX;
             this.atlasY = atlasY;
             this.layer = layer;
@@ -49,16 +56,21 @@ namespace SonOfRobin
             var colBounds = this.FindCollisionBounds(croppedAtlasX: atlasX, croppedAtlasY: atlasY, croppedWidth: width, croppedHeight: height);
             var colXMin = colBounds[0]; var colXMax = colBounds[1]; var colYMin = colBounds[2]; var colYMax = colBounds[3];
 
-            this.colWidth = Convert.ToUInt16(colXMax - colXMin + 1);
-            this.colHeight = Convert.ToUInt16(colYMax - colYMin + 1);
+            this.colWidth = Convert.ToUInt16((colXMax - colXMin + 1) * scale);
+            this.colHeight = Convert.ToUInt16((colYMax - colYMin + 1) * scale);
             this.colOffset = new Vector2(-Convert.ToInt32(this.colWidth * 0.5f), -Convert.ToInt32(this.colHeight * 0.5f));
 
-            this.gfxWidth = width;
-            this.gfxHeight = height;
+            this.sourceWidth = width;
+            this.sourceHeight = height;
+            this.gfxWidth = (ushort)(width * scale);
+            this.gfxHeight = (ushort)(height * scale);
 
             this.gfxOffset = new Vector2(
                 this.colOffset.X - (colXMin - atlasX),
                 this.colOffset.Y - (colYMin - atlasY));
+
+            this.gfxOffset *= scale;
+            this.colOffset *= scale;
 
             this.duration = duration; // duration == 0 will stop the animation
         }
@@ -70,7 +82,7 @@ namespace SonOfRobin
         {
             // checking bottom part of the frame for collision bounds
 
-            ushort bottomPartHeight = Math.Max(Convert.ToUInt16(croppedHeight * 0.25), (ushort)20);
+            ushort bottomPartHeight = Math.Max(Convert.ToUInt16(croppedHeight * this.depthPercent), (ushort)20); // testing
             bottomPartHeight = Math.Min(bottomPartHeight, croppedHeight);
 
             ushort sliceWidth = croppedWidth;
@@ -139,8 +151,8 @@ namespace SonOfRobin
                 var croppedBounds = FindBoundaries(texture: texture, textureX: textureX, textureY: textureY, width: width, height: height, minAlpha: 1);
 
                 var croppedXMin = croppedBounds[0]; var gfxXMax = croppedBounds[1]; var gfxYMin = croppedBounds[2]; var gfxYMax = croppedBounds[3];
-                var croppedWidth = Convert.ToUInt16((gfxXMax - croppedXMin) + 1);
-                var croppedHeight = Convert.ToUInt16((gfxYMax - gfxYMin) + 1);
+                var croppedWidth = Convert.ToUInt16(gfxXMax - croppedXMin + 1);
+                var croppedHeight = Convert.ToUInt16(gfxYMax - gfxYMin + 1);
                 var croppedAtlasX = Convert.ToUInt16(textureX + croppedXMin);
                 var croppedAtlasY = Convert.ToUInt16(textureY + gfxYMin);
 
@@ -174,20 +186,39 @@ namespace SonOfRobin
             return rawDataAsGrid;
         }
 
-        public void Draw(Rectangle gfxRect, Color color)
+        public void Draw(Rectangle destRect, Color color, float opacity, int submergeCorrection = 0)
         {
-            // invoke from Sprite class
-            Rectangle sourceRectangle = new Rectangle(this.atlasX, this.atlasY, gfxRect.Width, gfxRect.Height);
-            Rectangle destinationRectangle = new Rectangle(gfxRect.X, gfxRect.Y, gfxRect.Width, gfxRect.Height);
+            int correctedSourceHeight = this.sourceHeight;
+            if (submergeCorrection > 0)
+            {
+                correctedSourceHeight = Math.Max(sourceHeight / 2, sourceHeight - submergeCorrection);
+                destRect.Height = (int)(correctedSourceHeight * this.scale);
+            }
 
-            SonOfRobinGame.spriteBatch.Draw(this.atlasTexture, destinationRectangle, sourceRectangle, color);
+            // invoke from Sprite class
+            Rectangle sourceRectangle = new Rectangle(this.atlasX, this.atlasY, this.sourceWidth, correctedSourceHeight);
+            Rectangle destinationRectangle = new Rectangle(destRect.X, destRect.Y, destRect.Width, destRect.Height);
+
+           // Helpers.DrawRectangleOutline(rect: destinationRectangle, color: Color.YellowGreen, borderWidth: 2); // testing rect size
+
+            SonOfRobinGame.spriteBatch.Draw(this.atlasTexture, destinationRectangle, sourceRectangle, color * opacity);
         }
 
-        public void DrawAndKeepInRectBounds(Rectangle destBoundsRect, Color color)
+        public void DrawWithRotation(Vector2 position, Color color, float rotation, float opacity)
+        {
+            // invoke from Sprite class
+            Rectangle sourceRectangle = new Rectangle(this.atlasX, this.atlasY, this.sourceWidth, this.sourceHeight);
+
+            Vector2 rotationOrigin = new Vector2(this.sourceWidth / 2, this.sourceHeight / 2);
+
+            SonOfRobinGame.spriteBatch.Draw(this.atlasTexture, position: position, sourceRectangle: sourceRectangle, color: color * opacity, rotation: rotation, origin: rotationOrigin, scale: this.scale, effects: SpriteEffects.None, layerDepth: 0);
+        }
+
+        public void DrawAndKeepInRectBounds(Rectangle destBoundsRect, Color color, float opacity = 1f)
         {
             // general use
 
-            Rectangle sourceRect = new Rectangle(this.atlasX, this.atlasY, this.gfxWidth, gfxHeight);
+            Rectangle sourceRect = new Rectangle(this.atlasX, this.atlasY, this.sourceWidth, this.sourceHeight);
 
             int destBoundsShorterSide = Math.Min(destBoundsRect.Width, destBoundsRect.Height);
             int sourceLongerSide = Math.Max(sourceRect.Width, sourceRect.Height);
@@ -203,7 +234,7 @@ namespace SonOfRobin
 
             //Helpers.DrawRectangleOutline(rect: destRect, color: Color.YellowGreen, borderWidth: 2); // testing rect size
 
-            SonOfRobinGame.spriteBatch.Draw(texture: this.atlasTexture, destinationRectangle: destRect, sourceRectangle: sourceRect, color: color);
+            SonOfRobinGame.spriteBatch.Draw(texture: this.atlasTexture, destinationRectangle: destRect, sourceRectangle: sourceRect, color: color * opacity);
         }
 
     }

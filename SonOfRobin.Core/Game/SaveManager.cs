@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 
 namespace SonOfRobin
 {
@@ -20,7 +19,15 @@ namespace SonOfRobin
         private readonly TimeSpan elapsedTime;
         public readonly DateTime saveDate;
         private string ElapsedTimeString { get { return this.elapsedTime.ToString("hh\\:mm"); } }
-        private string SaveDateString { get { return this.saveDate.ToString("yyyy/MM/dd HH:mm"); } }
+        private string SaveDateString
+        {
+            get
+            {
+                if (this.saveDate.Date == DateTime.Today) { return this.saveDate.ToString("TODAY HH:mm"); }
+                else if (this.saveDate.Date == DateTime.Today - TimeSpan.FromDays(1)) { return this.saveDate.ToString("YESTERDAY HH:mm"); }
+                else { return this.saveDate.ToString("yyyy/MM/dd HH:mm"); }
+            }
+        }
         public string FullDescription
         {
             get
@@ -29,7 +36,6 @@ namespace SonOfRobin
                 return $"{SaveDateString} time played: {ElapsedTimeString} seed: {this.seed} {this.width}x{this.height}{autoSaveString}";
             }
         }
-
         public SaveInfo(string folderName)
         {
             this.folderName = folderName;
@@ -38,10 +44,10 @@ namespace SonOfRobin
 
             string headerPath = Path.Combine(this.fullPath, "header.sav");
 
-            this.saveDate = File.GetLastWriteTime(headerPath);
             var headerData = (Dictionary<string, Object>)LoaderSaver.Load(path: headerPath);
 
             this.saveIsCorrect = false;
+            this.saveDate = DateTime.FromOADate(0d);
             this.autoSave = false;
             this.seed = -1;
             this.width = -1;
@@ -55,6 +61,7 @@ namespace SonOfRobin
                 if (saveVersion == SaveManager.saveVersion)
                 {
                     this.saveIsCorrect = true;
+                    this.saveDate = (DateTime)headerData["realDateTime"];
                     this.autoSave = this.folderName == "0";
                     this.seed = (int)headerData["seed"];
                     this.width = (int)headerData["width"];
@@ -62,7 +69,6 @@ namespace SonOfRobin
                     this.currentUpdate = (int)headerData["currentUpdate"];
                     this.elapsedTime = TimeSpan.FromMilliseconds(this.currentUpdate * 16.67);
                 }
-
             }
         }
 
@@ -72,7 +78,7 @@ namespace SonOfRobin
 
     public class SaveManager
     {
-        public readonly static float saveVersion = 1.13f;
+        public readonly static float saveVersion = 1.198f;
 
         public static bool AnySavesExist
         { get { return Directory.GetDirectories(SonOfRobinGame.saveGamesPath).ToList().Count > 0; } }

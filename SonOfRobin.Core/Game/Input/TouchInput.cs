@@ -15,8 +15,10 @@ namespace SonOfRobin
         MenuMiddleReturn,
         MenuLeftReturn,
         WorldMain,
+        WorldShoot,
+        WorldSleep,
         Inventory,
-        Test,
+        Map,
     }
     public class TouchInput
     {
@@ -68,7 +70,6 @@ namespace SonOfRobin
 
             MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"Changing touch sticks scale from {stickScale} to {Preferences.globalScale}.", color: Color.White);
 
-
             TouchPanel.EnableMouseGestures = SonOfRobinGame.fakeMobileMode;
             TouchPanel.EnableMouseTouchPoint = SonOfRobinGame.fakeMobileMode;
 
@@ -102,34 +103,60 @@ namespace SonOfRobin
 
                 case TouchLayout.WorldMain:
                     showSticks = true;
+                    xShift = 0.09f;
+                    yShift = 0.20f;
+
+                    // right side
 
                     xPos = 0.76f;
                     yPos = 0.12f;
-                    xShift = 0.09f;
-                    yShift = 0.20f;
 
                     new VirtButton(name: VButName.Map, label: "MAP", colorPressed: Color.CornflowerBlue, colorReleased: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
                     xPos += xShift;
                     new VirtButton(name: VButName.ZoomOut, label: "ZOOM\nOUT", colorPressed: Color.Orange, colorReleased: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size, switchButton: true);
                     xPos += xShift;
-                    new VirtButton(name: VButName.Interact, label: "ACTION", colorPressed: Color.LightGreen, colorReleased: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
-                    yPos += yShift;
                     new VirtButton(name: VButName.Run, label: "RUN", colorPressed: Color.Red, colorReleased: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
+                    yPos += yShift;
+                    new VirtButton(name: VButName.Interact, label: "INTERACT", colorPressed: Color.LightGreen, colorReleased: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
                     xPos -= xShift;
-                    new VirtButton(name: VButName.UseTool, label: "USE\nTOOL", colorPressed: Color.CornflowerBlue, colorReleased: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
+                    new VirtButton(name: VButName.UseTool, label: "USE\nITEM", colorPressed: Color.CornflowerBlue, colorReleased: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
                     xPos -= xShift;
                     new VirtButton(name: VButName.PickUp, label: "PICK\nUP", colorPressed: Color.LightGreen, colorReleased: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
 
+                    // left side
 
                     xPos = 0.06f;
                     yPos = 0.12f;
+
                     new VirtButton(name: VButName.Inventory, label: "ITEMS", colorPressed: Color.CornflowerBlue, colorReleased: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
                     xPos += xShift;
-                    new VirtButton(name: VButName.BasicCraft, label: "BASIC\nCRAFT", colorPressed: Color.CornflowerBlue, colorReleased: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
+                    new VirtButton(name: VButName.FieldCraft, label: "FIELD\nCRAFT", colorPressed: Color.CornflowerBlue, colorReleased: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
                     xPos += xShift;
                     new VirtButton(name: VButName.PauseMenu, label: "MENU", colorPressed: Color.Yellow, colorReleased: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
 
+                    return;
 
+                case TouchLayout.WorldShoot:
+                    showSticks = true;
+
+                    new VirtButton(name: VButName.Shoot, label: "SHOOT", colorPressed: Color.CornflowerBlue, colorReleased: Color.White, posX0to1: 0.06f, posY0to1: 0.32f, width0to1: size, height0to1: size);
+
+                    return;
+
+                case TouchLayout.WorldSleep:
+                    showSticks = false;
+
+                    new VirtButton(name: VButName.UseTool, label: "WAKE UP", colorPressed: Color.CornflowerBlue, colorReleased: Color.White, posX0to1: 0.94f, posY0to1: 0.32f, width0to1: size, height0to1: size);
+
+                    return;
+
+                case TouchLayout.Map:
+                    showSticks = false;
+
+                    xPos = 0.76f;
+                    yPos = 0.12f;
+
+                    new VirtButton(name: VButName.Return, label: "RETURN", colorPressed: Color.CornflowerBlue, colorReleased: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
 
                     return;
 
@@ -160,7 +187,6 @@ namespace SonOfRobin
 
                     return;
 
-
                 case TouchLayout.MenuMiddleReturn:
                     showSticks = false;
 
@@ -171,13 +197,6 @@ namespace SonOfRobin
 
                     return;
 
-                case TouchLayout.Test:
-                    showSticks = false;
-
-                    new VirtButton(name: VButName.Interact, label: "ACTION", colorPressed: Color.LightGreen, colorReleased: Color.White, posX0to1: 0.5f, posY0to1: 0.5f, width0to1: 0.15f, height0to1: 0.15f);
-                    new VirtButton(name: VButName.PauseMenu, label: "MENU", colorPressed: Color.Yellow, colorReleased: Color.White, posX0to1: 0.7f, posY0to1: 0.5f, width0to1: 0.15f, height0to1: 0.15f);
-                    return;
-
                 default:
                     throw new DivideByZeroException($"Unsupported touch layout - {touchLayout}.");
             }
@@ -185,11 +204,12 @@ namespace SonOfRobin
 
         public static void AddDebugButtons()
         {
-            float xPos = 0.25f;
+            float xPos = 0.32f;
             float yPos = 0.07f;
             float width = 0.065f;
             float height = 0.065f;
             float xShift = 0.07f;
+            float yShift = 0.15f;
 
             new VirtButton(name: VButName.DebugPause, label: "||", colorPressed: Color.Violet, colorReleased: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: width, height0to1: height);
             xPos += xShift;
@@ -197,11 +217,7 @@ namespace SonOfRobin
             xPos += xShift;
             new VirtButton(name: VButName.DebugFastForward, label: ">>", colorPressed: Color.Violet, colorReleased: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: width, height0to1: height);
             xPos += xShift;
-            new VirtButton(name: VButName.DebugClear, label: "clear", colorPressed: Color.Violet, colorReleased: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: width, height0to1: height);
-            xPos += xShift;
-            new VirtButton(name: VButName.DebugSwitchLayout, label: "switch\nlayout", colorPressed: Color.Violet, colorReleased: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: width, height0to1: height);
-            xPos += xShift;
-            new VirtButton(name: VButName.DebugRemoveTopScene, label: "remove\ntop\nscene", colorPressed: Color.Violet, colorReleased: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: width, height0to1: height);
+            new VirtButton(name: VButName.DebugClear, label: "clear", colorPressed: Color.Violet, colorReleased: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: width, height0to1: height);                 
         }
 
 

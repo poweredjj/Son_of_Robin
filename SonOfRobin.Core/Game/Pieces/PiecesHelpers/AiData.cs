@@ -27,6 +27,7 @@ namespace SonOfRobin
         public Vector2 Position { get { return position; } }
         public bool dontStop;
         public short timeLeft;
+        public int sleepShownUpdate;
 
         public AiData(char notUsedVariable = 'a')
         {
@@ -34,6 +35,7 @@ namespace SonOfRobin
             this.coordinates = null;
             this.dontStop = false;
             this.timeLeft = 0;
+            this.sleepShownUpdate = 0;
         }
         public void Reset()
         {
@@ -41,6 +43,7 @@ namespace SonOfRobin
             this.coordinates = null;
             this.dontStop = false;
             this.timeLeft = 0;
+            this.sleepShownUpdate = 0;
         }
 
         public void UpdatePosition()
@@ -59,6 +62,11 @@ namespace SonOfRobin
         public void SetTimeLeft(short timeLeft)
         {
             this.timeLeft = timeLeft;
+        }
+
+        public void SetSleepShown(int sleepShownUpdate)
+        {
+            this.sleepShownUpdate = sleepShownUpdate;
         }
     }
 }

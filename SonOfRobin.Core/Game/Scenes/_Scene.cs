@@ -34,6 +34,7 @@ namespace SonOfRobin
         public bool updateActive;
         public bool inputActive;
         public TouchLayout touchLayout;
+        public ControlTips.TipsLayout tipsLayout;
 
         private readonly bool alwaysUpdates;
         private readonly bool alwaysDraws;
@@ -45,6 +46,7 @@ namespace SonOfRobin
         private static int sceneIdCounter = 0;
 
         public static bool processingUpdate; // true = update, false = draw
+        public static DateTime startUpdateTime;
 
         private InputTypes inputType;
 
@@ -108,7 +110,7 @@ namespace SonOfRobin
             }
         }
 
-        public Scene(InputTypes inputType, TouchLayout touchLayout, int priority = 1, bool blocksUpdatesBelow = false, bool blocksDrawsBelow = false, bool alwaysUpdates = false, bool alwaysDraws = false, bool hidesSameScenesBelow = false)
+        public Scene(InputTypes inputType, TouchLayout touchLayout, ControlTips.TipsLayout tipsLayout, int priority = 1, bool blocksUpdatesBelow = false, bool blocksDrawsBelow = false, bool alwaysUpdates = false, bool alwaysDraws = false, bool hidesSameScenesBelow = false)
         {
             this.viewParams = new ViewParams();
             this.priority = priority;
@@ -120,6 +122,7 @@ namespace SonOfRobin
             this.updateActive = true;
             this.drawActive = true;
             this.touchLayout = touchLayout;
+            this.tipsLayout = tipsLayout;
 
             this.alwaysUpdates = alwaysUpdates;
             this.alwaysDraws = alwaysDraws;
@@ -179,6 +182,7 @@ namespace SonOfRobin
         private static void UpdateInputActive()
         {
             bool normalInputSet = false;
+            ControlTips topTips = ControlTips.GetTopTips();
 
             for (int i = sceneStack.Count - 1; i >= 0; i--)
             {
@@ -200,6 +204,12 @@ namespace SonOfRobin
                         {
                             scene.inputActive = true;
                             TouchInput.SwitchToLayout(scene.touchLayout);
+                            if (topTips != null)
+                            {
+                                topTips.SwitchToLayout(scene.tipsLayout);
+                                topTips.currentScene = scene;
+                            }
+
                             normalInputSet = true;
                         }
                         else
@@ -211,7 +221,11 @@ namespace SonOfRobin
                 }
             }
 
-            if (!normalInputSet) TouchInput.SwitchToLayout(TouchLayout.Empty);
+            if (!normalInputSet)
+            {
+                TouchInput.SwitchToLayout(TouchLayout.Empty);
+                topTips?.SwitchToLayout(ControlTips.TipsLayout.Empty);
+            }
         }
 
         public static List<Scene> GetAllScenesOfType(Type type)
@@ -341,10 +355,11 @@ namespace SonOfRobin
         public static void UpdateAllScenesInStack(GameTime gameTime)
         {
             processingUpdate = true;
+            startUpdateTime = DateTime.Now;
 
             Scheduler.ProcessQueue();
-            Input.UpdateInput(gameTime: gameTime);
 
+            Input.UpdateInput(gameTime: gameTime);
             UpdateInputActive();
 
             foreach (Scene scene in UpdateStack)

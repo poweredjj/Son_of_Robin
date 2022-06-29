@@ -10,12 +10,15 @@ namespace SonOfRobin
 {
     public class Menu : Scene
     {
+        public static bool nextMenuNoStartTransition = false;
+
         public enum Layout { Middle, Left, Right }
 
         public readonly MenuTemplate.Name templateName;
         private readonly string name;
         public readonly bool canBeClosedManually;
-        public readonly bool closingSavesPrefs;
+        private Scheduler.ActionName closingAction;
+        private Object closingActionHelper;
         public List<Entry> entryList;
         public int activeIndex;
         private float currentScrollPosition;
@@ -132,7 +135,7 @@ namespace SonOfRobin
                 currentScrollPosition += posDiff / 20f;
             }
         }
-        public Menu(MenuTemplate.Name templateName, bool blocksUpdatesBelow, bool canBeClosedManually, string name, Layout layout = Layout.Right, bool closingSavesPrefs = false) : base(inputType: InputTypes.Normal, priority: 1, blocksUpdatesBelow: blocksUpdatesBelow, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, hidesSameScenesBelow: true, touchLayout: TouchLayout.Empty)
+        public Menu(MenuTemplate.Name templateName, bool blocksUpdatesBelow, bool canBeClosedManually, string name, Layout layout = Layout.Right, Scheduler.ActionName closingAction = Scheduler.ActionName.Empty, Object closingActionHelper = null) : base(inputType: InputTypes.Normal, priority: 1, blocksUpdatesBelow: blocksUpdatesBelow, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, hidesSameScenesBelow: true, touchLayout: TouchLayout.Empty, tipsLayout: canBeClosedManually ? ControlTips.TipsLayout.Menu : ControlTips.TipsLayout.MenuWithoutClosing)
         {
             this.layout = layout;
             this.touchMode = SonOfRobinGame.platform == Platform.Mobile;
@@ -142,7 +145,8 @@ namespace SonOfRobin
             this.currentScrollPosition = 0;
             this.entryList = new List<Entry> { };
             this.canBeClosedManually = canBeClosedManually;
-            this.closingSavesPrefs = closingSavesPrefs;
+            this.closingAction = closingAction;
+            this.closingActionHelper = closingActionHelper;
             this.SetViewPosAndSize();
             this.bgColor = Color.Black * 0.6f;
 
@@ -212,17 +216,25 @@ namespace SonOfRobin
             }
 
             base.Remove();
+            new Scheduler.Task(menu: this, actionName: this.closingAction, executeHelper: this.closingActionHelper);
+        }
+
+        public void AddClosingAction(Scheduler.ActionName closingAction, Object closingActionHelper)
+        {
+            this.closingAction = closingAction;
+            this.closingActionHelper = closingActionHelper;
         }
 
         public void Rebuild()
         {
+            nextMenuNoStartTransition = true;
             Menu rebuiltMenu = MenuTemplate.CreateMenuFromTemplate(templateName: this.templateName);
 
             Entry activeEntry = this.ActiveEntry;
             for (int i = 0; i < rebuiltMenu.entryList.Count; i++)
             {
                 Entry entry = rebuiltMenu.entryList[i];
-                if (entry.name == activeEntry.name)
+                if (entry.index == activeEntry.index)
                 {
                     rebuiltMenu.activeIndex = i;
                     break;
@@ -242,13 +254,18 @@ namespace SonOfRobin
 
         private void AddStartTransitions()
         {
+            if (nextMenuNoStartTransition)
+            {
+                nextMenuNoStartTransition = false;
+                return;
+            }
+
             Scene sceneBelow = this.GetSceneBelow();
 
             MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"sceneBelow {sceneBelow}", color: Color.White);
 
             if (sceneBelow != null && sceneBelow.GetType() != typeof(Menu))
             {
-
                 Dictionary<string, float> paramsToChange;
 
                 switch (this.layout)
@@ -326,7 +343,6 @@ namespace SonOfRobin
             {
                 if (this.canBeClosedManually)
                 {
-                    if (this.closingSavesPrefs) Preferences.Save();
                     this.Remove();
                     return;
                 }
@@ -341,11 +357,10 @@ namespace SonOfRobin
                 { entry.ProcessTouch(); }
             }
 
-            if (Keyboard.HasBeenPressed(Keys.W) || Keyboard.HasBeenPressed(Keys.Up) || GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.DPadUp)) this.PreviousItem();
-            if (Keyboard.HasBeenPressed(Keys.S) || Keyboard.HasBeenPressed(Keys.Down) || GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.DPadDown)) this.NextItem();
-
-            if (Keyboard.HasBeenPressed(Keys.A) || Keyboard.HasBeenPressed(Keys.Left) || GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.DPadLeft)) this.ActiveEntry.PreviousValue();
-            if (Keyboard.HasBeenPressed(Keys.D) || Keyboard.HasBeenPressed(Keys.Right) || GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.DPadRight)) this.ActiveEntry.NextValue();
+            if (Keyboard.HasBeenPressed(Keys.W) || Keyboard.HasBeenPressed(Keys.Up) || GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.DPadUp, analogAsDigital: true)) this.PreviousItem();
+            if (Keyboard.HasBeenPressed(Keys.S) || Keyboard.HasBeenPressed(Keys.Down) || GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.DPadDown, analogAsDigital: true)) this.NextItem();
+            if (Keyboard.HasBeenPressed(Keys.A) || Keyboard.HasBeenPressed(Keys.Left) || GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.DPadLeft, analogAsDigital: true)) this.ActiveEntry.PreviousValue();
+            if (Keyboard.HasBeenPressed(Keys.D) || Keyboard.HasBeenPressed(Keys.Right) || GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.DPadRight, analogAsDigital: true)) this.ActiveEntry.NextValue();
 
             if (Keyboard.HasBeenPressed(Keys.Enter) || GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.A)) this.ActiveEntry.Invoke();
         }

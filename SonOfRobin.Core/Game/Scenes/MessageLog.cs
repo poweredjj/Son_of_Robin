@@ -37,7 +37,6 @@ namespace SonOfRobin
         }
 
         private static readonly SpriteFont font = SonOfRobinGame.fontSmall;
-        private static readonly int margin = 5;
         private static readonly int txtSeparator = 3;
         private static readonly int freePixelsAboveMessages = 140;
 
@@ -48,19 +47,27 @@ namespace SonOfRobin
 
         private static List<DebugMessage> messages = new List<DebugMessage> { };
 
-        public MessageLog() : base(inputType: InputTypes.None, priority: 0, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: true, touchLayout: TouchLayout.Empty)
-        { }
+        private int marginX, marginY;
+        private int screenHeight;
+
+        public MessageLog() : base(inputType: InputTypes.None, priority: 0, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: true, alwaysDraws: true, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty)
+        {
+            this.marginX = SonOfRobinGame.platform == Platform.Desktop ? 5 : 20;
+            this.marginY = SonOfRobinGame.platform == Platform.Desktop ? 0 : 5;
+        }
 
         public override void Update(GameTime gameTime)
-        { }
+        {
+            int currentFrame = SonOfRobinGame.currentUpdate;
+            DeleteOldMessages(currentFrame);
+            this.screenHeight = Preferences.showControlTips ?  (int)(SonOfRobinGame.VirtualHeight * 0.94f) : (int)(SonOfRobinGame.VirtualHeight * 1f);
+        }
 
         public override void Draw()
         {
-            int currentFrame = SonOfRobinGame.currentUpdate;
-
             if (messages.Count == 0) return;
 
-            DeleteOldMessages(currentFrame);
+            int currentFrame = SonOfRobinGame.currentUpdate;
 
             var messagesToDisplay = messages.ToList();
             messagesToDisplay.Reverse();
@@ -76,9 +83,9 @@ namespace SonOfRobin
                 Vector2 txtSize = font.MeasureString(currentLineOfText);
                 currentOffsetY += (int)txtSize.Y + txtSeparator;
 
-                if (SonOfRobinGame.VirtualHeight - currentOffsetY < freePixelsAboveMessages) return;
+                if (this.screenHeight - currentOffsetY < freePixelsAboveMessages) return;
 
-                Vector2 txtPos = new Vector2(margin, Convert.ToInt16(SonOfRobinGame.VirtualHeight - (currentOffsetY + margin)));
+                Vector2 txtPos = new Vector2(this.marginX, Convert.ToInt16(this.screenHeight - (currentOffsetY + this.marginY)));
 
                 float textOpacity = Math.Min(Math.Max((float)(debugMessage.deletionFrame - currentFrame) / 30f, 0), 1);
                 float outlineOpacity = (textOpacity == 1) ? 1 : textOpacity / 4;
@@ -90,14 +97,13 @@ namespace SonOfRobin
                 }
 
                 SonOfRobinGame.spriteBatch.DrawString(font, currentLineOfText, txtPos, debugMessage.color * textOpacity);
-
             }
         }
         public static void AddMessage(int currentFrame, string message, Color color, MsgType msgType)
-        { messages.Add(new DebugMessage(currentFrame: currentFrame, message: message, color: color, msgType: msgType)); }
+        { if (DisplayedLevels.Contains(msgType)) messages.Add(new DebugMessage(currentFrame: currentFrame, message: message, color: color, msgType: msgType)); }
 
         public static void AddMessage(int currentFrame, string message, MsgType msgType)
-        { messages.Add(new DebugMessage(currentFrame: currentFrame, message: message, color: Color.White, msgType: msgType)); }
+        { if (DisplayedLevels.Contains(msgType)) messages.Add(new DebugMessage(currentFrame: currentFrame, message: message, color: Color.White, msgType: msgType)); }
 
         private static void DeleteOldMessages(int currentFrame)
         { messages = messages.Where(debugMessage => currentFrame < debugMessage.deletionFrame).ToList(); }

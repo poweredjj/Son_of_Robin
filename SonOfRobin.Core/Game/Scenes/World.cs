@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-
 namespace SonOfRobin
 {
     public class World : Scene
@@ -16,14 +15,16 @@ namespace SonOfRobin
             Right,
             Up,
             Down,
-            UseToolbarPiece,
+            UseToolbarPiecePress,
+            UseToolbarPieceHold,
             Interact,
             PickUp,
             Inventory,
-            BasicCraft,
+            FieldCraft,
             Run,
             MapToggle,
-            PauseMenu
+            PauseMenu,
+            ShootingMode,
         }
 
         public enum MapMode
@@ -33,9 +34,25 @@ namespace SonOfRobin
             Big
         }
 
-        public List<ActionKeys> actionKeyList = new List<ActionKeys>();
-        public Vector2 analogMovement;
+        public static readonly List<ActionKeys> DirectionKeys = new List<ActionKeys> { ActionKeys.Left, ActionKeys.Right, ActionKeys.Up, ActionKeys.Down };
+        public static readonly List<ActionKeys> InteractKeys = new List<ActionKeys> { ActionKeys.Interact, ActionKeys.PickUp, ActionKeys.Inventory, ActionKeys.FieldCraft, ActionKeys.Run, ActionKeys.MapToggle, ActionKeys.PauseMenu };
+
+        public bool ActionKeysContainDirection
+        {
+            get
+            {
+                foreach (ActionKeys actionKey in this.actionKeyList)
+                { if (DirectionKeys.Contains(actionKey)) return true; }
+
+                return false;
+            }
+        }
+
+        public List<ActionKeys> actionKeyList = new List<ActionKeys> { };
+        public Vector2 analogMovementLeftStick;
+        public Vector2 analogMovementRightStick;
         public Vector2 analogCameraCorrection;
+        public float rightTriggerPreviousFrame;
 
         public bool creationInProgress;
         public readonly DateTime creationStart;
@@ -50,7 +67,6 @@ namespace SonOfRobin
         private DateTime lastSaved;
 
         public readonly int seed;
-        public readonly string templatePath;
         public FastNoiseLite noise;
         public readonly Random random;
         public readonly int width;
@@ -63,23 +79,21 @@ namespace SonOfRobin
 
         public Player player;
 
+        public HintEngine hintEngine;
+
         public Dictionary<PieceTemplate.Name, int> pieceCountByName;
         public Dictionary<Type, int> pieceCountByClass;
         public Dictionary<string, Tracking> trackingQueue;
         public List<Cell> plantCellsQueue;
         public List<Sprite> plantSpritesQueue;
-        public Dictionary<int, List<PlannedEvent>> eventQueue;
+        public Dictionary<int, List<WorldEvent>> eventQueue;
         public Grid grid;
         public int currentFrame;
         public int currentUpdate;
         public int updateMultiplier;
         public string debugText;
         public int processedPlantsCount;
-        private int noOfPlantsToProcess;
-        private int noOfUpdatesWithDelay;
-        private int lastUpdateWithDelay;
-        public int plantsProcessingUpperLimit;
-        private Dictionary<PieceTemplate.Name, int> creationDelayByPiece;
+        public readonly List<PieceTemplate.Name> doNotCreatePiecesList;
 
         private MapMode NextMapMode
         {
@@ -106,7 +120,7 @@ namespace SonOfRobin
             }
         }
         public World(int width, int height, int seed = -1, Object saveGameData = null, bool demoMode = false) :
-              base(inputType: InputTypes.Normal, priority: 1, blocksUpdatesBelow: true, blocksDrawsBelow: true, touchLayout: TouchLayout.Empty)
+              base(inputType: InputTypes.Normal, priority: 1, blocksUpdatesBelow: true, blocksDrawsBelow: true, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.WorldMain)
         {
             this.demoMode = demoMode;
             if (this.demoMode) this.InputType = InputTypes.None;
@@ -117,6 +131,7 @@ namespace SonOfRobin
             this.lastSaved = DateTime.Now;
             this.creationInProgress = true;
             this.creationStart = DateTime.Now;
+            if (SonOfRobinGame.platform == Platform.Mobile) SonOfRobinGame.KeepScreenOn = true;
 
             if (seed == -1)
             {
@@ -141,25 +156,21 @@ namespace SonOfRobin
             this.pieceCountByClass = new Dictionary<Type, int> { };
 
             this.trackingQueue = new Dictionary<string, Tracking>();
-            this.eventQueue = new Dictionary<int, List<PlannedEvent>>();
+            this.eventQueue = new Dictionary<int, List<WorldEvent>>();
+            this.hintEngine = new HintEngine(world: this);
 
             this.plantSpritesQueue = new List<Sprite>();
             this.plantCellsQueue = new List<Cell>();
             this.processedPlantsCount = 0;
-            this.noOfPlantsToProcess = 300;
-            this.noOfUpdatesWithDelay = 0;
-            this.lastUpdateWithDelay = 0;
-            this.plantsProcessingUpperLimit = 5000;
-            this.creationDelayByPiece = new Dictionary<PieceTemplate.Name, int> { };
+            this.doNotCreatePiecesList = new List<PieceTemplate.Name> { };
             this.camera = new Camera(this);
             this.camera.TrackCoords(new Vector2(0, 0));
             this.mapMode = MapMode.None;
             this.mapCycle = SonOfRobinGame.platform == Platform.Mobile ? new List<MapMode> { MapMode.None, MapMode.Big } : new List<MapMode> { MapMode.None, MapMode.Small, MapMode.Big };
-            this.mapBig = new Map(world: this, fullScreen: true);
-            this.mapSmall = new Map(world: this, fullScreen: false);
+            this.mapBig = new Map(world: this, fullScreen: true, touchLayout: TouchLayout.Map);
+            this.mapSmall = new Map(world: this, fullScreen: false, touchLayout: TouchLayout.Empty);
             this.grid = new Grid(this);
-            this.templatePath = Path.Combine(SonOfRobinGame.worldTemplatesPath, $"seed_{this.seed}_{width}x{height}_{this.grid.cellWidth}x{this.grid.cellHeight}");
-            if (!Directory.Exists(this.templatePath)) Directory.CreateDirectory(this.templatePath);
+            this.rightTriggerPreviousFrame = 0f;
 
             SonOfRobinGame.game.IsFixedTimeStep = false; // speeds up the creation process
         }
@@ -184,31 +195,35 @@ namespace SonOfRobin
                 ProgressBar.Hide();
                 this.touchLayout = TouchLayout.WorldMain;
                 this.creationInProgress = false;
+                if (SonOfRobinGame.platform == Platform.Mobile) SonOfRobinGame.KeepScreenOn = false;
                 this.creationEnd = DateTime.Now;
                 this.creationDuration = this.creationEnd - this.creationStart;
+                Craft.PopulateAllCategories();
 
-                MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"World creation time: {creationDuration.ToString("hh\\:mm\\:ss\\.fff")}.", color: Color.GreenYellow);
+                MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"World creation time: {creationDuration:hh\\:mm\\:ss\\.fff}.", color: Color.GreenYellow);
 
                 if (this.saveGameData is null)
                 {
-                    if (!this.demoMode)
-                    {
-                        this.player = (Player)this.PlacePlayer();
-                        this.camera.TrackPiece(trackedPiece: this.player, fluidMotion: false);
-                    }
-
                     CreateMissingPieces(outsideCamera: false, multiplier: 1.0f);
-
-                    if (this.demoMode) this.camera.TrackLiveAnimal();
 
                     this.currentFrame = 0;
                     this.currentUpdate = 0;
+                    if (!this.demoMode) this.player = (Player)this.PlacePlayer();
+                    if (this.demoMode) this.camera.TrackLiveAnimal();
                 }
 
                 else
                 { this.Deserialize(); }
 
-                if (!this.demoMode) Scene.SetInventoryLayout(newLayout: InventoryLayout.Toolbar, player: this.player);
+                if (!this.demoMode)
+                {
+                    this.camera.TrackPiece(trackedPiece: this.player, fluidMotion: false);
+                    this.UpdateViewParams(manualScale: 1f);
+                    this.camera.Update(); // to render cells in camera view correctly
+                    SetInventoryLayout(newLayout: InventoryLayout.Toolbar, player: this.player);
+                }
+
+                this.grid.LoadAllTexturesInCameraView();
                 if (Preferences.FrameSkip) SonOfRobinGame.game.IsFixedTimeStep = true;
             }
 
@@ -224,6 +239,7 @@ namespace SonOfRobin
 
             this.currentFrame = (int)headerData["currentFrame"];
             this.currentUpdate = (int)headerData["currentUpdate"];
+            this.hintEngine.disabledHints = (List<HintEngine.Type>)headerData["disabledHints"];
 
             // deserializing pieces
 
@@ -240,7 +256,7 @@ namespace SonOfRobin
 
                 PieceTemplate.Name templateName = (PieceTemplate.Name)pieceData["base_name"];
 
-                bool female = pieceData.ContainsKey("animal_female") ? (bool)pieceData["animal_female"] : false;
+                bool female = pieceData.ContainsKey("animal_female") && (bool)pieceData["animal_female"];
 
                 var newBoardPiece = PieceTemplate.CreateOnBoard(world: this, position: new Vector2((float)pieceData["sprite_positionX"], (float)pieceData["sprite_positionY"]), templateName: templateName, female: female);
                 newBoardPiece.Deserialize(pieceData);
@@ -266,13 +282,13 @@ namespace SonOfRobin
 
             var trackingDataList = (List<Object>)saveGameDataDict["tracking"];
             foreach (Dictionary<string, Object> trackingData in trackingDataList)
-            { new Tracking(world: this, trackingData: trackingData, piecesByOldId: piecesByOldId); }
+            { Tracking.Deserialize(world: this, trackingData: trackingData, piecesByOldId: piecesByOldId); }
 
             // deserializing planned events
 
             var eventDataList = (List<Object>)saveGameDataDict["events"];
             foreach (Dictionary<string, Object> eventData in eventDataList)
-            { PlannedEvent.Deserialize(world: this, eventData: eventData, piecesByOldId: piecesByOldId); }
+            { WorldEvent.Deserialize(world: this, eventData: eventData, piecesByOldId: piecesByOldId); }
 
             // finalizing
 
@@ -284,7 +300,15 @@ namespace SonOfRobin
 
         public void AutoSave(bool force = false)
         {
-            if (this.demoMode || (!force && this.currentUpdate % 600 != 0)) return;
+            if (this.demoMode || (!force && this.currentUpdate % 600 != 0) || !this.player.alive) return;
+            if (this.player.activeState != BoardPiece.State.PlayerControlledWalking) return;
+            if (GetTopSceneOfType(typeof(Menu)) != null) return;
+            Scene invScene = GetTopSceneOfType(typeof(Inventory));
+            if (invScene != null)
+            {
+                Inventory inventory = (Inventory)invScene;
+                if (inventory.layout != Inventory.Layout.SingleBottom) return;
+            }
 
             TimeSpan timeSinceLastSave = DateTime.Now - this.lastSaved;
             if (!force && timeSinceLastSave < TimeSpan.FromMinutes(Preferences.autoSaveDelayMins)) return;
@@ -297,13 +321,15 @@ namespace SonOfRobin
             string saveSlotName = "0";
 
             if (force)
-            { this.Save(saveSlotName: saveSlotName); }
+            { this.Save(saveSlotName: saveSlotName, showMessage: false); }
             else
-            { new Scheduler.Task(menu: null, actionName: Scheduler.ActionName.SaveGame, executeHelper: saveSlotName); }
-
+            {
+                var saveParams = new Dictionary<string, Object> { { "saveSlotName", saveSlotName }, { "showMessage", false } };
+                new Scheduler.Task(menu: null, actionName: Scheduler.ActionName.SaveGame, executeHelper: saveParams);
+            }
         }
 
-        public void Save(string saveSlotName)
+        public void Save(string saveSlotName, bool showMessage = false)
         {
             // preparing save directory
 
@@ -326,6 +352,8 @@ namespace SonOfRobin
                 {"height", this.height },
                 {"currentFrame", this.currentFrame },
                 {"currentUpdate", this.currentUpdate },
+                {"disabledHints", this.hintEngine.disabledHints },
+                {"realDateTime", DateTime.Now },
                 {"saveVersion", SaveManager.saveVersion },
             };
 
@@ -341,7 +369,7 @@ namespace SonOfRobin
             var allSprites = this.grid.GetAllSprites(Cell.Group.All);
             foreach (Sprite sprite in allSprites)
             {
-                if (sprite.boardPiece.exists)
+                if (sprite.boardPiece.exists && sprite.boardPiece.serialize)
                 {
                     pieceDataPackages[currentPackageNo].Add(sprite.boardPiece.Serialize());
                     if (pieceDataPackages[currentPackageNo].Count >= maxPiecesInPackage)
@@ -380,6 +408,7 @@ namespace SonOfRobin
             string eventPath = Path.Combine(saveDir, "event.sav");
             LoaderSaver.Save(path: eventPath, savedObj: eventData);
 
+            if (showMessage) new TextWindow(text: "Game has been saved.", textColor: Color.White, bgColor: Color.DarkGreen, useTransition: false, animate: false);
             MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.User, message: $"Game saved in slot {saveSlotName}.", color: Color.LightBlue);
 
             this.lastSaved = DateTime.Now;
@@ -391,7 +420,7 @@ namespace SonOfRobin
 
             if (!Directory.Exists(saveDir))
             {
-                MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.User, message: $"Save slot {saveSlotName} is empty.", color: Color.Orange);
+                new TextWindow(text: $"Save slot {saveSlotName} is empty.", textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false);
                 return null;
             }
 
@@ -402,7 +431,7 @@ namespace SonOfRobin
 
             if (headerData is null)
             {
-                MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.User, message: $"Error while reading save header for slot {saveSlotName}.", color: Color.Orange);
+                new TextWindow(text: $"Error while reading save header for slot {saveSlotName}.", textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false);
                 return null;
             }
 
@@ -480,50 +509,66 @@ namespace SonOfRobin
             throw new DivideByZeroException("Cannot place player sprite.");
         }
 
-        public void CreateMissingPieces(uint maxAmountToCreateAtOnce = 100000, bool outsideCamera = false, float multiplier = 1.0f)
+        public struct PieceCreationData
         {
+            public readonly PieceTemplate.Name name;
+            public readonly float multiplier;
+            public readonly int maxAmount;
+            public PieceCreationData(PieceTemplate.Name name, float multiplier, int maxAmount)
+            {
+                this.name = name;
+                this.multiplier = multiplier;
+                this.maxAmount = maxAmount; // 0 == no limit
+            }
+        }
+
+        public void CreateMissingPieces(uint maxAmountToCreateAtOnce = 300000, bool outsideCamera = false, float multiplier = 1.0f, bool clearDoNotCreateList = false)
+        {
+            if (clearDoNotCreateList) doNotCreatePiecesList.Clear();
+
             // preparing a dictionary of pieces to create
 
-            var multiplierByPiece = new Dictionary<PieceTemplate.Name, float> {
-                { PieceTemplate.Name.GrassRegular, 10.0f },
-                { PieceTemplate.Name.GrassDesert, 10.0f },
-                { PieceTemplate.Name.Rushes, 5.0f },
-                { PieceTemplate.Name.WaterLily, 1.0f },
-                { PieceTemplate.Name.FlowersPlain, 0.3f },
-                { PieceTemplate.Name.FlowersMountain, 0.1f },
-                { PieceTemplate.Name.TreeSmall, 1.0f },
-                { PieceTemplate.Name.TreeBig, 1.0f },
-                { PieceTemplate.Name.AppleTree, 1.0f },
-                { PieceTemplate.Name.CherryTree, 1.0f },
-                { PieceTemplate.Name.BananaTree, 1.0f },
-                { PieceTemplate.Name.PalmTree, 1.0f },
-                { PieceTemplate.Name.Cactus, 0.2f },
-                { PieceTemplate.Name.WaterRock, 0.5f },
-                { PieceTemplate.Name.Minerals, 0.5f },
-                { PieceTemplate.Name.Shell, 1.5f },
-                { PieceTemplate.Name.Rabbit, 0.1f },
-                { PieceTemplate.Name.Fox, 0.1f },
-                { PieceTemplate.Name.Frog, 0.1f },
+            var creationDataList = new List<PieceCreationData>
+            {
+                new PieceCreationData(name: PieceTemplate.Name.GrassRegular, multiplier: 2.0f, maxAmount: 0),
+                new PieceCreationData(name: PieceTemplate.Name.GrassDesert, multiplier: 2.0f, maxAmount: 0),
+                new PieceCreationData(name: PieceTemplate.Name.Rushes, multiplier: 2.0f, maxAmount: 0),
+                new PieceCreationData(name: PieceTemplate.Name.WaterLily, multiplier: 1.0f, maxAmount: 0),
+                new PieceCreationData(name: PieceTemplate.Name.FlowersPlain, multiplier: 0.4f, maxAmount: 0),
+                new PieceCreationData(name: PieceTemplate.Name.FlowersMountain, multiplier: 0.1f, maxAmount: 0),
+                new PieceCreationData(name: PieceTemplate.Name.TreeSmall, multiplier: 1.0f, maxAmount: 0),
+                new PieceCreationData(name: PieceTemplate.Name.TreeBig, multiplier: 1.0f, maxAmount: 0),
+                new PieceCreationData(name: PieceTemplate.Name.AppleTree, multiplier: 0.03f, maxAmount: 0),
+                new PieceCreationData(name: PieceTemplate.Name.CherryTree, multiplier: 0.03f, maxAmount: 0),
+                new PieceCreationData(name: PieceTemplate.Name.BananaTree, multiplier: 0.03f, maxAmount: 0),
+                new PieceCreationData(name: PieceTemplate.Name.TomatoPlant, multiplier: 0.03f, maxAmount: 0),
+                new PieceCreationData(name: PieceTemplate.Name.PalmTree, multiplier: 1.0f, maxAmount: 0),
+                new PieceCreationData(name: PieceTemplate.Name.Cactus, multiplier: 0.2f, maxAmount: 0),
+                new PieceCreationData(name: PieceTemplate.Name.WaterRock, multiplier: 0.5f, maxAmount: 0),
+                new PieceCreationData(name: PieceTemplate.Name.MineralsSmall, multiplier: 0.5f, maxAmount: 0),
+                new PieceCreationData(name: PieceTemplate.Name.MineralsBig, multiplier: 0.3f, maxAmount: 0),
+                new PieceCreationData(name: PieceTemplate.Name.IronDeposit, multiplier: 0.01f, maxAmount: 80),
+                new PieceCreationData(name: PieceTemplate.Name.CoalDeposit, multiplier: 0.01f, maxAmount: 80),
+                new PieceCreationData(name: PieceTemplate.Name.Shell, multiplier: 1.5f, maxAmount: 0),
+                new PieceCreationData(name: PieceTemplate.Name.Rabbit, multiplier: 0.1f, maxAmount: Animal.maxAnimalsPerName),
+                new PieceCreationData(name: PieceTemplate.Name.Fox, multiplier: 0.1f, maxAmount: Animal.maxAnimalsPerName),
+                new PieceCreationData(name: PieceTemplate.Name.Frog, multiplier: 0.1f, maxAmount: Animal.maxAnimalsPerName),
             };
-            Vector2 notReallyUsedPosition = new Vector2(-100, -100); // -100, -100 will be converted to a random position on the map - needed for effective creation of new sprites 
-            int minPieceAmount = Math.Max(Convert.ToInt32(width * height / 300000 * multiplier), 0); // 300000
 
-            PieceTemplate.Name pieceName;
-            float pieceMultiplier;
+            Vector2 notReallyUsedPosition = new Vector2(-100, -100); // -100, -100 will be converted to a random position on the map - needed for effective creation of new sprites 
+            int minPieceAmount = Math.Max(Convert.ToInt32((long)width * (long)height / 300000 * multiplier), 0); // 300000
+
             int minAmount;
             var amountToCreateByName = new Dictionary<PieceTemplate.Name, int> { };
 
-            foreach (var kvp in multiplierByPiece)
+            foreach (PieceCreationData creationData in creationDataList)
             {
-                pieceName = kvp.Key;
+                if (doNotCreatePiecesList.Contains(creationData.name)) continue;
 
-                if (creationDelayByPiece.ContainsKey(pieceName) && this.currentUpdate < creationDelayByPiece[pieceName]) continue;
-
-                pieceMultiplier = kvp.Value;
-                minAmount = Math.Max((int)(minPieceAmount * pieceMultiplier), 4);
-
-                int amountToCreate = Math.Max(minAmount - this.pieceCountByName[pieceName], 0);
-                if (amountToCreate > 0) amountToCreateByName[pieceName] = amountToCreate;
+                minAmount = Math.Max((int)(minPieceAmount * creationData.multiplier), 4);
+                int amountToCreate = Math.Max(minAmount - this.pieceCountByName[creationData.name], 0);
+                if (creationData.maxAmount > 0) amountToCreate = Math.Min(amountToCreate, creationData.maxAmount);
+                if (amountToCreate > 0) amountToCreateByName[creationData.name] = amountToCreate;
             }
 
             if (amountToCreateByName.Keys.ToList().Count == 0) return;
@@ -533,6 +578,7 @@ namespace SonOfRobin
             this.createMissinPiecesOutsideCamera = outsideCamera;
             int piecesCreated = 0;
             int amountLeftToCreate;
+            PieceTemplate.Name pieceName;
 
             foreach (var kvp in amountToCreateByName)
             {
@@ -550,7 +596,11 @@ namespace SonOfRobin
 
                     if (amountLeftToCreate <= 0)
                     {
-                        this.creationDelayByPiece[pieceName] = this.currentUpdate + 15000;
+                        if (!this.doNotCreatePiecesList.Contains(pieceName))
+                        {
+                            this.doNotCreatePiecesList.Add(pieceName);
+                            new WorldEvent(eventName: WorldEvent.EventName.RestorePieceCreation, delay: 15000, world: this, boardPiece: null, eventHelper: pieceName);
+                        }
                         break;
                     }
                 }
@@ -578,7 +628,6 @@ namespace SonOfRobin
 
         public override void Update(GameTime gameTime)
         {
-
             if (this.creationInProgress)
             {
                 this.CompleteCreation();
@@ -587,6 +636,9 @@ namespace SonOfRobin
 
             float manualScale = this.ProcessInput();
             this.UpdateViewParams(manualScale: manualScale);
+
+            this.grid.UnloadTexturesIfMemoryLow();
+            this.grid.LoadClosestTextureInCameraView();
 
             if (!this.demoMode && !this.inTransitionPlayed)
             {
@@ -607,7 +659,7 @@ namespace SonOfRobin
 
             for (int i = 0; i < this.updateMultiplier; i++)
             {
-                PlannedEvent.ProcessQueue(this);
+                WorldEvent.ProcessQueue(this);
                 this.UpdateAllAnims();
                 this.ProcessActiveStateMachines();
                 Tracking.ProcessTrackingQueue(this);
@@ -633,61 +685,78 @@ namespace SonOfRobin
             if (Keyboard.IsPressed(Keys.A) || Keyboard.IsPressed(Keys.Left)) actionKeyList.Add(ActionKeys.Left);
             if (Keyboard.IsPressed(Keys.D) || Keyboard.IsPressed(Keys.Right)) actionKeyList.Add(ActionKeys.Right);
 
-            // analog movement
+            // analog movement (left stick)
 
             if (TouchInput.LeftStick.X != 0 || TouchInput.LeftStick.Y != 0)
-            { this.analogMovement = TouchInput.LeftStick / 15; }
+            { this.analogMovementLeftStick = TouchInput.LeftStick / 15; }
             else
             {
-                this.analogMovement = GamePad.GetState(index: (int)PlayerIndex.One, deadZoneMode: GamePadDeadZone.IndependentAxes).ThumbSticks.Left;
-                this.analogMovement = new Vector2(analogMovement.X * 4, analogMovement.Y * -4);
+                this.analogMovementLeftStick = GamePad.GetState(index: (int)PlayerIndex.One, deadZoneMode: GamePadDeadZone.Circular).ThumbSticks.Left;
+                this.analogMovementLeftStick = new Vector2(analogMovementLeftStick.X * 4, analogMovementLeftStick.Y * -4);
+            }
+
+            // analog movement (right stick)
+
+            if (TouchInput.RightStick.X != 0 || TouchInput.RightStick.Y != 0)
+            { this.analogMovementRightStick = TouchInput.RightStick / 15; }
+            else
+            {
+                this.analogMovementRightStick = GamePad.GetState(index: (int)PlayerIndex.One, deadZoneMode: GamePadDeadZone.Circular).ThumbSticks.Right;
+                this.analogMovementRightStick = new Vector2(analogMovementRightStick.X * 4, analogMovementRightStick.Y * -4);
             }
 
             // analog camera control
 
             if (TouchInput.RightStick.X != 0 || TouchInput.RightStick.Y != 0)
-            { this.analogCameraCorrection = new Vector2(TouchInput.RightStick.X / 8, TouchInput.RightStick.Y / 15); }
+            { this.analogCameraCorrection = new Vector2(TouchInput.RightStick.X / 30, TouchInput.RightStick.Y / 60); }
             else
             {
-                this.analogCameraCorrection = GamePad.GetState(index: (int)PlayerIndex.One, deadZoneMode: GamePadDeadZone.IndependentAxes).ThumbSticks.Right;
-                this.analogCameraCorrection = new Vector2(analogCameraCorrection.X * 25, analogCameraCorrection.Y * -25);
+                this.analogCameraCorrection = GamePad.GetState(index: (int)PlayerIndex.One, deadZoneMode: GamePadDeadZone.Circular).ThumbSticks.Right;
+                this.analogCameraCorrection = new Vector2(analogCameraCorrection.X * 10, analogCameraCorrection.Y * -10);
             }
 
             // interact
 
-            if (Keyboard.HasBeenPressed(Keys.LeftAlt) ||
-                GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.X) ||
-                VirtButton.HasButtonBeenPressed(VButName.Interact)
-               ) actionKeyList.Add(ActionKeys.Interact);
+            if (Keyboard.HasBeenPressed(Keys.RightShift) ||
+            GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.A) ||
+            VirtButton.HasButtonBeenPressed(VButName.Interact)
+           ) actionKeyList.Add(ActionKeys.Interact);
 
             // use tool
 
+            float rightTrigger = GamePad.GetState(index: (int)PlayerIndex.One, deadZoneMode: GamePadDeadZone.IndependentAxes).Triggers.Right;
+            if (rightTrigger > 0.5f) actionKeyList.Add(ActionKeys.UseToolbarPieceHold);
+            if (rightTriggerPreviousFrame <= 0.5f && rightTrigger > 0.5f) actionKeyList.Add(ActionKeys.UseToolbarPiecePress);
+
+            if (Keyboard.HasBeenPressed(Keys.Space) ||
+                VirtButton.HasButtonBeenPressed(VButName.UseTool)
+               ) actionKeyList.Add(ActionKeys.UseToolbarPiecePress);
+
+
             if (Keyboard.IsPressed(Keys.Space) ||
-                GamePad.IsPressed(playerIndex: PlayerIndex.One, button: Buttons.A) ||
-                VirtButton.IsButtonDown(VButName.UseTool)
-               ) actionKeyList.Add(ActionKeys.UseToolbarPiece);
+               VirtButton.IsButtonDown(VButName.UseTool)
+              ) actionKeyList.Add(ActionKeys.UseToolbarPieceHold);
 
             // pick up
 
-            if (Keyboard.HasBeenPressed(Keys.RightAlt) ||
-                GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.Y) ||
+            if (Keyboard.HasBeenPressed(Keys.RightControl) ||
+                GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.X) ||
                 VirtButton.HasButtonBeenPressed(VButName.PickUp)
                 ) actionKeyList.Add(ActionKeys.PickUp);
 
             // inventory
 
             if (Keyboard.HasBeenPressed(Keys.Enter) ||
-                GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.DPadLeft) ||
+                GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.Y) ||
                 VirtButton.HasButtonBeenPressed(VButName.Inventory)
                 ) actionKeyList.Add(ActionKeys.Inventory);
 
-
             // basic craft 
 
-            if (Keyboard.HasBeenPressed(Keys.RightControl) ||
+            if (Keyboard.HasBeenPressed(Keys.NumPad4) ||
                 GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.DPadUp) ||
-                VirtButton.HasButtonBeenPressed(VButName.BasicCraft)
-               ) actionKeyList.Add(ActionKeys.BasicCraft);
+                VirtButton.HasButtonBeenPressed(VButName.FieldCraft)
+               ) actionKeyList.Add(ActionKeys.FieldCraft);
 
             // run
 
@@ -703,24 +772,44 @@ namespace SonOfRobin
                 VirtButton.HasButtonBeenPressed(VButName.Map)
                 ) actionKeyList.Add(ActionKeys.MapToggle);
 
+
+            rightTriggerPreviousFrame = rightTrigger;
             ProcessActionKeyList();
 
             // camera zoom control
 
             float leftTrigger = GamePad.GetState(index: (int)PlayerIndex.One, deadZoneMode: GamePadDeadZone.IndependentAxes).Triggers.Left;
-            float rightTrigger = GamePad.GetState(index: (int)PlayerIndex.One, deadZoneMode: GamePadDeadZone.IndependentAxes).Triggers.Right;
 
-            float manualScale = leftTrigger != 0 ? 1 + (leftTrigger * 0.6f) : 1 - (rightTrigger * 0.7f);
+            float manualScale = 1 - (leftTrigger * 0.15f);
             if (VirtButton.IsButtonDown(VButName.ZoomOut) || Keyboard.IsPressed(Keys.NumPad1)) manualScale = 2f;
+
+            // shooting mode
+
+            bool triggerPressed = leftTrigger > 0.4f;
+            bool rightStickTilted = Math.Abs(analogCameraCorrection.X) > 0.05f || Math.Abs(analogCameraCorrection.Y) > 0.05f;
+
+            if (SonOfRobinGame.platform == Platform.Mobile)
+            {
+                if (rightStickTilted) actionKeyList.Add(ActionKeys.ShootingMode);
+            }
+            else
+            {
+                if ((triggerPressed && rightStickTilted) || Keyboard.IsPressed(Keys.Space)) actionKeyList.Add(ActionKeys.ShootingMode);
+            }
 
             return manualScale;
         }
 
         private void ProcessActionKeyList()
         {
+            if (this.demoMode) return;
+
             if (this.actionKeyList.Contains(World.ActionKeys.PauseMenu)) MenuTemplate.CreateMenuFromTemplate(templateName: MenuTemplate.Name.Pause);
 
-            if (this.actionKeyList.Contains(World.ActionKeys.BasicCraft))
+            if (this.player.activeState == BoardPiece.State.PlayerControlledSleep) return;
+
+
+            if (this.actionKeyList.Contains(World.ActionKeys.FieldCraft))
             {
                 MenuTemplate.CreateMenuFromTemplate(templateName: MenuTemplate.Name.CraftBasic);
                 return;
@@ -732,35 +821,38 @@ namespace SonOfRobin
                 return;
             }
 
-            if (this.actionKeyList.Contains(World.ActionKeys.MapToggle))
+            if (this.actionKeyList.Contains(World.ActionKeys.MapToggle)) this.ToggleMapMode();
+
+        }
+
+        public void ToggleMapMode()
+        {
+
+            this.mapMode = this.NextMapMode;
+
+            switch (this.mapMode)
             {
-                this.mapMode = this.NextMapMode;
+                case MapMode.None:
+                    this.mapSmall.TurnOff();
+                    this.mapBig.TurnOff();
+                    break;
+
+                case MapMode.Small:
+                    this.mapSmall.TurnOn();
+                    this.mapBig.TurnOff();
+                    break;
+
+                case MapMode.Big:
+                    this.mapSmall.TurnOff();
+                    this.mapBig.TurnOn();
+                    break;
 
 
-                switch (this.mapMode)
-                {
-                    case MapMode.None:
-                        this.mapSmall.TurnOff();
-                        this.mapBig.TurnOff();
-                        break;
-
-                    case MapMode.Small:
-                        this.mapSmall.TurnOn();
-                        this.mapBig.TurnOff();
-                        break;
-
-                    case MapMode.Big:
-                        this.mapSmall.TurnOff();
-                        this.mapBig.TurnOn();
-                        break;
-
-
-                    default:
-                        throw new DivideByZeroException($"Unsupported mapMode - {mapMode}."); ;
-                }
-
+                default:
+                    throw new DivideByZeroException($"Unsupported mapMode - {mapMode}.");
             }
         }
+
         public static World GetTopWorld()
         {
             World world;
@@ -782,7 +874,20 @@ namespace SonOfRobin
                     Animal animal = (Animal)sprite.boardPiece;
                     if (this.currentUpdate % 10 == 0) animal.ExpendEnergy(1);
 
-                    if (animal.alive && (animal.hitPoints <= 0 || animal.efficiency == 0)) animal.Kill();
+                    if (animal.alive && (animal.hitPoints <= 0 || animal.efficiency == 0))
+                    {
+                        animal.Kill();
+                        continue;
+                    }
+                }
+                else if (sprite.boardPiece.GetType() == typeof(Player))
+                {
+                    Player player = (Player)sprite.boardPiece;
+                    if (player.hitPoints <= 0)
+                    {
+                        player.Kill();
+                        continue;
+                    }
                 }
 
                 sprite.boardPiece.StateMachineWork();
@@ -791,40 +896,21 @@ namespace SonOfRobin
 
         public void ProcessPlantQueue()
         {
-            if ((SonOfRobinGame.lastUpdateDelay > 20 || SonOfRobinGame.lastDrawDelay > 20) && this.updateMultiplier == 1 && this.currentUpdate > 200)
-            {
-                this.noOfUpdatesWithDelay++;
-                this.lastUpdateWithDelay = this.currentUpdate;
-
-                if (this.noOfUpdatesWithDelay > 6)
-                {
-                    this.plantsProcessingUpperLimit = Math.Max(noOfPlantsToProcess, 500);
-                    this.noOfPlantsToProcess = 100;
-                    this.noOfUpdatesWithDelay = 0;
-                }
-                else { this.noOfPlantsToProcess = Math.Max(10, this.noOfPlantsToProcess - 100); }
-                return;
-            }
-            else
-            {
-                this.noOfUpdatesWithDelay = 0;
-                this.noOfPlantsToProcess = Math.Min(this.noOfPlantsToProcess + 1, this.plantsProcessingUpperLimit);
-                if (this.currentUpdate - lastUpdateWithDelay > 600 && this.currentUpdate % 20 == 0) this.plantsProcessingUpperLimit += 1;
-            }
-
             this.processedPlantsCount = 0;
-            int plantsLeftToProcess = this.noOfPlantsToProcess;
-            int noOfCellsToAdd = 500;
+
+            if ((SonOfRobinGame.lastUpdateDelay > 20 || SonOfRobinGame.lastDrawDelay > 20) && this.updateMultiplier == 1) return;
 
             if (this.plantCellsQueue.Count == 0)
             {
                 this.plantCellsQueue = new List<Cell>(this.grid.allCells.ToList());
                 //MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"Plants cells queue replenished ({this.plantCellsQueue.Count})");
-                return; // to avoid doing too many calculations in one frame
+                return; // to avoid doing too many calculations in one update
             }
 
             if (this.plantSpritesQueue.Count == 0)
             {
+                int noOfCellsToAdd = 500;
+
                 for (int i = 0; i < noOfCellsToAdd; i++)
                 {
                     int randomCellNo = random.Next(0, plantCellsQueue.Count);
@@ -834,12 +920,14 @@ namespace SonOfRobin
 
                     if (plantCellsQueue.Count == 0) break;
                 }
-                return; // to avoid doing too many calculations in one frame
+                return; // to avoid doing too many calculations in one update
             }
+
+            TimeSpan updateTimeElapsed;
 
             while (true)
             {
-                if (plantsLeftToProcess == 0 || plantSpritesQueue.Count == 0) return;
+                if (plantSpritesQueue.Count == 0) return;
 
                 Sprite plantSprite = this.plantSpritesQueue[0];
                 this.plantSpritesQueue.RemoveAt(0);
@@ -848,7 +936,14 @@ namespace SonOfRobin
                 plantSprite.boardPiece.GrowOlder();
                 if (plantSprite.boardPiece.efficiency < 0.2 || plantSprite.boardPiece.Mass < 1) plantSprite.boardPiece.Kill();
                 this.processedPlantsCount++;
-                plantsLeftToProcess--;
+
+                updateTimeElapsed = DateTime.Now - Scene.startUpdateTime;
+                if (updateTimeElapsed.Milliseconds > 9 * this.updateMultiplier)
+                {
+                    if (updateTimeElapsed.Milliseconds > 13 && this.updateMultiplier == 1) MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"Update time exceeded - {updateTimeElapsed.Milliseconds}ms.");
+
+                    return;
+                }
             }
         }
 
@@ -883,7 +978,6 @@ namespace SonOfRobin
             // updating debugText
             this.debugText = $"objects {this.PieceCount}, visible {noOfDisplayedSprites}";
         }
-
 
     }
 }

@@ -14,14 +14,18 @@ namespace SonOfRobin
     {
         public bool creationInProgress;
         private int creationStage;
+        public readonly Grid grid;
         private readonly World world;
         private readonly Color color;
         public readonly int cellNoX;
         public readonly int cellNoY;
         public readonly int xMin;
+        public readonly int xCenter;
         public readonly int xMax;
         public readonly int yMin;
+        public readonly int yCenter;
         public readonly int yMax;
+        public readonly Vector2 center;
         public readonly int width;
         public readonly int height;
         public List<Cell> surroundingCells;
@@ -40,11 +44,12 @@ namespace SonOfRobin
             StateMachinesPlants
         }
 
-        public Cell(World world, int cellNoX, int cellNoY, int xMin, int xMax, int yMin, int yMax, Random random)
+        public Cell(Grid grid, World world, int cellNoX, int cellNoY, int xMin, int xMax, int yMin, int yMax, Random random)
         {
             this.creationInProgress = true;
             this.creationStage = 0;
 
+            this.grid = grid;
             this.world = world;
             this.cellNoX = cellNoX;
             this.cellNoY = cellNoY;
@@ -52,8 +57,11 @@ namespace SonOfRobin
             this.xMax = xMax;
             this.yMin = yMin;
             this.yMax = yMax;
-            this.width = (xMax - xMin) + 1;
-            this.height = (yMax - yMin) + 1;
+            this.width = xMax - xMin + 1;
+            this.height = yMax - yMin + 1;
+            this.xCenter = this.xMin + (this.width / 2);
+            this.yCenter = this.yMin + (this.height / 2);
+            this.center = new Vector2(this.xCenter, this.yCenter);
             this.color = new Color(random.Next(0, 255), random.Next(0, 255), random.Next(0, 255));
             this.surroundingCells = new List<Cell>();
 
@@ -89,7 +97,7 @@ namespace SonOfRobin
 
                 case 3:
                     // cannot be run in parallel
-                    this.boardGraphics.CompleteCreation();
+                    if (Preferences.loadWholeMap) this.boardGraphics.LoadTexture();
                     this.creationInProgress = false;
                     return;
 
@@ -100,16 +108,18 @@ namespace SonOfRobin
 
         public void CopyFromTemplate(Cell templateCell)
         {
-
             foreach (TerrainName terainName in (Group[])Enum.GetValues(typeof(TerrainName)))
             { this.terrainByName[terainName] = templateCell.terrainByName[terainName]; }
 
-            this.boardGraphics = templateCell.boardGraphics;
+            this.boardGraphics = new BoardGraphics(grid: this.grid, cell: this);
+            this.boardGraphics.texture = templateCell.boardGraphics.texture;
         }
 
         public void UpdateBoardGraphics()
-        { this.boardGraphics = new BoardGraphics(world: this.world, cell: this); }
-
+        { 
+            this.boardGraphics = new BoardGraphics(grid: this.grid, cell: this);
+            this.boardGraphics.CreateAndSavePngTemplate();
+    }
 
         public void RemoveSprite(Sprite sprite)
         {
@@ -161,6 +171,13 @@ namespace SonOfRobin
 
             return surroundingSprites;
         }
+
+        public float GetDistance(Vector2 target)
+        { return Vector2.Distance(target, this.center); }
+
+        public float GetDistance(Cell cell)
+        { return Vector2.Distance(cell.center, this.center); }
+
         public void DrawDebugData(Group groupName)
         {
             SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, new Rectangle(
@@ -190,9 +207,14 @@ namespace SonOfRobin
 
         public void DrawBackground()
         {
-            Rectangle sourceRectangle = new Rectangle(0, 0, this.boardGraphics.texture.Width, this.boardGraphics.texture.Height);
-            Rectangle destinationRectangle = new Rectangle(this.xMin, this.yMin, this.boardGraphics.texture.Width, this.boardGraphics.texture.Height);
-            SonOfRobinGame.spriteBatch.Draw(this.boardGraphics.texture, destinationRectangle, sourceRectangle, Color.White);
+            try
+            {
+                Rectangle sourceRectangle = new Rectangle(0, 0, this.boardGraphics.texture.Width, this.boardGraphics.texture.Height);
+                Rectangle destinationRectangle = new Rectangle(this.xMin, this.yMin, this.boardGraphics.texture.Width, this.boardGraphics.texture.Height);
+                SonOfRobinGame.spriteBatch.Draw(this.boardGraphics.texture, destinationRectangle, sourceRectangle, Color.White);
+            }
+            catch (NullReferenceException)
+            { }
         }
 
     }

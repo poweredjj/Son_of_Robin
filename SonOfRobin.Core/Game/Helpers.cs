@@ -3,11 +3,15 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace SonOfRobin
 {
     public class Helpers
     {
+        public const double Rad2Deg = 180.0 / Math.PI;
+        public const double Deg2Rad = Math.PI / 180.0;
+
         public static void DrawRectangleOutline(Rectangle rect, Color color, int borderWidth)
         {
             // top
@@ -58,6 +62,17 @@ namespace SonOfRobin
                 return property.GetValue(targetObj);
             }
         }
+
+        public static float GetAngleBetweenTwoPoints(Vector2 start, Vector2 end)
+        {
+            return (float)Math.Atan2((start.Y - end.Y) * -1f, end.X - start.X);
+        }
+
+        public static string ToSentenceCase(string str)
+        {
+            return Regex.Replace(str, "[a-z][A-Z]", m => $"{m.Value[0]} {char.ToLower(m.Value[1])}");
+        }
+
 
     }
 }

@@ -9,7 +9,7 @@ namespace SonOfRobin
 {
     public class PieceContextMenu : Scene
     {
-        protected enum ContextAction { Drop, Move, Eat, Plant }
+        protected enum ContextAction { Drop, DropAll, Move, Eat, Plant }
 
         private static readonly SpriteFont font = SonOfRobinGame.fontHuge;
         private static readonly float marginPercent = 0.03f;
@@ -25,6 +25,7 @@ namespace SonOfRobin
         private bool showCursor;
 
         private int Margin { get { return Convert.ToInt32(SonOfRobinGame.VirtualHeight * marginPercent); } }
+
         private Vector2 MenuPos
         {
             get
@@ -60,7 +61,7 @@ namespace SonOfRobin
 
                 foreach (ContextAction action in this.actionList)
                 {
-                    Vector2 labelSize = font.MeasureString(Convert.ToString(action));
+                    Vector2 labelSize = font.MeasureString(this.GetActionLabel(action));
                     float maxTextWidth = SonOfRobinGame.VirtualWidth * entryWidthPercent;
                     float maxTextHeight = SonOfRobinGame.VirtualHeight * entryHeightPercent;
                     float textScale = Math.Min(maxTextWidth / labelSize.X, maxTextHeight / labelSize.Y);
@@ -82,7 +83,7 @@ namespace SonOfRobin
 
                 foreach (ContextAction action in this.actionList)
                 {
-                    Vector2 labelSize = font.MeasureString(Convert.ToString(action).ToLower());
+                    Vector2 labelSize = font.MeasureString(this.GetActionLabel(action));
                     textWidth = labelSize.X * textScale;
                     textHeight = labelSize.Y * textScale;
 
@@ -109,7 +110,7 @@ namespace SonOfRobin
             }
         }
 
-        public PieceContextMenu(BoardPiece piece, PieceStorage storage, StorageSlot slot, float percentPosX, float percentPosY, bool addMove = false) : base(inputType: InputTypes.Normal, priority: 1, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty)
+        public PieceContextMenu(BoardPiece piece, PieceStorage storage, StorageSlot slot, float percentPosX, float percentPosY, bool addMove = false) : base(inputType: InputTypes.Normal, priority: 1, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.PieceContext)
         {
             this.piece = piece;
             this.storage = storage;
@@ -129,15 +130,11 @@ namespace SonOfRobin
         {
             var contextActionList = new List<ContextAction> { };
 
-            if (this.piece.GetType() == typeof(Fruit))
-            {
-                contextActionList.Add(ContextAction.Eat);
-                contextActionList.Add(ContextAction.Plant);
-            }
-
+            if (this.piece.toolbarAction == Scheduler.ActionName.GetEaten) contextActionList.Add(ContextAction.Eat);
+            if (this.piece.GetType() == typeof(Fruit)) contextActionList.Add(ContextAction.Plant);
             if (addMove) contextActionList.Add(ContextAction.Move);
-
-            contextActionList.Add(ContextAction.Drop); // should go last
+            contextActionList.Add(ContextAction.Drop);
+            if (this.slot.PieceCount > 1) contextActionList.Add(ContextAction.DropAll);
 
             return contextActionList;
         }
@@ -178,13 +175,13 @@ namespace SonOfRobin
                 return;
             }
 
-            if (Keyboard.HasBeenPressed(Keys.W) || Keyboard.HasBeenPressed(Keys.Up) || GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.DPadUp))
+            if (Keyboard.HasBeenPressed(Keys.W) || Keyboard.HasBeenPressed(Keys.Up) || GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.DPadUp, analogAsDigital: true))
             {
                 this.ActiveEntry -= 1;
                 this.showCursor = true;
             }
 
-            if (Keyboard.HasBeenPressed(Keys.S) || Keyboard.HasBeenPressed(Keys.Down) || GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.DPadDown))
+            if (Keyboard.HasBeenPressed(Keys.S) || Keyboard.HasBeenPressed(Keys.Down) || GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.DPadDown, analogAsDigital: true))
             {
                 this.ActiveEntry += 1;
                 this.showCursor = true;
@@ -199,7 +196,6 @@ namespace SonOfRobin
 
             this.ProcessTouch();
         }
-
 
         private void ProcessTouch()
         {
@@ -247,7 +243,11 @@ namespace SonOfRobin
             switch (action)
             {
                 case ContextAction.Drop:
-                    this.storage.DropTopPieceFromSlot(slot: this.slot);
+                    this.storage.DropPiecesFromSlot(slot: this.slot);
+                    return;
+
+                case ContextAction.DropAll:
+                    this.storage.DropPiecesFromSlot(slot: this.slot, dropAllPieces: true);
                     return;
 
                 case ContextAction.Move:
@@ -269,9 +269,17 @@ namespace SonOfRobin
 
                     return;
 
-
                 case ContextAction.Eat:
-                    // TODO add eating code
+                    BoardPiece food = (BoardPiece)this.slot.GetTopPiece();
+                    World world = World.GetTopWorld();
+
+                    var executeHelper = new Dictionary<string, Object> { };
+                    executeHelper["player"] = world.player;
+                    executeHelper["toolbarPiece"] = food;
+                    executeHelper["buttonHeld"] = false;
+
+                    new Scheduler.Task(menu: null, actionName: food.toolbarAction, delay: 0, executeHelper: executeHelper);
+
                     return;
 
                 case ContextAction.Plant:
@@ -296,6 +304,11 @@ namespace SonOfRobin
 
         }
 
+        private string GetActionLabel(ContextAction action)
+        {
+           return Helpers.ToSentenceCase(Convert.ToString(action));
+        }
+
         public override void Draw()
         {
             Rectangle bgRect = this.BgRect;
@@ -308,10 +321,10 @@ namespace SonOfRobin
             float textScale = this.TextScale;
 
             Rectangle pieceRect = new Rectangle(bgRect.X + (int)margin, bgRect.Y + (int)margin, (int)maxEntrySize.Y, (int)maxEntrySize.Y);
-            this.piece.sprite.Draw(destRect: pieceRect, opacity: viewParams.drawOpacity);
+            this.piece.sprite.DrawAndKeepInRectBounds(destRect: pieceRect, opacity: viewParams.drawOpacity);
 
             int displayedPos;
-            string actionName;
+            string actionLabel;
             bool isActive;
             Color textColor;
             Vector2 textPos, shadowPos;
@@ -324,15 +337,15 @@ namespace SonOfRobin
                 displayedPos = entryNo + 1;
                 isActive = entryNo == this.ActiveEntry && showCursor;
                 textColor = isActive ? Color.White : Color.LightSkyBlue;
-                actionName = Convert.ToString(action).ToLower();
+                actionLabel = this.GetActionLabel(action);
 
                 entryRect = this.GetEntryRect(entryNo);
                 textPos = new Vector2(entryRect.X, entryRect.Y);
                 shadowPos = new Vector2(textPos.X + shadowOffset, textPos.Y + shadowOffset);
 
-                SonOfRobinGame.spriteBatch.DrawString(font, actionName, position: shadowPos, color: Color.MidnightBlue * this.viewParams.drawOpacity * 0.7f, origin: Vector2.Zero, scale: textScale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
+                SonOfRobinGame.spriteBatch.DrawString(font, actionLabel, position: shadowPos, color: Color.MidnightBlue * this.viewParams.drawOpacity * 0.7f, origin: Vector2.Zero, scale: textScale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
 
-                SonOfRobinGame.spriteBatch.DrawString(font, actionName, position: textPos, color: textColor * this.viewParams.drawOpacity, origin: Vector2.Zero, scale: textScale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
+                SonOfRobinGame.spriteBatch.DrawString(font, actionLabel, position: textPos, color: textColor * this.viewParams.drawOpacity, origin: Vector2.Zero, scale: textScale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
 
                 entryNo++;
             }

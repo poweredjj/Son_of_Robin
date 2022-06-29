@@ -2,10 +2,9 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
-
-// Version 4.7
-// Last changed: 2021.12.01
+using Xamarin.Essentials;
 
 namespace SonOfRobin
 {
@@ -13,6 +12,9 @@ namespace SonOfRobin
 
     public class SonOfRobinGame : Game
     {
+        public static readonly float version = 6.3f;
+        public static readonly DateTime lastChanged = new DateTime(2022, 01, 04);
+
         public static Game game;
         public static Platform platform;
         public static bool fakeMobileMode = false;
@@ -44,10 +46,23 @@ namespace SonOfRobin
 
         public static bool quitGame = false;
 
-        public static readonly int initialWindowWidth = 600; // 900
+        public static readonly int initialWindowWidth = 900; // 900
         public static readonly int initialWindowHeight = 250; // 250
         public static int VirtualWidth { get { return Convert.ToInt32(graphics.PreferredBackBufferWidth / Preferences.globalScale); } }
         public static int VirtualHeight { get { return Convert.ToInt32(graphics.PreferredBackBufferHeight / Preferences.globalScale); } }
+
+        public static PerformanceCounter ramCounter = new PerformanceCounter("Memory", "Available MBytes"); // THIS LINE MUST BE COMMENTED OUT WHEN COMPILING FOR ANDROID
+        public static bool DesktopMemoryLow
+        {
+            get
+            {
+                if (platform == Platform.Desktop) return ramCounter.NextValue() < 800;// THIS LINE MUST BE COMMENTED OUT WHEN COMPILING FOR ANDROID
+                return false; // for compatibility with mobile
+            }
+        }
+
+        public static bool KeepScreenOn
+        { set { if (platform == Platform.Mobile && !fakeMobileMode) DeviceDisplay.KeepScreenOn = value; } }
 
         public SonOfRobinGame()
         {
@@ -81,11 +96,12 @@ namespace SonOfRobin
             }
 
             graphicsDevice = GraphicsDevice;
+            Preferences.CheckIfResolutionIsSupported();
 
             if (Preferences.FullScreenMode)
             {
-                graphics.PreferredBackBufferWidth = graphicsDevice.Adapter.CurrentDisplayMode.Width;
-                graphics.PreferredBackBufferHeight = graphicsDevice.Adapter.CurrentDisplayMode.Height;
+                graphics.PreferredBackBufferWidth = Preferences.displayResX;
+                graphics.PreferredBackBufferHeight = Preferences.displayResY;
             }
             else
             {
@@ -95,15 +111,16 @@ namespace SonOfRobin
 
             graphics.ApplyChanges();
 
-            this.Window.Position = new Point(-10, 885); // THIS LINE MUST BE COMMENTED OUT WHEN COMPILING FOR ANDROID
-            //this.Window.Position = new Point(-908, 1317); // THIS LINE MUST BE COMMENTED OUT WHEN COMPILING FOR ANDROID
+            this.Window.Position = new Point(-10, 758); // THIS LINE MUST BE COMMENTED OUT WHEN COMPILING FOR ANDROID
             this.Window.AllowUserResizing = true;
             Window.ClientSizeChanged += OnResize;
 
             new SolidColor(color: Color.RoyalBlue, viewOpacity: 1f, clearScreen: true);
             new MessageLog();
-            Preferences.DebugMode = Preferences.DebugMode; // to create debugMode scenes
+            Preferences.DebugMode = Preferences.DebugMode; // to create debugMode sce
+                                                           // nes
             if (platform == Platform.Mobile) new TouchOverlay();
+            if (platform == Platform.Desktop) new ControlTips();
             new ProgressBar();
 
             if (Preferences.showDemoWorld)
@@ -143,7 +160,7 @@ namespace SonOfRobin
 
             textureByName = new Dictionary<string, Texture2D>();
 
-            string[] assetNames = { "no_anim", "recolor_pt2", "demonmaid", "demonmaid2", "fox", "tile_custom01", "actor29rec4", "tileb", "tile_19ba32a6", "backlight_1", "backlight_2", "backlight_3", "backlight_4", "crabs_small", "crabs_big", "frogs_small", "frogs_big", "flowers", "8f296dbbaf43865bc29e99660fe7b5af", "qYFvsmq", "NicePng_pine-tree-clipart-png_1446450", "palmtree_small", "tilees by guth_zpsfn3wpjdu", "attack_effect_sprite_sheets", "miss", "zzz", "heart_16x16", "rabbits", "virtual_joypad_background", "virtual_joypad_stick", "virtual_button", "virtual_button_pressed", "cursor", "chests", "d9ffec650d3104f5c4564c9055787530", "sticks1", "sticks2", "axe_stone", "axe_wooden", "axe_iron", "axe_diamond", "hand", "tools_gravel", "stones", "fancy_food", "fancy_food2", "fancy_food3" };
+            string[] assetNames = { "no_anim", "recolor_pt2", "demonmaid", "demonmaid2", "fox", "tile_custom01", "actor29rec4", "tileb", "tile_19ba32a6", "backlight_1", "backlight_2", "backlight_3", "backlight_4", "crabs_small", "crabs_big", "frogs_small", "frogs_big", "flowers", "8f296dbbaf43865bc29e99660fe7b5af_2x", "qYFvsmq", "NicePng_pine-tree-clipart-png_1446450", "palmtree_small", "tilees by guth_zpsfn3wpjdu_2x", "attack_effect_sprite_sheets", "miss", "zzz", "heart_16x16", "rabbits", "virtual_joypad_background", "virtual_joypad_stick", "virtual_button", "virtual_button_pressed", "cursor", "chests", "d9ffec650d3104f5c4564c9055787530", "sticks1", "sticks2", "axe_stone", "axe_wooden", "axe_iron", "axe_diamond", "hand", "tools_gravel", "stones", "fancy_food", "fancy_food2", "fancy_food3", "celianna_farmnature_crops_transparent", "weapons1", "steak_t-bone", "Cooked Meat", "big_icons_candacis", "Candacis_flames1", "gems__rpg_maker_mv__by_petschko-d9euoxr", "mv_blacksmith_by_schwarzenacht_dapf6ek", "bows", "arrow_wood", "arrow_iron", "crosshair", "sling", "greatsling", "stone_ammo", "craft_items", "tent_big", "tent_medium", "Xbox 360/360_A", "Xbox 360/360_B", "Xbox 360/360_Back", "Xbox 360/360_Back_Alt", "Xbox 360/360_Dpad", "Xbox 360/360_Dpad_Down", "Xbox 360/360_Dpad_Left", "Xbox 360/360_Dpad_Right", "Xbox 360/360_Dpad_Up", "Xbox 360/360_LB", "Xbox 360/360_Left_Stick", "Xbox 360/360_Left_Stick_Click", "Xbox 360/360_LT", "Xbox 360/360_RB", "Xbox 360/360_Right_Stick", "Xbox 360/360_Right_Stick_Click", "Xbox 360/360_RT", "Xbox 360/360_Start", "Xbox 360/360_Start_Alt", "Xbox 360/360_X", "Xbox 360/360_Y" };
             foreach (string assetName in assetNames)
             {
                 Texture2D characterTexture = Content.Load<Texture2D>($"gfx/{assetName}");

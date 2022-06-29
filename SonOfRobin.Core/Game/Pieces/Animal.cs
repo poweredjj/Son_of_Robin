@@ -9,8 +9,7 @@ namespace SonOfRobin
 {
     public class Animal : BoardPiece
     {
-
-        private static readonly uint maxAnimalsPerName = 120; // 45
+        public static readonly int maxAnimalsPerName = 45; // 45
 
         private readonly bool female;
         private readonly int maxMass;
@@ -26,7 +25,7 @@ namespace SonOfRobin
         private int fedLevel;
         private readonly float maxStamina;
         private float stamina;
-        private ushort sightRange;
+        private readonly ushort sightRange;
         public AiData aiData;
         public BoardPiece target;
         private readonly List<PieceTemplate.Name> eats;
@@ -38,10 +37,11 @@ namespace SonOfRobin
         private float RealSpeed
         { get { return stamina > 0 ? this.speed : Math.Max(this.speed / 2, 1); } }
 
+        public float MaxMassPercentage { get { return this.Mass / this.maxMass; } }
 
-        public Animal(World world, Vector2 position, AnimPkg animPackage, PieceTemplate.Name name, AllowedFields allowedFields, Dictionary<byte, int> maxMassBySize, int mass, int maxMass, byte awareness, bool female, int maxAge, int matureAge, uint pregnancyDuration, byte maxChildren, float maxStamina, int maxHitPoints, ushort sightRange, List<PieceTemplate.Name> eats, List<PieceTemplate.Name> isEatenBy, int strength, float massBurnedMultiplier, byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = false, int generation = 0, Yield yield = null) :
+        public Animal(World world, Vector2 position, AnimPkg animPackage, PieceTemplate.Name name, AllowedFields allowedFields, Dictionary<byte, int> maxMassBySize, int mass, int maxMass, byte awareness, bool female, int maxAge, int matureAge, uint pregnancyDuration, byte maxChildren, float maxStamina, int maxHitPoints, ushort sightRange, List<PieceTemplate.Name> eats, List<PieceTemplate.Name> isEatenBy, int strength, float massBurnedMultiplier, byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = false, int generation = 0, Yield yield = null, bool fadeInAnim = true) :
 
-            base(world: world, position: position, animPackage: animPackage, mass: mass, animSize: animSize, animName: animName, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedFields: allowedFields, floatsOnWater: floatsOnWater, maxMassBySize: maxMassBySize, generation: generation, speed: speed, maxAge: maxAge, maxHitPoints: maxHitPoints, yield: yield)
+            base(world: world, position: position, animPackage: animPackage, mass: mass, animSize: animSize, animName: animName, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedFields: allowedFields, floatsOnWater: floatsOnWater, maxMassBySize: maxMassBySize, generation: generation, speed: speed, maxAge: maxAge, maxHitPoints: maxHitPoints, yield: yield, fadeInAnim: fadeInAnim)
         {
             this.activeState = State.AnimalAssessSituation;
             this.target = null;
@@ -64,7 +64,7 @@ namespace SonOfRobin
             this.aiData = new AiData();
             this.strength = strength;
 
-            new PlannedDeath(world: this.world, delay: this.maxAge, boardPiece: this);
+            new WorldEvent(eventName: WorldEvent.EventName.Death, world: this.world, delay: this.maxAge, boardPiece: this);
         }
 
         public override Dictionary<string, Object> Serialize()
@@ -76,7 +76,7 @@ namespace SonOfRobin
             pieceData["animal_fedLevel"] = this.fedLevel;
             pieceData["animal_pregnancyMass"] = this.pregnancyMass;
             pieceData["animal_aiData"] = this.aiData;
-            pieceData["animal_target_old_id"] = this.target != null ? this.target.id : null;
+            pieceData["animal_target_old_id"] = this.target?.id;
 
             return pieceData;
         }
@@ -100,10 +100,15 @@ namespace SonOfRobin
             int posY = this.sprite.gfxRect.Bottom;
 
             new StatBar(label: "hp", value: (int)this.hitPoints, valueMax: (int)this.maxHitPoints, colorMin: new Color(255, 0, 0), colorMax: new Color(0, 255, 0), posX: posX, posY: posY);
-            new StatBar(label: "stam", value: (int)this.stamina, valueMax: (int)this.maxStamina, colorMin: new Color(100, 100, 100), colorMax: new Color(255, 255, 255), posX: posX, posY: posY);
-            new StatBar(label: "food", value: (int)this.fedLevel, valueMax: (int)this.maxFedLevel, colorMin: new Color(0, 128, 255), colorMax: new Color(0, 255, 255), posX: posX, posY: posY);
-            new StatBar(label: "age", value: (int)this.currentAge, valueMax: (int)this.maxAge, colorMin: new Color(180, 0, 0), colorMax: new Color(255, 0, 0), posX: posX, posY: posY);
-            new StatBar(label: "weight", value: (int)this.Mass, valueMax: (int)this.maxMass, colorMin: new Color(0, 128, 255), colorMax: new Color(0, 255, 255), posX: posX, posY: posY);
+
+            if (Preferences.debugShowStatBars)
+            {
+                new StatBar(label: "stam", value: (int)this.stamina, valueMax: (int)this.maxStamina, colorMin: new Color(100, 100, 100), colorMax: new Color(255, 255, 255), posX: posX, posY: posY);
+                new StatBar(label: "food", value: (int)this.fedLevel, valueMax: (int)this.maxFedLevel, colorMin: new Color(0, 128, 255), colorMax: new Color(0, 255, 255), posX: posX, posY: posY);
+                new StatBar(label: "age", value: (int)this.currentAge, valueMax: (int)this.maxAge, colorMin: new Color(180, 0, 0), colorMax: new Color(255, 0, 0), posX: posX, posY: posY);
+                new StatBar(label: "weight", value: (int)this.Mass, valueMax: (int)this.maxMass, colorMin: new Color(0, 128, 255), colorMax: new Color(0, 255, 255), posX: posX, posY: posY);
+            }
+
             StatBar.FinishThisBatch();
         }
 
@@ -113,7 +118,7 @@ namespace SonOfRobin
 
             if (this.fedLevel > 0)
             {
-                this.fedLevel = Convert.ToInt16(Math.Max(this.fedLevel - Math.Max((energyAmount / 2), 1), 0));
+                this.fedLevel = Convert.ToInt16(Math.Max(this.fedLevel - Math.Max(energyAmount / 2, 1), 0));
             }
             else // burning "fat"
             {
@@ -131,8 +136,8 @@ namespace SonOfRobin
             energyAmount *= this.efficiency;
             int massGained = Math.Max(Convert.ToInt32(energyAmount / 4), 1);
 
-            this.hitPoints = Math.Min(this.hitPoints + (energyAmount * 2), this.maxHitPoints);
-            this.fedLevel = Math.Min(this.fedLevel + (Convert.ToInt16(energyAmount * 2)), this.maxFedLevel);
+            this.hitPoints = Math.Min(this.hitPoints + (energyAmount / 3), this.maxHitPoints);
+            this.fedLevel = Math.Min(this.fedLevel + Convert.ToInt16(energyAmount * 2), this.maxFedLevel);
             this.stamina = Math.Min(this.stamina + 1, this.maxStamina);
 
             if (this.pregnancyMass > 0 && this.pregnancyMass < this.startingMass * this.maxChildren)
@@ -167,7 +172,6 @@ namespace SonOfRobin
         {
             this.target = null;
             this.sprite.CharacterStand();
-
 
             if (this.world.random.Next(0, 30) == 0) // to avoid getting blocked
             {
@@ -338,6 +342,13 @@ namespace SonOfRobin
 
         public override void SM_AnimalRest()
         {
+            if (this.world.currentUpdate > this.aiData.sleepShownUpdate + 60)
+            {
+                BoardPiece zzz = PieceTemplate.CreateOnBoard(world: this.world, position: this.sprite.position, templateName: PieceTemplate.Name.Zzz);
+                new Tracking(world: world, targetSprite: this.sprite, followingSprite: zzz.sprite);
+                this.aiData.SetSleepShown(this.world.currentUpdate);
+            }
+
             this.target = null;
             this.sprite.CharacterStand();
 
@@ -441,7 +452,9 @@ namespace SonOfRobin
                     BoardPiece attackEffect = PieceTemplate.CreateOnBoard(world: this.world, position: animalTarget.sprite.position, templateName: PieceTemplate.Name.Attack);
                     new Tracking(world: world, targetSprite: animalTarget.sprite, followingSprite: attackEffect.sprite);
 
-                    if (this.world.random.Next(0, 1) == 0) PieceTemplate.CreateOnBoard(world: this.world, position: animalTarget.sprite.position, templateName: PieceTemplate.Name.BloodSplatter);
+                    if (this.world.random.Next(0, 2) == 0) PieceTemplate.CreateOnBoard(world: this.world, position: animalTarget.sprite.position, templateName: PieceTemplate.Name.BloodSplatter);
+
+                    if (animalTarget.yield != null) animalTarget.yield.DropDebris();
 
                     int attackStrength = Convert.ToInt32(this.world.random.Next(Convert.ToInt32(this.strength * 0.75), Convert.ToInt32(this.strength * 1.5)) * this.efficiency);
                     animalTarget.hitPoints = Math.Max(0, animalTarget.hitPoints - attackStrength);
@@ -520,7 +533,7 @@ namespace SonOfRobin
             Animal female = this.female ? this : animalMate;
             female.pregnancyMass = 1; // starting mass should be greater than 0
 
-            new PlannedBirth(world: this.world, delay: (int)female.pregnancyDuration, boardPiece: female);
+            new WorldEvent(world: this.world, delay: (int)female.pregnancyDuration, boardPiece: female, eventName: WorldEvent.EventName.Birth);
 
             this.stamina = 0;
             animalMate.stamina = 0;
@@ -576,7 +589,7 @@ namespace SonOfRobin
             if (childrenBorn > 0) MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"{this.name} has been born ({childrenBorn}).");
 
             if (this.pregnancyMass > this.startingMass)
-            { new PlannedBirth(world: this.world, delay: 90, boardPiece: this); }
+            { new WorldEvent(world: this.world, delay: 90, boardPiece: this, eventName: WorldEvent.EventName.Birth); }
             else
             {
                 this.Mass = Math.Min(this.Mass + this.pregnancyMass, this.maxMass);

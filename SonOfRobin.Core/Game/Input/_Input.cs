@@ -36,7 +36,6 @@ namespace SonOfRobin
             ReactivateGlobalInput();
         }
 
-
         private static void ReactivateGlobalInput()
         {
             // globalInputActive should only be turned off temporarily 

@@ -8,7 +8,7 @@ namespace SonOfRobin
         public Color color;
         public readonly bool clearScreen;
 
-        public SolidColor(Color color, float viewOpacity, bool clearScreen, bool inTrans = false) : base(inputType: InputTypes.None, priority: 1, blocksUpdatesBelow: false, blocksDrawsBelow: clearScreen, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty)
+        public SolidColor(Color color, float viewOpacity, bool clearScreen, bool inTrans = false) : base(inputType: InputTypes.None, priority: 1, blocksUpdatesBelow: false, blocksDrawsBelow: clearScreen, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty)
         {
             this.color = color;
             this.viewParams.opacity = viewOpacity;

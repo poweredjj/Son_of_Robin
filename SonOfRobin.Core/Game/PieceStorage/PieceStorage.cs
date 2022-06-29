@@ -17,6 +17,7 @@ namespace SonOfRobin
         public readonly byte height;
         private readonly StorageSlot[,] slots;
         private readonly byte stackLimit;
+        public StorageSlot lastUsedSlot; // last used by Inventory class
         public int EmptySlotsCount { get { return this.EmptySlots.Count; } }
         public List<StorageSlot> EmptySlots { get { return AllSlots.Where(slot => slot.IsEmpty).ToList(); } }
         public int NotEmptySlotsCount { get { return this.NotEmptySlots.Count; } }
@@ -93,6 +94,11 @@ namespace SonOfRobin
             return true;
         }
 
+        public bool CanFitThisPiece(BoardPiece piece)
+        {
+            return this.FindCorrectSlot(piece) != null;
+        }
+
 
         public StorageSlot FindCorrectSlot(BoardPiece piece)
         {
@@ -151,25 +157,33 @@ namespace SonOfRobin
             try
             {
                 StorageSlot slot = this.slots[x, y];
-                this.DropTopPieceFromSlot(slot: slot, addMovement: addMovement);
+                this.DropPiecesFromSlot(slot: slot, addMovement: addMovement);
             }
             catch (IndexOutOfRangeException)
             { MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"Can't drop piece - inventory index out of bounds ({x},{y})", color: Color.White); }
         }
 
 
-        public void DropTopPieceFromSlot(StorageSlot slot, bool destroyIfFreeSpotNotFound = false, bool addMovement = false)
+        public void DropPiecesFromSlot(StorageSlot slot, bool destroyIfFreeSpotNotFound = false, bool addMovement = false, bool dropAllPieces = false)
         {
             MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: "Dropping piece...", color: Color.White);
 
-            BoardPiece piece = slot.RemoveTopPiece();
-            if (piece == null) return;
+            while (true)
+            {
+                BoardPiece piece = slot.RemoveTopPiece();
+                if (piece == null) return;
 
-            bool freeSpotFound = this.DropPieceToTheGround(piece: piece, addMovement: addMovement);
-            if (!freeSpotFound)
-            { if (!destroyIfFreeSpotNotFound) slot.AddPiece(piece); }
-            else
-            { MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"{piece.name} has been dropped.", color: Color.White); }
+                bool freeSpotFound = this.DropPieceToTheGround(piece: piece, addMovement: addMovement);
+                if (!freeSpotFound)
+                {
+                    if (!destroyIfFreeSpotNotFound) slot.AddPiece(piece);
+                    return;
+                }
+                else
+                { MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"{piece.name} has been dropped.", color: Color.White); }
+
+                if (!dropAllPieces) return;
+            }
         }
 
         public List<BoardPiece> GetAllPieces()
@@ -193,10 +207,10 @@ namespace SonOfRobin
 
         public bool DropPieceToTheGround(BoardPiece piece, bool addMovement)
         {
-            if (this.GetType() == typeof(Player))
+            if (this.storagePiece.GetType() == typeof(Player))
             {
                 // item should fall naturally to places, where player can go to
-                piece.sprite.allowedFields = this.storagePiece.sprite.allowedFields; 
+                piece.sprite.allowedFields = this.storagePiece.sprite.allowedFields;
             }
 
             bool freeSpotFound = piece.sprite.MoveToClosestFreeSpot(startPosition: this.storagePiece.sprite.position);
@@ -263,6 +277,40 @@ namespace SonOfRobin
             return quantityLeft.Where(kvp => kvp.Value > 0).ToList().Count == 0;
         }
 
+        public BoardPiece GetFirstPieceOfType(Type type, bool removePiece = false)
+        {
+            BoardPiece piece;
+
+            foreach (StorageSlot slot in this.OccupiedSlots)
+            {
+                piece = slot.GetTopPiece();
+                if (piece.GetType() == type)
+                {
+                    if (removePiece) return slot.RemoveTopPiece();
+                    return piece;
+                }
+            }
+
+            return null;
+        }
+
+        public BoardPiece GetFirstPieceOfName(PieceTemplate.Name name, bool removePiece = false)
+        {
+            BoardPiece piece;
+
+            foreach (StorageSlot slot in this.OccupiedSlots)
+            {
+                piece = slot.GetTopPiece();
+                if (piece.name == name)
+                {
+                    if (removePiece) return slot.RemoveTopPiece();
+                    return piece;
+                }
+            }
+
+            return null;
+        }
+
         public int CountPieceOccurences(PieceTemplate.Name pieceName)
         {
             int occurences = 0;
@@ -301,7 +349,13 @@ namespace SonOfRobin
               {"lockedSlots", lockedSlots},
             };
 
-            return storageDict;
+            if (this.lastUsedSlot != null)
+            {
+                storageDict["lastUsedSlotX"] = this.lastUsedSlot.posX;
+                storageDict["lastUsedSlotY"] = this.lastUsedSlot.posY;
+            }
+
+                return storageDict;
         }
 
         public static PieceStorage Deserialize(Object storageData, World world, BoardPiece storagePiece)
@@ -316,8 +370,14 @@ namespace SonOfRobin
             var slotData = (List<Object>)storageDict["slotData"];
             StorageType storageType = (StorageType)storageDict["storageType"];
             var lockedSlots = (List<int>)storageDict["lockedSlots"];
-
+          
             PieceStorage storage = new PieceStorage(width: width, height: height, world: world, storagePiece: storagePiece, storageType: storageType, stackLimit: stackLimit);
+            if (storageDict.ContainsKey("lastUsedSlotX") && storageDict.ContainsKey("lastUsedSlotY"))
+            {
+                byte lastUsedSlotX = (byte)storageDict["lastUsedSlotX"];
+                byte lastUsedSlotY = (byte)storageDict["lastUsedSlotY"];
+                storage.lastUsedSlot = storage.GetSlot(x: lastUsedSlotX, y: lastUsedSlotY);
+            }
 
             int slotNo = 0;
             for (int y = 0; y < height; y++)

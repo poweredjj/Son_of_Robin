@@ -12,6 +12,8 @@ namespace SonOfRobin
             Empty,
 
             PlayerControlledWalking,
+            PlayerControlledShooting,
+            PlayerControlledSleep,
 
             PlantGrowthAndReproduction,
 
@@ -26,7 +28,9 @@ namespace SonOfRobin
             AnimalFlee,
         }
 
+        protected static readonly float passiveMovementMultiplier = 100f;
         private static int idCounter;
+
         public readonly World world;
         public readonly string id;
         public readonly PieceTemplate.Name name;
@@ -45,17 +49,20 @@ namespace SonOfRobin
         public float bioWear;
         public float efficiency;
         public float hitPoints;
-        public int showHitPointsTillFrame;
-        public readonly float maxHitPoints;
+        public int showStatBarsTillFrame;
+        public float maxHitPoints;
+        public readonly bool indestructible;
         public readonly byte stackSize;
         public PieceStorage pieceStorage;
         public readonly Yield yield;
         public Scheduler.ActionName boardAction;
         public Scheduler.ActionName toolbarAction;
         public readonly bool canBePickedUp;
-        private static readonly float passiveMovementMultiplier = 100f;
-        private Vector2 passiveMovement;
+        protected Vector2 passiveMovement;
+        protected int passiveRotation;
+        protected readonly bool rotatesWhenDropped;
         private readonly int destructionDelay;
+        public readonly bool serialize;
 
         public float Mass
         {
@@ -68,10 +75,12 @@ namespace SonOfRobin
                 if (previousSpriteSize != this.sprite.animSize && this.pieceStorage != null && this.GetType() == typeof(Plant))
                 {
                     Plant plant = (Plant)this;
-                    plant.SetAllFruitPosAgain();
+                    plant.fruitEngine.SetAllFruitPosAgain();
                 }
             }
         }
+
+        public float HitPointsPercent { get { return this.hitPoints / this.maxHitPoints; } }
 
         private byte SpriteSize
         {
@@ -94,12 +103,12 @@ namespace SonOfRobin
         }
 
         public BoardPiece(World world, Vector2 position, AnimPkg animPackage, PieceTemplate.Name name, AllowedFields allowedFields, Dictionary<byte, int> maxMassBySize,
-            byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, bool visible = true, ushort minDistance = 0, ushort maxDistance = 100, bool ignoresCollisions = false, int destructionDelay = 0, int maxAge = 0, bool floatsOnWater = false, bool checksFullCollisions = false, int generation = 0, int mass = 1, int staysAfterDeath = 800, float maxHitPoints = 1, byte stackSize = 1, byte storageWidth = 0, byte storageHeight = 0, Scheduler.ActionName boardAction = Scheduler.ActionName.Empty, Scheduler.ActionName toolbarAction = Scheduler.ActionName.Empty, bool canBePickedUp = false, Yield yield = null)
+            byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, bool visible = true, ushort minDistance = 0, ushort maxDistance = 100, bool ignoresCollisions = false, int destructionDelay = 0, int maxAge = 0, bool floatsOnWater = false, bool checksFullCollisions = false, int generation = 0, int mass = 1, int staysAfterDeath = 800, float maxHitPoints = 1, byte stackSize = 1, byte storageWidth = 0, byte storageHeight = 0, Scheduler.ActionName boardAction = Scheduler.ActionName.Empty, Scheduler.ActionName toolbarAction = Scheduler.ActionName.Empty, bool canBePickedUp = false, Yield yield = null, bool indestructible = false, bool rotatesWhenDropped = false, bool fadeInAnim = false, bool serialize = true)
         {
             this.world = world;
             this.name = name;
             this.id = $"{idCounter}_{this.name}_{this.world.random.Next(0, 1000000)}";
-            this.sprite = new Sprite(boardPiece: this, id: this.id, position: position, world: this.world, animPackage: animPackage, animSize: animSize, animName: animName, blocksMovement: blocksMovement, visible: visible, minDistance: minDistance, maxDistance: maxDistance, ignoresCollisions: ignoresCollisions, allowedFields: allowedFields, floatsOnWater: floatsOnWater, checksFullCollisions: checksFullCollisions);
+            this.sprite = new Sprite(boardPiece: this, id: this.id, position: position, world: this.world, animPackage: animPackage, animSize: animSize, animName: animName, blocksMovement: blocksMovement, visible: visible, minDistance: minDistance, maxDistance: maxDistance, ignoresCollisions: ignoresCollisions, allowedFields: allowedFields, floatsOnWater: floatsOnWater, checksFullCollisions: checksFullCollisions, fadeInAnim: fadeInAnim);
 
             if (!this.sprite.placedCorrectly) return;
 
@@ -107,9 +116,10 @@ namespace SonOfRobin
             idCounter++;
             this.destructionDelay = destructionDelay;
             this.activeState = State.Empty;
+            this.indestructible = indestructible;
             this.maxHitPoints = maxHitPoints;
             this.hitPoints = maxHitPoints;
-            this.showHitPointsTillFrame = 0;
+            this.showStatBarsTillFrame = 0;
             this.speed = speed;
             this.maxMassBySize = maxMassBySize;
             this.mass = mass;
@@ -127,8 +137,12 @@ namespace SonOfRobin
             this.boardAction = boardAction;
             this.toolbarAction = toolbarAction;
             this.passiveMovement = Vector2.Zero;
+            this.passiveRotation = 0;
+            this.rotatesWhenDropped = rotatesWhenDropped;
             this.canBePickedUp = canBePickedUp;
+            this.serialize = serialize;
             this.yield = yield;
+            if (this.yield == null && Yield.antiCraft.ContainsKey(this.name)) this.yield = Yield.antiCraft[this.name];
             if (this.yield != null) this.yield.AddPiece(this);
 
             this.AddPlannedDestruction();
@@ -140,7 +154,7 @@ namespace SonOfRobin
             if (destructionDelay == 0) return;
 
             // duration value "-1" should be replaced with animation duration
-            new PlannedDestruction(world: this.world, delay: (this.destructionDelay == -1) ? this.sprite.GetAnimDuration() - 1 : this.destructionDelay, boardPiece: this);
+            new WorldEvent(eventName: WorldEvent.EventName.Destruction, world: this.world, delay: this.destructionDelay == -1 ? this.sprite.GetAnimDuration() - 1 : this.destructionDelay, boardPiece: this);
         }
 
         public virtual Dictionary<string, Object> Serialize()
@@ -150,7 +164,8 @@ namespace SonOfRobin
                 {"base_old_id", this.id}, // will be changed after loading, used to identify piece in other contexts
                 {"base_name", this.name},
                 {"base_hitPoints", this.hitPoints},
-                {"base_showHitPointsTillFrame", this.showHitPointsTillFrame},
+                {"base_maxHitPoints", this.maxHitPoints},
+                {"base_showStatBarsTillFrame", this.showStatBarsTillFrame},
                 {"base_mass", this.mass},
                 {"base_alive", this.alive},
                 {"base_maxAge", this.maxAge},
@@ -162,6 +177,7 @@ namespace SonOfRobin
                 {"base_toolbarAction", this.toolbarAction},
                 {"base_passiveMovementX", this.passiveMovement.X},
                 {"base_passiveMovementY", this.passiveMovement.Y},
+                {"base_passiveRotation", this.passiveRotation},
             };
 
             if (this.pieceStorage != null) pieceData["base_pieceStorage"] = this.pieceStorage.Serialize();
@@ -175,7 +191,8 @@ namespace SonOfRobin
         {
             this.mass = (float)pieceData["base_mass"];
             this.hitPoints = (float)pieceData["base_hitPoints"];
-            this.showHitPointsTillFrame = (int)pieceData["base_showHitPointsTillFrame"];
+            this.maxHitPoints = (float)pieceData["base_maxHitPoints"];
+            this.showStatBarsTillFrame = (int)pieceData["base_showStatBarsTillFrame"];
             this.bioWear = (float)pieceData["base_bioWear"];
             this.efficiency = (float)pieceData["base_efficiency"];
             this.activeState = (State)pieceData["base_activeState"];
@@ -184,6 +201,7 @@ namespace SonOfRobin
             this.boardAction = (Scheduler.ActionName)pieceData["base_boardAction"];
             this.toolbarAction = (Scheduler.ActionName)pieceData["base_toolbarAction"];
             this.passiveMovement = new Vector2((float)pieceData["base_passiveMovementX"], (float)pieceData["base_passiveMovementY"]);
+            this.passiveRotation = (int)pieceData["base_passiveRotation"];
 
             this.sprite.Deserialize(pieceData);
 
@@ -230,7 +248,7 @@ namespace SonOfRobin
             if (this.pieceStorage != null) this.pieceStorage.DropAllPiecesToTheGround(addMovement: true);
             this.RemoveFromStateMachines();
             this.sprite.Kill();
-            new PlannedDestruction(world: this.world, delay: this.staysAfterDeath, boardPiece: this);
+            new WorldEvent(eventName: WorldEvent.EventName.Destruction, world: this.world, delay: this.staysAfterDeath, boardPiece: this);
         }
 
         public void Destroy()
@@ -242,7 +260,6 @@ namespace SonOfRobin
             this.exists = false;
             this.RemoveFromPieceCount();
         }
-
 
         public void AddToStateMachines()
         {
@@ -294,6 +311,18 @@ namespace SonOfRobin
                 case State.PlayerControlledWalking:
                     {
                         this.SM_PlayerControlledWalking();
+                        return;
+                    }
+
+                case State.PlayerControlledShooting:
+                    {
+                        this.SM_PlayerControlledShooting();
+                        return;
+                    }
+
+                case State.PlayerControlledSleep:
+                    {
+                        this.SM_PlayerControlledSleep();
                         return;
                     }
 
@@ -371,32 +400,45 @@ namespace SonOfRobin
         {
             // activeState should not be changed ("empty" will be removed from state machines, other states will run after the movement stops)
             this.passiveMovement += movement;
+
+            int maxRotation = (int)(Math.Max(Math.Abs(movement.X), Math.Abs(movement.Y)) * 1);
+            maxRotation = Math.Min(maxRotation, 120);
+
+            if (this.rotatesWhenDropped) this.passiveRotation = this.world.random.Next(-maxRotation, maxRotation);
             this.AddToStateMachines();
         }
 
-        public bool ProcessPassiveMovement()
+        public virtual bool ProcessPassiveMovement()
         {
             if (this.passiveMovement == Vector2.Zero) return false;
-            if (this.passiveMovement.X < (passiveMovementMultiplier / 2f) && this.passiveMovement.Y < (passiveMovementMultiplier / 2f))
+
+            if (Math.Abs(this.passiveMovement.X) < (passiveMovementMultiplier / 2f) && Math.Abs(this.passiveMovement.Y) < (passiveMovementMultiplier / 2f))
             {
                 this.passiveMovement = Vector2.Zero;
+                this.passiveRotation = 0;
+                if (this.sprite.IsInWater) this.sprite.rotation = 0f; // rotated sprite cannot show submerge
                 return false;
             }
 
             if (this.sprite.Move(movement: this.passiveMovement / passiveMovementMultiplier))
-            { this.passiveMovement *= 0.94f; }
+            {
+                this.passiveMovement *= 0.94f;
+                this.sprite.rotation += this.passiveRotation / 300f;
+            }
             else
             {
                 this.passiveMovement *= -0.7f;// bounce off the obstacle and slow down a little
+                this.passiveRotation *= -1;
             }
             return true;
         }
 
-
-
         public virtual void SM_PlayerControlledWalking()
         { throw new DivideByZeroException("This method should not be executed."); }
-
+        public virtual void SM_PlayerControlledShooting()
+        { throw new DivideByZeroException("This method should not be executed."); }
+        public virtual void SM_PlayerControlledSleep()
+        { throw new DivideByZeroException("This method should not be executed."); }
         public virtual void SM_GrowthAndReproduction()
         { throw new DivideByZeroException("This method should not be executed."); }
 
@@ -428,9 +470,9 @@ namespace SonOfRobin
         { throw new DivideByZeroException("This method should not be executed."); }
 
 
-        public bool GoOneStepTowardsGoal(Vector2 goalPosition, float walkSpeed, bool runFrom = false, bool splitXY = false)
+        public bool GoOneStepTowardsGoal(Vector2 goalPosition, float walkSpeed, bool runFrom = false, bool splitXY = false, bool setOrientation = true)
         {
-            if (this.sprite.position.X == goalPosition.X && this.sprite.position.Y == goalPosition.Y)
+            if (this.sprite.position == goalPosition)
             {
                 this.sprite.CharacterStand();
                 return false;
@@ -440,13 +482,12 @@ namespace SonOfRobin
             if (this.sprite.IsInWater) realSpeed = Math.Max(1, this.speed * 0.75f);
 
             Vector2 positionDifference = goalPosition - this.sprite.position;
-
             if (runFrom) positionDifference = new Vector2(-positionDifference.X, -positionDifference.Y);
 
             // calculating "raw" direction (not taking speed into account)
             Vector2 movement = new Vector2(
                 Math.Max(Math.Min(positionDifference.X, 1), -1),
-                 Math.Max(Math.Min(positionDifference.Y, 1), -1));
+                Math.Max(Math.Min(positionDifference.Y, 1), -1));
 
             movement = new Vector2(movement.X * realSpeed, movement.Y * realSpeed);
 
@@ -454,22 +495,21 @@ namespace SonOfRobin
             if (Math.Abs(positionDifference.X) < Math.Abs(movement.X)) movement.X = positionDifference.X;
             if (Math.Abs(positionDifference.Y) < Math.Abs(movement.Y)) movement.Y = positionDifference.Y;
 
-            if (Math.Abs(movement.X) > Math.Abs(movement.Y))
-            { this.sprite.orientation = (movement.X < 0) ? Sprite.Orientation.left : Sprite.Orientation.right; }
-            else
-            { this.sprite.orientation = (movement.Y < 0) ? Sprite.Orientation.up : Sprite.Orientation.down; }
-
+            if (setOrientation) this.sprite.SetOrientationByMovement(movement);
             bool hasBeenMoved = this.sprite.Move(movement);
 
-            if (splitXY && !hasBeenMoved && movement.X != 0 && movement.Y != 0)
+            if (!hasBeenMoved && splitXY && movement != Vector2.Zero)
             {
                 Vector2[] splitMoves = { new Vector2(0, movement.Y), new Vector2(movement.X, 0) };
                 foreach (Vector2 splitMove in splitMoves)
                 {
-                    if (!(splitMove.X == 0 && splitMove.Y == 0))
+                    if (splitMove != Vector2.Zero)
                     {
-                        hasBeenMoved = this.sprite.Move(splitMove);
-                        if (hasBeenMoved) break;
+                        if (this.sprite.Move(splitMove))
+                        {
+                            hasBeenMoved = true;
+                            break;
+                        }
                     }
                 }
             }

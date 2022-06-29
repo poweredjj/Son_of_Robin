@@ -1,9 +1,7 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
 
 namespace SonOfRobin
 
@@ -24,6 +22,7 @@ namespace SonOfRobin
     }
     public class Tracking
     {
+        public readonly bool isCorrect;
         private readonly World world;
         private readonly Sprite followingSprite;
         private readonly Sprite targetSprite;
@@ -32,12 +31,18 @@ namespace SonOfRobin
         private readonly YAlign followingYAlign;
         private readonly XAlign targetXAlign;
         private readonly YAlign targetYAlign;
+        private readonly int lastTrackingFrame;
+        private readonly bool bounceWhenRemoved;
 
         public Tracking(World world, Sprite targetSprite, Sprite followingSprite, int offsetX = 0, int offsetY = 0,
             XAlign followingXAlign = XAlign.Center, YAlign followingYAlign = YAlign.Center,
-            XAlign targetXAlign = XAlign.Center, YAlign targetYAlign = YAlign.Center)
+            XAlign targetXAlign = XAlign.Center, YAlign targetYAlign = YAlign.Center,
+            int turnOffDelay = 0, bool bounceWhenRemoved = false)
         {
+            this.isCorrect = false;
             this.world = world;
+            this.lastTrackingFrame = turnOffDelay == 0 ? 0 : this.world.currentUpdate + turnOffDelay;
+            this.bounceWhenRemoved = bounceWhenRemoved;
 
             this.followingSprite = followingSprite;
             this.followingXAlign = followingXAlign;
@@ -49,28 +54,25 @@ namespace SonOfRobin
 
             this.offset = new Vector2(offsetX, offsetY);
 
+            if (!this.BothSpritesExist()) return;
+
+            this.isCorrect = true;
+
             this.AddToTrackingQueue();
         }
 
-        public Tracking(World world, Dictionary<string, Object> trackingData, Dictionary<string, BoardPiece> piecesByOldId)
-        // deserialize
+        private bool BothSpritesExist()
         {
-            // if object was destroyed, it will no longer be available after loading
-            if (!piecesByOldId.ContainsKey((string)trackingData["followingSprite_old_id"]) || !piecesByOldId.ContainsKey((string)trackingData["targetSprite_old_id"])) return;
+            if (!targetSprite.boardPiece.exists || !followingSprite.boardPiece.exists)
+            {
+                if (!targetSprite.boardPiece.exists) MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"Tracking cancelled - targetSprite '{targetSprite.boardPiece.name}' does not exist.");
 
-            this.world = world;
+                if (!followingSprite.boardPiece.exists) MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"Tracking cancelled - followingSprite '{followingSprite.boardPiece.name}' does not exist.");
 
-            this.followingSprite = piecesByOldId[(string)trackingData["followingSprite_old_id"]].sprite;
-            this.followingXAlign = (XAlign)trackingData["followingXAlign"];
-            this.followingYAlign = (YAlign)trackingData["followingYAlign"];
+                return false;
+            }
 
-            this.targetSprite = piecesByOldId[(string)trackingData["targetSprite_old_id"]].sprite;
-            this.targetXAlign = (XAlign)trackingData["targetXAlign"];
-            this.targetYAlign = (YAlign)trackingData["targetYAlign"];
-
-            this.offset = new Vector2((float)trackingData["offsetX"], (float)trackingData["offsetY"]);
-
-            this.AddToTrackingQueue();
+            return true;
         }
 
         public Dictionary<string, Object> Serialize()
@@ -84,45 +86,87 @@ namespace SonOfRobin
                 {"targetXAlign", this.targetXAlign},
                 {"targetYAlign", this.targetYAlign},
 
-                {"offsetX", this.offset.X},
-                {"offsetY", this.offset.Y},
+                {"offsetX", (int)this.offset.X},
+                {"offsetY", (int)this.offset.Y},
+
+                {"lastTrackingFrame", this.lastTrackingFrame},
+                {"bounceWhenRemoved", this.bounceWhenRemoved},
             };
 
             return trackingData;
         }
 
+        public static void Deserialize(World world, Dictionary<string, Object> trackingData, Dictionary<string, BoardPiece> piecesByOldId)
+        // deserialize
+        {
+            // if object was destroyed, it will no longer be available after loading
+            if (!piecesByOldId.ContainsKey((string)trackingData["followingSprite_old_id"]) || !piecesByOldId.ContainsKey((string)trackingData["targetSprite_old_id"])) return;
+
+            Sprite followingSprite = piecesByOldId[(string)trackingData["followingSprite_old_id"]].sprite;
+            XAlign followingXAlign = (XAlign)trackingData["followingXAlign"];
+            YAlign followingYAlign = (YAlign)trackingData["followingYAlign"];
+
+            Sprite targetSprite = piecesByOldId[(string)trackingData["targetSprite_old_id"]].sprite;
+            XAlign targetXAlign = (XAlign)trackingData["targetXAlign"];
+            YAlign targetYAlign = (YAlign)trackingData["targetYAlign"];
+
+            int offsetX = (int)trackingData["offsetX"];
+            int offsetY = (int)trackingData["offsetY"];
+
+            bool bounceWhenRemoved = (bool)trackingData["bounceWhenRemoved"];
+            int lastTrackingFrame = (int)trackingData["lastTrackingFrame"];
+            int delay = Math.Max(world.currentUpdate, lastTrackingFrame - world.currentUpdate);
+
+            new Tracking(world: world, targetSprite: targetSprite, followingSprite: followingSprite, followingXAlign: followingXAlign, followingYAlign: followingYAlign, targetXAlign: targetXAlign, targetYAlign: targetYAlign, offsetX: offsetX, offsetY: offsetY, turnOffDelay: delay, bounceWhenRemoved: bounceWhenRemoved);
+        }
 
         private void AddToTrackingQueue()
         { this.world.trackingQueue[this.followingSprite.id] = this; }
+
         private void RemoveFromTrackingQueue()
-        { this.world.trackingQueue.Remove(this.followingSprite.id); }
+        {
+            this.world.trackingQueue.Remove(this.followingSprite.id);
+            if (this.bounceWhenRemoved && this.followingSprite.boardPiece.exists)
+            {
+                MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"'{this.followingSprite.boardPiece.name}' removed from tracking queue - adding bounce.");
+
+                Vector2 passiveMovement = new Vector2(this.world.random.Next(-700, 700), this.world.random.Next(-700, 700));
+                this.followingSprite.boardPiece.AddPassiveMovement(movement: passiveMovement);
+            }
+        }
+
+        public static void RemoveFromTrackingQueue(BoardPiece pieceToRemove, World world)
+        {
+            world.trackingQueue.Remove(pieceToRemove.id);
+        }
 
         public static void ProcessTrackingQueue(World world)
         {
             // parallel processing causes data corruption and crashes
             foreach (var tracking in world.trackingQueue.Values.ToList())
-            { 
+            {
                 tracking.SetPosition();
             }
         }
 
         private void SetPosition()
         {
-            if (!this.followingSprite.boardPiece.exists || !this.targetSprite.boardPiece.exists)
+            if (!this.followingSprite.boardPiece.exists ||
+                !this.targetSprite.boardPiece.exists ||
+                (this.lastTrackingFrame > 0 && this.world.currentUpdate >= this.lastTrackingFrame))
             {
                 this.RemoveFromTrackingQueue();
                 return;
             }
 
-            Vector2 followingOffset = GetSpriteOffset(sprite: this.followingSprite, xAlign: this.followingXAlign, yAlign: followingYAlign);
             // followingOffset - what point of followingSprite should be treated as its center
+            Vector2 followingOffset = GetSpriteOffset(sprite: this.followingSprite, xAlign: this.followingXAlign, yAlign: followingYAlign);
 
-            Vector2 targetOffset = GetSpriteOffset(sprite: this.targetSprite, xAlign: this.targetXAlign, yAlign: targetYAlign);
             // targetOffset - what point of targetSprite should followingSprite be centered around
+            Vector2 targetOffset = GetSpriteOffset(sprite: this.targetSprite, xAlign: this.targetXAlign, yAlign: targetYAlign);
 
             // this.offset - independent offset, used regardless of two previous
             followingSprite.SetNewPosition(newPos: targetSprite.position + this.offset + targetOffset - followingOffset, ignoreCollisions: true);
-
         }
 
         private static Vector2 GetSpriteOffset(Sprite sprite, XAlign xAlign, YAlign yAlign)

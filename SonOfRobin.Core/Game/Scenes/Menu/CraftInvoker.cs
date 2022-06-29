@@ -18,14 +18,14 @@ namespace SonOfRobin
 
         public override void Invoke()
         {
-            if (recipe.CheckIfStorageContainsAllIngredients(storage)) base.Invoke();
+            base.Invoke();
         }
 
         public override void Draw(bool active)
         {
             bool canBeCrafted = recipe.CheckIfStorageContainsAllIngredients(storage);
 
-            Color notAvailableColor = Color.Red;
+            Color notAvailableColor = Color.Black;
             this.GetOpacity(active: active);
             float opacityFade = this.OpacityFade;
             Rectangle outerEntryRect = this.Rect;
@@ -41,11 +41,13 @@ namespace SonOfRobin
 
             var pieceNames = new List<PieceTemplate.Name> { };
             var pieceTxts = new List<string> { };
-            var pieceColors = new List<Color> { };
+            var pieceCounters = new List<int> { };
+            var bgColors = new List<Color> { };
 
             pieceNames.Add(recipe.pieceToCreate);
-            pieceTxts.Add($"({this.storage.CountPieceOccurences(recipe.pieceToCreate)})");
-            pieceColors.Add(canBeCrafted ? Color.White : notAvailableColor);
+            pieceTxts.Add($"own\n{this.storage.CountPieceOccurences(recipe.pieceToCreate)}");
+            pieceCounters.Add(recipe.amountToCreate);
+            bgColors.Add(canBeCrafted ? Color.Green : Color.Red);
 
             foreach (var kvp in recipe.ingredients)
             {
@@ -54,8 +56,9 @@ namespace SonOfRobin
                 int pieceCount = this.storage.CountPieceOccurences(pieceName);
 
                 pieceNames.Add(pieceName);
-                pieceTxts.Add($"{pieceCount}/{countNeeded}");
-                pieceColors.Add(pieceCount >= countNeeded ? Color.White : notAvailableColor);
+                pieceTxts.Add($"own\n{pieceCount}");
+                bgColors.Add(pieceCount >= countNeeded ? Color.White * 0f : Color.Red);
+                pieceCounters.Add(countNeeded);
             }
 
             // calculating rects
@@ -67,22 +70,25 @@ namespace SonOfRobin
             rectWidth -= margin;
             AnimFrame frame;
             Rectangle pieceRect;
+            Color bgColor;
 
             // drawing lists
 
             for (int i = 0; i < pieceNames.Count; i++)
             {
-                var pieceName = pieceNames[i];
-                var pieceTxt = pieceTxts[i];
-                var pieceColor = pieceColors[i];
+                PieceTemplate.Name pieceName = pieceNames[i];
+                string pieceTxt = pieceTxts[i];
+                int pieceCounter = pieceCounters[i];
+                bgColor = bgColors[i];
                 frame = Craft.framesToDisplay[pieceName];
 
                 pieceRect = new Rectangle(innerEntryRect.X + ((rectWidth + margin) * i), innerEntryRect.Y, rectWidth, innerEntryRect.Height);
 
-                if (i == 0)  SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, pieceRect, this.textColor * 0.3f * this.menu.viewParams.opacity);
+                SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, pieceRect, bgColor * 0.4f * this.menu.viewParams.opacity);
 
                 //Helpers.DrawRectangleOutline(rect: pieceRect, color: Color.YellowGreen, borderWidth: 2); // testing rect size
-                this.DrawFrameAndText(frame: frame, cellRect: pieceRect, gfxCol: pieceColor, txtCol: txtCol, text: pieceTxt);
+                this.DrawFrameAndText(frame: frame, cellRect: pieceRect, gfxCol: Color.White, txtCol: Color.White, text: pieceTxt);
+                Inventory.DrawQuantity(pieceCount: pieceCounter, destRect: pieceRect, opacity: this.menu.viewParams.drawOpacity, ignoreSingle: false);
             }
         }
 

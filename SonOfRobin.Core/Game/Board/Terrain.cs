@@ -43,7 +43,7 @@ namespace SonOfRobin
             this.persistence = persistence;
             this.lacunarity = lacunarity;
             this.gain = gain;
-            this.templatePath = Path.Combine(this.world.templatePath, $"{Convert.ToString(name).ToLower()}_{cell.cellNoX}_{cell.cellNoY}.map");
+            this.templatePath = Path.Combine(this.world.grid.templatePath, $"{Convert.ToString(name).ToLower()}_{cell.cellNoX}_{cell.cellNoY}.map");
 
             bool mapLoaded = this.LoadTemplate();
             if (!mapLoaded)
@@ -131,7 +131,7 @@ namespace SonOfRobin
             {
                 if (i < gradientSize)
                 {
-                    gradLine[i] = (edgeValue - (i * valueMultiplier));
+                    gradLine[i] = edgeValue - (i * valueMultiplier);
                 }
                 else if (i >= length - gradientSize)
                 {

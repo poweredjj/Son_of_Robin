@@ -45,8 +45,8 @@ namespace SonOfRobin
             this.scaleX = 1f;
             this.scaleY = 1f;
             this.opacity = 1f; // rarely used
-            this.width = SonOfRobinGame.graphics.PreferredBackBufferWidth; // needed to rotate scene around its center
-            this.height = SonOfRobinGame.graphics.PreferredBackBufferHeight; // needed to rotate scene around its center
+            this.width = SonOfRobinGame.graphics.PreferredBackBufferWidth; // needed to rotate scene around its center and for centering
+            this.height = SonOfRobinGame.graphics.PreferredBackBufferHeight; // needed to rotate scene around its center and for centering
 
             this.CopyBaseToDrawParams();
         }
@@ -67,10 +67,19 @@ namespace SonOfRobin
 
         public void CenterView(bool horizontally = true, bool vertically = true)
         {
-            if (horizontally) this.posX = (SonOfRobinGame.VirtualWidth - this.width) / 2;
-            if (vertically) this.posY = (SonOfRobinGame.VirtualHeight - this.height) / 2;
+            if (horizontally) this.posX = (int)(((SonOfRobinGame.VirtualWidth * this.scaleX) - this.width) / 2);
+            if (vertically) this.posY = (int)(((SonOfRobinGame.VirtualHeight * this.scaleY) - this.height) / 2);
         }
 
+        public void PutViewAtTheBottom()
+        {
+            this.posY = (int)((SonOfRobinGame.VirtualHeight * this.scaleY) - this.height);
+        }
+
+        public void PutViewAtTheRight()
+        {
+            this.posX = (int)((SonOfRobinGame.VirtualWidth * this.scaleX) - this.width);
+        }
 
     }
 }

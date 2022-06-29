@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.IO;
 
 namespace SonOfRobin
 {
@@ -17,6 +14,14 @@ namespace SonOfRobin
             }
         }
 
+        public static void SaveMemoryStream(MemoryStream memoryStream, string path)
+        {
+            FileStream outStream = File.OpenWrite(path);
+            memoryStream.WriteTo(outStream);
+            outStream.Flush();
+            outStream.Close();
+        }
+
         public static object Load(string path)
         {
             try
@@ -27,7 +32,7 @@ namespace SonOfRobin
                     return bformatter.Deserialize(stream);
                 }
             }
-            catch(System.Runtime.Serialization.SerializationException)
+            catch (System.Runtime.Serialization.SerializationException)
             { return null; } // file corrupted
 
             catch (FileNotFoundException)

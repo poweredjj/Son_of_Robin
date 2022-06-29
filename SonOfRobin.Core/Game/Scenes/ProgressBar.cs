@@ -17,7 +17,7 @@ namespace SonOfRobin
         private readonly static int txtMargin = 5;
         private static readonly Color defaultBgColor = Color.RoyalBlue;
 
-        public ProgressBar() : base(inputType: InputTypes.None, priority: 0, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: true, touchLayout: TouchLayout.Empty)
+        public ProgressBar() : base(inputType: InputTypes.None, priority: 0, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: true, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty)
         { }
 
         public static void ChangeValues(int curVal, int maxVal, string text)

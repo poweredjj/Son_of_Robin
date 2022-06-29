@@ -1,25 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Microsoft.Xna.Framework.Graphics;
+﻿using BigGustave;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace SonOfRobin
 {
     public class BoardGraphics
     {
-        public bool creationInProgress;
-        public readonly World world;
         private readonly Cell cell;
         public Texture2D texture;
         private readonly string templatePath;
-        public readonly bool templateExists;
-        Color[] tempColorArray;
+        private bool savedToDisk;
 
-        public static Dictionary<Colors, Color> colorsByName = GetColorsByName();
-        private static Dictionary<Colors, List<byte>> colorsByHeight = GetColorsByHeight();
-        private static Dictionary<Colors, List<byte>> colorsByHumidity = GetColorsByHumidity();
+        public static readonly Dictionary<Colors, Color> colorsByName = GetColorsByName();
+        private static readonly Dictionary<Colors, List<byte>> colorsByHeight = GetColorsByHeight();
+        private static readonly Dictionary<Colors, List<byte>> colorsByHumidity = GetColorsByHumidity();
 
         public enum Colors
         {
@@ -43,107 +41,148 @@ namespace SonOfRobin
             GrassGood
         }
 
-        public BoardGraphics(World world, Cell cell)
+        public BoardGraphics(Grid grid, Cell cell)
         {
-            this.creationInProgress = true;
-            this.world = world;
             this.cell = cell;
-            this.templatePath = Path.Combine(this.world.templatePath, $"background_{cell.cellNoX}_{cell.cellNoY}.png");
-
-            this.templateExists = (File.Exists(this.templatePath));
-
-            if (!this.templateExists) this.CreateColorArrayFromTerrain();
+            this.templatePath = Path.Combine(grid.templatePath, $"background_{cell.cellNoX}_{cell.cellNoY}.png");
+            this.savedToDisk = File.Exists(this.templatePath);
         }
 
-        public void CompleteCreation()
+        public void LoadTexture()
         {
-            if (this.templateExists)
+            if (this.texture != null) return;
+
+            this.texture = GfxConverter.LoadTextureFromPNG(this.templatePath);
+            if (this.texture == null) this.RenderTexture();
+
+            this.cell.grid.loadedTexturesCount++;
+        }
+
+        public void UnloadTexture()
+        {
+            if (this.texture == null) return;
+
+            this.texture = null;
+            this.cell.grid.loadedTexturesCount--;
+        }
+
+        public void CreateAndSavePngTemplate()
+        {
+            if (this.savedToDisk) return;
+
+            this.CreateBitmapFromTerrainAndSave();
+            this.savedToDisk = true;
+        }
+
+        public static Texture2D CreateEntireMapTexture(int width, int height, Grid grid, float multiplier)
+        {
+            var colorArray = new Color[width * height];
+            byte pixelHeight, pixelHumidity;
+            int pixelX, pixelY;
+
+            for (int y = 0; y < height; y++)
             {
-                bool textureLoaded = this.LoadTemplate();
-                if (!textureLoaded)
+                for (int x = 0; x < width; x++)
                 {
-                    this.CreateColorArrayFromTerrain();
-                    this.CreateTextureFromColorArray();
-                    this.SaveTemplate();
+                    pixelX = (int)(x / multiplier);
+                    pixelY = (int)(y / multiplier);
+
+                    pixelHeight = grid.GetFieldValue(position: new Vector2(pixelX, pixelY), terrainName: TerrainName.Height);
+                    pixelHumidity = grid.GetFieldValue(position: new Vector2(pixelX, pixelY), terrainName: TerrainName.Humidity);
+                    colorArray[(y * width) + x] = CreatePixel(pixelHeight: pixelHeight, pixelHumidity: pixelHumidity);
                 }
             }
-            else
-            {
-                this.CreateTextureFromColorArray();
-                this.SaveTemplate();
-            }
 
-            this.creationInProgress = false;
+            Texture2D texture = new Texture2D(SonOfRobinGame.graphicsDevice, width, height);
+            texture.SetData(colorArray);
+            return texture;
         }
 
-        private bool LoadTemplate()
+        private void CreateBitmapFromTerrainAndSave()
         {
-            var loadedTexture = GfxConverter.LoadTextureFromPNG(this.templatePath);
-            if (loadedTexture is null) { return false; }
-
-            this.texture = loadedTexture;
-            return true;
-        }
-
-        private void SaveTemplate()
-        {
-            GfxConverter.SaveTextureAsPNG(texture: this.texture, filename: this.templatePath);
-        }
-
-        private void CreateColorArrayFromTerrain()
-        {
-
-            this.tempColorArray = new Color[this.cell.width * this.cell.height];
+            // can be run in parallel, because it does not use graphicsDevice
 
             var mapDataHeight = this.cell.terrainByName[TerrainName.Height].mapData;
             var mapDataHumidity = this.cell.terrainByName[TerrainName.Humidity].mapData;
 
-            for (int y = 0; y < this.cell.height; y++)
+            var builder = PngBuilder.Create(this.cell.width, this.cell.height, true);
+
+            Color pixel;
+
+            for (int x = 0; x < this.cell.width; x++)
             {
-               for (int x = 0; x < this.cell.width; x++)
-               {
-                   Color pixel = new Color();
+                for (int y = 0; y < this.cell.height; y++)
+                {
+                    pixel = CreatePixel(pixelHeight: mapDataHeight[x, y], pixelHumidity: mapDataHumidity[x, y]);
+                    builder.SetPixel(pixel.R, pixel.G, pixel.B, x, y);
+                }
+            }
 
-                   foreach (var kvp in colorsByHeight)
-                   {
-                       if (kvp.Value[1] >= mapDataHeight[x, y] && mapDataHeight[x, y] >= kvp.Value[0])
-                       {
-                           pixel = colorsByName[kvp.Key];
-                           break;
-                       }
-                   }
 
-                   if (pixel.A < 255)
-                   {
-                       foreach (var kvp in colorsByHumidity)
-                       {
-                           if (kvp.Value[1] >= mapDataHumidity[x, y] && mapDataHumidity[x, y] >= kvp.Value[0])
-                           {
-                               pixel = Blend2Colors(colorsByName[kvp.Key], pixel);
-                               break;
-                           }
-                       }
-                   }
-
-                   tempColorArray[(y * this.cell.width) + x] = pixel;
-               }
-           }
-
+            using (var memoryStream = new MemoryStream())
+            {
+                builder.Save(memoryStream);
+                LoaderSaver.SaveMemoryStream(memoryStream: memoryStream, this.templatePath);
+            }
 
         }
 
-        public void CreateTextureFromColorArray()
+        private Color[] CreateColorArrayFromTerrain()
         {
-            this.texture = new Texture2D(SonOfRobinGame.graphicsDevice, this.cell.width, this.cell.height);
-            this.texture.SetData(this.tempColorArray);
-            this.tempColorArray = null;
+            var tempColorArray = new Color[this.cell.width * this.cell.height];
+
+            var mapDataHeight = this.cell.terrainByName[TerrainName.Height].mapData;
+            var mapDataHumidity = this.cell.terrainByName[TerrainName.Humidity].mapData;
+
+            Parallel.For(0, this.cell.height, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, y =>
+                 {
+                     for (int x = 0; x < this.cell.width; x++)
+                     {
+                         tempColorArray[(y * this.cell.width) + x] = CreatePixel(pixelHeight: mapDataHeight[x, y], pixelHumidity: mapDataHumidity[x, y]);
+                     }
+                 });
+
+            return tempColorArray;
         }
 
+        private static Color CreatePixel(byte pixelHeight, byte pixelHumidity)
+        {
+            Color pixel = new Color();
 
+            foreach (var kvp in colorsByHeight)
+            {
+                if (kvp.Value[1] >= pixelHeight && pixelHeight >= kvp.Value[0])
+                {
+                    pixel = colorsByName[kvp.Key];
+                    break;
+                }
+            }
+
+            if (pixel.A < 255)
+            {
+                foreach (var kvp in colorsByHumidity)
+                {
+                    if (kvp.Value[1] >= pixelHumidity && pixelHumidity >= kvp.Value[0])
+                    {
+                        pixel = Blend2Colors(colorsByName[kvp.Key], pixel);
+                        break;
+                    }
+                }
+            }
+
+            return pixel;
+        }
+
+        public void RenderTexture()
+        {
+            var tempColorArray = this.CreateColorArrayFromTerrain();
+            this.texture = new Texture2D(SonOfRobinGame.graphicsDevice, this.cell.width, this.cell.height);
+            this.texture.SetData(tempColorArray);
+        }
 
         public static Color Blend2Colors(Color color1, Color color2)
         {
-            if (color1.A == 0) { return color2; }
+            if (color1.A == 0) return color2;
 
             var alpha2 = Convert.ToSingle(color2.A) / 255;
             var alpha1 = 1 - alpha2;
@@ -203,7 +242,7 @@ namespace SonOfRobin
                 {Colors.VolcanoEdge, new List<byte>(){Terrain.volcanoLevelMin, 215}},
                 {Colors.VolcanoInside1, new List<byte>(){215, 225}},
                 {Colors.VolcanoInside2, new List<byte>(){225, 255}},
-            }; ;
+            };
         }
 
         private static Dictionary<Colors, List<byte>> GetColorsByHumidity()

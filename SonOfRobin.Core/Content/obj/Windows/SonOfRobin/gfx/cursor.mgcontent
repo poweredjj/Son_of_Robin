@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>C:/Users/tzwmsmid/Documents/SonOfRobin_old/SonOfRobin.Core/Content/gfx/cursor.png</SourceFile>
+  <SourceFile>C:/Users/msmidowi/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/cursor.png</SourceFile>
   <SourceTime>2021-11-16T14:17:51.0816008+01:00</SourceTime>
-  <DestFile>C:/Users/tzwmsmid/Documents/SonOfRobin_old/SonOfRobin.Core/Content/bin/Windows/SonOfRobin/gfx/cursor.xnb</DestFile>
-  <DestTime>2022-01-05T13:46:48.5405114+01:00</DestTime>
+  <DestFile>C:/Users/msmidowi/source/repos/SonOfRobin/SonOfRobin.Core/Content/bin/Windows/SonOfRobin/gfx/cursor.xnb</DestFile>
+  <DestTime>2021-12-20T07:41:08.9834301+01:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2020-08-10T18:17:54+02:00</ImporterTime>
   <Processor>TextureProcessor</Processor>

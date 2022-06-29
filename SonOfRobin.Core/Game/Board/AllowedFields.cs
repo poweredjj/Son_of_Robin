@@ -7,6 +7,7 @@ namespace SonOfRobin
 {
     public class AllowedFields
     {
+        public enum RangeName { All, WaterAll, WaterShallow, WaterMedium, WaterDeep, GroundSand, GroundAll, Volcano };
 
         private Dictionary<TerrainName, AllowedRange> rangesByTerrainName;
         private readonly World world;
@@ -28,7 +29,7 @@ namespace SonOfRobin
         }
 
 
-        public AllowedFields(World world, List<string> rangeNameList)
+        public AllowedFields(World world, List<RangeName> rangeNameList)
         {
             // var exampleRangeNameList = new List<string>() { BoardColors.WaterShallow, "ground_all" };
 
@@ -37,45 +38,38 @@ namespace SonOfRobin
 
             foreach (var rangeName in rangeNameList)
             {
+
                 switch (rangeName)
                 {
-                    case "all":
-
+                    case RangeName.All:
                         foreach (TerrainName terrainName in (TerrainName[])Enum.GetValues(typeof(TerrainName)))
                         { this.AddRange(terrainName: terrainName, min: 0, max: 255); }
                         break;
-
-                    case "water_all":
+                    case RangeName.WaterAll:
                         this.AddRange(terrainName: TerrainName.Height, min: 0, max: Terrain.waterLevelMax);
                         break;
-
-                    case "water_shallow":
+                    case RangeName.WaterShallow:
                         this.AddRange(terrainName: TerrainName.Height, min: Convert.ToByte((Terrain.waterLevelMax / 3) * 2), max: Terrain.waterLevelMax);
                         break;
-
-                    case "water_medium":
+                    case RangeName.WaterMedium:
                         this.AddRange(terrainName: TerrainName.Height, min: Convert.ToByte(Terrain.waterLevelMax / 3), max: Convert.ToByte((Terrain.waterLevelMax / 3) * 2));
                         break;
-
-                    case "water_deep":
+                    case RangeName.WaterDeep:
                         this.AddRange(terrainName: TerrainName.Height, min: 0, max: Convert.ToByte(Terrain.waterLevelMax / 3));
                         break;
-
-                    case "ground_sand":
+                    case RangeName.GroundSand:
                         this.AddRange(terrainName: TerrainName.Height, min: (byte)(Terrain.waterLevelMax + 1), max: 105);
                         break;
-
-                    case "ground_all":
+                    case RangeName.GroundAll:
                         this.AddRange(terrainName: TerrainName.Height, min: (byte)(Terrain.waterLevelMax + 1), max: (byte)(Terrain.volcanoLevelMin - 1));
                         break;
-
-                    case "volcano":
+                    case RangeName.Volcano:
                         this.AddRange(terrainName: TerrainName.Height, min: (byte)(Terrain.volcanoLevelMin - 1), max: 255);
                         break;
-
                     default:
                         throw new DivideByZeroException($"Unsupported range name - {rangeName}.");
                 }
+
             }
         }
 

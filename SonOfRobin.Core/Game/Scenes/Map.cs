@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 
@@ -12,6 +13,7 @@ namespace SonOfRobin
         private float multiplier;
         private bool dirtyBackground;
         private RenderTarget2D terrainGfx;
+        private bool initialized;
 
         // max screen percentage, that minimap may occupy
         private static readonly float minimapMaxPercentWidth = 0.35f;
@@ -36,16 +38,19 @@ namespace SonOfRobin
         private Transition OutTransition
         { get { return this.GetTransition(inTrans: false); } }
 
-        public Map(World world, bool fullScreen) : base(inputType: InputTypes.None, priority: 1, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: false, touchLayout: TouchLayout.Empty)
+        public Map(World world, bool fullScreen, TouchLayout touchLayout) : base(inputType: InputTypes.None, priority: 1, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: false, touchLayout: touchLayout, tipsLayout: ControlTips.TipsLayout.Map)
         {
             this.drawActive = false;
             this.updateActive = false;
             this.world = world;
             this.fullScreen = fullScreen;
+            this.initialized = false;
         }
 
         public void TurnOn(bool addTransition = true)
         {
+            if (this.fullScreen) this.InputType = InputTypes.Normal;
+
             this.updateActive = true;
             this.drawActive = true;
             this.blocksDrawsBelow = this.fullScreen;
@@ -70,10 +75,11 @@ namespace SonOfRobin
             }
         }
 
-        public void TurnOff()
+        public void TurnOff(bool addTransition = true)
         {
+            this.InputType = InputTypes.None;
             this.blocksDrawsBelow = false;
-            this.AddTransition(this.OutTransition);
+            if (addTransition) this.AddTransition(this.OutTransition);
         }
 
         public Transition GetTransition(bool inTrans)
@@ -113,18 +119,12 @@ namespace SonOfRobin
 
             this.StartRenderingToTarget(this.terrainGfx);
 
-            foreach (Cell cell in this.world.grid.allCells)
-            {
-                Rectangle sourceRectangle = new Rectangle(0, 0, cell.boardGraphics.texture.Width, cell.boardGraphics.texture.Height);
+            int width = (int)(this.world.width * this.multiplier);
+            int height = (int)(this.world.height * this.multiplier);
 
-                Rectangle destinationRectangle = new Rectangle(
-                    Convert.ToInt32(Math.Floor(cell.xMin * this.multiplier)),
-                    Convert.ToInt32(Math.Floor(cell.yMin * this.multiplier)),
-                    Convert.ToInt32(Math.Ceiling(cell.boardGraphics.texture.Width * this.multiplier)),
-                    Convert.ToInt32(Math.Ceiling(cell.boardGraphics.texture.Height * this.multiplier)));
-
-                SonOfRobinGame.spriteBatch.Draw(cell.boardGraphics.texture, destinationRectangle, sourceRectangle, Color.White);
-            }
+            Texture2D mapTexture = BoardGraphics.CreateEntireMapTexture(width: width, height: height, grid: this.world.grid, multiplier: this.multiplier);
+            Rectangle sourceRectangle = new Rectangle(0, 0, width, height);
+            SonOfRobinGame.spriteBatch.Draw(mapTexture, sourceRectangle, sourceRectangle, Color.White);
 
             this.EndRenderingToTarget();
 
@@ -134,7 +134,24 @@ namespace SonOfRobin
 
         public override void Update(GameTime gameTime)
         {
+            if (!this.initialized && !this.world.creationInProgress)
+            {
+                // to avoid lag when opening the map for the first time
+                this.TurnOn(addTransition: false);
+                this.TurnOff(addTransition: false);
+            }
+
             this.UpdateBackground(); // it's best to update background graphics in Update() (SetRenderTarget in Draw() must go first)
+            this.ProcessInput();
+        }
+
+        private void ProcessInput()
+        {
+            if (GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.B) ||
+                GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.DPadRight) ||
+                Keyboard.HasBeenPressed(Keys.Escape) ||
+                Keyboard.HasBeenPressed(Keys.M) ||
+                VirtButton.HasButtonBeenPressed(VButName.Return)) this.world.ToggleMapMode();
         }
 
         public override void Draw()
@@ -164,7 +181,7 @@ namespace SonOfRobin
                     else if (sprite.boardPiece.GetType() == typeof(Plant))
                     {
                         size = 2;
-                        color = (sprite.boardPiece.alive) ? Color.Green : Color.DarkGreen;
+                        color = sprite.boardPiece.alive ? Color.Green : Color.DarkGreen;
                     }
 
                     else if (sprite.boardPiece.GetType() == typeof(Decoration))

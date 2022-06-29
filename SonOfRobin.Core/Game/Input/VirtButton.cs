@@ -11,9 +11,10 @@ namespace SonOfRobin
     {
         Interact,
         UseTool,
+        Shoot,
         PickUp,
         Inventory,
-        BasicCraft,
+        FieldCraft,
         Map,
         Run,
         ZoomOut,
@@ -25,7 +26,6 @@ namespace SonOfRobin
         DebugPlay,
         DebugFastForward,
         DebugClear,
-        DebugSwitchLayout,
         DebugRemoveTopScene,
     }
 

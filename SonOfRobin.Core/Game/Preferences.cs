@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 
@@ -7,23 +8,30 @@ namespace SonOfRobin
     public class Preferences
     {
         public static int newWorldWidth = 8000;
-        public static int newWorldHeight = 4000;
+        public static int newWorldHeight = 8000;
         public static int newWorldSeed = -1;
         private static bool debugMode = false;
         public static float globalScale = 1f;
         public static float menuScale = 1f;
         public static float worldScale = 1f;
         private static bool fullScreenMode = true;
+        public static bool loadWholeMap = true;
         private static bool frameSkip = true;
         public static bool showDemoWorld = true;
-        public static int autoSaveDelayMins = 30;
+        public static int autoSaveDelayMins = 5;
+        public static int mobileMaxLoadedTextures = 1000;
+        public static int displayResX = 1920;
+        public static int displayResY = 1080;
+        public static bool showControlTips = true;
 
         // debug variables should not be saved to preferences file
         public static bool debugUseMultipleThreads = true;
+        public static bool debugGodMode = false;
         public static bool debugShowRects = false;
         public static bool debugShowCellData = false;
         public static bool debugShowStates = false;
         public static bool debugShowStatBars = false;
+        public static bool debugShowFruitRects = false;
         public static bool debugCreateMissingPieces = true;
 
         public static int MaxThreadsToUse
@@ -39,6 +47,31 @@ namespace SonOfRobin
             }
         }
 
+        public static List<Object> AvailableScreenModes
+        {
+            get
+            {
+                var availableScreenModes = new List<Object> { };
+
+                foreach (DisplayMode mode in GraphicsAdapter.DefaultAdapter.SupportedDisplayModes)
+                {
+                    if (mode.Width >= 640 && mode.Height >= 480) availableScreenModes.Add($"{mode.Width}x{mode.Height}");
+                }
+
+                return availableScreenModes;
+            }
+        }
+
+        public static string FullScreenResolution
+        {
+            get { return $"{displayResX}x{displayResY}"; }
+            set
+            {
+                displayResX = Convert.ToInt32(value.Split('x')[0]);
+                displayResY = Convert.ToInt32(value.Split('x')[1]);
+            }
+        }
+
         public static bool FrameSkip
         {
             get { return frameSkip; }
@@ -51,7 +84,7 @@ namespace SonOfRobin
 
         private static void ShowAppliedAfterRestartMessage(string settingName)
         {
-            MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.User, message: $"{settingName} setting will be applied after restart.", color: Color.White);
+            new TextWindow(text: $"{settingName} setting will be applied after restart.", textColor: Color.White, bgColor: Color.DarkBlue, useTransition: false, animate: false);
         }
 
         public static bool DebugMode
@@ -88,7 +121,15 @@ namespace SonOfRobin
             {
                 globalScale = 2f;
                 menuScale = 1.5f;
+                loadWholeMap = false;
+                showControlTips = false;
             }
+            else
+            {
+                loadWholeMap = true;
+                showControlTips = true;
+            }
+
         }
 
         public static void Save()
@@ -102,10 +143,15 @@ namespace SonOfRobin
             prefsData["globalScale"] = globalScale;
             prefsData["menuScale"] = menuScale;
             prefsData["worldScale"] = worldScale;
+            prefsData["loadWholeMap"] = loadWholeMap;
             prefsData["fullScreenMode"] = fullScreenMode;
             prefsData["frameSkip"] = frameSkip;
             prefsData["showDemoWorld"] = showDemoWorld;
             prefsData["autoSaveDelayMins"] = autoSaveDelayMins;
+            prefsData["mobileMaxLoadedTextures"] = mobileMaxLoadedTextures;
+            prefsData["displayResX"] = displayResX;
+            prefsData["displayResY"] = displayResY;
+            prefsData["showControlTips"] = showControlTips;
 
             LoaderSaver.Save(path: SonOfRobinGame.prefsPath, savedObj: prefsData);
 
@@ -114,7 +160,6 @@ namespace SonOfRobin
 
         public static void Load()
         {
-
             var prefsData = (Dictionary<string, Object>)LoaderSaver.Load(path: SonOfRobinGame.prefsPath);
             if (prefsData != null)
             {
@@ -128,9 +173,14 @@ namespace SonOfRobin
                     menuScale = (float)prefsData["menuScale"];
                     worldScale = (float)prefsData["worldScale"];
                     fullScreenMode = (bool)prefsData["fullScreenMode"];
+                    loadWholeMap = (bool)prefsData["loadWholeMap"];
                     frameSkip = (bool)prefsData["frameSkip"];
                     showDemoWorld = (bool)prefsData["showDemoWorld"];
                     autoSaveDelayMins = (int)prefsData["autoSaveDelayMins"];
+                    mobileMaxLoadedTextures = (int)prefsData["mobileMaxLoadedTextures"];
+                    displayResX = (int)prefsData["displayResX"];
+                    displayResY = (int)prefsData["displayResY"];
+                    showControlTips = (bool)prefsData["showControlTips"];
                 }
                 catch (KeyNotFoundException)
                 { MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: "KeyNotFoundException while loading preferences.", color: Color.White); }
@@ -139,7 +189,27 @@ namespace SonOfRobin
             if (SonOfRobinGame.platform == Platform.Mobile) fullScreenMode = true; // window mode makes no sense on mobile
             if (SonOfRobinGame.fakeMobileMode) fullScreenMode = false; // fakeMobileMode uses mouse (and mouse cursor is not visible in fullscreen mode)
 
+
             MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: "Preferences loaded.", color: Color.White);
+        }
+
+        public static void CheckIfResolutionIsSupported()
+        {
+            bool resolutionSupported = false;
+            foreach (var displayMode in SonOfRobinGame.graphicsDevice.Adapter.SupportedDisplayModes)
+            {
+                if (displayMode.Width == displayResX && displayMode.Height == displayResY)
+                {
+                    resolutionSupported = true;
+                    break;
+                }
+            }
+
+            if (!resolutionSupported)
+            {
+                displayResX = SonOfRobinGame.graphicsDevice.Adapter.CurrentDisplayMode.Width;
+                displayResY = SonOfRobinGame.graphicsDevice.Adapter.CurrentDisplayMode.Height;
+            }
 
         }
 

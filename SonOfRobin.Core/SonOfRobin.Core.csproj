@@ -11,8 +11,11 @@
     <None Remove="Content\SonOfRobin.mgcb" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="BigGustave" Version="1.0.6" />
     <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.0.1641">
       <PrivateAssets>All</PrivateAssets>
     </PackageReference>
+    <PackageReference Include="System.Diagnostics.PerformanceCounter" Version="6.0.0" />
+    <PackageReference Include="Xamarin.Essentials" Version="1.7.0" />
   </ItemGroup>
 </Project>

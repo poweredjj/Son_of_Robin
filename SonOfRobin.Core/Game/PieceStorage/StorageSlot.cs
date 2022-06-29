@@ -15,9 +15,7 @@ namespace SonOfRobin
         private readonly byte stackLimit;
         public bool locked;
 
-
         private BoardPiece TopPiece { get { return this.pieceList[this.pieceList.Count - 1]; } }
-
         public int PieceCount { get { return this.pieceList.Count; } }
         public bool IsEmpty { get { return this.pieceList.Count == 0 && this.locked == false; } }
         public bool IsFull
@@ -62,8 +60,7 @@ namespace SonOfRobin
         }
         public bool CanFitThisPiece(BoardPiece piece)
         {
-            if (this.locked) return false;
-            if (piece.GetType() == typeof(Container) && this.storage.storageType == PieceStorage.StorageType.Chest) return false;
+            if (this.locked || !piece.canBePickedUp) return false;
             return this.IsEmpty || (piece.name == this.PieceName && this.pieceList.Count < Math.Min(this.pieceList[0].stackSize, this.stackLimit));
         }
 
@@ -100,7 +97,7 @@ namespace SonOfRobin
             if (this.IsEmpty) return;
             Sprite sprite = this.TopPiece.sprite;
 
-            sprite.Draw(destRect: destRect, opacity: opacity);
+            sprite.DrawAndKeepInRectBounds(destRect: destRect, opacity: opacity);
 
             if (sprite.boardPiece.hitPoints < sprite.boardPiece.maxHitPoints)
             {
@@ -110,7 +107,6 @@ namespace SonOfRobin
                 StatBar.FinishThisBatch();
                 StatBar.DrawAll();
             }
-
         }
 
         public List<Object> Serialize()
@@ -118,7 +114,7 @@ namespace SonOfRobin
             var slotData = new List<Object> { };
 
             foreach (BoardPiece piece in this.pieceList)
-            { slotData.Add(piece.Serialize()); }
+            {if (piece.serialize) slotData.Add(piece.Serialize()); }
 
             return slotData;
         }

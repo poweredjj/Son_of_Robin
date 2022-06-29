@@ -26,6 +26,8 @@ namespace SonOfRobin.Android
         {
             base.OnCreate(bundle);
 
+            Xamarin.Essentials.Platform.Init(this, bundle);
+
             if (Build.VERSION.SdkInt >= BuildVersionCodes.P)
             { Window.Attributes.LayoutInDisplayCutoutMode = LayoutInDisplayCutoutMode.ShortEdges; }
 

@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SonOfRobin
 {
@@ -11,7 +12,7 @@ namespace SonOfRobin
         public static readonly SpriteFont font = SonOfRobinGame.fontMedium;
         public static string debugText = "";
 
-        public DebugScene() : base(inputType: InputTypes.Always, priority: 0, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: true, alwaysDraws: true, touchLayout: TouchLayout.Empty)
+        public DebugScene() : base(inputType: InputTypes.Always, tipsLayout: ControlTips.TipsLayout.Empty, priority: 0, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: true, alwaysDraws: true, touchLayout: TouchLayout.Empty)
         {
             this.viewParams.posX = 5;
             this.viewParams.posY = 5;
@@ -47,18 +48,17 @@ namespace SonOfRobin
 
                 if (world.pieceCountByClass.ContainsKey(typeof(Plant))) debugText += $"plants {world.pieceCountByClass[typeof(Plant)]}";
                 if (world.pieceCountByClass.ContainsKey(typeof(Animal))) debugText += $", animals {world.pieceCountByClass[typeof(Animal)]}";
-
-                debugText += $"\nproc. plants {world.processedPlantsCount}\nplant limit {world.plantsProcessingUpperLimit}";
+                debugText += $"\nproc. plants {world.processedPlantsCount}";
+                debugText += $"\nloaded textures {world.grid.loadedTexturesCount}";
 
                 TimeSpan elapsedTime = TimeSpan.FromMilliseconds(world.currentUpdate * 16.67);
-                debugText += $"\ntime {elapsedTime.ToString("hh\\:mm\\:ss")} (x{world.updateMultiplier})";
+                debugText += $"\ntime {elapsedTime:hh\\:mm\\:ss} (x{world.updateMultiplier})";
                 debugText += $"\n{SonOfRobinGame.fps.msg}";
             }
 
             Vector2 txtSize = font.MeasureString(debugText);
             this.viewParams.width = (int)txtSize.X;
             this.viewParams.height = (int)txtSize.Y;
-
         }
 
         public override void Draw()
@@ -85,16 +85,44 @@ namespace SonOfRobin
         public void ProcessDebugInput()
         {
             World world = World.GetTopWorld();
-
             //if (Keyboard.HasBeenPressed(Keys.Escape)) SonOfRobinGame.quitGame = true;
 
-            if (Keyboard.IsPressed(Keys.D1)) PieceTemplate.CreateOnBoard(world: world, position: world.player.sprite.position, templateName: PieceTemplate.Name.Apple);
-            if (Keyboard.HasBeenPressed(Keys.D2)) PieceTemplate.CreateOnBoard(world: world, position: world.player.sprite.position, templateName: PieceTemplate.Name.AppleTree);
-            if (Keyboard.HasBeenPressed(Keys.D3)) PieceTemplate.CreateOnBoard(world: world, position: world.player.sprite.position, templateName: PieceTemplate.Name.BananaTree);
-            if (Keyboard.HasBeenPressed(Keys.D4)) PieceTemplate.CreateOnBoard(world: world, position: world.player.sprite.position, templateName: PieceTemplate.Name.CherryTree);
 
-            if (Keyboard.HasBeenPressed(Keys.D5)) PieceTemplate.CreateOnBoard(world: world, position: world.player.sprite.position, templateName: PieceTemplate.Name.Rabbit);
-            if (Keyboard.HasBeenPressed(Keys.D6)) PieceTemplate.CreateOnBoard(world: world, position: world.player.sprite.position, templateName: PieceTemplate.Name.Fox);
+            if (Keyboard.HasBeenPressed(Keys.D1))
+            {
+                BoardPiece piece = PieceTemplate.CreateOnBoard(world: world, position: world.player.sprite.position, templateName: PieceTemplate.Name.TentSmall);
+                if (piece.sprite.placedCorrectly) piece.sprite.MoveToClosestFreeSpot(world.player.sprite.position);
+            }
+
+            if (Keyboard.HasBeenPressed(Keys.D2))
+            {
+                BoardPiece piece = PieceTemplate.CreateOnBoard(world: world, position: world.player.sprite.position, templateName: PieceTemplate.Name.TentMedium);
+                if (piece.sprite.placedCorrectly) piece.sprite.MoveToClosestFreeSpot(world.player.sprite.position);
+            }
+
+            if (Keyboard.HasBeenPressed(Keys.D3))
+            {
+                BoardPiece piece = PieceTemplate.CreateOnBoard(world: world, position: world.player.sprite.position, templateName: PieceTemplate.Name.TentBig);
+                if (piece.sprite.placedCorrectly) piece.sprite.MoveToClosestFreeSpot(world.player.sprite.position);
+            }
+
+            if (Keyboard.HasBeenPressed(Keys.D4))
+            {
+                BoardPiece piece = PieceTemplate.CreateOnBoard(world: world, position: world.player.sprite.position, templateName: PieceTemplate.Name.AxeIron);
+                if (piece.sprite.placedCorrectly) piece.sprite.MoveToClosestFreeSpot(world.player.sprite.position);
+            }
+
+            if (Keyboard.HasBeenPressed(Keys.D5))
+            {
+                BoardPiece piece = PieceTemplate.CreateOnBoard(world: world, position: world.player.sprite.position, templateName: PieceTemplate.Name.PickaxeIron);
+                if (piece.sprite.placedCorrectly) piece.sprite.MoveToClosestFreeSpot(world.player.sprite.position);
+            }
+
+            if (Keyboard.HasBeenPressed(Keys.D6))
+            {
+                BoardPiece piece = PieceTemplate.CreateOnBoard(world: world, position: world.player.sprite.position, templateName: PieceTemplate.Name.ArrowWood);
+                if (piece.sprite.placedCorrectly) piece.sprite.MoveToClosestFreeSpot(world.player.sprite.position);
+            }
 
             if (Keyboard.HasBeenPressed(Keys.D7))
             {
@@ -109,7 +137,7 @@ namespace SonOfRobin
                 new Tracking(world: world, targetSprite: world.player.sprite, followingSprite: backlight.sprite, offsetX: 0, offsetY: 0, targetXAlign: XAlign.Center, targetYAlign: YAlign.Bottom);
             }
 
-            if (Keyboard.IsPressed(Keys.D9)) world.CreateMissingPieces(outsideCamera: true);
+            if (Keyboard.IsPressed(Keys.D9)) world.CreateMissingPieces(outsideCamera: false, multiplier: 1.0f, clearDoNotCreateList: true);
 
             if (Keyboard.HasBeenPressed(Keys.G))
             {
@@ -138,6 +166,32 @@ namespace SonOfRobin
                 }
             }
 
+            if (Keyboard.HasBeenPressed(Keys.X)) world.grid.UnloadTexturesIfMemoryLow();
+
+            if (Keyboard.HasBeenPressed(Keys.U))
+            {
+                if (world == null) return;
+
+                Player player = world.player;
+                player.Fatigue = player.maxFatigue;
+            }
+
+            if (Keyboard.HasBeenPressed(Keys.I))
+            {
+                if (world == null) return;
+
+                Player player = world.player;
+                player.Fatigue = player.maxFatigue * 0.8f;
+            }
+
+            if (Keyboard.HasBeenPressed(Keys.O))
+            {
+                if (world == null) return;
+
+                world.AutoSave(force: true);
+            }
+
+
             if (Keyboard.HasBeenPressed(Keys.K))
             {
                 var piecesWithinDistance = world.grid.GetPiecesWithinDistance(groupName: Cell.Group.ColAll, mainSprite: world.player.sprite, distance: 150);
@@ -163,41 +217,42 @@ namespace SonOfRobin
                 { if (sprite.boardPiece != world.player) sprite.boardPiece.Destroy(); }
             }
 
-            if (Keyboard.HasBeenPressed(Keys.F1)) ProgressBar.ChangeValues(curVal: 1, maxVal: 5, text: "progressbar test\nsecond line\nand third line");
+            if (Keyboard.HasBeenPressed(Keys.W))
+            {
+                foreach (var sprite in world.grid.GetAllSprites(Cell.Group.All))
+                { if (sprite.boardPiece != world.player) sprite.boardPiece.RemoveFromStateMachines(); }
+            }
+
+            if (Keyboard.HasBeenPressed(Keys.F1)) new TextWindow(text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.", useTransition: true, bgColor: Color.DeepSkyBlue, textColor: Color.White);
             if (Keyboard.HasBeenPressed(Keys.F2)) ProgressBar.Hide();
             if (Keyboard.HasBeenPressed(Keys.F3)) world.player.pieceStorage.AddPiece(piece: PieceTemplate.CreateOffBoard(templateName: PieceTemplate.Name.Fox, world: world), dropIfDoesNotFit: true);
 
             if (Keyboard.HasBeenPressed(Keys.F4))
             {
                 Craft.PopulateAllCategories();
-                Craft.Recipe recipe = new Craft.Recipe(pieceToCreate: PieceTemplate.Name.Minerals, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Shell, 4 } });
-                recipe.TryToProducePiece(storage: world.player.pieceStorage);
+                Craft.Recipe recipe = new Craft.Recipe(pieceToCreate: PieceTemplate.Name.MineralsSmall, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Shell, 4 } });
+                recipe.TryToProducePieces(storage: world.player.pieceStorage);
             }
 
             if (Keyboard.HasBeenPressed(Keys.F5)) MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: "Test message.");
+            if (Keyboard.HasBeenPressed(Keys.F6)) ProgressBar.ChangeValues(curVal: 1, maxVal: 5, text: "progressbar test\nsecond line\nand third line");
             if (Keyboard.HasBeenPressed(Keys.F12) || VirtButton.HasButtonBeenPressed(VButName.DebugRemoveTopScene)) RemoveTopScene();
 
-            if (VirtButton.HasButtonBeenPressed(VButName.DebugSwitchLayout))
-            {
-                if (world.touchLayout == TouchLayout.WorldMain)
-                { world.touchLayout = TouchLayout.Test; }
-                else { world.touchLayout = TouchLayout.WorldMain; }
-            }
 
-            if (Keyboard.HasBeenPressed(Keys.LeftAlt) || GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.RightShoulder) || VirtButton.HasButtonBeenPressed(VButName.DebugFastForward))
+            if (Keyboard.HasBeenPressed(Keys.LeftAlt) || VirtButton.HasButtonBeenPressed(VButName.DebugFastForward))
             {
                 if (SonOfRobinGame.game.IsFixedTimeStep)
                 {  // at first, only IsFixedTimeStep should be changed
                     SonOfRobinGame.game.IsFixedTimeStep = false;
                 }
                 else
-                { world.updateMultiplier++; }
+                { world.updateMultiplier *= 2; }
 
                 SonOfRobinGame.game.TargetElapsedTime = TimeSpan.FromSeconds(1d / 60d);
                 world.camera.fluidMotionDisabled = true;
             }
 
-            if (Keyboard.HasBeenPressed(Keys.LeftControl) || GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.LeftShoulder) || VirtButton.HasButtonBeenPressed(VButName.DebugPlay))
+            if (Keyboard.HasBeenPressed(Keys.LeftControl) || VirtButton.HasButtonBeenPressed(VButName.DebugPlay))
             {
                 SonOfRobinGame.game.IsFixedTimeStep = true;
                 world.updateMultiplier = 1;
@@ -215,7 +270,8 @@ namespace SonOfRobin
 
             if (Keyboard.HasBeenPressed(Keys.OemOpenBrackets))
             {
-                var allSprites = world.grid.GetAllSprites(Cell.Group.ColAll);
+                var allSprites = world.grid.GetAllSprites(Cell.Group.ColBlocking).Where(sprite => sprite.boardPiece.GetType() == typeof(Animal) && sprite.boardPiece.alive).ToList();
+
                 var index = SonOfRobinGame.random.Next(0, allSprites.Count);
                 world.camera.TrackPiece(allSprites.ToArray()[index].boardPiece);
             }
@@ -233,6 +289,7 @@ namespace SonOfRobin
                     if (packageName != currentPackageName)
                     {
                         world.player.sprite.AssignNewPackage(animPackage: packageName, setEvenIfMissing: false);
+                        world.player.sprite.AssignNewSize(1);
                         break;
                     }
                 }

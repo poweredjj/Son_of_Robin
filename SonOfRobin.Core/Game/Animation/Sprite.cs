@@ -15,6 +15,8 @@ namespace SonOfRobin
             up,
             down
         }
+
+        public enum AdditionalMoveType { None, Minimal, Half }
         public static int maxDistanceOverride = -1; // -1 will not affect sprite creation; higher values will override one sprite creation
 
         public readonly string id;
@@ -23,13 +25,16 @@ namespace SonOfRobin
         public Vector2 position;
         public bool placedCorrectly;
         public Orientation orientation;
+        public float rotation;
+        public float opacity;
         public AnimFrame frame;
         public Color color;
         public AnimPkg animPackage;
         public byte animSize;
         public string animName;
-        byte currentFrameIndex;
-        ushort currentFrameTimeLeft; // measured in game frames
+        private byte currentFrameIndex;
+        private ushort currentFrameTimeLeft; // measured in game frames
+        public OpacityFade opacityFade;
         public Rectangle gfxRect;
         public Rectangle colRect;
         public readonly bool blocksMovement;
@@ -37,7 +42,7 @@ namespace SonOfRobin
         public readonly bool ignoresCollisions;
         public AllowedFields allowedFields;
         private readonly bool floatsOnWater;
-        public Cell currentCell; // coordinates of current cell, that is containing the sprite 
+        public Cell currentCell; // current cell, that is containing the sprite 
         public List<Cell.Group> gridGroups;
 
         public string CompleteAnimID
@@ -50,11 +55,15 @@ namespace SonOfRobin
             get
             { return this.GetFieldValue(TerrainName.Height) < Terrain.waterLevelMax; }
         }
+
+        public bool CanDrownHere { get { return this.GetFieldValue(TerrainName.Height) < (Terrain.waterLevelMax - 10); } }
         public bool Visible
         {
             get { return this.visible; }
             set
             {
+                if (this.visible == value) return;
+
                 this.visible = value;
                 if (value)
                 { this.world.grid.AddToGroup(sprite: this, groupName: Cell.Group.Visible); }
@@ -63,11 +72,26 @@ namespace SonOfRobin
             }
         }
 
-        public Sprite(World world, string id, BoardPiece boardPiece, Vector2 position, AnimPkg animPackage, byte animSize, string animName, bool ignoresCollisions, AllowedFields allowedFields, bool blocksMovement = true, bool visible = true, bool checksFullCollisions = false, ushort minDistance = 0, ushort maxDistance = 100, bool floatsOnWater = false)
+        public bool ObstructsPlayer
+        {
+            get
+            {
+                try
+                {
+                    if (!this.blocksMovement || this.position.Y < this.boardPiece.world.player.sprite.position.Y || this.boardPiece.name == PieceTemplate.Name.Player) return false;
+                    return this.gfxRect.Contains(this.boardPiece.world.player.sprite.position);
+                }
+                catch (NullReferenceException)
+                { return false; }
+            }
+        }
+
+        public Sprite(World world, string id, BoardPiece boardPiece, Vector2 position, AnimPkg animPackage, byte animSize, string animName, bool ignoresCollisions, AllowedFields allowedFields, bool blocksMovement = true, bool visible = true, bool checksFullCollisions = false, ushort minDistance = 0, ushort maxDistance = 100, bool floatsOnWater = false, bool fadeInAnim = true)
         {
             this.id = id; // duplicate from BoardPiece class
             this.boardPiece = boardPiece;
             this.world = world;
+            this.rotation = 0f;
             this.orientation = Orientation.right;
             this.animPackage = animPackage;
             this.animSize = animSize;
@@ -84,6 +108,13 @@ namespace SonOfRobin
             this.allowedFields = allowedFields;
             this.visible = visible; // initially it is assigned normally
             this.currentCell = null;
+            if (fadeInAnim)
+            {
+                this.opacity = 0f;
+                this.opacityFade = new OpacityFade(sprite: this, destOpacity: 1f);
+            }
+            else
+            { this.opacity = 1f; }
 
             AssignFrame(); // frame needs to be set before checking for free spot
 
@@ -107,23 +138,28 @@ namespace SonOfRobin
             pieceData["sprite_animName"] = this.animName;
             pieceData["sprite_currentFrameIndex"] = this.currentFrameIndex;
             pieceData["sprite_currentFrameTimeLeft"] = this.currentFrameTimeLeft;
+            pieceData["sprite_rotation"] = this.rotation;
+            pieceData["sprite_opacity"] = this.opacity;
+            pieceData["sprite_opacityFade"] = this.opacityFade;
             pieceData["sprite_orientation"] = this.orientation;
             pieceData["sprite_gridGroups"] = this.gridGroups;
         }
-
-        public void Deserialize(Dictionary<string, Object> spriteData)
+        public void Deserialize(Dictionary<string, Object> pieceData)
         {
-            this.position = new Vector2((float)spriteData["sprite_positionX"], (float)spriteData["sprite_positionY"]);
-            this.orientation = (Orientation)spriteData["sprite_orientation"];
-            this.animPackage = (AnimPkg)spriteData["sprite_animPackage"];
-            this.animSize = (byte)spriteData["sprite_animSize"];
-            this.animName = (string)spriteData["sprite_animName"];
-            this.currentFrameIndex = (byte)spriteData["sprite_currentFrameIndex"];
-            this.currentFrameTimeLeft = (ushort)spriteData["sprite_currentFrameTimeLeft"];
-            this.AssignFrameById((string)spriteData["sprite_frame_id"]);
-            this.gridGroups = (List<Cell.Group>)spriteData["sprite_gridGroups"];
+            this.position = new Vector2((float)pieceData["sprite_positionX"], (float)pieceData["sprite_positionY"]);
+            this.orientation = (Orientation)pieceData["sprite_orientation"];
+            this.rotation = (float)pieceData["sprite_rotation"];
+            this.opacity = (float)pieceData["sprite_opacity"];
+            this.opacityFade = (OpacityFade)pieceData["sprite_opacityFade"];
+            if (this.opacityFade != null) this.opacityFade.sprite = this;
+            this.animPackage = (AnimPkg)pieceData["sprite_animPackage"];
+            this.animSize = (byte)pieceData["sprite_animSize"];
+            this.animName = (string)pieceData["sprite_animName"];
+            this.currentFrameIndex = (byte)pieceData["sprite_currentFrameIndex"];
+            this.currentFrameTimeLeft = (ushort)pieceData["sprite_currentFrameTimeLeft"];
+            this.AssignFrameById((string)pieceData["sprite_frame_id"]);
+            this.gridGroups = (List<Cell.Group>)pieceData["sprite_gridGroups"];
         }
-
         public byte GetFieldValue(TerrainName terrainName)
         {
             return this.world.grid.GetFieldValue(position: this.position, terrainName: terrainName);
@@ -144,14 +180,13 @@ namespace SonOfRobin
 
             return duration;
         }
-
         public bool MoveToClosestFreeSpot(Vector2 startPosition)
         {
             if (!this.placedCorrectly) throw new DivideByZeroException($"Trying to move '{this.boardPiece.name}' that was not placed correctly.");
 
             ushort maxDistance = 0;
 
-            for (int i = 0; i < 300; i++)
+            for (int i = 0; i < 450; i++)
             {
                 for (int j = 0; j < 20; j++)
                 {
@@ -169,7 +204,6 @@ namespace SonOfRobin
 
             return false;
         }
-
         private bool FindFreeSpot(Vector2 startPosition, ushort minDistance, ushort maxDistance)
         {
             if (this.world.piecesLoadingMode)
@@ -223,6 +257,46 @@ namespace SonOfRobin
 
             return false;
         }
+        public void SetOrientationByMovement(Vector2 movement)
+        {
+            if (Math.Abs(movement.X) > Math.Abs(movement.Y))
+            { this.orientation = (movement.X < 0) ? Orientation.left : Orientation.right; }
+            else
+            { this.orientation = (movement.Y < 0) ? Orientation.up : Orientation.down; }
+
+            if (this.animName.Contains("walk-")) this.CharacterWalk();
+            if (this.animName.Contains("stand-")) this.CharacterStand();
+        }
+
+        public float GetAngleFromOrientation()
+        {
+            float degrees;
+
+            switch (this.orientation)
+            {
+                case Orientation.left:
+                    degrees = 180;
+                    break;
+
+                case Orientation.right:
+                    degrees = 0;
+                    break;
+
+                case Orientation.up:
+                    degrees = -90;
+                    break;
+
+                case Orientation.down:
+                    degrees = 90;
+                    break;
+
+                default:
+                    throw new DivideByZeroException($"Unsupported orientation - {this.orientation}.");
+            }
+
+            float radians = (float)(degrees * Helpers.Deg2Rad);
+            return radians;
+        }
 
         public Sprite FindClosestSprite(List<Sprite> spriteList)
         {
@@ -273,21 +347,33 @@ namespace SonOfRobin
         public void UpdateGridLocation()
         { this.world.grid.UpdateLocation(this); }
 
-
-        public bool Move(Vector2 movement)
+        public bool Move(Vector2 movement, AdditionalMoveType additionalMoveType = AdditionalMoveType.Minimal)
         {
-            var hasBeenMoved = false;
+            List<Vector2> movesToTest = new List<Vector2> { movement };
 
-            // normal and minimal movement (in case of collision)
-            Vector2[] movesToTest = { movement, new Vector2(Math.Max(Math.Min(movement.X, 1), -1), Math.Max(Math.Min(movement.Y, 1), -1)) };
+            switch (additionalMoveType)
+            {
+                case AdditionalMoveType.Minimal:
+                    movesToTest.Add(new Vector2(Math.Max(Math.Min(movement.X, 1), -1), Math.Max(Math.Min(movement.Y, 1), -1)));
+                    break;
+
+                case AdditionalMoveType.Half:
+                    movesToTest.Add(new Vector2(movement.X / 2, movement.Y / 2));
+                    break;
+
+                case AdditionalMoveType.None:
+                    break;
+
+                default:
+                    throw new DivideByZeroException($"Unsupported additionalMoveType - {additionalMoveType}.");
+            }
 
             foreach (Vector2 testMove in movesToTest)
             {
-                hasBeenMoved = this.SetNewPosition(this.position + testMove);
-                if (hasBeenMoved) break;
+                if (this.SetNewPosition(this.position + testMove)) return true;
             }
 
-            return hasBeenMoved;
+            return false;
         }
 
         public bool SetNewPosition(Vector2 newPos, bool ignoreCollisions = false, bool updateGridLocation = true)
@@ -295,6 +381,9 @@ namespace SonOfRobin
             var originalPosition = new Vector2(this.position.X, this.position.Y);
 
             this.position = new Vector2((int)newPos.X, (int)newPos.Y); // to ensure integer values
+            this.position.X = Math.Min(Math.Max(this.position.X, 0), this.world.width - 1);
+            this.position.Y = Math.Min(Math.Max(this.position.Y, 0), this.world.height - 1);
+
             this.UpdateRects();
             if (updateGridLocation) this.UpdateGridLocation();
             if (ignoreCollisions) return true;
@@ -310,25 +399,42 @@ namespace SonOfRobin
             return !collisionDetected; // negated "collisionDetected" == "hasBeenMoved"
         }
 
+        public List<Sprite> GetCollidingSpritesAtPosition(Vector2 positionToCheck)
+        {
+            var originalPosition = new Vector2(this.position.X, this.position.Y);
+
+            this.position = new Vector2((int)positionToCheck.X, (int)positionToCheck.Y); // to ensure integer values
+            this.position.X = Math.Min(Math.Max(this.position.X, 0), this.world.width - 1);
+            this.position.Y = Math.Min(Math.Max(this.position.Y, 0), this.world.height - 1);
+
+            this.UpdateRects();
+            this.UpdateGridLocation();
+
+            List<Sprite> collidingSpritesList = this.GetCollidingSprites();
+
+            this.position = originalPosition;
+            this.UpdateRects();
+            this.UpdateGridLocation();
+
+            return collidingSpritesList;
+        }
+
         public bool CheckForCollision()
         {
             if (this.world.piecesLoadingMode) return false;
 
             // checking world boundaries
-            if (this.gfxRect.Left <= 0 || this.gfxRect.Right >= this.world.width || this.gfxRect.Top <= 0 || this.gfxRect.Bottom >= this.world.height)
-            { return true; }
-
+            if (this.gfxRect.Left <= 0 || this.gfxRect.Right >= this.world.width || this.gfxRect.Top <= 0 || this.gfxRect.Bottom >= this.world.height) return true;
             if (this.ignoresCollisions) return false;
-
             if (!this.allowedFields.CanStandHere(position: this.position)) return true;
 
-            var gridTypeToCheck = (this.checksFullCollisions) ? Cell.Group.ColAll : Cell.Group.ColBlocking;
+            var gridTypeToCheck = this.checksFullCollisions ? Cell.Group.ColAll : Cell.Group.ColBlocking;
 
             foreach (Sprite sprite in this.world.grid.GetSpritesFromSurroundingCells(sprite: this, groupName: gridTypeToCheck))
             {
-                if (this.colRect.Intersects(sprite.colRect) && sprite.id != this.id)
-                    return true;
+                if (this.colRect.Intersects(sprite.colRect) && sprite.id != this.id) return true;
             }
+
             return false;
         }
 
@@ -374,8 +480,9 @@ namespace SonOfRobin
             {
                 if (CheckIfAnimPackageExists(animPackage) || setEvenIfMissing)
                 {
+                    var animPackageCopy = this.animPackage;
                     this.animPackage = animPackage;
-                    AssignFrame(forceRewind: true);
+                    if (!AssignFrame(forceRewind: true)) this.animPackage = animPackageCopy;
                 }
             }
         }
@@ -385,8 +492,9 @@ namespace SonOfRobin
             {
                 if (CheckIFAnimSizeExists(animSize) || setEvenIfMissing)
                 {
+                    var animSizeCopy = this.animSize;
                     this.animSize = animSize;
-                    AssignFrame(forceRewind: true);
+                    if (!AssignFrame(forceRewind: true)) this.animSize = animSizeCopy;
                 }
             }
         }
@@ -396,8 +504,10 @@ namespace SonOfRobin
             {
                 if (CheckIFAnimNameExists(animName) || setEvenIfMissing)
                 {
+                    var animNameCopy = this.animName;
+
                     this.animName = animName;
-                    AssignFrame(forceRewind: true);
+                    if (!AssignFrame(forceRewind: true)) this.animName = animNameCopy;
                 }
             }
         }
@@ -418,7 +528,7 @@ namespace SonOfRobin
             return AnimData.frameListById.ContainsKey(newCompleteAnimID);
         }
 
-        public void AssignFrame(bool forceRewind = false)
+        public bool AssignFrame(bool forceRewind = false)
         {
             AnimFrame frameCopy = this.frame;
 
@@ -433,7 +543,7 @@ namespace SonOfRobin
             this.currentFrameTimeLeft = this.frame.duration;
             this.UpdateRects();
 
-            if (!blocksMovement) return;
+            if (!blocksMovement) return true;
 
             // in case of collision - reverting to a previous, non-colliding frame
             if (this.CheckForCollision() && frameCopy != null)
@@ -441,7 +551,11 @@ namespace SonOfRobin
                 this.frame = frameCopy;
                 this.currentFrameTimeLeft = this.frame.duration;
                 this.UpdateRects();
+
+                return false;
             }
+
+            return true;
         }
         public void AssignFrameById(string frameId)
         // use only when loading game - does not check for collisions
@@ -477,21 +591,18 @@ namespace SonOfRobin
 
         public void Draw(bool calculateSubmerge = true)
         {
+            if (this.ObstructsPlayer && this.opacityFade == null) this.opacityFade = new OpacityFade(sprite: this, destOpacity: 0.5f, playerObstructMode: true, duration: 10);
+            this.opacityFade?.Process();
+
             if (Preferences.debugShowRects)
             { SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, new Rectangle(Convert.ToInt32(this.gfxRect.X), Convert.ToInt32(this.gfxRect.Y), this.gfxRect.Width, this.gfxRect.Height), this.gfxRect, Color.White * 0.5f); }
 
-            Rectangle correctedGfxRect;
+            int submergeCorrection = 0;
+            if (!this.floatsOnWater && this.IsInWater && calculateSubmerge) submergeCorrection = Convert.ToInt32((Terrain.waterLevelMax - this.GetFieldValue(TerrainName.Height)) / 2);
 
-            if (!this.floatsOnWater && this.IsInWater && calculateSubmerge)
-            {
-                correctedGfxRect = this.gfxRect;
-                int submergeCorrection = Convert.ToInt32((Terrain.waterLevelMax - this.GetFieldValue(TerrainName.Height)) / 2);
-                correctedGfxRect.Height = Math.Max(correctedGfxRect.Height / 2, correctedGfxRect.Height - submergeCorrection);
-            }
+            if (this.rotation == 0) { this.frame.Draw(destRect: this.gfxRect, color: this.color, submergeCorrection: submergeCorrection, opacity: this.opacity); }
             else
-            { correctedGfxRect = this.gfxRect; }
-
-            this.frame.Draw(gfxRect: correctedGfxRect, color: this.color);
+            { this.frame.DrawWithRotation(position: new Vector2(this.gfxRect.Center.X, this.gfxRect.Center.Y), color: this.color, rotation: this.rotation, opacity: this.opacity); }
 
             if (this.boardPiece.pieceStorage != null && this.boardPiece.GetType() == typeof(Plant)) this.DrawFruits();
 
@@ -502,22 +613,26 @@ namespace SonOfRobin
             }
 
             if (Preferences.debugShowStates && this.boardPiece.GetType() == typeof(Animal)) this.DrawState();
-            if (Preferences.debugShowStatBars || this.world.currentUpdate < this.boardPiece.showHitPointsTillFrame) this.boardPiece.DrawStatBar();
+            if (Preferences.debugShowStatBars ||
+                this.world.currentUpdate < this.boardPiece.showStatBarsTillFrame ||
+                this.boardPiece.GetType() == typeof(Player))
+            { this.boardPiece.DrawStatBar(); }
         }
 
         private void DrawFruits()
         {
             Plant plant = (Plant)this.boardPiece;
+            if (Preferences.debugShowFruitRects) SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, plant.fruitEngine.FruitAreaRect, Color.Cyan * 0.4f);
 
             if (plant.pieceStorage.NotEmptySlotsCount == 0) return;
-
             var fruitList = plant.pieceStorage.GetAllPieces();
             foreach (BoardPiece fruit in fruitList)
             { fruit.sprite.Draw(calculateSubmerge: false); }
         }
 
-        public void Draw(Rectangle destRect, float opacity)
+        public void DrawAndKeepInRectBounds(Rectangle destRect, float opacity)
         { this.frame.DrawAndKeepInRectBounds(destBoundsRect: destRect, color: this.color * opacity); }
+
 
         private void DrawState()
         {

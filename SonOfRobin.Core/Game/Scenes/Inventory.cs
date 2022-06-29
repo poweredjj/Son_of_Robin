@@ -28,11 +28,11 @@ namespace SonOfRobin
         private bool showEmptyCursor;
 
         public Inventory otherInventory;
-
         private bool IgnoreUpdateAndDraw
         {
             get
             {
+                if (this.piece.world.mapMode == World.MapMode.Big) return true;
                 Scene topScene = Scene.sceneStack[sceneStack.Count - 1];
                 return this.layout == Layout.SingleBottom && topScene.GetType() != typeof(Inventory);
             }
@@ -84,7 +84,8 @@ namespace SonOfRobin
                 return SonOfRobinGame.VirtualHeight * 0.75f;
             }
         }
-        public StorageSlot ActiveSlot { get { return this.storage.GetSlot((byte)this.CursorX, (byte)this.CursorY); } }
+        public StorageSlot ActiveSlot
+        { get { return this.storage.GetSlot((byte)this.CursorX, (byte)this.CursorY); } }
 
         private int TileSize
         {
@@ -111,15 +112,23 @@ namespace SonOfRobin
             }
         }
 
-        public Inventory(PieceStorage storage, BoardPiece piece, string label, Layout layout = Layout.SingleCenter, bool blocksUpdatesBelow = false, Inventory otherInventory = null, InputTypes inputType = InputTypes.Normal) : base(inputType: inputType, priority: 1, blocksUpdatesBelow: blocksUpdatesBelow, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Inventory)
+        public Inventory(PieceStorage storage, BoardPiece piece, string label, Layout layout = Layout.SingleCenter, bool blocksUpdatesBelow = false, Inventory otherInventory = null, InputTypes inputType = InputTypes.Normal) : base(inputType: inputType, priority: 1, blocksUpdatesBelow: blocksUpdatesBelow, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Inventory, tipsLayout: ControlTips.TipsLayout.InventorySelect)
         {
             this.storage = storage;
             this.piece = piece;
             this.label = label;
             this.layout = layout;
 
-            this.cursorX = 0;
-            this.cursorY = SonOfRobinGame.platform == Platform.Mobile && this.layout != Layout.SingleBottom ? -1 : 0;
+            if (this.storage.lastUsedSlot != null)
+            {
+                this.cursorX = this.storage.lastUsedSlot.posX;
+                this.cursorY = this.storage.lastUsedSlot.posY;
+            }
+            else
+            {
+                this.cursorX = 0;
+                this.cursorY = SonOfRobinGame.platform == Platform.Mobile && this.layout != Layout.SingleBottom ? -1 : 0;
+            }
 
             this.draggedPieces = new List<BoardPiece> { };
             this.touchHeldFrames = 0;
@@ -140,7 +149,6 @@ namespace SonOfRobin
                 var paramsToChange = new Dictionary<string, float> { { "posY", this.viewParams.posY + SonOfRobinGame.VirtualHeight }, { "opacity", 0f } };
                 this.AddTransition(new Transition(type: Transition.TransType.In, duration: 12, scene: this, blockInput: false, paramsToChange: paramsToChange));
             }
-
         }
 
         public override void Remove()
@@ -168,8 +176,10 @@ namespace SonOfRobin
         {
             if (this.IgnoreUpdateAndDraw) return;
 
+            this.storage.DestroyBrokenPieces();
             this.UpdateViewParams();
             this.ProcessInput();
+            this.storage.lastUsedSlot = this.ActiveSlot;
         }
 
         private void UpdateViewParams()
@@ -183,25 +193,33 @@ namespace SonOfRobin
             this.viewParams.opacity = this.inputActive && this.layout != Layout.SingleBottom ? 1f : 0.75f;
             int centerX = SonOfRobinGame.VirtualWidth / 2;
 
+            float posY;
+
             switch (this.layout)
             {
                 case Layout.SingleCenter:
                     break;
+
                 case Layout.DualLeft:
                     this.viewParams.posX = centerX - (SonOfRobinGame.VirtualWidth / 25) - this.viewParams.posX;
                     break;
+
                 case Layout.DualRight:
                     this.viewParams.posX = centerX + (SonOfRobinGame.VirtualWidth / 25);
                     break;
+
                 case Layout.DualTop:
                     this.viewParams.posY = SonOfRobinGame.VirtualHeight * 0.1f;
+                    break;
 
-                    break;
                 case Layout.SingleBottom:
-                    this.viewParams.posY = SonOfRobinGame.VirtualHeight - this.viewParams.height;
+                    posY = Preferences.showControlTips ? 0.95f : 1f; // little margin for ControlTips at the bottom
+                    this.viewParams.posY = (SonOfRobinGame.VirtualHeight * posY) - this.viewParams.height;
                     break;
+
                 case Layout.DualBottom:
-                    this.viewParams.posY = SonOfRobinGame.VirtualHeight - this.viewParams.height;
+                    posY = Preferences.showControlTips ? 0.95f : 1f; // little margin for ControlTips at the bottom
+                    this.viewParams.posY = (SonOfRobinGame.VirtualHeight * posY) - this.viewParams.height;
                     break;
 
                 default:
@@ -263,7 +281,6 @@ namespace SonOfRobin
                     }
 
                     break;
-
 
                 case Layout.DualBottom:
                     if (this.cursorX <= -1) this.cursorX = this.storage.width - 1;
@@ -385,7 +402,6 @@ namespace SonOfRobin
             otherInvBgRect.X += (int)this.otherInventory.viewParams.posX;
             otherInvBgRect.Y += (int)this.otherInventory.viewParams.posY;
 
-
             foreach (TouchLocation touch in TouchInput.TouchPanelState)
             {
                 touchPos = touch.Position / Preferences.globalScale;
@@ -401,22 +417,22 @@ namespace SonOfRobin
 
         private void MoveCursorByNormalInput()
         {
-            if (Keyboard.HasBeenPressed(Keys.A) || Keyboard.HasBeenPressed(Keys.Left) || GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.DPadLeft))
+            if (Keyboard.HasBeenPressed(Keys.A) || Keyboard.HasBeenPressed(Keys.Left) || GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.DPadLeft, analogAsDigital: true))
             {
                 this.CursorX -= 1;
                 this.showEmptyCursor = true;
             }
-            if (Keyboard.HasBeenPressed(Keys.D) || Keyboard.HasBeenPressed(Keys.Right) || GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.DPadRight))
+            if (Keyboard.HasBeenPressed(Keys.D) || Keyboard.HasBeenPressed(Keys.Right) || GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.DPadRight, analogAsDigital: true))
             {
                 this.CursorX += 1;
                 this.showEmptyCursor = true;
             }
-            if (Keyboard.HasBeenPressed(Keys.W) || Keyboard.HasBeenPressed(Keys.Up) || GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.DPadUp))
+            if (Keyboard.HasBeenPressed(Keys.W) || Keyboard.HasBeenPressed(Keys.Up) || GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.DPadUp, analogAsDigital: true))
             {
                 this.CursorY -= 1;
                 this.showEmptyCursor = true;
             }
-            if (Keyboard.HasBeenPressed(Keys.S) || Keyboard.HasBeenPressed(Keys.Down) || GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.DPadDown))
+            if (Keyboard.HasBeenPressed(Keys.S) || Keyboard.HasBeenPressed(Keys.Down) || GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.DPadDown, analogAsDigital: true))
             {
                 this.CursorY += 1;
                 this.showEmptyCursor = true;
@@ -425,6 +441,9 @@ namespace SonOfRobin
 
         private void MoveCursorByBumpers()
         {
+            World world = World.GetTopWorld();
+            if (world?.player.activeState == BoardPiece.State.PlayerControlledShooting) return;
+
             if (Keyboard.HasBeenPressed(Keys.OemOpenBrackets) || GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.LeftShoulder))
             {
                 this.CursorX -= 1;
@@ -460,6 +479,8 @@ namespace SonOfRobin
 
         private void ProcessPieceSelectMode()
         {
+            this.tipsLayout = ControlTips.TipsLayout.InventorySelect;
+
             if (Keyboard.HasBeenPressed(Keys.Escape) ||
                 VirtButton.HasButtonBeenPressed(VButName.Return) ||
                 GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.B))
@@ -520,6 +541,9 @@ namespace SonOfRobin
             { this.ReleaseHeldPieces(slot: null, forceReleaseAll: true); }
             else
             {
+                if (this.draggedPieces.Count > 0) { this.otherInventory.tipsLayout = ControlTips.TipsLayout.InventoryDrag; }
+                else { this.otherInventory.tipsLayout = ControlTips.TipsLayout.InventorySelect; }
+
                 foreach (BoardPiece piece in this.draggedPieces)
                 { this.otherInventory.draggedPieces.Add(piece); }
                 this.draggedPieces.Clear();
@@ -528,6 +552,8 @@ namespace SonOfRobin
 
         private void ProcessPieceDragMode()
         {
+            this.tipsLayout = ControlTips.TipsLayout.InventoryDrag;
+
             if (Keyboard.HasBeenPressed(Keys.Escape) || VirtButton.HasButtonBeenPressed(VButName.Return) || GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.B))
             {
                 SetInventoryLayout(newLayout: InventoryLayout.Toolbar, player: this.storage.world.player);
@@ -614,7 +640,6 @@ namespace SonOfRobin
                 Helpers.DrawRectangleOutline(rect: bgRect, color: Color.White * this.viewParams.drawOpacity, borderWidth: 2);
             }
 
-
             foreach (StorageSlot slot in this.storage.AllSlots)
             {
                 slotPos = this.GetSlotPos(slot: slot, margin: margin, tileSize: tileSize);
@@ -633,7 +658,7 @@ namespace SonOfRobin
                 Rectangle destRect = isActive && this.showEmptyCursor ? tileRect : new Rectangle((int)slotPos.X + spriteOffset, (int)slotPos.Y + spriteOffset, spriteSize, spriteSize);
                 slot.Draw(destRect: destRect, opacity: this.viewParams.drawOpacity);
 
-                this.DrawQuantity(pieceCount: slot.PieceCount, destRect: tileRect);
+                DrawQuantity(pieceCount: slot.PieceCount, destRect: tileRect, opacity: this.viewParams.drawOpacity);
             }
 
             if (this.InputType != InputTypes.Always) this.DrawCursor();
@@ -664,9 +689,9 @@ namespace SonOfRobin
             SonOfRobinGame.spriteBatch.DrawString(font, this.label, position: labelPos, color: Color.White * this.viewParams.drawOpacity, origin: Vector2.Zero, scale: textScale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
         }
 
-        public void DrawQuantity(int pieceCount, Rectangle destRect)
+        public static void DrawQuantity(int pieceCount, Rectangle destRect, float opacity, bool ignoreSingle = true)
         {
-            if (pieceCount <= 1) return;
+            if (ignoreSingle && pieceCount <= 1) return;
 
             string countTxt = $"x{pieceCount}";
 
@@ -690,11 +715,11 @@ namespace SonOfRobin
                 {
                     textShadowPos = new Vector2(textPos.X + (shadowOffset * x), textPos.Y + (shadowOffset * y));
 
-                    SonOfRobinGame.spriteBatch.DrawString(font, countTxt, position: textShadowPos, color: Color.Black * this.viewParams.drawOpacity, origin: Vector2.Zero, scale: textScale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
+                    SonOfRobinGame.spriteBatch.DrawString(font, countTxt, position: textShadowPos, color: Color.Black * opacity, origin: Vector2.Zero, scale: textScale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
                 }
             }
 
-            SonOfRobinGame.spriteBatch.DrawString(font, countTxt, position: textPos, color: Color.White * this.viewParams.drawOpacity, origin: Vector2.Zero, scale: textScale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
+            SonOfRobinGame.spriteBatch.DrawString(font, countTxt, position: textPos, color: Color.White * opacity, origin: Vector2.Zero, scale: textScale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
         }
 
         private Vector2 GetSlotPos(StorageSlot slot, int margin, int tileSize)
@@ -733,7 +758,7 @@ namespace SonOfRobin
                     destinationRectangle.Width,
                     destinationRectangle.Height);
 
-                shownPiece.sprite.Draw(destRect: shownPieceRect, opacity: viewParams.drawOpacity);
+                shownPiece.sprite.DrawAndKeepInRectBounds(destRect: shownPieceRect, opacity: viewParams.drawOpacity);
 
                 if (shownPiece.sprite.boardPiece.hitPoints < shownPiece.sprite.boardPiece.maxHitPoints)
                 {
@@ -744,7 +769,7 @@ namespace SonOfRobin
                     StatBar.DrawAll();
                 }
 
-                this.DrawQuantity(pieceCount: draggedPieces.Count, destRect: shownPieceRect);
+                DrawQuantity(pieceCount: draggedPieces.Count, destRect: shownPieceRect, opacity: this.viewParams.drawOpacity);
             }
 
             SonOfRobinGame.spriteBatch.Draw(cursorTexture, destinationRectangle, sourceRectangle, Color.White);

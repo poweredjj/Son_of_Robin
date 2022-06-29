@@ -1,0 +1,285 @@
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\obj\Debug\netcoreapp3.1\SonOfRobin.WindowsDX.csproj.AssemblyReference.cache
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\obj\Debug\netcoreapp3.1\SonOfRobin.WindowsDX.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\obj\Debug\netcoreapp3.1\SonOfRobin.WindowsDX.AssemblyInfoInputs.cache
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\obj\Debug\netcoreapp3.1\SonOfRobin.WindowsDX.AssemblyInfo.cs
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\obj\Debug\netcoreapp3.1\SonOfRobin.WindowsDX.csproj.CoreCompileInputs.cache
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\fonts\FreeSansBold12.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\fonts\FreeSansBold9.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\fonts\PixelMix.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\fonts\PressStart2P.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\fonts\Tommy20.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\fonts\Tommy40.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\8f296dbbaf43865bc29e99660fe7b5af_2x.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\actor29rec4.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\attack_effect_sprite_sheets.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\axe_diamond.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\axe_iron.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\axe_stone.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\axe_wooden.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\backlight_1.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\backlight_2.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\backlight_3.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\backlight_4.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\big_icons_candacis.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\Candacis_flames1.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\celianna_farmnature_crops_transparent.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\chests.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\Cooked Meat.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\crabs_big.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\crabs_small.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\cursor.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\d9ffec650d3104f5c4564c9055787530.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\demonmaid.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\demonmaid2.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\fancy_food.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\fancy_food2.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\fancy_food3.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\flowers.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\fox.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\frogs_big.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\frogs_small.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\gems__rpg_maker_mv__by_petschko-d9euoxr.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\hand.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\heart_16x16.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\miss.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\NicePng_pine-tree-clipart-png_1446450.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\no_anim.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\palmtree_small.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\qYFvsmq.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\rabbits.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\recolor_pt2.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\steak_t-bone.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\sticks1.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\sticks2.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\stones.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\tileb.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\tilees by guth_zpsfn3wpjdu.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\tilees by guth_zpsfn3wpjdu_2x.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\tile_19ba32a6.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\tile_custom01.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\tools_gravel.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\virtual_button.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\virtual_button_pressed.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\virtual_joypad_background.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\virtual_joypad_stick.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\weapons1.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\zzz.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\SonOfRobin.WindowsDX.exe
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\SonOfRobin.WindowsDX.deps.json
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\SonOfRobin.WindowsDX.runtimeconfig.json
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\SonOfRobin.WindowsDX.runtimeconfig.dev.json
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\SonOfRobin.WindowsDX.dll
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\SonOfRobin.WindowsDX.pdb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Microsoft.CodeAnalysis.dll
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Microsoft.CodeAnalysis.CSharp.dll
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Microsoft.CodeAnalysis.VisualBasic.dll
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Microsoft.VisualBasic.dll
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\MonoGame.Framework.dll
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\SharpDX.dll
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\SharpDX.Direct2D1.dll
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\SharpDX.Direct3D11.dll
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\SharpDX.Direct3D9.dll
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\SharpDX.DXGI.dll
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\SharpDX.Mathematics.dll
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\SharpDX.MediaFoundation.dll
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\SharpDX.XAudio2.dll
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\SharpDX.XInput.dll
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\runtimes\debian-x64\native\libuv.so
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\runtimes\fedora-x64\native\libuv.so
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\runtimes\opensuse-x64\native\libuv.so
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\runtimes\osx\native\libuv.dylib
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\runtimes\rhel-x64\native\libuv.so
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\runtimes\win7-arm\native\libuv.dll
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\runtimes\win7-x64\native\libuv.dll
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\runtimes\win7-x86\native\libuv.dll
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\SonOfRobin.Core.dll
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\SonOfRobin.Core.pdb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\obj\Debug\netcoreapp3.1\SonOfRobin.WindowsDX.csproj.CopyComplete
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\obj\Debug\netcoreapp3.1\SonOfRobin.WindowsDX.dll
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\obj\Debug\netcoreapp3.1\SonOfRobin.WindowsDX.pdb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\obj\Debug\netcoreapp3.1\SonOfRobin.WindowsDX.genruntimeconfig.cache
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Microsoft.Win32.Registry.dll
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Microsoft.Win32.SystemEvents.dll
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\System.Configuration.ConfigurationManager.dll
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\System.Diagnostics.PerformanceCounter.dll
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\System.Drawing.Common.dll
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\System.Security.AccessControl.dll
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\System.Security.Cryptography.ProtectedData.dll
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\System.Security.Permissions.dll
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\System.Security.Principal.Windows.dll
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\System.Windows.Extensions.dll
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\runtimes\win\lib\netstandard2.0\Microsoft.Win32.Registry.dll
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\runtimes\win\lib\netcoreapp3.1\Microsoft.Win32.SystemEvents.dll
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\runtimes\win\lib\netcoreapp3.1\System.Diagnostics.PerformanceCounter.dll
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\runtimes\unix\lib\netcoreapp3.1\System.Drawing.Common.dll
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\runtimes\win\lib\netcoreapp3.1\System.Drawing.Common.dll
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\runtimes\win\lib\netstandard2.0\System.Security.AccessControl.dll
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\runtimes\win\lib\netstandard2.0\System.Security.Cryptography.ProtectedData.dll
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\runtimes\unix\lib\netcoreapp2.1\System.Security.Principal.Windows.dll
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\runtimes\win\lib\netcoreapp2.1\System.Security.Principal.Windows.dll
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\runtimes\win\lib\netcoreapp3.1\System.Windows.Extensions.dll
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\mv_blacksmith_by_schwarzenacht_dapf6ek.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\BigGustave.dll
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\fonts\FreeSansBold12.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\fonts\FreeSansBold9.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\fonts\PixelMix.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\fonts\PressStart2P.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\fonts\Tommy20.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\fonts\Tommy40.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\8f296dbbaf43865bc29e99660fe7b5af_2x.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\actor29rec4.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\attack_effect_sprite_sheets.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\axe_diamond.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\axe_iron.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\axe_stone.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\axe_wooden.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\backlight_1.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\backlight_2.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\backlight_3.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\backlight_4.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\big_icons_candacis.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\Candacis_flames1.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\celianna_farmnature_crops_transparent.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\chests.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\Cooked Meat.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\crabs_big.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\crabs_small.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\cursor.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\d9ffec650d3104f5c4564c9055787530.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\demonmaid.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\demonmaid2.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\fancy_food.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\fancy_food2.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\fancy_food3.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\flowers.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\fox.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\frogs_big.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\frogs_small.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\gems__rpg_maker_mv__by_petschko-d9euoxr.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\hand.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\heart_16x16.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\miss.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\mv_blacksmith_by_schwarzenacht_dapf6ek.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\NicePng_pine-tree-clipart-png_1446450.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\no_anim.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\palmtree_small.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\qYFvsmq.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\rabbits.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\recolor_pt2.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\steak_t-bone.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\sticks1.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\sticks2.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\stones.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\tileb.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\tilees by guth_zpsfn3wpjdu.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\tilees by guth_zpsfn3wpjdu_2x.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\tile_19ba32a6.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\tile_custom01.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\tools_gravel.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\virtual_button.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\virtual_button_pressed.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\virtual_joypad_background.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\virtual_joypad_stick.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\weapons1.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\zzz.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\SonOfRobin.WindowsDX.exe
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\SonOfRobin.WindowsDX.deps.json
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\SonOfRobin.WindowsDX.runtimeconfig.json
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\SonOfRobin.WindowsDX.runtimeconfig.dev.json
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\SonOfRobin.WindowsDX.dll
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\SonOfRobin.WindowsDX.pdb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\BigGustave.dll
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Microsoft.CodeAnalysis.dll
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Microsoft.CodeAnalysis.CSharp.dll
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Microsoft.CodeAnalysis.VisualBasic.dll
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Microsoft.VisualBasic.dll
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Microsoft.Win32.Registry.dll
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Microsoft.Win32.SystemEvents.dll
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\MonoGame.Framework.dll
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\SharpDX.dll
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\SharpDX.Direct2D1.dll
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\SharpDX.Direct3D11.dll
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\SharpDX.Direct3D9.dll
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\SharpDX.DXGI.dll
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\SharpDX.Mathematics.dll
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\SharpDX.MediaFoundation.dll
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\SharpDX.XAudio2.dll
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\SharpDX.XInput.dll
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\System.Configuration.ConfigurationManager.dll
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\System.Diagnostics.PerformanceCounter.dll
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\System.Drawing.Common.dll
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\System.Security.AccessControl.dll
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\System.Security.Cryptography.ProtectedData.dll
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\System.Security.Permissions.dll
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\System.Security.Principal.Windows.dll
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\System.Windows.Extensions.dll
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\runtimes\debian-x64\native\libuv.so
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\runtimes\fedora-x64\native\libuv.so
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\runtimes\opensuse-x64\native\libuv.so
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\runtimes\osx\native\libuv.dylib
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\runtimes\rhel-x64\native\libuv.so
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\runtimes\win7-arm\native\libuv.dll
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\runtimes\win7-x64\native\libuv.dll
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\runtimes\win7-x86\native\libuv.dll
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\runtimes\win\lib\netstandard2.0\Microsoft.Win32.Registry.dll
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\runtimes\win\lib\netcoreapp3.1\Microsoft.Win32.SystemEvents.dll
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\runtimes\win\lib\netcoreapp3.1\System.Diagnostics.PerformanceCounter.dll
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\runtimes\unix\lib\netcoreapp3.1\System.Drawing.Common.dll
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\runtimes\win\lib\netcoreapp3.1\System.Drawing.Common.dll
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\runtimes\win\lib\netstandard2.0\System.Security.AccessControl.dll
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\runtimes\win\lib\netstandard2.0\System.Security.Cryptography.ProtectedData.dll
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\runtimes\unix\lib\netcoreapp2.1\System.Security.Principal.Windows.dll
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\runtimes\win\lib\netcoreapp2.1\System.Security.Principal.Windows.dll
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\runtimes\win\lib\netcoreapp3.1\System.Windows.Extensions.dll
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\SonOfRobin.Core.dll
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\SonOfRobin.Core.pdb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\obj\Debug\netcoreapp3.1\SonOfRobin.WindowsDX.csproj.AssemblyReference.cache
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\obj\Debug\netcoreapp3.1\SonOfRobin.WindowsDX.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\obj\Debug\netcoreapp3.1\SonOfRobin.WindowsDX.AssemblyInfoInputs.cache
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\obj\Debug\netcoreapp3.1\SonOfRobin.WindowsDX.AssemblyInfo.cs
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\obj\Debug\netcoreapp3.1\SonOfRobin.WindowsDX.csproj.CoreCompileInputs.cache
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\obj\Debug\netcoreapp3.1\SonOfRobin.WindowsDX.csproj.CopyComplete
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\obj\Debug\netcoreapp3.1\SonOfRobin.WindowsDX.dll
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\obj\Debug\netcoreapp3.1\SonOfRobin.WindowsDX.pdb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\obj\Debug\netcoreapp3.1\SonOfRobin.WindowsDX.genruntimeconfig.cache
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\bows.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\crosshair.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\arrow_iron.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\arrow_wood.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\craft_items.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\greatsling.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\sling.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\stone_ammo.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Xamarin.Essentials.dll
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\arrow_iron.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\arrow_wood.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\bows.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\craft_items.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\crosshair.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\greatsling.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\sling.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\stone_ammo.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Xamarin.Essentials.dll
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\tent_big.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\tent_medium.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\Xbox 360\360_A.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\Xbox 360\360_B.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\Xbox 360\360_Back.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\Xbox 360\360_Back_Alt.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\Xbox 360\360_Dpad.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\Xbox 360\360_Dpad_Down.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\Xbox 360\360_Dpad_Left.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\Xbox 360\360_Dpad_Right.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\Xbox 360\360_Dpad_Up.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\Xbox 360\360_LB.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\Xbox 360\360_Left_Stick.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\Xbox 360\360_Left_Stick_Click.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\Xbox 360\360_LT.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\Xbox 360\360_RB.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\Xbox 360\360_Right_Stick.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\Xbox 360\360_Right_Stick_Click.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\Xbox 360\360_RT.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\Xbox 360\360_Start.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\Xbox 360\360_Start_Alt.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\Xbox 360\360_X.xnb
+C:\Users\msmidowi\source\repos\SonOfRobin\SonOfRobin.WindowsDX\bin\Debug\netcoreapp3.1\Content\gfx\Xbox 360\360_Y.xnb
