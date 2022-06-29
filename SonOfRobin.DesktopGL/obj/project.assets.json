@@ -1111,20 +1111,28 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\msmidowi\\.nuget\\packages\\": {}
+    "C:\\Users\\Marcin\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {},
+    "C:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\msmidowi\\Documents\\SonOfRobin\\SonOfRobin.DesktopGL\\SonOfRobin.DesktopGL.csproj",
+      "projectUniqueName": "C:\\Users\\Marcin\\source\\repos\\SonOfRobin\\SonOfRobin.DesktopGL\\SonOfRobin.DesktopGL.csproj",
       "projectName": "SonOfRobin.DesktopGL",
-      "projectPath": "C:\\Users\\msmidowi\\Documents\\SonOfRobin\\SonOfRobin.DesktopGL\\SonOfRobin.DesktopGL.csproj",
-      "packagesPath": "C:\\Users\\msmidowi\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\msmidowi\\Documents\\SonOfRobin\\SonOfRobin.DesktopGL\\obj\\",
+      "projectPath": "C:\\Users\\Marcin\\source\\repos\\SonOfRobin\\SonOfRobin.DesktopGL\\SonOfRobin.DesktopGL.csproj",
+      "packagesPath": "C:\\Users\\Marcin\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Marcin\\source\\repos\\SonOfRobin\\SonOfRobin.DesktopGL\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
+        "C:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet\\"
+      ],
       "configFilePaths": [
-        "C:\\Users\\msmidowi\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        "C:\\Users\\Marcin\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
       ],
       "originalTargetFrameworks": [
         "netcoreapp3.1"
@@ -1137,8 +1145,8 @@
         "netcoreapp3.1": {
           "targetAlias": "netcoreapp3.1",
           "projectReferences": {
-            "C:\\Users\\msmidowi\\Documents\\SonOfRobin\\SonOfRobin.Core\\SonOfRobin.Core.csproj": {
-              "projectPath": "C:\\Users\\msmidowi\\Documents\\SonOfRobin\\SonOfRobin.Core\\SonOfRobin.Core.csproj"
+            "C:\\Users\\Marcin\\source\\repos\\SonOfRobin\\SonOfRobin.Core\\SonOfRobin.Core.csproj": {
+              "projectPath": "C:\\Users\\Marcin\\source\\repos\\SonOfRobin\\SonOfRobin.Core\\SonOfRobin.Core.csproj"
             }
           }
         }
@@ -1175,15 +1183,15 @@
         "downloadDependencies": [
           {
             "name": "Microsoft.AspNetCore.App.Runtime.osx-x64",
-            "version": "[3.1.21, 3.1.21]"
+            "version": "[3.1.22, 3.1.22]"
           },
           {
             "name": "Microsoft.NETCore.App.Host.osx-x64",
-            "version": "[3.1.21, 3.1.21]"
+            "version": "[3.1.22, 3.1.22]"
           },
           {
             "name": "Microsoft.NETCore.App.Runtime.osx-x64",
-            "version": "[3.1.21, 3.1.21]"
+            "version": "[3.1.22, 3.1.22]"
           }
         ],
         "frameworkReferences": {
@@ -1191,7 +1199,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.200-preview.21617.4\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.404\\RuntimeIdentifierGraph.json"
       }
     },
     "runtimes": {

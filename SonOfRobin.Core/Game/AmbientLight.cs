@@ -26,23 +26,25 @@ namespace SonOfRobin
 
         private static readonly List<AmbientLightData> lightDataList = new List<AmbientLightData>
         {
-            new AmbientLightData(timeOfDay: TimeSpan.FromHours(0), darknessColor: Color.Black * 0.8f, lightColor: Color.White * 0f),
-            new AmbientLightData(timeOfDay: TimeSpan.FromHours(3), darknessColor: Color.Black * 0.75f, lightColor: Color.White * 0f),
-            new AmbientLightData(timeOfDay: TimeSpan.FromHours(4), darknessColor: Color.DarkBlue * 0.4f, lightColor: Color.White * 0f),
-            new AmbientLightData(timeOfDay: TimeSpan.FromHours(5), darknessColor: Color.White * 0f, lightColor: Color.DarkOrange * 0.3f),
-            new AmbientLightData(timeOfDay: TimeSpan.FromHours(6), darknessColor: Color.Gold * 0.2f, lightColor: Color.Gold * 0.3f),
-            new AmbientLightData(timeOfDay: TimeSpan.FromHours(6.5), darknessColor: Color.White * 0f, lightColor: Color.White * 0.1f),
-            new AmbientLightData(timeOfDay: TimeSpan.FromHours(12), darknessColor: Color.White * 0f, lightColor: Color.White * 0.1f),
-            new AmbientLightData(timeOfDay: TimeSpan.FromHours(15), darknessColor: Color.White * 0f, lightColor: Color.White * 0.1f),
-            new AmbientLightData(timeOfDay: TimeSpan.FromHours(16.5), darknessColor: Color.Gold * 0.2f, lightColor: Color.Gold * 0.3f),
-            new AmbientLightData(timeOfDay: TimeSpan.FromHours(18), darknessColor: Color.White * 0f, lightColor: Color.DarkOrange * 0.3f),
-            new AmbientLightData(timeOfDay: TimeSpan.FromHours(19), darknessColor: Color.DarkBlue * 0.4f, lightColor: Color.White * 0f),
-            new AmbientLightData(timeOfDay: TimeSpan.FromHours(20), darknessColor: Color.Black * 0.75f, lightColor: Color.White * 0f),
+            new AmbientLightData(timeOfDay: TimeSpan.FromHours(0), darknessColor: Color.Black * 0.8f, lightColor: Color.Transparent),
+            new AmbientLightData(timeOfDay: TimeSpan.FromHours(3), darknessColor: Color.Black * 0.75f, lightColor: Color.Transparent),
+            new AmbientLightData(timeOfDay: TimeSpan.FromHours(4), darknessColor: Color.DarkBlue * 0.7f, lightColor: Color.Transparent),
+            new AmbientLightData(timeOfDay: TimeSpan.FromHours(5), darknessColor: Color.Brown * 0.6f, lightColor: Color.Orange * 0.4f),
+            new AmbientLightData(timeOfDay: TimeSpan.FromHours(6), darknessColor: Color.Transparent, lightColor: Color.Gold * 0.25f),
+            new AmbientLightData(timeOfDay: TimeSpan.FromHours(6.5), darknessColor: Color.Transparent, lightColor: Color.White * 0.1f),
+            new AmbientLightData(timeOfDay: TimeSpan.FromHours(12), darknessColor: Color.Transparent, lightColor: Color.White * 0.1f),
+            new AmbientLightData(timeOfDay: TimeSpan.FromHours(15), darknessColor: Color.Transparent, lightColor: Color.White * 0.1f),
+            new AmbientLightData(timeOfDay: TimeSpan.FromHours(16.5), darknessColor: Color.Transparent, lightColor: Color.Gold * 0.25f),
+            new AmbientLightData(timeOfDay: TimeSpan.FromHours(18), darknessColor:Color.Brown * 0.6f, lightColor: Color.Orange * 0.4f),
+            new AmbientLightData(timeOfDay: TimeSpan.FromHours(19), darknessColor: Color.DarkBlue * 0.7f, lightColor: Color.Transparent),
+            new AmbientLightData(timeOfDay: TimeSpan.FromHours(20), darknessColor: Color.Black * 0.75f, lightColor: Color.Transparent),
         };
 
         public static AmbientLightData CalculateLightAndDarknessColors(DateTime currentDateTime)
         {
             TimeSpan currentTimeOfDay = currentDateTime.TimeOfDay;
+
+            // return new AmbientLightData(timeOfDay: currentTimeOfDay, darknessColor: Color.Black, lightColor: Color.Transparent); // for testing
 
             AmbientLightData prevLightData, nextLightData;
             float minutesBetween, prevColorOpacity, nextColorOpacity;

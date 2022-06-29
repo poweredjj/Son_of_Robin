@@ -173,7 +173,6 @@ namespace SonOfRobin
                         spectator.sprite.color = new Color(150, 255, 255);
                         spectator.sprite.effectCol.AddEffect(new BorderInstance(outlineColor: Color.SkyBlue * 0.7f, textureSize: spectator.sprite.frame.textureSize, priority: 0, framesLeft: -1));
 
-
                         return spectator;
                     }
 
@@ -210,7 +209,7 @@ namespace SonOfRobin
                         var reproduction = new PlantReproductionData(massNeeded: 650, massLost: 180, bioWear: 0.3f);
 
                         return new Plant(name: templateName, world: world, position: position, blocksMovement: false, animPackage: AnimPkg.GrassRegular, allowedFields: allowedFields, category: BoardPiece.Category.SmallPlant,
-                            minDistance: 0, maxDistance: 400, bestEnvironment: bestEnvironment, mass: 1, maxMassBySize: maxMassBySize, maxAge: 1000, reproduction: reproduction, massToBurn: 5, massTakenMultiplier: 0.49f, generation: generation, staysAfterDeath: 300, readableName: "glow grass", description: "A special type of grass.", allowedDensity: new AllowedDensity(radious: 350, maxNoOfPiecesSameName: 1), yield: yield, lightEngine: new LightEngine(size: 0, opacity: 0.2f, colorActive: true, color: Color.Blue * 0.5f, addedGfxRectMultiplier: 4f, isActive: true, glowOnlyAtNight: true));
+                            minDistance: 0, maxDistance: 400, bestEnvironment: bestEnvironment, mass: 1, maxMassBySize: maxMassBySize, maxAge: 1000, reproduction: reproduction, massToBurn: 5, massTakenMultiplier: 0.49f, generation: generation, staysAfterDeath: 300, readableName: "glow grass", description: "A special type of grass.", allowedDensity: new AllowedDensity(radious: 350, maxNoOfPiecesSameName: 1), yield: yield, lightEngine: new LightEngine(size: 0, opacity: 0.3f, colorActive: true, color: Color.Blue * 3f, addedGfxRectMultiplier: 4f, isActive: true, glowOnlyAtNight: true, castShadows: false));
                     }
 
                 case Name.GrassDesert:
@@ -703,7 +702,7 @@ namespace SonOfRobin
                         var allowedFields = new AllowedFields(rangeDict: new Dictionary<TerrainName, AllowedRange>() {
                             { TerrainName.Height, new AllowedRange(min: Terrain.waterLevelMax, max: Terrain.volcanoEdgeMin) }});
                         return new Workshop(name: templateName, world: world, position: position, animPackage: AnimPkg.Furnace, allowedFields: allowedFields, category: BoardPiece.Category.Stone,
-                            floatsOnWater: false, minDistance: 0, maxDistance: 100, maxMassBySize: null, generation: generation, craftMenuTemplate: MenuTemplate.Name.CraftFurnace, maxHitPoints: 40, readableName: "furnace", description: "For ore smelting.", emitsLightWhenCrafting: true, lightEngine: new LightEngine(size: 0, opacity: 0.7f, colorActive: true, color: Color.Orange * 0.25f, addedGfxRectMultiplier: 8f, isActive: false));
+                            floatsOnWater: false, minDistance: 0, maxDistance: 100, maxMassBySize: null, generation: generation, craftMenuTemplate: MenuTemplate.Name.CraftFurnace, maxHitPoints: 40, readableName: "furnace", description: "For ore smelting.", emitsLightWhenCrafting: true, lightEngine: new LightEngine(size: 0, opacity: 0.7f, colorActive: true, color: Color.Orange * 0.25f, addedGfxRectMultiplier: 8f, isActive: false, castShadows: true));
                     }
 
                 case Name.CookingPot:
@@ -1210,7 +1209,7 @@ namespace SonOfRobin
                             new BuffEngine.Buff(world: world, type: BuffEngine.BuffType.MaxHp, value: 100f, sleepFrames: 1 * 60 * 60, isPositive: true, autoRemoveDelay: 5 * 60 * 60, increaseIDAtEveryUse: true)};
 
                         return new Shelter(name: templateName, world: world, position: position, animPackage: AnimPkg.TentMedium, allowedFields: allowedFields, category: BoardPiece.Category.Wood,
-                            floatsOnWater: false, minDistance: 0, maxDistance: 500, maxMassBySize: null, maxHitPoints: 120, sleepEngine: sleepEngine, readableName: "medium tent", description: "Average shelter for sleeping.\nProtects against enemies.", buffList: buffList, lightEngine: new LightEngine(size: 0, opacity: 0.65f, colorActive: false, color: Color.Transparent, addedGfxRectMultiplier: 4f, isActive: true));
+                            floatsOnWater: false, minDistance: 0, maxDistance: 500, maxMassBySize: null, maxHitPoints: 120, sleepEngine: sleepEngine, readableName: "medium tent", description: "Average shelter for sleeping.\nProtects against enemies.", buffList: buffList, lightEngine: new LightEngine(size: 0, opacity: 0.45f, colorActive: false, color: Color.Transparent, addedGfxRectMultiplier: 4f, isActive: true, castShadows: true));
                     }
 
                 case Name.TentBig:
@@ -1225,7 +1224,7 @@ namespace SonOfRobin
                             new BuffEngine.Buff(world: world, type: BuffEngine.BuffType.Strength, value: 1,sleepFrames: 1 * 60 * 60, isPositive: true, autoRemoveDelay: 5 * 60 * 60, increaseIDAtEveryUse: true)};
 
                         return new Shelter(name: templateName, world: world, position: position, animPackage: AnimPkg.TentBig, allowedFields: allowedFields, category: BoardPiece.Category.Wood,
-                            floatsOnWater: false, minDistance: 0, maxDistance: 500, maxMassBySize: null, maxHitPoints: 200, sleepEngine: sleepEngine, readableName: "big tent", description: "Luxurious shelter for sleeping.\nProtects against enemies.", buffList: buffList, lightEngine: new LightEngine(size: 0, opacity: 0.7f, colorActive: false, color: Color.Transparent, addedGfxRectMultiplier: 4f, isActive: true));
+                            floatsOnWater: false, minDistance: 0, maxDistance: 500, maxMassBySize: null, maxHitPoints: 200, sleepEngine: sleepEngine, readableName: "big tent", description: "Luxurious shelter for sleeping.\nProtects against enemies.", buffList: buffList, lightEngine: new LightEngine(size: 0, opacity: 0.45f, colorActive: false, color: Color.Transparent, addedGfxRectMultiplier: 4f, isActive: true, castShadows: true));
                     }
 
                 case Name.BackpackMedium:
@@ -1278,7 +1277,7 @@ namespace SonOfRobin
 
                         ushort range = 150;
 
-                        var fireplace = new Fireplace(name: templateName, world: world, position: position, animPackage: AnimPkg.Campfire, allowedFields: allowedFields, category: BoardPiece.Category.Stone, floatsOnWater: false, minDistance: 0, maxDistance: 100, maxMassBySize: null, generation: generation, storageWidth: 3, storageHeight: 3, maxHitPoints: 30, readableName: "campfire", description: "When burning, emits light and scares off animals.", lightEngine: new LightEngine(size: range * 6, opacity: 0.8f, colorActive: true, color: Color.Orange * 0.3f, isActive: false), scareRange: range);
+                        var fireplace = new Fireplace(name: templateName, world: world, position: position, animPackage: AnimPkg.Campfire, allowedFields: allowedFields, category: BoardPiece.Category.Stone, floatsOnWater: false, minDistance: 0, maxDistance: 100, maxMassBySize: null, generation: generation, storageWidth: 3, storageHeight: 3, maxHitPoints: 30, readableName: "campfire", description: "When burning, emits light and scares off animals.", lightEngine: new LightEngine(size: range * 6, opacity: 1.0f, colorActive: true, color: Color.Orange * 0.3f, isActive: false, castShadows: true), scareRange: range);
 
                         fireplace.sprite.AssignNewName("off");
                         return fireplace;

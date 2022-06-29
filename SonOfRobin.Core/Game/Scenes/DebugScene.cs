@@ -401,7 +401,7 @@ namespace SonOfRobin
             if (Keyboard.HasBeenPressed(Keys.PageUp) || GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.LeftStick)) Preferences.debugShowStates = !Preferences.debugShowStates;
             if (Keyboard.HasBeenPressed(Keys.PageDown) || GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.RightStick)) Preferences.debugShowStatBars = !Preferences.debugShowStatBars;
             if (Keyboard.HasBeenPressed(Keys.End)) Preferences.debugShowCellData = !Preferences.debugShowCellData;
-            if (Keyboard.HasBeenPressed(Keys.Delete)) Preferences.useMultipleThreads = !Preferences.useMultipleThreads;
+            if (Keyboard.HasBeenPressed(Keys.Delete)) Preferences.drawShadows = !Preferences.drawShadows;
         }
     }
 }

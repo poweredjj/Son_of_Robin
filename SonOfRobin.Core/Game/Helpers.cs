@@ -129,6 +129,14 @@ namespace SonOfRobin
         {
             return (float)Math.Atan2((start.Y - end.Y) * -1f, end.X - start.X);
         }
+        public static float GetAngleBetweenTwoPoints(Point start, Vector2 end)
+        {
+            return (float)Math.Atan2((start.Y - end.Y) * -1f, end.X - start.X);
+        }
+        public static float GetAngleBetweenTwoPoints(Point start, Point end)
+        {
+            return (float)Math.Atan2((start.Y - end.Y) * -1f, end.X - start.X);
+        }
 
         public static string ToSentenceCase(string str)
         {

@@ -14,7 +14,6 @@ C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcore
 C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\linux-x64\publish\Content/gfx\arrow_iron.xnb
 C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\linux-x64\publish\Content/gfx\arrow_wood.xnb
 C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\linux-x64\publish\Content/gfx\attack.xnb
-C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\linux-x64\publish\Content/gfx\axe_diamond.xnb
 C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\linux-x64\publish\Content/gfx\axe_wooden.xnb
 C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\linux-x64\publish\Content/gfx\backlight_1.xnb
 C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\linux-x64\publish\Content/gfx\backlight_2.xnb
@@ -22,6 +21,7 @@ C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcore
 C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\linux-x64\publish\Content/gfx\backlight_4.xnb
 C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\linux-x64\publish\Content/gfx\backpack.xnb
 C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\linux-x64\publish\Content/gfx\bag.xnb
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\linux-x64\publish\Content/gfx\bag_outline.xnb
 C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\linux-x64\publish\Content/gfx\belt.xnb
 C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\linux-x64\publish\Content/gfx\big_icons_candacis.xnb
 C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\linux-x64\publish\Content/gfx\bows.xnb
@@ -50,7 +50,6 @@ C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcore
 C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\linux-x64\publish\Content/gfx\greatsling.xnb
 C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\linux-x64\publish\Content/gfx\hand.xnb
 C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\linux-x64\publish\Content/gfx\heart_16x16.xnb
-C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\linux-x64\publish\Content/gfx\light_black.xnb
 C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\linux-x64\publish\Content/gfx\light_white.xnb
 C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\linux-x64\publish\Content/gfx\miss.xnb
 C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\linux-x64\publish\Content/gfx\mv_blacksmith_by_schwarzenacht_dapf6ek.xnb

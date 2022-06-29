@@ -15,6 +15,9 @@ namespace SonOfRobin
         private readonly bool colorActive;
         private readonly float addedGfxRectMultiplier;
         private readonly bool glowOnlyAtNight;
+        public readonly bool castShadows;
+        public int tempShadowMaskIndex;
+
         public int Width { get { return (int)(this.sprite.gfxRect.Width * this.addedGfxRectMultiplier) + width; } set { this.width = value; } }
         public int Height { get { return (int)(this.sprite.gfxRect.Height * this.addedGfxRectMultiplier) + height; } set { this.height = value; } }
         public int Size
@@ -53,7 +56,7 @@ namespace SonOfRobin
             }
         }
 
-        public LightEngine(float opacity, Color color, bool colorActive, float addedGfxRectMultiplier = 0f, bool isActive = true, Sprite sprite = null, int width = 0, int height = 0, int size = 0, bool glowOnlyAtNight = false)
+        public LightEngine(float opacity, Color color, bool colorActive, bool castShadows, float addedGfxRectMultiplier = 0f, bool isActive = true, Sprite sprite = null, int width = 0, int height = 0, int size = 0, bool glowOnlyAtNight = false)
         {
             this.isActive = isActive;
             this.sprite = sprite;
@@ -64,6 +67,7 @@ namespace SonOfRobin
             this.colorActive = colorActive;
             this.addedGfxRectMultiplier = addedGfxRectMultiplier;
             this.glowOnlyAtNight = glowOnlyAtNight;
+            this.castShadows = castShadows;
         }
 
         public void AssignSprite(Sprite newSprite)
@@ -98,6 +102,7 @@ namespace SonOfRobin
                 {"addedGfxRectMultiplier", this.addedGfxRectMultiplier },
                 {"isActive", this.isActive },
                 {"glowOnlyAtNight", this.glowOnlyAtNight },
+                {"castShadows", this.castShadows },
             };
 
             return lightData;
@@ -118,8 +123,9 @@ namespace SonOfRobin
             float addedGfxRectMultiplier = (float)lightDict["addedGfxRectMultiplier"];
             bool isActive = (bool)lightDict["isActive"];
             bool glowOnlyAtNight = (bool)lightDict["glowOnlyAtNight"];
+            bool castShadows = (bool)lightDict["castShadows"];
 
-            LightEngine lightEngine = new LightEngine(sprite: sprite, width: width, height: height, opacity: opacity, color: color, colorActive: colorActive, addedGfxRectMultiplier: addedGfxRectMultiplier, isActive: isActive, glowOnlyAtNight: glowOnlyAtNight);
+            LightEngine lightEngine = new LightEngine(sprite: sprite, width: width, height: height, opacity: opacity, color: color, colorActive: colorActive, addedGfxRectMultiplier: addedGfxRectMultiplier, isActive: isActive, glowOnlyAtNight: glowOnlyAtNight, castShadows: castShadows);
 
             if (lightEngine.isActive) lightEngine.Activate();
 

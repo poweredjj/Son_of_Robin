@@ -415,13 +415,13 @@ namespace SonOfRobin
         public void StartRenderingToTarget(RenderTarget2D newRenderTarget)
         {
             SonOfRobinGame.spriteBatch.Begin();
-            SonOfRobinGame.graphicsDevice.SetRenderTarget(newRenderTarget);
+            SonOfRobinGame.graphicsDevice.SetRenderTarget(newRenderTarget); // SetRenderTarget() wipes the target black!
         }
 
         public void StartRenderingToTarget(RenderTarget2D newRenderTarget, BlendState blendState)
         {
             SonOfRobinGame.spriteBatch.Begin(blendState: blendState);
-            SonOfRobinGame.graphicsDevice.SetRenderTarget(newRenderTarget);
+            SonOfRobinGame.graphicsDevice.SetRenderTarget(newRenderTarget); // SetRenderTarget() wipes the target black!
         }
 
         public void EndRenderingToTarget()

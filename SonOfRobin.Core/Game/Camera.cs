@@ -29,7 +29,12 @@ namespace SonOfRobin
             get
             {
                 int screenExtension = 200;
-                return new Rectangle(x: this.viewRect.X - (screenExtension / 2), y: this.viewRect.Y - (screenExtension / 2), width: this.viewRect.Width + screenExtension, height: this.viewRect.Height + screenExtension);
+
+                return new Rectangle(
+                    x: this.viewRect.X - (screenExtension / 2),
+                    y: this.viewRect.Y - (screenExtension / 2),
+                    width: this.viewRect.Width + screenExtension,
+                    height: this.viewRect.Height + screenExtension);
             }
         }
 
@@ -137,8 +142,8 @@ namespace SonOfRobin
 
             this.viewRect.X = (int)xMin;
             this.viewRect.Y = (int)yMin;
-            this.viewRect.Width = (int)(xMax - xMin);
-            this.viewRect.Height = (int)(yMax - yMin);
+            this.viewRect.Width = (int)Math.Floor(xMax - xMin);
+            this.viewRect.Height = (int)Math.Floor(yMax - yMin);
 
             this.viewPos = new Vector2(-xMin, -yMin);
 

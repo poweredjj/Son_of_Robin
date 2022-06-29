@@ -34,7 +34,7 @@ namespace SonOfRobin
                 if (this.piece.world.mapMode == World.MapMode.Big || this.piece.world.CineMode || this.piece.world.demoMode) return true;
 
                 Player player = this.piece.world.player;
-                if (player.activeState == BoardPiece.State.PlayerControlledSleep || !player.alive) return true;
+                if (player.activeState == BoardPiece.State.PlayerControlledSleep || !player.alive || this.piece.world.SpectatorMode) return true;
 
                 Scene topScene = sceneStack[sceneStack.Count - 1];
                 if (topScene.GetType() == typeof(TextWindow)) topScene = sceneStack[sceneStack.Count - 2];

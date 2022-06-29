@@ -14,6 +14,8 @@ namespace SonOfRobin
 
         public static int newWorldResDivider = 2;
         public static readonly Dictionary<Object, Object> namesForResDividers = new Dictionary<Object, Object> { { 10, "low" }, { 3, "medium" }, { 2, "high" }, { 1, "ultra" } };
+        public static readonly Dictionary<Object, Object> namesForDarknessRes = new Dictionary<Object, Object> { { 4, "very low" }, { 3, "low" }, { 2, "medium" }, { 1, "high" } };
+        public static readonly Dictionary<Object, Object> namesForFieldControlTipsScale = new Dictionary<Object, Object> { { 0.15f, "micro" }, { 0.25f, "small" }, { 0.4f, "medium" }, { 0.5f, "large" }, { 0.6f, "huge" }, { 0.75f, "gigantic" } };
 
         public static bool randomSeed = true;
         public static char seedDigit1 = '0';
@@ -74,12 +76,16 @@ namespace SonOfRobin
         public static int displayResX = 1920;
         public static int displayResY = 1080;
         public static bool showControlTips = true;
+        public static bool showFieldControlTips = true;
+        public static float fieldControlTipsScale = 0.25f;
         private static ButtonScheme.Type controlTipsScheme = ButtonScheme.Type.M;
         public static bool showHints = true;
         public static bool showLighting = true;
         public static bool showDebris = true;
         public static bool useMultipleThreads = true;
         private static bool mouseGesturesEmulateTouch = false;
+        public static int darknessResolution = 1;
+        public static bool drawShadows = true;
         public static bool MouseGesturesEmulateTouch
         {
             get { return mouseGesturesEmulateTouch; }
@@ -310,11 +316,13 @@ namespace SonOfRobin
                 menuScale = 1.5f;
                 loadWholeMap = false;
                 showControlTips = false;
+                showFieldControlTips = false;
             }
             else
             {
                 loadWholeMap = true;
                 showControlTips = true;
+                showFieldControlTips = true;
             }
 
             EnableTouch = SonOfRobinGame.platform == Platform.Mobile;
@@ -348,12 +356,16 @@ namespace SonOfRobin
             prefsData["displayResX"] = displayResX;
             prefsData["displayResY"] = displayResY;
             prefsData["showControlTips"] = showControlTips;
+            prefsData["showFieldControlTips"] = showFieldControlTips;
+            prefsData["fieldControlTipsScale"] = fieldControlTipsScale;
             prefsData["showHints"] = showHints;
             prefsData["showLighting"] = showLighting;
             prefsData["showDebris"] = showDebris;
             prefsData["useMultipleThreads"] = useMultipleThreads;
             prefsData["controlTipsScheme"] = ControlTipsScheme;
             prefsData["EnableTouch"] = EnableTouch;
+            prefsData["darknessResolution"] = darknessResolution;
+            prefsData["drawShadows"] = drawShadows;
 
             FileReaderWriter.Save(path: SonOfRobinGame.prefsPath, savedObj: prefsData);
 
@@ -392,12 +404,16 @@ namespace SonOfRobin
                     displayResX = (int)prefsData["displayResX"];
                     displayResY = (int)prefsData["displayResY"];
                     showControlTips = (bool)prefsData["showControlTips"];
+                    showFieldControlTips = (bool)prefsData["showFieldControlTips"];
+                    fieldControlTipsScale = (float)prefsData["fieldControlTipsScale"];
                     showHints = (bool)prefsData["showHints"];
                     showLighting = (bool)prefsData["showLighting"];
                     showDebris = (bool)prefsData["showDebris"];
                     useMultipleThreads = (bool)prefsData["useMultipleThreads"];
                     ControlTipsScheme = (ButtonScheme.Type)prefsData["controlTipsScheme"];
                     EnableTouch = (bool)prefsData["EnableTouch"];
+                    darknessResolution = (int)prefsData["darknessResolution"];
+                    drawShadows = (bool)prefsData["drawShadows"];
 
                     prefsLoaded = true;
                 }
@@ -436,7 +452,6 @@ namespace SonOfRobin
                 displayResX = SonOfRobinGame.graphicsDevice.Adapter.CurrentDisplayMode.Width;
                 displayResY = SonOfRobinGame.graphicsDevice.Adapter.CurrentDisplayMode.Height;
             }
-
         }
 
     }

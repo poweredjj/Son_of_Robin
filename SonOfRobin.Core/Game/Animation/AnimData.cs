@@ -97,12 +97,10 @@ namespace SonOfRobin
         AxeWood,
         AxeStone,
         AxeIron,
-        AxeDiamond,
 
         PickaxeWood,
         PickaxeStone,
         PickaxeIron,
-        PickaxeDiamond,
 
         Scythe,
         BatWood,
@@ -576,10 +574,6 @@ namespace SonOfRobin
             AddFrameList(animPackage: packageName, animSize: 0, animName: "default",
             frameList: ConvertImageToFrameList(atlasName: "big_icons_candacis", layer: 0, x: 48, y: 0, width: 48, height: 48, scale: 0.5f));
 
-            packageName = AnimPkg.AxeDiamond;
-            AddFrameList(animPackage: packageName, animSize: 0, animName: "default",
-            frameList: ConvertImageToFrameList(atlasName: "axe_diamond", layer: 0, x: 0, y: 0, width: 30, height: 32, scale: 0.7f));
-
             packageName = AnimPkg.PickaxeWood;
             AddFrameList(animPackage: packageName, animSize: 0, animName: "default",
             frameList: ConvertImageToFrameList(atlasName: "tools_gravel", layer: 0, x: 0, y: 384, width: 48, height: 48, scale: 0.7f));
@@ -591,10 +585,6 @@ namespace SonOfRobin
             packageName = AnimPkg.PickaxeIron;
             AddFrameList(animPackage: packageName, animSize: 0, animName: "default",
             frameList: ConvertImageToFrameList(atlasName: "tools_gravel", layer: 0, x: 192, y: 384, width: 48, height: 48, scale: 0.7f));
-
-            packageName = AnimPkg.PickaxeDiamond;
-            AddFrameList(animPackage: packageName, animSize: 0, animName: "default",
-            frameList: ConvertImageToFrameList(atlasName: "tools_gravel", layer: 0, x: 528, y: 384, width: 48, height: 48, scale: 0.7f));
 
             packageName = AnimPkg.BatWood;
             AddFrameList(animPackage: packageName, animSize: 0, animName: "default",

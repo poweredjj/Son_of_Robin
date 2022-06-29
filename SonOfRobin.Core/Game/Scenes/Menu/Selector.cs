@@ -30,7 +30,7 @@ namespace SonOfRobin
             this.CompleteCreation();
         }
 
-        public Selector(Menu menu, string name, Dictionary<object, object> valueDict, Object targetObj, string propertyName, bool rebuildsMenu = false) : base(menu: menu, name: name, rebuildsMenu: rebuildsMenu)
+        public Selector(Menu menu, string name, Dictionary<object, object> valueDict, Object targetObj, string propertyName, bool rebuildsMenu = false, bool rebuildsMenuInstantScroll = false, List<InfoWindow.TextEntry> infoTextList = null) : base(menu: menu, name: name, rebuildsMenu: rebuildsMenu, rebuildsMenuInstantScroll: rebuildsMenuInstantScroll, infoTextList: infoTextList)
         {
             this.targetObj = targetObj;
             this.propertyName = propertyName;

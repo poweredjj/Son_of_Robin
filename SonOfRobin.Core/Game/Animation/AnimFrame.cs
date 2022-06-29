@@ -14,7 +14,7 @@ namespace SonOfRobin
         public readonly Texture2D texture;
         public readonly Vector2 textureSize;
         public readonly Rectangle textureRect;
-        private readonly Vector2 rotationOrigin;
+        public readonly Vector2 rotationOrigin;
 
         public readonly string id;
         private readonly float depthPercent;
@@ -26,7 +26,7 @@ namespace SonOfRobin
         public readonly Vector2 colOffset;
         public readonly byte layer;
         public readonly byte duration;
-        private readonly float scale;
+        public readonly float scale;
 
         public AnimFrame(string atlasName, int atlasX, int atlasY, int width, int height, byte layer, byte duration, bool crop = false, float scale = 1f, float depthPercent = 0.25f, int padding = 1)
         {
@@ -58,8 +58,8 @@ namespace SonOfRobin
 
             var colBounds = this.FindCollisionBounds();
 
-            this.colWidth = (int)((colBounds.Width + 0) * scale);
-            this.colHeight = (int)((colBounds.Height + 0) * scale);
+            this.colWidth = (int)(colBounds.Width * scale);
+            this.colHeight = (int)(colBounds.Height * scale);
             this.colOffset = new Vector2(-(int)(this.colWidth * 0.5f), -(int)(this.colHeight * 0.5f));
 
             this.gfxWidth = (int)(this.texture.Width * scale);

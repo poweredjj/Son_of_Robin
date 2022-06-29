@@ -88,6 +88,7 @@ namespace SonOfRobin
             if (targets.Count == 0 || this.world.currentUpdate < this.hitCooldown || player.Stamina < 80) return;
 
             bool anyTargetHit = false;
+            bool fieldTipShown = false;
 
             foreach (BoardPiece currentTarget in targets)
             {
@@ -161,6 +162,11 @@ namespace SonOfRobin
 
                     VirtButton.ButtonHighlightOnNextFrame(VButName.UseTool);
                     ControlTips.TipHighlightOnNextFrame(tipName: "use item");
+                    if (!fieldTipShown)
+                    {
+                        new FieldTip(texture: ButtonScheme.buttonRT, pieceRect: currentTarget.sprite.gfxRect, alignment: FieldTip.Alignment.Center);
+                        fieldTipShown = true;
+                    }
                 }
                 else
                 {

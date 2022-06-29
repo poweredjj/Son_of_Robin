@@ -13,8 +13,8 @@ namespace SonOfRobin
 
     public class SonOfRobinGame : Game
     {
-        public static readonly float version = 7.7f;
-        public static readonly DateTime lastChanged = new DateTime(2022, 04, 07);
+        public static readonly float version = 7.8f;
+        public static readonly DateTime lastChanged = new DateTime(2022, 04, 12);
 
         public static ContentManager content;
 
@@ -41,8 +41,8 @@ namespace SonOfRobin
         public static SpriteFont fontTommy40;
 
         public static Texture2D whiteRectangle;
-        public static Texture2D lightSourceBlack;
-        public static Texture2D lightSourceWhite;
+        public static List<RenderTarget2D> tempShadowMaskList;
+        public static Texture2D lightSphere;
         public static Dictionary<string, Texture2D> textureByName;
 
         public static readonly SimpleFps fps = new SimpleFps();
@@ -173,6 +173,7 @@ namespace SonOfRobin
             effectColorize = Content.Load<Effect>("effects/Colorize");
             effectBorder = Content.Load<Effect>("effects/Border");
 
+
             fontPixelMix5 = Content.Load<SpriteFont>("fonts/PixelMix");
             fontPressStart2P5 = Content.Load<SpriteFont>("fonts/PressStart2P");
             fontFreeSansBold12 = Content.Load<SpriteFont>("fonts/FreeSansBold12");
@@ -182,15 +183,15 @@ namespace SonOfRobin
 
             textureByName = new Dictionary<string, Texture2D>();
 
-            string[] assetNames = { "no_anim", "fox", "tile_custom01", "actor29rec4", "tileb", "tile_19ba32a6", "backlight_1", "backlight_2", "backlight_3", "backlight_4", "crabs_small", "crabs_big", "frogs_small", "frogs_big", "flowers", "8f296dbbaf43865bc29e99660fe7b5af_2x", "qYFvsmq", "NicePng_pine-tree-clipart-png_1446450", "palmtree_small", "tilees by guth_zpsfn3wpjdu_2x", "attack", "miss", "zzz", "heart_16x16", "rabbits", "virtual_joypad_background", "virtual_joypad_stick", "virtual_button", "virtual_button_pressed", "cursor", "chests", "d9ffec650d3104f5c4564c9055787530", "sticks1", "sticks2", "axe_wooden", "axe_diamond", "hand", "tools_gravel", "stones", "fancy_food", "fancy_food2", "celianna_farmnature_crops_transparent", "weapons1", "steak_t-bone", "Cooked Meat", "big_icons_candacis", "Candacis_flames1", "gems__rpg_maker_mv__by_petschko-d9euoxr", "mv_blacksmith_by_schwarzenacht_dapf6ek", "bows", "arrow_wood", "arrow_iron", "crosshair", "sling", "greatsling", "stone_ammo", "craft_items", "tent_big", "tent_medium", "flames", "bag", "bag_outline", "backpack", "belt", "parchment", "exclamation", "scythe", "grass_blade", "tiger", "plus", "acorn", "light_black", "light_white", "torch_on", "torch_off", "water_drop" };
+            string[] assetNames = { "no_anim", "fox", "tile_custom01", "actor29rec4", "tileb", "tile_19ba32a6", "backlight_1", "backlight_2", "backlight_3", "backlight_4", "crabs_small", "crabs_big", "frogs_small", "frogs_big", "flowers", "8f296dbbaf43865bc29e99660fe7b5af_2x", "qYFvsmq", "NicePng_pine-tree-clipart-png_1446450", "palmtree_small", "tilees by guth_zpsfn3wpjdu_2x", "attack", "miss", "zzz", "heart_16x16", "rabbits", "virtual_joypad_background", "virtual_joypad_stick", "virtual_button", "virtual_button_pressed", "cursor", "chests", "d9ffec650d3104f5c4564c9055787530", "sticks1", "sticks2", "axe_wooden", "hand", "tools_gravel", "stones", "fancy_food", "fancy_food2", "celianna_farmnature_crops_transparent", "weapons1", "steak_t-bone", "Cooked Meat", "big_icons_candacis", "Candacis_flames1", "gems__rpg_maker_mv__by_petschko-d9euoxr", "mv_blacksmith_by_schwarzenacht_dapf6ek", "bows", "arrow_wood", "arrow_iron", "crosshair", "sling", "greatsling", "stone_ammo", "craft_items", "tent_big", "tent_medium", "flames", "bag", "bag_outline", "backpack", "belt", "parchment", "exclamation", "scythe", "grass_blade", "tiger", "plus", "acorn", "light_white", "torch_on", "torch_off", "water_drop" };
 
             foreach (string assetName in assetNames)
             {
                 textureByName[assetName] = Content.Load<Texture2D>($"gfx/{assetName}");
             }
 
-            lightSourceBlack = textureByName["light_black"];
-            lightSourceWhite = textureByName["light_white"];
+            lightSphere = textureByName["light_white"];
+            tempShadowMaskList = new List<RenderTarget2D> { };
             whiteRectangle = new Texture2D(GraphicsDevice, 1, 1);
             whiteRectangle.SetData(new[] { Color.White });
         }

@@ -238,7 +238,6 @@ namespace SonOfRobin
                 case TipsLayout.WorldSpectator:
                     new ButtonTip(tipCollection: this.tipCollection, text: "walk", textures: new List<Texture2D> { ButtonScheme.leftStick });
                     new ButtonTip(tipCollection: this.tipCollection, text: "camera", textures: new List<Texture2D> { ButtonScheme.rightStick });
-                    new ButtonTip(tipCollection: this.tipCollection, text: "map", highlightCoupledObj: world, highlightCoupledVarName: "MapEnabled", textures: new List<Texture2D> { ButtonScheme.dpadRight });
                     new ButtonTip(tipCollection: this.tipCollection, text: "menu", textures: new List<Texture2D> { ButtonScheme.buttonStart });
                     break;
 

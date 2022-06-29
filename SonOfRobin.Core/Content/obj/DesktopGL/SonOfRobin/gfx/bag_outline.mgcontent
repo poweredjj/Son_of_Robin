@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>C:/Users/msmidowi/Documents/SonOfRobin/SonOfRobin.Core/Content/gfx/axe_diamond.png</SourceFile>
-  <SourceTime>2021-11-25T14:18:56.7988535+01:00</SourceTime>
-  <DestFile>C:/Users/msmidowi/Documents/SonOfRobin/SonOfRobin.Core/Content/bin/DesktopGL/SonOfRobin/gfx/axe_diamond.xnb</DestFile>
-  <DestTime>2022-04-06T08:34:32.5880748+02:00</DestTime>
+  <SourceFile>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/bag_outline.png</SourceFile>
+  <SourceTime>2022-04-07T10:57:43.3537656+02:00</SourceTime>
+  <DestFile>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/bin/DesktopGL/SonOfRobin/gfx/bag_outline.xnb</DestFile>
+  <DestTime>2022-04-11T17:24:44.9232462+02:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2020-08-10T18:17:54+02:00</ImporterTime>
   <Processor>TextureProcessor</Processor>

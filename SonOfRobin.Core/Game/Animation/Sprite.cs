@@ -704,22 +704,28 @@ namespace SonOfRobin
             { this.boardPiece.DrawStatBar(); }
         }
 
-        private void DrawRoutine(bool calculateSubmerge)
+        public void DrawRoutine(bool calculateSubmerge, int offsetX = 0, int offsetY = 0)
         {
+            Rectangle destRect = this.gfxRect;
+            if (offsetX != 0 || offsetY != 0)
+            {
+                destRect.X += offsetX;
+                destRect.Y += offsetY;
+            }
+
             if (this.rotation == 0)
             {
                 int submergeCorrection = !this.floatsOnWater && this.IsInWater && calculateSubmerge ?
                     (Terrain.waterLevelMax - this.GetFieldValue(TerrainName.Height)) / 2 : 0;
 
-                this.frame.Draw(destRect: this.gfxRect, color: this.color, submergeCorrection: submergeCorrection, opacity: this.opacity);
+                this.frame.Draw(destRect: destRect, color: this.color, submergeCorrection: submergeCorrection, opacity: this.opacity);
             }
             else
             {
-                this.frame.DrawWithRotation(position: new Vector2(this.gfxRect.Center.X, this.gfxRect.Center.Y), color: this.color, rotation: this.rotation, opacity: this.opacity);
+                this.frame.DrawWithRotation(position: new Vector2(destRect.Center.X, destRect.Center.Y), color: this.color, rotation: this.rotation, opacity: this.opacity);
             }
 
             if (this.boardPiece.pieceStorage != null && this.boardPiece.GetType() == typeof(Plant)) this.DrawFruits();
-
         }
 
         private void DrawFruits()

@@ -23,7 +23,7 @@ namespace SonOfRobin
         private readonly int frozenUpdate;
         private int CurrentUpdate { get { return this.world != null ? this.world.currentUpdate : this.frozenUpdate; } }
         public TimeSpan IslandTimeElapsed
-        { get { return TimeSpan.FromSeconds(this.CurrentUpdate * 1.5) + startTimeOffset; } }
+        { get { return TimeSpan.FromSeconds(this.CurrentUpdate * 1.5) + startTimeOffset; } }  // * 1.5
         public DateTime IslandDateTime
         { get { return startingDate + this.IslandTimeElapsed - startTimeOffset; } }
 

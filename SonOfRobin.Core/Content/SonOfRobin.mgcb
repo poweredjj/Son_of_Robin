@@ -146,18 +146,6 @@
 /processorParam:TextureFormat=Color
 /build:gfx/attack.png
 
-#begin gfx/axe_diamond.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/axe_diamond.png
-
 #begin gfx/axe_wooden.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -589,18 +577,6 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:gfx/heart_16x16.png
-
-#begin gfx/light_black.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/light_black.png
 
 #begin gfx/light_white.png
 /importer:TextureImporter
