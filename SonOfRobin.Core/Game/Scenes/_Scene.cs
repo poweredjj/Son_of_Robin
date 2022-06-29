@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -72,6 +73,7 @@ namespace SonOfRobin
                 }
 
                 createdStack.Reverse();
+                createdStack = createdStack.OrderByDescending(o => o.priority).ToList();
                 return createdStack;
             }
         }
@@ -111,6 +113,28 @@ namespace SonOfRobin
             }
         }
 
+        public Matrix TransformMatrix
+        {
+            get
+            {
+                Matrix scaleMatrix = Matrix.CreateScale(
+                                           (float)SonOfRobinGame.graphics.PreferredBackBufferWidth / SonOfRobinGame.VirtualWidth / this.viewParams.drawScaleX,
+                                           (float)SonOfRobinGame.graphics.PreferredBackBufferHeight / SonOfRobinGame.VirtualHeight / this.viewParams.drawScaleY,
+                                           1f);
+
+                Matrix rotationMatrix = Matrix.CreateRotationZ(this.viewParams.drawRot);
+                Matrix translationMatrix = Matrix.CreateTranslation(new Vector3(this.viewParams.drawPosX, this.viewParams.drawPosY, 0));
+
+                // needed for rotation to center around the camera
+                Matrix translateToOrigin = Matrix.CreateTranslation(-(float)this.viewParams.drawWidth / 2f, -(float)this.viewParams.drawHeight / 2f, 0);
+                // needed for rotation to center around the camera
+                Matrix translateBackToPosition = Matrix.CreateTranslation((float)this.viewParams.drawWidth / 2f, (float)this.viewParams.drawHeight / 2f, 0);
+
+                Matrix compositeMatrix = translateToOrigin * rotationMatrix * translateBackToPosition * translationMatrix * scaleMatrix;
+                return compositeMatrix;
+            }
+        }
+
         public Scene(InputTypes inputType, TouchLayout touchLayout, ControlTips.TipsLayout tipsLayout, int priority = 1, bool blocksUpdatesBelow = false, bool blocksDrawsBelow = false, bool alwaysUpdates = false, bool alwaysDraws = false, bool hidesSameScenesBelow = false)
         {
             this.viewParams = new ViewParams();
@@ -133,12 +157,12 @@ namespace SonOfRobin
             if (this.hidesSameScenesBelow) this.HideSameScenesBelow();
 
             sceneStack.Add(this);
+
+            UpdateInputActiveTipsTouch(); // to avoid one frame delay in updating tips and touch overlay
         }
 
         public virtual void Remove()
         {
-            SonOfRobinGame.controlTips.SwitchToLayout(ControlTips.TipsLayout.Empty);
-
             sceneStack = sceneStack.Where(scene => scene.sceneID != this.sceneID).ToList();
             if (this.hidesSameScenesBelow) this.ShowTopSceneOfSameType();
         }
@@ -168,13 +192,13 @@ namespace SonOfRobin
             if (scene != null) scene.drawActive = true;
         }
 
-        protected Scene GetSceneBelow(bool ignorePriority0 = true)
+        protected Scene GetSceneBelow(bool ignorePriorityLessThan1 = true)
         {
             Scene previousScene = null;
             foreach (Scene scene in sceneStack)
             {
                 if (scene.transition != null && scene.transition.removeScene) continue;
-                if (scene.priority == 0 && ignorePriority0) continue;
+                if (scene.priority < 1 && ignorePriorityLessThan1) continue;
                 if (scene == this) return previousScene;
                 previousScene = scene;
             }
@@ -182,7 +206,7 @@ namespace SonOfRobin
             return null;
         }
 
-        private static void UpdateInputActive()
+        public static void UpdateInputActiveTipsTouch()
         {
             bool normalInputSet = false;
 
@@ -202,19 +226,15 @@ namespace SonOfRobin
                         break;
 
                     case InputTypes.Normal:
-
                         if (!normalInputSet)
                         {
                             scene.inputActive = true;
                             TouchInput.SwitchToLayout(scene.touchLayout);
-
-                            SonOfRobinGame.controlTips.SwitchToLayout(scene.tipsLayout);
-                            SonOfRobinGame.controlTips.currentScene = scene;
+                            SonOfRobinGame.controlTips.AssignScene(scene: scene);
 
                             normalInputSet = true;
                         }
-                        else
-                        { scene.inputActive = false; }
+                        else scene.inputActive = false;
                         break;
 
                     default:
@@ -224,8 +244,14 @@ namespace SonOfRobin
 
             if (!normalInputSet)
             {
-                TouchInput.SwitchToLayout(TouchLayout.Empty);
-                SonOfRobinGame.controlTips.SwitchToLayout(ControlTips.TipsLayout.Empty);
+                try
+                {
+                    TouchInput.SwitchToLayout(TouchLayout.Empty);
+                    SonOfRobinGame.controlTips.AssignScene(scene: null);
+                }
+                catch (NullReferenceException)
+                { }
+
             }
         }
 
@@ -297,7 +323,7 @@ namespace SonOfRobin
         public static void SetInventoryLayout(InventoryLayout newLayout, BoardPiece chest = null, Player player = null)
         {
 
-            var invScenes = Scene.GetAllScenesOfType(typeof(Inventory));
+            var invScenes = GetAllScenesOfType(typeof(Inventory));
             foreach (Scene scene in invScenes)
             {
                 Inventory invScene = (Inventory)scene;
@@ -375,7 +401,7 @@ namespace SonOfRobin
             Scheduler.ProcessQueue();
 
             Input.UpdateInput(gameTime: gameTime);
-            UpdateInputActive();
+            UpdateInputActiveTipsTouch();
 
             foreach (Scene scene in UpdateStack)
             {
@@ -407,30 +433,13 @@ namespace SonOfRobin
                                       (!(scene.viewParams.DrawPos == previousScene.viewParams.DrawPos &&
                                          scene.viewParams.drawRot == previousScene.viewParams.drawRot &&
                                          scene.viewParams.drawScaleX == previousScene.viewParams.drawScaleX &&
-                                          scene.viewParams.drawScaleY == previousScene.viewParams.drawScaleY
+                                         scene.viewParams.drawScaleY == previousScene.viewParams.drawScaleY
                                          ));
 
                 if (!firstSpriteBatchStarted || createNewMatrix)
                 {
+                    scene.StartNewSpriteBatch(end: spriteBatchNotEnded);
 
-                    Matrix scaleMatrix = Matrix.CreateScale(
-                                        (float)SonOfRobinGame.graphics.PreferredBackBufferWidth / SonOfRobinGame.VirtualWidth / scene.viewParams.drawScaleX,
-                                        (float)SonOfRobinGame.graphics.PreferredBackBufferHeight / SonOfRobinGame.VirtualHeight / scene.viewParams.drawScaleY,
-                                        1f);
-
-                    Matrix rotationMatrix = Matrix.CreateRotationZ(scene.viewParams.drawRot);
-                    Matrix translationMatrix = Matrix.CreateTranslation(new Vector3(scene.viewParams.drawPosX, scene.viewParams.drawPosY, 0));
-
-                    // needed for rotation to center around the camera
-                    Matrix translateToOrigin = Matrix.CreateTranslation(-(float)scene.viewParams.drawWidth / 2f, -(float)scene.viewParams.drawHeight / 2f, 0);
-                    // needed for rotation to center around the camera
-                    Matrix translateBackToPosition = Matrix.CreateTranslation((float)scene.viewParams.drawWidth / 2f, (float)scene.viewParams.drawHeight / 2f, 0);
-
-                    Matrix compositeMatrix = translateToOrigin * rotationMatrix * translateBackToPosition * translationMatrix * scaleMatrix;
-
-                    if (spriteBatchNotEnded) SonOfRobinGame.spriteBatch.End();
-
-                    SonOfRobinGame.spriteBatch.Begin(transformMatrix: compositeMatrix, samplerState: Microsoft.Xna.Framework.Graphics.SamplerState.AnisotropicClamp);
                     spriteBatchNotEnded = true;
                     firstSpriteBatchStarted = true;
                 }
@@ -441,6 +450,16 @@ namespace SonOfRobin
             }
 
             if (spriteBatchNotEnded) SonOfRobinGame.spriteBatch.End();
+        }
+
+        public void StartNewSpriteBatch(bool end = true, bool enableEffects = false)
+        {
+            if (end) SonOfRobinGame.spriteBatch.End();
+            SonOfRobinGame.spriteBatch.Begin(transformMatrix: this.TransformMatrix, samplerState: SamplerState.AnisotropicClamp,
+                sortMode: enableEffects ? SpriteSortMode.Immediate : SpriteSortMode.Deferred);
+
+            // SpriteSortMode.Immediate enables use of effects, but is slow.
+            // It is best to use it only if necessary.
         }
 
     }

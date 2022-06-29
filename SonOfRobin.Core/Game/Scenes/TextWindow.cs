@@ -12,6 +12,7 @@ namespace SonOfRobin
         public static readonly SpriteFont font = SonOfRobinGame.fontHuge;
         public static readonly int maxWidth = 90;
 
+        private readonly bool autoClose;
         private int blockingFramesLeft;
         public readonly string text;
         private readonly int textWidth;
@@ -46,7 +47,7 @@ namespace SonOfRobin
             }
         }
 
-        public TextWindow(string text, Color textColor, Color bgColor, bool animate = true, int framesPerChar = 0, bool useTransition = true, bool checkForDuplicate = false, bool blocksUpdatesBelow = false, int blockInputDuration = 0, Scheduler.TaskName closingTask = Scheduler.TaskName.Empty, Object closingTaskHelper = null, bool useTransitionOpen = false, bool useTransitionClose = false) : base(inputType: InputTypes.Normal, priority: 1, blocksUpdatesBelow: blocksUpdatesBelow, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: blockInputDuration > 0 ? ControlTips.TipsLayout.Empty : ControlTips.TipsLayout.TextWindow)
+        public TextWindow(string text, Color textColor, Color bgColor, bool animate = true, int framesPerChar = 0, bool useTransition = true, bool checkForDuplicate = false, bool blocksUpdatesBelow = false, int blockInputDuration = 0, Scheduler.TaskName closingTask = Scheduler.TaskName.Empty, Object closingTaskHelper = null, bool useTransitionOpen = false, bool useTransitionClose = false, bool autoClose = false) : base(inputType: InputTypes.Normal, priority: 0, blocksUpdatesBelow: blocksUpdatesBelow, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: blockInputDuration > 0 ? ControlTips.TipsLayout.Empty : ControlTips.TipsLayout.TextWindow)
         {
             this.text = SplitText(text: text, maxWidth: maxWidth);
             Vector2 textSize = font.MeasureString(this.text);
@@ -59,6 +60,7 @@ namespace SonOfRobin
             this.useTransitionOpen = useTransitionOpen;
             this.useTransitionClose = useTransitionClose;
             this.blockingFramesLeft = blockInputDuration;
+            this.autoClose = autoClose;
 
             this.charCounter = animate ? 0 : text.Length;
             this.currentCharFramesLeft = framesPerChar;
@@ -169,14 +171,16 @@ namespace SonOfRobin
 
             if (anyButtonPressed)
             {
-                if (this.animationFinished)
-                { this.Remove(); }
+                if (this.animationFinished) this.Remove();
                 else
                 {
                     this.charCounter = this.text.Length;
                     this.animationFinished = true;
                 }
             }
+
+            if (this.autoClose && this.animationFinished && this.blockingFramesLeft == 0) this.Remove();
+
         }
         public bool CheckForAnyInput()
         {

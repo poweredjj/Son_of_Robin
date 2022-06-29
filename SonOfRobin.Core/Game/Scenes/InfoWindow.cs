@@ -203,7 +203,6 @@ namespace SonOfRobin
                 TextEntry.CompareTwoLists(this.entryList, entryList))
                 return;
 
-
             this.entryList = entryList;
 
             var paramsToChange = new Dictionary<string, float> { };

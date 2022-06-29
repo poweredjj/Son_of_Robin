@@ -44,7 +44,6 @@ namespace SonOfRobin
         private static readonly TouchCollection emptyTouchList = new TouchCollection { };
         public static TouchCollection TouchPanelState { get { return Input.InputActive ? touchPanelState : emptyTouchList; } }
         public static bool IsGestureAvailable { get { return Input.InputActive ? TouchPanel.IsGestureAvailable : false; } } // should be used before reading gesture directly
-
         public static bool IsStateAvailable(TouchLocationState state)
         {
             var matchingTypes = TouchPanelState.Where(touch => touch.State == state).ToList();
@@ -86,6 +85,9 @@ namespace SonOfRobin
 
         public static void SwitchToLayout(TouchLayout touchLayout)
         {
+            World world = World.GetTopWorld();
+            Preferences preferences = new Preferences();
+
             if (SonOfRobinGame.platform != Platform.Mobile || touchLayout == currentLayout) return;
 
             currentLayout = touchLayout;
@@ -113,17 +115,17 @@ namespace SonOfRobin
                     xPos = 0.76f;
                     yPos = 0.12f;
 
-                    new VirtButton(name: VButName.Map, label: "MAP", colorPressed: Color.CornflowerBlue, colorReleased: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
+                    new VirtButton(name: VButName.Map, label: "MAP", colorPressed: Color.CornflowerBlue, colorReleased: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size, highlightCoupledObj: world, highlightCoupledVarName: "mapEnabled");
                     xPos += xShift;
-                    new VirtButton(name: VButName.ZoomOut, label: "ZOOM\nOUT", colorPressed: Color.Orange, colorReleased: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size, switchButton: true, coupledPrefName: "zoomedOut");
+                    new VirtButton(name: VButName.ZoomOut, label: "ZOOM\nOUT", colorPressed: Color.Orange, colorReleased: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size, switchButton: true, activeCoupledObj: preferences, activeCoupledVarName: "zoomedOut");
                     xPos += xShift;
                     new VirtButton(name: VButName.Run, label: "RUN", colorPressed: Color.Red, colorReleased: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
                     yPos += yShift;
-                    new VirtButton(name: VButName.Interact, label: "INTERACT", colorPressed: Color.LightGreen, colorReleased: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
+                    new VirtButton(name: VButName.Interact, label: "INTERACT", colorPressed: Color.LightGreen, colorReleased: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size, isHighlighted: false);
                     xPos -= xShift;
-                    new VirtButton(name: VButName.UseTool, label: "USE\nITEM", colorPressed: Color.CornflowerBlue, colorReleased: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
+                    new VirtButton(name: VButName.UseTool, label: "USE\nITEM", colorPressed: Color.CornflowerBlue, colorReleased: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size, isHighlighted: false);
                     xPos -= xShift;
-                    new VirtButton(name: VButName.PickUp, label: "PICK\nUP", colorPressed: Color.LightGreen, colorReleased: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
+                    new VirtButton(name: VButName.PickUp, label: "PICK\nUP", colorPressed: Color.LightBlue, colorReleased: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size, isHighlighted: false);
 
                     // left side
 
@@ -152,7 +154,7 @@ namespace SonOfRobin
                 case TouchLayout.WorldSleep:
                     showSticks = false;
 
-                    new VirtButton(name: VButName.Interact, label: "WAKE UP", colorPressed: Color.CornflowerBlue, colorReleased: Color.White, posX0to1: 0.94f, posY0to1: 0.32f, width0to1: size, height0to1: size);
+                    new VirtButton(name: VButName.Interact, label: "WAKE UP", colorPressed: Color.CornflowerBlue, colorReleased: Color.White, posX0to1: 0.94f, posY0to1: 0.32f, width0to1: size, height0to1: size, highlightCoupledObj: world.player, highlightCoupledVarName: "CanWakeNow");
 
                     return;
 

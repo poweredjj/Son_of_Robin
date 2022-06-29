@@ -151,7 +151,6 @@ namespace SonOfRobin
             this.allSteps = this.saveMode ? 7 + (this.spritesToSave.Count / maxPiecesInPackage) : 6 + this.PiecesFilesCount;
 
             if (this.saveMode) DeleteAllSaveTemps();
-            if (SonOfRobinGame.platform == Platform.Mobile) SonOfRobinGame.KeepScreenOn = true;
         }
 
         private string GetSaveTempPath()
@@ -171,7 +170,6 @@ namespace SonOfRobin
         public override void Remove()
         {
             if (Preferences.FrameSkip) SonOfRobinGame.game.IsFixedTimeStep = true;
-            if (SonOfRobinGame.platform == Platform.Mobile) SonOfRobinGame.KeepScreenOn = false;
             SonOfRobinGame.progressBar.TurnOff(addTransition: false);
             base.Remove();
             if (this.saveMode && this.quitGameAfterSaving) SonOfRobinGame.quitGame = true;
@@ -203,13 +201,6 @@ namespace SonOfRobin
         private void UpdateProgressBar()
         {
             SonOfRobinGame.progressBar.TurnOn(curVal: this.processedSteps, maxVal: this.allSteps, text: $"{this.modeText} game - {this.nextStepName}...");
-
-            // for proper ControlTips alignment
-            this.viewParams.width = SonOfRobinGame.progressBar.viewParams.width;
-            this.viewParams.height = SonOfRobinGame.progressBar.viewParams.height;
-            this.viewParams.posX = SonOfRobinGame.progressBar.viewParams.posX;
-            this.viewParams.posY = SonOfRobinGame.progressBar.viewParams.posY;
-
             // new TextWindow(text: $"{this.modeText} game - {this.nextStepName}...", textColor: Color.White, bgColor: Color.DarkBlue, useTransition: false, animate: false, blocksUpdatesBelow: true); // testing
         }
 

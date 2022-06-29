@@ -11,6 +11,7 @@ namespace SonOfRobin
     public class Menu : Scene
     {
         public static bool nextMenuNoStartTransition = false;
+        private static readonly float baseScrollSpeed = 20f;
         public enum Layout { Middle, Left, Right }
 
         public readonly MenuTemplate.Name templateName;
@@ -26,6 +27,7 @@ namespace SonOfRobin
         public readonly Layout layout;
         public Color bgColor;
         public Entry lastTouchedEntry;
+        private float scrollSpeed;
 
         public int EntryBgWidth
         {
@@ -133,7 +135,7 @@ namespace SonOfRobin
 
                 int targetPos = TargetScrollPosition;
                 float posDiff = targetPos - currentScrollPosition;
-                currentScrollPosition += posDiff / 20f;
+                currentScrollPosition += posDiff / this.scrollSpeed;
             }
         }
         public Menu(MenuTemplate.Name templateName, bool blocksUpdatesBelow, bool canBeClosedManually, string name, bool alwaysShowSelectedEntry = false, Layout layout = Layout.Right, Scheduler.TaskName closingTask = Scheduler.TaskName.Empty, Object closingTaskHelper = null) : base(inputType: InputTypes.Normal, priority: 1, blocksUpdatesBelow: blocksUpdatesBelow, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, hidesSameScenesBelow: true, touchLayout: TouchLayout.Empty, tipsLayout: canBeClosedManually ? ControlTips.TipsLayout.Menu : ControlTips.TipsLayout.MenuWithoutClosing)
@@ -152,6 +154,7 @@ namespace SonOfRobin
             this.closingTaskHelper = closingTaskHelper;
             this.SetViewPosAndSize();
             this.bgColor = Color.Black * 0.6f;
+            this.scrollSpeed = baseScrollSpeed;
 
             new Separator(menu: this, name: this.name);
             this.SetTouchLayout();
@@ -337,7 +340,7 @@ namespace SonOfRobin
             this.SetViewPosAndSize();
 
             var activeEntry = this.ActiveEntry;
-            if (activeEntry.infoTextList != null && !activeEntry.IsVisible) SonOfRobinGame.hintWindow.TurnOff();
+            if (activeEntry.infoTextList != null && !activeEntry.IsFullyVisible) SonOfRobinGame.hintWindow.TurnOff();
 
             this.ProcessInput();
         }
@@ -407,14 +410,17 @@ namespace SonOfRobin
 
             int valueToAdd = add ? 1 : -1;
 
-            int oldIndex = this.activeIndex;
+            this.scrollSpeed = baseScrollSpeed;
+
             while (true)
             {
                 this.activeIndex += valueToAdd;
-                if (this.activeIndex == this.entryList.Count || this.activeIndex == -1)
+
+                if (this.activeIndex == -1 || this.activeIndex == this.entryList.Count)
                 {
-                    this.activeIndex = oldIndex;
-                    return;
+                    this.scrollSpeed = baseScrollSpeed / 5f;
+                    if (this.activeIndex == this.entryList.Count) this.activeIndex = 0;
+                    if (this.activeIndex == -1) this.activeIndex = this.entryList.Count - 1;
                 }
 
                 Entry activeItem = this.ActiveEntry;

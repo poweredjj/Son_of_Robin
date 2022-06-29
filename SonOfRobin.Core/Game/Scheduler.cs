@@ -51,10 +51,8 @@ namespace SonOfRobin
 
                     this.frame = SonOfRobinGame.currentUpdate + this.delay;
 
-                    if (this.delay == 0)
-                    { this.Execute(); }
-                    else
-                    { this.AddToQueue(); }
+                    if (this.delay == 0) this.Execute();
+                    else this.AddToQueue();
                 }
                 else
                 { this.frame = -1; }
@@ -147,8 +145,6 @@ namespace SonOfRobin
                         Menu.RemoveEveryMenuOfTemplate(MenuTemplate.Name.CreateNewIsland);
                         Menu.RemoveEveryMenuOfTemplate(MenuTemplate.Name.Load);
                         Menu.RemoveEveryMenuOfTemplate(MenuTemplate.Name.Main);
-
-                        // SonOfRobinGame.progressBar.TurnOn(curVal: 0, maxVal: 5, text: "Creating new island...");
 
                         new Task(menu: null, taskName: TaskName.CreateNewWorldNow, turnOffInput: true, delay: 13, executeHelper: null);
 
@@ -292,20 +288,39 @@ namespace SonOfRobin
                             int shootingPower = (int)executeData["shootingPower"];
                             int offsetX = (int)executeData["offsetX"];
                             int offsetY = (int)executeData["offsetY"];
+                            bool highlightOnly = (bool)executeData["highlightOnly"];
 
-                            var nearbyPieces = player.world.grid.GetPiecesWithinDistance(groupName: Cell.Group.All, mainSprite: player.sprite, distance: 35, offsetX: offsetX, offsetY: offsetY);
-                            var piecesToHit = nearbyPieces.Where(piece => piece.yield != null).ToList();
+                            bool shootsProjectile = activeTool.shootsProjectile;
+                            if (shootsProjectile) activeTool.Use(shootingPower: shootingPower, targetPiece: null);
+                            else
+                            {
+                                var nearbyPieces = player.world.grid.GetPiecesWithinDistance(groupName: Cell.Group.All, mainSprite: player.sprite, distance: 35, offsetX: offsetX, offsetY: offsetY);
+                                var piecesToHit = nearbyPieces.Where(piece => piece.yield != null).ToList();
+                                BoardPiece targetPiece = BoardPiece.FindClosestPiece(sprite: player.sprite, pieceList: piecesToHit, offsetX: offsetX, offsetY: offsetY);
+                                if (targetPiece == null) return;
 
-                            activeTool.Use(shootingPower: shootingPower, targetPiece: BoardPiece.FindClosestPiece(sprite: player.sprite, pieceList: piecesToHit, offsetX: offsetX, offsetY: offsetY));
+                                if (highlightOnly)
+                                {
+                                    if (player.world.inputActive) Tutorials.ShowTutorial(type: Tutorials.Type.Hit, ignoreIfShown: true);
+                                    Sprite sprite = targetPiece.sprite;
+                                    sprite.effectCol.AddEffect(new BorderInstance(outlineColor: Color.Red, textureSize: sprite.frame.originalTextureSize, priority: 0));
+                                }
+                                else
+                                {
+                                    activeTool.Use(shootingPower: shootingPower, targetPiece: targetPiece);
+                                }
+                            }
+                            return;
                         }
-
-                        return;
 
                     case TaskName.GetEaten:
                         {
                             var executeData = (Dictionary<string, Object>)executeHelper;
                             Player player = (Player)executeData["player"];
                             BoardPiece food = (BoardPiece)executeData["toolbarPiece"];
+                            bool highlightOnly = false;
+                            if (executeData.ContainsKey("highlightOnly")) highlightOnly = (bool)executeData["highlightOnly"];
+                            if (highlightOnly) return;
 
                             if (executeData.ContainsKey("buttonHeld"))
                             {
@@ -621,9 +636,8 @@ namespace SonOfRobin
 
                     case TaskName.ShowTutorial:
                         {
-                            var messageList = (List<HintMessage>)executeHelper;
-                            var taskChain = HintMessage.ConvertToTasks(messageList: messageList);
-                            new Task(menu: null, taskName: TaskName.ExecuteTaskChain, turnOffInput: true, executeHelper: taskChain);
+                            Tutorials.Type type = (Tutorials.Type)executeHelper;
+                            Tutorials.ShowTutorial(type: type, ignoreIfShown: false, checkHintsSettings: false);
 
                             return;
                         }

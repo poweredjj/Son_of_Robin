@@ -155,6 +155,7 @@ namespace SonOfRobin
             projectile.GetThrown(startPosition: startingPos, movement: movement, hitPowerMultiplier: this.hitPower, shootingPower: shootingPower);
         }
 
+
         public void Use(BoardPiece targetPiece, int shootingPower = 0)
         {
             Player player = this.world.player;
@@ -171,12 +172,17 @@ namespace SonOfRobin
 
             if (targetPiece == null) return;
 
-            TargetCategory targetCategory = GetTargetCategory(targetPiece: targetPiece);
-            if (!this.multiplierByCategory.ContainsKey(targetCategory)) return;
 
-            float currentMultiplier = this.multiplierByCategory[targetCategory];
-            if (currentMultiplier == 0) return;
+            float currentMultiplier = 0;
+            TargetCategory targetCategory = GetTargetCategory(targetPiece: targetPiece);
+            if (this.multiplierByCategory.ContainsKey(targetCategory)) currentMultiplier = this.multiplierByCategory[targetCategory];
             if (isVeryTired) currentMultiplier /= 2;
+
+            if (currentMultiplier == 0)
+            {
+                new TextWindow(text: $"{this.readableName} is too weak to destroy this.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, blockInputDuration: 45);
+                return;
+            }
 
             player.Stamina = Math.Max(player.Stamina - 50, 0);
 

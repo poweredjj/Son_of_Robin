@@ -5,7 +5,7 @@ namespace SonOfRobin
 {
     public class TouchOverlay : Scene
     {
-        public TouchOverlay() : base(inputType: InputTypes.Always, priority: 0, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: true, alwaysDraws: true, touchLayout: TouchLayout.Uninitialized, tipsLayout: ControlTips.TipsLayout.Empty)
+        public TouchOverlay() : base(inputType: InputTypes.Always, priority: -1, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: true, alwaysDraws: true, touchLayout: TouchLayout.Uninitialized, tipsLayout: ControlTips.TipsLayout.Empty)
         { }
 
         public override void Remove()

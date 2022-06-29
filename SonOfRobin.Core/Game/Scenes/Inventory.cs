@@ -32,7 +32,9 @@ namespace SonOfRobin
             get
             {
                 if (this.piece.world.mapMode == World.MapMode.Big) return true;
-                Scene topScene = Scene.sceneStack[sceneStack.Count - 1];
+                Scene topScene = sceneStack[sceneStack.Count - 1];
+
+                if (topScene.GetType() == typeof(TextWindow)) topScene = sceneStack[sceneStack.Count - 2];
                 return this.layout == Layout.SingleBottom && topScene.GetType() != typeof(Inventory);
             }
         }
@@ -413,7 +415,6 @@ namespace SonOfRobin
 
             }
         }
-
 
         private void ProcessInput()
         {

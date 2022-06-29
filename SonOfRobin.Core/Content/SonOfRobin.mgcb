@@ -13,6 +13,18 @@
 
 #---------------------------------- Content ---------------------------------#
 
+#begin effects/Border.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:effects/Border.fx
+
+#begin effects/Colorize.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:effects/Colorize.fx
+
 #begin fonts/FreeSansBold12.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor

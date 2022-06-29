@@ -75,7 +75,12 @@ namespace SonOfRobin
         public void DropFruit()
         {
             var occupiedSlots = this.pieceStorage.OccupiedSlots;
-            if (occupiedSlots.Count == 0) return;
+            if (occupiedSlots.Count == 0)
+            {
+                new TextWindow(text: "There is nothing left to shake off.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true);
+
+                return;
+            }
 
             this.pieceStorage.DropPiecesFromSlot(slot: occupiedSlots[0], addMovement: true);
         }

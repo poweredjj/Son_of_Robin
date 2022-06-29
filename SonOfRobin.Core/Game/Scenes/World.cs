@@ -125,7 +125,7 @@ namespace SonOfRobin
             }
         }
         public World(int width, int height, int seed = -1, Object saveGameData = null, bool demoMode = false) :
-              base(inputType: InputTypes.Normal, priority: 1, blocksUpdatesBelow: true, blocksDrawsBelow: true, touchLayout: TouchLayout.QuitLoading, tipsLayout: ControlTips.TipsLayout.Empty)
+              base(inputType: InputTypes.Normal, priority: 1, blocksUpdatesBelow: true, blocksDrawsBelow: true, touchLayout: TouchLayout.QuitLoading, tipsLayout: ControlTips.TipsLayout.QuitLoading)
         {
             this.demoMode = demoMode;
             if (this.demoMode) this.InputType = InputTypes.None;
@@ -136,7 +136,6 @@ namespace SonOfRobin
             this.lastSaved = DateTime.Now;
             this.creationInProgress = true;
             this.creationStart = DateTime.Now;
-            if (SonOfRobinGame.platform == Platform.Mobile) SonOfRobinGame.KeepScreenOn = true;
 
             if (seed == -1)
             {
@@ -202,8 +201,7 @@ namespace SonOfRobin
                     GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.B) ||
                     VirtButton.IsButtonDown(VButName.Return))
                 {
-                    if (Preferences.FrameSkip) SonOfRobinGame.game.IsFixedTimeStep = true;
-                    if (SonOfRobinGame.platform == Platform.Mobile) SonOfRobinGame.KeepScreenOn = false;
+                    SonOfRobinGame.game.IsFixedTimeStep = Preferences.FrameSkip;
 
                     SonOfRobinGame.progressBar.TurnOff(addTransition: true);
                     bool menuFound = GetTopSceneOfType(typeof(Menu)) != null;
@@ -212,8 +210,6 @@ namespace SonOfRobin
                     new TextWindow(text: $"Entering the island has been cancelled.", textColor: Color.White, bgColor: Color.DarkRed, useTransition: true, animate: true, closingTask: menuFound ? Scheduler.TaskName.Empty : Scheduler.TaskName.OpenMainMenu);
                     return;
                 };
-
-                this.tipsLayout = ControlTips.TipsLayout.QuitLoading; // to avoid showing tips at the wrong position
 
                 SonOfRobinGame.game.IsFixedTimeStep = false; // speeds up the creation process
                 this.grid.RunNextCreationStage();
@@ -225,7 +221,6 @@ namespace SonOfRobin
                 this.touchLayout = TouchLayout.WorldMain;
                 this.tipsLayout = ControlTips.TipsLayout.WorldMain;
                 this.creationInProgress = false;
-                if (SonOfRobinGame.platform == Platform.Mobile) SonOfRobinGame.KeepScreenOn = false;
                 this.creationEnd = DateTime.Now;
                 this.creationDuration = this.creationEnd - this.creationStart;
                 Craft.PopulateAllCategories();
@@ -262,9 +257,8 @@ namespace SonOfRobin
                 }
 
                 this.grid.LoadAllTexturesInCameraView();
-                if (Preferences.FrameSkip) SonOfRobinGame.game.IsFixedTimeStep = true;
+                SonOfRobinGame.game.IsFixedTimeStep = Preferences.FrameSkip;
             }
-
         }
 
         private void Deserialize(bool gridOnly)

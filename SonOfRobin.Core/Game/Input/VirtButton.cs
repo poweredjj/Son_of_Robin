@@ -44,12 +44,13 @@ namespace SonOfRobin
         private readonly Texture2D textureReleased;
         private readonly Texture2D texturePressed;
         private bool isDown;
-        private bool isHighlighted;
+        private Highlighter highlighter;
         private bool wasDownLastFrame;
         private bool switchedState;
         private readonly bool hidden;
         private readonly bool switchButton;
-        private readonly string coupledPrefName;
+        private readonly Object activeCoupledObj;
+        private readonly string activeCoupledVarName;
         private readonly static SpriteFont font = SonOfRobinGame.fontSmall;
 
         public static Dictionary<VButName, VirtButton> buttonsByName = new Dictionary<VButName, VirtButton> { };
@@ -62,7 +63,6 @@ namespace SonOfRobin
         private int Height { get { return Convert.ToInt32(SonOfRobinGame.VirtualWidth * this.height0to1); } }  // VirtualWidth is repeated to maintain button proportions
 
         private Vector2 PosCenter { get { return new Vector2(SonOfRobinGame.VirtualWidth * this.posX0to1, SonOfRobinGame.VirtualHeight * this.posY0to1); } }
-
 
         private Rectangle Rect
         {
@@ -79,7 +79,10 @@ namespace SonOfRobin
             }
         }
 
-        public VirtButton(VButName name, string label, float posX0to1, float posY0to1, float width0to1, float height0to1, Color colorPressed, Color colorReleased, bool switchButton = false, bool hidden = false, string coupledPrefName = "")
+        public VirtButton(VButName name, string label, float posX0to1, float posY0to1, float width0to1, float height0to1, Color colorPressed, Color colorReleased,
+            bool switchButton = false, bool hidden = false,
+            Object activeCoupledObj = null, string activeCoupledVarName = "",
+            bool isHighlighted = true, string highlightCoupledVarName = null, Object highlightCoupledObj = null)
         {
             this.label = label;
             this.colorPressed = colorPressed;
@@ -94,12 +97,13 @@ namespace SonOfRobin
             this.width0to1 = width0to1;
             this.height0to1 = height0to1;
 
-            this.coupledPrefName = coupledPrefName;
+            this.activeCoupledObj = activeCoupledObj;
+            this.activeCoupledVarName = activeCoupledVarName;
             bool initialValue = false;
-            if (this.coupledPrefName != "") initialValue = (bool)Helpers.GetProperty(targetObj: new Preferences(), propertyName: this.coupledPrefName);
+            if (this.activeCoupledVarName != "") initialValue = (bool)Helpers.GetProperty(targetObj: this.activeCoupledObj, propertyName: this.activeCoupledVarName);
 
             this.isDown = initialValue;
-            this.isHighlighted = false;
+            this.highlighter = new Highlighter(isOn: isHighlighted, coupledObj: highlightCoupledObj, coupledVarName: highlightCoupledVarName);
             this.switchedState = initialValue;
             this.wasDownLastFrame = false;
 
@@ -126,12 +130,11 @@ namespace SonOfRobin
             return buttonsByName[buttonName].IsActive;
         }
 
-        public static void HighlightButton(VButName buttonName)
+        public static void ButtonHighlightOnNextFrame(VButName buttonName)
         {
             if (!Input.InputActive || !buttonsByName.ContainsKey(buttonName)) return;
-            buttonsByName[buttonName].isHighlighted = true;
+            buttonsByName[buttonName].highlighter.SetOnForNextRead();
         }
-
         public static void UpdateAll()
         {
             foreach (VirtButton button in buttonsByName.Values)
@@ -178,7 +181,7 @@ namespace SonOfRobin
         }
 
         private void SetCoupledPref()
-        { if (this.coupledPrefName != "") Helpers.SetProperty(targetObj: new Preferences(), propertyName: this.coupledPrefName, newValue: this.IsActive); }
+        { if (this.activeCoupledVarName != "") Helpers.SetProperty(targetObj: new Preferences(), propertyName: this.activeCoupledVarName, newValue: this.IsActive); }
 
         public static void DrawAll()
         {
@@ -192,28 +195,19 @@ namespace SonOfRobin
 
             Rectangle gfxRect = this.Rect;
             Rectangle sourceRectangle;
+            float opacityMultiplier = this.highlighter.IsOn ? 1f : 0.5f;
 
             if (this.IsActive)
             {
                 sourceRectangle = new Rectangle(0, 0, this.texturePressed.Width, this.texturePressed.Height);
-                SonOfRobinGame.spriteBatch.Draw(this.texturePressed, gfxRect, sourceRectangle, this.colorPressed);
+                SonOfRobinGame.spriteBatch.Draw(this.texturePressed, gfxRect, sourceRectangle, this.colorPressed * opacityMultiplier);
             }
 
             Vector2 posCenter = this.PosCenter;
 
             sourceRectangle = new Rectangle(0, 0, this.textureReleased.Width, this.textureReleased.Height);
 
-            int drawCount = 1;
-            if (this.isHighlighted)
-            {
-                drawCount = 4;
-                this.isHighlighted = false;
-            }
-
-            for (int i = 0; i < drawCount; i++)
-            {
-                SonOfRobinGame.spriteBatch.Draw(this.textureReleased, gfxRect, sourceRectangle, this.colorReleased);
-            }
+            SonOfRobinGame.spriteBatch.Draw(this.textureReleased, gfxRect, sourceRectangle, this.colorReleased * opacityMultiplier);
 
             var labelSize = font.MeasureString(this.label);
             float targetTextWidth = this.Width * 0.85f;
@@ -221,7 +215,7 @@ namespace SonOfRobin
 
             Vector2 posLabelUpperLeft = posCenter - new Vector2(labelSize.X / 2 * textScale, labelSize.Y / 2 * textScale);
 
-            SonOfRobinGame.spriteBatch.DrawString(font, this.label, position: posLabelUpperLeft, color: Color.White, origin: Vector2.Zero, scale: textScale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
+            SonOfRobinGame.spriteBatch.DrawString(font, this.label, position: posLabelUpperLeft, color: Color.White * opacityMultiplier, origin: Vector2.Zero, scale: textScale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
         }
 
     }

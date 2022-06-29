@@ -13,8 +13,8 @@ namespace SonOfRobin
 
     public class SonOfRobinGame : Game
     {
-        public static readonly float version = 6.9f;
-        public static readonly DateTime lastChanged = new DateTime(2022, 03, 03);
+        public static readonly float version = 7.0f;
+        public static readonly DateTime lastChanged = new DateTime(2022, 03, 06);
 
         public static ContentManager content;
 
@@ -25,6 +25,8 @@ namespace SonOfRobin
         public static GraphicsDeviceManager graphics;
         public static GraphicsDevice graphicsDevice;
         public static SpriteBatch spriteBatch;
+        public static Effect effectColorize;
+        public static Effect effectBorder;
 
         public static InfoWindow hintWindow;
         public static InfoWindow progressBar;
@@ -132,7 +134,8 @@ namespace SonOfRobin
             hintWindow = new InfoWindow(bgColor: Color.RoyalBlue, bgOpacity: 0.85f);
             progressBar = new InfoWindow(bgColor: Color.SeaGreen, bgOpacity: 0.85f);
             if (platform == Platform.Mobile) touchOverlay = new TouchOverlay();
-            controlTips.MoveToTop();
+
+            KeepScreenOn = false;
 
             if (LicenceValid)
             {
@@ -168,6 +171,9 @@ namespace SonOfRobin
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
             content = Content;
+
+            effectColorize = Content.Load<Effect>("effects/Colorize");
+            effectBorder = Content.Load<Effect>("effects/Border");
 
             fontSuperSmall = Content.Load<SpriteFont>("fonts/PixelMix");
             fontSmall = Content.Load<SpriteFont>("fonts/PressStart2P");

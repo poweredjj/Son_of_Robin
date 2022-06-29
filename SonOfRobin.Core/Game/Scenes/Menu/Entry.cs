@@ -34,7 +34,7 @@ namespace SonOfRobin
             get
             {
                 Rectangle screenRect = new Rectangle(0, 0, SonOfRobinGame.VirtualWidth, SonOfRobinGame.VirtualHeight);
-                return screenRect.Intersects(this.Rect);
+                return screenRect.Contains(this.Rect);
             }
         }
 

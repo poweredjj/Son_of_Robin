@@ -8,7 +8,8 @@ namespace SonOfRobin
     public class AnimFrame
     {
         public readonly string id;
-        private readonly Texture2D atlasTexture;
+        public readonly Texture2D atlasTexture;
+        public readonly Vector2 originalTextureSize;
         private readonly ushort atlasX;
         private readonly ushort atlasY;
         private readonly float depthPercent;
@@ -36,6 +37,7 @@ namespace SonOfRobin
             frameById[this.id] = this;
 
             this.atlasTexture = SonOfRobinGame.textureByName[atlasName];
+            this.originalTextureSize = new Vector2(this.atlasTexture.Width, this.atlasTexture.Height);
 
             var cropData = CropFrame(texture: this.atlasTexture, textureX: atlasX, textureY: atlasY, width: width, height: height, crop: crop);
             atlasX = cropData["croppedAtlasX"];

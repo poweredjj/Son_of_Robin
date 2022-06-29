@@ -248,14 +248,7 @@ namespace SonOfRobin
                             curVal: this.allCells.Count - this.cellsToProcessOnStart.Count,
                             maxVal: this.allCells.Count,
                             text: message);
-
-            // for proper ControlTips alignment
-            this.world.viewParams.width = SonOfRobinGame.progressBar.viewParams.width;
-            this.world.viewParams.height = SonOfRobinGame.progressBar.viewParams.height;
-            this.world.viewParams.posX = SonOfRobinGame.progressBar.viewParams.posX;
-            this.world.viewParams.posY = SonOfRobinGame.progressBar.viewParams.posY;
         }
-
 
         private static TimeSpan CalculateTimeLeft(DateTime startTime, int completeAmount, int totalAmount)
         {
@@ -364,7 +357,9 @@ namespace SonOfRobin
             foreach (Cell cell in cellsWithinDistance)
             {
                 foreach (Sprite currentSprite in cell.spriteGroups[groupName].Values)
-                { if (Vector2.Distance(currentSprite.position, centerPos) <= distance && currentSprite != mainSprite) piecesWithinDistance.Add(currentSprite.boardPiece); }
+                {
+                    if (Vector2.Distance(new Vector2(currentSprite.gfxRect.Center.X, currentSprite.gfxRect.Bottom), centerPos) <= distance && currentSprite != mainSprite) piecesWithinDistance.Add(currentSprite.boardPiece);
+                }
             }
 
             return piecesWithinDistance;

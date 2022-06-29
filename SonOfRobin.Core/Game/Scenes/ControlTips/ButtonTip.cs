@@ -15,14 +15,19 @@ namespace SonOfRobin
         public readonly List<Texture2D> textures;
         public readonly int width;
         public readonly int height;
+        public Highlighter highlighter;
 
-        public ButtonTip(string text, List<Texture2D> textures)
+        public ButtonTip(Dictionary<string, ButtonTip> tipCollection, string text, List<Texture2D> textures,
+            bool isHighlighted = true, string highlightCoupledVarName = null, Object highlightCoupledObj = null)
         {
             this.text = text;
             this.textures = textures;
             Vector2 size = this.WholeSize;
             this.width = (int)size.X;
             this.height = (int)size.Y;
+            this.highlighter = new Highlighter(isOn: isHighlighted, coupledObj: highlightCoupledObj, coupledVarName: highlightCoupledVarName);
+
+            tipCollection[this.text] = this;
         }
         private Vector2 WholeSize
         {
@@ -51,6 +56,8 @@ namespace SonOfRobin
         {
             Vector2 basePos = new Vector2(drawOffsetX, 0);
 
+            float opacityMultiplier = this.highlighter.IsOn ? 1f : 0.5f;
+
             int textureWidth, textureHeight;
             int textureOffsetX = 0;
             int textureMaxHeight = 0;
@@ -60,7 +67,7 @@ namespace SonOfRobin
                 textureHeight = (int)(texture.Height * textureScale);
                 textureMaxHeight = Math.Max(textureHeight, textureMaxHeight);
 
-                DrawTexture(texture: texture, pos: basePos + new Vector2(textureOffsetX, 0), opacity: controlTips.viewParams.opacity);
+                DrawTexture(texture: texture, pos: basePos + new Vector2(textureOffsetX, 0), opacity: controlTips.viewParams.opacity * opacityMultiplier);
                 textureOffsetX += textureWidth + margin;
             }
 
@@ -73,7 +80,7 @@ namespace SonOfRobin
                 { SonOfRobinGame.spriteBatch.DrawString(font, this.text, txtPos + new Vector2(x, y), Color.Black * controlTips.viewParams.drawOpacity); }
             }
 
-            SonOfRobinGame.spriteBatch.DrawString(font, this.text, txtPos, Color.White * controlTips.viewParams.drawOpacity);
+            SonOfRobinGame.spriteBatch.DrawString(font, this.text, txtPos, Color.White * controlTips.viewParams.drawOpacity * opacityMultiplier);
 
             //Helpers.DrawRectangleOutline(rect: new Rectangle((int)txtPos.X, (int)txtPos.Y, (int)font.MeasureString(this.text).X, (int)font.MeasureString(this.text).Y), color: Color.YellowGreen, borderWidth: 1); // testing rect size
         }

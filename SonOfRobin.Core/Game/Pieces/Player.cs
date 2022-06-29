@@ -26,19 +26,14 @@ namespace SonOfRobin
         public byte toolbarHeight;
 
         public BoardPiece ActiveToolbarPiece
+        { get { return this.toolStorage?.lastUsedSlot?.TopPiece; } }
+
+        private bool CanUseActiveToolbarPiece
         {
             get
             {
-                var invScenes = Scene.GetAllScenesOfType(typeof(Inventory));
-                foreach (Scene scene in invScenes)
-                {
-                    Inventory invScene = (Inventory)scene;
-                    if (invScene.layout == Inventory.Layout.SingleBottom || invScene.layout == Inventory.Layout.DualBottom)
-                    {
-                        return invScene.SelectedPiece;
-                    }
-                }
-                return null;
+                BoardPiece activeToolbarPiece = this.ActiveToolbarPiece;
+                return activeToolbarPiece != null && activeToolbarPiece.toolbarTask != Scheduler.TaskName.Empty;
             }
         }
 
@@ -65,7 +60,7 @@ namespace SonOfRobin
                 int offsetX = (int)centerOffset.X;
                 int offsetY = (int)centerOffset.Y;
 
-                var nearbyPieces = this.world.grid.GetPiecesWithinDistance(groupName: Cell.Group.All, mainSprite: this.sprite, distance: 47, offsetX: offsetX, offsetY: offsetY);
+                var nearbyPieces = this.world.grid.GetPiecesWithinDistance(groupName: Cell.Group.All, mainSprite: this.sprite, distance: 25, offsetX: offsetX, offsetY: offsetY);
 
                 var interestingPieces = nearbyPieces.Where(piece => piece.boardTask != Scheduler.TaskName.Empty).ToList();
                 if (interestingPieces.Count > 0)
@@ -74,6 +69,23 @@ namespace SonOfRobin
                     return closestPiece;
                 }
                 else return null;
+            }
+        }
+
+        private BoardPiece ClosestPieceToPickUp
+        {
+            get
+            {
+                Vector2 centerOffset = this.GetCenterOffset();
+                int offsetX = (int)centerOffset.X;
+                int offsetY = (int)centerOffset.Y;
+
+                var interestingPieces = this.world.grid.GetPiecesWithinDistance(groupName: Cell.Group.All, mainSprite: this.sprite, distance: 35, offsetX: offsetX, offsetY: offsetY);
+                interestingPieces = interestingPieces.Where(piece => piece.canBePickedUp).ToList();
+                if (interestingPieces.Count == 0) return null;
+
+                BoardPiece closestPiece = FindClosestPiece(sprite: this.sprite, pieceList: interestingPieces, offsetX: offsetX, offsetY: offsetY);
+                return closestPiece;
             }
         }
 
@@ -244,19 +256,53 @@ namespace SonOfRobin
 
         public override void SM_PlayerControlledWalking()
         {
+            if (this.world.currentUpdate % 300 == 0) this.world.hintEngine.CheckForPieceHintToShow();
+
             this.ExpendEnergy(0.1f);
+            if (!this.Walk()) this.Stamina = Math.Min(this.Stamina + 1, this.maxStamina);
+
+            // highlighting pieces to interact with and corresponding interface elements
+
+            this.UseToolbarPiece(isInShootingMode: false, buttonHeld: false, highlightOnly: true); // only to highlight pieces that will be hit
 
             BoardPiece pieceToInteract = this.ClosestPieceToInteract;
             if (pieceToInteract != null)
             {
-                pieceToInteract.sprite.isHighlighted = true;
-                if (SonOfRobinGame.platform == Platform.Mobile && this.world.inputActive) VirtButton.HighlightButton(VButName.Interact);
+                pieceToInteract.sprite.effectCol.AddEffect(new ColorizeInstance(color: Color.Green));
+
+                if (this.world.inputActive)
+                {
+                    Tutorials.ShowTutorial(type: Tutorials.Type.Interact, ignoreIfShown: true);
+                    if (SonOfRobinGame.platform == Platform.Mobile) VirtButton.ButtonHighlightOnNextFrame(VButName.Interact);
+                    ControlTips.TipHighlightOnNextFrame(tipName: "interact");
+                }
             }
 
+            BoardPiece pieceToPickUp = this.ClosestPieceToPickUp;
+            if (pieceToPickUp != null)
+            {
+                if (this.world.inputActive) Tutorials.ShowTutorial(type: Tutorials.Type.PickUp, ignoreIfShown: true);
+                pieceToPickUp.sprite.effectCol.AddEffect(new ColorizeInstance(color: Color.DodgerBlue));
+                pieceToPickUp.sprite.effectCol.AddEffect(new BorderInstance(outlineColor: Color.White, textureSize: pieceToPickUp.sprite.frame.originalTextureSize, priority: 0));
 
-            if (this.world.currentUpdate % 300 == 0) this.world.hintEngine.CheckForPieceHintToShow();
+                if (this.world.inputActive)
+                {
+                    if (SonOfRobinGame.platform == Platform.Mobile) VirtButton.ButtonHighlightOnNextFrame(VButName.PickUp);
+                    ControlTips.TipHighlightOnNextFrame(tipName: "pick up");
+                }
+            }
 
-            if (!this.Walk()) this.Stamina = Math.Min(this.Stamina + 1, this.maxStamina);
+            BoardPiece activeToolbarPiece = this.ActiveToolbarPiece;
+            if (activeToolbarPiece != null)
+            {
+                if (this.world.inputActive)
+                {
+                    if (SonOfRobinGame.platform == Platform.Mobile) VirtButton.ButtonHighlightOnNextFrame(VButName.UseTool);
+                    ControlTips.TipHighlightOnNextFrame(tipName: "use item");
+                }
+            }
+
+            // checking pressed buttons
 
             if (this.world.actionKeyList.Contains(World.ActionKeys.ShootingMode))
             {
@@ -265,26 +311,24 @@ namespace SonOfRobin
 
             if (this.world.actionKeyList.Contains(World.ActionKeys.UseToolbarPiecePress))
             {
-                if (this.UseToolbarPiece(isInShootingMode: false, buttonHeld: false)) return;
+                if (this.UseToolbarPiece(isInShootingMode: false, buttonHeld: false, highlightOnly: false)) return;
             }
 
             if (this.world.actionKeyList.Contains(World.ActionKeys.UseToolbarPieceHold))
             {
-                if (this.UseToolbarPiece(isInShootingMode: false, buttonHeld: true)) return;
+                if (this.UseToolbarPiece(isInShootingMode: false, buttonHeld: true, highlightOnly: false)) return;
             }
 
             if (this.world.actionKeyList.Contains(World.ActionKeys.PickUp))
             {
-                this.PickUpNearestPiece();
+                this.PickUpClosestPiece(closestPiece: pieceToPickUp);
                 return;
             }
 
             if (this.world.actionKeyList.Contains(World.ActionKeys.Interact))
             {
-                this.UseBoardPiece();
-                return;
+                if (pieceToInteract != null) new Scheduler.Task(menu: null, taskName: pieceToInteract.boardTask, delay: 0, executeHelper: pieceToInteract);
             }
-
         }
 
         private bool Walk(bool setOrientation = true)
@@ -432,7 +476,6 @@ namespace SonOfRobin
             this.world.touchLayout = TouchLayout.WorldSleep;
             this.world.tipsLayout = ControlTips.TipsLayout.WorldSleep;
             this.sprite.CharacterStand();
-            if (SonOfRobinGame.platform == Platform.Mobile) SonOfRobinGame.KeepScreenOn = true;
             this.activeState = State.PlayerControlledSleep;
 
             SolidColor solidColor = new SolidColor(color: Color.Black, viewOpacity: 0.75f, clearScreen: false);
@@ -461,7 +504,6 @@ namespace SonOfRobin
             this.world.touchLayout = TouchLayout.WorldMain;
             this.world.tipsLayout = ControlTips.TipsLayout.WorldMain;
             this.sprite.Visible = true;
-            if (SonOfRobinGame.platform == Platform.Mobile) SonOfRobinGame.KeepScreenOn = false;
 
             world.updateMultiplier = 1;
             SonOfRobinGame.game.IsFixedTimeStep = Preferences.FrameSkip;
@@ -546,17 +588,10 @@ namespace SonOfRobin
             return new Vector2(offsetX, offsetY);
         }
 
-        private void PickUpNearestPiece()
+
+        private void PickUpClosestPiece(BoardPiece closestPiece)
         {
-            Vector2 centerOffset = this.GetCenterOffset();
-            int offsetX = (int)centerOffset.X;
-            int offsetY = (int)centerOffset.Y;
-
-            var interestingPieces = this.world.grid.GetPiecesWithinDistance(groupName: Cell.Group.All, mainSprite: this.sprite, distance: 35, offsetX: offsetX, offsetY: offsetY);
-            interestingPieces = interestingPieces.Where(piece => piece.canBePickedUp).ToList();
-            if (interestingPieces.Count == 0) return;
-
-            BoardPiece closestPiece = FindClosestPiece(sprite: this.sprite, pieceList: interestingPieces, offsetX: offsetX, offsetY: offsetY);
+            if (closestPiece == null) return;
 
             bool piecePickedUp = this.PickUpPiece(piece: closestPiece);
             if (piecePickedUp)
@@ -589,14 +624,6 @@ namespace SonOfRobin
             }
         }
 
-        private void UseBoardPiece()
-        {
-            BoardPiece pieceToInteract = this.ClosestPieceToInteract;
-            if (pieceToInteract == null) return;
-
-            new Scheduler.Task(menu: null, taskName: pieceToInteract.boardTask, delay: 0, executeHelper: pieceToInteract);
-        }
-
         private bool TryToEnterShootingMode()
         {
             BoardPiece activeToolbarPiece = this.ActiveToolbarPiece;
@@ -623,42 +650,40 @@ namespace SonOfRobin
             return false;
         }
 
-        private bool UseToolbarPiece(bool isInShootingMode, bool buttonHeld = false)
+        private bool UseToolbarPiece(bool isInShootingMode, bool buttonHeld = false, bool highlightOnly = false)
         {
+            if (!this.CanUseActiveToolbarPiece) return false;
+
             BoardPiece activeToolbarPiece = this.ActiveToolbarPiece;
 
             Vector2 centerOffset = this.GetCenterOffset();
             int offsetX = (int)centerOffset.X;
             int offsetY = (int)centerOffset.Y;
 
-            if (activeToolbarPiece != null && activeToolbarPiece.toolbarTask != Scheduler.TaskName.Empty)
+            if (this.sprite.CanDrownHere)
             {
-                if (this.sprite.CanDrownHere)
-                {
-                    this.world.hintEngine.Show(HintEngine.Type.CantUseToolInDeepWater);
-                    return false;
-                }
+                this.world.hintEngine.Show(HintEngine.Type.CantUseToolInDeepWater);
+                return false;
+            }
 
-                if (activeToolbarPiece?.GetType() == typeof(Tool))
-                {
-                    Tool activeTool = (Tool)activeToolbarPiece;
-                    if (activeTool.shootsProjectile && !isInShootingMode) return false;
-                }
+            if (activeToolbarPiece?.GetType() == typeof(Tool))
+            {
+                Tool activeTool = (Tool)activeToolbarPiece;
+                if (activeTool.shootsProjectile && !isInShootingMode) return false;
+            }
 
-                var executeHelper = new Dictionary<string, Object> {
+            var executeHelper = new Dictionary<string, Object> {
                     {"player", this},
                     {"toolbarPiece", activeToolbarPiece},
                     {"shootingPower", this.shootingPower},
                     {"offsetX", offsetX},
                     {"offsetY", offsetY},
                     {"buttonHeld", buttonHeld },
+                    {"highlightOnly", highlightOnly },
                 };
 
-                new Scheduler.Task(menu: null, taskName: activeToolbarPiece.toolbarTask, delay: 0, executeHelper: executeHelper);
-                return true;
-            }
-
-            return false;
+            new Scheduler.Task(menu: null, taskName: activeToolbarPiece.toolbarTask, delay: 0, executeHelper: executeHelper);
+            return true;
         }
 
     }

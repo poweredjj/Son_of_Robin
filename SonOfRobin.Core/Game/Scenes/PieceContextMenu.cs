@@ -283,6 +283,7 @@ namespace SonOfRobin
                     executeHelper["player"] = world.player;
                     executeHelper["toolbarPiece"] = food;
                     executeHelper["buttonHeld"] = false;
+                    executeHelper["highlightOnly"] = false;
 
                     new Scheduler.Task(menu: null, taskName: food.toolbarTask, delay: 0, executeHelper: executeHelper);
 

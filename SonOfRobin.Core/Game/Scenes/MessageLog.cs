@@ -13,7 +13,7 @@ namespace SonOfRobin
     }
     public class MessageLog : Scene
     {
-        struct DebugMessage
+        struct Message
         {
             public readonly string text;
             public readonly int deletionFrame;
@@ -21,7 +21,7 @@ namespace SonOfRobin
             public readonly MsgType msgType;
             private static int lastDeletionFrame = 0;
 
-            public DebugMessage(string message, int currentFrame, Color color, MsgType msgType)
+            public Message(string message, int currentFrame, Color color, MsgType msgType)
             {
                 Console.WriteLine(message); // additional output
 
@@ -45,12 +45,12 @@ namespace SonOfRobin
 
         private static List<MsgType> DisplayedLevels { get { return Preferences.DebugMode ? displayedLevelsTemplateDebug : displayedLevelsTemplateUser; } }
 
-        private static List<DebugMessage> messages = new List<DebugMessage> { };
+        private static List<Message> messages = new List<Message> { };
 
         private int marginX, marginY;
         private int screenHeight;
 
-        public MessageLog() : base(inputType: InputTypes.None, priority: 0, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: true, alwaysDraws: true, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty)
+        public MessageLog() : base(inputType: InputTypes.None, priority: -1, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: true, alwaysDraws: true, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty)
         {
             this.marginX = SonOfRobinGame.platform == Platform.Desktop ? 5 : 20;
             this.marginY = SonOfRobinGame.platform == Platform.Desktop ? 0 : 5;
@@ -60,7 +60,7 @@ namespace SonOfRobin
         {
             int currentFrame = SonOfRobinGame.currentUpdate;
             DeleteOldMessages(currentFrame);
-            this.screenHeight = Preferences.showControlTips ?  (int)(SonOfRobinGame.VirtualHeight * 0.94f) : (int)(SonOfRobinGame.VirtualHeight * 1f);
+            this.screenHeight = Preferences.showControlTips ? (int)(SonOfRobinGame.VirtualHeight * 0.94f) : (int)(SonOfRobinGame.VirtualHeight * 1f);
         }
 
         public override void Draw()
@@ -74,11 +74,11 @@ namespace SonOfRobin
 
             int currentOffsetY = 0;
 
-            foreach (DebugMessage debugMessage in messagesToDisplay)
+            foreach (Message message in messagesToDisplay)
             {
-                if (!DisplayedLevels.Contains(debugMessage.msgType)) continue;
+                if (!DisplayedLevels.Contains(message.msgType)) continue;
 
-                string currentLineOfText = debugMessage.text;
+                string currentLineOfText = message.text;
 
                 Vector2 txtSize = font.MeasureString(currentLineOfText);
                 currentOffsetY += (int)txtSize.Y + txtSeparator;
@@ -87,7 +87,7 @@ namespace SonOfRobin
 
                 Vector2 txtPos = new Vector2(this.marginX, Convert.ToInt16(this.screenHeight - (currentOffsetY + this.marginY)));
 
-                float textOpacity = Math.Min(Math.Max((float)(debugMessage.deletionFrame - currentFrame) / 30f, 0), 1);
+                float textOpacity = Math.Min(Math.Max((float)(message.deletionFrame - currentFrame) / 30f, 0), 1);
                 float outlineOpacity = (textOpacity == 1) ? 1 : textOpacity / 4;
 
                 for (int x = -1; x < 2; x++)
@@ -96,17 +96,17 @@ namespace SonOfRobin
                     { SonOfRobinGame.spriteBatch.DrawString(font, currentLineOfText, txtPos + new Vector2(x, y), Color.Black * outlineOpacity); }
                 }
 
-                SonOfRobinGame.spriteBatch.DrawString(font, currentLineOfText, txtPos, debugMessage.color * textOpacity);
+                SonOfRobinGame.spriteBatch.DrawString(font, currentLineOfText, txtPos, message.color * textOpacity);
             }
         }
         public static void AddMessage(int currentFrame, string message, Color color, MsgType msgType)
-        { if (DisplayedLevels.Contains(msgType)) messages.Add(new DebugMessage(currentFrame: currentFrame, message: message, color: color, msgType: msgType)); }
+        { if (DisplayedLevels.Contains(msgType)) messages.Add(new Message(currentFrame: currentFrame, message: message, color: color, msgType: msgType)); }
 
         public static void AddMessage(int currentFrame, string message, MsgType msgType)
-        { if (DisplayedLevels.Contains(msgType)) messages.Add(new DebugMessage(currentFrame: currentFrame, message: message, color: Color.White, msgType: msgType)); }
+        { if (DisplayedLevels.Contains(msgType)) messages.Add(new Message(currentFrame: currentFrame, message: message, color: Color.White, msgType: msgType)); }
 
         private static void DeleteOldMessages(int currentFrame)
-        { messages = messages.Where(debugMessage => currentFrame < debugMessage.deletionFrame).ToList(); }
+        { messages = messages.Where(message => currentFrame < message.deletionFrame).ToList(); }
     }
 
 }

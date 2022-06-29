@@ -4,6 +4,8 @@
   <Platform>Android</Platform>
   <Config />
   <SourceFiles>
+    <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/effects/Border.fx</File>
+    <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/effects/Colorize.fx</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/fonts/FreeSansBold12.spritefont</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/fonts/FreeSansBold9.spritefont</File>
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/fonts/PixelMix.spritefont</File>
@@ -154,6 +156,8 @@
     <File>C:/Users/Marcin/source/repos/SonOfRobin/SonOfRobin.Core/Content/gfx/zzz.png</File>
   </SourceFiles>
   <DestFiles>
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />

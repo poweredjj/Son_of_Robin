@@ -47,7 +47,7 @@ namespace SonOfRobin
 
             BoardPiece boardPiece;
 
-            if (eventName == EventName.RestorePieceCreation)
+            if (eventName == EventName.RestorePieceCreation || eventName == EventName.RestoreHint)
             { boardPiece = null; }
             else
             {
@@ -125,6 +125,17 @@ namespace SonOfRobin
                     cooker.boardTask = Scheduler.TaskName.OpenContainer;
                     return;
 
+
+                case EventName.FadeOutSprite:
+                    this.boardPiece.sprite.opacityFade = new OpacityFade(sprite: this.boardPiece.sprite, destOpacity: 0f);
+                    return;
+
+                case EventName.RemoveBuff:
+                    int buffId = (int)this.eventHelper;
+                    this.boardPiece.buffEngine.RemoveBuff(buffId);
+
+                    return;
+
                 case EventName.RestorePieceCreation:
                     var pieceName = (PieceTemplate.Name)this.eventHelper;
                     this.world.doNotCreatePiecesList.Remove(pieceName);
@@ -138,16 +149,6 @@ namespace SonOfRobin
                     this.world.hintEngine.EnableType(hintType);
 
                     MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"Hint '{hintType}' restored.");
-
-                    return;
-
-                case EventName.FadeOutSprite:
-                    this.boardPiece.sprite.opacityFade = new OpacityFade(sprite: this.boardPiece.sprite, destOpacity: 0f);
-                    return;
-
-                case EventName.RemoveBuff:
-                    int buffId = (int)this.eventHelper;
-                    this.boardPiece.buffEngine.RemoveBuff(buffId);
 
                     return;
 

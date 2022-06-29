@@ -21,7 +21,7 @@ namespace SonOfRobin
 
         public readonly string id;
         public readonly BoardPiece boardPiece;
-        private readonly World world;
+        public readonly World world;
         public Vector2 position;
         public bool placedCorrectly;
         public Orientation orientation;
@@ -44,7 +44,7 @@ namespace SonOfRobin
         private readonly bool floatsOnWater;
         public readonly bool isShownOnMiniMap;
         public bool hasBeenDiscovered;
-        public bool isHighlighted;
+        public readonly EffectCol effectCol;
         public Cell currentCell; // current cell, that is containing the sprite 
         public List<Cell.Group> gridGroups;
 
@@ -111,8 +111,8 @@ namespace SonOfRobin
             this.allowedFields = allowedFields;
             this.visible = visible; // initially it is assigned normally
             this.isShownOnMiniMap = isShownOnMiniMap;
+            this.effectCol = new EffectCol(sprite: this);
             this.hasBeenDiscovered = false;
-            this.isHighlighted = false;
             this.currentCell = null;
             if (fadeInAnim)
             {
@@ -656,17 +656,26 @@ namespace SonOfRobin
             int submergeCorrection = 0;
             if (!this.floatsOnWater && this.IsInWater && calculateSubmerge) submergeCorrection = Convert.ToInt32((Terrain.waterLevelMax - this.GetFieldValue(TerrainName.Height)) / 2);
 
-            Color drawColor = this.color;
-            if (this.isHighlighted)
+            bool effectsShouldBeEnabled = this.effectCol.ThereAreEffectsToRender;
+            bool thereWillBeMoreEffects = false;
+            while (true)
             {
-                drawColor = Color.LightGreen;
-                this.isHighlighted = false;
+                if (effectsShouldBeEnabled) thereWillBeMoreEffects = this.effectCol.TurnOnNextEffect(world: this.world);
+
+                if (this.rotation == 0) this.frame.Draw(destRect: this.gfxRect, color: this.color, submergeCorrection: submergeCorrection, opacity: this.opacity);
+                else this.frame.DrawWithRotation(position: new Vector2(this.gfxRect.Center.X, this.gfxRect.Center.Y), color: this.color, rotation: this.rotation, opacity: this.opacity);
+
+                if (this.boardPiece.pieceStorage != null && this.boardPiece.GetType() == typeof(Plant)) this.DrawFruits();
+
+                if (!thereWillBeMoreEffects)
+                {
+                    if (effectsShouldBeEnabled)
+                    {
+                        this.world.StartNewSpriteBatch(enableEffects: false);
+                    }
+                    break;
+                }
             }
-
-            if (this.rotation == 0) this.frame.Draw(destRect: this.gfxRect, color: drawColor, submergeCorrection: submergeCorrection, opacity: this.opacity);
-            else this.frame.DrawWithRotation(position: new Vector2(this.gfxRect.Center.X, this.gfxRect.Center.Y), color: drawColor, rotation: this.rotation, opacity: this.opacity);
-
-            if (this.boardPiece.pieceStorage != null && this.boardPiece.GetType() == typeof(Plant)) this.DrawFruits();
 
             if (Preferences.debugShowRects)
             {

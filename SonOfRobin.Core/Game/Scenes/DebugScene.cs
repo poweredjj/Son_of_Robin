@@ -12,7 +12,7 @@ namespace SonOfRobin
         public static readonly SpriteFont font = SonOfRobinGame.fontMedium;
         public static string debugText = "";
 
-        public DebugScene() : base(inputType: InputTypes.Always, tipsLayout: ControlTips.TipsLayout.Empty, priority: 0, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: true, alwaysDraws: true, touchLayout: TouchLayout.Empty)
+        public DebugScene() : base(inputType: InputTypes.Always, tipsLayout: ControlTips.TipsLayout.Empty, priority: -1, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: true, alwaysDraws: true, touchLayout: TouchLayout.Empty)
         {
             this.viewParams.posX = 5;
             this.viewParams.posY = 5;

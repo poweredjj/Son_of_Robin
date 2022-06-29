@@ -211,7 +211,7 @@ namespace SonOfRobin
                     {
                         if (world.hintEngine.shownTutorials.Contains(tutorial.type))
                         {
-                            new Invoker(menu: menu, name: tutorial.name, taskName: Scheduler.TaskName.ShowTutorial, executeHelper: tutorial.MessagesToDisplay);
+                            new Invoker(menu: menu, name: tutorial.name, taskName: Scheduler.TaskName.ShowTutorial, executeHelper: tutorial.type);
                         }
                     }
                     new Invoker(menu: menu, name: "return", closesMenu: true, taskName: Scheduler.TaskName.Empty);
@@ -226,6 +226,8 @@ namespace SonOfRobin
 
         private static Menu CreateCraftMenu(Name templateName, Craft.Category category, string label)
         {
+            Tutorials.ShowTutorial(type: Tutorials.Type.Craft, ignoreIfShown: true);
+
             PieceStorage storage = World.GetTopWorld().player.pieceStorage;
 
             Menu menu = new Menu(templateName: templateName, name: label, blocksUpdatesBelow: false, canBeClosedManually: true, layout: SonOfRobinGame.platform == Platform.Mobile ? Menu.Layout.Right : Menu.Layout.Left, alwaysShowSelectedEntry: true);
