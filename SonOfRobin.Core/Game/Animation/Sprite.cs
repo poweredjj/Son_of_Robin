@@ -31,7 +31,7 @@ namespace SonOfRobin
         public AnimFrame frame;
         public Color color;
         public LightEngine lightEngine;
-        public AnimPkg animPackage;
+        public AnimData.PkgName animPackage;
         public byte animSize;
         public string animName;
         private byte currentFrameIndex;
@@ -95,7 +95,7 @@ namespace SonOfRobin
             }
         }
 
-        public Sprite(World world, string id, BoardPiece boardPiece, Vector2 position, AnimPkg animPackage, byte animSize, string animName, bool ignoresCollisions, AllowedFields allowedFields, bool blocksMovement = true, bool visible = true, bool checksFullCollisions = false, ushort minDistance = 0, ushort maxDistance = 100, bool floatsOnWater = false, bool fadeInAnim = true, bool placeAtBeachEdge = false, bool isShownOnMiniMap = false, AllowedDensity allowedDensity = null, LightEngine lightEngine = null)
+        public Sprite(World world, string id, BoardPiece boardPiece, Vector2 position, AnimData.PkgName animPackage, byte animSize, string animName, bool ignoresCollisions, AllowedFields allowedFields, bool blocksMovement = true, bool visible = true, bool checksFullCollisions = false, ushort minDistance = 0, ushort maxDistance = 100, bool floatsOnWater = false, bool fadeInAnim = true, bool placeAtBeachEdge = false, bool isShownOnMiniMap = false, AllowedDensity allowedDensity = null, LightEngine lightEngine = null)
         {
             this.id = id; // duplicate from BoardPiece class
             this.boardPiece = boardPiece;
@@ -176,7 +176,7 @@ namespace SonOfRobin
             this.opacity = (float)pieceData["sprite_opacity"];
             this.opacityFade = (OpacityFade)pieceData["sprite_opacityFade"];
             if (this.opacityFade != null) this.opacityFade.sprite = this;
-            this.animPackage = (AnimPkg)pieceData["sprite_animPackage"];
+            this.animPackage = (AnimData.PkgName)pieceData["sprite_animPackage"];
             this.animSize = (byte)pieceData["sprite_animSize"];
             this.animName = (string)pieceData["sprite_animName"];
             this.currentFrameIndex = (byte)pieceData["sprite_currentFrameIndex"];
@@ -192,7 +192,7 @@ namespace SonOfRobin
             return this.world.grid.GetFieldValue(position: this.position, terrainName: terrainName);
         }
 
-        public static string GetCompleteAnimId(AnimPkg animPackage, byte animSize, string animName)
+        public static string GetCompleteAnimId(AnimData.PkgName animPackage, byte animSize, string animName)
         { return $"{animPackage}-{animSize}-{animName}"; }
 
         public int GetAnimDuration()
@@ -548,7 +548,7 @@ namespace SonOfRobin
             this.colRect.Height = this.frame.colHeight;
         }
 
-        public void AssignNewPackage(AnimPkg animPackage, bool setEvenIfMissing = true)
+        public void AssignNewPackage(AnimData.PkgName animPackage, bool setEvenIfMissing = true)
         {
             if (this.animPackage != animPackage)
             {
@@ -585,7 +585,7 @@ namespace SonOfRobin
                 }
             }
         }
-        public bool CheckIfAnimPackageExists(AnimPkg newAnimPackage)
+        public bool CheckIfAnimPackageExists(AnimData.PkgName newAnimPackage)
         {
             string newCompleteAnimID = GetCompleteAnimId(animPackage: newAnimPackage, animSize: this.animSize, animName: this.animName);
             return AnimData.frameListById.ContainsKey(newCompleteAnimID);

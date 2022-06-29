@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
@@ -36,6 +37,12 @@ namespace SonOfRobin
             {
                 queue[frameNo] = queue[frameNo].Where(task => task.taskName != taskName).ToList();
             }
+        }
+
+        public static void ClearQueue()
+        {
+            MessageLog.AddMessage(msgType: MsgType.Debug, message: "Clearing Scheduler queue.");
+            queue.Clear();
         }
 
         public struct Task
@@ -499,6 +506,7 @@ namespace SonOfRobin
                             var textWindowData = (Dictionary<string, Object>)executeHelper;
 
                             string text = (string)textWindowData["text"];
+                            var imageList = (List<Texture2D>)textWindowData["imageList"];
 
                             bool checkForDuplicate = false;
                             if (textWindowData.ContainsKey("checkForDuplicate")) checkForDuplicate = (bool)textWindowData["checkForDuplicate"];
@@ -545,7 +553,7 @@ namespace SonOfRobin
                             int framesPerChar = 0;
                             if (textWindowData.ContainsKey("framesPerChar")) framesPerChar = (int)textWindowData["framesPerChar"];
 
-                            new TextWindow(text: text, useTransition: useTransition, useTransitionOpen: useTransitionOpen, useTransitionClose: useTransitionClose, bgColor: bgColor, textColor: textColor, framesPerChar: framesPerChar, animate: animate, checkForDuplicate: checkForDuplicate, closingTask: closingTask, closingTaskHelper: closingTaskHelper, blockInputDuration: blockInputDuration, blocksUpdatesBelow: blocksUpdatesBelow);
+                            new TextWindow(text: text, imageList: imageList, useTransition: useTransition, useTransitionOpen: useTransitionOpen, useTransitionClose: useTransitionClose, bgColor: bgColor, textColor: textColor, framesPerChar: framesPerChar, animate: animate, checkForDuplicate: checkForDuplicate, closingTask: closingTask, closingTaskHelper: closingTaskHelper, blockInputDuration: blockInputDuration, blocksUpdatesBelow: blocksUpdatesBelow);
                             return;
                         }
 
@@ -844,6 +852,7 @@ namespace SonOfRobin
                                 TextWindow textWindow = (TextWindow)scene;
                                 textWindow.RemoveWithoutExecutingTask(); // every cine task will be tied to text window
                             }
+                            ClearQueue(); // to be sure, that no task will be executed
                             world.CineMode = false;
 
                             return;

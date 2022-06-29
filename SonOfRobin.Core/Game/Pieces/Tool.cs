@@ -14,7 +14,7 @@ namespace SonOfRobin
         private readonly Dictionary<Category, float> multiplierByCategory;
         private readonly List<PieceTemplate.Name> compatibleAmmo;
 
-        public Tool(World world, Vector2 position, AnimPkg animPackage, PieceTemplate.Name name, AllowedFields allowedFields, Dictionary<byte, int> maxMassBySize, int hitPower, Dictionary<Category, float> multiplierByCategory, int maxHitPoints, string readableName, string description, Category category,
+        public Tool(World world, Vector2 position, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedFields allowedFields, Dictionary<byte, int> maxMassBySize, int hitPower, Dictionary<Category, float> multiplierByCategory, int maxHitPoints, string readableName, string description, Category category,
             byte animSize = 0, string animName = "default", bool blocksMovement = false, ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = true, int generation = 0, bool indestructible = false, Yield yield = null, bool shootsProjectile = false, List<PieceTemplate.Name> compatibleAmmo = null, bool rotatesWhenDropped = true, bool fadeInAnim = false, int range = 0) :
 
             base(world: world, position: position, animPackage: animPackage, animSize: animSize, animName: animName, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedFields: allowedFields, floatsOnWater: floatsOnWater, maxMassBySize: maxMassBySize, generation: generation, canBePickedUp: true, yield: yield, maxHitPoints: maxHitPoints, indestructible: indestructible, rotatesWhenDropped: rotatesWhenDropped, fadeInAnim: fadeInAnim, isShownOnMiniMap: true, readableName: readableName, description: description, category: category)
@@ -28,7 +28,6 @@ namespace SonOfRobin
             this.toolbarTask = Scheduler.TaskName.Hit;
             this.compatibleAmmo = compatibleAmmo == null ? new List<PieceTemplate.Name> { } : compatibleAmmo;
         }
-
 
         public Projectile CheckForAmmo(bool removePiece)
         {
@@ -71,7 +70,6 @@ namespace SonOfRobin
             Vector2 startingPos = playerSprite.position + new Vector2(offset.X * playerSprite.frame.colWidth * 1.5f, offset.Y * playerSprite.frame.colHeight * 1.5f);
             projectile.GetThrown(startPosition: startingPos, movement: movement, hitPowerMultiplier: this.hitPower + this.world.player.strength, shootingPower: shootingPower);
         }
-
 
         public void Use(List<BoardPiece> targets, int shootingPower = 0, bool highlightOnly = false)
         {
@@ -164,7 +162,7 @@ namespace SonOfRobin
                     ControlTips.TipHighlightOnNextFrame(tipName: "use item");
                     if (!fieldTipShown)
                     {
-                        new FieldTip(texture: ButtonScheme.buttonRT, pieceRect: currentTarget.sprite.gfxRect, alignment: FieldTip.Alignment.Center);
+                        FieldTip.AddUpdateTip(world: this.world, texture: ButtonScheme.buttonRT, targetSprite: currentTarget.sprite, alignment: FieldTip.Alignment.RightIn);
                         fieldTipShown = true;
                     }
                 }
@@ -186,7 +184,7 @@ namespace SonOfRobin
                     this.hitPoints = Math.Max(0, this.hitPoints);
 
                     if (this.HitPointsPercent < 0.4f && this.hitPoints > 0) this.world.hintEngine.ShowGeneralHint(type: HintEngine.Type.BreakingItem, ignoreDelay: true, text: this.readableName);
-                    if (this.hitPoints == 0) this.world.hintEngine.ShowGeneralHint(type: HintEngine.Type.BrokenItem, ignoreDelay: true, text: this.readableName);
+                    if (this.hitPoints == 0) this.world.hintEngine.ShowGeneralHint(type: HintEngine.Type.BrokenItem, ignoreDelay: true, text: this.readableName, texture: this.sprite.frame.texture);
                 }
             }
         }

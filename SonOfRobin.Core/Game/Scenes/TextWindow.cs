@@ -4,6 +4,8 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Input.Touch;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace SonOfRobin
 {
@@ -11,6 +13,8 @@ namespace SonOfRobin
     {
         public static readonly SpriteFont font = SonOfRobinGame.fontTommy40;
         public static readonly int maxWidth = 90;
+        public static readonly string imageMarkerStart = "|";
+        public static readonly string imageMarkerExtend = "'";
 
         private readonly bool autoClose;
         private int blockingFramesLeft;
@@ -20,6 +24,7 @@ namespace SonOfRobin
         private readonly Color textColor;
         private readonly Color bgColor;
         private float textScale;
+        private readonly List<Texture2D> imageList;
         private readonly bool useTransition;
         private readonly bool useTransitionOpen;
         private readonly bool useTransitionClose;
@@ -29,7 +34,6 @@ namespace SonOfRobin
         private readonly int framesPerChar;
         private Scheduler.TaskName closingTask;
         private Object closingTaskHelper;
-
         private string AnimatedText { get { return this.text.Substring(0, this.charCounter); } }
         private int MaxWindowWidth { get { return Convert.ToInt32(SonOfRobinGame.VirtualWidth * 0.8f); } }
         private int MaxWindowHeight { get { return Convert.ToInt32(SonOfRobinGame.VirtualHeight * 0.7f); } }
@@ -47,9 +51,10 @@ namespace SonOfRobin
             }
         }
 
-        public TextWindow(string text, Color textColor, Color bgColor, bool animate = true, int framesPerChar = 0, bool useTransition = true, bool checkForDuplicate = false, bool blocksUpdatesBelow = false, int blockInputDuration = 0, Scheduler.TaskName closingTask = Scheduler.TaskName.Empty, Object closingTaskHelper = null, bool useTransitionOpen = false, bool useTransitionClose = false, bool autoClose = false, InputTypes inputType = InputTypes.Normal, int priority = 0) : base(inputType: inputType, priority: priority, blocksUpdatesBelow: blocksUpdatesBelow, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty)
+        public TextWindow(string text, Color textColor, Color bgColor, bool animate = true, int framesPerChar = 0, bool useTransition = true, bool checkForDuplicate = false, bool blocksUpdatesBelow = false, int blockInputDuration = 0, Scheduler.TaskName closingTask = Scheduler.TaskName.Empty, Object closingTaskHelper = null, bool useTransitionOpen = false, bool useTransitionClose = false, bool autoClose = false, InputTypes inputType = InputTypes.Normal, int priority = 0, List<Texture2D> imageList = null) : base(inputType: inputType, priority: priority, blocksUpdatesBelow: blocksUpdatesBelow, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty)
         {
-            this.text = SplitText(text: text, maxWidth: maxWidth);
+            this.imageList = imageList == null ? new List<Texture2D>() : imageList;
+            this.text = SplitTextAndResizeMarkers(text: text, maxWidth: maxWidth, imageList: this.imageList);
             Vector2 textSize = font.MeasureString(this.text);
             this.textWidth = (int)textSize.X;
             this.textHeight = (int)textSize.Y;
@@ -62,7 +67,7 @@ namespace SonOfRobin
             this.blockingFramesLeft = blockInputDuration;
             this.autoClose = autoClose;
 
-            this.charCounter = animate ? 0 : text.Length;
+            this.charCounter = animate ? 0 : this.text.Length;
             this.currentCharFramesLeft = framesPerChar;
             this.animationFinished = !animate;
             this.framesPerChar = framesPerChar;
@@ -80,6 +85,15 @@ namespace SonOfRobin
 
             this.UpdateViewParams();
             if (this.useTransition || this.useTransitionOpen) this.AddInOutTransition(inTrans: true);
+
+            this.ValidateImagesCount();
+        }
+
+        private void ValidateImagesCount()
+        {
+            MatchCollection matches = Regex.Matches(this.text, $@"\{imageMarkerStart}"); // $@ is needed for "\" character inside interpolated string
+
+            if (this.imageList.Count != matches.Count) throw new ArgumentException($"TextWindow - count of markers ({matches.Count}) and images ({this.imageList.Count}) does not match.\n{this.text}");
         }
 
         private void SetTipsAndTouchLayout()
@@ -160,8 +174,9 @@ namespace SonOfRobin
             if (inTrans) this.transManager.AddTransition(new Transition(transManager: this.transManager, outTrans: true, duration: 15, playCount: -1, replaceBaseValue: false, baseParamName: "Rot", targetVal: 0.13f, stageTransform: Transition.Transform.Sinus, pingPongCycles: false, cycleMultiplier: 0.17f));
         }
 
-        private static string SplitText(string text, int maxWidth)
+        private static string SplitTextAndResizeMarkers(string text, int maxWidth, List<Texture2D> imageList)
         {
+            int imageNo = 0;
             string newText = "";
 
             string[] lineList = text.Split(Environment.NewLine.ToCharArray());
@@ -187,8 +202,16 @@ namespace SonOfRobin
                         lineWidth = 0;
                     }
 
-                    newText += word;
-                    lineWidth += word.Length;
+                    string wordWithResizedMarker = word;
+
+                    if (word.Contains(imageMarkerStart))
+                    {
+                        wordWithResizedMarker = ResizeImageMarker(text: wordWithResizedMarker, image: imageList[imageNo]);
+                        imageNo++;
+                    }
+
+                    newText += wordWithResizedMarker;
+                    lineWidth += wordWithResizedMarker.Length;
                     wordNo++;
                 }
 
@@ -196,6 +219,33 @@ namespace SonOfRobin
             }
 
             return newText;
+        }
+
+        private static string ResizeImageMarker(string text, Texture2D image)
+        {
+            float imageScale = (float)image.Height / font.MeasureString(text).Y;
+            int targetWidth = (int)((float)image.Width / imageScale);
+
+            int extendCharCount = 0;
+            int lastDelta = 99999;
+            string lastResizedMarker = imageMarkerStart;
+            while (true)
+            {
+                string resizedMarker = imageMarkerStart + string.Concat(Enumerable.Repeat(imageMarkerExtend, extendCharCount));
+
+                int delta = (int)Math.Abs(targetWidth - font.MeasureString(resizedMarker).X);
+                if (delta > lastDelta) break;
+                else
+                {
+                    lastDelta = delta;
+                    lastResizedMarker = resizedMarker;
+                    extendCharCount++;
+                }
+            }
+
+            if (text.IndexOf(imageMarkerStart) != text.LastIndexOf(imageMarkerStart)) throw new ArgumentException("Found multiple markers within one word.");
+
+            return text.Replace(imageMarkerStart, lastResizedMarker);
         }
 
         public override void Update(GameTime gameTime)
@@ -301,7 +351,7 @@ namespace SonOfRobin
         {
             int margin = this.Margin;
             int bgShadowOffset = (int)(SonOfRobinGame.VirtualHeight * 0.02f);
-            int textShadowOffset = (int)(SonOfRobinGame.VirtualHeight * 0.003f);
+            int textShadowOffset = (int)Math.Max(SonOfRobinGame.VirtualHeight * 0.003f, 1);
 
             Rectangle bgShadowRect = new Rectangle(bgShadowOffset, bgShadowOffset, this.viewParams.Width, this.viewParams.Height);
             Rectangle bgRect = new Rectangle(0, 0, this.viewParams.Width, this.viewParams.Height);
@@ -315,9 +365,80 @@ namespace SonOfRobin
             SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, bgRect, this.bgColor * this.viewParams.drawOpacity);
             Helpers.DrawRectangleOutline(rect: bgRect, color: this.textColor * this.viewParams.drawOpacity, borderWidth: 2);
 
-            SonOfRobinGame.spriteBatch.DrawString(font, currentText, position: textShadowPos, color: Color.Black * 0.5f * this.viewParams.drawOpacity, origin: Vector2.Zero, scale: this.textScale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
+            Color shadowColor = Color.Black * 0.5f * this.viewParams.drawOpacity;
+
+            SonOfRobinGame.spriteBatch.DrawString(font, currentText, position: textShadowPos, color: shadowColor, origin: Vector2.Zero, scale: this.textScale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
 
             SonOfRobinGame.spriteBatch.DrawString(font, currentText, position: textPos, color: this.textColor * this.viewParams.drawOpacity, origin: Vector2.Zero, scale: this.textScale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
+
+            int imageNo = 0;
+            foreach (Texture2D image in this.imageList)
+            {
+                int markerIndex = this.GetImageMarkerIndex(currentText: currentText, imageNo: imageNo);
+
+                if (markerIndex == -1) break;
+                else
+                {
+                    Rectangle markerRect = this.GetImageMarkerRect(markerIndex: markerIndex, baseTextPos: textPos);
+
+                    Rectangle markerShadowRect = new Rectangle(x: markerRect.X + textShadowOffset, y: markerRect.Y + textShadowOffset, width: markerRect.Width, height: markerRect.Height);
+
+                    // painting over the marker, to hide it
+                    SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, markerShadowRect, this.bgColor * this.viewParams.drawOpacity);
+                    SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, markerRect, this.bgColor * this.viewParams.drawOpacity);
+
+                    Helpers.DrawTextureInsideRect(texture: image, rectangle: markerShadowRect, color: shadowColor, drawTestRect: false);
+                    Helpers.DrawTextureInsideRect(texture: image, rectangle: markerRect, color: Color.White * this.viewParams.drawOpacity, drawTestRect: false);
+                }
+                imageNo++;
+            }
+        }
+
+        private int GetImageMarkerIndex(string currentText, int imageNo)
+        {
+            int markerIndex = -1;
+            int matchNo = 0;
+            foreach (Match match in Regex.Matches(currentText, $@"\{imageMarkerStart}"))  // $@ is needed for "\" character inside interpolated string
+            {
+                if (matchNo == imageNo)
+                {
+                    markerIndex = match.Index;
+                    break;
+                }
+                matchNo++;
+            }
+
+            return markerIndex;
+        }
+
+        private Rectangle GetImageMarkerRect(int markerIndex, Vector2 baseTextPos)
+        {
+            string fullMarker = imageMarkerStart;
+            int currentMarkerPos = markerIndex;
+            while (true)
+            {
+                currentMarkerPos++;
+
+                if (Convert.ToString(this.text[currentMarkerPos]) != imageMarkerExtend) break;
+                else fullMarker += this.text[currentMarkerPos];
+            }
+
+            string textBeforeMarker = this.text.Substring(0, markerIndex);
+
+            int lastNewLineIndex = textBeforeMarker.LastIndexOf('\n');
+            if (lastNewLineIndex == -1) lastNewLineIndex = 0; // if no newline was found, LastIndexOf() == -1
+            else lastNewLineIndex += 1; // deleting "\n" from the start
+
+            lastNewLineIndex = Math.Max(lastNewLineIndex, 0);
+
+            string thisLineText = textBeforeMarker.Substring(lastNewLineIndex, textBeforeMarker.Length - lastNewLineIndex);
+            string textBeforeThisLine = textBeforeMarker.Substring(0, Math.Max(lastNewLineIndex - 1, 0));
+
+            int posX = (int)(font.MeasureString(thisLineText).X * this.textScale);
+            int posY = (int)(font.MeasureString(textBeforeThisLine).Y * this.textScale);
+            Vector2 rectSize = font.MeasureString(fullMarker) * this.textScale;
+
+            return new Rectangle(x: (int)baseTextPos.X + posX, y: (int)baseTextPos.Y + posY, width: (int)rectSize.X, height: (int)rectSize.Y);
         }
 
     }

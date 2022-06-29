@@ -34,8 +34,6 @@ C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcore
 C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\osx-x64\Content\gfx\crosshair.xnb
 C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\osx-x64\Content\gfx\cursor.xnb
 C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\osx-x64\Content\gfx\d9ffec650d3104f5c4564c9055787530.xnb
-C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\osx-x64\Content\gfx\demonmaid.xnb
-C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\osx-x64\Content\gfx\demonmaid2.xnb
 C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\osx-x64\Content\gfx\exclamation.xnb
 C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\osx-x64\Content\gfx\fancy_food.xnb
 C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\osx-x64\Content\gfx\fancy_food2.xnb
@@ -369,3 +367,4 @@ C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\obj\Release\netcore
 C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\obj\Release\netcoreapp3.1\osx-x64\SonOfRobin.DesktopGL.dll
 C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\obj\Release\netcoreapp3.1\osx-x64\SonOfRobin.DesktopGL.pdb
 C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\obj\Release\netcoreapp3.1\osx-x64\SonOfRobin.DesktopGL.genruntimeconfig.cache
+C:\Users\Marcin\source\repos\SonOfRobin\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\osx-x64\Content\gfx\tile_rtp-addons.xnb

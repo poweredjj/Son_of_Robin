@@ -16,7 +16,7 @@ namespace SonOfRobin
             public bool isCarnivorous;
             public readonly BoardPiece.Category category;
             public List<BuffEngine.Buff> buffList;
-            public AnimFrame frame;
+            public readonly AnimFrame frame;
             public List<PieceTemplate.Name> eats;
             public List<PieceTemplate.Name> isEatenBy;
 

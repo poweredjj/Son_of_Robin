@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace SonOfRobin
 {
@@ -9,32 +11,29 @@ namespace SonOfRobin
         public enum BoxType { Dialogue, GreenBox, BlueBox, LightBlueBox, RedBox }
 
         public readonly string text;
+        public readonly List<Texture2D> imageList;
         public readonly BoxType boxType;
         public readonly int delay;
         public readonly bool fieldOnly;
+        public readonly bool blockInput;
 
-        public HintMessage(string text) // shortened version for dialogue
+        public HintMessage(string text, int delay = 1, bool fieldOnly = false, bool blockInput = true, List<Texture2D> imageList = null, BoxType boxType = BoxType.Dialogue)
         {
             this.text = text;
-            this.boxType = BoxType.Dialogue;
-            this.delay = 1;
-            this.fieldOnly = false;
-        }
-
-        public HintMessage(string text, BoxType boxType, int delay = 1, bool fieldOnly = false)
-        {
-            this.text = text;
+            this.imageList = imageList == null ? new List<Texture2D>() : imageList;
             this.boxType = boxType;
             this.delay = delay;
             this.fieldOnly = fieldOnly;
+            this.blockInput = blockInput;
+
+            this.ValidateImagesCount();
         }
 
-        public HintMessage(string text, int delay = 1, bool fieldOnly = false)
+        private void ValidateImagesCount()
         {
-            this.text = text;
-            this.boxType = BoxType.Dialogue;
-            this.delay = delay;
-            this.fieldOnly = fieldOnly;
+            MatchCollection matches = Regex.Matches(this.text, $@"\{TextWindow.imageMarkerStart}"); // $@ is needed for "\" character inside interpolated string
+
+            if (this.imageList.Count != matches.Count) throw new ArgumentException($"HintMessage - count of markers ({matches.Count}) and images ({this.imageList.Count}) does not match.\n{this.text}");
         }
 
         public Scheduler.Task ConvertToTask(bool useTransitionOpen = false, bool useTransitionClose = false)
@@ -74,6 +73,7 @@ namespace SonOfRobin
 
             var textWindowData = new Dictionary<string, Object> {
                 { "text", this.text },
+                { "imageList", this.imageList },
                 { "bgColor", new List<byte> {bgColor.R, bgColor.G, bgColor.B } },
                 { "textColor", new List<byte> {textColor.R, textColor.G, textColor.B }  },
                 { "checkForDuplicate", true },
@@ -81,7 +81,7 @@ namespace SonOfRobin
                 { "useTransitionOpen", useTransitionOpen },
                 { "useTransitionClose", useTransitionClose },
                 { "blocksUpdatesBelow", false },
-                { "blockInputDuration", HintEngine.blockInputDuration }
+                { "blockInputDuration", this.blockInput ? HintEngine.blockInputDuration : 0}
             };
 
             return new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.OpenTextWindow, turnOffInputUntilExecution: true, delay: this.delay, executeHelper: textWindowData, storeForLaterUse: true);

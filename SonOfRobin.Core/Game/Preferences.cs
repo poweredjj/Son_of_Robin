@@ -188,7 +188,7 @@ namespace SonOfRobin
 
                 }
 
-                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Setting world size to {newWorldWidth}x{newWorldHeight}");
+                //MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Setting world size to {newWorldWidth}x{newWorldHeight}");
 
             }
         }
@@ -223,6 +223,7 @@ namespace SonOfRobin
                 controlTipsScheme = value;
                 ButtonScheme.ChangeType(value);
                 Tutorials.RefreshData();
+                PieceHint.RefreshData();
             }
         }
 
@@ -410,7 +411,7 @@ namespace SonOfRobin
                     showLighting = (bool)prefsData["showLighting"];
                     showDebris = (bool)prefsData["showDebris"];
                     useMultipleThreads = (bool)prefsData["useMultipleThreads"];
-                    ControlTipsScheme = (ButtonScheme.Type)prefsData["controlTipsScheme"];
+                    controlTipsScheme = (ButtonScheme.Type)prefsData["controlTipsScheme"];
                     EnableTouch = (bool)prefsData["EnableTouch"];
                     darknessResolution = (int)prefsData["darknessResolution"];
                     drawShadows = (bool)prefsData["drawShadows"];
@@ -426,7 +427,6 @@ namespace SonOfRobin
             if (!prefsLoaded)
             {
                 CustomizeWorld = CustomizeWorld; // to refresh world sizes
-                ControlTipsScheme = ControlTipsScheme; // to load default control tips
             }
 
             if (SonOfRobinGame.platform == Platform.Mobile) fullScreenMode = true; // window mode makes no sense on mobile

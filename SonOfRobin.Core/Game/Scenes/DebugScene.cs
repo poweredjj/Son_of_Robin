@@ -139,7 +139,6 @@ namespace SonOfRobin
                 world.colorOverlay.color = Color.Red;
                 world.colorOverlay.viewParams.Opacity = 0f;
                 world.colorOverlay.transManager.AddTransition(new Transition(transManager: world.colorOverlay.transManager, outTrans: true, duration: 20, playCount: 1, stageTransform: Transition.Transform.Sinus, baseParamName: "Opacity", targetVal: 0.5f, refreshBaseVal: false));
-
             }
 
             if (Keyboard.HasBeenPressed(Keys.OemMinus))
@@ -150,15 +149,6 @@ namespace SonOfRobin
                 {
                     if (sprite.boardPiece != world.player) Tool.HitTarget(attacker: world.player, target: sprite.boardPiece, hitPower: 99999, targetPushMultiplier: 1f);
                 }
-            }
-
-            if (Keyboard.HasBeenPressed(Keys.OemPlus))
-            {
-                if (world == null) return;
-
-                Player player = world.player;
-
-                player.sprite.SetOrientationByMovement(new Vector2(0, -5));
             }
 
             if (Keyboard.HasBeenPressed(Keys.G))
@@ -267,7 +257,7 @@ namespace SonOfRobin
                 { if (sprite.boardPiece != world.player) sprite.boardPiece.RemoveFromStateMachines(); }
             }
 
-            if (Keyboard.HasBeenPressed(Keys.F1)) new TextWindow(text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.", useTransition: true, bgColor: Color.DeepSkyBlue, textColor: Color.White);
+            if (Keyboard.HasBeenPressed(Keys.F1)) new TextWindow(text: "Line 1\nLine 2\nThis is button A | and button B |.\nBelt here >|<\nLast line.", animate: false, useTransition: false, bgColor: Color.DeepSkyBlue, textColor: Color.White, imageList: new List<Texture2D> { ButtonScheme.buttonA, ButtonScheme.buttonB, AnimData.framesForPkgs[AnimData.PkgName.Skeleton].texture });
 
             if (Keyboard.HasBeenPressed(Keys.F2))
             {
@@ -306,6 +296,12 @@ namespace SonOfRobin
 
             if (Keyboard.HasBeenPressed(Keys.F5)) SonOfRobinGame.progressBar.TurnOn(curVal: 2, maxVal: 5, text: $"Loading game - replacing save slot data...              ...");
             if (Keyboard.HasBeenPressed(Keys.F6)) SonOfRobinGame.progressBar.TurnOn(curVal: 6, maxVal: 6, text: $"Loading game - events...");
+
+            if (Keyboard.HasBeenPressed(Keys.OemPlus))
+            {
+                if (world == null) return;
+                world.hintEngine.shownTutorials = Enum.GetValues(typeof(Tutorials.Type)).Cast<Tutorials.Type>().ToList();
+            }
 
             if (Keyboard.HasBeenPressed(Keys.F7))
             {
@@ -381,11 +377,11 @@ namespace SonOfRobin
 
             if (Keyboard.HasBeenPressed(Keys.Z))
             {
-                AnimPkg currentPackageName = world.player.sprite.animPackage;
+                AnimData.PkgName currentPackageName = world.player.sprite.animPackage;
 
                 while (true)
                 {
-                    var packageNames = new List<AnimPkg> { AnimPkg.Blonde, AnimPkg.FoxGinger, AnimPkg.Frog1, AnimPkg.CrabGreen, AnimPkg.TigerWhite };
+                    var packageNames = new List<AnimData.PkgName> { AnimData.PkgName.Blonde, AnimData.PkgName.FoxGinger, AnimData.PkgName.Frog1, AnimData.PkgName.CrabGreen, AnimData.PkgName.TigerWhite };
                     var packageName = packageNames[SonOfRobinGame.random.Next(0, packageNames.Count)];
                     if (packageName != currentPackageName)
                     {

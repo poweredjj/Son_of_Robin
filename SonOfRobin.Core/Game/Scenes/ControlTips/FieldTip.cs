@@ -7,139 +7,213 @@ namespace SonOfRobin
 {
     public class FieldTip
     {
-        public enum Alignment { Center, Above, Below, Left, Right };
-        private static readonly List<FieldTip> fieldTipList = new List<FieldTip>();
+        public enum Alignment { Center, TopOut, TopIn, BottomOut, BottomIn, LeftIn, RightIn, LeftOut, RightOut };
+        private static readonly List<Alignment> inAlignment = new List<Alignment> { Alignment.Center, Alignment.LeftIn, Alignment.RightIn, Alignment.TopIn, Alignment.BottomIn };
+        private static readonly int maxInactiveDuration = 10;
+        private static readonly int movementSlowdown = 6;
+        private static readonly int opacitySlowdown = 6;
 
+        private static readonly Dictionary<Texture2D, FieldTip> tipsDict = new Dictionary<Texture2D, FieldTip>();
+
+        private readonly World world;
         private readonly Texture2D texture;
-        private readonly Rectangle pieceRect;
-        private readonly Alignment alignment;
-        private Rectangle destRect;
 
-        public FieldTip(Texture2D texture, Rectangle pieceRect, Alignment alignment)
+        private Alignment alignment;
+
+        private int lastFrameActive;
+        private bool teleportToTarget;
+
+        private Sprite targetSprite;
+
+        private Vector2 targetPos;
+        private Vector2 currentPos;
+        private float targetOpacity;
+        private float currentOpacity;
+        private int TextureWidth { get { return (int)(this.texture.Width * Preferences.fieldControlTipsScale); } }
+        private int TextureHeight { get { return (int)(this.texture.Height * Preferences.fieldControlTipsScale); } }
+
+        private FieldTip(World world, Texture2D texture, Sprite targetSprite, Alignment alignment)
         {
+            this.world = world;
             this.texture = texture;
-            this.pieceRect = pieceRect;
+
+            this.currentOpacity = 0f;
+            this.targetOpacity = 1f;
+
             this.alignment = alignment;
+            this.lastFrameActive = this.world.currentUpdate;
 
-            this.CalculateDestRect();
+            this.targetSprite = targetSprite;
+            this.currentPos = this.targetPos;
 
-            fieldTipList.Add(this);
+            this.teleportToTarget = true;
+
+            tipsDict[texture] = this;
         }
 
-        private void CalculateDestRect()
+        private void Update(Sprite targetSprite, Alignment alignment)
         {
-            int textureWidth = (int)(this.texture.Width * Preferences.fieldControlTipsScale);
-            int textureHeight = (int)(this.texture.Height * Preferences.fieldControlTipsScale);
+            this.alignment = alignment;
+            this.lastFrameActive = world.currentUpdate;
 
-            Vector2 position;
-            switch (this.alignment)
-            {
-                case Alignment.Center:
-                    position = new Vector2(
-                        this.pieceRect.Center.X - (textureWidth / 2),
-                        this.pieceRect.Center.Y - (textureHeight / 2));
-                    break;
+            this.targetSprite = targetSprite;
+            if (this.currentOpacity == 0f) this.currentPos = this.targetPos;
 
-                case Alignment.Above:
-                    position = new Vector2(
-                        this.pieceRect.Center.X - (textureWidth / 2),
-                        this.pieceRect.Top - textureHeight);
-                    break;
-
-                case Alignment.Left:
-                    position = new Vector2(
-                        this.pieceRect.Left - textureWidth,
-                        this.pieceRect.Center.Y - (textureHeight / 2));
-                    break;
-
-                case Alignment.Right:
-                    position = new Vector2(
-                        this.pieceRect.Right,
-                        this.pieceRect.Center.Y - (textureHeight / 2));
-                    break;
-
-                case Alignment.Below:
-                    position = new Vector2(
-                     this.pieceRect.Center.X - (textureWidth / 2),
-                     this.pieceRect.Bottom);
-                    break;
-
-                default:
-                    throw new ArgumentException($"Unsupported alignment - '{alignment}'.");
-            }
-
-            this.destRect = new Rectangle(x: (int)position.X, y: (int)position.Y, width: textureWidth, height: textureHeight);
+            this.targetOpacity = 1f;
         }
 
-
-        private static void MoveCollidingTips()
+        private void Remove()
         {
-            int margin = 2;
-            bool moveBoth = true;
+            tipsDict.Remove(this.texture);
+        }
+        public static void AddUpdateTip(World world, Texture2D texture, Sprite targetSprite, Alignment alignment)
+        {
+            if (!tipsDict.ContainsKey(texture) || tipsDict[texture].world != world) new FieldTip(world: world, texture: texture, targetSprite: targetSprite, alignment: alignment);
+            else tipsDict[texture].Update(targetSprite: targetSprite, alignment: alignment);
+        }
 
-            for (int i = 0; i < 10; i++)
-            {
-                bool collisionsFound = false;
+        private void ChangeOpacityIfObstructsTarget()
+        {
+            if (this.targetSprite == null) return;
+            if (inAlignment.Contains(this.alignment) && (targetSprite.gfxRect.Width < this.TextureWidth || targetSprite.gfxRect.Height < this.TextureHeight)) this.targetOpacity = 0.6f;
+        }
 
-                foreach (FieldTip tip1 in fieldTipList)
-                {
-                    foreach (FieldTip tip2 in fieldTipList)
-                    {
-                        if (tip1 != tip2 && tip1.destRect.Intersects(tip2.destRect))
-                        {
-                            if (tip1.destRect.Y == tip2.destRect.Y)
-                            {
-                                int direction = tip1.destRect.X < tip2.destRect.X ? -1 : 1;
-
-                                if (moveBoth)
-                                {
-                                    tip1.destRect.X -= (tip1.destRect.Width / 2 * direction) + margin;
-                                    tip2.destRect.X += (tip2.destRect.Width / 2 * direction) + margin;
-                                }
-                                else tip2.destRect.X += (tip2.destRect.Width * direction) + margin;
-                            }
-                            else
-                            {
-                                int direction = tip1.destRect.Y < tip2.destRect.Y ? -1 : 1;
-
-                                if (moveBoth)
-                                {
-                                    tip1.destRect.Y -= (tip1.destRect.Height / 2 * direction) + margin;
-                                    tip2.destRect.Y += (tip2.destRect.Height / 2 * direction) + margin;
-                                }
-                                else tip2.destRect.Y += (tip2.destRect.Height * direction) + margin;
-                            }
-
-                            collisionsFound = true;
-                        }
-                    }
-                }
-
-                moveBoth = false;
-                if (!collisionsFound) break;
-            }
+        private Rectangle CalculateDestRect(Vector2 position)
+        {
+            int textureWidth = this.TextureWidth;
+            int textureHeight = this.TextureHeight;
+            return new Rectangle(x: (int)position.X, y: (int)position.Y, width: textureWidth, height: textureHeight);
         }
 
         public static void DrawFieldTips(World world)
         {
             if (Preferences.showControlTips && Preferences.showFieldControlTips)
             {
-                MoveCollidingTips();
-
                 SonOfRobinGame.spriteBatch.End();
                 SonOfRobinGame.spriteBatch.Begin(transformMatrix: world.TransformMatrix);
 
-                foreach (FieldTip fieldTip in fieldTipList)
-                { fieldTip.Draw(); }
+                foreach (FieldTip fieldTip in tipsDict.Values)
+                { fieldTip.UpdateAndDraw(); }
             }
-
-            fieldTipList.Clear();
         }
 
-        public void Draw()
+        public void UpdateAndDraw()
         {
+            if (this.targetSprite != null && !this.targetSprite.boardPiece.exists) this.targetSprite = null;
+
+            this.targetPos = this.CalculatePosition();
+            this.MoveIfObstructsPlayer();
+
+            if (this.world.currentUpdate - this.lastFrameActive > maxInactiveDuration) this.targetOpacity = 0f;
+            else this.ChangeOpacityIfObstructsTarget();
+
+            if (this.teleportToTarget)
+            {
+                this.currentPos = this.targetPos;
+                this.teleportToTarget = false;
+            }
+            else this.currentPos += (this.targetPos - this.currentPos) / movementSlowdown;
+
+            this.currentOpacity += (this.targetOpacity - this.currentOpacity) / opacitySlowdown;
+            if (this.currentOpacity < 0.05f)
+            {
+                this.Remove();
+                return;
+            }
+
             Rectangle sourceRectangle = new Rectangle(0, 0, this.texture.Width, this.texture.Height);
-            SonOfRobinGame.spriteBatch.Draw(this.texture, this.destRect, sourceRectangle, Color.White);
+            SonOfRobinGame.spriteBatch.Draw(this.texture, this.CalculateDestRect(this.currentPos), sourceRectangle, Color.White * this.currentOpacity);
+        }
+
+        private void MoveIfObstructsPlayer()
+        {
+            Rectangle targetRect = this.CalculateDestRect(position: this.targetPos);
+
+            if (this.world.player != null && targetRect.Intersects(this.world.player.sprite.gfxRect))
+            {
+                Rectangle playerRect = this.world.player.sprite.gfxRect;
+
+                int newPosX = Math.Abs(targetRect.Left - playerRect.Right) < Math.Abs(targetRect.Right - playerRect.Left) ?
+                    playerRect.Right : playerRect.Left - this.TextureWidth;
+
+                int newPosY = Math.Abs(targetRect.Top - playerRect.Bottom) < Math.Abs(targetRect.Bottom - playerRect.Top) ?
+                    playerRect.Bottom : playerRect.Top - this.TextureHeight;
+
+                if (Math.Abs(this.targetPos.X - newPosX) > Math.Abs(this.targetPos.Y - newPosY)) this.targetPos.Y = newPosY;
+                else this.targetPos.X = newPosX;
+            }
+        }
+
+        private Vector2 CalculatePosition()
+        {
+            if (this.targetSprite == null) return this.targetPos;
+
+            int textureWidth = this.TextureWidth;
+            int textureHeight = this.TextureHeight;
+            Rectangle targetRect = this.targetSprite.gfxRect;
+
+            Vector2 position;
+            switch (this.alignment)
+            {
+                case Alignment.Center:
+                    position = new Vector2(
+                        targetRect.Center.X - (textureWidth / 2),
+                        targetRect.Center.Y - (textureHeight / 2));
+                    break;
+
+                case Alignment.TopOut:
+                    position = new Vector2(
+                        targetRect.Center.X - (textureWidth / 2),
+                        targetRect.Top - textureHeight);
+                    break;
+
+                case Alignment.TopIn:
+                    position = new Vector2(
+                        targetRect.Center.X - (textureWidth / 2),
+                        targetRect.Top);
+                    break;
+
+                case Alignment.LeftIn:
+                    position = new Vector2(
+                        targetRect.Left,
+                        targetRect.Center.Y - (textureHeight / 2));
+                    break;
+
+                case Alignment.RightIn:
+                    position = new Vector2(
+                        targetRect.Right - textureWidth,
+                        targetRect.Center.Y - (textureHeight / 2));
+                    break;
+
+                case Alignment.LeftOut:
+                    position = new Vector2(
+                        targetRect.Left - textureWidth,
+                        targetRect.Center.Y - (textureHeight / 2));
+                    break;
+
+                case Alignment.RightOut:
+                    position = new Vector2(
+                        targetRect.Right,
+                        targetRect.Center.Y - (textureHeight / 2));
+                    break;
+
+                case Alignment.BottomOut:
+                    position = new Vector2(
+                        targetRect.Center.X - (textureWidth / 2),
+                        targetRect.Bottom);
+                    break;
+
+                case Alignment.BottomIn:
+                    position = new Vector2(
+                        targetRect.Center.X - (textureWidth / 2),
+                        targetRect.Bottom - textureHeight);
+                    break;
+
+                default:
+                    throw new ArgumentException($"Unsupported alignment - '{alignment}'.");
+            }
+
+            return position;
         }
     }
 }

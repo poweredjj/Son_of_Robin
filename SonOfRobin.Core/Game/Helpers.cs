@@ -72,8 +72,57 @@ namespace SonOfRobin
                     throw new DivideByZeroException($"Unsupported alignY - {alignY}.");
             }
 
-
             SonOfRobinGame.spriteBatch.DrawString(font, text, position: new Vector2(rectangle.X + xOffset, rectangle.Y + yOffset), color: color, origin: Vector2.Zero, scale: scale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
+        }
+
+        public static void DrawTextureInsideRect(Texture2D texture, Rectangle rectangle, Color color, AlignX alignX = AlignX.Center, AlignY alignY = AlignY.Center, bool drawTestRect = false)
+        {
+            float scale = Math.Min((float)rectangle.Width / (float)texture.Width, (float)rectangle.Height / (float)texture.Height);
+            Vector2 scaledTexture = new Vector2(texture.Width * scale, texture.Height * scale);
+
+            if (drawTestRect) DrawRectangleOutline(rect: rectangle, color: Color.White, borderWidth: 1);
+
+            int xOffset, yOffset;
+            switch (alignX)
+            {
+                case AlignX.Left:
+                    xOffset = 0;
+                    break;
+
+                case AlignX.Center:
+                    xOffset = (int)((rectangle.Width - scaledTexture.X) / 2);
+                    break;
+
+                case AlignX.Right:
+                    xOffset = (int)(rectangle.Width - scaledTexture.X);
+                    break;
+
+                default:
+                    throw new DivideByZeroException($"Unsupported alignX - {alignX}.");
+            }
+
+            switch (alignY)
+            {
+                case AlignY.Top:
+                    yOffset = 0;
+                    break;
+
+                case AlignY.Center:
+                    yOffset = (int)((rectangle.Height - scaledTexture.Y) / 2);
+                    break;
+
+                case AlignY.Bottom:
+                    yOffset = (int)(rectangle.Height - scaledTexture.Y);
+                    break;
+
+                default:
+                    throw new DivideByZeroException($"Unsupported alignY - {alignY}.");
+            }
+
+            Rectangle destRect = new Rectangle(x: rectangle.X + xOffset, y: rectangle.Y + yOffset, width: (int)(texture.Width * scale), height: (int)(texture.Height * scale));
+            if (drawTestRect) DrawRectangleOutline(rect: destRect, color: Color.Green, borderWidth: 1);
+            SonOfRobinGame.spriteBatch.Draw(texture: texture, destinationRectangle: destRect, color: color);
+
         }
 
         public static void DrawRectangleOutline(Rectangle rect, Color color, int borderWidth)

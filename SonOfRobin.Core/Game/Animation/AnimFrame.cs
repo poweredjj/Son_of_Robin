@@ -7,9 +7,8 @@ namespace SonOfRobin
 {
     public class AnimFrame
     {
-        public readonly static List<byte> allLayers = new List<byte> { }; // needed to draw frames in correct order
-        public readonly static Dictionary<string, AnimFrame> frameById = new Dictionary<string, AnimFrame>(); // needed to access frames directly by id (for loading and saving game)
-        public readonly static List<string> usedAtlasNames = new List<string>(); // for deleting used atlases after creating cropped textures
+        public static readonly List<byte> allLayers = new List<byte> { }; // needed to draw frames in correct order
+        public static readonly List<string> usedAtlasNames = new List<string>(); // for deleting used atlases after creating cropped textures
 
         public readonly Texture2D texture;
         public readonly Vector2 textureSize;
@@ -31,7 +30,7 @@ namespace SonOfRobin
         public AnimFrame(string atlasName, int atlasX, int atlasY, int width, int height, byte layer, byte duration, bool crop = false, float scale = 1f, float depthPercent = 0.25f, int padding = 1)
         {
             this.id = $"{atlasName}_{atlasX},{atlasY}_{width}x{height}_{layer}_{duration}_{crop}_{scale}_{depthPercent}";
-            frameById[this.id] = this;
+            AnimData.frameById[this.id] = this;
 
             if (!usedAtlasNames.Contains(atlasName)) usedAtlasNames.Add(atlasName);
 
@@ -88,7 +87,7 @@ namespace SonOfRobin
         }
 
         public static AnimFrame GetFrameById(string frameId)
-        { return frameById[frameId]; }
+        { return AnimData.frameById[frameId]; }
 
         private Rectangle FindCollisionBounds()
         {
