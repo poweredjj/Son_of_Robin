@@ -48,6 +48,7 @@ namespace SonOfRobin
         public float bioWear;
         public float efficiency;
         public float hitPoints;
+        public int strength;
         public int showStatBarsTillFrame;
         public float maxHitPoints;
         public readonly bool indestructible;
@@ -61,11 +62,14 @@ namespace SonOfRobin
         public readonly bool canBePickedUp;
         protected Vector2 passiveMovement;
         protected int passiveRotation;
-        protected readonly bool rotatesWhenDropped;
+        public bool rotatesWhenDropped;
         private readonly int destructionDelay;
+        public BoardPiece visualAid;
         public readonly string readableName;
         public readonly string description;
         public readonly bool serialize;
+
+        public bool IsAnimalOrPlayer { get { return this.GetType() == typeof(Animal) || this.GetType() == typeof(Player); } }
 
         public float Mass
         {
@@ -106,7 +110,7 @@ namespace SonOfRobin
         }
 
         public BoardPiece(World world, Vector2 position, AnimPkg animPackage, PieceTemplate.Name name, AllowedFields allowedFields, Dictionary<byte, int> maxMassBySize, string readableName, string description,
-            byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, bool visible = true, ushort minDistance = 0, ushort maxDistance = 100, bool ignoresCollisions = false, int destructionDelay = 0, int maxAge = 0, bool floatsOnWater = false, bool checksFullCollisions = false, int generation = 0, int mass = 1, int staysAfterDeath = 800, float maxHitPoints = 1, byte stackSize = 1, Scheduler.TaskName boardTask = Scheduler.TaskName.Empty, Scheduler.TaskName toolbarTask = Scheduler.TaskName.Empty, bool canBePickedUp = false, Yield yield = null, bool indestructible = false, bool rotatesWhenDropped = false, bool fadeInAnim = false, bool serialize = true, bool placeAtBeachEdge = false, bool isShownOnMiniMap = false, List<BuffEngine.Buff> buffList = null, AllowedDensity allowedDensity = null)
+            byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, bool visible = true, ushort minDistance = 0, ushort maxDistance = 100, bool ignoresCollisions = false, int destructionDelay = 0, int maxAge = 0, bool floatsOnWater = false, bool checksFullCollisions = false, int generation = 0, int mass = 1, int staysAfterDeath = 800, float maxHitPoints = 1, byte stackSize = 1, Scheduler.TaskName boardTask = Scheduler.TaskName.Empty, Scheduler.TaskName toolbarTask = Scheduler.TaskName.Empty, bool canBePickedUp = false, Yield yield = null, bool indestructible = false, bool rotatesWhenDropped = false, bool fadeInAnim = false, bool serialize = true, bool placeAtBeachEdge = false, bool isShownOnMiniMap = false, List<BuffEngine.Buff> buffList = null, AllowedDensity allowedDensity = null, int strength = 0)
         {
             this.world = world;
             this.name = name;
@@ -125,6 +129,7 @@ namespace SonOfRobin
             this.hitPoints = maxHitPoints;
             this.showStatBarsTillFrame = 0;
             this.speed = speed;
+            this.strength = strength;
             this.maxMassBySize = maxMassBySize;
             this.mass = mass;
             this.startingMass = mass;
@@ -172,6 +177,7 @@ namespace SonOfRobin
                 {"base_name", this.name},
                 {"base_speed", this.speed},
                 {"base_hitPoints", this.hitPoints},
+                {"base_strength", this.strength},
                 {"base_maxHitPoints", this.maxHitPoints},
                 {"base_showStatBarsTillFrame", this.showStatBarsTillFrame},
                 {"base_mass", this.mass},
@@ -202,6 +208,7 @@ namespace SonOfRobin
             this.mass = (float)pieceData["base_mass"];
             this.hitPoints = (float)pieceData["base_hitPoints"];
             this.speed = (float)pieceData["base_speed"];
+            this.strength = (int)pieceData["base_strength"];
             this.maxHitPoints = (float)pieceData["base_maxHitPoints"];
             this.showStatBarsTillFrame = (int)pieceData["base_showStatBarsTillFrame"];
             this.bioWear = (float)pieceData["base_bioWear"];
@@ -257,6 +264,12 @@ namespace SonOfRobin
         {
             if (!this.alive) return;
 
+            if (this.IsAnimalOrPlayer)
+            {
+                this.rotatesWhenDropped = true; // so it can be tossed around with rotation
+                this.sprite.rotation = (float)(this.world.random.NextDouble() * Math.PI);
+            }
+            if (this.visualAid != null) this.visualAid.Destroy();
             this.alive = false;
             if (this.pieceStorage != null) this.pieceStorage.DropAllPiecesToTheGround(addMovement: true);
             this.RemoveFromStateMachines();
@@ -527,10 +540,8 @@ namespace SonOfRobin
                 }
             }
 
-            if (hasBeenMoved)
-            { this.sprite.CharacterWalk(); }
-            else
-            { this.sprite.CharacterStand(); }
+            if (hasBeenMoved) this.sprite.CharacterWalk();
+            else this.sprite.CharacterStand();
 
             return hasBeenMoved;
         }

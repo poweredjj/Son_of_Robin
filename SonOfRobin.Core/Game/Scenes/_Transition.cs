@@ -67,7 +67,7 @@ namespace SonOfRobin
             }
 
             this.paused = false;
-            SetStartEndFrames();
+            this.SetStartEndFrames();
 
             if (this.removeScene)
             {
@@ -115,12 +115,11 @@ namespace SonOfRobin
 
         private void CopyDrawToBaseParams()
         {
-            string sourceParamName, destParamName;
+            string sourceParamName;
 
-            foreach (var kvp in this.paramsToChange)
+            foreach (string destParamName in this.paramsToChange.Keys)
             {
-                destParamName = kvp.Key;
-                sourceParamName = $"draw{Helpers.FirstCharToUpperCase(kvp.Key.ToString())}";
+                sourceParamName = $"draw{Helpers.FirstCharToUpperCase(destParamName)}";
 
                 float sourceValue = (float)Helpers.GetProperty(targetObj: this.viewParams, propertyName: sourceParamName);
                 Helpers.SetProperty(targetObj: this.viewParams, propertyName: destParamName, newValue: sourceValue);
@@ -129,12 +128,11 @@ namespace SonOfRobin
 
         private void CopyBaseToDrawParams()
         {
-            string sourceParamName, destParamName;
+            string destParamName;
 
-            foreach (var kvp in this.paramsToChange)
+            foreach (string sourceParamName in this.paramsToChange.Keys)
             {
-                sourceParamName = kvp.Key;
-                destParamName = $"draw{Helpers.FirstCharToUpperCase(kvp.Key.ToString())}";
+                destParamName = $"draw{Helpers.FirstCharToUpperCase(sourceParamName)}";
 
                 float sourceValue = (float)Helpers.GetProperty(targetObj: this.viewParams, propertyName: sourceParamName);
                 Helpers.SetProperty(targetObj: this.viewParams, propertyName: destParamName, newValue: sourceValue);

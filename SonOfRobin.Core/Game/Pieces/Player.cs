@@ -19,11 +19,11 @@ namespace SonOfRobin
         public float shootingAngle;
         private int shootingPower;
         public SleepEngine sleepEngine;
-        public BoardPiece visualAid;
         public byte invWidth;
         public byte invHeight;
         public byte toolbarWidth;
         public byte toolbarHeight;
+        public int wentToSleepFrame;
 
         public BoardPiece ActiveToolbarPiece
         { get { return this.toolStorage?.lastUsedSlot?.TopPiece; } }
@@ -60,7 +60,7 @@ namespace SonOfRobin
                 int offsetX = (int)centerOffset.X;
                 int offsetY = (int)centerOffset.Y;
 
-                var nearbyPieces = this.world.grid.GetPiecesWithinDistance(groupName: Cell.Group.All, mainSprite: this.sprite, distance: 35, offsetX: offsetX, offsetY: offsetY);
+                var nearbyPieces = this.world.grid.GetPiecesWithinDistance(groupName: Cell.Group.All, mainSprite: this.sprite, distance: 35, offsetX: offsetX, offsetY: offsetY, compareWithBottom: true);
 
                 var interestingPieces = nearbyPieces.Where(piece => piece.boardTask != Scheduler.TaskName.Empty).ToList();
                 if (interestingPieces.Count > 0)
@@ -80,7 +80,7 @@ namespace SonOfRobin
                 int offsetX = (int)centerOffset.X;
                 int offsetY = (int)centerOffset.Y;
 
-                var interestingPieces = this.world.grid.GetPiecesWithinDistance(groupName: Cell.Group.All, mainSprite: this.sprite, distance: 35, offsetX: offsetX, offsetY: offsetY);
+                var interestingPieces = this.world.grid.GetPiecesWithinDistance(groupName: Cell.Group.All, mainSprite: this.sprite, distance: 35, offsetX: offsetX, offsetY: offsetY, compareWithBottom: true);
                 interestingPieces = interestingPieces.Where(piece => piece.canBePickedUp).ToList();
                 if (interestingPieces.Count == 0) return null;
 
@@ -128,7 +128,7 @@ namespace SonOfRobin
         public Player(World world, Vector2 position, AnimPkg animPackage, PieceTemplate.Name name, AllowedFields allowedFields, byte invWidth, byte invHeight, byte toolbarWidth, byte toolbarHeight, string readableName, string description,
             byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = false, int generation = 0, Yield yield = null) :
 
-            base(world: world, position: position, animPackage: animPackage, animSize: animSize, animName: animName, speed: speed, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedFields: allowedFields, floatsOnWater: floatsOnWater, mass: 50000, maxMassBySize: null, generation: generation, canBePickedUp: false, maxHitPoints: 400, fadeInAnim: false, placeAtBeachEdge: true, isShownOnMiniMap: true, readableName: readableName, description: description, yield: yield)
+            base(world: world, position: position, animPackage: animPackage, animSize: animSize, animName: animName, speed: speed, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedFields: allowedFields, floatsOnWater: floatsOnWater, mass: 50000, maxMassBySize: null, generation: generation, canBePickedUp: false, maxHitPoints: 400, fadeInAnim: false, placeAtBeachEdge: true, isShownOnMiniMap: true, readableName: readableName, description: description, yield: yield, strength: 1)
         {
             this.maxFedLevel = 40000;
             this.fedLevel = maxFedLevel;
@@ -148,6 +148,7 @@ namespace SonOfRobin
             this.ConfigureEquip();
             this.shootingAngle = -100; // -100 == no real value
             this.shootingPower = 0;
+            this.wentToSleepFrame = 0;
 
             BoardPiece handTool = PieceTemplate.CreateOffBoard(templateName: PieceTemplate.Name.Hand, world: this.world);
 
@@ -179,13 +180,12 @@ namespace SonOfRobin
 
             base.Kill();
 
-            SolidColor solidColor = new SolidColor(color: Color.DarkRed, viewOpacity: 0.8f, clearScreen: false);
-            solidColor.AddTransition(new Transition(type: Transition.TransType.From, duration: 250, scene: solidColor, blockInput: false, paramsToChange: new Dictionary<string, float> { { "opacity", 0f } }));
+            this.world.colorOverlay.color = Color.DarkRed;
+            this.world.colorOverlay.viewParams.opacity = 0.75f;
+            this.world.colorOverlay.AddTransition(new Transition(type: Transition.TransType.From, duration: 200, scene: this.world.colorOverlay, blockInput: false, paramsToChange: new Dictionary<string, float> { { "opacity", 0f } }));
 
             new Scheduler.Task(taskName: Scheduler.TaskName.CameraZoom, turnOffInput: true, delay: 0, executeHelper: 3f, menu: null);
             new Scheduler.Task(taskName: Scheduler.TaskName.OpenGameOverMenu, turnOffInput: true, delay: 300, menu: null, executeHelper: null);
-            new Scheduler.Task(taskName: Scheduler.TaskName.RemoveScene, turnOffInput: true, delay: 300, menu: null,
-                executeHelper: new Dictionary<string, Object> { { "scene", solidColor }, { "fadeOut", true }, { "fadeOutDuration", 1500 } });
         }
 
         public override Dictionary<string, Object> Serialize()
@@ -272,7 +272,7 @@ namespace SonOfRobin
 
             // highlighting pieces to interact with and corresponding interface elements
 
-            this.UseToolbarPiece(isInShootingMode: false, buttonHeld: false, highlightOnly: true); // only to highlight pieces that will be hit
+            if (this.world.inputActive) this.UseToolbarPiece(isInShootingMode: false, buttonHeld: false, highlightOnly: true); // only to highlight pieces that will be hit
 
             BoardPiece pieceToInteract = this.ClosestPieceToInteract;
             if (pieceToInteract != null)
@@ -298,16 +298,6 @@ namespace SonOfRobin
                 {
                     if (SonOfRobinGame.platform == Platform.Mobile) VirtButton.ButtonHighlightOnNextFrame(VButName.PickUp);
                     ControlTips.TipHighlightOnNextFrame(tipName: "pick up");
-                }
-            }
-
-            BoardPiece activeToolbarPiece = this.ActiveToolbarPiece;
-            if (activeToolbarPiece != null)
-            {
-                if (this.world.inputActive)
-                {
-                    if (SonOfRobinGame.platform == Platform.Mobile) VirtButton.ButtonHighlightOnNextFrame(VButName.UseTool);
-                    ControlTips.TipHighlightOnNextFrame(tipName: "use item");
                 }
             }
 
@@ -462,15 +452,16 @@ namespace SonOfRobin
             if (this.world.currentUpdate % 10 == 0) SonOfRobinGame.progressBar.TurnOn(curVal: (int)(this.maxFatigue - this.Fatigue), maxVal: (int)this.maxFatigue, text: "Sleeping...");
         }
 
-        public void GoToSleep(SleepEngine sleepEngine, Vector2 zzzPos)
+        public void GoToSleep(SleepEngine sleepEngine, Vector2 zzzPos, List<BuffEngine.Buff> wakeUpBuffs)
         {
             if (!this.CanSleepNow)
             {
                 new TextWindow(text: "I cannot sleep right now.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true);
                 return;
             }
-
+            this.wentToSleepFrame = this.world.currentUpdate;
             this.sleepEngine = sleepEngine;
+            this.buffList.AddRange(wakeUpBuffs);
 
             if (this.visualAid != null)
             {
@@ -479,7 +470,6 @@ namespace SonOfRobin
             }
 
             this.visualAid = PieceTemplate.CreateOnBoard(world: world, position: zzzPos, templateName: PieceTemplate.Name.Zzz);
-            WorldEvent.RemovePieceFromQueue(pieceToRemove: this.visualAid, world: this.world);
 
             if (!this.sleepEngine.canBeAttacked) this.sprite.Visible = false;
             this.world.touchLayout = TouchLayout.WorldSleep;
@@ -487,11 +477,11 @@ namespace SonOfRobin
             this.sprite.CharacterStand();
             this.activeState = State.PlayerControlledSleep;
 
-            SolidColor solidColor = new SolidColor(color: Color.Black, viewOpacity: 0.75f, clearScreen: false);
-            solidColor.AddTransition(new Transition(type: Transition.TransType.From, duration: 20, scene: solidColor, blockInput: false, paramsToChange: new Dictionary<string, float> { { "opacity", 0f } }));
+            this.world.colorOverlay.color = Color.Black;
+            this.world.colorOverlay.viewParams.opacity = 0.75f;
+            this.world.colorOverlay.AddTransition(new Transition(type: Transition.TransType.From, duration: 20, scene: this.world.colorOverlay, blockInput: false, paramsToChange: new Dictionary<string, float> { { "opacity", 0f } }));
 
-            int fastForwardSpeed = 20;
-            new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.TempoFastForward, delay: 20, executeHelper: fastForwardSpeed, turnOffInput: true);
+            new Scheduler.Task(menu: null, taskName: Scheduler.TaskName.TempoFastForward, delay: 22, executeHelper: 20, turnOffInput: true);
 
             MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.User, message: "Going to sleep.");
         }
@@ -506,6 +496,10 @@ namespace SonOfRobin
 
             SonOfRobinGame.progressBar.TurnOff();
 
+            foreach (BuffEngine.Buff buff in this.buffList)
+            { this.buffEngine.AddBuff(buff: buff, world: this.world); }
+            this.buffList.Clear();
+
             this?.visualAid.Destroy();
             this.visualAid = null;
 
@@ -516,12 +510,9 @@ namespace SonOfRobin
 
             world.updateMultiplier = 1;
             SonOfRobinGame.game.IsFixedTimeStep = Preferences.FrameSkip;
+            Scheduler.RemoveAllTasksOfName(Scheduler.TaskName.TempoFastForward); // to prevent fast forward, when waking up before this task was executed
 
-            Scene existingSolidColor = Scene.GetTopSceneOfType(typeof(SolidColor));
-            if (existingSolidColor != null)
-            {
-                existingSolidColor.AddTransition(new Transition(type: Transition.TransType.To, duration: 20, scene: existingSolidColor, blockInput: false, paramsToChange: new Dictionary<string, float> { { "opacity", 0f } }, removeScene: true));
-            }
+            this.world.colorOverlay.AddTransition(new Transition(type: Transition.TransType.To, duration: 20, scene: this.world.colorOverlay, blockInput: false, copyToBaseAtTheEnd: true, paramsToChange: new Dictionary<string, float> { { "opacity", 0f } }));
 
             MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: "Waking up.");
         }
@@ -597,7 +588,6 @@ namespace SonOfRobin
             return new Vector2(offsetX, offsetY);
         }
 
-
         private void PickUpClosestPiece(BoardPiece closestPiece)
         {
             if (closestPiece == null) return;
@@ -611,14 +601,17 @@ namespace SonOfRobin
             }
             else
             {
-                new TextWindow(text: "My inventory is full.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: false, closingTask: Scheduler.TaskName.ShowHint, closingTaskHelper: HintEngine.Type.SmallInventory);
+                new TextWindow(text: "My inventory is full.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1, closingTask: Scheduler.TaskName.ShowHint, closingTaskHelper: HintEngine.Type.SmallInventory);
                 MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.User, message: $"Inventory full - cannot pick up {closestPiece.readableName}.");
             }
         }
 
         public bool PickUpPiece(BoardPiece piece)
         {
-            bool pieceCollected = this.pieceStorage.AddPiece(piece);
+            bool pieceCollected = false;
+
+            if (piece.GetType() == typeof(Tool)) pieceCollected = this.toolStorage.AddPiece(piece);
+            if (!pieceCollected) pieceCollected = this.pieceStorage.AddPiece(piece);
             if (!pieceCollected) pieceCollected = this.toolStorage.AddPiece(piece);
 
             if (pieceCollected)
@@ -627,10 +620,7 @@ namespace SonOfRobin
                 Tracking.RemoveFromTrackingQueue(world: this.world, pieceToRemove: piece);
                 return true;
             }
-            else
-            {
-                return false;
-            }
+            else return false;
         }
 
         private bool TryToEnterShootingMode()
@@ -669,11 +659,7 @@ namespace SonOfRobin
             int offsetX = (int)centerOffset.X;
             int offsetY = (int)centerOffset.Y;
 
-            if (this.sprite.CanDrownHere)
-            {
-                this.world.hintEngine.ShowGeneralHint(HintEngine.Type.CantUseToolInDeepWater);
-                return false;
-            }
+            if (this.sprite.CanDrownHere) return false;
 
             if (activeToolbarPiece?.GetType() == typeof(Tool))
             {

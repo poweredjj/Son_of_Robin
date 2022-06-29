@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "1G1Wx7vCgHvqKe10FyRFpjOfyhjtfc7h8bMniF3RLAU7+Rswe0uRi9X5k3CR9TyJnL5NYyIgXE0zU37q7Hjepw==",
+  "dgSpecHash": "PshOaMc63mYaJovgJo20cKRcsgNagxOIczVuZWleKkKgG7H1uC4m0ijUt9maarHQyCgny8cc9fJJ3/Y9hsAzxA==",
   "success": true,
   "projectFilePath": "C:\\Users\\Marcin\\source\\repos\\SonOfRobin\\SonOfRobin.DesktopGL\\SonOfRobin.DesktopGL.csproj",
   "expectedPackageFiles": [
@@ -20,9 +20,9 @@
     "C:\\Users\\Marcin\\.nuget\\packages\\system.security.principal.windows\\5.0.0\\system.security.principal.windows.5.0.0.nupkg.sha512",
     "C:\\Users\\Marcin\\.nuget\\packages\\system.windows.extensions\\6.0.0\\system.windows.extensions.6.0.0.nupkg.sha512",
     "C:\\Users\\Marcin\\.nuget\\packages\\xamarin.essentials\\1.7.0\\xamarin.essentials.1.7.0.nupkg.sha512",
-    "C:\\Users\\Marcin\\.nuget\\packages\\microsoft.netcore.app.runtime.win-x64\\3.1.22\\microsoft.netcore.app.runtime.win-x64.3.1.22.nupkg.sha512",
-    "C:\\Users\\Marcin\\.nuget\\packages\\microsoft.windowsdesktop.app.runtime.win-x64\\3.1.22\\microsoft.windowsdesktop.app.runtime.win-x64.3.1.22.nupkg.sha512",
-    "C:\\Users\\Marcin\\.nuget\\packages\\microsoft.aspnetcore.app.runtime.win-x64\\3.1.22\\microsoft.aspnetcore.app.runtime.win-x64.3.1.22.nupkg.sha512"
+    "C:\\Users\\Marcin\\.nuget\\packages\\microsoft.netcore.app.runtime.osx-x64\\3.1.22\\microsoft.netcore.app.runtime.osx-x64.3.1.22.nupkg.sha512",
+    "C:\\Users\\Marcin\\.nuget\\packages\\microsoft.aspnetcore.app.runtime.osx-x64\\3.1.22\\microsoft.aspnetcore.app.runtime.osx-x64.3.1.22.nupkg.sha512",
+    "C:\\Users\\Marcin\\.nuget\\packages\\microsoft.netcore.app.host.osx-x64\\3.1.22\\microsoft.netcore.app.host.osx-x64.3.1.22.nupkg.sha512"
   ],
   "logs": []
 }

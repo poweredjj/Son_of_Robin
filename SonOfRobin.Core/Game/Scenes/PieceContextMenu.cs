@@ -253,11 +253,11 @@ namespace SonOfRobin
             switch (action)
             {
                 case ContextAction.Drop:
-                    this.storage.DropPiecesFromSlot(slot: this.slot);
+                    this.storage.DropPiecesFromSlot(slot: this.slot, addMovement: true);
                     return;
 
                 case ContextAction.DropAll:
-                    this.storage.DropPiecesFromSlot(slot: this.slot, dropAllPieces: true);
+                    this.storage.DropPiecesFromSlot(slot: this.slot, dropAllPieces: true, addMovement: true);
                     return;
 
                 case ContextAction.Move:

@@ -1,7 +1,6 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework;
-using System.Collections.Generic;
+﻿using Microsoft.Xna.Framework;
 using System;
+using System.Collections.Generic;
 
 namespace SonOfRobin
 {
@@ -27,7 +26,6 @@ namespace SonOfRobin
         public Vector2 Position { get { return position; } }
         public bool dontStop;
         public short timeLeft;
-        public int sleepShownUpdate;
 
         public AiData(char notUsedVariable = 'a')
         {
@@ -35,20 +33,21 @@ namespace SonOfRobin
             this.coordinates = null;
             this.dontStop = false;
             this.timeLeft = 0;
-            this.sleepShownUpdate = 0;
         }
-        public void Reset()
+        public void Reset(BoardPiece piece)
         {
+            if (piece.visualAid != null) piece.visualAid.sprite.opacityFade = new OpacityFade(sprite: piece.visualAid.sprite, destOpacity: 0f, destroyPiece: true);
+            piece.visualAid = null;
+
             this.position = nullPosition;
             this.coordinates = null;
             this.dontStop = false;
             this.timeLeft = 0;
-            this.sleepShownUpdate = 0;
         }
 
         public void UpdatePosition()
         {
-            if (this.coordinates != null) this.position = new Vector2(coordinates[0], coordinates[1]);        
+            if (this.coordinates != null) this.position = new Vector2(coordinates[0], coordinates[1]);
         }
 
         public void SetCoordinates(List<int> corrdinates)
@@ -62,11 +61,6 @@ namespace SonOfRobin
         public void SetTimeLeft(short timeLeft)
         {
             this.timeLeft = timeLeft;
-        }
-
-        public void SetSleepShown(int sleepShownUpdate)
-        {
-            this.sleepShownUpdate = sleepShownUpdate;
         }
     }
 }

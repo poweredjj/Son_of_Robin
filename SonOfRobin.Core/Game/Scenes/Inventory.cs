@@ -123,7 +123,7 @@ namespace SonOfRobin
             }
         }
 
-        public Inventory(PieceStorage storage, BoardPiece piece, Layout layout = Layout.SingleCenter, bool blocksUpdatesBelow = false, Inventory otherInventory = null, InputTypes inputType = InputTypes.Normal) : base(inputType: inputType, priority: 1, blocksUpdatesBelow: blocksUpdatesBelow, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Inventory, tipsLayout: ControlTips.TipsLayout.InventorySelect)
+        public Inventory(PieceStorage storage, BoardPiece piece, Layout layout = Layout.SingleCenter, bool blocksUpdatesBelow = true, Inventory otherInventory = null, InputTypes inputType = InputTypes.Normal) : base(inputType: inputType, priority: 1, blocksUpdatesBelow: blocksUpdatesBelow, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Inventory, tipsLayout: ControlTips.TipsLayout.InventorySelect)
         {
             this.storage = storage;
             this.piece = piece;
@@ -418,6 +418,8 @@ namespace SonOfRobin
 
         private void ProcessInput()
         {
+            if (!this.piece.world.player.alive) return;
+
             this.SetCursorByTouch();
             if (this.layout == Layout.SingleBottom) this.MoveCursorByBumpers();
             else

@@ -67,7 +67,7 @@ namespace SonOfRobin
 
         private static readonly SpriteFont font = SonOfRobinGame.fontHuge;
         private static readonly float marginPercent = 0.02f;
-        private static readonly float entryWidthPercent = 0.3f;
+        private static readonly float entryWidthPercent = 0.35f;
         private static readonly float entryHeightPercent = 0.045f;
         private static readonly int transDuration = 6; // 6
 

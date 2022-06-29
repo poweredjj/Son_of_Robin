@@ -427,6 +427,18 @@
 /processorParam:TextureFormat=Color
 /build:gfx/demonmaid2.png
 
+#begin gfx/exclamation.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/exclamation.png
+
 #begin gfx/fancy_food.png
 /importer:TextureImporter
 /processor:TextureProcessor

@@ -9,6 +9,8 @@ namespace SonOfRobin
     public class Animal : BoardPiece
     {
         public static readonly int maxAnimalsPerName = 45; // 45
+        public static readonly int attackDistanceDynamic = 18;
+        public static readonly int attackDistanceStatic = 5;
 
         private readonly bool female;
         private readonly int maxMass;
@@ -17,7 +19,6 @@ namespace SonOfRobin
         private readonly int matureAge;
         private readonly uint pregnancyDuration;
         private readonly byte maxChildren;
-        private readonly int strength;
         private uint pregnancyMass;
         private int attackCooldown;
         private readonly int maxFedLevel;
@@ -40,7 +41,7 @@ namespace SonOfRobin
 
         public Animal(World world, Vector2 position, AnimPkg animPackage, PieceTemplate.Name name, AllowedFields allowedFields, Dictionary<byte, int> maxMassBySize, int mass, int maxMass, byte awareness, bool female, int maxAge, int matureAge, uint pregnancyDuration, byte maxChildren, float maxStamina, int maxHitPoints, ushort sightRange, string readableName, string description, List<PieceTemplate.Name> eats, int strength, float massBurnedMultiplier, byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = false, int generation = 0, Yield yield = null, bool fadeInAnim = true) :
 
-            base(world: world, position: position, animPackage: animPackage, mass: mass, animSize: animSize, animName: animName, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedFields: allowedFields, floatsOnWater: floatsOnWater, maxMassBySize: maxMassBySize, generation: generation, speed: speed, maxAge: maxAge, maxHitPoints: maxHitPoints, yield: yield, fadeInAnim: fadeInAnim, isShownOnMiniMap: true, readableName: readableName, description: description, staysAfterDeath: 30 * 60)
+            base(world: world, position: position, animPackage: animPackage, mass: mass, animSize: animSize, animName: animName, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedFields: allowedFields, floatsOnWater: floatsOnWater, maxMassBySize: maxMassBySize, generation: generation, speed: speed, maxAge: maxAge, maxHitPoints: maxHitPoints, yield: yield, fadeInAnim: fadeInAnim, isShownOnMiniMap: true, readableName: readableName, description: description, staysAfterDeath: 30 * 60, strength: strength)
         {
             this.activeState = State.AnimalAssessSituation;
             this.target = null;
@@ -111,8 +112,6 @@ namespace SonOfRobin
             StatBar.FinishThisBatch();
         }
 
-        private static bool CanThisFoodRunAway(object food)
-        { return food.GetType() == typeof(Player) || food.GetType() == typeof(Animal); }
 
         public void ExpendEnergy(float energyAmount)
         {
@@ -168,7 +167,7 @@ namespace SonOfRobin
         }
 
         public List<BoardPiece> GetSeenPieces()
-        { return world.grid.GetPiecesWithinDistance(groupName: Cell.Group.ColAll, mainSprite: this.sprite, distance: this.sightRange); }
+        { return world.grid.GetPiecesWithinDistance(groupName: Cell.Group.Visible, mainSprite: this.sprite, distance: this.sightRange); }
 
         public override void SM_AnimalAssessSituation()
         {
@@ -178,7 +177,7 @@ namespace SonOfRobin
             if (this.world.random.Next(0, 30) == 0) // to avoid getting blocked
             {
                 this.activeState = State.AnimalWalkAround;
-                this.aiData.Reset();
+                this.aiData.Reset(this);
                 this.aiData.SetTimeLeft(700);
                 return;
             }
@@ -190,7 +189,7 @@ namespace SonOfRobin
             if (seenPieces.Count == 0)
             {
                 this.activeState = State.AnimalWalkAround;
-                this.aiData.Reset();
+                this.aiData.Reset(this);
                 this.aiData.SetTimeLeft(16000);
                 this.aiData.SetDontStop(true);
                 return;
@@ -204,7 +203,7 @@ namespace SonOfRobin
             var enemyList = seenPieces.Where(piece => this.isEatenBy.Contains(piece.name)).ToList();
             if (enemyList.Count > 0)
             {
-                enemyPiece = BoardPiece.FindClosestPiece(sprite: this.sprite, pieceList: enemyList);
+                enemyPiece = FindClosestPiece(sprite: this.sprite, pieceList: enemyList);
                 enemyDistance = Vector2.Distance(this.sprite.position, enemyPiece.sprite.position);
             }
 
@@ -218,7 +217,7 @@ namespace SonOfRobin
             {
                 var deadFoodList = foodList.Where(piece => !piece.alive).ToList();
                 if (deadFoodList.Count > 0) foodList = deadFoodList;
-                foodPiece = this.world.random.Next(0, 8) != 0 ? foodList[0] : foodList[world.random.Next(0, foodList.Count)];
+                foodPiece = this.world.random.Next(0, 8) != 0 ? FindClosestPiece(sprite: this.sprite, pieceList: foodList) : foodList[world.random.Next(0, foodList.Count)];
             }
 
             // looking for mating partner
@@ -248,14 +247,40 @@ namespace SonOfRobin
             if (bestChoice is null)
             {
                 this.activeState = State.AnimalWalkAround;
-                this.aiData.Reset();
+                this.aiData.Reset(this);
                 this.aiData.SetTimeLeft(10000);
                 this.aiData.SetDontStop(true);
                 return;
             }
 
-            this.aiData.Reset();
+            this.aiData.Reset(this);
             this.target = bestChoice.piece;
+
+            if (Preferences.DebugMode)
+            {
+                BoardPiece crossHair = PieceTemplate.CreateOnBoard(world: world, position: this.target.sprite.position, templateName: PieceTemplate.Name.Crosshair);
+                BoardPiece backlight = PieceTemplate.CreateOnBoard(world: world, position: this.sprite.position, templateName: PieceTemplate.Name.Backlight);
+
+                new Tracking(world: world, targetSprite: this.target.sprite, followingSprite: crossHair.sprite);
+                new Tracking(world: world, targetSprite: this.sprite, followingSprite: backlight.sprite, targetYAlign: YAlign.Bottom);
+                crossHair.sprite.opacityFade = new OpacityFade(sprite: crossHair.sprite, destOpacity: 0, duration: 60, destroyPiece: true);
+                backlight.sprite.opacityFade = new OpacityFade(sprite: backlight.sprite, destOpacity: 0, duration: 60, destroyPiece: true);
+
+                switch (bestChoice.action)
+                {
+                    case DecisionEngine.Action.Eat:
+                        crossHair.sprite.color = backlight.sprite.color = Color.Red;
+                        break;
+                    case DecisionEngine.Action.Mate:
+                        crossHair.sprite.color = backlight.sprite.color = Color.Pink;
+                        break;
+                    case DecisionEngine.Action.Flee:
+                        crossHair.sprite.color = backlight.sprite.color = Color.Blue;
+                        break;
+                    default:
+                        break;
+                }
+            }
 
             switch (bestChoice.action)
             {
@@ -270,9 +295,17 @@ namespace SonOfRobin
                         if (this.world.random.Next(0, Convert.ToInt32(animalTarget.awareness / 3)) == 0)
                         {
                             animalTarget.target = this;
-                            animalTarget.aiData.Reset();
+                            animalTarget.aiData.Reset(this);
                             animalTarget.activeState = State.AnimalFlee;
                         }
+                    }
+
+                    if (this.target.GetType().Equals(typeof(Player)))
+                    {
+                        this.visualAid = PieceTemplate.CreateOnBoard(world: world, position: this.sprite.position, templateName: PieceTemplate.Name.Exclamation);
+                        new Tracking(world: world, targetSprite: this.sprite, followingSprite: this.visualAid.sprite, targetYAlign: YAlign.Top, targetXAlign: XAlign.Left, followingYAlign: YAlign.Bottom, offsetX: 0, offsetY: 5);
+
+                        if (!this.world.hintEngine.shownPieceHints.Contains(PieceHint.Type.RedExclamation)) this.world.hintEngine.CheckForPieceHintToShow(forcedMode: true);
                     }
 
                     this.activeState = State.AnimalChaseTarget;
@@ -292,7 +325,7 @@ namespace SonOfRobin
             if (this.aiData.timeLeft <= 0)
             {
                 this.activeState = State.AnimalAssessSituation;
-                this.aiData.Reset();
+                this.aiData.Reset(this);
                 return;
             }
 
@@ -301,7 +334,7 @@ namespace SonOfRobin
             if (this.stamina < 20)
             {
                 this.activeState = State.AnimalRest;
-                this.aiData.Reset();
+                this.aiData.Reset(this);
                 return;
             }
 
@@ -327,7 +360,7 @@ namespace SonOfRobin
             if (successfullWalking && Vector2.Distance(this.sprite.position, this.aiData.Position) < 10)
             {
                 this.activeState = State.AnimalAssessSituation;
-                this.aiData.Reset();
+                this.aiData.Reset(this);
                 return;
             }
 
@@ -336,19 +369,17 @@ namespace SonOfRobin
             if (!successfullWalking || !this.aiData.dontStop && (this.world.random.Next(0, this.awareness * 2) == 0))
             {
                 this.activeState = State.AnimalAssessSituation;
-                this.aiData.Reset();
+                this.aiData.Reset(this);
                 return;
             }
-
         }
 
         public override void SM_AnimalRest()
         {
-            if (this.world.currentUpdate > this.aiData.sleepShownUpdate + 60)
+            if (this.visualAid == null || this.visualAid.name != PieceTemplate.Name.Zzz)
             {
-                BoardPiece zzz = PieceTemplate.CreateOnBoard(world: this.world, position: this.sprite.position, templateName: PieceTemplate.Name.Zzz);
-                new Tracking(world: world, targetSprite: this.sprite, followingSprite: zzz.sprite);
-                this.aiData.SetSleepShown(this.world.currentUpdate);
+                this.visualAid = PieceTemplate.CreateOnBoard(world: world, position: this.sprite.position, templateName: PieceTemplate.Name.Zzz);
+                new Tracking(world: world, targetSprite: this.sprite, followingSprite: this.visualAid.sprite);
             }
 
             this.target = null;
@@ -358,7 +389,7 @@ namespace SonOfRobin
             if (this.stamina == this.maxStamina || this.world.random.Next(0, this.awareness * 10) == 0)
             {
                 this.activeState = State.AnimalAssessSituation;
-                this.aiData.Reset();
+                this.aiData.Reset(this);
             }
         }
 
@@ -367,24 +398,23 @@ namespace SonOfRobin
             if (this.target == null || !this.target.exists || Vector2.Distance(this.sprite.position, this.target.sprite.position) > this.sightRange)
             {
                 this.activeState = State.AnimalAssessSituation;
-                this.aiData.Reset();
+                this.aiData.Reset(this);
                 return;
             }
 
-            if (this.sprite.CheckIfOtherSpriteIsWithinRange(target: target.sprite,
-                range: CanThisFoodRunAway(this.target) ? 4 : 10))
+            if (this.sprite.CheckIfOtherSpriteIsWithinRange(target: target.sprite, range: this.target.IsAnimalOrPlayer ? attackDistanceDynamic : attackDistanceStatic))
             {
                 if (this.eats.Contains(this.target.name))
                 {
                     this.activeState = State.AnimalAttack;
-                    this.aiData.Reset();
+                    this.aiData.Reset(this);
                     return;
                 }
 
                 else if (this.AssessAsMatingPartners(new List<BoardPiece> { this.target }) != null)
                 {
                     this.activeState = State.AnimalMate;
-                    this.aiData.Reset();
+                    this.aiData.Reset(this);
                     return;
                 }
 
@@ -394,7 +424,7 @@ namespace SonOfRobin
             if (this.world.random.Next(0, this.awareness) == 0) // once in a while it is good to look around and assess situation
             {
                 this.activeState = State.AnimalAssessSituation;
-                this.aiData.Reset();
+                this.aiData.Reset(this);
                 return;
             }
 
@@ -406,14 +436,14 @@ namespace SonOfRobin
                 if (this.stamina <= 0)
                 {
                     this.activeState = State.AnimalRest;
-                    this.aiData.Reset();
+                    this.aiData.Reset(this);
                     return;
                 }
             }
             else
             {
                 this.activeState = State.AnimalWalkAround;
-                this.aiData.Reset();
+                this.aiData.Reset(this);
                 this.aiData.SetTimeLeft(1000);
             }
         }
@@ -425,17 +455,17 @@ namespace SonOfRobin
             if (this.target is null ||
                 !this.target.exists ||
                 this.target.Mass <= 0 ||
-                !this.sprite.CheckIfOtherSpriteIsWithinRange(target: this.target.sprite, range: CanThisFoodRunAway(this.target) ? 4 : 15))
+                !this.sprite.CheckIfOtherSpriteIsWithinRange(target: this.target.sprite, range: this.target.IsAnimalOrPlayer ? attackDistanceDynamic : attackDistanceStatic))
             {
                 this.activeState = State.AnimalAssessSituation;
-                this.aiData.Reset();
+                this.aiData.Reset(this);
                 return;
             }
 
-            if (!this.target.alive || !CanThisFoodRunAway(this.target))
+            if (!this.target.alive || !this.target.IsAnimalOrPlayer)
             {
                 this.activeState = State.AnimalEat;
-                this.aiData.Reset();
+                this.aiData.Reset(this);
                 return;
             }
 
@@ -448,14 +478,23 @@ namespace SonOfRobin
             {
                 Animal animalTarget = (Animal)this.target;
                 animalTarget.target = this;
-                animalTarget.aiData.Reset();
+                animalTarget.aiData.Reset(animalTarget);
                 animalTarget.activeState = State.AnimalFlee;
 
                 targetSpeed = (float)animalTarget.RealSpeed;
             }
             else if (this.target.GetType() == typeof(Player))
             {
-                targetSpeed = this.target.speed;
+                Player playerTarget = (Player)this.target;
+
+                if (playerTarget.activeState == State.PlayerControlledSleep)
+                {
+                    playerTarget.WakeUp(force: true);
+                    HintEngine.ShowPieceDuringPause(world: world, pieceToShow: this,
+                        messageList: new List<HintMessage> { new HintMessage(text: $"{Helpers.FirstCharToUpperCase(this.readableName)} is attacking me!", boxType: HintMessage.BoxType.Dialogue) });
+                }
+
+                targetSpeed = playerTarget.speed;
                 this.attackCooldown += this.world.random.Next(0, 40);
             }
             else throw new ArgumentException($"Unsupported target class - '{this.target.GetType()}'.");
@@ -477,7 +516,7 @@ namespace SonOfRobin
 
                 this.target.AddPassiveMovement(movement: (this.sprite.position - this.target.sprite.position) * -0.3f * attackStrength);
             }
-            else // if attack has missed
+            else // if attack had missed
             {
                 BoardPiece miss = PieceTemplate.CreateOnBoard(world: this.world, position: this.target.sprite.position, templateName: PieceTemplate.Name.Miss);
                 new Tracking(world: world, targetSprite: this.target.sprite, followingSprite: miss.sprite);
@@ -488,38 +527,44 @@ namespace SonOfRobin
         {
             this.sprite.CharacterStand();
 
-            if (this.target == null || !this.target.exists || this.target.Mass <= 0)
+            if (this.target == null || !this.target.exists || this.target.Mass <= 0 || !this.sprite.CheckIfOtherSpriteIsWithinRange(target: this.target.sprite, range: attackDistanceDynamic))
             {
                 this.activeState = State.AnimalAssessSituation;
-                this.aiData.Reset();
+                this.aiData.Reset(this);
                 return;
             }
 
-            if (CanThisFoodRunAway(this.target) && this.target.yield != null && this.world.random.Next(0, 30) == 0)
+            if (this.target.IsAnimalOrPlayer && this.target.yield != null && this.world.random.Next(0, 25) == 0)
             {
                 PieceTemplate.CreateOnBoard(world: this.world, position: this.target.sprite.position, templateName: PieceTemplate.Name.Attack);
                 this.target.yield.DropDebris();
-                this.target.AddPassiveMovement(movement: new Vector2(this.world.random.Next(35, 75) * this.world.random.Next(-1, 1), this.world.random.Next(35, 75) * this.world.random.Next(-1, 1)));
+                this.target.AddPassiveMovement(movement: new Vector2(this.world.random.Next(60, 130) * this.world.random.Next(-1, 1), this.world.random.Next(60, 130) * this.world.random.Next(-1, 1)));
             }
 
-            bool eatingPlantOrFruit = !CanThisFoodRunAway(this.target);  // meat is more nutricious than plants
-            var bittenMass = Math.Min(eatingPlantOrFruit ? 25 : 5, this.target.Mass);
+            bool eatingPlantOrFruit = !this.target.IsAnimalOrPlayer;  // meat is more nutricious than plants
+
+            var bittenMass = Math.Min(2, this.target.Mass);
             this.AcquireEnergy(bittenMass * (eatingPlantOrFruit ? 0.5f : 6f));
 
             this.target.Mass = Math.Max(this.target.Mass - bittenMass, 0);
 
             if (this.target.Mass <= 0)
             {
+                if (this.target.IsAnimalOrPlayer && this.target.yield != null)
+                {
+                    PieceTemplate.CreateOnBoard(world: this.world, position: this.target.sprite.position, templateName: PieceTemplate.Name.BloodSplatter);
+                    this.target.yield.DropDebris();
+                }
                 this.target.Destroy();
                 this.activeState = State.AnimalAssessSituation;
-                this.aiData.Reset();
+                this.aiData.Reset(this);
                 return;
             }
 
             if ((this.Mass >= this.maxMass && this.pregnancyMass == 0) || this.world.random.Next(0, this.awareness) == 0)
             {
                 this.activeState = State.AnimalAssessSituation;
-                this.aiData.Reset();
+                this.aiData.Reset(this);
                 return;
             }
         }
@@ -531,16 +576,16 @@ namespace SonOfRobin
             if (this.target == null)
             {
                 this.activeState = State.AnimalAssessSituation;
-                this.aiData.Reset();
+                this.aiData.Reset(this);
                 return;
             }
 
             Animal animalMate = (Animal)this.target;
 
-            if (!(this.pregnancyMass == 0 && animalMate.pregnancyMass == 0 && this.target.alive && this.sprite.CheckIfOtherSpriteIsWithinRange(animalMate.sprite, range: 15)))
+            if (!(this.pregnancyMass == 0 && animalMate.pregnancyMass == 0 && this.target.alive && this.sprite.CheckIfOtherSpriteIsWithinRange(animalMate.sprite, range: attackDistanceDynamic)))
             {
                 this.activeState = State.AnimalAssessSituation;
-                this.aiData.Reset();
+                this.aiData.Reset(this);
                 return;
             }
 
@@ -558,10 +603,10 @@ namespace SonOfRobin
             animalMate.stamina = 0;
 
             this.activeState = State.AnimalRest;
-            this.aiData.Reset();
+            this.aiData.Reset(this);
 
             animalMate.activeState = State.AnimalRest;
-            animalMate.aiData.Reset();
+            animalMate.aiData.Reset(animalMate);
         }
 
         public override void SM_AnimalGiveBirth()
@@ -590,7 +635,7 @@ namespace SonOfRobin
                     this.pregnancyMass = 0;
 
                     this.activeState = State.AnimalAssessSituation;
-                    this.aiData.Reset();
+                    this.aiData.Reset(this);
                     return;
                 }
 
@@ -616,7 +661,7 @@ namespace SonOfRobin
             }
 
             this.activeState = State.AnimalRest;
-            this.aiData.Reset();
+            this.aiData.Reset(this);
         }
 
         public override void SM_AnimalFlee()
@@ -624,14 +669,14 @@ namespace SonOfRobin
             if (this.stamina == 0)
             {
                 this.activeState = State.AnimalRest;
-                this.aiData.Reset();
+                this.aiData.Reset(this);
                 return;
             }
 
             if (this.target == null || !this.target.alive)
             {
                 this.activeState = State.AnimalAssessSituation;
-                this.aiData.Reset();
+                this.aiData.Reset(this);
                 return;
             }
 
@@ -644,14 +689,14 @@ namespace SonOfRobin
                 if (Vector2.Distance(this.sprite.position, this.target.sprite.position) > 400)
                 {
                     this.activeState = State.AnimalAssessSituation;
-                    this.aiData.Reset();
+                    this.aiData.Reset(this);
                     return;
                 }
             }
             else
             {
                 this.activeState = State.AnimalWalkAround;
-                this.aiData.Reset();
+                this.aiData.Reset(this);
                 this.aiData.SetTimeLeft(120);
                 return;
             }

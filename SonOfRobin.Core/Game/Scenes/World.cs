@@ -79,7 +79,7 @@ namespace SonOfRobin
         public List<MapMode> mapCycle;
         public readonly Map mapBig;
         public readonly Map mapSmall;
-        public readonly PlayerPanel playerPanel;
+        public readonly SolidColor colorOverlay;
         public bool mapEnabled;
 
         public Player player;
@@ -175,20 +175,17 @@ namespace SonOfRobin
             this.mapCycle = SonOfRobinGame.platform == Platform.Mobile ? new List<MapMode> { MapMode.None, MapMode.Big } : new List<MapMode> { MapMode.None, MapMode.Small, MapMode.Big };
             this.mapBig = new Map(world: this, fullScreen: true, touchLayout: TouchLayout.Map);
             this.mapSmall = new Map(world: this, fullScreen: false, touchLayout: TouchLayout.Empty);
-            this.playerPanel = new PlayerPanel(world: this);
             if (saveGameData == null) this.grid = new Grid(this);
             else { this.Deserialize(gridOnly: true); }
             this.rightTriggerPreviousFrame = 0f;
 
-            SonOfRobinGame.game.IsFixedTimeStep = false; // speeds up the creation process
-        }
+            this.AddLinkedScene(this.mapBig);
+            this.AddLinkedScene(this.mapSmall);
+            this.AddLinkedScene(new PlayerPanel(world: this));
+            this.colorOverlay = new SolidColor(color: this.demoMode ? Color.White : Color.Black, viewOpacity: this.demoMode ? 0.4f : 0.0f, clearScreen: false, priority: 1);
+            this.AddLinkedScene(colorOverlay);
 
-        public override void Remove()
-        {
-            this.mapBig.Remove(); // map is a separate scene - need to be removed as well
-            this.mapSmall.Remove(); // map is a separate scene - need to be removed as well
-            this.playerPanel.Remove();// playerPanel is a separate scene - need to be removed as well
-            base.Remove();
+            SonOfRobinGame.game.IsFixedTimeStep = false; // speeds up the creation process
         }
 
         public void CompleteCreation()

@@ -26,10 +26,18 @@ namespace SonOfRobin
             }
         }
 
+        public static void RemoveAllTasksOfName(TaskName taskName)
+        {
+            foreach (int frameNo in queue.Keys.ToList())
+            {
+                queue[frameNo] = queue[frameNo].Where(task => task.taskName != taskName).ToList();
+            }
+        }
+
         public struct Task
         {
             private readonly Menu menu;
-            private readonly TaskName taskName;
+            public readonly TaskName taskName;
             private Object executeHelper;
             private readonly int delay;
             private int frame;
@@ -83,39 +91,39 @@ namespace SonOfRobin
                         return;
 
                     case TaskName.OpenMainMenu:
-                        MenuTemplate.CreateMenuFromTemplate(templateName: MenuTemplate.Name.Main);
+                        OpenMenu(templateName: MenuTemplate.Name.Main, executeHelper: executeHelper);
                         return;
 
                     case TaskName.OpenCreateMenu:
-                        MenuTemplate.CreateMenuFromTemplate(templateName: MenuTemplate.Name.CreateNewIsland);
+                        OpenMenu(templateName: MenuTemplate.Name.CreateNewIsland, executeHelper: executeHelper);
                         return;
 
                     case TaskName.OpenLoadMenu:
-                        MenuTemplate.CreateMenuFromTemplate(templateName: MenuTemplate.Name.Load);
+                        OpenMenu(templateName: MenuTemplate.Name.Load, executeHelper: executeHelper);
                         return;
 
                     case TaskName.OpenSaveMenu:
-                        MenuTemplate.CreateMenuFromTemplate(templateName: MenuTemplate.Name.Save);
+                        OpenMenu(templateName: MenuTemplate.Name.Save, executeHelper: executeHelper);
                         return;
 
                     case TaskName.OpenOptionsMenu:
-                        MenuTemplate.CreateMenuFromTemplate(templateName: MenuTemplate.Name.Options);
+                        OpenMenu(templateName: MenuTemplate.Name.Options, executeHelper: executeHelper);
                         return;
 
                     case TaskName.OpenTutorialsMenu:
-                        MenuTemplate.CreateMenuFromTemplate(templateName: MenuTemplate.Name.Tutorials);
+                        OpenMenu(templateName: MenuTemplate.Name.Tutorials, executeHelper: executeHelper);
                         return;
 
                     case TaskName.OpenDebugMenu:
-                        MenuTemplate.CreateMenuFromTemplate(templateName: MenuTemplate.Name.Debug);
+                        OpenMenu(templateName: MenuTemplate.Name.Debug, executeHelper: executeHelper);
                         return;
 
                     case TaskName.OpenCreateAnyPieceMenu:
-                        MenuTemplate.CreateMenuFromTemplate(templateName: MenuTemplate.Name.CreateAnyPiece);
+                        OpenMenu(templateName: MenuTemplate.Name.CreateAnyPiece, executeHelper: executeHelper);
                         return;
 
                     case TaskName.OpenGameOverMenu:
-                        MenuTemplate.CreateMenuFromTemplate(templateName: MenuTemplate.Name.GameOver);
+                        OpenMenu(templateName: MenuTemplate.Name.GameOver, executeHelper: executeHelper);
                         return;
 
                     case TaskName.OpenCraftMenu:
@@ -291,25 +299,15 @@ namespace SonOfRobin
                             int offsetY = (int)executeData["offsetY"];
                             bool highlightOnly = (bool)executeData["highlightOnly"];
 
-                            bool shootsProjectile = activeTool.shootsProjectile;
-                            if (shootsProjectile) activeTool.Use(shootingPower: shootingPower, targetPiece: null);
+                            if (activeTool.shootsProjectile) activeTool.Use(shootingPower: shootingPower, targetPiece: null);
                             else
                             {
-                                var nearbyPieces = player.world.grid.GetPiecesWithinDistance(groupName: Cell.Group.All, mainSprite: player.sprite, distance: 35, offsetX: offsetX, offsetY: offsetY);
+                                var nearbyPieces = player.world.grid.GetPiecesWithinDistance(groupName: Cell.Group.All, mainSprite: player.sprite, distance: 42, offsetX: offsetX, offsetY: offsetY, compareWithBottom: true);
                                 var piecesToHit = nearbyPieces.Where(piece => piece.yield != null).ToList();
                                 BoardPiece targetPiece = BoardPiece.FindClosestPiece(sprite: player.sprite, pieceList: piecesToHit, offsetX: offsetX, offsetY: offsetY);
                                 if (targetPiece == null) return;
 
-                                if (highlightOnly)
-                                {
-                                    if (player.world.inputActive) Tutorials.ShowTutorial(type: Tutorials.Type.Hit, ignoreIfShown: true);
-                                    Sprite sprite = targetPiece.sprite;
-                                    sprite.effectCol.AddEffect(new BorderInstance(outlineColor: Color.Red, textureSize: sprite.frame.originalTextureSize, priority: 0));
-                                }
-                                else
-                                {
-                                    activeTool.Use(shootingPower: shootingPower, targetPiece: targetPiece);
-                                }
+                                activeTool.Use(shootingPower: shootingPower, targetPiece: targetPiece, highlightOnly: highlightOnly);
                             }
                             return;
                         }
@@ -410,6 +408,9 @@ namespace SonOfRobin
                             Object closingTaskHelper = null;
                             if (textWindowData.ContainsKey("closingTaskHelper")) closingTaskHelper = textWindowData["closingTaskHelper"];
 
+                            bool blocksUpdatesBelow = false;
+                            if (textWindowData.ContainsKey("blocksUpdatesBelow")) blocksUpdatesBelow = (bool)textWindowData["blocksUpdatesBelow"];
+
                             int blockInputDuration = 0;
                             if (textWindowData.ContainsKey("blockInputDuration")) blockInputDuration = (int)textWindowData["blockInputDuration"];
 
@@ -431,7 +432,7 @@ namespace SonOfRobin
                             int framesPerChar = 0;
                             if (textWindowData.ContainsKey("framesPerChar")) framesPerChar = (int)textWindowData["framesPerChar"];
 
-                            new TextWindow(text: text, useTransition: useTransition, useTransitionOpen: useTransitionOpen, useTransitionClose: useTransitionClose, bgColor: bgColor, textColor: textColor, framesPerChar: framesPerChar, animate: animate, checkForDuplicate: checkForDuplicate, closingTask: closingTask, closingTaskHelper: closingTaskHelper, blockInputDuration: blockInputDuration);
+                            new TextWindow(text: text, useTransition: useTransition, useTransitionOpen: useTransitionOpen, useTransitionClose: useTransitionClose, bgColor: bgColor, textColor: textColor, framesPerChar: framesPerChar, animate: animate, checkForDuplicate: checkForDuplicate, closingTask: closingTask, closingTaskHelper: closingTaskHelper, blockInputDuration: blockInputDuration, blocksUpdatesBelow: blocksUpdatesBelow);
                             return;
                         }
 
@@ -447,10 +448,8 @@ namespace SonOfRobin
                                 if (player.sprite.CanDrownHere)
                                 {
                                     player.hitPoints = 0;
+                                    player.sprite.Visible = false;
                                     player.Kill();
-
-                                    var bgColor = new List<byte> { Color.DarkRed.R, Color.DarkRed.G, Color.DarkRed.B };
-                                    var textWindowData = new Dictionary<string, Object> { { "text", "You have drowned." }, { "bgColor", bgColor } };
 
                                     new TextWindow(text: "You have drowned.", textColor: Color.White, bgColor: Color.DarkRed, useTransition: true, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 220);
 
@@ -461,7 +460,7 @@ namespace SonOfRobin
                             }
                             else { sleepEngine = SleepEngine.OutdoorSleepDry; }
 
-                            player.GoToSleep(sleepEngine: sleepEngine, zzzPos: player.sprite.position);
+                            player.GoToSleep(sleepEngine: sleepEngine, zzzPos: player.sprite.position, wakeUpBuffs: new List<BuffEngine.Buff> { });
                             return;
                         }
 
@@ -469,7 +468,7 @@ namespace SonOfRobin
                         {
                             Shelter shelterPiece = (Shelter)executeHelper;
                             SleepEngine sleepEngine = shelterPiece.sleepEngine;
-                            World.GetTopWorld()?.player.GoToSleep(sleepEngine: sleepEngine, new Vector2(shelterPiece.sprite.gfxRect.Center.X, shelterPiece.sprite.gfxRect.Center.Y));
+                            World.GetTopWorld()?.player.GoToSleep(sleepEngine: sleepEngine, zzzPos: new Vector2(shelterPiece.sprite.gfxRect.Center.X, shelterPiece.sprite.gfxRect.Center.Y), wakeUpBuffs: shelterPiece.buffList);
 
                             return;
                         }
@@ -672,6 +671,16 @@ namespace SonOfRobin
                         throw new DivideByZeroException($"Unsupported taskName - {taskName}.");
                 }
 
+            }
+
+            private static void OpenMenu(MenuTemplate.Name templateName, Object executeHelper)
+            {
+                Menu menu = MenuTemplate.CreateMenuFromTemplate(templateName: templateName);
+                if (executeHelper != null)
+                {
+                    var scenesToLink = (List<Scene>)executeHelper;
+                    menu.AddLinkedScenes(scenesToLink);
+                }
             }
 
             private static void CloseGame(bool quitGame)

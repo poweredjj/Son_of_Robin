@@ -75,6 +75,7 @@ namespace SonOfRobin
             Zzz,
             Heart,
             Crosshair,
+            Exclamation,
             FlameRegular,
             FlameTrigger,
 
@@ -496,7 +497,7 @@ namespace SonOfRobin
                 case Name.Zzz:
                     {
                         var allowedFields = new AllowedFields();
-                        return new VisualEffect(name: templateName, world: world, position: position, animPackage: AnimPkg.Zzz, minDistance: 0, maxDistance: 0, destructionDelay: 60, allowedFields: allowedFields, generation: generation, fadeInAnim: true, readableName: "zzz", description: "A visual effect.");
+                        return new VisualEffect(name: templateName, world: world, position: position, animPackage: AnimPkg.Zzz, minDistance: 0, maxDistance: 0, destructionDelay: 0, allowedFields: allowedFields, generation: generation, fadeInAnim: true, serialize: false, readableName: "zzz", description: "A visual effect.");
                     }
 
                 case Name.Heart:
@@ -509,6 +510,12 @@ namespace SonOfRobin
                     {
                         var allowedFields = new AllowedFields();
                         return new VisualEffect(name: templateName, world: world, position: position, animPackage: AnimPkg.Crosshair, destructionDelay: 0, allowedFields: allowedFields, minDistance: 0, maxDistance: 2, generation: generation, serialize: false, readableName: "crosshair", description: "A visual effect.");
+                    }
+
+                case Name.Exclamation:
+                    {
+                        var allowedFields = new AllowedFields();
+                        return new VisualEffect(name: templateName, world: world, position: position, animPackage: AnimPkg.Exclamation, destructionDelay: 0, allowedFields: allowedFields, minDistance: 0, maxDistance: 2, generation: generation, fadeInAnim: true, serialize: false, readableName: "crosshair", description: "A visual effect.");
                     }
 
                 case Name.FlameRegular:
@@ -562,7 +569,7 @@ namespace SonOfRobin
                     {
                         var allowedFields = new AllowedFields(rangeDict: new Dictionary<TerrainName, AllowedRange>() {
                             { TerrainName.Height, new AllowedRange(min: Terrain.waterLevelMax, max: Terrain.volcanoLevelMin) }});
-                        return new Container(name: templateName, world: world, position: position, animPackage: AnimPkg.ChestWooden, allowedFields: allowedFields, floatsOnWater: false, minDistance: 0, maxDistance: 100, maxMassBySize: null, generation: generation, storageWidth: 3, storageHeight: 3, maxHitPoints: 40, readableName: "Wooden chest", description: "can store items.");
+                        return new Container(name: templateName, world: world, position: position, animPackage: AnimPkg.ChestWooden, allowedFields: allowedFields, floatsOnWater: false, minDistance: 0, maxDistance: 100, maxMassBySize: null, generation: generation, storageWidth: 3, storageHeight: 3, maxHitPoints: 40, readableName: "wooden chest", description: "can store items.");
                     }
 
                 case Name.ChestIron:
@@ -811,8 +818,8 @@ namespace SonOfRobin
                         var animPkg = packageNames[world.random.Next(0, packageNames.Count)];
                         var allowedFields = new AllowedFields(rangeNameList: new List<AllowedFields.RangeName> { AllowedFields.RangeName.GroundAll });
 
-                        return new Animal(name: templateName, world: world, position: position, animPackage: animPkg, allowedFields: allowedFields, speed: 1f,
-                         minDistance: 5, maxDistance: 30, maxHitPoints: 300, mass: 60, maxMass: 15000, awareness: 80, female: female, massBurnedMultiplier: 1.3f, matureAge: 2000, maxAge: 30000, pregnancyDuration: 4000, maxChildren: 6, maxStamina: 800, sightRange: 400, eats: new List<Name> { Name.Rabbit, Name.Player, Name.RawMeat, Name.CookedMeat }, strength: 30, maxMassBySize: maxMassBySize, generation: generation, yield: yield, readableName: "fox", description: "An animal.");
+                        return new Animal(name: templateName, world: world, position: position, animPackage: animPkg, allowedFields: allowedFields, speed: 1.5f,
+                         minDistance: 5, maxDistance: 30, maxHitPoints: 300, mass: 60, maxMass: 15000, awareness: 80, female: female, massBurnedMultiplier: 1.3f, matureAge: 2000, maxAge: 30000, pregnancyDuration: 4000, maxChildren: 6, maxStamina: 800, sightRange: 450, eats: new List<Name> { Name.Rabbit, Name.Player, Name.RawMeat, Name.CookedMeat }, strength: 30, maxMassBySize: maxMassBySize, generation: generation, yield: yield, readableName: "fox", description: "An animal.");
                     }
 
                 case Name.Frog:
@@ -999,7 +1006,7 @@ namespace SonOfRobin
 
                         SleepEngine sleepEngine = new SleepEngine(minFedPercent: 0.2f, fatigueRegen: 0.14f, canBeAttacked: false);
 
-                        return new Shelter(name: templateName, world: world, position: position, animPackage: AnimPkg.TentSmall, allowedFields: allowedFields, floatsOnWater: false, minDistance: 0, maxDistance: 500, maxMassBySize: null, maxHitPoints: 120, sleepEngine: sleepEngine, readableName: "small tent", description: "Basic shelter for sleeping.");
+                        return new Shelter(name: templateName, world: world, position: position, animPackage: AnimPkg.TentSmall, allowedFields: allowedFields, floatsOnWater: false, minDistance: 0, maxDistance: 500, maxMassBySize: null, maxHitPoints: 120, sleepEngine: sleepEngine, readableName: "small tent", description: "Basic shelter for sleeping.\nProtects against enemies.");
                     }
 
                 case Name.TentMedium:
@@ -1008,8 +1015,10 @@ namespace SonOfRobin
                             { TerrainName.Height, new AllowedRange(min: Terrain.waterLevelMax, max: Terrain.volcanoLevelMin) }});
 
                         SleepEngine sleepEngine = new SleepEngine(minFedPercent: 0.3f, fatigueRegen: 0.2f, canBeAttacked: false);
+                        var buffList = new List<BuffEngine.Buff> {
+                            new BuffEngine.Buff(world: world, type: BuffEngine.BuffType.MaxHp, value: 100f, sleepFrames: 1 * 60 * 60, isPositive: true, autoRemoveDelay: 5 * 60 * 60, increaseIDAtEveryUse: true)};
 
-                        return new Shelter(name: templateName, world: world, position: position, animPackage: AnimPkg.TentMedium, allowedFields: allowedFields, floatsOnWater: false, minDistance: 0, maxDistance: 500, maxMassBySize: null, maxHitPoints: 120, sleepEngine: sleepEngine, readableName: "medium tent", description: "Average shelter for sleeping.");
+                        return new Shelter(name: templateName, world: world, position: position, animPackage: AnimPkg.TentMedium, allowedFields: allowedFields, floatsOnWater: false, minDistance: 0, maxDistance: 500, maxMassBySize: null, maxHitPoints: 120, sleepEngine: sleepEngine, readableName: "medium tent", description: "Average shelter for sleeping.\nProtects against enemies.", buffList: buffList);
                     }
 
                 case Name.TentBig:
@@ -1019,7 +1028,11 @@ namespace SonOfRobin
 
                         SleepEngine sleepEngine = new SleepEngine(minFedPercent: 0.5f, fatigueRegen: 0.4f, canBeAttacked: false);
 
-                        return new Shelter(name: templateName, world: world, position: position, animPackage: AnimPkg.TentBig, allowedFields: allowedFields, floatsOnWater: false, minDistance: 0, maxDistance: 500, maxMassBySize: null, maxHitPoints: 200, sleepEngine: sleepEngine, readableName: "big tent", description: "Luxurious shelter for sleeping.");
+                        var buffList = new List<BuffEngine.Buff> {
+                            new BuffEngine.Buff(world: world, type: BuffEngine.BuffType.MaxHp, value: 100f,sleepFrames: 1 * 60 * 60, isPositive: true, autoRemoveDelay: 5 * 60 * 60, increaseIDAtEveryUse: true),
+                            new BuffEngine.Buff(world: world, type: BuffEngine.BuffType.Strength, value: 1,sleepFrames: 1 * 60 * 60, isPositive: true, autoRemoveDelay: 5 * 60 * 60, increaseIDAtEveryUse: true)};
+
+                        return new Shelter(name: templateName, world: world, position: position, animPackage: AnimPkg.TentBig, allowedFields: allowedFields, floatsOnWater: false, minDistance: 0, maxDistance: 500, maxMassBySize: null, maxHitPoints: 200, sleepEngine: sleepEngine, readableName: "big tent", description: "Luxurious shelter for sleeping.\nProtects against enemies.", buffList: buffList);
                     }
 
                 case Name.BackpackMedium:

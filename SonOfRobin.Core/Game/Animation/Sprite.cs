@@ -196,13 +196,14 @@ namespace SonOfRobin
 
             return duration;
         }
-        public bool MoveToClosestFreeSpot(Vector2 startPosition)
+        public bool MoveToClosestFreeSpot(Vector2 startPosition, bool extensiveSearch = false)
         {
             if (!this.placedCorrectly) throw new DivideByZeroException($"Trying to move '{this.boardPiece.name}' that was not placed correctly.");
 
+            int threshold = extensiveSearch ? 10000 : 450;
             ushort maxDistance = 0;
 
-            for (int i = 0; i < 450; i++)
+            for (int i = 0; i < threshold; i++)
             {
                 for (int j = 0; j < 20; j++)
                 {
@@ -430,9 +431,8 @@ namespace SonOfRobin
 
             foreach (Vector2 testMove in movesToTest)
             {
-                if (this.SetNewPosition(this.position + testMove)) return true;
+                if (((int)testMove.X != 0 || (int)testMove.Y != 0) && this.SetNewPosition(this.position + testMove)) return true;
             }
-
             return false;
         }
 
@@ -456,10 +456,7 @@ namespace SonOfRobin
                 if (updateGridLocation) this.UpdateGridLocation();
             }
 
-            if (collisionDetected) return false;
-
-            Vector2 realMove = originalPosition - this.position;
-            return Math.Abs(realMove.X) >= 1 || Math.Abs(realMove.Y) >= 1;
+            return !collisionDetected;
         }
 
         public List<Sprite> GetCollidingSpritesAtPosition(Vector2 positionToCheck)
@@ -503,6 +500,8 @@ namespace SonOfRobin
 
         public bool CheckIfOtherSpriteIsWithinRange(Sprite target, int range = 4)
         {
+            //if (!target.Visible) return false;
+
             if (Vector2.Distance(this.position, target.position) <= range * 1.5) return true;
 
             Rectangle rectangle1 = this.colRect;
@@ -686,7 +685,7 @@ namespace SonOfRobin
                 SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, new Rectangle(Convert.ToInt32((this.position.X) - 1), Convert.ToInt32(this.position.Y - 1), 2, 2), Color.White);
             }
 
-            if (Preferences.debugShowStates && this.boardPiece.GetType() == typeof(Animal)) this.DrawState();
+            if (Preferences.debugShowStates && this.boardPiece.GetType() == typeof(Animal) && this.boardPiece.alive) this.DrawState();
             if (Preferences.debugShowStatBars ||
                 this.world.currentUpdate < this.boardPiece.showStatBarsTillFrame ||
                 this.boardPiece.GetType() == typeof(Player))

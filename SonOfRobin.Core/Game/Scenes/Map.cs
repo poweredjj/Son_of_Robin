@@ -76,6 +76,7 @@ namespace SonOfRobin
                 this.dirtyFog = true;
             }
             this.UpdateFogOfWar();
+            this.blocksUpdatesBelow = this.fullScreen && !Preferences.DebugMode; // fullscreen map should only be "animated" in debug mode
         }
 
         private void UpdateFogOfWar()
@@ -114,6 +115,8 @@ namespace SonOfRobin
             this.InputType = InputTypes.None;
             this.blocksDrawsBelow = false;
             if (addTransition) this.AddTransition(this.OutTransition);
+
+            this.blocksUpdatesBelow = false;
         }
 
         public Transition GetTransition(bool inTrans)

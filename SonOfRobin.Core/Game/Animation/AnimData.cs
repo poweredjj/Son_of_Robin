@@ -54,6 +54,7 @@ namespace SonOfRobin
         Attack,
         Backlight,
         Crosshair,
+        Exclamation,
         Flame,
 
         ChestWooden,
@@ -699,6 +700,10 @@ namespace SonOfRobin
             packageName = AnimPkg.Map;
             AddFrameList(animPackage: packageName, animSize: 0, animName: "default",
             frameList: ConvertImageToFrameList(atlasName: "parchment", layer: 0, scale: 0.03f));
+
+            packageName = AnimPkg.Exclamation;
+            AddFrameList(animPackage: packageName, animSize: 0, animName: "default",
+            frameList: ConvertImageToFrameList(atlasName: "exclamation", layer: 2, scale: 0.2f));
 
             // RPGMaker characters
             AddRPGMakerPackageV1(packageName: AnimPkg.Blonde, atlasName: "actor29rec4", setNoX: 0, setNoY: 0, animSize: 0);

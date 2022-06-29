@@ -67,6 +67,7 @@ namespace SonOfRobin
                 { "useTransition", false },
                 { "useTransitionOpen", useTransitionOpen },
                 { "useTransitionClose", useTransitionClose },
+                { "blocksUpdatesBelow", true },
                 { "blockInputDuration", HintEngine.blockInputDuration }
             };
 
@@ -95,7 +96,7 @@ namespace SonOfRobin
 
     public struct PieceHint
     {
-        public enum Type { CrateStarting, CrateAnother, WoodNegative, WoodPositive, StoneNegative, StonePositive, AnimalNegative, AnimalSling, AnimalBow, AnimalBat, AnimalAxe, SlingNoAmmo, BowNoAmmo, ShellIsNotUseful, FruitTree, BananaTree, TomatoPlant, IronDepositNegative, IronDepositPositive, CoalDepositNegative, CoalDepositPositive, Cooker, LeatherPositive, BackpackPositive, BeltPositive, MapCanMake, MapPositive }
+        public enum Type { CrateStarting, CrateAnother, WoodNegative, WoodPositive, StoneNegative, StonePositive, AnimalNegative, AnimalSling, AnimalBow, AnimalBat, AnimalAxe, SlingNoAmmo, BowNoAmmo, ShellIsNotUseful, FruitTree, BananaTree, TomatoPlant, IronDepositNegative, IronDepositPositive, CoalDepositNegative, CoalDepositPositive, Cooker, LeatherPositive, BackpackPositive, BeltPositive, MapCanMake, MapPositive, RedExclamation }
 
         public static readonly List<PieceHint> pieceHintList = new List<PieceHint>
         {
@@ -111,6 +112,11 @@ namespace SonOfRobin
                 new PieceHint(type: Type.ShellIsNotUseful, canBeForced: true,
                 message: "This shell is pretty, but I don't think it will be useful.",
                 playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.Shell}),
+
+                new PieceHint(type: Type.RedExclamation, canBeForced: true,
+                message: "This animal is attacking me!",
+                fieldPieces: new List<PieceTemplate.Name> {PieceTemplate.Name.Exclamation},
+                tutorialsToActivate: new List<Tutorials.Type> {Tutorials.Type.AnimalAttacking}),
 
                 new PieceHint(type: Type.LeatherPositive, canBeForced: true,
                 message: "If I had more leather, I could make a backpack or a belt.",

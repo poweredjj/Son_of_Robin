@@ -38,10 +38,8 @@ namespace SonOfRobin
         public Choice GetBestChoice()
         {
             var possibleChoices = this.allChoices.Where(choice => choice.priority > 0 && choice.piece != null).OrderByDescending(choice => choice.priority).ToList();
-            if (possibleChoices.Count > 0)
-            { return possibleChoices[0]; }
-            else
-            { return null; }
+            if (possibleChoices.Count > 0) return possibleChoices[0];
+            else return null;
         }
 
     }

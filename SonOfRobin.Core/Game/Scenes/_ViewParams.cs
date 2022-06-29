@@ -13,14 +13,14 @@ namespace SonOfRobin
         public int width;
         public int height;
 
+        public float drawRot;
         public float drawPosX;
         public float drawPosY;
-        public float drawRot;
         public float drawScaleX;
         public float drawScaleY;
         public float drawOpacity;
-        public float drawWidth;
-        public float drawHeight;
+        public int drawWidth;
+        public int drawHeight;
 
         public Vector2 Pos
         {
@@ -53,17 +53,20 @@ namespace SonOfRobin
         }
 
         public ViewParams()
-        { this.ResetValues(); }
+        {
+            this.ResetValues();
+        }
 
         public void ResetValues()
         {
             // input params
+
             this.posX = 0f;
             this.posY = 0f;
             this.rot = 0f;
             this.scaleX = 1f;
             this.scaleY = 1f;
-            this.opacity = 1f; // rarely used
+            this.opacity = 1f; // has to be manually used during Draw()
             this.width = SonOfRobinGame.graphics.PreferredBackBufferWidth; // needed to rotate scene around its center and for centering
             this.height = SonOfRobinGame.graphics.PreferredBackBufferHeight; // needed to rotate scene around its center and for centering
 
@@ -90,14 +93,15 @@ namespace SonOfRobin
             if (vertically) this.posY = (int)(((SonOfRobinGame.VirtualHeight * this.scaleY) - this.height) / 2);
         }
 
-        public void PutViewAtTheBottom()
-        {
-            this.posY = (int)((SonOfRobinGame.VirtualHeight * this.scaleY) - this.height);
-        }
 
         public void PutViewAtTheRight()
         {
             this.posX = (int)((SonOfRobinGame.VirtualWidth * this.scaleX) - this.width);
+        }
+
+        public void PutViewAtTheBottom()
+        {
+            this.posY = (int)((SonOfRobinGame.VirtualHeight * this.scaleY) - this.height);
         }
 
     }

@@ -232,7 +232,7 @@ namespace SonOfRobin
 
             PieceStorage storage = World.GetTopWorld().player.pieceStorage;
 
-            Menu menu = new Menu(templateName: templateName, name: label, blocksUpdatesBelow: false, canBeClosedManually: true, layout: SonOfRobinGame.platform == Platform.Mobile ? Menu.Layout.Right : Menu.Layout.Left, alwaysShowSelectedEntry: true);
+            Menu menu = new Menu(templateName: templateName, name: label, blocksUpdatesBelow: true, canBeClosedManually: true, layout: SonOfRobinGame.platform == Platform.Mobile ? Menu.Layout.Right : Menu.Layout.Left, alwaysShowSelectedEntry: true);
             menu.bgColor = Color.LemonChiffon * 0.5f;
 
             var recipeList = Craft.recipesByCategory[category];

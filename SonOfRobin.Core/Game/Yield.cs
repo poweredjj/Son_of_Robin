@@ -116,12 +116,10 @@ namespace SonOfRobin
 
                             if (yieldPiece.sprite.placedCorrectly)
                             {
-                                yieldPiece.sprite.allowedFields = new AllowedFields( rangeNameList: new List<AllowedFields.RangeName> { AllowedFields.RangeName.WaterShallow, AllowedFields.RangeName.WaterMedium, AllowedFields.RangeName.GroundAll }); // where player can go
+                                yieldPiece.sprite.allowedFields = new AllowedFields(rangeNameList: new List<AllowedFields.RangeName> { AllowedFields.RangeName.WaterShallow, AllowedFields.RangeName.WaterMedium, AllowedFields.RangeName.GroundAll }); // where player can go
 
-                                yieldPiece.sprite.MoveToClosestFreeSpot(startPosition: this.mainPiece.sprite.position);
-
-                                Vector2 passiveMovement = (this.mainPiece.sprite.position - yieldPiece.sprite.position) * -1 * world.random.Next(3, 40);
-                                yieldPiece.AddPassiveMovement(movement: passiveMovement);
+                                Vector2 posDiff = Helpers.VectorAbsMax(vector: this.mainPiece.sprite.position - yieldPiece.sprite.position, maxVal: 3f);
+                                yieldPiece.AddPassiveMovement(movement: posDiff * world.random.Next(-100, -20));
                                 break;
                             }
                         }

@@ -95,7 +95,7 @@ namespace SonOfRobin
 
             if (Keyboard.HasBeenPressed(Keys.D2))
             {
-                BoardPiece piece = PieceTemplate.CreateOnBoard(world: world, position: world.player.sprite.position, templateName: PieceTemplate.Name.TentBig);
+                BoardPiece piece = PieceTemplate.CreateOnBoard(world: world, position: world.player.sprite.position, templateName: PieceTemplate.Name.Rabbit);
                 if (piece.sprite.placedCorrectly) piece.sprite.MoveToClosestFreeSpot(world.player.sprite.position);
             }
 
@@ -186,13 +186,15 @@ namespace SonOfRobin
             if (Keyboard.HasBeenPressed(Keys.O))
             {
                 if (world == null) return;
-
-                world.AutoSave();
+                Player player = world.player;
+                player.sprite.RemoveFromGrid();
             }
 
-            if (Keyboard.HasBeenPressed(Keys.K))
+            if (Keyboard.HasBeenPressed(Keys.K) || Keyboard.HasBeenPressed(Keys.L))
             {
-                var piecesWithinDistance = world.grid.GetPiecesWithinDistance(groupName: Cell.Group.ColAll, mainSprite: world.player.sprite, distance: 150);
+                bool compareWithBottom = Keyboard.HasBeenPressed(Keys.K);
+
+                var piecesWithinDistance = world.grid.GetPiecesWithinDistance(groupName: Cell.Group.ColAll, mainSprite: world.player.sprite, distance: 150, compareWithBottom: compareWithBottom);
                 foreach (BoardPiece piece in piecesWithinDistance)
                 {
                     if (world.player.sprite.CheckIfOtherSpriteIsWithinRange(target: piece.sprite))
@@ -208,6 +210,7 @@ namespace SonOfRobin
                     backlight.sprite.color = new Color(0, 128, 128);
                 }
             }
+
 
             if (Keyboard.HasBeenPressed(Keys.Q) || VirtButton.HasButtonBeenPressed(VButName.DebugClear))
             {
@@ -256,8 +259,8 @@ namespace SonOfRobin
 
             if (Keyboard.HasBeenPressed(Keys.F7))
             {
-                float value = world.random.Next(-10, 10);
-                world.player.buffEngine.AddBuff(world: world, buff: new BuffEngine.Buff(world: world, type: BuffEngine.BuffType.Speed, value: value, autoRemoveDelay: world.random.Next(120, 600), isPositive: value > 0));
+                int value = world.random.Next(1, 5);
+                world.player.buffEngine.AddBuff(world: world, buff: new BuffEngine.Buff(world: world, type: BuffEngine.BuffType.Strength, value: value, autoRemoveDelay: world.random.Next(100, 500), isPositive: value > 0));
             }
 
             if (Keyboard.HasBeenPressed(Keys.F8))
@@ -294,8 +297,7 @@ namespace SonOfRobin
                 {  // at first, only IsFixedTimeStep should be changed
                     SonOfRobinGame.game.IsFixedTimeStep = false;
                 }
-                else
-                { world.updateMultiplier *= 2; }
+                else world.updateMultiplier *= 2;
 
                 SonOfRobinGame.game.TargetElapsedTime = TimeSpan.FromSeconds(1d / 60d);
                 world.camera.fluidMotionDisabled = true;

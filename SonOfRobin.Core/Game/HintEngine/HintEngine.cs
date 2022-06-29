@@ -6,7 +6,7 @@ namespace SonOfRobin
 {
     public class HintEngine
     {
-        public enum Type { Hungry, VeryHungry, Starving, Tired, VeryTired, CantShootInWater, CantUseToolInDeepWater, SmallInventory, MapNegative }
+        public enum Type { Hungry, VeryHungry, Starving, Tired, VeryTired, CantShootInWater, SmallInventory, MapNegative }
 
         private static readonly int hintDelay = 1 * 60 * 60; // 1 * 60 * 60
         public static readonly int blockInputDuration = 80;
@@ -142,12 +142,6 @@ namespace SonOfRobin
 
                         break;
                     }
-
-                case Type.CantUseToolInDeepWater:
-                    this.Disable(type: type, delay: 60 * 60 * 10);
-                    ShowMessageDuringPause(new List<HintMessage> { new HintMessage(text: "I cannot do this while swimming.") });
-
-                    break;
 
                 case Type.SmallInventory:
                     {

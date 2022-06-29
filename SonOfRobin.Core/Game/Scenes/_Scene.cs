@@ -43,9 +43,12 @@ namespace SonOfRobin
 
         public ViewParams viewParams;
         protected Transition transition;
+        public Transition Transition { get { return transition; } }
 
         private readonly int sceneID;
         private static int sceneIdCounter = 0;
+
+        private readonly List<Scene> linkedScenes;
 
         public static bool processingUpdate; // true = update, false = draw
         public static DateTime startUpdateTime;
@@ -149,6 +152,7 @@ namespace SonOfRobin
             this.touchLayout = touchLayout;
             this.tipsLayout = tipsLayout;
 
+            this.linkedScenes = new List<Scene> { }; // scenes that will also be removed on Remove()
             this.alwaysUpdates = alwaysUpdates;
             this.alwaysDraws = alwaysDraws;
             this.sceneID = sceneIdCounter;
@@ -163,9 +167,30 @@ namespace SonOfRobin
 
         public virtual void Remove()
         {
+            // removing all linked scenes
+            foreach (Scene scene in this.linkedScenes.ToList())
+            { scene.Remove(); }
+            this.linkedScenes.Clear();
+
+            // removing all links to current scene (to avoid having it linked when removed directly)
+            foreach (Scene currentScene in sceneStack)
+            {
+                foreach (Scene linkedScene in currentScene.linkedScenes.ToList())
+                { if (this.sceneID == linkedScene.sceneID) currentScene.linkedScenes.Remove(linkedScene); }
+            }
+
+            // rebuilding sceneStack
             sceneStack = sceneStack.Where(scene => scene.sceneID != this.sceneID).ToList();
+
+            // showing hidden scene (if any)
             if (this.hidesSameScenesBelow) this.ShowTopSceneOfSameType();
         }
+
+        public void AddLinkedScene(Scene scene)
+        { this.linkedScenes.Add(scene); }
+
+        public void AddLinkedScenes(List<Scene> sceneList)
+        { this.linkedScenes.AddRange(sceneList); }
 
         public void AddTransition(Transition transition)
         {
@@ -336,7 +361,7 @@ namespace SonOfRobin
 
                 case InventoryLayout.Toolbar:
                     {
-                        new Inventory(piece: player, storage: player.toolStorage, layout: Inventory.Layout.SingleBottom, inputType: InputTypes.Always);
+                        new Inventory(piece: player, storage: player.toolStorage, layout: Inventory.Layout.SingleBottom, inputType: InputTypes.Always, blocksUpdatesBelow: false);
 
                         break;
                     }
@@ -352,8 +377,8 @@ namespace SonOfRobin
 
                 case InventoryLayout.InventoryAndChest:
                     {
-                        Inventory inventoryLeft = new Inventory(piece: player, storage: player.pieceStorage, layout: Inventory.Layout.DualLeft, blocksUpdatesBelow: false);
-                        Inventory inventoryRight = new Inventory(piece: chest, storage: chest.pieceStorage, layout: Inventory.Layout.DualRight, blocksUpdatesBelow: false, otherInventory: inventoryLeft);
+                        Inventory inventoryLeft = new Inventory(piece: player, storage: player.pieceStorage, layout: Inventory.Layout.DualLeft);
+                        Inventory inventoryRight = new Inventory(piece: chest, storage: chest.pieceStorage, layout: Inventory.Layout.DualRight, otherInventory: inventoryLeft);
                         inventoryLeft.otherInventory = inventoryRight;
 
                         break;
@@ -361,8 +386,8 @@ namespace SonOfRobin
 
                 case InventoryLayout.InventoryAndEquip:
                     {
-                        Inventory inventoryLeft = new Inventory(piece: player, storage: player.pieceStorage, layout: Inventory.Layout.DualLeft, blocksUpdatesBelow: false);
-                        Inventory inventoryRight = new Inventory(piece: player, storage: player.equipStorage, layout: Inventory.Layout.DualRight, blocksUpdatesBelow: false, otherInventory: inventoryLeft);
+                        Inventory inventoryLeft = new Inventory(piece: player, storage: player.pieceStorage, layout: Inventory.Layout.DualLeft);
+                        Inventory inventoryRight = new Inventory(piece: player, storage: player.equipStorage, layout: Inventory.Layout.DualRight, otherInventory: inventoryLeft);
                         inventoryLeft.otherInventory = inventoryRight;
 
                         player.world.hintEngine.Disable(Tutorials.Type.Equip);

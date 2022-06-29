@@ -69,6 +69,16 @@ namespace SonOfRobin
             return Regex.Replace(str, "[a-z][A-Z]", m => $"{m.Value[0]} {char.ToLower(m.Value[1])}");
         }
 
+        public static Vector2 VectorAbsMax(Vector2 vector, float maxVal)
+        {
+            if (vector.X > 0) vector.X = Math.Min(vector.X, maxVal);
+            else vector.X = Math.Max(-maxVal, vector.X);
+
+            if (vector.Y > 0) vector.Y = Math.Min(vector.Y, maxVal);
+            else vector.Y = Math.Max(-maxVal, vector.Y);
+
+            return vector;
+        }
 
     }
 }

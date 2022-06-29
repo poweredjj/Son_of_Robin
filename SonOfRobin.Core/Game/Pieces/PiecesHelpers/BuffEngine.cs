@@ -6,25 +6,29 @@ namespace SonOfRobin
 {
     public class BuffEngine
     {
-        public enum BuffType { InvWidth, InvHeight, ToolbarWidth, ToolbarHeight, Speed, MaxHp, EnableMap };
+        public enum BuffType { InvWidth, InvHeight, ToolbarWidth, ToolbarHeight, Speed, Strength, MaxHp, EnableMap };
 
         [Serializable]
         public class Buff
         {
-            public readonly int id;
+            public int id;
+            public readonly bool increaseIDAtEveryUse;
             public readonly BuffType type;
             public readonly object value;
             public readonly int autoRemoveDelay;
             public int activationFrame;
             public int endFrame;
             public readonly bool isPositive;
-            public Buff(World world, BuffType type, object value, bool isPositive, int autoRemoveDelay = 0)
+            public readonly int sleepFrames;
+            public Buff(World world, BuffType type, object value, bool isPositive, int autoRemoveDelay = 0, int sleepFrames = 0, bool increaseIDAtEveryUse = false)
             {
+                this.increaseIDAtEveryUse = increaseIDAtEveryUse; // for buffs that could stack (like sleeping buffs)
                 this.id = world.currentBuffId;
                 world.currentBuffId++;
                 this.type = type;
                 this.value = value;
                 this.isPositive = isPositive;
+                this.sleepFrames = sleepFrames;
 
                 // AutoRemoveDelay should not be used for equip!
                 // It should only be used for temporary buffs (food, status effects, etc.).
@@ -33,38 +37,60 @@ namespace SonOfRobin
                 this.activationFrame = 0; // to be assigned during activation
             }
 
+            public bool HadEnoughSleepForBuff(World world)
+            {
+                int framesSlept = world.currentUpdate - world.player.wentToSleepFrame;
+                return framesSlept >= this.sleepFrames;
+            }
+
             public string Description
             {
                 get
                 {
+                    string description;
+                    string sign = $"{this.value}".StartsWith("-") ? "" : "+";
+
                     switch (this.type)
                     {
                         case BuffType.InvWidth:
-                            return $"Inventory width +{this.value}.";
+                            description = $"Inventory width {sign}{this.value}.";
+                            break;
 
                         case BuffType.InvHeight:
-                            return $"Inventory height +{this.value}.";
+                            description = $"Inventory height {sign}{this.value}.";
+                            break;
 
                         case BuffType.ToolbarWidth:
-                            return $"Toolbar width +{this.value}.";
+                            description = $"Toolbar width {sign}{this.value}.";
+                            break;
 
                         case BuffType.ToolbarHeight:
-                            return $"Toolbar height +{this.value}.";
+                            description = $"Toolbar height {sign}{this.value}.";
+                            break;
 
                         case BuffType.Speed:
-                            if ((float)this.value > 0) return $"Speed +{this.value}.";
-                            else return $"Speed {this.value}.";
+                            description = $"Speed {sign}{this.value}.";
+                            break;
+
+                        case BuffType.Strength:
+                            description = $"Strength {sign}{this.value}.";
+                            break;
 
                         case BuffType.MaxHp:
-                            if ((float)this.value > 0) return $"Max HP +{this.value}.";
-                            else return $"Max HP {this.value}.";
+                            description = $"Max HP {sign}{this.value}.";
+                            break;
 
                         case BuffType.EnableMap:
-                            return "Shows map of visited places.";
+                            description = "Shows map of visited places.";
+                            break;
 
                         default:
                             throw new DivideByZeroException($"Unsupported buff type - {this.type}.");
                     }
+
+                    if (this.sleepFrames > 0) description = $"After a long sleep: {Helpers.FirstCharToLowerCase(description)}";
+
+                    return description;
                 }
             }
 
@@ -89,6 +115,10 @@ namespace SonOfRobin
                         case BuffType.Speed:
                             if ((float)this.value > 0) return $"SPD\n+{this.value}";
                             else return $"SPD\n{this.value}";
+
+                        case BuffType.Strength:
+                            if ((int)this.value > 0) return $"STR\n+{this.value}";
+                            else return $"STR\n{this.value}";
 
                         case BuffType.MaxHp:
                             if ((float)this.value > 0) return $"HP\n+{this.value}";
@@ -152,12 +182,19 @@ namespace SonOfRobin
 
         public void AddBuff(Buff buff, World world)
         {
+            if (buff.increaseIDAtEveryUse)
+            {
+                buff.id = world.currentBuffId;
+                world.currentBuffId++;
+            }
+
             if (this.buffDict.ContainsKey(buff.id)) throw new DivideByZeroException($"Buff has been added twice - id {buff.id} type {buff.type}.");
 
-            bool hadThisBuffBefore = this.HasBuff(buff.type);
-            this.buffDict[buff.id] = buff;
-            this.ProcessBuff(world: world, buff: buff, add: true, hadThisBuffBefore: hadThisBuffBefore);
+            if (buff.sleepFrames > 0 && !buff.HadEnoughSleepForBuff(world)) return;
 
+            bool hadThisBuffBefore = this.HasBuff(buff.type);
+            this.ProcessBuff(world: world, buff: buff, add: true, hadThisBuffBefore: hadThisBuffBefore);
+            this.buffDict[buff.id] = buff;
             if (buff.autoRemoveDelay > 0) new WorldEvent(eventName: WorldEvent.EventName.RemoveBuff, world: this.piece.world, delay: buff.autoRemoveDelay, boardPiece: this.piece, eventHelper: buff.id);
 
             MessageLog.AddMessage(currentFrame: SonOfRobinGame.currentUpdate, msgType: MsgType.Debug, message: $"Buff added - id {buff.id} type {buff.type} value {buff.value}.");
@@ -273,6 +310,16 @@ namespace SonOfRobin
                                 player.world.DisableMap();
                             }
                         }
+
+                        break;
+                    }
+
+
+                case BuffType.Strength:
+                    {
+                        int value = (int)buff.value;
+                        if (!add) value *= -1;
+                        this.piece.strength += value;
 
                         break;
                     }

@@ -15,8 +15,9 @@ namespace SonOfRobin
         private readonly float fadePerFrame;
         private int currentFrame;
         private readonly bool playerObstructMode;
+        private readonly bool destroyPiece;
 
-        public OpacityFade(Sprite sprite, float destOpacity, int duration = -1, bool playerObstructMode = false)
+        public OpacityFade(Sprite sprite, float destOpacity, int duration = -1, bool playerObstructMode = false, bool destroyPiece = false)
         {
             this.sprite = sprite;
             this.duration = duration;
@@ -25,6 +26,7 @@ namespace SonOfRobin
             this.currentFrame = 0;
             this.fadePerFrame = (destOpacity - this.sprite.opacity) / (float)this.duration;
             this.playerObstructMode = playerObstructMode;
+            this.destroyPiece = destroyPiece;
         }
 
         public void Process()
@@ -49,7 +51,11 @@ namespace SonOfRobin
                 case false:
                     this.sprite.opacity += this.fadePerFrame;
                     if (this.currentFrame > this.duration) this.sprite.opacity = this.destOpacity;
-                    if (this.sprite.opacity == this.destOpacity) this.sprite.opacityFade = null;
+                    if (this.sprite.opacity == this.destOpacity)
+                    {
+                        this.sprite.opacityFade = null;
+                        if (this.destroyPiece) this.sprite.boardPiece.Destroy();
+                    }
 
                     return;
             }

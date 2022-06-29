@@ -347,21 +347,33 @@ namespace SonOfRobin
             return spritesWithinDistance;
         }
 
-        public List<BoardPiece> GetPiecesWithinDistance(Sprite mainSprite, ushort distance, Cell.Group groupName, int offsetX = 0, int offsetY = 0)
+        public List<BoardPiece> GetPiecesWithinDistance(Sprite mainSprite, ushort distance, Cell.Group groupName, int offsetX = 0, int offsetY = 0, bool compareWithBottom = false)
         {
             var cellsWithinDistance = this.GetCellsWithinDistance(position: mainSprite.position, distance: distance);
-            var piecesWithinDistance = new List<BoardPiece>();
+            var spritesWithinDistance = new List<Sprite>();
 
             Vector2 centerPos = mainSprite.position + new Vector2(offsetX, offsetY);
 
-            foreach (Cell cell in cellsWithinDistance)
+            if (compareWithBottom)
             {
-                foreach (Sprite currentSprite in cell.spriteGroups[groupName].Values)
+                foreach (Cell cell in cellsWithinDistance)
                 {
-                    if (Vector2.Distance(new Vector2(currentSprite.gfxRect.Center.X, currentSprite.gfxRect.Bottom), centerPos) <= distance && currentSprite != mainSprite) piecesWithinDistance.Add(currentSprite.boardPiece);
+                    spritesWithinDistance.AddRange(cell.spriteGroups[groupName].Values.Where(
+                                          currentSprite => Vector2.Distance(new Vector2(currentSprite.gfxRect.Center.X, currentSprite.gfxRect.Bottom), centerPos) <= distance &&
+                                          currentSprite != mainSprite).ToList());
+                }
+            }
+            else
+            {
+                foreach (Cell cell in cellsWithinDistance)
+                {
+                    spritesWithinDistance.AddRange(cell.spriteGroups[groupName].Values.Where(
+                           currentSprite => Vector2.Distance(currentSprite.position, centerPos) <= distance &&
+                           currentSprite != mainSprite).ToList());
                 }
             }
 
+            var piecesWithinDistance = spritesWithinDistance.Select(sprite => sprite.boardPiece).ToList();
             return piecesWithinDistance;
         }
 

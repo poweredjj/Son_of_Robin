@@ -147,7 +147,11 @@ namespace SonOfRobin
             {
                 BoardPiece meal = PieceTemplate.CreateOffBoard(templateName: PieceTemplate.Name.Meal, world: this.world);
                 meal.Mass = Math.Min(cookedMass, singleMealMass);
-                if (meal.Mass == singleMealMass) meal.buffList.Add(new BuffEngine.Buff(world: this.world, type: BuffEngine.BuffType.MaxHp, value: (float)20, autoRemoveDelay: 3 * 60 * 60, isPositive: true));
+                if (meal.Mass == singleMealMass)
+                {
+                    meal.buffList.Add(new BuffEngine.Buff(world: this.world, type: BuffEngine.BuffType.MaxHp, value: (float)20, autoRemoveDelay: 3 * 60 * 60, isPositive: true));
+                    if (this.world.random.Next(0, 5) == 0) meal.buffList.Add(new BuffEngine.Buff(world: this.world, type: BuffEngine.BuffType.Strength, value: 1, autoRemoveDelay: 3 * 60 * 60, isPositive: true));
+                }
                 this.pieceStorage.AddPiece(piece: meal, dropIfDoesNotFit: true);
                 cookedMass = Math.Max(cookedMass - meal.Mass, 0);
 

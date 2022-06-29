@@ -5,7 +5,7 @@ namespace SonOfRobin
 {
     public class Tutorials
     {
-        public enum Type { BreakThing, Equip, BuildWorkshop, GetWood, Mine, Interact, PickUp, Hit, Craft, ShootProjectile, Cook, ShakeFruit }
+        public enum Type { BreakThing, Equip, BuildWorkshop, GetWood, Mine, Interact, PickUp, Hit, Craft, ShootProjectile, Cook, ShakeFruit, AnimalAttacking }
 
         private static readonly HintMessage.BoxType messageHeaderType = HintMessage.BoxType.BlueBox;
         private static readonly HintMessage.BoxType messageTextType = HintMessage.BoxType.LightBlueBox;
@@ -175,6 +175,10 @@ namespace SonOfRobin
                     new HintMessage(text: "2. It will fall nearby.", boxType: messageTextType),
              });
 
+            new Tutorial(type: Type.AnimalAttacking, name: "red exclamation mark", title: "Being attacked.",
+                messages: new List<HintMessage>  {
+                    new HintMessage(text: "A red exclamation mark means than an animal is attacking you.", boxType: messageTextType),
+                    new HintMessage(text: "You should run away from it, or try to fight it.", boxType: messageTextType)});
         }
 
     }

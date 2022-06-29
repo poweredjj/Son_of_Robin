@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Text;
 
 namespace SonOfRobin
 {
@@ -17,7 +16,7 @@ namespace SonOfRobin
         private readonly float hitPointsDecrease;
         public readonly bool canBeAttacked;
 
-        public SleepEngine(float minFedPercent, float fatigueRegen, bool canBeAttacked, float hitPointsRegen = 0f, float hitPointsDecrease = 0f)
+        public SleepEngine(float minFedPercent, float fatigueRegen, bool canBeAttacked, float hitPointsRegen = 0f, float hitPointsDecrease = 0f, List<BuffEngine.Buff> buffList = null)
         {
             this.minFedPercent = minFedPercent;
             this.hitPointsRegen = hitPointsRegen;
