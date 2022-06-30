@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "fMu+Zq+d2jMM1AzRp7ot5iP2ambGAD1TPhR9AQpkAHAdyobFo6E6aPLUp9LklhUJhfcdUeFQavk9KkjtM6LAuA==",
+  "dgSpecHash": "xSQBXoG4uFRKsnJg2nryP1MGUa8FSpvWDy9Hht2MiRgnSIsBCS56R8lZEuNf+atxHG3SJSWymCzTY6bFJ4tawg==",
   "success": true,
-  "projectFilePath": "C:\\Users\\msmidowi\\Documents\\GitHub\\Son_of_Robin\\SonOfRobin.Core\\SonOfRobin.Core.csproj",
+  "projectFilePath": "C:\\Users\\msmidowi\\Documents\\Son_of_Robin\\SonOfRobin.Core\\SonOfRobin.Core.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\msmidowi\\.nuget\\packages\\biggustave\\1.0.6\\biggustave.1.0.6.nupkg.sha512",
     "C:\\Users\\msmidowi\\.nuget\\packages\\microsoft.netcore.platforms\\1.1.0\\microsoft.netcore.platforms.1.1.0.nupkg.sha512",

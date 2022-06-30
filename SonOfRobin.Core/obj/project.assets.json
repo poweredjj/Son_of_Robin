@@ -430,11 +430,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\msmidowi\\Documents\\GitHub\\Son_of_Robin\\SonOfRobin.Core\\SonOfRobin.Core.csproj",
+      "projectUniqueName": "C:\\Users\\msmidowi\\Documents\\Son_of_Robin\\SonOfRobin.Core\\SonOfRobin.Core.csproj",
       "projectName": "SonOfRobin.Core",
-      "projectPath": "C:\\Users\\msmidowi\\Documents\\GitHub\\Son_of_Robin\\SonOfRobin.Core\\SonOfRobin.Core.csproj",
+      "projectPath": "C:\\Users\\msmidowi\\Documents\\Son_of_Robin\\SonOfRobin.Core\\SonOfRobin.Core.csproj",
       "packagesPath": "C:\\Users\\msmidowi\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\msmidowi\\Documents\\GitHub\\Son_of_Robin\\SonOfRobin.Core\\obj\\",
+      "outputPath": "C:\\Users\\msmidowi\\Documents\\Son_of_Robin\\SonOfRobin.Core\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\msmidowi\\AppData\\Roaming\\NuGet\\NuGet.Config",
