@@ -83,7 +83,6 @@ namespace SonOfRobin
 
         public static bool KeepScreenOn
         { set { if (platform == Platform.Mobile && !fakeMobileMode) DeviceDisplay.KeepScreenOn = value; } }
-
         public SonOfRobinGame()
         {
             graphics = new GraphicsDeviceManager(this);
