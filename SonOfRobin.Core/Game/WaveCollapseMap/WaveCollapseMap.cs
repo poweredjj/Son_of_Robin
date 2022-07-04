@@ -535,7 +535,7 @@ namespace SonOfRobin
                         break;
 
                     case Name.Sand:
-                        texture = AnimData.framesForPkgs[AnimData.PkgName.TileBeach].texture;
+                        texture = AnimData.framesForPkgs[AnimData.PkgName.TileSand].texture;
                         break;
 
                     case Name.Dirt:

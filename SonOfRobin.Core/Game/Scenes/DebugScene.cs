@@ -354,21 +354,37 @@ namespace SonOfRobin
             {
                 RemoveAllScenesOfType(typeof(TextWindow));
 
-                ITopoArray<char> sample = TopoArray.Create(new[]
-                 {
-                    new[]{ '_', '_', '_'},
-                    new[]{ '_', '*', '_'},
-                    new[]{ '_', '_', '_'},
-                    }, periodic: false);
+                MapTile.GetTile(MapTile.Name.Sand);
+
+                var model = new AdjacentModel();
+                var tile1 = new Tile(1);
+                var tile2 = new Tile(2);
+
+                model.SetDirections(new DirectionSet());
+
+                model.AddAdjacency(src: tile1, dest: tile2, x: 1, y: 0, z: 0);
+
+                //ITopoArray<char> sample = TopoArray.Create(new[]
+                // {
+                //    new[]{ '_', '_', '_'},
+                //    new[]{ '_', '*', '_'},
+                //    new[]{ '_', '_', '_'},
+                //    }, periodic: false);
+
+                // Specify the model used for generation
+                //var model = new AdjacentModel(sample.ToTiles());
+
+                // Set the output dimensions
 
                 int width = 10;
                 int height = 5;
 
-                // Specify the model used for generation
-                var model = new AdjacentModel(sample.ToTiles());
-                // Set the output dimensions
                 var topology = new GridTopology(width, height, periodic: false);
+
+                //  var constrainArray = new ITileConstraint[] { new BorderConstraint() };
+
                 // Acturally run the algorithm
+
                 var propagator = new TilePropagator(model, topology);
                 var status = propagator.Run();
                 if (status != Resolution.Decided) return;

@@ -10,7 +10,7 @@ namespace SonOfRobin
         public static readonly Dictionary<string, List<AnimFrame>> frameListById = new Dictionary<string, List<AnimFrame>>();
         public static readonly Dictionary<PkgName, AnimFrame> framesForPkgs = new Dictionary<PkgName, AnimFrame>(); // default frames for packages
 
-        public static readonly string[] gfxNames = { "no_anim", "fox", "tile_custom01", "actor29rec4", "tileb", "tile_19ba32a6", "backlight_1", "backlight_2", "backlight_3", "backlight_4", "crabs_small", "crabs_big", "frogs_small", "frogs_big", "flowers", "8f296dbbaf43865bc29e99660fe7b5af_2x", "qYFvsmq", "NicePng_pine-tree-clipart-png_1446450", "palmtree_small", "tilees by guth_zpsfn3wpjdu_2x", "attack", "miss", "zzz", "heart_16x16", "rabbits", "virtual_joypad_background", "virtual_joypad_stick", "virtual_button", "virtual_button_pressed", "cursor", "chests", "d9ffec650d3104f5c4564c9055787530", "sticks1", "sticks2", "axe_wooden", "hand", "tools_gravel", "stones", "fancy_food", "fancy_food2", "celianna_farmnature_crops_transparent", "big_icons_candacis", "Candacis_flames1", "gems__rpg_maker_mv__by_petschko-d9euoxr", "mv_blacksmith_by_schwarzenacht_dapf6ek", "bows", "arrow_wood", "arrow_iron", "crosshair", "stone_small", "craft_items", "tent_big", "tent_medium", "flames", "bag", "bag_outline", "backpack", "belt", "parchment", "exclamation", "scythe_stone", "scythe_iron", "grass_blade", "tiger", "plus", "acorn", "light_white", "small_torch_on", "small_torch_off", "big_torch_on", "big_torch_off", "water_drop", "tile_rtp-addons", "bottle_empty", "herbs_black", "herbs_blue", "herbs_cyan", "herbs_green", "herbs_red", "herbs_violet", "herbs_yellow", "rpg_maker_vx_ace_tilesets_1_by_hishimy_d8e7pjd", "Mouse/Mouse_Left_Key_Light", "Mouse/Mouse_Middle_Key_Light", "Mouse/Mouse_Right_Key_Light", "Mouse/Mouse_Scroll_Up_Light", "Mouse/Mouse_Scroll_Down_Light", "potion_black", "arrow_poison", "spear_wood", "spear_stone", "spear_iron", "spear_poison", "alchemy_lab", "workshop_basic", "workshop_advanced", "workshop_essential", "workshop_master", "piece_of_fat", "bottle_oil", "burger", "biceps", "bed", "leaf_1", "leaf_2", "leaf_3", "crystal_deposit_big", "crystal_deposit_small", "crystal_shard", "crystal", "stone", "axe_crystal", "spear_crystal", "scythe_crystal", "arrow_crystal", "arrow_stone", "anvil", "iron_rod", "iron_plate", "skull_and_bones", "wood_regular", "wood_hard", "dig_site", "shovel_stone", "shovel_iron", "shovel_crystal", "clay", "hole", "meat_raw", "meat_dried", "jar_sealed", "jar_broken", "tree_stump", "debris_ceramic_1", "debris_ceramic_2", "granite", "hot_plate_off", "hot_plate_on_1", "hot_plate_on_2", "hot_plate_on_3", "music_note", "recolor_pt2", "star", "white_spot", "new", "tile_beach", "tile_desert", "tile_grass", "tile_lake", "tile_lava", "tile_mountain_high", "tile_mountain_medium", "tile_mountain_low", "tile_water_deep", "tile_water_medium", "tile_water_shallow", "tile_dirt" };
+        public static readonly string[] gfxNames = { "no_anim", "fox", "tile_custom01", "actor29rec4", "tileb", "tile_19ba32a6", "backlight_1", "backlight_2", "backlight_3", "backlight_4", "crabs_small", "crabs_big", "frogs_small", "frogs_big", "flowers", "8f296dbbaf43865bc29e99660fe7b5af_2x", "qYFvsmq", "NicePng_pine-tree-clipart-png_1446450", "palmtree_small", "tilees by guth_zpsfn3wpjdu_2x", "attack", "miss", "zzz", "heart_16x16", "rabbits", "virtual_joypad_background", "virtual_joypad_stick", "virtual_button", "virtual_button_pressed", "cursor", "chests", "d9ffec650d3104f5c4564c9055787530", "sticks1", "sticks2", "axe_wooden", "hand", "tools_gravel", "stones", "fancy_food", "fancy_food2", "celianna_farmnature_crops_transparent", "big_icons_candacis", "Candacis_flames1", "gems__rpg_maker_mv__by_petschko-d9euoxr", "mv_blacksmith_by_schwarzenacht_dapf6ek", "bows", "arrow_wood", "arrow_iron", "crosshair", "stone_small", "craft_items", "tent_big", "tent_medium", "flames", "bag", "bag_outline", "backpack", "belt", "parchment", "exclamation", "scythe_stone", "scythe_iron", "grass_blade", "tiger", "plus", "acorn", "light_white", "small_torch_on", "small_torch_off", "big_torch_on", "big_torch_off", "water_drop", "tile_rtp-addons", "bottle_empty", "herbs_black", "herbs_blue", "herbs_cyan", "herbs_green", "herbs_red", "herbs_violet", "herbs_yellow", "rpg_maker_vx_ace_tilesets_1_by_hishimy_d8e7pjd", "Mouse/Mouse_Left_Key_Light", "Mouse/Mouse_Middle_Key_Light", "Mouse/Mouse_Right_Key_Light", "Mouse/Mouse_Scroll_Up_Light", "Mouse/Mouse_Scroll_Down_Light", "potion_black", "arrow_poison", "spear_wood", "spear_stone", "spear_iron", "spear_poison", "alchemy_lab", "workshop_basic", "workshop_advanced", "workshop_essential", "workshop_master", "piece_of_fat", "bottle_oil", "burger", "biceps", "bed", "leaf_1", "leaf_2", "leaf_3", "crystal_deposit_big", "crystal_deposit_small", "crystal_shard", "crystal", "stone", "axe_crystal", "spear_crystal", "scythe_crystal", "arrow_crystal", "arrow_stone", "anvil", "iron_rod", "iron_plate", "skull_and_bones", "wood_regular", "wood_hard", "dig_site", "shovel_stone", "shovel_iron", "shovel_crystal", "clay", "hole", "meat_raw", "meat_dried", "jar_sealed", "jar_broken", "tree_stump", "debris_ceramic_1", "debris_ceramic_2", "granite", "hot_plate_off", "hot_plate_on_1", "hot_plate_on_2", "hot_plate_on_3", "music_note", "recolor_pt2", "star", "white_spot", "new", "tile_lake", "tile_lava", "tile_mountain_high", "tile_mountain_medium", "tile_mountain_low", "tile_water_deep", "tile_water_medium", "tile_water_shallow", "tile_dirt", "tilea2", "tile_sand" };
 
         public enum PkgName
         {
@@ -274,10 +274,9 @@ namespace SonOfRobin
             WhiteSpot,
             NewIcon,
 
-            TileBeach,
-            TileDesert,
-            TileDirt,
             TileGrass,
+            TileSand,
+            TileDirt,
             TileLake,
             TileLava,
             TileMountainLow,
@@ -286,6 +285,12 @@ namespace SonOfRobin
             TileWaterShallow,
             TileWaterMedium,
             TileWaterDeep,
+
+            TileSandOnGrassLT,
+            TileSandOnGrassRT,
+            TileSandOnGrassLB,
+            TileSandOnGrassRB,
+
         }
 
         public static void AddFrameList(PkgName animPackage, byte animSize, string animName, List<AnimFrame> frameList)
@@ -812,8 +817,18 @@ namespace SonOfRobin
                 frameList: ConvertImageToFrameList(atlasName: "d9ffec650d3104f5c4564c9055787530", layer: 1, x: 352, y: 128, width: 32, height: 32, scale: 0.5f));
             AddFrameList(animPackage: PkgName.PotionCyan, animSize: 0, animName: "default",
                 frameList: ConvertImageToFrameList(atlasName: "d9ffec650d3104f5c4564c9055787530", layer: 1, x: 288, y: 128, width: 32, height: 32, scale: 0.5f));
-            AddFrameList(animPackage: PkgName.PotionGreen, animSize: 0, animName: "default",
-                frameList: ConvertImageToFrameList(atlasName: "d9ffec650d3104f5c4564c9055787530", layer: 1, x: 320, y: 128, width: 32, height: 32, scale: 0.5f));
+
+            AddFrameList(animPackage: PkgName.TileGrass, animSize: 0, animName: "default",
+                frameList: ConvertImageToFrameList(atlasName: "tilea2", layer: 0, x: 0, y: 0, width: 32, height: 32, scale: 1f));
+
+            AddFrameList(animPackage: PkgName.TileSandOnGrassLT, animSize: 0, animName: "default",
+                frameList: ConvertImageToFrameList(atlasName: "tilea2", layer: 0, x: 192, y: 32, width: 32, height: 32, scale: 1f));
+            AddFrameList(animPackage: PkgName.TileSandOnGrassRT, animSize: 0, animName: "default",
+                frameList: ConvertImageToFrameList(atlasName: "tilea2", layer: 0, x: 224, y: 32, width: 32, height: 32, scale: 1f));
+            AddFrameList(animPackage: PkgName.TileSandOnGrassLB, animSize: 0, animName: "default",
+                frameList: ConvertImageToFrameList(atlasName: "tilea2", layer: 0, x: 192, y: 64, width: 32, height: 32, scale: 1f));
+            AddFrameList(animPackage: PkgName.TileSandOnGrassRB, animSize: 0, animName: "default",
+                frameList: ConvertImageToFrameList(atlasName: "tilea2", layer: 0, x: 224, y: 64, width: 32, height: 32, scale: 1f));
 
             // "one-liners"
             AddFrameList(animPackage: PkgName.WoodLogRegular, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "wood_regular", layer: 1, scale: 0.75f));
@@ -894,10 +909,8 @@ namespace SonOfRobin
             AddFrameList(animPackage: PkgName.WhiteSpot, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "white_spot", layer: 0, scale: 1f));
             AddFrameList(animPackage: PkgName.NewIcon, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "new", layer: 0, scale: 1f));
 
-            AddFrameList(animPackage: PkgName.TileBeach, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "tile_beach", layer: 0, scale: 1f, crop: false));
-            AddFrameList(animPackage: PkgName.TileDesert, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "tile_desert", layer: 0, scale: 1f, crop: false));
+            AddFrameList(animPackage: PkgName.TileSand, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "tile_sand", layer: 0, scale: 1f, crop: false));
             AddFrameList(animPackage: PkgName.TileDirt, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "tile_dirt", layer: 0, scale: 1f, crop: false));
-            AddFrameList(animPackage: PkgName.TileGrass, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "tile_grass", layer: 0, scale: 1f, crop: false));
             AddFrameList(animPackage: PkgName.TileLake, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "tile_lake", layer: 0, scale: 1f, crop: false));
             AddFrameList(animPackage: PkgName.TileLava, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "tile_lava", layer: 0, scale: 1f, crop: false));
             AddFrameList(animPackage: PkgName.TileMountainHigh, animSize: 0, animName: "default", frameList: ConvertImageToFrameList(atlasName: "tile_mountain_high", layer: 0, scale: 1f, crop: false));
