@@ -6,6 +6,6 @@ Please note that graphics (free web assets from various sites) is temporary and 
 
 If you want to collaborate, or use any part of game code - feel free to contact me.
 
-UWP version is not functional (yet). iOS and Mac versions are untested.
+UWP version is not functional. iOS and Mac versions are untested.
 
-The game is not finished (yet), but can be played already. Have fun!
+The game does not have an ending, but can be played already. Have fun!
