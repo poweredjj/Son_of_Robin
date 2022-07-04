@@ -22,7 +22,7 @@ namespace SonOfRobin
 
     public struct MapTile
     {
-        public enum Name { Sand, Grass, SandOnGrassLT, SandOnGrassRT, SandOnGrassLB, SandOnGrassRB }
+        public enum Name { Sand, Grass, SandOnGrassLT, SandOnGrassRT, SandOnGrassLB, SandOnGrassRB, SandOnGrassCB, SandOnGrassCT, SandOnGrassLC, SandOnGrassRC }
         public enum Direction { Left, Right, Up, Down }
 
         public static readonly Dictionary<Direction, Vector2> vectorForDirection = new Dictionary<Direction, Vector2>
@@ -119,6 +119,23 @@ namespace SonOfRobin
                 tile.AddAllowedNeighbour(direction: Direction.Right, nameList: new List<Name> { Name.Grass });
                 tile.AddAllowedNeighbour(direction: Direction.Down, nameList: new List<Name> { Name.Grass });
             }
+
+            {
+                MapTile tile = new MapTile(name: Name.Sand, texture: AnimData.framesForPkgs[AnimData.PkgName.TileSand].texture, edge: false);
+                tile.AddAllowedNeighbour(name: Name.Sand);
+                tile.AddAllowedNeighbour(direction: Direction.Down, nameList: new List<Name> { Name.SandOnGrassLB, Name.SandOnGrassCB, Name.SandOnGrassRB });
+                tile.AddAllowedNeighbour(direction: Direction.Right, nameList: new List<Name> { Name.SandOnGrassRT, Name.SandOnGrassRC, Name.SandOnGrassRB });
+                tile.AddAllowedNeighbour(direction: Direction.Left, nameList: new List<Name> { Name.SandOnGrassLT, Name.SandOnGrassLC, Name.SandOnGrassLB });
+                tile.AddAllowedNeighbour(direction: Direction.Up, nameList: new List<Name> { Name.SandOnGrassLT, Name.SandOnGrassCT, Name.SandOnGrassRT });
+            }
+
+            new MapTile(name: Name.SandOnGrassCB, texture: AnimData.framesForPkgs[AnimData.PkgName.TileSandOnGrassCB].texture, edge: true);
+            new MapTile(name: Name.SandOnGrassCT, texture: AnimData.framesForPkgs[AnimData.PkgName.TileSandOnGrassCT].texture, edge: true);
+            new MapTile(name: Name.SandOnGrassLC, texture: AnimData.framesForPkgs[AnimData.PkgName.TileSandOnGrassLC].texture, edge: true);
+            new MapTile(name: Name.SandOnGrassRC, texture: AnimData.framesForPkgs[AnimData.PkgName.TileSandOnGrassRC].texture, edge: true);
+
+
+            // TODO add center tiles neighbours
         }
 
         public static void SetAdjacency(AdjacentModel model)
@@ -143,7 +160,6 @@ namespace SonOfRobin
                     model.AddAdjacency(src: tile, dest: tileByName[neighbourData.name], x: neighbourData.xOffset, y: neighbourData.yOffset, z: 0);
                 }
             }
-
         }
 
     }

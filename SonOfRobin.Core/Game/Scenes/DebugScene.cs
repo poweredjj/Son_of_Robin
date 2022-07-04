@@ -355,21 +355,11 @@ namespace SonOfRobin
                 RemoveAllScenesOfType(typeof(TextWindow));
 
                 var model = new AdjacentModel(directions: DirectionSet.Cartesian2d);
-                //var tileSand = new Tile(MapTile.Name.Sand);
-                //var tileGrass = new Tile(MapTile.Name.Grass);
 
                 MapTile.SetAdjacency(model);
 
-                //model.SetFrequency(tileSand, 1f);
-                //model.SetFrequency(tileGrass, 1f);
-
-                //model.AddAdjacency(src: tileSand, dest: tileGrass, x: 1, y: 0, z: 0);
-                //model.AddAdjacency(src: tileSand, dest: tileGrass, x: -1, y: 0, z: 0);
-                //model.AddAdjacency(src: tileSand, dest: tileGrass, x: 0, y: 1, z: 0);
-                //model.AddAdjacency(src: tileSand, dest: tileGrass, x: 0, y: -1, z: 0);
-
-                int width = 10;
-                int height = 5;
+                int width = 15;
+                int height = 8;
 
                 var topology = new GridTopology(width, height, periodic: false);
 
