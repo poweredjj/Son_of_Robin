@@ -166,7 +166,7 @@ namespace SonOfRobin
             {
                 if (this.namesToUse.Contains(name))
                 {
-                    MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Percentage ({this.GetElementPercentage(name)}) exceeded for {name}.");
+                    // MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Percentage ({this.GetElementPercentage(name)}) exceeded for {name}.");
 
                     this.namesToUse.Remove(name);
                     this.allowedNamesByName.Remove(name);

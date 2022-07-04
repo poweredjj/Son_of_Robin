@@ -1,4 +1,7 @@
-﻿using Microsoft.Xna.Framework;
+﻿using DeBroglie;
+using DeBroglie.Models;
+using DeBroglie.Topo;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
@@ -32,7 +35,7 @@ namespace SonOfRobin
         {
             ProcessDebugInput();
 
-            debugText = "";
+            var debugLines = new List<string>();
 
             World world = World.GetTopWorld();
 
@@ -40,27 +43,32 @@ namespace SonOfRobin
 
             if (worldActive)
             {
-                if (world.mapMode == World.MapMode.Big) debugText += $"\nobjects {world.PieceCount}";
-                else debugText += $"{world.debugText}";
+                if (world.mapMode == World.MapMode.Big) debugLines.Add($"objects {world.PieceCount}");
+                else debugLines.Add($"{world.debugText}");
             }
 
-            debugText += "\n";
+            if (worldActive && world.pieceCountByClass.ContainsKey(typeof(Plant))) debugLines.Add($"plants {world.pieceCountByClass[typeof(Plant)]}");
+            if (worldActive && world.pieceCountByClass.ContainsKey(typeof(Animal))) debugLines.Add($", animals {world.pieceCountByClass[typeof(Animal)]}");
 
-            if (worldActive && world.pieceCountByClass.ContainsKey(typeof(Plant))) debugText += $"plants {world.pieceCountByClass[typeof(Plant)]}";
-            if (worldActive && world.pieceCountByClass.ContainsKey(typeof(Animal))) debugText += $", animals {world.pieceCountByClass[typeof(Animal)]}";
-            if (worldActive) debugText += $"\nproc. animals: {world.processedNonPlantsCount} plants: {world.processedPlantsCount}";
-            if (worldActive) debugText += $"\nloaded textures {world.grid.loadedTexturesCount}";
-            if (worldActive) debugText += $"\ntracking count {world.trackingQueue.Count}";
-            if (worldActive && world.trackingQueue.Count > 5000) debugText += " <--- WARNING, CHECK IF CORRECT!";
-            debugText += $"\nsnd inst. total: {SoundInstanceManager.CreatedInstancesCount} act: {SoundInstanceManager.ActiveInstancesCount} inact: {SoundInstanceManager.InactiveInstancesCount} inact. names: {SoundInstanceManager.InactiveNamesCount}";
+            if (worldActive)
+            {
+                debugLines.Add($"proc. animals: {world.processedNonPlantsCount} plants: {world.processedPlantsCount}");
+                debugLines.Add($"loaded textures {world.grid.loadedTexturesCount}");
+                debugLines.Add($"tracking count {world.trackingQueue.Count}");
+                if (world.trackingQueue.Count > 5000) debugLines.Add("WARNING, CHECK IF CORRECT!");
+            }
 
-            debugText += $"\nGC {GC.CollectionCount(0)} {GC.CollectionCount(1)} {GC.CollectionCount(2)}";
+            debugLines.Add($"snd inst. total: {SoundInstanceManager.CreatedInstancesCount} act: {SoundInstanceManager.ActiveInstancesCount} inact: {SoundInstanceManager.InactiveInstancesCount} inact. names: {SoundInstanceManager.InactiveNamesCount}");
 
-            //if(SonOfRobinGame.platform == Platform.Desktop) debugText += $"\nram free: {SonOfRobinGame.ramCounter.NextValue()}";
-            if (worldActive) debugText += $"\nreal time elapsed {world.TimePlayed:hh\\:mm\\:ss}";
-            if (worldActive) debugText += $"\nisland time elapsed {world.islandClock.IslandTimeElapsed:hh\\:mm\\:ss} (x{world.updateMultiplier})";
-            if (worldActive) debugText += $"\nisland day {world.islandClock.CurrentDayNo} clock {world.islandClock.TimeOfDay:hh\\:mm\\:ss} ({Convert.ToString(world.islandClock.CurrentPartOfDay).ToLower()})";
-            debugText += $"\n{SonOfRobinGame.fps.msg}";
+            debugLines.Add($"GC {GC.CollectionCount(0)} {GC.CollectionCount(1)} {GC.CollectionCount(2)}");
+
+            //if(SonOfRobinGame.platform == Platform.Desktop) debugText += $"ram free: {SonOfRobinGame.ramCounter.NextValue()}";
+            if (worldActive) debugLines.Add($"real time elapsed {world.TimePlayed:hh\\:mm\\:ss}");
+            if (worldActive) debugLines.Add($"island time elapsed {world.islandClock.IslandTimeElapsed:hh\\:mm\\:ss} (x{world.updateMultiplier})");
+            if (worldActive) debugLines.Add($"island day {world.islandClock.CurrentDayNo} clock {world.islandClock.TimeOfDay:hh\\:mm\\:ss} ({Convert.ToString(world.islandClock.CurrentPartOfDay).ToLower()})");
+            debugLines.Add($"{SonOfRobinGame.fps.msg}");
+
+            debugText = String.Join("\n", debugLines);
 
             Vector2 txtSize = font.MeasureString(debugText);
             this.viewParams.Width = (int)txtSize.X;
@@ -254,9 +262,9 @@ namespace SonOfRobin
                 if (world == null) return;
                 Player player = world.player;
 
-                Point point1 = new Point((int)player.sprite.position.X, (int)player.sprite.position.Y);
-                Point point2 = new Point((int)player.sprite.position.X + 200, (int)player.sprite.position.Y - 100);
-                Point point3 = new Point((int)player.sprite.position.X + 200, (int)player.sprite.position.Y + 100);
+                Microsoft.Xna.Framework.Point point1 = new Microsoft.Xna.Framework.Point((int)player.sprite.position.X, (int)player.sprite.position.Y);
+                Microsoft.Xna.Framework.Point point2 = new Microsoft.Xna.Framework.Point((int)player.sprite.position.X + 200, (int)player.sprite.position.Y - 100);
+                Microsoft.Xna.Framework.Point point3 = new Microsoft.Xna.Framework.Point((int)player.sprite.position.X + 200, (int)player.sprite.position.Y + 100);
 
                 PieceTemplate.CreateAndPlaceOnBoard(world: world, position: new Vector2(point1.X, point1.Y), templateName: PieceTemplate.Name.Heart);
                 PieceTemplate.CreateAndPlaceOnBoard(world: world, position: new Vector2(point2.X, point2.Y), templateName: PieceTemplate.Name.Heart);
@@ -327,38 +335,61 @@ namespace SonOfRobin
 
             if (Keyboard.HasBeenPressed(Keys.F1)) new TextWindow(text: "If I had more | leather, I could make a | backpack or a | belt.\n>|1|2|3|4|5<", animate: true, useTransition: false, framesPerChar: 1, bgColor: Color.DeepSkyBlue, textColor: Color.White, imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Leather), PieceInfo.GetTexture(PieceTemplate.Name.BackpackMedium), PieceInfo.GetTexture(PieceTemplate.Name.BeltMedium), PieceInfo.GetTexture(PieceTemplate.Name.BeltMedium), PieceInfo.GetTexture(PieceTemplate.Name.BeltMedium), PieceInfo.GetTexture(PieceTemplate.Name.BeltMedium), PieceInfo.GetTexture(PieceTemplate.Name.BeltMedium), PieceInfo.GetTexture(PieceTemplate.Name.BeltMedium) });
 
+
             if (Keyboard.HasBeenPressed(Keys.F2))
-            {
-                var taskChain = new List<Object> { };
-
-                taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.TempoStop, delay: 0, executeHelper: null, storeForLaterUse: true));
-
-                var bgColor1 = new List<byte> { Color.DarkRed.R, Color.DarkRed.G, Color.DarkRed.B };
-                var textWindowData1 = new Dictionary<string, Object> { { "text", "Message 1" }, { "bgColor", bgColor1 } };
-                taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ShowTextWindow, turnOffInputUntilExecution: true, delay: 1, executeHelper: textWindowData1, storeForLaterUse: true));
-
-                var bgColor2 = new List<byte> { Color.DarkCyan.R, Color.DarkCyan.G, Color.DarkCyan.B };
-                var textWindowData2 = new Dictionary<string, Object> { { "text", "Message 2" }, { "bgColor", bgColor2 } };
-                taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ShowTextWindow, turnOffInputUntilExecution: true, delay: 60, executeHelper: textWindowData2, storeForLaterUse: true));
-
-                taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.TempoPlay, delay: 0, executeHelper: null, storeForLaterUse: true));
-
-                new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteTaskChain, turnOffInputUntilExecution: true, executeHelper: taskChain);
-            }
-
-            if (Keyboard.HasBeenPressed(Keys.F3))
             {
                 if (world == null) return;
 
                 world.SpectatorMode = !world.SpectatorMode;
             }
 
-            if (Keyboard.HasBeenPressed(Keys.F4) || VirtButton.HasButtonBeenPressed(VButName.DebugClockAdvance))
+            if (Keyboard.HasBeenPressed(Keys.F3) || VirtButton.HasButtonBeenPressed(VButName.DebugClockAdvance))
             {
                 if (world == null) return;
 
                 world.islandClock.Advance(amount: 60 * 60 * 2, ignorePause: true);
             }
+
+            if (Keyboard.HasBeenPressed(Keys.F4))
+            {
+                RemoveAllScenesOfType(typeof(TextWindow));
+
+                ITopoArray<char> sample = TopoArray.Create(new[]
+                 {
+                    new[]{ '_', '_', '_'},
+                    new[]{ '_', '*', '_'},
+                    new[]{ '_', '_', '_'},
+                    }, periodic: false);
+
+                int width = 10;
+                int height = 5;
+
+                // Specify the model used for generation
+                var model = new AdjacentModel(sample.ToTiles());
+                // Set the output dimensions
+                var topology = new GridTopology(width, height, periodic: false);
+                // Acturally run the algorithm
+                var propagator = new TilePropagator(model, topology);
+                var status = propagator.Run();
+                if (status != Resolution.Decided) return;
+
+                var output = propagator.ToValueArray<char>();
+
+                string resultText = "";
+
+                // Display the results
+                for (var y = 0; y < height; y++)
+                {
+                    for (var x = 0; x < width; x++)
+                    {
+                        resultText += output.Get(x, y);
+                    }
+                    resultText += "\n";
+                }
+
+                new TextWindow(text: resultText, textColor: Color.White, bgColor: Color.Blue, animate: false, useTransition: false);
+            }
+
 
             if (Keyboard.HasBeenPressed(Keys.F5))
             {
@@ -386,8 +417,8 @@ namespace SonOfRobin
             {
                 RemoveAllScenesOfType(typeof(CollapseMapProcessScene));
 
-                int width = 400;
-                int height = 200;
+                int width = 220;
+                int height = 100;
                 int seed = -1;
 
                 CollapseMapProcessScene mapContainer = new CollapseMapProcessScene(mapType: CollapseMapProcessScene.MapType.DefaultOverworld, width: width, height: height, seed: seed, showVis: true, showProgressBar: false, elementsPerFrame: width * height / 80);
@@ -413,7 +444,6 @@ namespace SonOfRobin
 
                 // world.player.buffEngine.AddBuff(buff: new BuffEngine.Buff(type: BuffEngine.BuffType.Sprint, autoRemoveDelay: 4 * 60, value: world.player.speed), world: world);
             }
-
 
 
             if (Keyboard.HasBeenPressed(Keys.F9))
