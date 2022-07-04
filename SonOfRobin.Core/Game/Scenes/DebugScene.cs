@@ -354,48 +354,50 @@ namespace SonOfRobin
             {
                 RemoveAllScenesOfType(typeof(TextWindow));
 
-                MapTile.GetTile(MapTile.Name.Sand);
-
-
                 var model = new AdjacentModel(directions: DirectionSet.Cartesian2d);
-                var tile1 = new Tile('1');
-                var tile2 = new Tile('2');
+                //var tileSand = new Tile(MapTile.Name.Sand);
+                //var tileGrass = new Tile(MapTile.Name.Grass);
 
-                model.SetFrequency(tile1, 1f);
-                model.SetFrequency(tile2, 1f);
+                MapTile.SetAdjacency(model);
 
-                model.AddAdjacency(src: tile1, dest: tile2, x: 1, y: 0, z: 0);
-                model.AddAdjacency(src: tile1, dest: tile2, x: -1, y: 0, z: 0);
-                model.AddAdjacency(src: tile1, dest: tile2, x: 0, y: 1, z: 0);
-                model.AddAdjacency(src: tile1, dest: tile2, x: 0, y: -1, z: 0);
+                //model.SetFrequency(tileSand, 1f);
+                //model.SetFrequency(tileGrass, 1f);
 
+                //model.AddAdjacency(src: tileSand, dest: tileGrass, x: 1, y: 0, z: 0);
+                //model.AddAdjacency(src: tileSand, dest: tileGrass, x: -1, y: 0, z: 0);
+                //model.AddAdjacency(src: tileSand, dest: tileGrass, x: 0, y: 1, z: 0);
+                //model.AddAdjacency(src: tileSand, dest: tileGrass, x: 0, y: -1, z: 0);
 
                 int width = 10;
                 int height = 5;
 
                 var topology = new GridTopology(width, height, periodic: false);
 
-                //  var constrainArray = new ITileConstraint[] { new BorderConstraint() };
-
-
                 var propagator = new TilePropagator(model, topology);
                 var status = propagator.Run();
-                if (status != Resolution.Decided) return;
+                if (status != Resolution.Decided)
+                {
+                    MessageLog.AddMessage(msgType: MsgType.Debug, message: "Could not collapse whole map correctly. ");
+                    return;
+                }
 
-                var output = propagator.ToValueArray<char>();
-
+                var output = propagator.ToValueArray<MapTile.Name>();
                 string resultText = "";
+                var imageList = new List<Texture2D>();
 
                 for (var y = 0; y < height; y++)
                 {
                     for (var x = 0; x < width; x++)
                     {
-                        resultText += output.Get(x, y);
+                        MapTile mapTile = MapTile.GetTile(output.Get(x, y));
+
+                        imageList.Add(mapTile.texture);
+                        resultText += "|";
                     }
-                    resultText += "\n";
+                    if (y < height - 1) resultText += "\n";
                 }
 
-                new TextWindow(text: resultText, textColor: Color.White, bgColor: Color.Blue, animate: false, useTransition: false);
+                new TextWindow(text: resultText, imageList: imageList, textColor: Color.White, bgColor: Color.Blue, animate: false, useTransition: false);
             }
 
 
