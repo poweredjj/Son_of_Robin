@@ -356,25 +356,19 @@ namespace SonOfRobin
 
                 MapTile.GetTile(MapTile.Name.Sand);
 
-                var model = new AdjacentModel();
-                var tile1 = new Tile(1);
-                var tile2 = new Tile(2);
 
-                model.SetDirections(new DirectionSet());
+                var model = new AdjacentModel(directions: DirectionSet.Cartesian2d);
+                var tile1 = new Tile('1');
+                var tile2 = new Tile('2');
+
+                model.SetFrequency(tile1, 1f);
+                model.SetFrequency(tile2, 1f);
 
                 model.AddAdjacency(src: tile1, dest: tile2, x: 1, y: 0, z: 0);
+                model.AddAdjacency(src: tile1, dest: tile2, x: -1, y: 0, z: 0);
+                model.AddAdjacency(src: tile1, dest: tile2, x: 0, y: 1, z: 0);
+                model.AddAdjacency(src: tile1, dest: tile2, x: 0, y: -1, z: 0);
 
-                //ITopoArray<char> sample = TopoArray.Create(new[]
-                // {
-                //    new[]{ '_', '_', '_'},
-                //    new[]{ '_', '*', '_'},
-                //    new[]{ '_', '_', '_'},
-                //    }, periodic: false);
-
-                // Specify the model used for generation
-                //var model = new AdjacentModel(sample.ToTiles());
-
-                // Set the output dimensions
 
                 int width = 10;
                 int height = 5;
@@ -383,7 +377,6 @@ namespace SonOfRobin
 
                 //  var constrainArray = new ITileConstraint[] { new BorderConstraint() };
 
-                // Acturally run the algorithm
 
                 var propagator = new TilePropagator(model, topology);
                 var status = propagator.Run();
@@ -393,7 +386,6 @@ namespace SonOfRobin
 
                 string resultText = "";
 
-                // Display the results
                 for (var y = 0; y < height; y++)
                 {
                     for (var x = 0; x < width; x++)

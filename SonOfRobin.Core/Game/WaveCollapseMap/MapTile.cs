@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 
@@ -10,6 +11,16 @@ namespace SonOfRobin
         {
             Sand, Grass, SandOnGrassLT, SandOnGrassRT, SandOnGrassLB, SandOnGrassRB,
         }
+
+        public enum Direction { Left, Right, Up, Down }
+
+        public static readonly Dictionary<Direction, Vector2> vectorForDirection = new Dictionary<Direction, Vector2>
+        {
+            { Direction.Left, new Vector2(-1, 0) },
+            { Direction.Right, new Vector2(1, 0) },
+            { Direction.Up, new Vector2(0, -1) },
+            { Direction.Down, new Vector2(0, 1) },
+        };
 
         public static readonly Dictionary<Name, MapTile> tileDict = new Dictionary<Name, MapTile>();
 
@@ -25,6 +36,11 @@ namespace SonOfRobin
 
             if (tileDict.ContainsKey(name)) throw new ArgumentException($"Tile '{name}' has already been defined.");
             tileDict[name] = this;
+        }
+
+        public void AddAllowedNeighbours()
+        {
+
         }
 
 
