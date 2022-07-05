@@ -598,7 +598,7 @@ namespace SonOfRobin
 
                             foreach (var kvp in AnimData.frameListById)
                             {
-                                if (!kvp.Key.StartsWith(pkgName.ToString())) continue;
+                                if (!kvp.Key.StartsWith($"{pkgName}-")) continue;
 
                                 int counter = 0;
                                 foreach (AnimFrame frame in kvp.Value)

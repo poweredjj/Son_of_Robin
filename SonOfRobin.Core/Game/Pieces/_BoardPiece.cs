@@ -395,6 +395,7 @@ namespace SonOfRobin
         {
             if (!this.exists) return;
             if (this.alive) this.Kill();
+            if (this.name == PieceTemplate.Name.Player) this.yield.DropFinalPieces();
             this.soundPack.StopAll(ignoredAction: PieceSoundPack.Action.IsDestroyed);
             this.RemoveFromBoard();
             if (this.visualAid != null) this.visualAid.Destroy();

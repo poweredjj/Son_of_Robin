@@ -27,7 +27,7 @@ namespace SonOfRobin
             TreeBig,
             PalmTree,
 
-            AcornTree,
+            Oak,
             AppleTree,
             CherryTree,
             BananaTree,
@@ -178,6 +178,7 @@ namespace SonOfRobin
 
             Campfire,
 
+            HumanSkeleton,
             PredatorRepellant,
 
             HerbsBlack,
@@ -251,7 +252,7 @@ namespace SonOfRobin
                     {
                         var yield = new Yield(debrisType: Yield.DebrisType.Blood,
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
-                            finalDroppedPieces: new List<Yield.DroppedPiece> { });
+                            finalDroppedPieces: new List<Yield.DroppedPiece> { new Yield.DroppedPiece(pieceName: Name.HumanSkeleton, chanceToDrop: 100, maxNumberToDrop: 1) });
 
                         var allowedFields = new AllowedFields(rangeNameList: new List<AllowedFields.RangeName> { AllowedFields.RangeName.WaterShallow, AllowedFields.RangeName.WaterMedium, AllowedFields.RangeName.GroundAll, AllowedFields.RangeName.Volcano, AllowedFields.RangeName.NoDanger });
 
@@ -287,6 +288,7 @@ namespace SonOfRobin
                         soundPack.AddAction(action: PieceSoundPack.Action.PlayerSpeak, sound: new Sound(name: SoundData.Name.Beep, cooldown: 4, volume: 0.12f, pitchChange: female ? 0.5f : -0.5f, maxPitchVariation: 0.07f, ignore3DAlways: true));
 
                         soundPack.AddAction(action: PieceSoundPack.Action.PlayerPulse, sound: new Sound(name: SoundData.Name.Pulse, isLooped: true, ignore3DAlways: true, volume: 0.7f));
+
                         return new Player(name: templateName, world: world, id: id, animPackage: female ? AnimData.PkgName.PlayerFemale : AnimData.PkgName.PlayerMale, speed: 3, allowedFields: allowedFields, minDistance: 0, maxDistance: 65535, generation: generation, invWidth: 4, invHeight: 2, toolbarWidth: 3, toolbarHeight: 1, readableName: "player", description: "This is you.", yield: yield, activeState: BoardPiece.State.PlayerControlledWalking, lightEngine: new LightEngine(size: 300, opacity: 0.9f, colorActive: true, color: Color.Orange * 0.2f, isActive: false, castShadows: true), soundPack: soundPack, female: female);
                     }
 
@@ -519,7 +521,7 @@ namespace SonOfRobin
                             minDistance: 40, maxDistance: 300, bestEnvironment: bestEnvironment, mass: 1, maxMassBySize: maxMassBySize, maxAge: 30000, reproduction: reproduction, massToBurn: 35, massTakenMultiplier: 3.1f, generation: generation, staysAfterDeath: 5000, yield: yield, maxHitPoints: 100, readableName: "big tree", description: "A big tree.", allowedDensity: new AllowedDensity(radious: 260, maxNoOfPiecesSameName: 2), soundPack: soundPack);
                     }
 
-                case Name.AcornTree:
+                case Name.Oak:
                     {
                         var allowedFields = new AllowedFields(rangeDict: new Dictionary<TerrainName, AllowedRange>() {
                             { TerrainName.Height, new AllowedRange(min: 115, max: 150) },
@@ -737,11 +739,11 @@ namespace SonOfRobin
                             { TerrainName.Height, new AllowedRange(min: 165, max: 210) }});
 
                         var yield = new Yield(debrisType: Yield.DebrisType.Stone,
-                       firstDroppedPieces: new List<Yield.DroppedPiece> { },
-                       finalDroppedPieces: new List<Yield.DroppedPiece> {
-                           new Yield.DroppedPiece(pieceName: Name.MineralsSmall, chanceToDrop: 100, maxNumberToDrop: 1),
-                           new Yield.DroppedPiece(pieceName: Name.MineralsSmall, chanceToDrop: 100, maxNumberToDrop: 2),
-                           new Yield.DroppedPiece(pieceName: Name.Granite, chanceToDrop: 25, maxNumberToDrop: 2)
+                            firstDroppedPieces: new List<Yield.DroppedPiece> { },
+                            finalDroppedPieces: new List<Yield.DroppedPiece> {
+                                new Yield.DroppedPiece(pieceName: Name.MineralsSmall, chanceToDrop: 100, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: Name.MineralsSmall, chanceToDrop: 100, maxNumberToDrop: 2),
+                                new Yield.DroppedPiece(pieceName: Name.Granite, chanceToDrop: 25, maxNumberToDrop: 2)
                        });
 
                         return new Decoration(name: templateName, world: world, id: id, animPackage: animPkg, allowedFields: allowedFields, category: BoardPiece.Category.Stone,
@@ -2341,6 +2343,12 @@ namespace SonOfRobin
 
                         return new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.TreeStump, allowedFields: allowedFields, category: BoardPiece.Category.Wood,
                             minDistance: 0, maxDistance: 500, maxMassBySize: null, generation: generation, maxHitPoints: 50, readableName: "tree stump", description: "This was once a tree.", movesWhenDropped: false, yield: yield, soundPack: soundPack);
+                    }
+
+                case Name.HumanSkeleton:
+                    {
+                        return new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HumanSkeleton, allowedFields: new AllowedFields(), category: BoardPiece.Category.Flesh,
+                            minDistance: 0, maxDistance: 500, maxMassBySize: null, generation: generation, yield: null, maxHitPoints: 100, readableName: "skeleton", description: "Human remains.", movesWhenDropped: false);
                     }
 
                 case Name.LavaLight:

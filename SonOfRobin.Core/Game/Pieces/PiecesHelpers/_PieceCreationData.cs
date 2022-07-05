@@ -32,7 +32,7 @@ namespace SonOfRobin
                      new PieceCreationData(name: PieceTemplate.Name.FlowersMountain, multiplier: 0.1f, maxAmount: -1),
                      new PieceCreationData(name: PieceTemplate.Name.TreeSmall, multiplier: 1.0f, maxAmount: -1),
                      new PieceCreationData(name: PieceTemplate.Name.TreeBig, multiplier: 1.0f, maxAmount: -1),
-                     new PieceCreationData(name: PieceTemplate.Name.AcornTree, multiplier: 0.03f, maxAmount: -1),
+                     new PieceCreationData(name: PieceTemplate.Name.Oak, multiplier: 0.03f, maxAmount: -1),
                      new PieceCreationData(name: PieceTemplate.Name.AppleTree, multiplier: 0.03f, maxAmount: -1),
                      new PieceCreationData(name: PieceTemplate.Name.CherryTree, multiplier: 0.03f, maxAmount: -1),
                      new PieceCreationData(name: PieceTemplate.Name.BananaTree, multiplier: 0.03f, maxAmount: -1),
