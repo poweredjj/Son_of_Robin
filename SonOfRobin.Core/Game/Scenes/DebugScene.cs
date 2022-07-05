@@ -358,8 +358,8 @@ namespace SonOfRobin
 
                 MapTile.SetAdjacency(model);
 
-                int width = 15;
-                int height = 8;
+                int width = 20;
+                int height = 10;
 
                 var topology = new GridTopology(width, height, periodic: false);
 
