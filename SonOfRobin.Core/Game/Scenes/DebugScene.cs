@@ -359,11 +359,19 @@ namespace SonOfRobin
                 MapTile.SetAdjacency(model);
 
                 int width = 50;
-                int height = 15;
+                int height = 18;
 
-                var topology = new GridTopology(width, height, periodic: false);
+                int seed = -1;
+                if (seed == -1) seed = new Random().Next(9999);
+                Random random = new Random(seed);
 
-                var propagator = new TilePropagator(model, topology);
+                var topology = new GridTopology(width: width, height: height, periodic: false);
+
+                TilePropagatorOptions tilePropagatorOptions = new TilePropagatorOptions();
+                tilePropagatorOptions.RandomDouble = random.NextDouble;
+
+                var propagator = new TilePropagator(tileModel: model, topology: topology, options: tilePropagatorOptions);
+
                 var status = propagator.Run();
                 if (status != Resolution.Decided)
                 {

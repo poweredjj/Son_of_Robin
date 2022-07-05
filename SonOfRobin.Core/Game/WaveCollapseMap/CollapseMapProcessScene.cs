@@ -47,7 +47,6 @@ namespace SonOfRobin
             List<WaveCollapseMap.Name> nameBlackList = null;
             bool correctErrors = false;
 
-
             switch (this.mapType)
             {
                 case MapType.DefaultOverworld:
