@@ -461,9 +461,10 @@ namespace SonOfRobin
                         {
                             if (pieceName == PieceTemplate.Name.Player || pieceName == PieceTemplate.Name.PlayerGhost) continue;
 
+                            var imageList = new List<Texture2D> { PieceInfo.GetTexture(pieceName) };
                             Dictionary<string, Object> createData = new Dictionary<string, Object> { { "position", world.player.sprite.position }, { "templateName", pieceName } };
 
-                            new Invoker(menu: menu, name: $"{PieceInfo.GetInfo(pieceName).readableName} ({pieceCounterDict[pieceName]})", taskName: Scheduler.TaskName.CreateDebugPieces, createData, rebuildsMenu: true);
+                            new Invoker(menu: menu, name: $"{PieceInfo.GetInfo(pieceName).readableName} | ({pieceCounterDict[pieceName]})", imageList: imageList, taskName: Scheduler.TaskName.CreateDebugPieces, executeHelper: createData, rebuildsMenu: true);
                         }
 
                         new Separator(menu: menu, name: "", isEmpty: true);
@@ -589,23 +590,30 @@ namespace SonOfRobin
 
                 case Name.GfxListTest:
                     {
-                        Menu menu = new Menu(templateName: templateName, name: "GRAPHICS LIST", blocksUpdatesBelow: true, canBeClosedManually: true, templateExecuteHelper: executeHelper, soundNavigate: SoundData.Name.Empty);
+                        Menu menu = new Menu(templateName: templateName, name: "GRAPHICS LIST", blocksUpdatesBelow: true, canBeClosedManually: true, templateExecuteHelper: executeHelper);
 
                         foreach (AnimData.PkgName pkgName in (AnimData.PkgName[])Enum.GetValues(typeof(AnimData.PkgName)))
                         {
-                            bool textureFound = AnimData.framesForPkgs.ContainsKey(pkgName);
+                            var textureByName = new Dictionary<object, object>();
 
-
-                            var imageList = new List<Texture2D> { };
-                            if (textureFound)
+                            foreach (var kvp in AnimData.frameListById)
                             {
-                                Texture2D texture = AnimData.framesForPkgs[pkgName].texture;
-                                imageList.Add(texture);
+                                if (!kvp.Key.StartsWith(pkgName.ToString())) continue;
+
+                                int counter = 0;
+                                foreach (AnimFrame frame in kvp.Value)
+                                {
+                                    textureByName[$"{kvp.Key} - {frame}"] = frame.texture;
+                                    counter++;
+                                }
                             }
 
-                            string imageMarker = textureFound ? "|" : "no texture";
+                            var tempDict = new Dictionary<string, object>();
 
-                            new Invoker(menu: menu, name: $"{pkgName}   {imageMarker}", imageList: imageList, taskName: Scheduler.TaskName.Empty, playSound: false);
+
+                            if (textureByName.Count == 0) new Invoker(menu: menu, name: $"{pkgName} NO FRAMES", taskName: Scheduler.TaskName.Empty, playSound: false);
+                            else if (textureByName.Count > 1) new Selector(menu: menu, name: pkgName.ToString(), valueDict: textureByName, targetObj: preferences, propertyName: "neededForMenus");
+                            else new Invoker(menu: menu, name: $"{pkgName}  |", imageList: new List<Texture2D> { AnimData.framesForPkgs[pkgName].texture }, taskName: Scheduler.TaskName.Empty, playSound: false);
                         }
 
                         new Separator(menu: menu, name: "", isEmpty: true);

@@ -151,7 +151,7 @@ namespace SonOfRobin
                 rect.Center.X - (this.textWithImages.textWidth / 2 * textScale),
                 rect.Center.Y - (this.textWithImages.textHeight / 2 * textScale));
 
-            this.textWithImages.Draw(position: textPos, color: this.textColor * opacity * menu.viewParams.Opacity, textScale: textScale, inflatePercent: 0.3f);
+            this.textWithImages.Draw(position: textPos, color: this.textColor * opacity * menu.viewParams.Opacity, textScale: textScale, inflatePercent: this.imageList == null ? 0.3f : 0f);
         }
 
         protected void UpdateHintWindow()

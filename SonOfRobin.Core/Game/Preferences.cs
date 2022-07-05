@@ -27,6 +27,8 @@ namespace SonOfRobin
         public static char seedDigit2 = '0';
         public static char seedDigit3 = '0';
         public static char seedDigit4 = '0';
+
+        public static string neededForMenus = ""; // needed for menus, which display some values, but do not need to set anything
         public static int NewWorldSeed
         {
             get
