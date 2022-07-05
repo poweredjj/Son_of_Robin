@@ -79,79 +79,80 @@ namespace SonOfRobin
         {
             if (tileDict.Count > 0) throw new ArgumentException("Tiles already created.");
 
-            {
-                MapTile tile = new MapTile(name: Name.Grass, texture: AnimData.framesForPkgs[AnimData.PkgName.TileGrass].texture, edge: false);
-                tile.AddAllowedNeighbour(name: Name.Grass);
-                tile.AddAllowedNeighbour(direction: Direction.Up, nameList: new List<Name> { Name.SandOnGrassLB, Name.SandOnGrassRB });
-                tile.AddAllowedNeighbour(direction: Direction.Left, nameList: new List<Name> { Name.SandOnGrassRB, Name.SandOnGrassRT });
-                tile.AddAllowedNeighbour(direction: Direction.Right, nameList: new List<Name> { Name.SandOnGrassLB, Name.SandOnGrassLT });
-                tile.AddAllowedNeighbour(direction: Direction.Down, nameList: new List<Name> { Name.SandOnGrassLT, Name.SandOnGrassRT });
-            }
+            MapTile grass = new MapTile(name: Name.Grass, texture: AnimData.framesForPkgs[AnimData.PkgName.TileGrass].texture, edge: false);
+            MapTile sand = new MapTile(name: Name.Sand, texture: AnimData.framesForPkgs[AnimData.PkgName.TileSand].texture, edge: false);
+            MapTile sandOnGrassLT = new MapTile(name: Name.SandOnGrassLT, texture: AnimData.framesForPkgs[AnimData.PkgName.TileSandOnGrassLT].texture, edge: true);
+            MapTile sandOnGrassRT = new MapTile(name: Name.SandOnGrassRT, texture: AnimData.framesForPkgs[AnimData.PkgName.TileSandOnGrassRT].texture, edge: true);
+            MapTile sandOnGrassLB = new MapTile(name: Name.SandOnGrassLB, texture: AnimData.framesForPkgs[AnimData.PkgName.TileSandOnGrassLB].texture, edge: true);
+            MapTile sandOnGrassRB = new MapTile(name: Name.SandOnGrassRB, texture: AnimData.framesForPkgs[AnimData.PkgName.TileSandOnGrassRB].texture, edge: true);
+            MapTile sandOnGrassCT = new MapTile(name: Name.SandOnGrassCT, texture: AnimData.framesForPkgs[AnimData.PkgName.TileSandOnGrassCT].texture, edge: true);
+            MapTile sandOnGrassCB = new MapTile(name: Name.SandOnGrassCB, texture: AnimData.framesForPkgs[AnimData.PkgName.TileSandOnGrassCB].texture, edge: true);
+            MapTile sandOnGrassRC = new MapTile(name: Name.SandOnGrassRC, texture: AnimData.framesForPkgs[AnimData.PkgName.TileSandOnGrassRC].texture, edge: true);
+            MapTile sandOnGrassLC = new MapTile(name: Name.SandOnGrassLC, texture: AnimData.framesForPkgs[AnimData.PkgName.TileSandOnGrassLC].texture, edge: true);
 
-            {
-                MapTile tile = new MapTile(name: Name.SandOnGrassLT, texture: AnimData.framesForPkgs[AnimData.PkgName.TileSandOnGrassLT].texture, edge: true);
-                tile.AddAllowedNeighbour(direction: Direction.Up, nameList: new List<Name> { Name.Grass });
-                tile.AddAllowedNeighbour(direction: Direction.Left, nameList: new List<Name> { Name.Grass });
-                tile.AddAllowedNeighbour(direction: Direction.Right, nameList: new List<Name> { Name.SandOnGrassRT });
-                tile.AddAllowedNeighbour(direction: Direction.Down, nameList: new List<Name> { Name.SandOnGrassLB });
-            }
+            CreateAllEdgeCombinations(solidBG: grass, solidFG: sand, leftTop: sandOnGrassLT, top: sandOnGrassCT, rightTop: sandOnGrassRT, right: sandOnGrassRC, rightBottom: sandOnGrassRB, bottom: sandOnGrassCB, leftBottom: sandOnGrassLB, left: sandOnGrassLC);
 
-            {
-                MapTile tile = new MapTile(name: Name.SandOnGrassRT, texture: AnimData.framesForPkgs[AnimData.PkgName.TileSandOnGrassRT].texture, edge: true);
-                tile.AddAllowedNeighbour(direction: Direction.Up, nameList: new List<Name> { Name.Grass });
-                tile.AddAllowedNeighbour(direction: Direction.Left, nameList: new List<Name> { Name.SandOnGrassLT });
-                tile.AddAllowedNeighbour(direction: Direction.Right, nameList: new List<Name> { Name.Grass });
-                tile.AddAllowedNeighbour(direction: Direction.Down, nameList: new List<Name> { Name.SandOnGrassRB });
-            }
+        }
 
-            {
-                MapTile tile = new MapTile(name: Name.SandOnGrassLB, texture: AnimData.framesForPkgs[AnimData.PkgName.TileSandOnGrassLB].texture, edge: true);
-                tile.AddAllowedNeighbour(direction: Direction.Up, nameList: new List<Name> { Name.SandOnGrassRT });
-                tile.AddAllowedNeighbour(direction: Direction.Left, nameList: new List<Name> { Name.Grass });
-                tile.AddAllowedNeighbour(direction: Direction.Right, nameList: new List<Name> { Name.SandOnGrassRB });
-                tile.AddAllowedNeighbour(direction: Direction.Down, nameList: new List<Name> { Name.Grass });
-            }
+        private static void CreateAllEdgeCombinations(MapTile solidBG, MapTile solidFG, MapTile leftTop, MapTile top, MapTile rightTop, MapTile right, MapTile rightBottom, MapTile bottom, MapTile leftBottom, MapTile left)
+        {
+            // solid
 
-            {
-                MapTile tile = new MapTile(name: Name.SandOnGrassRB, texture: AnimData.framesForPkgs[AnimData.PkgName.TileSandOnGrassRB].texture, edge: true);
-                tile.AddAllowedNeighbour(direction: Direction.Up, nameList: new List<Name> { Name.SandOnGrassRT });
-                tile.AddAllowedNeighbour(direction: Direction.Left, nameList: new List<Name> { Name.SandOnGrassLB });
-                tile.AddAllowedNeighbour(direction: Direction.Right, nameList: new List<Name> { Name.Grass });
-                tile.AddAllowedNeighbour(direction: Direction.Down, nameList: new List<Name> { Name.Grass });
-            }
+            solidBG.AddAllowedNeighbour(name: solidBG.name);
+            solidBG.AddAllowedNeighbour(direction: Direction.Up, nameList: new List<Name> { leftBottom.name, rightBottom.name });
+            solidBG.AddAllowedNeighbour(direction: Direction.Left, nameList: new List<Name> { rightBottom.name, rightTop.name });
+            solidBG.AddAllowedNeighbour(direction: Direction.Right, nameList: new List<Name> { leftBottom.name, leftTop.name });
+            solidBG.AddAllowedNeighbour(direction: Direction.Down, nameList: new List<Name> { leftTop.name, rightTop.name });
 
-            {
-                MapTile tile = new MapTile(name: Name.SandOnGrassCT, texture: AnimData.framesForPkgs[AnimData.PkgName.TileSandOnGrassCT].texture, edge: true);
-                tile.AddAllowedNeighbour(direction: Direction.Up, nameList: new List<Name> { Name.Grass, Name.SandOnGrassLT, Name.SandOnGrassCT, Name.SandOnGrassRT });
-                tile.AddAllowedNeighbour(direction: Direction.Left, nameList: new List<Name> { Name.SandOnGrassLC, Name.SandOnGrassLT });
-                tile.AddAllowedNeighbour(direction: Direction.Right, nameList: new List<Name> { Name.SandOnGrassRC, Name.SandOnGrassRT });
-                tile.AddAllowedNeighbour(direction: Direction.Down, nameList: new List<Name> { Name.Sand, Name.SandOnGrassCB });
-            }
+            solidFG.AddAllowedNeighbour(name: solidFG.name);
+            solidFG.AddAllowedNeighbour(direction: Direction.Up, nameList: new List<Name> { leftTop.name, top.name, rightTop.name });
+            solidFG.AddAllowedNeighbour(direction: Direction.Left, nameList: new List<Name> { leftTop.name, left.name, leftBottom.name });
+            solidFG.AddAllowedNeighbour(direction: Direction.Right, nameList: new List<Name> { rightTop.name, right.name, rightBottom.name });
+            solidFG.AddAllowedNeighbour(direction: Direction.Down, nameList: new List<Name> { leftBottom.name, bottom.name, rightBottom.name });
 
-            {
-                MapTile tile = new MapTile(name: Name.SandOnGrassCB, texture: AnimData.framesForPkgs[AnimData.PkgName.TileSandOnGrassCB].texture, edge: true);
-                tile.AddAllowedNeighbour(direction: Direction.Up, nameList: new List<Name> { Name.Sand, Name.SandOnGrassCB });
-                tile.AddAllowedNeighbour(direction: Direction.Left, nameList: new List<Name> { Name.SandOnGrassLC, Name.SandOnGrassLB });
-                tile.AddAllowedNeighbour(direction: Direction.Right, nameList: new List<Name> { Name.SandOnGrassRC, Name.SandOnGrassRB });
-                tile.AddAllowedNeighbour(direction: Direction.Down, nameList: new List<Name> { Name.Grass, Name.SandOnGrassLB, Name.SandOnGrassCB, Name.SandOnGrassRB });
-            }
+            // corners
 
-            {
-                MapTile tile = new MapTile(name: Name.Sand, texture: AnimData.framesForPkgs[AnimData.PkgName.TileSand].texture, edge: false);
-                tile.AddAllowedNeighbour(name: Name.Sand);
-                tile.AddAllowedNeighbour(direction: Direction.Down, nameList: new List<Name> { Name.SandOnGrassLB, Name.SandOnGrassCB, Name.SandOnGrassRB });
-                tile.AddAllowedNeighbour(direction: Direction.Right, nameList: new List<Name> { Name.SandOnGrassRT, Name.SandOnGrassRC, Name.SandOnGrassRB });
-                tile.AddAllowedNeighbour(direction: Direction.Left, nameList: new List<Name> { Name.SandOnGrassLT, Name.SandOnGrassLC, Name.SandOnGrassLB });
-                tile.AddAllowedNeighbour(direction: Direction.Up, nameList: new List<Name> { Name.SandOnGrassLT, Name.SandOnGrassCT, Name.SandOnGrassRT });
-            }
+            leftTop.AddAllowedNeighbour(direction: Direction.Up, nameList: new List<Name> { solidBG.name });
+            leftTop.AddAllowedNeighbour(direction: Direction.Left, nameList: new List<Name> { solidBG.name });
+            leftTop.AddAllowedNeighbour(direction: Direction.Right, nameList: new List<Name> { rightTop.name });
+            leftTop.AddAllowedNeighbour(direction: Direction.Down, nameList: new List<Name> { leftBottom.name });
 
+            rightTop.AddAllowedNeighbour(direction: Direction.Up, nameList: new List<Name> { solidBG.name });
+            rightTop.AddAllowedNeighbour(direction: Direction.Left, nameList: new List<Name> { leftTop.name });
+            rightTop.AddAllowedNeighbour(direction: Direction.Right, nameList: new List<Name> { solidBG.name });
+            rightTop.AddAllowedNeighbour(direction: Direction.Down, nameList: new List<Name> { rightBottom.name });
 
+            leftBottom.AddAllowedNeighbour(direction: Direction.Up, nameList: new List<Name> { rightTop.name });
+            leftBottom.AddAllowedNeighbour(direction: Direction.Left, nameList: new List<Name> { solidBG.name });
+            leftBottom.AddAllowedNeighbour(direction: Direction.Right, nameList: new List<Name> { rightBottom.name });
+            leftBottom.AddAllowedNeighbour(direction: Direction.Down, nameList: new List<Name> { solidBG.name });
 
-            new MapTile(name: Name.SandOnGrassLC, texture: AnimData.framesForPkgs[AnimData.PkgName.TileSandOnGrassLC].texture, edge: true);
-            new MapTile(name: Name.SandOnGrassRC, texture: AnimData.framesForPkgs[AnimData.PkgName.TileSandOnGrassRC].texture, edge: true);
+            rightBottom.AddAllowedNeighbour(direction: Direction.Up, nameList: new List<Name> { rightTop.name });
+            rightBottom.AddAllowedNeighbour(direction: Direction.Left, nameList: new List<Name> { leftBottom.name });
+            rightBottom.AddAllowedNeighbour(direction: Direction.Right, nameList: new List<Name> { solidBG.name });
+            rightBottom.AddAllowedNeighbour(direction: Direction.Down, nameList: new List<Name> { solidBG.name });
 
+            // sides
 
-            // TODO add center tiles neighbours
+            top.AddAllowedNeighbour(direction: Direction.Up, nameList: new List<Name> { solidBG.name });
+            top.AddAllowedNeighbour(direction: Direction.Left, nameList: new List<Name> { left.name, leftTop.name });
+            top.AddAllowedNeighbour(direction: Direction.Right, nameList: new List<Name> { right.name, rightTop.name });
+            top.AddAllowedNeighbour(direction: Direction.Down, nameList: new List<Name> { solidFG.name, bottom.name });
+
+            bottom.AddAllowedNeighbour(direction: Direction.Up, nameList: new List<Name> { solidFG.name, top.name });
+            bottom.AddAllowedNeighbour(direction: Direction.Left, nameList: new List<Name> { left.name, leftBottom.name });
+            bottom.AddAllowedNeighbour(direction: Direction.Right, nameList: new List<Name> { right.name, rightBottom.name });
+            bottom.AddAllowedNeighbour(direction: Direction.Down, nameList: new List<Name> { solidBG.name });
+
+            right.AddAllowedNeighbour(direction: Direction.Up, nameList: new List<Name> { rightTop.name, right.name });
+            right.AddAllowedNeighbour(direction: Direction.Left, nameList: new List<Name> { solidFG.name, left.name });
+            right.AddAllowedNeighbour(direction: Direction.Right, nameList: new List<Name> { solidBG.name });
+            right.AddAllowedNeighbour(direction: Direction.Down, nameList: new List<Name> { right.name, rightBottom.name });
+
+            left.AddAllowedNeighbour(direction: Direction.Up, nameList: new List<Name> { left.name, leftTop.name });
+            left.AddAllowedNeighbour(direction: Direction.Left, nameList: new List<Name> { solidBG.name });
+            left.AddAllowedNeighbour(direction: Direction.Right, nameList: new List<Name> { solidFG.name, right.name });
+            left.AddAllowedNeighbour(direction: Direction.Down, nameList: new List<Name> { left.name, leftBottom.name });
         }
 
         public static void SetAdjacency(AdjacentModel model)
