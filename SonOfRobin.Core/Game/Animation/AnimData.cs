@@ -290,20 +290,20 @@ namespace SonOfRobin
             TileSandOnGrassRT,
             TileSandOnGrassLB,
             TileSandOnGrassRB,
-            TileSandOnGrassLC,
-            TileSandOnGrassRC,
-            TileSandOnGrassCT,
-            TileSandOnGrassCB,
+            TileSandOnGrassL,
+            TileSandOnGrassR,
+            TileSandOnGrassT,
+            TileSandOnGrassB,
 
             TileWater,
             TileSandOnWaterLT,
             TileSandOnWaterRT,
             TileSandOnWaterLB,
             TileSandOnWaterRB,
-            TileSandOnWaterLC,
-            TileSandOnWaterRC,
-            TileSandOnWaterCT,
-            TileSandOnWaterCB,
+            TileSandOnWaterL,
+            TileSandOnWaterR,
+            TileSandOnWaterT,
+            TileSandOnWaterB,
         }
 
         public static void AddFrameList(PkgName animPackage, byte animSize, List<AnimFrame> frameList, string animName = "default")
@@ -715,21 +715,21 @@ namespace SonOfRobin
             AddFrameList(animPackage: PkgName.TileSandOnGrassRT, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "tilea2", layer: 0, x: 224, y: 32, width: 32, height: 32));
             AddFrameList(animPackage: PkgName.TileSandOnGrassLB, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "tilea2", layer: 0, x: 192, y: 64, width: 32, height: 32));
             AddFrameList(animPackage: PkgName.TileSandOnGrassRB, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "tilea2", layer: 0, x: 224, y: 64, width: 32, height: 32));
-            AddFrameList(animPackage: PkgName.TileSandOnGrassCB, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "TileSandOnGrassCB", layer: 0));
-            AddFrameList(animPackage: PkgName.TileSandOnGrassCT, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "TileSandOnGrassCT", layer: 0));
-            AddFrameList(animPackage: PkgName.TileSandOnGrassLC, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "TileSandOnGrassLC", layer: 0));
-            AddFrameList(animPackage: PkgName.TileSandOnGrassRC, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "TileSandOnGrassRC", layer: 0));
+            AddFrameList(animPackage: PkgName.TileSandOnGrassB, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "TileSandOnGrassCB", layer: 0));
+            AddFrameList(animPackage: PkgName.TileSandOnGrassT, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "TileSandOnGrassCT", layer: 0));
+            AddFrameList(animPackage: PkgName.TileSandOnGrassL, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "TileSandOnGrassLC", layer: 0));
+            AddFrameList(animPackage: PkgName.TileSandOnGrassR, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "TileSandOnGrassRC", layer: 0));
 
-            //TileWater,
-            //TileSandOnWaterLT,
-            //TileSandOnWaterRT,
-            //TileSandOnWaterLB,
-            //TileSandOnWaterRB,
-            //TileSandOnWaterLC,
-            //TileSandOnWaterRC,
-            //TileSandOnWaterCT,
-            //TileSandOnWaterCB,
+            AddFrameList(animPackage: PkgName.TileSandOnWaterLT, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "tilea1", layer: 0, x: 256, y: 128, width: 32, height: 32));
+            AddFrameList(animPackage: PkgName.TileSandOnWaterRT, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "tilea1", layer: 0, x: 288, y: 128, width: 32, height: 32));
+            AddFrameList(animPackage: PkgName.TileSandOnWaterLB, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "tilea1", layer: 0, x: 256, y: 160, width: 32, height: 32));
+            AddFrameList(animPackage: PkgName.TileSandOnWaterRB, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "tilea1", layer: 0, x: 288, y: 160, width: 32, height: 32));
 
+            AddFrameList(animPackage: PkgName.TileSandOnWaterL, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "tilea1", layer: 0, x: 256, y: 144, width: 32, height: 32));
+            AddFrameList(animPackage: PkgName.TileSandOnWaterR, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "tilea1", layer: 0, x: 288, y: 144, width: 32, height: 32));
+            AddFrameList(animPackage: PkgName.TileSandOnWaterT, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "tilea1", layer: 0, x: 272, y: 128, width: 32, height: 32));
+            AddFrameList(animPackage: PkgName.TileSandOnWaterB, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "tilea1", layer: 0, x: 272, y: 160, width: 32, height: 32));
+            AddFrameList(animPackage: PkgName.TileWater, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "tilea1", layer: 0, x: 272, y: 144, width: 32, height: 32));
 
             AddFrameList(animPackage: PkgName.MineralsBig1, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "tile_19ba32a6", layer: 1, x: 128, y: 320, width: 64, height: 51));
             AddFrameList(animPackage: PkgName.MineralsBig2, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "tile_19ba32a6", layer: 1, x: 192, y: 320, width: 32, height: 64));
@@ -843,7 +843,6 @@ namespace SonOfRobin
             AddFrameList(animPackage: PkgName.MusicNoteBig, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "music_note", layer: 2, scale: 2.5f));
             AddFrameList(animPackage: PkgName.WhiteSpot, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "white_spot", layer: 0, scale: 1f));
             AddFrameList(animPackage: PkgName.NewIcon, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "new", layer: 0, scale: 1f));
-
             AddFrameList(animPackage: PkgName.TileSand, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "tile_sand", layer: 0, scale: 1f, crop: false));
             AddFrameList(animPackage: PkgName.TileDirt, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "tile_dirt", layer: 0, scale: 1f, crop: false));
             AddFrameList(animPackage: PkgName.TileLake, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "tile_lake", layer: 0, scale: 1f, crop: false));
@@ -975,12 +974,11 @@ namespace SonOfRobin
             ushort width = 32;
             ushort height = 32;
 
-
             var yByDirection = new Dictionary<string, int>(){
-                {"down", 0 },
-                {"up", height * 3},
-                {"right", height * 2},
-                {"left", height },
+                { "down", 0 },
+                { "up", height * 3 },
+                { "right", height * 2 },
+                { "left", height },
                 };
 
             // standing

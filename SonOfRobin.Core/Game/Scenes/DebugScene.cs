@@ -358,8 +358,8 @@ namespace SonOfRobin
 
                 MapTile.SetAdjacency(model);
 
-                int width = 50;
-                int height = 18;
+                int width = 30;
+                int height = 12;
 
                 int seed = -1;
                 if (seed == -1) seed = new Random().Next(9999);
