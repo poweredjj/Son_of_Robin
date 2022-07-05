@@ -22,7 +22,7 @@ namespace SonOfRobin
 
     public struct MapTile
     {
-        public enum Name { Sand, Grass, Water, SandOnGrassLT, SandOnGrassRT, SandOnGrassLB, SandOnGrassRB, SandOnGrassB, SandOnGrassT, SandOnGrassL, SandOnGrassR, SandOnWaterLT, SandOnWaterRT, SandOnWaterLB, SandOnWaterRB, SandOnWaterB, SandOnWaterT, SandOnWaterL, SandOnWaterR }
+        public enum Name { Sand, Grass, Water, SandOnGrassLT, SandOnGrassRT, SandOnGrassLB, SandOnGrassRB, SandOnGrassB, SandOnGrassT, SandOnGrassL, SandOnGrassR, WaterOnSandLT, WaterOnSandRT, WaterOnSandLB, WaterOnSandRB, WaterOnSandB, WaterOnSandT, WaterOnSandL, WaterOnSandR }
         public enum Direction { Left, Right, Up, Down }
 
         public static readonly Dictionary<Direction, Vector2> vectorForDirection = new Dictionary<Direction, Vector2>
@@ -91,18 +91,18 @@ namespace SonOfRobin
             MapTile sandOnGrassL = new MapTile(name: Name.SandOnGrassL, texture: AnimData.framesForPkgs[AnimData.PkgName.TileSandOnGrassL].texture, edge: true);
 
             MapTile water = new MapTile(name: Name.Water, texture: AnimData.framesForPkgs[AnimData.PkgName.TileWater].texture, edge: false);
-            MapTile sandOnWaterLT = new MapTile(name: Name.SandOnWaterLT, texture: AnimData.framesForPkgs[AnimData.PkgName.TileSandOnWaterLT].texture, edge: true);
-            MapTile sandOnWaterRT = new MapTile(name: Name.SandOnWaterRT, texture: AnimData.framesForPkgs[AnimData.PkgName.TileSandOnWaterRT].texture, edge: true);
-            MapTile sandOnWaterLB = new MapTile(name: Name.SandOnWaterLB, texture: AnimData.framesForPkgs[AnimData.PkgName.TileSandOnWaterLB].texture, edge: true);
-            MapTile sandOnWaterRB = new MapTile(name: Name.SandOnWaterRB, texture: AnimData.framesForPkgs[AnimData.PkgName.TileSandOnWaterRB].texture, edge: true);
-            MapTile sandOnWaterT = new MapTile(name: Name.SandOnWaterT, texture: AnimData.framesForPkgs[AnimData.PkgName.TileSandOnWaterT].texture, edge: true);
-            MapTile sandOnWaterB = new MapTile(name: Name.SandOnWaterB, texture: AnimData.framesForPkgs[AnimData.PkgName.TileSandOnWaterB].texture, edge: true);
-            MapTile sandOnWaterR = new MapTile(name: Name.SandOnWaterR, texture: AnimData.framesForPkgs[AnimData.PkgName.TileSandOnWaterR].texture, edge: true);
-            MapTile sandOnWaterL = new MapTile(name: Name.SandOnWaterL, texture: AnimData.framesForPkgs[AnimData.PkgName.TileSandOnWaterL].texture, edge: true);
+            MapTile waterOnSandLT = new MapTile(name: Name.WaterOnSandLT, texture: AnimData.framesForPkgs[AnimData.PkgName.TileWaterOnSandLT].texture, edge: true);
+            MapTile waterOnSandRT = new MapTile(name: Name.WaterOnSandRT, texture: AnimData.framesForPkgs[AnimData.PkgName.TileWaterOnSandRT].texture, edge: true);
+            MapTile waterOnSandLB = new MapTile(name: Name.WaterOnSandLB, texture: AnimData.framesForPkgs[AnimData.PkgName.TileWaterOnSandLB].texture, edge: true);
+            MapTile waterOnSandRB = new MapTile(name: Name.WaterOnSandRB, texture: AnimData.framesForPkgs[AnimData.PkgName.TileWaterOnSandRB].texture, edge: true);
+            MapTile waterOnSandT = new MapTile(name: Name.WaterOnSandT, texture: AnimData.framesForPkgs[AnimData.PkgName.TileWaterOnSandT].texture, edge: true);
+            MapTile waterOnSandB = new MapTile(name: Name.WaterOnSandB, texture: AnimData.framesForPkgs[AnimData.PkgName.TileWaterOnSandB].texture, edge: true);
+            MapTile waterOnSandR = new MapTile(name: Name.WaterOnSandR, texture: AnimData.framesForPkgs[AnimData.PkgName.TileWaterOnSandR].texture, edge: true);
+            MapTile waterOnSandL = new MapTile(name: Name.WaterOnSandL, texture: AnimData.framesForPkgs[AnimData.PkgName.TileWaterOnSandL].texture, edge: true);
 
             CreateAllEdgeCombinations(solidBG: grass, solidFG: sand, leftTop: sandOnGrassLT, top: sandOnGrassT, rightTop: sandOnGrassRT, right: sandOnGrassR, rightBottom: sandOnGrassRB, bottom: sandOnGrassB, leftBottom: sandOnGrassLB, left: sandOnGrassL);
 
-            CreateAllEdgeCombinations(solidBG: water, solidFG: sand, leftTop: sandOnWaterLT, top: sandOnWaterT, rightTop: sandOnWaterRT, right: sandOnWaterR, rightBottom: sandOnWaterRB, bottom: sandOnWaterB, leftBottom: sandOnWaterLB, left: sandOnWaterL);
+            CreateAllEdgeCombinations(solidBG: sand, solidFG: water, leftTop: waterOnSandLT, top: waterOnSandT, rightTop: waterOnSandRT, right: waterOnSandR, rightBottom: waterOnSandRB, bottom: waterOnSandB, leftBottom: waterOnSandLB, left: waterOnSandL);
         }
 
         private static void CreateAllEdgeCombinations(MapTile solidBG, MapTile solidFG, MapTile leftTop, MapTile top, MapTile rightTop, MapTile right, MapTile rightBottom, MapTile bottom, MapTile leftBottom, MapTile left)

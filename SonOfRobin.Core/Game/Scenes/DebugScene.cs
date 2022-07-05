@@ -282,7 +282,6 @@ namespace SonOfRobin
             {
                 if (world == null) return;
 
-
                 foreach (var sprite in world.grid.GetAllSprites(Cell.Group.All))
                 {
                     if (sprite.boardPiece != world.player)
@@ -358,8 +357,8 @@ namespace SonOfRobin
 
                 MapTile.SetAdjacency(model);
 
-                int width = 30;
-                int height = 12;
+                int width = 50;
+                int height = 20;
 
                 int seed = -1;
                 if (seed == -1) seed = new Random().Next(9999);
