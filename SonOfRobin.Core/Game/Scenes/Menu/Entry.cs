@@ -12,6 +12,7 @@ namespace SonOfRobin
         public readonly Menu menu;
         public readonly int index;
         public readonly string name;
+        public readonly List<Texture2D> imageList;
         protected TextWithImages textWithImages;
         public Color textColor;
         public Color rectColor;
@@ -69,10 +70,11 @@ namespace SonOfRobin
         }
         protected float OpacityFade { get { return Math.Max((float)this.lastFlashFrame - (float)SonOfRobinGame.currentUpdate, 0) * 0.015f; } }
 
-        public Entry(Menu menu, string name, bool rebuildsMenu = false, bool rebuildsMenuInstantScroll = false, bool rebuildsAllMenus = false, List<InfoWindow.TextEntry> infoTextList = null)
+        public Entry(Menu menu, string name, bool rebuildsMenu = false, bool rebuildsMenuInstantScroll = false, bool rebuildsAllMenus = false, List<InfoWindow.TextEntry> infoTextList = null, List<Texture2D> imageList = null)
         {
             this.menu = menu;
             this.name = name;
+            this.imageList = imageList;
             this.textWithImages = null;
             this.index = this.menu.entryList.Count;
             this.rebuildsMenu = rebuildsMenu;
@@ -120,6 +122,8 @@ namespace SonOfRobin
 
         public virtual void Draw(bool active, string textOverride = null, List<Texture2D> imageList = null)
         {
+            if (this.imageList != null) imageList = this.imageList;
+
             float opacity = this.GetOpacity(active: active);
             float opacityFade = this.OpacityFade;
             Rectangle rect = this.Rect;

@@ -155,8 +155,6 @@ namespace SonOfRobin
             ArrowIron,
             ArrowCrystal,
 
-            StoneSmall,
-
             CoalDeposit,
             IronDeposit,
 
