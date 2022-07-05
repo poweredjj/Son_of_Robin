@@ -375,7 +375,7 @@ namespace SonOfRobin
                 var status = propagator.Run();
                 if (status != Resolution.Decided)
                 {
-                    MessageLog.AddMessage(msgType: MsgType.Debug, message: "Could not collapse whole map correctly. ");
+                    MessageLog.AddMessage(msgType: MsgType.Debug, message: "Could not collapse whole map correctly.");
                     return;
                 }
 
@@ -397,7 +397,6 @@ namespace SonOfRobin
 
                 new TextWindow(text: resultText, imageList: imageList, textColor: Color.White, bgColor: Color.Blue, animate: false, useTransition: false);
             }
-
 
             if (Keyboard.HasBeenPressed(Keys.F5))
             {
