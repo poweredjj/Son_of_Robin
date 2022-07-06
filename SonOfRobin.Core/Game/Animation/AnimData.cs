@@ -274,7 +274,6 @@ namespace SonOfRobin
 
             TileGrass,
             TileSand,
-            TileDirt,
             TileLake,
             TileLava,
             TileMountainLow,
@@ -302,6 +301,16 @@ namespace SonOfRobin
             TileWaterOnSandR,
             TileWaterOnSandT,
             TileWaterOnSandB,
+
+            TileDirt,
+            TileGrassOnDirtLT,
+            TileGrassOnDirtRT,
+            TileGrassOnDirtLB,
+            TileGrassOnDirtRB,
+            TileGrassOnDirtL,
+            TileGrassOnDirtR,
+            TileGrassOnDirtT,
+            TileGrassOnDirtB,
         }
 
         public static void AddFrameList(PkgName animPackage, byte animSize, List<AnimFrame> frameList, string animName = "default")
@@ -729,6 +738,17 @@ namespace SonOfRobin
             AddFrameList(animPackage: PkgName.TileWaterOnSandT, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "tilea1", layer: 0, x: 272, y: 128, width: 32, height: 32));
             AddFrameList(animPackage: PkgName.TileWaterOnSandB, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "tilea1", layer: 0, x: 272, y: 160, width: 32, height: 32));
             AddFrameList(animPackage: PkgName.TileWater, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "tilea1", layer: 0, x: 272, y: 144, width: 32, height: 32));
+
+            AddFrameList(animPackage: PkgName.TileGrassOnDirtLT, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "tilea2", layer: 0, x: 128, y: 128, width: 32, height: 32));
+            AddFrameList(animPackage: PkgName.TileGrassOnDirtRT, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "tilea2", layer: 0, x: 160, y: 128, width: 32, height: 32));
+            AddFrameList(animPackage: PkgName.TileGrassOnDirtLB, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "tilea2", layer: 0, x: 128, y: 160, width: 32, height: 32));
+            AddFrameList(animPackage: PkgName.TileGrassOnDirtRB, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "tilea2", layer: 0, x: 160, y: 160, width: 32, height: 32));
+            AddFrameList(animPackage: PkgName.TileGrassOnDirtL, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "tilea2", layer: 0, x: 128, y: 144, width: 32, height: 32));
+            AddFrameList(animPackage: PkgName.TileGrassOnDirtR, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "tilea2", layer: 0, x: 160, y: 144, width: 32, height: 32));
+            AddFrameList(animPackage: PkgName.TileGrassOnDirtT, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "tilea2", layer: 0, x: 144, y: 128, width: 32, height: 32));
+            AddFrameList(animPackage: PkgName.TileGrassOnDirtB, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "tilea2", layer: 0, x: 144, y: 160, width: 32, height: 32));
+
+            AddFrameList(animPackage: PkgName.TileDirt, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "tilea2", layer: 0, x: 144, y: 144, width: 32, height: 32));
 
             AddFrameList(animPackage: PkgName.MineralsBig1, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "tile_19ba32a6", layer: 1, x: 128, y: 320, width: 64, height: 51));
             AddFrameList(animPackage: PkgName.MineralsBig2, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "tile_19ba32a6", layer: 1, x: 192, y: 320, width: 32, height: 64));
