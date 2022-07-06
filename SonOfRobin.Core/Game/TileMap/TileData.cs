@@ -27,7 +27,7 @@ namespace SonOfRobin
             Sand, Grass, Water, Dirt,
             SandOnGrassLT, SandOnGrassRT, SandOnGrassLB, SandOnGrassRB, SandOnGrassB, SandOnGrassT, SandOnGrassL, SandOnGrassR,
             WaterOnSandLT, WaterOnSandRT, WaterOnSandLB, WaterOnSandRB, WaterOnSandB, WaterOnSandT, WaterOnSandL, WaterOnSandR,
-            GrassOnDirtLT, GrassOnDirtRT, GrassOnDirtLB, GrassOnDirtRB, GrassOnDirtB, GrassOnDirtT, GrassOnDirtL, GrassOnDirtR,
+            DirtOnGrassLT, DirtOnGrassRT, DirtOnGrassLB, DirtOnGrassRB, DirtOnGrassB, DirtOnGrassT, DirtOnGrassL, DirtOnGrassR,
         }
         public enum Direction { Left, Right, Up, Down }
 
@@ -90,6 +90,9 @@ namespace SonOfRobin
 
             TileData grass = new TileData(name: Name.Grass, texture: AnimData.framesForPkgs[AnimData.PkgName.TileGrass].texture, edge: false);
             TileData sand = new TileData(name: Name.Sand, texture: AnimData.framesForPkgs[AnimData.PkgName.TileSand].texture, edge: false);
+            TileData water = new TileData(name: Name.Water, texture: AnimData.framesForPkgs[AnimData.PkgName.TileWater].texture, edge: false);
+            TileData dirt = new TileData(name: Name.Dirt, texture: AnimData.framesForPkgs[AnimData.PkgName.TileDirt].texture, edge: false);
+
             TileData sandOnGrassLT = new TileData(name: Name.SandOnGrassLT, texture: AnimData.framesForPkgs[AnimData.PkgName.TileSandOnGrassLT].texture, edge: true);
             TileData sandOnGrassRT = new TileData(name: Name.SandOnGrassRT, texture: AnimData.framesForPkgs[AnimData.PkgName.TileSandOnGrassRT].texture, edge: true);
             TileData sandOnGrassLB = new TileData(name: Name.SandOnGrassLB, texture: AnimData.framesForPkgs[AnimData.PkgName.TileSandOnGrassLB].texture, edge: true);
@@ -99,7 +102,6 @@ namespace SonOfRobin
             TileData sandOnGrassR = new TileData(name: Name.SandOnGrassR, texture: AnimData.framesForPkgs[AnimData.PkgName.TileSandOnGrassR].texture, edge: true);
             TileData sandOnGrassL = new TileData(name: Name.SandOnGrassL, texture: AnimData.framesForPkgs[AnimData.PkgName.TileSandOnGrassL].texture, edge: true);
 
-            TileData water = new TileData(name: Name.Water, texture: AnimData.framesForPkgs[AnimData.PkgName.TileWater].texture, edge: false);
             TileData waterOnSandLT = new TileData(name: Name.WaterOnSandLT, texture: AnimData.framesForPkgs[AnimData.PkgName.TileWaterOnSandLT].texture, edge: true);
             TileData waterOnSandRT = new TileData(name: Name.WaterOnSandRT, texture: AnimData.framesForPkgs[AnimData.PkgName.TileWaterOnSandRT].texture, edge: true);
             TileData waterOnSandLB = new TileData(name: Name.WaterOnSandLB, texture: AnimData.framesForPkgs[AnimData.PkgName.TileWaterOnSandLB].texture, edge: true);
@@ -109,21 +111,20 @@ namespace SonOfRobin
             TileData waterOnSandR = new TileData(name: Name.WaterOnSandR, texture: AnimData.framesForPkgs[AnimData.PkgName.TileWaterOnSandR].texture, edge: true);
             TileData waterOnSandL = new TileData(name: Name.WaterOnSandL, texture: AnimData.framesForPkgs[AnimData.PkgName.TileWaterOnSandL].texture, edge: true);
 
-            TileData dirt = new TileData(name: Name.Dirt, texture: AnimData.framesForPkgs[AnimData.PkgName.TileWater].texture, edge: false);
-            TileData grassOnDirtLT = new TileData(name: Name.GrassOnDirtLT, texture: AnimData.framesForPkgs[AnimData.PkgName.TileGrassOnDirtLT].texture, edge: true);
-            TileData grassOnDirtRT = new TileData(name: Name.GrassOnDirtRT, texture: AnimData.framesForPkgs[AnimData.PkgName.TileGrassOnDirtRT].texture, edge: true);
-            TileData grassOnDirtLB = new TileData(name: Name.GrassOnDirtLB, texture: AnimData.framesForPkgs[AnimData.PkgName.TileGrassOnDirtLB].texture, edge: true);
-            TileData grassOnDirtRB = new TileData(name: Name.GrassOnDirtRB, texture: AnimData.framesForPkgs[AnimData.PkgName.TileGrassOnDirtRB].texture, edge: true);
-            TileData grassOnDirtT = new TileData(name: Name.GrassOnDirtT, texture: AnimData.framesForPkgs[AnimData.PkgName.TileGrassOnDirtT].texture, edge: true);
-            TileData grassOnDirtB = new TileData(name: Name.GrassOnDirtB, texture: AnimData.framesForPkgs[AnimData.PkgName.TileGrassOnDirtB].texture, edge: true);
-            TileData grassOnDirtR = new TileData(name: Name.GrassOnDirtR, texture: AnimData.framesForPkgs[AnimData.PkgName.TileGrassOnDirtR].texture, edge: true);
-            TileData grassOnDirtL = new TileData(name: Name.GrassOnDirtL, texture: AnimData.framesForPkgs[AnimData.PkgName.TileGrassOnDirtL].texture, edge: true);
+            TileData dirtOnGrassLT = new TileData(name: Name.DirtOnGrassLT, texture: AnimData.framesForPkgs[AnimData.PkgName.TileDirtOnGrassLT].texture, edge: true);
+            TileData dirtOnGrassRT = new TileData(name: Name.DirtOnGrassRT, texture: AnimData.framesForPkgs[AnimData.PkgName.TileDirtOnGrassRT].texture, edge: true);
+            TileData dirtOnGrassLB = new TileData(name: Name.DirtOnGrassLB, texture: AnimData.framesForPkgs[AnimData.PkgName.TileDirtOnGrassLB].texture, edge: true);
+            TileData dirtOnGrassRB = new TileData(name: Name.DirtOnGrassRB, texture: AnimData.framesForPkgs[AnimData.PkgName.TileDirtOnGrassRB].texture, edge: true);
+            TileData dirtOnGrassT = new TileData(name: Name.DirtOnGrassT, texture: AnimData.framesForPkgs[AnimData.PkgName.TileDirtOnGrassT].texture, edge: true);
+            TileData dirtOnGrassB = new TileData(name: Name.DirtOnGrassB, texture: AnimData.framesForPkgs[AnimData.PkgName.TileDirtOnGrassB].texture, edge: true);
+            TileData dirtOnGrassR = new TileData(name: Name.DirtOnGrassR, texture: AnimData.framesForPkgs[AnimData.PkgName.TileDirtOnGrassR].texture, edge: true);
+            TileData dirtOnGrassL = new TileData(name: Name.DirtOnGrassL, texture: AnimData.framesForPkgs[AnimData.PkgName.TileDirtOnGrassL].texture, edge: true);
 
             CreateAllEdgeCombinations(solidBG: grass, solidFG: sand, leftTop: sandOnGrassLT, top: sandOnGrassT, rightTop: sandOnGrassRT, right: sandOnGrassR, rightBottom: sandOnGrassRB, bottom: sandOnGrassB, leftBottom: sandOnGrassLB, left: sandOnGrassL);
 
             CreateAllEdgeCombinations(solidBG: sand, solidFG: water, leftTop: waterOnSandLT, top: waterOnSandT, rightTop: waterOnSandRT, right: waterOnSandR, rightBottom: waterOnSandRB, bottom: waterOnSandB, leftBottom: waterOnSandLB, left: waterOnSandL);
 
-            CreateAllEdgeCombinations(solidBG: dirt, solidFG: grass, leftTop: grassOnDirtLT, top: grassOnDirtT, rightTop: grassOnDirtRT, right: grassOnDirtR, rightBottom: grassOnDirtRB, bottom: grassOnDirtB, leftBottom: grassOnDirtLB, left: grassOnDirtL);
+            CreateAllEdgeCombinations(solidBG: grass, solidFG: dirt, leftTop: dirtOnGrassLT, top: dirtOnGrassT, rightTop: dirtOnGrassRT, right: dirtOnGrassR, rightBottom: dirtOnGrassRB, bottom: dirtOnGrassB, leftBottom: dirtOnGrassLB, left: dirtOnGrassL);
         }
 
         private static void CreateAllEdgeCombinations(TileData solidBG, TileData solidFG, TileData leftTop, TileData top, TileData rightTop, TileData right, TileData rightBottom, TileData bottom, TileData leftBottom, TileData left)

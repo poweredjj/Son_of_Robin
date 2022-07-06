@@ -404,11 +404,11 @@ namespace SonOfRobin
             {
                 RemoveAllScenesOfType(typeof(TileMapProcessScene));
 
-                int width = 200;
-                int height = 100;
+                int width = 400;
+                int height = 200;
                 int seed = -1;
 
-                TileMapProcessScene tileMapProcessScene = new TileMapProcessScene(mapType: TileMapProcessScene.MapType.DefaultOverworld, width: width, height: height, seed: seed, showVis: true, showProgressBar: false, elementsPerFrame: 20);
+                TileMapProcessScene tileMapProcessScene = new TileMapProcessScene(mapType: TileMapProcessScene.MapType.DefaultOverworld, width: width, height: height, seed: seed, showVis: true, showProgressBar: false, elementsPerFrame: 50);
             }
 
             if (Keyboard.HasBeenPressed(Keys.F6))

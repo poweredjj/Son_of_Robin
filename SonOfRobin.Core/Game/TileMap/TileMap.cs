@@ -52,6 +52,7 @@ namespace SonOfRobin
 
             TilePropagatorOptions tilePropagatorOptions = new TilePropagatorOptions();
             tilePropagatorOptions.RandomDouble = random.NextDouble;
+            tilePropagatorOptions.BackTrackDepth = 200;
 
 
             //var borderConstraint = new BorderConstraint();
@@ -65,14 +66,28 @@ namespace SonOfRobin
 
         public void ProcessNextGeneratorStep(int processCount = 1)
         {
+            SonOfRobinGame.game.IsFixedTimeStep = false;
+
             for (int i = 0; i < processCount; i++)
             {
                 Resolution resolution = this.propagator.Step();
-                if (resolution == Resolution.Decided)
+
+                switch (resolution)
                 {
-                    this.FinishProcessing();
-                    return;
+                    case Resolution.Decided:
+                        this.FinishProcessing();
+                        return;
+
+                    case Resolution.Undecided:
+                        break;
+
+                    case Resolution.Contradiction:
+                        break;
+
+                    default:
+                        throw new DivideByZeroException($"Unsupported resolution - {resolution}.");
                 }
+                
             }
 
             this.propagatorOutput = propagator.ToValueArray<TileData.Name>();
@@ -84,6 +99,7 @@ namespace SonOfRobin
         private void FinishProcessing()
         {
             SonOfRobinGame.progressBar.TurnOff();
+            SonOfRobinGame.game.IsFixedTimeStep = Preferences.FrameSkip;
 
             this.propagatorOutput = this.propagator.ToValueArray<TileData.Name>();
 
