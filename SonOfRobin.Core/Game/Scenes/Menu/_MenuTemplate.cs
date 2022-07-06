@@ -608,9 +608,6 @@ namespace SonOfRobin
                                 }
                             }
 
-                            var tempDict = new Dictionary<string, object>();
-
-
                             if (textureByName.Count == 0) new Invoker(menu: menu, name: $"{pkgName} NO FRAMES", taskName: Scheduler.TaskName.Empty, playSound: false);
                             else if (textureByName.Count > 1) new Selector(menu: menu, name: pkgName.ToString(), valueDict: textureByName, targetObj: preferences, propertyName: "neededForMenus");
                             else new Invoker(menu: menu, name: $"{pkgName}  |", imageList: new List<Texture2D> { AnimData.framesForPkgs[pkgName].texture }, taskName: Scheduler.TaskName.Empty, playSound: false);

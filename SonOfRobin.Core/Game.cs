@@ -152,7 +152,7 @@ namespace SonOfRobin
             progressBar = new InfoWindow(bgColor: Color.SeaGreen, bgOpacity: 0.85f);
             PieceInfo.CreateAllInfo();
             Craft.PopulateAllCategories();
-            MapTile.CreateAllTiles();
+            TileData.CreateAllTiles();
 
             Preferences.ControlTipsScheme = Preferences.ControlTipsScheme; // to load default control tips
 

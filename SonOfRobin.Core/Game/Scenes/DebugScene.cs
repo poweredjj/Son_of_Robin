@@ -355,10 +355,10 @@ namespace SonOfRobin
 
                 var model = new AdjacentModel(directions: DirectionSet.Cartesian2d);
 
-                MapTile.SetAdjacency(model);
+                TileData.SetAdjacency(model);
 
-                int width = 50;
-                int height = 20;
+                int width = 40;
+                int height = 15;
 
                 int seed = -1;
                 if (seed == -1) seed = new Random().Next(9999);
@@ -368,6 +368,9 @@ namespace SonOfRobin
 
                 TilePropagatorOptions tilePropagatorOptions = new TilePropagatorOptions();
                 tilePropagatorOptions.RandomDouble = random.NextDouble;
+                //var borderConstraint = new BorderConstraint();
+                // borderConstraint.Tiles = MapTile.Name.Water;
+
 
                 var propagator = new TilePropagator(tileModel: model, topology: topology, options: tilePropagatorOptions);
 
@@ -378,7 +381,7 @@ namespace SonOfRobin
                     return;
                 }
 
-                var output = propagator.ToValueArray<MapTile.Name>();
+                var output = propagator.ToValueArray<TileData.Name>();
                 string resultText = "";
                 var imageList = new List<Texture2D>();
 
@@ -386,7 +389,7 @@ namespace SonOfRobin
                 {
                     for (var x = 0; x < width; x++)
                     {
-                        MapTile mapTile = MapTile.GetTile(output.Get(x, y));
+                        TileData mapTile = TileData.GetTile(output.Get(x, y));
 
                         imageList.Add(mapTile.texture);
                         resultText += "|";
