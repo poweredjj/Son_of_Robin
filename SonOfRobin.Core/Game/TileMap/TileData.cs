@@ -23,6 +23,7 @@ namespace SonOfRobin
     {
         public enum Name
         {
+            Empty,
             Sand, Grass, Water, Dirt,
             SandOnGrassLT, SandOnGrassRT, SandOnGrassLB, SandOnGrassRB, SandOnGrassB, SandOnGrassT, SandOnGrassL, SandOnGrassR,
             WaterOnSandLT, WaterOnSandRT, WaterOnSandLB, WaterOnSandRB, WaterOnSandB, WaterOnSandT, WaterOnSandL, WaterOnSandR,
@@ -83,6 +84,9 @@ namespace SonOfRobin
         public static void CreateAllTiles()
         {
             if (tileDict.Count > 0) throw new ArgumentException("Tiles already created.");
+
+            TileData empty = new TileData(name: Name.Empty, texture: SonOfRobinGame.whiteRectangle, edge: false); // to see uncollapsed tiles in their initial state
+            empty.AddAllowedNeighbour(name: empty.name);
 
             TileData grass = new TileData(name: Name.Grass, texture: AnimData.framesForPkgs[AnimData.PkgName.TileGrass].texture, edge: false);
             TileData sand = new TileData(name: Name.Sand, texture: AnimData.framesForPkgs[AnimData.PkgName.TileSand].texture, edge: false);

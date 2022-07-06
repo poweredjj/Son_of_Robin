@@ -402,13 +402,13 @@ namespace SonOfRobin
 
             if (Keyboard.HasBeenPressed(Keys.F5))
             {
-                RemoveAllScenesOfType(typeof(CollapseMapProcessScene));
+                RemoveAllScenesOfType(typeof(TileMapProcessScene));
 
-                int width = 400;
-                int height = 200;
+                int width = 200;
+                int height = 100;
                 int seed = -1;
 
-                CollapseMapProcessScene mapContainer = new CollapseMapProcessScene(mapType: CollapseMapProcessScene.MapType.Test1, width: width, height: height, seed: seed, showVis: true, showProgressBar: false, elementsPerFrame: width * height / 80);
+                TileMapProcessScene tileMapProcessScene = new TileMapProcessScene(mapType: TileMapProcessScene.MapType.DefaultOverworld, width: width, height: height, seed: seed, showVis: true, showProgressBar: false, elementsPerFrame: 20);
             }
 
             if (Keyboard.HasBeenPressed(Keys.F6))
