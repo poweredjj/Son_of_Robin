@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SonOfRobin
 {
@@ -65,10 +66,8 @@ namespace SonOfRobin
             {
                 RandomDouble = random.NextDouble,
                 BackTrackDepth = 400,
+                Constraints = this.GetConstrains(),
             };
-
-            tilePropagatorOptions.Constraints = this.GetConstrains();
-
 
             this.propagator = new TilePropagator(tileModel: model, topology: topology, options: tilePropagatorOptions);
             this.propagatorOutput = null;
@@ -76,6 +75,8 @@ namespace SonOfRobin
             this.propagator.Select(x: this.width / 2, y: this.height / 2, z: 0, tile: this.tileByName[MapTileData.Name.Grass]);
 
             this.ShowProgressBar();
+
+            MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Creating tile map {this.width}x{this.height} seed {this.seed}.", color: Color.LightCyan);
         }
 
         private List<MapTileData.Name> GetWhiteList()
@@ -125,6 +126,23 @@ namespace SonOfRobin
                         Tiles = new Tile[] { this.tileByName[MapTileData.Name.DeepWater] },
                         Sides = BorderSides.XMin
                     });
+
+                    // TODO finish writing constrains
+
+                    var tilesContainingList = this.GetTilesContaining(MapTileData.Name.DeepWater);
+                    var tilesContainingSet = new HashSet<Tile>();
+                    foreach (Tile tile in tilesContainingList)
+                    {
+                        tilesContainingSet.Add(tile);
+                    }
+
+                    constrainsList.Add(new CountConstraint
+                    {
+                        Count = 10000,
+                        Comparison = CountComparison.AtMost,
+                        Tiles = tilesContainingSet,
+                    });
+
                     break;
 
                 case MapType.Test1:
@@ -141,12 +159,24 @@ namespace SonOfRobin
         }
 
 
-        public void ProcessNextGeneratorStep(bool generateOutputForThisStep, int processCount = 1)
+        private List<Tile> GetTilesContaining(MapTileData.Name name)
+        {
+            return this.tileByName.Where(
+                kvp => kvp.Key == name ||
+                MapTileData.tileDict[kvp.Key].topName == name ||
+                MapTileData.tileDict[kvp.Key].bottomName == name
+
+            ).Select(kvp => kvp.Value).ToList();
+        }
+
+        public void ProcessNextGeneratorStep(int processCount = 1)
         {
             SonOfRobinGame.game.IsFixedTimeStep = false;
 
             for (int i = 0; i < processCount; i++)
             {
+                this.propagatorOutput = null;
+
                 Resolution resolution = this.propagator.Step();
 
                 if (resolution == Resolution.Decided)
@@ -156,8 +186,6 @@ namespace SonOfRobin
                 }
             }
 
-            if (generateOutputForThisStep) this.propagatorOutput = propagator.ToValueArray<MapTileData.Name>();
-
             this.ShowProgressBar();
         }
 
@@ -165,7 +193,7 @@ namespace SonOfRobin
         {
             this.processTime = DateTime.Now - this.creationTime;
 
-            MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Tile map procesing time ({this.width}x{this.height}): {this.processTime:hh\\:mm\\:ss\\.fff}.", color: Color.GreenYellow);
+            MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Tile map  {this.width}x{this.height} seed {this.seed} procesing time: {this.processTime:hh\\:mm\\:ss\\.fff}.", color: Color.GreenYellow);
 
             SonOfRobinGame.progressBar.TurnOff();
             SonOfRobinGame.game.IsFixedTimeStep = Preferences.FrameSkip;
@@ -202,7 +230,7 @@ namespace SonOfRobin
             if (this.ReadyToUse) return this.tileBoard[x, y].mapTileData.texture;
             else
             {
-                if (this.propagatorOutput == null) return null;
+                if (this.propagatorOutput == null) this.propagatorOutput = propagator.ToValueArray<MapTileData.Name>();
 
                 MapTileData mapTile = MapTileData.GetTile(this.propagatorOutput.Get(x, y));
                 return mapTile.texture;
