@@ -1,4 +1,5 @@
 ﻿using DeBroglie;
+using DeBroglie.Constraints;
 using DeBroglie.Models;
 using DeBroglie.Topo;
 using Microsoft.Xna.Framework;
@@ -10,6 +11,9 @@ namespace SonOfRobin
 {
     public class TileMap
     {
+        public enum MapType { DefaultOverworld, Test1, Test2 }
+
+        public readonly MapType mapType;
         public readonly int width;
         public readonly int height;
         public readonly int seed;
@@ -30,12 +34,12 @@ namespace SonOfRobin
         private TilePropagator propagator;
         private ITopoArray<TileData.Name> propagatorOutput;
 
-
-        public TileMap(int width, int height, int seed = -1, bool showProgressBar = false)
+        public TileMap(MapType mapType, int width, int height, int seed = -1, bool showProgressBar = false)
         {
             this.creationTime = DateTime.Now;
             this.ReadyToUse = false;
 
+            this.mapType = mapType;
             this.width = width;
             this.height = height;
             this.showProgressBar = showProgressBar;
@@ -47,16 +51,37 @@ namespace SonOfRobin
             this.seed = seed == -1 ? new Random().Next(9999) : seed;
             this.random = new Random(this.seed);
 
+            List<TileData.Name> tileNameBlackList = null;
+            List<TileData.Name> tileNameWhiteList = null;
+
+            switch (this.mapType)
+            {
+                case MapType.DefaultOverworld:
+                    break;
+
+                case MapType.Test1:
+                    tileNameBlackList = new List<TileData.Name> { TileData.Name.Water };
+                    break;
+
+                case MapType.Test2:
+                    tileNameWhiteList = new List<TileData.Name> { TileData.Name.DeepWater, TileData.Name.Water };
+                    break;
+
+                default:
+                    throw new DivideByZeroException($"Unsupported mapType - {this.mapType}.");
+            }
+
             this.model = new AdjacentModel(directions: DirectionSet.Cartesian2d);
-            TileData.SetAdjacency(this.model);
+            TileData.SetAdjacency(this.model, nameBlackList: tileNameBlackList, nameWhiteList: tileNameWhiteList);
             this.topology = new GridTopology(width: width, height: height, periodic: false);
 
             TilePropagatorOptions tilePropagatorOptions = new TilePropagatorOptions();
             tilePropagatorOptions.RandomDouble = random.NextDouble;
             tilePropagatorOptions.BackTrackDepth = 250;
 
-            //var borderConstraint = new BorderConstraint();
-            // borderConstraint.Tiles = MapTile.Name.Water;
+            var borderConstraint = new BorderConstraint();
+            // borderConstraint.Tiles = TileData.Name.DeepWater;
+            // tilePropagatorOptions.Constraints += borderConstraint;
 
             this.propagator = new TilePropagator(tileModel: model, topology: topology, options: tilePropagatorOptions);
             this.propagatorOutput = null;
@@ -121,16 +146,19 @@ namespace SonOfRobin
             this.model = null;
             this.topology = null;
             this.propagator = null;
+            this.propagatorOutput = null;
 
             this.ReadyToUse = true;
         }
 
+        public Tile GetTile(int x, int y)
+        {
+            return this.tileBoard[x, y];
+        }
+
         public Texture2D GetTileTexture(int x, int y)
         {
-            if (this.ReadyToUse)
-            {
-                return this.tileBoard[x, y].tileData.texture;
-            }
+            if (this.ReadyToUse) return this.tileBoard[x, y].tileData.texture;
             else
             {
                 if (this.propagatorOutput == null) return null;
@@ -139,7 +167,6 @@ namespace SonOfRobin
                 return mapTile.texture;
             }
         }
-
 
         private void ShowProgressBar()
         {
@@ -167,8 +194,7 @@ namespace SonOfRobin
 
                 return timeLeft;
             }
-            catch (OverflowException)
-            { return TimeSpan.FromMinutes(30); }
+            catch (OverflowException) { return TimeSpan.FromMinutes(30); }
         }
 
         private static string TimeSpanToString(TimeSpan timeSpan)

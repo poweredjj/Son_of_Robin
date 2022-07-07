@@ -6,9 +6,7 @@ namespace SonOfRobin
 {
     public class TileMapProcessScene : Scene
     {
-        public enum MapType { DefaultOverworld, Test1, Test2 }
 
-        private readonly MapType mapType;
         private readonly int width;
         private readonly int height;
         private readonly int seed;
@@ -17,11 +15,10 @@ namespace SonOfRobin
         private readonly bool showProgressBar;
         private readonly int elementsPerFrame;
 
-        public TileMapProcessScene(MapType mapType, int width, int height, int seed, bool showVis = false, bool showProgressBar = true, int elementsPerFrame = 2) :
+        public TileMapProcessScene(TileMap.MapType mapType, int width, int height, int seed, bool showVis = false, bool showProgressBar = true, int elementsPerFrame = 2) :
 
             base(inputType: InputTypes.Normal, touchLayout: TouchLayout.QuitLoading, tipsLayout: ControlTips.TipsLayout.QuitLoading)
         {
-            this.mapType = mapType;
             this.width = width;
             this.height = height;
             this.seed = seed;
@@ -30,14 +27,7 @@ namespace SonOfRobin
             this.showProgressBar = showProgressBar;
             this.elementsPerFrame = elementsPerFrame;
 
-            this.map = this.CreateMap();
-        }
-
-        private TileMap CreateMap()
-        {
-            // TODO add mapType usage
-
-            return new TileMap(width: this.width, height: this.height, seed: this.seed, showProgressBar: this.showProgressBar);
+            this.map = new TileMap(mapType: mapType, width: this.width, height: this.height, seed: this.seed, showProgressBar: this.showProgressBar);
         }
 
 
