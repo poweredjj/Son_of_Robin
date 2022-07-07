@@ -19,7 +19,7 @@ namespace SonOfRobin
 
         public TileMapProcessScene(MapType mapType, int width, int height, int seed, bool showVis = false, bool showProgressBar = true, int elementsPerFrame = 2) :
 
-            base(inputType: InputTypes.Normal, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty)
+            base(inputType: InputTypes.Normal, touchLayout: TouchLayout.QuitLoading, tipsLayout: ControlTips.TipsLayout.QuitLoading)
         {
             this.mapType = mapType;
             this.width = width;
@@ -43,6 +43,12 @@ namespace SonOfRobin
 
         public override void Update(GameTime gameTime)
         {
+            if (InputMapper.IsPressed(InputMapper.Action.GlobalCancelReturnSkip))
+            {
+                this.Remove();
+                return;
+            }
+
             if (this.map.ReadyToUse) return;
 
             this.map.ProcessNextGeneratorStep(generateOutputForThisStep: this.showVis, processCount: this.elementsPerFrame);
@@ -52,7 +58,7 @@ namespace SonOfRobin
         {
             if (!this.showVis && !this.map.ReadyToUse) return;
 
-            SonOfRobinGame.graphicsDevice.Clear(Color.White * this.viewParams.drawOpacity);
+            SonOfRobinGame.graphicsDevice.Clear(Color.DarkBlue * this.viewParams.drawOpacity);
 
             Rectangle mapRect = new Rectangle(x: 0, y: 0, width: this.map.width, height: this.map.height);
             Rectangle screenRect = new Rectangle(x: 0, y: 0, width: SonOfRobinGame.VirtualWidth, height: SonOfRobinGame.VirtualHeight);

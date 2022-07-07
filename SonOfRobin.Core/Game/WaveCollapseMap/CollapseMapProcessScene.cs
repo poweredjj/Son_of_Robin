@@ -21,7 +21,7 @@ namespace SonOfRobin
 
         public CollapseMapProcessScene(MapType mapType, int width, int height, int seed, bool showVis = false, bool showProgressBar = true, int elementsPerFrame = 2) :
 
-            base(inputType: InputTypes.Normal, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty)
+            base(inputType: InputTypes.Normal, touchLayout: TouchLayout.QuitLoading, tipsLayout: ControlTips.TipsLayout.QuitLoading)
         {
             this.mapType = mapType;
             this.width = width;
@@ -111,6 +111,12 @@ namespace SonOfRobin
 
         public override void Update(GameTime gameTime)
         {
+            if (InputMapper.IsPressed(InputMapper.Action.GlobalCancelReturnSkip))
+            {
+                this.Remove();
+                return;
+            }
+
             if (this.map.IsFullyCollapsed) return;
 
             this.map.ProcessNextBatchInteractively(elementsPerFrame: this.elementsPerFrame);
