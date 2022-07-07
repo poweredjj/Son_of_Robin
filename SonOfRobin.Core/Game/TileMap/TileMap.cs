@@ -1,6 +1,7 @@
 ﻿using DeBroglie;
 using DeBroglie.Models;
 using DeBroglie.Topo;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -52,8 +53,7 @@ namespace SonOfRobin
 
             TilePropagatorOptions tilePropagatorOptions = new TilePropagatorOptions();
             tilePropagatorOptions.RandomDouble = random.NextDouble;
-            tilePropagatorOptions.BackTrackDepth = 200;
-
+            tilePropagatorOptions.BackTrackDepth = 250;
 
             //var borderConstraint = new BorderConstraint();
             // borderConstraint.Tiles = MapTile.Name.Water;
@@ -64,7 +64,7 @@ namespace SonOfRobin
             this.ShowProgressBar();
         }
 
-        public void ProcessNextGeneratorStep(int processCount = 1)
+        public void ProcessNextGeneratorStep(bool generateOutputForThisStep, int processCount = 1)
         {
             SonOfRobinGame.game.IsFixedTimeStep = false;
 
@@ -87,17 +87,20 @@ namespace SonOfRobin
                     default:
                         throw new DivideByZeroException($"Unsupported resolution - {resolution}.");
                 }
-                
+
             }
 
-            this.propagatorOutput = propagator.ToValueArray<TileData.Name>();
-
+            if (generateOutputForThisStep) this.propagatorOutput = propagator.ToValueArray<TileData.Name>();
 
             this.ShowProgressBar();
         }
 
         private void FinishProcessing()
         {
+            this.processTime = DateTime.Now - this.creationTime;
+
+            MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Tile map procesing time ({this.width}x{this.height}): {this.processTime:hh\\:mm\\:ss\\.fff}.", color: Color.GreenYellow);
+
             SonOfRobinGame.progressBar.TurnOff();
             SonOfRobinGame.game.IsFixedTimeStep = Preferences.FrameSkip;
 

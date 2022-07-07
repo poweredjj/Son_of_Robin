@@ -1,7 +1,4 @@
-﻿using DeBroglie;
-using DeBroglie.Models;
-using DeBroglie.Topo;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
@@ -351,53 +348,13 @@ namespace SonOfRobin
 
             if (Keyboard.HasBeenPressed(Keys.F4))
             {
-                RemoveAllScenesOfType(typeof(TextWindow));
-
-                var model = new AdjacentModel(directions: DirectionSet.Cartesian2d);
-
-                TileData.SetAdjacency(model);
+                RemoveAllScenesOfType(typeof(TileMapProcessScene));
 
                 int width = 40;
-                int height = 15;
-
+                int height = 20;
                 int seed = -1;
-                if (seed == -1) seed = new Random().Next(9999);
-                Random random = new Random(seed);
 
-                var topology = new GridTopology(width: width, height: height, periodic: false);
-
-                TilePropagatorOptions tilePropagatorOptions = new TilePropagatorOptions();
-                tilePropagatorOptions.RandomDouble = random.NextDouble;
-                //var borderConstraint = new BorderConstraint();
-                // borderConstraint.Tiles = MapTile.Name.Water;
-
-
-                var propagator = new TilePropagator(tileModel: model, topology: topology, options: tilePropagatorOptions);
-
-                var status = propagator.Run();
-                if (status != Resolution.Decided)
-                {
-                    MessageLog.AddMessage(msgType: MsgType.Debug, message: "Could not collapse whole map correctly.");
-                    return;
-                }
-
-                var output = propagator.ToValueArray<TileData.Name>();
-                string resultText = "";
-                var imageList = new List<Texture2D>();
-
-                for (var y = 0; y < height; y++)
-                {
-                    for (var x = 0; x < width; x++)
-                    {
-                        TileData mapTile = TileData.GetTile(output.Get(x, y));
-
-                        imageList.Add(mapTile.texture);
-                        resultText += "|";
-                    }
-                    if (y < height - 1) resultText += "\n";
-                }
-
-                new TextWindow(text: resultText, imageList: imageList, textColor: Color.White, bgColor: Color.Blue, animate: false, useTransition: false);
+                TileMapProcessScene tileMapProcessScene = new TileMapProcessScene(mapType: TileMapProcessScene.MapType.DefaultOverworld, width: width, height: height, seed: seed, showVis: true, showProgressBar: false, elementsPerFrame: 50);
             }
 
             if (Keyboard.HasBeenPressed(Keys.F5))

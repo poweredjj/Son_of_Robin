@@ -45,7 +45,7 @@ namespace SonOfRobin
         {
             if (this.map.ReadyToUse) return;
 
-            this.map.ProcessNextGeneratorStep(this.elementsPerFrame);
+            this.map.ProcessNextGeneratorStep(generateOutputForThisStep: this.showVis, processCount: this.elementsPerFrame);
         }
 
         public override void Draw()
