@@ -248,11 +248,15 @@ namespace SonOfRobin
 
         private static List<Name> GetNamesToUse(List<Name> nameWhiteList, List<Name> nameBlackList)
         {
-            if (nameWhiteList == null && nameBlackList == null) return allNames;
-            if (nameWhiteList != null && nameBlackList != null) throw new ArgumentException("Whitelist and blacklist cannot both be active.");
+            bool whiteListActive = nameWhiteList != null && nameWhiteList.Any();
+            bool blackListActive = nameBlackList != null && nameBlackList.Any();
 
-            if (nameWhiteList != null) return nameWhiteList;
-            else return allNames.Where(n => !nameBlackList.Contains(n)).ToList();
+            if (!whiteListActive && !blackListActive) return allNames.ToList();
+
+            var namesToUse = whiteListActive ? nameWhiteList : allNames;
+
+            if (blackListActive) return namesToUse.Where(n => !nameBlackList.Contains(n)).ToList();
+            else return namesToUse.ToList();
         }
 
     }

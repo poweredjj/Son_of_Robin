@@ -51,8 +51,8 @@ namespace SonOfRobin
             this.seed = seed == -1 ? new Random().Next(9999) : seed;
             this.random = new Random(this.seed);
 
-            List<TileData.Name> tileNameBlackList = null;
-            List<TileData.Name> tileNameWhiteList = null;
+            List<TileData.Name> tileNameBlackList = new List<TileData.Name> { TileData.Name.Empty };
+            List<TileData.Name> tileNameWhiteList = new List<TileData.Name> { };
 
             switch (this.mapType)
             {
@@ -60,11 +60,11 @@ namespace SonOfRobin
                     break;
 
                 case MapType.Test1:
-                    tileNameBlackList = new List<TileData.Name> { TileData.Name.Water };
+                    tileNameBlackList.Add(TileData.Name.DeepWater);
                     break;
 
                 case MapType.Test2:
-                    tileNameWhiteList = new List<TileData.Name> { TileData.Name.DeepWater, TileData.Name.Water };
+                    tileNameWhiteList.AddRange(new List<TileData.Name> { TileData.Name.DeepWater, TileData.Name.Water });
                     break;
 
                 default:
@@ -75,9 +75,11 @@ namespace SonOfRobin
             TileData.SetAdjacency(this.model, nameBlackList: tileNameBlackList, nameWhiteList: tileNameWhiteList);
             this.topology = new GridTopology(width: width, height: height, periodic: false);
 
-            TilePropagatorOptions tilePropagatorOptions = new TilePropagatorOptions();
-            tilePropagatorOptions.RandomDouble = random.NextDouble;
-            tilePropagatorOptions.BackTrackDepth = 250;
+            TilePropagatorOptions tilePropagatorOptions = new TilePropagatorOptions
+            {
+                RandomDouble = random.NextDouble,
+                BackTrackDepth = 250
+            };
 
             var borderConstraint = new BorderConstraint();
             // borderConstraint.Tiles = TileData.Name.DeepWater;
@@ -97,22 +99,11 @@ namespace SonOfRobin
             {
                 Resolution resolution = this.propagator.Step();
 
-                switch (resolution)
+                if (resolution == Resolution.Decided)
                 {
-                    case Resolution.Decided:
-                        this.FinishProcessing();
-                        return;
-
-                    case Resolution.Undecided:
-                        break;
-
-                    case Resolution.Contradiction:
-                        break;
-
-                    default:
-                        throw new DivideByZeroException($"Unsupported resolution - {resolution}.");
+                    this.FinishProcessing();
+                    return;
                 }
-
             }
 
             if (generateOutputForThisStep) this.propagatorOutput = propagator.ToValueArray<TileData.Name>();
