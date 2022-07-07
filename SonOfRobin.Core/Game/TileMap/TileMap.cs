@@ -65,14 +65,14 @@ namespace SonOfRobin
             TilePropagatorOptions tilePropagatorOptions = new TilePropagatorOptions
             {
                 RandomDouble = random.NextDouble,
-                BackTrackDepth = 400,
+                BackTrackDepth = 1000,
                 Constraints = this.GetConstrains(),
             };
 
             this.propagator = new TilePropagator(tileModel: model, topology: topology, options: tilePropagatorOptions);
             this.propagatorOutput = null;
 
-            this.propagator.Select(x: this.width / 2, y: this.height / 2, z: 0, tile: this.tileByName[MapTileData.Name.Grass]);
+            this.propagator.Select(x: this.width / 2, y: this.height / 2, z: 0, tile: this.tileByName[MapTileData.Name.Sand]);
 
             this.ShowProgressBar();
 
@@ -129,7 +129,7 @@ namespace SonOfRobin
 
                     // TODO finish writing constrains
 
-                    var tilesContainingList = this.GetTilesContaining(MapTileData.Name.DeepWater);
+                    var tilesContainingList = this.GetTilesContaining(name: MapTileData.Name.DeepWater, bottomName: MapTileData.Name.DeepWater, topName: MapTileData.Name.DeepWater);
                     var tilesContainingSet = new HashSet<Tile>();
                     foreach (Tile tile in tilesContainingList)
                     {
@@ -138,7 +138,14 @@ namespace SonOfRobin
 
                     constrainsList.Add(new CountConstraint
                     {
-                        Count = 10000,
+                        Count = (int)(this.width * this.height * 0.03f),
+                        Comparison = CountComparison.AtLeast,
+                        Tiles = tilesContainingSet,
+                    });
+
+                    constrainsList.Add(new CountConstraint
+                    {
+                        Count = (int)(this.width * this.height * 0.25f),
                         Comparison = CountComparison.AtMost,
                         Tiles = tilesContainingSet,
                     });
@@ -159,12 +166,12 @@ namespace SonOfRobin
         }
 
 
-        private List<Tile> GetTilesContaining(MapTileData.Name name)
+        private List<Tile> GetTilesContaining(MapTileData.Name name = MapTileData.Name.Empty, MapTileData.Name topName = MapTileData.Name.Empty, MapTileData.Name bottomName = MapTileData.Name.Empty)
         {
             return this.tileByName.Where(
-                kvp => kvp.Key == name ||
-                MapTileData.tileDict[kvp.Key].topName == name ||
-                MapTileData.tileDict[kvp.Key].bottomName == name
+                kvp => (kvp.Key == name && name != MapTileData.Name.Empty) ||
+                (MapTileData.tileDict[kvp.Key].topName == topName && topName != MapTileData.Name.Empty) ||
+                (MapTileData.tileDict[kvp.Key].bottomName == bottomName && bottomName != MapTileData.Name.Empty)
 
             ).Select(kvp => kvp.Value).ToList();
         }
