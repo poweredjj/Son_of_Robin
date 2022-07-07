@@ -63,6 +63,7 @@ namespace SonOfRobin
             int offsetY = (screenRect.Height - scaledMapRect.Height) / 2;
 
             int tileSize = (int)Math.Ceiling((double)scaledMapRect.Height / (double)this.map.height);
+            if (tileSize > 5) tileSize += 2;
 
             Rectangle destRect = new Rectangle(x: 0, y: 0, width: tileSize, height: tileSize);
 

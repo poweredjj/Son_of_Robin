@@ -20,8 +20,9 @@ namespace SonOfRobin
         public readonly Random random;
         private readonly bool showProgressBar;
 
-        private readonly List<Tile> allTiles;
-        public readonly Tile[,] tileBoard;
+        private readonly List<MapTile> allTiles;
+        private readonly Dictionary<MapTileData.Name, Tile> tileByName;
+        public readonly MapTile[,] tileBoard;
 
         private readonly DateTime creationTime;
         private TimeSpan processTime;
@@ -32,7 +33,7 @@ namespace SonOfRobin
         private AdjacentModel model;
         private GridTopology topology;
         private TilePropagator propagator;
-        private ITopoArray<TileData.Name> propagatorOutput;
+        private ITopoArray<MapTileData.Name> propagatorOutput;
 
         public TileMap(MapType mapType, int width, int height, int seed = -1, bool showProgressBar = false)
         {
@@ -45,35 +46,20 @@ namespace SonOfRobin
             this.showProgressBar = showProgressBar;
             this.allElementsCount = this.width * this.height;
 
-            this.tileBoard = new Tile[this.width, this.height];
-            this.allTiles = new List<Tile>();
+            this.tileBoard = new MapTile[this.width, this.height];
+            this.allTiles = new List<MapTile>();
 
             this.seed = seed == -1 ? new Random().Next(9999) : seed;
             this.random = new Random(this.seed);
 
-            List<TileData.Name> tileNameBlackList = new List<TileData.Name> { TileData.Name.Empty };
-            List<TileData.Name> tileNameWhiteList = new List<TileData.Name> { };
-
-            switch (this.mapType)
-            {
-                case MapType.DefaultOverworld:
-                    break;
-
-                case MapType.Test1:
-                    tileNameBlackList.Add(TileData.Name.DeepWater);
-                    break;
-
-                case MapType.Test2:
-                    tileNameWhiteList.AddRange(new List<TileData.Name> { TileData.Name.DeepWater, TileData.Name.Water });
-                    break;
-
-                default:
-                    throw new DivideByZeroException($"Unsupported mapType - {this.mapType}.");
-            }
-
             this.model = new AdjacentModel(directions: DirectionSet.Cartesian2d);
-            TileData.SetAdjacency(this.model, nameBlackList: tileNameBlackList, nameWhiteList: tileNameWhiteList);
+
+            List<MapTileData.Name> tileNameBlackList = this.GetBlackList();
+            List<MapTileData.Name> tileNameWhiteList = this.GetWhiteList();
+            this.tileByName = MapTileData.CreateDeBroglieTiles(nameBlackList: tileNameBlackList, nameWhiteList: tileNameWhiteList);
             this.topology = new GridTopology(width: width, height: height, periodic: false);
+
+            MapTileData.SetAdjacency(model: this.model, tileByName: this.tileByName);
 
             TilePropagatorOptions tilePropagatorOptions = new TilePropagatorOptions
             {
@@ -81,15 +67,79 @@ namespace SonOfRobin
                 BackTrackDepth = 250
             };
 
-            var borderConstraint = new BorderConstraint();
-            // borderConstraint.Tiles = TileData.Name.DeepWater;
-            // tilePropagatorOptions.Constraints += borderConstraint;
+
+            tilePropagatorOptions.Constraints = this.GetConstrains();
+
 
             this.propagator = new TilePropagator(tileModel: model, topology: topology, options: tilePropagatorOptions);
             this.propagatorOutput = null;
 
+            //this.propagator.Select(x: this.width / 2, y: this.height / 2, z: 0, tile: this.tileByName[MapTileData.Name.Grass]);
+
             this.ShowProgressBar();
         }
+
+        private List<MapTileData.Name> GetWhiteList()
+        {
+            switch (this.mapType)
+            {
+                case MapType.DefaultOverworld:
+                    return new List<MapTileData.Name> { };
+
+                case MapType.Test1:
+                    return new List<MapTileData.Name> { };
+
+                case MapType.Test2:
+                    return new List<MapTileData.Name> { };
+
+                default:
+                    throw new DivideByZeroException($"Unsupported mapType - {this.mapType}.");
+            }
+        }
+
+        private List<MapTileData.Name> GetBlackList()
+        {
+            switch (this.mapType)
+            {
+                case MapType.DefaultOverworld:
+                    return new List<MapTileData.Name> { MapTileData.Name.Empty };
+
+                case MapType.Test1:
+                    return new List<MapTileData.Name> { MapTileData.Name.Empty };
+
+                case MapType.Test2:
+                    return new List<MapTileData.Name> { MapTileData.Name.Empty };
+
+                default:
+                    throw new DivideByZeroException($"Unsupported mapType - {this.mapType}.");
+            }
+        }
+        private ITileConstraint[] GetConstrains()
+        {
+            var constrainsList = new List<ITileConstraint> { };
+
+            switch (this.mapType)
+            {
+                case MapType.DefaultOverworld:
+                    //constrainsList.Add(new BorderConstraint
+                    //{
+                    //    Tiles = new Tile[] { this.tileByName[MapTileData.Name.DeepWater] }
+                    //});
+                    break;
+
+                case MapType.Test1:
+                    break;
+
+                case MapType.Test2:
+                    break;
+
+                default:
+                    throw new DivideByZeroException($"Unsupported mapType - {this.mapType}.");
+            }
+
+            return constrainsList.ToArray();
+        }
+
 
         public void ProcessNextGeneratorStep(bool generateOutputForThisStep, int processCount = 1)
         {
@@ -106,7 +156,7 @@ namespace SonOfRobin
                 }
             }
 
-            if (generateOutputForThisStep) this.propagatorOutput = propagator.ToValueArray<TileData.Name>();
+            if (generateOutputForThisStep) this.propagatorOutput = propagator.ToValueArray<MapTileData.Name>();
 
             this.ShowProgressBar();
         }
@@ -120,14 +170,14 @@ namespace SonOfRobin
             SonOfRobinGame.progressBar.TurnOff();
             SonOfRobinGame.game.IsFixedTimeStep = Preferences.FrameSkip;
 
-            this.propagatorOutput = this.propagator.ToValueArray<TileData.Name>();
+            this.propagatorOutput = this.propagator.ToValueArray<MapTileData.Name>();
 
             for (int y = 0; y < this.height; y++)
             {
                 for (int x = 0; x < this.width; x++)
                 {
-                    TileData tileData = TileData.GetTile(this.propagatorOutput.Get(x, y));
-                    Tile tile = new Tile(x: x, y: y, tileData: tileData);
+                    MapTileData tileData = MapTileData.GetTile(this.propagatorOutput.Get(x, y));
+                    MapTile tile = new MapTile(x: x, y: y, mapTileData: tileData);
 
                     this.allTiles.Add(tile);
                     this.tileBoard[x, y] = tile;
@@ -142,19 +192,19 @@ namespace SonOfRobin
             this.ReadyToUse = true;
         }
 
-        public Tile GetTile(int x, int y)
+        public MapTile GetTile(int x, int y)
         {
             return this.tileBoard[x, y];
         }
 
         public Texture2D GetTileTexture(int x, int y)
         {
-            if (this.ReadyToUse) return this.tileBoard[x, y].tileData.texture;
+            if (this.ReadyToUse) return this.tileBoard[x, y].mapTileData.texture;
             else
             {
                 if (this.propagatorOutput == null) return null;
 
-                TileData mapTile = TileData.GetTile(this.propagatorOutput.Get(x, y));
+                MapTileData mapTile = MapTileData.GetTile(this.propagatorOutput.Get(x, y));
                 return mapTile.texture;
             }
         }

@@ -1,18 +1,18 @@
 ﻿namespace SonOfRobin
 {
-    public class Tile
+    public class MapTile
     {
         public readonly string id;
         public readonly int x;
         public readonly int y;
-        public readonly TileData tileData;
+        public readonly MapTileData mapTileData;
 
-        public Tile(int x, int y, TileData tileData)
+        public MapTile(int x, int y, MapTileData mapTileData)
         {
             this.id = Helpers.GetUniqueHash();
             this.x = x;
             this.y = y;
-            this.tileData = tileData;
+            this.mapTileData = mapTileData;
         }
 
     }

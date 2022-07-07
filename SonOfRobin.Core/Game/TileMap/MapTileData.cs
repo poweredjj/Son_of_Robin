@@ -9,10 +9,10 @@ namespace SonOfRobin
 {
     public struct NeighbourData
     {
-        public readonly TileData.Name name;
+        public readonly MapTileData.Name name;
         public readonly int xOffset;
         public readonly int yOffset;
-        public NeighbourData(TileData.Name name, int xOffset, int yOffset)
+        public NeighbourData(MapTileData.Name name, int xOffset, int yOffset)
         {
             this.name = name;
             this.xOffset = xOffset;
@@ -20,7 +20,7 @@ namespace SonOfRobin
         }
     }
 
-    public struct TileData
+    public struct MapTileData
     {
         public enum Name
         {
@@ -46,7 +46,7 @@ namespace SonOfRobin
 
         public static readonly int width = 32;
         public static readonly int height = 32;
-        public static readonly Dictionary<Name, TileData> tileDict = new Dictionary<Name, TileData>();
+        public static readonly Dictionary<Name, MapTileData> tileDict = new Dictionary<Name, MapTileData>();
 
         public readonly Name name;
         public readonly Name topName;
@@ -57,7 +57,7 @@ namespace SonOfRobin
         public readonly bool edge;
         public readonly List<NeighbourData> allowedNeighbours;
 
-        public TileData(Name name, Texture2D texture, bool edge, double frequency = 1d, Name topName = Name.Empty, Name bottomName = Name.Empty)
+        public MapTileData(Name name, Texture2D texture, bool edge, double frequency = 1d, Name topName = Name.Empty, Name bottomName = Name.Empty)
         {
             this.name = name;
 
@@ -93,7 +93,7 @@ namespace SonOfRobin
             }
         }
 
-        public static TileData GetTile(Name name)
+        public static MapTileData GetTile(Name name)
         {
             return tileDict[name];
         }
@@ -102,49 +102,49 @@ namespace SonOfRobin
         {
             if (tileDict.Count > 0) throw new ArgumentException("Tiles already created.");
 
-            new TileData(name: Name.Empty, texture: SonOfRobinGame.whiteRectangle, edge: false); // to see uncollapsed tiles in their initial state
+            new MapTileData(name: Name.Empty, texture: SonOfRobinGame.whiteRectangle, edge: false); // to see uncollapsed tiles in their initial state
 
-            TileData grass = new TileData(name: Name.Grass, texture: AnimData.framesForPkgs[AnimData.PkgName.TileGrass].texture, edge: false);
-            TileData sand = new TileData(name: Name.Sand, texture: AnimData.framesForPkgs[AnimData.PkgName.TileSand].texture, edge: false);
-            TileData water = new TileData(name: Name.Water, texture: AnimData.framesForPkgs[AnimData.PkgName.TileWater].texture, edge: false);
-            TileData dirt = new TileData(name: Name.Dirt, texture: AnimData.framesForPkgs[AnimData.PkgName.TileDirt].texture, edge: false);
-            TileData deepWater = new TileData(name: Name.DeepWater, texture: AnimData.framesForPkgs[AnimData.PkgName.TileDeepWater].texture, edge: false);
+            MapTileData grass = new MapTileData(name: Name.Grass, texture: AnimData.framesForPkgs[AnimData.PkgName.TileGrass].texture, edge: false);
+            MapTileData sand = new MapTileData(name: Name.Sand, texture: AnimData.framesForPkgs[AnimData.PkgName.TileSand].texture, edge: false);
+            MapTileData water = new MapTileData(name: Name.Water, texture: AnimData.framesForPkgs[AnimData.PkgName.TileWater].texture, edge: false);
+            MapTileData dirt = new MapTileData(name: Name.Dirt, texture: AnimData.framesForPkgs[AnimData.PkgName.TileDirt].texture, edge: false);
+            MapTileData deepWater = new MapTileData(name: Name.DeepWater, texture: AnimData.framesForPkgs[AnimData.PkgName.TileDeepWater].texture, edge: false);
 
-            TileData sandOnGrassLT = new TileData(name: Name.SandOnGrassLT, texture: AnimData.framesForPkgs[AnimData.PkgName.TileSandOnGrassLT].texture, edge: true, topName: Name.Sand, bottomName: Name.Grass);
-            TileData sandOnGrassRT = new TileData(name: Name.SandOnGrassRT, texture: AnimData.framesForPkgs[AnimData.PkgName.TileSandOnGrassRT].texture, edge: true, topName: Name.Sand, bottomName: Name.Grass);
-            TileData sandOnGrassLB = new TileData(name: Name.SandOnGrassLB, texture: AnimData.framesForPkgs[AnimData.PkgName.TileSandOnGrassLB].texture, edge: true, topName: Name.Sand, bottomName: Name.Grass);
-            TileData sandOnGrassRB = new TileData(name: Name.SandOnGrassRB, texture: AnimData.framesForPkgs[AnimData.PkgName.TileSandOnGrassRB].texture, edge: true, topName: Name.Sand, bottomName: Name.Grass);
-            TileData sandOnGrassT = new TileData(name: Name.SandOnGrassT, texture: AnimData.framesForPkgs[AnimData.PkgName.TileSandOnGrassT].texture, edge: true, topName: Name.Sand, bottomName: Name.Grass);
-            TileData sandOnGrassB = new TileData(name: Name.SandOnGrassB, texture: AnimData.framesForPkgs[AnimData.PkgName.TileSandOnGrassB].texture, edge: true, topName: Name.Sand, bottomName: Name.Grass);
-            TileData sandOnGrassR = new TileData(name: Name.SandOnGrassR, texture: AnimData.framesForPkgs[AnimData.PkgName.TileSandOnGrassR].texture, edge: true, topName: Name.Sand, bottomName: Name.Grass);
-            TileData sandOnGrassL = new TileData(name: Name.SandOnGrassL, texture: AnimData.framesForPkgs[AnimData.PkgName.TileSandOnGrassL].texture, edge: true, topName: Name.Sand, bottomName: Name.Grass);
+            MapTileData sandOnGrassLT = new MapTileData(name: Name.SandOnGrassLT, texture: AnimData.framesForPkgs[AnimData.PkgName.TileSandOnGrassLT].texture, edge: true, topName: Name.Sand, bottomName: Name.Grass);
+            MapTileData sandOnGrassRT = new MapTileData(name: Name.SandOnGrassRT, texture: AnimData.framesForPkgs[AnimData.PkgName.TileSandOnGrassRT].texture, edge: true, topName: Name.Sand, bottomName: Name.Grass);
+            MapTileData sandOnGrassLB = new MapTileData(name: Name.SandOnGrassLB, texture: AnimData.framesForPkgs[AnimData.PkgName.TileSandOnGrassLB].texture, edge: true, topName: Name.Sand, bottomName: Name.Grass);
+            MapTileData sandOnGrassRB = new MapTileData(name: Name.SandOnGrassRB, texture: AnimData.framesForPkgs[AnimData.PkgName.TileSandOnGrassRB].texture, edge: true, topName: Name.Sand, bottomName: Name.Grass);
+            MapTileData sandOnGrassT = new MapTileData(name: Name.SandOnGrassT, texture: AnimData.framesForPkgs[AnimData.PkgName.TileSandOnGrassT].texture, edge: true, topName: Name.Sand, bottomName: Name.Grass);
+            MapTileData sandOnGrassB = new MapTileData(name: Name.SandOnGrassB, texture: AnimData.framesForPkgs[AnimData.PkgName.TileSandOnGrassB].texture, edge: true, topName: Name.Sand, bottomName: Name.Grass);
+            MapTileData sandOnGrassR = new MapTileData(name: Name.SandOnGrassR, texture: AnimData.framesForPkgs[AnimData.PkgName.TileSandOnGrassR].texture, edge: true, topName: Name.Sand, bottomName: Name.Grass);
+            MapTileData sandOnGrassL = new MapTileData(name: Name.SandOnGrassL, texture: AnimData.framesForPkgs[AnimData.PkgName.TileSandOnGrassL].texture, edge: true, topName: Name.Sand, bottomName: Name.Grass);
 
-            TileData waterOnSandLT = new TileData(name: Name.WaterOnSandLT, texture: AnimData.framesForPkgs[AnimData.PkgName.TileWaterOnSandLT].texture, edge: true, topName: Name.Water, bottomName: Name.Sand);
-            TileData waterOnSandRT = new TileData(name: Name.WaterOnSandRT, texture: AnimData.framesForPkgs[AnimData.PkgName.TileWaterOnSandRT].texture, edge: true, topName: Name.Water, bottomName: Name.Sand);
-            TileData waterOnSandLB = new TileData(name: Name.WaterOnSandLB, texture: AnimData.framesForPkgs[AnimData.PkgName.TileWaterOnSandLB].texture, edge: true, topName: Name.Water, bottomName: Name.Sand);
-            TileData waterOnSandRB = new TileData(name: Name.WaterOnSandRB, texture: AnimData.framesForPkgs[AnimData.PkgName.TileWaterOnSandRB].texture, edge: true, topName: Name.Water, bottomName: Name.Sand);
-            TileData waterOnSandT = new TileData(name: Name.WaterOnSandT, texture: AnimData.framesForPkgs[AnimData.PkgName.TileWaterOnSandT].texture, edge: true, topName: Name.Water, bottomName: Name.Sand);
-            TileData waterOnSandB = new TileData(name: Name.WaterOnSandB, texture: AnimData.framesForPkgs[AnimData.PkgName.TileWaterOnSandB].texture, edge: true, topName: Name.Water, bottomName: Name.Sand);
-            TileData waterOnSandR = new TileData(name: Name.WaterOnSandR, texture: AnimData.framesForPkgs[AnimData.PkgName.TileWaterOnSandR].texture, edge: true, topName: Name.Water, bottomName: Name.Sand);
-            TileData waterOnSandL = new TileData(name: Name.WaterOnSandL, texture: AnimData.framesForPkgs[AnimData.PkgName.TileWaterOnSandL].texture, edge: true, topName: Name.Water, bottomName: Name.Sand);
+            MapTileData waterOnSandLT = new MapTileData(name: Name.WaterOnSandLT, texture: AnimData.framesForPkgs[AnimData.PkgName.TileWaterOnSandLT].texture, edge: true, topName: Name.Water, bottomName: Name.Sand);
+            MapTileData waterOnSandRT = new MapTileData(name: Name.WaterOnSandRT, texture: AnimData.framesForPkgs[AnimData.PkgName.TileWaterOnSandRT].texture, edge: true, topName: Name.Water, bottomName: Name.Sand);
+            MapTileData waterOnSandLB = new MapTileData(name: Name.WaterOnSandLB, texture: AnimData.framesForPkgs[AnimData.PkgName.TileWaterOnSandLB].texture, edge: true, topName: Name.Water, bottomName: Name.Sand);
+            MapTileData waterOnSandRB = new MapTileData(name: Name.WaterOnSandRB, texture: AnimData.framesForPkgs[AnimData.PkgName.TileWaterOnSandRB].texture, edge: true, topName: Name.Water, bottomName: Name.Sand);
+            MapTileData waterOnSandT = new MapTileData(name: Name.WaterOnSandT, texture: AnimData.framesForPkgs[AnimData.PkgName.TileWaterOnSandT].texture, edge: true, topName: Name.Water, bottomName: Name.Sand);
+            MapTileData waterOnSandB = new MapTileData(name: Name.WaterOnSandB, texture: AnimData.framesForPkgs[AnimData.PkgName.TileWaterOnSandB].texture, edge: true, topName: Name.Water, bottomName: Name.Sand);
+            MapTileData waterOnSandR = new MapTileData(name: Name.WaterOnSandR, texture: AnimData.framesForPkgs[AnimData.PkgName.TileWaterOnSandR].texture, edge: true, topName: Name.Water, bottomName: Name.Sand);
+            MapTileData waterOnSandL = new MapTileData(name: Name.WaterOnSandL, texture: AnimData.framesForPkgs[AnimData.PkgName.TileWaterOnSandL].texture, edge: true, topName: Name.Water, bottomName: Name.Sand);
 
-            TileData dirtOnGrassLT = new TileData(name: Name.DirtOnGrassLT, texture: AnimData.framesForPkgs[AnimData.PkgName.TileDirtOnGrassLT].texture, edge: true, topName: Name.Dirt, bottomName: Name.Grass);
-            TileData dirtOnGrassRT = new TileData(name: Name.DirtOnGrassRT, texture: AnimData.framesForPkgs[AnimData.PkgName.TileDirtOnGrassRT].texture, edge: true, topName: Name.Dirt, bottomName: Name.Grass);
-            TileData dirtOnGrassLB = new TileData(name: Name.DirtOnGrassLB, texture: AnimData.framesForPkgs[AnimData.PkgName.TileDirtOnGrassLB].texture, edge: true, topName: Name.Dirt, bottomName: Name.Grass);
-            TileData dirtOnGrassRB = new TileData(name: Name.DirtOnGrassRB, texture: AnimData.framesForPkgs[AnimData.PkgName.TileDirtOnGrassRB].texture, edge: true, topName: Name.Dirt, bottomName: Name.Grass);
-            TileData dirtOnGrassT = new TileData(name: Name.DirtOnGrassT, texture: AnimData.framesForPkgs[AnimData.PkgName.TileDirtOnGrassT].texture, edge: true, topName: Name.Dirt, bottomName: Name.Grass);
-            TileData dirtOnGrassB = new TileData(name: Name.DirtOnGrassB, texture: AnimData.framesForPkgs[AnimData.PkgName.TileDirtOnGrassB].texture, edge: true, topName: Name.Dirt, bottomName: Name.Grass);
-            TileData dirtOnGrassR = new TileData(name: Name.DirtOnGrassR, texture: AnimData.framesForPkgs[AnimData.PkgName.TileDirtOnGrassR].texture, edge: true, topName: Name.Dirt, bottomName: Name.Grass);
-            TileData dirtOnGrassL = new TileData(name: Name.DirtOnGrassL, texture: AnimData.framesForPkgs[AnimData.PkgName.TileDirtOnGrassL].texture, edge: true, topName: Name.Dirt, bottomName: Name.Grass);
+            MapTileData dirtOnGrassLT = new MapTileData(name: Name.DirtOnGrassLT, texture: AnimData.framesForPkgs[AnimData.PkgName.TileDirtOnGrassLT].texture, edge: true, topName: Name.Dirt, bottomName: Name.Grass);
+            MapTileData dirtOnGrassRT = new MapTileData(name: Name.DirtOnGrassRT, texture: AnimData.framesForPkgs[AnimData.PkgName.TileDirtOnGrassRT].texture, edge: true, topName: Name.Dirt, bottomName: Name.Grass);
+            MapTileData dirtOnGrassLB = new MapTileData(name: Name.DirtOnGrassLB, texture: AnimData.framesForPkgs[AnimData.PkgName.TileDirtOnGrassLB].texture, edge: true, topName: Name.Dirt, bottomName: Name.Grass);
+            MapTileData dirtOnGrassRB = new MapTileData(name: Name.DirtOnGrassRB, texture: AnimData.framesForPkgs[AnimData.PkgName.TileDirtOnGrassRB].texture, edge: true, topName: Name.Dirt, bottomName: Name.Grass);
+            MapTileData dirtOnGrassT = new MapTileData(name: Name.DirtOnGrassT, texture: AnimData.framesForPkgs[AnimData.PkgName.TileDirtOnGrassT].texture, edge: true, topName: Name.Dirt, bottomName: Name.Grass);
+            MapTileData dirtOnGrassB = new MapTileData(name: Name.DirtOnGrassB, texture: AnimData.framesForPkgs[AnimData.PkgName.TileDirtOnGrassB].texture, edge: true, topName: Name.Dirt, bottomName: Name.Grass);
+            MapTileData dirtOnGrassR = new MapTileData(name: Name.DirtOnGrassR, texture: AnimData.framesForPkgs[AnimData.PkgName.TileDirtOnGrassR].texture, edge: true, topName: Name.Dirt, bottomName: Name.Grass);
+            MapTileData dirtOnGrassL = new MapTileData(name: Name.DirtOnGrassL, texture: AnimData.framesForPkgs[AnimData.PkgName.TileDirtOnGrassL].texture, edge: true, topName: Name.Dirt, bottomName: Name.Grass);
 
-            TileData deepWaterOnWaterLT = new TileData(name: Name.DeepWaterOnWaterLT, texture: AnimData.framesForPkgs[AnimData.PkgName.TileDeepWaterOnWaterLT].texture, edge: true, topName: Name.DeepWater, bottomName: Name.Water);
-            TileData deepWaterOnWaterRT = new TileData(name: Name.DeepWaterOnWaterRT, texture: AnimData.framesForPkgs[AnimData.PkgName.TileDeepWaterOnWaterRT].texture, edge: true, topName: Name.DeepWater, bottomName: Name.Water);
-            TileData deepWaterOnWaterLB = new TileData(name: Name.DeepWaterOnWaterLB, texture: AnimData.framesForPkgs[AnimData.PkgName.TileDeepWaterOnWaterLB].texture, edge: true, topName: Name.DeepWater, bottomName: Name.Water);
-            TileData deepWaterOnWaterRB = new TileData(name: Name.DeepWaterOnWaterRB, texture: AnimData.framesForPkgs[AnimData.PkgName.TileDeepWaterOnWaterRB].texture, edge: true, topName: Name.DeepWater, bottomName: Name.Water);
-            TileData deepWaterOnWaterT = new TileData(name: Name.DeepWaterOnWaterT, texture: AnimData.framesForPkgs[AnimData.PkgName.TileDeepWaterOnWaterT].texture, edge: true, topName: Name.DeepWater, bottomName: Name.Water);
-            TileData deepWaterOnWaterB = new TileData(name: Name.DeepWaterOnWaterB, texture: AnimData.framesForPkgs[AnimData.PkgName.TileDeepWaterOnWaterB].texture, edge: true, topName: Name.DeepWater, bottomName: Name.Water);
-            TileData deepWaterOnWaterR = new TileData(name: Name.DeepWaterOnWaterR, texture: AnimData.framesForPkgs[AnimData.PkgName.TileDeepWaterOnWaterR].texture, edge: true, topName: Name.DeepWater, bottomName: Name.Water);
-            TileData deepWaterOnWaterL = new TileData(name: Name.DeepWaterOnWaterL, texture: AnimData.framesForPkgs[AnimData.PkgName.TileDeepWaterOnWaterL].texture, edge: true, topName: Name.DeepWater, bottomName: Name.Water);
+            MapTileData deepWaterOnWaterLT = new MapTileData(name: Name.DeepWaterOnWaterLT, texture: AnimData.framesForPkgs[AnimData.PkgName.TileDeepWaterOnWaterLT].texture, edge: true, topName: Name.DeepWater, bottomName: Name.Water);
+            MapTileData deepWaterOnWaterRT = new MapTileData(name: Name.DeepWaterOnWaterRT, texture: AnimData.framesForPkgs[AnimData.PkgName.TileDeepWaterOnWaterRT].texture, edge: true, topName: Name.DeepWater, bottomName: Name.Water);
+            MapTileData deepWaterOnWaterLB = new MapTileData(name: Name.DeepWaterOnWaterLB, texture: AnimData.framesForPkgs[AnimData.PkgName.TileDeepWaterOnWaterLB].texture, edge: true, topName: Name.DeepWater, bottomName: Name.Water);
+            MapTileData deepWaterOnWaterRB = new MapTileData(name: Name.DeepWaterOnWaterRB, texture: AnimData.framesForPkgs[AnimData.PkgName.TileDeepWaterOnWaterRB].texture, edge: true, topName: Name.DeepWater, bottomName: Name.Water);
+            MapTileData deepWaterOnWaterT = new MapTileData(name: Name.DeepWaterOnWaterT, texture: AnimData.framesForPkgs[AnimData.PkgName.TileDeepWaterOnWaterT].texture, edge: true, topName: Name.DeepWater, bottomName: Name.Water);
+            MapTileData deepWaterOnWaterB = new MapTileData(name: Name.DeepWaterOnWaterB, texture: AnimData.framesForPkgs[AnimData.PkgName.TileDeepWaterOnWaterB].texture, edge: true, topName: Name.DeepWater, bottomName: Name.Water);
+            MapTileData deepWaterOnWaterR = new MapTileData(name: Name.DeepWaterOnWaterR, texture: AnimData.framesForPkgs[AnimData.PkgName.TileDeepWaterOnWaterR].texture, edge: true, topName: Name.DeepWater, bottomName: Name.Water);
+            MapTileData deepWaterOnWaterL = new MapTileData(name: Name.DeepWaterOnWaterL, texture: AnimData.framesForPkgs[AnimData.PkgName.TileDeepWaterOnWaterL].texture, edge: true, topName: Name.DeepWater, bottomName: Name.Water);
 
             CreateAllEdgeCombinations(solidBG: grass, solidFG: sand, leftTop: sandOnGrassLT, top: sandOnGrassT, rightTop: sandOnGrassRT, right: sandOnGrassR, rightBottom: sandOnGrassRB, bottom: sandOnGrassB, leftBottom: sandOnGrassLB, left: sandOnGrassL);
 
@@ -155,7 +155,7 @@ namespace SonOfRobin
             CreateAllEdgeCombinations(solidBG: water, solidFG: deepWater, leftTop: deepWaterOnWaterLT, top: deepWaterOnWaterT, rightTop: deepWaterOnWaterRT, right: deepWaterOnWaterR, rightBottom: deepWaterOnWaterRB, bottom: deepWaterOnWaterB, leftBottom: deepWaterOnWaterLB, left: deepWaterOnWaterL);
         }
 
-        private static void CreateAllEdgeCombinations(TileData solidBG, TileData solidFG, TileData leftTop, TileData top, TileData rightTop, TileData right, TileData rightBottom, TileData bottom, TileData leftBottom, TileData left)
+        private static void CreateAllEdgeCombinations(MapTileData solidBG, MapTileData solidFG, MapTileData leftTop, MapTileData top, MapTileData rightTop, MapTileData right, MapTileData rightBottom, MapTileData bottom, MapTileData leftBottom, MapTileData left)
         {
             // solid
 
@@ -216,28 +216,35 @@ namespace SonOfRobin
             left.AddAllowedNeighbour(direction: Direction.Down, nameList: new List<Name> { left.name, leftBottom.name });
         }
 
-        public static void SetAdjacency(AdjacentModel model, List<Name> nameWhiteList = null, List<Name> nameBlackList = null)
+
+        public static Dictionary<Name, DeBroglie.Tile> CreateDeBroglieTiles(List<Name> nameWhiteList = null, List<Name> nameBlackList = null)
         {
             var namesToUse = GetNamesToUse(nameWhiteList: nameWhiteList, nameBlackList: nameBlackList);
 
             var tileByName = new Dictionary<Name, DeBroglie.Tile>();
 
-            foreach (TileData mapTile in tileDict.Values)
+            foreach (MapTileData mapTile in tileDict.Values)
             {
                 if (!mapTile.edge && !namesToUse.Contains(mapTile.name)) continue;
                 if (mapTile.edge && !namesToUse.Contains(mapTile.topName)) continue;
                 if (mapTile.edge && !namesToUse.Contains(mapTile.bottomName)) continue;
 
                 var tile = new DeBroglie.Tile(mapTile.name);
-                model.SetFrequency(tile, mapTile.frequency);
                 tileByName[mapTile.name] = tile;
             }
 
+            return tileByName;
+        }
+
+        public static void SetAdjacency(AdjacentModel model, Dictionary<Name, DeBroglie.Tile> tileByName)
+        {
             foreach (var kvp in tileByName)
             {
                 Name name = kvp.Key;
                 DeBroglie.Tile tile = tileByName[name];
-                TileData mapTile = tileDict[name];
+                MapTileData mapTile = tileDict[name];
+
+                model.SetFrequency(tile, mapTile.frequency);
 
                 foreach (NeighbourData neighbourData in mapTile.allowedNeighbours)
                 {
