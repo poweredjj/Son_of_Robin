@@ -75,8 +75,7 @@ namespace SonOfRobin
                 for (int y = 0; y < this.map.height; y++)
                 {
                     Texture2D texture = this.map.GetTileTexture(x, y);
-
-                    if (texture == null) continue;
+                    if (texture == null || texture == SonOfRobinGame.whiteRectangle) continue;
 
                     destRect.X = (int)(x * scale) + offsetX;
                     destRect.Y = (int)(y * scale) + offsetY;
