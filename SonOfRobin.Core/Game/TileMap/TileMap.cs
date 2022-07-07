@@ -64,9 +64,8 @@ namespace SonOfRobin
             TilePropagatorOptions tilePropagatorOptions = new TilePropagatorOptions
             {
                 RandomDouble = random.NextDouble,
-                BackTrackDepth = 250
+                BackTrackDepth = 400,
             };
-
 
             tilePropagatorOptions.Constraints = this.GetConstrains();
 
@@ -74,7 +73,7 @@ namespace SonOfRobin
             this.propagator = new TilePropagator(tileModel: model, topology: topology, options: tilePropagatorOptions);
             this.propagatorOutput = null;
 
-            //this.propagator.Select(x: this.width / 2, y: this.height / 2, z: 0, tile: this.tileByName[MapTileData.Name.Grass]);
+            this.propagator.Select(x: this.width / 2, y: this.height / 2, z: 0, tile: this.tileByName[MapTileData.Name.Grass]);
 
             this.ShowProgressBar();
         }
@@ -121,10 +120,11 @@ namespace SonOfRobin
             switch (this.mapType)
             {
                 case MapType.DefaultOverworld:
-                    //constrainsList.Add(new BorderConstraint
-                    //{
-                    //    Tiles = new Tile[] { this.tileByName[MapTileData.Name.DeepWater] }
-                    //});
+                    constrainsList.Add(new BorderConstraint
+                    {
+                        Tiles = new Tile[] { this.tileByName[MapTileData.Name.DeepWater] },
+                        Sides = BorderSides.XMin
+                    });
                     break;
 
                 case MapType.Test1:
