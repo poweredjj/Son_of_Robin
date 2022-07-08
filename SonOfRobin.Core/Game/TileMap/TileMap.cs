@@ -65,23 +65,12 @@ namespace SonOfRobin
             TilePropagatorOptions tilePropagatorOptions = new TilePropagatorOptions
             {
                 RandomDouble = random.NextDouble,
-                BackTrackDepth = 1000,
+                BackTrackDepth = -1,
                 Constraints = this.GetConstrains(),
             };
 
             this.propagator = new TilePropagator(tileModel: model, topology: topology, options: tilePropagatorOptions);
             this.propagatorOutput = null;
-
-            var xList = new List<int> { this.width / 4, (this.width / 4) + (this.width / 2) };
-            var yList = new List<int> { this.height / 4, (this.height / 4) + (this.height / 2) };
-
-            foreach (int x in xList)
-            {
-                foreach (int y in yList)
-                {
-                    // this.propagator.Select(x: x, y: y, z: 0, tile: this.tileByName[MapTileData.Name.Dirt]);
-                }
-            }
 
             this.ShowProgressBar();
 
@@ -127,37 +116,31 @@ namespace SonOfRobin
         {
             var constrainsList = new List<ITileConstraint> { };
 
+
             switch (this.mapType)
             {
                 case MapType.DefaultOverworld:
 
-                    constrainsList.Add(new BorderConstraint
+                    var waterTilesList = this.GetTilesContaining(name: MapTileData.Name.DeepWater, bottomName: MapTileData.Name.DeepWater, topName: MapTileData.Name.DeepWater);
+                    waterTilesList.AddRange(this.GetTilesContaining(name: MapTileData.Name.Water, bottomName: MapTileData.Name.Water, topName: MapTileData.Name.Water));
+                    var waterTilesSet = new HashSet<Tile>();
+                    foreach (Tile tile in waterTilesList)
                     {
-                        Tiles = new Tile[] { this.tileByName[MapTileData.Name.DeepWater] },
-                        Sides = BorderSides.XMin,
-                    });
-
-                    var deepWaterTilesList = this.GetTilesContaining(name: MapTileData.Name.DeepWater, bottomName: MapTileData.Name.DeepWater, topName: MapTileData.Name.DeepWater);
-                    var deepWaterTilesSet = new HashSet<Tile>();
-                    foreach (Tile tile in deepWaterTilesList)
-                    {
-                        deepWaterTilesSet.Add(tile);
+                        waterTilesSet.Add(tile);
                     }
-
-
 
                     //constrainsList.Add(new CountConstraint
                     //{
-                    //    Count = (int)(this.allElementsCount * 0.03f),
+                    //    Count = (int)(this.allElementsCount * 0.05f),
                     //    Comparison = CountComparison.AtLeast,
-                    //    Tiles = tilesContainingSet,
+                    //    Tiles = waterTilesSet,
                     //});
 
                     //constrainsList.Add(new CountConstraint
                     //{
-                    //    Count = (int)(this.allElementsCount * 0.25f),
+                    //    Count = (int)(this.allElementsCount * 0.2f),
                     //    Comparison = CountComparison.AtMost,
-                    //    Tiles = tilesContainingSet,
+                    //    Tiles = waterTilesSet,
                     //});
 
                     //constrainsList.Add(new MaxConsecutiveConstraint
@@ -166,19 +149,50 @@ namespace SonOfRobin
                     //    MaxCount = 10,
                     //});
 
-                    var xList = new List<int> { this.width / 4, (this.width / 4) + (this.width / 2) };
-                    var yList = new List<int> { this.height / 4, (this.height / 4) + (this.height / 2) };
-                    foreach (int x in xList)
-                    {
-                        foreach (int y in yList)
-                        {
-                            constrainsList.Add(new FixedTileConstraint
-                            {
-                                Tiles = new Tile[] { this.tileByName[MapTileData.Name.Dirt] },
-                                Point = new DeBroglie.Point(x, y)
-                            });
-                        }
-                    }
+                    //{
+                    //    var xList = new List<int> { this.width / 4, (this.width / 4) + (this.width / 2) };
+                    //    var yList = new List<int> { this.height / 4, (this.height / 4) + (this.height / 2) };
+                    //    foreach (int x in xList)
+                    //    {
+                    //        foreach (int y in yList)
+                    //        {
+                    //            constrainsList.Add(new FixedTileConstraint
+                    //            {
+                    //                Tiles = new Tile[] { this.tileByName[MapTileData.Name.Sand] },
+                    //                Point = new DeBroglie.Point(x, y)
+                    //            });
+                    //        }
+                    //    }
+                    //}
+
+                    //{
+                    //    var xList = new List<int> { 0, 1, this.width - 2, this.width - 1 };
+                    //    var yList = new List<int> { 0, 1, this.height - 2, this.height - 1 };
+                    //    foreach (int x in xList)
+                    //    {
+                    //        foreach (int y in yList)
+                    //        {
+                    //            constrainsList.Add(new FixedTileConstraint
+                    //            {
+                    //                Tiles = new Tile[] { this.tileByName[MapTileData.Name.DeepWater] },
+                    //                Point = new DeBroglie.Point(x, y)
+                    //            });
+                    //        }
+                    //    }
+                    //}
+
+                    //constrainsList.Add(new FixedTileConstraint
+                    //{
+                    //    Tiles = new Tile[] { this.tileByName[MapTileData.Name.Dirt] },
+                    //    Point = new DeBroglie.Point(this.width / 2, this.height / 2)
+                    //});
+
+                    //constrainsList.Add(new BorderConstraint
+                    //{
+                    //    Tiles = new Tile[] { this.tileByName[MapTileData.Name.Water] },
+                    //    Sides = BorderSides.All,
+                    //});
+
 
                     break;
 
