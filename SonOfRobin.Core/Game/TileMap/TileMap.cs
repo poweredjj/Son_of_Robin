@@ -79,7 +79,7 @@ namespace SonOfRobin
             {
                 foreach (int y in yList)
                 {
-                    this.propagator.Select(x: x, y: y, z: 0, tile: this.tileByName[MapTileData.Name.Dirt]);
+                    // this.propagator.Select(x: x, y: y, z: 0, tile: this.tileByName[MapTileData.Name.Dirt]);
                 }
             }
 
@@ -130,19 +130,21 @@ namespace SonOfRobin
             switch (this.mapType)
             {
                 case MapType.DefaultOverworld:
+
                     constrainsList.Add(new BorderConstraint
                     {
                         Tiles = new Tile[] { this.tileByName[MapTileData.Name.DeepWater] },
                         Sides = BorderSides.XMin,
                     });
 
-
-                    var tilesContainingList = this.GetTilesContaining(name: MapTileData.Name.DeepWater, bottomName: MapTileData.Name.DeepWater, topName: MapTileData.Name.DeepWater);
-                    var tilesContainingSet = new HashSet<Tile>();
-                    foreach (Tile tile in tilesContainingList)
+                    var deepWaterTilesList = this.GetTilesContaining(name: MapTileData.Name.DeepWater, bottomName: MapTileData.Name.DeepWater, topName: MapTileData.Name.DeepWater);
+                    var deepWaterTilesSet = new HashSet<Tile>();
+                    foreach (Tile tile in deepWaterTilesList)
                     {
-                        tilesContainingSet.Add(tile);
+                        deepWaterTilesSet.Add(tile);
                     }
+
+
 
                     //constrainsList.Add(new CountConstraint
                     //{
@@ -157,6 +159,26 @@ namespace SonOfRobin
                     //    Comparison = CountComparison.AtMost,
                     //    Tiles = tilesContainingSet,
                     //});
+
+                    //constrainsList.Add(new MaxConsecutiveConstraint
+                    //{
+                    //    Tiles = deepWaterTilesSet,
+                    //    MaxCount = 10,
+                    //});
+
+                    var xList = new List<int> { this.width / 4, (this.width / 4) + (this.width / 2) };
+                    var yList = new List<int> { this.height / 4, (this.height / 4) + (this.height / 2) };
+                    foreach (int x in xList)
+                    {
+                        foreach (int y in yList)
+                        {
+                            constrainsList.Add(new FixedTileConstraint
+                            {
+                                Tiles = new Tile[] { this.tileByName[MapTileData.Name.Dirt] },
+                                Point = new DeBroglie.Point(x, y)
+                            });
+                        }
+                    }
 
                     break;
 

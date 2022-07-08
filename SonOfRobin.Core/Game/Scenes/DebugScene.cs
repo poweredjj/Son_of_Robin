@@ -350,7 +350,7 @@ namespace SonOfRobin
             {
                 RemoveAllScenesOfType(typeof(TileMapProcessScene));
 
-                int width = 53; // 53
+                int width = 55; // 55
                 int height = 20; // 20
                 int seed = -1;
 
