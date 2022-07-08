@@ -67,7 +67,9 @@ namespace SonOfRobin
                 RandomDouble = random.NextDouble,
                 BackTrackDepth = -1,
                 Constraints = this.GetConstrains(),
+                //  Weights = new Dictionary<IDictionary<Tile, PriorityAndWeight>>(),
             };
+
 
             this.propagator = new TilePropagator(tileModel: model, topology: topology, options: tilePropagatorOptions);
             this.propagatorOutput = null;
@@ -136,12 +138,12 @@ namespace SonOfRobin
                     //    Tiles = waterTilesSet,
                     //});
 
-                    //constrainsList.Add(new CountConstraint
-                    //{
-                    //    Count = (int)(this.allElementsCount * 0.2f),
-                    //    Comparison = CountComparison.AtMost,
-                    //    Tiles = waterTilesSet,
-                    //});
+                    constrainsList.Add(new CountConstraint
+                    {
+                        Count = (int)(this.allElementsCount * 0.2f),
+                        Comparison = CountComparison.AtMost,
+                        Tiles = waterTilesSet,
+                    });
 
                     //constrainsList.Add(new MaxConsecutiveConstraint
                     //{
@@ -165,21 +167,6 @@ namespace SonOfRobin
                     //    }
                     //}
 
-                    //{
-                    //    var xList = new List<int> { 0, 1, this.width - 2, this.width - 1 };
-                    //    var yList = new List<int> { 0, 1, this.height - 2, this.height - 1 };
-                    //    foreach (int x in xList)
-                    //    {
-                    //        foreach (int y in yList)
-                    //        {
-                    //            constrainsList.Add(new FixedTileConstraint
-                    //            {
-                    //                Tiles = new Tile[] { this.tileByName[MapTileData.Name.DeepWater] },
-                    //                Point = new DeBroglie.Point(x, y)
-                    //            });
-                    //        }
-                    //    }
-                    //}
 
                     //constrainsList.Add(new FixedTileConstraint
                     //{
@@ -187,11 +174,11 @@ namespace SonOfRobin
                     //    Point = new DeBroglie.Point(this.width / 2, this.height / 2)
                     //});
 
-                    //constrainsList.Add(new BorderConstraint
-                    //{
-                    //    Tiles = new Tile[] { this.tileByName[MapTileData.Name.Water] },
-                    //    Sides = BorderSides.All,
-                    //});
+                    constrainsList.Add(new BorderConstraint
+                    {
+                        Tiles = new Tile[] { this.tileByName[MapTileData.Name.Water] },
+                        Sides = BorderSides.XMin,
+                    });
 
 
                     break;
