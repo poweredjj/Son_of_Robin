@@ -6,7 +6,6 @@ namespace SonOfRobin
 {
     public class TileMapProcessScene : Scene
     {
-
         private readonly int width;
         private readonly int height;
         private readonly int seed;

@@ -73,6 +73,7 @@ namespace SonOfRobin
             this.propagatorOutput = null;
 
             this.propagator.Select(x: this.width / 2, y: this.height / 2, z: 0, tile: this.tileByName[MapTileData.Name.Sand]);
+            this.propagator.Clear();
 
             this.ShowProgressBar();
 
@@ -138,14 +139,14 @@ namespace SonOfRobin
 
                     constrainsList.Add(new CountConstraint
                     {
-                        Count = (int)(this.width * this.height * 0.03f),
+                        Count = (int)(this.allElementsCount * 0.03f),
                         Comparison = CountComparison.AtLeast,
                         Tiles = tilesContainingSet,
                     });
 
                     constrainsList.Add(new CountConstraint
                     {
-                        Count = (int)(this.width * this.height * 0.25f),
+                        Count = (int)(this.allElementsCount * 0.25f),
                         Comparison = CountComparison.AtMost,
                         Tiles = tilesContainingSet,
                     });
@@ -248,8 +249,8 @@ namespace SonOfRobin
         {
             if (!this.showProgressBar) return;
 
-            // int completeAmount = this.allElementsCount - this.elementsToCollapse.Count; // TODO find how to calculate this
-            int completeAmount = 1;
+            int completeAmount = (int)(this.propagator.GetProgress() * (double)this.allElementsCount);
+
 
             TimeSpan timeLeft = CalculateTimeLeft(startTime: this.creationTime, completeAmount: completeAmount, totalAmount: this.allElementsCount);
             string timeLeftString = TimeSpanToString(timeLeft + TimeSpan.FromSeconds(1));
