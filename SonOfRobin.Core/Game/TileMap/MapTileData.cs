@@ -36,7 +36,11 @@ namespace SonOfRobin
         public static readonly List<Name> allNames = Enum.GetValues(typeof(Name)).Cast<Name>().Where(n => n != Name.Empty).ToList().ToList();
         public static readonly List<Direction> allDirections = Enum.GetValues(typeof(Direction)).Cast<Direction>().ToList();
 
+        public static readonly Dictionary<Name, List<MapTileData>> edgesByTopName = new Dictionary<Name, List<MapTileData>>();
+        public static readonly Dictionary<Name, List<MapTileData>> edgesByBottomName = new Dictionary<Name, List<MapTileData>>();
+
         public static readonly Dictionary<Direction, Vector2> vectorForDirection = new Dictionary<Direction, Vector2>
+
         {
             { Direction.Left, new Vector2(-1, 0) },
             { Direction.Right, new Vector2(1, 0) },
@@ -153,6 +157,25 @@ namespace SonOfRobin
             CreateAllEdgeCombinations(solidBG: grass, solidFG: dirt, leftTop: dirtOnGrassLT, top: dirtOnGrassT, rightTop: dirtOnGrassRT, right: dirtOnGrassR, rightBottom: dirtOnGrassRB, bottom: dirtOnGrassB, leftBottom: dirtOnGrassLB, left: dirtOnGrassL);
 
             CreateAllEdgeCombinations(solidBG: water, solidFG: deepWater, leftTop: deepWaterOnWaterLT, top: deepWaterOnWaterT, rightTop: deepWaterOnWaterRT, right: deepWaterOnWaterR, rightBottom: deepWaterOnWaterRB, bottom: deepWaterOnWaterB, leftBottom: deepWaterOnWaterLB, left: deepWaterOnWaterL);
+
+
+            foreach (MapTileData tile in tileDict.Values)
+            {
+                if (tile.edge || tile.name == Name.Empty) continue;
+                edgesByTopName[tile.name] = new List<MapTileData>();
+                edgesByBottomName[tile.name] = new List<MapTileData>();
+            }
+
+            foreach (Name name in allNames)
+            {
+                foreach (MapTileData tile in tileDict.Values)
+                {
+                    if (!tile.edge || tile.name == Name.Empty) continue;
+
+                    if (tile.topName == name) edgesByTopName[name].Add(tile);
+                    if (tile.bottomName == name) edgesByBottomName[name].Add(tile);
+                }
+            }
         }
 
         private static void CreateAllEdgeCombinations(MapTileData solidBG, MapTileData solidFG, MapTileData leftTop, MapTileData top, MapTileData rightTop, MapTileData right, MapTileData rightBottom, MapTileData bottom, MapTileData leftBottom, MapTileData left)

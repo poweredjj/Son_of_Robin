@@ -361,8 +361,8 @@ namespace SonOfRobin
             {
                 RemoveAllScenesOfType(typeof(TileMapProcessScene));
 
-                int width = 400;
-                int height = 200;
+                int width = 350;
+                int height = 120;
                 int seed = -1;
 
                 TileMapProcessScene tileMapProcessScene = new TileMapProcessScene(mapType: TileMap.MapType.DefaultOverworld, width: width, height: height, seed: seed, showVis: true, showProgressBar: false, elementsPerFrame: 50);

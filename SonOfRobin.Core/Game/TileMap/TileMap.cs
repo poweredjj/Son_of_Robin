@@ -72,8 +72,16 @@ namespace SonOfRobin
             this.propagator = new TilePropagator(tileModel: model, topology: topology, options: tilePropagatorOptions);
             this.propagatorOutput = null;
 
-            this.propagator.Select(x: this.width / 2, y: this.height / 2, z: 0, tile: this.tileByName[MapTileData.Name.Sand]);
-            this.propagator.Clear();
+            var xList = new List<int> { this.width / 4, (this.width / 4) + (this.width / 2) };
+            var yList = new List<int> { this.height / 4, (this.height / 4) + (this.height / 2) };
+
+            foreach (int x in xList)
+            {
+                foreach (int y in yList)
+                {
+                    this.propagator.Select(x: x, y: y, z: 0, tile: this.tileByName[MapTileData.Name.Dirt]);
+                }
+            }
 
             this.ShowProgressBar();
 
@@ -125,10 +133,9 @@ namespace SonOfRobin
                     constrainsList.Add(new BorderConstraint
                     {
                         Tiles = new Tile[] { this.tileByName[MapTileData.Name.DeepWater] },
-                        Sides = BorderSides.XMin
+                        Sides = BorderSides.XMin,
                     });
 
-                    // TODO finish writing constrains
 
                     var tilesContainingList = this.GetTilesContaining(name: MapTileData.Name.DeepWater, bottomName: MapTileData.Name.DeepWater, topName: MapTileData.Name.DeepWater);
                     var tilesContainingSet = new HashSet<Tile>();
@@ -137,19 +144,19 @@ namespace SonOfRobin
                         tilesContainingSet.Add(tile);
                     }
 
-                    constrainsList.Add(new CountConstraint
-                    {
-                        Count = (int)(this.allElementsCount * 0.03f),
-                        Comparison = CountComparison.AtLeast,
-                        Tiles = tilesContainingSet,
-                    });
+                    //constrainsList.Add(new CountConstraint
+                    //{
+                    //    Count = (int)(this.allElementsCount * 0.03f),
+                    //    Comparison = CountComparison.AtLeast,
+                    //    Tiles = tilesContainingSet,
+                    //});
 
-                    constrainsList.Add(new CountConstraint
-                    {
-                        Count = (int)(this.allElementsCount * 0.25f),
-                        Comparison = CountComparison.AtMost,
-                        Tiles = tilesContainingSet,
-                    });
+                    //constrainsList.Add(new CountConstraint
+                    //{
+                    //    Count = (int)(this.allElementsCount * 0.25f),
+                    //    Comparison = CountComparison.AtMost,
+                    //    Tiles = tilesContainingSet,
+                    //});
 
                     break;
 
