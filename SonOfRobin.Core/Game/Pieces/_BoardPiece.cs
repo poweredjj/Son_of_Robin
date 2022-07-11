@@ -65,6 +65,7 @@ namespace SonOfRobin
         public float hitPoints;
         public int strength;
         public int showStatBarsTillFrame;
+        private readonly StatBarManager statBarManager;
         public float maxHitPoints;
         public readonly bool indestructible;
         public readonly byte stackSize;
@@ -212,6 +213,7 @@ namespace SonOfRobin
             this.maxHitPoints = maxHitPoints;
             this.hitPoints = maxHitPoints;
             this.showStatBarsTillFrame = 0;
+            this.statBarManager = new StatBarManager(boardPiece: this);
             this.speed = speed;
             this.strength = strength;
             this.maxMassBySize = maxMassBySize;
