@@ -15,7 +15,7 @@ namespace SonOfRobin
 
     public class SonOfRobinGame : Game
     {
-        public static readonly float version = 9.1f;
+        public static readonly float version = 9.2f;
         public static readonly DateTime lastChanged = new DateTime(2022, 07, 11);
 
         public static ContentManager content;
@@ -152,7 +152,6 @@ namespace SonOfRobin
             progressBar = new InfoWindow(bgColor: Color.SeaGreen, bgOpacity: 0.85f);
             PieceInfo.CreateAllInfo();
             Craft.PopulateAllCategories();
-            MapTileData.CreateAllTiles();
 
             Preferences.ControlTipsScheme = Preferences.ControlTipsScheme; // to load default control tips
 

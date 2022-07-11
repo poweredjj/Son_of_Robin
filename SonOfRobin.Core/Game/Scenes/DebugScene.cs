@@ -348,46 +348,22 @@ namespace SonOfRobin
 
             if (Keyboard.HasBeenPressed(Keys.F4))
             {
-                RemoveAllScenesOfType(typeof(TileMapProcessScene));
-
-                int width = 55; // 55
-                int height = 20; // 20
-                int seed = -1;
-
-                TileMapProcessScene tileMapProcessScene = new TileMapProcessScene(mapType: TileMap.MapType.DefaultOverworld, width: width, height: height, seed: seed, showVis: true, showProgressBar: false, elementsPerFrame: 50);
+                // not used
             }
 
             if (Keyboard.HasBeenPressed(Keys.F5))
             {
-                RemoveAllScenesOfType(typeof(TileMapProcessScene));
-
-                int width = 350;
-                int height = 120;
-                int seed = -1;
-
-                TileMapProcessScene tileMapProcessScene = new TileMapProcessScene(mapType: TileMap.MapType.DefaultOverworld, width: width, height: height, seed: seed, showVis: true, showProgressBar: false, elementsPerFrame: 50);
+                // not used
             }
 
             if (Keyboard.HasBeenPressed(Keys.F6))
             {
-                RemoveAllScenesOfType(typeof(CollapseMapProcessScene));
-
-                int width = 400;
-                int height = 200;
-                int seed = -1;
-
-                CollapseMapProcessScene mapContainer = new CollapseMapProcessScene(mapType: CollapseMapProcessScene.MapType.Test2, width: width, height: height, seed: seed, showVis: true, showProgressBar: false, elementsPerFrame: width * height / 80);
+                // not used
             }
 
             if (Keyboard.HasBeenPressed(Keys.F7))
             {
-                RemoveAllScenesOfType(typeof(CollapseMapProcessScene));
-
-                int width = 220;
-                int height = 100;
-                int seed = -1;
-
-                CollapseMapProcessScene mapContainer = new CollapseMapProcessScene(mapType: CollapseMapProcessScene.MapType.DefaultOverworld, width: width, height: height, seed: seed, showVis: true, showProgressBar: false, elementsPerFrame: width * height / 80);
+                // not used
             }
 
             if (Keyboard.HasBeenPressed(Keys.OemPlus))
