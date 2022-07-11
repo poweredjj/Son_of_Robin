@@ -98,17 +98,17 @@ namespace SonOfRobin
         {
             if (!Scene.currentlyProcessedScene.soundActive || !globalOn || this.isEmpty) return;
 
+            this.ignore3DThisPlay = ignore3DThisPlay;
+
             if (this.cooldown > 0 && !ignoreCooldown)
             {
-                int currentUpdate = this.boardPiece == null ? SonOfRobinGame.currentUpdate : this.boardPiece.world.currentUpdate;
+                int currentUpdate = this.boardPiece == null || this.Ignore3D ? SonOfRobinGame.currentUpdate : this.boardPiece.world.currentUpdate;
 
                 if (currentUpdate < this.lastFramePlayed + cooldown) return;
                 this.lastFramePlayed = currentUpdate;
             }
 
             if (this.IsLooped) this.targetVolume = 1f;
-
-            this.ignore3DThisPlay = ignore3DThisPlay;
 
             if (this.boardPiece != null && !this.Ignore3D && !this.isLooped && !this.IsInCameraRect) return;
 
