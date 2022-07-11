@@ -77,6 +77,7 @@ namespace SonOfRobin
             Anvil,
             HotPlate,
             CookingPot,
+            CombineWorkshop,
 
             Stick,
             Stone,
@@ -120,6 +121,7 @@ namespace SonOfRobin
             Exclamation,
             FlameRegular,
             CookingTrigger,
+            CombineTrigger,
             FireplaceTriggerOn,
             FireplaceTriggerOff,
 
@@ -825,6 +827,12 @@ namespace SonOfRobin
                         return new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Flame, destructionDelay: 0, allowedFields: allowedFields, minDistance: 0, maxDistance: 2, generation: generation, serialize: true, canBePickedUp: true, readableName: "cooking starter", description: "Starts cooking process.", activeState: BoardPiece.State.Empty);
                     }
 
+                case Name.CombineTrigger:
+                    {
+                        var allowedFields = new AllowedFields();
+                        return new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Combine, destructionDelay: 0, allowedFields: allowedFields, minDistance: 0, maxDistance: 2, generation: generation, serialize: true, canBePickedUp: true, readableName: "combine", description: "Combines inserted items.", activeState: BoardPiece.State.Empty);
+                    }
+
                 case Name.FireplaceTriggerOn:
                     {
                         var allowedFields = new AllowedFields();
@@ -1140,6 +1148,20 @@ namespace SonOfRobin
 
                         cookingPot.sprite.AssignNewName("off");
                         return cookingPot;
+                    }
+
+                case Name.CombineWorkshop:
+                    {
+                        var allowedFields = new AllowedFields(rangeDict: new Dictionary<TerrainName, AllowedRange>() {
+                            { TerrainName.Height, new AllowedRange(min: Terrain.waterLevelMax, max: Terrain.volcanoEdgeMin) }});
+
+                        var soundPack = new PieceSoundPack();
+                        soundPack.AddAction(action: PieceSoundPack.Action.Open, sound: new Sound(name: SoundData.Name.ToolsMove, ignore3DAlways: true));
+
+                        var combineWorkshop = new CombineWorkshop(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WorkshopCombine, allowedFields: allowedFields, category: BoardPiece.Category.Metal, floatsOnWater: false, minDistance: 0, maxDistance: 100, maxMassBySize: null, generation: generation, maxHitPoints: 30, readableName: "combine workshop", description: "For combining various items.", soundPack: soundPack);
+
+                        combineWorkshop.sprite.AssignNewName("off");
+                        return combineWorkshop;
                     }
 
                 case Name.Clam:

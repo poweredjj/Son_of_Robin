@@ -8,7 +8,7 @@ namespace SonOfRobin
 {
     public class PieceContextMenu : Scene
     {
-        protected enum ContextAction { Drop, DropAll, Move, Eat, Drink, Plant, Cook, Switch, Ignite, Extinguish }
+        protected enum ContextAction { Drop, DropAll, Move, Eat, Drink, Plant, Cook, Switch, Ignite, Extinguish, Combine }
 
         private static readonly SpriteFont font = SonOfRobinGame.fontTommy40;
         private static readonly float marginPercent = 0.03f;
@@ -18,7 +18,6 @@ namespace SonOfRobin
         private static readonly Sound soundOpen = new Sound(SoundData.Name.Invoke);
         private static readonly Sound soundNavigate = new Sound(SoundData.Name.Navigation);
         private static readonly Sound soundReturn = new Sound(SoundData.Name.Navigation);
-
 
         private readonly BoardPiece piece;
         private readonly PieceStorage storage;
@@ -118,12 +117,12 @@ namespace SonOfRobin
             }
         }
 
-        public PieceContextMenu(BoardPiece piece, PieceStorage storage, StorageSlot slot, float percentPosX, float percentPosY, bool addMove = false, bool addDrop = true, bool addCook = false, bool addIgnite = false, bool addExtinguish = false) : base(inputType: InputTypes.Normal, priority: 0, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.PieceContext)
+        public PieceContextMenu(BoardPiece piece, PieceStorage storage, StorageSlot slot, float percentPosX, float percentPosY, bool addMove = false, bool addDrop = true, bool addCook = false, bool addIgnite = false, bool addExtinguish = false, bool addCombine = false) : base(inputType: InputTypes.Normal, priority: 0, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.PieceContext)
         {
             this.piece = piece;
             this.storage = storage;
             this.slot = slot;
-            this.actionList = this.GetContextActionList(addMove: addMove, addDrop: addDrop, addCook: addCook, addIgnite: addIgnite, addExtinguish: addExtinguish);
+            this.actionList = this.GetContextActionList(addMove: addMove, addDrop: addDrop, addCook: addCook, addIgnite: addIgnite, addExtinguish: addExtinguish, addCombine: addCombine);
             this.percentPosX = percentPosX;
             this.percentPosY = percentPosY;
             this.activeEntry = 0;
@@ -135,7 +134,7 @@ namespace SonOfRobin
                 new Dictionary<string, float> { { "PosY", this.viewParams.PosY + SonOfRobinGame.VirtualHeight }, { "Opacity", 0f } });
         }
 
-        private List<ContextAction> GetContextActionList(bool addMove = false, bool addDrop = false, bool addCook = false, bool addIgnite = false, bool addExtinguish = false)
+        private List<ContextAction> GetContextActionList(bool addMove = false, bool addDrop = false, bool addCook = false, bool addIgnite = false, bool addExtinguish = false, bool addCombine = false)
         {
             var contextActionList = new List<ContextAction> { };
 
@@ -148,6 +147,7 @@ namespace SonOfRobin
             if (addCook) contextActionList.Add(ContextAction.Cook);
             if (addIgnite) contextActionList.Add(ContextAction.Ignite);
             if (addExtinguish) contextActionList.Add(ContextAction.Extinguish);
+            if (addCombine) contextActionList.Add(ContextAction.Combine);
             if (this.slot.PieceCount > 1) contextActionList.Add(ContextAction.DropAll);
 
             return contextActionList;
@@ -360,6 +360,14 @@ namespace SonOfRobin
                     {
                         Fireplace fireplace = (Fireplace)this.storage.storagePiece;
                         fireplace.IsOn = true;
+
+                        return;
+                    }
+
+                case ContextAction.Combine:
+                    {
+                        CombineWorkshop combineWorkshop = (CombineWorkshop)this.storage.storagePiece;
+                        combineWorkshop.Combine();
 
                         return;
                     }

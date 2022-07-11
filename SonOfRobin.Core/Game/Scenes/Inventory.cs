@@ -674,7 +674,7 @@ namespace SonOfRobin
             BoardPiece piece = this.storage.GetTopPiece(slot: slot);
             if (piece == null) return;
 
-            var lockedButWorking = new List<PieceTemplate.Name> { PieceTemplate.Name.CookingTrigger, PieceTemplate.Name.FireplaceTriggerOn, PieceTemplate.Name.FireplaceTriggerOff };
+            var lockedButWorking = new List<PieceTemplate.Name> { PieceTemplate.Name.CookingTrigger, PieceTemplate.Name.FireplaceTriggerOn, PieceTemplate.Name.FireplaceTriggerOff, PieceTemplate.Name.CombineTrigger };
             if (slot.locked && !lockedButWorking.Contains(piece.name)) return;
 
             Vector2 slotPos = this.GetSlotPos(slot: slot, margin: this.Margin, tileSize: this.TileSize);
@@ -687,8 +687,9 @@ namespace SonOfRobin
             bool addCook = piece.name == PieceTemplate.Name.CookingTrigger;
             bool addIgnite = piece.name == PieceTemplate.Name.FireplaceTriggerOn;
             bool addExtinguish = piece.name == PieceTemplate.Name.FireplaceTriggerOff;
+            bool addCombine = piece.name == PieceTemplate.Name.CombineTrigger;
 
-            new PieceContextMenu(piece: piece, storage: this.storage, slot: slot, percentPosX: percentPos.X, percentPosY: percentPos.Y, addMove: addMove, addDrop: addDrop, addCook: addCook, addIgnite: addIgnite, addExtinguish: addExtinguish);
+            new PieceContextMenu(piece: piece, storage: this.storage, slot: slot, percentPosX: percentPos.X, percentPosY: percentPos.Y, addMove: addMove, addDrop: addDrop, addCook: addCook, addIgnite: addIgnite, addExtinguish: addExtinguish, addCombine: addCombine);
             return;
         }
         private void MoveOtherInventoryToTop()

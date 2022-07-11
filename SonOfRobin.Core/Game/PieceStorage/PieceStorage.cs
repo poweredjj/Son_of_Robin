@@ -8,7 +8,7 @@ namespace SonOfRobin
 {
     public class PieceStorage
     {
-        public enum StorageType { Inventory, Cooking, Fireplace, Chest, Tools, Equip, Fruits }
+        public enum StorageType { Inventory, Cooking, Combine, Fireplace, Chest, Tools, Equip, Fruits }
 
         public readonly World world;
         public readonly StorageType storageType;
