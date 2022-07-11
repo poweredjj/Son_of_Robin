@@ -1,11 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SonOfRobin
 {
     public class CombineWorkshop : BoardPiece
     {
-
         public CombineWorkshop(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedFields allowedFields, Dictionary<byte, int> maxMassBySize, string readableName, string description, Category category,
             byte animSize = 0, string animName = "off", bool blocksMovement = true, ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = false, int generation = 0, Yield yield = null, int maxHitPoints = 1, bool fadeInAnim = false, PieceSoundPack soundPack = null) :
 
@@ -23,6 +23,23 @@ namespace SonOfRobin
 
         public void Combine()
         {
+
+            var piecesToCombine = this.pieceStorage.GetAllPieces();
+
+            if (!piecesToCombine.Any())
+            {
+                new TextWindow(text: "I need to place some items first.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
+                return;
+            }
+
+            if (piecesToCombine.Count == 1)
+            {
+                new TextWindow(text: "I need to place 2 items first.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
+                return;
+            }
+
+
+
 
             MessageLog.AddMessage(msgType: MsgType.User, message: $"Combining items...");
         }
