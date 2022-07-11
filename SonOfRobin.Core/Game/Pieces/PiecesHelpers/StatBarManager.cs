@@ -11,6 +11,7 @@ namespace SonOfRobin
         {
             private static readonly SpriteFont defaultFont = SonOfRobinGame.fontPixelMix5;
 
+            private readonly BoardPiece boardPiece;
             private readonly string label;
             private readonly string statName;
             private readonly SpriteFont font;
@@ -21,11 +22,13 @@ namespace SonOfRobin
             private readonly Color colorMax;
             private readonly bool centerX;
             private readonly bool ignoreIfAtMax;
+            private readonly int maxVal;
 
-            public StatBar(string statName, SpriteFont font, Color colorMin, Color colorMax, bool centerX = true, string label = "", int width = 50, int height = 6, Texture2D texture = null, bool ignoreIfAtMax = false)
+            public StatBar(BoardPiece boardPiece, string statName, SpriteFont font, Color colorMin, Color colorMax, int maxVal, bool centerX = true, string label = "", int width = 50, int height = 6, Texture2D texture = null, bool ignoreIfAtMax = false)
             {
                 if (label == "" && texture == null) throw new ArgumentException("Label and texture are both undefined.");
 
+                this.boardPiece = boardPiece;
                 this.label = label;
                 this.statName = statName;
                 this.font = font;
@@ -36,19 +39,24 @@ namespace SonOfRobin
                 this.colorMax = colorMax;
                 this.centerX = centerX;
                 this.ignoreIfAtMax = ignoreIfAtMax;
+                this.maxVal = maxVal;
             }
 
             public bool Draw(Vector2 position)
             {
+                int currentVal = (int)Helpers.GetProperty(targetObj: this.boardPiece, propertyName: this.statName);
+
+                if (this.ignoreIfAtMax && this.maxVal == currentVal) return false;
+
                 // TODO add draw code
 
-                return false;
+                return true;
             }
         }
 
         private readonly World world;
-        private readonly BoardPiece boardPiece; // boardPiece - its position will be used
-        private readonly Vector2 position; // static position to use
+        private readonly BoardPiece boardPiece;
+        private readonly Vector2 positionOverride; // static position to use
         private int showUntilFrame;
         private List<StatBar> statBarList;
         private readonly int margin;
@@ -62,12 +70,13 @@ namespace SonOfRobin
             this.margin = margin;
         }
 
-        public StatBarManager(Vector2 position, World world)
+        public StatBarManager(Vector2 position, World world, int margin = 4)
         {
             this.showUntilFrame = 0;
             this.statBarList = new List<StatBar>();
-            this.position = position;
+            this.positionOverride = position;
             this.world = world;
+            this.margin = margin;
         }
 
         public void AddStatBar(StatBar statBar)
@@ -80,12 +89,12 @@ namespace SonOfRobin
             if (this.world.currentUpdate < this.showUntilFrame) return;
 
             Vector2 offset = Vector2.Zero;
-            Vector2 baseDrawPos = this.boardPiece == null ? this.position : boardPiece.sprite.position;
+            Vector2 baseDrawPos = this.boardPiece == null ? this.positionOverride : boardPiece.sprite.position;
 
             foreach (StatBar statBar in this.statBarList)
             {
                 bool barDrawn = statBar.Draw(baseDrawPos + offset);
-                if (barDrawn) offset.Y += statBar.fullHeight;
+                if (barDrawn) offset.Y += statBar.fullHeight + this.margin;
             }
         }
 
