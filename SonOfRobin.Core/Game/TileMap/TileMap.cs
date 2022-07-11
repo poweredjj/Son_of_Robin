@@ -67,7 +67,7 @@ namespace SonOfRobin
                 RandomDouble = random.NextDouble,
                 BackTrackDepth = -1,
                 Constraints = this.GetConstrains(),
-                // Weights = new Dictionary<IDictionary<Tile, PriorityAndWeight>>(), // TODO check how to assign weights
+                //  Weights = new Dictionary<IDictionary<Tile, PriorityAndWeight>>(),
             };
 
 
