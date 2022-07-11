@@ -48,6 +48,38 @@ namespace SonOfRobin
 
                 if (this.ignoreIfAtMax && this.maxVal == currentVal) return false;
 
+                if (this.centerX) position.X -= this.width / 2;
+
+                if (this.texture != null)
+                {
+                    // texture
+
+                    int rectWidth = this.width * 3;
+                    int margin = (int)(this.height * 1.2);
+
+                    Rectangle destRect = new Rectangle(x: (int)(position.X - rectWidth - margin), y: (int)position.Y, width: rectWidth, height: this.height);
+                    destRect.Inflate(0, 2);
+
+                    Helpers.DrawTextureInsideRect(texture: this.texture, rectangle: destRect, color: Color.White, alignX: Helpers.AlignX.Right, drawTestRect: false);
+                }
+                else
+                {
+                    // label
+                    Vector2 labelSize = font.MeasureString(this.label);
+                    Vector2 labelPos = new Vector2(position.X - (labelSize.X + 4), position.Y + (this.height / 2f) - (labelSize.Y / 2f));
+
+                    for (int x = -1; x < 2; x++)
+                    {
+                        for (int y = -1; y < 2; y++)
+                        {
+                            if (x == 0 && y == 0) continue;
+                            SonOfRobinGame.spriteBatch.DrawString(font, this.label, labelPos + new Vector2(x, y), Color.Black);
+                        }
+                    }
+
+                    SonOfRobinGame.spriteBatch.DrawString(font, this.label, labelPos, Color.White);
+                }
+
                 float lengthPercentage = 0;
                 try
                 { lengthPercentage = (float)currentVal / (float)this.maxVal; }
@@ -65,21 +97,8 @@ namespace SonOfRobin
 
                 int valueWidth = (int)(this.width * lengthPercentage);
 
-                if (this.centerX) position.X -= this.width / 2;
-
-                if (this.texture != null)
-                {
-                    // texture
-
-
-                }
-                else
-                {
-                    // label
-                    Vector2 labelSize = font.MeasureString(this.label);
-                    Vector2 labelPos = new Vector2(position.X - (labelSize.X + 4), position.Y + (this.height / 2f) - (labelSize.Y / 2f));
-                }
-
+                SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, new Rectangle((int)position.X - 1, (int)position.Y - 1, this.width + 2, this.height + 2), Color.Black);
+                SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, new Rectangle((int)position.X, (int)position.Y, valueWidth, this.height), color);
 
                 return true;
             }
