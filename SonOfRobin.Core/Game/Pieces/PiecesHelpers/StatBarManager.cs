@@ -12,7 +12,8 @@ namespace SonOfRobin
             private static readonly SpriteFont defaultFont = SonOfRobinGame.fontPixelMix5;
 
             private readonly BoardPiece boardPiece;
-            private readonly string statName;
+            private readonly string curStatName;
+            private readonly string maxStatName;
             private readonly string label;
             private readonly SpriteFont font;
             private readonly Texture2D texture;
@@ -24,13 +25,32 @@ namespace SonOfRobin
             private readonly bool ignoreIfAtMax;
             private readonly int maxVal;
 
-            public StatBar(BoardPiece boardPiece, string statName, Color colorMin, Color colorMax, int maxVal, bool centerX = true, string label = "", int width = 50, int height = 6, Texture2D texture = null, bool ignoreIfAtMax = false, SpriteFont font = null)
+            public int CurrentValue
+            {
+                get
+                {
+                    object valObj = Helpers.GetProperty(targetObj: this.boardPiece, propertyName: this.curStatName);
+                    return ConvertValObj(valObj);
+                }
+            }
+
+            public int MaxValue
+            {
+                get
+                {
+                    return this.maxVal == -1 ? ConvertValObj(Helpers.GetProperty(targetObj: this.boardPiece, propertyName: this.maxStatName)) : this.maxVal;
+                }
+            }
+
+            public StatBar(BoardPiece boardPiece, string curStatName, Color colorMin, Color colorMax, bool centerX = true, string label = "", int width = 50, int height = 6, Texture2D texture = null, bool ignoreIfAtMax = false, SpriteFont font = null, string maxStatName = "", int maxVal = -1)
             {
                 if (label == "" && texture == null) throw new ArgumentException("Label and texture are both undefined.");
+                if (maxStatName == "" && maxVal == -1) throw new ArgumentException("MaxStatName and maxVal are both undefined.");
 
                 this.boardPiece = boardPiece;
                 this.label = label;
-                this.statName = statName;
+                this.curStatName = curStatName;
+                this.maxStatName = maxStatName;
                 this.font = font ?? defaultFont;
                 this.texture = texture;
                 this.width = width;
@@ -42,11 +62,22 @@ namespace SonOfRobin
                 this.maxVal = maxVal;
             }
 
+            private static int ConvertValObj(object valObj)
+            {
+                if (valObj.GetType() == typeof(int)) return (int)valObj;
+                else
+                {
+                    float floatVal = (float)valObj;
+                    return (int)floatVal;
+                }
+            }
+
             public bool Draw(Vector2 position)
             {
-                int currentVal = (int)Helpers.GetProperty(targetObj: this.boardPiece, propertyName: this.statName);
+                int currentValue = CurrentValue;
+                int maxValue = this.MaxValue;
 
-                if (this.ignoreIfAtMax && this.maxVal == currentVal) return false;
+                if (this.ignoreIfAtMax && currentValue == maxValue) return false;
 
                 if (this.centerX) position.X -= this.width / 2;
 
@@ -82,7 +113,7 @@ namespace SonOfRobin
 
                 float lengthPercentage = 0;
                 try
-                { lengthPercentage = (float)currentVal / (float)this.maxVal; }
+                { lengthPercentage = (float)currentValue / (float)maxValue; }
                 catch (DivideByZeroException)
                 { }
 
@@ -108,25 +139,38 @@ namespace SonOfRobin
         private readonly BoardPiece boardPiece;
         private readonly Vector2 positionOverride; // static position to use
         private int showUntilFrame;
-        private List<StatBar> statBarList;
+        private readonly List<StatBar> statBarList;
         private readonly int margin;
+        private readonly int offsetY;
 
-        public StatBarManager(BoardPiece boardPiece, int margin = 4)
+        public StatBarManager(BoardPiece boardPiece, int margin = 4, int offsetY = 4)
         {
             this.showUntilFrame = 0;
             this.statBarList = new List<StatBar>();
             this.boardPiece = boardPiece;
             this.world = boardPiece.world;
             this.margin = margin;
+            this.offsetY = offsetY;
         }
 
-        public StatBarManager(BoardPiece boardPiece, Vector2 positionOverride, int margin = 4)
+        public StatBarManager(BoardPiece boardPiece, Vector2 positionOverride, int margin = 4, int offsetY = 0)
         {
             this.showUntilFrame = 0;
             this.statBarList = new List<StatBar>();
             this.world = boardPiece.world;
             this.margin = margin;
+            this.offsetY = offsetY;
             this.positionOverride = positionOverride;
+        }
+
+        public void Serialize(Dictionary<string, Object> pieceData)
+        {
+            pieceData["statBarManager_showUntilFrame"] = this.showUntilFrame;
+        }
+
+        public void Deserialize(Dictionary<string, Object> pieceData)
+        {
+            this.showUntilFrame = (int)pieceData["statBarManager_showUntilFrame"];
         }
 
         public void AddStatBar(StatBar statBar)
@@ -134,11 +178,21 @@ namespace SonOfRobin
             this.statBarList.Add(statBar);
         }
 
+        public void EnableDraw(int duration)
+        {
+            this.showUntilFrame = this.world.currentUpdate + duration;
+        }
+
+        public void EnableDrawForever()
+        {
+            this.showUntilFrame = 2147483647;
+        }
+
         public void Draw()
         {
             if (this.world.currentUpdate < this.showUntilFrame) return;
 
-            Vector2 offset = Vector2.Zero;
+            Vector2 offset = new Vector2(0, this.offsetY);
             Vector2 baseDrawPos = this.boardPiece == null ? this.positionOverride : new Vector2(this.boardPiece.sprite.gfxRect.Center.X, this.boardPiece.sprite.gfxRect.Bottom);
 
             foreach (StatBar statBar in this.statBarList)
