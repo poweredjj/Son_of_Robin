@@ -65,7 +65,6 @@ namespace SonOfRobin
         public float hitPoints;
         public int strength;
         public int showStatBarsTillFrame;
-        public readonly StatBarManager statBarManager;
         public float maxHitPoints;
         public readonly bool indestructible;
         public readonly byte stackSize;
@@ -213,10 +212,6 @@ namespace SonOfRobin
             this.maxHitPoints = maxHitPoints;
             this.hitPoints = maxHitPoints;
             this.showStatBarsTillFrame = 0;
-            this.statBarManager = new StatBarManager(boardPiece: this);
-
-            this.statBarManager.AddStatBar(new StatBarManager.StatBar(boardPiece: this, curStatName: "hitPoints", maxStatName: "maxHitPoints", colorMin: new Color(255, 0, 0), colorMax: new Color(0, 255, 0), ignoreIfAtMax: true, texture: AnimData.framesForPkgs[AnimData.PkgName.Heart].texture));
-
             this.speed = speed;
             this.strength = strength;
             this.maxMassBySize = maxMassBySize;
@@ -311,8 +306,6 @@ namespace SonOfRobin
             };
 
             if (this.pieceStorage != null) pieceData["base_pieceStorage"] = this.pieceStorage.Serialize();
-            this.statBarManager.Serialize(pieceData);
-
             this.sprite.Serialize(pieceData);
 
             return pieceData;
@@ -340,7 +333,6 @@ namespace SonOfRobin
             this.soundPack.Deserialize(pieceData["base_soundPack"]);
             this.canBeHit = (bool)pieceData["base_canBeHit"];
 
-            this.statBarManager.Deserialize(pieceData);
             this.sprite.Deserialize(pieceData);
 
             if (!(bool)pieceData["base_alive"]) this.Kill();

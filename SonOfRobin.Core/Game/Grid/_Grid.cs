@@ -545,10 +545,7 @@ namespace SonOfRobin
             var visibleSprites = camera.GetVisibleSprites(groupName: Cell.Group.Visible, compareWithCameraRect: true);
 
             foreach (Sprite sprite in visibleSprites.OrderBy(o => o.frame.layer).ThenBy(o => o.gfxRect.Bottom))
-            {
-                sprite.Draw();
-                sprite.boardPiece.statBarManager.Draw();
-            }
+            { sprite.Draw(); }
 
             StatBar.DrawAll();
 
