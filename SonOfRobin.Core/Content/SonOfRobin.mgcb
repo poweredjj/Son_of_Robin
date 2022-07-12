@@ -158,18 +158,6 @@
 /processorParam:TextureFormat=Color
 /build:gfx/arrow_iron.png
 
-#begin gfx/arrow_poison.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/arrow_poison.png
-
 #begin gfx/arrow_stone.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -2797,18 +2785,6 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:gfx/spear_iron.png
-
-#begin gfx/spear_poison.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/spear_poison.png
 
 #begin gfx/spear_stone.png
 /importer:TextureImporter

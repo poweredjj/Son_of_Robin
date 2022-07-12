@@ -138,7 +138,6 @@ namespace SonOfRobin
 
             SpearWood,
             SpearStone,
-            SpearPoisoned,
             SpearIron,
             SpearCrystal,
 
@@ -154,7 +153,6 @@ namespace SonOfRobin
 
             ArrowWood,
             ArrowStone,
-            ArrowPoisoned,
             ArrowIron,
             ArrowCrystal,
 
@@ -1998,20 +1996,6 @@ namespace SonOfRobin
                             floatsOnWater: false, minDistance: 0, maxDistance: 100, maxMassBySize: null, generation: generation, hitPower: 5, indestructible: false, multiplierByCategory: multiplierByCategory, maxHitPoints: 75, readableName: "stone spear", description: "Simple melee weapon.");
                     }
 
-                case Name.SpearPoisoned:
-                    {
-                        var multiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Flesh, 8f } };
-
-                        var allowedFields = new AllowedFields(rangeDict: new Dictionary<TerrainName, AllowedRange>() {
-                            { TerrainName.Height, new AllowedRange(min: Terrain.waterLevelMax, max: Terrain.volcanoEdgeMin) }});
-
-                        var buffList = new List<BuffEngine.Buff> {
-                            new BuffEngine.Buff(type: BuffEngine.BuffType.RegenPoison, value: (int)-15, autoRemoveDelay: 30 * 60, canKill: true, increaseIDAtEveryUse: true)};
-
-                        return new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.SpearPoisoned, allowedFields: allowedFields, category: BoardPiece.Category.Wood,
-                            floatsOnWater: false, minDistance: 0, maxDistance: 100, maxMassBySize: null, generation: generation, hitPower: 5, indestructible: false, multiplierByCategory: multiplierByCategory, maxHitPoints: 75, readableName: "poisoned stone spear", description: "Melee weapon with poison applied.", buffList: buffList);
-                    }
-
                 case Name.SpearIron:
                     {
                         var multiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Flesh, 8f } };
@@ -2105,7 +2089,7 @@ namespace SonOfRobin
                 case Name.BowWood:
                     {
                         var multiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Flesh, 5f } };
-                        var compatibleAmmo = new List<PieceTemplate.Name> { Name.ArrowWood, Name.ArrowStone, Name.ArrowIron, Name.ArrowPoisoned, Name.ArrowCrystal };
+                        var compatibleAmmo = new List<PieceTemplate.Name> { Name.ArrowWood, Name.ArrowStone, Name.ArrowIron, Name.ArrowCrystal };
 
                         var allowedFields = new AllowedFields(rangeDict: new Dictionary<TerrainName, AllowedRange>() {
                             { TerrainName.Height, new AllowedRange(min: Terrain.waterLevelMax, max: Terrain.volcanoEdgeMin) }});
@@ -2128,17 +2112,6 @@ namespace SonOfRobin
                             { TerrainName.Height, new AllowedRange(min: 0, max: 255) }});
 
                         return new Projectile(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ArrowStone, allowedFields: allowedFields, floatsOnWater: false, minDistance: 0, maxDistance: 100, maxMassBySize: null, generation: generation, baseHitPower: 12, indestructible: false, maxHitPoints: 25, stackSize: 15, canBeStuck: true, readableName: "stone arrow", description: "Basic arrow.");
-                    }
-
-                case Name.ArrowPoisoned:
-                    {
-                        var allowedFields = new AllowedFields(rangeDict: new Dictionary<TerrainName, AllowedRange> {
-                            { TerrainName.Height, new AllowedRange(min: 0, max: 255) }});
-
-                        var buffList = new List<BuffEngine.Buff> {
-                            new BuffEngine.Buff(type: BuffEngine.BuffType.RegenPoison, value: (int)-20, autoRemoveDelay: 30 * 60, canKill: true, increaseIDAtEveryUse: true)};
-
-                        return new Projectile(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ArrowPoisoned, allowedFields: allowedFields, floatsOnWater: false, minDistance: 0, maxDistance: 100, maxMassBySize: null, generation: generation, baseHitPower: 12, indestructible: false, maxHitPoints: 25, stackSize: 15, canBeStuck: true, readableName: "poisoned arrow", description: "Poisoned arrow.", buffList: buffList);
                     }
 
                 case Name.ArrowIron:
