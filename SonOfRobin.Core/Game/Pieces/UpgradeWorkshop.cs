@@ -8,7 +8,10 @@ namespace SonOfRobin
     public class UpgradeWorkshop : BoardPiece
     {
         public static readonly List<PieceTemplate.Name> mainNames = new List<PieceTemplate.Name>(); // to be updated during first use
-        private static readonly List<PieceTemplate.Name> boosterNames = new List<PieceTemplate.Name> { PieceTemplate.Name.BottleOfPoison, PieceTemplate.Name.PotionMaxHP, PieceTemplate.Name.PotionStrength, PieceTemplate.Name.PotionMaxStamina, PieceTemplate.Name.EmptyBottle };
+        private static readonly List<PieceTemplate.Name> boosterNames = new List<PieceTemplate.Name>(); // to be updated during first use
+
+        private static readonly List<PieceTemplate.Name> attackBoosterNames = new List<PieceTemplate.Name> { PieceTemplate.Name.BottleOfPoison };
+        private static readonly List<PieceTemplate.Name> defenseBoosterNames = new List<PieceTemplate.Name> { PieceTemplate.Name.BottleOfPoison, PieceTemplate.Name.PotionMaxHP, PieceTemplate.Name.PotionStrength, PieceTemplate.Name.PotionMaxStamina, PieceTemplate.Name.EmptyBottle };
 
         private StorageSlot CombineTriggerSlot { get { return this.pieceStorage.GetSlot(0, 0); } }
         private StorageSlot MainSlot { get { return this.pieceStorage.GetSlot(1, 0); } }
@@ -21,11 +24,11 @@ namespace SonOfRobin
             base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedFields: allowedFields, floatsOnWater: floatsOnWater, maxMassBySize: maxMassBySize, generation: generation, canBePickedUp: false, yield: yield, maxHitPoints: maxHitPoints, fadeInAnim: fadeInAnim, isShownOnMiniMap: true, readableName: readableName, description: description, category: category, lightEngine: new LightEngine(size: 0, opacity: 0.7f, colorActive: true, color: Color.Orange * 0.25f, addedGfxRectMultiplier: 8f, isActive: false, castShadows: true), activeState: State.Empty, soundPack: soundPack)
         {
 
-            this.CreateMainNames();
+            this.CreateAllowedNames();
 
             this.boardTask = Scheduler.TaskName.OpenContainer;
 
-            this.pieceStorage = new PieceStorage(width: 3, height: 1, world: this.world, storagePiece: this, storageType: PieceStorage.StorageType.Cooking, stackLimit: 1);
+            this.pieceStorage = new PieceStorage(width: 3, height: 1, world: this.world, storagePiece: this, storageType: PieceStorage.StorageType.Cooking);
 
             StorageSlot combineTriggerSlot = this.CombineTriggerSlot;
             BoardPiece combineTrigger = PieceTemplate.Create(templateName: PieceTemplate.Name.UpgradeTrigger, world: this.world);
@@ -41,15 +44,18 @@ namespace SonOfRobin
             boosterSlot.label = "booster";
         }
 
-        private void CreateMainNames()
+        private void CreateAllowedNames()
         {
-            if (mainNames.Any()) return;
+            if (mainNames.Any() && boosterNames.Any()) return;
 
             var typeList = new List<System.Type> { typeof(Tool), typeof(Equipment), typeof(Projectile) };
             foreach (PieceInfo.Info info in PieceInfo.AllInfo)
             {
                 if (typeList.Contains(info.type)) mainNames.Add(info.name);
             }
+
+            boosterNames.AddRange(attackBoosterNames);
+            boosterNames.AddRange(defenseBoosterNames);
         }
 
         public void Upgrade()
@@ -90,8 +96,14 @@ namespace SonOfRobin
                 return;
             }
 
+            bool equipMode = mainPiece.GetType() == typeof(Equipment);
+            var allowedBoosterNames = equipMode ? defenseBoosterNames : attackBoosterNames;
 
-
+            if (!allowedBoosterNames.Contains(boosterPiece.name))
+            {
+                new TextWindow(text: $"I cannot upgrade | '{mainPiece.name}' with '{boosterPiece.name}'.", imageList: new List<Texture2D> { mainPiece.sprite.frame.texture, boosterPiece.sprite.frame.texture }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
+                return;
+            }
 
             mainPiece.buffList.AddRange(boosterPiece.buffList);
 
