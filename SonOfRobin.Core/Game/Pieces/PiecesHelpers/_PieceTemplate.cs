@@ -191,7 +191,8 @@ namespace SonOfRobin
 
             EmptyBottle,
             PotionHealing,
-            PotionMaxHP,
+            PotionMaxHPIncrease,
+            PotionMaxHPDecrease,
             PotionStrength,
             PotionHaste,
             PotionMaxStamina,
@@ -942,7 +943,7 @@ namespace SonOfRobin
                                 new Yield.DroppedPiece(pieceName: Name.PotionFatigue, chanceToDrop: 20, maxNumberToDrop: 1),
                                 new Yield.DroppedPiece(pieceName: Name.PotionHaste, chanceToDrop: 20, maxNumberToDrop: 1),
                                 new Yield.DroppedPiece(pieceName: Name.PotionHealing, chanceToDrop: 20, maxNumberToDrop: 1),
-                                new Yield.DroppedPiece(pieceName: Name.PotionMaxHP, chanceToDrop: 20, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: Name.PotionMaxHPIncrease, chanceToDrop: 20, maxNumberToDrop: 1),
                                 new Yield.DroppedPiece(pieceName: Name.PotionMaxStamina, chanceToDrop: 20, maxNumberToDrop: 1),
                                 new Yield.DroppedPiece(pieceName: Name.PotionStrength, chanceToDrop: 20, maxNumberToDrop: 1),
                                 new Yield.DroppedPiece(pieceName: Name.Crystal, chanceToDrop: 10, maxNumberToDrop: 1),
@@ -998,7 +999,7 @@ namespace SonOfRobin
                                 new Yield.DroppedPiece(pieceName: Name.PotionFatigue, chanceToDrop: 20, maxNumberToDrop: 2),
                                 new Yield.DroppedPiece(pieceName: Name.PotionHaste, chanceToDrop: 20, maxNumberToDrop: 2),
                                 new Yield.DroppedPiece(pieceName: Name.PotionHealing, chanceToDrop: 20, maxNumberToDrop: 2),
-                                new Yield.DroppedPiece(pieceName: Name.PotionMaxHP, chanceToDrop: 20, maxNumberToDrop: 2),
+                                new Yield.DroppedPiece(pieceName: Name.PotionMaxHPIncrease, chanceToDrop: 20, maxNumberToDrop: 2),
                                 new Yield.DroppedPiece(pieceName: Name.PotionMaxStamina, chanceToDrop: 20, maxNumberToDrop: 2),
                                 new Yield.DroppedPiece(pieceName: Name.PotionStrength, chanceToDrop: 20, maxNumberToDrop: 2),
                                 new Yield.DroppedPiece(pieceName: Name.Crystal, chanceToDrop: 10, maxNumberToDrop: 3),
@@ -1648,7 +1649,7 @@ namespace SonOfRobin
                             minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 200, toolbarTask: Scheduler.TaskName.GetDrinked, rotatesWhenDropped: true, floatsOnWater: false, readableName: "healing potion", description: "Restores hit points.", buffList: buffList, convertsToWhenUsed: Name.EmptyBottle, soundPack: soundPack);
                     }
 
-                case Name.PotionMaxHP:
+                case Name.PotionMaxHPIncrease:
                     {
                         var buffList = new List<BuffEngine.Buff> {
                              new BuffEngine.Buff(type: BuffEngine.BuffType.MaxHP, value: 200f, autoRemoveDelay: 5 * 60 * 60)};
@@ -1658,6 +1659,18 @@ namespace SonOfRobin
 
                         return new Potion(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PotionGreen, blocksMovement: false, category: BoardPiece.Category.Indestructible, allowedFields: shallowWaterToVolcano,
                             minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 200, toolbarTask: Scheduler.TaskName.GetDrinked, rotatesWhenDropped: true, floatsOnWater: false, readableName: "max health increase potion", description: "Increases max health for some time.", buffList: buffList, convertsToWhenUsed: Name.EmptyBottle, soundPack: soundPack);
+                    }
+
+                case Name.PotionMaxHPDecrease:
+                    {
+                        var buffList = new List<BuffEngine.Buff> {
+                             new BuffEngine.Buff(type: BuffEngine.BuffType.MaxHP, value: -50f, autoRemoveDelay: 1 * 60 * 60)};
+
+                        var soundPack = new PieceSoundPack();
+                        soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropGlass, cooldown: 15, maxPitchVariation: 0.3f));
+
+                        return new Potion(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PotionDarkGreen, blocksMovement: false, category: BoardPiece.Category.Indestructible, allowedFields: shallowWaterToVolcano,
+                            minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 200, toolbarTask: Scheduler.TaskName.GetDrinked, rotatesWhenDropped: true, floatsOnWater: false, readableName: "max health decrease potion", description: "Decreases max health for some time.", buffList: buffList, convertsToWhenUsed: Name.EmptyBottle, soundPack: soundPack);
                     }
 
                 case Name.PotionStrength:

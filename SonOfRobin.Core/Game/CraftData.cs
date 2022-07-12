@@ -128,7 +128,7 @@ namespace SonOfRobin
 
                 new Craft.Recipe(pieceToCreate: PieceTemplate.Name.PotionHealing, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.EmptyBottle, 1 }, { PieceTemplate.Name.Tomato, 4 }, { PieceTemplate.Name.HerbsRed, 3 }}, isReversible: false, unlocksWhenCrafted: new List<PieceTemplate.Name> {PieceTemplate.Name.PotionStrength }, craftCountToUnlock: 3 ),
 
-                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.PotionMaxHP, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.EmptyBottle, 1 }, { PieceTemplate.Name.Apple, 2 }, { PieceTemplate.Name.HerbsGreen, 3 }}, isReversible: false),
+                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.PotionMaxHPIncrease, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.EmptyBottle, 1 }, { PieceTemplate.Name.Apple, 2 }, { PieceTemplate.Name.HerbsGreen, 3 }}, isReversible: false),
 
                 new Craft.Recipe(pieceToCreate: PieceTemplate.Name.PotionStrength, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.EmptyBottle, 1 }, { PieceTemplate.Name.Banana, 2 }, { PieceTemplate.Name.HerbsYellow, 3 }}, isReversible: false, isHidden: true, unlocksWhenCrafted: new List<PieceTemplate.Name> {PieceTemplate.Name.PotionHaste }, craftCountToUnlock: 3 ),
 
@@ -145,6 +145,8 @@ namespace SonOfRobin
                 new Craft.Recipe(pieceToCreate: PieceTemplate.Name.PotionSlowdown, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.EmptyBottle, 1 }, { PieceTemplate.Name.HerbsBlack, 1 }, { PieceTemplate.Name.HerbsYellow, 2 }}, isReversible: false, unlocksWhenCrafted: new List<PieceTemplate.Name> { PieceTemplate.Name.UpgradeBench }),
 
                 new Craft.Recipe(pieceToCreate: PieceTemplate.Name.PotionWeakness, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.EmptyBottle, 1 }, { PieceTemplate.Name.HerbsBlack, 1 }, { PieceTemplate.Name.HerbsYellow, 2 }}, isReversible: false, unlocksWhenCrafted: new List<PieceTemplate.Name> { PieceTemplate.Name.UpgradeBench }),
+
+                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.PotionMaxHPDecrease, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.EmptyBottle, 1 }, { PieceTemplate.Name.HerbsBlack, 1 }, { PieceTemplate.Name.HerbsGreen, 2 }}, isReversible: false, unlocksWhenCrafted: new List<PieceTemplate.Name> { PieceTemplate.Name.UpgradeBench }),
                 };
         }
 
