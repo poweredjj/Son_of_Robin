@@ -176,6 +176,7 @@ namespace SonOfRobin
             Bag,
             BackpackSmall,
             BackpackMedium,
+            BeltPouchSmall,
             BeltMedium,
             Map,
 
@@ -2349,6 +2350,17 @@ namespace SonOfRobin
 
                         return new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BackpackMedium, blocksMovement: true, category: BoardPiece.Category.Flesh,
                             allowedFields: allowedFields, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 500, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "medium backpack", description: "Expands inventory space.");
+                    }
+
+                case Name.BeltPouchSmall:
+                    {
+                        var allowedFields = new AllowedFields(rangeNameList: new List<AllowedFields.RangeName> { AllowedFields.RangeName.WaterShallow, AllowedFields.RangeName.WaterMedium, AllowedFields.RangeName.GroundAll });
+
+                        var buffList = new List<BuffEngine.Buff> {
+                            new BuffEngine.Buff(type: BuffEngine.BuffType.ToolbarWidth, value: (byte)1)};
+
+                        return new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BeltPouchSmall, blocksMovement: false, category: BoardPiece.Category.Flesh,
+                            allowedFields: allowedFields, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 200, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "small belt pouch", description: "Expands belt space.");
                     }
 
                 case Name.BeltMedium:

@@ -278,18 +278,6 @@
 /processorParam:TextureFormat=Color
 /build:gfx/backpack_medium.jpg
 
-#begin gfx/backpack_medium.jpg
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/backpack_medium.jpg
-
 #begin gfx/backpack_small.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -338,7 +326,7 @@
 /processorParam:TextureFormat=Color
 /build:gfx/bed.png
 
-#begin gfx/belt.png
+#begin gfx/belt_medium.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -348,7 +336,19 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/belt.png
+/build:gfx/belt_medium.png
+
+#begin gfx/belt_pouch_small.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/belt_pouch_small.png
 
 #begin gfx/biceps.png
 /importer:TextureImporter
