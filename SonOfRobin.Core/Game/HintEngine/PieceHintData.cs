@@ -101,31 +101,30 @@ namespace SonOfRobin
                 new PieceHint(
                     type: PieceHint.Type.LeatherPositive,
                     messageList: new List<HintMessage> {
-                    new HintMessage(text: $"I can use this | leather to make a | map.\nBut I need a | {PieceInfo.GetInfo(PieceTemplate.Name.WorkshopBasic).readableName} to make it.", imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.Leather), PieceInfo.GetTexture(PieceTemplate.Name.Map),  PieceInfo.GetTexture(PieceTemplate.Name.WorkshopBasic)}, boxType: HintMessage.BoxType.Dialogue, blockInput: true),
-                    new HintMessage(text: "If I had more | leather,\nI could make a | backpack or a | belt.", imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.Leather), PieceInfo.GetTexture(PieceTemplate.Name.BackpackSmall), PieceInfo.GetTexture(PieceTemplate.Name.BeltMedium)}, boxType: HintMessage.BoxType.Dialogue, blockInput: true)},
+                    new HintMessage(text: $"I can use this | leather to make a | map.\nBut I need a | { PieceInfo.GetInfo(PieceTemplate.Name.WorkshopLeatherBasic).readableName } to make it.", imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.Leather), PieceInfo.GetTexture(PieceTemplate.Name.Map), PieceInfo.GetTexture(PieceTemplate.Name.WorkshopLeatherBasic)}, boxType: HintMessage.BoxType.Dialogue, blockInput: true),
+                    new HintMessage(text: "If I had more | leather,\nI could make a | backpack or a | belt.", imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.Leather), PieceInfo.GetTexture(PieceTemplate.Name.BackpackSmall), PieceInfo.GetTexture(PieceTemplate.Name.BeltPouchSmall)}, boxType: HintMessage.BoxType.Dialogue, blockInput: true)},
                     playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.Leather}),
 
                 new PieceHint(
                     type: PieceHint.Type.MapPositive,
                     message: "I should equip this map | to use it.",
                     imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.Map) },
-                    playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.Map},
-                    tutorialsToActivate: new List<Tutorials.Type> {Tutorials.Type.Equip}),
+                    playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> { PieceTemplate.Name.Map },
+                    tutorialsToActivate: new List<Tutorials.Type> { Tutorials.Type.Equip }),
 
                 new PieceHint(
-                    type: PieceHint.Type.BackpackPositive,
+                    type: PieceHint.Type.BagPositive,
                     messageList: new List<HintMessage> {
-                    new HintMessage(text: "This backpack | has a lot of free space.\nI should equip it now.", imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.BackpackSmall)}, boxType: HintMessage.BoxType.Dialogue, blockInput: true)},
-                    imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.BackpackSmall) },
-                    tutorialsToActivate: new List<Tutorials.Type> {Tutorials.Type.Equip},
-                    playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.BackpackSmall}),
+                    new HintMessage(text: "This bag | will allow me to carry more items.\nI should equip it now.", imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.Bag)}, boxType: HintMessage.BoxType.Dialogue, blockInput: true)},
+                    tutorialsToActivate: new List<Tutorials.Type> { Tutorials.Type.Equip },
+                    playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> { PieceTemplate.Name.Bag }),
 
                 new PieceHint(
                     type: PieceHint.Type.BeltPositive,
                     message: "I should equip my | belt now.",
-                    imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.BeltMedium)},
-                    playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.BeltMedium},
-                    tutorialsToActivate: new List<Tutorials.Type> {Tutorials.Type.Equip}),
+                    imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.BeltPouchSmall) },
+                    playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> { PieceTemplate.Name.BeltPouchSmall },
+                    tutorialsToActivate: new List<Tutorials.Type> { Tutorials.Type.Equip }),
 
                 new PieceHint(
                     type: PieceHint.Type.BowNoAmmo,
