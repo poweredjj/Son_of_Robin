@@ -198,6 +198,7 @@ namespace SonOfRobin
             PotionFatigue,
             PotionPoison,
             PotionSlowdown,
+            PotionWeakness,
             BottleOfOil,
 
             Hole,
@@ -1157,7 +1158,7 @@ namespace SonOfRobin
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.Open, sound: new Sound(name: SoundData.Name.ToolsMove, ignore3DAlways: true));
 
-                        var combineWorkshop = new UpgradeWorkshop(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.UpgradeBench, allowedFields: allowedFields, category: BoardPiece.Category.Metal, floatsOnWater: false, minDistance: 0, maxDistance: 100, maxMassBySize: null, generation: generation, maxHitPoints: 30, readableName: "upgrade bench", description: "For upgrading items.", soundPack: soundPack);
+                        var combineWorkshop = new UpgradeBench(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.UpgradeBench, allowedFields: allowedFields, category: BoardPiece.Category.Metal, floatsOnWater: false, minDistance: 0, maxDistance: 100, maxMassBySize: null, generation: generation, maxHitPoints: 30, readableName: "upgrade bench", description: "For upgrading items.", soundPack: soundPack);
 
                         combineWorkshop.sprite.AssignNewName("off");
                         return combineWorkshop;
@@ -1669,6 +1670,18 @@ namespace SonOfRobin
 
                         return new Potion(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PotionYellow, blocksMovement: false, category: BoardPiece.Category.Indestructible, allowedFields: shallowWaterToVolcano,
                             minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 200, toolbarTask: Scheduler.TaskName.GetDrinked, rotatesWhenDropped: true, floatsOnWater: false, readableName: "strength potion", description: "Increases strength for a short while.", buffList: buffList, convertsToWhenUsed: Name.EmptyBottle, soundPack: soundPack);
+                    }
+
+                case Name.PotionWeakness:
+                    {
+                        var buffList = new List<BuffEngine.Buff> {
+                             new BuffEngine.Buff(type: BuffEngine.BuffType.Strength, value: (int)-2, autoRemoveDelay: 60 * 60 * 1)};
+
+                        var soundPack = new PieceSoundPack();
+                        soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropGlass, cooldown: 15, maxPitchVariation: 0.3f));
+
+                        return new Potion(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PotionDarkYellow, blocksMovement: false, category: BoardPiece.Category.Indestructible, allowedFields: shallowWaterToVolcano,
+                            minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 200, toolbarTask: Scheduler.TaskName.GetDrinked, rotatesWhenDropped: true, floatsOnWater: false, readableName: "weakness potion", description: "Decreases strength for a short while.", buffList: buffList, convertsToWhenUsed: Name.EmptyBottle, soundPack: soundPack);
                     }
 
                 case Name.PotionHaste:

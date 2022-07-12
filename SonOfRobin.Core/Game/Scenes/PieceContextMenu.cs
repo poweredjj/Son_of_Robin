@@ -366,7 +366,7 @@ namespace SonOfRobin
 
                 case ContextAction.Upgrade:
                     {
-                        UpgradeWorkshop upgradeBench = (UpgradeWorkshop)this.storage.storagePiece;
+                        UpgradeBench upgradeBench = (UpgradeBench)this.storage.storagePiece;
                         upgradeBench.Upgrade();
 
                         return;

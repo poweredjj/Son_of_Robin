@@ -5,17 +5,17 @@ using System.Linq;
 
 namespace SonOfRobin
 {
-    public class UpgradeWorkshop : BoardPiece
+    public class UpgradeBench : BoardPiece
     {
         public static readonly List<PieceTemplate.Name> mainNames = new List<PieceTemplate.Name>(); // to be updated during first use
-        private static readonly List<PieceTemplate.Name> boosterNames = new List<PieceTemplate.Name> { PieceTemplate.Name.PotionPoison, PieceTemplate.Name.PotionSlowdown, PieceTemplate.Name.EmptyBottle };
+        private static readonly List<PieceTemplate.Name> boosterNames = new List<PieceTemplate.Name> { PieceTemplate.Name.PotionPoison, PieceTemplate.Name.PotionSlowdown, PieceTemplate.Name.PotionWeakness, PieceTemplate.Name.EmptyBottle };
 
         private StorageSlot UpgradeTriggerSlot { get { return this.pieceStorage.GetSlot(0, 0); } }
         private StorageSlot MainSlot { get { return this.pieceStorage.GetSlot(1, 0); } }
         private StorageSlot BoosterSlot { get { return this.pieceStorage.GetSlot(2, 0); } }
 
 
-        public UpgradeWorkshop(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedFields allowedFields, Dictionary<byte, int> maxMassBySize, string readableName, string description, Category category,
+        public UpgradeBench(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedFields allowedFields, Dictionary<byte, int> maxMassBySize, string readableName, string description, Category category,
             byte animSize = 0, string animName = "off", bool blocksMovement = true, ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = false, int generation = 0, Yield yield = null, int maxHitPoints = 1, bool fadeInAnim = false, PieceSoundPack soundPack = null) :
 
             base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedFields: allowedFields, floatsOnWater: floatsOnWater, maxMassBySize: maxMassBySize, generation: generation, canBePickedUp: false, yield: yield, maxHitPoints: maxHitPoints, fadeInAnim: fadeInAnim, isShownOnMiniMap: true, readableName: readableName, description: description, category: category, lightEngine: new LightEngine(size: 0, opacity: 0.7f, colorActive: true, color: Color.Orange * 0.25f, addedGfxRectMultiplier: 8f, isActive: false, castShadows: true), activeState: State.Empty, soundPack: soundPack)

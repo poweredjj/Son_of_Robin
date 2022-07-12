@@ -500,27 +500,18 @@ namespace SonOfRobin
                     {
                         if (add)
                         {
-                            int newMaxHP = this.piece.strength + (int)buff.value;
-                            if (newMaxHP <= 0) return false;
+                            float newMaxHP = this.piece.maxHitPoints + (float)buff.value;
+                            if (newMaxHP < 3) return false;
 
-                            this.piece.strength = newMaxHP;
+                            this.piece.maxHitPoints = newMaxHP;
                         }
-                        else this.piece.strength -= (int)buff.value;
+                        else this.piece.maxHitPoints -= (float)buff.value;
+
+                        this.piece.hitPoints = Math.Min(this.piece.hitPoints, this.piece.maxHitPoints);
 
                         return true;
                     }
 
-                //case BuffType.MaxHP:
-                //    {
-                //        if (add) this.piece.maxHitPoints += (float)buff.value;
-                //        else
-                //        {
-                //            this.piece.maxHitPoints -= (float)buff.value;
-                //            this.piece.hitPoints = Math.Min(this.piece.hitPoints, this.piece.maxHitPoints);
-                //        }
-
-                //        return true;
-                //    }
 
                 case BuffType.MaxStamina:
                     {
@@ -528,16 +519,19 @@ namespace SonOfRobin
 
                         Player player = (Player)this.piece;
 
+                        float valueChange = add ? (float)buff.value : -(float)buff.value;
+
                         if (add)
                         {
-                            player.maxStamina += (float)buff.value;
-                            player.stamina = player.maxStamina;
+                            float newMaxStamina = player.maxStamina + valueChange;
+                            if (newMaxStamina <= 10) return false;
+
+                            player.maxStamina = newMaxStamina;
                         }
-                        else
-                        {
-                            player.maxStamina -= (float)buff.value;
-                            player.stamina = Math.Min(player.stamina, player.maxStamina);
-                        }
+                        else player.maxStamina += valueChange;
+
+                        if (valueChange > 0) player.stamina = player.maxStamina;
+                        else player.stamina = Math.Min(player.stamina, player.maxStamina);
 
                         return true;
                     }
