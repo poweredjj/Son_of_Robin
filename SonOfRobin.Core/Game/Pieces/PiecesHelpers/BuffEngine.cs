@@ -7,7 +7,7 @@ namespace SonOfRobin
 {
     public class BuffEngine
     {
-        public enum BuffType { InvWidth, InvHeight, ToolbarWidth, ToolbarHeight, Speed, Strength, HP, MaxHP, MaxStamina, EnableMap, Tired, Hungry, LightSource, RegenPoison, Haste, Fatigue, Sprint, SprintCooldown, LowHP };
+        public enum BuffType { InvWidth, InvHeight, ToolbarWidth, ToolbarHeight, Speed, Strength, HP, MaxHP, MaxStamina, EnableMap, LightSource, RegenPoison, Haste, Fatigue, Sprint, SprintCooldown, LowHP, Tired, Hungry };
 
         [Serializable]
         public class Buff
@@ -338,7 +338,12 @@ namespace SonOfRobin
             if (buff.sleepFramesNeededForActivation > 0 && !buff.HadEnoughSleepForBuff(world)) return;
 
             bool hadThisBuffBefore = this.HasBuff(buff.type);
-            this.ProcessBuff(world: world, buff: buff, add: true, hadThisBuffBefore: hadThisBuffBefore);
+            bool buffHasBeenApplied = this.ProcessBuff(world: world, buff: buff, add: true, hadThisBuffBefore: hadThisBuffBefore);
+            if (!buffHasBeenApplied)
+            {
+                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Buff id {buff.id} type {buff.type} value {buff.value} could not be applied to '{this.piece.readableName}'.");
+                return;
+            }
             this.buffDict[buff.id] = buff;
             if (buff.autoRemoveDelay > 0) new WorldEvent(eventName: WorldEvent.EventName.RemoveBuff, world: this.piece.world, delay: buff.autoRemoveDelay, boardPiece: this.piece, eventHelper: buff.id);
 
@@ -398,7 +403,7 @@ namespace SonOfRobin
             return false;
         }
 
-        private void ProcessBuff(World world, Buff buff, bool add, bool hadThisBuffBefore = false, bool stillHasThisBuff = false)
+        private bool ProcessBuff(World world, Buff buff, bool add, bool hadThisBuffBefore = false, bool stillHasThisBuff = false)
         {
             if (add)
             {
@@ -410,63 +415,74 @@ namespace SonOfRobin
             {
                 case BuffType.InvWidth:
                     {
-                        if (!this.CheckIfPieceIsPlayer(buff)) return;
+                        if (!this.CheckIfPieceIsPlayer(buff)) return false;
 
                         Player player = (Player)this.piece;
                         if (add) player.InvWidth += (byte)buff.value;
                         else player.InvWidth -= (byte)buff.value;
 
-                        return;
+                        return true;
                     }
 
                 case BuffType.InvHeight:
                     {
-                        if (!this.CheckIfPieceIsPlayer(buff)) return;
+                        if (!this.CheckIfPieceIsPlayer(buff)) return false;
 
                         Player player = (Player)this.piece;
                         if (add) player.InvHeight += (byte)buff.value;
                         else player.InvHeight -= (byte)buff.value;
 
-                        return;
+                        return true;
                     }
 
                 case BuffType.ToolbarWidth:
                     {
-                        if (!this.CheckIfPieceIsPlayer(buff)) return;
+                        if (!this.CheckIfPieceIsPlayer(buff)) return false;
 
                         Player player = (Player)this.piece;
                         if (add) player.ToolbarWidth += (byte)buff.value;
                         else player.ToolbarWidth -= (byte)buff.value;
 
-                        return;
+                        return true;
                     }
 
                 case BuffType.ToolbarHeight:
                     {
-                        if (!this.CheckIfPieceIsPlayer(buff)) return;
+                        if (!this.CheckIfPieceIsPlayer(buff)) return false;
 
                         Player player = (Player)this.piece;
                         if (add) player.ToolbarHeight += (byte)buff.value;
                         else player.ToolbarHeight -= (byte)buff.value;
 
-                        return;
+                        return true;
                     }
 
                 case BuffType.Speed:
                     {
-                        if (add) this.piece.speed += (float)buff.value;
+                        if (add)
+                        {
+                            float newSpeed = this.piece.speed + (float)buff.value;
+                            if (newSpeed <= 0) return false;
+
+                            this.piece.speed = newSpeed;
+                        }
                         else this.piece.speed -= (float)buff.value;
 
-                        return;
+                        return true;
                     }
 
                 case BuffType.Strength:
                     {
-                        int value = (int)buff.value;
-                        if (!add) value *= -1;
-                        this.piece.strength += value;
+                        if (add)
+                        {
+                            int newStrength = this.piece.strength + (int)buff.value;
+                            if (newStrength <= 0) return false;
 
-                        return;
+                            this.piece.strength = newStrength;
+                        }
+                        else this.piece.strength -= (int)buff.value;
+
+                        return true;
                     }
 
                 case BuffType.HP:
@@ -477,24 +493,38 @@ namespace SonOfRobin
                         this.piece.hitPoints = Math.Min(this.piece.hitPoints, this.piece.maxHitPoints);
                         this.piece.hitPoints = Math.Max(this.piece.hitPoints, 0);
 
-                        return;
+                        return true;
                     }
 
                 case BuffType.MaxHP:
                     {
-                        if (add) this.piece.maxHitPoints += (float)buff.value;
-                        else
+                        if (add)
                         {
-                            this.piece.maxHitPoints -= (float)buff.value;
-                            this.piece.hitPoints = Math.Min(this.piece.hitPoints, this.piece.maxHitPoints);
-                        }
+                            int newMaxHP = this.piece.strength + (int)buff.value;
+                            if (newMaxHP <= 0) return false;
 
-                        return;
+                            this.piece.strength = newMaxHP;
+                        }
+                        else this.piece.strength -= (int)buff.value;
+
+                        return true;
                     }
+
+                //case BuffType.MaxHP:
+                //    {
+                //        if (add) this.piece.maxHitPoints += (float)buff.value;
+                //        else
+                //        {
+                //            this.piece.maxHitPoints -= (float)buff.value;
+                //            this.piece.hitPoints = Math.Min(this.piece.hitPoints, this.piece.maxHitPoints);
+                //        }
+
+                //        return true;
+                //    }
 
                 case BuffType.MaxStamina:
                     {
-                        if (!this.CheckIfPieceIsPlayer(buff)) return;
+                        if (!this.CheckIfPieceIsPlayer(buff)) return false;
 
                         Player player = (Player)this.piece;
 
@@ -509,12 +539,12 @@ namespace SonOfRobin
                             player.stamina = Math.Min(player.stamina, player.maxStamina);
                         }
 
-                        return;
+                        return true;
                     }
 
                 case BuffType.EnableMap:
                     {
-                        if (!this.CheckIfPieceIsPlayer(buff)) return;
+                        if (!this.CheckIfPieceIsPlayer(buff)) return false;
 
                         Player player = (Player)this.piece;
 
@@ -527,42 +557,36 @@ namespace SonOfRobin
                             }
                         }
 
-                        return;
+                        return true;
                     }
 
                 case BuffType.Tired:
                     {
                         // this buff exists only to show negative status icon
-                        return;
+                        return true;
                     }
 
                 case BuffType.Hungry:
                     {
                         // this buff exists only to show negative status icon
-                        return;
+                        return true;
                     }
 
                 case BuffType.LowHP:
                     {
-                        if (!this.CheckIfPieceIsPlayer(buff)) return;
+                        if (!this.CheckIfPieceIsPlayer(buff)) return false;
 
                         Player player = (Player)this.piece;
 
-                        if (add)
-                        {
-                            player.soundPack.Play(PieceSoundPack.Action.PlayerPulse);
-                        }
-                        else
-                        {
-                            player.soundPack.Stop(PieceSoundPack.Action.PlayerPulse);
-                        }
+                        if (add) player.soundPack.Play(PieceSoundPack.Action.PlayerPulse);
+                        else player.soundPack.Stop(PieceSoundPack.Action.PlayerPulse);
 
-                        return;
+                        return true;
                     }
 
                 case BuffType.LightSource:
                     {
-                        if (!this.CheckIfPieceIsPlayer(buff)) return;
+                        if (!this.CheckIfPieceIsPlayer(buff)) return false;
 
                         Player player = (Player)this.piece;
                         LightEngine playerLightSource = player.sprite.lightEngine;
@@ -577,7 +601,7 @@ namespace SonOfRobin
                             if (!stillHasThisBuff) playerLightSource.Deactivate();
                         }
 
-                        return;
+                        return true;
                     }
 
                 case BuffType.RegenPoison:
@@ -613,12 +637,12 @@ namespace SonOfRobin
                             if (!hasPoisonBuff) this.piece.sprite.color = Color.White;
                         }
 
-                        return;
+                        return true;
                     }
 
                 case BuffType.Haste:
                     {
-                        if (!this.CheckIfPieceIsPlayer(buff)) return;
+                        if (!this.CheckIfPieceIsPlayer(buff)) return false;
                         Player player = (Player)this.piece;
 
                         if (add)
@@ -635,24 +659,24 @@ namespace SonOfRobin
                             player.world.stateMachineTypesManager.EnableAllTypes(everyFrame: true, nthFrame: true);
                         }
 
-                        return;
+                        return true;
                     }
 
                 case BuffType.Fatigue:
                     {
-                        if (!this.CheckIfPieceIsPlayer(buff)) return;
+                        if (!this.CheckIfPieceIsPlayer(buff)) return false;
 
                         Player player = (Player)this.piece;
 
                         if (add) player.Fatigue = Math.Max(0, player.Fatigue + (float)buff.value);
                         else player.Fatigue = Math.Min(player.maxFatigue, player.Fatigue - (float)buff.value);
 
-                        return;
+                        return true;
                     }
 
                 case BuffType.Sprint:
                     {
-                        if (!this.CheckIfPieceIsPlayer(buff)) return;
+                        if (!this.CheckIfPieceIsPlayer(buff)) return false;
                         Player player = (Player)this.piece;
 
                         if (add)
@@ -670,13 +694,13 @@ namespace SonOfRobin
                             player.buffEngine.AddBuff(buff: new Buff(type: BuffType.SprintCooldown, autoRemoveDelay: 15 * 60, value: null), world: player.world);
                         }
 
-                        return;
+                        return true;
                     }
 
                 case BuffType.SprintCooldown:
                     {
                         // this buff exists only to show negative status and prevent sprint
-                        return;
+                        return true;
                     }
 
                 default:
