@@ -263,7 +263,7 @@ namespace SonOfRobin
         {
             StorageSlot backpackSlot = this.equipStorage.AllSlots[0];
             backpackSlot.allowedPieceNames = new List<PieceTemplate.Name>();
-            backpackSlot.label = "backpack";
+            backpackSlot.label = "item storage";
 
             foreach (PieceInfo.Info info in PieceInfo.AllInfo)
             {

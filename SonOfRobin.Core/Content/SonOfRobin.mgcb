@@ -2666,6 +2666,18 @@
 /processorParam:TextureFormat=Color
 /build:gfx/recolor_pt2.png
 
+#begin gfx/rope.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/rope.png
+
 #begin gfx/rpg_maker_vx_ace_tilesets_1_by_hishimy_d8e7pjd.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -4333,6 +4345,12 @@
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:sound/45654__simon-lacelle__dun-dun-dun.ogg
+
+#begin sound/459440__coral-island-studios__13-cardboard-box-stacking.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sound/459440__coral-island-studios__13-cardboard-box-stacking.ogg
 
 #begin sound/465739__arnaud-coutancier__wind-waves-splashing.ogg
 /importer:OggImporter

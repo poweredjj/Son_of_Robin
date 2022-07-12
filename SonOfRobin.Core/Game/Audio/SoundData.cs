@@ -117,6 +117,7 @@ namespace SonOfRobin
             DropCrystal,
             DropGlass,
             DropArrow,
+            DropRope,
 
             TigerRoar,
 
@@ -433,6 +434,7 @@ namespace SonOfRobin
             { Name.ClothRustle2, "427865__leonelmail__clothing-rustle-nylon_2" },
             { Name.ItemUpgrade, "485436__nobarknoonan__door-slam" },
             { Name.LeatherMove, "536087__eminyildirim__leather-movement" },
+            { Name.DropRope, "459440__coral-island-studios__13-cardboard-box-stacking" },
             };
     }
 }
