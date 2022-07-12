@@ -267,8 +267,6 @@ namespace SonOfRobin
 
                     var movement = (attacker.sprite.position - animalTarget.sprite.position) * targetPushMultiplier * -0.5f * hitPower;
                     animalTarget.AddPassiveMovement(movement: Helpers.VectorAbsMax(vector: movement, maxVal: 400f));
-
-                    animalTarget.buffEngine.AddBuff(world: attacker.world, buff: new BuffEngine.Buff(type: BuffEngine.BuffType.Speed, value: -animalTarget.speed / 2, autoRemoveDelay: 180)); // animal will be slower for a while
                 }
             }
         }

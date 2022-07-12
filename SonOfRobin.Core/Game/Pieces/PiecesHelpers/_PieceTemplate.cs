@@ -196,7 +196,8 @@ namespace SonOfRobin
             PotionHaste,
             PotionMaxStamina,
             PotionFatigue,
-            BottleOfPoison,
+            PotionPoison,
+            PotionSlowdown,
             BottleOfOil,
 
             Hole,
@@ -1706,7 +1707,7 @@ namespace SonOfRobin
                             minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 200, toolbarTask: Scheduler.TaskName.GetDrinked, rotatesWhenDropped: true, floatsOnWater: false, readableName: "fatigue remove potion", description: "Removes fatigue.", buffList: buffList, convertsToWhenUsed: Name.EmptyBottle, soundPack: soundPack);
                     }
 
-                case Name.BottleOfPoison:
+                case Name.PotionPoison:
                     {
                         var buffList = new List<BuffEngine.Buff> {
                             new BuffEngine.Buff(type: BuffEngine.BuffType.RegenPoison, value: (int)-30, autoRemoveDelay: 30 * 60, canKill: true, increaseIDAtEveryUse: true)};
@@ -1715,7 +1716,19 @@ namespace SonOfRobin
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropGlass, cooldown: 15, maxPitchVariation: 0.3f));
 
                         return new Potion(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PotionBlack, blocksMovement: false, category: BoardPiece.Category.Indestructible, allowedFields: shallowWaterToVolcano,
-                            minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 200, toolbarTask: Scheduler.TaskName.Empty, rotatesWhenDropped: true, floatsOnWater: false, readableName: "bottle of poison", description: "Crafting material.", buffList: buffList, convertsToWhenUsed: Name.EmptyBottle, soundPack: soundPack);
+                            minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 200, toolbarTask: Scheduler.TaskName.GetDrinked, rotatesWhenDropped: true, floatsOnWater: false, readableName: "poison potion", description: "Contains poison.", buffList: buffList, convertsToWhenUsed: Name.EmptyBottle, soundPack: soundPack);
+                    }
+
+                case Name.PotionSlowdown:
+                    {
+                        var buffList = new List<BuffEngine.Buff> {
+                            new BuffEngine.Buff(type: BuffEngine.BuffType.Speed, value: -1f, autoRemoveDelay: 30 * 60, canKill: false, increaseIDAtEveryUse: true)};
+
+                        var soundPack = new PieceSoundPack();
+                        soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropGlass, cooldown: 15, maxPitchVariation: 0.3f));
+
+                        return new Potion(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PotionDarkViolet, blocksMovement: false, category: BoardPiece.Category.Indestructible, allowedFields: shallowWaterToVolcano,
+                            minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 200, toolbarTask: Scheduler.TaskName.GetDrinked, rotatesWhenDropped: true, floatsOnWater: false, readableName: "slowdown potion", description: "Decreases speed.", buffList: buffList, convertsToWhenUsed: Name.EmptyBottle, soundPack: soundPack);
                     }
 
                 case Name.BottleOfOil:
