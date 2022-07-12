@@ -422,7 +422,7 @@
 /processorParam:TextureFormat=Color
 /build:gfx/bottle_oil.png
 
-#begin gfx/bows.png
+#begin gfx/bow.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -432,7 +432,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/bows.png
+/build:gfx/bow.png
 
 #begin gfx/burger.png
 /importer:TextureImporter
