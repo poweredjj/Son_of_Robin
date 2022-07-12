@@ -41,6 +41,7 @@ namespace SonOfRobin
 
             StorageSlot boosterSlot = this.BoosterSlot;
             boosterSlot.allowedPieceNames = boosterNames;
+            boosterSlot.stackLimit = 1;
             boosterSlot.label = "booster";
         }
 
@@ -63,6 +64,8 @@ namespace SonOfRobin
             StorageSlot mainSlot = this.MainSlot;
             StorageSlot boosterSlot = this.BoosterSlot;
 
+            // checking if slots are empty
+
             if (mainSlot.IsEmpty && boosterSlot.IsEmpty)
             {
                 new TextWindow(text: "I need to place some items first.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
@@ -81,7 +84,9 @@ namespace SonOfRobin
                 return;
             }
 
-            BoardPiece mainPiece = mainSlot.GetAllPieces(remove: false)[0];
+            // checking inserted pieces
+
+            List<BoardPiece> piecesToUpgrade = mainSlot.GetAllPieces(remove: false);
             BoardPiece boosterPiece = boosterSlot.GetAllPieces(remove: false)[0];
 
             if (boosterPiece.name == PieceTemplate.Name.EmptyBottle)
@@ -90,22 +95,38 @@ namespace SonOfRobin
                 return;
             }
 
-            if (mainPiece.buffList.Any())
+            foreach (BoardPiece pieceToUpgrade in piecesToUpgrade)
             {
-                new TextWindow(text: $"This | '{mainPiece.name}' has already been upgraded.", imageList: new List<Texture2D> { mainPiece.sprite.frame.texture }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
-                return;
+                if (pieceToUpgrade.buffList.Any())
+                {
+                    new TextWindow(text: $"This | '{pieceToUpgrade.name}' has already been upgraded.", imageList: new List<Texture2D> { pieceToUpgrade.sprite.frame.texture }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
+                    return;
+                }
             }
 
-            bool equipMode = mainPiece.GetType() == typeof(Equipment);
+            // checking for allowed combinations
+
+            bool equipMode = piecesToUpgrade[0].GetType() == typeof(Equipment);
             var allowedBoosterNames = equipMode ? defenseBoosterNames : attackBoosterNames;
 
             if (!allowedBoosterNames.Contains(boosterPiece.name))
             {
-                new TextWindow(text: $"I cannot upgrade | '{mainPiece.name}' with '{boosterPiece.name}'.", imageList: new List<Texture2D> { mainPiece.sprite.frame.texture, boosterPiece.sprite.frame.texture }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
+                new TextWindow(text: $"I cannot upgrade | '{piecesToUpgrade[0].name}' with '{boosterPiece.name}'.", imageList: new List<Texture2D> { piecesToUpgrade[0].sprite.frame.texture, boosterPiece.sprite.frame.texture }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
                 return;
             }
 
-            mainPiece.buffList.AddRange(boosterPiece.buffList);
+            // making new buffs (to ensure that autoRemoveDelay == 0 and that every piece gets its own individual buffs)
+
+            foreach (BoardPiece pieceToUpgrade in piecesToUpgrade)
+            {
+                foreach (BuffEngine.Buff buff in boosterPiece.buffList)
+                {
+                    BuffEngine.Buff newBuff = new BuffEngine.Buff(type: buff.type, value: buff.value, autoRemoveDelay: 0, isPermanent: false, canKill: false);
+                    pieceToUpgrade.buffList.Add(newBuff);
+                }
+            }
+
+            // removing booster
 
             if (boosterPiece.GetType() == typeof(Potion))
             {

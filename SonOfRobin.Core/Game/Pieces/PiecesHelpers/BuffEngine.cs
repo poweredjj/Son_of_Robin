@@ -24,8 +24,8 @@ namespace SonOfRobin
             public int activationFrame;
             public int endFrame;
             public readonly bool isPermanent;
-            public readonly int sleepFrames;
-            public Buff(BuffType type, object value, int autoRemoveDelay = 0, int sleepFrames = 0, bool isPermanent = false, bool canKill = false, bool increaseIDAtEveryUse = false)
+            public readonly int sleepFramesNeededForActivation;
+            public Buff(BuffType type, object value, int autoRemoveDelay = 0, int sleepFramesNeededForActivation = 0, bool isPermanent = false, bool canKill = false, bool increaseIDAtEveryUse = false)
             {
                 this.increaseIDAtEveryUse = increaseIDAtEveryUse; // for buffs that could stack (like sleeping buffs)
                 this.id = Helpers.GetUniqueHash();
@@ -33,7 +33,7 @@ namespace SonOfRobin
                 this.value = value;
                 this.canKill = canKill;
                 this.isPermanent = isPermanent;
-                this.sleepFrames = sleepFrames;
+                this.sleepFramesNeededForActivation = sleepFramesNeededForActivation;
                 this.isPositive = this.GetIsPositive();
                 this.description = this.GetDescription();
                 this.iconText = this.GetIconText();
@@ -48,7 +48,7 @@ namespace SonOfRobin
             public bool HadEnoughSleepForBuff(World world)
             {
                 int framesSlept = world.currentUpdate - world.player.wentToSleepFrame;
-                return framesSlept >= this.sleepFrames;
+                return framesSlept >= this.sleepFramesNeededForActivation;
             }
 
             private bool GetIsPositive()
@@ -207,7 +207,7 @@ namespace SonOfRobin
                         throw new DivideByZeroException($"Unsupported buff type - {this.type}.");
                 }
 
-                if (this.sleepFrames > 0) description = $"After a long sleep: {Helpers.FirstCharToLowerCase(description)}";
+                if (this.sleepFramesNeededForActivation > 0) description = $"After a long sleep: {Helpers.FirstCharToLowerCase(description)}";
 
                 return description;
             }
@@ -335,7 +335,7 @@ namespace SonOfRobin
 
             if (this.buffDict.ContainsKey(buff.id)) throw new DivideByZeroException($"Buff has been added twice - id {buff.id} type {buff.type}.");
 
-            if (buff.sleepFrames > 0 && !buff.HadEnoughSleepForBuff(world)) return;
+            if (buff.sleepFramesNeededForActivation > 0 && !buff.HadEnoughSleepForBuff(world)) return;
 
             bool hadThisBuffBefore = this.HasBuff(buff.type);
             this.ProcessBuff(world: world, buff: buff, add: true, hadThisBuffBefore: hadThisBuffBefore);
@@ -760,7 +760,7 @@ namespace SonOfRobin
 
             object value;
             int autoRemoveDelay = Math.Max(buff1.autoRemoveDelay, buff2.autoRemoveDelay);
-            int sleepFrames = Math.Max(buff1.sleepFrames, buff2.sleepFrames);
+            int sleepFrames = Math.Max(buff1.sleepFramesNeededForActivation, buff2.sleepFramesNeededForActivation);
             bool canKill = buff1.canKill || buff2.canKill;
             bool increaseIDAtEveryUse = buff1.increaseIDAtEveryUse || buff2.increaseIDAtEveryUse;
 
@@ -842,7 +842,7 @@ namespace SonOfRobin
                     throw new DivideByZeroException($"Unsupported buff type - {buffType}.");
             }
 
-            return new Buff(type: buffType, value: value, autoRemoveDelay: autoRemoveDelay, isPermanent: buff1.isPermanent, sleepFrames: sleepFrames, canKill: canKill, increaseIDAtEveryUse: increaseIDAtEveryUse);
+            return new Buff(type: buffType, value: value, autoRemoveDelay: autoRemoveDelay, isPermanent: buff1.isPermanent, sleepFramesNeededForActivation: sleepFrames, canKill: canKill, increaseIDAtEveryUse: increaseIDAtEveryUse);
         }
 
     }
