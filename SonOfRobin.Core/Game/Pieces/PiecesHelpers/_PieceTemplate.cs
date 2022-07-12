@@ -1128,7 +1128,7 @@ namespace SonOfRobin
 
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsOn, sound: new Sound(name: SoundData.Name.FryingPan, isLooped: true));
-                        soundPack.AddAction(action: PieceSoundPack.Action.Open, sound: new Sound(name: SoundData.Name.StoneMove, ignore3DAlways: true));
+                        soundPack.AddAction(action: PieceSoundPack.Action.Open, sound: new Sound(name: SoundData.Name.StoneMove1, ignore3DAlways: true));
 
                         var hotPlate = new Cooker(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HotPlate, allowedFields: allowedFields, category: BoardPiece.Category.Stone, floatsOnWater: false, minDistance: 0, maxDistance: 100, maxMassBySize: null, generation: generation, maxHitPoints: 20, foodMassMultiplier: 1.1f, readableName: "hot plate", description: "For cooking.", ingredientSpace: 1, boosterSpace: 1, soundPack: soundPack);
 

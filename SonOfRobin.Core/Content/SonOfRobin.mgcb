@@ -4700,6 +4700,12 @@
 /processorParam:Quality=Best
 /build:sound/571670__nachtmahrtv__frying-in-a-pan.ogg
 
+#begin sound/572754__f-m-audio__scraping-and-clunking-large-stone-1.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sound/572754__f-m-audio__scraping-and-clunking-large-stone-1.ogg
+
 #begin sound/575542__tissman__menu-move7.ogg
 /importer:OggImporter
 /processor:SoundEffectProcessor
