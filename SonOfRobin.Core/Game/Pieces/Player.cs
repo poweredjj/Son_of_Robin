@@ -262,13 +262,36 @@ namespace SonOfRobin
         private void ConfigureEquip()
         {
             StorageSlot backpackSlot = this.equipStorage.AllSlots[0];
-            backpackSlot.allowedPieceNames = new List<PieceTemplate.Name> { PieceTemplate.Name.BackpackSmall };
+            backpackSlot.allowedPieceNames = new List<PieceTemplate.Name>();
             backpackSlot.label = "backpack";
 
+            foreach (PieceInfo.Info info in PieceInfo.AllInfo)
+            {
+                foreach (BuffEngine.Buff buff in info.buffList)
+                {
+                    if (buff.type == BuffEngine.BuffType.InvWidth || buff.type == BuffEngine.BuffType.InvHeight)
+                    {
+                        backpackSlot.allowedPieceNames.Add(info.name);
+                        break;
+                    }
+                }
+            }
+
             StorageSlot beltSlot = this.equipStorage.AllSlots[1];
-            beltSlot.allowedPieceNames = new List<PieceTemplate.Name> { PieceTemplate.Name.BeltMedium };
+            beltSlot.allowedPieceNames = new List<PieceTemplate.Name>();
             beltSlot.label = "belt";
 
+            foreach (PieceInfo.Info info in PieceInfo.AllInfo)
+            {
+                foreach (BuffEngine.Buff buff in info.buffList)
+                {
+                    if (buff.type == BuffEngine.BuffType.ToolbarWidth || buff.type == BuffEngine.BuffType.ToolbarHeight)
+                    {
+                        beltSlot.allowedPieceNames.Add(info.name);
+                        break;
+                    }
+                }
+            }
 
             foreach (StorageSlot slot in this.equipStorage.AllSlots.GetRange(2, 2))
             {
