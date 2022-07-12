@@ -184,8 +184,9 @@ namespace SonOfRobin
                 { "locked", this.locked},
                 { "hidden", this.hidden},
                 { "label", this.label},
-                {"allowedPieceNames", this.allowedPieceNames },
-                {"pieceList", pieceList },
+                { "allowedPieceNames", this.allowedPieceNames },
+                { "stackLimit", this.stackLimit },
+                { "pieceList", pieceList },
             };
 
             return slotData;
@@ -199,6 +200,7 @@ namespace SonOfRobin
             this.hidden = (bool)slotDict["hidden"];
             this.label = (string)slotDict["label"];
             this.allowedPieceNames = (List<PieceTemplate.Name>)slotDict["allowedPieceNames"];
+            this.stackLimit = (byte)slotDict["stackLimit"];
             var pieceListObj = (List<Object>)slotDict["pieceList"];
 
             // repeated in World

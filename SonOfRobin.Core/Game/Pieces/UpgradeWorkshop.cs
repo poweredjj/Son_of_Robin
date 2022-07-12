@@ -8,12 +8,9 @@ namespace SonOfRobin
     public class UpgradeWorkshop : BoardPiece
     {
         public static readonly List<PieceTemplate.Name> mainNames = new List<PieceTemplate.Name>(); // to be updated during first use
-        private static readonly List<PieceTemplate.Name> boosterNames = new List<PieceTemplate.Name>(); // to be updated during first use
+        private static readonly List<PieceTemplate.Name> boosterNames = new List<PieceTemplate.Name> { PieceTemplate.Name.BottleOfPoison, PieceTemplate.Name.EmptyBottle };
 
-        private static readonly List<PieceTemplate.Name> attackBoosterNames = new List<PieceTemplate.Name> { PieceTemplate.Name.BottleOfPoison };
-        private static readonly List<PieceTemplate.Name> defenseBoosterNames = new List<PieceTemplate.Name> { PieceTemplate.Name.BottleOfPoison, PieceTemplate.Name.PotionMaxHP, PieceTemplate.Name.PotionStrength, PieceTemplate.Name.PotionMaxStamina, PieceTemplate.Name.EmptyBottle };
-
-        private StorageSlot CombineTriggerSlot { get { return this.pieceStorage.GetSlot(0, 0); } }
+        private StorageSlot UpgradeTriggerSlot { get { return this.pieceStorage.GetSlot(0, 0); } }
         private StorageSlot MainSlot { get { return this.pieceStorage.GetSlot(1, 0); } }
         private StorageSlot BoosterSlot { get { return this.pieceStorage.GetSlot(2, 0); } }
 
@@ -28,12 +25,12 @@ namespace SonOfRobin
 
             this.boardTask = Scheduler.TaskName.OpenContainer;
 
-            this.pieceStorage = new PieceStorage(width: 3, height: 1, world: this.world, storagePiece: this, storageType: PieceStorage.StorageType.Cooking);
+            this.pieceStorage = new PieceStorage(width: 3, height: 1, world: this.world, storagePiece: this, storageType: PieceStorage.StorageType.Upgrade);
 
-            StorageSlot combineTriggerSlot = this.CombineTriggerSlot;
-            BoardPiece combineTrigger = PieceTemplate.Create(templateName: PieceTemplate.Name.UpgradeTrigger, world: this.world);
-            combineTriggerSlot.AddPiece(combineTrigger);
-            combineTriggerSlot.locked = true;
+            StorageSlot upgradeTriggerSlot = this.UpgradeTriggerSlot;
+            BoardPiece upgradeTrigger = PieceTemplate.Create(templateName: PieceTemplate.Name.UpgradeTrigger, world: this.world);
+            upgradeTriggerSlot.AddPiece(upgradeTrigger);
+            upgradeTriggerSlot.locked = true;
 
             StorageSlot mainSlot = this.MainSlot;
             mainSlot.allowedPieceNames = mainNames;
@@ -49,14 +46,11 @@ namespace SonOfRobin
         {
             if (mainNames.Any() && boosterNames.Any()) return;
 
-            var typeList = new List<System.Type> { typeof(Tool), typeof(Equipment), typeof(Projectile) };
+            var typeList = new List<System.Type> { typeof(Tool), typeof(Projectile) };
             foreach (PieceInfo.Info info in PieceInfo.AllInfo)
             {
                 if (typeList.Contains(info.type) && !info.shootsProjectile) mainNames.Add(info.name);
             }
-
-            boosterNames.AddRange(attackBoosterNames);
-            boosterNames.AddRange(defenseBoosterNames);
         }
 
         public void Upgrade()
@@ -68,7 +62,7 @@ namespace SonOfRobin
 
             if (mainSlot.IsEmpty && boosterSlot.IsEmpty)
             {
-                new TextWindow(text: "I need to place some items first.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
+                new TextWindow(text: "There are no items placed.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
                 return;
             }
 
@@ -104,24 +98,13 @@ namespace SonOfRobin
                 }
             }
 
-            // checking for allowed combinations
-
-            bool equipMode = piecesToUpgrade[0].GetType() == typeof(Equipment);
-            var allowedBoosterNames = equipMode ? defenseBoosterNames : attackBoosterNames;
-
-            if (!allowedBoosterNames.Contains(boosterPiece.name))
-            {
-                new TextWindow(text: $"I cannot upgrade | {piecesToUpgrade[0].readableName}\nusing | {boosterPiece.readableName}.", imageList: new List<Texture2D> { piecesToUpgrade[0].sprite.frame.texture, boosterPiece.sprite.frame.texture }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
-                return;
-            }
-
-            // making new buffs (to ensure that autoRemoveDelay == 0 and that every piece gets its own individual buffs)
+            // making new buffs (to ensure that every piece gets its own individual buffs)
 
             foreach (BoardPiece pieceToUpgrade in piecesToUpgrade)
             {
                 foreach (BuffEngine.Buff buff in boosterPiece.buffList)
                 {
-                    BuffEngine.Buff newBuff = new BuffEngine.Buff(type: buff.type, value: buff.value, autoRemoveDelay: 0, isPermanent: false, canKill: false);
+                    BuffEngine.Buff newBuff = new BuffEngine.Buff(type: buff.type, value: buff.value, autoRemoveDelay: buff.autoRemoveDelay, isPermanent: buff.isPermanent, canKill: buff.canKill);
                     pieceToUpgrade.buffList.Add(newBuff);
                 }
             }
@@ -131,7 +114,6 @@ namespace SonOfRobin
             if (boosterPiece.GetType() == typeof(Potion))
             {
                 Potion potion = (Potion)boosterPiece;
-
                 BoardPiece emptyContainter = PieceTemplate.Create(templateName: potion.convertsToWhenUsed, world: this.world);
                 boosterSlot.DestroyPieceAndReplaceWithAnother(emptyContainter);
             }

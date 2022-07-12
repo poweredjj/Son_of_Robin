@@ -29,6 +29,9 @@ namespace SonOfRobin
             {
                 this.increaseIDAtEveryUse = increaseIDAtEveryUse; // for buffs that could stack (like sleeping buffs)
                 this.id = Helpers.GetUniqueHash();
+                // AutoRemoveDelay should not be used for equip!
+                // It should only be used for temporary buffs (food, status effects, etc.).
+                this.autoRemoveDelay = autoRemoveDelay;
                 this.type = type;
                 this.value = value;
                 this.canKill = canKill;
@@ -38,9 +41,6 @@ namespace SonOfRobin
                 this.description = this.GetDescription();
                 this.iconText = this.GetIconText();
 
-                // AutoRemoveDelay should not be used for equip!
-                // It should only be used for temporary buffs (food, status effects, etc.).
-                this.autoRemoveDelay = autoRemoveDelay;
                 this.endFrame = 0; // to be assigned during activation
                 this.activationFrame = 0; // to be assigned during activation
             }
@@ -300,7 +300,7 @@ namespace SonOfRobin
         {
             var buffDataDict = new Dictionary<string, Object>
             {
-              {"buffDict", this.buffDict},
+              { "buffDict", this.buffDict },
             };
 
             return buffDataDict;
