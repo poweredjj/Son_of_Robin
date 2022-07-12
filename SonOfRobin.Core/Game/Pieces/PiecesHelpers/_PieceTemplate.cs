@@ -172,7 +172,8 @@ namespace SonOfRobin
             TentMedium,
             TentBig,
 
-            BackpackMedium,
+            Bag,
+            BackpackSmall,
             BeltMedium,
             Map,
 
@@ -2301,7 +2302,19 @@ namespace SonOfRobin
                             floatsOnWater: false, minDistance: 0, maxDistance: 500, maxMassBySize: null, maxHitPoints: 200, sleepEngine: sleepEngine, readableName: "big tent", description: "Luxurious shelter for sleeping.\nProtects against enemies.", buffList: buffList, lightEngine: new LightEngine(size: 0, opacity: 0.45f, colorActive: false, color: Color.Transparent, addedGfxRectMultiplier: 4f, isActive: true, castShadows: true));
                     }
 
-                case Name.BackpackMedium:
+                case Name.Bag:
+                    {
+                        var allowedFields = new AllowedFields(rangeNameList: new List<AllowedFields.RangeName> { AllowedFields.RangeName.WaterShallow, AllowedFields.RangeName.WaterMedium, AllowedFields.RangeName.GroundAll });
+
+                        var buffList = new List<BuffEngine.Buff> {
+                            new BuffEngine.Buff(type: BuffEngine.BuffType.InvWidth, value: (byte)1),
+                            new BuffEngine.Buff(type: BuffEngine.BuffType.InvHeight, value: (byte)1)};
+
+                        return new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Bag, blocksMovement: true, category: BoardPiece.Category.Flesh,
+                            allowedFields: allowedFields, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 500, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "small bag", description: "Expands inventory space a little.");
+                    }
+
+                case Name.BackpackSmall:
                     {
                         var allowedFields = new AllowedFields(rangeNameList: new List<AllowedFields.RangeName> { AllowedFields.RangeName.WaterShallow, AllowedFields.RangeName.WaterMedium, AllowedFields.RangeName.GroundAll });
 
@@ -2309,8 +2322,8 @@ namespace SonOfRobin
                             new BuffEngine.Buff(type: BuffEngine.BuffType.InvWidth, value: (byte)2),
                             new BuffEngine.Buff(type: BuffEngine.BuffType.InvHeight, value: (byte)2)};
 
-                        return new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BackpackMedium, blocksMovement: true, category: BoardPiece.Category.Flesh,
-                            allowedFields: allowedFields, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 500, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "medium backpack", description: "Expands inventory space.");
+                        return new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BackpackSmall, blocksMovement: true, category: BoardPiece.Category.Flesh,
+                            allowedFields: allowedFields, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 500, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "small backpack", description: "Expands inventory space.");
                     }
 
                 case Name.BeltMedium:
@@ -2320,7 +2333,7 @@ namespace SonOfRobin
                         var buffList = new List<BuffEngine.Buff> {
                             new BuffEngine.Buff(type: BuffEngine.BuffType.ToolbarWidth, value: (byte)3)};
 
-                        return new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BeltMedium, blocksMovement: true, category: BoardPiece.Category.Flesh,
+                        return new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BeltMedium, blocksMovement: false, category: BoardPiece.Category.Flesh,
                             allowedFields: allowedFields, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 500, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "medium belt", description: "Expands belt space.");
                     }
 

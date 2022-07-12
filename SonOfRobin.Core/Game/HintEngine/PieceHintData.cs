@@ -102,7 +102,7 @@ namespace SonOfRobin
                     type: PieceHint.Type.LeatherPositive,
                     messageList: new List<HintMessage> {
                     new HintMessage(text: $"I can use this | leather to make a | map.\nBut I need a | {PieceInfo.GetInfo(PieceTemplate.Name.WorkshopBasic).readableName} to make it.", imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.Leather), PieceInfo.GetTexture(PieceTemplate.Name.Map),  PieceInfo.GetTexture(PieceTemplate.Name.WorkshopBasic)}, boxType: HintMessage.BoxType.Dialogue, blockInput: true),
-                    new HintMessage(text: "If I had more | leather,\nI could make a | backpack or a | belt.", imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.Leather), PieceInfo.GetTexture(PieceTemplate.Name.BackpackMedium), PieceInfo.GetTexture(PieceTemplate.Name.BeltMedium)}, boxType: HintMessage.BoxType.Dialogue, blockInput: true)},
+                    new HintMessage(text: "If I had more | leather,\nI could make a | backpack or a | belt.", imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.Leather), PieceInfo.GetTexture(PieceTemplate.Name.BackpackSmall), PieceInfo.GetTexture(PieceTemplate.Name.BeltMedium)}, boxType: HintMessage.BoxType.Dialogue, blockInput: true)},
                     playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.Leather}),
 
                 new PieceHint(
@@ -115,10 +115,10 @@ namespace SonOfRobin
                 new PieceHint(
                     type: PieceHint.Type.BackpackPositive,
                     messageList: new List<HintMessage> {
-                    new HintMessage(text: "This backpack | has a lot of free space.\nI should equip it now.", imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.BackpackMedium)}, boxType: HintMessage.BoxType.Dialogue, blockInput: true)},
-                    imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.BackpackMedium) },
+                    new HintMessage(text: "This backpack | has a lot of free space.\nI should equip it now.", imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.BackpackSmall)}, boxType: HintMessage.BoxType.Dialogue, blockInput: true)},
+                    imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.BackpackSmall) },
                     tutorialsToActivate: new List<Tutorials.Type> {Tutorials.Type.Equip},
-                    playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.BackpackMedium}),
+                    playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.BackpackSmall}),
 
                 new PieceHint(
                     type: PieceHint.Type.BeltPositive,

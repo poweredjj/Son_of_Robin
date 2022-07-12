@@ -236,7 +236,7 @@ namespace SonOfRobin
 
             Bag,
             BagOutline,
-            BackpackMedium,
+            BackpackSmall,
             BeltMedium,
             Map,
 
@@ -797,7 +797,7 @@ namespace SonOfRobin
             AddFrameList(animPackage: PkgName.Map, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "parchment", layer: 0, scale: 0.03f));
             AddFrameList(animPackage: PkgName.Bag, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "bag", layer: 1, scale: 0.2f));
             AddFrameList(animPackage: PkgName.BagOutline, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "bag_outline", layer: 1, scale: 0.2f));
-            AddFrameList(animPackage: PkgName.BackpackMedium, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "backpack", layer: 1, scale: 0.5f));
+            AddFrameList(animPackage: PkgName.BackpackSmall, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "backpack", layer: 1, scale: 0.5f));
             AddFrameList(animPackage: PkgName.Miss, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "miss", layer: 2));
             AddFrameList(animPackage: PkgName.Zzz, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "zzz", layer: 2));
             AddFrameList(animPackage: PkgName.Heart, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "heart_16x16", layer: 2));

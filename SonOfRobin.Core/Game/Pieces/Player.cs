@@ -262,7 +262,7 @@ namespace SonOfRobin
         private void ConfigureEquip()
         {
             StorageSlot backpackSlot = this.equipStorage.AllSlots[0];
-            backpackSlot.allowedPieceNames = new List<PieceTemplate.Name> { PieceTemplate.Name.BackpackMedium };
+            backpackSlot.allowedPieceNames = new List<PieceTemplate.Name> { PieceTemplate.Name.BackpackSmall };
             backpackSlot.label = "backpack";
 
             StorageSlot beltSlot = this.equipStorage.AllSlots[1];
