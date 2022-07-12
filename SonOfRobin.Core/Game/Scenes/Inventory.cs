@@ -689,7 +689,7 @@ namespace SonOfRobin
             bool addExtinguish = piece.name == PieceTemplate.Name.FireplaceTriggerOff;
             bool addCombine = piece.name == PieceTemplate.Name.CombineTrigger;
 
-            new PieceContextMenu(piece: piece, storage: this.storage, slot: slot, percentPosX: percentPos.X, percentPosY: percentPos.Y, addMove: addMove, addDrop: addDrop, addCook: addCook, addIgnite: addIgnite, addExtinguish: addExtinguish, addCombine: addCombine);
+            new PieceContextMenu(piece: piece, storage: this.storage, slot: slot, percentPosX: percentPos.X, percentPosY: percentPos.Y, addMove: addMove, addDrop: addDrop, addCook: addCook, addIgnite: addIgnite, addExtinguish: addExtinguish, addUpgrade: addCombine);
             return;
         }
         private void MoveOtherInventoryToTop()

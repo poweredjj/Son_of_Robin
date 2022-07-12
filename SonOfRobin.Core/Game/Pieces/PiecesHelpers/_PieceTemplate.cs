@@ -77,7 +77,7 @@ namespace SonOfRobin
             Anvil,
             HotPlate,
             CookingPot,
-            CombineWorkshop,
+            UpgradeBench,
 
             Stick,
             Stone,
@@ -1150,7 +1150,7 @@ namespace SonOfRobin
                         return cookingPot;
                     }
 
-                case Name.CombineWorkshop:
+                case Name.UpgradeBench:
                     {
                         var allowedFields = new AllowedFields(rangeDict: new Dictionary<TerrainName, AllowedRange>() {
                             { TerrainName.Height, new AllowedRange(min: Terrain.waterLevelMax, max: Terrain.volcanoEdgeMin) }});
@@ -1158,7 +1158,7 @@ namespace SonOfRobin
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.Open, sound: new Sound(name: SoundData.Name.ToolsMove, ignore3DAlways: true));
 
-                        var combineWorkshop = new CombineWorkshop(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WorkshopCombine, allowedFields: allowedFields, category: BoardPiece.Category.Metal, floatsOnWater: false, minDistance: 0, maxDistance: 100, maxMassBySize: null, generation: generation, maxHitPoints: 30, readableName: "combine workshop", description: "For combining various items.", soundPack: soundPack);
+                        var combineWorkshop = new UpgradeWorkshop(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.UpgradeBench, allowedFields: allowedFields, category: BoardPiece.Category.Metal, floatsOnWater: false, minDistance: 0, maxDistance: 100, maxMassBySize: null, generation: generation, maxHitPoints: 30, readableName: "upgrade bench", description: "For upgrading items.", soundPack: soundPack);
 
                         combineWorkshop.sprite.AssignNewName("off");
                         return combineWorkshop;
