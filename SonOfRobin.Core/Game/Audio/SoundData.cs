@@ -142,6 +142,7 @@ namespace SonOfRobin
             ArrowHit,
             ClothRustle1,
             ClothRustle2,
+            ItemUpgrade,
 
             SnoringFemale,
             SnoringMale,
@@ -427,6 +428,7 @@ namespace SonOfRobin
             { Name.PaperMove2, "517732__zovipoland__book-page-change-1-2" },
             { Name.ClothRustle1, "427865__leonelmail__clothing-rustle-nylon_1" },
             { Name.ClothRustle2, "427865__leonelmail__clothing-rustle-nylon_2" },
+            { Name.ItemUpgrade, "485436__nobarknoonan__door-slam" },
             };
     }
 }

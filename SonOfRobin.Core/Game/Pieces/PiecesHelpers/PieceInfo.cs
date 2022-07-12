@@ -20,6 +20,7 @@ namespace SonOfRobin
             public readonly Type type;
             public readonly bool convertsWhenUsed;
             public readonly PieceTemplate.Name convertsToWhenUsed;
+            public readonly bool shootsProjectile;
             public bool isCarnivorous;
             public readonly BoardPiece.Category category;
             public readonly bool canBePickedUp;
@@ -70,6 +71,8 @@ namespace SonOfRobin
                     this.convertsWhenUsed = true;
                     this.convertsToWhenUsed = ((Potion)piece).convertsToWhenUsed;
                 }
+                this.shootsProjectile = false;
+                if (piece.GetType() == typeof(Tool)) this.shootsProjectile = ((Tool)piece).shootsProjectile;
                 this.isEatenBy = new List<PieceTemplate.Name> { };
 
                 this.hasFruit = false;

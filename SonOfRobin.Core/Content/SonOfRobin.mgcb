@@ -4334,6 +4334,12 @@
 /processorParam:Quality=Best
 /build:sound/485076__inspectorj__heartbeat-regular-single-01-01-loop.ogg
 
+#begin sound/485436__nobarknoonan__door-slam.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sound/485436__nobarknoonan__door-slam.ogg
+
 #begin sound/486628__nanisia__japanese-summer-cicadas.ogg
 /importer:OggImporter
 /processor:SoundEffectProcessor

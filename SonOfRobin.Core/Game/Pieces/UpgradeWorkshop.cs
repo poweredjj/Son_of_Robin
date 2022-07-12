@@ -52,7 +52,7 @@ namespace SonOfRobin
             var typeList = new List<System.Type> { typeof(Tool), typeof(Equipment), typeof(Projectile) };
             foreach (PieceInfo.Info info in PieceInfo.AllInfo)
             {
-                if (typeList.Contains(info.type)) mainNames.Add(info.name);
+                if (typeList.Contains(info.type) && !info.shootsProjectile) mainNames.Add(info.name);
             }
 
             boosterNames.AddRange(attackBoosterNames);
@@ -99,7 +99,7 @@ namespace SonOfRobin
             {
                 if (pieceToUpgrade.buffList.Any())
                 {
-                    new TextWindow(text: $"This | '{pieceToUpgrade.name}' has already been upgraded.", imageList: new List<Texture2D> { pieceToUpgrade.sprite.frame.texture }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
+                    new TextWindow(text: $"This | {pieceToUpgrade.readableName} has already been upgraded.", imageList: new List<Texture2D> { pieceToUpgrade.sprite.frame.texture }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
                     return;
                 }
             }
@@ -111,7 +111,7 @@ namespace SonOfRobin
 
             if (!allowedBoosterNames.Contains(boosterPiece.name))
             {
-                new TextWindow(text: $"I cannot upgrade | '{piecesToUpgrade[0].name}' with '{boosterPiece.name}'.", imageList: new List<Texture2D> { piecesToUpgrade[0].sprite.frame.texture, boosterPiece.sprite.frame.texture }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
+                new TextWindow(text: $"I cannot upgrade | {piecesToUpgrade[0].readableName}\nusing | {boosterPiece.readableName}.", imageList: new List<Texture2D> { piecesToUpgrade[0].sprite.frame.texture, boosterPiece.sprite.frame.texture }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
                 return;
             }
 
@@ -136,6 +136,8 @@ namespace SonOfRobin
                 boosterSlot.DestroyPieceAndReplaceWithAnother(emptyContainter);
             }
             else boosterSlot.GetAllPieces(remove: true);
+
+            Sound.QuickPlay(SoundData.Name.ItemUpgrade);
         }
 
         public void TurnOn()
