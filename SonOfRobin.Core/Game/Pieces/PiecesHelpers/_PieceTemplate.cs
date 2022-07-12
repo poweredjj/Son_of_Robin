@@ -1675,7 +1675,7 @@ namespace SonOfRobin
                 case Name.PotionWeakness:
                     {
                         var buffList = new List<BuffEngine.Buff> {
-                             new BuffEngine.Buff(type: BuffEngine.BuffType.Strength, value: (int)-2, autoRemoveDelay: 60 * 60 * 1)};
+                             new BuffEngine.Buff(type: BuffEngine.BuffType.Strength, value: (int)-2, autoRemoveDelay: 60 * 60 * 1, increaseIDAtEveryUse: true)};
 
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropGlass, cooldown: 15, maxPitchVariation: 0.3f));

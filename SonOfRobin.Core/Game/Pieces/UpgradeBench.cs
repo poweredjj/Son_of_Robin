@@ -104,7 +104,7 @@ namespace SonOfRobin
             {
                 foreach (BuffEngine.Buff buff in boosterPiece.buffList)
                 {
-                    BuffEngine.Buff newBuff = new BuffEngine.Buff(type: buff.type, value: buff.value, autoRemoveDelay: buff.autoRemoveDelay, isPermanent: buff.isPermanent, canKill: buff.canKill);
+                    BuffEngine.Buff newBuff = new BuffEngine.Buff(type: buff.type, value: buff.value, autoRemoveDelay: buff.autoRemoveDelay, isPermanent: buff.isPermanent, canKill: buff.canKill, increaseIDAtEveryUse: true);
                     pieceToUpgrade.buffList.Add(newBuff);
                 }
             }
