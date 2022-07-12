@@ -10,15 +10,19 @@ namespace SonOfRobin
 
                 new Craft.Recipe(pieceToCreate: PieceTemplate.Name.WorkshopEssential, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodLogRegular, 6 } }, isReversible: true, unlocksWhenCrafted: new List<PieceTemplate.Name> {PieceTemplate.Name.WorkshopBasic }),
 
-                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.WorkshopBasic, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodPlank, 20 }, { PieceTemplate.Name.WoodLogHard, 4 }, { PieceTemplate.Name.Stone, 5 }, { PieceTemplate.Name.Granite, 2 } }, isReversible: true, isHidden: true, unlocksWhenCrafted: new List<PieceTemplate.Name> { PieceTemplate.Name.WorkshopAdvanced, PieceTemplate.Name.Furnace, PieceTemplate.Name.HotPlate }),
+                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.WorkshopBasic, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodPlank, 20 }, { PieceTemplate.Name.WoodLogHard, 4 }, { PieceTemplate.Name.Stone, 5 }, { PieceTemplate.Name.Granite, 2 } }, isReversible: true, isHidden: true, unlocksWhenCrafted: new List<PieceTemplate.Name> { PieceTemplate.Name.WorkshopAdvanced, PieceTemplate.Name.Furnace, PieceTemplate.Name.HotPlate, PieceTemplate.Name.WorkshopLeatherBasic }),
 
-                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.UpgradeBench, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodPlank, 12 },  { PieceTemplate.Name.Nail, 10 },  { PieceTemplate.Name.IronPlate, 1 } }, isReversible: true, isHidden: true ),
-
-                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.WorkshopAdvanced, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodPlank, 12 },  { PieceTemplate.Name.Nail, 30 },  { PieceTemplate.Name.IronPlate, 2 } }, isReversible: true, isHidden: true, unlocksWhenCrafted: new List<PieceTemplate.Name> {PieceTemplate.Name.WorkshopMaster, PieceTemplate.Name.WorkshopAlchemy }),
+                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.WorkshopAdvanced, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodPlank, 12 },  { PieceTemplate.Name.Nail, 30 },  { PieceTemplate.Name.IronPlate, 2 } }, isReversible: true, isHidden: true, unlocksWhenCrafted: new List<PieceTemplate.Name> {PieceTemplate.Name.WorkshopMaster, PieceTemplate.Name.WorkshopAlchemy, PieceTemplate.Name.WorkshopLeatherAdvanced }),
 
                 new Craft.Recipe(pieceToCreate: PieceTemplate.Name.WorkshopMaster, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodPlank, 24 },  { PieceTemplate.Name.Nail, 50 }, { PieceTemplate.Name.IronPlate, 3 }, { PieceTemplate.Name.Clay, 3 }, { PieceTemplate.Name.IronRod, 3 }, { PieceTemplate.Name.EmptyBottle, 2 }, { PieceTemplate.Name.Leather, 5 } }, isReversible: true, isHidden: true),
 
                 new Craft.Recipe(pieceToCreate: PieceTemplate.Name.WorkshopAlchemy, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stone, 4 }, { PieceTemplate.Name.Granite, 2 }, { PieceTemplate.Name.WoodPlank, 4 }, { PieceTemplate.Name.Clay, 1 }, { PieceTemplate.Name.IronPlate, 3 }, { PieceTemplate.Name.EmptyBottle, 2 } }, isReversible: true, isHidden: true),
+
+                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.UpgradeBench, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodPlank, 12 },  { PieceTemplate.Name.Nail, 10 },  { PieceTemplate.Name.IronPlate, 1 } }, isReversible: true, isHidden: true ),
+
+                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.WorkshopLeatherBasic, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodPlank, 12 },  { PieceTemplate.Name.WoodLogHard, 6 }, { PieceTemplate.Name.Leather, 1 }, { PieceTemplate.Name.Clay, 3 } }, isReversible: true, isHidden: true ),
+
+                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.WorkshopLeatherAdvanced, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodPlank, 6 },  { PieceTemplate.Name.WoodLogHard, 3 }, { PieceTemplate.Name.Leather, 4 }, { PieceTemplate.Name.IronPlate, 2 }, { PieceTemplate.Name.Nail, 10 }, { PieceTemplate.Name.IronRod, 3 }, }, isReversible: true, isHidden: true ),
 
                 new Craft.Recipe(pieceToCreate: PieceTemplate.Name.Campfire, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stone, 8 }}, isReversible: true),
 
@@ -78,8 +82,6 @@ namespace SonOfRobin
                 new Craft.Recipe(pieceToCreate: PieceTemplate.Name.ArrowStone, amountToCreate: 5, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stick, 3 }, { PieceTemplate.Name.Stone, 2 }}, isReversible: false, isHidden: true, unlocksWhenCrafted: new List<PieceTemplate.Name> { PieceTemplate.Name.ArrowIron }, craftCountToUnlock: 3),
 
                 new Craft.Recipe(pieceToCreate: PieceTemplate.Name.Map, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Leather, 1 }}, isReversible: true),
-
-                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.BeltMedium, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Leather, 3 }}, isReversible: true),
                 };
         }
 
@@ -99,8 +101,6 @@ namespace SonOfRobin
                     new Craft.Recipe(pieceToCreate: PieceTemplate.Name.TorchBig, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodLogHard, 1 }, { PieceTemplate.Name.BottleOfOil, 1 }}, isHidden: true),
 
                     new Craft.Recipe(pieceToCreate: PieceTemplate.Name.ArrowIron, amountToCreate: 10, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stick, 6 }, { PieceTemplate.Name.IronRod, 1 }}, isReversible: false, isHidden: true, unlocksWhenCrafted: new List<PieceTemplate.Name> {PieceTemplate.Name.ArrowCrystal}, craftCountToUnlock: 3),
-
-                    new Craft.Recipe(pieceToCreate: PieceTemplate.Name.BackpackMedium, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Leather, 5 }}, isReversible: true),
                 };
         }
 
@@ -170,6 +170,26 @@ namespace SonOfRobin
                 new Craft.Recipe(pieceToCreate: PieceTemplate.Name.IronPlate, amountToCreate: 3, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.IronBar, 1 } }, isReversible: false),
                 new Craft.Recipe(pieceToCreate: PieceTemplate.Name.Nail, amountToCreate: 10, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.IronRod, 1 }}),
                 };
+        }
+
+        public static List<Craft.Recipe> GetBasicLeatherRecipes()
+        {
+            return new List<Craft.Recipe>
+            {
+                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.BeltMedium, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Leather, 3 }}, isReversible: true),
+
+                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.BackpackMedium, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Leather, 5 }}, isReversible: true),
+            };
+        }
+
+        public static List<Craft.Recipe> GetAdvancedLeatherRecipes()
+        {
+            return new List<Craft.Recipe>
+            {
+
+                // TODO add advanced leather recipes
+
+            };
         }
 
     }

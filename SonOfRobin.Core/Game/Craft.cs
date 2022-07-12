@@ -8,7 +8,7 @@ namespace SonOfRobin
 {
     public class Craft
     {
-        public enum Category { Field, Essential, Basic, Advanced, Master, Alchemy, Furnace, Anvil }
+        public enum Category { Field, Essential, Basic, Advanced, Master, Alchemy, Furnace, Anvil, LeatherBasic, LeatherAdvanced }
 
         public class Recipe
         {
@@ -366,6 +366,17 @@ namespace SonOfRobin
 
                 var anvilRecipes = CraftData.GetAnvilRecipes();
                 AddCategory(category: Category.Anvil, recipeList: anvilRecipes);
+            }
+
+            {
+                // leather
+
+                List<Recipe> basicLeatherRecipes = CraftData.GetBasicLeatherRecipes();
+                AddCategory(category: Category.LeatherBasic, recipeList: basicLeatherRecipes);
+
+                List<Recipe> advancedLeatherRecipes = CraftData.GetAdvancedLeatherRecipes();
+                advancedLeatherRecipes.InsertRange(0, basicLeatherRecipes);
+                AddCategory(category: Category.LeatherAdvanced, recipeList: advancedLeatherRecipes);
             }
 
             CheckIfRecipesAreCorrect();

@@ -3518,6 +3518,30 @@
 /processorParam:TextureFormat=Color
 /build:gfx/workshop_essential.png
 
+#begin gfx/workshop_leather_advanced.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/workshop_leather_advanced.png
+
+#begin gfx/workshop_leather_basic.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/workshop_leather_basic.png
+
 #begin gfx/workshop_master.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -4561,6 +4585,12 @@
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:sound/531852__tissman__menu-click-1.ogg
+
+#begin sound/536087__eminyildirim__leather-movement.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sound/536087__eminyildirim__leather-movement.ogg
 
 #begin sound/536870__nuncaconoci__stomach-growl.ogg
 /importer:OggImporter

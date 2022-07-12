@@ -144,6 +144,7 @@ namespace SonOfRobin
             ClothRustle1,
             ClothRustle2,
             ItemUpgrade,
+            LeatherMove,
 
             SnoringFemale,
             SnoringMale,
@@ -431,6 +432,7 @@ namespace SonOfRobin
             { Name.ClothRustle1, "427865__leonelmail__clothing-rustle-nylon_1" },
             { Name.ClothRustle2, "427865__leonelmail__clothing-rustle-nylon_2" },
             { Name.ItemUpgrade, "485436__nobarknoonan__door-slam" },
+            { Name.LeatherMove, "536087__eminyildirim__leather-movement" },
             };
     }
 }

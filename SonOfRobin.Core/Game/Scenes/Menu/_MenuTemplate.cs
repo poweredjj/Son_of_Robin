@@ -9,7 +9,7 @@ namespace SonOfRobin
 {
     public class MenuTemplate
     {
-        public enum Name { Main, Options, Sound, Graphics, Controls, Gamepad, Keyboard, Scale, OtherOptions, CreateNewIsland, SetSeed, OpenIslandTemplate, Pause, Load, Save, Tutorials, GameOver, Debug, SoundTest, GfxListTest, Shelter, CreateAnyPiece, GenericConfirm, CraftField, CraftEssential, CraftBasic, CraftAdvanced, CraftMaster, CraftAlchemy, CraftFurnace, CraftAnvil }
+        public enum Name { Main, Options, Sound, Graphics, Controls, Gamepad, Keyboard, Scale, OtherOptions, CreateNewIsland, SetSeed, OpenIslandTemplate, Pause, Load, Save, Tutorials, GameOver, Debug, SoundTest, GfxListTest, Shelter, CreateAnyPiece, GenericConfirm, CraftField, CraftEssential, CraftBasic, CraftAdvanced, CraftMaster, CraftAlchemy, CraftFurnace, CraftAnvil, CraftLeatherBasic, CraftLeatherAdvanced }
 
         public static Menu CreateConfirmationMenu(Object confirmationData)
         {
@@ -554,6 +554,12 @@ namespace SonOfRobin
 
                 case Name.CraftAnvil:
                     return CreateCraftMenu(templateName: templateName, category: Craft.Category.Anvil, label: "ANVIL", soundOpen: SoundData.Name.HammerHits);
+
+                case Name.CraftLeatherBasic:
+                    return CreateCraftMenu(templateName: templateName, category: Craft.Category.LeatherBasic, label: "BASIC LEATHER WORKSHOP", soundOpen: SoundData.Name.LeatherMove);
+
+                case Name.CraftLeatherAdvanced:
+                    return CreateCraftMenu(templateName: templateName, category: Craft.Category.LeatherAdvanced, label: "ADVANCED LEATHER WORKSHOP", soundOpen: SoundData.Name.LeatherMove);
 
                 case Name.Tutorials:
                     {
