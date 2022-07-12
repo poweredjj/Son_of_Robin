@@ -21,20 +21,14 @@ namespace SonOfRobin
             base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedFields: allowedFields, floatsOnWater: floatsOnWater, maxMassBySize: maxMassBySize, generation: generation, canBePickedUp: false, yield: yield, maxHitPoints: maxHitPoints, fadeInAnim: fadeInAnim, isShownOnMiniMap: true, readableName: readableName, description: description, category: category, lightEngine: new LightEngine(size: 0, opacity: 0.7f, colorActive: true, color: Color.Orange * 0.25f, addedGfxRectMultiplier: 8f, isActive: false, castShadows: true), activeState: State.Empty, soundPack: soundPack)
         {
 
-            if (!mainNames.Any())
-            {
-                foreach (PieceInfo.Info info in PieceInfo.AllInfo)
-                {
-                    if (info.type == typeof(Tool) || info.type == typeof(Equipment)) mainNames.Add(info.name);
-                }
-            }
+            this.CreateMainNames();
 
             this.boardTask = Scheduler.TaskName.OpenContainer;
 
             this.pieceStorage = new PieceStorage(width: 3, height: 1, world: this.world, storagePiece: this, storageType: PieceStorage.StorageType.Cooking, stackLimit: 1);
 
             StorageSlot combineTriggerSlot = this.CombineTriggerSlot;
-            BoardPiece combineTrigger = PieceTemplate.Create(templateName: PieceTemplate.Name.CombineTrigger, world: this.world);
+            BoardPiece combineTrigger = PieceTemplate.Create(templateName: PieceTemplate.Name.UpgradeTrigger, world: this.world);
             combineTriggerSlot.AddPiece(combineTrigger);
             combineTriggerSlot.locked = true;
 
@@ -47,11 +41,21 @@ namespace SonOfRobin
             boosterSlot.label = "booster";
         }
 
+        private void CreateMainNames()
+        {
+            if (mainNames.Any()) return;
+
+            var typeList = new List<System.Type> { typeof(Tool), typeof(Equipment), typeof(Projectile) };
+            foreach (PieceInfo.Info info in PieceInfo.AllInfo)
+            {
+                if (typeList.Contains(info.type)) mainNames.Add(info.name);
+            }
+        }
+
         public void Upgrade()
         {
             StorageSlot mainSlot = this.MainSlot;
             StorageSlot boosterSlot = this.BoosterSlot;
-
 
             if (mainSlot.IsEmpty && boosterSlot.IsEmpty)
             {
@@ -85,6 +89,8 @@ namespace SonOfRobin
                 new TextWindow(text: $"This | '{mainPiece.name}' has already been upgraded.", imageList: new List<Texture2D> { mainPiece.sprite.frame.texture }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
                 return;
             }
+
+
 
 
             mainPiece.buffList.AddRange(boosterPiece.buffList);

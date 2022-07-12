@@ -121,7 +121,7 @@ namespace SonOfRobin
             Exclamation,
             FlameRegular,
             CookingTrigger,
-            CombineTrigger,
+            UpgradeTrigger,
             FireplaceTriggerOn,
             FireplaceTriggerOff,
 
@@ -825,10 +825,10 @@ namespace SonOfRobin
                         return new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Flame, destructionDelay: 0, allowedFields: allowedFields, minDistance: 0, maxDistance: 2, generation: generation, serialize: true, canBePickedUp: true, readableName: "cooking starter", description: "Starts cooking process.", activeState: BoardPiece.State.Empty);
                     }
 
-                case Name.CombineTrigger:
+                case Name.UpgradeTrigger:
                     {
                         var allowedFields = new AllowedFields();
-                        return new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Combine, destructionDelay: 0, allowedFields: allowedFields, minDistance: 0, maxDistance: 2, generation: generation, serialize: true, canBePickedUp: true, readableName: "combine", description: "Combines inserted items.", activeState: BoardPiece.State.Empty);
+                        return new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Upgrade, destructionDelay: 0, allowedFields: allowedFields, minDistance: 0, maxDistance: 2, generation: generation, serialize: true, canBePickedUp: true, readableName: "upgrade", description: "Upgrades item.", activeState: BoardPiece.State.Empty);
                     }
 
                 case Name.FireplaceTriggerOn:
