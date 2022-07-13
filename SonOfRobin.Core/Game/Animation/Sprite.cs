@@ -172,6 +172,12 @@ namespace SonOfRobin
             }
             else this.opacity = 1f;
 
+            if (this.boardPiece.name == PieceTemplate.Name.Rabbit)
+            {
+
+                var a = 1;
+            }
+
             this.AssignFrame(checkForCollision: false);
             this.gridGroups = this.GetGridGroups();
 
@@ -663,7 +669,10 @@ namespace SonOfRobin
                 this.frame = AnimData.frameListById[this.CompleteAnimID][this.currentFrameIndex];
             }
             catch (KeyNotFoundException) // placeholder frame if the animation was missing
-            { this.frame = AnimData.frameListById["NoAnim-0-default"][0]; }
+            {
+                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Anim frame not found {this.CompleteAnimID}.");
+                this.frame = AnimData.frameListById["NoAnim-0-default"][0];
+            }
 
             this.currentFrameTimeLeft = this.frame.duration;
             this.UpdateRects();

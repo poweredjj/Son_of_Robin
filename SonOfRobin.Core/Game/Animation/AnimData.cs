@@ -1010,12 +1010,15 @@ namespace SonOfRobin
                 {
                     new AnimFrame(atlasName: atlasName, atlasX: Convert.ToUInt16(width + offsetX), atlasY: Convert.ToUInt16(kvp.Value + offsetY),
                     width: width, height: height, layer: 1, duration: 8, crop: crop, scale: scale),
+
                     new AnimFrame(atlasName: atlasName, atlasX: Convert.ToUInt16((width * 2) + offsetX), atlasY: Convert.ToUInt16(kvp.Value + offsetY),
                     width: width, height: height, layer: 1, duration: 8, crop: crop, scale: scale)
                 };
 
                 AddFrameList(animPackage: packageName, animSize: animSize, animName: $"walk-{kvp.Key}", frameList: frameList);
             }
+
+            AddFrameList(animPackage: packageName, animSize: animSize, frameList: new List<AnimFrame> { framesForPkgs[packageName] }); // adding default frame
         }
 
         public static void AddRPGMakerPackageV2(PkgName packageName, string atlasName, byte setNoX, byte setNoY, byte animSize, bool crop = false, float scale = 1f)
@@ -1051,16 +1054,21 @@ namespace SonOfRobin
                 {
                     new AnimFrame(atlasName: atlasName, atlasX: Convert.ToUInt16(0 + offsetX), atlasY: Convert.ToUInt16(kvp.Value + offsetY),
                     width: width, height: height, layer: 1, duration: 8, crop: crop, scale: scale),
+
                     new AnimFrame(atlasName: atlasName, atlasX: Convert.ToUInt16(width + offsetX), atlasY: Convert.ToUInt16(kvp.Value + offsetY),
                     width: width, height: height, layer: 1, duration: 8, crop: crop, scale: scale),
+
                     new AnimFrame(atlasName: atlasName, atlasX: Convert.ToUInt16((width * 2) + offsetX), atlasY: Convert.ToUInt16(kvp.Value + offsetY),
                     width: width, height: height, layer: 1, duration: 8, crop: crop, scale: scale),
+
                     new AnimFrame(atlasName: atlasName, atlasX: Convert.ToUInt16(width + offsetX), atlasY: Convert.ToUInt16(kvp.Value + offsetY),
                     width: width, height: height, layer: 1, duration: 8, crop: crop, scale: scale)
                 };
 
                 AddFrameList(animPackage: packageName, animSize: animSize, animName: $"walk-{kvp.Key}", frameList: frameList);
             }
+
+            AddFrameList(animPackage: packageName, animSize: animSize, frameList: new List<AnimFrame> { framesForPkgs[packageName] }); // adding default frame
         }
 
     }
