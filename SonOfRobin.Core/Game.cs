@@ -98,6 +98,13 @@ namespace SonOfRobin
             whiteRectangle = new Texture2D(GraphicsDevice, 1, 1);
             whiteRectangle.SetData(new[] { Color.White });
 
+            if (!Directory.Exists(SonOfRobinGame.gameDataPath)) Directory.CreateDirectory(SonOfRobinGame.gameDataPath);
+            if (!Directory.Exists(SonOfRobinGame.worldTemplatesPath)) Directory.CreateDirectory(SonOfRobinGame.worldTemplatesPath);
+            if (!Directory.Exists(SonOfRobinGame.saveGamesPath)) Directory.CreateDirectory(SonOfRobinGame.saveGamesPath);
+
+            Preferences.Initialize(); // to set some default values
+            Preferences.Load();
+
             if (Preferences.FullScreenMode)
             {
                 graphics.IsFullScreen = true;

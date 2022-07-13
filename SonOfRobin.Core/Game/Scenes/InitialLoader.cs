@@ -2,22 +2,19 @@
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
-using System.IO;
 
 namespace SonOfRobin
 {
     public class InitialLoader : Scene
     {
-        public enum Step { Initial, LoadEffects, LoadFonts, MakeDirs, DeleteObsoleteSaves, CreateControlTips, LoadPrefs, LoadSounds, LoadTextures, CreateAnims, LoadKeysGfx, CreateScenes, MakeItemsInfo, MakeCraftRecipes, SetControlTips }
+        public enum Step { Initial, LoadEffects, LoadFonts, DeleteObsoleteSaves, CreateControlTips, LoadSounds, LoadTextures, CreateAnims, LoadKeysGfx, CreateScenes, MakeItemsInfo, MakeCraftRecipes, SetControlTips }
 
         private static Dictionary<Step, string> namesForSteps = new Dictionary<Step, string> {
             { Step.Initial, "starting" },
             { Step.LoadEffects, "loading effects" },
             { Step.LoadFonts, "loading fonts" },
-            { Step.MakeDirs, "creating directories" },
             { Step.DeleteObsoleteSaves, "deleting obsolete saves" },
             { Step.CreateControlTips, "creating control tips" },
-            { Step.LoadPrefs, "loading preferences" },
             { Step.LoadSounds, "loading sounds" },
             { Step.LoadTextures, "loading textures" },
             { Step.CreateAnims, "creating animations" },
@@ -38,12 +35,11 @@ namespace SonOfRobin
         public InitialLoader() : base(inputType: InputTypes.None, priority: 1, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty)
         {
             this.currentStep = 0;
-
-            SonOfRobinGame.game.IsFixedTimeStep = false; // if turned on, some screen updates will be missing
         }
 
         public override void Update(GameTime gameTime)
         {
+            SonOfRobinGame.game.IsFixedTimeStep = false; // if turned on, some screen updates will be missing
             bool finish = false;
 
             switch (this.currentStep)
@@ -60,23 +56,12 @@ namespace SonOfRobin
                     SonOfRobinGame.LoadFonts();
                     break;
 
-                case Step.MakeDirs:
-                    if (!Directory.Exists(SonOfRobinGame.gameDataPath)) Directory.CreateDirectory(SonOfRobinGame.gameDataPath);
-                    if (!Directory.Exists(SonOfRobinGame.worldTemplatesPath)) Directory.CreateDirectory(SonOfRobinGame.worldTemplatesPath);
-                    if (!Directory.Exists(SonOfRobinGame.saveGamesPath)) Directory.CreateDirectory(SonOfRobinGame.saveGamesPath);
-                    break;
-
                 case Step.DeleteObsoleteSaves:
                     SaveHeaderManager.DeleteObsoleteSaves();
                     break;
 
                 case Step.CreateControlTips:
                     SonOfRobinGame.controlTips = new ControlTips();
-                    break;
-
-                case Step.LoadPrefs:
-                    Preferences.Initialize(); // to set some default values
-                    Preferences.Load();
                     break;
 
                 case Step.LoadSounds:
