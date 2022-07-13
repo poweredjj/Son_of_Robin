@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace SonOfRobin
@@ -8,15 +9,35 @@ namespace SonOfRobin
     public class InitialLoader : Scene
     {
         public enum Step { Initial, LoadEffects, LoadFonts, MakeDirs, DeleteObsoleteSaves, CreateControlTips, LoadPrefs, LoadSounds, LoadTextures, CreateAnims, LoadKeysGfx, CreateScenes, MakeItemsInfo, MakeCraftRecipes, SetControlTips }
-        public static readonly int allStepsCount = ((Step[])Enum.GetValues(typeof(Step))).Length;
+
+        private static Dictionary<Step, string> namesForSteps = new Dictionary<Step, string> {
+            { Step.Initial, "starting" },
+            { Step.LoadEffects, "loading effects" },
+            { Step.LoadFonts, "loading fonts" },
+            { Step.MakeDirs, "creating directories" },
+            { Step.DeleteObsoleteSaves, "deleting obsolete saves" },
+            { Step.CreateControlTips, "creating control tips" },
+            { Step.LoadPrefs, "loading preferences" },
+            { Step.LoadSounds, "loading sounds" },
+            { Step.LoadTextures, "loading textures" },
+            { Step.CreateAnims, "creating animations" },
+            { Step.LoadKeysGfx, "loading keyboard textures" },
+            { Step.CreateScenes, "creating helper scenes" },
+            { Step.MakeItemsInfo, "creating items info" },
+            { Step.MakeCraftRecipes, "preparing craft recipes" },
+            { Step.SetControlTips, "setting control tips" },
+        };
+
+        private static readonly int allStepsCount = ((Step[])Enum.GetValues(typeof(Step))).Length;
 
         private Step currentStep;
-        private string nextStepName;
+
+        private string NextStepName
+        { get { return (int)this.currentStep == allStepsCount ? "opening main menu" : namesForSteps[this.currentStep]; } }
 
         public InitialLoader() : base(inputType: InputTypes.None, priority: 1, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty)
         {
-            this.currentStep = Step.Initial;
-            this.nextStepName = "";
+            this.currentStep = 0;
 
             SonOfRobinGame.game.IsFixedTimeStep = false; // if turned on, some screen updates will be missing
         }
@@ -28,73 +49,52 @@ namespace SonOfRobin
             switch (this.currentStep)
             {
                 case Step.Initial:
-                    this.nextStepName = "loading effects";
                     break;
 
                 case Step.LoadEffects:
                     SonOfRobinGame.effectColorize = SonOfRobinGame.content.Load<Effect>("effects/Colorize");
                     SonOfRobinGame.effectBorder = SonOfRobinGame.content.Load<Effect>("effects/Border");
-
-                    this.nextStepName = "loading fonts";
                     break;
 
                 case Step.LoadFonts:
                     SonOfRobinGame.LoadFonts();
-
-                    this.nextStepName = "deleting obsolete saves";
                     break;
 
                 case Step.MakeDirs:
                     if (!Directory.Exists(SonOfRobinGame.gameDataPath)) Directory.CreateDirectory(SonOfRobinGame.gameDataPath);
                     if (!Directory.Exists(SonOfRobinGame.worldTemplatesPath)) Directory.CreateDirectory(SonOfRobinGame.worldTemplatesPath);
                     if (!Directory.Exists(SonOfRobinGame.saveGamesPath)) Directory.CreateDirectory(SonOfRobinGame.saveGamesPath);
-
-                    this.nextStepName = "deleting obsolete saves";
                     break;
 
                 case Step.DeleteObsoleteSaves:
                     SaveHeaderManager.DeleteObsoleteSaves();
-
-                    this.nextStepName = "creating control tips";
                     break;
 
                 case Step.CreateControlTips:
                     SonOfRobinGame.controlTips = new ControlTips();
-
-                    this.nextStepName = "loading preferences";
                     break;
 
                 case Step.LoadPrefs:
                     Preferences.Initialize(); // to set some default values
                     Preferences.Load();
-
-                    this.nextStepName = "loading sounds";
                     break;
 
                 case Step.LoadSounds:
                     SoundData.LoadAllSounds();
-
-                    this.nextStepName = "loading textures";
                     break;
 
                 case Step.LoadTextures:
                     AnimData.LoadAllTextures();
-
-                    this.nextStepName = "creating animations";
                     break;
 
                 case Step.CreateAnims:
                     AnimData.CreateAllAnims();
                     AnimFrame.DeleteUsedAtlases();
-
-                    this.nextStepName = "loading keyboard textures";
                     break;
 
                 case Step.LoadKeysGfx:
                     KeyboardScheme.LoadAllKeys();
                     InputMapper.RebuildMappings();
-
-                    this.nextStepName = "creating helper scenes";
                     break;
 
                 case Step.CreateScenes:
@@ -104,26 +104,18 @@ namespace SonOfRobin
                     Preferences.DebugMode = Preferences.DebugMode; // to create debugMode scenes
                     SonOfRobinGame.hintWindow = new InfoWindow(bgColor: Color.RoyalBlue, bgOpacity: 0.85f);
                     SonOfRobinGame.progressBar = new InfoWindow(bgColor: Color.SeaGreen, bgOpacity: 0.85f);
-
-                    this.nextStepName = "creating items info";
                     break;
 
                 case Step.MakeItemsInfo:
                     PieceInfo.CreateAllInfo();
-
-                    this.nextStepName = "preparing craft recipes";
                     break;
 
                 case Step.MakeCraftRecipes:
                     Craft.PopulateAllCategories();
-
-                    this.nextStepName = "setting control tips";
                     break;
 
                 case Step.SetControlTips:
                     Preferences.ControlTipsScheme = Preferences.ControlTipsScheme; // to load default control tips
-
-                    this.nextStepName = "";
                     break;
 
                 default:
@@ -161,7 +153,7 @@ namespace SonOfRobin
 
             SpriteFont font = SonOfRobinGame.fontPressStart2P5;
 
-            string text = $"{this.nextStepName} {(int)this.currentStep}/{allStepsCount}";
+            string text = $"{this.NextStepName} {(int)this.currentStep}/{allStepsCount}";
             Vector2 textSize = font.MeasureString(text);
 
             int posX = (int)((SonOfRobinGame.VirtualWidth / 2) - (textSize.X / 2));
