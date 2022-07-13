@@ -138,6 +138,7 @@ namespace SonOfRobin
                             { "taskName", Scheduler.TaskName.Craft },
                             { "executeHelper", craftParams }, { "blocksUpdatesBelow", true } };
 
+                        Sound.QuickPlay(SoundData.Name.Notification4);
                         MenuTemplate.CreateConfirmationMenu(confirmationData: confirmationData);
                         return craftedPieces;
                     }
@@ -223,7 +224,7 @@ namespace SonOfRobin
 
                 var taskChain = new List<Object>();
 
-                SoundData.Name soundName = !pieceInfo.canBePickedUp && pieceInfo.type != typeof(Plant) ? SoundData.Name.Ding1 : SoundData.Name.Invoke;
+                SoundData.Name soundName = !pieceInfo.canBePickedUp && pieceInfo.type != typeof(Plant) ? SoundData.Name.Ding1 : SoundData.Name.Ding3;
 
                 taskChain.Add(new HintMessage(text: message, boxType: HintMessage.BoxType.GreenBox, delay: 0, blockInput: false, useTransition: true,
                     imageList: new List<Texture2D> { PieceInfo.GetInfo(this.pieceToCreate).texture }, startingSound: soundName).ConvertToTask());

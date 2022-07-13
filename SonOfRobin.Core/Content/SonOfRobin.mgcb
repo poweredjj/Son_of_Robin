@@ -3872,6 +3872,12 @@
 /processorParam:Quality=Best
 /build:sound/135193__felix-blume__wind-blowing-in-the-bush-on-the-top-of-kitt-peak-mountain.ogg
 
+#begin sound/13934__adcbicycle__6.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sound/13934__adcbicycle__6.ogg
+
 #begin sound/139952__ecfike__a-tree-falling-down.ogg
 /importer:OggImporter
 /processor:SoundEffectProcessor
@@ -4135,6 +4141,12 @@
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:sound/352650__foolboymedia__piano-notification-4.ogg
+
+#begin sound/352651__foolboymedia__piano-notification-3.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sound/352651__foolboymedia__piano-notification-3.ogg
 
 #begin sound/360423__blouhond__female-snoring.ogg
 /importer:OggImporter

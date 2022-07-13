@@ -14,6 +14,7 @@ namespace SonOfRobin
         public static float globalVolume = 1f;
         public static Dictionary<string, Sound> currentlyPlaying = new Dictionary<string, Sound>();
 
+        private readonly SoundData.Name name;
         private readonly float volume;
         public float FadeVolume { get { return this.fadeVolume; } }
         private float fadeVolume;
@@ -60,6 +61,7 @@ namespace SonOfRobin
 
             if (this.isEmpty) return;
 
+            this.name = name;
             this.volume = volume;
             this.isLooped = isLooped;
             this.volumeFadeFrames = volumeFadeFrames;
