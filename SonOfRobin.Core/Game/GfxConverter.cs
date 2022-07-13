@@ -2,7 +2,6 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -55,48 +54,28 @@ namespace SonOfRobin
             int paddedWidth = cropRect.Width + (padding * 2);
             int paddedHeight = cropRect.Height + (padding * 2);
 
-            Color[,] colorData2DPadded = new Color[paddedWidth, paddedHeight];
+            Color[] paddedArray1D = new Color[paddedWidth * paddedHeight];
 
-            // filling the padding
-
-            List<int> rowsToFill = new List<int> { };
-            List<int> columnsToFill = new List<int> { };
-            for (int i = 0; i < padding; i++)
-            {
-                columnsToFill.Add(i);
-                columnsToFill.Add(paddedWidth - i - 1);
-                rowsToFill.Add(i);
-                rowsToFill.Add(paddedHeight - i - 1);
-            }
-
-            foreach (int x in columnsToFill)
-            {
-                for (int y = 0; y < paddedHeight; y++)
-                {
-                    colorData2DPadded[x, y] = Color.Transparent;
-                }
-            }
-
-            foreach (int y in rowsToFill)
-            {
-                for (int x = 0; x < paddedWidth; x++)
-                {
-                    colorData2DPadded[x, y] = Color.Transparent;
-                }
-            }
-
+            // filling the padding is not needed - default array color is transparent
             // copying pixels from original texture data
 
-            for (int x = 0; x < cropRect.Width; x++)
+            for (int y = 0; y < cropRect.Height; y++)
             {
-                for (int y = 0; y < cropRect.Height; y++)
+                int yMultipliedOutput = y * paddedWidth;
+                int yMultipliedInput = y * cropRect.Width;
+
+                for (int x = 0; x < cropRect.Width; x++)
                 {
-                    colorData2DPadded[x + padding, y + padding] = colorData[(y * cropRect.Width) + x];
+                    paddedArray1D[yMultipliedOutput + x] = colorData[yMultipliedInput + x];
                 }
             }
 
-            return Convert2DArrayToTexture(colorData2DPadded);
+            var texture = new Texture2D(graphicsDevice: SonOfRobinGame.graphicsDevice, width: paddedWidth, height: paddedHeight);
+            texture.SetData(paddedArray1D);
+
+            return texture;
         }
+
 
         public static Color[,] ConvertTextureToGrid(Texture2D texture, int x, int y, int width, int height)
         {
