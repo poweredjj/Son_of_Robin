@@ -59,9 +59,10 @@ namespace SonOfRobin
                 else
                 {
                     MouseState currentMouseState = Microsoft.Xna.Framework.Input.Mouse.GetState();
-                    if (currentMouseState.LeftButton == ButtonState.Pressed ||
+                    if (SonOfRobinGame.platform == Platform.Desktop &&
+                        (currentMouseState.LeftButton == ButtonState.Pressed ||
                         currentMouseState.MiddleButton == ButtonState.Pressed ||
-                        currentMouseState.RightButton == ButtonState.Pressed)
+                        currentMouseState.RightButton == ButtonState.Pressed))
                         keyboardOrMousePressed = true;
                 }
 
