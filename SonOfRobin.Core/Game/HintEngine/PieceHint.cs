@@ -153,7 +153,6 @@ namespace SonOfRobin
                 return;
             }
 
-
             var messagesToDisplay = this.messageList.ToList();
             messagesToDisplay.AddRange(this.GetTutorials(world.hintEngine.shownTutorials));
 

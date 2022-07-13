@@ -250,7 +250,7 @@ namespace SonOfRobin
 
                 if (unlockedPieces.Count > 0)
                 {
-                    if (!pieceInfo.canBePickedUp) Menu.RebuildAllMenus();
+                    Menu.RebuildAllMenus();
 
                     string unlockedRecipesMessage = unlockedPieces.Count == 1 ? "New recipe unlocked" : "New recipes unlocked:\n";
                     var imageList = new List<Texture2D>();
