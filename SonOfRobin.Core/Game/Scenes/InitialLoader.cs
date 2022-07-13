@@ -88,8 +88,6 @@ namespace SonOfRobin
             {
                 if (Preferences.FrameSkip) SonOfRobinGame.game.IsFixedTimeStep = true;
 
-                GC.Collect();
-
                 SonOfRobinGame.KeepScreenOn = true;
 
                 new SolidColor(color: Color.RoyalBlue, viewOpacity: 1f, clearScreen: true);
@@ -105,6 +103,7 @@ namespace SonOfRobin
                 }
 
                 this.Remove();
+                GC.Collect();
             }
         }
 
@@ -123,6 +122,16 @@ namespace SonOfRobin
 
             SonOfRobinGame.spriteBatch.DrawString(font, text, position: new Vector2(posX, (int)(SonOfRobinGame.VirtualHeight * 0.75)), color: Color.White, origin: Vector2.Zero, scale: 1, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
 
+            int progressBarFullLength = (int)(SonOfRobinGame.VirtualWidth * 0.8f);
+            int progressBarCurrentLength = (int)(progressBarFullLength * ((float)this.currentStep / (float)allStepsCount));
+
+            Rectangle progressBarFullRect = new Rectangle(x: (SonOfRobinGame.VirtualWidth / 2) - (progressBarFullLength / 2), y: (int)(SonOfRobinGame.VirtualHeight * 0.8f), width: progressBarFullLength, height: (int)(SonOfRobinGame.VirtualHeight * 0.1f));
+
+            Rectangle progressBarFilledRect = new Rectangle(x: progressBarFullRect.X, y: progressBarFullRect.Y, width: progressBarCurrentLength, height: progressBarFullRect.Height);
+
+
+            SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, progressBarFullRect, Color.White * 0.5f);
+            SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, progressBarFilledRect, Color.White * 1f);
         }
 
     }
