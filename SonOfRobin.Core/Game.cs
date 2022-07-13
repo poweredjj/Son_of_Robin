@@ -149,7 +149,7 @@ namespace SonOfRobin
             spriteBatch = new SpriteBatch(GraphicsDevice);
             content = Content;
 
-            fontPressStart2P5 = content.Load<SpriteFont>("fonts/PressStart2P");
+            fontPressStart2P5 = content.Load<SpriteFont>("fonts/PressStart2P"); // needed for InitialLoader
         }
 
         public static void LoadFonts()

@@ -25,7 +25,6 @@ namespace SonOfRobin
         {
             bool finish = false;
 
-
             switch (this.currentStep)
             {
                 case Step.Initial:
@@ -139,7 +138,6 @@ namespace SonOfRobin
             if (finish)
             {
                 if (Preferences.FrameSkip) SonOfRobinGame.game.IsFixedTimeStep = true;
-
                 SonOfRobinGame.KeepScreenOn = true;
 
                 if (SonOfRobinGame.LicenceValid)
@@ -162,10 +160,8 @@ namespace SonOfRobin
             SonOfRobinGame.graphicsDevice.Clear(Color.DarkBlue);
 
             SpriteFont font = SonOfRobinGame.fontPressStart2P5;
-            if (font == null) return;
 
             string text = $"{this.nextStepName} {(int)this.currentStep}/{allStepsCount}";
-
             Vector2 textSize = font.MeasureString(text);
 
             int posX = (int)((SonOfRobinGame.VirtualWidth / 2) - (textSize.X / 2));
