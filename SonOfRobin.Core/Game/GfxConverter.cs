@@ -4,7 +4,6 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace SonOfRobin
@@ -94,7 +93,6 @@ namespace SonOfRobin
                 {
                     colorData2DPadded[x + padding, y + padding] = colorData[(y * cropRect.Width) + x];
                 }
-
             }
 
             return Convert2DArrayToTexture(colorData2DPadded);
@@ -174,9 +172,7 @@ namespace SonOfRobin
 
             Color[,] graphics = new Color[width, height];
 
-            var allY = Enumerable.Range(0, height).ToList();
-
-            Parallel.ForEach(allY, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, y =>
+            Parallel.For(0, height, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, y =>
             {
                 for (int x = 0; x < width; x++)
                 {
@@ -199,15 +195,13 @@ namespace SonOfRobin
 
             Color[,] graphics = new Color[width, height];
 
-            var allY = Enumerable.Range(0, height).ToList();
-
-            Parallel.ForEach(allY, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, y =>
+            for (int y = 0; y < height; y++)
             {
                 for (int x = 0; x < width; x++)
                 {
                     graphics[x, y] = inputArray[x, y];
                 }
-            });
+            }
 
             var texture = new Texture2D(graphicsDevice: SonOfRobinGame.graphicsDevice, width: width, height: height);
             var array1D = ConvertArray2DTo1D(width: width, height: height, array2D: graphics);
@@ -220,10 +214,8 @@ namespace SonOfRobin
         {
             Color[,] array2D = new Color[width, height];
 
-            var allY = Enumerable.Range(0, height).ToList();
-
             // correct order for Texture2D is y,x
-            Parallel.ForEach(allY, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, y =>
+            Parallel.For(0, height, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, y =>
             {
                 for (int x = 0; x < width; x++)
                 {
@@ -237,14 +229,13 @@ namespace SonOfRobin
         {
             Color[] array1D = new Color[width * height];
 
-            var allY = Enumerable.Range(0, height).ToList();
-
             // correct order for Texture2D is y,x
-            Parallel.ForEach(allY, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, y =>
-            {
-                for (int x = 0; x < width; x++)
-                { array1D[(y * width) + x] = array2D[x, y]; }
-            });
+
+            Parallel.For(0, height, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, y =>
+                        {
+                            for (int x = 0; x < width; x++)
+                            { array1D[(y * width) + x] = array2D[x, y]; }
+                        });
 
             return array1D;
         }
@@ -268,13 +259,11 @@ namespace SonOfRobin
 
             var byteArray = new byte[width, height];
 
-            var allY = Enumerable.Range(0, height).ToList();
-
-            Parallel.ForEach(allY, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, y =>
-            {
-                for (int x = 0; x < width; x++)
-                { byteArray[x, y] = colorArray[x, y].G; }
-            });
+            Parallel.For(0, height, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, y =>
+                        {
+                            for (int x = 0; x < width; x++)
+                            { byteArray[x, y] = colorArray[x, y].G; }
+                        });
 
             return byteArray;
         }

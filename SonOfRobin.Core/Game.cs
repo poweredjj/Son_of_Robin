@@ -98,17 +98,6 @@ namespace SonOfRobin
             whiteRectangle = new Texture2D(GraphicsDevice, 1, 1);
             whiteRectangle.SetData(new[] { Color.White });
 
-            new InitialLoader();
-
-            //if (!Directory.Exists(gameDataPath)) Directory.CreateDirectory(gameDataPath);
-            //if (!Directory.Exists(worldTemplatesPath)) Directory.CreateDirectory(worldTemplatesPath);
-            //if (!Directory.Exists(saveGamesPath)) Directory.CreateDirectory(saveGamesPath);
-            new Scheduler.Task(taskName: Scheduler.TaskName.DeleteObsoleteSaves, executeHelper: null, delay: 0);
-
-            controlTips = new ControlTips();
-            Preferences.Initialize(); // to set some default values
-            Preferences.Load();
-
             if (Preferences.FullScreenMode)
             {
                 graphics.IsFullScreen = true;
@@ -144,33 +133,7 @@ namespace SonOfRobin
 
             SoundEffect.DistanceScale = 1;
 
-            // AnimData.CreateAllAnims();
-            // AnimFrame.DeleteUsedAtlases();
-
-            KeyboardScheme.LoadAllKeys();
-            InputMapper.RebuildMappings();
-
-            new MessageLog();
-            Preferences.DebugMode = Preferences.DebugMode; // to create debugMode scenes
-            hintWindow = new InfoWindow(bgColor: Color.RoyalBlue, bgOpacity: 0.85f);
-            progressBar = new InfoWindow(bgColor: Color.SeaGreen, bgOpacity: 0.85f);
-
-            // PieceInfo.CreateAllInfo();
-            // Craft.PopulateAllCategories();
-
-            // Preferences.ControlTipsScheme = Preferences.ControlTipsScheme; // to load default control tips
-
-            //KeepScreenOn = true;
-
-            //if (LicenceValid)
-            //{
-            //    if (Preferences.showDemoWorld) new World(seed: 777, width: 1500, height: 1000, resDivider: 2, playerFemale: false, demoMode: true, initialMaxAnimalsMultiplier: 100, addAgressiveAnimals: true);
-            //    MenuTemplate.CreateMenuFromTemplate(templateName: MenuTemplate.Name.Main);
-            //}
-            //else
-            //{
-            //    var textWindow = new TextWindow(text: "This version of 'Son of Robin' has expired.", textColor: Color.White, bgColor: Color.DarkBlue, useTransition: false, animate: true, blockInputDuration: 60, closingTask: Scheduler.TaskName.OpenMainMenuIfSpecialKeysArePressed);
-            //}
+            new InitialLoader();
         }
 
         public void OnResize(Object sender, EventArgs e)
@@ -186,19 +149,16 @@ namespace SonOfRobin
             spriteBatch = new SpriteBatch(GraphicsDevice);
             content = Content;
 
-            // effects
+            fontPressStart2P5 = content.Load<SpriteFont>("fonts/PressStart2P");
+        }
 
-            effectColorize = Content.Load<Effect>("effects/Colorize");
-            effectBorder = Content.Load<Effect>("effects/Border");
-
-            // fonts
-
-            fontPixelMix5 = Content.Load<SpriteFont>("fonts/PixelMix");
-            fontPressStart2P5 = Content.Load<SpriteFont>("fonts/PressStart2P");
-            fontFreeSansBold12 = Content.Load<SpriteFont>("fonts/FreeSansBold12");
-            fontFreeSansBold24 = Content.Load<SpriteFont>("fonts/FreeSansBold24");
-            fontTommy20 = Content.Load<SpriteFont>("fonts/Tommy20");
-            fontTommy40 = Content.Load<SpriteFont>("fonts/Tommy40");
+        public static void LoadFonts()
+        {
+            fontPixelMix5 = content.Load<SpriteFont>("fonts/PixelMix");
+            fontFreeSansBold12 = content.Load<SpriteFont>("fonts/FreeSansBold12");
+            fontFreeSansBold24 = content.Load<SpriteFont>("fonts/FreeSansBold24");
+            fontTommy20 = content.Load<SpriteFont>("fonts/Tommy20");
+            fontTommy40 = content.Load<SpriteFont>("fonts/Tommy40");
         }
         protected override void Update(GameTime gameTime)
         {

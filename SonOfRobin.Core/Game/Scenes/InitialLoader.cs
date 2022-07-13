@@ -7,7 +7,7 @@ namespace SonOfRobin
 {
     public class InitialLoader : Scene
     {
-        public enum Step { Initial, MakeDirs, LoadSounds, LoadTextures, CreateAnims, MakingItemsInfo, MakingCraftRecipes, SettingControlTips }
+        public enum Step { Initial, LoadEffects, LoadFonts, MakeDirs, DeleteObsoleteSaves, CreateControlTips, LoadPrefs, LoadSounds, LoadTextures, CreateAnims, LoadKeysGfx, CreateScenes, MakeItemsInfo, MakeCraftRecipes, SetControlTips }
         public static readonly int allStepsCount = ((Step[])Enum.GetValues(typeof(Step))).Length;
 
         private Step currentStep;
@@ -29,13 +29,45 @@ namespace SonOfRobin
             switch (this.currentStep)
             {
                 case Step.Initial:
-                    this.nextStepName = "making directories";
+                    this.nextStepName = "loading effects";
+                    break;
+
+                case Step.LoadEffects:
+                    SonOfRobinGame.effectColorize = SonOfRobinGame.content.Load<Effect>("effects/Colorize");
+                    SonOfRobinGame.effectBorder = SonOfRobinGame.content.Load<Effect>("effects/Border");
+
+                    this.nextStepName = "loading fonts";
+                    break;
+
+                case Step.LoadFonts:
+                    SonOfRobinGame.LoadFonts();
+
+                    this.nextStepName = "deleting obsolete saves";
                     break;
 
                 case Step.MakeDirs:
                     if (!Directory.Exists(SonOfRobinGame.gameDataPath)) Directory.CreateDirectory(SonOfRobinGame.gameDataPath);
                     if (!Directory.Exists(SonOfRobinGame.worldTemplatesPath)) Directory.CreateDirectory(SonOfRobinGame.worldTemplatesPath);
                     if (!Directory.Exists(SonOfRobinGame.saveGamesPath)) Directory.CreateDirectory(SonOfRobinGame.saveGamesPath);
+
+                    this.nextStepName = "deleting obsolete saves";
+                    break;
+
+                case Step.DeleteObsoleteSaves:
+                    SaveHeaderManager.DeleteObsoleteSaves();
+
+                    this.nextStepName = "creating control tips";
+                    break;
+
+                case Step.CreateControlTips:
+                    SonOfRobinGame.controlTips = new ControlTips();
+
+                    this.nextStepName = "loading preferences";
+                    break;
+
+                case Step.LoadPrefs:
+                    Preferences.Initialize(); // to set some default values
+                    Preferences.Load();
 
                     this.nextStepName = "loading sounds";
                     break;
@@ -56,28 +88,48 @@ namespace SonOfRobin
                     AnimData.CreateAllAnims();
                     AnimFrame.DeleteUsedAtlases();
 
+                    this.nextStepName = "loading keyboard textures";
+                    break;
+
+                case Step.LoadKeysGfx:
+                    KeyboardScheme.LoadAllKeys();
+                    InputMapper.RebuildMappings();
+
+                    this.nextStepName = "creating helper scenes";
+                    break;
+
+                case Step.CreateScenes:
+                    SolidColor solidColor = new SolidColor(color: Color.RoyalBlue, viewOpacity: 1f, clearScreen: true);
+                    solidColor.MoveToBottom();
+                    new MessageLog();
+                    Preferences.DebugMode = Preferences.DebugMode; // to create debugMode scenes
+                    SonOfRobinGame.hintWindow = new InfoWindow(bgColor: Color.RoyalBlue, bgOpacity: 0.85f);
+                    SonOfRobinGame.progressBar = new InfoWindow(bgColor: Color.SeaGreen, bgOpacity: 0.85f);
+
                     this.nextStepName = "creating items info";
                     break;
 
-                case Step.MakingItemsInfo:
+                case Step.MakeItemsInfo:
                     PieceInfo.CreateAllInfo();
 
                     this.nextStepName = "preparing craft recipes";
                     break;
 
-                case Step.MakingCraftRecipes:
+                case Step.MakeCraftRecipes:
                     Craft.PopulateAllCategories();
 
                     this.nextStepName = "setting control tips";
                     break;
 
-                case Step.SettingControlTips:
+                case Step.SetControlTips:
                     Preferences.ControlTipsScheme = Preferences.ControlTipsScheme; // to load default control tips
 
                     this.nextStepName = "";
                     break;
 
                 default:
+                    if ((int)this.currentStep < allStepsCount) throw new ArgumentException("Not all steps has been processed.");
+
                     finish = true;
                     break;
             }
@@ -89,8 +141,6 @@ namespace SonOfRobin
                 if (Preferences.FrameSkip) SonOfRobinGame.game.IsFixedTimeStep = true;
 
                 SonOfRobinGame.KeepScreenOn = true;
-
-                new SolidColor(color: Color.RoyalBlue, viewOpacity: 1f, clearScreen: true);
 
                 if (SonOfRobinGame.LicenceValid)
                 {
@@ -125,10 +175,9 @@ namespace SonOfRobin
             int progressBarFullLength = (int)(SonOfRobinGame.VirtualWidth * 0.8f);
             int progressBarCurrentLength = (int)(progressBarFullLength * ((float)this.currentStep / (float)allStepsCount));
 
-            Rectangle progressBarFullRect = new Rectangle(x: (SonOfRobinGame.VirtualWidth / 2) - (progressBarFullLength / 2), y: (int)(SonOfRobinGame.VirtualHeight * 0.8f), width: progressBarFullLength, height: (int)(SonOfRobinGame.VirtualHeight * 0.1f));
+            Rectangle progressBarFullRect = new Rectangle(x: (SonOfRobinGame.VirtualWidth / 2) - (progressBarFullLength / 2), y: (int)(SonOfRobinGame.VirtualHeight * 0.82f), width: progressBarFullLength, height: (int)(SonOfRobinGame.VirtualHeight * 0.07f));
 
             Rectangle progressBarFilledRect = new Rectangle(x: progressBarFullRect.X, y: progressBarFullRect.Y, width: progressBarCurrentLength, height: progressBarFullRect.Height);
-
 
             SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, progressBarFullRect, Color.White * 0.5f);
             SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, progressBarFilledRect, Color.White * 1f);
