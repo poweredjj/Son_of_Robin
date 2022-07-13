@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework.Audio;
+using System;
 using System.Collections.Generic;
 
 namespace SonOfRobin
@@ -6,6 +7,16 @@ namespace SonOfRobin
     public class SoundData
     {
         public static readonly Dictionary<Name, SoundEffect> soundsDict = new Dictionary<Name, SoundEffect>();
+
+        public static void LoadAllSounds()
+        {
+            if (soundsDict.Count > 0) throw new ArgumentException("Sounds has already been loaded.");
+
+            foreach (var kvp in soundFilenamesDict)
+            {
+                soundsDict[kvp.Key] = SonOfRobinGame.content.Load<SoundEffect>($"sound/{kvp.Value}");
+            }
+        }
 
         public enum Name
         {

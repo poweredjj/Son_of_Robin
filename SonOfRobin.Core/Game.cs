@@ -95,9 +95,14 @@ namespace SonOfRobin
             base.Initialize();
             game = this;
 
-            if (!Directory.Exists(gameDataPath)) Directory.CreateDirectory(gameDataPath);
-            if (!Directory.Exists(worldTemplatesPath)) Directory.CreateDirectory(worldTemplatesPath);
-            if (!Directory.Exists(saveGamesPath)) Directory.CreateDirectory(saveGamesPath);
+            whiteRectangle = new Texture2D(GraphicsDevice, 1, 1);
+            whiteRectangle.SetData(new[] { Color.White });
+
+            new InitialLoader();
+
+            //if (!Directory.Exists(gameDataPath)) Directory.CreateDirectory(gameDataPath);
+            //if (!Directory.Exists(worldTemplatesPath)) Directory.CreateDirectory(worldTemplatesPath);
+            //if (!Directory.Exists(saveGamesPath)) Directory.CreateDirectory(saveGamesPath);
             new Scheduler.Task(taskName: Scheduler.TaskName.DeleteObsoleteSaves, executeHelper: null, delay: 0);
 
             controlTips = new ControlTips();
@@ -139,34 +144,33 @@ namespace SonOfRobin
 
             SoundEffect.DistanceScale = 1;
 
-            AnimData.CreateAllAnims();
-            AnimFrame.DeleteUsedAtlases();
+            // AnimData.CreateAllAnims();
+            // AnimFrame.DeleteUsedAtlases();
 
             KeyboardScheme.LoadAllKeys();
             InputMapper.RebuildMappings();
 
-            new SolidColor(color: Color.RoyalBlue, viewOpacity: 1f, clearScreen: true);
             new MessageLog();
             Preferences.DebugMode = Preferences.DebugMode; // to create debugMode scenes
             hintWindow = new InfoWindow(bgColor: Color.RoyalBlue, bgOpacity: 0.85f);
             progressBar = new InfoWindow(bgColor: Color.SeaGreen, bgOpacity: 0.85f);
-            PieceInfo.CreateAllInfo();
-            Craft.PopulateAllCategories();
 
-            Preferences.ControlTipsScheme = Preferences.ControlTipsScheme; // to load default control tips
+            // PieceInfo.CreateAllInfo();
+            // Craft.PopulateAllCategories();
 
-            KeepScreenOn = true;
+            // Preferences.ControlTipsScheme = Preferences.ControlTipsScheme; // to load default control tips
 
-            if (LicenceValid)
-            {
-                if (Preferences.showDemoWorld) new World(seed: 777, width: 1500, height: 1000, resDivider: 2, playerFemale: false, demoMode: true, initialMaxAnimalsMultiplier: 100, addAgressiveAnimals: true);
-                MenuTemplate.CreateMenuFromTemplate(templateName: MenuTemplate.Name.Main);
-            }
-            else
-            {
-                var textWindow = new TextWindow(text: "This version of 'Son of Robin' has expired.", textColor: Color.White, bgColor: Color.DarkBlue, useTransition: false, animate: true, blockInputDuration: 60, closingTask: Scheduler.TaskName.OpenMainMenuIfSpecialKeysArePressed);
-            }
-            GC.Collect();
+            //KeepScreenOn = true;
+
+            //if (LicenceValid)
+            //{
+            //    if (Preferences.showDemoWorld) new World(seed: 777, width: 1500, height: 1000, resDivider: 2, playerFemale: false, demoMode: true, initialMaxAnimalsMultiplier: 100, addAgressiveAnimals: true);
+            //    MenuTemplate.CreateMenuFromTemplate(templateName: MenuTemplate.Name.Main);
+            //}
+            //else
+            //{
+            //    var textWindow = new TextWindow(text: "This version of 'Son of Robin' has expired.", textColor: Color.White, bgColor: Color.DarkBlue, useTransition: false, animate: true, blockInputDuration: 60, closingTask: Scheduler.TaskName.OpenMainMenuIfSpecialKeysArePressed);
+            //}
         }
 
         public void OnResize(Object sender, EventArgs e)
@@ -195,27 +199,6 @@ namespace SonOfRobin
             fontFreeSansBold24 = Content.Load<SpriteFont>("fonts/FreeSansBold24");
             fontTommy20 = Content.Load<SpriteFont>("fonts/Tommy20");
             fontTommy40 = Content.Load<SpriteFont>("fonts/Tommy40");
-
-            // sounds
-
-            foreach (var kvp in SoundData.soundFilenamesDict)
-            {
-                SoundData.soundsDict[kvp.Key] = Content.Load<SoundEffect>($"sound/{kvp.Value}");
-            }
-
-            var sound = SoundData.soundsDict;
-
-            // textures
-
-            foreach (string gfxName in AnimData.gfxNames)
-            {
-                textureByName[gfxName] = Content.Load<Texture2D>($"gfx/{gfxName}");
-            }
-
-            lightSphere = textureByName["light_white"];
-            tempShadowMaskList = new List<RenderTarget2D> { };
-            whiteRectangle = new Texture2D(GraphicsDevice, 1, 1);
-            whiteRectangle.SetData(new[] { Color.White });
         }
         protected override void Update(GameTime gameTime)
         {
