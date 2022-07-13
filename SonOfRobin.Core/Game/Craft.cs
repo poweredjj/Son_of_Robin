@@ -107,7 +107,7 @@ namespace SonOfRobin
                 return quantityLeft.Count == 0;
             }
 
-            public List<BoardPiece> TryToProducePieces(Player player, bool showMessages)
+            public List<BoardPiece> TryToProducePieces(Player player, bool showMessages, bool craftOnTheGround = false)
             {
                 // checking if crafting is possible
 
@@ -127,14 +127,18 @@ namespace SonOfRobin
 
                 if (canBePickedUp && !PieceStorage.StorageListCanFitSpecifiedPieces(storageList: storagesToTakeFrom, pieceName: this.pieceToCreate, quantity: this.amountToCreate))
                 {
-                    foreach (PieceStorage storage in storagesToTakeFrom)
-                    {
-                        storage.Sort();
-                    }
+                    foreach (PieceStorage storage in storagesToTakeFrom) storage.Sort(); // trying to make room in storages by sorting pieces
 
-                    if (!PieceStorage.StorageListCanFitSpecifiedPieces(storageList: storagesToTakeFrom, pieceName: this.pieceToCreate, quantity: this.amountToCreate))
+                    if (!craftOnTheGround && !PieceStorage.StorageListCanFitSpecifiedPieces(storageList: storagesToTakeFrom, pieceName: this.pieceToCreate, quantity: this.amountToCreate))
                     {
-                        new TextWindow(text: "Not enough inventory space to craft.", textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false);
+                        var craftParams = new Dictionary<string, object> { { "recipe", this }, { "craftOnTheGround", true } };
+
+                        var confirmationData = new Dictionary<string, Object> {
+                            { "question", "Not enough inventory space to craft. Craft on the ground?" },
+                            { "taskName", Scheduler.TaskName.Craft },
+                            { "executeHelper", craftParams }, { "blocksUpdatesBelow", true } };
+
+                        MenuTemplate.CreateConfirmationMenu(confirmationData: confirmationData);
                         return craftedPieces;
                     }
                 }
@@ -175,7 +179,12 @@ namespace SonOfRobin
                             }
                         }
 
-                        if (!pieceInserted) throw new ArgumentException($"{pieceInfo.name} could not fit into any storage.");
+                        if (!pieceInserted)
+                        {
+                            if (craftOnTheGround) storagesToPutInto[0].AddPiece(piece: piece, dropIfDoesNotFit: true, addMovement: true);
+
+                            else throw new ArgumentException($"{pieceInfo.name} could not fit into any storage.");
+                        }
                     }
                 }
                 else // !canBePickedUp

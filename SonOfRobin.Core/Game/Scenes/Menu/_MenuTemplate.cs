@@ -655,7 +655,9 @@ namespace SonOfRobin
             var recipeList = Craft.GetRecipesForCategory(category: category, includeHidden: false, discoveredRecipes: world.discoveredRecipesForPieces);
             foreach (Craft.Recipe recipe in recipeList)
             {
-                new CraftInvoker(menu: menu, name: recipe.pieceToCreate.ToString(), closesMenu: false, taskName: Scheduler.TaskName.Craft, rebuildsMenu: true, executeHelper: recipe, recipe: recipe, storageList: storageList);
+                var craftParams = new Dictionary<string, object> { { "recipe", recipe }, { "craftOnTheGround", false } };
+
+                new CraftInvoker(menu: menu, name: recipe.pieceToCreate.ToString(), closesMenu: false, taskName: Scheduler.TaskName.Craft, rebuildsMenu: true, executeHelper: craftParams, recipe: recipe, storageList: storageList);
             }
 
             menu.EntriesRectColor = Color.SaddleBrown;

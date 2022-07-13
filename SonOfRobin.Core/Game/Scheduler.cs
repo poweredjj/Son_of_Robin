@@ -9,7 +9,7 @@ namespace SonOfRobin
 {
     public class Scheduler
     {
-        public enum TaskName { Empty, CreateNewWorld, CreateNewWorldNow, QuitGame, OpenMenuTemplate, OpenMainMenu, OpenConfirmationMenu, SaveGame, LoadGame, LoadGameNow, ReturnToMainMenu, SavePrefs, ProcessConfirmation, OpenCraftMenu, CraftOnPosition, Craft, Hit, CreateNewPiece, CreateDebugPieces, OpenContainer, DeleteObsoleteSaves, DropFruit, GetEaten, GetDrinked, ExecuteTaskWithDelay, AddWorldEvent, ShowTextWindow, OpenShelterMenu, SleepInsideShelter, SleepOutside, ForceWakeUp, TempoFastForward, TempoStop, TempoPlay, CameraTrackPiece, CameraTrackCoords, CameraSetZoom, ShowCookingProgress, RestoreHints, OpenMainMenuIfSpecialKeysArePressed, CheckForPieceHints, ShowHint, ExecuteTaskChain, ShowTutorialInMenu, ShowTutorialOnTheField, RemoveScene, ChangeSceneInputType, SetCineMode, AddTransition, SolidColorRemoveAll, SkipCinematics, DeleteTemplates, SetSpectatorMode, SwitchLightSource, ResetControls, SaveControls, CheckForNonSavedControls, RebuildMenu, RebuildAllMenus, CheckForIncorrectPieces, RestartWorld, ResetNewWorldSettings, PlaySound, PlaySoundByName, AllowPieceToBeHit, SetPlayerPointWalkTarget, ShowCraftStats, StopSound, RemoveAllScenesOfType }
+        public enum TaskName { Empty, CreateNewWorld, CreateNewWorldNow, QuitGame, OpenMenuTemplate, OpenMainMenu, OpenConfirmationMenu, SaveGame, LoadGame, LoadGameNow, ReturnToMainMenu, SavePrefs, ProcessConfirmation, OpenCraftMenu, Craft, Hit, CreateNewPiece, CreateDebugPieces, OpenContainer, DeleteObsoleteSaves, DropFruit, GetEaten, GetDrinked, ExecuteTaskWithDelay, AddWorldEvent, ShowTextWindow, OpenShelterMenu, SleepInsideShelter, SleepOutside, ForceWakeUp, TempoFastForward, TempoStop, TempoPlay, CameraTrackPiece, CameraTrackCoords, CameraSetZoom, ShowCookingProgress, RestoreHints, OpenMainMenuIfSpecialKeysArePressed, CheckForPieceHints, ShowHint, ExecuteTaskChain, ShowTutorialInMenu, ShowTutorialOnTheField, RemoveScene, ChangeSceneInputType, SetCineMode, AddTransition, SolidColorRemoveAll, SkipCinematics, DeleteTemplates, SetSpectatorMode, SwitchLightSource, ResetControls, SaveControls, CheckForNonSavedControls, RebuildMenu, RebuildAllMenus, CheckForIncorrectPieces, RestartWorld, ResetNewWorldSettings, PlaySound, PlaySoundByName, AllowPieceToBeHit, SetPlayerPointWalkTarget, ShowCraftStats, StopSound, RemoveAllScenesOfType }
 
         private readonly static Dictionary<int, List<Task>> queue = new Dictionary<int, List<Task>>();
         private static int inputTurnedOffUntilFrame = 0;
@@ -399,8 +399,14 @@ namespace SonOfRobin
 
                     case TaskName.Craft:
                         {
-                            var recipe = (Craft.Recipe)executeHelper;
-                            recipe.TryToProducePieces(player: World.GetTopWorld().player, showMessages: true);
+                            // example executeHelper for this task
+                            // var craftParams = new Dictionary<string, Object> { { "recipe", recipe }, { "craftOnTheGround", false } };
+
+                            var executeData = (Dictionary<string, Object>)executeHelper;
+                            Craft.Recipe recipe = (Craft.Recipe)executeData["recipe"];
+                            bool craftOnTheGround = (bool)executeData["craftOnTheGround"];
+
+                            recipe.TryToProducePieces(player: World.GetTopWorld().player, showMessages: true, craftOnTheGround: craftOnTheGround);
                         }
                         return;
 

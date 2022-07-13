@@ -172,12 +172,6 @@ namespace SonOfRobin
             }
             else this.opacity = 1f;
 
-            if (this.boardPiece.name == PieceTemplate.Name.Rabbit)
-            {
-
-                var a = 1;
-            }
-
             this.AssignFrame(checkForCollision: false);
             this.gridGroups = this.GetGridGroups();
 

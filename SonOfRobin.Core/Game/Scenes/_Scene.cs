@@ -149,9 +149,9 @@ namespace SonOfRobin
 
             Sound.QuickPlay(startingSound);
 
-            if (this.hidesSameScenesBelow) this.HideSameScenesBelow();
-
             sceneStack.Add(this);
+
+            if (this.hidesSameScenesBelow) this.HideSameScenesBelow();
 
             UpdateInputActiveTipsTouch(); // to avoid one frame delay in updating tips and touch overlay
         }
@@ -198,8 +198,10 @@ namespace SonOfRobin
 
         private void HideSameScenesBelow()
         {
-            var existingScenesOfSameType = Scene.GetAllScenesOfType(this.GetType());
-            foreach (Scene scene in existingScenesOfSameType)
+            var topScene = GetTopSceneOfType(this.GetType());
+            if (topScene != null && topScene != this) return; // if scene is being rebuilt, it will not be on top (and should not hide other scenes)
+
+            foreach (Scene scene in GetAllScenesOfType(this.GetType()))
             {
                 if (scene != this) scene.drawActive = false;
             }
@@ -207,8 +209,8 @@ namespace SonOfRobin
 
         private void ShowTopSceneOfSameType()
         {
-            var scene = GetTopSceneOfType(this.GetType());
-            if (scene != null) scene.drawActive = true;
+            var topScene = GetTopSceneOfType(this.GetType());
+            if (topScene != null) topScene.drawActive = true;
         }
 
         protected Scene GetSceneBelow(bool ignorePriorityLessThan1 = true)
@@ -270,12 +272,13 @@ namespace SonOfRobin
         }
 
         public static List<Scene> GetAllScenesOfType(Type type)
-        { return sceneStack.Where(scene => scene.GetType().Name == type.Name && !scene.transManager.IsEnding).ToList(); }
+        {
+            return sceneStack.Where(scene => scene.GetType().Name == type.Name && !scene.transManager.IsEnding).OrderByDescending(o => o.priority).ToList();
+        }
 
         public static void RemoveAllScenesOfType(Type type)
         {
-            foreach (Scene scene in GetAllScenesOfType(type: type))
-            { scene.Remove(); }
+            foreach (Scene scene in GetAllScenesOfType(type: type)) scene.Remove();
         }
 
         public static Scene GetTopSceneOfType(Type type)

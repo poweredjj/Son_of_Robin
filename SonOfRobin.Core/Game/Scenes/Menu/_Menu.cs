@@ -183,7 +183,7 @@ namespace SonOfRobin
             this.SetTouchLayout();
             this.AddStartTransitions();
 
-            //MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Menu {this.name} - created with closing task '{this.closingTask}'.");
+            // MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Menu {this.name} - created with closing task '{this.closingTask}'.");
         }
 
         private bool ThisMenuIsBeingRebuilt
