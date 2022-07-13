@@ -6,9 +6,51 @@ using System.Linq;
 
 namespace SonOfRobin
 {
+    public struct CountComparison
+    {
+        public enum Comparison { Greater, GreaterOrEqual, Equal, LessOrEqual, Less }
+
+        public readonly PieceTemplate.Name name;
+        private readonly int count;
+        private readonly Comparison comparison;
+
+        public CountComparison(PieceTemplate.Name name, int count, Comparison comparison = Comparison.GreaterOrEqual)
+        {
+            this.name = name;
+            this.count = count;
+            this.comparison = comparison;
+        }
+
+        public bool Check(int countCrafted)
+        {
+            switch (this.comparison)
+            {
+                case Comparison.Greater:
+                    return countCrafted > this.count;
+
+                case Comparison.GreaterOrEqual:
+                    return countCrafted >= this.count;
+
+                case Comparison.Equal:
+                    return countCrafted == this.count;
+
+                case Comparison.LessOrEqual:
+                    return countCrafted <= this.count;
+
+                case Comparison.Less:
+                    return countCrafted < this.count;
+
+                default:
+                    throw new ArgumentException($"Unsupported comparison - {this.comparison}.");
+            }
+        }
+    }
+
     public struct PieceHint
     {
         public enum Type { CrateStarting, CrateAnother, WoodNegative, WoodPositive, DigSiteNegative, DigSitePositive, StoneNegative, StonePositive, CrystalNegative, CrystalPositive, AnimalNegative, AnimalBow, AnimalBat, AnimalAxe, BowNoAmmo, ShellIsNotUseful, ClamField, ClamInventory, FruitTree, BananaTree, TomatoPlant, IronDepositNegative, IronDepositPositive, CoalDepositNegative, CoalDepositPositive, Cooker, LeatherPositive, BackpackPositive, BeltPositive, MapPositive, RedExclamation, Acorn, TorchNegative, TorchPositive, Fireplace, HerbsRed, HerbsYellow, HerbsViolet, HerbsCyan, HerbsBlue, HerbsBlack, GlassSand, CanBuildWorkshop, SmallBase }
+
+        public enum Comparison { Greater, GreaterOrEqual, Equal, LessOrEqual, Less }
 
         public static readonly List<PieceHint> pieceHintList = new List<PieceHint>();
 
@@ -48,13 +90,13 @@ namespace SonOfRobin
         private readonly List<PieceTemplate.Name> playerOwnsAllOfThesePieces;
         private readonly List<PieceTemplate.Name> playerDoesNotOwnAnyOfThesePieces;
         private readonly List<IslandClock.PartOfDay> partsOfDay;
-        private readonly Dictionary<PieceTemplate.Name, int> piecesCraftedCount;
+        private readonly List<CountComparison> piecesCraftedCount;
         private readonly Dictionary<PieceTemplate.Name, int> usedIngredientsCount;
         private readonly Dictionary<PieceTemplate.Name, int> existingPiecesCount;
         private readonly bool fieldOnly;
         private readonly bool menuOnly;
 
-        public PieceHint(Type type, List<PieceTemplate.Name> fieldPiecesNearby = null, List<PieceTemplate.Name> playerOwnsAnyOfThesePieces = null, List<PieceTemplate.Name> playerDoesNotOwnAnyOfThesePieces = null, List<PieceTemplate.Name> playerOwnsAllOfThesePieces = null, List<Type> alsoDisables = null, bool fieldPieceHasNotEmptyStorage = false, string message = null, List<Texture2D> imageList = null, List<HintMessage> messageList = null, List<Tutorials.Type> tutorialsToActivate = null, HintEngine.Type generalHintToActivate = HintEngine.Type.Empty, List<IslandClock.PartOfDay> partsOfDay = null, Dictionary<PieceTemplate.Name, int> piecesCraftedCount = null, Dictionary<PieceTemplate.Name, int> usedIngredientsCount = null, Dictionary<PieceTemplate.Name, int> existingPiecesCount = null, bool fieldOnly = false, bool menuOnly = false)
+        public PieceHint(Type type, List<PieceTemplate.Name> fieldPiecesNearby = null, List<PieceTemplate.Name> playerOwnsAnyOfThesePieces = null, List<PieceTemplate.Name> playerDoesNotOwnAnyOfThesePieces = null, List<PieceTemplate.Name> playerOwnsAllOfThesePieces = null, List<Type> alsoDisables = null, bool fieldPieceHasNotEmptyStorage = false, string message = null, List<Texture2D> imageList = null, List<HintMessage> messageList = null, List<Tutorials.Type> tutorialsToActivate = null, HintEngine.Type generalHintToActivate = HintEngine.Type.Empty, List<IslandClock.PartOfDay> partsOfDay = null, List<CountComparison> piecesCraftedCount = null, Dictionary<PieceTemplate.Name, int> usedIngredientsCount = null, Dictionary<PieceTemplate.Name, int> existingPiecesCount = null, bool fieldOnly = false, bool menuOnly = false)
         {
             this.type = type;
             this.alsoDisables = alsoDisables == null ? new List<Type> { } : alsoDisables;
@@ -251,12 +293,9 @@ namespace SonOfRobin
 
             if (this.piecesCraftedCount != null)
             {
-                foreach (var kvp in this.piecesCraftedCount)
+                foreach (CountComparison pieceCraftedCount in this.piecesCraftedCount)
                 {
-                    PieceTemplate.Name pieceName = kvp.Key;
-                    int minimumCraftedCount = kvp.Value;
-
-                    if (player.world.craftStats.HowMuchHasBeenCrafted(pieceName) < minimumCraftedCount) return false;
+                    if (!pieceCraftedCount.Check(player.world.craftStats.HowMuchHasBeenCrafted(pieceCraftedCount.name))) return false;
                 }
             }
 

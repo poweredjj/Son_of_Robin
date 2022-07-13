@@ -297,12 +297,17 @@ namespace SonOfRobin
                     message: $"If I had more | wood, I could build an | { PieceInfo.GetInfo(PieceTemplate.Name.WorkshopEssential).readableName}.",
                     imageList: new List<Texture2D>{ PieceInfo.GetInfo(PieceTemplate.Name.WoodLogRegular).texture, PieceInfo.GetTexture(PieceTemplate.Name.WorkshopEssential) },
                     tutorialsToActivate: new List<Tutorials.Type> {Tutorials.Type.BuildWorkshop},
-                    playerOwnsAllOfThesePieces: new List<PieceTemplate.Name> { PieceTemplate.Name.WoodLogRegular }),
+                    playerOwnsAllOfThesePieces: new List<PieceTemplate.Name> { PieceTemplate.Name.WoodLogRegular },
+                    piecesCraftedCount: new List<CountComparison> {
+                        new CountComparison(name: PieceTemplate.Name.WorkshopEssential, count: 0, comparison: CountComparison.Comparison.Equal) }),
 
                 new PieceHint(
                     type: PieceHint.Type.SmallBase,
                     generalHintToActivate: HintEngine.Type.CineSmallBase,
-                    piecesCraftedCount: new Dictionary<PieceTemplate.Name, int> {{ PieceTemplate.Name.WorkshopEssential, 1 }, { PieceTemplate.Name.TentSmall, 1 }}, existingPiecesCount: new Dictionary<PieceTemplate.Name, int>{{ PieceTemplate.Name.WorkshopEssential, 1 }, { PieceTemplate.Name.TentSmall, 1 } }, fieldPiecesNearby: new List<PieceTemplate.Name> { PieceTemplate.Name.TentSmall, PieceTemplate.Name.WorkshopEssential }),
+                    piecesCraftedCount: new List<CountComparison> {
+                        new CountComparison(name: PieceTemplate.Name.WorkshopEssential, count: 1),
+                        new CountComparison(name: PieceTemplate.Name.TentSmall, count: 1)},
+                    existingPiecesCount: new Dictionary<PieceTemplate.Name, int>{{ PieceTemplate.Name.WorkshopEssential, 1 }, { PieceTemplate.Name.TentSmall, 1 } }, fieldPiecesNearby: new List<PieceTemplate.Name> { PieceTemplate.Name.TentSmall, PieceTemplate.Name.WorkshopEssential }),
                 };
 
             return newPieceHintList;
