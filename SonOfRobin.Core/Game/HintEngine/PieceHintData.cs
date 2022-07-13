@@ -293,13 +293,6 @@ namespace SonOfRobin
                     fieldPiecesNearby: new List<PieceTemplate.Name> {PieceTemplate.Name.Campfire}),
 
                 new PieceHint(
-                    type: PieceHint.Type.EssentialWorkshopCrafted,
-                    alsoDisables: new List<PieceHint.Type> {PieceHint.Type.CanBuildWorkshop },
-                    message: $"With this | {PieceInfo.GetInfo(PieceTemplate.Name.WorkshopEssential).readableName} I can make useful items.",
-                    imageList: new List<Texture2D>{ PieceInfo.GetInfo(PieceTemplate.Name.WorkshopEssential).texture },
-                    piecesCraftedCount: new Dictionary<PieceTemplate.Name, int> {{ PieceTemplate.Name.WorkshopEssential, 1 }}),
-
-                new PieceHint(
                     type: PieceHint.Type.CanBuildWorkshop,
                     message: $"If I had more | wood, I could build an | { PieceInfo.GetInfo(PieceTemplate.Name.WorkshopEssential).readableName}.",
                     imageList: new List<Texture2D>{ PieceInfo.GetInfo(PieceTemplate.Name.WoodLogRegular).texture, PieceInfo.GetTexture(PieceTemplate.Name.WorkshopEssential) },
