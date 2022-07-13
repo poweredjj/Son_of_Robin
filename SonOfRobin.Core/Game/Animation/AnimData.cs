@@ -245,7 +245,7 @@ namespace SonOfRobin
             BackpackMedium,
             BackpackBig,
 
-            BeltPouchSmall,
+            BeltSmall,
             BeltMedium,
             Map,
 
@@ -829,7 +829,7 @@ namespace SonOfRobin
             AddFrameList(animPackage: PkgName.DebrisStone, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "stone_small", layer: 0, scale: 0.25f));
             AddFrameList(animPackage: PkgName.DebrisPlant, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "grass_blade", layer: 0, scale: 0.25f));
             AddFrameList(animPackage: PkgName.Hand, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "hand", layer: 1));
-            AddFrameList(animPackage: PkgName.BeltPouchSmall, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "belt_pouch_small", layer: 0, scale: 1f));
+            AddFrameList(animPackage: PkgName.BeltSmall, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "belt_pouch_small", layer: 0, scale: 1f));
             AddFrameList(animPackage: PkgName.BeltMedium, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "belt_medium", layer: 0, scale: 0.06f));
             AddFrameList(animPackage: PkgName.HerbsGreen, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "herbs_green", layer: 0));
             AddFrameList(animPackage: PkgName.HerbsBlack, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "herbs_black", layer: 0));

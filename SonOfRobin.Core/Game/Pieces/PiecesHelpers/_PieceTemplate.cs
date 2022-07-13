@@ -177,7 +177,7 @@ namespace SonOfRobin
             BackpackMedium,
             BackpackBig,
 
-            BeltPouchSmall,
+            BeltSmall,
             BeltMedium,
             Map,
 
@@ -887,7 +887,7 @@ namespace SonOfRobin
                                 new Yield.DroppedPiece(pieceName: Name.Burger, chanceToDrop: 100, maxNumberToDrop: 3),
                                 new Yield.DroppedPiece(pieceName: Name.EmptyBottle, chanceToDrop: 30, maxNumberToDrop: 1),
                                 new Yield.DroppedPiece(pieceName: Name.BackpackSmall, chanceToDrop: 15, maxNumberToDrop: 1),
-                                new Yield.DroppedPiece(pieceName: Name.BeltPouchSmall, chanceToDrop: 15, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: Name.BeltSmall, chanceToDrop: 15, maxNumberToDrop: 1),
                                 });
 
                         var soundPack = new PieceSoundPack();
@@ -2355,15 +2355,15 @@ namespace SonOfRobin
                             allowedFields: allowedFields, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 500, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "big backpack", description: "Expands inventory space.");
                     }
 
-                case Name.BeltPouchSmall:
+                case Name.BeltSmall:
                     {
                         var allowedFields = new AllowedFields(rangeNameList: new List<AllowedFields.RangeName> { AllowedFields.RangeName.WaterShallow, AllowedFields.RangeName.WaterMedium, AllowedFields.RangeName.GroundAll });
 
                         var buffList = new List<BuffEngine.Buff> {
                             new BuffEngine.Buff(type: BuffEngine.BuffType.ToolbarWidth, value: (byte)1)};
 
-                        return new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BeltPouchSmall, blocksMovement: false, category: BoardPiece.Category.Flesh,
-                            allowedFields: allowedFields, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 200, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "small belt pouch", description: "Expands belt space.");
+                        return new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BeltSmall, blocksMovement: false, category: BoardPiece.Category.Flesh,
+                            allowedFields: allowedFields, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 200, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "small belt", description: "Expands belt space.");
                     }
 
                 case Name.BeltMedium:
