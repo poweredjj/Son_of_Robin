@@ -54,11 +54,9 @@ namespace SonOfRobin
             int paddedWidth = cropRect.Width + (padding * 2);
             int paddedHeight = cropRect.Height + (padding * 2);
 
-            Color[] paddedArray1D = new Color[paddedWidth * paddedHeight];
+            Color[] paddedArray1D = new Color[paddedWidth * paddedHeight]; // filling the padding is not needed - default array color is transparent     
 
-            // filling the padding is not needed - default array color is transparent
             // copying pixels from original texture data
-
             for (int y = 0; y < cropRect.Height; y++)
             {
                 int yMultipliedOutput = y * paddedWidth;

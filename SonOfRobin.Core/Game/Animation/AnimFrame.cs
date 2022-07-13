@@ -100,6 +100,7 @@ namespace SonOfRobin
             int sliceY = this.texture.Height - sliceHeight;
 
             var boundsRect = FindNonTransparentPixelsRect(texture: this.texture, textureX: sliceX, textureY: sliceY, width: sliceWidth, height: sliceHeight, minAlpha: 240); // 240
+
             // bounds value would be incorrect without adding the base slice value
 
             boundsRect.X += sliceX;
@@ -110,7 +111,9 @@ namespace SonOfRobin
 
         private static Rectangle FindNonTransparentPixelsRect(Texture2D texture, int textureX, int textureY, int width, int height, int minAlpha)
         {
-            var rawDataAsGrid = GfxConverter.ConvertTextureToGrid(texture: texture, x: textureX, y: textureY, width: width, height: height);
+            Color[] colorData = new Color[width * height];
+            Rectangle extractRegion = new Rectangle(textureX, textureY, width, height);
+            texture.GetData<Color>(0, extractRegion, colorData, 0, width * height);
 
             int xMin = width;
             int xMax = 0;
@@ -118,16 +121,18 @@ namespace SonOfRobin
             int yMax = 0;
 
             bool opaquePixelsFound = false;
-            Color pixel;
             int[] alphaValues = { minAlpha, 1 }; // if there are no desired alpha values, minimum value is used instead
 
             foreach (int currentMinAlpha in alphaValues)
             {
-                for (int x = 0; x < width; x++)
+                for (int y = 0; y < height; y++)
                 {
-                    for (int y = 0; y < height; y++)
+                    int yMultipliedInput = y * width;
+
+                    for (int x = 0; x < width; x++)
                     {
-                        pixel = rawDataAsGrid[y, x];
+                        Color pixel = colorData[yMultipliedInput + x];
+
                         if (pixel.A >= minAlpha) // looking for non-transparent pixels
                         {
                             opaquePixelsFound = true;
