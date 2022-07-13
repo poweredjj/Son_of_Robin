@@ -113,11 +113,11 @@ namespace SonOfRobin
                     tutorialsToActivate: new List<Tutorials.Type> { Tutorials.Type.Equip }),
 
                 new PieceHint(
-                    type: PieceHint.Type.BagPositive,
+                    type: PieceHint.Type.BackpackPositive,
                     messageList: new List<HintMessage> {
-                    new HintMessage(text: "This bag | will allow me to carry more items.\nI should equip it now.", imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.Bag)}, boxType: HintMessage.BoxType.Dialogue, blockInput: true)},
+                    new HintMessage(text: "This backpack | will allow me to carry more items.\nI should equip it now.", imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.BackpackSmall)}, boxType: HintMessage.BoxType.Dialogue, blockInput: true)},
                     tutorialsToActivate: new List<Tutorials.Type> { Tutorials.Type.Equip },
-                    playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> { PieceTemplate.Name.Bag }),
+                    playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> { PieceTemplate.Name.BackpackSmall }),
 
                 new PieceHint(
                     type: PieceHint.Type.BeltPositive,

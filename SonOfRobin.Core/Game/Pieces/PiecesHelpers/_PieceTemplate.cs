@@ -173,8 +173,6 @@ namespace SonOfRobin
             TentMedium,
             TentBig,
 
-            Bag,
-
             BackpackSmall,
             BackpackMedium,
             BackpackBig,
@@ -2319,18 +2317,6 @@ namespace SonOfRobin
 
                         return new Shelter(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.TentBig, allowedFields: allowedFields, category: BoardPiece.Category.Wood,
                             floatsOnWater: false, minDistance: 0, maxDistance: 500, maxMassBySize: null, maxHitPoints: 200, sleepEngine: sleepEngine, readableName: "big tent", description: "Luxurious shelter for sleeping.\nProtects against enemies.", buffList: buffList, lightEngine: new LightEngine(size: 0, opacity: 0.45f, colorActive: false, color: Color.Transparent, addedGfxRectMultiplier: 4f, isActive: true, castShadows: true));
-                    }
-
-                case Name.Bag:
-                    {
-                        var allowedFields = new AllowedFields(rangeNameList: new List<AllowedFields.RangeName> { AllowedFields.RangeName.WaterShallow, AllowedFields.RangeName.WaterMedium, AllowedFields.RangeName.GroundAll });
-
-                        var buffList = new List<BuffEngine.Buff> {
-                            new BuffEngine.Buff(type: BuffEngine.BuffType.InvWidth, value: (byte)1),
-                            new BuffEngine.Buff(type: BuffEngine.BuffType.InvHeight, value: (byte)1)};
-
-                        return new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Bag, blocksMovement: true, category: BoardPiece.Category.Flesh,
-                            allowedFields: allowedFields, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 500, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "small bag", description: "Expands inventory space a little.");
                     }
 
                 case Name.BackpackSmall:
