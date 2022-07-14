@@ -160,7 +160,7 @@ namespace SonOfRobin
             int barPosY = textPosY + (int)(textSize.Y * 1.5);
 
             Rectangle progressBarFullRect = new Rectangle(x: barPosX, y: barPosY, width: progressBarFullLength, height: (int)(textSize.Y * 3));
-            Rectangle progressBarFilledRect = new Rectangle(x: progressBarFullRect.X, y: progressBarFullRect.Y, width: progressBarCurrentLength, height: progressBarFullRect.Height);
+            Rectangle progressBarFilledRect = new Rectangle(x: barPosX, y: barPosY, width: progressBarCurrentLength, height: progressBarFullRect.Height);
 
             SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, progressBarFullRect, Color.White * 0.5f);
             SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, progressBarFilledRect, Color.White * 1f);
