@@ -816,7 +816,7 @@ namespace SonOfRobin
             AnimFrame frame = shadowSprite.frame;
 
             var flatShadowNames = new List<AnimData.PkgName> {
-                AnimData.PkgName.WoodLogRegular, AnimData.PkgName.WoodLogHard, AnimData.PkgName.MineralsBig1, AnimData.PkgName.MineralsBig4, AnimData.PkgName.MineralsSmall1, AnimData.PkgName.Stone, AnimData.PkgName.WaterRock5, AnimData.PkgName.WoodPlank, AnimData.PkgName.IronBar, AnimData.PkgName.Clay, AnimData.PkgName.Hole, AnimData.PkgName.Granite, AnimData.PkgName.BeltMedium, AnimData.PkgName.HumanSkeleton };
+                AnimData.PkgName.WoodLogRegular, AnimData.PkgName.WoodLogHard, AnimData.PkgName.MineralsBig1, AnimData.PkgName.MineralsBig4, AnimData.PkgName.MineralsSmall1, AnimData.PkgName.Stone, AnimData.PkgName.WaterRock5, AnimData.PkgName.WoodPlank, AnimData.PkgName.IronBar, AnimData.PkgName.Clay, AnimData.PkgName.Hole, AnimData.PkgName.Granite, AnimData.PkgName.BeltBig, AnimData.PkgName.HumanSkeleton };
 
             bool flatShadow = flatShadowNames.Contains(shadowSprite.boardPiece.sprite.animPackage) || shadowSprite.rotation != 0;
 

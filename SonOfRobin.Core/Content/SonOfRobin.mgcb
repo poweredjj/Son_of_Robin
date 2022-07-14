@@ -326,7 +326,7 @@
 /processorParam:TextureFormat=Color
 /build:gfx/bed.png
 
-#begin gfx/belt_medium.png
+#begin gfx/belt_big.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -336,7 +336,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/belt_medium.png
+/build:gfx/belt_big.png
 
 #begin gfx/belt_pouch_small.png
 /importer:TextureImporter

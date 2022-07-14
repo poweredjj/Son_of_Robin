@@ -9,7 +9,9 @@ namespace SonOfRobin
     {
         public enum Step { Initial, LoadEffects, LoadFonts, DeleteObsoleteSaves, CreateControlTips, LoadSounds, LoadTextures, CreateAnims, LoadKeysGfx, CreateScenes, MakeItemsInfo, MakeCraftRecipes, SetControlTips }
 
-        private static Dictionary<Step, string> namesForSteps = new Dictionary<Step, string> {
+        private static readonly int allStepsCount = ((Step[])Enum.GetValues(typeof(Step))).Length;
+
+        private readonly static Dictionary<Step, string> namesForSteps = new Dictionary<Step, string> {
             { Step.Initial, "starting" },
             { Step.LoadEffects, "loading effects" },
             { Step.LoadFonts, "loading fonts" },
@@ -24,8 +26,6 @@ namespace SonOfRobin
             { Step.MakeCraftRecipes, "preparing craft recipes" },
             { Step.SetControlTips, "setting control tips" },
         };
-
-        private static readonly int allStepsCount = ((Step[])Enum.GetValues(typeof(Step))).Length;
 
         private Step currentStep;
         private readonly SpriteFont font;

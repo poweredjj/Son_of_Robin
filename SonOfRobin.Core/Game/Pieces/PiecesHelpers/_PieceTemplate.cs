@@ -178,7 +178,7 @@ namespace SonOfRobin
             BackpackBig,
 
             BeltSmall,
-            BeltMedium,
+            BeltBig,
             Map,
 
             TorchSmall,
@@ -2366,15 +2366,15 @@ namespace SonOfRobin
                             allowedFields: allowedFields, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 200, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "small belt", description: "Expands belt space.");
                     }
 
-                case Name.BeltMedium:
+                case Name.BeltBig:
                     {
                         var allowedFields = new AllowedFields(rangeNameList: new List<AllowedFields.RangeName> { AllowedFields.RangeName.WaterShallow, AllowedFields.RangeName.WaterMedium, AllowedFields.RangeName.GroundAll });
 
                         var buffList = new List<BuffEngine.Buff> {
-                            new BuffEngine.Buff(type: BuffEngine.BuffType.ToolbarWidth, value: (byte)3)};
+                            new BuffEngine.Buff(type: BuffEngine.BuffType.ToolbarWidth, value: (byte)5)};
 
-                        return new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BeltMedium, blocksMovement: false, category: BoardPiece.Category.Flesh,
-                            allowedFields: allowedFields, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 500, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "medium belt", description: "Expands belt space.");
+                        return new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BeltBig, blocksMovement: false, category: BoardPiece.Category.Flesh,
+                            allowedFields: allowedFields, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 500, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "big belt", description: "Expands belt space.");
                     }
 
                 case Name.Map:

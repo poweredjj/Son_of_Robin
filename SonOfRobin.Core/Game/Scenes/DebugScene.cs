@@ -111,7 +111,7 @@ namespace SonOfRobin
 
                 if (Keyboard.HasBeenPressed(Keys.D5))
                 {
-                    BoardPiece piece = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: world.player.sprite.position, templateName: PieceTemplate.Name.BeltMedium, closestFreeSpot: true);
+                    BoardPiece piece = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: world.player.sprite.position, templateName: PieceTemplate.Name.BeltBig, closestFreeSpot: true);
                 }
 
                 if (Keyboard.HasBeenPressed(Keys.D6))
@@ -329,7 +329,7 @@ namespace SonOfRobin
 
             //if (Keyboard.HasBeenPressed(Keys.F1)) new TextWindow(text: "Line 1\nLine 2\nThis is button A | and button B |.\nBelt here >|<\nLast line.", animate: false, useTransition: false, bgColor: Color.DeepSkyBlue, textColor: Color.White, imageList: new List<Texture2D> { ButtonScheme.buttonA, ButtonScheme.buttonB, AnimData.framesForPkgs[AnimData.PkgName.BeltMedium].texture });
 
-            if (Keyboard.HasBeenPressed(Keys.F1)) new TextWindow(text: "If I had more | leather, I could make a | backpack or a | belt.\n>|1|2|3|4|5<", animate: true, useTransition: false, framesPerChar: 1, bgColor: Color.DeepSkyBlue, textColor: Color.White, imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Leather), PieceInfo.GetTexture(PieceTemplate.Name.BackpackSmall), PieceInfo.GetTexture(PieceTemplate.Name.BeltMedium), PieceInfo.GetTexture(PieceTemplate.Name.BeltMedium), PieceInfo.GetTexture(PieceTemplate.Name.BeltMedium), PieceInfo.GetTexture(PieceTemplate.Name.BeltMedium), PieceInfo.GetTexture(PieceTemplate.Name.BeltMedium), PieceInfo.GetTexture(PieceTemplate.Name.BeltMedium) });
+            if (Keyboard.HasBeenPressed(Keys.F1)) new TextWindow(text: "If I had more | leather, I could make a | backpack or a | belt.\n>|1|2|3|4|5<", animate: true, useTransition: false, framesPerChar: 1, bgColor: Color.DeepSkyBlue, textColor: Color.White, imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Leather), PieceInfo.GetTexture(PieceTemplate.Name.BackpackSmall), PieceInfo.GetTexture(PieceTemplate.Name.BeltBig), PieceInfo.GetTexture(PieceTemplate.Name.BeltBig), PieceInfo.GetTexture(PieceTemplate.Name.BeltBig), PieceInfo.GetTexture(PieceTemplate.Name.BeltBig), PieceInfo.GetTexture(PieceTemplate.Name.BeltBig), PieceInfo.GetTexture(PieceTemplate.Name.BeltBig) });
 
 
             if (Keyboard.HasBeenPressed(Keys.F2))
