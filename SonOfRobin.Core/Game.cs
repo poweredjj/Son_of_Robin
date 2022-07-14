@@ -101,9 +101,9 @@ namespace SonOfRobin
 
             splashScreenTexture = content.Load<Texture2D>("gfx/loading_gfx");
 
-            if (!Directory.Exists(SonOfRobinGame.gameDataPath)) Directory.CreateDirectory(SonOfRobinGame.gameDataPath);
-            if (!Directory.Exists(SonOfRobinGame.worldTemplatesPath)) Directory.CreateDirectory(SonOfRobinGame.worldTemplatesPath);
-            if (!Directory.Exists(SonOfRobinGame.saveGamesPath)) Directory.CreateDirectory(SonOfRobinGame.saveGamesPath);
+            if (!Directory.Exists(gameDataPath)) Directory.CreateDirectory(gameDataPath);
+            if (!Directory.Exists(worldTemplatesPath)) Directory.CreateDirectory(worldTemplatesPath);
+            if (!Directory.Exists(saveGamesPath)) Directory.CreateDirectory(saveGamesPath);
 
             Preferences.Initialize(); // to set some default values
             Preferences.Load();
