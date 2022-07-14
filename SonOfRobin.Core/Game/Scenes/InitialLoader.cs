@@ -7,7 +7,7 @@ namespace SonOfRobin
 {
     public class InitialLoader : Scene
     {
-        public enum Step { Initial, LoadEffects, LoadFonts, DeleteObsoleteSaves, CreateControlTips, LoadSounds, LoadTextures, CreateAnims, LoadKeysGfx, CreateScenes, MakeItemsInfo, MakeCraftRecipes, SetControlTips }
+        public enum Step { Initial, LoadEffects, LoadFonts, DeleteObsoleteSaves, CreateControlTips, LoadSounds, LoadTextures, CreateAnims, LoadKeysGfx, CreateScenes, MakeItemsInfo, MakeCraftRecipes, SetControlTips, OpenMainMenu }
 
         private static readonly int allStepsCount = ((Step[])Enum.GetValues(typeof(Step))).Length;
 
@@ -25,6 +25,7 @@ namespace SonOfRobin
             { Step.MakeItemsInfo, "creating items info" },
             { Step.MakeCraftRecipes, "preparing craft recipes" },
             { Step.SetControlTips, "setting control tips" },
+            { Step.OpenMainMenu, "opening main menu" },
         };
 
         private Step currentStep;
@@ -107,6 +108,21 @@ namespace SonOfRobin
                     Preferences.ControlTipsScheme = Preferences.ControlTipsScheme; // to load default control tips
                     break;
 
+                case Step.OpenMainMenu:
+                    if (Preferences.FrameSkip) SonOfRobinGame.game.IsFixedTimeStep = true;
+
+                    if (SonOfRobinGame.LicenceValid)
+                    {
+                        if (Preferences.showDemoWorld) new World(seed: 777, width: 1500, height: 1000, resDivider: 2, playerFemale: false, demoMode: true, initialMaxAnimalsMultiplier: 100, addAgressiveAnimals: true);
+                        MenuTemplate.CreateMenuFromTemplate(templateName: MenuTemplate.Name.Main);
+                    }
+                    else
+                    {
+                        new TextWindow(text: "This version of 'Son of Robin' has expired.", textColor: Color.White, bgColor: Color.DarkBlue, useTransition: false, animate: true, blockInputDuration: 60, closingTask: Scheduler.TaskName.OpenMainMenuIfSpecialKeysArePressed);
+                    }
+                    this.splashScreenTexture.Dispose();
+                    break;
+
                 default:
                     if ((int)this.currentStep < allStepsCount) throw new ArgumentException("Not all steps has been processed.");
 
@@ -118,19 +134,6 @@ namespace SonOfRobin
 
             if (finish)
             {
-                if (Preferences.FrameSkip) SonOfRobinGame.game.IsFixedTimeStep = true;
-                SonOfRobinGame.KeepScreenOn = true;
-
-                if (SonOfRobinGame.LicenceValid)
-                {
-                    if (Preferences.showDemoWorld) new World(seed: 777, width: 1500, height: 1000, resDivider: 2, playerFemale: false, demoMode: true, initialMaxAnimalsMultiplier: 100, addAgressiveAnimals: true);
-                    MenuTemplate.CreateMenuFromTemplate(templateName: MenuTemplate.Name.Main);
-                }
-                else
-                {
-                    new TextWindow(text: "This version of 'Son of Robin' has expired.", textColor: Color.White, bgColor: Color.DarkBlue, useTransition: false, animate: true, blockInputDuration: 60, closingTask: Scheduler.TaskName.OpenMainMenuIfSpecialKeysArePressed);
-                }
-                this.splashScreenTexture.Dispose();
                 this.Remove();
                 GC.Collect();
             }

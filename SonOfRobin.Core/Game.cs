@@ -134,7 +134,6 @@ namespace SonOfRobin
             }
 
             graphics.SynchronizeWithVerticalRetrace = Preferences.VSync;
-
             graphics.ApplyChanges();
 
             if (ThisIsWorkMachine) this.Window.Position = new Point(-10, 758); // THIS LINE MUST BE COMMENTED OUT WHEN COMPILING FOR ANDROID
@@ -142,6 +141,8 @@ namespace SonOfRobin
             Window.ClientSizeChanged += OnResize;
 
             SoundEffect.DistanceScale = 1;
+
+            KeepScreenOn = true;
 
             new InitialLoader();
         }
