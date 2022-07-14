@@ -371,7 +371,7 @@ namespace SonOfRobin
             this.sprite.AssignNewSize(this.SpriteSize);
         }
 
-        public virtual void Kill()
+        public virtual void Kill(bool addDestroyEvent = true)
         {
             if (!this.alive) return;
 
@@ -387,13 +387,13 @@ namespace SonOfRobin
             if (this.pieceStorage != null) this.pieceStorage.DropAllPiecesToTheGround(addMovement: true);
             this.RemoveFromStateMachines();
             this.sprite.Kill();
-            new WorldEvent(eventName: WorldEvent.EventName.Destruction, world: this.world, delay: this.staysAfterDeath, boardPiece: this);
+            if (addDestroyEvent) new WorldEvent(eventName: WorldEvent.EventName.Destruction, world: this.world, delay: this.staysAfterDeath, boardPiece: this);
         }
 
         public void Destroy()
         {
             if (!this.exists) return;
-            if (this.alive) this.Kill();
+            if (this.alive) this.Kill(addDestroyEvent: false);
             if (this.name == PieceTemplate.Name.Player) this.yield.DropFinalPieces();
             this.soundPack.StopAll(ignoredAction: PieceSoundPack.Action.IsDestroyed);
             this.RemoveFromBoard();

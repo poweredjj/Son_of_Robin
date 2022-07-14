@@ -910,13 +910,13 @@ namespace SonOfRobin
 
             if (piece.GetType() == typeof(Animal))
             {
-                Animal animal = (Animal)piece;
-                if (animal.isPregnant && animal.alive) animal.pregnancyFramesLeft = Math.Max(animal.pregnancyFramesLeft - 1, 0);
-                if (this.currentUpdate % 10 == 0) animal.ExpendEnergy(1);
+                Animal nonPlant = (Animal)piece;
+                if (nonPlant.isPregnant && nonPlant.alive) nonPlant.pregnancyFramesLeft = Math.Max(nonPlant.pregnancyFramesLeft - 1, 0);
+                if (this.currentUpdate % 10 == 0) nonPlant.ExpendEnergy(1);
 
-                if (animal.alive && (animal.hitPoints <= 0 || animal.efficiency == 0 || animal.currentAge >= animal.maxAge))
+                if (nonPlant.alive && (nonPlant.hitPoints <= 0 || nonPlant.efficiency == 0 || nonPlant.currentAge >= nonPlant.maxAge))
                 {
-                    animal.Kill();
+                    nonPlant.Kill();
                     return;
                 }
             }

@@ -300,7 +300,7 @@ namespace SonOfRobin
             }
         }
 
-        public override void Kill()
+        public override void Kill(bool addDestroyEvent = true)
         {
             if (Preferences.DebugGodMode || this.name != PieceTemplate.Name.Player) return;
 

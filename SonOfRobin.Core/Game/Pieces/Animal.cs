@@ -424,7 +424,7 @@ namespace SonOfRobin
 
         public override void SM_AnimalChaseTarget()
         {
-            if (this.target == null || !this.target.exists || Vector2.Distance(this.sprite.position, this.target.sprite.position) > this.sightRange)
+            if (this.target == null || !this.target.exists || !this.target.sprite.IsOnBoard || Vector2.Distance(this.sprite.position, this.target.sprite.position) > this.sightRange)
             {
                 this.activeState = State.AnimalAssessSituation;
                 this.aiData.Reset(this);
@@ -480,6 +480,7 @@ namespace SonOfRobin
 
             if (this.target == null ||
                 !this.target.exists ||
+                !this.target.sprite.IsOnBoard ||
                 this.target.Mass <= 0 ||
                 !this.sprite.CheckIfOtherSpriteIsWithinRange(target: this.target.sprite, range: this.target.IsAnimalOrPlayer ? attackDistanceDynamic : attackDistanceStatic))
             {
@@ -545,7 +546,7 @@ namespace SonOfRobin
 
                 int attackStrength = Convert.ToInt32(this.world.random.Next(Convert.ToInt32(this.strength * 0.75), Convert.ToInt32(this.strength * 1.5)) * this.efficiency);
                 this.target.hitPoints = Math.Max(0, this.target.hitPoints - attackStrength);
-                if (this.target.hitPoints <= 0) this.target.Kill();
+                if (this.target.hitPoints <= 0 && this.target.IsAnimalOrPlayer) this.target.Kill();
 
                 Vector2 movement = (this.sprite.position - this.target.sprite.position) * -0.3f * attackStrength;
                 this.target.AddPassiveMovement(movement: Helpers.VectorAbsMax(vector: movement, maxVal: 400f));
@@ -580,7 +581,7 @@ namespace SonOfRobin
         {
             this.sprite.CharacterStand();
 
-            if (this.target == null || !this.target.exists || this.target.Mass <= 0 || !this.sprite.CheckIfOtherSpriteIsWithinRange(target: this.target.sprite, range: attackDistanceDynamic))
+            if (this.target == null || !this.target.exists || !this.target.sprite.IsOnBoard || this.target.Mass <= 0 || !this.sprite.CheckIfOtherSpriteIsWithinRange(target: this.target.sprite, range: attackDistanceDynamic))
             {
                 this.activeState = State.AnimalAssessSituation;
                 this.aiData.Reset(this);
