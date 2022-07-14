@@ -648,7 +648,7 @@ namespace SonOfRobin
 
             Animal animalMate = (Animal)this.target;
 
-            if (!(this.pregnancyMass == 0 && animalMate.pregnancyMass == 0 && this.target.alive && this.sprite.CheckIfOtherSpriteIsWithinRange(animalMate.sprite, range: attackDistanceDynamic)))
+            if (!(this.pregnancyMass == 0 && animalMate.pregnancyMass == 0 && this.target.alive && this.target.sprite.IsOnBoard && this.sprite.CheckIfOtherSpriteIsWithinRange(animalMate.sprite, range: attackDistanceDynamic)))
             {
                 this.activeState = State.AnimalAssessSituation;
                 this.aiData.Reset(this);
@@ -746,7 +746,7 @@ namespace SonOfRobin
                 return;
             }
 
-            if (this.target == null || !this.target.alive)
+            if (this.target == null || !this.target.alive || !this.target.sprite.IsOnBoard)
             {
                 this.activeState = State.AnimalAssessSituation;
                 this.aiData.Reset(this);

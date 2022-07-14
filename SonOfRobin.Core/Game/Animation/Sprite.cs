@@ -573,7 +573,7 @@ namespace SonOfRobin
 
         public bool CheckIfOtherSpriteIsWithinRange(Sprite target, int range = 4)
         {
-            //if (!target.Visible) return false;
+            if (!target.IsOnBoard) return false;
 
             if (Vector2.Distance(this.position, target.position) <= range * 1.5) return true;
 
