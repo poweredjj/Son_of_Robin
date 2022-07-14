@@ -28,6 +28,8 @@ namespace SonOfRobin
         private static readonly int allStepsCount = ((Step[])Enum.GetValues(typeof(Step))).Length;
 
         private Step currentStep;
+        private readonly SpriteFont font;
+        private readonly Texture2D splashScreenTexture;
 
         private string NextStepName
         { get { return (int)this.currentStep == allStepsCount ? "opening main menu" : namesForSteps[this.currentStep]; } }
@@ -35,6 +37,8 @@ namespace SonOfRobin
         public InitialLoader() : base(inputType: InputTypes.None, priority: 1, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty)
         {
             this.currentStep = 0;
+            this.font = SonOfRobinGame.fontPressStart2P5;
+            this.splashScreenTexture = SonOfRobinGame.splashScreenTexture;
         }
 
         public override void Update(GameTime gameTime)
@@ -126,7 +130,7 @@ namespace SonOfRobin
                 {
                     new TextWindow(text: "This version of 'Son of Robin' has expired.", textColor: Color.White, bgColor: Color.DarkBlue, useTransition: false, animate: true, blockInputDuration: 60, closingTask: Scheduler.TaskName.OpenMainMenuIfSpecialKeysArePressed);
                 }
-
+                this.splashScreenTexture.Dispose();
                 this.Remove();
                 GC.Collect();
             }
@@ -136,20 +140,26 @@ namespace SonOfRobin
         {
             SonOfRobinGame.graphicsDevice.Clear(Color.DarkBlue);
 
-            SpriteFont font = SonOfRobinGame.fontPressStart2P5;
+            Rectangle splashRect = new Rectangle(x: 0, y: -SonOfRobinGame.VirtualHeight / 8, width: SonOfRobinGame.VirtualWidth, height: SonOfRobinGame.VirtualHeight);
+            splashRect.Inflate(-(int)(SonOfRobinGame.VirtualWidth * 0.42), -(int)(SonOfRobinGame.VirtualHeight * 0.42));
 
-            string text = $"{this.NextStepName} {(int)this.currentStep}/{allStepsCount}";
-            Vector2 textSize = font.MeasureString(text);
+            Helpers.DrawTextureInsideRect(texture: this.splashScreenTexture, rectangle: splashRect, color: Color.White);
 
-            int posX = (int)((SonOfRobinGame.VirtualWidth / 2) - (textSize.X / 2));
+            string text = $"{this.NextStepName}...";
+            Vector2 textSize = this.font.MeasureString(text);
 
-            SonOfRobinGame.spriteBatch.DrawString(font, text, position: new Vector2(posX, (int)(SonOfRobinGame.VirtualHeight * 0.75)), color: Color.White, origin: Vector2.Zero, scale: 1, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
+            int textPosX = (int)((SonOfRobinGame.VirtualWidth / 2) - (textSize.X / 2));
+            int textPosY = (int)(SonOfRobinGame.VirtualHeight * 0.75);
+
+            SonOfRobinGame.spriteBatch.DrawString(this.font, text, position: new Vector2(textPosX, textPosY), color: Color.White, origin: Vector2.Zero, scale: 1, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
 
             int progressBarFullLength = (int)(SonOfRobinGame.VirtualWidth * 0.8f);
             int progressBarCurrentLength = (int)(progressBarFullLength * ((float)this.currentStep / (float)allStepsCount));
 
-            Rectangle progressBarFullRect = new Rectangle(x: (SonOfRobinGame.VirtualWidth / 2) - (progressBarFullLength / 2), y: (int)(SonOfRobinGame.VirtualHeight * 0.82f), width: progressBarFullLength, height: (int)(SonOfRobinGame.VirtualHeight * 0.07f));
+            int barPosX = (SonOfRobinGame.VirtualWidth / 2) - (progressBarFullLength / 2);
+            int barPosY = textPosY + (int)(textSize.Y * 1.5);
 
+            Rectangle progressBarFullRect = new Rectangle(x: barPosX, y: barPosY, width: progressBarFullLength, height: (int)(textSize.Y * 3));
             Rectangle progressBarFilledRect = new Rectangle(x: progressBarFullRect.X, y: progressBarFullRect.Y, width: progressBarCurrentLength, height: progressBarFullRect.Height);
 
             SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, progressBarFullRect, Color.White * 0.5f);

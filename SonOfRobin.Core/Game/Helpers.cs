@@ -157,7 +157,6 @@ namespace SonOfRobin
             Rectangle destRect = new Rectangle(x: rectangle.X + xOffset, y: rectangle.Y + yOffset, width: (int)(texture.Width * scale), height: (int)(texture.Height * scale));
             if (drawTestRect) DrawRectangleOutline(rect: destRect, color: Color.Green, borderWidth: 1);
             SonOfRobinGame.spriteBatch.Draw(texture: texture, destinationRectangle: destRect, color: color);
-
         }
 
         public static void DrawRectangleOutline(Rectangle rect, Color color, int borderWidth)

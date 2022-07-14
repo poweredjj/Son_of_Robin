@@ -16,7 +16,7 @@ namespace SonOfRobin
     public class SonOfRobinGame : Game
     {
         public static readonly float version = 9.2f;
-        public static readonly DateTime lastChanged = new DateTime(2022, 07, 13);
+        public static readonly DateTime lastChanged = new DateTime(2022, 07, 14);
 
         public static ContentManager content;
 
@@ -44,6 +44,7 @@ namespace SonOfRobin
         public static SpriteFont fontTommy40;
 
         public static Texture2D whiteRectangle;
+        public static Texture2D splashScreenTexture;
         public static List<RenderTarget2D> tempShadowMaskList;
         public static Texture2D lightSphere;
         public static Dictionary<string, Texture2D> textureByName = new Dictionary<string, Texture2D>();
@@ -97,6 +98,8 @@ namespace SonOfRobin
 
             whiteRectangle = new Texture2D(GraphicsDevice, 1, 1);
             whiteRectangle.SetData(new[] { Color.White });
+
+            splashScreenTexture = content.Load<Texture2D>("gfx/loading_gfx");
 
             if (!Directory.Exists(SonOfRobinGame.gameDataPath)) Directory.CreateDirectory(SonOfRobinGame.gameDataPath);
             if (!Directory.Exists(SonOfRobinGame.worldTemplatesPath)) Directory.CreateDirectory(SonOfRobinGame.worldTemplatesPath);
