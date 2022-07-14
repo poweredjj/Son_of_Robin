@@ -351,6 +351,7 @@ namespace SonOfRobin
                         {
                             Scene.RemoveAllScenesOfType(typeof(Menu));
                             Scene.RemoveAllScenesOfType(typeof(TextWindow));
+                            Sound.StopAll();
 
                             new Task(taskName: TaskName.LoadGameNow, turnOffInputUntilExecution: true, delay: 17, executeHelper: this.executeHelper);
 
@@ -359,6 +360,7 @@ namespace SonOfRobin
 
                     case TaskName.LoadGameNow:
                         {
+                            Sound.StopAll();
                             new LoaderSaver(saveMode: false, saveSlotName: (string)executeHelper);
 
                             return;
