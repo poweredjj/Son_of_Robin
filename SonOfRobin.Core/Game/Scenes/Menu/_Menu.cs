@@ -15,7 +15,6 @@ namespace SonOfRobin
 
         public readonly MenuTemplate.Name templateName;
         private readonly string name;
-        private readonly string id; // should not be copied during rebuild
         public readonly bool canBeClosedManually;
         private Scheduler.TaskName closingTask;
         private Object closingTaskHelper;
@@ -159,7 +158,6 @@ namespace SonOfRobin
             this.lastTouchedEntry = null;
             this.templateName = templateName;
             this.name = name;
-            this.id = Helpers.GetUniqueHash();
             this.activeIndex = -1; // dummy value, to be changed
             this.currentScrollPosition = 0;
             this.entryList = new List<Entry> { };
@@ -194,7 +192,7 @@ namespace SonOfRobin
 
                 foreach (Menu menu in menuScenes)
                 {
-                    if (menu.id != this.id && menu.name == this.name) return true;
+                    if (menu.sceneID != this.sceneID && menu.name == this.name) return true;
                 }
 
                 return false;

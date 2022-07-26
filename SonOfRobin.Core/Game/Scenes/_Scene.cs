@@ -37,8 +37,7 @@ namespace SonOfRobin
         public ViewParams viewParams;
         public readonly TransManager transManager;
 
-        private readonly int sceneID;
-        private static int sceneIdCounter = 0;
+        public readonly string sceneID;
 
         private readonly List<Scene> linkedScenes;
 
@@ -144,8 +143,7 @@ namespace SonOfRobin
             this.linkedScenes = new List<Scene> { }; // scenes that will also be removed on Remove()
             this.alwaysUpdates = alwaysUpdates;
             this.alwaysDraws = alwaysDraws;
-            this.sceneID = sceneIdCounter;
-            sceneIdCounter++;
+            this.sceneID = Helpers.GetUniqueHash();
 
             Sound.QuickPlay(startingSound);
 
