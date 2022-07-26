@@ -235,7 +235,6 @@ namespace SonOfRobin
                 if (this.pieceToCreate == PieceTemplate.Name.WorkshopEssential) hintEngine.Disable(Tutorials.Type.BuildWorkshop);
 
                 var unlockedPieces = new List<PieceTemplate.Name>();
-
                 foreach (PieceTemplate.Name newUnlockedPiece in this.unlocksWhenCrafted)
                 {
                     if (!world.discoveredRecipesForPieces.Contains(newUnlockedPiece))

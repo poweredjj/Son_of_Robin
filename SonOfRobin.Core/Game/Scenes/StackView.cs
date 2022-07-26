@@ -83,7 +83,9 @@ namespace SonOfRobin
         }
 
         public override void Update(GameTime gameTime)
-        { }
+        {
+            this.UpdateView();
+        }
 
         public void UpdateView()
         {
