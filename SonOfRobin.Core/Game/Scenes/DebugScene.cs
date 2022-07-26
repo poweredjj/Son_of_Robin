@@ -348,7 +348,7 @@ namespace SonOfRobin
 
             if (Keyboard.HasBeenPressed(Keys.F4))
             {
-                // not used
+                Menu.RebuildAllMenus();
             }
 
             if (Keyboard.HasBeenPressed(Keys.F5))

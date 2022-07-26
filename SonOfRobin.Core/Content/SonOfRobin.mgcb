@@ -338,7 +338,7 @@
 /processorParam:TextureFormat=Color
 /build:gfx/belt_big.png
 
-#begin gfx/belt_pouch_small.png
+#begin gfx/belt_medium.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -348,7 +348,19 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/belt_pouch_small.png
+/build:gfx/belt_medium.png
+
+#begin gfx/belt_small.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/belt_small.png
 
 #begin gfx/biceps.png
 /importer:TextureImporter

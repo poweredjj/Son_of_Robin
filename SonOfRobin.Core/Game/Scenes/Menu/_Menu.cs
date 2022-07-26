@@ -294,6 +294,8 @@ namespace SonOfRobin
 
         public void Rebuild(bool instantScroll)
         {
+            //  MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{SonOfRobinGame.currentUpdate} rebuilding menu {this.name}", color: Color.Cyan);
+
             nextMenuNoStartTransition = true;
             Menu rebuiltMenu = MenuTemplate.CreateMenuFromTemplate(templateName: this.templateName, executeHelper: this.templateExecuteHelper);
 
