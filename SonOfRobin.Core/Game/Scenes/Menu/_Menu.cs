@@ -192,7 +192,7 @@ namespace SonOfRobin
 
                 foreach (Menu menu in menuScenes)
                 {
-                    if (menu.sceneID != this.sceneID && menu.name == this.name) return true;
+                    if (menu.id != this.id && menu.name == this.name) return true;
                 }
 
                 return false;

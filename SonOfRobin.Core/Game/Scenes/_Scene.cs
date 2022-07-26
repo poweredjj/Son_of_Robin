@@ -22,7 +22,7 @@ namespace SonOfRobin
         public bool HasBeenRemoved { get { return this.hasBeenRemoved; } }
         public bool blocksUpdatesBelow;
         public bool blocksDrawsBelow;
-        public bool hidesSameScenesBelow;
+        private readonly bool hidesSameScenesBelow;
 
         public bool soundActive;
         public bool drawActive;
@@ -37,7 +37,7 @@ namespace SonOfRobin
         public ViewParams viewParams;
         public readonly TransManager transManager;
 
-        public readonly string sceneID;
+        public readonly string id;
 
         private readonly List<Scene> linkedScenes;
 
@@ -85,18 +85,27 @@ namespace SonOfRobin
                 var createdStack = new List<Scene> { };
                 if (sceneStack.Count == 0) return createdStack;
 
-                bool ignoreScenes = false;
-                for (int i = sceneStack.Count - 1; i >= 0; i--)
-                {
-                    Scene scene = sceneStack[i];
-                    if ((!ignoreScenes && scene.drawActive) || scene.alwaysDraws) createdStack.Add(scene);
+                var sortedSceneStack = sceneStack.OrderByDescending(o => o.priority).ToList();
+                sortedSceneStack.Reverse();
 
-                    if (scene.blocksDrawsBelow) ignoreScenes = true;
+                var hiddenTypes = new List<Type>(); // to hide same types below
+
+                foreach (Scene scene in sortedSceneStack)
+                {
+                    Type sceneType = scene.GetType();
+
+                    if (hiddenTypes.Contains(sceneType)) continue;
+
+                    if (scene.drawActive || scene.alwaysDraws)
+                    {
+                        createdStack.Add(scene);
+                        if (scene.hidesSameScenesBelow && !hiddenTypes.Contains(sceneType)) hiddenTypes.Add(sceneType);
+                    }
+
+                    if (scene.blocksDrawsBelow) break;
                 }
 
                 createdStack.Reverse();
-                createdStack = createdStack.OrderByDescending(o => o.priority).ToList();
-
                 return createdStack;
             }
         }
@@ -143,14 +152,11 @@ namespace SonOfRobin
             this.linkedScenes = new List<Scene> { }; // scenes that will also be removed on Remove()
             this.alwaysUpdates = alwaysUpdates;
             this.alwaysDraws = alwaysDraws;
-            this.sceneID = Helpers.GetUniqueHash();
+            this.id = Helpers.GetUniqueHash();
 
             Sound.QuickPlay(startingSound);
 
             sceneStack.Add(this);
-
-            if (this.hidesSameScenesBelow) this.HideSameScenesBelow();
-
             UpdateInputActiveTipsTouch(); // to avoid one frame delay in updating tips and touch overlay
         }
 
@@ -176,14 +182,11 @@ namespace SonOfRobin
             foreach (Scene currentScene in sceneStack)
             {
                 foreach (Scene linkedScene in currentScene.linkedScenes.ToList())
-                { if (this.sceneID == linkedScene.sceneID) currentScene.linkedScenes.Remove(linkedScene); }
+                { if (this.id == linkedScene.id) currentScene.linkedScenes.Remove(linkedScene); }
             }
 
             // rebuilding sceneStack
-            sceneStack = sceneStack.Where(scene => scene.sceneID != this.sceneID).ToList();
-
-            // showing hidden scene (if any)
-            if (this.hidesSameScenesBelow) this.ShowTopSceneOfSameType();
+            sceneStack = sceneStack.Where(scene => scene.id != this.id).ToList();
 
             this.hasBeenRemoved = true;
         }
@@ -193,23 +196,6 @@ namespace SonOfRobin
 
         public void AddLinkedScenes(List<Scene> sceneList)
         { this.linkedScenes.AddRange(sceneList); }
-
-        private void HideSameScenesBelow()
-        {
-            var topScene = GetTopSceneOfType(this.GetType());
-            if (topScene != null && topScene != this) return; // if scene is being rebuilt, it will not be on top (and should not hide other scenes)
-
-            foreach (Scene scene in GetAllScenesOfType(this.GetType()))
-            {
-                if (scene != this) scene.drawActive = false;
-            }
-        }
-
-        private void ShowTopSceneOfSameType()
-        {
-            var topScene = GetTopSceneOfType(this.GetType());
-            if (topScene != null) topScene.drawActive = true;
-        }
 
         protected Scene GetSceneBelow(bool ignorePriorityLessThan1 = true)
         {
