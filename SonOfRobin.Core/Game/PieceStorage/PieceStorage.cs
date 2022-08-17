@@ -133,7 +133,7 @@ namespace SonOfRobin
                 {
                     if (x >= this.width || y >= this.height)
                     {
-                        newSlots[x, y] = new StorageSlot(storage: this, posX: (byte)x, posY: (byte)y, stackLimit: this.stackLimit, allowedPieceNames: allowedPieceNames);
+                        newSlots[x, y] = new StorageSlot(storage: this, posX: (byte)x, posY: (byte)y, stackLimit: this.stackLimit, allowedPieceNames: this.allowedPieceNames);
                     }
                     else
                     {
@@ -485,6 +485,7 @@ namespace SonOfRobin
               {"stackLimit", this.stackLimit},
               {"slotData", slotData},
               {"storageType", storageType},
+              {"allowedPieceNames", allowedPieceNames},
             };
 
             if (this.lastUsedSlot != null)
@@ -507,8 +508,9 @@ namespace SonOfRobin
             byte stackLimit = (byte)storageDict["stackLimit"];
             var slotData = (List<Object>)storageDict["slotData"];
             StorageType storageType = (StorageType)storageDict["storageType"];
+            List<PieceTemplate.Name> allowedPieceNames = (List<PieceTemplate.Name>)storageDict["allowedPieceNames"];
 
-            PieceStorage storage = new PieceStorage(width: width, height: height, world: world, storagePiece: storagePiece, storageType: storageType, stackLimit: stackLimit);
+            PieceStorage storage = new PieceStorage(width: width, height: height, world: world, storagePiece: storagePiece, storageType: storageType, stackLimit: stackLimit, allowedPieceNames: allowedPieceNames);
             if (storageDict.ContainsKey("lastUsedSlotX") && storageDict.ContainsKey("lastUsedSlotY"))
             {
                 byte lastUsedSlotX = (byte)storageDict["lastUsedSlotX"];
