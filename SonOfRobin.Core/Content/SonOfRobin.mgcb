@@ -3908,6 +3908,12 @@
 /processorParam:Quality=Best
 /build:sound/139952__ecfike__a-tree-falling-down.ogg
 
+#begin sound/141334__lluiset7__error-2.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sound/141334__lluiset7__error-2.ogg
+
 #begin sound/145242__nathanaelj83__water-step.ogg
 /importer:OggImporter
 /processor:SoundEffectProcessor
