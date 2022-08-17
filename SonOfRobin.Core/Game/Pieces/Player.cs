@@ -714,7 +714,12 @@ namespace SonOfRobin
                 this.sleepMode = SleepMode.Waiting;
                 this.soundPack.Stop(PieceSoundPack.Action.PlayerSnore);
 
-                var confirmationData = new Dictionary<string, Object> { { "blocksUpdatesBelow", true }, { "question", "You are fully rested." }, { "labelYes", "go out" }, { "labelNo", "stay inside" }, { "taskName", Scheduler.TaskName.ForceWakeUp }, { "executeHelper", this } };
+                var optionList = new List<object>();
+
+                optionList.Add(new Dictionary<string, object> { { "label", "go out" }, { "taskName", Scheduler.TaskName.ForceWakeUp }, { "executeHelper", this } });
+                optionList.Add(new Dictionary<string, object> { { "label", "stay inside" }, { "taskName", Scheduler.TaskName.Empty }, { "executeHelper", null } });
+
+                var confirmationData = new Dictionary<string, Object> { { "blocksUpdatesBelow", true }, { "question", "You are fully rested." }, { "customOptionList", optionList } };
 
                 new Scheduler.Task(taskName: Scheduler.TaskName.OpenConfirmationMenu, executeHelper: confirmationData);
 

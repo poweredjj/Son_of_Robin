@@ -21,29 +21,17 @@ namespace SonOfRobin
             var menu = new Menu(templateName: Name.GenericConfirm, name: question, blocksUpdatesBelow: blocksUpdatesBelow, canBeClosedManually: true, priority: 0, templateExecuteHelper: null);
             new Separator(menu: menu, name: "", isEmpty: true);
 
-            if (confirmationDict.ContainsKey("customOptionList"))
+            var optionList = (List<object>)confirmationDict["customOptionList"];
+
+            foreach (var optionData in optionList)
             {
-                var optionList = (List<object>)confirmationDict["customOptionList"];
+                var optionDict = (Dictionary<string, Object>)optionData;
 
-                foreach (var optionData in optionList)
-                {
-                    var optionDict = (Dictionary<string, Object>)optionData;
-
-                    new Invoker(menu: menu, name: (string)optionDict["label"], closesMenu: true, taskName: (Scheduler.TaskName)optionDict["taskName"], executeHelper: optionDict["executeHelper"]);
-                }
-            }
-            else
-            {
-                string labelYes = confirmationDict.ContainsKey("labelYes") ? (string)confirmationDict["labelYes"] : "yes";
-                string labelNo = confirmationDict.ContainsKey("labelNo") ? (string)confirmationDict["labelNo"] : "no";
-
-                new Invoker(menu: menu, name: labelNo, closesMenu: true, taskName: Scheduler.TaskName.Empty);
-                new Invoker(menu: menu, name: labelYes, closesMenu: true, taskName: Scheduler.TaskName.ProcessConfirmation, executeHelper: confirmationData);
+                new Invoker(menu: menu, name: (string)optionDict["label"], closesMenu: true, taskName: (Scheduler.TaskName)optionDict["taskName"], executeHelper: optionDict["executeHelper"]);
             }
 
             return menu;
         }
-
 
         public static Menu CreateMenuFromTemplate(Name templateName, object executeHelper = null)
         {
