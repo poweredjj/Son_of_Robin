@@ -332,7 +332,7 @@ namespace SonOfRobin
                         Fruit fruit = (Fruit)this.slot.TopPiece;
                         Player player = fruit.world.player;
 
-                        Craft.Recipe plantRecipe = new Craft.Recipe(pieceToCreate: PieceInfo.GetInfo(fruit.name).isSpawnedBy, ingredients: new Dictionary<PieceTemplate.Name, byte> { { fruit.name, 1 } }, isReversible: false);
+                        Craft.Recipe plantRecipe = new Craft.Recipe(pieceToCreate: PieceInfo.GetInfo(fruit.name).isSpawnedBy, ingredients: new Dictionary<PieceTemplate.Name, byte> { { fruit.name, 1 } }, isReversible: false, checkIfAlreadyAdded: false);
 
                         Inventory.SetLayout(newLayout: Inventory.Layout.Toolbar, player: player);
                         plantRecipe.TryToProducePieces(player: player, showMessages: false);

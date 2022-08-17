@@ -28,7 +28,6 @@ namespace SonOfRobin
             this.nthFrameMultiplier = 0; // 0 == disabled
 
             this.EnableAllTypes(everyFrame: true, nthFrame: true);
-
         }
 
         private List<int> ConvertTypeListToIntList(List<Type> typeList)
@@ -53,7 +52,6 @@ namespace SonOfRobin
 
             throw new ArgumentException($"Cannot find type {type} in allTypes.");
         }
-
 
         private List<Type> ConvertIntListToTypeList(List<int> intList)
         {
