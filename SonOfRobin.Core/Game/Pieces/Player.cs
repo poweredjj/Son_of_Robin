@@ -746,11 +746,7 @@ namespace SonOfRobin
             this.activeState = State.PlayerControlledSleep;
             this.soundPack.Play(PieceSoundPack.Action.PlayerSnore);
 
-            SolidColor blackOverlay = new SolidColor(color: Color.Black, viewOpacity: 0.75f);
-            blackOverlay.transManager.AddTransition(new Transition(transManager: blackOverlay.transManager, outTrans: false, baseParamName: "Opacity", targetVal: 0f, duration: 20));
-            this.world.solidColorManager.Add(blackOverlay);
-
-            new Scheduler.Task(taskName: Scheduler.TaskName.TempoFastForward, delay: 22, executeHelper: 8, turnOffInputUntilExecution: true);
+            new Scheduler.Task(taskName: Scheduler.TaskName.TempoFastForward, delay: 0, executeHelper: 8);
 
             MessageLog.AddMessage(msgType: MsgType.User, message: "Going to sleep.");
         }
@@ -782,8 +778,6 @@ namespace SonOfRobin
             world.updateMultiplier = 1;
             SonOfRobinGame.game.IsFixedTimeStep = Preferences.FrameSkip;
             Scheduler.RemoveAllTasksOfName(Scheduler.TaskName.TempoFastForward); // to prevent fast forward, when waking up before this task was executed
-
-            this.world.solidColorManager.RemoveAll(fadeOutDuration: 20);
 
             MessageLog.AddMessage(msgType: MsgType.Debug, message: "Waking up.");
         }
