@@ -117,7 +117,7 @@ namespace SonOfRobin
 
                 if (!this.CheckIfStorageContainsAllIngredients(storageList: storagesToTakeFrom))
                 {
-                    new TextWindow(text: "Not enough ingredients.", textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false);
+                    new TextWindow(text: "Not enough ingredients.", textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false, startingSound: SoundData.Name.Error);
                     MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Not enough ingredients to craft '{this.pieceToCreate}'.");
                     return craftedPieces;
                 }
