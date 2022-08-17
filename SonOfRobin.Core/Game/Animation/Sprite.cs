@@ -86,7 +86,7 @@ namespace SonOfRobin
         public bool IsInDangerZone
         { get { return this.GetFieldValue(TerrainName.Danger) > Terrain.safeZoneMax; } }
         public bool IsDeepInDangerZone
-        { get { return this.GetFieldValue(TerrainName.Danger) > Terrain.safeZoneMax * 1.3; } }
+        { get { return this.GetFieldValue(TerrainName.Danger) > Terrain.safeZoneMax * 1.2; } }
 
         public PieceSoundPack.Action WalkSoundAction
         {
