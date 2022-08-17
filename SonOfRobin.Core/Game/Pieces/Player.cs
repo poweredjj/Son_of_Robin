@@ -9,7 +9,7 @@ namespace SonOfRobin
 {
     public class Player : BoardPiece
     {
-        public enum SleepMode { Sleep, Waiting };
+        public enum SleepMode { Sleep, Idle, WaitMorning };
 
         private static readonly int maxShootingPower = 90;
 
@@ -703,7 +703,8 @@ namespace SonOfRobin
         {
             this.CheckLowHP();
 
-            if (InputMapper.HasBeenPressed(InputMapper.Action.GlobalCancelReturnSkip))
+            if (InputMapper.HasBeenPressed(InputMapper.Action.GlobalCancelReturnSkip) ||
+                (this.sleepMode == SleepMode.WaitMorning && this.world.islandClock.CurrentPartOfDay == IslandClock.PartOfDay.Morning))
             {
                 this.WakeUp();
                 return;
@@ -711,12 +712,16 @@ namespace SonOfRobin
 
             if (this.sleepMode == SleepMode.Sleep && this.Fatigue == 0)
             {
-                this.sleepMode = SleepMode.Waiting;
+                this.sleepMode = SleepMode.Idle;
                 this.soundPack.Stop(PieceSoundPack.Action.PlayerSnore);
+
+                this.visualAid.Destroy();
+                this.visualAid = null;
 
                 var optionList = new List<object>();
 
                 optionList.Add(new Dictionary<string, object> { { "label", "go out" }, { "taskName", Scheduler.TaskName.ForceWakeUp }, { "executeHelper", this } });
+                optionList.Add(new Dictionary<string, object> { { "label", "wait until morning" }, { "taskName", Scheduler.TaskName.WaitUntilMorning }, { "executeHelper", this } });
                 optionList.Add(new Dictionary<string, object> { { "label", "stay inside" }, { "taskName", Scheduler.TaskName.Empty }, { "executeHelper", null } });
 
                 var confirmationData = new Dictionary<string, Object> { { "blocksUpdatesBelow", true }, { "question", "You are fully rested." }, { "customOptionList", optionList } };
@@ -726,8 +731,12 @@ namespace SonOfRobin
                 return;
             }
 
+            string sleepModeText = "Sleeping...";
+            if (this.sleepMode == SleepMode.WaitMorning) sleepModeText = "Waiting until morning...";
+            if (this.sleepMode == SleepMode.Idle) sleepModeText = "Waiting...";
+
             this.sleepEngine.Execute(player: this);
-            if (this.world.currentUpdate % 10 == 0) SonOfRobinGame.progressBar.TurnOn(curVal: (int)(this.maxFatigue - this.Fatigue), maxVal: (int)this.maxFatigue, text: this.sleepMode == SleepMode.Sleep ? "Sleeping..." : "Waiting...");
+            if (this.world.currentUpdate % 10 == 0) SonOfRobinGame.progressBar.TurnOn(curVal: (int)(this.maxFatigue - this.Fatigue), maxVal: (int)this.maxFatigue, text: sleepModeText);
         }
 
         public void GoToSleep(SleepEngine sleepEngine, Vector2 zzzPos, List<BuffEngine.Buff> wakeUpBuffs)

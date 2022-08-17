@@ -21,17 +21,26 @@ namespace SonOfRobin
             var menu = new Menu(templateName: Name.GenericConfirm, name: question, blocksUpdatesBelow: blocksUpdatesBelow, canBeClosedManually: true, priority: 0, templateExecuteHelper: null);
             new Separator(menu: menu, name: "", isEmpty: true);
 
-            var optionList = (List<object>)confirmationDict["customOptionList"];
-
-            foreach (var optionData in optionList)
+            if (confirmationDict.ContainsKey("customOptionList"))
             {
-                var optionDict = (Dictionary<string, Object>)optionData;
+                var optionList = (List<object>)confirmationDict["customOptionList"];
 
-                new Invoker(menu: menu, name: (string)optionDict["label"], closesMenu: true, taskName: (Scheduler.TaskName)optionDict["taskName"], executeHelper: optionDict["executeHelper"]);
+                foreach (var optionData in optionList)
+                {
+                    var optionDict = (Dictionary<string, Object>)optionData;
+
+                    new Invoker(menu: menu, name: (string)optionDict["label"], closesMenu: true, taskName: (Scheduler.TaskName)optionDict["taskName"], executeHelper: optionDict["executeHelper"]);
+                }
+            }
+            else
+            {
+                new Invoker(menu: menu, name: "no", closesMenu: true, taskName: Scheduler.TaskName.Empty);
+                new Invoker(menu: menu, name: "yes", closesMenu: true, taskName: Scheduler.TaskName.ProcessConfirmation, executeHelper: confirmationData);
             }
 
             return menu;
         }
+
 
         public static Menu CreateMenuFromTemplate(Name templateName, object executeHelper = null)
         {
