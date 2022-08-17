@@ -456,7 +456,7 @@ namespace SonOfRobin
 
             if (!this.ignoresCollisions)
             {
-                if (this.blocksPlantGrowth) groupNames.Add(Cell.Group.ColPlantGrowth);
+                if (this.blocksPlantGrowth || this.blocksMovement) groupNames.Add(Cell.Group.ColPlantGrowth); // what blocks movement, should block plant growth too
                 if (this.blocksMovement) groupNames.Add(Cell.Group.ColMovement);
             }
             if (this.visible) groupNames.Add(Cell.Group.Visible);
