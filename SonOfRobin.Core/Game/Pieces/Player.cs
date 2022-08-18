@@ -9,7 +9,7 @@ namespace SonOfRobin
 {
     public class Player : BoardPiece
     {
-        public enum SleepMode { Sleep, Idle, WaitMorning };
+        public enum SleepMode { Awake, Sleep, WaitMorning, WaitIndefinitely };
 
         private static readonly int maxShootingPower = 90;
 
@@ -260,7 +260,7 @@ namespace SonOfRobin
             this.shootingPower = 0;
             this.wentToSleepFrame = 0;
             this.sleepingInsideShelter = false;
-            this.sleepMode = SleepMode.Sleep;
+            this.sleepMode = SleepMode.Awake;
             this.recipeToBuild = null;
             this.simulatedPieceToBuild = null;
 
@@ -715,16 +715,23 @@ namespace SonOfRobin
         {
             this.CheckLowHP();
 
-            if (InputMapper.HasBeenPressed(InputMapper.Action.GlobalCancelReturnSkip) ||
-                (this.sleepMode == SleepMode.WaitMorning && this.world.islandClock.CurrentPartOfDay == IslandClock.PartOfDay.Morning))
+            if (InputMapper.HasBeenPressed(InputMapper.Action.GlobalCancelReturnSkip))
             {
+                this.WakeUp();
+                return;
+            }
+
+            if (this.sleepMode == SleepMode.WaitMorning && this.world.islandClock.CurrentPartOfDay == IslandClock.PartOfDay.Morning)
+            {
+                new TextWindow(text: "The morning has came.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound, blocksUpdatesBelow: true);
+
                 this.WakeUp();
                 return;
             }
 
             if (this.sleepMode == SleepMode.Sleep && this.Fatigue == 0)
             {
-                this.sleepMode = SleepMode.Idle;
+                this.sleepMode = SleepMode.WaitIndefinitely;
                 this.soundPack.Stop(PieceSoundPack.Action.PlayerSnore);
 
                 this.visualAid.Destroy();
@@ -734,7 +741,7 @@ namespace SonOfRobin
 
                 optionList.Add(new Dictionary<string, object> { { "label", "go out" }, { "taskName", Scheduler.TaskName.ForceWakeUp }, { "executeHelper", this } });
                 optionList.Add(new Dictionary<string, object> { { "label", "wait until morning" }, { "taskName", Scheduler.TaskName.WaitUntilMorning }, { "executeHelper", this } });
-                optionList.Add(new Dictionary<string, object> { { "label", "stay inside" }, { "taskName", Scheduler.TaskName.Empty }, { "executeHelper", null } });
+                optionList.Add(new Dictionary<string, object> { { "label", "wait indefinitely" }, { "taskName", Scheduler.TaskName.Empty }, { "executeHelper", null } });
 
                 var confirmationData = new Dictionary<string, Object> { { "blocksUpdatesBelow", true }, { "question", "You are fully rested." }, { "customOptionList", optionList } };
 
@@ -745,7 +752,7 @@ namespace SonOfRobin
 
             string sleepModeText = "Sleeping...";
             if (this.sleepMode == SleepMode.WaitMorning) sleepModeText = "Waiting until morning...";
-            if (this.sleepMode == SleepMode.Idle) sleepModeText = "Waiting...";
+            if (this.sleepMode == SleepMode.WaitIndefinitely) sleepModeText = "Waiting indefinitely...";
 
             this.sleepEngine.Execute(player: this);
             if (this.world.currentUpdate % 10 == 0) SonOfRobinGame.progressBar.TurnOn(curVal: (int)(this.maxFatigue - this.Fatigue), maxVal: (int)this.maxFatigue, text: sleepModeText);
@@ -800,6 +807,7 @@ namespace SonOfRobin
             this.world.tipsLayout = ControlTips.TipsLayout.WorldMain;
             this.sprite.Visible = true;
             this.soundPack.Stop(PieceSoundPack.Action.PlayerSnore);
+            this.sleepMode = SleepMode.Awake;
 
             world.updateMultiplier = 1;
             SonOfRobinGame.game.IsFixedTimeStep = Preferences.FrameSkip;
