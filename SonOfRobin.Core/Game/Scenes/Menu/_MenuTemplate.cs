@@ -41,7 +41,6 @@ namespace SonOfRobin
             return menu;
         }
 
-
         public static Menu CreateMenuFromTemplate(Name templateName, object executeHelper = null)
         {
             Preferences preferences = new Preferences();

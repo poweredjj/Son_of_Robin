@@ -184,8 +184,6 @@ namespace SonOfRobin
             return newText;
         }
 
-
-
         public override void Update(GameTime gameTime)
         {
             if (this.blockingFramesLeft > 0 && this.textWithImages.AnimationFinished)

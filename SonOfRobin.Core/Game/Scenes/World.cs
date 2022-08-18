@@ -1088,7 +1088,7 @@ namespace SonOfRobin
 
         public void AddPauseMenuTransitions()
         {
-            if (this.demoMode) return;
+            if (this.demoMode || this.solidColorManager.AnySolidColorPresent) return;
 
             SolidColor blackOverlay = new SolidColor(color: Color.Black, viewOpacity: 0f);
             blackOverlay.viewParams.Opacity = 0f;
