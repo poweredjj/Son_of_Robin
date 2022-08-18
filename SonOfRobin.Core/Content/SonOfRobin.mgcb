@@ -482,6 +482,18 @@
 /processorParam:TextureFormat=Color
 /build:gfx/celianna_farmnature_crops_transparent.png
 
+#begin gfx/chest_stone.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/chest_stone.png
+
 #begin gfx/chests.png
 /importer:TextureImporter
 /processor:TextureProcessor
