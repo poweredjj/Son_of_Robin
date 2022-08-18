@@ -59,14 +59,13 @@ namespace SonOfRobin
         private readonly bool switchButton;
         private readonly Object activeCoupledObj;
         private readonly string activeCoupledVarName;
-        private readonly static SpriteFont font = SonOfRobinGame.fontPressStart2P5;
 
         public static Dictionary<VButName, VirtButton> buttonsByName = new Dictionary<VButName, VirtButton> { };
         private bool HasBeenPressed { get { return this.IsActive && !this.wasDownLastFrame; } }
         private bool HasBeenReleased { get { return !this.IsActive && this.wasDownLastFrame; } }
         private bool IsActive { get { return this.switchButton ? this.switchedState : this.isDown; } }
-        private int Width { get { return Convert.ToInt32(SonOfRobinGame.VirtualWidth * this.width0to1); } }
-        private int Height { get { return Convert.ToInt32(SonOfRobinGame.VirtualWidth * this.height0to1); } }  // VirtualWidth is repeated to maintain button proportions
+        private int Width { get { return (int)(SonOfRobinGame.VirtualWidth * this.width0to1); } }
+        private int Height { get { return (int)(SonOfRobinGame.VirtualWidth * this.height0to1); } }  // VirtualWidth is repeated to maintain button proportions
         private Vector2 PosCenter { get { return new Vector2(SonOfRobinGame.VirtualWidth * this.posX0to1, SonOfRobinGame.VirtualHeight * this.posY0to1); } }
         private Rectangle Rect
         {
@@ -80,6 +79,16 @@ namespace SonOfRobin
                     x: (int)posUpperLeft.X,
                     y: (int)posUpperLeft.Y,
                     width: width, height: height);
+            }
+        }
+        private SpriteFont Font
+        {
+            get
+            {
+                SpriteFont font = SonOfRobinGame.fontTommy40;
+                if (font == null) font = SonOfRobinGame.fontPressStart2P5;
+
+                return font;
             }
         }
 
@@ -254,27 +263,35 @@ namespace SonOfRobin
             if (this.hidden) return;
 
             Rectangle gfxRect = this.Rect;
-            Rectangle sourceRectangle;
             float opacityMultiplier = this.highlighter.IsOn ? 1f : 0.5f;
 
             if (this.IsActive)
             {
-                sourceRectangle = new Rectangle(0, 0, this.texturePressed.Width, this.texturePressed.Height);
-                SonOfRobinGame.spriteBatch.Draw(this.texturePressed, gfxRect, sourceRectangle, this.bgColorPressed * opacityMultiplier);
+                Rectangle srcRectPressed = new Rectangle(0, 0, this.texturePressed.Width, this.texturePressed.Height);
+                SonOfRobinGame.spriteBatch.Draw(this.texturePressed, gfxRect, srcRectPressed, this.bgColorPressed * opacityMultiplier);
             }
 
-            Vector2 posCenter = this.PosCenter;
+            Rectangle srcRectReleased = new Rectangle(0, 0, this.textureReleased.Width, this.textureReleased.Height);
+            SonOfRobinGame.spriteBatch.Draw(this.textureReleased, gfxRect, srcRectReleased, this.bgColorReleased * opacityMultiplier);
 
-            sourceRectangle = new Rectangle(0, 0, this.textureReleased.Width, this.textureReleased.Height);
-            SonOfRobinGame.spriteBatch.Draw(this.textureReleased, gfxRect, sourceRectangle, this.bgColorReleased * opacityMultiplier);
+            Rectangle wholeLabelRect = gfxRect;
+            wholeLabelRect.Inflate(-wholeLabelRect.Width * 0.08f, -wholeLabelRect.Height * 0.2f);
 
-            var labelSize = font.MeasureString(this.label);
-            float targetTextWidth = this.Width * 0.85f;
-            float textScale = targetTextWidth / labelSize.X;
+            var labelLines = this.label.Split('\n');
+            int labelRectHeight = wholeLabelRect.Height / labelLines.Length;
+            int labelRectYOffset = 0;
 
-            Vector2 posLabelUpperLeft = posCenter - new Vector2(labelSize.X / 2 * textScale, labelSize.Y / 2 * textScale);
+            SpriteFont font = this.Font;
 
-            SonOfRobinGame.spriteBatch.DrawString(font, this.label, position: posLabelUpperLeft, color: this.textColor * opacityMultiplier, origin: Vector2.Zero, scale: textScale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
+            foreach (string currentLabel in labelLines)
+            {
+                Rectangle currentLabelRect = new Rectangle(x: wholeLabelRect.X, y: wholeLabelRect.Y + labelRectYOffset, width: wholeLabelRect.Width, height: labelRectHeight);
+
+                Helpers.DrawTextInsideRectWithOutline(font: font, text: currentLabel, rectangle: currentLabelRect, color: Color.White * opacityMultiplier, outlineColor: new Color(0, 0, 0, 128), outlineSize: 1, alignX: Helpers.AlignX.Center, alignY: Helpers.AlignY.Center, drawTestRect: false);
+
+                labelRectYOffset += labelRectHeight;
+            }
+
         }
 
     }

@@ -363,7 +363,7 @@ namespace SonOfRobin
                         float xPos = 0.06f;
                         float yPos = 0.85f;
 
-                        new VirtButton(name: VButName.Return, label: "SKIP", bgColorPressed: Color.LightGreen, bgColorReleased: Color.White, textColor: new Color(206, 235, 253), posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
+                        new VirtButton(name: VButName.Return, label: "SKIP", bgColorPressed: Color.LightGreen, bgColorReleased: Color.White, textColor: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
 
                         return;
                     }
@@ -374,8 +374,8 @@ namespace SonOfRobin
 
                         float yPos = 0.85f;
 
-                        new VirtButton(name: VButName.Return, label: "SKIP", bgColorPressed: Color.LightGreen, bgColorReleased: Color.White, textColor: new Color(206, 235, 253), posX0to1: 0.06f, posY0to1: yPos, width0to1: size, height0to1: size);
-                        new VirtButton(name: VButName.Confirm, label: "CONFIRM", bgColorPressed: Color.LightGreen, bgColorReleased: Color.White, textColor: new Color(206, 235, 253), posX0to1: 0.94f, posY0to1: yPos, width0to1: size, height0to1: size);
+                        new VirtButton(name: VButName.Return, label: "SKIP", bgColorPressed: Color.LightGreen, bgColorReleased: Color.White, textColor: Color.White, posX0to1: 0.06f, posY0to1: yPos, width0to1: size, height0to1: size);
+                        new VirtButton(name: VButName.Confirm, label: "CONFIRM", bgColorPressed: Color.LightGreen, bgColorReleased: Color.White, textColor: Color.White, posX0to1: 0.94f, posY0to1: yPos, width0to1: size, height0to1: size);
 
                         return;
                     }
