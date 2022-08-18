@@ -8,12 +8,9 @@ namespace SonOfRobin
 {
     public class CraftStats
     {
-        public int TotalNoOfCrafts { get { return this.totalNoOfCrafts; } }
-        private int totalNoOfCrafts;
-        public int CraftedPiecesTotal { get { return this.craftedPiecesTotal; } }
-        private int craftedPiecesTotal;
-        public int UsedIngredientsTotal { get { return this.usedIngredientsTotal; } }
-        private int usedIngredientsTotal;
+        public int TotalNoOfCrafts { get; private set; }
+        public int CraftedPiecesTotal { get; private set; }
+        public int UsedIngredientsTotal { get; private set; }
 
         private Dictionary<string, int> craftedRecipes;
         private Dictionary<PieceTemplate.Name, int> craftedPieces;
@@ -21,19 +18,19 @@ namespace SonOfRobin
 
         public CraftStats()
         {
-            this.totalNoOfCrafts = 0;
+            this.TotalNoOfCrafts = 0;
             this.craftedRecipes = new Dictionary<string, int>();
             this.craftedPieces = new Dictionary<PieceTemplate.Name, int>();
             this.usedIngredients = new Dictionary<PieceTemplate.Name, int>();
-            this.craftedPiecesTotal = 0;
-            this.usedIngredientsTotal = 0;
+            this.CraftedPiecesTotal = 0;
+            this.UsedIngredientsTotal = 0;
         }
 
         public void AddRecipe(Craft.Recipe recipe, int craftCount = 1)
         {
             if (craftCount < 1) throw new ArgumentException($"craftCount ({craftCount}) is less than 1");
 
-            this.totalNoOfCrafts += craftCount;
+            this.TotalNoOfCrafts += craftCount;
 
             {
                 string id = recipe.id;
@@ -45,7 +42,7 @@ namespace SonOfRobin
                 PieceTemplate.Name craftedPiece = recipe.pieceToCreate;
                 if (!this.craftedPieces.ContainsKey(craftedPiece)) this.craftedPieces[craftedPiece] = 0;
                 this.craftedPieces[craftedPiece] += craftCount;
-                this.craftedPiecesTotal += craftCount;
+                this.CraftedPiecesTotal += craftCount;
             }
 
             foreach (var kvp in recipe.ingredients)
@@ -55,7 +52,7 @@ namespace SonOfRobin
 
                 if (!this.usedIngredients.ContainsKey(ingredientName)) this.usedIngredients[ingredientName] = 0;
                 this.usedIngredients[ingredientName] += ingredientCount * craftCount;
-                this.usedIngredientsTotal += ingredientCount * craftCount;
+                this.UsedIngredientsTotal += ingredientCount * craftCount;
             }
         }
 
@@ -63,12 +60,12 @@ namespace SonOfRobin
         {
             var statsData = new Dictionary<string, object>
             {
-                { "totalNoOfCrafts", this.totalNoOfCrafts },
+                { "TotalNoOfCrafts", this.TotalNoOfCrafts },
                 { "craftedRecipes", this.craftedRecipes },
                 { "craftedPieces", this.craftedPieces },
                 { "usedIngredients", this.usedIngredients },
-                { "craftedPiecesTotal", this.craftedPiecesTotal },
-                { "usedIngredientsTotal", this.usedIngredientsTotal },
+                { "CraftedPiecesTotal", this.CraftedPiecesTotal },
+                { "UsedIngredientsTotal", this.UsedIngredientsTotal },
             };
 
             return statsData;
@@ -76,12 +73,12 @@ namespace SonOfRobin
 
         public void Deserialize(Dictionary<string, Object> statsData)
         {
-            this.totalNoOfCrafts = (int)statsData["totalNoOfCrafts"];
+            this.TotalNoOfCrafts = (int)statsData["TotalNoOfCrafts"];
             this.craftedRecipes = (Dictionary<string, int>)statsData["craftedRecipes"];
             this.craftedPieces = (Dictionary<PieceTemplate.Name, int>)statsData["craftedPieces"];
             this.usedIngredients = (Dictionary<PieceTemplate.Name, int>)statsData["usedIngredients"];
-            this.craftedPiecesTotal = (int)statsData["craftedPiecesTotal"];
-            this.usedIngredientsTotal = (int)statsData["usedIngredientsTotal"];
+            this.CraftedPiecesTotal = (int)statsData["CraftedPiecesTotal"];
+            this.UsedIngredientsTotal = (int)statsData["UsedIngredientsTotal"];
         }
 
         public bool HasBeenCrafted(Craft.Recipe recipe)

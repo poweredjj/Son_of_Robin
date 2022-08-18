@@ -21,7 +21,9 @@ namespace SonOfRobin
         }
 
         public bool IsInRange(byte value)
-        { return this.min <= value && value <= this.max; }
+        {
+            return this.min <= value && value <= this.max;
+        }
 
     }
 }

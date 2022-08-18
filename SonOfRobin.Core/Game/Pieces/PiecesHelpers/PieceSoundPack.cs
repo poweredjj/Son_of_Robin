@@ -24,7 +24,7 @@ namespace SonOfRobin
                 Action action = kvp.Key;
                 Sound sound = kvp.Value;
 
-                if (sound.IsLooped && sound.IsPlaying) playingLoopsList.Add(action);
+                if (sound.isLooped && sound.IsPlaying) playingLoopsList.Add(action);
             }
 
             return playingLoopsList;
@@ -55,7 +55,7 @@ namespace SonOfRobin
                 {
                     Sound previousSound = this.soundDict[action];
 
-                    if (previousSound.playAfterAssign || (sound.IsLooped && previousSound.IsLooped && previousSound.IsPlaying))
+                    if (previousSound.playAfterAssign || (sound.isLooped && previousSound.isLooped && previousSound.IsPlaying))
                     {
                         previousSound.Stop();
                         sound.Play();
@@ -138,7 +138,7 @@ namespace SonOfRobin
 
         public bool IsLooped(Action action)
         {
-            return this.soundDict.ContainsKey(action) ? this.soundDict[action].IsLooped : false;
+            return this.soundDict.ContainsKey(action) ? this.soundDict[action].isLooped : false;
         }
 
         public void StopAll(Action ignoredAction)

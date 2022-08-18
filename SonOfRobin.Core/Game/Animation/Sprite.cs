@@ -51,8 +51,7 @@ namespace SonOfRobin
         public readonly EffectCol effectCol;
         public List<Cell.Group> gridGroups;
         public Cell currentCell; // current cell, that is containing the sprite 
-        private bool isOnBoard;
-        public bool IsOnBoard { get { return isOnBoard; } }
+        public bool IsOnBoard { get; private set; }
         public string CompleteAnimID
         { get { return GetCompleteAnimId(animPackage: this.animPackage, animSize: this.animSize, animName: this.animName); } }
 
@@ -164,7 +163,7 @@ namespace SonOfRobin
             this.effectCol = new EffectCol(world: world);
             this.hasBeenDiscovered = false;
             this.currentCell = null;
-            this.isOnBoard = false;
+            this.IsOnBoard = false;
             if (fadeInAnim)
             {
                 this.opacity = 0f;
@@ -190,7 +189,7 @@ namespace SonOfRobin
                 this.MoveToClosestFreeSpot(startPosition: position, checkIsOnBoard: false, ignoreDensity: ignoreDensity) :
                 this.FindFreeSpot(position, minDistance: minDistance, maxDistance: maxDistance, findAtBeachEdge: this.placeAtBeachEdge, ignoreCollisions: ignoreCollisions, precisePlacement: precisePlacement, ignoreDensity: ignoreDensity);
 
-            if (placedCorrectly) this.isOnBoard = true;
+            if (placedCorrectly) this.IsOnBoard = true;
             else this.RemoveFromBoard();
 
             return placedCorrectly;
@@ -200,7 +199,7 @@ namespace SonOfRobin
         {
             this.world.grid.RemoveSprite(this);
             this.position = new Vector2(-500, -500);  // to fail if trying to use in the future
-            this.isOnBoard = false;
+            this.IsOnBoard = false;
         }
 
         public void UpdateBoardLocation()
