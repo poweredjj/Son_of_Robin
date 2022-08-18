@@ -28,7 +28,7 @@ namespace SonOfRobin
         public readonly int dividedHeight;
 
         public List<Cell> surroundingCells;
-        public bool visitedByPlayer;
+        public bool VisitedByPlayer { get; private set; }
 
         public readonly Dictionary<Group, Dictionary<string, Sprite>> spriteGroups;
         public readonly Dictionary<TerrainName, Terrain> terrainByName;
@@ -73,7 +73,7 @@ namespace SonOfRobin
             this.center = new Vector2(this.xCenter, this.yCenter);
             this.color = new Color(random.Next(0, 255), random.Next(0, 255), random.Next(0, 255));
             this.surroundingCells = new List<Cell>();
-            this.visitedByPlayer = false;
+            this.VisitedByPlayer = false;
 
             this.spriteGroups = new Dictionary<Group, Dictionary<string, Sprite>> { };
             foreach (Group groupName in allGroups)
@@ -86,11 +86,16 @@ namespace SonOfRobin
             this.creationStage++;
         }
 
+        public void SetAsVisited()
+        {
+            this.VisitedByPlayer = true;
+        }
+
         public Object Serialize()
         {
             var cellData = new Dictionary<string, object>
             {
-                { "visitedByPlayer", this.visitedByPlayer},
+                { "VisitedByPlayer", this.VisitedByPlayer},
             };
 
             return cellData;
@@ -100,7 +105,7 @@ namespace SonOfRobin
         {
             var cellDict = (Dictionary<string, object>)cellData;
 
-            this.visitedByPlayer = (bool)cellDict["visitedByPlayer"];
+            this.VisitedByPlayer = (bool)cellDict["VisitedByPlayer"];
         }
 
         public void RunNextCreationStage()

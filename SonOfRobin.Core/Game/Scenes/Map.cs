@@ -219,7 +219,7 @@ namespace SonOfRobin
 
         public bool CheckIfCanBeTurnedOn(bool showMessage = true)
         {
-            bool canBeTurnedOn = this.world.islandClock.CurrentPartOfDay != IslandClock.PartOfDay.Night || this.world.player.sprite.IsInLightSourceRange;
+            bool canBeTurnedOn = this.world.player.CanSeeAnything;
 
             if (!canBeTurnedOn && showMessage && GetTopSceneOfType(typeof(TextWindow)) == null)
             {

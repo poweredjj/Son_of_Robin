@@ -97,6 +97,14 @@ namespace SonOfRobin
             }
         }
 
+        public bool CanSeeAnything
+        {
+            get
+            {
+                return this.world.islandClock.CurrentPartOfDay != IslandClock.PartOfDay.Night || this.world.player.sprite.IsInLightSourceRange;
+            }
+        }
+
         private bool ActiveToolbarWeaponHasAmmo // applies only to shooting weapons
         {
             get
