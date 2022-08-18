@@ -6,7 +6,7 @@ namespace SonOfRobin
 {
     public class Tutorials
     {
-        public enum Type { BreakThing, Equip, BuildWorkshop, GetWood, Mine, Interact, PickUp, Hit, Craft, KeepingAnimalsAway, ShootProjectile, Cook, ShakeFruit, AnimalAttacking, DangerZone, Torch, Fireplace, TooDarkToReadMap }
+        public enum Type { BreakThing, Equip, BuildWorkshop, GetWood, Mine, Interact, PickUp, Hit, Craft, KeepingAnimalsAway, ShootProjectile, Cook, ShakeFruit, AnimalAttacking, DangerZone, Torch, Fireplace, TooDarkToReadMap, TooDarkToSeeAnything }
 
         private static readonly HintMessage.BoxType messageHeaderType = HintMessage.BoxType.BlueBox;
         private static readonly HintMessage.BoxType messageTextType = HintMessage.BoxType.LightBlueBox;
@@ -160,8 +160,14 @@ namespace SonOfRobin
             new Tutorial(type: Type.TooDarkToReadMap, name: "reading map at night", title: "Reading map at night.",
                 messages: new List<HintMessage> {
                 new HintMessage(text: "The | map can't be read at night.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Map) }, boxType: messageTextType),
-                new HintMessage(text: "You must use a | torch\nor be near to light source |.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.TorchBig), AnimData.framesForPkgs[AnimData.PkgName.Flame].texture }, boxType: messageTextType)
+                new HintMessage(text: "You must use a | torch\nor be near to light source |\nto read map at night.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.TorchBig), AnimData.framesForPkgs[AnimData.PkgName.Flame].texture }, boxType: messageTextType)
                 });
+
+            new Tutorial(type: Type.TooDarkToSeeAnything, name: "when it is dark", title: "When it is dark.",
+                messages: new List<HintMessage> {
+                new HintMessage(text: "At night, you cannot:\n-pick up any items ||\n-use most tools ||\n-craft ||\n-use other stuff |||", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.WoodLogRegular), PieceInfo.GetTexture(PieceTemplate.Name.Stone), PieceInfo.GetTexture(PieceTemplate.Name.AxeStone), PieceInfo.GetTexture(PieceTemplate.Name.PickaxeStone), PieceInfo.GetTexture(PieceTemplate.Name.WorkshopBasic), PieceInfo.GetTexture(PieceTemplate.Name.Anvil), PieceInfo.GetTexture(PieceTemplate.Name.ChestIron), PieceInfo.GetTexture(PieceTemplate.Name.CookingPot), PieceInfo.GetTexture(PieceTemplate.Name.UpgradeBench) }, boxType: messageTextType),
+                new HintMessage(text: "However, you can still do these things\nif you're near to a light source | or have a torch |.", imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.Flame].texture, PieceInfo.GetTexture(PieceTemplate.Name.TorchBig) }, boxType: messageTextType)
+    });
 
             new Tutorial(type: Type.Equip, name: "using equipment", title: "Using equipment.",
                  messages: new List<HintMessage> {

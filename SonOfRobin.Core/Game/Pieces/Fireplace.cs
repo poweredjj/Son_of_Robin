@@ -104,7 +104,7 @@ namespace SonOfRobin
                     this.soundPack.Play(PieceSoundPack.Action.TurnOff);
                 }
 
-                if (Inventory.layout == Inventory.Layout.InventoryAndChest) Inventory.SetLayout(newLayout: Inventory.Layout.Toolbar, player: this.world.player);
+                if (Inventory.layout == Inventory.Layout.InventoryAndFieldStorage) Inventory.SetLayout(newLayout: Inventory.Layout.Toolbar, player: this.world.player);
             }
         }
 

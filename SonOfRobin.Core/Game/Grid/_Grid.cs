@@ -512,7 +512,7 @@ namespace SonOfRobin
             {
                 cell.DrawBackground();
 
-                if (this.world.MapEnabled && !cell.VisitedByPlayer && cameraRect.Intersects(cell.rect) && camera.IsTrackingPlayer)
+                if (this.world.MapEnabled && !cell.VisitedByPlayer && cameraRect.Intersects(cell.rect) && camera.IsTrackingPlayer && this.world.player.CanSeeAnything)
                 {
                     cell.SetAsVisited();
                     updateFog = true;

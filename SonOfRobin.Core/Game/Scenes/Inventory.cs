@@ -14,7 +14,7 @@ namespace SonOfRobin
             None,
             Toolbar,
             InventoryAndToolbar,
-            InventoryAndChest,
+            InventoryAndFieldStorage,
             InventoryAndEquip
         }
 
@@ -159,8 +159,15 @@ namespace SonOfRobin
             }
         }
 
-        public static void SetLayout(Layout newLayout, BoardPiece chest = null, Player player = null)
+        public static void SetLayout(Layout newLayout, BoardPiece fieldStorage = null, Player player = null)
         {
+            if (fieldStorage != null && fieldStorage.pieceStorage.storageType != PieceStorage.StorageType.Fireplace && player != null && !player.CanSeeAnything)
+            {
+                new TextWindow(text: $"It is too dark to use the | {fieldStorage.readableName}...", imageList: new List<Texture2D> { PieceInfo.GetTexture(fieldStorage.name) }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: InputTypes.None, blockInputDuration: 45, priority: 1, animSound: player.world.DialogueSound);
+
+                return;
+            }
+
             RemoveAllScenesOfType(typeof(Inventory));
 
             switch (newLayout)
@@ -186,10 +193,10 @@ namespace SonOfRobin
                         break;
                     }
 
-                case Layout.InventoryAndChest:
+                case Layout.InventoryAndFieldStorage:
                     {
                         Inventory inventoryLeft = new Inventory(piece: player, storage: player.pieceStorage, layout: Type.DualLeft, transDirection: TransDirection.Left);
-                        Inventory inventoryRight = new Inventory(piece: chest, storage: chest.pieceStorage, layout: Type.DualRight, otherInventory: inventoryLeft, transDirection: TransDirection.Right);
+                        Inventory inventoryRight = new Inventory(piece: fieldStorage, storage: fieldStorage.pieceStorage, layout: Type.DualRight, otherInventory: inventoryLeft, transDirection: TransDirection.Right);
                         inventoryLeft.otherInventory = inventoryRight;
 
                         break;

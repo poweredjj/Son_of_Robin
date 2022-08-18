@@ -332,6 +332,13 @@ namespace SonOfRobin
                         Fruit fruit = (Fruit)this.slot.TopPiece;
                         Player player = fruit.world.player;
 
+                        if (!player.CanSeeAnything)
+                        {
+                            new TextWindow(text: $"It is too dark to plant | {fruit.readableName}...", imageList: new List<Texture2D> { PieceInfo.GetTexture(fruit.name) }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: InputTypes.None, blockInputDuration: 45, priority: 1, animSound: player.world.DialogueSound);
+
+                            return;
+                        }
+
                         Craft.Recipe plantRecipe = new Craft.Recipe(pieceToCreate: PieceInfo.GetInfo(fruit.name).isSpawnedBy, ingredients: new Dictionary<PieceTemplate.Name, byte> { { fruit.name, 1 } }, isReversible: false, checkIfAlreadyAdded: false);
 
                         Inventory.SetLayout(newLayout: Inventory.Layout.Toolbar, player: player);

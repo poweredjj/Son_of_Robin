@@ -101,7 +101,9 @@ namespace SonOfRobin
         {
             get
             {
-                return this.world.islandClock.CurrentPartOfDay != IslandClock.PartOfDay.Night || this.world.player.sprite.IsInLightSourceRange;
+                bool canSeeAnything = this.world.islandClock.CurrentPartOfDay != IslandClock.PartOfDay.Night || this.world.player.sprite.IsInLightSourceRange;
+                if (!canSeeAnything) Tutorials.ShowTutorialOnTheField(type: Tutorials.Type.TooDarkToSeeAnything, world: this.world, ignoreDelay: true, ignoreHintsSetting: true);
+                return canSeeAnything;
             }
         }
 
@@ -144,6 +146,8 @@ namespace SonOfRobin
         {
             get
             {
+                if (!this.CanSeeAnything) return null;
+
                 Vector2 centerOffset = this.GetCenterOffset();
                 int offsetX = (int)centerOffset.X;
                 int offsetY = (int)centerOffset.Y;
@@ -899,6 +903,8 @@ namespace SonOfRobin
             if (!this.CanUseActiveToolbarPiece) return false;
 
             BoardPiece activeToolbarPiece = this.ActiveToolbarPiece;
+
+            if (activeToolbarPiece?.GetType() != typeof(PortableLight) && !this.CanSeeAnything) return false;
 
             Vector2 centerOffset = this.GetCenterOffset();
             int offsetX = (int)centerOffset.X;
