@@ -37,8 +37,7 @@ namespace SonOfRobin
         public readonly bool isEmpty;
         public bool playAfterAssign; // to allow for playing empty sounds, that will be reassigned after deserialization
 
-        public List<SoundData.Name> SoundNameList { get { return this.soundNameList; } }
-        private readonly List<SoundData.Name> soundNameList;
+        public List<SoundData.Name> SoundNameList { get; private set; }
         private BoardPiece boardPiece;
         private BoardPiece visPiece;
 
@@ -73,13 +72,13 @@ namespace SonOfRobin
             this.pitchChange = pitchChange;
             if (this.pitchChange < -1 || this.pitchChange > 1) throw new ArgumentException($"Pitch change {this.pitchChange} is over the limit (-1, 1).");
 
-            this.soundNameList = new List<SoundData.Name>();
-            if (nameList == null) this.soundNameList.Add(name);
+            this.SoundNameList = new List<SoundData.Name>();
+            if (nameList == null) this.SoundNameList.Add(name);
             else
             {
                 foreach (SoundData.Name soundName in nameList)
                 {
-                    this.soundNameList.Add(soundName);
+                    this.SoundNameList.Add(soundName);
                 }
             }
 
@@ -111,7 +110,7 @@ namespace SonOfRobin
 
             if (this.boardPiece != null && !this.Ignore3D && !this.isLooped && !this.IsInCameraRect) return;
 
-            SoundData.Name soundName = this.soundNameList.Count == 1 ? this.soundNameList[0] : this.soundNameList[SonOfRobinGame.random.Next(0, this.soundNameList.Count)];
+            SoundData.Name soundName = this.SoundNameList.Count == 1 ? this.SoundNameList[0] : this.SoundNameList[SonOfRobinGame.random.Next(0, this.SoundNameList.Count)];
             SoundEffectInstance instance = SoundInstanceManager.GetNewOrStoppedInstance(soundName: soundName, id: this.Id);
 
             float pitch = this.pitchChange;

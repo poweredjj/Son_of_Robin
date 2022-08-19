@@ -61,8 +61,7 @@ namespace SonOfRobin
 
         private int charCounter;
         private int currentCharFramesLeft;
-        public bool AnimationFinished { get { return this.animationFinished; } }
-        private bool animationFinished;
+        public bool AnimationFinished { get; private set; }
         private readonly int framesPerChar;
         private readonly int charsPerFrame;
         public string Text { get { return this.textWithResizedMarkers; } }
@@ -90,7 +89,7 @@ namespace SonOfRobin
 
             this.charCounter = this.animate ? 0 : this.textWithResizedMarkers.Length;
             this.currentCharFramesLeft = framesPerChar;
-            this.animationFinished = !this.animate;
+            this.AnimationFinished = !this.animate;
             this.framesPerChar = framesPerChar;
             this.charsPerFrame = charsPerFrame;
         }
@@ -121,7 +120,7 @@ namespace SonOfRobin
         {
             if (!this.animate) return;
             this.charCounter = this.textWithResizedMarkers.Length;
-            this.animationFinished = true;
+            this.AnimationFinished = true;
         }
 
         public void ResetAnim()
@@ -129,7 +128,7 @@ namespace SonOfRobin
             if (!this.animate) return;
 
             this.charCounter = 0;
-            this.animationFinished = false;
+            this.AnimationFinished = false;
         }
 
         private void ValidateImagesCount(List<Texture2D> imageList)
@@ -232,7 +231,7 @@ namespace SonOfRobin
 
         private void Animate()
         {
-            if (this.animationFinished) return;
+            if (this.AnimationFinished) return;
 
             this.currentCharFramesLeft--;
             if (this.currentCharFramesLeft <= 0)
@@ -243,7 +242,7 @@ namespace SonOfRobin
 
                 if (this.charCounter == this.textWithResizedMarkers.Length)
                 {
-                    this.animationFinished = true;
+                    this.AnimationFinished = true;
                     return;
                 }
             }

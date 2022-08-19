@@ -18,8 +18,7 @@ namespace SonOfRobin
         public static List<Scene> sceneStack = new List<Scene> { };
 
         public readonly int priority;
-        private bool hasBeenRemoved;
-        public bool HasBeenRemoved { get { return this.hasBeenRemoved; } }
+        public bool HasBeenRemoved { get; private set; }
         public bool blocksUpdatesBelow;
         public bool blocksDrawsBelow;
         private readonly bool hidesSameScenesBelow;
@@ -137,7 +136,7 @@ namespace SonOfRobin
             this.viewParams = new ViewParams();
             this.transManager = new TransManager(scene: this);
             this.priority = priority;
-            this.hasBeenRemoved = false;
+            this.HasBeenRemoved = false;
             this.blocksUpdatesBelow = blocksUpdatesBelow;
             this.blocksDrawsBelow = blocksDrawsBelow;
             this.hidesSameScenesBelow = hidesSameScenesBelow;
@@ -188,7 +187,7 @@ namespace SonOfRobin
             // rebuilding sceneStack
             sceneStack = sceneStack.Where(scene => scene.id != this.id).ToList();
 
-            this.hasBeenRemoved = true;
+            this.HasBeenRemoved = true;
         }
 
         public void AddLinkedScene(Scene scene)

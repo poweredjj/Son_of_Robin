@@ -6,8 +6,7 @@ namespace SonOfRobin
 {
     public class LightEngine
     {
-        private bool isActive;
-        public bool IsActive { get { return isActive; } }
+        public bool IsActive { get; private set; }
         private Sprite sprite;
         private int width;
         private int height;
@@ -35,10 +34,10 @@ namespace SonOfRobin
             get
             {
                 if (this.glowOnlyAtNight && this.sprite.world.islandClock.CurrentPartOfDay != IslandClock.PartOfDay.Night) return 0f;
-                return this.isActive ? opacity * this.sprite.opacity : 0f;
+                return this.IsActive ? opacity * this.sprite.opacity : 0f;
             }
         }
-        public Color Color { get { return this.isActive ? color * this.sprite.opacity : Color.Transparent; } }
+        public Color Color { get { return this.IsActive ? color * this.sprite.opacity : Color.Transparent; } }
         public bool ColorActive
         {
             get
@@ -59,7 +58,7 @@ namespace SonOfRobin
 
         public LightEngine(float opacity, Color color, bool colorActive, bool castShadows, float addedGfxRectMultiplier = 0f, bool isActive = true, Sprite sprite = null, int width = 0, int height = 0, int size = 0, bool glowOnlyAtNight = false)
         {
-            this.isActive = isActive;
+            this.IsActive = isActive;
             this.sprite = sprite;
             this.width = size == 0 ? width : size;
             this.height = size == 0 ? height : size;
@@ -76,12 +75,12 @@ namespace SonOfRobin
             if (this.sprite != null) throw new ArgumentException($"Trying to assign new sprite '({this.sprite.boardPiece.readableName})' to lightEngine that already has sprite '({newSprite.boardPiece.readableName}') ");
 
             this.sprite = newSprite;
-            if (this.isActive) this.Activate();
+            if (this.IsActive) this.Activate();
         }
 
         public void Activate()
         {
-            this.isActive = true;
+            this.IsActive = true;
 
             if (!this.sprite.gridGroups.Contains(Cell.Group.LightSource)) this.sprite.gridGroups.Add(Cell.Group.LightSource);
             if (this.sprite.IsOnBoard) this.sprite.currentCell.UpdateGroups(sprite: this.sprite, groupNames: this.sprite.gridGroups);
@@ -89,7 +88,7 @@ namespace SonOfRobin
 
         public void Deactivate()
         {
-            this.isActive = false;
+            this.IsActive = false;
 
             if (this.sprite.gridGroups.Contains(Cell.Group.LightSource)) this.sprite.gridGroups.Remove(Cell.Group.LightSource);
             if (this.sprite.IsOnBoard) this.sprite.currentCell.UpdateGroups(sprite: this.sprite, groupNames: this.sprite.gridGroups);
@@ -105,7 +104,7 @@ namespace SonOfRobin
                 {"color", new List<Byte>{color.R, color.G, color.B, color.A}},
                 {"colorActive", this.colorActive },
                 {"addedGfxRectMultiplier", this.addedGfxRectMultiplier },
-                {"isActive", this.isActive },
+                {"isActive", this.IsActive },
                 {"glowOnlyAtNight", this.glowOnlyAtNight },
                 {"castShadows", this.castShadows },
             };
@@ -132,7 +131,7 @@ namespace SonOfRobin
 
             LightEngine lightEngine = new LightEngine(sprite: sprite, width: width, height: height, opacity: opacity, color: color, colorActive: colorActive, addedGfxRectMultiplier: addedGfxRectMultiplier, isActive: isActive, glowOnlyAtNight: glowOnlyAtNight, castShadows: castShadows);
 
-            if (lightEngine.isActive) lightEngine.Activate();
+            if (lightEngine.IsActive) lightEngine.Activate();
 
             return lightEngine;
         }

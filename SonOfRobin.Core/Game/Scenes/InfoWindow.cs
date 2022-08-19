@@ -11,7 +11,6 @@ namespace SonOfRobin
         public struct TextEntry
         {
             public enum Justify { Left, Center, Right };
-
             public int Width { get { return (int)(this.textWithImages.textWidth * this.scale); } }
             public int Height { get { return (int)(this.textWithImages.textHeight * this.scale); } }
 

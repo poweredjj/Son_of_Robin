@@ -68,8 +68,7 @@ namespace SonOfRobin
         public struct Task
         {
             public readonly TaskName taskName;
-            private Object executeHelper;
-            public Object ExecuteHelper { get { return executeHelper; } }
+            public Object ExecuteHelper { get; private set; }
             private readonly int delay;
             private int frame;
             private readonly bool turnOffInputUntilExecution;
@@ -86,7 +85,7 @@ namespace SonOfRobin
             public Task(TaskName taskName, Object executeHelper = null, bool turnOffInputUntilExecution = false, int delay = 0, bool storeForLaterUse = false)
             {
                 this.taskName = taskName;
-                this.executeHelper = executeHelper;
+                this.ExecuteHelper = executeHelper;
                 this.turnOffInputUntilExecution = turnOffInputUntilExecution;
                 this.delay = delay;
 
@@ -138,7 +137,7 @@ namespace SonOfRobin
 
                     case TaskName.RebuildMenu:
                         {
-                            Menu menu = (Menu)executeHelper;
+                            Menu menu = (Menu)this.ExecuteHelper;
                             menu.Rebuild(instantScroll: false);
                             return;
                         }
@@ -154,7 +153,7 @@ namespace SonOfRobin
                             // example executeHelper for this task
                             // var menuTemplateData = new Dictionary<string, Object> { { "templateName", MenuTemplate.Name.Main }, { "scenesToLink", scenesToLink } };
 
-                            var menuTemplateData = (Dictionary<string, Object>)executeHelper;
+                            var menuTemplateData = (Dictionary<string, Object>)this.ExecuteHelper;
                             MenuTemplate.Name templateName = (MenuTemplate.Name)menuTemplateData["templateName"];
 
                             Menu menu = MenuTemplate.CreateMenuFromTemplate(templateName: templateName);
@@ -179,7 +178,7 @@ namespace SonOfRobin
 
                     case TaskName.OpenCraftMenu:
                         {
-                            Workshop workshop = (Workshop)executeHelper;
+                            Workshop workshop = (Workshop)this.ExecuteHelper;
 
                             Menu menu = MenuTemplate.CreateMenuFromTemplate(templateName: workshop.craftMenuTemplate);
                             if (menu == null) return; // if crafting was impossible at the moment
@@ -198,13 +197,13 @@ namespace SonOfRobin
 
                     case TaskName.OpenConfirmationMenu:
                         {
-                            MenuTemplate.CreateConfirmationMenu(confirmationData: executeHelper);
+                            MenuTemplate.CreateConfirmationMenu(confirmationData: this.ExecuteHelper);
                             return;
                         }
 
                     case TaskName.ProcessConfirmation:
                         {
-                            var confirmationData = (Dictionary<string, Object>)executeHelper;
+                            var confirmationData = (Dictionary<string, Object>)this.ExecuteHelper;
                             new Task(taskName: (TaskName)confirmationData["taskName"], executeHelper: confirmationData["executeHelper"]);
 
                             return;
@@ -213,7 +212,7 @@ namespace SonOfRobin
                     case TaskName.CreateNewWorld:
                         {
                             Scene.RemoveAllScenesOfType(typeof(Menu));
-                            new Task(taskName: TaskName.CreateNewWorldNow, turnOffInputUntilExecution: true, delay: 13, executeHelper: executeHelper);
+                            new Task(taskName: TaskName.CreateNewWorldNow, turnOffInputUntilExecution: true, delay: 13, executeHelper: this.ExecuteHelper);
 
                             return;
                         }
@@ -226,7 +225,7 @@ namespace SonOfRobin
                             int width, height, seed, resDivider, initialMaxAnimalsMultiplier;
                             bool addAgressiveAnimals, playerFemale;
 
-                            if (executeHelper == null)
+                            if (this.ExecuteHelper == null)
                             {
                                 width = Preferences.newWorldWidth;
                                 height = Preferences.newWorldHeight;
@@ -238,7 +237,7 @@ namespace SonOfRobin
                             }
                             else
                             {
-                                var createData = (Dictionary<string, Object>)executeHelper;
+                                var createData = (Dictionary<string, Object>)this.ExecuteHelper;
                                 width = (int)createData["width"];
                                 height = (int)createData["height"];
                                 seed = (int)createData["seed"];
@@ -256,7 +255,7 @@ namespace SonOfRobin
                     case TaskName.RestartWorld:
                         {
                             Scene.RemoveAllScenesOfType(typeof(Menu));
-                            World oldWorld = (World)executeHelper;
+                            World oldWorld = (World)this.ExecuteHelper;
                             bool playerFemale = oldWorld.playerFemale;
 
                             new World(width: oldWorld.width, height: oldWorld.height, seed: oldWorld.seed, playerFemale: playerFemale, resDivider: oldWorld.resDivider, initialMaxAnimalsMultiplier: oldWorld.initialMaxAnimalsMultiplier, addAgressiveAnimals: oldWorld.addAgressiveAnimals);
@@ -276,7 +275,7 @@ namespace SonOfRobin
                             world = World.GetTopWorld();
                             if (world != null)
                             {
-                                var executeData = (Dictionary<string, Object>)executeHelper;
+                                var executeData = (Dictionary<string, Object>)this.ExecuteHelper;
                                 Vector2 position = (Vector2)executeData["position"];
                                 PieceTemplate.Name templateName = (PieceTemplate.Name)executeData["templateName"];
                                 BoardPiece piece = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: position, templateName: templateName);
@@ -296,7 +295,7 @@ namespace SonOfRobin
 
                             Player player = world.player;
 
-                            var executeData = (Dictionary<string, Object>)executeHelper;
+                            var executeData = (Dictionary<string, Object>)this.ExecuteHelper;
                             Vector2 position = (Vector2)executeData["position"];
                             PieceTemplate.Name templateName = (PieceTemplate.Name)executeData["templateName"];
 
@@ -334,7 +333,7 @@ namespace SonOfRobin
                             // example executeHelper for this task
                             // var saveParams = new Dictionary<string, Object> { { "world", world }, { "saveSlotName", "1" }, { "showMessage", false }, {"quitGameAfterSaving", false} };
 
-                            var saveParams = (Dictionary<string, Object>)executeHelper;
+                            var saveParams = (Dictionary<string, Object>)this.ExecuteHelper;
                             world = (World)saveParams["world"];
                             string saveSlotName = (string)saveParams["saveSlotName"];
                             bool showMessage = false;
@@ -354,7 +353,7 @@ namespace SonOfRobin
                             Sound.StopAll();
                             Sound.QuickPlay(SoundData.Name.Select); // this sound should be short, because it will be silenced by LoadGameNow task
 
-                            new Task(taskName: TaskName.LoadGameNow, turnOffInputUntilExecution: true, delay: 17, executeHelper: this.executeHelper);
+                            new Task(taskName: TaskName.LoadGameNow, turnOffInputUntilExecution: true, delay: 17, executeHelper: this.ExecuteHelper);
 
                             return;
                         }
@@ -362,7 +361,7 @@ namespace SonOfRobin
                     case TaskName.LoadGameNow:
                         {
                             Sound.StopAll(); // no point in playing any sounds here - loading process glitches sound for a while
-                            new LoaderSaver(saveMode: false, saveSlotName: (string)executeHelper);
+                            new LoaderSaver(saveMode: false, saveSlotName: (string)this.ExecuteHelper);
 
                             return;
                         }
@@ -375,7 +374,7 @@ namespace SonOfRobin
 
                     case TaskName.OpenContainer:
                         {
-                            BoardPiece container = (BoardPiece)executeHelper;
+                            BoardPiece container = (BoardPiece)this.ExecuteHelper;
 
                             world = World.GetTopWorld();
                             if (world == null) return;
@@ -405,7 +404,7 @@ namespace SonOfRobin
                             // example executeHelper for this task
                             // var craftParams = new Dictionary<string, Object> { { "recipe", recipe }, { "craftOnTheGround", false } };
 
-                            var executeData = (Dictionary<string, Object>)executeHelper;
+                            var executeData = (Dictionary<string, Object>)this.ExecuteHelper;
                             Craft.Recipe recipe = (Craft.Recipe)executeData["recipe"];
                             bool craftOnTheGround = (bool)executeData["craftOnTheGround"];
 
@@ -416,7 +415,7 @@ namespace SonOfRobin
 
                     case TaskName.Hit:
                         {
-                            var executeData = (Dictionary<string, Object>)executeHelper;
+                            var executeData = (Dictionary<string, Object>)this.ExecuteHelper;
                             Player player = (Player)executeData["player"];
                             Tool activeTool = (Tool)executeData["toolbarPiece"];
                             int shootingPower = (int)executeData["shootingPower"];
@@ -484,7 +483,7 @@ namespace SonOfRobin
 
                     case TaskName.GetEaten:
                         {
-                            var executeData = (Dictionary<string, Object>)executeHelper;
+                            var executeData = (Dictionary<string, Object>)this.ExecuteHelper;
                             Player player = (Player)executeData["player"];
                             BoardPiece food = (BoardPiece)executeData["toolbarPiece"];
                             bool highlightOnly = false;
@@ -527,7 +526,7 @@ namespace SonOfRobin
 
                     case TaskName.GetDrinked:
                         {
-                            var executeData = (Dictionary<string, Object>)executeHelper;
+                            var executeData = (Dictionary<string, Object>)this.ExecuteHelper;
                             Player player = (Player)executeData["player"];
                             Potion potion = (Potion)executeData["toolbarPiece"];
                             StorageSlot slot = (StorageSlot)executeData["slot"];
@@ -566,7 +565,7 @@ namespace SonOfRobin
 
                     case TaskName.SwitchLightSource:
                         {
-                            var executeData = (Dictionary<string, Object>)executeHelper;
+                            var executeData = (Dictionary<string, Object>)this.ExecuteHelper;
                             PortableLight portableLight = (PortableLight)executeData["toolbarPiece"];
                             bool highlightOnly = (bool)executeData["highlightOnly"];
 
@@ -590,7 +589,7 @@ namespace SonOfRobin
                             // example executeHelper for this task
                             // var resetData = new Dictionary<string, Object> { { "gamepad", gamepad }, { "useDefault", true } };
 
-                            var resetData = (Dictionary<string, Object>)executeHelper;
+                            var resetData = (Dictionary<string, Object>)this.ExecuteHelper;
                             bool gamepad = (bool)resetData["gamepad"];
                             bool useDefault = (bool)resetData["useDefault"];
                             bool showMessage = resetData.ContainsKey("showMessage") ? (bool)resetData["showMessage"] : true;
@@ -628,7 +627,7 @@ namespace SonOfRobin
                             // example executeHelper for this task
                             // var saveData = new Dictionary<string, Object> { { "gamepad", gamepad }, { "openMenuIfNotValid", true } };
 
-                            var saveData = (Dictionary<string, Object>)executeHelper;
+                            var saveData = (Dictionary<string, Object>)this.ExecuteHelper;
                             bool gamepad = (bool)saveData["gamepad"];
                             bool openMenuIfNotValid = (bool)saveData["openMenuIfNotValid"];
 
@@ -657,7 +656,7 @@ namespace SonOfRobin
 
                     case TaskName.CheckForNonSavedControls:
                         {
-                            var gamepad = (bool)executeHelper;
+                            var gamepad = (bool)this.ExecuteHelper;
 
                             InputPackage newControls = gamepad ? InputMapper.newMappingGamepad : InputMapper.newMappingKeyboard;
                             InputPackage currentControls = gamepad ? InputMapper.currentMappingGamepad : InputMapper.currentMappingKeyboard;
@@ -681,7 +680,7 @@ namespace SonOfRobin
 
                     case TaskName.DropFruit:
                         {
-                            Plant fruitPlant = (Plant)executeHelper;
+                            Plant fruitPlant = (Plant)this.ExecuteHelper;
                             fruitPlant.DropFruit();
 
                             return;
@@ -698,7 +697,7 @@ namespace SonOfRobin
                             // example executeHelper for this task
                             // var delayData = new Dictionary<string, Object> { { "taskName", TaskName.TurnOffWorkshop }, { "executeHelper", workshop }, { "delay", 300 } };
 
-                            var delayData = (Dictionary<string, Object>)executeHelper;
+                            var delayData = (Dictionary<string, Object>)this.ExecuteHelper;
                             new Task(taskName: (TaskName)delayData["taskName"], executeHelper: delayData["executeHelper"], delay: (int)delayData["delay"]);
 
                             return;
@@ -709,7 +708,7 @@ namespace SonOfRobin
                             world = (World)Scene.GetTopSceneOfType(typeof(World));
                             if (world == null) return;
 
-                            var worldEventData = (Dictionary<string, Object>)executeHelper;
+                            var worldEventData = (Dictionary<string, Object>)this.ExecuteHelper;
 
                             WorldEvent.EventName eventName = (WorldEvent.EventName)worldEventData["eventName"];
                             BoardPiece boardPiece = (BoardPiece)worldEventData["boardPiece"];
@@ -722,7 +721,7 @@ namespace SonOfRobin
 
                     case TaskName.ShowTextWindow:
                         {
-                            var textWindowData = (Dictionary<string, Object>)executeHelper;
+                            var textWindowData = (Dictionary<string, Object>)this.ExecuteHelper;
 
                             string text = (string)textWindowData["text"];
 
@@ -817,13 +816,13 @@ namespace SonOfRobin
                     case TaskName.OpenShelterMenu:
                         {
                             // executeHelper will go through menu - to "SleepInsideShelter" case
-                            MenuTemplate.CreateMenuFromTemplate(templateName: MenuTemplate.Name.Shelter, executeHelper: this.executeHelper);
+                            MenuTemplate.CreateMenuFromTemplate(templateName: MenuTemplate.Name.Shelter, executeHelper: this.ExecuteHelper);
                             return;
                         }
 
                     case TaskName.SleepInsideShelter:
                         {
-                            Shelter shelterPiece = (Shelter)executeHelper;
+                            Shelter shelterPiece = (Shelter)this.ExecuteHelper;
                             SleepEngine sleepEngine = shelterPiece.sleepEngine;
                             World.GetTopWorld()?.player.GoToSleep(sleepEngine: sleepEngine, zzzPos: new Vector2(shelterPiece.sprite.gfxRect.Center.X, shelterPiece.sprite.gfxRect.Center.Y), wakeUpBuffs: shelterPiece.buffList);
 
@@ -832,14 +831,14 @@ namespace SonOfRobin
 
                     case TaskName.ForceWakeUp:
                         {
-                            Player player = (Player)executeHelper;
+                            Player player = (Player)this.ExecuteHelper;
                             player.WakeUp(force: true);
                             return;
                         }
 
                     case TaskName.WaitUntilMorning:
                         {
-                            Player player = (Player)executeHelper;
+                            Player player = (Player)this.ExecuteHelper;
                             player.sleepMode = Player.SleepMode.WaitMorning;
                             return;
                         }
@@ -883,7 +882,7 @@ namespace SonOfRobin
 
                             SonOfRobinGame.game.IsFixedTimeStep = false;
 
-                            world.updateMultiplier = (int)executeHelper;
+                            world.updateMultiplier = (int)this.ExecuteHelper;
                             world.stateMachineTypesManager.DisableMultiplier();
                             world.stateMachineTypesManager.EnableAllTypes(everyFrame: true, nthFrame: true);
                             world.islandClock.Resume();
@@ -896,7 +895,7 @@ namespace SonOfRobin
                             world = World.GetTopWorld();
                             if (world == null) return;
 
-                            BoardPiece piece = (BoardPiece)executeHelper;
+                            BoardPiece piece = (BoardPiece)this.ExecuteHelper;
                             world.camera.TrackPiece(piece);
 
                             return;
@@ -907,7 +906,7 @@ namespace SonOfRobin
                             world = World.GetTopWorld();
                             if (world == null) return;
 
-                            world.camera.TrackCoords(position: (Vector2)executeHelper);
+                            world.camera.TrackCoords(position: (Vector2)this.ExecuteHelper);
 
                             return;
                         }
@@ -920,7 +919,7 @@ namespace SonOfRobin
                             world = World.GetTopWorld();
                             if (world == null) return;
 
-                            var zoomData = (Dictionary<string, Object>)executeHelper;
+                            var zoomData = (Dictionary<string, Object>)this.ExecuteHelper;
                             float zoom = (float)zoomData["zoom"];
                             float zoomSpeedMultiplier = 1f;
                             if (zoomData.ContainsKey("zoomSpeedMultiplier")) zoomSpeedMultiplier = (float)zoomData["zoomSpeedMultiplier"];
@@ -932,7 +931,7 @@ namespace SonOfRobin
 
                     case TaskName.ShowCookingProgress:
                         {
-                            Cooker cooker = (Cooker)executeHelper;
+                            Cooker cooker = (Cooker)this.ExecuteHelper;
                             cooker.ShowCookingProgress();
 
                             return;
@@ -949,7 +948,7 @@ namespace SonOfRobin
 
                     case TaskName.ExecuteTaskChain:
                         {
-                            List<Object> taskChain = (List<Object>)executeHelper;
+                            List<Object> taskChain = (List<Object>)this.ExecuteHelper;
 
                             Task currentTask = (Task)taskChain[0];
                             taskChain.RemoveAt(0);
@@ -961,11 +960,11 @@ namespace SonOfRobin
 
                                 if (taskChain.Count > 0)
                                 {
-                                    var executeHelper = currentTask.executeHelper;
+                                    var executeHelper = currentTask.ExecuteHelper;
                                     var textWindowData = (Dictionary<string, Object>)executeHelper;
                                     textWindowData["closingTask"] = TaskName.ExecuteTaskChain;
                                     textWindowData["closingTaskHelper"] = taskChain;
-                                    currentTask.executeHelper = textWindowData;
+                                    currentTask.ExecuteHelper = textWindowData;
                                 }
                                 currentTask.Process();
                             }
@@ -1001,7 +1000,7 @@ namespace SonOfRobin
                             // example executeHelper for this task
                             //  var pieceHintData = new Dictionary<string, Object> { { "typesToCheckOnly", new List<PieceHint.Type> { PieceHint.Type.CrateStarting } }, { "fieldPiece", PieceTemplate.Name.Acorn }, { "newOwnedPiece", PieceTemplate.Name.Shell } };
 
-                            var pieceHintData = (Dictionary<string, Object>)executeHelper;
+                            var pieceHintData = (Dictionary<string, Object>)this.ExecuteHelper;
                             List<PieceHint.Type> typesToCheckOnly = pieceHintData.ContainsKey("typesToCheckOnly") ? (List<PieceHint.Type>)pieceHintData["typesToCheckOnly"] : null;
                             PieceTemplate.Name fieldPiece = pieceHintData.ContainsKey("fieldPiece") ? (PieceTemplate.Name)pieceHintData["fieldPiece"] : PieceTemplate.Name.Empty;
                             PieceTemplate.Name newOwnedPiece = pieceHintData.ContainsKey("newOwnedPiece") ? (PieceTemplate.Name)pieceHintData["newOwnedPiece"] : PieceTemplate.Name.Empty;
@@ -1016,7 +1015,7 @@ namespace SonOfRobin
                             world = World.GetTopWorld();
                             if (world == null) return;
 
-                            var hintType = (HintEngine.Type)executeHelper;
+                            var hintType = (HintEngine.Type)this.ExecuteHelper;
                             world.hintEngine.ShowGeneralHint(type: hintType, ignoreDelay: true);
 
                             return;
@@ -1024,14 +1023,14 @@ namespace SonOfRobin
 
                     case TaskName.ShowTutorialInMenu:
                         {
-                            Tutorials.ShowTutorialInMenu(type: (Tutorials.Type)executeHelper);
+                            Tutorials.ShowTutorialInMenu(type: (Tutorials.Type)this.ExecuteHelper);
 
                             return;
                         }
 
                     case TaskName.ShowTutorialOnTheField:
                         {
-                            var tutorialData = (Dictionary<string, Object>)executeHelper;
+                            var tutorialData = (Dictionary<string, Object>)this.ExecuteHelper;
 
                             // example executeHelper for this task
                             // var tutorialData = new Dictionary<string, Object> { { "tutorial", Tutorials.Type.KeepingAnimalsAway }, { "world", world }, { "ignoreHintsSetting", false }, { "ignoreDelay", false }, { "ignoreIfShown", false } };
@@ -1058,7 +1057,7 @@ namespace SonOfRobin
 
                     case TaskName.RemoveScene:
                         {
-                            var removeData = (Dictionary<string, Object>)executeHelper;
+                            var removeData = (Dictionary<string, Object>)this.ExecuteHelper;
                             Scene scene = (Scene)removeData["scene"];
                             bool fadeOut = (bool)removeData["fadeOut"];
                             int fadeOutDuration = (int)removeData["fadeOutDuration"];
@@ -1074,7 +1073,7 @@ namespace SonOfRobin
                             // example executeHelper for this task
                             // var inputData = new Dictionary<string, Object> { { "scene", world }, { "inputType",  Scene.InputTypes.Normal }};
 
-                            var inputData = (Dictionary<string, Object>)executeHelper;
+                            var inputData = (Dictionary<string, Object>)this.ExecuteHelper;
 
                             Scene scene = (Scene)inputData["scene"];
                             Scene.InputTypes inputType = (Scene.InputTypes)inputData["inputType"];
@@ -1088,7 +1087,7 @@ namespace SonOfRobin
                             world = World.GetTopWorld();
                             if (world == null || world.demoMode) return;
 
-                            world.CineMode = (bool)executeHelper;
+                            world.CineMode = (bool)this.ExecuteHelper;
                             return;
                         }
 
@@ -1097,7 +1096,7 @@ namespace SonOfRobin
                             // example executeHelper for this task
                             // var transData = new Dictionary<string, Object> { { "scene", scene }, { "transition",  transition }};
 
-                            var transData = (Dictionary<string, Object>)executeHelper;
+                            var transData = (Dictionary<string, Object>)this.ExecuteHelper;
 
                             Scene scene = (Scene)transData["scene"];
                             Transition transition = (Transition)transData["transition"];
@@ -1111,7 +1110,7 @@ namespace SonOfRobin
                             // example executeHelper for this task
                             // var removeData = new Dictionary<string, Object> { { "manager", this.solidColorManager }, { "delay", 10 } }
 
-                            var removeData = (Dictionary<string, Object>)executeHelper;
+                            var removeData = (Dictionary<string, Object>)this.ExecuteHelper;
                             SolidColorManager solidColorManager = (SolidColorManager)removeData["manager"];
                             int delay = removeData.ContainsKey("delay") ? (int)removeData["delay"] : 0;
 
@@ -1145,7 +1144,7 @@ namespace SonOfRobin
                             List<string> pathsToDelete;
                             int pathCount;
 
-                            bool firstRun = executeHelper == null;
+                            bool firstRun = this.ExecuteHelper == null;
 
                             if (firstRun)
                             {
@@ -1180,12 +1179,12 @@ namespace SonOfRobin
                                     return;
                                 }
 
-                                executeHelper = new Dictionary<string, Object> { { "pathsToDelete", pathsToDelete }, { "pathCount", pathsToDelete.Count } };
+                                this.ExecuteHelper = new Dictionary<string, Object> { { "pathsToDelete", pathsToDelete }, { "pathCount", pathsToDelete.Count } };
                             }
 
                             SonOfRobinGame.game.IsFixedTimeStep = false;
 
-                            deleteData = (Dictionary<string, Object>)executeHelper;
+                            deleteData = (Dictionary<string, Object>)this.ExecuteHelper;
                             pathsToDelete = (List<string>)deleteData["pathsToDelete"];
                             pathCount = (int)deleteData["pathCount"];
 
@@ -1218,7 +1217,7 @@ namespace SonOfRobin
                             world = World.GetTopWorld();
                             if (world == null) return;
 
-                            world.SpectatorMode = (bool)executeHelper;
+                            world.SpectatorMode = (bool)this.ExecuteHelper;
 
                             return;
                         }
@@ -1299,7 +1298,7 @@ namespace SonOfRobin
 
                     case TaskName.PlaySound:
                         {
-                            Sound sound = (Sound)executeHelper;
+                            Sound sound = (Sound)this.ExecuteHelper;
                             sound.Play();
 
                             return;
@@ -1307,7 +1306,7 @@ namespace SonOfRobin
 
                     case TaskName.PlaySoundByName:
                         {
-                            SoundData.Name soundName = (SoundData.Name)executeHelper;
+                            SoundData.Name soundName = (SoundData.Name)this.ExecuteHelper;
                             Sound.QuickPlay(soundName);
 
                             return;
@@ -1315,7 +1314,7 @@ namespace SonOfRobin
 
                     case TaskName.AllowPieceToBeHit:
                         {
-                            BoardPiece piece = (BoardPiece)executeHelper;
+                            BoardPiece piece = (BoardPiece)this.ExecuteHelper;
                             piece.canBeHit = true;
 
                             return;
@@ -1323,7 +1322,7 @@ namespace SonOfRobin
 
                     case TaskName.SetPlayerPointWalkTarget:
                         {
-                            var setData = (Dictionary<Player, Vector2>)executeHelper;
+                            var setData = (Dictionary<Player, Vector2>)this.ExecuteHelper;
 
                             foreach (var kvp in setData)
                             {
@@ -1338,7 +1337,7 @@ namespace SonOfRobin
                             world = World.GetTopWorld();
                             if (world == null) return;
 
-                            bool showIngredients = (bool)executeHelper;
+                            bool showIngredients = (bool)this.ExecuteHelper;
 
                             if (showIngredients) world.craftStats.DisplayUsedIngredientsSummary();
                             else world.craftStats.DisplayCraftedPiecesSummary();
@@ -1348,7 +1347,7 @@ namespace SonOfRobin
 
                     case TaskName.StopSound:
                         {
-                            Sound sound = (Sound)executeHelper;
+                            Sound sound = (Sound)this.ExecuteHelper;
                             sound.Stop(skipFade: true);
 
                             // MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{sound.Id} {sound.SoundNameList[0]} fade out ended - stopping.");
@@ -1358,7 +1357,7 @@ namespace SonOfRobin
 
                     case TaskName.RemoveAllScenesOfType:
                         {
-                            Type type = (Type)executeHelper;
+                            Type type = (Type)this.ExecuteHelper;
                             Scene.RemoveAllScenesOfType(type);
 
                             return;

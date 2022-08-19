@@ -34,9 +34,7 @@ namespace SonOfRobin
         private Object saveGameData;
         public bool createMissinPiecesOutsideCamera;
         public DateTime lastSaved;
-
-        private bool buildMode;
-        public bool BuildMode { get { return this.buildMode; } }
+        public bool BuildMode { get; private set; }
 
         private bool spectatorMode;
         public bool SpectatorMode
@@ -283,7 +281,7 @@ namespace SonOfRobin
             this.demoMode = demoMode;
             this.playerFemale = playerFemale;
             this.cineMode = false;
-            this.buildMode = false;
+            this.BuildMode = false;
             this.spectatorMode = false;
             if (this.demoMode)
             {
@@ -986,9 +984,9 @@ namespace SonOfRobin
         }
         public void EnterBuildMode(Craft.Recipe recipe)
         {
-            if (this.buildMode) throw new ArgumentException("Is already in build mode.");
+            if (this.BuildMode) throw new ArgumentException("Is already in build mode.");
 
-            this.buildMode = true;
+            this.BuildMode = true;
 
             this.touchLayout = TouchLayout.WorldBuild;
             this.tipsLayout = ControlTips.TipsLayout.WorldBuild;
@@ -1009,7 +1007,7 @@ namespace SonOfRobin
 
         public void BuildPiece()
         {
-            if (!this.buildMode) throw new ArgumentException("Is not in build mode.");
+            if (!this.BuildMode) throw new ArgumentException("Is not in build mode.");
 
             this.touchLayout = TouchLayout.Empty;
             this.tipsLayout = ControlTips.TipsLayout.Empty;
@@ -1046,7 +1044,7 @@ namespace SonOfRobin
 
         public void ExitBuildMode(bool restoreCraftMenu, bool showCraftMessages = false)
         {
-            if (!this.buildMode) throw new ArgumentException("Is not in build mode.");
+            if (!this.BuildMode) throw new ArgumentException("Is not in build mode.");
 
             this.touchLayout = TouchLayout.WorldMain;
             this.tipsLayout = ControlTips.TipsLayout.WorldMain;
@@ -1069,7 +1067,7 @@ namespace SonOfRobin
                 this.player.simulatedPieceToBuild = null;
             }
 
-            this.buildMode = false;
+            this.BuildMode = false;
         }
 
         public void UpdateAllAnims()

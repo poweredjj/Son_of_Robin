@@ -107,7 +107,6 @@ namespace SonOfRobin
                 if (Inventory.layout == Inventory.Layout.InventoryAndFieldStorage) Inventory.SetLayout(newLayout: Inventory.Layout.Toolbar, player: this.world.player);
             }
         }
-
         private List<BoardPiece> StoredFuel { get { return this.pieceStorage.GetAllPieces().Where(piece => fuelNames.Contains(piece.name)).ToList(); } }
 
         private bool StartFire(bool showMessage)

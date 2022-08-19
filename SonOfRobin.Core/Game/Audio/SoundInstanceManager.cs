@@ -10,8 +10,7 @@ namespace SonOfRobin
         private readonly static Dictionary<SoundData.Name, List<SoundEffectInstance>> inactiveInstancesByName = new Dictionary<SoundData.Name, List<SoundEffectInstance>>();
         private readonly static Dictionary<int, SoundData.Name> soundNamesByInstanceHash = new Dictionary<int, SoundData.Name>(); // to keep track what instance plays what sound
 
-        private static int createdInstancesCount = 0;
-        public static int CreatedInstancesCount { get { return createdInstancesCount; } }
+        public static int CreatedInstancesCount { get; private set; } = 0;
         public static int ActiveInstancesCount { get { return activeSoundInstancesByID.Count; } }
         public static int InactiveInstancesCount
         {
@@ -57,7 +56,7 @@ namespace SonOfRobin
             }
 
             SoundEffectInstance newInstance = SoundData.soundsDict[soundName].CreateInstance();
-            createdInstancesCount++;
+            CreatedInstancesCount++;
 
             if (activeSoundInstancesByID.ContainsKey(id))
             {

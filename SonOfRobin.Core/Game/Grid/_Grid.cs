@@ -28,9 +28,7 @@ namespace SonOfRobin
 
         private static readonly TimeSpan textureLoadingDelay = TimeSpan.FromMilliseconds(5);
         public bool ProcessingStepComplete { get { return this.cellsToProcessOnStart.Count == 0; } }
-
         public List<Cell> CellsVisitedByPlayer { get { return this.allCells.Where(cell => cell.VisitedByPlayer).ToList(); } }
-
         public List<Cell> CellsNotVisitedByPlayer { get { return this.allCells.Where(cell => !cell.VisitedByPlayer).ToList(); } }
 
         public Grid(World world, int resDivider, int cellWidth = 0, int cellHeight = 0)

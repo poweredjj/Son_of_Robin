@@ -53,9 +53,7 @@ namespace SonOfRobin
                 if (this.activeEntry >= this.actionList.Count) this.activeEntry = 0;
             }
         }
-
         private ContextAction ActiveAction { get { return this.actionList[this.ActiveEntry]; } }
-
         private float TextScale
         {
             get

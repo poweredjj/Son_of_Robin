@@ -19,12 +19,11 @@ namespace SonOfRobin
 
         public static readonly TimeSpan startTimeOffset = TimeSpan.FromHours(7); // 7 - to start the game in the morning, not at midnight
         public static readonly DateTime startingDate = new DateTime(year: 2020, month: 1, day: 1, hour: 0, minute: 0, second: 0) + startTimeOffset;
-        public int ElapsedUpdates { get { return this.elapsedUpdates; } }
-        private int elapsedUpdates;
+        public int ElapsedUpdates { get; private set; }
         private bool isPaused;
         private bool initComplete;
         public int multiplier;
-        public TimeSpan IslandTimeElapsed { get { return TimeSpan.FromSeconds(this.elapsedUpdates * 1.5) + startTimeOffset; } }  // * 1.5
+        public TimeSpan IslandTimeElapsed { get { return TimeSpan.FromSeconds(this.ElapsedUpdates * 1.5) + startTimeOffset; } }  // * 1.5
         public DateTime IslandDateTime { get { return startingDate + this.IslandTimeElapsed - startTimeOffset; } }
         public TimeSpan TimeOfDay { get { return this.IslandDateTime.TimeOfDay; } }
         public int CurrentDayNo
@@ -83,7 +82,7 @@ namespace SonOfRobin
             }
             else
             {
-                this.elapsedUpdates = elapsedUpdates;
+                this.ElapsedUpdates = elapsedUpdates;
                 this.initComplete = true;
             }
 
@@ -93,9 +92,9 @@ namespace SonOfRobin
 
         public void Initialize(int elapsedUpdates)
         {
-            if (this.initComplete) throw new ArgumentException($"Island clock has already been initialized - value {this.elapsedUpdates}.");
+            if (this.initComplete) throw new ArgumentException($"Island clock has already been initialized - value {this.ElapsedUpdates}.");
 
-            this.elapsedUpdates = elapsedUpdates;
+            this.ElapsedUpdates = elapsedUpdates;
             this.initComplete = true;
         }
 
@@ -116,8 +115,8 @@ namespace SonOfRobin
 
             if (ignorePause || !this.isPaused)
             {
-                if (ignoreMultiplier) this.elapsedUpdates += amount;
-                else this.elapsedUpdates += amount * this.multiplier;
+                if (ignoreMultiplier) this.ElapsedUpdates += amount;
+                else this.ElapsedUpdates += amount * this.multiplier;
             }
         }
 

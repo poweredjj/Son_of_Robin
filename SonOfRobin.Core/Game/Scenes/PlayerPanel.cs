@@ -13,7 +13,6 @@ namespace SonOfRobin
         private static readonly int posY = 4;
 
         private readonly World world;
-
         private int CounterSize { get { return (int)(SonOfRobinGame.VirtualWidth * 0.05f); } }
         public Rectangle CounterRect
         {

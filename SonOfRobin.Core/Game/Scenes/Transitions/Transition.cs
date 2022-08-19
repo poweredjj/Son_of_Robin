@@ -16,9 +16,8 @@ namespace SonOfRobin
         public string BaseParamName { get { return baseParamName; } }
         private readonly string drawParamName;
         private float sourceVal;
-        private float targetVal;
+        public float TargetVal { get; private set; }
         private Transform stageTransform;
-        public float TargetVal { get { return targetVal; } }
         private readonly bool refreshBaseVal;
         private readonly bool replaceBaseValue;
 
@@ -64,7 +63,7 @@ namespace SonOfRobin
             this.replaceBaseValue = replaceBaseValue;
             this.SourceVal = (float)Helpers.GetProperty(targetObj: this.viewParams, propertyName: this.baseParamName);
             this.drawParamName = $"draw{Helpers.FirstCharToUpperCase(this.baseParamName)}";
-            this.targetVal = targetVal;
+            this.TargetVal = targetVal;
             this.stageTransform = stageTransform;
             this.duration = duration;
             this.cyclesLeft = playCount; // -1 == infinite
@@ -129,7 +128,7 @@ namespace SonOfRobin
             float transStage = 1f - antiTransStage;
             if (!this.replaceBaseValue) antiTransStage = 1f;
 
-            float targetValue = (this.SourceVal * antiTransStage) + (this.targetVal * this.ComputeStageTransform(transStage));
+            float targetValue = (this.SourceVal * antiTransStage) + (this.TargetVal * this.ComputeStageTransform(transStage));
             Helpers.SetProperty(targetObj: this.viewParams, propertyName: this.drawParamName, newValue: targetValue);
 
             if (SonOfRobinGame.currentUpdate >= this.endFrame) this.StartNextCycle();
@@ -157,9 +156,9 @@ namespace SonOfRobin
             if (repeat)
             {
                 if (this.pingPongCycles) this.outTrans = !this.outTrans;
-                this.targetVal *= this.cycleMultiplier;
+                this.TargetVal *= this.cycleMultiplier;
 
-                bool sameAsSource = Math.Round(this.targetVal, 4) == Math.Round(this.sourceVal, 4);
+                bool sameAsSource = Math.Round(this.TargetVal, 4) == Math.Round(this.sourceVal, 4);
                 if (sameAsSource) this.sameAsSourceCount++;
                 else this.sameAsSourceCount = 0;
 
@@ -190,15 +189,15 @@ namespace SonOfRobin
         {
             float baseVal = (float)this.SourceVal;
 
-            Helpers.SetProperty(targetObj: this.viewParams, propertyName: this.baseParamName, newValue: this.targetVal);
-            this.SourceVal = this.targetVal;
-            this.targetVal = baseVal;
+            Helpers.SetProperty(targetObj: this.viewParams, propertyName: this.baseParamName, newValue: this.TargetVal);
+            this.SourceVal = this.TargetVal;
+            this.TargetVal = baseVal;
         }
 
         private void CopyTargetToBase()
         {
-            Helpers.SetProperty(targetObj: this.viewParams, propertyName: this.baseParamName, newValue: this.targetVal);
-            this.SourceVal = this.targetVal;
+            Helpers.SetProperty(targetObj: this.viewParams, propertyName: this.baseParamName, newValue: this.TargetVal);
+            this.SourceVal = this.TargetVal;
         }
 
         public void CopyDrawToBase()

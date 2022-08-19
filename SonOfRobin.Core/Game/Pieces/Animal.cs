@@ -34,10 +34,8 @@ namespace SonOfRobin
 
         private float FedPercentage // float 0-1
         { get { return (float)this.fedLevel / (float)maxFedLevel; } }
-
         private float RealSpeed
         { get { return stamina > 0 ? this.speed : Math.Max(this.speed / 2, 1); } }
-
         public float MaxMassPercentage { get { return this.Mass / this.maxMass; } }
 
         public Animal(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedFields allowedFields, Dictionary<byte, int> maxMassBySize, int mass, int maxMass, byte awareness, bool female, int maxAge, int matureAge, uint pregnancyDuration, byte maxChildren, float maxStamina, int maxHitPoints, ushort sightRange, string readableName, string description, List<PieceTemplate.Name> eats, int strength, float massBurnedMultiplier,

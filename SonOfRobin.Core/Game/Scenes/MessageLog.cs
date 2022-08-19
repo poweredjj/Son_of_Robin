@@ -46,7 +46,7 @@ namespace SonOfRobin
 
         private static List<Message> messages = new List<Message> { };
 
-        private int marginX, marginY;
+        private readonly int marginX, marginY;
         private int screenHeight;
 
         public MessageLog() : base(inputType: InputTypes.None, priority: -1, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: true, alwaysDraws: true, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty)

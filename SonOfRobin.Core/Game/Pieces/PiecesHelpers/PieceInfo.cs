@@ -9,8 +9,7 @@ namespace SonOfRobin
     {
         private static readonly Dictionary<PieceTemplate.Name, Info> info = new Dictionary<PieceTemplate.Name, Info> { };
         public static List<Info> AllInfo { get { return info.Values.ToList(); } }
-        private static bool hasBeenInitialized = false;
-        public static bool HasBeenInitialized { get { return hasBeenInitialized; } }
+        public static bool HasBeenInitialized { get; private set; } = false;
         public class Info
         {
             public readonly PieceTemplate.Name name;
@@ -137,7 +136,7 @@ namespace SonOfRobin
                 info[fruitSpawnerInfo.fruitName].isSpawnedBy = fruitSpawnerInfo.name;
             }
 
-            hasBeenInitialized = true;
+            HasBeenInitialized = true;
         }
 
         public static List<PieceTemplate.Name> GetIsEatenBy(PieceTemplate.Name name)

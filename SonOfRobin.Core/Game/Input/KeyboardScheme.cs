@@ -7,9 +7,7 @@ namespace SonOfRobin
 {
     public class KeyboardScheme
     {
-        public static Dictionary<Keys, Texture2D> KeyTextures { get { return keyTextures; } }
-
-        private static readonly Dictionary<Keys, Texture2D> keyTextures = new Dictionary<Keys, Texture2D>();
+        public static Dictionary<Keys, Texture2D> KeyTextures { get; private set; } = new Dictionary<Keys, Texture2D>();
 
         private static readonly Dictionary<Keys, string> keyNames = new Dictionary<Keys, string>
         {
@@ -121,13 +119,13 @@ namespace SonOfRobin
         {
             foreach (Keys key in keyList)
             {
-                keyTextures[key] = SonOfRobinGame.content.Load<Texture2D>($"gfx/Keyboard/{keyNames[key]}");
+                KeyTextures[key] = SonOfRobinGame.content.Load<Texture2D>($"gfx/Keyboard/{keyNames[key]}");
             }
         }
         public static Texture2D GetTexture(Keys key)
         {
-            if (!keyTextures.ContainsKey(key)) return null;
-            return keyTextures[key];
+            if (!KeyTextures.ContainsKey(key)) return null;
+            return KeyTextures[key];
         }
     }
 

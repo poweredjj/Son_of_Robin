@@ -13,16 +13,14 @@ namespace SonOfRobin
         public readonly World world;
         public readonly StorageType storageType;
         public readonly BoardPiece storagePiece;
-        private byte width;
-        private byte height;
-        public byte Width { get { return width; } }
-        public byte Height { get { return height; } }
+        public byte Width { get; private set; }
+        public byte Height { get; private set; }
 
         private StorageSlot[,] slots;
         private readonly byte stackLimit;
         public List<PieceTemplate.Name> allowedPieceNames;
         public StorageSlot lastUsedSlot; // last used by Inventory class
-        public int AllSlotsCount { get { return this.width * this.height; } }
+        public int AllSlotsCount { get { return this.Width * this.Height; } }
         public int EmptySlotsCount { get { return this.EmptySlots.Count; } }
         public List<StorageSlot> EmptySlots { get { return AllSlots.Where(slot => slot.IsEmpty).ToList(); } }
         public int FullSlotsCount { get { return this.FullSlots.Count; } }
@@ -61,9 +59,9 @@ namespace SonOfRobin
             {
                 var allSlots = new List<StorageSlot> { };
 
-                for (int y = 0; y < height; y++)
+                for (int y = 0; y < Height; y++)
                 {
-                    for (int x = 0; x < width; x++)
+                    for (int x = 0; x < Width; x++)
                     { allSlots.Add(slots[x, y]); }
                 }
                 return allSlots;
@@ -78,8 +76,8 @@ namespace SonOfRobin
             this.storageType = storageType;
             this.stackLimit = stackLimit;
             this.world = world;
-            this.width = width;
-            this.height = height;
+            this.Width = width;
+            this.Height = height;
             this.allowedPieceNames = allowedPieceNames;
             this.slots = this.MakeEmptySlots();
         }
@@ -92,11 +90,11 @@ namespace SonOfRobin
 
         private StorageSlot[,] MakeEmptySlots()
         {
-            var emptySlots = new StorageSlot[this.width, this.height];
+            var emptySlots = new StorageSlot[this.Width, this.Height];
 
-            for (int x = 0; x < this.width; x++)
+            for (int x = 0; x < this.Width; x++)
             {
-                for (int y = 0; y < this.height; y++)
+                for (int y = 0; y < this.Height; y++)
                 { emptySlots[x, y] = new StorageSlot(storage: this, posX: (byte)x, posY: (byte)y, stackLimit: this.stackLimit, allowedPieceNames: allowedPieceNames); }
             }
 
@@ -105,16 +103,16 @@ namespace SonOfRobin
 
         public void Resize(byte newWidth, byte newHeight)
         {
-            if (this.width == newWidth && this.height == newHeight) return;
+            if (this.Width == newWidth && this.Height == newHeight) return;
 
             var excessPieces = new List<BoardPiece> { };
 
             // dropping pieces from excess slots
-            if (this.width > newWidth || this.height > newHeight)
+            if (this.Width > newWidth || this.Height > newHeight)
             {
-                for (int x = 0; x < this.width; x++)
+                for (int x = 0; x < this.Width; x++)
                 {
-                    for (int y = 0; y < this.height; y++)
+                    for (int y = 0; y < this.Height; y++)
                     {
                         if (x >= newWidth || y >= newHeight)
                         {
@@ -131,7 +129,7 @@ namespace SonOfRobin
             {
                 for (int y = 0; y < newHeight; y++)
                 {
-                    if (x >= this.width || y >= this.height)
+                    if (x >= this.Width || y >= this.Height)
                     {
                         newSlots[x, y] = new StorageSlot(storage: this, posX: (byte)x, posY: (byte)y, stackLimit: this.stackLimit, allowedPieceNames: this.allowedPieceNames);
                     }
@@ -142,8 +140,8 @@ namespace SonOfRobin
                 }
             }
 
-            this.width = newWidth;
-            this.height = newHeight;
+            this.Width = newWidth;
+            this.Height = newHeight;
             this.slots = newSlots;
 
             foreach (BoardPiece piece in excessPieces)
@@ -480,8 +478,8 @@ namespace SonOfRobin
 
             var storageDict = new Dictionary<string, Object>
             {
-              {"width", this.width},
-              {"height", this.height},
+              {"width", this.Width},
+              {"height", this.Height},
               {"stackLimit", this.stackLimit},
               {"slotData", slotData},
               {"storageType", storageType},

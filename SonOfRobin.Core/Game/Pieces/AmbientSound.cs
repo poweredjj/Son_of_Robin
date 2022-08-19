@@ -34,7 +34,6 @@ namespace SonOfRobin
             this.checkDelay = 100 + Random.Next(0, 60); // to avoid playing all ambient sound in the same frame
             if (this.sprite.Visible) this.sprite.opacity = visMinOpacity;
         }
-
         private bool CanPlayAtThisPartOfDay
         { get { return this.partOfDayList == null ? true : this.partOfDayList.Contains(this.world.islandClock.CurrentPartOfDay); } }
 

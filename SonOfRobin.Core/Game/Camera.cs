@@ -62,8 +62,7 @@ namespace SonOfRobin
         private Vector2 trackedPos;
         public Vector2 TrackedPos
         { get { return this.trackingMode == TrackingMode.Position ? this.trackedPos : this.trackedSprite.position; } }
-        private Vector2 currentPos;
-        public Vector2 CurrentPos { get { return this.currentPos; } }
+        public Vector2 CurrentPos { get; private set; }
         private float targetZoom;
         public float currentZoom;
         private bool currentFluidMotion;
@@ -130,7 +129,7 @@ namespace SonOfRobin
         public Camera(World world)
         {
             this.world = world;
-            this.currentPos = new Vector2(0, 0);
+            this.CurrentPos = new Vector2(0, 0);
 
             this.viewRect = new Rectangle(0, 0, 0, 0);
             this.currentFluidMotion = false;
@@ -158,8 +157,8 @@ namespace SonOfRobin
                 this.currentZoom += (this.targetZoom - this.currentZoom) / this.zoomSlowdown;
                 if (this.currentZoom == this.targetZoom) this.zoomSlowdown = movementSlowdown; // resetting to default zoom speed, after reaching target value
 
-                viewCenter.X = this.currentPos.X + ((currentTargetPos.X - this.currentPos.X) / movementSlowdown);
-                viewCenter.Y = this.currentPos.Y + ((currentTargetPos.Y - this.currentPos.Y) / movementSlowdown);
+                viewCenter.X = this.CurrentPos.X + ((currentTargetPos.X - this.CurrentPos.X) / movementSlowdown);
+                viewCenter.Y = this.CurrentPos.Y + ((currentTargetPos.Y - this.CurrentPos.Y) / movementSlowdown);
             }
             else
             {
@@ -187,7 +186,7 @@ namespace SonOfRobin
             xMax = Math.Min(xMin + screenWidth, this.world.width);
             yMax = Math.Min(yMin + screenHeight, this.world.height);
 
-            this.currentPos = viewCenter;
+            this.CurrentPos = viewCenter;
 
             this.viewRect.X = (int)xMin;
             this.viewRect.Y = (int)yMin;
@@ -198,7 +197,7 @@ namespace SonOfRobin
 
             SoundEffect.DistanceScale = this.viewRect.Width * 0.065f;
 
-            if (!this.trackedSpriteReached && Vector2.Distance(this.currentPos, currentTargetPos) < 30) this.trackedSpriteReached = true;
+            if (!this.trackedSpriteReached && Vector2.Distance(this.CurrentPos, currentTargetPos) < 30) this.trackedSpriteReached = true;
         }
 
         public void TrackPiece(BoardPiece trackedPiece, bool fluidMotion = true)
@@ -258,7 +257,7 @@ namespace SonOfRobin
                         { return this.trackedSprite.position; }
                         else
                         {
-                            this.TrackCoords(this.currentPos);
+                            this.TrackCoords(this.CurrentPos);
                             return this.trackedPos;
                         }
                     }

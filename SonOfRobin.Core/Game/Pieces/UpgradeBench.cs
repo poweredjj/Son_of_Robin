@@ -13,8 +13,6 @@ namespace SonOfRobin
         private StorageSlot UpgradeTriggerSlot { get { return this.pieceStorage.GetSlot(0, 0); } }
         private StorageSlot MainSlot { get { return this.pieceStorage.GetSlot(1, 0); } }
         private StorageSlot BoosterSlot { get { return this.pieceStorage.GetSlot(2, 0); } }
-
-
         public UpgradeBench(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedFields allowedFields, Dictionary<byte, int> maxMassBySize, string readableName, string description, Category category,
             byte animSize = 0, string animName = "off", bool blocksMovement = true, ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = false, int generation = 0, Yield yield = null, int maxHitPoints = 1, bool fadeInAnim = false, PieceSoundPack soundPack = null) :
 

@@ -127,9 +127,7 @@ namespace SonOfRobin
         }
 
         public bool IsAnimalOrPlayer { get { return this.GetType() == typeof(Animal) || this.GetType() == typeof(Player); } }
-
         public bool IsPlantOrFruit { get { return this.GetType() == typeof(Plant) || this.GetType() == typeof(Fruit); } }
-
 
         public bool IsEquippedByPlayer
         {
