@@ -251,6 +251,7 @@ namespace SonOfRobin
             Cicadas2,
             Cicadas3,
 
+            Lava,
             SeaWind,
             DesertWind,
             NightCrickets,
@@ -452,6 +453,7 @@ namespace SonOfRobin
             { Name.LeatherMove, "536087__eminyildirim__leather-movement" },
             { Name.DropRope, "459440__coral-island-studios__13-cardboard-box-stacking" },
             { Name.Error, "141334__lluiset7__error-2" },
+            { Name.Lava, "174500__unfa__boiling-towel-loop" },
             };
     }
 }

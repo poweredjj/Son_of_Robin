@@ -223,6 +223,7 @@ namespace SonOfRobin
             SoundDesertWind,
             SoundNightCrickets,
             SoundNoonCicadas,
+            SoundLava,
         }
 
         public static readonly Name[] allNames = (Name[])Enum.GetValues(typeof(Name));
@@ -2592,6 +2593,22 @@ namespace SonOfRobin
                         AmbientSound ambientSound = new AmbientSound(name: templateName, world: world, id: id, allowedFields: allowedFields, allowedDensity: allowedDensity, readableName: "ambient noon cicadas sound", description: "Ambient sound for cicadas at noon.", sound: sound, playDelay: 0, visible: Preferences.debugShowSounds, partOfDayList: new List<IslandClock.PartOfDay> { IslandClock.PartOfDay.Noon });
 
                         ambientSound.sprite.color = Color.Green;
+
+                        return ambientSound;
+                    }
+
+                case Name.SoundLava:
+                    {
+                        var allowedFields = new AllowedFields(rangeDict: new Dictionary<TerrainName, AllowedRange>() {
+                            { TerrainName.Height, new AllowedRange(min: (byte)(Terrain.lavaMin + 1), max: 255) }});
+
+                        AllowedDensity allowedDensity = new AllowedDensity(radious: 160, maxNoOfPiecesSameName: 1);
+
+                        Sound sound = new Sound(name: SoundData.Name.Lava, maxPitchVariation: 0.5f, volume: 1f, isLooped: true, volumeFadeFrames: 60);
+
+                        AmbientSound ambientSound = new AmbientSound(name: templateName, world: world, id: id, allowedFields: allowedFields, allowedDensity: allowedDensity, readableName: "ambient lava sound", description: "Ambient sound for lava.", sound: sound, playDelay: 0, visible: Preferences.debugShowSounds);
+
+                        ambientSound.sprite.color = Color.Yellow;
 
                         return ambientSound;
                     }

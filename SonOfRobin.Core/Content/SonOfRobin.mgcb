@@ -3956,6 +3956,12 @@
 /processorParam:Quality=Best
 /build:sound/164882__timsc__squirrel-call-4.ogg
 
+#begin sound/174500__unfa__boiling-towel-loop.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sound/174500__unfa__boiling-towel-loop.ogg
+
 #begin sound/178872__hanbaal__bow.ogg
 /importer:OggImporter
 /processor:SoundEffectProcessor
