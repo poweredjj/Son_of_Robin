@@ -11,7 +11,6 @@ namespace SonOfRobin
         private double last = 0;
         private double now = 0;
         public double msgFrequency = 1.0;
-        public string Message { get { return $"FPS: {this.FPS} updates: {this.Updates} frames: {this.Frames}"; } }
         public double FPS { get; private set; }
         public double Updates { get; private set; }
         public double Frames { get; private set; }

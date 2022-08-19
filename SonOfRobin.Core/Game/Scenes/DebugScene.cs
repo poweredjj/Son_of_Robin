@@ -65,7 +65,9 @@ namespace SonOfRobin
             if (worldActive) debugLines.Add($"real time elapsed {world.TimePlayed:hh\\:mm\\:ss}");
             if (worldActive) debugLines.Add($"island time elapsed {world.islandClock.IslandTimeElapsed:hh\\:mm\\:ss} (x{world.updateMultiplier})");
             if (worldActive) debugLines.Add($"island day {world.islandClock.CurrentDayNo} clock {world.islandClock.TimeOfDay:hh\\:mm\\:ss} ({Convert.ToString(world.islandClock.CurrentPartOfDay).ToLower()})");
-            debugLines.Add($"{SonOfRobinGame.fps.Message}");
+
+            SimpleFps fps = SonOfRobinGame.fps;
+            debugLines.Add($"FPS: {fps.FPS} updates: {fps.Updates} frames: {fps.Frames}");
 
             debugText = String.Join("\n", debugLines);
 

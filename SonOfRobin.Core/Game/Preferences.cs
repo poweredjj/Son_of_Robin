@@ -198,6 +198,20 @@ namespace SonOfRobin
             }
         }
 
+        private static bool fpsCounterPosRight = true;
+
+        public static bool FpsCounterPosRight
+        {
+            get { return fpsCounterPosRight; }
+            set
+            {
+                if (fpsCounterPosRight == value) return;
+
+                fpsCounterPosRight = value;
+                Scene.ResizeAllScenes();
+            }
+        }
+
         private static bool showFpsCounter = false;
         public static bool ShowFpsCounter
         {
@@ -501,7 +515,8 @@ namespace SonOfRobin
             prefsData["drawSunShadows"] = drawSunShadows;
             prefsData["controlTipsScheme"] = ControlTipsScheme;
             prefsData["EnableTouchButtons"] = EnableTouchButtons;
-            prefsData["ShowFpsCounter"] = ShowFpsCounter;
+            prefsData["showFpsCounter"] = showFpsCounter;
+            prefsData["fpsCounterPosRight"] = fpsCounterPosRight;
             prefsData["enableTouchJoysticks"] = enableTouchJoysticks;
             prefsData["pointToWalk"] = pointToWalk;
             prefsData["pointToInteract"] = pointToInteract;
@@ -565,7 +580,8 @@ namespace SonOfRobin
                     drawSunShadows = (bool)prefsData["drawSunShadows"];
                     controlTipsScheme = (ButtonScheme.Type)prefsData["controlTipsScheme"];
                     EnableTouchButtons = (bool)prefsData["EnableTouchButtons"];
-                    ShowFpsCounter = (bool)prefsData["ShowFpsCounter"];
+                    showFpsCounter = (bool)prefsData["showFpsCounter"];
+                    fpsCounterPosRight = (bool)prefsData["fpsCounterPosRight"];
                     enableTouchJoysticks = (bool)prefsData["enableTouchJoysticks"];
                     pointToWalk = (bool)prefsData["pointToWalk"];
                     pointToInteract = (bool)prefsData["pointToInteract"];
