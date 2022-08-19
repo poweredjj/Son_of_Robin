@@ -39,9 +39,8 @@ namespace SonOfRobin
 
         protected override void AdaptToNewSize()
         {
-            int width = (int)(SonOfRobinGame.VirtualWidth * 0.07f);
-            width = Math.Min(width, 55);
-            width = Math.Max(width, 35);
+            int width = (int)(SonOfRobinGame.VirtualWidth * 0.03f);
+            width = Math.Max(width, 40);
             int height = (int)(width * 0.3);
 
             this.textRect = new Rectangle(x: 0, y: 0, width: width, height: height);
