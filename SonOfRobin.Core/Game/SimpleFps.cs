@@ -10,14 +10,10 @@ namespace SonOfRobin
         private double elapsed = 0;
         private double last = 0;
         private double now = 0;
-        public double msgFrequency = 1.0;
+        private static readonly double msgFrequency = 0.5;
         public double FPS { get; private set; }
         public double Updates { get; private set; }
         public double Frames { get; private set; }
-
-        /// <summary>
-        /// The msgFrequency here is the reporting time to update the message.
-        /// </summary>
         public void Update(GameTime gameTime)
         {
             this.now = gameTime.TotalGameTime.TotalSeconds;
