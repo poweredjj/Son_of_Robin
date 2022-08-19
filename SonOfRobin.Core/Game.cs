@@ -35,6 +35,7 @@ namespace SonOfRobin
         public static InfoWindow progressBar;
         public static ControlTips controlTips;
         public static TouchOverlay touchOverlay;
+        public static FpsCounter fpsCounter;
 
         public static SpriteFont fontPixelMix5;
         public static SpriteFont fontPressStart2P5;
@@ -52,6 +53,7 @@ namespace SonOfRobin
         public static readonly SimpleFps fps = new SimpleFps();
         public static readonly Random random = new Random();
 
+        public static bool initialLoadingFinished = false;
         public static int currentUpdate = 0;
         public static float lastUpdateDelay = 0;
         public static float lastDrawDelay = 0;

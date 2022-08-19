@@ -43,7 +43,7 @@ namespace SonOfRobin
 
             foreach (Rectangle outlineRect in outlineRectList)
             {
-                DrawTextInsideRect(font: font, rectangle: outlineRect, text: text, color: outlineColor, alignX: alignX, alignY: alignY, drawTestRect: drawTestRect);
+                DrawTextInsideRect(font: font, rectangle: outlineRect, text: text, color: outlineColor, alignX: alignX, alignY: alignY, drawTestRect: false);
             }
 
             DrawTextInsideRect(font: font, rectangle: rectangle, text: text, color: color, alignX: alignX, alignY: alignY, drawTestRect: drawTestRect);

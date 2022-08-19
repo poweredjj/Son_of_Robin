@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using System;
 
 namespace SonOfRobin
@@ -11,46 +10,39 @@ namespace SonOfRobin
         private double elapsed = 0;
         private double last = 0;
         private double now = 0;
-        public double msgFrequency = 1.0f;
-        public string msg = "";
+        public double msgFrequency = 1.0;
+        public string Message { get { return $"FPS: {this.FPS} updates: {this.Updates} frames: {this.Frames}"; } }
+        public double FPS { get; private set; }
+        public double Updates { get; private set; }
+        public double Frames { get; private set; }
 
         /// <summary>
         /// The msgFrequency here is the reporting time to update the message.
         /// </summary>
         public void Update(GameTime gameTime)
         {
-            now = gameTime.TotalGameTime.TotalSeconds;
-            elapsed = (double)(now - last);
-            if (elapsed > msgFrequency)
-            {
-                msg = $"FPS: {Math.Round(frames / elapsed)} updates: {updates} frames: {frames}";
-                elapsed = 0;
-                frames = 0;
-                updates = 0;
-                last = now;
-            }
-            updates++;
-        }
+            this.now = gameTime.TotalGameTime.TotalSeconds;
+            this.elapsed = now - last;
 
-        public void DrawFps(SpriteBatch spriteBatch, SpriteFont font, Vector2 fpsDisplayPosition, Color fpsTextColor)
-        {
-            int[] offsets = { -2, -1, 1, 2 };
-            foreach (int x in offsets)
+            if (this.elapsed > msgFrequency)
             {
-                foreach (int y in offsets)
-                { spriteBatch.DrawString(font, msg, fpsDisplayPosition + new Vector2(x, y), Color.Black); }
+                this.FPS = Math.Round(frames / elapsed);
+                this.Updates = this.updates;
+                this.Frames = this.frames;
+
+                this.elapsed = 0;
+                this.frames = 0;
+                this.updates = 0;
+                this.last = now;
             }
 
-            spriteBatch.DrawString(font, msg, fpsDisplayPosition, Color.White);
-            frames++;
+            this.updates++;
         }
 
         public void UpdateFpsCounter()
         {
-            frames++;
+            this.frames++;
         }
-
-
 
     }
 }

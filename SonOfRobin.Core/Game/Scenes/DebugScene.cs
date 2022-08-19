@@ -44,8 +44,10 @@ namespace SonOfRobin
                 else debugLines.Add($"{world.debugText}");
             }
 
-            if (worldActive && world.pieceCountByClass.ContainsKey(typeof(Plant))) debugLines.Add($"plants {world.pieceCountByClass[typeof(Plant)]}");
-            if (worldActive && world.pieceCountByClass.ContainsKey(typeof(Animal))) debugLines.Add($", animals {world.pieceCountByClass[typeof(Animal)]}");
+            int plantCount = worldActive && world.pieceCountByClass.ContainsKey(typeof(Plant)) ? world.pieceCountByClass[typeof(Plant)] : 0;
+            int animalCount = worldActive && world.pieceCountByClass.ContainsKey(typeof(Animal)) ? world.pieceCountByClass[typeof(Animal)] : 0;
+
+            if (plantCount > 0 && animalCount > 0) debugLines.Add($"plants {plantCount}, animals {animalCount}");
 
             if (worldActive)
             {
@@ -63,7 +65,7 @@ namespace SonOfRobin
             if (worldActive) debugLines.Add($"real time elapsed {world.TimePlayed:hh\\:mm\\:ss}");
             if (worldActive) debugLines.Add($"island time elapsed {world.islandClock.IslandTimeElapsed:hh\\:mm\\:ss} (x{world.updateMultiplier})");
             if (worldActive) debugLines.Add($"island day {world.islandClock.CurrentDayNo} clock {world.islandClock.TimeOfDay:hh\\:mm\\:ss} ({Convert.ToString(world.islandClock.CurrentPartOfDay).ToLower()})");
-            debugLines.Add($"{SonOfRobinGame.fps.msg}");
+            debugLines.Add($"{SonOfRobinGame.fps.Message}");
 
             debugText = String.Join("\n", debugLines);
 

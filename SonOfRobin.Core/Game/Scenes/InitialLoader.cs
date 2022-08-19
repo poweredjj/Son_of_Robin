@@ -134,6 +134,7 @@ namespace SonOfRobin
 
             if (finish)
             {
+                SonOfRobinGame.initialLoadingFinished = true;
                 this.Remove();
                 GC.Collect();
             }

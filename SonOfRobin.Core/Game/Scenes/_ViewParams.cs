@@ -109,15 +109,24 @@ namespace SonOfRobin
             if (vertically) this.PosY = this.CenterPosY;
         }
 
-
-        public void PutViewAtTheRight()
+        public void PutViewAtTheLeft(int margin = 0)
         {
-            this.PosX = (int)((SonOfRobinGame.VirtualWidth * this.scaleX) - this.width);
+            this.PosX = margin;
         }
 
-        public void PutViewAtTheBottom()
+        public void PutViewAtTheRight(int margin = 0)
         {
-            this.PosY = (int)((SonOfRobinGame.VirtualHeight * this.scaleY) - this.height);
+            this.PosX = (int)((SonOfRobinGame.VirtualWidth * this.scaleX) - this.width) - margin;
+        }
+
+        public void PutViewAtTheTop(int margin = 0)
+        {
+            this.PosY = margin;
+        }
+
+        public void PutViewAtTheBottom(int margin = 0)
+        {
+            this.PosY = (int)((SonOfRobinGame.VirtualHeight * this.scaleY) - this.height) - margin;
         }
 
     }

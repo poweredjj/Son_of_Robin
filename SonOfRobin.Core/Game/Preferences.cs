@@ -198,6 +198,29 @@ namespace SonOfRobin
             }
         }
 
+        private static bool showFpsCounter = false;
+        public static bool ShowFpsCounter
+        {
+            get { return showFpsCounter; }
+            set
+            {
+                showFpsCounter = value;
+
+                if (showFpsCounter)
+                {
+                    if (SonOfRobinGame.fpsCounter == null) SonOfRobinGame.fpsCounter = new FpsCounter();
+                }
+                else
+                {
+                    if (SonOfRobinGame.fpsCounter != null)
+                    {
+                        SonOfRobinGame.fpsCounter.Remove();
+                        SonOfRobinGame.fpsCounter = null;
+                    }
+                }
+            }
+        }
+
         public static bool zoomedOut = false; // used to store virtual button value
 
         // debug variables should not be saved to preferences file
@@ -478,6 +501,7 @@ namespace SonOfRobin
             prefsData["drawSunShadows"] = drawSunShadows;
             prefsData["controlTipsScheme"] = ControlTipsScheme;
             prefsData["EnableTouchButtons"] = EnableTouchButtons;
+            prefsData["ShowFpsCounter"] = ShowFpsCounter;
             prefsData["enableTouchJoysticks"] = enableTouchJoysticks;
             prefsData["pointToWalk"] = pointToWalk;
             prefsData["pointToInteract"] = pointToInteract;
@@ -541,6 +565,7 @@ namespace SonOfRobin
                     drawSunShadows = (bool)prefsData["drawSunShadows"];
                     controlTipsScheme = (ButtonScheme.Type)prefsData["controlTipsScheme"];
                     EnableTouchButtons = (bool)prefsData["EnableTouchButtons"];
+                    ShowFpsCounter = (bool)prefsData["ShowFpsCounter"];
                     enableTouchJoysticks = (bool)prefsData["enableTouchJoysticks"];
                     pointToWalk = (bool)prefsData["pointToWalk"];
                     pointToInteract = (bool)prefsData["pointToInteract"];
