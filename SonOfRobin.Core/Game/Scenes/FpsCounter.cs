@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
+using System.Collections.Generic;
 
 namespace SonOfRobin
 {
@@ -8,7 +9,31 @@ namespace SonOfRobin
         private Rectangle bgRect;
         private Rectangle textRect;
         private static readonly int margin = 2;
-        private string CounterText { get { return $"FPS {SonOfRobinGame.fps.Frames}"; } }
+
+        private static readonly Dictionary<int, Color> colorDict = new Dictionary<int, Color> {
+            { 40, Color.White },
+            { 30, Color.Yellow },
+            { 15, Color.Orange },
+            { -1, Color.Red },
+            };
+
+        private int CounterValue { get { return (int)SonOfRobinGame.fps.Frames; } }
+        private string CounterText { get { return $"FPS {this.CounterValue}"; } }
+
+        private Color CounterColor
+        {
+            get
+            {
+                int counterValue = this.CounterValue;
+
+                foreach (var kvp in colorDict)
+                {
+                    if (counterValue > kvp.Key) return kvp.Value;
+                }
+
+                throw new ArgumentException($"Cannot calculate FPS counter color for value {counterValue}.");
+            }
+        }
 
         public FpsCounter() : base(inputType: InputTypes.None, priority: -2, blocksUpdatesBelow: false, alwaysUpdates: true, alwaysDraws: true, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty)
         {
@@ -61,7 +86,7 @@ namespace SonOfRobin
         {
             SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, this.bgRect, Color.Black * 0.6f * this.viewParams.drawOpacity);
 
-            Helpers.DrawTextInsideRect(font: SonOfRobinGame.fontFreeSansBold24, text: this.CounterText, rectangle: this.textRect, color: Color.White * this.viewParams.drawOpacity, alignX: Helpers.AlignX.Center, alignY: Helpers.AlignY.Center);
+            Helpers.DrawTextInsideRect(font: SonOfRobinGame.fontFreeSansBold24, text: this.CounterText, rectangle: this.textRect, color: this.CounterColor * this.viewParams.drawOpacity, alignX: Helpers.AlignX.Center, alignY: Helpers.AlignY.Center);
         }
 
     }
