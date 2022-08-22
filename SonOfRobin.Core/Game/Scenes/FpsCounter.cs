@@ -65,8 +65,8 @@ namespace SonOfRobin
             return new Transition(
                 transManager: this.transManager,
                 outTrans: !inTrans,
-                baseParamName: "PosX",
-                targetVal: Preferences.FpsCounterPosRight ? this.viewParams.PosX + this.viewParams.Width : -this.viewParams.Width,
+                baseParamName: "PosY",
+                targetVal: -this.viewParams.Height,
                 duration: 12,
                 endRemoveScene: !inTrans
                 );
