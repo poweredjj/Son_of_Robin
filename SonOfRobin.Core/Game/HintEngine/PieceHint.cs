@@ -95,8 +95,9 @@ namespace SonOfRobin
         private readonly Dictionary<PieceTemplate.Name, int> existingPiecesCount;
         private readonly bool fieldOnly;
         private readonly bool menuOnly;
+        private readonly bool ignoreHintSetting;
 
-        public PieceHint(Type type, List<PieceTemplate.Name> fieldPiecesNearby = null, List<PieceTemplate.Name> playerOwnsAnyOfThesePieces = null, List<PieceTemplate.Name> playerDoesNotOwnAnyOfThesePieces = null, List<PieceTemplate.Name> playerOwnsAllOfThesePieces = null, List<Type> alsoDisables = null, bool fieldPieceHasNotEmptyStorage = false, string message = null, List<Texture2D> imageList = null, List<HintMessage> messageList = null, List<Tutorials.Type> tutorialsToActivate = null, HintEngine.Type generalHintToActivate = HintEngine.Type.Empty, List<IslandClock.PartOfDay> partsOfDay = null, List<CountComparison> piecesCraftedCount = null, Dictionary<PieceTemplate.Name, int> usedIngredientsCount = null, Dictionary<PieceTemplate.Name, int> existingPiecesCount = null, bool fieldOnly = false, bool menuOnly = false)
+        public PieceHint(Type type, List<PieceTemplate.Name> fieldPiecesNearby = null, List<PieceTemplate.Name> playerOwnsAnyOfThesePieces = null, List<PieceTemplate.Name> playerDoesNotOwnAnyOfThesePieces = null, List<PieceTemplate.Name> playerOwnsAllOfThesePieces = null, List<Type> alsoDisables = null, bool fieldPieceHasNotEmptyStorage = false, string message = null, List<Texture2D> imageList = null, List<HintMessage> messageList = null, List<Tutorials.Type> tutorialsToActivate = null, HintEngine.Type generalHintToActivate = HintEngine.Type.Empty, List<IslandClock.PartOfDay> partsOfDay = null, List<CountComparison> piecesCraftedCount = null, Dictionary<PieceTemplate.Name, int> usedIngredientsCount = null, Dictionary<PieceTemplate.Name, int> existingPiecesCount = null, bool fieldOnly = false, bool menuOnly = false, bool ignoreHintSetting = false)
         {
             this.type = type;
             this.alsoDisables = alsoDisables == null ? new List<Type> { } : alsoDisables;
@@ -113,6 +114,8 @@ namespace SonOfRobin
 
             this.fieldOnly = fieldOnly || this.fieldPiecesNearby != null; // fieldPiecesNearby need to be shown on the field
             this.menuOnly = menuOnly;
+
+            this.ignoreHintSetting = ignoreHintSetting;
 
             if (this.fieldOnly && this.menuOnly) throw new ArgumentException("fieldOnly and menuOnly cannot both be active.");
 
@@ -204,6 +207,7 @@ namespace SonOfRobin
 
         private bool CheckIfConditionsAreMet(Player player, PieceTemplate.Name fieldPieceNameToCheck = PieceTemplate.Name.Empty, PieceTemplate.Name newOwnedPieceNameToCheck = PieceTemplate.Name.Empty)
         {
+            if (!Preferences.showHints && !this.ignoreHintSetting) return false;
             if (player.world.hintEngine.shownPieceHints.Contains(this.type)) return false;
             if (this.menuOnly && Scene.GetTopSceneOfType(typeof(Menu)) == null) return false;
             if (this.fieldOnly && Scene.GetTopSceneOfType(typeof(Menu)) != null) return false;

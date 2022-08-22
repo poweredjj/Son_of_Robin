@@ -304,6 +304,7 @@ namespace SonOfRobin
                 new PieceHint(
                     type: PieceHint.Type.SmallBase,
                     generalHintToActivate: HintEngine.Type.CineSmallBase,
+                    ignoreHintSetting: true,
                     piecesCraftedCount: new List<CountComparison> {
                         new CountComparison(name: PieceTemplate.Name.WorkshopEssential, count: 1),
                         new CountComparison(name: PieceTemplate.Name.TentSmall, count: 1)},
