@@ -71,7 +71,7 @@ namespace SonOfRobin
         private Rectangle bgRect;
         private Rectangle textRect;
         private Rectangle graphRect;
-        private static readonly int outerMargin = SonOfRobinGame.platform == Platform.Mobile ? 12 : 5;
+        private static readonly int outerMargin = SonOfRobinGame.platform == Platform.Mobile ? 14 : 6;
         private static readonly int innerMargin = 3;
 
         private static readonly Dictionary<int, Color> colorDict = new Dictionary<int, Color> {
@@ -109,6 +109,8 @@ namespace SonOfRobin
 
         public void ResizeFpsHistory(int newStoredValuesCount)
         {
+            if (newStoredValuesCount < 1) throw new ArgumentException($"FPS history stored values count {newStoredValuesCount} cannot be less than 1.");
+
             this.fpsHistory.StoreCapacity = newStoredValuesCount;
         }
 
