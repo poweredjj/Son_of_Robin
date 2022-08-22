@@ -399,7 +399,7 @@ namespace SonOfRobin
                 {
                     if (!PieceInfo.GetInfo(recipe.pieceToCreate).canBePickedUp && recipe.amountToCreate > 1) throw new ArgumentException($"Cannot create multiple pieces in the field - {recipe.pieceToCreate}.");
 
-                    if (recipe.amountToCreate > 1 && recipe.isReversible) throw new ArgumentException($"Found reversible recipe, that can be reversed - {recipe.pieceToCreate}."); // this would lead to item duplication exploit
+                    if (recipe.amountToCreate > 1 && recipe.isReversible) throw new ArgumentException($"Found recipe for amount > 1, that can be reversed - {recipe.pieceToCreate}."); // this could lead to item duplication exploit
                 }
             }
 
