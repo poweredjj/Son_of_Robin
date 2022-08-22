@@ -356,7 +356,7 @@ namespace SonOfRobin
                 this.transManager.AddMultipleTransitions(paramsToChange: paramsToChange, outTrans: false, duration: 12);
 
                 World topWorld = World.GetTopWorld();
-                if (topWorld != null) topWorld.AddPauseMenuTransitions();
+                if (topWorld != null && GetTopSceneOfType(typeof(TextWindow)) == null) topWorld.AddPauseMenuTransitions();
             }
         }
 
