@@ -183,6 +183,8 @@ namespace SonOfRobin
             BeltBig,
             Map,
 
+            HatSimple,
+
             TorchSmall,
             TorchBig,
 
@@ -2420,6 +2422,19 @@ namespace SonOfRobin
 
                         return new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Map, blocksMovement: false, category: BoardPiece.Category.Flesh,
                             allowedFields: allowedFields, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 100, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "map", description: "Keeps track of visited places.");
+                    }
+
+                case Name.HatSimple:
+                    {
+                        var allowedFields = new AllowedFields(rangeNameList: new List<AllowedFields.RangeName> { AllowedFields.RangeName.WaterShallow, AllowedFields.RangeName.WaterMedium, AllowedFields.RangeName.GroundAll });
+
+                        var buffList = new List<BuffEngine.Buff>
+                        {
+                            // TODO add heat protection buff
+                        };
+
+                        return new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HatSimple, blocksMovement: false, category: BoardPiece.Category.Flesh,
+                            allowedFields: allowedFields, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 100, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "hat", description: "Simple hat");
                     }
 
                 case Name.TorchSmall:

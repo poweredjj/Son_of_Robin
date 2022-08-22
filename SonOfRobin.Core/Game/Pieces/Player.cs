@@ -254,7 +254,7 @@ namespace SonOfRobin
 
             this.pieceStorage = new PieceStorage(width: invWidth, height: invHeight, world: this.world, storagePiece: this, storageType: PieceStorage.StorageType.Inventory);
             this.toolStorage = new PieceStorage(width: toolbarWidth, height: toolbarHeight, world: this.world, storagePiece: this, storageType: PieceStorage.StorageType.Tools, allowedPieceNames: allowedToolbarPieces);
-            this.equipStorage = new PieceStorage(width: 2, height: 2, world: this.world, storagePiece: this, storageType: PieceStorage.StorageType.Equip);
+            this.equipStorage = new PieceStorage(width: 3, height: 3, world: this.world, storagePiece: this, storageType: PieceStorage.StorageType.Equip);
             this.ConfigureEquip();
             this.shootingAngle = -100; // -100 == no real value
             this.shootingPower = 0;
@@ -273,7 +273,33 @@ namespace SonOfRobin
 
         private void ConfigureEquip()
         {
-            StorageSlot backpackSlot = this.equipStorage.AllSlots[0];
+            foreach (StorageSlot slot in this.equipStorage.AllSlots)
+            {
+                slot.locked = true;
+                slot.hidden = true;
+            }
+
+            StorageSlot headSlot = this.equipStorage.GetSlot(1, 0);
+            headSlot.locked = false;
+            headSlot.hidden = false;
+            headSlot.allowedPieceNames = new List<PieceTemplate.Name> { PieceTemplate.Name.HatSimple };
+            headSlot.label = "head";
+
+            StorageSlot chestSlot = this.equipStorage.GetSlot(1, 1);
+            chestSlot.locked = false;
+            chestSlot.hidden = false;
+            chestSlot.allowedPieceNames = new List<PieceTemplate.Name> { }; // TODO add chest equip
+            chestSlot.label = "chest";
+
+            StorageSlot legsSlot = this.equipStorage.GetSlot(1, 2);
+            legsSlot.locked = false;
+            legsSlot.hidden = false;
+            legsSlot.allowedPieceNames = new List<PieceTemplate.Name> { }; // TODO add legs equip
+            legsSlot.label = "legs";
+
+            StorageSlot backpackSlot = this.equipStorage.GetSlot(0, 1);
+            backpackSlot.locked = false;
+            backpackSlot.hidden = false;
             backpackSlot.allowedPieceNames = new List<PieceTemplate.Name>();
             backpackSlot.label = "backpack";
 
@@ -289,7 +315,9 @@ namespace SonOfRobin
                 }
             }
 
-            StorageSlot beltSlot = this.equipStorage.AllSlots[1];
+            StorageSlot beltSlot = this.equipStorage.GetSlot(2, 1);
+            beltSlot.locked = false;
+            beltSlot.hidden = false;
             beltSlot.allowedPieceNames = new List<PieceTemplate.Name>();
             beltSlot.label = "belt";
 
@@ -305,10 +333,14 @@ namespace SonOfRobin
                 }
             }
 
-            foreach (StorageSlot slot in this.equipStorage.AllSlots.GetRange(2, 2))
+            var accessorySlotsList = new List<StorageSlot> { this.equipStorage.GetSlot(0, 0), this.equipStorage.GetSlot(2, 0) };
+
+            foreach (StorageSlot accessorySlot in accessorySlotsList)
             {
-                slot.allowedPieceNames = new List<PieceTemplate.Name> { PieceTemplate.Name.Map };
-                slot.label = "accessory";
+                accessorySlot.locked = false;
+                accessorySlot.hidden = false;
+                accessorySlot.allowedPieceNames = new List<PieceTemplate.Name> { PieceTemplate.Name.Map };
+                accessorySlot.label = "accessory";
             }
         }
 
