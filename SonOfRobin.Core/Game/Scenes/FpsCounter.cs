@@ -6,33 +6,48 @@ namespace SonOfRobin
 {
     public class FpsCounter : Scene
     {
+        public struct FPSValueGroup
+        {
+            public readonly int fps;
+            public readonly int length;
+
+            public FPSValueGroup(int fps, int length)
+            {
+                this.fps = fps;
+                this.length = length;
+            }
+        }
+
         public class FPSHistory
         {
             public int StoreCapacity { get; private set; }
             private readonly List<int> recordList;
 
-            public Dictionary<int, int> ValuesAndLengthDict
+            public List<FPSValueGroup> FPSValueGroupList
             {
                 get
                 {
-                    var valuesAndLengthDict = new Dictionary<int, int>();
+                    var fpsValueGroupList = new List<FPSValueGroup>();
 
                     int lastVal = -1;
                     int length = 1;
-                    foreach (int record in this.recordList)
+                    int listCount = this.recordList.Count;
+
+                    for (int i = 0; i < listCount; i++)
                     {
-                        if (record == lastVal) length++;
+                        int record = this.recordList[i];
+
+                        if (record == lastVal && i < listCount - 1) length++;
                         else
                         {
-                            if (lastVal != -1) valuesAndLengthDict[lastVal] = length;
+                            if (lastVal != -1) fpsValueGroupList.Add(new FPSValueGroup(fps: lastVal, length: length));
 
                             lastVal = record;
-                            length = 0;
+                            length = 1;
                         }
                     }
-                    valuesAndLengthDict[lastVal] = length;
 
-                    return valuesAndLengthDict;
+                    return fpsValueGroupList;
                 }
             }
 
@@ -96,7 +111,7 @@ namespace SonOfRobin
         public override void Update(GameTime gameTime)
         {
             this.counterValue = (int)SonOfRobinGame.fps.FPS;
-            this.fpsHistory.AddRecord(this.counterValue);
+            if (Preferences.FpsCounterShowGraph) this.fpsHistory.AddRecord(this.counterValue);
         }
 
         private Transition GetTransition(bool inTrans)
@@ -154,18 +169,15 @@ namespace SonOfRobin
                 int oneEntryWidth = this.graphRect.Width / this.fpsHistory.StoreCapacity;
 
                 int recordCounter = 0;
-                foreach (var kvp in this.fpsHistory.ValuesAndLengthDict)
+                foreach (FPSValueGroup fpsValueGroup in this.fpsHistory.FPSValueGroupList)
                 {
-                    int fps = kvp.Key;
-                    int length = kvp.Value;
-
-                    double percentage = (double)fps / 60d;
+                    double percentage = (double)fpsValueGroup.fps / 60d;
                     int barYOffset = this.graphRect.Height - ((int)(this.graphRect.Height * percentage));
 
-                    Rectangle graphBarRect = new Rectangle(x: this.graphRect.X + (recordCounter * oneEntryWidth), y: this.graphRect.Y + barYOffset, width: oneEntryWidth * length, height: 1);
+                    Rectangle graphBarRect = new Rectangle(x: this.graphRect.X + (recordCounter * oneEntryWidth), y: this.graphRect.Y + barYOffset, width: oneEntryWidth * fpsValueGroup.length, height: 1);
                     SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, graphBarRect, Color.White * this.viewParams.drawOpacity);
 
-                    recordCounter += length;
+                    recordCounter += fpsValueGroup.length;
                 }
             }
 
