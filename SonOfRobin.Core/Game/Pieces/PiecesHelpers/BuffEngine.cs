@@ -7,7 +7,7 @@ namespace SonOfRobin
 {
     public class BuffEngine
     {
-        public enum BuffType { InvWidth, InvHeight, ToolbarWidth, ToolbarHeight, Speed, Strength, HP, MaxHP, MaxStamina, EnableMap, LightSource, RegenPoison, Haste, Fatigue, Sprint, SprintCooldown, LowHP, Tired, Hungry };
+        public enum BuffType { InvWidth, InvHeight, ToolbarWidth, ToolbarHeight, Speed, Strength, HP, MaxHP, MaxStamina, EnableMap, LightSource, RegenPoison, Haste, Fatigue, Sprint, SprintCooldown, LowHP, Tired, Hungry, Heat, HeatProtection, Wet };
 
         [Serializable]
         public class Buff
@@ -106,6 +106,15 @@ namespace SonOfRobin
                     case BuffType.Hungry:
                         return false;
 
+                    case BuffType.Heat:
+                        return false;
+
+                    case BuffType.HeatProtection:
+                        return true;
+
+                    case BuffType.Wet:
+                        return true;
+
                     case BuffType.Sprint:
                         return true;
 
@@ -177,6 +186,18 @@ namespace SonOfRobin
 
                     case BuffType.Hungry:
                         description = "Hungry.";
+                        break;
+
+                    case BuffType.Heat:
+                        description = "Heat.";
+                        break;
+
+                    case BuffType.HeatProtection:
+                        description = "Heat protection.";
+                        break;
+
+                    case BuffType.Wet:
+                        description = "Wet.";
                         break;
 
                     case BuffType.LightSource:
@@ -256,6 +277,15 @@ namespace SonOfRobin
 
                     case BuffType.Hungry:
                         return "HUNGRY";
+
+                    case BuffType.Heat:
+                        return "HEAT";
+
+                    case BuffType.HeatProtection:
+                        return "HEAT\nPROTECT";
+
+                    case BuffType.Wet:
+                        return "WET";
 
                     case BuffType.LightSource:
                         return $"LIGHT\n{sign}{this.value}";
@@ -566,6 +596,26 @@ namespace SonOfRobin
                         return true;
                     }
 
+                case BuffType.Heat:
+                    {
+                        if (this.HasBuff(BuffType.Heat) || this.HasBuff(BuffType.HeatProtection) || this.HasBuff(BuffType.Wet)) return false;
+
+                        return true;
+                    }
+
+                case BuffType.HeatProtection:
+                    {
+                        this.RemoveEveryBuffOfType(BuffType.Heat);
+                        return true;
+                    }
+
+                case BuffType.Wet:
+                    {
+                        if (hadThisBuffBefore) this.RemoveEveryBuffOfType(BuffType.Wet); // to refresh buff duration
+                        this.RemoveEveryBuffOfType(BuffType.Heat);
+                        return true;
+                    }
+
                 case BuffType.LowHP:
                     {
                         if (!this.CheckIfPieceIsPlayer(buff)) return false;
@@ -845,6 +895,18 @@ namespace SonOfRobin
                     break;
 
                 case BuffType.Hungry:
+                    value = null;
+                    break;
+
+                case BuffType.Heat:
+                    value = null;
+                    break;
+
+                case BuffType.HeatProtection:
+                    value = null;
+                    break;
+
+                case BuffType.Wet:
                     value = null;
                     break;
 

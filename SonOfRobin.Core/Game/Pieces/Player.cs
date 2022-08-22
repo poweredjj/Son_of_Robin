@@ -168,7 +168,10 @@ namespace SonOfRobin
             {
                 if (Preferences.DebugGodMode) return;
 
-                this.fatigue = Math.Min(Math.Max(value, 0), this.maxFatigue);
+                float fatigueDifference = value - this.fatigue;
+                if (fatigueDifference < 0 && this.buffEngine.HasBuff(BuffEngine.BuffType.Heat)) fatigueDifference *= 2;
+
+                this.fatigue = Math.Min(Math.Max(this.fatigue + fatigueDifference, 0), this.maxFatigue);
 
                 if (this.IsVeryTired)
                 {
@@ -651,6 +654,16 @@ namespace SonOfRobin
         {
             if (this.sprite.IsDeepInDangerZone && this.world.addAgressiveAnimals) Tutorials.ShowTutorialOnTheField(type: Tutorials.Type.DangerZone, world: this.world, ignoreDelay: true);
 
+            // adding and removing heat
+            if (this.world.currentUpdate % 65 == 0)
+            {
+                if (this.world.islandClock.CurrentPartOfDay == IslandClock.PartOfDay.Noon)
+                {
+                    this.buffEngine.AddBuff(buff: new BuffEngine.Buff(type: BuffEngine.BuffType.Heat, value: null), world: this.world);
+                }
+                else this.buffEngine.RemoveEveryBuffOfType(BuffEngine.BuffType.Heat);
+            }
+
             if (this.sprite.IsOnLava)
             {
                 this.world.hintEngine.ShowGeneralHint(type: HintEngine.Type.Lava, ignoreDelay: true);
@@ -686,6 +699,7 @@ namespace SonOfRobin
         public override void SM_PlayerControlledShooting()
         {
             this.ExpendEnergy(0.1f);
+            this.CheckGround();
             this.CheckLowHP();
 
             this.shootingPower = Math.Min(this.shootingPower + 1, maxShootingPower);
