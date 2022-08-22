@@ -337,7 +337,7 @@ namespace SonOfRobin
                             return;
                         }
 
-                        Craft.Recipe plantRecipe = new Craft.Recipe(pieceToCreate: PieceInfo.GetInfo(fruit.name).isSpawnedBy, ingredients: new Dictionary<PieceTemplate.Name, byte> { { fruit.name, 1 } }, isReversible: false, checkIfAlreadyAdded: false);
+                        Craft.Recipe plantRecipe = new Craft.Recipe(pieceToCreate: PieceInfo.GetInfo(fruit.name).isSpawnedBy, ingredients: new Dictionary<PieceTemplate.Name, byte> { { fruit.name, 1 } }, fatigue: 100, isReversible: false, checkIfAlreadyAdded: false);
 
                         Inventory.SetLayout(newLayout: Inventory.Layout.Toolbar, player: player);
                         plantRecipe.TryToProducePieces(player: player, showMessages: false);

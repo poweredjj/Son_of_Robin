@@ -18,7 +18,7 @@ namespace SonOfRobin
         public float maxStamina;
         public float stamina;
         private float fatigue;
-        public float maxFatigue;
+        public float MaxFatigue { get; private set; }
         public float shootingAngle;
         private int shootingPower;
         public SleepEngine sleepEngine;
@@ -171,7 +171,7 @@ namespace SonOfRobin
                 float fatigueDifference = value - this.fatigue;
                 if (fatigueDifference > 0 && this.buffEngine.HasBuff(BuffEngine.BuffType.Heat)) fatigueDifference *= 2;
 
-                this.fatigue = Math.Min(Math.Max(this.fatigue + fatigueDifference, 0), this.maxFatigue);
+                this.fatigue = Math.Min(Math.Max(this.fatigue + fatigueDifference, 0), this.MaxFatigue);
 
                 if (this.IsVeryTired)
                 {
@@ -187,7 +187,7 @@ namespace SonOfRobin
                 if (this.FatiguePercent > 0.95f) this.world.hintEngine.ShowGeneralHint(HintEngine.Type.VeryTired);
                 if (this.FatiguePercent < 0.8f) this.world.hintEngine.Enable(HintEngine.Type.VeryTired);
 
-                if (this.fatigue == this.maxFatigue) new Scheduler.Task(taskName: Scheduler.TaskName.SleepOutside, delay: 0, executeHelper: null);
+                if (this.fatigue == this.MaxFatigue) new Scheduler.Task(taskName: Scheduler.TaskName.SleepOutside, delay: 0, executeHelper: null);
             }
         }
         public float Stamina
@@ -218,7 +218,7 @@ namespace SonOfRobin
                 return fedPercent;
             }
         }
-        public float FatiguePercent { get { return (float)this.Fatigue / (float)this.maxFatigue; } }
+        public float FatiguePercent { get { return (float)this.Fatigue / (float)this.MaxFatigue; } }
         public bool IsVeryTired { get { return this.FatiguePercent > 0.75f; } }
         public bool CanWakeNow { get { return this.sleepingInsideShelter || this.FatiguePercent < 0.85f; } }
 
@@ -233,7 +233,7 @@ namespace SonOfRobin
             this.fedLevel = maxFedLevel;
             this.maxStamina = 300;
             this.stamina = maxStamina;
-            this.maxFatigue = 2000;
+            this.MaxFatigue = 2000;
             this.fatigue = 0;
             this.sleepEngine = SleepEngine.OutdoorSleepDry; // to be changed later
 
@@ -377,7 +377,7 @@ namespace SonOfRobin
             pieceData["player_stamina"] = this.stamina;
             pieceData["player_maxStamina"] = this.maxStamina;
             pieceData["player_fatigue"] = this.fatigue;
-            pieceData["player_maxFatigue"] = this.maxFatigue;
+            pieceData["player_maxFatigue"] = this.MaxFatigue;
             pieceData["player_sleepEngine"] = this.sleepEngine;
             pieceData["player_toolStorage"] = this.toolStorage.Serialize();
             pieceData["player_equipStorage"] = this.equipStorage.Serialize();
@@ -393,7 +393,7 @@ namespace SonOfRobin
             this.stamina = (float)pieceData["player_stamina"];
             this.maxStamina = (float)pieceData["player_maxStamina"];
             this.fatigue = (float)pieceData["player_fatigue"];
-            this.maxFatigue = (float)pieceData["player_maxFatigue"];
+            this.MaxFatigue = (float)pieceData["player_maxFatigue"];
             this.sleepEngine = (SleepEngine)pieceData["player_sleepEngine"];
             this.toolStorage = PieceStorage.Deserialize(storageData: pieceData["player_toolStorage"], world: this.world, storagePiece: this);
             this.equipStorage = PieceStorage.Deserialize(storageData: pieceData["player_equipStorage"], world: this.world, storagePiece: this);
@@ -805,7 +805,7 @@ namespace SonOfRobin
             if (this.sleepMode == SleepMode.WaitIndefinitely) sleepModeText = "Waiting indefinitely...";
 
             this.sleepEngine.Execute(player: this);
-            if (this.world.currentUpdate % 10 == 0) SonOfRobinGame.progressBar.TurnOn(curVal: (int)(this.maxFatigue - this.Fatigue), maxVal: (int)this.maxFatigue, text: sleepModeText);
+            if (this.world.currentUpdate % 10 == 0) SonOfRobinGame.progressBar.TurnOn(curVal: (int)(this.MaxFatigue - this.Fatigue), maxVal: (int)this.MaxFatigue, text: sleepModeText);
         }
 
         public void GoToSleep(SleepEngine sleepEngine, Vector2 zzzPos, List<BuffEngine.Buff> wakeUpBuffs)

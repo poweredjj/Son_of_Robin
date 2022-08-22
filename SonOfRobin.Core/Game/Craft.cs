@@ -18,17 +18,19 @@ namespace SonOfRobin
             public readonly PieceTemplate.Name pieceToCreate;
             public readonly int amountToCreate;
             public readonly Dictionary<PieceTemplate.Name, byte> ingredients;
+            public readonly float fatigue;
             public readonly List<PieceTemplate.Name> unlocksWhenCrafted;
             public readonly int craftCountToUnlock;
             public readonly bool isHidden;
             public readonly bool isReversible;
 
-            public Recipe(PieceTemplate.Name pieceToCreate, Dictionary<PieceTemplate.Name, byte> ingredients, bool isReversible = false, int amountToCreate = 1, bool isHidden = false, List<PieceTemplate.Name> unlocksWhenCrafted = null, int craftCountToUnlock = 1, bool checkIfAlreadyAdded = true)
+            public Recipe(PieceTemplate.Name pieceToCreate, Dictionary<PieceTemplate.Name, byte> ingredients, float fatigue, bool isReversible = false, int amountToCreate = 1, bool isHidden = false, List<PieceTemplate.Name> unlocksWhenCrafted = null, int craftCountToUnlock = 1, bool checkIfAlreadyAdded = true)
             {
                 this.pieceToCreate = pieceToCreate;
                 this.amountToCreate = amountToCreate;
                 this.id = $"{this.pieceToCreate}_{this.amountToCreate}";
                 this.ingredients = ingredients;
+                this.fatigue = fatigue;
                 this.isHidden = isHidden;
                 this.unlocksWhenCrafted = unlocksWhenCrafted == null ? new List<PieceTemplate.Name> { } : unlocksWhenCrafted;
                 this.craftCountToUnlock = craftCountToUnlock;
@@ -206,6 +208,8 @@ namespace SonOfRobin
                 }
 
                 // unlocking other recipes and showing messages          
+
+                world.player.Fatigue += this.fatigue;
 
                 if (showMessages) this.UnlockNewRecipesAndShowSummary(world);
 

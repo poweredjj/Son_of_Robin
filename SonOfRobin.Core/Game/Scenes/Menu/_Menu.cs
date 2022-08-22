@@ -295,6 +295,14 @@ namespace SonOfRobin
             nextMenuNoStartTransition = true;
             Menu rebuiltMenu = MenuTemplate.CreateMenuFromTemplate(templateName: this.templateName, executeHelper: this.templateExecuteHelper);
 
+            if (rebuiltMenu == null)
+            {
+                // if menu refuses to be rebuild, after changing game parameters (craft, for example)
+
+                this.Remove();
+                return;
+            }
+
             Entry activeEntry = this.ActiveEntry;
             for (int i = 0; i < rebuiltMenu.entryList.Count; i++)
             {
