@@ -6,28 +6,28 @@ namespace SonOfRobin
 {
     public class FpsCounter : Scene
     {
-        public struct FPSValueGroup
+        public struct FpsValueGroup
         {
             public readonly int fps;
             public readonly int length;
 
-            public FPSValueGroup(int fps, int length)
+            public FpsValueGroup(int fps, int length)
             {
                 this.fps = fps;
                 this.length = length;
             }
         }
 
-        public class FPSHistory
+        public class FpsHistory
         {
-            public int StoreCapacity { get; private set; }
+            public int StoreCapacity { get; set; }
             private readonly List<int> recordList;
 
-            public List<FPSValueGroup> FPSValueGroupList
+            public List<FpsValueGroup> FPSValueGroupList
             {
                 get
                 {
-                    var fpsValueGroupList = new List<FPSValueGroup>();
+                    var fpsValueGroupList = new List<FpsValueGroup>();
 
                     int lastVal = -1;
                     int length = 1;
@@ -40,7 +40,7 @@ namespace SonOfRobin
                         if (record == lastVal && i < listCount - 1) length++;
                         else
                         {
-                            if (lastVal != -1) fpsValueGroupList.Add(new FPSValueGroup(fps: lastVal, length: length));
+                            if (lastVal != -1) fpsValueGroupList.Add(new FpsValueGroup(fps: lastVal, length: length));
 
                             lastVal = record;
                             length = 1;
@@ -51,7 +51,7 @@ namespace SonOfRobin
                 }
             }
 
-            public FPSHistory(int storedValuesCount)
+            public FpsHistory(int storedValuesCount)
             {
                 this.StoreCapacity = storedValuesCount;
                 this.recordList = new List<int>();
@@ -60,7 +60,11 @@ namespace SonOfRobin
             public void AddRecord(int fps)
             {
                 this.recordList.Add(fps);
-                if (this.recordList.Count > this.StoreCapacity) this.recordList.RemoveAt(0);
+                while (true)
+                {
+                    if (this.recordList.Count > this.StoreCapacity) this.recordList.RemoveAt(0);
+                    else break;
+                }
             }
         }
 
@@ -77,7 +81,7 @@ namespace SonOfRobin
             { -1, Color.Red },
             };
 
-        private readonly FPSHistory fpsHistory = new FPSHistory(70);
+        private FpsHistory fpsHistory;
         private int counterValue;
         private string CounterText { get { return $"FPS {this.counterValue}"; } }
 
@@ -98,8 +102,14 @@ namespace SonOfRobin
 
         public FpsCounter() : base(inputType: InputTypes.None, priority: -2, blocksUpdatesBelow: false, alwaysUpdates: true, alwaysDraws: true, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty)
         {
+            this.fpsHistory = new FpsHistory(Preferences.FpsCounterGraphLength);
             this.AdaptToNewSize();
             this.transManager.AddTransition(this.GetTransition(inTrans: true));
+        }
+
+        public void ResizeFpsHistory(int newStoredValuesCount)
+        {
+            this.fpsHistory.StoreCapacity = newStoredValuesCount;
         }
 
         public override void Remove()
@@ -169,19 +179,28 @@ namespace SonOfRobin
                 int oneEntryWidth = this.graphRect.Width / this.fpsHistory.StoreCapacity;
 
                 int recordCounter = 0;
-                foreach (FPSValueGroup fpsValueGroup in this.fpsHistory.FPSValueGroupList)
+                int lastYOffset = 0;
+                foreach (FpsValueGroup fpsValueGroup in this.fpsHistory.FPSValueGroupList)
                 {
                     double percentage = (double)fpsValueGroup.fps / 60d;
                     int barYOffset = this.graphRect.Height - ((int)(this.graphRect.Height * percentage));
 
-                    Rectangle graphBarRect = new Rectangle(x: this.graphRect.X + (recordCounter * oneEntryWidth), y: this.graphRect.Y + barYOffset, width: oneEntryWidth * fpsValueGroup.length, height: 1);
-                    SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, graphBarRect, Color.White * this.viewParams.drawOpacity);
+                    int minOffset = Math.Min(barYOffset, lastYOffset);
+                    int maxOffset = Math.Max(barYOffset, lastYOffset);
+
+                    // vertical line - connecting 2 different values
+                    Rectangle graphBarVertRect = new Rectangle(x: this.graphRect.X + (recordCounter * oneEntryWidth), y: this.graphRect.Y + minOffset, width: oneEntryWidth, height: maxOffset - minOffset + 1);
+                    SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, graphBarVertRect, Color.White * this.viewParams.drawOpacity);
+
+                    // horizontal line - connecting the same aggregated values
+                    Rectangle graphBarHorizRect = new Rectangle(x: this.graphRect.X + (recordCounter * oneEntryWidth), y: this.graphRect.Y + barYOffset, width: oneEntryWidth * fpsValueGroup.length, height: 1);
+                    SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, graphBarHorizRect, Color.White * this.viewParams.drawOpacity);
 
                     recordCounter += fpsValueGroup.length;
+                    lastYOffset = barYOffset;
                 }
             }
 
         }
-
     }
 }
