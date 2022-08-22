@@ -6,12 +6,54 @@ namespace SonOfRobin
 {
     public class FpsCounter : Scene
     {
+        public class FPSHistory
+        {
+            public int StoreCapacity { get; private set; }
+            private readonly List<int> recordList;
+
+            public Dictionary<int, int> ValuesAndLengthDict
+            {
+                get
+                {
+                    var valuesAndLengthDict = new Dictionary<int, int>();
+
+                    int lastVal = -1;
+                    int length = 1;
+                    foreach (int record in this.recordList)
+                    {
+                        if (record == lastVal) length++;
+                        else
+                        {
+                            if (lastVal != -1) valuesAndLengthDict[lastVal] = length;
+
+                            lastVal = record;
+                            length = 0;
+                        }
+                    }
+                    valuesAndLengthDict[lastVal] = length;
+
+                    return valuesAndLengthDict;
+                }
+            }
+
+            public FPSHistory(int storedValuesCount)
+            {
+                this.StoreCapacity = storedValuesCount;
+                this.recordList = new List<int>();
+            }
+
+            public void AddRecord(int fps)
+            {
+                this.recordList.Add(fps);
+                if (this.recordList.Count > this.StoreCapacity) this.recordList.RemoveAt(0);
+            }
+        }
+
         private Rectangle bgRect;
         private Rectangle textRect;
         private Rectangle graphRect;
         private static readonly int outerMargin = SonOfRobinGame.platform == Platform.Mobile ? 12 : 5;
         private static readonly int innerMargin = 3;
-        private static readonly int historyLength = 70;
 
         private static readonly Dictionary<int, Color> colorDict = new Dictionary<int, Color> {
             { 40, Color.White },
@@ -20,11 +62,9 @@ namespace SonOfRobin
             { -1, Color.Red },
             };
 
-        private readonly List<double> percentageHistory = new List<double>();
-
+        private readonly FPSHistory fpsHistory = new FPSHistory(70);
         private int counterValue;
         private string CounterText { get { return $"FPS {this.counterValue}"; } }
-        private double CounterPercentage { get { return Math.Min(this.counterValue / 60d, 1d); } }
 
         private Color CounterColor
         {
@@ -56,8 +96,7 @@ namespace SonOfRobin
         public override void Update(GameTime gameTime)
         {
             this.counterValue = (int)SonOfRobinGame.fps.FPS;
-            this.percentageHistory.Add(this.CounterPercentage);
-            if (this.percentageHistory.Count > historyLength) this.percentageHistory.RemoveAt(0);
+            this.fpsHistory.AddRecord(this.counterValue);
         }
 
         private Transition GetTransition(bool inTrans)
@@ -79,7 +118,7 @@ namespace SonOfRobin
             int height = (int)(width * 0.3);
 
             this.textRect = new Rectangle(x: 0, y: 0, width: width, height: height);
-            this.graphRect = new Rectangle(x: this.textRect.X, y: this.textRect.Y, width: Preferences.FpsCounterShowGraph ? historyLength : 0, height: this.textRect.Height);
+            this.graphRect = new Rectangle(x: this.textRect.X, y: this.textRect.Y, width: Preferences.FpsCounterShowGraph ? this.fpsHistory.StoreCapacity : 0, height: this.textRect.Height);
             this.textRect.X += this.graphRect.Width;
 
             this.bgRect = new Rectangle(x: this.graphRect.X, y: this.graphRect.Y, width: textRect.Width + graphRect.Width, height: this.graphRect.Height);
@@ -112,15 +151,21 @@ namespace SonOfRobin
 
             if (Preferences.FpsCounterShowGraph)
             {
-                int oneEntryWidth = this.graphRect.Width / historyLength;
-                for (int i = 0; i < this.percentageHistory.Count; i++)
+                int oneEntryWidth = this.graphRect.Width / this.fpsHistory.StoreCapacity;
+
+                int recordCounter = 0;
+                foreach (var kvp in this.fpsHistory.ValuesAndLengthDict)
                 {
-                    double percentage = this.percentageHistory[i];
+                    int fps = kvp.Key;
+                    int length = kvp.Value;
+
+                    double percentage = (double)fps / 60d;
                     int barYOffset = this.graphRect.Height - ((int)(this.graphRect.Height * percentage));
 
-                    Rectangle graphBarRect = new Rectangle(x: this.graphRect.X + (i * oneEntryWidth), y: this.graphRect.Y + barYOffset, width: oneEntryWidth, height: 1);
-
+                    Rectangle graphBarRect = new Rectangle(x: this.graphRect.X + (recordCounter * oneEntryWidth), y: this.graphRect.Y + barYOffset, width: oneEntryWidth * length, height: 1);
                     SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, graphBarRect, Color.White * this.viewParams.drawOpacity);
+
+                    recordCounter += length;
                 }
             }
 
