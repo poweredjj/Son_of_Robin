@@ -6,7 +6,7 @@ namespace SonOfRobin
 {
     public class Tutorials
     {
-        public enum Type { BreakThing, Equip, BuildWorkshop, GetWood, Mine, Interact, PickUp, Hit, Craft, KeepingAnimalsAway, ShootProjectile, Cook, ShakeFruit, AnimalAttacking, DangerZone, Torch, Fireplace, TooDarkToReadMap, TooDarkToSeeAnything }
+        public enum Type { BreakThing, Equip, BuildWorkshop, GetWood, Mine, Interact, PickUp, Hit, Craft, KeepingAnimalsAway, ShootProjectile, Cook, ShakeFruit, AnimalAttacking, DangerZone, Torch, Fireplace, TooDarkToReadMap, TooDarkToSeeAnything, Heat }
 
         private static readonly HintMessage.BoxType messageHeaderType = HintMessage.BoxType.BlueBox;
         private static readonly HintMessage.BoxType messageTextType = HintMessage.BoxType.LightBlueBox;
@@ -167,7 +167,15 @@ namespace SonOfRobin
                 messages: new List<HintMessage> {
                 new HintMessage(text: "At night, you cannot:\n-pick up any items ||\n-use most tools ||\n-craft ||\n-use other stuff |||", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.WoodLogRegular), PieceInfo.GetTexture(PieceTemplate.Name.Stone), PieceInfo.GetTexture(PieceTemplate.Name.AxeStone), PieceInfo.GetTexture(PieceTemplate.Name.PickaxeStone), PieceInfo.GetTexture(PieceTemplate.Name.WorkshopBasic), PieceInfo.GetTexture(PieceTemplate.Name.Anvil), PieceInfo.GetTexture(PieceTemplate.Name.ChestIron), PieceInfo.GetTexture(PieceTemplate.Name.CookingPot), PieceInfo.GetTexture(PieceTemplate.Name.UpgradeBench) }, boxType: messageTextType),
                 new HintMessage(text: "However, you can still do these things\nif you're near to a light source | or have a torch |.", imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.Flame].texture, PieceInfo.GetTexture(PieceTemplate.Name.TorchBig) }, boxType: messageTextType)
-    });
+                });
+
+            new Tutorial(type: Type.Heat, name: "heat", title: "Heat.",
+                messages: new List<HintMessage> {
+                new HintMessage(text: "It is getting really hot.\nI feel dizzy...", boxType: HintMessage.BoxType.Dialogue, fieldOnly: true),
+                new HintMessage(text: "At noon, heat makes you get tired much faster.", boxType: messageTextType),
+                new HintMessage(text: "You can cool yourself for a while by entering water |.",imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.WaterDrop].texture }, boxType: messageTextType),
+                new HintMessage(text: "The best solution is to wear equipment, that protects from heat |.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.HatSimple) }, boxType: messageTextType)
+                });
 
             new Tutorial(type: Type.Equip, name: "using equipment", title: "Using equipment.",
                  messages: new List<HintMessage> {
