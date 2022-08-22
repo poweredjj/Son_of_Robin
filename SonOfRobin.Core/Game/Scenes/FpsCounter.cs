@@ -9,8 +9,9 @@ namespace SonOfRobin
         private Rectangle bgRect;
         private Rectangle textRect;
         private Rectangle graphRect;
-        private static readonly int margin = 2;
-        private static readonly int historyLength = 60;
+        private static readonly int outerMargin = SonOfRobinGame.platform == Platform.Mobile ? 12 : 5;
+        private static readonly int innerMargin = 3;
+        private static readonly int historyLength = 70;
 
         private static readonly Dictionary<int, Color> colorDict = new Dictionary<int, Color> {
             { 40, Color.White },
@@ -86,12 +87,15 @@ namespace SonOfRobin
             this.viewParams.Width = bgRect.Width;
             this.viewParams.Height = textRect.Height;
 
-            if (Preferences.FpsCounterPosRight) this.viewParams.PutViewAtTheRight(margin: margin);
-            else this.viewParams.PutViewAtTheLeft(margin: margin);
+            if (Preferences.FpsCounterPosRight) this.viewParams.PutViewAtTheRight(margin: outerMargin);
+            else this.viewParams.PutViewAtTheLeft(margin: outerMargin);
 
-            this.viewParams.PutViewAtTheTop(margin: margin);
+            this.viewParams.PutViewAtTheTop(margin: outerMargin);
 
-            bgRect.Inflate(2, 2);
+            bgRect.Width += innerMargin + outerMargin;
+            bgRect.Height += innerMargin + outerMargin;
+            bgRect.X -= Preferences.FpsCounterPosRight ? innerMargin : outerMargin;
+            bgRect.Y -= outerMargin;
         }
 
         public override void Draw()
