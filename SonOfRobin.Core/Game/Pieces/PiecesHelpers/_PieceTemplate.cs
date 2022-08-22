@@ -2430,7 +2430,7 @@ namespace SonOfRobin
 
                         var buffList = new List<BuffEngine.Buff>
                         {
-                            // TODO add heat protection buff
+                           new BuffEngine.Buff(type: BuffEngine.BuffType.HeatProtection, value: null)
                         };
 
                         return new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HatSimple, blocksMovement: false, category: BoardPiece.Category.Flesh,

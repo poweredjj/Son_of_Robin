@@ -179,7 +179,9 @@ namespace SonOfRobin
             {
                 new Craft.Recipe(pieceToCreate: PieceTemplate.Name.Rope, amountToCreate: 2, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Leather, 1 }}, isReversible: false ),
 
-                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.Map, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Leather, 1 }}, isReversible: true),
+                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.Map, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Leather, 1 }}, isReversible: false),
+
+                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.HatSimple, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Leather, 2 }, { PieceTemplate.Name.Rope, 1 }}, isReversible: false),
 
                 new Craft.Recipe(pieceToCreate: PieceTemplate.Name.BackpackSmall, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Leather, 4 }, { PieceTemplate.Name.Rope, 2 }}, isReversible: false, unlocksWhenCrafted: new List<PieceTemplate.Name> { PieceTemplate.Name.BackpackMedium }),
 

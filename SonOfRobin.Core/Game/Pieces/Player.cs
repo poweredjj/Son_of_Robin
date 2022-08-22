@@ -169,7 +169,7 @@ namespace SonOfRobin
                 if (Preferences.DebugGodMode) return;
 
                 float fatigueDifference = value - this.fatigue;
-                if (fatigueDifference < 0 && this.buffEngine.HasBuff(BuffEngine.BuffType.Heat)) fatigueDifference *= 2;
+                if (fatigueDifference > 0 && this.buffEngine.HasBuff(BuffEngine.BuffType.Heat)) fatigueDifference *= 2;
 
                 this.fatigue = Math.Min(Math.Max(this.fatigue + fatigueDifference, 0), this.maxFatigue);
 
@@ -663,6 +663,8 @@ namespace SonOfRobin
                 }
                 else this.buffEngine.RemoveEveryBuffOfType(BuffEngine.BuffType.Heat);
             }
+
+            if (this.sprite.IsInWater) this.buffEngine.AddBuff(buff: new BuffEngine.Buff(type: BuffEngine.BuffType.Wet, value: null, autoRemoveDelay: 30 * 60 * 1), world: this.world);
 
             if (this.sprite.IsOnLava)
             {
