@@ -666,7 +666,7 @@ namespace SonOfRobin
                 if (this.buffEngine.HasBuff(BuffEngine.BuffType.Heat)) Tutorials.ShowTutorialOnTheField(type: Tutorials.Type.Heat, world: this.world, ignoreDelay: true);
             }
 
-            if (this.sprite.IsInWater) this.buffEngine.AddBuff(buff: new BuffEngine.Buff(type: BuffEngine.BuffType.Wet, value: null, autoRemoveDelay: 30 * 60 * 1), world: this.world);
+            if (this.sprite.IsInWater) this.buffEngine.AddBuff(buff: new BuffEngine.Buff(type: BuffEngine.BuffType.Wet, value: null, autoRemoveDelay: 40 * 60 * 1), world: this.world);
 
             if (this.sprite.IsOnLava)
             {
