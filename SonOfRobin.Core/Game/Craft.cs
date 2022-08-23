@@ -211,7 +211,7 @@ namespace SonOfRobin
                 {
                     world.islandClock.Advance(amount: this.GetRealDuration(world.craftStats), ignorePause: true);
                     world.player.Fatigue += this.GetRealFatigue(world.craftStats);
-                    world.player.Fatigue = Math.Min(world.player.Fatigue, world.player.MaxFatigue - 10); // to avoid falling asleep just after crafting
+                    world.player.Fatigue = Math.Min(world.player.Fatigue, world.player.MaxFatigue - 20); // to avoid falling asleep just after crafting
                 }
 
                 // crafting
