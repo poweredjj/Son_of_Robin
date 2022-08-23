@@ -20,12 +20,16 @@ namespace SonOfRobin
             public readonly Dictionary<PieceTemplate.Name, byte> ingredients;
             public readonly float fatigue;
             public readonly int duration;
+            public readonly int maxLevel;
+            public readonly int craftCountToLevelUp;
+            public readonly float maxLevelFatigueMultiplier;
+            public readonly float maxLevelDurationMultiplier;
             public readonly List<PieceTemplate.Name> unlocksWhenCrafted;
             public readonly int craftCountToUnlock;
             public readonly bool isHidden;
             public readonly bool isReversible;
 
-            public Recipe(PieceTemplate.Name pieceToCreate, Dictionary<PieceTemplate.Name, byte> ingredients, float fatigue, int duration = -1, bool isReversible = false, int amountToCreate = 1, bool isHidden = false, List<PieceTemplate.Name> unlocksWhenCrafted = null, int craftCountToUnlock = 1, bool checkIfAlreadyAdded = true)
+            public Recipe(PieceTemplate.Name pieceToCreate, Dictionary<PieceTemplate.Name, byte> ingredients, float fatigue, int duration = -1, bool isReversible = false, int amountToCreate = 1, bool isHidden = false, List<PieceTemplate.Name> unlocksWhenCrafted = null, int craftCountToUnlock = 1, bool checkIfAlreadyAdded = true, int maxLevel = 3, int craftCountToLevelUp = 3, float maxLevelFatigueMultiplier = 0.6f, float maxLevelDurationMultiplier = 0.6f)
             {
                 this.pieceToCreate = pieceToCreate;
                 this.amountToCreate = amountToCreate;
@@ -33,6 +37,10 @@ namespace SonOfRobin
                 this.ingredients = ingredients;
                 this.fatigue = fatigue;
                 this.duration = duration == -1 ? (int)(this.fatigue * 10) : duration; // if duration was not specified, it will be calculated from fatigue
+                this.maxLevel = maxLevel;
+                this.craftCountToLevelUp = craftCountToLevelUp;
+                this.maxLevelFatigueMultiplier = maxLevelFatigueMultiplier;
+                this.maxLevelDurationMultiplier = maxLevelDurationMultiplier;
                 this.isHidden = isHidden;
                 this.unlocksWhenCrafted = unlocksWhenCrafted == null ? new List<PieceTemplate.Name> { } : unlocksWhenCrafted;
                 this.craftCountToUnlock = craftCountToUnlock;
@@ -40,6 +48,9 @@ namespace SonOfRobin
                 if (this.isReversible) Yield.antiCraftRecipes[this.pieceToCreate] = this;
 
                 if (checkIfAlreadyAdded && recipeByID.ContainsKey(this.id)) throw new ArgumentException($"Recipe with ID {this.id} has already been added.");
+                if (this.maxLevelFatigueMultiplier > 1) throw new ArgumentException($"Max level fatigue multiplier ({this.maxLevelFatigueMultiplier}) cannot be greater than 1.");
+                if (this.maxLevelDurationMultiplier > 1) throw new ArgumentException($"Max level duration multiplier ({this.maxLevelDurationMultiplier}) cannot be greater than 1.");
+                if (this.maxLevel <= 1) throw new ArgumentException($"Max level ({this.maxLevel}) cannot be less than 1.");
                 recipeByID[this.id] = this;
             }
 
@@ -254,6 +265,11 @@ namespace SonOfRobin
                         }
                     }
                 }
+
+                float recipeLevel = world.craftStats.GetRecipeLevel(this);
+                bool recipeLevelUp = recipeLevel > 0 && recipeLevel == Math.Floor(recipeLevel);
+
+                if (recipeLevelUp) taskChain.Add(new HintMessage(text: $"| recipe level up!\n{(int)recipeLevel} -> {(int)recipeLevel + 1}", imageList: new List<Texture2D> { PieceInfo.GetInfo(this.pieceToCreate).texture }, boxType: HintMessage.BoxType.LightBlueBox, delay: 0, blockInput: false, animate: true, useTransition: true, startingSound: SoundData.Name.Notification1).ConvertToTask());
 
                 if (unlockedPieces.Count > 0)
                 {

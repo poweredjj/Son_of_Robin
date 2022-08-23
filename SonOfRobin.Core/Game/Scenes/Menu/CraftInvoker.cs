@@ -170,12 +170,14 @@ namespace SonOfRobin
         }
         private void UpdateInfoText()
         {
-            PieceInfo.Info pieceInfo = PieceInfo.GetInfo(recipe.pieceToCreate);
+            World world = World.GetTopWorld();
 
-            bool canBeCrafted = recipe.CheckIfStorageContainsAllIngredients(storageList);
+            PieceInfo.Info pieceInfo = PieceInfo.GetInfo(this.recipe.pieceToCreate);
+
+            bool canBeCrafted = this.recipe.CheckIfStorageContainsAllIngredients(storageList);
 
             var entryList = new List<InfoWindow.TextEntry> {
-                new InfoWindow.TextEntry(imageList: new List<Texture2D> { PieceInfo.GetInfo(recipe.pieceToCreate).texture }, text:$"|  {pieceInfo.readableName}" , color: Color.White, scale: 1.5f, animate: true, charsPerFrame: 2),
+                new InfoWindow.TextEntry(imageList: new List<Texture2D> { PieceInfo.GetInfo(this.recipe.pieceToCreate).texture }, text:$"|  {pieceInfo.readableName}" , color: Color.White, scale: 1.5f, animate: true, charsPerFrame: 2),
                 new InfoWindow.TextEntry(text: pieceInfo.description, color: Color.White, animate: true, charsPerFrame: 2)};
 
             if (pieceInfo.buffList != null)
@@ -185,7 +187,7 @@ namespace SonOfRobin
             }
             if (!canBeCrafted)
             {
-                var missingPiecesDict = PieceStorage.CheckMultipleStoragesForSpecifiedPieces(storageList: this.storageList, quantityByPiece: recipe.ingredients);
+                var missingPiecesDict = PieceStorage.CheckMultipleStoragesForSpecifiedPieces(storageList: this.storageList, quantityByPiece: this.recipe.ingredients);
 
                 var ingredientsTextLines = new List<string>();
                 var missingIngredientsImages = new List<Texture2D>();
@@ -199,6 +201,15 @@ namespace SonOfRobin
 
                 entryList.Add(new InfoWindow.TextEntry(text: "Missing ingredients:\n" + String.Join("\n", ingredientsTextLines), color: Color.DarkOrange, scale: 1f, imageList: missingIngredientsImages, animate: true, charsPerFrame: 2));
             }
+
+            int recipeLevelCurrent = (int)world.craftStats.GetRecipeLevel(this.recipe);
+            int recipeLevelMax = this.recipe.maxLevel;
+
+            if (recipeLevelCurrent == recipeLevelMax)
+            {
+                entryList.Add(new InfoWindow.TextEntry(text: "Level master |", imageList: new List<Texture2D> { PieceInfo.GetInfo(PieceTemplate.Name.DebrisStar).texture }, color: Color.Gold, scale: 1f, animate: true, charsPerFrame: 1));
+            }
+            else entryList.Add(new InfoWindow.TextEntry(text: $"Level {recipeLevelCurrent + 1}/{recipeLevelMax + 1}", color: Color.LimeGreen, scale: 1f, animate: true, charsPerFrame: 1));
 
             this.infoTextList = entryList;
         }

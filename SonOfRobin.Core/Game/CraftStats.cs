@@ -120,6 +120,13 @@ namespace SonOfRobin
             this.DisplaySummary(collectionToShow: this.usedIngredients, header: "Used ingredients");
         }
 
+        public float GetRecipeLevel(Craft.Recipe recipe)
+        {
+            int craftCount = this.HowManyTimesHasBeenCrafted(recipe);
+
+            return (float)craftCount / (float)recipe.craftCountToLevelUp;
+        }
+
         private void DisplaySummary(Dictionary<PieceTemplate.Name, int> collectionToShow, string header)
         {
             if (collectionToShow.Keys.Count == 0)

@@ -272,9 +272,11 @@ namespace SonOfRobin
             return sceneStack.Where(scene => scene.GetType().Name == type.Name && !scene.transManager.IsEnding).OrderByDescending(o => o.priority).ToList();
         }
 
-        public static void RemoveAllScenesOfType(Type type)
+        public static void RemoveAllScenesOfType(Type type, bool includeWaiting = true)
         {
             foreach (Scene scene in GetAllScenesOfType(type: type)) scene.Remove();
+
+            if (includeWaiting) waitingScenes = waitingScenes.Where(scene => scene.GetType() != type).ToList();
         }
 
         public static Scene GetTopSceneOfType(Type type)
