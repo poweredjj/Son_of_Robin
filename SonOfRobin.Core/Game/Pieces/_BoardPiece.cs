@@ -10,7 +10,7 @@ namespace SonOfRobin
         public enum State
         {
             Empty,
-            Frozen,
+            PlayerWaitForBuilding,
 
             PlayerControlledWalking,
             PlayerControlledShooting,
@@ -542,9 +542,9 @@ namespace SonOfRobin
                         return;
                     }
 
-                case State.Frozen:
+                case State.PlayerWaitForBuilding:
                     {
-                        this.SM_Frozen();
+                        this.SM_PlayerWaitForBuilding();
                         return;
                     }
 
@@ -634,11 +634,8 @@ namespace SonOfRobin
             return true;
         }
 
-        public virtual void SM_Frozen()
-        {
-            // needs to be updated from the outside
-        }
-
+        public virtual void SM_PlayerWaitForBuilding()
+        { throw new DivideByZeroException("This method should not be executed."); }
         public virtual void SM_PlayerControlledWalking()
         { throw new DivideByZeroException("This method should not be executed."); }
         public virtual void SM_PlayerControlledShooting()

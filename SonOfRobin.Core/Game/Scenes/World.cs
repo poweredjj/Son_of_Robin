@@ -24,6 +24,7 @@ namespace SonOfRobin
         public bool worldCreationInProgress;
         private bool plantsProcessing;
         private readonly static int initialPiecesCreationFramesTotal = 20;
+        public readonly static int buildDuration = (int)(60 * 2.5);
         private int initialPiecesCreationFramesLeft;
         public readonly DateTime creationStart;
         public DateTime creationEnd;
@@ -992,8 +993,8 @@ namespace SonOfRobin
             this.tipsLayout = ControlTips.TipsLayout.WorldBuild;
             this.player.activeState = BoardPiece.State.PlayerControlledBuilding;
 
-            player.world.stateMachineTypesManager.DisableMultiplier();
-            player.world.stateMachineTypesManager.SetOnlyTheseTypes(enabledTypes: new List<Type> { typeof(Player) }, everyFrame: true, nthFrame: true);
+            this.stateMachineTypesManager.DisableMultiplier();
+            this.stateMachineTypesManager.SetOnlyTheseTypes(enabledTypes: new List<Type> { typeof(Player) }, everyFrame: true, nthFrame: true);
             this.islandClock.Pause();
 
             Scene craftMenu = GetTopSceneOfType(typeof(Menu));
@@ -1003,6 +1004,7 @@ namespace SonOfRobin
             this.player.recipeToBuild = recipe;
             this.player.simulatedPieceToBuild = PieceTemplate.CreateAndPlaceOnBoard(templateName: recipe.pieceToCreate, world: this, position: this.player.sprite.position, ignoreCollisions: true); // "template" piece should be placed - collisions doesn't matter...
             this.player.simulatedPieceToBuild.sprite.MoveToClosestFreeSpot(this.player.sprite.position); // ...but the starting position should be correct for building, if possible
+            this.player.buildDurationForOneFrame = recipe.duration / buildDuration;
         }
 
         public void BuildPiece()
@@ -1011,7 +1013,7 @@ namespace SonOfRobin
 
             this.touchLayout = TouchLayout.Empty;
             this.tipsLayout = ControlTips.TipsLayout.Empty;
-            this.player.activeState = BoardPiece.State.Frozen;
+            this.player.activeState = BoardPiece.State.PlayerWaitForBuilding;
 
             BoardPiece builtPiece = this.player.recipeToBuild.TryToProducePieces(player: this.player, showMessages: false)[0];
 
@@ -1031,8 +1033,6 @@ namespace SonOfRobin
 
             this.player.simulatedPieceToBuild.Destroy();
             this.player.simulatedPieceToBuild = null;
-
-            int buildDuration = (int)(60 * 2.5);
 
             builtPiece.sprite.opacity = 0f;
             builtPiece.sprite.opacityFade = new OpacityFade(sprite: builtPiece.sprite, destOpacity: 1f, duration: buildDuration);

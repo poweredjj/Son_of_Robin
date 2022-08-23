@@ -158,6 +158,8 @@ namespace SonOfRobin
                     return craftedPieces;
                 }
 
+                if (canBePickedUp) world.islandClock.Advance(amount: this.duration, ignorePause: true); // build mode advances clock gradually, not all at once
+
                 // crafting
 
                 world.craftStats.AddRecipe(recipe: this, craftCount: 1);
@@ -212,7 +214,6 @@ namespace SonOfRobin
                 // unlocking other recipes and showing messages          
 
                 world.player.Fatigue += this.fatigue;
-                world.islandClock.Advance(amount: this.duration, ignorePause: true);
 
                 if (showMessages) this.UnlockNewRecipesAndShowSummary(world);
 

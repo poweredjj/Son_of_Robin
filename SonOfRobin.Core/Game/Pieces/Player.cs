@@ -25,6 +25,7 @@ namespace SonOfRobin
         public Vector2 pointWalkTarget;
         public Craft.Recipe recipeToBuild;
         public BoardPiece simulatedPieceToBuild;
+        public int buildDurationForOneFrame;
         public override bool ShowStatBars { get { return true; } }
 
         private bool ShootingModeInputPressed
@@ -488,6 +489,13 @@ namespace SonOfRobin
                 if (canBuildHere) this.world.BuildPiece();
                 else new TextWindow(text: $"|  {Helpers.FirstCharToUpperCase(this.simulatedPieceToBuild.readableName)} can't be placed here.", imageList: new List<Texture2D> { this.simulatedPieceToBuild.sprite.frame.texture }, textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false, checkForDuplicate: true, autoClose: false, inputType: Scene.InputTypes.Normal, priority: 1, blocksUpdatesBelow: false, startingSound: SoundData.Name.Error);
             }
+        }
+
+        public override void SM_PlayerWaitForBuilding()
+        {
+            // needs to be updated from the outside
+
+            this.world.islandClock.Advance(amount: this.buildDurationForOneFrame, ignorePause: true);
         }
 
         public override void SM_PlayerControlledGhosting()
