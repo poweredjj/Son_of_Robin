@@ -16,6 +16,7 @@ namespace SonOfRobin
         }
 
         public static List<Scene> sceneStack = new List<Scene> { };
+        public static List<Scene> waitingScenes = new List<Scene> { };
 
         public readonly int priority;
         public bool HasBeenRemoved { get; private set; }
@@ -24,6 +25,7 @@ namespace SonOfRobin
         private readonly bool hidesSameScenesBelow;
 
         public bool soundActive;
+        public readonly SoundData.Name startingSound;
         public bool drawActive;
         public bool updateActive;
         public bool inputActive;
@@ -47,13 +49,18 @@ namespace SonOfRobin
         public static DateTime startDrawTime;
         public static TimeSpan UpdateTimeElapsed { get { return DateTime.Now - startUpdateTime; } }
         public static TimeSpan DrawTimeElapsed { get { return DateTime.Now - startDrawTime; } }
+        public InputTypes InputType { get; set; }
 
-        private InputTypes inputType;
-
-        public InputTypes InputType
+        private bool OtherScenesOfThisTypePresent
         {
-            get { return inputType; }
-            set { this.inputType = value; }
+            get
+            {
+                foreach (Scene scene in GetAllScenesOfType(this.GetType()))
+                {
+                    if (scene.id != this.id) return true;
+                }
+                return false;
+            }
         }
 
         public static List<Scene> UpdateStack
@@ -131,7 +138,7 @@ namespace SonOfRobin
             }
         }
 
-        public Scene(InputTypes inputType, TouchLayout touchLayout, ControlTips.TipsLayout tipsLayout, int priority = 1, bool blocksUpdatesBelow = false, bool blocksDrawsBelow = false, bool alwaysUpdates = false, bool alwaysDraws = false, bool hidesSameScenesBelow = false, SoundData.Name startingSound = SoundData.Name.Empty)
+        public Scene(InputTypes inputType, TouchLayout touchLayout, ControlTips.TipsLayout tipsLayout, int priority = 1, bool blocksUpdatesBelow = false, bool blocksDrawsBelow = false, bool alwaysUpdates = false, bool alwaysDraws = false, bool hidesSameScenesBelow = false, SoundData.Name startingSound = SoundData.Name.Empty, bool waitForOtherScenesOfTypeToEnd = false)
         {
             this.viewParams = new ViewParams();
             this.transManager = new TransManager(scene: this);
@@ -145,6 +152,7 @@ namespace SonOfRobin
             this.updateActive = true;
             this.drawActive = true;
             this.soundActive = true;
+            this.startingSound = startingSound;
             this.touchLayout = touchLayout;
             this.tipsLayout = tipsLayout;
 
@@ -153,8 +161,13 @@ namespace SonOfRobin
             this.alwaysDraws = alwaysDraws;
             this.id = Helpers.GetUniqueHash();
 
-            Sound.QuickPlay(startingSound);
+            if (waitForOtherScenesOfTypeToEnd && this.OtherScenesOfThisTypePresent) waitingScenes.Add(this);
+            else this.Activate();
+        }
 
+        private void Activate()
+        {
+            Sound.QuickPlay(this.startingSound);
             sceneStack.Add(this);
             UpdateInputActiveTipsTouch(); // to avoid one frame delay in updating tips and touch overlay
         }
@@ -373,6 +386,24 @@ namespace SonOfRobin
             UpdateAllTransitions();
 
             if (sceneStack.Count == 0) throw new DivideByZeroException("SceneStack is empty.");
+
+            CheckWaitingScenes();
+        }
+
+        private static void CheckWaitingScenes()
+        {
+            var restoredScenesIDs = new List<string>();
+
+            foreach (Scene scene in waitingScenes)
+            {
+                if (!scene.OtherScenesOfThisTypePresent)
+                {
+                    scene.Activate();
+                    restoredScenesIDs.Add(scene.id);
+                }
+            }
+
+            waitingScenes = waitingScenes.Where(scene => !restoredScenesIDs.Contains(scene.id)).ToList();
         }
 
         public static void DrawAllScenesInStack()

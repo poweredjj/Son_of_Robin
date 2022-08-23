@@ -357,7 +357,9 @@ namespace SonOfRobin
 
             if (Keyboard.HasBeenPressed(Keys.F5))
             {
-                // not used
+                new TextWindow(text: "Text window 1", animate: false, useTransition: false, bgColor: Color.DeepSkyBlue, textColor: Color.White, startingSound: SoundData.Name.Tick);
+                new TextWindow(text: "Text window 2", animate: false, useTransition: false, bgColor: Color.DeepSkyBlue, textColor: Color.White, startingSound: SoundData.Name.ChestOpen);
+                new TextWindow(text: "Text window 3", animate: false, useTransition: false, bgColor: Color.DeepSkyBlue, textColor: Color.White, startingSound: SoundData.Name.ChestClose);
             }
 
             if (Keyboard.HasBeenPressed(Keys.F6))

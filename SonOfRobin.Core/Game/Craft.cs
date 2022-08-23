@@ -19,18 +19,20 @@ namespace SonOfRobin
             public readonly int amountToCreate;
             public readonly Dictionary<PieceTemplate.Name, byte> ingredients;
             public readonly float fatigue;
+            public readonly int duration;
             public readonly List<PieceTemplate.Name> unlocksWhenCrafted;
             public readonly int craftCountToUnlock;
             public readonly bool isHidden;
             public readonly bool isReversible;
 
-            public Recipe(PieceTemplate.Name pieceToCreate, Dictionary<PieceTemplate.Name, byte> ingredients, float fatigue, bool isReversible = false, int amountToCreate = 1, bool isHidden = false, List<PieceTemplate.Name> unlocksWhenCrafted = null, int craftCountToUnlock = 1, bool checkIfAlreadyAdded = true)
+            public Recipe(PieceTemplate.Name pieceToCreate, Dictionary<PieceTemplate.Name, byte> ingredients, float fatigue, int duration = -1, bool isReversible = false, int amountToCreate = 1, bool isHidden = false, List<PieceTemplate.Name> unlocksWhenCrafted = null, int craftCountToUnlock = 1, bool checkIfAlreadyAdded = true)
             {
                 this.pieceToCreate = pieceToCreate;
                 this.amountToCreate = amountToCreate;
                 this.id = $"{this.pieceToCreate}_{this.amountToCreate}";
                 this.ingredients = ingredients;
                 this.fatigue = fatigue;
+                this.duration = duration == -1 ? (int)(this.fatigue * 10) : duration; // if duration was not specified, it will be calculated from fatigue
                 this.isHidden = isHidden;
                 this.unlocksWhenCrafted = unlocksWhenCrafted == null ? new List<PieceTemplate.Name> { } : unlocksWhenCrafted;
                 this.craftCountToUnlock = craftCountToUnlock;
@@ -210,6 +212,7 @@ namespace SonOfRobin
                 // unlocking other recipes and showing messages          
 
                 world.player.Fatigue += this.fatigue;
+                world.islandClock.Advance(amount: this.duration, ignorePause: true);
 
                 if (showMessages) this.UnlockNewRecipesAndShowSummary(world);
 
