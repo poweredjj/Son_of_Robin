@@ -6,7 +6,7 @@ namespace SonOfRobin
 {
     public class Tutorials
     {
-        public enum Type { BreakThing, Equip, BuildWorkshop, GetWood, Mine, Interact, PickUp, Hit, Craft, KeepingAnimalsAway, ShootProjectile, Cook, ShakeFruit, AnimalAttacking, DangerZone, Torch, Fireplace, TooDarkToReadMap, TooDarkToSeeAnything, Heat }
+        public enum Type { BreakThing, Equip, BuildWorkshop, GetWood, Mine, Interact, PickUp, Hit, Craft, KeepingAnimalsAway, ShootProjectile, Cook, ShakeFruit, AnimalAttacking, DangerZone, Torch, Fireplace, TooDarkToReadMap, TooDarkToSeeAnything, Heat, CraftLevels }
 
         private static readonly HintMessage.BoxType messageHeaderType = HintMessage.BoxType.BlueBox;
         private static readonly HintMessage.BoxType messageTextType = HintMessage.BoxType.LightBlueBox;
@@ -215,6 +215,14 @@ namespace SonOfRobin
                     new HintMessage(text: "2. Activate craft by pressing |.", imageList: new List<Texture2D> {InputMapper.GetTexture(InputMapper.Action.GlobalConfirm)}, boxType: messageTextType):
                     new HintMessage(text: "2. Activate craft by pressing it a second time.", boxType: messageTextType),
                     new HintMessage(text: "3. If you have all necessary ingredients and some free space\nthe item will be crafted.", boxType: messageTextType)});
+
+            new Tutorial(type: Type.CraftLevels, name: "craft levels", title: "Craft skill levels.",
+                messages: new List<HintMessage> {
+                    new HintMessage(text: "Every craft recipe has a skill level.", boxType: messageTextType),
+                    new HintMessage(text: "After being crafted a certain number of times, the recipe will level up.", boxType: messageTextType),
+                    new HintMessage(text: "With every recipe level, crafting it will require less time and effort.", boxType: messageTextType),
+                    new HintMessage(text: "Required ingredient amount will not change,\neven at |MASTER level.", imageList: new List<Texture2D> { PieceInfo.GetInfo(PieceTemplate.Name.DebrisStar).texture }, boxType: messageTextType),
+                });
 
             new Tutorial(type: Type.KeepingAnimalsAway, name: "keeping animals away", title: "Keeping animals away.",
                 messages: new List<HintMessage> {

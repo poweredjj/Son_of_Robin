@@ -308,7 +308,9 @@ namespace SonOfRobin
                     }
                 }
 
-                if (world.craftStats.RecipeJustLevelledUp(this))
+                bool recipeLevelUp = world.craftStats.RecipeJustLevelledUp(this);
+
+                if (recipeLevelUp)
                 {
                     int recipeLevel = world.craftStats.GetRecipeLevel(this);
                     bool levelMaster = recipeLevel == this.maxLevel;
@@ -346,6 +348,12 @@ namespace SonOfRobin
                 var executeHelper = new Dictionary<string, Object>();
                 if (pieceInfo.canBePickedUp) executeHelper["newOwnedPiece"] = this.pieceToCreate;
                 else executeHelper["fieldPiece"] = this.pieceToCreate;
+
+                if (recipeLevelUp)
+                {
+                    var tutorialData = new Dictionary<string, Object> { { "tutorial", Tutorials.Type.CraftLevels }, { "world", world }, { "ignoreHintsSetting", false }, { "ignoreDelay", true }, { "ignoreIfShown", false } };
+                    taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ShowTutorialInGame, delay: 0, storeForLaterUse: true, executeHelper: tutorialData));
+                }
 
                 taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CheckForPieceHints, delay: 0, storeForLaterUse: true, executeHelper: executeHelper));
 
