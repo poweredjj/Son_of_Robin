@@ -211,6 +211,7 @@ namespace SonOfRobin
                 {
                     world.islandClock.Advance(amount: this.GetRealDuration(world.craftStats), ignorePause: true);
                     world.player.Fatigue += this.GetRealFatigue(world.craftStats);
+                    world.player.Fatigue = Math.Min(world.player.Fatigue, world.player.MaxFatigue - 10); // to avoid falling asleep just after crafting
                 }
 
                 // crafting
@@ -351,7 +352,7 @@ namespace SonOfRobin
 
                 if (recipeLevelUp)
                 {
-                    var tutorialData = new Dictionary<string, Object> { { "tutorial", Tutorials.Type.CraftLevels }, { "world", world }, { "ignoreHintsSetting", false }, { "ignoreDelay", true }, { "ignoreIfShown", false } };
+                    var tutorialData = new Dictionary<string, Object> { { "tutorial", Tutorials.Type.CraftLevels }, { "world", world }, { "ignoreHintsSetting", false }, { "ignoreDelay", true }, { "ignoreIfShown", true } };
                     taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ShowTutorialInGame, delay: 0, storeForLaterUse: true, executeHelper: tutorialData));
                 }
 
