@@ -55,7 +55,7 @@ namespace SonOfRobin
         {
             get
             {
-                foreach (Scene scene in GetAllScenesOfType(this.GetType()))
+                foreach (Scene scene in GetAllScenesOfType(type: this.GetType(), includeEndingScenes: true))
                 {
                     if (scene.id != this.id) return true;
                 }
@@ -269,9 +269,10 @@ namespace SonOfRobin
             }
         }
 
-        public static List<Scene> GetAllScenesOfType(Type type)
+        public static List<Scene> GetAllScenesOfType(Type type, bool includeEndingScenes = false)
         {
-            return sceneStack.Where(scene => scene.GetType().Name == type.Name && !scene.transManager.IsEnding).OrderByDescending(o => o.priority).ToList();
+            if (includeEndingScenes) return sceneStack.Where(scene => scene.GetType().Name == type.Name).OrderByDescending(o => o.priority).ToList();
+            else return sceneStack.Where(scene => scene.GetType().Name == type.Name && !scene.transManager.IsEnding).OrderByDescending(o => o.priority).ToList();
         }
 
         public static void RemoveAllScenesOfType(Type type, bool includeWaiting = true)
@@ -281,21 +282,21 @@ namespace SonOfRobin
             if (includeWaiting) waitingScenes = waitingScenes.Where(scene => scene.GetType() != type).ToList();
         }
 
-        public static Scene GetTopSceneOfType(Type type)
+        public static Scene GetTopSceneOfType(Type type, bool includeEndingScenes = false)
         {
-            var foundScenes = GetAllScenesOfType(type);
+            var foundScenes = GetAllScenesOfType(type: type, includeEndingScenes: includeEndingScenes);
             return foundScenes.Count > 0 ? foundScenes[foundScenes.Count - 1] : null;
         }
 
-        public static Scene GetSecondTopSceneOfType(Type type)
+        public static Scene GetSecondTopSceneOfType(Type type, bool includeEndingScenes = false)
         {
-            var foundScenes = GetAllScenesOfType(type);
+            var foundScenes = GetAllScenesOfType(type: type, includeEndingScenes: includeEndingScenes);
             return foundScenes.Count > 1 ? foundScenes[foundScenes.Count - 2] : null;
         }
 
-        public static Scene GetBottomSceneOfType(Type type)
+        public static Scene GetBottomSceneOfType(Type type, bool includeEndingScenes = false)
         {
-            var foundScenes = GetAllScenesOfType(type);
+            var foundScenes = GetAllScenesOfType(type: type, includeEndingScenes: includeEndingScenes);
             return foundScenes.Count > 0 ? foundScenes[0] : null;
         }
 
