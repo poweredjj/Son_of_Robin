@@ -346,7 +346,7 @@ namespace SonOfRobin
 
                         PieceTemplate.Name plantName = PieceInfo.GetInfo(fruit.name).isSpawnedBy;
 
-                        Craft.Recipe plantRecipe = new Craft.Recipe(pieceToCreate: plantName, ingredients: new Dictionary<PieceTemplate.Name, byte> { { fruit.name, 1 } }, fatigue: PieceInfo.GetInfo(plantName).blocksMovement ? 100 : 50, maxLevel: 0, masterLevelDurationMultiplier: 1f, masterLevelFatigueMultiplier: 1f, isReversible: false, checkIfAlreadyAdded: false);
+                        Craft.Recipe plantRecipe = new Craft.Recipe(pieceToCreate: plantName, ingredients: new Dictionary<PieceTemplate.Name, byte> { { fruit.name, 1 } }, fatigue: PieceInfo.GetInfo(plantName).blocksMovement ? 100 : 50, maxLevel: 0, durationMultiplier: 1f, fatigueMultiplier: 1f, isReversible: false, checkIfAlreadyAdded: false);
 
                         Inventory.SetLayout(newLayout: Inventory.Layout.Toolbar, player: player);
                         plantRecipe.TryToProducePieces(player: player, showMessages: false);

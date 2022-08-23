@@ -29,7 +29,7 @@ namespace SonOfRobin
             public readonly bool isHidden;
             public readonly bool isReversible;
 
-            public Recipe(PieceTemplate.Name pieceToCreate, Dictionary<PieceTemplate.Name, byte> ingredients, float fatigue, int duration = -1, bool isReversible = false, int amountToCreate = 1, bool isHidden = false, List<PieceTemplate.Name> unlocksWhenCrafted = null, int craftCountToUnlock = 1, bool checkIfAlreadyAdded = true, int maxLevel = 2, int craftCountToLevelUp = 3, float masterLevelFatigueMultiplier = 0.6f, float masterLevelDurationMultiplier = 0.6f)
+            public Recipe(PieceTemplate.Name pieceToCreate, Dictionary<PieceTemplate.Name, byte> ingredients, float fatigue, int duration = -1, bool isReversible = false, int amountToCreate = 1, bool isHidden = false, List<PieceTemplate.Name> unlocksWhenCrafted = null, int craftCountToUnlock = 1, bool checkIfAlreadyAdded = true, int maxLevel = -1, int craftCountToLevelUp = -1, float fatigueMultiplier = 0.5f, float durationMultiplier = 0.5f)
             {
                 this.pieceToCreate = pieceToCreate;
                 this.amountToCreate = amountToCreate;
@@ -37,10 +37,12 @@ namespace SonOfRobin
                 this.ingredients = ingredients;
                 this.fatigue = fatigue;
                 this.duration = duration == -1 ? (int)(this.fatigue * 10) : duration; // if duration was not specified, it will be calculated from fatigue
+                if (maxLevel == -1) maxLevel = PieceInfo.GetInfo(pieceToCreate).canBePickedUp ? 4 : 2;
                 this.maxLevel = maxLevel;
+                if (craftCountToLevelUp == -1) craftCountToLevelUp = PieceInfo.GetInfo(pieceToCreate).canBePickedUp ? 3 : 1;
                 this.craftCountToLevelUp = craftCountToLevelUp;
-                this.masterLevelFatigueMultiplier = masterLevelFatigueMultiplier;
-                this.masterLevelDurationMultiplier = masterLevelDurationMultiplier;
+                this.masterLevelFatigueMultiplier = fatigueMultiplier;
+                this.masterLevelDurationMultiplier = durationMultiplier;
                 this.isHidden = isHidden;
                 this.unlocksWhenCrafted = unlocksWhenCrafted == null ? new List<PieceTemplate.Name> { } : unlocksWhenCrafted;
                 this.craftCountToUnlock = craftCountToUnlock;
