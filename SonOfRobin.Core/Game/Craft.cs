@@ -206,9 +206,12 @@ namespace SonOfRobin
                     return craftedPieces;
                 }
 
-                // build mode advances clock gradually, not all at once
-                if (canBePickedUp) world.islandClock.Advance(amount: this.GetRealDuration(world.craftStats), ignorePause: true);
-                world.player.Fatigue += this.GetRealFatigue(world.craftStats);
+                // build mode advances island clock (and adds fatigue) gradually, not all at once
+                if (canBePickedUp)
+                {
+                    world.islandClock.Advance(amount: this.GetRealDuration(world.craftStats), ignorePause: true);
+                    world.player.Fatigue += this.GetRealFatigue(world.craftStats);
+                }
 
                 // crafting
 

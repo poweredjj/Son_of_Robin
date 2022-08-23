@@ -26,6 +26,7 @@ namespace SonOfRobin
         public Craft.Recipe recipeToBuild;
         public BoardPiece simulatedPieceToBuild;
         public int buildDurationForOneFrame;
+        public float buildFatigueForOneFrame;
         public override bool ShowStatBars { get { return true; } }
 
         private bool ShootingModeInputPressed
@@ -496,6 +497,7 @@ namespace SonOfRobin
             // needs to be updated from the outside
 
             this.world.islandClock.Advance(amount: this.buildDurationForOneFrame, ignorePause: true);
+            this.Fatigue += this.buildFatigueForOneFrame;
         }
 
         public override void SM_PlayerControlledGhosting()
