@@ -17,6 +17,7 @@ namespace SonOfRobin
             public readonly string description;
             public readonly int stackSize;
             public readonly Type type;
+            public readonly bool blocksMovement;
             public readonly bool convertsWhenUsed;
             public readonly PieceTemplate.Name convertsToWhenUsed;
             public readonly bool shootsProjectile;
@@ -55,6 +56,7 @@ namespace SonOfRobin
                 this.category = piece.category;
                 this.canBePickedUp = piece.canBePickedUp;
                 this.type = piece.GetType();
+                this.blocksMovement = piece.sprite.blocksMovement;
                 this.readableName = piece.readableName;
                 this.description = piece.description;
                 this.stackSize = piece.stackSize;

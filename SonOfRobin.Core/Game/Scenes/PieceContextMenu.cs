@@ -332,12 +332,21 @@ namespace SonOfRobin
 
                         if (!player.CanSeeAnything)
                         {
-                            new TextWindow(text: $"It is too dark to plant | {fruit.readableName}...", imageList: new List<Texture2D> { PieceInfo.GetTexture(fruit.name) }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: InputTypes.None, blockInputDuration: 45, priority: 1, animSound: player.world.DialogueSound);
+                            new TextWindow(text: $"It is too dark to plant | {fruit.readableName}...", imageList: new List<Texture2D> { PieceInfo.GetTexture(fruit.name) }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: InputTypes.None, blockInputDuration: 45, priority: 0, animSound: player.world.DialogueSound);
 
                             return;
                         }
 
-                        Craft.Recipe plantRecipe = new Craft.Recipe(pieceToCreate: PieceInfo.GetInfo(fruit.name).isSpawnedBy, ingredients: new Dictionary<PieceTemplate.Name, byte> { { fruit.name, 1 } }, fatigue: 100, isReversible: false, checkIfAlreadyAdded: false);
+                        if (player.IsVeryTired)
+                        {
+                            new TextWindow(text: "I'm too tired to plant anything...", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: InputTypes.None, blockInputDuration: 45, priority: 0, animSound: player.world.DialogueSound);
+
+                            return;
+                        }
+
+                        PieceTemplate.Name plantName = PieceInfo.GetInfo(fruit.name).isSpawnedBy;
+
+                        Craft.Recipe plantRecipe = new Craft.Recipe(pieceToCreate: plantName, ingredients: new Dictionary<PieceTemplate.Name, byte> { { fruit.name, 1 } }, fatigue: PieceInfo.GetInfo(plantName).blocksMovement ? 100 : 50, maxLevel: 0, masterLevelDurationMultiplier: 1f, masterLevelFatigueMultiplier: 1f, isReversible: false, checkIfAlreadyAdded: false);
 
                         Inventory.SetLayout(newLayout: Inventory.Layout.Toolbar, player: player);
                         plantRecipe.TryToProducePieces(player: player, showMessages: false);

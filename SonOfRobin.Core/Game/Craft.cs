@@ -50,7 +50,7 @@ namespace SonOfRobin
                 if (checkIfAlreadyAdded && recipeByID.ContainsKey(this.id)) throw new ArgumentException($"Recipe with ID {this.id} has already been added.");
                 if (this.masterLevelFatigueMultiplier > 1) throw new ArgumentException($"Master level fatigue multiplier ({this.masterLevelFatigueMultiplier}) cannot be greater than 1.");
                 if (this.masterLevelDurationMultiplier > 1) throw new ArgumentException($"Master level duration multiplier ({this.masterLevelDurationMultiplier}) cannot be greater than 1.");
-                if (this.maxLevel <= 1) throw new ArgumentException($"Max level ({this.maxLevel}) cannot be less than 1.");
+                if (this.maxLevel < 0) throw new ArgumentException($"Max level ({this.maxLevel}) cannot be less than 0.");
                 recipeByID[this.id] = this;
             }
 
@@ -61,6 +61,8 @@ namespace SonOfRobin
 
             private float GetLevelMultiplier(CraftStats craftStats)
             {
+                if (this.maxLevel == 0) return 0;
+
                 int recipeLevel = craftStats.GetRecipeLevel(this);
                 float levelMultiplier = (float)recipeLevel / (float)this.maxLevel;
                 return levelMultiplier;
@@ -73,9 +75,10 @@ namespace SonOfRobin
                 float fatigueDifferenceForMasterLevel = this.fatigue * (1f - this.masterLevelFatigueMultiplier);
                 float fatigueDifference = fatigueDifferenceForMasterLevel * levelMultiplier;
 
-                MessageLog.AddMessage(msgType: MsgType.User, message: $"{SonOfRobinGame.currentUpdate} real fatigue {this.fatigue - fatigueDifference}");
+                float realFatigue = this.fatigue - fatigueDifference;
+                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{SonOfRobinGame.currentUpdate} real fatigue {realFatigue}");
 
-                return this.fatigue - fatigueDifference;
+                return realFatigue;
             }
 
             public int GetRealDuration(CraftStats craftStats)
@@ -85,9 +88,10 @@ namespace SonOfRobin
                 float durationDifferenceForMasterLevel = this.duration * (1f - this.masterLevelDurationMultiplier);
                 float durationDifference = durationDifferenceForMasterLevel * levelMultiplier;
 
-                MessageLog.AddMessage(msgType: MsgType.User, message: $"{SonOfRobinGame.currentUpdate} real duration {(int)(this.duration - durationDifference)}");
+                int realDuration = (int)(this.duration - durationDifference);
+                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{SonOfRobinGame.currentUpdate} real duration {realDuration}");
 
-                return (int)(this.duration - durationDifference);
+                return realDuration;
             }
 
             public Yield ConvertToYield()
