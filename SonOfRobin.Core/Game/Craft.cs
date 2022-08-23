@@ -18,18 +18,18 @@ namespace SonOfRobin
             public readonly PieceTemplate.Name pieceToCreate;
             public readonly int amountToCreate;
             public readonly Dictionary<PieceTemplate.Name, byte> ingredients;
-            public readonly float fatigue;
-            public readonly int duration;
+            private readonly float fatigue;
+            private readonly int duration;
             public readonly int maxLevel;
             public readonly int craftCountToLevelUp;
-            public readonly float maxLevelFatigueMultiplier;
-            public readonly float maxLevelDurationMultiplier;
+            public readonly float masterLevelFatigueMultiplier;
+            public readonly float masterLevelDurationMultiplier;
             public readonly List<PieceTemplate.Name> unlocksWhenCrafted;
             public readonly int craftCountToUnlock;
             public readonly bool isHidden;
             public readonly bool isReversible;
 
-            public Recipe(PieceTemplate.Name pieceToCreate, Dictionary<PieceTemplate.Name, byte> ingredients, float fatigue, int duration = -1, bool isReversible = false, int amountToCreate = 1, bool isHidden = false, List<PieceTemplate.Name> unlocksWhenCrafted = null, int craftCountToUnlock = 1, bool checkIfAlreadyAdded = true, int maxLevel = 2, int craftCountToLevelUp = 3, float maxLevelFatigueMultiplier = 0.6f, float maxLevelDurationMultiplier = 0.6f)
+            public Recipe(PieceTemplate.Name pieceToCreate, Dictionary<PieceTemplate.Name, byte> ingredients, float fatigue, int duration = -1, bool isReversible = false, int amountToCreate = 1, bool isHidden = false, List<PieceTemplate.Name> unlocksWhenCrafted = null, int craftCountToUnlock = 1, bool checkIfAlreadyAdded = true, int maxLevel = 2, int craftCountToLevelUp = 3, float masterLevelFatigueMultiplier = 0.6f, float masterLevelDurationMultiplier = 0.6f)
             {
                 this.pieceToCreate = pieceToCreate;
                 this.amountToCreate = amountToCreate;
@@ -39,8 +39,8 @@ namespace SonOfRobin
                 this.duration = duration == -1 ? (int)(this.fatigue * 10) : duration; // if duration was not specified, it will be calculated from fatigue
                 this.maxLevel = maxLevel;
                 this.craftCountToLevelUp = craftCountToLevelUp;
-                this.maxLevelFatigueMultiplier = maxLevelFatigueMultiplier;
-                this.maxLevelDurationMultiplier = maxLevelDurationMultiplier;
+                this.masterLevelFatigueMultiplier = masterLevelFatigueMultiplier;
+                this.masterLevelDurationMultiplier = masterLevelDurationMultiplier;
                 this.isHidden = isHidden;
                 this.unlocksWhenCrafted = unlocksWhenCrafted == null ? new List<PieceTemplate.Name> { } : unlocksWhenCrafted;
                 this.craftCountToUnlock = craftCountToUnlock;
@@ -48,8 +48,8 @@ namespace SonOfRobin
                 if (this.isReversible) Yield.antiCraftRecipes[this.pieceToCreate] = this;
 
                 if (checkIfAlreadyAdded && recipeByID.ContainsKey(this.id)) throw new ArgumentException($"Recipe with ID {this.id} has already been added.");
-                if (this.maxLevelFatigueMultiplier > 1) throw new ArgumentException($"Max level fatigue multiplier ({this.maxLevelFatigueMultiplier}) cannot be greater than 1.");
-                if (this.maxLevelDurationMultiplier > 1) throw new ArgumentException($"Max level duration multiplier ({this.maxLevelDurationMultiplier}) cannot be greater than 1.");
+                if (this.masterLevelFatigueMultiplier > 1) throw new ArgumentException($"Master level fatigue multiplier ({this.masterLevelFatigueMultiplier}) cannot be greater than 1.");
+                if (this.masterLevelDurationMultiplier > 1) throw new ArgumentException($"Master level duration multiplier ({this.masterLevelDurationMultiplier}) cannot be greater than 1.");
                 if (this.maxLevel <= 1) throw new ArgumentException($"Max level ({this.maxLevel}) cannot be less than 1.");
                 recipeByID[this.id] = this;
             }
@@ -57,6 +57,37 @@ namespace SonOfRobin
             public static Recipe GetRecipeByID(string id)
             {
                 return recipeByID[id];
+            }
+
+            private float GetLevelMultiplier(CraftStats craftStats)
+            {
+                int recipeLevel = craftStats.GetRecipeLevel(this);
+                float levelMultiplier = (float)recipeLevel / (float)this.maxLevel;
+                return levelMultiplier;
+            }
+
+            public float GetRealFatigue(CraftStats craftStats)
+            {
+                float levelMultiplier = this.GetLevelMultiplier(craftStats);
+
+                float fatigueDifferenceForMasterLevel = this.fatigue * (1f - this.masterLevelFatigueMultiplier);
+                float fatigueDifference = fatigueDifferenceForMasterLevel * levelMultiplier;
+
+                MessageLog.AddMessage(msgType: MsgType.User, message: $"{SonOfRobinGame.currentUpdate} real fatigue {this.fatigue - fatigueDifference}");
+
+                return this.fatigue - fatigueDifference;
+            }
+
+            public int GetRealDuration(CraftStats craftStats)
+            {
+                float levelMultiplier = this.GetLevelMultiplier(craftStats);
+
+                float durationDifferenceForMasterLevel = this.duration * (1f - this.masterLevelDurationMultiplier);
+                float durationDifference = durationDifferenceForMasterLevel * levelMultiplier;
+
+                MessageLog.AddMessage(msgType: MsgType.User, message: $"{SonOfRobinGame.currentUpdate} real duration {(int)(this.duration - durationDifference)}");
+
+                return (int)(this.duration - durationDifference);
             }
 
             public Yield ConvertToYield()
@@ -169,7 +200,9 @@ namespace SonOfRobin
                     return craftedPieces;
                 }
 
-                if (canBePickedUp) world.islandClock.Advance(amount: this.duration, ignorePause: true); // build mode advances clock gradually, not all at once
+                // build mode advances clock gradually, not all at once
+                if (canBePickedUp) world.islandClock.Advance(amount: this.GetRealDuration(world.craftStats), ignorePause: true);
+                world.player.Fatigue += this.GetRealFatigue(world.craftStats);
 
                 // crafting
 
@@ -224,8 +257,6 @@ namespace SonOfRobin
 
                 // unlocking other recipes and showing messages          
 
-                world.player.Fatigue += this.fatigue;
-
                 if (showMessages) this.UnlockNewRecipesAndShowSummary(world);
 
                 return craftedPieces;
@@ -268,18 +299,16 @@ namespace SonOfRobin
                     }
                 }
 
-                float recipeLevel = world.craftStats.GetRecipeLevel(this);
-                bool recipeLevelUp = world.craftStats.RecipeJustLevelledUp(this);
-
-                if (recipeLevelUp)
+                if (world.craftStats.RecipeJustLevelledUp(this))
                 {
+                    int recipeLevel = world.craftStats.GetRecipeLevel(this);
                     bool levelMaster = recipeLevel == this.maxLevel;
-                    string recipeNewLevelName = levelMaster ? "master |" : $"{(int)recipeLevel + 1}";
+                    string recipeNewLevelName = levelMaster ? "master |" : $"{recipeLevel + 1}";
 
                     var imageList = new List<Texture2D> { PieceInfo.GetInfo(this.pieceToCreate).texture };
                     if (levelMaster) imageList.Add(PieceInfo.GetInfo(PieceTemplate.Name.DebrisStar).texture);
 
-                    taskChain.Add(new HintMessage(text: $"{pieceName} |\nrecipe level up {(int)recipeLevel} -> {recipeNewLevelName}", imageList: imageList, boxType: levelMaster ? HintMessage.BoxType.GoldBox : HintMessage.BoxType.LightBlueBox, delay: 0, blockInput: false, animate: true, useTransition: true, startingSound: levelMaster ? SoundData.Name.Chime : SoundData.Name.Notification1).ConvertToTask());
+                    taskChain.Add(new HintMessage(text: $"{pieceName} |\nrecipe level up {recipeLevel} -> {recipeNewLevelName}", imageList: imageList, boxType: levelMaster ? HintMessage.BoxType.GoldBox : HintMessage.BoxType.LightBlueBox, delay: 0, blockInput: false, animate: true, useTransition: true, startingSound: levelMaster ? SoundData.Name.Chime : SoundData.Name.Notification1).ConvertToTask());
                 }
 
                 if (unlockedPieces.Count > 0)

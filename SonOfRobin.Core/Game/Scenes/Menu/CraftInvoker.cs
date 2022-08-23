@@ -202,7 +202,7 @@ namespace SonOfRobin
                 entryList.Add(new InfoWindow.TextEntry(text: "Missing ingredients:\n" + String.Join("\n", ingredientsTextLines), color: Color.DarkOrange, scale: 1f, imageList: missingIngredientsImages, animate: true, charsPerFrame: 2));
             }
 
-            int recipeLevelCurrent = (int)world.craftStats.GetRecipeLevel(this.recipe);
+            int recipeLevelCurrent = world.craftStats.GetRecipeLevel(this.recipe);
             int recipeLevelMax = this.recipe.maxLevel;
 
             if (recipeLevelCurrent == recipeLevelMax)

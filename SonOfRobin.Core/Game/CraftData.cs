@@ -4,12 +4,12 @@ namespace SonOfRobin
 {
     public class CraftData
     {
-        private static readonly float fatigueItemSmall = 100f;
-        private static readonly float fatigueItemMedium = 150f;
-        private static readonly float fatigueItemBig = 200f;
-        private static readonly float fatigueStructureSmall = 300f;
-        private static readonly float fatigueStructureMedium = 400f;
-        private static readonly float fatigueStructureBig = 600f;
+        private static readonly float fatigueItemSmall = 150f;
+        private static readonly float fatigueItemMedium = 200f;
+        private static readonly float fatigueItemBig = 300f;
+        private static readonly float fatigueStructureSmall = 350f;
+        private static readonly float fatigueStructureMedium = 500f;
+        private static readonly float fatigueStructureBig = 650f;
 
         public static List<Craft.Recipe> GetFieldRecipes()
         {

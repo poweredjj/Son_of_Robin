@@ -1004,7 +1004,7 @@ namespace SonOfRobin
             this.player.recipeToBuild = recipe;
             this.player.simulatedPieceToBuild = PieceTemplate.CreateAndPlaceOnBoard(templateName: recipe.pieceToCreate, world: this, position: this.player.sprite.position, ignoreCollisions: true); // "template" piece should be placed - collisions doesn't matter...
             this.player.simulatedPieceToBuild.sprite.MoveToClosestFreeSpot(this.player.sprite.position); // ...but the starting position should be correct for building, if possible
-            this.player.buildDurationForOneFrame = recipe.duration / buildDuration;
+            this.player.buildDurationForOneFrame = recipe.GetRealDuration(this.craftStats) / buildDuration;
         }
 
         public void BuildPiece()
