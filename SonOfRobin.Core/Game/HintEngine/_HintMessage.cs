@@ -8,7 +8,7 @@ namespace SonOfRobin
 {
     public struct HintMessage
     {
-        public enum BoxType { Dialogue, GreenBox, BlueBox, LightBlueBox, RedBox }
+        public enum BoxType { Dialogue, GreenBox, BlueBox, LightBlueBox, RedBox, GoldBox }
 
         public readonly string text;
         public readonly List<Texture2D> imageList;
@@ -71,6 +71,11 @@ namespace SonOfRobin
                 case BoxType.RedBox:
                     bgColor = Color.DarkRed;
                     textColor = Color.White;
+                    break;
+
+                case BoxType.GoldBox:
+                    bgColor = Color.DarkGoldenrod;
+                    textColor = Color.PaleGoldenrod;
                     break;
 
                 default:

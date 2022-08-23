@@ -29,7 +29,7 @@ namespace SonOfRobin
             public readonly bool isHidden;
             public readonly bool isReversible;
 
-            public Recipe(PieceTemplate.Name pieceToCreate, Dictionary<PieceTemplate.Name, byte> ingredients, float fatigue, int duration = -1, bool isReversible = false, int amountToCreate = 1, bool isHidden = false, List<PieceTemplate.Name> unlocksWhenCrafted = null, int craftCountToUnlock = 1, bool checkIfAlreadyAdded = true, int maxLevel = 3, int craftCountToLevelUp = 3, float maxLevelFatigueMultiplier = 0.6f, float maxLevelDurationMultiplier = 0.6f)
+            public Recipe(PieceTemplate.Name pieceToCreate, Dictionary<PieceTemplate.Name, byte> ingredients, float fatigue, int duration = -1, bool isReversible = false, int amountToCreate = 1, bool isHidden = false, List<PieceTemplate.Name> unlocksWhenCrafted = null, int craftCountToUnlock = 1, bool checkIfAlreadyAdded = true, int maxLevel = 2, int craftCountToLevelUp = 3, float maxLevelFatigueMultiplier = 0.6f, float maxLevelDurationMultiplier = 0.6f)
             {
                 this.pieceToCreate = pieceToCreate;
                 this.amountToCreate = amountToCreate;
@@ -237,9 +237,11 @@ namespace SonOfRobin
 
                 string creationType = pieceInfo.type == typeof(Plant) ? "planted" : "crafted";
 
+                string pieceName = Helpers.FirstCharToUpperCase(PieceInfo.GetInfo(this.pieceToCreate).readableName);
+
                 string message = this.amountToCreate == 1 ?
-                    $"|  {Helpers.FirstCharToUpperCase(PieceInfo.GetInfo(this.pieceToCreate).readableName)} has been {creationType}." :
-                    $"|  {Helpers.FirstCharToUpperCase(PieceInfo.GetInfo(this.pieceToCreate).readableName)} x{this.amountToCreate} has been {creationType}.";
+                    $"|  {pieceName} has been {creationType}." :
+                    $"|  {pieceName} x{this.amountToCreate} has been {creationType}.";
 
                 var taskChain = new List<Object>();
 
@@ -267,9 +269,18 @@ namespace SonOfRobin
                 }
 
                 float recipeLevel = world.craftStats.GetRecipeLevel(this);
-                bool recipeLevelUp = recipeLevel > 0 && recipeLevel == Math.Floor(recipeLevel);
+                bool recipeLevelUp = world.craftStats.RecipeJustLevelledUp(this);
 
-                if (recipeLevelUp) taskChain.Add(new HintMessage(text: $"| recipe level up!\n{(int)recipeLevel} -> {(int)recipeLevel + 1}", imageList: new List<Texture2D> { PieceInfo.GetInfo(this.pieceToCreate).texture }, boxType: HintMessage.BoxType.LightBlueBox, delay: 0, blockInput: false, animate: true, useTransition: true, startingSound: SoundData.Name.Notification1).ConvertToTask());
+                if (recipeLevelUp)
+                {
+                    bool levelMaster = recipeLevel == this.maxLevel;
+                    string recipeNewLevelName = levelMaster ? "master |" : $"{(int)recipeLevel + 1}";
+
+                    var imageList = new List<Texture2D> { PieceInfo.GetInfo(this.pieceToCreate).texture };
+                    if (levelMaster) imageList.Add(PieceInfo.GetInfo(PieceTemplate.Name.DebrisStar).texture);
+
+                    taskChain.Add(new HintMessage(text: $"{pieceName} |\nrecipe level up {(int)recipeLevel} -> {recipeNewLevelName}", imageList: imageList, boxType: levelMaster ? HintMessage.BoxType.GoldBox : HintMessage.BoxType.LightBlueBox, delay: 0, blockInput: false, animate: true, useTransition: true, startingSound: levelMaster ? SoundData.Name.Chime : SoundData.Name.Notification1).ConvertToTask());
+                }
 
                 if (unlockedPieces.Count > 0)
                 {

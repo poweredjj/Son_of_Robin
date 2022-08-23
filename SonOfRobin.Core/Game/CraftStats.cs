@@ -123,8 +123,18 @@ namespace SonOfRobin
         public float GetRecipeLevel(Craft.Recipe recipe)
         {
             int craftCount = this.HowManyTimesHasBeenCrafted(recipe);
+            float recipeLevel = (float)craftCount / (float)recipe.craftCountToLevelUp;
 
-            return (float)craftCount / (float)recipe.craftCountToLevelUp;
+            return Math.Min(recipeLevel, recipe.maxLevel);
+        }
+
+        public bool RecipeJustLevelledUp(Craft.Recipe recipe)
+        {
+            // repeated calculations, because Math.Min() would cause level up to be reported every time at master level
+            int craftCount = this.HowManyTimesHasBeenCrafted(recipe);
+            float recipeLevel = (float)craftCount / (float)recipe.craftCountToLevelUp;
+
+            return recipeLevel > 0 && recipeLevel <= recipe.maxLevel && recipeLevel == Math.Floor(recipeLevel);
         }
 
         private void DisplaySummary(Dictionary<PieceTemplate.Name, int> collectionToShow, string header)
