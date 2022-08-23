@@ -70,16 +70,18 @@ namespace SonOfRobin
                 var createdStack = new List<Scene> { };
                 if (sceneStack.Count == 0) return createdStack;
 
+                var sortedSceneStack = sceneStack.OrderByDescending(o => o.priority).ToList();
+                sortedSceneStack.Reverse();
+
                 bool ignoreScenes = false;
-                for (int i = sceneStack.Count - 1; i >= 0; i--)
+
+                foreach (Scene scene in sortedSceneStack)
                 {
-                    Scene scene = sceneStack[i];
                     if ((!ignoreScenes && scene.updateActive) || scene.alwaysUpdates) createdStack.Add(scene);
                     if (scene.blocksUpdatesBelow) ignoreScenes = true;
                 }
 
                 createdStack.Reverse();
-                createdStack = createdStack.OrderByDescending(o => o.priority).ToList();
                 return createdStack;
             }
         }
