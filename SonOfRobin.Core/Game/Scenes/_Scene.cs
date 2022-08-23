@@ -403,6 +403,8 @@ namespace SonOfRobin
                 }
             }
 
+            if (!restoredScenesIDs.Any()) return;
+
             waitingScenes = waitingScenes.Where(scene => !restoredScenesIDs.Contains(scene.id)).ToList();
         }
 
