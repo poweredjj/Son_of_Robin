@@ -13,7 +13,14 @@ namespace SonOfRobin
         private static readonly int margin = 3;
 
         private static List<Scene> DisplayedStack
-        { get { return sceneStack.OrderByDescending(o => o.priority).ToList(); } }
+        {
+            get
+            {
+                var displayedStack = sceneStack.OrderByDescending(o => o.priority).ToList();
+                displayedStack.AddRange(waitingScenes);
+                return displayedStack;
+            }
+        }
 
         private static Dictionary<Scene, string> TextByScene
         {
@@ -28,7 +35,8 @@ namespace SonOfRobin
                 {
                     bool updates = updateStack.Contains(scene);
                     bool draws = drawStack.Contains(scene);
-                    string sceneText = GetSceneText(scene: scene, updates: updates, draws: draws);
+                    bool waits = waitingScenes.Contains(scene);
+                    string sceneText = GetSceneText(scene: scene, updates: updates, draws: draws, waits: waits);
 
                     textByScene[scene] = sceneText;
                 }
@@ -107,7 +115,7 @@ namespace SonOfRobin
                 string sceneTxt = textByScene.Values.ToList()[i];
 
                 Vector2 txtSize = font.MeasureString(sceneTxt);
-                Vector2 currentPos = new Vector2(0, (sceneNo * (txtSize.Y + margin)));
+                Vector2 currentPos = new Vector2(0, sceneNo * (txtSize.Y + margin));
 
                 for (int x = -1; x < 2; x++)
                 {
@@ -116,12 +124,13 @@ namespace SonOfRobin
                 }
 
                 Color color = scene.priority == 0 ? Color.White : Color.LightGreen;
+                if (waitingScenes.Contains(scene)) color = Color.Cyan;
                 SonOfRobinGame.spriteBatch.DrawString(font, sceneTxt, currentPos, color);
                 sceneNo++;
             }
         }
 
-        private static string GetSceneText(Scene scene, bool updates, bool draws)
+        private static string GetSceneText(Scene scene, bool updates, bool draws, bool waits)
         {
             string sceneName;
 
@@ -146,10 +155,11 @@ namespace SonOfRobin
             string inputTxt = scene.inputActive ? " I" : "";
             string updatesTxt = updates ? " U" : "";
             string drawsTxt = draws ? " D" : "";
+            string waitsTxt = waits ? " W" : "";
             string blocksUpdatesTxt = scene.blocksUpdatesBelow ? " blU" : "";
             string blocksDrawsTxt = scene.blocksDrawsBelow ? " blD" : "";
 
-            return $"{scene.priority} {sceneName}{inputTxt}{updatesTxt}{drawsTxt}{blocksUpdatesTxt}{blocksDrawsTxt}";
+            return $"{scene.priority} {sceneName}{inputTxt}{updatesTxt}{drawsTxt}{waitsTxt}{blocksUpdatesTxt}{blocksDrawsTxt}";
         }
 
     }
