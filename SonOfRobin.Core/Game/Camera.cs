@@ -255,8 +255,7 @@ namespace SonOfRobin
             {
                 case TrackingMode.Sprite:
                     {
-                        if (this.trackedSprite.boardPiece.exists)
-                        { return this.trackedSprite.position; }
+                        if (this.trackedSprite.boardPiece.exists) return this.trackedSprite.position;
                         else
                         {
                             this.TrackCoords(this.CurrentPos);
@@ -268,7 +267,7 @@ namespace SonOfRobin
                     { return this.trackedPos; }
 
                 default:
-                    { throw new DivideByZeroException($"Unsupported tracking mode - {this.trackingMode}."); }
+                    { throw new ArgumentException($"Unsupported tracking mode - {this.trackingMode}."); }
             }
         }
 

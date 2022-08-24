@@ -44,6 +44,8 @@ namespace SonOfRobin
             this.updateActive = false;
             this.world = world;
             this.worldRect = new Rectangle(x: 0, y: 0, width: world.width, height: world.height);
+            this.viewParams.Width = this.world.width; // it does not need to be updated, because world size is constant
+            this.viewParams.Height = this.world.height; // it does not need to be updated, because world size is constant
             this.camera = new Camera(this.world);
             this.fullScreen = fullScreen;
             this.dirtyFog = true;
@@ -58,6 +60,8 @@ namespace SonOfRobin
         public void TurnOn(bool addTransition = true)
         {
             if (this.fullScreen) this.InputType = InputTypes.Normal;
+
+            this.camera.TrackPiece(trackedPiece: this.world.player, fluidMotion: false);
 
             this.updateActive = true;
             this.drawActive = true;
@@ -191,6 +195,8 @@ namespace SonOfRobin
 
         public void AddTransition(bool inTrans)
         {
+            return; // TODO update method and remove this line
+
             bool turnOffDraw = !inTrans;
             bool turnOffUpdate = !inTrans;
 
@@ -245,6 +251,19 @@ namespace SonOfRobin
 
             this.UpdateBackground(); // it's best to update background graphics in Update() (SetRenderTarget in Draw() must go first)
             this.ProcessInput();
+            this.UpdateViewParams();
+        }
+
+        public void UpdateViewParams()
+        {
+            this.viewParams.ScaleX = 1f;
+            this.viewParams.ScaleY = 1f;
+
+            this.camera.Update();
+            this.viewParams.PosX = this.camera.viewPos.X;
+            this.viewParams.PosY = this.camera.viewPos.Y;
+
+            // width and height are set once in constructor
         }
 
         private void ProcessInput()
@@ -258,7 +277,7 @@ namespace SonOfRobin
             if (this.fullScreen) SonOfRobinGame.graphicsDevice.Clear(BoardGraphics.colorsByName[BoardGraphics.Colors.WaterDeep]);
 
             // drawing terrain and fog of war
-            SonOfRobinGame.spriteBatch.Draw(this.combinedGfx, new Rectangle(0, 0, this.viewParams.Width, this.viewParams.Height), Color.White * this.viewParams.drawOpacity);
+            SonOfRobinGame.spriteBatch.Draw(this.combinedGfx, this.worldRect, Color.White * this.viewParams.drawOpacity);
 
             // drawing pieces
             var groupName = this.fullScreen ? Cell.Group.Visible : Cell.Group.MiniMap;
@@ -432,10 +451,12 @@ namespace SonOfRobin
 
         private void DrawSpriteSquare(Sprite sprite, byte size, Color color)
         {
-            SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, new Rectangle(
-                   (int)((sprite.position.X * this.multiplier) - size / 2),
-                   (int)((sprite.position.Y * this.multiplier) - size / 2),
-                   size, size), color * this.viewParams.drawOpacity);
+            SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle,
+                new Rectangle(
+                   x: (int)(sprite.position.X - size / 2),
+                  y: (int)(sprite.position.Y - size / 2),
+                    width: size, height: size),
+                color * this.viewParams.drawOpacity);
         }
 
         public void StartRenderingToTarget(RenderTarget2D newRenderTarget)
