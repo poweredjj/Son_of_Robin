@@ -171,7 +171,7 @@ namespace SonOfRobin
                 this.disableFluidMotionForOneFrame = false;
             }
 
-            viewCenter += this.world.analogCameraCorrection;
+            if (this.displayScene == this.world) viewCenter += this.world.analogCameraCorrection;
 
             float screenWidth = this.ScreenWidth;
             float screenHeight = this.ScreenHeight;

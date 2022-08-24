@@ -35,7 +35,9 @@ namespace SonOfRobin
                 {"invPickStack", "pick stack"},
                 {"invSort", "sort"},
                 {"toolbarPrev", "previous item"},
-                {"toolbarNext", "next item"}
+                {"toolbarNext", "next item"},
+                {"mapZoomIn", "zoom in"},
+                {"mapZoomOut", "zoom out"},
             };
 
         public readonly float packageVersion;
@@ -65,9 +67,11 @@ namespace SonOfRobin
         public object invPickOne;
         public object invPickStack;
         public object invSort;
+        public object mapZoomIn;
+        public object mapZoomOut;
 
         public bool IsObsolete { get { return this.packageVersion != version; } }
-        public InputPackage(float packageVersion, InputMapper.AnalogType leftStick, InputMapper.AnalogType rightStick, object confirm, object cancel, object pauseMenu, object sprint, object equip, object inventory, object pickUp, object craft, object interact, object map, object useTool, object zoomOut, object toolbarPrev, object invSwitch, object invSort, object toolbarNext, object invPickOne, object invPickStack, object left = null, object right = null, object up = null, object down = null)
+        public InputPackage(float packageVersion, InputMapper.AnalogType leftStick, InputMapper.AnalogType rightStick, object confirm, object cancel, object pauseMenu, object sprint, object equip, object inventory, object pickUp, object craft, object interact, object map, object useTool, object zoomOut, object toolbarPrev, object invSwitch, object invSort, object toolbarNext, object invPickOne, object invPickStack, object mapZoomIn, object mapZoomOut, object left = null, object right = null, object up = null, object down = null)
         {
             this.packageVersion = packageVersion;
 
@@ -95,6 +99,8 @@ namespace SonOfRobin
             this.invPickOne = invPickOne;
             this.invPickStack = invPickStack;
             this.interact = interact;
+            this.mapZoomIn = mapZoomIn;
+            this.mapZoomOut = mapZoomOut;
         }
 
         public string GetReadablePropertyName(string propertyName)
@@ -126,6 +132,8 @@ namespace SonOfRobin
                 invPickOne: this.invPickOne,
                 invPickStack: this.invPickStack,
                 invSort: this.invSort,
+                mapZoomIn: this.mapZoomIn,
+                mapZoomOut: this.mapZoomOut,
                 left: this.left,
                 right: this.right,
                 up: this.up,
@@ -156,6 +164,8 @@ namespace SonOfRobin
                 this.invPickOne == inputPackage.invPickOne &&
                 this.invPickStack == inputPackage.invPickStack &&
                 this.invSort == inputPackage.invSort &&
+                this.mapZoomIn == inputPackage.mapZoomIn &&
+                this.mapZoomOut == inputPackage.mapZoomOut &&
                 this.left == inputPackage.left &&
                 this.right == inputPackage.right &&
                 this.up == inputPackage.up &&
@@ -171,6 +181,7 @@ namespace SonOfRobin
                 { new List<string> { "confirm", "cancel", "left", "right", "up", "down", "pauseMenu"} }, // general
                 { new List<string> { "interact", "pickUp", "sprint", "useTool", "zoomOut", "toolbarPrev", "toolbarNext", "pauseMenu", "equip", "inventory", "craft", "map" } }, // field
                 { new List<string> { "invSwitch", "invPickOne", "invPickStack", "invSort", "confirm", "cancel", "left", "right", "up", "down" } }, // inventory
+                { new List<string> { "confirm", "cancel", "mapZoomIn", "mapZoomOut" } }, // map
             };
 
             // searching for duplicates and making a dictionary of found duplicates (texture: property list)

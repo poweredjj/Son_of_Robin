@@ -169,7 +169,7 @@ namespace Studies.Joystick.Input
             RightStick.Update(state, rightTouch, dt);
         }
 
-        public List<Rectangle> Draw(SpriteBatch spriteBatch = null, bool getBGRectsOnly = false)
+        public List<Rectangle> Draw(SpriteBatch spriteBatch = null, bool getBGRectsOnly = false, bool drawLeftStick = true, bool drawRightStick = true)
         {
             Texture2D backgroundTx = SonOfRobinGame.textureByName["virtual_joypad_background"];
             Texture2D stickTx = SonOfRobinGame.textureByName["virtual_joypad_stick"];
@@ -178,15 +178,18 @@ namespace Studies.Joystick.Input
             float backgroundSize = aliveZoneSize / scale * 2;
             float stickSize = aliveZoneSize * 0.6f / scale;
 
-            Rectangle leftRect = DrawTextureCentered(texture: backgroundTx, position: LeftStick.StartLocation / scale, spriteBatch: spriteBatch, width: backgroundSize, height: backgroundSize, getRectOnly: getBGRectsOnly);
-            Rectangle rightRect = DrawTextureCentered(texture: backgroundTx, position: RightStick.StartLocation / scale, spriteBatch: spriteBatch, width: backgroundSize, height: backgroundSize, getRectOnly: getBGRectsOnly);
+            Rectangle leftRect = new Rectangle();
+            Rectangle rightRect = new Rectangle();
+
+            if (drawLeftStick) leftRect = DrawTextureCentered(texture: backgroundTx, position: LeftStick.StartLocation / scale, spriteBatch: spriteBatch, width: backgroundSize, height: backgroundSize, getRectOnly: getBGRectsOnly);
+            if (drawRightStick) rightRect = DrawTextureCentered(texture: backgroundTx, position: RightStick.StartLocation / scale, spriteBatch: spriteBatch, width: backgroundSize, height: backgroundSize, getRectOnly: getBGRectsOnly);
 
             var rectList = new List<Rectangle> { leftRect, rightRect };
 
             if (!getBGRectsOnly)
             {
-                DrawTextureCentered(texture: stickTx, position: LeftStick.GetPositionVector(aliveZoneSize) / scale, spriteBatch: spriteBatch, width: stickSize, height: stickSize);
-                DrawTextureCentered(texture: stickTx, position: RightStick.GetPositionVector(aliveZoneSize) / scale, spriteBatch: spriteBatch, width: stickSize, height: stickSize);
+                if (drawLeftStick) DrawTextureCentered(texture: stickTx, position: LeftStick.GetPositionVector(aliveZoneSize) / scale, spriteBatch: spriteBatch, width: stickSize, height: stickSize);
+                if (drawRightStick) DrawTextureCentered(texture: stickTx, position: RightStick.GetPositionVector(aliveZoneSize) / scale, spriteBatch: spriteBatch, width: stickSize, height: stickSize);
             }
 
             return rectList;

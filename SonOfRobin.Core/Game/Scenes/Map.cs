@@ -61,7 +61,7 @@ namespace SonOfRobin
         {
             if (this.FullScreen) this.InputType = InputTypes.Normal;
 
-            this.camera.TrackPiece(trackedPiece: this.world.player, moveInstantly: true);
+            this.camera.TrackCoords(position: this.world.player.sprite.position, moveInstantly: true);
             this.camera.SetZoom(zoom: 0.5f, setInstantly: true);
 
             this.updateActive = true;
@@ -305,14 +305,41 @@ namespace SonOfRobin
 
         private void ProcessInput()
         {
-            if (InputMapper.HasBeenPressed(InputMapper.Action.MapSwitch)) this.world.ToggleMapMode();
+            if (InputMapper.HasBeenPressed(InputMapper.Action.MapSwitch)) this.SwitchToNextMode();
+            if (InputMapper.IsPressed(InputMapper.Action.MapZoomIn))
+            {
+                float currentZoom = this.camera.currentZoom + 0.007f;
+                this.camera.SetZoom(currentZoom);
+            }
+
+            if (InputMapper.IsPressed(InputMapper.Action.MapZoomOut))
+            {
+                float currentZoom = this.camera.currentZoom - 0.007f;
+                this.camera.SetZoom(currentZoom);
+            }
+
+            // TODO add zoom boundaries
+
+            Vector2 movement = InputMapper.Analog(InputMapper.Action.WorldWalk) * 10 / this.camera.currentZoom;
+
+            this.camera.Update();
+
+            // TODO add stopping right after hitting bounds with viewRect bounds        
+
+            Vector2 newPos = this.camera.TrackedPos + movement;
+            newPos.X = Math.Min(0, newPos.X);
+            newPos.X = Math.Max(newPos.X, this.world.width);
+            newPos.Y = Math.Min(0, newPos.Y);
+            newPos.Y = Math.Max(newPos.Y, this.world.height);
+
+            this.camera.TrackCoords(this.camera.TrackedPos + movement);
         }
 
         public override void Draw()
         {
             // filling screen with water color
 
-            if (this.FullScreen) SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, this.worldRect, BoardGraphics.colorsByName[BoardGraphics.Colors.WaterDeep] * this.viewParams.drawOpacity);
+            if (this.FullScreen && !this.transManager.HasAnyTransition) SonOfRobinGame.graphicsDevice.Clear(BoardGraphics.colorsByName[BoardGraphics.Colors.WaterDeep]);
 
             // drawing terrain and fog of war
             SonOfRobinGame.spriteBatch.Draw(this.combinedGfx, this.worldRect, Color.White * this.viewParams.drawOpacity);

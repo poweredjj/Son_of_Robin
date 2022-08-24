@@ -41,6 +41,9 @@ namespace SonOfRobin
             ToolbarPrev,
             ToolbarNext,
 
+            MapZoomIn,
+            MapZoomOut,
+
             MapSwitch,
 
             SecretLicenceBypass
@@ -54,9 +57,9 @@ namespace SonOfRobin
 
         protected readonly static Dictionary<Action, Mapping> detailedMappings = new Dictionary<Action, Mapping>();
 
-        public static readonly InputPackage defaultMappingGamepad = new InputPackage(packageVersion: InputPackage.version, leftStick: AnalogType.PadLeft, rightStick: AnalogType.PadRight, confirm: Buttons.A, cancel: Buttons.B, pauseMenu: Buttons.Start, sprint: Buttons.LeftStick, equip: Buttons.DPadLeft, inventory: Buttons.Y, pickUp: Buttons.X, craft: Buttons.DPadUp, interact: Buttons.A, map: Buttons.DPadRight, useTool: Buttons.RightTrigger, zoomOut: Buttons.LeftTrigger, toolbarPrev: Buttons.LeftShoulder, toolbarNext: Buttons.RightShoulder, invSwitch: Buttons.LeftStick, invPickOne: Buttons.Y, invPickStack: Buttons.X, invSort: Buttons.RightStick);
+        public static readonly InputPackage defaultMappingGamepad = new InputPackage(packageVersion: InputPackage.version, leftStick: AnalogType.PadLeft, rightStick: AnalogType.PadRight, confirm: Buttons.A, cancel: Buttons.B, pauseMenu: Buttons.Start, sprint: Buttons.LeftStick, equip: Buttons.DPadLeft, inventory: Buttons.Y, pickUp: Buttons.X, craft: Buttons.DPadUp, interact: Buttons.A, map: Buttons.DPadRight, useTool: Buttons.RightTrigger, zoomOut: Buttons.LeftTrigger, toolbarPrev: Buttons.LeftShoulder, toolbarNext: Buttons.RightShoulder, invSwitch: Buttons.LeftStick, invPickOne: Buttons.Y, invPickStack: Buttons.X, invSort: Buttons.RightStick, mapZoomIn: Buttons.RightTrigger, mapZoomOut: Buttons.LeftTrigger);
 
-        public static readonly InputPackage defaultMappingKeyboard = new InputPackage(packageVersion: InputPackage.version, leftStick: AnalogType.FromKeys, rightStick: AnalogType.Empty, confirm: Keys.Enter, cancel: Keys.Escape, pauseMenu: Keys.Back, sprint: Keys.NumPad0, equip: Keys.E, inventory: Keys.Enter, pickUp: Keys.RightControl, craft: Keys.NumPad5, interact: Keys.RightShift, map: Keys.M, useTool: Keys.Space, zoomOut: Keys.NumPad1, toolbarPrev: Keys.OemOpenBrackets, toolbarNext: Keys.OemCloseBrackets, invSwitch: Keys.Tab, invPickOne: Keys.RightShift, invPickStack: Keys.Space, invSort: Keys.LeftShift, left: Keys.Left, right: Keys.Right, up: Keys.Up, down: Keys.Down);
+        public static readonly InputPackage defaultMappingKeyboard = new InputPackage(packageVersion: InputPackage.version, leftStick: AnalogType.FromKeys, rightStick: AnalogType.Empty, confirm: Keys.Enter, cancel: Keys.Escape, pauseMenu: Keys.Back, sprint: Keys.NumPad0, equip: Keys.E, inventory: Keys.Enter, pickUp: Keys.RightControl, craft: Keys.NumPad5, interact: Keys.RightShift, map: Keys.M, useTool: Keys.Space, zoomOut: Keys.NumPad1, toolbarPrev: Keys.OemOpenBrackets, toolbarNext: Keys.OemCloseBrackets, invSwitch: Keys.Tab, invPickOne: Keys.RightShift, invPickStack: Keys.Space, invSort: Keys.LeftShift, mapZoomIn: Keys.X, mapZoomOut: Keys.Z, left: Keys.Left, right: Keys.Right, up: Keys.Up, down: Keys.Down);
 
         public static InputPackage currentMappingGamepad = defaultMappingGamepad.MakeCopy();
         public static InputPackage currentMappingKeyboard = defaultMappingKeyboard.MakeCopy();
@@ -117,6 +120,8 @@ namespace SonOfRobin
 
             // map
             new Mapping(action: Action.MapSwitch, anyInputList: new List<object> { keybMap.cancel, keybMap.map, padMap.cancel, padMap.map, VButName.Return });
+            new Mapping(action: Action.MapZoomIn, anyInputList: new List<object> { keybMap.mapZoomIn, padMap.mapZoomIn, VButName.MapZoomIn });
+            new Mapping(action: Action.MapZoomOut, anyInputList: new List<object> { keybMap.mapZoomOut, padMap.mapZoomOut, VButName.MapZoomOut });
 
             // secret licence bypass
             new Mapping(action: Action.SecretLicenceBypass, anyInputList: new List<object> { Keys.LeftControl, Buttons.Start, VButName.Return });
