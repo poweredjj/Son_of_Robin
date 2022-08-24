@@ -56,6 +56,7 @@ namespace SonOfRobin
         }
 
         private readonly World world;
+        private readonly Scene displayScene;
         private TrackingMode trackingMode;
         private Sprite trackedSprite;
         private bool trackedSpriteReached;
@@ -88,10 +89,10 @@ namespace SonOfRobin
         }
 
         public int ScreenWidth
-        { get { return (int)(SonOfRobinGame.VirtualWidth * this.world.viewParams.ScaleX); } }
+        { get { return (int)(SonOfRobinGame.VirtualWidth * this.displayScene.viewParams.ScaleX); } }
 
         public int ScreenHeight
-        { get { return (int)(SonOfRobinGame.VirtualHeight * this.world.viewParams.ScaleY); } }
+        { get { return (int)(SonOfRobinGame.VirtualHeight * this.displayScene.viewParams.ScaleY); } }
 
         public bool TrackedSpriteExists
         {
@@ -126,9 +127,10 @@ namespace SonOfRobin
             Position,
         }
 
-        public Camera(World world, bool useFluidMotion)
+        public Camera(World world, Scene displayScene, bool useFluidMotion)
         {
             this.world = world;
+            this.displayScene = displayScene;
             this.useFluidMotion = useFluidMotion;
             this.CurrentPos = new Vector2(0, 0);
 

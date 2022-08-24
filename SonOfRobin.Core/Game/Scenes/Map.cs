@@ -33,7 +33,7 @@ namespace SonOfRobin
             this.updateActive = false;
             this.world = world;
             this.worldRect = new Rectangle(x: 0, y: 0, width: world.width, height: world.height);
-            this.camera = new Camera(world: this.world, useFluidMotion: false);
+            this.camera = new Camera(world: this.world, displayScene: this, useFluidMotion: false);
             this.fullScreen = fullScreen;
             this.dirtyFog = true;
             this.spritesBag = new ConcurrentBag<Sprite> { };
