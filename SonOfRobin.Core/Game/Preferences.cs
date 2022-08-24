@@ -294,11 +294,7 @@ namespace SonOfRobin
                 debugShowWholeMap = value;
 
                 World world = World.GetTopWorld();
-                if (world != null)
-                {
-                    world.mapBig.ForceRender();
-                    world.mapSmall.ForceRender();
-                }
+                if (world != null) world.map.ForceRender();
             }
         }
 
@@ -353,11 +349,7 @@ namespace SonOfRobin
                 if (world != null)
                 {
                     world.MapEnabled = debugGodMode;
-                    if (debugGodMode)
-                    {
-                        world.mapBig.ForceRender();
-                        world.mapSmall.ForceRender();
-                    }
+                    if (debugGodMode) world.map.ForceRender();
                 }
             }
         }

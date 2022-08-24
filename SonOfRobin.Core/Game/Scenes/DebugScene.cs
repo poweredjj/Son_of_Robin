@@ -40,7 +40,7 @@ namespace SonOfRobin
 
             if (worldActive)
             {
-                if (world.mapMode == World.MapMode.Big) debugLines.Add($"objects {world.PieceCount}");
+                if (world.map.FullScreen) debugLines.Add($"objects {world.PieceCount}");
                 else debugLines.Add($"{world.debugText}");
             }
 

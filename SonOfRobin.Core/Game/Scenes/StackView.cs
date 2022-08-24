@@ -139,11 +139,6 @@ namespace SonOfRobin
                 Menu menu = (Menu)scene;
                 sceneName = $"Menu '{menu.templateName}'";
             }
-            else if (scene.GetType() == typeof(Map))
-            {
-                Map map = (Map)scene;
-                sceneName = map.fullScreen ? "Map (big)" : "Map (small)";
-            }
             else if (scene.GetType() == typeof(Inventory))
             {
                 Inventory inventory = (Inventory)scene;

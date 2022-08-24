@@ -60,7 +60,7 @@ namespace SonOfRobin
                 Scene inventoryScene = GetTopSceneOfType(typeof(Inventory));
                 if (inventoryScene != null && ((Inventory)inventoryScene).type != Inventory.Type.SingleBottom && !inventoryScene.transManager.HasAnyTransition) return true;
 
-                return this.world.mapMode == World.MapMode.Big ||
+                return this.world.map.FullScreen ||
                     this.world.CineMode ||
                     this.world.SpectatorMode ||
                     this.world.player == null;

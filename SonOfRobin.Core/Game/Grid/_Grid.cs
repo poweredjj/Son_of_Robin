@@ -517,7 +517,7 @@ namespace SonOfRobin
                 }
             }
 
-            if (updateFog) this.world.UpdateFogOfWar();
+            if (updateFog) this.world.map.dirtyFog = true;
         }
 
         public int DrawSprites(Camera camera, List<Sprite> blockingLightSpritesList)

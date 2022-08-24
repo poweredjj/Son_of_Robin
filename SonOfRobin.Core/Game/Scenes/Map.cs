@@ -8,10 +8,18 @@ namespace SonOfRobin
 {
     public class Map : Scene
     {
+        public enum MapMode
+        {
+            Off,
+            Mini,
+            Full
+        }
+
         private readonly World world;
         private readonly Camera camera;
         private readonly Rectangle worldRect;
-        public readonly bool fullScreen;
+        public bool FullScreen { get { return this.Mode == MapMode.Full; } }
+        public MapMode Mode { get; private set; }
 
         private float scaleMultiplier;
         private bool dirtyBackground;
@@ -20,21 +28,17 @@ namespace SonOfRobin
         private RenderTarget2D combinedGfx;
         private ConcurrentBag<Sprite> spritesBag;
 
-        // max screen percentage, that minimap may occupy
-        private static readonly float minimapMaxPercentWidth = 0.35f;
-        private static readonly float minimapMaxPercentHeight = 0.5f;
-
         private static readonly List<PieceTemplate.Name> depositNameList = new List<PieceTemplate.Name> {
             PieceTemplate.Name.CoalDeposit, PieceTemplate.Name.IronDeposit, PieceTemplate.Name.CrystalDepositSmall, PieceTemplate.Name.CrystalDepositBig };
 
-        public Map(World world, bool fullScreen, TouchLayout touchLayout) : base(inputType: InputTypes.None, priority: 1, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: false, touchLayout: touchLayout, tipsLayout: ControlTips.TipsLayout.Map)
+        public Map(World world, TouchLayout touchLayout) : base(inputType: InputTypes.None, priority: 1, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: false, touchLayout: touchLayout, tipsLayout: ControlTips.TipsLayout.Map)
         {
             this.drawActive = false;
             this.updateActive = false;
             this.world = world;
             this.worldRect = new Rectangle(x: 0, y: 0, width: world.width, height: world.height);
             this.camera = new Camera(world: this.world, displayScene: this, useFluidMotion: false);
-            this.fullScreen = fullScreen;
+            this.Mode = MapMode.Off;
             this.dirtyFog = true;
             this.spritesBag = new ConcurrentBag<Sprite> { };
         }
@@ -44,22 +48,21 @@ namespace SonOfRobin
             this.UpdateResolution();
         }
 
-        public void TurnOn(bool addTransition = true)
+        private void TurnOn()
         {
-            if (this.fullScreen) this.InputType = InputTypes.Normal;
+            if (this.FullScreen) this.InputType = InputTypes.Normal;
 
             this.camera.TrackPiece(trackedPiece: this.world.player, moveInstantly: true);
             this.camera.SetZoom(zoom: 0.5f, setInstantly: true);
 
             this.updateActive = true;
             this.drawActive = true;
-            this.blocksDrawsBelow = this.fullScreen;
+            this.blocksDrawsBelow = this.FullScreen;
 
             this.UpdateResolution();
+            this.AddTransition(inTrans: true);
 
-            if (addTransition) this.AddTransition(inTrans: true);
-
-            this.blocksUpdatesBelow = this.fullScreen && !Preferences.DebugMode; // fullscreen map should only be "live animated" in debug mode
+            this.blocksUpdatesBelow = this.FullScreen && !Preferences.DebugMode; // fullscreen map should only be "live animated" in debug mode
         }
 
         public void ForceRender()
@@ -73,11 +76,8 @@ namespace SonOfRobin
 
         public void UpdateResolution() // main rendering code
         {
-            float maxPercentWidth = this.fullScreen ? 1 : minimapMaxPercentWidth;
-            float maxPercentHeight = this.fullScreen ? 1 : minimapMaxPercentHeight;
-
-            float multiplierX = (float)SonOfRobinGame.VirtualWidth / (float)world.width * maxPercentWidth;
-            float multiplierY = (float)SonOfRobinGame.VirtualHeight / (float)world.height * maxPercentHeight;
+            float multiplierX = (float)SonOfRobinGame.VirtualWidth / (float)world.width;
+            float multiplierY = (float)SonOfRobinGame.VirtualHeight / (float)world.height;
             this.scaleMultiplier = Math.Min(multiplierX, multiplierY);
 
             this.SetViewParamsForMiniature();
@@ -97,7 +97,7 @@ namespace SonOfRobin
         {
             if (this.dirtyBackground)
             {
-                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{SonOfRobinGame.currentUpdate} updating map background (fullscreen {this.fullScreen})");
+                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{SonOfRobinGame.currentUpdate} updating map background (fullscreen {this.FullScreen})");
 
                 this.StartRenderingToTarget(this.terrainGfx);
                 SonOfRobinGame.graphicsDevice.Clear(Color.Transparent);
@@ -125,7 +125,7 @@ namespace SonOfRobin
 
             this.SetViewParamsForMiniature();
 
-            MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{SonOfRobinGame.currentUpdate} updating map fog (fullscreen {this.fullScreen})");
+            MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{SonOfRobinGame.currentUpdate} updating map fog (fullscreen {this.FullScreen})");
 
             if (this.combinedGfx == null || this.combinedGfx.Width != this.viewParams.Width || this.combinedGfx.Height != this.viewParams.Height)
             {
@@ -144,7 +144,7 @@ namespace SonOfRobin
                 int cellHeight = this.world.grid.allCells[0].height;
                 int destCellWidth = (int)Math.Ceiling(cellWidth * this.scaleMultiplier);
                 int destCellHeight = (int)Math.Ceiling(cellHeight * this.scaleMultiplier);
-                Color fogColor = this.fullScreen ? new Color(50, 50, 50) : new Color(80, 80, 80);
+                Color fogColor = this.FullScreen ? new Color(50, 50, 50) : new Color(80, 80, 80);
 
                 Rectangle sourceRectangle = new Rectangle(0, 0, cellWidth, cellHeight);
                 SonOfRobinGame.graphicsDevice.Clear(new Color(0, 0, 0, 0));
@@ -167,6 +167,8 @@ namespace SonOfRobin
 
         public void TurnOff(bool addTransition = true)
         {
+            this.Mode = MapMode.Off;
+
             this.InputType = InputTypes.None;
             this.blocksDrawsBelow = false;
             this.blocksUpdatesBelow = false;
@@ -179,12 +181,41 @@ namespace SonOfRobin
             }
         }
 
+        public void SwitchToNextMode()
+        {
+            switch (this.Mode)
+            {
+                case MapMode.Off:
+                    Sound.QuickPlay(SoundData.Name.TurnPage);
+                    this.Mode = MapMode.Mini;
+                    this.TurnOn();
+                    break;
+
+                case MapMode.Mini:
+                    Sound.QuickPlay(SoundData.Name.PaperMove1);
+                    this.Mode = MapMode.Full;
+                    break;
+
+                case MapMode.Full:
+                    this.Mode = MapMode.Off;
+                    Sound.QuickPlay(SoundData.Name.PaperMove2);
+                    this.TurnOff();
+                    break;
+
+                default:
+                    throw new ArgumentException($"Unsupported mode - {this.Mode}.");
+            }
+
+        }
+
         public void AddTransition(bool inTrans)
         {
             this.UpdateViewPos();
 
             if (inTrans)
             {
+                this.viewParams.Opacity = this.FullScreen ? 1f : 0.7f;
+
                 this.transManager.AddMultipleTransitions(outTrans: !inTrans, duration: 15, endTurnOffDraw: false, endTurnOffUpdate: false,
                     paramsToChange: new Dictionary<string, float> {
                         { "PosX", this.world.viewParams.drawPosX},
@@ -219,7 +250,6 @@ namespace SonOfRobin
             if (!this.CheckIfCanBeTurnedOn(showMessage: true))
             {
                 this.TurnOff();
-                this.world.mapMode = World.MapMode.None;
                 return;
             }
 
@@ -240,8 +270,6 @@ namespace SonOfRobin
 
         private void SetViewParamsForRender()
         {
-            if (!this.fullScreen) this.viewParams.Opacity = 0.7f;
-
             this.viewParams.Width = this.world.width;
             this.viewParams.Height = this.world.height;
             this.viewParams.ScaleX = 1 / this.camera.currentZoom;
@@ -253,7 +281,7 @@ namespace SonOfRobin
 
         private void UpdateViewPos()
         {
-            if (this.fullScreen) this.viewParams.CenterView();
+            if (this.FullScreen) this.viewParams.CenterView();
             else
             {
                 var margin = (int)Math.Ceiling(Math.Min(SonOfRobinGame.VirtualWidth / 30f, SonOfRobinGame.VirtualHeight / 30f));
@@ -272,13 +300,13 @@ namespace SonOfRobin
         {
             // filling screen with water color
 
-            if (this.fullScreen) SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, this.worldRect, BoardGraphics.colorsByName[BoardGraphics.Colors.WaterDeep] * this.viewParams.drawOpacity);
+            if (this.FullScreen) SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, this.worldRect, BoardGraphics.colorsByName[BoardGraphics.Colors.WaterDeep] * this.viewParams.drawOpacity);
 
             // drawing terrain and fog of war
             SonOfRobinGame.spriteBatch.Draw(this.combinedGfx, this.worldRect, Color.White * this.viewParams.drawOpacity);
 
             // drawing pieces
-            var groupName = this.fullScreen ? Cell.Group.Visible : Cell.Group.MiniMap;
+            var groupName = this.FullScreen ? Cell.Group.Visible : Cell.Group.MiniMap;
 
             byte fillSize;
             byte outlineSize = 1;
@@ -437,7 +465,7 @@ namespace SonOfRobin
             // drawing camera FOV
             var viewRect = this.world.camera.viewRect;
 
-            Helpers.DrawRectangleOutline(rect: viewRect, color: Color.White * this.viewParams.drawOpacity, borderWidth: this.fullScreen ? 2 : 1);
+            Helpers.DrawRectangleOutline(rect: viewRect, color: Color.White * this.viewParams.drawOpacity, borderWidth: this.FullScreen ? 2 : 1);
         }
 
         private void DrawSpriteSquare(Sprite sprite, byte size, Color color)

@@ -9,13 +9,6 @@ namespace SonOfRobin
 {
     public class World : Scene
     {
-        public enum MapMode
-        {
-            None,
-            Small,
-            Big
-        }
-
         public Vector2 analogMovementLeftStick;
         public Vector2 analogMovementRightStick;
         public Vector2 analogCameraCorrection;
@@ -170,10 +163,7 @@ namespace SonOfRobin
         public readonly int height;
         public readonly Camera camera;
         private RenderTarget2D darknessMask;
-        public MapMode mapMode;
-        public List<MapMode> mapCycle;
-        public readonly Map mapBig;
-        public readonly Map mapSmall;
+        public readonly Map map;
         public readonly PlayerPanel playerPanel;
         public readonly SolidColorManager solidColorManager;
         public readonly SMTypesManager stateMachineTypesManager;
@@ -188,16 +178,8 @@ namespace SonOfRobin
                 if (this.mapEnabled == value) return;
                 this.mapEnabled = value;
 
-                if (this.mapEnabled)
-                {
-                    if (SonOfRobinGame.platform == Platform.Desktop) this.ToggleMapMode();
-                }
-                else
-                {
-                    this.mapSmall.TurnOff();
-                    this.mapBig.TurnOff();
-                    this.mapMode = MapMode.None;
-                }
+                if (this.mapEnabled) this.ToggleMapMode();
+                else this.map.TurnOff();
             }
         }
 
@@ -236,20 +218,6 @@ namespace SonOfRobin
         public bool CanProcessMoreNonPlantsNow { get { return UpdateTimeElapsed.Milliseconds <= 7 * this.updateMultiplier; } }
         public bool CanProcessMorePlantsNow { get { return UpdateTimeElapsed.Milliseconds <= 9 * this.updateMultiplier; } }
         public bool CanProcessAnyStateMachineNow { get { return !this.plantsProcessing || UpdateTimeElapsed.Milliseconds <= 9 * this.updateMultiplier; } }
-
-        private MapMode NextMapMode
-        {
-            get
-            {
-                bool modeFound = false;
-                foreach (MapMode mapMode in this.mapCycle)
-                {
-                    if (modeFound) return mapMode;
-                    if (mapMode == this.mapMode) modeFound = true;
-                }
-                return this.mapCycle[0];
-            }
-        }
 
         public float PieceCount
         {
@@ -341,17 +309,13 @@ namespace SonOfRobin
             this.camera = new Camera(world: this, displayScene: this, useFluidMotion: true);
             this.camera.TrackCoords(new Vector2(0, 0));
             this.MapEnabled = false;
-            this.mapMode = MapMode.None;
-            this.mapCycle = SonOfRobinGame.platform == Platform.Mobile ? new List<MapMode> { MapMode.None, MapMode.Big } : new List<MapMode> { MapMode.None, MapMode.Small, MapMode.Big };
-            this.mapBig = new Map(world: this, fullScreen: true, touchLayout: TouchLayout.Map);
-            this.mapSmall = new Map(world: this, fullScreen: false, touchLayout: TouchLayout.Empty);
+            this.map = new Map(world: this, touchLayout: TouchLayout.Map);
             this.playerPanel = new PlayerPanel(world: this);
             this.debugText = "";
             if (saveGameData == null) this.grid = new Grid(world: this, resDivider: resDivider);
             else this.Deserialize(gridOnly: true);
 
-            this.AddLinkedScene(this.mapBig);
-            this.AddLinkedScene(this.mapSmall);
+            this.AddLinkedScene(this.map);
             this.AddLinkedScene(this.playerPanel);
 
             this.solidColorManager = new SolidColorManager(this);
@@ -444,11 +408,7 @@ namespace SonOfRobin
 
             this.CreateNewDarknessMask();
             this.grid.LoadAllTexturesInCameraView();
-            if (!this.demoMode)
-            {
-                this.mapBig.ForceRender();
-                this.mapSmall.ForceRender();
-            }
+            if (!this.demoMode) this.map.ForceRender();
 
             SonOfRobinGame.game.IsFixedTimeStep = Preferences.FrameSkip;
 
@@ -807,40 +767,11 @@ namespace SonOfRobin
                 return;
             }
 
-            if (!this.mapSmall.CheckIfCanBeTurnedOn(showMessage: true))
-            {
-                this.mapMode = MapMode.None;
-                return;
-            }
+            if (!this.map.CheckIfCanBeTurnedOn(showMessage: true)) return;
 
-            if (this.mapSmall.transManager.HasAnyTransition || this.mapBig.transManager.HasAnyTransition) return;
+            if (this.map.transManager.HasAnyTransition || this.map.transManager.HasAnyTransition) return;
 
-            this.mapMode = this.NextMapMode;
-
-            switch (this.mapMode)
-            {
-                case MapMode.None:
-                    Sound.QuickPlay(SoundData.Name.PaperMove2);
-                    this.mapSmall.TurnOff();
-                    this.mapBig.TurnOff();
-                    break;
-
-                case MapMode.Small:
-                    Sound.QuickPlay(SoundData.Name.PaperMove1);
-                    this.mapSmall.TurnOn();
-                    this.mapBig.TurnOff();
-                    break;
-
-                case MapMode.Big:
-                    Sound.QuickPlay(SoundData.Name.TurnPage);
-                    this.mapSmall.TurnOff();
-                    this.mapBig.TurnOn();
-                    break;
-
-
-                default:
-                    throw new DivideByZeroException($"Unsupported mapMode - {mapMode}.");
-            }
+            this.map.SwitchToNextMode();
         }
 
         public static World GetTopWorld()
@@ -1082,11 +1013,6 @@ namespace SonOfRobin
             }
         }
 
-        public void UpdateFogOfWar()
-        {
-            this.mapBig.dirtyFog = true;
-            this.mapSmall.dirtyFog = true;
-        }
 
         public void AddPauseMenuTransitions()
         {
