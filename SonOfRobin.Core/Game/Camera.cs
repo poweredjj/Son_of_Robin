@@ -144,11 +144,11 @@ namespace SonOfRobin
         public void Update()
         {
             // Update should not be called more than once per frame - this causes jerky motion.
-            // Also, it should not be calculated on Draw(), because new viewPos cannot be used before the next spriteBatch.Begin (position and zoom will not match in the same frame).
+            // Also, it should not be calculated on Draw(), because new viewPos cannot be used before the next spriteBatch.Begin() (position and zoom will not match in the same frame).
 
             if (!Scene.processingUpdate) return;
 
-            float xMin; float xMax; float yMin; float yMax;
+            float xMin, xMax, yMin, yMax;
             Vector2 currentTargetPos = this.GetTargetCoords();
             Vector2 viewCenter = new Vector2(0, 0); // to be updated below
 
@@ -234,7 +234,9 @@ namespace SonOfRobin
 
             // in case of map being smaller than the screen
             if (viewRect.Width >= this.world.width && viewRect.Height >= this.world.height)
-            { return new Vector2(this.world.random.Next(0, this.world.width), this.world.random.Next(0, this.world.height)); }
+            {
+                return new Vector2(this.world.random.Next(0, this.world.width), this.world.random.Next(0, this.world.height));
+            }
 
             while (true)
             {

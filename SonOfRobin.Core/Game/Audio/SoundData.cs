@@ -109,6 +109,7 @@ namespace SonOfRobin
             ToolsMove,
             PaperMove1,
             PaperMove2,
+            TurnPage,
 
             GameOver,
 
@@ -454,6 +455,7 @@ namespace SonOfRobin
             { Name.DropRope, "459440__coral-island-studios__13-cardboard-box-stacking" },
             { Name.Error, "141334__lluiset7__error-2" },
             { Name.Lava, "174500__unfa__boiling-towel-loop" },
+            { Name.TurnPage, "521114__d-jones__turn-the-page" },
             };
     }
 }

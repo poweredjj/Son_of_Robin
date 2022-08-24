@@ -9,6 +9,8 @@ namespace SonOfRobin
     public class Map : Scene
     {
         private readonly World world;
+        private readonly Camera camera;
+        private readonly Rectangle worldRect;
         public readonly bool fullScreen;
         private float multiplier;
         private bool dirtyBackground;
@@ -41,6 +43,8 @@ namespace SonOfRobin
             this.drawActive = false;
             this.updateActive = false;
             this.world = world;
+            this.worldRect = new Rectangle(x: 0, y: 0, width: world.width, height: world.height);
+            this.camera = new Camera(this.world);
             this.fullScreen = fullScreen;
             this.dirtyFog = true;
             this.spritesBag = new ConcurrentBag<Sprite> { };

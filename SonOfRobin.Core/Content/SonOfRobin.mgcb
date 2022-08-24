@@ -4592,6 +4592,12 @@
 /processorParam:Quality=Best
 /build:sound/517732__zovipoland__book-page-change-1-2.ogg
 
+#begin sound/521114__d-jones__turn-the-page.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sound/521114__d-jones__turn-the-page.ogg
+
 #begin sound/521587__fission9__hiking-boot-footsteps-on-grass-1.ogg
 /importer:OggImporter
 /processor:SoundEffectProcessor

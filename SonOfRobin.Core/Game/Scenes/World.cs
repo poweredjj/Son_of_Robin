@@ -820,16 +820,19 @@ namespace SonOfRobin
             switch (this.mapMode)
             {
                 case MapMode.None:
+                    Sound.QuickPlay(SoundData.Name.PaperMove2);
                     this.mapSmall.TurnOff();
                     this.mapBig.TurnOff();
                     break;
 
                 case MapMode.Small:
+                    Sound.QuickPlay(SoundData.Name.PaperMove1);
                     this.mapSmall.TurnOn();
                     this.mapBig.TurnOff();
                     break;
 
                 case MapMode.Big:
+                    Sound.QuickPlay(SoundData.Name.TurnPage);
                     this.mapSmall.TurnOff();
                     this.mapBig.TurnOn();
                     break;
