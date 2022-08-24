@@ -65,8 +65,8 @@ namespace SonOfRobin
         public Vector2 CurrentPos { get; private set; }
         private float targetZoom;
         public float currentZoom;
-        private bool currentFluidMotion;
-        public bool fluidMotionDisabled;
+        private readonly bool useFluidMotion;
+        private bool disableFluidMotionForOneFrame;
         private static readonly int movementSlowdown = 20;
         private int zoomSlowdown = 20;
 
@@ -126,14 +126,14 @@ namespace SonOfRobin
             Position,
         }
 
-        public Camera(World world)
+        public Camera(World world, bool useFluidMotion)
         {
             this.world = world;
+            this.useFluidMotion = useFluidMotion;
             this.CurrentPos = new Vector2(0, 0);
 
             this.viewRect = new Rectangle(0, 0, 0, 0);
-            this.currentFluidMotion = false;
-            this.fluidMotionDisabled = false;
+            this.disableFluidMotionForOneFrame = false;
             this.trackingMode = TrackingMode.Undefined;
             this.targetZoom = 1f;
             this.currentZoom = 1f;
@@ -152,7 +152,8 @@ namespace SonOfRobin
             Vector2 currentTargetPos = this.GetTargetCoords();
             Vector2 viewCenter = new Vector2(0, 0); // to be updated below
 
-            if (this.currentFluidMotion)
+
+            if (this.useFluidMotion && !this.disableFluidMotionForOneFrame)
             {
                 this.currentZoom += (this.targetZoom - this.currentZoom) / this.zoomSlowdown;
                 if (this.currentZoom == this.targetZoom) this.zoomSlowdown = movementSlowdown; // resetting to default zoom speed, after reaching target value
@@ -166,10 +167,8 @@ namespace SonOfRobin
                 viewCenter.X = currentTargetPos.X;
                 viewCenter.Y = currentTargetPos.Y;
                 this.trackedSpriteReached = true;
-                this.currentFluidMotion = true; // only one frame should be displayed with instant scrolling...
+                this.disableFluidMotionForOneFrame = false;
             }
-
-            if (this.fluidMotionDisabled) this.currentFluidMotion = false; // ...unless fluid motion is disabled
 
             viewCenter += this.world.analogCameraCorrection;
 
@@ -205,7 +204,7 @@ namespace SonOfRobin
             this.trackingMode = TrackingMode.Sprite;
             this.trackedSprite = trackedPiece.sprite;
             this.trackedSpriteReached = false;
-            this.currentFluidMotion = fluidMotion;
+            this.disableFluidMotionForOneFrame = !fluidMotion;
         }
 
         public void TrackCoords(Vector2 position, bool fluidMotion = true)
@@ -214,7 +213,7 @@ namespace SonOfRobin
             this.trackedSprite = null;
             this.trackedSpriteReached = false;
             this.trackedPos = new Vector2(position.X, position.Y);
-            this.currentFluidMotion = fluidMotion;
+            this.disableFluidMotionForOneFrame = !fluidMotion;
         }
         public void ResetZoom(bool setInstantly = false, float zoomSpeedMultiplier = 1f)
         {

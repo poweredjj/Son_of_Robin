@@ -430,7 +430,6 @@ namespace SonOfRobin
                 else world.updateMultiplier *= 2;
 
                 SonOfRobinGame.game.TargetElapsedTime = TimeSpan.FromSeconds(1d / 60d);
-                world.camera.fluidMotionDisabled = true;
             }
 
             if (Keyboard.HasBeenPressed(Keys.LeftControl) || VirtButton.HasButtonBeenPressed(VButName.DebugPlay))
@@ -440,7 +439,6 @@ namespace SonOfRobin
                 SonOfRobinGame.game.IsFixedTimeStep = true;
                 world.updateMultiplier = 1;
                 SonOfRobinGame.game.TargetElapsedTime = TimeSpan.FromSeconds(1d / 60d);
-                world.camera.fluidMotionDisabled = false;
             }
 
             if (Keyboard.HasBeenPressed(Keys.LeftShift) || VirtButton.HasButtonBeenPressed(VButName.DebugPause))
@@ -451,7 +449,6 @@ namespace SonOfRobin
                 SonOfRobinGame.game.IsFixedTimeStep = true;
                 world.updateMultiplier = 1;
                 SonOfRobinGame.game.TargetElapsedTime = TimeSpan.FromSeconds(1d / 3d);
-                world.camera.fluidMotionDisabled = false;
             }
 
             if (Keyboard.HasBeenPressed(Keys.OemOpenBrackets))
@@ -463,15 +460,14 @@ namespace SonOfRobin
                 if (!allSprites.Any()) return;
 
                 var index = BoardPiece.Random.Next(0, allSprites.Count);
-                world.camera.TrackPiece(allSprites.ToArray()[index].boardPiece);
+                world.camera.TrackPiece(trackedPiece: allSprites.ToArray()[index].boardPiece, fluidMotion: false);
             }
 
-            if (Keyboard.HasBeenPressed(Keys.OemCloseBrackets)) world.camera.TrackPiece(world.player);
+            if (Keyboard.HasBeenPressed(Keys.OemCloseBrackets)) world.camera.TrackPiece(trackedPiece: world.player, fluidMotion: false);
 
             if (Keyboard.HasBeenPressed(Keys.X))
             {
                 if (world == null) return;
-
 
                 AnimData.PkgName currentPackageName = world.player.sprite.animPackage;
 

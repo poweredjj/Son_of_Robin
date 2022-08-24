@@ -12,7 +12,8 @@ namespace SonOfRobin
         private readonly Camera camera;
         private readonly Rectangle worldRect;
         public readonly bool fullScreen;
-        private float multiplier;
+
+        private float scaleMultiplier;
         private bool dirtyBackground;
         private RenderTarget2D terrainGfx;
         public bool dirtyFog;
@@ -23,20 +24,8 @@ namespace SonOfRobin
         private static readonly float minimapMaxPercentWidth = 0.35f;
         private static readonly float minimapMaxPercentHeight = 0.5f;
 
-        private static readonly List<PieceTemplate.Name> depositList = new List<PieceTemplate.Name> {
+        private static readonly List<PieceTemplate.Name> depositNameList = new List<PieceTemplate.Name> {
             PieceTemplate.Name.CoalDeposit, PieceTemplate.Name.IronDeposit, PieceTemplate.Name.CrystalDepositSmall, PieceTemplate.Name.CrystalDepositBig };
-
-        private void UpdateViewPos()
-        {
-            if (this.fullScreen) this.viewParams.CenterView();
-            else
-            {
-                var margin = (int)Math.Ceiling(Math.Min(SonOfRobinGame.VirtualWidth / 30f, SonOfRobinGame.VirtualHeight / 30f));
-
-                this.viewParams.PosX = SonOfRobinGame.VirtualWidth - this.viewParams.Width - margin;
-                this.viewParams.PosY = SonOfRobinGame.VirtualHeight - this.viewParams.Height - margin;
-            }
-        }
 
         public Map(World world, bool fullScreen, TouchLayout touchLayout) : base(inputType: InputTypes.None, priority: 1, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: false, touchLayout: touchLayout, tipsLayout: ControlTips.TipsLayout.Map)
         {
@@ -44,9 +33,7 @@ namespace SonOfRobin
             this.updateActive = false;
             this.world = world;
             this.worldRect = new Rectangle(x: 0, y: 0, width: world.width, height: world.height);
-            this.viewParams.Width = this.world.width; // it does not need to be updated, because world size is constant
-            this.viewParams.Height = this.world.height; // it does not need to be updated, because world size is constant
-            this.camera = new Camera(this.world);
+            this.camera = new Camera(world: this.world, useFluidMotion: false);
             this.fullScreen = fullScreen;
             this.dirtyFog = true;
             this.spritesBag = new ConcurrentBag<Sprite> { };
@@ -90,13 +77,9 @@ namespace SonOfRobin
 
             float multiplierX = (float)SonOfRobinGame.VirtualWidth / (float)world.width * maxPercentWidth;
             float multiplierY = (float)SonOfRobinGame.VirtualHeight / (float)world.height * maxPercentHeight;
-            this.multiplier = Math.Min(multiplierX, multiplierY);
+            this.scaleMultiplier = Math.Min(multiplierX, multiplierY);
 
-            this.viewParams.Width = (int)(world.width * this.multiplier);
-            this.viewParams.Height = (int)(world.height * this.multiplier);
-
-            if (!this.fullScreen) this.viewParams.Opacity = 0.7f;
-
+            this.UpdateViewParams(renderMiniature: true);
             this.UpdateViewPos();
 
             if (this.terrainGfx == null || this.terrainGfx.Width != this.viewParams.Width || this.terrainGfx.Height != this.viewParams.Height)
@@ -118,10 +101,10 @@ namespace SonOfRobin
                 this.StartRenderingToTarget(this.terrainGfx);
                 SonOfRobinGame.graphicsDevice.Clear(Color.Transparent);
 
-                int width = (int)(this.world.width * this.multiplier);
-                int height = (int)(this.world.height * this.multiplier);
+                int width = (int)(this.world.width * this.scaleMultiplier);
+                int height = (int)(this.world.height * this.scaleMultiplier);
 
-                Texture2D mapTexture = BoardGraphics.CreateEntireMapTexture(width: width, height: height, grid: this.world.grid, multiplier: this.multiplier);
+                Texture2D mapTexture = BoardGraphics.CreateEntireMapTexture(width: width, height: height, grid: this.world.grid, multiplier: this.scaleMultiplier);
                 Rectangle sourceRectangle = new Rectangle(0, 0, width, height);
                 SonOfRobinGame.spriteBatch.Draw(mapTexture, sourceRectangle, sourceRectangle, Color.White);
 
@@ -138,6 +121,8 @@ namespace SonOfRobin
         private void UpdateFogOfWar()
         {
             if (this.combinedGfx != null && this.dirtyFog == false) return;
+
+            this.UpdateViewParams(renderMiniature: true);
 
             MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{SonOfRobinGame.currentUpdate} updating map fog (fullscreen {this.fullScreen})");
 
@@ -156,8 +141,8 @@ namespace SonOfRobin
             {
                 int cellWidth = this.world.grid.allCells[0].width;
                 int cellHeight = this.world.grid.allCells[0].height;
-                int destCellWidth = (int)Math.Ceiling(cellWidth * this.multiplier);
-                int destCellHeight = (int)Math.Ceiling(cellHeight * this.multiplier);
+                int destCellWidth = (int)Math.Ceiling(cellWidth * this.scaleMultiplier);
+                int destCellHeight = (int)Math.Ceiling(cellHeight * this.scaleMultiplier);
                 Color fogColor = this.fullScreen ? new Color(50, 50, 50) : new Color(80, 80, 80);
 
                 Rectangle sourceRectangle = new Rectangle(0, 0, cellWidth, cellHeight);
@@ -166,8 +151,8 @@ namespace SonOfRobin
                 foreach (Cell cell in this.world.grid.CellsNotVisitedByPlayer)
                 {
                     destinationRectangle = new Rectangle(
-                        (int)Math.Floor(cell.xMin * this.multiplier),
-                        (int)Math.Floor(cell.yMin * this.multiplier),
+                        (int)Math.Floor(cell.xMin * this.scaleMultiplier),
+                        (int)Math.Floor(cell.yMin * this.scaleMultiplier),
                         destCellWidth,
                         destCellHeight);
 
@@ -195,8 +180,6 @@ namespace SonOfRobin
 
         public void AddTransition(bool inTrans)
         {
-            return; // TODO update method and remove this line
-
             bool turnOffDraw = !inTrans;
             bool turnOffUpdate = !inTrans;
 
@@ -251,19 +234,44 @@ namespace SonOfRobin
 
             this.UpdateBackground(); // it's best to update background graphics in Update() (SetRenderTarget in Draw() must go first)
             this.ProcessInput();
-            this.UpdateViewParams();
+            this.UpdateViewParams(renderMiniature: false);
         }
 
-        public void UpdateViewParams()
+        public void UpdateViewParams(bool renderMiniature)
         {
-            this.viewParams.ScaleX = 1f;
-            this.viewParams.ScaleY = 1f;
+            if (!this.fullScreen) this.viewParams.Opacity = 0.7f;
 
-            this.camera.Update();
-            this.viewParams.PosX = this.camera.viewPos.X;
-            this.viewParams.PosY = this.camera.viewPos.Y;
+            if (renderMiniature)
+            {
+                this.viewParams.PosX = 0;
+                this.viewParams.PosY = 0;
+                this.viewParams.ScaleX = 1;
+                this.viewParams.ScaleY = 1;
+                this.viewParams.Width = (int)(world.width * this.scaleMultiplier);
+                this.viewParams.Height = (int)(world.height * this.scaleMultiplier);
+            }
+            else
+            {
+                this.viewParams.ScaleX = 1f;
+                this.viewParams.ScaleY = 1f;
+                this.camera.Update();
+                this.viewParams.PosX = this.camera.viewPos.X;
+                this.viewParams.PosY = this.camera.viewPos.Y;
+                this.viewParams.Width = this.world.width;
+                this.viewParams.Height = this.world.height;
+            }
+        }
 
-            // width and height are set once in constructor
+        private void UpdateViewPos()
+        {
+            if (this.fullScreen) this.viewParams.CenterView();
+            else
+            {
+                var margin = (int)Math.Ceiling(Math.Min(SonOfRobinGame.VirtualWidth / 30f, SonOfRobinGame.VirtualHeight / 30f));
+
+                this.viewParams.PosX = SonOfRobinGame.VirtualWidth - this.viewParams.Width - margin;
+                this.viewParams.PosY = SonOfRobinGame.VirtualHeight - this.viewParams.Height - margin;
+            }
         }
 
         private void ProcessInput()
@@ -300,8 +308,9 @@ namespace SonOfRobin
                 drawOutline = false;
                 showOutsideCamera = false;
                 piece = sprite.boardPiece;
+                Type pieceType = piece.GetType();
 
-                if (piece.GetType() == typeof(Player))
+                if (pieceType == typeof(Player))
                 {
                     showOutsideCamera = true;
                     fillSize = 4;
@@ -311,7 +320,7 @@ namespace SonOfRobin
                     drawOutline = true;
                 }
 
-                else if (piece.GetType() == typeof(Workshop))
+                else if (pieceType == typeof(Workshop))
                 {
                     showOutsideCamera = sprite.hasBeenDiscovered;
                     fillSize = 4;
@@ -321,7 +330,7 @@ namespace SonOfRobin
                     drawOutline = true;
                 }
 
-                else if (piece.GetType() == typeof(Cooker))
+                else if (pieceType == typeof(Cooker))
                 {
                     showOutsideCamera = true;
                     fillSize = 4;
@@ -331,7 +340,7 @@ namespace SonOfRobin
                     drawOutline = true;
                 }
 
-                else if (piece.GetType() == typeof(Shelter))
+                else if (pieceType == typeof(Shelter))
                 {
                     showOutsideCamera = true;
                     fillSize = 4;
@@ -341,7 +350,7 @@ namespace SonOfRobin
                     drawOutline = true;
                 }
 
-                else if (piece.GetType() == typeof(Container))
+                else if (pieceType == typeof(Container))
                 {
                     showOutsideCamera = true;
                     fillSize = 4;
@@ -351,7 +360,7 @@ namespace SonOfRobin
                     drawOutline = true;
                 }
 
-                else if (piece.GetType() == typeof(Tool))
+                else if (pieceType == typeof(Tool))
                 {
                     showOutsideCamera = true;
                     fillSize = 4;
@@ -361,7 +370,7 @@ namespace SonOfRobin
                     drawOutline = true;
                 }
 
-                else if (piece.GetType() == typeof(Equipment))
+                else if (pieceType == typeof(Equipment))
                 {
                     showOutsideCamera = true;
                     fillSize = 4;
@@ -371,7 +380,7 @@ namespace SonOfRobin
                     drawOutline = true;
                 }
 
-                else if (piece.GetType() == typeof(Fruit))
+                else if (pieceType == typeof(Fruit))
                 {
                     showOutsideCamera = sprite.hasBeenDiscovered;
                     fillSize = 2;
@@ -381,19 +390,19 @@ namespace SonOfRobin
                     drawOutline = true;
                 }
 
-                else if (piece.GetType() == typeof(Animal))
+                else if (pieceType == typeof(Animal))
                 {
                     fillColor = PieceInfo.GetInfo(piece.name).isCarnivorous ? Color.Red : Color.Yellow;
                     fillSize = 3;
                 }
 
-                else if (piece.GetType() == typeof(Plant))
+                else if (pieceType == typeof(Plant))
                 {
                     fillSize = 2;
                     fillColor = piece.alive ? Color.Green : Color.DarkGreen;
                 }
 
-                else if (piece.GetType() == typeof(Decoration))
+                else if (pieceType == typeof(Decoration))
                 {
                     if (piece.name == PieceTemplate.Name.CrateStarting || piece.name == PieceTemplate.Name.CrateRegular)
                     {
@@ -404,7 +413,7 @@ namespace SonOfRobin
                         outlineColor = Color.Maroon;
                         drawOutline = true;
                     }
-                    else if (depositList.Contains(piece.name))
+                    else if (depositNameList.Contains(piece.name))
                     {
                         showOutsideCamera = sprite.hasBeenDiscovered;
                         fillSize = 4;
@@ -421,14 +430,13 @@ namespace SonOfRobin
                     }
                 }
 
-                else if (piece.GetType() == typeof(Collectible))
+                else if (pieceType == typeof(Collectible))
                 {
                     fillSize = 2;
                     fillColor = Color.Gray;
                 }
 
-                else
-                { continue; }
+                else continue;
 
                 if (!showOutsideCamera && !cameraRect.Contains(sprite.gfxRect) && !Preferences.debugShowAllMapPieces) continue;
 
@@ -439,22 +447,15 @@ namespace SonOfRobin
             // drawing camera FOV
             var viewRect = this.world.camera.viewRect;
 
-            int fovX = (int)(viewRect.Left * this.multiplier);
-            int fovY = (int)(viewRect.Top * this.multiplier);
-            int fovWidth = (int)(viewRect.Width * this.multiplier);
-            int fovHeight = (int)(viewRect.Height * this.multiplier);
-            int borderWidth = this.fullScreen ? 2 : 1;
-
-            Rectangle fovRect = new Rectangle(fovX, fovY, fovWidth, fovHeight);
-            Helpers.DrawRectangleOutline(rect: fovRect, color: Color.White * this.viewParams.drawOpacity, borderWidth: borderWidth);
+            Helpers.DrawRectangleOutline(rect: viewRect, color: Color.White * this.viewParams.drawOpacity, borderWidth: this.fullScreen ? 2 : 1);
         }
 
         private void DrawSpriteSquare(Sprite sprite, byte size, Color color)
         {
             SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle,
                 new Rectangle(
-                   x: (int)(sprite.position.X - size / 2),
-                  y: (int)(sprite.position.Y - size / 2),
+                    x: (int)(sprite.position.X - size / 2),
+                    y: (int)(sprite.position.Y - size / 2),
                     width: size, height: size),
                 color * this.viewParams.drawOpacity);
         }

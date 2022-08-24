@@ -338,7 +338,7 @@ namespace SonOfRobin
             this.blockingLightSpritesList = new List<Sprite>();
             this.doNotCreatePiecesList = new List<PieceTemplate.Name> { };
             this.discoveredRecipesForPieces = new List<PieceTemplate.Name> { };
-            this.camera = new Camera(this);
+            this.camera = new Camera(world: this, useFluidMotion: true);
             this.camera.TrackCoords(new Vector2(0, 0));
             this.MapEnabled = false;
             this.mapMode = MapMode.None;
