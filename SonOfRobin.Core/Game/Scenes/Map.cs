@@ -48,6 +48,15 @@ namespace SonOfRobin
             this.UpdateResolution();
         }
 
+        public void TurnOff()
+        {
+            this.Mode = MapMode.Off;
+
+            this.InputType = InputTypes.None;
+            this.blocksDrawsBelow = false;
+            this.blocksUpdatesBelow = false;
+        }
+
         private void TurnOn()
         {
             if (this.FullScreen) this.InputType = InputTypes.Normal;
@@ -60,7 +69,6 @@ namespace SonOfRobin
             this.blocksDrawsBelow = this.FullScreen;
 
             this.UpdateResolution();
-            this.AddTransition(inTrans: true);
 
             this.blocksUpdatesBelow = this.FullScreen && !Preferences.DebugMode; // fullscreen map should only be "live animated" in debug mode
         }
@@ -165,36 +173,22 @@ namespace SonOfRobin
             this.dirtyFog = false;
         }
 
-        public void TurnOff(bool addTransition = true)
-        {
-            this.Mode = MapMode.Off;
-
-            this.InputType = InputTypes.None;
-            this.blocksDrawsBelow = false;
-            this.blocksUpdatesBelow = false;
-
-            if (addTransition) this.AddTransition(inTrans: false);
-            else
-            {
-                this.updateActive = false;
-                this.drawActive = false;
-            }
-        }
-
         public void SwitchToNextMode()
         {
             switch (this.Mode)
             {
                 case MapMode.Off:
                     Sound.QuickPlay(SoundData.Name.TurnPage);
-                    this.Mode = MapMode.Mini;
+                    this.Mode = MapMode.Full;
                     this.TurnOn();
                     break;
 
-                case MapMode.Mini:
-                    Sound.QuickPlay(SoundData.Name.PaperMove1);
-                    this.Mode = MapMode.Full;
-                    break;
+                // TODO enable mini mode
+
+                //case MapMode.Mini:
+                //    Sound.QuickPlay(SoundData.Name.PaperMove1);
+                //    this.Mode = MapMode.Full;
+                //    break;
 
                 case MapMode.Full:
                     this.Mode = MapMode.Off;
@@ -206,30 +200,48 @@ namespace SonOfRobin
                     throw new ArgumentException($"Unsupported mode - {this.Mode}.");
             }
 
+            this.AddTransition();
         }
 
-        public void AddTransition(bool inTrans)
+        public void AddTransition()
         {
             this.UpdateViewPos();
 
-            if (inTrans)
-            {
-                this.viewParams.Opacity = this.FullScreen ? 1f : 0.7f;
+            // this.viewParams.Opacity = this.FullScreen ? 1f : 0.7f;
 
-                this.transManager.AddMultipleTransitions(outTrans: !inTrans, duration: 15, endTurnOffDraw: false, endTurnOffUpdate: false,
-                    paramsToChange: new Dictionary<string, float> {
+            switch (this.Mode)
+            {
+                case MapMode.Off:
+
+                    this.transManager.AddMultipleTransitions(outTrans: true, duration: 15, endTurnOffDraw: true, endTurnOffUpdate: true,
+                        paramsToChange: new Dictionary<string, float> { { "Opacity", 0f } });
+
+                    break;
+
+                case MapMode.Mini:
+
+                    // TODO add transition code
+
+                    break;
+
+                case MapMode.Full:
+
+                    this.viewParams.Opacity = 1f;
+
+                    this.transManager.AddMultipleTransitions(outTrans: false, duration: 15, endTurnOffDraw: false, endTurnOffUpdate: false,
+                        paramsToChange: new Dictionary<string, float> {
                         { "PosX", this.world.viewParams.drawPosX},
                         { "PosY", this.world.viewParams.drawPosY},
                         { "ScaleX", this.world.viewParams.drawScaleX },
-                        { "ScaleY", this.world.viewParams.drawScaleY } });
+                        { "ScaleY", this.world.viewParams.drawScaleY },
+                        });
+
+                    break;
+
+                default:
+                    throw new ArgumentException($"Unsupported mode - {this.Mode}.");
             }
-            else
-            {
-                this.transManager.AddMultipleTransitions(outTrans: !inTrans, duration: 15, endTurnOffDraw: true, endTurnOffUpdate: true,
-                    paramsToChange: new Dictionary<string, float> {
-                        { "Opacity", 0f} }
-                    );
-            }
+
         }
 
         public bool CheckIfCanBeTurnedOn(bool showMessage = true)
