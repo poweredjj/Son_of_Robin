@@ -460,10 +460,10 @@ namespace SonOfRobin
                 if (!allSprites.Any()) return;
 
                 var index = BoardPiece.Random.Next(0, allSprites.Count);
-                world.camera.TrackPiece(trackedPiece: allSprites.ToArray()[index].boardPiece, fluidMotion: false);
+                world.camera.TrackPiece(trackedPiece: allSprites.ToArray()[index].boardPiece, moveInstantly: true);
             }
 
-            if (Keyboard.HasBeenPressed(Keys.OemCloseBrackets)) world.camera.TrackPiece(trackedPiece: world.player, fluidMotion: false);
+            if (Keyboard.HasBeenPressed(Keys.OemCloseBrackets)) world.camera.TrackPiece(trackedPiece: world.player, moveInstantly: true);
 
             if (Keyboard.HasBeenPressed(Keys.X))
             {

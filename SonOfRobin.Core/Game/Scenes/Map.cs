@@ -15,8 +15,8 @@ namespace SonOfRobin
 
         private float scaleMultiplier;
         private bool dirtyBackground;
-        private RenderTarget2D terrainGfx;
         public bool dirtyFog;
+        private RenderTarget2D terrainGfx;
         private RenderTarget2D combinedGfx;
         private ConcurrentBag<Sprite> spritesBag;
 
@@ -48,7 +48,8 @@ namespace SonOfRobin
         {
             if (this.fullScreen) this.InputType = InputTypes.Normal;
 
-            this.camera.TrackPiece(trackedPiece: this.world.player, fluidMotion: false);
+            this.camera.TrackPiece(trackedPiece: this.world.player, moveInstantly: true);
+            this.camera.SetZoom(zoom: 0.5f, setInstantly: true);
 
             this.updateActive = true;
             this.drawActive = true;
@@ -79,7 +80,7 @@ namespace SonOfRobin
             float multiplierY = (float)SonOfRobinGame.VirtualHeight / (float)world.height * maxPercentHeight;
             this.scaleMultiplier = Math.Min(multiplierX, multiplierY);
 
-            this.UpdateViewParams(renderMiniature: true);
+            this.SetViewParamsForMiniature();
             this.UpdateViewPos();
 
             if (this.terrainGfx == null || this.terrainGfx.Width != this.viewParams.Width || this.terrainGfx.Height != this.viewParams.Height)
@@ -122,7 +123,7 @@ namespace SonOfRobin
         {
             if (this.combinedGfx != null && this.dirtyFog == false) return;
 
-            this.UpdateViewParams(renderMiniature: true);
+            this.SetViewParamsForMiniature();
 
             MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{SonOfRobinGame.currentUpdate} updating map fog (fullscreen {this.fullScreen})");
 
@@ -180,33 +181,23 @@ namespace SonOfRobin
 
         public void AddTransition(bool inTrans)
         {
-            bool turnOffDraw = !inTrans;
-            bool turnOffUpdate = !inTrans;
-
             this.UpdateViewPos();
 
-            if (this.fullScreen)
+            if (inTrans)
             {
-                Rectangle viewRect = this.world.camera.viewRect;
-                float transScaleX = SonOfRobinGame.VirtualWidth / (float)this.world.width * this.world.viewParams.ScaleX;
-                float transScaleY = SonOfRobinGame.VirtualHeight / (float)this.world.height * this.world.viewParams.ScaleY;
-                float transScale = Math.Min(transScaleX, transScaleY);
-
-                float transPosX = 1f / (float)this.world.width * SonOfRobinGame.VirtualWidth;
-                float transPosY = 1f / (float)this.world.height * SonOfRobinGame.VirtualHeight;
-                float transPos = Math.Min(transPosX, transPosY);
-
-                this.transManager.AddMultipleTransitions(outTrans: !inTrans, duration: 15, endTurnOffDraw: turnOffDraw, endTurnOffUpdate: turnOffUpdate,
+                this.transManager.AddMultipleTransitions(outTrans: !inTrans, duration: 15, endTurnOffDraw: false, endTurnOffUpdate: false,
                     paramsToChange: new Dictionary<string, float> {
-                        { "PosX", -viewRect.Left * transPos },
-                        { "PosY", -viewRect.Top * transPos },
-                        { "ScaleX", transScale },
-                        { "ScaleY", transScale } });
+                        { "PosX", this.world.viewParams.drawPosX},
+                        { "PosY", this.world.viewParams.drawPosY},
+                        { "ScaleX", this.world.viewParams.drawScaleX },
+                        { "ScaleY", this.world.viewParams.drawScaleY } });
             }
             else
             {
-                this.transManager.AddMultipleTransitions(outTrans: !inTrans, duration: 8, endTurnOffDraw: turnOffDraw, endTurnOffUpdate: turnOffUpdate,
-                    paramsToChange: new Dictionary<string, float> { { "PosY", this.viewParams.PosY + this.viewParams.Height } });
+                this.transManager.AddMultipleTransitions(outTrans: !inTrans, duration: 15, endTurnOffDraw: true, endTurnOffUpdate: true,
+                    paramsToChange: new Dictionary<string, float> {
+                        { "Opacity", 0f} }
+                    );
             }
         }
 
@@ -234,32 +225,30 @@ namespace SonOfRobin
 
             this.UpdateBackground(); // it's best to update background graphics in Update() (SetRenderTarget in Draw() must go first)
             this.ProcessInput();
-            this.UpdateViewParams(renderMiniature: false);
+            this.SetViewParamsForRender();
         }
 
-        public void UpdateViewParams(bool renderMiniature)
+        private void SetViewParamsForMiniature()
+        {
+            this.viewParams.Width = (int)(this.world.width * this.scaleMultiplier);
+            this.viewParams.Height = (int)(this.world.height * this.scaleMultiplier);
+            this.viewParams.ScaleX = 1f;
+            this.viewParams.ScaleY = 1f;
+            this.viewParams.PosX = 0;
+            this.viewParams.PosY = 0;
+        }
+
+        private void SetViewParamsForRender()
         {
             if (!this.fullScreen) this.viewParams.Opacity = 0.7f;
 
-            if (renderMiniature)
-            {
-                this.viewParams.PosX = 0;
-                this.viewParams.PosY = 0;
-                this.viewParams.ScaleX = 1;
-                this.viewParams.ScaleY = 1;
-                this.viewParams.Width = (int)(world.width * this.scaleMultiplier);
-                this.viewParams.Height = (int)(world.height * this.scaleMultiplier);
-            }
-            else
-            {
-                this.viewParams.ScaleX = 1f;
-                this.viewParams.ScaleY = 1f;
-                this.camera.Update();
-                this.viewParams.PosX = this.camera.viewPos.X;
-                this.viewParams.PosY = this.camera.viewPos.Y;
-                this.viewParams.Width = this.world.width;
-                this.viewParams.Height = this.world.height;
-            }
+            this.viewParams.Width = this.world.width;
+            this.viewParams.Height = this.world.height;
+            this.viewParams.ScaleX = 1 / this.camera.currentZoom;
+            this.viewParams.ScaleY = 1 / this.camera.currentZoom;
+            this.camera.Update();
+            this.viewParams.PosX = this.camera.viewPos.X;
+            this.viewParams.PosY = this.camera.viewPos.Y;
         }
 
         private void UpdateViewPos()
@@ -282,7 +271,8 @@ namespace SonOfRobin
         public override void Draw()
         {
             // filling screen with water color
-            if (this.fullScreen) SonOfRobinGame.graphicsDevice.Clear(BoardGraphics.colorsByName[BoardGraphics.Colors.WaterDeep]);
+
+            if (this.fullScreen) SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, this.worldRect, BoardGraphics.colorsByName[BoardGraphics.Colors.WaterDeep] * this.viewParams.drawOpacity);
 
             // drawing terrain and fog of war
             SonOfRobinGame.spriteBatch.Draw(this.combinedGfx, this.worldRect, Color.White * this.viewParams.drawOpacity);

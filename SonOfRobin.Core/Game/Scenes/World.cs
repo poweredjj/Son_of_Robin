@@ -436,7 +436,7 @@ namespace SonOfRobin
 
             if (!this.demoMode)
             {
-                this.camera.TrackPiece(trackedPiece: this.player, fluidMotion: false);
+                this.camera.TrackPiece(trackedPiece: this.player, moveInstantly: true);
                 this.UpdateViewParams(manualScale: 1f);
                 this.camera.Update(); // to render cells in camera view correctly
                 Inventory.SetLayout(newLayout: Inventory.Layout.Toolbar, player: this.player);
@@ -526,7 +526,7 @@ namespace SonOfRobin
                 if (templateName == PieceTemplate.Name.Player)
                 {
                     this.player = (Player)newBoardPiece;
-                    this.camera.TrackPiece(trackedPiece: this.player, fluidMotion: false);
+                    this.camera.TrackPiece(trackedPiece: this.player, moveInstantly: true);
                 }
 
                 piecesByID[newBoardPiece.id] = newBoardPiece;

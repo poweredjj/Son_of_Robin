@@ -152,7 +152,6 @@ namespace SonOfRobin
             Vector2 currentTargetPos = this.GetTargetCoords();
             Vector2 viewCenter = new Vector2(0, 0); // to be updated below
 
-
             if (this.useFluidMotion && !this.disableFluidMotionForOneFrame)
             {
                 this.currentZoom += (this.targetZoom - this.currentZoom) / this.zoomSlowdown;
@@ -199,21 +198,21 @@ namespace SonOfRobin
             if (!this.trackedSpriteReached && Vector2.Distance(this.CurrentPos, currentTargetPos) < 30) this.trackedSpriteReached = true;
         }
 
-        public void TrackPiece(BoardPiece trackedPiece, bool fluidMotion = true)
+        public void TrackPiece(BoardPiece trackedPiece, bool moveInstantly = false)
         {
             this.trackingMode = TrackingMode.Sprite;
             this.trackedSprite = trackedPiece.sprite;
             this.trackedSpriteReached = false;
-            this.disableFluidMotionForOneFrame = !fluidMotion;
+            this.disableFluidMotionForOneFrame = moveInstantly;
         }
 
-        public void TrackCoords(Vector2 position, bool fluidMotion = true)
+        public void TrackCoords(Vector2 position, bool moveInstantly = false)
         {
             this.trackingMode = TrackingMode.Position;
             this.trackedSprite = null;
             this.trackedSpriteReached = false;
             this.trackedPos = new Vector2(position.X, position.Y);
-            this.disableFluidMotionForOneFrame = !fluidMotion;
+            this.disableFluidMotionForOneFrame = moveInstantly;
         }
         public void ResetZoom(bool setInstantly = false, float zoomSpeedMultiplier = 1f)
         {
@@ -278,7 +277,7 @@ namespace SonOfRobin
             var animals = allSprites.Where(sprite => sprite.boardPiece.GetType() == typeof(Animal) && sprite.boardPiece.alive).ToList();
             if (animals.Count == 0) return;
             var index = BoardPiece.Random.Next(0, animals.Count);
-            this.TrackPiece(trackedPiece: animals[index].boardPiece, fluidMotion: fluidMotion);
+            this.TrackPiece(trackedPiece: animals[index].boardPiece, moveInstantly: true);
         }
 
         public List<Sprite> GetVisibleSprites(Cell.Group groupName, bool compareWithCameraRect = false)
