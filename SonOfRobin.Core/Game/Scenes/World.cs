@@ -664,8 +664,8 @@ namespace SonOfRobin
             this.ProcessInput();
             this.UpdateViewParams(manualScale: this.manualScale);
 
-            this.grid.UnloadTexturesIfMemoryLow();
-            this.grid.LoadClosestTextureInCameraView();
+            this.grid.UnloadTexturesIfMemoryLow(this.camera);
+            this.grid.LoadClosestTextureInCameraView(this.camera);
 
             if (this.demoMode) this.camera.TrackLiveAnimal(fluidMotion: true);
             // this.AutoSave(); // autosave is not needed anymore

@@ -29,6 +29,8 @@ namespace SonOfRobin
         private RenderTarget2D miniatureCombinedGfx;
         private Vector2 lastTouchPos;
 
+        private float InitialZoom { get { return Preferences.WorldScale / 2; } }
+
         private static readonly List<PieceTemplate.Name> depositNameList = new List<PieceTemplate.Name> {
             PieceTemplate.Name.CoalDeposit, PieceTemplate.Name.IronDeposit, PieceTemplate.Name.CrystalDepositSmall, PieceTemplate.Name.CrystalDepositBig };
 
@@ -65,7 +67,7 @@ namespace SonOfRobin
             if (this.FullScreen) this.InputType = InputTypes.Normal;
 
             this.camera.TrackCoords(position: this.world.player.sprite.position, moveInstantly: true);
-            this.camera.SetZoom(zoom: 0.5f, setInstantly: true);
+            this.camera.SetZoom(zoom: this.InitialZoom, setInstantly: true);
 
             this.updateActive = true;
             this.drawActive = true;
@@ -269,6 +271,9 @@ namespace SonOfRobin
             this.UpdateBackground(); // it's best to update background graphics in Update() (SetRenderTarget in Draw() must go first)
             this.ProcessInput();
             this.SetViewParamsForRender();
+
+            this.world.grid.UnloadTexturesIfMemoryLow(this.camera);
+            this.world.grid.LoadClosestTextureInCameraView(this.camera);
         }
 
         private void SetViewParamsForMiniature()
@@ -312,12 +317,13 @@ namespace SonOfRobin
                 return;
             }
 
-            float zoomChangeVal = Mouse.ScrollWheelRolledUp || Mouse.ScrollWheelRolledDown ? 0.035f : 0.0075f;
+            float zoomMultiplier = Mouse.ScrollWheelRolledUp || Mouse.ScrollWheelRolledDown ? 0.15f : 0.035f;
+            float zoomChangeVal = this.camera.currentZoom * zoomMultiplier;
 
             if (InputMapper.IsPressed(InputMapper.Action.MapZoomIn))
             {
                 float currentZoom = this.camera.currentZoom + zoomChangeVal;
-                currentZoom = Math.Min(currentZoom, 0.5f);
+                currentZoom = Math.Min(currentZoom, this.InitialZoom);
                 this.camera.SetZoom(currentZoom);
             }
 
@@ -377,6 +383,8 @@ namespace SonOfRobin
                 this.camera.TrackCoords(newPos);
             }
 
+            this.camera.Update();
+
         }
         private Vector2 DrawOffset
         {
@@ -411,8 +419,8 @@ namespace SonOfRobin
 
             // calculating miniature opacity
 
-            float showMiniatureAtZoom = (float)SonOfRobinGame.VirtualWidth / (float)this.world.width;
-            float showFullScaleAtZoom = 0.3f;
+            float showMiniatureAtZoom = (float)SonOfRobinGame.VirtualWidth / (float)this.world.width * 1.4f;
+            float showFullScaleAtZoom = this.InitialZoom;
 
             float miniatureOpacity = (float)Helpers.ConvertRange(oldMin: showFullScaleAtZoom, oldMax: showMiniatureAtZoom, newMin: 0f, newMax: 1f, oldVal: this.camera.currentZoom, clampToEdges: true);
 
@@ -420,7 +428,11 @@ namespace SonOfRobin
 
             // drawing detailed background
 
-            var visibleCells = this.world.grid.GetCellsInsideRect(camera.viewRect);
+            var visibleCells = this.world.grid.GetCellsInsideRect(this.camera.viewRect);
+
+            int drawnCellCount = miniatureOpacity < 1 ? visibleCells.Count : 0;
+
+            // MessageLog.AddMessage(msgType: MsgType.User, message: $"{SonOfRobinGame.currentUpdate} - drawn map cells count: {drawnCellCount}");
 
             if (miniatureOpacity < 1)
             {
@@ -428,7 +440,7 @@ namespace SonOfRobin
 
                 foreach (Cell cell in visibleCells)
                 {
-                    if (cell.VisitedByPlayer) cell.DrawBackground(drawOffsetX: drawOffsetX, drawOffsetY: drawOffsetY, opacity: this.viewParams.drawOpacity);
+                    if (cell.VisitedByPlayer || Preferences.DebugShowWholeMap) cell.DrawBackground(drawOffsetX: drawOffsetX, drawOffsetY: drawOffsetY, opacity: this.viewParams.drawOpacity);
                 }
             }
 
@@ -456,7 +468,6 @@ namespace SonOfRobin
             {
                 BoardPiece piece = sprite.boardPiece;
                 Type pieceType = piece.GetType();
-
 
                 bool showSprite = false;
 

@@ -660,14 +660,14 @@ namespace SonOfRobin
             return new Vector2(frameMaxWidth, frameMaxHeight);
         }
 
-        public void LoadClosestTextureInCameraView()
+        public void LoadClosestTextureInCameraView(Camera camera)
         {
             if (Preferences.loadWholeMap || DateTime.Now - this.lastCellProcessedTime < textureLoadingDelay) return;
 
-            var cellsInCameraView = this.GetCellsInsideRect(this.world.camera.viewRect).Where(cell => cell.boardGraphics.texture == null).ToList();
+            var cellsInCameraView = this.GetCellsInsideRect(camera.viewRect).Where(cell => cell.boardGraphics.texture == null).ToList();
             if (cellsInCameraView.Count == 0) return;
 
-            var viewRect = this.world.camera.viewRect;
+            var viewRect = camera.viewRect;
             Vector2 cameraCenter = new Vector2(viewRect.Center.X, viewRect.Center.Y);
 
             var cellsByDistance = cellsInCameraView.OrderBy(cell => cell.GetDistance(cameraCenter));
@@ -688,7 +688,7 @@ namespace SonOfRobin
             }
         }
 
-        public void UnloadTexturesIfMemoryLow()
+        public void UnloadTexturesIfMemoryLow(Camera camera)
         {
             if (Preferences.loadWholeMap) return;
 
@@ -706,7 +706,7 @@ namespace SonOfRobin
                     throw new ArgumentException($"Textures unloading - unsupported platform {SonOfRobinGame.platform}.");
             }
 
-            var cellsInCameraView = this.GetCellsInsideRect(this.world.camera.viewRect);
+            var cellsInCameraView = this.GetCellsInsideRect(camera.viewRect);
             var cellsToUnload = this.allCells.Where(cell => !cellsInCameraView.Contains(cell) && cell.boardGraphics.texture != null).ToList();
 
             foreach (Cell cell in cellsToUnload)
