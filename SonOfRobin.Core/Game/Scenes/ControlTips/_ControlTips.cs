@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace SonOfRobin
 
@@ -276,9 +275,7 @@ namespace SonOfRobin
 
                 case TipsLayout.Map:
                     {
-                        var moveTextures = InputMapper.GetTextures(InputMapper.Action.WorldWalk);
-                        moveTextures = moveTextures.Where(texture => texture != InputVis.GetTexture(InputMapper.MouseAction.LeftButton)).ToList();
-                        new ButtonTip(tipCollection: this.tipCollection, text: "move", textures: moveTextures);
+                        new ButtonTip(tipCollection: this.tipCollection, text: "move", textures: InputMapper.GetTextures(InputMapper.Action.WorldWalk));
                         new ButtonTip(tipCollection: this.tipCollection, text: "zoom in", textures: InputMapper.GetTextures(InputMapper.Action.MapZoomIn));
                         new ButtonTip(tipCollection: this.tipCollection, text: "zoom out", textures: InputMapper.GetTextures(InputMapper.Action.MapZoomOut));
                         new ButtonTip(tipCollection: this.tipCollection, text: "toggle marker", textures: InputMapper.GetTextures(InputMapper.Action.GlobalConfirm));

@@ -306,33 +306,40 @@ namespace SonOfRobin
         private void ProcessInput()
         {
             if (InputMapper.HasBeenPressed(InputMapper.Action.MapSwitch)) this.SwitchToNextMode();
+
             if (InputMapper.IsPressed(InputMapper.Action.MapZoomIn))
             {
                 float currentZoom = this.camera.currentZoom + 0.007f;
+                currentZoom = Math.Min(currentZoom, 0.5f);
                 this.camera.SetZoom(currentZoom);
             }
 
             if (InputMapper.IsPressed(InputMapper.Action.MapZoomOut))
             {
                 float currentZoom = this.camera.currentZoom - 0.007f;
+                currentZoom = Math.Max(currentZoom, this.scaleMultiplier);
                 this.camera.SetZoom(currentZoom);
             }
 
-            // TODO add zoom boundaries
-
             Vector2 movement = InputMapper.Analog(InputMapper.Action.WorldWalk) * 10 / this.camera.currentZoom;
+
+            if (movement != Vector2.Zero) this.camera.TrackCoords(this.camera.TrackedPos + movement);
+
+            // keeping the camera in bounds
 
             this.camera.Update();
 
-            // TODO add stopping right after hitting bounds with viewRect bounds        
+            Rectangle viewRect = this.camera.viewRect;
 
-            Vector2 newPos = this.camera.TrackedPos + movement;
-            newPos.X = Math.Min(0, newPos.X);
-            newPos.X = Math.Max(newPos.X, this.world.width);
-            newPos.Y = Math.Min(0, newPos.Y);
-            newPos.Y = Math.Max(newPos.Y, this.world.height);
+            if (viewRect.Left < 0) viewRect.X = 0;
+            if (viewRect.Right > this.world.width) viewRect.X = this.world.width - viewRect.Width;
+            if (viewRect.Top < 0) viewRect.Y = 0;
+            if (viewRect.Bottom > this.world.height) viewRect.Y = this.world.height - viewRect.Height;
 
-            this.camera.TrackCoords(this.camera.TrackedPos + movement);
+            this.camera.TrackCoords(new Vector2(viewRect.Center.X, viewRect.Center.Y));
+            this.camera.Update();
+
+            MessageLog.AddMessage(msgType: MsgType.User, message: $"Camera position {viewRect.Center}");
         }
 
         public override void Draw()
