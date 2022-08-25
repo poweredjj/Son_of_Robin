@@ -80,7 +80,7 @@ namespace SonOfRobin
                     BoardPiece spectator = this.player;
 
                     bool playerFound = false;
-                    foreach (Sprite sprite in this.grid.GetAllSprites(Cell.Group.All))
+                    foreach (Sprite sprite in this.grid.GetSprites(Cell.Group.All))
                     {
                         if (sprite.boardPiece.name == PieceTemplate.Name.Player && sprite.boardPiece.alive)
                         {
@@ -810,7 +810,7 @@ namespace SonOfRobin
 
             if (this.nonPlantSpritesQueue.Count == 0)
             {
-                this.nonPlantSpritesQueue = this.grid.GetAllSprites(groupName: Cell.Group.StateMachinesNonPlants).OrderBy(sprite => sprite.boardPiece.lastFrameSMProcessed).ToList();
+                this.nonPlantSpritesQueue = this.grid.GetSprites(groupName: Cell.Group.StateMachinesNonPlants).OrderBy(sprite => sprite.boardPiece.lastFrameSMProcessed).ToList();
                 return;
             }
 

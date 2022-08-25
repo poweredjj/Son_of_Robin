@@ -2,7 +2,6 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input.Touch;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -28,7 +27,6 @@ namespace SonOfRobin
         public bool dirtyFog;
         private RenderTarget2D miniatureTerrainGfx;
         private RenderTarget2D miniatureCombinedGfx;
-        private ConcurrentBag<Sprite> spritesBag;
         private Vector2 lastTouchPos;
 
         private static readonly List<PieceTemplate.Name> depositNameList = new List<PieceTemplate.Name> {
@@ -45,7 +43,6 @@ namespace SonOfRobin
             this.camera = new Camera(world: this.world, displayScene: this, useFluidMotion: false);
             this.Mode = MapMode.Off;
             this.dirtyFog = true;
-            this.spritesBag = new ConcurrentBag<Sprite> { };
             this.lastTouchPos = Vector2.Zero;
         }
 
@@ -210,9 +207,8 @@ namespace SonOfRobin
 
         public void AddTransition()
         {
+            this.camera.Update();
             this.UpdateViewPos();
-
-            // this.viewParams.Opacity = this.FullScreen ? 1f : 0.7f;
 
             switch (this.Mode)
             {
@@ -235,7 +231,6 @@ namespace SonOfRobin
 
                     this.transManager.AddMultipleTransitions(outTrans: false, duration: 15, endTurnOffDraw: false, endTurnOffUpdate: false,
                         paramsToChange: new Dictionary<string, float> {
-                        { "Opacity", 0f},
                         { "PosX", this.world.viewParams.drawPosX},
                         { "PosY", this.world.viewParams.drawPosY},
                         { "ScaleX", this.world.viewParams.drawScaleX },
@@ -405,7 +400,7 @@ namespace SonOfRobin
 
             if (this.FullScreen && !this.transManager.HasAnyTransition) SonOfRobinGame.graphicsDevice.Clear(BoardGraphics.colorsByName[BoardGraphics.Colors.WaterDeep]);
 
-            // drawing terrain and fog of war
+            // calculating centered world rectangle
 
             Rectangle worldRectCentered = this.worldRect;
             Vector2 drawOffset = this.DrawOffset;
@@ -414,12 +409,16 @@ namespace SonOfRobin
             worldRectCentered.X += (int)drawOffset.X;
             worldRectCentered.Y += (int)drawOffset.Y;
 
+            // calculating miniature opacity
+
             float showMiniatureAtZoom = (float)SonOfRobinGame.VirtualWidth / (float)this.world.width;
             float showFullScaleAtZoom = 0.3f;
 
             float miniatureOpacity = (float)Helpers.ConvertRange(oldMin: showFullScaleAtZoom, oldMax: showMiniatureAtZoom, newMin: 0f, newMax: 1f, oldVal: this.camera.currentZoom, clampToEdges: true);
 
             // MessageLog.AddMessage(msgType: MsgType.User, message: $"Zoom {this.camera.currentZoom} miniatureOpacity {miniatureOpacity} showMiniatureAtZoom {showMiniatureAtZoom}");
+
+            // drawing detailed background
 
             var visibleCells = this.world.grid.GetCellsInsideRect(camera.viewRect);
 
@@ -433,10 +432,12 @@ namespace SonOfRobin
                 }
             }
 
+            // drawing miniature background
+
             if (miniatureOpacity > 0) SonOfRobinGame.spriteBatch.Draw(this.miniatureCombinedGfx, worldRectCentered, Color.White * this.viewParams.drawOpacity * miniatureOpacity);
 
-
             // drawing pieces
+
             var groupName = this.FullScreen ? Cell.Group.Visible : Cell.Group.MiniMap;
 
             byte fillSize;
@@ -448,12 +449,15 @@ namespace SonOfRobin
             Rectangle worldCameraRect = this.world.camera.viewRect;
             BoardPiece piece;
 
-            // sprites bag should be only updated once in a while
-            if ((this.world.currentUpdate % 4 == 0 && SonOfRobinGame.lastDrawDelay < 20) || this.world.currentUpdate % 60 != 0) this.spritesBag = world.grid.GetAllSprites(groupName: groupName, visitedByPlayerOnly: !Preferences.DebugShowWholeMap);
+            var spritesBag = world.grid.GetSprites(groupName: groupName, visitedByPlayerOnly: !Preferences.DebugShowWholeMap, camera: this.camera);
 
             // regular "foreach", because spriteBatch is not thread-safe
-            foreach (Sprite sprite in this.spritesBag)
+            foreach (Sprite sprite in spritesBag.OrderBy(o => o.frame.layer).ThenBy(o => o.gfxRect.Bottom))
             {
+
+                sprite.DrawRoutine(calculateSubmerge: false, offsetX: drawOffsetX, offsetY: drawOffsetY);
+
+
                 drawOutline = false;
                 showOutsideCamera = false;
                 piece = sprite.boardPiece;
