@@ -27,6 +27,7 @@ namespace SonOfRobin
         public bool dirtyFog;
         private RenderTarget2D miniatureTerrainGfx;
         private RenderTarget2D miniatureCombinedGfx;
+        private RenderTarget2D finalMapToDisplay;
         private Vector2 lastTouchPos;
 
         private float InitialZoom { get { return Preferences.WorldScale / 2; } }
@@ -45,6 +46,15 @@ namespace SonOfRobin
             this.lastTouchPos = Vector2.Zero;
         }
 
+        public override void Remove()
+        {
+            base.Remove();
+
+            if (this.miniatureTerrainGfx != null) this.miniatureTerrainGfx.Dispose();
+            if (this.miniatureCombinedGfx != null) this.miniatureCombinedGfx.Dispose();
+            if (this.finalMapToDisplay != null) this.finalMapToDisplay.Dispose();
+        }
+
         protected override void AdaptToNewSize()
         {
             this.UpdateResolution();
@@ -53,6 +63,12 @@ namespace SonOfRobin
         public void TurnOff()
         {
             this.Mode = MapMode.Off;
+
+            if (this.finalMapToDisplay != null)
+            {
+                this.finalMapToDisplay.Dispose();
+                this.finalMapToDisplay = null;
+            }
 
             this.InputType = InputTypes.None;
             this.blocksDrawsBelow = false;
@@ -97,9 +113,14 @@ namespace SonOfRobin
             {
                 if (this.miniatureTerrainGfx != null) this.miniatureTerrainGfx.Dispose();
                 this.miniatureTerrainGfx = new RenderTarget2D(SonOfRobinGame.graphicsDevice, this.viewParams.Width, this.viewParams.Height, false, SurfaceFormat.Color, DepthFormat.None);
+                if (this.finalMapToDisplay != null) this.finalMapToDisplay.Dispose();
+
+                this.finalMapToDisplay = new RenderTarget2D(SonOfRobinGame.graphicsDevice, SonOfRobinGame.VirtualWidth, SonOfRobinGame.VirtualHeight, false, SurfaceFormat.Color, DepthFormat.None);
+
                 this.dirtyBackground = true;
                 this.dirtyFog = true;
             }
+
             this.UpdateFogOfWar();
         }
 
@@ -146,7 +167,6 @@ namespace SonOfRobin
             this.StartRenderingToTarget(this.miniatureCombinedGfx);
             SonOfRobinGame.graphicsDevice.Clear(Color.Transparent);
             SonOfRobinGame.spriteBatch.Draw(this.miniatureTerrainGfx, this.miniatureTerrainGfx.Bounds, Color.White);
-            Rectangle destinationRectangle;
 
             if (!Preferences.DebugShowWholeMap)
             {
@@ -160,7 +180,7 @@ namespace SonOfRobin
 
                 foreach (Cell cell in this.world.grid.CellsNotVisitedByPlayer)
                 {
-                    destinationRectangle = new Rectangle(
+                    Rectangle destinationRectangle = new Rectangle(
                         (int)Math.Floor(cell.xMin * this.scaleMultiplier),
                         (int)Math.Floor(cell.yMin * this.scaleMultiplier),
                         destCellWidth,
@@ -271,6 +291,8 @@ namespace SonOfRobin
 
             this.world.grid.UnloadTexturesIfMemoryLow(this.camera);
             this.world.grid.LoadClosestTextureInCameraView(this.camera);
+
+            this.DrawFinalMapToSurface();
         }
 
         private void SetViewParamsForMiniature()
@@ -399,9 +421,11 @@ namespace SonOfRobin
             }
         }
 
-        public override void Draw()
+        private void DrawFinalMapToSurface()
         {
-            // filling screen with water color
+            this.StartRenderingToTarget(this.finalMapToDisplay);
+
+            // filling with water color
 
             if (this.FullScreen && !this.transManager.HasAnyTransition) SonOfRobinGame.graphicsDevice.Clear(BoardGraphics.colorsByName[BoardGraphics.Colors.WaterDeep]);
 
@@ -433,17 +457,17 @@ namespace SonOfRobin
 
             if (miniatureOpacity < 1)
             {
-                SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, worldRectCentered, fogColor * this.viewParams.drawOpacity);
+                SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, worldRectCentered, fogColor);
 
                 foreach (Cell cell in visibleCells)
                 {
-                    if (cell.VisitedByPlayer || Preferences.DebugShowWholeMap) cell.DrawBackground(drawOffsetX: drawOffsetX, drawOffsetY: drawOffsetY, opacity: this.viewParams.drawOpacity);
+                    if (cell.VisitedByPlayer || Preferences.DebugShowWholeMap) cell.DrawBackground(drawOffsetX: drawOffsetX, drawOffsetY: drawOffsetY, opacity: 1f);
                 }
             }
 
             // drawing miniature background
 
-            if (miniatureOpacity > 0) SonOfRobinGame.spriteBatch.Draw(this.miniatureCombinedGfx, worldRectCentered, Color.White * this.viewParams.drawOpacity * miniatureOpacity);
+            if (miniatureOpacity > 0) SonOfRobinGame.spriteBatch.Draw(this.miniatureCombinedGfx, worldRectCentered, Color.White * miniatureOpacity);
 
             // drawing pieces
 
@@ -456,6 +480,8 @@ namespace SonOfRobin
             var typesShownAlways = new List<Type> { typeof(Player), typeof(Workshop), typeof(Cooker), typeof(Shelter), };
             var typesShownIfDiscovered = new List<Type> { typeof(Container) };
             var namesShownIfDiscovered = new List<PieceTemplate.Name> { PieceTemplate.Name.CrateStarting, PieceTemplate.Name.CrateRegular, PieceTemplate.Name.CoalDeposit, PieceTemplate.Name.IronDeposit, PieceTemplate.Name.CrystalDepositSmall, PieceTemplate.Name.CrystalDepositBig };
+
+            float spriteSize = 1f / this.camera.currentZoom * 0.25f;
 
             // regular "foreach", because spriteBatch is not thread-safe
             foreach (Sprite sprite in spritesBag.OrderBy(o => o.frame.layer).ThenBy(o => o.gfxRect.Bottom))
@@ -471,8 +497,27 @@ namespace SonOfRobin
                     (namesShownIfDiscovered.Contains(sprite.boardPiece.name) ||
                     typesShownIfDiscovered.Contains(pieceType))) showSprite = true;
 
-                if (showSprite) sprite.DrawRoutine(calculateSubmerge: false, offsetX: drawOffsetX, offsetY: drawOffsetY);
+                if (showSprite)
+                {
+                    Rectangle destRect = sprite.gfxRect;
+                    destRect.Inflate(destRect.Width * spriteSize, destRect.Height * spriteSize);
+                    destRect.X += drawOffsetX;
+                    destRect.Y += drawOffsetY;
+
+                    sprite.frame.Draw(destRect: destRect, color: Color.White, opacity: 1f);
+                }
             }
+
+            this.EndRenderingToTarget();
+        }
+
+        public override void Draw()
+        {
+            if (this.finalMapToDisplay == null) return;
+
+            this.viewParams.ResetValues(); // TODO check if the values are really changed before rendering
+
+            SonOfRobinGame.spriteBatch.Draw(this.finalMapToDisplay, this.finalMapToDisplay.Bounds, Color.White * this.viewParams.drawOpacity);
         }
 
         public void StartRenderingToTarget(RenderTarget2D newRenderTarget)
