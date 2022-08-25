@@ -86,51 +86,65 @@ namespace SonOfRobin
             VirtButton.UpdateAll();
         }
 
-        public static bool IsPointActivatingAnyTouchInterface(Vector2 point)
+        public static bool IsPointActivatingAnyTouchInterface(Vector2 point, bool checkLeftStick = true, bool checkRightStick = true, bool checkVirtButtons = true, bool checkInventory = true, bool checkPlayerPanel = true)
         {
             Vector2 scaledPoint = point / Preferences.GlobalScale;
 
-            if (Preferences.enableTouchJoysticks && IsPointInsideSticks(scaledPoint)) return true;
+            if (Preferences.enableTouchJoysticks && (checkLeftStick || checkRightStick) && IsPointInsideSticks(point: scaledPoint, checkLeftStick: checkLeftStick, checkRightStick: checkRightStick)) return true;
 
-            foreach (Rectangle virtButtonRect in VirtButton.AllButtonRects)
+            if (checkVirtButtons)
             {
-                if (virtButtonRect.Contains(scaledPoint)) return true;
+                foreach (Rectangle virtButtonRect in VirtButton.AllButtonRects)
+                {
+                    if (virtButtonRect.Contains(scaledPoint)) return true;
+                }
             }
 
-
-            foreach (Inventory inventory in Scene.GetAllScenesOfType(typeof(Inventory)))
+            if (checkInventory)
             {
-                Rectangle invRect = inventory.BgRect;
-                invRect.X += (int)inventory.viewParams.drawPosX;
-                invRect.Y += (int)inventory.viewParams.drawPosY;
+                foreach (Inventory inventory in Scene.GetAllScenesOfType(typeof(Inventory)))
+                {
+                    Rectangle invRect = inventory.BgRect;
+                    invRect.X += (int)inventory.viewParams.drawPosX;
+                    invRect.Y += (int)inventory.viewParams.drawPosY;
 
-                invRect.Inflate(2, 2);
+                    invRect.Inflate(2, 2);
 
-                if (invRect.Contains(scaledPoint)) return true;
+                    if (invRect.Contains(scaledPoint)) return true;
+                }
             }
 
-            foreach (PlayerPanel playerPanel in Scene.GetAllScenesOfType(typeof(PlayerPanel)))
+            if (checkPlayerPanel)
             {
-                Rectangle counterRect = playerPanel.CounterRect;
-                counterRect.X += (int)playerPanel.viewParams.drawPosX;
-                counterRect.Y += (int)playerPanel.viewParams.drawPosY;
+                foreach (PlayerPanel playerPanel in Scene.GetAllScenesOfType(typeof(PlayerPanel)))
+                {
+                    Rectangle counterRect = playerPanel.CounterRect;
+                    counterRect.X += (int)playerPanel.viewParams.drawPosX;
+                    counterRect.Y += (int)playerPanel.viewParams.drawPosY;
 
-                counterRect.Inflate(2, 2);
+                    counterRect.Inflate(2, 2);
 
-                if (counterRect.Contains(scaledPoint)) return true;
+                    if (counterRect.Contains(scaledPoint)) return true;
+                }
             }
 
             return false;
         }
 
-        public static bool IsPointInsideSticks(Vector2 point)
+        public static bool IsPointInsideSticks(Vector2 point, bool checkLeftStick = true, bool checkRightStick = true)
         {
             if (!Preferences.EnableTouchButtons || !ShowSticks) return false;
 
-            foreach (Rectangle stickRect in dualStick.Draw(getBGRectsOnly: true))
-            {
-                stickRect.Inflate(8, 8); // to add some margin around the stick
+            var sticks = dualStick.Draw(getBGRectsOnly: true);
+            var leftStick = sticks[0];
+            var rightStick = sticks[1];
 
+            foreach (Rectangle stickRect in sticks)
+            {
+                if (stickRect == leftStick && !checkLeftStick) continue;
+                if (stickRect == rightStick && !checkRightStick) continue;
+
+                stickRect.Inflate(8, 8); // to add some margin around the stick
                 if (stickRect.Contains(point)) return true;
             }
 

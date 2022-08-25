@@ -1,8 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input.Touch;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SonOfRobin
 {
@@ -27,6 +29,7 @@ namespace SonOfRobin
         private RenderTarget2D terrainGfx;
         private RenderTarget2D combinedGfx;
         private ConcurrentBag<Sprite> spritesBag;
+        private Vector2 lastTouchPos;
 
         private static readonly List<PieceTemplate.Name> depositNameList = new List<PieceTemplate.Name> {
             PieceTemplate.Name.CoalDeposit, PieceTemplate.Name.IronDeposit, PieceTemplate.Name.CrystalDepositSmall, PieceTemplate.Name.CrystalDepositBig };
@@ -41,6 +44,7 @@ namespace SonOfRobin
             this.Mode = MapMode.Off;
             this.dirtyFog = true;
             this.spritesBag = new ConcurrentBag<Sprite> { };
+            this.lastTouchPos = Vector2.Zero;
         }
 
         protected override void AdaptToNewSize()
@@ -311,7 +315,7 @@ namespace SonOfRobin
                 return;
             }
 
-            float zoomChangeVal = 0.007f;
+            float zoomChangeVal = Mouse.ScrollWheelRolledUp || Mouse.ScrollWheelRolledDown ? 0.025f : 0.0075f;
 
             if (InputMapper.IsPressed(InputMapper.Action.MapZoomIn))
             {
@@ -327,7 +331,39 @@ namespace SonOfRobin
                 this.camera.SetZoom(currentZoom);
             }
 
+            var touches = TouchInput.TouchPanelState;
+            if (!touches.Any()) this.lastTouchPos = Vector2.Zero;
+
             Vector2 movement = InputMapper.Analog(InputMapper.Action.WorldWalk) * 10 / this.camera.currentZoom;
+
+            if (movement == Vector2.Zero)
+            {
+                foreach (TouchLocation touch in TouchInput.TouchPanelState)
+                {
+                    if (touch.State == TouchLocationState.Released)
+                    {
+                        this.lastTouchPos = Vector2.Zero;
+                        break;
+                    }
+
+                    if (!TouchInput.IsPointActivatingAnyTouchInterface(point: touch.Position, checkLeftStick: true, checkRightStick: false, checkVirtButtons: true, checkInventory: false, checkPlayerPanel: false))
+                    {
+                        if (touch.State == TouchLocationState.Pressed)
+                        {
+                            this.lastTouchPos = touch.Position;
+                            break;
+                        }
+                        else if (touch.State == TouchLocationState.Moved)
+                        {
+                            movement = this.lastTouchPos - touch.Position;
+                            this.lastTouchPos = touch.Position;
+                        }
+
+                        movement /= this.camera.currentZoom;
+                    }
+                }
+            }
+
             if (movement != Vector2.Zero)
             {
                 Rectangle cameraRect = this.camera.viewRect;
@@ -356,8 +392,6 @@ namespace SonOfRobin
 
                 if (displayedMapWidth < SonOfRobinGame.VirtualWidth) drawOffset.X += (SonOfRobinGame.VirtualWidth - displayedMapWidth) / 2 / this.camera.currentZoom;
                 if (displayedMapHeight < SonOfRobinGame.VirtualHeight) drawOffset.Y += (SonOfRobinGame.VirtualHeight - displayedMapHeight) / 2 / this.camera.currentZoom;
-
-                MessageLog.AddMessage(msgType: MsgType.User, message: $"{SonOfRobinGame.currentUpdate} VirtualWidth {SonOfRobinGame.VirtualWidth} displayedMapWidth {displayedMapWidth} combined {(SonOfRobinGame.VirtualWidth - displayedMapWidth) / 2}");
 
                 return drawOffset;
             }

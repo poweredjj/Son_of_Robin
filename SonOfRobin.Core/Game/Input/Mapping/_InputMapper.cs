@@ -120,8 +120,8 @@ namespace SonOfRobin
 
             // map
             new Mapping(action: Action.MapSwitch, anyInputList: new List<object> { keybMap.cancel, keybMap.map, padMap.cancel, padMap.map, VButName.Return });
-            new Mapping(action: Action.MapZoomIn, anyInputList: new List<object> { keybMap.mapZoomIn, padMap.mapZoomIn, VButName.MapZoomIn });
-            new Mapping(action: Action.MapZoomOut, anyInputList: new List<object> { keybMap.mapZoomOut, padMap.mapZoomOut, VButName.MapZoomOut });
+            new Mapping(action: Action.MapZoomIn, anyInputList: new List<object> { keybMap.mapZoomIn, padMap.mapZoomIn, VButName.MapZoomIn, MouseAction.ScrollUp });
+            new Mapping(action: Action.MapZoomOut, anyInputList: new List<object> { keybMap.mapZoomOut, padMap.mapZoomOut, VButName.MapZoomOut, MouseAction.ScrollDown });
 
             // secret licence bypass
             new Mapping(action: Action.SecretLicenceBypass, anyInputList: new List<object> { Keys.LeftControl, Buttons.Start, VButName.Return });
