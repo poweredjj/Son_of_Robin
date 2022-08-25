@@ -41,6 +41,7 @@ namespace SonOfRobin
             ToolbarPrev,
             ToolbarNext,
 
+            MapMove,
             MapZoomIn,
             MapZoomOut,
 
@@ -76,55 +77,65 @@ namespace SonOfRobin
             var keysToAnalog = new List<Keys> { (Keys)keybMap.left, (Keys)keybMap.right, (Keys)keybMap.up, (Keys)keybMap.down };
 
             // global
-            new Mapping(action: Action.GlobalConfirm, anyInputList: new List<object> { keybMap.confirm, MouseAction.LeftButtonVisOnly, padMap.confirm, VButName.Confirm });
-            new Mapping(action: Action.GlobalCancelReturnSkip, anyInputList: new List<object> { keybMap.cancel, padMap.cancel, VButName.Return, MouseAction.RightButton });
-            new Mapping(action: Action.GlobalLeft, anyInputList: new List<object> { keybMap.left, Buttons.DPadLeft }, gamepadAnalogAsDigital: true, repeat: true);
-            new Mapping(action: Action.GlobalRight, anyInputList: new List<object> { keybMap.right, Buttons.DPadRight }, gamepadAnalogAsDigital: true, repeat: true);
-            new Mapping(action: Action.GlobalUp, anyInputList: new List<object> { keybMap.up, Buttons.DPadUp }, gamepadAnalogAsDigital: true, repeat: true);
-            new Mapping(action: Action.GlobalDown, anyInputList: new List<object> { keybMap.down, Buttons.DPadDown }, gamepadAnalogAsDigital: true, repeat: true);
-            new Mapping(action: Action.GlobalScrollUp, anyInputList: new List<object> { MouseAction.ScrollUp });
-            new Mapping(action: Action.GlobalScrollDown, anyInputList: new List<object> { MouseAction.ScrollDown });
+            {
+                new Mapping(action: Action.GlobalConfirm, anyInputList: new List<object> { keybMap.confirm, MouseAction.LeftButtonVisOnly, padMap.confirm, VButName.Confirm });
+                new Mapping(action: Action.GlobalCancelReturnSkip, anyInputList: new List<object> { keybMap.cancel, padMap.cancel, VButName.Return, MouseAction.RightButton });
+                new Mapping(action: Action.GlobalLeft, anyInputList: new List<object> { keybMap.left, Buttons.DPadLeft }, gamepadAnalogAsDigital: true, repeat: true);
+                new Mapping(action: Action.GlobalRight, anyInputList: new List<object> { keybMap.right, Buttons.DPadRight }, gamepadAnalogAsDigital: true, repeat: true);
+                new Mapping(action: Action.GlobalUp, anyInputList: new List<object> { keybMap.up, Buttons.DPadUp }, gamepadAnalogAsDigital: true, repeat: true);
+                new Mapping(action: Action.GlobalDown, anyInputList: new List<object> { keybMap.down, Buttons.DPadDown }, gamepadAnalogAsDigital: true, repeat: true);
+                new Mapping(action: Action.GlobalScrollUp, anyInputList: new List<object> { MouseAction.ScrollUp });
+                new Mapping(action: Action.GlobalScrollDown, anyInputList: new List<object> { MouseAction.ScrollDown });
+            }
 
             // world
+            {
+                var walkList = new List<object> { AnalogType.VirtLeft, keybMap.leftStick, padMap.leftStick };
+                if (Preferences.PointToWalk) walkList.Add(MouseAction.LeftButtonVisOnly);
+                new Mapping(action: Action.WorldWalk, anyInputList: walkList, keysToAnalog: keysToAnalog);
+                new Mapping(action: Action.WorldCameraMove, anyInputList: new List<object> { AnalogType.VirtRight, padMap.rightStick });
+                new Mapping(action: Action.WorldPauseMenu, anyInputList: new List<object> { keybMap.pauseMenu, padMap.pauseMenu, VButName.PauseMenu });
+                new Mapping(action: Action.WorldSprintToggle, anyInputList: new List<object> { keybMap.sprint, padMap.sprint, VButName.Sprint });
+                new Mapping(action: Action.WorldEquip, anyInputList: new List<object> { keybMap.equip, padMap.equip, VButName.Equip });
+                new Mapping(action: Action.WorldInventory, anyInputList: new List<object> { keybMap.inventory, padMap.inventory, VButName.Inventory });
 
-            var walkList = new List<object> { AnalogType.VirtLeft, keybMap.leftStick, padMap.leftStick };
-            if (Preferences.PointToWalk) walkList.Add(MouseAction.LeftButtonVisOnly);
-            new Mapping(action: Action.WorldWalk, anyInputList: walkList, keysToAnalog: keysToAnalog);
-            new Mapping(action: Action.WorldCameraMove, anyInputList: new List<object> { AnalogType.VirtRight, padMap.rightStick });
-            new Mapping(action: Action.WorldPauseMenu, anyInputList: new List<object> { keybMap.pauseMenu, padMap.pauseMenu, VButName.PauseMenu });
-            new Mapping(action: Action.WorldSprintToggle, anyInputList: new List<object> { keybMap.sprint, padMap.sprint, VButName.Sprint });
-            new Mapping(action: Action.WorldEquip, anyInputList: new List<object> { keybMap.equip, padMap.equip, VButName.Equip });
-            new Mapping(action: Action.WorldInventory, anyInputList: new List<object> { keybMap.inventory, padMap.inventory, VButName.Inventory });
+                var pickUpList = new List<object> { keybMap.pickUp, padMap.pickUp, VButName.PickUp };
+                if (Preferences.PointToWalk && Preferences.PointToInteract) pickUpList.Add(MouseAction.LeftButtonVisOnly);
+                new Mapping(action: Action.WorldPickUp, anyInputList: pickUpList);
 
-            var pickUpList = new List<object> { keybMap.pickUp, padMap.pickUp, VButName.PickUp };
-            if (Preferences.PointToWalk && Preferences.PointToInteract) pickUpList.Add(MouseAction.LeftButtonVisOnly);
-            new Mapping(action: Action.WorldPickUp, anyInputList: pickUpList);
+                var interactList = new List<object> { keybMap.interact, padMap.interact, VButName.Interact };
+                if (Preferences.PointToWalk && Preferences.PointToInteract) interactList.Add(MouseAction.LeftButtonVisOnly);
+                new Mapping(action: Action.WorldInteract, anyInputList: interactList);
 
-            var interactList = new List<object> { keybMap.interact, padMap.interact, VButName.Interact };
-            if (Preferences.PointToWalk && Preferences.PointToInteract) interactList.Add(MouseAction.LeftButtonVisOnly);
-            new Mapping(action: Action.WorldInteract, anyInputList: interactList);
-
-            new Mapping(action: Action.WorldMapToggle, anyInputList: new List<object> { keybMap.map, padMap.map, VButName.Map });
-            new Mapping(action: Action.WorldFieldCraft, anyInputList: new List<object> { keybMap.craft, padMap.craft, VButName.FieldCraft });
-            new Mapping(action: Action.WorldUseToolbarPiece, anyInputList: new List<object> { keybMap.useTool, MouseAction.RightButton, padMap.useTool, VButName.UseTool, });
-            new Mapping(action: Action.WorldCameraZoomOut, anyInputList: new List<object> { keybMap.zoomOut, padMap.zoomOut, VButName.ZoomOut });
+                new Mapping(action: Action.WorldMapToggle, anyInputList: new List<object> { keybMap.map, padMap.map, VButName.Map });
+                new Mapping(action: Action.WorldFieldCraft, anyInputList: new List<object> { keybMap.craft, padMap.craft, VButName.FieldCraft });
+                new Mapping(action: Action.WorldUseToolbarPiece, anyInputList: new List<object> { keybMap.useTool, MouseAction.RightButton, padMap.useTool, VButName.UseTool, });
+                new Mapping(action: Action.WorldCameraZoomOut, anyInputList: new List<object> { keybMap.zoomOut, padMap.zoomOut, VButName.ZoomOut });
+            }
 
             // inventory
-            new Mapping(action: Action.InvPickStack, anyInputList: new List<object> { keybMap.invPickStack, padMap.invPickStack });
-            new Mapping(action: Action.InvPickOne, anyInputList: new List<object> { keybMap.invPickOne, padMap.invPickOne });
-            new Mapping(action: Action.InvRelease, anyInputList: new List<object> { keybMap.confirm, padMap.confirm, keybMap.invPickStack, padMap.invPickStack, keybMap.invPickOne, padMap.invPickOne });
-            new Mapping(action: Action.InvSwitch, anyInputList: new List<object> { keybMap.invSwitch, padMap.invSwitch, keybMap.toolbarPrev, keybMap.toolbarNext, padMap.toolbarPrev, padMap.toolbarNext, MouseAction.ScrollUp, MouseAction.ScrollDown });
-            new Mapping(action: Action.InvSort, anyInputList: new List<object> { keybMap.invSort, padMap.invSort, VButName.InvSort });
-            new Mapping(action: Action.ToolbarPrev, anyInputList: new List<object> { keybMap.toolbarPrev, padMap.toolbarPrev, MouseAction.ScrollUp }, repeat: true);
-            new Mapping(action: Action.ToolbarNext, anyInputList: new List<object> { keybMap.toolbarNext, padMap.toolbarNext, MouseAction.ScrollDown }, repeat: true);
+            {
+                new Mapping(action: Action.InvPickStack, anyInputList: new List<object> { keybMap.invPickStack, padMap.invPickStack });
+                new Mapping(action: Action.InvPickOne, anyInputList: new List<object> { keybMap.invPickOne, padMap.invPickOne });
+                new Mapping(action: Action.InvRelease, anyInputList: new List<object> { keybMap.confirm, padMap.confirm, keybMap.invPickStack, padMap.invPickStack, keybMap.invPickOne, padMap.invPickOne });
+                new Mapping(action: Action.InvSwitch, anyInputList: new List<object> { keybMap.invSwitch, padMap.invSwitch, keybMap.toolbarPrev, keybMap.toolbarNext, padMap.toolbarPrev, padMap.toolbarNext, MouseAction.ScrollUp, MouseAction.ScrollDown });
+                new Mapping(action: Action.InvSort, anyInputList: new List<object> { keybMap.invSort, padMap.invSort, VButName.InvSort });
+                new Mapping(action: Action.ToolbarPrev, anyInputList: new List<object> { keybMap.toolbarPrev, padMap.toolbarPrev, MouseAction.ScrollUp }, repeat: true);
+                new Mapping(action: Action.ToolbarNext, anyInputList: new List<object> { keybMap.toolbarNext, padMap.toolbarNext, MouseAction.ScrollDown }, repeat: true);
+            }
 
             // map
-            new Mapping(action: Action.MapSwitch, anyInputList: new List<object> { keybMap.cancel, keybMap.map, padMap.cancel, padMap.map, VButName.Return });
-            new Mapping(action: Action.MapZoomIn, anyInputList: new List<object> { keybMap.mapZoomIn, padMap.mapZoomIn, VButName.MapZoomIn, MouseAction.ScrollUp });
-            new Mapping(action: Action.MapZoomOut, anyInputList: new List<object> { keybMap.mapZoomOut, padMap.mapZoomOut, VButName.MapZoomOut, MouseAction.ScrollDown });
+            {
+                new Mapping(action: Action.MapMove, anyInputList: new List<object> { keybMap.leftStick, padMap.leftStick, MouseAction.LeftButtonVisOnly }, keysToAnalog: keysToAnalog); // virtual stick is replaced with direct touch reading
+                new Mapping(action: Action.MapSwitch, anyInputList: new List<object> { keybMap.cancel, keybMap.map, padMap.cancel, padMap.map, VButName.Return });
+                new Mapping(action: Action.MapZoomIn, anyInputList: new List<object> { keybMap.mapZoomIn, padMap.mapZoomIn, VButName.MapZoomIn, MouseAction.ScrollUp });
+                new Mapping(action: Action.MapZoomOut, anyInputList: new List<object> { keybMap.mapZoomOut, padMap.mapZoomOut, VButName.MapZoomOut, MouseAction.ScrollDown });
+            }
 
             // secret licence bypass
-            new Mapping(action: Action.SecretLicenceBypass, anyInputList: new List<object> { Keys.LeftControl, Buttons.Start, VButName.Return });
+            {
+                new Mapping(action: Action.SecretLicenceBypass, anyInputList: new List<object> { Keys.LeftControl, Buttons.Start, VButName.Return });
+            }
         }
 
         public static List<Texture2D> GetTextures(Action action)

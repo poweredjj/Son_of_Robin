@@ -315,7 +315,7 @@ namespace SonOfRobin
                 return;
             }
 
-            float zoomChangeVal = Mouse.ScrollWheelRolledUp || Mouse.ScrollWheelRolledDown ? 0.025f : 0.0075f;
+            float zoomChangeVal = Mouse.ScrollWheelRolledUp || Mouse.ScrollWheelRolledDown ? 0.035f : 0.0075f;
 
             if (InputMapper.IsPressed(InputMapper.Action.MapZoomIn))
             {
@@ -334,7 +334,7 @@ namespace SonOfRobin
             var touches = TouchInput.TouchPanelState;
             if (!touches.Any()) this.lastTouchPos = Vector2.Zero;
 
-            Vector2 movement = InputMapper.Analog(InputMapper.Action.WorldWalk) * 10 / this.camera.currentZoom;
+            Vector2 movement = InputMapper.Analog(InputMapper.Action.MapMove) * 10 / this.camera.currentZoom;
 
             if (movement == Vector2.Zero)
             {
@@ -346,7 +346,7 @@ namespace SonOfRobin
                         break;
                     }
 
-                    if (!TouchInput.IsPointActivatingAnyTouchInterface(point: touch.Position, checkLeftStick: true, checkRightStick: false, checkVirtButtons: true, checkInventory: false, checkPlayerPanel: false))
+                    if (!TouchInput.IsPointActivatingAnyTouchInterface(point: touch.Position, checkLeftStick: false, checkRightStick: false, checkVirtButtons: true, checkInventory: false, checkPlayerPanel: false))
                     {
                         if (touch.State == TouchLocationState.Pressed)
                         {

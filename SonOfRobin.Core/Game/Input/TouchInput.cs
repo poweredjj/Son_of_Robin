@@ -324,8 +324,7 @@ namespace SonOfRobin
 
                 case TouchLayout.Map:
                     {
-                        ShowLeftStick = true;
-                        ShowRightStick = false;
+                        ShowSticks = false;
 
                         new VirtButton(name: VButName.Return, label: "RETURN", bgColorPressed: Color.CornflowerBlue, bgColorReleased: Color.White, textColor: Color.White, posX0to1: 0.76f, posY0to1: 0.12f, width0to1: size, height0to1: size);
 
