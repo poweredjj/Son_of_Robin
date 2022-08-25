@@ -305,18 +305,24 @@ namespace SonOfRobin
 
         private void ProcessInput()
         {
-            if (InputMapper.HasBeenPressed(InputMapper.Action.MapSwitch)) this.SwitchToNextMode();
+            if (InputMapper.HasBeenPressed(InputMapper.Action.MapSwitch))
+            {
+                this.SwitchToNextMode();
+                return;
+            }
+
+            float zoomChangeVal = 0.007f;
 
             if (InputMapper.IsPressed(InputMapper.Action.MapZoomIn))
             {
-                float currentZoom = this.camera.currentZoom + 0.007f;
+                float currentZoom = this.camera.currentZoom + zoomChangeVal;
                 currentZoom = Math.Min(currentZoom, 0.5f);
                 this.camera.SetZoom(currentZoom);
             }
 
             if (InputMapper.IsPressed(InputMapper.Action.MapZoomOut))
             {
-                float currentZoom = this.camera.currentZoom - 0.007f;
+                float currentZoom = this.camera.currentZoom - zoomChangeVal;
                 currentZoom = Math.Max(currentZoom, this.scaleMultiplier);
                 this.camera.SetZoom(currentZoom);
             }
@@ -336,10 +342,25 @@ namespace SonOfRobin
                 newPos.Y = Math.Min(newPos.Y, this.world.height - cameraHalfHeight);
 
                 this.camera.TrackCoords(newPos);
-
-                MessageLog.AddMessage(msgType: MsgType.User, message: $"Camera position {newPos}");
             }
 
+        }
+        private Vector2 DrawOffset
+        {
+            get
+            {
+                Vector2 drawOffset = Vector2.Zero;
+
+                int displayedMapWidth = (int)(this.world.width * this.camera.currentZoom);
+                int displayedMapHeight = (int)(this.world.width * this.camera.currentZoom);
+
+                if (displayedMapWidth < SonOfRobinGame.VirtualWidth) drawOffset.X += (SonOfRobinGame.VirtualWidth - displayedMapWidth) / 2 / this.camera.currentZoom;
+                if (displayedMapHeight < SonOfRobinGame.VirtualHeight) drawOffset.Y += (SonOfRobinGame.VirtualHeight - displayedMapHeight) / 2 / this.camera.currentZoom;
+
+                MessageLog.AddMessage(msgType: MsgType.User, message: $"{SonOfRobinGame.currentUpdate} VirtualWidth {SonOfRobinGame.VirtualWidth} displayedMapWidth {displayedMapWidth} combined {(SonOfRobinGame.VirtualWidth - displayedMapWidth) / 2}");
+
+                return drawOffset;
+            }
         }
 
         public override void Draw()
@@ -349,7 +370,13 @@ namespace SonOfRobin
             if (this.FullScreen && !this.transManager.HasAnyTransition) SonOfRobinGame.graphicsDevice.Clear(BoardGraphics.colorsByName[BoardGraphics.Colors.WaterDeep]);
 
             // drawing terrain and fog of war
-            SonOfRobinGame.spriteBatch.Draw(this.combinedGfx, this.worldRect, Color.White * this.viewParams.drawOpacity);
+
+            Rectangle worldRectCorrected = this.worldRect;
+            Vector2 drawOffset = this.DrawOffset;
+            worldRectCorrected.X += (int)drawOffset.X;
+            worldRectCorrected.Y += (int)drawOffset.Y;
+
+            SonOfRobinGame.spriteBatch.Draw(this.combinedGfx, worldRectCorrected, Color.White * this.viewParams.drawOpacity);
 
             // drawing pieces
             var groupName = this.FullScreen ? Cell.Group.Visible : Cell.Group.MiniMap;
@@ -360,7 +387,7 @@ namespace SonOfRobin
             Color outlineColor = new Color(0, 0, 0);
             bool drawOutline;
             bool showOutsideCamera;
-            Rectangle cameraRect = this.world.camera.viewRect;
+            Rectangle worldCameraRect = this.world.camera.viewRect;
             BoardPiece piece;
 
             // sprites bag should be only updated once in a while
@@ -502,24 +529,22 @@ namespace SonOfRobin
 
                 else continue;
 
-                if (!showOutsideCamera && !cameraRect.Contains(sprite.gfxRect) && !Preferences.debugShowAllMapPieces) continue;
+                if (!showOutsideCamera && !worldCameraRect.Contains(sprite.gfxRect) && !Preferences.debugShowAllMapPieces) continue;
 
-                if (drawOutline) this.DrawSpriteSquare(sprite: sprite, size: outlineSize, color: outlineColor);
-                this.DrawSpriteSquare(sprite: sprite, size: fillSize, color: fillColor);
+                if (drawOutline) this.DrawSpriteSquare(position: sprite.position + drawOffset, size: outlineSize, color: outlineColor);
+                this.DrawSpriteSquare(position: sprite.position + drawOffset, size: fillSize, color: fillColor);
             }
 
             // drawing camera FOV
-            var viewRect = this.world.camera.viewRect;
-
-            Helpers.DrawRectangleOutline(rect: viewRect, color: Color.White * this.viewParams.drawOpacity, borderWidth: this.FullScreen ? 2 : 1);
+            Helpers.DrawRectangleOutline(rect: worldRectCorrected, color: Color.White * this.viewParams.drawOpacity, borderWidth: this.FullScreen ? 4 : 2);
         }
 
-        private void DrawSpriteSquare(Sprite sprite, byte size, Color color)
+        private void DrawSpriteSquare(Vector2 position, byte size, Color color)
         {
             SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle,
                 new Rectangle(
-                    x: (int)(sprite.position.X - size / 2),
-                    y: (int)(sprite.position.Y - size / 2),
+                    x: (int)(position.X - size / 2),
+                    y: (int)(position.Y - size / 2),
                     width: size, height: size),
                 color * this.viewParams.drawOpacity);
         }
