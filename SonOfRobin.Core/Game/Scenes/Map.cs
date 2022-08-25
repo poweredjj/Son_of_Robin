@@ -322,24 +322,24 @@ namespace SonOfRobin
             }
 
             Vector2 movement = InputMapper.Analog(InputMapper.Action.WorldWalk) * 10 / this.camera.currentZoom;
+            if (movement != Vector2.Zero)
+            {
+                Rectangle cameraRect = this.camera.viewRect;
+                int cameraHalfWidth = cameraRect.Width / 2;
+                int cameraHalfHeight = cameraRect.Height / 2;
 
-            if (movement != Vector2.Zero) this.camera.TrackCoords(this.camera.TrackedPos + movement);
+                Vector2 newPos = this.camera.TrackedPos + movement;
 
-            // keeping the camera in bounds
+                newPos.X = Math.Max(newPos.X, cameraHalfWidth);
+                newPos.X = Math.Min(newPos.X, this.world.width - cameraHalfWidth);
+                newPos.Y = Math.Max(newPos.Y, cameraHalfHeight);
+                newPos.Y = Math.Min(newPos.Y, this.world.height - cameraHalfHeight);
 
-            this.camera.Update();
+                this.camera.TrackCoords(newPos);
 
-            Rectangle viewRect = this.camera.viewRect;
+                MessageLog.AddMessage(msgType: MsgType.User, message: $"Camera position {newPos}");
+            }
 
-            if (viewRect.Left < 0) viewRect.X = 0;
-            if (viewRect.Right > this.world.width) viewRect.X = this.world.width - viewRect.Width;
-            if (viewRect.Top < 0) viewRect.Y = 0;
-            if (viewRect.Bottom > this.world.height) viewRect.Y = this.world.height - viewRect.Height;
-
-            this.camera.TrackCoords(new Vector2(viewRect.Center.X, viewRect.Center.Y));
-            this.camera.Update();
-
-            MessageLog.AddMessage(msgType: MsgType.User, message: $"Camera position {viewRect.Center}");
         }
 
         public override void Draw()
