@@ -440,175 +440,45 @@ namespace SonOfRobin
 
             var groupName = this.FullScreen ? Cell.Group.Visible : Cell.Group.MiniMap;
 
-            byte fillSize;
-            byte outlineSize = 1;
-            Color fillColor;
-            Color outlineColor = new Color(0, 0, 0);
-            bool drawOutline;
-            bool showOutsideCamera;
             Rectangle worldCameraRect = this.world.camera.viewRect;
-            BoardPiece piece;
 
             var spritesBag = world.grid.GetSprites(groupName: groupName, visitedByPlayerOnly: !Preferences.DebugShowWholeMap, camera: this.camera);
+
+            var typesShownOutsideCamera = new List<Type> { typeof(Player), typeof(Workshop), typeof(Cooker), typeof(Shelter), };
+            var typesShownIfDiscovered = new List<Type> { typeof(Container), typeof(Tool), typeof(Equipment), typeof(Fruit), };
+            var typesShownInCamera = new List<Type> { typeof(Animal), typeof(Plant), typeof(Collectible) };
+
+            var namesShownIfDiscovered = new List<PieceTemplate.Name> { PieceTemplate.Name.CrateStarting, PieceTemplate.Name.CrateRegular };
+            namesShownIfDiscovered.AddRange(depositNameList);
 
             // regular "foreach", because spriteBatch is not thread-safe
             foreach (Sprite sprite in spritesBag.OrderBy(o => o.frame.layer).ThenBy(o => o.gfxRect.Bottom))
             {
-
-                sprite.DrawRoutine(calculateSubmerge: false, offsetX: drawOffsetX, offsetY: drawOffsetY);
-
-
-                drawOutline = false;
-                showOutsideCamera = false;
-                piece = sprite.boardPiece;
+                BoardPiece piece = sprite.boardPiece;
                 Type pieceType = piece.GetType();
 
-                if (pieceType == typeof(Player))
-                {
-                    showOutsideCamera = true;
-                    fillSize = 4;
-                    fillColor = Color.White;
-                    outlineSize = 8;
-                    outlineColor = Color.Black;
-                    drawOutline = true;
-                }
 
-                else if (pieceType == typeof(Workshop))
-                {
-                    showOutsideCamera = sprite.hasBeenDiscovered;
-                    fillSize = 4;
-                    fillColor = Color.Aqua;
-                    outlineSize = 8;
-                    outlineColor = Color.Blue;
-                    drawOutline = true;
-                }
+                bool showSprite = false;
 
-                else if (pieceType == typeof(Cooker))
-                {
-                    showOutsideCamera = true;
-                    fillSize = 4;
-                    fillColor = new Color(255, 0, 0);
-                    outlineSize = 8;
-                    outlineColor = new Color(128, 0, 0);
-                    drawOutline = true;
-                }
+                if (typesShownOutsideCamera.Contains(pieceType)) showSprite = true;
 
-                else if (pieceType == typeof(Shelter))
-                {
-                    showOutsideCamera = true;
-                    fillSize = 4;
-                    fillColor = Color.Chartreuse;
-                    outlineSize = 8;
-                    outlineColor = Color.SeaGreen;
-                    drawOutline = true;
-                }
+                if (!showSprite && sprite.hasBeenDiscovered &&
+                    (namesShownIfDiscovered.Contains(sprite.boardPiece.name) ||
+                    typesShownIfDiscovered.Contains(pieceType))) showSprite = true;
 
-                else if (pieceType == typeof(Container))
-                {
-                    showOutsideCamera = true;
-                    fillSize = 4;
-                    fillColor = Color.Fuchsia;
-                    outlineSize = 8;
-                    outlineColor = Color.DarkOrchid;
-                    drawOutline = true;
-                }
+                if (!showSprite && typesShownInCamera.Contains(pieceType) && sprite.IsInCameraRect) showSprite = true;
 
-                else if (pieceType == typeof(Tool))
-                {
-                    showOutsideCamera = true;
-                    fillSize = 4;
-                    fillColor = Color.LightCyan;
-                    outlineSize = 8;
-                    outlineColor = Color.Teal;
-                    drawOutline = true;
-                }
 
-                else if (pieceType == typeof(Equipment))
-                {
-                    showOutsideCamera = true;
-                    fillSize = 4;
-                    fillColor = Color.Gold;
-                    outlineSize = 8;
-                    outlineColor = Color.Chocolate;
-                    drawOutline = true;
-                }
-
-                else if (pieceType == typeof(Fruit))
-                {
-                    showOutsideCamera = sprite.hasBeenDiscovered;
-                    fillSize = 2;
-                    fillColor = Color.Lime;
-                    outlineSize = 4;
-                    outlineColor = Color.DarkGreen;
-                    drawOutline = true;
-                }
-
-                else if (pieceType == typeof(Animal))
-                {
-                    fillColor = PieceInfo.GetInfo(piece.name).isCarnivorous ? Color.Red : Color.Yellow;
-                    fillSize = 3;
-                }
-
-                else if (pieceType == typeof(Plant))
-                {
-                    fillSize = 2;
-                    fillColor = piece.alive ? Color.Green : Color.DarkGreen;
-                }
-
-                else if (pieceType == typeof(Decoration))
-                {
-                    if (piece.name == PieceTemplate.Name.CrateStarting || piece.name == PieceTemplate.Name.CrateRegular)
-                    {
-                        showOutsideCamera = sprite.hasBeenDiscovered;
-                        fillSize = 4;
-                        fillColor = Color.BurlyWood;
-                        outlineSize = 8;
-                        outlineColor = Color.Maroon;
-                        drawOutline = true;
-                    }
-                    else if (depositNameList.Contains(piece.name))
-                    {
-                        showOutsideCamera = sprite.hasBeenDiscovered;
-                        fillSize = 4;
-                        fillColor = Color.Yellow;
-                        outlineSize = 8;
-                        outlineColor = Color.Red;
-                        drawOutline = true;
-                    }
-
-                    else
-                    {
-                        fillSize = 3;
-                        fillColor = Color.Black;
-                    }
-                }
-
-                else if (pieceType == typeof(Collectible))
-                {
-                    fillSize = 2;
-                    fillColor = Color.Gray;
-                }
-
-                else continue;
-
-                if (!showOutsideCamera && !worldCameraRect.Contains(sprite.gfxRect) && !Preferences.debugShowAllMapPieces) continue;
-
-                if (drawOutline) this.DrawSpriteSquare(position: sprite.position + drawOffset, size: outlineSize, color: outlineColor);
-                this.DrawSpriteSquare(position: sprite.position + drawOffset, size: fillSize, color: fillColor);
+                if (showSprite) sprite.DrawRoutine(calculateSubmerge: false, offsetX: drawOffsetX, offsetY: drawOffsetY);
             }
 
             // drawing camera FOV
-            Helpers.DrawRectangleOutline(rect: worldRectCentered, color: Color.White * this.viewParams.drawOpacity, borderWidth: this.FullScreen ? 4 : 2);
-        }
 
-        private void DrawSpriteSquare(Vector2 position, byte size, Color color)
-        {
-            SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle,
-                new Rectangle(
-                    x: (int)(position.X - size / 2),
-                    y: (int)(position.Y - size / 2),
-                    width: size, height: size),
-                color * this.viewParams.drawOpacity);
+            Rectangle worldCameraRectCentered = this.world.camera.viewRect;
+            worldCameraRectCentered.X += drawOffsetX;
+            worldCameraRectCentered.Y += drawOffsetY;
+
+            Helpers.DrawRectangleOutline(rect: worldCameraRectCentered, color: Color.White * this.viewParams.drawOpacity, borderWidth: this.FullScreen ? 4 : 2);
         }
 
         public void StartRenderingToTarget(RenderTarget2D newRenderTarget)
