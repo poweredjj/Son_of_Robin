@@ -267,18 +267,17 @@ namespace SonOfRobin
             return list;
         }
 
-        public static float ConvertRange(float oldMin, float oldMax, float newMin, float newMax, float oldValue, bool clampToEdges = true)
+        public static double ConvertRange(double oldMin, double oldMax, double newMin, double newMax, double oldVal, bool clampToEdges)
         {
-            float oldRange = oldMax - oldMin;
-            float newRange = newMax - newMin;
-            float newValue = ((oldValue - oldMin) * newRange / oldRange) + newMin;
+            double newVal = ((oldVal - oldMin) * (newMax - newMin) / (oldMax - oldMin)) + newMin;
 
             if (clampToEdges)
             {
-                newValue = Math.Min(newValue, newMax);
-                newValue = Math.Max(newValue, newMin);
+                newVal = Math.Min(newVal, newMax);
+                newVal = Math.Max(newVal, newMin);
             }
-            return newValue;
+
+            return newVal;
         }
     }
 }

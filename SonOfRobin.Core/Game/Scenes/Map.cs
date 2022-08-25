@@ -413,12 +413,12 @@ namespace SonOfRobin
             worldRectCentered.X += (int)drawOffset.X;
             worldRectCentered.Y += (int)drawOffset.Y;
 
-            float showMiniatureAtZoom = 0.2f;
+            float showMiniatureAtZoom = (float)SonOfRobinGame.VirtualWidth / (float)this.world.width;
             float showFullScaleAtZoom = 0.3f;
 
-            float miniatureOpacity = Helpers.ConvertRange(oldMin: showFullScaleAtZoom, oldMax: showMiniatureAtZoom, newMin: 0f, newMax: 1f, oldValue: this.camera.currentZoom);
+            float miniatureOpacity = (float)Helpers.ConvertRange(oldMin: showFullScaleAtZoom, oldMax: showMiniatureAtZoom, newMin: 0f, newMax: 1f, oldVal: this.camera.currentZoom, clampToEdges: true);
 
-            MessageLog.AddMessage(msgType: MsgType.User, message: $"Zoom {this.camera.currentZoom} miniatureOpacity {miniatureOpacity}");
+            // MessageLog.AddMessage(msgType: MsgType.User, message: $"Zoom {this.camera.currentZoom} miniatureOpacity {miniatureOpacity} showMiniatureAtZoom {showMiniatureAtZoom}");
 
             var visibleCells = this.world.grid.GetCellsInsideRect(camera.viewRect);
 
