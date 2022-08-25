@@ -406,20 +406,32 @@ namespace SonOfRobin
 
             // drawing terrain and fog of war
 
-            Rectangle worldRectCorrected = this.worldRect;
+            Rectangle worldRectCentered = this.worldRect;
             Vector2 drawOffset = this.DrawOffset;
             int drawOffsetX = (int)drawOffset.X;
             int drawOffsetY = (int)drawOffset.Y;
-            worldRectCorrected.X += (int)drawOffset.X;
-            worldRectCorrected.Y += (int)drawOffset.Y;
+            worldRectCentered.X += (int)drawOffset.X;
+            worldRectCentered.Y += (int)drawOffset.Y;
 
-            SonOfRobinGame.spriteBatch.Draw(this.combinedGfx, worldRectCorrected, Color.White * this.viewParams.drawOpacity);
+            float showMiniatureAtZoom = 0.2f;
+            float showFullScaleAtZoom = 0.3f;
+
+            float miniatureOpacity = Helpers.ConvertRange(oldMin: showFullScaleAtZoom, oldMax: showMiniatureAtZoom, newMin: 0f, newMax: 1f, oldValue: this.camera.currentZoom);
+
+            MessageLog.AddMessage(msgType: MsgType.User, message: $"Zoom {this.camera.currentZoom} miniatureOpacity {miniatureOpacity}");
 
             var visibleCells = this.world.grid.GetCellsInsideRect(camera.viewRect);
-            foreach (Cell cell in visibleCells)
+
+            if (miniatureOpacity < 1)
             {
-                if (cell.VisitedByPlayer) cell.DrawBackground(drawOffsetX: drawOffsetX, drawOffsetY: drawOffsetY);
+                foreach (Cell cell in visibleCells)
+                {
+                    if (cell.VisitedByPlayer) cell.DrawBackground(drawOffsetX: drawOffsetX, drawOffsetY: drawOffsetY, opacity: this.viewParams.drawOpacity);
+                }
             }
+
+            if (miniatureOpacity > 0) SonOfRobinGame.spriteBatch.Draw(this.combinedGfx, worldRectCentered, Color.White * this.viewParams.drawOpacity * miniatureOpacity);
+
 
             // drawing pieces
             var groupName = this.FullScreen ? Cell.Group.Visible : Cell.Group.MiniMap;
@@ -579,7 +591,7 @@ namespace SonOfRobin
             }
 
             // drawing camera FOV
-            Helpers.DrawRectangleOutline(rect: worldRectCorrected, color: Color.White * this.viewParams.drawOpacity, borderWidth: this.FullScreen ? 4 : 2);
+            Helpers.DrawRectangleOutline(rect: worldRectCentered, color: Color.White * this.viewParams.drawOpacity, borderWidth: this.FullScreen ? 4 : 2);
         }
 
         private void DrawSpriteSquare(Vector2 position, byte size, Color color)
