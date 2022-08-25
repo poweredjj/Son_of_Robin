@@ -234,6 +234,7 @@ namespace SonOfRobin
 
                     this.transManager.AddMultipleTransitions(outTrans: false, duration: 15, endTurnOffDraw: false, endTurnOffUpdate: false,
                         paramsToChange: new Dictionary<string, float> {
+                        { "Opacity", 0f},
                         { "PosX", this.world.viewParams.drawPosX},
                         { "PosY", this.world.viewParams.drawPosY},
                         { "ScaleX", this.world.viewParams.drawScaleX },
@@ -407,10 +408,18 @@ namespace SonOfRobin
 
             Rectangle worldRectCorrected = this.worldRect;
             Vector2 drawOffset = this.DrawOffset;
+            int drawOffsetX = (int)drawOffset.X;
+            int drawOffsetY = (int)drawOffset.Y;
             worldRectCorrected.X += (int)drawOffset.X;
             worldRectCorrected.Y += (int)drawOffset.Y;
 
             SonOfRobinGame.spriteBatch.Draw(this.combinedGfx, worldRectCorrected, Color.White * this.viewParams.drawOpacity);
+
+            var visibleCells = this.world.grid.GetCellsInsideRect(camera.viewRect);
+            foreach (Cell cell in visibleCells)
+            {
+                if (cell.VisitedByPlayer) cell.DrawBackground(drawOffsetX: drawOffsetX, drawOffsetY: drawOffsetY);
+            }
 
             // drawing pieces
             var groupName = this.FullScreen ? Cell.Group.Visible : Cell.Group.MiniMap;

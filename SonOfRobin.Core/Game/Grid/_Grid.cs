@@ -505,7 +505,7 @@ namespace SonOfRobin
             bool updateFog = false;
             Rectangle cameraRect = camera.viewRect;
 
-            var visibleCells = this.GetCellsInsideRect(camera.viewRect).OrderBy(o => o.cellNoY);
+            var visibleCells = this.GetCellsInsideRect(camera.viewRect);
             foreach (Cell cell in visibleCells)
             {
                 cell.DrawBackground();

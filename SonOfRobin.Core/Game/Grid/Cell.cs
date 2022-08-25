@@ -261,7 +261,7 @@ namespace SonOfRobin
             }
         }
 
-        public void DrawBackground()
+        public void DrawBackground(int drawOffsetX = 0, int drawOffsetY = 0, float opacity = 1f)
         {
             if (this.boardGraphics.texture == null) return;
 
@@ -269,7 +269,10 @@ namespace SonOfRobin
             Rectangle destinationRectangle = new Rectangle(this.xMin, this.yMin,
                 this.boardGraphics.texture.Width * this.grid.resDivider, this.boardGraphics.texture.Height * this.grid.resDivider);
 
-            SonOfRobinGame.spriteBatch.Draw(this.boardGraphics.texture, destinationRectangle, sourceRectangle, Color.White);
+            destinationRectangle.X += drawOffsetX;
+            destinationRectangle.Y += drawOffsetY;
+
+            SonOfRobinGame.spriteBatch.Draw(this.boardGraphics.texture, destinationRectangle, sourceRectangle, Color.White * opacity);
         }
 
     }

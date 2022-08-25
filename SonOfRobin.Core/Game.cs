@@ -23,7 +23,7 @@ namespace SonOfRobin
         public static Game game;
         public static Platform platform;
         public static OS os;
-        public static bool fakeMobileMode = true;
+        public static bool fakeMobileMode = false;
 
         public static GraphicsDeviceManager graphics;
         public static GraphicsDevice graphicsDevice;
