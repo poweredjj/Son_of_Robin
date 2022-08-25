@@ -31,9 +31,6 @@ namespace SonOfRobin
 
         private float InitialZoom { get { return Preferences.WorldScale / 2; } }
 
-        private static readonly List<PieceTemplate.Name> depositNameList = new List<PieceTemplate.Name> {
-            PieceTemplate.Name.CoalDeposit, PieceTemplate.Name.IronDeposit, PieceTemplate.Name.CrystalDepositSmall, PieceTemplate.Name.CrystalDepositBig };
-
         private static readonly Color fogColor = new Color(50, 50, 50);
 
         public Map(World world, TouchLayout touchLayout) : base(inputType: InputTypes.None, priority: 1, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: false, touchLayout: touchLayout, tipsLayout: ControlTips.TipsLayout.Map)
@@ -311,6 +308,9 @@ namespace SonOfRobin
 
         private void ProcessInput()
         {
+            var touches = TouchInput.TouchPanelState;
+            if (!touches.Any()) this.lastTouchPos = Vector2.Zero;
+
             if (InputMapper.HasBeenPressed(InputMapper.Action.MapSwitch))
             {
                 this.SwitchToNextMode();
@@ -333,9 +333,6 @@ namespace SonOfRobin
                 currentZoom = Math.Max(currentZoom, this.scaleMultiplier);
                 this.camera.SetZoom(currentZoom);
             }
-
-            var touches = TouchInput.TouchPanelState;
-            if (!touches.Any()) this.lastTouchPos = Vector2.Zero;
 
             Vector2 movement = InputMapper.Analog(InputMapper.Action.MapMove) * 10 / this.camera.currentZoom;
 
@@ -456,12 +453,9 @@ namespace SonOfRobin
 
             var spritesBag = world.grid.GetSprites(groupName: groupName, visitedByPlayerOnly: !Preferences.DebugShowWholeMap, camera: this.camera);
 
-            var typesShownOutsideCamera = new List<Type> { typeof(Player), typeof(Workshop), typeof(Cooker), typeof(Shelter), };
-            var typesShownIfDiscovered = new List<Type> { typeof(Container), typeof(Tool), typeof(Equipment), typeof(Fruit), };
-            var typesShownInCamera = new List<Type> { typeof(Animal), typeof(Plant), typeof(Collectible) };
-
-            var namesShownIfDiscovered = new List<PieceTemplate.Name> { PieceTemplate.Name.CrateStarting, PieceTemplate.Name.CrateRegular };
-            namesShownIfDiscovered.AddRange(depositNameList);
+            var typesShownAlways = new List<Type> { typeof(Player), typeof(Workshop), typeof(Cooker), typeof(Shelter), };
+            var typesShownIfDiscovered = new List<Type> { typeof(Container) };
+            var namesShownIfDiscovered = new List<PieceTemplate.Name> { PieceTemplate.Name.CrateStarting, PieceTemplate.Name.CrateRegular, PieceTemplate.Name.CoalDeposit, PieceTemplate.Name.IronDeposit, PieceTemplate.Name.CrystalDepositSmall, PieceTemplate.Name.CrystalDepositBig };
 
             // regular "foreach", because spriteBatch is not thread-safe
             foreach (Sprite sprite in spritesBag.OrderBy(o => o.frame.layer).ThenBy(o => o.gfxRect.Bottom))
@@ -471,25 +465,14 @@ namespace SonOfRobin
 
                 bool showSprite = false;
 
-                if (typesShownOutsideCamera.Contains(pieceType)) showSprite = true;
+                if (typesShownAlways.Contains(pieceType)) showSprite = true;
 
                 if (!showSprite && sprite.hasBeenDiscovered &&
                     (namesShownIfDiscovered.Contains(sprite.boardPiece.name) ||
                     typesShownIfDiscovered.Contains(pieceType))) showSprite = true;
 
-                if (!showSprite && typesShownInCamera.Contains(pieceType) && sprite.IsInCameraRect) showSprite = true;
-
-
                 if (showSprite) sprite.DrawRoutine(calculateSubmerge: false, offsetX: drawOffsetX, offsetY: drawOffsetY);
             }
-
-            // drawing camera FOV
-
-            Rectangle worldCameraRectCentered = this.world.camera.viewRect;
-            worldCameraRectCentered.X += drawOffsetX;
-            worldCameraRectCentered.Y += drawOffsetY;
-
-            Helpers.DrawRectangleOutline(rect: worldCameraRectCentered, color: Color.White * this.viewParams.drawOpacity, borderWidth: this.FullScreen ? 4 : 2);
         }
 
         public void StartRenderingToTarget(RenderTarget2D newRenderTarget)
