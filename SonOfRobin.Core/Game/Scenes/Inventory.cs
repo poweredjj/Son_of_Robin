@@ -390,6 +390,11 @@ namespace SonOfRobin
             hintWindow.TurnOn(newPosX: (int)windowPos.X, newPosY: (int)windowPos.Y, entryList: entryList);
         }
 
+        protected override void AdaptToNewSize()
+        {
+            this.UpdateViewParams();
+        }
+
         public override void Update(GameTime gameTime)
         {
             if (this.IgnoreUpdateAndDraw) return;

@@ -19,6 +19,7 @@ namespace SonOfRobin
         private readonly World world;
         private readonly Camera camera;
         private readonly Rectangle worldRect;
+        private readonly MapRenderer mapRenderer;
         public bool FullScreen { get { return this.Mode == MapMode.Full; } }
         public MapMode Mode { get; private set; }
 
@@ -27,7 +28,8 @@ namespace SonOfRobin
         public bool dirtyFog;
         private RenderTarget2D miniatureTerrainGfx;
         private RenderTarget2D miniatureCombinedGfx;
-        private RenderTarget2D finalMapToDisplay;
+        public RenderTarget2D FinalMapToDisplay { get; private set; }
+
         private Vector2 lastTouchPos;
 
         private float InitialZoom { get { return Preferences.WorldScale / 2; } }
@@ -36,6 +38,8 @@ namespace SonOfRobin
 
         public Map(World world, TouchLayout touchLayout) : base(inputType: InputTypes.None, priority: 1, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: false, touchLayout: touchLayout, tipsLayout: ControlTips.TipsLayout.Map)
         {
+            this.mapRenderer = new MapRenderer(this);
+            this.AddLinkedScene(this.mapRenderer);
             this.drawActive = false;
             this.updateActive = false;
             this.world = world;
@@ -52,7 +56,7 @@ namespace SonOfRobin
 
             if (this.miniatureTerrainGfx != null) this.miniatureTerrainGfx.Dispose();
             if (this.miniatureCombinedGfx != null) this.miniatureCombinedGfx.Dispose();
-            if (this.finalMapToDisplay != null) this.finalMapToDisplay.Dispose();
+            if (this.FinalMapToDisplay != null) this.FinalMapToDisplay.Dispose();
         }
 
         protected override void AdaptToNewSize()
@@ -64,10 +68,10 @@ namespace SonOfRobin
         {
             this.Mode = MapMode.Off;
 
-            if (this.finalMapToDisplay != null)
+            if (this.FinalMapToDisplay != null)
             {
-                this.finalMapToDisplay.Dispose();
-                this.finalMapToDisplay = null;
+                this.FinalMapToDisplay.Dispose();
+                this.FinalMapToDisplay = null;
             }
 
             this.InputType = InputTypes.None;
@@ -100,22 +104,21 @@ namespace SonOfRobin
             this.UpdateBackground();
         }
 
-        public void UpdateResolution() // main rendering code
+        public void UpdateResolution()
         {
             float multiplierX = (float)SonOfRobinGame.VirtualWidth / (float)world.width;
             float multiplierY = (float)SonOfRobinGame.VirtualHeight / (float)world.height;
             this.scaleMultiplier = Math.Min(multiplierX, multiplierY);
 
             this.SetViewParamsForMiniature();
-            this.UpdateViewPos();
 
             if (this.miniatureTerrainGfx == null || this.miniatureTerrainGfx.Width != this.viewParams.Width || this.miniatureTerrainGfx.Height != this.viewParams.Height)
             {
                 if (this.miniatureTerrainGfx != null) this.miniatureTerrainGfx.Dispose();
                 this.miniatureTerrainGfx = new RenderTarget2D(SonOfRobinGame.graphicsDevice, this.viewParams.Width, this.viewParams.Height, false, SurfaceFormat.Color, DepthFormat.None);
-                if (this.finalMapToDisplay != null) this.finalMapToDisplay.Dispose();
+                if (this.FinalMapToDisplay != null) this.FinalMapToDisplay.Dispose();
 
-                this.finalMapToDisplay = new RenderTarget2D(SonOfRobinGame.graphicsDevice, SonOfRobinGame.VirtualWidth, SonOfRobinGame.VirtualHeight, false, SurfaceFormat.Color, DepthFormat.None);
+                this.FinalMapToDisplay = new RenderTarget2D(SonOfRobinGame.graphicsDevice, SonOfRobinGame.VirtualWidth, SonOfRobinGame.VirtualHeight, false, SurfaceFormat.Color, DepthFormat.None);
 
                 this.dirtyBackground = true;
                 this.dirtyFog = true;
@@ -165,7 +168,7 @@ namespace SonOfRobin
                 this.miniatureCombinedGfx = new RenderTarget2D(SonOfRobinGame.graphicsDevice, this.viewParams.Width, this.viewParams.Height, false, SurfaceFormat.Color, DepthFormat.None);
             }
 
-            SonOfRobinGame.spriteBatch.Begin();
+            SonOfRobinGame.spriteBatch.Begin(transformMatrix: this.TransformMatrix);
             SetRenderTarget(this.miniatureCombinedGfx);
             SonOfRobinGame.graphicsDevice.Clear(Color.Transparent);
             SonOfRobinGame.spriteBatch.Draw(this.miniatureTerrainGfx, this.miniatureTerrainGfx.Bounds, Color.White);
@@ -229,7 +232,6 @@ namespace SonOfRobin
         public void AddTransition()
         {
             this.camera.Update();
-            this.UpdateViewPos();
 
             switch (this.Mode)
             {
@@ -289,7 +291,7 @@ namespace SonOfRobin
 
             this.UpdateBackground(); // it's best to update background graphics in Update() (SetRenderTarget in Draw() must go first)
             this.ProcessInput();
-            this.SetViewParamsForRender();
+            this.SetViewParamsForTargetRender();
 
             this.world.grid.UnloadTexturesIfMemoryLow(this.camera);
             this.world.grid.LoadClosestTextureInCameraView(this.camera);
@@ -303,11 +305,9 @@ namespace SonOfRobin
             this.viewParams.ScaleY = 1f;
             this.viewParams.PosX = 0;
             this.viewParams.PosY = 0;
-
-
         }
 
-        private void SetViewParamsForRender()
+        private void SetViewParamsForTargetRender()
         {
             this.viewParams.Width = this.world.width;
             this.viewParams.Height = this.world.height;
@@ -316,18 +316,6 @@ namespace SonOfRobin
             this.camera.Update();
             this.viewParams.PosX = this.camera.viewPos.X;
             this.viewParams.PosY = this.camera.viewPos.Y;
-        }
-
-        private void UpdateViewPos()
-        {
-            if (this.FullScreen) this.viewParams.CenterView();
-            else
-            {
-                var margin = (int)Math.Ceiling(Math.Min(SonOfRobinGame.VirtualWidth / 30f, SonOfRobinGame.VirtualHeight / 30f));
-
-                this.viewParams.PosX = SonOfRobinGame.VirtualWidth - this.viewParams.Width - margin;
-                this.viewParams.PosY = SonOfRobinGame.VirtualHeight - this.viewParams.Height - margin;
-            }
         }
 
         private void ProcessInput()
@@ -427,7 +415,7 @@ namespace SonOfRobin
         {
             SonOfRobinGame.spriteBatch.Begin(transformMatrix: this.TransformMatrix);
 
-            SetRenderTarget(this.finalMapToDisplay);
+            SetRenderTarget(this.FinalMapToDisplay);
 
             // filling with water color
 
@@ -518,11 +506,7 @@ namespace SonOfRobin
 
         public override void Draw()
         {
-            if (this.finalMapToDisplay == null) return;
-
-            this.viewParams.ResetValues(); // TODO check if the values are really changed before rendering
-
-            SonOfRobinGame.spriteBatch.Draw(this.finalMapToDisplay, this.finalMapToDisplay.Bounds, Color.White * this.viewParams.drawOpacity);
+            // is drawn in MapRenderer scene
         }
 
     }

@@ -1100,8 +1100,6 @@ namespace SonOfRobin
 
         private List<Sprite> UpdateDarknessMask(List<Sprite> blockingLightSpritesList)
         {
-            // Has to be called a the beggining, because calling SetRenderTarget() after any draw will wipe the screen black.
-
             // searching for light sources
 
             var lightSprites = this.camera.GetVisibleSprites(groupName: Cell.Group.LightSource).OrderBy(o => o.frame.layer).ThenBy(o => o.gfxRect.Bottom).ToList();
@@ -1200,13 +1198,11 @@ namespace SonOfRobin
 
                     // second pass - erasing shadow from original sprites' position
                     SonOfRobinGame.spriteBatch.Begin(transformMatrix: scaleMatrix, blendState: shadowBlendRedraw);
-
                     foreach (Sprite shadowSprite in blockingLightSpritesList)
                     {
                         // the lightSprite should be also redrawn, to avoid being overdrawn with any shadow
                         if (lightRect.Intersects(shadowSprite.gfxRect)) shadowSprite.DrawRoutine(calculateSubmerge: true, offsetX: -lightRect.X, offsetY: -lightRect.Y);
                     }
-
                     SonOfRobinGame.spriteBatch.End();
 
                     // drawing light on top of shadows

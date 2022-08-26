@@ -398,6 +398,8 @@ namespace SonOfRobin
             startUpdateTime = DateTime.Now;
             ProcessingMode = ProcessingModes.Update;
 
+            if (adaptScenesToNewSize) ResizeAllScenes();
+
             Scheduler.ProcessQueue();
 
             UpdateInputActiveTipsTouch();
@@ -452,8 +454,6 @@ namespace SonOfRobin
         public static void AllScenesInStackDraw()
         {
             startDrawTime = DateTime.Now;
-
-            if (adaptScenesToNewSize) ResizeAllScenes();
 
             var drawStack = DrawStack;
             AllScenesInStackRenderToTarget(drawStack);
