@@ -31,6 +31,7 @@ namespace SonOfRobin
         public RenderTarget2D FinalMapToDisplay { get; private set; }
 
         private Vector2 lastTouchPos;
+        private int switchCooldownFramesLeft;
 
         private float InitialZoom { get { return Preferences.WorldScale / 2; } }
 
@@ -40,14 +41,13 @@ namespace SonOfRobin
         {
             this.mapOverlay = new MapOverlay(this);
             this.AddLinkedScene(this.mapOverlay);
-            this.drawActive = false;
-            this.updateActive = false;
             this.world = world;
             this.worldRect = new Rectangle(x: 0, y: 0, width: world.width, height: world.height);
             this.camera = new Camera(world: this.world, displayScene: this, useFluidMotion: false);
             this.mode = MapMode.Off;
             this.dirtyFog = true;
             this.lastTouchPos = Vector2.Zero;
+            this.switchCooldownFramesLeft = 0;
         }
 
         public override void Remove()
@@ -62,25 +62,12 @@ namespace SonOfRobin
         protected override void AdaptToNewSize()
         {
             this.UpdateResolution();
+            this.mapOverlay.AddTransition();
         }
 
         public void TurnOff()
         {
             this.Mode = MapMode.Off;
-        }
-
-        private void TurnOn()
-        {
-            this.camera.TrackCoords(position: this.world.player.sprite.position, moveInstantly: true);
-            this.camera.SetZoom(zoom: this.InitialZoom, setInstantly: true);
-
-            this.updateActive = true;
-            this.drawActive = true;
-            this.blocksDrawsBelow = this.FullScreen;
-
-            this.UpdateResolution();
-
-            this.blocksUpdatesBelow = this.FullScreen && !Preferences.DebugMode; // fullscreen map should only be "live animated" in debug mode
         }
 
         public void ForceRender()
@@ -208,6 +195,8 @@ namespace SonOfRobin
                 default:
                     throw new ArgumentException($"Unsupported mode - {this.Mode}.");
             }
+
+            switchCooldownFramesLeft = 5;
         }
 
         public MapMode Mode
@@ -222,22 +211,32 @@ namespace SonOfRobin
                 {
                     case MapMode.Mini:
                         Sound.QuickPlay(SoundData.Name.TurnPage);
-                        this.TurnOn();
+                        this.camera.TrackCoords(position: this.world.player.sprite.position, moveInstantly: true);
+                        this.camera.SetZoom(zoom: this.InitialZoom, setInstantly: true);
+                        this.UpdateResolution();
                         this.blocksDrawsBelow = false;
                         this.blocksUpdatesBelow = false;
+                        this.InputType = InputTypes.None;
+                        this.updateActive = true;
+                        this.drawActive = true;
                         break;
 
                     case MapMode.Full:
                         Sound.QuickPlay(SoundData.Name.PaperMove1);
                         this.blocksUpdatesBelow = true;
-                        this.blocksDrawsBelow = true;
+                        this.blocksDrawsBelow = this.FullScreen && !Preferences.DebugMode; // fullscreen map should only be "live animated" in debug mode
+                        this.InputType = InputTypes.Normal;
+                        this.updateActive = true;
+                        this.drawActive = true;
                         break;
 
                     case MapMode.Off:
                         Sound.QuickPlay(SoundData.Name.PaperMove2);
-                        this.InputType = InputTypes.None;
                         this.blocksDrawsBelow = false;
                         this.blocksUpdatesBelow = false;
+                        this.InputType = InputTypes.None;
+                        this.updateActive = false;
+                        this.drawActive = false;
                         break;
 
                     default:
@@ -277,7 +276,6 @@ namespace SonOfRobin
             else this.camera.TrackCoords(this.world.player.sprite.position);
 
             this.camera.Update();
-
             this.world.grid.UnloadTexturesIfMemoryLow(this.camera);
             this.world.grid.LoadClosestTextureInCameraView(this.camera);
         }
@@ -308,11 +306,12 @@ namespace SonOfRobin
             var touches = TouchInput.TouchPanelState;
             if (!touches.Any()) this.lastTouchPos = Vector2.Zero;
 
-            if (InputMapper.HasBeenPressed(InputMapper.Action.MapSwitch))
+            if (this.switchCooldownFramesLeft == 0 && InputMapper.HasBeenPressed(InputMapper.Action.MapSwitch))
             {
                 this.SwitchToNextMode();
                 return;
             }
+            this.switchCooldownFramesLeft = Math.Max(this.switchCooldownFramesLeft - 1, 0);
 
             float zoomMultiplier = Mouse.ScrollWheelRolledUp || Mouse.ScrollWheelRolledDown ? 0.15f : 0.035f;
             float zoomChangeVal = this.camera.currentZoom * zoomMultiplier;
@@ -496,7 +495,7 @@ namespace SonOfRobin
 
         public override void Draw()
         {
-            // is drawn in MapRenderer scene
+            // is being drawn in MapOverlay scene
         }
 
     }
