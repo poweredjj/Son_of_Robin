@@ -80,6 +80,7 @@ namespace SonOfRobin
             Bed,
             Miss,
             Attack,
+            MapMarker,
             Backlight,
             Crosshair,
             Exclamation,
@@ -901,6 +902,7 @@ namespace SonOfRobin
             AddFrameList(animPackage: PkgName.NewIcon, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "new", layer: 0, scale: 1f));
             AddFrameList(animPackage: PkgName.Upgrade, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "upgrade", layer: 0, scale: 1f));
             AddFrameList(animPackage: PkgName.Rope, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "rope", layer: 0, scale: 1f));
+            AddFrameList(animPackage: PkgName.MapMarker, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "attack", layer: 2, x: 0, y: 20, width: 23, height: 23));
 
             // RPGMaker characters
             AddRPGMakerPackageV1(packageName: PkgName.PlayerMale, atlasName: "actor29rec4", setNoX: 0, setNoY: 0, animSize: 0);

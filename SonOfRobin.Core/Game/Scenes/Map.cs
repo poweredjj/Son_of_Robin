@@ -31,6 +31,8 @@ namespace SonOfRobin
         public RenderTarget2D FinalMapToDisplay { get; private set; }
 
         private Vector2 lastTouchPos;
+        private bool movedByTouch;
+        private BoardPiece mapMarker;
         private float InitialZoom { get { return Preferences.WorldScale / 2; } }
 
         private static readonly Color fogColor = new Color(50, 50, 50);
@@ -45,6 +47,7 @@ namespace SonOfRobin
             this.mode = MapMode.Off;
             this.dirtyFog = true;
             this.lastTouchPos = Vector2.Zero;
+            this.movedByTouch = false;
         }
 
         public override void Remove()
@@ -299,7 +302,18 @@ namespace SonOfRobin
 
             if (InputMapper.HasBeenPressed(InputMapper.Action.MapSwitch))
             {
+                this.movedByTouch = false;
                 this.SwitchToNextMode();
+                return;
+            }
+
+            if (InputMapper.HasBeenPressed(InputMapper.Action.GlobalConfirm))
+            {
+                this.movedByTouch = false;
+
+                if (this.mapMarker == null) this.mapMarker = PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: this.camera.CurrentPos, templateName: PieceTemplate.Name.MapMarker);
+                else this.mapMarker.sprite.SetNewPosition(this.camera.CurrentPos);
+
                 return;
             }
 
@@ -308,6 +322,7 @@ namespace SonOfRobin
 
             if (InputMapper.IsPressed(InputMapper.Action.MapZoomIn))
             {
+                this.movedByTouch = false;
                 float currentZoom = this.camera.currentZoom + zoomChangeVal;
                 currentZoom = Math.Min(currentZoom, this.InitialZoom);
                 this.camera.SetZoom(currentZoom);
@@ -315,6 +330,7 @@ namespace SonOfRobin
 
             if (InputMapper.IsPressed(InputMapper.Action.MapZoomOut))
             {
+                this.movedByTouch = false;
                 float currentZoom = this.camera.currentZoom - zoomChangeVal;
                 currentZoom = Math.Max(currentZoom, this.scaleMultiplier);
                 this.camera.SetZoom(currentZoom);
@@ -322,7 +338,8 @@ namespace SonOfRobin
 
             Vector2 movement = InputMapper.Analog(InputMapper.Action.MapMove) * 10 / this.camera.currentZoom;
 
-            if (movement == Vector2.Zero)
+            if (movement != Vector2.Zero) this.movedByTouch = false;
+            else
             {
                 foreach (TouchLocation touch in TouchInput.TouchPanelState)
                 {
@@ -334,6 +351,8 @@ namespace SonOfRobin
 
                     if (!TouchInput.IsPointActivatingAnyTouchInterface(point: touch.Position, checkLeftStick: false, checkRightStick: false, checkVirtButtons: true, checkInventory: false, checkPlayerPanel: false))
                     {
+                        this.movedByTouch = true;
+
                         if (touch.State == TouchLocationState.Pressed)
                         {
                             this.lastTouchPos = touch.Position;
@@ -446,32 +465,47 @@ namespace SonOfRobin
 
             var spritesBag = world.grid.GetSprites(groupName: Cell.Group.Visible, visitedByPlayerOnly: !Preferences.DebugShowWholeMap, camera: this.camera);
 
-            var typesShownAlways = new List<Type> { typeof(Player), typeof(Workshop), typeof(Cooker), typeof(Shelter), };
+            var typesShownAlways = new List<Type> { typeof(Player), typeof(Workshop), typeof(Cooker), typeof(Shelter) };
+            var namesShownAlways = new List<PieceTemplate.Name> { PieceTemplate.Name.MapMarker };
             var typesShownIfDiscovered = new List<Type> { typeof(Container) };
             var namesShownIfDiscovered = new List<PieceTemplate.Name> { PieceTemplate.Name.CrateStarting, PieceTemplate.Name.CrateRegular, PieceTemplate.Name.CoalDeposit, PieceTemplate.Name.IronDeposit, PieceTemplate.Name.CrystalDepositSmall, PieceTemplate.Name.CrystalDepositBig };
 
             float spriteSize = 1f / this.camera.currentZoom * 0.25f;
 
+            // drawing marker
+
+            if (this.mapMarker != null) spritesBag.Add(this.mapMarker.sprite);
+
             // regular "foreach", because spriteBatch is not thread-safe
             foreach (Sprite sprite in spritesBag.OrderBy(o => o.frame.layer).ThenBy(o => o.gfxRect.Bottom))
             {
                 BoardPiece piece = sprite.boardPiece;
+                PieceTemplate.Name name = piece.name;
                 Type pieceType = piece.GetType();
 
                 bool showSprite = false;
 
-                if (typesShownAlways.Contains(pieceType)) showSprite = true;
+                if (typesShownAlways.Contains(pieceType) || namesShownAlways.Contains(name)) showSprite = true;
 
                 if (!showSprite && sprite.hasBeenDiscovered &&
-                    (namesShownIfDiscovered.Contains(sprite.boardPiece.name) ||
+                    (namesShownIfDiscovered.Contains(name) ||
                     typesShownIfDiscovered.Contains(pieceType))) showSprite = true;
 
                 if (showSprite)
                 {
                     Rectangle destRect = sprite.gfxRect;
+
                     destRect.Inflate(destRect.Width * spriteSize, destRect.Height * spriteSize);
                     destRect.X += drawOffsetX;
                     destRect.Y += drawOffsetY;
+
+                    if (this.Mode == MapMode.Mini && name == PieceTemplate.Name.MapMarker && !this.camera.viewRect.Contains(sprite.position))
+                    {
+                        destRect.X = Math.Max(this.camera.viewRect.Left, destRect.X);
+                        destRect.X = Math.Min(this.camera.viewRect.Right - destRect.Width, destRect.X);
+                        destRect.Y = Math.Max(this.camera.viewRect.Top, destRect.Y);
+                        destRect.Y = Math.Min(this.camera.viewRect.Bottom - destRect.Height, destRect.Y);
+                    }
 
                     sprite.frame.Draw(destRect: destRect, color: Color.White, opacity: 1f);
                 }
@@ -479,14 +513,12 @@ namespace SonOfRobin
 
             // drawing crosshair
 
-            if (this.Mode == MapMode.Full)
+            if (this.Mode == MapMode.Full && !this.movedByTouch)
             {
                 int crossHairSize = (int)(this.camera.viewRect.Width * 0.02f);
                 int crosshairHalfSize = crossHairSize / 2;
-                int centerX = this.camera.viewRect.Center.X;
-                int centerY = this.camera.viewRect.Center.Y;
 
-                Rectangle crosshairRect = new Rectangle(x: centerX - crosshairHalfSize, y: centerY - crosshairHalfSize, width: crossHairSize, height: crossHairSize);
+                Rectangle crosshairRect = new Rectangle(x: (int)this.camera.CurrentPos.X - crosshairHalfSize, y: (int)this.camera.CurrentPos.Y - crosshairHalfSize, width: crossHairSize, height: crossHairSize);
                 AnimFrame crosshairFrame = PieceInfo.GetInfo(PieceTemplate.Name.Crosshair).frame;
                 crosshairFrame.DrawAndKeepInRectBounds(destBoundsRect: crosshairRect, color: Color.White);
             }
