@@ -19,7 +19,7 @@ namespace SonOfRobin
         private readonly World world;
         private readonly Camera camera;
         private readonly Rectangle worldRect;
-        private readonly MapRenderer mapRenderer;
+        private readonly MapOverlay mapOverlay;
         public bool FullScreen { get { return this.Mode == MapMode.Full; } }
         public MapMode Mode { get; private set; }
 
@@ -38,8 +38,8 @@ namespace SonOfRobin
 
         public Map(World world, TouchLayout touchLayout) : base(inputType: InputTypes.None, priority: 1, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: false, touchLayout: touchLayout, tipsLayout: ControlTips.TipsLayout.Map)
         {
-            this.mapRenderer = new MapRenderer(this);
-            this.AddLinkedScene(this.mapRenderer);
+            this.mapOverlay = new MapOverlay(this);
+            this.AddLinkedScene(this.mapOverlay);
             this.drawActive = false;
             this.updateActive = false;
             this.world = world;
@@ -67,12 +67,6 @@ namespace SonOfRobin
         public void TurnOff()
         {
             this.Mode = MapMode.Off;
-
-            if (this.FinalMapToDisplay != null)
-            {
-                this.FinalMapToDisplay.Dispose();
-                this.FinalMapToDisplay = null;
-            }
 
             this.InputType = InputTypes.None;
             this.blocksDrawsBelow = false;
@@ -133,8 +127,8 @@ namespace SonOfRobin
             {
                 MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{SonOfRobinGame.currentUpdate} updating map background (fullscreen {this.FullScreen})");
 
-                SonOfRobinGame.spriteBatch.Begin();
                 SetRenderTarget(this.miniatureTerrainGfx);
+                SonOfRobinGame.spriteBatch.Begin();
                 SonOfRobinGame.graphicsDevice.Clear(Color.Transparent);
 
                 int width = (int)(this.world.width * this.scaleMultiplier);
@@ -168,8 +162,8 @@ namespace SonOfRobin
                 this.miniatureCombinedGfx = new RenderTarget2D(SonOfRobinGame.graphicsDevice, this.viewParams.Width, this.viewParams.Height, false, SurfaceFormat.Color, DepthFormat.None);
             }
 
-            SonOfRobinGame.spriteBatch.Begin(transformMatrix: this.TransformMatrix);
             SetRenderTarget(this.miniatureCombinedGfx);
+            SonOfRobinGame.spriteBatch.Begin(transformMatrix: this.TransformMatrix);
             SonOfRobinGame.graphicsDevice.Clear(Color.Transparent);
             SonOfRobinGame.spriteBatch.Draw(this.miniatureTerrainGfx, this.miniatureTerrainGfx.Bounds, Color.White);
 
@@ -237,8 +231,8 @@ namespace SonOfRobin
             {
                 case MapMode.Off:
 
-                    this.transManager.AddMultipleTransitions(outTrans: true, duration: 15, endTurnOffDraw: true, endTurnOffUpdate: true,
-                        paramsToChange: new Dictionary<string, float> { { "Opacity", 0f } });
+                    //  this.transManager.AddMultipleTransitions(outTrans: true, duration: 15, endTurnOffDraw: true, endTurnOffUpdate: true,
+                    //   paramsToChange: new Dictionary<string, float> { { "Opacity", 0f } });
 
                     break;
 
@@ -265,6 +259,8 @@ namespace SonOfRobin
                 default:
                     throw new ArgumentException($"Unsupported mode - {this.Mode}.");
             }
+
+            this.mapOverlay.AddTransition();
 
         }
 
@@ -413,9 +409,10 @@ namespace SonOfRobin
 
         public override void RenderToTarget()
         {
-            SonOfRobinGame.spriteBatch.Begin(transformMatrix: this.TransformMatrix);
+            if (this.Mode == MapMode.Off) return;
 
             SetRenderTarget(this.FinalMapToDisplay);
+            SonOfRobinGame.spriteBatch.Begin(transformMatrix: this.TransformMatrix);
 
             // filling with water color
 

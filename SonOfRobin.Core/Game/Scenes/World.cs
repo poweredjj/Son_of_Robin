@@ -1110,8 +1110,8 @@ namespace SonOfRobin
 
             if (ambientLightData.darknessColor == Color.Transparent)
             {
-                SonOfRobinGame.spriteBatch.Begin();
                 SetRenderTarget(this.darknessMask);
+                SonOfRobinGame.spriteBatch.Begin();
                 SonOfRobinGame.graphicsDevice.Clear(ambientLightData.darknessColor);
                 SonOfRobinGame.spriteBatch.End();
 
@@ -1174,8 +1174,8 @@ namespace SonOfRobin
 
                     RenderTarget2D tempShadowMask = SonOfRobinGame.tempShadowMaskList[tempShadowMaskIndex];
 
-                    SonOfRobinGame.spriteBatch.Begin(transformMatrix: this.TransformMatrix);
                     SetRenderTarget(tempShadowMask);
+                    SonOfRobinGame.spriteBatch.Begin(transformMatrix: this.TransformMatrix);
                     SonOfRobinGame.graphicsDevice.Clear(Color.Black);
                     SonOfRobinGame.spriteBatch.End();
 
@@ -1228,8 +1228,8 @@ namespace SonOfRobin
                 ColorDestinationBlend = Blend.One,
             };
 
-            SonOfRobinGame.spriteBatch.Begin(blendState: darknessMaskBlend);
             SetRenderTarget(this.darknessMask);
+            SonOfRobinGame.spriteBatch.Begin(blendState: darknessMaskBlend);
             SonOfRobinGame.graphicsDevice.Clear(ambientLightData.darknessColor);
 
             // subtracting shadow masks from darkness
