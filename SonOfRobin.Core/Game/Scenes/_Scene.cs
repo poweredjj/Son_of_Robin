@@ -24,6 +24,7 @@ namespace SonOfRobin
 
         public static List<Scene> sceneStack = new List<Scene> { };
         public static List<Scene> waitingScenes = new List<Scene> { };
+        private static bool adaptScenesToNewSize = false;
 
         public readonly int priority;
         public bool HasBeenRemoved { get; private set; }
@@ -36,6 +37,7 @@ namespace SonOfRobin
         public bool inputActive;
         public bool updateActive;
         public bool drawActive;
+
 
         public TouchLayout touchLayout;
         public ControlTips.TipsLayout tipsLayout;
@@ -182,8 +184,17 @@ namespace SonOfRobin
             UpdateInputActiveTipsTouch(); // to avoid one frame delay in updating tips and touch overlay
         }
 
-        public static void ResizeAllScenes()
+        public static void ScheduleAllScenesResize()
         {
+            adaptScenesToNewSize = true;
+
+            // has to be scheduled, to avoid resizing during Draw()
+        }
+
+        private static void ResizeAllScenes()
+        {
+            adaptScenesToNewSize = false;
+
             foreach (Scene currentScene in sceneStack)
             { currentScene.AdaptToNewSize(); }
         }
@@ -446,11 +457,12 @@ namespace SonOfRobin
         {
             startDrawTime = DateTime.Now;
 
+            if (adaptScenesToNewSize) ResizeAllScenes();
+
             var drawStack = DrawStack;
             AllScenesInStackRenderToTarget(drawStack);
 
             ProcessingMode = ProcessingModes.Draw;
-
 
             Scene previousScene = DrawStack[0];
 

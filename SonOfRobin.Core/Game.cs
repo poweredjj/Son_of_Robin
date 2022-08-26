@@ -154,7 +154,7 @@ namespace SonOfRobin
             graphics.PreferredBackBufferWidth = Window.ClientBounds.Width < 100 ? 100 : Window.ClientBounds.Width;
             graphics.PreferredBackBufferHeight = Window.ClientBounds.Height < 100 ? 100 : Window.ClientBounds.Height;
 
-            Scene.ResizeAllScenes();
+            Scene.ScheduleAllScenesResize();
         }
 
         protected override void LoadContent()

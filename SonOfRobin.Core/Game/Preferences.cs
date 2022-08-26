@@ -70,7 +70,7 @@ namespace SonOfRobin
                 if (globalScale == value) return;
 
                 globalScale = value;
-                Scene.ResizeAllScenes();
+                Scene.ScheduleAllScenesResize();
             }
         }
         public static float menuScale = 0.75f;
@@ -208,7 +208,7 @@ namespace SonOfRobin
                 if (fpsCounterPosRight == value) return;
 
                 fpsCounterPosRight = value;
-                Scene.ResizeAllScenes();
+                Scene.ScheduleAllScenesResize();
             }
         }
 
@@ -230,7 +230,7 @@ namespace SonOfRobin
                     FpsCounter fpsCounter = (FpsCounter)counterScene;
                     fpsCounter.ResizeFpsHistory(fpsCounterGraphLength);
                 }
-                Scene.ResizeAllScenes();
+                Scene.ScheduleAllScenesResize();
             }
         }
 
@@ -242,7 +242,7 @@ namespace SonOfRobin
                 if (fpsCounterShowGraph == value) return;
 
                 fpsCounterShowGraph = value;
-                Scene.ResizeAllScenes();
+                Scene.ScheduleAllScenesResize();
             }
         }
 
