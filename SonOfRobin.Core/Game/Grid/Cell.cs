@@ -44,7 +44,6 @@ namespace SonOfRobin
             ColPlantGrowth,
             Visible,
             LightSource,
-            MiniMap,
             StateMachinesNonPlants,
             StateMachinesPlants
         }

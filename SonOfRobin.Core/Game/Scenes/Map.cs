@@ -31,8 +31,6 @@ namespace SonOfRobin
         public RenderTarget2D FinalMapToDisplay { get; private set; }
 
         private Vector2 lastTouchPos;
-        private int switchCooldownFramesLeft;
-
         private float InitialZoom { get { return Preferences.WorldScale / 2; } }
 
         private static readonly Color fogColor = new Color(50, 50, 50);
@@ -47,7 +45,6 @@ namespace SonOfRobin
             this.mode = MapMode.Off;
             this.dirtyFog = true;
             this.lastTouchPos = Vector2.Zero;
-            this.switchCooldownFramesLeft = 0;
         }
 
         public override void Remove()
@@ -195,8 +192,6 @@ namespace SonOfRobin
                 default:
                     throw new ArgumentException($"Unsupported mode - {this.Mode}.");
             }
-
-            switchCooldownFramesLeft = 5;
         }
 
         public MapMode Mode
@@ -214,7 +209,6 @@ namespace SonOfRobin
                         this.camera.TrackCoords(position: this.world.player.sprite.position, moveInstantly: true);
                         this.camera.SetZoom(zoom: this.InitialZoom, setInstantly: true);
                         this.UpdateResolution();
-                        this.blocksDrawsBelow = false;
                         this.blocksUpdatesBelow = false;
                         this.InputType = InputTypes.None;
                         this.updateActive = true;
@@ -223,8 +217,7 @@ namespace SonOfRobin
 
                     case MapMode.Full:
                         Sound.QuickPlay(SoundData.Name.PaperMove1);
-                        this.blocksUpdatesBelow = true;
-                        this.blocksDrawsBelow = this.FullScreen && !Preferences.DebugMode; // fullscreen map should only be "live animated" in debug mode
+                        this.blocksUpdatesBelow = this.FullScreen && !Preferences.DebugMode; // fullscreen map should only be "live animated" in debug mode
                         this.InputType = InputTypes.Normal;
                         this.updateActive = true;
                         this.drawActive = true;
@@ -232,7 +225,6 @@ namespace SonOfRobin
 
                     case MapMode.Off:
                         Sound.QuickPlay(SoundData.Name.PaperMove2);
-                        this.blocksDrawsBelow = false;
                         this.blocksUpdatesBelow = false;
                         this.InputType = InputTypes.None;
                         this.updateActive = false;
@@ -244,7 +236,6 @@ namespace SonOfRobin
                 }
 
                 this.camera.Update();
-
                 this.mapOverlay.AddTransition();
             }
         }
@@ -306,12 +297,11 @@ namespace SonOfRobin
             var touches = TouchInput.TouchPanelState;
             if (!touches.Any()) this.lastTouchPos = Vector2.Zero;
 
-            if (this.switchCooldownFramesLeft == 0 && InputMapper.HasBeenPressed(InputMapper.Action.MapSwitch))
+            if (InputMapper.HasBeenPressed(InputMapper.Action.MapSwitch))
             {
                 this.SwitchToNextMode();
                 return;
             }
-            this.switchCooldownFramesLeft = Math.Max(this.switchCooldownFramesLeft - 1, 0);
 
             float zoomMultiplier = Mouse.ScrollWheelRolledUp || Mouse.ScrollWheelRolledDown ? 0.15f : 0.035f;
             float zoomChangeVal = this.camera.currentZoom * zoomMultiplier;
@@ -377,6 +367,7 @@ namespace SonOfRobin
             }
 
             this.camera.Update();
+            this.SetViewParamsForTargetRender();
 
         }
         private Vector2 DrawOffset
@@ -397,12 +388,11 @@ namespace SonOfRobin
 
         public override void RenderToTarget()
         {
-            if (this.Mode == MapMode.Off) return;
+            if (this.Mode == MapMode.Off || (this.Mode == MapMode.Mini && SonOfRobinGame.currentUpdate % 2 != 0)) return;
 
             this.UpdateBackground();
 
             this.SetViewParamsForTargetRender();
-
             SetRenderTarget(this.FinalMapToDisplay);
             SonOfRobinGame.spriteBatch.Begin(transformMatrix: this.TransformMatrix);
 
@@ -452,11 +442,9 @@ namespace SonOfRobin
 
             // drawing pieces
 
-            var groupName = this.FullScreen ? Cell.Group.Visible : Cell.Group.MiniMap;
-
             Rectangle worldCameraRect = this.world.camera.viewRect;
 
-            var spritesBag = world.grid.GetSprites(groupName: groupName, visitedByPlayerOnly: !Preferences.DebugShowWholeMap, camera: this.camera);
+            var spritesBag = world.grid.GetSprites(groupName: Cell.Group.Visible, visitedByPlayerOnly: !Preferences.DebugShowWholeMap, camera: this.camera);
 
             var typesShownAlways = new List<Type> { typeof(Player), typeof(Workshop), typeof(Cooker), typeof(Shelter), };
             var typesShownIfDiscovered = new List<Type> { typeof(Container) };

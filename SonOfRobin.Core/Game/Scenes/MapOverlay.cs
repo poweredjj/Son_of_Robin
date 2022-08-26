@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 
@@ -19,19 +18,26 @@ namespace SonOfRobin
         public void AddTransition()
         {
             int margin = (int)(SonOfRobinGame.VirtualWidth * 0.05f);
-            float miniScale = 3f;
+            float scaleMini = 3f;
+            float scaleFull = 1f;
 
-            int miniWidth = (int)(this.map.FinalMapToDisplay.Width / miniScale);
-            int miniHeight = (int)(this.map.FinalMapToDisplay.Height / miniScale);
+            int widthMini = (int)(this.map.FinalMapToDisplay.Width / scaleMini);
+            int heightMini = (int)(this.map.FinalMapToDisplay.Height / scaleMini);
 
-            int miniPosX = (int)((SonOfRobinGame.VirtualWidth - miniWidth - margin) * miniScale);
-            int miniPosY = (int)((SonOfRobinGame.VirtualHeight - miniHeight - margin) * miniScale);
+            int posXMini = (int)((SonOfRobinGame.VirtualWidth - widthMini - margin) * scaleMini);
+            int posYMini = (int)((SonOfRobinGame.VirtualHeight - heightMini - margin) * scaleMini);
+
+            int posXFull = 0;
+            int posYFull = 0;
+
+            float opacityMini = 0.7f;
+            float opacityFull = 1f;
 
             switch (this.map.Mode)
             {
                 case Map.MapMode.Off:
 
-                    this.transManager.AddMultipleTransitions(outTrans: true, duration: 15,
+                    this.transManager.AddMultipleTransitions(outTrans: true, duration: 10, endCopyToBase: true,
                         paramsToChange: new Dictionary<string, float> {
                         { "Opacity", 0f },
                         });
@@ -40,26 +46,31 @@ namespace SonOfRobin
 
                 case Map.MapMode.Mini:
 
-                    this.transManager.AddMultipleTransitions(outTrans: true, duration: 15,
+                    this.viewParams.PosX = posXMini;
+                    this.viewParams.PosY = SonOfRobinGame.VirtualHeight * scaleMini;
+                    this.viewParams.Opacity = 0.7f;
+                    this.viewParams.ScaleX = scaleMini;
+                    this.viewParams.ScaleY = scaleMini;
+
+                    this.transManager.AddMultipleTransitions(outTrans: true, duration: 10, endCopyToBase: true,
                         paramsToChange: new Dictionary<string, float> {
-                        { "Opacity", 0.7f },
-                        { "PosX", miniPosX },
-                        { "PosY", miniPosY },
-                        { "ScaleX", miniScale },
-                        { "ScaleY", miniScale },
+                        { "PosX", posXMini },
+                        { "PosY", posYMini },
+                        { "ScaleX", scaleMini },
+                        { "ScaleY", scaleMini },
                         });
 
                     break;
 
                 case Map.MapMode.Full:
 
-                    this.transManager.AddMultipleTransitions(outTrans: true, duration: 15,
+                    this.transManager.AddMultipleTransitions(outTrans: true, duration: 10, endCopyToBase: true,
                         paramsToChange: new Dictionary<string, float> {
-                        { "Opacity", 1f },
-                        { "PosX", 0 },
-                        { "PosY", 0 },
-                        { "ScaleX", 1f },
-                        { "ScaleY", 1f },
+                        { "Opacity", opacityFull },
+                        { "PosX", posXFull },
+                        { "PosY", posYFull },
+                        { "ScaleX", scaleFull },
+                        { "ScaleY", scaleFull },
                         });
 
                     break;
@@ -67,37 +78,21 @@ namespace SonOfRobin
                 default:
                     throw new ArgumentException($"Unsupported mode - {this.map.Mode}.");
             }
-
         }
 
         public override void Update(GameTime gameTime)
-        { }
+        {
+            this.map.blocksDrawsBelow = this.map.Mode == Map.MapMode.Full && this.viewParams.ScaleX == 1;
+        }
 
         public override void Draw()
         {
             if ((this.map.Mode == Map.MapMode.Off && !this.transManager.HasAnyTransition) || this.map.FinalMapToDisplay == null) return;
 
             SonOfRobinGame.spriteBatch.End();
-
-            var mapBlend = BlendState.AlphaBlend;
-
-            //var mapBlend = new BlendState
-            //{
-            //    AlphaBlendFunction = BlendFunction.Add,
-            //    AlphaSourceBlend = Blend.SourceAlpha,
-            //    AlphaDestinationBlend = Blend.DestinationAlpha,
-
-            //    ColorBlendFunction = BlendFunction.Add,
-            //    ColorSourceBlend = Blend.SourceColor,
-            //    ColorDestinationBlend = Blend.DestinationColor,
-            //};
-
-            SonOfRobinGame.spriteBatch.Begin(transformMatrix: this.TransformMatrix, blendState: mapBlend);
+            SonOfRobinGame.spriteBatch.Begin(transformMatrix: this.TransformMatrix);
 
             SonOfRobinGame.spriteBatch.Draw(this.map.FinalMapToDisplay, this.map.FinalMapToDisplay.Bounds, Color.White * this.viewParams.drawOpacity);
-
-            SonOfRobinGame.spriteBatch.End();
-            SonOfRobinGame.spriteBatch.Begin();
         }
 
     }

@@ -898,13 +898,12 @@ namespace SonOfRobin
                 return; // to avoid doing too many calculations in one update
             }
 
-            Plant currentPlant;
 
             while (true)
             {
                 if (plantSpritesQueue.Count == 0) return;
 
-                currentPlant = (Plant)this.plantSpritesQueue[0].boardPiece;
+                Plant currentPlant = (Plant)this.plantSpritesQueue[0].boardPiece;
                 this.plantSpritesQueue.RemoveAt(0);
 
                 currentPlant.StateMachineWork();
