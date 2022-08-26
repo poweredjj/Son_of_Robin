@@ -204,6 +204,7 @@ namespace SonOfRobin
         public int processedNonPlantsCount;
         public int processedPlantsCount;
         private readonly List<Sprite> blockingLightSpritesList;
+        private readonly List<Sprite> lightSprites;
         public List<PieceTemplate.Name> doNotCreatePiecesList;
         public List<PieceTemplate.Name> discoveredRecipesForPieces;
         public readonly DateTime createdTime; // for calculating time spent in game
@@ -304,6 +305,7 @@ namespace SonOfRobin
             this.processedNonPlantsCount = 0;
             this.processedPlantsCount = 0;
             this.blockingLightSpritesList = new List<Sprite>();
+            this.lightSprites = new List<Sprite>();
             this.doNotCreatePiecesList = new List<PieceTemplate.Name> { };
             this.discoveredRecipesForPieces = new List<PieceTemplate.Name> { };
             this.camera = new Camera(world: this, displayScene: this, useFluidMotion: true);
@@ -1035,11 +1037,12 @@ namespace SonOfRobin
                 y: (screenPos.Y / Preferences.GlobalScale * this.viewParams.ScaleY) - this.viewParams.DrawPos.Y);
         }
 
-        public override void Draw()
+        public override void RenderToTarget()
         {
             // preparing a list of sprites, that cast shadows
 
             this.blockingLightSpritesList.Clear();
+            this.lightSprites.Clear();
 
             if ((Preferences.drawSunShadows && AmbientLight.SunLightData.CalculateSunLight(this.islandClock.IslandDateTime).sunShadowsColor != Color.Transparent) ||
                 (Preferences.drawShadows && AmbientLight.CalculateLightAndDarknessColors(this.islandClock.IslandDateTime).darknessColor != Color.Transparent))
@@ -1047,8 +1050,12 @@ namespace SonOfRobin
                 this.blockingLightSpritesList.AddRange(this.camera.GetVisibleSprites(groupName: Cell.Group.ColMovement).OrderBy(o => o.gfxRect.Bottom));
             }
 
-            var lightSprites = this.UpdateDarknessMask(blockingLightSpritesList: blockingLightSpritesList); // Has to be called first, because calling SetRenderTarget() after any draw will wipe the screen black.
+            var lightSpritesToAdd = this.UpdateDarknessMask(blockingLightSpritesList: blockingLightSpritesList); // Has to be called first, because calling SetRenderTarget() after any draw will wipe the screen black.
+            this.lightSprites.AddRange(lightSpritesToAdd);
+        }
 
+        public override void Draw()
+        {
             // drawing blue background (to ensure drawing even if screen is larger than map)
             SonOfRobinGame.graphicsDevice.Clear(BoardGraphics.colorsByName[BoardGraphics.Colors.WaterDeep]);
 
@@ -1105,12 +1112,11 @@ namespace SonOfRobin
 
             if (ambientLightData.darknessColor == Color.Transparent)
             {
-                SonOfRobinGame.graphicsDevice.SetRenderTarget(this.darknessMask); // SetRenderTarget() wipes the target black!
+                StartRenderingToTarget(this.darknessMask);
                 SonOfRobinGame.graphicsDevice.Clear(ambientLightData.darknessColor);
 
                 SonOfRobinGame.spriteBatch.End();
                 SonOfRobinGame.spriteBatch.Begin(transformMatrix: this.TransformMatrix);
-                SonOfRobinGame.graphicsDevice.SetRenderTarget(null); // SetRenderTarget() wipes the target black!
 
                 return lightSprites;
             }
@@ -1174,7 +1180,7 @@ namespace SonOfRobin
                     RenderTarget2D tempShadowMask = SonOfRobinGame.tempShadowMaskList[tempShadowMaskIndex];
 
                     SonOfRobinGame.spriteBatch.End();
-                    SonOfRobinGame.graphicsDevice.SetRenderTarget(tempShadowMask); // SetRenderTarget() wipes the target black!
+                    StartRenderingToTarget(tempShadowMask);
                     SonOfRobinGame.graphicsDevice.Clear(Color.Black);
 
                     Matrix scaleMatrix = Matrix.CreateScale( // to match drawing size with rect size (light texture size differs from light rect size)
@@ -1230,7 +1236,7 @@ namespace SonOfRobin
             SonOfRobinGame.spriteBatch.End();
 
             SonOfRobinGame.spriteBatch.Begin(blendState: darknessMaskBlend);
-            SonOfRobinGame.graphicsDevice.SetRenderTarget(this.darknessMask); // SetRenderTarget() wipes the target black!
+            StartRenderingToTarget(this.darknessMask);
             SonOfRobinGame.graphicsDevice.Clear(ambientLightData.darknessColor);
 
             // subtracting shadow masks from darkness
@@ -1261,7 +1267,6 @@ namespace SonOfRobin
 
             SonOfRobinGame.spriteBatch.End();
             SonOfRobinGame.spriteBatch.Begin(transformMatrix: this.TransformMatrix);
-            SonOfRobinGame.graphicsDevice.SetRenderTarget(null); // SetRenderTarget() wipes the target black!
 
             return lightSprites;
         }

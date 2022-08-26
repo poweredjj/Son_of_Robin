@@ -16,7 +16,7 @@ namespace SonOfRobin
     public class SonOfRobinGame : Game
     {
         public static readonly float version = 9.4f;
-        public static readonly DateTime lastChanged = new DateTime(2022, 08, 25);
+        public static readonly DateTime lastChanged = new DateTime(2022, 08, 26);
 
         public static ContentManager content;
 
@@ -178,7 +178,7 @@ namespace SonOfRobin
             currentUpdate++;
             lastUpdateDelay = gameTime.ElapsedGameTime.Milliseconds;
 
-            Scene.UpdateAllScenesInStack(gameTime: gameTime);
+            Scene.AllScenesInStackUpdate(gameTime: gameTime);
 
             base.Update(gameTime);
             fps.Update(gameTime);
@@ -199,7 +199,7 @@ namespace SonOfRobin
 
             SoundInstanceManager.CleanUpActiveInstances();
             Sound.UpdateAll();
-            Scene.DrawAllScenesInStack();
+            Scene.AllScenesInStackDraw();
 
             base.Draw(gameTime);
 

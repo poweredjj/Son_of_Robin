@@ -130,7 +130,8 @@ namespace SonOfRobin
             {
                 MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{SonOfRobinGame.currentUpdate} updating map background (fullscreen {this.FullScreen})");
 
-                this.StartRenderingToTarget(this.miniatureTerrainGfx);
+                SonOfRobinGame.spriteBatch.Begin();
+                StartRenderingToTarget(this.miniatureTerrainGfx);
                 SonOfRobinGame.graphicsDevice.Clear(Color.Transparent);
 
                 int width = (int)(this.world.width * this.scaleMultiplier);
@@ -140,7 +141,7 @@ namespace SonOfRobin
                 Rectangle sourceRectangle = new Rectangle(0, 0, width, height);
                 SonOfRobinGame.spriteBatch.Draw(mapTexture, sourceRectangle, sourceRectangle, Color.White);
 
-                this.EndRenderingToTarget();
+                SonOfRobinGame.spriteBatch.End();
 
                 this.dirtyBackground = false;
                 this.dirtyFog = true;
@@ -164,7 +165,8 @@ namespace SonOfRobin
                 this.miniatureCombinedGfx = new RenderTarget2D(SonOfRobinGame.graphicsDevice, this.viewParams.Width, this.viewParams.Height, false, SurfaceFormat.Color, DepthFormat.None);
             }
 
-            this.StartRenderingToTarget(this.miniatureCombinedGfx);
+            SonOfRobinGame.spriteBatch.Begin();
+            StartRenderingToTarget(this.miniatureCombinedGfx);
             SonOfRobinGame.graphicsDevice.Clear(Color.Transparent);
             SonOfRobinGame.spriteBatch.Draw(this.miniatureTerrainGfx, this.miniatureTerrainGfx.Bounds, Color.White);
 
@@ -189,7 +191,7 @@ namespace SonOfRobin
                     SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, destinationRectangle, sourceRectangle, fogColor);
                 }
             }
-            this.EndRenderingToTarget();
+            SonOfRobinGame.spriteBatch.End();
 
             this.dirtyFog = false;
         }
@@ -291,8 +293,6 @@ namespace SonOfRobin
 
             this.world.grid.UnloadTexturesIfMemoryLow(this.camera);
             this.world.grid.LoadClosestTextureInCameraView(this.camera);
-
-            this.DrawFinalMapToSurface();
         }
 
         private void SetViewParamsForMiniature()
@@ -303,6 +303,8 @@ namespace SonOfRobin
             this.viewParams.ScaleY = 1f;
             this.viewParams.PosX = 0;
             this.viewParams.PosY = 0;
+
+
         }
 
         private void SetViewParamsForRender()
@@ -421,9 +423,12 @@ namespace SonOfRobin
             }
         }
 
-        private void DrawFinalMapToSurface()
+        public override void RenderToTarget()
         {
-            this.StartRenderingToTarget(this.finalMapToDisplay);
+            SonOfRobinGame.spriteBatch.End();
+            SonOfRobinGame.spriteBatch.Begin(transformMatrix: this.TransformMatrix);
+
+            StartRenderingToTarget(this.finalMapToDisplay);
 
             // filling with water color
 
@@ -507,9 +512,8 @@ namespace SonOfRobin
                     sprite.frame.Draw(destRect: destRect, color: Color.White, opacity: 1f);
                 }
             }
-
-            this.EndRenderingToTarget();
         }
+
 
         public override void Draw()
         {
@@ -520,20 +524,7 @@ namespace SonOfRobin
             SonOfRobinGame.spriteBatch.Draw(this.finalMapToDisplay, this.finalMapToDisplay.Bounds, Color.White * this.viewParams.drawOpacity);
         }
 
-        public void StartRenderingToTarget(RenderTarget2D newRenderTarget)
-        {
-            SonOfRobinGame.spriteBatch.Begin();
-            SonOfRobinGame.graphicsDevice.SetRenderTarget(newRenderTarget); // SetRenderTarget() wipes the target black!
-        }
 
-        public void StartRenderingToTarget(RenderTarget2D newRenderTarget, BlendState blendState)
-        {
-            SonOfRobinGame.spriteBatch.Begin(blendState: blendState);
-            SonOfRobinGame.graphicsDevice.SetRenderTarget(newRenderTarget); // SetRenderTarget() wipes the target black!
-        }
-
-        public void EndRenderingToTarget()
-        { SonOfRobinGame.spriteBatch.End(); }
 
     }
 }

@@ -148,7 +148,7 @@ namespace SonOfRobin
             // Update should not be called more than once per frame - this causes jerky motion.
             // Also, it should not be calculated on Draw(), because new viewPos cannot be used before the next spriteBatch.Begin() (position and zoom will not match in the same frame).
 
-            if (!Scene.processingUpdate) return;
+            if (Scene.ProcessingMode != Scene.ProcessingModes.Update) return;
 
             float xMin, xMax, yMin, yMax;
             Vector2 currentTargetPos = this.GetTargetCoords();

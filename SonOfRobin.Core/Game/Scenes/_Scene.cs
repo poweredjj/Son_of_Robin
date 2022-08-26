@@ -15,6 +15,13 @@ namespace SonOfRobin
             Normal
         }
 
+        public enum ProcessingModes
+        {
+            Update,
+            RenderToTarget,
+            Draw
+        }
+
         public static List<Scene> sceneStack = new List<Scene> { };
         public static List<Scene> waitingScenes = new List<Scene> { };
 
@@ -26,9 +33,10 @@ namespace SonOfRobin
 
         public bool soundActive;
         public readonly SoundData.Name startingSound;
-        public bool drawActive;
-        public bool updateActive;
         public bool inputActive;
+        public bool updateActive;
+        public bool drawActive;
+
         public TouchLayout touchLayout;
         public ControlTips.TipsLayout tipsLayout;
 
@@ -43,7 +51,7 @@ namespace SonOfRobin
         private readonly List<Scene> linkedScenes;
 
         public static Scene currentlyProcessedScene;
-        public static bool processingUpdate; // true = update, false = draw
+        public static ProcessingModes ProcessingMode { get; private set; }
 
         public static DateTime startUpdateTime;
         public static DateTime startDrawTime;
@@ -258,7 +266,7 @@ namespace SonOfRobin
                         break;
 
                     default:
-                        throw new DivideByZeroException($"Unsupported inputType - {scene.InputType}.");
+                        throw new ArgumentException($"Unsupported inputType - {scene.InputType}.");
                 }
             }
 
@@ -356,6 +364,11 @@ namespace SonOfRobin
         public virtual void Update(GameTime gameTime)
         { throw new DivideByZeroException("This method should not be executed."); }
 
+        public virtual void RenderToTarget()
+        {
+            // empty by default
+        }
+
         public virtual void Draw()
         { throw new DivideByZeroException("This method should not be executed."); }
 
@@ -369,10 +382,10 @@ namespace SonOfRobin
             }
         }
 
-        public static void UpdateAllScenesInStack(GameTime gameTime)
+        public static void AllScenesInStackUpdate(GameTime gameTime)
         {
             startUpdateTime = DateTime.Now;
-            processingUpdate = true;
+            ProcessingMode = ProcessingModes.Update;
 
             Scheduler.ProcessQueue();
 
@@ -413,12 +426,31 @@ namespace SonOfRobin
             waitingScenes = waitingScenes.Where(scene => !restoredScenesIDs.Contains(scene.id)).ToList();
         }
 
-        public static void DrawAllScenesInStack()
+        public static void AllScenesInStackRenderToTarget(List<Scene> drawStack)
+        {
+            ProcessingMode = ProcessingModes.RenderToTarget;
+
+            SonOfRobinGame.spriteBatch.Begin();
+
+            foreach (Scene scene in drawStack)
+            {
+                scene.RenderToTarget();
+            }
+
+            SonOfRobinGame.spriteBatch.End();
+
+            SetRenderingToBackBuffer();
+        }
+
+        public static void AllScenesInStackDraw()
         {
             startDrawTime = DateTime.Now;
-            processingUpdate = false;
 
-            SonOfRobinGame.graphicsDevice.SetRenderTarget(null); // setting rendertarget to backbuffer
+            var drawStack = DrawStack;
+            AllScenesInStackRenderToTarget(drawStack);
+
+            ProcessingMode = ProcessingModes.Draw;
+
 
             Scene previousScene = DrawStack[0];
 
@@ -427,7 +459,7 @@ namespace SonOfRobin
 
             currentlyProcessedScene = null;
 
-            foreach (Scene scene in DrawStack)
+            foreach (Scene scene in drawStack)
             {
                 currentlyProcessedScene = scene;
 
@@ -461,11 +493,26 @@ namespace SonOfRobin
         public void StartNewSpriteBatch(bool end = true, bool enableEffects = false)
         {
             if (end) SonOfRobinGame.spriteBatch.End();
-            SonOfRobinGame.spriteBatch.Begin(transformMatrix: this.TransformMatrix, samplerState: SamplerState.AnisotropicClamp,
-                sortMode: enableEffects ? SpriteSortMode.Immediate : SpriteSortMode.Deferred);
 
             // SpriteSortMode.Immediate enables use of effects, but is slow.
             // It is best to use it only if necessary.
+
+            SonOfRobinGame.spriteBatch.Begin(transformMatrix: this.TransformMatrix, samplerState: SamplerState.AnisotropicClamp,
+                sortMode: enableEffects ? SpriteSortMode.Immediate : SpriteSortMode.Deferred);
+        }
+
+        public static void StartRenderingToTarget(RenderTarget2D newRenderTarget)
+        {
+            if (ProcessingMode == ProcessingModes.Draw) throw new ArgumentException($"Cannot set RenderTarget during {ProcessingMode}.");
+
+            SonOfRobinGame.graphicsDevice.SetRenderTarget(newRenderTarget); // do not use SetRenderTarget() anywhere else!
+        }
+
+        public static void SetRenderingToBackBuffer()
+        {
+            if (ProcessingMode == ProcessingModes.Draw) throw new ArgumentException($"Cannot set RenderTarget during {ProcessingMode}.");
+
+            SonOfRobinGame.graphicsDevice.SetRenderTarget(null); // do not use SetRenderTarget() anywhere else!
         }
 
     }
