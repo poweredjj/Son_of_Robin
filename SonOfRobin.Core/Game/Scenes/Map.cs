@@ -131,7 +131,7 @@ namespace SonOfRobin
                 MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{SonOfRobinGame.currentUpdate} updating map background (fullscreen {this.FullScreen})");
 
                 SonOfRobinGame.spriteBatch.Begin();
-                StartRenderingToTarget(this.miniatureTerrainGfx);
+                SetRenderTarget(this.miniatureTerrainGfx);
                 SonOfRobinGame.graphicsDevice.Clear(Color.Transparent);
 
                 int width = (int)(this.world.width * this.scaleMultiplier);
@@ -166,7 +166,7 @@ namespace SonOfRobin
             }
 
             SonOfRobinGame.spriteBatch.Begin();
-            StartRenderingToTarget(this.miniatureCombinedGfx);
+            SetRenderTarget(this.miniatureCombinedGfx);
             SonOfRobinGame.graphicsDevice.Clear(Color.Transparent);
             SonOfRobinGame.spriteBatch.Draw(this.miniatureTerrainGfx, this.miniatureTerrainGfx.Bounds, Color.White);
 
@@ -425,10 +425,9 @@ namespace SonOfRobin
 
         public override void RenderToTarget()
         {
-            SonOfRobinGame.spriteBatch.End();
             SonOfRobinGame.spriteBatch.Begin(transformMatrix: this.TransformMatrix);
 
-            StartRenderingToTarget(this.finalMapToDisplay);
+            SetRenderTarget(this.finalMapToDisplay);
 
             // filling with water color
 
@@ -512,6 +511,8 @@ namespace SonOfRobin
                     sprite.frame.Draw(destRect: destRect, color: Color.White, opacity: 1f);
                 }
             }
+
+            SonOfRobinGame.spriteBatch.End();
         }
 
 
@@ -523,8 +524,6 @@ namespace SonOfRobin
 
             SonOfRobinGame.spriteBatch.Draw(this.finalMapToDisplay, this.finalMapToDisplay.Bounds, Color.White * this.viewParams.drawOpacity);
         }
-
-
 
     }
 }

@@ -441,16 +441,12 @@ namespace SonOfRobin
         {
             ProcessingMode = ProcessingModes.RenderToTarget;
 
-            SonOfRobinGame.spriteBatch.Begin();
-
             foreach (Scene scene in drawStack)
             {
                 scene.RenderToTarget();
             }
 
-            SonOfRobinGame.spriteBatch.End();
-
-            SetRenderingToBackBuffer();
+            SetRenderTargetToNull();
         }
 
         public static void AllScenesInStackDraw()
@@ -513,14 +509,14 @@ namespace SonOfRobin
                 sortMode: enableEffects ? SpriteSortMode.Immediate : SpriteSortMode.Deferred);
         }
 
-        public static void StartRenderingToTarget(RenderTarget2D newRenderTarget)
+        public static void SetRenderTarget(RenderTarget2D newRenderTarget)
         {
             if (ProcessingMode == ProcessingModes.Draw) throw new ArgumentException($"Cannot set RenderTarget during {ProcessingMode}.");
 
             SonOfRobinGame.graphicsDevice.SetRenderTarget(newRenderTarget); // do not use SetRenderTarget() anywhere else!
         }
 
-        public static void SetRenderingToBackBuffer()
+        public static void SetRenderTargetToNull()
         {
             if (ProcessingMode == ProcessingModes.Draw) throw new ArgumentException($"Cannot set RenderTarget during {ProcessingMode}.");
 
