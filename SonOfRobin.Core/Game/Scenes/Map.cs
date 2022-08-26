@@ -477,9 +477,22 @@ namespace SonOfRobin
                 }
             }
 
+            // drawing crosshair
+
+            if (this.Mode == MapMode.Full)
+            {
+                int crossHairSize = (int)(this.camera.viewRect.Width * 0.02f);
+                int crosshairHalfSize = crossHairSize / 2;
+                int centerX = this.camera.viewRect.Center.X;
+                int centerY = this.camera.viewRect.Center.Y;
+
+                Rectangle crosshairRect = new Rectangle(x: centerX - crosshairHalfSize, y: centerY - crosshairHalfSize, width: crossHairSize, height: crossHairSize);
+                AnimFrame crosshairFrame = PieceInfo.GetInfo(PieceTemplate.Name.Crosshair).frame;
+                crosshairFrame.DrawAndKeepInRectBounds(destBoundsRect: crosshairRect, color: Color.White);
+            }
+
             SonOfRobinGame.spriteBatch.End();
         }
-
 
         public override void Draw()
         {

@@ -48,7 +48,7 @@ namespace SonOfRobin
 
                     this.viewParams.PosX = posXMini;
                     this.viewParams.PosY = SonOfRobinGame.VirtualHeight * scaleMini;
-                    this.viewParams.Opacity = 0.7f;
+                    this.viewParams.Opacity = opacityMini;
                     this.viewParams.ScaleX = scaleMini;
                     this.viewParams.ScaleY = scaleMini;
 
