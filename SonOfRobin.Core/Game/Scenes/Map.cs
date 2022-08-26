@@ -11,9 +11,9 @@ namespace SonOfRobin
     {
         public enum MapMode
         {
-            Off,
             Mini,
-            Full
+            Full,
+            Off
         }
 
         private readonly World world;
@@ -21,8 +21,8 @@ namespace SonOfRobin
         private readonly Rectangle worldRect;
         private readonly MapOverlay mapOverlay;
         public bool FullScreen { get { return this.Mode == MapMode.Full; } }
-        public MapMode Mode { get; private set; }
 
+        private MapMode mode;
         private float scaleMultiplier;
         private bool dirtyBackground;
         public bool dirtyFog;
@@ -45,7 +45,7 @@ namespace SonOfRobin
             this.world = world;
             this.worldRect = new Rectangle(x: 0, y: 0, width: world.width, height: world.height);
             this.camera = new Camera(world: this.world, displayScene: this, useFluidMotion: false);
-            this.Mode = MapMode.Off;
+            this.mode = MapMode.Off;
             this.dirtyFog = true;
             this.lastTouchPos = Vector2.Zero;
         }
@@ -67,16 +67,10 @@ namespace SonOfRobin
         public void TurnOff()
         {
             this.Mode = MapMode.Off;
-
-            this.InputType = InputTypes.None;
-            this.blocksDrawsBelow = false;
-            this.blocksUpdatesBelow = false;
         }
 
         private void TurnOn()
         {
-            if (this.FullScreen) this.InputType = InputTypes.Normal;
-
             this.camera.TrackCoords(position: this.world.player.sprite.position, moveInstantly: true);
             this.camera.SetZoom(zoom: this.InitialZoom, setInstantly: true);
 
@@ -125,10 +119,12 @@ namespace SonOfRobin
         {
             if (this.dirtyBackground)
             {
+                this.SetViewParamsForMiniature();
+
                 MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{SonOfRobinGame.currentUpdate} updating map background (fullscreen {this.FullScreen})");
 
                 SetRenderTarget(this.miniatureTerrainGfx);
-                SonOfRobinGame.spriteBatch.Begin();
+                SonOfRobinGame.spriteBatch.Begin(transformMatrix: this.TransformMatrix);
                 SonOfRobinGame.graphicsDevice.Clear(Color.Transparent);
 
                 int width = (int)(this.world.width * this.scaleMultiplier);
@@ -197,71 +193,61 @@ namespace SonOfRobin
         {
             switch (this.Mode)
             {
-                case MapMode.Off:
-                    Sound.QuickPlay(SoundData.Name.TurnPage);
+                case MapMode.Mini:
                     this.Mode = MapMode.Full;
-                    this.TurnOn();
                     break;
-
-                // TODO enable mini mode
-
-                //case MapMode.Mini:
-                //    Sound.QuickPlay(SoundData.Name.PaperMove1);
-                //    this.Mode = MapMode.Full;
-                //    break;
 
                 case MapMode.Full:
                     this.Mode = MapMode.Off;
-                    Sound.QuickPlay(SoundData.Name.PaperMove2);
-                    this.TurnOff();
+                    break;
+
+                case MapMode.Off:
+                    this.Mode = MapMode.Mini;
                     break;
 
                 default:
                     throw new ArgumentException($"Unsupported mode - {this.Mode}.");
             }
-
-            this.AddTransition();
         }
 
-        public void AddTransition()
+        public MapMode Mode
         {
-            this.camera.Update();
-
-            switch (this.Mode)
+            get { return this.mode; }
+            private set
             {
-                case MapMode.Off:
+                if (this.mode == value) return;
+                this.mode = value;
 
-                    //  this.transManager.AddMultipleTransitions(outTrans: true, duration: 15, endTurnOffDraw: true, endTurnOffUpdate: true,
-                    //   paramsToChange: new Dictionary<string, float> { { "Opacity", 0f } });
+                switch (this.mode)
+                {
+                    case MapMode.Mini:
+                        Sound.QuickPlay(SoundData.Name.TurnPage);
+                        this.TurnOn();
+                        this.blocksDrawsBelow = false;
+                        this.blocksUpdatesBelow = false;
+                        break;
 
-                    break;
+                    case MapMode.Full:
+                        Sound.QuickPlay(SoundData.Name.PaperMove1);
+                        this.blocksUpdatesBelow = true;
+                        this.blocksDrawsBelow = true;
+                        break;
 
-                case MapMode.Mini:
+                    case MapMode.Off:
+                        Sound.QuickPlay(SoundData.Name.PaperMove2);
+                        this.InputType = InputTypes.None;
+                        this.blocksDrawsBelow = false;
+                        this.blocksUpdatesBelow = false;
+                        break;
 
-                    // TODO add transition code
+                    default:
+                        throw new ArgumentException($"Unsupported mode - {this.Mode}.");
+                }
 
-                    break;
+                this.camera.Update();
 
-                case MapMode.Full:
-
-                    this.viewParams.Opacity = 1f;
-
-                    this.transManager.AddMultipleTransitions(outTrans: false, duration: 15, endTurnOffDraw: false, endTurnOffUpdate: false,
-                        paramsToChange: new Dictionary<string, float> {
-                        { "PosX", this.world.viewParams.drawPosX},
-                        { "PosY", this.world.viewParams.drawPosY},
-                        { "ScaleX", this.world.viewParams.drawScaleX },
-                        { "ScaleY", this.world.viewParams.drawScaleY },
-                        });
-
-                    break;
-
-                default:
-                    throw new ArgumentException($"Unsupported mode - {this.Mode}.");
+                this.mapOverlay.AddTransition();
             }
-
-            this.mapOverlay.AddTransition();
-
         }
 
         public bool CheckIfCanBeTurnedOn(bool showMessage = true)
@@ -279,15 +265,18 @@ namespace SonOfRobin
 
         public override void Update(GameTime gameTime)
         {
+            if (this.Mode == MapMode.Off) return;
+
             if (!this.CheckIfCanBeTurnedOn(showMessage: true))
             {
                 this.TurnOff();
                 return;
             }
 
-            this.UpdateBackground(); // it's best to update background graphics in Update() (SetRenderTarget in Draw() must go first)
-            this.ProcessInput();
-            this.SetViewParamsForTargetRender();
+            if (this.Mode == MapMode.Full) this.ProcessInput();
+            else this.camera.TrackCoords(this.world.player.sprite.position);
+
+            this.camera.Update();
 
             this.world.grid.UnloadTexturesIfMemoryLow(this.camera);
             this.world.grid.LoadClosestTextureInCameraView(this.camera);
@@ -410,6 +399,10 @@ namespace SonOfRobin
         public override void RenderToTarget()
         {
             if (this.Mode == MapMode.Off) return;
+
+            this.UpdateBackground();
+
+            this.SetViewParamsForTargetRender();
 
             SetRenderTarget(this.FinalMapToDisplay);
             SonOfRobinGame.spriteBatch.Begin(transformMatrix: this.TransformMatrix);
