@@ -20,6 +20,7 @@ namespace SonOfRobin
         private readonly World world;
         private readonly Texture2D texture;
         private readonly Rectangle textureSourceRect;
+        private readonly bool ignoreShowTipsSetting;
 
         private Alignment alignment;
 
@@ -35,9 +36,10 @@ namespace SonOfRobin
         private int TextureWidth { get { return (int)(this.texture.Width * Preferences.fieldControlTipsScale); } }
         private int TextureHeight { get { return (int)(this.texture.Height * Preferences.fieldControlTipsScale); } }
 
-        private FieldTip(World world, Texture2D texture, Sprite targetSprite, Alignment alignment)
+        private FieldTip(World world, Texture2D texture, Sprite targetSprite, Alignment alignment, bool ignoreShowTipsSetting = true)
         {
             this.world = world;
+            this.ignoreShowTipsSetting = ignoreShowTipsSetting;
             this.texture = texture;
             this.textureSourceRect = new Rectangle(0, 0, this.texture.Width, this.texture.Height);
 
@@ -70,9 +72,9 @@ namespace SonOfRobin
         {
             tipsDict.Remove(this.texture);
         }
-        public static void AddUpdateTip(World world, Texture2D texture, Sprite targetSprite, Alignment alignment)
+        public static void AddUpdateTip(World world, Texture2D texture, Sprite targetSprite, Alignment alignment, bool ignoreShowTipsSetting = true)
         {
-            if (!tipsDict.ContainsKey(texture) || tipsDict[texture].world != world) new FieldTip(world: world, texture: texture, targetSprite: targetSprite, alignment: alignment);
+            if (!tipsDict.ContainsKey(texture) || tipsDict[texture].world != world) new FieldTip(world: world, texture: texture, targetSprite: targetSprite, alignment: alignment, ignoreShowTipsSetting: ignoreShowTipsSetting);
             else tipsDict[texture].Update(targetSprite: targetSprite, alignment: alignment);
         }
 
@@ -100,7 +102,7 @@ namespace SonOfRobin
 
                 foreach (FieldTip fieldTip in tipsDict.Values.ToList())
                 {
-                    fieldTip.UpdateAndDraw(world);
+                    if (!fieldTip.ignoreShowTipsSetting || (Preferences.ShowControlTips && Preferences.showFieldControlTips)) fieldTip.UpdateAndDraw(world);
                 }
             }
         }

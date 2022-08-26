@@ -214,7 +214,6 @@ namespace SonOfRobin
                         this.UpdateResolution();
                         this.blocksUpdatesBelow = false;
                         this.InputType = InputTypes.None;
-                        this.updateActive = true;
                         this.drawActive = true;
                         break;
 
@@ -222,7 +221,6 @@ namespace SonOfRobin
                         Sound.QuickPlay(SoundData.Name.PaperMove1);
                         this.blocksUpdatesBelow = this.FullScreen && !Preferences.DebugMode; // fullscreen map should only be "live animated" in debug mode
                         this.InputType = InputTypes.Normal;
-                        this.updateActive = true;
                         this.drawActive = true;
                         break;
 
@@ -230,7 +228,6 @@ namespace SonOfRobin
                         Sound.QuickPlay(SoundData.Name.PaperMove2);
                         this.blocksUpdatesBelow = false;
                         this.InputType = InputTypes.None;
-                        this.updateActive = false;
                         this.drawActive = false;
                         break;
 
@@ -258,6 +255,9 @@ namespace SonOfRobin
 
         public override void Update(GameTime gameTime)
         {
+            if (this.mapMarker != null) FieldTip.AddUpdateTip(world: this.world, texture: this.mapMarker.sprite.frame.texture, targetSprite: this.mapMarker.sprite, alignment: FieldTip.Alignment.Center); // needed to update tips, when map is not active
+            // TODO add field tip option, for keeping tip inside camera rect
+
             if (this.Mode == MapMode.Off) return;
 
             if (!this.CheckIfCanBeTurnedOn(showMessage: true))
