@@ -266,9 +266,7 @@ namespace SonOfRobin
             if (this.Mode == MapMode.Full) this.ProcessInput();
             else this.camera.TrackCoords(this.world.player.sprite.position);
 
-            this.camera.UpdateZoom();
-            this.SetViewParamsForTargetRender();
-            this.camera.UpdatePos();
+            this.camera.Update(cameraCorrection: Vector2.Zero);
             this.world.grid.UnloadTexturesIfMemoryLow(this.camera);
             this.world.grid.LoadClosestTextureInCameraView(this.camera);
         }

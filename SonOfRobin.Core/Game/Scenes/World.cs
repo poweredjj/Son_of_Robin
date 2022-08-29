@@ -405,8 +405,7 @@ namespace SonOfRobin
             {
                 this.camera.TrackPiece(trackedPiece: this.player, moveInstantly: true);
                 this.UpdateViewParams(manualScale: 1f);
-                this.camera.UpdateZoom();
-                this.camera.UpdatePos(); // to render cells in camera view correctly
+                this.camera.Update(cameraCorrection: Vector2.Zero); // to render cells in camera view correctly
                 Inventory.SetLayout(newLayout: Inventory.Layout.Toolbar, player: this.player);
             }
 
@@ -642,17 +641,13 @@ namespace SonOfRobin
 
         public void UpdateViewParams(float manualScale = 1f)
         {
-            this.viewParams.ScaleX = manualScale;
-            this.viewParams.ScaleY = manualScale;
+            this.camera.SetZoom(zoom: this.demoMode ? 0.5f : manualScale, zoomSpeedMultiplier: 3f);
+            this.camera.Update(cameraCorrection: this.analogCameraCorrection);
 
-            float scaleMultiplier = this.demoMode ? 2f : this.camera.currentZoom;
-            this.viewParams.ScaleX *= 1 / (Preferences.WorldScale * scaleMultiplier);
-            this.viewParams.ScaleY *= 1 / (Preferences.WorldScale * scaleMultiplier);
-
-            this.camera.UpdateZoom();
-            this.camera.UpdatePos();
             this.viewParams.PosX = this.camera.viewPos.X;
             this.viewParams.PosY = this.camera.viewPos.Y;
+            this.viewParams.ScaleX = this.camera.currentZoom;
+            this.viewParams.ScaleY = this.camera.currentZoom;
 
             // width and height are set once in constructor
         }
@@ -729,7 +724,7 @@ namespace SonOfRobin
 
             // camera zoom control (to keep the current zoom level, when other scene is above the world, that scene must block updates below)
             float leftTrigger = InputMapper.TriggerForce(InputMapper.Action.WorldCameraZoomOut);
-            this.manualScale = 1f + leftTrigger;
+            this.manualScale = 1f + (!this.CineMode ? leftTrigger : 0);
 
             if (!this.player.alive || this.player.activeState != BoardPiece.State.PlayerControlledWalking) return;
 
