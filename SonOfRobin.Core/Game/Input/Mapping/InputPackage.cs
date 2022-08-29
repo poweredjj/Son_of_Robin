@@ -9,7 +9,7 @@ namespace SonOfRobin
     [Serializable]
     public class InputPackage
     {
-        public static readonly float version = 1.05f;
+        public static readonly float version = 1.06f;
 
         private static readonly Dictionary<string, string> readablePropertyNames = new Dictionary<string, string>
             {
@@ -37,6 +37,7 @@ namespace SonOfRobin
                 {"toolbarPrev", "previous item"},
                 {"toolbarNext", "next item"},
                 {"mapToggleMarker", "toggle marker"},
+                {"mapCenterPlayer", "center on player"},
                 {"mapZoomIn", "zoom in"},
                 {"mapZoomOut", "zoom out"},
             };
@@ -69,11 +70,12 @@ namespace SonOfRobin
         public object invPickStack;
         public object invSort;
         public object mapToggleMarker;
+        public object mapCenterPlayer;
         public object mapZoomIn;
         public object mapZoomOut;
 
         public bool IsObsolete { get { return this.packageVersion != version; } }
-        public InputPackage(float packageVersion, InputMapper.AnalogType leftStick, InputMapper.AnalogType rightStick, object confirm, object cancel, object pauseMenu, object sprint, object equip, object inventory, object pickUp, object craft, object interact, object map, object useTool, object zoomOut, object toolbarPrev, object invSwitch, object invSort, object toolbarNext, object invPickOne, object invPickStack, object mapToggleMarker, object mapZoomIn, object mapZoomOut, object left = null, object right = null, object up = null, object down = null)
+        public InputPackage(float packageVersion, InputMapper.AnalogType leftStick, InputMapper.AnalogType rightStick, object confirm, object cancel, object pauseMenu, object sprint, object equip, object inventory, object pickUp, object craft, object interact, object map, object useTool, object zoomOut, object toolbarPrev, object invSwitch, object invSort, object toolbarNext, object invPickOne, object invPickStack, object mapToggleMarker, object mapCenterPlayer, object mapZoomIn, object mapZoomOut, object left = null, object right = null, object up = null, object down = null)
         {
             this.packageVersion = packageVersion;
 
@@ -102,6 +104,7 @@ namespace SonOfRobin
             this.invPickStack = invPickStack;
             this.interact = interact;
             this.mapToggleMarker = mapToggleMarker;
+            this.mapCenterPlayer = mapCenterPlayer;
             this.mapZoomIn = mapZoomIn;
             this.mapZoomOut = mapZoomOut;
         }
@@ -136,6 +139,7 @@ namespace SonOfRobin
                 invPickStack: this.invPickStack,
                 invSort: this.invSort,
                 mapToggleMarker: this.mapToggleMarker,
+                mapCenterPlayer: this.mapCenterPlayer,
                 mapZoomIn: this.mapZoomIn,
                 mapZoomOut: this.mapZoomOut,
                 left: this.left,
@@ -169,6 +173,7 @@ namespace SonOfRobin
                 this.invPickStack == inputPackage.invPickStack &&
                 this.invSort == inputPackage.invSort &&
                 this.mapToggleMarker == inputPackage.mapToggleMarker &&
+                this.mapCenterPlayer == inputPackage.mapCenterPlayer &&
                 this.mapZoomIn == inputPackage.mapZoomIn &&
                 this.mapZoomOut == inputPackage.mapZoomOut &&
                 this.left == inputPackage.left &&
@@ -186,7 +191,7 @@ namespace SonOfRobin
                 { new List<string> { "confirm", "cancel", "left", "right", "up", "down", "pauseMenu"} }, // general
                 { new List<string> { "interact", "pickUp", "sprint", "useTool", "zoomOut", "toolbarPrev", "toolbarNext", "pauseMenu", "equip", "inventory", "craft", "map" } }, // field
                 { new List<string> { "invSwitch", "invPickOne", "invPickStack", "invSort", "confirm", "cancel", "left", "right", "up", "down" } }, // inventory
-                { new List<string> { "cancel", "mapToggleMarker", "mapZoomIn", "mapZoomOut" } }, // map
+                { new List<string> { "cancel", "mapToggleMarker", "mapCenterPlayer", "mapZoomIn", "mapZoomOut" } }, // map
             };
 
             // searching for duplicates and making a dictionary of found duplicates (texture: property list)

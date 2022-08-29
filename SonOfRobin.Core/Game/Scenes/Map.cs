@@ -254,7 +254,6 @@ namespace SonOfRobin
             if (this.mapMarker != null && !this.mapMarker.exists) this.mapMarker = null; // if marker had destroyed itself
 
             if (this.mapMarker != null) FieldTip.AddUpdateTip(world: this.world, texture: this.mapMarker.sprite.frame.texture, targetSprite: this.mapMarker.sprite, alignment: FieldTip.Alignment.Center, textureScaleMultiplier: 3f, showLabel: false, stayInsideCameraBounds: true, alwaysTeleport: true, allowObstructingTarget: true); // needed to update tips, when map is not active
-            // TODO add field tip option, for keeping tip inside camera rect
 
             if (this.Mode == MapMode.Off) return;
 
@@ -317,6 +316,10 @@ namespace SonOfRobin
 
                 return;
             }
+
+            // center on player
+
+            if (InputMapper.HasBeenPressed(InputMapper.Action.MapCenterPlayer)) this.camera.TrackCoords(position: this.world.player.sprite.position, moveInstantly: true);
 
             // zoom
 
@@ -438,7 +441,7 @@ namespace SonOfRobin
 
             Rectangle worldCameraRect = this.world.camera.viewRect;
 
-            var spritesBag = world.grid.GetSprites(groupName: Cell.Group.Visible, visitedByPlayerOnly: !Preferences.DebugShowWholeMap, camera: this.camera);
+            var spritesBag = world.grid.GetSprites(groupName: Cell.Group.ColMovement, visitedByPlayerOnly: !Preferences.DebugShowWholeMap, camera: this.camera);
 
             var typesShownAlways = new List<Type> { typeof(Player), typeof(Workshop), typeof(Cooker), typeof(Shelter) };
             var namesShownAlways = new List<PieceTemplate.Name> { PieceTemplate.Name.MapMarker };

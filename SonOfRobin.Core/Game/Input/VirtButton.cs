@@ -27,6 +27,7 @@ namespace SonOfRobin
         InvSort,
 
         MapToggleMarker,
+        MapCenterPlayer,
         MapZoomIn,
         MapZoomOut,
 
