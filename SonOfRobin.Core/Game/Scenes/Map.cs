@@ -32,7 +32,7 @@ namespace SonOfRobin
 
         private Vector2 lastTouchPos;
         private BoardPiece mapMarker;
-        private float InitialZoom { get { return Preferences.WorldScale / 2; } }
+        private float InitialZoom { get { return Preferences.WorldScale * 2; } }
 
         private static readonly Color fogColor = new Color(50, 50, 50);
 
@@ -42,7 +42,7 @@ namespace SonOfRobin
             this.AddLinkedScene(this.mapOverlay);
             this.world = world;
             this.worldRect = new Rectangle(x: 0, y: 0, width: world.width, height: world.height);
-            this.camera = new Camera(world: this.world, displayScene: this, useFluidMotionForMove: false, useFluidMotionForZoom: true, keepInWorldBounds: false);
+            this.camera = new Camera(world: this.world, useFluidMotionForMove: false, useFluidMotionForZoom: true, keepInWorldBounds: false);
             this.mode = MapMode.Off;
             this.dirtyFog = true;
             this.lastTouchPos = Vector2.Zero;
@@ -285,8 +285,8 @@ namespace SonOfRobin
         {
             this.viewParams.Width = this.world.width;
             this.viewParams.Height = this.world.height;
-            this.viewParams.ScaleX = 1 / this.camera.currentZoom;
-            this.viewParams.ScaleY = 1 / this.camera.currentZoom;
+            this.viewParams.ScaleX = this.camera.currentZoom;
+            this.viewParams.ScaleY = this.camera.currentZoom;
             this.viewParams.PosX = this.camera.viewPos.X;
             this.viewParams.PosY = this.camera.viewPos.Y;
         }
@@ -327,14 +327,14 @@ namespace SonOfRobin
 
                 if (InputMapper.IsPressed(InputMapper.Action.MapZoomIn))
                 {
-                    currentZoom = this.camera.currentZoom + zoomChangeVal;
-                    currentZoom = Math.Min(currentZoom, this.InitialZoom);
+                    currentZoom = this.camera.currentZoom - zoomChangeVal;
+                    currentZoom = Math.Max(currentZoom, this.InitialZoom);
                 }
 
                 if (InputMapper.IsPressed(InputMapper.Action.MapZoomOut))
                 {
-                    currentZoom = this.camera.currentZoom - zoomChangeVal;
-                    currentZoom = Math.Max(currentZoom, this.scaleMultiplier * 0.7f);
+                    currentZoom = this.camera.currentZoom + zoomChangeVal;
+                    currentZoom = Math.Min(currentZoom, 1f / this.scaleMultiplier / 0.7f);
                 }
 
                 this.camera.SetZoom(zoom: currentZoom, setInstantly: !zoomByMouse, zoomSpeedMultiplier: zoomByMouse ? 5f : 1f);
@@ -342,7 +342,7 @@ namespace SonOfRobin
 
             // movement
 
-            Vector2 movement = InputMapper.Analog(InputMapper.Action.MapMove) * 10 / this.camera.currentZoom;
+            Vector2 movement = InputMapper.Analog(InputMapper.Action.MapMove) * 10 * this.camera.currentZoom;
             if (movement == Vector2.Zero)
             {
                 foreach (TouchLocation touch in TouchInput.TouchPanelState)
@@ -366,7 +366,7 @@ namespace SonOfRobin
                             this.lastTouchPos = touch.Position;
                         }
 
-                        movement /= this.camera.currentZoom;
+                        movement *= this.camera.currentZoom;
                     }
                 }
             }
@@ -401,7 +401,7 @@ namespace SonOfRobin
 
             // calculating miniature opacity
 
-            float showMiniatureAtZoom = (float)SonOfRobinGame.VirtualWidth / (float)this.world.width * 1.4f;
+            float showMiniatureAtZoom = 1f / ((float)SonOfRobinGame.VirtualWidth / (float)this.world.width * 1.4f);
             float showFullScaleAtZoom = this.InitialZoom;
 
             float miniatureOpacity = (float)Helpers.ConvertRange(oldMin: showFullScaleAtZoom, oldMax: showMiniatureAtZoom, newMin: 0f, newMax: 1f, oldVal: this.camera.currentZoom, clampToEdges: true);

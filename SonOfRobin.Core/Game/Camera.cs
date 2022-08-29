@@ -129,7 +129,7 @@ namespace SonOfRobin
             Position,
         }
 
-        public Camera(World world, Scene displayScene, bool useFluidMotionForMove, bool useFluidMotionForZoom, bool keepInWorldBounds = true)
+        public Camera(World world, bool useFluidMotionForMove, bool useFluidMotionForZoom, bool keepInWorldBounds = true)
         {
             this.world = world;
             this.keepInWorldBounds = keepInWorldBounds;
