@@ -58,6 +58,7 @@ namespace SonOfRobin
         private readonly bool keepInWorldBounds;
         private readonly bool useFluidMotionForMove;
         private readonly bool useFluidMotionForZoom;
+        private readonly bool useWorldScale;
         private int lastUpdateFrame;
         private TrackingMode trackingMode;
         private Sprite trackedSprite;
@@ -75,8 +76,11 @@ namespace SonOfRobin
             scene.viewParams.Height = this.world.height;
             scene.viewParams.PosX = this.viewPos.X;
             scene.viewParams.PosY = this.viewPos.Y;
-            scene.viewParams.ScaleX = 1f / this.CurrentZoom;
-            scene.viewParams.ScaleY = 1f / this.CurrentZoom;
+
+            float worldScale = this.useWorldScale ? Preferences.WorldScale : 1f;
+            float scale = 1f / (worldScale * this.CurrentZoom);
+            scene.viewParams.ScaleX = scale;
+            scene.viewParams.ScaleY = scale;
         }
 
         private bool disableFluidMotionMoveForOneFrame;
@@ -101,10 +105,22 @@ namespace SonOfRobin
         }
 
         public int ScreenWidth
-        { get { return (int)(SonOfRobinGame.VirtualWidth / this.CurrentZoom); } }
+        {
+            get
+            {
+                float worldScale = this.useWorldScale ? Preferences.WorldScale : 1f;
+                return (int)(SonOfRobinGame.VirtualWidth / this.CurrentZoom / worldScale);
+            }
+        }
 
         public int ScreenHeight
-        { get { return (int)(SonOfRobinGame.VirtualHeight / this.CurrentZoom); } }
+        {
+            get
+            {
+                float worldScale = this.useWorldScale ? Preferences.WorldScale : 1f;
+                return (int)(SonOfRobinGame.VirtualHeight / this.CurrentZoom / worldScale);
+            }
+        }
 
         public bool TrackedSpriteExists
         {
@@ -139,12 +155,13 @@ namespace SonOfRobin
             Position,
         }
 
-        public Camera(World world, bool useFluidMotionForMove, bool useFluidMotionForZoom, bool keepInWorldBounds = true)
+        public Camera(World world, bool useFluidMotionForMove, bool useFluidMotionForZoom, bool useWorldScale, bool keepInWorldBounds = true)
         {
             this.world = world;
             this.keepInWorldBounds = keepInWorldBounds;
             this.useFluidMotionForMove = useFluidMotionForMove;
             this.useFluidMotionForZoom = useFluidMotionForZoom;
+            this.useWorldScale = useWorldScale;
             this.CurrentPos = new Vector2(0, 0);
 
             this.viewRect = new Rectangle(0, 0, 0, 0);

@@ -41,7 +41,7 @@ namespace SonOfRobin
             this.AddLinkedScene(this.mapOverlay);
             this.world = world;
             this.worldRect = new Rectangle(x: 0, y: 0, width: world.width, height: world.height);
-            this.camera = new Camera(world: this.world, useFluidMotionForMove: false, useFluidMotionForZoom: true, keepInWorldBounds: false);
+            this.camera = new Camera(world: this.world, useWorldScale: false, useFluidMotionForMove: false, useFluidMotionForZoom: true, keepInWorldBounds: false);
             this.mode = MapMode.Off;
             this.dirtyFog = true;
             this.lastTouchPos = Vector2.Zero;
