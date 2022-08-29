@@ -325,7 +325,7 @@ namespace SonOfRobin
             if (InputMapper.IsPressed(InputMapper.Action.MapZoomOut))
             {
                 float currentZoom = this.camera.currentZoom - zoomChangeVal;
-                currentZoom = Math.Max(currentZoom, this.scaleMultiplier);
+                currentZoom = Math.Max(currentZoom, this.scaleMultiplier * 0.7f);
                 this.camera.SetZoom(currentZoom);
             }
 
@@ -375,21 +375,6 @@ namespace SonOfRobin
             this.SetViewParamsForTargetRender();
 
         }
-        private Vector2 DrawOffset
-        {
-            get
-            {
-                Vector2 drawOffset = Vector2.Zero;
-
-                int displayedMapWidth = (int)(this.world.width * this.camera.currentZoom);
-                int displayedMapHeight = (int)(this.world.width * this.camera.currentZoom);
-
-                if (displayedMapWidth < SonOfRobinGame.VirtualWidth) drawOffset.X += (SonOfRobinGame.VirtualWidth - displayedMapWidth) / 2 / this.camera.currentZoom;
-                if (displayedMapHeight < SonOfRobinGame.VirtualHeight) drawOffset.Y += (SonOfRobinGame.VirtualHeight - displayedMapHeight) / 2 / this.camera.currentZoom;
-
-                return drawOffset;
-            }
-        }
 
         public override void RenderToTarget()
         {
@@ -404,15 +389,6 @@ namespace SonOfRobin
             // filling with water color
 
             SonOfRobinGame.graphicsDevice.Clear(BoardGraphics.colorsByName[BoardGraphics.Colors.Beach1]);
-
-            // calculating centered world rectangle
-
-            Rectangle worldRectCentered = this.worldRect;
-            Vector2 drawOffset = this.DrawOffset;
-            int drawOffsetX = (int)drawOffset.X;
-            int drawOffsetY = (int)drawOffset.Y;
-            worldRectCentered.X += (int)drawOffset.X;
-            worldRectCentered.Y += (int)drawOffset.Y;
 
             // calculating miniature opacity
 
@@ -433,17 +409,17 @@ namespace SonOfRobin
 
             if (miniatureOpacity < 1)
             {
-                SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, worldRectCentered, fogColor);
+                SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, this.worldRect, fogColor);
 
                 foreach (Cell cell in visibleCells)
                 {
-                    if (cell.VisitedByPlayer || Preferences.DebugShowWholeMap) cell.DrawBackground(drawOffsetX: drawOffsetX, drawOffsetY: drawOffsetY, opacity: 1f);
+                    if (cell.VisitedByPlayer || Preferences.DebugShowWholeMap) cell.DrawBackground(opacity: 1f);
                 }
             }
 
             // drawing miniature background
 
-            if (miniatureOpacity > 0) SonOfRobinGame.spriteBatch.Draw(this.miniatureCombinedGfx, worldRectCentered, Color.White * miniatureOpacity);
+            if (miniatureOpacity > 0) SonOfRobinGame.spriteBatch.Draw(this.miniatureCombinedGfx, this.worldRect, Color.White * miniatureOpacity);
 
             // drawing pieces
 
@@ -482,8 +458,6 @@ namespace SonOfRobin
                     Rectangle destRect = sprite.gfxRect;
 
                     destRect.Inflate(destRect.Width * spriteSize, destRect.Height * spriteSize);
-                    destRect.X += drawOffsetX;
-                    destRect.Y += drawOffsetY;
 
                     if (this.Mode == MapMode.Mini && name == PieceTemplate.Name.MapMarker && !this.camera.viewRect.Contains(sprite.position))
                     {
