@@ -67,8 +67,18 @@ namespace SonOfRobin
         { get { return this.trackingMode == TrackingMode.Position ? this.trackedPos : this.trackedSprite.position; } }
         public Vector2 CurrentPos { get; private set; }
         public float TargetZoom { get; private set; }
+        public float CurrentZoom { get; private set; }
 
-        public float currentZoom;
+        public void SetViewParams(Scene scene)
+        {
+            scene.viewParams.Width = this.world.width;
+            scene.viewParams.Height = this.world.height;
+            scene.viewParams.PosX = this.viewPos.X;
+            scene.viewParams.PosY = this.viewPos.Y;
+            scene.viewParams.ScaleX = 1f / this.CurrentZoom;
+            scene.viewParams.ScaleY = 1f / this.CurrentZoom;
+        }
+
         private bool disableFluidMotionMoveForOneFrame;
         private static readonly int movementSlowdown = 20;
         private int zoomSlowdown = 20;
@@ -91,10 +101,10 @@ namespace SonOfRobin
         }
 
         public int ScreenWidth
-        { get { return (int)(SonOfRobinGame.VirtualWidth * this.currentZoom); } }
+        { get { return (int)(SonOfRobinGame.VirtualWidth / this.CurrentZoom); } }
 
         public int ScreenHeight
-        { get { return (int)(SonOfRobinGame.VirtualHeight * this.currentZoom); } }
+        { get { return (int)(SonOfRobinGame.VirtualHeight / this.CurrentZoom); } }
 
         public bool TrackedSpriteExists
         {
@@ -141,13 +151,12 @@ namespace SonOfRobin
             this.disableFluidMotionMoveForOneFrame = false;
             this.trackingMode = TrackingMode.Undefined;
             this.TargetZoom = 1f;
-            this.currentZoom = 1f;
+            this.CurrentZoom = 1f;
             this.trackedSprite = null;
             this.trackedSpriteReached = false;
             this.trackedPos = Vector2.One;
             this.lastUpdateFrame = 0;
         }
-
 
         public void Update(Vector2 cameraCorrection)
         {
@@ -155,12 +164,12 @@ namespace SonOfRobin
 
             if (this.useFluidMotionForZoom)
             {
-                this.currentZoom += (this.TargetZoom - this.currentZoom) / this.zoomSlowdown;
-                if (this.currentZoom == this.TargetZoom) this.zoomSlowdown = movementSlowdown; // resetting to default zoom speed, after reaching target value
+                this.CurrentZoom += (this.TargetZoom - this.CurrentZoom) / this.zoomSlowdown;
+                if (this.CurrentZoom == this.TargetZoom) this.zoomSlowdown = movementSlowdown; // resetting to default zoom speed, after reaching target value
             }
             else
             {
-                this.currentZoom = this.TargetZoom;
+                this.CurrentZoom = this.TargetZoom;
                 this.zoomSlowdown = movementSlowdown;
             }
 
@@ -243,7 +252,7 @@ namespace SonOfRobin
         {
             this.zoomSlowdown = (int)(movementSlowdown / zoomSpeedMultiplier);
             this.TargetZoom = zoom;
-            if (setInstantly) this.currentZoom = zoom;
+            if (setInstantly) this.CurrentZoom = zoom;
         }
 
         public Vector2 GetRandomPositionOutsideCameraView()
