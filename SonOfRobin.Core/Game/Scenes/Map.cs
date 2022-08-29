@@ -251,7 +251,7 @@ namespace SonOfRobin
 
         public override void Update(GameTime gameTime)
         {
-            if (this.mapMarker != null) FieldTip.AddUpdateTip(world: this.world, texture: this.mapMarker.sprite.frame.texture, targetSprite: this.mapMarker.sprite, alignment: FieldTip.Alignment.Center); // needed to update tips, when map is not active
+            if (this.mapMarker != null) FieldTip.AddUpdateTip(world: this.world, texture: this.mapMarker.sprite.frame.texture, targetSprite: this.mapMarker.sprite, alignment: FieldTip.Alignment.Center, textureScaleMultiplier: 3f, showLabel: false); // needed to update tips, when map is not active
             // TODO add field tip option, for keeping tip inside camera rect
 
             if (this.Mode == MapMode.Off) return;
@@ -298,12 +298,24 @@ namespace SonOfRobin
                 return;
             }
 
-            // set / remove marker
+            // place or remove marker
 
             if (InputMapper.HasBeenPressed(InputMapper.Action.MapToggleMarker))
             {
-                if (this.mapMarker == null) this.mapMarker = PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: this.camera.CurrentPos, templateName: PieceTemplate.Name.MapMarker);
-                else this.mapMarker.sprite.SetNewPosition(this.camera.CurrentPos);
+                if (this.mapMarker == null)
+                {
+                    this.mapMarker = PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: this.camera.CurrentPos, templateName: PieceTemplate.Name.MapMarker);
+                    this.mapMarker.sprite.opacity = 0f; // to avoid being displayed in World
+                }
+                else
+                {
+                    if (Math.Abs(Vector2.Distance(this.mapMarker.sprite.position, this.camera.CurrentPos)) < 15)
+                    {
+                        this.mapMarker.Destroy();
+                        this.mapMarker = null;
+                    }
+                    else this.mapMarker.sprite.SetNewPosition(this.camera.CurrentPos);
+                }
 
                 return;
             }

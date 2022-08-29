@@ -21,6 +21,9 @@ namespace SonOfRobin
         private readonly Texture2D texture;
         private readonly Rectangle textureSourceRect;
         private readonly bool ignoreShowTipsSetting;
+        private readonly bool showLabel;
+        private readonly float textureScaleMultiplier;
+
 
         private Alignment alignment;
 
@@ -33,13 +36,15 @@ namespace SonOfRobin
         private Vector2 currentPos;
         private float targetOpacity;
         private float currentOpacity;
-        private int TextureWidth { get { return (int)(this.texture.Width * Preferences.fieldControlTipsScale); } }
-        private int TextureHeight { get { return (int)(this.texture.Height * Preferences.fieldControlTipsScale); } }
+        private int TextureWidth { get { return (int)(this.texture.Width * Preferences.fieldControlTipsScale * textureScaleMultiplier); } }
+        private int TextureHeight { get { return (int)(this.texture.Height * Preferences.fieldControlTipsScale * textureScaleMultiplier); } }
 
-        private FieldTip(World world, Texture2D texture, Sprite targetSprite, Alignment alignment, bool ignoreShowTipsSetting = true)
+        private FieldTip(World world, Texture2D texture, Sprite targetSprite, Alignment alignment, bool ignoreShowTipsSetting = true, float textureScaleMultiplier = 1f, bool showLabel = true)
         {
             this.world = world;
             this.ignoreShowTipsSetting = ignoreShowTipsSetting;
+            this.showLabel = showLabel;
+            this.textureScaleMultiplier = textureScaleMultiplier;
             this.texture = texture;
             this.textureSourceRect = new Rectangle(0, 0, this.texture.Width, this.texture.Height);
 
@@ -72,9 +77,9 @@ namespace SonOfRobin
         {
             tipsDict.Remove(this.texture);
         }
-        public static void AddUpdateTip(World world, Texture2D texture, Sprite targetSprite, Alignment alignment, bool ignoreShowTipsSetting = true)
+        public static void AddUpdateTip(World world, Texture2D texture, Sprite targetSprite, Alignment alignment, bool ignoreShowTipsSetting = true, float textureScaleMultiplier = 1f, bool showLabel = true)
         {
-            if (!tipsDict.ContainsKey(texture) || tipsDict[texture].world != world) new FieldTip(world: world, texture: texture, targetSprite: targetSprite, alignment: alignment, ignoreShowTipsSetting: ignoreShowTipsSetting);
+            if (!tipsDict.ContainsKey(texture) || tipsDict[texture].world != world) new FieldTip(world: world, texture: texture, targetSprite: targetSprite, alignment: alignment, ignoreShowTipsSetting: ignoreShowTipsSetting, textureScaleMultiplier: textureScaleMultiplier, showLabel: showLabel);
             else tipsDict[texture].Update(targetSprite: targetSprite, alignment: alignment);
         }
 
@@ -137,14 +142,14 @@ namespace SonOfRobin
                 return;
             }
 
-            // drawing button hint
+            // drawing tip texture
 
             Rectangle destRect = this.CalculateDestRect(this.currentPos);
             SonOfRobinGame.spriteBatch.Draw(this.texture, this.CalculateDestRect(this.currentPos), this.textureSourceRect, Color.White * this.currentOpacity);
 
             // drawing piece name label
 
-            if (this.targetSprite != null && !thisFrameSpritesShown.Contains(this.targetSprite))
+            if (this.showLabel && this.targetSprite != null && !thisFrameSpritesShown.Contains(this.targetSprite))
             {
                 // Helpers.DrawRectangleOutline(rect: destRect, color: Color.LightBlue, borderWidth: 1); // for testing
 
