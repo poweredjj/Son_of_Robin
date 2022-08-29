@@ -322,8 +322,8 @@ namespace SonOfRobin
             {
                 bool zoomByMouse = Mouse.ScrollWheelRolledUp || Mouse.ScrollWheelRolledDown;
 
-                float zoomMultiplier = zoomByMouse ? 0.25f : 0.035f;
-                float zoomChangeVal = this.camera.currentZoom * zoomMultiplier;
+                float zoomMultiplier = zoomByMouse ? 0.3f : 0.035f;
+                float zoomChangeVal = (zoomByMouse ? this.camera.TargetZoom : this.camera.currentZoom) * zoomMultiplier;
 
                 float currentZoom = this.camera.currentZoom; // value to be replaced
 
@@ -339,7 +339,7 @@ namespace SonOfRobin
                     currentZoom = Math.Max(currentZoom, this.scaleMultiplier * 0.7f);
                 }
 
-                this.camera.SetZoom(zoom: currentZoom, setInstantly: !zoomByMouse, zoomSpeedMultiplier: zoomByMouse ? 4f : 1f);
+                this.camera.SetZoom(zoom: currentZoom, setInstantly: !zoomByMouse, zoomSpeedMultiplier: zoomByMouse ? 5f : 1f);
             }
 
             // movement

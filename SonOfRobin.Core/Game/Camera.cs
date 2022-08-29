@@ -68,7 +68,8 @@ namespace SonOfRobin
         public Vector2 TrackedPos
         { get { return this.trackingMode == TrackingMode.Position ? this.trackedPos : this.trackedSprite.position; } }
         public Vector2 CurrentPos { get; private set; }
-        private float targetZoom;
+        public float TargetZoom { get; private set; }
+
         public float currentZoom;
         private bool disableFluidMotionMoveForOneFrame;
         private static readonly int movementSlowdown = 20;
@@ -142,7 +143,7 @@ namespace SonOfRobin
             this.viewRect = new Rectangle(0, 0, 0, 0);
             this.disableFluidMotionMoveForOneFrame = false;
             this.trackingMode = TrackingMode.Undefined;
-            this.targetZoom = 1f;
+            this.TargetZoom = 1f;
             this.currentZoom = 1f;
             this.trackedSprite = null;
             this.trackedSpriteReached = false;
@@ -159,12 +160,12 @@ namespace SonOfRobin
 
             if (this.useFluidMotionForZoom)
             {
-                this.currentZoom += (this.targetZoom - this.currentZoom) / this.zoomSlowdown;
-                if (this.currentZoom == this.targetZoom) this.zoomSlowdown = movementSlowdown; // resetting to default zoom speed, after reaching target value
+                this.currentZoom += (this.TargetZoom - this.currentZoom) / this.zoomSlowdown;
+                if (this.currentZoom == this.TargetZoom) this.zoomSlowdown = movementSlowdown; // resetting to default zoom speed, after reaching target value
             }
             else
             {
-                this.currentZoom = this.targetZoom;
+                this.currentZoom = this.TargetZoom;
                 this.zoomSlowdown = movementSlowdown;
             }
 
@@ -258,7 +259,7 @@ namespace SonOfRobin
         public void SetZoom(float zoom, bool setInstantly = false, float zoomSpeedMultiplier = 1f)
         {
             this.zoomSlowdown = (int)(movementSlowdown / zoomSpeedMultiplier);
-            this.targetZoom = zoom;
+            this.TargetZoom = zoom;
             if (setInstantly) this.currentZoom = zoom;
         }
 
