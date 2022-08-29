@@ -233,7 +233,6 @@ namespace SonOfRobin
                         throw new ArgumentException($"Unsupported mode - {this.Mode}.");
                 }
 
-                this.camera.Update();
                 this.mapOverlay.AddTransition();
             }
         }
@@ -267,7 +266,9 @@ namespace SonOfRobin
             if (this.Mode == MapMode.Full) this.ProcessInput();
             else this.camera.TrackCoords(this.world.player.sprite.position);
 
-            this.camera.Update();
+            this.camera.UpdateZoom();
+            this.SetViewParamsForTargetRender();
+            this.camera.UpdatePos();
             this.world.grid.UnloadTexturesIfMemoryLow(this.camera);
             this.world.grid.LoadClosestTextureInCameraView(this.camera);
         }
@@ -288,7 +289,6 @@ namespace SonOfRobin
             this.viewParams.Height = this.world.height;
             this.viewParams.ScaleX = 1 / this.camera.currentZoom;
             this.viewParams.ScaleY = 1 / this.camera.currentZoom;
-            this.camera.Update();
             this.viewParams.PosX = this.camera.viewPos.X;
             this.viewParams.PosY = this.camera.viewPos.Y;
         }
@@ -298,13 +298,17 @@ namespace SonOfRobin
             var touches = TouchInput.TouchPanelState;
             if (!touches.Any()) this.lastTouchPos = Vector2.Zero;
 
+            // map mode switch
+
             if (InputMapper.HasBeenPressed(InputMapper.Action.MapSwitch))
             {
                 this.SwitchToNextMode();
                 return;
             }
 
-            if (InputMapper.HasBeenPressed(InputMapper.Action.GlobalConfirm))
+            // set / remove marker
+
+            if (InputMapper.HasBeenPressed(InputMapper.Action.GlobalConfirm)) // TODO replace with dedicated action (with right mouse button added)
             {
                 if (this.mapMarker == null) this.mapMarker = PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: this.camera.CurrentPos, templateName: PieceTemplate.Name.MapMarker);
                 else this.mapMarker.sprite.SetNewPosition(this.camera.CurrentPos);
@@ -312,30 +316,35 @@ namespace SonOfRobin
                 return;
             }
 
+            // zoom
+
             if (InputMapper.IsPressed(InputMapper.Action.MapZoomIn) || InputMapper.IsPressed(InputMapper.Action.MapZoomOut))
             {
                 bool zoomByMouse = Mouse.ScrollWheelRolledUp || Mouse.ScrollWheelRolledDown;
 
-                float zoomMultiplier = zoomByMouse ? 0.2f : 0.035f;
+                float zoomMultiplier = zoomByMouse ? 0.25f : 0.035f;
                 float zoomChangeVal = this.camera.currentZoom * zoomMultiplier;
+
+                float currentZoom = this.camera.currentZoom; // value to be replaced
 
                 if (InputMapper.IsPressed(InputMapper.Action.MapZoomIn))
                 {
-                    float currentZoom = this.camera.currentZoom + zoomChangeVal;
+                    currentZoom = this.camera.currentZoom + zoomChangeVal;
                     currentZoom = Math.Min(currentZoom, this.InitialZoom);
-                    this.camera.SetZoom(zoom: currentZoom, setInstantly: !zoomByMouse);
                 }
 
                 if (InputMapper.IsPressed(InputMapper.Action.MapZoomOut))
                 {
-                    float currentZoom = this.camera.currentZoom - zoomChangeVal;
+                    currentZoom = this.camera.currentZoom - zoomChangeVal;
                     currentZoom = Math.Max(currentZoom, this.scaleMultiplier * 0.7f);
-                    this.camera.SetZoom(zoom: currentZoom, setInstantly: !zoomByMouse);
                 }
+
+                this.camera.SetZoom(zoom: currentZoom, setInstantly: !zoomByMouse, zoomSpeedMultiplier: zoomByMouse ? 4f : 1f);
             }
 
-            Vector2 movement = InputMapper.Analog(InputMapper.Action.MapMove) * 10 / this.camera.currentZoom;
+            // movement
 
+            Vector2 movement = InputMapper.Analog(InputMapper.Action.MapMove) * 10 / this.camera.currentZoom;
             if (movement == Vector2.Zero)
             {
                 foreach (TouchLocation touch in TouchInput.TouchPanelState)
@@ -376,8 +385,6 @@ namespace SonOfRobin
                 this.camera.TrackCoords(newPos);
             }
 
-            this.camera.Update();
-            this.SetViewParamsForTargetRender();
         }
 
         public override void RenderToTarget()

@@ -57,6 +57,10 @@ namespace SonOfRobin
         private readonly World world;
         private readonly Scene displayScene;
         private readonly bool keepInWorldBounds;
+        private readonly bool useFluidMotionForMove;
+        private readonly bool useFluidMotionForZoom;
+        private int lastUpdateFrameMove;
+        private int lastUpdateFrameZoom;
         private TrackingMode trackingMode;
         private Sprite trackedSprite;
         private bool trackedSpriteReached;
@@ -66,8 +70,6 @@ namespace SonOfRobin
         public Vector2 CurrentPos { get; private set; }
         private float targetZoom;
         public float currentZoom;
-        private readonly bool useFluidMotionForMove;
-        private readonly bool useFluidMotionForZoom;
         private bool disableFluidMotionMoveForOneFrame;
         private static readonly int movementSlowdown = 20;
         private int zoomSlowdown = 20;
@@ -145,23 +147,41 @@ namespace SonOfRobin
             this.trackedSprite = null;
             this.trackedSpriteReached = false;
             this.trackedPos = Vector2.One;
+            this.lastUpdateFrameMove = 0;
+            this.lastUpdateFrameZoom = 0;
         }
-        public void Update()
+
+        public void UpdateZoom()
         {
-            // Update should not be called more than once per frame - this causes jerky motion.
-            // Also, it should not be calculated on Draw(), because new viewPos cannot be used before the next spriteBatch.Begin() (position and zoom will not match in the same frame).
+            // Scene viewParams need to be updated after updating zoom.
 
-            if (Scene.ProcessingMode != Scene.ProcessingModes.Update) return;
-
-            Vector2 currentTargetPos = this.GetTargetCoords();
-            Vector2 viewCenter = new Vector2(0, 0); // to be updated below
+            if (Scene.ProcessingMode == Scene.ProcessingModes.Draw || this.lastUpdateFrameZoom == SonOfRobinGame.currentUpdate) return;
 
             if (this.useFluidMotionForZoom)
             {
                 this.currentZoom += (this.targetZoom - this.currentZoom) / this.zoomSlowdown;
                 if (this.currentZoom == this.targetZoom) this.zoomSlowdown = movementSlowdown; // resetting to default zoom speed, after reaching target value
             }
-            else this.currentZoom = this.targetZoom;
+            else
+            {
+                this.currentZoom = this.targetZoom;
+                this.zoomSlowdown = movementSlowdown;
+            }
+
+            this.lastUpdateFrameZoom = SonOfRobinGame.currentUpdate;
+        }
+
+        public void UpdatePos()
+        {
+            // Update should not be called more than once per frame - this causes jerky motion.
+            // Also, it should not be calculated on Draw(), because new viewPos cannot be used before the next spriteBatch.Begin() (position and zoom will not match in the same frame).
+
+            // Scene viewParams need to be updated after updating zoom and before updating position.
+
+            if (Scene.ProcessingMode == Scene.ProcessingModes.Draw || this.lastUpdateFrameMove == SonOfRobinGame.currentUpdate) return;
+
+            Vector2 currentTargetPos = this.GetTargetCoords();
+            Vector2 viewCenter = new Vector2(0, 0); // to be updated below
 
             if (this.useFluidMotionForMove && !this.disableFluidMotionMoveForOneFrame)
             {
@@ -211,6 +231,7 @@ namespace SonOfRobin
             this.viewPos = new Vector2(-xMin, -yMin);
 
             if (!this.trackedSpriteReached && Vector2.Distance(this.CurrentPos, currentTargetPos) < 30) this.trackedSpriteReached = true;
+            this.lastUpdateFrameMove = SonOfRobinGame.currentUpdate;
         }
 
         public void TrackPiece(BoardPiece trackedPiece, bool moveInstantly = false)
@@ -284,7 +305,7 @@ namespace SonOfRobin
             }
         }
 
-        public void TrackLiveAnimal(bool fluidMotion = true)
+        public void TrackLiveAnimal(bool fluidMotion)
         {
             if (this.TrackedSpriteExists) return;
 
@@ -292,7 +313,7 @@ namespace SonOfRobin
             var animals = allSprites.Where(sprite => sprite.boardPiece.GetType() == typeof(Animal) && sprite.boardPiece.alive).ToList();
             if (animals.Count == 0) return;
             var index = BoardPiece.Random.Next(0, animals.Count);
-            this.TrackPiece(trackedPiece: animals[index].boardPiece, moveInstantly: true);
+            this.TrackPiece(trackedPiece: animals[index].boardPiece, moveInstantly: !fluidMotion);
         }
 
         public List<Sprite> GetVisibleSprites(Cell.Group groupName, bool compareWithCameraRect = false)

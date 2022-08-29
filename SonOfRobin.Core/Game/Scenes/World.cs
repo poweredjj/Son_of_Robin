@@ -405,7 +405,8 @@ namespace SonOfRobin
             {
                 this.camera.TrackPiece(trackedPiece: this.player, moveInstantly: true);
                 this.UpdateViewParams(manualScale: 1f);
-                this.camera.Update(); // to render cells in camera view correctly
+                this.camera.UpdateZoom();
+                this.camera.UpdatePos(); // to render cells in camera view correctly
                 Inventory.SetLayout(newLayout: Inventory.Layout.Toolbar, player: this.player);
             }
 
@@ -648,7 +649,8 @@ namespace SonOfRobin
             this.viewParams.ScaleX *= 1 / (Preferences.WorldScale * scaleMultiplier);
             this.viewParams.ScaleY *= 1 / (Preferences.WorldScale * scaleMultiplier);
 
-            this.camera.Update();
+            this.camera.UpdateZoom();
+            this.camera.UpdatePos();
             this.viewParams.PosX = this.camera.viewPos.X;
             this.viewParams.PosY = this.camera.viewPos.Y;
 
