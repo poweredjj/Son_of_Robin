@@ -31,7 +31,6 @@ namespace SonOfRobin
         public RenderTarget2D FinalMapToDisplay { get; private set; }
 
         private Vector2 lastTouchPos;
-        private bool movedByTouch;
         private BoardPiece mapMarker;
         private float InitialZoom { get { return Preferences.WorldScale / 2; } }
 
@@ -43,11 +42,10 @@ namespace SonOfRobin
             this.AddLinkedScene(this.mapOverlay);
             this.world = world;
             this.worldRect = new Rectangle(x: 0, y: 0, width: world.width, height: world.height);
-            this.camera = new Camera(world: this.world, displayScene: this, useFluidMotion: false);
+            this.camera = new Camera(world: this.world, displayScene: this, useFluidMotion: false, keepInWorldBounds: false);
             this.mode = MapMode.Off;
             this.dirtyFog = true;
             this.lastTouchPos = Vector2.Zero;
-            this.movedByTouch = false;
         }
 
         public override void Remove()
@@ -302,15 +300,12 @@ namespace SonOfRobin
 
             if (InputMapper.HasBeenPressed(InputMapper.Action.MapSwitch))
             {
-                this.movedByTouch = false;
                 this.SwitchToNextMode();
                 return;
             }
 
             if (InputMapper.HasBeenPressed(InputMapper.Action.GlobalConfirm))
             {
-                this.movedByTouch = false;
-
                 if (this.mapMarker == null) this.mapMarker = PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: this.camera.CurrentPos, templateName: PieceTemplate.Name.MapMarker);
                 else this.mapMarker.sprite.SetNewPosition(this.camera.CurrentPos);
 
@@ -322,7 +317,6 @@ namespace SonOfRobin
 
             if (InputMapper.IsPressed(InputMapper.Action.MapZoomIn))
             {
-                this.movedByTouch = false;
                 float currentZoom = this.camera.currentZoom + zoomChangeVal;
                 currentZoom = Math.Min(currentZoom, this.InitialZoom);
                 this.camera.SetZoom(currentZoom);
@@ -330,7 +324,6 @@ namespace SonOfRobin
 
             if (InputMapper.IsPressed(InputMapper.Action.MapZoomOut))
             {
-                this.movedByTouch = false;
                 float currentZoom = this.camera.currentZoom - zoomChangeVal;
                 currentZoom = Math.Max(currentZoom, this.scaleMultiplier);
                 this.camera.SetZoom(currentZoom);
@@ -338,8 +331,7 @@ namespace SonOfRobin
 
             Vector2 movement = InputMapper.Analog(InputMapper.Action.MapMove) * 10 / this.camera.currentZoom;
 
-            if (movement != Vector2.Zero) this.movedByTouch = false;
-            else
+            if (movement == Vector2.Zero)
             {
                 foreach (TouchLocation touch in TouchInput.TouchPanelState)
                 {
@@ -351,8 +343,6 @@ namespace SonOfRobin
 
                     if (!TouchInput.IsPointActivatingAnyTouchInterface(point: touch.Position, checkLeftStick: false, checkRightStick: false, checkVirtButtons: true, checkInventory: false, checkPlayerPanel: false))
                     {
-                        this.movedByTouch = true;
-
                         if (touch.State == TouchLocationState.Pressed)
                         {
                             this.lastTouchPos = touch.Position;
@@ -371,16 +361,12 @@ namespace SonOfRobin
 
             if (movement != Vector2.Zero)
             {
-                Rectangle cameraRect = this.camera.viewRect;
-                int cameraHalfWidth = cameraRect.Width / 2;
-                int cameraHalfHeight = cameraRect.Height / 2;
-
                 Vector2 newPos = this.camera.TrackedPos + movement;
 
-                newPos.X = Math.Max(newPos.X, cameraHalfWidth);
-                newPos.X = Math.Min(newPos.X, this.world.width - cameraHalfWidth);
-                newPos.Y = Math.Max(newPos.Y, cameraHalfHeight);
-                newPos.Y = Math.Min(newPos.Y, this.world.height - cameraHalfHeight);
+                newPos.X = Math.Max(newPos.X, 0);
+                newPos.X = Math.Min(newPos.X, this.world.width);
+                newPos.Y = Math.Max(newPos.Y, 0);
+                newPos.Y = Math.Min(newPos.Y, this.world.height);
 
                 this.camera.TrackCoords(newPos);
             }
@@ -417,7 +403,7 @@ namespace SonOfRobin
 
             // filling with water color
 
-            if (this.FullScreen && !this.transManager.HasAnyTransition) SonOfRobinGame.graphicsDevice.Clear(BoardGraphics.colorsByName[BoardGraphics.Colors.WaterDeep]);
+            SonOfRobinGame.graphicsDevice.Clear(BoardGraphics.colorsByName[BoardGraphics.Colors.Beach1]);
 
             // calculating centered world rectangle
 
@@ -513,7 +499,7 @@ namespace SonOfRobin
 
             // drawing crosshair
 
-            if (this.Mode == MapMode.Full && !this.movedByTouch)
+            if (this.Mode == MapMode.Full)
             {
                 int crossHairSize = (int)(this.camera.viewRect.Width * 0.02f);
                 int crosshairHalfSize = crossHairSize / 2;

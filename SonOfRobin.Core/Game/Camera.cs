@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -57,6 +56,7 @@ namespace SonOfRobin
 
         private readonly World world;
         private readonly Scene displayScene;
+        private readonly bool keepInWorldBounds;
         private TrackingMode trackingMode;
         private Sprite trackedSprite;
         private bool trackedSpriteReached;
@@ -127,10 +127,11 @@ namespace SonOfRobin
             Position,
         }
 
-        public Camera(World world, Scene displayScene, bool useFluidMotion)
+        public Camera(World world, Scene displayScene, bool useFluidMotion, bool keepInWorldBounds = true)
         {
             this.world = world;
             this.displayScene = displayScene;
+            this.keepInWorldBounds = keepInWorldBounds;
             this.useFluidMotion = useFluidMotion;
             this.CurrentPos = new Vector2(0, 0);
 
@@ -150,7 +151,6 @@ namespace SonOfRobin
 
             if (Scene.ProcessingMode != Scene.ProcessingModes.Update) return;
 
-            float xMin, xMax, yMin, yMax;
             Vector2 currentTargetPos = this.GetTargetCoords();
             Vector2 viewCenter = new Vector2(0, 0); // to be updated below
 
@@ -178,13 +178,23 @@ namespace SonOfRobin
 
             float widthDivider = this.world.demoMode ? 5 : 2; // to put the camera center on the left side of the screen during demo (there is menu on the right)
 
-            xMin = Math.Min(Math.Max(viewCenter.X - (screenWidth / widthDivider), 0), (float)this.world.width - screenWidth - 1f);
-            yMin = Math.Min(Math.Max(viewCenter.Y - (screenHeight / 2f), 0), (float)this.world.height - screenHeight - 1f);
+            float xMin = viewCenter.X - (screenWidth / widthDivider);
+            float yMin = viewCenter.Y - (screenHeight / 2f);
 
-            xMin = Math.Max(xMin, 0);
-            yMin = Math.Max(yMin, 0);
-            xMax = Math.Min(xMin + screenWidth, this.world.width);
-            yMax = Math.Min(yMin + screenHeight, this.world.height);
+            if (this.keepInWorldBounds)
+            {
+                xMin = Math.Min(Math.Max(xMin, 0), (float)this.world.width - screenWidth - 1f);
+                yMin = Math.Min(Math.Max(yMin, 0), (float)this.world.height - screenHeight - 1f);
+            }
+
+            float xMax = xMin + screenWidth;
+            float yMax = yMin + screenHeight;
+
+            if (this.keepInWorldBounds)
+            {
+                xMax = Math.Min(xMax, this.world.width);
+                yMax = Math.Min(yMax, this.world.height);
+            }
 
             this.CurrentPos = viewCenter;
 
@@ -194,8 +204,6 @@ namespace SonOfRobin
             this.viewRect.Height = (int)Math.Floor(yMax - yMin);
 
             this.viewPos = new Vector2(-xMin, -yMin);
-
-            SoundEffect.DistanceScale = this.viewRect.Width * 0.065f;
 
             if (!this.trackedSpriteReached && Vector2.Distance(this.CurrentPos, currentTargetPos) < 30) this.trackedSpriteReached = true;
         }

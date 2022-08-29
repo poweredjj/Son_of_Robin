@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Concurrent;
@@ -665,6 +666,7 @@ namespace SonOfRobin
             this.manualScale = 1f;
             this.ProcessInput();
             this.UpdateViewParams(manualScale: this.manualScale);
+            SoundEffect.DistanceScale = this.camera.viewRect.Width * 0.065f;
 
             this.grid.UnloadTexturesIfMemoryLow(this.camera);
             this.grid.LoadClosestTextureInCameraView(this.camera);
