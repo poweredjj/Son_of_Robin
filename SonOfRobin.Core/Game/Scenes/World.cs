@@ -309,7 +309,7 @@ namespace SonOfRobin
             this.lightSprites = new List<Sprite>();
             this.doNotCreatePiecesList = new List<PieceTemplate.Name> { };
             this.discoveredRecipesForPieces = new List<PieceTemplate.Name> { };
-            this.camera = new Camera(world: this, displayScene: this, useFluidMotion: true);
+            this.camera = new Camera(world: this, displayScene: this, useFluidMotionForMove: true, useFluidMotionForZoom: true);
             this.camera.TrackCoords(new Vector2(0, 0));
             this.MapEnabled = false;
             this.map = new Map(world: this, touchLayout: TouchLayout.Map);

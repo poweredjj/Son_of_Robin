@@ -42,7 +42,7 @@ namespace SonOfRobin
             this.AddLinkedScene(this.mapOverlay);
             this.world = world;
             this.worldRect = new Rectangle(x: 0, y: 0, width: world.width, height: world.height);
-            this.camera = new Camera(world: this.world, displayScene: this, useFluidMotion: false, keepInWorldBounds: false);
+            this.camera = new Camera(world: this.world, displayScene: this, useFluidMotionForMove: false, useFluidMotionForZoom: true, keepInWorldBounds: false);
             this.mode = MapMode.Off;
             this.dirtyFog = true;
             this.lastTouchPos = Vector2.Zero;
@@ -312,21 +312,26 @@ namespace SonOfRobin
                 return;
             }
 
-            float zoomMultiplier = Mouse.ScrollWheelRolledUp || Mouse.ScrollWheelRolledDown ? 0.15f : 0.035f;
-            float zoomChangeVal = this.camera.currentZoom * zoomMultiplier;
-
-            if (InputMapper.IsPressed(InputMapper.Action.MapZoomIn))
+            if (InputMapper.IsPressed(InputMapper.Action.MapZoomIn) || InputMapper.IsPressed(InputMapper.Action.MapZoomOut))
             {
-                float currentZoom = this.camera.currentZoom + zoomChangeVal;
-                currentZoom = Math.Min(currentZoom, this.InitialZoom);
-                this.camera.SetZoom(currentZoom);
-            }
+                bool zoomByMouse = Mouse.ScrollWheelRolledUp || Mouse.ScrollWheelRolledDown;
 
-            if (InputMapper.IsPressed(InputMapper.Action.MapZoomOut))
-            {
-                float currentZoom = this.camera.currentZoom - zoomChangeVal;
-                currentZoom = Math.Max(currentZoom, this.scaleMultiplier * 0.7f);
-                this.camera.SetZoom(currentZoom);
+                float zoomMultiplier = zoomByMouse ? 0.2f : 0.035f;
+                float zoomChangeVal = this.camera.currentZoom * zoomMultiplier;
+
+                if (InputMapper.IsPressed(InputMapper.Action.MapZoomIn))
+                {
+                    float currentZoom = this.camera.currentZoom + zoomChangeVal;
+                    currentZoom = Math.Min(currentZoom, this.InitialZoom);
+                    this.camera.SetZoom(zoom: currentZoom, setInstantly: !zoomByMouse);
+                }
+
+                if (InputMapper.IsPressed(InputMapper.Action.MapZoomOut))
+                {
+                    float currentZoom = this.camera.currentZoom - zoomChangeVal;
+                    currentZoom = Math.Max(currentZoom, this.scaleMultiplier * 0.7f);
+                    this.camera.SetZoom(zoom: currentZoom, setInstantly: !zoomByMouse);
+                }
             }
 
             Vector2 movement = InputMapper.Analog(InputMapper.Action.MapMove) * 10 / this.camera.currentZoom;
@@ -373,7 +378,6 @@ namespace SonOfRobin
 
             this.camera.Update();
             this.SetViewParamsForTargetRender();
-
         }
 
         public override void RenderToTarget()

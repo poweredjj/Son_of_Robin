@@ -66,8 +66,9 @@ namespace SonOfRobin
         public Vector2 CurrentPos { get; private set; }
         private float targetZoom;
         public float currentZoom;
-        private readonly bool useFluidMotion;
-        private bool disableFluidMotionForOneFrame;
+        private readonly bool useFluidMotionForMove;
+        private readonly bool useFluidMotionForZoom;
+        private bool disableFluidMotionMoveForOneFrame;
         private static readonly int movementSlowdown = 20;
         private int zoomSlowdown = 20;
 
@@ -127,16 +128,17 @@ namespace SonOfRobin
             Position,
         }
 
-        public Camera(World world, Scene displayScene, bool useFluidMotion, bool keepInWorldBounds = true)
+        public Camera(World world, Scene displayScene, bool useFluidMotionForMove, bool useFluidMotionForZoom, bool keepInWorldBounds = true)
         {
             this.world = world;
             this.displayScene = displayScene;
             this.keepInWorldBounds = keepInWorldBounds;
-            this.useFluidMotion = useFluidMotion;
+            this.useFluidMotionForMove = useFluidMotionForMove;
+            this.useFluidMotionForZoom = useFluidMotionForZoom;
             this.CurrentPos = new Vector2(0, 0);
 
             this.viewRect = new Rectangle(0, 0, 0, 0);
-            this.disableFluidMotionForOneFrame = false;
+            this.disableFluidMotionMoveForOneFrame = false;
             this.trackingMode = TrackingMode.Undefined;
             this.targetZoom = 1f;
             this.currentZoom = 1f;
@@ -154,21 +156,24 @@ namespace SonOfRobin
             Vector2 currentTargetPos = this.GetTargetCoords();
             Vector2 viewCenter = new Vector2(0, 0); // to be updated below
 
-            if (this.useFluidMotion && !this.disableFluidMotionForOneFrame)
+            if (this.useFluidMotionForZoom)
             {
                 this.currentZoom += (this.targetZoom - this.currentZoom) / this.zoomSlowdown;
                 if (this.currentZoom == this.targetZoom) this.zoomSlowdown = movementSlowdown; // resetting to default zoom speed, after reaching target value
+            }
+            else this.currentZoom = this.targetZoom;
 
+            if (this.useFluidMotionForMove && !this.disableFluidMotionMoveForOneFrame)
+            {
                 viewCenter.X = this.CurrentPos.X + ((currentTargetPos.X - this.CurrentPos.X) / movementSlowdown);
                 viewCenter.Y = this.CurrentPos.Y + ((currentTargetPos.Y - this.CurrentPos.Y) / movementSlowdown);
             }
             else
             {
-                this.currentZoom = this.targetZoom;
                 viewCenter.X = currentTargetPos.X;
                 viewCenter.Y = currentTargetPos.Y;
                 this.trackedSpriteReached = true;
-                this.disableFluidMotionForOneFrame = false;
+                this.disableFluidMotionMoveForOneFrame = false;
             }
 
             if (this.displayScene == this.world) viewCenter += this.world.analogCameraCorrection;
@@ -213,7 +218,7 @@ namespace SonOfRobin
             this.trackingMode = TrackingMode.Sprite;
             this.trackedSprite = trackedPiece.sprite;
             this.trackedSpriteReached = false;
-            this.disableFluidMotionForOneFrame = moveInstantly;
+            this.disableFluidMotionMoveForOneFrame = moveInstantly;
         }
 
         public void TrackCoords(Vector2 position, bool moveInstantly = false)
@@ -222,7 +227,7 @@ namespace SonOfRobin
             this.trackedSprite = null;
             this.trackedSpriteReached = false;
             this.trackedPos = new Vector2(position.X, position.Y);
-            this.disableFluidMotionForOneFrame = moveInstantly;
+            this.disableFluidMotionMoveForOneFrame = moveInstantly;
         }
         public void ResetZoom(bool setInstantly = false, float zoomSpeedMultiplier = 1f)
         {
