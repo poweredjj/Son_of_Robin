@@ -791,7 +791,7 @@ namespace SonOfRobin
                 case Name.MapMarker:
                     {
                         var allowedFields = new AllowedFields();
-                        return new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.MapMarker, minDistance: 0, maxDistance: 0, allowedFields: allowedFields, generation: generation, readableName: "map marker", description: "Map marker.", activeState: BoardPiece.State.Empty, serialize: false);
+                        return new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.MapMarker, minDistance: 0, maxDistance: 0, allowedFields: allowedFields, generation: generation, readableName: "map marker", description: "Map marker.", activeState: BoardPiece.State.VanishIfPlayerIsNearby, visible: false, serialize: false);
                     }
 
                 case Name.Empty:

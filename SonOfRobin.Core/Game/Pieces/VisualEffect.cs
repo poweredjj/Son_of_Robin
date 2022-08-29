@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -43,6 +44,11 @@ namespace SonOfRobin
                 animal.aiData.Reset(animal);
                 animal.activeState = State.AnimalFlee;
             }
+        }
+
+        public override void SM_VanishIfPlayerIsNearby()
+        {
+            if (Vector2.Distance(this.sprite.position, this.world.player.sprite.position) < 200) this.Destroy();
         }
     }
 }

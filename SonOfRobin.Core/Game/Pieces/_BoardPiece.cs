@@ -34,7 +34,8 @@ namespace SonOfRobin
             FireplaceBurn,
 
             ScareAnimalsAway,
-            PlayAmbientSound
+            PlayAmbientSound,
+            VanishIfPlayerIsNearby
         }
 
         public enum Category { Wood, Stone, Metal, SmallPlant, Flesh, Dirt, Crystal, Indestructible }
@@ -578,6 +579,12 @@ namespace SonOfRobin
                         return;
                     }
 
+                case State.VanishIfPlayerIsNearby:
+                    {
+                        this.SM_VanishIfPlayerIsNearby();
+                        return;
+                    }
+
                 case State.Empty: // this state should be removed from execution (for performance reasons)
                     {
                         this.RemoveFromStateMachines();
@@ -653,6 +660,8 @@ namespace SonOfRobin
         public virtual void SM_ScarePredatorsAway()
         { throw new DivideByZeroException("This method should not be executed."); }
         public virtual void SM_PlayAmbientSound()
+        { throw new DivideByZeroException("This method should not be executed."); }
+        public virtual void SM_VanishIfPlayerIsNearby()
         { throw new DivideByZeroException("This method should not be executed."); }
         public virtual void SM_GrowthAndReproduction()
         { throw new DivideByZeroException("This method should not be executed."); }
