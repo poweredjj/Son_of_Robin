@@ -9,7 +9,7 @@ namespace SonOfRobin
     [Serializable]
     public class InputPackage
     {
-        public static readonly float version = 1.04f;
+        public static readonly float version = 1.05f;
 
         private static readonly Dictionary<string, string> readablePropertyNames = new Dictionary<string, string>
             {
@@ -36,6 +36,7 @@ namespace SonOfRobin
                 {"invSort", "sort"},
                 {"toolbarPrev", "previous item"},
                 {"toolbarNext", "next item"},
+                {"mapToggleMarker", "toggle marker"},
                 {"mapZoomIn", "zoom in"},
                 {"mapZoomOut", "zoom out"},
             };
@@ -67,11 +68,12 @@ namespace SonOfRobin
         public object invPickOne;
         public object invPickStack;
         public object invSort;
+        public object mapToggleMarker;
         public object mapZoomIn;
         public object mapZoomOut;
 
         public bool IsObsolete { get { return this.packageVersion != version; } }
-        public InputPackage(float packageVersion, InputMapper.AnalogType leftStick, InputMapper.AnalogType rightStick, object confirm, object cancel, object pauseMenu, object sprint, object equip, object inventory, object pickUp, object craft, object interact, object map, object useTool, object zoomOut, object toolbarPrev, object invSwitch, object invSort, object toolbarNext, object invPickOne, object invPickStack, object mapZoomIn, object mapZoomOut, object left = null, object right = null, object up = null, object down = null)
+        public InputPackage(float packageVersion, InputMapper.AnalogType leftStick, InputMapper.AnalogType rightStick, object confirm, object cancel, object pauseMenu, object sprint, object equip, object inventory, object pickUp, object craft, object interact, object map, object useTool, object zoomOut, object toolbarPrev, object invSwitch, object invSort, object toolbarNext, object invPickOne, object invPickStack, object mapToggleMarker, object mapZoomIn, object mapZoomOut, object left = null, object right = null, object up = null, object down = null)
         {
             this.packageVersion = packageVersion;
 
@@ -99,6 +101,7 @@ namespace SonOfRobin
             this.invPickOne = invPickOne;
             this.invPickStack = invPickStack;
             this.interact = interact;
+            this.mapToggleMarker = mapToggleMarker;
             this.mapZoomIn = mapZoomIn;
             this.mapZoomOut = mapZoomOut;
         }
@@ -132,6 +135,7 @@ namespace SonOfRobin
                 invPickOne: this.invPickOne,
                 invPickStack: this.invPickStack,
                 invSort: this.invSort,
+                mapToggleMarker: this.mapToggleMarker,
                 mapZoomIn: this.mapZoomIn,
                 mapZoomOut: this.mapZoomOut,
                 left: this.left,
@@ -164,6 +168,7 @@ namespace SonOfRobin
                 this.invPickOne == inputPackage.invPickOne &&
                 this.invPickStack == inputPackage.invPickStack &&
                 this.invSort == inputPackage.invSort &&
+                this.mapToggleMarker == inputPackage.mapToggleMarker &&
                 this.mapZoomIn == inputPackage.mapZoomIn &&
                 this.mapZoomOut == inputPackage.mapZoomOut &&
                 this.left == inputPackage.left &&
@@ -181,7 +186,7 @@ namespace SonOfRobin
                 { new List<string> { "confirm", "cancel", "left", "right", "up", "down", "pauseMenu"} }, // general
                 { new List<string> { "interact", "pickUp", "sprint", "useTool", "zoomOut", "toolbarPrev", "toolbarNext", "pauseMenu", "equip", "inventory", "craft", "map" } }, // field
                 { new List<string> { "invSwitch", "invPickOne", "invPickStack", "invSort", "confirm", "cancel", "left", "right", "up", "down" } }, // inventory
-                { new List<string> { "confirm", "cancel", "mapZoomIn", "mapZoomOut" } }, // map
+                { new List<string> { "cancel", "mapToggleMarker", "mapZoomIn", "mapZoomOut" } }, // map
             };
 
             // searching for duplicates and making a dictionary of found duplicates (texture: property list)

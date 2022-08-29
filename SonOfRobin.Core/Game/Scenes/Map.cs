@@ -300,7 +300,7 @@ namespace SonOfRobin
 
             // set / remove marker
 
-            if (InputMapper.HasBeenPressed(InputMapper.Action.GlobalConfirm)) // TODO replace with dedicated action (with right mouse button added)
+            if (InputMapper.HasBeenPressed(InputMapper.Action.MapToggleMarker))
             {
                 if (this.mapMarker == null) this.mapMarker = PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: this.camera.CurrentPos, templateName: PieceTemplate.Name.MapMarker);
                 else this.mapMarker.sprite.SetNewPosition(this.camera.CurrentPos);
@@ -336,7 +336,7 @@ namespace SonOfRobin
 
             // movement
 
-            Vector2 movement = InputMapper.Analog(InputMapper.Action.MapMove) * 10 * this.camera.CurrentZoom;
+            Vector2 movement = InputMapper.Analog(InputMapper.Action.MapMove) * 10 / this.camera.CurrentZoom;
             if (movement == Vector2.Zero)
             {
                 foreach (TouchLocation touch in TouchInput.TouchPanelState)
@@ -395,7 +395,7 @@ namespace SonOfRobin
 
             // calculating miniature opacity
 
-            float showMiniatureAtZoom = 1f / ((float)SonOfRobinGame.VirtualWidth / (float)this.world.width * 1.4f);
+            float showMiniatureAtZoom = (float)SonOfRobinGame.VirtualWidth / (float)this.world.width * 1.4f;
             float showFullScaleAtZoom = this.InitialZoom;
 
             float miniatureOpacity = (float)Helpers.ConvertRange(oldMin: showFullScaleAtZoom, oldMax: showMiniatureAtZoom, newMin: 0f, newMax: 1f, oldVal: this.camera.CurrentZoom, clampToEdges: true);

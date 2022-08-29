@@ -26,6 +26,7 @@ namespace SonOfRobin
         InvDragSingle,
         InvSort,
 
+        MapToggleMarker,
         MapZoomIn,
         MapZoomOut,
 

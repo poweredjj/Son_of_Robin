@@ -724,7 +724,7 @@ namespace SonOfRobin
 
             new Separator(menu: menu, name: "", isEmpty: true);
             new Separator(menu: menu, name: "map");
-            foreach (string propertyName in new List<string> { "mapZoomIn", "mapZoomOut" })
+            foreach (string propertyName in new List<string> { "mapToggleMarker", "mapZoomIn", "mapZoomOut" })
             { new Selector(menu: menu, name: newMapping.GetReadablePropertyName(propertyName), valueDict: keysOrButtonsDict, targetObj: newMapping, propertyName: propertyName, captureInput: true, captureKeys: captureKeys, captureButtons: captureButtons); }
 
             new Separator(menu: menu, name: "", isEmpty: true);
