@@ -249,11 +249,9 @@ namespace SonOfRobin
 
         public override void Update(GameTime gameTime)
         {
-            if (this.MapMarker != null && !this.MapMarker.exists) this.MapMarker = null; // if marker had destroyed itself
-
-            //   if (this.MapMarker != null) FieldTip.AddUpdateTip(world: this.world, texture: this.MapMarker.sprite.frame.texture, targetSprite: this.MapMarker.sprite, alignment: FieldTip.Alignment.Center, textureScaleMultiplier: 3f, showLabel: false, stayInsideCameraBounds: true, alwaysTeleport: true, allowObstructingTarget: true); // needed to update tips, when map is not active
-
             if (this.Mode == MapMode.Off) return;
+
+            if (this.MapMarker != null && !this.MapMarker.exists) this.MapMarker = null; // if marker had destroyed itself
 
             if (!this.CheckIfPlayerCanReadTheMap(showMessage: true))
             {

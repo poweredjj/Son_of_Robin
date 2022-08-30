@@ -20,12 +20,6 @@ namespace SonOfRobin
         private readonly World world;
         private readonly Texture2D texture;
         private readonly Rectangle textureSourceRect;
-        private readonly bool ignoreShowTipsSetting;
-        private readonly bool allowObstructingTarget;
-        private readonly bool showLabel;
-        private readonly bool stayInsideCameraBounds;
-        private readonly bool alwaysTeleport;
-        private readonly float textureScaleMultiplier;
 
         private Alignment alignment;
 
@@ -38,18 +32,12 @@ namespace SonOfRobin
         private Vector2 currentPos;
         private float targetOpacity;
         private float currentOpacity;
-        private int TextureWidth { get { return (int)(this.texture.Width * Preferences.fieldControlTipsScale * textureScaleMultiplier); } }
-        private int TextureHeight { get { return (int)(this.texture.Height * Preferences.fieldControlTipsScale * textureScaleMultiplier); } }
+        private int TextureWidth { get { return (int)(this.texture.Width * Preferences.fieldControlTipsScale); } }
+        private int TextureHeight { get { return (int)(this.texture.Height * Preferences.fieldControlTipsScale); } }
 
-        private FieldTip(World world, Texture2D texture, Sprite targetSprite, Alignment alignment, bool ignoreShowTipsSetting = true, float textureScaleMultiplier = 1f, bool showLabel = true, bool stayInsideCameraBounds = false, bool alwaysTeleport = false, bool allowObstructingTarget = false)
+        private FieldTip(World world, Texture2D texture, Sprite targetSprite, Alignment alignment)
         {
             this.world = world;
-            this.ignoreShowTipsSetting = ignoreShowTipsSetting;
-            this.showLabel = showLabel;
-            this.stayInsideCameraBounds = stayInsideCameraBounds;
-            this.alwaysTeleport = alwaysTeleport;
-            this.allowObstructingTarget = allowObstructingTarget;
-            this.textureScaleMultiplier = textureScaleMultiplier;
             this.texture = texture;
             this.textureSourceRect = new Rectangle(0, 0, this.texture.Width, this.texture.Height);
 
@@ -82,15 +70,15 @@ namespace SonOfRobin
         {
             tipsDict.Remove(this.texture);
         }
-        public static void AddUpdateTip(World world, Texture2D texture, Sprite targetSprite, Alignment alignment, bool ignoreShowTipsSetting = true, float textureScaleMultiplier = 1f, bool showLabel = true, bool stayInsideCameraBounds = false, bool alwaysTeleport = false, bool allowObstructingTarget = false)
+        public static void AddUpdateTip(World world, Texture2D texture, Sprite targetSprite, Alignment alignment)
         {
-            if (!tipsDict.ContainsKey(texture) || tipsDict[texture].world != world) new FieldTip(world: world, texture: texture, targetSprite: targetSprite, alignment: alignment, ignoreShowTipsSetting: ignoreShowTipsSetting, textureScaleMultiplier: textureScaleMultiplier, showLabel: showLabel, alwaysTeleport: alwaysTeleport, stayInsideCameraBounds: stayInsideCameraBounds, allowObstructingTarget: allowObstructingTarget);
+            if (!tipsDict.ContainsKey(texture) || tipsDict[texture].world != world) new FieldTip(world: world, texture: texture, targetSprite: targetSprite, alignment: alignment);
             else tipsDict[texture].Update(targetSprite: targetSprite, alignment: alignment);
         }
 
         private void ChangeOpacityIfObstructsTarget()
         {
-            if (this.targetSprite == null || this.allowObstructingTarget) return;
+            if (this.targetSprite == null) return;
             if (inAlignment.Contains(this.alignment) && (targetSprite.gfxRect.Width < this.TextureWidth || targetSprite.gfxRect.Height < this.TextureHeight)) this.targetOpacity = 0.5f;
         }
 
@@ -112,7 +100,7 @@ namespace SonOfRobin
 
                 foreach (FieldTip fieldTip in tipsDict.Values.ToList())
                 {
-                    if (!fieldTip.ignoreShowTipsSetting || (Preferences.ShowControlTips && Preferences.showFieldControlTips)) fieldTip.UpdateAndDraw(world);
+                    fieldTip.UpdateAndDraw(world);
                 }
             }
         }
@@ -133,7 +121,7 @@ namespace SonOfRobin
             if (this.world.currentUpdate - this.lastFrameActive > maxInactiveDuration) this.targetOpacity = 0f;
             else this.ChangeOpacityIfObstructsTarget();
 
-            if (this.alwaysTeleport || this.teleportToTarget)
+            if (this.teleportToTarget)
             {
                 this.currentPos = this.targetPos;
                 this.teleportToTarget = false;
@@ -147,14 +135,14 @@ namespace SonOfRobin
                 return;
             }
 
-            // drawing tip texture
+            // drawing button hint
 
             Rectangle destRect = this.CalculateDestRect(this.currentPos);
             SonOfRobinGame.spriteBatch.Draw(this.texture, this.CalculateDestRect(this.currentPos), this.textureSourceRect, Color.White * this.currentOpacity);
 
             // drawing piece name label
 
-            if (this.showLabel && this.targetSprite != null && !thisFrameSpritesShown.Contains(this.targetSprite))
+            if (this.targetSprite != null && !thisFrameSpritesShown.Contains(this.targetSprite))
             {
                 // Helpers.DrawRectangleOutline(rect: destRect, color: Color.LightBlue, borderWidth: 1); // for testing
 
@@ -213,23 +201,6 @@ namespace SonOfRobin
             int textureWidth = this.TextureWidth;
             int textureHeight = this.TextureHeight;
             Rectangle targetRect = this.targetSprite.gfxRect;
-
-            if (this.stayInsideCameraBounds)
-            {
-                Rectangle cameraRect = this.targetSprite.world.camera.viewRect;
-
-                int offsetX = 0;
-                int offsetY = 0;
-
-                if (targetRect.Left < cameraRect.Left) offsetX = cameraRect.Left - targetRect.Left;
-                if (targetRect.Right > cameraRect.Right) offsetX = -(targetRect.Right - cameraRect.Right);
-
-                if (targetRect.Top < cameraRect.Top) offsetY = cameraRect.Top - targetRect.Top;
-                if (targetRect.Bottom > cameraRect.Bottom) offsetY = -(targetRect.Bottom - cameraRect.Bottom);
-
-                targetRect.X += offsetX;
-                targetRect.Y += offsetY;
-            }
 
             Vector2 position;
             switch (this.alignment)
