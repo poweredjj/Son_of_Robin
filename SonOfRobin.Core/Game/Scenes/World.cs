@@ -764,7 +764,7 @@ namespace SonOfRobin
                 return;
             }
 
-            if (!this.map.CheckIfCanBeTurnedOn(showMessage: true)) return;
+            if (!this.map.CheckIfPlayerCanReadTheMap(showMessage: true)) return;
 
             if (this.map.transManager.HasAnyTransition || this.map.transManager.HasAnyTransition) return;
 

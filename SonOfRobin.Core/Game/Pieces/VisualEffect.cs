@@ -48,8 +48,14 @@ namespace SonOfRobin
 
         public override void SM_VanishIfPlayerIsNearby()
         {
-            if (this.world.currentUpdate % 60 != 0) return;
-            if (Vector2.Distance(this.sprite.position, this.world.player.sprite.position) < 200) this.Destroy();
+            if (this.world.currentUpdate % 10 != 0) return;
+
+            if (!this.world.player.buffEngine.HasBuff(BuffEngine.BuffType.EnableMap) ||
+                !this.world.map.CheckIfPlayerCanReadTheMap(showMessage: false) ||
+                Vector2.Distance(this.sprite.position, this.world.player.sprite.position) < 200)
+            {
+                this.Destroy();
+            }
         }
     }
 }

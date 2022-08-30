@@ -236,7 +236,7 @@ namespace SonOfRobin
             }
         }
 
-        public bool CheckIfCanBeTurnedOn(bool showMessage = true)
+        public bool CheckIfPlayerCanReadTheMap(bool showMessage)
         {
             bool canBeTurnedOn = this.world.player.CanSeeAnything;
 
@@ -257,7 +257,7 @@ namespace SonOfRobin
 
             if (this.Mode == MapMode.Off) return;
 
-            if (!this.CheckIfCanBeTurnedOn(showMessage: true))
+            if (!this.CheckIfPlayerCanReadTheMap(showMessage: true))
             {
                 this.TurnOff();
                 return;
