@@ -407,7 +407,9 @@ namespace SonOfRobin
             float showMiniatureAtZoom = (float)SonOfRobinGame.VirtualWidth / (float)this.world.width * 1.4f;
             float showFullScaleAtZoom = this.InitialZoom;
 
-            float miniatureOpacity = (float)Helpers.ConvertRange(oldMin: showFullScaleAtZoom, oldMax: showMiniatureAtZoom, newMin: 0f, newMax: 1f, oldVal: this.camera.CurrentZoom, clampToEdges: true);
+            float totalBGOpacity = 0.7f;
+
+            float miniatureOpacity = (float)Helpers.ConvertRange(oldMin: showFullScaleAtZoom, oldMax: showMiniatureAtZoom, newMin: 0f, newMax: totalBGOpacity, oldVal: this.camera.CurrentZoom, clampToEdges: true);
 
             // MessageLog.AddMessage(msgType: MsgType.User, message: $"Zoom {this.camera.currentZoom} miniatureOpacity {miniatureOpacity} showMiniatureAtZoom {showMiniatureAtZoom}");
 
@@ -415,17 +417,17 @@ namespace SonOfRobin
 
             var backgroundBlend = new BlendState
             {
-                //AlphaBlendFunction = BlendFunction.Add,
-                // AlphaDestinationBlend = Blend.One,
-                // AlphaSourceBlend = Blend.One,
+                AlphaBlendFunction = BlendFunction.Add,
+                AlphaSourceBlend = Blend.One,
+                AlphaDestinationBlend = Blend.One,
 
-                ColorBlendFunction = BlendFunction.Add,
-                ColorSourceBlend = Blend.Zero,
-                ColorDestinationBlend = Blend.InverseSourceColor,
+                ColorBlendFunction = BlendFunction.Subtract,
+                ColorSourceBlend = Blend.InverseSourceAlpha,
+                ColorDestinationBlend = Blend.SourceAlpha,
             };
 
-            //SonOfRobinGame.spriteBatch.Begin(transformMatrix: this.TransformMatrix, blendState: backgroundBlend);
-            SonOfRobinGame.spriteBatch.Begin(transformMatrix: this.TransformMatrix); // for testing
+            // SonOfRobinGame.spriteBatch.Begin(transformMatrix: this.TransformMatrix, blendState: backgroundBlend);
+            SonOfRobinGame.spriteBatch.Begin(transformMatrix: this.TransformMatrix, blendState: BlendState.AlphaBlend); // for testing
 
             var visibleCells = this.world.grid.GetCellsInsideRect(this.camera.viewRect);
 
@@ -437,7 +439,7 @@ namespace SonOfRobin
             {
                 foreach (Cell cell in visibleCells)
                 {
-                    if (cell.VisitedByPlayer || Preferences.DebugShowWholeMap) cell.DrawBackground(opacity: 1f);
+                    if (cell.VisitedByPlayer || Preferences.DebugShowWholeMap) cell.DrawBackground(opacity: totalBGOpacity - miniatureOpacity);
                 }
             }
 
