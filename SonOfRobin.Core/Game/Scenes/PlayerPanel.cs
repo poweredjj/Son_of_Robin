@@ -222,33 +222,39 @@ namespace SonOfRobin
                 }
             }
 
-            // drawing map marker, if outside of camera rect
+            // drawing map marker
 
             if (this.world.map.MapMarker != null && this.world.map.MapMarker.exists)
             {
-                Rectangle markerRect = this.world.map.MapMarker.sprite.gfxRect;
-                Rectangle cameraRect = this.world.camera.viewRect;
+                // calculating and drawing everything as Vector2 / float to avoid jerky marker motion
 
-                int offsetX = 0;
-                int offsetY = 0;
+                Camera camera = this.world.camera;
 
-                if (markerRect.Left < cameraRect.Left) offsetX = cameraRect.Left - markerRect.Left;
-                if (markerRect.Right > cameraRect.Right) offsetX = -(markerRect.Right - cameraRect.Right);
-                if (markerRect.Top < cameraRect.Top) offsetY = cameraRect.Top - markerRect.Top;
-                if (markerRect.Bottom > cameraRect.Bottom) offsetY = -(markerRect.Bottom - cameraRect.Bottom);
+                Sprite markerSprite = this.world.map.MapMarker.sprite;
 
-                markerRect.X += offsetX;
-                markerRect.Y += offsetY;
+                float cameraLeft = camera.viewPos.X * -1;
+                float cameraRight = cameraLeft + camera.viewRect.Width;
+                float cameraTop = camera.viewPos.Y * -1;
+                float cameraBottom = cameraTop + camera.viewRect.Height;
 
-                Vector2 markerScreenPos = this.world.TranslateWorldToScreenPos(new Vector2(markerRect.X, markerRect.Y));
+                Vector2 markerPos = markerSprite.position;
+                float markerWidth = (float)markerSprite.gfxRect.Width * (float)this.world.viewParams.ScaleX;
+                float markerHeight = (float)markerSprite.gfxRect.Height * (float)this.world.viewParams.ScaleY;
+
+                Vector2 offset = Vector2.Zero;
+
+                if (markerPos.X < cameraLeft) offset.X = cameraLeft - markerPos.X;
+                if (markerPos.X + markerWidth > cameraRight) offset.X = -(markerPos.X + markerWidth - cameraRight);
+                if (markerPos.Y < cameraTop) offset.Y = cameraTop - markerPos.Y;
+                if (markerPos.Y + markerHeight > cameraBottom) offset.Y = -(markerPos.Y + markerHeight - cameraBottom);
+
+                markerPos += offset;
+
+                Vector2 markerScreenPos = this.world.TranslateWorldToScreenPos(markerPos);
                 markerScreenPos.X -= this.viewParams.DrawPos.X;
                 markerScreenPos.Y -= this.viewParams.DrawPos.Y;
 
-                markerRect.X = (int)markerScreenPos.X;
-                markerRect.Y = (int)markerScreenPos.Y;
-
-                // drawing at Vector2 pos will to smoothen marker motion
-                SonOfRobinGame.spriteBatch.Draw(this.world.map.MapMarker.sprite.frame.texture, markerScreenPos, Color.White);
+                SonOfRobinGame.spriteBatch.Draw(markerSprite.frame.texture, markerScreenPos, Color.White);
             }
 
         }

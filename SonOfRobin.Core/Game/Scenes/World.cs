@@ -1034,8 +1034,8 @@ namespace SonOfRobin
         public Vector2 TranslateWorldToScreenPos(Vector2 worldPos)
         {
             return new Vector2(
-                x: (worldPos.X + this.viewParams.DrawPos.X) * Preferences.GlobalScale / this.viewParams.ScaleX,
-                y: (worldPos.Y + this.viewParams.DrawPos.Y) * Preferences.GlobalScale / this.viewParams.ScaleY);
+                x: (worldPos.X + this.viewParams.DrawPos.X) / this.viewParams.ScaleX,
+                y: (worldPos.Y + this.viewParams.DrawPos.Y) / this.viewParams.ScaleY);
         }
 
         public override void RenderToTarget()
