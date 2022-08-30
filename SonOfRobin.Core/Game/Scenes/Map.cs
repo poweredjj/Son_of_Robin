@@ -200,7 +200,7 @@ namespace SonOfRobin
                     case MapMode.Mini:
                         Sound.QuickPlay(SoundData.Name.TurnPage);
                         this.camera.TrackCoords(position: this.world.player.sprite.position, moveInstantly: true);
-                        this.camera.SetZoom(zoom: this.InitialZoom / 2, setInstantly: true);
+                        this.camera.SetZoom(zoom: this.InitialZoom, setInstantly: true);
                         this.UpdateResolution();
                         this.blocksUpdatesBelow = false;
                         this.InputType = InputTypes.None;
@@ -400,14 +400,15 @@ namespace SonOfRobin
             // drawing "paper" map background
 
             SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, this.worldRect, BoardGraphics.colorsByName[BoardGraphics.Colors.Beach1]);
-            SonOfRobinGame.spriteBatch.End();
 
             // calculating miniature opacity
 
             float showMiniatureAtZoom = (float)SonOfRobinGame.VirtualWidth / (float)this.world.width * 1.4f;
             float showFullScaleAtZoom = this.InitialZoom;
 
-            float totalBGOpacity = 0.7f;
+            float totalBGOpacity = 0.6f;
+            Color bgColor = new Color(235, 216, 181);
+            //bgColor = Color.White;
 
             float miniatureOpacity = (float)Helpers.ConvertRange(oldMin: showFullScaleAtZoom, oldMax: showMiniatureAtZoom, newMin: 0f, newMax: totalBGOpacity, oldVal: this.camera.CurrentZoom, clampToEdges: true);
 
@@ -415,37 +416,22 @@ namespace SonOfRobin
 
             // drawing detailed background
 
-            var backgroundBlend = new BlendState
-            {
-                AlphaBlendFunction = BlendFunction.Add,
-                AlphaSourceBlend = Blend.One,
-                AlphaDestinationBlend = Blend.One,
-
-                ColorBlendFunction = BlendFunction.Subtract,
-                ColorSourceBlend = Blend.InverseSourceAlpha,
-                ColorDestinationBlend = Blend.SourceAlpha,
-            };
-
-            // SonOfRobinGame.spriteBatch.Begin(transformMatrix: this.TransformMatrix, blendState: backgroundBlend);
-            SonOfRobinGame.spriteBatch.Begin(transformMatrix: this.TransformMatrix, blendState: BlendState.AlphaBlend); // for testing
-
             var visibleCells = this.world.grid.GetCellsInsideRect(this.camera.viewRect);
 
-            int drawnCellCount = miniatureOpacity < 1 ? visibleCells.Count : 0;
-
+            // int drawnCellCount = miniatureOpacity < 1 ? visibleCells.Count : 0;
             // MessageLog.AddMessage(msgType: MsgType.User, message: $"{SonOfRobinGame.currentUpdate} - drawn map cells count: {drawnCellCount}");
 
             if (miniatureOpacity < 1)
             {
                 foreach (Cell cell in visibleCells)
                 {
-                    if (cell.VisitedByPlayer || Preferences.DebugShowWholeMap) cell.DrawBackground(opacity: totalBGOpacity - miniatureOpacity);
+                    if (cell.VisitedByPlayer || Preferences.DebugShowWholeMap) cell.DrawBackground(color: bgColor * (totalBGOpacity - miniatureOpacity));
                 }
             }
 
             // drawing miniature background
 
-            if (miniatureOpacity > 0) SonOfRobinGame.spriteBatch.Draw(this.miniatureCombinedGfx, this.worldRect, Color.White * miniatureOpacity);
+            if (miniatureOpacity > 0) SonOfRobinGame.spriteBatch.Draw(this.miniatureCombinedGfx, this.worldRect, bgColor * miniatureOpacity);
 
             SonOfRobinGame.spriteBatch.End();
 

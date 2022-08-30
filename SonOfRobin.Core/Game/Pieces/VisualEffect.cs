@@ -52,7 +52,7 @@ namespace SonOfRobin
 
             if (!this.world.player.buffEngine.HasBuff(BuffEngine.BuffType.EnableMap) ||
                 !this.world.map.CheckIfPlayerCanReadTheMap(showMessage: false) ||
-                Vector2.Distance(this.sprite.position, this.world.player.sprite.position) < 150) // 200
+                Vector2.Distance(this.sprite.position, this.world.player.sprite.position) < 100)
             {
                 this.Destroy();
             }
