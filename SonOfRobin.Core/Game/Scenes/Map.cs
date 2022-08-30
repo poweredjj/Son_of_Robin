@@ -29,9 +29,7 @@ namespace SonOfRobin
         private RenderTarget2D miniatureTerrainGfx;
         private RenderTarget2D miniatureCombinedGfx;
         public RenderTarget2D FinalMapToDisplay { get; private set; }
-
-        private Vector2 lastTouchPos;
-        private BoardPiece mapMarker;
+        private Vector2 lastTouchPos; public BoardPiece MapMarker { get; private set; }
         private float InitialZoom { get { return Preferences.WorldScale / 2; } }
         private static readonly Color fogColor = new Color(50, 50, 50);
 
@@ -251,9 +249,9 @@ namespace SonOfRobin
 
         public override void Update(GameTime gameTime)
         {
-            if (this.mapMarker != null && !this.mapMarker.exists) this.mapMarker = null; // if marker had destroyed itself
+            if (this.MapMarker != null && !this.MapMarker.exists) this.MapMarker = null; // if marker had destroyed itself
 
-            if (this.mapMarker != null) FieldTip.AddUpdateTip(world: this.world, texture: this.mapMarker.sprite.frame.texture, targetSprite: this.mapMarker.sprite, alignment: FieldTip.Alignment.Center, textureScaleMultiplier: 3f, showLabel: false, stayInsideCameraBounds: true, alwaysTeleport: true, allowObstructingTarget: true); // needed to update tips, when map is not active
+            //   if (this.MapMarker != null) FieldTip.AddUpdateTip(world: this.world, texture: this.MapMarker.sprite.frame.texture, targetSprite: this.MapMarker.sprite, alignment: FieldTip.Alignment.Center, textureScaleMultiplier: 3f, showLabel: false, stayInsideCameraBounds: true, alwaysTeleport: true, allowObstructingTarget: true); // needed to update tips, when map is not active
 
             if (this.Mode == MapMode.Off) return;
 
@@ -303,15 +301,15 @@ namespace SonOfRobin
 
             if (InputMapper.HasBeenPressed(InputMapper.Action.MapToggleMarker))
             {
-                if (this.mapMarker == null) this.mapMarker = PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: this.camera.CurrentPos, templateName: PieceTemplate.Name.MapMarker);
+                if (this.MapMarker == null) this.MapMarker = PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: this.camera.CurrentPos, templateName: PieceTemplate.Name.MapMarker);
                 else
                 {
-                    if (Math.Abs(Vector2.Distance(this.mapMarker.sprite.position, this.camera.CurrentPos)) < 15)
+                    if (Math.Abs(Vector2.Distance(this.MapMarker.sprite.position, this.camera.CurrentPos)) < 15)
                     {
-                        this.mapMarker.Destroy();
-                        this.mapMarker = null;
+                        this.MapMarker.Destroy();
+                        this.MapMarker = null;
                     }
-                    else this.mapMarker.sprite.SetNewPosition(this.camera.CurrentPos);
+                    else this.MapMarker.sprite.SetNewPosition(this.camera.CurrentPos);
                 }
 
                 return;
@@ -452,7 +450,7 @@ namespace SonOfRobin
 
             // drawing marker
 
-            if (this.mapMarker != null) spritesBag.Add(this.mapMarker.sprite);
+            if (this.MapMarker != null) spritesBag.Add(this.MapMarker.sprite);
 
             // regular "foreach", because spriteBatch is not thread-safe
             foreach (Sprite sprite in spritesBag.OrderBy(o => o.frame.layer).ThenBy(o => o.gfxRect.Bottom))

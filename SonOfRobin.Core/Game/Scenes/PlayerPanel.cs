@@ -221,6 +221,39 @@ namespace SonOfRobin
                     }
                 }
             }
+
+            // drawing map marker, if outside of camera rect
+
+            if (this.world.map.MapMarker != null)
+            {
+                int offsetX = 0;
+                int offsetY = 0;
+
+                BoardPiece mapMarker = this.world.map.MapMarker;
+
+                Rectangle markerRect = mapMarker.sprite.gfxRect;
+                Rectangle cameraRect = this.world.camera.viewRect;
+
+                if (markerRect.Left < cameraRect.Left) offsetX = cameraRect.Left - markerRect.Left;
+                if (markerRect.Right > cameraRect.Right) offsetX = -(markerRect.Right - cameraRect.Right);
+
+                if (markerRect.Top < cameraRect.Top) offsetY = cameraRect.Top - markerRect.Top;
+                if (markerRect.Bottom > cameraRect.Bottom) offsetY = -(markerRect.Bottom - cameraRect.Bottom);
+
+                markerRect.X += offsetX;
+                markerRect.Y += offsetY;
+
+                Vector2 markerScreenPos = this.world.TranslateWorldToScreenPos(new Vector2(markerRect.X, markerRect.Y));
+
+                markerScreenPos.X -= this.viewParams.DrawPos.X;
+                markerScreenPos.Y -= this.viewParams.DrawPos.Y;
+
+                markerRect.X = (int)markerScreenPos.X;
+                markerRect.Y = (int)markerScreenPos.Y;
+
+                mapMarker.sprite.frame.Draw(destRect: markerRect, color: Color.White, opacity: 1f);
+            }
+
         }
 
     }

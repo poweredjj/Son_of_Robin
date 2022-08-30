@@ -46,13 +46,13 @@ namespace SonOfRobin
             }
         }
 
-        public override void SM_VanishIfPlayerIsNearby()
+        public override void SM_MapMarkerShowAndCheck()
         {
             if (this.world.currentUpdate % 10 != 0) return;
 
             if (!this.world.player.buffEngine.HasBuff(BuffEngine.BuffType.EnableMap) ||
                 !this.world.map.CheckIfPlayerCanReadTheMap(showMessage: false) ||
-                Vector2.Distance(this.sprite.position, this.world.player.sprite.position) < 200)
+                Vector2.Distance(this.sprite.position, this.world.player.sprite.position) < 50) // 200
             {
                 this.Destroy();
             }

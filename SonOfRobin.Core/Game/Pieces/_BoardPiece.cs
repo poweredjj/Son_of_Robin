@@ -35,7 +35,7 @@ namespace SonOfRobin
 
             ScareAnimalsAway,
             PlayAmbientSound,
-            VanishIfPlayerIsNearby
+            MapMarkerShowAndCheck
         }
 
         public enum Category { Wood, Stone, Metal, SmallPlant, Flesh, Dirt, Crystal, Indestructible }
@@ -579,9 +579,9 @@ namespace SonOfRobin
                         return;
                     }
 
-                case State.VanishIfPlayerIsNearby:
+                case State.MapMarkerShowAndCheck:
                     {
-                        this.SM_VanishIfPlayerIsNearby();
+                        this.SM_MapMarkerShowAndCheck();
                         return;
                     }
 
@@ -661,7 +661,7 @@ namespace SonOfRobin
         { throw new DivideByZeroException("This method should not be executed."); }
         public virtual void SM_PlayAmbientSound()
         { throw new DivideByZeroException("This method should not be executed."); }
-        public virtual void SM_VanishIfPlayerIsNearby()
+        public virtual void SM_MapMarkerShowAndCheck()
         { throw new DivideByZeroException("This method should not be executed."); }
         public virtual void SM_GrowthAndReproduction()
         { throw new DivideByZeroException("This method should not be executed."); }

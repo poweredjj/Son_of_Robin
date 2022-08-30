@@ -1031,6 +1031,13 @@ namespace SonOfRobin
                 y: (screenPos.Y / Preferences.GlobalScale * this.viewParams.ScaleY) - this.viewParams.DrawPos.Y);
         }
 
+        public Vector2 TranslateWorldToScreenPos(Vector2 worldPos)
+        {
+            return new Vector2(
+                x: (worldPos.X * Preferences.GlobalScale / this.viewParams.ScaleX) + this.viewParams.DrawPos.X,
+                y: (worldPos.Y * Preferences.GlobalScale / this.viewParams.ScaleY) + this.viewParams.DrawPos.Y);
+        }
+
         public override void RenderToTarget()
         {
             // preparing a list of sprites, that cast shadows
