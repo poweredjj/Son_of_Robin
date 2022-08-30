@@ -468,17 +468,7 @@ namespace SonOfRobin
                 if (showSprite)
                 {
                     Rectangle destRect = sprite.gfxRect;
-
                     destRect.Inflate(destRect.Width * spriteSize, destRect.Height * spriteSize);
-
-                    if (this.Mode == MapMode.Mini && name == PieceTemplate.Name.MapMarker && !this.camera.viewRect.Contains(sprite.position))
-                    {
-                        destRect.X = Math.Max(this.camera.viewRect.Left, destRect.X);
-                        destRect.X = Math.Min(this.camera.viewRect.Right - destRect.Width, destRect.X);
-                        destRect.Y = Math.Max(this.camera.viewRect.Top, destRect.Y);
-                        destRect.Y = Math.Min(this.camera.viewRect.Bottom - destRect.Height, destRect.Y);
-                    }
-
                     sprite.frame.Draw(destRect: destRect, color: Color.White, opacity: 1f);
                 }
             }
