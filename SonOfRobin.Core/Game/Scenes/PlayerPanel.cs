@@ -247,7 +247,8 @@ namespace SonOfRobin
                 markerRect.X = (int)markerScreenPos.X;
                 markerRect.Y = (int)markerScreenPos.Y;
 
-                this.world.map.MapMarker.sprite.frame.Draw(destRect: markerRect, color: Color.White, opacity: 1f);
+                // drawing at Vector2 pos will to smoothen marker motion
+                SonOfRobinGame.spriteBatch.Draw(this.world.map.MapMarker.sprite.frame.texture, markerScreenPos, Color.White);
             }
 
         }
