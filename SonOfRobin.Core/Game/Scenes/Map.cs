@@ -31,7 +31,7 @@ namespace SonOfRobin
         public RenderTarget2D FinalMapToDisplay { get; private set; }
         private Vector2 lastTouchPos; public BoardPiece MapMarker { get; private set; }
         private float InitialZoom { get { return Preferences.WorldScale / 2; } }
-        private static readonly Color fogColor = new Color(50, 50, 50);
+        private static readonly Color fogColor = Color.White;
 
         public Map(World world, TouchLayout touchLayout) : base(inputType: InputTypes.None, priority: 1, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: false, touchLayout: touchLayout, tipsLayout: ControlTips.TipsLayout.Map)
         {
@@ -107,7 +107,6 @@ namespace SonOfRobin
 
                 SetRenderTarget(this.miniatureTerrainGfx);
                 SonOfRobinGame.spriteBatch.Begin(transformMatrix: this.TransformMatrix);
-                SonOfRobinGame.graphicsDevice.Clear(Color.Transparent);
 
                 int width = (int)(this.world.width * this.scaleMultiplier);
                 int height = (int)(this.world.height * this.scaleMultiplier);
@@ -143,7 +142,6 @@ namespace SonOfRobin
             SetRenderTarget(this.miniatureCombinedGfx);
             SonOfRobinGame.spriteBatch.Begin(transformMatrix: this.TransformMatrix);
             SonOfRobinGame.graphicsDevice.Clear(Color.Transparent);
-            SonOfRobinGame.spriteBatch.Draw(this.miniatureTerrainGfx, this.miniatureTerrainGfx.Bounds, Color.White);
 
             if (!Preferences.DebugShowWholeMap)
             {
@@ -152,18 +150,15 @@ namespace SonOfRobin
                 int destCellWidth = (int)Math.Ceiling(cellWidth * this.scaleMultiplier);
                 int destCellHeight = (int)Math.Ceiling(cellHeight * this.scaleMultiplier);
 
-                Rectangle sourceRectangle = new Rectangle(0, 0, cellWidth, cellHeight);
-                SonOfRobinGame.graphicsDevice.Clear(new Color(0, 0, 0, 0));
-
-                foreach (Cell cell in this.world.grid.CellsNotVisitedByPlayer)
+                foreach (Cell cell in this.world.grid.CellsVisitedByPlayer)
                 {
-                    Rectangle destinationRectangle = new Rectangle(
+                    Rectangle srcDestRect = new Rectangle(
                         (int)Math.Floor(cell.xMin * this.scaleMultiplier),
                         (int)Math.Floor(cell.yMin * this.scaleMultiplier),
                         destCellWidth,
                         destCellHeight);
 
-                    SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, destinationRectangle, sourceRectangle, fogColor);
+                    SonOfRobinGame.spriteBatch.Draw(this.miniatureTerrainGfx, srcDestRect, srcDestRect, Color.White);
                 }
             }
             SonOfRobinGame.spriteBatch.End();
@@ -205,7 +200,7 @@ namespace SonOfRobin
                     case MapMode.Mini:
                         Sound.QuickPlay(SoundData.Name.TurnPage);
                         this.camera.TrackCoords(position: this.world.player.sprite.position, moveInstantly: true);
-                        this.camera.SetZoom(zoom: this.InitialZoom, setInstantly: true);
+                        this.camera.SetZoom(zoom: this.InitialZoom / 2, setInstantly: true);
                         this.UpdateResolution();
                         this.blocksUpdatesBelow = false;
                         this.InputType = InputTypes.None;
@@ -396,11 +391,16 @@ namespace SonOfRobin
 
             this.SetViewParamsForTargetRender();
             SetRenderTarget(this.FinalMapToDisplay);
-            SonOfRobinGame.spriteBatch.Begin(transformMatrix: this.TransformMatrix);
 
             // filling with water color
 
-            SonOfRobinGame.graphicsDevice.Clear(BoardGraphics.colorsByName[BoardGraphics.Colors.Beach1]);
+            SonOfRobinGame.spriteBatch.Begin(transformMatrix: this.TransformMatrix);
+            SonOfRobinGame.graphicsDevice.Clear(BoardGraphics.colorsByName[BoardGraphics.Colors.WaterDeep]);
+
+            // drawing "paper" map background
+
+            SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, this.worldRect, BoardGraphics.colorsByName[BoardGraphics.Colors.Beach1]);
+            SonOfRobinGame.spriteBatch.End();
 
             // calculating miniature opacity
 
@@ -413,6 +413,20 @@ namespace SonOfRobin
 
             // drawing detailed background
 
+            var backgroundBlend = new BlendState
+            {
+                //AlphaBlendFunction = BlendFunction.Add,
+                // AlphaDestinationBlend = Blend.One,
+                // AlphaSourceBlend = Blend.One,
+
+                ColorBlendFunction = BlendFunction.Add,
+                ColorSourceBlend = Blend.Zero,
+                ColorDestinationBlend = Blend.InverseSourceColor,
+            };
+
+            //SonOfRobinGame.spriteBatch.Begin(transformMatrix: this.TransformMatrix, blendState: backgroundBlend);
+            SonOfRobinGame.spriteBatch.Begin(transformMatrix: this.TransformMatrix); // for testing
+
             var visibleCells = this.world.grid.GetCellsInsideRect(this.camera.viewRect);
 
             int drawnCellCount = miniatureOpacity < 1 ? visibleCells.Count : 0;
@@ -421,8 +435,6 @@ namespace SonOfRobin
 
             if (miniatureOpacity < 1)
             {
-                SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, this.worldRect, fogColor);
-
                 foreach (Cell cell in visibleCells)
                 {
                     if (cell.VisitedByPlayer || Preferences.DebugShowWholeMap) cell.DrawBackground(opacity: 1f);
@@ -433,7 +445,11 @@ namespace SonOfRobin
 
             if (miniatureOpacity > 0) SonOfRobinGame.spriteBatch.Draw(this.miniatureCombinedGfx, this.worldRect, Color.White * miniatureOpacity);
 
+            SonOfRobinGame.spriteBatch.End();
+
             // drawing pieces
+
+            SonOfRobinGame.spriteBatch.Begin(transformMatrix: this.TransformMatrix, blendState: BlendState.AlphaBlend);
 
             Rectangle worldCameraRect = this.world.camera.viewRect;
 
