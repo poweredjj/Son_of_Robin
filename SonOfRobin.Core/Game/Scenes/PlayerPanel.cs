@@ -232,9 +232,9 @@ namespace SonOfRobin
 
                 Sprite markerSprite = this.world.map.MapMarker.sprite;
 
-                float tipsHeight = 0;
+                float tipsHeight = 0; // to avoid drawing marker under ControlTips
                 ControlTips topTips = ControlTips.GetTopTips();
-                if (topTips != null) tipsHeight = topTips.viewParams.Height / topTips.viewParams.ScaleY;
+                if (topTips != null) tipsHeight = (float)topTips.viewParams.Height / topTips.viewParams.ScaleY;
 
                 float cameraLeft = camera.viewPos.X * -1;
                 float cameraRight = cameraLeft + camera.viewRect.Width;
@@ -242,8 +242,11 @@ namespace SonOfRobin
                 float cameraBottom = cameraTop + camera.viewRect.Height - (tipsHeight * this.world.viewParams.ScaleY);
 
                 Vector2 markerPos = markerSprite.position;
-                float markerWidth = (float)markerSprite.gfxRect.Width * (float)this.world.viewParams.ScaleX;
-                float markerHeight = (float)markerSprite.gfxRect.Height * (float)this.world.viewParams.ScaleY;
+                Texture2D markerTexture = markerSprite.frame.texture;
+
+                float markerHeight = SonOfRobinGame.VirtualHeight * 0.04f;
+                float markerScale = markerHeight / markerSprite.gfxRect.Height;
+                float markerWidth = markerSprite.gfxRect.Width * markerScale;
 
                 Vector2 offset = Vector2.Zero;
 
@@ -258,7 +261,7 @@ namespace SonOfRobin
                 markerScreenPos.X -= this.viewParams.DrawPos.X;
                 markerScreenPos.Y -= this.viewParams.DrawPos.Y;
 
-                SonOfRobinGame.spriteBatch.Draw(markerSprite.frame.texture, markerScreenPos, Color.White);
+                SonOfRobinGame.spriteBatch.Draw(texture: markerTexture, position: markerScreenPos, sourceRectangle: markerTexture.Bounds, color: Color.White, rotation: 0, origin: Vector2.Zero, scale: markerScale, effects: SpriteEffects.None, layerDepth: 0);
             }
 
         }
