@@ -406,9 +406,7 @@ namespace SonOfRobin
             float showMiniatureAtZoom = (float)SonOfRobinGame.VirtualWidth / (float)this.world.width * 1.4f;
             float showFullScaleAtZoom = this.InitialZoom;
 
-            float totalBGOpacity = 1f;
-
-            float miniatureOpacity = (float)Helpers.ConvertRange(oldMin: showFullScaleAtZoom, oldMax: showMiniatureAtZoom, newMin: 0f, newMax: totalBGOpacity, oldVal: this.camera.CurrentZoom, clampToEdges: true);
+            float miniatureOpacity = (float)Helpers.ConvertRange(oldMin: showFullScaleAtZoom, oldMax: showMiniatureAtZoom, newMin: 0f, newMax: 1f, oldVal: this.camera.CurrentZoom, clampToEdges: true);
 
             // MessageLog.AddMessage(msgType: MsgType.User, message: $"Zoom {this.camera.currentZoom} miniatureOpacity {miniatureOpacity} showMiniatureAtZoom {showMiniatureAtZoom}");
 
@@ -419,17 +417,18 @@ namespace SonOfRobin
             // int drawnCellCount = miniatureOpacity < 1 ? visibleCells.Count : 0;
             // MessageLog.AddMessage(msgType: MsgType.User, message: $"{SonOfRobinGame.currentUpdate} - drawn map cells count: {drawnCellCount}");
 
+            // drawing miniature background
+
             if (miniatureOpacity < 1)
             {
                 foreach (Cell cell in visibleCells)
                 {
-                    if (cell.VisitedByPlayer || Preferences.DebugShowWholeMap) cell.DrawBackground(opacity: totalBGOpacity - miniatureOpacity);
+                    if (cell.VisitedByPlayer || Preferences.DebugShowWholeMap) cell.DrawBackground(opacity: 1f);
                 }
             }
 
-            // drawing miniature background
-
             if (miniatureOpacity > 0) SonOfRobinGame.spriteBatch.Draw(this.miniatureCombinedGfx, this.worldRect, Color.White * miniatureOpacity);
+
 
             SonOfRobinGame.spriteBatch.End();
 
