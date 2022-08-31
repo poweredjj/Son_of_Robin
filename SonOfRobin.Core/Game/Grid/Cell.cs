@@ -270,17 +270,5 @@ namespace SonOfRobin
             SonOfRobinGame.spriteBatch.Draw(this.boardGraphics.texture, destinationRectangle, this.boardGraphics.texture.Bounds, Color.White * opacity);
         }
 
-        public void DrawBackground(Color color)
-        {
-            // copy with color instead of opacity
-
-            if (this.boardGraphics.texture == null) return;
-
-            Rectangle destinationRectangle = new Rectangle(this.xMin, this.yMin,
-                this.boardGraphics.texture.Width * this.grid.resDivider, this.boardGraphics.texture.Height * this.grid.resDivider);
-
-            SonOfRobinGame.spriteBatch.Draw(this.boardGraphics.texture, destinationRectangle, this.boardGraphics.texture.Bounds, color);
-        }
-
     }
 }

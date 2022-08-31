@@ -179,7 +179,7 @@ namespace SonOfRobin
             {
                 if (world == null) return;
 
-                foreach (var sprite in world.grid.GetSprites(Cell.Group.All))
+                foreach (var sprite in world.grid.GetSpritesFromAllCells(Cell.Group.All))
                 { if (sprite.boardPiece != world.player) sprite.boardPiece.Kill(); }
             }
 
@@ -187,7 +187,7 @@ namespace SonOfRobin
             {
                 if (world == null) return;
 
-                foreach (var sprite in world.grid.GetSprites(Cell.Group.All))
+                foreach (var sprite in world.grid.GetSpritesFromAllCells(Cell.Group.All))
                 { sprite.AssignNewName("default"); }
             }
 
@@ -283,7 +283,7 @@ namespace SonOfRobin
             {
                 if (world == null) return;
 
-                foreach (var sprite in world.grid.GetSprites(Cell.Group.All))
+                foreach (var sprite in world.grid.GetSpritesFromAllCells(Cell.Group.All))
                 {
                     if (sprite.boardPiece != world.player)
                     {
@@ -316,7 +316,7 @@ namespace SonOfRobin
                 if (world == null) return;
 
 
-                foreach (var sprite in world.grid.GetSprites(Cell.Group.All))
+                foreach (var sprite in world.grid.GetSpritesFromAllCells(Cell.Group.All))
                 {
                     if (sprite.boardPiece != world.player) sprite.boardPiece.Destroy();
                 }
@@ -327,7 +327,7 @@ namespace SonOfRobin
                 if (world == null) return;
 
 
-                foreach (var sprite in world.grid.GetSprites(Cell.Group.All))
+                foreach (var sprite in world.grid.GetSpritesFromAllCells(Cell.Group.All))
                 { if (sprite.boardPiece != world.player) sprite.boardPiece.RemoveFromStateMachines(); }
             }
 
@@ -455,7 +455,7 @@ namespace SonOfRobin
             {
                 if (world == null) return;
 
-                var allSprites = world.grid.GetSprites(Cell.Group.ColMovement).Where(sprite => sprite.boardPiece.GetType() == typeof(Animal) && sprite.boardPiece.alive).ToList();
+                var allSprites = world.grid.GetSpritesFromAllCells(Cell.Group.ColMovement).Where(sprite => sprite.boardPiece.GetType() == typeof(Animal) && sprite.boardPiece.alive).ToList();
 
                 if (!allSprites.Any()) return;
 

@@ -406,9 +406,7 @@ namespace SonOfRobin
             float showMiniatureAtZoom = (float)SonOfRobinGame.VirtualWidth / (float)this.world.width * 1.4f;
             float showFullScaleAtZoom = this.InitialZoom;
 
-            float totalBGOpacity = 0.6f;
-            Color bgColor = new Color(235, 216, 181);
-            //bgColor = Color.White;
+            float totalBGOpacity = 1f;
 
             float miniatureOpacity = (float)Helpers.ConvertRange(oldMin: showFullScaleAtZoom, oldMax: showMiniatureAtZoom, newMin: 0f, newMax: totalBGOpacity, oldVal: this.camera.CurrentZoom, clampToEdges: true);
 
@@ -425,13 +423,13 @@ namespace SonOfRobin
             {
                 foreach (Cell cell in visibleCells)
                 {
-                    if (cell.VisitedByPlayer || Preferences.DebugShowWholeMap) cell.DrawBackground(color: bgColor * (totalBGOpacity - miniatureOpacity));
+                    if (cell.VisitedByPlayer || Preferences.DebugShowWholeMap) cell.DrawBackground(opacity: totalBGOpacity - miniatureOpacity);
                 }
             }
 
             // drawing miniature background
 
-            if (miniatureOpacity > 0) SonOfRobinGame.spriteBatch.Draw(this.miniatureCombinedGfx, this.worldRect, bgColor * miniatureOpacity);
+            if (miniatureOpacity > 0) SonOfRobinGame.spriteBatch.Draw(this.miniatureCombinedGfx, this.worldRect, Color.White * miniatureOpacity);
 
             SonOfRobinGame.spriteBatch.End();
 
@@ -439,9 +437,11 @@ namespace SonOfRobin
 
             SonOfRobinGame.spriteBatch.Begin(transformMatrix: this.TransformMatrix, blendState: BlendState.AlphaBlend);
 
-            Rectangle worldCameraRect = this.world.camera.viewRect;
+            Rectangle worldCameraRectForSpriteSearch = this.world.camera.viewRect;
+            // mini map displays far pieces on the sides
+            if (this.Mode == MapMode.Mini) worldCameraRectForSpriteSearch.Inflate(worldCameraRectForSpriteSearch.Width, worldCameraRectForSpriteSearch.Height);
 
-            var spritesBag = world.grid.GetSprites(groupName: Cell.Group.ColMovement, visitedByPlayerOnly: !Preferences.DebugShowWholeMap, camera: this.camera);
+            var spritesBag = world.grid.GetSpritesForRect(groupName: Cell.Group.ColMovement, visitedByPlayerOnly: !Preferences.DebugShowWholeMap, rectangle: worldCameraRectForSpriteSearch);
 
             var typesShownAlways = new List<Type> { typeof(Player), typeof(Workshop), typeof(Cooker), typeof(Shelter) };
             var namesShownAlways = new List<PieceTemplate.Name> { PieceTemplate.Name.MapMarker };
@@ -449,10 +449,6 @@ namespace SonOfRobin
             var namesShownIfDiscovered = new List<PieceTemplate.Name> { PieceTemplate.Name.CrateStarting, PieceTemplate.Name.CrateRegular, PieceTemplate.Name.CoalDeposit, PieceTemplate.Name.IronDeposit, PieceTemplate.Name.CrystalDepositSmall, PieceTemplate.Name.CrystalDepositBig };
 
             float spriteSize = 1f / this.camera.CurrentZoom * 0.25f;
-
-            // drawing marker
-
-            if (this.MapMarker != null) spritesBag.Add(this.MapMarker.sprite);
 
             // regular "foreach", because spriteBatch is not thread-safe
             foreach (Sprite sprite in spritesBag.OrderBy(o => o.frame.layer).ThenBy(o => o.gfxRect.Bottom))
@@ -473,6 +469,15 @@ namespace SonOfRobin
                 {
                     Rectangle destRect = sprite.gfxRect;
                     destRect.Inflate(destRect.Width * spriteSize, destRect.Height * spriteSize);
+
+                    if (this.Mode == MapMode.Mini && !this.camera.viewRect.Contains(destRect))
+                    {
+                        destRect.X = Math.Max(this.camera.viewRect.Left, destRect.X);
+                        destRect.X = Math.Min(this.camera.viewRect.Right - destRect.Width, destRect.X);
+                        destRect.Y = Math.Max(this.camera.viewRect.Top, destRect.Y);
+                        destRect.Y = Math.Min(this.camera.viewRect.Bottom - destRect.Height, destRect.Y);
+                    }
+
                     sprite.frame.Draw(destRect: destRect, color: Color.White, opacity: 1f);
                 }
             }

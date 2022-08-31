@@ -319,7 +319,7 @@ namespace SonOfRobin
         {
             if (this.TrackedSpriteExists) return;
 
-            var allSprites = this.world.grid.GetSprites(Cell.Group.ColMovement);
+            var allSprites = this.world.grid.GetSpritesFromAllCells(Cell.Group.ColMovement);
             var animals = allSprites.Where(sprite => sprite.boardPiece.GetType() == typeof(Animal) && sprite.boardPiece.alive).ToList();
             if (animals.Count == 0) return;
             var index = BoardPiece.Random.Next(0, animals.Count);

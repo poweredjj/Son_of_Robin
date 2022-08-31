@@ -460,7 +460,7 @@ namespace SonOfRobin
                         foreach (PieceTemplate.Name pieceName in PieceTemplate.allNames)
                         { pieceCounterDict[pieceName] = 0; }
 
-                        foreach (Sprite sprite in world.grid.GetSprites(Cell.Group.All))
+                        foreach (Sprite sprite in world.grid.GetSpritesFromAllCells(Cell.Group.All))
                         { pieceCounterDict[sprite.boardPiece.name]++; }
 
                         foreach (PieceTemplate.Name pieceName in pieceCounterDict.Keys)

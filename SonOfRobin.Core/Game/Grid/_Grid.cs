@@ -459,9 +459,27 @@ namespace SonOfRobin
             return allCells;
         }
 
-        public ConcurrentBag<Sprite> GetSprites(Cell.Group groupName, bool visitedByPlayerOnly = false, Camera camera = null)
+        public ConcurrentBag<Sprite> GetSpritesFromAllCells(Cell.Group groupName, bool visitedByPlayerOnly = false)
         {
-            var cells = camera == null ? this.allCells : this.GetCellsInsideRect(camera.viewRect);
+            var cells = this.allCells;
+            if (visitedByPlayerOnly) cells = this.allCells.Where(cell => cell.VisitedByPlayer).ToList();
+
+            var allSprites = new ConcurrentBag<Sprite> { };
+
+            Parallel.ForEach(cells, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, cell =>
+            {
+                foreach (Sprite sprite in cell.spriteGroups[groupName].Values)
+                {
+                    allSprites.Add(sprite);
+                }
+            });
+
+            return allSprites;
+        }
+
+        public ConcurrentBag<Sprite> GetSpritesForRect(Cell.Group groupName, Rectangle rectangle, bool visitedByPlayerOnly = false)
+        {
+            var cells = this.GetCellsInsideRect(rectangle);
             if (visitedByPlayerOnly) cells = cells.Where(cell => cell.VisitedByPlayer).ToList();
 
             var allSprites = new ConcurrentBag<Sprite> { };
@@ -495,7 +513,7 @@ namespace SonOfRobin
             var countByName = new Dictionary<PieceTemplate.Name, int>();
             foreach (PieceTemplate.Name name in nameList) countByName[name] = 0;
 
-            foreach (var sprite in this.GetSprites(Cell.Group.All))
+            foreach (var sprite in this.GetSpritesFromAllCells(Cell.Group.All))
             {
                 if (nameList.Contains(sprite.boardPiece.name) && sprite.boardPiece.exists) countByName[sprite.boardPiece.name]++;
             }
