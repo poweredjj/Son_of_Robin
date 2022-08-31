@@ -49,7 +49,7 @@ namespace SonOfRobin
             return false;
         }
 
-        public bool TurnOnNextEffect(World world)
+        public bool TurnOnNextEffect(Scene scene, int currentUpdateToUse)
         {
             if (this.effectInstanceList.Count == 0) return false;
 
@@ -57,8 +57,8 @@ namespace SonOfRobin
 
             foreach (EffInstance effInstance in effectsLeftToRender)
             {
-                world.StartNewSpriteBatch(enableEffects: true);
-                effInstance.TurnOn(world.currentUpdate);
+                scene.StartNewSpriteBatch(enableEffects: true);
+                effInstance.TurnOn(currentUpdateToUse);
                 if (effInstance.framesLeft == 0)
                 {
                     this.effectInstanceList.Remove(effInstance);

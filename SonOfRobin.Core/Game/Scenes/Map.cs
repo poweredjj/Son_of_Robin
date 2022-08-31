@@ -20,6 +20,7 @@ namespace SonOfRobin
         private readonly Camera camera;
         private readonly Rectangle worldRect;
         private readonly MapOverlay mapOverlay;
+        private readonly EffectCol effectCol;
         public bool FullScreen { get { return this.Mode == MapMode.Full; } }
 
         private MapMode mode;
@@ -31,7 +32,7 @@ namespace SonOfRobin
         public RenderTarget2D FinalMapToDisplay { get; private set; }
         private Vector2 lastTouchPos; public BoardPiece MapMarker { get; private set; }
         private float InitialZoom { get { return Preferences.WorldScale / 2; } }
-        private static readonly Color fogColor = Color.White;
+        private static readonly Color paperColor = BoardGraphics.colorsByName[BoardGraphics.Colors.Beach1];
 
         public Map(World world, TouchLayout touchLayout) : base(inputType: InputTypes.None, priority: 1, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: false, touchLayout: touchLayout, tipsLayout: ControlTips.TipsLayout.Map)
         {
@@ -43,6 +44,8 @@ namespace SonOfRobin
             this.mode = MapMode.Off;
             this.dirtyFog = true;
             this.lastTouchPos = Vector2.Zero;
+            this.effectCol = new EffectCol(world: world);
+            this.effectCol.AddEffect(new SketchInstance(fgColor: Color.Gray, bgColor: paperColor, framesLeft: -1));
         }
 
         public override void Remove()
@@ -399,16 +402,23 @@ namespace SonOfRobin
 
             // drawing "paper" map background
 
-            SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, this.worldRect, BoardGraphics.colorsByName[BoardGraphics.Colors.Beach1]);
+            SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, this.worldRect, paperColor);
 
             // calculating miniature opacity
 
             float showMiniatureAtZoom = (float)SonOfRobinGame.VirtualWidth / (float)this.world.width * 1.4f;
             float showFullScaleAtZoom = this.InitialZoom;
 
-            float miniatureOpacity = (float)Helpers.ConvertRange(oldMin: showFullScaleAtZoom, oldMax: showMiniatureAtZoom, newMin: 0f, newMax: 1f, oldVal: this.camera.CurrentZoom, clampToEdges: true);
+            bool showMiniature = this.camera.CurrentZoom >= showMiniatureAtZoom;
+
+            //   float miniatureOpacity = (float)Helpers.ConvertRange(oldMin: showFullScaleAtZoom, oldMax: showMiniatureAtZoom, newMin: 0f, newMax: 1f, oldVal: this.camera.CurrentZoom, clampToEdges: true);
 
             // MessageLog.AddMessage(msgType: MsgType.User, message: $"Zoom {this.camera.currentZoom} miniatureOpacity {miniatureOpacity} showMiniatureAtZoom {showMiniatureAtZoom}");
+
+
+            // turning on effects for background
+
+            this.effectCol.TurnOnNextEffect(scene: this, currentUpdateToUse: SonOfRobinGame.currentUpdate);
 
             // drawing detailed background
 
@@ -419,7 +429,9 @@ namespace SonOfRobin
 
             // drawing miniature background
 
-            if (miniatureOpacity < 1)
+            if (showMiniature) SonOfRobinGame.spriteBatch.Draw(this.miniatureCombinedGfx, this.worldRect, Color.White);
+
+            else
             {
                 foreach (Cell cell in visibleCells)
                 {
@@ -427,13 +439,9 @@ namespace SonOfRobin
                 }
             }
 
-            if (miniatureOpacity > 0) SonOfRobinGame.spriteBatch.Draw(this.miniatureCombinedGfx, this.worldRect, Color.White * miniatureOpacity);
-
-            SonOfRobinGame.spriteBatch.End();
+            this.StartNewSpriteBatch(enableEffects: false); // turning off effects
 
             // drawing pieces
-
-            SonOfRobinGame.spriteBatch.Begin(transformMatrix: this.TransformMatrix, blendState: BlendState.AlphaBlend);
 
             Rectangle worldCameraRectForSpriteSearch = this.world.camera.viewRect;
             // mini map displays far pieces on the sides

@@ -25,6 +25,12 @@
 /processorParam:DebugMode=Auto
 /build:effects/Colorize.fx
 
+#begin effects/Sketch.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:effects/Sketch.fx
+
 #begin fonts/FreeSansBold12.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor

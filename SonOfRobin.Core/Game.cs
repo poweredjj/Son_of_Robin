@@ -30,6 +30,7 @@ namespace SonOfRobin
         public static SpriteBatch spriteBatch;
         public static Effect effectColorize;
         public static Effect effectBorder;
+        public static Effect effectSketch;
 
         public static InfoWindow hintWindow;
         public static InfoWindow progressBar;
