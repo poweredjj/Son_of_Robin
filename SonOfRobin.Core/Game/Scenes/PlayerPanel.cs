@@ -244,7 +244,7 @@ namespace SonOfRobin
                 Vector2 markerPos = markerSprite.position;
                 Texture2D markerTexture = markerSprite.frame.texture;
 
-                float markerHeight = SonOfRobinGame.VirtualHeight * 0.04f;
+                float markerHeight = SonOfRobinGame.VirtualHeight * 0.04f * Preferences.mapMarkerScale;
                 float markerScale = markerHeight / markerSprite.gfxRect.Height;
                 float markerWidth = markerSprite.gfxRect.Width * markerScale;
 

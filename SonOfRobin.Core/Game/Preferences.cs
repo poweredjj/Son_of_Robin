@@ -12,6 +12,7 @@ namespace SonOfRobin
         public static readonly Dictionary<Object, Object> namesForResDividers = new Dictionary<Object, Object> { { 30, "garbage" }, { 10, "low" }, { 3, "medium" }, { 2, "high" }, { 1, "ultra" } };
         public static readonly Dictionary<Object, Object> namesForDarknessRes = new Dictionary<Object, Object> { { 4, "very low" }, { 3, "low" }, { 2, "medium" }, { 1, "high" } };
         public static readonly Dictionary<Object, Object> namesForFieldControlTipsScale = new Dictionary<Object, Object> { { 0.15f, "micro" }, { 0.25f, "small" }, { 0.4f, "medium" }, { 0.5f, "large" }, { 0.6f, "huge" }, { 0.75f, "gigantic" } };
+        public static readonly Dictionary<Object, Object> namesForMapMarkerScale = new Dictionary<Object, Object> { { 0.5f, "small" }, { 1f, "medium" }, { 2f, "big" }, { 3f, "huge" }, { 4f, "gigantic" } };
         public static readonly Dictionary<Object, Object> namesForAnimalsMultiplier = new Dictionary<Object, Object> { { 5, "almost extinct" }, { 20, "few" }, { 50, "within reason" }, { 100, "many" }, { 500, "total invasion" } };
 
         public static int newWorldWidth;
@@ -123,6 +124,7 @@ namespace SonOfRobin
         public static bool showFieldControlTips = true;
         public static float fieldControlTipsScale = 0.4f;
         private static ButtonScheme.Type controlTipsScheme = ButtonScheme.Type.M;
+        public static float mapMarkerScale = 1f;
         public static bool showHints = true;
         public static bool showLighting = true;
         public static bool showDebris = true;
@@ -532,6 +534,7 @@ namespace SonOfRobin
             prefsData["showControlTips"] = showControlTips;
             prefsData["showFieldControlTips"] = showFieldControlTips;
             prefsData["fieldControlTipsScale"] = fieldControlTipsScale;
+            prefsData["mapMarkerScale"] = mapMarkerScale;
             prefsData["showHints"] = showHints;
             prefsData["showLighting"] = showLighting;
             prefsData["showDebris"] = showDebris;
@@ -599,6 +602,7 @@ namespace SonOfRobin
                     showControlTips = (bool)prefsData["showControlTips"];
                     showFieldControlTips = (bool)prefsData["showFieldControlTips"];
                     fieldControlTipsScale = (float)prefsData["fieldControlTipsScale"];
+                    mapMarkerScale = (float)prefsData["mapMarkerScale"];
                     showHints = (bool)prefsData["showHints"];
                     showLighting = (bool)prefsData["showLighting"];
                     showDebris = (bool)prefsData["showDebris"];
