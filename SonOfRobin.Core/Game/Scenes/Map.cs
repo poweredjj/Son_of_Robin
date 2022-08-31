@@ -429,7 +429,6 @@ namespace SonOfRobin
 
             if (miniatureOpacity > 0) SonOfRobinGame.spriteBatch.Draw(this.miniatureCombinedGfx, this.worldRect, Color.White * miniatureOpacity);
 
-
             SonOfRobinGame.spriteBatch.End();
 
             // drawing pieces
@@ -446,6 +445,10 @@ namespace SonOfRobin
             var namesShownAlways = new List<PieceTemplate.Name> { PieceTemplate.Name.MapMarker };
             var typesShownIfDiscovered = new List<Type> { typeof(Container) };
             var namesShownIfDiscovered = new List<PieceTemplate.Name> { PieceTemplate.Name.CrateStarting, PieceTemplate.Name.CrateRegular, PieceTemplate.Name.CoalDeposit, PieceTemplate.Name.IronDeposit, PieceTemplate.Name.CrystalDepositSmall, PieceTemplate.Name.CrystalDepositBig };
+
+            // adding marker
+
+            if (this.MapMarker != null) spritesBag.Add(this.MapMarker.sprite);
 
             float spriteSize = 1f / this.camera.CurrentZoom * 0.25f;
 

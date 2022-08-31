@@ -232,10 +232,14 @@ namespace SonOfRobin
 
                 Sprite markerSprite = this.world.map.MapMarker.sprite;
 
+                float tipsHeight = 0;
+                ControlTips topTips = ControlTips.GetTopTips();
+                if (topTips != null) tipsHeight = topTips.viewParams.Height / topTips.viewParams.ScaleY;
+
                 float cameraLeft = camera.viewPos.X * -1;
                 float cameraRight = cameraLeft + camera.viewRect.Width;
                 float cameraTop = camera.viewPos.Y * -1;
-                float cameraBottom = cameraTop + camera.viewRect.Height;
+                float cameraBottom = cameraTop + camera.viewRect.Height - (tipsHeight * this.world.viewParams.ScaleY);
 
                 Vector2 markerPos = markerSprite.position;
                 float markerWidth = (float)markerSprite.gfxRect.Width * (float)this.world.viewParams.ScaleX;

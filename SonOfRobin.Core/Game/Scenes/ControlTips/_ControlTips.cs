@@ -133,6 +133,8 @@ namespace SonOfRobin
                 drawOffsetX += tip.width + tipMargin;
             }
 
+            Helpers.DrawRectangleOutline(rect: new Rectangle(0, 0, this.viewParams.Width, this.viewParams.Height), color: Color.Cyan, borderWidth: 2);
+
             if (Preferences.DebugMode) SonOfRobinGame.spriteBatch.DrawString(SonOfRobinGame.fontPressStart2P5, $"{this.currentLayout}", Vector2.Zero, Color.White);
         }
 
