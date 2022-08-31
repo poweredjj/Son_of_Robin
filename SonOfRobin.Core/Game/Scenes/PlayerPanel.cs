@@ -261,7 +261,9 @@ namespace SonOfRobin
                 markerScreenPos.X -= this.viewParams.DrawPos.X;
                 markerScreenPos.Y -= this.viewParams.DrawPos.Y;
 
-                SonOfRobinGame.spriteBatch.Draw(texture: markerTexture, position: markerScreenPos, sourceRectangle: markerTexture.Bounds, color: Color.White, rotation: 0, origin: Vector2.Zero, scale: markerScale, effects: SpriteEffects.None, layerDepth: 0);
+                SonOfRobinGame.spriteBatch.Draw(texture: markerTexture, position: markerScreenPos, sourceRectangle: markerTexture.Bounds, color: Color.White, rotation: 0, origin: Vector2.Zero, scale: markerScale * Preferences.WorldScale, effects: SpriteEffects.None, layerDepth: 0);
+
+                Helpers.DrawRectangleOutline(rect: new Rectangle(x: (int)markerScreenPos.X, y: (int)markerScreenPos.Y, width: (int)(markerWidth * Preferences.WorldScale), height: (int)(markerHeight * Preferences.WorldScale)), color: Color.White, borderWidth: 2);
             }
 
         }
