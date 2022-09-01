@@ -45,7 +45,7 @@ namespace SonOfRobin
             this.dirtyFog = true;
             this.lastTouchPos = Vector2.Zero;
             this.effectCol = new EffectCol(world: world);
-            this.effectCol.AddEffect(new SketchInstance(fgColor: Color.Gray, bgColor: paperColor, framesLeft: -1));
+            this.effectCol.AddEffect(new SketchInstance(fgColor: new Color(107, 98, 87, 255), bgColor: paperColor, framesLeft: -1));
         }
 
         public override void Remove()
@@ -404,18 +404,12 @@ namespace SonOfRobin
 
             SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, this.worldRect, paperColor);
 
-            // calculating miniature opacity
+            // drawing detailed or miniature background 
 
             float showMiniatureAtZoom = (float)SonOfRobinGame.VirtualWidth / (float)this.world.width * 1.4f;
-            float showFullScaleAtZoom = this.InitialZoom;
-
             bool showMiniature = this.camera.CurrentZoom < showMiniatureAtZoom;
 
-            // turning on effects for background
-
             this.effectCol.TurnOnNextEffect(scene: this, currentUpdateToUse: SonOfRobinGame.currentUpdate);
-
-            // drawing detailed or miniature background 
 
             if (showMiniature) SonOfRobinGame.spriteBatch.Draw(this.miniatureCombinedGfx, this.worldRect, Color.White);
             else

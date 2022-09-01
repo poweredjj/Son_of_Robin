@@ -10,6 +10,7 @@
 Texture2D SpriteTexture;
 sampler s0;
 float4 newColor;
+float4 gray;
 
 sampler2D SpriteTextureSampler = sampler_state
 {
@@ -26,15 +27,11 @@ struct VertexShaderOutput
 float4 MainPS(VertexShaderOutput input) : COLOR
 {
 	float4 color = tex2D(s0, input.TextureCoordinates);
-	if (color.a > 0.5)
-	{
-		float gray = (color.r + color.g + color.b) / 3;
 
-		color.r = gray + (newColor.r * 0.8);
-		color.g = gray + (newColor.g * 0.8);
-		color.b = gray + (newColor.b * 0.8);
-	}
-	return color;
+	if (color.a <= 0.5) return color;
+	
+	gray.rgb = (color.r + color.g + color.b) / 3.0f;
+	return gray + (newColor * 0.8);
 }
 
 technique SpriteDrawing
