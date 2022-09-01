@@ -30,7 +30,8 @@ namespace SonOfRobin
         {
             get
             {
-                foreach (TextWindow textWindow in GetAllScenesOfType(typeof(TextWindow)))
+
+                foreach (TextWindow textWindow in GetAllScenesOfType(typeof(TextWindow), includeWaiting: true))
                 {
                     if (textWindow != this && textWindow.textWithImages.Text == this.textWithImages.Text) return true;
                 }
@@ -61,6 +62,8 @@ namespace SonOfRobin
 
             if (checkForDuplicate && this.IsADuplicate)
             {
+                // TODO add checking at Scene level, before adding to waitlist
+
                 this.Remove();
                 return;
             }

@@ -65,7 +65,7 @@ namespace SonOfRobin
         {
             get
             {
-                foreach (Scene scene in GetAllScenesOfType(type: this.GetType(), includeEndingScenes: true))
+                foreach (Scene scene in GetAllScenesOfType(type: this.GetType(), includeEnding: true))
                 {
                     if (scene.id != this.id) return true;
                 }
@@ -288,10 +288,16 @@ namespace SonOfRobin
             }
         }
 
-        public static List<Scene> GetAllScenesOfType(Type type, bool includeEndingScenes = false)
+        public static List<Scene> GetAllScenesOfType(Type type, bool includeEnding = false, bool includeWaiting = false)
         {
-            if (includeEndingScenes) return sceneStack.Where(scene => scene.GetType().Name == type.Name).OrderByDescending(o => o.priority).ToList();
-            else return sceneStack.Where(scene => scene.GetType().Name == type.Name && !scene.transManager.IsEnding).OrderByDescending(o => o.priority).ToList();
+            List<Scene> scenesOfType;
+
+            if (includeEnding) scenesOfType = sceneStack.Where(scene => scene.GetType().Name == type.Name).OrderByDescending(o => o.priority).ToList();
+            else scenesOfType = sceneStack.Where(scene => scene.GetType().Name == type.Name && !scene.transManager.IsEnding).OrderByDescending(o => o.priority).ToList();
+
+            if (includeWaiting) scenesOfType.AddRange(waitingScenes.Where(scene => scene.GetType().Name == type.Name));
+
+            return scenesOfType;
         }
 
         public static void RemoveAllScenesOfType(Type type, bool includeWaiting = true)
@@ -301,21 +307,21 @@ namespace SonOfRobin
             if (includeWaiting) waitingScenes = waitingScenes.Where(scene => scene.GetType() != type).ToList();
         }
 
-        public static Scene GetTopSceneOfType(Type type, bool includeEndingScenes = false)
+        public static Scene GetTopSceneOfType(Type type, bool includeEndingScenes = false, bool includeWaiting = false)
         {
-            var foundScenes = GetAllScenesOfType(type: type, includeEndingScenes: includeEndingScenes);
+            var foundScenes = GetAllScenesOfType(type: type, includeEnding: includeEndingScenes, includeWaiting: includeWaiting);
             return foundScenes.Count > 0 ? foundScenes[foundScenes.Count - 1] : null;
         }
 
-        public static Scene GetSecondTopSceneOfType(Type type, bool includeEndingScenes = false)
+        public static Scene GetSecondTopSceneOfType(Type type, bool includeEndingScenes = false, bool includeWaiting = false)
         {
-            var foundScenes = GetAllScenesOfType(type: type, includeEndingScenes: includeEndingScenes);
+            var foundScenes = GetAllScenesOfType(type: type, includeEnding: includeEndingScenes, includeWaiting: includeWaiting);
             return foundScenes.Count > 1 ? foundScenes[foundScenes.Count - 2] : null;
         }
 
-        public static Scene GetBottomSceneOfType(Type type, bool includeEndingScenes = false)
+        public static Scene GetBottomSceneOfType(Type type, bool includeEndingScenes = false, bool includeWaiting = false)
         {
-            var foundScenes = GetAllScenesOfType(type: type, includeEndingScenes: includeEndingScenes);
+            var foundScenes = GetAllScenesOfType(type: type, includeEnding: includeEndingScenes, includeWaiting: includeWaiting);
             return foundScenes.Count > 0 ? foundScenes[0] : null;
         }
 
@@ -398,6 +404,8 @@ namespace SonOfRobin
             startUpdateTime = DateTime.Now;
             ProcessingMode = ProcessingModes.Update;
 
+            CheckWaitingScenes(); // has to be check at the start to avoid screen flashing
+
             if (adaptScenesToNewSize) ResizeAllScenes();
 
             Scheduler.ProcessQueue();
@@ -417,8 +425,6 @@ namespace SonOfRobin
             UpdateAllTransitions();
 
             if (sceneStack.Count == 0) throw new DivideByZeroException("SceneStack is empty.");
-
-            CheckWaitingScenes();
         }
 
         private static void CheckWaitingScenes()

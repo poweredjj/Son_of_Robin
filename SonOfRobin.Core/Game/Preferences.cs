@@ -346,14 +346,15 @@ namespace SonOfRobin
             get { return debugGodMode; }
             set
             {
+                if (debugGodMode == value) return;
                 debugGodMode = value;
                 debugShowWholeMap = debugGodMode;
                 debugAllowMapAnimation = debugGodMode;
                 World world = World.GetTopWorld();
                 if (world != null)
                 {
-                    world.MapEnabled = debugGodMode;
-                    if (debugGodMode) world.map.ForceRender();
+                    if (debugMode || !world.player.buffEngine.HasBuff(BuffEngine.BuffType.EnableMap)) world.MapEnabled = debugGodMode;
+                    world.map.ForceRender();
                 }
             }
         }
