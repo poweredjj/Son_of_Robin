@@ -11,9 +11,6 @@ Texture2D SpriteTexture;
 sampler s0;
 float4 fgColor;
 float4 bgColor;
-float gray;
-float4 newColor;
-float4 tonedGray;
 
 sampler2D SpriteTextureSampler = sampler_state
 {
@@ -40,8 +37,10 @@ float4 MainPS(VertexShaderOutput input) : COLOR
 	}
 
 	float gray = (color.r + color.g + color.b) / 3.0f;
+	float4 tonedGray;
 	tonedGray.rgb = (gray * fgColor.rgb);
 
+	float4 newColor;
 	newColor = bgColor * (tonedGray * 2.7f) + (color * 0.23f);
 	newColor.a = 1.0f;
 

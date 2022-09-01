@@ -298,12 +298,12 @@ namespace SonOfRobin
                 if (this.MapMarker == null) this.MapMarker = PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: this.camera.CurrentPos, templateName: PieceTemplate.Name.MapMarker);
                 else
                 {
-                    if (Math.Abs(Vector2.Distance(this.MapMarker.sprite.position, this.camera.CurrentPos)) < 15)
-                    {
-                        this.MapMarker.Destroy();
-                        this.MapMarker = null;
-                    }
-                    else this.MapMarker.sprite.SetNewPosition(this.camera.CurrentPos);
+                    this.MapMarker.Destroy();
+
+                    if (Math.Abs(Vector2.Distance(this.MapMarker.sprite.position, this.camera.CurrentPos)) < 15) this.MapMarker = null;
+
+                    else this.MapMarker = PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: this.camera.CurrentPos, templateName: PieceTemplate.Name.MapMarker);
+
                 }
 
                 return;
