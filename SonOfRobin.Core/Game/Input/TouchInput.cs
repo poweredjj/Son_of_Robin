@@ -34,7 +34,20 @@ namespace SonOfRobin
         private static float stickScale = -100; // dummy value
         private static int screenWidth = -100;
         private static int screenHeight = -100;
-        public static bool showSticks = false;
+
+        public static bool ShowSticks
+        {
+            get { return ShowLeftStick || ShowRightStick; }
+            set
+            {
+                ShowLeftStick = value;
+                ShowRightStick = value;
+            }
+        }
+
+        public static bool ShowLeftStick { get; private set; }
+        public static bool ShowRightStick { get; private set; }
+
 
         public static DualStick dualStick;
 
@@ -73,51 +86,65 @@ namespace SonOfRobin
             VirtButton.UpdateAll();
         }
 
-        public static bool IsPointActivatingAnyTouchInterface(Vector2 point)
+        public static bool IsPointActivatingAnyTouchInterface(Vector2 point, bool checkLeftStick = true, bool checkRightStick = true, bool checkVirtButtons = true, bool checkInventory = true, bool checkPlayerPanel = true)
         {
             Vector2 scaledPoint = point / Preferences.GlobalScale;
 
-            if (Preferences.enableTouchJoysticks && IsPointInsideSticks(scaledPoint)) return true;
+            if (Preferences.enableTouchJoysticks && (checkLeftStick || checkRightStick) && IsPointInsideSticks(point: scaledPoint, checkLeftStick: checkLeftStick, checkRightStick: checkRightStick)) return true;
 
-            foreach (Rectangle virtButtonRect in VirtButton.AllButtonRects)
+            if (checkVirtButtons)
             {
-                if (virtButtonRect.Contains(scaledPoint)) return true;
+                foreach (Rectangle virtButtonRect in VirtButton.AllButtonRects)
+                {
+                    if (virtButtonRect.Contains(scaledPoint)) return true;
+                }
             }
 
-
-            foreach (Inventory inventory in Scene.GetAllScenesOfType(typeof(Inventory)))
+            if (checkInventory)
             {
-                Rectangle invRect = inventory.BgRect;
-                invRect.X += (int)inventory.viewParams.drawPosX;
-                invRect.Y += (int)inventory.viewParams.drawPosY;
+                foreach (Inventory inventory in Scene.GetAllScenesOfType(typeof(Inventory)))
+                {
+                    Rectangle invRect = inventory.BgRect;
+                    invRect.X += (int)inventory.viewParams.drawPosX;
+                    invRect.Y += (int)inventory.viewParams.drawPosY;
 
-                invRect.Inflate(2, 2);
+                    invRect.Inflate(2, 2);
 
-                if (invRect.Contains(scaledPoint)) return true;
+                    if (invRect.Contains(scaledPoint)) return true;
+                }
             }
 
-            foreach (PlayerPanel playerPanel in Scene.GetAllScenesOfType(typeof(PlayerPanel)))
+            if (checkPlayerPanel)
             {
-                Rectangle counterRect = playerPanel.CounterRect;
-                counterRect.X += (int)playerPanel.viewParams.drawPosX;
-                counterRect.Y += (int)playerPanel.viewParams.drawPosY;
+                foreach (PlayerPanel playerPanel in Scene.GetAllScenesOfType(typeof(PlayerPanel)))
+                {
+                    Rectangle counterRect = playerPanel.CounterRect;
+                    counterRect.X += (int)playerPanel.viewParams.drawPosX;
+                    counterRect.Y += (int)playerPanel.viewParams.drawPosY;
 
-                counterRect.Inflate(2, 2);
+                    counterRect.Inflate(2, 2);
 
-                if (counterRect.Contains(scaledPoint)) return true;
+                    if (counterRect.Contains(scaledPoint)) return true;
+                }
             }
 
             return false;
         }
 
-        public static bool IsPointInsideSticks(Vector2 point)
+        public static bool IsPointInsideSticks(Vector2 point, bool checkLeftStick = true, bool checkRightStick = true)
         {
-            if (!Preferences.EnableTouchButtons || !showSticks) return false;
+            if (!Preferences.EnableTouchButtons || !ShowSticks) return false;
 
-            foreach (Rectangle stickRect in dualStick.Draw(getBGRectsOnly: true))
+            var sticks = dualStick.Draw(getBGRectsOnly: true);
+            var leftStick = sticks[0];
+            var rightStick = sticks[1];
+
+            foreach (Rectangle stickRect in sticks)
             {
-                stickRect.Inflate(8, 8); // to add some margin around the stick
+                if (stickRect == leftStick && !checkLeftStick) continue;
+                if (stickRect == rightStick && !checkRightStick) continue;
 
+                stickRect.Inflate(8, 8); // to add some margin around the stick
                 if (stickRect.Contains(point)) return true;
             }
 
@@ -168,13 +195,13 @@ namespace SonOfRobin
             {
                 case TouchLayout.Empty:
                     {
-                        showSticks = false;
+                        ShowSticks = false;
                         return;
                     }
 
                 case TouchLayout.WorldMain:
                     {
-                        showSticks = true;
+                        ShowSticks = true;
                         float xShift = 0.09f;
                         float yShift = 0.20f;
 
@@ -216,7 +243,7 @@ namespace SonOfRobin
 
                 case TouchLayout.WorldShoot:
                     {
-                        showSticks = true;
+                        ShowSticks = true;
 
                         if (Preferences.enableTouchJoysticks)
                         {
@@ -234,7 +261,7 @@ namespace SonOfRobin
 
                 case TouchLayout.Inventory:
                     {
-                        showSticks = false;
+                        ShowSticks = false;
 
                         float yPos = 0.12f;
 
@@ -246,7 +273,7 @@ namespace SonOfRobin
 
                 case TouchLayout.WorldSleep:
                     {
-                        showSticks = false;
+                        ShowSticks = false;
 
                         new VirtButton(name: VButName.Return, label: "STOP\nREST", bgColorPressed: Color.CornflowerBlue, bgColorReleased: Color.White, textColor: Color.White, posX0to1: 0.94f, posY0to1: 0.32f, width0to1: size, height0to1: size, highlightCoupledObj: world.player, highlightCoupledVarName: "CanWakeNow");
 
@@ -255,7 +282,7 @@ namespace SonOfRobin
 
                 case TouchLayout.WorldBuild:
                     {
-                        showSticks = true;
+                        ShowSticks = true;
 
                         float xShift = 0.09f;
 
@@ -277,7 +304,7 @@ namespace SonOfRobin
 
                 case TouchLayout.WorldSpectator:
                     {
-                        showSticks = true;
+                        ShowSticks = true;
                         float xShift = 0.09f;
 
                         // right side
@@ -297,16 +324,39 @@ namespace SonOfRobin
 
                 case TouchLayout.Map:
                     {
-                        showSticks = false;
+                        ShowSticks = false;
 
                         new VirtButton(name: VButName.Return, label: "RETURN", bgColorPressed: Color.CornflowerBlue, bgColorReleased: Color.White, textColor: Color.White, posX0to1: 0.76f, posY0to1: 0.12f, width0to1: size, height0to1: size);
+
+                        float xPos = 0.76f;
+                        float yPos = 0.12f;
+                        float xShift = 0.09f;
+                        float yShift = 0.20f;
+
+                        new VirtButton(name: VButName.Return, label: "RETURN", bgColorPressed: Color.CornflowerBlue, bgColorReleased: Color.White, textColor: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
+
+                        xPos += xShift;
+
+                        new VirtButton(name: VButName.MapZoomOut, label: "ZOOM\nOUT", bgColorPressed: Color.Orange, bgColorReleased: Color.White, textColor: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
+
+                        xPos += xShift;
+
+                        new VirtButton(name: VButName.MapZoomIn, label: "ZOOM\nIN", bgColorPressed: Color.Orange, bgColorReleased: Color.White, textColor: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
+
+                        yPos += yShift;
+
+                        new VirtButton(name: VButName.MapToggleMarker, label: "TOGGLE\nMARKER", bgColorPressed: Color.LightGreen, bgColorReleased: Color.White, textColor: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
+
+                        xPos -= xShift;
+
+                        new VirtButton(name: VButName.MapCenterPlayer, label: "GO TO\nPLAYER", bgColorPressed: Color.LightGreen, bgColorReleased: Color.White, textColor: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
 
                         return;
                     }
 
                 case TouchLayout.MenuLeftReturn:
                     {
-                        showSticks = false;
+                        ShowSticks = false;
 
                         new VirtButton(name: VButName.Return, label: "RETURN", bgColorPressed: Color.LightGreen, bgColorReleased: Color.White, textColor: Color.White, posX0to1: 0.7f, posY0to1: 0.85f, width0to1: size, height0to1: size);
 
@@ -315,7 +365,7 @@ namespace SonOfRobin
 
                 case TouchLayout.MenuRightReturn:
                     {
-                        showSticks = false;
+                        ShowSticks = false;
 
                         new VirtButton(name: VButName.Return, label: "RETURN", bgColorPressed: Color.LightGreen, bgColorReleased: Color.White, textColor: Color.White, posX0to1: 0.06f, posY0to1: 0.85f, width0to1: size, height0to1: size);
 
@@ -324,7 +374,7 @@ namespace SonOfRobin
 
                 case TouchLayout.CaptureInputCancel:
                     {
-                        showSticks = false;
+                        ShowSticks = false;
 
                         float xPos = 0.06f;
                         float yPos = 0.85f;
@@ -335,7 +385,7 @@ namespace SonOfRobin
 
                 case TouchLayout.QuitLoading:
                     {
-                        showSticks = false;
+                        ShowSticks = false;
 
                         float xPos = 0.06f;
                         float yPos = 0.85f;
@@ -346,7 +396,7 @@ namespace SonOfRobin
 
                 case TouchLayout.TextWindowOk:
                     {
-                        showSticks = false;
+                        ShowSticks = false;
 
                         float xPos = 0.94f;
                         float yPos = 0.85f;
@@ -358,7 +408,7 @@ namespace SonOfRobin
 
                 case TouchLayout.TextWindowCancel:
                     {
-                        showSticks = false;
+                        ShowSticks = false;
 
                         float xPos = 0.06f;
                         float yPos = 0.85f;
@@ -370,7 +420,7 @@ namespace SonOfRobin
 
                 case TouchLayout.TextWindowOkCancel:
                     {
-                        showSticks = false;
+                        ShowSticks = false;
 
                         float yPos = 0.85f;
 
@@ -382,7 +432,7 @@ namespace SonOfRobin
 
                 case TouchLayout.MenuMiddleReturn:
                     {
-                        showSticks = false;
+                        ShowSticks = false;
 
                         size = 0.07f;
                         float xPos = 0.04f;

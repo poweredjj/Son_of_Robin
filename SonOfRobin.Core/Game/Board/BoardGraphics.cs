@@ -77,19 +77,17 @@ namespace SonOfRobin
         public static Texture2D CreateEntireMapTexture(int width, int height, Grid grid, float multiplier)
         {
             var colorArray = new Color[width * height];
-            byte pixelHeight, pixelHumidity, pixelDanger;
-            int pixelX, pixelY;
 
             for (int y = 0; y < height; y++)
             {
                 for (int x = 0; x < width; x++)
                 {
-                    pixelX = (int)(x / multiplier);
-                    pixelY = (int)(y / multiplier);
+                    int pixelX = (int)(x / multiplier);
+                    int pixelY = (int)(y / multiplier);
 
-                    pixelHeight = grid.GetFieldValue(position: new Vector2(pixelX, pixelY), terrainName: TerrainName.Height);
-                    pixelHumidity = grid.GetFieldValue(position: new Vector2(pixelX, pixelY), terrainName: TerrainName.Humidity);
-                    pixelDanger = grid.GetFieldValue(position: new Vector2(pixelX, pixelY), terrainName: TerrainName.Danger);
+                    byte pixelHeight = grid.GetFieldValue(position: new Vector2(pixelX, pixelY), terrainName: TerrainName.Height);
+                    byte pixelHumidity = grid.GetFieldValue(position: new Vector2(pixelX, pixelY), terrainName: TerrainName.Humidity);
+                    byte pixelDanger = grid.GetFieldValue(position: new Vector2(pixelX, pixelY), terrainName: TerrainName.Danger);
                     colorArray[(y * width) + x] = CreatePixel(pixelHeight: pixelHeight, pixelHumidity: pixelHumidity, pixelDanger: pixelDanger);
                 }
             }

@@ -44,7 +44,6 @@ namespace SonOfRobin
             ColPlantGrowth,
             Visible,
             LightSource,
-            MiniMap,
             StateMachinesNonPlants,
             StateMachinesPlants
         }
@@ -261,15 +260,14 @@ namespace SonOfRobin
             }
         }
 
-        public void DrawBackground()
+        public void DrawBackground(float opacity = 1f)
         {
             if (this.boardGraphics.texture == null) return;
 
-            Rectangle sourceRectangle = new Rectangle(0, 0, this.boardGraphics.texture.Width, this.boardGraphics.texture.Height);
             Rectangle destinationRectangle = new Rectangle(this.xMin, this.yMin,
                 this.boardGraphics.texture.Width * this.grid.resDivider, this.boardGraphics.texture.Height * this.grid.resDivider);
 
-            SonOfRobinGame.spriteBatch.Draw(this.boardGraphics.texture, destinationRectangle, sourceRectangle, Color.White);
+            SonOfRobinGame.spriteBatch.Draw(this.boardGraphics.texture, destinationRectangle, this.boardGraphics.texture.Bounds, Color.White * opacity);
         }
 
     }

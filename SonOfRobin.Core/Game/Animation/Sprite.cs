@@ -46,7 +46,6 @@ namespace SonOfRobin
         private readonly int maxDistance;
         private readonly bool placeAtBeachEdge;
         private readonly bool floatsOnWater;
-        public readonly bool isShownOnMiniMap;
         public bool hasBeenDiscovered;
         public readonly EffectCol effectCol;
         public List<Cell.Group> gridGroups;
@@ -133,7 +132,7 @@ namespace SonOfRobin
             }
         }
 
-        public Sprite(World world, string id, BoardPiece boardPiece, AnimData.PkgName animPackage, byte animSize, string animName, bool ignoresCollisions, AllowedFields allowedFields, bool blocksMovement = true, bool visible = true, bool floatsOnWater = false, bool fadeInAnim = true, bool isShownOnMiniMap = false, AllowedDensity allowedDensity = null, LightEngine lightEngine = null, int minDistance = 0, int maxDistance = 100, bool placeAtBeachEdge = false, bool blocksPlantGrowth = false)
+        public Sprite(World world, string id, BoardPiece boardPiece, AnimData.PkgName animPackage, byte animSize, string animName, bool ignoresCollisions, AllowedFields allowedFields, bool blocksMovement = true, bool visible = true, bool floatsOnWater = false, bool fadeInAnim = true, AllowedDensity allowedDensity = null, LightEngine lightEngine = null, int minDistance = 0, int maxDistance = 100, bool placeAtBeachEdge = false, bool blocksPlantGrowth = false)
         {
             this.id = id; // duplicate from BoardPiece class
             this.boardPiece = boardPiece;
@@ -159,7 +158,6 @@ namespace SonOfRobin
             this.placeAtBeachEdge = placeAtBeachEdge;
             if (this.allowedDensity != null) this.allowedDensity.FinishCreation(piece: this.boardPiece, sprite: this);
             this.visible = visible; // initially it is assigned normally
-            this.isShownOnMiniMap = isShownOnMiniMap;
             this.effectCol = new EffectCol(world: world);
             this.hasBeenDiscovered = false;
             this.currentCell = null;
@@ -459,7 +457,6 @@ namespace SonOfRobin
                 if (this.blocksMovement) groupNames.Add(Cell.Group.ColMovement);
             }
             if (this.visible) groupNames.Add(Cell.Group.Visible);
-            if (this.isShownOnMiniMap) groupNames.Add(Cell.Group.MiniMap);
 
             return groupNames;
         }
@@ -733,7 +730,7 @@ namespace SonOfRobin
                 bool thereWillBeMoreEffects = false;
                 while (true)
                 {
-                    if (effectsShouldBeEnabled) thereWillBeMoreEffects = this.effectCol.TurnOnNextEffect(world: this.world);
+                    if (effectsShouldBeEnabled) thereWillBeMoreEffects = this.effectCol.TurnOnNextEffect(scene: this.world, currentUpdateToUse: world.currentUpdate);
                     this.DrawRoutine(calculateSubmerge);
 
                     if (!thereWillBeMoreEffects)

@@ -22,8 +22,14 @@ namespace SonOfRobin
         ZoomOut,
         PauseMenu,
         Return,
+
         InvDragSingle,
         InvSort,
+
+        MapToggleMarker,
+        MapCenterPlayer,
+        MapZoomIn,
+        MapZoomOut,
 
         DebugPause,
         DebugPlay,

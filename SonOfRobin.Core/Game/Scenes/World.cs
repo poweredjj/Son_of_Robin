@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Concurrent;
@@ -9,13 +10,6 @@ namespace SonOfRobin
 {
     public class World : Scene
     {
-        public enum MapMode
-        {
-            None,
-            Small,
-            Big
-        }
-
         public Vector2 analogMovementLeftStick;
         public Vector2 analogMovementRightStick;
         public Vector2 analogCameraCorrection;
@@ -87,7 +81,7 @@ namespace SonOfRobin
                     BoardPiece spectator = this.player;
 
                     bool playerFound = false;
-                    foreach (Sprite sprite in this.grid.GetAllSprites(Cell.Group.All))
+                    foreach (Sprite sprite in this.grid.GetSpritesFromAllCells(Cell.Group.All))
                     {
                         if (sprite.boardPiece.name == PieceTemplate.Name.Player && sprite.boardPiece.alive)
                         {
@@ -170,10 +164,7 @@ namespace SonOfRobin
         public readonly int height;
         public readonly Camera camera;
         private RenderTarget2D darknessMask;
-        public MapMode mapMode;
-        public List<MapMode> mapCycle;
-        public readonly Map mapBig;
-        public readonly Map mapSmall;
+        public readonly Map map;
         public readonly PlayerPanel playerPanel;
         public readonly SolidColorManager solidColorManager;
         public readonly SMTypesManager stateMachineTypesManager;
@@ -188,16 +179,8 @@ namespace SonOfRobin
                 if (this.mapEnabled == value) return;
                 this.mapEnabled = value;
 
-                if (this.mapEnabled)
-                {
-                    if (SonOfRobinGame.platform == Platform.Desktop) this.ToggleMapMode();
-                }
-                else
-                {
-                    this.mapSmall.TurnOff();
-                    this.mapBig.TurnOff();
-                    this.mapMode = MapMode.None;
-                }
+                if (this.mapEnabled) this.ToggleMapMode();
+                else this.map.TurnOff();
             }
         }
 
@@ -222,6 +205,7 @@ namespace SonOfRobin
         public int processedNonPlantsCount;
         public int processedPlantsCount;
         private readonly List<Sprite> blockingLightSpritesList;
+        private readonly List<Sprite> lightSprites;
         public List<PieceTemplate.Name> doNotCreatePiecesList;
         public List<PieceTemplate.Name> discoveredRecipesForPieces;
         public readonly DateTime createdTime; // for calculating time spent in game
@@ -236,20 +220,6 @@ namespace SonOfRobin
         public bool CanProcessMoreNonPlantsNow { get { return UpdateTimeElapsed.Milliseconds <= 7 * this.updateMultiplier; } }
         public bool CanProcessMorePlantsNow { get { return UpdateTimeElapsed.Milliseconds <= 9 * this.updateMultiplier; } }
         public bool CanProcessAnyStateMachineNow { get { return !this.plantsProcessing || UpdateTimeElapsed.Milliseconds <= 9 * this.updateMultiplier; } }
-
-        private MapMode NextMapMode
-        {
-            get
-            {
-                bool modeFound = false;
-                foreach (MapMode mapMode in this.mapCycle)
-                {
-                    if (modeFound) return mapMode;
-                    if (mapMode == this.mapMode) modeFound = true;
-                }
-                return this.mapCycle[0];
-            }
-        }
 
         public float PieceCount
         {
@@ -336,22 +306,19 @@ namespace SonOfRobin
             this.processedNonPlantsCount = 0;
             this.processedPlantsCount = 0;
             this.blockingLightSpritesList = new List<Sprite>();
+            this.lightSprites = new List<Sprite>();
             this.doNotCreatePiecesList = new List<PieceTemplate.Name> { };
             this.discoveredRecipesForPieces = new List<PieceTemplate.Name> { };
-            this.camera = new Camera(this);
+            this.camera = new Camera(world: this, useWorldScale: true, useFluidMotionForMove: true, useFluidMotionForZoom: true);
             this.camera.TrackCoords(new Vector2(0, 0));
             this.MapEnabled = false;
-            this.mapMode = MapMode.None;
-            this.mapCycle = SonOfRobinGame.platform == Platform.Mobile ? new List<MapMode> { MapMode.None, MapMode.Big } : new List<MapMode> { MapMode.None, MapMode.Small, MapMode.Big };
-            this.mapBig = new Map(world: this, fullScreen: true, touchLayout: TouchLayout.Map);
-            this.mapSmall = new Map(world: this, fullScreen: false, touchLayout: TouchLayout.Empty);
+            this.map = new Map(world: this, touchLayout: TouchLayout.Map);
             this.playerPanel = new PlayerPanel(world: this);
             this.debugText = "";
             if (saveGameData == null) this.grid = new Grid(world: this, resDivider: resDivider);
             else this.Deserialize(gridOnly: true);
 
-            this.AddLinkedScene(this.mapBig);
-            this.AddLinkedScene(this.mapSmall);
+            this.AddLinkedScene(this.map);
             this.AddLinkedScene(this.playerPanel);
 
             this.solidColorManager = new SolidColorManager(this);
@@ -436,19 +403,15 @@ namespace SonOfRobin
 
             if (!this.demoMode)
             {
-                this.camera.TrackPiece(trackedPiece: this.player, fluidMotion: false);
+                this.camera.TrackPiece(trackedPiece: this.player, moveInstantly: true);
                 this.UpdateViewParams(manualScale: 1f);
-                this.camera.Update(); // to render cells in camera view correctly
+                this.camera.Update(cameraCorrection: Vector2.Zero); // to render cells in camera view correctly
                 Inventory.SetLayout(newLayout: Inventory.Layout.Toolbar, player: this.player);
             }
 
             this.CreateNewDarknessMask();
             this.grid.LoadAllTexturesInCameraView();
-            if (!this.demoMode)
-            {
-                this.mapBig.ForceRender();
-                this.mapSmall.ForceRender();
-            }
+            if (!this.demoMode) this.map.ForceRender();
 
             SonOfRobinGame.game.IsFixedTimeStep = Preferences.FrameSkip;
 
@@ -526,7 +489,7 @@ namespace SonOfRobin
                 if (templateName == PieceTemplate.Name.Player)
                 {
                     this.player = (Player)newBoardPiece;
-                    this.camera.TrackPiece(trackedPiece: this.player, fluidMotion: false);
+                    this.camera.TrackPiece(trackedPiece: this.player, moveInstantly: true);
                 }
 
                 piecesByID[newBoardPiece.id] = newBoardPiece;
@@ -678,16 +641,9 @@ namespace SonOfRobin
 
         public void UpdateViewParams(float manualScale = 1f)
         {
-            this.viewParams.ScaleX = manualScale;
-            this.viewParams.ScaleY = manualScale;
-
-            float scaleMultiplier = this.demoMode ? 2f : this.camera.currentZoom;
-            this.viewParams.ScaleX *= 1 / (Preferences.WorldScale * scaleMultiplier);
-            this.viewParams.ScaleY *= 1 / (Preferences.WorldScale * scaleMultiplier);
-
-            this.camera.Update();
-            this.viewParams.PosX = this.camera.viewPos.X;
-            this.viewParams.PosY = this.camera.viewPos.Y;
+            if (!this.CineMode) this.camera.SetZoom(zoom: this.demoMode ? 2f : 1f / manualScale, zoomSpeedMultiplier: 3f);
+            this.camera.Update(cameraCorrection: this.analogCameraCorrection);
+            this.camera.SetViewParams(this);
 
             // width and height are set once in constructor
         }
@@ -703,9 +659,10 @@ namespace SonOfRobin
             this.manualScale = 1f;
             this.ProcessInput();
             this.UpdateViewParams(manualScale: this.manualScale);
+            SoundEffect.DistanceScale = this.camera.viewRect.Width * 0.065f;
 
-            this.grid.UnloadTexturesIfMemoryLow();
-            this.grid.LoadClosestTextureInCameraView();
+            this.grid.UnloadTexturesIfMemoryLow(this.camera);
+            this.grid.LoadClosestTextureInCameraView(this.camera);
 
             if (this.demoMode) this.camera.TrackLiveAnimal(fluidMotion: true);
             // this.AutoSave(); // autosave is not needed anymore
@@ -807,40 +764,11 @@ namespace SonOfRobin
                 return;
             }
 
-            if (!this.mapSmall.CheckIfCanBeTurnedOn(showMessage: true))
-            {
-                this.mapMode = MapMode.None;
-                return;
-            }
+            if (!this.map.CheckIfPlayerCanReadTheMap(showMessage: true)) return;
 
-            if (this.mapSmall.transManager.HasAnyTransition || this.mapBig.transManager.HasAnyTransition) return;
+            if (this.map.transManager.HasAnyTransition || this.map.transManager.HasAnyTransition) return;
 
-            this.mapMode = this.NextMapMode;
-
-            switch (this.mapMode)
-            {
-                case MapMode.None:
-                    Sound.QuickPlay(SoundData.Name.PaperMove2);
-                    this.mapSmall.TurnOff();
-                    this.mapBig.TurnOff();
-                    break;
-
-                case MapMode.Small:
-                    Sound.QuickPlay(SoundData.Name.PaperMove1);
-                    this.mapSmall.TurnOn();
-                    this.mapBig.TurnOff();
-                    break;
-
-                case MapMode.Big:
-                    Sound.QuickPlay(SoundData.Name.TurnPage);
-                    this.mapSmall.TurnOff();
-                    this.mapBig.TurnOn();
-                    break;
-
-
-                default:
-                    throw new DivideByZeroException($"Unsupported mapMode - {mapMode}.");
-            }
+            this.map.SwitchToNextMode();
         }
 
         public static World GetTopWorld()
@@ -879,7 +807,7 @@ namespace SonOfRobin
 
             if (this.nonPlantSpritesQueue.Count == 0)
             {
-                this.nonPlantSpritesQueue = this.grid.GetAllSprites(groupName: Cell.Group.StateMachinesNonPlants).OrderBy(sprite => sprite.boardPiece.lastFrameSMProcessed).ToList();
+                this.nonPlantSpritesQueue = this.grid.GetSpritesFromAllCells(groupName: Cell.Group.StateMachinesNonPlants).OrderBy(sprite => sprite.boardPiece.lastFrameSMProcessed).ToList();
                 return;
             }
 
@@ -965,13 +893,12 @@ namespace SonOfRobin
                 return; // to avoid doing too many calculations in one update
             }
 
-            Plant currentPlant;
 
             while (true)
             {
                 if (plantSpritesQueue.Count == 0) return;
 
-                currentPlant = (Plant)this.plantSpritesQueue[0].boardPiece;
+                Plant currentPlant = (Plant)this.plantSpritesQueue[0].boardPiece;
                 this.plantSpritesQueue.RemoveAt(0);
 
                 currentPlant.StateMachineWork();
@@ -1082,11 +1009,6 @@ namespace SonOfRobin
             }
         }
 
-        public void UpdateFogOfWar()
-        {
-            this.mapBig.dirtyFog = true;
-            this.mapSmall.dirtyFog = true;
-        }
 
         public void AddPauseMenuTransitions()
         {
@@ -1109,11 +1031,19 @@ namespace SonOfRobin
                 y: (screenPos.Y / Preferences.GlobalScale * this.viewParams.ScaleY) - this.viewParams.DrawPos.Y);
         }
 
-        public override void Draw()
+        public Vector2 TranslateWorldToScreenPos(Vector2 worldPos)
+        {
+            return new Vector2(
+                x: (worldPos.X + this.viewParams.DrawPos.X) / this.viewParams.ScaleX,
+                y: (worldPos.Y + this.viewParams.DrawPos.Y) / this.viewParams.ScaleY);
+        }
+
+        public override void RenderToTarget()
         {
             // preparing a list of sprites, that cast shadows
 
             this.blockingLightSpritesList.Clear();
+            this.lightSprites.Clear();
 
             if ((Preferences.drawSunShadows && AmbientLight.SunLightData.CalculateSunLight(this.islandClock.IslandDateTime).sunShadowsColor != Color.Transparent) ||
                 (Preferences.drawShadows && AmbientLight.CalculateLightAndDarknessColors(this.islandClock.IslandDateTime).darknessColor != Color.Transparent))
@@ -1121,8 +1051,12 @@ namespace SonOfRobin
                 this.blockingLightSpritesList.AddRange(this.camera.GetVisibleSprites(groupName: Cell.Group.ColMovement).OrderBy(o => o.gfxRect.Bottom));
             }
 
-            var lightSprites = this.UpdateDarknessMask(blockingLightSpritesList: blockingLightSpritesList); // Has to be called first, because calling SetRenderTarget() after any draw will wipe the screen black.
+            var lightSpritesToAdd = this.UpdateDarknessMask(blockingLightSpritesList: blockingLightSpritesList); // Has to be called first, because calling SetRenderTarget() after any draw will wipe the screen black.
+            this.lightSprites.AddRange(lightSpritesToAdd);
+        }
 
+        public override void Draw()
+        {
             // drawing blue background (to ensure drawing even if screen is larger than map)
             SonOfRobinGame.graphicsDevice.Clear(BoardGraphics.colorsByName[BoardGraphics.Colors.WaterDeep]);
 
@@ -1167,8 +1101,6 @@ namespace SonOfRobin
 
         private List<Sprite> UpdateDarknessMask(List<Sprite> blockingLightSpritesList)
         {
-            // Has to be called a the beggining, because calling SetRenderTarget() after any draw will wipe the screen black.
-
             // searching for light sources
 
             var lightSprites = this.camera.GetVisibleSprites(groupName: Cell.Group.LightSource).OrderBy(o => o.frame.layer).ThenBy(o => o.gfxRect.Bottom).ToList();
@@ -1179,16 +1111,13 @@ namespace SonOfRobin
 
             if (ambientLightData.darknessColor == Color.Transparent)
             {
-                SonOfRobinGame.graphicsDevice.SetRenderTarget(this.darknessMask); // SetRenderTarget() wipes the target black!
+                SetRenderTarget(this.darknessMask);
+                SonOfRobinGame.spriteBatch.Begin();
                 SonOfRobinGame.graphicsDevice.Clear(ambientLightData.darknessColor);
-
                 SonOfRobinGame.spriteBatch.End();
-                SonOfRobinGame.spriteBatch.Begin(transformMatrix: this.TransformMatrix);
-                SonOfRobinGame.graphicsDevice.SetRenderTarget(null); // SetRenderTarget() wipes the target black!
 
                 return lightSprites;
             }
-
             Vector2 darknessMaskScale = this.DarknessMaskScale;
 
             // preparing shadow masks
@@ -1232,8 +1161,7 @@ namespace SonOfRobin
             {
                 if (!Preferences.drawShadows)
                 {
-                    foreach (RenderTarget2D shadowMask in SonOfRobinGame.tempShadowMaskList)
-                    { shadowMask.Dispose(); }
+                    foreach (RenderTarget2D shadowMask in SonOfRobinGame.tempShadowMaskList) shadowMask.Dispose();
                     SonOfRobinGame.tempShadowMaskList.Clear();
                 }
                 else
@@ -1247,18 +1175,18 @@ namespace SonOfRobin
 
                     RenderTarget2D tempShadowMask = SonOfRobinGame.tempShadowMaskList[tempShadowMaskIndex];
 
-                    SonOfRobinGame.spriteBatch.End();
-                    SonOfRobinGame.graphicsDevice.SetRenderTarget(tempShadowMask); // SetRenderTarget() wipes the target black!
+                    SetRenderTarget(tempShadowMask);
+                    SonOfRobinGame.spriteBatch.Begin(transformMatrix: this.TransformMatrix);
                     SonOfRobinGame.graphicsDevice.Clear(Color.Black);
+                    SonOfRobinGame.spriteBatch.End();
 
                     Matrix scaleMatrix = Matrix.CreateScale( // to match drawing size with rect size (light texture size differs from light rect size)
                         (float)tempShadowMask.Width / (float)lightRect.Width,
                         (float)tempShadowMask.Height / (float)lightRect.Height,
                         1f);
 
-                    SonOfRobinGame.spriteBatch.Begin(transformMatrix: scaleMatrix, blendState: shadowBlend);
-
                     // first pass - drawing shadows
+                    SonOfRobinGame.spriteBatch.Begin(transformMatrix: scaleMatrix, blendState: shadowBlend);
                     foreach (Sprite shadowSprite in blockingLightSpritesList)
                     {
                         if (shadowSprite == lightSprite || !lightSprite.lightEngine.castShadows || !lightRect.Intersects(shadowSprite.gfxRect)) continue;
@@ -1267,22 +1195,22 @@ namespace SonOfRobin
 
                         Sprite.DrawShadow(color: Color.White, shadowSprite: shadowSprite, lightPos: lightSprite.position, shadowAngle: shadowAngle, drawOffsetX: -lightRect.X, drawOffsetY: -lightRect.Y);
                     }
-
                     SonOfRobinGame.spriteBatch.End();
-                    SonOfRobinGame.spriteBatch.Begin(transformMatrix: scaleMatrix, blendState: shadowBlendRedraw);
 
                     // second pass - erasing shadow from original sprites' position
+                    SonOfRobinGame.spriteBatch.Begin(transformMatrix: scaleMatrix, blendState: shadowBlendRedraw);
                     foreach (Sprite shadowSprite in blockingLightSpritesList)
                     {
                         // the lightSprite should be also redrawn, to avoid being overdrawn with any shadow
                         if (lightRect.Intersects(shadowSprite.gfxRect)) shadowSprite.DrawRoutine(calculateSubmerge: true, offsetX: -lightRect.X, offsetY: -lightRect.Y);
                     }
+                    SonOfRobinGame.spriteBatch.End();
 
                     // drawing light on top of shadows
 
-                    SonOfRobinGame.spriteBatch.End();
                     SonOfRobinGame.spriteBatch.Begin(blendState: lightBlend);
                     SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.lightSphere, tempShadowMask.Bounds, Color.White);
+                    SonOfRobinGame.spriteBatch.End();
 
                     tempShadowMaskIndex++;
                 }
@@ -1301,10 +1229,8 @@ namespace SonOfRobin
                 ColorDestinationBlend = Blend.One,
             };
 
-            SonOfRobinGame.spriteBatch.End();
-
+            SetRenderTarget(this.darknessMask);
             SonOfRobinGame.spriteBatch.Begin(blendState: darknessMaskBlend);
-            SonOfRobinGame.graphicsDevice.SetRenderTarget(this.darknessMask); // SetRenderTarget() wipes the target black!
             SonOfRobinGame.graphicsDevice.Clear(ambientLightData.darknessColor);
 
             // subtracting shadow masks from darkness
@@ -1334,8 +1260,6 @@ namespace SonOfRobin
             }
 
             SonOfRobinGame.spriteBatch.End();
-            SonOfRobinGame.spriteBatch.Begin(transformMatrix: this.TransformMatrix);
-            SonOfRobinGame.graphicsDevice.SetRenderTarget(null); // SetRenderTarget() wipes the target black!
 
             return lightSprites;
         }

@@ -16,7 +16,7 @@ namespace SonOfRobin
     public class SonOfRobinGame : Game
     {
         public static readonly float version = 9.4f;
-        public static readonly DateTime lastChanged = new DateTime(2022, 08, 24);
+        public static readonly DateTime lastChanged = new DateTime(2022, 09, 01);
 
         public static ContentManager content;
 
@@ -30,6 +30,7 @@ namespace SonOfRobin
         public static SpriteBatch spriteBatch;
         public static Effect effectColorize;
         public static Effect effectBorder;
+        public static Effect effectSketch;
 
         public static InfoWindow hintWindow;
         public static InfoWindow progressBar;
@@ -154,7 +155,7 @@ namespace SonOfRobin
             graphics.PreferredBackBufferWidth = Window.ClientBounds.Width < 100 ? 100 : Window.ClientBounds.Width;
             graphics.PreferredBackBufferHeight = Window.ClientBounds.Height < 100 ? 100 : Window.ClientBounds.Height;
 
-            Scene.ResizeAllScenes();
+            Scene.ScheduleAllScenesResize();
         }
 
         protected override void LoadContent()
@@ -178,7 +179,7 @@ namespace SonOfRobin
             currentUpdate++;
             lastUpdateDelay = gameTime.ElapsedGameTime.Milliseconds;
 
-            Scene.UpdateAllScenesInStack(gameTime: gameTime);
+            Scene.AllScenesInStackUpdate(gameTime: gameTime);
 
             base.Update(gameTime);
             fps.Update(gameTime);
@@ -199,7 +200,7 @@ namespace SonOfRobin
 
             SoundInstanceManager.CleanUpActiveInstances();
             Sound.UpdateAll();
-            Scene.DrawAllScenesInStack();
+            Scene.AllScenesInStackDraw();
 
             base.Draw(gameTime);
 

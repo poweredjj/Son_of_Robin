@@ -60,7 +60,7 @@ namespace SonOfRobin
                 Scene inventoryScene = GetTopSceneOfType(typeof(Inventory));
                 if (inventoryScene != null && ((Inventory)inventoryScene).type != Inventory.Type.SingleBottom && !inventoryScene.transManager.HasAnyTransition) return true;
 
-                return this.world.mapMode == World.MapMode.Big ||
+                return this.world.map.FullScreen ||
                     this.world.CineMode ||
                     this.world.SpectatorMode ||
                     this.world.player == null;
@@ -221,6 +221,53 @@ namespace SonOfRobin
                     }
                 }
             }
+
+            // drawing map marker
+
+            if (this.world.map.MapMarker != null && this.world.map.MapMarker.exists)
+            {
+                // calculating and drawing everything as Vector2 / float to avoid jerky marker motion
+
+                Camera camera = this.world.camera;
+                Vector2 markerPos = this.world.map.MapMarker.sprite.position;
+                Texture2D markerTexture = this.world.map.MapMarker.sprite.frame.texture;
+
+                float tipsHeight = 0; // to avoid drawing marker under ControlTips
+                ControlTips topTips = ControlTips.GetTopTips();
+                if (topTips != null) tipsHeight = (float)topTips.viewParams.Height / topTips.viewParams.ScaleY;
+
+                float markerHeight = SonOfRobinGame.VirtualHeight * 0.04f * Preferences.mapMarkerScale;
+                float markerScale = markerHeight / markerTexture.Height;
+                float markerWidth = markerTexture.Width * markerScale;
+
+                float cameraLeft = camera.viewPos.X * -1;
+                float cameraRight = cameraLeft + camera.viewRect.Width;
+                float cameraTop = camera.viewPos.Y * -1;
+                float cameraBottom = cameraTop + camera.viewRect.Height - (tipsHeight * this.world.viewParams.ScaleY);
+
+                Vector2 offset = Vector2.Zero;
+
+                if (markerPos.X < cameraLeft) offset.X = cameraLeft - markerPos.X;
+                if (markerPos.X + markerWidth > cameraRight) offset.X = -(markerPos.X + markerWidth - cameraRight);
+                if (markerPos.Y < cameraTop) offset.Y = cameraTop - markerPos.Y;
+                if (markerPos.Y + markerHeight > cameraBottom) offset.Y = -(markerPos.Y + markerHeight - cameraBottom);
+
+                markerPos += offset;
+
+                Vector2 markerScreenPos = this.world.TranslateWorldToScreenPos(markerPos);
+                markerScreenPos.X -= this.viewParams.DrawPos.X;
+                markerScreenPos.Y -= this.viewParams.DrawPos.Y;
+
+                Vector2 markerPosRightBottom = new Vector2(markerPos.X + markerWidth, markerPos.Y + markerHeight);
+                Vector2 markerScreenPosRightBottom = this.world.TranslateWorldToScreenPos(markerPosRightBottom);
+                markerScreenPosRightBottom.X -= this.viewParams.DrawPos.X;
+                markerScreenPosRightBottom.Y -= this.viewParams.DrawPos.Y;
+
+                float markerDrawScale = (markerScreenPosRightBottom.X - markerScreenPos.X) / (float)markerTexture.Width;
+
+                SonOfRobinGame.spriteBatch.Draw(texture: markerTexture, position: markerScreenPos, scale: markerDrawScale, sourceRectangle: markerTexture.Bounds, color: Color.White, rotation: 0, origin: Vector2.Zero, effects: SpriteEffects.None, layerDepth: 0);
+            }
+
         }
 
     }

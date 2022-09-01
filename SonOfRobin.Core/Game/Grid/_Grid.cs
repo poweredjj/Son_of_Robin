@@ -459,11 +459,32 @@ namespace SonOfRobin
             return allCells;
         }
 
-        public ConcurrentBag<Sprite> GetAllSprites(Cell.Group groupName, bool visitedByPlayerOnly = false)
+        public ConcurrentBag<Sprite> GetSpritesFromAllCells(Cell.Group groupName, bool visitedByPlayerOnly = false)
         {
+            var cells = this.allCells;
+            if (visitedByPlayerOnly) cells = this.allCells.Where(cell => cell.VisitedByPlayer).ToList();
+
             var allSprites = new ConcurrentBag<Sprite> { };
 
-            Parallel.ForEach(visitedByPlayerOnly ? this.CellsVisitedByPlayer : this.allCells, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, cell =>
+            Parallel.ForEach(cells, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, cell =>
+            {
+                foreach (Sprite sprite in cell.spriteGroups[groupName].Values)
+                {
+                    allSprites.Add(sprite);
+                }
+            });
+
+            return allSprites;
+        }
+
+        public ConcurrentBag<Sprite> GetSpritesForRect(Cell.Group groupName, Rectangle rectangle, bool visitedByPlayerOnly = false)
+        {
+            var cells = this.GetCellsInsideRect(rectangle);
+            if (visitedByPlayerOnly) cells = cells.Where(cell => cell.VisitedByPlayer).ToList();
+
+            var allSprites = new ConcurrentBag<Sprite> { };
+
+            Parallel.ForEach(cells, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, cell =>
             {
                 foreach (Sprite sprite in cell.spriteGroups[groupName].Values)
                 {
@@ -492,7 +513,7 @@ namespace SonOfRobin
             var countByName = new Dictionary<PieceTemplate.Name, int>();
             foreach (PieceTemplate.Name name in nameList) countByName[name] = 0;
 
-            foreach (var sprite in this.GetAllSprites(Cell.Group.All))
+            foreach (var sprite in this.GetSpritesFromAllCells(Cell.Group.All))
             {
                 if (nameList.Contains(sprite.boardPiece.name) && sprite.boardPiece.exists) countByName[sprite.boardPiece.name]++;
             }
@@ -505,7 +526,7 @@ namespace SonOfRobin
             bool updateFog = false;
             Rectangle cameraRect = camera.viewRect;
 
-            var visibleCells = this.GetCellsInsideRect(camera.viewRect).OrderBy(o => o.cellNoY);
+            var visibleCells = this.GetCellsInsideRect(camera.viewRect);
             foreach (Cell cell in visibleCells)
             {
                 cell.DrawBackground();
@@ -517,7 +538,7 @@ namespace SonOfRobin
                 }
             }
 
-            if (updateFog) this.world.UpdateFogOfWar();
+            if (updateFog) this.world.map.dirtyFog = true;
         }
 
         public int DrawSprites(Camera camera, List<Sprite> blockingLightSpritesList)
@@ -657,14 +678,14 @@ namespace SonOfRobin
             return new Vector2(frameMaxWidth, frameMaxHeight);
         }
 
-        public void LoadClosestTextureInCameraView()
+        public void LoadClosestTextureInCameraView(Camera camera)
         {
             if (Preferences.loadWholeMap || DateTime.Now - this.lastCellProcessedTime < textureLoadingDelay) return;
 
-            var cellsInCameraView = this.GetCellsInsideRect(this.world.camera.viewRect).Where(cell => cell.boardGraphics.texture == null).ToList();
+            var cellsInCameraView = this.GetCellsInsideRect(camera.viewRect).Where(cell => cell.boardGraphics.texture == null).ToList();
             if (cellsInCameraView.Count == 0) return;
 
-            var viewRect = this.world.camera.viewRect;
+            var viewRect = camera.viewRect;
             Vector2 cameraCenter = new Vector2(viewRect.Center.X, viewRect.Center.Y);
 
             var cellsByDistance = cellsInCameraView.OrderBy(cell => cell.GetDistance(cameraCenter));
@@ -685,7 +706,7 @@ namespace SonOfRobin
             }
         }
 
-        public void UnloadTexturesIfMemoryLow()
+        public void UnloadTexturesIfMemoryLow(Camera camera)
         {
             if (Preferences.loadWholeMap) return;
 
@@ -703,7 +724,7 @@ namespace SonOfRobin
                     throw new ArgumentException($"Textures unloading - unsupported platform {SonOfRobinGame.platform}.");
             }
 
-            var cellsInCameraView = this.GetCellsInsideRect(this.world.camera.viewRect);
+            var cellsInCameraView = this.GetCellsInsideRect(camera.viewRect);
             var cellsToUnload = this.allCells.Where(cell => !cellsInCameraView.Contains(cell) && cell.boardGraphics.texture != null).ToList();
 
             foreach (Cell cell in cellsToUnload)

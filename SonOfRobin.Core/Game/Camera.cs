@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -56,6 +55,11 @@ namespace SonOfRobin
         }
 
         private readonly World world;
+        private readonly bool keepInWorldBounds;
+        private readonly bool useFluidMotionForMove;
+        private readonly bool useFluidMotionForZoom;
+        private readonly bool useWorldScale;
+        private int lastUpdateFrame;
         private TrackingMode trackingMode;
         private Sprite trackedSprite;
         private bool trackedSpriteReached;
@@ -63,10 +67,23 @@ namespace SonOfRobin
         public Vector2 TrackedPos
         { get { return this.trackingMode == TrackingMode.Position ? this.trackedPos : this.trackedSprite.position; } }
         public Vector2 CurrentPos { get; private set; }
-        private float targetZoom;
-        public float currentZoom;
-        private bool currentFluidMotion;
-        public bool fluidMotionDisabled;
+        public float TargetZoom { get; private set; }
+        public float CurrentZoom { get; private set; }
+
+        public void SetViewParams(Scene scene)
+        {
+            scene.viewParams.Width = this.world.width;
+            scene.viewParams.Height = this.world.height;
+            scene.viewParams.PosX = this.viewPos.X;
+            scene.viewParams.PosY = this.viewPos.Y;
+
+            float worldScale = this.useWorldScale ? Preferences.WorldScale : 1f;
+            float scale = 1f / (worldScale * this.CurrentZoom);
+            scene.viewParams.ScaleX = scale;
+            scene.viewParams.ScaleY = scale;
+        }
+
+        private bool disableFluidMotionMoveForOneFrame;
         private static readonly int movementSlowdown = 20;
         private int zoomSlowdown = 20;
 
@@ -88,10 +105,22 @@ namespace SonOfRobin
         }
 
         public int ScreenWidth
-        { get { return (int)(SonOfRobinGame.VirtualWidth * this.world.viewParams.ScaleX); } }
+        {
+            get
+            {
+                float worldScale = this.useWorldScale ? Preferences.WorldScale : 1f;
+                return (int)(SonOfRobinGame.VirtualWidth / this.CurrentZoom / worldScale);
+            }
+        }
 
         public int ScreenHeight
-        { get { return (int)(SonOfRobinGame.VirtualHeight * this.world.viewParams.ScaleY); } }
+        {
+            get
+            {
+                float worldScale = this.useWorldScale ? Preferences.WorldScale : 1f;
+                return (int)(SonOfRobinGame.VirtualHeight / this.CurrentZoom / worldScale);
+            }
+        }
 
         public bool TrackedSpriteExists
         {
@@ -126,65 +155,81 @@ namespace SonOfRobin
             Position,
         }
 
-        public Camera(World world)
+        public Camera(World world, bool useFluidMotionForMove, bool useFluidMotionForZoom, bool useWorldScale, bool keepInWorldBounds = true)
         {
             this.world = world;
+            this.keepInWorldBounds = keepInWorldBounds;
+            this.useFluidMotionForMove = useFluidMotionForMove;
+            this.useFluidMotionForZoom = useFluidMotionForZoom;
+            this.useWorldScale = useWorldScale;
             this.CurrentPos = new Vector2(0, 0);
 
             this.viewRect = new Rectangle(0, 0, 0, 0);
-            this.currentFluidMotion = false;
-            this.fluidMotionDisabled = false;
+            this.disableFluidMotionMoveForOneFrame = false;
             this.trackingMode = TrackingMode.Undefined;
-            this.targetZoom = 1f;
-            this.currentZoom = 1f;
+            this.TargetZoom = 1f;
+            this.CurrentZoom = 1f;
             this.trackedSprite = null;
             this.trackedSpriteReached = false;
             this.trackedPos = Vector2.One;
+            this.lastUpdateFrame = 0;
         }
-        public void Update()
+
+        public void Update(Vector2 cameraCorrection)
         {
-            // Update should not be called more than once per frame - this causes jerky motion.
-            // Also, it should not be calculated on Draw(), because new viewPos cannot be used before the next spriteBatch.Begin() (position and zoom will not match in the same frame).
+            if (Scene.ProcessingMode == Scene.ProcessingModes.Draw || this.lastUpdateFrame == SonOfRobinGame.currentUpdate) return;
 
-            if (!Scene.processingUpdate) return;
+            if (this.useFluidMotionForZoom)
+            {
+                this.CurrentZoom += (this.TargetZoom - this.CurrentZoom) / this.zoomSlowdown;
+                if (this.CurrentZoom == this.TargetZoom) this.zoomSlowdown = movementSlowdown; // resetting to default zoom speed, after reaching target value
+            }
+            else
+            {
+                this.CurrentZoom = this.TargetZoom;
+                this.zoomSlowdown = movementSlowdown;
+            }
 
-            float xMin, xMax, yMin, yMax;
             Vector2 currentTargetPos = this.GetTargetCoords();
             Vector2 viewCenter = new Vector2(0, 0); // to be updated below
 
-            if (this.currentFluidMotion)
+            if (this.useFluidMotionForMove && !this.disableFluidMotionMoveForOneFrame)
             {
-                this.currentZoom += (this.targetZoom - this.currentZoom) / this.zoomSlowdown;
-                if (this.currentZoom == this.targetZoom) this.zoomSlowdown = movementSlowdown; // resetting to default zoom speed, after reaching target value
-
                 viewCenter.X = this.CurrentPos.X + ((currentTargetPos.X - this.CurrentPos.X) / movementSlowdown);
                 viewCenter.Y = this.CurrentPos.Y + ((currentTargetPos.Y - this.CurrentPos.Y) / movementSlowdown);
             }
             else
             {
-                this.currentZoom = this.targetZoom;
                 viewCenter.X = currentTargetPos.X;
                 viewCenter.Y = currentTargetPos.Y;
                 this.trackedSpriteReached = true;
-                this.currentFluidMotion = true; // only one frame should be displayed with instant scrolling...
+                this.disableFluidMotionMoveForOneFrame = false;
             }
 
-            if (this.fluidMotionDisabled) this.currentFluidMotion = false; // ...unless fluid motion is disabled
-
-            viewCenter += this.world.analogCameraCorrection;
+            viewCenter += cameraCorrection;
 
             float screenWidth = this.ScreenWidth;
             float screenHeight = this.ScreenHeight;
 
             float widthDivider = this.world.demoMode ? 5 : 2; // to put the camera center on the left side of the screen during demo (there is menu on the right)
 
-            xMin = Math.Min(Math.Max(viewCenter.X - (screenWidth / widthDivider), 0), (float)this.world.width - screenWidth - 1f);
-            yMin = Math.Min(Math.Max(viewCenter.Y - (screenHeight / 2f), 0), (float)this.world.height - screenHeight - 1f);
+            float xMin = viewCenter.X - (screenWidth / widthDivider);
+            float yMin = viewCenter.Y - (screenHeight / 2f);
 
-            xMin = Math.Max(xMin, 0);
-            yMin = Math.Max(yMin, 0);
-            xMax = Math.Min(xMin + screenWidth, this.world.width);
-            yMax = Math.Min(yMin + screenHeight, this.world.height);
+            if (this.keepInWorldBounds)
+            {
+                xMin = Math.Min(Math.Max(xMin, 0), (float)this.world.width - screenWidth - 1f);
+                yMin = Math.Min(Math.Max(yMin, 0), (float)this.world.height - screenHeight - 1f);
+            }
+
+            float xMax = xMin + screenWidth;
+            float yMax = yMin + screenHeight;
+
+            if (this.keepInWorldBounds)
+            {
+                xMax = Math.Min(xMax, this.world.width);
+                yMax = Math.Min(yMax, this.world.height);
+            }
 
             this.CurrentPos = viewCenter;
 
@@ -195,26 +240,25 @@ namespace SonOfRobin
 
             this.viewPos = new Vector2(-xMin, -yMin);
 
-            SoundEffect.DistanceScale = this.viewRect.Width * 0.065f;
-
             if (!this.trackedSpriteReached && Vector2.Distance(this.CurrentPos, currentTargetPos) < 30) this.trackedSpriteReached = true;
+            this.lastUpdateFrame = SonOfRobinGame.currentUpdate;
         }
 
-        public void TrackPiece(BoardPiece trackedPiece, bool fluidMotion = true)
+        public void TrackPiece(BoardPiece trackedPiece, bool moveInstantly = false)
         {
             this.trackingMode = TrackingMode.Sprite;
             this.trackedSprite = trackedPiece.sprite;
             this.trackedSpriteReached = false;
-            this.currentFluidMotion = fluidMotion;
+            this.disableFluidMotionMoveForOneFrame = moveInstantly;
         }
 
-        public void TrackCoords(Vector2 position, bool fluidMotion = true)
+        public void TrackCoords(Vector2 position, bool moveInstantly = false)
         {
             this.trackingMode = TrackingMode.Position;
             this.trackedSprite = null;
             this.trackedSpriteReached = false;
             this.trackedPos = new Vector2(position.X, position.Y);
-            this.currentFluidMotion = fluidMotion;
+            this.disableFluidMotionMoveForOneFrame = moveInstantly;
         }
         public void ResetZoom(bool setInstantly = false, float zoomSpeedMultiplier = 1f)
         {
@@ -224,8 +268,8 @@ namespace SonOfRobin
         public void SetZoom(float zoom, bool setInstantly = false, float zoomSpeedMultiplier = 1f)
         {
             this.zoomSlowdown = (int)(movementSlowdown / zoomSpeedMultiplier);
-            this.targetZoom = zoom;
-            if (setInstantly) this.currentZoom = zoom;
+            this.TargetZoom = zoom;
+            if (setInstantly) this.CurrentZoom = zoom;
         }
 
         public Vector2 GetRandomPositionOutsideCameraView()
@@ -255,8 +299,7 @@ namespace SonOfRobin
             {
                 case TrackingMode.Sprite:
                     {
-                        if (this.trackedSprite.boardPiece.exists)
-                        { return this.trackedSprite.position; }
+                        if (this.trackedSprite.boardPiece.exists) return this.trackedSprite.position;
                         else
                         {
                             this.TrackCoords(this.CurrentPos);
@@ -268,19 +311,19 @@ namespace SonOfRobin
                     { return this.trackedPos; }
 
                 default:
-                    { throw new DivideByZeroException($"Unsupported tracking mode - {this.trackingMode}."); }
+                    { throw new ArgumentException($"Unsupported tracking mode - {this.trackingMode}."); }
             }
         }
 
-        public void TrackLiveAnimal(bool fluidMotion = true)
+        public void TrackLiveAnimal(bool fluidMotion)
         {
             if (this.TrackedSpriteExists) return;
 
-            var allSprites = this.world.grid.GetAllSprites(Cell.Group.ColMovement);
+            var allSprites = this.world.grid.GetSpritesFromAllCells(Cell.Group.ColMovement);
             var animals = allSprites.Where(sprite => sprite.boardPiece.GetType() == typeof(Animal) && sprite.boardPiece.alive).ToList();
             if (animals.Count == 0) return;
             var index = BoardPiece.Random.Next(0, animals.Count);
-            this.TrackPiece(trackedPiece: animals[index].boardPiece, fluidMotion: fluidMotion);
+            this.TrackPiece(trackedPiece: animals[index].boardPiece, moveInstantly: !fluidMotion);
         }
 
         public List<Sprite> GetVisibleSprites(Cell.Group groupName, bool compareWithCameraRect = false)

@@ -55,6 +55,7 @@ namespace SonOfRobin
                 case Step.LoadEffects:
                     SonOfRobinGame.effectColorize = SonOfRobinGame.content.Load<Effect>("effects/Colorize");
                     SonOfRobinGame.effectBorder = SonOfRobinGame.content.Load<Effect>("effects/Border");
+                    SonOfRobinGame.effectSketch = SonOfRobinGame.content.Load<Effect>("effects/Sketch");
                     break;
 
                 case Step.LoadFonts:

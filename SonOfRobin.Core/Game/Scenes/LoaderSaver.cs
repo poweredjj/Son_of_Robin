@@ -151,7 +151,7 @@ namespace SonOfRobin
             List<BoardPiece> currentPieceList = new List<BoardPiece>();
             piecePackages.Add(currentPieceList);
 
-            foreach (Sprite sprite in this.world.grid.GetAllSprites(Cell.Group.All))
+            foreach (Sprite sprite in this.world.grid.GetSpritesFromAllCells(Cell.Group.All))
             {
                 if (sprite.boardPiece.exists && sprite.IsOnBoard && sprite.boardPiece.serialize)
                 {

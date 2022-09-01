@@ -40,7 +40,7 @@ namespace SonOfRobin
 
             if (worldActive)
             {
-                if (world.mapMode == World.MapMode.Big) debugLines.Add($"objects {world.PieceCount}");
+                if (world.map.FullScreen) debugLines.Add($"objects {world.PieceCount}");
                 else debugLines.Add($"{world.debugText}");
             }
 
@@ -179,7 +179,7 @@ namespace SonOfRobin
             {
                 if (world == null) return;
 
-                foreach (var sprite in world.grid.GetAllSprites(Cell.Group.All))
+                foreach (var sprite in world.grid.GetSpritesFromAllCells(Cell.Group.All))
                 { if (sprite.boardPiece != world.player) sprite.boardPiece.Kill(); }
             }
 
@@ -187,7 +187,7 @@ namespace SonOfRobin
             {
                 if (world == null) return;
 
-                foreach (var sprite in world.grid.GetAllSprites(Cell.Group.All))
+                foreach (var sprite in world.grid.GetSpritesFromAllCells(Cell.Group.All))
                 { sprite.AssignNewName("default"); }
             }
 
@@ -283,7 +283,7 @@ namespace SonOfRobin
             {
                 if (world == null) return;
 
-                foreach (var sprite in world.grid.GetAllSprites(Cell.Group.All))
+                foreach (var sprite in world.grid.GetSpritesFromAllCells(Cell.Group.All))
                 {
                     if (sprite.boardPiece != world.player)
                     {
@@ -316,7 +316,7 @@ namespace SonOfRobin
                 if (world == null) return;
 
 
-                foreach (var sprite in world.grid.GetAllSprites(Cell.Group.All))
+                foreach (var sprite in world.grid.GetSpritesFromAllCells(Cell.Group.All))
                 {
                     if (sprite.boardPiece != world.player) sprite.boardPiece.Destroy();
                 }
@@ -327,7 +327,7 @@ namespace SonOfRobin
                 if (world == null) return;
 
 
-                foreach (var sprite in world.grid.GetAllSprites(Cell.Group.All))
+                foreach (var sprite in world.grid.GetSpritesFromAllCells(Cell.Group.All))
                 { if (sprite.boardPiece != world.player) sprite.boardPiece.RemoveFromStateMachines(); }
             }
 
@@ -430,7 +430,6 @@ namespace SonOfRobin
                 else world.updateMultiplier *= 2;
 
                 SonOfRobinGame.game.TargetElapsedTime = TimeSpan.FromSeconds(1d / 60d);
-                world.camera.fluidMotionDisabled = true;
             }
 
             if (Keyboard.HasBeenPressed(Keys.LeftControl) || VirtButton.HasButtonBeenPressed(VButName.DebugPlay))
@@ -440,7 +439,6 @@ namespace SonOfRobin
                 SonOfRobinGame.game.IsFixedTimeStep = true;
                 world.updateMultiplier = 1;
                 SonOfRobinGame.game.TargetElapsedTime = TimeSpan.FromSeconds(1d / 60d);
-                world.camera.fluidMotionDisabled = false;
             }
 
             if (Keyboard.HasBeenPressed(Keys.LeftShift) || VirtButton.HasButtonBeenPressed(VButName.DebugPause))
@@ -451,27 +449,25 @@ namespace SonOfRobin
                 SonOfRobinGame.game.IsFixedTimeStep = true;
                 world.updateMultiplier = 1;
                 SonOfRobinGame.game.TargetElapsedTime = TimeSpan.FromSeconds(1d / 3d);
-                world.camera.fluidMotionDisabled = false;
             }
 
             if (Keyboard.HasBeenPressed(Keys.OemOpenBrackets))
             {
                 if (world == null) return;
 
-                var allSprites = world.grid.GetAllSprites(Cell.Group.ColMovement).Where(sprite => sprite.boardPiece.GetType() == typeof(Animal) && sprite.boardPiece.alive).ToList();
+                var allSprites = world.grid.GetSpritesFromAllCells(Cell.Group.ColMovement).Where(sprite => sprite.boardPiece.GetType() == typeof(Animal) && sprite.boardPiece.alive).ToList();
 
                 if (!allSprites.Any()) return;
 
                 var index = BoardPiece.Random.Next(0, allSprites.Count);
-                world.camera.TrackPiece(allSprites.ToArray()[index].boardPiece);
+                world.camera.TrackPiece(trackedPiece: allSprites.ToArray()[index].boardPiece, moveInstantly: true);
             }
 
-            if (Keyboard.HasBeenPressed(Keys.OemCloseBrackets)) world.camera.TrackPiece(world.player);
+            if (Keyboard.HasBeenPressed(Keys.OemCloseBrackets)) world.camera.TrackPiece(trackedPiece: world.player, moveInstantly: true);
 
             if (Keyboard.HasBeenPressed(Keys.X))
             {
                 if (world == null) return;
-
 
                 AnimData.PkgName currentPackageName = world.player.sprite.animPackage;
 

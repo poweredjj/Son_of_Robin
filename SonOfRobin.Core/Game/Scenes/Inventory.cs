@@ -60,7 +60,7 @@ namespace SonOfRobin
             {
                 if (this.type != Type.SingleBottom) return false;
 
-                if (this.piece.world.mapMode == World.MapMode.Big || this.piece.world.CineMode || this.piece.world.demoMode) return true;
+                if (this.piece.world.map.FullScreen || this.piece.world.CineMode || this.piece.world.demoMode) return true;
 
                 Player player = this.piece.world.player;
                 if (player.activeState == BoardPiece.State.PlayerControlledSleep || !player.alive || this.piece.world.SpectatorMode) return true;
@@ -388,6 +388,11 @@ namespace SonOfRobin
             windowPos.Y = Math.Min(windowPos.Y, maxY);
 
             hintWindow.TurnOn(newPosX: (int)windowPos.X, newPosY: (int)windowPos.Y, entryList: entryList);
+        }
+
+        protected override void AdaptToNewSize()
+        {
+            this.UpdateViewParams();
         }
 
         public override void Update(GameTime gameTime)

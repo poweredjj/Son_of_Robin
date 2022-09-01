@@ -266,5 +266,18 @@ namespace SonOfRobin
 
             return list;
         }
+
+        public static double ConvertRange(double oldMin, double oldMax, double newMin, double newMax, double oldVal, bool clampToEdges)
+        {
+            double newVal = ((oldVal - oldMin) * (newMax - newMin) / (oldMax - oldMin)) + newMin;
+
+            if (clampToEdges)
+            {
+                newVal = Math.Min(newVal, newMax);
+                newVal = Math.Max(newVal, newMin);
+            }
+
+            return newVal;
+        }
     }
 }

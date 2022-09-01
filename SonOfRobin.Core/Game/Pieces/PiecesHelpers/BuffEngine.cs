@@ -575,10 +575,7 @@ namespace SonOfRobin
                         if (add) player.world.MapEnabled = true;
                         else
                         {
-                            if (!stillHasThisBuff)
-                            {
-                                player.world.MapEnabled = false;
-                            }
+                            if (!stillHasThisBuff) player.world.MapEnabled = false;
                         }
 
                         return true;

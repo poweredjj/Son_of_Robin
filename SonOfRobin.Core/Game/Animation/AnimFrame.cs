@@ -182,17 +182,14 @@ namespace SonOfRobin
             }
 
             Rectangle sourceRectangle = new Rectangle(x: 0, y: 0, width: this.texture.Width, correctedSourceHeight);
-            Rectangle destinationRectangle = new Rectangle(destRect.X, destRect.Y, destRect.Width, destRect.Height);
 
-            // Helpers.DrawRectangleOutline(rect: destinationRectangle, color: Color.YellowGreen, borderWidth: 2); // testing rect size
+            // Helpers.DrawRectangleOutline(rect: destRect, color: Color.YellowGreen, borderWidth: 2); // testing rect size
 
-            SonOfRobinGame.spriteBatch.Draw(this.texture, destinationRectangle, sourceRectangle, color * opacity);
+            SonOfRobinGame.spriteBatch.Draw(this.texture, destRect, sourceRectangle, color * opacity);
         }
 
         public void DrawWithRotation(Vector2 position, Color color, float rotation, float opacity)
         {
-
-
             // invoke from Sprite class
 
             SonOfRobinGame.spriteBatch.Draw(this.texture, position: position, sourceRectangle: this.textureRect, color: color * opacity, rotation: rotation, origin: this.rotationOrigin, scale: this.scale, effects: SpriteEffects.None, layerDepth: 0);

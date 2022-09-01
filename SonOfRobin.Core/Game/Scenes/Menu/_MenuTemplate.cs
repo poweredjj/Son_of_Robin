@@ -115,6 +115,8 @@ namespace SonOfRobin
 
                         new Selector(menu: menu, name: "show hints", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "showHints");
 
+                        new Selector(menu: menu, name: "map marker size", valueDict: Preferences.namesForMapMarkerScale, targetObj: preferences, propertyName: "mapMarkerScale");
+
                         if (world == null || world.demoMode) new Selector(menu: menu, name: "load whole map", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "loadWholeMap", rebuildsMenu: true);
 
                         new Selector(menu: menu, name: "use multiple CPU cores", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "useMultipleThreads", infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: "use all available CPU cores for some operations", color: Color.White, scale: 1f) });
@@ -460,7 +462,7 @@ namespace SonOfRobin
                         foreach (PieceTemplate.Name pieceName in PieceTemplate.allNames)
                         { pieceCounterDict[pieceName] = 0; }
 
-                        foreach (Sprite sprite in world.grid.GetAllSprites(Cell.Group.All))
+                        foreach (Sprite sprite in world.grid.GetSpritesFromAllCells(Cell.Group.All))
                         { pieceCounterDict[sprite.boardPiece.name]++; }
 
                         foreach (PieceTemplate.Name pieceName in pieceCounterDict.Keys)
@@ -494,8 +496,8 @@ namespace SonOfRobin
                         new Selector(menu: menu, name: "create missing pieces", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugCreateMissingPieces");
                         new Selector(menu: menu, name: "god mode", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "DebugGodMode", rebuildsMenu: true);
                         new Selector(menu: menu, name: "show whole map", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "DebugShowWholeMap");
+                        new Selector(menu: menu, name: "allow fullscreen map animation", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugAllowMapAnimation");
                         new Selector(menu: menu, name: "show sounds", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugShowSounds");
-                        new Selector(menu: menu, name: "show all items on map", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugShowAllMapPieces");
                         new Selector(menu: menu, name: "show all recipes", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugShowAllRecipes");
                         new Invoker(menu: menu, name: "restore all hints", taskName: Scheduler.TaskName.RestoreHints);
                         new Selector(menu: menu, name: "show fruit rects", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugShowFruitRects");
@@ -723,12 +725,16 @@ namespace SonOfRobin
             { new Selector(menu: menu, name: newMapping.GetReadablePropertyName(propertyName), valueDict: keysOrButtonsDict, targetObj: newMapping, propertyName: propertyName, captureInput: true, captureKeys: captureKeys, captureButtons: captureButtons); }
 
             new Separator(menu: menu, name: "", isEmpty: true);
+            new Separator(menu: menu, name: "map");
+            foreach (string propertyName in new List<string> { "mapToggleMarker", "mapZoomIn", "mapZoomOut" })
+            { new Selector(menu: menu, name: newMapping.GetReadablePropertyName(propertyName), valueDict: keysOrButtonsDict, targetObj: newMapping, propertyName: propertyName, captureInput: true, captureKeys: captureKeys, captureButtons: captureButtons); }
+
+            new Separator(menu: menu, name: "", isEmpty: true);
             new Separator(menu: menu, name: "toolbar");
             foreach (string propertyName in new List<string> { "toolbarPrev", "toolbarNext" })
             { new Selector(menu: menu, name: newMapping.GetReadablePropertyName(propertyName), valueDict: keysOrButtonsDict, targetObj: newMapping, propertyName: propertyName, captureInput: true, captureKeys: captureKeys, captureButtons: captureButtons); }
 
             new Separator(menu: menu, name: "", isEmpty: true);
-
             var saveData = new Dictionary<string, Object> { { "gamepad", gamepad }, { "openMenuIfNotValid", false } };
             new Invoker(menu: menu, name: "save", taskName: Scheduler.TaskName.SaveControls, executeHelper: saveData, rebuildsMenu: true, sound: SoundData.Name.Empty, playSound: false);
             var resetData = new Dictionary<string, Object> { { "gamepad", gamepad }, { "useDefault", true } };

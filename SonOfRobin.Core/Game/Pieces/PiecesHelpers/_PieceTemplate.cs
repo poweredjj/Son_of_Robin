@@ -121,6 +121,7 @@ namespace SonOfRobin
             Miss,
             Zzz,
             Heart,
+            MapMarker,
             MusicNote,
             Crosshair,
             Exclamation,
@@ -785,6 +786,12 @@ namespace SonOfRobin
                     {
                         var allowedFields = new AllowedFields();
                         return new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Attack, minDistance: 0, maxDistance: 3, destructionDelay: -1, allowedFields: allowedFields, generation: generation, readableName: "attack", description: "A visual effect.", activeState: BoardPiece.State.Empty, serialize: false);
+                    }
+
+                case Name.MapMarker:
+                    {
+                        var allowedFields = new AllowedFields();
+                        return new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.MapMarker, minDistance: 0, maxDistance: 0, allowedFields: allowedFields, generation: generation, readableName: "map marker", description: "Map marker.", activeState: BoardPiece.State.MapMarkerShowAndCheck, visible: false, serialize: false);
                     }
 
                 case Name.Empty:

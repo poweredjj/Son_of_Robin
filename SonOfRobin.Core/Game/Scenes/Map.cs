@@ -1,73 +1,71 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input.Touch;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SonOfRobin
 {
     public class Map : Scene
     {
+        public enum MapMode
+        {
+            Mini,
+            Full,
+            Off
+        }
+
         private readonly World world;
         private readonly Camera camera;
         private readonly Rectangle worldRect;
-        public readonly bool fullScreen;
-        private float multiplier;
+        private readonly MapOverlay mapOverlay;
+        private readonly EffectCol effectCol;
+        public bool FullScreen { get { return this.Mode == MapMode.Full; } }
+
+        private MapMode mode;
+        private float scaleMultiplier;
         private bool dirtyBackground;
-        private RenderTarget2D terrainGfx;
         public bool dirtyFog;
-        private RenderTarget2D combinedGfx;
-        private ConcurrentBag<Sprite> spritesBag;
+        private RenderTarget2D miniatureTerrainGfx;
+        private RenderTarget2D miniatureCombinedGfx;
+        public RenderTarget2D FinalMapToDisplay { get; private set; }
+        private Vector2 lastTouchPos; public BoardPiece MapMarker { get; private set; }
+        private float InitialZoom { get { return Preferences.WorldScale / 2; } }
+        private static readonly Color paperColor = BoardGraphics.colorsByName[BoardGraphics.Colors.Beach1];
 
-        // max screen percentage, that minimap may occupy
-        private static readonly float minimapMaxPercentWidth = 0.35f;
-        private static readonly float minimapMaxPercentHeight = 0.5f;
-
-        private static readonly List<PieceTemplate.Name> depositList = new List<PieceTemplate.Name> {
-            PieceTemplate.Name.CoalDeposit, PieceTemplate.Name.IronDeposit, PieceTemplate.Name.CrystalDepositSmall, PieceTemplate.Name.CrystalDepositBig };
-
-        private void UpdateViewPos()
+        public Map(World world, TouchLayout touchLayout) : base(inputType: InputTypes.None, priority: 1, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: false, touchLayout: touchLayout, tipsLayout: ControlTips.TipsLayout.Map)
         {
-            if (this.fullScreen) this.viewParams.CenterView();
-            else
-            {
-                var margin = (int)Math.Ceiling(Math.Min(SonOfRobinGame.VirtualWidth / 30f, SonOfRobinGame.VirtualHeight / 30f));
-
-                this.viewParams.PosX = SonOfRobinGame.VirtualWidth - this.viewParams.Width - margin;
-                this.viewParams.PosY = SonOfRobinGame.VirtualHeight - this.viewParams.Height - margin;
-            }
-        }
-
-        public Map(World world, bool fullScreen, TouchLayout touchLayout) : base(inputType: InputTypes.None, priority: 1, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: false, touchLayout: touchLayout, tipsLayout: ControlTips.TipsLayout.Map)
-        {
-            this.drawActive = false;
-            this.updateActive = false;
+            this.mapOverlay = new MapOverlay(this);
+            this.AddLinkedScene(this.mapOverlay);
             this.world = world;
             this.worldRect = new Rectangle(x: 0, y: 0, width: world.width, height: world.height);
-            this.camera = new Camera(this.world);
-            this.fullScreen = fullScreen;
+            this.camera = new Camera(world: this.world, useWorldScale: false, useFluidMotionForMove: false, useFluidMotionForZoom: true, keepInWorldBounds: false);
+            this.mode = MapMode.Off;
             this.dirtyFog = true;
-            this.spritesBag = new ConcurrentBag<Sprite> { };
+            this.lastTouchPos = Vector2.Zero;
+            this.effectCol = new EffectCol(world: world);
+            this.effectCol.AddEffect(new SketchInstance(fgColor: new Color(107, 98, 87, 255), bgColor: paperColor, framesLeft: -1));
+        }
+
+        public override void Remove()
+        {
+            base.Remove();
+
+            if (this.miniatureTerrainGfx != null) this.miniatureTerrainGfx.Dispose();
+            if (this.miniatureCombinedGfx != null) this.miniatureCombinedGfx.Dispose();
+            if (this.FinalMapToDisplay != null) this.FinalMapToDisplay.Dispose();
         }
 
         protected override void AdaptToNewSize()
         {
             this.UpdateResolution();
+            this.mapOverlay.AddTransition();
         }
 
-        public void TurnOn(bool addTransition = true)
+        public void TurnOff()
         {
-            if (this.fullScreen) this.InputType = InputTypes.Normal;
-
-            this.updateActive = true;
-            this.drawActive = true;
-            this.blocksDrawsBelow = this.fullScreen;
-
-            this.UpdateResolution();
-
-            if (addTransition) this.AddTransition(inTrans: true);
-
-            this.blocksUpdatesBelow = this.fullScreen && !Preferences.DebugMode; // fullscreen map should only be "live animated" in debug mode
+            this.Mode = MapMode.Off;
         }
 
         public void ForceRender()
@@ -79,149 +77,160 @@ namespace SonOfRobin
             this.UpdateBackground();
         }
 
-        public void UpdateResolution() // main rendering code
+        public void UpdateResolution()
         {
-            float maxPercentWidth = this.fullScreen ? 1 : minimapMaxPercentWidth;
-            float maxPercentHeight = this.fullScreen ? 1 : minimapMaxPercentHeight;
+            float multiplierX = (float)SonOfRobinGame.VirtualWidth / (float)world.width;
+            float multiplierY = (float)SonOfRobinGame.VirtualHeight / (float)world.height;
+            this.scaleMultiplier = Math.Min(multiplierX, multiplierY);
 
-            float multiplierX = (float)SonOfRobinGame.VirtualWidth / (float)world.width * maxPercentWidth;
-            float multiplierY = (float)SonOfRobinGame.VirtualHeight / (float)world.height * maxPercentHeight;
-            this.multiplier = Math.Min(multiplierX, multiplierY);
+            this.SetViewParamsForMiniature();
 
-            this.viewParams.Width = (int)(world.width * this.multiplier);
-            this.viewParams.Height = (int)(world.height * this.multiplier);
-
-            if (!this.fullScreen) this.viewParams.Opacity = 0.7f;
-
-            this.UpdateViewPos();
-
-            if (this.terrainGfx == null || this.terrainGfx.Width != this.viewParams.Width || this.terrainGfx.Height != this.viewParams.Height)
+            if (this.miniatureTerrainGfx == null || this.miniatureTerrainGfx.Width != this.viewParams.Width || this.miniatureTerrainGfx.Height != this.viewParams.Height)
             {
-                if (this.terrainGfx != null) this.terrainGfx.Dispose();
-                this.terrainGfx = new RenderTarget2D(SonOfRobinGame.graphicsDevice, this.viewParams.Width, this.viewParams.Height, false, SurfaceFormat.Color, DepthFormat.None);
+                if (this.miniatureTerrainGfx != null) this.miniatureTerrainGfx.Dispose();
+                this.miniatureTerrainGfx = new RenderTarget2D(SonOfRobinGame.graphicsDevice, this.viewParams.Width, this.viewParams.Height, false, SurfaceFormat.Color, DepthFormat.None);
+                if (this.FinalMapToDisplay != null) this.FinalMapToDisplay.Dispose();
+
+                this.FinalMapToDisplay = new RenderTarget2D(SonOfRobinGame.graphicsDevice, SonOfRobinGame.VirtualWidth, SonOfRobinGame.VirtualHeight, false, SurfaceFormat.Color, DepthFormat.None);
+
                 this.dirtyBackground = true;
                 this.dirtyFog = true;
             }
-            this.UpdateFogOfWar();
+
+            this.UpdateCombinedGfx();
         }
 
         public void UpdateBackground()
         {
             if (this.dirtyBackground)
             {
-                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{SonOfRobinGame.currentUpdate} updating map background (fullscreen {this.fullScreen})");
+                this.SetViewParamsForMiniature();
 
-                this.StartRenderingToTarget(this.terrainGfx);
-                SonOfRobinGame.graphicsDevice.Clear(Color.Transparent);
+                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{SonOfRobinGame.currentUpdate} updating map background (fullscreen {this.FullScreen})");
 
-                int width = (int)(this.world.width * this.multiplier);
-                int height = (int)(this.world.height * this.multiplier);
+                SetRenderTarget(this.miniatureTerrainGfx);
+                SonOfRobinGame.spriteBatch.Begin(transformMatrix: this.TransformMatrix);
 
-                Texture2D mapTexture = BoardGraphics.CreateEntireMapTexture(width: width, height: height, grid: this.world.grid, multiplier: this.multiplier);
+                int width = (int)(this.world.width * this.scaleMultiplier);
+                int height = (int)(this.world.height * this.scaleMultiplier);
+
+                Texture2D mapTexture = BoardGraphics.CreateEntireMapTexture(width: width, height: height, grid: this.world.grid, multiplier: this.scaleMultiplier);
                 Rectangle sourceRectangle = new Rectangle(0, 0, width, height);
                 SonOfRobinGame.spriteBatch.Draw(mapTexture, sourceRectangle, sourceRectangle, Color.White);
 
-                this.EndRenderingToTarget();
+                SonOfRobinGame.spriteBatch.End();
 
                 this.dirtyBackground = false;
                 this.dirtyFog = true;
                 MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{SonOfRobinGame.currentUpdate} map background updated ({this.viewParams.Width}x{this.viewParams.Height}).", color: Color.White);
             }
 
-            this.UpdateFogOfWar();
+            this.UpdateCombinedGfx();
         }
 
-        private void UpdateFogOfWar()
+        private void UpdateCombinedGfx()
         {
-            if (this.combinedGfx != null && this.dirtyFog == false) return;
+            if (this.miniatureCombinedGfx != null && this.dirtyFog == false) return;
 
-            MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{SonOfRobinGame.currentUpdate} updating map fog (fullscreen {this.fullScreen})");
+            this.SetViewParamsForMiniature();
 
-            if (this.combinedGfx == null || this.combinedGfx.Width != this.viewParams.Width || this.combinedGfx.Height != this.viewParams.Height)
+            MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{SonOfRobinGame.currentUpdate} updating map fog (fullscreen {this.FullScreen})");
+
+            if (this.miniatureCombinedGfx == null || this.miniatureCombinedGfx.Width != this.viewParams.Width || this.miniatureCombinedGfx.Height != this.viewParams.Height)
             {
-                if (this.combinedGfx != null) this.combinedGfx.Dispose();
-                this.combinedGfx = new RenderTarget2D(SonOfRobinGame.graphicsDevice, this.viewParams.Width, this.viewParams.Height, false, SurfaceFormat.Color, DepthFormat.None);
+                if (this.miniatureCombinedGfx != null) this.miniatureCombinedGfx.Dispose();
+                this.miniatureCombinedGfx = new RenderTarget2D(SonOfRobinGame.graphicsDevice, this.viewParams.Width, this.viewParams.Height, false, SurfaceFormat.Color, DepthFormat.None);
             }
 
-            this.StartRenderingToTarget(this.combinedGfx);
+            SetRenderTarget(this.miniatureCombinedGfx);
+            SonOfRobinGame.spriteBatch.Begin(transformMatrix: this.TransformMatrix);
             SonOfRobinGame.graphicsDevice.Clear(Color.Transparent);
-            SonOfRobinGame.spriteBatch.Draw(this.terrainGfx, this.terrainGfx.Bounds, Color.White);
-            Rectangle destinationRectangle;
 
-            if (!Preferences.DebugShowWholeMap)
+            int cellWidth = this.world.grid.allCells[0].width;
+            int cellHeight = this.world.grid.allCells[0].height;
+            int destCellWidth = (int)Math.Ceiling(cellWidth * this.scaleMultiplier);
+            int destCellHeight = (int)Math.Ceiling(cellHeight * this.scaleMultiplier);
+
+            foreach (Cell cell in Preferences.DebugShowWholeMap ? this.world.grid.allCells : this.world.grid.CellsVisitedByPlayer)
             {
-                int cellWidth = this.world.grid.allCells[0].width;
-                int cellHeight = this.world.grid.allCells[0].height;
-                int destCellWidth = (int)Math.Ceiling(cellWidth * this.multiplier);
-                int destCellHeight = (int)Math.Ceiling(cellHeight * this.multiplier);
-                Color fogColor = this.fullScreen ? new Color(50, 50, 50) : new Color(80, 80, 80);
+                Rectangle srcDestRect = new Rectangle(
+                    (int)Math.Floor(cell.xMin * this.scaleMultiplier),
+                    (int)Math.Floor(cell.yMin * this.scaleMultiplier),
+                    destCellWidth,
+                    destCellHeight);
 
-                Rectangle sourceRectangle = new Rectangle(0, 0, cellWidth, cellHeight);
-                SonOfRobinGame.graphicsDevice.Clear(new Color(0, 0, 0, 0));
-
-                foreach (Cell cell in this.world.grid.CellsNotVisitedByPlayer)
-                {
-                    destinationRectangle = new Rectangle(
-                        (int)Math.Floor(cell.xMin * this.multiplier),
-                        (int)Math.Floor(cell.yMin * this.multiplier),
-                        destCellWidth,
-                        destCellHeight);
-
-                    SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, destinationRectangle, sourceRectangle, fogColor);
-                }
+                SonOfRobinGame.spriteBatch.Draw(this.miniatureTerrainGfx, srcDestRect, srcDestRect, Color.White);
             }
-            this.EndRenderingToTarget();
+
+            SonOfRobinGame.spriteBatch.End();
 
             this.dirtyFog = false;
         }
 
-        public void TurnOff(bool addTransition = true)
+        public void SwitchToNextMode()
         {
-            this.InputType = InputTypes.None;
-            this.blocksDrawsBelow = false;
-            this.blocksUpdatesBelow = false;
-
-            if (addTransition) this.AddTransition(inTrans: false);
-            else
+            switch (this.Mode)
             {
-                this.updateActive = false;
-                this.drawActive = false;
+                case MapMode.Mini:
+                    this.Mode = MapMode.Full;
+                    break;
+
+                case MapMode.Full:
+                    this.Mode = MapMode.Off;
+                    break;
+
+                case MapMode.Off:
+                    this.Mode = MapMode.Mini;
+                    break;
+
+                default:
+                    throw new ArgumentException($"Unsupported mode - {this.Mode}.");
             }
         }
 
-        public void AddTransition(bool inTrans)
+        public MapMode Mode
         {
-            bool turnOffDraw = !inTrans;
-            bool turnOffUpdate = !inTrans;
-
-            this.UpdateViewPos();
-
-            if (this.fullScreen)
+            get { return this.mode; }
+            private set
             {
-                Rectangle viewRect = this.world.camera.viewRect;
-                float transScaleX = SonOfRobinGame.VirtualWidth / (float)this.world.width * this.world.viewParams.ScaleX;
-                float transScaleY = SonOfRobinGame.VirtualHeight / (float)this.world.height * this.world.viewParams.ScaleY;
-                float transScale = Math.Min(transScaleX, transScaleY);
+                if (this.mode == value) return;
+                this.mode = value;
 
-                float transPosX = 1f / (float)this.world.width * SonOfRobinGame.VirtualWidth;
-                float transPosY = 1f / (float)this.world.height * SonOfRobinGame.VirtualHeight;
-                float transPos = Math.Min(transPosX, transPosY);
+                switch (this.mode)
+                {
+                    case MapMode.Mini:
+                        Sound.QuickPlay(SoundData.Name.TurnPage);
+                        this.camera.TrackCoords(position: this.world.player.sprite.position, moveInstantly: true);
+                        this.camera.SetZoom(zoom: this.InitialZoom, setInstantly: true);
+                        this.UpdateResolution();
+                        this.blocksUpdatesBelow = false;
+                        this.InputType = InputTypes.None;
+                        this.drawActive = true;
+                        break;
 
-                this.transManager.AddMultipleTransitions(outTrans: !inTrans, duration: 15, endTurnOffDraw: turnOffDraw, endTurnOffUpdate: turnOffUpdate,
-                    paramsToChange: new Dictionary<string, float> {
-                        { "PosX", -viewRect.Left * transPos },
-                        { "PosY", -viewRect.Top * transPos },
-                        { "ScaleX", transScale },
-                        { "ScaleY", transScale } });
-            }
-            else
-            {
-                this.transManager.AddMultipleTransitions(outTrans: !inTrans, duration: 8, endTurnOffDraw: turnOffDraw, endTurnOffUpdate: turnOffUpdate,
-                    paramsToChange: new Dictionary<string, float> { { "PosY", this.viewParams.PosY + this.viewParams.Height } });
+                    case MapMode.Full:
+                        Sound.QuickPlay(SoundData.Name.PaperMove1);
+                        this.blocksUpdatesBelow = this.FullScreen && !Preferences.debugAllowMapAnimation;
+                        this.InputType = InputTypes.Normal;
+                        this.drawActive = true;
+                        break;
+
+                    case MapMode.Off:
+                        Sound.QuickPlay(SoundData.Name.PaperMove2);
+                        this.blocksUpdatesBelow = false;
+                        this.InputType = InputTypes.None;
+                        this.drawActive = false;
+                        break;
+
+                    default:
+                        throw new ArgumentException($"Unsupported mode - {this.Mode}.");
+                }
+
+                this.mapOverlay.AddTransition();
             }
         }
 
-        public bool CheckIfCanBeTurnedOn(bool showMessage = true)
+        public bool CheckIfPlayerCanReadTheMap(bool showMessage)
         {
             bool canBeTurnedOn = this.world.player.CanSeeAnything;
 
@@ -236,222 +245,259 @@ namespace SonOfRobin
 
         public override void Update(GameTime gameTime)
         {
-            if (!this.CheckIfCanBeTurnedOn(showMessage: true))
+            if (this.Mode == MapMode.Off) return;
+
+            if (this.MapMarker != null && !this.MapMarker.exists) this.MapMarker = null; // if marker had destroyed itself
+
+            if (!this.CheckIfPlayerCanReadTheMap(showMessage: true))
             {
                 this.TurnOff();
-                this.world.mapMode = World.MapMode.None;
                 return;
             }
 
-            this.UpdateBackground(); // it's best to update background graphics in Update() (SetRenderTarget in Draw() must go first)
-            this.ProcessInput();
+            if (this.Mode == MapMode.Full) this.ProcessInput();
+            else this.camera.TrackCoords(this.world.player.sprite.position);
+
+            this.camera.Update(cameraCorrection: Vector2.Zero);
+            this.world.grid.UnloadTexturesIfMemoryLow(this.camera);
+            this.world.grid.LoadClosestTextureInCameraView(this.camera);
+        }
+
+        private void SetViewParamsForMiniature()
+        {
+            this.viewParams.Width = (int)(this.world.width * this.scaleMultiplier);
+            this.viewParams.Height = (int)(this.world.height * this.scaleMultiplier);
+            this.viewParams.ScaleX = 1f;
+            this.viewParams.ScaleY = 1f;
+            this.viewParams.PosX = 0;
+            this.viewParams.PosY = 0;
+        }
+
+        private void SetViewParamsForTargetRender()
+        {
+            this.camera.SetViewParams(this);
         }
 
         private void ProcessInput()
         {
-            if (InputMapper.HasBeenPressed(InputMapper.Action.MapSwitch)) this.world.ToggleMapMode();
+            var touches = TouchInput.TouchPanelState;
+            if (!touches.Any()) this.lastTouchPos = Vector2.Zero;
+
+            // map mode switch
+
+            if (InputMapper.HasBeenPressed(InputMapper.Action.MapSwitch))
+            {
+                this.SwitchToNextMode();
+                return;
+            }
+
+            // place or remove marker
+
+            if (InputMapper.HasBeenPressed(InputMapper.Action.MapToggleMarker))
+            {
+                if (this.MapMarker == null) this.MapMarker = PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: this.camera.CurrentPos, templateName: PieceTemplate.Name.MapMarker);
+                else
+                {
+                    if (Math.Abs(Vector2.Distance(this.MapMarker.sprite.position, this.camera.CurrentPos)) < 15)
+                    {
+                        this.MapMarker.Destroy();
+                        this.MapMarker = null;
+                    }
+                    else this.MapMarker.sprite.SetNewPosition(this.camera.CurrentPos);
+                }
+
+                return;
+            }
+
+            // center on player
+
+            if (InputMapper.HasBeenPressed(InputMapper.Action.MapCenterPlayer)) this.camera.TrackCoords(position: this.world.player.sprite.position, moveInstantly: true);
+
+            // zoom
+
+            if (InputMapper.IsPressed(InputMapper.Action.MapZoomIn) || InputMapper.IsPressed(InputMapper.Action.MapZoomOut))
+            {
+                bool zoomByMouse = Mouse.ScrollWheelRolledUp || Mouse.ScrollWheelRolledDown;
+
+                float zoomMultiplier = zoomByMouse ? 0.4f : 0.035f;
+                float zoomChangeVal = (zoomByMouse ? this.camera.TargetZoom : this.camera.CurrentZoom) * zoomMultiplier;
+
+                float currentZoom = this.camera.CurrentZoom; // value to be replaced
+
+                if (InputMapper.IsPressed(InputMapper.Action.MapZoomIn))
+                {
+                    currentZoom = this.camera.CurrentZoom + zoomChangeVal;
+                    currentZoom = Math.Min(currentZoom, this.InitialZoom);
+                }
+
+                if (InputMapper.IsPressed(InputMapper.Action.MapZoomOut))
+                {
+                    currentZoom = this.camera.CurrentZoom - zoomChangeVal;
+                    currentZoom = Math.Max(currentZoom, this.scaleMultiplier * 0.8f);
+                }
+
+                this.camera.SetZoom(zoom: currentZoom, setInstantly: !zoomByMouse, zoomSpeedMultiplier: zoomByMouse ? 5f : 1f);
+            }
+
+            // movement
+
+            Vector2 movement = InputMapper.Analog(InputMapper.Action.MapMove) * 10 / this.camera.CurrentZoom;
+            if (movement == Vector2.Zero)
+            {
+                foreach (TouchLocation touch in TouchInput.TouchPanelState)
+                {
+                    if (touch.State == TouchLocationState.Released)
+                    {
+                        this.lastTouchPos = Vector2.Zero;
+                        break;
+                    }
+
+                    if (!TouchInput.IsPointActivatingAnyTouchInterface(point: touch.Position, checkLeftStick: false, checkRightStick: false, checkVirtButtons: true, checkInventory: false, checkPlayerPanel: false))
+                    {
+                        if (touch.State == TouchLocationState.Pressed)
+                        {
+                            this.lastTouchPos = touch.Position;
+                            break;
+                        }
+                        else if (touch.State == TouchLocationState.Moved)
+                        {
+                            movement = this.lastTouchPos - touch.Position;
+                            this.lastTouchPos = touch.Position;
+                        }
+
+                        movement /= this.camera.CurrentZoom;
+                    }
+                }
+            }
+
+            if (movement != Vector2.Zero)
+            {
+                Vector2 newPos = this.camera.TrackedPos + movement;
+
+                newPos.X = Math.Max(newPos.X, 0);
+                newPos.X = Math.Min(newPos.X, this.world.width);
+                newPos.Y = Math.Max(newPos.Y, 0);
+                newPos.Y = Math.Min(newPos.Y, this.world.height);
+
+                this.camera.TrackCoords(newPos);
+            }
+
+        }
+
+        public override void RenderToTarget()
+        {
+            if (this.Mode == MapMode.Off || (this.Mode == MapMode.Mini && SonOfRobinGame.currentUpdate % 2 != 0)) return;
+
+            this.UpdateBackground();
+
+            this.SetViewParamsForTargetRender();
+            SetRenderTarget(this.FinalMapToDisplay);
+
+            // filling with water color
+
+            SonOfRobinGame.spriteBatch.Begin(transformMatrix: this.TransformMatrix);
+            SonOfRobinGame.graphicsDevice.Clear(BoardGraphics.colorsByName[BoardGraphics.Colors.WaterDeep]);
+
+            // drawing paper map background texture
+
+            Rectangle extendedMapRect = this.worldRect;
+            extendedMapRect.Inflate(extendedMapRect.Width * 0.1f, extendedMapRect.Width * 0.1f); // width should be used twice
+
+            SonOfRobinGame.spriteBatch.Draw(AnimData.framesForPkgs[AnimData.PkgName.Map].texture, extendedMapRect, Color.White);
+
+            // drawing detailed or miniature background 
+
+            float showDetailedMapAtZoom = (float)SonOfRobinGame.VirtualWidth / (float)this.world.width * 1.4f;
+            bool showDetailedMap = this.camera.CurrentZoom >= showDetailedMapAtZoom;
+
+            this.effectCol.TurnOnNextEffect(scene: this, currentUpdateToUse: SonOfRobinGame.currentUpdate);
+
+            SonOfRobinGame.spriteBatch.Draw(this.miniatureCombinedGfx, this.worldRect, Color.White);
+            if (showDetailedMap)
+            {
+                foreach (Cell cell in this.world.grid.GetCellsInsideRect(this.camera.viewRect))
+                {
+                    if (cell.VisitedByPlayer || Preferences.DebugShowWholeMap) cell.DrawBackground(opacity: 1f);
+                }
+            }
+
+            this.StartNewSpriteBatch(enableEffects: false); // turning off effects
+
+            // drawing pieces
+
+            Rectangle worldCameraRectForSpriteSearch = this.camera.viewRect;
+            // mini map displays far pieces on the sides
+            if (this.Mode == MapMode.Mini) worldCameraRectForSpriteSearch.Inflate(worldCameraRectForSpriteSearch.Width, worldCameraRectForSpriteSearch.Height);
+
+            var spritesBag = world.grid.GetSpritesForRect(groupName: Cell.Group.ColMovement, visitedByPlayerOnly: !Preferences.DebugShowWholeMap, rectangle: worldCameraRectForSpriteSearch);
+
+            var typesShownAlways = new List<Type> { typeof(Player), typeof(Workshop), typeof(Cooker), typeof(Shelter) };
+            var namesShownAlways = new List<PieceTemplate.Name> { PieceTemplate.Name.MapMarker };
+            var typesShownIfDiscovered = new List<Type> { typeof(Container) };
+            var namesShownIfDiscovered = new List<PieceTemplate.Name> { PieceTemplate.Name.CrateStarting, PieceTemplate.Name.CrateRegular, PieceTemplate.Name.CoalDeposit, PieceTemplate.Name.IronDeposit, PieceTemplate.Name.CrystalDepositSmall, PieceTemplate.Name.CrystalDepositBig };
+
+            if (Preferences.DebugShowWholeMap)
+            {
+                typesShownAlways.Add(typeof(Animal));
+                typesShownAlways.AddRange(typesShownIfDiscovered);
+            }
+
+            if (this.MapMarker != null) spritesBag.Add(this.MapMarker.sprite);
+
+            float spriteSize = 1f / this.camera.CurrentZoom * 0.25f;
+
+            // regular "foreach", because spriteBatch is not thread-safe
+            foreach (Sprite sprite in spritesBag.OrderBy(o => o.frame.layer).ThenBy(o => o.gfxRect.Bottom))
+            {
+                BoardPiece piece = sprite.boardPiece;
+                PieceTemplate.Name name = piece.name;
+                Type pieceType = piece.GetType();
+
+                bool showSprite = false;
+
+                if (typesShownAlways.Contains(pieceType) || namesShownAlways.Contains(name)) showSprite = true;
+
+                if (!showSprite && (sprite.hasBeenDiscovered) &&
+                    (namesShownIfDiscovered.Contains(name) ||
+                    typesShownIfDiscovered.Contains(pieceType))) showSprite = true;
+
+                if (showSprite)
+                {
+                    Rectangle destRect = sprite.gfxRect;
+                    destRect.Inflate(destRect.Width * spriteSize, destRect.Height * spriteSize);
+
+                    if (this.Mode == MapMode.Mini && !this.camera.viewRect.Contains(destRect))
+                    {
+                        destRect.X = Math.Max(this.camera.viewRect.Left, destRect.X);
+                        destRect.X = Math.Min(this.camera.viewRect.Right - destRect.Width, destRect.X);
+                        destRect.Y = Math.Max(this.camera.viewRect.Top, destRect.Y);
+                        destRect.Y = Math.Min(this.camera.viewRect.Bottom - destRect.Height, destRect.Y);
+                    }
+
+                    if (Preferences.debugAllowMapAnimation) sprite.UpdateAnimation();
+                    sprite.frame.Draw(destRect: destRect, color: Color.White, opacity: 1f);
+                }
+            }
+
+            // drawing crosshair
+
+            if (this.Mode == MapMode.Full)
+            {
+                int crossHairSize = (int)(this.camera.viewRect.Width * 0.02f);
+                int crosshairHalfSize = crossHairSize / 2;
+
+                Rectangle crosshairRect = new Rectangle(x: (int)this.camera.CurrentPos.X - crosshairHalfSize, y: (int)this.camera.CurrentPos.Y - crosshairHalfSize, width: crossHairSize, height: crossHairSize);
+                AnimFrame crosshairFrame = PieceInfo.GetInfo(PieceTemplate.Name.Crosshair).frame;
+                crosshairFrame.DrawAndKeepInRectBounds(destBoundsRect: crosshairRect, color: Color.White);
+            }
+
+            SonOfRobinGame.spriteBatch.End();
         }
 
         public override void Draw()
         {
-            // filling screen with water color
-            if (this.fullScreen) SonOfRobinGame.graphicsDevice.Clear(BoardGraphics.colorsByName[BoardGraphics.Colors.WaterDeep]);
-
-            // drawing terrain and fog of war
-            SonOfRobinGame.spriteBatch.Draw(this.combinedGfx, new Rectangle(0, 0, this.viewParams.Width, this.viewParams.Height), Color.White * this.viewParams.drawOpacity);
-
-            // drawing pieces
-            var groupName = this.fullScreen ? Cell.Group.Visible : Cell.Group.MiniMap;
-
-            byte fillSize;
-            byte outlineSize = 1;
-            Color fillColor;
-            Color outlineColor = new Color(0, 0, 0);
-            bool drawOutline;
-            bool showOutsideCamera;
-            Rectangle cameraRect = this.world.camera.viewRect;
-            BoardPiece piece;
-
-            // sprites bag should be only updated once in a while
-            if ((this.world.currentUpdate % 4 == 0 && SonOfRobinGame.lastDrawDelay < 20) || this.world.currentUpdate % 60 != 0) this.spritesBag = world.grid.GetAllSprites(groupName: groupName, visitedByPlayerOnly: !Preferences.DebugShowWholeMap);
-
-            // regular "foreach", because spriteBatch is not thread-safe
-            foreach (Sprite sprite in this.spritesBag)
-            {
-                drawOutline = false;
-                showOutsideCamera = false;
-                piece = sprite.boardPiece;
-
-                if (piece.GetType() == typeof(Player))
-                {
-                    showOutsideCamera = true;
-                    fillSize = 4;
-                    fillColor = Color.White;
-                    outlineSize = 8;
-                    outlineColor = Color.Black;
-                    drawOutline = true;
-                }
-
-                else if (piece.GetType() == typeof(Workshop))
-                {
-                    showOutsideCamera = sprite.hasBeenDiscovered;
-                    fillSize = 4;
-                    fillColor = Color.Aqua;
-                    outlineSize = 8;
-                    outlineColor = Color.Blue;
-                    drawOutline = true;
-                }
-
-                else if (piece.GetType() == typeof(Cooker))
-                {
-                    showOutsideCamera = true;
-                    fillSize = 4;
-                    fillColor = new Color(255, 0, 0);
-                    outlineSize = 8;
-                    outlineColor = new Color(128, 0, 0);
-                    drawOutline = true;
-                }
-
-                else if (piece.GetType() == typeof(Shelter))
-                {
-                    showOutsideCamera = true;
-                    fillSize = 4;
-                    fillColor = Color.Chartreuse;
-                    outlineSize = 8;
-                    outlineColor = Color.SeaGreen;
-                    drawOutline = true;
-                }
-
-                else if (piece.GetType() == typeof(Container))
-                {
-                    showOutsideCamera = true;
-                    fillSize = 4;
-                    fillColor = Color.Fuchsia;
-                    outlineSize = 8;
-                    outlineColor = Color.DarkOrchid;
-                    drawOutline = true;
-                }
-
-                else if (piece.GetType() == typeof(Tool))
-                {
-                    showOutsideCamera = true;
-                    fillSize = 4;
-                    fillColor = Color.LightCyan;
-                    outlineSize = 8;
-                    outlineColor = Color.Teal;
-                    drawOutline = true;
-                }
-
-                else if (piece.GetType() == typeof(Equipment))
-                {
-                    showOutsideCamera = true;
-                    fillSize = 4;
-                    fillColor = Color.Gold;
-                    outlineSize = 8;
-                    outlineColor = Color.Chocolate;
-                    drawOutline = true;
-                }
-
-                else if (piece.GetType() == typeof(Fruit))
-                {
-                    showOutsideCamera = sprite.hasBeenDiscovered;
-                    fillSize = 2;
-                    fillColor = Color.Lime;
-                    outlineSize = 4;
-                    outlineColor = Color.DarkGreen;
-                    drawOutline = true;
-                }
-
-                else if (piece.GetType() == typeof(Animal))
-                {
-                    fillColor = PieceInfo.GetInfo(piece.name).isCarnivorous ? Color.Red : Color.Yellow;
-                    fillSize = 3;
-                }
-
-                else if (piece.GetType() == typeof(Plant))
-                {
-                    fillSize = 2;
-                    fillColor = piece.alive ? Color.Green : Color.DarkGreen;
-                }
-
-                else if (piece.GetType() == typeof(Decoration))
-                {
-                    if (piece.name == PieceTemplate.Name.CrateStarting || piece.name == PieceTemplate.Name.CrateRegular)
-                    {
-                        showOutsideCamera = sprite.hasBeenDiscovered;
-                        fillSize = 4;
-                        fillColor = Color.BurlyWood;
-                        outlineSize = 8;
-                        outlineColor = Color.Maroon;
-                        drawOutline = true;
-                    }
-                    else if (depositList.Contains(piece.name))
-                    {
-                        showOutsideCamera = sprite.hasBeenDiscovered;
-                        fillSize = 4;
-                        fillColor = Color.Yellow;
-                        outlineSize = 8;
-                        outlineColor = Color.Red;
-                        drawOutline = true;
-                    }
-
-                    else
-                    {
-                        fillSize = 3;
-                        fillColor = Color.Black;
-                    }
-                }
-
-                else if (piece.GetType() == typeof(Collectible))
-                {
-                    fillSize = 2;
-                    fillColor = Color.Gray;
-                }
-
-                else
-                { continue; }
-
-                if (!showOutsideCamera && !cameraRect.Contains(sprite.gfxRect) && !Preferences.debugShowAllMapPieces) continue;
-
-                if (drawOutline) this.DrawSpriteSquare(sprite: sprite, size: outlineSize, color: outlineColor);
-                this.DrawSpriteSquare(sprite: sprite, size: fillSize, color: fillColor);
-            }
-
-            // drawing camera FOV
-            var viewRect = this.world.camera.viewRect;
-
-            int fovX = (int)(viewRect.Left * this.multiplier);
-            int fovY = (int)(viewRect.Top * this.multiplier);
-            int fovWidth = (int)(viewRect.Width * this.multiplier);
-            int fovHeight = (int)(viewRect.Height * this.multiplier);
-            int borderWidth = this.fullScreen ? 2 : 1;
-
-            Rectangle fovRect = new Rectangle(fovX, fovY, fovWidth, fovHeight);
-            Helpers.DrawRectangleOutline(rect: fovRect, color: Color.White * this.viewParams.drawOpacity, borderWidth: borderWidth);
+            // is being drawn in MapOverlay scene
         }
-
-        private void DrawSpriteSquare(Sprite sprite, byte size, Color color)
-        {
-            SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, new Rectangle(
-                   (int)((sprite.position.X * this.multiplier) - size / 2),
-                   (int)((sprite.position.Y * this.multiplier) - size / 2),
-                   size, size), color * this.viewParams.drawOpacity);
-        }
-
-        public void StartRenderingToTarget(RenderTarget2D newRenderTarget)
-        {
-            SonOfRobinGame.spriteBatch.Begin();
-            SonOfRobinGame.graphicsDevice.SetRenderTarget(newRenderTarget); // SetRenderTarget() wipes the target black!
-        }
-
-        public void StartRenderingToTarget(RenderTarget2D newRenderTarget, BlendState blendState)
-        {
-            SonOfRobinGame.spriteBatch.Begin(blendState: blendState);
-            SonOfRobinGame.graphicsDevice.SetRenderTarget(newRenderTarget); // SetRenderTarget() wipes the target black!
-        }
-
-        public void EndRenderingToTarget()
-        { SonOfRobinGame.spriteBatch.End(); }
 
     }
 }

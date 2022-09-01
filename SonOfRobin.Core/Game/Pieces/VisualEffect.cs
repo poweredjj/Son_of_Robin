@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -42,6 +43,18 @@ namespace SonOfRobin
                 animal.target = this;
                 animal.aiData.Reset(animal);
                 animal.activeState = State.AnimalFlee;
+            }
+        }
+
+        public override void SM_MapMarkerShowAndCheck()
+        {
+            if (this.world.currentUpdate % 10 != 0) return;
+
+            if (!this.world.player.buffEngine.HasBuff(BuffEngine.BuffType.EnableMap) ||
+                !this.world.map.CheckIfPlayerCanReadTheMap(showMessage: false) ||
+                Vector2.Distance(this.sprite.position, this.world.player.sprite.position) < 100)
+            {
+                this.Destroy();
             }
         }
     }

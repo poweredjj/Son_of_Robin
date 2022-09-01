@@ -9,8 +9,11 @@
 
 Texture2D SpriteTexture;
 sampler s0;
+float4 fgColor;
+float4 bgColor;
+float gray;
 float4 newColor;
-float4 gray;
+float4 tonedGray;
 
 sampler2D SpriteTextureSampler = sampler_state
 {
@@ -30,10 +33,19 @@ float4 MainPS(VertexShaderOutput input) : COLOR
 
 	float4 color = tex2D(s0, input.TextureCoordinates);
 
-	if (color.a <= 0.5) return color;
-	
-	gray.rgb = (color.r + color.g + color.b) / 3.0f;
-	return gray + (newColor * 0.8);
+	if (color.a < 0.5f)
+	{
+		color.a = 0.0f;
+		return color;
+	}
+
+	float gray = (color.r + color.g + color.b) / 3.0f;
+	tonedGray.rgb = (gray * fgColor.rgb);
+
+	newColor = bgColor * (tonedGray * 2.7f) + (color * 0.23f);
+	newColor.a = 1.0f;
+
+	return newColor;
 }
 
 technique SpriteDrawing

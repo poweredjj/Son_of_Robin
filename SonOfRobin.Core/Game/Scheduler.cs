@@ -1234,7 +1234,7 @@ namespace SonOfRobin
                             var piecesByID = new Dictionary<string, List<BoardPiece>>();
                             var duplicatedPiecesByID = new Dictionary<string, List<BoardPiece>>();
 
-                            foreach (Sprite sprite in world.grid.GetAllSprites(Cell.Group.All))
+                            foreach (Sprite sprite in world.grid.GetSpritesFromAllCells(Cell.Group.All))
                             {
                                 if (sprite.boardPiece.exists && !sprite.IsOnBoard) incorrectBoardPieces.Add(sprite.boardPiece);
                                 if (piecesByID.ContainsKey(sprite.id)) piecesByID[sprite.id].Add(sprite.boardPiece);
