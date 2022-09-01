@@ -210,7 +210,7 @@ namespace SonOfRobin
 
                     case MapMode.Full:
                         Sound.QuickPlay(SoundData.Name.PaperMove1);
-                        this.blocksUpdatesBelow = this.FullScreen && !Preferences.debugAllowMapAnimation; // fullscreen map should only be "live animated" in debug mode
+                        this.blocksUpdatesBelow = this.FullScreen && !Preferences.debugAllowMapAnimation;
                         this.InputType = InputTypes.Normal;
                         this.drawActive = true;
                         break;
@@ -425,7 +425,7 @@ namespace SonOfRobin
 
             // drawing pieces
 
-            Rectangle worldCameraRectForSpriteSearch = this.world.camera.viewRect;
+            Rectangle worldCameraRectForSpriteSearch = this.camera.viewRect;
             // mini map displays far pieces on the sides
             if (this.Mode == MapMode.Mini) worldCameraRectForSpriteSearch.Inflate(worldCameraRectForSpriteSearch.Width, worldCameraRectForSpriteSearch.Height);
 
@@ -459,7 +459,7 @@ namespace SonOfRobin
 
                 if (typesShownAlways.Contains(pieceType) || namesShownAlways.Contains(name)) showSprite = true;
 
-                if (!showSprite && sprite.hasBeenDiscovered &&
+                if (!showSprite && (sprite.hasBeenDiscovered) &&
                     (namesShownIfDiscovered.Contains(name) ||
                     typesShownIfDiscovered.Contains(pieceType))) showSprite = true;
 

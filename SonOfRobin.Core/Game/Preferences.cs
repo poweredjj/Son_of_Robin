@@ -281,7 +281,6 @@ namespace SonOfRobin
         public static bool debugShowStatBars = false;
         public static bool debugShowFruitRects = false;
         public static bool debugCreateMissingPieces = true;
-        public static bool debugShowAllMapPieces = false;
         private static bool debugShowWholeMap = false;
         public static bool debugShowAllRecipes = false;
         public static bool debugSaveEverywhere = false;
@@ -349,7 +348,7 @@ namespace SonOfRobin
             {
                 debugGodMode = value;
                 debugShowWholeMap = debugGodMode;
-                debugShowAllMapPieces = debugGodMode;
+                debugAllowMapAnimation = debugGodMode;
                 World world = World.GetTopWorld();
                 if (world != null)
                 {
