@@ -59,7 +59,7 @@ namespace SonOfRobin
 
         protected override void AdaptToNewSize()
         {
-            this.UpdateResolution();
+            this.UpdateResolution(force: true);
             this.mapOverlay.AddTransition();
         }
 
@@ -73,11 +73,11 @@ namespace SonOfRobin
             this.dirtyBackground = true;
             this.dirtyFog = true;
 
-            this.UpdateResolution();
+            this.UpdateResolution(force: true);
             this.UpdateBackground();
         }
 
-        public void UpdateResolution()
+        public void UpdateResolution(bool force = false)
         {
             float multiplierX = (float)SonOfRobinGame.VirtualWidth / (float)world.width;
             float multiplierY = (float)SonOfRobinGame.VirtualHeight / (float)world.height;
@@ -85,7 +85,7 @@ namespace SonOfRobin
 
             this.SetViewParamsForMiniature();
 
-            if (this.miniatureTerrainGfx == null || this.miniatureTerrainGfx.Width != this.viewParams.Width || this.miniatureTerrainGfx.Height != this.viewParams.Height)
+            if (force || this.miniatureTerrainGfx == null || this.miniatureTerrainGfx.Width != this.viewParams.Width || this.miniatureTerrainGfx.Height != this.viewParams.Height)
             {
                 if (this.miniatureTerrainGfx != null) this.miniatureTerrainGfx.Dispose();
                 this.miniatureTerrainGfx = new RenderTarget2D(SonOfRobinGame.graphicsDevice, this.viewParams.Width, this.viewParams.Height, false, SurfaceFormat.Color, DepthFormat.None);
