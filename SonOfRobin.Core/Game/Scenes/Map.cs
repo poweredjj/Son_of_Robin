@@ -442,8 +442,6 @@ namespace SonOfRobin
                 typesShownAlways.AddRange(typesShownIfDiscovered);
             }
 
-            // adding marker
-
             if (this.MapMarker != null) spritesBag.Add(this.MapMarker.sprite);
 
             float spriteSize = 1f / this.camera.CurrentZoom * 0.25f;
@@ -476,6 +474,7 @@ namespace SonOfRobin
                         destRect.Y = Math.Min(this.camera.viewRect.Bottom - destRect.Height, destRect.Y);
                     }
 
+                    if (Preferences.debugAllowMapAnimation) sprite.UpdateAnimation();
                     sprite.frame.Draw(destRect: destRect, color: Color.White, opacity: 1f);
                 }
             }
