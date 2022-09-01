@@ -26,6 +26,8 @@ struct VertexShaderOutput
 
 float4 MainPS(VertexShaderOutput input) : COLOR
 {
+	// shaders use color value range 0.0f - 1.0f
+
 	float4 color = tex2D(s0, input.TextureCoordinates);
 
 	if (color.a <= 0.5) return color;

@@ -25,6 +25,8 @@ struct VertexShaderOutput
 
 float4 MainPS(VertexShaderOutput input) : COLOR
 {
+	// shaders use color value range 0.0f - 1.0f
+
 	float4 currentPixel = tex2D(InputSampler, input.UV) * input.Color;
 	float4 output = currentPixel;
 	float threshold = 0.4f;

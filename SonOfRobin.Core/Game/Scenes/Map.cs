@@ -97,7 +97,7 @@ namespace SonOfRobin
                 this.dirtyFog = true;
             }
 
-            this.UpdateFogOfWar();
+            this.UpdateCombinedGfx();
         }
 
         public void UpdateBackground()
@@ -125,10 +125,10 @@ namespace SonOfRobin
                 MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{SonOfRobinGame.currentUpdate} map background updated ({this.viewParams.Width}x{this.viewParams.Height}).", color: Color.White);
             }
 
-            this.UpdateFogOfWar();
+            this.UpdateCombinedGfx();
         }
 
-        private void UpdateFogOfWar()
+        private void UpdateCombinedGfx()
         {
             if (this.miniatureCombinedGfx != null && this.dirtyFog == false) return;
 
@@ -400,9 +400,12 @@ namespace SonOfRobin
             SonOfRobinGame.spriteBatch.Begin(transformMatrix: this.TransformMatrix);
             SonOfRobinGame.graphicsDevice.Clear(BoardGraphics.colorsByName[BoardGraphics.Colors.WaterDeep]);
 
-            // drawing "paper" map background
+            // drawing paper map background texture
 
-            SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, this.worldRect, paperColor);
+            Rectangle extendedMapRect = this.worldRect;
+            extendedMapRect.Inflate(extendedMapRect.Width * 0.1f, extendedMapRect.Width * 0.1f); // width should be used twice
+
+            SonOfRobinGame.spriteBatch.Draw(AnimData.framesForPkgs[AnimData.PkgName.Map].texture, extendedMapRect, Color.White);
 
             // drawing detailed or miniature background 
 

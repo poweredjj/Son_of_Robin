@@ -29,16 +29,21 @@ struct VertexShaderOutput
 
 float4 MainPS(VertexShaderOutput input) : COLOR
 {
+	// shaders use color value range 0.0f - 1.0f
+
 	float4 color = tex2D(s0, input.TextureCoordinates);
+
+	if (color.a < 0.5f)
+	{
+		color.a = 0.0f;
+		return color;
+	}
+
 	float gray = (color.r + color.g + color.b) / 3.0f;
-
-	if (color.a < 0.5 || gray > 0.8) return bgColor;
-
 	tonedGray.rgb = (gray * fgColor.rgb);
 
-
-	newColor = bgColor * (tonedGray * 3.0f) + (color * 0.2f);
-	newColor.a = 255;
+	newColor = bgColor * (tonedGray * 2.7f) + (color * 0.23f);
+	newColor.a = 1.0f;
 
 	return newColor;
 }
