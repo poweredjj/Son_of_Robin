@@ -409,31 +409,18 @@ namespace SonOfRobin
             float showMiniatureAtZoom = (float)SonOfRobinGame.VirtualWidth / (float)this.world.width * 1.4f;
             float showFullScaleAtZoom = this.InitialZoom;
 
-            bool showMiniature = this.camera.CurrentZoom >= showMiniatureAtZoom;
-
-            //   float miniatureOpacity = (float)Helpers.ConvertRange(oldMin: showFullScaleAtZoom, oldMax: showMiniatureAtZoom, newMin: 0f, newMax: 1f, oldVal: this.camera.CurrentZoom, clampToEdges: true);
-
-            // MessageLog.AddMessage(msgType: MsgType.User, message: $"Zoom {this.camera.currentZoom} miniatureOpacity {miniatureOpacity} showMiniatureAtZoom {showMiniatureAtZoom}");
-
+            bool showMiniature = this.camera.CurrentZoom < showMiniatureAtZoom;
 
             // turning on effects for background
 
             this.effectCol.TurnOnNextEffect(scene: this, currentUpdateToUse: SonOfRobinGame.currentUpdate);
 
-            // drawing detailed background
-
-            var visibleCells = this.world.grid.GetCellsInsideRect(this.camera.viewRect);
-
-            // int drawnCellCount = miniatureOpacity < 1 ? visibleCells.Count : 0;
-            // MessageLog.AddMessage(msgType: MsgType.User, message: $"{SonOfRobinGame.currentUpdate} - drawn map cells count: {drawnCellCount}");
-
-            // drawing miniature background
+            // drawing detailed or miniature background 
 
             if (showMiniature) SonOfRobinGame.spriteBatch.Draw(this.miniatureCombinedGfx, this.worldRect, Color.White);
-
             else
             {
-                foreach (Cell cell in visibleCells)
+                foreach (Cell cell in this.world.grid.GetCellsInsideRect(this.camera.viewRect))
                 {
                     if (cell.VisitedByPlayer || Preferences.DebugShowWholeMap) cell.DrawBackground(opacity: 1f);
                 }

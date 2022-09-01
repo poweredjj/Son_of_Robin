@@ -29,14 +29,14 @@ float4 MainPS(VertexShaderOutput input) : COLOR
 {
 	float4 color = tex2D(s0, input.TextureCoordinates);
 
-	float gray = (color.r + color.g + color.b) / 3;
+	float gray = (color.r + color.g + color.b) / 2;
 
-	// TODO finish writing a proper formula
+	if (color.a < 0.5) return bgColor;
 
-	newColor.r = bgColor.r - gray + (color.r * 0.15);
-	newColor.g = bgColor.g - gray + (color.g * 0.15);
-	newColor.b = bgColor.b - gray + (color.b * 0.15);
-	
+	newColor.r = bgColor.r * (gray * fgColor.r) * (color.r * 0.7);
+	newColor.g = bgColor.g * (gray * fgColor.r) * (color.g * 0.7);
+	newColor.b = bgColor.b * (gray * fgColor.r) * (color.b * 0.7);
+
 	return newColor;
 }
 
