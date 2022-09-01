@@ -229,24 +229,21 @@ namespace SonOfRobin
                 // calculating and drawing everything as Vector2 / float to avoid jerky marker motion
 
                 Camera camera = this.world.camera;
-
-                Sprite markerSprite = this.world.map.MapMarker.sprite;
+                Vector2 markerPos = this.world.map.MapMarker.sprite.position;
+                Texture2D markerTexture = this.world.map.MapMarker.sprite.frame.texture;
 
                 float tipsHeight = 0; // to avoid drawing marker under ControlTips
                 ControlTips topTips = ControlTips.GetTopTips();
                 if (topTips != null) tipsHeight = (float)topTips.viewParams.Height / topTips.viewParams.ScaleY;
 
+                float markerHeight = SonOfRobinGame.VirtualHeight * 0.04f * Preferences.mapMarkerScale;
+                float markerScale = markerHeight / markerTexture.Height;
+                float markerWidth = markerTexture.Width * markerScale;
+
                 float cameraLeft = camera.viewPos.X * -1;
                 float cameraRight = cameraLeft + camera.viewRect.Width;
                 float cameraTop = camera.viewPos.Y * -1;
                 float cameraBottom = cameraTop + camera.viewRect.Height - (tipsHeight * this.world.viewParams.ScaleY);
-
-                Vector2 markerPos = markerSprite.position;
-                Texture2D markerTexture = markerSprite.frame.texture;
-
-                float markerHeight = SonOfRobinGame.VirtualHeight * 0.04f * Preferences.mapMarkerScale;
-                float markerScale = markerHeight / markerSprite.gfxRect.Height;
-                float markerWidth = markerSprite.gfxRect.Width * markerScale;
 
                 Vector2 offset = Vector2.Zero;
 
@@ -268,7 +265,7 @@ namespace SonOfRobin
 
                 float markerDrawScale = (markerScreenPosRightBottom.X - markerScreenPos.X) / (float)markerTexture.Width;
 
-                SonOfRobinGame.spriteBatch.Draw(texture: markerTexture, position: markerScreenPos, sourceRectangle: markerTexture.Bounds, color: Color.White, rotation: 0, origin: Vector2.Zero, scale: markerDrawScale, effects: SpriteEffects.None, layerDepth: 0);
+                SonOfRobinGame.spriteBatch.Draw(texture: markerTexture, position: markerScreenPos, scale: markerDrawScale, sourceRectangle: markerTexture.Bounds, color: Color.White, rotation: 0, origin: Vector2.Zero, effects: SpriteEffects.None, layerDepth: 0);
             }
 
         }
