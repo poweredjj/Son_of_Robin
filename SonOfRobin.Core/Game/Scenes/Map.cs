@@ -146,24 +146,22 @@ namespace SonOfRobin
             SonOfRobinGame.spriteBatch.Begin(transformMatrix: this.TransformMatrix);
             SonOfRobinGame.graphicsDevice.Clear(Color.Transparent);
 
-            if (!Preferences.DebugShowWholeMap)
+            int cellWidth = this.world.grid.allCells[0].width;
+            int cellHeight = this.world.grid.allCells[0].height;
+            int destCellWidth = (int)Math.Ceiling(cellWidth * this.scaleMultiplier);
+            int destCellHeight = (int)Math.Ceiling(cellHeight * this.scaleMultiplier);
+
+            foreach (Cell cell in Preferences.DebugShowWholeMap ? this.world.grid.allCells : this.world.grid.CellsVisitedByPlayer)
             {
-                int cellWidth = this.world.grid.allCells[0].width;
-                int cellHeight = this.world.grid.allCells[0].height;
-                int destCellWidth = (int)Math.Ceiling(cellWidth * this.scaleMultiplier);
-                int destCellHeight = (int)Math.Ceiling(cellHeight * this.scaleMultiplier);
+                Rectangle srcDestRect = new Rectangle(
+                    (int)Math.Floor(cell.xMin * this.scaleMultiplier),
+                    (int)Math.Floor(cell.yMin * this.scaleMultiplier),
+                    destCellWidth,
+                    destCellHeight);
 
-                foreach (Cell cell in this.world.grid.CellsVisitedByPlayer)
-                {
-                    Rectangle srcDestRect = new Rectangle(
-                        (int)Math.Floor(cell.xMin * this.scaleMultiplier),
-                        (int)Math.Floor(cell.yMin * this.scaleMultiplier),
-                        destCellWidth,
-                        destCellHeight);
-
-                    SonOfRobinGame.spriteBatch.Draw(this.miniatureTerrainGfx, srcDestRect, srcDestRect, Color.White);
-                }
+                SonOfRobinGame.spriteBatch.Draw(this.miniatureTerrainGfx, srcDestRect, srcDestRect, Color.White);
             }
+
             SonOfRobinGame.spriteBatch.End();
 
             this.dirtyFog = false;
@@ -212,7 +210,7 @@ namespace SonOfRobin
 
                     case MapMode.Full:
                         Sound.QuickPlay(SoundData.Name.PaperMove1);
-                        this.blocksUpdatesBelow = this.FullScreen && !Preferences.DebugMode; // fullscreen map should only be "live animated" in debug mode
+                        this.blocksUpdatesBelow = this.FullScreen && !Preferences.debugAllowMapAnimation; // fullscreen map should only be "live animated" in debug mode
                         this.InputType = InputTypes.Normal;
                         this.drawActive = true;
                         break;
@@ -321,7 +319,7 @@ namespace SonOfRobin
             {
                 bool zoomByMouse = Mouse.ScrollWheelRolledUp || Mouse.ScrollWheelRolledDown;
 
-                float zoomMultiplier = zoomByMouse ? 0.3f : 0.035f;
+                float zoomMultiplier = zoomByMouse ? 0.4f : 0.035f;
                 float zoomChangeVal = (zoomByMouse ? this.camera.TargetZoom : this.camera.CurrentZoom) * zoomMultiplier;
 
                 float currentZoom = this.camera.CurrentZoom; // value to be replaced
@@ -409,13 +407,13 @@ namespace SonOfRobin
 
             // drawing detailed or miniature background 
 
-            float showMiniatureAtZoom = (float)SonOfRobinGame.VirtualWidth / (float)this.world.width * 1.4f;
-            bool showMiniature = this.camera.CurrentZoom < showMiniatureAtZoom;
+            float showDetailedMapAtZoom = (float)SonOfRobinGame.VirtualWidth / (float)this.world.width * 1.4f;
+            bool showDetailedMap = this.camera.CurrentZoom >= showDetailedMapAtZoom;
 
             this.effectCol.TurnOnNextEffect(scene: this, currentUpdateToUse: SonOfRobinGame.currentUpdate);
 
-            if (showMiniature) SonOfRobinGame.spriteBatch.Draw(this.miniatureCombinedGfx, this.worldRect, Color.White);
-            else
+            SonOfRobinGame.spriteBatch.Draw(this.miniatureCombinedGfx, this.worldRect, Color.White);
+            if (showDetailedMap)
             {
                 foreach (Cell cell in this.world.grid.GetCellsInsideRect(this.camera.viewRect))
                 {
@@ -437,6 +435,12 @@ namespace SonOfRobin
             var namesShownAlways = new List<PieceTemplate.Name> { PieceTemplate.Name.MapMarker };
             var typesShownIfDiscovered = new List<Type> { typeof(Container) };
             var namesShownIfDiscovered = new List<PieceTemplate.Name> { PieceTemplate.Name.CrateStarting, PieceTemplate.Name.CrateRegular, PieceTemplate.Name.CoalDeposit, PieceTemplate.Name.IronDeposit, PieceTemplate.Name.CrystalDepositSmall, PieceTemplate.Name.CrystalDepositBig };
+
+            if (Preferences.DebugShowWholeMap)
+            {
+                typesShownAlways.Add(typeof(Animal));
+                typesShownAlways.AddRange(typesShownIfDiscovered);
+            }
 
             // adding marker
 

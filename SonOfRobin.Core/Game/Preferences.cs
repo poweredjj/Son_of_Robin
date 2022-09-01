@@ -287,6 +287,8 @@ namespace SonOfRobin
         public static bool debugSaveEverywhere = false;
         public static bool debugShowSounds = false;
         public static bool debugDisablePlayerPanel = false;
+        public static bool debugAllowMapAnimation = false;
+
         public static bool DebugShowWholeMap
         {
             get { return debugShowWholeMap; }
@@ -299,6 +301,7 @@ namespace SonOfRobin
                 if (world != null) world.map.ForceRender();
             }
         }
+
 
         private static WorldSize selectedWorldSize;
         public static WorldSize SelectedWorldSize
