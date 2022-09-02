@@ -358,11 +358,11 @@ namespace SonOfRobin
                         xPos = 0.06f;
                         yPos = 0.12f;
 
-                        new VirtButton(name: VButName.MapZoomOut, label: "ZOOM\nOUT", bgColorPressed: Color.Orange, bgColorReleased: Color.White, textColor: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
+                        new VirtButton(name: VButName.MapZoomIn, label: "ZOOM\nIN", bgColorPressed: Color.Orange, bgColorReleased: Color.White, textColor: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
 
                         yPos += yShift;
 
-                        new VirtButton(name: VButName.MapZoomIn, label: "ZOOM\nIN", bgColorPressed: Color.Orange, bgColorReleased: Color.White, textColor: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
+                        new VirtButton(name: VButName.MapZoomOut, label: "ZOOM\nOUT", bgColorPressed: Color.Orange, bgColorReleased: Color.White, textColor: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
 
                         return;
                     }
