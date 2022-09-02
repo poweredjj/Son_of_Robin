@@ -61,7 +61,8 @@ namespace SonOfRobin
 
             debugLines.Add($"GC {GC.CollectionCount(0)} {GC.CollectionCount(1)} {GC.CollectionCount(2)}");
 
-            //if(SonOfRobinGame.platform == Platform.Desktop) debugText += $"ram free: {SonOfRobinGame.ramCounter.NextValue()}";
+            // if(SonOfRobinGame.os == OS.Windows) debugLines.Add($"ram free: {SonOfRobinGame.ramCounter.NextValue()}"); // uncomment only if needed - breaks game outside WindowsDX
+
             if (worldActive) debugLines.Add($"real time elapsed {world.TimePlayed:hh\\:mm\\:ss}");
             if (worldActive) debugLines.Add($"island time elapsed {world.islandClock.IslandTimeElapsed:hh\\:mm\\:ss} (x{world.updateMultiplier})");
             if (worldActive) debugLines.Add($"island day {world.islandClock.CurrentDayNo} clock {world.islandClock.TimeOfDay:hh\\:mm\\:ss} ({Convert.ToString(world.islandClock.CurrentPartOfDay).ToLower()})");

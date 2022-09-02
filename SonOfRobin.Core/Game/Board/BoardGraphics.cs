@@ -62,6 +62,7 @@ namespace SonOfRobin
         {
             if (this.texture == null) return;
 
+            this.texture.Dispose();
             this.texture = null;
             this.cell.grid.loadedTexturesCount--;
         }

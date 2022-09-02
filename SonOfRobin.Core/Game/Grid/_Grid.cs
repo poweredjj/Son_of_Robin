@@ -732,6 +732,7 @@ namespace SonOfRobin
                 cell.boardGraphics.UnloadTexture();
                 MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Unloaded texture from cell {cell.cellNoX},{cell.cellNoY}.", color: Color.Pink);
             }
+            GC.Collect();
         }
 
         public void UnloadAllTextures()
@@ -741,6 +742,7 @@ namespace SonOfRobin
                 cell.boardGraphics.UnloadTexture();
                 MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Unloaded texture from cell {cell.cellNoX},{cell.cellNoY}.", color: Color.Pink);
             }
+            GC.Collect();
         }
 
     }
