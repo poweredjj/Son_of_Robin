@@ -218,8 +218,9 @@ namespace SonOfRobin
                 { if (this.id == linkedScene.id) currentScene.linkedScenes.Remove(linkedScene); }
             }
 
-            // rebuilding sceneStack
+            // rebuilding sceneStack and waitingScenes
             sceneStack = sceneStack.Where(scene => scene.id != this.id).ToList();
+            waitingScenes = waitingScenes.Where(scene => scene.id != this.id).ToList();
 
             this.HasBeenRemoved = true;
         }

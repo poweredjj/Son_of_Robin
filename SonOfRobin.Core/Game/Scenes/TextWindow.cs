@@ -62,8 +62,6 @@ namespace SonOfRobin
 
             if (checkForDuplicate && this.IsADuplicate)
             {
-                // TODO add checking at Scene level, before adding to waitlist
-
                 this.Remove();
                 return;
             }
