@@ -468,7 +468,7 @@ namespace SonOfRobin
 
             if (this.MapMarker != null) spritesBag.Add(this.MapMarker.sprite);
 
-            float spriteSize = 1f / this.camera.CurrentZoom * 0.25f;
+            float spriteSize = 1f / this.camera.CurrentZoom * (this.Mode == MapMode.Mini ? 1f : 0.25f); // to keep sprite size constant, regardless of zoom
 
             // regular "foreach", because spriteBatch is not thread-safe
             foreach (Sprite sprite in spritesBag.OrderBy(o => o.frame.layer).ThenBy(o => o.gfxRect.Bottom))
