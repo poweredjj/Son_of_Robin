@@ -734,5 +734,14 @@ namespace SonOfRobin
             }
         }
 
+        public void UnloadAllTextures()
+        {
+            foreach (Cell cell in this.allCells)
+            {
+                cell.boardGraphics.UnloadTexture();
+                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Unloaded texture from cell {cell.cellNoX},{cell.cellNoY}.", color: Color.Pink);
+            }
+        }
+
     }
 }

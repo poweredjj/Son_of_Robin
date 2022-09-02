@@ -75,6 +75,8 @@ namespace SonOfRobin
         {
             touchPanelState = TouchPanel.GetState();
 
+            // ShowDebugTouchMessages(touchPanelState); // for testing only
+
             if (!Preferences.EnableTouchButtons) return;
             Refresh();
 
@@ -84,6 +86,16 @@ namespace SonOfRobin
             rightStick = dualStick.RightStick.GetRelativeVector(dualStick.aliveZoneSize) / dualStick.aliveZoneSize;
 
             VirtButton.UpdateAll();
+        }
+
+        private static void ShowDebugTouchMessages(TouchCollection touchPanelState)
+        {
+            // for testing only
+
+            foreach (TouchLocation touch in TouchPanelState)
+            {
+                MessageLog.AddMessage(msgType: MsgType.User, message: $"{SonOfRobinGame.currentUpdate} touch {touch.State} x:{touch.Position.X} y:{touch.Position.Y}");
+            }
         }
 
         public static bool IsPointActivatingAnyTouchInterface(Vector2 point, bool checkLeftStick = true, bool checkRightStick = true, bool checkVirtButtons = true, bool checkInventory = true, bool checkPlayerPanel = true)

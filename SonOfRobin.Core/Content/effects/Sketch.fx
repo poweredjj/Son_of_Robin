@@ -30,19 +30,13 @@ float4 MainPS(VertexShaderOutput input) : COLOR
 
 	float4 color = tex2D(s0, input.TextureCoordinates);
 
-	if (color.a < 0.9f)
-	{
-		color.a = 0.0f;
-		return color;
-	}
-
 	float gray = (color.r + color.g + color.b) / 3.0f;
 	float4 tonedGray;
 	tonedGray.rgb = (gray * fgColor.rgb);
 
 	float4 newColor;
 	newColor = bgColor * (tonedGray * 2.7f) + (color * 0.23f);
-	newColor.a = 1.0f;
+	newColor.a = color.a;
 
 	return newColor;
 }

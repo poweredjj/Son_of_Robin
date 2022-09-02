@@ -352,7 +352,8 @@ namespace SonOfRobin
 
             if (Keyboard.HasBeenPressed(Keys.F4))
             {
-                Menu.RebuildAllMenus();
+                if (world == null) return;
+                world.grid.UnloadAllTextures();
             }
 
             if (Keyboard.HasBeenPressed(Keys.F5))
