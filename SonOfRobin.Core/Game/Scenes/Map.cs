@@ -248,6 +248,11 @@ namespace SonOfRobin
             if (this.Mode == MapMode.Off) return;
 
             if (this.MapMarker != null && !this.MapMarker.exists) this.MapMarker = null; // if marker had destroyed itself
+            if (this.MapMarker != null && !this.MapMarker.sprite.IsOnBoard)
+            {
+                this.MapMarker.Destroy();
+                this.MapMarker = null;
+            }
 
             if (!this.CheckIfPlayerCanReadTheMap(showMessage: true))
             {
@@ -267,8 +272,8 @@ namespace SonOfRobin
         {
             this.viewParams.Width = (int)(this.world.width * this.scaleMultiplier);
             this.viewParams.Height = (int)(this.world.height * this.scaleMultiplier);
-            this.viewParams.ScaleX = 1f * Preferences.GlobalScale;
-            this.viewParams.ScaleY = 1f * Preferences.GlobalScale;
+            this.viewParams.ScaleX = Preferences.GlobalScale;
+            this.viewParams.ScaleY = Preferences.GlobalScale;
             this.viewParams.PosX = 0;
             this.viewParams.PosY = 0;
         }
@@ -298,12 +303,12 @@ namespace SonOfRobin
                 if (this.MapMarker == null) this.MapMarker = PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: this.camera.CurrentPos, templateName: PieceTemplate.Name.MapMarker);
                 else
                 {
-                    this.MapMarker.Destroy();
-
-                    if (Math.Abs(Vector2.Distance(this.MapMarker.sprite.position, this.camera.CurrentPos)) < 15) this.MapMarker = null;
-
-                    else this.MapMarker = PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: this.camera.CurrentPos, templateName: PieceTemplate.Name.MapMarker);
-
+                    if (Math.Abs(Vector2.Distance(this.MapMarker.sprite.position, this.camera.CurrentPos)) < 15)
+                    {
+                        this.MapMarker.Destroy();
+                        this.MapMarker = null;
+                    }
+                    else this.MapMarker.sprite.SetNewPosition(newPos: this.camera.CurrentPos, ignoreCollisions: true);
                 }
 
                 return;
@@ -361,7 +366,7 @@ namespace SonOfRobin
                         }
                         else if (touch.State == TouchLocationState.Moved)
                         {
-                            movement = this.lastTouchPos - touch.Position;
+                            movement = (this.lastTouchPos - touch.Position) / Preferences.GlobalScale;
                             this.lastTouchPos = touch.Position;
                         }
 
