@@ -233,8 +233,11 @@ namespace SonOfRobin
                 Texture2D markerTexture = this.world.map.MapMarker.sprite.frame.texture;
 
                 float tipsHeight = 0; // to avoid drawing marker under ControlTips
-                ControlTips topTips = ControlTips.GetTopTips();
-                if (topTips != null) tipsHeight = (float)topTips.viewParams.Height / topTips.viewParams.ScaleY;
+                if (Preferences.ShowControlTips)
+                {
+                    ControlTips topTips = ControlTips.GetTopTips();
+                    if (topTips != null) tipsHeight = (float)topTips.viewParams.Height / topTips.viewParams.ScaleY;
+                }
 
                 float markerHeight = SonOfRobinGame.VirtualHeight * 0.04f * Preferences.mapMarkerScale;
                 float markerScale = markerHeight / markerTexture.Height;
