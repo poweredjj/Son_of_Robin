@@ -14,13 +14,14 @@ namespace SonOfRobin
         {
             get
             {
-                return this.effectInstanceList.Where(effInstance => !effInstance.WasUsedInThisFrame(this.world.currentUpdate)).OrderBy(effInstance => effInstance.priority).ToList();
+                int currentUpdate = this.world == null ? SonOfRobinGame.currentUpdate : this.world.currentUpdate;
+                return this.effectInstanceList.Where(effInstance => !effInstance.WasUsedInThisFrame(currentUpdate)).OrderBy(effInstance => effInstance.priority).ToList();
             }
         }
 
         public EffectCol(World world)
         {
-            this.world = world;
+            this.world = world; // used for currentUpdate only
             this.effectInstanceList = new List<EffInstance> { };
         }
 

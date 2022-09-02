@@ -44,7 +44,7 @@ namespace SonOfRobin
             this.mode = MapMode.Off;
             this.dirtyFog = true;
             this.lastTouchPos = Vector2.Zero;
-            this.effectCol = new EffectCol(world: world);
+            this.effectCol = new EffectCol(world: null);
             this.effectCol.AddEffect(new SketchInstance(fgColor: new Color(107, 98, 87, 255), bgColor: paperColor, framesLeft: -1));
         }
 

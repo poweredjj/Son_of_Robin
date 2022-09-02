@@ -92,7 +92,7 @@ namespace SonOfRobin
         {
             // for testing only
 
-            foreach (TouchLocation touch in TouchPanelState)
+            foreach (TouchLocation touch in touchPanelState)
             {
                 MessageLog.AddMessage(msgType: MsgType.User, message: $"{SonOfRobinGame.currentUpdate} touch {touch.State} x:{touch.Position.X} y:{touch.Position.Y}");
             }
