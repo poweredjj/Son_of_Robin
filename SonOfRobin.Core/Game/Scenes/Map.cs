@@ -484,6 +484,10 @@ namespace SonOfRobin
                 }
             }
 
+            // drawing map edges over everything
+
+            SonOfRobinGame.spriteBatch.Draw(AnimData.framesForPkgs[AnimData.PkgName.MapEdges].texture, extendedMapRect, Color.White);
+
             // drawing crosshair
 
             if (this.Mode == MapMode.Full)

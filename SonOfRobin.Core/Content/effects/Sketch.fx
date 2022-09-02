@@ -30,7 +30,7 @@ float4 MainPS(VertexShaderOutput input) : COLOR
 
 	float4 color = tex2D(s0, input.TextureCoordinates);
 
-	if (color.a < 0.5f)
+	if (color.a < 0.9f)
 	{
 		color.a = 0.0f;
 		return color;
