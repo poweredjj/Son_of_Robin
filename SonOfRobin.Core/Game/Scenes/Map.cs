@@ -267,8 +267,8 @@ namespace SonOfRobin
         {
             this.viewParams.Width = (int)(this.world.width * this.scaleMultiplier);
             this.viewParams.Height = (int)(this.world.height * this.scaleMultiplier);
-            this.viewParams.ScaleX = 1f;
-            this.viewParams.ScaleY = 1f;
+            this.viewParams.ScaleX = 1f * Preferences.GlobalScale;
+            this.viewParams.ScaleY = 1f * Preferences.GlobalScale;
             this.viewParams.PosX = 0;
             this.viewParams.PosY = 0;
         }

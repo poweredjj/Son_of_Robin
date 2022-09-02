@@ -77,7 +77,7 @@ namespace SonOfRobin
             scene.viewParams.PosX = this.viewPos.X;
             scene.viewParams.PosY = this.viewPos.Y;
 
-            float worldScale = this.useWorldScale ? Preferences.WorldScale : 1f;
+            float worldScale = this.useWorldScale ? Preferences.WorldScale : 1f / Preferences.GlobalScale;
             float scale = 1f / (worldScale * this.CurrentZoom);
             scene.viewParams.ScaleX = scale;
             scene.viewParams.ScaleY = scale;
