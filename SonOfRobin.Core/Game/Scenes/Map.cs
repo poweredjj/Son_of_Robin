@@ -406,7 +406,7 @@ namespace SonOfRobin
             // drawing paper map background texture
 
             Rectangle extendedMapRect = this.worldRect;
-            extendedMapRect.Inflate(extendedMapRect.Width * 0.1f, extendedMapRect.Width * 0.1f); // width should be used twice
+            extendedMapRect.Inflate(extendedMapRect.Width * 0.1f, extendedMapRect.Height * 0.1f);
 
             SonOfRobinGame.spriteBatch.Draw(AnimData.framesForPkgs[AnimData.PkgName.Map].texture, extendedMapRect, Color.White);
 
