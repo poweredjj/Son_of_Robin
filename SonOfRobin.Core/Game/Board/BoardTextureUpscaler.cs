@@ -20,7 +20,6 @@ namespace SonOfRobin
             "upscale_x2_source_diag_v1",
             "upscale_x2_source_left-right_v1",
             "upscale_x2_source_top-bottom_v1",
-
             "upscale_x3_source_bottom_v1",
             "upscale_x3_source_diag_LT-RB_v1",
             "upscale_x3_source_diag_RT-LB_v1",
@@ -41,7 +40,6 @@ namespace SonOfRobin
             "upscale_x2_top-bottom_v1",
             "upscale_x2_top-bottom_v2",
             "upscale_x2_top-bottom_v3",
-
             "upscale_x3_diag_RT-LB_v1",
             "upscale_x3_diag_RT-LB_v2",
             "upscale_x3_diag_RT-LB_v3",
@@ -71,7 +69,7 @@ namespace SonOfRobin
         }
 
 
-        public BoardTextureUpscaler()
+        public BoardTextureUpscaler(Texture2D inputTexture)
         {
 
 
@@ -80,34 +78,41 @@ namespace SonOfRobin
         public class Case
         {
             public readonly Color[,] inputArray; // original array with RGB values
-            public readonly int[,] sourceArray; // array of unique color indices
+            public int[,] SourceArray { get; private set; } // array of unique color indices
             public readonly Dictionary<int, Color> indexToColorDict; // dictionary for replacing color indices with source colors
             public readonly string caseID;
-
 
             public Case(Color[,] sourceArray)
             {
                 this.inputArray = sourceArray;
                 this.caseID = GetCaseIDForArray(this.inputArray);
 
-                var tuple = this.ConvertInputArrayToSourceArray();
-                this.sourceArray = tuple.Item1;
+                var tuple = ConvertColorArrayToIndexArray(this.inputArray);
+                this.SourceArray = tuple.Item1;
                 this.indexToColorDict = tuple.Item2;
             }
 
-            private (int[,], Dictionary<int, Color>) ConvertInputArrayToSourceArray()
+            private static (int[,], Dictionary<int, Color>) ConvertColorArrayToIndexArray(Color[,] inputArray)
             {
-                int[,] sourceArray = new int[2, 2];
+                if (inputArray == null) throw new ArgumentNullException("Input array cannot be null.");
+
+                int width = inputArray.GetLength(0);
+                int height = inputArray.GetLength(1);
+
+                if (width != 2) throw new ArgumentException($"Input array x size {inputArray.GetLength(0)} must be 2.");
+                if (height != 2) throw new ArgumentException($"Input array y size {inputArray.GetLength(1)} must be 2.");
+
+                int[,] sourceArray = new int[width, height];
 
                 var colorIndexDict = new Dictionary<Color, int>();
                 var colorsAdded = new List<Color>();
                 int colorCounter = 0;
 
-                for (int y = 0; y < 2; y++)
+                for (int y = 0; y < height; y++)
                 {
-                    for (int x = 0; x < 2; x++)
+                    for (int x = 0; x < width; x++)
                     {
-                        Color currentColor = this.inputArray[x, y];
+                        Color currentColor = inputArray[x, y];
                         if (!colorsAdded.Contains(currentColor))
                         {
                             colorIndexDict[currentColor] = colorCounter;
