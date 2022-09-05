@@ -74,24 +74,32 @@ namespace SonOfRobin
                                 int currentY = baseY + offsetY;
                                 currentX = Math.Min(currentX, sourceWidth - 1);
                                 currentY = Math.Min(currentY, sourceHeight - 1);
-                                colorGrid[offsetX, offsetY] = sourceTextureData[((currentY) * sourceWidth) + currentX];
+                                colorGrid[offsetX, offsetY] = sourceTextureData[(currentY * sourceWidth) + currentX];
                             }
                         }
                     }
 
-                    // converting 2x2 grid to 10x10 grid
-
+                    // creating resized grid
                     Case resizeCase = new Case(colorGrid);
+
+                    // placing resized grid data into texture data
 
                     for (int resizedY = 0; resizedY < 2 * resizeFactor; resizedY++)
                     {
                         for (int resizedX = 0; resizedX < 2 * resizeFactor; resizedX++)
                         {
-                            targetTextureData[(((baseY * resizeFactor) + resizedY) * sourceWidth) + (baseX * resizeFactor) + resizedX] = resizeCase.resizedGridRGB[resizedX, resizedY];
+                            try
+                            {
+                                targetTextureData[(((baseY * resizeFactor) + resizedY) * targetWidth) + (baseX * resizeFactor) + resizedX] = resizeCase.resizedGridRGB[resizedX, resizedY];
+                            }
+                            catch (IndexOutOfRangeException)
+                            { }
                         }
                     }
                 }
             }
+
+            // creating final texture
 
             Texture2D upscaledTexture = new Texture2D(SonOfRobinGame.graphicsDevice, targetWidth, targetHeight);
             upscaledTexture.SetData(targetTextureData);
