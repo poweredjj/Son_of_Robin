@@ -54,7 +54,7 @@ namespace SonOfRobin
                 !this.world.map.CheckIfPlayerCanReadTheMap(showMessage: false) ||
                 Vector2.Distance(this.sprite.position, this.world.player.sprite.position) < 100)
             {
-                this.Destroy();
+                this.Destroy(); // will be destroyed right away if map was enabled by using god mode
             }
         }
     }
