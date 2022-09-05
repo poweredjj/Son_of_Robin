@@ -416,6 +416,7 @@ namespace SonOfRobin
             SonOfRobinGame.game.IsFixedTimeStep = Preferences.FrameSkip;
 
             if (!this.demoMode && newGameStarted) this.hintEngine.ShowGeneralHint(type: HintEngine.Type.CineIntroduction, ignoreDelay: true);
+            BoardTextureUpscaler.CleanUpAfterUpscalingAll();
             GC.Collect();
         }
 

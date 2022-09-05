@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -14,7 +15,7 @@ namespace SonOfRobin
         private static Random random = SonOfRobinGame.random;
         private static Dictionary<string, byte[,]> indexGridByName = new Dictionary<string, byte[,]>();
         private static Dictionary<string, string> gridNameByID = new Dictionary<string, string>();
-        private static Dictionary<string, Case> solvedCaseByID = new Dictionary<string, Case> { };
+        private static ConcurrentDictionary<string, Case> solvedCaseByID = new ConcurrentDictionary<string, Case> { };
 
         public static Dictionary<string, List<String>> upscaleNamesDict = new Dictionary<string, List<String>>
         {
@@ -42,17 +43,17 @@ namespace SonOfRobin
             {"upscale_x4_source", new List<String> { "upscale_x4_v1", "upscale_x4_v2", "upscale_x4_v3" } },
         };
 
-        public static Texture2D GetUpscaledTexture(Texture2D textureToUpscale)
+        public static Color[] GetUpscaledTexture(Texture2D textureToUpscale)
         {
             int sourceWidth = textureToUpscale.Width;
             int sourceHeight = textureToUpscale.Height;
             Color[] sourceTextureData = new Color[sourceWidth * sourceHeight];
             textureToUpscale.GetData(sourceTextureData);
 
-            return GetUpscaledTexture(sourceTextureData: sourceTextureData, sourceWidth: sourceWidth, sourceHeight: sourceHeight);
+            return GetUpscaledColorData(sourceTextureData: sourceTextureData, sourceWidth: sourceWidth, sourceHeight: sourceHeight);
         }
 
-        public static Texture2D GetUpscaledTexture(Color[] sourceTextureData, int sourceWidth, int sourceHeight)
+        public static Color[] GetUpscaledColorData(Color[] sourceTextureData, int sourceWidth, int sourceHeight)
         {
             int targetWidth = sourceWidth * resizeFactor;
             int targetHeight = sourceHeight * resizeFactor;
@@ -105,12 +106,7 @@ namespace SonOfRobin
                 }
             }
 
-            // creating final texture
-
-            Texture2D upscaledTexture = new Texture2D(SonOfRobinGame.graphicsDevice, targetWidth, targetHeight);
-            upscaledTexture.SetData(targetTextureData);
-
-            return upscaledTexture;
+            return targetTextureData;
         }
 
         public static void PrepareAllTemplates()

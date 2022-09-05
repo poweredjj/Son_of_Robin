@@ -356,7 +356,10 @@ namespace SonOfRobin
             {
                 Texture2D textureToUpscale = PieceInfo.GetTexture(PieceTemplate.Name.BackpackMedium);
 
-                Texture2D upscaledTexture = BoardTextureUpscaler.GetUpscaledTexture(textureToUpscale);
+                var upscaledTextureData = BoardTextureUpscaler.GetUpscaledTexture(textureToUpscale);
+                Texture2D upscaledTexture = new Texture2D(SonOfRobinGame.graphicsDevice, textureToUpscale.Width * BoardTextureUpscaler.resizeFactor, textureToUpscale.Height * BoardTextureUpscaler.resizeFactor);
+                upscaledTexture.SetData(upscaledTextureData);
+
                 BoardTextureUpscaler.CleanUpAfterUpscalingAll();
 
                 GfxConverter.SaveTextureAsPNG(filename: Path.Combine(SonOfRobinGame.worldTemplatesPath, "upscale_test.png"), upscaledTexture);

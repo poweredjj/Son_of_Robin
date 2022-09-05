@@ -4,7 +4,6 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Threading.Tasks;
 
 namespace SonOfRobin
 {
@@ -57,7 +56,7 @@ namespace SonOfRobin
             {
                 this.CreateBitmapFromTerrainAndSave();
                 this.texture = GfxConverter.LoadTextureFromPNG(this.templatePath);
-                if (this.texture == null) throw new FileNotFoundException("Cannot create texture.");
+                if (this.texture == null) throw new FileNotFoundException("Cannot create board texture.");
             }
 
             this.cell.grid.loadedTexturesCount++;
@@ -107,7 +106,12 @@ namespace SonOfRobin
         {
             // can be run in parallel, because it does not use graphicsDevice
 
-            var builder = PngBuilder.Create(width: this.cell.dividedWidth, height: this.cell.dividedHeight, hasAlphaChannel: true);
+            // creating 1D color array with rgb color data
+
+            int width = this.cell.dividedWidth;
+            int height = this.cell.dividedHeight;
+
+            Color[] textureData = new Color[width * height];
 
             Terrain heightTerrain = this.cell.terrainByName[TerrainName.Height];
             Terrain humidityTerrain = this.cell.terrainByName[TerrainName.Humidity];
@@ -123,14 +127,35 @@ namespace SonOfRobin
                 {
                     int realY = y * resDivider;
 
-                    Color pixel = CreatePixel(
+                    textureData[(y * width) + x] = CreatePixel(
                         pixelHeight: heightTerrain.GetMapData(realX, realY),
                         pixelHumidity: humidityTerrain.GetMapData(realX, realY),
                         pixelDanger: dangerTerrain.GetMapData(realX, realY));
+                }
+            }
 
+            // upscaling 1D color data
+
+            int upscaledWidth = width * BoardTextureUpscaler.resizeFactor;
+            int upscaledHeight = height * BoardTextureUpscaler.resizeFactor;
+
+            var upscaledTextureData = BoardTextureUpscaler.GetUpscaledColorData(sourceTextureData: textureData, sourceWidth: width, sourceHeight: height);
+
+            // putting upscaled 1D color data into PngBuilder
+
+            var builder = PngBuilder.Create(width: upscaledWidth, height: upscaledHeight, hasAlphaChannel: true);
+
+            for (int y = 0; y < upscaledHeight; y++)
+            {
+                int currentY = y * upscaledWidth;
+                for (int x = 0; x < upscaledWidth; x++)
+                {
+                    Color pixel = upscaledTextureData[currentY + x];
                     builder.SetPixel(pixel.R, pixel.G, pixel.B, x, y);
                 }
             }
+
+            // saving PngBuilder to file
 
             using (var memoryStream = new MemoryStream())
             {
