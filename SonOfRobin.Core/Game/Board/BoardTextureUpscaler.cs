@@ -56,7 +56,7 @@ namespace SonOfRobin
                 }
             }
 
-            // reading texture data and converting to color index arrays (+ storing corners)
+            // reading texture data and converting to color index grids (+ storing corners)
 
             foreach (var textureName in textureNamesList)
             {
@@ -71,13 +71,13 @@ namespace SonOfRobin
                 corners[1, 1] = colorGrid[texture.Width - 1, texture.Height - 1];
                 cornersByName[textureName] = corners;
 
-                var tuple = ConvertColorArrayToIndexArray(colorGrid);
+                var tuple = ConvertColorGridToIndexGrid(colorGrid);
                 colorGridByName[textureName] = tuple.Item1;
 
                 texture.Dispose();
             }
 
-            // checking if corners match
+            // checking if source corners match with upscaled ones
 
             foreach (var kvp in upscaleNamesDict)
             {
@@ -89,19 +89,67 @@ namespace SonOfRobin
                     {
                         for (int x = 0; x < 2; x++)
                         {
-                            if (cornersByName[sourceName][x, y] != cornersByName[upscaledName][x, y]) throw new ArgumentException($"Corner colors do not match - {sourceName} vs {upscaledName}.");
+                            if (cornersByName[sourceName][x, y] != cornersByName[upscaledName][x, y])
+                            {
+                                throw new ArgumentException($"Corner colors do not match - {sourceName} vs {upscaledName}.");
+                            }
                         }
                     }
                 }
             }
+
+            // checking if conversion can be executed properly
+
+            Random random = SonOfRobinGame.random;
+
+            foreach (string sourceName in upscaleNamesDict.Keys)
+            {
+                var sourceIndexGrid = colorGridByName[sourceName];
+
+                int width = sourceIndexGrid.GetLength(0);
+                int height = sourceIndexGrid.GetLength(1);
+
+
+                var indexToColorDict = new Dictionary<byte, Color>();
+                var addedColors = new List<Color>();
+
+                for (int y = 0; y < height; y++)
+                {
+                    for (int x = 0; x < width; x++)
+                    {
+                        byte index = sourceIndexGrid[x, y];
+                        if (!indexToColorDict.ContainsKey(index))
+                        {
+                            while (true)
+                            {
+                                Color color = new Color(r: random.Next(0, 255), g: random.Next(0, 255), b: random.Next(0, 255), alpha: random.Next(0, 255));
+                                if (!addedColors.Contains(color))
+                                {
+                                    indexToColorDict[index] = color;
+                                    addedColors.Add(color);
+
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+
+
+                var sourceGridRGB = Case.ConvertIndexGridToColorGrid(indexGrid: sourceIndexGrid, indexToColorDict: indexToColorDict);
+
+                new Case(sourceGridRGB);
+
+
+            }
         }
 
-        public static (byte[,], Dictionary<byte, Color>) ConvertColorArrayToIndexArray(Color[,] inputArray)
+        public static (byte[,], Dictionary<byte, Color>) ConvertColorGridToIndexGrid(Color[,] gridRGB)
         {
-            int width = inputArray.GetLength(0);
-            int height = inputArray.GetLength(1);
+            int width = gridRGB.GetLength(0);
+            int height = gridRGB.GetLength(1);
 
-            byte[,] sourceArray = new byte[width, height];
+            byte[,] indexGrid = new byte[width, height];
 
             var colorIndexDict = new Dictionary<Color, byte>();
             var colorsAdded = new List<Color>();
@@ -111,7 +159,7 @@ namespace SonOfRobin
             {
                 for (int x = 0; x < width; x++)
                 {
-                    Color currentColor = inputArray[x, y];
+                    Color currentColor = gridRGB[x, y];
                     if (!colorsAdded.Contains(currentColor))
                     {
                         colorIndexDict[currentColor] = colorCounter;
@@ -119,11 +167,11 @@ namespace SonOfRobin
                         colorsAdded.Add(currentColor);
                     }
 
-                    sourceArray[x, y] = colorIndexDict[currentColor];
+                    indexGrid[x, y] = colorIndexDict[currentColor];
                 }
             }
 
-            return (sourceArray, colorIndexDict.ToDictionary(x => x.Value, x => x.Key));
+            return (indexGrid, colorIndexDict.ToDictionary(x => x.Value, x => x.Key));
         }
 
 
@@ -135,28 +183,67 @@ namespace SonOfRobin
 
         public class Case
         {
-            public readonly Color[,] inputArray; // original array with RGB values
-            public byte[,] SourceArray { get; private set; } // array of unique color indices
-            public readonly Dictionary<byte, Color> indexToColorDict; // dictionary for replacing color indices with source colors
             public readonly string caseID;
+            public readonly Dictionary<byte, Color> indexToColorDict; // dictionary for replacing color indices with source colors
+            public readonly Color[,] sourceGridRGB; // original grid with RGB values
+            public readonly byte[,] sourceIndexGrid; // grid of unique color indices
+            public readonly Color[,] resizedGridRGB; // original grid with RGB values
 
-            public Case(Color[,] sourceArray)
+            public Case(Color[,] sourceGridRGB)
             {
-                this.inputArray = sourceArray;
-                this.caseID = GetCaseIDForArray(this.inputArray);
+                this.sourceGridRGB = sourceGridRGB;
+                this.caseID = GetCaseIDForGrid(this.sourceGridRGB);
 
-                var tuple = ConvertColorArrayToIndexArray(this.inputArray);
-                this.SourceArray = tuple.Item1;
+                var tuple = ConvertColorGridToIndexGrid(this.sourceGridRGB);
+                this.sourceIndexGrid = tuple.Item1;
                 this.indexToColorDict = tuple.Item2;
+
+                var resizedIndexGrid = GetMatchingResizedGrid();
+                this.resizedGridRGB = ConvertIndexGridToColorGrid(indexGrid: resizedIndexGrid, indexToColorDict: this.indexToColorDict);
             }
 
-            public static string GetCaseIDForArray(Color[,] inputArray)
+            public static string GetCaseIDForGrid(Color[,] inputGrid)
             {
-                if (inputArray == null) throw new ArgumentNullException("Input array cannot be null.");
-                if (inputArray.GetLength(0) != 2) throw new ArgumentException($"Input array x size {inputArray.GetLength(0)} must be 2.");
-                if (inputArray.GetLength(1) != 2) throw new ArgumentException($"Input array y size {inputArray.GetLength(1)} must be 2.");
+                if (inputGrid == null) throw new ArgumentNullException("Input grid cannot be null.");
+                if (inputGrid.GetLength(0) != 2) throw new ArgumentException($"Input grid x size {inputGrid.GetLength(0)} must be 2.");
+                if (inputGrid.GetLength(1) != 2) throw new ArgumentException($"Input grid y size {inputGrid.GetLength(1)} must be 2.");
 
-                return $"{inputArray[0, 0]},{inputArray[0, 1]},{inputArray[1, 0]},{inputArray[1, 1]}";
+                return $"{inputGrid[0, 0]},{inputGrid[0, 1]},{inputGrid[1, 0]},{inputGrid[1, 1]}";
+            }
+
+            private byte[,] GetMatchingResizedGrid()
+            {
+                foreach (var kvp in upscaleNamesDict)
+                {
+                    string sourceName = kvp.Key;
+
+                    if (colorGridByName[sourceName] == this.sourceIndexGrid)
+                    {
+                        var upscaledNames = kvp.Value;
+                        var upscaledGridName = upscaledNames[SonOfRobinGame.random.Next(0, upscaledNames.Count)];
+                        return colorGridByName[upscaledGridName];
+                    }
+                }
+
+                throw new ArgumentException($"Cannot find matching source grid for {this.sourceIndexGrid}.");
+            }
+
+            public static Color[,] ConvertIndexGridToColorGrid(byte[,] indexGrid, Dictionary<byte, Color> indexToColorDict)
+            {
+                int width = indexGrid.GetLength(0);
+                int height = indexGrid.GetLength(1);
+
+                Color[,] rgbGrid = new Color[width, height];
+
+                for (int y = 0; y < height; y++)
+                {
+                    for (int x = 0; x < width; x++)
+                    {
+                        rgbGrid[x, y] = indexToColorDict[indexGrid[x, y]];
+                    }
+                }
+
+                return rgbGrid;
             }
 
         }
