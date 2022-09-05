@@ -8,6 +8,9 @@ namespace SonOfRobin
 {
     public class BoardTextureUpscaler
     {
+        public static readonly int resizeFactor = 5; // has to be compliant with upscale texture templates
+
+
         private static Random random = SonOfRobinGame.random;
         private static Dictionary<string, byte[,]> indexGridByName = new Dictionary<string, byte[,]>();
         private static Dictionary<string, string> gridNameByID = new Dictionary<string, string>();
@@ -39,19 +42,22 @@ namespace SonOfRobin
             {"upscale_x4_source", new List<String> { "upscale_x4_v1", "upscale_x4_v2", "upscale_x4_v3" } },
         };
 
-
         public static Texture2D GetUpscaledTexture(Texture2D textureToUpscale)
         {
-            int resizeFactor = 5; // has to be compliant with upscale texture templates
-
             int sourceWidth = textureToUpscale.Width;
             int sourceHeight = textureToUpscale.Height;
+            Color[] sourceTextureData = new Color[sourceWidth * sourceHeight];
+            textureToUpscale.GetData(sourceTextureData);
+
+            return GetUpscaledTexture(sourceTextureData: sourceTextureData, sourceWidth: sourceWidth, sourceHeight: sourceHeight);
+        }
+
+        public static Texture2D GetUpscaledTexture(Color[] sourceTextureData, int sourceWidth, int sourceHeight)
+        {
             int targetWidth = sourceWidth * resizeFactor;
             int targetHeight = sourceHeight * resizeFactor;
 
-            Color[] sourceTextureData = new Color[sourceWidth * sourceHeight];
             Color[] targetTextureData = new Color[targetWidth * targetHeight];
-            textureToUpscale.GetData(sourceTextureData);
 
             for (int baseY = 0; baseY < sourceHeight; baseY += 2)
             {

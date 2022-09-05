@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace SonOfRobin
@@ -357,6 +358,8 @@ namespace SonOfRobin
 
                 Texture2D upscaledTexture = BoardTextureUpscaler.GetUpscaledTexture(textureToUpscale);
                 BoardTextureUpscaler.CleanUpAfterUpscalingAll();
+
+                GfxConverter.SaveTextureAsPNG(filename: Path.Combine(SonOfRobinGame.worldTemplatesPath, "upscale_test.png"), upscaledTexture);
 
                 new TextWindow(text: "Original vs upscaled: | |", imageList: new List<Texture2D> { textureToUpscale, upscaledTexture }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: false);
             }

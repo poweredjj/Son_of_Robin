@@ -201,8 +201,10 @@ namespace SonOfRobin
         public void RenderTexture()
         {
             var tempColorArray = this.CreateColorArrayFromTerrain();
-            this.texture = new Texture2D(SonOfRobinGame.graphicsDevice, this.cell.width, this.cell.height);
-            this.texture.SetData(tempColorArray);
+
+            this.texture = BoardTextureUpscaler.GetUpscaledTexture(sourceTextureData: tempColorArray, sourceWidth: this.cell.width, sourceHeight: this.cell.height);
+            //   this.texture = new Texture2D(SonOfRobinGame.graphicsDevice, this.cell.width, this.cell.height);
+            //   this.texture.SetData(tempColorArray);
         }
 
         public static Color Blend2Colors(Color bottomColor, Color topColor)

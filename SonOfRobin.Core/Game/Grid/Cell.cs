@@ -264,8 +264,7 @@ namespace SonOfRobin
         {
             if (this.boardGraphics.texture == null) return;
 
-            Rectangle destinationRectangle = new Rectangle(this.xMin, this.yMin,
-                this.boardGraphics.texture.Width * this.grid.resDivider, this.boardGraphics.texture.Height * this.grid.resDivider);
+            Rectangle destinationRectangle = new Rectangle(this.xMin, this.yMin, this.rect.Width, this.rect.Height);
 
             SonOfRobinGame.spriteBatch.Draw(this.boardGraphics.texture, destinationRectangle, this.boardGraphics.texture.Bounds, Color.White * opacity);
         }
