@@ -15,6 +15,8 @@ namespace SonOfRobin
         {
             // source (small bitmap) name: all replacement (large bitmap) names
 
+            {"upscale_x1_source", new List<String> { "upscale_x1" } },
+
             {"upscale_x2_source_corner_LL", new List<String> { "upscale_x2_corner_LL" } },
             {"upscale_x2_source_corner_LR", new List<String> { "upscale_x2_corner_LR" } },
             {"upscale_x2_source_corner_TL", new List<String> { "upscale_x2_corner_TL" } },
@@ -31,21 +33,30 @@ namespace SonOfRobin
 
             {"upscale_x3_source_diag_LT-RB", new List<String> { "upscale_x3_diag_LT-RB_v1", "upscale_x3_diag_LT-RB_v2", "upscale_x3_diag_LT-RB_v3" } },
             {"upscale_x3_source_diag_RT-LB", new List<String> { "upscale_x3_diag_RT-LB_v1", "upscale_x3_diag_RT-LB_v2", "upscale_x3_diag_RT-LB_v3" } },
+
+            {"upscale_x4_source", new List<String> { "upscale_x4_v1", "upscale_x4_v2", "upscale_x4_v3" } },
         };
 
 
-        public static void LoadAllTextures()
+        public static void PrepareUpscaleTemplates()
         {
             var textureNamesList = new List<string>();
+            var cornersByName = new Dictionary<string, Color[,]>();
+
+            // creating texture names list
 
             foreach (var kvp in upscaleNamesDict)
             {
-                textureNamesList.Add(kvp.Key);
-                foreach (string name in kvp.Value)
+                string sourceName = kvp.Key;
+
+                textureNamesList.Add(sourceName);
+                foreach (string upscaledName in kvp.Value)
                 {
-                    textureNamesList.Add(name);
+                    textureNamesList.Add(upscaledName);
                 }
             }
+
+            // reading texture data and converting to color index arrays (+ storing corners)
 
             foreach (var textureName in textureNamesList)
             {
@@ -53,10 +64,36 @@ namespace SonOfRobin
 
                 Color[,] colorGrid = GfxConverter.ConvertTextureToGrid(texture: texture, x: 0, y: 0, width: texture.Width, height: texture.Height);
 
+                var corners = new Color[2, 2];
+                corners[0, 0] = colorGrid[0, 0];
+                corners[1, 0] = colorGrid[texture.Width - 1, 0];
+                corners[0, 1] = colorGrid[0, texture.Height - 1];
+                corners[1, 1] = colorGrid[texture.Width - 1, texture.Height - 1];
+                cornersByName[textureName] = corners;
+
                 var tuple = ConvertColorArrayToIndexArray(colorGrid);
                 colorGridByName[textureName] = tuple.Item1;
+
+                texture.Dispose();
             }
 
+            // checking if corners match
+
+            foreach (var kvp in upscaleNamesDict)
+            {
+                string sourceName = kvp.Key;
+
+                foreach (string upscaledName in kvp.Value)
+                {
+                    for (int y = 0; y < 2; y++)
+                    {
+                        for (int x = 0; x < 2; x++)
+                        {
+                            if (cornersByName[sourceName][x, y] != cornersByName[upscaledName][x, y]) throw new ArgumentException($"Corner colors do not match - {sourceName} vs {upscaledName}.");
+                        }
+                    }
+                }
+            }
         }
 
         public static (byte[,], Dictionary<byte, Color>) ConvertColorArrayToIndexArray(Color[,] inputArray)

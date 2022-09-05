@@ -7,7 +7,7 @@ namespace SonOfRobin
 {
     public class InitialLoader : Scene
     {
-        public enum Step { Initial, LoadEffects, LoadFonts, DeleteObsoleteSaves, CreateControlTips, LoadSounds, LoadTextures, CreateAnims, LoadKeysGfx, LoadUpscaleMatrix, CreateScenes, MakeItemsInfo, MakeCraftRecipes, SetControlTips, OpenMainMenu }
+        public enum Step { Initial, LoadEffects, LoadFonts, PrepareUpscaleMatrix, DeleteObsoleteSaves, CreateControlTips, LoadSounds, LoadTextures, CreateAnims, LoadKeysGfx, CreateScenes, MakeItemsInfo, MakeCraftRecipes, SetControlTips, OpenMainMenu }
 
         private static readonly int allStepsCount = ((Step[])Enum.GetValues(typeof(Step))).Length;
 
@@ -15,13 +15,13 @@ namespace SonOfRobin
             { Step.Initial, "starting" },
             { Step.LoadEffects, "loading effects" },
             { Step.LoadFonts, "loading fonts" },
+            { Step.PrepareUpscaleMatrix, "preparing board upscale matrix" },
             { Step.DeleteObsoleteSaves, "deleting obsolete saves" },
             { Step.CreateControlTips, "creating control tips" },
             { Step.LoadSounds, "loading sounds" },
             { Step.LoadTextures, "loading textures" },
             { Step.CreateAnims, "creating animations" },
             { Step.LoadKeysGfx, "loading keyboard textures" },
-            { Step.LoadUpscaleMatrix, "loading board upscale matrix" },
             { Step.CreateScenes, "creating helper scenes" },
             { Step.MakeItemsInfo, "creating items info" },
             { Step.MakeCraftRecipes, "preparing craft recipes" },
@@ -63,6 +63,10 @@ namespace SonOfRobin
                     SonOfRobinGame.LoadFonts();
                     break;
 
+                case Step.PrepareUpscaleMatrix:
+                    BoardTextureUpscaler.PrepareUpscaleTemplates();
+                    break;
+
                 case Step.DeleteObsoleteSaves:
                     SaveHeaderManager.DeleteObsoleteSaves();
                     break;
@@ -87,10 +91,6 @@ namespace SonOfRobin
                 case Step.LoadKeysGfx:
                     KeyboardScheme.LoadAllKeys();
                     InputMapper.RebuildMappings();
-                    break;
-
-                case Step.LoadUpscaleMatrix:
-                    BoardTextureUpscaler.LoadAllTextures();
                     break;
 
                 case Step.CreateScenes:
