@@ -53,7 +53,12 @@ namespace SonOfRobin
             if (this.texture != null) return;
 
             this.texture = GfxConverter.LoadTextureFromPNG(this.templatePath);
-            if (this.texture == null) this.RenderTexture();
+            if (this.texture == null)
+            {
+                this.CreateBitmapFromTerrainAndSave();
+                this.texture = GfxConverter.LoadTextureFromPNG(this.templatePath);
+                if (this.texture == null) throw new FileNotFoundException("Cannot create texture.");
+            }
 
             this.cell.grid.loadedTexturesCount++;
         }
@@ -134,34 +139,6 @@ namespace SonOfRobin
             }
         }
 
-        private Color[] CreateColorArrayFromTerrain()
-        {
-            var tempColorArray = new Color[this.cell.dividedHeight * this.cell.dividedHeight];
-
-            Terrain heightTerrain = this.cell.terrainByName[TerrainName.Height];
-            Terrain humidityTerrain = this.cell.terrainByName[TerrainName.Humidity];
-            Terrain dangerTerrain = this.cell.terrainByName[TerrainName.Danger];
-
-            int resDivider = this.cell.grid.resDivider;
-
-            Parallel.For(0, this.cell.dividedHeight, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, y =>
-                 {
-                     int realY = y * resDivider;
-
-                     for (int x = 0; x < this.cell.dividedHeight; x++)
-                     {
-                         int realX = x * resDivider;
-
-                         tempColorArray[(y * this.cell.width) + x] = CreatePixel(
-                             pixelHeight: heightTerrain.GetMapData(realX, realY),
-                             pixelHumidity: humidityTerrain.GetMapData(realX, realY),
-                             pixelDanger: dangerTerrain.GetMapData(realX, realY));
-                     }
-                 });
-
-            return tempColorArray;
-        }
-
         private static Color CreatePixel(byte pixelHeight, byte pixelHumidity, byte pixelDanger)
         {
             Color pixel = new Color();
@@ -198,14 +175,6 @@ namespace SonOfRobin
             return pixel;
         }
 
-        public void RenderTexture()
-        {
-            var tempColorArray = this.CreateColorArrayFromTerrain();
-
-            this.texture = BoardTextureUpscaler.GetUpscaledTexture(sourceTextureData: tempColorArray, sourceWidth: this.cell.width, sourceHeight: this.cell.height);
-            //   this.texture = new Texture2D(SonOfRobinGame.graphicsDevice, this.cell.width, this.cell.height);
-            //   this.texture.SetData(tempColorArray);
-        }
 
         public static Color Blend2Colors(Color bottomColor, Color topColor)
         {

@@ -113,7 +113,6 @@ namespace SonOfRobin
             return upscaledTexture;
         }
 
-
         public static void PrepareAllTemplates()
         {
             var textureNamesList = new List<string>();
