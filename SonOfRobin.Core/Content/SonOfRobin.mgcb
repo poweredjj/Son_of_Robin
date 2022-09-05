@@ -3584,18 +3584,6 @@
 /processorParam:TextureFormat=Color
 /build:gfx/Upscale_matrix/upscale_x2_diag_v3.png
 
-#begin gfx/Upscale_matrix/upscale_x2_left-righ_v2.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/Upscale_matrix/upscale_x2_left-righ_v2.png
-
 #begin gfx/Upscale_matrix/upscale_x2_left-right_v1.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -3607,6 +3595,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:gfx/Upscale_matrix/upscale_x2_left-right_v1.png
+
+#begin gfx/Upscale_matrix/upscale_x2_left-right_v2.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/Upscale_matrix/upscale_x2_left-right_v2.png
 
 #begin gfx/Upscale_matrix/upscale_x2_left-right_v3.png
 /importer:TextureImporter
@@ -3668,7 +3668,7 @@
 /processorParam:TextureFormat=Color
 /build:gfx/Upscale_matrix/upscale_x2_source_corner_TR.png
 
-#begin gfx/Upscale_matrix/upscale_x2_source_diag_v1.png
+#begin gfx/Upscale_matrix/upscale_x2_source_diag.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -3678,9 +3678,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/Upscale_matrix/upscale_x2_source_diag_v1.png
+/build:gfx/Upscale_matrix/upscale_x2_source_diag.png
 
-#begin gfx/Upscale_matrix/upscale_x2_source_left-right_v1.png
+#begin gfx/Upscale_matrix/upscale_x2_source_left-right.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -3690,9 +3690,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/Upscale_matrix/upscale_x2_source_left-right_v1.png
+/build:gfx/Upscale_matrix/upscale_x2_source_left-right.png
 
-#begin gfx/Upscale_matrix/upscale_x2_source_top-bottom_v1.png
+#begin gfx/Upscale_matrix/upscale_x2_source_top-bottom.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -3702,7 +3702,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/Upscale_matrix/upscale_x2_source_top-bottom_v1.png
+/build:gfx/Upscale_matrix/upscale_x2_source_top-bottom.png
 
 #begin gfx/Upscale_matrix/upscale_x2_top-bottom_v1.png
 /importer:TextureImporter
@@ -3848,7 +3848,7 @@
 /processorParam:TextureFormat=Color
 /build:gfx/Upscale_matrix/upscale_x3_diag_RT-LB_v3.png
 
-#begin gfx/Upscale_matrix/upscale_x3_L_v1.png
+#begin gfx/Upscale_matrix/upscale_x3_left_v1.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -3858,9 +3858,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/Upscale_matrix/upscale_x3_L_v1.png
+/build:gfx/Upscale_matrix/upscale_x3_left_v1.png
 
-#begin gfx/Upscale_matrix/upscale_x3_L_v2.png
+#begin gfx/Upscale_matrix/upscale_x3_left_v2.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -3870,9 +3870,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/Upscale_matrix/upscale_x3_L_v2.png
+/build:gfx/Upscale_matrix/upscale_x3_left_v2.png
 
-#begin gfx/Upscale_matrix/upscale_x3_L_v3.png
+#begin gfx/Upscale_matrix/upscale_x3_left_v3.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -3882,9 +3882,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/Upscale_matrix/upscale_x3_L_v3.png
+/build:gfx/Upscale_matrix/upscale_x3_left_v3.png
 
-#begin gfx/Upscale_matrix/upscale_x3_R_v1.png
+#begin gfx/Upscale_matrix/upscale_x3_right_v1.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -3894,9 +3894,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/Upscale_matrix/upscale_x3_R_v1.png
+/build:gfx/Upscale_matrix/upscale_x3_right_v1.png
 
-#begin gfx/Upscale_matrix/upscale_x3_R_v2.png
+#begin gfx/Upscale_matrix/upscale_x3_right_v2.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -3906,9 +3906,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/Upscale_matrix/upscale_x3_R_v2.png
+/build:gfx/Upscale_matrix/upscale_x3_right_v2.png
 
-#begin gfx/Upscale_matrix/upscale_x3_R_v3.png
+#begin gfx/Upscale_matrix/upscale_x3_right_v3.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -3918,9 +3918,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/Upscale_matrix/upscale_x3_R_v3.png
+/build:gfx/Upscale_matrix/upscale_x3_right_v3.png
 
-#begin gfx/Upscale_matrix/upscale_x3_source_bottom_v1.png
+#begin gfx/Upscale_matrix/upscale_x3_source_bottom.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -3930,9 +3930,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/Upscale_matrix/upscale_x3_source_bottom_v1.png
+/build:gfx/Upscale_matrix/upscale_x3_source_bottom.png
 
-#begin gfx/Upscale_matrix/upscale_x3_source_diag_LT-RB_v1.png
+#begin gfx/Upscale_matrix/upscale_x3_source_diag_LT-RB.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -3942,9 +3942,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/Upscale_matrix/upscale_x3_source_diag_LT-RB_v1.png
+/build:gfx/Upscale_matrix/upscale_x3_source_diag_LT-RB.png
 
-#begin gfx/Upscale_matrix/upscale_x3_source_diag_RT-LB_v1.png
+#begin gfx/Upscale_matrix/upscale_x3_source_diag_RT-LB.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -3954,9 +3954,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/Upscale_matrix/upscale_x3_source_diag_RT-LB_v1.png
+/build:gfx/Upscale_matrix/upscale_x3_source_diag_RT-LB.png
 
-#begin gfx/Upscale_matrix/upscale_x3_source_L_v1.png
+#begin gfx/Upscale_matrix/upscale_x3_source_left.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -3966,9 +3966,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/Upscale_matrix/upscale_x3_source_L_v1.png
+/build:gfx/Upscale_matrix/upscale_x3_source_left.png
 
-#begin gfx/Upscale_matrix/upscale_x3_source_R_v1.png
+#begin gfx/Upscale_matrix/upscale_x3_source_right.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -3978,9 +3978,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/Upscale_matrix/upscale_x3_source_R_v1.png
+/build:gfx/Upscale_matrix/upscale_x3_source_right.png
 
-#begin gfx/Upscale_matrix/upscale_x3_source_T_v1.png
+#begin gfx/Upscale_matrix/upscale_x3_source_top.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -3990,9 +3990,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/Upscale_matrix/upscale_x3_source_T_v1.png
+/build:gfx/Upscale_matrix/upscale_x3_source_top.png
 
-#begin gfx/Upscale_matrix/upscale_x3_T_v1.png
+#begin gfx/Upscale_matrix/upscale_x3_top_v1.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -4002,9 +4002,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/Upscale_matrix/upscale_x3_T_v1.png
+/build:gfx/Upscale_matrix/upscale_x3_top_v1.png
 
-#begin gfx/Upscale_matrix/upscale_x3_T_v2.png
+#begin gfx/Upscale_matrix/upscale_x3_top_v2.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -4014,9 +4014,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/Upscale_matrix/upscale_x3_T_v2.png
+/build:gfx/Upscale_matrix/upscale_x3_top_v2.png
 
-#begin gfx/Upscale_matrix/upscale_x3_T_v3.png
+#begin gfx/Upscale_matrix/upscale_x3_top_v3.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -4026,7 +4026,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/Upscale_matrix/upscale_x3_T_v3.png
+/build:gfx/Upscale_matrix/upscale_x3_top_v3.png
 
 #begin gfx/virtual_button.png
 /importer:TextureImporter

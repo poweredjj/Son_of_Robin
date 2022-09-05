@@ -8,64 +8,85 @@ namespace SonOfRobin
 {
     public class BoardTextureUpscaler
     {
-        public static Dictionary<string, Texture2D> TextureByName { get; private set; } = new Dictionary<string, Texture2D>();
-        public static Dictionary<string, Texture2D> solvedCasesByID = new Dictionary<string, Texture2D> { };
+        private static Dictionary<string, byte[,]> colorGridByName = new Dictionary<string, byte[,]>();
+        private static Dictionary<string, Texture2D> solvedCasesByID = new Dictionary<string, Texture2D> { };
 
-        private static readonly List<string> textureNames = new List<string>
+        public static Dictionary<string, List<String>> upscaleNamesDict = new Dictionary<string, List<String>>
         {
-            "upscale_x2_source_corner_LL",
-            "upscale_x2_source_corner_LR",
-            "upscale_x2_source_corner_TL",
-            "upscale_x2_source_corner_TR",
-            "upscale_x2_source_diag_v1",
-            "upscale_x2_source_left-right_v1",
-            "upscale_x2_source_top-bottom_v1",
-            "upscale_x3_source_bottom_v1",
-            "upscale_x3_source_diag_LT-RB_v1",
-            "upscale_x3_source_diag_RT-LB_v1",
-            "upscale_x3_source_L_v1",
-            "upscale_x3_source_R_v1",
-            "upscale_x3_source_T_v1",
+            // source (small bitmap) name: all replacement (large bitmap) names
 
-            "upscale_x2_corner_LL",
-            "upscale_x2_corner_LR",
-            "upscale_x2_corner_TL",
-            "upscale_x2_corner_TR",
-            "upscale_x2_diag_v1",
-            "upscale_x2_diag_v2",
-            "upscale_x2_diag_v3",
-            "upscale_x2_left-righ_v2",
-            "upscale_x2_left-right_v1",
-            "upscale_x2_left-right_v3",
-            "upscale_x2_top-bottom_v1",
-            "upscale_x2_top-bottom_v2",
-            "upscale_x2_top-bottom_v3",
-            "upscale_x3_diag_RT-LB_v1",
-            "upscale_x3_diag_RT-LB_v2",
-            "upscale_x3_diag_RT-LB_v3",
-            "upscale_x3_L_v1",
-            "upscale_x3_L_v2",
-            "upscale_x3_L_v3",
-            "upscale_x3_R_v1",
-            "upscale_x3_R_v2",
-            "upscale_x3_R_v3",
-            "upscale_x3_T_v1",
-            "upscale_x3_T_v2",
-            "upscale_x3_T_v3",
-            "upscale_x3_bottom_v1",
-            "upscale_x3_bottom_v2",
-            "upscale_x3_bottom_v3",
-            "upscale_x3_diag_LT-RB_v1",
-            "upscale_x3_diag_LT-RB_v2",
-            "upscale_x3_diag_LT-RB_v3",
+            {"upscale_x2_source_corner_LL", new List<String> { "upscale_x2_corner_LL" } },
+            {"upscale_x2_source_corner_LR", new List<String> { "upscale_x2_corner_LR" } },
+            {"upscale_x2_source_corner_TL", new List<String> { "upscale_x2_corner_TL" } },
+            {"upscale_x2_source_corner_TR", new List<String> { "upscale_x2_corner_TR" } },
+
+            {"upscale_x2_source_diag", new List<String> { "upscale_x2_diag_v1", "upscale_x2_diag_v2", "upscale_x2_diag_v3" } },
+            {"upscale_x2_source_left-right", new List<String> { "upscale_x2_left-right_v1", "upscale_x2_left-right_v2", "upscale_x2_left-right_v3" } },
+            {"upscale_x2_source_top-bottom", new List<String> { "upscale_x2_top-bottom_v1", "upscale_x2_top-bottom_v2", "upscale_x2_top-bottom_v3" } },
+
+            {"upscale_x3_source_left", new List<String> { "upscale_x3_left_v1", "upscale_x3_left_v2", "upscale_x3_left_v3" } },
+            {"upscale_x3_source_right", new List<String> { "upscale_x3_right_v1", "upscale_x3_right_v2", "upscale_x3_right_v3" } },
+            {"upscale_x3_source_top", new List<String> { "upscale_x3_top_v1", "upscale_x3_top_v2", "upscale_x3_top_v3" } },
+            {"upscale_x3_source_bottom", new List<String> { "upscale_x3_bottom_v1", "upscale_x3_bottom_v2", "upscale_x3_bottom_v3" } },
+
+            {"upscale_x3_source_diag_LT-RB", new List<String> { "upscale_x3_diag_LT-RB_v1", "upscale_x3_diag_LT-RB_v2", "upscale_x3_diag_LT-RB_v3" } },
+            {"upscale_x3_source_diag_RT-LB", new List<String> { "upscale_x3_diag_RT-LB_v1", "upscale_x3_diag_RT-LB_v2", "upscale_x3_diag_RT-LB_v3" } },
         };
+
 
         public static void LoadAllTextures()
         {
-            foreach (string textureName in textureNames)
+            var textureNamesList = new List<string>();
+
+            foreach (var kvp in upscaleNamesDict)
             {
-                TextureByName[textureName] = SonOfRobinGame.content.Load<Texture2D>($"gfx/Upscale_matrix/{textureName}");
+                textureNamesList.Add(kvp.Key);
+                foreach (string name in kvp.Value)
+                {
+                    textureNamesList.Add(name);
+                }
             }
+
+            foreach (var textureName in textureNamesList)
+            {
+                Texture2D texture = SonOfRobinGame.content.Load<Texture2D>($"gfx/Upscale_matrix/{textureName}");
+
+                Color[,] colorGrid = GfxConverter.ConvertTextureToGrid(texture: texture, x: 0, y: 0, width: texture.Width, height: texture.Height);
+
+                var tuple = ConvertColorArrayToIndexArray(colorGrid);
+                colorGridByName[textureName] = tuple.Item1;
+            }
+
+        }
+
+        public static (byte[,], Dictionary<byte, Color>) ConvertColorArrayToIndexArray(Color[,] inputArray)
+        {
+            int width = inputArray.GetLength(0);
+            int height = inputArray.GetLength(1);
+
+            byte[,] sourceArray = new byte[width, height];
+
+            var colorIndexDict = new Dictionary<Color, byte>();
+            var colorsAdded = new List<Color>();
+            byte colorCounter = 0;
+
+            for (int y = 0; y < height; y++)
+            {
+                for (int x = 0; x < width; x++)
+                {
+                    Color currentColor = inputArray[x, y];
+                    if (!colorsAdded.Contains(currentColor))
+                    {
+                        colorIndexDict[currentColor] = colorCounter;
+                        colorCounter++;
+                        colorsAdded.Add(currentColor);
+                    }
+
+                    sourceArray[x, y] = colorIndexDict[currentColor];
+                }
+            }
+
+            return (sourceArray, colorIndexDict.ToDictionary(x => x.Value, x => x.Key));
         }
 
 
@@ -78,8 +99,8 @@ namespace SonOfRobin
         public class Case
         {
             public readonly Color[,] inputArray; // original array with RGB values
-            public int[,] SourceArray { get; private set; } // array of unique color indices
-            public readonly Dictionary<int, Color> indexToColorDict; // dictionary for replacing color indices with source colors
+            public byte[,] SourceArray { get; private set; } // array of unique color indices
+            public readonly Dictionary<byte, Color> indexToColorDict; // dictionary for replacing color indices with source colors
             public readonly string caseID;
 
             public Case(Color[,] sourceArray)
@@ -90,41 +111,6 @@ namespace SonOfRobin
                 var tuple = ConvertColorArrayToIndexArray(this.inputArray);
                 this.SourceArray = tuple.Item1;
                 this.indexToColorDict = tuple.Item2;
-            }
-
-            private static (int[,], Dictionary<int, Color>) ConvertColorArrayToIndexArray(Color[,] inputArray)
-            {
-                if (inputArray == null) throw new ArgumentNullException("Input array cannot be null.");
-
-                int width = inputArray.GetLength(0);
-                int height = inputArray.GetLength(1);
-
-                if (width != 2) throw new ArgumentException($"Input array x size {inputArray.GetLength(0)} must be 2.");
-                if (height != 2) throw new ArgumentException($"Input array y size {inputArray.GetLength(1)} must be 2.");
-
-                int[,] sourceArray = new int[width, height];
-
-                var colorIndexDict = new Dictionary<Color, int>();
-                var colorsAdded = new List<Color>();
-                int colorCounter = 0;
-
-                for (int y = 0; y < height; y++)
-                {
-                    for (int x = 0; x < width; x++)
-                    {
-                        Color currentColor = inputArray[x, y];
-                        if (!colorsAdded.Contains(currentColor))
-                        {
-                            colorIndexDict[currentColor] = colorCounter;
-                            colorCounter++;
-                            colorsAdded.Add(currentColor);
-                        }
-
-                        sourceArray[x, y] = colorIndexDict[currentColor];
-                    }
-                }
-
-                return (sourceArray, colorIndexDict.ToDictionary(x => x.Value, x => x.Key));
             }
 
             public static string GetCaseIDForArray(Color[,] inputArray)
