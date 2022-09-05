@@ -353,8 +353,12 @@ namespace SonOfRobin
 
             if (Keyboard.HasBeenPressed(Keys.F4))
             {
-                if (world == null) return;
-                world.grid.UnloadAllTextures();
+                Texture2D textureToUpscale = PieceInfo.GetTexture(PieceTemplate.Name.BackpackMedium);
+
+                Texture2D upscaledTexture = BoardTextureUpscaler.GetUpscaledTexture(textureToUpscale);
+                BoardTextureUpscaler.CleanUpAfterUpscalingAll();
+
+                new TextWindow(text: "Original vs upscaled: | |", imageList: new List<Texture2D> { textureToUpscale, upscaledTexture }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: false);
             }
 
             if (Keyboard.HasBeenPressed(Keys.F5))

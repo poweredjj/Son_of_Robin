@@ -40,7 +40,67 @@ namespace SonOfRobin
         };
 
 
-        public static void PrepareUpscaleTemplates()
+        public static Texture2D GetUpscaledTexture(Texture2D textureToUpscale)
+        {
+            int resizeFactor = 5; // has to be compliant with upscale texture templates
+
+            int sourceWidth = textureToUpscale.Width;
+            int sourceHeight = textureToUpscale.Height;
+            int targetWidth = sourceWidth * resizeFactor;
+            int targetHeight = sourceHeight * resizeFactor;
+
+            Color[] sourceTextureData = new Color[sourceWidth * sourceHeight];
+            Color[] targetTextureData = new Color[targetWidth * targetHeight];
+            textureToUpscale.GetData(sourceTextureData);
+
+            for (int baseY = 0; baseY < sourceHeight; baseY += 2)
+            {
+                for (int baseX = 0; baseX < sourceWidth; baseX += 2)
+                {
+                    // preparing 2x2 source grid
+
+                    Color[,] colorGrid = new Color[2, 2];
+                    for (int offsetY = 0; offsetY < 2; offsetY++)
+                    {
+                        for (int offsetX = 0; offsetX < 2; offsetX++)
+                        {
+                            try
+                            {
+                                colorGrid[offsetX, offsetY] = sourceTextureData[((baseY + offsetY) * sourceWidth) + baseX + offsetX];
+                            }
+                            catch (IndexOutOfRangeException)
+                            {
+                                int currentX = baseX + offsetX;
+                                int currentY = baseY + offsetY;
+                                currentX = Math.Min(currentX, sourceWidth - 1);
+                                currentY = Math.Min(currentY, sourceHeight - 1);
+                                colorGrid[offsetX, offsetY] = sourceTextureData[((currentY) * sourceWidth) + currentX];
+                            }
+                        }
+                    }
+
+                    // converting 2x2 grid to 10x10 grid
+
+                    Case resizeCase = new Case(colorGrid);
+
+                    for (int resizedY = 0; resizedY < 2 * resizeFactor; resizedY++)
+                    {
+                        for (int resizedX = 0; resizedX < 2 * resizeFactor; resizedX++)
+                        {
+                            targetTextureData[(((baseY * resizeFactor) + resizedY) * sourceWidth) + (baseX * resizeFactor) + resizedX] = resizeCase.resizedGridRGB[resizedX, resizedY];
+                        }
+                    }
+                }
+            }
+
+            Texture2D upscaledTexture = new Texture2D(SonOfRobinGame.graphicsDevice, targetWidth, targetHeight);
+            upscaledTexture.SetData(targetTextureData);
+
+            return upscaledTexture;
+        }
+
+
+        public static void PrepareAllTemplates()
         {
             var textureNamesList = new List<string>();
             var cornersByName = new Dictionary<string, Color[,]>();
@@ -103,14 +163,19 @@ namespace SonOfRobin
                 }
             }
 
-
-            TryToUpscale(); // checking if conversion can be executed properly
-            UpscaleRandomTest();
+            // RandomUpscaleTest(); // for testing only
         }
 
-        private static void UpscaleRandomTest()
+        public static void CleanUpAfterUpscalingAll()
         {
-            for (int i = 0; i < 100; i++)
+            // should be invoked after finishing upscaling all textures (not after each texture)
+
+            solvedCaseByID.Clear();
+        }
+
+        private static void RandomUpscaleTest()
+        {
+            for (int i = 0; i < 100000; i++)
             {
                 var gridRGB = GenerateRandomGridRGB(width: 2, height: 2);
                 new Case(gridRGB);
@@ -152,46 +217,6 @@ namespace SonOfRobin
             return gridRGB;
         }
 
-
-
-        private static void TryToUpscale()
-        {
-            foreach (string sourceName in upscaleNamesDict.Keys)
-            {
-                var sourceIndexGrid = indexGridByName[sourceName];
-
-                int width = sourceIndexGrid.GetLength(0);
-                int height = sourceIndexGrid.GetLength(1);
-
-                var indexToColorDict = new Dictionary<byte, Color>();
-                var addedColors = new List<Color>();
-
-                for (int y = 0; y < height; y++)
-                {
-                    for (int x = 0; x < width; x++)
-                    {
-                        byte index = sourceIndexGrid[x, y];
-                        if (!indexToColorDict.ContainsKey(index))
-                        {
-                            while (true)
-                            {
-                                Color color = new Color(r: random.Next(0, 255), g: random.Next(0, 255), b: random.Next(0, 255), alpha: random.Next(0, 255));
-                                if (!addedColors.Contains(color))
-                                {
-                                    indexToColorDict[index] = color;
-                                    addedColors.Add(color);
-
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
-
-                var sourceGridRGB = Case.ConvertIndexGridToColorGrid(indexGrid: sourceIndexGrid, indexToColorDict: indexToColorDict);
-                new Case(sourceGridRGB);
-            }
-        }
 
         public static (byte[,], Dictionary<byte, Color>) ConvertColorGridToIndexGrid(Color[,] gridRGB)
         {
@@ -259,20 +284,12 @@ namespace SonOfRobin
             return id;
         }
 
-
-        public BoardTextureUpscaler(Texture2D inputTexture)
-        {
-
-
-        }
-
         public class Case
         {
             public readonly string caseID;
             public readonly string indexGridID;
             public readonly Dictionary<byte, Color> indexToColorDict; // dictionary for replacing color indices with source colors
             public readonly Color[,] sourceGridRGB; // original grid with RGB values
-            public readonly byte[,] sourceIndexGrid; // grid of unique color indices
             public readonly Color[,] resizedGridRGB; // original grid with RGB values
 
             public Case(Color[,] sourceGridRGB)
@@ -287,9 +304,9 @@ namespace SonOfRobin
                 if (!solvedCaseByID.ContainsKey(this.caseID))
                 {
                     var tuple = ConvertColorGridToIndexGrid(this.sourceGridRGB);
-                    this.sourceIndexGrid = tuple.Item1;
+                    byte[,] sourceIndexGrid = tuple.Item1;
                     this.indexToColorDict = tuple.Item2;
-                    this.indexGridID = GetIDForGrid(this.sourceIndexGrid);
+                    this.indexGridID = GetIDForGrid(sourceIndexGrid);
 
                     var resizedIndexGrid = GetMatchingResizedGrid();
                     this.resizedGridRGB = ConvertIndexGridToColorGrid(indexGrid: resizedIndexGrid, indexToColorDict: this.indexToColorDict);

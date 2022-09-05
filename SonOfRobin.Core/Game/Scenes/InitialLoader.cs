@@ -64,7 +64,7 @@ namespace SonOfRobin
                     break;
 
                 case Step.PrepareUpscaleMatrix:
-                    BoardTextureUpscaler.PrepareUpscaleTemplates();
+                    BoardTextureUpscaler.PrepareAllTemplates();
                     break;
 
                 case Step.DeleteObsoleteSaves:
