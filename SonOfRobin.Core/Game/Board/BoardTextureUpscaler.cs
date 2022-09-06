@@ -9,8 +9,7 @@ namespace SonOfRobin
 {
     public class BoardTextureUpscaler
     {
-        public static readonly int resizeFactor = 5; // has to be compliant with upscale texture templates
-
+        public static readonly int resizeFactor = 5; // has to match upscale texture templates
 
         private static Random random = SonOfRobinGame.random;
         private static Dictionary<string, byte[,]> indexGridByName = new Dictionary<string, byte[,]>();
@@ -226,7 +225,6 @@ namespace SonOfRobin
             return gridRGB;
         }
 
-
         public static (byte[,], Dictionary<byte, Color>) ConvertColorGridToIndexGrid(Color[,] gridRGB)
         {
             int width = gridRGB.GetLength(0);
@@ -297,8 +295,6 @@ namespace SonOfRobin
         {
             public readonly string caseID;
             public readonly string indexGridID;
-            public readonly Dictionary<byte, Color> indexToColorDict; // dictionary for replacing color indices with source colors
-            public readonly Color[,] sourceGridRGB; // original grid with RGB values
             public readonly Color[,] resizedGridRGB; // original grid with RGB values
 
             public Case(Color[,] sourceGridRGB)
@@ -307,18 +303,17 @@ namespace SonOfRobin
                 if (sourceGridRGB.GetLength(0) != 2) throw new ArgumentException($"Input grid x size {sourceGridRGB.GetLength(0)} must be 2.");
                 if (sourceGridRGB.GetLength(1) != 2) throw new ArgumentException($"Input grid y size {sourceGridRGB.GetLength(1)} must be 2.");
 
-                this.sourceGridRGB = sourceGridRGB;
-                this.caseID = GetIDForGrid(this.sourceGridRGB);
+                this.caseID = GetIDForGrid(sourceGridRGB);
 
                 if (!solvedCaseByID.ContainsKey(this.caseID))
                 {
-                    var tuple = ConvertColorGridToIndexGrid(this.sourceGridRGB);
+                    var tuple = ConvertColorGridToIndexGrid(sourceGridRGB);
                     byte[,] sourceIndexGrid = tuple.Item1;
-                    this.indexToColorDict = tuple.Item2;
+                    Dictionary<byte, Color> indexToColorDict = tuple.Item2;
                     this.indexGridID = GetIDForGrid(sourceIndexGrid);
 
                     var resizedIndexGrid = GetMatchingResizedGrid();
-                    this.resizedGridRGB = ConvertIndexGridToColorGrid(indexGrid: resizedIndexGrid, indexToColorDict: this.indexToColorDict);
+                    this.resizedGridRGB = ConvertIndexGridToColorGrid(indexGrid: resizedIndexGrid, indexToColorDict: indexToColorDict);
                 }
                 else
                 {
