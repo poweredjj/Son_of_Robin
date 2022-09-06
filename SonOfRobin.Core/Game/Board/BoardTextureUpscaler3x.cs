@@ -52,9 +52,9 @@ namespace SonOfRobin
         {
             Color[,] targetGrid3x3 = new Color[3, 3];
 
-            for (int baseY = 1; baseY < this.sourceHeight - 1; baseY++)
+            for (int baseY = 0; baseY < this.sourceHeight; baseY++)
             {
-                for (int baseX = 1; baseX < this.sourceWidth - 1; baseX++)
+                for (int baseX = 0; baseX < this.sourceWidth; baseX++)
                 {
                     // preparing source grid for interpolation
 
@@ -95,7 +95,7 @@ namespace SonOfRobin
         }
 
 
-        private static Color[,] Upscale3x3Grid(Color[,] srcGrid, Color[,] targetGrid)
+        public static Color[,] Upscale3x3Grid(Color[,] srcGrid, Color[,] targetGrid)
         {
             // base code, before replacing letters with srcGrid locations
 
@@ -118,6 +118,8 @@ namespace SonOfRobin
             //targetGrid[0, 2] = H == D && H != F && D != B ? D : E;
             //targetGrid[1, 2] = (F == H && F != B && H != D && E != G) || (H == D && H != F && D != B && E != I) ? H : E;
             //targetGrid[2, 2] = F == H && F != B && H != D ? F : E;
+
+            // optimized code
 
             targetGrid[0, 0] = srcGrid[0, 1] == srcGrid[1, 0] && srcGrid[0, 1] != srcGrid[1, 2] && srcGrid[1, 0] != srcGrid[2, 1] ? srcGrid[0, 1] : srcGrid[1, 1];
             targetGrid[1, 0] = (srcGrid[0, 1] == srcGrid[1, 0] && srcGrid[0, 1] != srcGrid[1, 2] && srcGrid[1, 0] != srcGrid[2, 1] && srcGrid[1, 1] != srcGrid[2, 0]) || (srcGrid[1, 0] == srcGrid[2, 1] && srcGrid[1, 0] != srcGrid[0, 1] && srcGrid[2, 1] != srcGrid[1, 2] && srcGrid[1, 1] != srcGrid[0, 0]) ? srcGrid[1, 0] : srcGrid[1, 1];
