@@ -26,7 +26,7 @@ namespace SonOfRobin
         private DateTime lastCellProcessedTime;
         public int loadedTexturesCount;
 
-        private static readonly TimeSpan textureLoadingDelay = TimeSpan.FromMilliseconds(5);
+        private static readonly TimeSpan textureLoadingDelay = TimeSpan.FromMilliseconds(10);
         public bool ProcessingStepComplete { get { return this.cellsToProcessOnStart.Count == 0; } }
         public List<Cell> CellsVisitedByPlayer { get { return this.allCells.Where(cell => cell.VisitedByPlayer).ToList(); } }
         public List<Cell> CellsNotVisitedByPlayer { get { return this.allCells.Where(cell => !cell.VisitedByPlayer).ToList(); } }

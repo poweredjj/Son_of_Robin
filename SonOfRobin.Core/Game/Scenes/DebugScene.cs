@@ -366,7 +366,6 @@ namespace SonOfRobin
                 }
 
                 Texture2D upscaledTexture = BoardTextureUpscaler.GetUpscaledTexture(textureToUpscale);
-                BoardTextureUpscaler.CleanUpAfterUpscalingAll();
                 GfxConverter.SaveTextureAsPNG(filename: Path.Combine(SonOfRobinGame.gameDataPath, targetPngName), upscaledTexture);
                 new TextWindow(text: "Original vs upscaled: | |", imageList: new List<Texture2D> { textureToUpscale, upscaledTexture }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: false);
             }

@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -14,7 +13,6 @@ namespace SonOfRobin
         private static Random random = SonOfRobinGame.random;
         private static Dictionary<string, byte[,]> indexGridByName = new Dictionary<string, byte[,]>();
         private static Dictionary<string, string> gridNameByID = new Dictionary<string, string>();
-        private static ConcurrentDictionary<string, Case> solvedCaseByID = new ConcurrentDictionary<string, Case> { };
 
         public static Dictionary<string, List<String>> upscaleNamesDict = new Dictionary<string, List<String>>
         {
@@ -174,13 +172,6 @@ namespace SonOfRobin
             // RandomUpscaleTest(); // for testing only
         }
 
-        public static void CleanUpAfterUpscalingAll()
-        {
-            // should be invoked after finishing upscaling all textures (not after each texture)
-
-            solvedCaseByID.Clear();
-        }
-
         private static void RandomUpscaleTest()
         {
             for (int i = 0; i < 100000; i++)
@@ -293,7 +284,6 @@ namespace SonOfRobin
 
         public class Case
         {
-            public readonly string caseID;
             public readonly string indexGridID;
             public readonly Color[,] resizedGridRGB; // original grid with RGB values
 
@@ -303,25 +293,13 @@ namespace SonOfRobin
                 if (sourceGridRGB.GetLength(0) != 2) throw new ArgumentException($"Input grid x size {sourceGridRGB.GetLength(0)} must be 2.");
                 if (sourceGridRGB.GetLength(1) != 2) throw new ArgumentException($"Input grid y size {sourceGridRGB.GetLength(1)} must be 2.");
 
-                this.caseID = GetIDForGrid(sourceGridRGB);
+                var tuple = ConvertColorGridToIndexGrid(sourceGridRGB);
+                byte[,] sourceIndexGrid = tuple.Item1;
+                Dictionary<byte, Color> indexToColorDict = tuple.Item2;
+                this.indexGridID = GetIDForGrid(sourceIndexGrid);
 
-                if (!solvedCaseByID.ContainsKey(this.caseID))
-                {
-                    var tuple = ConvertColorGridToIndexGrid(sourceGridRGB);
-                    byte[,] sourceIndexGrid = tuple.Item1;
-                    Dictionary<byte, Color> indexToColorDict = tuple.Item2;
-                    this.indexGridID = GetIDForGrid(sourceIndexGrid);
-
-                    var resizedIndexGrid = GetMatchingResizedGrid();
-                    this.resizedGridRGB = ConvertIndexGridToColorGrid(indexGrid: resizedIndexGrid, indexToColorDict: indexToColorDict);
-                }
-                else
-                {
-                    Case solvedCase = solvedCaseByID[this.caseID];
-                    this.resizedGridRGB = solvedCase.resizedGridRGB;
-                }
-
-                if (!solvedCaseByID.ContainsKey(this.caseID)) solvedCaseByID[this.caseID] = this;
+                var resizedIndexGrid = GetMatchingResizedGrid();
+                this.resizedGridRGB = ConvertIndexGridToColorGrid(indexGrid: resizedIndexGrid, indexToColorDict: indexToColorDict);
             }
 
             private byte[,] GetMatchingResizedGrid()
