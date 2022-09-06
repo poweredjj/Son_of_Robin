@@ -50,6 +50,8 @@ namespace SonOfRobin
 
         private void FillUpscaledGrid()
         {
+            Color[,] targetGrid3x3 = new Color[3, 3];
+
             for (int baseY = 1; baseY < this.sourceHeight - 1; baseY++)
             {
                 for (int baseX = 1; baseX < this.sourceWidth - 1; baseX++)
@@ -74,7 +76,7 @@ namespace SonOfRobin
 
                     // creating target grid and filling with middle value
 
-                    Color[,] targetGrid3x3 = Upscale3x3Grid(sourceGrid3x3: sourceGrid3x3);
+                    targetGrid3x3 = Upscale3x3Grid(srcGrid: sourceGrid3x3, targetGrid: targetGrid3x3);
                     for (int yOffset = 0; yOffset < 3; yOffset++)
                     {
                         for (int xOffset = 0; xOffset < 3; xOffset++)
@@ -93,37 +95,42 @@ namespace SonOfRobin
         }
 
 
-        private static Color[,] Upscale3x3Grid(Color[,] sourceGrid3x3)
+        private static Color[,] Upscale3x3Grid(Color[,] srcGrid, Color[,] targetGrid)
         {
-            Color[,] targetGrid3x3 = new Color[3, 3];
+            // base code, before replacing letters with srcGrid locations
 
-            for (int y = 0; y < 3; y++)
-            {
-                for (int x = 0; x < 3; x++)
-                {
-                    targetGrid3x3[x, y] = sourceGrid3x3[1, 1];
-                }
-            }
+            //Color A = srcGrid[0, 0];
+            //Color B = srcGrid[1, 0];
+            //Color C = srcGrid[2, 0];
+            //Color D = srcGrid[0, 1];
+            //Color E = srcGrid[1, 1];
+            //Color F = srcGrid[2, 1];
+            //Color G = srcGrid[0, 2];
+            //Color H = srcGrid[1, 2];
+            //Color I = srcGrid[2, 2];
 
-            if (sourceGrid3x3[1, 0] == sourceGrid3x3[0, 1] && sourceGrid3x3[1, 0] != sourceGrid3x3[2, 1] && sourceGrid3x3[0, 1] != sourceGrid3x3[1, 2]) targetGrid3x3[0, 0] = sourceGrid3x3[1, 0];
+            //targetGrid[0, 0] = D == B && D != H && B != F ? D : E;
+            //targetGrid[1, 0] = (D == B && D != H && B != F && E != C) || (B == F && B != D && F != H && E != A) ? B : E;
+            //targetGrid[2, 0] = (B == F && B != D && F != H) ? F : E;
+            //targetGrid[0, 1] = (H == D && H != F && D != B && E != A) || (D == B && D != H && B != F && E != G) ? D : E;
+            //targetGrid[1, 1] = E;
+            //targetGrid[2, 1] = (B == F && B != D && F != H && E != I) || (F == H && F != B && H != D && E != C) ? F : E;
+            //targetGrid[0, 2] = H == D && H != F && D != B ? D : E;
+            //targetGrid[1, 2] = (F == H && F != B && H != D && E != G) || (H == D && H != F && D != B && E != I) ? H : E;
+            //targetGrid[2, 2] = F == H && F != B && H != D ? F : E;
 
-            if ((sourceGrid3x3[1, 0] == sourceGrid3x3[0, 1] && sourceGrid3x3[1, 0] != sourceGrid3x3[2, 1] && sourceGrid3x3[0, 1] != sourceGrid3x3[1, 2] && sourceGrid3x3[1, 1] != sourceGrid3x3[0, 2]) || (sourceGrid3x3[0, 1] == sourceGrid3x3[1, 2] && sourceGrid3x3[0, 1] != sourceGrid3x3[1, 0] && sourceGrid3x3[1, 2] != sourceGrid3x3[2, 1] && sourceGrid3x3[1, 1] != sourceGrid3x3[0, 0])) targetGrid3x3[1, 0] = sourceGrid3x3[0, 1];
+            targetGrid[0, 0] = srcGrid[0, 1] == srcGrid[1, 0] && srcGrid[0, 1] != srcGrid[1, 2] && srcGrid[1, 0] != srcGrid[2, 1] ? srcGrid[0, 1] : srcGrid[1, 1];
+            targetGrid[1, 0] = (srcGrid[0, 1] == srcGrid[1, 0] && srcGrid[0, 1] != srcGrid[1, 2] && srcGrid[1, 0] != srcGrid[2, 1] && srcGrid[1, 1] != srcGrid[2, 0]) || (srcGrid[1, 0] == srcGrid[2, 1] && srcGrid[1, 0] != srcGrid[0, 1] && srcGrid[2, 1] != srcGrid[1, 2] && srcGrid[1, 1] != srcGrid[0, 0]) ? srcGrid[1, 0] : srcGrid[1, 1];
+            targetGrid[2, 0] = (srcGrid[1, 0] == srcGrid[2, 1] && srcGrid[1, 0] != srcGrid[0, 1] && srcGrid[2, 1] != srcGrid[1, 2]) ? srcGrid[2, 1] : srcGrid[1, 1];
+            targetGrid[0, 1] = (srcGrid[1, 2] == srcGrid[0, 1] && srcGrid[1, 2] != srcGrid[2, 1] && srcGrid[0, 1] != srcGrid[1, 0] && srcGrid[1, 1] != srcGrid[0, 0]) || (srcGrid[0, 1] == srcGrid[1, 0] && srcGrid[0, 1] != srcGrid[1, 2] && srcGrid[1, 0] != srcGrid[2, 1] && srcGrid[1, 1] != srcGrid[0, 2]) ? srcGrid[0, 1] : srcGrid[1, 1];
+            targetGrid[1, 1] = srcGrid[1, 1];
+            targetGrid[2, 1] = (srcGrid[1, 0] == srcGrid[2, 1] && srcGrid[1, 0] != srcGrid[0, 1] && srcGrid[2, 1] != srcGrid[1, 2] && srcGrid[1, 1] != srcGrid[2, 2]) || (srcGrid[2, 1] == srcGrid[1, 2] && srcGrid[2, 1] != srcGrid[1, 0] && srcGrid[1, 2] != srcGrid[0, 1] && srcGrid[1, 1] != srcGrid[2, 0]) ? srcGrid[2, 1] : srcGrid[1, 1];
+            targetGrid[0, 2] = srcGrid[1, 2] == srcGrid[0, 1] && srcGrid[1, 2] != srcGrid[2, 1] && srcGrid[0, 1] != srcGrid[1, 0] ? srcGrid[0, 1] : srcGrid[1, 1];
+            targetGrid[1, 2] = (srcGrid[2, 1] == srcGrid[1, 2] && srcGrid[2, 1] != srcGrid[1, 0] && srcGrid[1, 2] != srcGrid[0, 1] && srcGrid[1, 1] != srcGrid[0, 2]) || (srcGrid[1, 2] == srcGrid[0, 1] && srcGrid[1, 2] != srcGrid[2, 1] && srcGrid[0, 1] != srcGrid[1, 0] && srcGrid[1, 1] != srcGrid[2, 2]) ? srcGrid[1, 2] : srcGrid[1, 1];
+            targetGrid[2, 2] = srcGrid[2, 1] == srcGrid[1, 2] && srcGrid[2, 1] != srcGrid[1, 0] && srcGrid[1, 2] != srcGrid[0, 1] ? srcGrid[2, 1] : srcGrid[1, 1];
 
-            if (sourceGrid3x3[0, 1] == sourceGrid3x3[1, 2] && sourceGrid3x3[0, 1] != sourceGrid3x3[1, 0] && sourceGrid3x3[1, 2] != sourceGrid3x3[2, 1]) targetGrid3x3[2, 0] = sourceGrid3x3[1, 2];
-
-            if ((sourceGrid3x3[2, 1] == sourceGrid3x3[1, 0] && sourceGrid3x3[2, 1] != sourceGrid3x3[1, 2] && sourceGrid3x3[1, 0] != sourceGrid3x3[0, 1] && sourceGrid3x3[1, 1] != sourceGrid3x3[0, 0]) || (sourceGrid3x3[1, 0] == sourceGrid3x3[0, 1] && sourceGrid3x3[1, 0] != sourceGrid3x3[2, 1] && sourceGrid3x3[0, 1] != sourceGrid3x3[1, 2] && sourceGrid3x3[1, 1] != sourceGrid3x3[2, 0])) targetGrid3x3[0, 1] = sourceGrid3x3[1, 0];
-
-            if ((sourceGrid3x3[0, 1] == sourceGrid3x3[1, 2] && sourceGrid3x3[0, 1] != sourceGrid3x3[1, 0] && sourceGrid3x3[1, 2] != sourceGrid3x3[2, 1] && sourceGrid3x3[1, 1] != sourceGrid3x3[2, 2]) || (sourceGrid3x3[1, 2] == sourceGrid3x3[2, 1] && sourceGrid3x3[1, 2] != sourceGrid3x3[0, 1] && sourceGrid3x3[2, 1] != sourceGrid3x3[1, 0] && sourceGrid3x3[1, 1] != sourceGrid3x3[0, 2])) targetGrid3x3[2, 1] = sourceGrid3x3[1, 2];
-
-            if (sourceGrid3x3[2, 1] == sourceGrid3x3[1, 0] && sourceGrid3x3[2, 1] != sourceGrid3x3[1, 2] && sourceGrid3x3[1, 0] != sourceGrid3x3[0, 1]) targetGrid3x3[0, 2] = sourceGrid3x3[1, 0];
-
-            if ((sourceGrid3x3[1, 2] == sourceGrid3x3[2, 1] && sourceGrid3x3[1, 2] != sourceGrid3x3[0, 1] && sourceGrid3x3[2, 1] != sourceGrid3x3[1, 0] && sourceGrid3x3[1, 1] != sourceGrid3x3[2, 0]) || (sourceGrid3x3[2, 1] == sourceGrid3x3[1, 0] && sourceGrid3x3[2, 1] != sourceGrid3x3[1, 2] && sourceGrid3x3[1, 0] != sourceGrid3x3[0, 1] && sourceGrid3x3[1, 1] != sourceGrid3x3[2, 2])) targetGrid3x3[1, 2] = sourceGrid3x3[2, 1];
-
-            if (sourceGrid3x3[1, 2] == sourceGrid3x3[2, 1] && sourceGrid3x3[1, 2] != sourceGrid3x3[0, 1] && sourceGrid3x3[2, 1] != sourceGrid3x3[1, 0]) targetGrid3x3[2, 2] = sourceGrid3x3[1, 2];
-
-            return targetGrid3x3;
+            return targetGrid;
         }
-
 
     }
 }
