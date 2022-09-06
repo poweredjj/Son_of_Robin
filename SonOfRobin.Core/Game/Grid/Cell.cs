@@ -136,16 +136,11 @@ namespace SonOfRobin
                     this.terrainByName[TerrainName.Danger] = new Terrain(
                     world: this.world, cell: this, name: TerrainName.Danger, frequency: 2.9f, octaves: 3, persistence: 0.7f, lacunarity: 1.4f, gain: 0.3f, addBorder: true);
 
-                    this.creationStage++;
-                    return;
-
-                case 4:
-                    // have to be processed separately
                     this.UpdateBoardGraphics();
                     this.creationStage++;
                     return;
 
-                case 5:
+                case 4:
                     // cannot be run in parallel
                     if (Preferences.loadWholeMap) this.boardGraphics.LoadTexture();
                     this.creationInProgress = false;
