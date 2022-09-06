@@ -354,16 +354,20 @@ namespace SonOfRobin
 
             if (Keyboard.HasBeenPressed(Keys.F4))
             {
-                Texture2D textureToUpscale = PieceInfo.GetTexture(PieceTemplate.Name.BackpackMedium);
+                string sourcePngName = "upscale_test_small.png";
+                string targetPngName = "upscale_test_big.png";
 
-                var upscaledTextureData = BoardTextureUpscaler.GetUpscaledTexture(textureToUpscale);
-                Texture2D upscaledTexture = new Texture2D(SonOfRobinGame.graphicsDevice, textureToUpscale.Width * BoardTextureUpscaler.resizeFactor, textureToUpscale.Height * BoardTextureUpscaler.resizeFactor);
-                upscaledTexture.SetData(upscaledTextureData);
+                Texture2D textureToUpscale = GfxConverter.LoadTextureFromPNG(Path.Combine(SonOfRobinGame.gameDataPath, sourcePngName));
 
+                if (textureToUpscale == null)
+                {
+                    MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Source filename {sourcePngName} not found.");
+                    return;
+                }
+
+                Texture2D upscaledTexture = BoardTextureUpscaler.GetUpscaledTexture(textureToUpscale);
                 BoardTextureUpscaler.CleanUpAfterUpscalingAll();
-
-                GfxConverter.SaveTextureAsPNG(filename: Path.Combine(SonOfRobinGame.worldTemplatesPath, "upscale_test.png"), upscaledTexture);
-
+                GfxConverter.SaveTextureAsPNG(filename: Path.Combine(SonOfRobinGame.gameDataPath, targetPngName), upscaledTexture);
                 new TextWindow(text: "Original vs upscaled: | |", imageList: new List<Texture2D> { textureToUpscale, upscaledTexture }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: false);
             }
 

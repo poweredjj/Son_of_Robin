@@ -169,7 +169,7 @@ namespace SonOfRobin
         {
             var cellProcessingQueue = new List<Cell> { };
 
-            for (int i = 0; i < 50 * Preferences.newWorldResDivider; i++)
+            for (int i = 0; i < 5 * Preferences.newWorldResDivider; i++)
             {
                 cellProcessingQueue.Add(this.cellsToProcessOnStart[0]);
                 this.cellsToProcessOnStart.RemoveAt(0);

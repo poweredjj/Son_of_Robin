@@ -43,20 +43,31 @@ namespace SonOfRobin
             {"upscale_x4_source", new List<String> { "upscale_x4_v1", "upscale_x4_v2", "upscale_x4_v3" } },
         };
 
-        public static Color[] GetUpscaledTexture(Texture2D textureToUpscale)
+        public static Texture2D GetUpscaledTexture(Texture2D textureToUpscale)
         {
             int sourceWidth = textureToUpscale.Width;
             int sourceHeight = textureToUpscale.Height;
             Color[] sourceTextureData = new Color[sourceWidth * sourceHeight];
             textureToUpscale.GetData(sourceTextureData);
 
-            return GetUpscaledColorData(sourceTextureData: sourceTextureData, sourceWidth: sourceWidth, sourceHeight: sourceHeight);
+            var tuple = GetUpscaledColorData(sourceTextureData: sourceTextureData, sourceWidth: sourceWidth, sourceHeight: sourceHeight);
+            var upscaledTextureData = tuple.Item1;
+            int upscaledWidth = tuple.Item2;
+            int upscaledHeight = tuple.Item3;
+
+            Texture2D upscaledTexture = new Texture2D(SonOfRobinGame.graphicsDevice, upscaledWidth, upscaledHeight);
+            upscaledTexture.SetData(upscaledTextureData);
+
+            return upscaledTexture;
         }
 
-        public static Color[] GetUpscaledColorData(Color[] sourceTextureData, int sourceWidth, int sourceHeight)
+        public static (Color[], int, int) GetUpscaledColorData(Color[] sourceTextureData, int sourceWidth, int sourceHeight)
         {
-            int targetWidth = sourceWidth * resizeFactor;
-            int targetHeight = sourceHeight * resizeFactor;
+            int sourceWidthRoundedEven = (int)Math.Ceiling(sourceWidth / 2d) * 2;
+            int sourceHeightRoundedEven = (int)Math.Ceiling(sourceHeight / 2d) * 2;
+
+            int targetWidth = sourceWidthRoundedEven * resizeFactor;
+            int targetHeight = sourceHeightRoundedEven * resizeFactor;
 
             Color[] targetTextureData = new Color[targetWidth * targetHeight];
 
@@ -106,7 +117,7 @@ namespace SonOfRobin
                 }
             }
 
-            return targetTextureData;
+            return (targetTextureData, targetWidth, targetHeight);
         }
 
         public static void PrepareAllTemplates()

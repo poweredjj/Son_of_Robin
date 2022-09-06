@@ -136,10 +136,10 @@ namespace SonOfRobin
 
             // upscaling 1D color data
 
-            int upscaledWidth = width * BoardTextureUpscaler.resizeFactor;
-            int upscaledHeight = height * BoardTextureUpscaler.resizeFactor;
-
-            var upscaledTextureData = BoardTextureUpscaler.GetUpscaledColorData(sourceTextureData: textureData, sourceWidth: width, sourceHeight: height);
+            var tuple = BoardTextureUpscaler.GetUpscaledColorData(sourceTextureData: textureData, sourceWidth: width, sourceHeight: height);
+            var upscaledTextureData = tuple.Item1;
+            int upscaledWidth = tuple.Item2;
+            int upscaledHeight = tuple.Item3;
 
             // putting upscaled 1D color data into PngBuilder
 
