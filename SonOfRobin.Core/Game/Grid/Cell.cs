@@ -10,7 +10,7 @@ namespace SonOfRobin
         public bool creationInProgress;
         private int creationStage;
         public readonly Grid grid;
-        private readonly World world;
+        public readonly World world;
         private readonly Color color;
         public readonly int cellNoX;
         public readonly int cellNoY;
@@ -55,26 +55,26 @@ namespace SonOfRobin
 
             this.grid = grid;
             this.world = world;
+
             this.cellNoX = cellNoX;
             this.cellNoY = cellNoY;
+
             this.xMin = xMin;
             this.xMax = xMax;
             this.yMin = yMin;
             this.yMax = yMax;
+
             this.width = xMax - xMin + 1; // virtual value, simulated for the outside world
             this.height = yMax - yMin + 1; // virtual value, simulated for the outside world
-
             this.dividedWidth = (int)Math.Ceiling((float)width / (float)this.grid.resDivider);  // real storing data capacity
             this.dividedHeight = (int)Math.Ceiling((float)height / (float)this.grid.resDivider); // real storing data capacity
-
-            if (this.dividedWidth % 2 != 0) this.dividedWidth++;
-            if (this.dividedHeight % 2 != 0) this.dividedHeight++;
 
             this.rect = new Rectangle(this.xMin, this.yMin, this.width, this.height);
             this.xCenter = this.xMin + (this.width / 2);
             this.yCenter = this.yMin + (this.height / 2);
             this.center = new Vector2(this.xCenter, this.yCenter);
             this.color = new Color(random.Next(0, 255), random.Next(0, 255), random.Next(0, 255));
+
             this.surroundingCells = new List<Cell>();
             this.VisitedByPlayer = false;
 
@@ -136,11 +136,16 @@ namespace SonOfRobin
                     this.terrainByName[TerrainName.Danger] = new Terrain(
                     world: this.world, cell: this, name: TerrainName.Danger, frequency: 2.9f, octaves: 3, persistence: 0.7f, lacunarity: 1.4f, gain: 0.3f, addBorder: true);
 
-                    this.UpdateBoardGraphics();
                     this.creationStage++;
                     return;
 
                 case 4:
+                    // have to be processed separately
+                    this.UpdateBoardGraphics();
+                    this.creationStage++;
+                    return;
+
+                case 5:
                     // cannot be run in parallel
                     if (Preferences.loadWholeMap) this.boardGraphics.LoadTexture();
                     this.creationInProgress = false;

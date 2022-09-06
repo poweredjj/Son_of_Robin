@@ -175,7 +175,7 @@ namespace SonOfRobin
         {
             var cellProcessingQueue = new List<Cell> { };
 
-            for (int i = 0; i < 5 * Preferences.newWorldResDivider; i++)
+            for (int i = 0; i < 40 * Preferences.newWorldResDivider; i++)
             {
                 cellProcessingQueue.Add(this.cellsToProcessOnStart[0]);
                 this.cellsToProcessOnStart.RemoveAt(0);
@@ -592,6 +592,19 @@ namespace SonOfRobin
 
             int posInsideCellX = (int)position.X % cellWidth;
             int posInsideCellY = (int)position.Y % cellHeight;
+
+            return this.cellGrid[cellNoX, cellNoY].terrainByName[terrainName].GetMapData(posInsideCellX, posInsideCellY);
+        }
+
+        public byte GetFieldValue(TerrainName terrainName, int x, int y)
+        {
+            int cellNoX = (int)Math.Floor((float)x / cellWidth);
+            int cellNoY = (int)Math.Floor((float)y / cellHeight);
+
+            int posInsideCellX = x % cellWidth;
+            int posInsideCellY = y % cellHeight;
+
+            var a = this.cellGrid[cellNoX, cellNoY];
 
             return this.cellGrid[cellNoX, cellNoY].terrainByName[terrainName].GetMapData(posInsideCellX, posInsideCellY);
         }

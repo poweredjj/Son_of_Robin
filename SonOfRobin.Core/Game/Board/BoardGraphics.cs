@@ -90,9 +90,9 @@ namespace SonOfRobin
                     int pixelX = (int)(x / multiplier);
                     int pixelY = (int)(y / multiplier);
 
-                    byte pixelHeight = grid.GetFieldValue(position: new Vector2(pixelX, pixelY), terrainName: TerrainName.Height);
-                    byte pixelHumidity = grid.GetFieldValue(position: new Vector2(pixelX, pixelY), terrainName: TerrainName.Humidity);
-                    byte pixelDanger = grid.GetFieldValue(position: new Vector2(pixelX, pixelY), terrainName: TerrainName.Danger);
+                    byte pixelHeight = grid.GetFieldValue(x: pixelX, y: pixelY, terrainName: TerrainName.Height);
+                    byte pixelHumidity = grid.GetFieldValue(x: pixelX, y: pixelY, terrainName: TerrainName.Humidity);
+                    byte pixelDanger = grid.GetFieldValue(x: pixelX, y: pixelY, terrainName: TerrainName.Danger);
                     colorArray[(y * width) + x] = CreatePixel(pixelHeight: pixelHeight, pixelHumidity: pixelHumidity, pixelDanger: pixelDanger);
                 }
             }
