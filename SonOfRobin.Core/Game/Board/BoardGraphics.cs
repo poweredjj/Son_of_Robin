@@ -115,7 +115,7 @@ namespace SonOfRobin
             Terrain humidityTerrain = this.cell.terrainByName[TerrainName.Humidity];
             Terrain dangerTerrain = this.cell.terrainByName[TerrainName.Danger];
 
-            Color[] textureData = new Color[width * height];
+            Color[,] colorGrid = new Color[width, height];
             int resDivider = this.cell.grid.resDivider;
 
             for (int x = 0; x < this.cell.dividedWidth; x++)
@@ -126,30 +126,29 @@ namespace SonOfRobin
                 {
                     int realY = y * resDivider;
 
-                    textureData[(y * width) + x] = CreatePixel(
+                    colorGrid[x, y] = CreatePixel(
                         pixelHeight: heightTerrain.GetMapData(realX, realY),
                         pixelHumidity: humidityTerrain.GetMapData(realX, realY),
                         pixelDanger: dangerTerrain.GetMapData(realX, realY));
                 }
             }
 
-            // upscaling 1D color data
+            // upscaling color grid
 
-            var tuple = BoardTextureUpscaler.GetUpscaledColorData(sourceTextureData: textureData, sourceWidth: width, sourceHeight: height);
-            Color[] upscaledTextureData = tuple.Item1;
-            int upscaledWidth = tuple.Item2;
-            int upscaledHeight = tuple.Item3;
+            Color[,] upscaledColorGrid = BoardTextureUpscaler3x.UpscaleColorGrid(colorGrid);
 
-            // putting upscaled 1D color data into PngBuilder
+            int upscaledWidth = upscaledColorGrid.GetLength(0);
+            int upscaledHeight = upscaledColorGrid.GetLength(1);
+
+            // putting upscaled color grid into PngBuilder
 
             var builder = PngBuilder.Create(width: upscaledWidth, height: upscaledHeight, hasAlphaChannel: true);
 
             for (int y = 0; y < upscaledHeight; y++)
             {
-                int currentY = y * upscaledWidth;
                 for (int x = 0; x < upscaledWidth; x++)
                 {
-                    Color pixel = upscaledTextureData[currentY + x];
+                    Color pixel = upscaledColorGrid[x, y];
                     builder.SetPixel(pixel.R, pixel.G, pixel.B, x, y);
                 }
             }
