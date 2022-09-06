@@ -44,12 +44,18 @@ namespace SonOfRobin
                 Vector2 maxFrameSize = CalculateMaxFrameSize();
                 this.cellWidth = Convert.ToInt32(maxFrameSize.X * 1.3);
                 this.cellHeight = Convert.ToInt32(maxFrameSize.Y * 1.3);
+
+                this.cellWidth = (int)Math.Ceiling(this.cellWidth / 2d) * 2;
+                this.cellHeight = (int)Math.Ceiling(this.cellWidth / 2d) * 2;
             }
             else
             {
                 this.cellWidth = cellWidth;
                 this.cellHeight = cellHeight;
             }
+
+            if (this.cellWidth % 2 != 0) throw new ArgumentException($"Cell width {this.cellWidth} is not divisible by 2.");
+            if (this.cellHeight % 2 != 0) throw new ArgumentException($"Cell height {this.cellHeight} is not divisible by 2.");
 
             this.noOfCellsX = (int)Math.Ceiling((float)this.world.width / (float)this.cellWidth);
             this.noOfCellsY = (int)Math.Ceiling((float)this.world.height / (float)this.cellHeight);

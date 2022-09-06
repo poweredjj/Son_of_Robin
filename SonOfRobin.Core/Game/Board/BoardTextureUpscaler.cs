@@ -51,7 +51,7 @@ namespace SonOfRobin
             textureToUpscale.GetData(sourceTextureData);
 
             var tuple = GetUpscaledColorData(sourceTextureData: sourceTextureData, sourceWidth: sourceWidth, sourceHeight: sourceHeight);
-            var upscaledTextureData = tuple.Item1;
+            Color[] upscaledTextureData = tuple.Item1;
             int upscaledWidth = tuple.Item2;
             int upscaledHeight = tuple.Item3;
 
@@ -63,13 +63,14 @@ namespace SonOfRobin
 
         public static (Color[], int, int) GetUpscaledColorData(Color[] sourceTextureData, int sourceWidth, int sourceHeight)
         {
-            int sourceWidthRoundedEven = (int)Math.Ceiling(sourceWidth / 2d) * 2;
-            int sourceHeightRoundedEven = (int)Math.Ceiling(sourceHeight / 2d) * 2;
+            if (sourceWidth % 2 != 0) throw new ArgumentException($"Source width {sourceWidth} is not divisible by 2.");
+            if (sourceHeight % 2 != 0) throw new ArgumentException($"Source height {sourceHeight} is not divisible by 2.");
 
-            int targetWidth = sourceWidthRoundedEven * resizeFactor;
-            int targetHeight = sourceHeightRoundedEven * resizeFactor;
+            int targetWidth = sourceWidth * resizeFactor;
+            int targetHeight = sourceHeight * resizeFactor;
 
             Color[] targetTextureData = new Color[targetWidth * targetHeight];
+            Color[,] colorGrid2x2 = new Color[2, 2];
 
             for (int baseY = 0; baseY < sourceHeight; baseY += 2)
             {
@@ -77,28 +78,16 @@ namespace SonOfRobin
                 {
                     // preparing 2x2 source grid
 
-                    Color[,] colorGrid = new Color[2, 2];
                     for (int offsetY = 0; offsetY < 2; offsetY++)
                     {
                         for (int offsetX = 0; offsetX < 2; offsetX++)
                         {
-                            try
-                            {
-                                colorGrid[offsetX, offsetY] = sourceTextureData[((baseY + offsetY) * sourceWidth) + baseX + offsetX];
-                            }
-                            catch (IndexOutOfRangeException)
-                            {
-                                int currentX = baseX + offsetX;
-                                int currentY = baseY + offsetY;
-                                currentX = Math.Min(currentX, sourceWidth - 1);
-                                currentY = Math.Min(currentY, sourceHeight - 1);
-                                colorGrid[offsetX, offsetY] = sourceTextureData[(currentY * sourceWidth) + currentX];
-                            }
+                            colorGrid2x2[offsetX, offsetY] = sourceTextureData[((baseY + offsetY) * sourceWidth) + baseX + offsetX];
                         }
                     }
 
                     // creating resized grid
-                    Case resizeCase = new Case(colorGrid);
+                    Case resizeCase = new Case(colorGrid2x2);
 
                     // placing resized grid data into texture data
 

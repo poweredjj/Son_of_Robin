@@ -63,9 +63,13 @@ namespace SonOfRobin
             this.yMax = yMax;
             this.width = xMax - xMin + 1; // virtual value, simulated for the outside world
             this.height = yMax - yMin + 1; // virtual value, simulated for the outside world
-            // Ceiling() to round up in case of odd numbers
+
             this.dividedWidth = (int)Math.Ceiling((float)width / (float)this.grid.resDivider);  // real storing data capacity
             this.dividedHeight = (int)Math.Ceiling((float)height / (float)this.grid.resDivider); // real storing data capacity
+
+            if (this.dividedWidth % 2 != 0) this.dividedWidth++;
+            if (this.dividedHeight % 2 != 0) this.dividedHeight++;
+
             this.rect = new Rectangle(this.xMin, this.yMin, this.width, this.height);
             this.xCenter = this.xMin + (this.width / 2);
             this.yCenter = this.yMin + (this.height / 2);

@@ -111,12 +111,11 @@ namespace SonOfRobin
             int width = this.cell.dividedWidth;
             int height = this.cell.dividedHeight;
 
-            Color[] textureData = new Color[width * height];
-
             Terrain heightTerrain = this.cell.terrainByName[TerrainName.Height];
             Terrain humidityTerrain = this.cell.terrainByName[TerrainName.Humidity];
             Terrain dangerTerrain = this.cell.terrainByName[TerrainName.Danger];
 
+            Color[] textureData = new Color[width * height];
             int resDivider = this.cell.grid.resDivider;
 
             for (int x = 0; x < this.cell.dividedWidth; x++)
@@ -137,7 +136,7 @@ namespace SonOfRobin
             // upscaling 1D color data
 
             var tuple = BoardTextureUpscaler.GetUpscaledColorData(sourceTextureData: textureData, sourceWidth: width, sourceHeight: height);
-            var upscaledTextureData = tuple.Item1;
+            Color[] upscaledTextureData = tuple.Item1;
             int upscaledWidth = tuple.Item2;
             int upscaledHeight = tuple.Item3;
 
