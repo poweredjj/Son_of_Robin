@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Collections.Generic;
 
 namespace SonOfRobin
 {
@@ -46,36 +47,51 @@ namespace SonOfRobin
                     workingGrid3x3[1, 2] = sourceGrid[baseX, baseY + 1];
                     workingGrid3x3[2, 2] = sourceGrid[baseX + 1, baseY + 1];
 
-                    // Upscale3x3Grid(src: workingGrid3x3, target: upscaledGrid, offsetX: baseX * resizeFactor, offsetY: baseY * resizeFactor);
+                    Upscale3x3Grid(src: workingGrid3x3, target: upscaledGrid, offsetX: baseX * resizeFactor, offsetY: baseY * resizeFactor);
                 }
             }
 
-            // filling edges (slower method)
+            List<Point> pointList = new List<Point>();
 
-            foreach (int baseY in new int[] { 0, sourceHeight - 1 })
+            // making edges coordinates list
+
+            for (int baseX = 0; baseX < sourceWidth; baseX++)
+            {
+                foreach (int baseY in new int[] { 0, sourceHeight - 1 })
+                {
+                    Point newPoint = new Point(baseX, baseY);
+                    if (!pointList.Contains(newPoint)) pointList.Add(newPoint);
+                }
+            }
+
+            for (int baseY = 0; baseY < sourceHeight; baseY++)
             {
                 foreach (int baseX in new int[] { 0, sourceWidth - 1 })
                 {
-
-
-                    for (int yOffset = 0; yOffset < 3; yOffset++)
-                    {
-                        for (int xOffset = 0; xOffset < 3; xOffset++)
-                        {
-                            workingGrid3x3[xOffset, yOffset] = sourceGrid[baseX, baseY]; // inserting middle value first
-                            try
-                            {
-                                workingGrid3x3[xOffset, yOffset] = sourceGrid[baseX + xOffset - 1, baseY + yOffset - 1];
-                            }
-                            catch (IndexOutOfRangeException)
-                            { }
-                        }
-                    }
-
-                    Upscale3x3Grid(src: workingGrid3x3, target: upscaledGrid, offsetX: baseX * resizeFactor, offsetY: baseY * resizeFactor);
-
-
+                    Point newPoint = new Point(baseX, baseY);
+                    if (!pointList.Contains(newPoint)) pointList.Add(newPoint);
                 }
+            }
+
+            // filling edges
+
+            foreach (Point point in pointList)
+            {
+                for (int yOffset = 0; yOffset < 3; yOffset++)
+                {
+                    for (int xOffset = 0; xOffset < 3; xOffset++)
+                    {
+                        workingGrid3x3[xOffset, yOffset] = sourceGrid[point.X, point.Y]; // inserting middle value first
+                        try
+                        {
+                            workingGrid3x3[xOffset, yOffset] = sourceGrid[point.X + xOffset - 1, point.Y + yOffset - 1];
+                        }
+                        catch (IndexOutOfRangeException)
+                        { }
+                    }
+                }
+
+                Upscale3x3Grid(src: workingGrid3x3, target: upscaledGrid, offsetX: point.X * resizeFactor, offsetY: point.Y * resizeFactor);
             }
 
             return upscaledGrid;
