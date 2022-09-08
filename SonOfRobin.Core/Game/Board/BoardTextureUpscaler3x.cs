@@ -1,6 +1,8 @@
-﻿using Microsoft.Xna.Framework;
+﻿using BigGustave;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.IO;
 
 namespace SonOfRobin
 {
@@ -16,6 +18,85 @@ namespace SonOfRobin
             Color[,] upscaledRGBGrid = UpscaleColorGrid(sourceRGBGrid: sourceRGBGrid);
 
             return GfxConverter.Convert2DArrayToTexture(upscaledRGBGrid);
+        }
+
+        public static void UpscaleColorGridAndSaveAsPNG(Color[,] sourceRGBGrid, string pngPath)
+        {
+            int sourceWidth = sourceRGBGrid.GetLength(0);
+            int sourceHeight = sourceRGBGrid.GetLength(1);
+            int targetWidth = sourceWidth * resizeFactor;
+            int targetHeight = sourceHeight * resizeFactor;
+
+            var builder = PngBuilder.Create(width: targetWidth, height: targetHeight, hasAlphaChannel: true);
+
+            Color[,] sourceGrid3x3 = new Color[3, 3];
+            Color[,] targetGrid3x3 = new Color[3, 3];
+
+            for (int baseY = 0; baseY < sourceHeight; baseY++)
+            {
+                for (int baseX = 0; baseX < sourceWidth; baseX++)
+                {
+                    // preparing source grid for interpolation
+
+                    for (int yOffset = 0; yOffset < 3; yOffset++)
+                    {
+                        int currentY = baseY + yOffset - 1;
+
+                        for (int xOffset = 0; xOffset < 3; xOffset++)
+                        {
+                            try
+                            {
+                                sourceGrid3x3[xOffset, yOffset] = sourceRGBGrid[baseX + xOffset - 1, currentY];
+                            }
+                            catch (IndexOutOfRangeException)
+                            {
+                                continue;
+                            }
+                        }
+                    }
+
+                    // updating target 3x3 grid
+
+                    Upscale3x3Grid(srcGrid: sourceGrid3x3, targetGrid: targetGrid3x3);
+
+                    // updating upscaled grid using data from target 3x3 grid
+
+                    for (int yOffset = 0; yOffset < 3; yOffset++)
+                    {
+                        int targetY = (baseY * resizeFactor) + yOffset;
+
+                        for (int xOffset = 0; xOffset < 3; xOffset++)
+                        {
+                            try
+                            {
+                                int targetX = (baseX * resizeFactor) + xOffset;
+
+                                Color pixel = targetGrid3x3[xOffset, yOffset];
+                                builder.SetPixel(pixel.R, pixel.G, pixel.B, targetX, targetY);
+                            }
+                            catch (IndexOutOfRangeException)
+                            { }
+
+                        }
+                    }
+                }
+            }
+
+            // saving PngBuilder to file
+
+            using (var memoryStream = new MemoryStream())
+            {
+                builder.Save(memoryStream);
+
+                try
+                {
+                    FileReaderWriter.SaveMemoryStream(memoryStream: memoryStream, pngPath);
+                }
+                catch (IOException)
+                {
+                    // write error
+                }
+            }
         }
 
         public static Color[,] UpscaleColorGrid(Color[,] sourceRGBGrid)

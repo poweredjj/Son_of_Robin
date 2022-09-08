@@ -251,6 +251,9 @@ namespace SonOfRobin
 
             if (this.ProcessingStageComplete)
             {
+                TimeSpan creationDuration = DateTime.Now - this.stageStartTime;
+                MessageLog.AddMessage(msgType: MsgType.User, message: $"{namesForStages[this.currentStage]} - time: {creationDuration:hh\\:mm\\:ss\\.fff}.", color: Color.GreenYellow);
+
                 this.currentStage++;
                 this.PrepareNextStage();
             }
