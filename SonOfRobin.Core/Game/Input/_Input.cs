@@ -82,7 +82,7 @@ namespace SonOfRobin
 
             if (currentControlType != ControlType.Touch)
             {
-                if (SonOfRobinGame.platform == Platform.Mobile && TouchInput.IsBeingTouchedInAnyWay) currentControlType = ControlType.Touch;
+                if (Preferences.EnableTouchButtons && TouchInput.IsBeingTouchedInAnyWay) currentControlType = ControlType.Touch;
             }
 
             if (prevControlType != currentControlType)
