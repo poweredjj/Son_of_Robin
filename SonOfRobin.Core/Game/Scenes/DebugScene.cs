@@ -365,11 +365,7 @@ namespace SonOfRobin
                     return;
                 }
 
-                DateTime upscaleStart = DateTime.Now;
                 Texture2D upscaledTexture = BoardTextureUpscaler3x.UpscaleTexture(textureToUpscale);
-
-                TimeSpan creationDuration = DateTime.Now - upscaleStart;
-                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Upscale time: {creationDuration:hh\\:mm\\:ss\\.fff}.", color: Color.GreenYellow);
 
                 GfxConverter.SaveTextureAsPNG(filename: Path.Combine(SonOfRobinGame.gameDataPath, targetPngName), upscaledTexture);
 

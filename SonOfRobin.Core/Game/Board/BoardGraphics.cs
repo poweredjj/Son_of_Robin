@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using BigGustave;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -53,11 +54,11 @@ namespace SonOfRobin
             this.texture = GfxConverter.LoadTextureFromPNG(this.templatePath);
             if (this.texture == null)
             {
-                this.CreateBitmapFromTerrain(saveOnly: true);
+                this.CreateBitmapFromTerrain();
                 this.texture = GfxConverter.LoadTextureFromPNG(this.templatePath); // trying to create texture on disk first...
                 if (this.texture == null)
                 {
-                    Color[,] colorGrid = this.CreateBitmapFromTerrain(saveOnly: false); // ...if this fails (disk error, locked file, etc.), get texture data directly
+                    Color[,] colorGrid = this.CreateBitmapFromTerrain(); // ...if this fails (disk error, locked file, etc.), get texture data directly
                     this.texture = GfxConverter.Convert2DArrayToTexture(colorGrid);
                 }
             }
@@ -78,7 +79,7 @@ namespace SonOfRobin
         {
             if (this.savedToDisk) return;
 
-            this.CreateBitmapFromTerrain(saveOnly: true);
+            this.CreateBitmapFromTerrain();
             this.savedToDisk = true;
         }
 
@@ -105,7 +106,7 @@ namespace SonOfRobin
             return texture;
         }
 
-        private Color[,] CreateBitmapFromTerrain(bool saveOnly)
+        private Color[,] CreateBitmapFromTerrain()
         {
             // saveOnly - true: save and return dummy grid, false: don't save and return correct grid
 
@@ -138,14 +139,43 @@ namespace SonOfRobin
                 }
             }
 
-            // upscaling color grid and saving as png
+            // upscaling color grid
 
-            if (saveOnly)
+            Color[,] upscaledColorGrid = BoardTextureUpscaler3x.UpscaleColorGrid(sourceRGBGrid: colorGrid);
+
+            int upscaledWidth = upscaledColorGrid.GetLength(0);
+            int upscaledHeight = upscaledColorGrid.GetLength(1);
+
+            // putting upscaled color grid into PngBuilder
+
+            var builder = PngBuilder.Create(width: upscaledWidth, height: upscaledHeight, hasAlphaChannel: true);
+
+            for (int y = 0; y < upscaledHeight; y++)
             {
-                BoardTextureUpscaler3x.UpscaleColorGridAndSaveAsPNG(sourceRGBGrid: colorGrid, pngPath: this.templatePath);
-                return new Color[1, 1]; // dummy value
+                for (int x = 0; x < upscaledWidth; x++)
+                {
+                    Color pixel = upscaledColorGrid[x, y];
+                    builder.SetPixel(pixel.R, pixel.G, pixel.B, x, y);
+                }
             }
-            else return BoardTextureUpscaler3x.UpscaleColorGrid(sourceRGBGrid: colorGrid);
+
+            // saving PngBuilder to file
+
+            using (var memoryStream = new MemoryStream())
+            {
+                builder.Save(memoryStream);
+
+                try
+                {
+                    FileReaderWriter.SaveMemoryStream(memoryStream: memoryStream, this.templatePath);
+                }
+                catch (IOException)
+                {
+                    // write error
+                }
+            }
+
+            return upscaledColorGrid;
         }
 
         private static Color CreatePixel(byte pixelHeight, byte pixelHumidity, byte pixelDanger)
