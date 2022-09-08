@@ -10,7 +10,7 @@ namespace SonOfRobin
         private static bool localInputActive = true;
         private static bool globalInputActive = true;
         private static int globalInputReactivateUpdate = 0;
-        public static ControlType currentControlType { get; private set; } = ControlType.Touch;
+        public static ControlType currentControlType { get; private set; } = SonOfRobinGame.platform == Platform.Mobile ? ControlType.Touch : ControlType.Gamepad;
 
         public static bool InputActive { get { return localInputActive == true && globalInputActive == true; } set { localInputActive = value; } }
         public static bool GlobalInputActive

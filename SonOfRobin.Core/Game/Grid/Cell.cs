@@ -7,8 +7,6 @@ namespace SonOfRobin
 {
     public class Cell
     {
-        public bool creationInProgress;
-        private int creationStage;
         public readonly Grid grid;
         public readonly World world;
         private readonly Color color;
@@ -50,9 +48,6 @@ namespace SonOfRobin
 
         public Cell(Grid grid, World world, int cellNoX, int cellNoY, int xMin, int xMax, int yMin, int yMax, Random random)
         {
-            this.creationInProgress = true;
-            this.creationStage = 0;
-
             this.grid = grid;
             this.world = world;
 
@@ -85,8 +80,6 @@ namespace SonOfRobin
             }
 
             this.terrainByName = new Dictionary<TerrainName, Terrain>();
-
-            this.creationStage++;
         }
 
         public void SetAsVisited()
@@ -111,44 +104,22 @@ namespace SonOfRobin
             this.VisitedByPlayer = (bool)cellDict["VisitedByPlayer"];
         }
 
-        public void RunNextCreationStage()
-
+        public void ComputeHeight()
         {
-            switch (this.creationStage)
-            {
-                case 1:
-                    // different noise settings should not be processed together in parallel
-                    this.terrainByName[TerrainName.Height] = new Terrain(
-                    world: this.world, cell: this, name: TerrainName.Height, frequency: 8f, octaves: 9, persistence: 0.5f, lacunarity: 1.9f, gain: 0.55f, addBorder: true);
-                    this.creationStage++;
-                    return;
+            this.terrainByName[TerrainName.Height] = new Terrain(
+            world: this.world, cell: this, name: TerrainName.Height, frequency: 8f, octaves: 9, persistence: 0.5f, lacunarity: 1.9f, gain: 0.55f, addBorder: true);
+        }
 
-                case 2:
-                    // different noise settings should not be processed together in parallel
-                    this.terrainByName[TerrainName.Humidity] = new Terrain(
-                    world: this.world, cell: this, name: TerrainName.Humidity, frequency: 4.3f, octaves: 9, persistence: 0.6f, lacunarity: 1.7f, gain: 0.6f);
+        public void ComputeHumidity()
+        {
+            this.terrainByName[TerrainName.Humidity] = new Terrain(
+                world: this.world, cell: this, name: TerrainName.Humidity, frequency: 4.3f, octaves: 9, persistence: 0.6f, lacunarity: 1.7f, gain: 0.6f);
+        }
 
-                    this.creationStage++;
-                    return;
-
-                case 3:
-                    // different noise settings should not be processed together in parallel
-                    this.terrainByName[TerrainName.Danger] = new Terrain(
-                    world: this.world, cell: this, name: TerrainName.Danger, frequency: 2.9f, octaves: 3, persistence: 0.7f, lacunarity: 1.4f, gain: 0.3f, addBorder: true);
-
-                    this.UpdateBoardGraphics();
-                    this.creationStage++;
-                    return;
-
-                case 4:
-                    // cannot be run in parallel
-                    if (Preferences.loadWholeMap) this.boardGraphics.LoadTexture();
-                    this.creationInProgress = false;
-                    return;
-
-                default:
-                    throw new DivideByZeroException($"Unsupported creationStage - {creationStage}.");
-            }
+        public void ComputeDanger()
+        {
+            this.terrainByName[TerrainName.Danger] = new Terrain(
+                world: this.world, cell: this, name: TerrainName.Danger, frequency: 2.9f, octaves: 3, persistence: 0.7f, lacunarity: 1.4f, gain: 0.3f, addBorder: true);
         }
 
         public void CopyFromTemplate(Cell templateCell)
