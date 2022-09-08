@@ -141,7 +141,7 @@ namespace SonOfRobin
 
             // upscaling color grid
 
-            Color[,] upscaledColorGrid = BoardTextureUpscaler3x.UpscaleColorGrid(sourceRGBGrid: colorGrid);
+            Color[,] upscaledColorGrid = BoardTextureUpscaler3x.UpscaleColorGrid(sourceGrid: colorGrid);
 
             int upscaledWidth = upscaledColorGrid.GetLength(0);
             int upscaledHeight = upscaledColorGrid.GetLength(1);

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 
 namespace SonOfRobin
 {
@@ -12,40 +13,68 @@ namespace SonOfRobin
             // slow, should be used for debugging only
 
             Color[,] sourceRGBGrid = GfxConverter.ConvertTextureToGrid(texture: sourceTexture, x: 0, y: 0, width: sourceTexture.Width, height: sourceTexture.Height);
-            Color[,] upscaledRGBGrid = UpscaleColorGrid(sourceRGBGrid: sourceRGBGrid);
+            Color[,] upscaledRGBGrid = UpscaleColorGrid(sourceGrid: sourceRGBGrid);
 
             return GfxConverter.Convert2DArrayToTexture(upscaledRGBGrid);
         }
 
-        public static Color[,] UpscaleColorGrid(Color[,] sourceRGBGrid)
+        public static Color[,] UpscaleColorGrid(Color[,] sourceGrid)
         {
-            int sourceWidth = sourceRGBGrid.GetLength(0);
-            int sourceHeight = sourceRGBGrid.GetLength(1);
+            int sourceWidth = sourceGrid.GetLength(0);
+            int sourceHeight = sourceGrid.GetLength(1);
             int targetWidth = sourceWidth * resizeFactor;
             int targetHeight = sourceHeight * resizeFactor;
 
-            Color[,] sourceGrid3x3 = new Color[3, 3];
+            Color[,] workingGrid3x3 = new Color[3, 3];
             Color[,] upscaledGrid = new Color[targetWidth, targetHeight];
+
+            // filling the middle
 
             for (int baseY = 1; baseY < sourceHeight - 1; baseY++)
             {
                 for (int baseX = 1; baseX < sourceWidth - 1; baseX++)
                 {
-                    // preparing source grid for interpolation
+                    workingGrid3x3[0, 0] = sourceGrid[baseX - 1, baseY - 1];
+                    workingGrid3x3[1, 0] = sourceGrid[baseX, baseY - 1];
+                    workingGrid3x3[2, 0] = sourceGrid[baseX + 1, baseY - 1];
 
-                    sourceGrid3x3[0, 0] = sourceRGBGrid[baseX - 1, baseY - 1];
-                    sourceGrid3x3[1, 0] = sourceRGBGrid[baseX, baseY - 1];
-                    sourceGrid3x3[2, 0] = sourceRGBGrid[baseX + 1, baseY - 1];
+                    workingGrid3x3[0, 1] = sourceGrid[baseX - 1, baseY];
+                    workingGrid3x3[1, 1] = sourceGrid[baseX, baseY];
+                    workingGrid3x3[2, 1] = sourceGrid[baseX + 1, baseY];
 
-                    sourceGrid3x3[0, 1] = sourceRGBGrid[baseX - 1, baseY];
-                    sourceGrid3x3[1, 1] = sourceRGBGrid[baseX, baseY];
-                    sourceGrid3x3[2, 1] = sourceRGBGrid[baseX + 1, baseY];
+                    workingGrid3x3[0, 2] = sourceGrid[baseX - 1, baseY + 1];
+                    workingGrid3x3[1, 2] = sourceGrid[baseX, baseY + 1];
+                    workingGrid3x3[2, 2] = sourceGrid[baseX + 1, baseY + 1];
 
-                    sourceGrid3x3[0, 2] = sourceRGBGrid[baseX - 1, baseY + 1];
-                    sourceGrid3x3[1, 2] = sourceRGBGrid[baseX, baseY + 1];
-                    sourceGrid3x3[2, 2] = sourceRGBGrid[baseX + 1, baseY + 1];
+                    // Upscale3x3Grid(src: workingGrid3x3, target: upscaledGrid, offsetX: baseX * resizeFactor, offsetY: baseY * resizeFactor);
+                }
+            }
 
-                    Upscale3x3Grid(src: sourceGrid3x3, target: upscaledGrid, offsetX: baseX * resizeFactor, offsetY: baseY * resizeFactor);
+            // filling edges (slower method)
+
+            foreach (int baseY in new int[] { 0, sourceHeight - 1 })
+            {
+                foreach (int baseX in new int[] { 0, sourceWidth - 1 })
+                {
+
+
+                    for (int yOffset = 0; yOffset < 3; yOffset++)
+                    {
+                        for (int xOffset = 0; xOffset < 3; xOffset++)
+                        {
+                            workingGrid3x3[xOffset, yOffset] = sourceGrid[baseX, baseY]; // inserting middle value first
+                            try
+                            {
+                                workingGrid3x3[xOffset, yOffset] = sourceGrid[baseX + xOffset - 1, baseY + yOffset - 1];
+                            }
+                            catch (IndexOutOfRangeException)
+                            { }
+                        }
+                    }
+
+                    Upscale3x3Grid(src: workingGrid3x3, target: upscaledGrid, offsetX: baseX * resizeFactor, offsetY: baseY * resizeFactor);
+
+
                 }
             }
 
