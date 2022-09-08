@@ -549,9 +549,14 @@ namespace SonOfRobin
                 {
                     var textureList = new List<Texture2D>();
 
-                    switch (Input.tipsTypeToShow)
+                    switch (Input.currentControlType)
                     {
-                        case Input.TipsTypeToShow.Gamepad:
+                        case Input.ControlType.Touch:
+                            {
+                                break;
+                            }
+
+                        case Input.ControlType.Gamepad:
                             foreach (Buttons button in gamepadButtons)
                             { textureList.Add(InputVis.GetTexture(button)); }
 
@@ -564,7 +569,7 @@ namespace SonOfRobin
 
                             break;
 
-                        case Input.TipsTypeToShow.Keyboard:
+                        case Input.ControlType.KeyboardAndMouse:
                             foreach (Keys key in keyboardKeys)
                             { textureList.Add(InputVis.GetTexture(key)); }
 
@@ -583,7 +588,7 @@ namespace SonOfRobin
                             break;
 
                         default:
-                            throw new ArgumentException($"Unsupported LastUsedType - '{Input.tipsTypeToShow}'.");
+                            throw new ArgumentException($"Unsupported LastUsedType - '{Input.currentControlType}'.");
                     }
 
                     return textureList;

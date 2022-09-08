@@ -1053,7 +1053,7 @@ namespace SonOfRobin
 
         public void DrawCursor()
         {
-            if (this.CursorX == -1 || this.CursorY == -1 || !this.inputActive || (this.draggedPieces.Count == 0 && SonOfRobinGame.platform == Platform.Mobile)) return;
+            if (this.CursorX == -1 || this.CursorY == -1 || !this.inputActive || (this.draggedPieces.Count == 0 && Input.currentControlType == Input.ControlType.Touch)) return;
 
             Texture2D cursorTexture = SonOfRobinGame.textureByName["cursor"];
             int tileSize = this.TileSize;
