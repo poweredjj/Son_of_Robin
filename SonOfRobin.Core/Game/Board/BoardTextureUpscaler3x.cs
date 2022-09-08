@@ -1,7 +1,6 @@
 ﻿using BigGustave;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 using System.IO;
 
 namespace SonOfRobin
@@ -32,34 +31,29 @@ namespace SonOfRobin
             Color[,] sourceGrid3x3 = new Color[3, 3];
             Color[,] targetGrid3x3 = new Color[3, 3];
 
-            for (int baseY = 0; baseY < sourceHeight; baseY++)
+            for (int baseY = 1; baseY < sourceHeight - 1; baseY++)
             {
-                for (int baseX = 0; baseX < sourceWidth; baseX++)
+                for (int baseX = 1; baseX < sourceWidth - 1; baseX++)
                 {
                     // preparing source grid for interpolation
 
-                    for (int yOffset = 0; yOffset < 3; yOffset++)
-                    {
-                        int currentY = baseY + yOffset - 1;
+                    sourceGrid3x3[0, 0] = sourceRGBGrid[baseX - 1, baseY - 1];
+                    sourceGrid3x3[1, 0] = sourceRGBGrid[baseX, baseY - 1];
+                    sourceGrid3x3[2, 0] = sourceRGBGrid[baseX + 1, baseY - 1];
 
-                        for (int xOffset = 0; xOffset < 3; xOffset++)
-                        {
-                            try
-                            {
-                                sourceGrid3x3[xOffset, yOffset] = sourceRGBGrid[baseX + xOffset - 1, currentY];
-                            }
-                            catch (IndexOutOfRangeException)
-                            {
-                                continue;
-                            }
-                        }
-                    }
+                    sourceGrid3x3[0, 1] = sourceRGBGrid[baseX - 1, baseY];
+                    sourceGrid3x3[1, 1] = sourceRGBGrid[baseX, baseY];
+                    sourceGrid3x3[2, 1] = sourceRGBGrid[baseX + 1, baseY];
+
+                    sourceGrid3x3[0, 2] = sourceRGBGrid[baseX - 1, baseY + 1];
+                    sourceGrid3x3[1, 2] = sourceRGBGrid[baseX, baseY + 1];
+                    sourceGrid3x3[2, 2] = sourceRGBGrid[baseX + 1, baseY + 1];
 
                     // updating target 3x3 grid
 
                     Upscale3x3Grid(srcGrid: sourceGrid3x3, targetGrid: targetGrid3x3);
 
-                    // updating upscaled grid using data from target 3x3 grid
+                    // updating png builder using data from target 3x3 grid
 
                     for (int yOffset = 0; yOffset < 3; yOffset++)
                     {
@@ -67,16 +61,8 @@ namespace SonOfRobin
 
                         for (int xOffset = 0; xOffset < 3; xOffset++)
                         {
-                            try
-                            {
-                                int targetX = (baseX * resizeFactor) + xOffset;
-
-                                Color pixel = targetGrid3x3[xOffset, yOffset];
-                                builder.SetPixel(pixel.R, pixel.G, pixel.B, targetX, targetY);
-                            }
-                            catch (IndexOutOfRangeException)
-                            { }
-
+                            Color pixel = targetGrid3x3[xOffset, yOffset];
+                            builder.SetPixel(pixel.R, pixel.G, pixel.B, (baseX * resizeFactor) + xOffset, targetY);
                         }
                     }
                 }
@@ -101,6 +87,8 @@ namespace SonOfRobin
 
         public static Color[,] UpscaleColorGrid(Color[,] sourceRGBGrid)
         {
+            // TODO implement changes from UpscaleColorGridAndSaveAsPNG()
+
             int sourceWidth = sourceRGBGrid.GetLength(0);
             int sourceHeight = sourceRGBGrid.GetLength(1);
             int targetWidth = sourceWidth * resizeFactor;
@@ -111,28 +99,48 @@ namespace SonOfRobin
             Color[,] sourceGrid3x3 = new Color[3, 3];
             Color[,] targetGrid3x3 = new Color[3, 3];
 
-            for (int baseY = 0; baseY < sourceHeight; baseY++)
+            for (int baseY = 1; baseY < sourceHeight - 1; baseY++)
             {
-                for (int baseX = 0; baseX < sourceWidth; baseX++)
+                for (int baseX = 1; baseX < sourceWidth - 1; baseX++)
                 {
                     // preparing source grid for interpolation
 
-                    for (int yOffset = 0; yOffset < 3; yOffset++)
+                    // try
                     {
-                        int currentY = baseY + yOffset - 1;
+                        sourceGrid3x3[0, 0] = sourceRGBGrid[baseX - 1, baseY - 1];
+                        sourceGrid3x3[1, 0] = sourceRGBGrid[baseX, baseY - 1];
+                        sourceGrid3x3[2, 0] = sourceRGBGrid[baseX + 1, baseY - 1];
 
-                        for (int xOffset = 0; xOffset < 3; xOffset++)
-                        {
-                            try
-                            {
-                                sourceGrid3x3[xOffset, yOffset] = sourceRGBGrid[baseX + xOffset - 1, currentY];
-                            }
-                            catch (IndexOutOfRangeException)
-                            {
-                                continue;
-                            }
-                        }
+                        sourceGrid3x3[0, 1] = sourceRGBGrid[baseX - 1, baseY];
+                        sourceGrid3x3[1, 1] = sourceRGBGrid[baseX, baseY];
+                        sourceGrid3x3[2, 1] = sourceRGBGrid[baseX + 1, baseY];
+
+                        sourceGrid3x3[0, 2] = sourceRGBGrid[baseX - 1, baseY + 1];
+                        sourceGrid3x3[1, 2] = sourceRGBGrid[baseX, baseY + 1];
+                        sourceGrid3x3[2, 2] = sourceRGBGrid[baseX + 1, baseY + 1];
                     }
+                    //catch (IndexOutOfRangeException)
+                    //{
+
+                    //}
+
+
+                    //for (int yOffset = 0; yOffset < 3; yOffset++)
+                    //{
+                    //    int currentY = baseY + yOffset - 1;
+
+                    //    for (int xOffset = 0; xOffset < 3; xOffset++)
+                    //    {
+                    //        try
+                    //        {
+                    //            sourceGrid3x3[xOffset, yOffset] = sourceRGBGrid[baseX + xOffset - 1, currentY];
+                    //        }
+                    //        catch (IndexOutOfRangeException)
+                    //        {
+                    //            continue;
+                    //        }
+                    //    }
+                    //}
 
                     // updating target 3x3 grid
 
@@ -144,12 +152,12 @@ namespace SonOfRobin
                     {
                         for (int xOffset = 0; xOffset < 3; xOffset++)
                         {
-                            try
-                            {
-                                upscaledRGBGrid[(baseX * resizeFactor) + xOffset, (baseY * resizeFactor) + yOffset] = targetGrid3x3[xOffset, yOffset];
-                            }
-                            catch (IndexOutOfRangeException)
-                            { }
+                            // try
+                            //{
+                            upscaledRGBGrid[(baseX * resizeFactor) + xOffset, (baseY * resizeFactor) + yOffset] = targetGrid3x3[xOffset, yOffset];
+                            // }
+                            // catch (IndexOutOfRangeException)
+                            // { }
 
                         }
                     }

@@ -111,7 +111,7 @@ namespace SonOfRobin
 
             // can be run in parallel, because it does not use graphicsDevice
 
-            // creating 1D color array with rgb color data
+            // creating 2D color array with rgb color data
 
             int width = this.cell.dividedWidth;
             int height = this.cell.dividedHeight;
@@ -138,7 +138,7 @@ namespace SonOfRobin
                 }
             }
 
-            // upscaling color grid
+            // upscaling color grid and saving as png
 
             if (saveOnly)
             {
