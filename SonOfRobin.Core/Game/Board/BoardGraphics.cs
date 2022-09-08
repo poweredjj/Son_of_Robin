@@ -54,8 +54,8 @@ namespace SonOfRobin
             this.texture = GfxConverter.LoadTextureFromPNG(this.templatePath);
             if (this.texture == null)
             {
-                this.CreateBitmapFromTerrainAndSave();
-                this.texture = GfxConverter.LoadTextureFromPNG(this.templatePath);
+                Color[,] colorGrid = this.CreateBitmapFromTerrainAndSave();
+                this.texture = GfxConverter.Convert2DArrayToTexture(colorGrid);
                 if (this.texture == null) throw new FileNotFoundException("Cannot create board texture.");
             }
 
@@ -102,7 +102,7 @@ namespace SonOfRobin
             return texture;
         }
 
-        private void CreateBitmapFromTerrainAndSave()
+        private Color[,] CreateBitmapFromTerrainAndSave()
         {
             // can be run in parallel, because it does not use graphicsDevice
 
@@ -158,8 +158,18 @@ namespace SonOfRobin
             using (var memoryStream = new MemoryStream())
             {
                 builder.Save(memoryStream);
-                FileReaderWriter.SaveMemoryStream(memoryStream: memoryStream, this.templatePath);
+
+                try
+                {
+                    FileReaderWriter.SaveMemoryStream(memoryStream: memoryStream, this.templatePath);
+                }
+                catch (IOException)
+                {
+                    // write error
+                }
             }
+
+            return upscaledColorGrid;
         }
 
         private static Color CreatePixel(byte pixelHeight, byte pixelHumidity, byte pixelDanger)

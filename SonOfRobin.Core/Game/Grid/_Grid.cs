@@ -10,13 +10,13 @@ namespace SonOfRobin
 {
     public class Grid
     {
-        public enum Stage { GenerateTerrain, UpscaleTextures, LoadTextures }
+        public enum Stage { GenerateTerrain, ProcessTextures, LoadTextures }
 
         private static readonly int allStagesCount = ((Stage[])Enum.GetValues(typeof(Stage))).Length;
 
         private readonly static Dictionary<Stage, string> namesForStages = new Dictionary<Stage, string> {
             { Stage.GenerateTerrain, "generating terrain" },
-            { Stage.UpscaleTextures, "upscaling textures" },
+            { Stage.ProcessTextures, "processing textures" },
             { Stage.LoadTextures, "loading textures" },
         };
 
@@ -155,7 +155,7 @@ namespace SonOfRobin
 
         public void ProcessNextCreationStage()
         {
-            if (SonOfRobinGame.currentUpdate < this.stageStartFrame + 3)
+            if (this.currentStage != Stage.LoadTextures && SonOfRobinGame.currentUpdate < this.stageStartFrame + 3)
             {
                 // first frame of each stage should update progress bar
                 this.UpdateProgressBar();
@@ -170,7 +170,7 @@ namespace SonOfRobin
 
                     cellProcessingQueue = new List<Cell> { };
 
-                    for (int i = 0; i < 40 * Preferences.newWorldResDivider; i++)
+                    for (int i = 0; i < 50 * Preferences.newWorldResDivider; i++)
                     {
                         cellProcessingQueue.Add(this.cellsToProcessOnStart[0]);
                         this.cellsToProcessOnStart.RemoveAt(0);
@@ -194,11 +194,11 @@ namespace SonOfRobin
 
                     break;
 
-                case Stage.UpscaleTextures:
+                case Stage.ProcessTextures:
 
                     cellProcessingQueue = new List<Cell> { };
 
-                    for (int i = 0; i < 40 * Preferences.newWorldResDivider; i++)
+                    for (int i = 0; i < 25 * Preferences.newWorldResDivider; i++)
                     {
                         cellProcessingQueue.Add(this.cellsToProcessOnStart[0]);
                         this.cellsToProcessOnStart.RemoveAt(0);

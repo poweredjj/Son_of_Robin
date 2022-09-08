@@ -119,6 +119,8 @@ namespace SonOfRobin
             }
             catch (FileNotFoundException)
             { }
+            catch (IOException) // png file corrupted
+            { }
             catch (InvalidOperationException) // png file corrupted
             { }
 
