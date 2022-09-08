@@ -56,7 +56,6 @@ namespace SonOfRobin
             {
                 Color[,] colorGrid = this.CreateBitmapFromTerrainAndSave();
                 this.texture = GfxConverter.Convert2DArrayToTexture(colorGrid);
-                if (this.texture == null) throw new FileNotFoundException("Cannot create board texture.");
             }
 
             this.cell.grid.loadedTexturesCount++;
