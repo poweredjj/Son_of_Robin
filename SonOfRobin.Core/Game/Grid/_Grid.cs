@@ -21,6 +21,7 @@ namespace SonOfRobin
         };
 
         private Stage currentStage;
+        private int currentStageStartFrame;
         public readonly GridTemplate gridTemplate;
         public bool creationInProgress;
         private DateTime stageStartTime;
@@ -153,6 +154,9 @@ namespace SonOfRobin
 
         public void ProcessNextCreationStage()
         {
+            this.UpdateProgressBar();
+            if (this.currentStageStartFrame == SonOfRobinGame.currentUpdate) return; // first frame of each stage should update progress bar
+
             List<Cell> cellProcessingQueue;
 
             switch (currentStage)
@@ -238,8 +242,6 @@ namespace SonOfRobin
                     break;
             }
 
-            this.UpdateProgressBar();
-
             if (this.ProcessingStageComplete)
             {
                 this.currentStage++;
@@ -249,6 +251,7 @@ namespace SonOfRobin
 
         private void PrepareNextStage()
         {
+            this.currentStageStartFrame = SonOfRobinGame.currentUpdate;
             this.stageStartTime = DateTime.Now;
             this.cellsToProcessOnStart.Clear();
             this.cellsToProcessOnStart.AddRange(this.allCells);
