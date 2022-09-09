@@ -195,8 +195,9 @@ namespace SonOfRobin
                         }
                         catch (IndexOutOfRangeException)
                         {
-                            int x = this.cell.xMin + point.X + xOffset - 1;
-                            int y = this.cell.yMin + point.Y + yOffset - 1;
+                            // translating pixel coordinates to world space
+                            int x = this.cell.xMin + ((point.X + xOffset - 1) * resDivider);
+                            int y = this.cell.yMin + ((point.Y + yOffset - 1) * resDivider);
 
                             try
                             {
@@ -227,76 +228,6 @@ namespace SonOfRobin
             for (int y = 0; y < targetHeight; y++)
             {
                 for (int x = 0; x < targetWidth; x++)
-                {
-                    Color pixel = upscaledColorGrid[x, y];
-                    builder.SetPixel(pixel.R, pixel.G, pixel.B, x, y);
-                }
-            }
-
-            // saving PngBuilder to file
-
-            using (var memoryStream = new MemoryStream())
-            {
-                builder.Save(memoryStream);
-
-                try
-                {
-                    FileReaderWriter.SaveMemoryStream(memoryStream: memoryStream, this.templatePath);
-                }
-                catch (IOException)
-                {
-                    // write error
-                }
-            }
-
-            return upscaledColorGrid;
-        }
-
-        private Color[,] CreateBitmapFromTerrainOld()
-        {
-            // can be run in parallel, because it does not use graphicsDevice
-
-            // creating 2D color array with rgb color data
-
-            int width = this.cell.dividedWidth;
-            int height = this.cell.dividedHeight;
-
-            Terrain heightTerrain = this.cell.terrainByName[TerrainName.Height];
-            Terrain humidityTerrain = this.cell.terrainByName[TerrainName.Humidity];
-            Terrain dangerTerrain = this.cell.terrainByName[TerrainName.Danger];
-
-            Color[,] colorGrid = new Color[width, height];
-            int resDivider = this.cell.grid.resDivider;
-
-            for (int x = 0; x < this.cell.dividedWidth; x++)
-            {
-                int realX = x * resDivider;
-
-                for (int y = 0; y < this.cell.dividedHeight; y++)
-                {
-                    int realY = y * resDivider;
-
-                    colorGrid[x, y] = CreatePixel(
-                        pixelHeight: heightTerrain.GetMapData(realX, realY),
-                        pixelHumidity: humidityTerrain.GetMapData(realX, realY),
-                        pixelDanger: dangerTerrain.GetMapData(realX, realY));
-                }
-            }
-
-            // upscaling color grid
-
-            Color[,] upscaledColorGrid = BoardTextureUpscaler3x.UpscaleColorGrid(sourceGrid: colorGrid);
-
-            int upscaledWidth = upscaledColorGrid.GetLength(0);
-            int upscaledHeight = upscaledColorGrid.GetLength(1);
-
-            // putting upscaled color grid into PngBuilder
-
-            var builder = PngBuilder.Create(width: upscaledWidth, height: upscaledHeight, hasAlphaChannel: true);
-
-            for (int y = 0; y < upscaledHeight; y++)
-            {
-                for (int x = 0; x < upscaledWidth; x++)
                 {
                     Color pixel = upscaledColorGrid[x, y];
                     builder.SetPixel(pixel.R, pixel.G, pixel.B, x, y);
