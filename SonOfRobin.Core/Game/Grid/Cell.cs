@@ -19,7 +19,6 @@ namespace SonOfRobin
         public readonly int yCenter;
         public readonly int yMax;
         public readonly Rectangle rect;
-        private readonly Rectangle drawRect; // to correct 1 pixel gaps between cells; use only to draw cell
         public readonly Vector2 center;
         public readonly int width;
         public readonly int height;
@@ -47,7 +46,7 @@ namespace SonOfRobin
             StateMachinesPlants
         }
 
-        public Cell(Grid grid, World world, int cellNoX, int cellNoY, int xMin, int xMax, int yMin, int yMax, Random random)
+        public Cell(Grid grid, World world, int cellNoX, int cellNoY, int width, int height, Random random)
         {
             this.grid = grid;
             this.world = world;
@@ -55,18 +54,20 @@ namespace SonOfRobin
             this.cellNoX = cellNoX;
             this.cellNoY = cellNoY;
 
-            this.xMin = xMin;
-            this.xMax = xMax;
-            this.yMin = yMin;
-            this.yMax = yMax;
-
-            this.width = xMax - xMin; // virtual value, simulated for the outside world
-            this.height = yMax - yMin; // virtual value, simulated for the outside world
+            this.width = width; // virtual value, simulated for the outside world
+            this.height = height; // virtual value, simulated for the outside world
             this.dividedWidth = (int)Math.Ceiling((float)width / (float)this.grid.resDivider);  // real storing data capacity
             this.dividedHeight = (int)Math.Ceiling((float)height / (float)this.grid.resDivider); // real storing data capacity
 
+            this.xMin = cellNoX * width;
+            this.xMax = ((cellNoX + 1) * this.width) - 1;
+            this.xMax = Math.Min(this.xMax, this.world.width - 1);
+
+            this.yMin = cellNoY * height;
+            this.yMax = ((cellNoY + 1) * this.height) - 1;
+            this.yMax = Math.Min(this.yMax, this.world.height - 1);
+
             this.rect = new Rectangle(this.xMin, this.yMin, this.width, this.height);
-            this.drawRect = new Rectangle(this.xMin, this.yMin, this.width + 1, this.height + 1);
             this.xCenter = this.xMin + (this.width / 2);
             this.yCenter = this.yMin + (this.height / 2);
             this.center = new Vector2(this.xCenter, this.yCenter);
@@ -212,12 +213,7 @@ namespace SonOfRobin
 
         public void DrawDebugData(Group groupName)
         {
-            SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, new Rectangle(
-                this.xMin,
-                this.yMin,
-                this.width,
-                this.height),
-                this.color * 0.3f);
+            SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, this.rect, this.color * 0.3f);
 
             var posFont = SonOfRobinGame.fontPressStart2P5;
 
@@ -241,7 +237,7 @@ namespace SonOfRobin
         {
             if (this.boardGraphics.texture == null) return;
 
-            SonOfRobinGame.spriteBatch.Draw(this.boardGraphics.texture, this.drawRect, this.boardGraphics.texture.Bounds, Color.White * opacity);
+            SonOfRobinGame.spriteBatch.Draw(this.boardGraphics.texture, this.rect, this.boardGraphics.texture.Bounds, Color.White * opacity);
         }
 
     }

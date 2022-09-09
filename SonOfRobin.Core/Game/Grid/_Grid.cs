@@ -617,22 +617,22 @@ namespace SonOfRobin
 
         public byte GetFieldValue(TerrainName terrainName, Vector2 position)
         {
-            int cellNoX = (int)Math.Floor(position.X / cellWidth);
-            int cellNoY = (int)Math.Floor(position.Y / cellHeight);
+            int cellNoX = (int)Math.Floor(position.X / this.cellWidth);
+            int cellNoY = (int)Math.Floor(position.Y / this.cellHeight);
 
-            int posInsideCellX = (int)position.X % cellWidth;
-            int posInsideCellY = (int)position.Y % cellHeight;
+            int posInsideCellX = (int)position.X % this.cellWidth;
+            int posInsideCellY = (int)position.Y % this.cellHeight;
 
             return this.cellGrid[cellNoX, cellNoY].terrainByName[terrainName].GetMapData(posInsideCellX, posInsideCellY);
         }
 
         public byte GetFieldValue(TerrainName terrainName, int x, int y)
         {
-            int cellNoX = (int)Math.Floor((float)x / cellWidth);
-            int cellNoY = (int)Math.Floor((float)y / cellHeight);
+            int cellNoX = (int)Math.Floor((float)x / this.cellWidth);
+            int cellNoY = (int)Math.Floor((float)y / this.cellHeight);
 
-            int posInsideCellX = x % cellWidth;
-            int posInsideCellY = y % cellHeight;
+            int posInsideCellX = x % this.cellWidth;
+            int posInsideCellY = y % this.cellHeight;
 
             return this.cellGrid[cellNoX, cellNoY].terrainByName[terrainName].GetMapData(posInsideCellX, posInsideCellY);
         }
@@ -656,12 +656,7 @@ namespace SonOfRobin
             {
                 for (int y = 0; y < this.noOfCellsY; y++)
                 {
-                    int xMin = x * this.cellWidth;
-                    int xMax = Math.Min(((x + 1) * this.cellWidth) - 1, this.world.width - 1);
-                    int yMin = y * this.cellHeight;
-                    int yMax = Math.Min(((y + 1) * this.cellHeight) - 1, this.world.height - 1);
-
-                    cellGrid[x, y] = new Cell(world: this.world, grid: this, cellNoX: x, cellNoY: y, xMin: xMin, xMax: xMax, yMin: yMin, yMax: yMax, random: this.world.random);
+                    cellGrid[x, y] = new Cell(world: this.world, grid: this, cellNoX: x, cellNoY: y, width: this.cellWidth, height: this.cellHeight, random: this.world.random);
                 }
             }
 

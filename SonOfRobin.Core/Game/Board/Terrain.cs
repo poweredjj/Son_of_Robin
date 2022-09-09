@@ -56,11 +56,13 @@ namespace SonOfRobin
         }
 
         public Byte GetMapData(int x, int y)
-        { return mapData[x / this.cell.grid.resDivider, y / this.cell.grid.resDivider]; }
+        {
+            return mapData[x / this.cell.grid.resDivider, y / this.cell.grid.resDivider];
+        }
 
         private byte[,] LoadTemplate()
         {
-            var loadedData = (byte[,])FileReaderWriter.Load(this.templatePath); ;
+            var loadedData = (byte[,])FileReaderWriter.Load(this.templatePath);
             if (loadedData == null) return null;
 
             return loadedData;
