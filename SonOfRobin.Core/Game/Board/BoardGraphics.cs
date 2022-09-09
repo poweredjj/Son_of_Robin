@@ -164,19 +164,19 @@ namespace SonOfRobin
 
             // filling edges
 
+            Color[,] workingGrid3x3 = new Color[3, 3]; // working grid is needed, because the edges are missing and using sourceOffset will not work
+
             foreach (Point point in edgePointList)
             {
-                Color[,] workingGrid3x3 = new Color[3, 3]; // working grid is needed, because the edges are missing and using sourceOffset will not work
-
                 for (int yOffset = -1; yOffset < 2; yOffset++)
                 {
                     for (int xOffset = -1; xOffset < 2; xOffset++)
                     {
-                        int localX = point.X + xOffset;
-                        int localY = point.Y + yOffset;
-
                         try
                         {
+                            int localX = point.X + xOffset; // do not use to calculate world space
+                            int localY = point.Y + yOffset; // do not use to calculate world space
+
                             // looking for pixel locally
                             workingGrid3x3[xOffset + 1, yOffset + 1] = CreatePixel(
                                 pixelHeight: heightTerrain.GetMapDataRaw(localX, localY),
@@ -188,9 +188,8 @@ namespace SonOfRobin
                             try
                             {
                                 // looking for pixel in the whole grid
-
-                                int worldSpaceX = this.cell.xMin + (localX * resDivider);
-                                int worldSpaceY = this.cell.yMin + (localY * resDivider);
+                                int worldSpaceX = this.cell.xMin + (point.X * resDivider) + xOffset;
+                                int worldSpaceY = this.cell.yMin + (point.Y * resDivider) + yOffset;
 
                                 workingGrid3x3[xOffset + 1, yOffset + 1] = CreatePixel(
                                     pixelHeight: this.cell.grid.GetFieldValue(terrainName: TerrainName.Height, x: worldSpaceX, y: worldSpaceY),
