@@ -108,8 +108,6 @@ namespace SonOfRobin
 
         private Color[,] CreateBitmapFromTerrain()
         {
-            // saveOnly - true: save and return dummy grid, false: don't save and return correct grid
-
             // can be run in parallel, because it does not use graphicsDevice
 
             // creating 2D color array with rgb color data

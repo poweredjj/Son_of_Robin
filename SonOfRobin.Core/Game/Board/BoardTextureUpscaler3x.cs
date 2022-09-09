@@ -47,7 +47,7 @@ namespace SonOfRobin
                     workingGrid3x3[1, 2] = sourceGrid[baseX, baseY + 1];
                     workingGrid3x3[2, 2] = sourceGrid[baseX + 1, baseY + 1];
 
-                    Upscale3x3Grid(src: workingGrid3x3, target: upscaledGrid, offsetX: baseX * resizeFactor, offsetY: baseY * resizeFactor);
+                    Upscale3x3Grid(src: workingGrid3x3, target: upscaledGrid, targetOffsetX: baseX * resizeFactor, targetOffsetY: baseY * resizeFactor);
                 }
             }
 
@@ -81,57 +81,44 @@ namespace SonOfRobin
                 {
                     for (int xOffset = 0; xOffset < 3; xOffset++)
                     {
-                        workingGrid3x3[xOffset, yOffset] = sourceGrid[point.X, point.Y]; // inserting middle value first
                         try
                         {
                             workingGrid3x3[xOffset, yOffset] = sourceGrid[point.X + xOffset - 1, point.Y + yOffset - 1];
                         }
                         catch (IndexOutOfRangeException)
-                        { }
+                        {
+                            workingGrid3x3[xOffset, yOffset] = sourceGrid[point.X, point.Y]; // inserting middle value, if the pixel is outside grid bounds
+                        }
                     }
                 }
 
-                Upscale3x3Grid(src: workingGrid3x3, target: upscaledGrid, offsetX: point.X * resizeFactor, offsetY: point.Y * resizeFactor);
+                Upscale3x3Grid(src: workingGrid3x3, target: upscaledGrid, targetOffsetX: point.X * resizeFactor, targetOffsetY: point.Y * resizeFactor);
             }
 
             return upscaledGrid;
         }
 
-        private static Color[,] Upscale3x3Grid(Color[,] src, Color[,] target, int offsetX, int offsetY)
+        private static Color[,] Upscale3x3Grid(Color[,] src, Color[,] target, int targetOffsetX, int targetOffsetY, int sourceOffsetX = 0, int sourceOffsetY = 0)
         {
-            // base code, before replacing letters with src locations and adding offset
+            Color leftTop = src[0 + sourceOffsetX, 0 + sourceOffsetY];
+            Color middleTop = src[1 + sourceOffsetX, 0 + sourceOffsetY];
+            Color rightTop = src[2 + sourceOffsetX, 0 + sourceOffsetY];
+            Color leftMiddle = src[0 + sourceOffsetX, 1 + sourceOffsetY];
+            Color center = src[1 + sourceOffsetX, 1 + sourceOffsetY];
+            Color rightMiddle = src[2 + sourceOffsetX, 1 + sourceOffsetY];
+            Color leftBottom = src[0 + sourceOffsetX, 2 + sourceOffsetY];
+            Color middleBottom = src[1 + sourceOffsetX, 2 + sourceOffsetY];
+            Color rightBottom = src[2 + sourceOffsetX, 2 + sourceOffsetY];
 
-            //Color A = src[0, 0];
-            //Color B = src[1, 0];
-            //Color C = src[2, 0];
-            //Color D = src[0, 1];
-            //Color E = src[1, 1];
-            //Color F = src[2, 1];
-            //Color G = src[0, 2];
-            //Color H = src[1, 2];
-            //Color I = src[2, 2];
-
-            //target[0, 0] = D == B && D != H && B != F ? D : E;
-            //target[1, 0] = (D == B && D != H && B != F && E != C) || (B == F && B != D && F != H && E != A) ? B : E;
-            //target[2, 0] = (B == F && B != D && F != H) ? F : E;
-            //target[0, 1] = (H == D && H != F && D != B && E != A) || (D == B && D != H && B != F && E != G) ? D : E;
-            //target[1, 1] = E;
-            //target[2, 1] = (B == F && B != D && F != H && E != I) || (F == H && F != B && H != D && E != C) ? F : E;
-            //target[0, 2] = H == D && H != F && D != B ? D : E;
-            //target[1, 2] = (F == H && F != B && H != D && E != G) || (H == D && H != F && D != B && E != I) ? H : E;
-            //target[2, 2] = F == H && F != B && H != D ? F : E;
-
-            // optimized code
-
-            target[0 + offsetX, 0 + offsetY] = src[0, 1] == src[1, 0] && src[0, 1] != src[1, 2] && src[1, 0] != src[2, 1] ? src[0, 1] : src[1, 1];
-            target[1 + offsetX, 0 + offsetY] = (src[0, 1] == src[1, 0] && src[0, 1] != src[1, 2] && src[1, 0] != src[2, 1] && src[1, 1] != src[2, 0]) || (src[1, 0] == src[2, 1] && src[1, 0] != src[0, 1] && src[2, 1] != src[1, 2] && src[1, 1] != src[0, 0]) ? src[1, 0] : src[1, 1];
-            target[2 + offsetX, 0 + offsetY] = (src[1, 0] == src[2, 1] && src[1, 0] != src[0, 1] && src[2, 1] != src[1, 2]) ? src[2, 1] : src[1, 1];
-            target[0 + offsetX, 1 + offsetY] = (src[1, 2] == src[0, 1] && src[1, 2] != src[2, 1] && src[0, 1] != src[1, 0] && src[1, 1] != src[0, 0]) || (src[0, 1] == src[1, 0] && src[0, 1] != src[1, 2] && src[1, 0] != src[2, 1] && src[1, 1] != src[0, 2]) ? src[0, 1] : src[1, 1];
-            target[1 + offsetX, 1 + offsetY] = src[1, 1];
-            target[2 + offsetX, 1 + offsetY] = (src[1, 0] == src[2, 1] && src[1, 0] != src[0, 1] && src[2, 1] != src[1, 2] && src[1, 1] != src[2, 2]) || (src[2, 1] == src[1, 2] && src[2, 1] != src[1, 0] && src[1, 2] != src[0, 1] && src[1, 1] != src[2, 0]) ? src[2, 1] : src[1, 1];
-            target[0 + offsetX, 2 + offsetY] = src[1, 2] == src[0, 1] && src[1, 2] != src[2, 1] && src[0, 1] != src[1, 0] ? src[0, 1] : src[1, 1];
-            target[1 + offsetX, 2 + offsetY] = (src[2, 1] == src[1, 2] && src[2, 1] != src[1, 0] && src[1, 2] != src[0, 1] && src[1, 1] != src[0, 2]) || (src[1, 2] == src[0, 1] && src[1, 2] != src[2, 1] && src[0, 1] != src[1, 0] && src[1, 1] != src[2, 2]) ? src[1, 2] : src[1, 1];
-            target[2 + offsetX, 2 + offsetY] = src[2, 1] == src[1, 2] && src[2, 1] != src[1, 0] && src[1, 2] != src[0, 1] ? src[2, 1] : src[1, 1];
+            target[0 + targetOffsetX, 0 + targetOffsetY] = leftMiddle == middleTop && leftMiddle != middleBottom && middleTop != rightMiddle ? leftMiddle : center;
+            target[1 + targetOffsetX, 0 + targetOffsetY] = (leftMiddle == middleTop && leftMiddle != middleBottom && middleTop != rightMiddle && center != rightTop) || (middleTop == rightMiddle && middleTop != leftMiddle && rightMiddle != middleBottom && center != leftTop) ? middleTop : center;
+            target[2 + targetOffsetX, 0 + targetOffsetY] = (middleTop == rightMiddle && middleTop != leftMiddle && rightMiddle != middleBottom) ? rightMiddle : center;
+            target[0 + targetOffsetX, 1 + targetOffsetY] = (middleBottom == leftMiddle && middleBottom != rightMiddle && leftMiddle != middleTop && center != leftTop) || (leftMiddle == middleTop && leftMiddle != middleBottom && middleTop != rightMiddle && center != leftBottom) ? leftMiddle : center;
+            target[1 + targetOffsetX, 1 + targetOffsetY] = center;
+            target[2 + targetOffsetX, 1 + targetOffsetY] = (middleTop == rightMiddle && middleTop != leftMiddle && rightMiddle != middleBottom && center != rightBottom) || (rightMiddle == middleBottom && rightMiddle != middleTop && middleBottom != leftMiddle && center != rightTop) ? rightMiddle : center;
+            target[0 + targetOffsetX, 2 + targetOffsetY] = middleBottom == leftMiddle && middleBottom != rightMiddle && leftMiddle != middleTop ? leftMiddle : center;
+            target[1 + targetOffsetX, 2 + targetOffsetY] = (rightMiddle == middleBottom && rightMiddle != middleTop && middleBottom != leftMiddle && center != leftBottom) || (middleBottom == leftMiddle && middleBottom != rightMiddle && leftMiddle != middleTop && center != rightBottom) ? middleBottom : center;
+            target[2 + targetOffsetX, 2 + targetOffsetY] = rightMiddle == middleBottom && rightMiddle != middleTop && middleBottom != leftMiddle ? rightMiddle : center;
 
             return target;
         }
