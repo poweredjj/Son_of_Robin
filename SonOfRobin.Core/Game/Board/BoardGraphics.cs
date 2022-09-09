@@ -110,7 +110,7 @@ namespace SonOfRobin
         {
             // can be run in parallel, because it does not use graphicsDevice
 
-            // creating upscaled 2D color array with rgb color data
+            // creating base 2D color array with rgb color data
 
             int sourceWidth = this.cell.dividedWidth;
             int sourceHeight = this.cell.dividedHeight;
@@ -120,7 +120,7 @@ namespace SonOfRobin
             Terrain humidityTerrain = this.cell.terrainByName[TerrainName.Humidity];
             Terrain dangerTerrain = this.cell.terrainByName[TerrainName.Danger];
 
-            Color[,] colorGrid = new Color[sourceWidth, sourceHeight];
+            Color[,] smallColorGrid = new Color[sourceWidth, sourceHeight];
 
             for (int x = 0; x < this.cell.dividedWidth; x++)
             {
@@ -130,12 +130,14 @@ namespace SonOfRobin
                 {
                     int realY = y * resDivider;
 
-                    colorGrid[x, y] = CreatePixel(
+                    smallColorGrid[x, y] = CreatePixel(
                         pixelHeight: heightTerrain.GetMapData(realX, realY),
                         pixelHumidity: humidityTerrain.GetMapData(realX, realY),
                         pixelDanger: dangerTerrain.GetMapData(realX, realY));
                 }
             }
+
+            // the upscaling method is implemented directly here, to interpolate edges correctly (needed map data from other cells)
 
             // upscaling color grid
 
@@ -151,7 +153,7 @@ namespace SonOfRobin
             {
                 for (int baseX = 1; baseX < sourceWidth - 1; baseX++)
                 {
-                    BoardTextureUpscaler3x.Upscale3x3Grid(src: colorGrid, target: upscaledColorGrid, sourceOffsetX: baseX - 1, sourceOffsetY: baseY - 1, targetOffsetX: baseX * resizeFactor, targetOffsetY: baseY * resizeFactor);
+                    BoardTextureUpscaler3x.Upscale3x3Grid(src: smallColorGrid, target: upscaledColorGrid, sourceOffsetX: baseX - 1, sourceOffsetY: baseY - 1, targetOffsetX: baseX * resizeFactor, targetOffsetY: baseY * resizeFactor);
                 }
             }
 
@@ -191,7 +193,7 @@ namespace SonOfRobin
                         try
                         {
                             // looking for pixel in this cell
-                            workingGrid3x3[xOffset, yOffset] = colorGrid[point.X + xOffset - 1, point.Y + yOffset - 1];
+                            workingGrid3x3[xOffset, yOffset] = smallColorGrid[point.X + xOffset - 1, point.Y + yOffset - 1];
                         }
                         catch (IndexOutOfRangeException)
                         {
@@ -210,9 +212,7 @@ namespace SonOfRobin
                             catch (IndexOutOfRangeException)
                             {
                                 // pixel outside world bounds - inserting the nearest correct position
-                                workingGrid3x3[xOffset, yOffset] = colorGrid[point.X, point.Y];
-
-                                MessageLog.AddMessage(msgType: MsgType.User, message: $"Grid edge - pixel not found {x},{y}.");
+                                workingGrid3x3[xOffset, yOffset] = smallColorGrid[point.X, point.Y];
                             }
                         }
                     }
