@@ -363,7 +363,9 @@ namespace SonOfRobin
 
                         foreach (GridTemplate gridTemplate in GridTemplate.CorrectTemplates)
                         {
-                            new Invoker(menu: menu, name: $"{gridTemplate.width}x{gridTemplate.height}  seed  {String.Format("{0:0000}", gridTemplate.seed)}  detail {Preferences.namesForResDividers[gridTemplate.resDivider]}", closesMenu: true, taskName: Scheduler.TaskName.CreateNewWorld, executeHelper: new Dictionary<string, Object> { { "width", gridTemplate.width }, { "height", gridTemplate.height }, { "seed", gridTemplate.seed }, { "resDivider", gridTemplate.resDivider }, { "initialMaxAnimalsMultiplier", Preferences.newWorldMaxAnimalsMultiplier }, { "addAgressiveAnimals", Preferences.newWorldAgressiveAnimals }, { "playerFemale", Preferences.newWorldPlayerFemale } }, sound: SoundData.Name.NewGameStart);
+                            string detailLevelName = Preferences.namesForResDividers.ContainsKey(gridTemplate.resDivider) ? (string)Preferences.namesForResDividers[gridTemplate.resDivider] : $"{gridTemplate.resDivider}";
+
+                            new Invoker(menu: menu, name: $"{gridTemplate.width}x{gridTemplate.height}  seed  {String.Format("{0:0000}", gridTemplate.seed)}  detail {detailLevelName}", closesMenu: true, taskName: Scheduler.TaskName.CreateNewWorld, executeHelper: new Dictionary<string, Object> { { "width", gridTemplate.width }, { "height", gridTemplate.height }, { "seed", gridTemplate.seed }, { "resDivider", gridTemplate.resDivider }, { "initialMaxAnimalsMultiplier", Preferences.newWorldMaxAnimalsMultiplier }, { "addAgressiveAnimals", Preferences.newWorldAgressiveAnimals }, { "playerFemale", Preferences.newWorldPlayerFemale } }, sound: SoundData.Name.NewGameStart);
                         }
 
                         new Separator(menu: menu, name: "", isEmpty: true);
