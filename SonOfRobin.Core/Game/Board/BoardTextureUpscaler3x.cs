@@ -28,36 +28,24 @@ namespace SonOfRobin
 
             Color[,] upscaledGrid = new Color[targetWidth, targetHeight];
 
-            // filling the middle
+            // filling the whole grid
 
-            for (int baseY = 1; baseY < sourceHeight - 1; baseY++)
-            {
-                for (int baseX = 1; baseX < sourceWidth - 1; baseX++)
-                {
-                    Upscale3x3Grid(src: sourceGrid, target: upscaledGrid, sourceOffsetX: baseX - 1, sourceOffsetY: baseY - 1, targetOffsetX: baseX * resizeFactor, targetOffsetY: baseY * resizeFactor);
-                }
-            }
+            List<Point> edgePointList = new List<Point>();
 
-            // making edge coordinates list
-
-            List<Point> pointList = new List<Point>();
-
-            // horizontal
-            for (int baseX = 0; baseX < sourceWidth; baseX++)
-            {
-                foreach (int baseY in new int[] { 0, sourceHeight - 1 })
-                {
-                    Point newPoint = new Point(baseX, baseY);
-                    if (!pointList.Contains(newPoint)) pointList.Add(newPoint);
-                }
-            }
-            // vertical
             for (int baseY = 0; baseY < sourceHeight; baseY++)
             {
-                foreach (int baseX in new int[] { 0, sourceWidth - 1 })
+                int targetOffsetY = baseY * resizeFactor;
+
+                for (int baseX = 0; baseX < sourceWidth; baseX++)
                 {
-                    Point newPoint = new Point(baseX, baseY);
-                    if (!pointList.Contains(newPoint)) pointList.Add(newPoint);
+                    try
+                    {
+                        Upscale3x3Grid(src: sourceGrid, target: upscaledGrid, sourceOffsetX: baseX - 1, sourceOffsetY: baseY - 1, targetOffsetX: baseX * resizeFactor, targetOffsetY: targetOffsetY);
+                    }
+                    catch (IndexOutOfRangeException)
+                    {
+                        edgePointList.Add(new Point(baseX, baseY)); // pixels outside the edge will not be found - adding to edge list
+                    }
                 }
             }
 
@@ -65,7 +53,7 @@ namespace SonOfRobin
 
             Color[,] workingGrid3x3 = new Color[3, 3]; // working grid is needed, because the edges are missing and just using sourceOffset will not work
 
-            foreach (Point point in pointList)
+            foreach (Point point in edgePointList)
             {
                 for (int yOffset = 0; yOffset < 3; yOffset++)
                 {
