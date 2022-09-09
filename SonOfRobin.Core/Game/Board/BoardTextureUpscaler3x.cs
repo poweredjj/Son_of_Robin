@@ -7,7 +7,7 @@ namespace SonOfRobin
 {
     public class BoardTextureUpscaler3x
     {
-        private static readonly int resizeFactor = 3;
+        public static readonly int resizeFactor = 3;
 
         public static Texture2D UpscaleTexture(Texture2D sourceTexture)
         {
@@ -26,7 +26,6 @@ namespace SonOfRobin
             int targetWidth = sourceWidth * resizeFactor;
             int targetHeight = sourceHeight * resizeFactor;
 
-            Color[,] workingGrid3x3 = new Color[3, 3];
             Color[,] upscaledGrid = new Color[targetWidth, targetHeight];
 
             // filling the middle
@@ -35,26 +34,15 @@ namespace SonOfRobin
             {
                 for (int baseX = 1; baseX < sourceWidth - 1; baseX++)
                 {
-                    workingGrid3x3[0, 0] = sourceGrid[baseX - 1, baseY - 1];
-                    workingGrid3x3[1, 0] = sourceGrid[baseX, baseY - 1];
-                    workingGrid3x3[2, 0] = sourceGrid[baseX + 1, baseY - 1];
-
-                    workingGrid3x3[0, 1] = sourceGrid[baseX - 1, baseY];
-                    workingGrid3x3[1, 1] = sourceGrid[baseX, baseY];
-                    workingGrid3x3[2, 1] = sourceGrid[baseX + 1, baseY];
-
-                    workingGrid3x3[0, 2] = sourceGrid[baseX - 1, baseY + 1];
-                    workingGrid3x3[1, 2] = sourceGrid[baseX, baseY + 1];
-                    workingGrid3x3[2, 2] = sourceGrid[baseX + 1, baseY + 1];
-
-                    Upscale3x3Grid(src: workingGrid3x3, target: upscaledGrid, targetOffsetX: baseX * resizeFactor, targetOffsetY: baseY * resizeFactor);
+                    Upscale3x3Grid(src: sourceGrid, target: upscaledGrid, sourceOffsetX: baseX - 1, sourceOffsetY: baseY - 1, targetOffsetX: baseX * resizeFactor, targetOffsetY: baseY * resizeFactor);
                 }
             }
 
+            // making edge coordinates list
+
             List<Point> pointList = new List<Point>();
 
-            // making edges coordinates list
-
+            // horizontal
             for (int baseX = 0; baseX < sourceWidth; baseX++)
             {
                 foreach (int baseY in new int[] { 0, sourceHeight - 1 })
@@ -63,7 +51,7 @@ namespace SonOfRobin
                     if (!pointList.Contains(newPoint)) pointList.Add(newPoint);
                 }
             }
-
+            // vertical
             for (int baseY = 0; baseY < sourceHeight; baseY++)
             {
                 foreach (int baseX in new int[] { 0, sourceWidth - 1 })
@@ -74,6 +62,8 @@ namespace SonOfRobin
             }
 
             // filling edges
+
+            Color[,] workingGrid3x3 = new Color[3, 3]; // working grid is needed, because the edges are missing and just using sourceOffset will not work
 
             foreach (Point point in pointList)
             {
@@ -98,7 +88,7 @@ namespace SonOfRobin
             return upscaledGrid;
         }
 
-        private static Color[,] Upscale3x3Grid(Color[,] src, Color[,] target, int targetOffsetX, int targetOffsetY, int sourceOffsetX = 0, int sourceOffsetY = 0)
+        public static Color[,] Upscale3x3Grid(Color[,] src, Color[,] target, int targetOffsetX = 0, int targetOffsetY = 0, int sourceOffsetX = 0, int sourceOffsetY = 0)
         {
             Color leftTop = src[0 + sourceOffsetX, 0 + sourceOffsetY];
             Color middleTop = src[1 + sourceOffsetX, 0 + sourceOffsetY];

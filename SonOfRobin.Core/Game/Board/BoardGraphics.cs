@@ -110,6 +110,152 @@ namespace SonOfRobin
         {
             // can be run in parallel, because it does not use graphicsDevice
 
+            // creating upscaled 2D color array with rgb color data
+
+            int sourceWidth = this.cell.dividedWidth;
+            int sourceHeight = this.cell.dividedHeight;
+            int resDivider = this.cell.grid.resDivider;
+
+            Terrain heightTerrain = this.cell.terrainByName[TerrainName.Height];
+            Terrain humidityTerrain = this.cell.terrainByName[TerrainName.Humidity];
+            Terrain dangerTerrain = this.cell.terrainByName[TerrainName.Danger];
+
+            Color[,] colorGrid = new Color[sourceWidth, sourceHeight];
+
+            for (int x = 0; x < this.cell.dividedWidth; x++)
+            {
+                int realX = x * resDivider;
+
+                for (int y = 0; y < this.cell.dividedHeight; y++)
+                {
+                    int realY = y * resDivider;
+
+                    colorGrid[x, y] = CreatePixel(
+                        pixelHeight: heightTerrain.GetMapData(realX, realY),
+                        pixelHumidity: humidityTerrain.GetMapData(realX, realY),
+                        pixelDanger: dangerTerrain.GetMapData(realX, realY));
+                }
+            }
+
+            // upscaling color grid
+
+            int resizeFactor = BoardTextureUpscaler3x.resizeFactor;
+            int targetWidth = sourceWidth * resizeFactor;
+            int targetHeight = sourceHeight * resizeFactor;
+
+            Color[,] upscaledColorGrid = new Color[targetWidth, targetHeight];
+
+            // filling the middle
+
+            for (int baseY = 1; baseY < sourceHeight - 1; baseY++)
+            {
+                for (int baseX = 1; baseX < sourceWidth - 1; baseX++)
+                {
+                    BoardTextureUpscaler3x.Upscale3x3Grid(src: colorGrid, target: upscaledColorGrid, sourceOffsetX: baseX - 1, sourceOffsetY: baseY - 1, targetOffsetX: baseX * resizeFactor, targetOffsetY: baseY * resizeFactor);
+                }
+            }
+
+            // making edge coordinates list
+
+            List<Point> pointList = new List<Point>();
+
+            // horizontal
+            for (int baseX = 0; baseX < sourceWidth; baseX++)
+            {
+                foreach (int baseY in new int[] { 0, sourceHeight - 1 })
+                {
+                    Point newPoint = new Point(baseX, baseY);
+                    if (!pointList.Contains(newPoint)) pointList.Add(newPoint);
+                }
+            }
+            // vertical
+            for (int baseY = 0; baseY < sourceHeight; baseY++)
+            {
+                foreach (int baseX in new int[] { 0, sourceWidth - 1 })
+                {
+                    Point newPoint = new Point(baseX, baseY);
+                    if (!pointList.Contains(newPoint)) pointList.Add(newPoint);
+                }
+            }
+
+            // filling edges
+
+            Color[,] workingGrid3x3 = new Color[3, 3]; // working grid is needed, because the edges are missing and just using sourceOffset will not work
+
+            foreach (Point point in pointList)
+            {
+                for (int yOffset = 0; yOffset < 3; yOffset++)
+                {
+                    for (int xOffset = 0; xOffset < 3; xOffset++)
+                    {
+                        try
+                        {
+                            // looking for pixel in this cell
+                            workingGrid3x3[xOffset, yOffset] = colorGrid[point.X + xOffset - 1, point.Y + yOffset - 1];
+                        }
+                        catch (IndexOutOfRangeException)
+                        {
+                            int x = this.cell.xMin + point.X + xOffset - 1;
+                            int y = this.cell.yMin + point.Y + yOffset - 1;
+
+                            try
+                            {
+                                // looking for pixel in the whole grid
+                                workingGrid3x3[xOffset, yOffset] = CreatePixel(
+                                    pixelHeight: this.cell.grid.GetFieldValue(terrainName: TerrainName.Height, x: x, y: y),
+                                    pixelHumidity: this.cell.grid.GetFieldValue(terrainName: TerrainName.Humidity, x: x, y: y),
+                                    pixelDanger: this.cell.grid.GetFieldValue(terrainName: TerrainName.Danger, x: x, y: y));
+                            }
+                            catch (IndexOutOfRangeException)
+                            {
+                                // pixel outside world bounds - inserting the nearest correct position
+                                workingGrid3x3[xOffset, yOffset] = colorGrid[point.X, point.Y];
+
+                                MessageLog.AddMessage(msgType: MsgType.User, message: $"Grid edge - pixel not found {x},{y}.");
+                            }
+                        }
+                    }
+                }
+
+                BoardTextureUpscaler3x.Upscale3x3Grid(src: workingGrid3x3, target: upscaledColorGrid, targetOffsetX: point.X * resizeFactor, targetOffsetY: point.Y * resizeFactor);
+            }
+
+            // putting upscaled color grid into PngBuilder
+
+            var builder = PngBuilder.Create(width: targetWidth, height: targetHeight, hasAlphaChannel: true);
+
+            for (int y = 0; y < targetHeight; y++)
+            {
+                for (int x = 0; x < targetWidth; x++)
+                {
+                    Color pixel = upscaledColorGrid[x, y];
+                    builder.SetPixel(pixel.R, pixel.G, pixel.B, x, y);
+                }
+            }
+
+            // saving PngBuilder to file
+
+            using (var memoryStream = new MemoryStream())
+            {
+                builder.Save(memoryStream);
+
+                try
+                {
+                    FileReaderWriter.SaveMemoryStream(memoryStream: memoryStream, this.templatePath);
+                }
+                catch (IOException)
+                {
+                    // write error
+                }
+            }
+
+            return upscaledColorGrid;
+        }
+
+        private Color[,] CreateBitmapFromTerrainOld()
+        {
+            // can be run in parallel, because it does not use graphicsDevice
+
             // creating 2D color array with rgb color data
 
             int width = this.cell.dividedWidth;
