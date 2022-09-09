@@ -628,8 +628,8 @@ namespace SonOfRobin
 
         public byte GetFieldValue(TerrainName terrainName, int x, int y)
         {
-            int cellNoX = (int)Math.Floor((float)x / this.cellWidth);
-            int cellNoY = (int)Math.Floor((float)y / this.cellHeight);
+            int cellNoX = x / this.cellWidth;
+            int cellNoY = y / this.cellHeight;
 
             int posInsideCellX = x % this.cellWidth;
             int posInsideCellY = y % this.cellHeight;
@@ -639,12 +639,12 @@ namespace SonOfRobin
 
         private Cell FindMatchingCell(Vector2 position)
         {
-            return this.cellGrid[(int)Math.Floor(position.X / this.cellWidth), (int)Math.Floor(position.Y / this.cellHeight)];
+            return this.cellGrid[(int)(position.X / this.cellWidth), (int)(position.Y / this.cellHeight)];
         }
 
         private static int FindMatchingCellInSingleAxis(int position, int cellLength)
         {
-            return (int)Math.Floor((float)position / (float)cellLength);
+            return position / cellLength;
         }
 
 

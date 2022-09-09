@@ -57,7 +57,19 @@ namespace SonOfRobin
 
         public Byte GetMapData(int x, int y)
         {
+            if (x < 0) throw new IndexOutOfRangeException($"X {x} cannot be less than 0.");
+            if (y < 0) throw new IndexOutOfRangeException($"X {y} cannot be less than 0.");
+
             return mapData[x / this.cell.grid.resDivider, y / this.cell.grid.resDivider];
+        }
+
+        public Byte GetMapDataRaw(int x, int y)
+        {
+            if (x < 0) throw new IndexOutOfRangeException($"X {x} cannot be less than 0.");
+            if (y < 0) throw new IndexOutOfRangeException($"X {y} cannot be less than 0.");
+
+            // direct access, without taking resDivider into account
+            return mapData[x, y];
         }
 
         private byte[,] LoadTemplate()

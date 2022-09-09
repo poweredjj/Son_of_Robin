@@ -122,18 +122,14 @@ namespace SonOfRobin
 
             Color[,] smallColorGrid = new Color[sourceWidth, sourceHeight];
 
-            for (int x = 0; x < this.cell.dividedWidth; x++)
+            for (int localX = 0; localX < this.cell.dividedWidth; localX++)
             {
-                int realX = x * resDivider;
-
-                for (int y = 0; y < this.cell.dividedHeight; y++)
+                for (int localY = 0; localY < this.cell.dividedHeight; localY++)
                 {
-                    int realY = y * resDivider;
-
-                    smallColorGrid[x, y] = CreatePixel(
-                        pixelHeight: heightTerrain.GetMapData(realX, realY),
-                        pixelHumidity: humidityTerrain.GetMapData(realX, realY),
-                        pixelDanger: dangerTerrain.GetMapData(realX, realY));
+                    smallColorGrid[localX, localY] = CreatePixel(
+                        pixelHeight: heightTerrain.GetMapDataRaw(localX, localY),
+                        pixelHumidity: humidityTerrain.GetMapDataRaw(localX, localY),
+                        pixelDanger: dangerTerrain.GetMapDataRaw(localX, localY));
                 }
             }
 
@@ -151,47 +147,61 @@ namespace SonOfRobin
 
             List<Point> edgePointList = new List<Point>();
 
-            for (int baseY = 0; baseY < sourceHeight; baseY++)
+            for (int localY = 0; localY < sourceHeight; localY++)
             {
-                for (int baseX = 0; baseX < sourceWidth; baseX++)
+                for (int localX = 0; localX < sourceWidth; localX++)
                 {
                     try
                     {
-                        BoardTextureUpscaler3x.Upscale3x3Grid(src: smallColorGrid, target: upscaledColorGrid, sourceOffsetX: baseX - 1, sourceOffsetY: baseY - 1, targetOffsetX: baseX * resizeFactor, targetOffsetY: baseY * resizeFactor);
+                        BoardTextureUpscaler3x.Upscale3x3Grid(src: smallColorGrid, target: upscaledColorGrid, sourceOffsetX: localX - 1, sourceOffsetY: localY - 1, targetOffsetX: localX * resizeFactor, targetOffsetY: localY * resizeFactor);
                     }
                     catch (IndexOutOfRangeException)
                     {
-                        edgePointList.Add(new Point(baseX, baseY)); // pixels outside the edge will not be found - adding to edge list
+                        edgePointList.Add(new Point(localX, localY)); // pixels outside the edge will not be found - adding to edge list
                     }
                 }
             }
 
             // filling edges
 
-            Color[,] workingGrid3x3 = new Color[3, 3]; // working grid is needed, because the edges are missing and using sourceOffset will not work
-
             foreach (Point point in edgePointList)
             {
+                Color[,] workingGrid3x3 = new Color[3, 3]; // working grid is needed, because the edges are missing and using sourceOffset will not work
+
                 for (int yOffset = -1; yOffset < 2; yOffset++)
                 {
-                    int y = this.cell.yMin + ((point.Y + yOffset) * resDivider); // translating pixel coordinates to world space
-
                     for (int xOffset = -1; xOffset < 2; xOffset++)
                     {
-                        int x = this.cell.xMin + ((point.X + xOffset) * resDivider); // translating pixel coordinates to world space
+                        int localX = point.X + xOffset;
+                        int localY = point.Y + yOffset;
 
                         try
                         {
-                            // looking for pixel in the whole grid
+                            // looking for pixel locally
                             workingGrid3x3[xOffset + 1, yOffset + 1] = CreatePixel(
-                                pixelHeight: this.cell.grid.GetFieldValue(terrainName: TerrainName.Height, x: x, y: y),
-                                pixelHumidity: this.cell.grid.GetFieldValue(terrainName: TerrainName.Humidity, x: x, y: y),
-                                pixelDanger: this.cell.grid.GetFieldValue(terrainName: TerrainName.Danger, x: x, y: y));
+                                pixelHeight: heightTerrain.GetMapDataRaw(localX, localY),
+                                pixelHumidity: humidityTerrain.GetMapDataRaw(localX, localY),
+                                pixelDanger: dangerTerrain.GetMapDataRaw(localX, localY));
                         }
                         catch (IndexOutOfRangeException)
                         {
-                            // pixel outside world bounds - inserting the nearest correct position
-                            workingGrid3x3[xOffset + 1, yOffset + 1] = smallColorGrid[point.X, point.Y];
+                            try
+                            {
+                                // looking for pixel in the whole grid
+
+                                int worldSpaceX = this.cell.xMin + (localX * resDivider);
+                                int worldSpaceY = this.cell.yMin + (localY * resDivider);
+
+                                workingGrid3x3[xOffset + 1, yOffset + 1] = CreatePixel(
+                                    pixelHeight: this.cell.grid.GetFieldValue(terrainName: TerrainName.Height, x: worldSpaceX, y: worldSpaceY),
+                                    pixelHumidity: this.cell.grid.GetFieldValue(terrainName: TerrainName.Humidity, x: worldSpaceX, y: worldSpaceY),
+                                    pixelDanger: this.cell.grid.GetFieldValue(terrainName: TerrainName.Danger, x: worldSpaceX, y: worldSpaceY));
+                            }
+                            catch (IndexOutOfRangeException)
+                            {
+                                // pixel outside world bounds - inserting the nearest correct position
+                                workingGrid3x3[xOffset + 1, yOffset + 1] = smallColorGrid[point.X, point.Y];
+                            }
                         }
                     }
                 }
