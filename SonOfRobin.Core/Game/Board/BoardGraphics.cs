@@ -168,23 +168,22 @@ namespace SonOfRobin
 
             // filling edges
 
-            Color[,] workingGrid3x3 = new Color[3, 3]; // working grid is needed, because the edges are missing and just using sourceOffset will not work
+            Color[,] workingGrid3x3 = new Color[3, 3]; // working grid is needed, because the edges are missing and using sourceOffset will not work
 
             foreach (Point point in edgePointList)
             {
-                for (int yOffset = 0; yOffset < 3; yOffset++)
+                for (int yOffset = -1; yOffset < 2; yOffset++)
                 {
-                    int y = this.cell.yMin + ((point.Y + yOffset - 1) * resDivider);
+                    int y = this.cell.yMin + ((point.Y + yOffset) * resDivider); // translating pixel coordinates to world space
 
-                    for (int xOffset = 0; xOffset < 3; xOffset++)
+                    for (int xOffset = -1; xOffset < 2; xOffset++)
                     {
-                        // translating pixel coordinates to world space
-                        int x = this.cell.xMin + ((point.X + xOffset - 1) * resDivider);
+                        int x = this.cell.xMin + ((point.X + xOffset) * resDivider); // translating pixel coordinates to world space
 
                         try
                         {
                             // looking for pixel in the whole grid
-                            workingGrid3x3[xOffset, yOffset] = CreatePixel(
+                            workingGrid3x3[xOffset + 1, yOffset + 1] = CreatePixel(
                                 pixelHeight: this.cell.grid.GetFieldValue(terrainName: TerrainName.Height, x: x, y: y),
                                 pixelHumidity: this.cell.grid.GetFieldValue(terrainName: TerrainName.Humidity, x: x, y: y),
                                 pixelDanger: this.cell.grid.GetFieldValue(terrainName: TerrainName.Danger, x: x, y: y));
@@ -192,7 +191,7 @@ namespace SonOfRobin
                         catch (IndexOutOfRangeException)
                         {
                             // pixel outside world bounds - inserting the nearest correct position
-                            workingGrid3x3[xOffset, yOffset] = smallColorGrid[point.X, point.Y];
+                            workingGrid3x3[xOffset + 1, yOffset + 1] = smallColorGrid[point.X, point.Y];
                         }
                     }
                 }

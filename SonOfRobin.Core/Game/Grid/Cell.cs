@@ -9,7 +9,7 @@ namespace SonOfRobin
     {
         public readonly Grid grid;
         public readonly World world;
-        private readonly Color color;
+        public readonly Color color;
         public readonly int cellNoX;
         public readonly int cellNoY;
         public readonly int xMin;
@@ -56,8 +56,8 @@ namespace SonOfRobin
 
             this.width = width; // virtual value, simulated for the outside world
             this.height = height; // virtual value, simulated for the outside world
-            this.dividedWidth = (int)Math.Ceiling((float)width / (float)this.grid.resDivider);  // real storing data capacity
-            this.dividedHeight = (int)Math.Ceiling((float)height / (float)this.grid.resDivider); // real storing data capacity
+            this.dividedWidth = (int)Math.Ceiling((float)this.width / (float)this.grid.resDivider);  // real storing data capacity
+            this.dividedHeight = (int)Math.Ceiling((float)this.height / (float)this.grid.resDivider); // real storing data capacity
 
             this.xMin = cellNoX * width;
             this.xMax = ((cellNoX + 1) * this.width) - 1;
