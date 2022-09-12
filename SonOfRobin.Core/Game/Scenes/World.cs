@@ -347,7 +347,7 @@ namespace SonOfRobin
             if (this.grid.creationInProgress)
             {
                 SonOfRobinGame.game.IsFixedTimeStep = false; // speeds up the creation process
-                this.grid.RunNextCreationStage();
+                this.grid.ProcessNextCreationStage();
                 return;
             }
 

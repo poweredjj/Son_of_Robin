@@ -124,7 +124,7 @@ namespace SonOfRobin
             this.percentPosX = percentPosX;
             this.percentPosY = percentPosY;
             this.activeEntry = 0;
-            this.showCursor = SonOfRobinGame.platform != Platform.Mobile;
+            this.showCursor = Input.currentControlType != Input.ControlType.Touch;
 
             this.UpdateViewSizes();
 

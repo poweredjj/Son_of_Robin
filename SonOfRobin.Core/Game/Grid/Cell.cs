@@ -7,11 +7,9 @@ namespace SonOfRobin
 {
     public class Cell
     {
-        public bool creationInProgress;
-        private int creationStage;
         public readonly Grid grid;
-        private readonly World world;
-        private readonly Color color;
+        public readonly World world;
+        public readonly Color color;
         public readonly int cellNoX;
         public readonly int cellNoY;
         public readonly int xMin;
@@ -48,29 +46,33 @@ namespace SonOfRobin
             StateMachinesPlants
         }
 
-        public Cell(Grid grid, World world, int cellNoX, int cellNoY, int xMin, int xMax, int yMin, int yMax, Random random)
+        public Cell(Grid grid, World world, int cellNoX, int cellNoY, int width, int height, Random random)
         {
-            this.creationInProgress = true;
-            this.creationStage = 0;
-
             this.grid = grid;
             this.world = world;
+
             this.cellNoX = cellNoX;
             this.cellNoY = cellNoY;
-            this.xMin = xMin;
-            this.xMax = xMax;
-            this.yMin = yMin;
-            this.yMax = yMax;
-            this.width = xMax - xMin + 1; // virtual value, simulated for the outside world
-            this.height = yMax - yMin + 1; // virtual value, simulated for the outside world
-            // Ceiling() to round up in case of odd numbers
-            this.dividedWidth = (int)Math.Ceiling((float)width / (float)this.grid.resDivider);  // real storing data capacity
-            this.dividedHeight = (int)Math.Ceiling((float)height / (float)this.grid.resDivider); // real storing data capacity
+
+            this.width = width; // virtual value, simulated for the outside world
+            this.height = height; // virtual value, simulated for the outside world
+            this.dividedWidth = (int)Math.Ceiling((float)this.width / (float)this.grid.resDivider);  // real storing data capacity
+            this.dividedHeight = (int)Math.Ceiling((float)this.height / (float)this.grid.resDivider); // real storing data capacity
+
+            this.xMin = cellNoX * width;
+            this.xMax = ((cellNoX + 1) * this.width) - 1;
+            this.xMax = Math.Min(this.xMax, this.world.width - 1);
+
+            this.yMin = cellNoY * height;
+            this.yMax = ((cellNoY + 1) * this.height) - 1;
+            this.yMax = Math.Min(this.yMax, this.world.height - 1);
+
             this.rect = new Rectangle(this.xMin, this.yMin, this.width, this.height);
             this.xCenter = this.xMin + (this.width / 2);
             this.yCenter = this.yMin + (this.height / 2);
             this.center = new Vector2(this.xCenter, this.yCenter);
             this.color = new Color(random.Next(0, 255), random.Next(0, 255), random.Next(0, 255));
+
             this.surroundingCells = new List<Cell>();
             this.VisitedByPlayer = false;
 
@@ -81,8 +83,6 @@ namespace SonOfRobin
             }
 
             this.terrainByName = new Dictionary<TerrainName, Terrain>();
-
-            this.creationStage++;
         }
 
         public void SetAsVisited()
@@ -107,44 +107,22 @@ namespace SonOfRobin
             this.VisitedByPlayer = (bool)cellDict["VisitedByPlayer"];
         }
 
-        public void RunNextCreationStage()
-
+        public void ComputeHeight()
         {
-            switch (this.creationStage)
-            {
-                case 1:
-                    // different noise settings should not be processed together in parallel
-                    this.terrainByName[TerrainName.Height] = new Terrain(
-                    world: this.world, cell: this, name: TerrainName.Height, frequency: 8f, octaves: 9, persistence: 0.5f, lacunarity: 1.9f, gain: 0.55f, addBorder: true);
-                    this.creationStage++;
-                    return;
+            this.terrainByName[TerrainName.Height] = new Terrain(
+            world: this.world, cell: this, name: TerrainName.Height, frequency: 8f, octaves: 9, persistence: 0.5f, lacunarity: 1.9f, gain: 0.55f, addBorder: true);
+        }
 
-                case 2:
-                    // different noise settings should not be processed together in parallel
-                    this.terrainByName[TerrainName.Humidity] = new Terrain(
-                    world: this.world, cell: this, name: TerrainName.Humidity, frequency: 4.3f, octaves: 9, persistence: 0.6f, lacunarity: 1.7f, gain: 0.6f);
+        public void ComputeHumidity()
+        {
+            this.terrainByName[TerrainName.Humidity] = new Terrain(
+                world: this.world, cell: this, name: TerrainName.Humidity, frequency: 4.3f, octaves: 9, persistence: 0.6f, lacunarity: 1.7f, gain: 0.6f);
+        }
 
-                    this.creationStage++;
-                    return;
-
-                case 3:
-                    // different noise settings should not be processed together in parallel
-                    this.terrainByName[TerrainName.Danger] = new Terrain(
-                    world: this.world, cell: this, name: TerrainName.Danger, frequency: 2.9f, octaves: 3, persistence: 0.7f, lacunarity: 1.4f, gain: 0.3f, addBorder: true);
-
-                    this.UpdateBoardGraphics();
-                    this.creationStage++;
-                    return;
-
-                case 4:
-                    // cannot be run in parallel
-                    if (Preferences.loadWholeMap) this.boardGraphics.LoadTexture();
-                    this.creationInProgress = false;
-                    return;
-
-                default:
-                    throw new DivideByZeroException($"Unsupported creationStage - {creationStage}.");
-            }
+        public void ComputeDanger()
+        {
+            this.terrainByName[TerrainName.Danger] = new Terrain(
+                world: this.world, cell: this, name: TerrainName.Danger, frequency: 2.9f, octaves: 3, persistence: 0.7f, lacunarity: 1.4f, gain: 0.3f, addBorder: true);
         }
 
         public void CopyFromTemplate(Cell templateCell)
@@ -235,12 +213,7 @@ namespace SonOfRobin
 
         public void DrawDebugData(Group groupName)
         {
-            SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, new Rectangle(
-                this.xMin,
-                this.yMin,
-                this.width,
-                this.height),
-                this.color * 0.3f);
+            SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, this.rect, this.color * 0.3f);
 
             var posFont = SonOfRobinGame.fontPressStart2P5;
 
@@ -264,10 +237,7 @@ namespace SonOfRobin
         {
             if (this.boardGraphics.texture == null) return;
 
-            Rectangle destinationRectangle = new Rectangle(this.xMin, this.yMin,
-                this.boardGraphics.texture.Width * this.grid.resDivider, this.boardGraphics.texture.Height * this.grid.resDivider);
-
-            SonOfRobinGame.spriteBatch.Draw(this.boardGraphics.texture, destinationRectangle, this.boardGraphics.texture.Bounds, Color.White * opacity);
+            SonOfRobinGame.spriteBatch.Draw(this.boardGraphics.texture, this.rect, this.boardGraphics.texture.Bounds, Color.White * opacity);
         }
 
     }

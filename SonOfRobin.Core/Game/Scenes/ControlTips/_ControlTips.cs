@@ -69,7 +69,7 @@ namespace SonOfRobin
 
         public override void Update(GameTime gameTime)
         {
-            if (this.currentScene == null) return;
+            if (this.currentScene == null || Input.currentControlType == Input.ControlType.Touch) return;
 
             bool bigMode =
                 this.currentLayout == TipsLayout.WorldMain ||
@@ -123,7 +123,7 @@ namespace SonOfRobin
 
         public override void Draw()
         {
-            if (!Preferences.ShowControlTips) return;
+            if (!Preferences.ShowControlTips || Input.currentControlType == Input.ControlType.Touch) return;
 
             int drawOffsetX = 0;
 
@@ -177,7 +177,7 @@ namespace SonOfRobin
                 case TipsLayout.Menu:
                     {
                         new ButtonTip(tipCollection: this.tipCollection, text: "navigation", textures: InputVis.LeftStickTextureList);
-                        if (Input.tipsTypeToShow == Input.TipsTypeToShow.Keyboard) new ButtonTip(tipCollection: this.tipCollection, text: "scroll", textures: scrollTextures);
+                        if (Input.currentControlType == Input.ControlType.KeyboardAndMouse) new ButtonTip(tipCollection: this.tipCollection, text: "scroll", textures: scrollTextures);
                         new ButtonTip(tipCollection: this.tipCollection, text: "confirm", textures: InputMapper.GetTextures(InputMapper.Action.GlobalConfirm));
                         new ButtonTip(tipCollection: this.tipCollection, text: "return", textures: InputMapper.GetTextures(InputMapper.Action.GlobalCancelReturnSkip));
                         break;
@@ -186,7 +186,7 @@ namespace SonOfRobin
                 case TipsLayout.MenuWithoutClosing:
                     {
                         new ButtonTip(tipCollection: this.tipCollection, text: "navigation", textures: InputVis.LeftStickTextureList);
-                        if (Input.tipsTypeToShow == Input.TipsTypeToShow.Keyboard) new ButtonTip(tipCollection: this.tipCollection, text: "scroll", textures: scrollTextures);
+                        if (Input.currentControlType == Input.ControlType.KeyboardAndMouse) new ButtonTip(tipCollection: this.tipCollection, text: "scroll", textures: scrollTextures);
                         new ButtonTip(tipCollection: this.tipCollection, text: "confirm", textures: InputMapper.GetTextures(InputMapper.Action.GlobalConfirm));
                         break;
                     }

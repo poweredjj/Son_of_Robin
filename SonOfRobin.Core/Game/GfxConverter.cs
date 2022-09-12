@@ -83,18 +83,17 @@ namespace SonOfRobin
             texture.GetData<Color>(0, extractRegion, rawData, 0, width * height);
 
             // getting 2D pixel grid
-            Color[,] rawDataAsGrid = new Color[height, width];
+            Color[,] rawDataAsGrid = new Color[width, height];
             for (int row = 0; row < height; row++)
             {
                 for (int column = 0; column < width; column++)
                 {
                     // Assumes row major ordering of the array.
-                    rawDataAsGrid[row, column] = rawData[row * width + column];
+                    rawDataAsGrid[column, row] = rawData[row * width + column];
                 }
             }
             return rawDataAsGrid;
         }
-
 
         public static void SaveTextureAsPNG(string filename, Texture2D texture)
         {
@@ -118,6 +117,8 @@ namespace SonOfRobin
                 return loadedTexture;
             }
             catch (FileNotFoundException)
+            { }
+            catch (IOException) // png file corrupted
             { }
             catch (InvalidOperationException) // png file corrupted
             { }

@@ -154,7 +154,7 @@ namespace SonOfRobin
         {
             this.layout = layout;
             this.alwaysShowSelectedEntry = alwaysShowSelectedEntry;
-            this.touchMode = SonOfRobinGame.platform == Platform.Mobile;
+            this.touchMode = Input.currentControlType == Input.ControlType.Touch;
             this.lastTouchedEntry = null;
             this.templateName = templateName;
             this.name = name;

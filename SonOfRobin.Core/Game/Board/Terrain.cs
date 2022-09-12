@@ -56,11 +56,25 @@ namespace SonOfRobin
         }
 
         public Byte GetMapData(int x, int y)
-        { return mapData[x / this.cell.grid.resDivider, y / this.cell.grid.resDivider]; }
+        {
+            if (x < 0) throw new IndexOutOfRangeException($"X {x} cannot be less than 0.");
+            if (y < 0) throw new IndexOutOfRangeException($"X {y} cannot be less than 0.");
+
+            return mapData[x / this.cell.grid.resDivider, y / this.cell.grid.resDivider];
+        }
+
+        public Byte GetMapDataRaw(int x, int y)
+        {
+            if (x < 0) throw new IndexOutOfRangeException($"X {x} cannot be less than 0.");
+            if (y < 0) throw new IndexOutOfRangeException($"X {y} cannot be less than 0.");
+
+            // direct access, without taking resDivider into account
+            return mapData[x, y];
+        }
 
         private byte[,] LoadTemplate()
         {
-            var loadedData = (byte[,])FileReaderWriter.Load(this.templatePath); ;
+            var loadedData = (byte[,])FileReaderWriter.Load(this.templatePath);
             if (loadedData == null) return null;
 
             return loadedData;
@@ -87,22 +101,19 @@ namespace SonOfRobin
 
             var newMapData = new byte[this.cell.dividedWidth, this.cell.dividedHeight];
 
-            int globalX, globalY;
-            double rawNoiseValue;
-            int realX, realY;
             int resDivider = this.cell.grid.resDivider;
 
             for (int y = 0; y < this.cell.dividedHeight; y++)
             {
-                realY = y * resDivider;
+                int realY = y * resDivider;
                 for (int x = 0; x < this.cell.dividedWidth; x++)
                 {
-                    realX = x * resDivider;
+                    int realX = x * resDivider;
 
-                    globalX = realX + this.cell.xMin;
-                    globalY = realY + this.cell.yMin;
+                    int globalX = Math.Min(realX + this.cell.xMin, this.world.width - 1);
+                    int globalY = Math.Min(realY + this.cell.yMin, this.world.height - 1);
 
-                    rawNoiseValue = noise.GetNoise(globalX, globalY) + 1; // 0-2 range
+                    double rawNoiseValue = noise.GetNoise(globalX, globalY) + 1; // 0-2 range
                     if (addBorder) rawNoiseValue = Math.Max(rawNoiseValue - Math.Max(gradientLineX[globalX], gradientLineY[globalY]), 0);
 
                     newMapData[x, y] = (byte)(rawNoiseValue * 128); // 0-255 range

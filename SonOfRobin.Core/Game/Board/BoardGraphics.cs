@@ -4,7 +4,6 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Threading.Tasks;
 
 namespace SonOfRobin
 {
@@ -53,7 +52,16 @@ namespace SonOfRobin
             if (this.texture != null) return;
 
             this.texture = GfxConverter.LoadTextureFromPNG(this.templatePath);
-            if (this.texture == null) this.RenderTexture();
+            if (this.texture == null)
+            {
+                this.CreateBitmapFromTerrain();
+                this.texture = GfxConverter.LoadTextureFromPNG(this.templatePath); // trying to create texture on disk first...
+                if (this.texture == null)
+                {
+                    Color[,] colorGrid = this.CreateBitmapFromTerrain(); // ...if this fails (disk error, locked file, etc.), get texture data directly
+                    this.texture = GfxConverter.Convert2DArrayToTexture(colorGrid);
+                }
+            }
 
             this.cell.grid.loadedTexturesCount++;
         }
@@ -71,7 +79,7 @@ namespace SonOfRobin
         {
             if (this.savedToDisk) return;
 
-            this.CreateBitmapFromTerrainAndSave();
+            this.CreateBitmapFromTerrain();
             this.savedToDisk = true;
         }
 
@@ -86,9 +94,9 @@ namespace SonOfRobin
                     int pixelX = (int)(x / multiplier);
                     int pixelY = (int)(y / multiplier);
 
-                    byte pixelHeight = grid.GetFieldValue(position: new Vector2(pixelX, pixelY), terrainName: TerrainName.Height);
-                    byte pixelHumidity = grid.GetFieldValue(position: new Vector2(pixelX, pixelY), terrainName: TerrainName.Humidity);
-                    byte pixelDanger = grid.GetFieldValue(position: new Vector2(pixelX, pixelY), terrainName: TerrainName.Danger);
+                    byte pixelHeight = grid.GetFieldValue(x: pixelX, y: pixelY, terrainName: TerrainName.Height);
+                    byte pixelHumidity = grid.GetFieldValue(x: pixelX, y: pixelY, terrainName: TerrainName.Humidity);
+                    byte pixelDanger = grid.GetFieldValue(x: pixelX, y: pixelY, terrainName: TerrainName.Danger);
                     colorArray[(y * width) + x] = CreatePixel(pixelHeight: pixelHeight, pixelHumidity: pixelHumidity, pixelDanger: pixelDanger);
                 }
             }
@@ -98,68 +106,138 @@ namespace SonOfRobin
             return texture;
         }
 
-        private void CreateBitmapFromTerrainAndSave()
+        private Color[,] CreateBitmapFromTerrain()
         {
             // can be run in parallel, because it does not use graphicsDevice
 
-            var builder = PngBuilder.Create(width: this.cell.dividedWidth, height: this.cell.dividedHeight, hasAlphaChannel: true);
+            // creating base 2D color array with rgb color data
+
+            int sourceWidth = this.cell.dividedWidth;
+            int sourceHeight = this.cell.dividedHeight;
+            int resDivider = this.cell.grid.resDivider;
 
             Terrain heightTerrain = this.cell.terrainByName[TerrainName.Height];
             Terrain humidityTerrain = this.cell.terrainByName[TerrainName.Humidity];
             Terrain dangerTerrain = this.cell.terrainByName[TerrainName.Danger];
 
-            int resDivider = this.cell.grid.resDivider;
+            Color[,] smallColorGrid = new Color[sourceWidth, sourceHeight];
 
-            for (int x = 0; x < this.cell.dividedWidth; x++)
+            for (int localX = 0; localX < this.cell.dividedWidth; localX++)
             {
-                int realX = x * resDivider;
-
-                for (int y = 0; y < this.cell.dividedHeight; y++)
+                for (int localY = 0; localY < this.cell.dividedHeight; localY++)
                 {
-                    int realY = y * resDivider;
+                    smallColorGrid[localX, localY] = CreatePixel(
+                        pixelHeight: heightTerrain.GetMapDataRaw(localX, localY),
+                        pixelHumidity: humidityTerrain.GetMapDataRaw(localX, localY),
+                        pixelDanger: dangerTerrain.GetMapDataRaw(localX, localY));
+                }
+            }
 
-                    Color pixel = CreatePixel(
-                        pixelHeight: heightTerrain.GetMapData(realX, realY),
-                        pixelHumidity: humidityTerrain.GetMapData(realX, realY),
-                        pixelDanger: dangerTerrain.GetMapData(realX, realY));
+            // the upscaling method is used here directly, to interpolate edges correctly (map data from other cells is needed)
 
+            // upscaling color grid
+
+            int resizeFactor = BoardTextureUpscaler3x.resizeFactor;
+            int targetWidth = sourceWidth * resizeFactor;
+            int targetHeight = sourceHeight * resizeFactor;
+
+            Color[,] upscaledColorGrid = new Color[targetWidth, targetHeight];
+
+            // filling upscaled grid
+
+            List<Point> edgePointList = new List<Point>();
+
+            for (int localY = 0; localY < sourceHeight; localY++)
+            {
+                for (int localX = 0; localX < sourceWidth; localX++)
+                {
+                    try
+                    {
+                        BoardTextureUpscaler3x.Upscale3x3Grid(src: smallColorGrid, target: upscaledColorGrid, sourceOffsetX: localX - 1, sourceOffsetY: localY - 1, targetOffsetX: localX * resizeFactor, targetOffsetY: localY * resizeFactor);
+                    }
+                    catch (IndexOutOfRangeException)
+                    {
+                        edgePointList.Add(new Point(localX, localY)); // pixels outside the edge will not be found - adding to edge list
+                    }
+                }
+            }
+
+            // filling edges
+
+            Color[,] workingGrid3x3 = new Color[3, 3]; // working grid is needed, because the edges are missing and using sourceOffset will not work
+
+            foreach (Point point in edgePointList)
+            {
+                for (int yOffset = -1; yOffset < 2; yOffset++)
+                {
+                    for (int xOffset = -1; xOffset < 2; xOffset++)
+                    {
+                        try
+                        {
+                            int localX = point.X + xOffset; // do not use to calculate world space
+                            int localY = point.Y + yOffset; // do not use to calculate world space
+
+                            // looking for pixel locally
+                            workingGrid3x3[xOffset + 1, yOffset + 1] = CreatePixel(
+                                pixelHeight: heightTerrain.GetMapDataRaw(localX, localY),
+                                pixelHumidity: humidityTerrain.GetMapDataRaw(localX, localY),
+                                pixelDanger: dangerTerrain.GetMapDataRaw(localX, localY));
+                        }
+                        catch (IndexOutOfRangeException)
+                        {
+                            try
+                            {
+                                // looking for pixel in the whole grid
+                                int worldSpaceX = this.cell.xMin + (point.X * resDivider) + xOffset;
+                                int worldSpaceY = this.cell.yMin + (point.Y * resDivider) + yOffset;
+
+                                workingGrid3x3[xOffset + 1, yOffset + 1] = CreatePixel(
+                                    pixelHeight: this.cell.grid.GetFieldValue(terrainName: TerrainName.Height, x: worldSpaceX, y: worldSpaceY),
+                                    pixelHumidity: this.cell.grid.GetFieldValue(terrainName: TerrainName.Humidity, x: worldSpaceX, y: worldSpaceY),
+                                    pixelDanger: this.cell.grid.GetFieldValue(terrainName: TerrainName.Danger, x: worldSpaceX, y: worldSpaceY));
+                            }
+                            catch (IndexOutOfRangeException)
+                            {
+                                // pixel outside world bounds - inserting the nearest correct position
+                                workingGrid3x3[xOffset + 1, yOffset + 1] = smallColorGrid[point.X, point.Y];
+                            }
+                        }
+                    }
+                }
+
+                BoardTextureUpscaler3x.Upscale3x3Grid(src: workingGrid3x3, target: upscaledColorGrid, targetOffsetX: point.X * resizeFactor, targetOffsetY: point.Y * resizeFactor);
+            }
+
+            // putting upscaled color grid into PngBuilder
+
+            var builder = PngBuilder.Create(width: targetWidth, height: targetHeight, hasAlphaChannel: true);
+
+            for (int y = 0; y < targetHeight; y++)
+            {
+                for (int x = 0; x < targetWidth; x++)
+                {
+                    Color pixel = upscaledColorGrid[x, y];
                     builder.SetPixel(pixel.R, pixel.G, pixel.B, x, y);
                 }
             }
 
+            // saving PngBuilder to file
+
             using (var memoryStream = new MemoryStream())
             {
                 builder.Save(memoryStream);
-                FileReaderWriter.SaveMemoryStream(memoryStream: memoryStream, this.templatePath);
+
+                try
+                {
+                    FileReaderWriter.SaveMemoryStream(memoryStream: memoryStream, this.templatePath);
+                }
+                catch (IOException)
+                {
+                    // write error
+                }
             }
-        }
 
-        private Color[] CreateColorArrayFromTerrain()
-        {
-            var tempColorArray = new Color[this.cell.dividedHeight * this.cell.dividedHeight];
-
-            Terrain heightTerrain = this.cell.terrainByName[TerrainName.Height];
-            Terrain humidityTerrain = this.cell.terrainByName[TerrainName.Humidity];
-            Terrain dangerTerrain = this.cell.terrainByName[TerrainName.Danger];
-
-            int resDivider = this.cell.grid.resDivider;
-
-            Parallel.For(0, this.cell.dividedHeight, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, y =>
-                 {
-                     int realY = y * resDivider;
-
-                     for (int x = 0; x < this.cell.dividedHeight; x++)
-                     {
-                         int realX = x * resDivider;
-
-                         tempColorArray[(y * this.cell.width) + x] = CreatePixel(
-                             pixelHeight: heightTerrain.GetMapData(realX, realY),
-                             pixelHumidity: humidityTerrain.GetMapData(realX, realY),
-                             pixelDanger: dangerTerrain.GetMapData(realX, realY));
-                     }
-                 });
-
-            return tempColorArray;
+            return upscaledColorGrid;
         }
 
         private static Color CreatePixel(byte pixelHeight, byte pixelHumidity, byte pixelDanger)
@@ -198,12 +276,6 @@ namespace SonOfRobin
             return pixel;
         }
 
-        public void RenderTexture()
-        {
-            var tempColorArray = this.CreateColorArrayFromTerrain();
-            this.texture = new Texture2D(SonOfRobinGame.graphicsDevice, this.cell.width, this.cell.height);
-            this.texture.SetData(tempColorArray);
-        }
 
         public static Color Blend2Colors(Color bottomColor, Color topColor)
         {

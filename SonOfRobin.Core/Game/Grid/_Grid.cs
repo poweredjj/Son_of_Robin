@@ -10,10 +10,22 @@ namespace SonOfRobin
 {
     public class Grid
     {
-        public readonly GridTemplate gridTemplate;
-        public bool creationInProgress;
-        private int creationStage;
+        public enum Stage { GenerateTerrain, ProcessTextures, LoadTextures }
+
+        private static readonly int allStagesCount = ((Stage[])Enum.GetValues(typeof(Stage))).Length;
+
+        private readonly static Dictionary<Stage, string> namesForStages = new Dictionary<Stage, string> {
+            { Stage.GenerateTerrain, "generating terrain" },
+            { Stage.ProcessTextures, "processing textures" },
+            { Stage.LoadTextures, "loading textures" },
+        };
+
+        private Stage currentStage;
         private DateTime stageStartTime;
+        private int stageStartFrame;
+        public bool creationInProgress;
+
+        public readonly GridTemplate gridTemplate;
         private readonly World world;
         private readonly int noOfCellsX;
         private readonly int noOfCellsY;
@@ -22,19 +34,19 @@ namespace SonOfRobin
         public readonly int resDivider;
         public readonly Cell[,] cellGrid;
         public readonly List<Cell> allCells;
-        public List<Cell> cellsToProcessOnStart;
+        public readonly List<Cell> cellsToProcessOnStart;
         private DateTime lastCellProcessedTime;
         public int loadedTexturesCount;
 
-        private static readonly TimeSpan textureLoadingDelay = TimeSpan.FromMilliseconds(5);
-        public bool ProcessingStepComplete { get { return this.cellsToProcessOnStart.Count == 0; } }
+        private static readonly TimeSpan textureLoadingDelay = TimeSpan.FromMilliseconds(10);
+        public bool ProcessingStageComplete { get { return this.cellsToProcessOnStart.Count == 0; } }
         public List<Cell> CellsVisitedByPlayer { get { return this.allCells.Where(cell => cell.VisitedByPlayer).ToList(); } }
         public List<Cell> CellsNotVisitedByPlayer { get { return this.allCells.Where(cell => !cell.VisitedByPlayer).ToList(); } }
 
         public Grid(World world, int resDivider, int cellWidth = 0, int cellHeight = 0)
         {
             this.creationInProgress = true;
-            this.creationStage = -1;
+            this.currentStage = 0;
 
             this.world = world;
             this.resDivider = resDivider;
@@ -44,12 +56,18 @@ namespace SonOfRobin
                 Vector2 maxFrameSize = CalculateMaxFrameSize();
                 this.cellWidth = Convert.ToInt32(maxFrameSize.X * 1.3);
                 this.cellHeight = Convert.ToInt32(maxFrameSize.Y * 1.3);
+
+                this.cellWidth = (int)Math.Ceiling(this.cellWidth / 2d) * 2;
+                this.cellHeight = (int)Math.Ceiling(this.cellWidth / 2d) * 2;
             }
             else
             {
                 this.cellWidth = cellWidth;
                 this.cellHeight = cellHeight;
             }
+
+            if (this.cellWidth % 2 != 0) throw new ArgumentException($"Cell width {this.cellWidth} is not divisible by 2.");
+            if (this.cellHeight % 2 != 0) throw new ArgumentException($"Cell height {this.cellHeight} is not divisible by 2.");
 
             this.noOfCellsX = (int)Math.Ceiling((float)this.world.width / (float)this.cellWidth);
             this.noOfCellsY = (int)Math.Ceiling((float)this.world.height / (float)this.cellHeight);
@@ -68,7 +86,9 @@ namespace SonOfRobin
                 return;
             }
 
-            this.PrepareNextCreationStage();
+            this.cellsToProcessOnStart = new List<Cell>();
+
+            this.PrepareNextStage();
         }
 
         public Dictionary<string, Object> Serialize()
@@ -133,83 +153,118 @@ namespace SonOfRobin
             return false;
         }
 
-        public void PrepareNextCreationStage()
+        public void ProcessNextCreationStage()
         {
-            this.stageStartTime = DateTime.Now;
-            this.cellsToProcessOnStart = this.allCells.ToList();
-            this.creationStage++;
-        }
-
-        public void RunNextCreationStage()
-        {
-            switch (this.creationStage)
+            if (this.currentStage != Stage.LoadTextures && SonOfRobinGame.currentUpdate < this.stageStartFrame + 3)
             {
-                case 0:
-                    CreationStage0();
-                    return;
-                case 1:
-                    CreationStage1();
-                    return;
-                case 2:
-                    CreationStage2();
-                    return;
+                // first frame of each stage should update progress bar
+                this.UpdateProgressBar();
+                return;
+            }
+
+            List<Cell> cellProcessingQueue;
+
+            switch (currentStage)
+            {
+                case Stage.GenerateTerrain:
+
+                    cellProcessingQueue = new List<Cell> { };
+
+                    for (int i = 0; i < 50 * Preferences.newWorldResDivider; i++)
+                    {
+                        cellProcessingQueue.Add(this.cellsToProcessOnStart[0]);
+                        this.cellsToProcessOnStart.RemoveAt(0);
+                        if (this.cellsToProcessOnStart.Count == 0) break;
+                    }
+
+                    Parallel.ForEach(cellProcessingQueue, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, cell =>
+                    {
+                        cell.ComputeHeight();
+                    });
+
+                    Parallel.ForEach(cellProcessingQueue, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, cell =>
+                    {
+                        cell.ComputeHumidity();
+                    });
+
+                    Parallel.ForEach(cellProcessingQueue, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, cell =>
+                    {
+                        cell.ComputeDanger();
+                    });
+
+                    break;
+
+                case Stage.ProcessTextures:
+
+                    cellProcessingQueue = new List<Cell> { };
+
+                    for (int i = 0; i < 25 * Preferences.newWorldResDivider; i++)
+                    {
+                        cellProcessingQueue.Add(this.cellsToProcessOnStart[0]);
+                        this.cellsToProcessOnStart.RemoveAt(0);
+                        if (this.cellsToProcessOnStart.Count == 0) break;
+                    }
+
+                    Parallel.ForEach(cellProcessingQueue, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, cell =>
+                    {
+                        cell.UpdateBoardGraphics();
+                    });
+
+                    break;
+
+                case Stage.LoadTextures:
+
+                    if (Preferences.loadWholeMap)
+                    {
+                        int maxCellsToProcess = 40 * Preferences.newWorldResDivider;
+
+                        for (int i = 0; i < maxCellsToProcess; i++)
+                        {
+                            Cell cell = this.cellsToProcessOnStart[0];
+                            this.cellsToProcessOnStart.RemoveAt(0);
+                            cell.boardGraphics.LoadTexture();
+
+                            if (this.ProcessingStageComplete)
+                            {
+                                this.creationInProgress = false;
+                                return;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        this.cellsToProcessOnStart.Clear();
+                        this.creationInProgress = false;
+                        return;
+                    }
+
+                    break;
+
                 default:
-                    throw new DivideByZeroException($"Unsupported creationStage - {creationStage}.");
-            }
-        }
+                    if ((int)this.currentStage < allStagesCount) throw new ArgumentException("Not all steps has been processed.");
 
-        public void CreationStage0()
-        {
-            this.UpdateProgressBar();
-            this.PrepareNextCreationStage();
-        }
-
-        public void CreationStage1()
-        // can be processed using parallel
-        {
-            var cellProcessingQueue = new List<Cell> { };
-
-            for (int i = 0; i < 50 * Preferences.newWorldResDivider; i++)
-            {
-                cellProcessingQueue.Add(this.cellsToProcessOnStart[0]);
-                this.cellsToProcessOnStart.RemoveAt(0);
-                if (this.cellsToProcessOnStart.Count == 0) break;
-            }
-
-            Parallel.ForEach(cellProcessingQueue, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, cell =>
-            { cell.RunNextCreationStage(); });
-
-            Parallel.ForEach(cellProcessingQueue, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, cell =>
-            { cell.RunNextCreationStage(); });
-
-            Parallel.ForEach(cellProcessingQueue, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, cell =>
-            { cell.RunNextCreationStage(); });
-
-            this.UpdateProgressBar();
-
-            if (this.ProcessingStepComplete) this.PrepareNextCreationStage();
-        }
-
-        public void CreationStage2()
-        // cannot be processed using parallel (textures don't work in parallel processing)
-        {
-            // when whole map is not loaded, processing cells will be very fast (and drawing progress bar is slowing down the whole process)
-            int maxCellsToProcess = Preferences.loadWholeMap ? 50 * Preferences.newWorldResDivider : 9999999;
-
-            for (int i = 0; i < maxCellsToProcess; i++)
-            {
-                Cell cell = this.cellsToProcessOnStart[0];
-                this.cellsToProcessOnStart.RemoveAt(0);
-                cell.RunNextCreationStage();
-
-                if (this.ProcessingStepComplete)
-                {
                     this.creationInProgress = false;
-                    return;
-                }
+                    break;
             }
 
-            if (!this.ProcessingStepComplete) this.UpdateProgressBar();
+            this.UpdateProgressBar();
+
+            if (this.ProcessingStageComplete)
+            {
+                TimeSpan creationDuration = DateTime.Now - this.stageStartTime;
+                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{namesForStages[this.currentStage]} - time: {creationDuration:hh\\:mm\\:ss\\.fff}.", color: Color.GreenYellow);
+
+                this.currentStage++;
+                this.PrepareNextStage();
+            }
+        }
+
+        private void PrepareNextStage()
+        {
+            this.stageStartFrame = SonOfRobinGame.currentUpdate;
+            this.stageStartTime = DateTime.Now;
+            this.cellsToProcessOnStart.Clear();
+            this.cellsToProcessOnStart.AddRange(this.allCells);
         }
 
         private void UpdateProgressBar()
@@ -219,27 +274,8 @@ namespace SonOfRobin
             TimeSpan timeLeft = CalculateTimeLeft(startTime: this.stageStartTime, completeAmount: this.allCells.Count - this.cellsToProcessOnStart.Count, totalAmount: this.allCells.Count);
             string timeLeftString = TimeSpanToString(timeLeft + TimeSpan.FromSeconds(1));
 
-            string message;
-
             string seedText = String.Format("{0:0000}", this.world.seed);
-
-            switch (this.creationStage)
-            {
-                case 0:
-                    message = $"preparing island\nseed {seedText}\n{this.world.width} x {this.world.height}\ngenerating terrain {timeLeftString}";
-                    break;
-
-                case 1:
-                    message = $"preparing island\nseed {seedText}\n{this.world.width} x {this.world.height}\ngenerating terrain {timeLeftString}";
-                    break;
-
-                case 2:
-                    message = $"preparing island\nseed {seedText}\n{this.world.width} x {this.world.height}\nloading textures {timeLeftString}";
-                    break;
-
-                default:
-                    throw new DivideByZeroException($"Unsupported creationStage - {creationStage}.");
-            }
+            string message = $"preparing island\nseed {seedText}\n{this.world.width} x {this.world.height}\n{namesForStages[this.currentStage]} {timeLeftString}";
 
             SonOfRobinGame.progressBar.TurnOn(
                             curVal: this.allCells.Count - this.cellsToProcessOnStart.Count,
@@ -581,23 +617,34 @@ namespace SonOfRobin
 
         public byte GetFieldValue(TerrainName terrainName, Vector2 position)
         {
-            int cellNoX = (int)Math.Floor(position.X / cellWidth);
-            int cellNoY = (int)Math.Floor(position.Y / cellHeight);
+            int cellNoX = (int)Math.Floor(position.X / this.cellWidth);
+            int cellNoY = (int)Math.Floor(position.Y / this.cellHeight);
 
-            int posInsideCellX = (int)position.X % cellWidth;
-            int posInsideCellY = (int)position.Y % cellHeight;
+            int posInsideCellX = (int)position.X % this.cellWidth;
+            int posInsideCellY = (int)position.Y % this.cellHeight;
+
+            return this.cellGrid[cellNoX, cellNoY].terrainByName[terrainName].GetMapData(posInsideCellX, posInsideCellY);
+        }
+
+        public byte GetFieldValue(TerrainName terrainName, int x, int y)
+        {
+            int cellNoX = x / this.cellWidth;
+            int cellNoY = y / this.cellHeight;
+
+            int posInsideCellX = x % this.cellWidth;
+            int posInsideCellY = y % this.cellHeight;
 
             return this.cellGrid[cellNoX, cellNoY].terrainByName[terrainName].GetMapData(posInsideCellX, posInsideCellY);
         }
 
         private Cell FindMatchingCell(Vector2 position)
         {
-            return this.cellGrid[(int)Math.Floor(position.X / this.cellWidth), (int)Math.Floor(position.Y / this.cellHeight)];
+            return this.cellGrid[(int)(position.X / this.cellWidth), (int)(position.Y / this.cellHeight)];
         }
 
         private static int FindMatchingCellInSingleAxis(int position, int cellLength)
         {
-            return (int)Math.Floor((float)position / (float)cellLength);
+            return position / cellLength;
         }
 
 
@@ -609,12 +656,7 @@ namespace SonOfRobin
             {
                 for (int y = 0; y < this.noOfCellsY; y++)
                 {
-                    int xMin = x * this.cellWidth;
-                    int xMax = Math.Min(((x + 1) * this.cellWidth) - 1, this.world.width - 1);
-                    int yMin = y * this.cellHeight;
-                    int yMax = Math.Min(((y + 1) * this.cellHeight) - 1, this.world.height - 1);
-
-                    cellGrid[x, y] = new Cell(world: this.world, grid: this, cellNoX: x, cellNoY: y, xMin: xMin, xMax: xMax, yMin: yMin, yMax: yMax, random: this.world.random);
+                    cellGrid[x, y] = new Cell(world: this.world, grid: this, cellNoX: x, cellNoY: y, width: this.cellWidth, height: this.cellHeight, random: this.world.random);
                 }
             }
 
@@ -696,7 +738,6 @@ namespace SonOfRobin
         public void LoadAllTexturesInCameraView()
         // cannot be processed using parallel (textures don't work in parallel processing)
         {
-
             if (Preferences.loadWholeMap) return;
 
             foreach (Cell cell in this.GetCellsInsideRect(this.world.camera.viewRect))
