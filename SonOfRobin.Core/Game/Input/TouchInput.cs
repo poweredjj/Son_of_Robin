@@ -48,7 +48,6 @@ namespace SonOfRobin
         public static bool ShowLeftStick { get; private set; }
         public static bool ShowRightStick { get; private set; }
 
-
         public static DualStick dualStick;
 
         private static Vector2 leftStick = new Vector2(0, 0);
@@ -58,11 +57,44 @@ namespace SonOfRobin
         public static Vector2 LeftStick { get { return Input.InputActive && Preferences.enableTouchJoysticks ? leftStick : emptyStick; } }
         public static Vector2 RightStick { get { return Input.InputActive && Preferences.enableTouchJoysticks ? rightStick : emptyStick; } }
 
+        private static TouchCollection lastFrameTouchPanelState = new TouchCollection { };
         private static TouchCollection touchPanelState = new TouchCollection { };
         private static readonly TouchCollection emptyTouchList = new TouchCollection { };
         public static TouchCollection TouchPanelState { get { return Input.InputActive ? touchPanelState : emptyTouchList; } }
         public static bool IsGestureAvailable { get { return Input.InputActive && TouchPanel.IsGestureAvailable; } } // should be used before reading gesture directly
         public static bool IsBeingTouchedInAnyWay { get { return TouchPanelState.Count > 0; } }
+
+        public static Vector2 GetMovementDelta(bool ignoreLeftStick, bool ignoreRightStick, bool ignoreVirtButtons, bool ignoreInventory, bool ignorePlayerPanel)
+        {
+            if (!Input.InputActive || (!lastFrameTouchPanelState.Any() && !touchPanelState.Any())) return Vector2.Zero;
+
+            Vector2 lastPos = Vector2.Zero;
+            Vector2 currentPos = Vector2.Zero;
+
+            foreach (TouchLocation touch in lastFrameTouchPanelState)
+            {
+                if (touch.State != TouchLocationState.Released && !IsPointActivatingAnyTouchInterface(point: touch.Position, checkLeftStick: ignoreLeftStick, checkRightStick: ignoreRightStick, checkVirtButtons: ignoreVirtButtons, checkInventory: ignoreInventory, checkPlayerPanel: ignorePlayerPanel))
+                {
+                    lastPos = touch.Position;
+                    break;
+                }
+            }
+
+            foreach (TouchLocation touch in touchPanelState)
+            {
+                if (touch.State != TouchLocationState.Released && !IsPointActivatingAnyTouchInterface(point: touch.Position, checkLeftStick: false, checkRightStick: false, checkVirtButtons: true, checkInventory: false, checkPlayerPanel: false))
+                {
+                    currentPos = touch.Position;
+                    break;
+                }
+            }
+
+            if (lastPos == Vector2.Zero || currentPos == Vector2.Zero) return Vector2.Zero;
+
+            return lastPos - currentPos;
+        }
+
+
         public static bool IsStateAvailable(TouchLocationState state)
         {
             var matchingTypes = TouchPanelState.Where(touch => touch.State == state).ToList();
@@ -73,6 +105,7 @@ namespace SonOfRobin
 
         public static void GetState(GameTime gameTime)
         {
+            lastFrameTouchPanelState = touchPanelState;
             touchPanelState = TouchPanel.GetState();
 
             // ShowDebugTouchMessages(touchPanelState); // for testing only

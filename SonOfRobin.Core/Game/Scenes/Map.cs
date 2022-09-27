@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input.Touch;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,7 +29,8 @@ namespace SonOfRobin
         private RenderTarget2D lowResWholeTerrainGfx;
         private RenderTarget2D lowResWholeCombinedGfx;
         public RenderTarget2D FinalMapToDisplay { get; private set; }
-        private Vector2 lastTouchPos; public BoardPiece MapMarker { get; private set; }
+        private Vector2 lastTouchPos;
+        public BoardPiece MapMarker { get; private set; }
         private float InitialZoom { get { return Preferences.WorldScale / 2; } }
         private static readonly Color paperColor = BoardGraphics.colorsByName[BoardGraphics.Colors.Beach1];
 
@@ -349,30 +349,7 @@ namespace SonOfRobin
             Vector2 movement = InputMapper.Analog(InputMapper.Action.MapMove) * 10 / this.camera.CurrentZoom;
             if (movement == Vector2.Zero)
             {
-                foreach (TouchLocation touch in TouchInput.TouchPanelState)
-                {
-                    if (touch.State == TouchLocationState.Released)
-                    {
-                        this.lastTouchPos = Vector2.Zero;
-                        break;
-                    }
-
-                    if (!TouchInput.IsPointActivatingAnyTouchInterface(point: touch.Position, checkLeftStick: false, checkRightStick: false, checkVirtButtons: true, checkInventory: false, checkPlayerPanel: false))
-                    {
-                        if (touch.State == TouchLocationState.Pressed)
-                        {
-                            this.lastTouchPos = touch.Position;
-                            break;
-                        }
-                        else if (touch.State == TouchLocationState.Moved)
-                        {
-                            movement = (this.lastTouchPos - touch.Position) / Preferences.GlobalScale;
-                            this.lastTouchPos = touch.Position;
-                        }
-
-                        movement /= this.camera.CurrentZoom;
-                    }
-                }
+                movement = TouchInput.GetMovementDelta(ignoreLeftStick: false, ignoreRightStick: false, ignoreVirtButtons: true, ignoreInventory: false, ignorePlayerPanel: false) / Preferences.GlobalScale / this.camera.CurrentZoom;
             }
 
             if (movement != Vector2.Zero)
@@ -386,7 +363,6 @@ namespace SonOfRobin
 
                 this.camera.TrackCoords(newPos);
             }
-
         }
 
         public override void RenderToTarget()
