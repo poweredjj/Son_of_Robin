@@ -28,8 +28,6 @@ namespace SonOfRobin
 
         MapToggleMarker,
         MapCenterPlayer,
-        MapZoomIn,
-        MapZoomOut,
 
         DebugPause,
         DebugPlay,

@@ -29,7 +29,6 @@ namespace SonOfRobin
         private RenderTarget2D lowResWholeTerrainGfx;
         private RenderTarget2D lowResWholeCombinedGfx;
         public RenderTarget2D FinalMapToDisplay { get; private set; }
-        private Vector2 lastTouchPos;
         public BoardPiece MapMarker { get; private set; }
         private float InitialZoom { get { return Preferences.WorldScale / 2; } }
         private static readonly Color paperColor = BoardGraphics.colorsByName[BoardGraphics.Colors.Beach1];
@@ -43,7 +42,6 @@ namespace SonOfRobin
             this.camera = new Camera(world: this.world, useWorldScale: false, useFluidMotionForMove: false, useFluidMotionForZoom: true, keepInWorldBounds: false);
             this.mode = MapMode.Off;
             this.dirtyFog = true;
-            this.lastTouchPos = Vector2.Zero;
             this.effectCol = new EffectCol(world: null);
             this.effectCol.AddEffect(new SketchInstance(fgColor: new Color(107, 98, 87, 255), bgColor: paperColor, framesLeft: -1));
         }
@@ -285,9 +283,6 @@ namespace SonOfRobin
 
         private void ProcessInput()
         {
-            var touches = TouchInput.TouchPanelState;
-            if (!touches.Any()) this.lastTouchPos = Vector2.Zero;
-
             // map mode switch
 
             if (InputMapper.HasBeenPressed(InputMapper.Action.MapSwitch))
@@ -320,7 +315,7 @@ namespace SonOfRobin
 
             // zoom
 
-            if (InputMapper.IsPressed(InputMapper.Action.MapZoomIn) || InputMapper.IsPressed(InputMapper.Action.MapZoomOut))
+            if (InputMapper.IsPressed(InputMapper.Action.MapZoomIn) || InputMapper.IsPressed(InputMapper.Action.MapZoomOut) || TouchInput.IsBeingTouchedInAnyWay)
             {
                 bool zoomByMouse = Mouse.ScrollWheelRolledUp || Mouse.ScrollWheelRolledDown;
 
@@ -329,17 +324,16 @@ namespace SonOfRobin
 
                 float currentZoom = this.camera.CurrentZoom; // value to be replaced
 
-                if (InputMapper.IsPressed(InputMapper.Action.MapZoomIn))
+                bool zoomButtonPressed = InputMapper.IsPressed(InputMapper.Action.MapZoomIn) || InputMapper.IsPressed(InputMapper.Action.MapZoomOut);
+                if (zoomButtonPressed)
                 {
-                    currentZoom = this.camera.CurrentZoom + zoomChangeVal;
-                    currentZoom = Math.Min(currentZoom, this.InitialZoom);
+                    if (InputMapper.IsPressed(InputMapper.Action.MapZoomIn)) currentZoom = this.camera.CurrentZoom + zoomChangeVal;
+                    if (InputMapper.IsPressed(InputMapper.Action.MapZoomOut)) currentZoom = this.camera.CurrentZoom - zoomChangeVal;
                 }
+                else currentZoom += TouchInput.GetZoomDelta(ignoreLeftStick: false, ignoreRightStick: false, ignoreVirtButtons: true, ignoreInventory: false, ignorePlayerPanel: false);
 
-                if (InputMapper.IsPressed(InputMapper.Action.MapZoomOut))
-                {
-                    currentZoom = this.camera.CurrentZoom - zoomChangeVal;
-                    currentZoom = Math.Max(currentZoom, this.scaleMultiplier * 0.8f);
-                }
+                currentZoom = Math.Min(currentZoom, this.InitialZoom);
+                currentZoom = Math.Max(currentZoom, this.scaleMultiplier * 0.8f);
 
                 this.camera.SetZoom(zoom: currentZoom, setInstantly: !zoomByMouse, zoomSpeedMultiplier: zoomByMouse ? 5f : 1f);
             }
@@ -349,6 +343,7 @@ namespace SonOfRobin
             Vector2 movement = InputMapper.Analog(InputMapper.Action.MapMove) * 10 / this.camera.CurrentZoom;
             if (movement == Vector2.Zero)
             {
+                // using touch
                 movement = TouchInput.GetMovementDelta(ignoreLeftStick: false, ignoreRightStick: false, ignoreVirtButtons: true, ignoreInventory: false, ignorePlayerPanel: false) / Preferences.GlobalScale / this.camera.CurrentZoom;
             }
 
@@ -457,7 +452,7 @@ namespace SonOfRobin
 
                 if (typesShownAlways.Contains(pieceType) || namesShownAlways.Contains(name)) showSprite = true;
 
-                if (!showSprite && (sprite.hasBeenDiscovered) &&
+                if (!showSprite && sprite.hasBeenDiscovered &&
                     (namesShownIfDiscovered.Contains(name) ||
                     typesShownIfDiscovered.Contains(pieceType))) showSprite = true;
 

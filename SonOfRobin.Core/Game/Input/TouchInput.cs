@@ -64,18 +64,18 @@ namespace SonOfRobin
         public static bool IsGestureAvailable { get { return Input.InputActive && TouchPanel.IsGestureAvailable; } } // should be used before reading gesture directly
         public static bool IsBeingTouchedInAnyWay { get { return TouchPanelState.Count > 0; } }
 
-        public static Vector2 GetMovementDelta(bool ignoreLeftStick, bool ignoreRightStick, bool ignoreVirtButtons, bool ignoreInventory, bool ignorePlayerPanel)
+        public static Vector2 GetMovementDelta(bool ignoreLeftStick, bool ignoreRightStick, bool ignoreVirtButtons, bool ignoreInventory, bool ignorePlayerPanel, bool preventLargeJump = true)
         {
             if (!Input.InputActive || (!lastFrameTouchPanelState.Any() && !touchPanelState.Any())) return Vector2.Zero;
 
-            Vector2 lastPos = Vector2.Zero;
+            Vector2 prevPos = Vector2.Zero;
             Vector2 currentPos = Vector2.Zero;
 
             foreach (TouchLocation touch in lastFrameTouchPanelState)
             {
                 if (touch.State != TouchLocationState.Released && !IsPointActivatingAnyTouchInterface(point: touch.Position, checkLeftStick: ignoreLeftStick, checkRightStick: ignoreRightStick, checkVirtButtons: ignoreVirtButtons, checkInventory: ignoreInventory, checkPlayerPanel: ignorePlayerPanel))
                 {
-                    lastPos = touch.Position;
+                    prevPos = touch.Position;
                     break;
                 }
             }
@@ -89,9 +89,65 @@ namespace SonOfRobin
                 }
             }
 
-            if (lastPos == Vector2.Zero || currentPos == Vector2.Zero) return Vector2.Zero;
+            if (prevPos == Vector2.Zero || currentPos == Vector2.Zero) return Vector2.Zero;
 
-            return lastPos - currentPos;
+            Vector2 movementDelta = prevPos - currentPos;
+
+            if (preventLargeJump && (Math.Abs(movementDelta.X) > 220 || Math.Abs(movementDelta.Y) > 220)) movementDelta = Vector2.Zero;
+
+            return movementDelta;
+        }
+
+        public static float GetZoomDelta(bool ignoreLeftStick, bool ignoreRightStick, bool ignoreVirtButtons, bool ignoreInventory, bool ignorePlayerPanel, bool preventLargeJump = true)
+        {
+            if (!Input.InputActive || (!lastFrameTouchPanelState.Any() && !touchPanelState.Any())) return 0;
+
+            Vector2 prevPos1 = Vector2.Zero;
+            Vector2 prevPos2 = Vector2.Zero;
+
+            Vector2 currentPos1 = Vector2.Zero;
+            Vector2 currentPos2 = Vector2.Zero;
+
+            foreach (TouchLocation touch in lastFrameTouchPanelState)
+            {
+                if (touch.State != TouchLocationState.Released && !IsPointActivatingAnyTouchInterface(point: touch.Position, checkLeftStick: ignoreLeftStick, checkRightStick: ignoreRightStick, checkVirtButtons: ignoreVirtButtons, checkInventory: ignoreInventory, checkPlayerPanel: ignorePlayerPanel))
+                {
+                    if (prevPos1 == Vector2.Zero) prevPos1 = touch.Position;
+                    else
+                    {
+                        prevPos2 = touch.Position;
+                        break;
+                    }
+                }
+            }
+
+            foreach (TouchLocation touch in touchPanelState)
+            {
+                if (touch.State != TouchLocationState.Released && !IsPointActivatingAnyTouchInterface(point: touch.Position, checkLeftStick: false, checkRightStick: false, checkVirtButtons: true, checkInventory: false, checkPlayerPanel: false))
+                {
+                    if (currentPos1 == Vector2.Zero) currentPos1 = touch.Position;
+                    else
+                    {
+                        currentPos2 = touch.Position;
+                        break;
+                    }
+                }
+            }
+
+            if (prevPos1 == Vector2.Zero || prevPos2 == Vector2.Zero || currentPos1 == Vector2.Zero || currentPos2 == Vector2.Zero) return 0;
+            if (Vector2.Distance(currentPos1, currentPos2) < 350) return 0; // preventing glitching, when player fingers are too close
+
+            float prevDeltaX = Math.Abs(prevPos1.X - prevPos2.X) / SonOfRobinGame.VirtualWidth;
+            float prevDeltaY = Math.Abs(prevPos1.Y - prevPos2.Y) / SonOfRobinGame.VirtualHeight;
+
+            float currentDeltaX = Math.Abs(currentPos1.X - currentPos2.X) / SonOfRobinGame.VirtualWidth;
+            float currentDeltaY = Math.Abs(currentPos1.Y - currentPos2.Y) / SonOfRobinGame.VirtualHeight;
+
+            float zoomDelta =  ((currentDeltaX - prevDeltaX) + (currentDeltaY - prevDeltaY)) / 2f;
+
+            if (preventLargeJump && zoomDelta > 0.2f) zoomDelta = 0;
+
+            return zoomDelta;
         }
 
 
@@ -376,7 +432,6 @@ namespace SonOfRobin
                         float xPos = 0.76f;
                         float yPos = 0.12f;
                         float xShift = 0.09f;
-                        float yShift = 0.20f;
 
                         new VirtButton(name: VButName.Return, label: "RETURN", bgColorPressed: Color.CornflowerBlue, bgColorReleased: Color.White, textColor: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
 
@@ -387,15 +442,6 @@ namespace SonOfRobin
                         xPos += xShift;
 
                         new VirtButton(name: VButName.MapToggleMarker, label: "TOGGLE\nMARKER", bgColorPressed: Color.LightGreen, bgColorReleased: Color.White, textColor: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
-
-                        xPos = 0.06f;
-                        yPos = 0.12f;
-
-                        new VirtButton(name: VButName.MapZoomIn, label: "ZOOM\nIN", bgColorPressed: Color.Orange, bgColorReleased: Color.White, textColor: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
-
-                        yPos += yShift;
-
-                        new VirtButton(name: VButName.MapZoomOut, label: "ZOOM\nOUT", bgColorPressed: Color.Orange, bgColorReleased: Color.White, textColor: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
 
                         return;
                     }

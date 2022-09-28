@@ -132,8 +132,8 @@ namespace SonOfRobin
                 new Mapping(action: Action.MapCenterPlayer, anyInputList: new List<object> { keybMap.mapCenterPlayer, padMap.mapCenterPlayer, VButName.MapCenterPlayer });
                 new Mapping(action: Action.MapMove, anyInputList: new List<object> { keybMap.leftStick, padMap.leftStick, MouseAction.LeftButtonVisOnly }, keysToAnalog: keysToAnalog); // virtual stick is replaced with direct touch reading
                 new Mapping(action: Action.MapSwitch, anyInputList: new List<object> { keybMap.cancel, keybMap.map, padMap.cancel, padMap.map, VButName.Return });
-                new Mapping(action: Action.MapZoomIn, anyInputList: new List<object> { keybMap.mapZoomIn, padMap.mapZoomIn, VButName.MapZoomIn, MouseAction.ScrollUp });
-                new Mapping(action: Action.MapZoomOut, anyInputList: new List<object> { keybMap.mapZoomOut, padMap.mapZoomOut, VButName.MapZoomOut, MouseAction.ScrollDown });
+                new Mapping(action: Action.MapZoomIn, anyInputList: new List<object> { keybMap.mapZoomIn, padMap.mapZoomIn, MouseAction.ScrollUp });
+                new Mapping(action: Action.MapZoomOut, anyInputList: new List<object> { keybMap.mapZoomOut, padMap.mapZoomOut, MouseAction.ScrollDown });
             }
 
             // secret licence bypass
