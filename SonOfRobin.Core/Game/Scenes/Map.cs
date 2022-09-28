@@ -458,6 +458,7 @@ namespace SonOfRobin
 
                 if (showSprite)
                 {
+                    float opacity = 1f;
                     Rectangle destRect = sprite.gfxRect;
                     destRect.Inflate(destRect.Width * spriteSize, destRect.Height * spriteSize);
 
@@ -467,10 +468,11 @@ namespace SonOfRobin
                         destRect.X = Math.Min(this.camera.viewRect.Right - destRect.Width, destRect.X);
                         destRect.Y = Math.Max(this.camera.viewRect.Top, destRect.Y);
                         destRect.Y = Math.Min(this.camera.viewRect.Bottom - destRect.Height, destRect.Y);
+                        opacity = 0.6f;
                     }
 
                     if (Preferences.debugAllowMapAnimation) sprite.UpdateAnimation();
-                    sprite.frame.Draw(destRect: destRect, color: Color.White, opacity: 1f);
+                    sprite.frame.Draw(destRect: destRect, color: Color.White, opacity: opacity);
                 }
             }
 
