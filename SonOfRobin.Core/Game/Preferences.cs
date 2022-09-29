@@ -182,7 +182,7 @@ namespace SonOfRobin
             get { return enableTouchButtons; }
             set
             {
-                if (SonOfRobinGame.platform == Platform.Mobile) value = true; // mobile should always have touch buttons enabled
+                if (SonOfRobinGame.platform == Platform.Mobile && Input.currentControlType == Input.ControlType.Touch) value = true; // when not using joypad / keyboard, mobile should always have touch buttons enabled 
                 enableTouchButtons = value;
 
                 if (enableTouchButtons)

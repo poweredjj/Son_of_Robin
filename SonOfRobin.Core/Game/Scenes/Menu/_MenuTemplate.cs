@@ -215,7 +215,7 @@ namespace SonOfRobin
 
                         new Separator(menu: menu, name: "", isEmpty: true);
 
-                        if (SonOfRobinGame.platform != Platform.Mobile && SonOfRobinGame.os == OS.Windows) new Selector(menu: menu, name: "on screen buttons", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "EnableTouchButtons", rebuildsMenu: true);
+                        if (Input.currentControlType != Input.ControlType.Touch) new Selector(menu: menu, name: "on screen buttons", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "EnableTouchButtons", rebuildsMenu: true);
 
                         if (Preferences.EnableTouchButtons)
                         {
