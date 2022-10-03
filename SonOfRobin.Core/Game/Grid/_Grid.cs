@@ -170,7 +170,7 @@ namespace SonOfRobin
 
                     cellProcessingQueue = new List<Cell> { };
 
-                    for (int i = 0; i < 50 * Preferences.newWorldResDivider; i++)
+                    for (int i = 0; i < 40 * Preferences.newWorldResDivider; i++)
                     {
                         cellProcessingQueue.Add(this.cellsToProcessOnStart[0]);
                         this.cellsToProcessOnStart.RemoveAt(0);
@@ -198,7 +198,7 @@ namespace SonOfRobin
 
                     cellProcessingQueue = new List<Cell> { };
 
-                    for (int i = 0; i < 25 * Preferences.newWorldResDivider; i++)
+                    for (int i = 0; i < 20; i++)
                     {
                         cellProcessingQueue.Add(this.cellsToProcessOnStart[0]);
                         this.cellsToProcessOnStart.RemoveAt(0);
@@ -216,7 +216,7 @@ namespace SonOfRobin
 
                     if (Preferences.loadWholeMap)
                     {
-                        int maxCellsToProcess = 40 * Preferences.newWorldResDivider;
+                        int maxCellsToProcess = 40;
 
                         for (int i = 0; i < maxCellsToProcess; i++)
                         {
