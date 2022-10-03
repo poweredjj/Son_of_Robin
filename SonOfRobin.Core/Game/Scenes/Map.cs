@@ -262,8 +262,6 @@ namespace SonOfRobin
             else this.camera.TrackCoords(this.world.player.sprite.position);
 
             this.camera.Update(cameraCorrection: Vector2.Zero);
-            this.world.grid.UnloadTexturesIfMemoryLow(this.camera);
-            this.world.grid.LoadClosestTextureInCameraView(this.camera);
         }
 
         private void SetViewParamsForMiniature()
@@ -404,6 +402,10 @@ namespace SonOfRobin
                         break;
                     }
                 }
+
+                // loading and unloading textures should be done during "showDetailedMap" only, to avoid memory leak and high CPU usage
+                this.world.grid.UnloadTexturesIfMemoryLow(this.camera);
+                this.world.grid.LoadClosestTextureInCameraView(this.camera);
             }
 
             if (!showDetailedMap || foundCellsWithMissingTextures) SonOfRobinGame.spriteBatch.Draw(this.lowResWholeCombinedGfx, this.worldRect, Color.White);
