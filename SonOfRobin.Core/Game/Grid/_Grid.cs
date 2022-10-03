@@ -198,7 +198,7 @@ namespace SonOfRobin
 
                     cellProcessingQueue = new List<Cell> { };
 
-                    for (int i = 0; i < 20; i++)
+                    for (int i = 0; i < 30; i++)
                     {
                         cellProcessingQueue.Add(this.cellsToProcessOnStart[0]);
                         this.cellsToProcessOnStart.RemoveAt(0);
