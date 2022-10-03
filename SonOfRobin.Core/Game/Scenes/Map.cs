@@ -403,9 +403,13 @@ namespace SonOfRobin
                     }
                 }
 
-                // loading and unloading textures should be done during "showDetailedMap" only, to avoid memory leak and high CPU usage
-                this.world.grid.UnloadTexturesIfMemoryLow(this.camera);
-                this.world.grid.LoadClosestTextureInCameraView(this.camera);
+                if (foundCellsWithMissingTextures)
+                {
+                    // loading and unloading textures should be done during "foundCellsWithMissingTextures" only, to avoid unnecessary texture loading
+
+                    this.world.grid.UnloadTexturesIfMemoryLow(this.camera);
+                    this.world.grid.LoadClosestTextureInCameraView(camera: this.camera, visitedByPlayerOnly: !Preferences.DebugShowWholeMap);
+                }
             }
 
             if (!showDetailedMap || foundCellsWithMissingTextures) SonOfRobinGame.spriteBatch.Draw(this.lowResWholeCombinedGfx, this.worldRect, Color.White);

@@ -117,7 +117,6 @@ namespace SonOfRobin
             }
         }
 
-        public static int autoSaveDelayMins = 10;
         public static int mobileMaxLoadedTextures = 1000;
         public static int displayResX = 1920;
         public static int displayResY = 1080;
@@ -530,7 +529,6 @@ namespace SonOfRobin
             prefsData["fullScreenMode"] = fullScreenMode;
             prefsData["frameSkip"] = frameSkip;
             prefsData["showDemoWorld"] = showDemoWorld;
-            prefsData["autoSaveDelayMins"] = autoSaveDelayMins;
             prefsData["mobileMaxLoadedTextures"] = mobileMaxLoadedTextures;
             prefsData["displayResX"] = displayResX;
             prefsData["displayResY"] = displayResY;
@@ -598,7 +596,6 @@ namespace SonOfRobin
                     loadWholeMap = (bool)prefsData["loadWholeMap"];
                     frameSkip = (bool)prefsData["frameSkip"];
                     showDemoWorld = (bool)prefsData["showDemoWorld"];
-                    autoSaveDelayMins = (int)prefsData["autoSaveDelayMins"];
                     mobileMaxLoadedTextures = (int)prefsData["mobileMaxLoadedTextures"];
                     displayResX = (int)prefsData["displayResX"];
                     displayResY = (int)prefsData["displayResY"];

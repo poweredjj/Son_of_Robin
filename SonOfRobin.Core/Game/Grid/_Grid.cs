@@ -720,17 +720,17 @@ namespace SonOfRobin
             return new Vector2(frameMaxWidth, frameMaxHeight);
         }
 
-        public void LoadClosestTextureInCameraView(Camera camera)
+        public void LoadClosestTextureInCameraView(Camera camera, bool visitedByPlayerOnly)
         {
             if (Preferences.loadWholeMap || DateTime.Now - this.lastCellProcessedTime < textureLoadingDelay) return;
 
-            var cellsInCameraView = this.GetCellsInsideRect(camera.viewRect).Where(cell => cell.boardGraphics.texture == null).ToList();
-            if (cellsInCameraView.Count == 0) return;
+            var cellsInCameraViewWithNoTextures = this.GetCellsInsideRect(camera.viewRect).Where(cell => cell.boardGraphics.texture == null);
+            if (visitedByPlayerOnly) cellsInCameraViewWithNoTextures = cellsInCameraViewWithNoTextures.Where(cell => cell.VisitedByPlayer);
+            if (!cellsInCameraViewWithNoTextures.Any()) return;
 
-            var viewRect = camera.viewRect;
-            Vector2 cameraCenter = new Vector2(viewRect.Center.X, viewRect.Center.Y);
+            Vector2 cameraCenter = camera.CurrentPos;
 
-            var cellsByDistance = cellsInCameraView.OrderBy(cell => cell.GetDistance(cameraCenter));
+            var cellsByDistance = cellsInCameraViewWithNoTextures.OrderBy(cell => cell.GetDistance(cameraCenter));
             cellsByDistance.First().boardGraphics.LoadTexture();
             this.lastCellProcessedTime = DateTime.Now;
         }

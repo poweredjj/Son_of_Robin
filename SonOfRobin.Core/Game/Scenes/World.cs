@@ -527,27 +527,6 @@ namespace SonOfRobin
             MessageLog.AddMessage(msgType: MsgType.User, message: "Game has been loaded.", color: Color.Cyan);
         }
 
-        public void AutoSave()
-        {
-            if (this.demoMode || this.currentUpdate % 600 != 0 || !this.player.alive) return;
-            TimeSpan timeSinceLastSave = DateTime.Now - this.lastSaved;
-            if (timeSinceLastSave < TimeSpan.FromMinutes(Preferences.autoSaveDelayMins)) return;
-
-            if (this.player.activeState != BoardPiece.State.PlayerControlledWalking) return;
-            if (GetTopSceneOfType(typeof(Menu)) != null) return;
-            Scene invScene = GetTopSceneOfType(typeof(Inventory));
-            if (invScene != null)
-            {
-                Inventory inventory = (Inventory)invScene;
-                if (inventory.type != Inventory.Type.SingleBottom) return;
-            }
-
-            string timeElapsedTxt = timeSinceLastSave.ToString("mm\\:ss");
-            MessageLog.AddMessage(msgType: MsgType.User, message: $"{timeElapsedTxt} elapsed - autosaving...", color: Color.LightBlue);
-
-            var saveParams = new Dictionary<string, Object> { { "world", this }, { "saveSlotName", "0" }, { "showMessage", false } };
-            new Scheduler.Task(taskName: Scheduler.TaskName.SaveGame, executeHelper: saveParams);
-        }
 
         private BoardPiece PlacePlayer()
         {
@@ -662,10 +641,9 @@ namespace SonOfRobin
             SoundEffect.DistanceScale = this.camera.viewRect.Width * 0.065f;
 
             this.grid.UnloadTexturesIfMemoryLow(this.camera);
-            this.grid.LoadClosestTextureInCameraView(this.camera);
+            this.grid.LoadClosestTextureInCameraView(camera: this.camera, visitedByPlayerOnly: false);
 
             if (this.demoMode) this.camera.TrackLiveAnimal(fluidMotion: true);
-            // this.AutoSave(); // autosave is not needed anymore
 
             bool createMissingPieces = this.currentUpdate % 200 == 0 && Preferences.debugCreateMissingPieces && !this.CineMode && !this.BuildMode;
             if (createMissingPieces) this.CreateMissingPieces(initialCreation: false, maxAmountToCreateAtOnce: 100, outsideCamera: true, multiplier: 0.1f);
