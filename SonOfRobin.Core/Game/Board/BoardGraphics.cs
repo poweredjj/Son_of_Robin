@@ -153,7 +153,7 @@ namespace SonOfRobin
                 {
                     try
                     {
-                        BoardTextureUpscaler3x.Upscale3x3Grid(src: smallColorGrid, target: upscaledColorGrid, sourceOffsetX: localX - 1, sourceOffsetY: localY - 1, targetOffsetX: localX * resizeFactor, targetOffsetY: localY * resizeFactor);
+                        BoardTextureUpscaler3x.Upscale3x3Grid(source: smallColorGrid, target: upscaledColorGrid, sourceOffsetX: localX - 1, sourceOffsetY: localY - 1, targetOffsetX: localX * resizeFactor, targetOffsetY: localY * resizeFactor);
                     }
                     catch (IndexOutOfRangeException)
                     {
@@ -205,7 +205,7 @@ namespace SonOfRobin
                     }
                 }
 
-                BoardTextureUpscaler3x.Upscale3x3Grid(src: workingGrid3x3, target: upscaledColorGrid, targetOffsetX: point.X * resizeFactor, targetOffsetY: point.Y * resizeFactor);
+                BoardTextureUpscaler3x.Upscale3x3Grid(source: workingGrid3x3, target: upscaledColorGrid, targetOffsetX: point.X * resizeFactor, targetOffsetY: point.Y * resizeFactor);
             }
 
             // putting upscaled color grid into PngBuilder
