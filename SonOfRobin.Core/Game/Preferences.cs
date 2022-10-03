@@ -117,7 +117,7 @@ namespace SonOfRobin
             }
         }
 
-        public static int mobileMaxLoadedTextures = 1000;
+        public static int mobileMaxLoadedTextures = 500;
         public static int displayResX = 1920;
         public static int displayResY = 1080;
         public static bool showFieldControlTips = true;
