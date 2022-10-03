@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input.Touch;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,7 +29,7 @@ namespace SonOfRobin
         private RenderTarget2D lowResWholeTerrainGfx;
         private RenderTarget2D lowResWholeCombinedGfx;
         public RenderTarget2D FinalMapToDisplay { get; private set; }
-        private Vector2 lastTouchPos; public BoardPiece MapMarker { get; private set; }
+        public BoardPiece MapMarker { get; private set; }
         private float InitialZoom { get { return Preferences.WorldScale / 2; } }
         private static readonly Color paperColor = BoardGraphics.colorsByName[BoardGraphics.Colors.Beach1];
 
@@ -43,7 +42,6 @@ namespace SonOfRobin
             this.camera = new Camera(world: this.world, useWorldScale: false, useFluidMotionForMove: false, useFluidMotionForZoom: true, keepInWorldBounds: false);
             this.mode = MapMode.Off;
             this.dirtyFog = true;
-            this.lastTouchPos = Vector2.Zero;
             this.effectCol = new EffectCol(world: null);
             this.effectCol.AddEffect(new SketchInstance(fgColor: new Color(107, 98, 87, 255), bgColor: paperColor, framesLeft: -1));
         }
@@ -264,8 +262,6 @@ namespace SonOfRobin
             else this.camera.TrackCoords(this.world.player.sprite.position);
 
             this.camera.Update(cameraCorrection: Vector2.Zero);
-            this.world.grid.UnloadTexturesIfMemoryLow(this.camera);
-            this.world.grid.LoadClosestTextureInCameraView(this.camera);
         }
 
         private void SetViewParamsForMiniature()
@@ -285,9 +281,6 @@ namespace SonOfRobin
 
         private void ProcessInput()
         {
-            var touches = TouchInput.TouchPanelState;
-            if (!touches.Any()) this.lastTouchPos = Vector2.Zero;
-
             // map mode switch
 
             if (InputMapper.HasBeenPressed(InputMapper.Action.MapSwitch))
@@ -320,7 +313,7 @@ namespace SonOfRobin
 
             // zoom
 
-            if (InputMapper.IsPressed(InputMapper.Action.MapZoomIn) || InputMapper.IsPressed(InputMapper.Action.MapZoomOut))
+            if (InputMapper.IsPressed(InputMapper.Action.MapZoomIn) || InputMapper.IsPressed(InputMapper.Action.MapZoomOut) || TouchInput.IsBeingTouchedInAnyWay)
             {
                 bool zoomByMouse = Mouse.ScrollWheelRolledUp || Mouse.ScrollWheelRolledDown;
 
@@ -329,17 +322,16 @@ namespace SonOfRobin
 
                 float currentZoom = this.camera.CurrentZoom; // value to be replaced
 
-                if (InputMapper.IsPressed(InputMapper.Action.MapZoomIn))
+                bool zoomButtonPressed = InputMapper.IsPressed(InputMapper.Action.MapZoomIn) || InputMapper.IsPressed(InputMapper.Action.MapZoomOut);
+                if (zoomButtonPressed)
                 {
-                    currentZoom = this.camera.CurrentZoom + zoomChangeVal;
-                    currentZoom = Math.Min(currentZoom, this.InitialZoom);
+                    if (InputMapper.IsPressed(InputMapper.Action.MapZoomIn)) currentZoom = this.camera.CurrentZoom + zoomChangeVal;
+                    if (InputMapper.IsPressed(InputMapper.Action.MapZoomOut)) currentZoom = this.camera.CurrentZoom - zoomChangeVal;
                 }
+                else currentZoom += TouchInput.GetZoomDelta(ignoreLeftStick: false, ignoreRightStick: false, ignoreVirtButtons: true, ignoreInventory: false, ignorePlayerPanel: false);
 
-                if (InputMapper.IsPressed(InputMapper.Action.MapZoomOut))
-                {
-                    currentZoom = this.camera.CurrentZoom - zoomChangeVal;
-                    currentZoom = Math.Max(currentZoom, this.scaleMultiplier * 0.8f);
-                }
+                currentZoom = Math.Min(currentZoom, this.InitialZoom);
+                currentZoom = Math.Max(currentZoom, this.scaleMultiplier * 0.8f);
 
                 this.camera.SetZoom(zoom: currentZoom, setInstantly: !zoomByMouse, zoomSpeedMultiplier: zoomByMouse ? 5f : 1f);
             }
@@ -349,30 +341,8 @@ namespace SonOfRobin
             Vector2 movement = InputMapper.Analog(InputMapper.Action.MapMove) * 10 / this.camera.CurrentZoom;
             if (movement == Vector2.Zero)
             {
-                foreach (TouchLocation touch in TouchInput.TouchPanelState)
-                {
-                    if (touch.State == TouchLocationState.Released)
-                    {
-                        this.lastTouchPos = Vector2.Zero;
-                        break;
-                    }
-
-                    if (!TouchInput.IsPointActivatingAnyTouchInterface(point: touch.Position, checkLeftStick: false, checkRightStick: false, checkVirtButtons: true, checkInventory: false, checkPlayerPanel: false))
-                    {
-                        if (touch.State == TouchLocationState.Pressed)
-                        {
-                            this.lastTouchPos = touch.Position;
-                            break;
-                        }
-                        else if (touch.State == TouchLocationState.Moved)
-                        {
-                            movement = (this.lastTouchPos - touch.Position) / Preferences.GlobalScale;
-                            this.lastTouchPos = touch.Position;
-                        }
-
-                        movement /= this.camera.CurrentZoom;
-                    }
-                }
+                // using touch
+                movement = TouchInput.GetMovementDelta(ignoreLeftStick: false, ignoreRightStick: false, ignoreVirtButtons: true, ignoreInventory: false, ignorePlayerPanel: false) / Preferences.GlobalScale / this.camera.CurrentZoom;
             }
 
             if (movement != Vector2.Zero)
@@ -386,7 +356,6 @@ namespace SonOfRobin
 
                 this.camera.TrackCoords(newPos);
             }
-
         }
 
         public override void RenderToTarget()
@@ -432,6 +401,14 @@ namespace SonOfRobin
                         foundCellsWithMissingTextures = true;
                         break;
                     }
+                }
+
+                if (foundCellsWithMissingTextures)
+                {
+                    // loading and unloading textures should be done during "foundCellsWithMissingTextures" only, to avoid unnecessary texture loading
+
+                    this.world.grid.UnloadTexturesIfMemoryLow(this.camera);
+                    this.world.grid.LoadClosestTextureInCameraView(camera: this.camera, visitedByPlayerOnly: !Preferences.DebugShowWholeMap);
                 }
             }
 
@@ -481,12 +458,13 @@ namespace SonOfRobin
 
                 if (typesShownAlways.Contains(pieceType) || namesShownAlways.Contains(name)) showSprite = true;
 
-                if (!showSprite && (sprite.hasBeenDiscovered) &&
+                if (!showSprite && sprite.hasBeenDiscovered &&
                     (namesShownIfDiscovered.Contains(name) ||
                     typesShownIfDiscovered.Contains(pieceType))) showSprite = true;
 
                 if (showSprite)
                 {
+                    float opacity = 1f;
                     Rectangle destRect = sprite.gfxRect;
                     destRect.Inflate(destRect.Width * spriteSize, destRect.Height * spriteSize);
 
@@ -496,10 +474,11 @@ namespace SonOfRobin
                         destRect.X = Math.Min(this.camera.viewRect.Right - destRect.Width, destRect.X);
                         destRect.Y = Math.Max(this.camera.viewRect.Top, destRect.Y);
                         destRect.Y = Math.Min(this.camera.viewRect.Bottom - destRect.Height, destRect.Y);
+                        opacity = 0.6f;
                     }
 
                     if (Preferences.debugAllowMapAnimation) sprite.UpdateAnimation();
-                    sprite.frame.Draw(destRect: destRect, color: Color.White, opacity: 1f);
+                    sprite.frame.Draw(destRect: destRect, color: Color.White, opacity: opacity);
                 }
             }
 

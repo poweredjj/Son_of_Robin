@@ -40,7 +40,7 @@ namespace SonOfRobin
                 {
                     try
                     {
-                        Upscale3x3Grid(src: sourceGrid, target: upscaledGrid, sourceOffsetX: baseX - 1, sourceOffsetY: baseY - 1, targetOffsetX: baseX * resizeFactor, targetOffsetY: targetOffsetY);
+                        Upscale3x3Grid(source: sourceGrid, target: upscaledGrid, sourceOffsetX: baseX - 1, sourceOffsetY: baseY - 1, targetOffsetX: baseX * resizeFactor, targetOffsetY: targetOffsetY);
                     }
                     catch (IndexOutOfRangeException)
                     {
@@ -70,31 +70,31 @@ namespace SonOfRobin
                     }
                 }
 
-                Upscale3x3Grid(src: workingGrid3x3, target: upscaledGrid, targetOffsetX: point.X * resizeFactor, targetOffsetY: point.Y * resizeFactor);
+                Upscale3x3Grid(source: workingGrid3x3, target: upscaledGrid, targetOffsetX: point.X * resizeFactor, targetOffsetY: point.Y * resizeFactor);
             }
 
             return upscaledGrid;
         }
 
-        public static Color[,] Upscale3x3Grid(Color[,] src, Color[,] target, int targetOffsetX = 0, int targetOffsetY = 0, int sourceOffsetX = 0, int sourceOffsetY = 0)
+        public static Color[,] Upscale3x3Grid(Color[,] source, Color[,] target, int targetOffsetX = 0, int targetOffsetY = 0, int sourceOffsetX = 0, int sourceOffsetY = 0)
         {
-            Color leftTop = src[0 + sourceOffsetX, 0 + sourceOffsetY];
-            Color middleTop = src[1 + sourceOffsetX, 0 + sourceOffsetY];
-            Color rightTop = src[2 + sourceOffsetX, 0 + sourceOffsetY];
-            Color leftMiddle = src[0 + sourceOffsetX, 1 + sourceOffsetY];
-            Color center = src[1 + sourceOffsetX, 1 + sourceOffsetY];
-            Color rightMiddle = src[2 + sourceOffsetX, 1 + sourceOffsetY];
-            Color leftBottom = src[0 + sourceOffsetX, 2 + sourceOffsetY];
-            Color middleBottom = src[1 + sourceOffsetX, 2 + sourceOffsetY];
-            Color rightBottom = src[2 + sourceOffsetX, 2 + sourceOffsetY];
+            Color leftTop = source[sourceOffsetX, sourceOffsetY];
+            Color middleTop = source[1 + sourceOffsetX, sourceOffsetY];
+            Color rightTop = source[2 + sourceOffsetX, sourceOffsetY];
+            Color leftMiddle = source[sourceOffsetX, 1 + sourceOffsetY];
+            Color center = source[1 + sourceOffsetX, 1 + sourceOffsetY];
+            Color rightMiddle = source[2 + sourceOffsetX, 1 + sourceOffsetY];
+            Color leftBottom = source[sourceOffsetX, 2 + sourceOffsetY];
+            Color middleBottom = source[1 + sourceOffsetX, 2 + sourceOffsetY];
+            Color rightBottom = source[2 + sourceOffsetX, 2 + sourceOffsetY];
 
-            target[0 + targetOffsetX, 0 + targetOffsetY] = leftMiddle == middleTop && leftMiddle != middleBottom && middleTop != rightMiddle ? leftMiddle : center;
-            target[1 + targetOffsetX, 0 + targetOffsetY] = (leftMiddle == middleTop && leftMiddle != middleBottom && middleTop != rightMiddle && center != rightTop) || (middleTop == rightMiddle && middleTop != leftMiddle && rightMiddle != middleBottom && center != leftTop) ? middleTop : center;
-            target[2 + targetOffsetX, 0 + targetOffsetY] = (middleTop == rightMiddle && middleTop != leftMiddle && rightMiddle != middleBottom) ? rightMiddle : center;
-            target[0 + targetOffsetX, 1 + targetOffsetY] = (middleBottom == leftMiddle && middleBottom != rightMiddle && leftMiddle != middleTop && center != leftTop) || (leftMiddle == middleTop && leftMiddle != middleBottom && middleTop != rightMiddle && center != leftBottom) ? leftMiddle : center;
+            target[targetOffsetX, targetOffsetY] = leftMiddle == middleTop && leftMiddle != middleBottom && middleTop != rightMiddle ? leftMiddle : center;
+            target[1 + targetOffsetX, targetOffsetY] = (leftMiddle == middleTop && leftMiddle != middleBottom && middleTop != rightMiddle && center != rightTop) || (middleTop == rightMiddle && middleTop != leftMiddle && rightMiddle != middleBottom && center != leftTop) ? middleTop : center;
+            target[2 + targetOffsetX, targetOffsetY] = (middleTop == rightMiddle && middleTop != leftMiddle && rightMiddle != middleBottom) ? rightMiddle : center;
+            target[targetOffsetX, 1 + targetOffsetY] = (middleBottom == leftMiddle && middleBottom != rightMiddle && leftMiddle != middleTop && center != leftTop) || (leftMiddle == middleTop && leftMiddle != middleBottom && middleTop != rightMiddle && center != leftBottom) ? leftMiddle : center;
             target[1 + targetOffsetX, 1 + targetOffsetY] = center;
             target[2 + targetOffsetX, 1 + targetOffsetY] = (middleTop == rightMiddle && middleTop != leftMiddle && rightMiddle != middleBottom && center != rightBottom) || (rightMiddle == middleBottom && rightMiddle != middleTop && middleBottom != leftMiddle && center != rightTop) ? rightMiddle : center;
-            target[0 + targetOffsetX, 2 + targetOffsetY] = middleBottom == leftMiddle && middleBottom != rightMiddle && leftMiddle != middleTop ? leftMiddle : center;
+            target[targetOffsetX, 2 + targetOffsetY] = middleBottom == leftMiddle && middleBottom != rightMiddle && leftMiddle != middleTop ? leftMiddle : center;
             target[1 + targetOffsetX, 2 + targetOffsetY] = (rightMiddle == middleBottom && rightMiddle != middleTop && middleBottom != leftMiddle && center != leftBottom) || (middleBottom == leftMiddle && middleBottom != rightMiddle && leftMiddle != middleTop && center != rightBottom) ? middleBottom : center;
             target[2 + targetOffsetX, 2 + targetOffsetY] = rightMiddle == middleBottom && rightMiddle != middleTop && middleBottom != leftMiddle ? rightMiddle : center;
 

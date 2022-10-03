@@ -10,7 +10,6 @@ namespace SonOfRobin
         public readonly bool saveIsCorrect;
         public readonly string folderName;
         public readonly string fullPath;
-        public bool autoSave;
         public readonly int seed;
         public readonly int width;
         public readonly int height;
@@ -32,11 +31,9 @@ namespace SonOfRobin
         {
             get
             {
-                string autoSaveString = this.autoSave ? " autosave" : "";
-
                 if (SonOfRobinGame.platform == Platform.Mobile)
-                    return $"{SaveDateString} time played: {this.ElapsedTimeString}{autoSaveString} day {this.frozenClock.CurrentDayNo} seed: {String.Format("{0:0000}", this.seed)} {this.width}x{this.height}";
-                else return $"{SaveDateString}   time played: {this.ElapsedTimeString}{autoSaveString}   day {this.frozenClock.CurrentDayNo}";
+                    return $"{SaveDateString} time played: {this.ElapsedTimeString} day {this.frozenClock.CurrentDayNo} seed: {String.Format("{0:0000}", this.seed)} {this.width}x{this.height}";
+                else return $"{SaveDateString}   time played: {this.ElapsedTimeString}   day {this.frozenClock.CurrentDayNo}";
             }
         }
 
@@ -57,7 +54,6 @@ namespace SonOfRobin
 
             this.saveIsCorrect = false;
             this.saveDate = DateTime.FromOADate(0d);
-            this.autoSave = false;
             this.seed = -1;
             this.width = -1;
             this.height = -1;
@@ -72,7 +68,6 @@ namespace SonOfRobin
                 {
                     this.saveIsCorrect = true;
                     this.saveDate = (DateTime)headerData["realDateTime"];
-                    this.autoSave = this.folderName == "0";
                     this.seed = (int)headerData["seed"];
                     this.width = (int)headerData["width"];
                     this.height = (int)headerData["height"];

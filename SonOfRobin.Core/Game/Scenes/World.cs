@@ -14,7 +14,6 @@ namespace SonOfRobin
         public Vector2 analogMovementRightStick;
         public Vector2 analogCameraCorrection;
 
-        private float manualScale;
         public bool worldCreationInProgress;
         private bool plantsProcessing;
         private readonly static int initialPiecesCreationFramesTotal = 20;
@@ -404,7 +403,7 @@ namespace SonOfRobin
             if (!this.demoMode)
             {
                 this.camera.TrackPiece(trackedPiece: this.player, moveInstantly: true);
-                this.UpdateViewParams(manualScale: 1f);
+                this.UpdateViewParams();
                 this.camera.Update(cameraCorrection: Vector2.Zero); // to render cells in camera view correctly
                 Inventory.SetLayout(newLayout: Inventory.Layout.Toolbar, player: this.player);
             }
@@ -527,27 +526,6 @@ namespace SonOfRobin
             MessageLog.AddMessage(msgType: MsgType.User, message: "Game has been loaded.", color: Color.Cyan);
         }
 
-        public void AutoSave()
-        {
-            if (this.demoMode || this.currentUpdate % 600 != 0 || !this.player.alive) return;
-            TimeSpan timeSinceLastSave = DateTime.Now - this.lastSaved;
-            if (timeSinceLastSave < TimeSpan.FromMinutes(Preferences.autoSaveDelayMins)) return;
-
-            if (this.player.activeState != BoardPiece.State.PlayerControlledWalking) return;
-            if (GetTopSceneOfType(typeof(Menu)) != null) return;
-            Scene invScene = GetTopSceneOfType(typeof(Inventory));
-            if (invScene != null)
-            {
-                Inventory inventory = (Inventory)invScene;
-                if (inventory.type != Inventory.Type.SingleBottom) return;
-            }
-
-            string timeElapsedTxt = timeSinceLastSave.ToString("mm\\:ss");
-            MessageLog.AddMessage(msgType: MsgType.User, message: $"{timeElapsedTxt} elapsed - autosaving...", color: Color.LightBlue);
-
-            var saveParams = new Dictionary<string, Object> { { "world", this }, { "saveSlotName", "0" }, { "showMessage", false } };
-            new Scheduler.Task(taskName: Scheduler.TaskName.SaveGame, executeHelper: saveParams);
-        }
 
         private BoardPiece PlacePlayer()
         {
@@ -639,9 +617,8 @@ namespace SonOfRobin
             return piecesCreated > 0;
         }
 
-        public void UpdateViewParams(float manualScale = 1f)
+        public void UpdateViewParams()
         {
-            if (!this.CineMode) this.camera.SetZoom(zoom: this.demoMode ? 2f : 1f / manualScale, zoomSpeedMultiplier: 3f);
             this.camera.Update(cameraCorrection: this.analogCameraCorrection);
             this.camera.SetViewParams(this);
 
@@ -656,16 +633,16 @@ namespace SonOfRobin
                 return;
             }
 
-            this.manualScale = 1f;
+            if (this.demoMode) this.camera.SetZoom(zoom: 2f, setInstantly: true);
+
             this.ProcessInput();
-            this.UpdateViewParams(manualScale: this.manualScale);
+            this.UpdateViewParams();
             SoundEffect.DistanceScale = this.camera.viewRect.Width * 0.065f;
 
             this.grid.UnloadTexturesIfMemoryLow(this.camera);
-            this.grid.LoadClosestTextureInCameraView(this.camera);
+            this.grid.LoadClosestTextureInCameraView(camera: this.camera, visitedByPlayerOnly: false);
 
             if (this.demoMode) this.camera.TrackLiveAnimal(fluidMotion: true);
-            // this.AutoSave(); // autosave is not needed anymore
 
             bool createMissingPieces = this.currentUpdate % 200 == 0 && Preferences.debugCreateMissingPieces && !this.CineMode && !this.BuildMode;
             if (createMissingPieces) this.CreateMissingPieces(initialCreation: false, maxAmountToCreateAtOnce: 100, outsideCamera: true, multiplier: 0.1f);
@@ -719,8 +696,9 @@ namespace SonOfRobin
             }
 
             // camera zoom control (to keep the current zoom level, when other scene is above the world, that scene must block updates below)
-            float leftTrigger = InputMapper.TriggerForce(InputMapper.Action.WorldCameraZoomOut);
-            this.manualScale = 1f + leftTrigger;
+            float zoomOutForce = InputMapper.TriggerForce(InputMapper.Action.WorldCameraZoomOut);
+
+            if (!this.CineMode) this.camera.SetZoom(zoom: 1f / (1f + zoomOutForce), zoomSpeedMultiplier: 3f);
 
             if (!this.player.alive || this.player.activeState != BoardPiece.State.PlayerControlledWalking) return;
 
