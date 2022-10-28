@@ -81,7 +81,7 @@ namespace SonOfRobin
             var messageList = tutorials[type].MessagesToDisplay;
             var taskChain = HintMessage.ConvertToTasks(messageList: messageList);
 
-            taskChain.Insert(0, new Scheduler.Task(taskName: Scheduler.TaskName.SetCineMode, delay: 0, executeHelper: true, storeForLaterUse: true));
+            taskChain.Insert(0, new Scheduler.Task(taskName: Scheduler.TaskName.SetCineMode, delay: 1, executeHelper: true, storeForLaterUse: true)); // 1 frame delay is needed to allow time for some messages (tired, too dark)
             taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetCineMode, delay: 0, executeHelper: false, storeForLaterUse: true));
 
             new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteTaskChain, turnOffInputUntilExecution: true, executeHelper: taskChain);

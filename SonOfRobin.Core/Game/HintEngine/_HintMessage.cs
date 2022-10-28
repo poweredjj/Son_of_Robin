@@ -42,7 +42,7 @@ namespace SonOfRobin
             if (this.imageList.Count != matches.Count) throw new ArgumentException($"HintMessage - count of markers ({matches.Count}) and images ({this.imageList.Count}) does not match.\n{this.text}");
         }
 
-        public Scheduler.Task ConvertToTask(bool useTransitionOpen = false, bool useTransitionClose = false, bool playSound = true)
+        public Scheduler.Task ConvertToTask(bool useTransitionOpen = false, bool useTransitionClose = false, bool playSound = true, bool storeForLaterUse = true)
         {
             Color bgColor, textColor;
 
@@ -102,7 +102,7 @@ namespace SonOfRobin
 
             if (!playSound) textWindowData.Remove("sound");
 
-            return new Scheduler.Task(taskName: Scheduler.TaskName.ShowTextWindow, turnOffInputUntilExecution: true, delay: this.delay, executeHelper: textWindowData, storeForLaterUse: true);
+            return new Scheduler.Task(taskName: Scheduler.TaskName.ShowTextWindow, turnOffInputUntilExecution: true, delay: this.delay, executeHelper: textWindowData, storeForLaterUse: storeForLaterUse);
         }
 
         public static List<Object> ConvertToTasks(List<HintMessage> messageList, bool playSounds = true)

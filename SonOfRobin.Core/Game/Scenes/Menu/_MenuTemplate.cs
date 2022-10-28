@@ -649,14 +649,14 @@ namespace SonOfRobin
 
             if (!player.CanSeeAnything)
             {
-                new TextWindow(text: "It is too dark to craft.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 0, animSound: world.DialogueSound);
+                new HintMessage(text: "It is too dark to craft.", boxType: HintMessage.BoxType.Dialogue, delay: 1, blockInput: false, animate: true, useTransition: false).ConvertToTask(storeForLaterUse: false); // converted to task for display in proper order (after other messages, not before)
 
                 return null;
             }
 
             if (player.IsVeryTired)
             {
-                new TextWindow(text: "I'm too tired to craft...", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 0, animSound: player.world.DialogueSound);
+                new HintMessage(text: "I'm too tired to craft...", boxType: HintMessage.BoxType.Dialogue, delay: 1, blockInput: false, animate: true, useTransition: false).ConvertToTask(storeForLaterUse: false); // converted to task for display in proper order (after other messages, not before)
 
                 return null;
             }

@@ -351,7 +351,7 @@ namespace SonOfRobin
             {
                 if (world == null) return;
 
-                world.islandClock.Advance(amount: 60 * 60 * 2, ignorePause: true);
+                world.islandClock.Advance(amount: 60 * 60 * 1, ignorePause: true);
             }
 
             if (Keyboard.HasBeenPressed(Keys.F4))
