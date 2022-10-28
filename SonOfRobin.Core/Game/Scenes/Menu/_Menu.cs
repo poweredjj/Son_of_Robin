@@ -89,6 +89,15 @@ namespace SonOfRobin
                 }
             }
         }
+
+        public static bool CanInterpretTouchReleaseAsButtonPress
+        {
+            get
+            {
+                return TouchInput.IsPressedReleasedWithinDistance(7);
+            }
+        }
+
         public bool ScrollActive { get { return this.FullyVisibleEntries.Count < this.entryList.Count || this.PartiallyVisibleEntries.Count > 0; } }
         private float ScrollbarVisiblePercent { get { return (float)this.viewParams.Height / (((float)this.EntryHeight + (float)this.EntryMargin) * (float)this.entryList.Count); } }
         private int ScrollbarWidgetHeight { get { return (int)(this.ScrollbarVisiblePercent * this.viewParams.Height); } }
@@ -462,6 +471,8 @@ namespace SonOfRobin
 
         private void ScrollByTouch()
         {
+            // scroll by scrollbar
+
             Rectangle scrollWholeRect = this.ScrollWholeRect;
             scrollWholeRect.X += (int)this.viewParams.PosX;
             scrollWholeRect.Y += (int)this.viewParams.PosY;
@@ -492,6 +503,31 @@ namespace SonOfRobin
                     this.currentScrollPosition = KeepScrollInBounds(Convert.ToInt32(this.currentScrollPosition));
                     return;
                 }
+            }
+
+            // "regular" scroll
+
+            bool touchedWithinMenuArea = false; // not counting scrollbar
+            Rectangle bgRect = this.BgRect;
+            bgRect.X += (int)this.viewParams.PosX;
+            bgRect.Y += (int)this.viewParams.PosY;
+
+            foreach (TouchLocation touch in TouchInput.TouchPanelState)
+            {
+                Vector2 touchPos = touch.Position / Preferences.GlobalScale;
+                if (bgRect.Contains(touchPos) && !scrollWholeRect.Contains(touchPos))
+                {
+                    touchedWithinMenuArea = true;
+                    break;
+                }
+            }
+
+            if (touchedWithinMenuArea)
+            {
+                float swipeScroll = TouchInput.GetMovementDelta(ignoreLeftStick: false, ignoreRightStick: false, ignoreVirtButtons: true, ignoreInventory: false, ignorePlayerPanel: false).Y / Preferences.GlobalScale;
+                if (swipeScroll != 0) this.touchMode = true;
+                this.currentScrollPosition += swipeScroll;
+                this.currentScrollPosition = KeepScrollInBounds(Convert.ToInt32(this.currentScrollPosition));
             }
         }
 

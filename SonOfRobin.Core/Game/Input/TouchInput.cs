@@ -64,6 +64,42 @@ namespace SonOfRobin
         public static bool IsGestureAvailable { get { return Input.InputActive && TouchPanel.IsGestureAvailable; } } // should be used before reading gesture directly
         public static bool IsBeingTouchedInAnyWay { get { return TouchPanelState.Count > 0; } }
 
+        private static Vector2 lastPressPos = new Vector2(-100, -100); //  (-100, -100) == null equivalent
+        private static Vector2 lastReleasedPos = new Vector2(-100, -100); //  (-100, -100) == null equivalent
+
+        private static void UpdateLastPressedReleasedPos()
+        {
+            foreach (TouchLocation touch in touchPanelState)
+            {
+                if (touch.State == TouchLocationState.Pressed)
+                {
+                    lastPressPos = touch.Position;
+                    lastReleasedPos.X = -100;
+                    lastReleasedPos.Y = -100;
+                    return;
+                }
+
+                if (touch.State == TouchLocationState.Released)
+                {
+                    lastReleasedPos = touch.Position;
+                    return;
+                }
+            }
+        }
+
+        public static bool IsPressedReleasedWithinDistance(int maxDistance)
+        {
+            if (!Input.InputActive ||
+                (lastPressPos.X == -100 && lastPressPos.Y == -100) ||
+                (lastReleasedPos.X == -100 && lastReleasedPos.Y == -100)) return false;
+
+            float distance = Vector2.Distance(lastPressPos, lastReleasedPos);
+
+            MessageLog.AddMessage(msgType: MsgType.User, message: $"Press release distance {distance}, maxDistance {maxDistance}.");
+
+            return distance <= maxDistance;
+        }
+
         public static Vector2 GetMovementDelta(bool ignoreLeftStick, bool ignoreRightStick, bool ignoreVirtButtons, bool ignoreInventory, bool ignorePlayerPanel, bool preventLargeJump = true)
         {
             if (!Input.InputActive || (!lastFrameTouchPanelState.Any() && !touchPanelState.Any())) return Vector2.Zero;
@@ -82,7 +118,7 @@ namespace SonOfRobin
 
             foreach (TouchLocation touch in touchPanelState)
             {
-                if (touch.State != TouchLocationState.Released && !IsPointActivatingAnyTouchInterface(point: touch.Position, checkLeftStick: false, checkRightStick: false, checkVirtButtons: true, checkInventory: false, checkPlayerPanel: false))
+                if (touch.State != TouchLocationState.Released && !IsPointActivatingAnyTouchInterface(point: touch.Position, checkLeftStick: ignoreLeftStick, checkRightStick: ignoreRightStick, checkVirtButtons: ignoreVirtButtons, checkInventory: ignoreInventory, checkPlayerPanel: ignorePlayerPanel))
                 {
                     currentPos = touch.Position;
                     break;
@@ -92,7 +128,6 @@ namespace SonOfRobin
             if (prevPos == Vector2.Zero || currentPos == Vector2.Zero) return Vector2.Zero;
 
             Vector2 movementDelta = prevPos - currentPos;
-
             if (preventLargeJump && (Math.Abs(movementDelta.X) > 220 || Math.Abs(movementDelta.Y) > 220)) movementDelta = Vector2.Zero;
 
             return movementDelta;
@@ -123,7 +158,7 @@ namespace SonOfRobin
 
             foreach (TouchLocation touch in touchPanelState)
             {
-                if (touch.State != TouchLocationState.Released && !IsPointActivatingAnyTouchInterface(point: touch.Position, checkLeftStick: false, checkRightStick: false, checkVirtButtons: true, checkInventory: false, checkPlayerPanel: false))
+                if (touch.State != TouchLocationState.Released && !IsPointActivatingAnyTouchInterface(point: touch.Position, checkLeftStick: ignoreLeftStick, checkRightStick: ignoreRightStick, checkVirtButtons: ignoreVirtButtons, checkInventory: ignoreInventory, checkPlayerPanel: ignorePlayerPanel))
                 {
                     if (currentPos1 == Vector2.Zero) currentPos1 = touch.Position;
                     else
@@ -163,6 +198,7 @@ namespace SonOfRobin
         {
             lastFrameTouchPanelState = touchPanelState;
             touchPanelState = TouchPanel.GetState();
+            UpdateLastPressedReleasedPos();
 
             // ShowDebugTouchMessages(touchPanelState); // for testing only
 
