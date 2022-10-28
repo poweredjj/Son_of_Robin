@@ -35,6 +35,7 @@ namespace SonOfRobin
             Ding1,
             Ding2,
             Ding3,
+            Ding4,
             Chime,
             Error,
 
@@ -314,6 +315,7 @@ namespace SonOfRobin
             { Name.Ding1, "320655__rhodesmas__level-up-01" },
             { Name.Ding2, "406243__stubb__typewriter-ding-near-mono" },
             { Name.Ding3, "13934__adcbicycle__6" },
+            { Name.Ding4, "614981__simonegianni__beepc6" },
             { Name.Chime, "321263__rhodesmas__coins-purchase-01" },
             { Name.DestroyWood, "66778__kevinkace__crate-break-2" },
             { Name.SwimShallow, "317067__robinhood76__05913-swimming-loop-shallow_1" },

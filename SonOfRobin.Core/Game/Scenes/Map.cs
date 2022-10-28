@@ -20,6 +20,8 @@ namespace SonOfRobin
         private readonly Rectangle worldRect;
         private readonly MapOverlay mapOverlay;
         private readonly EffectCol effectCol;
+        private readonly Sound soundMarkerPlace = new Sound(name: SoundData.Name.Ding4, pitchChange: 0f);
+        public readonly Sound soundMarkerRemove = new Sound(name: SoundData.Name.Ding4, pitchChange: -0.3f);
         public bool FullScreen { get { return this.Mode == MapMode.Full; } }
 
         private MapMode mode;
@@ -293,15 +295,24 @@ namespace SonOfRobin
 
             if (InputMapper.HasBeenPressed(InputMapper.Action.MapToggleMarker))
             {
-                if (this.MapMarker == null) this.MapMarker = PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: this.camera.CurrentPos, templateName: PieceTemplate.Name.MapMarker);
+                if (this.MapMarker == null)
+                {
+                    this.MapMarker = PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: this.camera.CurrentPos, templateName: PieceTemplate.Name.MapMarker);
+                    soundMarkerPlace.Play();
+                }
                 else
                 {
                     if (Math.Abs(Vector2.Distance(this.MapMarker.sprite.position, this.camera.CurrentPos)) < 15)
                     {
                         this.MapMarker.Destroy();
                         this.MapMarker = null;
+                        soundMarkerRemove.Play();
                     }
-                    else this.MapMarker.sprite.SetNewPosition(newPos: this.camera.CurrentPos, ignoreCollisions: true);
+                    else
+                    {
+                        this.MapMarker.sprite.SetNewPosition(newPos: this.camera.CurrentPos, ignoreCollisions: true);
+                        soundMarkerPlace.Play();
+                    }
                 }
 
                 return;

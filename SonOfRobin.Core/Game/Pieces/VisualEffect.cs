@@ -55,6 +55,8 @@ namespace SonOfRobin
                 Vector2.Distance(this.sprite.position, this.world.player.sprite.position) < 100)
             {
                 this.Destroy(); // will be destroyed right away if map was enabled by using god mode
+                this.world.map.soundMarkerRemove.Play();
+                MessageLog.AddMessage(msgType: MsgType.User, message: "Map marker has been reached.");
             }
         }
     }

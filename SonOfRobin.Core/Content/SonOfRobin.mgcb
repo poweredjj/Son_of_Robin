@@ -4970,6 +4970,12 @@
 /processorParam:Quality=Best
 /build:sound/614724__newlocknew__fast-fire-flare-whoosh-1-6lrs.ogg
 
+#begin sound/614981__simonegianni__beepc6.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sound/614981__simonegianni__beepc6.ogg
+
 #begin sound/615308__fractanimal__ceramic-cup-hit.ogg
 /importer:OggImporter
 /processor:SoundEffectProcessor
