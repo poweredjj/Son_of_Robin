@@ -61,7 +61,7 @@ namespace SonOfRobin
                 if (!this.WaitFrameReached) return false;
             }
 
-            if (this.shownGeneralHints.Contains(type) || Scheduler.HasTaskChainInQueue) return false;
+            if (this.shownGeneralHints.Contains(type) || Scheduler.HasTaskChainInQueue) return false; // only one hint should be shown at once - waitingScenes cause playing next scene after turning off CineMode (playing scene without game being paused)
 
             this.UpdateWaitFrame();
 
@@ -250,6 +250,7 @@ namespace SonOfRobin
                         var taskChain = new List<Object>();
 
                         taskChain.Add(new HintMessage(text: "Where am I?", boxType: dialogue, delay: 80, blockInput: false).ConvertToTask());
+
                         taskChain.Add(new HintMessage(text: "    ...    ", boxType: dialogue, delay: 120, blockInput: false).ConvertToTask());
 
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SolidColorRemoveAll, delay: 0, executeHelper: new Dictionary<string, Object> { { "manager", this.world.solidColorManager }, { "delay", 700 } }, storeForLaterUse: true));
@@ -304,11 +305,13 @@ namespace SonOfRobin
 
                         this.world.CineMode = true;
 
-                        this.world.camera.SetZoom(zoom: 1.5f, setInstantly: false, zoomSpeedMultiplier: 0.4f);
-
                         var taskChain = new List<Object>();
 
                         taskChain.Add(new HintMessage(text: "Well...", boxType: dialogue, delay: 60).ConvertToTask());
+
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetCineMode, delay: 1, executeHelper: true, storeForLaterUse: true)); // repeated, to make sure it will be executed (in case of waitingScenes being used)
+
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetZoom, delay: 0, executeHelper: new Dictionary<string, Object> { { "zoom", 1.5f }, { "zoomSpeedMultiplier", 0.4f } }, storeForLaterUse: true));
 
                         Vector2 basePos = player.sprite.position;
                         int distance = 30;
@@ -376,9 +379,9 @@ namespace SonOfRobin
 
             // tasks before the messages - inserted at 0, so the last go first
 
-            taskChain.Insert(0, new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetZoom, delay: 0, executeHelper: new Dictionary<string, Object> { { "zoom", 2f } }, storeForLaterUse: true));
-
             taskChain.Insert(0, new Scheduler.Task(taskName: Scheduler.TaskName.SetCineMode, delay: 1, executeHelper: true, storeForLaterUse: true));
+
+            taskChain.Insert(0, new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetZoom, delay: 0, executeHelper: new Dictionary<string, Object> { { "zoom", 2f } }, storeForLaterUse: true));
 
             var worldEventData = new Dictionary<string, object> { { "boardPiece", crossHair }, { "delay", 60 }, { "eventName", WorldEvent.EventName.Destruction } };
             taskChain.Insert(0, new Scheduler.Task(taskName: Scheduler.TaskName.AddWorldEvent, delay: 0, executeHelper: worldEventData, storeForLaterUse: true));
@@ -398,6 +401,8 @@ namespace SonOfRobin
             this.shownGeneralHints.Clear();
             this.shownTutorials.Clear();
             this.waitUntilFrame = 0;
+
+            MessageLog.AddMessage(msgType: MsgType.User, message: "Hints has been restored.");
         }
         public void Enable(Type type)
         {

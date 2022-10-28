@@ -914,17 +914,17 @@ namespace SonOfRobin
                     case TaskName.CameraSetZoom:
                         {
                             // example executeHelper for this task
-                            // var saveParams = new Dictionary<string, Object> { { "zoom", 2f }, { "zoomSpeedMultiplier", 2f }};
+                            // var zoomData = new Dictionary<string, Object> { { "zoom", 2f }, { "zoomSpeedMultiplier", 2f }, { "setInstantly", false } };
 
                             world = World.GetTopWorld();
                             if (world == null) return;
 
                             var zoomData = (Dictionary<string, Object>)this.ExecuteHelper;
                             float zoom = (float)zoomData["zoom"];
-                            float zoomSpeedMultiplier = 1f;
-                            if (zoomData.ContainsKey("zoomSpeedMultiplier")) zoomSpeedMultiplier = (float)zoomData["zoomSpeedMultiplier"];
+                            bool setInstantly = zoomData.ContainsKey("setInstantly") ? (bool)zoomData["setInstantly"] : false;
+                            float zoomSpeedMultiplier = zoomData.ContainsKey("zoomSpeedMultiplier") ? (float)zoomData["zoomSpeedMultiplier"] : 1f;
 
-                            world.camera.SetZoom(zoom: zoom, zoomSpeedMultiplier: zoomSpeedMultiplier);
+                            world.camera.SetZoom(zoom: zoom, zoomSpeedMultiplier: zoomSpeedMultiplier, setInstantly: setInstantly);
 
                             return;
                         }

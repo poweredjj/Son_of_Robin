@@ -69,7 +69,7 @@ namespace SonOfRobin
 
             if (ignoreIfShown && hintEngine.shownTutorials.Contains(type)) return;
 
-            if (Scheduler.HasTaskChainInQueue) return;
+            if (Scheduler.HasTaskChainInQueue) return; // only one tutorial / hint should be shown at once - waitingScenes cause playing next scene after turning off CineMode (playing scene without game being paused)
 
             if (!ignoreDelay)
             {

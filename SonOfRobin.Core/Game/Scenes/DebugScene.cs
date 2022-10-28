@@ -97,7 +97,7 @@ namespace SonOfRobin
             {
                 if (Keyboard.HasBeenPressed(Keys.D1))
                 {
-                    BoardPiece piece = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: world.player.sprite.position, templateName: PieceTemplate.Name.Campfire, closestFreeSpot: true);
+                    BoardPiece piece = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: world.player.sprite.position, templateName: PieceTemplate.Name.Rabbit, closestFreeSpot: true);
                 }
 
                 if (Keyboard.HasBeenPressed(Keys.D2))
@@ -342,7 +342,9 @@ namespace SonOfRobin
             {
                 if (world == null) return;
 
-                world.SpectatorMode = !world.SpectatorMode;
+                world.hintEngine.ShowGeneralHint(type: HintEngine.Type.CantShootInWater, ignoreDelay: true);
+                world.hintEngine.ShowGeneralHint(type: HintEngine.Type.CineSmallBase, ignoreDelay: true);
+                world.hintEngine.ShowGeneralHint(type: HintEngine.Type.Lava, ignoreDelay: true);
             }
 
             if (Keyboard.HasBeenPressed(Keys.F3) || VirtButton.HasButtonBeenPressed(VButName.DebugClockAdvance))
