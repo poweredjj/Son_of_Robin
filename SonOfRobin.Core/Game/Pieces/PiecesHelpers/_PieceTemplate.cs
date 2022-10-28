@@ -884,7 +884,7 @@ namespace SonOfRobin
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(name: SoundData.Name.DestroyBox, maxPitchVariation: 0.5f));
 
                         return new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Crate, allowedFields: allowedFields, category: BoardPiece.Category.Wood,
-                            minDistance: 0, maxDistance: 50, maxMassBySize: null, generation: generation, yield: yield, maxHitPoints: 5, placeAtBeachEdge: true, isShownOnMiniMap: true, readableName: "supply crate", description: "Contains valuable items.", soundPack: soundPack);
+                            minDistance: 0, maxDistance: 50, maxMassBySize: null, generation: generation, yield: yield, maxHitPoints: 5, placeAtBeachEdge: true, readableName: "supply crate", description: "Contains valuable items.", soundPack: soundPack);
                     }
 
                 case Name.CrateRegular:
@@ -906,7 +906,7 @@ namespace SonOfRobin
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(name: SoundData.Name.DestroyBox, maxPitchVariation: 0.5f));
 
                         return new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Crate, allowedFields: allowedFields, category: BoardPiece.Category.Wood,
-                            minDistance: 0, maxDistance: 50, maxMassBySize: null, generation: generation, yield: yield, maxHitPoints: 40, placeAtBeachEdge: true, isShownOnMiniMap: true, readableName: "supply crate", description: "Contains valuable items.", soundPack: soundPack);
+                            minDistance: 0, maxDistance: 50, maxMassBySize: null, generation: generation, yield: yield, maxHitPoints: 40, placeAtBeachEdge: true, readableName: "supply crate", description: "Contains valuable items.", soundPack: soundPack);
                     }
 
                 case Name.ChestWooden:
@@ -1089,7 +1089,7 @@ namespace SonOfRobin
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(name: SoundData.Name.DestroyCeramic3, maxPitchVariation: 0.5f));
 
                         return new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.JarWhole, allowedFields: allowedFields, category: BoardPiece.Category.Wood,
-                            minDistance: 0, maxDistance: 50, maxMassBySize: null, generation: generation, yield: yield, maxHitPoints: 40, isShownOnMiniMap: false, readableName: "sealed jar", description: "Contains supplies.", movesWhenDropped: false, soundPack: soundPack);
+                            minDistance: 0, maxDistance: 50, maxMassBySize: null, generation: generation, yield: yield, maxHitPoints: 40, readableName: "sealed jar", description: "Contains supplies.", movesWhenDropped: false, soundPack: soundPack);
                     }
 
                 case Name.JarBroken:
@@ -1105,7 +1105,7 @@ namespace SonOfRobin
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(nameList: new List<SoundData.Name> { SoundData.Name.DestroyCeramic1, SoundData.Name.DestroyCeramic2 }, maxPitchVariation: 0.5f));
 
                         return new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.JarBroken, allowedFields: allowedFields, category: BoardPiece.Category.Wood,
-                    minDistance: 0, maxDistance: 50, maxMassBySize: null, generation: generation, yield: yield, maxHitPoints: 20, placeAtBeachEdge: true, isShownOnMiniMap: false, readableName: "broken jar", description: "Broken Jar.", movesWhenDropped: false, soundPack: soundPack);
+                    minDistance: 0, maxDistance: 50, maxMassBySize: null, generation: generation, yield: yield, maxHitPoints: 20, placeAtBeachEdge: true, readableName: "broken jar", description: "Broken Jar.", movesWhenDropped: false, soundPack: soundPack);
                     }
 
                 case Name.WorkshopEssential:
@@ -1349,7 +1349,7 @@ namespace SonOfRobin
                                     new Yield.DroppedPiece(pieceName: Name.Stone, chanceToDrop: 20, maxNumberToDrop: 2)});
 
                         return new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.DigSite, allowedFields: allowedFields, category: BoardPiece.Category.Dirt, blocksMovement: false,
-                          minDistance: 0, maxDistance: 1000, maxMassBySize: null, generation: generation, yield: yield, maxHitPoints: 20, isShownOnMiniMap: false, readableName: "dig site", description: "May contain some buried items.");
+                          minDistance: 0, maxDistance: 1000, maxMassBySize: null, generation: generation, yield: yield, maxHitPoints: 20, readableName: "dig site", description: "May contain some buried items.");
                     }
 
                 case Name.ForestDigSite:
@@ -1368,7 +1368,7 @@ namespace SonOfRobin
                                     new Yield.DroppedPiece(pieceName: Name.Stone, chanceToDrop: 25, maxNumberToDrop: 1)});
 
                         return new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.DigSite, allowedFields: allowedFields, category: BoardPiece.Category.Dirt, blocksMovement: false,
-                          minDistance: 0, maxDistance: 1000, maxMassBySize: null, generation: generation, yield: yield, maxHitPoints: 30, isShownOnMiniMap: false, readableName: "dig site", description: "May contain some buried items.");
+                          minDistance: 0, maxDistance: 1000, maxMassBySize: null, generation: generation, yield: yield, maxHitPoints: 30, readableName: "dig site", description: "May contain some buried items.");
                     }
 
                 case Name.DesertDigSite:
@@ -1386,7 +1386,7 @@ namespace SonOfRobin
                                     new Yield.DroppedPiece(pieceName: Name.Granite, chanceToDrop: 10, maxNumberToDrop: 2)});
 
                         return new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.DigSite, allowedFields: allowedFields, category: BoardPiece.Category.Dirt, blocksMovement: false,
-                          minDistance: 0, maxDistance: 1000, maxMassBySize: null, generation: generation, yield: yield, maxHitPoints: 30, isShownOnMiniMap: false, readableName: "dig site", description: "May contain some buried items.");
+                          minDistance: 0, maxDistance: 1000, maxMassBySize: null, generation: generation, yield: yield, maxHitPoints: 30, readableName: "dig site", description: "May contain some buried items.");
                     }
 
                 case Name.GlassDigSite:
@@ -1404,7 +1404,7 @@ namespace SonOfRobin
                                     new Yield.DroppedPiece(pieceName: Name.Stone, chanceToDrop: 30, maxNumberToDrop: 2)});
 
                         return new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.DigSite, allowedFields: allowedFields, category: BoardPiece.Category.Dirt, blocksMovement: false,
-                          minDistance: 0, maxDistance: 1000, maxMassBySize: null, generation: generation, yield: yield, maxHitPoints: 30, isShownOnMiniMap: false, readableName: "dig site", description: "May contain some buried items.");
+                          minDistance: 0, maxDistance: 1000, maxMassBySize: null, generation: generation, yield: yield, maxHitPoints: 30, readableName: "dig site", description: "May contain some buried items.");
                     }
 
                 case Name.DangerDigSite:
@@ -1425,7 +1425,7 @@ namespace SonOfRobin
                                     new Yield.DroppedPiece(pieceName: Name.Acorn, chanceToDrop: 20, maxNumberToDrop: 1)});
 
                         return new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.DigSite, allowedFields: allowedFields, category: BoardPiece.Category.Dirt, blocksMovement: false,
-                          minDistance: 0, maxDistance: 1000, maxMassBySize: null, generation: generation, yield: yield, maxHitPoints: 50, isShownOnMiniMap: false, readableName: "dig site", description: "May contain some buried items.");
+                          minDistance: 0, maxDistance: 1000, maxMassBySize: null, generation: generation, yield: yield, maxHitPoints: 50, readableName: "dig site", description: "May contain some buried items.");
                     }
 
                 case Name.IronDeposit:
@@ -1441,7 +1441,7 @@ namespace SonOfRobin
                                 new Yield.DroppedPiece(pieceName: Name.IronOre, chanceToDrop: 100, maxNumberToDrop: 6)});
 
                         return new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.IronDeposit, allowedFields: allowedFields, category: BoardPiece.Category.Stone,
-                          minDistance: 0, maxDistance: 1000, maxMassBySize: null, generation: generation, yield: yield, maxHitPoints: 300, isShownOnMiniMap: true, readableName: "iron deposit", description: "Can be mined for iron.");
+                          minDistance: 0, maxDistance: 1000, maxMassBySize: null, generation: generation, yield: yield, maxHitPoints: 300, readableName: "iron deposit", description: "Can be mined for iron.");
                     }
 
                 case Name.CrystalDepositBig:
@@ -1457,7 +1457,7 @@ namespace SonOfRobin
                                 new Yield.DroppedPiece(pieceName: Name.CrystalDepositSmall, chanceToDrop: 100, maxNumberToDrop: 2)});
 
                         return new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CrystalDepositBig, allowedFields: allowedFields, category: BoardPiece.Category.Crystal,
-                          minDistance: 0, maxDistance: 1000, maxMassBySize: null, generation: generation, yield: yield, maxHitPoints: 300, isShownOnMiniMap: true, readableName: "big crystal deposit", description: "Can be mined for crystals.");
+                          minDistance: 0, maxDistance: 1000, maxMassBySize: null, generation: generation, yield: yield, maxHitPoints: 300, readableName: "big crystal deposit", description: "Can be mined for crystals.");
                     }
 
                 case Name.CrystalDepositSmall:
@@ -1473,7 +1473,7 @@ namespace SonOfRobin
                                 new Yield.DroppedPiece(pieceName: Name.Crystal, chanceToDrop: 100, maxNumberToDrop: 12)});
 
                         return new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CrystalDepositSmall, allowedFields: allowedFields, category: BoardPiece.Category.Crystal,
-                          minDistance: 0, maxDistance: 1000, maxMassBySize: null, generation: generation, yield: yield, maxHitPoints: 150, isShownOnMiniMap: true, readableName: "small crystal deposit", description: "Can be mined for crystals.");
+                          minDistance: 0, maxDistance: 1000, maxMassBySize: null, generation: generation, yield: yield, maxHitPoints: 150, readableName: "small crystal deposit", description: "Can be mined for crystals.");
                     }
 
                 case Name.CoalDeposit:
@@ -1489,7 +1489,7 @@ namespace SonOfRobin
                                 new Yield.DroppedPiece(pieceName: Name.Coal, chanceToDrop: 100, maxNumberToDrop: 12)});
 
                         return new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CoalDeposit, allowedFields: allowedFields, category: BoardPiece.Category.Stone,
-                          minDistance: 0, maxDistance: 1000, maxMassBySize: null, generation: generation, yield: yield, maxHitPoints: 300, isShownOnMiniMap: true, readableName: "coal deposit", description: "Can be mined for coal.");
+                          minDistance: 0, maxDistance: 1000, maxMassBySize: null, generation: generation, yield: yield, maxHitPoints: 300, readableName: "coal deposit", description: "Can be mined for coal.");
                     }
 
                 case Name.Coal:
