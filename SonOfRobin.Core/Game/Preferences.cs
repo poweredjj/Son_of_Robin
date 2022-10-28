@@ -92,7 +92,7 @@ namespace SonOfRobin
 
         private static bool fullScreenMode = false;
         private static bool vSync = true;
-        public static bool loadWholeMap = true;
+        public static bool loadWholeMap = false;
         private static bool frameSkip = true;
         public static bool showDemoWorld = true;
         private static bool pointToWalk = false;
@@ -482,14 +482,12 @@ namespace SonOfRobin
                 if (SonOfRobinGame.graphics.PreferredBackBufferWidth > 1500) globalScale = 2f;
 
                 menuScale = 1.5f;
-                loadWholeMap = false;
                 showControlTips = false;
                 showFieldControlTips = false;
                 enableTouchJoysticks = true;
             }
             else
             {
-                loadWholeMap = true;
                 showControlTips = true;
                 showFieldControlTips = true;
             }
