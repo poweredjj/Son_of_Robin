@@ -95,7 +95,7 @@ namespace SonOfRobin
 
             float distance = Vector2.Distance(lastPressPos, lastReleasedPos);
 
-            MessageLog.AddMessage(msgType: MsgType.User, message: $"Press release distance {distance}, maxDistance {maxDistance}.");
+            MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Press release distance {distance}, maxDistance {maxDistance}.");
 
             return distance <= maxDistance;
         }
