@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace SonOfRobin
@@ -29,6 +30,13 @@ namespace SonOfRobin
 
         public void AddTransition(Transition transToAdd)
         {
+            World world = World.GetTopWorld();
+            if (world != null && world.updateMultiplier > 1)
+            {
+                int newDuration = Math.Max(transToAdd.Duration / world.updateMultiplier, 5);
+                transToAdd.SetNewDuration(newDuration); // to avoid sluggish transitions when updateMultiplier is active
+            }
+
             this.transitions.Add(transToAdd);
         }
 

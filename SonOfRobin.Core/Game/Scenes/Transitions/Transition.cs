@@ -21,7 +21,7 @@ namespace SonOfRobin
         private readonly bool refreshBaseVal;
         private readonly bool replaceBaseValue;
 
-        private readonly int duration;
+        public int Duration { get; private set; }
         private int cyclesLeft;
         private readonly bool pingPongCycles;
         private readonly float cycleMultiplier;
@@ -65,7 +65,7 @@ namespace SonOfRobin
             this.drawParamName = $"draw{Helpers.FirstCharToUpperCase(this.baseParamName)}";
             this.TargetVal = targetVal;
             this.stageTransform = stageTransform;
-            this.duration = duration;
+            this.Duration = duration;
             this.cyclesLeft = playCount; // -1 == infinite
             this.requireInputActiveAtRepeats = requireInputActiveAtRepeats; // will pause at the end of every cycle, waiting for user input to be active
             this.inputActiveAtRepeatsScene = inputActiveAtRepeatsScene; // if null, base scene will be used
@@ -92,9 +92,17 @@ namespace SonOfRobin
             if (!storeForLaterUse) this.Update();
         }
 
+        public void SetNewDuration(int newDuration)
+        {
+            if (newDuration < 1) throw new ArgumentException($"NewDuration cannot be less than 1 - {newDuration}.");
+
+            this.Duration = newDuration;
+            this.UpdateEndFrame();
+        }
+
         private void UpdateEndFrame()
         {
-            this.endFrame = SonOfRobinGame.currentUpdate + this.duration;
+            this.endFrame = SonOfRobinGame.currentUpdate + this.Duration;
         }
 
         private float ComputeStageTransform(float inputValue)
@@ -121,7 +129,7 @@ namespace SonOfRobin
             if (SonOfRobinGame.currentUpdate < this.cycleStartFrame) return;
             if (SonOfRobinGame.currentUpdate == this.cycleStartFrame) this.UpdateEndFrame();
 
-            float antiTransStage = ((float)this.endFrame - (float)SonOfRobinGame.currentUpdate) / (float)this.duration;
+            float antiTransStage = ((float)this.endFrame - (float)SonOfRobinGame.currentUpdate) / (float)this.Duration;
             antiTransStage = Math.Max(antiTransStage, 0f);
             if (!this.outTrans) antiTransStage = 1f - antiTransStage;
 
