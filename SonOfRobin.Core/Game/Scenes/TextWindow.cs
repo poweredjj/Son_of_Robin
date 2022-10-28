@@ -202,8 +202,8 @@ namespace SonOfRobin
             {
                 if (this.tipsLayout == ControlTips.TipsLayout.TextWindowCancel || this.tipsLayout == ControlTips.TipsLayout.TextWindowOkCancel)
                 {
-                    var confirmationData = new Dictionary<string, Object> { { "question", "Do you want to skip?" }, { "taskName", Scheduler.TaskName.SkipCinematics }, { "executeHelper", null } };
-                    new Scheduler.Task(taskName: Scheduler.TaskName.OpenConfirmationMenu, executeHelper: confirmationData);
+                    new Scheduler.Task(taskName: Scheduler.TaskName.SkipCinematics);
+
                     return;
                 }
                 else okButtonPressed = cancelButtonPressed; // if there is no cancel button, cancel button can be used as "ok"
