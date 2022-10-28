@@ -163,6 +163,7 @@ namespace SonOfRobin
 
             // MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Switching layout: '{this.currentLayout}' to '{tipsLayout}'.", color: Color.LightGreen);
 
+            Preferences preferences = new Preferences();
             World world = World.GetTopWorld();
             var scrollTextures = InputMapper.GetTextures(InputMapper.Action.GlobalScrollUp);
             scrollTextures.AddRange(InputMapper.GetTextures(InputMapper.Action.GlobalScrollDown));
@@ -227,7 +228,7 @@ namespace SonOfRobin
                         new ButtonTip(tipCollection: this.tipCollection, text: "craft", textures: InputMapper.GetTextures(InputMapper.Action.WorldFieldCraft));
                         new ButtonTip(tipCollection: this.tipCollection, text: "interact", isHighlighted: false, textures: InputMapper.GetTextures(InputMapper.Action.WorldInteract));
                         new ButtonTip(tipCollection: this.tipCollection, text: "map", highlightCoupledObj: world, highlightCoupledVarName: "MapEnabled", textures: InputMapper.GetTextures(InputMapper.Action.WorldMapToggle));
-                        new ButtonTip(tipCollection: this.tipCollection, text: "zoom out", textures: InputMapper.GetTextures(InputMapper.Action.WorldCameraZoomOut));
+                        new ButtonTip(tipCollection: this.tipCollection, text: "zoom out", highlightCoupledObj: preferences, highlightCoupledVarName: "CanZoomOut", textures: InputMapper.GetTextures(InputMapper.Action.WorldCameraZoomOut));
                         new ButtonTip(tipCollection: this.tipCollection, text: "use item", isHighlighted: false, textures: InputMapper.GetTextures(InputMapper.Action.WorldUseToolbarPiece));
                         new ButtonTip(tipCollection: this.tipCollection, text: "prev item", textures: InputMapper.GetTextures(InputMapper.Action.ToolbarPrev));
                         new ButtonTip(tipCollection: this.tipCollection, text: "next item", textures: InputMapper.GetTextures(InputMapper.Action.ToolbarNext));
@@ -239,7 +240,7 @@ namespace SonOfRobin
                         new ButtonTip(tipCollection: this.tipCollection, text: "walk", textures: InputMapper.GetTextures(InputMapper.Action.WorldWalk));
                         var cameraTextures = InputMapper.GetTextures(InputMapper.Action.WorldCameraMove); // there is no camera mapping for keyboard
                         if (cameraTextures.Count > 0) new ButtonTip(tipCollection: this.tipCollection, text: "aim", textures: cameraTextures);
-                        new ButtonTip(tipCollection: this.tipCollection, text: "zoom out", textures: InputMapper.GetTextures(InputMapper.Action.WorldCameraZoomOut));
+                        new ButtonTip(tipCollection: this.tipCollection, text: "zoom out", highlightCoupledObj: preferences, highlightCoupledVarName: "CanZoomOut", textures: InputMapper.GetTextures(InputMapper.Action.WorldCameraZoomOut));
                         new ButtonTip(tipCollection: this.tipCollection, text: "shoot", textures: InputMapper.GetTextures(InputMapper.Action.WorldUseToolbarPiece));
                         new ButtonTip(tipCollection: this.tipCollection, text: "menu", textures: InputMapper.GetTextures(InputMapper.Action.WorldPauseMenu));
                         break;
@@ -254,7 +255,7 @@ namespace SonOfRobin
                 case TipsLayout.WorldBuild:
                     {
                         new ButtonTip(tipCollection: this.tipCollection, text: "move", textures: InputMapper.GetTextures(InputMapper.Action.WorldWalk));
-                        new ButtonTip(tipCollection: this.tipCollection, text: "zoom out", textures: InputMapper.GetTextures(InputMapper.Action.WorldCameraZoomOut));
+                        new ButtonTip(tipCollection: this.tipCollection, text: "zoom out", highlightCoupledObj: preferences, highlightCoupledVarName: "CanZoomOut", textures: InputMapper.GetTextures(InputMapper.Action.WorldCameraZoomOut));
                         new ButtonTip(tipCollection: this.tipCollection, text: "place", textures: InputMapper.GetTextures(InputMapper.Action.GlobalConfirm), isHighlighted: false);
                         new ButtonTip(tipCollection: this.tipCollection, text: "cancel", textures: InputMapper.GetTextures(InputMapper.Action.GlobalCancelReturnSkip));
                         new ButtonTip(tipCollection: this.tipCollection, text: "menu", textures: InputMapper.GetTextures(InputMapper.Action.WorldPauseMenu));
@@ -275,7 +276,7 @@ namespace SonOfRobin
                     {
                         new ButtonTip(tipCollection: this.tipCollection, text: "move", textures: InputMapper.GetTextures(InputMapper.Action.WorldWalk));
                         new ButtonTip(tipCollection: this.tipCollection, text: "zoom in", textures: InputMapper.GetTextures(InputMapper.Action.MapZoomIn));
-                        new ButtonTip(tipCollection: this.tipCollection, text: "zoom out", textures: InputMapper.GetTextures(InputMapper.Action.MapZoomOut));
+                        new ButtonTip(tipCollection: this.tipCollection, text: "zoom out", highlightCoupledObj: preferences, highlightCoupledVarName: "CanZoomOut", textures: InputMapper.GetTextures(InputMapper.Action.MapZoomOut));
                         new ButtonTip(tipCollection: this.tipCollection, text: "toggle marker", textures: InputMapper.GetTextures(InputMapper.Action.MapToggleMarker));
                         new ButtonTip(tipCollection: this.tipCollection, text: "center on player", textures: InputMapper.GetTextures(InputMapper.Action.MapCenterPlayer));
                         new ButtonTip(tipCollection: this.tipCollection, text: "return", textures: InputMapper.GetTextures(InputMapper.Action.MapSwitch));

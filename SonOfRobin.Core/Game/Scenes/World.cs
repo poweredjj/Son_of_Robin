@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Concurrent;
@@ -637,7 +636,7 @@ namespace SonOfRobin
 
             this.ProcessInput();
             this.UpdateViewParams();
-            SoundEffect.DistanceScale = this.camera.viewRect.Width * 0.065f;
+            //SoundEffect.DistanceScale = this.camera.viewRect.Width * 0.065f;
 
             this.grid.UnloadTexturesIfMemoryLow(this.camera);
             this.grid.LoadClosestTextureInCameraView(camera: this.camera, visitedByPlayerOnly: false);
@@ -695,10 +694,25 @@ namespace SonOfRobin
                 this.analogCameraCorrection *= 10;
             }
 
-            // camera zoom control (to keep the current zoom level, when other scene is above the world, that scene must block updates below)
             float zoomOutForce = InputMapper.TriggerForce(InputMapper.Action.WorldCameraZoomOut);
 
-            if (!this.CineMode) this.camera.SetZoom(zoom: 1f / (1f + zoomOutForce), zoomSpeedMultiplier: 3f);
+            // camera zoom control (to keep the current zoom level, when other scene is above the world, that scene must block updates below)
+
+            if (!this.CineMode)
+            {
+                if (!Preferences.CanZoomOut)
+                {
+                    // zoomOutForce combined with worldScale is considered cheating and therefore not allowed
+
+                    if (zoomOutForce > 0.4f) this.hintEngine.ShowGeneralHint(type: HintEngine.Type.ZoomOutLocked, ignoreDelay: true); // to avoid showing the message at minimal (accidental, unintended) trigger pressure
+
+                    zoomOutForce = 0;
+                }
+                else VirtButton.ButtonHighlightOnNextFrame(VButName.ZoomOut);
+
+                this.camera.SetZoom(zoom: 1f / (1f + zoomOutForce), zoomSpeedMultiplier: 3f);
+            }
+
 
             if (!this.player.alive || this.player.activeState != BoardPiece.State.PlayerControlledWalking) return;
 

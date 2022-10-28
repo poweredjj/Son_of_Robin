@@ -143,7 +143,7 @@ namespace SonOfRobin
             this.Window.AllowUserResizing = true;
             Window.ClientSizeChanged += OnResize;
 
-            SoundEffect.DistanceScale = 1;
+            SoundEffect.DistanceScale = 125;
 
             KeepScreenOn = true;
 

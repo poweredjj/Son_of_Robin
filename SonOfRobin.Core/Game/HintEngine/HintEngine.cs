@@ -7,7 +7,7 @@ namespace SonOfRobin
 {
     public class HintEngine
     {
-        public enum Type { Empty, Hungry, VeryHungry, Starving, Tired, VeryTired, CantShootInWater, SmallInventory, MapNegative, Lava, BreakingItem, BrokenItem, BurntOutTorch, CineIntroduction, CineSmallBase, AnimalScaredOfFire, AnimalCounters };
+        public enum Type { Empty, Hungry, VeryHungry, Starving, Tired, VeryTired, CantShootInWater, SmallInventory, MapNegative, Lava, BreakingItem, BrokenItem, BurntOutTorch, CineIntroduction, CineSmallBase, AnimalScaredOfFire, AnimalCounters, ZoomOutLocked };
 
         private static readonly List<Type> typesThatIgnoreShowHintSetting = new List<Type> { Type.CineIntroduction, Type.CineSmallBase, Type.VeryTired, Type.Starving, Type.BrokenItem, Type.BurntOutTorch };
 
@@ -231,6 +231,16 @@ namespace SonOfRobin
                         ShowPieceDuringPause(world: world, pieceToShow: piece, messageList: new List<HintMessage> {
                             new HintMessage($"This | {piece.readableName} had just attacked me!\nIt must be because I have | attacked it first...", imageList: new List<Texture2D> {piece.sprite.frame.texture, AnimData.framesForPkgs[AnimData.PkgName.BloodSplatter1].texture}, blockInput: true),
                         });
+                        break;
+                    }
+
+                case Type.ZoomOutLocked:
+                    {
+                        this.Disable(type: type, delay: 0);
+
+                        Sound.QuickPlay(SoundData.Name.Error);
+
+                        ShowMessageDuringPause(new HintMessage(text: "'Zoom out' is disabled, when world scale is less than 1.", boxType: HintMessage.BoxType.RedBox, blockInput: true));
                         break;
                     }
 

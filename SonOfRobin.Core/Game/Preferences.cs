@@ -90,6 +90,8 @@ namespace SonOfRobin
             }
         }
 
+        public static bool CanZoomOut { get { return worldScale >= 1; } }
+
         private static bool fullScreenMode = false;
         private static bool vSync = true;
         public static bool loadWholeMap = false;
