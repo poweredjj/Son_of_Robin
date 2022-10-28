@@ -82,7 +82,7 @@ namespace SonOfRobin
                 return false; // for compatibility with mobile
             }
         }
-        public static bool LicenceValid { get { return DateTime.Now - lastChanged < TimeSpan.FromDays(30) || overrideLicence; } }
+        public static bool LicenceValid { get { return DateTime.Now - lastChanged < TimeSpan.FromDays(90) || overrideLicence; } }
         public static bool overrideLicence = false;
 
         public static bool KeepScreenOn
