@@ -183,7 +183,8 @@ namespace SonOfRobin
             if (!player.world.inputActive && !ignoreInputActive) return false;
             MessageLog.AddMessage(msgType: MsgType.Debug, message: "Checking piece hints.");
 
-            if (Scheduler.HasTaskChainInQueue) return false; // only one hint should be shown at once - waitingScenes cause playing next scene after turning off CineMode (playing scene without game being paused)
+            if (Scheduler.HasTaskChainInQueue || player.sleepMode != Player.SleepMode.Awake) return false;
+            // only one hint should be shown at once - waitingScenes cause playing next scene after turning off CineMode (playing scene without game being paused)
 
             foreach (PieceHint hint in pieceHintList)
             {

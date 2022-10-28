@@ -61,7 +61,8 @@ namespace SonOfRobin
                 if (!this.WaitFrameReached) return false;
             }
 
-            if (this.shownGeneralHints.Contains(type) || Scheduler.HasTaskChainInQueue) return false; // only one hint should be shown at once - waitingScenes cause playing next scene after turning off CineMode (playing scene without game being paused)
+            if (this.shownGeneralHints.Contains(type) || Scheduler.HasTaskChainInQueue || this.world.player.sleepMode != Player.SleepMode.Awake) return false;
+            // only one hint should be shown at once - waitingScenes cause playing next scene after turning off CineMode (playing scene without game being paused)
 
             this.UpdateWaitFrame();
 
