@@ -173,7 +173,7 @@ namespace SonOfRobin
             }
         }
         public static bool ShowTouchTips
-        { get { return SonOfRobinGame.platform == Platform.Mobile && !showControlTips; } }
+        { get { return Input.currentControlType == Input.ControlType.Touch; } }
 
         public static bool enableTouchJoysticks = false;
 
@@ -642,7 +642,7 @@ namespace SonOfRobin
                 CustomizeWorld = CustomizeWorld; // to refresh world sizes
             }
 
-            if (SonOfRobinGame.platform == Platform.Mobile)
+            if (SonOfRobinGame.platform == Platform.Mobile && !SonOfRobinGame.fakeMobileMode)
             {
                 fullScreenMode = true; // window mode makes no sense on mobile
                 vSync = true; // vSync cannot be turned off on mobile

@@ -94,7 +94,7 @@ namespace SonOfRobin
         {
             get
             {
-                return TouchInput.IsPressedReleasedWithinDistance(7);
+                return TouchInput.IsPressedReleasedWithinDistance(10);
             }
         }
 
