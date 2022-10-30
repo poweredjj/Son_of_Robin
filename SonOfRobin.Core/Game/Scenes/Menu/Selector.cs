@@ -190,19 +190,19 @@ namespace SonOfRobin
             {
                 Vector2 position = touch.Position / Preferences.GlobalScale;
 
-                if (leftRect.Contains(position) && touch.State == TouchLocationState.Pressed)
+                if (leftRect.Contains(position) && touch.State == TouchLocationState.Released && Menu.CanInterpretTouchReleaseAsButtonPress)
                 {
                     this.PreviousValue(touchMode: true);
                     return;
                 }
 
-                if (middleRect.Contains(position) && touch.State == TouchLocationState.Pressed)
+                if (middleRect.Contains(position) && touch.State == TouchLocationState.Released && Menu.CanInterpretTouchReleaseAsButtonPress)
                 {
                     this.Invoke();
                     return;
                 }
 
-                if (rightRect.Contains(position) && touch.State == TouchLocationState.Pressed)
+                if (rightRect.Contains(position) && touch.State == TouchLocationState.Released && Menu.CanInterpretTouchReleaseAsButtonPress)
                 {
                     this.NextValue(touchMode: true);
                     return;
