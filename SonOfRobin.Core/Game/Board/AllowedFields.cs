@@ -148,5 +148,11 @@ namespace SonOfRobin
             return true;
         }
 
+        public AllowedRange GetInitialRangeForTerrainName(TerrainName terrainName)
+        {
+            if (this.initialRangesByTerrainName.ContainsKey(terrainName)) return this.initialRangesByTerrainName[terrainName];
+            else return null;
+        }
+
     }
 }

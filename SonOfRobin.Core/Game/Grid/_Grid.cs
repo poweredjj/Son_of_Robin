@@ -190,6 +190,7 @@ namespace SonOfRobin
                     Parallel.ForEach(cellProcessingQueue, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, cell =>
                     {
                         cell.ComputeDanger();
+                        cell.FillAllowedNames(); // needs to be invoked after calculating every terrain
                     });
 
                     break;

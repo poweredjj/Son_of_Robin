@@ -32,6 +32,8 @@ namespace SonOfRobin
         public readonly Dictionary<TerrainName, Terrain> terrainByName;
         public BoardGraphics boardGraphics;
 
+        public readonly List<PieceTemplate.Name> allowedNames;  // for initialRangesByTerrainName only - because currentRangesByTerrainName can be changed anytime
+
         public static readonly Group[] allGroups = (Group[])Enum.GetValues(typeof(Group));
         public static readonly TerrainName[] allTerrains = (TerrainName[])Enum.GetValues(typeof(TerrainName));
 
@@ -83,6 +85,36 @@ namespace SonOfRobin
             }
 
             this.terrainByName = new Dictionary<TerrainName, Terrain>();
+            this.allowedNames = new List<PieceTemplate.Name>();
+        }
+
+        public void FillAllowedNames()
+        {
+            foreach (PieceTemplate.Name pieceName in PieceTemplate.allNames)
+            {
+                PieceInfo.Info pieceInfo = PieceInfo.GetInfo(pieceName);
+                AllowedFields allowedFields = pieceInfo.allowedFields;
+                bool cellCanContainThisPiece = true;
+
+                foreach (var kvp in this.terrainByName)
+                {
+                    TerrainName terrainName = kvp.Key;
+
+                    AllowedRange allowedRange = allowedFields.GetInitialRangeForTerrainName(terrainName);
+                    if (allowedRange != null)
+                    {
+                        Terrain terrain = kvp.Value;
+
+                        if (!allowedRange.IsInRange(terrain.MinVal) && !allowedRange.IsInRange(terrain.MaxVal))
+                        {
+                            cellCanContainThisPiece = false;
+                            break;
+                        }
+                    }
+                }
+
+                if (cellCanContainThisPiece) this.allowedNames.Add(pieceName);
+            }
         }
 
         public void SetAsVisited()

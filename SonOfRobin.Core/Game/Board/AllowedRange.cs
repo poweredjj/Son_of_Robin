@@ -5,14 +5,14 @@ namespace SonOfRobin
     [Serializable]
     public class AllowedRange
     {
-        private byte min;
-        private byte max;
+        public byte Min { get; private set; }
+        public byte Max { get; private set; }
         private bool isReadOnly;
 
         public AllowedRange(byte min, byte max)
         {
-            this.min = min;
-            this.max = max;
+            this.Min = min;
+            this.Max = max;
             this.isReadOnly = false;
         }
 
@@ -30,17 +30,17 @@ namespace SonOfRobin
         {
             this.CheckWritePermission();
 
-            this.min = Math.Min(this.min, expandedMin);
-            this.max = Math.Max(this.max, expandedMax);
+            this.Min = Math.Min(this.Min, expandedMin);
+            this.Max = Math.Max(this.Max, expandedMax);
         }
 
         public bool IsInRange(byte value)
         {
-            return this.min <= value && value <= this.max;
+            return this.Min <= value && value <= this.Max;
         }
         public AllowedRange GetRangeCopy(bool isReadOnly)
         {
-            var rangeCopy = new AllowedRange(min: this.min, max: this.max);
+            var rangeCopy = new AllowedRange(min: this.Min, max: this.Max);
             if (isReadOnly) rangeCopy.MakeReadOnly();
 
             return rangeCopy;

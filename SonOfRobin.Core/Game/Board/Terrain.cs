@@ -23,8 +23,8 @@ namespace SonOfRobin
         private readonly float gain;
 
         private readonly Byte[,] mapData;
-        private readonly byte minVal;
-        private readonly byte maxVal;
+        public byte MinVal { get; private set; }
+        public byte MaxVal { get; private set; }
 
         public static byte waterLevelMax = 84;
         public static byte volcanoEdgeMin = 210;
@@ -56,16 +56,16 @@ namespace SonOfRobin
 
                 var tuple = this.CreateNoiseMap(addBorder: addBorder);
                 this.mapData = tuple.Item1;
-                this.minVal = tuple.Item2;
-                this.maxVal = tuple.Item3;
+                this.MinVal = tuple.Item2;
+                this.MaxVal = tuple.Item3;
 
                 this.SaveTemplate();
             }
             else
             {
                 this.mapData = (Byte[,])serializedMapData["mapData"];
-                this.minVal = (byte)serializedMapData["minVal"];
-                this.maxVal = (byte)serializedMapData["maxVal"];
+                this.MinVal = (byte)serializedMapData["MinVal"];
+                this.MaxVal = (byte)serializedMapData["MaxVal"];
             }
         }
 
@@ -104,8 +104,8 @@ namespace SonOfRobin
             var serializedMapData = new Dictionary<string, object>
             {
                 { "mapData", this.mapData },
-                { "minVal", this.minVal },
-                { "maxVal", this.maxVal },
+                { "MinVal", this.MinVal },
+                { "MaxVal", this.MaxVal },
             };
 
             return serializedMapData;
