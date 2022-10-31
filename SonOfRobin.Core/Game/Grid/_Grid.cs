@@ -35,6 +35,7 @@ namespace SonOfRobin
         public readonly Cell[,] cellGrid;
         public readonly List<Cell> allCells;
         public readonly List<Cell> cellsToProcessOnStart;
+        private readonly Dictionary<PieceTemplate.Name, List<Cell>> cellListsForPieceNames; // pieces and cells that those pieces can (initially) be placed into
         private DateTime lastCellProcessedTime;
         public int loadedTexturesCount;
 
@@ -72,6 +73,7 @@ namespace SonOfRobin
             this.noOfCellsX = (int)Math.Ceiling((float)this.world.width / (float)this.cellWidth);
             this.noOfCellsY = (int)Math.Ceiling((float)this.world.height / (float)this.cellHeight);
 
+            this.cellListsForPieceNames = new Dictionary<PieceTemplate.Name, List<Cell>>();
             this.cellGrid = this.MakeGrid();
             this.allCells = this.GetAllCells();
             this.CalculateSurroundingCells();
@@ -193,7 +195,10 @@ namespace SonOfRobin
                         cell.FillAllowedNames(); // needs to be invoked after calculating every terrain
                     });
 
+                    this.FillCellListsForPieceNames();
+
                     break;
+
 
                 case Stage.ProcessTextures:
 
@@ -257,6 +262,19 @@ namespace SonOfRobin
 
                 this.currentStage++;
                 this.PrepareNextStage();
+            }
+        }
+
+        private void FillCellListsForPieceNames()
+        {
+            foreach (PieceTemplate.Name pieceName in PieceTemplate.allNames)
+            {
+                this.cellListsForPieceNames[pieceName] = new List<Cell>();
+
+                foreach (Cell cell in this.allCells)
+                {
+                    if (cell.allowedNames.Contains(pieceName)) this.cellListsForPieceNames[pieceName].Add(cell);
+                }
             }
         }
 
