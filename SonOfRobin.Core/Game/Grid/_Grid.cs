@@ -149,6 +149,8 @@ namespace SonOfRobin
                             this.cellGrid[x, y].CopyFromTemplate(templateGrid.cellGrid[x, y]);
                     }
 
+                    this.FillCellListsForPieceNames();
+
                     return true;
                 }
             }

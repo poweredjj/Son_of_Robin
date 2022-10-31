@@ -167,6 +167,7 @@ namespace SonOfRobin
 
             this.boardGraphics = new BoardGraphics(grid: this.grid, cell: this);
             this.boardGraphics.texture = templateCell.boardGraphics.texture;
+            this.allowedNames.AddRange(templateCell.allowedNames);
         }
 
         public void UpdateBoardGraphics()
