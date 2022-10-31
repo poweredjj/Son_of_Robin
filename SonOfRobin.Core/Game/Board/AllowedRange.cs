@@ -26,14 +26,6 @@ namespace SonOfRobin
             if (this.isReadOnly) throw new ArgumentException("Trying to modify read-only AllowedRange.");
         }
 
-        public AllowedRange GetRangeCopy(bool isReadOnly)
-        {
-            var rangeCopy = new AllowedRange(min: this.min, max: this.max);
-            if (isReadOnly) rangeCopy.MakeReadOnly();
-
-            return rangeCopy;
-        }
-
         public void ExpandRange(byte expandedMin, byte expandedMax)
         {
             this.CheckWritePermission();
@@ -45,6 +37,13 @@ namespace SonOfRobin
         public bool IsInRange(byte value)
         {
             return this.min <= value && value <= this.max;
+        }
+        public AllowedRange GetRangeCopy(bool isReadOnly)
+        {
+            var rangeCopy = new AllowedRange(min: this.min, max: this.max);
+            if (isReadOnly) rangeCopy.MakeReadOnly();
+
+            return rangeCopy;
         }
 
     }
