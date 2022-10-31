@@ -320,15 +320,14 @@ namespace SonOfRobin
             if (!this.world.CanProcessAnyStateMachineNow) return false;
 
             int numberOfTries = (minDistance == 0 && maxDistance == 0) ? 1 : 4;
-            Vector2 newPosition;
+
             if (startPosition.X == -100 && startPosition.Y == -100) // -100, -100 will be converted to any position on the map - needed for effective creation of new sprites 
             {
                 for (int tryIndex = 0; tryIndex < numberOfTries; tryIndex++)
                 {
-                    if (this.world.createMissinPiecesOutsideCamera) newPosition = this.world.camera.GetRandomPositionOutsideCameraView();
-                    else newPosition = new Vector2(this.world.random.Next(0, this.world.width - 1), this.world.random.Next(0, this.world.height - 1));
+                    Vector2 newPos = this.GetRandomPosition(outsideCamera: this.world.createMissingPiecesOutsideCamera);
 
-                    bool hasBeenMoved = this.SetNewPosition(newPos: newPosition, ignoreCollisions: ignoreCollisions, ignoreDensity: ignoreDensity, checkIsOnBoard: false);
+                    bool hasBeenMoved = this.SetNewPosition(newPos: newPos, ignoreCollisions: ignoreCollisions, ignoreDensity: ignoreDensity, checkIsOnBoard: false);
                     if (hasBeenMoved) return true;
                 }
             }
@@ -341,18 +340,48 @@ namespace SonOfRobin
                     if (this.world.random.Next(2) == 1) offset.X *= -1;
                     if (this.world.random.Next(2) == 1) offset.Y *= -1;
 
-                    newPosition = startPosition + offset;
-                    newPosition.X = Math.Max(newPosition.X, 0);
-                    newPosition.X = Math.Min(newPosition.X, this.world.width - 1);
-                    newPosition.Y = Math.Max(newPosition.Y, 0);
-                    newPosition.Y = Math.Min(newPosition.Y, this.world.height - 1);
+                    Vector2 newPos = startPosition + offset;
+                    newPos.X = Math.Max(newPos.X, 0);
+                    newPos.X = Math.Min(newPos.X, this.world.width - 1);
+                    newPos.Y = Math.Max(newPos.Y, 0);
+                    newPos.Y = Math.Min(newPos.Y, this.world.height - 1);
 
-                    bool hasBeenMoved = this.SetNewPosition(newPos: newPosition, ignoreCollisions: ignoreCollisions, ignoreDensity: ignoreDensity, checkIsOnBoard: false);
+                    bool hasBeenMoved = this.SetNewPosition(newPos: newPos, ignoreCollisions: ignoreCollisions, ignoreDensity: ignoreDensity, checkIsOnBoard: false);
                     if (hasBeenMoved) return true;
                 }
             }
 
             return false;
+        }
+
+        public Vector2 GetRandomPosition(bool outsideCamera)
+        {
+            if (!outsideCamera)
+            {
+                var cellList = this.world.grid.GetCellsForPieceName(this.boardPiece.name);
+                Cell cell = cellList[this.world.random.Next(0, cellList.Count)];
+                return new Vector2(this.world.random.Next(cell.xMin, cell.xMax), this.world.random.Next(cell.yMin, cell.yMax));
+            }
+
+            Rectangle cameraViewRect = this.world.camera.viewRect;
+
+            Vector2 position = new Vector2(0, 0);
+
+            // in case of map being smaller than the screen
+            if (cameraViewRect.Width >= this.world.width && cameraViewRect.Height >= this.world.height)
+            {
+                return new Vector2(this.world.random.Next(0, this.world.width), this.world.random.Next(0, this.world.height));
+            }
+
+            while (true)
+            {
+                position.X = this.world.random.Next(0, this.world.width);
+                position.Y = this.world.random.Next(0, this.world.height);
+
+                if (!cameraViewRect.Contains(position)) break;
+            }
+
+            return position;
         }
 
         private bool FindFreeSpotAtBeachEdge(bool ignoreCollisions = false, bool ignoreDensity = false)
@@ -441,7 +470,7 @@ namespace SonOfRobin
         {
             this.CharacterStand(setEvenIfMissing: false);
 
-            if (CheckIFAnimNameExists("dead")) this.AssignNewName("dead");
+            if (CheckIfAnimNameExists("dead")) this.AssignNewName("dead");
             else this.color = Color.LightCoral;
 
             if (this.boardPiece.GetType() == typeof(Animal)) PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: this.position, templateName: PieceTemplate.Name.BloodSplatter);
@@ -623,7 +652,7 @@ namespace SonOfRobin
         {
             if (this.animName != animName)
             {
-                if (CheckIFAnimNameExists(animName) || setEvenIfMissing)
+                if (CheckIfAnimNameExists(animName) || setEvenIfMissing)
                 {
                     var animNameCopy = this.animName;
 
@@ -643,7 +672,7 @@ namespace SonOfRobin
             string newCompleteAnimID = GetCompleteAnimId(animPackage: this.animPackage, animSize: newAnimSize, animName: this.animName);
             return AnimData.frameListById.ContainsKey(newCompleteAnimID);
         }
-        public bool CheckIFAnimNameExists(string newAnimName)
+        public bool CheckIfAnimNameExists(string newAnimName)
         {
             string newCompleteAnimID = GetCompleteAnimId(animPackage: this.animPackage, animSize: this.animSize, animName: newAnimName);
             return AnimData.frameListById.ContainsKey(newCompleteAnimID);

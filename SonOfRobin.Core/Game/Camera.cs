@@ -272,27 +272,6 @@ namespace SonOfRobin
             if (setInstantly) this.CurrentZoom = zoom;
         }
 
-        public Vector2 GetRandomPositionOutsideCameraView()
-        {
-            Vector2 position = new Vector2(0, 0);
-
-            // in case of map being smaller than the screen
-            if (viewRect.Width >= this.world.width && viewRect.Height >= this.world.height)
-            {
-                return new Vector2(this.world.random.Next(0, this.world.width), this.world.random.Next(0, this.world.height));
-            }
-
-            while (true)
-            {
-                position.X = this.world.random.Next(0, this.world.width);
-                position.Y = this.world.random.Next(0, this.world.height);
-
-                if (!viewRect.Contains(position)) break;
-            }
-
-            return position;
-        }
-
         private Vector2 GetTargetCoords()
         {
             switch (this.trackingMode)

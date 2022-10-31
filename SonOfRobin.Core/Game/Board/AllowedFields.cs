@@ -14,9 +14,11 @@ namespace SonOfRobin
         private readonly Dictionary<TerrainName, AllowedRange> initialRangesByTerrainName; // never to be changed
         private Dictionary<TerrainName, AllowedRange> currentRangesByTerrainName;
 
+        public bool InitialRangesHasChanged { get { return this.currentRangesByTerrainName != null; } }
+
         public AllowedFields()
         {
-            // No fields defined - all fields allowed.
+            // no fields defined - all fields allowed
 
             this.initialRangesByTerrainName = new Dictionary<TerrainName, AllowedRange> { };
             MakeRangeDictReadOnly(this.initialRangesByTerrainName);

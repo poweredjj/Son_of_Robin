@@ -25,7 +25,7 @@ namespace SonOfRobin
         public readonly bool playerFemale;
 
         private Object saveGameData;
-        public bool createMissinPiecesOutsideCamera;
+        public bool createMissingPiecesOutsideCamera;
         public DateTime lastSaved;
         public bool BuildMode { get; private set; }
 
@@ -258,7 +258,7 @@ namespace SonOfRobin
                 this.soundActive = false;
             }
             this.saveGameData = saveGameData;
-            this.createMissinPiecesOutsideCamera = false;
+            this.createMissingPiecesOutsideCamera = false;
             this.lastSaved = DateTime.Now;
             this.worldCreationInProgress = true;
             this.plantsProcessing = false;
@@ -568,7 +568,7 @@ namespace SonOfRobin
 
             // creating pieces
 
-            this.createMissinPiecesOutsideCamera = outsideCamera;
+            this.createMissingPiecesOutsideCamera = outsideCamera;
             int piecesCreated = 0;
 
             foreach (var kvp in amountToCreateByName)
@@ -612,7 +612,7 @@ namespace SonOfRobin
             }
 
             if (piecesCreated > 0) MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Created {piecesCreated} new pieces.");
-            this.createMissinPiecesOutsideCamera = false;
+            this.createMissingPiecesOutsideCamera = false;
             return piecesCreated > 0;
         }
 

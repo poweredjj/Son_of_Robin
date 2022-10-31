@@ -192,8 +192,9 @@ namespace SonOfRobin
                     Parallel.ForEach(cellProcessingQueue, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, cell =>
                     {
                         cell.ComputeDanger();
-                        cell.FillAllowedNames(); // needs to be invoked after calculating every terrain
+                        cell.FillAllowedNames(); // needs to be invoked after calculating final terrain
                     });
+
 
                     this.FillCellListsForPieceNames();
 
@@ -276,6 +277,11 @@ namespace SonOfRobin
                     if (cell.allowedNames.Contains(pieceName)) this.cellListsForPieceNames[pieceName].Add(cell);
                 }
             }
+        }
+
+        public List<Cell> GetCellsForPieceName(PieceTemplate.Name pieceName)
+        {
+            return this.cellListsForPieceNames[pieceName];
         }
 
         private void PrepareNextStage()
@@ -656,7 +662,7 @@ namespace SonOfRobin
             return this.cellGrid[cellNoX, cellNoY].terrainByName[terrainName].GetMapData(posInsideCellX, posInsideCellY);
         }
 
-        private Cell FindMatchingCell(Vector2 position)
+        public Cell FindMatchingCell(Vector2 position)
         {
             return this.cellGrid[(int)(position.X / this.cellWidth), (int)(position.Y / this.cellHeight)];
         }

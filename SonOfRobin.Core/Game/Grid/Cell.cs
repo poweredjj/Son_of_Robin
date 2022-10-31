@@ -105,7 +105,8 @@ namespace SonOfRobin
                     {
                         Terrain terrain = kvp.Value;
 
-                        if (!allowedRange.IsInRange(terrain.MinVal) && !allowedRange.IsInRange(terrain.MaxVal))
+                        if ((allowedRange.Min < terrain.MinVal && allowedRange.Max < terrain.MinVal) ||
+                            (allowedRange.Min > terrain.MaxVal && allowedRange.Max > terrain.MaxVal))
                         {
                             cellCanContainThisPiece = false;
                             break;
