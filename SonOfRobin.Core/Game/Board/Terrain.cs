@@ -90,8 +90,7 @@ namespace SonOfRobin
         {
             var loadedData = FileReaderWriter.Load(this.templatePath);
             if (loadedData == null) return null;
-
-            return (Dictionary<string, object>)loadedData;
+            else return (Dictionary<string, object>)loadedData;
         }
 
         public void SaveTemplate()

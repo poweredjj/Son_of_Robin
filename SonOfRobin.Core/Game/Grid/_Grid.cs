@@ -10,12 +10,13 @@ namespace SonOfRobin
     public class Grid
     {
         public enum Stage
-        { GenerateTerrain, ProcessTextures, LoadTextures }
+        { GenerateTerrain, SetExtData, ProcessTextures, LoadTextures }
 
         private static readonly int allStagesCount = ((Stage[])Enum.GetValues(typeof(Stage))).Length;
 
         private static readonly Dictionary<Stage, string> namesForStages = new Dictionary<Stage, string> {
             { Stage.GenerateTerrain, "generating terrain" },
+            { Stage.SetExtData, "setting extended data" },
             { Stage.ProcessTextures, "processing textures" },
             { Stage.LoadTextures, "loading textures" },
         };
@@ -26,13 +27,14 @@ namespace SonOfRobin
         public bool creationInProgress;
 
         public readonly GridTemplate gridTemplate;
-        private readonly World world;
+        public readonly World world;
         private readonly int noOfCellsX;
         private readonly int noOfCellsY;
         public readonly int cellWidth;
         public readonly int cellHeight;
         public readonly int resDivider;
         public readonly Cell[,] cellGrid;
+        public ExtBoardProperties ExtBoardProperties { get; private set; }
         public readonly List<Cell> allCells;
         public readonly List<Cell> cellsToProcessOnStart;
         private readonly Dictionary<PieceTemplate.Name, List<Cell>> cellListsForPieceNames; // pieces and cells that those pieces can (initially) be placed into
@@ -81,6 +83,7 @@ namespace SonOfRobin
             this.cellListsForPieceNames = new Dictionary<PieceTemplate.Name, List<Cell>>();
             this.cellGrid = this.MakeGrid();
             this.allCells = this.GetAllCells();
+            this.ExtBoardProperties = new ExtBoardProperties(grid: this);
             this.CalculateSurroundingCells();
 
             this.lastCellProcessedTime = DateTime.Now;
@@ -153,6 +156,7 @@ namespace SonOfRobin
                     }
 
                     this.FillCellListsForPieceNames();
+                    this.ExtBoardProperties = templateGrid.ExtBoardProperties;
 
                     return true;
                 }
@@ -202,6 +206,11 @@ namespace SonOfRobin
 
                     this.FillCellListsForPieceNames();
 
+                    break;
+
+                case Stage.SetExtData:
+
+                    this.SetExtProperties();
                     break;
 
                 case Stage.ProcessTextures:
@@ -280,6 +289,35 @@ namespace SonOfRobin
                     if (cell.allowedNames.Contains(pieceName)) this.cellListsForPieceNames[pieceName].Add(cell);
                 }
             }
+        }
+
+        private void SetExtProperties()
+        {
+            // TODO add ext calculation code
+
+            // this.GetExtValue(name: ExtBoardProperties.ExtPropName.Water, x: x, y: y);
+
+            if (!this.ExtBoardProperties.CreationInProgress)
+            {
+                for (int dividedX = 0; dividedX < this.ExtBoardProperties.dividedWidth; dividedX++)
+                {
+                    for (int dividedY = 0; dividedY < this.ExtBoardProperties.dividedHeight; dividedY++)
+                    {
+                        int realX = dividedX * this.resDivider;
+                        int realY = dividedY * this.resDivider;
+
+
+
+                        this.ExtBoardProperties.SetDataRaw(name: ExtBoardProperties.ExtPropName.Water, x: dividedX, y: dividedY, value: this.GetFieldValue(terrainName: TerrainName.Height, x: realX, y: realY) < Terrain.waterLevelMax);
+
+                        // if (this.GetFieldValue(terrainName: TerrainName.Height, x: x, y: y) < Terrain.waterLevelMax)
+                    }
+                }
+            }
+
+            this.ExtBoardProperties.EndCreationAndSave();
+
+            this.cellsToProcessOnStart.Clear();
         }
 
         public List<Cell> GetCellsForPieceName(PieceTemplate.Name pieceName)

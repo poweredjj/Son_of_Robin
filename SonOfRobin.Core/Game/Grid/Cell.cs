@@ -30,7 +30,6 @@ namespace SonOfRobin
 
         public readonly Dictionary<Group, Dictionary<string, Sprite>> spriteGroups;
         public readonly Dictionary<TerrainName, Terrain> terrainByName;
-        public readonly ExtBoardProperties extBoardProperties;
         public BoardGraphics boardGraphics;
 
         public readonly List<PieceTemplate.Name> allowedNames;  // for initialRangesByTerrainName only - because currentRangesByTerrainName can be changed anytime
@@ -85,7 +84,6 @@ namespace SonOfRobin
                 this.spriteGroups[groupName] = new Dictionary<string, Sprite> { };
             }
 
-            this.extBoardProperties = new ExtBoardProperties(cell: this);
             this.terrainByName = new Dictionary<TerrainName, Terrain>();
             this.allowedNames = new List<PieceTemplate.Name>();
         }
