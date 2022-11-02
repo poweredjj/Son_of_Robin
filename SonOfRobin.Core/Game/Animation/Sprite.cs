@@ -356,12 +356,9 @@ namespace SonOfRobin
 
         public Vector2 GetRandomPosition(bool outsideCamera)
         {
-            var cellList = this.world.grid.GetCellsForPieceName(this.boardPiece.name);
-
             Cell cell;
 
-            if (!outsideCamera) cell = cellList[this.world.random.Next(0, cellList.Count)];
-            else
+            if (outsideCamera)
             {
                 Rectangle cameraViewRect = this.world.camera.viewRect;
 
@@ -371,6 +368,8 @@ namespace SonOfRobin
                     return new Vector2(this.world.random.Next(0, this.world.width), this.world.random.Next(0, this.world.height));
                 }
 
+                var cellList = this.world.grid.GetCellsForPieceName(this.boardPiece.name);
+
                 while (true)
                 {
                     int cellNo = this.world.random.Next(0, cellList.Count);
@@ -378,8 +377,14 @@ namespace SonOfRobin
                     cell = cellList[cellNo];
                     cellList.RemoveAt(cellNo);
                     if (!cameraViewRect.Intersects(cell.rect)) break;
+                    if (!cellList.Any())
+                    {
+                        MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{this.boardPiece.name} - no cells left while searching for a random position outside camera.");
+                        return new Vector2(this.world.random.Next(0, this.world.width), this.world.random.Next(0, this.world.height));
+                    }
                 }
             }
+            else cell = this.world.grid.GetRandomCellForPieceName(this.boardPiece.name);
 
             return new Vector2(this.world.random.Next(cell.xMin, cell.xMax), this.world.random.Next(cell.yMin, cell.yMax));
         }

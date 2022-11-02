@@ -284,6 +284,12 @@ namespace SonOfRobin
             return this.cellListsForPieceNames[pieceName].ToList(); // ToList() - to avoid modifying original list
         }
 
+        public Cell GetRandomCellForPieceName(PieceTemplate.Name pieceName) // to avoid calling GetCellsForPieceName() for getting one random cell only
+        {
+            var cellList = this.cellListsForPieceNames[pieceName];
+            return cellList[this.world.random.Next(0, cellList.Count)];
+        }
+
         private void PrepareNextStage()
         {
             this.stageStartFrame = SonOfRobinGame.currentUpdate;
