@@ -74,7 +74,7 @@ namespace SonOfRobin
             if (x < 0) throw new IndexOutOfRangeException($"X {x} cannot be less than 0.");
             if (y < 0) throw new IndexOutOfRangeException($"Y {y} cannot be less than 0.");
 
-            return mapData[x / this.cell.grid.resDivider, y / this.cell.grid.resDivider];
+            return this.mapData[x / this.cell.grid.resDivider, y / this.cell.grid.resDivider];
         }
 
         public Byte GetMapDataRaw(int x, int y)
@@ -83,7 +83,7 @@ namespace SonOfRobin
             if (y < 0) throw new IndexOutOfRangeException($"Y {y} cannot be less than 0.");
 
             // direct access, without taking resDivider into account
-            return mapData[x, y];
+            return this.mapData[x, y];
         }
 
         private Dictionary<string, object> LoadTemplate()

@@ -73,6 +73,8 @@ namespace SonOfRobin
             if (this.cellWidth % 2 != 0) throw new ArgumentException($"Cell width {this.cellWidth} is not divisible by 2.");
             if (this.cellHeight % 2 != 0) throw new ArgumentException($"Cell height {this.cellHeight} is not divisible by 2.");
 
+            this.gridTemplate = new GridTemplate(seed: this.world.seed, width: this.world.width, height: this.world.height, cellWidth: this.cellWidth, cellHeight: this.cellHeight, resDivider: this.resDivider);
+
             this.noOfCellsX = (int)Math.Ceiling((float)this.world.width / (float)this.cellWidth);
             this.noOfCellsY = (int)Math.Ceiling((float)this.world.height / (float)this.cellHeight);
 
@@ -80,8 +82,6 @@ namespace SonOfRobin
             this.cellGrid = this.MakeGrid();
             this.allCells = this.GetAllCells();
             this.CalculateSurroundingCells();
-
-            this.gridTemplate = new GridTemplate(seed: this.world.seed, width: this.world.width, height: this.world.height, cellWidth: this.cellWidth, cellHeight: this.cellHeight, resDivider: this.resDivider);
 
             this.lastCellProcessedTime = DateTime.Now;
 

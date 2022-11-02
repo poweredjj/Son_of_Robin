@@ -20,7 +20,8 @@ namespace SonOfRobin
         private readonly float version;
         public readonly string templatePath;
         private readonly string headerPath;
-        private readonly DateTime createdDate;
+        public DateTime CreatedDate { get; private set; }
+
         public bool IsObsolete { get { return this.version != currentVersion; } }
         public static bool CorrectTemplatesExist { get { return CorrectTemplates.Count > 0; } }
         public static List<GridTemplate> CorrectTemplates
@@ -50,7 +51,7 @@ namespace SonOfRobin
             this.cellHeight = cellHeight;
             this.resDivider = resDivider;
             this.version = currentVersion;
-            this.createdDate = DateTime.Now;
+            this.CreatedDate = DateTime.Now;
 
             this.templatePath = this.CheckCreateFolder();
             this.headerPath = Path.Combine(this.templatePath, headerName);
