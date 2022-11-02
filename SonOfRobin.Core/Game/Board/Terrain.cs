@@ -88,10 +88,10 @@ namespace SonOfRobin
 
         private Dictionary<string, object> LoadTemplate()
         {
-            var loadedData = (Dictionary<string, object>)FileReaderWriter.Load(this.templatePath);
+            var loadedData = FileReaderWriter.Load(this.templatePath);
             if (loadedData == null) return null;
 
-            return loadedData;
+            return (Dictionary<string, object>)loadedData;
         }
 
         public void SaveTemplate()

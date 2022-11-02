@@ -127,7 +127,7 @@ namespace SonOfRobin
         {
             var cellData = new Dictionary<string, object>
             {
-                { "VisitedByPlayer", this.VisitedByPlayer},
+                { "VisitedByPlayer", this.VisitedByPlayer },
             };
 
             return cellData;
