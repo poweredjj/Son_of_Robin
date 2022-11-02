@@ -60,7 +60,7 @@ namespace SonOfRobin
 
             if (!topTips.tipCollection.ContainsKey(tipName))
             {
-                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"No tip named '{tipName}' was found.");
+                // MessageLog.AddMessage(msgType: MsgType.Debug, message: $"No tip named '{tipName}' was found.");
                 return;
             }
 

@@ -357,8 +357,7 @@ namespace SonOfRobin
             var newCell = this.FindMatchingCell(position: sprite.position);
 
             if (sprite.currentCell == newCell) return;
-
-            if (sprite.currentCell == null)
+            else if (sprite.currentCell == null)
             {
                 this.AddSprite(sprite: sprite);
                 return;
