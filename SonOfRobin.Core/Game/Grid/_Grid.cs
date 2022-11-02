@@ -197,11 +197,9 @@ namespace SonOfRobin
                         cell.FillAllowedNames(); // needs to be invoked after calculating final terrain
                     });
 
-
                     this.FillCellListsForPieceNames();
 
                     break;
-
 
                 case Stage.ProcessTextures:
 
@@ -283,7 +281,7 @@ namespace SonOfRobin
 
         public List<Cell> GetCellsForPieceName(PieceTemplate.Name pieceName)
         {
-            return this.cellListsForPieceNames[pieceName];
+            return this.cellListsForPieceNames[pieceName].ToList(); // ToList() - to avoid modifying original list
         }
 
         private void PrepareNextStage()

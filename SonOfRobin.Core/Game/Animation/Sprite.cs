@@ -356,32 +356,32 @@ namespace SonOfRobin
 
         public Vector2 GetRandomPosition(bool outsideCamera)
         {
-            if (!outsideCamera)
+            var cellList = this.world.grid.GetCellsForPieceName(this.boardPiece.name);
+
+            Cell cell;
+
+            if (!outsideCamera) cell = cellList[this.world.random.Next(0, cellList.Count)];
+            else
             {
-                var cellList = this.world.grid.GetCellsForPieceName(this.boardPiece.name);
-                Cell cell = cellList[this.world.random.Next(0, cellList.Count)];
-                return new Vector2(this.world.random.Next(cell.xMin, cell.xMax), this.world.random.Next(cell.yMin, cell.yMax));
+                Rectangle cameraViewRect = this.world.camera.viewRect;
+
+                // in case of map being smaller than the screen
+                if (cameraViewRect.Width >= this.world.width && cameraViewRect.Height >= this.world.height)
+                {
+                    return new Vector2(this.world.random.Next(0, this.world.width), this.world.random.Next(0, this.world.height));
+                }
+
+                while (true)
+                {
+                    int cellNo = this.world.random.Next(0, cellList.Count);
+
+                    cell = cellList[cellNo];
+                    cellList.RemoveAt(cellNo);
+                    if (!cameraViewRect.Intersects(cell.rect)) break;
+                }
             }
 
-            Rectangle cameraViewRect = this.world.camera.viewRect;
-
-            Vector2 position = new Vector2(0, 0);
-
-            // in case of map being smaller than the screen
-            if (cameraViewRect.Width >= this.world.width && cameraViewRect.Height >= this.world.height)
-            {
-                return new Vector2(this.world.random.Next(0, this.world.width), this.world.random.Next(0, this.world.height));
-            }
-
-            while (true)
-            {
-                position.X = this.world.random.Next(0, this.world.width);
-                position.Y = this.world.random.Next(0, this.world.height);
-
-                if (!cameraViewRect.Contains(position)) break;
-            }
-
-            return position;
+            return new Vector2(this.world.random.Next(cell.xMin, cell.xMax), this.world.random.Next(cell.yMin, cell.yMax));
         }
 
         private bool FindFreeSpotAtBeachEdge(bool ignoreCollisions = false, bool ignoreDensity = false)

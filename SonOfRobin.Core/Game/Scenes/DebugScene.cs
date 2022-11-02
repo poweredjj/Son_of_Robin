@@ -136,15 +136,16 @@ namespace SonOfRobin
 
                 if (Keyboard.HasBeenPressed(Keys.D8))
                 {
-                    var backlight = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: world.player.sprite.position, templateName: PieceTemplate.Name.Backlight);
-                    new Tracking(world: world, targetSprite: world.player.sprite, followingSprite: backlight.sprite, offsetX: 0, offsetY: 0, targetXAlign: XAlign.Center, targetYAlign: YAlign.Bottom);
+                    if (world == null) return;
+
+                    world.CreateMissingPieces(initialCreation: true, outsideCamera: false, multiplier: 1.0f, clearDoNotCreateList: true);
                 }
 
                 if (Keyboard.HasBeenPressed(Keys.D9))
                 {
                     if (world == null) return;
 
-                    world.CreateMissingPieces(initialCreation: true, outsideCamera: false, multiplier: 1.0f, clearDoNotCreateList: true);
+                    world.CreateMissingPieces(initialCreation: false, maxAmountToCreateAtOnce: 100, outsideCamera: true, multiplier: 0.1f);
                 }
             }
 
