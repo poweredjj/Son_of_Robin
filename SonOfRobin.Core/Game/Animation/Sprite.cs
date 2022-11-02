@@ -356,35 +356,31 @@ namespace SonOfRobin
 
         public Vector2 GetRandomPosition(bool outsideCamera)
         {
-            Cell cell;
+            Cell cell = this.world.grid.GetRandomCellForPieceName(this.boardPiece.name); // random cell for both cases (fast)
 
-            if (outsideCamera)
+            if (outsideCamera) // needs a cell, that is not intersecting with camera
             {
                 Rectangle cameraViewRect = this.world.camera.viewRect;
 
-                // in case of map being smaller than the screen
-                if (cameraViewRect.Width >= this.world.width && cameraViewRect.Height >= this.world.height)
+                if (cameraViewRect.Intersects(cell.rect)) // checking if initial random cell intersects with camera
                 {
-                    return new Vector2(this.world.random.Next(0, this.world.width), this.world.random.Next(0, this.world.height));
-                }
+                    var cellList = this.world.grid.GetCellsForPieceName(this.boardPiece.name); // getting cell list to find non-intersecting cell (slow)
 
-                var cellList = this.world.grid.GetCellsForPieceName(this.boardPiece.name);
-
-                while (true)
-                {
-                    int cellNo = this.world.random.Next(0, cellList.Count);
-
-                    cell = cellList[cellNo];
-                    cellList.RemoveAt(cellNo);
-                    if (!cameraViewRect.Intersects(cell.rect)) break;
-                    if (!cellList.Any())
+                    while (true) // looking for first non-intersecting cell
                     {
-                        MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{this.boardPiece.name} - no cells left while searching for a random position outside camera.");
-                        return new Vector2(this.world.random.Next(0, this.world.width), this.world.random.Next(0, this.world.height));
+                        int cellNo = this.world.random.Next(0, cellList.Count);
+
+                        cell = cellList[cellNo];
+                        cellList.RemoveAt(cellNo);
+                        if (!cameraViewRect.Intersects(cell.rect)) break;
+                        if (!cellList.Any())
+                        {
+                            MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{this.boardPiece.name} - no cells left while searching for a random position outside camera.");
+                            return Vector2.One; // a Vector2 needs to be returned, even if this piece cannot be placed there
+                        }
                     }
                 }
             }
-            else cell = this.world.grid.GetRandomCellForPieceName(this.boardPiece.name);
 
             return new Vector2(this.world.random.Next(cell.xMin, cell.xMax), this.world.random.Next(cell.yMin, cell.yMax));
         }

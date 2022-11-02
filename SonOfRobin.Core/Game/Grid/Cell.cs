@@ -273,6 +273,5 @@ namespace SonOfRobin
 
             SonOfRobinGame.spriteBatch.Draw(this.boardGraphics.texture, this.rect, this.boardGraphics.texture.Bounds, Color.White * opacity);
         }
-
     }
 }

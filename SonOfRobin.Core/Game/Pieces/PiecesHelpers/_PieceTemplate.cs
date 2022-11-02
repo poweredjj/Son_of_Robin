@@ -398,7 +398,6 @@ namespace SonOfRobin
                         var maxMassBySize = new Dictionary<byte, int>() { { 0, 400 }, { 1, 65535 } };
                         var reproduction = new PlantReproductionData(massNeeded: 500, massLost: 40, bioWear: 0.41f);
 
-
                         return new Plant(name: templateName, world: world, id: id, blocksMovement: false, animPackage: AnimData.PkgName.Rushes, allowedFields: allowedFields, category: BoardPiece.Category.SmallPlant, minDistance: 0, maxDistance: 120, bestEnvironment: bestEnvironment, mass: 1, maxMassBySize: maxMassBySize, maxAge: 600, reproduction: reproduction, massToBurn: 15, massTakenMultiplier: 0.62f, generation: generation, staysAfterDeath: 300, readableName: "rushes", description: "A water plant.", allowedDensity: new AllowedDensity(radious: 120, maxNoOfPiecesTotal: 60), yield: yield);
                     }
 
@@ -2636,9 +2635,7 @@ namespace SonOfRobin
                     }
 
                 default: { throw new DivideByZeroException($"Unsupported template name - {templateName}."); }
-
             }
         }
-
     }
 }

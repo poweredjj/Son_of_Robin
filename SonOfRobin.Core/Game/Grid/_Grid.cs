@@ -5,16 +5,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-
 namespace SonOfRobin
 {
     public class Grid
     {
-        public enum Stage { GenerateTerrain, ProcessTextures, LoadTextures }
+        public enum Stage
+        { GenerateTerrain, ProcessTextures, LoadTextures }
 
         private static readonly int allStagesCount = ((Stage[])Enum.GetValues(typeof(Stage))).Length;
 
-        private readonly static Dictionary<Stage, string> namesForStages = new Dictionary<Stage, string> {
+        private static readonly Dictionary<Stage, string> namesForStages = new Dictionary<Stage, string> {
             { Stage.GenerateTerrain, "generating terrain" },
             { Stage.ProcessTextures, "processing textures" },
             { Stage.LoadTextures, "loading textures" },
@@ -40,9 +40,12 @@ namespace SonOfRobin
         public int loadedTexturesCount;
 
         private static readonly TimeSpan textureLoadingDelay = TimeSpan.FromMilliseconds(10);
-        public bool ProcessingStageComplete { get { return this.cellsToProcessOnStart.Count == 0; } }
-        public List<Cell> CellsVisitedByPlayer { get { return this.allCells.Where(cell => cell.VisitedByPlayer).ToList(); } }
-        public List<Cell> CellsNotVisitedByPlayer { get { return this.allCells.Where(cell => !cell.VisitedByPlayer).ToList(); } }
+        public bool ProcessingStageComplete
+        { get { return this.cellsToProcessOnStart.Count == 0; } }
+        public List<Cell> CellsVisitedByPlayer
+        { get { return this.allCells.Where(cell => cell.VisitedByPlayer).ToList(); } }
+        public List<Cell> CellsNotVisitedByPlayer
+        { get { return this.allCells.Where(cell => !cell.VisitedByPlayer).ToList(); } }
 
         public Grid(World world, int resDivider, int cellWidth = 0, int cellHeight = 0)
         {
@@ -677,7 +680,6 @@ namespace SonOfRobin
             return position / cellLength;
         }
 
-
         private Cell[,] MakeGrid()
         {
             Cell[,] cellGrid = new Cell[this.noOfCellsX, this.noOfCellsY];
@@ -815,6 +817,5 @@ namespace SonOfRobin
             }
             GC.Collect();
         }
-
     }
 }
