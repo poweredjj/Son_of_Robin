@@ -717,7 +717,7 @@ namespace SonOfRobin
             return this.cellGrid[cellNoX, cellNoY].terrainByName[terrainName].GetMapData(posInsideCellX, posInsideCellY);
         }
 
-        public bool CheckIfHasExtProperty(ExtBoardProperties.ExtPropName name, Vector2 position)
+        public bool GetExtProperty(ExtBoardProperties.ExtPropName name, Vector2 position)
         {
             int cellNoX = (int)Math.Floor(position.X / this.cellWidth);
             int cellNoY = (int)Math.Floor(position.Y / this.cellHeight);
@@ -725,10 +725,10 @@ namespace SonOfRobin
             int posInsideCellX = (int)position.X % this.cellWidth;
             int posInsideCellY = (int)position.Y % this.cellHeight;
 
-            return this.cellGrid[cellNoX, cellNoY].ExtBoardProperties.CheckIfHasProperty(name: name, x: posInsideCellX, y: posInsideCellY, xyRaw: false);
+            return this.cellGrid[cellNoX, cellNoY].ExtBoardProperties.GetValue(name: name, x: posInsideCellX, y: posInsideCellY, xyRaw: false);
         }
 
-        public bool CheckIfHasExtProperty(ExtBoardProperties.ExtPropName name, int x, int y)
+        public bool GetExtProperty(ExtBoardProperties.ExtPropName name, int x, int y)
         {
             int cellNoX = x / this.cellWidth;
             int cellNoY = y / this.cellHeight;
@@ -736,10 +736,10 @@ namespace SonOfRobin
             int posInsideCellX = x % this.cellWidth;
             int posInsideCellY = y % this.cellHeight;
 
-            return this.cellGrid[cellNoX, cellNoY].ExtBoardProperties.CheckIfHasProperty(name: name, x: posInsideCellX, y: posInsideCellY, xyRaw: false);
+            return this.cellGrid[cellNoX, cellNoY].ExtBoardProperties.GetValue(name: name, x: posInsideCellX, y: posInsideCellY, xyRaw: false);
         }
 
-        public void ModifyProperty(ExtBoardProperties.ExtPropName name, bool add, int x, int y)
+        public void SetExtProperty(ExtBoardProperties.ExtPropName name, bool value, int x, int y)
         {
             int cellNoX = x / this.cellWidth;
             int cellNoY = y / this.cellHeight;
@@ -747,8 +747,7 @@ namespace SonOfRobin
             int posInsideCellX = x % this.cellWidth;
             int posInsideCellY = y % this.cellHeight;
 
-            if (add) this.cellGrid[cellNoX, cellNoY].ExtBoardProperties.AddProperty(name: name, x: posInsideCellX, y: posInsideCellY, xyRaw: false);
-            else this.cellGrid[cellNoX, cellNoY].ExtBoardProperties.RemoveProperty(name: name, x: posInsideCellX, y: posInsideCellY, xyRaw: false);
+            this.cellGrid[cellNoX, cellNoY].ExtBoardProperties.SetValue(name: name, value: value, x: posInsideCellX, y: posInsideCellY, xyRaw: false);
         }
 
         public Cell FindMatchingCell(Vector2 position)

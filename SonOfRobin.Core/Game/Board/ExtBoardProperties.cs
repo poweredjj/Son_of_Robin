@@ -1,7 +1,7 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 
 namespace SonOfRobin
 {
@@ -10,9 +10,11 @@ namespace SonOfRobin
         public enum ExtPropName
         { Sea, OuterBeach, OuterBeachEdge };
 
+        private static readonly ExtPropName[] allExtPropNames = (ExtPropName[])Enum.GetValues(typeof(ExtPropName));
+
         public readonly Cell cell;
 
-        private readonly List<ExtPropName>[,] extPropListGrid;
+        private readonly Dictionary<ExtPropName, BitArray> extDataByProperty;
         private readonly List<ExtPropName> containsProperties;
         private readonly string templatePath;
         public bool CreationInProgress { get; private set; }
@@ -27,39 +29,42 @@ namespace SonOfRobin
             var serializedData = this.LoadTemplate();
             if (serializedData == null)
             {
-                this.extPropListGrid = this.MakeEmptyGrid();
+                this.extDataByProperty = this.MakeArrayCollection();
                 this.containsProperties = new List<ExtPropName>();
             }
             else
             {
-                this.extPropListGrid = (List<ExtPropName>[,])serializedData["extPropListGrid"];
+                this.extDataByProperty = (Dictionary<ExtPropName, BitArray>)serializedData["extDataByProperty"];
                 this.containsProperties = (List<ExtPropName>)serializedData["containsProperties"];
                 this.CreationInProgress = false;
             }
         }
 
-        private List<ExtPropName>[,] MakeEmptyGrid()
+        private Dictionary<ExtPropName, BitArray> MakeArrayCollection()
         {
-            List<ExtPropName>[,] emptyGrid = new List<ExtPropName>[this.cell.dividedWidth, this.cell.dividedHeight];
-            for (int x = 0; x < this.cell.dividedWidth; x++)
+            var arrayCollection = new Dictionary<ExtPropName, BitArray>();
+
+            foreach (ExtPropName extPropName in allExtPropNames)
             {
-                for (int y = 0; y < this.cell.dividedHeight; y++)
-                {
-                    emptyGrid[x, y] = new List<ExtPropName>();
-                }
+                arrayCollection[extPropName] = new BitArray(this.cell.dividedWidth * this.cell.dividedHeight);
             }
 
-            return emptyGrid;
+            return arrayCollection;
         }
+
         public void EndCreationAndSave()
         {
-            for (int x = 0; x < this.cell.dividedWidth; x++)
+            if (!this.CreationInProgress) throw new ArgumentException("Cannot end creation more than once.");
+
+            foreach (var kvp in this.extDataByProperty)
             {
-                for (int y = 0; y < this.cell.dividedHeight; y++)
+                ExtPropName name = kvp.Key;
+
+                for (int x = 0; x < this.cell.dividedWidth; x++)
                 {
-                    foreach (ExtPropName name in this.extPropListGrid[x, y])
+                    for (int y = 0; y < this.cell.dividedHeight; y++)
                     {
-                        if (!this.containsProperties.Contains(name)) this.containsProperties.Add(name);
+                        if (kvp.Value.Get(Convert2DCoordinatesTo1D(x, y)) && !this.containsProperties.Contains(name)) this.containsProperties.Add(name);
                     }
                 }
             }
@@ -73,35 +78,26 @@ namespace SonOfRobin
             return this.containsProperties.Contains(name);
         }
 
-        private List<ExtPropName> GetList(int x, int y, bool xyRaw)
+        private int ConvertRaw2DCoordinatesTo1D(int x, int y)
         {
-            return xyRaw ? this.extPropListGrid[x, y] : this.extPropListGrid[x / this.cell.grid.resDivider, y / this.cell.grid.resDivider];
+            return (y * this.cell.dividedWidth) + x;
         }
 
-        public void AddProperty(ExtPropName name, int x, int y, bool xyRaw)
+        private int Convert2DCoordinatesTo1D(int x, int y)
         {
-            if (!this.CreationInProgress) throw new ArgumentException("Cannot modify data after ending creation process.");
-
-            List<ExtPropName> list = this.GetList(x: x, y: y, xyRaw: xyRaw);
-            if (!list.Contains(name)) list.Add(name);
+            return (y / this.cell.grid.resDivider * this.cell.dividedWidth) + (x / this.cell.grid.resDivider);
         }
 
-        public void RemoveProperty(ExtPropName name, int x, int y, bool xyRaw)
+        public bool GetValue(ExtPropName name, int x, int y, bool xyRaw)
         {
-            if (!this.CreationInProgress) throw new ArgumentException("Cannot modify data after ending creation process.");
-
-            List<ExtPropName> list = this.GetList(x: x, y: y, xyRaw: xyRaw);
-            if (list.Contains(name)) list.Remove(name);
+            if (xyRaw) return this.extDataByProperty[name].Get(this.ConvertRaw2DCoordinatesTo1D(x, y));
+            else return this.extDataByProperty[name].Get(this.Convert2DCoordinatesTo1D(x, y));
         }
 
-        public bool CheckIfHasProperty(ExtPropName name, int x, int y, bool xyRaw)
+        public void SetValue(ExtPropName name, bool value, int x, int y, bool xyRaw)
         {
-            return this.GetList(x: x, y: y, xyRaw: xyRaw).Contains(name);
-        }
-
-        public List<ExtPropName> GetAllProperties(int x, int y, bool xyRaw)
-        {
-            return this.GetList(x: x, y: y, xyRaw: xyRaw).ToList();
+            if (xyRaw) this.extDataByProperty[name].Set(index: this.ConvertRaw2DCoordinatesTo1D(x, y), value: value);
+            else this.extDataByProperty[name].Set(index: this.Convert2DCoordinatesTo1D(x, y), value: value);
         }
 
         private Dictionary<string, object> LoadTemplate()
@@ -120,7 +116,7 @@ namespace SonOfRobin
         {
             var serializedData = new Dictionary<string, object>
             {
-                { "extPropListGrid", this.extPropListGrid },
+                { "extDataByProperty", this.extDataByProperty },
                 { "containsProperties", this.containsProperties },
             };
 
