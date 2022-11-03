@@ -34,7 +34,6 @@ namespace SonOfRobin
         public readonly int cellHeight;
         public readonly int resDivider;
         public readonly Cell[,] cellGrid;
-        public ExtBoardProperties ExtBoardProperties { get; private set; }
         public readonly List<Cell> allCells;
         public readonly List<Cell> cellsToProcessOnStart;
         private readonly Dictionary<PieceTemplate.Name, List<Cell>> cellListsForPieceNames; // pieces and cells that those pieces can (initially) be placed into
@@ -83,7 +82,6 @@ namespace SonOfRobin
             this.cellListsForPieceNames = new Dictionary<PieceTemplate.Name, List<Cell>>();
             this.cellGrid = this.MakeGrid();
             this.allCells = this.GetAllCells();
-            this.ExtBoardProperties = new ExtBoardProperties(grid: this);
             this.CalculateSurroundingCells();
 
             this.lastCellProcessedTime = DateTime.Now;
@@ -156,7 +154,6 @@ namespace SonOfRobin
                     }
 
                     this.FillCellListsForPieceNames();
-                    this.ExtBoardProperties = templateGrid.ExtBoardProperties;
 
                     return true;
                 }
@@ -293,29 +290,41 @@ namespace SonOfRobin
 
         private void SetExtProperties()
         {
+            var cellsWithoutExtPropertiesSet = this.allCells.Where(cell => cell.ExtBoardProperties.CreationInProgress);
+            if (!cellsWithoutExtPropertiesSet.Any())
+            {
+                this.cellsToProcessOnStart.Clear();
+                return;
+            }
+
             // TODO add ext calculation code
+
+
 
             // this.GetExtValue(name: ExtBoardProperties.ExtPropName.Water, x: x, y: y);
 
-            if (!this.ExtBoardProperties.CreationInProgress)
+            //if (!this.ExtBoardProperties.CreationInProgress)
+            //{
+            //    for (int dividedX = 0; dividedX < this.ExtBoardProperties.dividedWidth; dividedX++)
+            //    {
+            //        for (int dividedY = 0; dividedY < this.ExtBoardProperties.dividedHeight; dividedY++)
+            //        {
+            //            int realX = dividedX * this.resDivider;
+            //            int realY = dividedY * this.resDivider;
+
+
+
+            //            this.ExtBoardProperties.SetDataRaw(name: ExtBoardProperties.ExtPropName.Water, x: dividedX, y: dividedY, value: this.GetFieldValue(terrainName: TerrainName.Height, x: realX, y: realY) < Terrain.waterLevelMax);
+
+            //            // if (this.GetFieldValue(terrainName: TerrainName.Height, x: x, y: y) < Terrain.waterLevelMax)
+            //        }
+            //    }
+            //}
+
+            foreach (Cell cell in this.allCells)
             {
-                for (int dividedX = 0; dividedX < this.ExtBoardProperties.dividedWidth; dividedX++)
-                {
-                    for (int dividedY = 0; dividedY < this.ExtBoardProperties.dividedHeight; dividedY++)
-                    {
-                        int realX = dividedX * this.resDivider;
-                        int realY = dividedY * this.resDivider;
-
-
-
-                        this.ExtBoardProperties.SetDataRaw(name: ExtBoardProperties.ExtPropName.Water, x: dividedX, y: dividedY, value: this.GetFieldValue(terrainName: TerrainName.Height, x: realX, y: realY) < Terrain.waterLevelMax);
-
-                        // if (this.GetFieldValue(terrainName: TerrainName.Height, x: x, y: y) < Terrain.waterLevelMax)
-                    }
-                }
+                cell.ExtBoardProperties.EndCreationAndSave();
             }
-
-            this.ExtBoardProperties.EndCreationAndSave();
 
             this.cellsToProcessOnStart.Clear();
         }
@@ -706,6 +715,40 @@ namespace SonOfRobin
             int posInsideCellY = y % this.cellHeight;
 
             return this.cellGrid[cellNoX, cellNoY].terrainByName[terrainName].GetMapData(posInsideCellX, posInsideCellY);
+        }
+
+        public bool CheckIfHasExtProperty(ExtBoardProperties.ExtPropName name, Vector2 position)
+        {
+            int cellNoX = (int)Math.Floor(position.X / this.cellWidth);
+            int cellNoY = (int)Math.Floor(position.Y / this.cellHeight);
+
+            int posInsideCellX = (int)position.X % this.cellWidth;
+            int posInsideCellY = (int)position.Y % this.cellHeight;
+
+            return this.cellGrid[cellNoX, cellNoY].ExtBoardProperties.CheckIfHasProperty(name: name, x: posInsideCellX, y: posInsideCellY, xyRaw: false);
+        }
+
+        public bool CheckIfHasExtProperty(ExtBoardProperties.ExtPropName name, int x, int y)
+        {
+            int cellNoX = x / this.cellWidth;
+            int cellNoY = y / this.cellHeight;
+
+            int posInsideCellX = x % this.cellWidth;
+            int posInsideCellY = y % this.cellHeight;
+
+            return this.cellGrid[cellNoX, cellNoY].ExtBoardProperties.CheckIfHasProperty(name: name, x: posInsideCellX, y: posInsideCellY, xyRaw: false);
+        }
+
+        public void ModifyProperty(ExtBoardProperties.ExtPropName name, bool add, int x, int y)
+        {
+            int cellNoX = x / this.cellWidth;
+            int cellNoY = y / this.cellHeight;
+
+            int posInsideCellX = x % this.cellWidth;
+            int posInsideCellY = y % this.cellHeight;
+
+            if (add) this.cellGrid[cellNoX, cellNoY].ExtBoardProperties.AddProperty(name: name, x: posInsideCellX, y: posInsideCellY, xyRaw: false);
+            else this.cellGrid[cellNoX, cellNoY].ExtBoardProperties.RemoveProperty(name: name, x: posInsideCellX, y: posInsideCellY, xyRaw: false);
         }
 
         public Cell FindMatchingCell(Vector2 position)

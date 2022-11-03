@@ -30,6 +30,7 @@ namespace SonOfRobin
 
         public readonly Dictionary<Group, Dictionary<string, Sprite>> spriteGroups;
         public readonly Dictionary<TerrainName, Terrain> terrainByName;
+        public ExtBoardProperties ExtBoardProperties { get; private set; }
         public BoardGraphics boardGraphics;
 
         public readonly List<PieceTemplate.Name> allowedNames;  // for initialRangesByTerrainName only - because currentRangesByTerrainName can be changed anytime
@@ -84,6 +85,7 @@ namespace SonOfRobin
                 this.spriteGroups[groupName] = new Dictionary<string, Sprite> { };
             }
 
+            this.ExtBoardProperties = new ExtBoardProperties(cell: this);
             this.terrainByName = new Dictionary<TerrainName, Terrain>();
             this.allowedNames = new List<PieceTemplate.Name>();
         }
@@ -167,6 +169,7 @@ namespace SonOfRobin
 
             this.boardGraphics = new BoardGraphics(grid: this.grid, cell: this);
             this.boardGraphics.texture = templateCell.boardGraphics.texture;
+            this.ExtBoardProperties = templateCell.ExtBoardProperties;
             this.allowedNames.AddRange(templateCell.allowedNames);
         }
 

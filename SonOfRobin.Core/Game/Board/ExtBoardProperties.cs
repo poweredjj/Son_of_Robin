@@ -1,96 +1,130 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace SonOfRobin
 {
     public class ExtBoardProperties
     {
-        public enum ExtPropName { Water, Sea, OuterBeach, OuterBeachEdge };
-        private static readonly ExtPropName[] allExtPropNames = (ExtPropName[])Enum.GetValues(typeof(ExtPropName));
+        public enum ExtPropName
+        { Sea, OuterBeach, OuterBeachEdge };
 
-        public readonly Grid grid;
-        public readonly int dividedWidth;
-        public readonly int dividedHeight;
+        public readonly Cell cell;
 
-        private readonly Dictionary<ExtPropName, bool[,]> extDataByProperty;
+        private readonly List<ExtPropName>[,] extPropListGrid;
+        private readonly List<ExtPropName> containsProperties;
         private readonly string templatePath;
         public bool CreationInProgress { get; private set; }
 
-        public ExtBoardProperties(Grid grid)
+        public ExtBoardProperties(Cell cell)
         {
-            this.grid = grid;
-            this.dividedWidth = this.grid.world.width / this.grid.resDivider;
-            this.dividedHeight = this.grid.world.height / this.grid.resDivider;
+            this.cell = cell;
 
             this.CreationInProgress = true;
-            this.templatePath = Path.Combine(this.grid.gridTemplate.templatePath, "properties.ext");
+            this.templatePath = Path.Combine(this.cell.grid.gridTemplate.templatePath, $"properties_{cell.cellNoX}_{cell.cellNoY}.ext");
 
-            this.extDataByProperty = this.LoadTemplate();
-            if (this.extDataByProperty == null)
+            var serializedData = this.LoadTemplate();
+            if (serializedData == null)
             {
-                this.extDataByProperty = new Dictionary<ExtPropName, bool[,]>();
+                this.extPropListGrid = this.MakeEmptyGrid();
+                this.containsProperties = new List<ExtPropName>();
+            }
+            else
+            {
+                this.extPropListGrid = (List<ExtPropName>[,])serializedData["extPropListGrid"];
+                this.containsProperties = (List<ExtPropName>)serializedData["containsProperties"];
+                this.CreationInProgress = false;
+            }
+        }
 
-                foreach (ExtPropName extPropName in allExtPropNames)
+        private List<ExtPropName>[,] MakeEmptyGrid()
+        {
+            List<ExtPropName>[,] emptyGrid = new List<ExtPropName>[this.cell.dividedWidth, this.cell.dividedHeight];
+            for (int x = 0; x < this.cell.dividedWidth; x++)
+            {
+                for (int y = 0; y < this.cell.dividedHeight; y++)
                 {
-                    this.extDataByProperty[extPropName] = new bool[this.dividedWidth, this.dividedHeight];
+                    emptyGrid[x, y] = new List<ExtPropName>();
                 }
             }
-            else this.CreationInProgress = false;
+
+            return emptyGrid;
         }
-
-        public void SetData(ExtPropName name, bool value, int x, int y)
-        {
-            if (!this.CreationInProgress) throw new ArgumentException("Cannot call SetData() after ending creation process.");
-
-            this.extDataByProperty[name][x / this.grid.resDivider, y / this.grid.resDivider] = value;
-        }
-
-        public void SetDataRaw(ExtPropName name, bool value, int x, int y)
-        {
-            if (!this.CreationInProgress) throw new ArgumentException("Cannot call SetData() after ending creation process.");
-
-            // direct access, without taking resDivider into account
-            this.extDataByProperty[name][x, y] = value;
-        }
-
         public void EndCreationAndSave()
         {
+            for (int x = 0; x < this.cell.dividedWidth; x++)
+            {
+                for (int y = 0; y < this.cell.dividedHeight; y++)
+                {
+                    foreach (ExtPropName name in this.extPropListGrid[x, y])
+                    {
+                        if (!this.containsProperties.Contains(name)) this.containsProperties.Add(name);
+                    }
+                }
+            }
+
             this.CreationInProgress = false;
             this.SaveTemplate();
         }
 
-        public bool GetData(ExtPropName name, int x, int y)
+        public bool CheckIfContainsProperty(ExtPropName name)
         {
-            if (this.CreationInProgress) throw new ArgumentException("Cannot call GetData() before ending creation process.");
-
-            if (x < 0) throw new IndexOutOfRangeException($"X {x} cannot be less than 0.");
-            if (y < 0) throw new IndexOutOfRangeException($"Y {y} cannot be less than 0.");
-
-            return this.extDataByProperty[name][x / this.grid.resDivider, y / this.grid.resDivider];
+            return this.containsProperties.Contains(name);
         }
 
-        public bool GetDataRaw(ExtPropName name, int x, int y)
+        private List<ExtPropName> GetList(int x, int y, bool xyRaw)
         {
-            if (this.CreationInProgress) throw new ArgumentException("Cannot call GetData() before ending creation process.");
-
-            if (x < 0) throw new IndexOutOfRangeException($"X {x} cannot be less than 0.");
-            if (y < 0) throw new IndexOutOfRangeException($"Y {y} cannot be less than 0.");
-
-            // direct access, without taking resDivider into account
-            return this.extDataByProperty[name][x, y];
+            return xyRaw ? this.extPropListGrid[x, y] : this.extPropListGrid[x / this.cell.grid.resDivider, y / this.cell.grid.resDivider];
         }
 
-        private Dictionary<ExtPropName, bool[,]> LoadTemplate()
+        public void AddProperty(ExtPropName name, int x, int y, bool xyRaw)
+        {
+            if (!this.CreationInProgress) throw new ArgumentException("Cannot modify data after ending creation process.");
+
+            List<ExtPropName> list = this.GetList(x: x, y: y, xyRaw: xyRaw);
+            if (!list.Contains(name)) list.Add(name);
+        }
+
+        public void RemoveProperty(ExtPropName name, int x, int y, bool xyRaw)
+        {
+            if (!this.CreationInProgress) throw new ArgumentException("Cannot modify data after ending creation process.");
+
+            List<ExtPropName> list = this.GetList(x: x, y: y, xyRaw: xyRaw);
+            if (list.Contains(name)) list.Remove(name);
+        }
+
+        public bool CheckIfHasProperty(ExtPropName name, int x, int y, bool xyRaw)
+        {
+            return this.GetList(x: x, y: y, xyRaw: xyRaw).Contains(name);
+        }
+
+        public List<ExtPropName> GetAllProperties(int x, int y, bool xyRaw)
+        {
+            return this.GetList(x: x, y: y, xyRaw: xyRaw).ToList();
+        }
+
+        private Dictionary<string, object> LoadTemplate()
         {
             var loadedData = FileReaderWriter.Load(this.templatePath);
             if (loadedData == null) return null;
-            else return (Dictionary<ExtPropName, bool[,]>)loadedData;
+            else return (Dictionary<string, object>)loadedData;
         }
 
         public void SaveTemplate()
         {
-            FileReaderWriter.Save(path: this.templatePath, savedObj: this.extDataByProperty);
+            FileReaderWriter.Save(path: this.templatePath, savedObj: this.Serialize());
+        }
+
+        private Dictionary<string, object> Serialize()
+        {
+            var serializedData = new Dictionary<string, object>
+            {
+                { "extPropListGrid", this.extPropListGrid },
+                { "containsProperties", this.containsProperties },
+            };
+
+            return serializedData;
         }
     }
 }
