@@ -17,7 +17,7 @@ namespace SonOfRobin
         private readonly Dictionary<ExtPropName, BitArray> extDataByProperty;
         private readonly List<ExtPropName> containsProperties;
         private readonly string templatePath;
-        private readonly bool loadedFromTemplate;
+        private readonly bool loadedFromTemplate; // to avoid saving template, after being loaded (needed because saving is not done inside constructor)
         public bool CreationInProgress { get; private set; }
 
         public ExtBoardProperties(Cell cell)

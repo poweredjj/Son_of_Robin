@@ -207,7 +207,7 @@ namespace SonOfRobin
 
                 case Stage.SetExtData:
 
-                    this.SetExtProperties();
+                    this.CalculateExtPropertiesForWholeMap();
                     break;
 
                 case Stage.ProcessTextures:
@@ -288,7 +288,7 @@ namespace SonOfRobin
             }
         }
 
-        private void SetExtProperties()
+        private void CalculateExtPropertiesForWholeMap()
         {
             var cellsWithoutExtPropertiesSet = this.allCells.Where(cell => cell.ExtBoardProperties.CreationInProgress);
             if (!cellsWithoutExtPropertiesSet.Any())
@@ -299,28 +299,62 @@ namespace SonOfRobin
 
             // TODO add ext calculation code here
 
+            int width = this.world.width;
+            int height = this.world.height;
+            int dividedWidth = width / this.resDivider;
+            int dividedHeight = height / this.resDivider;
 
+            bool[,] processedMap = new bool[dividedWidth, dividedHeight]; // working inside "compressed" map space, to avoid unnecessary calculations
 
+            List<Point> offsetList = new List<Point> {
+                new Point(-1, 0),
+                new Point(1, 0),
+                new Point(0, -1),
+                new Point(0, 1),
+            };
 
+            List<Point> nextPointsList = new List<Point> { new Point(0, 0) }; // algorithm will only work, if water surrounds the island and is present at the edge 
 
-            //if (!this.ExtBoardProperties.CreationInProgress)
-            //{
-            //    for (int dividedX = 0; dividedX < this.ExtBoardProperties.dividedWidth; dividedX++)
-            //    {
-            //        for (int dividedY = 0; dividedY < this.ExtBoardProperties.dividedHeight; dividedY++)
-            //        {
-            //            int realX = dividedX * this.resDivider;
-            //            int realY = dividedY * this.resDivider;
+            while (true)
+            {
+                foreach (Point currentPoint in nextPointsList.ToList())
+                {
+                    nextPointsList.Clear();
 
+                    int realX = currentPoint.X * this.resDivider;
+                    int realY = currentPoint.Y * this.resDivider;
 
+                    byte heightVal = this.GetFieldValue(terrainName: TerrainName.Height, x: realX, y: realY);
 
-            //            this.ExtBoardProperties.SetDataRaw(name: ExtBoardProperties.ExtPropName.Water, x: dividedX, y: dividedY, value: this.GetFieldValue(terrainName: TerrainName.Height, x: realX, y: realY) < Terrain.waterLevelMax);
+                    bool water = heightVal < Terrain.waterLevelMax;
 
-            //            // if (this.GetFieldValue(terrainName: TerrainName.Height, x: x, y: y) < Terrain.waterLevelMax)
-            //        }
-            //    }
-            //}
+                    if (water)
+                    {
+                        this.SetExtProperty(name: ExtBoardProperties.ExtPropName.Sea, value: true, x: realX, y: realY);
 
+                        foreach (Point currentOffset in offsetList)
+                        {
+                            Point nextPoint = new Point(currentPoint.X + currentOffset.X, currentPoint.Y + currentOffset.Y);
+
+                            if (nextPoint.X >= 0 && nextPoint.X < dividedWidth &&
+                                nextPoint.Y >= 0 && nextPoint.Y < dividedHeight &&
+                                !processedMap[nextPoint.X, nextPoint.Y])
+                            {
+                                nextPointsList.Add(nextPoint);
+                            }
+                        }
+
+                    }
+                    else
+                    {
+                        this.SetExtProperty(name: ExtBoardProperties.ExtPropName.OuterBeachEdge, value: true, x: realX, y: realY);
+                    }
+
+                    processedMap[currentPoint.X, currentPoint.Y] = true;
+                }
+
+                if (!nextPointsList.Any()) break;
+            }
 
 
 
