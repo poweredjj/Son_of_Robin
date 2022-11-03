@@ -15,8 +15,8 @@ namespace SonOfRobin
         private bool savedToDisk;
 
         public static readonly Dictionary<Colors, Color> colorsByName = GetColorsByName();
-        private static readonly Dictionary<Colors, List<byte>> colorsByHeight = GetColorsByHeight();
-        private static readonly Dictionary<Colors, List<byte>> colorsByHumidity = GetColorsByHumidity();
+        public static readonly Dictionary<Colors, List<byte>> colorsByHeight = GetColorsByHeight();
+        public static readonly Dictionary<Colors, List<byte>> colorsByHumidity = GetColorsByHumidity();
 
         public enum Colors
         {
@@ -131,13 +131,13 @@ namespace SonOfRobin
                         pixelHumidity: humidityTerrain.GetMapDataRaw(localX, localY),
                         pixelDanger: dangerTerrain.GetMapDataRaw(localX, localY));
 
-                    { // start of ExtBoardProperties visualisation (edges of cells will be unpainted) - for testing
-                        int realX = this.cell.xMin + (localX * this.cell.grid.resDivider);
-                        int realY = this.cell.yMin + (localY * this.cell.grid.resDivider);
+                    //{ // start of ExtBoardProperties visualisation (edges of cells will be unpainted) - for testing
+                    //    int realX = this.cell.xMin + (localX * this.cell.grid.resDivider);
+                    //    int realY = this.cell.yMin + (localY * this.cell.grid.resDivider);
 
-                        bool sea = this.cell.grid.GetExtProperty(name: ExtBoardProperties.ExtPropName.OuterBeachEdge, x: realX, y: realY);
-                        if (sea) smallColorGrid[localX, localY] = Color.HotPink;
-                    } // end of ExtBoardProperties visualisation (edges of cells will be unpainted) - for testing
+                    //    bool sea = this.cell.grid.GetExtProperty(name: ExtBoardProperties.ExtPropName.OuterBeach, x: realX, y: realY);
+                    //    if (sea) smallColorGrid[localX, localY] = Color.HotPink;
+                    //} // end of ExtBoardProperties visualisation (edges of cells will be unpainted) - for testing
                 }
             }
 
@@ -284,7 +284,6 @@ namespace SonOfRobin
             return pixel;
         }
 
-
         public static Color Blend2Colors(Color bottomColor, Color topColor)
         {
             if (topColor.A == 255) return topColor;
@@ -333,7 +332,7 @@ namespace SonOfRobin
         {
             return new Dictionary<Colors, List<byte>>() {
                 {Colors.WaterDeep, new List<byte>(){0,Convert.ToByte(Terrain.waterLevelMax / 3)}},
-                {Colors.WaterMedium, new List<byte>(){Convert.ToByte(Terrain.waterLevelMax / 3), Convert.ToByte((Terrain.waterLevelMax / 3)*2)}},
+                {Colors.WaterMedium, new List<byte>(){Convert.ToByte(Terrain.waterLevelMax / 3), (byte)(Terrain.waterLevelMax / 3 *2)}},
                 {Colors.WaterShallow, new List<byte>(){Convert.ToByte((Terrain.waterLevelMax / 3)*2), Terrain.waterLevelMax}},
                 {Colors.Beach1, new List<byte>(){Terrain.waterLevelMax, 100}},
                 {Colors.Beach2, new List<byte>(){100, 105}},
@@ -358,6 +357,5 @@ namespace SonOfRobin
                 {Colors.GrassGood, new List<byte>(){200, 255}},
             };
         }
-
     }
 }

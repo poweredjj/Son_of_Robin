@@ -41,10 +41,13 @@ namespace SonOfRobin
         public int loadedTexturesCount;
 
         private static readonly TimeSpan textureLoadingDelay = TimeSpan.FromMilliseconds(10);
+
         public bool ProcessingStageComplete
         { get { return this.cellsToProcessOnStart.Count == 0; } }
+
         public List<Cell> CellsVisitedByPlayer
         { get { return this.allCells.Where(cell => cell.VisitedByPlayer).ToList(); } }
+
         public List<Cell> CellsNotVisitedByPlayer
         { get { return this.allCells.Where(cell => !cell.VisitedByPlayer).ToList(); } }
 
@@ -300,9 +303,15 @@ namespace SonOfRobin
             // algorithm will only work, if water surrounds the island and is present at (0,0)
             this.FloodFillExtProperties(
                 startingPointList: new List<Point> { new Point(0, 0) }, terrainName: TerrainName.Height, minVal: 0, maxVal: Terrain.waterLevelMax,
-                nameToSet: ExtBoardProperties.ExtPropName.Sea, setNameIfOutsideRange: true, nameToSetIfOutsideRange: ExtBoardProperties.ExtPropName.OuterBeachEdge);
+                nameToSet: ExtBoardProperties.ExtPropName.Sea, setNameIfOutsideRange: true, nameToSetIfOutsideRange: ExtBoardProperties.ExtPropName.OuterBeach);
 
-            // TODO add ext calculation code here
+            List<Point> beachEdgePointList = this.GetAllRawCoordinatesWithExtProperty(nameToUse: ExtBoardProperties.ExtPropName.OuterBeach, value: true);
+            byte beachHeightMin = (byte)(Terrain.waterLevelMax + 1);
+            byte beachHeightMax = (byte)(BoardGraphics.colorsByHeight[BoardGraphics.Colors.Beach1][1] - 4);
+
+            this.FloodFillExtProperties(
+                 startingPointList: beachEdgePointList, terrainName: TerrainName.Height, minVal: beachHeightMin, maxVal: beachHeightMax,
+                 nameToSet: ExtBoardProperties.ExtPropName.OuterBeach, setNameIfOutsideRange: false, nameToSetIfOutsideRange: ExtBoardProperties.ExtPropName.OuterBeach);
 
             foreach (Cell cell in cellsWithoutExtPropertiesSet)
             {
@@ -310,6 +319,24 @@ namespace SonOfRobin
             }
 
             this.cellsToProcessOnStart.Clear();
+        }
+
+        private List<Point> GetAllRawCoordinatesWithExtProperty(ExtBoardProperties.ExtPropName nameToUse, bool value)
+        {
+            List<Point> pointList = new List<Point> { };
+
+            for (int rawX = 0; rawX < this.world.width / this.resDivider; rawX++)
+            {
+                for (int rawY = 0; rawY < this.world.height / this.resDivider; rawY++)
+                {
+                    if (this.GetExtProperty(name: nameToUse, x: rawX * this.resDivider, y: rawY * this.resDivider) == value)
+                    {
+                        pointList.Add(new Point(rawX, rawY));
+                    }
+                }
+            }
+
+            return pointList;
         }
 
         private void FloodFillExtProperties(List<Point> startingPointList, TerrainName terrainName, byte minVal, byte maxVal, ExtBoardProperties.ExtPropName nameToSet, bool setNameIfOutsideRange, ExtBoardProperties.ExtPropName nameToSetIfOutsideRange)

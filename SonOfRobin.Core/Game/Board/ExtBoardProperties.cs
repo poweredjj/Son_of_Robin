@@ -8,7 +8,7 @@ namespace SonOfRobin
     public class ExtBoardProperties
     {
         public enum ExtPropName
-        { Sea, OuterBeach, OuterBeachEdge };
+        { Sea, OuterBeach };
 
         private static readonly ExtPropName[] allExtPropNames = (ExtPropName[])Enum.GetValues(typeof(ExtPropName));
 
