@@ -97,6 +97,18 @@ namespace SonOfRobin
             else return this.extDataByProperty[name].Get(this.Convert2DCoordinatesTo1D(x, y));
         }
 
+        public Dictionary<ExtPropName, bool> GetValueDict(int x, int y, bool xyRaw)
+        {
+            var valueDict = new Dictionary<ExtPropName, bool>();
+
+            foreach (ExtPropName name in this.extDataByProperty.Keys)
+            {
+                valueDict[name] = this.GetValue(name: name, x: x, y: y, xyRaw: xyRaw);
+            }
+
+            return valueDict;
+        }
+
         public void SetValue(ExtPropName name, bool value, int x, int y, bool xyRaw)
         {
             if (xyRaw) this.extDataByProperty[name].Set(index: this.ConvertRaw2DCoordinatesTo1D(x, y), value: value);

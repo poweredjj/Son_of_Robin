@@ -796,6 +796,16 @@ namespace SonOfRobin
 
             return this.cellGrid[cellNoX, cellNoY].ExtBoardProperties.GetValue(name: name, x: posInsideCellX, y: posInsideCellY, xyRaw: false);
         }
+        public Dictionary<ExtBoardProperties.ExtPropName, bool> GetExtValueDict(int x, int y)
+        {
+            int cellNoX = x / this.cellWidth;
+            int cellNoY = y / this.cellHeight;
+
+            int posInsideCellX = x % this.cellWidth;
+            int posInsideCellY = y % this.cellHeight;
+
+            return this.cellGrid[cellNoX, cellNoY].ExtBoardProperties.GetValueDict(x: posInsideCellX, y: posInsideCellY, xyRaw: false);
+        }
 
         public bool GetExtProperty(ExtBoardProperties.ExtPropName name, int x, int y)
         {
