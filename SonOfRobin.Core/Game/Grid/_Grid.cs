@@ -297,8 +297,23 @@ namespace SonOfRobin
                 return;
             }
 
+            // algorithm will only work, if water surrounds the island and is present at (0,0)
+            this.FloodFillExtProperties(
+                startingPointList: new List<Point> { new Point(0, 0) }, terrainName: TerrainName.Height, minVal: 0, maxVal: Terrain.waterLevelMax,
+                nameToSet: ExtBoardProperties.ExtPropName.Sea, setNameIfOutsideRange: true, nameToSetIfOutsideRange: ExtBoardProperties.ExtPropName.OuterBeachEdge);
+
             // TODO add ext calculation code here
 
+            foreach (Cell cell in cellsWithoutExtPropertiesSet)
+            {
+                cell.ExtBoardProperties.EndCreationAndSave();
+            }
+
+            this.cellsToProcessOnStart.Clear();
+        }
+
+        private void FloodFillExtProperties(List<Point> startingPointList, TerrainName terrainName, byte minVal, byte maxVal, ExtBoardProperties.ExtPropName nameToSet, bool setNameIfOutsideRange, ExtBoardProperties.ExtPropName nameToSetIfOutsideRange)
+        {
             int width = this.world.width;
             int height = this.world.height;
             int dividedWidth = width / this.resDivider;
@@ -313,24 +328,24 @@ namespace SonOfRobin
                 new Point(0, 1),
             };
 
-            List<Point> nextPointsList = new List<Point> { new Point(0, 0) }; // algorithm will only work, if water surrounds the island and is present at the edge 
+            List<Point> nextPointsList = startingPointList.ToList();
 
             while (true)
             {
-                foreach (Point currentPoint in nextPointsList.ToList())
-                {
-                    nextPointsList.Clear();
+                var currentPointList = nextPointsList.Distinct().ToList();
 
+                nextPointsList.Clear();
+                foreach (Point currentPoint in currentPointList) // using Distinct() to filter out duplicates
+                {
                     int realX = currentPoint.X * this.resDivider;
                     int realY = currentPoint.Y * this.resDivider;
 
-                    byte heightVal = this.GetFieldValue(terrainName: TerrainName.Height, x: realX, y: realY);
+                    byte value = this.GetFieldValue(terrainName: terrainName, x: realX, y: realY);
+                    bool pointWithinRange = minVal <= value && value <= maxVal;
 
-                    bool water = heightVal < Terrain.waterLevelMax;
-
-                    if (water)
+                    if (pointWithinRange)
                     {
-                        this.SetExtProperty(name: ExtBoardProperties.ExtPropName.Sea, value: true, x: realX, y: realY);
+                        this.SetExtProperty(name: nameToSet, value: true, x: realX, y: realY);
 
                         foreach (Point currentOffset in offsetList)
                         {
@@ -343,11 +358,10 @@ namespace SonOfRobin
                                 nextPointsList.Add(nextPoint);
                             }
                         }
-
                     }
                     else
                     {
-                        this.SetExtProperty(name: ExtBoardProperties.ExtPropName.OuterBeachEdge, value: true, x: realX, y: realY);
+                        if (setNameIfOutsideRange) this.SetExtProperty(name: nameToSetIfOutsideRange, value: true, x: realX, y: realY);
                     }
 
                     processedMap[currentPoint.X, currentPoint.Y] = true;
@@ -355,17 +369,6 @@ namespace SonOfRobin
 
                 if (!nextPointsList.Any()) break;
             }
-
-
-
-            // TODO add ext calculation code here
-
-            foreach (Cell cell in cellsWithoutExtPropertiesSet)
-            {
-                cell.ExtBoardProperties.EndCreationAndSave();
-            }
-
-            this.cellsToProcessOnStart.Clear();
         }
 
         public List<Cell> GetCellsForPieceName(PieceTemplate.Name pieceName)

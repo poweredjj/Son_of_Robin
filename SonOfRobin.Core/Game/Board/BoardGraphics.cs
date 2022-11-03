@@ -130,6 +130,14 @@ namespace SonOfRobin
                         pixelHeight: heightTerrain.GetMapDataRaw(localX, localY),
                         pixelHumidity: humidityTerrain.GetMapDataRaw(localX, localY),
                         pixelDanger: dangerTerrain.GetMapDataRaw(localX, localY));
+
+                    { // start of ExtBoardProperties visualisation (edges of cells will be unpainted) - for testing
+                        int realX = this.cell.xMin + (localX * this.cell.grid.resDivider);
+                        int realY = this.cell.yMin + (localY * this.cell.grid.resDivider);
+
+                        bool sea = this.cell.grid.GetExtProperty(name: ExtBoardProperties.ExtPropName.OuterBeachEdge, x: realX, y: realY);
+                        if (sea) smallColorGrid[localX, localY] = Color.HotPink;
+                    } // end of ExtBoardProperties visualisation (edges of cells will be unpainted) - for testing
                 }
             }
 
