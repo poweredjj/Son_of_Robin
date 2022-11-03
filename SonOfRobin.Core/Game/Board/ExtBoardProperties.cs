@@ -17,6 +17,7 @@ namespace SonOfRobin
         private readonly Dictionary<ExtPropName, BitArray> extDataByProperty;
         private readonly List<ExtPropName> containsProperties;
         private readonly string templatePath;
+        private readonly bool loadedFromTemplate;
         public bool CreationInProgress { get; private set; }
 
         public ExtBoardProperties(Cell cell)
@@ -31,12 +32,14 @@ namespace SonOfRobin
             {
                 this.extDataByProperty = this.MakeArrayCollection();
                 this.containsProperties = new List<ExtPropName>();
+                this.loadedFromTemplate = false;
             }
             else
             {
                 this.extDataByProperty = (Dictionary<ExtPropName, BitArray>)serializedData["extDataByProperty"];
                 this.containsProperties = (List<ExtPropName>)serializedData["containsProperties"];
                 this.CreationInProgress = false;
+                this.loadedFromTemplate = true;
             }
         }
 
@@ -70,7 +73,7 @@ namespace SonOfRobin
             }
 
             this.CreationInProgress = false;
-            this.SaveTemplate();
+            if (!this.loadedFromTemplate) this.SaveTemplate();
         }
 
         public bool CheckIfContainsProperty(ExtPropName name)

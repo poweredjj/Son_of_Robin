@@ -297,11 +297,11 @@ namespace SonOfRobin
                 return;
             }
 
-            // TODO add ext calculation code
+            // TODO add ext calculation code here
 
 
 
-            // this.GetExtValue(name: ExtBoardProperties.ExtPropName.Water, x: x, y: y);
+
 
             //if (!this.ExtBoardProperties.CreationInProgress)
             //{
@@ -321,7 +321,12 @@ namespace SonOfRobin
             //    }
             //}
 
-            foreach (Cell cell in this.allCells)
+
+
+
+            // TODO add ext calculation code here
+
+            foreach (Cell cell in cellsWithoutExtPropertiesSet)
             {
                 cell.ExtBoardProperties.EndCreationAndSave();
             }
