@@ -38,7 +38,7 @@ namespace SonOfRobin
         public ExtBoardProperties ExtBoardProperties { get; private set; }
         public BoardGraphics boardGraphics;
 
-        public readonly List<PieceTemplate.Name> allowedNames;  // for initialRangesByTerrainName only - because currentRangesByTerrainName can be changed anytime
+        public readonly List<PieceTemplate.Name> allowedNames; // for initialRangesByTerrainName only - because currentRangesByTerrainName can be changed anytime
 
         public static readonly Group[] allGroups = (Group[])Enum.GetValues(typeof(Group));
         public static readonly TerrainName[] allTerrains = (TerrainName[])Enum.GetValues(typeof(TerrainName));
@@ -115,6 +115,21 @@ namespace SonOfRobin
 
                         if ((allowedRange.Min < terrain.MinVal && allowedRange.Max < terrain.MinVal) ||
                             (allowedRange.Min > terrain.MaxVal && allowedRange.Max > terrain.MaxVal))
+                        {
+                            cellCanContainThisPiece = false;
+                            break;
+                        }
+                    }
+                }
+
+                if (cellCanContainThisPiece)
+                {
+                    foreach (var kvp in allowedTerrain.GetInitialExtPropertiesDict())
+                    {
+                        ExtBoardProperties.ExtPropName name = kvp.Key;
+                        bool value = kvp.Value;
+
+                        if (!this.ExtBoardProperties.CheckIfContainsProperty(name: name, value: value))
                         {
                             cellCanContainThisPiece = false;
                             break;

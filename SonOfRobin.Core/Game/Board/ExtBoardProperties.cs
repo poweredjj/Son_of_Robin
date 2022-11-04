@@ -15,7 +15,8 @@ namespace SonOfRobin
         public readonly Cell cell;
 
         private readonly Dictionary<ExtPropName, BitArray> extDataByProperty;
-        private readonly List<ExtPropName> containsProperties;
+        private readonly List<ExtPropName> containsPropertiesTrue;
+        private readonly List<ExtPropName> containsPropertiesFalse;
         private readonly string templatePath;
         private readonly bool loadedFromTemplate; // to avoid saving template, after being loaded (needed because saving is not done inside constructor)
         public bool CreationInProgress { get; private set; }
@@ -31,13 +32,15 @@ namespace SonOfRobin
             if (serializedData == null)
             {
                 this.extDataByProperty = this.MakeArrayCollection();
-                this.containsProperties = new List<ExtPropName>();
+                this.containsPropertiesTrue = new List<ExtPropName>();
+                this.containsPropertiesFalse = new List<ExtPropName>();
                 this.loadedFromTemplate = false;
             }
             else
             {
                 this.extDataByProperty = (Dictionary<ExtPropName, BitArray>)serializedData["extDataByProperty"];
-                this.containsProperties = (List<ExtPropName>)serializedData["containsProperties"];
+                this.containsPropertiesTrue = (List<ExtPropName>)serializedData["containsPropertiesTrue"];
+                this.containsPropertiesTrue = (List<ExtPropName>)serializedData["containsPropertiesFalse"];
                 this.CreationInProgress = false;
                 this.loadedFromTemplate = true;
             }
@@ -67,7 +70,9 @@ namespace SonOfRobin
                 {
                     for (int y = 0; y < this.cell.dividedHeight; y++)
                     {
-                        if (kvp.Value.Get(Convert2DCoordinatesTo1D(x, y)) && !this.containsProperties.Contains(name)) this.containsProperties.Add(name);
+                        bool value = kvp.Value.Get(Convert2DCoordinatesTo1D(x, y));
+                        if (value && !this.containsPropertiesTrue.Contains(name)) this.containsPropertiesTrue.Add(name);
+                        if (!value && !this.containsPropertiesFalse.Contains(name)) this.containsPropertiesFalse.Add(name);
                     }
                 }
             }
@@ -76,9 +81,10 @@ namespace SonOfRobin
             if (!this.loadedFromTemplate) this.SaveTemplate();
         }
 
-        public bool CheckIfContainsProperty(ExtPropName name)
+        public bool CheckIfContainsProperty(ExtPropName name, bool value)
         {
-            return this.containsProperties.Contains(name);
+            if (value) return this.containsPropertiesTrue.Contains(name);
+            else return this.containsPropertiesFalse.Contains(name);
         }
 
         private int ConvertRaw2DCoordinatesTo1D(int x, int y)
@@ -132,7 +138,8 @@ namespace SonOfRobin
             var serializedData = new Dictionary<string, object>
             {
                 { "extDataByProperty", this.extDataByProperty },
-                { "containsProperties", this.containsProperties },
+                { "containsPropertiesTrue", this.containsPropertiesTrue },
+                { "containsPropertiesFalse", this.containsPropertiesFalse },
             };
 
             return serializedData;

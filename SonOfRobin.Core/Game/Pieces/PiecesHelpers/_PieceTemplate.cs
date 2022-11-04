@@ -867,7 +867,9 @@ namespace SonOfRobin
 
                 case Name.CrateStarting:
                     {
-                        var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName>() { AllowedTerrain.RangeName.GroundAll });
+                        var allowedTerrain = new AllowedTerrain(
+                            rangeNameList: new List<AllowedTerrain.RangeName>() { AllowedTerrain.RangeName.GroundAll },
+                            extPropertiesDict: new Dictionary<ExtBoardProperties.ExtPropName, bool> { { ExtBoardProperties.ExtPropName.OuterBeach, true } });
 
                         var yield = new Yield(debrisType: Yield.DebrisType.Wood,
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -883,12 +885,14 @@ namespace SonOfRobin
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(name: SoundData.Name.DestroyBox, maxPitchVariation: 0.5f));
 
                         return new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Crate, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Wood,
-                            minDistance: 0, maxDistance: 50, maxMassBySize: null, generation: generation, yield: yield, maxHitPoints: 5, placeAtBeachEdge: true, readableName: "supply crate", description: "Contains valuable items.", soundPack: soundPack);
+                            minDistance: 0, maxDistance: 50, maxMassBySize: null, generation: generation, yield: yield, maxHitPoints: 5, readableName: "supply crate", description: "Contains valuable items.", soundPack: soundPack);
                     }
 
                 case Name.CrateRegular:
                     {
-                        var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName>() { AllowedTerrain.RangeName.GroundAll });
+                        var allowedTerrain = new AllowedTerrain(
+                            rangeNameList: new List<AllowedTerrain.RangeName>() { AllowedTerrain.RangeName.GroundAll },
+                            extPropertiesDict: new Dictionary<ExtBoardProperties.ExtPropName, bool> { { ExtBoardProperties.ExtPropName.OuterBeach, true } });
 
                         var yield = new Yield(debrisType: Yield.DebrisType.Wood,
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -905,7 +909,7 @@ namespace SonOfRobin
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(name: SoundData.Name.DestroyBox, maxPitchVariation: 0.5f));
 
                         return new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Crate, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Wood,
-                            minDistance: 0, maxDistance: 50, maxMassBySize: null, generation: generation, yield: yield, maxHitPoints: 40, placeAtBeachEdge: true, readableName: "supply crate", description: "Contains valuable items.", soundPack: soundPack);
+                            minDistance: 0, maxDistance: 50, maxMassBySize: null, generation: generation, yield: yield, maxHitPoints: 40, readableName: "supply crate", description: "Contains valuable items.", soundPack: soundPack);
                     }
 
                 case Name.ChestWooden:
@@ -1104,7 +1108,7 @@ namespace SonOfRobin
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(nameList: new List<SoundData.Name> { SoundData.Name.DestroyCeramic1, SoundData.Name.DestroyCeramic2 }, maxPitchVariation: 0.5f));
 
                         return new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.JarBroken, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Wood,
-                    minDistance: 0, maxDistance: 50, maxMassBySize: null, generation: generation, yield: yield, maxHitPoints: 20, placeAtBeachEdge: true, readableName: "broken jar", description: "Broken Jar.", movesWhenDropped: false, soundPack: soundPack);
+                    minDistance: 0, maxDistance: 50, maxMassBySize: null, generation: generation, yield: yield, maxHitPoints: 20, readableName: "broken jar", description: "Broken Jar.", movesWhenDropped: false, soundPack: soundPack);
                     }
 
                 case Name.WorkshopEssential:
@@ -1225,11 +1229,12 @@ namespace SonOfRobin
 
                 case Name.Clam:
                     {
-                        var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.GroundAll });
+                        var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.GroundAll },
+                            extPropertiesDict: new Dictionary<ExtBoardProperties.ExtPropName, bool> { { ExtBoardProperties.ExtPropName.OuterBeach, true } });
 
                         return new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Clam, blocksMovement: false, allowedTerrain: allowedTerrain,
                             category: BoardPiece.Category.Indestructible,
-                            minDistance: 0, maxDistance: 200, generation: generation, mass: 100, stackSize: 6, rotatesWhenDropped: true, placeAtBeachEdge: true, readableName: "clam", description: "Have to be cooked before eating.");
+                            minDistance: 0, maxDistance: 200, generation: generation, mass: 100, stackSize: 6, rotatesWhenDropped: true, readableName: "clam", description: "Have to be cooked before eating.");
                     }
 
                 case Name.Shell:
@@ -1238,11 +1243,12 @@ namespace SonOfRobin
 
                         var animPkg = packageNames[random.Next(0, packageNames.Count)];
 
-                        var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.GroundAll });
+                        var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.GroundAll },
+                            extPropertiesDict: new Dictionary<ExtBoardProperties.ExtPropName, bool> { { ExtBoardProperties.ExtPropName.OuterBeach, true } });
 
                         return new Collectible(name: templateName, world: world, id: id, animPackage: animPkg, blocksMovement: false, allowedTerrain: allowedTerrain,
                             category: BoardPiece.Category.Indestructible,
-                            minDistance: 0, maxDistance: 200, generation: generation, stackSize: 6, rotatesWhenDropped: true, placeAtBeachEdge: true, readableName: "shell", description: "Not really useful.");
+                            minDistance: 0, maxDistance: 200, generation: generation, stackSize: 6, rotatesWhenDropped: true, readableName: "shell", description: "Not really useful.");
                     }
 
                 case Name.Stick:
@@ -2527,12 +2533,13 @@ namespace SonOfRobin
 
                 case Name.SoundSeaWaves:
                     {
-                        AllowedTerrain allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName>() { AllowedTerrain.RangeName.GroundAll });
+                        AllowedTerrain allowedTerrain = new AllowedTerrain(
+                            extPropertiesDict: new Dictionary<ExtBoardProperties.ExtPropName, bool> { { ExtBoardProperties.ExtPropName.Sea, true } });
                         AllowedDensity allowedDensity = new AllowedDensity(radious: 160, maxNoOfPiecesSameName: 1);
 
                         Sound sound = new Sound(nameList: new List<SoundData.Name> { SoundData.Name.SeaWave1, SoundData.Name.SeaWave2, SoundData.Name.SeaWave3, SoundData.Name.SeaWave4, SoundData.Name.SeaWave5, SoundData.Name.SeaWave6, SoundData.Name.SeaWave7, SoundData.Name.SeaWave8, SoundData.Name.SeaWave9, SoundData.Name.SeaWave10, SoundData.Name.SeaWave11, SoundData.Name.SeaWave12, SoundData.Name.SeaWave13 }, maxPitchVariation: 0.8f, volume: 0.7f);
 
-                        AmbientSound ambientSound = new AmbientSound(name: templateName, world: world, id: id, allowedTerrain: allowedTerrain, allowedDensity: allowedDensity, readableName: "ambient sea waves sound", description: "Ambient sound for sea waves.", sound: sound, playDelay: 300, playDelayMaxVariation: 200, visible: Preferences.debugShowSounds, placeAtBeachEdge: true);
+                        AmbientSound ambientSound = new AmbientSound(name: templateName, world: world, id: id, allowedTerrain: allowedTerrain, allowedDensity: allowedDensity, readableName: "ambient sea waves sound", description: "Ambient sound for sea waves.", sound: sound, playDelay: 300, playDelayMaxVariation: 200, visible: Preferences.debugShowSounds);
 
                         ambientSound.sprite.color = Color.Cyan;
 
@@ -2541,12 +2548,13 @@ namespace SonOfRobin
 
                 case Name.SoundSeaWind:
                     {
-                        AllowedTerrain allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName>() { AllowedTerrain.RangeName.GroundAll });
+                        AllowedTerrain allowedTerrain = new AllowedTerrain(
+                            extPropertiesDict: new Dictionary<ExtBoardProperties.ExtPropName, bool> { { ExtBoardProperties.ExtPropName.Sea, true } });
                         AllowedDensity allowedDensity = new AllowedDensity(radious: 170, maxNoOfPiecesSameName: 1);
 
                         Sound sound = new Sound(name: SoundData.Name.SeaWind, maxPitchVariation: 0.5f, volume: 0.6f, isLooped: true, volumeFadeFrames: 60);
 
-                        AmbientSound ambientSound = new AmbientSound(name: templateName, world: world, id: id, allowedTerrain: allowedTerrain, allowedDensity: allowedDensity, readableName: "ambient sea wind sound", description: "Ambient sound for sea wind.", sound: sound, playDelay: 0, visible: Preferences.debugShowSounds, placeAtBeachEdge: true);
+                        AmbientSound ambientSound = new AmbientSound(name: templateName, world: world, id: id, allowedTerrain: allowedTerrain, allowedDensity: allowedDensity, readableName: "ambient sea wind sound", description: "Ambient sound for sea wind.", sound: sound, playDelay: 0, visible: Preferences.debugShowSounds);
 
                         ambientSound.sprite.color = Color.White;
 
