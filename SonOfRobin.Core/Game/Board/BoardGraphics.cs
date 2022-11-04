@@ -107,69 +107,7 @@ namespace SonOfRobin
             return texture;
         }
 
-        private Color[,] CreateBitmapFromTerrain() // FOR TESTING ONLY
-        {
-            // can be run in parallel, because it does not use graphicsDevice
-
-            // creating base 2D color array with rgb color data
-
-            int sourceWidth = this.cell.dividedWidth;
-            int sourceHeight = this.cell.dividedHeight;
-            int resDivider = this.cell.grid.resDivider;
-
-            Terrain heightTerrain = this.cell.terrainByName[TerrainName.Height];
-            Terrain humidityTerrain = this.cell.terrainByName[TerrainName.Humidity];
-            Terrain dangerTerrain = this.cell.terrainByName[TerrainName.Danger];
-            ExtBoardProperties extBoardProperties = this.cell.ExtBoardProperties;
-
-            Color[,] smallColorGrid = new Color[sourceWidth, sourceHeight];
-
-            for (int localX = 0; localX < sourceWidth; localX++)
-            {
-                for (int localY = 0; localY < sourceHeight; localY++)
-                {
-                    smallColorGrid[localX, localY] = CreatePixel(
-                        pixelHeight: heightTerrain.GetMapDataRaw(localX, localY),
-                        pixelHumidity: humidityTerrain.GetMapDataRaw(localX, localY),
-                        pixelDanger: dangerTerrain.GetMapDataRaw(localX, localY),
-                        extDataValDict: extBoardProperties.GetValueDict(x: localX, y: localY, xyRaw: true));
-                }
-            }
-
-            // putting upscaled color grid into PngBuilder
-
-            var builder = PngBuilder.Create(width: sourceWidth, height: sourceHeight, hasAlphaChannel: true);
-
-            for (int y = 0; y < sourceHeight; y++)
-            {
-                for (int x = 0; x < sourceWidth; x++)
-                {
-                    Color pixel = smallColorGrid[x, y];
-                    builder.SetPixel(pixel.R, pixel.G, pixel.B, x, y);
-                }
-            }
-
-            // saving PngBuilder to file
-
-            using (var memoryStream = new MemoryStream())
-            {
-                builder.Save(memoryStream);
-
-                try
-                {
-                    FileReaderWriter.SaveMemoryStream(memoryStream: memoryStream, this.templatePath);
-                }
-                catch (IOException)
-                {
-                    // write error
-                }
-            }
-
-            return smallColorGrid;
-        }
-
-
-        private Color[,] CreateBitmapFromTerrainOriginal()
+        private Color[,] CreateBitmapFromTerrain()
         {
             // can be run in parallel, because it does not use graphicsDevice
 
@@ -237,25 +175,28 @@ namespace SonOfRobin
                 {
                     for (int xOffset = -1; xOffset < 2; xOffset++)
                     {
-                        try
-                        {
-                            int localX = point.X + xOffset; // do not use to calculate world space
-                            int localY = point.Y + yOffset; // do not use to calculate world space
+                        int localX = point.X + xOffset;
+                        int localY = point.Y + yOffset;
 
+                        if (localX >= 0 && localX < this.cell.dividedWidth &&
+                            localY >= 0 && localY < this.cell.dividedHeight)
+                        {
                             // looking for pixel locally
+
                             workingGrid3x3[xOffset + 1, yOffset + 1] = CreatePixel(
                                 pixelHeight: heightTerrain.GetMapDataRaw(localX, localY),
                                 pixelHumidity: humidityTerrain.GetMapDataRaw(localX, localY),
                                 pixelDanger: dangerTerrain.GetMapDataRaw(localX, localY),
                                 extDataValDict: this.cell.ExtBoardProperties.GetValueDict(x: localX, y: localY, xyRaw: true));
                         }
-                        catch (IndexOutOfRangeException)
+                        else
                         {
                             try
                             {
                                 // looking for pixel in the whole grid
-                                int worldSpaceX = this.cell.xMin + (point.X * resDivider) + xOffset;
-                                int worldSpaceY = this.cell.yMin + (point.Y * resDivider) + yOffset;
+
+                                int worldSpaceX = this.cell.xMin + (localX * resDivider);
+                                int worldSpaceY = this.cell.yMin + (localY * resDivider);
 
                                 workingGrid3x3[xOffset + 1, yOffset + 1] = CreatePixel(
                                     pixelHeight: this.cell.grid.GetFieldValue(terrainName: TerrainName.Height, x: worldSpaceX, y: worldSpaceY),
@@ -265,7 +206,7 @@ namespace SonOfRobin
                             }
                             catch (IndexOutOfRangeException)
                             {
-                                // pixel outside world bounds - inserting the nearest correct position
+                                // pixel outside world bounds -inserting the nearest correct position
                                 workingGrid3x3[xOffset + 1, yOffset + 1] = smallColorGrid[point.X, point.Y];
                             }
                         }
@@ -296,7 +237,7 @@ namespace SonOfRobin
 
                 try
                 {
-                    FileReaderWriter.SaveMemoryStream(memoryStream: memoryStream, this.templatePath);
+                    FileReaderWriter.SaveMemoryStream(memoryStream: memoryStream, this.templatePath); // TODO enable this
                 }
                 catch (IOException)
                 {
@@ -340,8 +281,8 @@ namespace SonOfRobin
                 pixel = Blend2Colors(bottomColor: pixel, topColor: new Color((byte)40, (byte)0, (byte)0, dangerAlpha));
             }
 
-            if (extDataValDict[ExtBoardProperties.ExtPropName.OuterBeach]) pixel = Color.HotPink; // for testing
-            if (extDataValDict[ExtBoardProperties.ExtPropName.Sea]) pixel = Color.Cyan; // for testing
+            // if (extDataValDict[ExtBoardProperties.ExtPropName.OuterBeach]) pixel = Color.HotPink; // for testing
+            // if (extDataValDict[ExtBoardProperties.ExtPropName.Sea]) pixel = Color.Cyan; // for testing
 
             return pixel;
         }
