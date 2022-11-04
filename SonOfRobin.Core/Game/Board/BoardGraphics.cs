@@ -120,6 +120,7 @@ namespace SonOfRobin
             Terrain heightTerrain = this.cell.terrainByName[TerrainName.Height];
             Terrain humidityTerrain = this.cell.terrainByName[TerrainName.Humidity];
             Terrain dangerTerrain = this.cell.terrainByName[TerrainName.Danger];
+            ExtBoardProperties extBoardProperties = this.cell.ExtBoardProperties;
 
             Color[,] smallColorGrid = new Color[sourceWidth, sourceHeight];
 
@@ -131,7 +132,7 @@ namespace SonOfRobin
                         pixelHeight: heightTerrain.GetMapDataRaw(localX, localY),
                         pixelHumidity: humidityTerrain.GetMapDataRaw(localX, localY),
                         pixelDanger: dangerTerrain.GetMapDataRaw(localX, localY),
-                        extDataValDict: this.cell.ExtBoardProperties.GetValueDict(x: localX, y: localY, xyRaw: true));
+                        extDataValDict: extBoardProperties.GetValueDict(x: localX, y: localY, xyRaw: true));
                 }
             }
 
@@ -181,6 +182,7 @@ namespace SonOfRobin
             Terrain heightTerrain = this.cell.terrainByName[TerrainName.Height];
             Terrain humidityTerrain = this.cell.terrainByName[TerrainName.Humidity];
             Terrain dangerTerrain = this.cell.terrainByName[TerrainName.Danger];
+            ExtBoardProperties extBoardProperties = this.cell.ExtBoardProperties;
 
             Color[,] smallColorGrid = new Color[sourceWidth, sourceHeight];
 
@@ -192,7 +194,7 @@ namespace SonOfRobin
                         pixelHeight: heightTerrain.GetMapDataRaw(localX, localY),
                         pixelHumidity: humidityTerrain.GetMapDataRaw(localX, localY),
                         pixelDanger: dangerTerrain.GetMapDataRaw(localX, localY),
-                        extDataValDict: this.cell.ExtBoardProperties.GetValueDict(x: localX, y: localY, xyRaw: true));
+                        extDataValDict: extBoardProperties.GetValueDict(x: localX, y: localY, xyRaw: true));
                 }
             }
 

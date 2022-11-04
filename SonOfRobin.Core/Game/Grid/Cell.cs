@@ -10,18 +10,23 @@ namespace SonOfRobin
         public readonly Grid grid;
         public readonly World world;
         public readonly Color color;
+
         public readonly int cellNoX;
         public readonly int cellNoY;
+
         public readonly int xMin;
         public readonly int xCenter;
         public readonly int xMax;
         public readonly int yMin;
         public readonly int yCenter;
         public readonly int yMax;
+
         public readonly Rectangle rect;
         public readonly Vector2 center;
+
         public readonly int width;
         public readonly int height;
+
         public readonly int dividedWidth;
         public readonly int dividedHeight;
 
