@@ -6,11 +6,11 @@ dotnet publish -c Release -r osx-x64 /p:PublishReadyToRun=false /p:TieredCompila
 
 cd ..
 
-move .\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\linux-x64\publish ".\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\linux-x64\Son of Robin"
-move .\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\osx-x64\publish ".\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\osx-x64\Son of Robin"
+move .\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\linux-x64\publish ".\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\linux-x64\Son_of_Robin"
+move .\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\osx-x64\publish ".\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\osx-x64\Son_of_Robin"
 
-7z.exe a SonOfRobin_Linux.zip ".\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\linux-x64\Son of Robin" -tzip -mx=9
-7z.exe a SonOfRobin_OSX.zip ".\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\osx-x64\Son of Robin" -tzip -mx=9
+7z.exe a SonOfRobin_Linux.zip ".\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\linux-x64\Son_of_Robin" -tzip -mx=9
+7z.exe a SonOfRobin_OSX.zip ".\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\osx-x64\Son_of_Robin" -tzip -mx=9
 
 rmdir /S /Q .\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\linux-x64
 rmdir /S /Q .\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\osx-x64

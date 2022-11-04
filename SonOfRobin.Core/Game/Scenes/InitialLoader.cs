@@ -114,7 +114,7 @@ namespace SonOfRobin
 
                     if (SonOfRobinGame.LicenceValid)
                     {
-                        if (Preferences.showDemoWorld) new World(seed: 777, width: 1500, height: 1000, resDivider: 2, playerFemale: false, demoMode: true, initialMaxAnimalsMultiplier: 100, addAgressiveAnimals: true);
+                        if (Preferences.showDemoWorld) new World(seed: 777, width: 2500, height: 2500, resDivider: 4, playerFemale: false, demoMode: true, initialMaxAnimalsMultiplier: 100, addAgressiveAnimals: true);
                         MenuTemplate.CreateMenuFromTemplate(templateName: MenuTemplate.Name.Main);
                     }
                     else
