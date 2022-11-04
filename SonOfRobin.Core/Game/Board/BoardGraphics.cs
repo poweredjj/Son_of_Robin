@@ -237,7 +237,7 @@ namespace SonOfRobin
 
                 try
                 {
-                    FileReaderWriter.SaveMemoryStream(memoryStream: memoryStream, this.templatePath); // TODO enable this
+                    FileReaderWriter.SaveMemoryStream(memoryStream: memoryStream, this.templatePath);
                 }
                 catch (IOException)
                 {

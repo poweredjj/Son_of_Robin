@@ -309,12 +309,11 @@ namespace SonOfRobin
 
             List<Point> beachEdgePointList = this.GetAllRawCoordinatesWithExtProperty(nameToUse: ExtBoardProperties.ExtPropName.OuterBeach, value: true);
             byte beachHeightMin = (byte)(Terrain.waterLevelMax + 1);
-            byte beachHeightMax = (byte)(BoardGraphics.colorsByHeight[BoardGraphics.Colors.Beach1][1] - 4);
+            byte beachHeightMax = (byte)(Terrain.waterLevelMax + 4);
 
             this.FloodFillExtProperties(
                  startingPointList: beachEdgePointList, terrainName: TerrainName.Height, minVal: beachHeightMin, maxVal: beachHeightMax,
                  nameToSet: ExtBoardProperties.ExtPropName.OuterBeach, setNameIfOutsideRange: false, nameToSetIfOutsideRange: ExtBoardProperties.ExtPropName.OuterBeach);
-
 
             foreach (Cell cell in cellsWithoutExtPropertiesSet)
             {
@@ -804,21 +803,30 @@ namespace SonOfRobin
             {
                 cellNoX++;
                 posInsideCellX = 0;
+
+                if (cellNoX >= this.noOfCellsX)
+                {
+                    cellNoX--;
+                    posInsideCellX = this.cellGrid[cellNoX, cellNoY].dividedWidth - 1;
+                }
             }
             if (posInsideCellY / this.resDivider >= cell.dividedHeight)
             {
                 cellNoY++;
                 posInsideCellY = 0;
+
+                if (cellNoY >= this.noOfCellsY)
+                {
+                    cellNoY--;
+                    posInsideCellY = this.cellGrid[cellNoX, cellNoY].dividedHeight - 1;
+                }
             }
 
-            if (cellNoX >= this.noOfCellsX) cellNoX--;
-            if (cellNoY >= this.noOfCellsY) cellNoY--;
-
             return new Dictionary<string, int> {
-                {"cellNoX", cellNoX },
-                {"cellNoY", cellNoY },
-                {"posInsideCellX", posInsideCellX },
-                {"posInsideCellY", posInsideCellY }};
+                { "cellNoX", cellNoX },
+                { "cellNoY", cellNoY },
+                { "posInsideCellX", posInsideCellX },
+                { "posInsideCellY", posInsideCellY }};
         }
 
         public Cell FindMatchingCell(Vector2 position)
@@ -903,10 +911,13 @@ namespace SonOfRobin
 
             if (timeSpan < TimeSpan.FromMinutes(1))
             { timeLeftString = timeSpan.ToString("ss"); }
+
             else if (timeSpan < TimeSpan.FromHours(1))
             { timeLeftString = timeSpan.ToString("mm\\:ss"); }
+
             else if (timeSpan < TimeSpan.FromDays(1))
             { timeLeftString = timeSpan.ToString("hh\\:mm\\:ss"); }
+
             else
             { timeLeftString = timeSpan.ToString("dd\\:hh\\:mm\\:ss"); }
 
