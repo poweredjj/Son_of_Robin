@@ -40,7 +40,7 @@ namespace SonOfRobin
         public readonly bool blocksMovement;
         public readonly bool blocksPlantGrowth;
         public readonly bool ignoresCollisions;
-        public AllowedFields allowedFields;
+        public AllowedTerrain allowedTerrain;
         private readonly AllowedDensity allowedDensity;
         private readonly int minDistance;
         private readonly int maxDistance;
@@ -132,7 +132,7 @@ namespace SonOfRobin
             }
         }
 
-        public Sprite(World world, string id, BoardPiece boardPiece, AnimData.PkgName animPackage, byte animSize, string animName, bool ignoresCollisions, AllowedFields allowedFields, bool blocksMovement = true, bool visible = true, bool floatsOnWater = false, bool fadeInAnim = true, AllowedDensity allowedDensity = null, LightEngine lightEngine = null, int minDistance = 0, int maxDistance = 100, bool placeAtBeachEdge = false, bool blocksPlantGrowth = false)
+        public Sprite(World world, string id, BoardPiece boardPiece, AnimData.PkgName animPackage, byte animSize, string animName, bool ignoresCollisions, AllowedTerrain allowedTerrain, bool blocksMovement = true, bool visible = true, bool floatsOnWater = false, bool fadeInAnim = true, AllowedDensity allowedDensity = null, LightEngine lightEngine = null, int minDistance = 0, int maxDistance = 100, bool placeAtBeachEdge = false, bool blocksPlantGrowth = false)
         {
             this.id = id; // duplicate from BoardPiece class
             this.boardPiece = boardPiece;
@@ -151,7 +151,7 @@ namespace SonOfRobin
             this.blocksMovement = blocksMovement;
             this.ignoresCollisions = ignoresCollisions;
             this.blocksPlantGrowth = blocksPlantGrowth;
-            this.allowedFields = allowedFields;
+            this.allowedTerrain = allowedTerrain;
             this.allowedDensity = allowedDensity;
             this.minDistance = minDistance;
             this.maxDistance = maxDistance;
@@ -221,7 +221,7 @@ namespace SonOfRobin
             pieceData["sprite_orientation"] = this.orientation;
             pieceData["sprite_gridGroups"] = this.gridGroups;
             pieceData["sprite_hasBeenDiscovered"] = this.hasBeenDiscovered;
-            pieceData["sprite_allowedFields"] = this.allowedFields;
+            pieceData["sprite_allowedTerrain"] = this.allowedTerrain;
             pieceData["sprite_lightSource"] = this.lightEngine == null ? null : this.lightEngine.Serialize();
             pieceData["sprite_color"] = new byte[] { this.color.R, this.color.G, this.color.B, this.color.A };
         }
@@ -241,7 +241,7 @@ namespace SonOfRobin
             this.AssignFrameById((string)pieceData["sprite_frame_id"]);
             this.gridGroups = (List<Cell.Group>)pieceData["sprite_gridGroups"];
             this.hasBeenDiscovered = (bool)pieceData["sprite_hasBeenDiscovered"];
-            this.allowedFields = (AllowedFields)pieceData["sprite_allowedFields"];
+            this.allowedTerrain = (AllowedTerrain)pieceData["sprite_allowedTerrain"];
             this.lightEngine = LightEngine.Deserialize(lightData: pieceData["sprite_lightSource"], sprite: this);
             var colorArray = (byte[])pieceData["sprite_color"];
             this.color = new Color(r: colorArray[0], g: colorArray[1], b: colorArray[2], alpha: colorArray[3]);
@@ -585,7 +585,7 @@ namespace SonOfRobin
             if (this.gfxRect.Left <= 0 || this.gfxRect.Right >= this.world.width || this.gfxRect.Top <= 0 || this.gfxRect.Bottom >= this.world.height) return true;
             if (this.ignoresCollisions) return false;
             if (this.allowedDensity != null && !ignoreDensity && !this.allowedDensity.CanBePlacedHere()) return true;
-            if (!this.allowedFields.CanStandHere(world: this.world, position: this.position)) return true;
+            if (!this.allowedTerrain.CanStandHere(world: this.world, position: this.position)) return true;
 
             var gridTypeToCheck = this.boardPiece.GetType() == typeof(Plant) ? Cell.Group.ColPlantGrowth : Cell.Group.ColMovement;
 

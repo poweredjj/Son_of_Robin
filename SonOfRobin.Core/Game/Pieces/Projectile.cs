@@ -14,10 +14,10 @@ namespace SonOfRobin
         private bool shootMode; // true == shoot (can damage target), false == bounce (can't damage anything)
         private readonly bool canBeStuck;
 
-        public Projectile(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedFields allowedFields, Dictionary<byte, int> maxMassBySize, int baseHitPower, int maxHitPoints, byte stackSize, bool canBeStuck, string readableName, string description,
+        public Projectile(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, Dictionary<byte, int> maxMassBySize, int baseHitPower, int maxHitPoints, byte stackSize, bool canBeStuck, string readableName, string description,
             byte animSize = 0, string animName = "default", bool blocksMovement = false, ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = true, int generation = 0, bool indestructible = false, Yield yield = null, bool rotatesWhenDropped = true, bool fadeInAnim = false, List<BuffEngine.Buff> buffList = null) :
 
-            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedFields: allowedFields, floatsOnWater: floatsOnWater, maxMassBySize: maxMassBySize, generation: generation, canBePickedUp: true, yield: yield, maxHitPoints: maxHitPoints, stackSize: stackSize, indestructible: indestructible, rotatesWhenDropped: rotatesWhenDropped, fadeInAnim: fadeInAnim, readableName: readableName, description: description, category: Category.Indestructible, buffList: buffList, activeState: State.Empty)
+            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedTerrain: allowedTerrain, floatsOnWater: floatsOnWater, maxMassBySize: maxMassBySize, generation: generation, canBePickedUp: true, yield: yield, maxHitPoints: maxHitPoints, stackSize: stackSize, indestructible: indestructible, rotatesWhenDropped: rotatesWhenDropped, fadeInAnim: fadeInAnim, readableName: readableName, description: description, category: Category.Indestructible, buffList: buffList, activeState: State.Empty)
         {
             this.canBeStuck = canBeStuck;
             this.baseHitPower = baseHitPower;

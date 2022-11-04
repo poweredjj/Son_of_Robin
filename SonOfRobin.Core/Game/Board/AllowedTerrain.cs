@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace SonOfRobin
 {
     [Serializable]
-    public class AllowedFields
+    public class AllowedTerrain
     {
         public enum RangeName { All, WaterAll, WaterShallow, WaterMedium, WaterDeep, GroundSand, GroundAll, Volcano, NoDanger, Danger };
 
@@ -16,7 +16,7 @@ namespace SonOfRobin
 
         public bool InitialRangesHasChanged { get { return this.currentRangesByTerrainName != null; } }
 
-        public AllowedFields()
+        public AllowedTerrain()
         {
             // no fields defined - all fields allowed
 
@@ -25,7 +25,7 @@ namespace SonOfRobin
             this.currentRangesByTerrainName = null;
         }
 
-        public AllowedFields(Dictionary<TerrainName, AllowedRange> rangeDict)
+        public AllowedTerrain(Dictionary<TerrainName, AllowedRange> rangeDict)
         {
             // var exampleRangeDict = new Dictionary<string, AllowedRange>() { { TerrainName.Height, new AllowedRange(min: 0, max: 128) } };
 
@@ -34,7 +34,7 @@ namespace SonOfRobin
             this.currentRangesByTerrainName = null;
         }
 
-        public AllowedFields(List<RangeName> rangeNameList)
+        public AllowedTerrain(List<RangeName> rangeNameList)
         {
             // var exampleRangeNameList = new List<string>() { BoardColors.WaterShallow, "ground_all" };
 

@@ -189,7 +189,7 @@ namespace SonOfRobin
             }
         }
 
-        public BoardPiece(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedFields allowedFields, Dictionary<byte, int> maxMassBySize, string readableName, string description, Category category, State activeState,
+        public BoardPiece(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, Dictionary<byte, int> maxMassBySize, string readableName, string description, Category category, State activeState,
             byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, bool blocksPlantGrowth = false, bool visible = true, bool ignoresCollisions = false, int destructionDelay = 0, int maxAge = 0, bool floatsOnWater = false, int generation = 0, int mass = 1, int staysAfterDeath = 800, float maxHitPoints = 1, byte stackSize = 1, Scheduler.TaskName boardTask = Scheduler.TaskName.Empty, Scheduler.TaskName toolbarTask = Scheduler.TaskName.Empty, bool canBePickedUp = false, Yield yield = null, Yield appearDebris = null, bool indestructible = false, bool rotatesWhenDropped = false, bool movesWhenDropped = true, bool fadeInAnim = false, bool serialize = true, List<BuffEngine.Buff> buffList = null, AllowedDensity allowedDensity = null, int strength = 0, LightEngine lightEngine = null, int minDistance = 0, int maxDistance = 100, bool placeAtBeachEdge = false, PieceSoundPack soundPack = null, bool female = false)
         {
             this.world = world;
@@ -198,7 +198,7 @@ namespace SonOfRobin
             this.category = category;
             this.id = id;
 
-            this.sprite = new Sprite(boardPiece: this, id: this.id, world: this.world, animPackage: animPackage, animSize: animSize, animName: animName, blocksMovement: blocksMovement, blocksPlantGrowth: blocksPlantGrowth, visible: visible, ignoresCollisions: ignoresCollisions, allowedFields: allowedFields, floatsOnWater: floatsOnWater, fadeInAnim: fadeInAnim, allowedDensity: allowedDensity, lightEngine: lightEngine, minDistance: minDistance, maxDistance: maxDistance, placeAtBeachEdge: placeAtBeachEdge);
+            this.sprite = new Sprite(boardPiece: this, id: this.id, world: this.world, animPackage: animPackage, animSize: animSize, animName: animName, blocksMovement: blocksMovement, blocksPlantGrowth: blocksPlantGrowth, visible: visible, ignoresCollisions: ignoresCollisions, allowedTerrain: allowedTerrain, floatsOnWater: floatsOnWater, fadeInAnim: fadeInAnim, allowedDensity: allowedDensity, lightEngine: lightEngine, minDistance: minDistance, maxDistance: maxDistance, placeAtBeachEdge: placeAtBeachEdge);
 
             this.soundPack = soundPack == null ? new PieceSoundPack() : soundPack;
             this.soundPack.Activate(this);

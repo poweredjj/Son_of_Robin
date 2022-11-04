@@ -190,7 +190,7 @@ namespace SonOfRobin
                     {
                         //  MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Yield - {yieldPiece.readableName} ID {yieldPiece.id} dropped.");
 
-                        yieldPiece.sprite.allowedFields = new AllowedFields(rangeNameList: new List<AllowedFields.RangeName> { AllowedFields.RangeName.WaterShallow, AllowedFields.RangeName.WaterMedium, AllowedFields.RangeName.GroundAll }); // where player can go
+                        yieldPiece.sprite.allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.WaterShallow, AllowedTerrain.RangeName.WaterMedium, AllowedTerrain.RangeName.GroundAll }); // where player can go
 
                         Vector2 posDiff = Helpers.VectorAbsMax(vector: this.mainPiece.sprite.position - yieldPiece.sprite.position, maxVal: 4f);
                         posDiff += new Vector2(yieldPiece.world.random.Next(-8, 8), yieldPiece.world.random.Next(-8, 8)); // to add a lot of variation

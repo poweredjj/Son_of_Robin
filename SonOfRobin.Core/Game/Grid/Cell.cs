@@ -101,14 +101,14 @@ namespace SonOfRobin
             foreach (PieceTemplate.Name pieceName in PieceTemplate.allNames)
             {
                 PieceInfo.Info pieceInfo = PieceInfo.GetInfo(pieceName);
-                AllowedFields allowedFields = pieceInfo.allowedFields;
+                AllowedTerrain allowedTerrain = pieceInfo.allowedTerrain;
                 bool cellCanContainThisPiece = true;
 
                 foreach (var kvp in this.terrainByName)
                 {
                     TerrainName terrainName = kvp.Key;
 
-                    AllowedRange allowedRange = allowedFields.GetInitialRangeForTerrainName(terrainName);
+                    AllowedRange allowedRange = allowedTerrain.GetInitialRangeForTerrainName(terrainName);
                     if (allowedRange != null)
                     {
                         Terrain terrain = kvp.Value;
