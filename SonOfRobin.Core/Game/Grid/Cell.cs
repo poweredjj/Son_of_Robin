@@ -35,7 +35,7 @@ namespace SonOfRobin
 
         public readonly Dictionary<Group, Dictionary<string, Sprite>> spriteGroups;
         public readonly Dictionary<TerrainName, Terrain> terrainByName;
-        public ExtBoardProperties ExtBoardProperties { get; private set; }
+        public ExtBoardProps ExtBoardProps { get; private set; }
         public BoardGraphics boardGraphics;
 
         public readonly List<PieceTemplate.Name> allowedNames; // for initialRangesByTerrainName only - because currentRangesByTerrainName can be changed anytime
@@ -91,7 +91,7 @@ namespace SonOfRobin
                 this.spriteGroups[groupName] = new Dictionary<string, Sprite> { };
             }
 
-            this.ExtBoardProperties = new ExtBoardProperties(cell: this);
+            this.ExtBoardProps = new ExtBoardProps(cell: this);
             this.terrainByName = new Dictionary<TerrainName, Terrain>();
             this.allowedNames = new List<PieceTemplate.Name>();
         }
@@ -126,10 +126,10 @@ namespace SonOfRobin
                 {
                     foreach (var kvp in allowedTerrain.GetInitialExtPropertiesDict())
                     {
-                        ExtBoardProperties.ExtPropName name = kvp.Key;
+                        ExtBoardProps.ExtPropName name = kvp.Key;
                         bool value = kvp.Value;
 
-                        if (!this.ExtBoardProperties.CheckIfContainsProperty(name: name, value: value))
+                        if (!this.ExtBoardProps.CheckIfContainsProperty(name: name, value: value))
                         {
                             cellCanContainThisPiece = false;
                             break;
@@ -190,7 +190,7 @@ namespace SonOfRobin
 
             this.boardGraphics = new BoardGraphics(grid: this.grid, cell: this);
             this.boardGraphics.texture = templateCell.boardGraphics.texture;
-            this.ExtBoardProperties = templateCell.ExtBoardProperties;
+            this.ExtBoardProps = templateCell.ExtBoardProps;
             this.allowedNames.AddRange(templateCell.allowedNames);
         }
 

@@ -536,6 +536,7 @@ namespace SonOfRobin
                     player.sprite.orientation = Sprite.Orientation.up;
                     player.sprite.CharacterStand();
                     player.sprite.allowedTerrain.RemoveTerrain(TerrainName.Danger); // player should be spawned in a safe place, but able to go everywhere afterwards
+                    player.sprite.allowedTerrain.ClearExtProperties();
                     return player;
                 }
             }

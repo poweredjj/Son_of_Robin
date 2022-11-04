@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace SonOfRobin
 {
+    [System.Runtime.InteropServices.Guid("2398A06F-F75B-4A2C-9F23-E3B9104E2FFC")]
     public class Grid
     {
         public enum Stage
@@ -40,7 +41,7 @@ namespace SonOfRobin
         private DateTime lastCellProcessedTime;
         public int loadedTexturesCount;
 
-        private static readonly TimeSpan textureLoadingDelay = TimeSpan.FromMilliseconds(10);
+        private static readonly TimeSpan textureLoadingDelay = TimeSpan.FromMilliseconds(2);
 
         public bool ProcessingStageComplete
         { get { return this.cellsToProcessOnStart.Count == 0; } }
@@ -203,16 +204,22 @@ namespace SonOfRobin
                     Parallel.ForEach(cellProcessingQueue, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, cell =>
                     {
                         cell.ComputeDanger();
-                        cell.FillAllowedNames(); // needs to be invoked after calculating final terrain
                     });
-
-                    this.FillCellListsForPieceNames();
 
                     break;
 
                 case Stage.SetExtData:
 
-                    this.CalculateExtPropertiesForWholeMap();
+                    this.CalculateExtPropsForWholeMap();
+
+                    Parallel.ForEach(this.allCells, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, cell =>
+                    {
+                        cell.FillAllowedNames(); // needs to be invoked after calculating final terrain and ExtProps
+                    });
+
+                    this.FillCellListsForPieceNames();
+                    this.cellsToProcessOnStart.Clear();
+
                     break;
 
                 case Stage.ProcessTextures:
@@ -293,37 +300,32 @@ namespace SonOfRobin
             }
         }
 
-        private void CalculateExtPropertiesForWholeMap()
+        private void CalculateExtPropsForWholeMap()
         {
-            var cellsWithoutExtPropertiesSet = this.allCells.Where(cell => cell.ExtBoardProperties.CreationInProgress);
-            if (!cellsWithoutExtPropertiesSet.Any())
-            {
-                this.cellsToProcessOnStart.Clear();
-                return;
-            }
+            var cellsWithoutExtPropsSet = this.allCells.Where(cell => cell.ExtBoardProps.CreationInProgress);
+            if (!cellsWithoutExtPropsSet.Any()) return;
 
             // algorithm will only work, if water surrounds the island and is present at (0, 0)
-            this.FloodFillExtProperties(
-                startingPointList: new List<Point> { new Point(0, 0) }, terrainName: TerrainName.Height, minVal: 0, maxVal: Terrain.waterLevelMax,
-                nameToSet: ExtBoardProperties.ExtPropName.Sea, setNameIfOutsideRange: true, nameToSetIfOutsideRange: ExtBoardProperties.ExtPropName.OuterBeach);
+            var listOfPointLists = this.FloodFillExtProps(
+                 startingPointList: new List<Point> { new Point(0, 0) }, terrainName: TerrainName.Height, minVal: 0, maxVal: Terrain.waterLevelMax,
+                 nameToSetIfInRange: ExtBoardProps.ExtPropName.Sea, setNameIfOutsideRange: true, nameToSetIfOutsideRange: ExtBoardProps.ExtPropName.OuterBeach);
 
-            List<Point> beachEdgePointList = this.GetAllRawCoordinatesWithExtProperty(nameToUse: ExtBoardProperties.ExtPropName.OuterBeach, value: true);
+            List<Point> beachEdgePointList = listOfPointLists[1];
+
             byte beachHeightMin = (byte)(Terrain.waterLevelMax + 1);
-            byte beachHeightMax = (byte)(Terrain.waterLevelMax + 4);
+            byte beachHeightMax = (byte)(Terrain.waterLevelMax + 8);
 
-            this.FloodFillExtProperties(
+            this.FloodFillExtProps(
                  startingPointList: beachEdgePointList, terrainName: TerrainName.Height, minVal: beachHeightMin, maxVal: beachHeightMax,
-                 nameToSet: ExtBoardProperties.ExtPropName.OuterBeach, setNameIfOutsideRange: false, nameToSetIfOutsideRange: ExtBoardProperties.ExtPropName.OuterBeach);
+                 nameToSetIfInRange: ExtBoardProps.ExtPropName.OuterBeach, setNameIfOutsideRange: false, nameToSetIfOutsideRange: ExtBoardProps.ExtPropName.OuterBeach);
 
-            foreach (Cell cell in cellsWithoutExtPropertiesSet)
+            foreach (Cell cell in cellsWithoutExtPropsSet)
             {
-                cell.ExtBoardProperties.EndCreationAndSave();
+                cell.ExtBoardProps.EndCreationAndSave();
             }
-
-            this.cellsToProcessOnStart.Clear();
         }
 
-        private List<Point> GetAllRawCoordinatesWithExtProperty(ExtBoardProperties.ExtPropName nameToUse, bool value)
+        private List<Point> GetAllRawCoordinatesWithExtProperty(ExtBoardProps.ExtPropName nameToUse, bool value)
         {
             List<Point> pointList = new List<Point> { };
 
@@ -341,7 +343,7 @@ namespace SonOfRobin
             return pointList;
         }
 
-        private void FloodFillExtProperties(List<Point> startingPointList, TerrainName terrainName, byte minVal, byte maxVal, ExtBoardProperties.ExtPropName nameToSet, bool setNameIfOutsideRange, ExtBoardProperties.ExtPropName nameToSetIfOutsideRange)
+        private List<List<Point>> FloodFillExtProps(List<Point> startingPointList, TerrainName terrainName, byte minVal, byte maxVal, ExtBoardProps.ExtPropName nameToSetIfInRange, bool setNameIfOutsideRange, ExtBoardProps.ExtPropName nameToSetIfOutsideRange)
         {
             int width = this.world.width;
             int height = this.world.height;
@@ -356,6 +358,12 @@ namespace SonOfRobin
                 new Point(0, -1),
                 new Point(0, 1),
             };
+
+            var listOfPointLists = new List<List<Point>>();
+            var pointsInsideRangeList = new List<Point>();
+            var pointsOutsideRangeList = new List<Point>();
+            listOfPointLists.Add(pointsInsideRangeList);
+            listOfPointLists.Add(pointsOutsideRangeList);
 
             List<Point> nextPointsList = startingPointList.ToList();
 
@@ -374,7 +382,8 @@ namespace SonOfRobin
 
                     if (pointWithinRange)
                     {
-                        this.SetExtProperty(name: nameToSet, value: true, x: realX, y: realY);
+                        this.SetExtProperty(name: nameToSetIfInRange, value: true, x: realX, y: realY);
+                        pointsInsideRangeList.Add(currentPoint);
 
                         foreach (Point currentOffset in offsetList)
                         {
@@ -390,7 +399,11 @@ namespace SonOfRobin
                     }
                     else
                     {
-                        if (setNameIfOutsideRange) this.SetExtProperty(name: nameToSetIfOutsideRange, value: true, x: realX, y: realY);
+                        if (setNameIfOutsideRange)
+                        {
+                            this.SetExtProperty(name: nameToSetIfOutsideRange, value: true, x: realX, y: realY);
+                            pointsOutsideRangeList.Add(currentPoint);
+                        }
                     }
 
                     processedMap[currentPoint.X, currentPoint.Y] = true;
@@ -398,6 +411,8 @@ namespace SonOfRobin
 
                 if (!nextPointsList.Any()) break;
             }
+
+            return listOfPointLists;
         }
 
         public List<Cell> GetCellsForPieceName(PieceTemplate.Name pieceName)
@@ -408,6 +423,13 @@ namespace SonOfRobin
         public Cell GetRandomCellForPieceName(PieceTemplate.Name pieceName) // to avoid calling GetCellsForPieceName() for getting one random cell only
         {
             var cellList = this.cellListsForPieceNames[pieceName];
+
+            if (!cellList.Any())
+            {
+                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"No cells suitable for creation of {PieceInfo.GetInfo(pieceName).readableName}.", avoidDuplicates: true);
+                return this.allCells[0]; // to properly return a (useless) cell
+            }
+
             return cellList[this.world.random.Next(0, cellList.Count)];
         }
 
@@ -446,7 +468,7 @@ namespace SonOfRobin
                 return timeLeft;
             }
             catch (OverflowException)
-            { return TimeSpan.FromMinutes(30); }
+            { return TimeSpan.FromMinutes(10); }
         }
 
         public void AddToGroup(Sprite sprite, Cell.Group groupName)
@@ -852,35 +874,35 @@ namespace SonOfRobin
                 coordsDict["posInsideCellX"], coordsDict["posInsideCellY"]);
         }
 
-        public Dictionary<ExtBoardProperties.ExtPropName, bool> GetExtValueDict(int x, int y)
+        public Dictionary<ExtBoardProps.ExtPropName, bool> GetExtValueDict(int x, int y)
         {
             var coordsDict = this.FindMatchingCellNoAndPosInside(x: x, y: y);
 
-            return this.cellGrid[coordsDict["cellNoX"], coordsDict["cellNoY"]].ExtBoardProperties.GetValueDict(
+            return this.cellGrid[coordsDict["cellNoX"], coordsDict["cellNoY"]].ExtBoardProps.GetValueDict(
                 x: coordsDict["posInsideCellX"], y: coordsDict["posInsideCellY"], xyRaw: false);
         }
 
-        public bool GetExtProperty(ExtBoardProperties.ExtPropName name, Vector2 position)
+        public bool GetExtProperty(ExtBoardProps.ExtPropName name, Vector2 position)
         {
             var coordsDict = this.FindMatchingCellNoAndPosInside(position: position);
 
-            return this.cellGrid[coordsDict["cellNoX"], coordsDict["cellNoY"]].ExtBoardProperties.GetValue(
+            return this.cellGrid[coordsDict["cellNoX"], coordsDict["cellNoY"]].ExtBoardProps.GetValue(
                 name: name, x: coordsDict["posInsideCellX"], y: coordsDict["posInsideCellY"], xyRaw: false);
         }
 
-        public bool GetExtProperty(ExtBoardProperties.ExtPropName name, int x, int y)
+        public bool GetExtProperty(ExtBoardProps.ExtPropName name, int x, int y)
         {
             var coordsDict = this.FindMatchingCellNoAndPosInside(x: x, y: y);
 
-            return this.cellGrid[coordsDict["cellNoX"], coordsDict["cellNoY"]].ExtBoardProperties.GetValue(
+            return this.cellGrid[coordsDict["cellNoX"], coordsDict["cellNoY"]].ExtBoardProps.GetValue(
                 name: name, x: coordsDict["posInsideCellX"], y: coordsDict["posInsideCellY"], xyRaw: false);
         }
 
-        public void SetExtProperty(ExtBoardProperties.ExtPropName name, bool value, int x, int y)
+        public void SetExtProperty(ExtBoardProps.ExtPropName name, bool value, int x, int y)
         {
             var coordsDict = this.FindMatchingCellNoAndPosInside(x: x, y: y);
 
-            this.cellGrid[coordsDict["cellNoX"], coordsDict["cellNoY"]].ExtBoardProperties.SetValue(
+            this.cellGrid[coordsDict["cellNoX"], coordsDict["cellNoY"]].ExtBoardProps.SetValue(
                 name: name, value: value, x: coordsDict["posInsideCellX"], y: coordsDict["posInsideCellY"], xyRaw: false);
         }
 

@@ -44,7 +44,6 @@ namespace SonOfRobin
         private readonly AllowedDensity allowedDensity;
         private readonly int minDistance;
         private readonly int maxDistance;
-        private readonly bool placeAtBeachEdge;
         private readonly bool floatsOnWater;
         public bool hasBeenDiscovered;
         public readonly EffectCol effectCol;
@@ -132,7 +131,7 @@ namespace SonOfRobin
             }
         }
 
-        public Sprite(World world, string id, BoardPiece boardPiece, AnimData.PkgName animPackage, byte animSize, string animName, bool ignoresCollisions, AllowedTerrain allowedTerrain, bool blocksMovement = true, bool visible = true, bool floatsOnWater = false, bool fadeInAnim = true, AllowedDensity allowedDensity = null, LightEngine lightEngine = null, int minDistance = 0, int maxDistance = 100, bool placeAtBeachEdge = false, bool blocksPlantGrowth = false)
+        public Sprite(World world, string id, BoardPiece boardPiece, AnimData.PkgName animPackage, byte animSize, string animName, bool ignoresCollisions, AllowedTerrain allowedTerrain, bool blocksMovement = true, bool visible = true, bool floatsOnWater = false, bool fadeInAnim = true, AllowedDensity allowedDensity = null, LightEngine lightEngine = null, int minDistance = 0, int maxDistance = 100, bool blocksPlantGrowth = false)
         {
             this.id = id; // duplicate from BoardPiece class
             this.boardPiece = boardPiece;
@@ -155,7 +154,6 @@ namespace SonOfRobin
             this.allowedDensity = allowedDensity;
             this.minDistance = minDistance;
             this.maxDistance = maxDistance;
-            this.placeAtBeachEdge = placeAtBeachEdge;
             if (this.allowedDensity != null) this.allowedDensity.FinishCreation(piece: this.boardPiece, sprite: this);
             this.visible = visible; // initially it is assigned normally
             this.effectCol = new EffectCol(world: world);
@@ -185,7 +183,7 @@ namespace SonOfRobin
 
             bool placedCorrectly = closestFreeSpot ?
                 this.MoveToClosestFreeSpot(startPosition: position, checkIsOnBoard: false, ignoreDensity: ignoreDensity) :
-                this.FindFreeSpot(position, minDistance: minDistance, maxDistance: maxDistance, findAtBeachEdge: this.placeAtBeachEdge, ignoreCollisions: ignoreCollisions, precisePlacement: precisePlacement, ignoreDensity: ignoreDensity);
+                this.FindFreeSpot(position, minDistance: minDistance, maxDistance: maxDistance, ignoreCollisions: ignoreCollisions, precisePlacement: precisePlacement, ignoreDensity: ignoreDensity);
 
             if (placedCorrectly) this.IsOnBoard = true;
             else this.RemoveFromBoard();
@@ -297,22 +295,12 @@ namespace SonOfRobin
             return false;
         }
 
-        private bool FindFreeSpot(Vector2 startPosition, int minDistance, int maxDistance, bool findAtBeachEdge = false, bool ignoreCollisions = false, bool precisePlacement = false, bool ignoreDensity = false)
+        private bool FindFreeSpot(Vector2 startPosition, int minDistance, int maxDistance, bool ignoreCollisions = false, bool precisePlacement = false, bool ignoreDensity = false)
         {
             if (ignoreCollisions)
             {
                 this.SetNewPosition(newPos: new Vector2(startPosition.X, startPosition.Y), ignoreCollisions: ignoreCollisions, ignoreDensity: ignoreDensity, checkIsOnBoard: false);
                 return true;
-            }
-
-            if (findAtBeachEdge)
-            {
-                for (int i = 0; i < 4; i++)
-                {
-                    if (this.FindFreeSpotAtBeachEdge(ignoreCollisions: ignoreCollisions, ignoreDensity: ignoreDensity)) return true;
-                }
-
-                return false; // if no free spot at the edge was found
             }
 
             if (precisePlacement) return this.SetNewPosition(newPos: startPosition, ignoreCollisions: ignoreCollisions, ignoreDensity: ignoreDensity, checkIsOnBoard: false);
@@ -368,49 +356,22 @@ namespace SonOfRobin
 
                     while (true) // looking for first non-intersecting cell
                     {
-                        int cellNo = this.world.random.Next(0, cellList.Count);
-
-                        cell = cellList[cellNo];
-                        cellList.RemoveAt(cellNo);
-                        if (!cameraViewRect.Intersects(cell.rect)) break;
                         if (!cellList.Any())
                         {
                             MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{this.boardPiece.name} - no cells left while searching for a random position outside camera.");
                             return Vector2.One; // a Vector2 needs to be returned, even if this piece cannot be placed there
                         }
+
+                        int cellNo = this.world.random.Next(0, cellList.Count);
+
+                        cell = cellList[cellNo];
+                        cellList.RemoveAt(cellNo);
+                        if (!cameraViewRect.Intersects(cell.rect)) break;
                     }
                 }
             }
 
             return new Vector2(this.world.random.Next(cell.xMin, cell.xMax), this.world.random.Next(cell.yMin, cell.yMax));
-        }
-
-        private bool FindFreeSpotAtBeachEdge(bool ignoreCollisions = false, bool ignoreDensity = false)
-        {
-            bool useWidth = this.world.random.Next(0, 2) == 0;
-            bool minMax = this.world.random.Next(0, 2) == 0;
-
-            Vector2 startPos;
-            if (useWidth) startPos = new Vector2(this.world.random.Next((int)(this.world.width * 0.05f), (int)(this.world.width * 0.95f)), minMax ? this.world.height : 0);
-            else startPos = new Vector2(minMax ? this.world.width : 0, this.world.random.Next((int)(this.world.height * 0.05f), (int)(this.world.height * 0.95f)));
-
-            int stepWidth = 3;
-            if (minMax) stepWidth *= -1;
-            Vector2 step = useWidth ? new Vector2(0, stepWidth) : new Vector2(stepWidth, 0);
-
-            Rectangle worldRect = new Rectangle(0, 0, this.world.width, this.world.height);
-            Vector2 currentPos = startPos;
-
-            while (true)
-            {
-                currentPos += step;
-                if (!worldRect.Contains(currentPos)) return false;
-
-                int height = this.world.grid.GetFieldValue(terrainName: TerrainName.Height, position: currentPos);
-                if (height > Terrain.waterLevelMax + 10) return false;
-
-                if (height >= Terrain.waterLevelMax + 1 && this.SetNewPosition(newPos: currentPos, ignoreCollisions: ignoreCollisions, ignoreDensity: ignoreDensity, checkIsOnBoard: false)) return true;
-            }
         }
 
         public void SetOrientationByMovement(Vector2 movement)

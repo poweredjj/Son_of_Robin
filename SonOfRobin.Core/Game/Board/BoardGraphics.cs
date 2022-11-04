@@ -120,7 +120,7 @@ namespace SonOfRobin
             Terrain heightTerrain = this.cell.terrainByName[TerrainName.Height];
             Terrain humidityTerrain = this.cell.terrainByName[TerrainName.Humidity];
             Terrain dangerTerrain = this.cell.terrainByName[TerrainName.Danger];
-            ExtBoardProperties extBoardProperties = this.cell.ExtBoardProperties;
+            ExtBoardProps extBoardProperties = this.cell.ExtBoardProps;
 
             Color[,] smallColorGrid = new Color[sourceWidth, sourceHeight];
 
@@ -187,7 +187,7 @@ namespace SonOfRobin
                                 pixelHeight: heightTerrain.GetMapDataRaw(localX, localY),
                                 pixelHumidity: humidityTerrain.GetMapDataRaw(localX, localY),
                                 pixelDanger: dangerTerrain.GetMapDataRaw(localX, localY),
-                                extDataValDict: this.cell.ExtBoardProperties.GetValueDict(x: localX, y: localY, xyRaw: true));
+                                extDataValDict: this.cell.ExtBoardProps.GetValueDict(x: localX, y: localY, xyRaw: true));
                         }
                         else
                         {
@@ -248,7 +248,7 @@ namespace SonOfRobin
             return upscaledColorGrid;
         }
 
-        private static Color CreatePixel(byte pixelHeight, byte pixelHumidity, byte pixelDanger, Dictionary<ExtBoardProperties.ExtPropName, bool> extDataValDict)
+        private static Color CreatePixel(byte pixelHeight, byte pixelHumidity, byte pixelDanger, Dictionary<ExtBoardProps.ExtPropName, bool> extDataValDict)
         {
             Color pixel = new Color();
 
@@ -281,8 +281,8 @@ namespace SonOfRobin
                 pixel = Blend2Colors(bottomColor: pixel, topColor: new Color((byte)40, (byte)0, (byte)0, dangerAlpha));
             }
 
-            // if (extDataValDict[ExtBoardProperties.ExtPropName.OuterBeach]) pixel = Color.HotPink; // for testing
-            // if (extDataValDict[ExtBoardProperties.ExtPropName.Sea]) pixel = Color.Cyan; // for testing
+             // if (extDataValDict[ExtBoardProps.ExtPropName.OuterBeach]) pixel = Color.HotPink; // for testing
+             // if (extDataValDict[ExtBoardProps.ExtPropName.Sea]) pixel = Color.Cyan; // for testing
 
             return pixel;
         }

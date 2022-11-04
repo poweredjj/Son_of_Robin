@@ -5,7 +5,7 @@ using System.IO;
 
 namespace SonOfRobin
 {
-    public class ExtBoardProperties
+    public class ExtBoardProps
     {
         public enum ExtPropName
         { Sea, OuterBeach };
@@ -21,7 +21,7 @@ namespace SonOfRobin
         private readonly bool loadedFromTemplate; // to avoid saving template, after being loaded (needed because saving is not done inside constructor)
         public bool CreationInProgress { get; private set; }
 
-        public ExtBoardProperties(Cell cell)
+        public ExtBoardProps(Cell cell)
         {
             this.cell = cell;
 
@@ -40,7 +40,7 @@ namespace SonOfRobin
             {
                 this.extDataByProperty = (Dictionary<ExtPropName, BitArray>)serializedData["extDataByProperty"];
                 this.containsPropertiesTrue = (List<ExtPropName>)serializedData["containsPropertiesTrue"];
-                this.containsPropertiesTrue = (List<ExtPropName>)serializedData["containsPropertiesFalse"];
+                this.containsPropertiesFalse = (List<ExtPropName>)serializedData["containsPropertiesFalse"];
                 this.CreationInProgress = false;
                 this.loadedFromTemplate = true;
             }

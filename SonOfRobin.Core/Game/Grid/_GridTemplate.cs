@@ -95,12 +95,12 @@ namespace SonOfRobin
 
             // skipping obsolete templates and creating a new one
 
-            string folderName, templatePath;
+            string templatePath;
             int counter = 0;
 
             while (true)
             {
-                folderName = $"seed_{this.seed}_{this.width}x{this.height}_{this.resDivider}_{counter}";
+                string folderName = $"seed_{this.seed}_{this.width}x{this.height}_{this.resDivider}_{counter}";
                 templatePath = Path.Combine(SonOfRobinGame.worldTemplatesPath, folderName);
 
                 if (!Directory.Exists(templatePath))

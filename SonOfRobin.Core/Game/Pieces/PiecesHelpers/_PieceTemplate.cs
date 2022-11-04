@@ -267,11 +267,14 @@ namespace SonOfRobin
             {
                 case Name.Player:
                     {
+                        var allowedTerrain = new AllowedTerrain(
+                            rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.WaterShallow, AllowedTerrain.RangeName.WaterMedium, AllowedTerrain.RangeName.GroundAll,
+                            AllowedTerrain.RangeName.Volcano, AllowedTerrain.RangeName.NoDanger },
+                            extPropertiesDict: new Dictionary<ExtBoardProps.ExtPropName, bool> { { ExtBoardProps.ExtPropName.OuterBeach, true } });
+
                         var yield = new Yield(debrisType: Yield.DebrisType.Blood,
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
                             finalDroppedPieces: new List<Yield.DroppedPiece> { new Yield.DroppedPiece(pieceName: Name.HumanSkeleton, chanceToDrop: 100, maxNumberToDrop: 1) });
-
-                        var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.WaterShallow, AllowedTerrain.RangeName.WaterMedium, AllowedTerrain.RangeName.GroundAll, AllowedTerrain.RangeName.Volcano, AllowedTerrain.RangeName.NoDanger });
 
                         var soundPack = new PieceSoundPack();
 
@@ -869,7 +872,7 @@ namespace SonOfRobin
                     {
                         var allowedTerrain = new AllowedTerrain(
                             rangeNameList: new List<AllowedTerrain.RangeName>() { AllowedTerrain.RangeName.GroundAll },
-                            extPropertiesDict: new Dictionary<ExtBoardProperties.ExtPropName, bool> { { ExtBoardProperties.ExtPropName.OuterBeach, true } });
+                            extPropertiesDict: new Dictionary<ExtBoardProps.ExtPropName, bool> { { ExtBoardProps.ExtPropName.OuterBeach, true } });
 
                         var yield = new Yield(debrisType: Yield.DebrisType.Wood,
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -892,7 +895,7 @@ namespace SonOfRobin
                     {
                         var allowedTerrain = new AllowedTerrain(
                             rangeNameList: new List<AllowedTerrain.RangeName>() { AllowedTerrain.RangeName.GroundAll },
-                            extPropertiesDict: new Dictionary<ExtBoardProperties.ExtPropName, bool> { { ExtBoardProperties.ExtPropName.OuterBeach, true } });
+                            extPropertiesDict: new Dictionary<ExtBoardProps.ExtPropName, bool> { { ExtBoardProps.ExtPropName.OuterBeach, true } });
 
                         var yield = new Yield(debrisType: Yield.DebrisType.Wood,
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -1230,7 +1233,7 @@ namespace SonOfRobin
                 case Name.Clam:
                     {
                         var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.GroundAll },
-                            extPropertiesDict: new Dictionary<ExtBoardProperties.ExtPropName, bool> { { ExtBoardProperties.ExtPropName.OuterBeach, true } });
+                            extPropertiesDict: new Dictionary<ExtBoardProps.ExtPropName, bool> { { ExtBoardProps.ExtPropName.OuterBeach, true } });
 
                         return new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Clam, blocksMovement: false, allowedTerrain: allowedTerrain,
                             category: BoardPiece.Category.Indestructible,
@@ -1244,7 +1247,7 @@ namespace SonOfRobin
                         var animPkg = packageNames[random.Next(0, packageNames.Count)];
 
                         var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.GroundAll },
-                            extPropertiesDict: new Dictionary<ExtBoardProperties.ExtPropName, bool> { { ExtBoardProperties.ExtPropName.OuterBeach, true } });
+                            extPropertiesDict: new Dictionary<ExtBoardProps.ExtPropName, bool> { { ExtBoardProps.ExtPropName.OuterBeach, true } });
 
                         return new Collectible(name: templateName, world: world, id: id, animPackage: animPkg, blocksMovement: false, allowedTerrain: allowedTerrain,
                             category: BoardPiece.Category.Indestructible,
@@ -2534,8 +2537,9 @@ namespace SonOfRobin
                 case Name.SoundSeaWaves:
                     {
                         AllowedTerrain allowedTerrain = new AllowedTerrain(
-                            extPropertiesDict: new Dictionary<ExtBoardProperties.ExtPropName, bool> { { ExtBoardProperties.ExtPropName.Sea, true } });
-                        AllowedDensity allowedDensity = new AllowedDensity(radious: 160, maxNoOfPiecesSameName: 1);
+                            rangeNameList: new List<AllowedTerrain.RangeName>() { AllowedTerrain.RangeName.WaterShallow, AllowedTerrain.RangeName.WaterMedium },
+                            extPropertiesDict: new Dictionary<ExtBoardProps.ExtPropName, bool> { { ExtBoardProps.ExtPropName.Sea, true } });
+                        AllowedDensity allowedDensity = new AllowedDensity(radious: 150, maxNoOfPiecesSameName: 1);
 
                         Sound sound = new Sound(nameList: new List<SoundData.Name> { SoundData.Name.SeaWave1, SoundData.Name.SeaWave2, SoundData.Name.SeaWave3, SoundData.Name.SeaWave4, SoundData.Name.SeaWave5, SoundData.Name.SeaWave6, SoundData.Name.SeaWave7, SoundData.Name.SeaWave8, SoundData.Name.SeaWave9, SoundData.Name.SeaWave10, SoundData.Name.SeaWave11, SoundData.Name.SeaWave12, SoundData.Name.SeaWave13 }, maxPitchVariation: 0.8f, volume: 0.7f);
 
@@ -2549,8 +2553,8 @@ namespace SonOfRobin
                 case Name.SoundSeaWind:
                     {
                         AllowedTerrain allowedTerrain = new AllowedTerrain(
-                            extPropertiesDict: new Dictionary<ExtBoardProperties.ExtPropName, bool> { { ExtBoardProperties.ExtPropName.Sea, true } });
-                        AllowedDensity allowedDensity = new AllowedDensity(radious: 170, maxNoOfPiecesSameName: 1);
+                            extPropertiesDict: new Dictionary<ExtBoardProps.ExtPropName, bool> { { ExtBoardProps.ExtPropName.Sea, true } });
+                        AllowedDensity allowedDensity = new AllowedDensity(radious: 150, maxNoOfPiecesSameName: 1);
 
                         Sound sound = new Sound(name: SoundData.Name.SeaWind, maxPitchVariation: 0.5f, volume: 0.6f, isLooped: true, volumeFadeFrames: 60);
 
@@ -2580,7 +2584,9 @@ namespace SonOfRobin
 
                 case Name.SoundLakeWaves:
                     {
-                        AllowedTerrain allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName>() { AllowedTerrain.RangeName.WaterShallow });
+                        AllowedTerrain allowedTerrain = new AllowedTerrain(
+                            rangeNameList: new List<AllowedTerrain.RangeName>() { AllowedTerrain.RangeName.WaterShallow },
+                            extPropertiesDict: new Dictionary<ExtBoardProps.ExtPropName, bool> { { ExtBoardProps.ExtPropName.Sea, false } });
                         AllowedDensity allowedDensity = new AllowedDensity(radious: 200, maxNoOfPiecesSameClass: 0);
 
                         Sound sound = new Sound(nameList: new List<SoundData.Name> { SoundData.Name.LakeWave1, SoundData.Name.LakeWave2, SoundData.Name.LakeWave3, SoundData.Name.LakeWave4, SoundData.Name.LakeWave5, SoundData.Name.LakeWave6, SoundData.Name.LakeWave7 }, maxPitchVariation: 0.8f, volume: 0.7f);
