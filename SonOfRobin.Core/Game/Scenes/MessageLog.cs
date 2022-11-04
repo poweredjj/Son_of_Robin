@@ -98,14 +98,35 @@ namespace SonOfRobin
                 SonOfRobinGame.spriteBatch.DrawString(font, currentLineOfText, txtPos, message.color * textOpacity);
             }
         }
-        public static void AddMessage(string message, Color color, MsgType msgType)
-        { if (DisplayedLevels.Contains(msgType)) messages.Add(new Message(message: message, color: color, msgType: msgType)); }
 
-        public static void AddMessage(string message, MsgType msgType)
-        { if (DisplayedLevels.Contains(msgType)) messages.Add(new Message(message: message, color: Color.White, msgType: msgType)); }
+        private static bool CheckIfDuplicate(string text)
+        {
+            foreach (Message message in messages)
+            {
+                if (message.text.ToLower() == text.ToLower()) return true;
+            }
+
+            return false;
+        }
+
+        public static void AddMessage(string message, Color color, MsgType msgType, bool avoidDuplicates = false)
+        {
+            if (avoidDuplicates && CheckIfDuplicate(message)) return;
+
+            if (DisplayedLevels.Contains(msgType)) messages.Add(new Message(message: message, color: color, msgType: msgType));
+        }
+
+        public static void AddMessage(string message, MsgType msgType, bool avoidDuplicates = false)
+        {
+            if (avoidDuplicates && CheckIfDuplicate(message)) return;
+
+            if (DisplayedLevels.Contains(msgType)) messages.Add(new Message(message: message, color: Color.White, msgType: msgType));
+        }
 
         private static void DeleteOldMessages(int currentFrame)
-        { messages = messages.Where(message => currentFrame < message.deletionFrame).ToList(); }
+        {
+            messages = messages.Where(message => currentFrame < message.deletionFrame).ToList();
+        }
     }
 
 }

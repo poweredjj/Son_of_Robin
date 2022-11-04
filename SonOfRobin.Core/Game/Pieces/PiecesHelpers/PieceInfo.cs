@@ -15,6 +15,7 @@ namespace SonOfRobin
             public readonly PieceTemplate.Name name;
             public readonly string readableName;
             public readonly string description;
+            public readonly AllowedTerrain allowedTerrain;
             public readonly int stackSize;
             public readonly Type type;
             public readonly bool blocksMovement;
@@ -54,6 +55,7 @@ namespace SonOfRobin
             {
                 this.name = piece.name;
                 this.category = piece.category;
+                this.allowedTerrain = piece.sprite.allowedTerrain;
                 this.canBePickedUp = piece.canBePickedUp;
                 this.type = piece.GetType();
                 this.blocksMovement = piece.sprite.blocksMovement;

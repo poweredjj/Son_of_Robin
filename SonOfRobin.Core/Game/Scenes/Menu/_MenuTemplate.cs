@@ -294,9 +294,9 @@ namespace SonOfRobin
                         {
                             List<Object> sizeList;
                             if (SonOfRobinGame.platform == Platform.Desktop)
-                            { sizeList = new List<Object> { 1000, 2000, 4000, 8000, 10000, 15000, 20000, 30000, 40000, 50000, 60000, 70000, 80000, 90000, 100000 }; }
+                            { sizeList = new List<Object> { 4000, 8000, 10000, 15000, 20000, 30000, 40000, 50000, 60000, 70000, 80000, 90000, 100000 }; }
                             else
-                            { sizeList = new List<Object> { 1000, 2000, 4000, 8000, 10000, 15000, 20000, 30000, 40000 }; }
+                            { sizeList = new List<Object> { 4000, 8000, 10000, 15000, 20000, 30000, 40000 }; }
 
                             new Selector(menu: menu, name: "width", valueList: sizeList, targetObj: preferences, propertyName: "newWorldWidth");
                             new Selector(menu: menu, name: "height", valueList: sizeList, targetObj: preferences, propertyName: "newWorldHeight");

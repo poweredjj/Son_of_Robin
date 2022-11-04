@@ -136,38 +136,25 @@ namespace SonOfRobin
 
                 if (Keyboard.HasBeenPressed(Keys.D8))
                 {
-                    var backlight = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: world.player.sprite.position, templateName: PieceTemplate.Name.Backlight);
-                    new Tracking(world: world, targetSprite: world.player.sprite, followingSprite: backlight.sprite, offsetX: 0, offsetY: 0, targetXAlign: XAlign.Center, targetYAlign: YAlign.Bottom);
+                    // not used
                 }
 
                 if (Keyboard.HasBeenPressed(Keys.D9))
                 {
-                    if (world == null) return;
+                    world.CreateMissingPieces(initialCreation: false, maxAmountToCreateAtOnce: 100, outsideCamera: true, multiplier: 0.1f, clearDoNotCreateList: true);
+                }
 
+                if (Keyboard.HasBeenPressed(Keys.D0))
+                {
                     world.CreateMissingPieces(initialCreation: true, outsideCamera: false, multiplier: 1.0f, clearDoNotCreateList: true);
                 }
-            }
 
-            if (Keyboard.HasBeenPressed(Keys.D0))
-            {
-                if (world == null) return;
-
-                Vector2 motion = new Vector2(world.random.Next(-20, 20), world.random.Next(-20, 20));
-
-                world.transManager.AddMultipleTransitions(outTrans: true, duration: world.random.Next(4, 10), playCount: -1, replaceBaseValue: false, stageTransform: Transition.Transform.Sinus, pingPongCycles: false, cycleMultiplier: 0.02f, paramsToChange: new Dictionary<string, float> { { "PosX", motion.X }, { "PosY", motion.Y } });
-
-                SolidColor redOverlay = new SolidColor(color: Color.DarkRed, viewOpacity: 0.0f);
-                redOverlay.transManager.AddTransition(new Transition(transManager: redOverlay.transManager, outTrans: true, duration: 20, playCount: 1, stageTransform: Transition.Transform.Sinus, baseParamName: "Opacity", targetVal: 0.5f, endRemoveScene: true));
-                world.solidColorManager.Add(redOverlay);
-            }
-
-            if (Keyboard.HasBeenPressed(Keys.OemMinus))
-            {
-                if (world == null) return;
-
-                foreach (var sprite in world.camera.GetVisibleSprites(groupName: Cell.Group.All))
+                if (Keyboard.HasBeenPressed(Keys.OemMinus))
                 {
-                    if (sprite.boardPiece != world.player) Tool.HitTarget(attacker: world.player, target: sprite.boardPiece, hitPower: 99999, targetPushMultiplier: 1f);
+                    foreach (var sprite in world.camera.GetVisibleSprites(groupName: Cell.Group.All))
+                    {
+                        if (sprite.boardPiece != world.player) Tool.HitTarget(attacker: world.player, target: sprite.boardPiece, hitPower: 99999, targetPushMultiplier: 1f);
+                    }
                 }
             }
 
@@ -317,7 +304,6 @@ namespace SonOfRobin
             {
                 if (world == null) return;
 
-
                 foreach (var sprite in world.grid.GetSpritesFromAllCells(Cell.Group.All))
                 {
                     if (sprite.boardPiece != world.player) sprite.boardPiece.Destroy();
@@ -327,7 +313,6 @@ namespace SonOfRobin
             if (Keyboard.HasBeenPressed(Keys.W))
             {
                 if (world == null) return;
-
 
                 foreach (var sprite in world.grid.GetSpritesFromAllCells(Cell.Group.All))
                 { if (sprite.boardPiece != world.player) sprite.boardPiece.RemoveFromStateMachines(); }

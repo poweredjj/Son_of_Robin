@@ -7,7 +7,7 @@ namespace SonOfRobin
     [Serializable]
     public class GridTemplate
     {
-        private static readonly float currentVersion = 1.06f;
+        private static readonly float currentVersion = 1.10f;
         private static readonly string headerName = "_template_header.dat";
 
         public readonly int seed;
@@ -20,7 +20,8 @@ namespace SonOfRobin
         private readonly float version;
         public readonly string templatePath;
         private readonly string headerPath;
-        private readonly DateTime createdDate;
+        public DateTime CreatedDate { get; private set; }
+
         public bool IsObsolete { get { return this.version != currentVersion; } }
         public static bool CorrectTemplatesExist { get { return CorrectTemplates.Count > 0; } }
         public static List<GridTemplate> CorrectTemplates
@@ -50,7 +51,7 @@ namespace SonOfRobin
             this.cellHeight = cellHeight;
             this.resDivider = resDivider;
             this.version = currentVersion;
-            this.createdDate = DateTime.Now;
+            this.CreatedDate = DateTime.Now;
 
             this.templatePath = this.CheckCreateFolder();
             this.headerPath = Path.Combine(this.templatePath, headerName);
@@ -94,12 +95,12 @@ namespace SonOfRobin
 
             // skipping obsolete templates and creating a new one
 
-            string folderName, templatePath;
+            string templatePath;
             int counter = 0;
 
             while (true)
             {
-                folderName = $"seed_{this.seed}_{this.width}x{this.height}_{this.resDivider}_{counter}";
+                string folderName = $"seed_{this.seed}_{this.width}x{this.height}_{this.resDivider}_{counter}";
                 templatePath = Path.Combine(SonOfRobinGame.worldTemplatesPath, folderName);
 
                 if (!Directory.Exists(templatePath))

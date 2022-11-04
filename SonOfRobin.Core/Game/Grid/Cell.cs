@@ -10,18 +10,23 @@ namespace SonOfRobin
         public readonly Grid grid;
         public readonly World world;
         public readonly Color color;
+
         public readonly int cellNoX;
         public readonly int cellNoY;
+
         public readonly int xMin;
         public readonly int xCenter;
         public readonly int xMax;
         public readonly int yMin;
         public readonly int yCenter;
         public readonly int yMax;
+
         public readonly Rectangle rect;
         public readonly Vector2 center;
+
         public readonly int width;
         public readonly int height;
+
         public readonly int dividedWidth;
         public readonly int dividedHeight;
 
@@ -30,7 +35,10 @@ namespace SonOfRobin
 
         public readonly Dictionary<Group, Dictionary<string, Sprite>> spriteGroups;
         public readonly Dictionary<TerrainName, Terrain> terrainByName;
+        public ExtBoardProps ExtBoardProps { get; private set; }
         public BoardGraphics boardGraphics;
+
+        public readonly List<PieceTemplate.Name> allowedNames; // for initialRangesByTerrainName only - because currentRangesByTerrainName can be changed anytime
 
         public static readonly Group[] allGroups = (Group[])Enum.GetValues(typeof(Group));
         public static readonly TerrainName[] allTerrains = (TerrainName[])Enum.GetValues(typeof(TerrainName));
@@ -46,7 +54,7 @@ namespace SonOfRobin
             StateMachinesPlants
         }
 
-        public Cell(Grid grid, World world, int cellNoX, int cellNoY, int width, int height, Random random)
+        public Cell(Grid grid, World world, int cellNoX, int cellNoY, int cellWidth, int cellHeight, Random random)
         {
             this.grid = grid;
             this.world = world;
@@ -54,20 +62,21 @@ namespace SonOfRobin
             this.cellNoX = cellNoX;
             this.cellNoY = cellNoY;
 
-            this.width = width; // virtual value, simulated for the outside world
-            this.height = height; // virtual value, simulated for the outside world
-            this.dividedWidth = (int)Math.Ceiling((float)this.width / (float)this.grid.resDivider);  // real storing data capacity
-            this.dividedHeight = (int)Math.Ceiling((float)this.height / (float)this.grid.resDivider); // real storing data capacity
-
-            this.xMin = cellNoX * width;
-            this.xMax = ((cellNoX + 1) * this.width) - 1;
+            this.xMin = cellNoX * cellWidth;
+            this.xMax = this.xMin + cellWidth - 1;
             this.xMax = Math.Min(this.xMax, this.world.width - 1);
 
-            this.yMin = cellNoY * height;
-            this.yMax = ((cellNoY + 1) * this.height) - 1;
+            this.yMin = cellNoY * cellHeight;
+            this.yMax = this.yMin + cellHeight - 1;
             this.yMax = Math.Min(this.yMax, this.world.height - 1);
 
-            this.rect = new Rectangle(this.xMin, this.yMin, this.width, this.height);
+            this.width = this.xMax - this.xMin; // virtual value, simulated for the outside world
+            this.height = this.yMax - this.yMin; // virtual value, simulated for the outside world
+
+            this.dividedWidth = this.width / this.grid.resDivider; // real storing data capacity
+            this.dividedHeight = this.height / this.grid.resDivider; // real storing data capacity
+
+            this.rect = new Rectangle(this.xMin, this.yMin, this.width + 1, this.height + 1);
             this.xCenter = this.xMin + (this.width / 2);
             this.yCenter = this.yMin + (this.height / 2);
             this.center = new Vector2(this.xCenter, this.yCenter);
@@ -82,7 +91,54 @@ namespace SonOfRobin
                 this.spriteGroups[groupName] = new Dictionary<string, Sprite> { };
             }
 
+            this.ExtBoardProps = new ExtBoardProps(cell: this);
             this.terrainByName = new Dictionary<TerrainName, Terrain>();
+            this.allowedNames = new List<PieceTemplate.Name>();
+        }
+
+        public void FillAllowedNames()
+        {
+            foreach (PieceTemplate.Name pieceName in PieceTemplate.allNames)
+            {
+                PieceInfo.Info pieceInfo = PieceInfo.GetInfo(pieceName);
+                AllowedTerrain allowedTerrain = pieceInfo.allowedTerrain;
+                bool cellCanContainThisPiece = true;
+
+                foreach (var kvp in this.terrainByName)
+                {
+                    TerrainName terrainName = kvp.Key;
+
+                    AllowedRange allowedRange = allowedTerrain.GetInitialRangeForTerrainName(terrainName);
+                    if (allowedRange != null)
+                    {
+                        Terrain terrain = kvp.Value;
+
+                        if ((allowedRange.Min < terrain.MinVal && allowedRange.Max < terrain.MinVal) ||
+                            (allowedRange.Min > terrain.MaxVal && allowedRange.Max > terrain.MaxVal))
+                        {
+                            cellCanContainThisPiece = false;
+                            break;
+                        }
+                    }
+                }
+
+                if (cellCanContainThisPiece)
+                {
+                    foreach (var kvp in allowedTerrain.GetInitialExtPropertiesDict())
+                    {
+                        ExtBoardProps.ExtPropName name = kvp.Key;
+                        bool value = kvp.Value;
+
+                        if (!this.ExtBoardProps.CheckIfContainsProperty(name: name, value: value))
+                        {
+                            cellCanContainThisPiece = false;
+                            break;
+                        }
+                    }
+                }
+
+                if (cellCanContainThisPiece) this.allowedNames.Add(pieceName);
+            }
         }
 
         public void SetAsVisited()
@@ -94,7 +150,7 @@ namespace SonOfRobin
         {
             var cellData = new Dictionary<string, object>
             {
-                { "VisitedByPlayer", this.VisitedByPlayer},
+                { "VisitedByPlayer", this.VisitedByPlayer },
             };
 
             return cellData;
@@ -134,6 +190,8 @@ namespace SonOfRobin
 
             this.boardGraphics = new BoardGraphics(grid: this.grid, cell: this);
             this.boardGraphics.texture = templateCell.boardGraphics.texture;
+            this.ExtBoardProps = templateCell.ExtBoardProps;
+            this.allowedNames.AddRange(templateCell.allowedNames);
         }
 
         public void UpdateBoardGraphics()
@@ -239,6 +297,5 @@ namespace SonOfRobin
 
             SonOfRobinGame.spriteBatch.Draw(this.boardGraphics.texture, this.rect, this.boardGraphics.texture.Bounds, Color.White * opacity);
         }
-
     }
 }

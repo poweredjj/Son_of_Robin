@@ -35,6 +35,9 @@ namespace SonOfRobin
             catch (System.Runtime.Serialization.SerializationException)
             { return null; } // file corrupted
 
+            catch (System.Text.DecoderFallbackException)
+            { return null; } // file corrupted
+
             catch (FileNotFoundException)
             { return null; }
 

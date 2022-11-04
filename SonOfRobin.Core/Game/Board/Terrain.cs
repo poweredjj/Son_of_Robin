@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace SonOfRobin
@@ -22,6 +23,8 @@ namespace SonOfRobin
         private readonly float gain;
 
         private readonly Byte[,] mapData;
+        public byte MinVal { get; private set; }
+        public byte MaxVal { get; private set; }
 
         public static byte waterLevelMax = 84;
         public static byte volcanoEdgeMin = 210;
@@ -45,46 +48,69 @@ namespace SonOfRobin
             this.gain = gain;
             this.templatePath = Path.Combine(this.world.grid.gridTemplate.templatePath, $"{Convert.ToString(name).ToLower()}_{cell.cellNoX}_{cell.cellNoY}.map");
 
-            this.mapData = this.LoadTemplate();
+            var serializedMapData = this.LoadTemplate();
 
-            if (this.mapData == null)
+            if (serializedMapData == null)
             {
                 this.CreateGradientLines();
-                this.mapData = this.CreateNoiseMap(addBorder: addBorder);
+
+                var tuple = this.CreateNoiseMap(addBorder: addBorder);
+                this.mapData = tuple.Item1;
+                this.MinVal = tuple.Item2;
+                this.MaxVal = tuple.Item3;
+
                 this.SaveTemplate();
+            }
+            else
+            {
+                this.mapData = (Byte[,])serializedMapData["mapData"];
+                this.MinVal = (byte)serializedMapData["MinVal"];
+                this.MaxVal = (byte)serializedMapData["MaxVal"];
             }
         }
 
         public Byte GetMapData(int x, int y)
         {
             if (x < 0) throw new IndexOutOfRangeException($"X {x} cannot be less than 0.");
-            if (y < 0) throw new IndexOutOfRangeException($"X {y} cannot be less than 0.");
+            if (y < 0) throw new IndexOutOfRangeException($"Y {y} cannot be less than 0.");
 
-            return mapData[x / this.cell.grid.resDivider, y / this.cell.grid.resDivider];
+            return this.mapData[x / this.cell.grid.resDivider, y / this.cell.grid.resDivider];
         }
 
         public Byte GetMapDataRaw(int x, int y)
         {
             if (x < 0) throw new IndexOutOfRangeException($"X {x} cannot be less than 0.");
-            if (y < 0) throw new IndexOutOfRangeException($"X {y} cannot be less than 0.");
+            if (y < 0) throw new IndexOutOfRangeException($"Y {y} cannot be less than 0.");
 
             // direct access, without taking resDivider into account
-            return mapData[x, y];
+            return this.mapData[x, y];
         }
 
-        private byte[,] LoadTemplate()
+        private Dictionary<string, object> LoadTemplate()
         {
-            var loadedData = (byte[,])FileReaderWriter.Load(this.templatePath);
+            var loadedData = FileReaderWriter.Load(this.templatePath);
             if (loadedData == null) return null;
-
-            return loadedData;
+            else return (Dictionary<string, object>)loadedData;
         }
 
         public void SaveTemplate()
         {
-            FileReaderWriter.Save(path: this.templatePath, savedObj: this.mapData);
+            FileReaderWriter.Save(path: this.templatePath, savedObj: this.Serialize());
         }
-        private byte[,] CreateNoiseMap(bool addBorder = false)
+
+        private Dictionary<string, object> Serialize()
+        {
+            var serializedMapData = new Dictionary<string, object>
+            {
+                { "mapData", this.mapData },
+                { "MinVal", this.MinVal },
+                { "MaxVal", this.MaxVal },
+            };
+
+            return serializedMapData;
+        }
+
+        private (byte[,], byte, byte) CreateNoiseMap(bool addBorder = false)
         {
             var noise = this.world.noise;
 
@@ -103,6 +129,9 @@ namespace SonOfRobin
 
             int resDivider = this.cell.grid.resDivider;
 
+            byte minVal = 255;
+            byte maxVal = 0;
+
             for (int y = 0; y < this.cell.dividedHeight; y++)
             {
                 int realY = y * resDivider;
@@ -116,11 +145,15 @@ namespace SonOfRobin
                     double rawNoiseValue = noise.GetNoise(globalX, globalY) + 1; // 0-2 range
                     if (addBorder) rawNoiseValue = Math.Max(rawNoiseValue - Math.Max(gradientLineX[globalX], gradientLineY[globalY]), 0);
 
-                    newMapData[x, y] = (byte)(rawNoiseValue * 128); // 0-255 range
+                    byte newVal = (byte)(rawNoiseValue * 128); // 0-255 range
+                    newMapData[x, y] = newVal;
+
+                    minVal = Math.Min(minVal, newVal);
+                    maxVal = Math.Max(maxVal, newVal);
                 }
             }
 
-            return newMapData;
+            return (newMapData, minVal, maxVal);
         }
 
         private void CreateGradientLines()

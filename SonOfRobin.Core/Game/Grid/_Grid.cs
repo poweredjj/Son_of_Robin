@@ -5,17 +5,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-
 namespace SonOfRobin
 {
+    [System.Runtime.InteropServices.Guid("2398A06F-F75B-4A2C-9F23-E3B9104E2FFC")]
     public class Grid
     {
-        public enum Stage { GenerateTerrain, ProcessTextures, LoadTextures }
+        public enum Stage
+        { GenerateTerrain, SetExtData, ProcessTextures, LoadTextures }
 
         private static readonly int allStagesCount = ((Stage[])Enum.GetValues(typeof(Stage))).Length;
 
-        private readonly static Dictionary<Stage, string> namesForStages = new Dictionary<Stage, string> {
+        private static readonly Dictionary<Stage, string> namesForStages = new Dictionary<Stage, string> {
             { Stage.GenerateTerrain, "generating terrain" },
+            { Stage.SetExtData, "setting extended data" },
             { Stage.ProcessTextures, "processing textures" },
             { Stage.LoadTextures, "loading textures" },
         };
@@ -26,7 +28,7 @@ namespace SonOfRobin
         public bool creationInProgress;
 
         public readonly GridTemplate gridTemplate;
-        private readonly World world;
+        public readonly World world;
         private readonly int noOfCellsX;
         private readonly int noOfCellsY;
         public readonly int cellWidth;
@@ -35,13 +37,20 @@ namespace SonOfRobin
         public readonly Cell[,] cellGrid;
         public readonly List<Cell> allCells;
         public readonly List<Cell> cellsToProcessOnStart;
+        private readonly Dictionary<PieceTemplate.Name, List<Cell>> cellListsForPieceNames; // pieces and cells that those pieces can (initially) be placed into
         private DateTime lastCellProcessedTime;
         public int loadedTexturesCount;
 
-        private static readonly TimeSpan textureLoadingDelay = TimeSpan.FromMilliseconds(10);
-        public bool ProcessingStageComplete { get { return this.cellsToProcessOnStart.Count == 0; } }
-        public List<Cell> CellsVisitedByPlayer { get { return this.allCells.Where(cell => cell.VisitedByPlayer).ToList(); } }
-        public List<Cell> CellsNotVisitedByPlayer { get { return this.allCells.Where(cell => !cell.VisitedByPlayer).ToList(); } }
+        private static readonly TimeSpan textureLoadingDelay = TimeSpan.FromMilliseconds(2);
+
+        public bool ProcessingStageComplete
+        { get { return this.cellsToProcessOnStart.Count == 0; } }
+
+        public List<Cell> CellsVisitedByPlayer
+        { get { return this.allCells.Where(cell => cell.VisitedByPlayer).ToList(); } }
+
+        public List<Cell> CellsNotVisitedByPlayer
+        { get { return this.allCells.Where(cell => !cell.VisitedByPlayer).ToList(); } }
 
         public Grid(World world, int resDivider, int cellWidth = 0, int cellHeight = 0)
         {
@@ -50,6 +59,8 @@ namespace SonOfRobin
 
             this.world = world;
             this.resDivider = resDivider;
+
+            if (!Helpers.IsPowerOfTwo((ulong)this.resDivider)) throw new ArgumentException($"ResDivider ({this.resDivider}) is not a power of 2.");
 
             if (cellWidth == 0 && cellHeight == 0)
             {
@@ -69,14 +80,15 @@ namespace SonOfRobin
             if (this.cellWidth % 2 != 0) throw new ArgumentException($"Cell width {this.cellWidth} is not divisible by 2.");
             if (this.cellHeight % 2 != 0) throw new ArgumentException($"Cell height {this.cellHeight} is not divisible by 2.");
 
+            this.gridTemplate = new GridTemplate(seed: this.world.seed, width: this.world.width, height: this.world.height, cellWidth: this.cellWidth, cellHeight: this.cellHeight, resDivider: this.resDivider);
+
             this.noOfCellsX = (int)Math.Ceiling((float)this.world.width / (float)this.cellWidth);
             this.noOfCellsY = (int)Math.Ceiling((float)this.world.height / (float)this.cellHeight);
 
+            this.cellListsForPieceNames = new Dictionary<PieceTemplate.Name, List<Cell>>();
             this.cellGrid = this.MakeGrid();
             this.allCells = this.GetAllCells();
             this.CalculateSurroundingCells();
-
-            this.gridTemplate = new GridTemplate(seed: this.world.seed, width: this.world.width, height: this.world.height, cellWidth: this.cellWidth, cellHeight: this.cellHeight, resDivider: this.resDivider);
 
             this.lastCellProcessedTime = DateTime.Now;
 
@@ -147,6 +159,8 @@ namespace SonOfRobin
                             this.cellGrid[x, y].CopyFromTemplate(templateGrid.cellGrid[x, y]);
                     }
 
+                    this.FillCellListsForPieceNames();
+
                     return true;
                 }
             }
@@ -194,11 +208,25 @@ namespace SonOfRobin
 
                     break;
 
+                case Stage.SetExtData:
+
+                    this.CalculateExtPropsForWholeMap();
+
+                    Parallel.ForEach(this.allCells, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, cell =>
+                    {
+                        cell.FillAllowedNames(); // needs to be invoked after calculating final terrain and ExtProps
+                    });
+
+                    this.FillCellListsForPieceNames();
+                    this.cellsToProcessOnStart.Clear();
+
+                    break;
+
                 case Stage.ProcessTextures:
 
                     cellProcessingQueue = new List<Cell> { };
 
-                    for (int i = 0; i < 30; i++)
+                    for (int i = 0; i < 70; i++)
                     {
                         cellProcessingQueue.Add(this.cellsToProcessOnStart[0]);
                         this.cellsToProcessOnStart.RemoveAt(0);
@@ -259,6 +287,152 @@ namespace SonOfRobin
             }
         }
 
+        private void FillCellListsForPieceNames()
+        {
+            foreach (PieceTemplate.Name pieceName in PieceTemplate.allNames)
+            {
+                this.cellListsForPieceNames[pieceName] = new List<Cell>();
+
+                foreach (Cell cell in this.allCells)
+                {
+                    if (cell.allowedNames.Contains(pieceName)) this.cellListsForPieceNames[pieceName].Add(cell);
+                }
+            }
+        }
+
+        private void CalculateExtPropsForWholeMap()
+        {
+            var cellsWithoutExtPropsSet = this.allCells.Where(cell => cell.ExtBoardProps.CreationInProgress);
+            if (!cellsWithoutExtPropsSet.Any()) return;
+
+            // algorithm will only work, if water surrounds the island and is present at (0, 0)
+            var listOfPointLists = this.FloodFillExtProps(
+                 startingPointList: new List<Point> { new Point(0, 0) }, terrainName: TerrainName.Height, minVal: 0, maxVal: Terrain.waterLevelMax,
+                 nameToSetIfInRange: ExtBoardProps.ExtPropName.Sea, setNameIfOutsideRange: true, nameToSetIfOutsideRange: ExtBoardProps.ExtPropName.OuterBeach);
+
+            List<Point> beachEdgePointList = listOfPointLists[1];
+
+            byte beachHeightMin = (byte)(Terrain.waterLevelMax + 1);
+            byte beachHeightMax = (byte)(Terrain.waterLevelMax + 8);
+
+            this.FloodFillExtProps(
+                 startingPointList: beachEdgePointList, terrainName: TerrainName.Height, minVal: beachHeightMin, maxVal: beachHeightMax,
+                 nameToSetIfInRange: ExtBoardProps.ExtPropName.OuterBeach, setNameIfOutsideRange: false, nameToSetIfOutsideRange: ExtBoardProps.ExtPropName.OuterBeach);
+
+            foreach (Cell cell in cellsWithoutExtPropsSet)
+            {
+                cell.ExtBoardProps.EndCreationAndSave();
+            }
+        }
+
+        private List<Point> GetAllRawCoordinatesWithExtProperty(ExtBoardProps.ExtPropName nameToUse, bool value)
+        {
+            List<Point> pointList = new List<Point> { };
+
+            for (int rawX = 0; rawX < this.world.width / this.resDivider; rawX++)
+            {
+                for (int rawY = 0; rawY < this.world.height / this.resDivider; rawY++)
+                {
+                    if (this.GetExtProperty(name: nameToUse, x: rawX * this.resDivider, y: rawY * this.resDivider) == value)
+                    {
+                        pointList.Add(new Point(rawX, rawY));
+                    }
+                }
+            }
+
+            return pointList;
+        }
+
+        private List<List<Point>> FloodFillExtProps(List<Point> startingPointList, TerrainName terrainName, byte minVal, byte maxVal, ExtBoardProps.ExtPropName nameToSetIfInRange, bool setNameIfOutsideRange, ExtBoardProps.ExtPropName nameToSetIfOutsideRange)
+        {
+            int width = this.world.width;
+            int height = this.world.height;
+            int dividedWidth = width / this.resDivider;
+            int dividedHeight = height / this.resDivider;
+
+            bool[,] processedMap = new bool[dividedWidth, dividedHeight]; // working inside "compressed" map space, to avoid unnecessary calculations
+
+            List<Point> offsetList = new List<Point> {
+                new Point(-1, 0),
+                new Point(1, 0),
+                new Point(0, -1),
+                new Point(0, 1),
+            };
+
+            var listOfPointLists = new List<List<Point>>();
+            var pointsInsideRangeList = new List<Point>();
+            var pointsOutsideRangeList = new List<Point>();
+            listOfPointLists.Add(pointsInsideRangeList);
+            listOfPointLists.Add(pointsOutsideRangeList);
+
+            List<Point> nextPointsList = startingPointList.ToList();
+
+            while (true)
+            {
+                var currentPointList = nextPointsList.Distinct().ToList();
+
+                nextPointsList.Clear();
+                foreach (Point currentPoint in currentPointList) // using Distinct() to filter out duplicates
+                {
+                    int realX = currentPoint.X * this.resDivider;
+                    int realY = currentPoint.Y * this.resDivider;
+
+                    byte value = this.GetFieldValue(terrainName: terrainName, x: realX, y: realY);
+                    bool pointWithinRange = minVal <= value && value <= maxVal;
+
+                    if (pointWithinRange)
+                    {
+                        this.SetExtProperty(name: nameToSetIfInRange, value: true, x: realX, y: realY);
+                        pointsInsideRangeList.Add(currentPoint);
+
+                        foreach (Point currentOffset in offsetList)
+                        {
+                            Point nextPoint = new Point(currentPoint.X + currentOffset.X, currentPoint.Y + currentOffset.Y);
+
+                            if (nextPoint.X >= 0 && nextPoint.X < dividedWidth &&
+                                nextPoint.Y >= 0 && nextPoint.Y < dividedHeight &&
+                                !processedMap[nextPoint.X, nextPoint.Y])
+                            {
+                                nextPointsList.Add(nextPoint);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (setNameIfOutsideRange)
+                        {
+                            this.SetExtProperty(name: nameToSetIfOutsideRange, value: true, x: realX, y: realY);
+                            pointsOutsideRangeList.Add(currentPoint);
+                        }
+                    }
+
+                    processedMap[currentPoint.X, currentPoint.Y] = true;
+                }
+
+                if (!nextPointsList.Any()) break;
+            }
+
+            return listOfPointLists;
+        }
+
+        public List<Cell> GetCellsForPieceName(PieceTemplate.Name pieceName)
+        {
+            return this.cellListsForPieceNames[pieceName].ToList(); // ToList() - to avoid modifying original list
+        }
+
+        public Cell GetRandomCellForPieceName(PieceTemplate.Name pieceName) // to avoid calling GetCellsForPieceName() for getting one random cell only
+        {
+            var cellList = this.cellListsForPieceNames[pieceName];
+
+            if (!cellList.Any())
+            {
+                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"No cells suitable for creation of {PieceInfo.GetInfo(pieceName).readableName}.", avoidDuplicates: true);
+                return this.allCells[0]; // to properly return a (useless) cell
+            }
+
+            return cellList[this.world.random.Next(0, cellList.Count)];
+        }
+
         private void PrepareNextStage()
         {
             this.stageStartFrame = SonOfRobinGame.currentUpdate;
@@ -294,7 +468,7 @@ namespace SonOfRobin
                 return timeLeft;
             }
             catch (OverflowException)
-            { return TimeSpan.FromMinutes(30); }
+            { return TimeSpan.FromMinutes(10); }
         }
 
         public void AddToGroup(Sprite sprite, Cell.Group groupName)
@@ -326,8 +500,7 @@ namespace SonOfRobin
             var newCell = this.FindMatchingCell(position: sprite.position);
 
             if (sprite.currentCell == newCell) return;
-
-            if (sprite.currentCell == null)
+            else if (sprite.currentCell == null)
             {
                 this.AddSprite(sprite: sprite);
                 return;
@@ -420,18 +593,20 @@ namespace SonOfRobin
             {
                 foreach (Cell cell in cellsWithinDistance)
                 {
-                    spritesWithinDistance.AddRange(cell.spriteGroups[groupName].Values.Where(
-                                          currentSprite => Vector2.Distance(new Vector2(currentSprite.gfxRect.Center.X, currentSprite.gfxRect.Bottom), centerPos) <= distance &&
-                                          currentSprite != mainSprite).ToList());
+                    spritesWithinDistance.AddRange(
+                        cell.spriteGroups[groupName].Values.Where(
+                            currentSprite => Vector2.Distance(new Vector2(currentSprite.gfxRect.Center.X, currentSprite.gfxRect.Bottom), centerPos) <= distance &&
+                            currentSprite != mainSprite).ToList());
                 }
             }
             else
             {
                 foreach (Cell cell in cellsWithinDistance)
                 {
-                    spritesWithinDistance.AddRange(cell.spriteGroups[groupName].Values.Where(
-                           currentSprite => Vector2.Distance(currentSprite.position, centerPos) <= distance &&
-                           currentSprite != mainSprite).ToList());
+                    spritesWithinDistance.AddRange(
+                        cell.spriteGroups[groupName].Values.Where(
+                            currentSprite => Vector2.Distance(currentSprite.position, centerPos) <= distance &&
+                            currentSprite != mainSprite).ToList());
                 }
             }
 
@@ -615,7 +790,12 @@ namespace SonOfRobin
             { cell.DrawDebugData(groupName: Cell.Group.ColMovement); }
         }
 
-        public byte GetFieldValue(TerrainName terrainName, Vector2 position)
+        private static int FindMatchingCellInSingleAxis(int position, int cellLength)
+        {
+            return position / cellLength;
+        }
+
+        private Dictionary<string, int> FindMatchingCellNoAndPosInside(Vector2 position)
         {
             int cellNoX = (int)Math.Floor(position.X / this.cellWidth);
             int cellNoY = (int)Math.Floor(position.Y / this.cellHeight);
@@ -623,10 +803,10 @@ namespace SonOfRobin
             int posInsideCellX = (int)position.X % this.cellWidth;
             int posInsideCellY = (int)position.Y % this.cellHeight;
 
-            return this.cellGrid[cellNoX, cellNoY].terrainByName[terrainName].GetMapData(posInsideCellX, posInsideCellY);
+            return this.CorrectCellCoordinatesAndPosInside(cellNoX, cellNoY, posInsideCellX, posInsideCellY);
         }
 
-        public byte GetFieldValue(TerrainName terrainName, int x, int y)
+        private Dictionary<string, int> FindMatchingCellNoAndPosInside(int x, int y)
         {
             int cellNoX = x / this.cellWidth;
             int cellNoY = y / this.cellHeight;
@@ -634,19 +814,97 @@ namespace SonOfRobin
             int posInsideCellX = x % this.cellWidth;
             int posInsideCellY = y % this.cellHeight;
 
-            return this.cellGrid[cellNoX, cellNoY].terrainByName[terrainName].GetMapData(posInsideCellX, posInsideCellY);
+            return this.CorrectCellCoordinatesAndPosInside(cellNoX, cellNoY, posInsideCellX, posInsideCellY);
         }
 
-        private Cell FindMatchingCell(Vector2 position)
+        private Dictionary<string, int> CorrectCellCoordinatesAndPosInside(int cellNoX, int cellNoY, int posInsideCellX, int posInsideCellY)
         {
-            return this.cellGrid[(int)(position.X / this.cellWidth), (int)(position.Y / this.cellHeight)];
+            Cell cell = this.cellGrid[cellNoX, cellNoY];
+
+            if (posInsideCellX / this.resDivider >= cell.dividedWidth)
+            {
+                cellNoX++;
+                posInsideCellX = 0;
+
+                if (cellNoX >= this.noOfCellsX)
+                {
+                    cellNoX--;
+                    posInsideCellX = this.cellGrid[cellNoX, cellNoY].dividedWidth - 1;
+                }
+            }
+            if (posInsideCellY / this.resDivider >= cell.dividedHeight)
+            {
+                cellNoY++;
+                posInsideCellY = 0;
+
+                if (cellNoY >= this.noOfCellsY)
+                {
+                    cellNoY--;
+                    posInsideCellY = this.cellGrid[cellNoX, cellNoY].dividedHeight - 1;
+                }
+            }
+
+            return new Dictionary<string, int> {
+                { "cellNoX", cellNoX },
+                { "cellNoY", cellNoY },
+                { "posInsideCellX", posInsideCellX },
+                { "posInsideCellY", posInsideCellY }};
         }
 
-        private static int FindMatchingCellInSingleAxis(int position, int cellLength)
+        public Cell FindMatchingCell(Vector2 position)
         {
-            return position / cellLength;
+            var coordsDict = this.FindMatchingCellNoAndPosInside(position: position);
+
+            return this.cellGrid[coordsDict["cellNoX"], coordsDict["cellNoY"]];
         }
 
+        public byte GetFieldValue(TerrainName terrainName, int x, int y)
+        {
+            var coordsDict = this.FindMatchingCellNoAndPosInside(x: x, y: y);
+
+            return this.cellGrid[coordsDict["cellNoX"], coordsDict["cellNoY"]].terrainByName[terrainName].GetMapData(
+                coordsDict["posInsideCellX"], coordsDict["posInsideCellY"]);
+        }
+
+        public byte GetFieldValue(TerrainName terrainName, Vector2 position)
+        {
+            var coordsDict = this.FindMatchingCellNoAndPosInside(position: position);
+
+            return this.cellGrid[coordsDict["cellNoX"], coordsDict["cellNoY"]].terrainByName[terrainName].GetMapData(
+                coordsDict["posInsideCellX"], coordsDict["posInsideCellY"]);
+        }
+
+        public Dictionary<ExtBoardProps.ExtPropName, bool> GetExtValueDict(int x, int y)
+        {
+            var coordsDict = this.FindMatchingCellNoAndPosInside(x: x, y: y);
+
+            return this.cellGrid[coordsDict["cellNoX"], coordsDict["cellNoY"]].ExtBoardProps.GetValueDict(
+                x: coordsDict["posInsideCellX"], y: coordsDict["posInsideCellY"], xyRaw: false);
+        }
+
+        public bool GetExtProperty(ExtBoardProps.ExtPropName name, Vector2 position)
+        {
+            var coordsDict = this.FindMatchingCellNoAndPosInside(position: position);
+
+            return this.cellGrid[coordsDict["cellNoX"], coordsDict["cellNoY"]].ExtBoardProps.GetValue(
+                name: name, x: coordsDict["posInsideCellX"], y: coordsDict["posInsideCellY"], xyRaw: false);
+        }
+
+        public bool GetExtProperty(ExtBoardProps.ExtPropName name, int x, int y)
+        {
+            var coordsDict = this.FindMatchingCellNoAndPosInside(x: x, y: y);
+
+            return this.cellGrid[coordsDict["cellNoX"], coordsDict["cellNoY"]].ExtBoardProps.GetValue(
+                name: name, x: coordsDict["posInsideCellX"], y: coordsDict["posInsideCellY"], xyRaw: false);
+        }
+
+        public void SetExtProperty(ExtBoardProps.ExtPropName name, bool value, int x, int y)
+        {
+            var coordsDict = this.FindMatchingCellNoAndPosInside(x: x, y: y);
+
+            this.cellGrid[coordsDict["cellNoX"], coordsDict["cellNoY"]].ExtBoardProps.SetValue(
+                name: name, value: value, x: coordsDict["posInsideCellX"], y: coordsDict["posInsideCellY"], xyRaw: false);
+        }
 
         private Cell[,] MakeGrid()
         {
@@ -656,7 +914,7 @@ namespace SonOfRobin
             {
                 for (int y = 0; y < this.noOfCellsY; y++)
                 {
-                    cellGrid[x, y] = new Cell(world: this.world, grid: this, cellNoX: x, cellNoY: y, width: this.cellWidth, height: this.cellHeight, random: this.world.random);
+                    cellGrid[x, y] = new Cell(world: this.world, grid: this, cellNoX: x, cellNoY: y, cellWidth: this.cellWidth, cellHeight: this.cellHeight, random: this.world.random);
                 }
             }
 
@@ -675,10 +933,13 @@ namespace SonOfRobin
 
             if (timeSpan < TimeSpan.FromMinutes(1))
             { timeLeftString = timeSpan.ToString("ss"); }
+
             else if (timeSpan < TimeSpan.FromHours(1))
             { timeLeftString = timeSpan.ToString("mm\\:ss"); }
+
             else if (timeSpan < TimeSpan.FromDays(1))
             { timeLeftString = timeSpan.ToString("hh\\:mm\\:ss"); }
+
             else
             { timeLeftString = timeSpan.ToString("dd\\:hh\\:mm\\:ss"); }
 
@@ -710,10 +971,13 @@ namespace SonOfRobin
 
             foreach (var frameList in AnimData.frameListById)
             {
-                foreach (var frame in frameList.Value)
+                foreach (AnimFrame frame in frameList.Value)
                 {
-                    if (frame.gfxWidth > frameMaxWidth) frameMaxWidth = frame.gfxWidth;
-                    if (frame.gfxHeight > frameMaxHeight) frameMaxHeight = frame.gfxHeight;
+                    int scaledWidth = (int)(frame.gfxWidth * frame.scale);
+                    int scaledHeight = (int)(frame.gfxHeight * frame.scale);
+
+                    if (scaledWidth > frameMaxWidth) frameMaxWidth = scaledWidth;
+                    if (scaledHeight > frameMaxHeight) frameMaxHeight = scaledHeight;
                 }
             }
 
@@ -785,6 +1049,5 @@ namespace SonOfRobin
             }
             GC.Collect();
         }
-
     }
 }
