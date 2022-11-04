@@ -901,10 +901,13 @@ namespace SonOfRobin
 
             foreach (var frameList in AnimData.frameListById)
             {
-                foreach (var frame in frameList.Value)
+                foreach (AnimFrame frame in frameList.Value)
                 {
-                    if (frame.gfxWidth > frameMaxWidth) frameMaxWidth = frame.gfxWidth;
-                    if (frame.gfxHeight > frameMaxHeight) frameMaxHeight = frame.gfxHeight;
+                    int scaledWidth = (int)(frame.gfxWidth * frame.scale);
+                    int scaledHeight = (int)(frame.gfxHeight * frame.scale);
+
+                    if (scaledWidth > frameMaxWidth) frameMaxWidth = scaledWidth;
+                    if (scaledHeight > frameMaxHeight) frameMaxHeight = scaledHeight;
                 }
             }
 

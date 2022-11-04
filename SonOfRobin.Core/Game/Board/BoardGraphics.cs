@@ -277,7 +277,8 @@ namespace SonOfRobin
                 pixel = Blend2Colors(bottomColor: pixel, topColor: new Color((byte)40, (byte)0, (byte)0, dangerAlpha));
             }
 
-            // if (extDataValDict[ExtBoardProperties.ExtPropName.OuterBeach]) pixel = Color.HotPink; // for testing
+            if (extDataValDict[ExtBoardProperties.ExtPropName.OuterBeach]) pixel = Color.HotPink; // for testing
+            if (extDataValDict[ExtBoardProperties.ExtPropName.Sea]) pixel = Color.Cyan; // for testing
 
             return pixel;
         }

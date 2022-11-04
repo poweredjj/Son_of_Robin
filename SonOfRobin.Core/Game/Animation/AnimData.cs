@@ -844,6 +844,7 @@ namespace SonOfRobin
             AddFrameList(animPackage: PkgName.WaterDrop, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "water_drop", layer: 0, scale: 0.5f));
             AddFrameList(animPackage: PkgName.Exclamation, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "exclamation", layer: 2, scale: 0.2f));
             AddFrameList(animPackage: PkgName.Map, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "parchment", layer: 0, scale: 0.03f));
+            AddFrameList(animPackage: PkgName.MapEdges, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "parchment_edges", layer: 0, scale: 0.03f));
             AddFrameList(animPackage: PkgName.BackpackMediumOutline, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "backpack_medium_outline", layer: 1, scale: 0.2f));
             AddFrameList(animPackage: PkgName.BackpackSmall, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "backpack_small", layer: 1, scale: 0.1f));
             AddFrameList(animPackage: PkgName.BackpackMedium, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "backpack_medium", layer: 1, scale: 0.5f));
@@ -868,7 +869,7 @@ namespace SonOfRobin
             AddFrameList(animPackage: PkgName.ArrowCrystal, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "arrow_crystal", layer: 0, scale: 0.75f));
             AddFrameList(animPackage: PkgName.DebrisStone, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "stone_small", layer: 0, scale: 0.25f));
             AddFrameList(animPackage: PkgName.DebrisPlant, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "grass_blade", layer: 0, scale: 0.25f));
-            AddFrameList(animPackage: PkgName.Hand, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "hand", layer: 1));
+            AddFrameList(animPackage: PkgName.Hand, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "hand", layer: 1, scale: 0.1f));
             AddFrameList(animPackage: PkgName.BeltSmall, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "belt_small", layer: 0, scale: 1f));
             AddFrameList(animPackage: PkgName.BeltMedium, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "belt_medium", layer: 0, scale: 0.12f));
             AddFrameList(animPackage: PkgName.BeltBig, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "belt_big", layer: 0, scale: 0.06f));
@@ -900,7 +901,6 @@ namespace SonOfRobin
             AddFrameList(animPackage: PkgName.MusicNoteSmall, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "music_note", layer: 2));
             AddFrameList(animPackage: PkgName.MusicNoteBig, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "music_note", layer: 2, scale: 2.5f));
             AddFrameList(animPackage: PkgName.WhiteSpot, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "white_spot", layer: 0, scale: 1f));
-            AddFrameList(animPackage: PkgName.MapEdges, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "parchment_edges", layer: 0, scale: 1f));
             AddFrameList(animPackage: PkgName.NewIcon, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "new", layer: 0, scale: 1f));
             AddFrameList(animPackage: PkgName.Upgrade, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "upgrade", layer: 0, scale: 1f));
             AddFrameList(animPackage: PkgName.Rope, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "rope", layer: 0, scale: 1f));
