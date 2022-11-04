@@ -49,7 +49,7 @@ namespace SonOfRobin
             StateMachinesPlants
         }
 
-        public Cell(Grid grid, World world, int cellNoX, int cellNoY, int width, int height, Random random)
+        public Cell(Grid grid, World world, int cellNoX, int cellNoY, int cellWidth, int cellHeight, Random random)
         {
             this.grid = grid;
             this.world = world;
@@ -57,20 +57,21 @@ namespace SonOfRobin
             this.cellNoX = cellNoX;
             this.cellNoY = cellNoY;
 
-            this.width = width; // virtual value, simulated for the outside world
-            this.height = height; // virtual value, simulated for the outside world
-            this.dividedWidth = (int)Math.Ceiling((float)this.width / (float)this.grid.resDivider);  // real storing data capacity
-            this.dividedHeight = (int)Math.Ceiling((float)this.height / (float)this.grid.resDivider); // real storing data capacity
-
-            this.xMin = cellNoX * width;
-            this.xMax = ((cellNoX + 1) * this.width) - 1;
+            this.xMin = cellNoX * cellWidth;
+            this.xMax = this.xMin + cellWidth - 1;
             this.xMax = Math.Min(this.xMax, this.world.width - 1);
 
-            this.yMin = cellNoY * height;
-            this.yMax = ((cellNoY + 1) * this.height) - 1;
+            this.yMin = cellNoY * cellHeight;
+            this.yMax = this.yMin + cellHeight - 1;
             this.yMax = Math.Min(this.yMax, this.world.height - 1);
 
-            this.rect = new Rectangle(this.xMin, this.yMin, this.width, this.height);
+            this.width = this.xMax - this.xMin; // virtual value, simulated for the outside world
+            this.height = this.yMax - this.yMin; // virtual value, simulated for the outside world
+
+            this.dividedWidth = this.width / this.grid.resDivider; // real storing data capacity
+            this.dividedHeight = this.height / this.grid.resDivider; // real storing data capacity
+
+            this.rect = new Rectangle(this.xMin, this.yMin, this.width + 1, this.height + 1);
             this.xCenter = this.xMin + (this.width / 2);
             this.yCenter = this.yMin + (this.height / 2);
             this.center = new Vector2(this.xCenter, this.yCenter);

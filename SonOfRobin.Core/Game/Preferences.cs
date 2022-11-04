@@ -9,7 +9,7 @@ namespace SonOfRobin
     {
         public enum WorldSize { small, medium, large, gigantic } // lower case, for proper display in menu
 
-        public static readonly Dictionary<Object, Object> namesForResDividers = new Dictionary<Object, Object> { { 20, "garbage" }, { 10, "low" }, { 7, "medium" }, { 5, "high" }, { 3, "ultra" } };
+        public static readonly Dictionary<Object, Object> namesForResDividers = new Dictionary<Object, Object> { { 32, "garbage" }, { 16, "low" }, { 8, "medium" }, { 4, "high" }, { 2, "ultra" } };
         public static readonly Dictionary<Object, Object> namesForDarknessRes = new Dictionary<Object, Object> { { 4, "very low" }, { 3, "low" }, { 2, "medium" }, { 1, "high" } };
         public static readonly Dictionary<Object, Object> namesForFieldControlTipsScale = new Dictionary<Object, Object> { { 0.15f, "micro" }, { 0.25f, "small" }, { 0.4f, "medium" }, { 0.5f, "large" }, { 0.6f, "huge" }, { 0.75f, "gigantic" } };
         public static readonly Dictionary<Object, Object> namesForMapMarkerScale = new Dictionary<Object, Object> { { 0.25f, "small" }, { 0.5f, "medium" }, { 1f, "big" }, { 2f, "huge" }, { 3f, "gigantic" } };
@@ -54,7 +54,7 @@ namespace SonOfRobin
                 if (!customizeWorld)
                 {
                     SelectedWorldSize = selectedWorldSize;  // to restore base values
-                    newWorldResDivider = 5;
+                    newWorldResDivider = 4;
                     randomSeed = true;
                 }
             }

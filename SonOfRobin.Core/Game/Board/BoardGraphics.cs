@@ -107,7 +107,7 @@ namespace SonOfRobin
             return texture;
         }
 
-        private Color[,] CreateBitmapFromTerrain()
+        private Color[,] CreateBitmapFromTerrain() // FOR TESTING ONLY
         {
             // can be run in parallel, because it does not use graphicsDevice
 
@@ -123,9 +123,70 @@ namespace SonOfRobin
 
             Color[,] smallColorGrid = new Color[sourceWidth, sourceHeight];
 
-            for (int localX = 0; localX < this.cell.dividedWidth; localX++)
+            for (int localX = 0; localX < sourceWidth; localX++)
             {
-                for (int localY = 0; localY < this.cell.dividedHeight; localY++)
+                for (int localY = 0; localY < sourceHeight; localY++)
+                {
+                    smallColorGrid[localX, localY] = CreatePixel(
+                        pixelHeight: heightTerrain.GetMapDataRaw(localX, localY),
+                        pixelHumidity: humidityTerrain.GetMapDataRaw(localX, localY),
+                        pixelDanger: dangerTerrain.GetMapDataRaw(localX, localY),
+                        extDataValDict: this.cell.ExtBoardProperties.GetValueDict(x: localX, y: localY, xyRaw: true));
+                }
+            }
+
+            // putting upscaled color grid into PngBuilder
+
+            var builder = PngBuilder.Create(width: sourceWidth, height: sourceHeight, hasAlphaChannel: true);
+
+            for (int y = 0; y < sourceHeight; y++)
+            {
+                for (int x = 0; x < sourceWidth; x++)
+                {
+                    Color pixel = smallColorGrid[x, y];
+                    builder.SetPixel(pixel.R, pixel.G, pixel.B, x, y);
+                }
+            }
+
+            // saving PngBuilder to file
+
+            using (var memoryStream = new MemoryStream())
+            {
+                builder.Save(memoryStream);
+
+                try
+                {
+                    FileReaderWriter.SaveMemoryStream(memoryStream: memoryStream, this.templatePath);
+                }
+                catch (IOException)
+                {
+                    // write error
+                }
+            }
+
+            return smallColorGrid;
+        }
+
+
+        private Color[,] CreateBitmapFromTerrainOriginal()
+        {
+            // can be run in parallel, because it does not use graphicsDevice
+
+            // creating base 2D color array with rgb color data
+
+            int sourceWidth = this.cell.dividedWidth;
+            int sourceHeight = this.cell.dividedHeight;
+            int resDivider = this.cell.grid.resDivider;
+
+            Terrain heightTerrain = this.cell.terrainByName[TerrainName.Height];
+            Terrain humidityTerrain = this.cell.terrainByName[TerrainName.Humidity];
+            Terrain dangerTerrain = this.cell.terrainByName[TerrainName.Danger];
+
+            Color[,] smallColorGrid = new Color[sourceWidth, sourceHeight];
+
+            for (int localX = 0; localX < sourceWidth; localX++)
+            {
+                for (int localY = 0; localY < sourceHeight; localY++)
                 {
                     smallColorGrid[localX, localY] = CreatePixel(
                         pixelHeight: heightTerrain.GetMapDataRaw(localX, localY),

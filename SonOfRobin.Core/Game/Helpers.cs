@@ -279,5 +279,10 @@ namespace SonOfRobin
 
             return newVal;
         }
+
+        public static bool IsPowerOfTwo(ulong x)
+        {
+            return (x != 0) && ((x & (x - 1)) == 0);
+        }
     }
 }

@@ -59,6 +59,8 @@ namespace SonOfRobin
             this.world = world;
             this.resDivider = resDivider;
 
+            if (!Helpers.IsPowerOfTwo((ulong)this.resDivider)) throw new ArgumentException($"ResDivider ({this.resDivider}) is not a power of 2.");
+
             if (cellWidth == 0 && cellHeight == 0)
             {
                 Vector2 maxFrameSize = CalculateMaxFrameSize();
@@ -217,7 +219,7 @@ namespace SonOfRobin
 
                     cellProcessingQueue = new List<Cell> { };
 
-                    for (int i = 0; i < 30; i++)
+                    for (int i = 0; i < 70; i++)
                     {
                         cellProcessingQueue.Add(this.cellsToProcessOnStart[0]);
                         this.cellsToProcessOnStart.RemoveAt(0);
@@ -764,7 +766,12 @@ namespace SonOfRobin
             { cell.DrawDebugData(groupName: Cell.Group.ColMovement); }
         }
 
-        public byte GetFieldValue(TerrainName terrainName, Vector2 position)
+        private static int FindMatchingCellInSingleAxis(int position, int cellLength)
+        {
+            return position / cellLength;
+        }
+
+        private Dictionary<string, int> FindMatchingCellNoAndPosInside(Vector2 position)
         {
             int cellNoX = (int)Math.Floor(position.X / this.cellWidth);
             int cellNoY = (int)Math.Floor(position.Y / this.cellHeight);
@@ -772,10 +779,17 @@ namespace SonOfRobin
             int posInsideCellX = (int)position.X % this.cellWidth;
             int posInsideCellY = (int)position.Y % this.cellHeight;
 
-            return this.cellGrid[cellNoX, cellNoY].terrainByName[terrainName].GetMapData(posInsideCellX, posInsideCellY);
+            var coordsDict = new Dictionary<string, int> {
+                {"cellNoX", cellNoX },
+                {"cellNoY", cellNoY },
+                {"posInsideCellX", posInsideCellX },
+                {"posInsideCellY", posInsideCellY }};
+
+            this.CorrectCellCoordinatesAndPosInside(coordsDict);
+            return coordsDict;
         }
 
-        public byte GetFieldValue(TerrainName terrainName, int x, int y)
+        private Dictionary<string, int> FindMatchingCellNoAndPosInside(int x, int y)
         {
             int cellNoX = x / this.cellWidth;
             int cellNoY = y / this.cellHeight;
@@ -783,60 +797,77 @@ namespace SonOfRobin
             int posInsideCellX = x % this.cellWidth;
             int posInsideCellY = y % this.cellHeight;
 
-            return this.cellGrid[cellNoX, cellNoY].terrainByName[terrainName].GetMapData(posInsideCellX, posInsideCellY);
+            var coordsDict = new Dictionary<string, int> {
+                {"cellNoX", cellNoX },
+                {"cellNoY", cellNoY },
+                {"posInsideCellX", posInsideCellX },
+                {"posInsideCellY", posInsideCellY }};
+
+            this.CorrectCellCoordinatesAndPosInside(coordsDict);
+            return coordsDict;
         }
 
-        public bool GetExtProperty(ExtBoardProperties.ExtPropName name, Vector2 position)
+        private Dictionary<string, int> CorrectCellCoordinatesAndPosInside(Dictionary<string, int> coordsDict)
         {
-            int cellNoX = (int)Math.Floor(position.X / this.cellWidth);
-            int cellNoY = (int)Math.Floor(position.Y / this.cellHeight);
+            Cell cell = this.cellGrid[coordsDict["cellNoX"], coordsDict["cellNoY"]];
 
-            int posInsideCellX = (int)position.X % this.cellWidth;
-            int posInsideCellY = (int)position.Y % this.cellHeight;
+            if (coordsDict["posInsideCellX"] >= cell.dividedWidth)
+            {
+                coordsDict["cellNoX"]++;
+                coordsDict["posInsideCellX"] = 0;
+            }
+            if (coordsDict["posInsideCellY"] >= cell.dividedHeight)
+            {
+                coordsDict["cellNoY"]++;
+                coordsDict["posInsideCellY"] = 0;
+            }
 
-            return this.cellGrid[cellNoX, cellNoY].ExtBoardProperties.GetValue(name: name, x: posInsideCellX, y: posInsideCellY, xyRaw: false);
-        }
-        public Dictionary<ExtBoardProperties.ExtPropName, bool> GetExtValueDict(int x, int y)
-        {
-            int cellNoX = x / this.cellWidth;
-            int cellNoY = y / this.cellHeight;
+            if (coordsDict["cellNoX"] >= this.noOfCellsX) coordsDict["cellNoX"]--;
+            if (coordsDict["cellNoY"] >= this.noOfCellsY) coordsDict["cellNoY"]--;
 
-            int posInsideCellX = x % this.cellWidth;
-            int posInsideCellY = y % this.cellHeight;
-
-            return this.cellGrid[cellNoX, cellNoY].ExtBoardProperties.GetValueDict(x: posInsideCellX, y: posInsideCellY, xyRaw: false);
-        }
-
-        public bool GetExtProperty(ExtBoardProperties.ExtPropName name, int x, int y)
-        {
-            int cellNoX = x / this.cellWidth;
-            int cellNoY = y / this.cellHeight;
-
-            int posInsideCellX = x % this.cellWidth;
-            int posInsideCellY = y % this.cellHeight;
-
-            return this.cellGrid[cellNoX, cellNoY].ExtBoardProperties.GetValue(name: name, x: posInsideCellX, y: posInsideCellY, xyRaw: false);
-        }
-
-        public void SetExtProperty(ExtBoardProperties.ExtPropName name, bool value, int x, int y)
-        {
-            int cellNoX = x / this.cellWidth;
-            int cellNoY = y / this.cellHeight;
-
-            int posInsideCellX = x % this.cellWidth;
-            int posInsideCellY = y % this.cellHeight;
-
-            this.cellGrid[cellNoX, cellNoY].ExtBoardProperties.SetValue(name: name, value: value, x: posInsideCellX, y: posInsideCellY, xyRaw: false);
+            return coordsDict;
         }
 
         public Cell FindMatchingCell(Vector2 position)
         {
-            return this.cellGrid[(int)(position.X / this.cellWidth), (int)(position.Y / this.cellHeight)];
+            var coordsDict = this.FindMatchingCellNoAndPosInside(position: position);
+            return this.cellGrid[coordsDict["cellNoX"], coordsDict["cellNoY"]];
         }
 
-        private static int FindMatchingCellInSingleAxis(int position, int cellLength)
+        public byte GetFieldValue(TerrainName terrainName, int x, int y)
         {
-            return position / cellLength;
+            var coordsDict = this.FindMatchingCellNoAndPosInside(x: x, y: y);
+            return this.cellGrid[coordsDict["cellNoX"], coordsDict["cellNoY"]].terrainByName[terrainName].GetMapData(coordsDict["posInsideCellX"], coordsDict["posInsideCellY"]);
+        }
+
+        public byte GetFieldValue(TerrainName terrainName, Vector2 position)
+        {
+            var coordsDict = this.FindMatchingCellNoAndPosInside(position: position);
+            return this.cellGrid[coordsDict["cellNoX"], coordsDict["cellNoY"]].terrainByName[terrainName].GetMapData(coordsDict["posInsideCellX"], coordsDict["posInsideCellY"]);
+        }
+
+        public Dictionary<ExtBoardProperties.ExtPropName, bool> GetExtValueDict(int x, int y)
+        {
+            var coordsDict = this.FindMatchingCellNoAndPosInside(x: x, y: y);
+            return this.cellGrid[coordsDict["cellNoX"], coordsDict["cellNoY"]].ExtBoardProperties.GetValueDict(x: coordsDict["posInsideCellX"], y: coordsDict["posInsideCellY"], xyRaw: false);
+        }
+
+        public bool GetExtProperty(ExtBoardProperties.ExtPropName name, Vector2 position)
+        {
+            var coordsDict = this.FindMatchingCellNoAndPosInside(position: position);
+            return this.cellGrid[coordsDict["cellNoX"], coordsDict["cellNoY"]].ExtBoardProperties.GetValue(name: name, x: coordsDict["posInsideCellX"], y: coordsDict["posInsideCellY"], xyRaw: false);
+        }
+
+        public bool GetExtProperty(ExtBoardProperties.ExtPropName name, int x, int y)
+        {
+            var coordsDict = this.FindMatchingCellNoAndPosInside(x: x, y: y);
+            return this.cellGrid[coordsDict["cellNoX"], coordsDict["cellNoY"]].ExtBoardProperties.GetValue(name: name, x: coordsDict["posInsideCellX"], y: coordsDict["posInsideCellY"], xyRaw: false);
+        }
+
+        public void SetExtProperty(ExtBoardProperties.ExtPropName name, bool value, int x, int y)
+        {
+            var coordsDict = this.FindMatchingCellNoAndPosInside(x: x, y: y);
+            this.cellGrid[coordsDict["cellNoX"], coordsDict["cellNoY"]].ExtBoardProperties.SetValue(name: name, value: value, x: coordsDict["posInsideCellX"], y: coordsDict["posInsideCellY"], xyRaw: false);
         }
 
         private Cell[,] MakeGrid()
@@ -847,7 +878,7 @@ namespace SonOfRobin
             {
                 for (int y = 0; y < this.noOfCellsY; y++)
                 {
-                    cellGrid[x, y] = new Cell(world: this.world, grid: this, cellNoX: x, cellNoY: y, width: this.cellWidth, height: this.cellHeight, random: this.world.random);
+                    cellGrid[x, y] = new Cell(world: this.world, grid: this, cellNoX: x, cellNoY: y, cellWidth: this.cellWidth, cellHeight: this.cellHeight, random: this.world.random);
                 }
             }
 
