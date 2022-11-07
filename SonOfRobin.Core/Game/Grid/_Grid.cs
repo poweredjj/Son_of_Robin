@@ -356,10 +356,10 @@ namespace SonOfRobin
             var cellsWithoutExtPropsSet = this.allCells.Where(cell => cell.ExtBoardProps.CreationInProgress);
             if (!cellsWithoutExtPropsSet.Any()) return;
 
-            ConcurrentBag<Point> beachEdgePointList = this.GetAllRawCoordinatesWithExtProperty(nameToUse: ExtBoardProps.ExtPropName.Sea, value: true);
+            ConcurrentBag<Point> beachEdgePointList = this.GetAllRawCoordinatesWithExtProperty(nameToUse: ExtBoardProps.ExtPropName.OuterBeach, value: true);
 
             byte beachHeightMin = (byte)(Terrain.waterLevelMax + 1);
-            byte beachHeightMax = (byte)(Terrain.waterLevelMax + 8);
+            byte beachHeightMax = (byte)(Terrain.waterLevelMax + 5);
 
             this.FloodFillExtProps(
                  startingPoints: beachEdgePointList,

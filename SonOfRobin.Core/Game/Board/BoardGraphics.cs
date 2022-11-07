@@ -281,8 +281,8 @@ namespace SonOfRobin
                 pixel = Blend2Colors(bottomColor: pixel, topColor: new Color((byte)40, (byte)0, (byte)0, dangerAlpha));
             }
 
-             // if (extDataValDict[ExtBoardProps.ExtPropName.OuterBeach]) pixel = Color.HotPink; // for testing
-             // if (extDataValDict[ExtBoardProps.ExtPropName.Sea]) pixel = Color.Cyan; // for testing
+            // if (extDataValDict[ExtBoardProps.ExtPropName.OuterBeach]) pixel = Color.HotPink; // for testing
+            // if (extDataValDict[ExtBoardProps.ExtPropName.Sea]) pixel = Color.Cyan; // for testing
 
             return pixel;
         }
@@ -335,8 +335,8 @@ namespace SonOfRobin
         {
             return new Dictionary<Colors, List<byte>>() {
                 {Colors.WaterDeep, new List<byte>(){0,Convert.ToByte(Terrain.waterLevelMax / 3)}},
-                {Colors.WaterMedium, new List<byte>(){Convert.ToByte(Terrain.waterLevelMax / 3), (byte)(Terrain.waterLevelMax / 3 *2)}},
-                {Colors.WaterShallow, new List<byte>(){Convert.ToByte((Terrain.waterLevelMax / 3)*2), Terrain.waterLevelMax}},
+                {Colors.WaterMedium, new List<byte>(){Convert.ToByte(Terrain.waterLevelMax / 3), (byte)(Terrain.waterLevelMax / 3 * 2)}},
+                {Colors.WaterShallow, new List<byte>(){Convert.ToByte(Terrain.waterLevelMax / 3 * 2), Terrain.waterLevelMax}},
                 {Colors.Beach1, new List<byte>(){Terrain.waterLevelMax, 100}},
                 {Colors.Beach2, new List<byte>(){100, 105}},
                 {Colors.Ground, new List<byte>(){105, 160}},
