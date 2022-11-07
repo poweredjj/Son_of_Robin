@@ -329,35 +329,44 @@ namespace SonOfRobin
             // algorithm will only work, if water surrounds the island and is present at (0, 0)
 
             this.FloodFillExtProps(
-                 startingPointList: new ConcurrentBag<Point> { new Point(0, 0) }, terrainName: TerrainName.Height, minVal: 0, maxVal: Terrain.waterLevelMax,
-                 nameToSetIfInRange: ExtBoardProps.ExtPropName.Sea, setNameIfOutsideRange: true, nameToSetIfOutsideRange: ExtBoardProps.ExtPropName.OuterBeach);
+                 startingPointList: new ConcurrentBag<Point> { new Point(0, 0) },
+                 terrainName: TerrainName.Height,
+                 minVal: 0, maxVal: Terrain.waterLevelMax,
+                 nameToSetIfInRange: ExtBoardProps.ExtPropName.Sea,
+                 setNameIfOutsideRange: true,
+                 nameToSetIfOutsideRange: ExtBoardProps.ExtPropName.OuterBeach
+                 );
         }
 
         private void ExtCalculateOuterBeach()
         {
+            var cellsWithoutExtPropsSet = this.allCells.Where(cell => cell.ExtBoardProps.CreationInProgress);
+            if (!cellsWithoutExtPropsSet.Any()) return;
+
             ConcurrentBag<Point> beachEdgePointList = this.GetAllRawCoordinatesWithExtProperty(nameToUse: ExtBoardProps.ExtPropName.Sea, value: true);
 
             byte beachHeightMin = (byte)(Terrain.waterLevelMax + 1);
             byte beachHeightMax = (byte)(Terrain.waterLevelMax + 8);
 
             this.FloodFillExtProps(
-                 startingPointList: beachEdgePointList, terrainName: TerrainName.Height, minVal: beachHeightMin, maxVal: beachHeightMax,
-                 nameToSetIfInRange: ExtBoardProps.ExtPropName.OuterBeach, setNameIfOutsideRange: false, nameToSetIfOutsideRange: ExtBoardProps.ExtPropName.OuterBeach);
+                 startingPointList: beachEdgePointList,
+                 terrainName: TerrainName.Height,
+                 minVal: beachHeightMin, maxVal: beachHeightMax,
+                 nameToSetIfInRange: ExtBoardProps.ExtPropName.OuterBeach,
+                 setNameIfOutsideRange: false,
+                 nameToSetIfOutsideRange: ExtBoardProps.ExtPropName.OuterBeach // doesn't matter, if setNameIfOutsideRange is false
+                 );
         }
 
         private void ExtEndCreation()
         {
             var cellsWithoutExtPropsSet = this.allCells.Where(cell => cell.ExtBoardProps.CreationInProgress);
             if (!cellsWithoutExtPropsSet.Any()) return;
+
             foreach (Cell cell in cellsWithoutExtPropsSet)
             {
                 cell.ExtBoardProps.EndCreationAndSave();
             }
-
-            Parallel.ForEach(this.allCells, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, cell =>
-            {
-                cell.FillAllowedNames(); // needs to be invoked after calculating final terrain and ExtProps
-            });
         }
 
         private ConcurrentBag<Point> GetAllRawCoordinatesWithExtProperty(ExtBoardProps.ExtPropName nameToUse, bool value)
