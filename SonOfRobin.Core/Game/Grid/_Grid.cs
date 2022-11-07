@@ -7,17 +7,19 @@ using System.Threading.Tasks;
 
 namespace SonOfRobin
 {
-    [System.Runtime.InteropServices.Guid("2398A06F-F75B-4A2C-9F23-E3B9104E2FFC")]
     public class Grid
     {
         public enum Stage
-        { GenerateTerrain, SetExtData, ProcessTextures, LoadTextures }
+        { GenerateTerrain, SetExtDataSea, SetExtDataBeach, SetExtDataFinish, FillAllowedNames, ProcessTextures, LoadTextures }
 
         private static readonly int allStagesCount = ((Stage[])Enum.GetValues(typeof(Stage))).Length;
 
         private static readonly Dictionary<Stage, string> namesForStages = new Dictionary<Stage, string> {
             { Stage.GenerateTerrain, "generating terrain" },
-            { Stage.SetExtData, "setting extended data" },
+            { Stage.SetExtDataSea, "setting extended data (sea)" },
+            { Stage.SetExtDataBeach, "setting extended data (beach)" },
+            { Stage.SetExtDataFinish, "setting extended data - finishing" },
+            { Stage.FillAllowedNames, "filling lists of allowed names" },
             { Stage.ProcessTextures, "processing textures" },
             { Stage.LoadTextures, "loading textures" },
         };
@@ -208,9 +210,28 @@ namespace SonOfRobin
 
                     break;
 
-                case Stage.SetExtData:
+                case Stage.SetExtDataSea:
 
-                    this.CalculateExtPropsForWholeMap();
+                    this.ExtCalculateSea();
+                    this.cellsToProcessOnStart.Clear();
+
+                    break;
+
+                case Stage.SetExtDataBeach:
+
+                    this.ExtCalculateOuterBeach();
+                    this.cellsToProcessOnStart.Clear();
+
+                    break;
+
+                case Stage.SetExtDataFinish:
+
+                    this.ExtEndCreation();
+                    this.cellsToProcessOnStart.Clear();
+
+                    break;
+
+                case Stage.FillAllowedNames:
 
                     Parallel.ForEach(this.allCells, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, cell =>
                     {
@@ -300,17 +321,21 @@ namespace SonOfRobin
             }
         }
 
-        private void CalculateExtPropsForWholeMap()
+        private void ExtCalculateSea()
         {
             var cellsWithoutExtPropsSet = this.allCells.Where(cell => cell.ExtBoardProps.CreationInProgress);
             if (!cellsWithoutExtPropsSet.Any()) return;
 
             // algorithm will only work, if water surrounds the island and is present at (0, 0)
-            var listOfPointLists = this.FloodFillExtProps(
-                 startingPointList: new List<Point> { new Point(0, 0) }, terrainName: TerrainName.Height, minVal: 0, maxVal: Terrain.waterLevelMax,
-                 nameToSetIfInRange: ExtBoardProps.ExtPropName.Sea, setNameIfOutsideRange: true, nameToSetIfOutsideRange: ExtBoardProps.ExtPropName.OuterBeach);
 
-            List<Point> beachEdgePointList = listOfPointLists[1];
+            this.FloodFillExtProps(
+                 startingPointList: new ConcurrentBag<Point> { new Point(0, 0) }, terrainName: TerrainName.Height, minVal: 0, maxVal: Terrain.waterLevelMax,
+                 nameToSetIfInRange: ExtBoardProps.ExtPropName.Sea, setNameIfOutsideRange: true, nameToSetIfOutsideRange: ExtBoardProps.ExtPropName.OuterBeach);
+        }
+
+        private void ExtCalculateOuterBeach()
+        {
+            ConcurrentBag<Point> beachEdgePointList = this.GetAllRawCoordinatesWithExtProperty(nameToUse: ExtBoardProps.ExtPropName.Sea, value: true);
 
             byte beachHeightMin = (byte)(Terrain.waterLevelMax + 1);
             byte beachHeightMax = (byte)(Terrain.waterLevelMax + 8);
@@ -318,32 +343,42 @@ namespace SonOfRobin
             this.FloodFillExtProps(
                  startingPointList: beachEdgePointList, terrainName: TerrainName.Height, minVal: beachHeightMin, maxVal: beachHeightMax,
                  nameToSetIfInRange: ExtBoardProps.ExtPropName.OuterBeach, setNameIfOutsideRange: false, nameToSetIfOutsideRange: ExtBoardProps.ExtPropName.OuterBeach);
+        }
 
+        private void ExtEndCreation()
+        {
+            var cellsWithoutExtPropsSet = this.allCells.Where(cell => cell.ExtBoardProps.CreationInProgress);
+            if (!cellsWithoutExtPropsSet.Any()) return;
             foreach (Cell cell in cellsWithoutExtPropsSet)
             {
                 cell.ExtBoardProps.EndCreationAndSave();
             }
+
+            Parallel.ForEach(this.allCells, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, cell =>
+            {
+                cell.FillAllowedNames(); // needs to be invoked after calculating final terrain and ExtProps
+            });
         }
 
-        private List<Point> GetAllRawCoordinatesWithExtProperty(ExtBoardProps.ExtPropName nameToUse, bool value)
+        private ConcurrentBag<Point> GetAllRawCoordinatesWithExtProperty(ExtBoardProps.ExtPropName nameToUse, bool value)
         {
-            List<Point> pointList = new List<Point> { };
+            var pointBag = new ConcurrentBag<Point>();
 
-            for (int rawX = 0; rawX < this.world.width / this.resDivider; rawX++)
+            Parallel.For(0, this.world.width / this.resDivider, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, rawX =>
             {
                 for (int rawY = 0; rawY < this.world.height / this.resDivider; rawY++)
                 {
                     if (this.GetExtProperty(name: nameToUse, x: rawX * this.resDivider, y: rawY * this.resDivider) == value)
                     {
-                        pointList.Add(new Point(rawX, rawY));
+                        pointBag.Add(new Point(rawX, rawY));
                     }
                 }
-            }
+            });
 
-            return pointList;
+            return pointBag;
         }
 
-        private List<List<Point>> FloodFillExtProps(List<Point> startingPointList, TerrainName terrainName, byte minVal, byte maxVal, ExtBoardProps.ExtPropName nameToSetIfInRange, bool setNameIfOutsideRange, ExtBoardProps.ExtPropName nameToSetIfOutsideRange)
+        private void FloodFillExtProps(ConcurrentBag<Point> startingPointList, TerrainName terrainName, byte minVal, byte maxVal, ExtBoardProps.ExtPropName nameToSetIfInRange, bool setNameIfOutsideRange, ExtBoardProps.ExtPropName nameToSetIfOutsideRange)
         {
             int width = this.world.width;
             int height = this.world.height;
@@ -359,19 +394,13 @@ namespace SonOfRobin
                 new Point(0, 1),
             };
 
-            var listOfPointLists = new List<List<Point>>();
-            var pointsInsideRangeList = new List<Point>();
-            var pointsOutsideRangeList = new List<Point>();
-            listOfPointLists.Add(pointsInsideRangeList);
-            listOfPointLists.Add(pointsOutsideRangeList);
-
-            List<Point> nextPointsList = startingPointList.ToList();
+            List<Point> nextPointsBag = startingPointList.ToList();
 
             while (true)
             {
-                var currentPointList = nextPointsList.Distinct().ToList();
+                var currentPointList = nextPointsBag.Distinct().ToList();
 
-                nextPointsList.Clear();
+                nextPointsBag.Clear();
                 foreach (Point currentPoint in currentPointList) // using Distinct() to filter out duplicates
                 {
                     int realX = currentPoint.X * this.resDivider;
@@ -383,7 +412,6 @@ namespace SonOfRobin
                     if (pointWithinRange)
                     {
                         this.SetExtProperty(name: nameToSetIfInRange, value: true, x: realX, y: realY);
-                        pointsInsideRangeList.Add(currentPoint);
 
                         foreach (Point currentOffset in offsetList)
                         {
@@ -393,7 +421,7 @@ namespace SonOfRobin
                                 nextPoint.Y >= 0 && nextPoint.Y < dividedHeight &&
                                 !processedMap[nextPoint.X, nextPoint.Y])
                             {
-                                nextPointsList.Add(nextPoint);
+                                nextPointsBag.Add(nextPoint);
                             }
                         }
                     }
@@ -402,17 +430,14 @@ namespace SonOfRobin
                         if (setNameIfOutsideRange)
                         {
                             this.SetExtProperty(name: nameToSetIfOutsideRange, value: true, x: realX, y: realY);
-                            pointsOutsideRangeList.Add(currentPoint);
                         }
                     }
 
                     processedMap[currentPoint.X, currentPoint.Y] = true;
                 }
 
-                if (!nextPointsList.Any()) break;
+                if (!nextPointsBag.Any()) break;
             }
-
-            return listOfPointLists;
         }
 
         public List<Cell> GetCellsForPieceName(PieceTemplate.Name pieceName)
@@ -446,7 +471,7 @@ namespace SonOfRobin
             if (this.world.demoMode) return;
 
             TimeSpan timeLeft = CalculateTimeLeft(startTime: this.stageStartTime, completeAmount: this.allCells.Count - this.cellsToProcessOnStart.Count, totalAmount: this.allCells.Count);
-            string timeLeftString = TimeSpanToString(timeLeft + TimeSpan.FromSeconds(1));
+            string timeLeftString = timeLeft == TimeSpan.FromSeconds(0) ? "" : TimeSpanToString(timeLeft + TimeSpan.FromSeconds(1));
 
             string seedText = String.Format("{0:0000}", this.world.seed);
             string message = $"preparing island\nseed {seedText}\n{this.world.width} x {this.world.height}\n{namesForStages[this.currentStage]} {timeLeftString}";
@@ -468,7 +493,7 @@ namespace SonOfRobin
                 return timeLeft;
             }
             catch (OverflowException)
-            { return TimeSpan.FromMinutes(10); }
+            { return TimeSpan.FromMinutes(0); }
         }
 
         public void AddToGroup(Sprite sprite, Cell.Group groupName)
