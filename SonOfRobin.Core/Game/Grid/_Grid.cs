@@ -326,10 +326,23 @@ namespace SonOfRobin
             var cellsWithoutExtPropsSet = this.allCells.Where(cell => cell.ExtBoardProps.CreationInProgress);
             if (!cellsWithoutExtPropsSet.Any()) return;
 
-            // algorithm will only work, if water surrounds the island and is present at (0, 0)
+            // algorithm will only work, if water surrounds the island
+
+            int maxX = (this.world.width / this.resDivider) - 1;
+            int maxY = (this.world.height / this.resDivider) - 1;
+
+            var startingPoints = new ConcurrentBag<Point>();
+
+            foreach (int x in new List<int> { 0, maxX / 2, maxX })
+            {
+                foreach (int y in new List<int> { 0, maxY / 2, maxY })
+                {
+                    if (x == 0 || x == maxX || y == 0 || y == maxY) startingPoints.Add(new Point(x, y)); // adding edges only
+                }
+            }
 
             this.FloodFillExtProps(
-                 startingPointList: new ConcurrentBag<Point> { new Point(0, 0) },
+                 startingPoints: startingPoints,
                  terrainName: TerrainName.Height,
                  minVal: 0, maxVal: Terrain.waterLevelMax,
                  nameToSetIfInRange: ExtBoardProps.ExtPropName.Sea,
@@ -349,7 +362,7 @@ namespace SonOfRobin
             byte beachHeightMax = (byte)(Terrain.waterLevelMax + 8);
 
             this.FloodFillExtProps(
-                 startingPointList: beachEdgePointList,
+                 startingPoints: beachEdgePointList,
                  terrainName: TerrainName.Height,
                  minVal: beachHeightMin, maxVal: beachHeightMax,
                  nameToSetIfInRange: ExtBoardProps.ExtPropName.OuterBeach,
@@ -387,14 +400,10 @@ namespace SonOfRobin
             return pointBag;
         }
 
-        private void FloodFillExtProps(ConcurrentBag<Point> startingPointList, TerrainName terrainName, byte minVal, byte maxVal, ExtBoardProps.ExtPropName nameToSetIfInRange, bool setNameIfOutsideRange, ExtBoardProps.ExtPropName nameToSetIfOutsideRange)
+        private void FloodFillExtProps(ConcurrentBag<Point> startingPoints, TerrainName terrainName, byte minVal, byte maxVal, ExtBoardProps.ExtPropName nameToSetIfInRange, bool setNameIfOutsideRange, ExtBoardProps.ExtPropName nameToSetIfOutsideRange)
         {
-            int width = this.world.width;
-            int height = this.world.height;
-            int dividedWidth = width / this.resDivider;
-            int dividedHeight = height / this.resDivider;
-
-            bool[,] processedMap = new bool[dividedWidth, dividedHeight]; // working inside "compressed" map space, to avoid unnecessary calculations
+            int dividedWidth = this.world.width / this.resDivider;
+            int dividedHeight = this.world.height / this.resDivider;
 
             List<Point> offsetList = new List<Point> {
                 new Point(-1, 0),
@@ -403,24 +412,29 @@ namespace SonOfRobin
                 new Point(0, 1),
             };
 
-            List<Point> nextPointsBag = startingPointList.ToList();
+            bool[,] processedMap = new bool[dividedWidth, dividedHeight]; // working inside "compressed" map space, to avoid unnecessary calculations
+
+            var nextPoints = new ConcurrentBag<Point>(startingPoints);
+            var pointsInsideRange = new ConcurrentBag<Point>();
+            var pointsOutsideRange = new ConcurrentBag<Point>();
 
             while (true)
             {
-                var currentPointList = nextPointsBag.Distinct().ToList();
+                List<Point> currentPoints = nextPoints.Distinct().ToList(); // using Distinct() to filter out duplicates
+                nextPoints = new ConcurrentBag<Point>(); // because there is no Clear() for ConcurrentBag
 
-                nextPointsBag.Clear();
-                foreach (Point currentPoint in currentPointList) // using Distinct() to filter out duplicates
+                var pointsToSetAsProcessed = new ConcurrentBag<Point>();
+
+                Parallel.ForEach(currentPoints, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, currentPoint =>
                 {
                     int realX = currentPoint.X * this.resDivider;
                     int realY = currentPoint.Y * this.resDivider;
 
                     byte value = this.GetFieldValue(terrainName: terrainName, x: realX, y: realY);
-                    bool pointWithinRange = minVal <= value && value <= maxVal;
 
-                    if (pointWithinRange)
+                    if (minVal <= value && value <= maxVal) // point within range
                     {
-                        this.SetExtProperty(name: nameToSetIfInRange, value: true, x: realX, y: realY);
+                        pointsInsideRange.Add(new Point(realX, realY));
 
                         foreach (Point currentOffset in offsetList)
                         {
@@ -430,22 +444,34 @@ namespace SonOfRobin
                                 nextPoint.Y >= 0 && nextPoint.Y < dividedHeight &&
                                 !processedMap[nextPoint.X, nextPoint.Y])
                             {
-                                nextPointsBag.Add(nextPoint);
+                                nextPoints.Add(nextPoint);
                             }
                         }
                     }
                     else
                     {
-                        if (setNameIfOutsideRange)
-                        {
-                            this.SetExtProperty(name: nameToSetIfOutsideRange, value: true, x: realX, y: realY);
-                        }
+                        if (setNameIfOutsideRange) pointsOutsideRange.Add(new Point(realX, realY));
                     }
 
-                    processedMap[currentPoint.X, currentPoint.Y] = true;
+                    pointsToSetAsProcessed.Add(currentPoint);
+                });
+
+                foreach (Point point in pointsToSetAsProcessed)
+                {
+                    processedMap[point.X, point.Y] = true; // cannot be run in parallel
                 }
 
-                if (!nextPointsBag.Any()) break;
+                if (!nextPoints.Any()) break;
+            }
+
+            foreach (Point point in pointsInsideRange)
+            {
+                this.SetExtProperty(name: nameToSetIfInRange, value: true, x: point.X, y: point.Y); // cannot be run in parallel
+            }
+
+            foreach (Point point in pointsOutsideRange)
+            {
+                this.SetExtProperty(name: nameToSetIfOutsideRange, value: true, x: point.X, y: point.Y); // cannot be run in parallel
             }
         }
 
