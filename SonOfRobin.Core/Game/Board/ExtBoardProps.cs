@@ -2,15 +2,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace SonOfRobin
 {
     public class ExtBoardProps
     {
         public enum ExtPropName
-        { Sea, OuterBeach };
+        { Sea, OuterBeach, BiomeTest1, BiomeTest2, BiomeTest3, BiomeTest4 }; // each biome name must start with "biome"
 
         private static readonly ExtPropName[] allExtPropNames = (ExtPropName[])Enum.GetValues(typeof(ExtPropName));
+        public static readonly List<ExtPropName> allBiomes = allExtPropNames.Where(name => name.ToString().ToLower().StartsWith("biome")).ToList();
 
         public readonly Cell cell;
 

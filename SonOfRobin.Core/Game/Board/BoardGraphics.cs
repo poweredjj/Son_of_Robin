@@ -257,6 +257,9 @@ namespace SonOfRobin
                 if (kvp.Value[1] >= pixelHeight && pixelHeight >= kvp.Value[0])
                 {
                     pixel = colorsByName[kvp.Key];
+
+                    if (pixelHeight <= Terrain.waterLevelMax && extDataValDict[ExtBoardProps.ExtPropName.Sea]) pixel.G += 60;
+
                     break;
                 }
             }
@@ -275,14 +278,34 @@ namespace SonOfRobin
 
             if (pixelDanger >= Terrain.safeZoneMax)
             {
-                byte dangerAlpha = (byte)(((float)(pixelDanger - Terrain.safeZoneMax + 20) / (255 - Terrain.safeZoneMax)) * 150); // last value is max possible alpha
+                byte dangerAlpha = (byte)((float)(pixelDanger - Terrain.safeZoneMax + 20) / (255 - Terrain.safeZoneMax) * 150); // last value is max possible alpha
                 dangerAlpha = (byte)((int)(dangerAlpha / 15) * 15); // converting gradient to discrete shades
 
                 pixel = Blend2Colors(bottomColor: pixel, topColor: new Color((byte)40, (byte)0, (byte)0, dangerAlpha));
             }
 
-            // if (extDataValDict[ExtBoardProps.ExtPropName.OuterBeach]) pixel = Color.HotPink; // for testing
-            // if (extDataValDict[ExtBoardProps.ExtPropName.Sea]) pixel = Color.Cyan; // for testing
+            // pixel = ReplacePixelColorWithExtPropSimulation(pixel: pixel, extDataValDict: extDataValDict); // for testing only
+
+            return pixel;
+        }
+
+        private static Color ReplacePixelColorWithExtPropSimulation(Color pixel, Dictionary<ExtBoardProps.ExtPropName, bool> extDataValDict)
+        {
+            // extended properties highlighting - for testing purposes
+
+            var extPropNameToColorDict = new Dictionary<ExtBoardProps.ExtPropName, Color> {
+                { ExtBoardProps.ExtPropName.OuterBeach, Color.HotPink },
+                { ExtBoardProps.ExtPropName.Sea, Color.Cyan },
+                { ExtBoardProps.ExtPropName.BiomeTest1, Color.Red },
+                { ExtBoardProps.ExtPropName.BiomeTest2, Color.Green },
+                { ExtBoardProps.ExtPropName.BiomeTest3, Color.Blue },
+                { ExtBoardProps.ExtPropName.BiomeTest4, Color.Yellow },
+            };
+
+            foreach (var kvp in extPropNameToColorDict)
+            {
+                if (extDataValDict[kvp.Key]) pixel = kvp.Value;
+            }
 
             return pixel;
         }

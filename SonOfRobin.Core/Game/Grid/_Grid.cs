@@ -10,7 +10,7 @@ namespace SonOfRobin
     public class Grid
     {
         public enum Stage
-        { GenerateTerrain, SetExtDataSea, SetExtDataBeach, SetExtDataFinish, FillAllowedNames, ProcessTextures, LoadTextures }
+        { GenerateTerrain, SetExtDataSea, SetExtDataBeach, SetExtDataBiomes, SetExtDataFinish, FillAllowedNames, ProcessTextures, LoadTextures }
 
         private static readonly int allStagesCount = ((Stage[])Enum.GetValues(typeof(Stage))).Length;
 
@@ -18,6 +18,7 @@ namespace SonOfRobin
             { Stage.GenerateTerrain, "generating terrain" },
             { Stage.SetExtDataSea, "setting extended data (sea)" },
             { Stage.SetExtDataBeach, "setting extended data (beach)" },
+            { Stage.SetExtDataBiomes, "setting extended data (biomes)" },
             { Stage.SetExtDataFinish, "setting extended data - finishing" },
             { Stage.FillAllowedNames, "filling lists of allowed names" },
             { Stage.ProcessTextures, "processing textures" },
@@ -224,6 +225,13 @@ namespace SonOfRobin
 
                     break;
 
+                case Stage.SetExtDataBiomes:
+
+                    this.ExtCalculateBiomes();
+                    this.cellsToProcessOnStart.Clear();
+
+                    break;
+
                 case Stage.SetExtDataFinish:
 
                     this.ExtEndCreation();
@@ -358,17 +366,48 @@ namespace SonOfRobin
 
             ConcurrentBag<Point> beachEdgePointList = this.GetAllRawCoordinatesWithExtProperty(nameToUse: ExtBoardProps.ExtPropName.OuterBeach, value: true);
 
-            byte beachHeightMin = (byte)(Terrain.waterLevelMax + 1);
-            byte beachHeightMax = (byte)(Terrain.waterLevelMax + 5);
+            byte minVal = (byte)(Terrain.waterLevelMax + 1);
+            byte maxVal = (byte)(Terrain.waterLevelMax + 5);
 
             this.FloodFillExtProps(
                  startingPoints: beachEdgePointList,
                  terrainName: TerrainName.Height,
-                 minVal: beachHeightMin, maxVal: beachHeightMax,
+                 minVal: minVal, maxVal: maxVal,
                  nameToSetIfInRange: ExtBoardProps.ExtPropName.OuterBeach,
                  setNameIfOutsideRange: false,
                  nameToSetIfOutsideRange: ExtBoardProps.ExtPropName.OuterBeach // doesn't matter, if setNameIfOutsideRange is false
                  );
+        }
+
+        private void ExtCalculateBiomes()
+        {
+            var cellsWithoutExtPropsSet = this.allCells.Where(cell => cell.ExtBoardProps.CreationInProgress);
+            if (!cellsWithoutExtPropsSet.Any()) return;
+
+            byte minVal = 160;
+            byte maxVal = 255;
+
+            while (true)
+            {
+                ConcurrentBag<Point> pointsForBiomes = this.GetFirstRawCoordinatesWithRangeAndWithoutSpecifiedExtProps(terrainName: TerrainName.Danger, minVal: minVal, maxVal: maxVal, extPropNames: ExtBoardProps.allBiomes);
+
+                if (pointsForBiomes.Any())
+                {
+                    pointsForBiomes = new ConcurrentBag<Point> { pointsForBiomes.First() }; // use first only
+
+                    ExtBoardProps.ExtPropName biomeName = ExtBoardProps.allBiomes[this.world.random.Next(0, ExtBoardProps.allBiomes.Count)];
+
+                    this.FloodFillExtProps(
+                        startingPoints: pointsForBiomes,
+                        terrainName: TerrainName.Danger,
+                        minVal: minVal, maxVal: maxVal,
+                        nameToSetIfInRange: biomeName,
+                        setNameIfOutsideRange: false,
+                        nameToSetIfOutsideRange: biomeName // doesn't matter, if setNameIfOutsideRange is false
+                        );
+                }
+                else break;
+            }
         }
 
         private void ExtEndCreation()
@@ -393,6 +432,42 @@ namespace SonOfRobin
                     if (this.GetExtProperty(name: nameToUse, x: rawX * this.resDivider, y: rawY * this.resDivider) == value)
                     {
                         pointBag.Add(new Point(rawX, rawY));
+                    }
+                }
+            });
+
+            return pointBag;
+        }
+
+        private ConcurrentBag<Point> GetFirstRawCoordinatesWithRangeAndWithoutSpecifiedExtProps(TerrainName terrainName, byte minVal, byte maxVal, List<ExtBoardProps.ExtPropName> extPropNames)
+        {
+            var pointBag = new ConcurrentBag<Point>();
+
+            Parallel.For(0, this.world.width / this.resDivider, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, rawX =>
+            {
+                for (int rawY = 0; rawY < this.world.height / this.resDivider; rawY++)
+                {
+                    byte value = this.GetFieldValue(terrainName: terrainName, x: rawX * this.resDivider, y: rawY * this.resDivider);
+
+                    if (minVal <= value && value <= maxVal)
+                    {
+                        bool extPropsFound = false;
+
+                        var extDataValDict = this.GetExtValueDict(x: rawX * this.resDivider, y: rawY * this.resDivider);
+                        foreach (var kvp in extDataValDict)
+                        {
+                            if (kvp.Value && extPropNames.Contains(kvp.Key))
+                            {
+                                extPropsFound = true;
+                                break;
+                            }
+                        }
+
+                        if (!extPropsFound)
+                        {
+                            pointBag.Add(new Point(rawX, rawY));
+                            break; // no need to search further
+                        }
                     }
                 }
             });
