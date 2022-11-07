@@ -94,7 +94,7 @@ namespace SonOfRobin
         {
             get
             {
-                return TouchInput.IsPressedReleasedWithinDistance((int)(SonOfRobinGame.VirtualHeight * 0.02));
+                return TouchInput.IsPressedReleasedWithinDistanceAndDuration(maxDistance: (int)(SonOfRobinGame.VirtualHeight * 0.03), maxDuration: TimeSpan.FromMilliseconds(400));
             }
         }
 

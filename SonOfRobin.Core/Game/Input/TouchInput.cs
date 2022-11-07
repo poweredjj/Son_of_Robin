@@ -64,6 +64,7 @@ namespace SonOfRobin
         public static bool IsGestureAvailable { get { return Input.InputActive && TouchPanel.IsGestureAvailable; } } // should be used before reading gesture directly
         public static bool IsBeingTouchedInAnyWay { get { return TouchPanelState.Count > 0; } }
 
+        private static DateTime lastPressedTime = DateTime.Now;
         private static Vector2 lastPressPos = new Vector2(-100, -100); //  (-100, -100) == null equivalent
         private static Vector2 lastReleasedPos = new Vector2(-100, -100); //  (-100, -100) == null equivalent
 
@@ -74,6 +75,7 @@ namespace SonOfRobin
                 if (touch.State == TouchLocationState.Pressed)
                 {
                     lastPressPos = touch.Position;
+                    lastPressedTime = DateTime.Now;
                     lastReleasedPos.X = -100;
                     lastReleasedPos.Y = -100;
                     return;
@@ -87,7 +89,7 @@ namespace SonOfRobin
             }
         }
 
-        public static bool IsPressedReleasedWithinDistance(int maxDistance)
+        public static bool IsPressedReleasedWithinDistanceAndDuration(int maxDistance, TimeSpan maxDuration)
         {
             if (!Input.InputActive ||
                 (lastPressPos.X == -100 && lastPressPos.Y == -100) ||
@@ -95,9 +97,11 @@ namespace SonOfRobin
 
             float distance = Vector2.Distance(lastPressPos, lastReleasedPos);
 
-            MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Press release distance {distance}, maxDistance {maxDistance}.");
+            TimeSpan pressReleaseDuration = DateTime.Now - lastPressedTime;
 
-            return distance <= maxDistance;
+            MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Press release distance {distance}, max {maxDistance}, duration {pressReleaseDuration.Milliseconds} ms, max {maxDuration.Milliseconds} ms.");
+
+            return distance <= maxDistance && pressReleaseDuration <= maxDuration;
         }
 
         public static Vector2 GetMovementDelta(bool ignoreLeftStick, bool ignoreRightStick, bool ignoreVirtButtons, bool ignoreInventory, bool ignorePlayerPanel, bool preventLargeJump = true)
