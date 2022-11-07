@@ -452,6 +452,7 @@ namespace SonOfRobin
             {
                 typesShownAlways.Add(typeof(Animal));
                 typesShownAlways.AddRange(typesShownIfDiscovered);
+                namesShownAlways.AddRange(namesShownIfDiscovered);
             }
 
             if (this.MapMarker != null) spritesBag.Add(this.MapMarker.sprite);

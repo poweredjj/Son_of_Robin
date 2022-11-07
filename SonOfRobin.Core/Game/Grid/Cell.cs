@@ -178,7 +178,7 @@ namespace SonOfRobin
         public void ComputeDanger()
         {
             this.terrainByName[TerrainName.Danger] = new Terrain(
-                world: this.world, cell: this, name: TerrainName.Danger, frequency: 2.9f, octaves: 3, persistence: 0.7f, lacunarity: 1.4f, gain: 0.3f, addBorder: true);
+                world: this.world, cell: this, name: TerrainName.Danger, frequency: 7f, octaves: 3, persistence: 0.7f, lacunarity: 1.4f, gain: 0.3f, addBorder: true);
         }
 
         public void CopyFromTemplate(Cell templateCell)

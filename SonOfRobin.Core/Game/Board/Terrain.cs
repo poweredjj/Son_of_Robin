@@ -112,16 +112,16 @@ namespace SonOfRobin
 
         private (byte[,], byte, byte) CreateNoiseMap(bool addBorder = false)
         {
-            var noise = this.world.noise;
+            FastNoiseLite noise = this.world.noise;
 
-            bool scaleWorld = true;
+            bool scaleWorld = false;
 
             noise.SetSeed(this.world.seed);
             noise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2);
             noise.SetFractalOctaves(this.octaves);
             noise.SetFractalLacunarity(this.lacunarity);
             noise.SetFractalGain(this.gain);
-            noise.SetFrequency(scaleWorld ? this.frequency / this.world.width : this.frequency / 20000);
+            noise.SetFrequency(scaleWorld ? this.frequency / this.world.width : this.frequency / 30000);
             noise.SetFractalType(FastNoiseLite.FractalType.FBm);
             noise.SetFractalWeightedStrength(this.persistence);
 
