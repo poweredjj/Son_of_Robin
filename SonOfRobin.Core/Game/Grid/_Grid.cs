@@ -48,7 +48,7 @@ namespace SonOfRobin
 
         private bool allExtPropsFound;
         private ConcurrentBag<Point> pointsForBiomeCreation;
-        private List<ExtBoardProps.ExtPropName> namesForBiomeCreation; // to ensure biome diversity
+        private Dictionary<ExtBoardProps.ExtPropName, int> biomeCountByName; // to ensure biome diversity
 
         private DateTime lastCellProcessedTime;
         public int loadedTexturesCount;
@@ -113,7 +113,12 @@ namespace SonOfRobin
             this.cellsToProcessOnStart = new List<Cell>();
             this.allExtPropsFound = false;
             this.pointsForBiomeCreation = new ConcurrentBag<Point>();
-            this.namesForBiomeCreation = new List<ExtBoardProps.ExtPropName>();
+            this.biomeCountByName = new Dictionary<ExtBoardProps.ExtPropName, int>();
+
+            foreach (ExtBoardProps.ExtPropName name in ExtBoardProps.allBiomes.OrderBy(name => this.world.random.Next()).ToList()) // shuffled biome list
+            {
+                this.biomeCountByName[name] = 0;
+            }
 
             this.PrepareNextStage();
         }
@@ -418,9 +423,8 @@ namespace SonOfRobin
 
             if (this.pointsForBiomeCreation.Any())
             {
-                if (!this.namesForBiomeCreation.Any()) this.namesForBiomeCreation = ExtBoardProps.allBiomes.OrderBy(a => Guid.NewGuid()).ToList(); // shuffled copy
-                ExtBoardProps.ExtPropName biomeName = this.namesForBiomeCreation[0];
-                this.namesForBiomeCreation.RemoveAt(0);
+                var biomeName = this.biomeCountByName.OrderBy(kvp => kvp.Value).First().Key;
+                this.biomeCountByName[biomeName]++;
 
                 this.FloodFillExtProps(
                     startingPoints: new ConcurrentBag<Point> { this.pointsForBiomeCreation.First() },
@@ -447,7 +451,6 @@ namespace SonOfRobin
             }
 
             this.pointsForBiomeCreation = null;
-            this.namesForBiomeCreation.Clear();
             this.cellsToProcessOnStart.Clear();
         }
 

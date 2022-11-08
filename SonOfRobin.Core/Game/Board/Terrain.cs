@@ -12,6 +12,12 @@ namespace SonOfRobin
     }
     public class Terrain
     {
+        public static readonly byte waterLevelMax = 84;
+        public static readonly byte volcanoEdgeMin = 210;
+        public static readonly byte lavaMin = 225;
+        public static readonly byte biomeMin = 156;
+        public static readonly byte biomeDeep = 220;
+
         public readonly World world;
         public readonly Cell cell;
         public readonly TerrainName name;
@@ -25,12 +31,6 @@ namespace SonOfRobin
         private readonly Byte[,] mapData;
         public byte MinVal { get; private set; }
         public byte MaxVal { get; private set; }
-
-        public static byte waterLevelMax = 84;
-        public static byte volcanoEdgeMin = 210;
-        public static byte lavaMin = 225;
-        public static byte biomeMin = 160;
-        public static byte biomeDeep = 220;
 
         private static int gradientWidth;
         private static int gradientHeight;
