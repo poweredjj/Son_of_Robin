@@ -284,7 +284,7 @@ namespace SonOfRobin
                 pixel = Blend2Colors(bottomColor: pixel, topColor: new Color((byte)40, (byte)0, (byte)0, dangerAlpha));
             }
 
-            // pixel = ReplacePixelColorWithExtPropSimulation(pixel: pixel, extDataValDict: extDataValDict); // for testing only
+            pixel = ReplacePixelColorWithExtPropSimulation(pixel: pixel, extDataValDict: extDataValDict); // for testing only
 
             return pixel;
         }
