@@ -422,11 +422,8 @@ namespace SonOfRobin
                 ExtBoardProps.ExtPropName biomeName = this.namesForBiomeCreation[0];
                 this.namesForBiomeCreation.RemoveAt(0);
 
-                var biomeCreationTempBag = new ConcurrentBag<Point> { this.pointsForBiomeCreation.First() };
-
-
                 this.FloodFillExtProps(
-                    startingPoints: biomeCreationTempBag,
+                    startingPoints: new ConcurrentBag<Point> { this.pointsForBiomeCreation.First() },
                     terrainName: TerrainName.Danger,
                     minVal: minVal, maxVal: maxVal,
                     nameToSetIfInRange: biomeName,
@@ -451,7 +448,6 @@ namespace SonOfRobin
 
             this.pointsForBiomeCreation = null;
             this.namesForBiomeCreation.Clear();
-
             this.cellsToProcessOnStart.Clear();
         }
 
