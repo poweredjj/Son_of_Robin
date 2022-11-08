@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -9,10 +10,16 @@ namespace SonOfRobin
     public class ExtBoardProps
     {
         public enum ExtPropName
-        { Sea, OuterBeach, BiomeTest1, BiomeTest2, BiomeTest3, BiomeTest4 }; // each biome name must start with "biome"
+        { Sea, OuterBeach, BiomeDanger, BiomeTest1 }; // each biome name must start with "biome"
 
         private static readonly ExtPropName[] allExtPropNames = (ExtPropName[])Enum.GetValues(typeof(ExtPropName));
         public static readonly List<ExtPropName> allBiomes = allExtPropNames.Where(name => name.ToString().ToLower().StartsWith("biome")).ToList();
+
+        public static readonly Dictionary<ExtPropName, Color> colorsForBiomes = new Dictionary<ExtPropName, Color>
+        {
+            { ExtPropName.BiomeDanger, new Color((byte)40, (byte)0, (byte)0, (byte)120) },
+            { ExtPropName.BiomeTest1, Color.Aquamarine * 0.8f },
+        };
 
         public readonly Cell cell;
 

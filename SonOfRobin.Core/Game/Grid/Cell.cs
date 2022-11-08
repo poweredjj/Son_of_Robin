@@ -175,10 +175,10 @@ namespace SonOfRobin
                 world: this.world, cell: this, name: TerrainName.Humidity, frequency: 4.3f, octaves: 9, persistence: 0.6f, lacunarity: 1.7f, gain: 0.6f);
         }
 
-        public void ComputeDanger()
+        public void ComputeBiome()
         {
-            this.terrainByName[TerrainName.Danger] = new Terrain(
-                world: this.world, cell: this, name: TerrainName.Danger, frequency: 7f, octaves: 3, persistence: 0.7f, lacunarity: 1.4f, gain: 0.3f, addBorder: true);
+            this.terrainByName[TerrainName.Biome] = new Terrain(
+                world: this.world, cell: this, name: TerrainName.Biome, frequency: 7f, octaves: 3, persistence: 0.7f, lacunarity: 1.4f, gain: 0.3f, addBorder: true);
         }
 
         public void CopyFromTemplate(Cell templateCell)

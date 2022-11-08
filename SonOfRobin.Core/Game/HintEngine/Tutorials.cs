@@ -6,7 +6,7 @@ namespace SonOfRobin
 {
     public class Tutorials
     {
-        public enum Type { BreakThing, Equip, BuildWorkshop, GetWood, Mine, Interact, PickUp, Hit, Craft, KeepingAnimalsAway, ShootProjectile, Cook, ShakeFruit, AnimalAttacking, DangerZone, Torch, Fireplace, TooDarkToReadMap, TooDarkToSeeAnything, Heat, CraftLevels }
+        public enum Type { BreakThing, Equip, BuildWorkshop, GetWood, Mine, Interact, PickUp, Hit, Craft, KeepingAnimalsAway, ShootProjectile, Cook, ShakeFruit, AnimalAttacking, Torch, Fireplace, TooDarkToReadMap, TooDarkToSeeAnything, Heat, CraftLevels }
 
         private static readonly HintMessage.BoxType messageHeaderType = HintMessage.BoxType.BlueBox;
         private static readonly HintMessage.BoxType messageTextType = HintMessage.BoxType.LightBlueBox;
@@ -182,7 +182,7 @@ namespace SonOfRobin
                  messages: new List<HintMessage> {
                      Preferences.ShowTouchTips ?
                      new HintMessage(text: "1. Press 'equip' button to enter 'equip' menu.", boxType: messageTextType):
-                     new HintMessage(text: "1. Press | to enter 'equip' menu.", imageList: new List<Texture2D> {InputMapper.GetTexture(InputMapper.Action.WorldEquip)}, boxType: messageTextType),                  
+                     new HintMessage(text: "1. Press | to enter 'equip' menu.", imageList: new List<Texture2D> {InputMapper.GetTexture(InputMapper.Action.WorldEquip)}, boxType: messageTextType),
                      new HintMessage(text: "2. Place the item in its slot.", boxType: messageTextType) });
 
             new Tutorial(type: Type.Interact, name: "interacting", title: "Interacting with field objects.",
@@ -205,7 +205,7 @@ namespace SonOfRobin
                     new HintMessage(text: "Objects with red outline can be hit.", boxType: messageTextType),
                     Preferences.ShowTouchTips ?
                     new HintMessage(text: "To hit highlighted object, press 'USE TOOL' button.", boxType: messageTextType):
-                    new HintMessage(text: "To hit highlighted object, press |.", imageList: new List<Texture2D> {InputMapper.GetTexture(InputMapper.Action.WorldUseToolbarPiece)}, boxType: messageTextType),                 
+                    new HintMessage(text: "To hit highlighted object, press |.", imageList: new List<Texture2D> {InputMapper.GetTexture(InputMapper.Action.WorldUseToolbarPiece)}, boxType: messageTextType),
                     new HintMessage(text: "You will hit the object using active tool from the toolbar.", boxType: messageTextType)});
 
             new Tutorial(type: Type.Craft, name: "crafting", title: "Crafting new items.",
@@ -215,7 +215,7 @@ namespace SonOfRobin
                     new HintMessage(text: "1. Select the item you want to craft, using | and |.", imageList: new List<Texture2D> { InputMapper.GetTexture(InputMapper.Action.GlobalUp), InputMapper.GetTexture(InputMapper.Action.GlobalDown)}, boxType: messageTextType),
                     Preferences.ShowTouchTips ?
                     new HintMessage(text: "2. Activate craft by pressing it a second time.", boxType: messageTextType):
-                    new HintMessage(text: "2. Activate craft by pressing |.", imageList: new List<Texture2D> {InputMapper.GetTexture(InputMapper.Action.GlobalConfirm)}, boxType: messageTextType),                 
+                    new HintMessage(text: "2. Activate craft by pressing |.", imageList: new List<Texture2D> {InputMapper.GetTexture(InputMapper.Action.GlobalConfirm)}, boxType: messageTextType),
                     new HintMessage(text: "3. If you have all necessary ingredients and some free space\nthe item will be crafted.", boxType: messageTextType)});
 
             new Tutorial(type: Type.CraftLevels, name: "craft levels", title: "Craft skill levels.",
@@ -259,7 +259,7 @@ namespace SonOfRobin
                     new HintMessage(text: "1. Enter inventory and place the | projectile weapon on toolbar.",imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.BowWood)}, boxType: messageTextType),
                     Preferences.ShowTouchTips ?
                     new HintMessage(text:"2. Touch the | projectile weapon on toolbar to select it.", imageList: new List<Texture2D> {PieceInfo.GetTexture(PieceTemplate.Name.BowWood)}, boxType: messageTextType):
-                    new HintMessage(text:"3. Select the | projectile weapon using | and |.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.BowWood), InputMapper.GetTexture(InputMapper.Action.ToolbarPrev), InputMapper.GetTexture(InputMapper.Action.ToolbarNext)}, boxType: messageTextType), 
+                    new HintMessage(text:"3. Select the | projectile weapon using | and |.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.BowWood), InputMapper.GetTexture(InputMapper.Action.ToolbarPrev), InputMapper.GetTexture(InputMapper.Action.ToolbarNext)}, boxType: messageTextType),
                     shootingMessage,
                     Preferences.ShowTouchTips ?
                     new HintMessage(text:"4. Press 'SHOOT' button to shoot.", boxType: messageTextType):
@@ -270,7 +270,7 @@ namespace SonOfRobin
                 messages: new List<HintMessage>  {
                     Preferences.ShowTouchTips ?
                     new HintMessage(text:"1. Stand next to the | cooking site and press 'INTERACT' button.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.CookingPot)}, boxType: messageTextType):
-                    new HintMessage(text:"1. Stand next to the | cooking site and press |.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.CookingPot), InputMapper.GetTexture(InputMapper.Action.WorldInteract)}, boxType: messageTextType),  
+                    new HintMessage(text:"1. Stand next to the | cooking site and press |.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.CookingPot), InputMapper.GetTexture(InputMapper.Action.WorldInteract)}, boxType: messageTextType),
                     new HintMessage(text:"2. Place some | | | ingredients into | the cooking site.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.MeatRaw), PieceInfo.GetTexture(PieceTemplate.Name.Tomato), PieceInfo.GetTexture(PieceTemplate.Name.Clam), PieceInfo.GetTexture(PieceTemplate.Name.CookingPot)}, boxType: messageTextType),
                     new HintMessage(text: "3. You will also need to place some | | fuel\ninto | the cooking site.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.WoodLogRegular), PieceInfo.GetTexture(PieceTemplate.Name.WoodPlank), PieceInfo.GetTexture(PieceTemplate.Name.CookingPot)}, boxType: messageTextType),
                     new HintMessage(text:"4. You can also put some | | | boosters\ninto | the cooking site, if you like.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.HerbsRed), PieceInfo.GetTexture(PieceTemplate.Name.HerbsYellow), PieceInfo.GetTexture(PieceTemplate.Name.HerbsBlue), PieceInfo.GetTexture(PieceTemplate.Name.CookingPot)}, boxType: messageTextType),
@@ -289,13 +289,6 @@ namespace SonOfRobin
                 messages: new List<HintMessage>  {
                     new HintMessage(text: "A | mark means than an animal is attacking you.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Exclamation) }, boxType: messageTextType),
                     new HintMessage(text: "You should run away from it, or try to fight it.", boxType: messageTextType)});
-
-            new Tutorial(type: Type.DangerZone, name: "danger zones", title: "Danger zones.",
-                messages: new List<HintMessage>  {
-                    new HintMessage(text: "This dark area is... strange.\nI have a feeling that it is | not safe there.", imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.BloodSplatter1].texture}, boxType: HintMessage.BoxType.Dialogue, fieldOnly: true),
-                    new HintMessage(text: "Darker terrain indicate danger.", boxType: messageTextType),
-                    new HintMessage(text: "Some animals will not go outside of these zones.", boxType: messageTextType),
-                    new HintMessage(text: "There are some items and plants, that can only be found here.", boxType: messageTextType)});
         }
 
     }

@@ -80,10 +80,10 @@ namespace SonOfRobin
         { get { return this.GetFieldValue(TerrainName.Height) > 160; } }
         public bool IsOnLava
         { get { return this.GetFieldValue(TerrainName.Height) >= Terrain.lavaMin; } }
-        public bool IsInDangerZone
-        { get { return this.GetFieldValue(TerrainName.Danger) > Terrain.safeZoneMax; } }
-        public bool IsDeepInDangerZone
-        { get { return this.GetFieldValue(TerrainName.Danger) > Terrain.safeZoneMax * 1.2; } }
+        public bool IsInBiome
+        { get { return this.GetFieldValue(TerrainName.Biome) > Terrain.biomeMin; } }
+        public bool IsDeepInBiome
+        { get { return this.GetFieldValue(TerrainName.Biome) > Terrain.biomeDeep; } }
 
         public PieceSoundPack.Action WalkSoundAction
         {

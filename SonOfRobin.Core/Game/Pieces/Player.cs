@@ -663,8 +663,6 @@ namespace SonOfRobin
 
         private void CheckGround()
         {
-            if (this.sprite.IsDeepInDangerZone && this.world.addAgressiveAnimals) Tutorials.ShowTutorialOnTheField(type: Tutorials.Type.DangerZone, world: this.world, ignoreDelay: true);
-
             // adding and removing heat
             if (this.world.currentUpdate % 65 == 0)
             {

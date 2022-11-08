@@ -8,7 +8,7 @@ namespace SonOfRobin
     {
         Height,
         Humidity,
-        Danger
+        Biome
     }
     public class Terrain
     {
@@ -29,7 +29,8 @@ namespace SonOfRobin
         public static byte waterLevelMax = 84;
         public static byte volcanoEdgeMin = 210;
         public static byte lavaMin = 225;
-        public static byte safeZoneMax = 150;
+        public static byte biomeMin = 160;
+        public static byte biomeDeep = 220;
 
         private static int gradientWidth;
         private static int gradientHeight;

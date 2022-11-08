@@ -8,7 +8,7 @@ namespace SonOfRobin
     public class AllowedTerrain
     {
         public enum RangeName
-        { All, WaterAll, WaterShallow, WaterMedium, WaterDeep, GroundSand, GroundAll, Volcano, NoDanger, Danger };
+        { All, WaterAll, WaterShallow, WaterMedium, WaterDeep, GroundSand, GroundAll, Volcano, NoBiome, Biome };
 
         public static readonly TerrainName[] allTerrains = (TerrainName[])Enum.GetValues(typeof(TerrainName));
 
@@ -86,12 +86,12 @@ namespace SonOfRobin
                         AddRangeToRangeDict(rangeDict: rangeDict, terrainName: TerrainName.Height, min: (byte)(Terrain.volcanoEdgeMin - 1), max: 255);
                         break;
 
-                    case RangeName.NoDanger:
-                        AddRangeToRangeDict(rangeDict: rangeDict, terrainName: TerrainName.Danger, min: 0, max: Terrain.safeZoneMax);
+                    case RangeName.NoBiome:
+                        AddRangeToRangeDict(rangeDict: rangeDict, terrainName: TerrainName.Biome, min: 0, max: Terrain.biomeMin);
                         break;
 
-                    case RangeName.Danger:
-                        AddRangeToRangeDict(rangeDict: rangeDict, terrainName: TerrainName.Danger, min: (byte)(Terrain.safeZoneMax + 1), max: 255);
+                    case RangeName.Biome:
+                        AddRangeToRangeDict(rangeDict: rangeDict, terrainName: TerrainName.Biome, min: (byte)(Terrain.biomeMin + 1), max: 255);
                         break;
 
                     default:

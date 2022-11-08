@@ -20,7 +20,7 @@ namespace SonOfRobin
             { Stage.SetExtDataSea, "setting extended data (sea)" },
             { Stage.SetExtDataBeach, "setting extended data (beach)" },
             { Stage.SetExtDataBiomes, "setting extended data (biomes)" },
-            { Stage.SetExtDataFinish, "setting extended data - finishing" },
+            { Stage.SetExtDataFinish, "saving extended data" },
             { Stage.FillAllowedNames, "filling lists of allowed names" },
             { Stage.ProcessTextures, "processing textures" },
             { Stage.LoadTextures, "loading textures" },
@@ -218,7 +218,7 @@ namespace SonOfRobin
 
                     Parallel.ForEach(cellProcessingQueue, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, cell =>
                     {
-                        cell.ComputeDanger();
+                        cell.ComputeBiome();
                     });
 
                     break;
@@ -404,12 +404,12 @@ namespace SonOfRobin
 
         private void ExtCalculateBiomes()
         {
-            byte minVal = 160;
+            byte minVal = Terrain.biomeMin;
             byte maxVal = 255;
 
             if (!pointsForBiomeCreation.Any())
             {
-                this.pointsForBiomeCreation = this.GetAllRawCoordinatesWithRangeAndWithoutSpecifiedExtProps(terrainName: TerrainName.Danger, minVal: minVal, maxVal: maxVal, extPropNames: ExtBoardProps.allBiomes);
+                this.pointsForBiomeCreation = this.GetAllRawCoordinatesWithRangeAndWithoutSpecifiedExtProps(terrainName: TerrainName.Biome, minVal: minVal, maxVal: maxVal, extPropNames: ExtBoardProps.allBiomes);
             }
             else
             {
@@ -424,7 +424,7 @@ namespace SonOfRobin
 
                 this.FloodFillExtProps(
                     startingPoints: new ConcurrentBag<Point> { this.pointsForBiomeCreation.First() },
-                    terrainName: TerrainName.Danger,
+                    terrainName: TerrainName.Biome,
                     minVal: minVal, maxVal: maxVal,
                     nameToSetIfInRange: biomeName,
                     setNameIfOutsideRange: false,

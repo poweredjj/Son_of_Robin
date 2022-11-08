@@ -269,7 +269,7 @@ namespace SonOfRobin
                     {
                         var allowedTerrain = new AllowedTerrain(
                             rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.WaterShallow, AllowedTerrain.RangeName.WaterMedium, AllowedTerrain.RangeName.GroundAll,
-                            AllowedTerrain.RangeName.Volcano, AllowedTerrain.RangeName.NoDanger },
+                            AllowedTerrain.RangeName.Volcano, AllowedTerrain.RangeName.NoBiome },
                             extPropertiesDict: new Dictionary<ExtBoardProps.ExtPropName, bool> { { ExtBoardProps.ExtPropName.OuterBeach, true } });
 
                         var yield = new Yield(debrisType: Yield.DebrisType.Blood,
@@ -469,7 +469,7 @@ namespace SonOfRobin
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<TerrainName, AllowedRange>() {
                             { TerrainName.Height, new AllowedRange(min:160, max: 210
                             ) },
-                            { TerrainName.Danger, new AllowedRange(min: Terrain.safeZoneMax, max: 255) }});
+                            { TerrainName.Biome, new AllowedRange(min: Terrain.biomeMin, max: 255) }});
 
                         var yield = new Yield(debrisTypeList: new List<Yield.DebrisType> { Yield.DebrisType.Plant, Yield.DebrisType.Leaf },
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -1402,7 +1402,7 @@ namespace SonOfRobin
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<TerrainName, AllowedRange>() {
                             { TerrainName.Height, new AllowedRange(min: Terrain.waterLevelMax, max: Terrain.volcanoEdgeMin) },
                             { TerrainName.Humidity, new AllowedRange(min: 0, max: 90) },
-                            { TerrainName.Danger, new AllowedRange(min: Terrain.safeZoneMax, max: 255) }});
+                            { TerrainName.Biome, new AllowedRange(min: Terrain.biomeMin, max: 255) }});
 
                         var yield = new Yield(debrisType: Yield.DebrisType.Stone,
                                 firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -1419,7 +1419,7 @@ namespace SonOfRobin
                     {
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<TerrainName, AllowedRange>() {
                             { TerrainName.Height, new AllowedRange(min: Terrain.waterLevelMax, max: 165) },
-                            { TerrainName.Danger, new AllowedRange(min: (byte)(Terrain.safeZoneMax + 20), max: 255) }});
+                            { TerrainName.Biome, new AllowedRange(min: (byte)(Terrain.biomeMin + 20), max: 255) }});
 
                         var yield = new Yield(debrisType: Yield.DebrisType.Stone,
                                 firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -1440,7 +1440,7 @@ namespace SonOfRobin
                     {
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<TerrainName, AllowedRange>() {
                             { TerrainName.Height, new AllowedRange(min: 165, max: 210) },
-                            { TerrainName.Danger, new AllowedRange(min: (byte)(Terrain.safeZoneMax + 20), max: 255) }});
+                            { TerrainName.Biome, new AllowedRange(min: (byte)(Terrain.biomeMin + 20), max: 255) }});
 
                         var yield = new Yield(debrisType: Yield.DebrisType.Stone,
                             firstDroppedPieces: new List<Yield.DroppedPiece> {
@@ -1456,7 +1456,7 @@ namespace SonOfRobin
                     {
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<TerrainName, AllowedRange>() {
                             { TerrainName.Height, new AllowedRange(min: 165, max: 210) },
-                            { TerrainName.Danger, new AllowedRange(min: Terrain.safeZoneMax, max: 255) }});
+                            { TerrainName.Biome, new AllowedRange(min: Terrain.biomeMin, max: 255) }});
 
                         var yield = new Yield(debrisType: Yield.DebrisType.Crystal,
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -1472,7 +1472,7 @@ namespace SonOfRobin
                     {
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<TerrainName, AllowedRange>() {
                             { TerrainName.Height, new AllowedRange(min: 165, max: 210) },
-                            { TerrainName.Danger, new AllowedRange(min: Terrain.safeZoneMax, max: 255) }});
+                            { TerrainName.Biome, new AllowedRange(min: Terrain.biomeMin, max: 255) }});
 
                         var yield = new Yield(debrisType: Yield.DebrisType.Crystal,
                             firstDroppedPieces: new List<Yield.DroppedPiece> {
@@ -1488,7 +1488,7 @@ namespace SonOfRobin
                     {
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<TerrainName, AllowedRange>() {
                             { TerrainName.Height, new AllowedRange(min: 165, max: 210) },
-                            { TerrainName.Danger, new AllowedRange(min: Terrain.safeZoneMax, max: 255) }});
+                            { TerrainName.Biome, new AllowedRange(min: Terrain.biomeMin, max: 255) }});
 
                         var yield = new Yield(debrisType: Yield.DebrisType.Stone,
                             firstDroppedPieces: new List<Yield.DroppedPiece> {
@@ -1970,7 +1970,7 @@ namespace SonOfRobin
                           finalDroppedPieces: new List<Yield.DroppedPiece> { new Yield.DroppedPiece(pieceName: Name.MeatRaw, chanceToDrop: 100, maxNumberToDrop: 3), new Yield.DroppedPiece(pieceName: Name.Fat, chanceToDrop: 100, maxNumberToDrop: 2), new Yield.DroppedPiece(pieceName: Name.Leather, chanceToDrop: 100, maxNumberToDrop: 2) });
 
                         var animPkg = packageNames[random.Next(0, packageNames.Count)];
-                        var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.GroundAll, AllowedTerrain.RangeName.Danger });
+                        var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.GroundAll, AllowedTerrain.RangeName.Biome });
 
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.Cry, sound: new Sound(name: SoundData.Name.TigerRoar, maxPitchVariation: 0.3f));

@@ -96,9 +96,9 @@ namespace SonOfRobin
 
                     byte pixelHeight = grid.GetFieldValue(x: pixelX, y: pixelY, terrainName: TerrainName.Height);
                     byte pixelHumidity = grid.GetFieldValue(x: pixelX, y: pixelY, terrainName: TerrainName.Humidity);
-                    byte pixelDanger = grid.GetFieldValue(x: pixelX, y: pixelY, terrainName: TerrainName.Danger);
+                    byte pixelBiome = grid.GetFieldValue(x: pixelX, y: pixelY, terrainName: TerrainName.Biome);
                     var extDataValDict = grid.GetExtValueDict(x: pixelX, y: pixelY);
-                    colorArray[(y * width) + x] = CreatePixel(pixelHeight: pixelHeight, pixelHumidity: pixelHumidity, pixelDanger: pixelDanger, extDataValDict: extDataValDict);
+                    colorArray[(y * width) + x] = CreatePixel(pixelHeight: pixelHeight, pixelHumidity: pixelHumidity, pixelBiome: pixelBiome, extDataValDict: extDataValDict);
                 }
             }
 
@@ -119,7 +119,7 @@ namespace SonOfRobin
 
             Terrain heightTerrain = this.cell.terrainByName[TerrainName.Height];
             Terrain humidityTerrain = this.cell.terrainByName[TerrainName.Humidity];
-            Terrain dangerTerrain = this.cell.terrainByName[TerrainName.Danger];
+            Terrain biomeTerrain = this.cell.terrainByName[TerrainName.Biome];
             ExtBoardProps extBoardProperties = this.cell.ExtBoardProps;
 
             Color[,] smallColorGrid = new Color[sourceWidth, sourceHeight];
@@ -131,7 +131,7 @@ namespace SonOfRobin
                     smallColorGrid[localX, localY] = CreatePixel(
                         pixelHeight: heightTerrain.GetMapDataRaw(localX, localY),
                         pixelHumidity: humidityTerrain.GetMapDataRaw(localX, localY),
-                        pixelDanger: dangerTerrain.GetMapDataRaw(localX, localY),
+                        pixelBiome: biomeTerrain.GetMapDataRaw(localX, localY),
                         extDataValDict: extBoardProperties.GetValueDict(x: localX, y: localY, xyRaw: true));
                 }
             }
@@ -186,7 +186,7 @@ namespace SonOfRobin
                             workingGrid3x3[xOffset + 1, yOffset + 1] = CreatePixel(
                                 pixelHeight: heightTerrain.GetMapDataRaw(localX, localY),
                                 pixelHumidity: humidityTerrain.GetMapDataRaw(localX, localY),
-                                pixelDanger: dangerTerrain.GetMapDataRaw(localX, localY),
+                                pixelBiome: biomeTerrain.GetMapDataRaw(localX, localY),
                                 extDataValDict: this.cell.ExtBoardProps.GetValueDict(x: localX, y: localY, xyRaw: true));
                         }
                         else
@@ -201,7 +201,7 @@ namespace SonOfRobin
                                 workingGrid3x3[xOffset + 1, yOffset + 1] = CreatePixel(
                                     pixelHeight: this.cell.grid.GetFieldValue(terrainName: TerrainName.Height, x: worldSpaceX, y: worldSpaceY),
                                     pixelHumidity: this.cell.grid.GetFieldValue(terrainName: TerrainName.Humidity, x: worldSpaceX, y: worldSpaceY),
-                                    pixelDanger: this.cell.grid.GetFieldValue(terrainName: TerrainName.Danger, x: worldSpaceX, y: worldSpaceY),
+                                    pixelBiome: this.cell.grid.GetFieldValue(terrainName: TerrainName.Biome, x: worldSpaceX, y: worldSpaceY),
                                     extDataValDict: this.cell.grid.GetExtValueDict(x: worldSpaceX, y: worldSpaceY));
                             }
                             catch (IndexOutOfRangeException)
@@ -248,7 +248,7 @@ namespace SonOfRobin
             return upscaledColorGrid;
         }
 
-        private static Color CreatePixel(byte pixelHeight, byte pixelHumidity, byte pixelDanger, Dictionary<ExtBoardProps.ExtPropName, bool> extDataValDict)
+        private static Color CreatePixel(byte pixelHeight, byte pixelHumidity, byte pixelBiome, Dictionary<ExtBoardProps.ExtPropName, bool> extDataValDict)
         {
             Color pixel = new Color();
 
@@ -276,35 +276,24 @@ namespace SonOfRobin
                 }
             }
 
-            if (pixelDanger >= Terrain.safeZoneMax)
+            if (pixelBiome >= Terrain.biomeMin && pixelHeight > Terrain.waterLevelMax)
             {
-                byte dangerAlpha = (byte)((float)(pixelDanger - Terrain.safeZoneMax + 20) / (255 - Terrain.safeZoneMax) * 150); // last value is max possible alpha
-                dangerAlpha = (byte)((int)(dangerAlpha / 15) * 15); // converting gradient to discrete shades
+                Color biomeColor = Color.Black;
 
-                pixel = Blend2Colors(bottomColor: pixel, topColor: new Color((byte)40, (byte)0, (byte)0, dangerAlpha));
-            }
+                foreach (var kvp in ExtBoardProps.colorsForBiomes)
+                {
+                    if (extDataValDict[kvp.Key])
+                    {
+                        biomeColor = kvp.Value;
+                        break;
+                    }
+                }
 
-            // pixel = ReplacePixelColorWithExtPropSimulation(pixel: pixel, extDataValDict: extDataValDict); // for testing only
+                float alpha = (float)Helpers.ConvertRange(oldMin: Terrain.biomeMin, oldMax: Terrain.biomeMin + 13, newMin: 0.2, newMax: 1, oldVal: pixelBiome, clampToEdges: true);
+                biomeColor.A = (byte)(biomeColor.A * alpha);
+                biomeColor.A = (byte)((int)(biomeColor.A / 50) * 50); // converting gradient to discrete shades
 
-            return pixel;
-        }
-
-        private static Color ReplacePixelColorWithExtPropSimulation(Color pixel, Dictionary<ExtBoardProps.ExtPropName, bool> extDataValDict)
-        {
-            // extended properties highlighting - for testing purposes
-
-            var extPropNameToColorDict = new Dictionary<ExtBoardProps.ExtPropName, Color> {
-                { ExtBoardProps.ExtPropName.OuterBeach, Color.HotPink },
-                { ExtBoardProps.ExtPropName.Sea, Color.Cyan },
-                { ExtBoardProps.ExtPropName.BiomeTest1, Color.Red },
-                { ExtBoardProps.ExtPropName.BiomeTest2, Color.Green },
-                { ExtBoardProps.ExtPropName.BiomeTest3, Color.Blue },
-                { ExtBoardProps.ExtPropName.BiomeTest4, Color.Yellow },
-            };
-
-            foreach (var kvp in extPropNameToColorDict)
-            {
-                if (extDataValDict[kvp.Key]) pixel = kvp.Value;
+                pixel = Blend2Colors(bottomColor: pixel, topColor: biomeColor);
             }
 
             return pixel;
