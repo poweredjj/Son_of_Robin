@@ -366,12 +366,13 @@ namespace SonOfRobin
 
             if (this.aiData.Coordinates == null)
             {
-                while (true)
+                for (int i = 0; i < 10; i++) // trying to set coordinates, which can be reached
                 {
                     var coordinates = new List<int> {
                         Math.Min(Math.Max((int)this.sprite.position.X + this.world.random.Next(-2000, 2000), 0), this.world.width - 1),
                         Math.Min(Math.Max((int)this.sprite.position.Y + this.world.random.Next(-2000, 2000), 0), this.world.height - 1)
                     };
+
                     if (this.sprite.allowedTerrain.CanStandHere(world: this.world, position: new Vector2(coordinates[0], coordinates[1])))
                     {
                         this.aiData.SetCoordinates(coordinates);

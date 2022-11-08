@@ -103,6 +103,7 @@ namespace SonOfRobin
             DesertDigSite,
             GlassDigSite,
             DangerDigSite,
+            SwampDigSite,
 
             CrystalDepositSmall,
             CrystalDepositBig,
@@ -1437,6 +1438,25 @@ namespace SonOfRobin
                           minDistance: 0, maxDistance: 1000, maxMassBySize: null, generation: generation, yield: yield, maxHitPoints: 50, readableName: "dig site", description: "May contain some buried items.");
                     }
 
+                case Name.SwampDigSite:
+                    {
+                        var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<TerrainName, AllowedRange>() {
+                            { TerrainName.Height, new AllowedRange(min: Terrain.waterLevelMax, max: 165) }},
+                            extPropertiesDict: new Dictionary<ExtBoardProps.ExtPropName, bool> { { ExtBoardProps.ExtPropName.BiomeSwamp, true } });
+
+                        var yield = new Yield(debrisType: Yield.DebrisType.Stone,
+                                firstDroppedPieces: new List<Yield.DroppedPiece> { },
+                                finalDroppedPieces: new List<Yield.DroppedPiece> {
+                                    new Yield.DroppedPiece(pieceName: Name.Hole, chanceToDrop: 100, maxNumberToDrop: 1), // must go first
+                                    new Yield.DroppedPiece(pieceName: Name.ChestTreasureNormal, chanceToDrop: 5, maxNumberToDrop: 1),
+                                    new Yield.DroppedPiece(pieceName: Name.JarTreasure, chanceToDrop: 8, maxNumberToDrop: 1),
+                                    new Yield.DroppedPiece(pieceName: Name.GlassSand, chanceToDrop: 20, maxNumberToDrop: 2),
+                                    new Yield.DroppedPiece(pieceName: Name.Clay, chanceToDrop: 50, maxNumberToDrop: 1)});
+
+                        return new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.DigSite, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Dirt, blocksMovement: false,
+                          minDistance: 0, maxDistance: 1000, maxMassBySize: null, generation: generation, yield: yield, maxHitPoints: 50, readableName: "dig site", description: "May contain some buried items.");
+                    }
+
                 case Name.IronDeposit:
                     {
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<TerrainName, AllowedRange>() {
@@ -1995,7 +2015,12 @@ namespace SonOfRobin
                         finalDroppedPieces: new List<Yield.DroppedPiece> { new Yield.DroppedPiece(pieceName: Name.MeatRaw, chanceToDrop: 40, maxNumberToDrop: 1), new Yield.DroppedPiece(pieceName: Name.Fat, chanceToDrop: 60, maxNumberToDrop: 1), });
 
                         var animPkg = packageNames[random.Next(0, packageNames.Count)];
-                        var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.WaterShallow, AllowedTerrain.RangeName.WaterMedium, AllowedTerrain.RangeName.GroundSand });
+
+                        var allowedTerrain = new AllowedTerrain(
+                            rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.WaterShallow, AllowedTerrain.RangeName.WaterMedium, AllowedTerrain.RangeName.GroundSand },
+                            extPropertiesDict: new Dictionary<ExtBoardProps.ExtPropName, bool> { { ExtBoardProps.ExtPropName.Sea, false } }
+                            );
+
                         var maxMassBySize = new Dictionary<byte, int>() { { 0, 300 }, { 1, 800 }, { 2, 65535 } };
 
                         var soundPack = new PieceSoundPack();
@@ -2464,7 +2489,7 @@ namespace SonOfRobin
                         };
 
                         return new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BootsProtective, blocksMovement: false, category: BoardPiece.Category.Flesh,
-                            allowedTerrain: allowedTerrain, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 100, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "protective boots", description: "Allow to walk safely over swamp area.");
+                            allowedTerrain: allowedTerrain, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 500, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "protective boots", description: "Allow to walk safely over swamp area.");
                     }
 
                 case Name.TorchSmall:

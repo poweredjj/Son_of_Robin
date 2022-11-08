@@ -423,6 +423,16 @@ namespace SonOfRobin
             return this.buffDict.Values.Where(buff => buff.type == buffType).ToList();
         }
 
+        public bool HasBuff(BuffType buffType, bool isPositive)
+        {
+            foreach (Buff buff in this.buffDict.Values)
+            {
+                if (buff.type == buffType && buff.isPositive == isPositive) return true;
+            }
+
+            return false;
+        }
+
         public bool HasBuff(BuffType buffType)
         {
             foreach (Buff buff in this.buffDict.Values)

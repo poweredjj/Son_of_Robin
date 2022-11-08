@@ -289,9 +289,9 @@ namespace SonOfRobin
                     }
                 }
 
-                float alpha = (float)Helpers.ConvertRange(oldMin: Terrain.biomeMin, oldMax: Terrain.biomeMin + 13, newMin: 0.2, newMax: 1, oldVal: pixelBiome, clampToEdges: true);
+                float alpha = (float)Helpers.ConvertRange(oldMin: Terrain.biomeMin, oldMax: Terrain.biomeMin + 10, newMin: 0.2, newMax: 1, oldVal: pixelBiome, clampToEdges: true);
                 biomeColor.A = (byte)(biomeColor.A * alpha);
-                biomeColor.A = (byte)((int)(biomeColor.A / 50) * 50); // converting gradient to discrete shades
+                biomeColor.A = (byte)((int)(biomeColor.A / 30) * 30); // converting gradient to discrete shades
 
                 pixel = Blend2Colors(bottomColor: pixel, topColor: biomeColor);
             }
