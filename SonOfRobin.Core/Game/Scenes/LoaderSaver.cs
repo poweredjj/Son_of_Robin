@@ -255,7 +255,6 @@ namespace SonOfRobin
                     { "width", this.world.width },
                     { "height", this.world.height },
                     { "maxAnimalsPerName", this.world.maxAnimalsPerName },
-                    { "addAgressiveAnimals", this.world.addAgressiveAnimals },
                     { "playerFemale", this.world.playerFemale },
                     { "initialMaxAnimalsMultiplier", this.world.initialMaxAnimalsMultiplier },
                     { "resDivider", this.world.resDivider },
@@ -542,10 +541,9 @@ namespace SonOfRobin
             int height = (int)this.headerData["height"];
             int resDivider = (int)this.headerData["resDivider"];
             int initialMaxAnimalsMultiplier = (int)this.headerData["initialMaxAnimalsMultiplier"];
-            bool addAgressiveAnimals = (bool)this.headerData["addAgressiveAnimals"];
             bool playerFemale = (bool)this.headerData["playerFemale"];
 
-            this.world = new World(width: width, height: height, seed: seed, saveGameData: this.SaveGameData, playerFemale: playerFemale, resDivider: resDivider, initialMaxAnimalsMultiplier: initialMaxAnimalsMultiplier, addAgressiveAnimals: addAgressiveAnimals);
+            this.world = new World(width: width, height: height, seed: seed, saveGameData: this.SaveGameData, playerFemale: playerFemale, resDivider: resDivider, initialMaxAnimalsMultiplier: initialMaxAnimalsMultiplier);
             this.MoveToTop();
 
             MessageLog.AddMessage(msgType: MsgType.User, message: $"Game has been loaded from slot {saveSlotName} (time elapsed {this.TimeElapsed}s).", color: Color.LightBlue);

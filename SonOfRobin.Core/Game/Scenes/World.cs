@@ -155,7 +155,6 @@ namespace SonOfRobin
         public readonly int resDivider;
         public readonly int initialMaxAnimalsMultiplier;
         public int maxAnimalsPerName;
-        public bool addAgressiveAnimals;
         public FastNoiseLite noise;
         public readonly Random random;
         public readonly int width;
@@ -244,7 +243,7 @@ namespace SonOfRobin
             }
         }
 
-        public World(int width, int height, int seed, int resDivider, bool addAgressiveAnimals, int initialMaxAnimalsMultiplier, bool playerFemale, Object saveGameData = null, bool demoMode = false) :
+        public World(int width, int height, int seed, int resDivider, int initialMaxAnimalsMultiplier, bool playerFemale, Object saveGameData = null, bool demoMode = false) :
               base(inputType: InputTypes.Normal, priority: 1, blocksUpdatesBelow: true, blocksDrawsBelow: true, touchLayout: TouchLayout.QuitLoading, tipsLayout: ControlTips.TipsLayout.QuitLoading)
         {
             this.demoMode = demoMode;
@@ -286,9 +285,8 @@ namespace SonOfRobin
 
             this.initialMaxAnimalsMultiplier = initialMaxAnimalsMultiplier;
             this.maxAnimalsPerName = (int)(this.width * this.height * 0.00000001 * initialMaxAnimalsMultiplier);
-            this.addAgressiveAnimals = addAgressiveAnimals;
             MessageLog.AddMessage(msgType: MsgType.Debug, message: $"maxAnimalsPerName {maxAnimalsPerName}");
-            this.creationDataList = PieceCreationData.CreateDataList(addAgressiveAnimals: this.addAgressiveAnimals, maxAnimalsPerName: this.maxAnimalsPerName);
+            this.creationDataList = PieceCreationData.CreateDataList(maxAnimalsPerName: this.maxAnimalsPerName);
 
             this.pieceCountByName = new Dictionary<PieceTemplate.Name, int>();
             foreach (PieceTemplate.Name templateName in PieceTemplate.allNames) this.pieceCountByName[templateName] = 0;
@@ -446,7 +444,6 @@ namespace SonOfRobin
             this.TimePlayed = (TimeSpan)headerData["TimePlayed"];
             this.mapEnabled = (bool)headerData["MapEnabled"];
             this.maxAnimalsPerName = (int)headerData["maxAnimalsPerName"];
-            this.addAgressiveAnimals = (bool)headerData["addAgressiveAnimals"];
             this.doNotCreatePiecesList = (List<PieceTemplate.Name>)headerData["doNotCreatePiecesList"];
             this.discoveredRecipesForPieces = (List<PieceTemplate.Name>)headerData["discoveredRecipesForPieces"];
             this.stateMachineTypesManager.Deserialize((Dictionary<string, Object>)headerData["stateMachineTypesManager"]);

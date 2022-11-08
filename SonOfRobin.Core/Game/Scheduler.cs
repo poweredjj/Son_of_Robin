@@ -232,7 +232,6 @@ namespace SonOfRobin
                                 seed = Preferences.NewWorldSeed;
                                 resDivider = Preferences.newWorldResDivider;
                                 initialMaxAnimalsMultiplier = Preferences.newWorldMaxAnimalsMultiplier;
-                                addAgressiveAnimals = Preferences.newWorldAgressiveAnimals;
                                 playerFemale = Preferences.newWorldPlayerFemale;
                             }
                             else
@@ -243,11 +242,10 @@ namespace SonOfRobin
                                 seed = (int)createData["seed"];
                                 resDivider = (int)createData["resDivider"];
                                 initialMaxAnimalsMultiplier = (int)createData["initialMaxAnimalsMultiplier"];
-                                addAgressiveAnimals = (bool)createData["addAgressiveAnimals"];
                                 playerFemale = (bool)createData["playerFemale"];
                             }
 
-                            new World(width: width, height: height, seed: seed, resDivider: resDivider, playerFemale: playerFemale, initialMaxAnimalsMultiplier: initialMaxAnimalsMultiplier, addAgressiveAnimals: addAgressiveAnimals);
+                            new World(width: width, height: height, seed: seed, resDivider: resDivider, playerFemale: playerFemale, initialMaxAnimalsMultiplier: initialMaxAnimalsMultiplier);
 
                             return;
                         }
@@ -258,7 +256,7 @@ namespace SonOfRobin
                             World oldWorld = (World)this.ExecuteHelper;
                             bool playerFemale = oldWorld.playerFemale;
 
-                            new World(width: oldWorld.width, height: oldWorld.height, seed: oldWorld.seed, playerFemale: playerFemale, resDivider: oldWorld.resDivider, initialMaxAnimalsMultiplier: oldWorld.initialMaxAnimalsMultiplier, addAgressiveAnimals: oldWorld.addAgressiveAnimals);
+                            new World(width: oldWorld.width, height: oldWorld.height, seed: oldWorld.seed, playerFemale: playerFemale, resDivider: oldWorld.resDivider, initialMaxAnimalsMultiplier: oldWorld.initialMaxAnimalsMultiplier);
                             oldWorld.Remove();
 
                             return;

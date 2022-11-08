@@ -20,7 +20,6 @@ namespace SonOfRobin
 
         public static int newWorldMaxAnimalsMultiplier; // max animals per name for 10000x10000 area
         public static int newWorldResDivider;
-        public static bool newWorldAgressiveAnimals;
         public static bool newWorldPlayerFemale;
 
         public static bool randomSeed;
@@ -436,7 +435,6 @@ namespace SonOfRobin
         {
             newWorldPlayerFemale = false;
             SelectedWorldSize = WorldSize.medium;
-            newWorldAgressiveAnimals = true;
             newWorldPlayerFemale = false;
             newWorldMaxAnimalsMultiplier = 50;
             CustomizeWorld = false;
@@ -515,7 +513,6 @@ namespace SonOfRobin
             prefsData["newWorldWidth"] = newWorldWidth;
             prefsData["newWorldHeight"] = newWorldHeight;
             prefsData["newWorldMaxAnimalsMultiplier"] = newWorldMaxAnimalsMultiplier;
-            prefsData["newWorldAgressiveAnimals"] = newWorldAgressiveAnimals;
             prefsData["newWorldPlayerFemale"] = newWorldPlayerFemale;
             prefsData["randomSeed"] = randomSeed;
             prefsData["seedDigit1"] = seedDigit1;
@@ -582,7 +579,6 @@ namespace SonOfRobin
                     newWorldWidth = (int)prefsData["newWorldWidth"];
                     newWorldHeight = (int)prefsData["newWorldHeight"];
                     newWorldMaxAnimalsMultiplier = (int)prefsData["newWorldMaxAnimalsMultiplier"];
-                    newWorldAgressiveAnimals = (bool)prefsData["newWorldAgressiveAnimals"];
                     newWorldPlayerFemale = (bool)prefsData["newWorldPlayerFemale"];
                     randomSeed = (bool)prefsData["randomSeed"];
                     seedDigit1 = (char)prefsData["seedDigit1"];

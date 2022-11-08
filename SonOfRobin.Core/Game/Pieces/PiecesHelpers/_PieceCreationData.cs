@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 
 namespace SonOfRobin
 {
@@ -18,7 +17,7 @@ namespace SonOfRobin
             this.doNotReplenish = doNotReplenish; // create missing after world creation
         }
 
-        public static List<PieceCreationData> CreateDataList(bool addAgressiveAnimals, int maxAnimalsPerName)
+        public static List<PieceCreationData> CreateDataList(int maxAnimalsPerName)
         {
             var dataList = new List<PieceCreationData>
                 {
@@ -66,8 +65,6 @@ namespace SonOfRobin
                      new PieceCreationData(name: PieceTemplate.Name.SoundNoonCicadas, multiplier: 0.8f, maxAmount: -1, doNotReplenish: true),
                      new PieceCreationData(name: PieceTemplate.Name.SoundLava, multiplier: 0.8f, maxAmount: -1, doNotReplenish: true),
                 };
-
-            if (!addAgressiveAnimals) dataList = dataList.Where(data => PieceInfo.GetInfo(data.name).eats == null || !PieceInfo.GetInfo(data.name).eats.Contains(PieceTemplate.Name.Player)).ToList();
 
             return dataList;
         }

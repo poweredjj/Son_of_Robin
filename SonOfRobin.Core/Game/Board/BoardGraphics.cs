@@ -318,26 +318,26 @@ namespace SonOfRobin
             var colorsByName = new Dictionary<Colors, Color>()
             {
                 // height definitions
-                {Colors.WaterDeep, new Color(11,46,176,255)},
-                {Colors.WaterMedium, new Color(35,78,207,255)},
-                {Colors.WaterShallow, new Color(65,105,225,255)},
-                {Colors.Beach1, new Color(214,199,133,255)},
-                {Colors.Beach2, new Color(214,199,133,128)},
-                {Colors.Ground, new Color(0,0,0,0)},
-                {Colors.Mountains1, new Color(180,180,180,128)},
-                {Colors.Mountains2, new Color(180,180,180,255)},
-                {Colors.Mountains3, new Color(209,209,209,255)},
-                {Colors.Mountains4, new Color(225,225,225,255)},
-                {Colors.VolcanoEdge, new Color(64,64,64,255)},
-                {Colors.VolcanoInside1, new Color(255,81,0,255)},
-                {Colors.VolcanoInside2, new Color(255,179,0,255)},
+                { Colors.WaterDeep, new Color(11,46,176,255) },
+                { Colors.WaterMedium, new Color(35,78,207,255) },
+                { Colors.WaterShallow, new Color(65,105,225,255) },
+                { Colors.Beach1, new Color(214,199,133,255) },
+                { Colors.Beach2, new Color(214,199,133,128) },
+                { Colors.Ground, new Color(0,0,0,0) },
+                { Colors.Mountains1, new Color(180,180,180,128) },
+                { Colors.Mountains2, new Color(180,180,180,255) },
+                { Colors.Mountains3, new Color(209,209,209,255) },
+                { Colors.Mountains4, new Color(225,225,225,255) },
+                { Colors.VolcanoEdge, new Color(64,64,64,255) },
+                { Colors.VolcanoInside1, new Color(255,81,0,255) },
+                { Colors.VolcanoInside2, new Color(255,179,0,255) },
 
                 // humidity definitions
-                {Colors.Sand, new Color(227,210,102,255)},
-                {Colors.GroundBad, new Color(207,167,58,255)},
-                {Colors.GroundGood, new Color(173,128,54,255)},
-                {Colors.GrassBad, new Color(141,181,67,255)},
-                {Colors.GrassGood, new Color(78,186,0,255)},
+                { Colors.Sand, new Color(227,210,102,255) },
+                { Colors.GroundBad, new Color(207,167,58,255) },
+                { Colors.GroundGood, new Color(173,128,54,255) },
+                { Colors.GrassBad, new Color(141,181,67,255) },
+                { Colors.GrassGood, new Color(78,186,0,255) },
             };
 
             return colorsByName;
@@ -346,30 +346,30 @@ namespace SonOfRobin
         private static Dictionary<Colors, List<byte>> GetColorsByHeight()
         {
             return new Dictionary<Colors, List<byte>>() {
-                {Colors.WaterDeep, new List<byte>(){0,Convert.ToByte(Terrain.waterLevelMax / 3)}},
-                {Colors.WaterMedium, new List<byte>(){Convert.ToByte(Terrain.waterLevelMax / 3), (byte)(Terrain.waterLevelMax / 3 * 2)}},
-                {Colors.WaterShallow, new List<byte>(){Convert.ToByte(Terrain.waterLevelMax / 3 * 2), Terrain.waterLevelMax}},
-                {Colors.Beach1, new List<byte>(){Terrain.waterLevelMax, 100}},
-                {Colors.Beach2, new List<byte>(){100, 105}},
-                {Colors.Ground, new List<byte>(){105, 160}},
-                {Colors.Mountains1, new List<byte>(){160, 163}},
-                {Colors.Mountains2, new List<byte>(){163, 178}},
-                {Colors.Mountains3, new List<byte>(){178, 194}},
-                {Colors.Mountains4, new List<byte>(){194, Terrain.volcanoEdgeMin}},
-                {Colors.VolcanoEdge, new List<byte>(){Terrain.volcanoEdgeMin, Terrain.lavaMin}},
-                {Colors.VolcanoInside1, new List<byte>(){Terrain.lavaMin, 225}},
-                {Colors.VolcanoInside2, new List<byte>(){225, 255}},
+                { Colors.WaterDeep, new List<byte>(){0,(byte)(Terrain.waterLevelMax / 3)} },
+                { Colors.WaterMedium, new List<byte>(){ (byte)(Terrain.waterLevelMax / 3), (byte)(Terrain.waterLevelMax / 3 * 2)} },
+                { Colors.WaterShallow, new List<byte>(){ (byte)(Terrain.waterLevelMax / 3 * 2), Terrain.waterLevelMax} },
+                { Colors.Beach1, new List<byte>(){Terrain.waterLevelMax, 100} },
+                { Colors.Beach2, new List<byte>(){100, 105} },
+                { Colors.Ground, new List<byte>(){105, 160} },
+                { Colors.Mountains1, new List<byte>(){160, 163} },
+                { Colors.Mountains2, new List<byte>(){163, 178} },
+                { Colors.Mountains3, new List<byte>(){178, 194} },
+                { Colors.Mountains4, new List<byte>(){194, Terrain.volcanoEdgeMin} },
+                { Colors.VolcanoEdge, new List<byte>(){Terrain.volcanoEdgeMin, Terrain.lavaMin} },
+                { Colors.VolcanoInside1, new List<byte>(){Terrain.lavaMin, 225} },
+                { Colors.VolcanoInside2, new List<byte>(){225, 255} },
             };
         }
 
         private static Dictionary<Colors, List<byte>> GetColorsByHumidity()
         {
             return new Dictionary<Colors, List<byte>>() {
-                {Colors.Sand, new List<byte>(){0, 80}},
-                {Colors.GroundBad, new List<byte>(){80, 115}},
-                {Colors.GroundGood, new List<byte>(){115, 150}},
-                {Colors.GrassBad, new List<byte>(){150, 200}},
-                {Colors.GrassGood, new List<byte>(){200, 255}},
+                { Colors.Sand, new List<byte>(){0, 80} },
+                { Colors.GroundBad, new List<byte>(){80, 115} },
+                { Colors.GroundGood, new List<byte>(){115, 150} },
+                { Colors.GrassBad, new List<byte>(){150, 200} },
+                { Colors.GrassGood, new List<byte>(){200, 255} },
             };
         }
     }
