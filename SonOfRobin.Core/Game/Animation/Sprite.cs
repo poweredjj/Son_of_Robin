@@ -250,6 +250,12 @@ namespace SonOfRobin
             return this.world.grid.GetFieldValue(position: this.position, terrainName: terrainName);
         }
 
+        public bool GetExtProperty(ExtBoardProps.ExtPropName name)
+        {
+            if (!this.IsOnBoard) throw new ArgumentException($"Trying to get an ext value of '{this.boardPiece.name}' that is not on board.");
+            return this.world.grid.GetExtProperty(name: name, position: this.position);
+        }
+
         public static string GetCompleteAnimId(AnimData.PkgName animPackage, byte animSize, string animName)
         { return $"{animPackage}-{animSize}-{animName}"; }
 

@@ -18,7 +18,7 @@ namespace SonOfRobin
         public static readonly Dictionary<ExtPropName, Color> colorsForBiomes = new Dictionary<ExtPropName, Color>
         {
             { ExtPropName.BiomeDangerous, new Color((byte)40, (byte)0, (byte)0, (byte)100) },
-            { ExtPropName.BiomeSwamp, new Color((byte)7, (byte)133, (byte)53, (byte)200) },
+            { ExtPropName.BiomeSwamp, new Color((byte)7, (byte)133, (byte)53, (byte)170) },
         };
 
         public readonly Cell cell;

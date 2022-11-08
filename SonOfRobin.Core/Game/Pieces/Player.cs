@@ -299,7 +299,7 @@ namespace SonOfRobin
             StorageSlot legsSlot = this.equipStorage.GetSlot(1, 2);
             legsSlot.locked = false;
             legsSlot.hidden = false;
-            legsSlot.allowedPieceNames = new List<PieceTemplate.Name> { }; // TODO add legs equip
+            legsSlot.allowedPieceNames = new List<PieceTemplate.Name> { PieceTemplate.Name.BootsProtective };
             legsSlot.label = "legs";
 
             StorageSlot backpackSlot = this.equipStorage.GetSlot(0, 1);
@@ -675,7 +675,22 @@ namespace SonOfRobin
                 if (this.buffEngine.HasBuff(BuffEngine.BuffType.Heat)) Tutorials.ShowTutorialOnTheField(type: Tutorials.Type.Heat, world: this.world, ignoreDelay: true);
             }
 
-            if (this.sprite.IsInWater) this.buffEngine.AddBuff(buff: new BuffEngine.Buff(type: BuffEngine.BuffType.Wet, value: null, autoRemoveDelay: 40 * 60 * 1), world: this.world);
+            if (this.sprite.IsInWater) this.buffEngine.AddBuff(buff: new BuffEngine.Buff(type: BuffEngine.BuffType.Wet, value: null, autoRemoveDelay: 40 * 60), world: this.world);
+
+            if (this.sprite.IsInBiome)
+            {
+                // put detailed biome checks here
+
+                if (!this.sprite.IsInWater && this.sprite.GetExtProperty(name: ExtBoardProps.ExtPropName.BiomeSwamp))
+                {
+                    if (!this.buffEngine.HasBuff(BuffEngine.BuffType.SwampProtection))
+                    {
+                        Tutorials.ShowTutorialOnTheField(type: Tutorials.Type.SwampPoison, world: this.world, ignoreDelay: true);
+
+                        this.buffEngine.AddBuff(buff: new BuffEngine.Buff(type: BuffEngine.BuffType.RegenPoison, value: (int)-30, autoRemoveDelay: 20 * 60, canKill: true, increaseIDAtEveryUse: true), world: this.world);
+                    }
+                }
+            }
 
             if (this.sprite.IsOnLava)
             {

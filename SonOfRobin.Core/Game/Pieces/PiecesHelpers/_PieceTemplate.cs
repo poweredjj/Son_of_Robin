@@ -185,6 +185,7 @@ namespace SonOfRobin
             Map,
 
             HatSimple,
+            BootsProtective,
 
             TorchSmall,
             TorchBig,
@@ -2451,6 +2452,19 @@ namespace SonOfRobin
 
                         return new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HatSimple, blocksMovement: false, category: BoardPiece.Category.Flesh,
                             allowedTerrain: allowedTerrain, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 100, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "hat", description: "Simple hat");
+                    }
+
+                case Name.BootsProtective:
+                    {
+                        var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.WaterShallow, AllowedTerrain.RangeName.WaterMedium, AllowedTerrain.RangeName.GroundAll });
+
+                        var buffList = new List<BuffEngine.Buff>
+                        {
+                           new BuffEngine.Buff(type: BuffEngine.BuffType.SwampProtection, value: null)
+                        };
+
+                        return new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BootsProtective, blocksMovement: false, category: BoardPiece.Category.Flesh,
+                            allowedTerrain: allowedTerrain, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 100, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "protective boots", description: "Allow to walk safely over swamp area.");
                     }
 
                 case Name.TorchSmall:

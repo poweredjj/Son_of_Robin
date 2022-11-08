@@ -7,7 +7,7 @@ namespace SonOfRobin
 {
     public class BuffEngine
     {
-        public enum BuffType { InvWidth, InvHeight, ToolbarWidth, ToolbarHeight, Speed, Strength, HP, MaxHP, MaxStamina, EnableMap, LightSource, RegenPoison, Haste, Fatigue, Sprint, SprintCooldown, LowHP, Tired, Hungry, Heat, HeatProtection, Wet };
+        public enum BuffType { InvWidth, InvHeight, ToolbarWidth, ToolbarHeight, Speed, Strength, HP, MaxHP, MaxStamina, EnableMap, LightSource, RegenPoison, Haste, Fatigue, Sprint, SprintCooldown, LowHP, Tired, Hungry, Heat, HeatProtection, SwampProtection, Wet };
 
         [Serializable]
         public class Buff
@@ -112,6 +112,9 @@ namespace SonOfRobin
                     case BuffType.HeatProtection:
                         return true;
 
+                    case BuffType.SwampProtection:
+                        return true;
+
                     case BuffType.Wet:
                         return true;
 
@@ -194,6 +197,10 @@ namespace SonOfRobin
 
                     case BuffType.HeatProtection:
                         description = "Heat protection.";
+                        break;
+
+                    case BuffType.SwampProtection:
+                        description = "Swamp poison protection.";
                         break;
 
                     case BuffType.Wet:
@@ -283,6 +290,9 @@ namespace SonOfRobin
 
                     case BuffType.HeatProtection:
                         return "HEAT\nPROTECT";
+
+                    case BuffType.SwampProtection:
+                        return "SWAMP\nPROTECT";
 
                     case BuffType.Wet:
                         return "WET";
@@ -606,6 +616,12 @@ namespace SonOfRobin
                         return true;
                     }
 
+                case BuffType.SwampProtection:
+                    {
+                        // this buff exists only to show status icon and prevent from getting swamp poison
+                        return true;
+                    }
+
                 case BuffType.Wet:
                     {
                         if (hadThisBuffBefore) this.RemoveEveryBuffOfType(BuffType.Wet); // to refresh buff duration
@@ -900,6 +916,10 @@ namespace SonOfRobin
                     break;
 
                 case BuffType.HeatProtection:
+                    value = null;
+                    break;
+
+                case BuffType.SwampProtection:
                     value = null;
                     break;
 
