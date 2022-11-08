@@ -10,12 +10,13 @@ namespace SonOfRobin
     public class Grid
     {
         public enum Stage
-        { GenerateTerrain, SetExtDataSea, SetExtDataBeach, SetExtDataBiomes, SetExtDataFinish, FillAllowedNames, ProcessTextures, LoadTextures }
+        { GenerateTerrain, CheckExtData, SetExtDataSea, SetExtDataBeach, SetExtDataBiomes, SetExtDataFinish, FillAllowedNames, ProcessTextures, LoadTextures }
 
         private static readonly int allStagesCount = ((Stage[])Enum.GetValues(typeof(Stage))).Length;
 
         private static readonly Dictionary<Stage, string> namesForStages = new Dictionary<Stage, string> {
             { Stage.GenerateTerrain, "generating terrain" },
+            { Stage.CheckExtData, "checking extended data" },
             { Stage.SetExtDataSea, "setting extended data (sea)" },
             { Stage.SetExtDataBeach, "setting extended data (beach)" },
             { Stage.SetExtDataBiomes, "setting extended data (biomes)" },
@@ -41,6 +42,7 @@ namespace SonOfRobin
         public readonly List<Cell> allCells;
         public readonly List<Cell> cellsToProcessOnStart;
         private readonly Dictionary<PieceTemplate.Name, List<Cell>> cellListsForPieceNames; // pieces and cells that those pieces can (initially) be placed into
+        private bool allExtPropsFound;
         private DateTime lastCellProcessedTime;
         public int loadedTexturesCount;
 
@@ -102,6 +104,7 @@ namespace SonOfRobin
             }
 
             this.cellsToProcessOnStart = new List<Cell>();
+            this.allExtPropsFound = false;
 
             this.PrepareNextStage();
         }
@@ -211,31 +214,38 @@ namespace SonOfRobin
 
                     break;
 
+                case Stage.CheckExtData:
+
+                    this.CheckExtData();
+                    this.cellsToProcessOnStart.Clear();
+
+                    break;
+
                 case Stage.SetExtDataSea:
 
-                    this.ExtCalculateSea();
-                    this.cellsToProcessOnStart.Clear();
+                    if (!this.allExtPropsFound) this.ExtCalculateSea();
+                    else this.cellsToProcessOnStart.Clear();
 
                     break;
 
                 case Stage.SetExtDataBeach:
 
-                    this.ExtCalculateOuterBeach();
-                    this.cellsToProcessOnStart.Clear();
+                    if (!this.allExtPropsFound) this.ExtCalculateOuterBeach();
+                    else this.cellsToProcessOnStart.Clear();
 
                     break;
 
                 case Stage.SetExtDataBiomes:
 
-                    this.ExtCalculateBiomes();
-                    this.cellsToProcessOnStart.Clear();
+                    if (!this.allExtPropsFound) this.ExtCalculateBiomes();
+                    else this.cellsToProcessOnStart.Clear();
 
                     break;
 
                 case Stage.SetExtDataFinish:
 
-                    this.ExtEndCreation();
-                    this.cellsToProcessOnStart.Clear();
+                    if (!this.allExtPropsFound) this.ExtEndCreation();
+                    else this.cellsToProcessOnStart.Clear();
 
                     break;
 
@@ -329,12 +339,15 @@ namespace SonOfRobin
             }
         }
 
-        private void ExtCalculateSea()
+        private void CheckExtData()
         {
             var cellsWithoutExtPropsSet = this.allCells.Where(cell => cell.ExtBoardProps.CreationInProgress);
-            if (!cellsWithoutExtPropsSet.Any()) return;
+            if (!cellsWithoutExtPropsSet.Any()) this.allExtPropsFound = true;
+        }
 
-            // algorithm will only work, if water surrounds the island
+        private void ExtCalculateSea()
+        {
+            // the algorithm will only work, if water surrounds the island
 
             int maxX = (this.world.width / this.resDivider) - 1;
             int maxY = (this.world.height / this.resDivider) - 1;
@@ -357,13 +370,12 @@ namespace SonOfRobin
                  setNameIfOutsideRange: true,
                  nameToSetIfOutsideRange: ExtBoardProps.ExtPropName.OuterBeach
                  );
+
+            this.cellsToProcessOnStart.Clear();
         }
 
         private void ExtCalculateOuterBeach()
         {
-            var cellsWithoutExtPropsSet = this.allCells.Where(cell => cell.ExtBoardProps.CreationInProgress);
-            if (!cellsWithoutExtPropsSet.Any()) return;
-
             ConcurrentBag<Point> beachEdgePointList = this.GetAllRawCoordinatesWithExtProperty(nameToUse: ExtBoardProps.ExtPropName.OuterBeach, value: true);
 
             byte minVal = (byte)(Terrain.waterLevelMax + 1);
@@ -377,48 +389,47 @@ namespace SonOfRobin
                  setNameIfOutsideRange: false,
                  nameToSetIfOutsideRange: ExtBoardProps.ExtPropName.OuterBeach // doesn't matter, if setNameIfOutsideRange is false
                  );
+
+            this.cellsToProcessOnStart.Clear();
         }
 
         private void ExtCalculateBiomes()
         {
-            var cellsWithoutExtPropsSet = this.allCells.Where(cell => cell.ExtBoardProps.CreationInProgress);
-            if (!cellsWithoutExtPropsSet.Any()) return;
-
             byte minVal = 160;
             byte maxVal = 255;
 
-            while (true)
+            ConcurrentBag<Point> pointsForBiomes = this.GetFirstRawCoordinatesWithRangeAndWithoutSpecifiedExtProps(terrainName: TerrainName.Danger, minVal: minVal, maxVal: maxVal, extPropNames: ExtBoardProps.allBiomes);
+
+            if (pointsForBiomes.Any())
             {
-                ConcurrentBag<Point> pointsForBiomes = this.GetFirstRawCoordinatesWithRangeAndWithoutSpecifiedExtProps(terrainName: TerrainName.Danger, minVal: minVal, maxVal: maxVal, extPropNames: ExtBoardProps.allBiomes);
+                pointsForBiomes = new ConcurrentBag<Point> { pointsForBiomes.First() }; // use first only
 
-                if (pointsForBiomes.Any())
-                {
-                    pointsForBiomes = new ConcurrentBag<Point> { pointsForBiomes.First() }; // use first only
+                ExtBoardProps.ExtPropName biomeName = ExtBoardProps.allBiomes[this.world.random.Next(0, ExtBoardProps.allBiomes.Count)];
 
-                    ExtBoardProps.ExtPropName biomeName = ExtBoardProps.allBiomes[this.world.random.Next(0, ExtBoardProps.allBiomes.Count)];
+                this.FloodFillExtProps(
+                    startingPoints: pointsForBiomes,
+                    terrainName: TerrainName.Danger,
+                    minVal: minVal, maxVal: maxVal,
+                    nameToSetIfInRange: biomeName,
+                    setNameIfOutsideRange: false,
+                    nameToSetIfOutsideRange: biomeName // doesn't matter, if setNameIfOutsideRange is false
+                    );
 
-                    this.FloodFillExtProps(
-                        startingPoints: pointsForBiomes,
-                        terrainName: TerrainName.Danger,
-                        minVal: minVal, maxVal: maxVal,
-                        nameToSetIfInRange: biomeName,
-                        setNameIfOutsideRange: false,
-                        nameToSetIfOutsideRange: biomeName // doesn't matter, if setNameIfOutsideRange is false
-                        );
-                }
-                else break;
+                this.cellsToProcessOnStart.RemoveAt(0); // to update progress bar (a little)
             }
+            else this.cellsToProcessOnStart.Clear();
         }
 
         private void ExtEndCreation()
         {
             var cellsWithoutExtPropsSet = this.allCells.Where(cell => cell.ExtBoardProps.CreationInProgress);
-            if (!cellsWithoutExtPropsSet.Any()) return;
 
             foreach (Cell cell in cellsWithoutExtPropsSet)
             {
                 cell.ExtBoardProps.EndCreationAndSave();
             }
+
+            this.cellsToProcessOnStart.Clear();
         }
 
         private ConcurrentBag<Point> GetAllRawCoordinatesWithExtProperty(ExtBoardProps.ExtPropName nameToUse, bool value)
@@ -1068,13 +1079,10 @@ namespace SonOfRobin
 
             if (timeSpan < TimeSpan.FromMinutes(1))
             { timeLeftString = timeSpan.ToString("ss"); }
-
             else if (timeSpan < TimeSpan.FromHours(1))
             { timeLeftString = timeSpan.ToString("mm\\:ss"); }
-
             else if (timeSpan < TimeSpan.FromDays(1))
             { timeLeftString = timeSpan.ToString("hh\\:mm\\:ss"); }
-
             else
             { timeLeftString = timeSpan.ToString("dd\\:hh\\:mm\\:ss"); }
 
