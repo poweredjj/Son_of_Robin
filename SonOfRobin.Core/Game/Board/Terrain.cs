@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -52,9 +53,9 @@ namespace SonOfRobin
 
             this.templatePath = Path.Combine(this.grid.gridTemplate.templatePath, $"{Convert.ToString(name).ToLower()}.map");
 
-            this.mapData = this.LoadTemplate();
+            var serializedTerrainData = this.LoadTemplate();
 
-            if (this.mapData == null)
+            if (serializedTerrainData == null)
             {
                 var gradientLines = this.CreateGradientLines();
                 this.gradientLineX = gradientLines.Item1;
@@ -67,32 +68,11 @@ namespace SonOfRobin
                 this.mapData = this.CreateNoiseMap(addBorder: addBorder);
                 this.SaveTemplate();
             }
-        }
-
-        private void UpdateMinMaxGridCell()
-        {
-            foreach (Cell cell in this.grid.allCells)
+            else
             {
-                int xMinRaw = cell.xMin / this.grid.resDivider;
-                int xMaxRaw = cell.xMax / this.grid.resDivider;
-                int yMinRaw = cell.yMin / this.grid.resDivider;
-                int yMaxRaw = cell.yMax / this.grid.resDivider;
-
-                byte minVal = 255;
-                byte maxVal = 0;
-
-                for (int x = xMinRaw; x <= xMaxRaw; x++)
-                {
-                    for (int y = yMinRaw; y <= yMaxRaw; y++)
-                    {
-                        byte value = this.GetMapDataRaw(x, y);
-                        minVal = Math.Min(minVal, value);
-                        maxVal = Math.Max(maxVal, value);
-                    }
-                }
-
-                this.minValGridCell[cell.cellNoX, cell.cellNoY] = minVal;
-                this.maxValGridCell[cell.cellNoX, cell.cellNoY] = maxVal;
+                this.mapData = (Byte[,])serializedTerrainData["mapData"];
+                this.minValGridCell = (byte[,])serializedTerrainData["minValGridCell"];
+                this.maxValGridCell = (byte[,])serializedTerrainData["maxValGridCell"];
             }
         }
 
@@ -113,18 +93,39 @@ namespace SonOfRobin
             return this.mapData[x, y];
         }
 
-        private Byte[,] LoadTemplate()
+        public byte GetMinValueForCell(int cellNoX, int cellNoY)
+        {
+            return this.minValGridCell[cellNoX, cellNoY];
+        }
+
+        public byte GetMaxValueForCell(int cellNoX, int cellNoY)
+        {
+            return this.maxValGridCell[cellNoX, cellNoY];
+        }
+
+        private Dictionary<string, object> LoadTemplate()
         {
             var loadedData = FileReaderWriter.Load(this.templatePath);
             if (loadedData == null) return null;
-            else return (Byte[,])loadedData;
+            else return (Dictionary<string, object>)loadedData;
         }
 
         public void SaveTemplate()
         {
-            FileReaderWriter.Save(path: this.templatePath, savedObj: this.mapData);
+            FileReaderWriter.Save(path: this.templatePath, savedObj: this.Serialize());
         }
 
+        private Dictionary<string, object> Serialize()
+        {
+            var serializedMapData = new Dictionary<string, object>
+            {
+                { "mapData", this.mapData },
+                { "minValGridCell", this.minValGridCell },
+                { "maxValGridCell", this.maxValGridCell },
+            };
+
+            return serializedMapData;
+        }
         private byte[,] CreateNoiseMap(bool addBorder = false)
         {
             FastNoiseLite noise = this.world.noise;
@@ -188,6 +189,33 @@ namespace SonOfRobin
             }
 
             return gradLine;
+        }
+
+        private void UpdateMinMaxGridCell()
+        {
+            foreach (Cell cell in this.grid.allCells)
+            {
+                int xMinRaw = cell.xMin / this.grid.resDivider;
+                int xMaxRaw = cell.xMax / this.grid.resDivider;
+                int yMinRaw = cell.yMin / this.grid.resDivider;
+                int yMaxRaw = cell.yMax / this.grid.resDivider;
+
+                byte minVal = 255;
+                byte maxVal = 0;
+
+                for (int x = xMinRaw; x <= xMaxRaw; x++)
+                {
+                    for (int y = yMinRaw; y <= yMaxRaw; y++)
+                    {
+                        byte value = this.GetMapDataRaw(x, y);
+                        minVal = Math.Min(minVal, value);
+                        maxVal = Math.Max(maxVal, value);
+                    }
+                }
+
+                this.minValGridCell[cell.cellNoX, cell.cellNoY] = minVal;
+                this.maxValGridCell[cell.cellNoX, cell.cellNoY] = maxVal;
+            }
         }
     }
 }

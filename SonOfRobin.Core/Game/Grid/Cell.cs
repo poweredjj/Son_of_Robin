@@ -102,7 +102,7 @@ namespace SonOfRobin
                 AllowedTerrain allowedTerrain = pieceInfo.allowedTerrain;
                 bool cellCanContainThisPiece = true;
 
-                foreach (var kvp in this.terrainByName)
+                foreach (var kvp in this.grid.terrainByName)
                 {
                     TerrainName terrainName = kvp.Key;
 
@@ -111,8 +111,11 @@ namespace SonOfRobin
                     {
                         Terrain terrain = kvp.Value;
 
-                        if ((allowedRange.Min < terrain.MinVal && allowedRange.Max < terrain.MinVal) ||
-                            (allowedRange.Min > terrain.MaxVal && allowedRange.Max > terrain.MaxVal))
+                        byte minVal = terrain.GetMinValueForCell(cellNoX: this.cellNoX, cellNoY: this.cellNoY);
+                        byte maxVal = terrain.GetMinValueForCell(cellNoX: this.cellNoX, cellNoY: this.cellNoY);
+
+                        if ((allowedRange.Min < minVal && allowedRange.Max < minVal) ||
+                            (allowedRange.Min > maxVal && allowedRange.Max > maxVal))
                         {
                             cellCanContainThisPiece = false;
                             break;
