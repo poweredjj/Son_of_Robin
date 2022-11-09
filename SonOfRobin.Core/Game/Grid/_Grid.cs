@@ -260,6 +260,7 @@ namespace SonOfRobin
                         int cellsToRemove = this.cellsToProcessOnStart.Count / 3;
                         if (cellsToRemove > 0) this.cellsToProcessOnStart.RemoveRange(0, cellsToRemove); // to update progress bar
                     }
+                    else this.cellsToProcessOnStart.Clear();
 
                     break;
 

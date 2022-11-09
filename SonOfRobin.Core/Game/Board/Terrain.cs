@@ -61,11 +61,12 @@ namespace SonOfRobin
                 this.gradientLineX = gradientLines.Item1;
                 this.gradientLineY = gradientLines.Item2;
 
+                this.mapData = this.CreateNoiseMap(addBorder: addBorder);
+
                 this.minValGridCell = new byte[this.grid.noOfCellsX, this.grid.noOfCellsY];
                 this.maxValGridCell = new byte[this.grid.noOfCellsX, this.grid.noOfCellsY];
                 this.UpdateMinMaxGridCell();
 
-                this.mapData = this.CreateNoiseMap(addBorder: addBorder);
                 this.SaveTemplate();
             }
             else
