@@ -468,7 +468,7 @@ namespace SonOfRobin
                 case Name.FlowersMountain:
                     {
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<TerrainName, AllowedRange>() {
-                            { TerrainName.Height, new AllowedRange(min:160, max: 210) }});
+                            { TerrainName.Height, new AllowedRange(min:160, max: Terrain.volcanoEdgeMin) }});
 
                         var yield = new Yield(debrisTypeList: new List<Yield.DebrisType> { Yield.DebrisType.Plant, Yield.DebrisType.Leaf },
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -736,7 +736,7 @@ namespace SonOfRobin
                         var packageNames = new List<AnimData.PkgName> { AnimData.PkgName.MineralsSmall1, AnimData.PkgName.MineralsSmall2, AnimData.PkgName.MineralsSmall3, AnimData.PkgName.MineralsSmall4 };
                         var animPkg = packageNames[random.Next(0, packageNames.Count)];
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<TerrainName, AllowedRange>() {
-                            { TerrainName.Height, new AllowedRange(min: 140, max: 210) }});
+                            { TerrainName.Height, new AllowedRange(min: 140, max: 180) }});
 
                         var yield = new Yield(debrisType: Yield.DebrisType.Stone,
                             firstDroppedPieces: new List<Yield.DroppedPiece> {
@@ -754,7 +754,7 @@ namespace SonOfRobin
                         var packageNames = new List<AnimData.PkgName> { AnimData.PkgName.MineralsBig1, AnimData.PkgName.MineralsBig2, AnimData.PkgName.MineralsBig3, AnimData.PkgName.MineralsBig4 };
                         var animPkg = packageNames[random.Next(0, packageNames.Count)];
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<TerrainName, AllowedRange>() {
-                            { TerrainName.Height, new AllowedRange(min: 140, max: 210) }});
+                            { TerrainName.Height, new AllowedRange(min: 140, max: 180) }});
 
                         var yield = new Yield(debrisType: Yield.DebrisType.Stone,
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -1399,7 +1399,7 @@ namespace SonOfRobin
                 case Name.GlassDigSite:
                     {
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<TerrainName, AllowedRange>() {
-                            { TerrainName.Height, new AllowedRange(min: Terrain.waterLevelMax, max: Terrain.volcanoEdgeMin) },
+                            { TerrainName.Height, new AllowedRange(min: Terrain.waterLevelMax, max: 160) },
                             { TerrainName.Humidity, new AllowedRange(min: 0, max: 90) }});
 
                         var yield = new Yield(debrisType: Yield.DebrisType.Stone,
@@ -1415,8 +1415,7 @@ namespace SonOfRobin
 
                 case Name.SwampDigSite:
                     {
-                        var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<TerrainName, AllowedRange>() {
-                            { TerrainName.Height, new AllowedRange(min: Terrain.waterLevelMax, max: 165) }},
+                        var allowedTerrain = new AllowedTerrain(
                             extPropertiesDict: new Dictionary<ExtBoardProps.ExtPropName, bool> { { ExtBoardProps.ExtPropName.BiomeSwamp, true } });
 
                         var yield = new Yield(debrisType: Yield.DebrisType.Stone,
@@ -1437,7 +1436,7 @@ namespace SonOfRobin
                 case Name.IronDeposit:
                     {
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<TerrainName, AllowedRange>() {
-                            { TerrainName.Height, new AllowedRange(min: 165, max: 210) }});
+                            { TerrainName.Height, new AllowedRange(min: 165, max: Terrain.volcanoEdgeMin) }});
 
                         var yield = new Yield(debrisType: Yield.DebrisType.Stone,
                             firstDroppedPieces: new List<Yield.DroppedPiece> {
@@ -1452,7 +1451,7 @@ namespace SonOfRobin
                 case Name.CrystalDepositBig:
                     {
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<TerrainName, AllowedRange>() {
-                            { TerrainName.Height, new AllowedRange(min: 180, max: 210) }});
+                            { TerrainName.Height, new AllowedRange(min: 180, max: Terrain.volcanoEdgeMin) }});
 
                         var yield = new Yield(debrisType: Yield.DebrisType.Crystal,
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -1467,7 +1466,7 @@ namespace SonOfRobin
                 case Name.CrystalDepositSmall:
                     {
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<TerrainName, AllowedRange>() {
-                            { TerrainName.Height, new AllowedRange(min: 180, max: 210) }});
+                            { TerrainName.Height, new AllowedRange(min: 180, max: Terrain.volcanoEdgeMin) }});
 
                         var yield = new Yield(debrisType: Yield.DebrisType.Crystal,
                             firstDroppedPieces: new List<Yield.DroppedPiece> {
@@ -1482,7 +1481,7 @@ namespace SonOfRobin
                 case Name.CoalDeposit:
                     {
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<TerrainName, AllowedRange>() {
-                            { TerrainName.Height, new AllowedRange(min: 165, max: 210) }});
+                            { TerrainName.Height, new AllowedRange(min: 165, max: Terrain.volcanoEdgeMin) }});
 
                         var yield = new Yield(debrisType: Yield.DebrisType.Stone,
                             firstDroppedPieces: new List<Yield.DroppedPiece> {
