@@ -10,7 +10,7 @@ namespace SonOfRobin
     public class Grid
     {
         public enum Stage
-        { GenerateTerrain, CheckExtData, SetExtDataSea, SetExtDataBeach, SetExtDataBiomes, SetExtDataFinish, FillAllowedNames, ProcessTextures, LoadTextures }
+        { GenerateTerrain, CheckExtData, SetExtDataSea, SetExtDataBeach, SetExtDataBiomes, SetExtDataBiomesConstrains, SetExtDataFinish, FillAllowedNames, ProcessTextures, LoadTextures }
 
         private static readonly int allStagesCount = ((Stage[])Enum.GetValues(typeof(Stage))).Length;
 
@@ -20,6 +20,7 @@ namespace SonOfRobin
             { Stage.SetExtDataSea, "setting extended data (sea)" },
             { Stage.SetExtDataBeach, "setting extended data (beach)" },
             { Stage.SetExtDataBiomes, "setting extended data (biomes)" },
+            { Stage.SetExtDataBiomesConstrains, "setting extended data (biome constrains)" },
             { Stage.SetExtDataFinish, "saving extended data" },
             { Stage.FillAllowedNames, "filling lists of allowed names" },
             { Stage.ProcessTextures, "processing textures" },
@@ -47,7 +48,8 @@ namespace SonOfRobin
         private readonly Dictionary<PieceTemplate.Name, List<Cell>> cellListsForPieceNames; // pieces and cells that those pieces can (initially) be placed into
 
         private bool allExtPropsFound;
-        private ConcurrentBag<Point> pointsForBiomeCreation;
+        private ConcurrentBag<Point> tempRawPointsForBiomeCreation;
+        private Dictionary<ExtBoardProps.ExtPropName, ConcurrentBag<Point>> tempPointsForCreatedBiomes;
         private Dictionary<ExtBoardProps.ExtPropName, int> biomeCountByName; // to ensure biome diversity
 
         private DateTime lastCellProcessedTime;
@@ -112,12 +114,14 @@ namespace SonOfRobin
 
             this.cellsToProcessOnStart = new List<Cell>();
             this.allExtPropsFound = false;
-            this.pointsForBiomeCreation = new ConcurrentBag<Point>();
+            this.tempRawPointsForBiomeCreation = new ConcurrentBag<Point>();
+            this.tempPointsForCreatedBiomes = new Dictionary<ExtBoardProps.ExtPropName, ConcurrentBag<Point>>();
             this.biomeCountByName = new Dictionary<ExtBoardProps.ExtPropName, int>();
 
             foreach (ExtBoardProps.ExtPropName name in ExtBoardProps.allBiomes.OrderBy(name => this.world.random.Next()).ToList()) // shuffled biome list
             {
                 this.biomeCountByName[name] = 0;
+                this.tempPointsForCreatedBiomes[name] = new ConcurrentBag<Point>();
             }
 
             this.PrepareNextStage();
@@ -256,6 +260,13 @@ namespace SonOfRobin
 
                     break;
 
+                case Stage.SetExtDataBiomesConstrains:
+
+                    if (!this.allExtPropsFound) this.ExtApplyBiomeConstrains();
+                    else this.cellsToProcessOnStart.Clear();
+
+                    break;
+
                 case Stage.SetExtDataFinish:
 
                     if (!this.allExtPropsFound) this.ExtEndCreation();
@@ -366,18 +377,18 @@ namespace SonOfRobin
             int maxX = (this.world.width / this.resDivider) - 1;
             int maxY = (this.world.height / this.resDivider) - 1;
 
-            var startingPoints = new ConcurrentBag<Point>();
+            var startingPointsRaw = new ConcurrentBag<Point>();
 
             foreach (int x in new List<int> { 0, maxX / 2, maxX })
             {
                 foreach (int y in new List<int> { 0, maxY / 2, maxY })
                 {
-                    if (x == 0 || x == maxX || y == 0 || y == maxY) startingPoints.Add(new Point(x, y)); // adding edges only
+                    if (x == 0 || x == maxX || y == 0 || y == maxY) startingPointsRaw.Add(new Point(x, y)); // adding edges only
                 }
             }
 
             this.FloodFillExtProps(
-                 startingPoints: startingPoints,
+                 startingPoints: startingPointsRaw,
                  terrainName: TerrainName.Height,
                  minVal: 0, maxVal: Terrain.waterLevelMax,
                  nameToSetIfInRange: ExtBoardProps.ExtPropName.Sea,
@@ -390,13 +401,13 @@ namespace SonOfRobin
 
         private void ExtCalculateOuterBeach()
         {
-            ConcurrentBag<Point> beachEdgePointList = this.GetAllRawCoordinatesWithExtProperty(nameToUse: ExtBoardProps.ExtPropName.OuterBeach, value: true);
+            ConcurrentBag<Point> beachEdgePointListRaw = this.GetAllRawCoordinatesWithExtProperty(nameToUse: ExtBoardProps.ExtPropName.OuterBeach, value: true);
 
             byte minVal = (byte)(Terrain.waterLevelMax + 1);
             byte maxVal = (byte)(Terrain.waterLevelMax + 5);
 
             this.FloodFillExtProps(
-                 startingPoints: beachEdgePointList,
+                 startingPoints: beachEdgePointListRaw,
                  terrainName: TerrainName.Height,
                  minVal: minVal, maxVal: maxVal,
                  nameToSetIfInRange: ExtBoardProps.ExtPropName.OuterBeach,
@@ -412,33 +423,59 @@ namespace SonOfRobin
             byte minVal = Terrain.biomeMin;
             byte maxVal = 255;
 
-            if (!pointsForBiomeCreation.Any())
+            if (!tempRawPointsForBiomeCreation.Any())
             {
-                this.pointsForBiomeCreation = this.GetAllRawCoordinatesWithRangeAndWithoutSpecifiedExtProps(terrainName: TerrainName.Biome, minVal: minVal, maxVal: maxVal, extPropNames: ExtBoardProps.allBiomes);
+                this.tempRawPointsForBiomeCreation = this.GetAllRawCoordinatesWithRangeAndWithoutSpecifiedExtProps(terrainName: TerrainName.Biome, minVal: minVal, maxVal: maxVal, extPropNames: ExtBoardProps.allBiomes);
             }
             else
             {
-                this.pointsForBiomeCreation = this.FilterPointsWithoutSpecifiedExtProps(oldPointBag: this.pointsForBiomeCreation, extPropNames: ExtBoardProps.allBiomes);
+                this.tempRawPointsForBiomeCreation = this.FilterPointsWithoutSpecifiedExtProps(oldPointBag: this.tempRawPointsForBiomeCreation, extPropNames: ExtBoardProps.allBiomes, xyRaw: true);
             }
 
-            if (this.pointsForBiomeCreation.Any())
+            if (this.tempRawPointsForBiomeCreation.Any())
             {
                 var biomeName = this.biomeCountByName.OrderBy(kvp => kvp.Value).First().Key;
                 this.biomeCountByName[biomeName]++;
 
-                this.FloodFillExtProps(
-                    startingPoints: new ConcurrentBag<Point> { this.pointsForBiomeCreation.First() },
-                    terrainName: TerrainName.Biome,
-                    minVal: minVal, maxVal: maxVal,
-                    nameToSetIfInRange: biomeName,
-                    setNameIfOutsideRange: false,
-                    nameToSetIfOutsideRange: biomeName // doesn't matter, if setNameIfOutsideRange is false
-                    );
+                ConcurrentBag<Point> biomePoints = this.FloodFillExtProps(
+                      startingPoints: new ConcurrentBag<Point> { this.tempRawPointsForBiomeCreation.First() },
+                      terrainName: TerrainName.Biome,
+                      minVal: minVal, maxVal: maxVal,
+                      nameToSetIfInRange: biomeName,
+                      setNameIfOutsideRange: false,
+                      nameToSetIfOutsideRange: biomeName // doesn't matter, if setNameIfOutsideRange is false
+                      );
+
+                Parallel.ForEach(biomePoints, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, point =>
+                {
+                    this.tempPointsForCreatedBiomes[biomeName].Add(point);
+                });
 
                 int cellsToRemove = this.cellsToProcessOnStart.Count / 6;
                 if (cellsToRemove > 0) this.cellsToProcessOnStart.RemoveRange(0, cellsToRemove); // to update progress bar
             }
             else this.cellsToProcessOnStart.Clear();
+        }
+
+        private void ExtApplyBiomeConstrains()
+        {
+            foreach (var kvp in this.tempPointsForCreatedBiomes)
+            {
+                ExtBoardProps.ExtPropName biomeName = kvp.Key;
+                ConcurrentBag<Point> biomePoints = kvp.Value;
+
+                if (ExtBoardProps.biomeConstrains.ContainsKey(biomeName))
+                {
+                    ConcurrentBag<Point> pointsToRemoveFromBiome = this.FilterPointsOutsideBiomeConstrains(oldPointBag: biomePoints, constrainsList: ExtBoardProps.biomeConstrains[biomeName], xyRaw: false);
+
+                    foreach (Point point in pointsToRemoveFromBiome)
+                    {
+                        this.SetExtProperty(name: biomeName, value: false, x: point.X, y: point.Y); // cannot be run in parallel
+                    }
+                }
+            }
+
+            this.cellsToProcessOnStart.Clear();
         }
 
         private void ExtEndCreation()
@@ -450,7 +487,8 @@ namespace SonOfRobin
                 cell.ExtBoardProps.EndCreationAndSave();
             }
 
-            this.pointsForBiomeCreation = null;
+            this.tempRawPointsForBiomeCreation = null;
+            this.tempPointsForCreatedBiomes = null;
             this.cellsToProcessOnStart.Clear();
         }
 
@@ -504,7 +542,7 @@ namespace SonOfRobin
             return pointBag;
         }
 
-        private ConcurrentBag<Point> FilterPointsWithoutSpecifiedExtProps(ConcurrentBag<Point> oldPointBag, List<ExtBoardProps.ExtPropName> extPropNames)
+        private ConcurrentBag<Point> FilterPointsWithoutSpecifiedExtProps(ConcurrentBag<Point> oldPointBag, List<ExtBoardProps.ExtPropName> extPropNames, bool xyRaw)
         {
             var newPointBag = new ConcurrentBag<Point>();
 
@@ -512,7 +550,10 @@ namespace SonOfRobin
             {
                 var extPropsFound = false;
 
-                var extDataValDict = this.GetExtValueDict(x: currentPoint.X * this.resDivider, y: currentPoint.Y * this.resDivider);
+                int x = xyRaw ? currentPoint.X * this.resDivider : currentPoint.X;
+                int y = xyRaw ? currentPoint.Y * this.resDivider : currentPoint.Y;
+
+                var extDataValDict = this.GetExtValueDict(x: x, y: y);
                 foreach (var kvp in extDataValDict)
                 {
                     if (kvp.Value && extPropNames.Contains(kvp.Key))
@@ -528,7 +569,35 @@ namespace SonOfRobin
             return newPointBag;
         }
 
-        private void FloodFillExtProps(ConcurrentBag<Point> startingPoints, TerrainName terrainName, byte minVal, byte maxVal, ExtBoardProps.ExtPropName nameToSetIfInRange, bool setNameIfOutsideRange, ExtBoardProps.ExtPropName nameToSetIfOutsideRange)
+        private ConcurrentBag<Point> FilterPointsOutsideBiomeConstrains(ConcurrentBag<Point> oldPointBag, List<BiomeConstrain> constrainsList, bool xyRaw)
+        {
+            var newPointBag = new ConcurrentBag<Point>();
+
+            Parallel.ForEach(oldPointBag, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, currentPoint =>
+            {
+                bool withinConstrains = true;
+
+                foreach (BiomeConstrain constrain in constrainsList)
+                {
+                    int x = xyRaw ? currentPoint.X * this.resDivider : currentPoint.X;
+                    int y = xyRaw ? currentPoint.Y * this.resDivider : currentPoint.Y;
+
+                    byte value = this.GetFieldValue(terrainName: constrain.terrainName, x: x, y: y);
+
+                    if (value < constrain.min || value > constrain.max)
+                    {
+                        withinConstrains = false;
+                        break;
+                    }
+                }
+
+                if (!withinConstrains) newPointBag.Add(currentPoint);
+            });
+
+            return newPointBag;
+        }
+
+        private ConcurrentBag<Point> FloodFillExtProps(ConcurrentBag<Point> startingPoints, TerrainName terrainName, byte minVal, byte maxVal, ExtBoardProps.ExtPropName nameToSetIfInRange, bool setNameIfOutsideRange, ExtBoardProps.ExtPropName nameToSetIfOutsideRange)
         {
             int dividedWidth = this.world.width / this.resDivider;
             int dividedHeight = this.world.height / this.resDivider;
@@ -601,6 +670,8 @@ namespace SonOfRobin
             {
                 this.SetExtProperty(name: nameToSetIfOutsideRange, value: true, x: point.X, y: point.Y); // cannot be run in parallel
             }
+
+            return pointsInsideRange;
         }
 
         public List<Cell> GetCellsForPieceName(PieceTemplate.Name pieceName)

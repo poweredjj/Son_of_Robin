@@ -6,6 +6,20 @@ using System.Linq;
 
 namespace SonOfRobin
 {
+    public struct BiomeConstrain
+    {
+        public readonly TerrainName terrainName;
+        public readonly byte min;
+        public readonly byte max;
+
+        public BiomeConstrain(TerrainName terrainName, byte min, byte max)
+        {
+            this.terrainName = terrainName;
+            this.min = min;
+            this.max = max;
+        }
+    }
+
     public class ExtBoardProps
     {
         public enum ExtPropName
@@ -13,6 +27,13 @@ namespace SonOfRobin
 
         private static readonly ExtPropName[] allExtPropNames = (ExtPropName[])Enum.GetValues(typeof(ExtPropName));
         public static readonly List<ExtPropName> allBiomes = allExtPropNames.Where(name => name.ToString().ToLower().StartsWith("biome")).ToList();
+
+        public static readonly Dictionary<ExtPropName, List<BiomeConstrain>> biomeConstrains = new Dictionary<ExtPropName, List<BiomeConstrain>> {
+            { ExtPropName.BiomeSwamp, new List<BiomeConstrain>{
+                new BiomeConstrain(terrainName: TerrainName.Height, min: 105, max: 160),
+                new BiomeConstrain(terrainName: TerrainName.Humidity, min: 80, max: 255),
+            } }
+        };
 
         public readonly Cell cell;
 
