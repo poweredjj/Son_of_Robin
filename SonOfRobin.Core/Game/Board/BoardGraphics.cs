@@ -237,7 +237,7 @@ namespace SonOfRobin
 
                 try
                 {
-                    FileReaderWriter.SaveMemoryStream(memoryStream: memoryStream, this.templatePath);
+                    FileReaderWriter.SaveMemoryStream(memoryStream: memoryStream, this.templatePath); // TODO enable
                 }
                 catch (IOException)
                 {
@@ -276,24 +276,21 @@ namespace SonOfRobin
                 }
             }
 
-            if (pixelBiome >= Terrain.biomeMin && pixelHeight > Terrain.waterLevelMax)
+            if (pixelBiome >= Terrain.biomeMin)
             {
-                Color biomeColor = Color.Black;
-
-                foreach (var kvp in ExtBoardProps.colorsForBiomes)
+                if (extDataValDict[ExtBoardProps.ExtPropName.BiomeSwamp])
                 {
-                    if (extDataValDict[kvp.Key])
-                    {
-                        biomeColor = kvp.Value;
-                        break;
-                    }
+                    float pixelMultiplier = 0.6f;
+
+                    pixel = new Color(
+                        r: (byte)(pixel.R * pixelMultiplier),
+                        g: (byte)(pixel.G * pixelMultiplier),
+                        b: (byte)(pixel.B * pixelMultiplier),
+                        alpha: pixel.A);
+
+                    Color biomeColor = new Color(83, 97, 55, 128);
+                    pixel = Blend2Colors(bottomColor: pixel, topColor: biomeColor);
                 }
-
-                float alpha = (float)Helpers.ConvertRange(oldMin: Terrain.biomeMin, oldMax: Terrain.biomeMin + 10, newMin: 0.2, newMax: 1, oldVal: pixelBiome, clampToEdges: true);
-                biomeColor.A = (byte)(biomeColor.A * alpha);
-                biomeColor.A = (byte)((int)(biomeColor.A / 30) * 30); // converting gradient to discrete shades
-
-                pixel = Blend2Colors(bottomColor: pixel, topColor: biomeColor);
             }
 
             return pixel;

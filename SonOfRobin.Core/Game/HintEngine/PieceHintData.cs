@@ -170,7 +170,7 @@ namespace SonOfRobin
                     playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.ShovelStone, PieceTemplate.Name.ShovelIron, PieceTemplate.Name.ShovelCrystal }),
 
                 new PieceHint(
-                    type: PieceHint.Type.DigSiteNegative, fieldPiecesNearby: new List<PieceTemplate.Name> { PieceTemplate.Name.BeachDigSite, PieceTemplate.Name.ForestDigSite, PieceTemplate.Name.DangerDigSite },
+                    type: PieceHint.Type.DigSiteNegative, fieldPiecesNearby: new List<PieceTemplate.Name> { PieceTemplate.Name.BeachDigSite, PieceTemplate.Name.ForestDigSite, PieceTemplate.Name.SwampDigSite },
                     message: "I think that something could be buried | here.\nIf I had a | shovel, I could dig here.",
                     imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.BeachDigSite),  PieceInfo.GetTexture(PieceTemplate.Name.ShovelStone)},
                     playerDoesNotOwnAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.ShovelStone, PieceTemplate.Name.ShovelIron, PieceTemplate.Name.ShovelCrystal }),

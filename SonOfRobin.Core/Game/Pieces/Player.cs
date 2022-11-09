@@ -681,7 +681,7 @@ namespace SonOfRobin
             {
                 // put detailed biome checks here
 
-                if (!this.sprite.IsInWater && this.sprite.GetExtProperty(name: ExtBoardProps.ExtPropName.BiomeSwamp))
+                if (this.sprite.GetExtProperty(name: ExtBoardProps.ExtPropName.BiomeSwamp))
                 {
                     if (!this.buffEngine.HasBuff(BuffEngine.BuffType.SwampProtection))
                     {
