@@ -35,6 +35,9 @@ namespace SonOfRobin
         private readonly double[] gradientLineX;
         private readonly double[] gradientLineY;
 
+        private readonly byte[,] minValGridCell; // this values are stored in terrain, instead of cell
+        private readonly byte[,] maxValGridCell; // this values are stored in terrain, instead of cell
+
         public Terrain(World world, TerrainName name, float frequency, int octaves, float persistence, float lacunarity, float gain, bool addBorder = false)
         {
             this.name = name;
@@ -57,8 +60,39 @@ namespace SonOfRobin
                 this.gradientLineX = gradientLines.Item1;
                 this.gradientLineY = gradientLines.Item2;
 
+                this.minValGridCell = new byte[this.grid.noOfCellsX, this.grid.noOfCellsY];
+                this.maxValGridCell = new byte[this.grid.noOfCellsX, this.grid.noOfCellsY];
+                this.UpdateMinMaxGridCell();
+
                 this.mapData = this.CreateNoiseMap(addBorder: addBorder);
                 this.SaveTemplate();
+            }
+        }
+
+        private void UpdateMinMaxGridCell()
+        {
+            foreach (Cell cell in this.grid.allCells)
+            {
+                int xMinRaw = cell.xMin / this.grid.resDivider;
+                int xMaxRaw = cell.xMax / this.grid.resDivider;
+                int yMinRaw = cell.yMin / this.grid.resDivider;
+                int yMaxRaw = cell.yMax / this.grid.resDivider;
+
+                byte minVal = 255;
+                byte maxVal = 0;
+
+                for (int x = xMinRaw; x <= xMaxRaw; x++)
+                {
+                    for (int y = yMinRaw; y <= yMaxRaw; y++)
+                    {
+                        byte value = this.GetMapDataRaw(x, y);
+                        minVal = Math.Min(minVal, value);
+                        maxVal = Math.Max(maxVal, value);
+                    }
+                }
+
+                this.minValGridCell[cell.cellNoX, cell.cellNoY] = minVal;
+                this.maxValGridCell[cell.cellNoX, cell.cellNoY] = maxVal;
             }
         }
 

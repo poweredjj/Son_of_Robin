@@ -40,8 +40,8 @@ namespace SonOfRobin
         public readonly int dividedWidth;
         public readonly int dividedHeight;
 
-        private readonly int noOfCellsX;
-        private readonly int noOfCellsY;
+        public readonly int noOfCellsX;
+        public readonly int noOfCellsY;
         public readonly int cellWidth;
         public readonly int cellHeight;
         public readonly int resDivider;
@@ -143,6 +143,8 @@ namespace SonOfRobin
 
         public Dictionary<string, Object> Serialize()
         {
+            // this data is included in save file (not in template)
+
             var cellData = new List<Object> { };
 
             foreach (Cell cell in this.allCells)
@@ -152,9 +154,9 @@ namespace SonOfRobin
 
             Dictionary<string, Object> gridData = new Dictionary<string, object>
             {
-                {"cellWidth", this.cellWidth },
-                {"cellHeight", this.cellHeight },
-                {"cellData", cellData },
+                { "cellWidth", this.cellWidth },
+                { "cellHeight", this.cellHeight },
+                { "cellData", cellData },
             };
 
             return gridData;
@@ -162,6 +164,8 @@ namespace SonOfRobin
 
         public static Grid Deserialize(Dictionary<string, Object> gridData, World world, int resDivider)
         {
+            // this data is included in save file (not in template)
+
             int cellWidth = (int)gridData["cellWidth"];
             int cellHeight = (int)gridData["cellHeight"];
             var cellData = (List<Object>)gridData["cellData"];
@@ -195,6 +199,13 @@ namespace SonOfRobin
                     {
                         for (int y = 0; y < templateGrid.noOfCellsY; y++)
                             this.cellGrid[x, y].CopyFromTemplate(templateGrid.cellGrid[x, y]);
+                    }
+
+                    foreach (var kvp in templateGrid.terrainByName)
+                    {
+                        TerrainName terrainName = kvp.Key;
+                        Terrain terrain = kvp.Value;
+                        this.terrainByName[terrainName] = terrain;
                     }
 
                     this.FillCellListsForPieceNames();

@@ -163,11 +163,6 @@ namespace SonOfRobin
 
         public void CopyFromTemplate(Cell templateCell)
         {
-            foreach (TerrainName terainName in allTerrains)
-            {
-                this.terrainByName[terainName] = templateCell.terrainByName[terainName];
-            }
-
             this.boardGraphics = new BoardGraphics(grid: this.grid, cell: this);
             this.boardGraphics.texture = templateCell.boardGraphics.texture;
             this.ExtBoardProps = templateCell.ExtBoardProps;
