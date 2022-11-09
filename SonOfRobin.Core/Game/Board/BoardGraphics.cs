@@ -195,7 +195,6 @@ namespace SonOfRobin
                             workingGrid3x3[xOffset + 1, yOffset + 1] = smallColorGrid[point.X, point.Y];
                         }
                     }
-
                 }
 
                 BoardTextureUpscaler3x.Upscale3x3Grid(source: workingGrid3x3, target: upscaledColorGrid, targetOffsetX: point.X * resizeFactor, targetOffsetY: point.Y * resizeFactor);
@@ -242,9 +241,6 @@ namespace SonOfRobin
                 if (kvp.Value[1] >= pixelHeight && pixelHeight >= kvp.Value[0])
                 {
                     pixel = colorsByName[kvp.Key];
-
-                    if (pixelHeight <= Terrain.waterLevelMax && extDataValDict[ExtBoardProps.ExtPropName.Sea]) pixel.G += 40;
-
                     break;
                 }
             }

@@ -410,9 +410,10 @@ namespace SonOfRobin
                         var packageNames = new List<AnimData.PkgName> { AnimData.PkgName.WaterLily1, AnimData.PkgName.WaterLily2, AnimData.PkgName.WaterLily3 };
                         var animPkg = packageNames[random.Next(0, packageNames.Count)];
 
-                        var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<TerrainName, AllowedRange>() {
+                        var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<TerrainName, AllowedRange>{
                             { TerrainName.Height, new AllowedRange(min: 30, max: 70) },
-                            { TerrainName.Humidity, new AllowedRange(min: 0, max: 128) }});
+                            { TerrainName.Humidity, new AllowedRange(min: 0, max: 128) }},
+                            extPropertiesDict: new Dictionary<ExtBoardProps.ExtPropName, bool> { { ExtBoardProps.ExtPropName.Sea, false } });
 
                         var yield = new Yield(debrisType: Yield.DebrisType.Plant,
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },

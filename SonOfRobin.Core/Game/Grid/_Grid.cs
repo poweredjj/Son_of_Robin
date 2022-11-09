@@ -419,7 +419,7 @@ namespace SonOfRobin
             this.FloodFillExtProps(
                  startingPoints: startingPointsRaw,
                  terrainName: TerrainName.Height,
-                 minVal: 0, maxVal: (byte)(Terrain.waterLevelMax - 1),
+                 minVal: 0, maxVal: (byte)(Terrain.waterLevelMax),
                  nameToSetIfInRange: ExtBoardProps.ExtPropName.Sea,
                  setNameIfOutsideRange: true,
                  nameToSetIfOutsideRange: ExtBoardProps.ExtPropName.OuterBeach
@@ -497,10 +497,10 @@ namespace SonOfRobin
                 {
                     ConcurrentBag<Point> pointsToRemoveFromBiome = this.FilterPointsOutsideBiomeConstrains(oldPointBag: biomePoints, constrainsList: ExtBoardProps.biomeConstrains[biomeName], xyRaw: false);
 
-                    foreach (Point point in pointsToRemoveFromBiome)
+                    Parallel.ForEach(pointsToRemoveFromBiome, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, point =>
                     {
-                        this.SetExtProperty(name: biomeName, value: false, x: point.X, y: point.Y); // cannot be run in parallel
-                    }
+                        this.SetExtProperty(name: biomeName, value: false, x: point.X, y: point.Y); // can write to array using parallel, if every thread accesses its own indices
+                    });
                 }
             }
 
@@ -642,17 +642,16 @@ namespace SonOfRobin
 
             var nextPoints = new ConcurrentBag<Point>(startingPoints);
             var pointsInsideRange = new ConcurrentBag<Point>();
-            var pointsOutsideRange = new ConcurrentBag<Point>();
 
             while (true)
             {
                 List<Point> currentPoints = nextPoints.Distinct().ToList(); // using Distinct() to filter out duplicates
                 nextPoints = new ConcurrentBag<Point>(); // because there is no Clear() for ConcurrentBag
 
-                var pointsToSetAsProcessed = new ConcurrentBag<Point>();
-
                 Parallel.ForEach(currentPoints, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, currentPoint =>
                 {
+                    // array can be written to using parallel, if every thread accesses its own indices
+
                     int realX = currentPoint.X * this.resDivider;
                     int realY = currentPoint.Y * this.resDivider;
 
@@ -661,6 +660,7 @@ namespace SonOfRobin
                     if (minVal <= value && value <= maxVal) // point within range
                     {
                         pointsInsideRange.Add(new Point(realX, realY));
+                        this.SetExtProperty(name: nameToSetIfInRange, value: true, x: realX, y: realY);
 
                         foreach (Point currentOffset in offsetList)
                         {
@@ -676,28 +676,13 @@ namespace SonOfRobin
                     }
                     else
                     {
-                        if (setNameIfOutsideRange) pointsOutsideRange.Add(new Point(realX, realY));
+                        if (setNameIfOutsideRange) this.SetExtProperty(name: nameToSetIfOutsideRange, value: true, x: realX, y: realY);
                     }
 
-                    pointsToSetAsProcessed.Add(currentPoint);
+                    processedMap[currentPoint.X, currentPoint.Y] = true;
                 });
 
-                foreach (Point point in pointsToSetAsProcessed)
-                {
-                    processedMap[point.X, point.Y] = true; // cannot be run in parallel
-                }
-
                 if (!nextPoints.Any()) break;
-            }
-
-            foreach (Point point in pointsInsideRange)
-            {
-                this.SetExtProperty(name: nameToSetIfInRange, value: true, x: point.X, y: point.Y); // cannot be run in parallel
-            }
-
-            foreach (Point point in pointsOutsideRange)
-            {
-                this.SetExtProperty(name: nameToSetIfOutsideRange, value: true, x: point.X, y: point.Y); // cannot be run in parallel
             }
 
             return pointsInsideRange;
