@@ -35,11 +35,18 @@ namespace SonOfRobin
         public readonly GridTemplate gridTemplate;
         public readonly World world;
 
+        public readonly int width;
+        public readonly int height;
+        public readonly int dividedWidth;
+        public readonly int dividedHeight;
+
         private readonly int noOfCellsX;
         private readonly int noOfCellsY;
         public readonly int cellWidth;
         public readonly int cellHeight;
         public readonly int resDivider;
+
+        public readonly Dictionary<TerrainName, Terrain> terrainByName;
 
         public readonly Cell[,] cellGrid;
         public readonly List<Cell> allCells;
@@ -73,6 +80,13 @@ namespace SonOfRobin
 
             this.world = world;
             this.resDivider = resDivider;
+
+            this.terrainByName = new Dictionary<TerrainName, Terrain>();
+
+            this.width = this.world.width;
+            this.height = this.world.height;
+            this.dividedWidth = this.width / this.resDivider;
+            this.dividedHeight = this.height / this.resDivider;
 
             if (!Helpers.IsPowerOfTwo((ulong)this.resDivider)) throw new ArgumentException($"ResDivider ({this.resDivider}) is not a power of 2.");
 
@@ -206,29 +220,35 @@ namespace SonOfRobin
             {
                 case Stage.GenerateTerrain:
 
-                    cellProcessingQueue = new List<Cell> { };
+                    bool terrainComputed = false;
 
-                    for (int i = 0; i < 40 * Preferences.newWorldResDivider; i++)
+                    if (!terrainComputed && !this.terrainByName.ContainsKey(TerrainName.Height))
                     {
-                        cellProcessingQueue.Add(this.cellsToProcessOnStart[0]);
-                        this.cellsToProcessOnStart.RemoveAt(0);
-                        if (this.cellsToProcessOnStart.Count == 0) break;
+                        this.terrainByName[TerrainName.Height] = new Terrain(world: this.world, name: TerrainName.Height, frequency: 8f, octaves: 9, persistence: 0.5f, lacunarity: 1.9f, gain: 0.55f, addBorder: true);
+
+                        terrainComputed = true;
                     }
 
-                    Parallel.ForEach(cellProcessingQueue, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, cell =>
+                    if (!terrainComputed && !this.terrainByName.ContainsKey(TerrainName.Humidity))
                     {
-                        cell.ComputeHeight();
-                    });
+                        this.terrainByName[TerrainName.Humidity] = new Terrain(world: this.world, name: TerrainName.Humidity, frequency: 4.3f, octaves: 9, persistence: 0.6f, lacunarity: 1.7f, gain: 0.6f);
 
-                    Parallel.ForEach(cellProcessingQueue, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, cell =>
-                    {
-                        cell.ComputeHumidity();
-                    });
+                        terrainComputed = true;
 
-                    Parallel.ForEach(cellProcessingQueue, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, cell =>
+                    }
+
+                    if (!terrainComputed && !this.terrainByName.ContainsKey(TerrainName.Biome))
                     {
-                        cell.ComputeBiome();
-                    });
+                        this.terrainByName[TerrainName.Biome] = new Terrain(world: this.world, name: TerrainName.Biome, frequency: 7f, octaves: 3, persistence: 0.7f, lacunarity: 1.4f, gain: 0.3f, addBorder: true);
+
+                        terrainComputed = true;
+                    }
+
+                    if (terrainComputed)
+                    {
+                        int cellsToRemove = this.cellsToProcessOnStart.Count / 3;
+                        if (cellsToRemove > 0) this.cellsToProcessOnStart.RemoveRange(0, cellsToRemove); // to update progress bar
+                    }
 
                     break;
 
@@ -1117,20 +1137,16 @@ namespace SonOfRobin
             return this.cellGrid[coordsDict["cellNoX"], coordsDict["cellNoY"]];
         }
 
-        public byte GetFieldValue(TerrainName terrainName, int x, int y)
+        public byte GetFieldValue(TerrainName terrainName, int x, int y, bool xyRaw = false)
         {
-            var coordsDict = this.FindMatchingCellNoAndPosInside(x: x, y: y);
-
-            return this.cellGrid[coordsDict["cellNoX"], coordsDict["cellNoY"]].terrainByName[terrainName].GetMapData(
-                coordsDict["posInsideCellX"], coordsDict["posInsideCellY"]);
+            if (xyRaw) return this.terrainByName[terrainName].GetMapDataRaw(x, y);
+            else return this.terrainByName[terrainName].GetMapData(x, y);
         }
 
-        public byte GetFieldValue(TerrainName terrainName, Vector2 position)
+        public byte GetFieldValue(TerrainName terrainName, Vector2 position, bool xyRaw = false)
         {
-            var coordsDict = this.FindMatchingCellNoAndPosInside(position: position);
-
-            return this.cellGrid[coordsDict["cellNoX"], coordsDict["cellNoY"]].terrainByName[terrainName].GetMapData(
-                coordsDict["posInsideCellX"], coordsDict["posInsideCellY"]);
+            if (xyRaw) return this.terrainByName[terrainName].GetMapDataRaw((int)position.X, (int)position.Y);
+            else return this.terrainByName[terrainName].GetMapData((int)position.X, (int)position.Y);
         }
 
         public Dictionary<ExtBoardProps.ExtPropName, bool> GetExtValueDict(int x, int y)

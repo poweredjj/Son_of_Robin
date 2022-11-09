@@ -34,7 +34,6 @@ namespace SonOfRobin
         public bool VisitedByPlayer { get; private set; }
 
         public readonly Dictionary<Group, Dictionary<string, Sprite>> spriteGroups;
-        public readonly Dictionary<TerrainName, Terrain> terrainByName;
         public ExtBoardProps ExtBoardProps { get; private set; }
         public BoardGraphics boardGraphics;
 
@@ -92,7 +91,6 @@ namespace SonOfRobin
             }
 
             this.ExtBoardProps = new ExtBoardProps(cell: this);
-            this.terrainByName = new Dictionary<TerrainName, Terrain>();
             this.allowedNames = new List<PieceTemplate.Name>();
         }
 
@@ -161,24 +159,6 @@ namespace SonOfRobin
             var cellDict = (Dictionary<string, object>)cellData;
 
             this.VisitedByPlayer = (bool)cellDict["VisitedByPlayer"];
-        }
-
-        public void ComputeHeight()
-        {
-            this.terrainByName[TerrainName.Height] = new Terrain(
-            world: this.world, cell: this, name: TerrainName.Height, frequency: 8f, octaves: 9, persistence: 0.5f, lacunarity: 1.9f, gain: 0.55f, addBorder: true);
-        }
-
-        public void ComputeHumidity()
-        {
-            this.terrainByName[TerrainName.Humidity] = new Terrain(
-                world: this.world, cell: this, name: TerrainName.Humidity, frequency: 4.3f, octaves: 9, persistence: 0.6f, lacunarity: 1.7f, gain: 0.6f);
-        }
-
-        public void ComputeBiome()
-        {
-            this.terrainByName[TerrainName.Biome] = new Terrain(
-                world: this.world, cell: this, name: TerrainName.Biome, frequency: 7f, octaves: 3, persistence: 0.7f, lacunarity: 1.4f, gain: 0.3f, addBorder: true);
         }
 
         public void CopyFromTemplate(Cell templateCell)
