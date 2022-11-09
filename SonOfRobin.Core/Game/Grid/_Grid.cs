@@ -88,8 +88,6 @@ namespace SonOfRobin
             this.dividedWidth = this.width / this.resDivider;
             this.dividedHeight = this.height / this.resDivider;
 
-            if (!Helpers.IsPowerOfTwo((ulong)this.resDivider)) throw new ArgumentException($"ResDivider ({this.resDivider}) is not a power of 2.");
-
             if (cellWidth == 0 && cellHeight == 0)
             {
                 Vector2 maxFrameSize = CalculateMaxFrameSize();
@@ -231,33 +229,32 @@ namespace SonOfRobin
             {
                 case Stage.GenerateTerrain:
 
-                    bool terrainComputed = false;
+                    bool terrainRendered = false;
 
-                    if (!terrainComputed && !this.terrainByName.ContainsKey(TerrainName.Height))
+                    if (!terrainRendered && !this.terrainByName.ContainsKey(TerrainName.Height))
                     {
                         this.terrainByName[TerrainName.Height] = new Terrain(world: this.world, name: TerrainName.Height, frequency: 8f, octaves: 9, persistence: 0.5f, lacunarity: 1.9f, gain: 0.55f, addBorder: true);
 
-                        terrainComputed = true;
+                        terrainRendered = true;
                     }
 
-                    if (!terrainComputed && !this.terrainByName.ContainsKey(TerrainName.Humidity))
+                    if (!terrainRendered && !this.terrainByName.ContainsKey(TerrainName.Humidity))
                     {
                         this.terrainByName[TerrainName.Humidity] = new Terrain(world: this.world, name: TerrainName.Humidity, frequency: 4.3f, octaves: 9, persistence: 0.6f, lacunarity: 1.7f, gain: 0.6f);
 
-                        terrainComputed = true;
-
+                        terrainRendered = true;
                     }
 
-                    if (!terrainComputed && !this.terrainByName.ContainsKey(TerrainName.Biome))
+                    if (!terrainRendered && !this.terrainByName.ContainsKey(TerrainName.Biome))
                     {
                         this.terrainByName[TerrainName.Biome] = new Terrain(world: this.world, name: TerrainName.Biome, frequency: 7f, octaves: 3, persistence: 0.7f, lacunarity: 1.4f, gain: 0.3f, addBorder: true);
 
-                        terrainComputed = true;
+                        terrainRendered = true;
                     }
 
-                    if (terrainComputed)
+                    if (terrainRendered)
                     {
-                        int cellsToRemove = this.cellsToProcessOnStart.Count / 3;
+                        int cellsToRemove = this.cellsToProcessOnStart.Count / 2;
                         if (cellsToRemove > 0) this.cellsToProcessOnStart.RemoveRange(0, cellsToRemove); // to update progress bar
                     }
                     else this.cellsToProcessOnStart.Clear();
@@ -422,7 +419,7 @@ namespace SonOfRobin
             this.FloodFillExtProps(
                  startingPoints: startingPointsRaw,
                  terrainName: TerrainName.Height,
-                 minVal: 0, maxVal: Terrain.waterLevelMax,
+                 minVal: 0, maxVal: (byte)(Terrain.waterLevelMax - 1),
                  nameToSetIfInRange: ExtBoardProps.ExtPropName.Sea,
                  setNameIfOutsideRange: true,
                  nameToSetIfOutsideRange: ExtBoardProps.ExtPropName.OuterBeach
@@ -435,7 +432,7 @@ namespace SonOfRobin
         {
             ConcurrentBag<Point> beachEdgePointListRaw = this.GetAllRawCoordinatesWithExtProperty(nameToUse: ExtBoardProps.ExtPropName.OuterBeach, value: true);
 
-            byte minVal = (byte)(Terrain.waterLevelMax + 1);
+            byte minVal = Terrain.waterLevelMax;
             byte maxVal = (byte)(Terrain.waterLevelMax + 5);
 
             this.FloodFillExtProps(

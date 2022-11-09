@@ -125,13 +125,13 @@ namespace SonOfRobin
             {
                 for (int localY = 0; localY < sourceHeight; localY++)
                 {
-                    int realX = this.cell.xMin + (localX * resDivider);
-                    int realY = this.cell.yMin + (localY * resDivider);
+                    int worldSpaceX = this.cell.xMin + (localX * resDivider);
+                    int worldSpaceY = this.cell.yMin + (localY * resDivider);
 
                     smallColorGrid[localX, localY] = CreatePixel(
-                        pixelHeight: this.cell.grid.terrainByName[TerrainName.Height].GetMapData(realX, realY),
-                        pixelHumidity: this.cell.grid.terrainByName[TerrainName.Humidity].GetMapData(realX, realY),
-                        pixelBiome: this.cell.grid.terrainByName[TerrainName.Biome].GetMapData(realX, realY),
+                        pixelHeight: this.cell.grid.terrainByName[TerrainName.Height].GetMapData(worldSpaceX, worldSpaceY),
+                        pixelHumidity: this.cell.grid.terrainByName[TerrainName.Humidity].GetMapData(worldSpaceX, worldSpaceY),
+                        pixelBiome: this.cell.grid.terrainByName[TerrainName.Biome].GetMapData(worldSpaceX, worldSpaceY),
                         extDataValDict: extBoardProperties.GetValueDict(x: localX, y: localY, xyRaw: true));
                 }
             }
@@ -243,7 +243,7 @@ namespace SonOfRobin
                 {
                     pixel = colorsByName[kvp.Key];
 
-                    if (pixelHeight <= Terrain.waterLevelMax && extDataValDict[ExtBoardProps.ExtPropName.Sea]) pixel.G += 60;
+                    if (pixelHeight <= Terrain.waterLevelMax && extDataValDict[ExtBoardProps.ExtPropName.Sea]) pixel.G += 40;
 
                     break;
                 }
@@ -277,6 +277,9 @@ namespace SonOfRobin
                     pixel = Blend2Colors(bottomColor: pixel, topColor: biomeColor);
                 }
             }
+
+            // if (extDataValDict[ExtBoardProps.ExtPropName.OuterBeach]) pixel = Blend2Colors(bottomColor: pixel, topColor: Color.Cyan * 0.8f); // for testing
+            // if (extDataValDict[ExtBoardProps.ExtPropName.Sea]) pixel = Blend2Colors(bottomColor: pixel, topColor: Color.Red * 0.8f); // for testing
 
             return pixel;
         }

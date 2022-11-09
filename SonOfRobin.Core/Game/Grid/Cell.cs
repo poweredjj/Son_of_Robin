@@ -112,7 +112,7 @@ namespace SonOfRobin
                         Terrain terrain = kvp.Value;
 
                         byte minVal = terrain.GetMinValueForCell(cellNoX: this.cellNoX, cellNoY: this.cellNoY);
-                        byte maxVal = terrain.GetMinValueForCell(cellNoX: this.cellNoX, cellNoY: this.cellNoY);
+                        byte maxVal = terrain.GetMaxValueForCell(cellNoX: this.cellNoX, cellNoY: this.cellNoY);
 
                         if ((allowedRange.Min < minVal && allowedRange.Max < minVal) ||
                             (allowedRange.Min > maxVal && allowedRange.Max > maxVal))
