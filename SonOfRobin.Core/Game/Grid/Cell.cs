@@ -57,15 +57,13 @@ namespace SonOfRobin
             this.cellNoY = cellNoY;
 
             this.xMin = cellNoX * cellWidth;
-            this.xMax = this.xMin + cellWidth;
-            this.xMax = Math.Min(this.xMax, this.world.width - 1);
-
             this.yMin = cellNoY * cellHeight;
-            this.yMax = this.yMin + cellHeight;
-            this.yMax = Math.Min(this.yMax, this.world.height - 1);
 
-            this.width = this.xMax - this.xMin;
-            this.height = this.yMax - this.yMin;
+            this.width = Math.Min(this.xMin + cellWidth, this.world.width - 1) - this.xMin; // to ensure that it won't go over world bounds
+            this.height = Math.Min(this.yMin + cellHeight, this.world.height - 1) - this.yMin; // to ensure that it won't go over world bounds
+
+            this.xMax = this.xMin + this.width - 1;
+            this.yMax = this.yMin + this.height - 1;
 
             this.rect = new Rectangle(this.xMin, this.yMin, this.width, this.height);
             this.xCenter = this.xMin + (this.width / 2);

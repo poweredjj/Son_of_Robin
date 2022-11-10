@@ -107,7 +107,7 @@ namespace SonOfRobin
             return texture;
         }
 
-        private Color[,] CreateBitmapFromTerrainNoUpscaleTest() // for visual testing without upscaling turned on
+        private Color[,] CreateBitmapFromTerrainTest() // for visual testing without upscaling turned on
         {
             // can be run in parallel, because it does not use graphicsDevice
 
