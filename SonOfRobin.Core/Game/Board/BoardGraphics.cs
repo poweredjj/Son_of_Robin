@@ -159,9 +159,6 @@ namespace SonOfRobin
                     int worldSpaceX = this.cell.xMin + (localX * resDivider);
                     int worldSpaceY = this.cell.yMin + (localY * resDivider);
 
-                    worldSpaceX = Math.Min(Math.Max(worldSpaceX, 0), this.cell.world.width - 1);
-                    worldSpaceY = Math.Min(Math.Max(worldSpaceY, 0), this.cell.world.height - 1);
-
                     smallColorGrid[localX, localY] = CreatePixel(
                         pixelHeight: this.cell.grid.GetFieldValue(terrainName: Terrain.Name.Height, x: worldSpaceX, y: worldSpaceY),
                         pixelHumidity: this.cell.grid.GetFieldValue(terrainName: Terrain.Name.Humidity, x: worldSpaceX, y: worldSpaceY),
