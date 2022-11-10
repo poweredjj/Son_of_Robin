@@ -212,7 +212,7 @@ namespace SonOfRobin
 
         public void ProcessNextCreationStage()
         {
-            if (this.currentStage != Stage.LoadTextures && SonOfRobinGame.currentUpdate < this.stageStartFrame + 3)
+            if (SonOfRobinGame.currentUpdate < this.stageStartFrame + 3)
             {
                 // first frame of each stage should update progress bar
                 this.UpdateProgressBar();
@@ -337,9 +337,7 @@ namespace SonOfRobin
 
                     if (Preferences.loadWholeMap)
                     {
-                        int maxCellsToProcess = 40;
-
-                        for (int i = 0; i < maxCellsToProcess; i++)
+                        while (true)
                         {
                             Cell cell = this.cellsToProcessOnStart[0];
                             this.cellsToProcessOnStart.RemoveAt(0);
@@ -350,6 +348,8 @@ namespace SonOfRobin
                                 this.creationInProgress = false;
                                 return;
                             }
+
+                            if (Scene.UpdateTimeElapsed.Milliseconds > 600) break;
                         }
                     }
                     else
