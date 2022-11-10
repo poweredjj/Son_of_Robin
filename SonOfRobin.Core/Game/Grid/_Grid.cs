@@ -82,8 +82,8 @@ namespace SonOfRobin
 
             this.width = this.world.width;
             this.height = this.world.height;
-            this.dividedWidth = this.width / this.resDivider;
-            this.dividedHeight = this.height / this.resDivider;
+            this.dividedWidth = (int)Math.Ceiling((double)this.width / (double)this.resDivider);
+            this.dividedHeight = (int)Math.Ceiling((double)this.height / (double)this.resDivider);
 
             if (cellWidth == 0 && cellHeight == 0)
             {

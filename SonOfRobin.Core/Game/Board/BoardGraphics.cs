@@ -107,14 +107,47 @@ namespace SonOfRobin
             return texture;
         }
 
+        private Color[,] CreateBitmapFromTerrainNoUpscaleTest() // for visual testing without upscaling turned on
+        {
+            // can be run in parallel, because it does not use graphicsDevice
+
+            // creating base 2D color array with rgb color data
+
+            int sourceWidth = this.cell.width / this.cell.grid.resDivider;
+            int sourceHeight = this.cell.height / this.cell.grid.resDivider;
+            int resDivider = this.cell.grid.resDivider;
+
+            Color[,] smallColorGrid = new Color[sourceWidth, sourceHeight];
+
+            for (int localX = 0; localX < sourceWidth + 0; localX++)
+            {
+                for (int localY = 0; localY < sourceHeight + 0; localY++)
+                {
+                    int worldSpaceX = this.cell.xMin + (localX * resDivider);
+                    int worldSpaceY = this.cell.yMin + (localY * resDivider);
+
+                    worldSpaceX = Math.Min(Math.Max(worldSpaceX, 0), this.cell.world.width - 1);
+                    worldSpaceY = Math.Min(Math.Max(worldSpaceY, 0), this.cell.world.height - 1);
+
+                    smallColorGrid[localX, localY] = CreatePixel(
+                        pixelHeight: this.cell.grid.GetFieldValue(terrainName: Terrain.Name.Height, x: worldSpaceX, y: worldSpaceY),
+                        pixelHumidity: this.cell.grid.GetFieldValue(terrainName: Terrain.Name.Humidity, x: worldSpaceX, y: worldSpaceY),
+                        pixelBiome: this.cell.grid.GetFieldValue(terrainName: Terrain.Name.Biome, x: worldSpaceX, y: worldSpaceY),
+                        extDataValDict: this.cell.grid.GetExtValueDict(x: worldSpaceX, y: worldSpaceY));
+                }
+            }
+
+            return smallColorGrid;
+        }
+
         private Color[,] CreateBitmapFromTerrain()
         {
             // can be run in parallel, because it does not use graphicsDevice
 
             // creating base 2D color array with rgb color data
 
-            int sourceWidth = this.cell.dividedWidth;
-            int sourceHeight = this.cell.dividedHeight;
+            int sourceWidth = this.cell.width / this.cell.grid.resDivider;
+            int sourceHeight = this.cell.height / this.cell.grid.resDivider;
             int resDivider = this.cell.grid.resDivider;
 
             Color[,] smallColorGrid = new Color[sourceWidth, sourceHeight];

@@ -27,9 +27,6 @@ namespace SonOfRobin
         public readonly int width;
         public readonly int height;
 
-        public readonly int dividedWidth;
-        public readonly int dividedHeight;
-
         public List<Cell> surroundingCells;
         public bool VisitedByPlayer { get; private set; }
 
@@ -60,20 +57,17 @@ namespace SonOfRobin
             this.cellNoY = cellNoY;
 
             this.xMin = cellNoX * cellWidth;
-            this.xMax = this.xMin + cellWidth - 1;
+            this.xMax = this.xMin + cellWidth;
             this.xMax = Math.Min(this.xMax, this.world.width - 1);
 
             this.yMin = cellNoY * cellHeight;
-            this.yMax = this.yMin + cellHeight - 1;
+            this.yMax = this.yMin + cellHeight;
             this.yMax = Math.Min(this.yMax, this.world.height - 1);
 
-            this.width = this.xMax - this.xMin; // virtual value, simulated for the outside world
-            this.height = this.yMax - this.yMin; // virtual value, simulated for the outside world
+            this.width = this.xMax - this.xMin;
+            this.height = this.yMax - this.yMin;
 
-            this.dividedWidth = this.width / this.grid.resDivider; // real storing data capacity
-            this.dividedHeight = this.height / this.grid.resDivider; // real storing data capacity
-
-            this.rect = new Rectangle(this.xMin, this.yMin, this.width + 1, this.height + 1);
+            this.rect = new Rectangle(this.xMin, this.yMin, this.width, this.height);
             this.xCenter = this.xMin + (this.width / 2);
             this.yCenter = this.yMin + (this.height / 2);
             this.center = new Vector2(this.xCenter, this.yCenter);
