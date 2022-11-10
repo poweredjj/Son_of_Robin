@@ -21,7 +21,7 @@ namespace SonOfRobin
             { Stage.SetExtDataSea, "setting extended data (sea)" },
             { Stage.SetExtDataBeach, "setting extended data (beach)" },
             { Stage.SetExtDataBiomes, "setting extended data (biomes)" },
-            { Stage.SetExtDataBiomesConstrains, "setting extended data (biome constrains)" },
+            { Stage.SetExtDataBiomesConstrains, "setting extended data (constrains)" },
             { Stage.SetExtDataFinish, "saving extended data" },
             { Stage.FillAllowedNames, "filling lists of allowed names" },
             { Stage.ProcessTextures, "processing textures" },
@@ -58,7 +58,7 @@ namespace SonOfRobin
 
         private ConcurrentBag<Point> tempRawPointsForBiomeCreation;
         private Dictionary<ExtBoardProps.ExtPropName, ConcurrentBag<Point>> tempPointsForCreatedBiomes;
-        private Dictionary<ExtBoardProps.ExtPropName, int> biomeCountByName; // to ensure biome diversity
+        private readonly Dictionary<ExtBoardProps.ExtPropName, int> biomeCountByName; // to ensure biome diversity
         public int loadedTexturesCount;
 
         public bool ProcessingStageComplete
@@ -1055,40 +1055,6 @@ namespace SonOfRobin
         private static int FindMatchingCellInSingleAxis(int position, int cellLength)
         {
             return position / cellLength;
-        }
-
-        private Dictionary<string, int> CorrectCellCoordinatesAndPosInside(int cellNoX, int cellNoY, int posInsideCellX, int posInsideCellY)
-        {
-            Cell cell = this.cellGrid[cellNoX, cellNoY];
-
-            if (posInsideCellX / this.resDivider >= cell.dividedWidth)
-            {
-                cellNoX++;
-                posInsideCellX = 0;
-
-                if (cellNoX >= this.noOfCellsX)
-                {
-                    cellNoX--;
-                    posInsideCellX = this.cellGrid[cellNoX, cellNoY].dividedWidth - 1;
-                }
-            }
-            if (posInsideCellY / this.resDivider >= cell.dividedHeight)
-            {
-                cellNoY++;
-                posInsideCellY = 0;
-
-                if (cellNoY >= this.noOfCellsY)
-                {
-                    cellNoY--;
-                    posInsideCellY = this.cellGrid[cellNoX, cellNoY].dividedHeight - 1;
-                }
-            }
-
-            return new Dictionary<string, int> {
-                { "cellNoX", cellNoX },
-                { "cellNoY", cellNoY },
-                { "posInsideCellX", posInsideCellX },
-                { "posInsideCellY", posInsideCellY }};
         }
 
         public Cell FindMatchingCell(Vector2 position)

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace SonOfRobin
 {
@@ -8,7 +9,7 @@ namespace SonOfRobin
     public class GridTemplate
     {
         private static readonly float currentVersion = 1.15f;
-        private static readonly string headerName = "template_header.dat";
+        private static readonly string headerName = "_template_header.dat";
 
         public readonly int seed;
         public readonly int width;
@@ -23,7 +24,7 @@ namespace SonOfRobin
         public DateTime CreatedDate { get; private set; }
 
         public bool IsObsolete { get { return this.version != currentVersion; } }
-        public static bool CorrectTemplatesExist { get { return CorrectTemplates.Count > 0; } }
+        public static bool CorrectTemplatesExist { get { return CorrectTemplates.Any(); } }
         public static List<GridTemplate> CorrectTemplates
         {
             get

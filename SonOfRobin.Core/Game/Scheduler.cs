@@ -223,7 +223,7 @@ namespace SonOfRobin
                             // var createData = new Dictionary<string, Object> {{ "width", width }, { "height", height }, { "seed", seed }, {"resDivider", resDivider }, {"initialMaxAnimalsMultiplier", initialMaxAnimalsMultiplier}, {"addAgressiveAnimals", true }};                
 
                             int width, height, seed, resDivider, initialMaxAnimalsMultiplier;
-                            bool addAgressiveAnimals, playerFemale;
+                            bool playerFemale;
 
                             if (this.ExecuteHelper == null)
                             {

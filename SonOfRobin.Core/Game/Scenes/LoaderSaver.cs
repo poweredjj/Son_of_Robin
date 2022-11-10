@@ -11,14 +11,14 @@ namespace SonOfRobin
 {
     public class LoaderSaver : Scene
     {
-        private readonly static string headerName = "header.sav";
-        private readonly static string hintsName = "hints.sav";
-        private readonly static string trackingName = "tracking.sav";
-        private readonly static string eventsName = "events.sav";
-        private readonly static string gridName = "grid.sav";
-        public readonly static string tempPrefix = "_save_temp_";
+        private static readonly string headerName = "header.sav";
+        private static readonly string hintsName = "hints.sav";
+        private static readonly string trackingName = "tracking.sav";
+        private static readonly string eventsName = "events.sav";
+        private static readonly string gridName = "grid.sav";
+        public static readonly string tempPrefix = "_save_temp_";
 
-        private readonly static int maxPiecesInPackage = 1000; // using small piece packages lowers ram usage during writing binary files
+        private static readonly int maxPiecesInPackage = 1000; // using small piece packages lowers ram usage during writing binary files
 
         private readonly DateTime createdTime;
         private readonly bool quitGameAfterSaving;
@@ -38,6 +38,7 @@ namespace SonOfRobin
 
         // loading mode uses data variables
         private Dictionary<string, Object> headerData;
+
         private Dictionary<string, Object> hintsData;
         private Dictionary<string, Object> gridData;
         private List<Object> trackingData;
@@ -46,6 +47,7 @@ namespace SonOfRobin
 
         // saving mode uses flags instead of data variables - to save ram
         private bool headerSaved;
+
         private bool hintsSaved;
         private bool gridSaved;
         private bool trackingSaved;
@@ -55,7 +57,8 @@ namespace SonOfRobin
         private string nextStepName;
         private int processedSteps;
         private readonly int allSteps;
-        private int PiecesFilesCount { get { return Directory.GetFiles(this.savePath).Where(file => file.Contains("pieces_")).ToList().Count; } }
+        private int PiecesFilesCount
+        { get { return Directory.GetFiles(this.savePath).Where(file => file.Contains("pieces_")).ToList().Count; } }
 
         private static List<string> SaveTempPaths
         {
@@ -71,9 +74,11 @@ namespace SonOfRobin
             }
         }
 
-        private int TimeElapsed { get { return (int)(DateTime.Now - this.createdTime).TotalSeconds; } }
+        private int TimeElapsed
+        { get { return (int)(DateTime.Now - this.createdTime).TotalSeconds; } }
 
         private bool errorOccured;
+
         private bool ErrorOccured
         {
             get { return errorOccured; }
@@ -83,6 +88,7 @@ namespace SonOfRobin
                 if (errorOccured) this.Remove();
             }
         }
+
         private Scheduler.TaskName TextWindowTask
         {
             get
@@ -100,12 +106,12 @@ namespace SonOfRobin
             get
             {
                 return new Dictionary<string, Object> {
-                    {"header", this.headerData},
-                    {"hints", this.hintsData},
-                    {"grid", this.gridData},
-                    {"pieces", this.piecesData},
-                    {"tracking", this.trackingData},
-                    {"events", this.eventsData},
+                    { "header", this.headerData },
+                    { "hints", this.hintsData },
+                    { "grid", this.gridData },
+                    { "pieces", this.piecesData },
+                    { "tracking", this.trackingData },
+                    { "events", this.eventsData },
             };
             }
         }
@@ -180,6 +186,7 @@ namespace SonOfRobin
 
             return currentTempPath;
         }
+
         private string GetCurrentPiecesPath(int packageNo)
         {
             return Path.Combine(this.saveMode ? saveTempPath : savePath, $"pieces_{packageNo}.sav");
@@ -334,7 +341,7 @@ namespace SonOfRobin
                     FileReaderWriter.Save(path: this.GetCurrentPiecesPath(this.currentPiecePackageNo + packageIndex), savedObj: pieceDataPackage);
                 });
 
-                this.currentPiecePackageNo = this.currentPiecePackageNo + packagesToProcess.Count;
+                this.currentPiecePackageNo += packagesToProcess.Count;
                 this.processedSteps += packagesToProcess.Count - 1;
 
                 this.nextStepName = this.piecesSaved ? "tracking" : $"pieces {currentPiecePackageNo + 1}";

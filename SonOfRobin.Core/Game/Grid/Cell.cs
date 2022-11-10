@@ -201,14 +201,8 @@ namespace SonOfRobin
 
             foreach (Group currentGroupName in allGroups)
             {
-                if (groupNames.Contains(currentGroupName))
-                {
-                    this.spriteGroups[currentGroupName][sprite.id] = sprite;
-                }
-                else
-                {
-                    this.spriteGroups[currentGroupName].Remove(sprite.id);
-                }
+                if (groupNames.Contains(currentGroupName)) this.spriteGroups[currentGroupName][sprite.id] = sprite;
+                else this.spriteGroups[currentGroupName].Remove(sprite.id);
             }
         }
 
@@ -239,10 +233,14 @@ namespace SonOfRobin
         }
 
         public float GetDistance(Vector2 target)
-        { return Vector2.Distance(target, this.center); }
+        {
+            return Vector2.Distance(target, this.center);
+        }
 
         public float GetDistance(Cell cell)
-        { return Vector2.Distance(cell.center, this.center); }
+        {
+            return Vector2.Distance(cell.center, this.center);
+        }
 
         public void DrawDebugData(Group groupName)
         {
