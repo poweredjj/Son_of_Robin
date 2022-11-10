@@ -117,8 +117,6 @@ namespace SonOfRobin
             int sourceHeight = this.cell.dividedHeight;
             int resDivider = this.cell.grid.resDivider;
 
-            ExtBoardProps extBoardProperties = this.cell.ExtBoardProps;
-
             Color[,] smallColorGrid = new Color[sourceWidth, sourceHeight];
 
             for (int localX = 0; localX < sourceWidth; localX++)
@@ -132,7 +130,7 @@ namespace SonOfRobin
                         pixelHeight: this.cell.grid.terrainByName[TerrainName.Height].GetMapData(worldSpaceX, worldSpaceY),
                         pixelHumidity: this.cell.grid.terrainByName[TerrainName.Humidity].GetMapData(worldSpaceX, worldSpaceY),
                         pixelBiome: this.cell.grid.terrainByName[TerrainName.Biome].GetMapData(worldSpaceX, worldSpaceY),
-                        extDataValDict: extBoardProperties.GetValueDict(x: localX, y: localY, xyRaw: true));
+                        extDataValDict: this.cell.grid.ExtBoardProps.GetValueDict(x: worldSpaceX, y: worldSpaceY, xyRaw: false));
                 }
             }
 

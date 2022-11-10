@@ -10,13 +10,12 @@ namespace SonOfRobin
     public class Grid
     {
         public enum Stage
-        { GenerateTerrain, CheckExtData, SetExtDataSea, SetExtDataBeach, SetExtDataBiomes, SetExtDataBiomesConstrains, SetExtDataFinish, FillAllowedNames, ProcessTextures, LoadTextures }
+        { GenerateTerrain, SetExtDataSea, SetExtDataBeach, SetExtDataBiomes, SetExtDataBiomesConstrains, SetExtDataFinish, FillAllowedNames, ProcessTextures, LoadTextures }
 
         private static readonly int allStagesCount = ((Stage[])Enum.GetValues(typeof(Stage))).Length;
 
         private static readonly Dictionary<Stage, string> namesForStages = new Dictionary<Stage, string> {
             { Stage.GenerateTerrain, "generating terrain" },
-            { Stage.CheckExtData, "checking extended data" },
             { Stage.SetExtDataSea, "setting extended data (sea)" },
             { Stage.SetExtDataBeach, "setting extended data (beach)" },
             { Stage.SetExtDataBiomes, "setting extended data (biomes)" },
@@ -47,6 +46,7 @@ namespace SonOfRobin
         public readonly int resDivider;
 
         public readonly Dictionary<TerrainName, Terrain> terrainByName;
+        public ExtBoardProps ExtBoardProps { get; private set; }
 
         public readonly Cell[,] cellGrid;
         public readonly List<Cell> allCells;
@@ -54,7 +54,6 @@ namespace SonOfRobin
 
         private readonly Dictionary<PieceTemplate.Name, List<Cell>> cellListsForPieceNames; // pieces and cells that those pieces can (initially) be placed into
 
-        private bool allExtPropsFound;
         private ConcurrentBag<Point> tempRawPointsForBiomeCreation;
         private Dictionary<ExtBoardProps.ExtPropName, ConcurrentBag<Point>> tempPointsForCreatedBiomes;
         private Dictionary<ExtBoardProps.ExtPropName, int> biomeCountByName; // to ensure biome diversity
@@ -116,6 +115,8 @@ namespace SonOfRobin
             this.allCells = this.GetAllCells();
             this.CalculateSurroundingCells();
 
+            this.ExtBoardProps = new ExtBoardProps(grid: this);
+
             this.lastCellProcessedTime = DateTime.Now;
 
             if (this.CopyBoardFromTemplate())
@@ -125,7 +126,6 @@ namespace SonOfRobin
             }
 
             this.cellsToProcessOnStart = new List<Cell>();
-            this.allExtPropsFound = false;
             this.tempRawPointsForBiomeCreation = new ConcurrentBag<Point>();
             this.tempPointsForCreatedBiomes = new Dictionary<ExtBoardProps.ExtPropName, ConcurrentBag<Point>>();
             this.biomeCountByName = new Dictionary<ExtBoardProps.ExtPropName, int>();
@@ -206,6 +206,8 @@ namespace SonOfRobin
                         this.terrainByName[terrainName] = terrain;
                     }
 
+                    this.ExtBoardProps = templateGrid.ExtBoardProps;
+
                     this.FillCellListsForPieceNames();
 
                     return true;
@@ -261,44 +263,37 @@ namespace SonOfRobin
 
                     break;
 
-                case Stage.CheckExtData:
-
-                    this.CheckExtData();
-                    this.cellsToProcessOnStart.Clear();
-
-                    break;
-
                 case Stage.SetExtDataSea:
 
-                    if (!this.allExtPropsFound) this.ExtCalculateSea();
+                    if (this.ExtBoardProps.CreationInProgress) this.ExtCalculateSea();
                     else this.cellsToProcessOnStart.Clear();
 
                     break;
 
                 case Stage.SetExtDataBeach:
 
-                    if (!this.allExtPropsFound) this.ExtCalculateOuterBeach();
+                    if (this.ExtBoardProps.CreationInProgress) this.ExtCalculateOuterBeach();
                     else this.cellsToProcessOnStart.Clear();
 
                     break;
 
                 case Stage.SetExtDataBiomes:
 
-                    if (!this.allExtPropsFound) this.ExtCalculateBiomes();
+                    if (this.ExtBoardProps.CreationInProgress) this.ExtCalculateBiomes();
                     else this.cellsToProcessOnStart.Clear();
 
                     break;
 
                 case Stage.SetExtDataBiomesConstrains:
 
-                    if (!this.allExtPropsFound) this.ExtApplyBiomeConstrains();
+                    if (this.ExtBoardProps.CreationInProgress) this.ExtApplyBiomeConstrains();
                     else this.cellsToProcessOnStart.Clear();
 
                     break;
 
                 case Stage.SetExtDataFinish:
 
-                    if (!this.allExtPropsFound) this.ExtEndCreation();
+                    if (this.ExtBoardProps.CreationInProgress) this.ExtEndCreation();
                     else this.cellsToProcessOnStart.Clear();
 
                     break;
@@ -391,12 +386,6 @@ namespace SonOfRobin
                     if (cell.allowedNames.Contains(pieceName)) this.cellListsForPieceNames[pieceName].Add(cell);
                 }
             }
-        }
-
-        private void CheckExtData()
-        {
-            var cellsWithoutExtPropsSet = this.allCells.Where(cell => cell.ExtBoardProps.CreationInProgress);
-            if (!cellsWithoutExtPropsSet.Any()) this.allExtPropsFound = true;
         }
 
         private void ExtCalculateSea()
@@ -509,12 +498,7 @@ namespace SonOfRobin
 
         private void ExtEndCreation()
         {
-            var cellsWithoutExtPropsSet = this.allCells.Where(cell => cell.ExtBoardProps.CreationInProgress);
-
-            foreach (Cell cell in cellsWithoutExtPropsSet)
-            {
-                cell.ExtBoardProps.EndCreationAndSave();
-            }
+            this.ExtBoardProps.EndCreationAndSave();
 
             this.tempRawPointsForBiomeCreation = null;
             this.tempPointsForCreatedBiomes = null;
@@ -1068,28 +1052,6 @@ namespace SonOfRobin
             return position / cellLength;
         }
 
-        private Dictionary<string, int> FindMatchingCellNoAndPosInside(Vector2 position)
-        {
-            int cellNoX = (int)Math.Floor(position.X / this.cellWidth);
-            int cellNoY = (int)Math.Floor(position.Y / this.cellHeight);
-
-            int posInsideCellX = (int)position.X % this.cellWidth;
-            int posInsideCellY = (int)position.Y % this.cellHeight;
-
-            return this.CorrectCellCoordinatesAndPosInside(cellNoX, cellNoY, posInsideCellX, posInsideCellY);
-        }
-
-        private Dictionary<string, int> FindMatchingCellNoAndPosInside(int x, int y)
-        {
-            int cellNoX = x / this.cellWidth;
-            int cellNoY = y / this.cellHeight;
-
-            int posInsideCellX = x % this.cellWidth;
-            int posInsideCellY = y % this.cellHeight;
-
-            return this.CorrectCellCoordinatesAndPosInside(cellNoX, cellNoY, posInsideCellX, posInsideCellY);
-        }
-
         private Dictionary<string, int> CorrectCellCoordinatesAndPosInside(int cellNoX, int cellNoY, int posInsideCellX, int posInsideCellY)
         {
             Cell cell = this.cellGrid[cellNoX, cellNoY];
@@ -1126,9 +1088,9 @@ namespace SonOfRobin
 
         public Cell FindMatchingCell(Vector2 position)
         {
-            var coordsDict = this.FindMatchingCellNoAndPosInside(position: position);
-
-            return this.cellGrid[coordsDict["cellNoX"], coordsDict["cellNoY"]];
+            int cellNoX = (int)Math.Floor(position.X / this.cellWidth);
+            int cellNoY = (int)Math.Floor(position.Y / this.cellHeight);
+            return this.cellGrid[cellNoX, cellNoY];
         }
 
         public byte GetFieldValue(TerrainName terrainName, int x, int y, bool xyRaw = false)
@@ -1145,34 +1107,22 @@ namespace SonOfRobin
 
         public Dictionary<ExtBoardProps.ExtPropName, bool> GetExtValueDict(int x, int y)
         {
-            var coordsDict = this.FindMatchingCellNoAndPosInside(x: x, y: y);
-
-            return this.cellGrid[coordsDict["cellNoX"], coordsDict["cellNoY"]].ExtBoardProps.GetValueDict(
-                x: coordsDict["posInsideCellX"], y: coordsDict["posInsideCellY"], xyRaw: false);
+            return this.ExtBoardProps.GetValueDict(x: x, y: y, xyRaw: false);
         }
 
         public bool GetExtProperty(ExtBoardProps.ExtPropName name, Vector2 position)
         {
-            var coordsDict = this.FindMatchingCellNoAndPosInside(position: position);
-
-            return this.cellGrid[coordsDict["cellNoX"], coordsDict["cellNoY"]].ExtBoardProps.GetValue(
-                name: name, x: coordsDict["posInsideCellX"], y: coordsDict["posInsideCellY"], xyRaw: false);
+            return this.ExtBoardProps.GetValue(name: name, x: (int)position.X, y: (int)position.Y, xyRaw: false);
         }
 
         public bool GetExtProperty(ExtBoardProps.ExtPropName name, int x, int y)
         {
-            var coordsDict = this.FindMatchingCellNoAndPosInside(x: x, y: y);
-
-            return this.cellGrid[coordsDict["cellNoX"], coordsDict["cellNoY"]].ExtBoardProps.GetValue(
-                name: name, x: coordsDict["posInsideCellX"], y: coordsDict["posInsideCellY"], xyRaw: false);
+            return this.ExtBoardProps.GetValue(name: name, x: x, y: y, xyRaw: false);
         }
 
         public void SetExtProperty(ExtBoardProps.ExtPropName name, bool value, int x, int y)
         {
-            var coordsDict = this.FindMatchingCellNoAndPosInside(x: x, y: y);
-
-            this.cellGrid[coordsDict["cellNoX"], coordsDict["cellNoY"]].ExtBoardProps.SetValue(
-                name: name, value: value, x: coordsDict["posInsideCellX"], y: coordsDict["posInsideCellY"], xyRaw: false);
+            this.ExtBoardProps.SetValue(name: name, value: value, x: x, y: y, xyRaw: false);
         }
 
         private Cell[,] MakeGrid()

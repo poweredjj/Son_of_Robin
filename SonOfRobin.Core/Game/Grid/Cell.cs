@@ -34,7 +34,6 @@ namespace SonOfRobin
         public bool VisitedByPlayer { get; private set; }
 
         public readonly Dictionary<Group, Dictionary<string, Sprite>> spriteGroups;
-        public ExtBoardProps ExtBoardProps { get; private set; }
         public BoardGraphics boardGraphics;
 
         public readonly List<PieceTemplate.Name> allowedNames; // for initialRangesByTerrainName only - because currentRangesByTerrainName can be changed anytime
@@ -90,7 +89,6 @@ namespace SonOfRobin
                 this.spriteGroups[groupName] = new Dictionary<string, Sprite> { };
             }
 
-            this.ExtBoardProps = new ExtBoardProps(cell: this);
             this.allowedNames = new List<PieceTemplate.Name>();
         }
 
@@ -130,7 +128,7 @@ namespace SonOfRobin
                         ExtBoardProps.ExtPropName name = kvp.Key;
                         bool value = kvp.Value;
 
-                        if (!this.ExtBoardProps.CheckIfContainsProperty(name: name, value: value))
+                        if (!this.grid.ExtBoardProps.CheckIfContainsProperty(name: name, value: value, cellNoX: this.cellNoX, cellNoY: this.cellNoY))
                         {
                             cellCanContainThisPiece = false;
                             break;
@@ -168,7 +166,6 @@ namespace SonOfRobin
         {
             this.boardGraphics = new BoardGraphics(grid: this.grid, cell: this);
             this.boardGraphics.texture = templateCell.boardGraphics.texture;
-            this.ExtBoardProps = templateCell.ExtBoardProps;
             this.allowedNames.AddRange(templateCell.allowedNames);
         }
 
