@@ -133,7 +133,7 @@ namespace SonOfRobin
                         pixelHeight: this.cell.grid.GetFieldValue(terrainName: Terrain.Name.Height, x: worldSpaceX, y: worldSpaceY),
                         pixelHumidity: this.cell.grid.GetFieldValue(terrainName: Terrain.Name.Humidity, x: worldSpaceX, y: worldSpaceY),
                         pixelBiome: this.cell.grid.GetFieldValue(terrainName: Terrain.Name.Biome, x: worldSpaceX, y: worldSpaceY),
-                        extDataValDict: this.cell.grid.ExtBoardProps.GetValueDict(x: worldSpaceX, y: worldSpaceY, xyRaw: false));
+                        extDataValDict: this.cell.grid.GetExtValueDict(x: worldSpaceX, y: worldSpaceY));
                 }
             }
 

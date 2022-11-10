@@ -121,7 +121,7 @@ namespace SonOfRobin
             if (!this.loadedFromTemplate) this.SaveTemplate();
         }
 
-        public bool CheckIfContainsProperty(ExtPropName name, bool value, int cellNoX, int cellNoY)
+        public bool CheckIfContainsPropertyForCell(ExtPropName name, bool value, int cellNoX, int cellNoY)
         {
             if (value) return this.containsPropertiesTrueGridCell[cellNoX, cellNoY].Contains(name);
             else return this.containsPropertiesFalseGridCell[cellNoX, cellNoY].Contains(name);

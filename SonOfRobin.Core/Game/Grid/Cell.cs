@@ -36,7 +36,7 @@ namespace SonOfRobin
         public readonly Dictionary<Group, Dictionary<string, Sprite>> spriteGroups;
         public BoardGraphics boardGraphics;
 
-        public readonly List<PieceTemplate.Name> allowedNames; // for initialRangesByTerrainName only - because currentRangesByTerrainName can be changed anytime
+        public readonly List<PieceTemplate.Name> allowedNames; // for initial placing only - because possible piece placement can be changed during its lifecycle
 
         public static readonly Group[] allGroups = (Group[])Enum.GetValues(typeof(Group));
 
@@ -123,7 +123,7 @@ namespace SonOfRobin
                         ExtBoardProps.ExtPropName name = kvp.Key;
                         bool value = kvp.Value;
 
-                        if (!this.grid.ExtBoardProps.CheckIfContainsProperty(name: name, value: value, cellNoX: this.cellNoX, cellNoY: this.cellNoY))
+                        if (!this.grid.CheckIfContainsExtPropertyForCell(name: name, value: value, cellNoX: this.cellNoX, cellNoY: this.cellNoY))
                         {
                             cellCanContainThisPiece = false;
                             break;

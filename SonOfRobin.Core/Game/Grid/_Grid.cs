@@ -48,7 +48,7 @@ namespace SonOfRobin
         public readonly int resDivider;
 
         private readonly Dictionary<Terrain.Name, Terrain> terrainByName;
-        public ExtBoardProps ExtBoardProps { get; private set; }
+        private ExtBoardProps extBoardProps;
 
         public readonly Cell[,] cellGrid;
         public readonly List<Cell> allCells;
@@ -200,7 +200,7 @@ namespace SonOfRobin
                         this.terrainByName[terrainName] = terrain;
                     }
 
-                    this.ExtBoardProps = templateGrid.ExtBoardProps;
+                    this.extBoardProps = templateGrid.extBoardProps;
 
                     this.FillCellListsForPieceNames();
 
@@ -259,42 +259,42 @@ namespace SonOfRobin
 
                 case Stage.CheckExtData:
 
-                    if (this.ExtBoardProps == null) this.ExtBoardProps = new ExtBoardProps(grid: this);
+                    if (this.extBoardProps == null) this.extBoardProps = new ExtBoardProps(grid: this);
                     this.cellsToProcessOnStart.Clear();
 
                     break;
 
                 case Stage.SetExtDataSea:
 
-                    if (this.ExtBoardProps.CreationInProgress) this.ExtCalculateSea();
+                    if (this.extBoardProps.CreationInProgress) this.ExtCalculateSea();
                     else this.cellsToProcessOnStart.Clear();
 
                     break;
 
                 case Stage.SetExtDataBeach:
 
-                    if (this.ExtBoardProps.CreationInProgress) this.ExtCalculateOuterBeach();
+                    if (this.extBoardProps.CreationInProgress) this.ExtCalculateOuterBeach();
                     else this.cellsToProcessOnStart.Clear();
 
                     break;
 
                 case Stage.SetExtDataBiomes:
 
-                    if (this.ExtBoardProps.CreationInProgress) this.ExtCalculateBiomes();
+                    if (this.extBoardProps.CreationInProgress) this.ExtCalculateBiomes();
                     else this.cellsToProcessOnStart.Clear();
 
                     break;
 
                 case Stage.SetExtDataBiomesConstrains:
 
-                    if (this.ExtBoardProps.CreationInProgress) this.ExtApplyBiomeConstrains();
+                    if (this.extBoardProps.CreationInProgress) this.ExtApplyBiomeConstrains();
                     else this.cellsToProcessOnStart.Clear();
 
                     break;
 
                 case Stage.SetExtDataFinish:
 
-                    if (this.ExtBoardProps.CreationInProgress) this.ExtEndCreation();
+                    if (this.extBoardProps.CreationInProgress) this.ExtEndCreation();
                     else this.cellsToProcessOnStart.Clear();
 
                     break;
@@ -503,7 +503,7 @@ namespace SonOfRobin
 
         private void ExtEndCreation()
         {
-            this.ExtBoardProps.EndCreationAndSave();
+            this.extBoardProps.EndCreationAndSave();
 
             this.tempRawPointsForBiomeCreation = null;
             this.tempPointsForCreatedBiomes = null;
@@ -1074,6 +1074,11 @@ namespace SonOfRobin
             return this.terrainByName[terrainName].GetMaxValueForCell(cellNoX: cellNoX, cellNoY: cellNoY);
         }
 
+        public bool CheckIfContainsExtPropertyForCell(ExtBoardProps.ExtPropName name, bool value, int cellNoX, int cellNoY)
+        {
+            return this.extBoardProps.CheckIfContainsPropertyForCell(name: name, value: value, cellNoX: cellNoX, cellNoY: cellNoY);
+        }
+
         public byte GetFieldValue(Terrain.Name terrainName, int x, int y, bool xyRaw = false)
         {
             if (xyRaw) return this.terrainByName[terrainName].GetMapDataRaw(x, y);
@@ -1088,22 +1093,22 @@ namespace SonOfRobin
 
         public Dictionary<ExtBoardProps.ExtPropName, bool> GetExtValueDict(int x, int y)
         {
-            return this.ExtBoardProps.GetValueDict(x: x, y: y, xyRaw: false);
+            return this.extBoardProps.GetValueDict(x: x, y: y, xyRaw: false);
         }
 
         public bool GetExtProperty(ExtBoardProps.ExtPropName name, Vector2 position)
         {
-            return this.ExtBoardProps.GetValue(name: name, x: (int)position.X, y: (int)position.Y, xyRaw: false);
+            return this.extBoardProps.GetValue(name: name, x: (int)position.X, y: (int)position.Y, xyRaw: false);
         }
 
         public bool GetExtProperty(ExtBoardProps.ExtPropName name, int x, int y)
         {
-            return this.ExtBoardProps.GetValue(name: name, x: x, y: y, xyRaw: false);
+            return this.extBoardProps.GetValue(name: name, x: x, y: y, xyRaw: false);
         }
 
         public void SetExtProperty(ExtBoardProps.ExtPropName name, bool value, int x, int y)
         {
-            this.ExtBoardProps.SetValue(name: name, value: value, x: x, y: y, xyRaw: false);
+            this.extBoardProps.SetValue(name: name, value: value, x: x, y: y, xyRaw: false);
         }
 
         private Cell[,] MakeGrid()
