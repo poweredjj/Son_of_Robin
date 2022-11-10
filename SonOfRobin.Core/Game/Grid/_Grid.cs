@@ -705,7 +705,7 @@ namespace SonOfRobin
             string timeLeftString = timeLeft == TimeSpan.FromSeconds(0) ? "" : TimeSpanToString(timeLeft + TimeSpan.FromSeconds(1));
 
             string seedText = String.Format("{0:0000}", this.world.seed);
-            string message = $"preparing island\nseed {seedText}\n{this.world.width} x {this.world.height}\n{namesForStages[this.currentStage]} {timeLeftString}";
+            string message = $"preparing island\nstep {(int)this.currentStage + 1}/{allStagesCount}\nseed {seedText}\n{this.world.width} x {this.world.height}\n{namesForStages[this.currentStage]} {timeLeftString}";
 
             SonOfRobinGame.progressBar.TurnOn(
                             curVal: this.allCells.Count - this.cellsToProcessOnStart.Count,
