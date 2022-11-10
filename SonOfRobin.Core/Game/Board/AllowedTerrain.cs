@@ -10,10 +10,8 @@ namespace SonOfRobin
         public enum RangeName
         { All, WaterAll, WaterShallow, WaterMedium, WaterDeep, GroundSand, GroundAll, Volcano, NoBiome, Biome };
 
-        public static readonly TerrainName[] allTerrains = (TerrainName[])Enum.GetValues(typeof(TerrainName));
-
-        private readonly Dictionary<TerrainName, AllowedRange> initialRangesByTerrainName; // never to be changed
-        private Dictionary<TerrainName, AllowedRange> currentRangesByTerrainName;
+        private readonly Dictionary<Terrain.Name, AllowedRange> initialRangesByTerrainName; // never to be changed
+        private Dictionary<Terrain.Name, AllowedRange> currentRangesByTerrainName;
 
         private readonly Dictionary<ExtBoardProps.ExtPropName, bool> initialExtPropertiesDict;
         private Dictionary<ExtBoardProps.ExtPropName, bool> currentExtPropertiesDict;
@@ -21,7 +19,7 @@ namespace SonOfRobin
         public AllowedTerrain(Dictionary<ExtBoardProps.ExtPropName, bool> extPropertiesDict = null)
         {
             // no fields defined - all fields allowed
-            this.initialRangesByTerrainName = new Dictionary<TerrainName, AllowedRange> { };
+            this.initialRangesByTerrainName = new Dictionary<Terrain.Name, AllowedRange> { };
             MakeRangeDictReadOnly(this.initialRangesByTerrainName);
             this.currentRangesByTerrainName = null;
 
@@ -29,9 +27,9 @@ namespace SonOfRobin
             this.currentExtPropertiesDict = null;
         }
 
-        public AllowedTerrain(Dictionary<TerrainName, AllowedRange> rangeDict, Dictionary<ExtBoardProps.ExtPropName, bool> extPropertiesDict = null)
+        public AllowedTerrain(Dictionary<Terrain.Name, AllowedRange> rangeDict, Dictionary<ExtBoardProps.ExtPropName, bool> extPropertiesDict = null)
         {
-            // var exampleRangeDict = new Dictionary<string, AllowedRange>() { { TerrainName.Height, new AllowedRange(min: 0, max: 128) } };
+            // var exampleRangeDict = new Dictionary<string, AllowedRange>() { { Terrain.Name.Height, new AllowedRange(min: 0, max: 128) } };
 
             this.initialRangesByTerrainName = rangeDict;
             MakeRangeDictReadOnly(this.initialRangesByTerrainName);
@@ -45,53 +43,53 @@ namespace SonOfRobin
         {
             // var exampleRangeNameList = new List<string>() { BoardColors.WaterShallow, "ground_all" };
 
-            var rangeDict = new Dictionary<TerrainName, AllowedRange> { };
+            var rangeDict = new Dictionary<Terrain.Name, AllowedRange> { };
 
             foreach (var rangeName in rangeNameList)
             {
                 switch (rangeName)
                 {
                     case RangeName.All:
-                        foreach (TerrainName terrainName in allTerrains)
+                        foreach (Terrain.Name terrainName in Terrain.allTerrains)
                         {
                             AddRangeToRangeDict(rangeDict: rangeDict, terrainName: terrainName, min: 0, max: 255);
                         }
                         break;
 
                     case RangeName.WaterAll:
-                        AddRangeToRangeDict(rangeDict: rangeDict, terrainName: TerrainName.Height, min: 0, max: Terrain.waterLevelMax);
+                        AddRangeToRangeDict(rangeDict: rangeDict, terrainName: Terrain.Name.Height, min: 0, max: Terrain.waterLevelMax);
                         break;
 
                     case RangeName.WaterShallow:
-                        AddRangeToRangeDict(rangeDict: rangeDict, terrainName: TerrainName.Height, min: Convert.ToByte((Terrain.waterLevelMax / 3) * 2), max: Terrain.waterLevelMax);
+                        AddRangeToRangeDict(rangeDict: rangeDict, terrainName: Terrain.Name.Height, min: Convert.ToByte((Terrain.waterLevelMax / 3) * 2), max: Terrain.waterLevelMax);
                         break;
 
                     case RangeName.WaterMedium:
-                        AddRangeToRangeDict(rangeDict: rangeDict, terrainName: TerrainName.Height, min: Convert.ToByte(Terrain.waterLevelMax / 3), max: Convert.ToByte((Terrain.waterLevelMax / 3) * 2));
+                        AddRangeToRangeDict(rangeDict: rangeDict, terrainName: Terrain.Name.Height, min: Convert.ToByte(Terrain.waterLevelMax / 3), max: Convert.ToByte((Terrain.waterLevelMax / 3) * 2));
                         break;
 
                     case RangeName.WaterDeep:
-                        AddRangeToRangeDict(rangeDict: rangeDict, terrainName: TerrainName.Height, min: 0, max: Convert.ToByte(Terrain.waterLevelMax / 3));
+                        AddRangeToRangeDict(rangeDict: rangeDict, terrainName: Terrain.Name.Height, min: 0, max: Convert.ToByte(Terrain.waterLevelMax / 3));
                         break;
 
                     case RangeName.GroundSand:
-                        AddRangeToRangeDict(rangeDict: rangeDict, terrainName: TerrainName.Height, min: (byte)(Terrain.waterLevelMax + 1), max: 105);
+                        AddRangeToRangeDict(rangeDict: rangeDict, terrainName: Terrain.Name.Height, min: (byte)(Terrain.waterLevelMax + 1), max: 105);
                         break;
 
                     case RangeName.GroundAll:
-                        AddRangeToRangeDict(rangeDict: rangeDict, terrainName: TerrainName.Height, min: (byte)(Terrain.waterLevelMax + 1), max: (byte)(Terrain.volcanoEdgeMin - 1));
+                        AddRangeToRangeDict(rangeDict: rangeDict, terrainName: Terrain.Name.Height, min: (byte)(Terrain.waterLevelMax + 1), max: (byte)(Terrain.volcanoEdgeMin - 1));
                         break;
 
                     case RangeName.Volcano:
-                        AddRangeToRangeDict(rangeDict: rangeDict, terrainName: TerrainName.Height, min: (byte)(Terrain.volcanoEdgeMin - 1), max: 255);
+                        AddRangeToRangeDict(rangeDict: rangeDict, terrainName: Terrain.Name.Height, min: (byte)(Terrain.volcanoEdgeMin - 1), max: 255);
                         break;
 
                     case RangeName.NoBiome:
-                        AddRangeToRangeDict(rangeDict: rangeDict, terrainName: TerrainName.Biome, min: 0, max: Terrain.biomeMin);
+                        AddRangeToRangeDict(rangeDict: rangeDict, terrainName: Terrain.Name.Biome, min: 0, max: Terrain.biomeMin);
                         break;
 
                     case RangeName.Biome:
-                        AddRangeToRangeDict(rangeDict: rangeDict, terrainName: TerrainName.Biome, min: (byte)(Terrain.biomeMin + 1), max: 255);
+                        AddRangeToRangeDict(rangeDict: rangeDict, terrainName: Terrain.Name.Biome, min: (byte)(Terrain.biomeMin + 1), max: 255);
                         break;
 
                     default:
@@ -106,7 +104,7 @@ namespace SonOfRobin
             this.currentExtPropertiesDict = null;
         }
 
-        private static void MakeRangeDictReadOnly(Dictionary<TerrainName, AllowedRange> rangeDict)
+        private static void MakeRangeDictReadOnly(Dictionary<Terrain.Name, AllowedRange> rangeDict)
         {
             foreach (AllowedRange allowedRange in rangeDict.Values)
             {
@@ -114,7 +112,7 @@ namespace SonOfRobin
             }
         }
 
-        public static void AddRangeToRangeDict(Dictionary<TerrainName, AllowedRange> rangeDict, TerrainName terrainName, byte min, byte max)
+        public static void AddRangeToRangeDict(Dictionary<Terrain.Name, AllowedRange> rangeDict, Terrain.Name terrainName, byte min, byte max)
         {
             if (!rangeDict.ContainsKey(terrainName))
             {
@@ -126,16 +124,16 @@ namespace SonOfRobin
             }
         }
 
-        public void RemoveTerrain(TerrainName terrainName)
+        public void RemoveTerrain(Terrain.Name terrainName)
         {
             if (this.currentRangesByTerrainName is null) this.currentRangesByTerrainName = CopyRangeDict(this.initialRangesByTerrainName);
 
             this.currentRangesByTerrainName.Remove(terrainName);
         }
 
-        private static Dictionary<TerrainName, AllowedRange> CopyRangeDict(Dictionary<TerrainName, AllowedRange> rangeDict)
+        private static Dictionary<Terrain.Name, AllowedRange> CopyRangeDict(Dictionary<Terrain.Name, AllowedRange> rangeDict)
         {
-            var newRangeDict = new Dictionary<TerrainName, AllowedRange>();
+            var newRangeDict = new Dictionary<Terrain.Name, AllowedRange>();
 
             foreach (var kvp in rangeDict)
             {
@@ -201,7 +199,7 @@ namespace SonOfRobin
             return true;
         }
 
-        public AllowedRange GetInitialRangeForTerrainName(TerrainName terrainName)
+        public AllowedRange GetInitialRangeForTerrainName(Terrain.Name terrainName)
         {
             if (this.initialRangesByTerrainName.ContainsKey(terrainName)) return this.initialRangesByTerrainName[terrainName];
             else return null;

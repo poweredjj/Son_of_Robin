@@ -5,21 +5,24 @@ using System.Threading.Tasks;
 
 namespace SonOfRobin
 {
-    public enum TerrainName
-    {
-        Height,
-        Humidity,
-        Biome
-    }
     public class Terrain
     {
+        public enum Name
+        {
+            Height,
+            Humidity,
+            Biome
+        }
+
+        public static readonly Name[] allTerrains = (Name[])Enum.GetValues(typeof(Name));
+
         public static readonly byte waterLevelMax = 84;
         public static readonly byte volcanoEdgeMin = 210;
         public static readonly byte lavaMin = 225;
         public static readonly byte biomeMin = 156;
         public static readonly byte biomeDeep = 220;
 
-        public readonly TerrainName name;
+        public readonly Name name;
         private readonly Byte[,] mapData;
 
         public readonly Grid grid;
@@ -39,7 +42,7 @@ namespace SonOfRobin
         private readonly byte[,] minValGridCell; // this values are stored in terrain, instead of cell
         private readonly byte[,] maxValGridCell; // this values are stored in terrain, instead of cell
 
-        public Terrain(World world, TerrainName name, float frequency, int octaves, float persistence, float lacunarity, float gain, bool addBorder = false)
+        public Terrain(World world, Name name, float frequency, int octaves, float persistence, float lacunarity, float gain, bool addBorder = false)
         {
             this.name = name;
             this.world = world;
@@ -127,6 +130,7 @@ namespace SonOfRobin
 
             return serializedMapData;
         }
+
         private byte[,] CreateNoiseMap(bool addBorder = false)
         {
             FastNoiseLite noise = this.world.noise;

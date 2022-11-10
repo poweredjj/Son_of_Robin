@@ -8,11 +8,11 @@ namespace SonOfRobin
 {
     public struct BiomeConstrain
     {
-        public readonly TerrainName terrainName;
+        public readonly Terrain.Name terrainName;
         public readonly byte min;
         public readonly byte max;
 
-        public BiomeConstrain(TerrainName terrainName, byte min, byte max)
+        public BiomeConstrain(Terrain.Name terrainName, byte min, byte max)
         {
             this.terrainName = terrainName;
             this.min = min;
@@ -30,8 +30,8 @@ namespace SonOfRobin
 
         public static readonly Dictionary<ExtPropName, List<BiomeConstrain>> biomeConstrains = new Dictionary<ExtPropName, List<BiomeConstrain>> {
             { ExtPropName.BiomeSwamp, new List<BiomeConstrain>{
-                 new BiomeConstrain(terrainName: TerrainName.Height, min: 106, max: 160),
-                // new BiomeConstrain(terrainName: TerrainName.Humidity, min: 80, max: 255),
+                 new BiomeConstrain(terrainName: Terrain.Name.Height, min: 106, max: 160),
+                 new BiomeConstrain(terrainName: Terrain.Name.Humidity, min: 80, max: 255),
             } }
         };
 

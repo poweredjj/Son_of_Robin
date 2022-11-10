@@ -39,7 +39,6 @@ namespace SonOfRobin
         public readonly List<PieceTemplate.Name> allowedNames; // for initialRangesByTerrainName only - because currentRangesByTerrainName can be changed anytime
 
         public static readonly Group[] allGroups = (Group[])Enum.GetValues(typeof(Group));
-        public static readonly TerrainName[] allTerrains = (TerrainName[])Enum.GetValues(typeof(TerrainName));
 
         public enum Group
         {
@@ -100,17 +99,13 @@ namespace SonOfRobin
                 AllowedTerrain allowedTerrain = pieceInfo.allowedTerrain;
                 bool cellCanContainThisPiece = true;
 
-                foreach (var kvp in this.grid.terrainByName)
+                foreach (Terrain.Name terrainName in Terrain.allTerrains)
                 {
-                    TerrainName terrainName = kvp.Key;
-
                     AllowedRange allowedRange = allowedTerrain.GetInitialRangeForTerrainName(terrainName);
                     if (allowedRange != null)
                     {
-                        Terrain terrain = kvp.Value;
-
-                        byte minVal = terrain.GetMinValueForCell(cellNoX: this.cellNoX, cellNoY: this.cellNoY);
-                        byte maxVal = terrain.GetMaxValueForCell(cellNoX: this.cellNoX, cellNoY: this.cellNoY);
+                        byte minVal = this.grid.GetMinValueForCell(terrainName: terrainName, cellNoX: cellNoX, cellNoY: cellNoY);
+                        byte maxVal = this.grid.GetMaxValueForCell(terrainName: terrainName, cellNoX: cellNoX, cellNoY: cellNoY);
 
                         if ((allowedRange.Min < minVal && allowedRange.Max < minVal) ||
                             (allowedRange.Min > maxVal && allowedRange.Max > maxVal))

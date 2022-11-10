@@ -12,12 +12,14 @@ namespace SonOfRobin
         {
             // must be lowercase, to match animName
             left,
+
             right,
             up,
             down
         }
 
-        public enum AdditionalMoveType { None, Minimal, Half }
+        public enum AdditionalMoveType
+        { None, Minimal, Half }
 
         public readonly string id;
         public readonly BoardPiece boardPiece;
@@ -48,12 +50,14 @@ namespace SonOfRobin
         public bool hasBeenDiscovered;
         public readonly EffectCol effectCol;
         public List<Cell.Group> gridGroups;
-        public Cell currentCell; // current cell, that is containing the sprite 
+        public Cell currentCell; // current cell, that is containing the sprite
         public bool IsOnBoard { get; private set; }
+
         public string CompleteAnimID
         { get { return GetCompleteAnimId(animPackage: this.animPackage, animSize: this.animSize, animName: this.animName); } }
 
-        public bool IsInCameraRect { get { return this.world.camera.viewRect.Contains(this.position); } }
+        public bool IsInCameraRect
+        { get { return this.world.camera.viewRect.Contains(this.position); } }
 
         public bool IsInLightSourceRange
         {
@@ -71,19 +75,27 @@ namespace SonOfRobin
         }
 
         private bool visible;
+
         public bool IsInWater
-        { get { return this.GetFieldValue(TerrainName.Height) < Terrain.waterLevelMax; } }
-        public bool CanDrownHere { get { return this.GetFieldValue(TerrainName.Height) < Terrain.waterLevelMax - 10; } }
+        { get { return this.GetFieldValue(Terrain.Name.Height) < Terrain.waterLevelMax; } }
+
+        public bool CanDrownHere
+        { get { return this.GetFieldValue(Terrain.Name.Height) < Terrain.waterLevelMax - 10; } }
+
         public bool IsOnSand
-        { get { return !this.IsInWater && (this.GetFieldValue(TerrainName.Humidity) <= 80 || this.GetFieldValue(TerrainName.Height) < 105); } }
+        { get { return !this.IsInWater && (this.GetFieldValue(Terrain.Name.Humidity) <= 80 || this.GetFieldValue(Terrain.Name.Height) < 105); } }
+
         public bool IsOnRock
-        { get { return this.GetFieldValue(TerrainName.Height) > 160; } }
+        { get { return this.GetFieldValue(Terrain.Name.Height) > 160; } }
+
         public bool IsOnLava
-        { get { return this.GetFieldValue(TerrainName.Height) >= Terrain.lavaMin; } }
+        { get { return this.GetFieldValue(Terrain.Name.Height) >= Terrain.lavaMin; } }
+
         public bool IsInBiome
-        { get { return this.GetFieldValue(TerrainName.Biome) > Terrain.biomeMin; } }
+        { get { return this.GetFieldValue(Terrain.Name.Biome) > Terrain.biomeMin; } }
+
         public bool IsDeepInBiome
-        { get { return this.GetFieldValue(TerrainName.Biome) > Terrain.biomeDeep; } }
+        { get { return this.GetFieldValue(Terrain.Name.Biome) > Terrain.biomeDeep; } }
 
         public PieceSoundPack.Action WalkSoundAction
         {
@@ -94,7 +106,7 @@ namespace SonOfRobin
                 if (this.IsInWater)
                 {
                     if (this.CanDrownHere) return PieceSoundPack.Action.SwimDeep;
-                    else if (this.GetFieldValue(TerrainName.Height) < Terrain.waterLevelMax - 5) return PieceSoundPack.Action.SwimShallow;
+                    else if (this.GetFieldValue(Terrain.Name.Height) < Terrain.waterLevelMax - 5) return PieceSoundPack.Action.SwimShallow;
                     else return PieceSoundPack.Action.StepWater;
                 }
 
@@ -223,6 +235,7 @@ namespace SonOfRobin
             pieceData["sprite_lightSource"] = this.lightEngine == null ? null : this.lightEngine.Serialize();
             pieceData["sprite_color"] = new byte[] { this.color.R, this.color.G, this.color.B, this.color.A };
         }
+
         public void Deserialize(Dictionary<string, Object> pieceData)
         {
             this.position = new Vector2((float)pieceData["sprite_positionX"], (float)pieceData["sprite_positionY"]);
@@ -244,7 +257,8 @@ namespace SonOfRobin
             var colorArray = (byte[])pieceData["sprite_color"];
             this.color = new Color(r: colorArray[0], g: colorArray[1], b: colorArray[2], alpha: colorArray[3]);
         }
-        public byte GetFieldValue(TerrainName terrainName)
+
+        public byte GetFieldValue(Terrain.Name terrainName)
         {
             if (!this.IsOnBoard) throw new ArgumentException($"Trying to get a field value of '{this.boardPiece.name}' that is not on board.");
             return this.world.grid.GetFieldValue(position: this.position, terrainName: terrainName);
@@ -315,7 +329,7 @@ namespace SonOfRobin
 
             int numberOfTries = (minDistance == 0 && maxDistance == 0) ? 1 : 4;
 
-            if (startPosition.X == -100 && startPosition.Y == -100) // -100, -100 will be converted to any position on the map - needed for effective creation of new sprites 
+            if (startPosition.X == -100 && startPosition.Y == -100) // -100, -100 will be converted to any position on the map - needed for effective creation of new sprites
             {
                 for (int tryIndex = 0; tryIndex < numberOfTries; tryIndex++)
                 {
@@ -604,6 +618,7 @@ namespace SonOfRobin
                 }
             }
         }
+
         public void AssignNewSize(byte animSize, bool setEvenIfMissing = true)
         {
             if (this.animSize != animSize)
@@ -616,6 +631,7 @@ namespace SonOfRobin
                 }
             }
         }
+
         public void AssignNewName(string animName, bool setEvenIfMissing = true)
         {
             if (this.animName != animName)
@@ -629,6 +645,7 @@ namespace SonOfRobin
                 }
             }
         }
+
         public bool CheckIfAnimPackageExists(AnimData.PkgName newAnimPackage)
         {
             string newCompleteAnimID = GetCompleteAnimId(animPackage: newAnimPackage, animSize: this.animSize, animName: this.animName);
@@ -640,6 +657,7 @@ namespace SonOfRobin
             string newCompleteAnimID = GetCompleteAnimId(animPackage: this.animPackage, animSize: newAnimSize, animName: this.animName);
             return AnimData.frameListById.ContainsKey(newCompleteAnimID);
         }
+
         public bool CheckIfAnimNameExists(string newAnimName)
         {
             string newCompleteAnimID = GetCompleteAnimId(animPackage: this.animPackage, animSize: this.animSize, animName: newAnimName);
@@ -678,6 +696,7 @@ namespace SonOfRobin
 
             return true;
         }
+
         public void AssignFrameById(string frameId)
         // use only when loading game - does not check for collisions
         {
@@ -761,7 +780,7 @@ namespace SonOfRobin
             if (this.rotation == 0)
             {
                 int submergeCorrection = !this.floatsOnWater && this.IsInWater && calculateSubmerge ?
-                    (Terrain.waterLevelMax - this.GetFieldValue(TerrainName.Height)) / 2 : 0;
+                    (Terrain.waterLevelMax - this.GetFieldValue(Terrain.Name.Height)) / 2 : 0;
 
                 this.frame.Draw(destRect: destRect, color: this.color, submergeCorrection: submergeCorrection, opacity: this.opacity);
             }
@@ -786,7 +805,6 @@ namespace SonOfRobin
 
         public void DrawAndKeepInRectBounds(Rectangle destRect, float opacity)
         { this.frame.DrawAndKeepInRectBounds(destBoundsRect: destRect, color: this.color * opacity); }
-
 
         private void DrawState()
         {
@@ -849,6 +867,5 @@ namespace SonOfRobin
                     layerDepth: 0);
             }
         }
-
     }
 }

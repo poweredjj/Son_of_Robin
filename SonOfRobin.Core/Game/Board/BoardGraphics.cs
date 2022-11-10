@@ -94,9 +94,9 @@ namespace SonOfRobin
                     int pixelX = (int)(x / multiplier);
                     int pixelY = (int)(y / multiplier);
 
-                    byte pixelHeight = grid.GetFieldValue(x: pixelX, y: pixelY, terrainName: TerrainName.Height);
-                    byte pixelHumidity = grid.GetFieldValue(x: pixelX, y: pixelY, terrainName: TerrainName.Humidity);
-                    byte pixelBiome = grid.GetFieldValue(x: pixelX, y: pixelY, terrainName: TerrainName.Biome);
+                    byte pixelHeight = grid.GetFieldValue(x: pixelX, y: pixelY, terrainName: Terrain.Name.Height);
+                    byte pixelHumidity = grid.GetFieldValue(x: pixelX, y: pixelY, terrainName: Terrain.Name.Humidity);
+                    byte pixelBiome = grid.GetFieldValue(x: pixelX, y: pixelY, terrainName: Terrain.Name.Biome);
                     var extDataValDict = grid.GetExtValueDict(x: pixelX, y: pixelY);
                     colorArray[(y * width) + x] = CreatePixel(pixelHeight: pixelHeight, pixelHumidity: pixelHumidity, pixelBiome: pixelBiome, extDataValDict: extDataValDict);
                 }
@@ -119,17 +119,20 @@ namespace SonOfRobin
 
             Color[,] smallColorGrid = new Color[sourceWidth, sourceHeight];
 
-            for (int localX = 0; localX < sourceWidth; localX++)
+            for (int localX = 0; localX < sourceWidth + 0; localX++)
             {
-                for (int localY = 0; localY < sourceHeight; localY++)
+                for (int localY = 0; localY < sourceHeight + 0; localY++)
                 {
                     int worldSpaceX = this.cell.xMin + (localX * resDivider);
                     int worldSpaceY = this.cell.yMin + (localY * resDivider);
 
+                    worldSpaceX = Math.Min(Math.Max(worldSpaceX, 0), this.cell.world.width - 1);
+                    worldSpaceY = Math.Min(Math.Max(worldSpaceY, 0), this.cell.world.height - 1);
+
                     smallColorGrid[localX, localY] = CreatePixel(
-                        pixelHeight: this.cell.grid.terrainByName[TerrainName.Height].GetMapData(worldSpaceX, worldSpaceY),
-                        pixelHumidity: this.cell.grid.terrainByName[TerrainName.Humidity].GetMapData(worldSpaceX, worldSpaceY),
-                        pixelBiome: this.cell.grid.terrainByName[TerrainName.Biome].GetMapData(worldSpaceX, worldSpaceY),
+                        pixelHeight: this.cell.grid.GetFieldValue(terrainName: Terrain.Name.Height, x: worldSpaceX, y: worldSpaceY),
+                        pixelHumidity: this.cell.grid.GetFieldValue(terrainName: Terrain.Name.Humidity, x: worldSpaceX, y: worldSpaceY),
+                        pixelBiome: this.cell.grid.GetFieldValue(terrainName: Terrain.Name.Biome, x: worldSpaceX, y: worldSpaceY),
                         extDataValDict: this.cell.grid.ExtBoardProps.GetValueDict(x: worldSpaceX, y: worldSpaceY, xyRaw: false));
                 }
             }
@@ -173,23 +176,20 @@ namespace SonOfRobin
                 {
                     for (int xOffset = -1; xOffset < 2; xOffset++)
                     {
-                        int localX = point.X + xOffset;
-                        int localY = point.Y + yOffset;
+                        int worldSpaceX = this.cell.xMin + ((point.X + xOffset) * resDivider);
+                        int worldSpaceY = this.cell.yMin + ((point.Y + yOffset) * resDivider);
 
                         try
                         {
-                            int worldSpaceX = this.cell.xMin + (localX * resDivider);
-                            int worldSpaceY = this.cell.yMin + (localY * resDivider);
-
                             workingGrid3x3[xOffset + 1, yOffset + 1] = CreatePixel(
-                                pixelHeight: this.cell.grid.GetFieldValue(terrainName: TerrainName.Height, x: worldSpaceX, y: worldSpaceY),
-                                pixelHumidity: this.cell.grid.GetFieldValue(terrainName: TerrainName.Humidity, x: worldSpaceX, y: worldSpaceY),
-                                pixelBiome: this.cell.grid.GetFieldValue(terrainName: TerrainName.Biome, x: worldSpaceX, y: worldSpaceY),
+                                pixelHeight: this.cell.grid.GetFieldValue(terrainName: Terrain.Name.Height, x: worldSpaceX, y: worldSpaceY),
+                                pixelHumidity: this.cell.grid.GetFieldValue(terrainName: Terrain.Name.Humidity, x: worldSpaceX, y: worldSpaceY),
+                                pixelBiome: this.cell.grid.GetFieldValue(terrainName: Terrain.Name.Biome, x: worldSpaceX, y: worldSpaceY),
                                 extDataValDict: this.cell.grid.GetExtValueDict(x: worldSpaceX, y: worldSpaceY));
                         }
                         catch (IndexOutOfRangeException)
                         {
-                            // pixel outside world bounds -inserting the nearest correct position
+                            // pixel outside world bounds - inserting the nearest correct position
                             workingGrid3x3[xOffset + 1, yOffset + 1] = smallColorGrid[point.X, point.Y];
                         }
                     }

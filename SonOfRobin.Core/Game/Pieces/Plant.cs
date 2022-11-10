@@ -20,7 +20,7 @@ namespace SonOfRobin
 
     public class Plant : BoardPiece
     {
-        private readonly Dictionary<TerrainName, byte> bestEnvironment;
+        private readonly Dictionary<Terrain.Name, byte> bestEnvironment;
         public readonly PlantReproductionData reproduction;
         private readonly byte massToBurn;
         public float massTakenMultiplier;
@@ -28,7 +28,7 @@ namespace SonOfRobin
         private float occupiedFieldWealth;
         public readonly FruitEngine fruitEngine;
 
-        public Plant(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, Dictionary<TerrainName, byte> bestEnvironment, Dictionary<byte, int> maxMassBySize, string readableName, string description, Category category,
+        public Plant(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, Dictionary<Terrain.Name, byte> bestEnvironment, Dictionary<byte, int> maxMassBySize, string readableName, string description, Category category,
             int maxAge, PlantReproductionData reproduction, byte massToBurn, float massTakenMultiplier,
             byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = false, int mass = 1, int staysAfterDeath = 800, int generation = 0, Yield yield = null, int maxHitPoints = 1, FruitEngine fruitEngine = null, Scheduler.TaskName boardTask = Scheduler.TaskName.Empty, bool fadeInAnim = true, AllowedDensity allowedDensity = null, LightEngine lightEngine = null, int maxExistingNumber = 0, PieceSoundPack soundPack = null) :
 

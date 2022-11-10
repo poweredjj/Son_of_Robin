@@ -532,7 +532,7 @@ namespace SonOfRobin
                 {
                     player.sprite.orientation = Sprite.Orientation.up;
                     player.sprite.CharacterStand();
-                    player.sprite.allowedTerrain.RemoveTerrain(TerrainName.Biome); // player should be spawned in a safe place, but able to go everywhere afterwards
+                    player.sprite.allowedTerrain.RemoveTerrain(Terrain.Name.Biome); // player should be spawned in a safe place, but able to go everywhere afterwards
                     player.sprite.allowedTerrain.ClearExtProperties();
                     return player;
                 }
@@ -634,10 +634,9 @@ namespace SonOfRobin
 
             this.ProcessInput();
             this.UpdateViewParams();
-            //SoundEffect.DistanceScale = this.camera.viewRect.Width * 0.065f;
 
             this.grid.UnloadTexturesIfMemoryLow(this.camera);
-            this.grid.LoadClosestTexturesInCameraView(camera: this.camera, visitedByPlayerOnly: false);
+            this.grid.LoadClosestTexturesInCameraView(camera: this.camera, visitedByPlayerOnly: false, loadMoreThanOne: false);
 
             if (this.demoMode) this.camera.TrackLiveAnimal(fluidMotion: true);
 

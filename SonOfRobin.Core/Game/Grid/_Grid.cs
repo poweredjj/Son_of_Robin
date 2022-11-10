@@ -47,7 +47,7 @@ namespace SonOfRobin
         public readonly int cellHeight;
         public readonly int resDivider;
 
-        public readonly Dictionary<TerrainName, Terrain> terrainByName;
+        private readonly Dictionary<Terrain.Name, Terrain> terrainByName;
         public ExtBoardProps ExtBoardProps { get; private set; }
 
         public readonly Cell[,] cellGrid;
@@ -78,7 +78,7 @@ namespace SonOfRobin
             this.world = world;
             this.resDivider = resDivider;
 
-            this.terrainByName = new Dictionary<TerrainName, Terrain>();
+            this.terrainByName = new Dictionary<Terrain.Name, Terrain>();
 
             this.width = this.world.width;
             this.height = this.world.height;
@@ -195,7 +195,7 @@ namespace SonOfRobin
 
                     foreach (var kvp in templateGrid.terrainByName)
                     {
-                        TerrainName terrainName = kvp.Key;
+                        Terrain.Name terrainName = kvp.Key;
                         Terrain terrain = kvp.Value;
                         this.terrainByName[terrainName] = terrain;
                     }
@@ -227,23 +227,23 @@ namespace SonOfRobin
 
                     bool terrainRendered = false;
 
-                    if (!terrainRendered && !this.terrainByName.ContainsKey(TerrainName.Height))
+                    if (!terrainRendered && !this.terrainByName.ContainsKey(Terrain.Name.Height))
                     {
-                        this.terrainByName[TerrainName.Height] = new Terrain(world: this.world, name: TerrainName.Height, frequency: 8f, octaves: 9, persistence: 0.5f, lacunarity: 1.9f, gain: 0.55f, addBorder: true);
+                        this.terrainByName[Terrain.Name.Height] = new Terrain(world: this.world, name: Terrain.Name.Height, frequency: 8f, octaves: 9, persistence: 0.5f, lacunarity: 1.9f, gain: 0.55f, addBorder: true);
 
                         terrainRendered = true;
                     }
 
-                    if (!terrainRendered && !this.terrainByName.ContainsKey(TerrainName.Humidity))
+                    if (!terrainRendered && !this.terrainByName.ContainsKey(Terrain.Name.Humidity))
                     {
-                        this.terrainByName[TerrainName.Humidity] = new Terrain(world: this.world, name: TerrainName.Humidity, frequency: 4.3f, octaves: 9, persistence: 0.6f, lacunarity: 1.7f, gain: 0.6f);
+                        this.terrainByName[Terrain.Name.Humidity] = new Terrain(world: this.world, name: Terrain.Name.Humidity, frequency: 4.3f, octaves: 9, persistence: 0.6f, lacunarity: 1.7f, gain: 0.6f);
 
                         terrainRendered = true;
                     }
 
-                    if (!terrainRendered && !this.terrainByName.ContainsKey(TerrainName.Biome))
+                    if (!terrainRendered && !this.terrainByName.ContainsKey(Terrain.Name.Biome))
                     {
-                        this.terrainByName[TerrainName.Biome] = new Terrain(world: this.world, name: TerrainName.Biome, frequency: 7f, octaves: 3, persistence: 0.7f, lacunarity: 1.4f, gain: 0.3f, addBorder: true);
+                        this.terrainByName[Terrain.Name.Biome] = new Terrain(world: this.world, name: Terrain.Name.Biome, frequency: 7f, octaves: 3, persistence: 0.7f, lacunarity: 1.4f, gain: 0.3f, addBorder: true);
 
                         terrainRendered = true;
                     }
@@ -412,7 +412,7 @@ namespace SonOfRobin
 
             this.FloodFillExtProps(
                  startingPoints: startingPointsRaw,
-                 terrainName: TerrainName.Height,
+                 terrainName: Terrain.Name.Height,
                  minVal: 0, maxVal: (byte)(Terrain.waterLevelMax),
                  nameToSetIfInRange: ExtBoardProps.ExtPropName.Sea,
                  setNameIfOutsideRange: true,
@@ -431,7 +431,7 @@ namespace SonOfRobin
 
             this.FloodFillExtProps(
                  startingPoints: beachEdgePointListRaw,
-                 terrainName: TerrainName.Height,
+                 terrainName: Terrain.Name.Height,
                  minVal: minVal, maxVal: maxVal,
                  nameToSetIfInRange: ExtBoardProps.ExtPropName.OuterBeach,
                  setNameIfOutsideRange: false,
@@ -448,7 +448,7 @@ namespace SonOfRobin
 
             if (!tempRawPointsForBiomeCreation.Any())
             {
-                this.tempRawPointsForBiomeCreation = this.GetAllRawCoordinatesWithRangeAndWithoutSpecifiedExtProps(terrainName: TerrainName.Biome, minVal: minVal, maxVal: maxVal, extPropNames: ExtBoardProps.allBiomes);
+                this.tempRawPointsForBiomeCreation = this.GetAllRawCoordinatesWithRangeAndWithoutSpecifiedExtProps(terrainName: Terrain.Name.Biome, minVal: minVal, maxVal: maxVal, extPropNames: ExtBoardProps.allBiomes);
             }
             else
             {
@@ -462,7 +462,7 @@ namespace SonOfRobin
 
                 ConcurrentBag<Point> biomePoints = this.FloodFillExtProps(
                       startingPoints: new ConcurrentBag<Point> { this.tempRawPointsForBiomeCreation.First() },
-                      terrainName: TerrainName.Biome,
+                      terrainName: Terrain.Name.Biome,
                       minVal: minVal, maxVal: maxVal,
                       nameToSetIfInRange: biomeName,
                       setNameIfOutsideRange: false,
@@ -528,7 +528,7 @@ namespace SonOfRobin
             return pointBag;
         }
 
-        private ConcurrentBag<Point> GetAllRawCoordinatesWithRangeAndWithoutSpecifiedExtProps(TerrainName terrainName, byte minVal, byte maxVal, List<ExtBoardProps.ExtPropName> extPropNames)
+        private ConcurrentBag<Point> GetAllRawCoordinatesWithRangeAndWithoutSpecifiedExtProps(Terrain.Name terrainName, byte minVal, byte maxVal, List<ExtBoardProps.ExtPropName> extPropNames)
         {
             var pointBag = new ConcurrentBag<Point>();
 
@@ -615,7 +615,7 @@ namespace SonOfRobin
             return newPointBag;
         }
 
-        private ConcurrentBag<Point> FloodFillExtProps(ConcurrentBag<Point> startingPoints, TerrainName terrainName, byte minVal, byte maxVal, ExtBoardProps.ExtPropName nameToSetIfInRange, bool setNameIfOutsideRange, ExtBoardProps.ExtPropName nameToSetIfOutsideRange)
+        private ConcurrentBag<Point> FloodFillExtProps(ConcurrentBag<Point> startingPoints, Terrain.Name terrainName, byte minVal, byte maxVal, ExtBoardProps.ExtPropName nameToSetIfInRange, bool setNameIfOutsideRange, ExtBoardProps.ExtPropName nameToSetIfOutsideRange)
         {
             int dividedWidth = this.world.width / this.resDivider;
             int dividedHeight = this.world.height / this.resDivider;
@@ -1064,13 +1064,23 @@ namespace SonOfRobin
             return this.cellGrid[cellNoX, cellNoY];
         }
 
-        public byte GetFieldValue(TerrainName terrainName, int x, int y, bool xyRaw = false)
+        public byte GetMinValueForCell(Terrain.Name terrainName, int cellNoX, int cellNoY)
+        {
+            return this.terrainByName[terrainName].GetMinValueForCell(cellNoX: cellNoX, cellNoY: cellNoY);
+        }
+
+        public byte GetMaxValueForCell(Terrain.Name terrainName, int cellNoX, int cellNoY)
+        {
+            return this.terrainByName[terrainName].GetMaxValueForCell(cellNoX: cellNoX, cellNoY: cellNoY);
+        }
+
+        public byte GetFieldValue(Terrain.Name terrainName, int x, int y, bool xyRaw = false)
         {
             if (xyRaw) return this.terrainByName[terrainName].GetMapDataRaw(x, y);
             else return this.terrainByName[terrainName].GetMapData(x, y);
         }
 
-        public byte GetFieldValue(TerrainName terrainName, Vector2 position, bool xyRaw = false)
+        public byte GetFieldValue(Terrain.Name terrainName, Vector2 position, bool xyRaw = false)
         {
             if (xyRaw) return this.terrainByName[terrainName].GetMapDataRaw((int)position.X, (int)position.Y);
             else return this.terrainByName[terrainName].GetMapData((int)position.X, (int)position.Y);
@@ -1171,14 +1181,12 @@ namespace SonOfRobin
             return new Vector2(frameMaxWidth, frameMaxHeight);
         }
 
-        public void LoadClosestTexturesInCameraView(Camera camera, bool visitedByPlayerOnly)
+        public void LoadClosestTexturesInCameraView(Camera camera, bool visitedByPlayerOnly, bool loadMoreThanOne)
         {
             if (Preferences.loadWholeMap || SonOfRobinGame.lastUpdateDelay > 20) return;
 
             while (true)
             {
-                if (Scene.UpdateTimeElapsed.Milliseconds > 10) return;
-
                 var cellsInCameraViewWithNoTextures = this.GetCellsInsideRect(camera.viewRect).Where(cell => cell.boardGraphics.texture == null);
                 if (visitedByPlayerOnly) cellsInCameraViewWithNoTextures = cellsInCameraViewWithNoTextures.Where(cell => cell.VisitedByPlayer);
                 if (!cellsInCameraViewWithNoTextures.Any()) return;
@@ -1187,6 +1195,8 @@ namespace SonOfRobin
 
                 var cellsByDistance = cellsInCameraViewWithNoTextures.OrderBy(cell => cell.GetDistance(cameraCenter));
                 cellsByDistance.First().boardGraphics.LoadTexture();
+
+                if (!loadMoreThanOne || Scene.UpdateTimeElapsed.Milliseconds > 10) return;
             }
         }
 
