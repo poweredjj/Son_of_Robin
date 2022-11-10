@@ -57,11 +57,7 @@ namespace SonOfRobin
         private ConcurrentBag<Point> tempRawPointsForBiomeCreation;
         private Dictionary<ExtBoardProps.ExtPropName, ConcurrentBag<Point>> tempPointsForCreatedBiomes;
         private Dictionary<ExtBoardProps.ExtPropName, int> biomeCountByName; // to ensure biome diversity
-
-        private DateTime lastCellProcessedTime;
         public int loadedTexturesCount;
-
-        private static readonly TimeSpan textureLoadingDelay = TimeSpan.FromMilliseconds(1);
 
         public bool ProcessingStageComplete
         { get { return this.cellsToProcessOnStart.Count == 0; } }
@@ -116,8 +112,6 @@ namespace SonOfRobin
             this.CalculateSurroundingCells();
 
             this.ExtBoardProps = new ExtBoardProps(grid: this);
-
-            this.lastCellProcessedTime = DateTime.Now;
 
             if (this.CopyBoardFromTemplate())
             {
@@ -1200,19 +1194,23 @@ namespace SonOfRobin
             return new Vector2(frameMaxWidth, frameMaxHeight);
         }
 
-        public void LoadClosestTextureInCameraView(Camera camera, bool visitedByPlayerOnly)
+        public void LoadClosestTexturesInCameraView(Camera camera, bool visitedByPlayerOnly)
         {
-            if (Preferences.loadWholeMap || DateTime.Now - this.lastCellProcessedTime < textureLoadingDelay) return;
+            if (Preferences.loadWholeMap || SonOfRobinGame.lastUpdateDelay > 20) return;
 
-            var cellsInCameraViewWithNoTextures = this.GetCellsInsideRect(camera.viewRect).Where(cell => cell.boardGraphics.texture == null);
-            if (visitedByPlayerOnly) cellsInCameraViewWithNoTextures = cellsInCameraViewWithNoTextures.Where(cell => cell.VisitedByPlayer);
-            if (!cellsInCameraViewWithNoTextures.Any()) return;
+            while (true)
+            {
+                if (Scene.UpdateTimeElapsed.Milliseconds > 10) return;
 
-            Vector2 cameraCenter = camera.CurrentPos;
+                var cellsInCameraViewWithNoTextures = this.GetCellsInsideRect(camera.viewRect).Where(cell => cell.boardGraphics.texture == null);
+                if (visitedByPlayerOnly) cellsInCameraViewWithNoTextures = cellsInCameraViewWithNoTextures.Where(cell => cell.VisitedByPlayer);
+                if (!cellsInCameraViewWithNoTextures.Any()) return;
 
-            var cellsByDistance = cellsInCameraViewWithNoTextures.OrderBy(cell => cell.GetDistance(cameraCenter));
-            cellsByDistance.First().boardGraphics.LoadTexture();
-            this.lastCellProcessedTime = DateTime.Now;
+                Vector2 cameraCenter = camera.CurrentPos;
+
+                var cellsByDistance = cellsInCameraViewWithNoTextures.OrderBy(cell => cell.GetDistance(cameraCenter));
+                cellsByDistance.First().boardGraphics.LoadTexture();
+            }
         }
 
         public void LoadAllTexturesInCameraView()
