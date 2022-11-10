@@ -11,12 +11,13 @@ namespace SonOfRobin
     public class Grid
     {
         public enum Stage
-        { GenerateTerrain, SetExtDataSea, SetExtDataBeach, SetExtDataBiomes, SetExtDataBiomesConstrains, SetExtDataFinish, FillAllowedNames, ProcessTextures, LoadTextures }
+        { GenerateTerrain, CheckExtData, SetExtDataSea, SetExtDataBeach, SetExtDataBiomes, SetExtDataBiomesConstrains, SetExtDataFinish, FillAllowedNames, ProcessTextures, LoadTextures }
 
         private static readonly int allStagesCount = ((Stage[])Enum.GetValues(typeof(Stage))).Length;
 
         private static readonly Dictionary<Stage, string> namesForStages = new Dictionary<Stage, string> {
             { Stage.GenerateTerrain, "generating terrain" },
+            { Stage.CheckExtData, "loading extended data" },
             { Stage.SetExtDataSea, "setting extended data (sea)" },
             { Stage.SetExtDataBeach, "setting extended data (beach)" },
             { Stage.SetExtDataBiomes, "setting extended data (biomes)" },
@@ -87,8 +88,8 @@ namespace SonOfRobin
             if (cellWidth == 0 && cellHeight == 0)
             {
                 Vector2 maxFrameSize = CalculateMaxFrameSize();
-                this.cellWidth = Convert.ToInt32(maxFrameSize.X * 1.3);
-                this.cellHeight = Convert.ToInt32(maxFrameSize.Y * 1.3);
+                this.cellWidth = (int)(maxFrameSize.X * 1.1);
+                this.cellHeight = (int)(maxFrameSize.Y * 1.1);
 
                 this.cellWidth = (int)Math.Ceiling(this.cellWidth / 2d) * 2;
                 this.cellHeight = (int)Math.Ceiling(this.cellWidth / 2d) * 2;
@@ -111,8 +112,6 @@ namespace SonOfRobin
             this.cellGrid = this.MakeGrid();
             this.allCells = this.GetAllCells();
             this.CalculateSurroundingCells();
-
-            this.ExtBoardProps = new ExtBoardProps(grid: this);
 
             if (this.CopyBoardFromTemplate())
             {
@@ -255,6 +254,13 @@ namespace SonOfRobin
                         if (cellsToRemove > 0) this.cellsToProcessOnStart.RemoveRange(0, cellsToRemove); // to update progress bar
                     }
                     else this.cellsToProcessOnStart.Clear();
+
+                    break;
+
+                case Stage.CheckExtData:
+
+                    if (this.ExtBoardProps == null) this.ExtBoardProps = new ExtBoardProps(grid: this);
+                    this.cellsToProcessOnStart.Clear();
 
                     break;
 
