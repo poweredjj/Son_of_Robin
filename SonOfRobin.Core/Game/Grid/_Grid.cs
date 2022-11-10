@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -306,9 +307,13 @@ namespace SonOfRobin
 
                 case Stage.ProcessTextures:
 
+                    int texturesCount = Directory.GetFiles(this.gridTemplate.templatePath).Where(file => file.EndsWith(".png")).ToList().Count;
+                    bool allTexturesFound = texturesCount == this.allCells.Count;
+
                     cellProcessingQueue = new List<Cell> { };
 
-                    for (int i = 0; i < 70; i++)
+                    int noOfCellsToProcess = allTexturesFound ? this.allCells.Count : 70;
+                    for (int i = 0; i < noOfCellsToProcess; i++)
                     {
                         cellProcessingQueue.Add(this.cellsToProcessOnStart[0]);
                         this.cellsToProcessOnStart.RemoveAt(0);
