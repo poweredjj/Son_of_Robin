@@ -35,35 +35,38 @@ namespace SonOfRobin
             } }
         };
 
-        public readonly Cell cell;
+        public readonly Grid grid;
 
         private readonly Dictionary<ExtPropName, BitArray> extDataByProperty;
-        private readonly List<ExtPropName> containsPropertiesTrue;
-        private readonly List<ExtPropName> containsPropertiesFalse;
         private readonly string templatePath;
         private readonly bool loadedFromTemplate; // to avoid saving template, after being loaded (needed because saving is not done inside constructor)
+
+        private readonly List<ExtPropName>[,] containsPropertiesTrueGridCell; // this values are stored in terrain, instead of cell
+        private readonly List<ExtPropName>[,] containsPropertiesFalseGridCell; // this values are stored in terrain, instead of cell
+
         public bool CreationInProgress { get; private set; }
 
-        public ExtBoardProps(Cell cell)
+        public ExtBoardProps(Grid grid)
         {
-            this.cell = cell;
+            this.grid = grid;
 
             this.CreationInProgress = true;
-            this.templatePath = Path.Combine(this.cell.grid.gridTemplate.templatePath, $"properties_{cell.cellNoX}_{cell.cellNoY}.ext");
+            this.templatePath = Path.Combine(this.grid.gridTemplate.templatePath, $"properties.ext");
 
             var serializedData = this.LoadTemplate();
             if (serializedData == null)
             {
                 this.extDataByProperty = this.MakeArrayCollection();
-                this.containsPropertiesTrue = new List<ExtPropName>();
-                this.containsPropertiesFalse = new List<ExtPropName>();
+
+                this.containsPropertiesTrueGridCell = new List<ExtPropName>[this.grid.noOfCellsX, this.grid.noOfCellsY];
+                this.containsPropertiesFalseGridCell = new List<ExtPropName>[this.grid.noOfCellsX, this.grid.noOfCellsY];
                 this.loadedFromTemplate = false;
             }
             else
             {
                 this.extDataByProperty = (Dictionary<ExtPropName, BitArray>)serializedData["extDataByProperty"];
-                this.containsPropertiesTrue = (List<ExtPropName>)serializedData["containsPropertiesTrue"];
-                this.containsPropertiesFalse = (List<ExtPropName>)serializedData["containsPropertiesFalse"];
+                this.containsPropertiesTrueGridCell = (List<ExtPropName>[,])serializedData["containsPropertiesTrueGridCell"];
+                this.containsPropertiesFalseGridCell = (List<ExtPropName>[,])serializedData["containsPropertiesFalseGridCell"];
                 this.CreationInProgress = false;
                 this.loadedFromTemplate = true;
             }
@@ -75,7 +78,7 @@ namespace SonOfRobin
 
             foreach (ExtPropName extPropName in allExtPropNames)
             {
-                arrayCollection[extPropName] = new BitArray(this.cell.dividedWidth * this.cell.dividedHeight);
+                arrayCollection[extPropName] = new BitArray(this.grid.dividedWidth * this.grid.dividedHeight);
             }
 
             return arrayCollection;
@@ -85,17 +88,31 @@ namespace SonOfRobin
         {
             if (!this.CreationInProgress) throw new ArgumentException("Cannot end creation more than once.");
 
-            foreach (var kvp in this.extDataByProperty)
+            foreach (Cell cell in this.grid.allCells)
             {
-                ExtPropName name = kvp.Key;
+                int xMinRaw = cell.xMin / this.grid.resDivider;
+                int xMaxRaw = cell.xMax / this.grid.resDivider;
+                int yMinRaw = cell.yMin / this.grid.resDivider;
+                int yMaxRaw = cell.yMax / this.grid.resDivider;
 
-                for (int x = 0; x < this.cell.dividedWidth; x++)
+                this.containsPropertiesTrueGridCell[cell.cellNoX, cell.cellNoY] = new List<ExtPropName>();
+                this.containsPropertiesFalseGridCell[cell.cellNoX, cell.cellNoY] = new List<ExtPropName>();
+
+                List<ExtPropName> containsPropertiesTrue = this.containsPropertiesTrueGridCell[cell.cellNoX, cell.cellNoY];
+                List<ExtPropName> containsPropertiesFalse = this.containsPropertiesFalseGridCell[cell.cellNoX, cell.cellNoY];
+
+                foreach (var kvp in this.extDataByProperty)
                 {
-                    for (int y = 0; y < this.cell.dividedHeight; y++)
+                    ExtPropName name = kvp.Key;
+
+                    for (int x = xMinRaw; x <= xMaxRaw; x++)
                     {
-                        bool value = kvp.Value.Get(Convert2DCoordinatesTo1D(x, y));
-                        if (value && !this.containsPropertiesTrue.Contains(name)) this.containsPropertiesTrue.Add(name);
-                        if (!value && !this.containsPropertiesFalse.Contains(name)) this.containsPropertiesFalse.Add(name);
+                        for (int y = yMinRaw; y <= yMaxRaw; y++)
+                        {
+                            bool value = kvp.Value.Get(Convert2DCoordinatesTo1D(x, y));
+                            if (value && !containsPropertiesTrue.Contains(name)) containsPropertiesTrue.Add(name);
+                            if (!value && !containsPropertiesFalse.Contains(name)) containsPropertiesFalse.Add(name);
+                        }
                     }
                 }
             }
@@ -104,20 +121,20 @@ namespace SonOfRobin
             if (!this.loadedFromTemplate) this.SaveTemplate();
         }
 
-        public bool CheckIfContainsProperty(ExtPropName name, bool value)
+        public bool CheckIfContainsProperty(ExtPropName name, bool value, int cellNoX, int cellNoY)
         {
-            if (value) return this.containsPropertiesTrue.Contains(name);
-            else return this.containsPropertiesFalse.Contains(name);
+            if (value) return this.containsPropertiesTrueGridCell[cellNoX, cellNoY].Contains(name);
+            else return this.containsPropertiesFalseGridCell[cellNoX, cellNoY].Contains(name);
         }
 
         private int ConvertRaw2DCoordinatesTo1D(int x, int y)
         {
-            return (y * this.cell.dividedWidth) + x;
+            return (y * this.grid.dividedWidth) + x;
         }
 
         private int Convert2DCoordinatesTo1D(int x, int y)
         {
-            return (y / this.cell.grid.resDivider * this.cell.dividedWidth) + (x / this.cell.grid.resDivider);
+            return (y / this.grid.resDivider * this.grid.dividedWidth) + (x / this.grid.resDivider);
         }
 
         public bool GetValue(ExtPropName name, int x, int y, bool xyRaw)
@@ -161,8 +178,8 @@ namespace SonOfRobin
             var serializedData = new Dictionary<string, object>
             {
                 { "extDataByProperty", this.extDataByProperty },
-                { "containsPropertiesTrue", this.containsPropertiesTrue },
-                { "containsPropertiesFalse", this.containsPropertiesFalse },
+                { "containsPropertiesTrueGridCell", this.containsPropertiesTrueGridCell },
+                { "containsPropertiesFalseGridCell", this.containsPropertiesFalseGridCell },
             };
 
             return serializedData;

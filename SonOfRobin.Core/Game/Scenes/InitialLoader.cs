@@ -7,7 +7,7 @@ namespace SonOfRobin
 {
     public class InitialLoader : Scene
     {
-        public enum Step { Initial, LoadEffects, LoadFonts, DeleteObsoleteSaves, CreateControlTips, LoadSounds, LoadTextures, CreateAnims, LoadKeysGfx, CreateScenes, MakeItemsInfo, MakeCraftRecipes, SetControlTips, OpenMainMenu }
+        public enum Step { Initial, LoadEffects, LoadFonts, CreateControlTips, LoadSounds, LoadTextures, CreateAnims, LoadKeysGfx, CreateScenes, MakeItemsInfo, MakeCraftRecipes, SetControlTips, OpenMainMenu }
 
         private static readonly int allStepsCount = ((Step[])Enum.GetValues(typeof(Step))).Length;
 
@@ -15,7 +15,6 @@ namespace SonOfRobin
             { Step.Initial, "starting" },
             { Step.LoadEffects, "loading effects" },
             { Step.LoadFonts, "loading fonts" },
-            { Step.DeleteObsoleteSaves, "deleting obsolete saves" },
             { Step.CreateControlTips, "creating control tips" },
             { Step.LoadSounds, "loading sounds" },
             { Step.LoadTextures, "loading textures" },
@@ -60,10 +59,6 @@ namespace SonOfRobin
 
                 case Step.LoadFonts:
                     SonOfRobinGame.LoadFonts();
-                    break;
-
-                case Step.DeleteObsoleteSaves:
-                    SaveHeaderManager.DeleteObsoleteSaves();
                     break;
 
                 case Step.CreateControlTips:

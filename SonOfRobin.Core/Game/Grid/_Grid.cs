@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -10,13 +11,12 @@ namespace SonOfRobin
     public class Grid
     {
         public enum Stage
-        { GenerateTerrain, CheckExtData, SetExtDataSea, SetExtDataBeach, SetExtDataBiomes, SetExtDataBiomesConstrains, SetExtDataFinish, FillAllowedNames, ProcessTextures, LoadTextures }
+        { GenerateTerrain, SetExtDataSea, SetExtDataBeach, SetExtDataBiomes, SetExtDataBiomesConstrains, SetExtDataFinish, FillAllowedNames, ProcessTextures, LoadTextures }
 
         private static readonly int allStagesCount = ((Stage[])Enum.GetValues(typeof(Stage))).Length;
 
         private static readonly Dictionary<Stage, string> namesForStages = new Dictionary<Stage, string> {
             { Stage.GenerateTerrain, "generating terrain" },
-            { Stage.CheckExtData, "checking extended data" },
             { Stage.SetExtDataSea, "setting extended data (sea)" },
             { Stage.SetExtDataBeach, "setting extended data (beach)" },
             { Stage.SetExtDataBiomes, "setting extended data (biomes)" },
@@ -35,11 +35,19 @@ namespace SonOfRobin
         public readonly GridTemplate gridTemplate;
         public readonly World world;
 
-        private readonly int noOfCellsX;
-        private readonly int noOfCellsY;
+        public readonly int width;
+        public readonly int height;
+        public readonly int dividedWidth;
+        public readonly int dividedHeight;
+
+        public readonly int noOfCellsX;
+        public readonly int noOfCellsY;
         public readonly int cellWidth;
         public readonly int cellHeight;
         public readonly int resDivider;
+
+        public readonly Dictionary<TerrainName, Terrain> terrainByName;
+        public ExtBoardProps ExtBoardProps { get; private set; }
 
         public readonly Cell[,] cellGrid;
         public readonly List<Cell> allCells;
@@ -47,15 +55,10 @@ namespace SonOfRobin
 
         private readonly Dictionary<PieceTemplate.Name, List<Cell>> cellListsForPieceNames; // pieces and cells that those pieces can (initially) be placed into
 
-        private bool allExtPropsFound;
         private ConcurrentBag<Point> tempRawPointsForBiomeCreation;
         private Dictionary<ExtBoardProps.ExtPropName, ConcurrentBag<Point>> tempPointsForCreatedBiomes;
         private Dictionary<ExtBoardProps.ExtPropName, int> biomeCountByName; // to ensure biome diversity
-
-        private DateTime lastCellProcessedTime;
         public int loadedTexturesCount;
-
-        private static readonly TimeSpan textureLoadingDelay = TimeSpan.FromMilliseconds(1);
 
         public bool ProcessingStageComplete
         { get { return this.cellsToProcessOnStart.Count == 0; } }
@@ -74,7 +77,12 @@ namespace SonOfRobin
             this.world = world;
             this.resDivider = resDivider;
 
-            if (!Helpers.IsPowerOfTwo((ulong)this.resDivider)) throw new ArgumentException($"ResDivider ({this.resDivider}) is not a power of 2.");
+            this.terrainByName = new Dictionary<TerrainName, Terrain>();
+
+            this.width = this.world.width;
+            this.height = this.world.height;
+            this.dividedWidth = this.width / this.resDivider;
+            this.dividedHeight = this.height / this.resDivider;
 
             if (cellWidth == 0 && cellHeight == 0)
             {
@@ -104,7 +112,7 @@ namespace SonOfRobin
             this.allCells = this.GetAllCells();
             this.CalculateSurroundingCells();
 
-            this.lastCellProcessedTime = DateTime.Now;
+            this.ExtBoardProps = new ExtBoardProps(grid: this);
 
             if (this.CopyBoardFromTemplate())
             {
@@ -113,7 +121,6 @@ namespace SonOfRobin
             }
 
             this.cellsToProcessOnStart = new List<Cell>();
-            this.allExtPropsFound = false;
             this.tempRawPointsForBiomeCreation = new ConcurrentBag<Point>();
             this.tempPointsForCreatedBiomes = new Dictionary<ExtBoardProps.ExtPropName, ConcurrentBag<Point>>();
             this.biomeCountByName = new Dictionary<ExtBoardProps.ExtPropName, int>();
@@ -129,6 +136,8 @@ namespace SonOfRobin
 
         public Dictionary<string, Object> Serialize()
         {
+            // this data is included in save file (not in template)
+
             var cellData = new List<Object> { };
 
             foreach (Cell cell in this.allCells)
@@ -138,9 +147,9 @@ namespace SonOfRobin
 
             Dictionary<string, Object> gridData = new Dictionary<string, object>
             {
-                {"cellWidth", this.cellWidth },
-                {"cellHeight", this.cellHeight },
-                {"cellData", cellData },
+                { "cellWidth", this.cellWidth },
+                { "cellHeight", this.cellHeight },
+                { "cellData", cellData },
             };
 
             return gridData;
@@ -148,6 +157,8 @@ namespace SonOfRobin
 
         public static Grid Deserialize(Dictionary<string, Object> gridData, World world, int resDivider)
         {
+            // this data is included in save file (not in template)
+
             int cellWidth = (int)gridData["cellWidth"];
             int cellHeight = (int)gridData["cellHeight"];
             var cellData = (List<Object>)gridData["cellData"];
@@ -183,6 +194,15 @@ namespace SonOfRobin
                             this.cellGrid[x, y].CopyFromTemplate(templateGrid.cellGrid[x, y]);
                     }
 
+                    foreach (var kvp in templateGrid.terrainByName)
+                    {
+                        TerrainName terrainName = kvp.Key;
+                        Terrain terrain = kvp.Value;
+                        this.terrainByName[terrainName] = terrain;
+                    }
+
+                    this.ExtBoardProps = templateGrid.ExtBoardProps;
+
                     this.FillCellListsForPieceNames();
 
                     return true;
@@ -206,70 +226,69 @@ namespace SonOfRobin
             {
                 case Stage.GenerateTerrain:
 
-                    cellProcessingQueue = new List<Cell> { };
+                    bool terrainRendered = false;
 
-                    for (int i = 0; i < 40 * Preferences.newWorldResDivider; i++)
+                    if (!terrainRendered && !this.terrainByName.ContainsKey(TerrainName.Height))
                     {
-                        cellProcessingQueue.Add(this.cellsToProcessOnStart[0]);
-                        this.cellsToProcessOnStart.RemoveAt(0);
-                        if (this.cellsToProcessOnStart.Count == 0) break;
+                        this.terrainByName[TerrainName.Height] = new Terrain(world: this.world, name: TerrainName.Height, frequency: 8f, octaves: 9, persistence: 0.5f, lacunarity: 1.9f, gain: 0.55f, addBorder: true);
+
+                        terrainRendered = true;
                     }
 
-                    Parallel.ForEach(cellProcessingQueue, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, cell =>
+                    if (!terrainRendered && !this.terrainByName.ContainsKey(TerrainName.Humidity))
                     {
-                        cell.ComputeHeight();
-                    });
+                        this.terrainByName[TerrainName.Humidity] = new Terrain(world: this.world, name: TerrainName.Humidity, frequency: 4.3f, octaves: 9, persistence: 0.6f, lacunarity: 1.7f, gain: 0.6f);
 
-                    Parallel.ForEach(cellProcessingQueue, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, cell =>
+                        terrainRendered = true;
+                    }
+
+                    if (!terrainRendered && !this.terrainByName.ContainsKey(TerrainName.Biome))
                     {
-                        cell.ComputeHumidity();
-                    });
+                        this.terrainByName[TerrainName.Biome] = new Terrain(world: this.world, name: TerrainName.Biome, frequency: 7f, octaves: 3, persistence: 0.7f, lacunarity: 1.4f, gain: 0.3f, addBorder: true);
 
-                    Parallel.ForEach(cellProcessingQueue, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, cell =>
+                        terrainRendered = true;
+                    }
+
+                    if (terrainRendered)
                     {
-                        cell.ComputeBiome();
-                    });
-
-                    break;
-
-                case Stage.CheckExtData:
-
-                    this.CheckExtData();
-                    this.cellsToProcessOnStart.Clear();
+                        int cellsToRemove = this.cellsToProcessOnStart.Count / 2;
+                        if (cellsToRemove > 0) this.cellsToProcessOnStart.RemoveRange(0, cellsToRemove); // to update progress bar
+                    }
+                    else this.cellsToProcessOnStart.Clear();
 
                     break;
 
                 case Stage.SetExtDataSea:
 
-                    if (!this.allExtPropsFound) this.ExtCalculateSea();
+                    if (this.ExtBoardProps.CreationInProgress) this.ExtCalculateSea();
                     else this.cellsToProcessOnStart.Clear();
 
                     break;
 
                 case Stage.SetExtDataBeach:
 
-                    if (!this.allExtPropsFound) this.ExtCalculateOuterBeach();
+                    if (this.ExtBoardProps.CreationInProgress) this.ExtCalculateOuterBeach();
                     else this.cellsToProcessOnStart.Clear();
 
                     break;
 
                 case Stage.SetExtDataBiomes:
 
-                    if (!this.allExtPropsFound) this.ExtCalculateBiomes();
+                    if (this.ExtBoardProps.CreationInProgress) this.ExtCalculateBiomes();
                     else this.cellsToProcessOnStart.Clear();
 
                     break;
 
                 case Stage.SetExtDataBiomesConstrains:
 
-                    if (!this.allExtPropsFound) this.ExtApplyBiomeConstrains();
+                    if (this.ExtBoardProps.CreationInProgress) this.ExtApplyBiomeConstrains();
                     else this.cellsToProcessOnStart.Clear();
 
                     break;
 
                 case Stage.SetExtDataFinish:
 
-                    if (!this.allExtPropsFound) this.ExtEndCreation();
+                    if (this.ExtBoardProps.CreationInProgress) this.ExtEndCreation();
                     else this.cellsToProcessOnStart.Clear();
 
                     break;
@@ -288,9 +307,13 @@ namespace SonOfRobin
 
                 case Stage.ProcessTextures:
 
+                    int texturesCount = Directory.GetFiles(this.gridTemplate.templatePath).Where(file => file.EndsWith(".png")).ToList().Count;
+                    bool allTexturesFound = texturesCount == this.allCells.Count;
+
                     cellProcessingQueue = new List<Cell> { };
 
-                    for (int i = 0; i < 70; i++)
+                    int noOfCellsToProcess = allTexturesFound ? this.allCells.Count : 70;
+                    for (int i = 0; i < noOfCellsToProcess; i++)
                     {
                         cellProcessingQueue.Add(this.cellsToProcessOnStart[0]);
                         this.cellsToProcessOnStart.RemoveAt(0);
@@ -364,12 +387,6 @@ namespace SonOfRobin
             }
         }
 
-        private void CheckExtData()
-        {
-            var cellsWithoutExtPropsSet = this.allCells.Where(cell => cell.ExtBoardProps.CreationInProgress);
-            if (!cellsWithoutExtPropsSet.Any()) this.allExtPropsFound = true;
-        }
-
         private void ExtCalculateSea()
         {
             // the algorithm will only work, if water surrounds the island
@@ -390,7 +407,7 @@ namespace SonOfRobin
             this.FloodFillExtProps(
                  startingPoints: startingPointsRaw,
                  terrainName: TerrainName.Height,
-                 minVal: 0, maxVal: Terrain.waterLevelMax,
+                 minVal: 0, maxVal: (byte)(Terrain.waterLevelMax),
                  nameToSetIfInRange: ExtBoardProps.ExtPropName.Sea,
                  setNameIfOutsideRange: true,
                  nameToSetIfOutsideRange: ExtBoardProps.ExtPropName.OuterBeach
@@ -403,7 +420,7 @@ namespace SonOfRobin
         {
             ConcurrentBag<Point> beachEdgePointListRaw = this.GetAllRawCoordinatesWithExtProperty(nameToUse: ExtBoardProps.ExtPropName.OuterBeach, value: true);
 
-            byte minVal = (byte)(Terrain.waterLevelMax + 1);
+            byte minVal = Terrain.waterLevelMax;
             byte maxVal = (byte)(Terrain.waterLevelMax + 5);
 
             this.FloodFillExtProps(
@@ -468,10 +485,10 @@ namespace SonOfRobin
                 {
                     ConcurrentBag<Point> pointsToRemoveFromBiome = this.FilterPointsOutsideBiomeConstrains(oldPointBag: biomePoints, constrainsList: ExtBoardProps.biomeConstrains[biomeName], xyRaw: false);
 
-                    foreach (Point point in pointsToRemoveFromBiome)
+                    Parallel.ForEach(pointsToRemoveFromBiome, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, point =>
                     {
-                        this.SetExtProperty(name: biomeName, value: false, x: point.X, y: point.Y); // cannot be run in parallel
-                    }
+                        this.SetExtProperty(name: biomeName, value: false, x: point.X, y: point.Y); // can write to array using parallel, if every thread accesses its own indices
+                    });
                 }
             }
 
@@ -480,12 +497,7 @@ namespace SonOfRobin
 
         private void ExtEndCreation()
         {
-            var cellsWithoutExtPropsSet = this.allCells.Where(cell => cell.ExtBoardProps.CreationInProgress);
-
-            foreach (Cell cell in cellsWithoutExtPropsSet)
-            {
-                cell.ExtBoardProps.EndCreationAndSave();
-            }
+            this.ExtBoardProps.EndCreationAndSave();
 
             this.tempRawPointsForBiomeCreation = null;
             this.tempPointsForCreatedBiomes = null;
@@ -613,17 +625,16 @@ namespace SonOfRobin
 
             var nextPoints = new ConcurrentBag<Point>(startingPoints);
             var pointsInsideRange = new ConcurrentBag<Point>();
-            var pointsOutsideRange = new ConcurrentBag<Point>();
 
             while (true)
             {
                 List<Point> currentPoints = nextPoints.Distinct().ToList(); // using Distinct() to filter out duplicates
                 nextPoints = new ConcurrentBag<Point>(); // because there is no Clear() for ConcurrentBag
 
-                var pointsToSetAsProcessed = new ConcurrentBag<Point>();
-
                 Parallel.ForEach(currentPoints, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, currentPoint =>
                 {
+                    // array can be written to using parallel, if every thread accesses its own indices
+
                     int realX = currentPoint.X * this.resDivider;
                     int realY = currentPoint.Y * this.resDivider;
 
@@ -632,6 +643,7 @@ namespace SonOfRobin
                     if (minVal <= value && value <= maxVal) // point within range
                     {
                         pointsInsideRange.Add(new Point(realX, realY));
+                        this.SetExtProperty(name: nameToSetIfInRange, value: true, x: realX, y: realY);
 
                         foreach (Point currentOffset in offsetList)
                         {
@@ -647,28 +659,13 @@ namespace SonOfRobin
                     }
                     else
                     {
-                        if (setNameIfOutsideRange) pointsOutsideRange.Add(new Point(realX, realY));
+                        if (setNameIfOutsideRange) this.SetExtProperty(name: nameToSetIfOutsideRange, value: true, x: realX, y: realY);
                     }
 
-                    pointsToSetAsProcessed.Add(currentPoint);
+                    processedMap[currentPoint.X, currentPoint.Y] = true;
                 });
 
-                foreach (Point point in pointsToSetAsProcessed)
-                {
-                    processedMap[point.X, point.Y] = true; // cannot be run in parallel
-                }
-
                 if (!nextPoints.Any()) break;
-            }
-
-            foreach (Point point in pointsInsideRange)
-            {
-                this.SetExtProperty(name: nameToSetIfInRange, value: true, x: point.X, y: point.Y); // cannot be run in parallel
-            }
-
-            foreach (Point point in pointsOutsideRange)
-            {
-                this.SetExtProperty(name: nameToSetIfOutsideRange, value: true, x: point.X, y: point.Y); // cannot be run in parallel
             }
 
             return pointsInsideRange;
@@ -1054,28 +1051,6 @@ namespace SonOfRobin
             return position / cellLength;
         }
 
-        private Dictionary<string, int> FindMatchingCellNoAndPosInside(Vector2 position)
-        {
-            int cellNoX = (int)Math.Floor(position.X / this.cellWidth);
-            int cellNoY = (int)Math.Floor(position.Y / this.cellHeight);
-
-            int posInsideCellX = (int)position.X % this.cellWidth;
-            int posInsideCellY = (int)position.Y % this.cellHeight;
-
-            return this.CorrectCellCoordinatesAndPosInside(cellNoX, cellNoY, posInsideCellX, posInsideCellY);
-        }
-
-        private Dictionary<string, int> FindMatchingCellNoAndPosInside(int x, int y)
-        {
-            int cellNoX = x / this.cellWidth;
-            int cellNoY = y / this.cellHeight;
-
-            int posInsideCellX = x % this.cellWidth;
-            int posInsideCellY = y % this.cellHeight;
-
-            return this.CorrectCellCoordinatesAndPosInside(cellNoX, cellNoY, posInsideCellX, posInsideCellY);
-        }
-
         private Dictionary<string, int> CorrectCellCoordinatesAndPosInside(int cellNoX, int cellNoY, int posInsideCellX, int posInsideCellY)
         {
             Cell cell = this.cellGrid[cellNoX, cellNoY];
@@ -1112,57 +1087,41 @@ namespace SonOfRobin
 
         public Cell FindMatchingCell(Vector2 position)
         {
-            var coordsDict = this.FindMatchingCellNoAndPosInside(position: position);
-
-            return this.cellGrid[coordsDict["cellNoX"], coordsDict["cellNoY"]];
+            int cellNoX = (int)Math.Floor(position.X / this.cellWidth);
+            int cellNoY = (int)Math.Floor(position.Y / this.cellHeight);
+            return this.cellGrid[cellNoX, cellNoY];
         }
 
-        public byte GetFieldValue(TerrainName terrainName, int x, int y)
+        public byte GetFieldValue(TerrainName terrainName, int x, int y, bool xyRaw = false)
         {
-            var coordsDict = this.FindMatchingCellNoAndPosInside(x: x, y: y);
-
-            return this.cellGrid[coordsDict["cellNoX"], coordsDict["cellNoY"]].terrainByName[terrainName].GetMapData(
-                coordsDict["posInsideCellX"], coordsDict["posInsideCellY"]);
+            if (xyRaw) return this.terrainByName[terrainName].GetMapDataRaw(x, y);
+            else return this.terrainByName[terrainName].GetMapData(x, y);
         }
 
-        public byte GetFieldValue(TerrainName terrainName, Vector2 position)
+        public byte GetFieldValue(TerrainName terrainName, Vector2 position, bool xyRaw = false)
         {
-            var coordsDict = this.FindMatchingCellNoAndPosInside(position: position);
-
-            return this.cellGrid[coordsDict["cellNoX"], coordsDict["cellNoY"]].terrainByName[terrainName].GetMapData(
-                coordsDict["posInsideCellX"], coordsDict["posInsideCellY"]);
+            if (xyRaw) return this.terrainByName[terrainName].GetMapDataRaw((int)position.X, (int)position.Y);
+            else return this.terrainByName[terrainName].GetMapData((int)position.X, (int)position.Y);
         }
 
         public Dictionary<ExtBoardProps.ExtPropName, bool> GetExtValueDict(int x, int y)
         {
-            var coordsDict = this.FindMatchingCellNoAndPosInside(x: x, y: y);
-
-            return this.cellGrid[coordsDict["cellNoX"], coordsDict["cellNoY"]].ExtBoardProps.GetValueDict(
-                x: coordsDict["posInsideCellX"], y: coordsDict["posInsideCellY"], xyRaw: false);
+            return this.ExtBoardProps.GetValueDict(x: x, y: y, xyRaw: false);
         }
 
         public bool GetExtProperty(ExtBoardProps.ExtPropName name, Vector2 position)
         {
-            var coordsDict = this.FindMatchingCellNoAndPosInside(position: position);
-
-            return this.cellGrid[coordsDict["cellNoX"], coordsDict["cellNoY"]].ExtBoardProps.GetValue(
-                name: name, x: coordsDict["posInsideCellX"], y: coordsDict["posInsideCellY"], xyRaw: false);
+            return this.ExtBoardProps.GetValue(name: name, x: (int)position.X, y: (int)position.Y, xyRaw: false);
         }
 
         public bool GetExtProperty(ExtBoardProps.ExtPropName name, int x, int y)
         {
-            var coordsDict = this.FindMatchingCellNoAndPosInside(x: x, y: y);
-
-            return this.cellGrid[coordsDict["cellNoX"], coordsDict["cellNoY"]].ExtBoardProps.GetValue(
-                name: name, x: coordsDict["posInsideCellX"], y: coordsDict["posInsideCellY"], xyRaw: false);
+            return this.ExtBoardProps.GetValue(name: name, x: x, y: y, xyRaw: false);
         }
 
         public void SetExtProperty(ExtBoardProps.ExtPropName name, bool value, int x, int y)
         {
-            var coordsDict = this.FindMatchingCellNoAndPosInside(x: x, y: y);
-
-            this.cellGrid[coordsDict["cellNoX"], coordsDict["cellNoY"]].ExtBoardProps.SetValue(
-                name: name, value: value, x: coordsDict["posInsideCellX"], y: coordsDict["posInsideCellY"], xyRaw: false);
+            this.ExtBoardProps.SetValue(name: name, value: value, x: x, y: y, xyRaw: false);
         }
 
         private Cell[,] MakeGrid()
@@ -1240,19 +1199,23 @@ namespace SonOfRobin
             return new Vector2(frameMaxWidth, frameMaxHeight);
         }
 
-        public void LoadClosestTextureInCameraView(Camera camera, bool visitedByPlayerOnly)
+        public void LoadClosestTexturesInCameraView(Camera camera, bool visitedByPlayerOnly)
         {
-            if (Preferences.loadWholeMap || DateTime.Now - this.lastCellProcessedTime < textureLoadingDelay) return;
+            if (Preferences.loadWholeMap || SonOfRobinGame.lastUpdateDelay > 20) return;
 
-            var cellsInCameraViewWithNoTextures = this.GetCellsInsideRect(camera.viewRect).Where(cell => cell.boardGraphics.texture == null);
-            if (visitedByPlayerOnly) cellsInCameraViewWithNoTextures = cellsInCameraViewWithNoTextures.Where(cell => cell.VisitedByPlayer);
-            if (!cellsInCameraViewWithNoTextures.Any()) return;
+            while (true)
+            {
+                if (Scene.UpdateTimeElapsed.Milliseconds > 10) return;
 
-            Vector2 cameraCenter = camera.CurrentPos;
+                var cellsInCameraViewWithNoTextures = this.GetCellsInsideRect(camera.viewRect).Where(cell => cell.boardGraphics.texture == null);
+                if (visitedByPlayerOnly) cellsInCameraViewWithNoTextures = cellsInCameraViewWithNoTextures.Where(cell => cell.VisitedByPlayer);
+                if (!cellsInCameraViewWithNoTextures.Any()) return;
 
-            var cellsByDistance = cellsInCameraViewWithNoTextures.OrderBy(cell => cell.GetDistance(cameraCenter));
-            cellsByDistance.First().boardGraphics.LoadTexture();
-            this.lastCellProcessedTime = DateTime.Now;
+                Vector2 cameraCenter = camera.CurrentPos;
+
+                var cellsByDistance = cellsInCameraViewWithNoTextures.OrderBy(cell => cell.GetDistance(cameraCenter));
+                cellsByDistance.First().boardGraphics.LoadTexture();
+            }
         }
 
         public void LoadAllTexturesInCameraView()

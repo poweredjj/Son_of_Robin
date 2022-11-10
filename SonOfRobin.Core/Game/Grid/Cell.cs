@@ -34,8 +34,6 @@ namespace SonOfRobin
         public bool VisitedByPlayer { get; private set; }
 
         public readonly Dictionary<Group, Dictionary<string, Sprite>> spriteGroups;
-        public readonly Dictionary<TerrainName, Terrain> terrainByName;
-        public ExtBoardProps ExtBoardProps { get; private set; }
         public BoardGraphics boardGraphics;
 
         public readonly List<PieceTemplate.Name> allowedNames; // for initialRangesByTerrainName only - because currentRangesByTerrainName can be changed anytime
@@ -91,8 +89,6 @@ namespace SonOfRobin
                 this.spriteGroups[groupName] = new Dictionary<string, Sprite> { };
             }
 
-            this.ExtBoardProps = new ExtBoardProps(cell: this);
-            this.terrainByName = new Dictionary<TerrainName, Terrain>();
             this.allowedNames = new List<PieceTemplate.Name>();
         }
 
@@ -104,7 +100,7 @@ namespace SonOfRobin
                 AllowedTerrain allowedTerrain = pieceInfo.allowedTerrain;
                 bool cellCanContainThisPiece = true;
 
-                foreach (var kvp in this.terrainByName)
+                foreach (var kvp in this.grid.terrainByName)
                 {
                     TerrainName terrainName = kvp.Key;
 
@@ -113,8 +109,11 @@ namespace SonOfRobin
                     {
                         Terrain terrain = kvp.Value;
 
-                        if ((allowedRange.Min < terrain.MinVal && allowedRange.Max < terrain.MinVal) ||
-                            (allowedRange.Min > terrain.MaxVal && allowedRange.Max > terrain.MaxVal))
+                        byte minVal = terrain.GetMinValueForCell(cellNoX: this.cellNoX, cellNoY: this.cellNoY);
+                        byte maxVal = terrain.GetMaxValueForCell(cellNoX: this.cellNoX, cellNoY: this.cellNoY);
+
+                        if ((allowedRange.Min < minVal && allowedRange.Max < minVal) ||
+                            (allowedRange.Min > maxVal && allowedRange.Max > maxVal))
                         {
                             cellCanContainThisPiece = false;
                             break;
@@ -129,7 +128,7 @@ namespace SonOfRobin
                         ExtBoardProps.ExtPropName name = kvp.Key;
                         bool value = kvp.Value;
 
-                        if (!this.ExtBoardProps.CheckIfContainsProperty(name: name, value: value))
+                        if (!this.grid.ExtBoardProps.CheckIfContainsProperty(name: name, value: value, cellNoX: this.cellNoX, cellNoY: this.cellNoY))
                         {
                             cellCanContainThisPiece = false;
                             break;
@@ -163,34 +162,10 @@ namespace SonOfRobin
             this.VisitedByPlayer = (bool)cellDict["VisitedByPlayer"];
         }
 
-        public void ComputeHeight()
-        {
-            this.terrainByName[TerrainName.Height] = new Terrain(
-            world: this.world, cell: this, name: TerrainName.Height, frequency: 8f, octaves: 9, persistence: 0.5f, lacunarity: 1.9f, gain: 0.55f, addBorder: true);
-        }
-
-        public void ComputeHumidity()
-        {
-            this.terrainByName[TerrainName.Humidity] = new Terrain(
-                world: this.world, cell: this, name: TerrainName.Humidity, frequency: 4.3f, octaves: 9, persistence: 0.6f, lacunarity: 1.7f, gain: 0.6f);
-        }
-
-        public void ComputeBiome()
-        {
-            this.terrainByName[TerrainName.Biome] = new Terrain(
-                world: this.world, cell: this, name: TerrainName.Biome, frequency: 7f, octaves: 3, persistence: 0.7f, lacunarity: 1.4f, gain: 0.3f, addBorder: true);
-        }
-
         public void CopyFromTemplate(Cell templateCell)
         {
-            foreach (TerrainName terainName in allTerrains)
-            {
-                this.terrainByName[terainName] = templateCell.terrainByName[terainName];
-            }
-
             this.boardGraphics = new BoardGraphics(grid: this.grid, cell: this);
             this.boardGraphics.texture = templateCell.boardGraphics.texture;
-            this.ExtBoardProps = templateCell.ExtBoardProps;
             this.allowedNames.AddRange(templateCell.allowedNames);
         }
 

@@ -9,7 +9,7 @@ namespace SonOfRobin
 
     public class SaveHeaderManager
     {
-        public readonly static float saveVersion = 1.435f;
+        public readonly static float saveVersion = 1.436f;
 
         public static bool AnySavesExist
         { get { return Directory.GetDirectories(SonOfRobinGame.saveGamesPath).ToList().Count > 0; } }
@@ -71,11 +71,21 @@ namespace SonOfRobin
 
         public static void DeleteObsoleteSaves()
         {
-            foreach (SaveHeaderInfo saveInfo in IncorrectSaves)
+            List<SaveHeaderInfo> incorrectSaves = IncorrectSaves;
+
+            if (!incorrectSaves.Any())
+            {
+                new TextWindow(text: "No obsolete saves were found.", textColor: Color.White, bgColor: Color.Blue, useTransition: true, animate: true);
+                return;
+            }
+
+            foreach (SaveHeaderInfo saveInfo in incorrectSaves)
             {
                 saveInfo.Delete();
                 MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Deleted obsolete save '{saveInfo.folderName}'.", color: Color.White);
             }
+
+            MessageLog.AddMessage(msgType: MsgType.User, message: $"Deleted obsolete saves ({incorrectSaves.Count}).", color: Color.White);
         }
 
     }

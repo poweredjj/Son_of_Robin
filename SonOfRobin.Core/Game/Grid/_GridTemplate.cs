@@ -7,8 +7,8 @@ namespace SonOfRobin
     [Serializable]
     public class GridTemplate
     {
-        private static readonly float currentVersion = 1.12f;
-        private static readonly string headerName = "_template_header.dat";
+        private static readonly float currentVersion = 1.15f;
+        private static readonly string headerName = "template_header.dat";
 
         public readonly int seed;
         public readonly int width;

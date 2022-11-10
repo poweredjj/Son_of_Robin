@@ -637,7 +637,7 @@ namespace SonOfRobin
             //SoundEffect.DistanceScale = this.camera.viewRect.Width * 0.065f;
 
             this.grid.UnloadTexturesIfMemoryLow(this.camera);
-            this.grid.LoadClosestTextureInCameraView(camera: this.camera, visitedByPlayerOnly: false);
+            this.grid.LoadClosestTexturesInCameraView(camera: this.camera, visitedByPlayerOnly: false);
 
             if (this.demoMode) this.camera.TrackLiveAnimal(fluidMotion: true);
 
