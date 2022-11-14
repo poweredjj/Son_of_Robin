@@ -348,7 +348,6 @@ namespace SonOfRobin
                         {
                             Scene.RemoveAllScenesOfType(typeof(Menu));
                             Scene.RemoveAllScenesOfType(typeof(TextWindow));
-                            Sound.StopAll();
                             Sound.QuickPlay(SoundData.Name.Select); // this sound should be short, because it will be silenced by LoadGameNow task
 
                             new Task(taskName: TaskName.LoadGameNow, turnOffInputUntilExecution: true, delay: 17, executeHelper: this.ExecuteHelper);

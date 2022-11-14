@@ -27,6 +27,8 @@ namespace SonOfRobin
         private Object saveGameData;
         public bool createMissingPiecesOutsideCamera;
         public DateTime lastSaved;
+
+        private bool soundPaused;
         public bool BuildMode { get; private set; }
 
         private bool spectatorMode;
@@ -333,6 +335,7 @@ namespace SonOfRobin
             this.craftStats = new CraftStats();
             this.identifiedPieces = new List<PieceTemplate.Name> { PieceTemplate.Name.Hand };
             if (this.demoMode) this.solidColorManager.Add(new SolidColor(color: Color.White, viewOpacity: 0.4f, clearScreen: false, priority: 1));
+            this.soundPaused = false;
 
             SonOfRobinGame.game.IsFixedTimeStep = false; // speeds up the creation process
         }
@@ -646,6 +649,12 @@ namespace SonOfRobin
             this.ProcessInput();
             this.UpdateViewParams();
 
+            if (this.soundPaused && this.inputActive)
+            {
+                SoundInstanceManager.ResumeAll();
+                this.soundPaused = false;
+            }
+
             this.grid.UnloadTexturesIfMemoryLow(this.camera);
             this.grid.LoadClosestTexturesInCameraView(camera: this.camera, visitedByPlayerOnly: false, loadMoreThanOne: false);
 
@@ -683,6 +692,9 @@ namespace SonOfRobin
 
             if (InputMapper.HasBeenPressed(InputMapper.Action.WorldPauseMenu))
             {
+                SoundInstanceManager.PauseAll();
+                this.soundPaused = true;
+
                 MenuTemplate.CreateMenuFromTemplate(templateName: MenuTemplate.Name.Pause);
                 return;
             }

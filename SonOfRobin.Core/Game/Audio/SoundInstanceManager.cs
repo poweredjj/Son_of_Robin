@@ -77,19 +77,42 @@ namespace SonOfRobin
             if (instance.State != SoundState.Stopped) instance.Stop();
         }
 
+        public static void PauseInstance(string id)
+        {
+            if (!activeSoundInstancesByID.ContainsKey(id)) return;
+
+            SoundEffectInstance instance = activeSoundInstancesByID[id];
+            if (instance.State != SoundState.Stopped) instance.Pause();
+        }
+
+        public static void ResumeInstance(string id)
+        {
+            if (!activeSoundInstancesByID.ContainsKey(id)) return;
+
+            SoundEffectInstance instance = activeSoundInstancesByID[id];
+            if (instance.State == SoundState.Paused) instance.Resume();
+        }
+
+        public static void PauseAll()
+        {
+            foreach (string id in activeSoundInstancesByID.Keys.ToList()) PauseInstance(id);
+        }
+
+        public static void ResumeAll()
+        {
+            foreach (string id in activeSoundInstancesByID.Keys.ToList()) ResumeInstance(id);
+        }
+
         public static void StopAll()
         {
-            foreach (string id in activeSoundInstancesByID.Keys.ToList())
-            {
-                StopInstance(id);
-            }
+            foreach (string id in activeSoundInstancesByID.Keys.ToList()) StopInstance(id);
         }
 
         public static void CleanUpActiveInstances()
         {
-            var notPlayingInstances = activeSoundInstancesByID.Where(kvp => kvp.Value.State != SoundState.Playing).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+            var stoppedInstances = activeSoundInstancesByID.Where(kvp => kvp.Value.State == SoundState.Stopped).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 
-            foreach (var kvp in notPlayingInstances)
+            foreach (var kvp in stoppedInstances)
             {
                 string id = kvp.Key;
                 SoundEffectInstance instance = kvp.Value;

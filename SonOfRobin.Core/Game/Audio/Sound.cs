@@ -14,14 +14,18 @@ namespace SonOfRobin
         public static float globalVolume = 1f;
         public static Dictionary<string, Sound> currentlyPlaying = new Dictionary<string, Sound>();
 
-        private readonly SoundData.Name name;
+        public SoundData.Name Name { get; private set; }
+
         private readonly float volume;
         public float FadeVolume { get; private set; }
         public float TargetVolume { get; private set; }
-        private bool VolumeFadeEnded { get { return !this.isLooped || this.TargetVolume == this.FadeVolume; } }
-        private float Volume { get { return this.volume * this.FadeVolume * globalVolume; } }
+        private bool VolumeFadeEnded
+        { get { return !this.isLooped || this.TargetVolume == this.FadeVolume; } }
+        private float Volume
+        { get { return this.volume * this.FadeVolume * globalVolume; } }
         public readonly bool isLooped;
-        public bool IsPlaying { get { return SoundInstanceManager.GetPlayingInstance(this.Id) != null; } }
+        public bool IsPlaying
+        { get { return SoundInstanceManager.GetPlayingInstance(this.Id) != null; } }
 
         private readonly int cooldown;
         private int lastFramePlayed;
@@ -43,9 +47,12 @@ namespace SonOfRobin
 
         private static readonly AudioListener audioListener = new AudioListener();
         private static readonly AudioEmitter audioEmitter = new AudioEmitter();
-        public bool Ignore3D { get { return this.ignore3DAlways || this.ignore3DThisPlay; } }
-        public bool HasBoardPiece { get { return this.boardPiece != null; } }
-        private bool IsInCameraRect { get { return this.boardPiece == null || this.boardPiece.sprite.IsInCameraRect; } }
+        public bool Ignore3D
+        { get { return this.ignore3DAlways || this.ignore3DThisPlay; } }
+        public bool HasBoardPiece
+        { get { return this.boardPiece != null; } }
+        private bool IsInCameraRect
+        { get { return this.boardPiece == null || this.boardPiece.sprite.IsInCameraRect; } }
 
         public Sound(SoundData.Name name = SoundData.Name.Empty, List<SoundData.Name> nameList = null, BoardPiece boardPiece = null, float volume = 1f, bool isLooped = false, int cooldown = 0, bool ignore3DAlways = false, float maxPitchVariation = 0f, float pitchChange = 0f, int volumeFadeFrames = 30)
         {
@@ -57,7 +64,7 @@ namespace SonOfRobin
 
             if (this.isEmpty) return;
 
-            this.name = name;
+            this.Name = name;
             this.volume = volume;
             this.isLooped = isLooped;
             this.volumeFadeFrames = volumeFadeFrames;
@@ -196,7 +203,6 @@ namespace SonOfRobin
             if (this.boardPiece != null) this.UpdatePosition(instance);
         }
 
-
         private void UpdateFade(SoundEffectInstance instance)
         {
             if (this.VolumeFadeEnded) return;
@@ -246,6 +252,7 @@ namespace SonOfRobin
 
             instance.Apply3D(audioListener, audioEmitter);
         }
+
         public static void QuickPlay(SoundData.Name name, float volume = 1f)
         {
             if (name == SoundData.Name.Empty) return;

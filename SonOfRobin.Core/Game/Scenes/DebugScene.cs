@@ -252,9 +252,9 @@ namespace SonOfRobin
                 if (world == null) return;
                 Player player = world.player;
 
-                Microsoft.Xna.Framework.Point point1 = new Microsoft.Xna.Framework.Point((int)player.sprite.position.X, (int)player.sprite.position.Y);
-                Microsoft.Xna.Framework.Point point2 = new Microsoft.Xna.Framework.Point((int)player.sprite.position.X + 200, (int)player.sprite.position.Y - 100);
-                Microsoft.Xna.Framework.Point point3 = new Microsoft.Xna.Framework.Point((int)player.sprite.position.X + 200, (int)player.sprite.position.Y + 100);
+                Point point1 = new Point((int)player.sprite.position.X, (int)player.sprite.position.Y);
+                Point point2 = new Point((int)player.sprite.position.X + 200, (int)player.sprite.position.Y - 100);
+                Point point3 = new Point((int)player.sprite.position.X + 200, (int)player.sprite.position.Y + 100);
 
                 PieceTemplate.CreateAndPlaceOnBoard(world: world, position: new Vector2(point1.X, point1.Y), templateName: PieceTemplate.Name.Heart);
                 PieceTemplate.CreateAndPlaceOnBoard(world: world, position: new Vector2(point2.X, point2.Y), templateName: PieceTemplate.Name.Heart);
@@ -372,12 +372,12 @@ namespace SonOfRobin
 
             if (Keyboard.HasBeenPressed(Keys.F6))
             {
-                // not used
+                SoundInstanceManager.PauseAll();
             }
 
             if (Keyboard.HasBeenPressed(Keys.F7))
             {
-                // not used
+                SoundInstanceManager.ResumeAll();
             }
 
             if (Keyboard.HasBeenPressed(Keys.OemPlus))

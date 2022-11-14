@@ -92,7 +92,7 @@ namespace SonOfRobin
             if (this.Texture != null) this.Texture.Dispose();
             else this.cell.grid.loadedTexturesCount++;
             this.Texture = texture;
-            this.TextureSimulationColor = textureSimulationColor;
+            if (textureSimulationColor != null) this.TextureSimulationColor = textureSimulationColor;
         }
 
         public void UnloadTexture()
