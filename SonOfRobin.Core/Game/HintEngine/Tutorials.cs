@@ -275,7 +275,7 @@ namespace SonOfRobin
                     new HintMessage(text: "3. You will also need to place some | | fuel\ninto | the cooking site.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.WoodLogRegular), PieceInfo.GetTexture(PieceTemplate.Name.WoodPlank), PieceInfo.GetTexture(PieceTemplate.Name.CookingPot)}, boxType: messageTextType),
                     new HintMessage(text:"4. You can also put some | | | boosters\ninto | the cooking site, if you like.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.HerbsRed), PieceInfo.GetTexture(PieceTemplate.Name.HerbsYellow), PieceInfo.GetTexture(PieceTemplate.Name.HerbsBlue), PieceInfo.GetTexture(PieceTemplate.Name.CookingPot)}, boxType: messageTextType),
                     new HintMessage(text: "5. Use the | flame to start cooking |.", imageList: new List<Texture2D> {AnimData.framesForPkgs[AnimData.PkgName.Flame].texture, PieceInfo.GetTexture(PieceTemplate.Name.Meal)}, boxType: messageTextType),
-              });
+                    });
 
             new Tutorial(type: Type.ShakeFruit, name: "getting fruits and vegetables", title: "How to get fruits or vegetables.",
                 messages: new List<HintMessage>  {
@@ -294,7 +294,9 @@ namespace SonOfRobin
                 messages: new List<HintMessage>  {
                     new HintMessage(text: "Ouch!.\nMy feet burn!", boxType: HintMessage.BoxType.Dialogue, fieldOnly: true),
                     new HintMessage(text: "Swamp areas are poisonous.", boxType: messageTextType),
-                    new HintMessage(text: "You need | protective boots, to walk there safely.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.BootsProtective)}, boxType: messageTextType)});
+                    new HintMessage(text: "You need | protective boots, to walk there safely.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.BootsProtective)}, boxType: messageTextType),
+                    new HintMessage(text: "To get rid of the poison, you can eat | | | something.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Apple), PieceInfo.GetTexture(PieceTemplate.Name.MeatRaw), PieceInfo.GetTexture(PieceTemplate.Name.Meal)}, boxType: messageTextType),
+                    });
         }
 
     }

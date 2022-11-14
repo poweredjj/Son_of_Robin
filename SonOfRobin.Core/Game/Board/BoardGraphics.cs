@@ -13,6 +13,7 @@ namespace SonOfRobin
         public Texture2D Texture { get; private set; }
 
         private Color textureSimulationColor; // texture "preview" for display when the texture is unloaded
+
         public Color TextureSimulationColor
         {
             get
