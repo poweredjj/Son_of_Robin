@@ -89,13 +89,7 @@ namespace SonOfRobin
                 float textOpacity = Math.Min(Math.Max((float)(message.deletionFrame - currentFrame) / 30f, 0), 1);
                 float outlineOpacity = (textOpacity == 1) ? 1 : textOpacity / 4;
 
-                for (int x = -1; x < 2; x++)
-                {
-                    for (int y = -1; y < 2; y++)
-                    { SonOfRobinGame.spriteBatch.DrawString(font, currentLineOfText, txtPos + new Vector2(x, y), Color.Black * outlineOpacity); }
-                }
-
-                SonOfRobinGame.spriteBatch.DrawString(font, currentLineOfText, txtPos, message.color * textOpacity);
+                Helpers.DrawTextWithOutline(font: font, text: currentLineOfText, pos: txtPos, color: message.color * textOpacity, outlineColor: Color.Black * outlineOpacity, outlineSize: 1);
             }
         }
 

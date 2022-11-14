@@ -24,20 +24,39 @@ namespace SonOfRobin
             return $"{Math.Abs(DateTime.Now.GetHashCode())}_{hashCounter}";
         }
 
+        public static void DrawTextWithOutline(SpriteFont font, string text, Vector2 pos, Color color, Color outlineColor, int outlineSize = 1)
+        {
+            if (outlineSize > 0)
+            {
+                for (int x = -outlineSize; x <= outlineSize; x++)
+                {
+                    for (int y = -outlineSize; y <= outlineSize; y++)
+                    {
+                        SonOfRobinGame.spriteBatch.DrawString(font, text, pos + new Vector2(x, y), outlineColor);
+                    }
+                }
+            }
+
+            SonOfRobinGame.spriteBatch.DrawString(font, text, pos, color);
+        }
+
         public static void DrawTextInsideRectWithOutline(SpriteFont font, Rectangle rectangle, string text, Color color, Color outlineColor, AlignX alignX = AlignX.Center, AlignY alignY = AlignY.Center, int outlineSize = 0, bool drawTestRect = false)
         {
             var outlineRectList = new List<Rectangle>();
 
-            for (int x = -outlineSize; x <= outlineSize; x++)
+            if (outlineSize > 0)
             {
-                for (int y = -outlineSize; y <= outlineSize; y++)
+                for (int x = -outlineSize; x <= outlineSize; x++)
                 {
-                    if (x == 0 && y == 0) continue;
+                    for (int y = -outlineSize; y <= outlineSize; y++)
+                    {
+                        if (x == 0 && y == 0) continue;
 
-                    Rectangle outlineRect = rectangle;
-                    outlineRect.X += x;
-                    outlineRect.Y += y;
-                    outlineRectList.Add(outlineRect);
+                        Rectangle outlineRect = rectangle;
+                        outlineRect.X += x;
+                        outlineRect.Y += y;
+                        outlineRectList.Add(outlineRect);
+                    }
                 }
             }
 
@@ -56,11 +75,16 @@ namespace SonOfRobin
                 shadowOffsetX = shadowOffset;
                 shadowOffsetY = shadowOffset;
             }
-            Rectangle shadowRect = rectangle;
-            shadowRect.X += shadowOffsetX;
-            shadowRect.Y += shadowOffsetY;
 
-            DrawTextInsideRect(font: font, rectangle: shadowRect, text: text, color: shadowColor, alignX: alignX, alignY: alignY, drawTestRect: drawTestRect);
+            if (shadowOffsetX != 0 && shadowOffsetY != 0)
+            {
+                Rectangle shadowRect = rectangle;
+                shadowRect.X += shadowOffsetX;
+                shadowRect.Y += shadowOffsetY;
+
+                DrawTextInsideRect(font: font, rectangle: shadowRect, text: text, color: shadowColor, alignX: alignX, alignY: alignY, drawTestRect: drawTestRect);
+            }
+
             DrawTextInsideRect(font: font, rectangle: rectangle, text: text, color: color, alignX: alignX, alignY: alignY, drawTestRect: drawTestRect);
         }
         public static void DrawTextInsideRect(SpriteFont font, Rectangle rectangle, string text, Color color, AlignX alignX = AlignX.Center, AlignY alignY = AlignY.Center, bool drawTestRect = false)

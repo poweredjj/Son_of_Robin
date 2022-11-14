@@ -232,37 +232,32 @@ namespace SonOfRobin
         {
             Helpers.DrawRectangleOutline(rect: this.rect, color: Color.White * 0.3f, borderWidth: 1);
 
-            SpriteFont posFont = SonOfRobinGame.fontPressStart2P5;
-
-            Vector2 txtPos = new Vector2(this.xMin, this.yMin);
-            txtPos += new Vector2(5, 5);
-            string txtString = $"{this.cellNoX},{this.cellNoY}\n{this.xMin},{this.yMin}";
-
-            SonOfRobinGame.spriteBatch.DrawString(posFont, txtString, txtPos + new Vector2(1, 1), Color.Black);
-            SonOfRobinGame.spriteBatch.DrawString(posFont, txtString, txtPos, Color.White);
+            SpriteFont font = SonOfRobinGame.fontPressStart2P5;
 
             foreach (Sprite sprite in this.spriteGroups[groupName].Values)
             {
-                txtPos = sprite.position;
-                txtString = $"{sprite.id}\n{sprite.animPackage}\n{this.cellNoX},{this.cellNoY}\n{sprite.position.X},{sprite.position.Y}";
-
-                SonOfRobinGame.spriteBatch.DrawString(posFont, txtString, txtPos + new Vector2(1, 1), Color.Black);
-                SonOfRobinGame.spriteBatch.DrawString(posFont, txtString, txtPos, Color.White);
+                string spriteText = $"{sprite.id}\n{sprite.animPackage}\n{this.cellNoX},{this.cellNoY}\n{sprite.position.X},{sprite.position.Y}";
+                Helpers.DrawTextWithOutline(font: font, text: spriteText, pos: sprite.position, color: Color.White, outlineColor: Color.Black, outlineSize: 1);
             }
+
+            string cellText = $"{this.cellNoX},{this.cellNoY}\n{this.xMin},{this.yMin}";
+
+            Helpers.DrawTextWithOutline(font: font, text: cellText, pos: new Vector2(this.xMin, this.yMin) + new Vector2(5, 5), color: Color.White, outlineColor: Color.Black, outlineSize: 1);
         }
 
         public void DrawBackground(bool drawSimulation, float opacity = 1f)
         {
-            if (this.boardGraphics.Texture == null)
+            if (this.boardGraphics.Texture != null)
+            {
+                SonOfRobinGame.spriteBatch.Draw(this.boardGraphics.Texture, this.rect, this.boardGraphics.Texture.Bounds, Color.White * opacity);
+            }
+            else
             {
                 if (drawSimulation)
                 {
                     SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, this.rect, SonOfRobinGame.whiteRectangle.Bounds, this.boardGraphics.TextureSimulationColor * opacity);
                 }
-                return;
             }
-
-            SonOfRobinGame.spriteBatch.Draw(this.boardGraphics.Texture, this.rect, this.boardGraphics.Texture.Bounds, Color.White * opacity);
         }
     }
 }

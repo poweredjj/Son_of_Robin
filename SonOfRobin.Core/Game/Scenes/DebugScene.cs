@@ -80,13 +80,7 @@ namespace SonOfRobin
 
         public override void Draw()
         {
-            for (int x = -1; x < 2; x++)
-            {
-                for (int y = -1; y < 2; y++)
-                { SonOfRobinGame.spriteBatch.DrawString(font, debugText, new Vector2(x, y), Color.Black); }
-            }
-
-            SonOfRobinGame.spriteBatch.DrawString(font, debugText, Vector2.Zero, Color.White);
+            Helpers.DrawTextWithOutline(font: font, text: debugText, pos: Vector2.Zero, color: Color.White * this.viewParams.drawOpacity, outlineColor: Color.Black * this.viewParams.drawOpacity, outlineSize: 1);
         }
 
         public void ProcessDebugInput()

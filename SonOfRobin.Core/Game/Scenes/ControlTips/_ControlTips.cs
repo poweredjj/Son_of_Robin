@@ -133,7 +133,10 @@ namespace SonOfRobin
                 drawOffsetX += tip.width + tipMargin;
             }
 
-            if (Preferences.DebugMode) SonOfRobinGame.spriteBatch.DrawString(SonOfRobinGame.fontPressStart2P5, $"{this.currentLayout}", Vector2.Zero, Color.White);
+            if (Preferences.DebugMode)
+            {
+                Helpers.DrawTextWithOutline(font: SonOfRobinGame.fontPressStart2P5, text: $"{this.currentLayout}", pos: Vector2.Zero, color: Color.White, outlineColor: Color.Black, outlineSize: 1);
+            }
         }
 
         public static void RefreshTopTipsLayout()

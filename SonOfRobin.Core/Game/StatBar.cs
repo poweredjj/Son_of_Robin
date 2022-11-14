@@ -108,14 +108,8 @@ namespace SonOfRobin
         {
             if (this.texture != null) return;
 
-            for (int x = -1; x < 2; x++)
-            {
-                for (int y = -1; y < 2; y++)
-                {
-                    if (x == 0 && y == 0) continue;
-                    SonOfRobinGame.spriteBatch.DrawString(font, this.label, this.labelPos + new Vector2(x, y), Color.Black);
-                }
-            }
+            // Color.Transparent, because text should be drawn after drawing outlines for all statbars
+            Helpers.DrawTextWithOutline(font: font, text: this.label, pos: this.labelPos, color: Color.Transparent, outlineColor: Color.Black, outlineSize: 1);
         }
 
         private void DrawTxt()

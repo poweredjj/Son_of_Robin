@@ -115,17 +115,13 @@ namespace SonOfRobin
                 string sceneTxt = textByScene.Values.ToList()[i];
 
                 Vector2 txtSize = font.MeasureString(sceneTxt);
-                Vector2 currentPos = new Vector2(0, sceneNo * (txtSize.Y + margin));
-
-                for (int x = -1; x < 2; x++)
-                {
-                    for (int y = -1; y < 2; y++)
-                    { SonOfRobinGame.spriteBatch.DrawString(font, sceneTxt, currentPos + new Vector2(x, y), Color.Black); }
-                }
+                Vector2 txtPos = new Vector2(0, sceneNo * (txtSize.Y + margin));
 
                 Color color = scene.priority == 0 ? Color.White : Color.LightGreen;
                 if (waitingScenes.Contains(scene)) color = Color.Cyan;
-                SonOfRobinGame.spriteBatch.DrawString(font, sceneTxt, currentPos, color);
+
+                Helpers.DrawTextWithOutline(font: font, text: sceneTxt, pos: txtPos, color: color * this.viewParams.drawOpacity, outlineColor: Color.Black * this.viewParams.drawOpacity, outlineSize: 1);
+
                 sceneNo++;
             }
         }
