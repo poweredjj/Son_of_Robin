@@ -15,8 +15,8 @@ namespace SonOfRobin
 
         public bool worldCreationInProgress;
         private bool plantsProcessing;
-        private readonly static int initialPiecesCreationFramesTotal = 20;
-        public readonly static int buildDuration = (int)(60 * 2.5);
+        private static readonly int initialPiecesCreationFramesTotal = 20;
+        public static readonly int buildDuration = (int)(60 * 2.5);
         private int initialPiecesCreationFramesLeft;
         public readonly DateTime creationStart;
         public DateTime creationEnd;
@@ -30,6 +30,7 @@ namespace SonOfRobin
         public bool BuildMode { get; private set; }
 
         private bool spectatorMode;
+
         public bool SpectatorMode
         {
             get { return this.spectatorMode; }
@@ -112,6 +113,7 @@ namespace SonOfRobin
         }
 
         private bool cineMode;
+
         public bool CineMode
         {
             get { return cineMode; }
@@ -168,6 +170,7 @@ namespace SonOfRobin
         public readonly CraftStats craftStats;
         public List<PieceTemplate.Name> identifiedPieces; // pieces that were "looked at" in inventory
         private bool mapEnabled;
+
         public bool MapEnabled
         {
             get { return this.mapEnabled; }
@@ -181,7 +184,8 @@ namespace SonOfRobin
             }
         }
 
-        public Sound DialogueSound { get { return this.player.soundPack.GetSound(PieceSoundPack.Action.PlayerSpeak); } }
+        public Sound DialogueSound
+        { get { return this.player.soundPack.GetSound(PieceSoundPack.Action.PlayerSpeak); } }
 
         public Player player;
         public HintEngine hintEngine;
@@ -207,16 +211,22 @@ namespace SonOfRobin
         public List<PieceTemplate.Name> discoveredRecipesForPieces;
         public readonly DateTime createdTime; // for calculating time spent in game
         private TimeSpan timePlayed; // real time spent while playing (differs from currentUpdate because of island time compression via updateMultiplier)
+
         public TimeSpan TimePlayed
         {
             get
             { return timePlayed + (DateTime.Now - this.createdTime); }
             set { timePlayed = value; }
         }
-        public bool CanProcessMoreCameraRectPiecesNow { get { return UpdateTimeElapsed.Milliseconds <= 13 * this.updateMultiplier; } }
-        public bool CanProcessMoreNonPlantsNow { get { return UpdateTimeElapsed.Milliseconds <= 7 * this.updateMultiplier; } }
-        public bool CanProcessMorePlantsNow { get { return UpdateTimeElapsed.Milliseconds <= 9 * this.updateMultiplier; } }
-        public bool CanProcessAnyStateMachineNow { get { return !this.plantsProcessing || UpdateTimeElapsed.Milliseconds <= 9 * this.updateMultiplier; } }
+
+        public bool CanProcessMoreCameraRectPiecesNow
+        { get { return UpdateTimeElapsed.Milliseconds <= 13 * this.updateMultiplier; } }
+        public bool CanProcessMoreNonPlantsNow
+        { get { return UpdateTimeElapsed.Milliseconds <= 7 * this.updateMultiplier; } }
+        public bool CanProcessMorePlantsNow
+        { get { return UpdateTimeElapsed.Milliseconds <= 9 * this.updateMultiplier; } }
+        public bool CanProcessAnyStateMachineNow
+        { get { return !this.plantsProcessing || UpdateTimeElapsed.Milliseconds <= 9 * this.updateMultiplier; } }
 
         public float PieceCount
         {
@@ -230,6 +240,7 @@ namespace SonOfRobin
                 return pieceCount;
             }
         }
+
         private Vector2 DarknessMaskScale
         {
             get
@@ -522,7 +533,6 @@ namespace SonOfRobin
             MessageLog.AddMessage(msgType: MsgType.User, message: "Game has been loaded.", color: Color.Cyan);
         }
 
-
         private BoardPiece PlacePlayer()
         {
             for (int tryIndex = 0; tryIndex < 65535; tryIndex++)
@@ -540,13 +550,14 @@ namespace SonOfRobin
 
             throw new DivideByZeroException("Cannot place player sprite.");
         }
+
         public bool CreateMissingPieces(bool initialCreation, uint maxAmountToCreateAtOnce = 300000, bool outsideCamera = false, float multiplier = 1.0f, bool clearDoNotCreateList = false, bool addToDoNotCreateList = true)
         {
             if (clearDoNotCreateList) doNotCreatePiecesList.Clear();
 
             if (!initialCreation && !this.CanProcessMorePlantsNow) return false;
 
-            Vector2 notReallyUsedPosition = new Vector2(-100, -100); // -100, -100 will be converted to a random position on the map - needed for effective creation of new sprites 
+            Vector2 notReallyUsedPosition = new Vector2(-100, -100); // -100, -100 will be converted to a random position on the map - needed for effective creation of new sprites
             int minPieceAmount = Math.Max(Convert.ToInt32((long)width * (long)height / 300000 * multiplier), 0); // 300000
 
             var amountToCreateByName = new Dictionary<PieceTemplate.Name, int> { };
@@ -709,7 +720,6 @@ namespace SonOfRobin
 
                 this.camera.SetZoom(zoom: 1f / (1f + zoomOutForce), zoomSpeedMultiplier: 3f);
             }
-
 
             if (!this.player.alive || this.player.activeState != BoardPiece.State.PlayerControlledWalking) return;
 
@@ -882,7 +892,6 @@ namespace SonOfRobin
                 return; // to avoid doing too many calculations in one update
             }
 
-
             while (true)
             {
                 if (plantSpritesQueue.Count == 0) return;
@@ -902,6 +911,7 @@ namespace SonOfRobin
                 }
             }
         }
+
         public void EnterBuildMode(Craft.Recipe recipe)
         {
             if (this.BuildMode) throw new ArgumentException("Is already in build mode.");
@@ -997,7 +1007,6 @@ namespace SonOfRobin
                 if (this.stateMachineTypesManager.CanBeProcessed(sprite.boardPiece)) sprite.UpdateAnimation();
             }
         }
-
 
         public void AddPauseMenuTransitions()
         {
