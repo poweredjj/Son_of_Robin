@@ -220,6 +220,7 @@ namespace SonOfRobin
             TreeStump,
 
             LavaLight,
+            SwampGas,
 
             SoundSeaWaves,
             SoundLakeWaves,
@@ -2297,7 +2298,7 @@ namespace SonOfRobin
 
                 case Name.DebrisStar:
                     {
-                        var packageNames = new List<AnimData.PkgName> { AnimData.PkgName.StarDebris1, AnimData.PkgName.StarDebris2, AnimData.PkgName.StarDebris3 };
+                        var packageNames = new List<AnimData.PkgName> { AnimData.PkgName.DebrisStar1, AnimData.PkgName.DebrisStar2, AnimData.PkgName.DebrisStar3 };
                         var animPkg = packageNames[random.Next(0, packageNames.Count)];
 
                         var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.All });
@@ -2545,6 +2546,24 @@ namespace SonOfRobin
                         lavalight.sprite.color = Color.Orange;
 
                         return lavalight;
+                    }
+
+
+                case Name.SwampGas:
+                    {
+                        var packageNames = new List<AnimData.PkgName> { AnimData.PkgName.Fog1, AnimData.PkgName.Fog2, AnimData.PkgName.Fog3, AnimData.PkgName.Fog4 };
+                        var animPkg = packageNames[random.Next(0, packageNames.Count)];
+
+                        var allowedTerrain = new AllowedTerrain(
+                            extPropertiesDict: new Dictionary<ExtBoardProps.ExtPropName, bool> { { ExtBoardProps.ExtPropName.BiomeSwamp, true } });
+
+                        AllowedDensity allowedDensity = new AllowedDensity(radious: 100, maxNoOfPiecesSameName: 1);
+
+                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: animPkg, destructionDelay: 0, allowedTerrain: allowedTerrain, allowedDensity: allowedDensity, minDistance: 0, maxDistance: 500, generation: generation, fadeInAnim: false, readableName: "gas", description: "Swamp gas.", activeState: BoardPiece.State.Empty, serialize: true, ignoresCollisions: false, visible: true);
+
+                        visualEffect.sprite.color = Color.LimeGreen;
+
+                        return visualEffect;
                     }
 
                 case Name.SoundSeaWaves:
