@@ -10,7 +10,27 @@ namespace SonOfRobin
     public class BoardGraphics
     {
         private readonly Cell cell;
-        public Texture2D texture;
+        public Texture2D Texture { get; private set; }
+
+        private Color textureSimulationColor; // texture "preview" for display when the texture is unloaded
+        public Color TextureSimulationColor
+        {
+            get
+            {
+                if (this.textureSimulationColor == null)
+                {
+                    this.TextureSimulationColor = CreatePixel(grid: this.cell.grid, x: this.cell.xCenter, y: this.cell.yCenter);
+                }
+
+                return this.textureSimulationColor;
+            }
+
+            private set
+            {
+                this.textureSimulationColor = value;
+            }
+        }
+
         private readonly string templatePath;
         private bool savedToDisk;
 
@@ -49,29 +69,37 @@ namespace SonOfRobin
 
         public void LoadTexture()
         {
-            if (this.texture != null) return;
+            if (this.Texture != null) return;
 
-            this.texture = GfxConverter.LoadTextureFromPNG(this.templatePath);
-            if (this.texture == null)
+            this.Texture = GfxConverter.LoadTextureFromPNG(this.templatePath);
+            if (this.Texture == null)
             {
                 this.CreateBitmapFromTerrain();
-                this.texture = GfxConverter.LoadTextureFromPNG(this.templatePath); // trying to create texture on disk first...
-                if (this.texture == null)
+                this.Texture = GfxConverter.LoadTextureFromPNG(this.templatePath); // trying to create texture on disk first...
+                if (this.Texture == null)
                 {
                     Color[,] colorGrid = this.CreateBitmapFromTerrain(); // ...if this fails (disk error, locked file, etc.), get texture data directly
-                    this.texture = GfxConverter.Convert2DArrayToTexture(colorGrid);
+                    this.Texture = GfxConverter.Convert2DArrayToTexture(colorGrid);
                 }
             }
 
             this.cell.grid.loadedTexturesCount++;
         }
 
+        public void ReplaceTexture(Texture2D texture, Color textureSimulationColor)
+        {
+            if (this.Texture != null) this.Texture.Dispose();
+            else this.cell.grid.loadedTexturesCount++;
+            this.Texture = texture;
+            this.TextureSimulationColor = textureSimulationColor;
+        }
+
         public void UnloadTexture()
         {
-            if (this.texture == null) return;
+            if (this.Texture == null) return;
 
-            this.texture.Dispose();
-            this.texture = null;
+            this.Texture.Dispose();
+            this.Texture = null;
             this.cell.grid.loadedTexturesCount--;
         }
 
@@ -83,7 +111,7 @@ namespace SonOfRobin
             this.savedToDisk = true;
         }
 
-        public static Texture2D CreateEntireMapTexture(int width, int height, Grid grid, float multiplier)
+        public static Texture2D CreateEntireMapTexture(Grid grid, int width, int height, float multiplier)
         {
             var colorArray = new Color[width * height];
 
@@ -91,14 +119,7 @@ namespace SonOfRobin
             {
                 for (int x = 0; x < width; x++)
                 {
-                    int pixelX = (int)(x / multiplier);
-                    int pixelY = (int)(y / multiplier);
-
-                    byte pixelHeight = grid.GetFieldValue(x: pixelX, y: pixelY, terrainName: Terrain.Name.Height);
-                    byte pixelHumidity = grid.GetFieldValue(x: pixelX, y: pixelY, terrainName: Terrain.Name.Humidity);
-                    byte pixelBiome = grid.GetFieldValue(x: pixelX, y: pixelY, terrainName: Terrain.Name.Biome);
-                    var extDataValDict = grid.GetExtValueDict(x: pixelX, y: pixelY);
-                    colorArray[(y * width) + x] = CreatePixel(pixelHeight: pixelHeight, pixelHumidity: pixelHumidity, pixelBiome: pixelBiome, extDataValDict: extDataValDict);
+                    colorArray[(y * width) + x] = CreatePixel(grid: grid, x: (int)(x / multiplier), y: (int)(y / multiplier));
                 }
             }
 
@@ -129,11 +150,7 @@ namespace SonOfRobin
                     worldSpaceX = Math.Min(Math.Max(worldSpaceX, 0), this.cell.world.width - 1);
                     worldSpaceY = Math.Min(Math.Max(worldSpaceY, 0), this.cell.world.height - 1);
 
-                    smallColorGrid[localX, localY] = CreatePixel(
-                        pixelHeight: this.cell.grid.GetFieldValue(terrainName: Terrain.Name.Height, x: worldSpaceX, y: worldSpaceY),
-                        pixelHumidity: this.cell.grid.GetFieldValue(terrainName: Terrain.Name.Humidity, x: worldSpaceX, y: worldSpaceY),
-                        pixelBiome: this.cell.grid.GetFieldValue(terrainName: Terrain.Name.Biome, x: worldSpaceX, y: worldSpaceY),
-                        extDataValDict: this.cell.grid.GetExtValueDict(x: worldSpaceX, y: worldSpaceY));
+                    smallColorGrid[localX, localY] = CreatePixel(grid: this.cell.grid, x: worldSpaceX, y: worldSpaceY);
                 }
             }
 
@@ -156,14 +173,7 @@ namespace SonOfRobin
             {
                 for (int localY = 0; localY < sourceHeight + 0; localY++)
                 {
-                    int worldSpaceX = this.cell.xMin + (localX * resDivider);
-                    int worldSpaceY = this.cell.yMin + (localY * resDivider);
-
-                    smallColorGrid[localX, localY] = CreatePixel(
-                        pixelHeight: this.cell.grid.GetFieldValue(terrainName: Terrain.Name.Height, x: worldSpaceX, y: worldSpaceY),
-                        pixelHumidity: this.cell.grid.GetFieldValue(terrainName: Terrain.Name.Humidity, x: worldSpaceX, y: worldSpaceY),
-                        pixelBiome: this.cell.grid.GetFieldValue(terrainName: Terrain.Name.Biome, x: worldSpaceX, y: worldSpaceY),
-                        extDataValDict: this.cell.grid.GetExtValueDict(x: worldSpaceX, y: worldSpaceY));
+                    smallColorGrid[localX, localY] = CreatePixel(grid: this.cell.grid, x: this.cell.xMin + (localX * resDivider), y: this.cell.yMin + (localY * resDivider));
                 }
             }
 
@@ -211,11 +221,7 @@ namespace SonOfRobin
 
                         try
                         {
-                            workingGrid3x3[xOffset + 1, yOffset + 1] = CreatePixel(
-                                pixelHeight: this.cell.grid.GetFieldValue(terrainName: Terrain.Name.Height, x: worldSpaceX, y: worldSpaceY),
-                                pixelHumidity: this.cell.grid.GetFieldValue(terrainName: Terrain.Name.Humidity, x: worldSpaceX, y: worldSpaceY),
-                                pixelBiome: this.cell.grid.GetFieldValue(terrainName: Terrain.Name.Biome, x: worldSpaceX, y: worldSpaceY),
-                                extDataValDict: this.cell.grid.GetExtValueDict(x: worldSpaceX, y: worldSpaceY));
+                            workingGrid3x3[xOffset + 1, yOffset + 1] = CreatePixel(grid: this.cell.grid, x: worldSpaceX, y: worldSpaceY);
                         }
                         catch (IndexOutOfRangeException)
                         {
@@ -260,8 +266,13 @@ namespace SonOfRobin
             return upscaledColorGrid;
         }
 
-        private static Color CreatePixel(byte pixelHeight, byte pixelHumidity, byte pixelBiome, Dictionary<ExtBoardProps.ExtPropName, bool> extDataValDict)
+        private static Color CreatePixel(Grid grid, int x, int y)
         {
+            byte pixelHeight = grid.GetFieldValue(terrainName: Terrain.Name.Height, x: x, y: y);
+            byte pixelHumidity = grid.GetFieldValue(terrainName: Terrain.Name.Humidity, x: x, y: y);
+            byte pixelBiome = grid.GetFieldValue(terrainName: Terrain.Name.Biome, x: x, y: y);
+            Dictionary<ExtBoardProps.ExtPropName, bool> extDataValDict = grid.GetExtValueDict(x, y);
+
             Color pixel = new Color();
 
             foreach (var kvp in colorsByHeight)

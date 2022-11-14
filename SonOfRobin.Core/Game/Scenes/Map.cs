@@ -114,7 +114,7 @@ namespace SonOfRobin
                 int width = (int)(this.world.width * this.scaleMultiplier);
                 int height = (int)(this.world.height * this.scaleMultiplier);
 
-                Texture2D mapTexture = BoardGraphics.CreateEntireMapTexture(width: width, height: height, grid: this.world.grid, multiplier: this.scaleMultiplier);
+                Texture2D mapTexture = BoardGraphics.CreateEntireMapTexture(grid: this.world.grid, width: width, height: height, multiplier: this.scaleMultiplier);
                 Rectangle sourceRectangle = new Rectangle(0, 0, width, height);
                 SonOfRobinGame.spriteBatch.Draw(mapTexture, sourceRectangle, sourceRectangle, Color.White);
 
@@ -407,7 +407,7 @@ namespace SonOfRobin
 
                 foreach (Cell cell in cellsToDraw)
                 {
-                    if (cell.boardGraphics.texture == null)
+                    if (cell.boardGraphics.Texture == null)
                     {
                         foundCellsWithMissingTextures = true;
                         break;
@@ -429,7 +429,7 @@ namespace SonOfRobin
             {
                 foreach (Cell cell in cellsToDraw)
                 {
-                    cell.DrawBackground(opacity: 1f);
+                    cell.DrawBackground(drawSimulation: false, opacity: 1f);
                 }
             }
 

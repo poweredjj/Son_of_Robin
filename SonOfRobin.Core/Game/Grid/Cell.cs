@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,6 @@ namespace SonOfRobin
     {
         public readonly Grid grid;
         public readonly World world;
-        public readonly Color color;
 
         public readonly int cellNoX;
         public readonly int cellNoY;
@@ -69,7 +69,6 @@ namespace SonOfRobin
             this.xCenter = this.xMin + (this.width / 2);
             this.yCenter = this.yMin + (this.height / 2);
             this.center = new Vector2(this.xCenter, this.yCenter);
-            this.color = new Color(random.Next(0, 255), random.Next(0, 255), random.Next(0, 255));
 
             this.surroundingCells = new List<Cell>();
             this.VisitedByPlayer = false;
@@ -152,7 +151,7 @@ namespace SonOfRobin
         public void CopyFromTemplate(Cell templateCell)
         {
             this.boardGraphics = new BoardGraphics(grid: this.grid, cell: this);
-            this.boardGraphics.texture = templateCell.boardGraphics.texture;
+            this.boardGraphics.ReplaceTexture(texture: templateCell.boardGraphics.Texture, textureSimulationColor: templateCell.boardGraphics.TextureSimulationColor);
             this.allowedNames.AddRange(templateCell.allowedNames);
         }
 
@@ -231,11 +230,12 @@ namespace SonOfRobin
 
         public void DrawDebugData(Group groupName)
         {
-            SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, this.rect, this.color * 0.3f);
+            Helpers.DrawRectangleOutline(rect: this.rect, color: Color.White * 0.3f, borderWidth: 1);
 
-            var posFont = SonOfRobinGame.fontPressStart2P5;
+            SpriteFont posFont = SonOfRobinGame.fontPressStart2P5;
 
             Vector2 txtPos = new Vector2(this.xMin, this.yMin);
+            txtPos += new Vector2(5, 5);
             string txtString = $"{this.cellNoX},{this.cellNoY}\n{this.xMin},{this.yMin}";
 
             SonOfRobinGame.spriteBatch.DrawString(posFont, txtString, txtPos + new Vector2(1, 1), Color.Black);
@@ -251,11 +251,18 @@ namespace SonOfRobin
             }
         }
 
-        public void DrawBackground(float opacity = 1f)
+        public void DrawBackground(bool drawSimulation, float opacity = 1f)
         {
-            if (this.boardGraphics.texture == null) return;
+            if (this.boardGraphics.Texture == null)
+            {
+                if (drawSimulation)
+                {
+                    SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, this.rect, SonOfRobinGame.whiteRectangle.Bounds, this.boardGraphics.TextureSimulationColor * opacity);
+                }
+                return;
+            }
 
-            SonOfRobinGame.spriteBatch.Draw(this.boardGraphics.texture, this.rect, this.boardGraphics.texture.Bounds, Color.White * opacity);
+            SonOfRobinGame.spriteBatch.Draw(this.boardGraphics.Texture, this.rect, this.boardGraphics.Texture.Bounds, Color.White * opacity);
         }
     }
 }

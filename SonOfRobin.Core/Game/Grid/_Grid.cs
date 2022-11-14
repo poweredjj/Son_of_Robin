@@ -187,12 +187,6 @@ namespace SonOfRobin
                 {
                     Grid templateGrid = oldWorld.grid;
 
-                    for (int x = 0; x < templateGrid.noOfCellsX; x++)
-                    {
-                        for (int y = 0; y < templateGrid.noOfCellsY; y++)
-                            this.cellGrid[x, y].CopyFromTemplate(templateGrid.cellGrid[x, y]);
-                    }
-
                     foreach (var kvp in templateGrid.terrainByName)
                     {
                         Terrain.Name terrainName = kvp.Key;
@@ -201,6 +195,12 @@ namespace SonOfRobin
                     }
 
                     this.extBoardProps = templateGrid.extBoardProps;
+
+                    for (int x = 0; x < templateGrid.noOfCellsX; x++)
+                    {
+                        for (int y = 0; y < templateGrid.noOfCellsY; y++)
+                            this.cellGrid[x, y].CopyFromTemplate(templateGrid.cellGrid[x, y]);
+                    }
 
                     this.FillCellListsForPieceNames();
 
@@ -1002,7 +1002,7 @@ namespace SonOfRobin
             var visibleCells = this.GetCellsInsideRect(camera.viewRect);
             foreach (Cell cell in visibleCells)
             {
-                cell.DrawBackground();
+                cell.DrawBackground(drawSimulation: true);
 
                 if (this.world.MapEnabled && !cell.VisitedByPlayer && cameraRect.Intersects(cell.rect) && camera.IsTrackingPlayer && this.world.player.CanSeeAnything)
                 {
@@ -1192,7 +1192,7 @@ namespace SonOfRobin
 
             while (true)
             {
-                var cellsInCameraViewWithNoTextures = this.GetCellsInsideRect(camera.viewRect).Where(cell => cell.boardGraphics.texture == null);
+                var cellsInCameraViewWithNoTextures = this.GetCellsInsideRect(camera.viewRect).Where(cell => cell.boardGraphics.Texture == null);
                 if (visitedByPlayerOnly) cellsInCameraViewWithNoTextures = cellsInCameraViewWithNoTextures.Where(cell => cell.VisitedByPlayer);
                 if (!cellsInCameraViewWithNoTextures.Any()) return;
 
@@ -1236,7 +1236,7 @@ namespace SonOfRobin
             }
 
             var cellsInCameraView = this.GetCellsInsideRect(camera.viewRect);
-            var cellsToUnload = this.allCells.Where(cell => !cellsInCameraView.Contains(cell) && cell.boardGraphics.texture != null).ToList();
+            var cellsToUnload = this.allCells.Where(cell => !cellsInCameraView.Contains(cell) && cell.boardGraphics.Texture != null).ToList();
 
             foreach (Cell cell in cellsToUnload)
             {
