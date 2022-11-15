@@ -232,6 +232,21 @@ namespace SonOfRobin
         {
             Helpers.DrawRectangleOutline(rect: this.rect, color: Color.White * 0.3f, borderWidth: 1);
 
+            var colorForExtPropNames = new Dictionary<ExtBoardProps.Name, Color> {
+                { ExtBoardProps.Name.Sea, Color.Cyan },
+                { ExtBoardProps.Name.OuterBeach, Color.Red },
+                { ExtBoardProps.Name.BiomeSwamp, Color.Green },
+                // every name should have its color defined here
+            };
+
+            foreach (var kvp in colorForExtPropNames)
+            {
+                ExtBoardProps.Name name = kvp.Key;
+                Color color = kvp.Value;
+
+                if (this.grid.CheckIfContainsExtPropertyForCell(name: name, value: true, cellNoX: this.cellNoX, cellNoY: this.cellNoY)) SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, this.rect, SonOfRobinGame.whiteRectangle.Bounds, color * 0.4f);
+            }
+
             SpriteFont font = SonOfRobinGame.fontPressStart2P5;
 
             foreach (Sprite sprite in this.spriteGroups[groupName].Values)

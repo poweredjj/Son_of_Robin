@@ -183,12 +183,6 @@ namespace SonOfRobin
             foreach (var kvp in extPropertiesDict)
             {
                 bool value = world.grid.GetExtProperty(name: kvp.Key, position: position);
-
-                if (kvp.Key == ExtBoardProps.Name.BiomeSwamp)
-                {
-                    var a = 1;
-                }
-
                 if (value != kvp.Value) return false;
             }
 

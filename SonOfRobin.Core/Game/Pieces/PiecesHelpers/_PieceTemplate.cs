@@ -2558,7 +2558,7 @@ namespace SonOfRobin
 
                         AllowedDensity allowedDensity = new AllowedDensity(radious: 100, maxNoOfPiecesSameName: 1);
 
-                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: animPkg, destructionDelay: 0, allowedTerrain: allowedTerrain, allowedDensity: allowedDensity, minDistance: 0, maxDistance: 500, generation: generation, fadeInAnim: false, readableName: "gas", description: "Swamp gas.", activeState: BoardPiece.State.Empty, serialize: true, ignoresCollisions: false, visible: true);
+                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: animPkg, destructionDelay: 0, allowedTerrain: allowedTerrain, allowedDensity: allowedDensity, minDistance: 0, maxDistance: 0, generation: generation, fadeInAnim: false, readableName: "gas", description: "Swamp gas.", activeState: BoardPiece.State.Empty, serialize: true, ignoresCollisions: false, visible: true);
 
                         visualEffect.sprite.color = Color.LimeGreen;
 

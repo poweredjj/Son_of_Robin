@@ -105,11 +105,11 @@ namespace SonOfRobin
                 {
                     Name name = kvp.Key;
 
-                    for (int x = xMinRaw; x <= xMaxRaw; x++)
+                    for (int rawX = xMinRaw; rawX <= xMaxRaw; rawX++)
                     {
-                        for (int y = yMinRaw; y <= yMaxRaw; y++)
+                        for (int rawY = yMinRaw; rawY <= yMaxRaw; rawY++)
                         {
-                            bool value = kvp.Value.Get(Convert2DCoordinatesTo1D(x, y));
+                            bool value = kvp.Value.Get(ConvertRaw2DCoordinatesTo1D(rawX, rawY));
                             if (value && !containsPropertiesTrue.Contains(name)) containsPropertiesTrue.Add(name);
                             if (!value && !containsPropertiesFalse.Contains(name)) containsPropertiesFalse.Add(name);
                         }
