@@ -540,7 +540,7 @@ namespace SonOfRobin
         {
             for (int tryIndex = 0; tryIndex < 65535; tryIndex++)
             {
-                player = (Player)PieceTemplate.CreateAndPlaceOnBoard(world: this, position: new Vector2(random.Next(0, this.width), random.Next(0, this.height)), templateName: PieceTemplate.Name.Player, randomSex: false, female: this.playerFemale);
+                player = (Player)PieceTemplate.CreateAndPlaceOnBoard(world: this, randomPlacement: true, position: Vector2.Zero, templateName: PieceTemplate.Name.Player, randomSex: false, female: this.playerFemale);
                 if (player.sprite.IsOnBoard)
                 {
                     player.sprite.orientation = Sprite.Orientation.up;
@@ -591,7 +591,7 @@ namespace SonOfRobin
                 {
                     if (!initialCreation && !this.CanProcessMorePlantsNow) return false;
 
-                    var newBoardPiece = PieceTemplate.CreateAndPlaceOnBoard(world: this, position: Vector2.Zero, templateName: pieceName);
+                    var newBoardPiece = PieceTemplate.CreateAndPlaceOnBoard(world: this, randomPlacement: true, position: Vector2.Zero, templateName: pieceName);
                     if (newBoardPiece.sprite.IsOnBoard)
                     {
                         if (initialCreation && newBoardPiece.GetType() == typeof(Plant) && this.random.Next(2) == 0)

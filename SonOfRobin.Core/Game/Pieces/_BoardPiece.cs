@@ -35,7 +35,8 @@ namespace SonOfRobin
 
             ScareAnimalsAway,
             PlayAmbientSound,
-            MapMarkerShowAndCheck
+            MapMarkerShowAndCheck,
+            ProcessRandomMovement
         }
 
         public enum Category { Wood, Stone, Metal, SmallPlant, Flesh, Dirt, Crystal, Indestructible }
@@ -585,6 +586,12 @@ namespace SonOfRobin
                         return;
                     }
 
+                case State.ProcessRandomMovement:
+                    {
+                        this.SM_ProcessRandomMovement();
+                        return;
+                    }
+
                 case State.Empty: // this state should be removed from execution (for performance reasons)
                     {
                         this.RemoveFromStateMachines();
@@ -660,6 +667,8 @@ namespace SonOfRobin
         public virtual void SM_ScarePredatorsAway()
         { throw new DivideByZeroException("This method should not be executed."); }
         public virtual void SM_PlayAmbientSound()
+        { throw new DivideByZeroException("This method should not be executed."); }
+        public virtual void SM_ProcessRandomMovement()
         { throw new DivideByZeroException("This method should not be executed."); }
         public virtual void SM_MapMarkerShowAndCheck()
         { throw new DivideByZeroException("This method should not be executed."); }
