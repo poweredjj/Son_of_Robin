@@ -603,7 +603,7 @@ namespace SonOfRobin
             return rectangle1.Intersects(rectangle2);
         }
 
-        public void UpdateRects()
+        private void UpdateRects()
         {
             this.gfxRect.X = (int)(position.X + this.frame.gfxOffset.X);
             this.gfxRect.Y = (int)(position.Y + this.frame.gfxOffset.Y);

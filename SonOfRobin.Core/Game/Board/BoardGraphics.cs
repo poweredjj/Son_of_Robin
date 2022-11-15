@@ -12,13 +12,14 @@ namespace SonOfRobin
         private readonly Cell cell;
         public Texture2D Texture { get; private set; }
 
+        private bool textureSimulationCalculated;
         private Color textureSimulationColor; // texture "preview" for display when the texture is unloaded
 
         public Color TextureSimulationColor
         {
             get
             {
-                if (this.textureSimulationColor == null)
+                if (!this.textureSimulationCalculated)
                 {
                     this.TextureSimulationColor = CreatePixel(grid: this.cell.grid, x: this.cell.xCenter, y: this.cell.yCenter);
                 }
@@ -29,6 +30,7 @@ namespace SonOfRobin
             private set
             {
                 this.textureSimulationColor = value;
+                this.textureSimulationCalculated = true;
             }
         }
 
@@ -66,6 +68,7 @@ namespace SonOfRobin
             this.cell = cell;
             this.templatePath = Path.Combine(grid.gridTemplate.templatePath, $"background_{cell.cellNoX}_{cell.cellNoY}.png");
             this.savedToDisk = File.Exists(this.templatePath);
+            this.textureSimulationCalculated = false;
         }
 
         public void LoadTexture()

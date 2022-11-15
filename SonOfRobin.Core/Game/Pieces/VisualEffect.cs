@@ -22,13 +22,24 @@ namespace SonOfRobin
 
         public override Dictionary<string, Object> Serialize()
         {
-            if (this.tweener != null) // tweener will change parameters (temporarily) and original values must be restored first
+            float rotation = this.sprite.rotation;
+            Vector2 position = this.sprite.position;
+
+            if (this.tweener != null)
             {
+                // tweener will change parameters and original values must be restored first
                 this.sprite.rotation = this.startRot;
                 this.sprite.SetNewPosition(newPos: this.startPos, ignoreCollisions: true);
             }
 
-            Dictionary<string, Object> pieceData = base.Serialize();
+            Dictionary<string, Object> pieceData = base.Serialize(); // serializing with proper values
+
+            if (this.tweener != null)
+            {
+                // restoring "temporary" values after serializing
+                this.sprite.rotation = rotation;
+                this.sprite.SetNewPosition(newPos: position, ignoreCollisions: true);
+            }
 
             return pieceData;
         }
@@ -77,15 +88,17 @@ namespace SonOfRobin
                 this.startPos = this.sprite.position;
                 this.startRot = this.sprite.rotation;
 
-                this.tweener.TweenTo(target: this.sprite, expression: sprite => sprite.rotation, toValue: 1f, duration: 10, delay: 0)
+                this.tweener.TweenTo(target: this.sprite, expression: sprite => sprite.rotation, toValue: 1f, duration: 9, delay: 0)
                  .RepeatForever(repeatDelay: 0.0f)
                  .AutoReverse()
                  .Easing(EasingFunctions.QuadraticInOut);
 
-                Vector2 newPos = this.sprite.position + new Vector2(this.world.random.Next(-50, 50));
+                int maxDistance = 100;
+
+                Vector2 newPos = this.sprite.position + new Vector2(this.world.random.Next(-maxDistance, maxDistance), this.world.random.Next(-maxDistance, maxDistance));
                 newPos = this.sprite.world.KeepVector2InWorldBounds(newPos);
 
-                this.tweener.TweenTo(target: this.sprite, expression: sprite => sprite.position, toValue: newPos, duration: 10, delay: 0)
+                this.tweener.TweenTo(target: this.sprite, expression: sprite => sprite.position, toValue: newPos, duration: 9, delay: 0)
                     .RepeatForever(repeatDelay: 0.0f)
                     .AutoReverse()
                     .Easing(EasingFunctions.QuadraticInOut);
@@ -93,8 +106,7 @@ namespace SonOfRobin
 
             this.tweener.Update((float)Scene.CurrentGameTime.ElapsedGameTime.TotalSeconds);
 
-            this.sprite.UpdateRects(); // because tweener will change position directly
-            this.sprite.UpdateBoardLocation(); // because tweener will change position directly
+            this.sprite.SetNewPosition(this.sprite.position); // to update grid, because tweener will change the position directly
         }
     }
 }
