@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using MonoGame.Extended.Tweening;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,8 @@ namespace SonOfRobin
     {
         public class RandomMovement
         {
+            private readonly Tweener tweener;
+
             private Sprite sprite;
             public Vector2 StartPos { get; private set; }
             public float StartRot { get; private set; }
@@ -18,7 +21,27 @@ namespace SonOfRobin
 
             public RandomMovement()
             {
-                // TODO add code
+                this.tweener = new Tweener();
+            }
+
+            private void SetTweener()
+            {
+                this.tweener.TweenTo(target: this.sprite, expression: sprite => sprite.rotation, toValue: 1f, duration: 3, delay: 0)
+                    .RepeatForever(repeatDelay: 0.2f)
+                    .AutoReverse()
+                    .Easing(EasingFunctions.Linear);
+
+                Vector2 newPos = this.sprite.position + new Vector2(-100);
+                newPos.X = Math.Max(newPos.X, 0);
+                newPos.X = Math.Min(newPos.X, this.sprite.world.width - 1);
+                newPos.Y = Math.Max(newPos.Y, 0);
+                newPos.Y = Math.Min(newPos.Y, this.sprite.world.height - 1);
+
+                this.tweener.TweenTo(target: this.sprite, expression: sprite => sprite.position, toValue: newPos, duration: 3, delay: 0)
+                    .RepeatForever(repeatDelay: 0.2f)
+                    .AutoReverse()
+                    .Easing(EasingFunctions.Linear);
+
             }
 
             public void Initialize(Sprite sprite)
@@ -28,11 +51,15 @@ namespace SonOfRobin
                 this.sprite = sprite;
                 this.StartPos = sprite.position;
                 this.StartRot = sprite.rotation;
+
+                this.SetTweener();
             }
 
             public void Serialize(Dictionary<string, Object> pieceData)
             {
                 pieceData["randomMovement_Initialized"] = this.Initialized;
+                if (!this.Initialized) return;
+
                 pieceData["randomMovement_StartPosX"] = this.StartPos.X;
                 pieceData["randomMovement_StartPosY"] = this.StartPos.Y;
                 pieceData["randomMovement_StartRot"] = this.StartRot;
@@ -53,13 +80,18 @@ namespace SonOfRobin
 
                 this.sprite.SetNewPosition(newPos: this.StartPos, ignoreCollisions: true); // restoring original position (instead of serialized "temporal" one)
                 this.sprite.rotation = this.StartRot; // restoring original rotation
+
+                this.SetTweener();
             }
 
             public void Process()
             {
                 if (this.sprite == null) throw new ArgumentException("Cannot process before initialization.");
 
-                // TODO add process code here
+                tweener.Update((float)Scene.CurrentGameTime.ElapsedGameTime.TotalSeconds);
+
+                this.sprite.UpdateRects(); // because tweener will change position directly
+                this.sprite.UpdateBoardLocation(); // because tweener will change position directly
             }
         }
 

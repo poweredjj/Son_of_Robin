@@ -511,7 +511,7 @@ namespace SonOfRobin
             return false;
         }
 
-        public bool SetNewPosition(Vector2 newPos, bool ignoreCollisions = false, bool updateGridLocation = true, bool ignoreDensity = false, bool checkIsOnBoard = true)
+        public bool SetNewPosition(Vector2 newPos, bool ignoreCollisions = false, bool updateBoardLocation = true, bool ignoreDensity = false, bool checkIsOnBoard = true)
         {
             if (!this.IsOnBoard && checkIsOnBoard) throw new ArgumentException($"Trying to move '{this.boardPiece.name}' that is not on board.");
 
@@ -522,7 +522,7 @@ namespace SonOfRobin
             this.position.Y = Math.Min(Math.Max(this.position.Y, 0), this.world.height - 1);
 
             this.UpdateRects();
-            if (updateGridLocation) this.UpdateBoardLocation();
+            if (updateBoardLocation) this.UpdateBoardLocation();
             if (ignoreCollisions) return true;
 
             bool collisionDetected = this.CheckForCollision(ignoreDensity: ignoreDensity);
@@ -530,7 +530,7 @@ namespace SonOfRobin
             {
                 this.position = originalPosition;
                 this.UpdateRects();
-                if (updateGridLocation) this.UpdateBoardLocation();
+                if (updateBoardLocation) this.UpdateBoardLocation();
             }
 
             return !collisionDetected;
@@ -604,15 +604,15 @@ namespace SonOfRobin
             return rectangle1.Intersects(rectangle2);
         }
 
-        private void UpdateRects()
+        public void UpdateRects()
         {
-            this.gfxRect.X = Convert.ToInt32(position.X + this.frame.gfxOffset.X);
-            this.gfxRect.Y = Convert.ToInt32(position.Y + this.frame.gfxOffset.Y);
+            this.gfxRect.X = (int)(position.X + this.frame.gfxOffset.X);
+            this.gfxRect.Y = (int)(position.Y + this.frame.gfxOffset.Y);
             this.gfxRect.Width = this.frame.gfxWidth;
             this.gfxRect.Height = this.frame.gfxHeight;
 
-            this.colRect.X = Convert.ToInt32(position.X + this.frame.colOffset.X);
-            this.colRect.Y = Convert.ToInt32(position.Y + this.frame.colOffset.Y);
+            this.colRect.X = (int)(position.X + this.frame.colOffset.X);
+            this.colRect.Y = (int)(position.Y + this.frame.colOffset.Y);
             this.colRect.Width = this.frame.colWidth;
             this.colRect.Height = this.frame.colHeight;
         }

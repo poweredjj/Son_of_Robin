@@ -22,6 +22,7 @@ namespace SonOfRobin
             Draw
         }
 
+        public static GameTime CurrentGameTime { get; private set; }
         public static List<Scene> sceneStack = new List<Scene> { };
         public static List<Scene> waitingScenes = new List<Scene> { };
         private static bool adaptScenesToNewSize = false;
@@ -37,8 +38,6 @@ namespace SonOfRobin
         public bool inputActive;
         public bool updateActive;
         public bool drawActive;
-
-
         public TouchLayout touchLayout;
         public ControlTips.TipsLayout tipsLayout;
 
@@ -402,6 +401,8 @@ namespace SonOfRobin
 
         public static void AllScenesInStackUpdate(GameTime gameTime)
         {
+            CurrentGameTime = gameTime;
+
             startUpdateTime = DateTime.Now;
             ProcessingMode = ProcessingModes.Update;
 
