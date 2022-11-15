@@ -13,21 +13,21 @@ namespace SonOfRobin
         private readonly Dictionary<Terrain.Name, AllowedRange> initialRangesByTerrainName; // never to be changed
         private Dictionary<Terrain.Name, AllowedRange> currentRangesByTerrainName;
 
-        private readonly Dictionary<ExtBoardProps.ExtPropName, bool> initialExtPropertiesDict;
-        private Dictionary<ExtBoardProps.ExtPropName, bool> currentExtPropertiesDict;
+        private readonly Dictionary<ExtBoardProps.Name, bool> initialExtPropertiesDict;
+        private Dictionary<ExtBoardProps.Name, bool> currentExtPropertiesDict;
 
-        public AllowedTerrain(Dictionary<ExtBoardProps.ExtPropName, bool> extPropertiesDict = null)
+        public AllowedTerrain(Dictionary<ExtBoardProps.Name, bool> extPropertiesDict = null)
         {
             // no fields defined - all fields allowed
             this.initialRangesByTerrainName = new Dictionary<Terrain.Name, AllowedRange> { };
             MakeRangeDictReadOnly(this.initialRangesByTerrainName);
             this.currentRangesByTerrainName = null;
 
-            this.initialExtPropertiesDict = extPropertiesDict == null ? new Dictionary<ExtBoardProps.ExtPropName, bool>() : extPropertiesDict;
+            this.initialExtPropertiesDict = extPropertiesDict == null ? new Dictionary<ExtBoardProps.Name, bool>() : extPropertiesDict;
             this.currentExtPropertiesDict = null;
         }
 
-        public AllowedTerrain(Dictionary<Terrain.Name, AllowedRange> rangeDict, Dictionary<ExtBoardProps.ExtPropName, bool> extPropertiesDict = null)
+        public AllowedTerrain(Dictionary<Terrain.Name, AllowedRange> rangeDict, Dictionary<ExtBoardProps.Name, bool> extPropertiesDict = null)
         {
             // var exampleRangeDict = new Dictionary<string, AllowedRange>() { { Terrain.Name.Height, new AllowedRange(min: 0, max: 128) } };
 
@@ -35,11 +35,11 @@ namespace SonOfRobin
             MakeRangeDictReadOnly(this.initialRangesByTerrainName);
             this.currentRangesByTerrainName = null;
 
-            this.initialExtPropertiesDict = extPropertiesDict == null ? new Dictionary<ExtBoardProps.ExtPropName, bool>() : extPropertiesDict;
+            this.initialExtPropertiesDict = extPropertiesDict == null ? new Dictionary<ExtBoardProps.Name, bool>() : extPropertiesDict;
             this.currentExtPropertiesDict = null;
         }
 
-        public AllowedTerrain(List<RangeName> rangeNameList, Dictionary<ExtBoardProps.ExtPropName, bool> extPropertiesDict = null)
+        public AllowedTerrain(List<RangeName> rangeNameList, Dictionary<ExtBoardProps.Name, bool> extPropertiesDict = null)
         {
             // var exampleRangeNameList = new List<string>() { BoardColors.WaterShallow, "ground_all" };
 
@@ -100,7 +100,7 @@ namespace SonOfRobin
             this.initialRangesByTerrainName = rangeDict;
             MakeRangeDictReadOnly(this.initialRangesByTerrainName);
 
-            this.initialExtPropertiesDict = extPropertiesDict == null ? new Dictionary<ExtBoardProps.ExtPropName, bool>() : extPropertiesDict;
+            this.initialExtPropertiesDict = extPropertiesDict == null ? new Dictionary<ExtBoardProps.Name, bool>() : extPropertiesDict;
             this.currentExtPropertiesDict = null;
         }
 
@@ -143,9 +143,9 @@ namespace SonOfRobin
             return newRangeDict;
         }
 
-        private static Dictionary<ExtBoardProps.ExtPropName, bool> CopyExtPropertiesDict(Dictionary<ExtBoardProps.ExtPropName, bool> extPropertiesDict)
+        private static Dictionary<ExtBoardProps.Name, bool> CopyExtPropertiesDict(Dictionary<ExtBoardProps.Name, bool> extPropertiesDict)
         {
-            var newExtPropertiesDict = new Dictionary<ExtBoardProps.ExtPropName, bool>();
+            var newExtPropertiesDict = new Dictionary<ExtBoardProps.Name, bool>();
 
             foreach (var kvp in extPropertiesDict)
             {
@@ -155,14 +155,14 @@ namespace SonOfRobin
             return newExtPropertiesDict;
         }
 
-        public void AddUpdateNameInExtProperties(ExtBoardProps.ExtPropName name, bool value)
+        public void AddUpdateNameInExtProperties(ExtBoardProps.Name name, bool value)
         {
             if (this.currentExtPropertiesDict is null) this.currentExtPropertiesDict = CopyExtPropertiesDict(this.initialExtPropertiesDict);
 
             this.currentExtPropertiesDict[name] = value;
         }
 
-        public void RemoveNameInExtProperties(ExtBoardProps.ExtPropName name)
+        public void RemoveNameInExtProperties(ExtBoardProps.Name name)
         {
             if (this.currentExtPropertiesDict is null) this.currentExtPropertiesDict = CopyExtPropertiesDict(this.initialExtPropertiesDict);
 
@@ -183,6 +183,12 @@ namespace SonOfRobin
             foreach (var kvp in extPropertiesDict)
             {
                 bool value = world.grid.GetExtProperty(name: kvp.Key, position: position);
+
+                if (kvp.Key == ExtBoardProps.Name.BiomeSwamp)
+                {
+                    var a = 1;
+                }
+
                 if (value != kvp.Value) return false;
             }
 
@@ -191,9 +197,7 @@ namespace SonOfRobin
             foreach (var kvp in rangesToCheck)
             {
                 var fieldValue = world.grid.GetFieldValue(position: position, terrainName: kvp.Key);
-                bool terrainOk = kvp.Value.IsInRange(fieldValue);
-
-                if (!terrainOk) return false;
+                if (!kvp.Value.IsInRange(fieldValue)) return false;
             }
 
             return true;
@@ -205,7 +209,7 @@ namespace SonOfRobin
             else return null;
         }
 
-        public Dictionary<ExtBoardProps.ExtPropName, bool> GetInitialExtPropertiesDict()
+        public Dictionary<ExtBoardProps.Name, bool> GetInitialExtPropertiesDict()
         {
             return this.initialExtPropertiesDict;
         }

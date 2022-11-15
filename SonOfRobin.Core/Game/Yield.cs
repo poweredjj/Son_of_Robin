@@ -184,7 +184,7 @@ namespace SonOfRobin
             {
                 for (int j = 0; j < noOfTries; j++)
                 {
-                    yieldPiece.PlaceOnBoard(position: this.mainPiece.sprite.position, closestFreeSpot: true);
+                    yieldPiece.PlaceOnBoard(randomPlacement: false, position: this.mainPiece.sprite.position, closestFreeSpot: true);
 
                     if (yieldPiece.sprite.IsOnBoard)
                     {

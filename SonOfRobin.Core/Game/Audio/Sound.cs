@@ -8,7 +8,19 @@ namespace SonOfRobin
 {
     public class Sound
     {
-        public static bool globalOn = true;
+        private static bool globalOn = true;
+        public static bool GlobalOn
+        {
+            get { return globalOn; }
+            set
+            {
+                if (value == globalOn) return;
+
+                globalOn = value;
+                if (!globalOn) StopAll();
+            }
+        }
+
         public static bool menuOn = true;
         public static bool textWindowAnimOn = true;
         public static float globalVolume = 1f;
@@ -101,7 +113,7 @@ namespace SonOfRobin
 
         public void Play(bool ignore3DThisPlay = false, bool ignoreCooldown = false)
         {
-            if (!Scene.currentlyProcessedScene.soundActive || !globalOn || this.isEmpty) return;
+            if (!Scene.currentlyProcessedScene.soundActive || !GlobalOn || this.isEmpty) return;
 
             this.ignore3DThisPlay = ignore3DThisPlay;
 

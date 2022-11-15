@@ -272,7 +272,7 @@ namespace SonOfRobin
             byte pixelHeight = grid.GetFieldValue(terrainName: Terrain.Name.Height, x: x, y: y);
             byte pixelHumidity = grid.GetFieldValue(terrainName: Terrain.Name.Humidity, x: x, y: y);
             byte pixelBiome = grid.GetFieldValue(terrainName: Terrain.Name.Biome, x: x, y: y);
-            Dictionary<ExtBoardProps.ExtPropName, bool> extDataValDict = grid.GetExtValueDict(x, y);
+            Dictionary<ExtBoardProps.Name, bool> extDataValDict = grid.GetExtValueDict(x, y);
 
             Color pixel = new Color();
 
@@ -299,7 +299,7 @@ namespace SonOfRobin
 
             if (pixelBiome >= Terrain.biomeMin)
             {
-                if (extDataValDict[ExtBoardProps.ExtPropName.BiomeSwamp])
+                if (extDataValDict[ExtBoardProps.Name.BiomeSwamp])
                 {
                     float pixelMultiplier = 0.6f;
 
@@ -316,6 +316,7 @@ namespace SonOfRobin
 
             // if (extDataValDict[ExtBoardProps.ExtPropName.OuterBeach]) pixel = Blend2Colors(bottomColor: pixel, topColor: Color.Cyan * 0.8f); // for testing
             // if (extDataValDict[ExtBoardProps.ExtPropName.Sea]) pixel = Blend2Colors(bottomColor: pixel, topColor: Color.Red * 0.8f); // for testing
+            // if (extDataValDict[ExtBoardProps.ExtPropName.BiomeSwamp]) pixel = Blend2Colors(bottomColor: pixel, topColor: Color.Green * 0.8f); // for testing
 
             return pixel;
         }

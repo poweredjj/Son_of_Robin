@@ -560,7 +560,6 @@ namespace SonOfRobin
 
             if (!initialCreation && !this.CanProcessMorePlantsNow) return false;
 
-            Vector2 notReallyUsedPosition = new Vector2(-100, -100); // -100, -100 will be converted to a random position on the map - needed for effective creation of new sprites
             int minPieceAmount = Math.Max(Convert.ToInt32((long)width * (long)height / 300000 * multiplier), 0); // 300000
 
             var amountToCreateByName = new Dictionary<PieceTemplate.Name, int> { };
@@ -592,7 +591,7 @@ namespace SonOfRobin
                 {
                     if (!initialCreation && !this.CanProcessMorePlantsNow) return false;
 
-                    var newBoardPiece = PieceTemplate.CreateAndPlaceOnBoard(world: this, position: notReallyUsedPosition, templateName: pieceName);
+                    var newBoardPiece = PieceTemplate.CreateAndPlaceOnBoard(world: this, position: Vector2.Zero, templateName: pieceName);
                     if (newBoardPiece.sprite.IsOnBoard)
                     {
                         if (initialCreation && newBoardPiece.GetType() == typeof(Plant) && this.random.Next(2) == 0)

@@ -35,7 +35,7 @@ namespace SonOfRobin
             this.realHitPower = (int)(this.baseHitPower * hitPowerMultiplier);
             this.shootMode = true;
 
-            bool shotPossible = this.PlaceOnBoard(position: startPosition, precisePlacement: true);
+            bool shotPossible = this.PlaceOnBoard(randomPlacement: false, position: startPosition, precisePlacement: true);
             if (!shotPossible)
             {
                 this.world.player.toolStorage.AddPiece(this);

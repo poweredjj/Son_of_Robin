@@ -111,7 +111,7 @@ namespace SonOfRobin
                 {
                     foreach (var kvp in allowedTerrain.GetInitialExtPropertiesDict())
                     {
-                        ExtBoardProps.ExtPropName name = kvp.Key;
+                        ExtBoardProps.Name name = kvp.Key;
                         bool value = kvp.Value;
 
                         if (!this.grid.CheckIfContainsExtPropertyForCell(name: name, value: value, cellNoX: this.cellNoX, cellNoY: this.cellNoY))

@@ -183,9 +183,9 @@ namespace SonOfRobin
 
                         Sound sound = new Sound(SoundData.Name.Empty); // sound name doesn't really matter
 
-                        new Selector(menu: menu, name: "sound", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: sound, propertyName: "globalOn", rebuildsMenu: true);
+                        new Selector(menu: menu, name: "sound", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: sound, propertyName: "GlobalOn", rebuildsMenu: true);
 
-                        if (Sound.globalOn)
+                        if (Sound.GlobalOn)
                         {
                             new Selector(menu: menu, name: "menu sounds", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: sound, propertyName: "menuOn");
 

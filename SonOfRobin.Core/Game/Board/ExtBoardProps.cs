@@ -22,14 +22,14 @@ namespace SonOfRobin
 
     public class ExtBoardProps
     {
-        public enum ExtPropName
+        public enum Name
         { Sea, OuterBeach, BiomeSwamp }; // each biome name must start with "biome"
 
-        private static readonly ExtPropName[] allExtPropNames = (ExtPropName[])Enum.GetValues(typeof(ExtPropName));
-        public static readonly List<ExtPropName> allBiomes = allExtPropNames.Where(name => name.ToString().ToLower().StartsWith("biome")).ToList();
+        private static readonly Name[] allExtPropNames = (Name[])Enum.GetValues(typeof(Name));
+        public static readonly List<Name> allBiomes = allExtPropNames.Where(name => name.ToString().ToLower().StartsWith("biome")).ToList();
 
-        public static readonly Dictionary<ExtPropName, List<BiomeConstrain>> biomeConstrains = new Dictionary<ExtPropName, List<BiomeConstrain>> {
-            { ExtPropName.BiomeSwamp, new List<BiomeConstrain>{
+        public static readonly Dictionary<Name, List<BiomeConstrain>> biomeConstrains = new Dictionary<Name, List<BiomeConstrain>> {
+            { Name.BiomeSwamp, new List<BiomeConstrain>{
                  new BiomeConstrain(terrainName: Terrain.Name.Height, min: 106, max: 160),
                  new BiomeConstrain(terrainName: Terrain.Name.Humidity, min: 80, max: 255),
             } }
@@ -37,12 +37,12 @@ namespace SonOfRobin
 
         public readonly Grid grid;
 
-        private readonly Dictionary<ExtPropName, BitArray> extDataByProperty;
+        private readonly Dictionary<Name, BitArray> extDataByProperty;
         private readonly string templatePath;
         private readonly bool loadedFromTemplate; // to avoid saving template, after being loaded (needed because saving is not done inside constructor)
 
-        private readonly List<ExtPropName>[,] containsPropertiesTrueGridCell; // this values are stored in terrain, instead of cell
-        private readonly List<ExtPropName>[,] containsPropertiesFalseGridCell; // this values are stored in terrain, instead of cell
+        private readonly List<Name>[,] containsPropertiesTrueGridCell; // this values are stored in terrain, instead of cell
+        private readonly List<Name>[,] containsPropertiesFalseGridCell; // this values are stored in terrain, instead of cell
 
         public bool CreationInProgress { get; private set; }
 
@@ -58,25 +58,25 @@ namespace SonOfRobin
             {
                 this.extDataByProperty = this.MakeArrayCollection();
 
-                this.containsPropertiesTrueGridCell = new List<ExtPropName>[this.grid.noOfCellsX, this.grid.noOfCellsY];
-                this.containsPropertiesFalseGridCell = new List<ExtPropName>[this.grid.noOfCellsX, this.grid.noOfCellsY];
+                this.containsPropertiesTrueGridCell = new List<Name>[this.grid.noOfCellsX, this.grid.noOfCellsY];
+                this.containsPropertiesFalseGridCell = new List<Name>[this.grid.noOfCellsX, this.grid.noOfCellsY];
                 this.loadedFromTemplate = false;
             }
             else
             {
-                this.extDataByProperty = (Dictionary<ExtPropName, BitArray>)serializedData["extDataByProperty"];
-                this.containsPropertiesTrueGridCell = (List<ExtPropName>[,])serializedData["containsPropertiesTrueGridCell"];
-                this.containsPropertiesFalseGridCell = (List<ExtPropName>[,])serializedData["containsPropertiesFalseGridCell"];
+                this.extDataByProperty = (Dictionary<Name, BitArray>)serializedData["extDataByProperty"];
+                this.containsPropertiesTrueGridCell = (List<Name>[,])serializedData["containsPropertiesTrueGridCell"];
+                this.containsPropertiesFalseGridCell = (List<Name>[,])serializedData["containsPropertiesFalseGridCell"];
                 this.CreationInProgress = false;
                 this.loadedFromTemplate = true;
             }
         }
 
-        private Dictionary<ExtPropName, BitArray> MakeArrayCollection()
+        private Dictionary<Name, BitArray> MakeArrayCollection()
         {
-            var arrayCollection = new Dictionary<ExtPropName, BitArray>();
+            var arrayCollection = new Dictionary<Name, BitArray>();
 
-            foreach (ExtPropName extPropName in allExtPropNames)
+            foreach (Name extPropName in allExtPropNames)
             {
                 arrayCollection[extPropName] = new BitArray(this.grid.dividedWidth * this.grid.dividedHeight);
             }
@@ -95,15 +95,15 @@ namespace SonOfRobin
                 int yMinRaw = cell.yMin / this.grid.resDivider;
                 int yMaxRaw = cell.yMax / this.grid.resDivider;
 
-                this.containsPropertiesTrueGridCell[cell.cellNoX, cell.cellNoY] = new List<ExtPropName>();
-                this.containsPropertiesFalseGridCell[cell.cellNoX, cell.cellNoY] = new List<ExtPropName>();
+                this.containsPropertiesTrueGridCell[cell.cellNoX, cell.cellNoY] = new List<Name>();
+                this.containsPropertiesFalseGridCell[cell.cellNoX, cell.cellNoY] = new List<Name>();
 
-                List<ExtPropName> containsPropertiesTrue = this.containsPropertiesTrueGridCell[cell.cellNoX, cell.cellNoY];
-                List<ExtPropName> containsPropertiesFalse = this.containsPropertiesFalseGridCell[cell.cellNoX, cell.cellNoY];
+                List<Name> containsPropertiesTrue = this.containsPropertiesTrueGridCell[cell.cellNoX, cell.cellNoY];
+                List<Name> containsPropertiesFalse = this.containsPropertiesFalseGridCell[cell.cellNoX, cell.cellNoY];
 
                 foreach (var kvp in this.extDataByProperty)
                 {
-                    ExtPropName name = kvp.Key;
+                    Name name = kvp.Key;
 
                     for (int x = xMinRaw; x <= xMaxRaw; x++)
                     {
@@ -121,7 +121,7 @@ namespace SonOfRobin
             if (!this.loadedFromTemplate) this.SaveTemplate();
         }
 
-        public bool CheckIfContainsPropertyForCell(ExtPropName name, bool value, int cellNoX, int cellNoY)
+        public bool CheckIfContainsPropertyForCell(Name name, bool value, int cellNoX, int cellNoY)
         {
             if (value) return this.containsPropertiesTrueGridCell[cellNoX, cellNoY].Contains(name);
             else return this.containsPropertiesFalseGridCell[cellNoX, cellNoY].Contains(name);
@@ -137,17 +137,17 @@ namespace SonOfRobin
             return (y / this.grid.resDivider * this.grid.dividedWidth) + (x / this.grid.resDivider);
         }
 
-        public bool GetValue(ExtPropName name, int x, int y, bool xyRaw)
+        public bool GetValue(Name name, int x, int y, bool xyRaw)
         {
             if (xyRaw) return this.extDataByProperty[name].Get(this.ConvertRaw2DCoordinatesTo1D(x, y));
             else return this.extDataByProperty[name].Get(this.Convert2DCoordinatesTo1D(x, y));
         }
 
-        public Dictionary<ExtPropName, bool> GetValueDict(int x, int y, bool xyRaw)
+        public Dictionary<Name, bool> GetValueDict(int x, int y, bool xyRaw)
         {
-            var valueDict = new Dictionary<ExtPropName, bool>();
+            var valueDict = new Dictionary<Name, bool>();
 
-            foreach (ExtPropName name in this.extDataByProperty.Keys)
+            foreach (Name name in this.extDataByProperty.Keys)
             {
                 valueDict[name] = this.GetValue(name: name, x: x, y: y, xyRaw: xyRaw);
             }
@@ -155,7 +155,7 @@ namespace SonOfRobin
             return valueDict;
         }
 
-        public void SetValue(ExtPropName name, bool value, int x, int y, bool xyRaw)
+        public void SetValue(Name name, bool value, int x, int y, bool xyRaw)
         {
             if (xyRaw) this.extDataByProperty[name].Set(index: this.ConvertRaw2DCoordinatesTo1D(x, y), value: value);
             else this.extDataByProperty[name].Set(index: this.Convert2DCoordinatesTo1D(x, y), value: value);

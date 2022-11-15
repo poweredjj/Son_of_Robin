@@ -551,7 +551,7 @@ namespace SonOfRobin
             prefsData["pointToInteract"] = pointToInteract;
             prefsData["currentMappingGamepad"] = InputMapper.currentMappingGamepad;
             prefsData["currentMappingKeyboard"] = InputMapper.currentMappingKeyboard;
-            prefsData["soundGlobalOn"] = Sound.globalOn;
+            prefsData["soundGlobalOn"] = Sound.GlobalOn;
             prefsData["soundGlobalVolume"] = Sound.globalVolume;
             prefsData["soundMenuOn"] = Sound.menuOn;
             prefsData["textWindowAnimOn"] = Sound.textWindowAnimOn;
@@ -621,7 +621,7 @@ namespace SonOfRobin
                     if (!loadedMappingKeyboard.IsObsolete) InputMapper.currentMappingKeyboard = loadedMappingKeyboard;
                     InputMapper.newMappingGamepad = InputMapper.currentMappingGamepad.MakeCopy();
                     InputMapper.newMappingKeyboard = InputMapper.currentMappingKeyboard.MakeCopy();
-                    Sound.globalOn = (bool)prefsData["soundGlobalOn"];
+                    Sound.GlobalOn = (bool)prefsData["soundGlobalOn"];
                     Sound.globalVolume = (float)prefsData["soundGlobalVolume"];
                     Sound.menuOn = (bool)prefsData["soundMenuOn"];
                     Sound.textWindowAnimOn = (bool)prefsData["textWindowAnimOn"];

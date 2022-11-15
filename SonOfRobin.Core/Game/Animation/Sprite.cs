@@ -186,16 +186,27 @@ namespace SonOfRobin
             if (this.lightEngine != null) this.lightEngine.AssignSprite(this);
         }
 
-        public bool PlaceOnBoard(Vector2 position, bool ignoreCollisions = false, bool precisePlacement = false, bool closestFreeSpot = false, int minDistanceOverride = -1, int maxDistanceOverride = -1, bool ignoreDensity = false)
+        public bool PlaceOnBoard(bool randomPlacement, Vector2 position, bool ignoreCollisions = false, bool precisePlacement = false, bool closestFreeSpot = false, int minDistanceOverride = -1, int maxDistanceOverride = -1, bool ignoreDensity = false)
         {
             this.position = Vector2.Zero; // needed for placement purposes
 
-            int minDistance = minDistanceOverride == -1 ? this.minDistance : minDistanceOverride;
-            int maxDistance = maxDistanceOverride == -1 ? this.maxDistance : maxDistanceOverride;
+            bool placedCorrectly;
 
-            bool placedCorrectly = closestFreeSpot ?
-                this.MoveToClosestFreeSpot(startPosition: position, checkIsOnBoard: false, ignoreDensity: ignoreDensity) :
-                this.FindFreeSpot(position, minDistance: minDistance, maxDistance: maxDistance, ignoreCollisions: ignoreCollisions, precisePlacement: precisePlacement, ignoreDensity: ignoreDensity);
+            if (randomPlacement) placedCorrectly = this.FindFreeSpotRandomly(ignoreCollisions: ignoreCollisions, ignoreDensity: ignoreDensity);
+            else
+            {
+                int minDistance = minDistanceOverride == -1 ? this.minDistance : minDistanceOverride;
+                int maxDistance = maxDistanceOverride == -1 ? this.maxDistance : maxDistanceOverride;
+
+                if (closestFreeSpot)
+                {
+                    placedCorrectly = this.MoveToClosestFreeSpot(startPosition: position, checkIsOnBoard: false, ignoreDensity: ignoreDensity);
+                }
+                else
+                {
+                    placedCorrectly = this.FindFreeSpotNearby(position, minDistance: minDistance, maxDistance: maxDistance, ignoreCollisions: ignoreCollisions, precisePlacement: precisePlacement, ignoreDensity: ignoreDensity);
+                }
+            }
 
             if (placedCorrectly) this.IsOnBoard = true;
             else this.RemoveFromBoard();
@@ -264,7 +275,7 @@ namespace SonOfRobin
             return this.world.grid.GetFieldValue(position: this.position, terrainName: terrainName);
         }
 
-        public bool GetExtProperty(ExtBoardProps.ExtPropName name)
+        public bool GetExtProperty(ExtBoardProps.Name name)
         {
             if (!this.IsOnBoard) throw new ArgumentException($"Trying to get an ext value of '{this.boardPiece.name}' that is not on board.");
             return this.world.grid.GetExtProperty(name: name, position: this.position);
@@ -315,7 +326,22 @@ namespace SonOfRobin
             return false;
         }
 
-        private bool FindFreeSpot(Vector2 startPosition, int minDistance, int maxDistance, bool ignoreCollisions = false, bool precisePlacement = false, bool ignoreDensity = false)
+        private bool FindFreeSpotRandomly(bool ignoreCollisions = false, bool ignoreDensity = false)
+        {
+            if (!ignoreCollisions && !this.world.CanProcessAnyStateMachineNow) return false;
+
+            for (int tryIndex = 0; tryIndex < 4; tryIndex++)
+            {
+                Vector2 newPos = this.GetRandomPosition(outsideCamera: this.world.createMissingPiecesOutsideCamera);
+
+                bool hasBeenMoved = this.SetNewPosition(newPos: newPos, ignoreCollisions: ignoreCollisions, ignoreDensity: ignoreDensity, checkIsOnBoard: false);
+                if (hasBeenMoved || ignoreCollisions) return true;
+            }
+
+            return false;
+        }
+
+        private bool FindFreeSpotNearby(Vector2 startPosition, int minDistance, int maxDistance, bool ignoreCollisions = false, bool precisePlacement = false, bool ignoreDensity = false)
         {
             if (ignoreCollisions)
             {
@@ -325,38 +351,23 @@ namespace SonOfRobin
 
             if (precisePlacement) return this.SetNewPosition(newPos: startPosition, ignoreCollisions: ignoreCollisions, ignoreDensity: ignoreDensity, checkIsOnBoard: false);
 
-            if (!this.world.CanProcessAnyStateMachineNow) return false;
-
             int numberOfTries = (minDistance == 0 && maxDistance == 0) ? 1 : 4;
 
-            if (startPosition.X == -100 && startPosition.Y == -100) // -100, -100 will be converted to any position on the map - needed for effective creation of new sprites
+            for (int tryIndex = 0; tryIndex < numberOfTries; tryIndex++)
             {
-                for (int tryIndex = 0; tryIndex < numberOfTries; tryIndex++)
-                {
-                    Vector2 newPos = this.GetRandomPosition(outsideCamera: this.world.createMissingPiecesOutsideCamera);
+                var offset = new Vector2(this.world.random.Next(minDistance, maxDistance), this.world.random.Next(minDistance, maxDistance));
 
-                    bool hasBeenMoved = this.SetNewPosition(newPos: newPos, ignoreCollisions: ignoreCollisions, ignoreDensity: ignoreDensity, checkIsOnBoard: false);
-                    if (hasBeenMoved) return true;
-                }
-            }
-            else
-            {
-                for (int tryIndex = 0; tryIndex < numberOfTries; tryIndex++)
-                {
-                    var offset = new Vector2(this.world.random.Next(minDistance, maxDistance), this.world.random.Next(minDistance, maxDistance));
+                if (this.world.random.Next(2) == 1) offset.X *= -1;
+                if (this.world.random.Next(2) == 1) offset.Y *= -1;
 
-                    if (this.world.random.Next(2) == 1) offset.X *= -1;
-                    if (this.world.random.Next(2) == 1) offset.Y *= -1;
+                Vector2 newPos = startPosition + offset;
+                newPos.X = Math.Max(newPos.X, 0);
+                newPos.X = Math.Min(newPos.X, this.world.width - 1);
+                newPos.Y = Math.Max(newPos.Y, 0);
+                newPos.Y = Math.Min(newPos.Y, this.world.height - 1);
 
-                    Vector2 newPos = startPosition + offset;
-                    newPos.X = Math.Max(newPos.X, 0);
-                    newPos.X = Math.Min(newPos.X, this.world.width - 1);
-                    newPos.Y = Math.Max(newPos.Y, 0);
-                    newPos.Y = Math.Min(newPos.Y, this.world.height - 1);
-
-                    bool hasBeenMoved = this.SetNewPosition(newPos: newPos, ignoreCollisions: ignoreCollisions, ignoreDensity: ignoreDensity, checkIsOnBoard: false);
-                    if (hasBeenMoved) return true;
-                }
+                bool hasBeenMoved = this.SetNewPosition(newPos: newPos, ignoreCollisions: ignoreCollisions, ignoreDensity: ignoreDensity, checkIsOnBoard: false);
+                if (hasBeenMoved) return true;
             }
 
             return false;
