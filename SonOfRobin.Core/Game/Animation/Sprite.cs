@@ -518,8 +518,7 @@ namespace SonOfRobin
             var originalPosition = new Vector2(this.position.X, this.position.Y);
 
             this.position = new Vector2((int)newPos.X, (int)newPos.Y); // to ensure integer values
-            this.position.X = Math.Min(Math.Max(this.position.X, 0), this.world.width - 1);
-            this.position.Y = Math.Min(Math.Max(this.position.Y, 0), this.world.height - 1);
+            this.position = this.world.KeepVector2InWorldBounds(this.position);
 
             this.UpdateRects();
             if (updateBoardLocation) this.UpdateBoardLocation();

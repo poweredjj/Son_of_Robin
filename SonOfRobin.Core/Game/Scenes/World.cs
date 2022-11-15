@@ -1047,6 +1047,14 @@ namespace SonOfRobin
                 y: (worldPos.Y + this.viewParams.DrawPos.Y) / this.viewParams.ScaleY);
         }
 
+        public Vector2 KeepVector2InWorldBounds(Vector2 vector2)
+        {
+            vector2.X = Math.Min(Math.Max(vector2.X, 0), this.width - 1);
+            vector2.Y = Math.Min(Math.Max(vector2.Y, 0), this.height - 1);
+
+            return vector2;
+        }
+
         public override void RenderToTarget()
         {
             // preparing a list of sprites, that cast shadows

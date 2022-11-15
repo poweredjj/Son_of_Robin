@@ -8,116 +8,29 @@ namespace SonOfRobin
 {
     public class VisualEffect : BoardPiece
     {
-        public class RandomMovement
-        {
-            private readonly Tweener tweener;
-
-            private Sprite sprite;
-            public Vector2 StartPos { get; private set; }
-            public float StartRot { get; private set; }
-
-            public bool Initialized
-            { get { return this.sprite != null; } }
-
-            public RandomMovement()
-            {
-                this.tweener = new Tweener();
-            }
-
-            private void SetTweener()
-            {
-                this.tweener.TweenTo(target: this.sprite, expression: sprite => sprite.rotation, toValue: 1f, duration: 3, delay: 0)
-                    .RepeatForever(repeatDelay: 0.2f)
-                    .AutoReverse()
-                    .Easing(EasingFunctions.Linear);
-
-                Vector2 newPos = this.sprite.position + new Vector2(-100);
-                newPos.X = Math.Max(newPos.X, 0);
-                newPos.X = Math.Min(newPos.X, this.sprite.world.width - 1);
-                newPos.Y = Math.Max(newPos.Y, 0);
-                newPos.Y = Math.Min(newPos.Y, this.sprite.world.height - 1);
-
-                this.tweener.TweenTo(target: this.sprite, expression: sprite => sprite.position, toValue: newPos, duration: 3, delay: 0)
-                    .RepeatForever(repeatDelay: 0.2f)
-                    .AutoReverse()
-                    .Easing(EasingFunctions.Linear);
-
-            }
-
-            public void Initialize(Sprite sprite)
-            {
-                if (this.sprite != null) throw new ArgumentException("Cannot initialize twice.");
-
-                this.sprite = sprite;
-                this.StartPos = sprite.position;
-                this.StartRot = sprite.rotation;
-
-                this.SetTweener();
-            }
-
-            public void Serialize(Dictionary<string, Object> pieceData)
-            {
-                pieceData["randomMovement_Initialized"] = this.Initialized;
-                if (!this.Initialized) return;
-
-                pieceData["randomMovement_StartPosX"] = this.StartPos.X;
-                pieceData["randomMovement_StartPosY"] = this.StartPos.Y;
-                pieceData["randomMovement_StartRot"] = this.StartRot;
-            }
-
-            public void Deserialize(Dictionary<string, Object> pieceData, Sprite sprite)
-            {
-                bool initialized = (bool)pieceData["randomMovement_Initialized"];
-                if (!initialized) return; // pieceData will not contain correct information if uninitialized
-
-                this.sprite = sprite;
-
-                float startPosX = (float)pieceData["randomMovement_StartPosX"];
-                float startPosY = (float)pieceData["randomMovement_StartPosY"];
-                this.StartPos = new Vector2(startPosX, startPosY);
-
-                this.StartRot = (float)pieceData["randomMovement_StartRot"];
-
-                this.sprite.SetNewPosition(newPos: this.StartPos, ignoreCollisions: true); // restoring original position (instead of serialized "temporal" one)
-                this.sprite.rotation = this.StartRot; // restoring original rotation
-
-                this.SetTweener();
-            }
-
-            public void Process()
-            {
-                if (this.sprite == null) throw new ArgumentException("Cannot process before initialization.");
-
-                tweener.Update((float)Scene.CurrentGameTime.ElapsedGameTime.TotalSeconds);
-
-                this.sprite.UpdateRects(); // because tweener will change position directly
-                this.sprite.UpdateBoardLocation(); // because tweener will change position directly
-            }
-        }
-
-        private readonly RandomMovement randomMovement;
+        private Tweener tweener;
+        private Vector2 startPos;
+        private float startRot;
 
         public VisualEffect(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, State activeState, bool serialize,
-            byte animSize = 0, string animName = "default", ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = true, int generation = 0, bool fadeInAnim = false, bool canBePickedUp = false, bool visible = true, LightEngine lightEngine = null, bool ignoresCollisions = true, AllowedDensity allowedDensity = null, RandomMovement randomMovement = null) :
+            byte animSize = 0, string animName = "default", ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = true, int generation = 0, bool fadeInAnim = false, bool canBePickedUp = false, bool visible = true, LightEngine lightEngine = null, bool ignoresCollisions = true, AllowedDensity allowedDensity = null) :
 
             base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, blocksMovement: false, minDistance: minDistance, maxDistance: maxDistance, ignoresCollisions: ignoresCollisions, name: name, destructionDelay: destructionDelay, allowedTerrain: allowedTerrain, floatsOnWater: floatsOnWater, maxMassBySize: null, generation: generation, canBePickedUp: canBePickedUp, fadeInAnim: fadeInAnim, serialize: serialize, readableName: readableName, description: description, category: Category.Indestructible, visible: visible, activeState: activeState, lightEngine: lightEngine, allowedDensity: allowedDensity)
         {
-            this.randomMovement = randomMovement;
+
         }
 
         public override Dictionary<string, Object> Serialize()
         {
+            if (this.tweener != null) // tweener will change parameters (temporarily) and original values must be restored first
+            {
+                this.sprite.rotation = this.startRot;
+                this.sprite.SetNewPosition(newPos: this.startPos, ignoreCollisions: true);
+            }
+
             Dictionary<string, Object> pieceData = base.Serialize();
-            if (this.randomMovement != null) this.randomMovement.Serialize(pieceData);
 
             return pieceData;
-        }
-
-        public override void Deserialize(Dictionary<string, Object> pieceData)
-        {
-            base.Deserialize(pieceData);
-
-            if (this.randomMovement != null) this.randomMovement.Deserialize(pieceData: pieceData, sprite: this.sprite);
         }
 
         public override void SM_ScarePredatorsAway()
@@ -156,10 +69,32 @@ namespace SonOfRobin
         {
             // suitable only for passive decorations, that will never be moved "manually"
 
-            if (!this.randomMovement.Initialized) this.randomMovement.Initialize(this.sprite);
             if (!this.sprite.IsInCameraRect) return;
 
-            this.randomMovement.Process();
+            if (this.tweener == null)
+            {
+                this.tweener = new Tweener();
+                this.startPos = this.sprite.position;
+                this.startRot = this.sprite.rotation;
+
+                this.tweener.TweenTo(target: this.sprite, expression: sprite => sprite.rotation, toValue: 1f, duration: 10, delay: 0)
+                 .RepeatForever(repeatDelay: 0.0f)
+                 .AutoReverse()
+                 .Easing(EasingFunctions.QuadraticInOut);
+
+                Vector2 newPos = this.sprite.position + new Vector2(this.world.random.Next(-50, 50));
+                newPos = this.sprite.world.KeepVector2InWorldBounds(newPos);
+
+                this.tweener.TweenTo(target: this.sprite, expression: sprite => sprite.position, toValue: newPos, duration: 10, delay: 0)
+                    .RepeatForever(repeatDelay: 0.0f)
+                    .AutoReverse()
+                    .Easing(EasingFunctions.QuadraticInOut);
+            }
+
+            this.tweener.Update((float)Scene.CurrentGameTime.ElapsedGameTime.TotalSeconds);
+
+            this.sprite.UpdateRects(); // because tweener will change position directly
+            this.sprite.UpdateBoardLocation(); // because tweener will change position directly
         }
     }
 }
