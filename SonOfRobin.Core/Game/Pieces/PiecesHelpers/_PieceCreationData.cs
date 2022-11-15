@@ -57,7 +57,7 @@ namespace SonOfRobin
                      new PieceCreationData(name: PieceTemplate.Name.Tiger, multiplier: 0.4f, maxAmount: maxAnimalsPerName),
                      new PieceCreationData(name: PieceTemplate.Name.Frog, multiplier: 0.2f, maxAmount: maxAnimalsPerName),
                      new PieceCreationData(name: PieceTemplate.Name.LavaLight, multiplier: 0.5f, maxAmount: -1, doNotReplenish: true),
-                     new PieceCreationData(name: PieceTemplate.Name.SwampGas, multiplier: 0.8f, maxAmount: -1, doNotReplenish: true),
+                     new PieceCreationData(name: PieceTemplate.Name.SwampGas, multiplier: 3.0f, maxAmount: -1, doNotReplenish: true),
                      new PieceCreationData(name: PieceTemplate.Name.SoundSeaWaves, multiplier: 2.0f, maxAmount: -1, doNotReplenish: true),
                      new PieceCreationData(name: PieceTemplate.Name.SoundSeaWind, multiplier: 1.4f, maxAmount: -1, doNotReplenish: true),
                      new PieceCreationData(name: PieceTemplate.Name.SoundLakeWaves, multiplier: 1.2f, maxAmount: -1, doNotReplenish: true),
