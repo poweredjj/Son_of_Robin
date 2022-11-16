@@ -10,6 +10,7 @@ namespace SonOfRobin
     {
         private static readonly float currentVersion = 1.15f;
         private static readonly string headerName = "_template_header.dat";
+        public static readonly int demoWorldSeed = 77777;
 
         public readonly int seed;
         public readonly int width;
@@ -25,6 +26,8 @@ namespace SonOfRobin
 
         public bool IsObsolete { get { return this.version != currentVersion; } }
         public static bool CorrectTemplatesExist { get { return CorrectTemplates.Any(); } }
+        public static bool CorrectNonDemoTemplatesExist { get { return CorrectNonDemoTemplates.Any(); } }
+
         public static List<GridTemplate> CorrectTemplates
         {
             get
@@ -43,6 +46,10 @@ namespace SonOfRobin
             }
         }
 
+        public static List<GridTemplate> CorrectNonDemoTemplates
+        {
+            get { return CorrectTemplates.Where(template => template.seed != demoWorldSeed).ToList(); }
+        }
         public GridTemplate(int seed, int width, int height, int cellWidth, int cellHeight, int resDivider)
         {
             this.seed = seed;

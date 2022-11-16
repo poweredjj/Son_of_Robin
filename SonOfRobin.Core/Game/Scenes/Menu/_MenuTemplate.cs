@@ -321,7 +321,7 @@ namespace SonOfRobin
 
                         new Separator(menu: menu, name: "", isEmpty: true);
 
-                        if (GridTemplate.CorrectTemplatesExist)
+                        if (GridTemplate.CorrectNonDemoTemplatesExist)
                         {
                             new Invoker(menu: menu, name: "open previous island", taskName: Scheduler.TaskName.OpenMenuTemplate, executeHelper: new Dictionary<string, Object> { { "templateName", Name.OpenIslandTemplate } },
                           infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: "enter a fresh instance of a previously visited island", color: Color.White, scale: 1f) });
@@ -361,7 +361,8 @@ namespace SonOfRobin
 
                         new Separator(menu: menu, name: "", isEmpty: true);
 
-                        foreach (GridTemplate gridTemplate in GridTemplate.CorrectTemplates)
+
+                        foreach (GridTemplate gridTemplate in GridTemplate.CorrectNonDemoTemplates)
                         {
                             string detailLevelName = Preferences.namesForResDividers.ContainsKey(gridTemplate.resDivider) ? (string)Preferences.namesForResDividers[gridTemplate.resDivider] : $"{gridTemplate.resDivider}";
 

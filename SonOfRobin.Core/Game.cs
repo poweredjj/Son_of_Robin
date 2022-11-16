@@ -25,7 +25,7 @@ namespace SonOfRobin
 
         public static Platform platform;
         public static OS os;
-        public static readonly bool fakeMobileMode = false;
+        public static bool fakeMobileMode = false;
         public static GraphicsDeviceManager GfxDevMgr { get; private set; }
         public static GraphicsDevice GfxDev { get; private set; }
         public static SpriteBatch SpriteBatch { get; private set; }
