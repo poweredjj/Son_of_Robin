@@ -31,7 +31,7 @@ namespace SonOfRobin
         private Stage currentStage;
         private DateTime stageStartTime;
         private int stageStartFrame;
-        public bool creationInProgress;
+        public bool CreationInProgress { get; private set; }
 
         public readonly GridTemplate gridTemplate;
         public readonly World world;
@@ -72,7 +72,7 @@ namespace SonOfRobin
 
         public Grid(World world, int resDivider, int cellWidth = 0, int cellHeight = 0)
         {
-            this.creationInProgress = true;
+            this.CreationInProgress = true;
             this.currentStage = 0;
 
             this.world = world;
@@ -115,7 +115,7 @@ namespace SonOfRobin
 
             if (this.CopyBoardFromTemplate())
             {
-                this.creationInProgress = false;
+                this.CreationInProgress = false;
                 return;
             }
 
@@ -183,7 +183,7 @@ namespace SonOfRobin
             foreach (Scene scene in existingWorlds)
             {
                 World oldWorld = (World)scene;
-                if (!oldWorld.worldCreationInProgress && oldWorld.grid != null && !oldWorld.grid.creationInProgress && newWorld.seed == oldWorld.seed && newWorld.width == oldWorld.width && newWorld.height == oldWorld.height)
+                if (!oldWorld.WorldCreationInProgress && oldWorld.grid != null && !oldWorld.grid.CreationInProgress && newWorld.seed == oldWorld.seed && newWorld.width == oldWorld.width && newWorld.height == oldWorld.height)
                 {
                     Grid templateGrid = oldWorld.grid;
 
@@ -345,7 +345,7 @@ namespace SonOfRobin
 
                             if (this.ProcessingStageComplete)
                             {
-                                this.creationInProgress = false;
+                                this.CreationInProgress = false;
                                 return;
                             }
 
@@ -355,7 +355,7 @@ namespace SonOfRobin
                     else
                     {
                         this.cellsToProcessOnStart.Clear();
-                        this.creationInProgress = false;
+                        this.CreationInProgress = false;
                         return;
                     }
 
@@ -364,7 +364,7 @@ namespace SonOfRobin
                 default:
                     if ((int)this.currentStage < allStagesCount) throw new ArgumentException("Not all steps has been processed.");
 
-                    this.creationInProgress = false;
+                    this.CreationInProgress = false;
                     break;
             }
 

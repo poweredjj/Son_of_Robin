@@ -7,7 +7,7 @@ namespace SonOfRobin
 {
     public class InitialLoader : Scene
     {
-        public enum Step { Initial, LoadEffects, LoadFonts, CreateControlTips, LoadSounds, LoadTextures, CreateAnims, LoadKeysGfx, CreateScenes, MakeItemsInfo, MakeCraftRecipes, SetControlTips, OpenMainMenu }
+        public enum Step { Initial, LoadEffects, LoadFonts, CreateControlTips, LoadSounds, LoadTextures, CreateAnims, LoadKeysGfx, CreateScenes, MakeItemsInfo, MakeCraftRecipes, MakeDemoWorld, SetControlTips, OpenMainMenu }
 
         private static readonly int allStepsCount = ((Step[])Enum.GetValues(typeof(Step))).Length;
 
@@ -23,6 +23,7 @@ namespace SonOfRobin
             { Step.CreateScenes, "creating helper scenes" },
             { Step.MakeItemsInfo, "creating items info" },
             { Step.MakeCraftRecipes, "preparing craft recipes" },
+            { Step.MakeDemoWorld, "making demo world" },
             { Step.SetControlTips, "setting control tips" },
             { Step.OpenMainMenu, "opening main menu" },
         };
@@ -34,7 +35,7 @@ namespace SonOfRobin
         private string NextStepName
         { get { return (int)this.currentStep == allStepsCount ? "opening main menu" : namesForSteps[this.currentStep]; } }
 
-        public InitialLoader() : base(inputType: InputTypes.None, priority: 1, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty, alwaysUpdates: true)
+        public InitialLoader() : base(inputType: InputTypes.None, priority: 0, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty, alwaysUpdates: true)
         {
             this.currentStep = 0;
             this.font = SonOfRobinGame.fontPressStart2P5;
@@ -100,6 +101,24 @@ namespace SonOfRobin
                     Craft.PopulateAllCategories();
                     break;
 
+                case Step.MakeDemoWorld:
+                    if (Preferences.showDemoWorld && SonOfRobinGame.LicenceValid)
+                    {
+                        if (World.GetTopWorld() == null) new World(seed: 77777, width: 2500, height: 2500, resDivider: 5, playerFemale: false, demoMode: true, initialMaxAnimalsMultiplier: 100);
+
+                        World demoWorld = World.GetTopWorld();
+
+                        while (true)
+                        {
+                            demoWorld.Update(gameTime: gameTime);
+
+                            if (!demoWorld.WorldCreationInProgress && !demoWorld.PiecesCreationInProgress) break;
+                            else SonOfRobinGame.currentUpdate++; // manually changing the counter, to avoid softlock
+                        }
+                    }
+
+                    break;
+
                 case Step.SetControlTips:
                     Preferences.ControlTipsScheme = Preferences.ControlTipsScheme; // to load default control tips
                     break;
@@ -109,7 +128,6 @@ namespace SonOfRobin
 
                     if (SonOfRobinGame.LicenceValid)
                     {
-                        if (Preferences.showDemoWorld) new World(seed: 777, width: 2500, height: 2500, resDivider: 4, playerFemale: false, demoMode: true, initialMaxAnimalsMultiplier: 100);
                         MenuTemplate.CreateMenuFromTemplate(templateName: MenuTemplate.Name.Main);
                     }
                     else

@@ -81,9 +81,10 @@ namespace SonOfRobin
 
             if (!this.sprite.IsInCameraRect) return;
 
-            if (this.sprite.Tweener == null)
+            if (!this.sprite.HasTweener)
             {
-                this.sprite.CreateTweener();
+                Tweener tweener = this.sprite.Tweener;
+
                 this.startPos = this.sprite.position;
                 this.startRot = this.sprite.rotation;
 
@@ -92,17 +93,17 @@ namespace SonOfRobin
                 Vector2 newPos = this.sprite.position + new Vector2(this.world.random.Next(-maxDistance, maxDistance), this.world.random.Next(-maxDistance, maxDistance));
                 newPos = this.sprite.world.KeepVector2InWorldBounds(newPos);
 
-                this.sprite.Tweener.TweenTo(target: this.sprite, expression: sprite => sprite.position, toValue: newPos, duration: this.world.random.Next(6, 15), delay: 0)
+                tweener.TweenTo(target: this.sprite, expression: sprite => sprite.position, toValue: newPos, duration: this.world.random.Next(6, 15), delay: 0)
                     .RepeatForever(repeatDelay: 0.0f)
                     .AutoReverse()
                     .Easing(EasingFunctions.QuadraticInOut);
 
-                this.sprite.Tweener.TweenTo(target: this.sprite, expression: sprite => sprite.rotation, toValue: (float)(Random.NextDouble() * 2) - 1, duration: this.world.random.Next(6, 15), delay: 0)
+                tweener.TweenTo(target: this.sprite, expression: sprite => sprite.rotation, toValue: (float)(Random.NextDouble() * 2) - 1, duration: this.world.random.Next(6, 15), delay: 0)
                     .RepeatForever(repeatDelay: 0.0f)
                     .AutoReverse()
                     .Easing(EasingFunctions.QuadraticInOut);
 
-                this.sprite.Tweener.TweenTo(target: this.sprite, expression: sprite => sprite.opacity, toValue: (float)(Random.NextDouble() * 0.4), duration: this.world.random.Next(4, 20), delay: 0)
+                tweener.TweenTo(target: this.sprite, expression: sprite => sprite.opacity, toValue: (float)(Random.NextDouble() * 0.4), duration: this.world.random.Next(4, 20), delay: 0)
                     .RepeatForever(repeatDelay: 0.0f)
                     .AutoReverse()
                     .Easing(EasingFunctions.QuadraticInOut);

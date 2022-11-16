@@ -13,7 +13,8 @@ namespace SonOfRobin
         public Vector2 analogMovementRightStick;
         public Vector2 analogCameraCorrection;
 
-        public bool worldCreationInProgress;
+        public bool WorldCreationInProgress { get; private set; }
+        public bool PiecesCreationInProgress { get { return this.initialPiecesCreationFramesLeft > 0; } }
         private bool plantsProcessing;
         private static readonly int initialPiecesCreationFramesTotal = 20;
         public static readonly int buildDuration = (int)(60 * 2.5);
@@ -272,7 +273,7 @@ namespace SonOfRobin
             this.saveGameData = saveGameData;
             this.createMissingPiecesOutsideCamera = false;
             this.lastSaved = DateTime.Now;
-            this.worldCreationInProgress = true;
+            this.WorldCreationInProgress = true;
             this.plantsProcessing = false;
             this.initialPiecesCreationFramesLeft = initialPiecesCreationFramesTotal;
             this.creationStart = DateTime.Now;
@@ -354,16 +355,20 @@ namespace SonOfRobin
                 return;
             };
 
-            if (this.grid.creationInProgress)
+            if (this.grid.CreationInProgress)
             {
                 SonOfRobinGame.game.IsFixedTimeStep = false; // speeds up the creation process
                 this.grid.ProcessNextCreationStage();
                 return;
             }
 
-            if (this.saveGameData == null && this.initialPiecesCreationFramesLeft > 0)
+            if (this.saveGameData == null && this.PiecesCreationInProgress)
             {
-                if (this.demoMode) CreateMissingPieces(initialCreation: true, outsideCamera: false, multiplier: 1f);
+                if (this.demoMode)
+                {
+                    CreateMissingPieces(initialCreation: true, outsideCamera: false, multiplier: 1f);
+                    this.initialPiecesCreationFramesLeft = 0;
+                }
                 else
                 {
                     string seedText = String.Format("{0:0000}", this.seed);
@@ -387,7 +392,7 @@ namespace SonOfRobin
             SonOfRobinGame.progressBar.TurnOff(addTransition: true);
             this.touchLayout = TouchLayout.WorldMain;
             this.tipsLayout = ControlTips.TipsLayout.WorldMain;
-            this.worldCreationInProgress = false;
+            this.WorldCreationInProgress = false;
             this.creationEnd = DateTime.Now;
             this.creationDuration = this.creationEnd - this.creationStart;
             this.lastSaved = DateTime.Now;
@@ -637,7 +642,7 @@ namespace SonOfRobin
 
         public override void Update(GameTime gameTime)
         {
-            if (this.worldCreationInProgress)
+            if (this.WorldCreationInProgress)
             {
                 this.CompleteCreation();
                 return;
@@ -1077,7 +1082,7 @@ namespace SonOfRobin
             // drawing blue background (to ensure drawing even if screen is larger than map)
             SonOfRobinGame.graphicsDevice.Clear(BoardGraphics.colorsByName[BoardGraphics.Colors.WaterDeep]);
 
-            if (this.worldCreationInProgress) return;
+            if (this.WorldCreationInProgress) return;
 
             // drawing background
             this.grid.DrawBackground(camera: this.camera);

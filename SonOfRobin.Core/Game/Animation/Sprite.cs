@@ -53,7 +53,16 @@ namespace SonOfRobin
         public List<Cell.Group> gridGroups;
         public Cell currentCell; // current cell, that is containing the sprite
         public bool IsOnBoard { get; private set; }
-        public Tweener Tweener { get; private set; }
+        private Tweener tweener;
+        public bool HasTweener { get { return this.tweener != null; } }
+        public Tweener Tweener
+        {
+            get
+            {
+                if (!this.HasTweener) this.tweener = new Tweener();
+                return this.tweener;
+            }
+        }
         public string CompleteAnimID
         { get { return GetCompleteAnimId(animPackage: this.animPackage, animSize: this.animSize, animName: this.animName); } }
 
@@ -296,11 +305,6 @@ namespace SonOfRobin
             }
 
             return duration;
-        }
-
-        public void CreateTweener()
-        {
-            if (this.Tweener == null) this.Tweener = new Tweener();
         }
 
         public bool MoveToClosestFreeSpot(Vector2 startPosition, bool checkIsOnBoard = true, bool ignoreDensity = false, int maxDistance = 170)

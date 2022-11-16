@@ -37,7 +37,7 @@ namespace SonOfRobin
 
             World world = World.GetTopWorld();
 
-            bool worldActive = world != null && !world.worldCreationInProgress;
+            bool worldActive = world != null && !world.WorldCreationInProgress;
 
             if (worldActive)
             {
