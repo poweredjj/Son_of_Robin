@@ -56,7 +56,7 @@ namespace SonOfRobin
                 if (this.hitPoints == 0) this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.BrokenItem, ignoreDelay: true, text: this.readableName, texture: this.sprite.frame.texture);
             }
 
-            float angle = this.world.Player.shootingAngle;
+            float angle = this.world.Player.ShootingAngle;
 
             int offsetDist = 1;
             int movementDist = 1000;

@@ -19,9 +19,9 @@ namespace SonOfRobin
         public float stamina;
         private float fatigue;
         public float MaxFatigue { get; private set; }
-        public float shootingAngle;
+        public float ShootingAngle { get; private set; }
         private int shootingPower;
-        public SleepEngine sleepEngine;
+        private SleepEngine sleepEngine;
         public Vector2 pointWalkTarget;
         public Craft.Recipe recipeToBuild;
         public BoardPiece simulatedPieceToBuild;
@@ -35,7 +35,8 @@ namespace SonOfRobin
             {
                 return
                     InputMapper.IsPressed(InputMapper.Action.WorldUseToolbarPiece) ||
-                    (TouchInput.IsBeingTouchedInAnyWay && (Math.Abs(this.world.analogCameraCorrection.X) > 0.05f || Math.Abs(this.world.analogCameraCorrection.Y) > 0.05f));
+                    (TouchInput.IsBeingTouchedInAnyWay && (Math.Abs(this.world.analogCameraCorrection.X) > 0.05f ||
+                    Math.Abs(this.world.analogCameraCorrection.Y) > 0.05f));
             }
         }
 
@@ -261,7 +262,7 @@ namespace SonOfRobin
             this.toolStorage = new PieceStorage(width: toolbarWidth, height: toolbarHeight, world: this.world, storagePiece: this, storageType: PieceStorage.StorageType.Tools, allowedPieceNames: allowedToolbarPieces);
             this.equipStorage = new PieceStorage(width: 3, height: 3, world: this.world, storagePiece: this, storageType: PieceStorage.StorageType.Equip);
             this.ConfigureEquip();
-            this.shootingAngle = -100; // -100 == no real value
+            this.ShootingAngle = -100; // -100 == no real value
             this.shootingPower = 0;
             this.wentToSleepFrame = 0;
             this.sleepingInsideShelter = false;
@@ -740,7 +741,7 @@ namespace SonOfRobin
             this.Walk(setOrientation: false);
 
             // shooting angle should be set once at the start
-            if (this.shootingAngle == -100) this.shootingAngle = this.sprite.GetAngleFromOrientation();
+            if (this.ShootingAngle == -100) this.ShootingAngle = this.sprite.GetAngleFromOrientation();
 
             Vector2 moving = this.world.analogMovementLeftStick;
             Vector2 shooting = this.world.analogMovementRightStick;
@@ -754,12 +755,12 @@ namespace SonOfRobin
             {
                 this.sprite.SetOrientationByMovement(directionVector);
                 Vector2 goalPosition = this.sprite.position + directionVector; // used to calculate shooting angle
-                this.shootingAngle = Helpers.GetAngleBetweenTwoPoints(start: this.sprite.position, end: goalPosition);
+                this.ShootingAngle = Helpers.GetAngleBetweenTwoPoints(start: this.sprite.position, end: goalPosition);
             }
 
             int aidDistance = (int)(SonOfRobinGame.VirtualWidth * 0.08f);
-            int aidOffsetX = (int)Math.Round(aidDistance * Math.Cos(this.shootingAngle));
-            int aidOffsetY = (int)Math.Round(aidDistance * Math.Sin(this.shootingAngle));
+            int aidOffsetX = (int)Math.Round(aidDistance * Math.Cos(this.ShootingAngle));
+            int aidOffsetY = (int)Math.Round(aidDistance * Math.Sin(this.ShootingAngle));
             Vector2 aidPos = this.sprite.position + new Vector2(aidOffsetX, aidOffsetY);
             this.visualAid.sprite.SetNewPosition(aidPos);
 
@@ -780,7 +781,7 @@ namespace SonOfRobin
                 this.world.touchLayout = TouchLayout.WorldMain;
                 this.world.tipsLayout = ControlTips.TipsLayout.WorldMain;
                 this.activeState = State.PlayerControlledWalking;
-                this.shootingAngle = -100;
+                this.ShootingAngle = -100;
                 this.shootingPower = 0;
                 this.soundPack.Stop(PieceSoundPack.Action.PlayerBowDraw);
             }
@@ -847,7 +848,11 @@ namespace SonOfRobin
             if (this.visualAid != null) this.visualAid.Destroy();
             this.visualAid = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: zzzPos, templateName: PieceTemplate.Name.Zzz);
 
-            if (!this.sleepEngine.canBeAttacked) this.sprite.Visible = false;
+            if (!this.sleepEngine.canBeAttacked)
+            {
+                this.buffEngine.RemoveEveryBuffOfType(BuffEngine.BuffType.RegenPoison); // to remove poison inside shelter
+                this.sprite.Visible = false;
+            }
             this.world.touchLayout = TouchLayout.WorldSleep;
             this.world.tipsLayout = ControlTips.TipsLayout.WorldSleep;
             this.sprite.CharacterStand();
