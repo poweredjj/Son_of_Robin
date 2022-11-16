@@ -97,7 +97,11 @@ namespace SonOfRobin
                     {
                         Menu menu = new Menu(templateName: templateName, name: "SCALE", blocksUpdatesBelow: false, canBeClosedManually: true, closingTask: Scheduler.TaskName.SavePrefs, templateExecuteHelper: executeHelper);
 
-                        new Selector(menu: menu, name: "world scale", valueList: new List<Object> { 0.5f, 0.75f, 1f, 1.25f, 1.5f, 2f }, targetObj: preferences, propertyName: "WorldScale");
+                        var worldScaleList = new List<Object> { 0.5f, 0.75f, 1f, 1.25f, 1.5f, 2f };
+
+                        if (SonOfRobinGame.ThisIsWorkMachine) worldScaleList.InsertRange(0, new List<Object> { 0.125f, 0.25f });
+
+                        new Selector(menu: menu, name: "world scale", valueList: worldScaleList, targetObj: preferences, propertyName: "WorldScale");
                         new Selector(menu: menu, name: "global scale", valueList: new List<Object> { 1f, 1.5f, 2f }, targetObj: preferences, propertyName: "GlobalScale", rebuildsMenu: true, rebuildsMenuInstantScroll: true);
                         new Selector(menu: menu, name: "menu scale", valueList: new List<Object> { 0.5f, 0.75f, 1f, 1.25f, 1.5f, 2f, 2.5f }, targetObj: preferences, propertyName: "menuScale", rebuildsMenu: true, rebuildsMenuInstantScroll: true);
 
