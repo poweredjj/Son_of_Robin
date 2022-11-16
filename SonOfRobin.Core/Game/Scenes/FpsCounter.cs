@@ -168,11 +168,11 @@ namespace SonOfRobin
         {
             // background
 
-            SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, this.bgRect, Color.Black * 0.6f * this.viewParams.drawOpacity);
+            SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, this.bgRect, Color.Black * 0.6f * this.viewParams.drawOpacity);
 
             // text
 
-            Helpers.DrawTextInsideRect(font: SonOfRobinGame.fontFreeSansBold24, text: this.CounterText, rectangle: this.textRect, color: this.CounterColor * this.viewParams.drawOpacity, alignX: Helpers.AlignX.Center, alignY: Helpers.AlignY.Center);
+            Helpers.DrawTextInsideRect(font: SonOfRobinGame.FontFreeSansBold24, text: this.CounterText, rectangle: this.textRect, color: this.CounterColor * this.viewParams.drawOpacity, alignX: Helpers.AlignX.Center, alignY: Helpers.AlignY.Center);
 
             // graph
 
@@ -192,11 +192,11 @@ namespace SonOfRobin
 
                     // vertical line - connecting 2 different values
                     Rectangle graphBarVertRect = new Rectangle(x: this.graphRect.X + (recordCounter * oneEntryWidth), y: this.graphRect.Y + minOffset, width: oneEntryWidth, height: maxOffset - minOffset + 1);
-                    SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, graphBarVertRect, Color.White * this.viewParams.drawOpacity);
+                    SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, graphBarVertRect, Color.White * this.viewParams.drawOpacity);
 
                     // horizontal line - connecting the same aggregated values
                     Rectangle graphBarHorizRect = new Rectangle(x: this.graphRect.X + (recordCounter * oneEntryWidth), y: this.graphRect.Y + barYOffset, width: oneEntryWidth * fpsValueGroup.length, height: 1);
-                    SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, graphBarHorizRect, Color.White * this.viewParams.drawOpacity);
+                    SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, graphBarHorizRect, Color.White * this.viewParams.drawOpacity);
 
                     recordCounter += fpsValueGroup.length;
                     lastYOffset = barYOffset;

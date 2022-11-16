@@ -40,7 +40,7 @@ namespace SonOfRobin
             Color[] data = new Color[cropRect.Width * cropRect.Height];
             baseTexture.GetData(0, cropRect, data, 0, cropRect.Width * cropRect.Height);
 
-            Texture2D croppedTexture = new Texture2D(SonOfRobinGame.graphicsDevice, cropRect.Width, cropRect.Height);
+            Texture2D croppedTexture = new Texture2D(SonOfRobinGame.GfxDev, cropRect.Width, cropRect.Height);
             croppedTexture.SetData(data);
 
             return croppedTexture;
@@ -68,7 +68,7 @@ namespace SonOfRobin
                 }
             }
 
-            var texture = new Texture2D(graphicsDevice: SonOfRobinGame.graphicsDevice, width: paddedWidth, height: paddedHeight);
+            var texture = new Texture2D(graphicsDevice: SonOfRobinGame.GfxDev, width: paddedWidth, height: paddedHeight);
             texture.SetData(paddedArray1D);
 
             return texture;
@@ -112,7 +112,7 @@ namespace SonOfRobin
             try
             {
                 FileStream fileStream = new FileStream(filename, FileMode.Open);
-                Texture2D loadedTexture = Texture2D.FromStream(SonOfRobinGame.graphicsDevice, fileStream);
+                Texture2D loadedTexture = Texture2D.FromStream(SonOfRobinGame.GfxDev, fileStream);
                 fileStream.Dispose();
                 return loadedTexture;
             }
@@ -138,7 +138,7 @@ namespace SonOfRobin
 
         public static Texture2D ConvertColorArray1DToTexture(Color[] array1D, int width, int height)
         {
-            var texture = new Texture2D(SonOfRobinGame.graphicsDevice, width, height);
+            var texture = new Texture2D(SonOfRobinGame.GfxDev, width, height);
             texture.SetData(array1D);
             return texture;
         }
@@ -159,7 +159,7 @@ namespace SonOfRobin
                 }
             });
 
-            var texture = new Texture2D(graphicsDevice: SonOfRobinGame.graphicsDevice, width: width, height: height);
+            var texture = new Texture2D(graphicsDevice: SonOfRobinGame.GfxDev, width: width, height: height);
             var array1D = ConvertArray2DTo1D(width: width, height: height, array2D: graphics);
             texture.SetData(array1D);
 
@@ -181,7 +181,7 @@ namespace SonOfRobin
                 }
             }
 
-            var texture = new Texture2D(graphicsDevice: SonOfRobinGame.graphicsDevice, width: width, height: height);
+            var texture = new Texture2D(graphicsDevice: SonOfRobinGame.GfxDev, width: width, height: height);
             var array1D = ConvertArray2DTo1D(width: width, height: height, array2D: graphics);
             texture.SetData(array1D);
 

@@ -33,10 +33,10 @@ namespace SonOfRobin
 
             private List<Sprite> GetSprites(Camera camera)
             {
-                if (this.lastCheckedFrame != camera.world.currentUpdate)
+                if (this.lastCheckedFrame != camera.world.CurrentUpdate)
                 {
                     camera.world.grid.GetSpritesInCameraViewAndPutIntoList(camera: camera, groupName: groupName, spriteListToFill: this.spriteList, compareWithCameraRect: compareWithCameraRect);
-                    this.lastCheckedFrame = camera.world.currentUpdate;
+                    this.lastCheckedFrame = camera.world.CurrentUpdate;
                 }
                 // else MessageLog.AddMessage(msgType: MsgType.User, message: $"{camera.world.currentUpdate} reusing sprite search {groupName} - {compareWithCameraRect}");
 
@@ -177,7 +177,7 @@ namespace SonOfRobin
 
         public void Update(Vector2 cameraCorrection)
         {
-            if (Scene.ProcessingMode == Scene.ProcessingModes.Draw || this.lastUpdateFrame == SonOfRobinGame.currentUpdate) return;
+            if (Scene.ProcessingMode == Scene.ProcessingModes.Draw || this.lastUpdateFrame == SonOfRobinGame.CurrentUpdate) return;
 
             if (this.useFluidMotionForZoom)
             {
@@ -241,7 +241,7 @@ namespace SonOfRobin
             this.viewPos = new Vector2(-xMin, -yMin);
 
             if (!this.trackedSpriteReached && Vector2.Distance(this.CurrentPos, currentTargetPos) < 30) this.trackedSpriteReached = true;
-            this.lastUpdateFrame = SonOfRobinGame.currentUpdate;
+            this.lastUpdateFrame = SonOfRobinGame.CurrentUpdate;
         }
 
         public void TrackPiece(BoardPiece trackedPiece, bool moveInstantly = false)

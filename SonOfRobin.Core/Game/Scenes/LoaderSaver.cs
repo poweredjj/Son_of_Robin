@@ -119,7 +119,7 @@ namespace SonOfRobin
         public LoaderSaver(bool saveMode, string saveSlotName, World world = null, bool showSavedMessage = false, bool quitGameAfterSaving = false) : base(inputType: InputTypes.Normal, priority: 1, blocksUpdatesBelow: true, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.QuitLoading, tipsLayout: ControlTips.TipsLayout.QuitLoading)
         {
             this.createdTime = DateTime.Now;
-            SonOfRobinGame.game.IsFixedTimeStep = false; // if turned on, some screen updates will be missing
+            SonOfRobinGame.Game.IsFixedTimeStep = false; // if turned on, some screen updates will be missing
             this.drawActive = false;
             this.saveMode = saveMode;
             this.modeText = this.saveMode ? "Saving" : "Loading";
@@ -194,8 +194,8 @@ namespace SonOfRobin
 
         public override void Remove()
         {
-            if (Preferences.FrameSkip) SonOfRobinGame.game.IsFixedTimeStep = true;
-            if (this.saveMode) SonOfRobinGame.progressBar.TurnOff(addTransition: false);
+            if (Preferences.FrameSkip) SonOfRobinGame.Game.IsFixedTimeStep = true;
+            if (this.saveMode) SonOfRobinGame.ProgressBar.TurnOff(addTransition: false);
             base.Remove();
             if (this.saveMode && this.quitGameAfterSaving) SonOfRobinGame.quitGame = true;
             Menu.RebuildAllMenus();
@@ -212,7 +212,7 @@ namespace SonOfRobin
             if (InputMapper.IsPressed(InputMapper.Action.GlobalCancelReturnSkip))
             {
                 if (this.saveMode) DeleteAllSaveTemps();
-                SonOfRobinGame.progressBar.TurnOff(addTransition: true);
+                SonOfRobinGame.ProgressBar.TurnOff(addTransition: true);
                 this.Remove();
 
                 new TextWindow(text: $"{this.modeText} has been cancelled.", textColor: Color.White, bgColor: Color.DarkRed, useTransition: true, animate: true, closingTask: this.TextWindowTask);
@@ -227,7 +227,7 @@ namespace SonOfRobin
 
         private void UpdateProgressBar()
         {
-            SonOfRobinGame.progressBar.TurnOn(curVal: this.processedSteps, maxVal: this.allSteps, text: $"{this.modeText} game - {this.nextStepName}...");
+            SonOfRobinGame.ProgressBar.TurnOn(curVal: this.processedSteps, maxVal: this.allSteps, text: $"{this.modeText} game - {this.nextStepName}...");
             // new TextWindow(text: $"{this.modeText} game - {this.nextStepName}...", textColor: Color.White, bgColor: Color.DarkBlue, useTransition: false, animate: false, blocksUpdatesBelow: true); // testing
         }
 
@@ -265,8 +265,8 @@ namespace SonOfRobin
                     { "playerFemale", this.world.playerFemale },
                     { "initialMaxAnimalsMultiplier", this.world.initialMaxAnimalsMultiplier },
                     { "resDivider", this.world.resDivider },
-                    { "currentFrame", this.world.currentFrame },
-                    { "currentUpdate", this.world.currentUpdate },
+                    { "currentFrame", this.world.CurrentFrame },
+                    { "currentUpdate", this.world.CurrentUpdate },
                     { "clockTimeElapsed", this.world.islandClock.ElapsedUpdates },
                     { "TimePlayed", this.world.TimePlayed },
                     { "MapEnabled", this.world.MapEnabled },

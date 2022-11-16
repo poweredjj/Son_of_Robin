@@ -78,7 +78,7 @@ namespace SonOfRobin
                 float fatigueDifference = fatigueDifferenceForMasterLevel * levelMultiplier;
 
                 float realFatigue = this.fatigue - fatigueDifference;
-                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{SonOfRobinGame.currentUpdate} real fatigue {realFatigue}");
+                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{SonOfRobinGame.CurrentUpdate} real fatigue {realFatigue}");
 
                 return realFatigue;
             }
@@ -91,7 +91,7 @@ namespace SonOfRobin
                 float durationDifference = durationDifferenceForMasterLevel * levelMultiplier;
 
                 int realDuration = (int)(this.duration - durationDifference);
-                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{SonOfRobinGame.currentUpdate} real duration {realDuration}");
+                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{SonOfRobinGame.CurrentUpdate} real duration {realDuration}");
 
                 return realDuration;
             }

@@ -47,7 +47,7 @@ namespace SonOfRobin
 
             public bool HadEnoughSleepForBuff(World world)
             {
-                int framesSlept = world.currentUpdate - world.player.wentToSleepFrame;
+                int framesSlept = world.CurrentUpdate - world.player.wentToSleepFrame;
                 return framesSlept >= this.sleepFramesNeededForActivation;
             }
 
@@ -457,8 +457,8 @@ namespace SonOfRobin
         {
             if (add)
             {
-                buff.activationFrame = world.currentUpdate;
-                buff.endFrame = world.currentUpdate + buff.autoRemoveDelay;
+                buff.activationFrame = world.CurrentUpdate;
+                buff.endFrame = world.CurrentUpdate + buff.autoRemoveDelay;
             }
 
             switch (buff.type)
@@ -686,7 +686,7 @@ namespace SonOfRobin
                             if ((int)buff.value < 0)
                             {
                                 this.piece.sprite.color = Color.Chartreuse;
-                                this.piece.showStatBarsTillFrame = world.currentUpdate + buff.autoRemoveDelay;
+                                this.piece.showStatBarsTillFrame = world.CurrentUpdate + buff.autoRemoveDelay;
                             }
                         }
                         else
@@ -756,7 +756,7 @@ namespace SonOfRobin
                         else
                         {
                             player.speed -= (float)buff.value;
-                            player.sprite.effectCol.RemoveEffectsOfType(effect: SonOfRobinGame.effectBorder);
+                            player.sprite.effectCol.RemoveEffectsOfType(effect: SonOfRobinGame.EffectBorder);
                             player.soundPack.Play(PieceSoundPack.Action.PlayerPant);
                             player.buffEngine.AddBuff(buff: new Buff(type: BuffType.SprintCooldown, autoRemoveDelay: 15 * 60, value: null), world: player.world);
                         }

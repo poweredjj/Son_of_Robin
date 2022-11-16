@@ -9,7 +9,7 @@ namespace SonOfRobin
     {
         public static readonly int margin = 2;
         public static readonly float textureScale = 0.25f;
-        private static readonly SpriteFont font = SonOfRobinGame.fontFreeSansBold24;
+        private static readonly SpriteFont font = SonOfRobinGame.FontFreeSansBold24;
         private static readonly float fontScale = 0.5f; // base font scale (relative to icons); the whole controlTips scene can be scaled down if needed
 
         public readonly string text;
@@ -79,11 +79,11 @@ namespace SonOfRobin
             {
                 for (int y = -1; y < 2; y++)
                 {
-                    SonOfRobinGame.spriteBatch.DrawString(font, this.text, position: txtPos + new Vector2(x, y), color: Color.Black * controlTips.viewParams.drawOpacity, origin: Vector2.Zero, scale: fontScale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
+                    SonOfRobinGame.SpriteBatch.DrawString(font, this.text, position: txtPos + new Vector2(x, y), color: Color.Black * controlTips.viewParams.drawOpacity, origin: Vector2.Zero, scale: fontScale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
                 }
             }
 
-            SonOfRobinGame.spriteBatch.DrawString(font, this.text, position: txtPos, color: Color.White * controlTips.viewParams.drawOpacity * opacityMultiplier, origin: Vector2.Zero, scale: fontScale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
+            SonOfRobinGame.SpriteBatch.DrawString(font, this.text, position: txtPos, color: Color.White * controlTips.viewParams.drawOpacity * opacityMultiplier, origin: Vector2.Zero, scale: fontScale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
 
             // Helpers.DrawRectangleOutline(rect: new Rectangle((int)txtPos.X, (int)txtPos.Y, (int)(font.MeasureString(this.text).X * fontScale), (int)(font.MeasureString(this.text).Y * fontScale)), color: Color.YellowGreen, borderWidth: 1); // testing rect size
         }
@@ -92,7 +92,7 @@ namespace SonOfRobin
         {
             Rectangle sourceRectangle = new Rectangle(0, 0, texture.Width, texture.Height);
             Rectangle destRectangle = new Rectangle((int)pos.X, (int)pos.Y, (int)(texture.Width * textureScale), (int)(texture.Height * textureScale));
-            SonOfRobinGame.spriteBatch.Draw(texture, destRectangle, sourceRectangle, Color.White * opacity);
+            SonOfRobinGame.SpriteBatch.Draw(texture, destRectangle, sourceRectangle, Color.White * opacity);
 
             //Helpers.DrawRectangleOutline(rect: destRectangle, color: Color.Red, borderWidth: 1); // testing rect size
         }

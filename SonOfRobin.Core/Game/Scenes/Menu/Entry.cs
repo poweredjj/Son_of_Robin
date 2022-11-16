@@ -7,7 +7,7 @@ namespace SonOfRobin
 {
     public abstract class Entry
     {
-        public static readonly SpriteFont font = SonOfRobinGame.fontTommy40;
+        public static readonly SpriteFont font = SonOfRobinGame.FontTommy40;
 
         public readonly Menu menu;
         public readonly int index;
@@ -68,7 +68,7 @@ namespace SonOfRobin
                 return new Rectangle(x: (int)position.X, y: (int)position.Y - this.menu.CurrentScrollPosition, width: menu.EntryWidth, height: menu.EntryHeight);
             }
         }
-        protected float OpacityFade { get { return Math.Max((float)this.lastFlashFrame - (float)SonOfRobinGame.currentUpdate, 0) * 0.015f; } }
+        protected float OpacityFade { get { return Math.Max((float)this.lastFlashFrame - (float)SonOfRobinGame.CurrentUpdate, 0) * 0.015f; } }
 
         public Entry(Menu menu, string name, bool rebuildsMenu = false, bool rebuildsMenuInstantScroll = false, bool rebuildsAllMenus = false, List<InfoWindow.TextEntry> infoTextList = null, List<Texture2D> imageList = null)
         {
@@ -112,9 +112,9 @@ namespace SonOfRobin
 
         protected float GetOpacity(bool active)
         {
-            if (active) this.lastFlashFrame = SonOfRobinGame.currentUpdate + 20;
+            if (active) this.lastFlashFrame = SonOfRobinGame.CurrentUpdate + 20;
             float opacity = active ? 1 : 0.6f;
-            float opacityFade = Math.Max((float)this.lastFlashFrame - (float)SonOfRobinGame.currentUpdate, 0) * 0.015f;
+            float opacityFade = Math.Max((float)this.lastFlashFrame - (float)SonOfRobinGame.CurrentUpdate, 0) * 0.015f;
             opacity = Math.Min(opacity + opacityFade, 1);
 
             return opacity;
@@ -128,7 +128,7 @@ namespace SonOfRobin
             float opacityFade = this.OpacityFade;
             Rectangle rect = this.Rect;
 
-            if (active || opacityFade > 0) SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, rect, this.rectColor * opacityFade * 2);
+            if (active || opacityFade > 0) SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, rect, this.rectColor * opacityFade * 2);
 
             Helpers.DrawRectangleOutline(rect: this.Rect, color: this.outlineColor, borderWidth: 2);
 
@@ -158,11 +158,11 @@ namespace SonOfRobin
         {
             if (this.infoTextList == null || !this.menu.inputActive)
             {
-                SonOfRobinGame.hintWindow.TurnOff();
+                SonOfRobinGame.HintWindow.TurnOff();
                 return;
             }
 
-            InfoWindow hintWindow = SonOfRobinGame.hintWindow;
+            InfoWindow hintWindow = SonOfRobinGame.HintWindow;
 
             Vector2 windowPos;
             Vector2 infoWindowSize = hintWindow.MeasureEntries(this.infoTextList);
@@ -202,7 +202,7 @@ namespace SonOfRobin
             windowPos.X = Math.Min(windowPos.X, maxX);
             windowPos.Y = Math.Min(windowPos.Y, maxY);
 
-            SonOfRobinGame.hintWindow.TurnOn(newPosX: (int)windowPos.X, newPosY: (int)windowPos.Y, entryList: this.infoTextList, addTransition: true);
+            SonOfRobinGame.HintWindow.TurnOn(newPosX: (int)windowPos.X, newPosY: (int)windowPos.Y, entryList: this.infoTextList, addTransition: true);
         }
 
     }

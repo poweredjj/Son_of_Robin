@@ -8,7 +8,7 @@ namespace SonOfRobin
 {
     public class TextWindow : Scene
     {
-        public static readonly SpriteFont font = SonOfRobinGame.fontTommy40;
+        public static readonly SpriteFont font = SonOfRobinGame.FontTommy40;
 
         private readonly bool autoClose;
         private int blockingFramesLeft;
@@ -265,9 +265,9 @@ namespace SonOfRobin
             Rectangle bgRect = new Rectangle(0, 0, this.viewParams.Width, this.viewParams.Height);
             Vector2 textPos = new Vector2(margin, margin);
 
-            SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, bgShadowRect, Color.Black * 0.4f * this.viewParams.drawOpacity);
+            SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, bgShadowRect, Color.Black * 0.4f * this.viewParams.drawOpacity);
 
-            SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, bgRect, this.bgColor * this.viewParams.drawOpacity);
+            SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, bgRect, this.bgColor * this.viewParams.drawOpacity);
             Helpers.DrawRectangleOutline(rect: bgRect, color: this.textColor * this.viewParams.drawOpacity, borderWidth: 2);
 
             if (this.drawShadow)

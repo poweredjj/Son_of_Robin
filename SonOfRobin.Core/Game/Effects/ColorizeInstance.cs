@@ -7,7 +7,7 @@ namespace SonOfRobin
 
         private readonly Vector4 color;
 
-        public ColorizeInstance(Color color, int framesLeft = 1, int priority = 1) : base(effect: SonOfRobinGame.effectColorize, framesLeft: framesLeft, priority: priority)
+        public ColorizeInstance(Color color, int framesLeft = 1, int priority = 1) : base(effect: SonOfRobinGame.EffectColorize, framesLeft: framesLeft, priority: priority)
         {
             this.color = color.ToVector4();
         }

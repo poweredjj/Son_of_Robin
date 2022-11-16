@@ -60,14 +60,14 @@ namespace SonOfRobin
 
         private static List<BoardPiece> GetNearbyPieces(Player player)
         {
-            if (SonOfRobinGame.currentUpdate != nearbyPiecesFrameChecked)
+            if (SonOfRobinGame.CurrentUpdate != nearbyPiecesFrameChecked)
             {
                 nearbyPieces.Clear();
 
                 var nearbyPiecesTempList = player.world.grid.GetPiecesWithinDistance(groupName: Cell.Group.All, mainSprite: player.sprite, distance: 300).OrderBy(piece => Vector2.Distance(player.sprite.position, piece.sprite.position)).ToList();
 
                 nearbyPieces.AddRange(nearbyPiecesTempList);
-                nearbyPiecesFrameChecked = SonOfRobinGame.currentUpdate;
+                nearbyPiecesFrameChecked = SonOfRobinGame.CurrentUpdate;
             }
 
             return nearbyPieces;

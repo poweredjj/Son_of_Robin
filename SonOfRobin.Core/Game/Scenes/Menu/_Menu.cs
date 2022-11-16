@@ -274,8 +274,8 @@ namespace SonOfRobin
                 }
             }
 
-            SonOfRobinGame.hintWindow.TurnOff();
-            SonOfRobinGame.progressBar.TurnOff();
+            SonOfRobinGame.HintWindow.TurnOff();
+            SonOfRobinGame.ProgressBar.TurnOff();
             base.Remove();
             // MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Menu {this.name} - executing closing task '{this.closingTask}'.");
 
@@ -412,13 +412,13 @@ namespace SonOfRobin
 
         public override void Update(GameTime gameTime)
         {
-            SonOfRobinGame.progressBar.TurnOff();
+            SonOfRobinGame.ProgressBar.TurnOff();
 
             if (this.activeIndex == -1) this.NextItem(); // searching for first non-separator menu item
             this.CurrentScrollPosition = this.TargetScrollPosition;
 
             var activeEntry = this.ActiveEntry;
-            if (activeEntry.infoTextList != null && !activeEntry.IsFullyVisible) SonOfRobinGame.hintWindow.TurnOff();
+            if (activeEntry.infoTextList != null && !activeEntry.IsFullyVisible) SonOfRobinGame.HintWindow.TurnOff();
 
             this.ProcessInput();
         }
@@ -588,7 +588,7 @@ namespace SonOfRobin
 
         public override void Draw()
         {
-            SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, this.BgRect, this.bgColor);
+            SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, this.BgRect, this.bgColor);
 
             var visibleEntries = VisibleEntries;
             for (int i = 0; i < visibleEntries.Count; i++)
@@ -607,13 +607,13 @@ namespace SonOfRobin
             if (!this.ScrollActive) return;
 
             Rectangle scrollWholeRect = this.ScrollWholeRect;
-            SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, scrollWholeRect, this.bgColor * 0.5f * this.viewParams.Opacity);
+            SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, scrollWholeRect, this.bgColor * 0.5f * this.viewParams.Opacity);
             Helpers.DrawRectangleOutline(rect: scrollWholeRect, color: this.entryList[0].outlineColor * 0.5f * this.viewParams.Opacity, borderWidth: 2);
 
             int scrollPos = (int)(this.CurrentScrollPosition * this.ScrollbarMultiplier);
 
             Rectangle widgetRect = new Rectangle(this.ScrollbarPosX, scrollPos, this.ScrollbarWidth, this.ScrollbarWidgetHeight);
-            SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, widgetRect, this.entryList[0].outlineColor * 0.75f * this.viewParams.Opacity);
+            SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, widgetRect, this.entryList[0].outlineColor * 0.75f * this.viewParams.Opacity);
             Helpers.DrawRectangleOutline(rect: widgetRect, color: this.entryList[0].textColor * this.viewParams.Opacity, borderWidth: 2);
         }
 

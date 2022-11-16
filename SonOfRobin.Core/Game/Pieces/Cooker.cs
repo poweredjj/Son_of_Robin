@@ -22,7 +22,7 @@ namespace SonOfRobin
         private int cookingDoneFrame;
 
         private TimeSpan TimeToFinishCooking
-        { get { return TimeSpan.FromSeconds((int)(Math.Ceiling((float)(this.cookingDoneFrame - (float)this.world.currentUpdate) / 60f))); } }
+        { get { return TimeSpan.FromSeconds((int)(Math.Ceiling((float)(this.cookingDoneFrame - (float)this.world.CurrentUpdate) / 60f))); } }
 
         public Cooker(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, Dictionary<byte, int> maxMassBySize, float foodMassMultiplier, string readableName, string description, Category category, int ingredientSpace, int boosterSpace,
             byte animSize = 0, string animName = "off", bool blocksMovement = true, ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = false, int generation = 0, Yield yield = null, int maxHitPoints = 1, bool fadeInAnim = false, PieceSoundPack soundPack = null) :
@@ -136,10 +136,10 @@ namespace SonOfRobin
 
         public override void DrawStatBar()
         {
-            if (this.world.currentUpdate < this.cookingDoneFrame)
+            if (this.world.CurrentUpdate < this.cookingDoneFrame)
             {
                 int cookingDuration = this.cookingDoneFrame - this.cookingStartFrame;
-                int cookingCurrentFrame = this.world.currentUpdate - this.cookingStartFrame;
+                int cookingCurrentFrame = this.world.CurrentUpdate - this.cookingStartFrame;
 
                 new StatBar(label: "", value: cookingCurrentFrame, valueMax: cookingDuration, colorMin: new Color(255, 0, 0), colorMax: new Color(255, 128, 0), posX: this.sprite.gfxRect.Center.X, posY: this.sprite.gfxRect.Bottom, ignoreIfAtMax: false, texture: AnimData.framesForPkgs[AnimData.PkgName.Flame].texture);
             }
@@ -254,10 +254,10 @@ namespace SonOfRobin
             this.TurnOn();
             new TextWindow(text: "Cooking...", textColor: Color.White, bgColor: Color.Green, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1);
 
-            this.cookingStartFrame = this.world.currentUpdate;
-            this.cookingDoneFrame = this.world.currentUpdate + cookingTime;
+            this.cookingStartFrame = this.world.CurrentUpdate;
+            this.cookingDoneFrame = this.world.CurrentUpdate + cookingTime;
             this.boardTask = Scheduler.TaskName.ShowCookingProgress;
-            this.showStatBarsTillFrame = this.world.currentUpdate + cookingTime;
+            this.showStatBarsTillFrame = this.world.CurrentUpdate + cookingTime;
 
             new WorldEvent(eventName: WorldEvent.EventName.FinishCooking, world: this.world, delay: cookingTime, boardPiece: this);
 

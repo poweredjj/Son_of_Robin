@@ -19,7 +19,7 @@ namespace SonOfRobin
 
         public override void Draw()
         {
-            if (TouchInput.ShowSticks && Preferences.enableTouchJoysticks) TouchInput.dualStick.Draw(spriteBatch: SonOfRobinGame.spriteBatch, drawLeftStick: TouchInput.ShowLeftStick, drawRightStick: TouchInput.ShowRightStick);
+            if (TouchInput.ShowSticks && Preferences.enableTouchJoysticks) TouchInput.dualStick.Draw(spriteBatch: SonOfRobinGame.SpriteBatch, drawLeftStick: TouchInput.ShowLeftStick, drawRightStick: TouchInput.ShowRightStick);
             VirtButton.DrawAll();
         }
     }

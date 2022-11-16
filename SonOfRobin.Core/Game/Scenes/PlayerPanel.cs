@@ -8,8 +8,8 @@ namespace SonOfRobin
 {
     public class PlayerPanel : Scene
     {
-        private static readonly SpriteFont itemCounterFont = SonOfRobinGame.fontTommy40;
-        private static readonly SpriteFont buffFont = SonOfRobinGame.fontTommy40;
+        private static readonly SpriteFont itemCounterFont = SonOfRobinGame.FontTommy40;
+        private static readonly SpriteFont buffFont = SonOfRobinGame.FontTommy40;
         private static readonly int posY = 4;
 
         private readonly World world;
@@ -102,7 +102,7 @@ namespace SonOfRobin
 
                 int vOffsetCorrection = 4;
 
-                StatBar.ChangeBatchFont(spriteFont: SonOfRobinGame.fontFreeSansBold12);
+                StatBar.ChangeBatchFont(spriteFont: SonOfRobinGame.FontFreeSansBold12);
 
                 new StatBar(width: width, height: height, label: "food", value: (int)player.fedLevel, valueMax: (int)player.maxFedLevel, colorMin: new Color(0, 128, 255), colorMax: new Color(0, 255, 255), posX: posX, posY: posY, ignoreIfAtMax: false, centerX: false, drawFromTop: true, labelAtLeft: true, vOffsetCorrection: vOffsetCorrection, texture: AnimData.framesForPkgs[AnimData.PkgName.Burger].texture);
                 new StatBar(width: width, height: height, label: "fatigue", value: (int)player.Fatigue, valueMax: (int)player.MaxFatigue, colorMin: new Color(255, 255, 0), colorMax: new Color(255, 0, 0), posX: posX, posY: posY, ignoreIfAtMax: false, centerX: false, drawFromTop: true, labelAtLeft: true, vOffsetCorrection: vOffsetCorrection, texture: AnimData.framesForPkgs[AnimData.PkgName.Bed].texture);
@@ -181,7 +181,7 @@ namespace SonOfRobin
 
                     if (buff.autoRemoveDelay > 0)
                     {
-                        buffFramesLeft = Math.Max(buff.endFrame - world.currentUpdate, 0);
+                        buffFramesLeft = Math.Max(buff.endFrame - world.CurrentUpdate, 0);
                         buffProgress = 1f - ((float)buffFramesLeft / (float)buff.autoRemoveDelay);
                         bgRectShrink = (int)((float)iconWidthHeight * buffProgress);
 
@@ -189,8 +189,8 @@ namespace SonOfRobin
                     }
                     else progressRect = iconRect;
 
-                    SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, iconRect, bgColor * this.viewParams.drawOpacity);
-                    SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, progressRect, progressColor * this.viewParams.drawOpacity);
+                    SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, iconRect, bgColor * this.viewParams.drawOpacity);
+                    SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, progressRect, progressColor * this.viewParams.drawOpacity);
 
                     textMargin = (int)(iconWidthHeight * 0.1f);
                     textRect = new Rectangle(x: iconRect.X + textMargin, y: iconRect.Y + textMargin, width: iconWidthHeight - (textMargin * 2), height: iconWidthHeight - (textMargin * 2));
@@ -268,7 +268,7 @@ namespace SonOfRobin
 
                 float markerDrawScale = (markerScreenPosRightBottom.X - markerScreenPos.X) / (float)markerTexture.Width;
 
-                SonOfRobinGame.spriteBatch.Draw(texture: markerTexture, position: markerScreenPos, scale: markerDrawScale, sourceRectangle: markerTexture.Bounds, color: Color.White, rotation: 0, origin: Vector2.Zero, effects: SpriteEffects.None, layerDepth: 0);
+                SonOfRobinGame.SpriteBatch.Draw(texture: markerTexture, position: markerScreenPos, scale: markerDrawScale, sourceRectangle: markerTexture.Bounds, color: Color.White, rotation: 0, origin: Vector2.Zero, effects: SpriteEffects.None, layerDepth: 0);
             }
 
         }

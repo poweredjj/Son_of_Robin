@@ -30,7 +30,7 @@ namespace SonOfRobin
 
         private static readonly int minFramesToDragByTouch = 15;
         private static readonly float marginPercent = 0.05f;
-        private static readonly SpriteFont font = SonOfRobinGame.fontTommy40;
+        private static readonly SpriteFont font = SonOfRobinGame.FontTommy40;
 
         private static readonly Sound soundOpen = new Sound(SoundData.Name.InventoryOpen);
         private static readonly Sound soundNavigate = new Sound(SoundData.Name.Navigation);
@@ -290,7 +290,7 @@ namespace SonOfRobin
         public override void Remove()
         {
             this.ReleaseHeldPieces(slot: null, forceReleaseAll: true);
-            SonOfRobinGame.hintWindow.TurnOff();
+            SonOfRobinGame.HintWindow.TurnOff();
 
             if (!this.transManager.IsEnding)
             {
@@ -315,7 +315,7 @@ namespace SonOfRobin
             StorageSlot slot = this.storage.GetSlot(x: this.CursorX, y: this.CursorY);
             if (selectedPiece == null || slot == null)
             {
-                SonOfRobinGame.hintWindow.TurnOff();
+                SonOfRobinGame.HintWindow.TurnOff();
                 return;
             }
 
@@ -334,7 +334,7 @@ namespace SonOfRobin
 
             int margin = this.Margin;
             int tileSize = this.TileSize;
-            InfoWindow hintWindow = SonOfRobinGame.hintWindow;
+            InfoWindow hintWindow = SonOfRobinGame.HintWindow;
 
             Vector2 slotPos = this.GetSlotPos(slot: slot, margin: margin, tileSize: tileSize) + new Vector2(this.viewParams.PosX, this.viewParams.PosY);
             Vector2 windowPos;
@@ -613,7 +613,7 @@ namespace SonOfRobin
                         else if (
                             touch.State == TouchLocationState.Released &&
                             this.touchHeldFrames < minFramesToDragByTouch &&
-                            SonOfRobinGame.currentUpdate >= this.disableTouchContextMenuUntilFrame &&
+                            SonOfRobinGame.CurrentUpdate >= this.disableTouchContextMenuUntilFrame &&
                             this.type != Type.SingleBottom)
                         {
                             if (this.lastTouchedSlot == this.ActiveSlot) this.OpenPieceContextMenu();
@@ -924,7 +924,7 @@ namespace SonOfRobin
             if (this.draggedByTouch)
             {
                 this.ReleaseHeldPieces(slot: slot, forceReleaseAll: true); // in case of touch (or mouse) drag, dragged pieces should be released after swap
-                this.disableTouchContextMenuUntilFrame = SonOfRobinGame.currentUpdate + 15;
+                this.disableTouchContextMenuUntilFrame = SonOfRobinGame.CurrentUpdate + 15;
             }
         }
 
@@ -963,7 +963,7 @@ namespace SonOfRobin
 
             if (this.type != Type.SingleBottom)
             {
-                SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, bgRect, Color.BlanchedAlmond * 0.7f * this.viewParams.drawOpacity);
+                SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, bgRect, Color.BlanchedAlmond * 0.7f * this.viewParams.drawOpacity);
                 Helpers.DrawRectangleOutline(rect: bgRect, color: Color.White * this.viewParams.drawOpacity, borderWidth: 2);
             }
 
@@ -979,7 +979,7 @@ namespace SonOfRobin
                 Color outlineColor = isActive ? Color.LawnGreen : Color.White;
                 Color fillColor = isActive ? Color.LightSeaGreen : Color.White;
 
-                SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, tileRect, fillColor * 0.35f * this.viewParams.drawOpacity);
+                SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, tileRect, fillColor * 0.35f * this.viewParams.drawOpacity);
                 Helpers.DrawRectangleOutline(rect: tileRect, color: outlineColor * this.viewParams.drawOpacity * 0.8f, borderWidth: 2);
 
                 this.DrawSlotLabel(slot: slot, tileRect: tileRect);
@@ -1024,8 +1024,8 @@ namespace SonOfRobin
             float shadowOffset = textHeight * 0.06f;
             Vector2 shadowPos = labelPos + new Vector2(shadowOffset, shadowOffset);
 
-            SonOfRobinGame.spriteBatch.DrawString(font, label, position: shadowPos, color: Color.Black * 0.5f * this.viewParams.drawOpacity, origin: Vector2.Zero, scale: textScale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
-            SonOfRobinGame.spriteBatch.DrawString(font, label, position: labelPos, color: Color.White * this.viewParams.drawOpacity, origin: Vector2.Zero, scale: textScale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
+            SonOfRobinGame.SpriteBatch.DrawString(font, label, position: shadowPos, color: Color.Black * 0.5f * this.viewParams.drawOpacity, origin: Vector2.Zero, scale: textScale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
+            SonOfRobinGame.SpriteBatch.DrawString(font, label, position: labelPos, color: Color.White * this.viewParams.drawOpacity, origin: Vector2.Zero, scale: textScale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
         }
 
         public static void DrawQuantity(int pieceCount, Rectangle destRect, float opacity, bool ignoreSingle = true)
@@ -1088,7 +1088,7 @@ namespace SonOfRobin
                 DrawQuantity(pieceCount: draggedPieces.Count, destRect: quantityRect, opacity: this.viewParams.drawOpacity);
             }
 
-            SonOfRobinGame.spriteBatch.Draw(cursorTexture, destinationRectangle, sourceRectangle, Color.White);
+            SonOfRobinGame.SpriteBatch.Draw(cursorTexture, destinationRectangle, sourceRectangle, Color.White);
         }
 
     }

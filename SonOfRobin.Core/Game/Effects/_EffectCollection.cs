@@ -14,7 +14,7 @@ namespace SonOfRobin
         {
             get
             {
-                int currentUpdate = this.world == null ? SonOfRobinGame.currentUpdate : this.world.currentUpdate;
+                int currentUpdate = this.world == null ? SonOfRobinGame.CurrentUpdate : this.world.CurrentUpdate;
                 return this.effectInstanceList.Where(effInstance => !effInstance.WasUsedInThisFrame(currentUpdate)).OrderBy(effInstance => effInstance.priority).ToList();
             }
         }

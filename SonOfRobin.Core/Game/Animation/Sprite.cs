@@ -757,7 +757,7 @@ namespace SonOfRobin
             if (Scene.UpdateStack.Contains(this.world)) this.opacityFade?.Process();
 
             if (Preferences.debugShowRects)
-            { SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, new Rectangle(Convert.ToInt32(this.gfxRect.X), Convert.ToInt32(this.gfxRect.Y), this.gfxRect.Width, this.gfxRect.Height), this.gfxRect, Color.White * 0.5f); }
+            { SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, new Rectangle(Convert.ToInt32(this.gfxRect.X), Convert.ToInt32(this.gfxRect.Y), this.gfxRect.Width, this.gfxRect.Height), this.gfxRect, Color.White * 0.5f); }
 
             bool effectsShouldBeEnabled = this.effectCol.ThereAreEffectsToRender;
             if (!effectsShouldBeEnabled) this.DrawRoutine(calculateSubmerge);
@@ -766,7 +766,7 @@ namespace SonOfRobin
                 bool thereWillBeMoreEffects = false;
                 while (true)
                 {
-                    if (effectsShouldBeEnabled) thereWillBeMoreEffects = this.effectCol.TurnOnNextEffect(scene: this.world, currentUpdateToUse: world.currentUpdate);
+                    if (effectsShouldBeEnabled) thereWillBeMoreEffects = this.effectCol.TurnOnNextEffect(scene: this.world, currentUpdateToUse: world.CurrentUpdate);
                     this.DrawRoutine(calculateSubmerge);
 
                     if (!thereWillBeMoreEffects)
@@ -779,8 +779,8 @@ namespace SonOfRobin
 
             if (Preferences.debugShowRects)
             {
-                SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, new Rectangle(Convert.ToInt32(this.colRect.X), Convert.ToInt32(this.colRect.Y), this.colRect.Width, this.colRect.Height), this.colRect, Color.Red * 0.7f);
-                SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, new Rectangle(Convert.ToInt32((this.position.X) - 1), Convert.ToInt32(this.position.Y - 1), 2, 2), Color.White);
+                SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, new Rectangle(Convert.ToInt32(this.colRect.X), Convert.ToInt32(this.colRect.Y), this.colRect.Width, this.colRect.Height), this.colRect, Color.Red * 0.7f);
+                SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, new Rectangle(Convert.ToInt32((this.position.X) - 1), Convert.ToInt32(this.position.Y - 1), 2, 2), Color.White);
             }
 
             if (Preferences.debugShowStates && this.boardPiece.GetType() == typeof(Animal) && this.boardPiece.alive) this.DrawState();
@@ -815,7 +815,7 @@ namespace SonOfRobin
         private void DrawFruits()
         {
             Plant plant = (Plant)this.boardPiece;
-            if (Preferences.debugShowFruitRects) SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, plant.fruitEngine.FruitAreaRect, Color.Cyan * 0.4f);
+            if (Preferences.debugShowFruitRects) SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, plant.fruitEngine.FruitAreaRect, Color.Cyan * 0.4f);
 
             if (plant.pieceStorage.OccupiedSlotsCount == 0) return;
             var fruitList = plant.pieceStorage.GetAllPieces();
@@ -829,7 +829,7 @@ namespace SonOfRobin
         private void DrawState()
         {
             string stateTxt = $"{this.boardPiece.activeState}".Replace("Player", "").Replace("Animal", "");
-            var stateFont = SonOfRobinGame.fontPressStart2P5;
+            var stateFont = SonOfRobinGame.FontPressStart2P5;
 
             Vector2 textSize = stateFont.MeasureString(stateTxt);
             // text position should be integer, otherwise it would get blurry
@@ -837,8 +837,8 @@ namespace SonOfRobin
                 (int)(this.position.X - (textSize.X / 2)),
                 (int)(this.position.Y - (textSize.Y / 2)));
 
-            SonOfRobinGame.spriteBatch.DrawString(stateFont, stateTxt, txtPos + new Vector2(1, 1), Color.Black);
-            SonOfRobinGame.spriteBatch.DrawString(stateFont, stateTxt, txtPos, Color.White);
+            SonOfRobinGame.SpriteBatch.DrawString(stateFont, stateTxt, txtPos + new Vector2(1, 1), Color.Black);
+            SonOfRobinGame.SpriteBatch.DrawString(stateFont, stateTxt, txtPos, Color.White);
         }
 
         public static void DrawShadow(Color color, Sprite shadowSprite, Vector2 lightPos, float shadowAngle, int drawOffsetX = 0, int drawOffsetY = 0, float yScaleForce = 0f)
@@ -874,7 +874,7 @@ namespace SonOfRobin
                 yScale = Math.Min(yScale, frame.scale * 3f);
                 if (yScaleForce != 0) yScale = frame.scale * yScaleForce;
 
-                SonOfRobinGame.spriteBatch.Draw(
+                SonOfRobinGame.SpriteBatch.Draw(
                     frame.texture,
                     position:
                     new Vector2(shadowSprite.position.X + drawOffsetX, shadowSprite.position.Y + drawOffsetY),

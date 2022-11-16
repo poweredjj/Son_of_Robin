@@ -196,7 +196,7 @@ namespace SonOfRobin
             return matchingTypes.Count > 0;
         }
         private static int lastFrameLayoutChanged = 0;
-        public static int FramesSinceLayoutChanged { get { return SonOfRobinGame.currentUpdate - lastFrameLayoutChanged; } }
+        public static int FramesSinceLayoutChanged { get { return SonOfRobinGame.CurrentUpdate - lastFrameLayoutChanged; } }
 
         public static void GetState(GameTime gameTime)
         {
@@ -223,7 +223,7 @@ namespace SonOfRobin
 
             foreach (TouchLocation touch in touchPanelState)
             {
-                MessageLog.AddMessage(msgType: MsgType.User, message: $"{SonOfRobinGame.currentUpdate} touch {touch.State} x:{touch.Position.X} y:{touch.Position.Y}");
+                MessageLog.AddMessage(msgType: MsgType.User, message: $"{SonOfRobinGame.CurrentUpdate} touch {touch.State} x:{touch.Position.X} y:{touch.Position.Y}");
             }
         }
 
@@ -294,7 +294,7 @@ namespace SonOfRobin
 
         private static void Refresh()
         {
-            if (stickScale == Preferences.GlobalScale && screenWidth == SonOfRobinGame.graphics.PreferredBackBufferWidth && screenHeight == SonOfRobinGame.graphics.PreferredBackBufferHeight) return;
+            if (stickScale == Preferences.GlobalScale && screenWidth == SonOfRobinGame.GfxDevMgr.PreferredBackBufferWidth && screenHeight == SonOfRobinGame.GfxDevMgr.PreferredBackBufferHeight) return;
 
             MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Changing touch sticks scale from {stickScale} to {Preferences.GlobalScale}.", color: Color.White);
 
@@ -305,8 +305,8 @@ namespace SonOfRobin
             dualStick.RightStick.SetAsFixed();
 
             stickScale = Preferences.GlobalScale;
-            screenWidth = SonOfRobinGame.graphics.PreferredBackBufferWidth;
-            screenHeight = SonOfRobinGame.graphics.PreferredBackBufferHeight;
+            screenWidth = SonOfRobinGame.GfxDevMgr.PreferredBackBufferWidth;
+            screenHeight = SonOfRobinGame.GfxDevMgr.PreferredBackBufferHeight;
         }
 
         public static void SetEmulationByMouse()
@@ -324,7 +324,7 @@ namespace SonOfRobin
             Preferences preferences = new Preferences();
 
             currentLayout = touchLayout;
-            lastFrameLayoutChanged = SonOfRobinGame.currentUpdate;
+            lastFrameLayoutChanged = SonOfRobinGame.CurrentUpdate;
 
             VirtButton.RemoveAll();
 

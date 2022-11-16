@@ -185,14 +185,14 @@ namespace SonOfRobin
 
             // Helpers.DrawRectangleOutline(rect: destRect, color: Color.YellowGreen, borderWidth: 2); // testing rect size
 
-            SonOfRobinGame.spriteBatch.Draw(this.texture, destRect, sourceRectangle, color * opacity);
+            SonOfRobinGame.SpriteBatch.Draw(this.texture, destRect, sourceRectangle, color * opacity);
         }
 
         public void DrawWithRotation(Vector2 position, Color color, float rotation, float opacity)
         {
             // invoke from Sprite class
 
-            SonOfRobinGame.spriteBatch.Draw(this.texture, position: position, sourceRectangle: this.textureRect, color: color * opacity, rotation: rotation, origin: this.rotationOrigin, scale: this.scale, effects: SpriteEffects.None, layerDepth: 0);
+            SonOfRobinGame.SpriteBatch.Draw(this.texture, position: position, sourceRectangle: this.textureRect, color: color * opacity, rotation: rotation, origin: this.rotationOrigin, scale: this.scale, effects: SpriteEffects.None, layerDepth: 0);
         }
 
         public void DrawAndKeepInRectBounds(Rectangle destBoundsRect, Color color, float opacity = 1f)

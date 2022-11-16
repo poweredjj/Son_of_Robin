@@ -55,7 +55,7 @@ namespace SonOfRobin
                     (this.followingSprite.boardPiece.serialize == false &&
                     this.followingSprite.opacity < 0.05f &&
                     this.followingSprite.opacityFade != null &&
-                    this.world.currentUpdate > this.firstTrackingFrame + 100);
+                    this.world.CurrentUpdate > this.firstTrackingFrame + 100);
             }
         }
 
@@ -66,8 +66,8 @@ namespace SonOfRobin
         {
             this.isCorrect = false;
             this.world = world;
-            this.firstTrackingFrame = this.world.currentUpdate;
-            this.lastTrackingFrame = turnOffDelay == 0 ? 0 : this.world.currentUpdate + turnOffDelay;
+            this.firstTrackingFrame = this.world.CurrentUpdate;
+            this.lastTrackingFrame = turnOffDelay == 0 ? 0 : this.world.CurrentUpdate + turnOffDelay;
             this.bounceWhenRemoved = bounceWhenRemoved;
             this.followSlowDown = followSlowDown;
             if (this.followSlowDown < 0) new ArgumentException($"followSlowDown ({followSlowDown}) cannot be < 0.");
@@ -133,7 +133,7 @@ namespace SonOfRobin
             bool bounceWhenRemoved = (bool)trackingData["bounceWhenRemoved"];
             int followSlowDown = (int)trackingData["followSlowDown"];
             int lastTrackingFrame = (int)trackingData["lastTrackingFrame"];
-            int delay = Math.Max(world.currentUpdate, lastTrackingFrame - world.currentUpdate);
+            int delay = Math.Max(world.CurrentUpdate, lastTrackingFrame - world.CurrentUpdate);
 
             new Tracking(world: world, targetSprite: targetSprite, followingSprite: followingSprite, followingXAlign: followingXAlign, followingYAlign: followingYAlign, targetXAlign: targetXAlign, targetYAlign: targetYAlign, offsetX: offsetX, offsetY: offsetY, turnOffDelay: delay, bounceWhenRemoved: bounceWhenRemoved, followSlowDown: followSlowDown);
         }
@@ -175,7 +175,7 @@ namespace SonOfRobin
         {
             if (!this.followingSprite.boardPiece.exists ||
                 !this.targetSprite.boardPiece.exists ||
-                (this.lastTrackingFrame > 0 && this.world.currentUpdate >= this.lastTrackingFrame))
+                (this.lastTrackingFrame > 0 && this.world.CurrentUpdate >= this.lastTrackingFrame))
             {
                 this.RemoveFromTrackingQueue();
                 return;

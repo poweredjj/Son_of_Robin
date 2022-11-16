@@ -10,7 +10,7 @@ namespace SonOfRobin
     {
         protected enum ContextAction { Drop, DropAll, Move, Eat, Drink, Plant, Cook, Switch, Ignite, Extinguish, Upgrade }
 
-        private static readonly SpriteFont font = SonOfRobinGame.fontTommy40;
+        private static readonly SpriteFont font = SonOfRobinGame.FontTommy40;
         private static readonly float marginPercent = 0.03f;
         private static readonly float entryWidthPercent = 0.8f;
         private static readonly float entryHeightPercent = 0.1f;
@@ -411,7 +411,7 @@ namespace SonOfRobin
             float margin = this.Margin;
             Vector2 maxEntrySize = this.MaxEntrySize;
 
-            SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, bgRect, Color.DodgerBlue * 0.9f * this.viewParams.drawOpacity);
+            SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, bgRect, Color.DodgerBlue * 0.9f * this.viewParams.drawOpacity);
             Helpers.DrawRectangleOutline(rect: bgRect, color: Color.White * this.viewParams.drawOpacity, borderWidth: 2);
 
             float textScale = this.TextScale;
@@ -439,9 +439,9 @@ namespace SonOfRobin
                 textPos = new Vector2(entryRect.X, entryRect.Y);
                 shadowPos = new Vector2(textPos.X + shadowOffset, textPos.Y + shadowOffset);
 
-                SonOfRobinGame.spriteBatch.DrawString(font, actionLabel, position: shadowPos, color: Color.MidnightBlue * this.viewParams.drawOpacity * 0.7f, origin: Vector2.Zero, scale: textScale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
+                SonOfRobinGame.SpriteBatch.DrawString(font, actionLabel, position: shadowPos, color: Color.MidnightBlue * this.viewParams.drawOpacity * 0.7f, origin: Vector2.Zero, scale: textScale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
 
-                SonOfRobinGame.spriteBatch.DrawString(font, actionLabel, position: textPos, color: textColor * this.viewParams.drawOpacity, origin: Vector2.Zero, scale: textScale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
+                SonOfRobinGame.SpriteBatch.DrawString(font, actionLabel, position: textPos, color: textColor * this.viewParams.drawOpacity, origin: Vector2.Zero, scale: textScale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
 
                 entryNo++;
             }

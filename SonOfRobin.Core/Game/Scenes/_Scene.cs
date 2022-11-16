@@ -132,8 +132,8 @@ namespace SonOfRobin
             get
             {
                 Matrix scaleMatrix = Matrix.CreateScale(
-                                           (float)SonOfRobinGame.graphics.PreferredBackBufferWidth / SonOfRobinGame.VirtualWidth / this.viewParams.drawScaleX,
-                                           (float)SonOfRobinGame.graphics.PreferredBackBufferHeight / SonOfRobinGame.VirtualHeight / this.viewParams.drawScaleY,
+                                           (float)SonOfRobinGame.GfxDevMgr.PreferredBackBufferWidth / SonOfRobinGame.VirtualWidth / this.viewParams.drawScaleX,
+                                           (float)SonOfRobinGame.GfxDevMgr.PreferredBackBufferHeight / SonOfRobinGame.VirtualHeight / this.viewParams.drawScaleY,
                                            1f);
 
                 Matrix rotationMatrix = Matrix.CreateRotationZ(this.viewParams.drawRot);
@@ -269,7 +269,7 @@ namespace SonOfRobin
                         {
                             scene.inputActive = true;
                             TouchInput.SwitchToLayout(scene.touchLayout);
-                            SonOfRobinGame.controlTips.AssignScene(scene: scene);
+                            SonOfRobinGame.ControlTips.AssignScene(scene: scene);
 
                             normalInputSet = true;
                         }
@@ -284,7 +284,7 @@ namespace SonOfRobin
             if (!normalInputSet)
             {
                 TouchInput.SwitchToLayout(TouchLayout.Empty);
-                if (SonOfRobinGame.controlTips != null) SonOfRobinGame.controlTips.AssignScene(scene: null);
+                if (SonOfRobinGame.ControlTips != null) SonOfRobinGame.ControlTips.AssignScene(scene: null);
             }
         }
 
@@ -420,7 +420,7 @@ namespace SonOfRobin
             foreach (Scene scene in UpdateStack)
             {
                 currentlyProcessedScene = scene;
-                Input.InputActive = scene.inputActive && SonOfRobinGame.game.IsActive;
+                Input.InputActive = scene.inputActive && SonOfRobinGame.Game.IsActive;
                 scene.Update(gameTime: gameTime);
             }
 
@@ -501,19 +501,19 @@ namespace SonOfRobin
                 previousScene = scene;
             }
 
-            if (spriteBatchNotEnded) SonOfRobinGame.spriteBatch.End();
+            if (spriteBatchNotEnded) SonOfRobinGame.SpriteBatch.End();
 
             //MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Draw time elapsed {DrawTimeElapsed.Milliseconds}ms.", color: Color.LightCyan);
         }
 
         public void StartNewSpriteBatch(bool end = true, bool enableEffects = false)
         {
-            if (end) SonOfRobinGame.spriteBatch.End();
+            if (end) SonOfRobinGame.SpriteBatch.End();
 
             // SpriteSortMode.Immediate enables use of effects, but is slow.
             // It is best to use it only if necessary.
 
-            SonOfRobinGame.spriteBatch.Begin(transformMatrix: this.TransformMatrix, samplerState: SamplerState.AnisotropicClamp,
+            SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix, samplerState: SamplerState.AnisotropicClamp,
                 sortMode: enableEffects ? SpriteSortMode.Immediate : SpriteSortMode.Deferred);
         }
 
@@ -521,14 +521,14 @@ namespace SonOfRobin
         {
             if (ProcessingMode == ProcessingModes.Draw) throw new ArgumentException($"Cannot set RenderTarget during {ProcessingMode}.");
 
-            SonOfRobinGame.graphicsDevice.SetRenderTarget(newRenderTarget); // do not use SetRenderTarget() anywhere else!
+            SonOfRobinGame.GfxDev.SetRenderTarget(newRenderTarget); // do not use SetRenderTarget() anywhere else!
         }
 
         public static void SetRenderTargetToNull()
         {
             if (ProcessingMode == ProcessingModes.Draw) throw new ArgumentException($"Cannot set RenderTarget during {ProcessingMode}.");
 
-            SonOfRobinGame.graphicsDevice.SetRenderTarget(null); // do not use SetRenderTarget() anywhere else!
+            SonOfRobinGame.GfxDev.SetRenderTarget(null); // do not use SetRenderTarget() anywhere else!
         }
 
     }

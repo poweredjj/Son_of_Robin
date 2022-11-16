@@ -83,8 +83,8 @@ namespace SonOfRobin
             this.ScaleX = 1f;
             this.ScaleY = 1f;
             this.Opacity = 1f; // has to be manually used during Draw()
-            this.Width = SonOfRobinGame.graphics.PreferredBackBufferWidth; // needed to rotate scene around its center and for centering
-            this.Height = SonOfRobinGame.graphics.PreferredBackBufferHeight; // needed to rotate scene around its center and for centering
+            this.Width = SonOfRobinGame.GfxDevMgr.PreferredBackBufferWidth; // needed to rotate scene around its center and for centering
+            this.Height = SonOfRobinGame.GfxDevMgr.PreferredBackBufferHeight; // needed to rotate scene around its center and for centering
 
             this.CopyBaseToDrawParams();
         }

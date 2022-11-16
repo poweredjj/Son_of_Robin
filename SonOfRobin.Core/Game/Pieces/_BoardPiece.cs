@@ -89,7 +89,7 @@ namespace SonOfRobin
         public readonly bool serialize;
         public bool canBeHit;
 
-        public virtual bool ShowStatBars { get { return this.world.currentUpdate < this.showStatBarsTillFrame; } }
+        public virtual bool ShowStatBars { get { return this.world.CurrentUpdate < this.showStatBarsTillFrame; } }
         public bool AreEnemiesNearby
         {
             get
@@ -437,7 +437,7 @@ namespace SonOfRobin
         {
             // checking if state machine can be processed
 
-            if (this.lastFrameSMProcessed == this.world.currentUpdate) return; // to avoid processing the same state machine multiple times in one frame
+            if (this.lastFrameSMProcessed == this.world.CurrentUpdate) return; // to avoid processing the same state machine multiple times in one frame
             if (!this.exists || !this.sprite.IsOnBoard)
             {
                 this.RemoveFromStateMachines();
@@ -446,7 +446,7 @@ namespace SonOfRobin
 
             // processing state machine
 
-            this.lastFrameSMProcessed = this.world.currentUpdate;
+            this.lastFrameSMProcessed = this.world.CurrentUpdate;
 
             if (this.ProcessPassiveMovement()) return; // passive movement blocks the state machine until the movement stops
 

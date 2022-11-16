@@ -89,8 +89,8 @@ namespace SonOfRobin
             if (this.currentLayout == TipsLayout.QuitLoading || this.currentLayout == TipsLayout.WorldSleep)
             {
                 // in this case, tips should be aligned with progress bar
-                sceneViewParams = SonOfRobinGame.progressBar.viewParams;
-                SonOfRobinGame.progressBar.transManager.Update();
+                sceneViewParams = SonOfRobinGame.ProgressBar.viewParams;
+                SonOfRobinGame.ProgressBar.transManager.Update();
             }
             else
             {
@@ -135,7 +135,7 @@ namespace SonOfRobin
 
             if (Preferences.DebugMode)
             {
-                Helpers.DrawTextWithOutline(font: SonOfRobinGame.fontPressStart2P5, text: $"{this.currentLayout}", pos: Vector2.Zero, color: Color.White, outlineColor: Color.Black, outlineSize: 1);
+                Helpers.DrawTextWithOutline(font: SonOfRobinGame.FontPressStart2P5, text: $"{this.currentLayout}", pos: Vector2.Zero, color: Color.White, outlineColor: Color.Black, outlineSize: 1);
             }
         }
 

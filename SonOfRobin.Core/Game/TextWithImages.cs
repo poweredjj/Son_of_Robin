@@ -262,9 +262,9 @@ namespace SonOfRobin
         {
             string currentText = this.AnimatedText;
 
-            if (drawShadow) SonOfRobinGame.spriteBatch.DrawString(font, currentText, position: position + shadowOffset, color: shadowColor, origin: Vector2.Zero, scale: textScale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
+            if (drawShadow) SonOfRobinGame.SpriteBatch.DrawString(font, currentText, position: position + shadowOffset, color: shadowColor, origin: Vector2.Zero, scale: textScale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
 
-            SonOfRobinGame.spriteBatch.DrawString(font, currentText, position: position, color: color, origin: Vector2.Zero, scale: textScale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
+            SonOfRobinGame.SpriteBatch.DrawString(font, currentText, position: position, color: color, origin: Vector2.Zero, scale: textScale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
 
             int imageNo = 0;
             foreach (ImageInfo imageInfo in this.imageInfoList)

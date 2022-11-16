@@ -32,12 +32,12 @@ namespace SonOfRobin
                 {
                     for (int y = -outlineSize; y <= outlineSize; y++)
                     {
-                        SonOfRobinGame.spriteBatch.DrawString(font, text, pos + new Vector2(x, y), outlineColor);
+                        SonOfRobinGame.SpriteBatch.DrawString(font, text, pos + new Vector2(x, y), outlineColor);
                     }
                 }
             }
 
-            SonOfRobinGame.spriteBatch.DrawString(font, text, pos, color);
+            SonOfRobinGame.SpriteBatch.DrawString(font, text, pos, color);
         }
 
         public static void DrawTextInsideRectWithOutline(SpriteFont font, Rectangle rectangle, string text, Color color, Color outlineColor, AlignX alignX = AlignX.Center, AlignY alignY = AlignY.Center, int outlineSize = 0, bool drawTestRect = false)
@@ -131,7 +131,7 @@ namespace SonOfRobin
                     throw new DivideByZeroException($"Unsupported alignY - {alignY}.");
             }
 
-            SonOfRobinGame.spriteBatch.DrawString(font, text, position: new Vector2(rectangle.X + xOffset, rectangle.Y + yOffset), color: color, origin: Vector2.Zero, scale: scale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
+            SonOfRobinGame.SpriteBatch.DrawString(font, text, position: new Vector2(rectangle.X + xOffset, rectangle.Y + yOffset), color: color, origin: Vector2.Zero, scale: scale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
         }
 
         public static void DrawTextureInsideRect(Texture2D texture, Rectangle rectangle, Color color, AlignX alignX = AlignX.Center, AlignY alignY = AlignY.Center, bool drawTestRect = false)
@@ -180,19 +180,19 @@ namespace SonOfRobin
 
             Rectangle destRect = new Rectangle(x: rectangle.X + xOffset, y: rectangle.Y + yOffset, width: (int)(texture.Width * scale), height: (int)(texture.Height * scale));
             if (drawTestRect) DrawRectangleOutline(rect: destRect, color: Color.Green, borderWidth: 1);
-            SonOfRobinGame.spriteBatch.Draw(texture: texture, destinationRectangle: destRect, color: color);
+            SonOfRobinGame.SpriteBatch.Draw(texture: texture, destinationRectangle: destRect, color: color);
         }
 
         public static void DrawRectangleOutline(Rectangle rect, Color color, int borderWidth)
         {
             // top
-            SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, new Rectangle(rect.X, rect.Y, rect.Width, borderWidth), color);
+            SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, new Rectangle(rect.X, rect.Y, rect.Width, borderWidth), color);
             // bottom
-            SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, new Rectangle(rect.X, (rect.Y + rect.Height) - borderWidth, rect.Width, borderWidth), color);
+            SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, new Rectangle(rect.X, (rect.Y + rect.Height) - borderWidth, rect.Width, borderWidth), color);
             // left
-            SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, new Rectangle(rect.X, rect.Y, borderWidth, rect.Height), color);
+            SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, new Rectangle(rect.X, rect.Y, borderWidth, rect.Height), color);
             // right
-            SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, new Rectangle((rect.X + rect.Width) - borderWidth, rect.Y, borderWidth, rect.Height), color);
+            SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, new Rectangle((rect.X + rect.Width) - borderWidth, rect.Y, borderWidth, rect.Height), color);
         }
 
         public static string FirstCharToLowerCase(string str)

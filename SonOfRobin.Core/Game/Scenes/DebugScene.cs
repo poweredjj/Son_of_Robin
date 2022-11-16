@@ -10,7 +10,7 @@ namespace SonOfRobin
 {
     public class DebugScene : Scene
     {
-        public static readonly SpriteFont font = SonOfRobinGame.fontFreeSansBold12;
+        public static readonly SpriteFont font = SonOfRobinGame.FontFreeSansBold12;
         public static string debugText = "";
 
         public DebugScene() : base(inputType: InputTypes.Always, tipsLayout: ControlTips.TipsLayout.Empty, priority: -1, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: true, alwaysDraws: true, touchLayout: TouchLayout.Empty)
@@ -91,7 +91,7 @@ namespace SonOfRobin
             {
                 if (Keyboard.HasBeenPressed(Keys.D1))
                 {
-                    BoardPiece piece = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: world.player.sprite.position, templateName: PieceTemplate.Name.Rabbit, closestFreeSpot: true);
+                    BoardPiece piece = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: world.player.sprite.position, templateName: PieceTemplate.Name.GrassGlow, closestFreeSpot: true);
                 }
 
                 if (Keyboard.HasBeenPressed(Keys.D2))
@@ -398,7 +398,7 @@ namespace SonOfRobin
 
             if (Keyboard.HasBeenPressed(Keys.F9))
             {
-                SonOfRobinGame.progressBar.TurnOn(newPosX: 0, newPosY: 0, centerHoriz: true, centerVert: true, addTransition: true, entryList: new List<InfoWindow.TextEntry> {
+                SonOfRobinGame.ProgressBar.TurnOn(newPosX: 0, newPosY: 0, centerHoriz: true, centerVert: true, addTransition: true, entryList: new List<InfoWindow.TextEntry> {
                         new InfoWindow.TextEntry(text: "| First line.", color: Color.White, imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Player) }),
                         new InfoWindow.TextEntry(text: "| Second line.", color: Color.Green, scale: 1.5f, imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Player) }, justify: InfoWindow.TextEntry.Justify.Center),
                         new InfoWindow.TextEntry(color: Color.White, progressCurrentVal: 2, progressMaxVal: 5),
@@ -409,7 +409,7 @@ namespace SonOfRobin
 
             if (Keyboard.HasBeenPressed(Keys.F10))
             {
-                SonOfRobinGame.progressBar.TurnOn(newPosX: 0, newPosY: 0,
+                SonOfRobinGame.ProgressBar.TurnOn(newPosX: 0, newPosY: 0,
                     entryList: new List<InfoWindow.TextEntry> {
                         new InfoWindow.TextEntry(text: "Second line.", color: Color.Green),
                         new InfoWindow.TextEntry(text: "And this is third line.", color: Color.LightBlue),
@@ -417,7 +417,7 @@ namespace SonOfRobin
                 });
             }
 
-            if (Keyboard.HasBeenPressed(Keys.F11)) SonOfRobinGame.progressBar.TurnOff();
+            if (Keyboard.HasBeenPressed(Keys.F11)) SonOfRobinGame.ProgressBar.TurnOff();
 
             if (Keyboard.HasBeenPressed(Keys.F12)) RemoveTopScene();
 
@@ -425,22 +425,22 @@ namespace SonOfRobin
             {
                 if (world == null) return;
 
-                if (SonOfRobinGame.game.IsFixedTimeStep)
+                if (SonOfRobinGame.Game.IsFixedTimeStep)
                 {  // at first, only IsFixedTimeStep should be changed
-                    SonOfRobinGame.game.IsFixedTimeStep = false;
+                    SonOfRobinGame.Game.IsFixedTimeStep = false;
                 }
                 else world.updateMultiplier *= 2;
 
-                SonOfRobinGame.game.TargetElapsedTime = TimeSpan.FromSeconds(1d / 60d);
+                SonOfRobinGame.Game.TargetElapsedTime = TimeSpan.FromSeconds(1d / 60d);
             }
 
             if (Keyboard.HasBeenPressed(Keys.LeftControl) || VirtButton.HasButtonBeenPressed(VButName.DebugPlay))
             {
                 if (world == null) return;
 
-                SonOfRobinGame.game.IsFixedTimeStep = true;
+                SonOfRobinGame.Game.IsFixedTimeStep = true;
                 world.updateMultiplier = 1;
-                SonOfRobinGame.game.TargetElapsedTime = TimeSpan.FromSeconds(1d / 60d);
+                SonOfRobinGame.Game.TargetElapsedTime = TimeSpan.FromSeconds(1d / 60d);
             }
 
             if (Keyboard.HasBeenPressed(Keys.LeftShift) || VirtButton.HasButtonBeenPressed(VButName.DebugPause))
@@ -448,9 +448,9 @@ namespace SonOfRobin
                 if (world == null) return;
 
 
-                SonOfRobinGame.game.IsFixedTimeStep = true;
+                SonOfRobinGame.Game.IsFixedTimeStep = true;
                 world.updateMultiplier = 1;
-                SonOfRobinGame.game.TargetElapsedTime = TimeSpan.FromSeconds(1d / 3d);
+                SonOfRobinGame.Game.TargetElapsedTime = TimeSpan.FromSeconds(1d / 3d);
             }
 
             if (Keyboard.HasBeenPressed(Keys.OemOpenBrackets))

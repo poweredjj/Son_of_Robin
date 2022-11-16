@@ -54,14 +54,14 @@ namespace SonOfRobin
             if (sound == null) return;
 
             if (sound.isLooped) new StatBar(label: "vol", value: (int)(sound.FadeVolume * 100), valueMax: 100, colorMin: new Color(0, 128, 0), colorMax: new Color(0, 255, 0), posX: this.sprite.gfxRect.Center.X, posY: this.sprite.gfxRect.Bottom, ignoreIfAtMax: false);
-            else new StatBar(label: "", value: this.currentDelay - (this.waitUntilFrame - this.world.currentUpdate), valueMax: this.currentDelay, colorMin: new Color(0, 128, 0), colorMax: new Color(0, 255, 0), posX: this.sprite.gfxRect.Center.X, posY: this.sprite.gfxRect.Bottom, ignoreIfAtMax: false, texture: AnimData.framesForPkgs[AnimData.PkgName.MusicNoteSmall].texture);
+            else new StatBar(label: "", value: this.currentDelay - (this.waitUntilFrame - this.world.CurrentUpdate), valueMax: this.currentDelay, colorMin: new Color(0, 128, 0), colorMax: new Color(0, 255, 0), posX: this.sprite.gfxRect.Center.X, posY: this.sprite.gfxRect.Bottom, ignoreIfAtMax: false, texture: AnimData.framesForPkgs[AnimData.PkgName.MusicNoteSmall].texture);
 
             StatBar.FinishThisBatch();
         }
 
         public override void SM_PlayAmbientSound()
         {
-            if (this.world.currentUpdate % checkDelay != 0) return;
+            if (this.world.CurrentUpdate % checkDelay != 0) return;
 
             bool isInCameraRect = this.sprite.IsInCameraRect;
             bool isLooped = this.soundPack.IsLooped(PieceSoundPack.Action.Ambient);
@@ -78,13 +78,13 @@ namespace SonOfRobin
 
             if (!isInCameraRect) return;
 
-            if (this.world.currentUpdate < this.waitUntilFrame || !this.CanPlayAtThisPartOfDay) return;
+            if (this.world.CurrentUpdate < this.waitUntilFrame || !this.CanPlayAtThisPartOfDay) return;
 
             if (this.playDelay > 0 || this.playDelayMaxVariation > 0)
             {
                 this.currentDelay = this.playDelay;
                 if (this.playDelayMaxVariation > 0) this.currentDelay += Random.Next(0, this.playDelayMaxVariation);
-                this.waitUntilFrame = this.world.currentUpdate + this.currentDelay;
+                this.waitUntilFrame = this.world.CurrentUpdate + this.currentDelay;
                 this.showStatBarsTillFrame = this.waitUntilFrame;
             }
 

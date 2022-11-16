@@ -81,7 +81,7 @@ namespace SonOfRobin
                 return;
             }
 
-            if (targets.Count == 0 || this.world.currentUpdate < this.hitCooldown || player.Stamina < 80) return;
+            if (targets.Count == 0 || this.world.CurrentUpdate < this.hitCooldown || player.Stamina < 80) return;
 
             bool anyTargetHit = false;
             bool fieldTipShown = false;
@@ -197,7 +197,7 @@ namespace SonOfRobin
             if (!highlightOnly && anyTargetHit)
             {
                 player.Stamina = Math.Max(player.Stamina - 50, 0);
-                this.hitCooldown = this.world.currentUpdate + 30;
+                this.hitCooldown = this.world.CurrentUpdate + 30;
                 if (!this.indestructible)
                 {
                     this.hitPoints -= 1;
@@ -249,7 +249,7 @@ namespace SonOfRobin
             else
             {
                 target.soundPack.Play(PieceSoundPack.Action.IsHit);
-                target.showStatBarsTillFrame = world.currentUpdate + 1200;
+                target.showStatBarsTillFrame = world.CurrentUpdate + 1200;
 
                 if (target.GetType() == typeof(Animal))
                 {

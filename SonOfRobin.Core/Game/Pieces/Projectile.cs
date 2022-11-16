@@ -84,7 +84,7 @@ namespace SonOfRobin
                     if (!this.indestructible)
                     {
                         this.hitPoints = Math.Max(0, this.hitPoints - this.world.random.Next(10, 35));
-                        this.showStatBarsTillFrame = world.currentUpdate + 1200;
+                        this.showStatBarsTillFrame = world.CurrentUpdate + 1200;
                         if (this.hitPoints == 0)
                         {
                             this.Destroy();
@@ -107,7 +107,7 @@ namespace SonOfRobin
                     if (!this.indestructible)
                     {
                         this.hitPoints = Math.Max(0, this.hitPoints - this.world.random.Next(0, 15));
-                        this.showStatBarsTillFrame = world.currentUpdate + 1200;
+                        this.showStatBarsTillFrame = world.CurrentUpdate + 1200;
                         if (this.hitPoints == 0)
                         {
                             PieceTemplate.CreateAndPlaceOnBoard(world: world, position: this.sprite.position, templateName: PieceTemplate.Name.Attack);

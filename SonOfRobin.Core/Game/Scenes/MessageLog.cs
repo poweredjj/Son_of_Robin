@@ -31,12 +31,12 @@ namespace SonOfRobin
 
                 int delay = (MessageLog.messages.Count == 0) ? 180 : 90 / Math.Min(MessageLog.messages.Count, 3);
 
-                this.deletionFrame = Math.Max(lastDeletionFrame, SonOfRobinGame.currentUpdate) + delay;
+                this.deletionFrame = Math.Max(lastDeletionFrame, SonOfRobinGame.CurrentUpdate) + delay;
                 lastDeletionFrame = this.deletionFrame;
             }
         }
 
-        private static readonly SpriteFont font = SonOfRobinGame.fontPressStart2P5;
+        private static readonly SpriteFont font = SonOfRobinGame.FontPressStart2P5;
         private static readonly int txtSeparator = 3;
         private static readonly int freePixelsAboveMessages = 160;
 
@@ -57,7 +57,7 @@ namespace SonOfRobin
 
         public override void Update(GameTime gameTime)
         {
-            int currentFrame = SonOfRobinGame.currentUpdate;
+            int currentFrame = SonOfRobinGame.CurrentUpdate;
             DeleteOldMessages(currentFrame);
             this.screenHeight = Preferences.ShowControlTips ? (int)(SonOfRobinGame.VirtualHeight * 0.94f) : (int)(SonOfRobinGame.VirtualHeight * 1f);
         }
@@ -66,7 +66,7 @@ namespace SonOfRobin
         {
             if (messages.Count == 0) return;
 
-            int currentFrame = SonOfRobinGame.currentUpdate;
+            int currentFrame = SonOfRobinGame.CurrentUpdate;
 
             var messagesToDisplay = messages.ToList();
             messagesToDisplay.Reverse();

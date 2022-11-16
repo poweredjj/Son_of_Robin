@@ -158,12 +158,12 @@ namespace SonOfRobin
             if (!detailedMappings.ContainsKey(action))
             {
                 MessageLog.AddMessage(msgType: MsgType.Debug, message: $"No mapping found for '{action}'.", color: Color.AliceBlue);
-                return SonOfRobinGame.whiteRectangle;
+                return SonOfRobinGame.WhiteRectangle;
             }
 
-            if (detailedMappings.Count == 0) return SonOfRobinGame.whiteRectangle;
+            if (detailedMappings.Count == 0) return SonOfRobinGame.WhiteRectangle;
             var textureList = detailedMappings[action].TextureList;
-            if (textureList.Count == 0) return SonOfRobinGame.whiteRectangle;
+            if (textureList.Count == 0) return SonOfRobinGame.WhiteRectangle;
             return textureList[0];
         }
 
@@ -531,7 +531,7 @@ namespace SonOfRobin
                 return triggerVal;
             }
 
-            private bool TriggerStateLastFrameExists { get { return this.triggerStateForFrame.ContainsKey(SonOfRobinGame.currentUpdate - 1); } }
+            private bool TriggerStateLastFrameExists { get { return this.triggerStateForFrame.ContainsKey(SonOfRobinGame.CurrentUpdate - 1); } }
 
             private float TriggerStateLastFrame
             {
@@ -539,7 +539,7 @@ namespace SonOfRobin
                 {
                     // TriggerStateLastFrameExists should always be checked first
 
-                    int lastFrameNo = SonOfRobinGame.currentUpdate - 1;
+                    int lastFrameNo = SonOfRobinGame.CurrentUpdate - 1;
                     return triggerStateForFrame[lastFrameNo];
                 }
             }
@@ -613,8 +613,8 @@ namespace SonOfRobin
                 if (triggerStateLastFrameExists) triggerStateLastFrame = this.TriggerStateLastFrame;
 
                 this.triggerStateForFrame.Clear();
-                if (triggerStateLastFrameExists) this.triggerStateForFrame[SonOfRobinGame.currentUpdate - 1] = triggerStateLastFrame;
-                this.triggerStateForFrame[SonOfRobinGame.currentUpdate] = triggerVal;
+                if (triggerStateLastFrameExists) this.triggerStateForFrame[SonOfRobinGame.CurrentUpdate - 1] = triggerStateLastFrame;
+                this.triggerStateForFrame[SonOfRobinGame.CurrentUpdate] = triggerVal;
             }
 
             private bool UpdateAndCheckButtonRepeat()
@@ -623,13 +623,13 @@ namespace SonOfRobin
 
                 if (this.IsPressed(triggerAsButton: true))
                 {
-                    if (SonOfRobinGame.currentUpdate > this.buttonHeldCurrentFrame)
+                    if (SonOfRobinGame.CurrentUpdate > this.buttonHeldCurrentFrame)
                     {
                         // there should be no "frame gap" when holding the button
-                        if (SonOfRobinGame.currentUpdate == this.buttonHeldCurrentFrame + 1) this.buttonHeldCounter++;
+                        if (SonOfRobinGame.CurrentUpdate == this.buttonHeldCurrentFrame + 1) this.buttonHeldCounter++;
                         else this.buttonHeldCounter = 0;
 
-                        this.buttonHeldCurrentFrame = SonOfRobinGame.currentUpdate;
+                        this.buttonHeldCurrentFrame = SonOfRobinGame.CurrentUpdate;
                     }
                 }
                 else return false;

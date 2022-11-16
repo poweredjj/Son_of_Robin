@@ -54,7 +54,7 @@ namespace SonOfRobin
             this.viewParams = scene.viewParams;
             this.startDelay = startDelay;
             this.cycleDelay = cycleDelay;
-            this.cycleStartFrame = storeForLaterUse ? -1 : SonOfRobinGame.currentUpdate + this.startDelay + this.cycleDelay;
+            this.cycleStartFrame = storeForLaterUse ? -1 : SonOfRobinGame.CurrentUpdate + this.startDelay + this.cycleDelay;
             this.cycleMultiplier = cycleMultiplier;
             this.sameAsSourceCount = 0;
             this.outTrans = outTrans; // true: moving "out" of base param, false: moving back in direction of base param
@@ -102,7 +102,7 @@ namespace SonOfRobin
 
         private void UpdateEndFrame()
         {
-            this.endFrame = SonOfRobinGame.currentUpdate + this.Duration;
+            this.endFrame = SonOfRobinGame.CurrentUpdate + this.Duration;
         }
 
         private float ComputeStageTransform(float inputValue)
@@ -125,11 +125,11 @@ namespace SonOfRobin
 
         public void Update()
         {
-            if (this.cycleStartFrame == -1) this.cycleStartFrame = SonOfRobinGame.currentUpdate + this.startDelay + this.cycleDelay;
-            if (SonOfRobinGame.currentUpdate < this.cycleStartFrame) return;
-            if (SonOfRobinGame.currentUpdate == this.cycleStartFrame) this.UpdateEndFrame();
+            if (this.cycleStartFrame == -1) this.cycleStartFrame = SonOfRobinGame.CurrentUpdate + this.startDelay + this.cycleDelay;
+            if (SonOfRobinGame.CurrentUpdate < this.cycleStartFrame) return;
+            if (SonOfRobinGame.CurrentUpdate == this.cycleStartFrame) this.UpdateEndFrame();
 
-            float antiTransStage = ((float)this.endFrame - (float)SonOfRobinGame.currentUpdate) / (float)this.Duration;
+            float antiTransStage = ((float)this.endFrame - (float)SonOfRobinGame.CurrentUpdate) / (float)this.Duration;
             antiTransStage = Math.Max(antiTransStage, 0f);
             if (!this.outTrans) antiTransStage = 1f - antiTransStage;
 
@@ -139,7 +139,7 @@ namespace SonOfRobin
             float targetValue = (this.SourceVal * antiTransStage) + (this.TargetVal * this.ComputeStageTransform(transStage));
             Helpers.SetProperty(targetObj: this.viewParams, propertyName: this.drawParamName, newValue: targetValue);
 
-            if (SonOfRobinGame.currentUpdate >= this.endFrame) this.StartNextCycle();
+            if (SonOfRobinGame.CurrentUpdate >= this.endFrame) this.StartNextCycle();
         }
 
         private void StartNextCycle()
@@ -150,7 +150,7 @@ namespace SonOfRobin
                 if (!sceneInputActive) return;
             }
 
-            this.cycleStartFrame = SonOfRobinGame.currentUpdate + this.cycleDelay + 1;
+            this.cycleStartFrame = SonOfRobinGame.CurrentUpdate + this.cycleDelay + 1;
 
             bool repeat;
 

@@ -127,7 +127,7 @@ namespace SonOfRobin
                 }
             }
 
-            Texture2D texture = new Texture2D(SonOfRobinGame.graphicsDevice, width, height);
+            Texture2D texture = new Texture2D(SonOfRobinGame.GfxDev, width, height);
             texture.SetData(colorArray);
             return texture;
         }

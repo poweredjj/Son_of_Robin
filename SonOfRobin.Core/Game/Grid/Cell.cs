@@ -244,10 +244,10 @@ namespace SonOfRobin
                 ExtBoardProps.Name name = kvp.Key;
                 Color color = kvp.Value;
 
-                if (this.grid.CheckIfContainsExtPropertyForCell(name: name, value: true, cellNoX: this.cellNoX, cellNoY: this.cellNoY)) SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, this.rect, SonOfRobinGame.whiteRectangle.Bounds, color * 0.4f);
+                if (this.grid.CheckIfContainsExtPropertyForCell(name: name, value: true, cellNoX: this.cellNoX, cellNoY: this.cellNoY)) SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, this.rect, SonOfRobinGame.WhiteRectangle.Bounds, color * 0.4f);
             }
 
-            SpriteFont font = SonOfRobinGame.fontPressStart2P5;
+            SpriteFont font = SonOfRobinGame.FontPressStart2P5;
 
             foreach (Sprite sprite in this.spriteGroups[groupName].Values)
             {
@@ -264,13 +264,13 @@ namespace SonOfRobin
         {
             if (this.boardGraphics.Texture != null)
             {
-                SonOfRobinGame.spriteBatch.Draw(this.boardGraphics.Texture, this.rect, this.boardGraphics.Texture.Bounds, Color.White * opacity);
+                SonOfRobinGame.SpriteBatch.Draw(this.boardGraphics.Texture, this.rect, this.boardGraphics.Texture.Bounds, Color.White * opacity);
             }
             else
             {
                 if (drawSimulation)
                 {
-                    SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, this.rect, SonOfRobinGame.whiteRectangle.Bounds, this.boardGraphics.TextureSimulationColor * opacity);
+                    SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, this.rect, SonOfRobinGame.WhiteRectangle.Bounds, this.boardGraphics.TextureSimulationColor * opacity);
                 }
             }
         }

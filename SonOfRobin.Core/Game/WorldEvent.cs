@@ -22,7 +22,7 @@ namespace SonOfRobin
             this.world = world;
             this.boardPiece = boardPiece;
             delay = Math.Max(delay, 0);
-            this.startUpdateNo = this.world.currentUpdate + delay;
+            this.startUpdateNo = this.world.CurrentUpdate + delay;
 
             this.AddToQueue();
 
@@ -63,7 +63,7 @@ namespace SonOfRobin
             }
 
             int startUpdateNo = (int)eventData["startUpdateNo"];
-            int delay = Math.Max(startUpdateNo - world.currentUpdate, 0);
+            int delay = Math.Max(startUpdateNo - world.CurrentUpdate, 0);
             Object eventHelper = eventData["eventHelper"];
 
             new WorldEvent(eventName: eventName, world: world, delay: delay, boardPiece: boardPiece, eventHelper: eventHelper);
@@ -89,7 +89,7 @@ namespace SonOfRobin
 
         public static void ProcessQueue(World world)
         {
-            var framesToProcess = world.eventQueue.Keys.Where(frameNo => world.currentUpdate >= frameNo).ToList();
+            var framesToProcess = world.eventQueue.Keys.Where(frameNo => world.CurrentUpdate >= frameNo).ToList();
             if (framesToProcess.Count == 0) return;
 
             foreach (int frameNo in framesToProcess)

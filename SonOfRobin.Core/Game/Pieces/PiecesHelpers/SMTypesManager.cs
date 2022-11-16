@@ -138,7 +138,7 @@ namespace SonOfRobin
             Type type = boardPiece.GetType();
 
             if (this.enabledTypesEveryFrame.Contains(type)) return true;
-            if (this.nthFrameMultiplier != 0 && this.world.currentUpdate % this.nthFrameMultiplier == 0) return this.enabledTypesNthFrame.Contains(type);
+            if (this.nthFrameMultiplier != 0 && this.world.CurrentUpdate % this.nthFrameMultiplier == 0) return this.enabledTypesNthFrame.Contains(type);
 
             return false;
         }

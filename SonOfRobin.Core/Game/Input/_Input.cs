@@ -19,7 +19,7 @@ namespace SonOfRobin
             set
             {
                 globalInputActive = value;
-                if (!value) globalInputReactivateUpdate = SonOfRobinGame.currentUpdate + 600;
+                if (!value) globalInputReactivateUpdate = SonOfRobinGame.CurrentUpdate + 600;
             }
         }
 
@@ -44,7 +44,7 @@ namespace SonOfRobin
 
         private static void RefreshTipsType()
         {
-            if (SonOfRobinGame.currentUpdate % 12 != 0) return;
+            if (SonOfRobinGame.CurrentUpdate % 12 != 0) return;
 
             ControlType prevControlType = currentControlType;
 
@@ -99,7 +99,7 @@ namespace SonOfRobin
             // globalInputActive should only be turned off temporarily 
 
             if (GlobalInputActive) return;
-            if (SonOfRobinGame.currentUpdate >= globalInputReactivateUpdate)
+            if (SonOfRobinGame.CurrentUpdate >= globalInputReactivateUpdate)
             {
                 GlobalInputActive = true;
                 MessageLog.AddMessage(msgType: MsgType.Debug, message: "GlobalInputActive had to be restored.", color: Color.White);

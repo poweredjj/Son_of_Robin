@@ -141,7 +141,7 @@ namespace SonOfRobin
             energyAmount *= this.efficiency;
             int massGained = Math.Max(Convert.ToInt32(energyAmount / 4), 1);
 
-            if (this.world.currentUpdate >= this.regenCooldown) this.hitPoints = Math.Min(this.hitPoints + (energyAmount / 3), this.maxHitPoints);
+            if (this.world.CurrentUpdate >= this.regenCooldown) this.hitPoints = Math.Min(this.hitPoints + (energyAmount / 3), this.maxHitPoints);
             this.fedLevel = Math.Min(this.fedLevel + Convert.ToInt16(energyAmount * 2), this.maxFedLevel);
             this.stamina = Math.Min(this.stamina + 1, this.maxStamina);
 
@@ -175,12 +175,12 @@ namespace SonOfRobin
 
         private void UpdateAttackCooldown()
         {
-            this.attackCooldown = this.world.currentUpdate + 20;
+            this.attackCooldown = this.world.CurrentUpdate + 20;
         }
 
         public void UpdateRegenCooldown()
         {
-            this.regenCooldown = this.world.currentUpdate + (60 * 60);
+            this.regenCooldown = this.world.CurrentUpdate + (60 * 60);
         }
 
         public override void SM_AnimalAssessSituation()
@@ -497,7 +497,7 @@ namespace SonOfRobin
                 return;
             }
 
-            if (this.world.currentUpdate < this.attackCooldown) return;
+            if (this.world.CurrentUpdate < this.attackCooldown) return;
             this.UpdateAttackCooldown();
 
             float targetSpeed;

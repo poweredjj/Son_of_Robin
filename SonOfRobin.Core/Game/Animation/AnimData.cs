@@ -18,7 +18,7 @@ namespace SonOfRobin
 
             foreach (string gfxName in gfxNames)
             {
-                SonOfRobinGame.textureByName[gfxName] = SonOfRobinGame.content.Load<Texture2D>($"gfx/{gfxName}");
+                SonOfRobinGame.textureByName[gfxName] = SonOfRobinGame.ContentMgr.Load<Texture2D>($"gfx/{gfxName}");
             }
 
             SonOfRobinGame.lightSphere = SonOfRobinGame.textureByName["light_white"];

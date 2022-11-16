@@ -7,7 +7,7 @@ namespace SonOfRobin
         private readonly Vector4 fgColor;
         private readonly Vector4 bgColor;
 
-        public SketchInstance(Color fgColor, Color bgColor, int framesLeft = 1, int priority = 1) : base(effect: SonOfRobinGame.effectSketch, framesLeft: framesLeft, priority: priority)
+        public SketchInstance(Color fgColor, Color bgColor, int framesLeft = 1, int priority = 1) : base(effect: SonOfRobinGame.EffectSketch, framesLeft: framesLeft, priority: priority)
         {
             this.fgColor = fgColor.ToVector4();
             this.bgColor = bgColor.ToVector4();

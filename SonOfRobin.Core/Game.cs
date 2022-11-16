@@ -10,42 +10,41 @@ using Xamarin.Essentials;
 
 namespace SonOfRobin
 {
-    public enum Platform { Desktop, Mobile }
-    public enum OS { Windows, Linux, OSX, Android, iOS }
+    public enum Platform
+    { Desktop, Mobile }
+
+    public enum OS
+    { Windows, Linux, OSX, Android, iOS }
 
     public class SonOfRobinGame : Game
     {
         public static readonly float version = 9.6f;
         public static readonly DateTime lastChanged = new DateTime(2022, 11, 16);
+        public static ContentManager ContentMgr { get; private set; }
+        public static Game Game { get; private set; }
 
-        public static ContentManager content;
-
-        public static Game game;
         public static Platform platform;
         public static OS os;
-        public static bool fakeMobileMode = false;
-
-        public static GraphicsDeviceManager graphics;
-        public static GraphicsDevice graphicsDevice;
-        public static SpriteBatch spriteBatch;
-        public static Effect effectColorize;
-        public static Effect effectBorder;
-        public static Effect effectSketch;
-
-        public static InfoWindow hintWindow;
-        public static InfoWindow progressBar;
-        public static ControlTips controlTips;
+        public static readonly bool fakeMobileMode = false;
+        public static GraphicsDeviceManager GfxDevMgr { get; private set; }
+        public static GraphicsDevice GfxDev { get; private set; }
+        public static SpriteBatch SpriteBatch { get; private set; }
+        public static Effect EffectColorize { get; private set; }
+        public static Effect EffectBorder { get; private set; }
+        public static Effect EffectSketch { get; private set; }
+        public static InfoWindow HintWindow { get; private set; }
+        public static InfoWindow ProgressBar { get; private set; }
+        public static ControlTips ControlTips { get; private set; }
         public static TouchOverlay touchOverlay;
         public static FpsCounter fpsCounter;
+        public static SpriteFont FontPixelMix5 { get; private set; }
+        public static SpriteFont FontPressStart2P5 { get; private set; }
+        public static SpriteFont FontFreeSansBold12 { get; private set; }
+        public static SpriteFont FontFreeSansBold24 { get; private set; }
+        public static SpriteFont FontTommy20 { get; private set; }
+        public static SpriteFont FontTommy40 { get; private set; }
+        public static Texture2D WhiteRectangle { get; private set; }
 
-        public static SpriteFont fontPixelMix5;
-        public static SpriteFont fontPressStart2P5;
-        public static SpriteFont fontFreeSansBold12;
-        public static SpriteFont fontFreeSansBold24;
-        public static SpriteFont fontTommy20;
-        public static SpriteFont fontTommy40;
-
-        public static Texture2D whiteRectangle;
         public static Texture2D splashScreenTexture;
         public static List<RenderTarget2D> tempShadowMaskList;
         public static Texture2D lightSphere;
@@ -53,27 +52,29 @@ namespace SonOfRobin
 
         public static readonly SimpleFps fps = new SimpleFps();
         public static readonly Random random = new Random();
-
-        public static bool initialLoadingFinished = false;
-        public static int currentUpdate = 0;
-        public static float lastUpdateDelay = 0;
-        public static float lastDrawDelay = 0;
+        public static int CurrentUpdate { get; private set; }
+        public static float LastUpdateDelay { get; private set; }
+        public static float LastDrawDelay { get; private set; }
 
         public static string gameDataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "SonOfRobin_data");
         public static string worldTemplatesPath = Path.Combine(gameDataPath, "world_templates");
         public static string saveGamesPath = Path.Combine(gameDataPath, "savegames");
         public static string prefsPath = Path.Combine(gameDataPath, "preferences.bin");
 
-        public static bool ThisIsWorkMachine { get { return gameDataPath.Contains("msmidowi"); } }
+        public static bool ThisIsWorkMachine
+        { get { return gameDataPath.Contains("msmidowi"); } }
 
         public static bool quitGame = false;
 
         public static readonly int initialWindowWidth = ThisIsWorkMachine ? 700 : 1280;
         public static readonly int initialWindowHeight = ThisIsWorkMachine ? 250 : 720;
-        public static int VirtualWidth { get { return Convert.ToInt32(graphics.PreferredBackBufferWidth / Preferences.GlobalScale); } }
-        public static int VirtualHeight { get { return Convert.ToInt32(graphics.PreferredBackBufferHeight / Preferences.GlobalScale); } }
+        public static int VirtualWidth
+        { get { return Convert.ToInt32(GfxDevMgr.PreferredBackBufferWidth / Preferences.GlobalScale); } }
+        public static int VirtualHeight
+        { get { return Convert.ToInt32(GfxDevMgr.PreferredBackBufferHeight / Preferences.GlobalScale); } }
 
         public static PerformanceCounter ramCounter = new PerformanceCounter("Memory", "Available MBytes"); // THIS LINE MUST BE COMMENTED OUT WHEN COMPILING FOR ANDROID AND LINUX
+
         public static bool DesktopMemoryLow
         {
             get
@@ -82,27 +83,30 @@ namespace SonOfRobin
                 return false; // for compatibility with mobile
             }
         }
-        public static bool LicenceValid { get { return DateTime.Now - lastChanged < TimeSpan.FromDays(90) || overrideLicence; } }
-        public static bool overrideLicence = false;
+
+        public static bool LicenceValid
+        { get { return DateTime.Now - lastChanged < TimeSpan.FromDays(90); } }
 
         public static bool KeepScreenOn
         { set { if (platform == Platform.Mobile && !fakeMobileMode) DeviceDisplay.KeepScreenOn = value; } }
+
         public SonOfRobinGame()
         {
-            graphics = new GraphicsDeviceManager(this);
+            GfxDevMgr = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
         }
+
         protected override void Initialize()
         {
             if (fakeMobileMode) platform = Platform.Mobile;
 
             base.Initialize();
-            game = this;
+            Game = this;
 
-            whiteRectangle = new Texture2D(GraphicsDevice, 1, 1);
-            whiteRectangle.SetData(new[] { Color.White });
+            WhiteRectangle = new Texture2D(base.GraphicsDevice, 1, 1);
+            WhiteRectangle.SetData(new[] { Color.White });
 
-            splashScreenTexture = content.Load<Texture2D>("gfx/loading_gfx");
+            splashScreenTexture = ContentMgr.Load<Texture2D>("gfx/loading_gfx");
 
             if (!Directory.Exists(gameDataPath)) Directory.CreateDirectory(gameDataPath);
             if (!Directory.Exists(worldTemplatesPath)) Directory.CreateDirectory(worldTemplatesPath);
@@ -113,31 +117,31 @@ namespace SonOfRobin
 
             if (Preferences.FullScreenMode)
             {
-                graphics.IsFullScreen = true;
+                GfxDevMgr.IsFullScreen = true;
                 IsMouseVisible = Preferences.MouseGesturesEmulateTouch;
             }
             else
             {
-                graphics.IsFullScreen = false;
+                GfxDevMgr.IsFullScreen = false;
                 IsMouseVisible = true;
             }
 
-            graphicsDevice = GraphicsDevice;
+            GfxDev = base.GraphicsDevice;
             Preferences.CheckIfResolutionIsSupported();
 
             if (Preferences.FullScreenMode)
             {
-                graphics.PreferredBackBufferWidth = Preferences.displayResX;
-                graphics.PreferredBackBufferHeight = Preferences.displayResY;
+                GfxDevMgr.PreferredBackBufferWidth = Preferences.displayResX;
+                GfxDevMgr.PreferredBackBufferHeight = Preferences.displayResY;
             }
             else
             {
-                graphics.PreferredBackBufferWidth = initialWindowWidth;
-                graphics.PreferredBackBufferHeight = initialWindowHeight;
+                GfxDevMgr.PreferredBackBufferWidth = initialWindowWidth;
+                GfxDevMgr.PreferredBackBufferHeight = initialWindowHeight;
             }
 
-            graphics.SynchronizeWithVerticalRetrace = Preferences.VSync;
-            graphics.ApplyChanges();
+            GfxDevMgr.SynchronizeWithVerticalRetrace = Preferences.VSync;
+            GfxDevMgr.ApplyChanges();
 
             if (ThisIsWorkMachine) this.Window.Position = new Point(-10, 758); // THIS LINE MUST BE COMMENTED OUT WHEN COMPILING FOR ANDROID
             this.Window.AllowUserResizing = true;
@@ -152,39 +156,64 @@ namespace SonOfRobin
 
         public void OnResize(Object sender, EventArgs e)
         {
-            graphics.PreferredBackBufferWidth = Window.ClientBounds.Width < 100 ? 100 : Window.ClientBounds.Width;
-            graphics.PreferredBackBufferHeight = Window.ClientBounds.Height < 100 ? 100 : Window.ClientBounds.Height;
+            GfxDevMgr.PreferredBackBufferWidth = Window.ClientBounds.Width < 100 ? 100 : Window.ClientBounds.Width;
+            GfxDevMgr.PreferredBackBufferHeight = Window.ClientBounds.Height < 100 ? 100 : Window.ClientBounds.Height;
 
             Scene.ScheduleAllScenesResize();
         }
 
         protected override void LoadContent()
         {
-            spriteBatch = new SpriteBatch(GraphicsDevice);
-            content = Content;
+            SpriteBatch = new SpriteBatch(base.GraphicsDevice);
+            ContentMgr = Content;
 
-            fontPressStart2P5 = content.Load<SpriteFont>("fonts/PressStart2P"); // needed for InitialLoader
+            FontPressStart2P5 = ContentMgr.Load<SpriteFont>("fonts/PressStart2P"); // needed for InitialLoader
         }
 
         public static void LoadFonts()
         {
-            fontPixelMix5 = content.Load<SpriteFont>("fonts/PixelMix");
-            fontFreeSansBold12 = content.Load<SpriteFont>("fonts/FreeSansBold12");
-            fontFreeSansBold24 = content.Load<SpriteFont>("fonts/FreeSansBold24");
-            fontTommy20 = content.Load<SpriteFont>("fonts/Tommy20");
-            fontTommy40 = content.Load<SpriteFont>("fonts/Tommy40");
+            FontPixelMix5 = ContentMgr.Load<SpriteFont>("fonts/PixelMix");
+            FontFreeSansBold12 = ContentMgr.Load<SpriteFont>("fonts/FreeSansBold12");
+            FontFreeSansBold24 = ContentMgr.Load<SpriteFont>("fonts/FreeSansBold24");
+            FontTommy20 = ContentMgr.Load<SpriteFont>("fonts/Tommy20");
+            FontTommy40 = ContentMgr.Load<SpriteFont>("fonts/Tommy40");
         }
+
+        public static void LoadEffects()
+        {
+            EffectColorize = ContentMgr.Load<Effect>("effects/Colorize");
+            EffectBorder = ContentMgr.Load<Effect>("effects/Border");
+            EffectSketch = ContentMgr.Load<Effect>("effects/Sketch");
+        }
+
+        public static void CreateHintAndProgressWindows()
+        {
+            HintWindow = new InfoWindow(bgColor: Color.RoyalBlue, bgOpacity: 0.85f);
+            ProgressBar = new InfoWindow(bgColor: Color.SeaGreen, bgOpacity: 0.85f);
+        }
+
+        public static void CreateControlTips()
+        {
+            ControlTips = new ControlTips();
+        }
+
+        public static void CurrentUpdateAdvance()
+        {
+            // using outside Update() loop can potentially lead to glitches
+            CurrentUpdate++;
+        }
+
         protected override void Update(GameTime gameTime)
         {
-            currentUpdate++;
-            lastUpdateDelay = gameTime.ElapsedGameTime.Milliseconds;
+            CurrentUpdateAdvance();
+            LastUpdateDelay = gameTime.ElapsedGameTime.Milliseconds;
 
             Scene.AllScenesInStackUpdate(gameTime: gameTime);
 
             base.Update(gameTime);
             fps.Update(gameTime);
 
-            if (lastUpdateDelay >= 20 && IsFixedTimeStep) MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Update delay {lastUpdateDelay}ms.", color: Color.Orange);
+            if (LastUpdateDelay >= 20 && IsFixedTimeStep) MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Update delay {LastUpdateDelay}ms.", color: Color.Orange);
 
             if (quitGame)
             {
@@ -196,7 +225,7 @@ namespace SonOfRobin
 
         protected override void Draw(GameTime gameTime)
         {
-            lastDrawDelay = gameTime.ElapsedGameTime.Milliseconds;
+            LastDrawDelay = gameTime.ElapsedGameTime.Milliseconds;
 
             SoundInstanceManager.CleanUpActiveInstances();
             Sound.UpdateAll();
@@ -205,8 +234,7 @@ namespace SonOfRobin
             base.Draw(gameTime);
 
             fps.UpdateFpsCounter();
-            if (lastDrawDelay >= 20 && IsFixedTimeStep) MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Draw delay {lastDrawDelay}ms.", color: Color.Orange);
+            if (LastDrawDelay >= 20 && IsFixedTimeStep) MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Draw delay {LastDrawDelay}ms.", color: Color.Orange);
         }
-
     }
 }

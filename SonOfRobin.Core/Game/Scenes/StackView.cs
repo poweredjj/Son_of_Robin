@@ -9,7 +9,7 @@ namespace SonOfRobin
 {
     public class StackView : Scene
     {
-        private static readonly SpriteFont font = SonOfRobinGame.fontPressStart2P5;
+        private static readonly SpriteFont font = SonOfRobinGame.FontPressStart2P5;
         private static readonly int margin = 3;
 
         private static List<Scene> DisplayedStack

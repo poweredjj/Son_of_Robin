@@ -38,13 +38,13 @@ namespace SonOfRobin
         public InitialLoader() : base(inputType: InputTypes.None, priority: 0, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty, alwaysUpdates: true)
         {
             this.currentStep = 0;
-            this.font = SonOfRobinGame.fontPressStart2P5;
+            this.font = SonOfRobinGame.FontPressStart2P5;
             this.splashScreenTexture = SonOfRobinGame.splashScreenTexture;
         }
 
         public override void Update(GameTime gameTime)
         {
-            SonOfRobinGame.game.IsFixedTimeStep = false; // if turned on, some screen updates will be missing
+            SonOfRobinGame.Game.IsFixedTimeStep = false; // if turned on, some screen updates will be missing
             bool finish = false;
 
             switch (this.currentStep)
@@ -53,9 +53,7 @@ namespace SonOfRobin
                     break;
 
                 case Step.LoadEffects:
-                    SonOfRobinGame.effectColorize = SonOfRobinGame.content.Load<Effect>("effects/Colorize");
-                    SonOfRobinGame.effectBorder = SonOfRobinGame.content.Load<Effect>("effects/Border");
-                    SonOfRobinGame.effectSketch = SonOfRobinGame.content.Load<Effect>("effects/Sketch");
+                    SonOfRobinGame.LoadEffects();
                     break;
 
                 case Step.LoadFonts:
@@ -63,7 +61,7 @@ namespace SonOfRobin
                     break;
 
                 case Step.CreateControlTips:
-                    SonOfRobinGame.controlTips = new ControlTips();
+                    SonOfRobinGame.CreateControlTips();
                     break;
 
                 case Step.LoadSounds:
@@ -89,8 +87,7 @@ namespace SonOfRobin
                     solidColor.MoveToBottom();
                     new MessageLog();
                     Preferences.DebugMode = Preferences.DebugMode; // to create debugMode scenes
-                    SonOfRobinGame.hintWindow = new InfoWindow(bgColor: Color.RoyalBlue, bgOpacity: 0.85f);
-                    SonOfRobinGame.progressBar = new InfoWindow(bgColor: Color.SeaGreen, bgOpacity: 0.85f);
+                    SonOfRobinGame.CreateHintAndProgressWindows();
                     break;
 
                 case Step.MakeItemsInfo:
@@ -113,7 +110,7 @@ namespace SonOfRobin
                             demoWorld.Update(gameTime: gameTime);
 
                             if (!demoWorld.WorldCreationInProgress && !demoWorld.PiecesCreationInProgress) break;
-                            else SonOfRobinGame.currentUpdate++; // manually changing the counter, to avoid softlock
+                            else SonOfRobinGame.CurrentUpdateAdvance(); // manually changing the counter, to avoid softlock
                         }
                     }
 
@@ -124,7 +121,7 @@ namespace SonOfRobin
                     break;
 
                 case Step.OpenMainMenu:
-                    if (Preferences.FrameSkip) SonOfRobinGame.game.IsFixedTimeStep = true;
+                    if (Preferences.FrameSkip) SonOfRobinGame.Game.IsFixedTimeStep = true;
 
                     if (SonOfRobinGame.LicenceValid)
                     {
@@ -149,7 +146,6 @@ namespace SonOfRobin
 
             if (finish)
             {
-                SonOfRobinGame.initialLoadingFinished = true;
                 this.Remove();
                 GC.Collect();
             }
@@ -157,7 +153,7 @@ namespace SonOfRobin
 
         public override void Draw()
         {
-            SonOfRobinGame.graphicsDevice.Clear(Color.DarkBlue);
+            SonOfRobinGame.GfxDev.Clear(Color.DarkBlue);
 
             Rectangle splashRect = new Rectangle(x: 0, y: -SonOfRobinGame.VirtualHeight / 8, width: SonOfRobinGame.VirtualWidth, height: SonOfRobinGame.VirtualHeight);
             splashRect.Inflate(-(int)(SonOfRobinGame.VirtualWidth * 0.42), -(int)(SonOfRobinGame.VirtualHeight * 0.42));
@@ -170,7 +166,7 @@ namespace SonOfRobin
             int textPosX = (int)((SonOfRobinGame.VirtualWidth / 2) - (textSize.X / 2));
             int textPosY = (int)(SonOfRobinGame.VirtualHeight * 0.75);
 
-            SonOfRobinGame.spriteBatch.DrawString(this.font, text, position: new Vector2(textPosX, textPosY), color: Color.White, origin: Vector2.Zero, scale: 1, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
+            SonOfRobinGame.SpriteBatch.DrawString(this.font, text, position: new Vector2(textPosX, textPosY), color: Color.White, origin: Vector2.Zero, scale: 1, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
 
             int progressBarFullLength = (int)(SonOfRobinGame.VirtualWidth * 0.8f);
             int progressBarCurrentLength = (int)(progressBarFullLength * ((float)this.currentStep / (float)allStepsCount));
@@ -181,8 +177,8 @@ namespace SonOfRobin
             Rectangle progressBarFullRect = new Rectangle(x: barPosX, y: barPosY, width: progressBarFullLength, height: (int)(textSize.Y * 3));
             Rectangle progressBarFilledRect = new Rectangle(x: barPosX, y: barPosY, width: progressBarCurrentLength, height: progressBarFullRect.Height);
 
-            SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, progressBarFullRect, Color.White * 0.5f);
-            SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, progressBarFilledRect, Color.White * 1f);
+            SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, progressBarFullRect, Color.White * 0.5f);
+            SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, progressBarFilledRect, Color.White * 1f);
         }
 
     }

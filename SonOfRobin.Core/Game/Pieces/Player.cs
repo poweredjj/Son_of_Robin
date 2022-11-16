@@ -521,7 +521,7 @@ namespace SonOfRobin
 
         public override void SM_PlayerControlledWalking()
         {
-            if (this.world.currentUpdate % 121 == 0) this.world.hintEngine.CheckForPieceHintToShow();
+            if (this.world.CurrentUpdate % 121 == 0) this.world.hintEngine.CheckForPieceHintToShow();
 
             this.ExpendEnergy(0.1f);
             if (!this.Walk()) this.Stamina = Math.Min(this.Stamina + 1, this.maxStamina);
@@ -664,7 +664,7 @@ namespace SonOfRobin
         private void CheckGround()
         {
             // adding and removing heat
-            if (this.world.currentUpdate % 65 == 0)
+            if (this.world.CurrentUpdate % 65 == 0)
             {
                 if (this.world.islandClock.CurrentPartOfDay == IslandClock.PartOfDay.Noon)
                 {
@@ -830,14 +830,14 @@ namespace SonOfRobin
             if (this.sleepMode == SleepMode.WaitIndefinitely) sleepModeText = "Waiting indefinitely...";
 
             this.sleepEngine.Execute(player: this);
-            if (this.world.currentUpdate % 10 == 0) SonOfRobinGame.progressBar.TurnOn(curVal: (int)(this.MaxFatigue - this.Fatigue), maxVal: (int)this.MaxFatigue, text: sleepModeText);
+            if (this.world.CurrentUpdate % 10 == 0) SonOfRobinGame.ProgressBar.TurnOn(curVal: (int)(this.MaxFatigue - this.Fatigue), maxVal: (int)this.MaxFatigue, text: sleepModeText);
         }
 
         public void GoToSleep(SleepEngine sleepEngine, Vector2 zzzPos, List<BuffEngine.Buff> wakeUpBuffs)
         {
-            if (this.world.currentUpdate < this.wentToSleepFrame + 60) return; // to prevent going to sleep with max fatigue and with attacking enemies around
+            if (this.world.CurrentUpdate < this.wentToSleepFrame + 60) return; // to prevent going to sleep with max fatigue and with attacking enemies around
 
-            this.wentToSleepFrame = this.world.currentUpdate;
+            this.wentToSleepFrame = this.world.CurrentUpdate;
             this.sleepingInsideShelter = !sleepEngine.canBeAttacked;
             this.sleepMode = SleepMode.Sleep;
             this.sleepEngine = sleepEngine;
@@ -867,7 +867,7 @@ namespace SonOfRobin
                 return;
             }
 
-            SonOfRobinGame.progressBar.TurnOff();
+            SonOfRobinGame.ProgressBar.TurnOff();
 
             foreach (BuffEngine.Buff buff in this.buffList)
             { this.buffEngine.AddBuff(buff: buff, world: this.world); }
@@ -885,7 +885,7 @@ namespace SonOfRobin
             this.sleepMode = SleepMode.Awake;
 
             world.updateMultiplier = 1;
-            SonOfRobinGame.game.IsFixedTimeStep = Preferences.FrameSkip;
+            SonOfRobinGame.Game.IsFixedTimeStep = Preferences.FrameSkip;
             Scheduler.RemoveAllTasksOfName(Scheduler.TaskName.TempoFastForward); // to prevent fast forward, when waking up before this task was executed
 
             MessageLog.AddMessage(msgType: MsgType.Debug, message: "Waking up.");

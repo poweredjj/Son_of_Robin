@@ -45,7 +45,7 @@ namespace SonOfRobin
 
         public override void SM_ScarePredatorsAway()
         {
-            if (this.world.currentUpdate % 60 != 0) return;
+            if (this.world.CurrentUpdate % 60 != 0) return;
 
             var nearbyPieces = this.world.grid.GetPiecesWithinDistance(groupName: Cell.Group.ColMovement, mainSprite: this.sprite, distance: 700, compareWithBottom: true);
             var predatorPieces = nearbyPieces.Where(piece => PieceInfo.GetInfo(piece.name).isCarnivorous);
@@ -63,7 +63,7 @@ namespace SonOfRobin
 
         public override void SM_MapMarkerShowAndCheck()
         {
-            if (this.world.currentUpdate % 10 != 0) return;
+            if (this.world.CurrentUpdate % 10 != 0) return;
 
             if (!this.world.player.buffEngine.HasBuff(BuffEngine.BuffType.EnableMap) ||
                 !this.world.map.CheckIfPlayerCanReadTheMap(showMessage: false) ||

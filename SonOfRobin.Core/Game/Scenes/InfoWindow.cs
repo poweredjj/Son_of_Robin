@@ -72,7 +72,7 @@ namespace SonOfRobin
             }
         }
 
-        private static readonly SpriteFont font = SonOfRobinGame.fontTommy40;
+        private static readonly SpriteFont font = SonOfRobinGame.FontTommy40;
 
         private static readonly float maxWindowWidthPercent = 0.35f;
         private static readonly float maxWindowHeightPercent = 0.7f;
@@ -337,7 +337,7 @@ namespace SonOfRobin
             Rectangle bgRect = this.BgRect;
             int margin = this.Margin;
 
-            SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, bgRect, this.bgColor * this.bgOpacity * this.viewParams.drawOpacity);
+            SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, bgRect, this.bgColor * this.bgOpacity * this.viewParams.drawOpacity);
             Helpers.DrawRectangleOutline(rect: bgRect, color: Color.White * this.viewParams.drawOpacity, borderWidth: 2);
 
             float globalScale = this.GlobalScale;
@@ -378,11 +378,11 @@ namespace SonOfRobin
                 {
                     int currentBarWidth = (int)(realEntrySize.X * ((float)entry.progressCurrentVal / (float)entry.progressMaxVal));
 
-                    SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, new Rectangle((int)textPos.X, (int)textPos.Y,
+                    SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, new Rectangle((int)textPos.X, (int)textPos.Y,
                         (int)realEntrySize.X, (int)(entry.Height * globalScale)),
                         entry.color * this.viewParams.drawOpacity * 0.4f);
 
-                    SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, new Rectangle((int)textPos.X, (int)textPos.Y,
+                    SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, new Rectangle((int)textPos.X, (int)textPos.Y,
                     currentBarWidth, (int)(entry.Height * globalScale)),
                     entry.color * this.viewParams.drawOpacity);
                 }

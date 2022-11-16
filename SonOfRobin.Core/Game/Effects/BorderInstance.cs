@@ -7,7 +7,7 @@ namespace SonOfRobin
         private readonly Vector3 outlineColor;
         private readonly Vector2 textureSize;
 
-        public BorderInstance(Color outlineColor, Vector2 textureSize, int framesLeft = 1, int priority = 1) : base(effect: SonOfRobinGame.effectBorder, framesLeft: framesLeft, priority: priority)
+        public BorderInstance(Color outlineColor, Vector2 textureSize, int framesLeft = 1, int priority = 1) : base(effect: SonOfRobinGame.EffectBorder, framesLeft: framesLeft, priority: priority)
         {
             this.outlineColor = outlineColor.ToVector3();
             this.textureSize = textureSize;

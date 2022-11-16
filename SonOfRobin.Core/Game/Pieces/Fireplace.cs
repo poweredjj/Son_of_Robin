@@ -119,7 +119,7 @@ namespace SonOfRobin
                 return false;
             }
 
-            if (!this.IsOn) this.burnStartFrame = this.world.currentUpdate;
+            if (!this.IsOn) this.burnStartFrame = this.world.CurrentUpdate;
 
             BoardPiece fuel = storedFuel[0];
             storedFuel.RemoveAt(0);
@@ -138,7 +138,7 @@ namespace SonOfRobin
 
         private void UpdateEndFrame(List<BoardPiece> storedFuel)
         {
-            this.burnAllFuelEndFrame = this.world.currentUpdate + this.currentCycleBurningFramesLeft;
+            this.burnAllFuelEndFrame = this.world.CurrentUpdate + this.currentCycleBurningFramesLeft;
             foreach (BoardPiece fuelPiece in storedFuel)
             {
                 this.burnAllFuelEndFrame += fuelFramesByName[fuelPiece.name];
@@ -157,7 +157,7 @@ namespace SonOfRobin
                 return;
             }
 
-            if (this.world.currentUpdate % 10 != 0) return;
+            if (this.world.CurrentUpdate % 10 != 0) return;
             this.UpdateEndFrame();
 
             var nearbyPieces = this.world.grid.GetPiecesWithinDistance(groupName: Cell.Group.ColMovement, mainSprite: this.sprite, distance: this.scareRange, compareWithBottom: true);
@@ -178,10 +178,10 @@ namespace SonOfRobin
 
         public override void DrawStatBar()
         {
-            if (this.world.currentUpdate < this.burnAllFuelEndFrame)
+            if (this.world.CurrentUpdate < this.burnAllFuelEndFrame)
             {
                 int burningDuration = this.burnAllFuelEndFrame - this.burnStartFrame;
-                int burningCurrentFrame = burningDuration - (this.world.currentUpdate - this.burnStartFrame);
+                int burningCurrentFrame = burningDuration - (this.world.CurrentUpdate - this.burnStartFrame);
 
                 new StatBar(label: "", value: burningCurrentFrame, valueMax: burningDuration, colorMin: new Color(255, 0, 0), colorMax: new Color(255, 255, 0), posX: this.sprite.gfxRect.Center.X, posY: this.sprite.gfxRect.Bottom, ignoreIfAtMax: false, texture: AnimData.framesForPkgs[AnimData.PkgName.WoodLogRegular].texture);
             }

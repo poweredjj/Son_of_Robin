@@ -19,7 +19,7 @@ namespace SonOfRobin
         public List<Tutorials.Type> shownTutorials = new List<Tutorials.Type> { };
         public readonly World world;
         private int waitUntilFrame;
-        public bool WaitFrameReached { get { return this.world.currentUpdate >= this.waitUntilFrame; } }
+        public bool WaitFrameReached { get { return this.world.CurrentUpdate >= this.waitUntilFrame; } }
 
         public HintEngine(World world)
         {
@@ -49,7 +49,7 @@ namespace SonOfRobin
         }
 
         public void UpdateWaitFrame()
-        { this.waitUntilFrame = this.world.currentUpdate + hintDelay; }
+        { this.waitUntilFrame = this.world.CurrentUpdate + hintDelay; }
 
         public bool ShowGeneralHint(Type type, bool ignoreDelay = false, string text = "", Texture2D texture = null, BoardPiece piece = null)
         {

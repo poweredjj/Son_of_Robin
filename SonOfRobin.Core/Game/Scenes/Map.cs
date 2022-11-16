@@ -88,10 +88,10 @@ namespace SonOfRobin
             if (force || this.lowResWholeTerrainGfx == null || this.lowResWholeTerrainGfx.Width != this.viewParams.Width || this.lowResWholeTerrainGfx.Height != this.viewParams.Height)
             {
                 if (this.lowResWholeTerrainGfx != null) this.lowResWholeTerrainGfx.Dispose();
-                this.lowResWholeTerrainGfx = new RenderTarget2D(SonOfRobinGame.graphicsDevice, this.viewParams.Width, this.viewParams.Height, false, SurfaceFormat.Color, DepthFormat.None);
+                this.lowResWholeTerrainGfx = new RenderTarget2D(SonOfRobinGame.GfxDev, this.viewParams.Width, this.viewParams.Height, false, SurfaceFormat.Color, DepthFormat.None);
                 if (this.FinalMapToDisplay != null) this.FinalMapToDisplay.Dispose();
 
-                this.FinalMapToDisplay = new RenderTarget2D(SonOfRobinGame.graphicsDevice, SonOfRobinGame.VirtualWidth, SonOfRobinGame.VirtualHeight, false, SurfaceFormat.Color, DepthFormat.None);
+                this.FinalMapToDisplay = new RenderTarget2D(SonOfRobinGame.GfxDev, SonOfRobinGame.VirtualWidth, SonOfRobinGame.VirtualHeight, false, SurfaceFormat.Color, DepthFormat.None);
 
                 this.dirtyBackground = true;
                 this.dirtyFog = true;
@@ -106,23 +106,23 @@ namespace SonOfRobin
             {
                 this.SetViewParamsForMiniature();
 
-                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{SonOfRobinGame.currentUpdate} updating map background (fullscreen {this.FullScreen})");
+                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{SonOfRobinGame.CurrentUpdate} updating map background (fullscreen {this.FullScreen})");
 
                 SetRenderTarget(this.lowResWholeTerrainGfx);
-                SonOfRobinGame.spriteBatch.Begin(transformMatrix: this.TransformMatrix);
+                SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
 
                 int width = (int)(this.world.width * this.scaleMultiplier);
                 int height = (int)(this.world.height * this.scaleMultiplier);
 
                 Texture2D mapTexture = BoardGraphics.CreateEntireMapTexture(grid: this.world.grid, width: width, height: height, multiplier: this.scaleMultiplier);
                 Rectangle sourceRectangle = new Rectangle(0, 0, width, height);
-                SonOfRobinGame.spriteBatch.Draw(mapTexture, sourceRectangle, sourceRectangle, Color.White);
+                SonOfRobinGame.SpriteBatch.Draw(mapTexture, sourceRectangle, sourceRectangle, Color.White);
 
-                SonOfRobinGame.spriteBatch.End();
+                SonOfRobinGame.SpriteBatch.End();
 
                 this.dirtyBackground = false;
                 this.dirtyFog = true;
-                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{SonOfRobinGame.currentUpdate} map background updated ({this.viewParams.Width}x{this.viewParams.Height}).", color: Color.White);
+                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{SonOfRobinGame.CurrentUpdate} map background updated ({this.viewParams.Width}x{this.viewParams.Height}).", color: Color.White);
             }
 
             this.UpdateCombinedGfx();
@@ -134,17 +134,17 @@ namespace SonOfRobin
 
             this.SetViewParamsForMiniature();
 
-            MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{SonOfRobinGame.currentUpdate} updating map fog (fullscreen {this.FullScreen})");
+            MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{SonOfRobinGame.CurrentUpdate} updating map fog (fullscreen {this.FullScreen})");
 
             if (this.lowResWholeCombinedGfx == null || this.lowResWholeCombinedGfx.Width != this.viewParams.Width || this.lowResWholeCombinedGfx.Height != this.viewParams.Height)
             {
                 if (this.lowResWholeCombinedGfx != null) this.lowResWholeCombinedGfx.Dispose();
-                this.lowResWholeCombinedGfx = new RenderTarget2D(SonOfRobinGame.graphicsDevice, this.viewParams.Width, this.viewParams.Height, false, SurfaceFormat.Color, DepthFormat.None);
+                this.lowResWholeCombinedGfx = new RenderTarget2D(SonOfRobinGame.GfxDev, this.viewParams.Width, this.viewParams.Height, false, SurfaceFormat.Color, DepthFormat.None);
             }
 
             SetRenderTarget(this.lowResWholeCombinedGfx);
-            SonOfRobinGame.spriteBatch.Begin(transformMatrix: this.TransformMatrix);
-            SonOfRobinGame.graphicsDevice.Clear(Color.Transparent);
+            SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
+            SonOfRobinGame.GfxDev.Clear(Color.Transparent);
 
             int cellWidth = this.world.grid.allCells[0].width;
             int cellHeight = this.world.grid.allCells[0].height;
@@ -159,10 +159,10 @@ namespace SonOfRobin
                     destCellWidth,
                     destCellHeight);
 
-                SonOfRobinGame.spriteBatch.Draw(this.lowResWholeTerrainGfx, srcDestRect, srcDestRect, Color.White);
+                SonOfRobinGame.SpriteBatch.Draw(this.lowResWholeTerrainGfx, srcDestRect, srcDestRect, Color.White);
             }
 
-            SonOfRobinGame.spriteBatch.End();
+            SonOfRobinGame.SpriteBatch.End();
 
             this.dirtyFog = false;
         }
@@ -371,7 +371,7 @@ namespace SonOfRobin
 
         public override void RenderToTarget()
         {
-            if (this.Mode == MapMode.Off || (this.Mode == MapMode.Mini && SonOfRobinGame.currentUpdate % 2 != 0)) return;
+            if (this.Mode == MapMode.Off || (this.Mode == MapMode.Mini && SonOfRobinGame.CurrentUpdate % 2 != 0)) return;
 
             this.UpdateBackground();
 
@@ -380,19 +380,19 @@ namespace SonOfRobin
 
             // filling with water color
 
-            SonOfRobinGame.spriteBatch.Begin(transformMatrix: this.TransformMatrix);
-            SonOfRobinGame.graphicsDevice.Clear(BoardGraphics.colorsByName[BoardGraphics.Colors.WaterDeep]);
+            SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
+            SonOfRobinGame.GfxDev.Clear(BoardGraphics.colorsByName[BoardGraphics.Colors.WaterDeep]);
 
             // drawing paper map background texture
 
             Rectangle extendedMapRect = this.worldRect;
             extendedMapRect.Inflate(extendedMapRect.Width * 0.1f, extendedMapRect.Height * 0.1f);
 
-            SonOfRobinGame.spriteBatch.Draw(AnimData.framesForPkgs[AnimData.PkgName.Map].texture, extendedMapRect, Color.White);
+            SonOfRobinGame.SpriteBatch.Draw(AnimData.framesForPkgs[AnimData.PkgName.Map].texture, extendedMapRect, Color.White);
 
             // drawing background 
 
-            this.effectCol.TurnOnNextEffect(scene: this, currentUpdateToUse: SonOfRobinGame.currentUpdate);
+            this.effectCol.TurnOnNextEffect(scene: this, currentUpdateToUse: SonOfRobinGame.CurrentUpdate);
 
             float showDetailedMapAtZoom = (float)SonOfRobinGame.VirtualWidth / (float)this.world.width * 1.4f;
             bool showDetailedMap = this.camera.CurrentZoom >= showDetailedMapAtZoom;
@@ -423,7 +423,7 @@ namespace SonOfRobin
                 }
             }
 
-            if (!showDetailedMap || foundCellsWithMissingTextures) SonOfRobinGame.spriteBatch.Draw(this.lowResWholeCombinedGfx, this.worldRect, Color.White);
+            if (!showDetailedMap || foundCellsWithMissingTextures) SonOfRobinGame.SpriteBatch.Draw(this.lowResWholeCombinedGfx, this.worldRect, Color.White);
 
             if (showDetailedMap)
             {
@@ -496,7 +496,7 @@ namespace SonOfRobin
 
             // drawing map edges over everything
 
-            SonOfRobinGame.spriteBatch.Draw(AnimData.framesForPkgs[AnimData.PkgName.MapEdges].texture, extendedMapRect, Color.White);
+            SonOfRobinGame.SpriteBatch.Draw(AnimData.framesForPkgs[AnimData.PkgName.MapEdges].texture, extendedMapRect, Color.White);
 
             // drawing crosshair
 
@@ -510,7 +510,7 @@ namespace SonOfRobin
                 crosshairFrame.DrawAndKeepInRectBounds(destBoundsRect: crosshairRect, color: Color.White);
             }
 
-            SonOfRobinGame.spriteBatch.End();
+            SonOfRobinGame.SpriteBatch.End();
         }
 
         public override void Draw()

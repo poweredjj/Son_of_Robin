@@ -89,8 +89,8 @@ namespace SonOfRobin
         {
             get
             {
-                SpriteFont font = SonOfRobinGame.fontTommy40;
-                if (font == null) font = SonOfRobinGame.fontPressStart2P5;
+                SpriteFont font = SonOfRobinGame.FontTommy40;
+                if (font == null) font = SonOfRobinGame.FontPressStart2P5;
 
                 return font;
             }
@@ -109,13 +109,13 @@ namespace SonOfRobin
             }
         }
 
-        private bool JustCreated { get { return this.frameCreated == SonOfRobinGame.currentUpdate; } }
+        private bool JustCreated { get { return this.frameCreated == SonOfRobinGame.CurrentUpdate; } }
 
         public VirtButton(VButName name, string label, float posX0to1, float posY0to1, float width0to1, float height0to1, Color bgColorPressed, Color bgColorReleased, Color textColor, bool switchButton = false, bool hidden = false,
             Object activeCoupledObj = null, string activeCoupledVarName = "",
             bool isHighlighted = true, string highlightCoupledVarName = null, Object highlightCoupledObj = null, bool checksTouchFromPrevLayout = false)
         {
-            this.frameCreated = SonOfRobinGame.currentUpdate;
+            this.frameCreated = SonOfRobinGame.CurrentUpdate;
             this.checksTouchFromPrevLayout = checksTouchFromPrevLayout;
 
             this.label = label;
@@ -272,11 +272,11 @@ namespace SonOfRobin
             if (this.IsActive)
             {
                 Rectangle srcRectPressed = new Rectangle(0, 0, this.texturePressed.Width, this.texturePressed.Height);
-                SonOfRobinGame.spriteBatch.Draw(this.texturePressed, gfxRect, srcRectPressed, this.bgColorPressed * opacityMultiplier);
+                SonOfRobinGame.SpriteBatch.Draw(this.texturePressed, gfxRect, srcRectPressed, this.bgColorPressed * opacityMultiplier);
             }
 
             Rectangle srcRectReleased = new Rectangle(0, 0, this.textureReleased.Width, this.textureReleased.Height);
-            SonOfRobinGame.spriteBatch.Draw(this.textureReleased, gfxRect, srcRectReleased, this.bgColorReleased * opacityMultiplier);
+            SonOfRobinGame.SpriteBatch.Draw(this.textureReleased, gfxRect, srcRectReleased, this.bgColorReleased * opacityMultiplier);
 
             Rectangle wholeLabelRect = gfxRect;
             wholeLabelRect.Inflate(-wholeLabelRect.Width * 0.08f, -wholeLabelRect.Height * 0.2f);

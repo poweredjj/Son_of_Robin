@@ -119,7 +119,7 @@ namespace SonOfRobin
 
             if (this.cooldown > 0 && !ignoreCooldown)
             {
-                int currentUpdate = this.boardPiece == null || this.Ignore3D ? SonOfRobinGame.currentUpdate : this.boardPiece.world.currentUpdate;
+                int currentUpdate = this.boardPiece == null || this.Ignore3D ? SonOfRobinGame.CurrentUpdate : this.boardPiece.world.CurrentUpdate;
 
                 if (currentUpdate < this.lastFramePlayed + cooldown) return;
                 this.lastFramePlayed = currentUpdate;

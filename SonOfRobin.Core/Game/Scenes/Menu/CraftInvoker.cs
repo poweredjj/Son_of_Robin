@@ -68,7 +68,7 @@ namespace SonOfRobin
             this.GetOpacity(active: active);
             float opacityFade = this.OpacityFade;
             Rectangle outerEntryRect = this.Rect;
-            if (active || opacityFade > 0) SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, outerEntryRect, this.rectColor * opacityFade * 2);
+            if (active || opacityFade > 0) SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, outerEntryRect, this.rectColor * opacityFade * 2);
 
             float innerMargin = outerEntryRect.Height * 0.1f;
             Rectangle innerEntryRect = new Rectangle(outerEntryRect.X + (int)innerMargin, outerEntryRect.Y + (int)innerMargin, outerEntryRect.Width - (int)(innerMargin * 2), outerEntryRect.Height - (int)(innerMargin * 2));
@@ -145,7 +145,7 @@ namespace SonOfRobin
 
                 bgColorOpacity = drawParams.isMain ? 0.7f : 0.35f;
 
-                SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, pieceRect, drawParams.bgColor * bgColorOpacity * this.menu.viewParams.drawOpacity);
+                SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, pieceRect, drawParams.bgColor * bgColorOpacity * this.menu.viewParams.drawOpacity);
 
                 //Helpers.DrawRectangleOutline(rect: pieceRect, color: Color.YellowGreen, borderWidth: 2); // testing rect size
                 this.DrawFrameAndText(frame: drawParams.frame, cellRect: pieceRect, gfxCol: Color.White, txtCol: Color.White, text: drawParams.text);
@@ -238,7 +238,7 @@ namespace SonOfRobin
                 containingRect.Center.X - (textSize.X / 2 * textScale),
                 containingRect.Center.Y - (textSize.Y / 2 * textScale));
 
-            SonOfRobinGame.spriteBatch.DrawString(font, text, position: textPos, color: txtCol * menu.viewParams.Opacity, origin: Vector2.Zero, scale: textScale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
+            SonOfRobinGame.SpriteBatch.DrawString(font, text, position: textPos, color: txtCol * menu.viewParams.Opacity, origin: Vector2.Zero, scale: textScale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
         }
 
     }

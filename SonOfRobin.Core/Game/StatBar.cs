@@ -10,8 +10,8 @@ namespace SonOfRobin
         private static readonly List<StatBar> barsToDraw = new List<StatBar> { };
         private static int currentBatchCount = 0;
 
-        private static readonly SpriteFont defaultFont = SonOfRobinGame.fontPixelMix5;
-        private static SpriteFont currentBatchFont = SonOfRobinGame.fontPixelMix5;
+        private static readonly SpriteFont defaultFont = SonOfRobinGame.FontPixelMix5;
+        private static SpriteFont currentBatchFont = SonOfRobinGame.FontPixelMix5;
         private readonly SpriteFont font;
         private readonly Color color;
 
@@ -115,12 +115,12 @@ namespace SonOfRobin
         private void DrawTxt()
         {
             if (this.texture != null) return;
-            SonOfRobinGame.spriteBatch.DrawString(font, this.label, this.labelPos, Color.White);
+            SonOfRobinGame.SpriteBatch.DrawString(font, this.label, this.labelPos, Color.White);
         }
 
         private void DrawBarOutline()
         {
-            SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, new Rectangle(this.posX - 1, this.posY - 1, this.fullWidth + 2, this.fullHeight + 2), Color.Black);
+            SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, new Rectangle(this.posX - 1, this.posY - 1, this.fullWidth + 2, this.fullHeight + 2), Color.Black);
         }
 
         private void DrawTexture()
@@ -138,7 +138,7 @@ namespace SonOfRobin
 
         private void DrawBar()
         {
-            SonOfRobinGame.spriteBatch.Draw(SonOfRobinGame.whiteRectangle, new Rectangle(this.posX, this.posY, this.valueWidth, this.fullHeight), this.color);
+            SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, new Rectangle(this.posX, this.posY, this.valueWidth, this.fullHeight), this.color);
         }
 
         public static void DrawAll()

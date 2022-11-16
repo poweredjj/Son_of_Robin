@@ -37,9 +37,9 @@ namespace SonOfRobin
 
         public static void ProcessQueue()
         {
-            if (SonOfRobinGame.currentUpdate >= inputTurnedOffUntilFrame) Input.GlobalInputActive = true;
+            if (SonOfRobinGame.CurrentUpdate >= inputTurnedOffUntilFrame) Input.GlobalInputActive = true;
 
-            var framesToProcess = queue.Keys.Where(frameNo => SonOfRobinGame.currentUpdate >= frameNo).ToList();
+            var framesToProcess = queue.Keys.Where(frameNo => SonOfRobinGame.CurrentUpdate >= frameNo).ToList();
             if (framesToProcess.Count == 0) return;
 
             foreach (int frameNo in framesToProcess)
@@ -91,7 +91,7 @@ namespace SonOfRobin
 
                 if (!storeForLaterUse)
                 {
-                    this.frame = SonOfRobinGame.currentUpdate + this.delay;
+                    this.frame = SonOfRobinGame.CurrentUpdate + this.delay;
 
                     if (this.turnOffInputUntilExecution) this.TurnOffInput();
 
@@ -121,7 +121,7 @@ namespace SonOfRobin
                 //  MessageLog.AddMessage(msgType: MsgType.User, message: $"Adding to queue '{this.taskName}' - delay {this.delay}.", color: Color.White); // for testing
 
                 if (this.turnOffInputUntilExecution) this.TurnOffInput();
-                if (this.frame == -1) this.frame = SonOfRobinGame.currentUpdate + this.delay;
+                if (this.frame == -1) this.frame = SonOfRobinGame.CurrentUpdate + this.delay;
                 if (!queue.ContainsKey(this.frame)) queue[this.frame] = new List<Task>();
                 queue[this.frame].Add(this);
             }
@@ -845,7 +845,7 @@ namespace SonOfRobin
                             world = World.GetTopWorld();
                             if (world == null || world.demoMode) return;
 
-                            if (Preferences.FrameSkip) SonOfRobinGame.game.IsFixedTimeStep = true;
+                            if (Preferences.FrameSkip) SonOfRobinGame.Game.IsFixedTimeStep = true;
 
                             // world.updateMultiplier = 0 is not used here, to allow for playing ambient sounds
 
@@ -862,7 +862,7 @@ namespace SonOfRobin
                             world = World.GetTopWorld();
                             if (world == null || world.demoMode) return;
 
-                            if (Preferences.FrameSkip) SonOfRobinGame.game.IsFixedTimeStep = true;
+                            if (Preferences.FrameSkip) SonOfRobinGame.Game.IsFixedTimeStep = true;
 
                             world.updateMultiplier = 1;
                             world.stateMachineTypesManager.DisableMultiplier();
@@ -877,7 +877,7 @@ namespace SonOfRobin
                             world = World.GetTopWorld();
                             if (world == null) return;
 
-                            SonOfRobinGame.game.IsFixedTimeStep = false;
+                            SonOfRobinGame.Game.IsFixedTimeStep = false;
 
                             world.updateMultiplier = (int)this.ExecuteHelper;
                             world.stateMachineTypesManager.DisableMultiplier();
@@ -1179,7 +1179,7 @@ namespace SonOfRobin
                                 this.ExecuteHelper = new Dictionary<string, Object> { { "pathsToDelete", pathsToDelete }, { "pathCount", pathsToDelete.Count } };
                             }
 
-                            SonOfRobinGame.game.IsFixedTimeStep = false;
+                            SonOfRobinGame.Game.IsFixedTimeStep = false;
 
                             deleteData = (Dictionary<string, Object>)this.ExecuteHelper;
                             pathsToDelete = (List<string>)deleteData["pathsToDelete"];
@@ -1187,7 +1187,7 @@ namespace SonOfRobin
 
                             string currentPath = pathsToDelete[0];
 
-                            SonOfRobinGame.progressBar.TurnOn(curVal: pathCount - pathsToDelete.Count + 1, maxVal: pathCount, text: $"Deleting templates...\n{Path.GetFileName(currentPath)}", addTransition: false, turnOffInput: true);
+                            SonOfRobinGame.ProgressBar.TurnOn(curVal: pathCount - pathsToDelete.Count + 1, maxVal: pathCount, text: $"Deleting templates...\n{Path.GetFileName(currentPath)}", addTransition: false, turnOffInput: true);
 
                             if (!firstRun)
                             {
@@ -1198,8 +1198,8 @@ namespace SonOfRobin
 
                             if (pathsToDelete.Count == 0)
                             {
-                                if (Preferences.FrameSkip) SonOfRobinGame.game.IsFixedTimeStep = true;
-                                SonOfRobinGame.progressBar.TurnOff();
+                                if (Preferences.FrameSkip) SonOfRobinGame.Game.IsFixedTimeStep = true;
+                                SonOfRobinGame.ProgressBar.TurnOff();
                                 return;
                             }
 

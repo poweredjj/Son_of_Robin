@@ -165,8 +165,8 @@ namespace SonOfRobin
                 if (mouseGesturesEmulateTouch == value) return;
                 mouseGesturesEmulateTouch = value;
 
-                if (mouseGesturesEmulateTouch) SonOfRobinGame.game.IsMouseVisible = true;
-                if (!mouseGesturesEmulateTouch && FullScreenMode) SonOfRobinGame.game.IsMouseVisible = false;
+                if (mouseGesturesEmulateTouch) SonOfRobinGame.Game.IsMouseVisible = true;
+                if (!mouseGesturesEmulateTouch && FullScreenMode) SonOfRobinGame.Game.IsMouseVisible = false;
 
                 TouchInput.SetEmulationByMouse();
             }
@@ -427,7 +427,7 @@ namespace SonOfRobin
             set
             {
                 frameSkip = value;
-                SonOfRobinGame.game.IsFixedTimeStep = value;
+                SonOfRobinGame.Game.IsFixedTimeStep = value;
             }
         }
 
@@ -479,7 +479,7 @@ namespace SonOfRobin
 
             if (SonOfRobinGame.platform == Platform.Mobile)
             {
-                if (SonOfRobinGame.graphics.PreferredBackBufferWidth > 1500) globalScale = 2f;
+                if (SonOfRobinGame.GfxDevMgr.PreferredBackBufferWidth > 1500) globalScale = 2f;
 
                 menuScale = 1.5f;
                 showControlTips = false;
@@ -651,7 +651,7 @@ namespace SonOfRobin
         public static void CheckIfResolutionIsSupported()
         {
             bool resolutionSupported = false;
-            foreach (var displayMode in SonOfRobinGame.graphicsDevice.Adapter.SupportedDisplayModes)
+            foreach (var displayMode in SonOfRobinGame.GfxDev.Adapter.SupportedDisplayModes)
             {
                 if (displayMode.Width == displayResX && displayMode.Height == displayResY)
                 {
@@ -662,8 +662,8 @@ namespace SonOfRobin
 
             if (!resolutionSupported)
             {
-                displayResX = SonOfRobinGame.graphicsDevice.Adapter.CurrentDisplayMode.Width;
-                displayResY = SonOfRobinGame.graphicsDevice.Adapter.CurrentDisplayMode.Height;
+                displayResX = SonOfRobinGame.GfxDev.Adapter.CurrentDisplayMode.Width;
+                displayResY = SonOfRobinGame.GfxDev.Adapter.CurrentDisplayMode.Height;
             }
         }
 

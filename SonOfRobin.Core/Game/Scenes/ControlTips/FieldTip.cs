@@ -45,7 +45,7 @@ namespace SonOfRobin
             this.targetOpacity = 1f;
 
             this.alignment = alignment;
-            this.lastFrameActive = this.world.currentUpdate;
+            this.lastFrameActive = this.world.CurrentUpdate;
 
             this.targetSprite = targetSprite;
             this.currentPos = this.targetPos;
@@ -58,7 +58,7 @@ namespace SonOfRobin
         private void Update(Sprite targetSprite, Alignment alignment)
         {
             this.alignment = alignment;
-            this.lastFrameActive = world.currentUpdate;
+            this.lastFrameActive = world.CurrentUpdate;
 
             this.targetSprite = targetSprite;
             if (this.currentOpacity == 0f) this.currentPos = this.targetPos;
@@ -95,8 +95,8 @@ namespace SonOfRobin
 
             if (Preferences.ShowControlTips && Preferences.showFieldControlTips)
             {
-                SonOfRobinGame.spriteBatch.End();
-                SonOfRobinGame.spriteBatch.Begin(transformMatrix: world.TransformMatrix);
+                SonOfRobinGame.SpriteBatch.End();
+                SonOfRobinGame.SpriteBatch.Begin(transformMatrix: world.TransformMatrix);
 
                 foreach (FieldTip fieldTip in tipsDict.Values.ToList())
                 {
@@ -118,7 +118,7 @@ namespace SonOfRobin
             this.targetPos = this.CalculatePosition();
             this.MoveIfObstructsPlayerOrOtherTip();
 
-            if (this.world.currentUpdate - this.lastFrameActive > maxInactiveDuration) this.targetOpacity = 0f;
+            if (this.world.CurrentUpdate - this.lastFrameActive > maxInactiveDuration) this.targetOpacity = 0f;
             else this.ChangeOpacityIfObstructsTarget();
 
             if (this.teleportToTarget)
@@ -138,7 +138,7 @@ namespace SonOfRobin
             // drawing button hint
 
             Rectangle destRect = this.CalculateDestRect(this.currentPos);
-            SonOfRobinGame.spriteBatch.Draw(this.texture, this.CalculateDestRect(this.currentPos), this.textureSourceRect, Color.White * this.currentOpacity);
+            SonOfRobinGame.SpriteBatch.Draw(this.texture, this.CalculateDestRect(this.currentPos), this.textureSourceRect, Color.White * this.currentOpacity);
 
             // drawing piece name label
 
@@ -160,7 +160,7 @@ namespace SonOfRobin
 
                 Rectangle pieceNameRect = new Rectangle(x: destRect.X + ((destRect.Width - textWidth) / 2), y: textPosY, width: textWidth, height: textHeight);
 
-                Helpers.DrawTextInsideRectWithShadow(font: SonOfRobinGame.fontTommy40, text: this.targetSprite.boardPiece.readableName.Replace(" ", "\n"), rectangle: pieceNameRect, color: Color.White * textOpacity, shadowColor: Color.Black * textOpacity, alignX: Helpers.AlignX.Center, alignY: topSide ? Helpers.AlignY.Bottom : Helpers.AlignY.Top, shadowOffset: 1, drawTestRect: false);
+                Helpers.DrawTextInsideRectWithShadow(font: SonOfRobinGame.FontTommy40, text: this.targetSprite.boardPiece.readableName.Replace(" ", "\n"), rectangle: pieceNameRect, color: Color.White * textOpacity, shadowColor: Color.Black * textOpacity, alignX: Helpers.AlignX.Center, alignY: topSide ? Helpers.AlignY.Bottom : Helpers.AlignY.Top, shadowOffset: 1, drawTestRect: false);
             }
         }
 

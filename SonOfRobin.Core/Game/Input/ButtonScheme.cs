@@ -9,7 +9,7 @@ namespace SonOfRobin
 
         private static Type currentType;
 
-        public static readonly Texture2D plus = SonOfRobinGame.content.Load<Texture2D>("gfx/plus"); // for buttons that need to be pressed together
+        public static readonly Texture2D plus = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/plus"); // for buttons that need to be pressed together
 
         public static Texture2D buttonA;
         public static Texture2D buttonB;
@@ -55,29 +55,29 @@ namespace SonOfRobin
             switch (currentType)
             {
                 case Type.M:
-                    buttonA = SonOfRobinGame.content.Load<Texture2D>("gfx/Xbox 360/360_A");
-                    buttonB = SonOfRobinGame.content.Load<Texture2D>("gfx/Xbox 360/360_B");
-                    buttonX = SonOfRobinGame.content.Load<Texture2D>("gfx/Xbox 360/360_X");
-                    buttonY = SonOfRobinGame.content.Load<Texture2D>("gfx/Xbox 360/360_Y");
+                    buttonA = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/Xbox 360/360_A");
+                    buttonB = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/Xbox 360/360_B");
+                    buttonX = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/Xbox 360/360_X");
+                    buttonY = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/Xbox 360/360_Y");
 
-                    buttonBack = SonOfRobinGame.content.Load<Texture2D>("gfx/Xbox 360/360_Back");
-                    buttonStart = SonOfRobinGame.content.Load<Texture2D>("gfx/Xbox 360/360_Start");
+                    buttonBack = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/Xbox 360/360_Back");
+                    buttonStart = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/Xbox 360/360_Start");
 
-                    dpad = SonOfRobinGame.content.Load<Texture2D>("gfx/Xbox 360/360_Dpad");
-                    dpadDown = SonOfRobinGame.content.Load<Texture2D>("gfx/Xbox 360/360_Dpad_Down");
-                    dpadUp = SonOfRobinGame.content.Load<Texture2D>("gfx/Xbox 360/360_Dpad_Up");
-                    dpadLeft = SonOfRobinGame.content.Load<Texture2D>("gfx/Xbox 360/360_Dpad_Left");
-                    dpadRight = SonOfRobinGame.content.Load<Texture2D>("gfx/Xbox 360/360_Dpad_Right");
+                    dpad = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/Xbox 360/360_Dpad");
+                    dpadDown = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/Xbox 360/360_Dpad_Down");
+                    dpadUp = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/Xbox 360/360_Dpad_Up");
+                    dpadLeft = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/Xbox 360/360_Dpad_Left");
+                    dpadRight = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/Xbox 360/360_Dpad_Right");
 
-                    buttonLB = SonOfRobinGame.content.Load<Texture2D>("gfx/Xbox 360/360_LB");
-                    buttonRB = SonOfRobinGame.content.Load<Texture2D>("gfx/Xbox 360/360_RB");
-                    buttonLT = SonOfRobinGame.content.Load<Texture2D>("gfx/Xbox 360/360_LT");
-                    buttonRT = SonOfRobinGame.content.Load<Texture2D>("gfx/Xbox 360/360_RT");
+                    buttonLB = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/Xbox 360/360_LB");
+                    buttonRB = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/Xbox 360/360_RB");
+                    buttonLT = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/Xbox 360/360_LT");
+                    buttonRT = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/Xbox 360/360_RT");
 
-                    leftStick = SonOfRobinGame.content.Load<Texture2D>("gfx/Xbox 360/360_Left_Stick");
-                    rightStick = SonOfRobinGame.content.Load<Texture2D>("gfx/Xbox 360/360_Right_Stick");
-                    leftStickClick = SonOfRobinGame.content.Load<Texture2D>("gfx/Xbox 360/360_Left_Stick_Click");
-                    rightStickClick = SonOfRobinGame.content.Load<Texture2D>("gfx/Xbox 360/360_Right_Stick_Click");
+                    leftStick = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/Xbox 360/360_Left_Stick");
+                    rightStick = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/Xbox 360/360_Right_Stick");
+                    leftStickClick = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/Xbox 360/360_Left_Stick_Click");
+                    rightStickClick = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/Xbox 360/360_Right_Stick_Click");
 
                     buttonNameA = "A";
                     buttonNameB = "B";
@@ -94,29 +94,29 @@ namespace SonOfRobin
 
                 case Type.S:
 
-                    buttonA = SonOfRobinGame.content.Load<Texture2D>("gfx/PS4/PS4_Cross");
-                    buttonB = SonOfRobinGame.content.Load<Texture2D>("gfx/PS4/PS4_Circle");
-                    buttonX = SonOfRobinGame.content.Load<Texture2D>("gfx/PS4/PS4_Square");
-                    buttonY = SonOfRobinGame.content.Load<Texture2D>("gfx/PS4/PS4_Triangle");
+                    buttonA = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/PS4/PS4_Cross");
+                    buttonB = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/PS4/PS4_Circle");
+                    buttonX = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/PS4/PS4_Square");
+                    buttonY = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/PS4/PS4_Triangle");
 
-                    buttonBack = SonOfRobinGame.content.Load<Texture2D>("gfx/PS4/PS4_Share"); // TODO check if this mapping is correct
-                    buttonStart = SonOfRobinGame.content.Load<Texture2D>("gfx/PS4/PS4_Options");
+                    buttonBack = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/PS4/PS4_Share"); // TODO check if this mapping is correct
+                    buttonStart = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/PS4/PS4_Options");
 
-                    dpad = SonOfRobinGame.content.Load<Texture2D>("gfx/PS4/PS4_Dpad");
-                    dpadDown = SonOfRobinGame.content.Load<Texture2D>("gfx/PS4/PS4_Dpad_Down");
-                    dpadUp = SonOfRobinGame.content.Load<Texture2D>("gfx/PS4/PS4_Dpad_Up");
-                    dpadLeft = SonOfRobinGame.content.Load<Texture2D>("gfx/PS4/PS4_Dpad_Left");
-                    dpadRight = SonOfRobinGame.content.Load<Texture2D>("gfx/PS4/PS4_Dpad_Right");
+                    dpad = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/PS4/PS4_Dpad");
+                    dpadDown = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/PS4/PS4_Dpad_Down");
+                    dpadUp = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/PS4/PS4_Dpad_Up");
+                    dpadLeft = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/PS4/PS4_Dpad_Left");
+                    dpadRight = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/PS4/PS4_Dpad_Right");
 
-                    buttonLB = SonOfRobinGame.content.Load<Texture2D>("gfx/PS4/PS4_L1");
-                    buttonRB = SonOfRobinGame.content.Load<Texture2D>("gfx/PS4/PS4_R1");
-                    buttonLT = SonOfRobinGame.content.Load<Texture2D>("gfx/PS4/PS4_L2");
-                    buttonRT = SonOfRobinGame.content.Load<Texture2D>("gfx/PS4/PS4_R2");
+                    buttonLB = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/PS4/PS4_L1");
+                    buttonRB = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/PS4/PS4_R1");
+                    buttonLT = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/PS4/PS4_L2");
+                    buttonRT = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/PS4/PS4_R2");
 
-                    leftStick = SonOfRobinGame.content.Load<Texture2D>("gfx/PS4/PS4_Left_Stick");
-                    rightStick = SonOfRobinGame.content.Load<Texture2D>("gfx/PS4/PS4_Right_Stick");
-                    leftStickClick = SonOfRobinGame.content.Load<Texture2D>("gfx/PS4/PS4_Left_Stick_Click");
-                    rightStickClick = SonOfRobinGame.content.Load<Texture2D>("gfx/PS4/PS4_Right_Stick_Click");
+                    leftStick = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/PS4/PS4_Left_Stick");
+                    rightStick = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/PS4/PS4_Right_Stick");
+                    leftStickClick = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/PS4/PS4_Left_Stick_Click");
+                    rightStickClick = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/PS4/PS4_Right_Stick_Click");
 
                     buttonNameA = "cross";
                     buttonNameB = "circle";
@@ -132,29 +132,29 @@ namespace SonOfRobin
                     break;
 
                 case Type.N:
-                    buttonA = SonOfRobinGame.content.Load<Texture2D>("gfx/Switch/Switch_B");
-                    buttonB = SonOfRobinGame.content.Load<Texture2D>("gfx/Switch/Switch_A");
-                    buttonX = SonOfRobinGame.content.Load<Texture2D>("gfx/Switch/Switch_Y");
-                    buttonY = SonOfRobinGame.content.Load<Texture2D>("gfx/Switch/Switch_X");
+                    buttonA = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/Switch/Switch_B");
+                    buttonB = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/Switch/Switch_A");
+                    buttonX = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/Switch/Switch_Y");
+                    buttonY = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/Switch/Switch_X");
 
-                    buttonBack = SonOfRobinGame.content.Load<Texture2D>("gfx/Switch/Switch_Minus");
-                    buttonStart = SonOfRobinGame.content.Load<Texture2D>("gfx/Switch/Switch_Plus");
+                    buttonBack = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/Switch/Switch_Minus");
+                    buttonStart = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/Switch/Switch_Plus");
 
-                    dpad = SonOfRobinGame.content.Load<Texture2D>("gfx/Switch/Switch_Dpad");
-                    dpadDown = SonOfRobinGame.content.Load<Texture2D>("gfx/Switch/Switch_Dpad_Down");
-                    dpadUp = SonOfRobinGame.content.Load<Texture2D>("gfx/Switch/Switch_Dpad_Up");
-                    dpadLeft = SonOfRobinGame.content.Load<Texture2D>("gfx/Switch/Switch_Dpad_Left");
-                    dpadRight = SonOfRobinGame.content.Load<Texture2D>("gfx/Switch/Switch_Dpad_Right");
+                    dpad = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/Switch/Switch_Dpad");
+                    dpadDown = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/Switch/Switch_Dpad_Down");
+                    dpadUp = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/Switch/Switch_Dpad_Up");
+                    dpadLeft = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/Switch/Switch_Dpad_Left");
+                    dpadRight = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/Switch/Switch_Dpad_Right");
 
-                    buttonLB = SonOfRobinGame.content.Load<Texture2D>("gfx/Switch/Switch_LB");
-                    buttonRB = SonOfRobinGame.content.Load<Texture2D>("gfx/Switch/Switch_RB");
-                    buttonLT = SonOfRobinGame.content.Load<Texture2D>("gfx/Switch/Switch_LT");
-                    buttonRT = SonOfRobinGame.content.Load<Texture2D>("gfx/Switch/Switch_RT");
+                    buttonLB = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/Switch/Switch_LB");
+                    buttonRB = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/Switch/Switch_RB");
+                    buttonLT = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/Switch/Switch_LT");
+                    buttonRT = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/Switch/Switch_RT");
 
-                    leftStick = SonOfRobinGame.content.Load<Texture2D>("gfx/Switch/Switch_Left_Stick");
-                    rightStick = SonOfRobinGame.content.Load<Texture2D>("gfx/Switch/Switch_Right_Stick");
-                    leftStickClick = SonOfRobinGame.content.Load<Texture2D>("gfx/Xbox 360/360_Left_Stick_Click"); // graphics missing 
-                    rightStickClick = SonOfRobinGame.content.Load<Texture2D>("gfx/Xbox 360/360_Right_Stick_Click");  // graphics missing 
+                    leftStick = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/Switch/Switch_Left_Stick");
+                    rightStick = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/Switch/Switch_Right_Stick");
+                    leftStickClick = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/Xbox 360/360_Left_Stick_Click"); // graphics missing 
+                    rightStickClick = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/Xbox 360/360_Right_Stick_Click");  // graphics missing 
 
                     buttonNameA = "B";
                     buttonNameB = "A";
@@ -173,7 +173,7 @@ namespace SonOfRobin
                     throw new DivideByZeroException($"Unsupported button scheme type - {currentType}.");
             }
 
-            SonOfRobinGame.controlTips.RefreshLayout();
+            SonOfRobinGame.ControlTips.RefreshLayout();
         }
 
     }
