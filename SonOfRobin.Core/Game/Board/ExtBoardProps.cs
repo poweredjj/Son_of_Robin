@@ -30,7 +30,7 @@ namespace SonOfRobin
 
         public static readonly Dictionary<Name, List<BiomeConstrain>> biomeConstrains = new Dictionary<Name, List<BiomeConstrain>> {
             { Name.BiomeSwamp, new List<BiomeConstrain>{
-                 new BiomeConstrain(terrainName: Terrain.Name.Height, min: 106, max: 160),
+                 new BiomeConstrain(terrainName: Terrain.Name.Height, min: 106, max: 159),
                  new BiomeConstrain(terrainName: Terrain.Name.Humidity, min: 80, max: 255),
             } }
         };

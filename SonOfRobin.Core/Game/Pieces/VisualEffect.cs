@@ -76,7 +76,7 @@ namespace SonOfRobin
             }
         }
 
-        public override void SM_ProcessRandomMovement()
+        public override void SM_FogMoveRandomly()
         {
             // suitable only for passive decorations, that will never be moved "manually"
 
@@ -88,17 +88,22 @@ namespace SonOfRobin
                 this.startPos = this.sprite.position;
                 this.startRot = this.sprite.rotation;
 
-                this.tweener.TweenTo(target: this.sprite, expression: sprite => sprite.rotation, toValue: 1f, duration: 9, delay: 0)
-                 .RepeatForever(repeatDelay: 0.0f)
-                 .AutoReverse()
-                 .Easing(EasingFunctions.QuadraticInOut);
-
                 int maxDistance = 100;
 
                 Vector2 newPos = this.sprite.position + new Vector2(this.world.random.Next(-maxDistance, maxDistance), this.world.random.Next(-maxDistance, maxDistance));
                 newPos = this.sprite.world.KeepVector2InWorldBounds(newPos);
 
-                this.tweener.TweenTo(target: this.sprite, expression: sprite => sprite.position, toValue: newPos, duration: 9, delay: 0)
+                this.tweener.TweenTo(target: this.sprite, expression: sprite => sprite.position, toValue: newPos, duration: this.world.random.Next(6, 15), delay: 0)
+                    .RepeatForever(repeatDelay: 0.0f)
+                    .AutoReverse()
+                    .Easing(EasingFunctions.QuadraticInOut);
+
+                this.tweener.TweenTo(target: this.sprite, expression: sprite => sprite.rotation, toValue: (float)(Random.NextDouble() * 2) - 1, duration: this.world.random.Next(6, 15), delay: 0)
+                    .RepeatForever(repeatDelay: 0.0f)
+                    .AutoReverse()
+                    .Easing(EasingFunctions.QuadraticInOut);
+
+                this.tweener.TweenTo(target: this.sprite, expression: sprite => sprite.opacity, toValue: (float)(Random.NextDouble() * 0.4), duration: this.world.random.Next(4, 20), delay: 0)
                     .RepeatForever(repeatDelay: 0.0f)
                     .AutoReverse()
                     .Easing(EasingFunctions.QuadraticInOut);

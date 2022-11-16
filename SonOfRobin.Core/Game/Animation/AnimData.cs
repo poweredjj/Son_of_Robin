@@ -75,6 +75,10 @@ namespace SonOfRobin
             Fog2,
             Fog3,
             Fog4,
+            Fog5,
+            Fog6,
+            Fog7,
+            Fog8,
 
             MusicNoteSmall,
             MusicNoteBig,
@@ -862,10 +866,14 @@ namespace SonOfRobin
             AddFrameList(animPackage: PkgName.Miss, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "miss", layer: 2));
             AddFrameList(animPackage: PkgName.Zzz, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "zzz", layer: 2));
             AddFrameList(animPackage: PkgName.Heart, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "heart_16x16", layer: 2));
-            AddFrameList(animPackage: PkgName.Fog1, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "fog_1", layer: 2, scale: 0.75f));
-            AddFrameList(animPackage: PkgName.Fog2, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "fog_2", layer: 2, scale: 0.75f));
-            AddFrameList(animPackage: PkgName.Fog3, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "fog_3", layer: 2, scale: 0.75f));
-            AddFrameList(animPackage: PkgName.Fog4, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "fog_4", layer: 2, scale: 0.75f));
+            AddFrameList(animPackage: PkgName.Fog1, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "fog_1", layer: 2, scale: 0.6f));
+            AddFrameList(animPackage: PkgName.Fog2, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "fog_2", layer: 2, scale: 0.6f));
+            AddFrameList(animPackage: PkgName.Fog3, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "fog_3", layer: 2, scale: 0.6f));
+            AddFrameList(animPackage: PkgName.Fog4, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "fog_4", layer: 2, scale: 0.6f));
+            AddFrameList(animPackage: PkgName.Fog5, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "fog_1", layer: 2, scale: 1.0f));
+            AddFrameList(animPackage: PkgName.Fog6, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "fog_2", layer: 2, scale: 1.0f));
+            AddFrameList(animPackage: PkgName.Fog7, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "fog_3", layer: 2, scale: 1.0f));
+            AddFrameList(animPackage: PkgName.Fog8, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "fog_4", layer: 2, scale: 1.0f));
             AddFrameList(animPackage: PkgName.DebrisStar1, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "star", layer: 0, scale: 0.1f));
             AddFrameList(animPackage: PkgName.DebrisStar2, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "star", layer: 0, scale: 0.12f));
             AddFrameList(animPackage: PkgName.DebrisStar3, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "star", layer: 0, scale: 0.05f));

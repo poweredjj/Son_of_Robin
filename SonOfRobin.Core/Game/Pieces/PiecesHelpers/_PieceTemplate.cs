@@ -2551,7 +2551,7 @@ namespace SonOfRobin
 
                 case Name.SwampGas:
                     {
-                        var packageNames = new List<AnimData.PkgName> { AnimData.PkgName.Fog1, AnimData.PkgName.Fog2, AnimData.PkgName.Fog3, AnimData.PkgName.Fog4 };
+                        var packageNames = new List<AnimData.PkgName> { AnimData.PkgName.Fog1, AnimData.PkgName.Fog2, AnimData.PkgName.Fog3, AnimData.PkgName.Fog4, AnimData.PkgName.Fog5, AnimData.PkgName.Fog6, AnimData.PkgName.Fog7, AnimData.PkgName.Fog8 };
                         var animPkg = packageNames[random.Next(0, packageNames.Count)];
 
                         var allowedTerrain = new AllowedTerrain(
@@ -2559,7 +2559,7 @@ namespace SonOfRobin
 
                         AllowedDensity allowedDensity = new AllowedDensity(radious: 120, maxNoOfPiecesSameName: 2);
 
-                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: animPkg, destructionDelay: 0, allowedTerrain: allowedTerrain, allowedDensity: allowedDensity, minDistance: 0, maxDistance: 0, generation: generation, fadeInAnim: false, readableName: "gas", description: "Swamp gas.", activeState: BoardPiece.State.ProcessRandomMovement, serialize: true, ignoresCollisions: false, visible: true);
+                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: animPkg, destructionDelay: 0, allowedTerrain: allowedTerrain, allowedDensity: allowedDensity, minDistance: 0, maxDistance: 0, generation: generation, fadeInAnim: false, readableName: "gas", description: "Swamp gas.", activeState: BoardPiece.State.FogMoveRandomly, serialize: true, ignoresCollisions: false, visible: true);
 
                         visualEffect.sprite.color = Color.LimeGreen;
                         visualEffect.sprite.opacity = 0.3f;
