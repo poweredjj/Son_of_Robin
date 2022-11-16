@@ -17,20 +17,25 @@ namespace SonOfRobin
             GrassRegular,
             GrassGlow,
             GrassDesert,
+
+            PlantPoison,
             Rushes,
             WaterLily,
+
             FlowersPlain,
             FlowersRed,
             FlowersMountain,
+
             Cactus,
+
             TreeSmall,
             TreeBig,
             PalmTree,
-
             Oak,
             AppleTree,
             CherryTree,
             BananaTree,
+
             TomatoPlant,
 
             Apple,
@@ -393,6 +398,23 @@ namespace SonOfRobin
                             minDistance: 60, maxDistance: 100, bestEnvironment: bestEnvironment, mass: 1, maxMassBySize: maxMassBySize, maxAge: 900, reproduction: reproduction, massToBurn: 5, massTakenMultiplier: 0.63f, generation: generation, staysAfterDeath: 300, readableName: "desert grass", description: "A grass, that grows on sand.", allowedDensity: new AllowedDensity(radious: 75, maxNoOfPiecesTotal: 0), yield: yield);
                     }
 
+                case Name.PlantPoison:
+                    {
+                        var allowedTerrain = new AllowedTerrain(
+                            extPropertiesDict: new Dictionary<ExtBoardProps.Name, bool> { { ExtBoardProps.Name.BiomeSwamp, true } });
+
+                        var yield = new Yield(debrisType: Yield.DebrisType.Plant,
+                            firstDroppedPieces: new List<Yield.DroppedPiece> { },
+                            finalDroppedPieces: new List<Yield.DroppedPiece> { new Yield.DroppedPiece(pieceName: Name.HerbsBlack, chanceToDrop: 20, maxNumberToDrop: 1) });
+
+                        var bestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Height, 132 } };
+                        var maxMassBySize = new Dictionary<byte, int>() { { 0, 500 }, { 1, 65535 } };
+                        var reproduction = new PlantReproductionData(massNeeded: 750, massLost: 300, bioWear: 0.37f);
+
+                        return new Plant(name: templateName, world: world, id: id, blocksMovement: false, animPackage: AnimData.PkgName.PlantPoison, allowedTerrain: allowedTerrain, category: BoardPiece.Category.SmallPlant,
+                            minDistance: 80, maxDistance: 120, bestEnvironment: bestEnvironment, mass: 1, maxMassBySize: maxMassBySize, maxAge: 950, reproduction: reproduction, massToBurn: 5, massTakenMultiplier: 0.63f, generation: generation, staysAfterDeath: 300, readableName: "poisonous plant", description: "Poisonous plant.", allowedDensity: new AllowedDensity(radious: 90, maxNoOfPiecesTotal: 0), yield: yield);
+                    }
+
                 case Name.Rushes:
                     {
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
@@ -449,7 +471,7 @@ namespace SonOfRobin
 
                         var yield = new Yield(debrisTypeList: new List<Yield.DebrisType> { Yield.DebrisType.Plant, Yield.DebrisType.Leaf },
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
-                            finalDroppedPieces: new List<Yield.DroppedPiece> { new Yield.DroppedPiece(pieceName: Name.HerbsBlack, chanceToDrop: 10, maxNumberToDrop: 1) });
+                            finalDroppedPieces: new List<Yield.DroppedPiece> { new Yield.DroppedPiece(pieceName: Name.HerbsYellow, chanceToDrop: 3, maxNumberToDrop: 1) });
 
                         var bestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 180 } };
                         var maxMassBySize = new Dictionary<byte, int>() { { 0, 400 }, { 1, 65535 } };

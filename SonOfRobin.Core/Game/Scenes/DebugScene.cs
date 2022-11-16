@@ -91,12 +91,12 @@ namespace SonOfRobin
             {
                 if (Keyboard.HasBeenPressed(Keys.D1))
                 {
-                    BoardPiece piece = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: world.Player.sprite.position, templateName: PieceTemplate.Name.GrassGlow, closestFreeSpot: true);
+                    BoardPiece piece = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: world.Player.sprite.position, templateName: PieceTemplate.Name.ScytheStone, closestFreeSpot: true);
                 }
 
                 if (Keyboard.HasBeenPressed(Keys.D2))
                 {
-                    BoardPiece piece = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: world.Player.sprite.position, templateName: PieceTemplate.Name.ChestTreasureNormal, closestFreeSpot: true);
+                    BoardPiece piece = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: world.Player.sprite.position, templateName: PieceTemplate.Name.BootsProtective, closestFreeSpot: true);
                 }
 
                 if (Keyboard.HasBeenPressed(Keys.D3))
