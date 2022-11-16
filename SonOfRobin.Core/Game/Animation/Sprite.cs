@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MonoGame.Extended.Tweening;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -52,7 +53,7 @@ namespace SonOfRobin
         public List<Cell.Group> gridGroups;
         public Cell currentCell; // current cell, that is containing the sprite
         public bool IsOnBoard { get; private set; }
-
+        public Tweener Tweener { get; private set; }
         public string CompleteAnimID
         { get { return GetCompleteAnimId(animPackage: this.animPackage, animSize: this.animSize, animName: this.animName); } }
 
@@ -295,6 +296,11 @@ namespace SonOfRobin
             }
 
             return duration;
+        }
+
+        public void CreateTweener()
+        {
+            if (this.Tweener == null) this.Tweener = new Tweener();
         }
 
         public bool MoveToClosestFreeSpot(Vector2 startPosition, bool checkIsOnBoard = true, bool ignoreDensity = false, int maxDistance = 170)
