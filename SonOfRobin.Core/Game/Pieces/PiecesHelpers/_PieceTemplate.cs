@@ -401,18 +401,22 @@ namespace SonOfRobin
                 case Name.PlantPoison:
                     {
                         var allowedTerrain = new AllowedTerrain(
+                            rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
+                                { Terrain.Name.Biome, new AllowedRange(min: (byte)(Terrain.biomeMin + (255 - Terrain.biomeMin) / 2), max:255 ) },
+                                { Terrain.Name.Height, new AllowedRange(min: 112, max:156 ) },
+                        },
                             extPropertiesDict: new Dictionary<ExtBoardProps.Name, bool> { { ExtBoardProps.Name.BiomeSwamp, true } });
 
                         var yield = new Yield(debrisType: Yield.DebrisType.Plant,
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
                             finalDroppedPieces: new List<Yield.DroppedPiece> { new Yield.DroppedPiece(pieceName: Name.HerbsBlack, chanceToDrop: 20, maxNumberToDrop: 1) });
 
-                        var bestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Height, 132 } };
-                        var maxMassBySize = new Dictionary<byte, int>() { { 0, 500 }, { 1, 65535 } };
-                        var reproduction = new PlantReproductionData(massNeeded: 750, massLost: 300, bioWear: 0.37f);
+                        var bestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Biome, 245 } };
+                        var maxMassBySize = new Dictionary<byte, int>() { { 0, 800 }, { 1, 65535 } };
+                        var reproduction = new PlantReproductionData(massNeeded: 1000, massLost: 190, bioWear: 0.34f);
 
                         return new Plant(name: templateName, world: world, id: id, blocksMovement: false, animPackage: AnimData.PkgName.PlantPoison, allowedTerrain: allowedTerrain, category: BoardPiece.Category.SmallPlant,
-                            minDistance: 80, maxDistance: 120, bestEnvironment: bestEnvironment, mass: 1, maxMassBySize: maxMassBySize, maxAge: 950, reproduction: reproduction, massToBurn: 5, massTakenMultiplier: 0.63f, generation: generation, staysAfterDeath: 300, readableName: "poisonous plant", description: "Poisonous plant.", allowedDensity: new AllowedDensity(radious: 90, maxNoOfPiecesTotal: 0), yield: yield);
+                            minDistance: 30, maxDistance: 90, bestEnvironment: bestEnvironment, mass: 1, maxMassBySize: maxMassBySize, maxAge: 950, reproduction: reproduction, massToBurn: 5, massTakenMultiplier: 0.63f, generation: generation, staysAfterDeath: 300, readableName: "poisonous plant", description: "Poisonous plant.", allowedDensity: new AllowedDensity(radious: 70, maxNoOfPiecesTotal: 4), yield: yield);
                     }
 
                 case Name.Rushes:
