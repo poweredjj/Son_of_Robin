@@ -52,8 +52,8 @@ namespace SonOfRobin
 
             if (worldActive)
             {
-                debugLines.Add($"proc. animals: {world.processedNonPlantsCount} plants: {world.processedPlantsCount}");
-                debugLines.Add($"loaded textures {world.grid.loadedTexturesCount}");
+                debugLines.Add($"proc. animals: {world.ProcessedNonPlantsCount} plants: {world.ProcessedPlantsCount}");
+                debugLines.Add($"loaded textures {world.Grid.loadedTexturesCount}");
                 debugLines.Add($"tracking count {world.trackingQueue.Count}");
                 if (world.trackingQueue.Count > 5000) debugLines.Add("WARNING, CHECK IF CORRECT!");
             }
@@ -91,41 +91,41 @@ namespace SonOfRobin
             {
                 if (Keyboard.HasBeenPressed(Keys.D1))
                 {
-                    BoardPiece piece = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: world.player.sprite.position, templateName: PieceTemplate.Name.GrassGlow, closestFreeSpot: true);
+                    BoardPiece piece = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: world.Player.sprite.position, templateName: PieceTemplate.Name.GrassGlow, closestFreeSpot: true);
                 }
 
                 if (Keyboard.HasBeenPressed(Keys.D2))
                 {
-                    BoardPiece piece = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: world.player.sprite.position, templateName: PieceTemplate.Name.ChestTreasureNormal, closestFreeSpot: true);
+                    BoardPiece piece = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: world.Player.sprite.position, templateName: PieceTemplate.Name.ChestTreasureNormal, closestFreeSpot: true);
                 }
 
                 if (Keyboard.HasBeenPressed(Keys.D3))
                 {
-                    BoardPiece piece = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: world.player.sprite.position, templateName: PieceTemplate.Name.ChestTreasureBig, closestFreeSpot: true);
+                    BoardPiece piece = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: world.Player.sprite.position, templateName: PieceTemplate.Name.ChestTreasureBig, closestFreeSpot: true);
                 }
 
                 if (Keyboard.HasBeenPressed(Keys.D4))
                 {
-                    BoardPiece piece = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: world.player.sprite.position, templateName: PieceTemplate.Name.Coal, closestFreeSpot: true);
+                    BoardPiece piece = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: world.Player.sprite.position, templateName: PieceTemplate.Name.Coal, closestFreeSpot: true);
                 }
 
                 if (Keyboard.HasBeenPressed(Keys.D5))
                 {
-                    BoardPiece piece = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: world.player.sprite.position, templateName: PieceTemplate.Name.BeltBig, closestFreeSpot: true);
+                    BoardPiece piece = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: world.Player.sprite.position, templateName: PieceTemplate.Name.BeltBig, closestFreeSpot: true);
                 }
 
                 if (Keyboard.HasBeenPressed(Keys.D6))
                 {
-                    BoardPiece piece = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: world.player.sprite.position, templateName: PieceTemplate.Name.ArrowWood, closestFreeSpot: true);
+                    BoardPiece piece = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: world.Player.sprite.position, templateName: PieceTemplate.Name.ArrowWood, closestFreeSpot: true);
                 }
 
                 if (Keyboard.HasBeenPressed(Keys.D7))
                 {
-                    var heart = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: world.player.sprite.position, templateName: PieceTemplate.Name.Heart);
+                    var heart = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: world.Player.sprite.position, templateName: PieceTemplate.Name.Heart);
                     WorldEvent.RemovePieceFromQueue(world: world, pieceToRemove: heart);
                     heart.sprite.opacityFade = null;
                     heart.sprite.opacity = 1;
-                    new Tracking(world: world, targetSprite: world.player.sprite, followingSprite: heart.sprite, offsetX: 0, offsetY: 0, targetXAlign: XAlign.Right, targetYAlign: YAlign.Top, followingXAlign: XAlign.Left, followingYAlign: YAlign.Bottom, followSlowDown: 5);
+                    new Tracking(world: world, targetSprite: world.Player.sprite, followingSprite: heart.sprite, offsetX: 0, offsetY: 0, targetXAlign: XAlign.Right, targetYAlign: YAlign.Top, followingXAlign: XAlign.Left, followingYAlign: YAlign.Bottom, followSlowDown: 5);
                 }
 
                 if (Keyboard.HasBeenPressed(Keys.D8))
@@ -147,7 +147,7 @@ namespace SonOfRobin
                 {
                     foreach (var sprite in world.camera.GetVisibleSprites(groupName: Cell.Group.All))
                     {
-                        if (sprite.boardPiece != world.player) Tool.HitTarget(attacker: world.player, target: sprite.boardPiece, hitPower: 99999, targetPushMultiplier: 1f);
+                        if (sprite.boardPiece != world.Player) Tool.HitTarget(attacker: world.Player, target: sprite.boardPiece, hitPower: 99999, targetPushMultiplier: 1f);
                     }
                 }
             }
@@ -162,15 +162,15 @@ namespace SonOfRobin
             {
                 if (world == null) return;
 
-                foreach (var sprite in world.grid.GetSpritesFromAllCells(Cell.Group.All))
-                { if (sprite.boardPiece != world.player) sprite.boardPiece.Kill(); }
+                foreach (var sprite in world.Grid.GetSpritesFromAllCells(Cell.Group.All))
+                { if (sprite.boardPiece != world.Player) sprite.boardPiece.Kill(); }
             }
 
             if (Keyboard.HasBeenPressed(Keys.Y))
             {
                 if (world == null) return;
 
-                foreach (var sprite in world.grid.GetSpritesFromAllCells(Cell.Group.All))
+                foreach (var sprite in world.Grid.GetSpritesFromAllCells(Cell.Group.All))
                 { sprite.AssignNewName("default"); }
             }
 
@@ -181,7 +181,7 @@ namespace SonOfRobin
 
                 while (true)
                 {
-                    bool hasBeenMoved = world.player.sprite.SetNewPosition(new Vector2(BoardPiece.Random.Next(0, world.width), BoardPiece.Random.Next(0, world.height)));
+                    bool hasBeenMoved = world.Player.sprite.SetNewPosition(new Vector2(BoardPiece.Random.Next(0, world.width), BoardPiece.Random.Next(0, world.height)));
                     if (hasBeenMoved) break;
                 }
             }
@@ -198,7 +198,7 @@ namespace SonOfRobin
             {
                 if (world == null) return;
 
-                Player player = world.player;
+                Player player = world.Player;
                 player.Fatigue = player.MaxFatigue;
             }
 
@@ -206,7 +206,7 @@ namespace SonOfRobin
             {
                 if (world == null) return;
 
-                Player player = world.player;
+                Player player = world.Player;
                 player.Fatigue = player.MaxFatigue * 0.8f;
             }
 
@@ -214,7 +214,7 @@ namespace SonOfRobin
             {
                 if (world == null) return;
 
-                Player player = world.player;
+                Player player = world.Player;
                 player.sprite.RemoveFromBoard();
             }
 
@@ -224,15 +224,15 @@ namespace SonOfRobin
 
                 bool compareWithBottom = Keyboard.HasBeenPressed(Keys.K);
 
-                var piecesWithinDistance = world.grid.GetPiecesWithinDistance(groupName: Cell.Group.All, mainSprite: world.player.sprite, distance: 100, compareWithBottom: compareWithBottom);
+                var piecesWithinDistance = world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.All, mainSprite: world.Player.sprite, distance: 100, compareWithBottom: compareWithBottom);
                 foreach (BoardPiece piece in piecesWithinDistance)
                 {
-                    if (world.player.sprite.CheckIfOtherSpriteIsWithinRange(target: piece.sprite))
+                    if (world.Player.sprite.CheckIfOtherSpriteIsWithinRange(target: piece.sprite))
                     { PieceTemplate.CreateAndPlaceOnBoard(world: world, position: piece.sprite.position, templateName: PieceTemplate.Name.Heart); }
                     else
                     { PieceTemplate.CreateAndPlaceOnBoard(world: world, position: piece.sprite.position, templateName: PieceTemplate.Name.Backlight); }
                 }
-                BoardPiece closestPiece = BoardPiece.FindClosestPiece(sprite: world.player.sprite, pieceList: piecesWithinDistance);
+                BoardPiece closestPiece = BoardPiece.FindClosestPiece(sprite: world.Player.sprite, pieceList: piecesWithinDistance);
 
                 if (closestPiece != null)
                 {
@@ -244,7 +244,7 @@ namespace SonOfRobin
             if (Keyboard.HasBeenPressed(Keys.OemComma))
             {
                 if (world == null) return;
-                Player player = world.player;
+                Player player = world.Player;
 
                 Point point1 = new Point((int)player.sprite.position.X, (int)player.sprite.position.Y);
                 Point point2 = new Point((int)player.sprite.position.X + 200, (int)player.sprite.position.Y - 100);
@@ -254,7 +254,7 @@ namespace SonOfRobin
                 PieceTemplate.CreateAndPlaceOnBoard(world: world, position: new Vector2(point2.X, point2.Y), templateName: PieceTemplate.Name.Heart);
                 PieceTemplate.CreateAndPlaceOnBoard(world: world, position: new Vector2(point3.X, point3.Y), templateName: PieceTemplate.Name.Heart);
 
-                var piecesInsideTriangle = world.grid.GetPiecesInsideTriangle(groupName: Cell.Group.All, point1: point1, point2: point2, point3: point3);
+                var piecesInsideTriangle = world.Grid.GetPiecesInsideTriangle(groupName: Cell.Group.All, point1: point1, point2: point2, point3: point3);
                 foreach (BoardPiece piece in piecesInsideTriangle)
                 {
                     piece.sprite.effectCol.AddEffect(new BorderInstance(outlineColor: Color.Red, textureSize: piece.sprite.frame.textureSize, priority: 0, framesLeft: 60));
@@ -266,9 +266,9 @@ namespace SonOfRobin
             {
                 if (world == null) return;
 
-                foreach (var sprite in world.grid.GetSpritesFromAllCells(Cell.Group.All))
+                foreach (var sprite in world.Grid.GetSpritesFromAllCells(Cell.Group.All))
                 {
-                    if (sprite.boardPiece != world.player)
+                    if (sprite.boardPiece != world.Player)
                     {
                         BoardPiece boardPiece = sprite.boardPiece;
 
@@ -284,7 +284,7 @@ namespace SonOfRobin
 
                 foreach (var sprite in world.camera.GetVisibleSprites(groupName: Cell.Group.All))
                 {
-                    if (sprite.boardPiece != world.player)
+                    if (sprite.boardPiece != world.Player)
                     {
                         BoardPiece boardPiece = sprite.boardPiece;
 
@@ -298,9 +298,9 @@ namespace SonOfRobin
             {
                 if (world == null) return;
 
-                foreach (var sprite in world.grid.GetSpritesFromAllCells(Cell.Group.All))
+                foreach (var sprite in world.Grid.GetSpritesFromAllCells(Cell.Group.All))
                 {
-                    if (sprite.boardPiece != world.player) sprite.boardPiece.Destroy();
+                    if (sprite.boardPiece != world.Player) sprite.boardPiece.Destroy();
                 }
             }
 
@@ -308,8 +308,8 @@ namespace SonOfRobin
             {
                 if (world == null) return;
 
-                foreach (var sprite in world.grid.GetSpritesFromAllCells(Cell.Group.All))
-                { if (sprite.boardPiece != world.player) sprite.boardPiece.RemoveFromStateMachines(); }
+                foreach (var sprite in world.Grid.GetSpritesFromAllCells(Cell.Group.All))
+                { if (sprite.boardPiece != world.Player) sprite.boardPiece.RemoveFromStateMachines(); }
             }
 
             //if (Keyboard.HasBeenPressed(Keys.F1)) new TextWindow(text: "Line 1\nLine 2\nThis is button A | and button B |.\nBelt here >|<\nLast line.", animate: false, useTransition: false, bgColor: Color.DeepSkyBlue, textColor: Color.White, imageList: new List<Texture2D> { ButtonScheme.buttonA, ButtonScheme.buttonB, AnimData.framesForPkgs[AnimData.PkgName.BeltMedium].texture });
@@ -321,9 +321,9 @@ namespace SonOfRobin
             {
                 if (world == null) return;
 
-                world.hintEngine.ShowGeneralHint(type: HintEngine.Type.CantShootInWater, ignoreDelay: true);
-                world.hintEngine.ShowGeneralHint(type: HintEngine.Type.CineSmallBase, ignoreDelay: true);
-                world.hintEngine.ShowGeneralHint(type: HintEngine.Type.Lava, ignoreDelay: true);
+                world.HintEngine.ShowGeneralHint(type: HintEngine.Type.CantShootInWater, ignoreDelay: true);
+                world.HintEngine.ShowGeneralHint(type: HintEngine.Type.CineSmallBase, ignoreDelay: true);
+                world.HintEngine.ShowGeneralHint(type: HintEngine.Type.Lava, ignoreDelay: true);
             }
 
             if (Keyboard.HasBeenPressed(Keys.F3) || VirtButton.HasButtonBeenPressed(VButName.DebugClockAdvance))
@@ -378,7 +378,7 @@ namespace SonOfRobin
             {
                 if (world == null) return;
 
-                world.hintEngine.shownTutorials = Enum.GetValues(typeof(Tutorials.Type)).Cast<Tutorials.Type>().ToList();
+                world.HintEngine.shownTutorials = Enum.GetValues(typeof(Tutorials.Type)).Cast<Tutorials.Type>().ToList();
             }
 
             if (Keyboard.HasBeenPressed(Keys.F8))
@@ -390,7 +390,7 @@ namespace SonOfRobin
 
                 //    world.player.buffEngine.AddBuff(world: world, buff: new BuffEngine.Buff(type: BuffEngine.BuffType.RegenPoison, value: value, autoRemoveDelay: world.random.Next(600, 1200), canKill: true));
 
-                world.player.buffEngine.AddBuff(world: world, buff: new BuffEngine.Buff(type: BuffEngine.BuffType.Haste, value: 2, autoRemoveDelay: 300));
+                world.Player.buffEngine.AddBuff(world: world, buff: new BuffEngine.Buff(type: BuffEngine.BuffType.Haste, value: 2, autoRemoveDelay: 300));
 
                 // world.player.buffEngine.AddBuff(buff: new BuffEngine.Buff(type: BuffEngine.BuffType.Sprint, autoRemoveDelay: 4 * 60, value: world.player.speed), world: world);
             }
@@ -457,7 +457,7 @@ namespace SonOfRobin
             {
                 if (world == null) return;
 
-                var allSprites = world.grid.GetSpritesFromAllCells(Cell.Group.ColMovement).Where(sprite => sprite.boardPiece.GetType() == typeof(Animal) && sprite.boardPiece.alive).ToList();
+                var allSprites = world.Grid.GetSpritesFromAllCells(Cell.Group.ColMovement).Where(sprite => sprite.boardPiece.GetType() == typeof(Animal) && sprite.boardPiece.alive).ToList();
 
                 if (!allSprites.Any()) return;
 
@@ -465,13 +465,13 @@ namespace SonOfRobin
                 world.camera.TrackPiece(trackedPiece: allSprites.ToArray()[index].boardPiece, moveInstantly: true);
             }
 
-            if (Keyboard.HasBeenPressed(Keys.OemCloseBrackets)) world.camera.TrackPiece(trackedPiece: world.player, moveInstantly: true);
+            if (Keyboard.HasBeenPressed(Keys.OemCloseBrackets)) world.camera.TrackPiece(trackedPiece: world.Player, moveInstantly: true);
 
             if (Keyboard.HasBeenPressed(Keys.X))
             {
                 if (world == null) return;
 
-                AnimData.PkgName currentPackageName = world.player.sprite.animPackage;
+                AnimData.PkgName currentPackageName = world.Player.sprite.animPackage;
 
                 while (true)
                 {
@@ -479,8 +479,8 @@ namespace SonOfRobin
                     var packageName = packageNames[BoardPiece.Random.Next(0, packageNames.Count)];
                     if (packageName != currentPackageName)
                     {
-                        world.player.sprite.AssignNewPackage(animPackage: packageName, setEvenIfMissing: false);
-                        world.player.sprite.AssignNewSize(1);
+                        world.Player.sprite.AssignNewPackage(animPackage: packageName, setEvenIfMissing: false);
+                        world.Player.sprite.AssignNewSize(1);
                         break;
                     }
                 }
@@ -490,7 +490,7 @@ namespace SonOfRobin
             {
                 if (world == null) return;
 
-                world.player.sprite.Visible = !world.player.sprite.Visible;
+                world.Player.sprite.Visible = !world.Player.sprite.Visible;
             }
             if (Keyboard.HasBeenPressed(Keys.Home)) Preferences.debugShowRects = !Preferences.debugShowRects;
             if (Keyboard.HasBeenPressed(Keys.PageUp) || GamePad.HasBeenPressed(playerIndex: PlayerIndex.One, button: Buttons.LeftStick)) Preferences.debugShowStates = !Preferences.debugShowStates;

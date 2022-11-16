@@ -7,11 +7,12 @@ namespace SonOfRobin
 {
     public class InitialLoader : Scene
     {
-        public enum Step { Initial, LoadEffects, LoadFonts, CreateControlTips, LoadSounds, LoadTextures, CreateAnims, LoadKeysGfx, CreateScenes, MakeItemsInfo, MakeCraftRecipes, MakeDemoWorld, SetControlTips, OpenMainMenu }
+        public enum Step
+        { Initial, LoadEffects, LoadFonts, CreateControlTips, LoadSounds, LoadTextures, CreateAnims, LoadKeysGfx, CreateScenes, MakeItemsInfo, MakeCraftRecipes, MakeDemoWorld, SetControlTips, OpenMainMenu }
 
         private static readonly int allStepsCount = ((Step[])Enum.GetValues(typeof(Step))).Length;
 
-        private readonly static Dictionary<Step, string> namesForSteps = new Dictionary<Step, string> {
+        private static readonly Dictionary<Step, string> namesForSteps = new Dictionary<Step, string> {
             { Step.Initial, "starting" },
             { Step.LoadEffects, "loading effects" },
             { Step.LoadFonts, "loading fonts" },
@@ -39,7 +40,7 @@ namespace SonOfRobin
         {
             this.currentStep = 0;
             this.font = SonOfRobinGame.FontPressStart2P5;
-            this.splashScreenTexture = SonOfRobinGame.splashScreenTexture;
+            this.splashScreenTexture = SonOfRobinGame.SplashScreenTexture;
         }
 
         public override void Update(GameTime gameTime)
@@ -180,6 +181,5 @@ namespace SonOfRobin
             SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, progressBarFullRect, Color.White * 0.5f);
             SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, progressBarFilledRect, Color.White * 1f);
         }
-
     }
 }

@@ -14,7 +14,8 @@ namespace SonOfRobin
         public Vector2 analogCameraCorrection;
 
         public bool WorldCreationInProgress { get; private set; }
-        public bool PiecesCreationInProgress { get { return this.initialPiecesCreationFramesLeft > 0; } }
+        public bool PiecesCreationInProgress
+        { get { return this.initialPiecesCreationFramesLeft > 0; } }
         private bool plantsProcessing;
         private static readonly int initialPiecesCreationFramesTotal = 20;
         public static readonly int buildDuration = (int)(60 * 2.5);
@@ -48,15 +49,15 @@ namespace SonOfRobin
                 {
                     Sound.QuickPlay(SoundData.Name.AngelChorus);
 
-                    this.player.RemoveFromStateMachines();
+                    this.Player.RemoveFromStateMachines();
 
                     BoardPiece spectator = PieceTemplate.CreateAndPlaceOnBoard(world: this, position: this.camera.TrackedPos, templateName: PieceTemplate.Name.PlayerGhost, closestFreeSpot: true, female: this.playerFemale, randomSex: false);
 
-                    spectator.sprite.orientation = this.player != null ? this.player.sprite.orientation : Sprite.Orientation.right;
+                    spectator.sprite.orientation = this.Player != null ? this.Player.sprite.orientation : Sprite.Orientation.right;
 
-                    this.player = (Player)spectator;
+                    this.Player = (Player)spectator;
 
-                    this.camera.TrackPiece(this.player);
+                    this.camera.TrackPiece(this.Player);
                     this.camera.SetZoom(zoom: 1f, zoomSpeedMultiplier: 0.1f);
 
                     this.tipsLayout = ControlTips.TipsLayout.WorldSpectator;
@@ -80,15 +81,15 @@ namespace SonOfRobin
                 }
                 else
                 {
-                    BoardPiece spectator = this.player;
+                    BoardPiece spectator = this.Player;
 
                     bool playerFound = false;
-                    foreach (Sprite sprite in this.grid.GetSpritesFromAllCells(Cell.Group.All))
+                    foreach (Sprite sprite in this.Grid.GetSpritesFromAllCells(Cell.Group.All))
                     {
                         if (sprite.boardPiece.name == PieceTemplate.Name.Player && sprite.boardPiece.alive)
                         {
-                            this.player = (Player)sprite.boardPiece;
-                            this.player.AddToStateMachines();
+                            this.Player = (Player)sprite.boardPiece;
+                            this.Player.AddToStateMachines();
 
                             playerFound = true;
                             break;
@@ -97,13 +98,13 @@ namespace SonOfRobin
 
                     if (!playerFound)
                     {
-                        this.player = (Player)this.PlacePlayer();
-                        this.player.sprite.MoveToClosestFreeSpot(this.camera.TrackedPos);
-                        this.camera.TrackPiece(this.player);
-                        if (spectator != null) this.player.sprite.orientation = spectator.sprite.orientation;
+                        this.Player = (Player)this.PlacePlayer();
+                        this.Player.sprite.MoveToClosestFreeSpot(this.camera.TrackedPos);
+                        this.camera.TrackPiece(this.Player);
+                        if (spectator != null) this.Player.sprite.orientation = spectator.sprite.orientation;
                     }
 
-                    this.camera.TrackPiece(this.player);
+                    this.camera.TrackPiece(this.Player);
 
                     spectator.Destroy();
 
@@ -133,9 +134,9 @@ namespace SonOfRobin
                     new Scheduler.Task(taskName: Scheduler.TaskName.TempoStop, delay: 0, executeHelper: null);
                     this.stateMachineTypesManager.SetOnlyTheseTypes(enabledTypes: new List<Type> { typeof(Player), typeof(AmbientSound) }, everyFrame: true, nthFrame: true);
 
-                    this.player.activeState = BoardPiece.State.PlayerControlledByCinematic;
-                    this.player.pointWalkTarget = Vector2.Zero;
-                    this.player.sprite.CharacterStand(); // to avoid playing walk animation while standing
+                    this.Player.activeState = BoardPiece.State.PlayerControlledByCinematic;
+                    this.Player.pointWalkTarget = Vector2.Zero;
+                    this.Player.sprite.CharacterStand(); // to avoid playing walk animation while standing
                 }
                 else
                 {
@@ -143,13 +144,13 @@ namespace SonOfRobin
                     this.tipsLayout = ControlTips.TipsLayout.WorldMain;
                     this.InputType = InputTypes.Normal;
 
-                    this.player.activeState = BoardPiece.State.PlayerControlledWalking;
-                    this.player.pointWalkTarget = Vector2.Zero;
+                    this.Player.activeState = BoardPiece.State.PlayerControlledWalking;
+                    this.Player.pointWalkTarget = Vector2.Zero;
 
                     this.solidColorManager.RemoveAll(0);
 
                     this.camera.SetZoom(zoom: 1f, zoomSpeedMultiplier: 1f);
-                    this.camera.TrackPiece(this.player);
+                    this.camera.TrackPiece(this.Player);
 
                     new Scheduler.Task(taskName: Scheduler.TaskName.TempoPlay, delay: 0, executeHelper: null);
                 }
@@ -160,7 +161,7 @@ namespace SonOfRobin
         public readonly int resDivider;
         public readonly int initialMaxAnimalsMultiplier;
         public int maxAnimalsPerName;
-        public FastNoiseLite noise;
+        public FastNoiseLite Noise { get; private set; }
         public readonly Random random;
         public readonly int width;
         public readonly int height;
@@ -188,10 +189,10 @@ namespace SonOfRobin
         }
 
         public Sound DialogueSound
-        { get { return this.player.soundPack.GetSound(PieceSoundPack.Action.PlayerSpeak); } }
+        { get { return this.Player.soundPack.GetSound(PieceSoundPack.Action.PlayerSpeak); } }
 
-        public Player player;
-        public HintEngine hintEngine;
+        public Player Player { get; private set; }
+        public HintEngine HintEngine { get; private set; }
         public Dictionary<PieceTemplate.Name, int> pieceCountByName;
         public Dictionary<Type, int> pieceCountByClass;
         private List<PieceCreationData> creationDataList;
@@ -200,14 +201,14 @@ namespace SonOfRobin
         public List<Sprite> plantSpritesQueue;
         public List<Sprite> nonPlantSpritesQueue;
         public Dictionary<int, List<WorldEvent>> eventQueue;
-        public Grid grid;
+        public Grid Grid { get; private set; }
         public int CurrentFrame { get; private set; }
         public int CurrentUpdate { get; private set; } // can be used to measure time elapsed on island
         public int updateMultiplier;
         public readonly IslandClock islandClock;
         public string debugText;
-        public int processedNonPlantsCount;
-        public int processedPlantsCount;
+        public int ProcessedNonPlantsCount { get; private set; }
+        public int ProcessedPlantsCount { get; private set; }
         private readonly List<Sprite> blockingLightSpritesList;
         private readonly List<Sprite> lightSprites;
         public List<PieceTemplate.Name> doNotCreatePiecesList;
@@ -224,10 +225,13 @@ namespace SonOfRobin
 
         public bool CanProcessMoreCameraRectPiecesNow
         { get { return UpdateTimeElapsed.Milliseconds <= 13 * this.updateMultiplier; } }
+
         public bool CanProcessMoreNonPlantsNow
         { get { return UpdateTimeElapsed.Milliseconds <= 7 * this.updateMultiplier; } }
+
         public bool CanProcessMorePlantsNow
         { get { return UpdateTimeElapsed.Milliseconds <= 9 * this.updateMultiplier; } }
+
         public bool CanProcessAnyStateMachineNow
         { get { return !this.plantsProcessing || UpdateTimeElapsed.Milliseconds <= 9 * this.updateMultiplier; } }
 
@@ -290,7 +294,7 @@ namespace SonOfRobin
             this.updateMultiplier = 1;
             this.islandClock = this.saveGameData == null ? new IslandClock(0) : new IslandClock();
 
-            this.noise = new FastNoiseLite(this.seed);
+            this.Noise = new FastNoiseLite(this.seed);
 
             this.width = width;
             this.height = height;
@@ -308,13 +312,13 @@ namespace SonOfRobin
 
             this.trackingQueue = new Dictionary<string, Tracking>();
             this.eventQueue = new Dictionary<int, List<WorldEvent>>();
-            this.hintEngine = new HintEngine(world: this);
+            this.HintEngine = new HintEngine(world: this);
 
             this.plantSpritesQueue = new List<Sprite>();
             this.nonPlantSpritesQueue = new List<Sprite>();
             this.plantCellsQueue = new List<Cell>();
-            this.processedNonPlantsCount = 0;
-            this.processedPlantsCount = 0;
+            this.ProcessedNonPlantsCount = 0;
+            this.ProcessedPlantsCount = 0;
             this.blockingLightSpritesList = new List<Sprite>();
             this.lightSprites = new List<Sprite>();
             this.doNotCreatePiecesList = new List<PieceTemplate.Name> { };
@@ -325,7 +329,7 @@ namespace SonOfRobin
             this.map = new Map(world: this, touchLayout: TouchLayout.Map);
             this.playerPanel = new PlayerPanel(world: this);
             this.debugText = "";
-            if (saveGameData == null) this.grid = new Grid(world: this, resDivider: resDivider);
+            if (saveGameData == null) this.Grid = new Grid(world: this, resDivider: resDivider);
             else this.Deserialize(gridOnly: true);
 
             this.AddLinkedScene(this.map);
@@ -355,10 +359,10 @@ namespace SonOfRobin
                 return;
             };
 
-            if (this.grid.CreationInProgress)
+            if (this.Grid.CreationInProgress)
             {
                 SonOfRobinGame.Game.IsFixedTimeStep = false; // speeds up the creation process
-                this.grid.ProcessNextCreationStage();
+                this.Grid.ProcessNextCreationStage();
                 return;
             }
 
@@ -409,28 +413,28 @@ namespace SonOfRobin
                 if (this.demoMode) this.camera.TrackLiveAnimal(fluidMotion: false);
                 else
                 {
-                    this.player = (Player)this.PlacePlayer();
-                    PieceTemplate.CreateAndPlaceOnBoard(world: this, position: this.player.sprite.position, templateName: PieceTemplate.Name.CrateStarting, closestFreeSpot: true);
-                    PieceTemplate.CreateAndPlaceOnBoard(world: this, position: this.player.sprite.position, templateName: PieceTemplate.Name.PredatorRepellant, closestFreeSpot: true);
+                    this.Player = (Player)this.PlacePlayer();
+                    PieceTemplate.CreateAndPlaceOnBoard(world: this, position: this.Player.sprite.position, templateName: PieceTemplate.Name.CrateStarting, closestFreeSpot: true);
+                    PieceTemplate.CreateAndPlaceOnBoard(world: this, position: this.Player.sprite.position, templateName: PieceTemplate.Name.PredatorRepellant, closestFreeSpot: true);
                 }
             }
             else this.Deserialize(gridOnly: false);
 
             if (!this.demoMode)
             {
-                this.camera.TrackPiece(trackedPiece: this.player, moveInstantly: true);
+                this.camera.TrackPiece(trackedPiece: this.Player, moveInstantly: true);
                 this.UpdateViewParams();
                 this.camera.Update(cameraCorrection: Vector2.Zero); // to render cells in camera view correctly
-                Inventory.SetLayout(newLayout: Inventory.Layout.Toolbar, player: this.player);
+                Inventory.SetLayout(newLayout: Inventory.Layout.Toolbar, player: this.Player);
             }
 
             this.CreateNewDarknessMask();
-            this.grid.LoadAllTexturesInCameraView();
+            this.Grid.LoadAllTexturesInCameraView();
             if (!this.demoMode) this.map.ForceRender();
 
             SonOfRobinGame.Game.IsFixedTimeStep = Preferences.FrameSkip;
 
-            if (!this.demoMode && newGameStarted) this.hintEngine.ShowGeneralHint(type: HintEngine.Type.CineIntroduction, ignoreDelay: true);
+            if (!this.demoMode && newGameStarted) this.HintEngine.ShowGeneralHint(type: HintEngine.Type.CineIntroduction, ignoreDelay: true);
             GC.Collect();
         }
 
@@ -449,7 +453,7 @@ namespace SonOfRobin
             if (gridOnly) // grid has to be deserialized first
             {
                 var gridData = (Dictionary<string, Object>)saveGameDataDict["grid"];
-                this.grid = Grid.Deserialize(world: this, gridData: gridData, resDivider: this.resDivider);
+                this.Grid = Grid.Deserialize(world: this, gridData: gridData, resDivider: this.resDivider);
                 return;
             }
 
@@ -472,7 +476,7 @@ namespace SonOfRobin
             // deserializing hints
 
             var hintsData = (Dictionary<string, Object>)saveGameDataDict["hints"];
-            this.hintEngine.Deserialize(hintsData);
+            this.HintEngine.Deserialize(hintsData);
 
             // deserializing pieces
 
@@ -502,8 +506,8 @@ namespace SonOfRobin
 
                 if (templateName == PieceTemplate.Name.Player)
                 {
-                    this.player = (Player)newBoardPiece;
-                    this.camera.TrackPiece(trackedPiece: this.player, moveInstantly: true);
+                    this.Player = (Player)newBoardPiece;
+                    this.camera.TrackPiece(trackedPiece: this.Player, moveInstantly: true);
                 }
 
                 piecesByID[newBoardPiece.id] = newBoardPiece;
@@ -545,14 +549,14 @@ namespace SonOfRobin
         {
             for (int tryIndex = 0; tryIndex < 65535; tryIndex++)
             {
-                player = (Player)PieceTemplate.CreateAndPlaceOnBoard(world: this, randomPlacement: true, position: Vector2.Zero, templateName: PieceTemplate.Name.Player, randomSex: false, female: this.playerFemale);
-                if (player.sprite.IsOnBoard)
+                Player = (Player)PieceTemplate.CreateAndPlaceOnBoard(world: this, randomPlacement: true, position: Vector2.Zero, templateName: PieceTemplate.Name.Player, randomSex: false, female: this.playerFemale);
+                if (Player.sprite.IsOnBoard)
                 {
-                    player.sprite.orientation = Sprite.Orientation.up;
-                    player.sprite.CharacterStand();
-                    player.sprite.allowedTerrain.RemoveTerrain(Terrain.Name.Biome); // player should be spawned in a safe place, but able to go everywhere afterwards
-                    player.sprite.allowedTerrain.ClearExtProperties();
-                    return player;
+                    Player.sprite.orientation = Sprite.Orientation.up;
+                    Player.sprite.CharacterStand();
+                    Player.sprite.allowedTerrain.RemoveTerrain(Terrain.Name.Biome); // player should be spawned in a safe place, but able to go everywhere afterwards
+                    Player.sprite.allowedTerrain.ClearExtProperties();
+                    return Player;
                 }
             }
 
@@ -659,8 +663,8 @@ namespace SonOfRobin
                 this.soundPaused = false;
             }
 
-            this.grid.UnloadTexturesIfMemoryLow(this.camera);
-            this.grid.LoadClosestTexturesInCameraView(camera: this.camera, visitedByPlayerOnly: false, loadMoreThanOne: false);
+            this.Grid.UnloadTexturesIfMemoryLow(this.camera);
+            this.Grid.LoadClosestTexturesInCameraView(camera: this.camera, visitedByPlayerOnly: false, loadMoreThanOne: false);
 
             if (this.demoMode) this.camera.TrackLiveAnimal(fluidMotion: true);
 
@@ -673,7 +677,7 @@ namespace SonOfRobin
                 WorldEvent.ProcessQueue(this);
                 if (!this.BuildMode) this.UpdateAllAnims();
 
-                if (this.player != null) this.ProcessOneNonPlant(this.player);
+                if (this.Player != null) this.ProcessOneNonPlant(this.Player);
 
                 this.StateMachinesProcessCameraView();
 
@@ -712,7 +716,7 @@ namespace SonOfRobin
             this.analogMovementRightStick *= 4;
 
             // analog camera control
-            if (this.player.activeState != BoardPiece.State.PlayerControlledSleep)
+            if (this.Player.activeState != BoardPiece.State.PlayerControlledSleep)
             {
                 this.analogCameraCorrection = InputMapper.Analog(InputMapper.Action.WorldCameraMove);
                 this.analogCameraCorrection *= 10;
@@ -728,7 +732,7 @@ namespace SonOfRobin
                 {
                     // zoomOutForce combined with worldScale is considered cheating and therefore not allowed
 
-                    if (zoomOutForce > 0.4f) this.hintEngine.ShowGeneralHint(type: HintEngine.Type.ZoomOutLocked, ignoreDelay: true); // to avoid showing the message at minimal (accidental, unintended) trigger pressure
+                    if (zoomOutForce > 0.4f) this.HintEngine.ShowGeneralHint(type: HintEngine.Type.ZoomOutLocked, ignoreDelay: true); // to avoid showing the message at minimal (accidental, unintended) trigger pressure
 
                     zoomOutForce = 0;
                 }
@@ -737,13 +741,13 @@ namespace SonOfRobin
                 this.camera.SetZoom(zoom: 1f / (1f + zoomOutForce), zoomSpeedMultiplier: 3f);
             }
 
-            if (!this.player.alive || this.player.activeState != BoardPiece.State.PlayerControlledWalking) return;
+            if (!this.Player.alive || this.Player.activeState != BoardPiece.State.PlayerControlledWalking) return;
 
-            if (!this.player.buffEngine.HasBuff(BuffEngine.BuffType.Sprint) && !this.player.buffEngine.HasBuff(BuffEngine.BuffType.SprintCooldown))
+            if (!this.Player.buffEngine.HasBuff(BuffEngine.BuffType.Sprint) && !this.Player.buffEngine.HasBuff(BuffEngine.BuffType.SprintCooldown))
             {
                 VirtButton.ButtonHighlightOnNextFrame(VButName.Sprint);
                 ControlTips.TipHighlightOnNextFrame(tipName: "sprint");
-                if (InputMapper.HasBeenPressed(InputMapper.Action.WorldSprintToggle)) this.player.buffEngine.AddBuff(buff: new BuffEngine.Buff(type: BuffEngine.BuffType.Sprint, autoRemoveDelay: 3 * 60, value: 2f), world: this);
+                if (InputMapper.HasBeenPressed(InputMapper.Action.WorldSprintToggle)) this.Player.buffEngine.AddBuff(buff: new BuffEngine.Buff(type: BuffEngine.BuffType.Sprint, autoRemoveDelay: 3 * 60, value: 2f), world: this);
             }
 
             if (InputMapper.HasBeenPressed(InputMapper.Action.WorldFieldCraft))
@@ -754,13 +758,13 @@ namespace SonOfRobin
 
             if (InputMapper.HasBeenPressed(InputMapper.Action.WorldInventory) || this.playerPanel.IsCounterActivatedByTouch)
             {
-                Inventory.SetLayout(Inventory.Layout.InventoryAndToolbar, player: this.player);
+                Inventory.SetLayout(Inventory.Layout.InventoryAndToolbar, player: this.Player);
                 return;
             }
 
             if (InputMapper.HasBeenPressed(InputMapper.Action.WorldEquip))
             {
-                Inventory.SetLayout(Inventory.Layout.InventoryAndEquip, player: this.player);
+                Inventory.SetLayout(Inventory.Layout.InventoryAndEquip, player: this.Player);
                 return;
             }
 
@@ -775,7 +779,7 @@ namespace SonOfRobin
         {
             if (!this.MapEnabled)
             {
-                if (!this.hintEngine.ShowGeneralHint(HintEngine.Type.MapNegative)) new TextWindow(text: "I don't have map equipped.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: InputTypes.None, blockInputDuration: 45, priority: 1, animSound: this.DialogueSound);
+                if (!this.HintEngine.ShowGeneralHint(HintEngine.Type.MapNegative)) new TextWindow(text: "I don't have map equipped.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: InputTypes.None, blockInputDuration: 45, priority: 1, animSound: this.DialogueSound);
                 return;
             }
 
@@ -822,11 +826,11 @@ namespace SonOfRobin
 
             if (this.nonPlantSpritesQueue.Count == 0)
             {
-                this.nonPlantSpritesQueue = this.grid.GetSpritesFromAllCells(groupName: Cell.Group.StateMachinesNonPlants).OrderBy(sprite => sprite.boardPiece.lastFrameSMProcessed).ToList();
+                this.nonPlantSpritesQueue = this.Grid.GetSpritesFromAllCells(groupName: Cell.Group.StateMachinesNonPlants).OrderBy(sprite => sprite.boardPiece.lastFrameSMProcessed).ToList();
                 return;
             }
 
-            this.processedNonPlantsCount = 0;
+            this.ProcessedNonPlantsCount = 0;
 
             while (true)
             {
@@ -838,7 +842,7 @@ namespace SonOfRobin
                 //if (currentNonPlant.name != PieceTemplate.Name.Player) MessageLog.AddMessage(msgType: MsgType.User, message: $"{this.currentUpdate} processing '{currentNonPlant.readableName}'");
 
                 this.ProcessOneNonPlant(currentNonPlant);
-                this.processedNonPlantsCount++;
+                this.ProcessedNonPlantsCount++;
 
                 if (!this.CanProcessMoreNonPlantsNow)
                 {
@@ -883,11 +887,11 @@ namespace SonOfRobin
             if (!this.CanProcessMorePlantsNow) return;
             if ((SonOfRobinGame.LastUpdateDelay > 20 || SonOfRobinGame.LastDrawDelay > 20) && this.updateMultiplier == 1) return;
 
-            this.processedPlantsCount = 0;
+            this.ProcessedPlantsCount = 0;
 
             if (this.plantCellsQueue.Count == 0)
             {
-                this.plantCellsQueue = new List<Cell>(this.grid.allCells.ToList());
+                this.plantCellsQueue = new List<Cell>(this.Grid.allCells.ToList());
                 //MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Plants cells queue replenished ({this.plantCellsQueue.Count})");
                 return; // to avoid doing too many calculations in one update
             }
@@ -918,7 +922,7 @@ namespace SonOfRobin
                 currentPlant.StateMachineWork();
                 currentPlant.GrowOlder();
                 if (currentPlant.currentAge >= currentPlant.maxAge || currentPlant.efficiency < 0.2 || currentPlant.Mass < 1) currentPlant.Kill();
-                this.processedPlantsCount++;
+                this.ProcessedPlantsCount++;
 
                 if (!this.CanProcessMorePlantsNow)
                 {
@@ -936,7 +940,7 @@ namespace SonOfRobin
 
             this.touchLayout = TouchLayout.WorldBuild;
             this.tipsLayout = ControlTips.TipsLayout.WorldBuild;
-            this.player.activeState = BoardPiece.State.PlayerControlledBuilding;
+            this.Player.activeState = BoardPiece.State.PlayerControlledBuilding;
 
             this.stateMachineTypesManager.DisableMultiplier();
             this.stateMachineTypesManager.SetOnlyTheseTypes(enabledTypes: new List<Type> { typeof(Player) }, everyFrame: true, nthFrame: true);
@@ -946,11 +950,11 @@ namespace SonOfRobin
             craftMenu?.MoveToBottom(); // there is no craft menu if planting
             SonOfRobinGame.HintWindow.TurnOff();
 
-            this.player.recipeToBuild = recipe;
-            this.player.simulatedPieceToBuild = PieceTemplate.CreateAndPlaceOnBoard(templateName: recipe.pieceToCreate, world: this, position: this.player.sprite.position, ignoreCollisions: true); // "template" piece should be placed - collisions doesn't matter...
-            this.player.simulatedPieceToBuild.sprite.MoveToClosestFreeSpot(this.player.sprite.position); // ...but the starting position should be correct for building, if possible
-            this.player.buildDurationForOneFrame = recipe.GetRealDuration(this.craftStats) / buildDuration;
-            this.player.buildFatigueForOneFrame = recipe.GetRealFatigue(this.craftStats) / buildDuration;
+            this.Player.recipeToBuild = recipe;
+            this.Player.simulatedPieceToBuild = PieceTemplate.CreateAndPlaceOnBoard(templateName: recipe.pieceToCreate, world: this, position: this.Player.sprite.position, ignoreCollisions: true); // "template" piece should be placed - collisions doesn't matter...
+            this.Player.simulatedPieceToBuild.sprite.MoveToClosestFreeSpot(this.Player.sprite.position); // ...but the starting position should be correct for building, if possible
+            this.Player.buildDurationForOneFrame = recipe.GetRealDuration(this.craftStats) / buildDuration;
+            this.Player.buildFatigueForOneFrame = recipe.GetRealFatigue(this.craftStats) / buildDuration;
         }
 
         public void BuildPiece()
@@ -959,9 +963,9 @@ namespace SonOfRobin
 
             this.touchLayout = TouchLayout.Empty;
             this.tipsLayout = ControlTips.TipsLayout.Empty;
-            this.player.activeState = BoardPiece.State.PlayerWaitForBuilding;
+            this.Player.activeState = BoardPiece.State.PlayerWaitForBuilding;
 
-            BoardPiece builtPiece = this.player.recipeToBuild.TryToProducePieces(player: this.player, showMessages: false)[0];
+            BoardPiece builtPiece = this.Player.recipeToBuild.TryToProducePieces(player: this.Player, showMessages: false)[0];
 
             bool plantMode = builtPiece.GetType() == typeof(Plant);
 
@@ -977,8 +981,8 @@ namespace SonOfRobin
                 Sound.QuickPlay(SoundData.Name.Hammering);
             }
 
-            this.player.simulatedPieceToBuild.Destroy();
-            this.player.simulatedPieceToBuild = null;
+            this.Player.simulatedPieceToBuild.Destroy();
+            this.Player.simulatedPieceToBuild = null;
 
             builtPiece.sprite.opacity = 0f;
             builtPiece.sprite.opacityFade = new OpacityFade(sprite: builtPiece.sprite, destOpacity: 1f, duration: buildDuration);
@@ -994,23 +998,23 @@ namespace SonOfRobin
 
             this.touchLayout = TouchLayout.WorldMain;
             this.tipsLayout = ControlTips.TipsLayout.WorldMain;
-            this.player.activeState = BoardPiece.State.PlayerControlledWalking;
+            this.Player.activeState = BoardPiece.State.PlayerControlledWalking;
 
-            player.world.stateMachineTypesManager.DisableMultiplier();
-            player.world.stateMachineTypesManager.EnableAllTypes(everyFrame: true, nthFrame: true);
+            Player.world.stateMachineTypesManager.DisableMultiplier();
+            Player.world.stateMachineTypesManager.EnableAllTypes(everyFrame: true, nthFrame: true);
             this.islandClock.Resume();
 
             Scene craftMenu = GetBottomSceneOfType(typeof(Menu));
             if (restoreCraftMenu) craftMenu?.MoveToTop(); // there is no craft menu if planting
             else craftMenu?.Remove();
 
-            if (showCraftMessages) this.player.recipeToBuild.UnlockNewRecipesAndShowSummary(this);
+            if (showCraftMessages) this.Player.recipeToBuild.UnlockNewRecipesAndShowSummary(this);
 
-            this.player.recipeToBuild = null;
-            if (this.player.simulatedPieceToBuild != null)
+            this.Player.recipeToBuild = null;
+            if (this.Player.simulatedPieceToBuild != null)
             {
-                this.player.simulatedPieceToBuild.Destroy();
-                this.player.simulatedPieceToBuild = null;
+                this.Player.simulatedPieceToBuild.Destroy();
+                this.Player.simulatedPieceToBuild = null;
             }
 
             this.BuildMode = false;
@@ -1085,13 +1089,13 @@ namespace SonOfRobin
             if (this.WorldCreationInProgress) return;
 
             // drawing background
-            this.grid.DrawBackground(camera: this.camera);
+            this.Grid.DrawBackground(camera: this.camera);
 
             // drawing sprites
-            var noOfDisplayedSprites = this.grid.DrawSprites(camera: this.camera, blockingLightSpritesList: this.blockingLightSpritesList);
+            var noOfDisplayedSprites = this.Grid.DrawSprites(camera: this.camera, blockingLightSpritesList: this.blockingLightSpritesList);
 
             // drawing grid cells
-            if (Preferences.debugShowCellData) this.grid.DrawDebugData();
+            if (Preferences.debugShowCellData) this.Grid.DrawDebugData();
 
             // drawing light and darkness
             this.DrawLightAndDarkness(lightSprites);

@@ -44,8 +44,8 @@ namespace SonOfRobin
         public static SpriteFont FontTommy20 { get; private set; }
         public static SpriteFont FontTommy40 { get; private set; }
         public static Texture2D WhiteRectangle { get; private set; }
+        public static Texture2D SplashScreenTexture { get; private set; }
 
-        public static Texture2D splashScreenTexture;
         public static List<RenderTarget2D> tempShadowMaskList;
         public static Texture2D lightSphere;
         public static Dictionary<string, Texture2D> textureByName = new Dictionary<string, Texture2D>();
@@ -56,10 +56,10 @@ namespace SonOfRobin
         public static float LastUpdateDelay { get; private set; }
         public static float LastDrawDelay { get; private set; }
 
-        public static string gameDataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "SonOfRobin_data");
-        public static string worldTemplatesPath = Path.Combine(gameDataPath, "world_templates");
-        public static string saveGamesPath = Path.Combine(gameDataPath, "savegames");
-        public static string prefsPath = Path.Combine(gameDataPath, "preferences.bin");
+        public static readonly string gameDataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "SonOfRobin_data");
+        public static readonly string worldTemplatesPath = Path.Combine(gameDataPath, "world_templates");
+        public static readonly string saveGamesPath = Path.Combine(gameDataPath, "savegames");
+        public static readonly string prefsPath = Path.Combine(gameDataPath, "preferences.bin");
 
         public static bool ThisIsWorkMachine
         { get { return gameDataPath.Contains("msmidowi"); } }
@@ -106,7 +106,7 @@ namespace SonOfRobin
             WhiteRectangle = new Texture2D(base.GraphicsDevice, 1, 1);
             WhiteRectangle.SetData(new[] { Color.White });
 
-            splashScreenTexture = ContentMgr.Load<Texture2D>("gfx/loading_gfx");
+            SplashScreenTexture = ContentMgr.Load<Texture2D>("gfx/loading_gfx");
 
             if (!Directory.Exists(gameDataPath)) Directory.CreateDirectory(gameDataPath);
             if (!Directory.Exists(worldTemplatesPath)) Directory.CreateDirectory(worldTemplatesPath);

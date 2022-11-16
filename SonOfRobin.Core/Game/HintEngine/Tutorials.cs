@@ -65,11 +65,11 @@ namespace SonOfRobin
         {
             if (!ignoreHintsSetting && !Preferences.showHints) return;
 
-            HintEngine hintEngine = world.hintEngine;
+            HintEngine hintEngine = world.HintEngine;
 
             if (ignoreIfShown && hintEngine.shownTutorials.Contains(type)) return;
 
-            if (Scheduler.HasTaskChainInQueue || world.player.sleepMode != Player.SleepMode.Awake) return;
+            if (Scheduler.HasTaskChainInQueue || world.Player.sleepMode != Player.SleepMode.Awake) return;
             // only one tutorial / hint should be shown at once - waitingScenes cause playing next scene after turning off CineMode (playing scene without game being paused)
 
             if (!ignoreDelay)

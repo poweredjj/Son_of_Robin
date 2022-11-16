@@ -46,7 +46,7 @@ namespace SonOfRobin
         {
             this.name = name;
             this.world = world;
-            this.grid = this.world.grid;
+            this.grid = this.world.Grid;
 
             this.frequency = frequency;
             this.octaves = octaves;
@@ -133,7 +133,7 @@ namespace SonOfRobin
 
         private byte[,] CreateNoiseMap(bool addBorder = false)
         {
-            FastNoiseLite noise = this.world.noise;
+            FastNoiseLite noise = this.world.Noise;
 
             noise.SetSeed(this.world.seed);
             noise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2);

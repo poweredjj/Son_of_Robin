@@ -75,7 +75,7 @@ namespace SonOfRobin
             {
                 if (this.lightEngine.IsActive) return true;
 
-                foreach (BoardPiece lightPiece in this.world.grid.GetPiecesWithinDistance(groupName: Cell.Group.LightSource, mainSprite: this, distance: 500))
+                foreach (BoardPiece lightPiece in this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.LightSource, mainSprite: this, distance: 500))
                 {
                     if (lightPiece.sprite.lightEngine.Rect.Contains(this.position)) return true;
                 }
@@ -134,8 +134,8 @@ namespace SonOfRobin
                 if (this.visible == value) return;
 
                 this.visible = value;
-                if (value) this.world.grid.AddToGroup(sprite: this, groupName: Cell.Group.Visible);
-                else this.world.grid.RemoveFromGroup(sprite: this, groupName: Cell.Group.Visible);
+                if (value) this.world.Grid.AddToGroup(sprite: this, groupName: Cell.Group.Visible);
+                else this.world.Grid.RemoveFromGroup(sprite: this, groupName: Cell.Group.Visible);
             }
         }
 
@@ -226,14 +226,14 @@ namespace SonOfRobin
 
         public void RemoveFromBoard()
         {
-            this.world.grid.RemoveSprite(this);
+            this.world.Grid.RemoveSprite(this);
             this.position = new Vector2(-500, -500);  // to fail if trying to use in the future
             this.IsOnBoard = false;
         }
 
         public void UpdateBoardLocation()
         {
-            this.world.grid.UpdateLocation(this);
+            this.world.Grid.UpdateLocation(this);
         }
 
         public void Serialize(Dictionary<string, Object> pieceData)
@@ -282,13 +282,13 @@ namespace SonOfRobin
         public byte GetFieldValue(Terrain.Name terrainName)
         {
             if (!this.IsOnBoard) throw new ArgumentException($"Trying to get a field value of '{this.boardPiece.name}' that is not on board.");
-            return this.world.grid.GetFieldValue(position: this.position, terrainName: terrainName);
+            return this.world.Grid.GetFieldValue(position: this.position, terrainName: terrainName);
         }
 
         public bool GetExtProperty(ExtBoardProps.Name name)
         {
             if (!this.IsOnBoard) throw new ArgumentException($"Trying to get an ext value of '{this.boardPiece.name}' that is not on board.");
-            return this.world.grid.GetExtProperty(name: name, position: this.position);
+            return this.world.Grid.GetExtProperty(name: name, position: this.position);
         }
 
         public static string GetCompleteAnimId(AnimData.PkgName animPackage, byte animSize, string animName)
@@ -385,7 +385,7 @@ namespace SonOfRobin
 
         public Vector2 GetRandomPosition(bool outsideCamera)
         {
-            Cell cell = this.world.grid.GetRandomCellForPieceName(this.boardPiece.name); // random cell for both cases (fast)
+            Cell cell = this.world.Grid.GetRandomCellForPieceName(this.boardPiece.name); // random cell for both cases (fast)
 
             if (outsideCamera) // needs a cell, that is not intersecting with camera
             {
@@ -393,7 +393,7 @@ namespace SonOfRobin
 
                 if (cameraViewRect.Intersects(cell.rect)) // checking if initial random cell intersects with camera
                 {
-                    var cellList = this.world.grid.GetCellsForPieceName(this.boardPiece.name); // getting cell list to find non-intersecting cell (slow)
+                    var cellList = this.world.Grid.GetCellsForPieceName(this.boardPiece.name); // getting cell list to find non-intersecting cell (slow)
 
                     while (true) // looking for first non-intersecting cell
                     {
@@ -571,7 +571,7 @@ namespace SonOfRobin
 
             foreach (Cell.Group group in cellGroupsToCheck)
             {
-                foreach (Sprite sprite in this.world.grid.GetSpritesFromSurroundingCells(sprite: this, groupName: group))
+                foreach (Sprite sprite in this.world.Grid.GetSpritesFromSurroundingCells(sprite: this, groupName: group))
                 {
                     if (this.colRect.Intersects(sprite.colRect) && sprite.id != this.id) collidingSprites.Add(sprite);
                 }
@@ -590,7 +590,7 @@ namespace SonOfRobin
 
             var gridTypeToCheck = this.boardPiece.GetType() == typeof(Plant) ? Cell.Group.ColPlantGrowth : Cell.Group.ColMovement;
 
-            foreach (Sprite sprite in this.world.grid.GetSpritesFromSurroundingCells(sprite: this, groupName: gridTypeToCheck))
+            foreach (Sprite sprite in this.world.Grid.GetSpritesFromSurroundingCells(sprite: this, groupName: gridTypeToCheck))
             {
                 if (this.colRect.Intersects(sprite.colRect) && sprite.id != this.id) return true;
             }

@@ -94,7 +94,7 @@ namespace SonOfRobin
         {
             get
             {
-                var nearbyPieces = this.world.grid.GetPiecesWithinDistance(groupName: Cell.Group.ColMovement, mainSprite: this.sprite, distance: 450, compareWithBottom: true);
+                var nearbyPieces = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.ColMovement, mainSprite: this.sprite, distance: 450, compareWithBottom: true);
 
                 foreach (BoardPiece piece in nearbyPieces)
                 {
@@ -113,7 +113,7 @@ namespace SonOfRobin
         {
             get
             {
-                var nearbyPieces = this.world.grid.GetPiecesWithinDistance(groupName: Cell.Group.ColMovement, mainSprite: this.sprite, distance: 450, compareWithBottom: true);
+                var nearbyPieces = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.ColMovement, mainSprite: this.sprite, distance: 450, compareWithBottom: true);
 
                 foreach (BoardPiece piece in nearbyPieces)
                 {
@@ -135,8 +135,8 @@ namespace SonOfRobin
         {
             get
             {
-                if (this.world.player == null) return false;
-                return this.world.player.equipStorage.ContainsThisPieceID(this.id);
+                if (this.world.Player == null) return false;
+                return this.world.Player.equipStorage.ContainsThisPieceID(this.id);
             }
         }
 
@@ -144,8 +144,8 @@ namespace SonOfRobin
         {
             get
             {
-                if (this.world.player == null) return false;
-                return this.world.player.toolStorage.ContainsThisPieceID(this.id);
+                if (this.world.Player == null) return false;
+                return this.world.Player.toolStorage.ContainsThisPieceID(this.id);
             }
         }
 
@@ -405,16 +405,16 @@ namespace SonOfRobin
         {
             // MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{this.world.currentUpdate} adding to state machines - '{this.readableName}'.");
 
-            if (this.GetType() == typeof(Plant)) this.world.grid.AddToGroup(sprite: this.sprite, groupName: Cell.Group.StateMachinesPlants);
-            else this.world.grid.AddToGroup(sprite: this.sprite, groupName: Cell.Group.StateMachinesNonPlants);
+            if (this.GetType() == typeof(Plant)) this.world.Grid.AddToGroup(sprite: this.sprite, groupName: Cell.Group.StateMachinesPlants);
+            else this.world.Grid.AddToGroup(sprite: this.sprite, groupName: Cell.Group.StateMachinesNonPlants);
         }
 
         public void RemoveFromStateMachines()
         {
             //  MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{this.world.currentUpdate} removing from state machines - '{this.readableName}'.");
 
-            if (this.GetType() == typeof(Plant)) this.world.grid.RemoveFromGroup(sprite: this.sprite, groupName: Cell.Group.StateMachinesPlants);
-            else this.world.grid.RemoveFromGroup(sprite: this.sprite, groupName: Cell.Group.StateMachinesNonPlants);
+            if (this.GetType() == typeof(Plant)) this.world.Grid.RemoveFromGroup(sprite: this.sprite, groupName: Cell.Group.StateMachinesPlants);
+            else this.world.Grid.RemoveFromGroup(sprite: this.sprite, groupName: Cell.Group.StateMachinesNonPlants);
         }
 
         public static BoardPiece FindClosestPiece(Sprite sprite, List<BoardPiece> pieceList, int offsetX = 0, int offsetY = 0)

@@ -47,7 +47,7 @@ namespace SonOfRobin
         {
             if (this.world.CurrentUpdate % 60 != 0) return;
 
-            var nearbyPieces = this.world.grid.GetPiecesWithinDistance(groupName: Cell.Group.ColMovement, mainSprite: this.sprite, distance: 700, compareWithBottom: true);
+            var nearbyPieces = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.ColMovement, mainSprite: this.sprite, distance: 700, compareWithBottom: true);
             var predatorPieces = nearbyPieces.Where(piece => PieceInfo.GetInfo(piece.name).isCarnivorous);
 
             foreach (BoardPiece piece in predatorPieces)
@@ -65,9 +65,9 @@ namespace SonOfRobin
         {
             if (this.world.CurrentUpdate % 10 != 0) return;
 
-            if (!this.world.player.buffEngine.HasBuff(BuffEngine.BuffType.EnableMap) ||
+            if (!this.world.Player.buffEngine.HasBuff(BuffEngine.BuffType.EnableMap) ||
                 !this.world.map.CheckIfPlayerCanReadTheMap(showMessage: false) ||
-                Vector2.Distance(this.sprite.position, this.world.player.sprite.position) < 100)
+                Vector2.Distance(this.sprite.position, this.world.Player.sprite.position) < 100)
             {
                 this.Destroy(); // will be destroyed right away if map was enabled by using god mode
                 this.world.map.soundMarkerRemove.Play();

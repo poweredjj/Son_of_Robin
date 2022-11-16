@@ -62,7 +62,7 @@ namespace SonOfRobin
 
                 if (this.piece.world.map.FullScreen || this.piece.world.CineMode || this.piece.world.demoMode) return true;
 
-                Player player = this.piece.world.player;
+                Player player = this.piece.world.Player;
                 if (player.activeState == BoardPiece.State.PlayerControlledSleep || !player.alive || this.piece.world.SpectatorMode) return true;
 
                 var ignoredTypes = new List<System.Type> { typeof(TextWindow), typeof(ControlTips), typeof(StackView), typeof(DebugScene), typeof(MessageLog), typeof(InfoWindow), typeof(TouchOverlay), typeof(FpsCounter) };
@@ -210,7 +210,7 @@ namespace SonOfRobin
                         Inventory inventoryRight = new Inventory(piece: player, storage: player.equipStorage, layout: Type.DualRight, otherInventory: inventoryLeft, transDirection: TransDirection.Right);
                         inventoryLeft.otherInventory = inventoryRight;
 
-                        player.world.hintEngine.Disable(Tutorials.Type.Equip);
+                        player.world.HintEngine.Disable(Tutorials.Type.Equip);
                         break;
                     }
 
@@ -570,7 +570,7 @@ namespace SonOfRobin
 
         private void ProcessInput()
         {
-            if (!this.piece.world.player.alive) return;
+            if (!this.piece.world.Player.alive) return;
 
             this.SetCursorByTouch();
             if (this.type == Type.SingleBottom) this.MoveCursorByBumpers();
@@ -659,7 +659,7 @@ namespace SonOfRobin
         private void MoveCursorByBumpers()
         {
             World world = World.GetTopWorld();
-            if (world?.player?.activeState == BoardPiece.State.PlayerControlledShooting) return;
+            if (world?.Player?.activeState == BoardPiece.State.PlayerControlledShooting) return;
 
             bool playSound = false;
 
@@ -720,7 +720,7 @@ namespace SonOfRobin
             if (InputMapper.HasBeenPressed(InputMapper.Action.GlobalCancelReturnSkip))
             {
                 // must go first, to read touch return button!
-                SetLayout(newLayout: Layout.Toolbar, player: this.storage.world.player);
+                SetLayout(newLayout: Layout.Toolbar, player: this.storage.world.Player);
                 return;
             }
 
@@ -837,7 +837,7 @@ namespace SonOfRobin
                 Vector2 touchPos = touch.Position / Preferences.GlobalScale;
                 if (!thisInvBgRect.Contains(touchPos) && !otherInvBgRect.Contains(touchPos))
                 {
-                    SetLayout(newLayout: Layout.Toolbar, player: this.storage.world.player);
+                    SetLayout(newLayout: Layout.Toolbar, player: this.storage.world.Player);
                     return true;
                 }
             }
@@ -851,7 +851,7 @@ namespace SonOfRobin
 
             if (InputMapper.HasBeenPressed(InputMapper.Action.GlobalCancelReturnSkip))
             {
-                SetLayout(newLayout: Layout.Toolbar, player: this.storage.world.player);
+                SetLayout(newLayout: Layout.Toolbar, player: this.storage.world.Player);
                 return;
             }
 

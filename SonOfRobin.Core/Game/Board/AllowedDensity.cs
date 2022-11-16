@@ -30,7 +30,7 @@ namespace SonOfRobin
 
         public bool CanBePlacedHere()
         {
-            var nearbyPieces = this.piece.world.grid.GetPiecesWithinDistance(groupName: Cell.Group.All, mainSprite: this.sprite, distance: this.radious);
+            var nearbyPieces = this.piece.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.All, mainSprite: this.sprite, distance: this.radious);
 
             if (this.maxNoOfPiecesTotal != -1 && nearbyPieces.Count > this.maxNoOfPiecesTotal) return false;
             if (this.maxNoOfPiecesSameName != -1 && this.CheckSameNameCount(nearbyPieces) > this.maxNoOfPiecesSameName) return false;

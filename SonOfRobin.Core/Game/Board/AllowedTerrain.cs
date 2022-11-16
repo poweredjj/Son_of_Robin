@@ -182,7 +182,7 @@ namespace SonOfRobin
 
             foreach (var kvp in extPropertiesDict)
             {
-                bool value = world.grid.GetExtProperty(name: kvp.Key, position: position);
+                bool value = world.Grid.GetExtProperty(name: kvp.Key, position: position);
                 if (value != kvp.Value) return false;
             }
 
@@ -190,7 +190,7 @@ namespace SonOfRobin
 
             foreach (var kvp in rangesToCheck)
             {
-                var fieldValue = world.grid.GetFieldValue(position: position, terrainName: kvp.Key);
+                var fieldValue = world.Grid.GetFieldValue(position: position, terrainName: kvp.Key);
                 if (!kvp.Value.IsInRange(fieldValue)) return false;
             }
 

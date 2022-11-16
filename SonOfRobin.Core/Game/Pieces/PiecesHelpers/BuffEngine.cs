@@ -47,7 +47,7 @@ namespace SonOfRobin
 
             public bool HadEnoughSleepForBuff(World world)
             {
-                int framesSlept = world.CurrentUpdate - world.player.wentToSleepFrame;
+                int framesSlept = world.CurrentUpdate - world.Player.wentToSleepFrame;
                 return framesSlept >= this.sleepFramesNeededForActivation;
             }
 

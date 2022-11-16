@@ -170,7 +170,7 @@ namespace SonOfRobin
                 case EventName.RestoreHint:
                     {
                         var hintType = (HintEngine.Type)this.eventHelper;
-                        this.world.hintEngine.Enable(hintType);
+                        this.world.HintEngine.Enable(hintType);
 
                         MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Hint '{hintType}' restored.");
 
@@ -186,7 +186,7 @@ namespace SonOfRobin
 
                         // breaking damage loop
 
-                        if (this.world.player == null || !this.world.player.alive || !this.world.player.exists || this.world.player.sprite.IsInWater || !portableLight.IsOnPlayersToolbar || !portableLight.IsOn)
+                        if (this.world.Player == null || !this.world.Player.alive || !this.world.Player.exists || this.world.Player.sprite.IsInWater || !portableLight.IsOnPlayersToolbar || !portableLight.IsOn)
                         {
                             portableLight.IsOn = false;
                             return;
@@ -204,11 +204,11 @@ namespace SonOfRobin
                         this.boardPiece.hitPoints = Math.Max(this.boardPiece.hitPoints - damage, 0);
                         if (this.boardPiece.hitPoints <= 0)
                         {
-                            this.world.hintEngine.ShowGeneralHint(type: HintEngine.Type.BurntOutTorch, ignoreDelay: true, text: portableLight.readableName, texture: portableLight.sprite.frame.texture);
+                            this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.BurntOutTorch, ignoreDelay: true, text: portableLight.readableName, texture: portableLight.sprite.frame.texture);
                             MessageLog.AddMessage(msgType: MsgType.User, message: $"{Helpers.FirstCharToUpperCase(this.boardPiece.readableName)} has burnt out.", color: Color.White);
 
                             portableLight.IsOn = false;
-                            this.world.player.equipStorage.DestroyBrokenPieces();
+                            this.world.Player.equipStorage.DestroyBrokenPieces();
                         }
 
                         // setting next loop event

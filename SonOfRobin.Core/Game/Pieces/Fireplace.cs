@@ -90,7 +90,7 @@ namespace SonOfRobin
                     this.AddToStateMachines();
                     this.sprite.AssignNewName(animName: "on");
                     this.sprite.lightEngine.Activate();
-                    this.world.hintEngine.Disable(Tutorials.Type.KeepingAnimalsAway);
+                    this.world.HintEngine.Disable(Tutorials.Type.KeepingAnimalsAway);
                     this.soundPack.Play(PieceSoundPack.Action.IsOn);
                 }
                 else
@@ -104,7 +104,7 @@ namespace SonOfRobin
                     this.soundPack.Play(PieceSoundPack.Action.TurnOff);
                 }
 
-                if (Inventory.layout == Inventory.Layout.InventoryAndFieldStorage) Inventory.SetLayout(newLayout: Inventory.Layout.Toolbar, player: this.world.player);
+                if (Inventory.layout == Inventory.Layout.InventoryAndFieldStorage) Inventory.SetLayout(newLayout: Inventory.Layout.Toolbar, player: this.world.Player);
             }
         }
         private List<BoardPiece> StoredFuel { get { return this.pieceStorage.GetAllPieces().Where(piece => fuelNames.Contains(piece.name)).ToList(); } }
@@ -160,7 +160,7 @@ namespace SonOfRobin
             if (this.world.CurrentUpdate % 10 != 0) return;
             this.UpdateEndFrame();
 
-            var nearbyPieces = this.world.grid.GetPiecesWithinDistance(groupName: Cell.Group.ColMovement, mainSprite: this.sprite, distance: this.scareRange, compareWithBottom: true);
+            var nearbyPieces = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.ColMovement, mainSprite: this.sprite, distance: this.scareRange, compareWithBottom: true);
             var animalPieces = nearbyPieces.Where(piece => piece.GetType() == typeof(Animal));
 
             foreach (BoardPiece piece in animalPieces)
@@ -172,7 +172,7 @@ namespace SonOfRobin
                 animal.aiData.Reset(animal);
                 animal.activeState = State.AnimalFlee;
 
-                if (PieceInfo.GetInfo(animal.name).isCarnivorous && animal.sprite.IsInCameraRect) this.world.hintEngine.ShowGeneralHint(type: HintEngine.Type.AnimalScaredOfFire, ignoreDelay: true, piece: animal);
+                if (PieceInfo.GetInfo(animal.name).isCarnivorous && animal.sprite.IsInCameraRect) this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.AnimalScaredOfFire, ignoreDelay: true, piece: animal);
             }
         }
 

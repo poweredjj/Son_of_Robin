@@ -109,7 +109,7 @@ namespace SonOfRobin
             // Placing the fruit on board (to allow drawing), but not on the grid (to prevent direct interaction).
 
             fruit.sprite.PlaceOnBoard(randomPlacement: false, position: position, ignoreCollisions: true);
-            fruit.world.grid.RemoveSprite(fruit.sprite); // the fruit should be on board, but not on the grid itself (to prevent direct interaction)
+            fruit.world.Grid.RemoveSprite(fruit.sprite); // the fruit should be on board, but not on the grid itself (to prevent direct interaction)
         }
 
         public void SetAllFruitPosAgain()

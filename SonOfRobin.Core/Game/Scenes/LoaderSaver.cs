@@ -157,7 +157,7 @@ namespace SonOfRobin
             List<BoardPiece> currentPieceList = new List<BoardPiece>();
             piecePackages.Add(currentPieceList);
 
-            foreach (Sprite sprite in this.world.grid.GetSpritesFromAllCells(Cell.Group.All))
+            foreach (Sprite sprite in this.world.Grid.GetSpritesFromAllCells(Cell.Group.All))
             {
                 if (sprite.boardPiece.exists && sprite.IsOnBoard && sprite.boardPiece.serialize)
                 {
@@ -291,7 +291,7 @@ namespace SonOfRobin
             if (!this.hintsSaved)
             {
                 string hintsPath = Path.Combine(this.saveTempPath, hintsName);
-                var hintsData = this.world.hintEngine.Serialize();
+                var hintsData = this.world.HintEngine.Serialize();
                 FileReaderWriter.Save(path: hintsPath, savedObj: hintsData);
 
                 this.hintsSaved = true;
@@ -303,7 +303,7 @@ namespace SonOfRobin
             if (!this.gridSaved)
             {
                 string gridPath = Path.Combine(this.saveTempPath, gridName);
-                var gridData = this.world.grid.Serialize();
+                var gridData = this.world.Grid.Serialize();
                 FileReaderWriter.Save(path: gridPath, savedObj: gridData);
 
                 this.gridSaved = true;

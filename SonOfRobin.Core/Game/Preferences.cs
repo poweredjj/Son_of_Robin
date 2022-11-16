@@ -353,7 +353,7 @@ namespace SonOfRobin
                 World world = World.GetTopWorld();
                 if (world != null)
                 {
-                    if (debugMode || !world.player.buffEngine.HasBuff(BuffEngine.BuffType.EnableMap)) world.MapEnabled = debugGodMode;
+                    if (debugMode || !world.Player.buffEngine.HasBuff(BuffEngine.BuffType.EnableMap)) world.MapEnabled = debugGodMode;
                     world.map.ForceRender();
                 }
             }

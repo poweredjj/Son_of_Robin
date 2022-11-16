@@ -152,7 +152,7 @@ namespace SonOfRobin
                 int textHeight = destRect.Height;
                 int margin = 0;
 
-                bool topSide = this.world.player.sprite.position.Y > destRect.Y;
+                bool topSide = this.world.Player.sprite.position.Y > destRect.Y;
 
                 int textPosY = topSide ? (int)(destRect.Y - textHeight - margin) : (int)(destRect.Y + destRect.Height + margin);
 
@@ -168,7 +168,7 @@ namespace SonOfRobin
         {
             List<Rectangle> rectsToCheck = new List<Rectangle>();
 
-            if (this.world.player != null) rectsToCheck.Add(this.world.player.sprite.gfxRect);
+            if (this.world.Player != null) rectsToCheck.Add(this.world.Player.sprite.gfxRect);
             foreach (FieldTip fieldTip in tipsDict.Values)
             {
                 if (fieldTip != this) rectsToCheck.Add(fieldTip.CalculateDestRect(fieldTip.currentPos));

@@ -57,11 +57,11 @@ namespace SonOfRobin
 
             if (!ignoreDelay)
             {
-                if (this.world.player.activeState != BoardPiece.State.PlayerControlledWalking) return false;
+                if (this.world.Player.activeState != BoardPiece.State.PlayerControlledWalking) return false;
                 if (!this.WaitFrameReached) return false;
             }
 
-            if (this.shownGeneralHints.Contains(type) || Scheduler.HasTaskChainInQueue || this.world.player.sleepMode != Player.SleepMode.Awake) return false;
+            if (this.shownGeneralHints.Contains(type) || Scheduler.HasTaskChainInQueue || this.world.Player.sleepMode != Player.SleepMode.Awake) return false;
             // only one hint should be shown at once - waitingScenes cause playing next scene after turning off CineMode (playing scene without game being paused)
 
             this.UpdateWaitFrame();
@@ -83,7 +83,7 @@ namespace SonOfRobin
                             new HintMessage(text: "Hmm... | Dinner time?", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Meal) }, blockInput: true),
                         };
 
-                        this.world.player.soundPack.Play(PieceSoundPack.Action.PlayerStomachGrowl);
+                        this.world.Player.soundPack.Play(PieceSoundPack.Action.PlayerStomachGrowl);
 
                         var message = hintMessages[this.world.random.Next(0, hintMessages.Count)];
                         this.Disable(type: type, delay: 0);
@@ -98,7 +98,7 @@ namespace SonOfRobin
                             new HintMessage(text: "I'm really | hungry.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Meal)}, blockInput: true),
                         };
 
-                        this.world.player.soundPack.Play(PieceSoundPack.Action.PlayerStomachGrowl);
+                        this.world.Player.soundPack.Play(PieceSoundPack.Action.PlayerStomachGrowl);
 
                         var message = hintMessages[this.world.random.Next(0, hintMessages.Count)];
                         this.Disable(type: type, delay: 0);
@@ -114,7 +114,7 @@ namespace SonOfRobin
                             new HintMessage(text: "| I have to | eat right now!", imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.Exclamation].texture, PieceInfo.GetTexture(PieceTemplate.Name.Meal)}, blockInput: true),
                         };
 
-                        this.world.player.soundPack.Play(PieceSoundPack.Action.PlayerStomachGrowl);
+                        this.world.Player.soundPack.Play(PieceSoundPack.Action.PlayerStomachGrowl);
 
                         var message = hintMessages[this.world.random.Next(0, hintMessages.Count)];
                         this.Disable(type: type, delay: 0);
@@ -130,7 +130,7 @@ namespace SonOfRobin
                             new HintMessage(text: "I'm exhausted |.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.TentMedium)}, blockInput: true),
                         };
 
-                        this.world.player.soundPack.Play(PieceSoundPack.Action.PlayerYawn);
+                        this.world.Player.soundPack.Play(PieceSoundPack.Action.PlayerYawn);
 
                         var message = hintMessages[this.world.random.Next(0, hintMessages.Count)];
                         this.Disable(type: type, delay: 0);
@@ -147,7 +147,7 @@ namespace SonOfRobin
                             new HintMessage(text: "I'm gonna collapse if I don't go to sleep | now.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.TentMedium)}, blockInput: true),
                         };
 
-                        this.world.player.soundPack.Play(PieceSoundPack.Action.PlayerYawn);
+                        this.world.Player.soundPack.Play(PieceSoundPack.Action.PlayerYawn);
 
                         var message = hintMessages[this.world.random.Next(0, hintMessages.Count)];
                         this.Disable(type: type, delay: 0);
@@ -254,7 +254,7 @@ namespace SonOfRobin
                         SolidColor whiteOverlay = new SolidColor(color: Color.White, viewOpacity: 1f);
                         this.world.solidColorManager.Add(whiteOverlay);
 
-                        Player player = this.world.player;
+                        Player player = this.world.Player;
                         var dialogue = HintMessage.BoxType.Dialogue;
 
                         // HintMessage.ConvertToTasks() could be used here, but adding one by one makes it easier to add other task types between text.
@@ -285,15 +285,15 @@ namespace SonOfRobin
                         else seaOffset.X = 0;
                         Vector2 seaPos = player.sprite.position + seaOffset;
 
-                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetPlayerPointWalkTarget, delay: 170, executeHelper: new Dictionary<Player, Vector2> { { this.world.player, player.sprite.position + (seaOffset * 0.1f) } }, storeForLaterUse: true));
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetPlayerPointWalkTarget, delay: 170, executeHelper: new Dictionary<Player, Vector2> { { this.world.Player, player.sprite.position + (seaOffset * 0.1f) } }, storeForLaterUse: true));
 
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraTrackCoords, delay: 40, executeHelper: seaPos, storeForLaterUse: true));
 
                         taskChain.Add(new HintMessage(text: "What happened to the ship?", boxType: dialogue, delay: 0).ConvertToTask());
-                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraTrackPiece, delay: 60, executeHelper: world.player, storeForLaterUse: true));
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraTrackPiece, delay: 60, executeHelper: world.Player, storeForLaterUse: true));
                         taskChain.Add(new HintMessage(text: "I can't see it anywhere...", boxType: dialogue, delay: 0).ConvertToTask());
 
-                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetPlayerPointWalkTarget, delay: 40, executeHelper: new Dictionary<Player, Vector2> { { this.world.player, player.sprite.position } }, storeForLaterUse: true));
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetPlayerPointWalkTarget, delay: 40, executeHelper: new Dictionary<Player, Vector2> { { this.world.Player, player.sprite.position } }, storeForLaterUse: true));
 
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetZoom, delay: 60, executeHelper: new Dictionary<string, Object> { { "zoom", 0.55f }, { "zoomSpeedMultiplier", 3f } }, storeForLaterUse: true));
 
@@ -311,7 +311,7 @@ namespace SonOfRobin
                     {
                         this.Disable(type: type, delay: 0);
 
-                        Player player = this.world.player;
+                        Player player = this.world.Player;
                         var dialogue = HintMessage.BoxType.Dialogue;
 
                         this.world.CineMode = true;
@@ -327,15 +327,15 @@ namespace SonOfRobin
                         Vector2 basePos = player.sprite.position;
                         int distance = 30;
 
-                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetPlayerPointWalkTarget, delay: 30, executeHelper: new Dictionary<Player, Vector2> { { this.world.player, basePos + new Vector2(-distance, 0) } }, storeForLaterUse: true));
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetPlayerPointWalkTarget, delay: 30, executeHelper: new Dictionary<Player, Vector2> { { this.world.Player, basePos + new Vector2(-distance, 0) } }, storeForLaterUse: true));
 
-                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetPlayerPointWalkTarget, delay: 60, executeHelper: new Dictionary<Player, Vector2> { { this.world.player, basePos + new Vector2(distance, 0) } }, storeForLaterUse: true));
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetPlayerPointWalkTarget, delay: 60, executeHelper: new Dictionary<Player, Vector2> { { this.world.Player, basePos + new Vector2(distance, 0) } }, storeForLaterUse: true));
 
-                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetPlayerPointWalkTarget, delay: 30, executeHelper: new Dictionary<Player, Vector2> { { this.world.player, basePos + new Vector2(distance * 1.5f, distance) } }, storeForLaterUse: true));
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetPlayerPointWalkTarget, delay: 30, executeHelper: new Dictionary<Player, Vector2> { { this.world.Player, basePos + new Vector2(distance * 1.5f, distance) } }, storeForLaterUse: true));
 
                         taskChain.Add(new HintMessage(text: "Hmm...", boxType: dialogue, delay: 60).ConvertToTask());
 
-                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetPlayerPointWalkTarget, delay: 0, executeHelper: new Dictionary<Player, Vector2> { { this.world.player, basePos } }, storeForLaterUse: true));
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetPlayerPointWalkTarget, delay: 0, executeHelper: new Dictionary<Player, Vector2> { { this.world.Player, basePos } }, storeForLaterUse: true));
 
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetZoom, delay: 0, executeHelper: new Dictionary<string, Object> { { "zoom", 0.8f }, { "zoomSpeedMultiplier", 2f } }, storeForLaterUse: true));
 
@@ -357,10 +357,10 @@ namespace SonOfRobin
 
         public void CheckForPieceHintToShow(bool ignoreInputActive = false, List<PieceHint.Type> typesToCheckOnly = null, PieceTemplate.Name fieldPieceNameToCheck = PieceTemplate.Name.Empty, PieceTemplate.Name newOwnedPieceNameToCheck = PieceTemplate.Name.Empty)
         {
-            if (this.world.player.activeState != BoardPiece.State.PlayerControlledWalking || Scene.GetTopSceneOfType(typeof(TextWindow)) != null) return;
+            if (this.world.Player.activeState != BoardPiece.State.PlayerControlledWalking || Scene.GetTopSceneOfType(typeof(TextWindow)) != null) return;
             if (!this.WaitFrameReached && typesToCheckOnly == null && fieldPieceNameToCheck == PieceTemplate.Name.Empty && newOwnedPieceNameToCheck == PieceTemplate.Name.Empty) return;
 
-            bool hintShown = PieceHint.CheckForHintToShow(hintEngine: this, player: world.player, ignoreInputActive: ignoreInputActive, typesToCheckOnly: typesToCheckOnly, fieldPieceNameToCheck: fieldPieceNameToCheck, newOwnedPieceNameToCheck: newOwnedPieceNameToCheck);
+            bool hintShown = PieceHint.CheckForHintToShow(hintEngine: this, player: world.Player, ignoreInputActive: ignoreInputActive, typesToCheckOnly: typesToCheckOnly, fieldPieceNameToCheck: fieldPieceNameToCheck, newOwnedPieceNameToCheck: newOwnedPieceNameToCheck);
             if (hintShown) this.UpdateWaitFrame();
         }
 
@@ -399,7 +399,7 @@ namespace SonOfRobin
 
             // task after the messages - added at the end, ordered normally
 
-            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraTrackPiece, delay: 0, executeHelper: world.player, storeForLaterUse: true));
+            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraTrackPiece, delay: 0, executeHelper: world.Player, storeForLaterUse: true));
             taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetZoom, delay: 0, executeHelper: new Dictionary<string, Object> { { "zoom", 1f } }, storeForLaterUse: true));
 
             taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetCineMode, delay: 0, executeHelper: false, storeForLaterUse: true));

@@ -251,7 +251,7 @@ namespace SonOfRobin
 
                 case TipsLayout.WorldSleep:
                     {
-                        new ButtonTip(tipCollection: this.tipCollection, text: "wake up", highlightCoupledObj: world.player, highlightCoupledVarName: "CanWakeNow", textures: InputMapper.GetTextures(InputMapper.Action.GlobalCancelReturnSkip));
+                        new ButtonTip(tipCollection: this.tipCollection, text: "wake up", highlightCoupledObj: world.Player, highlightCoupledVarName: "CanWakeNow", textures: InputMapper.GetTextures(InputMapper.Action.GlobalCancelReturnSkip));
                         break;
                     }
 

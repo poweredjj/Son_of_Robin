@@ -103,7 +103,7 @@ namespace SonOfRobin
         {
             get
             {
-                bool canSeeAnything = this.world.islandClock.CurrentPartOfDay != IslandClock.PartOfDay.Night || this.world.player.sprite.IsInLightSourceRange;
+                bool canSeeAnything = this.world.islandClock.CurrentPartOfDay != IslandClock.PartOfDay.Night || this.world.Player.sprite.IsInLightSourceRange;
                 if (!canSeeAnything) Tutorials.ShowTutorialOnTheField(type: Tutorials.Type.TooDarkToSeeAnything, world: this.world, ignoreDelay: true, ignoreHintsSetting: true);
                 return canSeeAnything;
             }
@@ -132,7 +132,7 @@ namespace SonOfRobin
                 int offsetX = (int)centerOffset.X;
                 int offsetY = (int)centerOffset.Y;
 
-                var nearbyPieces = this.world.grid.GetPiecesWithinDistance(groupName: Cell.Group.All, mainSprite: this.sprite, distance: 35, offsetX: offsetX, offsetY: offsetY, compareWithBottom: true);
+                var nearbyPieces = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.All, mainSprite: this.sprite, distance: 35, offsetX: offsetX, offsetY: offsetY, compareWithBottom: true);
 
                 var interestingPieces = nearbyPieces.Where(piece => piece.boardTask != Scheduler.TaskName.Empty).ToList();
                 if (interestingPieces.Count > 0)
@@ -154,7 +154,7 @@ namespace SonOfRobin
                 int offsetX = (int)centerOffset.X;
                 int offsetY = (int)centerOffset.Y;
 
-                var interestingPieces = this.world.grid.GetPiecesWithinDistance(groupName: Cell.Group.All, mainSprite: this.sprite, distance: 35, offsetX: offsetX, offsetY: offsetY, compareWithBottom: true);
+                var interestingPieces = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.All, mainSprite: this.sprite, distance: 35, offsetX: offsetX, offsetY: offsetY, compareWithBottom: true);
                 interestingPieces = interestingPieces.Where(piece => piece.canBePickedUp).ToList();
                 if (interestingPieces.Count == 0) return null;
 
@@ -184,10 +184,10 @@ namespace SonOfRobin
                     if (this.buffEngine.HasBuff(BuffEngine.BuffType.Tired)) this.buffEngine.RemoveEveryBuffOfType(BuffEngine.BuffType.Tired);
                 }
 
-                if (this.IsVeryTired) this.world.hintEngine.ShowGeneralHint(HintEngine.Type.Tired);
-                if (this.FatiguePercent < 0.2f) this.world.hintEngine.Enable(HintEngine.Type.Tired);
-                if (this.FatiguePercent > 0.95f) this.world.hintEngine.ShowGeneralHint(HintEngine.Type.VeryTired);
-                if (this.FatiguePercent < 0.8f) this.world.hintEngine.Enable(HintEngine.Type.VeryTired);
+                if (this.IsVeryTired) this.world.HintEngine.ShowGeneralHint(HintEngine.Type.Tired);
+                if (this.FatiguePercent < 0.2f) this.world.HintEngine.Enable(HintEngine.Type.Tired);
+                if (this.FatiguePercent > 0.95f) this.world.HintEngine.ShowGeneralHint(HintEngine.Type.VeryTired);
+                if (this.FatiguePercent < 0.8f) this.world.HintEngine.Enable(HintEngine.Type.VeryTired);
 
                 if (this.fatigue == this.MaxFatigue) new Scheduler.Task(taskName: Scheduler.TaskName.SleepOutside, delay: 0, executeHelper: null);
             }
@@ -420,9 +420,9 @@ namespace SonOfRobin
             {
                 this.fedLevel = Convert.ToInt32(Math.Max(this.fedLevel - Math.Max(energyAmount / 2, 1), 0));
 
-                if (this.FedPercent < 0.5f) this.world.hintEngine.ShowGeneralHint(HintEngine.Type.Hungry);
-                if (this.FedPercent < 0.2f) this.world.hintEngine.ShowGeneralHint(HintEngine.Type.VeryHungry);
-                if (this.FedPercent < 0.01f) this.world.hintEngine.ShowGeneralHint(HintEngine.Type.Starving);
+                if (this.FedPercent < 0.5f) this.world.HintEngine.ShowGeneralHint(HintEngine.Type.Hungry);
+                if (this.FedPercent < 0.2f) this.world.HintEngine.ShowGeneralHint(HintEngine.Type.VeryHungry);
+                if (this.FedPercent < 0.01f) this.world.HintEngine.ShowGeneralHint(HintEngine.Type.Starving);
             }
             else this.hitPoints = Math.Max(this.hitPoints - 0.02f, 0);
 
@@ -436,9 +436,9 @@ namespace SonOfRobin
             this.fedLevel = Math.Min(this.fedLevel + Convert.ToInt32(energyAmount * 2), this.maxFedLevel);
             this.Stamina = this.maxStamina;
 
-            if (this.FedPercent > 0.8f) this.world.hintEngine.Enable(HintEngine.Type.Hungry);
-            if (this.FedPercent > 0.4f) this.world.hintEngine.Enable(HintEngine.Type.VeryHungry);
-            if (this.FedPercent > 0.1f) this.world.hintEngine.Enable(HintEngine.Type.Starving);
+            if (this.FedPercent > 0.8f) this.world.HintEngine.Enable(HintEngine.Type.Hungry);
+            if (this.FedPercent > 0.4f) this.world.HintEngine.Enable(HintEngine.Type.VeryHungry);
+            if (this.FedPercent > 0.1f) this.world.HintEngine.Enable(HintEngine.Type.Starving);
         }
 
         public override void SM_PlayerControlledBuilding()
@@ -498,7 +498,7 @@ namespace SonOfRobin
 
             this.world.islandClock.Advance(amount: this.buildDurationForOneFrame, ignorePause: true);
             this.Fatigue += this.buildFatigueForOneFrame;
-            world.player.Fatigue = Math.Min(world.player.Fatigue, world.player.MaxFatigue - 20); // to avoid falling asleep just after crafting
+            world.Player.Fatigue = Math.Min(world.Player.Fatigue, world.Player.MaxFatigue - 20); // to avoid falling asleep just after crafting
         }
 
         public override void SM_PlayerControlledGhosting()
@@ -521,7 +521,7 @@ namespace SonOfRobin
 
         public override void SM_PlayerControlledWalking()
         {
-            if (this.world.CurrentUpdate % 121 == 0) this.world.hintEngine.CheckForPieceHintToShow();
+            if (this.world.CurrentUpdate % 121 == 0) this.world.HintEngine.CheckForPieceHintToShow();
 
             this.ExpendEnergy(0.1f);
             if (!this.Walk()) this.Stamina = Math.Min(this.Stamina + 1, this.maxStamina);
@@ -595,7 +595,7 @@ namespace SonOfRobin
                 if (pieceToInteract != null)
                 {
                     this.pointWalkTarget = Vector2.Zero; // to avoid interacting indefinitely
-                    this.world.hintEngine.Disable(Tutorials.Type.Interact);
+                    this.world.HintEngine.Disable(Tutorials.Type.Interact);
                     new Scheduler.Task(taskName: pieceToInteract.boardTask, delay: 0, executeHelper: pieceToInteract);
                 }
             }
@@ -695,7 +695,7 @@ namespace SonOfRobin
 
             if (this.sprite.IsOnLava)
             {
-                this.world.hintEngine.ShowGeneralHint(type: HintEngine.Type.Lava, ignoreDelay: true);
+                this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.Lava, ignoreDelay: true);
                 this.hitPoints -= 1;
                 if (!this.world.solidColorManager.AnySolidColorPresent)
                 {
@@ -922,7 +922,7 @@ namespace SonOfRobin
         {
             if (closestPiece == null) return;
 
-            this.world.hintEngine.Disable(Tutorials.Type.PickUp);
+            this.world.HintEngine.Disable(Tutorials.Type.PickUp);
 
             bool piecePickedUp = this.PickUpPiece(piece: closestPiece);
             if (piecePickedUp)
@@ -931,7 +931,7 @@ namespace SonOfRobin
 
                 closestPiece.sprite.rotation = 0f;
                 MessageLog.AddMessage(msgType: MsgType.User, message: $"Picked up {closestPiece.readableName}.");
-                this.world.hintEngine.CheckForPieceHintToShow(newOwnedPieceNameToCheck: closestPiece.name);
+                this.world.HintEngine.CheckForPieceHintToShow(newOwnedPieceNameToCheck: closestPiece.name);
             }
             else
             {
@@ -960,7 +960,7 @@ namespace SonOfRobin
             {
                 if (this.sprite.CanDrownHere)
                 {
-                    this.world.hintEngine.ShowGeneralHint(HintEngine.Type.CantShootInWater);
+                    this.world.HintEngine.ShowGeneralHint(HintEngine.Type.CantShootInWater);
                     return false;
                 }
 

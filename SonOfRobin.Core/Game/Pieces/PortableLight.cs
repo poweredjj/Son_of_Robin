@@ -30,7 +30,7 @@ namespace SonOfRobin
                 if (this.isOn)
                 {
                     PortableLight portableLight;
-                    foreach (BoardPiece piece in this.world.player.toolStorage.GetAllPieces())
+                    foreach (BoardPiece piece in this.world.Player.toolStorage.GetAllPieces())
                     {
                         // making sure that no light source is on
                         if (piece.GetType() == typeof(PortableLight) && piece.id != this.id)
@@ -42,7 +42,7 @@ namespace SonOfRobin
 
                     // turning on this piece
                     this.sprite.AssignNewName(animName: "on");
-                    this.world.player.buffEngine.AddBuffs(world: this.world, this.buffList);
+                    this.world.Player.buffEngine.AddBuffs(world: this.world, this.buffList);
                     this.soundPack.Play(PieceSoundPack.Action.TurnOn);
                     this.soundPack.Play(action: PieceSoundPack.Action.IsOn);
 
@@ -53,7 +53,7 @@ namespace SonOfRobin
                 else
                 {
                     this.sprite.AssignNewName(animName: "off");
-                    this.world.player.buffEngine.RemoveBuffs(this.buffList);
+                    this.world.Player.buffEngine.RemoveBuffs(this.buffList);
                     this.soundPack.Stop(PieceSoundPack.Action.IsOn);
                     this.soundPack.Play(PieceSoundPack.Action.TurnOff);
                 }

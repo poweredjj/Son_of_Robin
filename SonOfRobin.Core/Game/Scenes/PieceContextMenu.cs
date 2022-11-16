@@ -295,7 +295,7 @@ namespace SonOfRobin
                         World world = World.GetTopWorld();
 
                         var executeHelper = new Dictionary<string, Object> { };
-                        executeHelper["player"] = world.player;
+                        executeHelper["player"] = world.Player;
                         executeHelper["slot"] = this.slot;
                         executeHelper["toolbarPiece"] = food;
                         executeHelper["buttonHeld"] = false;
@@ -312,7 +312,7 @@ namespace SonOfRobin
                         World world = World.GetTopWorld();
 
                         var executeHelper = new Dictionary<string, Object> { };
-                        executeHelper["player"] = world.player;
+                        executeHelper["player"] = world.Player;
                         executeHelper["slot"] = this.slot;
                         executeHelper["toolbarPiece"] = potion;
                         executeHelper["buttonHeld"] = false;
@@ -328,7 +328,7 @@ namespace SonOfRobin
                         // plant is "crafted" to allow for planning its position
 
                         Fruit fruit = (Fruit)this.slot.TopPiece;
-                        Player player = fruit.world.player;
+                        Player player = fruit.world.Player;
 
                         if (!player.CanSeeAnything)
                         {

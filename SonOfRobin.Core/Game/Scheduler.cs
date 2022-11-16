@@ -291,7 +291,7 @@ namespace SonOfRobin
                                 return;
                             }
 
-                            Player player = world.player;
+                            Player player = world.Player;
 
                             var executeData = (Dictionary<string, Object>)this.ExecuteHelper;
                             Vector2 position = (Vector2)executeData["position"];
@@ -378,20 +378,20 @@ namespace SonOfRobin
 
                             if (container.GetType() == typeof(Cooker))
                             {
-                                if (world.player.AreEnemiesNearby && !world.player.IsActiveFireplaceNearby)
+                                if (world.Player.AreEnemiesNearby && !world.Player.IsActiveFireplaceNearby)
                                 {
                                     new TextWindow(text: "I can't cook with enemies nearby.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1, closingTask: TaskName.ShowTutorialInGame, closingTaskHelper: new Dictionary<string, Object> { { "tutorial", Tutorials.Type.KeepingAnimalsAway }, { "world", world }, { "ignoreDelay", true } }, animSound: world.DialogueSound);
                                     return;
                                 }
 
-                                if (world.player.IsVeryTired)
+                                if (world.Player.IsVeryTired)
                                 {
                                     new TextWindow(text: "I'm too tired to cook...", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1, animSound: world.DialogueSound);
                                     return;
                                 }
                             }
 
-                            Inventory.SetLayout(newLayout: Inventory.Layout.InventoryAndFieldStorage, player: world.player, fieldStorage: container);
+                            Inventory.SetLayout(newLayout: Inventory.Layout.InventoryAndFieldStorage, player: world.Player, fieldStorage: container);
                         }
 
                         return;
@@ -405,7 +405,7 @@ namespace SonOfRobin
                             Craft.Recipe recipe = (Craft.Recipe)executeData["recipe"];
                             bool craftOnTheGround = (bool)executeData["craftOnTheGround"];
 
-                            recipe.TryToProducePieces(player: World.GetTopWorld().player, showMessages: true, craftOnTheGround: craftOnTheGround);
+                            recipe.TryToProducePieces(player: World.GetTopWorld().Player, showMessages: true, craftOnTheGround: craftOnTheGround);
                         }
                         return;
 
@@ -429,7 +429,7 @@ namespace SonOfRobin
 
                             var targets = new List<BoardPiece> { };
 
-                            var nearbyPieces = world.grid.GetPiecesWithinDistance(groupName: Cell.Group.All, mainSprite: player.sprite, distance: activeTool.range == 0 ? (ushort)60 : (ushort)activeTool.range, offsetX: offsetX, offsetY: offsetY, compareWithBottom: true);
+                            var nearbyPieces = world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.All, mainSprite: player.sprite, distance: activeTool.range == 0 ? (ushort)60 : (ushort)activeTool.range, offsetX: offsetX, offsetY: offsetY, compareWithBottom: true);
 
                             nearbyPieces = nearbyPieces.Where(piece => piece.yield != null && piece.exists).ToList();
 
@@ -783,7 +783,7 @@ namespace SonOfRobin
 
                     case TaskName.SleepOutside:
                         {
-                            Player player = World.GetTopWorld()?.player;
+                            Player player = World.GetTopWorld()?.Player;
                             if (player == null) return;
 
                             SleepEngine sleepEngine;
@@ -821,7 +821,7 @@ namespace SonOfRobin
                         {
                             Shelter shelterPiece = (Shelter)this.ExecuteHelper;
                             SleepEngine sleepEngine = shelterPiece.sleepEngine;
-                            World.GetTopWorld()?.player.GoToSleep(sleepEngine: sleepEngine, zzzPos: new Vector2(shelterPiece.sprite.gfxRect.Center.X, shelterPiece.sprite.gfxRect.Center.Y), wakeUpBuffs: shelterPiece.buffList);
+                            World.GetTopWorld()?.Player.GoToSleep(sleepEngine: sleepEngine, zzzPos: new Vector2(shelterPiece.sprite.gfxRect.Center.X, shelterPiece.sprite.gfxRect.Center.Y), wakeUpBuffs: shelterPiece.buffList);
 
                             return;
                         }
@@ -938,7 +938,7 @@ namespace SonOfRobin
                         {
                             world = World.GetTopWorld();
                             if (world == null) return;
-                            world.hintEngine.RestoreAllHints();
+                            world.HintEngine.RestoreAllHints();
 
                             return;
                         }
@@ -1002,7 +1002,7 @@ namespace SonOfRobin
                             PieceTemplate.Name fieldPiece = pieceHintData.ContainsKey("fieldPiece") ? (PieceTemplate.Name)pieceHintData["fieldPiece"] : PieceTemplate.Name.Empty;
                             PieceTemplate.Name newOwnedPiece = pieceHintData.ContainsKey("newOwnedPiece") ? (PieceTemplate.Name)pieceHintData["newOwnedPiece"] : PieceTemplate.Name.Empty;
 
-                            world.hintEngine.CheckForPieceHintToShow(ignoreInputActive: true, typesToCheckOnly: typesToCheckOnly, fieldPieceNameToCheck: fieldPiece, newOwnedPieceNameToCheck: newOwnedPiece);
+                            world.HintEngine.CheckForPieceHintToShow(ignoreInputActive: true, typesToCheckOnly: typesToCheckOnly, fieldPieceNameToCheck: fieldPiece, newOwnedPieceNameToCheck: newOwnedPiece);
 
                             return;
                         }
@@ -1013,7 +1013,7 @@ namespace SonOfRobin
                             if (world == null) return;
 
                             var hintType = (HintEngine.Type)this.ExecuteHelper;
-                            world.hintEngine.ShowGeneralHint(type: hintType, ignoreDelay: true);
+                            world.HintEngine.ShowGeneralHint(type: hintType, ignoreDelay: true);
 
                             return;
                         }
@@ -1231,7 +1231,7 @@ namespace SonOfRobin
                             var piecesByID = new Dictionary<string, List<BoardPiece>>();
                             var duplicatedPiecesByID = new Dictionary<string, List<BoardPiece>>();
 
-                            foreach (Sprite sprite in world.grid.GetSpritesFromAllCells(Cell.Group.All))
+                            foreach (Sprite sprite in world.Grid.GetSpritesFromAllCells(Cell.Group.All))
                             {
                                 if (sprite.boardPiece.exists && !sprite.IsOnBoard) incorrectBoardPieces.Add(sprite.boardPiece);
                                 if (piecesByID.ContainsKey(sprite.id)) piecesByID[sprite.id].Add(sprite.boardPiece);

@@ -63,7 +63,7 @@ namespace SonOfRobin
                 return this.world.map.FullScreen ||
                     this.world.CineMode ||
                     this.world.SpectatorMode ||
-                    this.world.player == null;
+                    this.world.Player == null;
             }
         }
 
@@ -90,7 +90,7 @@ namespace SonOfRobin
 
             this.AdaptToNewSize();
 
-            Player player = world.player;
+            Player player = world.Player;
             int width = this.BarWidth;
             int height = this.BarHeight;
             int barsHeight;

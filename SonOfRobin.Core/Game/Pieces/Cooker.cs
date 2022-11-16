@@ -250,7 +250,7 @@ namespace SonOfRobin
 
             // blocking the cooker for "cooking duration"
 
-            Inventory.SetLayout(newLayout: Inventory.Layout.Toolbar, player: this.world.player);
+            Inventory.SetLayout(newLayout: Inventory.Layout.Toolbar, player: this.world.Player);
             this.TurnOn();
             new TextWindow(text: "Cooking...", textColor: Color.White, bgColor: Color.Green, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1);
 
@@ -261,8 +261,8 @@ namespace SonOfRobin
 
             new WorldEvent(eventName: WorldEvent.EventName.FinishCooking, world: this.world, delay: cookingTime, boardPiece: this);
 
-            this.world.hintEngine.Disable(PieceHint.Type.Cooker);
-            this.world.hintEngine.Disable(Tutorials.Type.Cook);
+            this.world.HintEngine.Disable(PieceHint.Type.Cooker);
+            this.world.HintEngine.Disable(Tutorials.Type.Cook);
         }
 
         public void ShowCookingProgress()

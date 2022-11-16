@@ -38,11 +38,11 @@ namespace SonOfRobin
             bool shotPossible = this.PlaceOnBoard(randomPlacement: false, position: startPosition, precisePlacement: true);
             if (!shotPossible)
             {
-                this.world.player.toolStorage.AddPiece(this);
+                this.world.Player.toolStorage.AddPiece(this);
                 return;
             }
 
-            this.world.player.soundPack.Play(PieceSoundPack.Action.PlayerBowRelease);
+            this.world.Player.soundPack.Play(PieceSoundPack.Action.PlayerBowRelease);
 
             float angle = Helpers.GetAngleBetweenTwoPoints(start: this.sprite.position, end: this.sprite.position + movement);
             this.sprite.rotation = angle + (float)(Math.PI * 2f * 0.375f);
@@ -53,9 +53,9 @@ namespace SonOfRobin
 
             this.soundPack.Play(PieceSoundPack.Action.ArrowFly);
 
-            this.world.hintEngine.Disable(Tutorials.Type.ShootProjectile);
-            this.world.hintEngine.Disable(PieceHint.Type.AnimalNegative);
-            this.world.hintEngine.Disable(PieceHint.Type.AnimalBow);
+            this.world.HintEngine.Disable(Tutorials.Type.ShootProjectile);
+            this.world.HintEngine.Disable(PieceHint.Type.AnimalNegative);
+            this.world.HintEngine.Disable(PieceHint.Type.AnimalBow);
         }
 
         public override bool ProcessPassiveMovement()
@@ -79,7 +79,7 @@ namespace SonOfRobin
                 if (closestAnimal != null)
                 {
                     Animal animal = (Animal)closestAnimal;
-                    Tool.HitTarget(attacker: this.world.player, target: animal, hitPower: this.realHitPower, targetPushMultiplier: 0.06f, buffList: this.buffList);
+                    Tool.HitTarget(attacker: this.world.Player, target: animal, hitPower: this.realHitPower, targetPushMultiplier: 0.06f, buffList: this.buffList);
 
                     if (!this.indestructible)
                     {

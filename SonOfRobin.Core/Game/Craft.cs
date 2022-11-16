@@ -211,7 +211,7 @@ namespace SonOfRobin
                 {
                     world.islandClock.Advance(amount: this.GetRealDuration(world.craftStats), ignorePause: true);
                     player.Fatigue += this.GetRealFatigue(world.craftStats);
-                    player.Fatigue = Math.Min(world.player.Fatigue, world.player.MaxFatigue - 20); // to avoid falling asleep just after crafting
+                    player.Fatigue = Math.Min(world.Player.Fatigue, world.Player.MaxFatigue - 20); // to avoid falling asleep just after crafting
                 }
 
                 // crafting
@@ -291,7 +291,7 @@ namespace SonOfRobin
                 taskChain.Add(new HintMessage(text: message, boxType: HintMessage.BoxType.GreenBox, delay: 0, blockInput: false, useTransition: true,
                     imageList: new List<Texture2D> { PieceInfo.GetInfo(this.pieceToCreate).texture }, startingSound: soundName).ConvertToTask());
 
-                HintEngine hintEngine = world.hintEngine;
+                HintEngine hintEngine = world.HintEngine;
 
                 hintEngine.Disable(Tutorials.Type.Craft);
                 if (this.pieceToCreate == PieceTemplate.Name.WorkshopEssential) hintEngine.Disable(Tutorials.Type.BuildWorkshop);

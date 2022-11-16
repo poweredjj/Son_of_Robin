@@ -171,7 +171,7 @@ namespace SonOfRobin
         }
 
         public List<BoardPiece> GetSeenPieces()
-        { return world.grid.GetPiecesWithinDistance(groupName: Cell.Group.Visible, mainSprite: this.sprite, distance: this.sightRange); }
+        { return world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.Visible, mainSprite: this.sprite, distance: this.sightRange); }
 
         private void UpdateAttackCooldown()
         {
@@ -331,7 +331,7 @@ namespace SonOfRobin
                         this.visualAid = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: this.sprite.position, templateName: PieceTemplate.Name.Exclamation);
                         new Tracking(world: world, targetSprite: this.sprite, followingSprite: this.visualAid.sprite, targetYAlign: YAlign.Top, targetXAlign: XAlign.Left, followingYAlign: YAlign.Bottom, offsetX: 0, offsetY: 5);
 
-                        this.world.hintEngine.CheckForPieceHintToShow(typesToCheckOnly: new List<PieceHint.Type> { PieceHint.Type.RedExclamation }, fieldPieceNameToCheck: this.visualAid.name);
+                        this.world.HintEngine.CheckForPieceHintToShow(typesToCheckOnly: new List<PieceHint.Type> { PieceHint.Type.RedExclamation }, fieldPieceNameToCheck: this.visualAid.name);
                     }
 
                     this.activeState = State.AnimalChaseTarget;
@@ -565,7 +565,7 @@ namespace SonOfRobin
                         redOverlay.transManager.AddTransition(new Transition(transManager: redOverlay.transManager, outTrans: true, duration: 20, playCount: 1, stageTransform: Transition.Transform.Sinus, baseParamName: "Opacity", targetVal: 0.5f, endRemoveScene: true));
                         this.world.solidColorManager.Add(redOverlay);
 
-                        if (!this.eats.Contains(PieceTemplate.Name.Player)) this.world.hintEngine.ShowGeneralHint(type: HintEngine.Type.AnimalCounters, ignoreDelay: true, piece: this);
+                        if (!this.eats.Contains(PieceTemplate.Name.Player)) this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.AnimalCounters, ignoreDelay: true, piece: this);
                     }
                 }
             }

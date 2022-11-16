@@ -183,9 +183,9 @@ namespace SonOfRobin
             foreach (Scene scene in existingWorlds)
             {
                 World oldWorld = (World)scene;
-                if (!oldWorld.WorldCreationInProgress && oldWorld.grid != null && !oldWorld.grid.CreationInProgress && newWorld.seed == oldWorld.seed && newWorld.width == oldWorld.width && newWorld.height == oldWorld.height)
+                if (!oldWorld.WorldCreationInProgress && oldWorld.Grid != null && !oldWorld.Grid.CreationInProgress && newWorld.seed == oldWorld.seed && newWorld.width == oldWorld.width && newWorld.height == oldWorld.height)
                 {
-                    Grid templateGrid = oldWorld.grid;
+                    Grid templateGrid = oldWorld.Grid;
 
                     foreach (var kvp in templateGrid.terrainByName)
                     {
@@ -1004,7 +1004,7 @@ namespace SonOfRobin
             {
                 cell.DrawBackground(drawSimulation: true);
 
-                if (this.world.MapEnabled && !cell.VisitedByPlayer && cameraRect.Intersects(cell.rect) && camera.IsTrackingPlayer && this.world.player.CanSeeAnything)
+                if (this.world.MapEnabled && !cell.VisitedByPlayer && cameraRect.Intersects(cell.rect) && camera.IsTrackingPlayer && this.world.Player.CanSeeAnything)
                 {
                     cell.SetAsVisited();
                     updateFog = true;

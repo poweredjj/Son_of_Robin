@@ -377,10 +377,10 @@ namespace SonOfRobin
                         Menu menu = new Menu(templateName: templateName, name: "PAUSE", blocksUpdatesBelow: true, canBeClosedManually: true, templateExecuteHelper: executeHelper, soundOpen: SoundData.Name.PaperMove1, soundClose: SoundData.Name.PaperMove2);
                         new Invoker(menu: menu, name: "return to game", closesMenu: true, taskName: Scheduler.TaskName.Empty);
 
-                        if ((Preferences.debugSaveEverywhere || Preferences.DebugMode) && !world.SpectatorMode && world.player?.activeState == BoardPiece.State.PlayerControlledWalking && world.player.alive) new Invoker(menu: menu, name: "save game", taskName: Scheduler.TaskName.OpenMenuTemplate, executeHelper: new Dictionary<string, Object> { { "templateName", Name.Save } });
+                        if ((Preferences.debugSaveEverywhere || Preferences.DebugMode) && !world.SpectatorMode && world.Player?.activeState == BoardPiece.State.PlayerControlledWalking && world.Player.alive) new Invoker(menu: menu, name: "save game", taskName: Scheduler.TaskName.OpenMenuTemplate, executeHelper: new Dictionary<string, Object> { { "templateName", Name.Save } });
                         if (SaveHeaderManager.AnySavesExist) new Invoker(menu: menu, name: "load game", taskName: Scheduler.TaskName.OpenMenuTemplate, executeHelper: new Dictionary<string, Object> { { "templateName", Name.Load } });
                         new Invoker(menu: menu, name: "options", taskName: Scheduler.TaskName.OpenMenuTemplate, executeHelper: new Dictionary<string, Object> { { "templateName", Name.Options } });
-                        if (world.hintEngine.shownTutorials.Count > 0) new Invoker(menu: menu, name: "tutorials", taskName: Scheduler.TaskName.OpenMenuTemplate, executeHelper: new Dictionary<string, Object> { { "templateName", Name.Tutorials } });
+                        if (world.HintEngine.shownTutorials.Count > 0) new Invoker(menu: menu, name: "tutorials", taskName: Scheduler.TaskName.OpenMenuTemplate, executeHelper: new Dictionary<string, Object> { { "templateName", Name.Tutorials } });
 
                         var restartConfirmationData = new Dictionary<string, Object> { { "question", "Restart this island?" }, { "taskName", Scheduler.TaskName.RestartWorld }, { "executeHelper", World.GetTopWorld() } };
                         new Invoker(menu: menu, name: "restart this island", taskName: Scheduler.TaskName.OpenConfirmationMenu, executeHelper: restartConfirmationData);
@@ -458,7 +458,7 @@ namespace SonOfRobin
                         foreach (PieceTemplate.Name pieceName in PieceTemplate.allNames)
                         { pieceCounterDict[pieceName] = 0; }
 
-                        foreach (Sprite sprite in world.grid.GetSpritesFromAllCells(Cell.Group.All))
+                        foreach (Sprite sprite in world.Grid.GetSpritesFromAllCells(Cell.Group.All))
                         { pieceCounterDict[sprite.boardPiece.name]++; }
 
                         foreach (PieceTemplate.Name pieceName in pieceCounterDict.Keys)
@@ -466,7 +466,7 @@ namespace SonOfRobin
                             if (pieceName == PieceTemplate.Name.Player || pieceName == PieceTemplate.Name.PlayerGhost) continue; // creating these pieces would cause many glitches
 
                             var imageList = new List<Texture2D> { PieceInfo.GetTexture(pieceName) };
-                            Dictionary<string, Object> createData = new Dictionary<string, Object> { { "position", world.player.sprite.position }, { "templateName", pieceName } };
+                            Dictionary<string, Object> createData = new Dictionary<string, Object> { { "position", world.Player.sprite.position }, { "templateName", pieceName } };
 
                             new Invoker(menu: menu, name: $"{PieceInfo.GetInfo(pieceName).readableName} | ({pieceCounterDict[pieceName]})", imageList: imageList, taskName: Scheduler.TaskName.CreateDebugPieces, executeHelper: createData, rebuildsMenu: true);
                         }
@@ -572,7 +572,7 @@ namespace SonOfRobin
 
                         foreach (Tutorials.Tutorial tutorial in Tutorials.TutorialsInMenu)
                         {
-                            if (world.hintEngine.shownTutorials.Contains(tutorial.type))
+                            if (world.HintEngine.shownTutorials.Contains(tutorial.type))
                             {
                                 new Invoker(menu: menu, name: tutorial.name, taskName: Scheduler.TaskName.ShowTutorialInMenu, executeHelper: tutorial.type);
                             }
@@ -635,7 +635,7 @@ namespace SonOfRobin
         private static Menu CreateCraftMenu(Name templateName, Craft.Category category, string label, SoundData.Name soundOpen)
         {
             World world = World.GetTopWorld();
-            Player player = world.player;
+            Player player = world.Player;
             List<PieceStorage> storageList = player.CraftStorages;
 
             if (player.AreEnemiesNearby && !player.IsActiveFireplaceNearby)

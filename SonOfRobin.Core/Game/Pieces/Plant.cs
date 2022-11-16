@@ -95,9 +95,9 @@ namespace SonOfRobin
                 return;
             }
 
-            if (this.name == PieceTemplate.Name.BananaTree) this.world.hintEngine.Disable(PieceHint.Type.BananaTree);
-            if (this.name == PieceTemplate.Name.TomatoPlant) this.world.hintEngine.Disable(PieceHint.Type.TomatoPlant);
-            if (this.name == PieceTemplate.Name.CherryTree || this.name == PieceTemplate.Name.AppleTree) this.world.hintEngine.Disable(PieceHint.Type.FruitTree);
+            if (this.name == PieceTemplate.Name.BananaTree) this.world.HintEngine.Disable(PieceHint.Type.BananaTree);
+            if (this.name == PieceTemplate.Name.TomatoPlant) this.world.HintEngine.Disable(PieceHint.Type.TomatoPlant);
+            if (this.name == PieceTemplate.Name.CherryTree || this.name == PieceTemplate.Name.AppleTree) this.world.HintEngine.Disable(PieceHint.Type.FruitTree);
 
             Yield debrisYield = new Yield(boardPiece: this, debrisTypeList: this.yield.DebrisTypeList);
             debrisYield.DropDebris();

@@ -64,7 +64,7 @@ namespace SonOfRobin
             {
                 nearbyPieces.Clear();
 
-                var nearbyPiecesTempList = player.world.grid.GetPiecesWithinDistance(groupName: Cell.Group.All, mainSprite: player.sprite, distance: 300).OrderBy(piece => Vector2.Distance(player.sprite.position, piece.sprite.position)).ToList();
+                var nearbyPiecesTempList = player.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.All, mainSprite: player.sprite, distance: 300).OrderBy(piece => Vector2.Distance(player.sprite.position, piece.sprite.position)).ToList();
 
                 nearbyPieces.AddRange(nearbyPiecesTempList);
                 nearbyPiecesFrameChecked = SonOfRobinGame.CurrentUpdate;
@@ -152,16 +152,16 @@ namespace SonOfRobin
         {
             if (this.generalHintToActivate != HintEngine.Type.Empty)
             {
-                world.hintEngine.ShowGeneralHint(type: this.generalHintToActivate, ignoreDelay: true);
+                world.HintEngine.ShowGeneralHint(type: this.generalHintToActivate, ignoreDelay: true);
                 return;
             }
 
             var messagesToDisplay = this.messageList.ToList();
-            messagesToDisplay.AddRange(this.GetTutorials(world.hintEngine.shownTutorials));
+            messagesToDisplay.AddRange(this.GetTutorials(world.HintEngine.shownTutorials));
 
             if (this.fieldPiecesNearby != null)
             {
-                foreach (BoardPiece piece in GetNearbyPieces(world.player))
+                foreach (BoardPiece piece in GetNearbyPieces(world.Player))
                 {
                     if (this.fieldPiecesNearby.Contains(piece.name))
                     {
@@ -209,7 +209,7 @@ namespace SonOfRobin
         private bool CheckIfConditionsAreMet(Player player, PieceTemplate.Name fieldPieceNameToCheck = PieceTemplate.Name.Empty, PieceTemplate.Name newOwnedPieceNameToCheck = PieceTemplate.Name.Empty)
         {
             if (!Preferences.showHints && !this.ignoreHintSetting) return false;
-            if (player.world.hintEngine.shownPieceHints.Contains(this.type)) return false;
+            if (player.world.HintEngine.shownPieceHints.Contains(this.type)) return false;
             if (this.menuOnly && Scene.GetTopSceneOfType(typeof(Menu)) == null) return false;
             if (this.fieldOnly && Scene.GetTopSceneOfType(typeof(Menu)) != null) return false;
 
@@ -317,7 +317,7 @@ namespace SonOfRobin
             }
 
             // field pieces anywhere
-            if (this.existingPiecesCount != null && !player.world.grid.SpecifiedPiecesCountIsMet(this.existingPiecesCount)) return false;
+            if (this.existingPiecesCount != null && !player.world.Grid.SpecifiedPiecesCountIsMet(this.existingPiecesCount)) return false;
 
             return true;
         }

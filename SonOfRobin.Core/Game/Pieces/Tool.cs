@@ -31,7 +31,7 @@ namespace SonOfRobin
         public Projectile CheckForAmmo(bool removePiece)
         {
             // toolStorage should be checked first (so that the player could place preferred ammo there)
-            var ammoStorages = new List<PieceStorage> { this.world.player.toolStorage, this.world.player.pieceStorage };
+            var ammoStorages = new List<PieceStorage> { this.world.Player.toolStorage, this.world.Player.pieceStorage };
 
             foreach (PieceStorage ammoStorage in ammoStorages)
             {
@@ -53,10 +53,10 @@ namespace SonOfRobin
             if (!this.indestructible)
             {
                 this.hitPoints = Math.Max(0, this.hitPoints - this.world.random.Next(1, 5));
-                if (this.hitPoints == 0) this.world.hintEngine.ShowGeneralHint(type: HintEngine.Type.BrokenItem, ignoreDelay: true, text: this.readableName, texture: this.sprite.frame.texture);
+                if (this.hitPoints == 0) this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.BrokenItem, ignoreDelay: true, text: this.readableName, texture: this.sprite.frame.texture);
             }
 
-            float angle = this.world.player.shootingAngle;
+            float angle = this.world.Player.shootingAngle;
 
             int offsetDist = 1;
             int movementDist = 1000;
@@ -64,14 +64,14 @@ namespace SonOfRobin
             Vector2 offset = new Vector2((int)Math.Round(offsetDist * Math.Cos(angle)), (int)Math.Round(offsetDist * Math.Sin(angle)));
             Vector2 movement = new Vector2((int)Math.Round(movementDist * Math.Cos(angle)), (int)Math.Round(movementDist * Math.Sin(angle)));
 
-            Sprite playerSprite = this.world.player.sprite;
+            Sprite playerSprite = this.world.Player.sprite;
             Vector2 startingPos = playerSprite.position + new Vector2(offset.X * playerSprite.frame.colWidth * 1.5f, offset.Y * playerSprite.frame.colHeight * 1.5f);
-            projectile.GetThrown(startPosition: startingPos, movement: movement, hitPowerMultiplier: this.hitPower + this.world.player.strength, shootingPower: shootingPower);
+            projectile.GetThrown(startPosition: startingPos, movement: movement, hitPowerMultiplier: this.hitPower + this.world.Player.strength, shootingPower: shootingPower);
         }
 
         public void Use(List<BoardPiece> targets, int shootingPower = 0, bool highlightOnly = false)
         {
-            Player player = this.world.player;
+            Player player = this.world.Player;
             bool isVeryTired = player.IsVeryTired;
 
             if (this.shootsProjectile)
@@ -112,23 +112,23 @@ namespace SonOfRobin
                     switch (currentTarget.category)
                     {
                         case Category.Wood:
-                            this.world.hintEngine.Disable(PieceHint.Type.WoodNegative);
-                            this.world.hintEngine.Disable(PieceHint.Type.WoodPositive);
-                            this.world.hintEngine.Disable(Tutorials.Type.GetWood);
+                            this.world.HintEngine.Disable(PieceHint.Type.WoodNegative);
+                            this.world.HintEngine.Disable(PieceHint.Type.WoodPositive);
+                            this.world.HintEngine.Disable(Tutorials.Type.GetWood);
 
-                            if (currentTarget.name == PieceTemplate.Name.CrateRegular) this.world.hintEngine.Disable(PieceHint.Type.CrateAnother);
+                            if (currentTarget.name == PieceTemplate.Name.CrateRegular) this.world.HintEngine.Disable(PieceHint.Type.CrateAnother);
 
                             break;
 
                         case Category.Stone:
-                            this.world.hintEngine.Disable(PieceHint.Type.StoneNegative);
-                            this.world.hintEngine.Disable(PieceHint.Type.StonePositive);
-                            this.world.hintEngine.Disable(Tutorials.Type.Mine);
+                            this.world.HintEngine.Disable(PieceHint.Type.StoneNegative);
+                            this.world.HintEngine.Disable(PieceHint.Type.StonePositive);
+                            this.world.HintEngine.Disable(Tutorials.Type.Mine);
                             break;
 
                         case Category.Crystal:
-                            this.world.hintEngine.Disable(PieceHint.Type.CrystalNegative);
-                            this.world.hintEngine.Disable(PieceHint.Type.CrystalPositive);
+                            this.world.HintEngine.Disable(PieceHint.Type.CrystalNegative);
+                            this.world.HintEngine.Disable(PieceHint.Type.CrystalPositive);
                             break;
 
                         case Category.Metal:
@@ -138,39 +138,39 @@ namespace SonOfRobin
                             break;
 
                         case Category.Flesh:
-                            this.world.hintEngine.Disable(PieceHint.Type.AnimalNegative);
-                            if (this.name == PieceTemplate.Name.SpearStone) this.world.hintEngine.Disable(PieceHint.Type.AnimalBat);
+                            this.world.HintEngine.Disable(PieceHint.Type.AnimalNegative);
+                            if (this.name == PieceTemplate.Name.SpearStone) this.world.HintEngine.Disable(PieceHint.Type.AnimalBat);
 
                             if (this.name == PieceTemplate.Name.AxeWood ||
                                 this.name == PieceTemplate.Name.AxeStone ||
                                 this.name == PieceTemplate.Name.AxeIron)
-                                this.world.hintEngine.Disable(PieceHint.Type.AnimalAxe);
+                                this.world.HintEngine.Disable(PieceHint.Type.AnimalAxe);
                             break;
 
                         case Category.Indestructible:
                             break;
 
                         case Category.Dirt:
-                            this.world.hintEngine.Disable(PieceHint.Type.DigSiteNegative);
-                            this.world.hintEngine.Disable(PieceHint.Type.DigSitePositive);
+                            this.world.HintEngine.Disable(PieceHint.Type.DigSiteNegative);
+                            this.world.HintEngine.Disable(PieceHint.Type.DigSitePositive);
                             break;
 
                         default:
                             throw new ArgumentException($"Unsupported targetCategory - {currentTarget.category}.");
                     }
 
-                    if (this.name == PieceTemplate.Name.Hand) this.world.hintEngine.Disable(Tutorials.Type.BreakThing);
+                    if (this.name == PieceTemplate.Name.Hand) this.world.HintEngine.Disable(Tutorials.Type.BreakThing);
                     if (currentTarget.name == PieceTemplate.Name.CoalDeposit)
                     {
-                        this.world.hintEngine.Disable(PieceHint.Type.CoalDepositNegative);
-                        this.world.hintEngine.Disable(PieceHint.Type.CoalDepositPositive);
+                        this.world.HintEngine.Disable(PieceHint.Type.CoalDepositNegative);
+                        this.world.HintEngine.Disable(PieceHint.Type.CoalDepositPositive);
                     }
                     if (currentTarget.name == PieceTemplate.Name.IronDeposit)
                     {
-                        this.world.hintEngine.Disable(PieceHint.Type.IronDepositNegative);
-                        this.world.hintEngine.Disable(PieceHint.Type.IronDepositPositive);
+                        this.world.HintEngine.Disable(PieceHint.Type.IronDepositNegative);
+                        this.world.HintEngine.Disable(PieceHint.Type.IronDepositPositive);
                     }
-                    this.world.hintEngine.Disable(Tutorials.Type.Hit);
+                    this.world.HintEngine.Disable(Tutorials.Type.Hit);
                 }
 
                 if (highlightOnly)
@@ -188,7 +188,7 @@ namespace SonOfRobin
                 }
                 else
                 {
-                    int currentHitPower = (int)Math.Max((this.hitPower + this.world.player.strength) * currentMultiplier, 1);
+                    int currentHitPower = (int)Math.Max((this.hitPower + this.world.Player.strength) * currentMultiplier, 1);
                     HitTarget(attacker: player, target: currentTarget, hitPower: currentHitPower, targetPushMultiplier: 1f, buffList: this.buffList);
                     anyTargetHit = true;
                 }
@@ -203,8 +203,8 @@ namespace SonOfRobin
                     this.hitPoints -= 1;
                     this.hitPoints = Math.Max(0, this.hitPoints);
 
-                    if (this.HitPointsPercent < 0.4f && this.hitPoints > 0) this.world.hintEngine.ShowGeneralHint(type: HintEngine.Type.BreakingItem, ignoreDelay: true, text: this.readableName, texture: this.sprite.frame.texture);
-                    if (this.hitPoints == 0) this.world.hintEngine.ShowGeneralHint(type: HintEngine.Type.BrokenItem, ignoreDelay: true, text: this.readableName, texture: this.sprite.frame.texture);
+                    if (this.HitPointsPercent < 0.4f && this.hitPoints > 0) this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.BreakingItem, ignoreDelay: true, text: this.readableName, texture: this.sprite.frame.texture);
+                    if (this.hitPoints == 0) this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.BrokenItem, ignoreDelay: true, text: this.readableName, texture: this.sprite.frame.texture);
                 }
             }
         }
@@ -230,7 +230,7 @@ namespace SonOfRobin
 
             if (!target.alive || target.hitPoints <= 0)
             {
-                target.world.grid.RemoveFromGroup(sprite: target.sprite, groupName: Cell.Group.ColMovement); // to ensure proper yield placement
+                target.world.Grid.RemoveFromGroup(sprite: target.sprite, groupName: Cell.Group.ColMovement); // to ensure proper yield placement
                 if (target.yield != null && target.exists) target.yield.DropFinalPieces();
                 target.soundPack.Play(PieceSoundPack.Action.IsDestroyed);
                 target.Destroy();

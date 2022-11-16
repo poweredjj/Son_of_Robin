@@ -35,7 +35,7 @@ namespace SonOfRobin
             {
                 if (this.lastCheckedFrame != camera.world.CurrentUpdate)
                 {
-                    camera.world.grid.GetSpritesInCameraViewAndPutIntoList(camera: camera, groupName: groupName, spriteListToFill: this.spriteList, compareWithCameraRect: compareWithCameraRect);
+                    camera.world.Grid.GetSpritesInCameraViewAndPutIntoList(camera: camera, groupName: groupName, spriteListToFill: this.spriteList, compareWithCameraRect: compareWithCameraRect);
                     this.lastCheckedFrame = camera.world.CurrentUpdate;
                 }
                 // else MessageLog.AddMessage(msgType: MsgType.User, message: $"{camera.world.currentUpdate} reusing sprite search {groupName} - {compareWithCameraRect}");
@@ -298,7 +298,7 @@ namespace SonOfRobin
         {
             if (this.TrackedSpriteExists) return;
 
-            var allSprites = this.world.grid.GetSpritesFromAllCells(Cell.Group.ColMovement);
+            var allSprites = this.world.Grid.GetSpritesFromAllCells(Cell.Group.ColMovement);
             var animals = allSprites.Where(sprite => sprite.boardPiece.GetType() == typeof(Animal) && sprite.boardPiece.alive).ToList();
             if (animals.Count == 0) return;
             var index = BoardPiece.Random.Next(0, animals.Count);

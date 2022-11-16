@@ -114,7 +114,7 @@ namespace SonOfRobin
                 int width = (int)(this.world.width * this.scaleMultiplier);
                 int height = (int)(this.world.height * this.scaleMultiplier);
 
-                Texture2D mapTexture = BoardGraphics.CreateEntireMapTexture(grid: this.world.grid, width: width, height: height, multiplier: this.scaleMultiplier);
+                Texture2D mapTexture = BoardGraphics.CreateEntireMapTexture(grid: this.world.Grid, width: width, height: height, multiplier: this.scaleMultiplier);
                 Rectangle sourceRectangle = new Rectangle(0, 0, width, height);
                 SonOfRobinGame.SpriteBatch.Draw(mapTexture, sourceRectangle, sourceRectangle, Color.White);
 
@@ -146,12 +146,12 @@ namespace SonOfRobin
             SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
             SonOfRobinGame.GfxDev.Clear(Color.Transparent);
 
-            int cellWidth = this.world.grid.allCells[0].width;
-            int cellHeight = this.world.grid.allCells[0].height;
+            int cellWidth = this.world.Grid.allCells[0].width;
+            int cellHeight = this.world.Grid.allCells[0].height;
             int destCellWidth = (int)Math.Ceiling(cellWidth * this.scaleMultiplier);
             int destCellHeight = (int)Math.Ceiling(cellHeight * this.scaleMultiplier);
 
-            foreach (Cell cell in Preferences.DebugShowWholeMap ? this.world.grid.allCells : this.world.grid.CellsVisitedByPlayer)
+            foreach (Cell cell in Preferences.DebugShowWholeMap ? this.world.Grid.allCells : this.world.Grid.CellsVisitedByPlayer)
             {
                 Rectangle srcDestRect = new Rectangle(
                     (int)Math.Floor(cell.xMin * this.scaleMultiplier),
@@ -200,7 +200,7 @@ namespace SonOfRobin
                 {
                     case MapMode.Mini:
                         Sound.QuickPlay(SoundData.Name.TurnPage);
-                        this.camera.TrackCoords(position: this.world.player.sprite.position, moveInstantly: true);
+                        this.camera.TrackCoords(position: this.world.Player.sprite.position, moveInstantly: true);
                         this.camera.SetZoom(zoom: this.InitialZoom, setInstantly: true);
                         this.UpdateResolution();
                         this.blocksUpdatesBelow = false;
@@ -232,11 +232,11 @@ namespace SonOfRobin
 
         public bool CheckIfPlayerCanReadTheMap(bool showMessage)
         {
-            bool canBeTurnedOn = this.world.player.CanSeeAnything;
+            bool canBeTurnedOn = this.world.Player.CanSeeAnything;
 
             if (!canBeTurnedOn && showMessage && GetTopSceneOfType(typeof(TextWindow)) == null)
             {
-                if (this.world.hintEngine.shownTutorials.Contains(Tutorials.Type.TooDarkToReadMap)) new TextWindow(text: "It is too dark to read the map.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: InputTypes.None, blockInputDuration: 45, priority: 1, animSound: this.world.DialogueSound);
+                if (this.world.HintEngine.shownTutorials.Contains(Tutorials.Type.TooDarkToReadMap)) new TextWindow(text: "It is too dark to read the map.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: InputTypes.None, blockInputDuration: 45, priority: 1, animSound: this.world.DialogueSound);
                 else Tutorials.ShowTutorialOnTheField(type: Tutorials.Type.TooDarkToReadMap, world: this.world, ignoreDelay: true, ignoreHintsSetting: true);
             }
 
@@ -261,7 +261,7 @@ namespace SonOfRobin
             }
 
             if (this.Mode == MapMode.Full) this.ProcessInput();
-            else this.camera.TrackCoords(this.world.player.sprite.position);
+            else this.camera.TrackCoords(this.world.Player.sprite.position);
 
             this.camera.Update(cameraCorrection: Vector2.Zero);
         }
@@ -320,7 +320,7 @@ namespace SonOfRobin
 
             // center on player
 
-            if (InputMapper.HasBeenPressed(InputMapper.Action.MapCenterPlayer)) this.camera.TrackCoords(position: this.world.player.sprite.position, moveInstantly: true);
+            if (InputMapper.HasBeenPressed(InputMapper.Action.MapCenterPlayer)) this.camera.TrackCoords(position: this.world.Player.sprite.position, moveInstantly: true);
 
             // zoom
 
@@ -402,7 +402,7 @@ namespace SonOfRobin
 
             if (showDetailedMap)
             {
-                cellsToDraw = this.world.grid.GetCellsInsideRect(this.camera.viewRect);
+                cellsToDraw = this.world.Grid.GetCellsInsideRect(this.camera.viewRect);
                 if (!Preferences.DebugShowWholeMap) cellsToDraw = cellsToDraw.Where(cell => cell.VisitedByPlayer).ToList();
 
                 foreach (Cell cell in cellsToDraw)
@@ -418,8 +418,8 @@ namespace SonOfRobin
                 {
                     // loading and unloading textures should be done during "foundCellsWithMissingTextures" only, to avoid unnecessary texture loading
 
-                    this.world.grid.UnloadTexturesIfMemoryLow(this.camera);
-                    this.world.grid.LoadClosestTexturesInCameraView(camera: this.camera, visitedByPlayerOnly: !Preferences.DebugShowWholeMap, loadMoreThanOne: true);
+                    this.world.Grid.UnloadTexturesIfMemoryLow(this.camera);
+                    this.world.Grid.LoadClosestTexturesInCameraView(camera: this.camera, visitedByPlayerOnly: !Preferences.DebugShowWholeMap, loadMoreThanOne: true);
                 }
             }
 
@@ -441,7 +441,7 @@ namespace SonOfRobin
             // mini map displays far pieces on the sides
             if (this.Mode == MapMode.Mini) worldCameraRectForSpriteSearch.Inflate(worldCameraRectForSpriteSearch.Width, worldCameraRectForSpriteSearch.Height);
 
-            var spritesBag = world.grid.GetSpritesForRect(groupName: Cell.Group.ColMovement, visitedByPlayerOnly: !Preferences.DebugShowWholeMap, rectangle: worldCameraRectForSpriteSearch);
+            var spritesBag = world.Grid.GetSpritesForRect(groupName: Cell.Group.ColMovement, visitedByPlayerOnly: !Preferences.DebugShowWholeMap, rectangle: worldCameraRectForSpriteSearch);
 
             var typesShownAlways = new List<Type> { typeof(Player), typeof(Workshop), typeof(Cooker), typeof(Shelter) };
             var namesShownAlways = new List<PieceTemplate.Name> { PieceTemplate.Name.MapMarker };
