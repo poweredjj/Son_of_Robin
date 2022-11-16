@@ -753,7 +753,7 @@ namespace SonOfRobin
         {
             if (!this.hasBeenDiscovered && this.world.MapEnabled && this.world.camera.IsTrackingPlayer && this.world.camera.viewRect.Contains(this.gfxRect)) this.hasBeenDiscovered = true;
 
-            if (this.ObstructsCameraTarget && this.opacityFade == null) this.opacityFade = new OpacityFade(sprite: this, destOpacity: 0.5f, playerObstructMode: true, duration: 10);
+            if (this.ObstructsCameraTarget && this.opacityFade == null) this.opacityFade = new OpacityFade(sprite: this, destOpacity: 0.5f, duration: 10, mode: OpacityFade.Mode.CameraTargetObstruct);
             if (Scene.UpdateStack.Contains(this.world)) this.opacityFade?.Process();
 
             if (Preferences.debugShowRects)

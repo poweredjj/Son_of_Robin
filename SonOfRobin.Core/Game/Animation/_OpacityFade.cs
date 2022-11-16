@@ -5,6 +5,8 @@ namespace SonOfRobin
     [Serializable]
     public class OpacityFade
     {
+        public enum Mode { Normal, CameraTargetObstruct, CameraTargetObstructRevert }
+
         public static readonly int defaultDuration = 30;
 
         [NonSerialized]
@@ -14,10 +16,10 @@ namespace SonOfRobin
         private readonly float destOpacity;
         private readonly float fadePerFrame;
         private int currentFrame;
-        private readonly bool playerObstructMode;
+        public readonly Mode mode;
         private readonly bool destroyPiece;
 
-        public OpacityFade(Sprite sprite, float destOpacity, int duration = -1, bool playerObstructMode = false, bool destroyPiece = false)
+        public OpacityFade(Sprite sprite, float destOpacity, int duration = -1, bool destroyPiece = false, Mode mode = Mode.Normal)
         {
             this.sprite = sprite;
             this.duration = duration;
@@ -25,7 +27,7 @@ namespace SonOfRobin
             this.destOpacity = destOpacity;
             this.currentFrame = 0;
             this.fadePerFrame = (destOpacity - this.sprite.opacity) / (float)this.duration;
-            this.playerObstructMode = playerObstructMode;
+            this.mode = mode;
             this.destroyPiece = destroyPiece;
         }
 
@@ -33,11 +35,11 @@ namespace SonOfRobin
         {
             this.currentFrame++;
 
-            if (this.playerObstructMode)
+            if (this.mode == Mode.CameraTargetObstruct)
             {
                 if (!this.sprite.ObstructsCameraTarget)
                 {
-                    this.sprite.opacityFade = new OpacityFade(sprite: this.sprite, duration: this.duration, destOpacity: 1f);
+                    this.sprite.opacityFade = new OpacityFade(sprite: this.sprite, duration: this.duration, destOpacity: 1f, mode: Mode.CameraTargetObstructRevert);
                     return;
                 }
 

@@ -24,7 +24,7 @@ namespace SonOfRobin
             float rotation = this.sprite.rotation;
             Vector2 position = this.sprite.position;
 
-            if (this.sprite.HasTweener)
+            if (this.sprite.IsOnBoard && this.sprite.HasTweener)
             {
                 // tweener will change parameters and original values must be restored first
                 this.sprite.rotation = this.startRot;
@@ -33,7 +33,7 @@ namespace SonOfRobin
 
             Dictionary<string, Object> pieceData = base.Serialize(); // serializing with proper values
 
-            if (this.sprite.HasTweener)
+            if (this.sprite.IsOnBoard && this.sprite.HasTweener)
             {
                 // restoring "temporary" values after serializing
                 this.sprite.rotation = rotation;

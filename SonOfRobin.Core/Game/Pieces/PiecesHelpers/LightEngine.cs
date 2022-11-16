@@ -18,8 +18,11 @@ namespace SonOfRobin
         public readonly bool castShadows;
         public int tempShadowMaskIndex;
 
-        public int Width { get { return (int)(this.sprite.gfxRect.Width * this.addedGfxRectMultiplier) + width; } set { this.width = value; } }
-        public int Height { get { return (int)(this.sprite.gfxRect.Height * this.addedGfxRectMultiplier) + height; } set { this.height = value; } }
+        public int Width
+        { get { return (int)(this.sprite.gfxRect.Width * this.addedGfxRectMultiplier) + width; } set { this.width = value; } }
+        public int Height
+        { get { return (int)(this.sprite.gfxRect.Height * this.addedGfxRectMultiplier) + height; } set { this.height = value; } }
+
         public int Size
         {
             get { return Math.Max(this.Width, this.Height); }
@@ -29,21 +32,28 @@ namespace SonOfRobin
                 this.height = value;
             }
         }
+
         public float Opacity
         {
             get
             {
-                if (this.glowOnlyAtNight && this.sprite.world.islandClock.CurrentPartOfDay != IslandClock.PartOfDay.Night) return 0f;
-                return this.IsActive ? opacity * this.sprite.opacity : 0f;
+                if (!this.IsActive || (this.glowOnlyAtNight && this.sprite.world.islandClock.CurrentPartOfDay != IslandClock.PartOfDay.Night)) return 0f;
+
+                if (this.sprite.opacityFade != null &&
+                    this.sprite.opacityFade.mode != OpacityFade.Mode.CameraTargetObstruct &&
+                    this.sprite.opacityFade.mode != OpacityFade.Mode.CameraTargetObstructRevert) return this.opacity * this.sprite.opacity;
+                return this.opacity;
             }
         }
-        public Color Color { get { return this.IsActive ? color * this.sprite.opacity : Color.Transparent; } }
+
+        public Color Color
+        { get { return this.IsActive ? this.color * this.Opacity : Color.Transparent; } }
+
         public bool ColorActive
         {
             get
             {
-                if (this.colorActive && this.glowOnlyAtNight && this.sprite.world.islandClock.CurrentPartOfDay != IslandClock.PartOfDay.Night) return false;
-                return this.colorActive;
+                return this.colorActive && this.glowOnlyAtNight && this.sprite.world.islandClock.CurrentPartOfDay != IslandClock.PartOfDay.Night ? false : this.colorActive;
             }
         }
 
