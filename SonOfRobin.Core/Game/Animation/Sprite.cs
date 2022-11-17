@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using MonoGame.Extended.Tweening;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -53,16 +52,7 @@ namespace SonOfRobin
         public List<Cell.Group> gridGroups;
         public Cell currentCell; // current cell, that is containing the sprite
         public bool IsOnBoard { get; private set; }
-        private Tweener tweener;
-        public bool HasTweener { get { return this.tweener != null; } }
-        public Tweener Tweener
-        {
-            get
-            {
-                if (!this.HasTweener) this.tweener = new Tweener();
-                return this.tweener;
-            }
-        }
+
         public string CompleteAnimID
         { get { return GetCompleteAnimId(animPackage: this.animPackage, animSize: this.animSize, animName: this.animName); } }
 
