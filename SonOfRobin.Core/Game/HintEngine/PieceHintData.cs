@@ -313,6 +313,5 @@ namespace SonOfRobin
 
             return newPieceHintList;
         }
-
     }
 }

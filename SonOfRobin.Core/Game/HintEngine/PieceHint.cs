@@ -8,7 +8,8 @@ namespace SonOfRobin
 {
     public struct CountComparison
     {
-        public enum Comparison { Greater, GreaterOrEqual, Equal, LessOrEqual, Less }
+        public enum Comparison
+        { Greater, GreaterOrEqual, Equal, LessOrEqual, Less }
 
         public readonly PieceTemplate.Name name;
         private readonly int count;
@@ -48,15 +49,16 @@ namespace SonOfRobin
 
     public struct PieceHint
     {
-        public enum Type { CrateStarting, CrateAnother, WoodNegative, WoodPositive, DigSiteNegative, DigSitePositive, StoneNegative, StonePositive, CrystalNegative, CrystalPositive, AnimalNegative, AnimalBow, AnimalBat, AnimalAxe, BowNoAmmo, ShellIsNotUseful, ClamField, ClamInventory, FruitTree, BananaTree, TomatoPlant, IronDepositNegative, IronDepositPositive, CoalDepositNegative, CoalDepositPositive, Cooker, LeatherPositive, BackpackPositive, BeltPositive, MapPositive, RedExclamation, Acorn, TorchNegative, TorchPositive, Fireplace, HerbsRed, HerbsYellow, HerbsViolet, HerbsCyan, HerbsBlue, HerbsBlack, GlassSand, CanBuildWorkshop, SmallBase }
+        public enum Type
+        { CrateStarting, CrateAnother, WoodNegative, WoodPositive, DigSiteNegative, DigSitePositive, StoneNegative, StonePositive, CrystalNegative, CrystalPositive, AnimalNegative, AnimalBow, AnimalBat, AnimalAxe, BowNoAmmo, ShellIsNotUseful, ClamField, ClamInventory, FruitTree, BananaTree, TomatoPlant, IronDepositNegative, IronDepositPositive, CoalDepositNegative, CoalDepositPositive, Cooker, LeatherPositive, BackpackPositive, BeltPositive, MapPositive, RedExclamation, Acorn, TorchNegative, TorchPositive, Fireplace, HerbsRed, HerbsYellow, HerbsViolet, HerbsCyan, HerbsBlue, HerbsBlack, GlassSand, CanBuildWorkshop, SmallBase }
 
-        public enum Comparison { Greater, GreaterOrEqual, Equal, LessOrEqual, Less }
+        public enum Comparison
+        { Greater, GreaterOrEqual, Equal, LessOrEqual, Less }
 
         public static readonly List<PieceHint> pieceHintList = new List<PieceHint>();
 
         private static int nearbyPiecesFrameChecked = 0;
         private static readonly List<BoardPiece> nearbyPieces = new List<BoardPiece>();
-
 
         private static List<BoardPiece> GetNearbyPieces(Player player)
         {
@@ -85,7 +87,7 @@ namespace SonOfRobin
         private readonly List<PieceTemplate.Name> fieldPiecesNearby;
         private readonly List<Tutorials.Type> tutorialsToActivate;
         private readonly HintEngine.Type generalHintToActivate;
-        private readonly bool fieldPieceHasNotEmptyStorage;
+        private readonly bool fieldPieceHasNotEmptyStorage; // can be used for checking for fruits, etc.
         private readonly List<PieceTemplate.Name> playerOwnsAnyOfThesePieces;
         private readonly List<PieceTemplate.Name> playerOwnsAllOfThesePieces;
         private readonly List<PieceTemplate.Name> playerDoesNotOwnAnyOfThesePieces;
@@ -161,7 +163,7 @@ namespace SonOfRobin
 
             if (this.fieldPiecesNearby != null)
             {
-                BoardPiece nearbyPiece = this.GetNearbyPiece(world.Player);
+                BoardPiece nearbyPiece = this.GetFirstCorrectFieldPieceNearby(world.Player);
                 Sound.QuickPlay(SoundData.Name.Notification3);
                 HintEngine.ShowPieceDuringPause(world: world, pieceToShow: nearbyPiece, messageList: messagesToDisplay);
             }
@@ -223,7 +225,7 @@ namespace SonOfRobin
             }
 
             // field pieces nearby
-            if (this.fieldPiecesNearby != null && this.GetNearbyPiece(player) == null) return false;
+            if (this.fieldPiecesNearby != null && this.GetFirstCorrectFieldPieceNearby(player) == null) return false;
 
             // parts of day
             if (this.partsOfDay != null && !this.partsOfDay.Contains(player.world.islandClock.CurrentPartOfDay)) return false;
@@ -295,16 +297,14 @@ namespace SonOfRobin
             return true;
         }
 
-        private BoardPiece GetNearbyPiece(Player player)
+        private BoardPiece GetFirstCorrectFieldPieceNearby(Player player)
         {
             foreach (BoardPiece piece in GetNearbyPieces(player))
             {
                 if (this.fieldPiecesNearby.Contains(piece.name))
                 {
-                    if (!this.fieldPieceHasNotEmptyStorage || piece.pieceStorage?.OccupiedSlotsCount > 0) // OccupiedSlotsCount for showing fruits
-                    {
-                        return piece;
-                    }
+                    // fieldPieceHasNotEmptyStorage can be used for checking fruits
+                    if (!this.fieldPieceHasNotEmptyStorage || piece.pieceStorage?.OccupiedSlotsCount > 0) return piece;
                 }
             }
 
@@ -323,6 +323,5 @@ namespace SonOfRobin
 
             return false;
         }
-
     }
 }

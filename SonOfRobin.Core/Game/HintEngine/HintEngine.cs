@@ -7,7 +7,8 @@ namespace SonOfRobin
 {
     public class HintEngine
     {
-        public enum Type { Empty, Hungry, VeryHungry, Starving, Tired, VeryTired, CantShootInWater, SmallInventory, MapNegative, Lava, BreakingItem, BrokenItem, BurntOutTorch, CineIntroduction, CineSmallBase, AnimalScaredOfFire, AnimalCounters, ZoomOutLocked };
+        public enum Type
+        { Empty, Hungry, VeryHungry, Starving, Tired, VeryTired, CantShootInWater, SmallInventory, MapNegative, Lava, BreakingItem, BrokenItem, BurntOutTorch, CineIntroduction, CineSmallBase, AnimalScaredOfFire, AnimalCounters, ZoomOutLocked };
 
         private static readonly List<Type> typesThatIgnoreShowHintSetting = new List<Type> { Type.CineIntroduction, Type.CineSmallBase, Type.VeryTired, Type.Starving, Type.BrokenItem, Type.BurntOutTorch };
 
@@ -19,7 +20,8 @@ namespace SonOfRobin
         public List<Tutorials.Type> shownTutorials = new List<Tutorials.Type> { };
         public readonly World world;
         private int waitUntilFrame;
-        public bool WaitFrameReached { get { return this.world.CurrentUpdate >= this.waitUntilFrame; } }
+        public bool WaitFrameReached
+        { get { return this.world.CurrentUpdate >= this.waitUntilFrame; } }
 
         public HintEngine(World world)
         {
@@ -406,6 +408,7 @@ namespace SonOfRobin
 
             new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteTaskChain, turnOffInputUntilExecution: true, executeHelper: taskChain);
         }
+
         public void RestoreAllHints()
         {
             this.shownPieceHints.Clear();
@@ -415,6 +418,7 @@ namespace SonOfRobin
 
             MessageLog.AddMessage(msgType: MsgType.User, message: "Hints has been restored.");
         }
+
         public void Enable(Type type)
         {
             this.shownGeneralHints.Remove(type);
@@ -432,7 +436,5 @@ namespace SonOfRobin
 
         public void Disable(Tutorials.Type type)
         { if (!this.shownTutorials.Contains(type)) this.shownTutorials.Add(type); }
-
-
     }
 }
