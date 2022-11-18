@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 
 namespace SonOfRobin
 {
@@ -40,10 +39,10 @@ namespace SonOfRobin
                 new PieceCreationData(name: PieceTemplate.Name.TomatoPlant, multiplier: 0.03f, maxAmount: -1),
                 new PieceCreationData(name: PieceTemplate.Name.PalmTree, multiplier: 1.0f, maxAmount: -1),
                 new PieceCreationData(name: PieceTemplate.Name.Cactus, multiplier: 0.2f, maxAmount: -1),
-                new PieceCreationData(name: PieceTemplate.Name.MineralsSmall, multiplier: 0.5f, maxAmount: -1),
-                new PieceCreationData(name: PieceTemplate.Name.MineralsBig, multiplier: 0.3f, maxAmount: -1),
-                new PieceCreationData(name: PieceTemplate.Name.MineralsMossySmall, multiplier: 0.5f, maxAmount: -1),
-                new PieceCreationData(name: PieceTemplate.Name.MineralsMossyBig, multiplier: 0.3f, maxAmount: -1),
+                new PieceCreationData(name: PieceTemplate.Name.MineralsSmall, multiplier: 0.12f, maxAmount: -1),
+                new PieceCreationData(name: PieceTemplate.Name.MineralsBig, multiplier: 0.1f, maxAmount: -1),
+                new PieceCreationData(name: PieceTemplate.Name.MineralsMossySmall, multiplier: 0.2f, maxAmount: -1),
+                new PieceCreationData(name: PieceTemplate.Name.MineralsMossyBig, multiplier: 0.1f, maxAmount: -1),
                 new PieceCreationData(name: PieceTemplate.Name.IronDeposit, multiplier: 0.02f, maxAmount: 30),
                 new PieceCreationData(name: PieceTemplate.Name.CoalDeposit, multiplier: 0.02f, maxAmount: 30),
                 new PieceCreationData(name: PieceTemplate.Name.CrystalDepositBig, multiplier: 0.01f, maxAmount: 10),
@@ -70,10 +69,10 @@ namespace SonOfRobin
                 new PieceCreationData(name: PieceTemplate.Name.SoundLava, multiplier: 0.8f, maxAmount: -1, doNotReplenish: true),
                 };
 
-            { // for testing creation of selected pieces
-                List<PieceTemplate.Name> debugNamesToCheck = new List<PieceTemplate.Name> { PieceTemplate.Name.MineralsMossyBig, PieceTemplate.Name.MineralsMossySmall, PieceTemplate.Name.MineralsBig, PieceTemplate.Name.MineralsSmall };
-                dataList = dataList.Where(record => debugNamesToCheck.Contains(record.name)).ToList();
-            }
+            //{ // for testing creation of selected pieces
+            //    List<PieceTemplate.Name> debugNamesToCheck = new List<PieceTemplate.Name> { PieceTemplate.Name.MineralsMossyBig, PieceTemplate.Name.MineralsMossySmall, PieceTemplate.Name.MineralsBig, PieceTemplate.Name.MineralsSmall };
+            //    dataList = dataList.Where(record => debugNamesToCheck.Contains(record.name)).ToList();
+            //}
 
             return dataList;
         }
