@@ -1044,12 +1044,16 @@ namespace SonOfRobin
             return visibleSprites.Count;
         }
 
-        public void DrawDebugData()
+        public void DrawDebugData(bool drawCellData, bool drawPieceData)
         {
+            if (!drawCellData && !drawPieceData) return;
+
             var visibleCells = this.GetCellsInsideRect(this.world.camera.viewRect);
 
             foreach (Cell cell in visibleCells)
-            { cell.DrawDebugData(groupName: Cell.Group.ColMovement); }
+            {
+                cell.DrawDebugData(groupName: Cell.Group.All, drawCellData: drawCellData, drawPieceData: drawPieceData);
+            }
         }
 
         private static int FindMatchingCellInSingleAxis(int position, int cellLength)

@@ -228,36 +228,51 @@ namespace SonOfRobin
             return Vector2.Distance(cell.center, this.center);
         }
 
-        public void DrawDebugData(Group groupName)
+        public void DrawDebugData(Group groupName, bool drawCellData, bool drawPieceData)
         {
-            Helpers.DrawRectangleOutline(rect: this.rect, color: Color.White * 0.3f, borderWidth: 1);
+            SpriteFont font = SonOfRobinGame.FontPressStart2P5;
 
-            var colorForExtPropNames = new Dictionary<ExtBoardProps.Name, Color> {
+            // drawing cell ext colors
+
+            if (drawCellData)
+            {
+                Helpers.DrawRectangleOutline(rect: this.rect, color: Color.White * 0.3f, borderWidth: 1);
+
+                var colorForExtPropNames = new Dictionary<ExtBoardProps.Name, Color> {
                 { ExtBoardProps.Name.Sea, Color.Cyan },
                 { ExtBoardProps.Name.OuterBeach, Color.Red },
                 { ExtBoardProps.Name.BiomeSwamp, Color.Green },
                 // every name should have its color defined here
             };
 
-            foreach (var kvp in colorForExtPropNames)
-            {
-                ExtBoardProps.Name name = kvp.Key;
-                Color color = kvp.Value;
+                foreach (var kvp in colorForExtPropNames)
+                {
+                    ExtBoardProps.Name name = kvp.Key;
+                    Color color = kvp.Value;
 
-                if (this.grid.CheckIfContainsExtPropertyForCell(name: name, value: true, cellNoX: this.cellNoX, cellNoY: this.cellNoY)) SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, this.rect, SonOfRobinGame.WhiteRectangle.Bounds, color * 0.4f);
+                    if (this.grid.CheckIfContainsExtPropertyForCell(name: name, value: true, cellNoX: this.cellNoX, cellNoY: this.cellNoY)) SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, this.rect, SonOfRobinGame.WhiteRectangle.Bounds, color * 0.4f);
+                }
             }
 
-            SpriteFont font = SonOfRobinGame.FontPressStart2P5;
+            // drawing piece data
 
-            foreach (Sprite sprite in this.spriteGroups[groupName].Values)
+            if (drawPieceData)
             {
-                string spriteText = $"{sprite.id}\n{sprite.animPackage}\n{this.cellNoX},{this.cellNoY}\n{sprite.position.X},{sprite.position.Y}";
-                Helpers.DrawTextWithOutline(font: font, text: spriteText, pos: sprite.position, color: Color.White, outlineColor: Color.Black, outlineSize: 1);
+                foreach (Sprite sprite in this.spriteGroups[groupName].Values)
+                {
+                    string spriteText = $"{sprite.animPackage}\n{this.cellNoX},{this.cellNoY}\n{sprite.position.X},{sprite.position.Y}";
+                    Helpers.DrawTextWithOutline(font: font, text: spriteText, pos: new Vector2(sprite.colRect.Left, sprite.colRect.Top), color: Color.White, outlineColor: Color.Black, outlineSize: 1);
+                }
             }
 
-            string cellText = $"{this.cellNoX},{this.cellNoY}\n{this.xMin},{this.yMin}";
+            // drawing cell info
 
-            Helpers.DrawTextWithOutline(font: font, text: cellText, pos: new Vector2(this.xMin, this.yMin) + new Vector2(5, 5), color: Color.White, outlineColor: Color.Black, outlineSize: 1);
+            if (drawCellData)
+            {
+                string cellText = $"{this.cellNoX},{this.cellNoY}\n{this.xMin},{this.yMin}";
+
+                Helpers.DrawTextWithOutline(font: font, text: cellText, pos: new Vector2(this.xMin, this.yMin) + new Vector2(5, 5), color: Color.White, outlineColor: Color.Black, outlineSize: 1);
+            }
         }
 
         public void DrawBackground(bool drawSimulation, float opacity = 1f)

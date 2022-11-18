@@ -67,8 +67,12 @@ namespace SonOfRobin
                      new PieceCreationData(name: PieceTemplate.Name.SoundLava, multiplier: 0.8f, maxAmount: -1, doNotReplenish: true),
                 };
 
+            //{ // for testing creation of selected pieces
+            //    List<PieceTemplate.Name> debugNamesToCheck = new List<PieceTemplate.Name> { PieceTemplate.Name.MineralsSmall, PieceTemplate.Name.MineralsBig };
+            //    dataList = dataList.Where(record => debugNamesToCheck.Contains(record.name)).ToList();
+            //}
+
             return dataList;
         }
     }
-
 }

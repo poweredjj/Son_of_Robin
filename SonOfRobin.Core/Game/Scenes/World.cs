@@ -1094,8 +1094,8 @@ namespace SonOfRobin
             // drawing sprites
             var noOfDisplayedSprites = this.Grid.DrawSprites(camera: this.camera, blockingLightSpritesList: this.blockingLightSpritesList);
 
-            // drawing grid cells
-            if (Preferences.debugShowCellData) this.Grid.DrawDebugData();
+            // drawing debug cell data
+            this.Grid.DrawDebugData(drawCellData: Preferences.debugShowCellData, drawPieceData: Preferences.debugShowPieceData);
 
             // drawing light and darkness
             this.DrawLightAndDarkness(lightSprites);

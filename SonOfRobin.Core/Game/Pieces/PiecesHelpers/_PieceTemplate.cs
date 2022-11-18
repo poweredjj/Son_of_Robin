@@ -809,7 +809,7 @@ namespace SonOfRobin
                        });
 
                         return new Decoration(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Stone,
-                            minDistance: 0, maxDistance: 500, maxMassBySize: null, generation: generation, yield: yield, maxHitPoints: 100, readableName: "big minerals", description: "Can be mined for stone.", movesWhenDropped: false);
+                            minDistance: 0, maxDistance: 500, maxMassBySize: null, generation: generation, yield: yield, maxHitPoints: 100, readableName: "big minerals", description: "Can be mined for stone.", movesWhenDropped: false, allowedDensity: new AllowedDensity(radious: 130, maxNoOfPiecesSameName: 0));
                     }
 
                 case Name.Backlight:
