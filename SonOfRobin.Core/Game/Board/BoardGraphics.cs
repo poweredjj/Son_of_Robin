@@ -93,7 +93,6 @@ namespace SonOfRobin
         public void ReplaceTexture(Texture2D texture, Color textureSimulationColor)
         {
             if (this.Texture != null) this.Texture.Dispose();
-            else this.cell.grid.loadedTexturesCount++;
             this.Texture = texture;
             if (textureSimulationColor != null) this.TextureSimulationColor = textureSimulationColor;
         }
@@ -151,8 +150,8 @@ namespace SonOfRobin
                     int worldSpaceX = this.cell.xMin + (localX * resDivider);
                     int worldSpaceY = this.cell.yMin + (localY * resDivider);
 
-                    worldSpaceX = Math.Min(Math.Max(worldSpaceX, 0), this.cell.world.width - 1);
-                    worldSpaceY = Math.Min(Math.Max(worldSpaceY, 0), this.cell.world.height - 1);
+                    worldSpaceX = Math.Min(Math.Max(worldSpaceX, 0), this.cell.grid.width - 1);
+                    worldSpaceY = Math.Min(Math.Max(worldSpaceY, 0), this.cell.grid.height - 1);
 
                     smallColorGrid[localX, localY] = CreatePixel(grid: this.cell.grid, x: worldSpaceX, y: worldSpaceY);
                 }

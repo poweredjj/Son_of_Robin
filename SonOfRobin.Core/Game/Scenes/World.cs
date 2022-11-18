@@ -161,7 +161,6 @@ namespace SonOfRobin
         public readonly int resDivider;
         public readonly int initialMaxAnimalsMultiplier;
         public int maxAnimalsPerName;
-        public FastNoiseLite Noise { get; private set; }
         public readonly Random random;
         public readonly int width;
         public readonly int height;
@@ -293,8 +292,6 @@ namespace SonOfRobin
             this.TimePlayed = TimeSpan.Zero;
             this.updateMultiplier = 1;
             this.islandClock = this.saveGameData == null ? new IslandClock(0) : new IslandClock();
-
-            this.Noise = new FastNoiseLite(this.seed);
 
             this.width = width;
             this.height = height;

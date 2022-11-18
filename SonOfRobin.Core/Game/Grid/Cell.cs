@@ -9,7 +9,6 @@ namespace SonOfRobin
     public class Cell
     {
         public readonly Grid grid;
-        public readonly World world;
 
         public readonly int cellNoX;
         public readonly int cellNoY;
@@ -48,10 +47,9 @@ namespace SonOfRobin
             StateMachinesPlants
         }
 
-        public Cell(Grid grid, World world, int cellNoX, int cellNoY, int cellWidth, int cellHeight, Random random)
+        public Cell(Grid grid, int cellNoX, int cellNoY, int cellWidth, int cellHeight, Random random)
         {
             this.grid = grid;
-            this.world = world;
 
             this.cellNoX = cellNoX;
             this.cellNoY = cellNoY;
@@ -59,8 +57,8 @@ namespace SonOfRobin
             this.xMin = cellNoX * cellWidth;
             this.yMin = cellNoY * cellHeight;
 
-            this.width = Math.Min(this.xMin + cellWidth, this.world.width - 1) - this.xMin; // to ensure that it won't go over world bounds
-            this.height = Math.Min(this.yMin + cellHeight, this.world.height - 1) - this.yMin; // to ensure that it won't go over world bounds
+            this.width = Math.Min(this.xMin + cellWidth, this.grid.width - 1) - this.xMin; // to ensure that it won't go over world bounds
+            this.height = Math.Min(this.yMin + cellHeight, this.grid.height - 1) - this.yMin; // to ensure that it won't go over world bounds
 
             this.xMax = this.xMin + this.width - 1;
             this.yMax = this.yMin + this.height - 1;

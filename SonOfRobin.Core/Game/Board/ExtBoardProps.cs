@@ -34,8 +34,7 @@ namespace SonOfRobin
                  new BiomeConstrain(terrainName: Terrain.Name.Humidity, min: 80, max: 255),
             } }
         };
-
-        public readonly Grid grid;
+        public Grid Grid { get; private set; }
 
         private readonly Dictionary<Name, BitArray> extDataByProperty;
         private readonly string templatePath;
@@ -48,18 +47,18 @@ namespace SonOfRobin
 
         public ExtBoardProps(Grid grid)
         {
-            this.grid = grid;
+            this.Grid = grid;
 
             this.CreationInProgress = true;
-            this.templatePath = Path.Combine(this.grid.gridTemplate.templatePath, $"properties.ext");
+            this.templatePath = Path.Combine(this.Grid.gridTemplate.templatePath, $"properties.ext");
 
             var serializedData = this.LoadTemplate();
             if (serializedData == null)
             {
                 this.extDataByProperty = this.MakeArrayCollection();
 
-                this.containsPropertiesTrueGridCell = new List<Name>[this.grid.noOfCellsX, this.grid.noOfCellsY];
-                this.containsPropertiesFalseGridCell = new List<Name>[this.grid.noOfCellsX, this.grid.noOfCellsY];
+                this.containsPropertiesTrueGridCell = new List<Name>[this.Grid.noOfCellsX, this.Grid.noOfCellsY];
+                this.containsPropertiesFalseGridCell = new List<Name>[this.Grid.noOfCellsX, this.Grid.noOfCellsY];
                 this.loadedFromTemplate = false;
             }
             else
@@ -71,6 +70,10 @@ namespace SonOfRobin
                 this.loadedFromTemplate = true;
             }
         }
+        public void AttachToNewGrid(Grid grid)
+        {
+            this.Grid = grid;
+        }
 
         private Dictionary<Name, BitArray> MakeArrayCollection()
         {
@@ -78,7 +81,7 @@ namespace SonOfRobin
 
             foreach (Name extPropName in allExtPropNames)
             {
-                arrayCollection[extPropName] = new BitArray(this.grid.dividedWidth * this.grid.dividedHeight);
+                arrayCollection[extPropName] = new BitArray(this.Grid.dividedWidth * this.Grid.dividedHeight);
             }
 
             return arrayCollection;
@@ -88,12 +91,12 @@ namespace SonOfRobin
         {
             if (!this.CreationInProgress) throw new ArgumentException("Cannot end creation more than once.");
 
-            foreach (Cell cell in this.grid.allCells)
+            foreach (Cell cell in this.Grid.allCells)
             {
-                int xMinRaw = cell.xMin / this.grid.resDivider;
-                int xMaxRaw = cell.xMax / this.grid.resDivider;
-                int yMinRaw = cell.yMin / this.grid.resDivider;
-                int yMaxRaw = cell.yMax / this.grid.resDivider;
+                int xMinRaw = cell.xMin / this.Grid.resDivider;
+                int xMaxRaw = cell.xMax / this.Grid.resDivider;
+                int yMinRaw = cell.yMin / this.Grid.resDivider;
+                int yMaxRaw = cell.yMax / this.Grid.resDivider;
 
                 this.containsPropertiesTrueGridCell[cell.cellNoX, cell.cellNoY] = new List<Name>();
                 this.containsPropertiesFalseGridCell[cell.cellNoX, cell.cellNoY] = new List<Name>();
@@ -129,12 +132,12 @@ namespace SonOfRobin
 
         private int ConvertRaw2DCoordinatesTo1D(int x, int y)
         {
-            return (y * this.grid.dividedWidth) + x;
+            return (y * this.Grid.dividedWidth) + x;
         }
 
         private int Convert2DCoordinatesTo1D(int x, int y)
         {
-            return (y / this.grid.resDivider * this.grid.dividedWidth) + (x / this.grid.resDivider);
+            return (y / this.Grid.resDivider * this.Grid.dividedWidth) + (x / this.Grid.resDivider);
         }
 
         public bool GetValue(Name name, int x, int y, bool xyRaw)

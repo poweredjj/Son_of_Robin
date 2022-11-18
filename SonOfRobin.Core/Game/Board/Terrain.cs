@@ -24,9 +24,9 @@ namespace SonOfRobin
 
         public readonly Name name;
         private readonly Byte[,] mapData;
+        public Grid Grid { get; private set; }
 
-        public readonly Grid grid;
-        public readonly World world;
+        private readonly int seed;
 
         private readonly string templatePath;
 
@@ -42,11 +42,11 @@ namespace SonOfRobin
         private readonly byte[,] minValGridCell; // this values are stored in terrain, instead of cell
         private readonly byte[,] maxValGridCell; // this values are stored in terrain, instead of cell
 
-        public Terrain(World world, Name name, float frequency, int octaves, float persistence, float lacunarity, float gain, bool addBorder = false)
+        public Terrain(Grid grid, Name name, float frequency, int octaves, float persistence, float lacunarity, float gain, bool addBorder = false)
         {
             this.name = name;
-            this.world = world;
-            this.grid = this.world.Grid;
+            this.Grid = grid;
+            this.seed = grid.gridTemplate.seed;
 
             this.frequency = frequency;
             this.octaves = octaves;
@@ -54,7 +54,7 @@ namespace SonOfRobin
             this.lacunarity = lacunarity;
             this.gain = gain;
 
-            this.templatePath = Path.Combine(this.grid.gridTemplate.templatePath, $"{Convert.ToString(name).ToLower()}.map");
+            this.templatePath = Path.Combine(this.Grid.gridTemplate.templatePath, $"{Convert.ToString(name).ToLower()}.map");
 
             var serializedTerrainData = this.LoadTemplate();
 
@@ -66,8 +66,8 @@ namespace SonOfRobin
 
                 this.mapData = this.CreateNoiseMap(addBorder: addBorder);
 
-                this.minValGridCell = new byte[this.grid.noOfCellsX, this.grid.noOfCellsY];
-                this.maxValGridCell = new byte[this.grid.noOfCellsX, this.grid.noOfCellsY];
+                this.minValGridCell = new byte[this.Grid.noOfCellsX, this.Grid.noOfCellsY];
+                this.maxValGridCell = new byte[this.Grid.noOfCellsX, this.Grid.noOfCellsY];
                 this.UpdateMinMaxGridCell();
 
                 this.SaveTemplate();
@@ -80,12 +80,18 @@ namespace SonOfRobin
             }
         }
 
+        public void AttachToNewGrid(Grid grid)
+        {
+            this.Grid = grid;
+        }
+
+
         public Byte GetMapData(int x, int y)
         {
             if (x < 0) throw new IndexOutOfRangeException($"X {x} cannot be less than 0.");
             if (y < 0) throw new IndexOutOfRangeException($"Y {y} cannot be less than 0.");
 
-            return this.mapData[x / this.grid.resDivider, y / this.grid.resDivider];
+            return this.mapData[x / this.Grid.resDivider, y / this.Grid.resDivider];
         }
 
         public Byte GetMapDataRaw(int x, int y)
@@ -133,9 +139,9 @@ namespace SonOfRobin
 
         private byte[,] CreateNoiseMap(bool addBorder = false)
         {
-            FastNoiseLite noise = this.world.Noise;
+            FastNoiseLite noise = new FastNoiseLite(this.seed);
 
-            noise.SetSeed(this.world.seed);
+            noise.SetSeed(this.seed);
             noise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2);
             noise.SetFractalOctaves(this.octaves);
             noise.SetFractalLacunarity(this.lacunarity);
@@ -144,15 +150,15 @@ namespace SonOfRobin
             noise.SetFractalType(FastNoiseLite.FractalType.FBm);
             noise.SetFractalWeightedStrength(this.persistence);
 
-            var newMapData = new byte[this.grid.dividedWidth, this.grid.dividedHeight];
+            var newMapData = new byte[this.Grid.dividedWidth, this.Grid.dividedHeight];
 
-            int resDivider = this.grid.resDivider;
+            int resDivider = this.Grid.resDivider;
 
-            Parallel.For(0, this.grid.dividedHeight, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, y =>
+            Parallel.For(0, this.Grid.dividedHeight, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, y =>
             {
                 int realY = y * resDivider;
 
-                for (int x = 0; x < this.grid.dividedWidth; x++)
+                for (int x = 0; x < this.Grid.dividedWidth; x++)
                 {
                     int realX = x * resDivider;
 
@@ -169,10 +175,10 @@ namespace SonOfRobin
 
         private (double[], double[]) CreateGradientLines()
         {
-            ushort gradientSize = Convert.ToUInt16(Math.Min(this.world.width / 8, this.world.height / 8));
+            ushort gradientSize = Convert.ToUInt16(Math.Min(this.Grid.width / 8, this.Grid.height / 8));
             float edgeValue = 1.5f;
-            double[] gradientX = CreateGradientLine(length: this.world.width, gradientSize: gradientSize, edgeValue: edgeValue);
-            double[] gradientY = CreateGradientLine(length: this.world.height, gradientSize: gradientSize, edgeValue: edgeValue);
+            double[] gradientX = CreateGradientLine(length: this.Grid.width, gradientSize: gradientSize, edgeValue: edgeValue);
+            double[] gradientY = CreateGradientLine(length: this.Grid.height, gradientSize: gradientSize, edgeValue: edgeValue);
             return (gradientX, gradientY);
         }
 
@@ -198,12 +204,12 @@ namespace SonOfRobin
 
         private void UpdateMinMaxGridCell()
         {
-            foreach (Cell cell in this.grid.allCells)
+            foreach (Cell cell in this.Grid.allCells)
             {
-                int xMinRaw = cell.xMin / this.grid.resDivider;
-                int xMaxRaw = cell.xMax / this.grid.resDivider;
-                int yMinRaw = cell.yMin / this.grid.resDivider;
-                int yMaxRaw = cell.yMax / this.grid.resDivider;
+                int xMinRaw = cell.xMin / this.Grid.resDivider;
+                int xMaxRaw = cell.xMax / this.Grid.resDivider;
+                int yMinRaw = cell.yMin / this.Grid.resDivider;
+                int yMaxRaw = cell.yMax / this.Grid.resDivider;
 
                 byte minVal = 255;
                 byte maxVal = 0;

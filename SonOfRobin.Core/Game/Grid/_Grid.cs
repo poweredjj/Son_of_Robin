@@ -183,7 +183,12 @@ namespace SonOfRobin
             foreach (Scene scene in existingWorlds)
             {
                 World oldWorld = (World)scene;
-                if (!oldWorld.WorldCreationInProgress && oldWorld.Grid != null && !oldWorld.Grid.CreationInProgress && newWorld.seed == oldWorld.seed && newWorld.width == oldWorld.width && newWorld.height == oldWorld.height)
+                if (!oldWorld.WorldCreationInProgress &&
+                    oldWorld.Grid != null &&
+                    !oldWorld.Grid.CreationInProgress &&
+                    newWorld.seed == oldWorld.seed &&
+                    newWorld.width == oldWorld.width &&
+                    newWorld.height == oldWorld.height)
                 {
                     Grid templateGrid = oldWorld.Grid;
 
@@ -192,15 +197,19 @@ namespace SonOfRobin
                         Terrain.Name terrainName = kvp.Key;
                         Terrain terrain = kvp.Value;
                         this.terrainByName[terrainName] = terrain;
+                        this.terrainByName[terrainName].AttachToNewGrid(this);
                     }
 
                     this.extBoardProps = templateGrid.extBoardProps;
+                    this.extBoardProps.AttachToNewGrid(this);
 
                     for (int x = 0; x < templateGrid.noOfCellsX; x++)
                     {
                         for (int y = 0; y < templateGrid.noOfCellsY; y++)
                             this.cellGrid[x, y].CopyFromTemplate(templateGrid.cellGrid[x, y]);
                     }
+
+                    this.loadedTexturesCount = this.allCells.Where(cell => cell.boardGraphics.Texture != null).ToList().Count;
 
                     this.FillCellListsForPieceNames();
 
@@ -229,21 +238,21 @@ namespace SonOfRobin
 
                     if (!terrainRendered && !this.terrainByName.ContainsKey(Terrain.Name.Height))
                     {
-                        this.terrainByName[Terrain.Name.Height] = new Terrain(world: this.world, name: Terrain.Name.Height, frequency: 8f, octaves: 9, persistence: 0.5f, lacunarity: 1.9f, gain: 0.55f, addBorder: true);
+                        this.terrainByName[Terrain.Name.Height] = new Terrain(grid: this, name: Terrain.Name.Height, frequency: 8f, octaves: 9, persistence: 0.5f, lacunarity: 1.9f, gain: 0.55f, addBorder: true);
 
                         terrainRendered = true;
                     }
 
                     if (!terrainRendered && !this.terrainByName.ContainsKey(Terrain.Name.Humidity))
                     {
-                        this.terrainByName[Terrain.Name.Humidity] = new Terrain(world: this.world, name: Terrain.Name.Humidity, frequency: 4.3f, octaves: 9, persistence: 0.6f, lacunarity: 1.7f, gain: 0.6f);
+                        this.terrainByName[Terrain.Name.Humidity] = new Terrain(grid: this, name: Terrain.Name.Humidity, frequency: 4.3f, octaves: 9, persistence: 0.6f, lacunarity: 1.7f, gain: 0.6f);
 
                         terrainRendered = true;
                     }
 
                     if (!terrainRendered && !this.terrainByName.ContainsKey(Terrain.Name.Biome))
                     {
-                        this.terrainByName[Terrain.Name.Biome] = new Terrain(world: this.world, name: Terrain.Name.Biome, frequency: 7f, octaves: 3, persistence: 0.7f, lacunarity: 1.4f, gain: 0.3f, addBorder: true);
+                        this.terrainByName[Terrain.Name.Biome] = new Terrain(grid: this, name: Terrain.Name.Biome, frequency: 7f, octaves: 3, persistence: 0.7f, lacunarity: 1.4f, gain: 0.3f, addBorder: true);
 
                         terrainRendered = true;
                     }
@@ -1123,7 +1132,7 @@ namespace SonOfRobin
             {
                 for (int y = 0; y < this.noOfCellsY; y++)
                 {
-                    cellGrid[x, y] = new Cell(world: this.world, grid: this, cellNoX: x, cellNoY: y, cellWidth: this.cellWidth, cellHeight: this.cellHeight, random: this.world.random);
+                    cellGrid[x, y] = new Cell(grid: this, cellNoX: x, cellNoY: y, cellWidth: this.cellWidth, cellHeight: this.cellHeight, random: this.world.random);
                 }
             }
 
@@ -1247,6 +1256,7 @@ namespace SonOfRobin
                 cell.boardGraphics.UnloadTexture();
                 MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Unloaded texture from cell {cell.cellNoX},{cell.cellNoY}.", color: Color.Pink);
             }
+            MessageLog.AddMessage(msgType: MsgType.Debug, message: "Finished unloading textures.", color: Color.Pink);
             GC.Collect();
         }
 
