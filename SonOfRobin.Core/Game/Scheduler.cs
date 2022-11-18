@@ -227,8 +227,8 @@ namespace SonOfRobin
 
                             if (this.ExecuteHelper == null)
                             {
-                                width = Preferences.newWorldWidth;
-                                height = Preferences.newWorldHeight;
+                                width = Preferences.newWorldSize;
+                                height = Preferences.newWorldSize;
                                 seed = Preferences.NewWorldSeed;
                                 resDivider = Preferences.newWorldResDivider;
                                 initialMaxAnimalsMultiplier = Preferences.newWorldMaxAnimalsMultiplier;

@@ -689,7 +689,7 @@ namespace SonOfRobin
                         Tutorials.ShowTutorialOnTheField(type: Tutorials.Type.SwampPoison, world: this.world, ignoreDelay: true);
 
                         if (!this.buffEngine.HasBuff(buffType: BuffEngine.BuffType.RegenPoison, isPositive: false))
-                            this.buffEngine.AddBuff(buff: new BuffEngine.Buff(type: BuffEngine.BuffType.RegenPoison, value: (int)-30, autoRemoveDelay: 25 * 60, canKill: true, increaseIDAtEveryUse: true), world: this.world);
+                            this.buffEngine.AddBuff(buff: new BuffEngine.Buff(type: BuffEngine.BuffType.RegenPoison, value: -70, autoRemoveDelay: 16 * 60, canKill: true, increaseIDAtEveryUse: true), world: this.world);
                     }
                 }
             }

@@ -261,7 +261,7 @@ namespace SonOfRobin
                 foreach (Sprite sprite in this.spriteGroups[groupName].Values)
                 {
                     string spriteText = $"{sprite.animPackage}\n{this.cellNoX},{this.cellNoY}\n{sprite.position.X},{sprite.position.Y}";
-                    Helpers.DrawTextWithOutline(font: font, text: spriteText, pos: new Vector2(sprite.colRect.Left, sprite.colRect.Top), color: Color.White, outlineColor: Color.Black, outlineSize: 1);
+                    Helpers.DrawTextWithOutline(font: font, text: spriteText, pos: new Vector2(sprite.colRect.Left, sprite.colRect.Bottom), color: Color.White, outlineColor: Color.Black, outlineSize: 1);
                 }
             }
 

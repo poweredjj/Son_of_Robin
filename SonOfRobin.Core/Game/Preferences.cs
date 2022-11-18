@@ -15,8 +15,7 @@ namespace SonOfRobin
         public static readonly Dictionary<Object, Object> namesForMapMarkerScale = new Dictionary<Object, Object> { { 0.25f, "small" }, { 0.5f, "medium" }, { 1f, "big" }, { 2f, "huge" }, { 3f, "gigantic" } };
         public static readonly Dictionary<Object, Object> namesForAnimalsMultiplier = new Dictionary<Object, Object> { { 5, "almost extinct" }, { 20, "few" }, { 50, "within reason" }, { 100, "many" }, { 500, "total invasion" } };
 
-        public static int newWorldWidth;
-        public static int newWorldHeight;
+        public static int newWorldSize;
 
         public static int newWorldMaxAnimalsMultiplier; // max animals per name for 10000x10000 area
         public static int newWorldResDivider;
@@ -314,30 +313,26 @@ namespace SonOfRobin
                 switch (selectedWorldSize)
                 {
                     case WorldSize.small:
-                        newWorldWidth = 10000;
-                        newWorldHeight = 10000;
+                        newWorldSize = 10000;
                         break;
 
                     case WorldSize.medium:
-                        newWorldWidth = 30000;
-                        newWorldHeight = 30000;
+                        newWorldSize = 30000;
                         break;
 
                     case WorldSize.large:
-                        newWorldWidth = 40000;
-                        newWorldHeight = 40000;
+                        newWorldSize = 40000;
                         break;
 
                     case WorldSize.gigantic:
-                        newWorldWidth = 60000;
-                        newWorldHeight = 60000;
+                        newWorldSize = 60000;
                         break;
 
                     default:
                         throw new ArgumentException($"Unsupported worldSize - {selectedWorldSize}.");
                 }
 
-                //MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Setting world size to {newWorldWidth}x{newWorldHeight}");
+                //MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Setting world size to {newWorldSize}x{newWorldSize}");
             }
         }
 
@@ -511,8 +506,7 @@ namespace SonOfRobin
             prefsData["customizeWorld"] = customizeWorld;
             prefsData["newWorldResDivider"] = newWorldResDivider;
             prefsData["selectedWorldSize"] = SelectedWorldSize;
-            prefsData["newWorldWidth"] = newWorldWidth;
-            prefsData["newWorldHeight"] = newWorldHeight;
+            prefsData["newWorldSize"] = newWorldSize;
             prefsData["newWorldMaxAnimalsMultiplier"] = newWorldMaxAnimalsMultiplier;
             prefsData["newWorldPlayerFemale"] = newWorldPlayerFemale;
             prefsData["randomSeed"] = randomSeed;
@@ -577,8 +571,7 @@ namespace SonOfRobin
                     CustomizeWorld = (bool)prefsData["customizeWorld"];
                     SelectedWorldSize = (WorldSize)prefsData["selectedWorldSize"];
                     newWorldResDivider = (int)prefsData["newWorldResDivider"];
-                    newWorldWidth = (int)prefsData["newWorldWidth"];
-                    newWorldHeight = (int)prefsData["newWorldHeight"];
+                    newWorldSize = (int)prefsData["newWorldSize"];
                     newWorldMaxAnimalsMultiplier = (int)prefsData["newWorldMaxAnimalsMultiplier"];
                     newWorldPlayerFemale = (bool)prefsData["newWorldPlayerFemale"];
                     randomSeed = (bool)prefsData["randomSeed"];

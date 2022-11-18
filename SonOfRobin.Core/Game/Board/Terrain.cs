@@ -140,7 +140,7 @@ namespace SonOfRobin
             noise.SetFractalOctaves(this.octaves);
             noise.SetFractalLacunarity(this.lacunarity);
             noise.SetFractalGain(this.gain);
-            noise.SetFrequency(this.frequency / 30000);
+            noise.SetFrequency(this.frequency / 45000);
             noise.SetFractalType(FastNoiseLite.FractalType.FBm);
             noise.SetFractalWeightedStrength(this.persistence);
 

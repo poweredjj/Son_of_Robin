@@ -1052,7 +1052,7 @@ namespace SonOfRobin
 
             foreach (Cell cell in visibleCells)
             {
-                cell.DrawDebugData(groupName: Cell.Group.All, drawCellData: drawCellData, drawPieceData: drawPieceData);
+                cell.DrawDebugData(groupName: Cell.Group.ColMovement, drawCellData: drawCellData, drawPieceData: drawPieceData);
             }
         }
 
