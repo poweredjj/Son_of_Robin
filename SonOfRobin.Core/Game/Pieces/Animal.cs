@@ -517,6 +517,7 @@ namespace SonOfRobin
 
                 if (playerTarget.activeState == State.PlayerControlledSleep)
                 {
+                    playerTarget.Fatigue = Math.Min(playerTarget.Fatigue, playerTarget.MaxFatigue * 0.8f); // to avoid hit-sleep loop
                     playerTarget.WakeUp(force: true);
                     HintEngine.ShowPieceDuringPause(world: world, pieceToShow: this,
                         messageList: new List<HintMessage> { new HintMessage(text: $"{Helpers.FirstCharToUpperCase(this.readableName)} is attacking me!", boxType: HintMessage.BoxType.Dialogue, blockInput: true) });

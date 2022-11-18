@@ -207,7 +207,7 @@ namespace SonOfRobin
                 if (world == null) return;
 
                 Player player = world.Player;
-                player.Fatigue = player.MaxFatigue * 0.8f;
+                player.Fatigue = player.MaxFatigue * 0.96f;
             }
 
             if (Keyboard.HasBeenPressed(Keys.O))
