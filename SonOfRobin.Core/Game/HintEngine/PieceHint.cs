@@ -161,15 +161,9 @@ namespace SonOfRobin
 
             if (this.fieldPiecesNearby != null)
             {
-                foreach (BoardPiece piece in GetNearbyPieces(world.Player))
-                {
-                    if (this.fieldPiecesNearby.Contains(piece.name))
-                    {
-                        Sound.QuickPlay(SoundData.Name.Notification3);
-                        HintEngine.ShowPieceDuringPause(world: world, pieceToShow: piece, messageList: messagesToDisplay);
-                        break;
-                    }
-                }
+                BoardPiece nearbyPiece = this.GetNearbyPiece(world.Player);
+                Sound.QuickPlay(SoundData.Name.Notification3);
+                HintEngine.ShowPieceDuringPause(world: world, pieceToShow: nearbyPiece, messageList: messagesToDisplay);
             }
             else
             {
@@ -229,28 +223,7 @@ namespace SonOfRobin
             }
 
             // field pieces nearby
-
-            if (this.fieldPiecesNearby != null)
-            {
-                bool fieldPieceFound = false;
-
-                if (!fieldPieceFound)
-                {
-                    foreach (BoardPiece piece in GetNearbyPieces(player))
-                    {
-                        if (this.fieldPiecesNearby.Contains(piece.name))
-                        {
-                            if (!this.fieldPieceHasNotEmptyStorage || piece.pieceStorage?.OccupiedSlotsCount > 0) // for showing fruits
-                            {
-                                fieldPieceFound = true;
-                                break;
-                            }
-                        }
-                    }
-                }
-
-                if (!fieldPieceFound) return false;
-            }
+            if (this.fieldPiecesNearby != null && this.GetNearbyPiece(player) == null) return false;
 
             // parts of day
             if (this.partsOfDay != null && !this.partsOfDay.Contains(player.world.islandClock.CurrentPartOfDay)) return false;
@@ -320,6 +293,22 @@ namespace SonOfRobin
             if (this.existingPiecesCount != null && !player.world.Grid.SpecifiedPiecesCountIsMet(this.existingPiecesCount)) return false;
 
             return true;
+        }
+
+        private BoardPiece GetNearbyPiece(Player player)
+        {
+            foreach (BoardPiece piece in GetNearbyPieces(player))
+            {
+                if (this.fieldPiecesNearby.Contains(piece.name))
+                {
+                    if (!this.fieldPieceHasNotEmptyStorage || piece.pieceStorage?.OccupiedSlotsCount > 0) // OccupiedSlotsCount for showing fruits
+                    {
+                        return piece;
+                    }
+                }
+            }
+
+            return null;
         }
 
         private static bool CheckIfPlayerOwnsPiece(Player player, PieceTemplate.Name name)
