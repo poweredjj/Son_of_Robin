@@ -66,13 +66,6 @@ namespace SonOfRobin
             WaterLily1,
             WaterLily2,
             WaterLily3,
-            WaterRock1,
-            WaterRock2,
-            WaterRock3,
-            WaterRock4,
-            WaterRock5,
-            WaterRock6,
-            WaterRock7,
 
             Zzz,
             Heart,
@@ -811,13 +804,6 @@ namespace SonOfRobin
             AddFrameList(animPackage: PkgName.WaterLily1, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "tile_19ba32a6", layer: 0, x: 384, y: 64, width: 32, height: 32));
             AddFrameList(animPackage: PkgName.WaterLily2, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "tile_19ba32a6", layer: 0, x: 416, y: 0, width: 32, height: 32));
             AddFrameList(animPackage: PkgName.WaterLily3, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "tile_19ba32a6", layer: 0, x: 448, y: 0, width: 32, height: 32));
-            AddFrameList(animPackage: PkgName.WaterRock1, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "tile_19ba32a6", layer: 1, x: 256, y: 0, width: 32, height: 28));
-            AddFrameList(animPackage: PkgName.WaterRock2, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "tile_19ba32a6", layer: 1, x: 292, y: 2, width: 21, height: 21));
-            AddFrameList(animPackage: PkgName.WaterRock3, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "tile_19ba32a6", layer: 1, x: 322, y: 0, width: 27, height: 26));
-            AddFrameList(animPackage: PkgName.WaterRock4, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "tile_19ba32a6", layer: 1, x: 361, y: 0, width: 43, height: 30));
-            AddFrameList(animPackage: PkgName.WaterRock5, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "tile_19ba32a6", layer: 0, x: 256, y: 64, width: 32, height: 32));
-            AddFrameList(animPackage: PkgName.WaterRock6, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "tile_19ba32a6", layer: 0, x: 324, y: 38, width: 27, height: 49));
-            AddFrameList(animPackage: PkgName.WaterRock7, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "tile_19ba32a6", layer: 0, x: 288, y: 32, width: 32, height: 32));
             AddFrameList(animPackage: PkgName.BloodSplatter1, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "tile_custom01", layer: 0, x: 416, y: 320, width: 32, height: 32));
             AddFrameList(animPackage: PkgName.BloodSplatter2, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "tile_custom01", layer: 0, x: 448, y: 320, width: 32, height: 32));
             AddFrameList(animPackage: PkgName.BloodSplatter3, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "tile_custom01", layer: 0, x: 448, y: 288, width: 32, height: 32));
