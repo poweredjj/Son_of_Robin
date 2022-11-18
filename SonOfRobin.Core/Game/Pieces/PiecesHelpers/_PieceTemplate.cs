@@ -57,8 +57,10 @@ namespace SonOfRobin
             Tiger,
             Frog,
 
-            MineralsSmall,
             MineralsBig,
+            MineralsSmall,
+            MineralsMossyBig,
+            MineralsMossySmall,
 
             ChestWooden,
             ChestStone,
@@ -779,6 +781,28 @@ namespace SonOfRobin
 
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
                             { Terrain.Name.Height, new AllowedRange(min: 140, max: 180) },
+                            { Terrain.Name.Humidity, new AllowedRange(min: 0, max: 128) },
+                        });
+
+                        var yield = new Yield(debrisType: Yield.DebrisType.Stone,
+                            firstDroppedPieces: new List<Yield.DroppedPiece> {
+                                new Yield.DroppedPiece(pieceName: Name.Stone, chanceToDrop: 100, maxNumberToDrop: 1)},
+                            finalDroppedPieces: new List<Yield.DroppedPiece> {
+                                new Yield.DroppedPiece(pieceName: Name.Stone, chanceToDrop: 100, maxNumberToDrop: 2),
+                                new Yield.DroppedPiece(pieceName: Name.Granite, chanceToDrop: 25, maxNumberToDrop: 1)});
+
+                        return new Decoration(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Stone,
+                            minDistance: 0, maxDistance: 500, maxMassBySize: null, generation: generation, yield: yield, maxHitPoints: 60, readableName: "small minerals", description: "Can be mined for stone.", movesWhenDropped: false);
+                    }
+
+                case Name.MineralsMossySmall:
+                    {
+                        var packageNames = new List<AnimData.PkgName> { AnimData.PkgName.MineralsMossySmall1, AnimData.PkgName.MineralsMossySmall2, AnimData.PkgName.MineralsMossySmall3, AnimData.PkgName.MineralsMossySmall4 };
+                        var animPkg = packageNames[random.Next(0, packageNames.Count)];
+
+                        var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
+                            { Terrain.Name.Height, new AllowedRange(min: 140, max: 180) },
+                            { Terrain.Name.Humidity, new AllowedRange(min: 129, max: 255) },
                         });
 
                         var yield = new Yield(debrisType: Yield.DebrisType.Stone,
@@ -798,6 +822,28 @@ namespace SonOfRobin
                         var animPkg = packageNames[random.Next(0, packageNames.Count)];
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
                             { Terrain.Name.Height, new AllowedRange(min: 140, max: 180) },
+                            { Terrain.Name.Humidity, new AllowedRange(min: 0, max: 128) },
+                        });
+
+                        var yield = new Yield(debrisType: Yield.DebrisType.Stone,
+                            firstDroppedPieces: new List<Yield.DroppedPiece> { },
+                            finalDroppedPieces: new List<Yield.DroppedPiece> {
+                                new Yield.DroppedPiece(pieceName: Name.MineralsSmall, chanceToDrop: 100, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: Name.MineralsSmall, chanceToDrop: 100, maxNumberToDrop: 2),
+                                new Yield.DroppedPiece(pieceName: Name.Granite, chanceToDrop: 25, maxNumberToDrop: 2)
+                       });
+
+                        return new Decoration(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Stone,
+                            minDistance: 0, maxDistance: 500, maxMassBySize: null, generation: generation, yield: yield, maxHitPoints: 100, readableName: "big minerals", description: "Can be mined for stone.", movesWhenDropped: false, allowedDensity: new AllowedDensity(radious: 130, maxNoOfPiecesSameName: 0));
+                    }
+
+                case Name.MineralsMossyBig:
+                    {
+                        var packageNames = new List<AnimData.PkgName> { AnimData.PkgName.MineralsMossyBig1, AnimData.PkgName.MineralsMossyBig2, AnimData.PkgName.MineralsMossyBig3, AnimData.PkgName.MineralsMossyBig4 };
+                        var animPkg = packageNames[random.Next(0, packageNames.Count)];
+                        var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
+                            { Terrain.Name.Height, new AllowedRange(min: 140, max: 180) },
+                            { Terrain.Name.Humidity, new AllowedRange(min: 129, max: 255) },
                         });
 
                         var yield = new Yield(debrisType: Yield.DebrisType.Stone,

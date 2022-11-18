@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace SonOfRobin
 {
@@ -20,57 +21,59 @@ namespace SonOfRobin
         public static List<PieceCreationData> CreateDataList(int maxAnimalsPerName)
         {
             var dataList = new List<PieceCreationData>
-                {
-                     new PieceCreationData(name: PieceTemplate.Name.GrassRegular, multiplier: 2.0f, maxAmount: 1000),
-                     new PieceCreationData(name: PieceTemplate.Name.GrassGlow, multiplier: 0.1f, maxAmount: 40),
-                     new PieceCreationData(name: PieceTemplate.Name.GrassDesert, multiplier: 2.0f, maxAmount: -1),
-                     new PieceCreationData(name: PieceTemplate.Name.PlantPoison, multiplier: 1.0f, maxAmount: -1),
-                     new PieceCreationData(name: PieceTemplate.Name.Rushes, multiplier: 2.0f, maxAmount: -1),
-                     new PieceCreationData(name: PieceTemplate.Name.WaterLily, multiplier: 0.3f, maxAmount: -1),
-                     new PieceCreationData(name: PieceTemplate.Name.FlowersPlain, multiplier: 0.4f, maxAmount: -1),
-                     new PieceCreationData(name: PieceTemplate.Name.FlowersRed, multiplier: 0.1f, maxAmount: -1),
-                     new PieceCreationData(name: PieceTemplate.Name.FlowersMountain, multiplier: 0.1f, maxAmount: -1),
-                     new PieceCreationData(name: PieceTemplate.Name.TreeSmall, multiplier: 1.0f, maxAmount: -1),
-                     new PieceCreationData(name: PieceTemplate.Name.TreeBig, multiplier: 1.0f, maxAmount: -1),
-                     new PieceCreationData(name: PieceTemplate.Name.Oak, multiplier: 0.03f, maxAmount: -1),
-                     new PieceCreationData(name: PieceTemplate.Name.AppleTree, multiplier: 0.03f, maxAmount: -1),
-                     new PieceCreationData(name: PieceTemplate.Name.CherryTree, multiplier: 0.03f, maxAmount: -1),
-                     new PieceCreationData(name: PieceTemplate.Name.BananaTree, multiplier: 0.03f, maxAmount: -1),
-                     new PieceCreationData(name: PieceTemplate.Name.TomatoPlant, multiplier: 0.03f, maxAmount: -1),
-                     new PieceCreationData(name: PieceTemplate.Name.PalmTree, multiplier: 1.0f, maxAmount: -1),
-                     new PieceCreationData(name: PieceTemplate.Name.Cactus, multiplier: 0.2f, maxAmount: -1),
-                     new PieceCreationData(name: PieceTemplate.Name.MineralsSmall, multiplier: 0.5f, maxAmount: -1),
-                     new PieceCreationData(name: PieceTemplate.Name.MineralsBig, multiplier: 0.3f, maxAmount: -1),
-                     new PieceCreationData(name: PieceTemplate.Name.IronDeposit, multiplier: 0.02f, maxAmount: 30),
-                     new PieceCreationData(name: PieceTemplate.Name.CoalDeposit, multiplier: 0.02f, maxAmount: 30),
-                     new PieceCreationData(name: PieceTemplate.Name.CrystalDepositBig, multiplier: 0.01f, maxAmount: 10),
-                     new PieceCreationData(name: PieceTemplate.Name.Shell, multiplier: 1f, maxAmount: 25),
-                     new PieceCreationData(name: PieceTemplate.Name.Clam, multiplier: 1f, maxAmount: 25),
-                     new PieceCreationData(name: PieceTemplate.Name.BeachDigSite, multiplier: 0.8f, maxAmount: -1),
-                     new PieceCreationData(name: PieceTemplate.Name.ForestDigSite, multiplier: 0.3f, maxAmount: -1),
-                     new PieceCreationData(name: PieceTemplate.Name.DesertDigSite, multiplier: 0.2f, maxAmount: -1),
-                     new PieceCreationData(name: PieceTemplate.Name.GlassDigSite, multiplier: 0.1f, maxAmount: 200),
-                     new PieceCreationData(name: PieceTemplate.Name.SwampDigSite, multiplier: 0.15f, maxAmount: -1),
-                     new PieceCreationData(name: PieceTemplate.Name.CrateRegular, multiplier: 0.1f, maxAmount: 2),
-                     new PieceCreationData(name: PieceTemplate.Name.Rabbit, multiplier: 0.6f, maxAmount: maxAnimalsPerName),
-                     new PieceCreationData(name: PieceTemplate.Name.Fox, multiplier: 0.4f, maxAmount: maxAnimalsPerName),
-                     new PieceCreationData(name: PieceTemplate.Name.Tiger, multiplier: 0.4f, maxAmount: maxAnimalsPerName),
-                     new PieceCreationData(name: PieceTemplate.Name.Frog, multiplier: 0.2f, maxAmount: maxAnimalsPerName),
-                     new PieceCreationData(name: PieceTemplate.Name.LavaLight, multiplier: 0.5f, maxAmount: -1, doNotReplenish: true),
-                     new PieceCreationData(name: PieceTemplate.Name.SwampGas, multiplier: 3.0f, maxAmount: -1, doNotReplenish: true),
-                     new PieceCreationData(name: PieceTemplate.Name.SoundSeaWaves, multiplier: 2.0f, maxAmount: -1, doNotReplenish: true),
-                     new PieceCreationData(name: PieceTemplate.Name.SoundSeaWind, multiplier: 1.4f, maxAmount: -1, doNotReplenish: true),
-                     new PieceCreationData(name: PieceTemplate.Name.SoundLakeWaves, multiplier: 1.2f, maxAmount: -1, doNotReplenish: true),
-                     new PieceCreationData(name: PieceTemplate.Name.SoundDesertWind, multiplier: 0.8f, maxAmount: -1, doNotReplenish: true),
-                     new PieceCreationData(name: PieceTemplate.Name.SoundNightCrickets, multiplier: 0.8f, maxAmount: -1, doNotReplenish: true),
-                     new PieceCreationData(name: PieceTemplate.Name.SoundNoonCicadas, multiplier: 0.8f, maxAmount: -1, doNotReplenish: true),
-                     new PieceCreationData(name: PieceTemplate.Name.SoundLava, multiplier: 0.8f, maxAmount: -1, doNotReplenish: true),
+            {
+                new PieceCreationData(name: PieceTemplate.Name.GrassRegular, multiplier: 2.0f, maxAmount: 1000),
+                new PieceCreationData(name: PieceTemplate.Name.GrassGlow, multiplier: 0.1f, maxAmount: 40),
+                new PieceCreationData(name: PieceTemplate.Name.GrassDesert, multiplier: 2.0f, maxAmount: -1),
+                new PieceCreationData(name: PieceTemplate.Name.PlantPoison, multiplier: 1.0f, maxAmount: -1),
+                new PieceCreationData(name: PieceTemplate.Name.Rushes, multiplier: 2.0f, maxAmount: -1),
+                new PieceCreationData(name: PieceTemplate.Name.WaterLily, multiplier: 0.3f, maxAmount: -1),
+                new PieceCreationData(name: PieceTemplate.Name.FlowersPlain, multiplier: 0.4f, maxAmount: -1),
+                new PieceCreationData(name: PieceTemplate.Name.FlowersRed, multiplier: 0.1f, maxAmount: -1),
+                new PieceCreationData(name: PieceTemplate.Name.FlowersMountain, multiplier: 0.1f, maxAmount: -1),
+                new PieceCreationData(name: PieceTemplate.Name.TreeSmall, multiplier: 1.0f, maxAmount: -1),
+                new PieceCreationData(name: PieceTemplate.Name.TreeBig, multiplier: 1.0f, maxAmount: -1),
+                new PieceCreationData(name: PieceTemplate.Name.Oak, multiplier: 0.03f, maxAmount: -1),
+                new PieceCreationData(name: PieceTemplate.Name.AppleTree, multiplier: 0.03f, maxAmount: -1),
+                new PieceCreationData(name: PieceTemplate.Name.CherryTree, multiplier: 0.03f, maxAmount: -1),
+                new PieceCreationData(name: PieceTemplate.Name.BananaTree, multiplier: 0.03f, maxAmount: -1),
+                new PieceCreationData(name: PieceTemplate.Name.TomatoPlant, multiplier: 0.03f, maxAmount: -1),
+                new PieceCreationData(name: PieceTemplate.Name.PalmTree, multiplier: 1.0f, maxAmount: -1),
+                new PieceCreationData(name: PieceTemplate.Name.Cactus, multiplier: 0.2f, maxAmount: -1),
+                new PieceCreationData(name: PieceTemplate.Name.MineralsSmall, multiplier: 0.5f, maxAmount: -1),
+                new PieceCreationData(name: PieceTemplate.Name.MineralsBig, multiplier: 0.3f, maxAmount: -1),
+                new PieceCreationData(name: PieceTemplate.Name.MineralsMossySmall, multiplier: 0.5f, maxAmount: -1),
+                new PieceCreationData(name: PieceTemplate.Name.MineralsMossyBig, multiplier: 0.3f, maxAmount: -1),
+                new PieceCreationData(name: PieceTemplate.Name.IronDeposit, multiplier: 0.02f, maxAmount: 30),
+                new PieceCreationData(name: PieceTemplate.Name.CoalDeposit, multiplier: 0.02f, maxAmount: 30),
+                new PieceCreationData(name: PieceTemplate.Name.CrystalDepositBig, multiplier: 0.01f, maxAmount: 10),
+                new PieceCreationData(name: PieceTemplate.Name.Shell, multiplier: 1f, maxAmount: 25),
+                new PieceCreationData(name: PieceTemplate.Name.Clam, multiplier: 1f, maxAmount: 25),
+                new PieceCreationData(name: PieceTemplate.Name.BeachDigSite, multiplier: 0.8f, maxAmount: -1),
+                new PieceCreationData(name: PieceTemplate.Name.ForestDigSite, multiplier: 0.3f, maxAmount: -1),
+                new PieceCreationData(name: PieceTemplate.Name.DesertDigSite, multiplier: 0.2f, maxAmount: -1),
+                new PieceCreationData(name: PieceTemplate.Name.GlassDigSite, multiplier: 0.1f, maxAmount: 200),
+                new PieceCreationData(name: PieceTemplate.Name.SwampDigSite, multiplier: 0.15f, maxAmount: -1),
+                new PieceCreationData(name: PieceTemplate.Name.CrateRegular, multiplier: 0.1f, maxAmount: 2),
+                new PieceCreationData(name: PieceTemplate.Name.Rabbit, multiplier: 0.6f, maxAmount: maxAnimalsPerName),
+                new PieceCreationData(name: PieceTemplate.Name.Fox, multiplier: 0.4f, maxAmount: maxAnimalsPerName),
+                new PieceCreationData(name: PieceTemplate.Name.Tiger, multiplier: 0.4f, maxAmount: maxAnimalsPerName),
+                new PieceCreationData(name: PieceTemplate.Name.Frog, multiplier: 0.2f, maxAmount: maxAnimalsPerName),
+                new PieceCreationData(name: PieceTemplate.Name.LavaLight, multiplier: 0.5f, maxAmount: -1, doNotReplenish: true),
+                new PieceCreationData(name: PieceTemplate.Name.SwampGas, multiplier: 3.0f, maxAmount: -1, doNotReplenish: true),
+                new PieceCreationData(name: PieceTemplate.Name.SoundSeaWaves, multiplier: 2.0f, maxAmount: -1, doNotReplenish: true),
+                new PieceCreationData(name: PieceTemplate.Name.SoundSeaWind, multiplier: 1.4f, maxAmount: -1, doNotReplenish: true),
+                new PieceCreationData(name: PieceTemplate.Name.SoundLakeWaves, multiplier: 1.2f, maxAmount: -1, doNotReplenish: true),
+                new PieceCreationData(name: PieceTemplate.Name.SoundDesertWind, multiplier: 0.8f, maxAmount: -1, doNotReplenish: true),
+                new PieceCreationData(name: PieceTemplate.Name.SoundNightCrickets, multiplier: 0.8f, maxAmount: -1, doNotReplenish: true),
+                new PieceCreationData(name: PieceTemplate.Name.SoundNoonCicadas, multiplier: 0.8f, maxAmount: -1, doNotReplenish: true),
+                new PieceCreationData(name: PieceTemplate.Name.SoundLava, multiplier: 0.8f, maxAmount: -1, doNotReplenish: true),
                 };
 
-            //{ // for testing creation of selected pieces
-            //    List<PieceTemplate.Name> debugNamesToCheck = new List<PieceTemplate.Name> { PieceTemplate.Name.MineralsSmall, PieceTemplate.Name.MineralsBig };
-            //    dataList = dataList.Where(record => debugNamesToCheck.Contains(record.name)).ToList();
-            //}
+            { // for testing creation of selected pieces
+                List<PieceTemplate.Name> debugNamesToCheck = new List<PieceTemplate.Name> { PieceTemplate.Name.MineralsMossyBig, PieceTemplate.Name.MineralsMossySmall, PieceTemplate.Name.MineralsBig, PieceTemplate.Name.MineralsSmall };
+                dataList = dataList.Where(record => debugNamesToCheck.Contains(record.name)).ToList();
+            }
 
             return dataList;
         }
