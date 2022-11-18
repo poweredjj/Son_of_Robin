@@ -477,7 +477,7 @@ namespace SonOfRobin
             {
                 if (SonOfRobinGame.GfxDevMgr.PreferredBackBufferWidth > 1500) globalScale = 2f;
 
-                menuScale = 1.5f;
+                menuScale = 1.25f;
                 showControlTips = false;
                 showFieldControlTips = false;
                 enableTouchJoysticks = true;
