@@ -61,32 +61,32 @@ namespace SonOfRobin
 
         public byte ToolbarWidth
         {
-            get { return this.toolStorage.Width; }
+            get { return this.ToolStorage.Width; }
             set
             {
-                if (this.toolStorage.Width == value) return;
-                this.toolStorage.Resize(value, this.ToolbarHeight);
+                if (this.ToolStorage.Width == value) return;
+                this.ToolStorage.Resize(value, this.ToolbarHeight);
             }
         }
 
         public byte ToolbarHeight
         {
-            get { return this.toolStorage.Height; }
+            get { return this.ToolStorage.Height; }
             set
             {
-                if (this.toolStorage.Height == value) return;
-                this.toolStorage.Resize(this.ToolbarWidth, value);
+                if (this.ToolStorage.Height == value) return;
+                this.ToolStorage.Resize(this.ToolbarWidth, value);
             }
         }
 
         public int wentToSleepFrame;
         public bool sleepingInsideShelter;
         public SleepMode sleepMode;
-        public List<PieceStorage> CraftStorages { get { return new List<PieceStorage> { this.pieceStorage, this.toolStorage, this.equipStorage }; } }
-        public List<PieceStorage> CraftStoragesToolbarFirst { get { return new List<PieceStorage> { this.toolStorage, this.pieceStorage, this.equipStorage }; } } // the same as above, changed order
+        public List<PieceStorage> CraftStorages { get { return new List<PieceStorage> { this.pieceStorage, this.ToolStorage, this.EquipStorage }; } }
+        public List<PieceStorage> CraftStoragesToolbarFirst { get { return new List<PieceStorage> { this.ToolStorage, this.pieceStorage, this.EquipStorage }; } } // the same as above, changed order
 
         public StorageSlot ActiveSlot
-        { get { return this.toolStorage?.lastUsedSlot; } }
+        { get { return this.ToolStorage?.lastUsedSlot; } }
 
         public BoardPiece ActiveToolbarPiece
         { get { return this.ActiveSlot?.TopPiece; } }
@@ -225,8 +225,9 @@ namespace SonOfRobin
         public bool IsVeryTired { get { return this.FatiguePercent > 0.75f; } }
         public bool CanWakeNow { get { return this.sleepingInsideShelter || this.FatiguePercent < 0.85f; } }
 
-        public PieceStorage toolStorage;
-        public PieceStorage equipStorage;
+        public PieceStorage ToolStorage { get; private set; }
+        public PieceStorage EquipStorage { get; private set; }
+
         public Player(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, byte invWidth, byte invHeight, byte toolbarWidth, byte toolbarHeight, string readableName, string description, State activeState, bool female,
             byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, bool ignoresCollisions = false, int destructionDelay = 0, bool floatsOnWater = false, int generation = 0, Yield yield = null, int minDistance = 0, int maxDistance = 100, LightEngine lightEngine = null, PieceSoundPack soundPack = null) :
 
@@ -259,8 +260,8 @@ namespace SonOfRobin
             else allowedToolbarPieces.Add(PieceTemplate.Name.Hand);
 
             this.pieceStorage = new PieceStorage(width: invWidth, height: invHeight, world: this.world, storagePiece: this, storageType: PieceStorage.StorageType.Inventory);
-            this.toolStorage = new PieceStorage(width: toolbarWidth, height: toolbarHeight, world: this.world, storagePiece: this, storageType: PieceStorage.StorageType.Tools, allowedPieceNames: allowedToolbarPieces);
-            this.equipStorage = new PieceStorage(width: 3, height: 3, world: this.world, storagePiece: this, storageType: PieceStorage.StorageType.Equip);
+            this.ToolStorage = new PieceStorage(width: toolbarWidth, height: toolbarHeight, world: this.world, storagePiece: this, storageType: PieceStorage.StorageType.Tools, allowedPieceNames: allowedToolbarPieces);
+            this.EquipStorage = new PieceStorage(width: 3, height: 3, world: this.world, storagePiece: this, storageType: PieceStorage.StorageType.Equip);
             this.ConfigureEquip();
             this.ShootingAngle = -100; // -100 == no real value
             this.shootingPower = 0;
@@ -272,38 +273,38 @@ namespace SonOfRobin
 
             BoardPiece handTool = PieceTemplate.Create(templateName: PieceTemplate.Name.Hand, world: this.world);
 
-            StorageSlot slotToLock = this.toolStorage.FindCorrectSlot(handTool);
-            this.toolStorage.AddPiece(handTool);
+            StorageSlot slotToLock = this.ToolStorage.FindCorrectSlot(handTool);
+            this.ToolStorage.AddPiece(handTool);
             slotToLock.locked = true;
         }
 
         private void ConfigureEquip()
         {
-            foreach (StorageSlot slot in this.equipStorage.AllSlots)
+            foreach (StorageSlot slot in this.EquipStorage.AllSlots)
             {
                 slot.locked = true;
                 slot.hidden = true;
             }
 
-            StorageSlot headSlot = this.equipStorage.GetSlot(1, 0);
+            StorageSlot headSlot = this.EquipStorage.GetSlot(1, 0);
             headSlot.locked = false;
             headSlot.hidden = false;
             headSlot.allowedPieceNames = new List<PieceTemplate.Name> { PieceTemplate.Name.HatSimple };
             headSlot.label = "head";
 
-            StorageSlot chestSlot = this.equipStorage.GetSlot(1, 1);
+            StorageSlot chestSlot = this.EquipStorage.GetSlot(1, 1);
             chestSlot.locked = false;
             chestSlot.hidden = false;
             chestSlot.allowedPieceNames = new List<PieceTemplate.Name> { }; // TODO add chest equip
             chestSlot.label = "chest";
 
-            StorageSlot legsSlot = this.equipStorage.GetSlot(1, 2);
+            StorageSlot legsSlot = this.EquipStorage.GetSlot(1, 2);
             legsSlot.locked = false;
             legsSlot.hidden = false;
             legsSlot.allowedPieceNames = new List<PieceTemplate.Name> { PieceTemplate.Name.BootsProtective };
             legsSlot.label = "legs";
 
-            StorageSlot backpackSlot = this.equipStorage.GetSlot(0, 1);
+            StorageSlot backpackSlot = this.EquipStorage.GetSlot(0, 1);
             backpackSlot.locked = false;
             backpackSlot.hidden = false;
             backpackSlot.allowedPieceNames = new List<PieceTemplate.Name>();
@@ -321,7 +322,7 @@ namespace SonOfRobin
                 }
             }
 
-            StorageSlot beltSlot = this.equipStorage.GetSlot(2, 1);
+            StorageSlot beltSlot = this.EquipStorage.GetSlot(2, 1);
             beltSlot.locked = false;
             beltSlot.hidden = false;
             beltSlot.allowedPieceNames = new List<PieceTemplate.Name>();
@@ -339,7 +340,7 @@ namespace SonOfRobin
                 }
             }
 
-            var accessorySlotsList = new List<StorageSlot> { this.equipStorage.GetSlot(0, 0), this.equipStorage.GetSlot(2, 0) };
+            var accessorySlotsList = new List<StorageSlot> { this.EquipStorage.GetSlot(0, 0), this.EquipStorage.GetSlot(2, 0) };
 
             foreach (StorageSlot accessorySlot in accessorySlotsList)
             {
@@ -382,8 +383,8 @@ namespace SonOfRobin
             pieceData["player_fatigue"] = this.fatigue;
             pieceData["player_maxFatigue"] = this.MaxFatigue;
             pieceData["player_sleepEngine"] = this.sleepEngine;
-            pieceData["player_toolStorage"] = this.toolStorage.Serialize();
-            pieceData["player_equipStorage"] = this.equipStorage.Serialize();
+            pieceData["player_toolStorage"] = this.ToolStorage.Serialize();
+            pieceData["player_equipStorage"] = this.EquipStorage.Serialize();
 
             return pieceData;
         }
@@ -398,8 +399,8 @@ namespace SonOfRobin
             this.fatigue = (float)pieceData["player_fatigue"];
             this.MaxFatigue = (float)pieceData["player_maxFatigue"];
             this.sleepEngine = (SleepEngine)pieceData["player_sleepEngine"];
-            this.toolStorage = PieceStorage.Deserialize(storageData: pieceData["player_toolStorage"], world: this.world, storagePiece: this);
-            this.equipStorage = PieceStorage.Deserialize(storageData: pieceData["player_equipStorage"], world: this.world, storagePiece: this);
+            this.ToolStorage = PieceStorage.Deserialize(storageData: pieceData["player_toolStorage"], world: this.world, storagePiece: this);
+            this.EquipStorage = PieceStorage.Deserialize(storageData: pieceData["player_equipStorage"], world: this.world, storagePiece: this);
         }
 
         public override void DrawStatBar()
@@ -952,7 +953,7 @@ namespace SonOfRobin
 
         public bool PickUpPiece(BoardPiece piece)
         {
-            bool pieceCollected = this.toolStorage.AddPiece(piece);
+            bool pieceCollected = this.ToolStorage.AddPiece(piece);
             if (!pieceCollected) pieceCollected = this.pieceStorage.AddPiece(piece);
 
             return pieceCollected;

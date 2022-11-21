@@ -30,7 +30,7 @@ namespace SonOfRobin
                 if (this.isOn)
                 {
                     PortableLight portableLight;
-                    foreach (BoardPiece piece in this.world.Player.toolStorage.GetAllPieces())
+                    foreach (BoardPiece piece in this.world.Player.ToolStorage.GetAllPieces())
                     {
                         // making sure that no light source is on
                         if (piece.GetType() == typeof(PortableLight) && piece.id != this.id)

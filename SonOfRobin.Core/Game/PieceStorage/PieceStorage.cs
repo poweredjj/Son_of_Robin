@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 
 namespace SonOfRobin
@@ -13,12 +12,14 @@ namespace SonOfRobin
         public readonly World world;
         public readonly StorageType storageType;
         public readonly BoardPiece storagePiece;
-        public byte Width { get; private set; }
-        public byte Height { get; private set; }
+        public virtual byte Width { get; private set; }
+        public virtual byte Height { get; private set; }
 
         private StorageSlot[,] slots;
         private readonly byte stackLimit;
-        public List<PieceTemplate.Name> allowedPieceNames;
+
+        public virtual List<PieceTemplate.Name> AllowedPieceNames { get; private set; }
+
         public StorageSlot lastUsedSlot; // last used by Inventory class
         public int AllSlotsCount { get { return this.Width * this.Height; } }
         public int EmptySlotsCount { get { return this.EmptySlots.Count; } }
@@ -53,7 +54,7 @@ namespace SonOfRobin
             }
         }
 
-        public List<StorageSlot> AllSlots
+        public virtual List<StorageSlot> AllSlots
         {
             get
             {
@@ -70,7 +71,8 @@ namespace SonOfRobin
 
         public PieceStorage(byte width, byte height, World world, BoardPiece storagePiece, StorageType storageType, byte stackLimit = 255, List<PieceTemplate.Name> allowedPieceNames = null)
         {
-            Debug.Assert(width > 0 && height > 0);
+            if (width < 1) throw new ArgumentException($"Width {width} cannot be less than 1.");
+            if (height < 1) throw new ArgumentException($"Height {height} cannot be less than 1.");
 
             this.storagePiece = storagePiece;
             this.storageType = storageType;
@@ -78,7 +80,7 @@ namespace SonOfRobin
             this.world = world;
             this.Width = width;
             this.Height = height;
-            this.allowedPieceNames = allowedPieceNames;
+            this.AllowedPieceNames = allowedPieceNames;
             this.slots = this.MakeEmptySlots();
         }
 
@@ -95,7 +97,7 @@ namespace SonOfRobin
             for (int x = 0; x < this.Width; x++)
             {
                 for (int y = 0; y < this.Height; y++)
-                { emptySlots[x, y] = new StorageSlot(storage: this, posX: (byte)x, posY: (byte)y, stackLimit: this.stackLimit, allowedPieceNames: allowedPieceNames); }
+                { emptySlots[x, y] = new StorageSlot(storage: this, posX: (byte)x, posY: (byte)y, stackLimit: this.stackLimit, allowedPieceNames: AllowedPieceNames); }
             }
 
             return emptySlots;
@@ -131,7 +133,7 @@ namespace SonOfRobin
                 {
                     if (x >= this.Width || y >= this.Height)
                     {
-                        newSlots[x, y] = new StorageSlot(storage: this, posX: (byte)x, posY: (byte)y, stackLimit: this.stackLimit, allowedPieceNames: this.allowedPieceNames);
+                        newSlots[x, y] = new StorageSlot(storage: this, posX: (byte)x, posY: (byte)y, stackLimit: this.stackLimit, allowedPieceNames: this.AllowedPieceNames);
                     }
                     else
                     {
@@ -483,7 +485,7 @@ namespace SonOfRobin
               {"stackLimit", this.stackLimit},
               {"slotData", slotData},
               {"storageType", storageType},
-              {"allowedPieceNames", allowedPieceNames},
+              {"allowedPieceNames", AllowedPieceNames},
             };
 
             if (this.lastUsedSlot != null)

@@ -1239,8 +1239,8 @@ namespace SonOfRobin
                                 if (sprite.boardPiece.GetType() == typeof(Player)) // need to be updated with new classes using storages other than "this.pieceStorage"
                                 {
                                     Player player = (Player)sprite.boardPiece;
-                                    storageList.Add(player.toolStorage);
-                                    storageList.Add(player.equipStorage);
+                                    storageList.Add(player.ToolStorage);
+                                    storageList.Add(player.EquipStorage);
                                 }
 
                                 foreach (PieceStorage currentStorage in storageList)

@@ -208,7 +208,7 @@ namespace SonOfRobin
                             MessageLog.AddMessage(msgType: MsgType.User, message: $"{Helpers.FirstCharToUpperCase(this.boardPiece.readableName)} has burnt out.", color: Color.White);
 
                             portableLight.IsOn = false;
-                            this.world.Player.equipStorage.DestroyBrokenPieces();
+                            this.world.Player.EquipStorage.DestroyBrokenPieces();
                         }
 
                         // setting next loop event

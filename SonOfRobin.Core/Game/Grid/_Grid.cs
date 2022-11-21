@@ -125,7 +125,8 @@ namespace SonOfRobin
             this.tempPointsForCreatedBiomes = new Dictionary<ExtBoardProps.Name, ConcurrentBag<Point>>();
             this.biomeCountByName = new Dictionary<ExtBoardProps.Name, int>();
 
-            foreach (ExtBoardProps.Name name in ExtBoardProps.allBiomes.OrderBy(name => this.world.random.Next()).ToList()) // shuffled biome list
+            Random tempRandom = new Random(this.world.seed); // separate from world.random, to avoid changing world.random state (difference when copying grid from template)
+            foreach (ExtBoardProps.Name name in ExtBoardProps.allBiomes.OrderBy(name => tempRandom.Next()).ToList()) // shuffled biome list
             {
                 this.biomeCountByName[name] = 0;
                 this.tempPointsForCreatedBiomes[name] = new ConcurrentBag<Point>();
@@ -1142,7 +1143,7 @@ namespace SonOfRobin
             {
                 for (int y = 0; y < this.noOfCellsY; y++)
                 {
-                    cellGrid[x, y] = new Cell(grid: this, cellNoX: x, cellNoY: y, cellWidth: this.cellWidth, cellHeight: this.cellHeight, random: this.world.random);
+                    cellGrid[x, y] = new Cell(grid: this, cellNoX: x, cellNoY: y, cellWidth: this.cellWidth, cellHeight: this.cellHeight);
                 }
             }
 

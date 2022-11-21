@@ -38,7 +38,7 @@ namespace SonOfRobin
             bool shotPossible = this.PlaceOnBoard(randomPlacement: false, position: startPosition, precisePlacement: true);
             if (!shotPossible)
             {
-                this.world.Player.toolStorage.AddPiece(this);
+                this.world.Player.ToolStorage.AddPiece(this);
                 return;
             }
 

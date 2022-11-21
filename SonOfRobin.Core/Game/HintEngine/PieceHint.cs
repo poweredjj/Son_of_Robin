@@ -313,7 +313,7 @@ namespace SonOfRobin
 
         private static bool CheckIfPlayerOwnsPiece(Player player, PieceTemplate.Name name)
         {
-            var playerStorages = new List<PieceStorage> { player.toolStorage, player.pieceStorage };
+            var playerStorages = new List<PieceStorage> { player.ToolStorage, player.pieceStorage };
 
             foreach (PieceStorage currentStorage in playerStorages)
             {

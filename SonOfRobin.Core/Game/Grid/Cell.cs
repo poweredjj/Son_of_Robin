@@ -47,7 +47,7 @@ namespace SonOfRobin
             StateMachinesPlants
         }
 
-        public Cell(Grid grid, int cellNoX, int cellNoY, int cellWidth, int cellHeight, Random random)
+        public Cell(Grid grid, int cellNoX, int cellNoY, int cellWidth, int cellHeight)
         {
             this.grid = grid;
 

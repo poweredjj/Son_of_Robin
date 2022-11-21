@@ -136,7 +136,7 @@ namespace SonOfRobin
             get
             {
                 if (this.world.Player == null) return false;
-                return this.world.Player.equipStorage.ContainsThisPieceID(this.id);
+                return this.world.Player.EquipStorage.ContainsThisPieceID(this.id);
             }
         }
 
@@ -145,7 +145,7 @@ namespace SonOfRobin
             get
             {
                 if (this.world.Player == null) return false;
-                return this.world.Player.toolStorage.ContainsThisPieceID(this.id);
+                return this.world.Player.ToolStorage.ContainsThisPieceID(this.id);
             }
         }
 
