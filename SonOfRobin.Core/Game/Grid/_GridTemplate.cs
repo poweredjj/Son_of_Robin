@@ -10,7 +10,7 @@ namespace SonOfRobin
     {
         private const float currentVersion = 1.17f;
         private const string headerName = "_template_header.dat";
-        public const int demoWorldSeed = 77777;
+        public const int demoWorldSeed = 777777;
 
         public readonly int seed;
         public readonly int width;

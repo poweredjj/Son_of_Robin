@@ -11,11 +11,12 @@ namespace SonOfRobin
     public class Grid
     {
         public enum Stage
-        { GenerateTerrain, CheckExtData, SetExtDataSea, SetExtDataBeach, SetExtDataBiomes, SetExtDataBiomesConstrains, SetExtDataFinish, FillAllowedNames, ProcessTextures, LoadTextures }
+        { LoadTerrain, GenerateTerrain, CheckExtData, SetExtDataSea, SetExtDataBeach, SetExtDataBiomes, SetExtDataBiomesConstrains, SetExtDataFinish, FillAllowedNames, ProcessTextures, LoadTextures }
 
         private static readonly int allStagesCount = ((Stage[])Enum.GetValues(typeof(Stage))).Length;
 
         private static readonly Dictionary<Stage, string> namesForStages = new Dictionary<Stage, string> {
+            { Stage.LoadTerrain, "loading terrain" },
             { Stage.GenerateTerrain, "generating terrain" },
             { Stage.CheckExtData, "loading extended data" },
             { Stage.SetExtDataSea, "setting extended data (sea)" },
@@ -232,37 +233,46 @@ namespace SonOfRobin
 
             switch (currentStage)
             {
+                case Stage.LoadTerrain:
+                    {
+                        this.terrainByName[Terrain.Name.Height] = new Terrain(
+                            grid: this, name: Terrain.Name.Height, frequency: 8f, octaves: 9, persistence: 0.5f, lacunarity: 1.9f, gain: 0.55f, addBorder: true);
+
+                        this.terrainByName[Terrain.Name.Humidity] = new Terrain(
+                            grid: this, name: Terrain.Name.Humidity, frequency: 4.3f, octaves: 9, persistence: 0.6f, lacunarity: 1.7f, gain: 0.6f);
+
+                        this.terrainByName[Terrain.Name.Biome] = new Terrain(
+                            grid: this, name: Terrain.Name.Biome, frequency: 7f, octaves: 3, persistence: 0.7f, lacunarity: 1.4f, gain: 0.3f, addBorder: true);
+
+                        Parallel.ForEach(this.terrainByName.Values, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, terrain =>
+                        {
+                            terrain.TryToLoadSavedTerrain();
+                        });
+                    }
+
+                    this.cellsToProcessOnStart.Clear();
+
+                    break;
+
                 case Stage.GenerateTerrain:
 
-                    bool terrainRendered = false;
+                    bool processedOneUpdateCycle = false;
+                    int processSegments = 5;
 
-                    if (!terrainRendered && !this.terrainByName.ContainsKey(Terrain.Name.Height))
+                    foreach (Terrain currentTerrain in this.terrainByName.Values)
                     {
-                        this.terrainByName[Terrain.Name.Height] = new Terrain(grid: this, name: Terrain.Name.Height, frequency: 8f, octaves: 9, persistence: 0.5f, lacunarity: 1.9f, gain: 0.55f, addBorder: true);
-
-                        terrainRendered = true;
+                        if (currentTerrain.CreationInProgress)
+                        {
+                            currentTerrain.UpdateNoiseMap(this.dividedHeight / processSegments);
+                            processedOneUpdateCycle = true;
+                            break;
+                        }
                     }
 
-                    if (!terrainRendered && !this.terrainByName.ContainsKey(Terrain.Name.Humidity))
-                    {
-                        this.terrainByName[Terrain.Name.Humidity] = new Terrain(grid: this, name: Terrain.Name.Humidity, frequency: 4.3f, octaves: 9, persistence: 0.6f, lacunarity: 1.7f, gain: 0.6f);
+                    int noOfCellsToRemove = Math.Min(this.allCells.Count / processSegments / this.terrainByName.Count, this.cellsToProcessOnStart.Count);
+                    if (noOfCellsToRemove > 0) this.cellsToProcessOnStart.RemoveRange(0, noOfCellsToRemove); // to update progress bar
 
-                        terrainRendered = true;
-                    }
-
-                    if (!terrainRendered && !this.terrainByName.ContainsKey(Terrain.Name.Biome))
-                    {
-                        this.terrainByName[Terrain.Name.Biome] = new Terrain(grid: this, name: Terrain.Name.Biome, frequency: 7f, octaves: 3, persistence: 0.7f, lacunarity: 1.4f, gain: 0.3f, addBorder: true);
-
-                        terrainRendered = true;
-                    }
-
-                    if (terrainRendered)
-                    {
-                        int cellsToRemove = this.cellsToProcessOnStart.Count / 2;
-                        if (cellsToRemove > 0) this.cellsToProcessOnStart.RemoveRange(0, cellsToRemove); // to update progress bar
-                    }
-                    else this.cellsToProcessOnStart.Clear();
+                    if (!processedOneUpdateCycle) this.cellsToProcessOnStart.Clear();
 
                     break;
 

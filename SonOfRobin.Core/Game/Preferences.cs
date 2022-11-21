@@ -120,7 +120,7 @@ namespace SonOfRobin
         public static int displayResY = 1080;
         public static bool showFieldControlTips = true;
         public static float fieldControlTipsScale = 0.4f;
-        private static ButtonScheme.Type controlTipsScheme = ButtonScheme.Type.Xbox360;
+        private static ButtonScheme.Type controlTipsScheme = ButtonScheme.Type.XboxSeries;
         public static float mapMarkerScale = 1f;
         public static bool showHints = true;
         public static bool showLighting = true;

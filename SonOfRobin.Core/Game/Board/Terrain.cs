@@ -23,40 +23,53 @@ namespace SonOfRobin
         public const byte biomeDeep = 220;
 
         public readonly Name name;
-        private readonly Byte[,] mapData;
+        private Byte[,] mapData;
         public Grid Grid { get; private set; }
-
-        private readonly int seed;
+        public bool CreationInProgress { get; private set; }
+        private int nextUpdateStartingRow;
 
         private readonly string templatePath;
 
+        private readonly FastNoiseLite noise;
+
+        private readonly int seed;
+        private readonly bool addBorder;
         private readonly float frequency;
         private readonly int octaves;
         private readonly float persistence;
         private readonly float lacunarity;
         private readonly float gain;
 
-        private readonly double[] gradientLineX;
-        private readonly double[] gradientLineY;
+        private double[] gradientLineX;
+        private double[] gradientLineY;
 
-        private readonly byte[,] minValGridCell; // this values are stored in terrain, instead of cell
-        private readonly byte[,] maxValGridCell; // this values are stored in terrain, instead of cell
+        private byte[,] minValGridCell; // this values are stored in terrain, instead of cell
+        private byte[,] maxValGridCell; // this values are stored in terrain, instead of cell
 
         public Terrain(Grid grid, Name name, float frequency, int octaves, float persistence, float lacunarity, float gain, bool addBorder = false)
         {
+            this.CreationInProgress = true;
+            this.nextUpdateStartingRow = 0;
+
             this.name = name;
             this.Grid = grid;
             this.seed = grid.gridTemplate.seed;
+
+            this.noise = new FastNoiseLite(this.seed);
 
             this.frequency = frequency;
             this.octaves = octaves;
             this.persistence = persistence;
             this.lacunarity = lacunarity;
             this.gain = gain;
+            this.addBorder = addBorder;
 
             this.templatePath = Path.Combine(this.Grid.gridTemplate.templatePath, $"{Convert.ToString(name).ToLower()}.map");
+        }
 
-            var serializedTerrainData = this.LoadTemplate();
+        public void TryToLoadSavedTerrain()
+        {
+            Dictionary<string, object> serializedTerrainData = this.LoadTemplate();
 
             if (serializedTerrainData == null)
             {
@@ -64,27 +77,73 @@ namespace SonOfRobin
                 this.gradientLineX = gradientLines.Item1;
                 this.gradientLineY = gradientLines.Item2;
 
-                this.mapData = this.CreateNoiseMap(addBorder: addBorder);
-
+                this.mapData = new byte[this.Grid.dividedWidth, this.Grid.dividedHeight];
                 this.minValGridCell = new byte[this.Grid.noOfCellsX, this.Grid.noOfCellsY];
                 this.maxValGridCell = new byte[this.Grid.noOfCellsX, this.Grid.noOfCellsY];
-                this.UpdateMinMaxGridCell();
-
-                this.SaveTemplate();
             }
             else
             {
                 this.mapData = (Byte[,])serializedTerrainData["mapData"];
                 this.minValGridCell = (byte[,])serializedTerrainData["minValGridCell"];
                 this.maxValGridCell = (byte[,])serializedTerrainData["maxValGridCell"];
+                this.CreationInProgress = false;
             }
+        }
+
+        public void UpdateNoiseMap(int rowsToCalculate)
+        {
+            if (!this.CreationInProgress) return;
+
+            this.noise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2);
+            this.noise.SetFractalOctaves(this.octaves);
+            this.noise.SetFractalLacunarity(this.lacunarity);
+            this.noise.SetFractalGain(this.gain);
+            this.noise.SetFrequency(this.frequency / 45000);
+            this.noise.SetFractalType(FastNoiseLite.FractalType.FBm);
+            this.noise.SetFractalWeightedStrength(this.persistence);
+
+            int resDivider = this.Grid.resDivider;
+
+            bool lastUpdate = false;
+
+            int yMin = this.nextUpdateStartingRow;
+            int yMax = this.nextUpdateStartingRow + rowsToCalculate;
+            if (yMax >= this.Grid.dividedHeight)
+            {
+                yMax = this.Grid.dividedHeight;
+                lastUpdate = true;
+            }
+
+            Parallel.For(yMin, yMax, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, y =>
+            {
+                int realY = y * resDivider;
+
+                for (int x = 0; x < this.Grid.dividedWidth; x++)
+                {
+                    int realX = x * resDivider;
+
+                    double rawNoiseValue = noise.GetNoise(realX, realY) + 1; // 0-2 range
+                    if (this.addBorder) rawNoiseValue = Math.Max(rawNoiseValue - Math.Max(gradientLineX[realX], gradientLineY[realY]), 0);
+
+                    this.mapData[x, y] = (byte)(rawNoiseValue * 128); // 0-255 range;  can write to array using parallel, if every thread accesses its own indices
+                }
+            });
+
+            if (lastUpdate) this.FinishUpdating();
+            else this.nextUpdateStartingRow = yMax;
+        }
+
+        private void FinishUpdating()
+        {
+            this.UpdateMinMaxGridCell();
+            this.SaveTemplate();
+            this.CreationInProgress = false;
         }
 
         public void AttachToNewGrid(Grid grid)
         {
             this.Grid = grid;
         }
-
 
         public Byte GetMapData(int x, int y)
         {
@@ -135,42 +194,6 @@ namespace SonOfRobin
             };
 
             return serializedMapData;
-        }
-
-        private byte[,] CreateNoiseMap(bool addBorder = false)
-        {
-            FastNoiseLite noise = new FastNoiseLite(this.seed);
-
-            noise.SetSeed(this.seed);
-            noise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2);
-            noise.SetFractalOctaves(this.octaves);
-            noise.SetFractalLacunarity(this.lacunarity);
-            noise.SetFractalGain(this.gain);
-            noise.SetFrequency(this.frequency / 45000);
-            noise.SetFractalType(FastNoiseLite.FractalType.FBm);
-            noise.SetFractalWeightedStrength(this.persistence);
-
-            var newMapData = new byte[this.Grid.dividedWidth, this.Grid.dividedHeight];
-
-            int resDivider = this.Grid.resDivider;
-
-            Parallel.For(0, this.Grid.dividedHeight, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, y =>
-            {
-                int realY = y * resDivider;
-
-                for (int x = 0; x < this.Grid.dividedWidth; x++)
-                {
-                    int realX = x * resDivider;
-
-                    double rawNoiseValue = noise.GetNoise(realX, realY) + 1; // 0-2 range
-                    if (addBorder) rawNoiseValue = Math.Max(rawNoiseValue - Math.Max(gradientLineX[realX], gradientLineY[realY]), 0);
-
-                    byte newVal = (byte)(rawNoiseValue * 128); // 0-255 range
-                    newMapData[x, y] = newVal; // can write to array using parallel, if every thread accesses its own indices
-                }
-            });
-
-            return newMapData;
         }
 
         private (double[], double[]) CreateGradientLines()
