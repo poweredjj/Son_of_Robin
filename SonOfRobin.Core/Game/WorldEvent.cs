@@ -245,7 +245,7 @@ namespace SonOfRobin
                         if (hpChange < 0 && this.boardPiece.GetType() == typeof(Player))
                         {
                             SolidColor redOverlay = new SolidColor(color: Color.Red * 0.8f, viewOpacity: 0.0f);
-                            redOverlay.transManager.AddTransition(new Transition(transManager: redOverlay.transManager, outTrans: true, duration: 12, playCount: 1, stageTransform: Transition.Transform.Sinus, baseParamName: "Opacity", targetVal: 0.5f, endRemoveScene: true));
+                            redOverlay.transManager.AddTransition(new Transition(transManager: redOverlay.transManager, outTrans: true, duration: 16, playCount: 1, stageTransform: Transition.Transform.Sinus, baseParamName: "Opacity", targetVal: 0.5f, endRemoveScene: true));
                             this.world.solidColorManager.Add(redOverlay);
                             this.boardPiece.soundPack.Play(PieceSoundPack.Action.IsHit);
                         }

@@ -287,6 +287,7 @@ namespace SonOfRobin
         public static bool debugShowSounds = false;
         public static bool debugDisablePlayerPanel = false;
         public static bool debugAllowMapAnimation = false;
+        public static bool debugShowPlantGrowthInCamera = false;
 
         public static bool DebugShowWholeMap
         {

@@ -916,6 +916,8 @@ namespace SonOfRobin
                 Plant currentPlant = (Plant)this.plantSpritesQueue[0].boardPiece;
                 this.plantSpritesQueue.RemoveAt(0);
 
+                if (currentPlant.sprite.IsInCameraRect && !Preferences.debugShowPlantGrowthInCamera) continue;
+
                 currentPlant.StateMachineWork();
                 currentPlant.GrowOlder();
                 if (currentPlant.currentAge >= currentPlant.maxAge || currentPlant.efficiency < 0.2 || currentPlant.Mass < 1) currentPlant.Kill();
