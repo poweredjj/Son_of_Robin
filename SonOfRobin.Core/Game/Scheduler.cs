@@ -220,9 +220,8 @@ namespace SonOfRobin
                     case TaskName.CreateNewWorldNow:
                         {
                             // example executeHelper for this task
-                            // var createData = new Dictionary<string, Object> {{ "width", width }, { "height", height }, { "seed", seed }, {"resDivider", resDivider }, {"initialMaxAnimalsMultiplier", initialMaxAnimalsMultiplier}, {"addAgressiveAnimals", true }};                
-
-                            int width, height, seed, resDivider, initialMaxAnimalsMultiplier;
+                            // var createData = new Dictionary<string, Object> {{ "width", width }, { "height", height }, { "seed", seed }, {"resDivider", resDivider }};                
+                            int width, height, seed, resDivider;
                             bool playerFemale;
 
                             if (this.ExecuteHelper == null)
@@ -231,7 +230,6 @@ namespace SonOfRobin
                                 height = Preferences.newWorldSize;
                                 seed = Preferences.NewWorldSeed;
                                 resDivider = Preferences.newWorldResDivider;
-                                initialMaxAnimalsMultiplier = Preferences.newWorldMaxAnimalsMultiplier;
                                 playerFemale = Preferences.newWorldPlayerFemale;
                             }
                             else
@@ -241,11 +239,10 @@ namespace SonOfRobin
                                 height = (int)createData["height"];
                                 seed = (int)createData["seed"];
                                 resDivider = (int)createData["resDivider"];
-                                initialMaxAnimalsMultiplier = (int)createData["initialMaxAnimalsMultiplier"];
                                 playerFemale = (bool)createData["playerFemale"];
                             }
 
-                            new World(width: width, height: height, seed: seed, resDivider: resDivider, playerFemale: playerFemale, initialMaxAnimalsMultiplier: initialMaxAnimalsMultiplier);
+                            new World(width: width, height: height, seed: seed, resDivider: resDivider, playerFemale: playerFemale);
 
                             return;
                         }
@@ -256,7 +253,7 @@ namespace SonOfRobin
                             World oldWorld = (World)this.ExecuteHelper;
                             bool playerFemale = oldWorld.playerFemale;
 
-                            new World(width: oldWorld.width, height: oldWorld.height, seed: oldWorld.seed, playerFemale: playerFemale, resDivider: oldWorld.resDivider, initialMaxAnimalsMultiplier: oldWorld.initialMaxAnimalsMultiplier);
+                            new World(width: oldWorld.width, height: oldWorld.height, seed: oldWorld.seed, playerFemale: playerFemale, resDivider: oldWorld.resDivider);
                             oldWorld.Remove();
 
                             return;

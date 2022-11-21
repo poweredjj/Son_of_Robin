@@ -159,7 +159,6 @@ namespace SonOfRobin
 
         public readonly int seed;
         public readonly int resDivider;
-        public readonly int initialMaxAnimalsMultiplier;
         public int maxAnimalsPerName;
         public readonly Random random;
         public readonly int width;
@@ -260,7 +259,7 @@ namespace SonOfRobin
             }
         }
 
-        public World(int width, int height, int seed, int resDivider, int initialMaxAnimalsMultiplier, bool playerFemale, Object saveGameData = null, bool demoMode = false) :
+        public World(int width, int height, int seed, int resDivider, bool playerFemale, Object saveGameData = null, bool demoMode = false) :
               base(inputType: InputTypes.Normal, priority: 1, blocksUpdatesBelow: true, blocksDrawsBelow: true, touchLayout: TouchLayout.QuitLoading, tipsLayout: ControlTips.TipsLayout.QuitLoading)
         {
             this.demoMode = demoMode;
@@ -298,8 +297,7 @@ namespace SonOfRobin
             this.viewParams.Width = width; // it does not need to be updated, because world size is constant
             this.viewParams.Height = height; // it does not need to be updated, because world size is constant
 
-            this.initialMaxAnimalsMultiplier = initialMaxAnimalsMultiplier;
-            this.maxAnimalsPerName = (int)(this.width * this.height * 0.00000001 * initialMaxAnimalsMultiplier);
+            this.maxAnimalsPerName = (int)(this.width * this.height * 0.0000004);
             MessageLog.AddMessage(msgType: MsgType.Debug, message: $"maxAnimalsPerName {maxAnimalsPerName}");
             this.creationDataList = PieceCreationData.CreateDataList(maxAnimalsPerName: this.maxAnimalsPerName);
 

@@ -13,11 +13,9 @@ namespace SonOfRobin
         public static readonly Dictionary<Object, Object> namesForDarknessRes = new Dictionary<Object, Object> { { 4, "very low" }, { 3, "low" }, { 2, "medium" }, { 1, "high" } };
         public static readonly Dictionary<Object, Object> namesForFieldControlTipsScale = new Dictionary<Object, Object> { { 0.15f, "micro" }, { 0.25f, "small" }, { 0.4f, "medium" }, { 0.5f, "large" }, { 0.6f, "huge" }, { 0.75f, "gigantic" } };
         public static readonly Dictionary<Object, Object> namesForMapMarkerScale = new Dictionary<Object, Object> { { 0.25f, "small" }, { 0.5f, "medium" }, { 1f, "big" }, { 2f, "huge" }, { 3f, "gigantic" } };
-        public static readonly Dictionary<Object, Object> namesForAnimalsMultiplier = new Dictionary<Object, Object> { { 5, "almost extinct" }, { 20, "few" }, { 50, "within reason" }, { 100, "many" }, { 500, "total invasion" } };
 
         public static int newWorldSize;
 
-        public static int newWorldMaxAnimalsMultiplier; // max animals per name for 10000x10000 area
         public static int newWorldResDivider;
         public static bool newWorldPlayerFemale;
 
@@ -433,7 +431,6 @@ namespace SonOfRobin
             newWorldPlayerFemale = false;
             SelectedWorldSize = WorldSize.medium;
             newWorldPlayerFemale = false;
-            newWorldMaxAnimalsMultiplier = 50;
             CustomizeWorld = false;
         }
 
@@ -508,7 +505,6 @@ namespace SonOfRobin
             prefsData["newWorldResDivider"] = newWorldResDivider;
             prefsData["selectedWorldSize"] = SelectedWorldSize;
             prefsData["newWorldSize"] = newWorldSize;
-            prefsData["newWorldMaxAnimalsMultiplier"] = newWorldMaxAnimalsMultiplier;
             prefsData["newWorldPlayerFemale"] = newWorldPlayerFemale;
             prefsData["randomSeed"] = randomSeed;
             prefsData["seedDigit1"] = seedDigit1;
@@ -573,7 +569,6 @@ namespace SonOfRobin
                     SelectedWorldSize = (WorldSize)prefsData["selectedWorldSize"];
                     newWorldResDivider = (int)prefsData["newWorldResDivider"];
                     newWorldSize = (int)prefsData["newWorldSize"];
-                    newWorldMaxAnimalsMultiplier = (int)prefsData["newWorldMaxAnimalsMultiplier"];
                     newWorldPlayerFemale = (bool)prefsData["newWorldPlayerFemale"];
                     randomSeed = (bool)prefsData["randomSeed"];
                     seedDigit1 = (char)prefsData["seedDigit1"];

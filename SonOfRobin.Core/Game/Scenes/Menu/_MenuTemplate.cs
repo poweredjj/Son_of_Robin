@@ -288,8 +288,6 @@ namespace SonOfRobin
 
                         new Selector(menu: menu, name: "character", valueDict: new Dictionary<object, object> { { true, AnimData.framesForPkgs[AnimData.PkgName.PlayerFemale].texture }, { false, AnimData.framesForPkgs[AnimData.PkgName.PlayerMale].texture } }, targetObj: preferences, propertyName: "newWorldPlayerFemale", rebuildsAllMenus: true);
 
-                        new Selector(menu: menu, name: "animals population", valueDict: Preferences.namesForAnimalsMultiplier, targetObj: preferences, propertyName: "newWorldMaxAnimalsMultiplier", rebuildsAllMenus: true);
-
                         new Separator(menu: menu, name: "", isEmpty: true);
                         new Selector(menu: menu, name: "customize", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "CustomizeWorld", rebuildsMenu: true);
 
@@ -356,8 +354,6 @@ namespace SonOfRobin
 
                         new Selector(menu: menu, name: "character", valueDict: new Dictionary<object, object> { { true, AnimData.framesForPkgs[AnimData.PkgName.PlayerFemale].texture }, { false, AnimData.framesForPkgs[AnimData.PkgName.PlayerMale].texture } }, targetObj: preferences, propertyName: "newWorldPlayerFemale", rebuildsAllMenus: true);
 
-                        new Selector(menu: menu, name: "animals population", valueDict: Preferences.namesForAnimalsMultiplier, targetObj: preferences, propertyName: "newWorldMaxAnimalsMultiplier", rebuildsAllMenus: true);
-
                         new Separator(menu: menu, name: "", isEmpty: true);
 
 
@@ -365,7 +361,7 @@ namespace SonOfRobin
                         {
                             string detailLevelName = Preferences.namesForResDividers.ContainsKey(gridTemplate.resDivider) ? (string)Preferences.namesForResDividers[gridTemplate.resDivider] : $"{gridTemplate.resDivider}";
 
-                            new Invoker(menu: menu, name: $"{gridTemplate.width}x{gridTemplate.height}  seed  {String.Format("{0:0000}", gridTemplate.seed)}  detail {detailLevelName}", closesMenu: true, taskName: Scheduler.TaskName.CreateNewWorld, executeHelper: new Dictionary<string, Object> { { "width", gridTemplate.width }, { "height", gridTemplate.height }, { "seed", gridTemplate.seed }, { "resDivider", gridTemplate.resDivider }, { "initialMaxAnimalsMultiplier", Preferences.newWorldMaxAnimalsMultiplier }, { "playerFemale", Preferences.newWorldPlayerFemale } }, sound: SoundData.Name.NewGameStart);
+                            new Invoker(menu: menu, name: $"{gridTemplate.width}x{gridTemplate.height}  seed  {String.Format("{0:0000}", gridTemplate.seed)}  detail {detailLevelName}", closesMenu: true, taskName: Scheduler.TaskName.CreateNewWorld, executeHelper: new Dictionary<string, Object> { { "width", gridTemplate.width }, { "height", gridTemplate.height }, { "seed", gridTemplate.seed }, { "resDivider", gridTemplate.resDivider }, { "playerFemale", Preferences.newWorldPlayerFemale } }, sound: SoundData.Name.NewGameStart);
                         }
 
                         new Separator(menu: menu, name: "", isEmpty: true);
