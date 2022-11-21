@@ -184,7 +184,7 @@ namespace SonOfRobin
             return null;
         }
 
-        public StorageSlot GetSlot(int x, int y)
+        public virtual StorageSlot GetSlot(int x, int y)
         {
             try
             { return this.slots[x, y]; }

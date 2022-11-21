@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SonOfRobin
 {
@@ -9,21 +11,30 @@ namespace SonOfRobin
         private readonly int arrayWidth;
         private readonly int arrayHeight;
 
+        private readonly int[] maxWidthForColumns;
+        private readonly int[] maxHeightForRows;
+        private readonly Point[,] offsetArray; // offset for every storage
+
         private readonly byte totalWidth;
         private readonly byte totalHeight;
+
         public override byte Width
         { get { return this.totalWidth; } }
+
         public override byte Height
         { get { return this.totalHeight; } }
 
         private readonly StorageSlot lockedSlot;
 
         private readonly List<PieceTemplate.Name> allowedPieceNames;
+
         public override List<PieceTemplate.Name> AllowedPieceNames
         { get { return this.allowedPieceNames; } }
 
         private readonly List<StorageSlot> allSlots;
-        public override List<StorageSlot> AllSlots { get { return this.allSlots; } }
+
+        public override List<StorageSlot> AllSlots
+        { get { return this.allSlots; } }
 
         public VirtualPieceStorage(BoardPiece storagePiece, World world, PieceStorage[,] storageArray) :
             base(width: 1, height: 1, world: world, storagePiece: storagePiece, storageType: storageArray[0, 0].storageType)
@@ -31,6 +42,11 @@ namespace SonOfRobin
             this.storageArray = storageArray;
             this.arrayWidth = this.storageArray.GetLength(0);
             this.arrayHeight = this.storageArray.GetLength(1);
+
+            this.maxWidthForColumns = this.CalculateMaxWidthForColumns();
+            this.maxHeightForRows = this.CalculateMaxHeightForRows();
+
+            this.offsetArray = this.CalculateOffsetArray();
 
             this.totalWidth = this.CalculateTotalWidth();
             this.totalHeight = this.CalculateTotalHeight();
@@ -43,13 +59,30 @@ namespace SonOfRobin
             this.lockedSlot.hidden = true;
         }
 
-        private byte CalculateTotalWidth()
+        //public override StorageSlot GetSlot(int x, int y)
+        //{
+        //    if (x >= this.Width || y >= this.Height) return null;
+
+        //    int arrayX, arrayY;
+
+        //    int currentSlotPosX = 0;
+        //    for (int currentX = 0; currentX < this.arrayWidth; x++)
+        //    {
+        //        if (this.arr)
+
+        //    }
+
+        //    return this.slots[x, y];
+
+        //}
+
+        private int[] CalculateMaxWidthForColumns()
         {
-            byte addedWidth = 0;
+            int[] maxWidthForColumns = new int[this.arrayWidth];
 
             for (int x = 0; x < this.arrayWidth; x++)
             {
-                byte maxColumnWidth = 0;
+                int maxColumnWidth = 0;
 
                 for (int y = 0; y < this.arrayHeight; y++)
                 {
@@ -57,7 +90,70 @@ namespace SonOfRobin
                     maxColumnWidth = Math.Max(maxColumnWidth, this.storageArray[x, y].Width);
                 }
 
-                addedWidth += maxColumnWidth;
+                maxWidthForColumns[x] = maxColumnWidth;
+            }
+
+            return maxWidthForColumns;
+        }
+
+        private int[] CalculateMaxHeightForRows()
+        {
+            int[] maxHeightForRows = new int[this.arrayHeight];
+
+            for (int y = 0; y < this.arrayHeight; y++)
+            {
+                int maxRowHeight = 0;
+
+                for (int x = 0; x < this.arrayWidth; x++)
+                {
+                    if (this.storageArray[x, y] == null) continue;
+                    maxRowHeight = Math.Max(maxRowHeight, this.storageArray[x, y].Height);
+                }
+
+                maxHeightForRows[y] = maxRowHeight;
+            }
+
+            return maxHeightForRows;
+        }
+
+
+        private Point[,] CalculateOffsetArray()
+        {
+            List<int> xOffsetList = new List<int> { 0 }; // first storage should start with offset == 0
+
+            for (int x = 0; x < this.arrayWidth - 1; x++)
+            {
+                xOffsetList.Add(xOffsetList.Last() + this.maxWidthForColumns[x]);
+            }
+
+            List<int> yOffsetList = new List<int> { 0 }; // first storage should start with offset == 0
+
+            for (int y = 0; y < this.arrayHeight - 1; y++)
+            {
+
+                yOffsetList.Add(yOffsetList.Last() + this.maxHeightForRows[y]);
+            }
+
+            var newOffsetArray = new Point[this.arrayWidth, this.arrayHeight];
+
+            for (int x = 0; x < this.arrayWidth; x++)
+            {
+                for (int y = 0; y < this.arrayHeight; y++)
+                {
+                    newOffsetArray[x, y] = new Point(xOffsetList[x], yOffsetList[y]);
+                }
+            }
+
+            return newOffsetArray;
+        }
+
+        private byte CalculateTotalWidth()
+        {
+            byte addedWidth = 0;
+
+            for (int x = 0; x < this.arrayWidth; x++)
+            {
+                addedWidth += (byte)this.maxWidthForColumns[x];
             }
 
             return addedWidth;
@@ -69,15 +165,7 @@ namespace SonOfRobin
 
             for (int y = 0; y < this.arrayHeight; y++)
             {
-                byte maxRowHeight = 0;
-
-                for (int x = 0; x < this.arrayWidth; x++)
-                {
-                    if (this.storageArray[x, y] == null) continue;
-                    maxRowHeight = Math.Max(maxRowHeight, this.storageArray[x, y].Height);
-                }
-
-                addedHeight += maxRowHeight;
+                addedHeight += (byte)this.maxHeightForRows[y];
             }
 
             return addedHeight;
@@ -124,7 +212,5 @@ namespace SonOfRobin
 
             return foundSlots;
         }
-
-
     }
 }
