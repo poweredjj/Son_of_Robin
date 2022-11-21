@@ -309,6 +309,11 @@ namespace SonOfRobin
                         new CountComparison(name: PieceTemplate.Name.WorkshopEssential, count: 1),
                         new CountComparison(name: PieceTemplate.Name.TentSmall, count: 1)},
                     existingPiecesCount: new Dictionary<PieceTemplate.Name, int>{{ PieceTemplate.Name.WorkshopEssential, 1 }, { PieceTemplate.Name.TentSmall, 1 } }, fieldPiecesNearby: new List<PieceTemplate.Name> { PieceTemplate.Name.TentSmall, PieceTemplate.Name.WorkshopEssential }),
+
+                new PieceHint(
+                    type: PieceHint.Type.DangerousTiger, fieldPiecesNearby: new List<PieceTemplate.Name> {PieceTemplate.Name.Tiger},
+                    message: $"This | {PieceInfo.GetInfo(PieceTemplate.Name.Tiger).readableName} looks very dangerous!\nI'd rather stay away.",
+                    imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.Tiger) }),
                 };
 
             return newPieceHintList;
