@@ -59,22 +59,49 @@ namespace SonOfRobin
             this.lockedSlot.hidden = true;
         }
 
-        //public override StorageSlot GetSlot(int x, int y)
-        //{
-        //    if (x >= this.Width || y >= this.Height) return null;
+        public override StorageSlot GetSlot(int x, int y)
+        {
+            if (x >= this.Width || y >= this.Height) return null;
 
-        //    int arrayX, arrayY;
+            int globalCellNoX = 0;
+            int arrayX = 0;
+            for (int currentX = 0; currentX < this.arrayWidth; currentX++)
+            {
+                globalCellNoX += this.maxWidthForColumns[currentX];
 
-        //    int currentSlotPosX = 0;
-        //    for (int currentX = 0; currentX < this.arrayWidth; x++)
-        //    {
-        //        if (this.arr)
+                int minX = globalCellNoX;
+                int maxX = currentX + 1 < this.arrayWidth ? globalCellNoX + this.maxWidthForColumns[currentX + 1] : 99999;
 
-        //    }
+                if (minX <= x && x <= maxX)
+                {
+                    arrayX = currentX;
+                    break;
+                }
+            }
 
-        //    return this.slots[x, y];
+            int globalCellNoY = 0;
+            int arrayY = 0;
+            for (int currentY = 0; currentY < this.arrayHeight; currentY++)
+            {
+                globalCellNoY += this.maxHeightForRows[currentY];
 
-        //}
+                int minY = globalCellNoY;
+                int maxY = currentY + 1 < this.arrayHeight ? globalCellNoY + this.maxHeightForRows[currentY + 1] : 99999;
+
+                if (minY <= y && y <= maxY)
+                {
+                    arrayY = currentY;
+                    break;
+                }
+            }
+
+            PieceStorage storage = this.storageArray[arrayX, arrayY];
+            Point offset = this.offsetArray[arrayX, arrayY];
+
+            StorageSlot slot = storage.GetSlot(offset.X - x, offset.Y - y);
+
+            return slot == null ? this.lockedSlot : slot;
+        }
 
         private int[] CalculateMaxWidthForColumns()
         {
@@ -116,7 +143,6 @@ namespace SonOfRobin
             return maxHeightForRows;
         }
 
-
         private Point[,] CalculateOffsetArray()
         {
             List<int> xOffsetList = new List<int> { 0 }; // first storage should start with offset == 0
@@ -130,7 +156,6 @@ namespace SonOfRobin
 
             for (int y = 0; y < this.arrayHeight - 1; y++)
             {
-
                 yOffsetList.Add(yOffsetList.Last() + this.maxHeightForRows[y]);
             }
 

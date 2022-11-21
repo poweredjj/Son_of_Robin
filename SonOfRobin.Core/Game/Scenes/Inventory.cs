@@ -188,15 +188,15 @@ namespace SonOfRobin
 
                         Inventory toolbar = new Inventory(piece: player, storage: player.ToolStorage, layout: Type.DualBottom, transDirection: TransDirection.Down);
 
-                        PieceStorage[,] storageArray = new PieceStorage[2, 1]; // for testing
-                        storageArray[0, 0] = player.EquipStorage; // for testing
-                        storageArray[1, 0] = player.pieceStorage; // for testing
+                        //PieceStorage[,] storageArray = new PieceStorage[2, 1]; // for testing
+                        //storageArray[0, 0] = player.EquipStorage; // for testing
+                        //storageArray[1, 0] = player.pieceStorage; // for testing
 
-                        PieceStorage virtualStorage = new VirtualPieceStorage(storagePiece: player, world: player.world, storageArray: storageArray); // for testing
+                        //PieceStorage virtualStorage = new VirtualPieceStorage(storagePiece: player, world: player.world, storageArray: storageArray); // for testing
 
-                        Inventory inventory = new Inventory(piece: player, storage: virtualStorage, layout: Type.DualTop, otherInventory: toolbar, transDirection: TransDirection.Up); // for testing
+                        //Inventory inventory = new Inventory(piece: player, storage: virtualStorage, layout: Type.DualTop, otherInventory: toolbar, transDirection: TransDirection.Up); // for testing
 
-                        //Inventory inventory = new Inventory(piece: player, storage: player.pieceStorage, layout: Type.DualTop, otherInventory: toolbar, transDirection: TransDirection.Up);
+                        Inventory inventory = new Inventory(piece: player, storage: player.pieceStorage, layout: Type.DualTop, otherInventory: toolbar, transDirection: TransDirection.Up);
 
                         toolbar.otherInventory = inventory;
 
