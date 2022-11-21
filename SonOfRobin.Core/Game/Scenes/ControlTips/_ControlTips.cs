@@ -27,7 +27,7 @@ namespace SonOfRobin
         {
             Uninitialized, Empty, Menu, MenuWithoutClosing, Map, InventorySelect, InventoryDrag, PieceContext, TextWindowOk, TextWindowCancel, TextWindowOkCancel, WorldMain, WorldShoot, WorldSleep, WorldBuild, WorldSpectator, QuitLoading
         }
-        public static readonly int tipMargin = 12;
+        public const int tipMargin = 12;
 
         public Dictionary<string, ButtonTip> tipCollection;
         public TipsLayout currentLayout;

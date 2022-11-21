@@ -17,8 +17,8 @@ namespace SonOfRobin
         public bool PiecesCreationInProgress
         { get { return this.initialPiecesCreationFramesLeft > 0; } }
         private bool plantsProcessing;
-        private static readonly int initialPiecesCreationFramesTotal = 20;
-        public static readonly int buildDuration = (int)(60 * 2.5);
+        private const int initialPiecesCreationFramesTotal = 20;
+        public const int buildDuration = (int)(60 * 2.5);
         private int initialPiecesCreationFramesLeft;
         public readonly DateTime creationStart;
         public DateTime creationEnd;

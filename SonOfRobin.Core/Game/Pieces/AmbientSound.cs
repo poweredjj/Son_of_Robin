@@ -6,8 +6,8 @@ namespace SonOfRobin
 {
     public class AmbientSound : BoardPiece
     {
-        private static readonly float visFullOpacity = 1f;
-        private static readonly float visMinOpacity = 0.3f;
+        private const float visFullOpacity = 1f;
+        private const float visMinOpacity = 0.3f;
 
 
         private readonly int playDelay;

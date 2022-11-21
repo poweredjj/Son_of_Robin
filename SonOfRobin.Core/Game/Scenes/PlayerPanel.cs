@@ -10,7 +10,7 @@ namespace SonOfRobin
     {
         private static readonly SpriteFont itemCounterFont = SonOfRobinGame.FontTommy40;
         private static readonly SpriteFont buffFont = SonOfRobinGame.FontTommy40;
-        private static readonly int posY = 4;
+        private const int posY = 4;
 
         private readonly World world;
         private int CounterSize { get { return (int)(SonOfRobinGame.VirtualWidth * 0.05f); } }

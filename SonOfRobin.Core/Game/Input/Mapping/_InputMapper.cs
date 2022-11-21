@@ -52,8 +52,8 @@ namespace SonOfRobin
             SecretLicenceBypass
         }
 
-        public static readonly int defaultRepeatThreshold = 35;
-        public static readonly int defaultRepeatFrames = 6;
+        public const int defaultRepeatThreshold = 35;
+        public const int defaultRepeatFrames = 6;
 
         public enum AnalogType { Empty, PadLeft, PadRight, VirtLeft, VirtRight, FromKeys }
         public enum MouseAction { LeftButton, LeftButtonVisOnly, MiddleButton, MiddleButtonVisOnly, RightButton, RightButtonVisOnly, ScrollUp, ScrollDown }

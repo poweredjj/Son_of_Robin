@@ -28,8 +28,8 @@ namespace SonOfRobin
 
         public enum Type { SingleCenter, SingleBottom, DualLeft, DualRight, DualTop, DualBottom }
 
-        private static readonly int minFramesToDragByTouch = 15;
-        private static readonly float marginPercent = 0.05f;
+        private const int minFramesToDragByTouch = 15;
+        private const float marginPercent = 0.05f;
         private static readonly SpriteFont font = SonOfRobinGame.FontTommy40;
 
         private static readonly Sound soundOpen = new Sound(SoundData.Name.InventoryOpen);

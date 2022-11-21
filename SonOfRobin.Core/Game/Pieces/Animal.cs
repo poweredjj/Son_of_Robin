@@ -8,8 +8,8 @@ namespace SonOfRobin
 {
     public class Animal : BoardPiece
     {
-        public static readonly int attackDistanceDynamic = 16;
-        public static readonly int attackDistanceStatic = 4;
+        public const int attackDistanceDynamic = 16;
+        public const int attackDistanceStatic = 4;
 
         private readonly int maxMass;
         private readonly float massBurnedMultiplier;

@@ -11,7 +11,7 @@ namespace SonOfRobin
     {
         public enum SleepMode { Awake, Sleep, WaitMorning, WaitIndefinitely };
 
-        private static readonly int maxShootingPower = 90;
+        private const int maxShootingPower = 90;
 
         public int maxFedLevel;
         public int fedLevel;

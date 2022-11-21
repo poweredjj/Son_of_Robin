@@ -16,11 +16,11 @@ namespace SonOfRobin
 
         public static readonly Name[] allTerrains = (Name[])Enum.GetValues(typeof(Name));
 
-        public static readonly byte waterLevelMax = 84;
-        public static readonly byte volcanoEdgeMin = 210;
-        public static readonly byte lavaMin = 225;
-        public static readonly byte biomeMin = 156;
-        public static readonly byte biomeDeep = 220;
+        public const byte waterLevelMax = 84;
+        public const byte volcanoEdgeMin = 210;
+        public const byte lavaMin = 225;
+        public const byte biomeMin = 156;
+        public const byte biomeDeep = 220;
 
         public readonly Name name;
         private readonly Byte[,] mapData;

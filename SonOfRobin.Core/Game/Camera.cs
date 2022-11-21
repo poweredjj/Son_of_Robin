@@ -84,7 +84,7 @@ namespace SonOfRobin
         }
 
         private bool disableFluidMotionMoveForOneFrame;
-        private static readonly int movementSlowdown = 20;
+        private const int movementSlowdown = 20;
         private int zoomSlowdown = 20;
 
         public Rectangle viewRect;

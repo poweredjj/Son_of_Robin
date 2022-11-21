@@ -8,9 +8,9 @@ namespace SonOfRobin
     [Serializable]
     public class GridTemplate
     {
-        private static readonly float currentVersion = 1.17f;
-        private static readonly string headerName = "_template_header.dat";
-        public static readonly int demoWorldSeed = 77777;
+        private const float currentVersion = 1.17f;
+        private const string headerName = "_template_header.dat";
+        public const int demoWorldSeed = 77777;
 
         public readonly int seed;
         public readonly int width;

@@ -74,12 +74,12 @@ namespace SonOfRobin
 
         private static readonly SpriteFont font = SonOfRobinGame.FontTommy40;
 
-        private static readonly float maxWindowWidthPercent = 0.35f;
-        private static readonly float maxWindowHeightPercent = 0.7f;
-        private static readonly float maxLineHeightPercent = 0.05f;
+        private const float maxWindowWidthPercent = 0.35f;
+        private const float maxWindowHeightPercent = 0.7f;
+        private const float maxLineHeightPercent = 0.05f;
 
-        private static readonly float marginPercent = 0.025f;
-        private static readonly int transDuration = 6; // 6
+        private const float marginPercent = 0.025f;
+        private const int transDuration = 6; // 6
         private int Margin
         {
             get

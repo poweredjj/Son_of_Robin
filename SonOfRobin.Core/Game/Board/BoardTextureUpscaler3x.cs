@@ -7,7 +7,7 @@ namespace SonOfRobin
 {
     public class BoardTextureUpscaler3x
     {
-        public static readonly int resizeFactor = 3;
+        public const int resizeFactor = 3;
 
         public static Texture2D UpscaleTexture(Texture2D sourceTexture)
         {

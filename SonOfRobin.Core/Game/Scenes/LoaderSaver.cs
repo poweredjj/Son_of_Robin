@@ -11,14 +11,14 @@ namespace SonOfRobin
 {
     public class LoaderSaver : Scene
     {
-        private static readonly string headerName = "header.sav";
-        private static readonly string hintsName = "hints.sav";
-        private static readonly string trackingName = "tracking.sav";
-        private static readonly string eventsName = "events.sav";
-        private static readonly string gridName = "grid.sav";
-        public static readonly string tempPrefix = "_save_temp_";
+        private const string headerName = "header.sav";
+        private const string hintsName = "hints.sav";
+        private const string trackingName = "tracking.sav";
+        private const string eventsName = "events.sav";
+        private const string gridName = "grid.sav";
+        public const string tempPrefix = "_save_temp_";
 
-        private static readonly int maxPiecesInPackage = 1000; // using small piece packages lowers ram usage during writing binary files
+        private const int maxPiecesInPackage = 1000; // using small piece packages lowers ram usage during writing binary files
 
         private readonly DateTime createdTime;
         private readonly bool quitGameAfterSaving;

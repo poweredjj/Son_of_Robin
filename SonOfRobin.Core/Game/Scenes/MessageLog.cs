@@ -37,8 +37,8 @@ namespace SonOfRobin
         }
 
         private static readonly SpriteFont font = SonOfRobinGame.FontPressStart2P5;
-        private static readonly int txtSeparator = 3;
-        private static readonly int freePixelsAboveMessages = 160;
+        private const int txtSeparator = 3;
+        private const int freePixelsAboveMessages = 160;
 
         private static readonly List<MsgType> displayedLevelsTemplateDebug = new List<MsgType> { MsgType.User, MsgType.Debug };
         private static readonly List<MsgType> displayedLevelsTemplateUser = new List<MsgType> { MsgType.User };

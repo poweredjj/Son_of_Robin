@@ -11,9 +11,9 @@ namespace SonOfRobin
         protected enum ContextAction { Drop, DropAll, Move, Eat, Drink, Plant, Cook, Switch, Ignite, Extinguish, Upgrade }
 
         private static readonly SpriteFont font = SonOfRobinGame.FontTommy40;
-        private static readonly float marginPercent = 0.03f;
-        private static readonly float entryWidthPercent = 0.8f;
-        private static readonly float entryHeightPercent = 0.1f;
+        private const float marginPercent = 0.03f;
+        private const float entryWidthPercent = 0.8f;
+        private const float entryHeightPercent = 0.1f;
 
         private static readonly Sound soundOpen = new Sound(SoundData.Name.Invoke);
         private static readonly Sound soundNavigate = new Sound(SoundData.Name.Navigation);

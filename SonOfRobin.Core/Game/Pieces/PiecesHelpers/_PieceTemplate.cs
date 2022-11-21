@@ -445,7 +445,7 @@ namespace SonOfRobin
                         var animPkg = packageNames[random.Next(0, packageNames.Count)];
 
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>{
-                            { Terrain.Name.Height, new AllowedRange(min: 30, max: 70) },
+                            { Terrain.Name.Height, new AllowedRange(min: 40, max: (byte)(Terrain.waterLevelMax - 2)) },
                             { Terrain.Name.Humidity, new AllowedRange(min: 0, max: 128) },
                             { Terrain.Name.Biome, new AllowedRange(min: 0, max: (byte)(Terrain.biomeMin - 1)) }
                         },

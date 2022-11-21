@@ -10,7 +10,7 @@ namespace SonOfRobin
         private double elapsed = 0;
         private double last = 0;
         private double now = 0;
-        private static readonly double msgFrequency = 0.5;
+        private const double msgFrequency = 0.5;
         public double FPS { get; private set; }
         public double Updates { get; private set; }
         public double Frames { get; private set; }

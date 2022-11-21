@@ -7,10 +7,10 @@ namespace SonOfRobin
 {
     public class ButtonTip
     {
-        public static readonly int margin = 2;
-        public static readonly float textureScale = 0.25f;
+        public const int margin = 2;
+        public const float textureScale = 0.25f;
         private static readonly SpriteFont font = SonOfRobinGame.FontFreeSansBold24;
-        private static readonly float fontScale = 0.5f; // base font scale (relative to icons); the whole controlTips scene can be scaled down if needed
+        private const float fontScale = 0.5f; // base font scale (relative to icons); the whole controlTips scene can be scaled down if needed
 
         public readonly string text;
         public readonly List<Texture2D> textures;

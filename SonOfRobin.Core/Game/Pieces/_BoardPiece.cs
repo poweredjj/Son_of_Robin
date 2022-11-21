@@ -41,7 +41,7 @@ namespace SonOfRobin
 
         public enum Category { Wood, Stone, Metal, SmallPlant, Flesh, Dirt, Crystal, Indestructible }
 
-        protected static readonly float passiveMovementMultiplier = 100f;
+        protected const float passiveMovementMultiplier = 100f;
 
         public readonly World world;
         public readonly string id;

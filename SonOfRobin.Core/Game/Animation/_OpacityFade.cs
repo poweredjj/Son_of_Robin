@@ -7,7 +7,7 @@ namespace SonOfRobin
     {
         public enum Mode { Normal, CameraTargetObstruct, CameraTargetObstructRevert }
 
-        public static readonly int defaultDuration = 30;
+        public const int defaultDuration = 30;
 
         [NonSerialized]
         public Sprite sprite; // must be updated manually after deserializing

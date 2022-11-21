@@ -10,7 +10,7 @@ namespace SonOfRobin
     public class Menu : Scene
     {
         public static bool nextMenuNoStartTransition = false;
-        private static readonly float baseScrollSpeed = 20f;
+        private const float baseScrollSpeed = 20f;
         public enum Layout { Middle, Left, Right }
 
         public readonly MenuTemplate.Name templateName;

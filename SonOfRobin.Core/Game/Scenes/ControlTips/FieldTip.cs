@@ -10,9 +10,9 @@ namespace SonOfRobin
     {
         public enum Alignment { Center, TopOut, TopIn, BottomOut, BottomIn, LeftIn, RightIn, LeftOut, RightOut };
         private static readonly List<Alignment> inAlignment = new List<Alignment> { Alignment.Center, Alignment.LeftIn, Alignment.RightIn, Alignment.TopIn, Alignment.BottomIn };
-        private static readonly int maxInactiveDuration = 10;
-        private static readonly int movementSlowdown = 6;
-        private static readonly int opacitySlowdown = 6;
+        private const int maxInactiveDuration = 10;
+        private const int movementSlowdown = 6;
+        private const int opacitySlowdown = 6;
 
         private static readonly Dictionary<Texture2D, FieldTip> tipsDict = new Dictionary<Texture2D, FieldTip>();
         private static readonly List<Sprite> thisFrameSpritesShown = new List<Sprite>();

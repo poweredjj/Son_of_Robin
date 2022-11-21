@@ -72,7 +72,7 @@ namespace SonOfRobin
         private Rectangle textRect;
         private Rectangle graphRect;
         private static readonly int outerMargin = SonOfRobinGame.platform == Platform.Mobile ? 14 : 6;
-        private static readonly int innerMargin = 3;
+        private const int innerMargin = 3;
 
         private static readonly Dictionary<int, Color> colorDict = new Dictionary<int, Color> {
             { 40, Color.White },
