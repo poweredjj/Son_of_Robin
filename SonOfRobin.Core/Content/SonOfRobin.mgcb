@@ -4790,6 +4790,48 @@
 /processorParam:Quality=Best
 /build:sound/486628__nanisia__japanese-summer-cicadas.ogg
 
+#begin sound/488068__bendrain__footsteps-mud-01_1.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sound/488068__bendrain__footsteps-mud-01_1.ogg
+
+#begin sound/488068__bendrain__footsteps-mud-01_2.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sound/488068__bendrain__footsteps-mud-01_2.ogg
+
+#begin sound/488068__bendrain__footsteps-mud-01_3.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sound/488068__bendrain__footsteps-mud-01_3.ogg
+
+#begin sound/488068__bendrain__footsteps-mud-01_4.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sound/488068__bendrain__footsteps-mud-01_4.ogg
+
+#begin sound/488068__bendrain__footsteps-mud-01_5.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sound/488068__bendrain__footsteps-mud-01_5.ogg
+
+#begin sound/488068__bendrain__footsteps-mud-01_6.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sound/488068__bendrain__footsteps-mud-01_6.ogg
+
+#begin sound/488068__bendrain__footsteps-mud-01_7.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sound/488068__bendrain__footsteps-mud-01_7.ogg
+
 #begin sound/488378__wobesound__harvest-sounds-1.ogg
 /importer:OggImporter
 /processor:SoundEffectProcessor

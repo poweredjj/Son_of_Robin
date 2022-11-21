@@ -223,6 +223,14 @@ namespace SonOfRobin
             StepRock2,
             StepRock3,
 
+            StepMud1,
+            StepMud2,
+            StepMud3,
+            StepMud4,
+            StepMud5,
+            StepMud6,
+            StepMud7,
+
             StepGhost,
 
             AngelChorus,
@@ -332,6 +340,13 @@ namespace SonOfRobin
             { Name.StepRock1, "434895__julius-galla__steps-on-loose-stones-actions-1" },
             { Name.StepRock2, "434895__julius-galla__steps-on-loose-stones-actions-2" },
             { Name.StepRock3, "434895__julius-galla__steps-on-loose-stones-actions-3" },
+            { Name.StepMud1, "488068__bendrain__footsteps-mud-01_1" },
+            { Name.StepMud2, "488068__bendrain__footsteps-mud-01_2" },
+            { Name.StepMud3, "488068__bendrain__footsteps-mud-01_3" },
+            { Name.StepMud4, "488068__bendrain__footsteps-mud-01_4" },
+            { Name.StepMud5, "488068__bendrain__footsteps-mud-01_5" },
+            { Name.StepMud6, "488068__bendrain__footsteps-mud-01_6" },
+            { Name.StepMud7, "488068__bendrain__footsteps-mud-01_7" },
             { Name.HitCrystal, "562199__gristi__snd-small-object-hit" },
             { Name.DestroyCrystal, "542560__matthewholdensound__owi-crystalshatter-2" },
             { Name.EatPredator1, "233168__jarredgibb__pig-chewing-2-96khz-1" },

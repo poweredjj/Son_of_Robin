@@ -5,7 +5,7 @@ namespace SonOfRobin
 {
     public class PieceSoundPack
     {
-        public enum Action { IsDestroyed, IsHit, IsOn, IsDropped, Cry, Die, Eat, Open, Close, StepGrass, StepWater, StepSand, StepRock, StepLava, SwimShallow, SwimDeep, HasAppeared, ArrowFly, ArrowHit, PlayerBowDraw, TurnOn, TurnOff, PlayerBowRelease, PlayerPulse, PlayerSnore, PlayerYawn, PlayerStomachGrowl, PlayerSprint, PlayerPant, PlayerSpeak, Ambient }
+        public enum Action { IsDestroyed, IsHit, IsOn, IsDropped, Cry, Die, Eat, Open, Close, StepGrass, StepWater, StepSand, StepRock, StepLava, StepMud, SwimShallow, SwimDeep, HasAppeared, ArrowFly, ArrowHit, PlayerBowDraw, TurnOn, TurnOff, PlayerBowRelease, PlayerPulse, PlayerSnore, PlayerYawn, PlayerStomachGrowl, PlayerSprint, PlayerPant, PlayerSpeak, Ambient }
 
         private readonly Dictionary<Action, Sound> soundDict;
         private BoardPiece boardPiece;
@@ -101,6 +101,8 @@ namespace SonOfRobin
                 AddAction(action: Action.StepGrass, sound: new Sound(nameList: new List<SoundData.Name> { SoundData.Name.StepGrass1, SoundData.Name.StepGrass2, SoundData.Name.StepGrass3, SoundData.Name.StepGrass4, SoundData.Name.StepGrass5, SoundData.Name.StepGrass6 }, boardPiece: this.boardPiece, cooldown: isPlayer ? 20 : 14, ignore3DAlways: isPlayer, volume: isPlayer ? 1f : 0.35f, maxPitchVariation: 0.6f), replaceExisting: false);
 
                 AddAction(action: Action.StepSand, sound: new Sound(nameList: new List<SoundData.Name> { SoundData.Name.StepSand1, SoundData.Name.StepSand2, SoundData.Name.StepSand3, SoundData.Name.StepSand4 }, boardPiece: this.boardPiece, cooldown: isPlayer ? 20 : 14, ignore3DAlways: isPlayer, volume: volumeMultiplier * 1f, maxPitchVariation: 0.2f), replaceExisting: false);
+
+                AddAction(action: Action.StepMud, sound: new Sound(nameList: new List<SoundData.Name> { SoundData.Name.StepMud1, SoundData.Name.StepMud2, SoundData.Name.StepMud3, SoundData.Name.StepMud4, SoundData.Name.StepMud5, SoundData.Name.StepMud6, SoundData.Name.StepMud7 }, boardPiece: this.boardPiece, cooldown: isPlayer ? 20 : 14, ignore3DAlways: isPlayer, volume: volumeMultiplier * 1f, maxPitchVariation: 0.2f), replaceExisting: false);
 
                 AddAction(action: Action.StepRock, sound: new Sound(nameList: new List<SoundData.Name> { SoundData.Name.StepRock1, SoundData.Name.StepRock2, SoundData.Name.StepRock3 }, boardPiece: this.boardPiece, cooldown: isPlayer ? 20 : 14, ignore3DAlways: isPlayer, volume: volumeMultiplier * 0.7f, maxPitchVariation: 0.2f), replaceExisting: false);
 

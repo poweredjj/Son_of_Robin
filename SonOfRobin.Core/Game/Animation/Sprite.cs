@@ -101,6 +101,7 @@ namespace SonOfRobin
         {
             get
             {
+                if (this.GetExtProperty(name: ExtBoardProps.Name.BiomeSwamp)) return PieceSoundPack.Action.StepMud;
                 if (this.IsOnLava) return PieceSoundPack.Action.StepLava;
                 if (this.IsOnRock) return PieceSoundPack.Action.StepRock;
                 if (this.IsInWater)
