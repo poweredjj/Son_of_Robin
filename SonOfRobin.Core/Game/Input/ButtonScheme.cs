@@ -5,7 +5,7 @@ namespace SonOfRobin
 {
     public class ButtonScheme
     {
-        public enum Type { M, S, N }
+        public enum Type { Xbox360, XboxSeries, SonyPS4, NintendoSwitchPro }
 
         private static Type currentType;
 
@@ -54,7 +54,7 @@ namespace SonOfRobin
 
             switch (currentType)
             {
-                case Type.M:
+                case Type.Xbox360:
                     buttonA = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/Xbox 360/360_A");
                     buttonB = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/Xbox 360/360_B");
                     buttonX = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/Xbox 360/360_X");
@@ -92,7 +92,45 @@ namespace SonOfRobin
 
                     break;
 
-                case Type.S:
+                case Type.XboxSeries:
+                    buttonA = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/Xbox Series/XboxSeriesX_A");
+                    buttonB = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/Xbox Series/XboxSeriesX_B");
+                    buttonX = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/Xbox Series/XboxSeriesX_X");
+                    buttonY = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/Xbox Series/XboxSeriesX_Y");
+
+                    buttonBack = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/Xbox Series/XboxSeriesX_View");
+                    buttonStart = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/Xbox Series/XboxSeriesX_Menu");
+
+                    dpad = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/Xbox Series/XboxSeriesX_Dpad");
+                    dpadDown = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/Xbox Series/XboxSeriesX_Dpad_Down");
+                    dpadUp = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/Xbox Series/XboxSeriesX_Dpad_Up");
+                    dpadLeft = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/Xbox Series/XboxSeriesX_Dpad_Left");
+                    dpadRight = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/Xbox Series/XboxSeriesX_Dpad_Right");
+
+                    buttonLB = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/Xbox Series/XboxSeriesX_LB");
+                    buttonRB = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/Xbox Series/XboxSeriesX_RB");
+                    buttonLT = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/Xbox Series/XboxSeriesX_LT");
+                    buttonRT = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/Xbox Series/XboxSeriesX_RT");
+
+                    leftStick = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/Xbox Series/XboxSeriesX_Left_Stick");
+                    rightStick = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/Xbox Series/XboxSeriesX_Right_Stick");
+                    leftStickClick = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/Xbox Series/XboxSeriesX_Left_Stick_Click");
+                    rightStickClick = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/Xbox Series/XboxSeriesX_Right_Stick_Click");
+
+                    buttonNameA = "A";
+                    buttonNameB = "B";
+                    buttonNameX = "X";
+                    buttonNameY = "Y";
+                    buttonNameBack = "view";
+                    buttonNameStart = "menu";
+                    buttonNameLB = "LB";
+                    buttonNameRB = "RB";
+                    buttonNameLT = "LT";
+                    buttonNameRT = "RT";
+
+                    break;
+
+                case Type.SonyPS4:
 
                     buttonA = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/PS4/PS4_Cross");
                     buttonB = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/PS4/PS4_Circle");
@@ -131,7 +169,7 @@ namespace SonOfRobin
 
                     break;
 
-                case Type.N:
+                case Type.NintendoSwitchPro:
                     buttonA = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/Switch/Switch_B");
                     buttonB = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/Switch/Switch_A");
                     buttonX = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/Switch/Switch_Y");
