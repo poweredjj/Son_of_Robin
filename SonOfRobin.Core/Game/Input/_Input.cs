@@ -44,9 +44,6 @@ namespace SonOfRobin
 
         private static void RefreshTipsType()
         {
-            // currentControlType = ControlType.Gamepad;  // for testing
-            // return; // for testing
-
             if (SonOfRobinGame.CurrentUpdate % 12 != 0) return;
 
             ControlType prevControlType = currentControlType;

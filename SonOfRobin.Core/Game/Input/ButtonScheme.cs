@@ -5,7 +5,7 @@ namespace SonOfRobin
 {
     public class ButtonScheme
     {
-        public enum Type { Xbox360, XboxSeries, SonyPS4, NintendoSwitchPro }
+        public enum Type { Xbox360, XboxSeries, DualShock4, DualSense, SwitchProController }
 
         private static Type currentType;
 
@@ -83,8 +83,10 @@ namespace SonOfRobin
                     buttonNameB = "B";
                     buttonNameX = "X";
                     buttonNameY = "Y";
+
                     buttonNameBack = "back";
                     buttonNameStart = "start";
+
                     buttonNameLB = "LB";
                     buttonNameRB = "RB";
                     buttonNameLT = "LT";
@@ -121,8 +123,10 @@ namespace SonOfRobin
                     buttonNameB = "B";
                     buttonNameX = "X";
                     buttonNameY = "Y";
+
                     buttonNameBack = "view";
                     buttonNameStart = "menu";
+
                     buttonNameLB = "LB";
                     buttonNameRB = "RB";
                     buttonNameLT = "LT";
@@ -130,7 +134,7 @@ namespace SonOfRobin
 
                     break;
 
-                case Type.SonyPS4:
+                case Type.DualShock4:
 
                     buttonA = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/PS4/PS4_Cross");
                     buttonB = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/PS4/PS4_Circle");
@@ -160,8 +164,10 @@ namespace SonOfRobin
                     buttonNameB = "circle";
                     buttonNameX = "square";
                     buttonNameY = "triangle";
+
                     buttonNameBack = "share";
                     buttonNameStart = "options";
+
                     buttonNameLB = "L1";
                     buttonNameRB = "R1";
                     buttonNameLT = "L2";
@@ -169,7 +175,49 @@ namespace SonOfRobin
 
                     break;
 
-                case Type.NintendoSwitchPro:
+                case Type.DualSense:
+
+                    buttonA = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/PS5/PS5_Cross");
+                    buttonB = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/PS5/PS5_Circle");
+                    buttonX = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/PS5/PS5_Square");
+                    buttonY = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/PS5/PS5_Triangle");
+
+                    buttonBack = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/PS5/PS5_Share"); // TODO check if this mapping is correct
+                    buttonStart = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/PS5/PS5_Options");
+
+                    dpad = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/PS5/PS5_Dpad");
+                    dpadDown = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/PS5/PS5_Dpad_Down");
+                    dpadUp = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/PS5/PS5_Dpad_Up");
+                    dpadLeft = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/PS5/PS5_Dpad_Left");
+                    dpadRight = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/PS5/PS5_Dpad_Right");
+
+                    buttonLB = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/PS5/PS5_L1");
+                    buttonRB = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/PS5/PS5_R1");
+                    buttonLT = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/PS5/PS5_L2");
+                    buttonRT = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/PS5/PS5_R2");
+
+                    leftStick = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/PS5/PS5_Left_Stick");
+                    rightStick = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/PS5/PS5_Right_Stick");
+                    leftStickClick = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/PS5/PS5_Left_Stick_Click");
+                    rightStickClick = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/PS5/PS5_Right_Stick_Click");
+
+                    buttonNameA = "cross";
+                    buttonNameB = "circle";
+                    buttonNameX = "square";
+                    buttonNameY = "triangle";
+
+                    buttonNameBack = "share";
+                    buttonNameStart = "options";
+
+                    buttonNameLB = "L1";
+                    buttonNameRB = "R1";
+                    buttonNameLT = "L2";
+                    buttonNameRT = "R2";
+
+                    break;
+
+                case Type.SwitchProController:
+
                     buttonA = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/Switch/Switch_B");
                     buttonB = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/Switch/Switch_A");
                     buttonX = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/Switch/Switch_Y");
@@ -198,8 +246,10 @@ namespace SonOfRobin
                     buttonNameB = "A";
                     buttonNameX = "Y";
                     buttonNameY = "X";
+
                     buttonNameBack = "minus";
                     buttonNameStart = "plus";
+
                     buttonNameLB = "L";
                     buttonNameRB = "R";
                     buttonNameLT = "zL";
