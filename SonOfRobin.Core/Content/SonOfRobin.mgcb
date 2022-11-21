@@ -4706,6 +4706,12 @@
 /processorParam:Quality=Best
 /build:sound/445109__breviceps__mud-splat.ogg
 
+#begin sound/447928__breviceps__muddy-boots.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sound/447928__breviceps__muddy-boots.ogg
+
 #begin sound/45654__simon-lacelle__dun-dun-dun.ogg
 /importer:OggImporter
 /processor:SoundEffectProcessor

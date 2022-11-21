@@ -162,6 +162,7 @@ namespace SonOfRobin
             ClothRustle2,
             ItemUpgrade,
             LeatherMove,
+            SplashMud,
 
             SnoringFemale,
             SnoringMale,
@@ -473,6 +474,7 @@ namespace SonOfRobin
             { Name.Error, "141334__lluiset7__error-2" },
             { Name.Lava, "174500__unfa__boiling-towel-loop" },
             { Name.TurnPage, "521114__d-jones__turn-the-page" },
+            { Name.SplashMud, "447928__breviceps__muddy-boots" },
             };
     }
 }
