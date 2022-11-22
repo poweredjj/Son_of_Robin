@@ -398,15 +398,10 @@ namespace SonOfRobin
         {
             if (this.IgnoreUpdateAndDraw) return;
 
-            if (this.storage.GetType() == typeof(VirtualPieceStorage))
-            {
-                VirtualPieceStorage virtStorage = (VirtualPieceStorage)this.storage;
-                virtStorage.RecalculateIfResized();
-            }
+            this.storage.Update();
 
             if (this.CursorX >= this.storage.Width) this.CursorX = this.storage.Width - 1; // in case storage was resized
             if (this.CursorY >= this.storage.Height) this.CursorY = this.storage.Height - 1; // in case storage was resized
-            this.storage.DestroyBrokenPieces();
             this.UpdateViewParams();
             if (this.type != Type.SingleBottom && this.inputActive) this.UpdateHintWindow();
             this.ProcessInput();
@@ -425,7 +420,7 @@ namespace SonOfRobin
             piece.world.identifiedPieces.Add(piece.name);
         }
 
-        private void UpdateViewParams()
+        public void UpdateViewParams()
         {
             Rectangle bgRect = this.BgRect;
             this.viewParams.Width = bgRect.Width;

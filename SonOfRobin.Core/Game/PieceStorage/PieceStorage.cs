@@ -190,6 +190,11 @@ namespace SonOfRobin
             {
                 this.AddPiece(piece: piece, dropIfDoesNotFit: true, addMovement: true);
             }
+
+            foreach (Inventory inventory in Scene.GetAllScenesOfType(typeof(Inventory)))
+            {
+                inventory.UpdateViewParams();
+            }
         }
 
         public bool AddPiece(BoardPiece piece, bool dropIfDoesNotFit = false, bool addMovement = false)
@@ -582,6 +587,11 @@ namespace SonOfRobin
             }
 
             return storage;
+        }
+
+        public virtual void Update()
+        {
+            this.DestroyBrokenPieces();
         }
     }
 }

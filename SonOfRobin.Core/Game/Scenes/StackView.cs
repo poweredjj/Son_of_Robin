@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -138,10 +137,9 @@ namespace SonOfRobin
             else if (scene.GetType() == typeof(Inventory))
             {
                 Inventory inventory = (Inventory)scene;
-                sceneName = Convert.ToString(inventory.storage.storageType);
+                sceneName = inventory.storage.Label;
             }
-            else
-            { sceneName = scene.GetType().Name; }
+            else sceneName = scene.GetType().Name;
 
             string inputTxt = scene.inputActive ? " I" : "";
             string updatesTxt = updates ? " U" : "";

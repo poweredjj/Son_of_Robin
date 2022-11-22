@@ -61,8 +61,10 @@ namespace SonOfRobin
             this.UpdateSlotPosByID();
         }
 
-        public void RecalculateIfResized()
+        public override void Update()
         {
+            base.Update();
+
             var resizedStorages = this.virtStoragePackList.Where(storagePack => storagePack.StorageResized);
             if (resizedStorages.Any()) this.Recalculate();
             foreach (VirtPieceStoragePack storagePack in resizedStorages)
