@@ -398,6 +398,12 @@ namespace SonOfRobin
         {
             if (this.IgnoreUpdateAndDraw) return;
 
+            if (this.storage.GetType() == typeof(VirtualPieceStorage))
+            {
+                VirtualPieceStorage virtStorage = (VirtualPieceStorage)this.storage;
+                virtStorage.RecalculateIfResized();
+            }
+
             if (this.CursorX >= this.storage.Width) this.CursorX = this.storage.Width - 1; // in case storage was resized
             if (this.CursorY >= this.storage.Height) this.CursorY = this.storage.Height - 1; // in case storage was resized
             this.storage.DestroyBrokenPieces();

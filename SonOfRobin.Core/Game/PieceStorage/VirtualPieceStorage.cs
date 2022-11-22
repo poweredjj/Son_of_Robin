@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SonOfRobin
 {
@@ -12,12 +13,25 @@ namespace SonOfRobin
             public readonly bool newRow;
             public Point Offset { get; private set; }
             public bool OffsetSet { get; private set; }
+            public bool StorageResized { get { return !(this.storageWidth == this.storage.Width && this.storageHeight == this.storage.Height); } }
+
+            private byte storageWidth;
+            private byte storageHeight;
 
             public VirtPieceStoragePack(PieceStorage storage, bool newRow = false)
             {
                 this.storage = storage;
                 this.newRow = newRow;
+
                 this.OffsetSet = false;
+
+                this.UpdateStorageSize();
+            }
+
+            public void UpdateStorageSize()
+            {
+                this.storageWidth = storage.Width;
+                this.storageHeight = storage.Height;
             }
 
             public void SetOffset(Point offset)
@@ -45,6 +59,16 @@ namespace SonOfRobin
 
             this.slots = this.MakeVirtualSlots();
             this.UpdateSlotPosByID();
+        }
+
+        public void RecalculateIfResized()
+        {
+            var resizedStorages = this.virtStoragePackList.Where(storagePack => storagePack.StorageResized);
+            if (resizedStorages.Any()) this.Recalculate();
+            foreach (VirtPieceStoragePack storagePack in resizedStorages)
+            {
+                storagePack.UpdateStorageSize();
+            }
         }
 
         private Point GetStorageSize()
@@ -95,6 +119,7 @@ namespace SonOfRobin
 
         private StorageSlot[,] MakeVirtualSlots()
         {
+            // slots that will be assigned to multiple storages (original and this one)
             var virtSlots = new StorageSlot[this.Width, this.Height];
 
             foreach (VirtPieceStoragePack storagePack in this.virtStoragePackList)
