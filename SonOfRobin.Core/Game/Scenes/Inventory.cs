@@ -15,7 +15,6 @@ namespace SonOfRobin
             Toolbar,
             InventoryAndToolbar,
             InventoryAndFieldStorage,
-            InventoryAndEquip
         }
 
         public enum TransDirection
@@ -188,16 +187,15 @@ namespace SonOfRobin
 
                         Inventory toolbar = new Inventory(piece: player, storage: player.ToolStorage, layout: Type.DualBottom, transDirection: TransDirection.Down);
 
-                        //PieceStorage[,] storageArray = new PieceStorage[2, 2]; // for testing
-                        //storageArray[0, 0] = player.pieceStorage; // for testing
-                        //storageArray[1, 0] = player.EquipStorage; // for testing
-                        //storageArray[0, 1] = player.ToolStorage; // for testing
+                        var virtStoragePackList = new List<VirtualPieceStorage.VirtPieceStoragePack>
+                        {
+                            new VirtualPieceStorage.VirtPieceStoragePack(storage: player.pieceStorage),
+                            new VirtualPieceStorage.VirtPieceStoragePack(storage: player.EquipStorage),
+                        };
 
-                        //PieceStorage virtualStorage = new VirtualPieceStorageOld(storagePiece: player, world: player.world, storageArray: storageArray); // for testing
+                        PieceStorage virtualStorage = new VirtualPieceStorage(storagePiece: player, world: player.world, virtStoragePackList: virtStoragePackList); // for testing
 
-                        //Inventory inventory = new Inventory(piece: player, storage: virtualStorage, layout: Type.DualTop, otherInventory: toolbar, transDirection: TransDirection.Up); // for testing
-
-                        Inventory inventory = new Inventory(piece: player, storage: player.pieceStorage, layout: Type.DualTop, otherInventory: toolbar, transDirection: TransDirection.Up);
+                        Inventory inventory = new Inventory(piece: player, storage: virtualStorage, layout: Type.DualTop, otherInventory: toolbar, transDirection: TransDirection.Up); // for testing
 
                         toolbar.otherInventory = inventory;
 
@@ -210,18 +208,6 @@ namespace SonOfRobin
                         Inventory inventoryRight = new Inventory(piece: fieldStorage, storage: fieldStorage.pieceStorage, layout: Type.DualRight, otherInventory: inventoryLeft, transDirection: TransDirection.Right);
                         inventoryLeft.otherInventory = inventoryRight;
 
-                        break;
-                    }
-
-                case Layout.InventoryAndEquip:
-                    {
-                        soundOpen.Play();
-
-                        Inventory inventoryLeft = new Inventory(piece: player, storage: player.pieceStorage, layout: Type.DualLeft, transDirection: TransDirection.Left);
-                        Inventory inventoryRight = new Inventory(piece: player, storage: player.EquipStorage, layout: Type.DualRight, otherInventory: inventoryLeft, transDirection: TransDirection.Right);
-                        inventoryLeft.otherInventory = inventoryRight;
-
-                        player.world.HintEngine.Disable(Tutorials.Type.Equip);
                         break;
                     }
 

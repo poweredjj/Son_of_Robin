@@ -181,9 +181,9 @@ namespace SonOfRobin
             new Tutorial(type: Type.Equip, name: "using equipment", title: "Using equipment.",
                  messages: new List<HintMessage> {
                      Preferences.ShowTouchTips ?
-                     new HintMessage(text: "1. Press 'equip' button to enter 'equip' menu.", boxType: messageTextType):
-                     new HintMessage(text: "1. Press | to enter 'equip' menu.", imageList: new List<Texture2D> {InputMapper.GetTexture(InputMapper.Action.WorldEquip)}, boxType: messageTextType),
-                     new HintMessage(text: "2. Place the item in its slot.", boxType: messageTextType) });
+                     new HintMessage(text: "1. Press 'inventory' button to enter 'inventory' menu.", boxType: messageTextType):
+                     new HintMessage(text: "1. Press | to enter 'inventory' menu.", imageList: new List<Texture2D> {InputMapper.GetTexture(InputMapper.Action.WorldInventory)}, boxType: messageTextType),
+                     new HintMessage(text: "2. Place the item in its slot (chest, legs, etc).", boxType: messageTextType) });
 
             new Tutorial(type: Type.Interact, name: "interacting", title: "Interacting with field objects.",
                 messages: new List<HintMessage> {

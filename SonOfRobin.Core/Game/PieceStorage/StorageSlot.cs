@@ -8,7 +8,7 @@ namespace SonOfRobin
 {
     public class StorageSlot
     {
-        private readonly PieceStorage storage;
+        public readonly PieceStorage storage;
         public List<BoardPiece> pieceList;
         public readonly byte posX;
         public readonly byte posY;
@@ -27,12 +27,13 @@ namespace SonOfRobin
             }
         }
 
-        public virtual int PieceCount
+        public int PieceCount
         { get { return this.pieceList.Count; } }
+
         public bool IsEmpty
         { get { return this.PieceCount == 0; } }
 
-        public virtual bool IsFull
+        public bool IsFull
         {
             get
             {
@@ -41,7 +42,7 @@ namespace SonOfRobin
             }
         }
 
-        public virtual PieceTemplate.Name PieceName
+        public PieceTemplate.Name PieceName
         { get { return pieceList[0].name; } }
 
         public StorageSlot(PieceStorage storage, byte posX, byte posY, byte stackLimit = 255, List<PieceTemplate.Name> allowedPieceNames = null)
@@ -57,7 +58,7 @@ namespace SonOfRobin
             this.allowedPieceNames = allowedPieceNames;
         }
 
-        public virtual void AddPiece(BoardPiece piece)
+        public void AddPiece(BoardPiece piece)
         {
             if (this.locked) return;
 
@@ -78,9 +79,11 @@ namespace SonOfRobin
 
             if (add) this.storage.storagePiece.buffEngine.AddBuffs(world: piece.world, equipPiece.buffList);
             else this.storage.storagePiece.buffEngine.RemoveBuffs(equipPiece.buffList);
+
+
         }
 
-        public virtual bool CanFitThisPiece(BoardPiece piece, int pieceCount = 1)
+        public bool CanFitThisPiece(BoardPiece piece, int pieceCount = 1)
         {
             if (this.locked || !piece.canBePickedUp) return false;
             if (this.allowedPieceNames != null && !this.allowedPieceNames.Contains(piece.name)) return false;
@@ -89,7 +92,7 @@ namespace SonOfRobin
             else return piece.name == this.PieceName && this.pieceList.Count + pieceCount <= Math.Min(this.pieceList[0].stackSize, this.stackLimit);
         }
 
-        public virtual int HowManyPiecesOfNameCanFit(PieceTemplate.Name pieceName)
+        public int HowManyPiecesOfNameCanFit(PieceTemplate.Name pieceName)
         {
             PieceInfo.Info pieceInfo = PieceInfo.GetInfo(pieceName);
 
@@ -101,7 +104,7 @@ namespace SonOfRobin
             return 0;
         }
 
-        public virtual BoardPiece RemoveTopPiece()
+        public BoardPiece RemoveTopPiece()
         {
             if (this.IsEmpty || this.locked) return null;
 
@@ -113,7 +116,7 @@ namespace SonOfRobin
             return removedPiece;
         }
 
-        public virtual List<BoardPiece> GetAllPieces(bool remove)
+        public List<BoardPiece> GetAllPieces(bool remove)
         {
             if (this.locked) return new List<BoardPiece> { };
 
@@ -127,7 +130,7 @@ namespace SonOfRobin
             return allPieces;
         }
 
-        public virtual void DestroyBrokenPieces()
+        public void DestroyBrokenPieces()
         {
             if (this.locked) return;
 
@@ -138,7 +141,7 @@ namespace SonOfRobin
             this.pieceList = this.pieceList.Where(piece => piece.hitPoints > 0).ToList();
         }
 
-        public virtual void DestroyPieceAndReplaceWithAnother(BoardPiece piece)
+        public void DestroyPieceAndReplaceWithAnother(BoardPiece piece)
         {
             // target piece stack size should be 1; otherwise it makes no sense
             if (this.pieceList.Count > 1) throw new ArgumentException($"Cannot replace {this.storage.storageType} slot (current stack size {this.pieceList.Count}) contents with {piece.name}.");
@@ -147,7 +150,7 @@ namespace SonOfRobin
             this.pieceList.Add(piece);
         }
 
-        public virtual Object Serialize()
+        public Object Serialize()
         {
             var pieceList = new List<Object> { };
 
@@ -167,7 +170,7 @@ namespace SonOfRobin
             return slotData;
         }
 
-        public virtual void Deserialize(Object slotData)
+        public void Deserialize(Object slotData)
         {
             var slotDict = (Dictionary<string, object>)slotData;
 
@@ -201,7 +204,7 @@ namespace SonOfRobin
             }
         }
 
-        public virtual void Draw(Rectangle destRect, float opacity, bool drawNewIcon)
+        public void Draw(Rectangle destRect, float opacity, bool drawNewIcon)
         {
             if (this.hidden || this.IsEmpty) return;
             Sprite sprite = this.TopPiece.sprite;

@@ -15,7 +15,6 @@ namespace SonOfRobin
         Shoot,
         PickUp,
         Inventory,
-        Equip,
         FieldCraft,
         Map,
         Sprint,

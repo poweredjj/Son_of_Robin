@@ -757,12 +757,6 @@ namespace SonOfRobin
                 return;
             }
 
-            if (InputMapper.HasBeenPressed(InputMapper.Action.WorldEquip))
-            {
-                Inventory.SetLayout(Inventory.Layout.InventoryAndEquip, player: this.Player);
-                return;
-            }
-
             if (InputMapper.HasBeenPressed(InputMapper.Action.WorldMapToggle))
             {
                 this.ToggleMapMode();

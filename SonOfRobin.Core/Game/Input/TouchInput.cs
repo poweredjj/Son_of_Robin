@@ -377,7 +377,7 @@ namespace SonOfRobin
 
                         xPos = 0.06f;
                         yPos += yShift;
-                        new VirtButton(name: VButName.Equip, label: "EQUIP", bgColorPressed: Color.Yellow, bgColorReleased: Color.White, textColor: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
+                        // xPos and yPos are set for a second row of buttons (currently not used)
 
                         return;
                     }

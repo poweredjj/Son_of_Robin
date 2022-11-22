@@ -9,7 +9,7 @@ namespace SonOfRobin
     [Serializable]
     public class InputPackage
     {
-        public const float version = 1.06f;
+        public const float version = 1.07f;
 
         private static readonly Dictionary<string, string> readablePropertyNames = new Dictionary<string, string>
             {
@@ -28,7 +28,6 @@ namespace SonOfRobin
                 {"zoomOut", "zoom out"},
                 {"pauseMenu", "open pause"},
                 {"craft", "open craft"},
-                {"equip", "open equip"},
                 {"inventory", "open inventory"},
                 {"invSwitch", "switch active inventory"},
                 {"invPickOne", "pick item"},
@@ -55,7 +54,6 @@ namespace SonOfRobin
         public object cancel;
         public object pauseMenu;
         public object sprint;
-        public object equip;
         public object inventory;
         public object pickUp;
         public object craft;
@@ -75,7 +73,7 @@ namespace SonOfRobin
         public object mapZoomOut;
 
         public bool IsObsolete { get { return this.packageVersion != version; } }
-        public InputPackage(float packageVersion, InputMapper.AnalogType leftStick, InputMapper.AnalogType rightStick, object confirm, object cancel, object pauseMenu, object sprint, object equip, object inventory, object pickUp, object craft, object interact, object map, object useTool, object zoomOut, object toolbarPrev, object invSwitch, object invSort, object toolbarNext, object invPickOne, object invPickStack, object mapToggleMarker, object mapCenterPlayer, object mapZoomIn, object mapZoomOut, object left = null, object right = null, object up = null, object down = null)
+        public InputPackage(float packageVersion, InputMapper.AnalogType leftStick, InputMapper.AnalogType rightStick, object confirm, object cancel, object pauseMenu, object sprint, object inventory, object pickUp, object craft, object interact, object map, object useTool, object zoomOut, object toolbarPrev, object invSwitch, object invSort, object toolbarNext, object invPickOne, object invPickStack, object mapToggleMarker, object mapCenterPlayer, object mapZoomIn, object mapZoomOut, object left = null, object right = null, object up = null, object down = null)
         {
             this.packageVersion = packageVersion;
 
@@ -89,7 +87,6 @@ namespace SonOfRobin
             this.cancel = cancel;
             this.pauseMenu = pauseMenu;
             this.sprint = sprint;
-            this.equip = equip;
             this.inventory = inventory;
             this.craft = craft;
             this.pickUp = pickUp;
@@ -124,7 +121,6 @@ namespace SonOfRobin
                 cancel: this.cancel,
                 pauseMenu: this.pauseMenu,
                 sprint: this.sprint,
-                equip: this.equip,
                 inventory: this.inventory,
                 pickUp: this.pickUp,
                 craft: this.craft,
@@ -158,7 +154,6 @@ namespace SonOfRobin
                 this.cancel == inputPackage.cancel &&
                 this.pauseMenu == inputPackage.pauseMenu &&
                 this.sprint == inputPackage.sprint &&
-                this.equip == inputPackage.equip &&
                 this.inventory == inputPackage.inventory &&
                 this.pickUp == inputPackage.pickUp &&
                 this.craft == inputPackage.craft &&
@@ -189,7 +184,7 @@ namespace SonOfRobin
             List<List<string>> groupsToCheck = new List<List<string>> {
                 { new List<string> { "leftStick", "rightStick" } }, // sticks
                 { new List<string> { "confirm", "cancel", "left", "right", "up", "down", "pauseMenu"} }, // general
-                { new List<string> { "interact", "pickUp", "sprint", "useTool", "zoomOut", "toolbarPrev", "toolbarNext", "pauseMenu", "equip", "inventory", "craft", "map" } }, // field
+                { new List<string> { "interact", "pickUp", "sprint", "useTool", "zoomOut", "toolbarPrev", "toolbarNext", "pauseMenu", "inventory", "craft", "map" } }, // field
                 { new List<string> { "invSwitch", "invPickOne", "invPickStack", "invSort", "confirm", "cancel", "left", "right", "up", "down" } }, // inventory
                 { new List<string> { "cancel", "mapToggleMarker", "mapCenterPlayer", "mapZoomIn", "mapZoomOut" } }, // map
             };

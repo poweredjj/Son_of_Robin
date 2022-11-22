@@ -225,7 +225,6 @@ namespace SonOfRobin
                         var cameraTextures = InputMapper.GetTextures(InputMapper.Action.WorldCameraMove); // there is no camera mapping for keyboard
                         if (cameraTextures.Count > 0) new ButtonTip(tipCollection: this.tipCollection, text: "camera", textures: cameraTextures);
                         new ButtonTip(tipCollection: this.tipCollection, text: "sprint", isHighlighted: false, textures: InputMapper.GetTextures(InputMapper.Action.WorldSprintToggle));
-                        new ButtonTip(tipCollection: this.tipCollection, text: "equip", textures: InputMapper.GetTextures(InputMapper.Action.WorldEquip));
                         new ButtonTip(tipCollection: this.tipCollection, text: "inventory", textures: InputMapper.GetTextures(InputMapper.Action.WorldInventory));
                         new ButtonTip(tipCollection: this.tipCollection, text: "pick up", isHighlighted: false, textures: InputMapper.GetTextures(InputMapper.Action.WorldPickUp));
                         new ButtonTip(tipCollection: this.tipCollection, text: "craft", textures: InputMapper.GetTextures(InputMapper.Action.WorldFieldCraft));

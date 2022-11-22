@@ -27,7 +27,6 @@ namespace SonOfRobin
             WorldPickUp,
             WorldUseToolbarPiece,
             WorldInventory,
-            WorldEquip,
             WorldFieldCraft,
             WorldMapToggle,
             WorldPauseMenu,
@@ -60,9 +59,9 @@ namespace SonOfRobin
 
         protected readonly static Dictionary<Action, Mapping> detailedMappings = new Dictionary<Action, Mapping>();
 
-        public static readonly InputPackage defaultMappingGamepad = new InputPackage(packageVersion: InputPackage.version, leftStick: AnalogType.PadLeft, rightStick: AnalogType.PadRight, confirm: Buttons.A, cancel: Buttons.B, pauseMenu: Buttons.Start, sprint: Buttons.LeftStick, equip: Buttons.DPadLeft, inventory: Buttons.Y, pickUp: Buttons.X, craft: Buttons.DPadUp, interact: Buttons.A, map: Buttons.DPadRight, useTool: Buttons.RightTrigger, zoomOut: Buttons.LeftTrigger, toolbarPrev: Buttons.LeftShoulder, toolbarNext: Buttons.RightShoulder, invSwitch: Buttons.LeftStick, invPickOne: Buttons.Y, invPickStack: Buttons.X, invSort: Buttons.RightStick, mapToggleMarker: Buttons.A, mapCenterPlayer: Buttons.LeftStick, mapZoomIn: Buttons.RightTrigger, mapZoomOut: Buttons.LeftTrigger);
+        public static readonly InputPackage defaultMappingGamepad = new InputPackage(packageVersion: InputPackage.version, leftStick: AnalogType.PadLeft, rightStick: AnalogType.PadRight, confirm: Buttons.A, cancel: Buttons.B, pauseMenu: Buttons.Start, sprint: Buttons.LeftStick, inventory: Buttons.Y, pickUp: Buttons.X, craft: Buttons.DPadUp, interact: Buttons.A, map: Buttons.DPadRight, useTool: Buttons.RightTrigger, zoomOut: Buttons.LeftTrigger, toolbarPrev: Buttons.LeftShoulder, toolbarNext: Buttons.RightShoulder, invSwitch: Buttons.LeftStick, invPickOne: Buttons.Y, invPickStack: Buttons.X, invSort: Buttons.RightStick, mapToggleMarker: Buttons.A, mapCenterPlayer: Buttons.LeftStick, mapZoomIn: Buttons.RightTrigger, mapZoomOut: Buttons.LeftTrigger);
 
-        public static readonly InputPackage defaultMappingKeyboard = new InputPackage(packageVersion: InputPackage.version, leftStick: AnalogType.FromKeys, rightStick: AnalogType.Empty, confirm: Keys.Enter, cancel: Keys.Escape, pauseMenu: Keys.Back, sprint: Keys.NumPad0, equip: Keys.E, inventory: Keys.Enter, pickUp: Keys.RightControl, craft: Keys.NumPad5, interact: Keys.RightShift, map: Keys.M, useTool: Keys.Space, zoomOut: Keys.NumPad1, toolbarPrev: Keys.OemOpenBrackets, toolbarNext: Keys.OemCloseBrackets, invSwitch: Keys.Tab, invPickOne: Keys.RightShift, invPickStack: Keys.Space, invSort: Keys.LeftShift, mapToggleMarker: Keys.Space, mapCenterPlayer: Keys.A, mapZoomIn: Keys.X, mapZoomOut: Keys.Z, left: Keys.Left, right: Keys.Right, up: Keys.Up, down: Keys.Down);
+        public static readonly InputPackage defaultMappingKeyboard = new InputPackage(packageVersion: InputPackage.version, leftStick: AnalogType.FromKeys, rightStick: AnalogType.Empty, confirm: Keys.Enter, cancel: Keys.Escape, pauseMenu: Keys.Back, sprint: Keys.NumPad0, inventory: Keys.Enter, pickUp: Keys.RightControl, craft: Keys.NumPad5, interact: Keys.RightShift, map: Keys.M, useTool: Keys.Space, zoomOut: Keys.NumPad1, toolbarPrev: Keys.OemOpenBrackets, toolbarNext: Keys.OemCloseBrackets, invSwitch: Keys.Tab, invPickOne: Keys.RightShift, invPickStack: Keys.Space, invSort: Keys.LeftShift, mapToggleMarker: Keys.Space, mapCenterPlayer: Keys.A, mapZoomIn: Keys.X, mapZoomOut: Keys.Z, left: Keys.Left, right: Keys.Right, up: Keys.Up, down: Keys.Down);
 
         public static InputPackage currentMappingGamepad = defaultMappingGamepad.MakeCopy();
         public static InputPackage currentMappingKeyboard = defaultMappingKeyboard.MakeCopy();
@@ -98,7 +97,6 @@ namespace SonOfRobin
                 new Mapping(action: Action.WorldCameraMove, anyInputList: new List<object> { AnalogType.VirtRight, padMap.rightStick });
                 new Mapping(action: Action.WorldPauseMenu, anyInputList: new List<object> { keybMap.pauseMenu, padMap.pauseMenu, VButName.PauseMenu });
                 new Mapping(action: Action.WorldSprintToggle, anyInputList: new List<object> { keybMap.sprint, padMap.sprint, VButName.Sprint });
-                new Mapping(action: Action.WorldEquip, anyInputList: new List<object> { keybMap.equip, padMap.equip, VButName.Equip });
                 new Mapping(action: Action.WorldInventory, anyInputList: new List<object> { keybMap.inventory, padMap.inventory, VButName.Inventory });
 
                 var pickUpList = new List<object> { keybMap.pickUp, padMap.pickUp, VButName.PickUp };

@@ -8,36 +8,45 @@ namespace SonOfRobin
     public class PieceStorage
     {
         public enum StorageType
-        { Inventory, Cooking, Upgrade, Fireplace, Chest, Tools, Equip, Fruits }
+        { Virtual, Inventory, Cooking, Upgrade, Fireplace, Chest, Tools, Equip, Fruits }
 
         public readonly World world;
         public readonly StorageType storageType;
         public readonly BoardPiece storagePiece;
-        public virtual byte Width { get; private set; }
-        public virtual byte Height { get; private set; }
+        public byte Width { get; protected set; }
+        public byte Height { get; protected set; }
 
-        private StorageSlot[,] slots;
+        protected StorageSlot[,] slots;
         private readonly byte stackLimit;
 
-        public virtual List<PieceTemplate.Name> AllowedPieceNames { get; private set; }
+        public List<PieceTemplate.Name> AllowedPieceNames { get; private set; }
 
         public StorageSlot lastUsedSlot; // last used by Inventory class
+
         public int AllSlotsCount
         { get { return this.Width * this.Height; } }
+
         public int EmptySlotsCount
         { get { return this.EmptySlots.Count; } }
+
         public List<StorageSlot> EmptySlots
         { get { return AllSlots.Where(slot => slot.IsEmpty).ToList(); } }
+
         public int FullSlotsCount
         { get { return this.FullSlots.Count; } }
+
         public List<StorageSlot> FullSlots
         { get { return AllSlots.Where(slot => slot.IsFull).ToList(); } }
+
         public int NotFullSlotsCount
         { get { return this.NotFullSlots.Count; } }
+
         public List<StorageSlot> NotFullSlots
         { get { return AllSlots.Where(slot => !slot.IsFull).ToList(); } }
+
         public int OccupiedSlotsCount
         { get { return this.OccupiedSlots.Count; } }
+
         public List<StorageSlot> OccupiedSlots
         { get { return AllSlots.Where(slot => !slot.IsEmpty).ToList(); } }
 
@@ -64,7 +73,7 @@ namespace SonOfRobin
             }
         }
 
-        public virtual List<StorageSlot> AllSlots
+        public List<StorageSlot> AllSlots
         {
             get
             {
@@ -114,7 +123,7 @@ namespace SonOfRobin
             return emptySlots;
         }
 
-        public virtual void Resize(byte newWidth, byte newHeight)
+        public void Resize(byte newWidth, byte newHeight)
         {
             if (this.Width == newWidth && this.Height == newHeight) return;
 
@@ -163,7 +172,7 @@ namespace SonOfRobin
             }
         }
 
-        public virtual bool AddPiece(BoardPiece piece, bool dropIfDoesNotFit = false, bool addMovement = false)
+        public bool AddPiece(BoardPiece piece, bool dropIfDoesNotFit = false, bool addMovement = false)
         {
             StorageSlot slot = this.FindCorrectSlot(piece);
             if (slot == null)
@@ -195,7 +204,7 @@ namespace SonOfRobin
             return null;
         }
 
-        public virtual StorageSlot GetSlot(int x, int y)
+        public StorageSlot GetSlot(int x, int y)
         {
             try
             { return this.slots[x, y]; }
@@ -463,7 +472,7 @@ namespace SonOfRobin
             return null;
         }
 
-        public void Sort()
+        public virtual void Sort()
         {
             if (this.storageType == StorageType.Equip) return; // equip should not be sorted, to avoid removing and adding buffs
 
