@@ -42,7 +42,7 @@ namespace SonOfRobin
             this.currentCycleBurningFramesLeft = 0;
             this.burnAllFuelEndFrame = 0;
 
-            this.pieceStorage = new PieceStorage(width: storageWidth, height: (byte)(storageHeight + 1), world: this.world, storagePiece: this, storageType: PieceStorage.StorageType.Fireplace);
+            this.pieceStorage = new PieceStorage(width: storageWidth, height: (byte)(storageHeight + 1), storagePiece: this, storageType: PieceStorage.StorageType.Fireplace);
 
             var allowedPieceNames = new List<PieceTemplate.Name>(fuelNames);
             allowedPieceNames.Add(PieceTemplate.Name.FireplaceTriggerOn);

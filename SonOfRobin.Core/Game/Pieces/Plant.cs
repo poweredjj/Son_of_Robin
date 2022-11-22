@@ -44,7 +44,7 @@ namespace SonOfRobin
             if (this.fruitEngine != null)
             {
                 this.fruitEngine.plant = this;
-                this.pieceStorage = new PieceStorage(width: this.fruitEngine.maxNumber, height: 1, world: this.world, storagePiece: this, storageType: PieceStorage.StorageType.Fruits, stackLimit: 1);
+                this.pieceStorage = new PieceStorage(width: this.fruitEngine.maxNumber, height: 1, storagePiece: this, storageType: PieceStorage.StorageType.Fruits, stackLimit: 1);
             }
         }
 

@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace SonOfRobin
 {
@@ -30,8 +29,8 @@ namespace SonOfRobin
 
         private readonly List<VirtPieceStoragePack> virtStoragePackList;
 
-        public VirtualPieceStorage(BoardPiece storagePiece, World world, List<VirtPieceStoragePack> virtStoragePackList) :
-            base(width: 1, height: 2, world: world, storagePiece: storagePiece, storageType: StorageType.Virtual)
+        public VirtualPieceStorage(BoardPiece storagePiece, List<VirtPieceStoragePack> virtStoragePackList, string label) :
+            base(width: 1, height: 1, storagePiece: storagePiece, storageType: StorageType.Virtual, label: label)
         {
             this.virtStoragePackList = virtStoragePackList;
             this.Recalculate();
@@ -39,22 +38,23 @@ namespace SonOfRobin
 
         public void Recalculate()
         {
-            Point storageSize = GetStorageSize(virtStoragePackList);
+            Point storageSize = GetStorageSize();
 
             this.Width = (byte)storageSize.X;
             this.Height = (byte)storageSize.Y;
 
             this.slots = this.MakeVirtualSlots();
+            this.UpdateSlotPosByID();
         }
 
-        private static Point GetStorageSize(List<VirtPieceStoragePack> virtStoragePackList)
+        private Point GetStorageSize()
         {
-            UpdateStoragePackOffsets(virtStoragePackList);
+            this.UpdateStoragePackOffsets();
 
             int maxWidth = 0;
             int maxHeight = 0;
 
-            foreach (VirtPieceStoragePack storagePack in virtStoragePackList)
+            foreach (VirtPieceStoragePack storagePack in this.virtStoragePackList)
             {
                 if (!storagePack.OffsetSet) throw new ArgumentException("Offset not set.");
 
@@ -65,20 +65,15 @@ namespace SonOfRobin
             return new Point(maxWidth, maxHeight);
         }
 
-        private static void UpdateStoragePackOffsets(List<VirtPieceStoragePack> virtStoragePackList, bool force = false)
+        private void UpdateStoragePackOffsets()
         {
-            bool offsetNeedsToBeCalculated = virtStoragePackList.Where(storagePack => !storagePack.OffsetSet).ToList().Any();
-            if (!offsetNeedsToBeCalculated && !force) return;
-
             int padding = 1;
 
             Point creationCursor = new Point(0, 0);
             Point prevStorageSize = new Point(0, 0);
 
-            foreach (VirtPieceStoragePack storagePack in virtStoragePackList)
+            foreach (VirtPieceStoragePack storagePack in this.virtStoragePackList)
             {
-                PieceStorage storage = storagePack.storage;
-
                 if (storagePack.newRow)
                 {
                     creationCursor.X = 0;
@@ -93,12 +88,12 @@ namespace SonOfRobin
 
                 storagePack.SetOffset(creationCursor);
 
-                prevStorageSize.X = storage.Width;
-                prevStorageSize.Y = storage.Height;
+                prevStorageSize.X = storagePack.storage.Width;
+                prevStorageSize.Y = storagePack.storage.Height;
             }
         }
 
-        private StorageSlot[,] MakeVirtualSlots() // overwrites original slots with virtual ones
+        private StorageSlot[,] MakeVirtualSlots()
         {
             var virtSlots = new StorageSlot[this.Width, this.Height];
 
@@ -107,8 +102,9 @@ namespace SonOfRobin
                 PieceStorage storage = storagePack.storage;
                 foreach (StorageSlot slot in storage.AllSlots)
                 {
-                    Point globalSlotPos = new Point(storagePack.Offset.X + slot.posX, storagePack.Offset.Y + slot.posY);
-                    virtSlots[globalSlotPos.X, globalSlotPos.Y] = new VirtualSlot(realSlot: slot, storage: this, posX: (byte)globalSlotPos.X, posY: (byte)globalSlotPos.Y);
+                    Point localSlotPos = storage.GetSlotPos(slot);
+                    Point globalSlotPos = new Point(storagePack.Offset.X + localSlotPos.X, storagePack.Offset.Y + localSlotPos.Y);
+                    virtSlots[globalSlotPos.X, globalSlotPos.Y] = slot;
                 }
             }
 
@@ -118,9 +114,11 @@ namespace SonOfRobin
                 {
                     if (virtSlots[x, y] == null)
                     {
-                        StorageSlot lockedSlot = new StorageSlot(storage: this, posX: (byte)x, posY: (byte)y);
-                        lockedSlot.locked = true;
-                        lockedSlot.hidden = true;
+                        StorageSlot lockedSlot = new StorageSlot(storage: this)
+                        {
+                            locked = true,
+                            hidden = true
+                        };
 
                         virtSlots[x, y] = lockedSlot;
                     }

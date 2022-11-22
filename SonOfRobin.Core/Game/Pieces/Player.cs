@@ -259,9 +259,9 @@ namespace SonOfRobin
             }
             else allowedToolbarPieces.Add(PieceTemplate.Name.Hand);
 
-            this.pieceStorage = new PieceStorage(width: invWidth, height: invHeight, world: this.world, storagePiece: this, storageType: PieceStorage.StorageType.Inventory);
-            this.ToolStorage = new PieceStorage(width: toolbarWidth, height: toolbarHeight, world: this.world, storagePiece: this, storageType: PieceStorage.StorageType.Tools, allowedPieceNames: allowedToolbarPieces);
-            this.EquipStorage = new PieceStorage(width: 3, height: 3, world: this.world, storagePiece: this, storageType: PieceStorage.StorageType.Equip);
+            this.pieceStorage = new PieceStorage(width: invWidth, height: invHeight, storagePiece: this, storageType: PieceStorage.StorageType.Inventory);
+            this.ToolStorage = new PieceStorage(width: toolbarWidth, height: toolbarHeight, storagePiece: this, storageType: PieceStorage.StorageType.Tools, allowedPieceNames: allowedToolbarPieces);
+            this.EquipStorage = new PieceStorage(width: 3, height: 3, storagePiece: this, storageType: PieceStorage.StorageType.Equip);
             this.ConfigureEquip();
             this.ShootingAngle = -100; // -100 == no real value
             this.shootingPower = 0;

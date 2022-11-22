@@ -23,7 +23,7 @@ namespace SonOfRobin
 
             this.boardTask = Scheduler.TaskName.OpenContainer;
 
-            this.pieceStorage = new PieceStorage(width: 3, height: 1, world: this.world, storagePiece: this, storageType: PieceStorage.StorageType.Upgrade);
+            this.pieceStorage = new PieceStorage(width: 3, height: 1, storagePiece: this, storageType: PieceStorage.StorageType.Upgrade);
 
             StorageSlot upgradeTriggerSlot = this.UpgradeTriggerSlot;
             BoardPiece upgradeTrigger = PieceTemplate.Create(templateName: PieceTemplate.Name.UpgradeTrigger, world: this.world);

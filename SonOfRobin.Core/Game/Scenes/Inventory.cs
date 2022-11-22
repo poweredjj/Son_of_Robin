@@ -193,9 +193,9 @@ namespace SonOfRobin
                             new VirtualPieceStorage.VirtPieceStoragePack(storage: player.EquipStorage),
                         };
 
-                        PieceStorage virtualStorage = new VirtualPieceStorage(storagePiece: player, world: player.world, virtStoragePackList: virtStoragePackList); // for testing
+                        PieceStorage virtualStorage = new VirtualPieceStorage(storagePiece: player, virtStoragePackList: virtStoragePackList, label: "Inventory and Equipment");
 
-                        Inventory inventory = new Inventory(piece: player, storage: virtualStorage, layout: Type.DualTop, otherInventory: toolbar, transDirection: TransDirection.Up); // for testing
+                        Inventory inventory = new Inventory(piece: player, storage: virtualStorage, layout: Type.DualTop, otherInventory: toolbar, transDirection: TransDirection.Up);
 
                         toolbar.otherInventory = inventory;
 
@@ -227,8 +227,10 @@ namespace SonOfRobin
 
             if (this.storage.lastUsedSlot != null)
             {
-                this.cursorX = this.storage.lastUsedSlot.posX;
-                this.cursorY = this.storage.lastUsedSlot.posY;
+                Point lastUsedSlotPos = this.storage.GetSlotPos(this.storage.lastUsedSlot);
+
+                this.cursorX = lastUsedSlotPos.X;
+                this.cursorY = lastUsedSlotPos.Y;
             }
             else
             {
@@ -597,13 +599,15 @@ namespace SonOfRobin
                     {
                         if (touch.State == TouchLocationState.Pressed || touch.State == TouchLocationState.Moved)
                         {
-                            if (this.CursorX == slot.posX && this.CursorY == slot.posY) this.touchHeldFrames++;
+                            Point currentSlotPos = this.storage.GetSlotPos(slot);
+
+                            if (this.CursorX == currentSlotPos.X && this.CursorY == currentSlotPos.Y) this.touchHeldFrames++;
                             else this.touchHeldFrames = 0;
 
-                            if (slot.posX != this.CursorX || slot.posY != this.CursorY) soundNavigate.Play();
+                            if (currentSlotPos.X != this.CursorX || currentSlotPos.Y != this.CursorY) soundNavigate.Play();
 
-                            this.CursorX = slot.posX;
-                            this.CursorY = slot.posY;
+                            this.CursorX = currentSlotPos.X;
+                            this.CursorY = currentSlotPos.Y;
 
                             return;
                         }
@@ -968,10 +972,12 @@ namespace SonOfRobin
             {
                 if (slot.hidden) continue;
 
-                Vector2 slotPos = this.GetSlotPos(slot: slot, margin: margin, tileSize: tileSize);
+                Vector2 slotPosWithMargin = this.GetSlotPos(slot: slot, margin: margin, tileSize: tileSize);
 
-                bool isActive = this.inputActive && slot.posX == this.CursorX && slot.posY == this.CursorY;
-                Rectangle tileRect = new Rectangle((int)slotPos.X, (int)slotPos.Y, tileSize, tileSize);
+                Point slotPos = this.storage.GetSlotPos(slot);
+
+                bool isActive = this.inputActive && slotPos.X == this.CursorX && slotPos.Y == this.CursorY;
+                Rectangle tileRect = new Rectangle((int)slotPosWithMargin.X, (int)slotPosWithMargin.Y, tileSize, tileSize);
 
                 Color outlineColor = isActive ? Color.LawnGreen : Color.White;
                 Color fillColor = isActive ? Color.LightSeaGreen : Color.White;
@@ -981,7 +987,7 @@ namespace SonOfRobin
 
                 this.DrawSlotLabel(slot: slot, tileRect: tileRect);
 
-                Rectangle destRect = isActive ? tileRect : new Rectangle((int)slotPos.X + spriteOffset, (int)slotPos.Y + spriteOffset, spriteSize, spriteSize);
+                Rectangle destRect = isActive ? tileRect : new Rectangle((int)slotPosWithMargin.X + spriteOffset, (int)slotPosWithMargin.Y + spriteOffset, spriteSize, spriteSize);
                 slot.Draw(destRect: destRect, opacity: this.viewParams.drawOpacity, drawNewIcon: this.type != Type.SingleBottom);
 
                 Rectangle quantityRect = new Rectangle(x: tileRect.X, y: tileRect.Y + (tileRect.Height / 2), width: tileRect.Width, height: tileRect.Height / 2);
@@ -1007,7 +1013,7 @@ namespace SonOfRobin
 
             Rectangle bgRect = this.BgRect;
 
-            string label = Convert.ToString(this.storage.storageType);
+            string label = this.storage.Label;
 
             Vector2 labelSize = font.MeasureString(label);
             float maxTextWidth = bgRect.Width * 0.3f;
@@ -1036,8 +1042,10 @@ namespace SonOfRobin
 
         private Vector2 GetSlotPos(StorageSlot slot, int margin, int tileSize)
         {
-            int slotPosX = margin + (slot.posX * (margin + tileSize));
-            int slotPosy = margin + (slot.posY * (margin + tileSize));
+            Point slotPos = this.storage.GetSlotPos(slot);
+
+            int slotPosX = margin + (slotPos.X * (margin + tileSize));
+            int slotPosy = margin + (slotPos.Y * (margin + tileSize));
             return new Vector2(slotPosX, slotPosy);
         }
 

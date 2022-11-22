@@ -53,7 +53,7 @@ namespace SonOfRobin
             storageWidth = Math.Max(storageWidth, (byte)3);
             byte storageHeight = 3;
 
-            this.pieceStorage = new PieceStorage(width: storageWidth, height: storageHeight, world: this.world, storagePiece: this, storageType: PieceStorage.StorageType.Cooking, stackLimit: 1);
+            this.pieceStorage = new PieceStorage(width: storageWidth, height: storageHeight, storagePiece: this, storageType: PieceStorage.StorageType.Cooking, stackLimit: 1);
 
             foreach (StorageSlot slot in this.pieceStorage.AllSlots)
             {

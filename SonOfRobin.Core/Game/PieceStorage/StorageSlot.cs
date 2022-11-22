@@ -8,12 +8,12 @@ namespace SonOfRobin
 {
     public class StorageSlot
     {
+        public readonly string id;
         public readonly PieceStorage storage;
         public List<BoardPiece> pieceList;
-        public readonly byte posX;
-        public readonly byte posY;
         public byte stackLimit;
         public string label;
+
         public bool locked;
         public bool hidden;
         public List<PieceTemplate.Name> allowedPieceNames;
@@ -45,11 +45,10 @@ namespace SonOfRobin
         public PieceTemplate.Name PieceName
         { get { return pieceList[0].name; } }
 
-        public StorageSlot(PieceStorage storage, byte posX, byte posY, byte stackLimit = 255, List<PieceTemplate.Name> allowedPieceNames = null)
+        public StorageSlot(PieceStorage storage, byte stackLimit = 255, List<PieceTemplate.Name> allowedPieceNames = null)
         {
+            this.id = Helpers.GetUniqueHash();
             this.storage = storage;
-            this.posX = posX;
-            this.posY = posY;
             this.pieceList = new List<BoardPiece> { };
             this.locked = false;
             this.hidden = false;
@@ -79,8 +78,6 @@ namespace SonOfRobin
 
             if (add) this.storage.storagePiece.buffEngine.AddBuffs(world: piece.world, equipPiece.buffList);
             else this.storage.storagePiece.buffEngine.RemoveBuffs(equipPiece.buffList);
-
-
         }
 
         public bool CanFitThisPiece(BoardPiece piece, int pieceCount = 1)

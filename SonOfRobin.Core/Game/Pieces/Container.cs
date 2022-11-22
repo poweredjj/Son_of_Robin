@@ -16,7 +16,7 @@ namespace SonOfRobin
             this.soundPack.AddAction(action: PieceSoundPack.Action.Close, sound: new Sound(name: SoundData.Name.ChestClose));
 
             this.boardTask = Scheduler.TaskName.OpenContainer;
-            this.pieceStorage = new PieceStorage(width: storageWidth, height: storageHeight, world: this.world, storagePiece: this, storageType: PieceStorage.StorageType.Chest);
+            this.pieceStorage = new PieceStorage(width: storageWidth, height: storageHeight, storagePiece: this, storageType: PieceStorage.StorageType.Chest);
         }
 
         public override bool ShowStatBars { get { return true; } }
