@@ -42,11 +42,13 @@ namespace SonOfRobin
         }
 
         private readonly List<VirtPieceStoragePack> virtStoragePackList;
+        private readonly int padding;
 
-        public VirtualPieceStorage(BoardPiece storagePiece, List<VirtPieceStoragePack> virtStoragePackList, string label) :
+        public VirtualPieceStorage(BoardPiece storagePiece, List<VirtPieceStoragePack> virtStoragePackList, string label, int padding = 1) :
             base(width: 1, height: 1, storagePiece: storagePiece, storageType: StorageType.Virtual, label: label)
         {
             this.virtStoragePackList = virtStoragePackList;
+            this.padding = padding;
             this.Recalculate();
         }
 
@@ -93,8 +95,6 @@ namespace SonOfRobin
 
         private void UpdateStoragePackOffsets()
         {
-            int padding = 1;
-
             Point creationCursor = new Point(0, 0);
             Point prevStorageSize = new Point(0, 0);
 
@@ -104,12 +104,12 @@ namespace SonOfRobin
                 {
                     creationCursor.X = 0;
                     creationCursor.Y += prevStorageSize.Y;
-                    if (prevStorageSize.Y > 0) creationCursor.Y += padding;
+                    if (prevStorageSize.Y > 0) creationCursor.Y += this.padding;
                 }
                 else
                 {
                     creationCursor.X += prevStorageSize.X;
-                    if (prevStorageSize.X > 0) creationCursor.X += padding;
+                    if (prevStorageSize.X > 0) creationCursor.X += this.padding;
                 }
 
                 storagePack.SetOffset(creationCursor);

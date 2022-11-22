@@ -13,8 +13,8 @@ namespace SonOfRobin
         {
             None,
             Toolbar,
-            InventoryAndToolbar,
-            InventoryAndFieldStorage,
+            Inventory,
+            FieldStorage,
         }
 
         public enum TransDirection
@@ -181,30 +181,36 @@ namespace SonOfRobin
                         break;
                     }
 
-                case Layout.InventoryAndToolbar:
+                case Layout.Inventory:
                     {
                         soundOpen.Play();
 
-                        Inventory toolbar = new Inventory(piece: player, storage: player.ToolStorage, layout: Type.DualBottom, transDirection: TransDirection.Down);
 
                         var virtStoragePackList = new List<VirtualPieceStorage.VirtPieceStoragePack>
                         {
                             new VirtualPieceStorage.VirtPieceStoragePack(storage: player.pieceStorage),
-                            new VirtualPieceStorage.VirtPieceStoragePack(storage: player.EquipStorage),
+                            new VirtualPieceStorage.VirtPieceStoragePack(storage: player.ToolStorage, newRow: true),
                         };
+                        PieceStorage virtualStorage = new VirtualPieceStorage(storagePiece: player, virtStoragePackList: virtStoragePackList, label: "Inventory", padding: 1);
 
-                        PieceStorage virtualStorage = new VirtualPieceStorage(storagePiece: player, virtStoragePackList: virtStoragePackList, label: "Inventory and Equipment");
+                        Inventory equip = new Inventory(piece: player, storage: virtualStorage, layout: Type.DualLeft, transDirection: TransDirection.Left);
 
-                        Inventory inventory = new Inventory(piece: player, storage: virtualStorage, layout: Type.DualTop, otherInventory: toolbar, transDirection: TransDirection.Up);
+                        Inventory inventory = new Inventory(piece: player, storage: player.EquipStorage, layout: Type.DualRight, otherInventory: equip, transDirection: TransDirection.Right);
 
-                        toolbar.otherInventory = inventory;
-
+                        equip.otherInventory = inventory;
                         break;
                     }
 
-                case Layout.InventoryAndFieldStorage:
+                case Layout.FieldStorage:
                     {
-                        Inventory inventoryLeft = new Inventory(piece: player, storage: player.pieceStorage, layout: Type.DualLeft, transDirection: TransDirection.Left);
+                        var virtStoragePackList = new List<VirtualPieceStorage.VirtPieceStoragePack>
+                        {
+                            new VirtualPieceStorage.VirtPieceStoragePack(storage: player.pieceStorage),
+                            new VirtualPieceStorage.VirtPieceStoragePack(storage: player.ToolStorage, newRow: true),
+                        };
+                        PieceStorage virtualStorage = new VirtualPieceStorage(storagePiece: player, virtStoragePackList: virtStoragePackList, label: "Inventory", padding: 1);
+
+                        Inventory inventoryLeft = new Inventory(piece: player, storage: virtualStorage, layout: Type.DualLeft, transDirection: TransDirection.Left);
                         Inventory inventoryRight = new Inventory(piece: fieldStorage, storage: fieldStorage.pieceStorage, layout: Type.DualRight, otherInventory: inventoryLeft, transDirection: TransDirection.Right);
                         inventoryLeft.otherInventory = inventoryRight;
 
@@ -399,6 +405,11 @@ namespace SonOfRobin
             if (this.IgnoreUpdateAndDraw) return;
 
             this.storage.Update();
+            if (this.otherInventory != null)
+            {
+                this.otherInventory.storage.Update();
+                this.otherInventory.UpdateViewParams();
+            }
 
             if (this.CursorX >= this.storage.Width) this.CursorX = this.storage.Width - 1; // in case storage was resized
             if (this.CursorY >= this.storage.Height) this.CursorY = this.storage.Height - 1; // in case storage was resized

@@ -753,7 +753,7 @@ namespace SonOfRobin
 
             if (InputMapper.HasBeenPressed(InputMapper.Action.WorldInventory) || this.playerPanel.IsCounterActivatedByTouch)
             {
-                Inventory.SetLayout(Inventory.Layout.InventoryAndToolbar, player: this.Player);
+                Inventory.SetLayout(Inventory.Layout.Inventory, player: this.Player);
                 return;
             }
 

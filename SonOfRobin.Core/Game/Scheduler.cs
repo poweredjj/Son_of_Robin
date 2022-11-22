@@ -388,7 +388,7 @@ namespace SonOfRobin
                                 }
                             }
 
-                            Inventory.SetLayout(newLayout: Inventory.Layout.InventoryAndFieldStorage, player: world.Player, fieldStorage: container);
+                            Inventory.SetLayout(newLayout: Inventory.Layout.FieldStorage, player: world.Player, fieldStorage: container);
                         }
 
                         return;
