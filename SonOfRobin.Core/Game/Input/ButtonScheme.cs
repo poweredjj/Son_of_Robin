@@ -35,19 +35,6 @@ namespace SonOfRobin
         public static Texture2D leftStickClick;
         public static Texture2D rightStickClick;
 
-        public static string buttonNameA;
-        public static string buttonNameB;
-        public static string buttonNameX;
-        public static string buttonNameY;
-
-        public static string buttonNameBack;
-        public static string buttonNameStart;
-
-        public static string buttonNameLB;
-        public static string buttonNameRB;
-        public static string buttonNameLT;
-        public static string buttonNameRT;
-
         public static void ChangeType(Type type)
         {
             currentType = type;
@@ -79,19 +66,6 @@ namespace SonOfRobin
                     leftStickClick = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/Xbox 360/360_Left_Stick_Click");
                     rightStickClick = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/Xbox 360/360_Right_Stick_Click");
 
-                    buttonNameA = "A";
-                    buttonNameB = "B";
-                    buttonNameX = "X";
-                    buttonNameY = "Y";
-
-                    buttonNameBack = "back";
-                    buttonNameStart = "start";
-
-                    buttonNameLB = "LB";
-                    buttonNameRB = "RB";
-                    buttonNameLT = "LT";
-                    buttonNameRT = "RT";
-
                     break;
 
                 case Type.XboxSeries:
@@ -118,19 +92,6 @@ namespace SonOfRobin
                     rightStick = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/Xbox Series/XboxSeriesX_Right_Stick");
                     leftStickClick = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/Xbox Series/XboxSeriesX_Left_Stick_Click");
                     rightStickClick = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/Xbox Series/XboxSeriesX_Right_Stick_Click");
-
-                    buttonNameA = "A";
-                    buttonNameB = "B";
-                    buttonNameX = "X";
-                    buttonNameY = "Y";
-
-                    buttonNameBack = "view";
-                    buttonNameStart = "menu";
-
-                    buttonNameLB = "LB";
-                    buttonNameRB = "RB";
-                    buttonNameLT = "LT";
-                    buttonNameRT = "RT";
 
                     break;
 
@@ -160,19 +121,6 @@ namespace SonOfRobin
                     leftStickClick = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/PS4/PS4_Left_Stick_Click");
                     rightStickClick = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/PS4/PS4_Right_Stick_Click");
 
-                    buttonNameA = "cross";
-                    buttonNameB = "circle";
-                    buttonNameX = "square";
-                    buttonNameY = "triangle";
-
-                    buttonNameBack = "share";
-                    buttonNameStart = "options";
-
-                    buttonNameLB = "L1";
-                    buttonNameRB = "R1";
-                    buttonNameLT = "L2";
-                    buttonNameRT = "R2";
-
                     break;
 
                 case Type.DualSense:
@@ -201,19 +149,6 @@ namespace SonOfRobin
                     leftStickClick = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/PS5/PS5_Left_Stick_Click");
                     rightStickClick = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/PS5/PS5_Right_Stick_Click");
 
-                    buttonNameA = "cross";
-                    buttonNameB = "circle";
-                    buttonNameX = "square";
-                    buttonNameY = "triangle";
-
-                    buttonNameBack = "share";
-                    buttonNameStart = "options";
-
-                    buttonNameLB = "L1";
-                    buttonNameRB = "R1";
-                    buttonNameLT = "L2";
-                    buttonNameRT = "R2";
-
                     break;
 
                 case Type.SwitchProController:
@@ -241,19 +176,6 @@ namespace SonOfRobin
                     rightStick = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/Switch/Switch_Right_Stick");
                     leftStickClick = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/Xbox 360/360_Left_Stick_Click"); // graphics missing 
                     rightStickClick = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/Xbox 360/360_Right_Stick_Click");  // graphics missing 
-
-                    buttonNameA = "B";
-                    buttonNameB = "A";
-                    buttonNameX = "Y";
-                    buttonNameY = "X";
-
-                    buttonNameBack = "minus";
-                    buttonNameStart = "plus";
-
-                    buttonNameLB = "L";
-                    buttonNameRB = "R";
-                    buttonNameLT = "zL";
-                    buttonNameRT = "zR";
 
                     break;
 

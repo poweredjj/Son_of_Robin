@@ -713,7 +713,7 @@ namespace SonOfRobin
 
             new Separator(menu: menu, name: "", isEmpty: true);
             new Separator(menu: menu, name: "menus");
-            foreach (string propertyName in new List<string> { "pauseMenu", "craft", "equip", "inventory" })
+            foreach (string propertyName in new List<string> { "pauseMenu", "craft", "inventory" })
             { new Selector(menu: menu, name: newMapping.GetReadablePropertyName(propertyName), valueDict: keysOrButtonsDict, targetObj: newMapping, propertyName: propertyName, captureInput: true, captureKeys: captureKeys, captureButtons: captureButtons); }
 
             new Separator(menu: menu, name: "", isEmpty: true);
