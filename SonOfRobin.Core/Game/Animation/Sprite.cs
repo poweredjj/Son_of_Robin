@@ -440,7 +440,7 @@ namespace SonOfRobin
                     break;
 
                 default:
-                    throw new DivideByZeroException($"Unsupported orientation - {this.orientation}.");
+                    throw new ArgumentException($"Unsupported orientation - {this.orientation}.");
             }
 
             float radians = (float)(degrees * Helpers.Deg2Rad);
@@ -502,7 +502,7 @@ namespace SonOfRobin
                     break;
 
                 default:
-                    throw new DivideByZeroException($"Unsupported additionalMoveType - {additionalMoveType}.");
+                    throw new ArgumentException($"Unsupported additionalMoveType - {additionalMoveType}.");
             }
 
             foreach (Vector2 testMove in movesToTest)

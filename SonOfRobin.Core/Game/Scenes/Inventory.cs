@@ -188,11 +188,12 @@ namespace SonOfRobin
 
                         Inventory toolbar = new Inventory(piece: player, storage: player.ToolStorage, layout: Type.DualBottom, transDirection: TransDirection.Down);
 
-                        //PieceStorage[,] storageArray = new PieceStorage[2, 1]; // for testing
-                        //storageArray[0, 0] = player.EquipStorage; // for testing
-                        //storageArray[1, 0] = player.pieceStorage; // for testing
+                        //PieceStorage[,] storageArray = new PieceStorage[2, 2]; // for testing
+                        //storageArray[0, 0] = player.pieceStorage; // for testing
+                        //storageArray[1, 0] = player.EquipStorage; // for testing
+                        //storageArray[0, 1] = player.ToolStorage; // for testing
 
-                        //PieceStorage virtualStorage = new VirtualPieceStorage(storagePiece: player, world: player.world, storageArray: storageArray); // for testing
+                        //PieceStorage virtualStorage = new VirtualPieceStorageOld(storagePiece: player, world: player.world, storageArray: storageArray); // for testing
 
                         //Inventory inventory = new Inventory(piece: player, storage: virtualStorage, layout: Type.DualTop, otherInventory: toolbar, transDirection: TransDirection.Up); // for testing
 
@@ -225,7 +226,7 @@ namespace SonOfRobin
                     }
 
                 default:
-                    throw new DivideByZeroException($"Unknown inventory layout '{newLayout}'.");
+                    throw new ArgumentException($"Unknown inventory layout '{newLayout}'.");
             }
 
             layout = newLayout;
@@ -291,7 +292,7 @@ namespace SonOfRobin
                     break;
 
                 default:
-                    throw new DivideByZeroException($"Unsupported transDirection - {transDirection}.");
+                    throw new ArgumentException($"Unsupported transDirection - {transDirection}.");
             }
 
             return paramsToChange;
@@ -386,7 +387,7 @@ namespace SonOfRobin
                     break;
 
                 default:
-                    throw new DivideByZeroException($"Unsupported layout - {type}.");
+                    throw new ArgumentException($"Unsupported layout - {type}.");
             }
 
             // keeping the window inside screen bounds
@@ -470,7 +471,7 @@ namespace SonOfRobin
                     break;
 
                 default:
-                    throw new DivideByZeroException($"Unknown inventory type '{this.type}'.");
+                    throw new ArgumentException($"Unknown inventory type '{this.type}'.");
             }
         }
         private void KeepCursorInBoundsAndSwitchInv()
@@ -568,7 +569,7 @@ namespace SonOfRobin
                     break;
 
                 default:
-                    throw new DivideByZeroException($"Unknown inventory layout '{this.type}'.");
+                    throw new ArgumentException($"Unknown inventory layout '{this.type}'.");
             }
 
             if (switchToSecondaryInv)

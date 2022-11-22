@@ -922,7 +922,7 @@ namespace SonOfRobin
                     offsetY += offset;
                     break;
                 default:
-                    throw new DivideByZeroException($"Unsupported sprite orientation - {this.sprite.orientation}.");
+                    throw new ArgumentException($"Unsupported sprite orientation - {this.sprite.orientation}.");
             }
 
             return new Vector2(offsetX, offsetY);

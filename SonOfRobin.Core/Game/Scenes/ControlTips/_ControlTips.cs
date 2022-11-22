@@ -316,7 +316,7 @@ namespace SonOfRobin
                     }
 
                 default:
-                    throw new DivideByZeroException($"Unsupported tipsLayout - {tipsLayout}.");
+                    throw new ArgumentException($"Unsupported tipsLayout - {tipsLayout}.");
             }
 
             Vector2 wholeSize = this.WholeSize;

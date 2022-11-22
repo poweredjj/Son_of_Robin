@@ -17,6 +17,7 @@ namespace SonOfRobin
         public bool locked;
         public bool hidden;
         public List<PieceTemplate.Name> allowedPieceNames;
+
         public BoardPiece TopPiece
         {
             get
@@ -25,9 +26,13 @@ namespace SonOfRobin
                 return this.pieceList[this.pieceList.Count - 1];
             }
         }
-        public int PieceCount { get { return this.pieceList.Count; } }
-        public bool IsEmpty { get { return this.PieceCount == 0; } }
-        public bool IsFull
+
+        public virtual int PieceCount
+        { get { return this.pieceList.Count; } }
+        public bool IsEmpty
+        { get { return this.PieceCount == 0; } }
+
+        public virtual bool IsFull
         {
             get
             {
@@ -35,7 +40,9 @@ namespace SonOfRobin
                 else return Math.Min(this.pieceList[0].stackSize, this.stackLimit) == this.pieceList.Count;
             }
         }
-        public PieceTemplate.Name PieceName { get { return pieceList[0].name; } }
+
+        public virtual PieceTemplate.Name PieceName
+        { get { return pieceList[0].name; } }
 
         public StorageSlot(PieceStorage storage, byte posX, byte posY, byte stackLimit = 255, List<PieceTemplate.Name> allowedPieceNames = null)
         {
@@ -50,7 +57,7 @@ namespace SonOfRobin
             this.allowedPieceNames = allowedPieceNames;
         }
 
-        public void AddPiece(BoardPiece piece)
+        public virtual void AddPiece(BoardPiece piece)
         {
             if (this.locked) return;
 
@@ -73,7 +80,7 @@ namespace SonOfRobin
             else this.storage.storagePiece.buffEngine.RemoveBuffs(equipPiece.buffList);
         }
 
-        public bool CanFitThisPiece(BoardPiece piece, int pieceCount = 1)
+        public virtual bool CanFitThisPiece(BoardPiece piece, int pieceCount = 1)
         {
             if (this.locked || !piece.canBePickedUp) return false;
             if (this.allowedPieceNames != null && !this.allowedPieceNames.Contains(piece.name)) return false;
@@ -82,8 +89,7 @@ namespace SonOfRobin
             else return piece.name == this.PieceName && this.pieceList.Count + pieceCount <= Math.Min(this.pieceList[0].stackSize, this.stackLimit);
         }
 
-
-        public int HowManyPiecesOfNameCanFit(PieceTemplate.Name pieceName)
+        public virtual int HowManyPiecesOfNameCanFit(PieceTemplate.Name pieceName)
         {
             PieceInfo.Info pieceInfo = PieceInfo.GetInfo(pieceName);
 
@@ -95,7 +101,7 @@ namespace SonOfRobin
             return 0;
         }
 
-        public BoardPiece RemoveTopPiece()
+        public virtual BoardPiece RemoveTopPiece()
         {
             if (this.IsEmpty || this.locked) return null;
 
@@ -107,7 +113,7 @@ namespace SonOfRobin
             return removedPiece;
         }
 
-        public List<BoardPiece> GetAllPieces(bool remove)
+        public virtual List<BoardPiece> GetAllPieces(bool remove)
         {
             if (this.locked) return new List<BoardPiece> { };
 
@@ -121,38 +127,7 @@ namespace SonOfRobin
             return allPieces;
         }
 
-        public void Draw(Rectangle destRect, float opacity, bool drawNewIcon)
-        {
-            if (this.hidden || this.IsEmpty) return;
-            Sprite sprite = this.TopPiece.sprite;
-            BoardPiece piece = sprite.boardPiece;
-            World world = piece.world;
-
-            sprite.UpdateAnimation();
-            sprite.DrawAndKeepInRectBounds(destRect: destRect, opacity: opacity);
-
-            if (piece.hitPoints < piece.maxHitPoints)
-            {
-                new StatBar(label: "", value: (int)piece.hitPoints, valueMax: (int)piece.maxHitPoints, colorMin: new Color(255, 0, 0), colorMax: new Color(0, 255, 0),
-                    posX: destRect.Center.X, posY: destRect.Y + (int)(destRect.Width * 0.8f), width: (int)(destRect.Width * 0.8f), height: (int)(destRect.Height * 0.1f));
-
-                StatBar.FinishThisBatch();
-                StatBar.DrawAll();
-            }
-
-            // drawing "new" icon
-            if (drawNewIcon && !world.identifiedPieces.Contains(piece.name))
-            {
-                int rectSize = (int)(destRect.Height * 0.6f);
-                int rectOffset = (int)(rectSize * 0.2f);
-
-                Rectangle newRect = new Rectangle(x: destRect.X - rectOffset, y: destRect.Y - rectOffset, width: (int)(destRect.Height * 0.6f), height: (int)(destRect.Height * 0.6f));
-                Texture2D newIconTexture = AnimData.framesForPkgs[AnimData.PkgName.NewIcon].texture;
-
-                Helpers.DrawTextureInsideRect(texture: newIconTexture, rectangle: newRect, color: Color.White * opacity, alignX: Helpers.AlignX.Left, alignY: Helpers.AlignY.Top);
-            }
-        }
-        public void DestroyBrokenPieces()
+        public virtual void DestroyBrokenPieces()
         {
             if (this.locked) return;
 
@@ -163,7 +138,7 @@ namespace SonOfRobin
             this.pieceList = this.pieceList.Where(piece => piece.hitPoints > 0).ToList();
         }
 
-        public void DestroyPieceAndReplaceWithAnother(BoardPiece piece)
+        public virtual void DestroyPieceAndReplaceWithAnother(BoardPiece piece)
         {
             // target piece stack size should be 1; otherwise it makes no sense
             if (this.pieceList.Count > 1) throw new ArgumentException($"Cannot replace {this.storage.storageType} slot (current stack size {this.pieceList.Count}) contents with {piece.name}.");
@@ -172,7 +147,7 @@ namespace SonOfRobin
             this.pieceList.Add(piece);
         }
 
-        public Object Serialize()
+        public virtual Object Serialize()
         {
             var pieceList = new List<Object> { };
 
@@ -192,7 +167,7 @@ namespace SonOfRobin
             return slotData;
         }
 
-        public void Deserialize(Object slotData)
+        public virtual void Deserialize(Object slotData)
         {
             var slotDict = (Dictionary<string, object>)slotData;
 
@@ -223,6 +198,38 @@ namespace SonOfRobin
                 var newBoardPiece = PieceTemplate.Create(world: this.storage.world, templateName: templateName, randomSex: randomSex, female: female);
                 newBoardPiece.Deserialize(pieceData);
                 this.pieceList.Add(newBoardPiece);
+            }
+        }
+
+        public virtual void Draw(Rectangle destRect, float opacity, bool drawNewIcon)
+        {
+            if (this.hidden || this.IsEmpty) return;
+            Sprite sprite = this.TopPiece.sprite;
+            BoardPiece piece = sprite.boardPiece;
+            World world = piece.world;
+
+            sprite.UpdateAnimation();
+            sprite.DrawAndKeepInRectBounds(destRect: destRect, opacity: opacity);
+
+            if (piece.hitPoints < piece.maxHitPoints)
+            {
+                new StatBar(label: "", value: (int)piece.hitPoints, valueMax: (int)piece.maxHitPoints, colorMin: new Color(255, 0, 0), colorMax: new Color(0, 255, 0),
+                    posX: destRect.Center.X, posY: destRect.Y + (int)(destRect.Width * 0.8f), width: (int)(destRect.Width * 0.8f), height: (int)(destRect.Height * 0.1f));
+
+                StatBar.FinishThisBatch();
+                StatBar.DrawAll();
+            }
+
+            // drawing "new" icon
+            if (drawNewIcon && !world.identifiedPieces.Contains(piece.name))
+            {
+                int rectSize = (int)(destRect.Height * 0.6f);
+                int rectOffset = (int)(rectSize * 0.2f);
+
+                Rectangle newRect = new Rectangle(x: destRect.X - rectOffset, y: destRect.Y - rectOffset, width: (int)(destRect.Height * 0.6f), height: (int)(destRect.Height * 0.6f));
+                Texture2D newIconTexture = AnimData.framesForPkgs[AnimData.PkgName.NewIcon].texture;
+
+                Helpers.DrawTextureInsideRect(texture: newIconTexture, rectangle: newRect, color: Color.White * opacity, alignX: Helpers.AlignX.Left, alignY: Helpers.AlignY.Top);
             }
         }
     }

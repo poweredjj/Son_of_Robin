@@ -396,7 +396,7 @@ namespace SonOfRobin
                     }
 
                 default:
-                    throw new DivideByZeroException($"Unsupported context action - {action}.");
+                    throw new ArgumentException($"Unsupported context action - {action}.");
             }
         }
 

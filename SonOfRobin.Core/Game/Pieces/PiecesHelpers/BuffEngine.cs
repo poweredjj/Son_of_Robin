@@ -125,7 +125,7 @@ namespace SonOfRobin
                         return false;
 
                     default:
-                        throw new DivideByZeroException($"Unsupported buff type - {this.type}.");
+                        throw new ArgumentException($"Unsupported buff type - {this.type}.");
                 }
             }
 
@@ -232,7 +232,7 @@ namespace SonOfRobin
                         break;
 
                     default:
-                        throw new DivideByZeroException($"Unsupported buff type - {this.type}.");
+                        throw new ArgumentException($"Unsupported buff type - {this.type}.");
                 }
 
                 if (this.sleepFramesNeededForActivation > 0) description = $"After a long sleep: {Helpers.FirstCharToLowerCase(description)}";
@@ -316,7 +316,7 @@ namespace SonOfRobin
                         return "CANNOT\nSPRINT";
 
                     default:
-                        throw new DivideByZeroException($"Unsupported buff type - {this.type}.");
+                        throw new ArgumentException($"Unsupported buff type - {this.type}.");
                 }
             }
         }
@@ -373,7 +373,7 @@ namespace SonOfRobin
                 buff.id = Helpers.GetUniqueHash();
             }
 
-            if (this.buffDict.ContainsKey(buff.id)) throw new DivideByZeroException($"Buff has been added twice - id {buff.id} type {buff.type}.");
+            if (this.buffDict.ContainsKey(buff.id)) throw new ArgumentException($"Buff has been added twice - id {buff.id} type {buff.type}.");
 
             if (buff.sleepFramesNeededForActivation > 0 && !buff.HadEnoughSleepForBuff(world)) return;
 
@@ -404,7 +404,7 @@ namespace SonOfRobin
         {
             if (!this.buffDict.ContainsKey(buffID))
             {
-                if (checkIfHasThisBuff) throw new DivideByZeroException($"Buff not found during removal - id {buffID}.");
+                if (checkIfHasThisBuff) throw new ArgumentException($"Buff not found during removal - id {buffID}.");
                 else return;
             }
 
@@ -771,7 +771,7 @@ namespace SonOfRobin
                     }
 
                 default:
-                    throw new DivideByZeroException($"Unsupported buff type - {buff.type}.");
+                    throw new ArgumentException($"Unsupported buff type - {buff.type}.");
             }
         }
 
@@ -946,7 +946,7 @@ namespace SonOfRobin
                     break;
 
                 default:
-                    throw new DivideByZeroException($"Unsupported buff type - {buffType}.");
+                    throw new ArgumentException($"Unsupported buff type - {buffType}.");
             }
 
             return new Buff(type: buffType, value: value, autoRemoveDelay: autoRemoveDelay, isPermanent: buff1.isPermanent, sleepFramesNeededForActivation: sleepFrames, canKill: canKill, increaseIDAtEveryUse: increaseIDAtEveryUse);

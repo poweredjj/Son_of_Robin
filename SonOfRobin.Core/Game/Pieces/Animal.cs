@@ -342,7 +342,7 @@ namespace SonOfRobin
                     break;
 
                 default:
-                    throw new DivideByZeroException($"Unsupported choice action - {bestChoice.action}.");
+                    throw new ArgumentException($"Unsupported choice action - {bestChoice.action}.");
             }
         }
 

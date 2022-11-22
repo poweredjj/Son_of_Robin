@@ -7,7 +7,8 @@ namespace SonOfRobin
 {
     public class PieceStorage
     {
-        public enum StorageType { Inventory, Cooking, Upgrade, Fireplace, Chest, Tools, Equip, Fruits }
+        public enum StorageType
+        { Inventory, Cooking, Upgrade, Fireplace, Chest, Tools, Equip, Fruits }
 
         public readonly World world;
         public readonly StorageType storageType;
@@ -21,15 +22,24 @@ namespace SonOfRobin
         public virtual List<PieceTemplate.Name> AllowedPieceNames { get; private set; }
 
         public StorageSlot lastUsedSlot; // last used by Inventory class
-        public int AllSlotsCount { get { return this.Width * this.Height; } }
-        public int EmptySlotsCount { get { return this.EmptySlots.Count; } }
-        public List<StorageSlot> EmptySlots { get { return AllSlots.Where(slot => slot.IsEmpty).ToList(); } }
-        public int FullSlotsCount { get { return this.FullSlots.Count; } }
-        public List<StorageSlot> FullSlots { get { return AllSlots.Where(slot => slot.IsFull).ToList(); } }
-        public int NotFullSlotsCount { get { return this.NotFullSlots.Count; } }
-        public List<StorageSlot> NotFullSlots { get { return AllSlots.Where(slot => !slot.IsFull).ToList(); } }
-        public int OccupiedSlotsCount { get { return this.OccupiedSlots.Count; } }
-        public List<StorageSlot> OccupiedSlots { get { return AllSlots.Where(slot => !slot.IsEmpty).ToList(); } }
+        public int AllSlotsCount
+        { get { return this.Width * this.Height; } }
+        public int EmptySlotsCount
+        { get { return this.EmptySlots.Count; } }
+        public List<StorageSlot> EmptySlots
+        { get { return AllSlots.Where(slot => slot.IsEmpty).ToList(); } }
+        public int FullSlotsCount
+        { get { return this.FullSlots.Count; } }
+        public List<StorageSlot> FullSlots
+        { get { return AllSlots.Where(slot => slot.IsFull).ToList(); } }
+        public int NotFullSlotsCount
+        { get { return this.NotFullSlots.Count; } }
+        public List<StorageSlot> NotFullSlots
+        { get { return AllSlots.Where(slot => !slot.IsFull).ToList(); } }
+        public int OccupiedSlotsCount
+        { get { return this.OccupiedSlots.Count; } }
+        public List<StorageSlot> OccupiedSlots
+        { get { return AllSlots.Where(slot => !slot.IsEmpty).ToList(); } }
 
         public int StoredPiecesCount
         {
@@ -81,6 +91,7 @@ namespace SonOfRobin
             this.Width = width;
             this.Height = height;
             this.AllowedPieceNames = allowedPieceNames;
+
             this.slots = this.MakeEmptySlots();
         }
 
@@ -103,7 +114,7 @@ namespace SonOfRobin
             return emptySlots;
         }
 
-        public void Resize(byte newWidth, byte newHeight)
+        public virtual void Resize(byte newWidth, byte newHeight)
         {
             if (this.Width == newWidth && this.Height == newHeight) return;
 
@@ -152,7 +163,7 @@ namespace SonOfRobin
             }
         }
 
-        public bool AddPiece(BoardPiece piece, bool dropIfDoesNotFit = false, bool addMovement = false)
+        public virtual bool AddPiece(BoardPiece piece, bool dropIfDoesNotFit = false, bool addMovement = false)
         {
             StorageSlot slot = this.FindCorrectSlot(piece);
             if (slot == null)
@@ -204,6 +215,7 @@ namespace SonOfRobin
 
             return pieceList;
         }
+
         public BoardPiece RemoveTopPiece(int x, int y)
         {
             try
@@ -216,6 +228,7 @@ namespace SonOfRobin
 
             return null;
         }
+
         public BoardPiece GetTopPiece(StorageSlot slot)
         { return slot.TopPiece; }
 
@@ -232,6 +245,7 @@ namespace SonOfRobin
             catch (IndexOutOfRangeException)
             { MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Can't drop piece - inventory index out of bounds ({x},{y})", color: Color.White); }
         }
+
         public void DropPiecesFromSlot(StorageSlot slot, bool destroyIfFreeSpotNotFound = false, bool addMovement = false, bool dropAllPieces = false)
         {
             while (true)
@@ -286,6 +300,7 @@ namespace SonOfRobin
 
             return piece.sprite.IsOnBoard;
         }
+
         public void DestroyBrokenPieces()
         {
             foreach (StorageSlot slot in AllSlots)
@@ -480,12 +495,12 @@ namespace SonOfRobin
 
             var storageDict = new Dictionary<string, Object>
             {
-              {"width", this.Width},
-              {"height", this.Height},
-              {"stackLimit", this.stackLimit},
-              {"slotData", slotData},
-              {"storageType", storageType},
-              {"allowedPieceNames", AllowedPieceNames},
+              { "width", this.Width },
+              { "height", this.Height },
+              { "stackLimit", this.stackLimit },
+              { "slotData", slotData },
+              { "storageType", storageType },
+              { "allowedPieceNames", AllowedPieceNames },
             };
 
             if (this.lastUsedSlot != null)
@@ -530,6 +545,5 @@ namespace SonOfRobin
 
             return storage;
         }
-
     }
 }

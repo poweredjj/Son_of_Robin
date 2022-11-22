@@ -575,7 +575,7 @@ namespace SonOfRobin
                     }
 
                 default:
-                    throw new DivideByZeroException($"Unsupported touch layout - {touchLayout}.");
+                    throw new ArgumentException($"Unsupported touch layout - {touchLayout}.");
             }
         }
 

@@ -50,7 +50,7 @@ namespace SonOfRobin
                         return Convert.ToInt32(SonOfRobinGame.VirtualWidth * 0.65f);
 
                     default:
-                        throw new DivideByZeroException($"Unsupported menu layout - {this.layout}.");
+                        throw new ArgumentException($"Unsupported menu layout - {this.layout}.");
                 }
             }
         }
@@ -237,7 +237,7 @@ namespace SonOfRobin
                     return;
 
                 default:
-                    throw new DivideByZeroException($"Unsupported menu layout - {this.layout}.");
+                    throw new ArgumentException($"Unsupported menu layout - {this.layout}.");
             }
         }
 
@@ -265,7 +265,7 @@ namespace SonOfRobin
                             break;
 
                         default:
-                            throw new DivideByZeroException($"Unsupported menu layout - {this.layout}.");
+                            throw new ArgumentException($"Unsupported menu layout - {this.layout}.");
                     }
 
                     this.transManager.AddMultipleTransitions(paramsToChange: paramsToChange, outTrans: true, duration: 12, endRemoveScene: true);
@@ -367,7 +367,7 @@ namespace SonOfRobin
                         break;
 
                     default:
-                        throw new DivideByZeroException($"Unsupported menu layout - {this.layout}.");
+                        throw new ArgumentException($"Unsupported menu layout - {this.layout}.");
                 }
 
                 this.transManager.AddMultipleTransitions(paramsToChange: paramsToChange, outTrans: false, duration: 12);
@@ -637,7 +637,7 @@ namespace SonOfRobin
                     break;
 
                 default:
-                    throw new DivideByZeroException($"Unsupported menu layout - {this.layout}.");
+                    throw new ArgumentException($"Unsupported menu layout - {this.layout}.");
             }
 
             this.viewParams.PosY = 0;

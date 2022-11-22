@@ -191,7 +191,7 @@ namespace SonOfRobin
                     break;
 
                 default:
-                    throw new DivideByZeroException($"Unsupported layout - {this.menu.layout}.");
+                    throw new ArgumentException($"Unsupported layout - {this.menu.layout}.");
             }
 
             // keeping the window inside screen bounds

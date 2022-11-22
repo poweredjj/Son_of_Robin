@@ -598,7 +598,7 @@ namespace SonOfRobin
                         return;
                     }
                 default:
-                    { throw new DivideByZeroException($"Unsupported state - {this.activeState}."); }
+                    { throw new ArgumentException($"Unsupported state - {this.activeState}."); }
             }
         }
 

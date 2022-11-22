@@ -110,7 +110,7 @@ namespace SonOfRobin
                     break;
 
                 default:
-                    throw new DivideByZeroException($"Unsupported alignX - {alignX}.");
+                    throw new ArgumentException($"Unsupported alignX - {alignX}.");
             }
 
             switch (alignY)
@@ -128,7 +128,7 @@ namespace SonOfRobin
                     break;
 
                 default:
-                    throw new DivideByZeroException($"Unsupported alignY - {alignY}.");
+                    throw new ArgumentException($"Unsupported alignY - {alignY}.");
             }
 
             SonOfRobinGame.SpriteBatch.DrawString(font, text, position: new Vector2(rectangle.X + xOffset, rectangle.Y + yOffset), color: color, origin: Vector2.Zero, scale: scale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
@@ -157,7 +157,7 @@ namespace SonOfRobin
                     break;
 
                 default:
-                    throw new DivideByZeroException($"Unsupported alignX - {alignX}.");
+                    throw new ArgumentException($"Unsupported alignX - {alignX}.");
             }
 
             switch (alignY)
@@ -175,7 +175,7 @@ namespace SonOfRobin
                     break;
 
                 default:
-                    throw new DivideByZeroException($"Unsupported alignY - {alignY}.");
+                    throw new ArgumentException($"Unsupported alignY - {alignY}.");
             }
 
             Rectangle destRect = new Rectangle(x: rectangle.X + xOffset, y: rectangle.Y + yOffset, width: (int)(texture.Width * scale), height: (int)(texture.Height * scale));

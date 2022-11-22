@@ -351,7 +351,7 @@ namespace SonOfRobin
                     }
 
                 default:
-                    { throw new DivideByZeroException($"Unsupported hint type - {type}."); }
+                    { throw new ArgumentException($"Unsupported hint type - {type}."); }
             }
 
             return true;

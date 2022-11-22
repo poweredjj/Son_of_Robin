@@ -7,235 +7,71 @@ namespace SonOfRobin
 {
     public class VirtualPieceStorage : PieceStorage
     {
-        private readonly PieceStorage[,] storageArray;
-        private readonly int arrayWidth;
-        private readonly int arrayHeight;
-
-        private readonly int[] maxWidthForColumns;
-        private readonly int[] maxHeightForRows;
-        private readonly Point[,] offsetArray; // offset for every storage
-
-        private readonly byte totalWidth;
-        private readonly byte totalHeight;
-
-        public override byte Width
-        { get { return this.totalWidth; } }
-
-        public override byte Height
-        { get { return this.totalHeight; } }
-
-        private readonly StorageSlot lockedSlot;
-
-        private readonly List<PieceTemplate.Name> allowedPieceNames;
-
-        public override List<PieceTemplate.Name> AllowedPieceNames
-        { get { return this.allowedPieceNames; } }
-
-        private readonly List<StorageSlot> allSlots;
-
-        public override List<StorageSlot> AllSlots
-        { get { return this.allSlots; } }
-
-        public VirtualPieceStorage(BoardPiece storagePiece, World world, PieceStorage[,] storageArray) :
-            base(width: 1, height: 1, world: world, storagePiece: storagePiece, storageType: storageArray[0, 0].storageType)
+        public class VirtPieceStoragePack
         {
-            this.storageArray = storageArray;
-            this.arrayWidth = this.storageArray.GetLength(0);
-            this.arrayHeight = this.storageArray.GetLength(1);
+            public readonly PieceStorage storage;
+            public readonly bool newRow;
+            public int XOffset { get; private set; }
+            public int YOffset { get; private set; }
+            public bool OffsetSet { get; private set; }
 
-            this.maxWidthForColumns = this.CalculateMaxWidthForColumns();
-            this.maxHeightForRows = this.CalculateMaxHeightForRows();
+            public VirtPieceStoragePack(PieceStorage storage, bool newRow)
+            {
+                this.storage = storage;
+                this.newRow = newRow;
+                this.OffsetSet = false;
+            }
 
-            this.offsetArray = this.CalculateOffsetArray();
+            public void SetOffset(Point offset)
+            {
+                if (this.OffsetSet) throw new ArgumentException("Cannot set offset twice.");
 
-            this.totalWidth = this.CalculateTotalWidth();
-            this.totalHeight = this.CalculateTotalHeight();
+                this.XOffset = offset.X;
+                this.YOffset = offset.Y;
 
-            this.allowedPieceNames = this.GetAllowedNames();
-            this.allSlots = this.GetAllSlots();
-
-            this.lockedSlot = new StorageSlot(storage: this, posX: 0, posY: 0);
-            this.lockedSlot.locked = true;
-            this.lockedSlot.hidden = true;
+                this.OffsetSet = true;
+            }
         }
 
-        public override StorageSlot GetSlot(int x, int y)
+        private readonly List<VirtPieceStoragePack> virtStoragePackList;
+
+        public VirtualPieceStorage(BoardPiece storagePiece, World world, List<VirtPieceStoragePack> pieceStoragePackList) :
+            base(width: (byte)GetStorageSize(pieceStoragePackList).X, height: (byte)GetStorageSize(pieceStoragePackList).Y, world: world, storagePiece: storagePiece, storageType: pieceStoragePackList[0].storage.storageType)
         {
-            if (x >= this.Width || y >= this.Height) return null;
+            this.virtStoragePackList = pieceStoragePackList;
+        }
 
-            int globalCellNoX = 0;
-            int arrayX = 0;
-            for (int currentX = 0; currentX < this.arrayWidth; currentX++)
+        private static Point GetStorageSize(List<VirtPieceStoragePack> pieceStoragePackList)
+        {
+            Point creationCursor = new Point(0, 0);
+
+            int maxWidth = 0;
+            int totalHeight = 0;
+
+            Point prevStorageSize = new Point(0, 0);
+
+            foreach (VirtPieceStoragePack storagePack in pieceStoragePackList)
             {
-                globalCellNoX += this.maxWidthForColumns[currentX];
+                PieceStorage storage = storagePack.storage;
 
-                int minX = globalCellNoX;
-                int maxX = currentX + 1 < this.arrayWidth ? globalCellNoX + this.maxWidthForColumns[currentX + 1] : 99999;
-
-                if (minX <= x && x <= maxX)
+                if (storagePack.newRow)
                 {
-                    arrayX = currentX;
-                    break;
+                    creationCursor.X = 0;
+                    creationCursor.Y += prevStorageSize.Y;
                 }
+                else creationCursor.X += prevStorageSize.X;
+
+                if (!storagePack.OffsetSet) storagePack.SetOffset(creationCursor);
+
+                maxWidth = Math.Max(maxWidth, creationCursor.X + storage.Width);
+
+                prevStorageSize.X = storage.Width;
+                prevStorageSize.Y = storage.Height;
+
+                if (storagePack.storage == pieceStoragePackList.Last().storage) totalHeight = creationCursor.Y + storage.Height;
             }
 
-            int globalCellNoY = 0;
-            int arrayY = 0;
-            for (int currentY = 0; currentY < this.arrayHeight; currentY++)
-            {
-                globalCellNoY += this.maxHeightForRows[currentY];
-
-                int minY = globalCellNoY;
-                int maxY = currentY + 1 < this.arrayHeight ? globalCellNoY + this.maxHeightForRows[currentY + 1] : 99999;
-
-                if (minY <= y && y <= maxY)
-                {
-                    arrayY = currentY;
-                    break;
-                }
-            }
-
-            PieceStorage storage = this.storageArray[arrayX, arrayY];
-            Point offset = this.offsetArray[arrayX, arrayY];
-
-            StorageSlot slot = storage.GetSlot(offset.X - x, offset.Y - y);
-
-            return slot == null ? this.lockedSlot : slot;
-        }
-
-        private int[] CalculateMaxWidthForColumns()
-        {
-            int[] maxWidthForColumns = new int[this.arrayWidth];
-
-            for (int x = 0; x < this.arrayWidth; x++)
-            {
-                int maxColumnWidth = 0;
-
-                for (int y = 0; y < this.arrayHeight; y++)
-                {
-                    if (this.storageArray[x, y] == null) continue;
-                    maxColumnWidth = Math.Max(maxColumnWidth, this.storageArray[x, y].Width);
-                }
-
-                maxWidthForColumns[x] = maxColumnWidth;
-            }
-
-            return maxWidthForColumns;
-        }
-
-        private int[] CalculateMaxHeightForRows()
-        {
-            int[] maxHeightForRows = new int[this.arrayHeight];
-
-            for (int y = 0; y < this.arrayHeight; y++)
-            {
-                int maxRowHeight = 0;
-
-                for (int x = 0; x < this.arrayWidth; x++)
-                {
-                    if (this.storageArray[x, y] == null) continue;
-                    maxRowHeight = Math.Max(maxRowHeight, this.storageArray[x, y].Height);
-                }
-
-                maxHeightForRows[y] = maxRowHeight;
-            }
-
-            return maxHeightForRows;
-        }
-
-        private Point[,] CalculateOffsetArray()
-        {
-            List<int> xOffsetList = new List<int> { 0 }; // first storage should start with offset == 0
-
-            for (int x = 0; x < this.arrayWidth - 1; x++)
-            {
-                xOffsetList.Add(xOffsetList.Last() + this.maxWidthForColumns[x]);
-            }
-
-            List<int> yOffsetList = new List<int> { 0 }; // first storage should start with offset == 0
-
-            for (int y = 0; y < this.arrayHeight - 1; y++)
-            {
-                yOffsetList.Add(yOffsetList.Last() + this.maxHeightForRows[y]);
-            }
-
-            var newOffsetArray = new Point[this.arrayWidth, this.arrayHeight];
-
-            for (int x = 0; x < this.arrayWidth; x++)
-            {
-                for (int y = 0; y < this.arrayHeight; y++)
-                {
-                    newOffsetArray[x, y] = new Point(xOffsetList[x], yOffsetList[y]);
-                }
-            }
-
-            return newOffsetArray;
-        }
-
-        private byte CalculateTotalWidth()
-        {
-            byte addedWidth = 0;
-
-            for (int x = 0; x < this.arrayWidth; x++)
-            {
-                addedWidth += (byte)this.maxWidthForColumns[x];
-            }
-
-            return addedWidth;
-        }
-
-        private byte CalculateTotalHeight()
-        {
-            byte addedHeight = 0;
-
-            for (int y = 0; y < this.arrayHeight; y++)
-            {
-                addedHeight += (byte)this.maxHeightForRows[y];
-            }
-
-            return addedHeight;
-        }
-
-        private List<PieceTemplate.Name> GetAllowedNames()
-        {
-            var allAllowedNames = new List<PieceTemplate.Name>();
-
-            for (int x = 0; x < this.arrayWidth; x++)
-            {
-                for (int y = 0; y < this.arrayHeight; y++)
-                {
-                    PieceStorage pieceStorage = this.storageArray[x, y];
-                    if (pieceStorage == null || pieceStorage.AllowedPieceNames == null) continue;
-
-                    foreach (PieceTemplate.Name name in pieceStorage.AllowedPieceNames)
-                    {
-                        if (!allAllowedNames.Contains(name)) allAllowedNames.Add(name);
-                    }
-                }
-            }
-
-            return allAllowedNames;
-        }
-
-        private List<StorageSlot> GetAllSlots()
-        {
-            var foundSlots = new List<StorageSlot>();
-
-            for (int x = 0; x < this.arrayWidth; x++)
-            {
-                for (int y = 0; y < this.arrayHeight; y++)
-                {
-                    PieceStorage pieceStorage = this.storageArray[x, y];
-                    if (pieceStorage == null) continue;
-
-                    foreach (StorageSlot slot in pieceStorage.AllSlots)
-                    {
-                        foundSlots.Add(slot);
-                    }
-                }
-            }
-
-            return foundSlots;
+            return new Point(maxWidth, totalHeight);
         }
     }
 }

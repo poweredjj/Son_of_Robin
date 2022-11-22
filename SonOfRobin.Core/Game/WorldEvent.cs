@@ -308,7 +308,7 @@ namespace SonOfRobin
                     }
 
                 default:
-                    throw new DivideByZeroException($"Unsupported eventName - {eventName}.");
+                    throw new ArgumentException($"Unsupported eventName - {eventName}.");
             }
         }
 

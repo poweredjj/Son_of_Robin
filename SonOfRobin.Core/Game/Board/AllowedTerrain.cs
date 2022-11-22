@@ -93,7 +93,7 @@ namespace SonOfRobin
                         break;
 
                     default:
-                        throw new DivideByZeroException($"Unsupported range name - {rangeName}.");
+                        throw new ArgumentException($"Unsupported range name - {rangeName}.");
                 }
             }
 

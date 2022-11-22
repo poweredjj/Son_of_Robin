@@ -1358,7 +1358,7 @@ namespace SonOfRobin
                         }
 
                     default:
-                        throw new DivideByZeroException($"Unsupported taskName - {taskName}.");
+                        throw new ArgumentException($"Unsupported taskName - {taskName}.");
                 }
             }
 

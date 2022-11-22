@@ -629,7 +629,7 @@ namespace SonOfRobin
                     }
 
                 default:
-                    throw new DivideByZeroException($"Unsupported menu templateName - {templateName}.");
+                    throw new ArgumentException($"Unsupported menu templateName - {templateName}.");
             }
         }
 

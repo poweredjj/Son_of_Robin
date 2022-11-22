@@ -257,7 +257,7 @@ namespace SonOfRobin
                     else if (inputType == typeof(VButName)) this.virtualButtons.Add((VButName)input);
                     else if (inputType == typeof(AnalogType)) this.analogTypes.Add((AnalogType)input);
                     else if (inputType == typeof(MouseAction)) this.mouseActions.Add((MouseAction)input);
-                    else throw new DivideByZeroException($"Unsupported inputType - {inputType}.");
+                    else throw new ArgumentException($"Unsupported inputType - {inputType}.");
                 }
 
                 this.gamepadAnalogAsDigital = gamepadAnalogAsDigital;

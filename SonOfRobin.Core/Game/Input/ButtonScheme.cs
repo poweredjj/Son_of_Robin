@@ -258,7 +258,7 @@ namespace SonOfRobin
                     break;
 
                 default:
-                    throw new DivideByZeroException($"Unsupported button scheme type - {currentType}.");
+                    throw new ArgumentException($"Unsupported button scheme type - {currentType}.");
             }
 
             SonOfRobinGame.ControlTips.RefreshLayout();

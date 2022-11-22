@@ -2714,7 +2714,7 @@ namespace SonOfRobin
                         return ambientSound;
                     }
 
-                default: { throw new DivideByZeroException($"Unsupported template name - {templateName}."); }
+                default: { throw new ArgumentException($"Unsupported template name - {templateName}."); }
             }
         }
     }

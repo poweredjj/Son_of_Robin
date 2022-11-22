@@ -200,7 +200,7 @@ namespace SonOfRobin
                     break;
 
                 default:
-                    throw new DivideByZeroException($"Unsupported category - {boardPiece.category}.");
+                    throw new ArgumentException($"Unsupported category - {boardPiece.category}.");
             }
 
             return soundNameList;
@@ -245,7 +245,7 @@ namespace SonOfRobin
                     break;
 
                 default:
-                    throw new DivideByZeroException($"Unsupported category - {boardPiece.category}.");
+                    throw new ArgumentException($"Unsupported category - {boardPiece.category}.");
             }
 
             return soundNameList;
@@ -297,7 +297,7 @@ namespace SonOfRobin
                     break;
 
                 default:
-                    throw new DivideByZeroException($"Unsupported category - {boardPiece.category}.");
+                    throw new ArgumentException($"Unsupported category - {boardPiece.category}.");
             }
 
             return soundNameList;

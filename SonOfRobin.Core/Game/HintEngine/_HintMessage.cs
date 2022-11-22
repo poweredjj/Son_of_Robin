@@ -79,7 +79,7 @@ namespace SonOfRobin
                     break;
 
                 default:
-                    { throw new DivideByZeroException($"Unsupported hint boxType - {boxType}."); }
+                    { throw new ArgumentException($"Unsupported hint boxType - {boxType}."); }
             }
 
             Sound animSound = this.boxType == BoxType.Dialogue ? World.GetTopWorld().DialogueSound : null;

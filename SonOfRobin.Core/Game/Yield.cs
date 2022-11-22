@@ -138,7 +138,7 @@ namespace SonOfRobin
                         break;
 
                     default:
-                        throw new DivideByZeroException($"Unsupported debris type - {debrisTypeList}.");
+                        throw new ArgumentException($"Unsupported debris type - {debrisTypeList}.");
                 }
             }
 
