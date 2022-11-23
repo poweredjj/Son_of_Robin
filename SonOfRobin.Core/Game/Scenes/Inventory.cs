@@ -10,25 +10,16 @@ namespace SonOfRobin
     public class Inventory : Scene
     {
         public enum Layout
-        {
-            None,
-            Toolbar,
-            Inventory,
-            FieldStorage,
-        }
+        { None, Toolbar, Inventory, FieldStorage }
 
         public enum TransDirection
-        {
-            Up,
-            Down,
-            Left,
-            Right
-        }
+        { Up, Down, Left, Right }
 
-        public enum Type { SingleCenter, SingleBottom, DualLeft, DualRight, DualTop, DualBottom }
+        public enum Type
+        { SingleCenter, SingleBottom, DualLeft, DualRight, DualTop, DualBottom }
 
         private const int minFramesToDragByTouch = 15;
-        private const float marginPercent = 0.05f;
+        private const float marginPercent = 0.01f;
         private static readonly SpriteFont font = SonOfRobinGame.FontTommy40;
 
         private static readonly Sound soundOpen = new Sound(SoundData.Name.InventoryOpen);
@@ -53,6 +44,49 @@ namespace SonOfRobin
         private StorageSlot lastTouchedSlot;
 
         public Inventory otherInventory;
+
+        public Inventory(PieceStorage storage, BoardPiece piece, TransDirection transDirection,
+            Type layout = Type.SingleCenter, bool blocksUpdatesBelow = true, Inventory otherInventory = null, InputTypes inputType = InputTypes.Normal) :
+
+            base(inputType: inputType, priority: 1, blocksUpdatesBelow: blocksUpdatesBelow, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Inventory, tipsLayout: ControlTips.TipsLayout.InventorySelect)
+        {
+            this.storage = storage;
+            this.piece = piece;
+            this.type = layout;
+            this.transDirection = transDirection;
+
+            if (this.storage.lastUsedSlot != null)
+            {
+                Point lastUsedSlotPos = this.storage.GetSlotPos(this.storage.lastUsedSlot);
+
+                this.cursorX = lastUsedSlotPos.X;
+                this.cursorY = lastUsedSlotPos.Y;
+            }
+            else
+            {
+                this.cursorX = 0;
+                this.cursorY = 0;
+            }
+
+            this.draggedPieces = new List<BoardPiece> { };
+            this.touchHeldFrames = 0;
+            this.disableTouchContextMenuUntilFrame = 0;
+            this.draggedByTouch = false;
+            this.lastTouchedSlot = null;
+            this.otherInventory = otherInventory;
+
+            this.UpdateViewParams(); // needed for transition
+
+            if (this.piece.GetType() == typeof(Container))
+            {
+                var container = (Container)piece;
+                container.Open();
+            }
+            else this.piece.soundPack.Play(PieceSoundPack.Action.Open);
+
+            if (!this.transManager.HasAnyTransition) this.transManager.AddMultipleTransitions(paramsToChange: this.GetTransitionsParams(), outTrans: false, duration: 12, refreshBaseVal: false);
+        }
+
         private bool IgnoreUpdateAndDraw
         {
             get
@@ -98,11 +132,11 @@ namespace SonOfRobin
         {
             get
             {
-                int margin = Convert.ToInt32(Math.Min(SonOfRobinGame.VirtualWidth * marginPercent, SonOfRobinGame.VirtualHeight * marginPercent));
-                if (this.type != Type.SingleCenter) margin /= 3;
-                return margin;
+                int margin = (int)Math.Min(SonOfRobinGame.VirtualWidth * marginPercent, SonOfRobinGame.VirtualHeight * marginPercent);
+                return Math.Max(margin, 3);
             }
         }
+
         private float BgMaxWidth
         {
             get
@@ -110,6 +144,7 @@ namespace SonOfRobin
                 return this.type == Type.SingleCenter || this.type == Type.DualTop ? SonOfRobinGame.VirtualWidth * 0.8f : SonOfRobinGame.VirtualWidth * 0.37f;
             }
         }
+
         private float BgMaxHeight
         {
             get
@@ -117,9 +152,10 @@ namespace SonOfRobin
                 if (this.type == Type.SingleBottom || this.type == Type.DualBottom) return SonOfRobinGame.VirtualHeight * 0.15f;
                 if (this.type == Type.DualTop) return SonOfRobinGame.VirtualHeight * 0.5f;
 
-                return SonOfRobinGame.VirtualHeight * 0.75f;
+                return SonOfRobinGame.VirtualHeight * 0.8f;
             }
         }
+
         public StorageSlot ActiveSlot
         { get { return this.storage.GetSlot((byte)this.CursorX, (byte)this.CursorY); } }
 
@@ -140,7 +176,10 @@ namespace SonOfRobin
                 int margin = this.Margin;
                 float maxTileWidth = (BgMaxWidth / this.storage.Width) - margin;
                 float maxTileHeight = (BgMaxHeight / this.storage.Height) - margin;
-                return Convert.ToInt32(Math.Min(maxTileWidth, maxTileHeight));
+
+                float tileSize = Math.Min(maxTileWidth, maxTileHeight);
+
+                return (int)tileSize;
             }
         }
 
@@ -185,7 +224,6 @@ namespace SonOfRobin
                     {
                         soundOpen.Play();
 
-
                         var virtStoragePackList = new List<VirtualPieceStorage.VirtPieceStoragePack>
                         {
                             new VirtualPieceStorage.VirtPieceStoragePack(storage: player.pieceStorage),
@@ -200,6 +238,22 @@ namespace SonOfRobin
                         equip.otherInventory = inventory;
                         break;
                     }
+
+                //case Layout.Inventory:
+                //    {
+                //        soundOpen.Play();
+
+                //        var virtStoragePackList = new List<VirtualPieceStorage.VirtPieceStoragePack>
+                //        {
+                //            new VirtualPieceStorage.VirtPieceStoragePack(storage: player.pieceStorage),
+                //            new VirtualPieceStorage.VirtPieceStoragePack(storage: player.EquipStorage),
+                //            new VirtualPieceStorage.VirtPieceStoragePack(storage: player.ToolStorage, newRow: true),
+                //        };
+                //        PieceStorage virtualStorage = new VirtualPieceStorage(storagePiece: player, virtStoragePackList: virtStoragePackList, label: "Inventory", padding: 1);
+                //        new Inventory(piece: player, storage: virtualStorage, layout: Type.SingleCenter, transDirection: TransDirection.Up);
+
+                //        break;
+                //    }
 
                 case Layout.FieldStorage:
                     {
@@ -222,45 +276,6 @@ namespace SonOfRobin
             }
 
             layout = newLayout;
-        }
-
-        public Inventory(PieceStorage storage, BoardPiece piece, TransDirection transDirection, Type layout = Type.SingleCenter, bool blocksUpdatesBelow = true, Inventory otherInventory = null, InputTypes inputType = InputTypes.Normal) : base(inputType: inputType, priority: 1, blocksUpdatesBelow: blocksUpdatesBelow, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Inventory, tipsLayout: ControlTips.TipsLayout.InventorySelect)
-        {
-            this.storage = storage;
-            this.piece = piece;
-            this.type = layout;
-            this.transDirection = transDirection;
-
-            if (this.storage.lastUsedSlot != null)
-            {
-                Point lastUsedSlotPos = this.storage.GetSlotPos(this.storage.lastUsedSlot);
-
-                this.cursorX = lastUsedSlotPos.X;
-                this.cursorY = lastUsedSlotPos.Y;
-            }
-            else
-            {
-                this.cursorX = 0;
-                this.cursorY = 0;
-            }
-
-            this.draggedPieces = new List<BoardPiece> { };
-            this.touchHeldFrames = 0;
-            this.disableTouchContextMenuUntilFrame = 0;
-            this.draggedByTouch = false;
-            this.lastTouchedSlot = null;
-            this.otherInventory = otherInventory;
-
-            this.UpdateViewParams();
-
-            if (this.piece.GetType() == typeof(Container))
-            {
-                var container = (Container)piece;
-                container.Open();
-            }
-            else this.piece.soundPack.Play(PieceSoundPack.Action.Open);
-
-            if (!this.transManager.HasAnyTransition) this.transManager.AddMultipleTransitions(paramsToChange: this.GetTransitionsParams(), outTrans: false, duration: 12, refreshBaseVal: false);
         }
 
         private Dictionary<string, float> GetTransitionsParams()
@@ -434,6 +449,7 @@ namespace SonOfRobin
         public void UpdateViewParams()
         {
             Rectangle bgRect = this.BgRect;
+
             this.viewParams.Width = bgRect.Width;
             this.viewParams.Height = bgRect.Height;
 
@@ -474,6 +490,7 @@ namespace SonOfRobin
                     throw new ArgumentException($"Unknown inventory type '{this.type}'.");
             }
         }
+
         private void KeepCursorInBoundsAndSwitchInv()
         {
             bool switchToSecondaryInv = false;
@@ -487,7 +504,6 @@ namespace SonOfRobin
                     if (this.cursorX <= -1) this.cursorX = this.storage.Width - 1;
                     if (this.cursorX >= this.storage.Width) this.cursorX = 0;
                     break;
-
 
                 case Type.DualLeft:
                     if (this.cursorY <= -1) this.cursorY = this.storage.Height - 1;
@@ -635,7 +651,6 @@ namespace SonOfRobin
                         }
                     }
                 }
-
             }
 
             this.touchHeldFrames = 0; // if no touch was registered
@@ -717,6 +732,7 @@ namespace SonOfRobin
             new PieceContextMenu(piece: piece, storage: this.storage, slot: slot, percentPosX: percentPos.X, percentPosY: percentPos.Y, addMove: addMove, addDrop: addDrop, addCook: addCook, addIgnite: addIgnite, addExtinguish: addExtinguish, addUpgrade: addCombine);
             return;
         }
+
         private void MoveOtherInventoryToTop()
         {
             if (this.otherInventory != null)
@@ -828,7 +844,7 @@ namespace SonOfRobin
 
         private bool ExitByOutsideTouch()
         {
-            if (Preferences.EnableTouchButtons || this.type == Type.SingleBottom) return false;
+            if (Preferences.EnableTouchButtons || this.otherInventory == null) return false;
 
             var pressTouches = TouchInput.TouchPanelState.Where(touch => touch.State == TouchLocationState.Pressed).ToList();
             if (pressTouches.Count == 0) return false;
@@ -1107,6 +1123,5 @@ namespace SonOfRobin
 
             SonOfRobinGame.SpriteBatch.Draw(cursorTexture, destinationRectangle, sourceRectangle, Color.White);
         }
-
     }
 }

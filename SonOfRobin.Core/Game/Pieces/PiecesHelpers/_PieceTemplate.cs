@@ -2428,8 +2428,8 @@ namespace SonOfRobin
                 case Name.BackpackBig:
                     {
                         var buffList = new List<BuffEngine.Buff> {
-                            new BuffEngine.Buff(type: BuffEngine.BuffType.InvWidth, value: (byte)3),
-                            new BuffEngine.Buff(type: BuffEngine.BuffType.InvHeight, value: (byte)3)};
+                            new BuffEngine.Buff(type: BuffEngine.BuffType.InvWidth, value: (byte)4),
+                            new BuffEngine.Buff(type: BuffEngine.BuffType.InvHeight, value: (byte)2)};
 
                         return new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BackpackBig, blocksMovement: true, category: BoardPiece.Category.Flesh,
                             allowedTerrain: shallowWaterToVolcano, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 500, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "big backpack", description: "Expands inventory space.");
