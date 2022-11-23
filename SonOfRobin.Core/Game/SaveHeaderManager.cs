@@ -6,13 +6,13 @@ using System.Linq;
 
 namespace SonOfRobin
 {
-
     public class SaveHeaderManager
     {
-        public readonly static float saveVersion = 1.445f;
+        public static readonly float saveVersion = 1.446f;
 
         public static bool AnySavesExist
         { get { return Directory.GetDirectories(SonOfRobinGame.saveGamesPath).ToList().Count > 0; } }
+
         public static List<SaveHeaderInfo> CorrectSaves
         {
             get
@@ -87,6 +87,5 @@ namespace SonOfRobin
 
             MessageLog.AddMessage(msgType: MsgType.User, message: $"Deleted obsolete saves ({incorrectSaves.Count}).", color: Color.White);
         }
-
     }
 }

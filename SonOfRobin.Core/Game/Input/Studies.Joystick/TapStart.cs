@@ -7,6 +7,7 @@ namespace Studies.Joystick.Abstract
         public int Id;
         public double Time;
         public Vector2 Pos;
+
         public TapStart(int id, double time, Vector2 pos)
         {
             Id = id;

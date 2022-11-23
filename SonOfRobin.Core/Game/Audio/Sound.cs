@@ -9,6 +9,7 @@ namespace SonOfRobin
     public class Sound
     {
         private static bool globalOn = true;
+
         public static bool GlobalOn
         {
             get { return globalOn; }
@@ -31,11 +32,15 @@ namespace SonOfRobin
         private readonly float volume;
         public float FadeVolume { get; private set; }
         public float TargetVolume { get; private set; }
+
         private bool VolumeFadeEnded
         { get { return !this.isLooped || this.TargetVolume == this.FadeVolume; } }
+
         private float Volume
         { get { return this.volume * this.FadeVolume * globalVolume; } }
+
         public readonly bool isLooped;
+
         public bool IsPlaying
         { get { return SoundInstanceManager.GetPlayingInstance(this.Id) != null; } }
 
@@ -59,10 +64,13 @@ namespace SonOfRobin
 
         private static readonly AudioListener audioListener = new AudioListener();
         private static readonly AudioEmitter audioEmitter = new AudioEmitter();
+
         public bool Ignore3D
         { get { return this.ignore3DAlways || this.ignore3DThisPlay; } }
+
         public bool HasBoardPiece
         { get { return this.boardPiece != null; } }
+
         private bool IsInCameraRect
         { get { return this.boardPiece == null || this.boardPiece.sprite.IsInCameraRect; } }
 

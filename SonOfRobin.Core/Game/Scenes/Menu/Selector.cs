@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace SonOfRobin
 {
-    class Selector : Entry
+    internal class Selector : Entry
     {
         private readonly Dictionary<object, object> valueDict; // real value : displayed name
         private int activeIndex;
@@ -19,11 +19,17 @@ namespace SonOfRobin
         private readonly bool captureKeys;
 
         private bool captureModeActive;
+
         private Object ActiveName
         { get { return valueDict.Values.ToList()[activeIndex]; } }
-        private Object ActiveValue { get { return valueDict.Keys.ToList()[activeIndex]; } }
-        private bool ActiveNameIsTexture { get { return this.ActiveName.GetType() == typeof(Texture2D); } }
-        public override string DisplayedText { get { return $"{this.name}   < {this.ActiveName} >"; } }
+
+        private Object ActiveValue
+        { get { return valueDict.Keys.ToList()[activeIndex]; } }
+        private bool ActiveNameIsTexture
+        { get { return this.ActiveName.GetType() == typeof(Texture2D); } }
+        public override string DisplayedText
+        { get { return $"{this.name}   < {this.ActiveName} >"; } }
+
         public Selector(Menu menu, string name, List<Object> valueList, Object targetObj, string propertyName, bool rebuildsMenu = false, bool rebuildsAllMenus = false, List<InfoWindow.TextEntry> infoTextList = null, bool rebuildsMenuInstantScroll = false, bool captureInput = false, bool captureButtons = false, bool captureKeys = false, SoundData.Name sound = SoundData.Name.Empty) : base(menu: menu, name: name, rebuildsMenu: rebuildsMenu, infoTextList: infoTextList, rebuildsAllMenus: rebuildsAllMenus, rebuildsMenuInstantScroll: rebuildsMenuInstantScroll)
         {
             this.targetObj = targetObj;

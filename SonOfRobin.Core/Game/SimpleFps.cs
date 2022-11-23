@@ -14,6 +14,7 @@ namespace SonOfRobin
         public double FPS { get; private set; }
         public double Updates { get; private set; }
         public double Frames { get; private set; }
+
         public void Update(GameTime gameTime)
         {
             this.now = gameTime.TotalGameTime.TotalSeconds;
@@ -38,6 +39,5 @@ namespace SonOfRobin
         {
             this.frames++;
         }
-
     }
 }

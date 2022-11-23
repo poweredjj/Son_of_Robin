@@ -17,6 +17,7 @@ namespace Studies.Joystick.Input
             this.edgeSpacing = edgeSpacing;
             Style = TouchStickStyle.Free;
         }
+
         public readonly float deadZoneSize;
         public readonly float aliveZoneSize;
         public readonly float aliveZoneFollowFactor;

@@ -4,10 +4,11 @@ using System.Collections.Generic;
 
 namespace SonOfRobin
 {
-    class Separator : Entry
+    internal class Separator : Entry
     {
         private readonly bool isEmpty;
-        public override string DisplayedText { get { return this.name; } }
+        public override string DisplayedText
+        { get { return this.name; } }
 
         public Separator(Menu menu, string name, bool isEmpty = false) : base(menu: menu, name: name)
         {
@@ -20,7 +21,5 @@ namespace SonOfRobin
         {
             if (!isEmpty) base.Draw(active: true);
         }
-
-
     }
 }

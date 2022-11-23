@@ -72,7 +72,9 @@ namespace SonOfRobin
         public object mapZoomIn;
         public object mapZoomOut;
 
-        public bool IsObsolete { get { return this.packageVersion != version; } }
+        public bool IsObsolete
+        { get { return this.packageVersion != version; } }
+
         public InputPackage(float packageVersion, InputMapper.AnalogType leftStick, InputMapper.AnalogType rightStick, object confirm, object cancel, object pauseMenu, object sprint, object inventory, object pickUp, object craft, object interact, object map, object useTool, object zoomOut, object toolbarPrev, object invSwitch, object invSort, object toolbarNext, object invPickOne, object invPickStack, object mapToggleMarker, object mapCenterPlayer, object mapZoomIn, object mapZoomOut, object left = null, object right = null, object up = null, object down = null)
         {
             this.packageVersion = packageVersion;
@@ -260,6 +262,5 @@ namespace SonOfRobin
 
             return duplicatesByValues;
         }
-
     }
 }

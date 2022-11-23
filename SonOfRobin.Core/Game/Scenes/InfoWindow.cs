@@ -10,7 +10,9 @@ namespace SonOfRobin
     {
         public struct TextEntry
         {
-            public enum Justify { Left, Center, Right };
+            public enum Justify
+            { Left, Center, Right };
+
             public int Width { get { return (int)(this.textWithImages.textWidth * this.scale); } }
             public int Height { get { return (int)(this.textWithImages.textHeight * this.scale); } }
 
@@ -21,6 +23,7 @@ namespace SonOfRobin
             public readonly int progressMaxVal;
             public readonly bool progressBarMode;
             public readonly Justify justify;
+
             public TextEntry(Color color, float scale = 1f, string text = "", int progressCurrentVal = -1, int progressMaxVal = -1, Justify justify = Justify.Left, List<Texture2D> imageList = null, bool animate = false, int framesPerChar = 0, int charsPerFrame = 1)
             {
                 this.progressBarMode = progressCurrentVal > -1 && progressMaxVal > -1;
@@ -80,6 +83,7 @@ namespace SonOfRobin
 
         private const float marginPercent = 0.025f;
         private const int transDuration = 6; // 6
+
         private int Margin
         {
             get
@@ -302,7 +306,7 @@ namespace SonOfRobin
 
         public void TurnOff(bool addTransition = true)
         {
-            this.InputType = InputTypes.None; // restores input 
+            this.InputType = InputTypes.None; // restores input
 
             if (!this.isActive) return;
 
@@ -396,6 +400,5 @@ namespace SonOfRobin
                 posY += (int)((entry.Height * globalScale) + margin);
             }
         }
-
     }
 }

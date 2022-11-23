@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 
-
 namespace SonOfRobin
 {
     public class Debris : BoardPiece
     {
-
         public Debris(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, Dictionary<byte, int> maxMassBySize, string readableName, string description,
             byte animSize = 0, string animName = "default", bool blocksMovement = false, ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 20, int destructionDelayMaxOffset = 90, bool floatsOnWater = false, int generation = 0, byte stackSize = 1, bool canBePickedUp = false, Yield yield = null, int maxHitPoints = 1, bool fadeInAnim = false, bool rotatesWhenDropped = true) :
 
@@ -27,6 +25,5 @@ namespace SonOfRobin
             base.Deserialize(pieceData);
             // data to deserialize here
         }
-
     }
 }

@@ -22,15 +22,17 @@ namespace SonOfRobin
         private readonly bool useTransitionClose;
         private Scheduler.TaskName closingTask;
         private Object closingTaskHelper;
-        private int MaxWindowWidth { get { return Convert.ToInt32(SonOfRobinGame.VirtualWidth * 0.8f); } }
-        private int MaxWindowHeight { get { return Convert.ToInt32(SonOfRobinGame.VirtualHeight * 0.7f); } }
-        private int Margin { get { return Convert.ToInt32(SonOfRobinGame.VirtualHeight * 0.03f); } }
+        private int MaxWindowWidth
+        { get { return Convert.ToInt32(SonOfRobinGame.VirtualWidth * 0.8f); } }
+        private int MaxWindowHeight
+        { get { return Convert.ToInt32(SonOfRobinGame.VirtualHeight * 0.7f); } }
+        private int Margin
+        { get { return Convert.ToInt32(SonOfRobinGame.VirtualHeight * 0.03f); } }
 
         private bool IsADuplicate
         {
             get
             {
-
                 foreach (TextWindow textWindow in GetAllScenesOfType(typeof(TextWindow), includeWaiting: true))
                 {
                     if (textWindow != this && textWindow.textWithImages.Text == this.textWithImages.Text) return true;
@@ -218,6 +220,7 @@ namespace SonOfRobin
 
             if (this.autoClose && this.textWithImages.AnimationFinished && this.blockingFramesLeft == 0) this.Remove();
         }
+
         public bool CheckForInputOk()
         {
             if (this.blockingFramesLeft > 0) return false;
@@ -278,8 +281,6 @@ namespace SonOfRobin
             {
                 this.textWithImages.Draw(position: textPos, color: this.textColor, imageOpacity: this.viewParams.drawOpacity, textScale: this.textScale);
             }
-
         }
-
     }
 }

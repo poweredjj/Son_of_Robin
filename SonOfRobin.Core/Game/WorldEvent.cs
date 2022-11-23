@@ -7,7 +7,8 @@ namespace SonOfRobin
 {
     public class WorldEvent
     {
-        public enum EventName { Birth, Death, Destruction, TurnOffWorkshop, FinishCooking, RestorePieceCreation, FadeOutSprite, RestoreHint, RemoveBuff, BurnOutLightSource, RegenPoison, ChangeActiveState, FinishBuilding, PlaySoundByName, YieldDropDebris }
+        public enum EventName
+        { Birth, Death, Destruction, TurnOffWorkshop, FinishCooking, RestorePieceCreation, FadeOutSprite, RestoreHint, RemoveBuff, BurnOutLightSource, RegenPoison, ChangeActiveState, FinishBuilding, PlaySoundByName, YieldDropDebris }
 
         public readonly World world;
         public readonly BoardPiece boardPiece;
@@ -311,6 +312,5 @@ namespace SonOfRobin
                     throw new ArgumentException($"Unsupported eventName - {eventName}.");
             }
         }
-
     }
 }

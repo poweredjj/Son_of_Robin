@@ -8,7 +8,15 @@ namespace SonOfRobin
     {
         private readonly World world;
         private List<EffInstance> effectInstanceList;
-        public bool ThereAreEffectsToRender { get { return this.effectInstanceList.Count > 0; } }
+
+        public EffectCol(World world)
+        {
+            this.world = world; // used for currentUpdate only
+            this.effectInstanceList = new List<EffInstance> { };
+        }
+
+        public bool ThereAreEffectsToRender
+        { get { return this.effectInstanceList.Count > 0; } }
 
         private List<EffInstance> EffectsLeftToRender
         {
@@ -17,12 +25,6 @@ namespace SonOfRobin
                 int currentUpdate = this.world == null ? SonOfRobinGame.CurrentUpdate : this.world.CurrentUpdate;
                 return this.effectInstanceList.Where(effInstance => !effInstance.WasUsedInThisFrame(currentUpdate)).OrderBy(effInstance => effInstance.priority).ToList();
             }
-        }
-
-        public EffectCol(World world)
-        {
-            this.world = world; // used for currentUpdate only
-            this.effectInstanceList = new List<EffInstance> { };
         }
 
         public void AddEffect(EffInstance effInstance, bool ignoreIfDuplicated = true)
@@ -69,7 +71,5 @@ namespace SonOfRobin
 
             return effectsLeftToRender.Count > 1; // this bool means, that there will be more effects after this one
         }
-
     }
-
 }

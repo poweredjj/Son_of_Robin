@@ -8,8 +8,10 @@ namespace SonOfRobin
     public class PieceInfo
     {
         private static readonly Dictionary<PieceTemplate.Name, Info> info = new Dictionary<PieceTemplate.Name, Info> { };
-        public static List<Info> AllInfo { get { return info.Values.ToList(); } }
+        public static List<Info> AllInfo
+        { get { return info.Values.ToList(); } }
         public static bool HasBeenInitialized { get; private set; } = false;
+
         public class Info
         {
             public readonly PieceTemplate.Name name;
@@ -25,7 +27,7 @@ namespace SonOfRobin
             public bool isCarnivorous;
             public readonly BoardPiece.Category category;
             public readonly bool canBePickedUp;
-            public List<BuffEngine.Buff> buffList;
+            public List<Buff> buffList;
             public readonly AnimFrame frame;
             public readonly Texture2D texture;
             public readonly Scheduler.TaskName toolbarTask;
@@ -35,21 +37,6 @@ namespace SonOfRobin
             public readonly bool hasFruit;
             public readonly PieceTemplate.Name fruitName;
             public PieceTemplate.Name isSpawnedBy;
-
-            public List<string> BuffDescList
-            {
-                get
-                {
-                    var buffDescList = new List<string> { };
-                    if (buffList == null) return buffDescList;
-
-                    foreach (var buff in buffList)
-                    {
-                        buffDescList.Add(buff.description);
-                    }
-                    return buffDescList;
-                }
-            }
 
             public Info(BoardPiece piece)
             {
@@ -87,6 +74,21 @@ namespace SonOfRobin
                         this.fruitName = plant.fruitEngine.fruitName;
                         this.hasFruit = true;
                     }
+                }
+            }
+
+            public List<string> BuffDescList
+            {
+                get
+                {
+                    var buffDescList = new List<string> { };
+                    if (buffList == null) return buffDescList;
+
+                    foreach (var buff in buffList)
+                    {
+                        buffDescList.Add(buff.description);
+                    }
+                    return buffDescList;
                 }
             }
         }
@@ -149,6 +151,5 @@ namespace SonOfRobin
 
             return new List<PieceTemplate.Name> { };
         }
-
     }
 }

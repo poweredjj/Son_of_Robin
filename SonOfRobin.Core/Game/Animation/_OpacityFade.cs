@@ -5,7 +5,8 @@ namespace SonOfRobin
     [Serializable]
     public class OpacityFade
     {
-        public enum Mode { Normal, CameraTargetObstruct, CameraTargetObstructRevert }
+        public enum Mode
+        { Normal, CameraTargetObstruct, CameraTargetObstructRevert }
 
         public const int defaultDuration = 30;
 
@@ -57,6 +58,5 @@ namespace SonOfRobin
                 }
             }
         }
-
     }
 }

@@ -56,8 +56,10 @@ namespace SonOfRobin
 
         public static DateTime startUpdateTime;
         public static DateTime startDrawTime;
-        public static TimeSpan UpdateTimeElapsed { get { return DateTime.Now - startUpdateTime; } }
-        public static TimeSpan DrawTimeElapsed { get { return DateTime.Now - startDrawTime; } }
+        public static TimeSpan UpdateTimeElapsed
+        { get { return DateTime.Now - startUpdateTime; } }
+        public static TimeSpan DrawTimeElapsed
+        { get { return DateTime.Now - startDrawTime; } }
         public InputTypes InputType { get; set; }
 
         private bool OtherScenesOfThisTypePresent
@@ -530,6 +532,5 @@ namespace SonOfRobin
 
             SonOfRobinGame.GfxDev.SetRenderTarget(null); // do not use SetRenderTarget() anywhere else!
         }
-
     }
 }

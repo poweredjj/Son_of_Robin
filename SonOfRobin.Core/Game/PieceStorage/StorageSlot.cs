@@ -18,6 +18,18 @@ namespace SonOfRobin
         public bool hidden;
         public List<PieceTemplate.Name> allowedPieceNames;
 
+        public StorageSlot(PieceStorage storage, byte stackLimit = 255, List<PieceTemplate.Name> allowedPieceNames = null)
+        {
+            this.id = Helpers.GetUniqueHash();
+            this.storage = storage;
+            this.pieceList = new List<BoardPiece> { };
+            this.locked = false;
+            this.hidden = false;
+            this.label = "";
+            this.stackLimit = stackLimit;
+            this.allowedPieceNames = allowedPieceNames;
+        }
+
         public BoardPiece TopPiece
         {
             get
@@ -44,18 +56,6 @@ namespace SonOfRobin
 
         public PieceTemplate.Name PieceName
         { get { return pieceList[0].name; } }
-
-        public StorageSlot(PieceStorage storage, byte stackLimit = 255, List<PieceTemplate.Name> allowedPieceNames = null)
-        {
-            this.id = Helpers.GetUniqueHash();
-            this.storage = storage;
-            this.pieceList = new List<BoardPiece> { };
-            this.locked = false;
-            this.hidden = false;
-            this.label = "";
-            this.stackLimit = stackLimit;
-            this.allowedPieceNames = allowedPieceNames;
-        }
 
         public void AddPiece(BoardPiece piece)
         {

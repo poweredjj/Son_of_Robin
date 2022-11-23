@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace SonOfRobin
 {
-    class CraftInvoker : Invoker
+    internal class CraftInvoker : Invoker
     {
         private struct InvokerDrawParams
         {
@@ -43,6 +43,7 @@ namespace SonOfRobin
 
         private readonly Craft.Recipe recipe;
         private readonly List<PieceStorage> storageList;
+
         public CraftInvoker(Menu menu, string name, Scheduler.TaskName taskName, Craft.Recipe recipe, List<PieceStorage> storageList, Object executeHelper = null, bool closesMenu = false, bool rebuildsMenu = false) : base(menu: menu, name: name, taskName: taskName, executeHelper: executeHelper, closesMenu: closesMenu, rebuildsMenu: rebuildsMenu, playSound: false)
         {
             this.recipe = recipe;
@@ -168,6 +169,7 @@ namespace SonOfRobin
                 }
             }
         }
+
         private void UpdateInfoText()
         {
             World world = World.GetTopWorld();
@@ -182,7 +184,7 @@ namespace SonOfRobin
 
             if (pieceInfo.buffList != null)
             {
-                foreach (BuffEngine.Buff buff in pieceInfo.buffList)
+                foreach (Buff buff in pieceInfo.buffList)
                 { entryList.Add(new InfoWindow.TextEntry(text: buff.description, color: Color.Cyan, scale: 1f, animate: true, charsPerFrame: 2)); }
             }
             if (!canBeCrafted)
@@ -240,6 +242,5 @@ namespace SonOfRobin
 
             SonOfRobinGame.SpriteBatch.DrawString(font, text, position: textPos, color: txtCol * menu.viewParams.Opacity, origin: Vector2.Zero, scale: textScale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
         }
-
     }
 }

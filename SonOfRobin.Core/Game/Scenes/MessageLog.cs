@@ -11,9 +11,10 @@ namespace SonOfRobin
         Debug,
         User
     }
+
     public class MessageLog : Scene
     {
-        struct Message
+        private struct Message
         {
             public readonly string text;
             public readonly int deletionFrame;
@@ -42,7 +43,8 @@ namespace SonOfRobin
 
         private static readonly List<MsgType> displayedLevelsTemplateDebug = new List<MsgType> { MsgType.User, MsgType.Debug };
         private static readonly List<MsgType> displayedLevelsTemplateUser = new List<MsgType> { MsgType.User };
-        private static List<MsgType> DisplayedLevels { get { return Preferences.DebugMode ? displayedLevelsTemplateDebug : displayedLevelsTemplateUser; } }
+        private static List<MsgType> DisplayedLevels
+        { get { return Preferences.DebugMode ? displayedLevelsTemplateDebug : displayedLevelsTemplateUser; } }
 
         private static List<Message> messages = new List<Message> { };
 
@@ -122,5 +124,4 @@ namespace SonOfRobin
             messages = messages.Where(message => currentFrame < message.deletionFrame).ToList();
         }
     }
-
 }

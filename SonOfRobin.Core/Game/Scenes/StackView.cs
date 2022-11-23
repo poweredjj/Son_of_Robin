@@ -81,7 +81,6 @@ namespace SonOfRobin
             else base.Remove();
         }
 
-
         public Transition GetTransition(bool inTrans)
         {
             this.UpdateView();
@@ -150,6 +149,5 @@ namespace SonOfRobin
 
             return $"{scene.priority} {sceneName}{inputTxt}{updatesTxt}{drawsTxt}{waitsTxt}{blocksUpdatesTxt}{blocksDrawsTxt}";
         }
-
     }
 }

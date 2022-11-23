@@ -8,7 +8,9 @@ namespace SonOfRobin
 {
     public class FieldTip
     {
-        public enum Alignment { Center, TopOut, TopIn, BottomOut, BottomIn, LeftIn, RightIn, LeftOut, RightOut };
+        public enum Alignment
+        { Center, TopOut, TopIn, BottomOut, BottomIn, LeftIn, RightIn, LeftOut, RightOut };
+
         private static readonly List<Alignment> inAlignment = new List<Alignment> { Alignment.Center, Alignment.LeftIn, Alignment.RightIn, Alignment.TopIn, Alignment.BottomIn };
         private const int maxInactiveDuration = 10;
         private const int movementSlowdown = 6;
@@ -32,8 +34,10 @@ namespace SonOfRobin
         private Vector2 currentPos;
         private float targetOpacity;
         private float currentOpacity;
-        private int TextureWidth { get { return (int)(this.texture.Width * Preferences.fieldControlTipsScale); } }
-        private int TextureHeight { get { return (int)(this.texture.Height * Preferences.fieldControlTipsScale); } }
+        private int TextureWidth
+        { get { return (int)(this.texture.Width * Preferences.fieldControlTipsScale); } }
+        private int TextureHeight
+        { get { return (int)(this.texture.Height * Preferences.fieldControlTipsScale); } }
 
         private FieldTip(World world, Texture2D texture, Sprite targetSprite, Alignment alignment)
         {
@@ -70,6 +74,7 @@ namespace SonOfRobin
         {
             tipsDict.Remove(this.texture);
         }
+
         public static void AddUpdateTip(World world, Texture2D texture, Sprite targetSprite, Alignment alignment)
         {
             if (!tipsDict.ContainsKey(texture) || tipsDict[texture].world != world) new FieldTip(world: world, texture: texture, targetSprite: targetSprite, alignment: alignment);

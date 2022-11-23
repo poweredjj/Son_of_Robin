@@ -15,11 +15,35 @@ namespace SonOfRobin
         public readonly PieceTemplate.Name fruitName;
         public Plant plant;
         private float currentMass;
-        private bool FruitCanBeAdded { get { return this.currentMass > this.oneFruitTargetMass; } }
-        public int MaxAreaWidth { get { return (int)((float)this.plant.sprite.gfxRect.Width * (float)this.areaWidthPercent * 0.5f); } }
-        public int MaxAreaHeight { get { return (int)((float)this.plant.sprite.gfxRect.Height * (float)this.areaHeightPercent * 0.5f); } }
-        public float XOffset { get { return (float)this.plant.sprite.gfxRect.Width * (float)this.xOffsetPercent; } }
-        public float YOffset { get { return (float)this.plant.sprite.gfxRect.Height * (float)this.yOffsetPercent; } }
+
+        public FruitEngine(byte maxNumber, float oneFruitMass, PieceTemplate.Name fruitName, float xOffsetPercent = 0, float yOffsetPercent = 0, float areaWidthPercent = 1f, float areaHeightPercent = 1f)
+        {
+            this.maxNumber = maxNumber;
+            this.oneFruitTargetMass = oneFruitMass;
+            this.xOffsetPercent = xOffsetPercent;
+            this.yOffsetPercent = yOffsetPercent;
+            this.areaWidthPercent = areaWidthPercent;
+            this.areaHeightPercent = areaHeightPercent;
+            this.fruitName = fruitName;
+            this.currentMass = 0;
+            this.plant = null; // to be updated after creating the plant
+        }
+
+        private bool FruitCanBeAdded
+        { get { return this.currentMass > this.oneFruitTargetMass; } }
+
+        public int MaxAreaWidth
+        { get { return (int)((float)this.plant.sprite.gfxRect.Width * (float)this.areaWidthPercent * 0.5f); } }
+
+        public int MaxAreaHeight
+        { get { return (int)((float)this.plant.sprite.gfxRect.Height * (float)this.areaHeightPercent * 0.5f); } }
+
+        public float XOffset
+        { get { return (float)this.plant.sprite.gfxRect.Width * (float)this.xOffsetPercent; } }
+
+        public float YOffset
+        { get { return (float)this.plant.sprite.gfxRect.Height * (float)this.yOffsetPercent; } }
+
         private Vector2 FruitCenterPos
         { get { return new Vector2(this.plant.sprite.gfxRect.Center.X + this.XOffset, this.plant.sprite.gfxRect.Center.Y + this.YOffset); } }
 
@@ -33,19 +57,6 @@ namespace SonOfRobin
 
                 return new Rectangle((int)fruitCenterPos.X - maxAreaWidth, (int)fruitCenterPos.Y - maxAreaHeight, maxAreaWidth * 2, maxAreaHeight * 2);
             }
-        }
-
-        public FruitEngine(byte maxNumber, float oneFruitMass, PieceTemplate.Name fruitName, float xOffsetPercent = 0, float yOffsetPercent = 0, float areaWidthPercent = 1f, float areaHeightPercent = 1f)
-        {
-            this.maxNumber = maxNumber;
-            this.oneFruitTargetMass = oneFruitMass;
-            this.xOffsetPercent = xOffsetPercent;
-            this.yOffsetPercent = yOffsetPercent;
-            this.areaWidthPercent = areaWidthPercent;
-            this.areaHeightPercent = areaHeightPercent;
-            this.fruitName = fruitName;
-            this.currentMass = 0;
-            this.plant = null; // to be updated after creating the plant
         }
 
         public void Serialize(Dictionary<string, Object> pieceData)
@@ -63,6 +74,7 @@ namespace SonOfRobin
         {
             this.currentMass += mass;
         }
+
         public void TryToConvertMassIntoFruit()
         {
             if (this.FruitCanBeAdded) this.AddFruit();
@@ -119,6 +131,5 @@ namespace SonOfRobin
                 this.SetFruitPos(fruit: fruit);
             }
         }
-
     }
 }

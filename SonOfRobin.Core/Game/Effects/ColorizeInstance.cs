@@ -4,7 +4,6 @@ namespace SonOfRobin
 {
     public class ColorizeInstance : EffInstance
     {
-
         private readonly Vector4 color;
 
         public ColorizeInstance(Color color, int framesLeft = 1, int priority = 1) : base(effect: SonOfRobinGame.EffectColorize, framesLeft: framesLeft, priority: priority)
@@ -18,6 +17,5 @@ namespace SonOfRobin
 
             base.TurnOn(currentUpdate);
         }
-
     }
 }

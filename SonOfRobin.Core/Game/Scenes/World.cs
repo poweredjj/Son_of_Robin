@@ -14,8 +14,10 @@ namespace SonOfRobin
         public Vector2 analogCameraCorrection;
 
         public bool WorldCreationInProgress { get; private set; }
+
         public bool PiecesCreationInProgress
         { get { return this.initialPiecesCreationFramesLeft > 0; } }
+
         private bool plantsProcessing;
         private const int initialPiecesCreationFramesTotal = 20;
         public const int buildDuration = (int)(60 * 2.5);
@@ -420,7 +422,7 @@ namespace SonOfRobin
                 this.camera.TrackPiece(trackedPiece: this.Player, moveInstantly: true);
                 this.UpdateViewParams();
                 this.camera.Update(cameraCorrection: Vector2.Zero); // to render cells in camera view correctly
-                Inventory.SetLayout(newLayout: Inventory.Layout.Toolbar, player: this.Player);
+                Inventory.SetLayout(newLayout: Inventory.LayoutType.Toolbar, player: this.Player);
             }
 
             this.CreateNewDarknessMask();
@@ -742,7 +744,7 @@ namespace SonOfRobin
             {
                 VirtButton.ButtonHighlightOnNextFrame(VButName.Sprint);
                 ControlTips.TipHighlightOnNextFrame(tipName: "sprint");
-                if (InputMapper.HasBeenPressed(InputMapper.Action.WorldSprintToggle)) this.Player.buffEngine.AddBuff(buff: new BuffEngine.Buff(type: BuffEngine.BuffType.Sprint, autoRemoveDelay: 3 * 60, value: 2f), world: this);
+                if (InputMapper.HasBeenPressed(InputMapper.Action.WorldSprintToggle)) this.Player.buffEngine.AddBuff(buff: new Buff(type: BuffEngine.BuffType.Sprint, autoRemoveDelay: 3 * 60, value: 2f), world: this);
             }
 
             if (InputMapper.HasBeenPressed(InputMapper.Action.WorldFieldCraft))
@@ -753,7 +755,7 @@ namespace SonOfRobin
 
             if (InputMapper.HasBeenPressed(InputMapper.Action.WorldInventory) || this.playerPanel.IsCounterActivatedByTouch)
             {
-                Inventory.SetLayout(Inventory.Layout.Inventory, player: this.Player);
+                Inventory.SetLayout(Inventory.LayoutType.Inventory, player: this.Player);
                 return;
             }
 

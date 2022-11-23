@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-
 namespace SonOfRobin
 {
     public class Animal : BoardPiece
@@ -32,12 +31,6 @@ namespace SonOfRobin
         public readonly List<PieceTemplate.Name> eats;
         private readonly List<PieceTemplate.Name> isEatenBy;
 
-        private float FedPercentage // float 0-1
-        { get { return (float)this.fedLevel / (float)maxFedLevel; } }
-        private float RealSpeed
-        { get { return stamina > 0 ? this.speed : Math.Max(this.speed / 2, 1); } }
-        public float MaxMassPercentage { get { return this.Mass / this.maxMass; } }
-
         public Animal(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, Dictionary<byte, int> maxMassBySize, int mass, int maxMass, byte awareness, bool female, int maxAge, int matureAge, uint pregnancyDuration, byte maxChildren, float maxStamina, int maxHitPoints, ushort sightRange, string readableName, string description, List<PieceTemplate.Name> eats, int strength, float massBurnedMultiplier,
             byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = false, int generation = 0, Yield yield = null, bool fadeInAnim = true, PieceSoundPack soundPack = null) :
 
@@ -63,8 +56,18 @@ namespace SonOfRobin
             this.eats = eats;
             this.isEatenBy = PieceInfo.GetIsEatenBy(this.name);
             this.aiData = new AiData();
+            this.aiData.Reset(this);
             this.strength = strength;
         }
+
+        private float FedPercentage // float 0-1
+        { get { return (float)this.fedLevel / (float)maxFedLevel; } }
+
+        private float RealSpeed
+        { get { return stamina > 0 ? this.speed : Math.Max(this.speed / 2, 1); } }
+
+        public float MaxMassPercentage
+        { get { return this.Mass / this.maxMass; } }
 
         public override Dictionary<string, Object> Serialize()
         {
@@ -115,7 +118,6 @@ namespace SonOfRobin
 
             StatBar.FinishThisBatch();
         }
-
 
         public void ExpendEnergy(float energyAmount)
         {
@@ -255,7 +257,6 @@ namespace SonOfRobin
                     { matingPartner = FindClosestPiece(sprite: this.sprite, pieceList: matingPartners); }
                     else
                     { matingPartner = matingPartners[world.random.Next(0, matingPartners.Count)]; }
-
                 }
             }
 
@@ -294,12 +295,15 @@ namespace SonOfRobin
                     case DecisionEngine.Action.Eat:
                         crossHair.sprite.color = backlight.sprite.color = Color.Red;
                         break;
+
                     case DecisionEngine.Action.Mate:
                         crossHair.sprite.color = backlight.sprite.color = Color.Pink;
                         break;
+
                     case DecisionEngine.Action.Flee:
                         crossHair.sprite.color = backlight.sprite.color = Color.Blue;
                         break;
+
                     default:
                         break;
                 }
@@ -610,7 +614,7 @@ namespace SonOfRobin
 
             if (this.target.Mass <= 0)
             {
-                foreach (BuffEngine.Buff buff in this.target.buffList)
+                foreach (Buff buff in this.target.buffList)
                 { this.buffEngine.AddBuff(buff: buff, world: world); }
                 this.target.buffList.Clear();
 
@@ -774,7 +778,5 @@ namespace SonOfRobin
                 return;
             }
         }
-
     }
-
 }

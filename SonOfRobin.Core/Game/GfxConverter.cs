@@ -9,7 +9,6 @@ namespace SonOfRobin
 {
     public class GfxConverter
     {
-
         public static void SaveColorArrayAsPNG(int width, int height, Color[,] colorArray, string pngPath, bool hasAlphaChannel = true)
         {
             // TODO test if it works correctly
@@ -54,7 +53,7 @@ namespace SonOfRobin
             int paddedWidth = cropRect.Width + (padding * 2);
             int paddedHeight = cropRect.Height + (padding * 2);
 
-            Color[] paddedArray1D = new Color[paddedWidth * paddedHeight]; // filling the padding is not needed - default array color is transparent     
+            Color[] paddedArray1D = new Color[paddedWidth * paddedHeight]; // filling the padding is not needed - default array color is transparent
 
             // copying pixels from original texture data
             for (int y = 0; y < cropRect.Height; y++)
@@ -73,7 +72,6 @@ namespace SonOfRobin
 
             return texture;
         }
-
 
         public static Color[,] ConvertTextureToGrid(Texture2D texture, int x, int y, int width, int height)
         {
@@ -203,6 +201,7 @@ namespace SonOfRobin
 
             return array2D;
         }
+
         public static Color[] ConvertArray2DTo1D(int width, int height, Color[,] array2D)
         {
             Color[] array1D = new Color[width * height];
@@ -217,7 +216,6 @@ namespace SonOfRobin
 
             return array1D;
         }
-
 
         public static Color[,] ConvertTextureToColorArray(Texture2D texture, int width, int height)
         {
@@ -245,6 +243,5 @@ namespace SonOfRobin
 
             return byteArray;
         }
-
     }
 }

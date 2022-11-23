@@ -26,6 +26,5 @@ namespace SonOfRobin
                 SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, rect, this.color * this.viewParams.drawOpacity);
             }
         }
-
     }
 }

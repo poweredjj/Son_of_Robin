@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 
-
 namespace SonOfRobin
 {
     public class Decoration : BoardPiece
@@ -25,6 +24,5 @@ namespace SonOfRobin
             base.Deserialize(pieceData);
             // data to deserialize here
         }
-
     }
 }

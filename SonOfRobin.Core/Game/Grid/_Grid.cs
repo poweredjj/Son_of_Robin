@@ -62,15 +62,6 @@ namespace SonOfRobin
         private readonly Dictionary<ExtBoardProps.Name, int> biomeCountByName; // to ensure biome diversity
         public int loadedTexturesCount;
 
-        public bool ProcessingStageComplete
-        { get { return this.cellsToProcessOnStart.Count == 0; } }
-
-        public List<Cell> CellsVisitedByPlayer
-        { get { return this.allCells.Where(cell => cell.VisitedByPlayer).ToList(); } }
-
-        public List<Cell> CellsNotVisitedByPlayer
-        { get { return this.allCells.Where(cell => !cell.VisitedByPlayer).ToList(); } }
-
         public Grid(World world, int resDivider, int cellWidth = 0, int cellHeight = 0)
         {
             this.CreationInProgress = true;
@@ -134,6 +125,15 @@ namespace SonOfRobin
 
             this.PrepareNextStage();
         }
+
+        public bool ProcessingStageComplete
+        { get { return this.cellsToProcessOnStart.Count == 0; } }
+
+        public List<Cell> CellsVisitedByPlayer
+        { get { return this.allCells.Where(cell => cell.VisitedByPlayer).ToList(); } }
+
+        public List<Cell> CellsNotVisitedByPlayer
+        { get { return this.allCells.Where(cell => !cell.VisitedByPlayer).ToList(); } }
 
         public Dictionary<string, Object> Serialize()
         {

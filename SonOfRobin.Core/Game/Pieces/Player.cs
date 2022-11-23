@@ -9,7 +9,8 @@ namespace SonOfRobin
 {
     public class Player : BoardPiece
     {
-        public enum SleepMode { Awake, Sleep, WaitMorning, WaitIndefinitely };
+        public enum SleepMode
+        { Awake, Sleep, WaitMorning, WaitIndefinitely };
 
         private const int maxShootingPower = 90;
 
@@ -27,7 +28,8 @@ namespace SonOfRobin
         public BoardPiece simulatedPieceToBuild;
         public int buildDurationForOneFrame;
         public float buildFatigueForOneFrame;
-        public override bool ShowStatBars { get { return true; } }
+        public override bool ShowStatBars
+        { get { return true; } }
 
         private bool ShootingModeInputPressed
         {
@@ -49,6 +51,7 @@ namespace SonOfRobin
                 this.pieceStorage.Resize(value, this.InvHeight);
             }
         }
+
         public byte InvHeight
         {
             get { return this.pieceStorage.Height; }
@@ -82,8 +85,10 @@ namespace SonOfRobin
         public int wentToSleepFrame;
         public bool sleepingInsideShelter;
         public SleepMode sleepMode;
-        public List<PieceStorage> CraftStorages { get { return new List<PieceStorage> { this.pieceStorage, this.ToolStorage, this.EquipStorage }; } }
-        public List<PieceStorage> CraftStoragesToolbarFirst { get { return new List<PieceStorage> { this.ToolStorage, this.pieceStorage, this.EquipStorage }; } } // the same as above, changed order
+        public List<PieceStorage> CraftStorages
+        { get { return new List<PieceStorage> { this.pieceStorage, this.ToolStorage, this.EquipStorage }; } }
+        public List<PieceStorage> CraftStoragesToolbarFirst
+        { get { return new List<PieceStorage> { this.ToolStorage, this.pieceStorage, this.EquipStorage }; } } // the same as above, changed order
 
         public StorageSlot ActiveSlot
         { get { return this.ToolStorage?.lastUsedSlot; } }
@@ -178,7 +183,7 @@ namespace SonOfRobin
 
                 if (this.IsVeryTired)
                 {
-                    if (!this.buffEngine.HasBuff(BuffEngine.BuffType.Tired)) this.buffEngine.AddBuff(world: this.world, buff: new BuffEngine.Buff(type: BuffEngine.BuffType.Tired, value: 0, autoRemoveDelay: 0));
+                    if (!this.buffEngine.HasBuff(BuffEngine.BuffType.Tired)) this.buffEngine.AddBuff(world: this.world, buff: new Buff(type: BuffEngine.BuffType.Tired, value: 0, autoRemoveDelay: 0));
                 }
                 else
                 {
@@ -193,6 +198,7 @@ namespace SonOfRobin
                 if (this.fatigue == this.MaxFatigue) new Scheduler.Task(taskName: Scheduler.TaskName.SleepOutside, delay: 0, executeHelper: null);
             }
         }
+
         public float Stamina
         {
             get { return this.stamina; }
@@ -203,6 +209,7 @@ namespace SonOfRobin
                 if (staminaDifference < 0) this.Fatigue -= staminaDifference / 10f;
             }
         }
+
         public float FedPercent
         {
             get
@@ -211,7 +218,7 @@ namespace SonOfRobin
 
                 if (fedPercent < 0.2f)
                 {
-                    if (!this.buffEngine.HasBuff(BuffEngine.BuffType.Hungry)) this.buffEngine.AddBuff(world: this.world, buff: new BuffEngine.Buff(type: BuffEngine.BuffType.Hungry, value: 0, autoRemoveDelay: 0));
+                    if (!this.buffEngine.HasBuff(BuffEngine.BuffType.Hungry)) this.buffEngine.AddBuff(world: this.world, buff: new Buff(type: BuffEngine.BuffType.Hungry, value: 0, autoRemoveDelay: 0));
                 }
                 else
                 {
@@ -221,9 +228,13 @@ namespace SonOfRobin
                 return fedPercent;
             }
         }
-        public float FatiguePercent { get { return (float)this.Fatigue / (float)this.MaxFatigue; } }
-        public bool IsVeryTired { get { return this.FatiguePercent > 0.75f; } }
-        public bool CanWakeNow { get { return this.sleepingInsideShelter || this.FatiguePercent < 0.85f; } }
+
+        public float FatiguePercent
+        { get { return (float)this.Fatigue / (float)this.MaxFatigue; } }
+        public bool IsVeryTired
+        { get { return this.FatiguePercent > 0.75f; } }
+        public bool CanWakeNow
+        { get { return this.sleepingInsideShelter || this.FatiguePercent < 0.85f; } }
 
         public PieceStorage ToolStorage { get; private set; }
         public PieceStorage EquipStorage { get; private set; }
@@ -245,7 +256,6 @@ namespace SonOfRobin
 
             if (PieceInfo.HasBeenInitialized)
             {
-
                 List<Type> typeList = new List<Type> { typeof(Tool), typeof(Fruit), typeof(Tool), typeof(PortableLight), typeof(Projectile) };
 
                 foreach (PieceTemplate.Name pieceName in PieceTemplate.allNames)
@@ -312,7 +322,7 @@ namespace SonOfRobin
 
             foreach (PieceInfo.Info info in PieceInfo.AllInfo)
             {
-                foreach (BuffEngine.Buff buff in info.buffList)
+                foreach (Buff buff in info.buffList)
                 {
                     if (buff.type == BuffEngine.BuffType.InvWidth || buff.type == BuffEngine.BuffType.InvHeight)
                     {
@@ -330,7 +340,7 @@ namespace SonOfRobin
 
             foreach (PieceInfo.Info info in PieceInfo.AllInfo)
             {
-                foreach (BuffEngine.Buff buff in info.buffList)
+                foreach (Buff buff in info.buffList)
                 {
                     if (buff.type == BuffEngine.BuffType.ToolbarWidth || buff.type == BuffEngine.BuffType.ToolbarHeight)
                     {
@@ -670,14 +680,14 @@ namespace SonOfRobin
             {
                 if (this.world.islandClock.CurrentPartOfDay == IslandClock.PartOfDay.Noon)
                 {
-                    this.buffEngine.AddBuff(buff: new BuffEngine.Buff(type: BuffEngine.BuffType.Heat, value: null), world: this.world);
+                    this.buffEngine.AddBuff(buff: new Buff(type: BuffEngine.BuffType.Heat, value: null), world: this.world);
                 }
                 else this.buffEngine.RemoveEveryBuffOfType(BuffEngine.BuffType.Heat);
 
                 if (this.buffEngine.HasBuff(BuffEngine.BuffType.Heat)) Tutorials.ShowTutorialOnTheField(type: Tutorials.Type.Heat, world: this.world, ignoreDelay: true);
             }
 
-            if (this.sprite.IsInWater) this.buffEngine.AddBuff(buff: new BuffEngine.Buff(type: BuffEngine.BuffType.Wet, value: null, autoRemoveDelay: 40 * 60), world: this.world);
+            if (this.sprite.IsInWater) this.buffEngine.AddBuff(buff: new Buff(type: BuffEngine.BuffType.Wet, value: null, autoRemoveDelay: 40 * 60), world: this.world);
 
             if (this.sprite.IsInBiome)
             {
@@ -693,7 +703,7 @@ namespace SonOfRobin
                         {
                             Sound.QuickPlay(name: SoundData.Name.SplashMud, volume: 1f);
 
-                            this.buffEngine.AddBuff(buff: new BuffEngine.Buff(type: BuffEngine.BuffType.RegenPoison, value: -70, autoRemoveDelay: 16 * 60, canKill: true, increaseIDAtEveryUse: true), world: this.world);
+                            this.buffEngine.AddBuff(buff: new Buff(type: BuffEngine.BuffType.RegenPoison, value: -70, autoRemoveDelay: 16 * 60, canKill: true, increaseIDAtEveryUse: true), world: this.world);
                         }
                     }
                 }
@@ -719,11 +729,12 @@ namespace SonOfRobin
                 }
             }
         }
+
         public void CheckLowHP()
         {
             if (this.HitPointsPercent < 0.15f)
             {
-                if (!this.buffEngine.HasBuff(BuffEngine.BuffType.LowHP)) this.buffEngine.AddBuff(world: this.world, buff: new BuffEngine.Buff(type: BuffEngine.BuffType.LowHP, value: 0, autoRemoveDelay: 0));
+                if (!this.buffEngine.HasBuff(BuffEngine.BuffType.LowHP)) this.buffEngine.AddBuff(world: this.world, buff: new Buff(type: BuffEngine.BuffType.LowHP, value: 0, autoRemoveDelay: 0));
             }
             else
             {
@@ -839,7 +850,7 @@ namespace SonOfRobin
             if (this.world.CurrentUpdate % 10 == 0) SonOfRobinGame.ProgressBar.TurnOn(curVal: (int)(this.MaxFatigue - this.Fatigue), maxVal: (int)this.MaxFatigue, text: sleepModeText);
         }
 
-        public void GoToSleep(SleepEngine sleepEngine, Vector2 zzzPos, List<BuffEngine.Buff> wakeUpBuffs)
+        public void GoToSleep(SleepEngine sleepEngine, Vector2 zzzPos, List<Buff> wakeUpBuffs)
         {
             if (this.world.CurrentUpdate < this.wentToSleepFrame + 60) return; // to prevent going to sleep with max fatigue and with attacking enemies around
 
@@ -879,7 +890,7 @@ namespace SonOfRobin
 
             SonOfRobinGame.ProgressBar.TurnOff();
 
-            foreach (BuffEngine.Buff buff in this.buffList)
+            foreach (Buff buff in this.buffList)
             { this.buffEngine.AddBuff(buff: buff, world: this.world); }
             this.buffList.Clear();
 
@@ -912,15 +923,19 @@ namespace SonOfRobin
                 case Sprite.Orientation.left:
                     offsetX -= offset;
                     break;
+
                 case Sprite.Orientation.right:
                     offsetX += offset;
                     break;
+
                 case Sprite.Orientation.up:
                     offsetY -= offset;
                     break;
+
                 case Sprite.Orientation.down:
                     offsetY += offset;
                     break;
+
                 default:
                     throw new ArgumentException($"Unsupported sprite orientation - {this.sprite.orientation}.");
             }
@@ -1034,7 +1049,5 @@ namespace SonOfRobin
             new Scheduler.Task(taskName: activeToolbarPiece.toolbarTask, delay: 0, executeHelper: executeHelper);
             return true;
         }
-
     }
-
 }

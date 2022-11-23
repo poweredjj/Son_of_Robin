@@ -10,24 +10,25 @@ namespace SonOfRobin
         public enum Type
         { Empty, Hungry, VeryHungry, Starving, Tired, VeryTired, CantShootInWater, SmallInventory, MapNegative, Lava, BreakingItem, BrokenItem, BurntOutTorch, CineIntroduction, CineSmallBase, AnimalScaredOfFire, AnimalCounters, ZoomOutLocked };
 
-        private static readonly List<Type> typesThatIgnoreShowHintSetting = new List<Type> { Type.CineIntroduction, Type.CineSmallBase, Type.VeryTired, Type.Starving, Type.BrokenItem, Type.BurntOutTorch };
-
         private const int hintDelay = 1 * 60 * 60; // 1 * 60 * 60
         public const int blockInputDuration = 80;
+
+        private static readonly List<Type> typesThatIgnoreShowHintSetting = new List<Type> { Type.CineIntroduction, Type.CineSmallBase, Type.VeryTired, Type.Starving, Type.BrokenItem, Type.BurntOutTorch };
 
         public List<Type> shownGeneralHints = new List<Type> { };
         public List<PieceHint.Type> shownPieceHints = new List<PieceHint.Type> { };
         public List<Tutorials.Type> shownTutorials = new List<Tutorials.Type> { };
         public readonly World world;
         private int waitUntilFrame;
-        public bool WaitFrameReached
-        { get { return this.world.CurrentUpdate >= this.waitUntilFrame; } }
 
         public HintEngine(World world)
         {
             this.world = world;
             this.waitUntilFrame = 200;
         }
+
+        public bool WaitFrameReached
+        { get { return this.world.CurrentUpdate >= this.waitUntilFrame; } }
 
         public Dictionary<string, Object> Serialize()
         {

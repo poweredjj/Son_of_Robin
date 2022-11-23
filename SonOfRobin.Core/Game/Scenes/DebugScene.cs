@@ -178,7 +178,6 @@ namespace SonOfRobin
             {
                 if (world == null) return;
 
-
                 while (true)
                 {
                     bool hasBeenMoved = world.Player.sprite.SetNewPosition(new Vector2(BoardPiece.Random.Next(0, world.width), BoardPiece.Random.Next(0, world.height)));
@@ -316,7 +315,6 @@ namespace SonOfRobin
 
             if (Keyboard.HasBeenPressed(Keys.F1)) new TextWindow(text: "If I had more | leather, I could make a | backpack or a | belt.\n>|1|2|3|4|5<", animate: true, useTransition: false, framesPerChar: 1, bgColor: Color.DeepSkyBlue, textColor: Color.White, imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Leather), PieceInfo.GetTexture(PieceTemplate.Name.BackpackSmall), PieceInfo.GetTexture(PieceTemplate.Name.BeltBig), PieceInfo.GetTexture(PieceTemplate.Name.BeltBig), PieceInfo.GetTexture(PieceTemplate.Name.BeltBig), PieceInfo.GetTexture(PieceTemplate.Name.BeltBig), PieceInfo.GetTexture(PieceTemplate.Name.BeltBig), PieceInfo.GetTexture(PieceTemplate.Name.BeltBig) });
 
-
             if (Keyboard.HasBeenPressed(Keys.F2))
             {
                 if (world == null) return;
@@ -386,15 +384,14 @@ namespace SonOfRobin
                 if (world == null) return;
 
                 // int value = world.random.Next(-30, 30);
-                //  world.player.buffEngine.AddBuff(world: world, buff: new BuffEngine.Buff(type: BuffEngine.BuffType.Strength, value: value, autoRemoveDelay: world.random.Next(100, 500), isPositive: value > 0));
+                //  world.player.buffEngine.AddBuff(world: world, buff: new Buff(type: BuffEngine.BuffType.Strength, value: value, autoRemoveDelay: world.random.Next(100, 500), isPositive: value > 0));
 
-                //    world.player.buffEngine.AddBuff(world: world, buff: new BuffEngine.Buff(type: BuffEngine.BuffType.RegenPoison, value: value, autoRemoveDelay: world.random.Next(600, 1200), canKill: true));
+                //    world.player.buffEngine.AddBuff(world: world, buff: new Buff(type: BuffEngine.BuffType.RegenPoison, value: value, autoRemoveDelay: world.random.Next(600, 1200), canKill: true));
 
-                world.Player.buffEngine.AddBuff(world: world, buff: new BuffEngine.Buff(type: BuffEngine.BuffType.Haste, value: 2, autoRemoveDelay: 300));
+                world.Player.buffEngine.AddBuff(world: world, buff: new Buff(type: BuffEngine.BuffType.Haste, value: 2, autoRemoveDelay: 300));
 
-                // world.player.buffEngine.AddBuff(buff: new BuffEngine.Buff(type: BuffEngine.BuffType.Sprint, autoRemoveDelay: 4 * 60, value: world.player.speed), world: world);
+                // world.player.buffEngine.AddBuff(buff: new Buff(type: BuffEngine.BuffType.Sprint, autoRemoveDelay: 4 * 60, value: world.player.speed), world: world);
             }
-
 
             if (Keyboard.HasBeenPressed(Keys.F9))
             {
@@ -446,7 +443,6 @@ namespace SonOfRobin
             if (Keyboard.HasBeenPressed(Keys.LeftShift) || VirtButton.HasButtonBeenPressed(VButName.DebugPause))
             {
                 if (world == null) return;
-
 
                 SonOfRobinGame.Game.IsFixedTimeStep = true;
                 world.updateMultiplier = 1;

@@ -1716,8 +1716,8 @@ namespace SonOfRobin
 
                 case Name.HerbsGreen:
                     {
-                        var buffList = new List<BuffEngine.Buff> {
-                             new BuffEngine.Buff(type: BuffEngine.BuffType.MaxHP, value: 50f, autoRemoveDelay: 5 * 60 * 60)};
+                        var buffList = new List<Buff> {
+                             new Buff(type: BuffEngine.BuffType.MaxHP, value: 50f, autoRemoveDelay: 5 * 60 * 60)};
 
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropPlant, cooldown: 15, maxPitchVariation: 0.7f));
@@ -1729,8 +1729,8 @@ namespace SonOfRobin
 
                 case Name.HerbsViolet:
                     {
-                        var buffList = new List<BuffEngine.Buff> {
-                             new BuffEngine.Buff(type: BuffEngine.BuffType.Fatigue, value: -120f, isPermanent: true)};
+                        var buffList = new List<Buff> {
+                             new Buff(type: BuffEngine.BuffType.Fatigue, value: -120f, isPermanent: true)};
 
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropPlant, cooldown: 15, maxPitchVariation: 0.7f));
@@ -1742,8 +1742,8 @@ namespace SonOfRobin
 
                 case Name.HerbsBlack:
                     {
-                        var buffList = new List<BuffEngine.Buff> {
-                            new BuffEngine.Buff(type: BuffEngine.BuffType.RegenPoison, value: (int)-15, autoRemoveDelay: 60 * 60, canKill: true, increaseIDAtEveryUse: true)};
+                        var buffList = new List<Buff> {
+                            new Buff(type: BuffEngine.BuffType.RegenPoison, value: (int)-15, autoRemoveDelay: 60 * 60, canKill: true, increaseIDAtEveryUse: true)};
 
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropPlant, cooldown: 15, maxPitchVariation: 0.7f));
@@ -1755,8 +1755,8 @@ namespace SonOfRobin
 
                 case Name.HerbsBlue:
                     {
-                        var buffList = new List<BuffEngine.Buff> {
-                             new BuffEngine.Buff(type: BuffEngine.BuffType.MaxStamina, value: 100f, autoRemoveDelay: 60 * 60 * 3)};
+                        var buffList = new List<Buff> {
+                             new Buff(type: BuffEngine.BuffType.MaxStamina, value: 100f, autoRemoveDelay: 60 * 60 * 3)};
 
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropPlant, cooldown: 15, maxPitchVariation: 0.7f));
@@ -1768,8 +1768,8 @@ namespace SonOfRobin
 
                 case Name.HerbsCyan:
                     {
-                        var buffList = new List<BuffEngine.Buff> {
-                             new BuffEngine.Buff(type: BuffEngine.BuffType.Haste, value: (int)2, autoRemoveDelay: 60 * 30)};
+                        var buffList = new List<Buff> {
+                             new Buff(type: BuffEngine.BuffType.Haste, value: (int)2, autoRemoveDelay: 60 * 30)};
 
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropPlant, cooldown: 15, maxPitchVariation: 0.7f));
@@ -1781,8 +1781,8 @@ namespace SonOfRobin
 
                 case Name.HerbsRed:
                     {
-                        var buffList = new List<BuffEngine.Buff> {
-                             new BuffEngine.Buff(type: BuffEngine.BuffType.HP, value: (float)200, isPermanent: true)};
+                        var buffList = new List<Buff> {
+                             new Buff(type: BuffEngine.BuffType.HP, value: (float)200, isPermanent: true)};
 
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropPlant, cooldown: 15, maxPitchVariation: 0.7f));
@@ -1794,8 +1794,8 @@ namespace SonOfRobin
 
                 case Name.HerbsYellow:
                     {
-                        var buffList = new List<BuffEngine.Buff> {
-                             new BuffEngine.Buff(type: BuffEngine.BuffType.Strength, value: (int)2, autoRemoveDelay: 60 * 60 * 3)};
+                        var buffList = new List<Buff> {
+                             new Buff(type: BuffEngine.BuffType.Strength, value: (int)2, autoRemoveDelay: 60 * 60 * 3)};
 
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropPlant, cooldown: 15, maxPitchVariation: 0.7f));
@@ -1815,8 +1815,8 @@ namespace SonOfRobin
 
                 case Name.PotionHealing:
                     {
-                        var buffList = new List<BuffEngine.Buff> {
-                             new BuffEngine.Buff(type: BuffEngine.BuffType.HP, value: (float)200, isPermanent: true)};
+                        var buffList = new List<Buff> {
+                             new Buff(type: BuffEngine.BuffType.HP, value: (float)200, isPermanent: true)};
 
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropGlass, cooldown: 15, maxPitchVariation: 0.3f));
@@ -1827,8 +1827,8 @@ namespace SonOfRobin
 
                 case Name.PotionMaxHPIncrease:
                     {
-                        var buffList = new List<BuffEngine.Buff> {
-                             new BuffEngine.Buff(type: BuffEngine.BuffType.MaxHP, value: 200f, autoRemoveDelay: 5 * 60 * 60)};
+                        var buffList = new List<Buff> {
+                             new Buff(type: BuffEngine.BuffType.MaxHP, value: 200f, autoRemoveDelay: 5 * 60 * 60)};
 
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropGlass, cooldown: 15, maxPitchVariation: 0.3f));
@@ -1839,8 +1839,8 @@ namespace SonOfRobin
 
                 case Name.PotionMaxHPDecrease:
                     {
-                        var buffList = new List<BuffEngine.Buff> {
-                             new BuffEngine.Buff(type: BuffEngine.BuffType.MaxHP, value: -50f, autoRemoveDelay: 1 * 60 * 60)};
+                        var buffList = new List<Buff> {
+                             new Buff(type: BuffEngine.BuffType.MaxHP, value: -50f, autoRemoveDelay: 1 * 60 * 60)};
 
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropGlass, cooldown: 15, maxPitchVariation: 0.3f));
@@ -1851,8 +1851,8 @@ namespace SonOfRobin
 
                 case Name.PotionStrength:
                     {
-                        var buffList = new List<BuffEngine.Buff> {
-                             new BuffEngine.Buff(type: BuffEngine.BuffType.Strength, value: (int)5, autoRemoveDelay: 60 * 60 * 3)};
+                        var buffList = new List<Buff> {
+                             new Buff(type: BuffEngine.BuffType.Strength, value: (int)5, autoRemoveDelay: 60 * 60 * 3)};
 
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropGlass, cooldown: 15, maxPitchVariation: 0.3f));
@@ -1863,8 +1863,8 @@ namespace SonOfRobin
 
                 case Name.PotionWeakness:
                     {
-                        var buffList = new List<BuffEngine.Buff> {
-                             new BuffEngine.Buff(type: BuffEngine.BuffType.Strength, value: (int)-2, autoRemoveDelay: 60 * 60 * 1, increaseIDAtEveryUse: true)};
+                        var buffList = new List<Buff> {
+                             new Buff(type: BuffEngine.BuffType.Strength, value: (int)-2, autoRemoveDelay: 60 * 60 * 1, increaseIDAtEveryUse: true)};
 
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropGlass, cooldown: 15, maxPitchVariation: 0.3f));
@@ -1875,8 +1875,8 @@ namespace SonOfRobin
 
                 case Name.PotionHaste:
                     {
-                        var buffList = new List<BuffEngine.Buff> {
-                             new BuffEngine.Buff(type: BuffEngine.BuffType.Haste, value: (int)4, autoRemoveDelay: 60 * 30)};
+                        var buffList = new List<Buff> {
+                             new Buff(type: BuffEngine.BuffType.Haste, value: (int)4, autoRemoveDelay: 60 * 30)};
 
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropGlass, cooldown: 15, maxPitchVariation: 0.3f));
@@ -1887,8 +1887,8 @@ namespace SonOfRobin
 
                 case Name.PotionMaxStamina:
                     {
-                        var buffList = new List<BuffEngine.Buff> {
-                             new BuffEngine.Buff(type: BuffEngine.BuffType.MaxStamina, value: 200f, autoRemoveDelay: 60 * 60 * 3)};
+                        var buffList = new List<Buff> {
+                             new Buff(type: BuffEngine.BuffType.MaxStamina, value: 200f, autoRemoveDelay: 60 * 60 * 3)};
 
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropGlass, cooldown: 15, maxPitchVariation: 0.3f));
@@ -1899,8 +1899,8 @@ namespace SonOfRobin
 
                 case Name.PotionFatigue:
                     {
-                        var buffList = new List<BuffEngine.Buff> {
-                             new BuffEngine.Buff(type: BuffEngine.BuffType.Fatigue, value: (float)-800, isPermanent: true)};
+                        var buffList = new List<Buff> {
+                             new Buff(type: BuffEngine.BuffType.Fatigue, value: (float)-800, isPermanent: true)};
 
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropGlass, cooldown: 15, maxPitchVariation: 0.3f));
@@ -1911,8 +1911,8 @@ namespace SonOfRobin
 
                 case Name.PotionPoison:
                     {
-                        var buffList = new List<BuffEngine.Buff> {
-                            new BuffEngine.Buff(type: BuffEngine.BuffType.RegenPoison, value: (int)-30, autoRemoveDelay: 30 * 60, canKill: true, increaseIDAtEveryUse: true)};
+                        var buffList = new List<Buff> {
+                            new Buff(type: BuffEngine.BuffType.RegenPoison, value: (int)-30, autoRemoveDelay: 30 * 60, canKill: true, increaseIDAtEveryUse: true)};
 
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropGlass, cooldown: 15, maxPitchVariation: 0.3f));
@@ -1923,8 +1923,8 @@ namespace SonOfRobin
 
                 case Name.PotionSlowdown:
                     {
-                        var buffList = new List<BuffEngine.Buff> {
-                            new BuffEngine.Buff(type: BuffEngine.BuffType.Speed, value: -1f, autoRemoveDelay: 30 * 60, canKill: false, increaseIDAtEveryUse: true)};
+                        var buffList = new List<Buff> {
+                            new Buff(type: BuffEngine.BuffType.Speed, value: -1f, autoRemoveDelay: 30 * 60, canKill: false, increaseIDAtEveryUse: true)};
 
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropGlass, cooldown: 15, maxPitchVariation: 0.3f));
@@ -2383,8 +2383,8 @@ namespace SonOfRobin
                             { Terrain.Name.Height, new AllowedRange(min: Terrain.waterLevelMax, max: Terrain.volcanoEdgeMin) }});
 
                         SleepEngine sleepEngine = new SleepEngine(minFedPercent: 0.3f, fatigueRegen: 0.8f, hitPointsChange: 0.1f, islandClockMultiplier: 4, canBeAttacked: false);
-                        var buffList = new List<BuffEngine.Buff> {
-                            new BuffEngine.Buff(type: BuffEngine.BuffType.MaxHP, value: 100f, sleepFramesNeededForActivation: 1 * 60 * 60, autoRemoveDelay: 5 * 60 * 60, increaseIDAtEveryUse: true)};
+                        var buffList = new List<Buff> {
+                            new Buff(type: BuffEngine.BuffType.MaxHP, value: 100f, sleepFramesNeededForActivation: 1 * 60 * 60, autoRemoveDelay: 5 * 60 * 60, increaseIDAtEveryUse: true)};
 
                         return new Shelter(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.TentMedium, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Wood,
                             floatsOnWater: false, minDistance: 0, maxDistance: 500, maxMassBySize: null, maxHitPoints: 120, sleepEngine: sleepEngine, readableName: "medium tent", description: "Average shelter for sleeping.\nProtects against enemies.", buffList: buffList, lightEngine: new LightEngine(size: 0, opacity: 0.45f, colorActive: false, color: Color.Transparent, addedGfxRectMultiplier: 4f, isActive: true, castShadows: true));
@@ -2397,9 +2397,9 @@ namespace SonOfRobin
 
                         SleepEngine sleepEngine = new SleepEngine(minFedPercent: 0.5f, fatigueRegen: 1.3f, hitPointsChange: 0.25f, islandClockMultiplier: 4, canBeAttacked: false);
 
-                        var buffList = new List<BuffEngine.Buff> {
-                            new BuffEngine.Buff(type: BuffEngine.BuffType.MaxHP, value: 100f,sleepFramesNeededForActivation: 1 * 60 * 60, autoRemoveDelay: 5 * 60 * 60, increaseIDAtEveryUse: true),
-                            new BuffEngine.Buff(type: BuffEngine.BuffType.Strength, value: 1,sleepFramesNeededForActivation: 1 * 60 * 60, autoRemoveDelay: 5 * 60 * 60, increaseIDAtEveryUse: true)};
+                        var buffList = new List<Buff> {
+                            new Buff(type: BuffEngine.BuffType.MaxHP, value: 100f,sleepFramesNeededForActivation: 1 * 60 * 60, autoRemoveDelay: 5 * 60 * 60, increaseIDAtEveryUse: true),
+                            new Buff(type: BuffEngine.BuffType.Strength, value: 1,sleepFramesNeededForActivation: 1 * 60 * 60, autoRemoveDelay: 5 * 60 * 60, increaseIDAtEveryUse: true)};
 
                         return new Shelter(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.TentBig, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Wood,
                             floatsOnWater: false, minDistance: 0, maxDistance: 500, maxMassBySize: null, maxHitPoints: 200, sleepEngine: sleepEngine, readableName: "big tent", description: "Luxurious shelter for sleeping.\nProtects against enemies.", buffList: buffList, lightEngine: new LightEngine(size: 0, opacity: 0.45f, colorActive: false, color: Color.Transparent, addedGfxRectMultiplier: 4f, isActive: true, castShadows: true));
@@ -2407,9 +2407,9 @@ namespace SonOfRobin
 
                 case Name.BackpackSmall:
                     {
-                        var buffList = new List<BuffEngine.Buff> {
-                            new BuffEngine.Buff(type: BuffEngine.BuffType.InvWidth, value: (byte)2),
-                            new BuffEngine.Buff(type: BuffEngine.BuffType.InvHeight, value: (byte)2)};
+                        var buffList = new List<Buff> {
+                            new Buff(type: BuffEngine.BuffType.InvWidth, value: (byte)2),
+                            new Buff(type: BuffEngine.BuffType.InvHeight, value: (byte)2)};
 
                         return new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BackpackSmall, blocksMovement: true, category: BoardPiece.Category.Flesh,
                             allowedTerrain: shallowWaterToVolcano, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 500, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "small backpack", description: "Expands inventory space.");
@@ -2417,9 +2417,9 @@ namespace SonOfRobin
 
                 case Name.BackpackMedium:
                     {
-                        var buffList = new List<BuffEngine.Buff> {
-                            new BuffEngine.Buff(type: BuffEngine.BuffType.InvWidth, value: (byte)3),
-                            new BuffEngine.Buff(type: BuffEngine.BuffType.InvHeight, value: (byte)2)};
+                        var buffList = new List<Buff> {
+                            new Buff(type: BuffEngine.BuffType.InvWidth, value: (byte)3),
+                            new Buff(type: BuffEngine.BuffType.InvHeight, value: (byte)2)};
 
                         return new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BackpackMedium, blocksMovement: true, category: BoardPiece.Category.Flesh,
                             allowedTerrain: shallowWaterToVolcano, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 500, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "medium backpack", description: "Expands inventory space.");
@@ -2427,9 +2427,9 @@ namespace SonOfRobin
 
                 case Name.BackpackBig:
                     {
-                        var buffList = new List<BuffEngine.Buff> {
-                            new BuffEngine.Buff(type: BuffEngine.BuffType.InvWidth, value: (byte)4),
-                            new BuffEngine.Buff(type: BuffEngine.BuffType.InvHeight, value: (byte)2)};
+                        var buffList = new List<Buff> {
+                            new Buff(type: BuffEngine.BuffType.InvWidth, value: (byte)4),
+                            new Buff(type: BuffEngine.BuffType.InvHeight, value: (byte)2)};
 
                         return new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BackpackBig, blocksMovement: true, category: BoardPiece.Category.Flesh,
                             allowedTerrain: shallowWaterToVolcano, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 500, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "big backpack", description: "Expands inventory space.");
@@ -2437,8 +2437,8 @@ namespace SonOfRobin
 
                 case Name.BeltSmall:
                     {
-                        var buffList = new List<BuffEngine.Buff> {
-                            new BuffEngine.Buff(type: BuffEngine.BuffType.ToolbarWidth, value: (byte)1)};
+                        var buffList = new List<Buff> {
+                            new Buff(type: BuffEngine.BuffType.ToolbarWidth, value: (byte)1)};
 
                         return new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BeltSmall, blocksMovement: false, category: BoardPiece.Category.Flesh,
                             allowedTerrain: shallowWaterToVolcano, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 200, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "small belt", description: "Expands belt space.");
@@ -2446,8 +2446,8 @@ namespace SonOfRobin
 
                 case Name.BeltMedium:
                     {
-                        var buffList = new List<BuffEngine.Buff> {
-                            new BuffEngine.Buff(type: BuffEngine.BuffType.ToolbarWidth, value: (byte)3)};
+                        var buffList = new List<Buff> {
+                            new Buff(type: BuffEngine.BuffType.ToolbarWidth, value: (byte)3)};
 
                         return new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BeltMedium, blocksMovement: false, category: BoardPiece.Category.Flesh,
                             allowedTerrain: shallowWaterToVolcano, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 200, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "medium belt", description: "Expands belt space.");
@@ -2455,8 +2455,8 @@ namespace SonOfRobin
 
                 case Name.BeltBig:
                     {
-                        var buffList = new List<BuffEngine.Buff> {
-                            new BuffEngine.Buff(type: BuffEngine.BuffType.ToolbarWidth, value: (byte)5)};
+                        var buffList = new List<Buff> {
+                            new Buff(type: BuffEngine.BuffType.ToolbarWidth, value: (byte)5)};
 
                         return new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BeltBig, blocksMovement: false, category: BoardPiece.Category.Flesh,
                             allowedTerrain: shallowWaterToVolcano, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 500, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "big belt", description: "Expands belt space.");
@@ -2464,7 +2464,7 @@ namespace SonOfRobin
 
                 case Name.Map:
                     {
-                        var buffList = new List<BuffEngine.Buff> { new BuffEngine.Buff(type: BuffEngine.BuffType.EnableMap, value: null) };
+                        var buffList = new List<Buff> { new Buff(type: BuffEngine.BuffType.EnableMap, value: null) };
 
                         return new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Map, blocksMovement: false, category: BoardPiece.Category.Flesh,
                             allowedTerrain: shallowWaterToVolcano, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 100, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "map", description: "Keeps track of visited places.");
@@ -2472,9 +2472,9 @@ namespace SonOfRobin
 
                 case Name.HatSimple:
                     {
-                        var buffList = new List<BuffEngine.Buff>
+                        var buffList = new List<Buff>
                         {
-                           new BuffEngine.Buff(type: BuffEngine.BuffType.HeatProtection, value: null)
+                           new Buff(type: BuffEngine.BuffType.HeatProtection, value: null)
                         };
 
                         return new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HatSimple, blocksMovement: false, category: BoardPiece.Category.Flesh,
@@ -2483,9 +2483,9 @@ namespace SonOfRobin
 
                 case Name.BootsProtective:
                     {
-                        var buffList = new List<BuffEngine.Buff>
+                        var buffList = new List<Buff>
                         {
-                           new BuffEngine.Buff(type: BuffEngine.BuffType.SwampProtection, value: null)
+                           new Buff(type: BuffEngine.BuffType.SwampProtection, value: null)
                         };
 
                         return new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BootsProtective, blocksMovement: false, category: BoardPiece.Category.Flesh,
@@ -2494,7 +2494,7 @@ namespace SonOfRobin
 
                 case Name.TorchSmall:
                     {
-                        var buffList = new List<BuffEngine.Buff> { new BuffEngine.Buff(type: BuffEngine.BuffType.LightSource, value: 4) };
+                        var buffList = new List<Buff> { new Buff(type: BuffEngine.BuffType.LightSource, value: 4) };
 
                         return new PortableLight(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.SmallTorch, blocksMovement: false, category: BoardPiece.Category.Wood,
                             allowedTerrain: shallowWaterToVolcano, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 3, mass: 100, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 250, readableName: "small torch", description: "A portable light source.");
@@ -2502,7 +2502,7 @@ namespace SonOfRobin
 
                 case Name.TorchBig:
                     {
-                        var buffList = new List<BuffEngine.Buff> { new BuffEngine.Buff(type: BuffEngine.BuffType.LightSource, value: 6) };
+                        var buffList = new List<Buff> { new Buff(type: BuffEngine.BuffType.LightSource, value: 6) };
 
                         return new PortableLight(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BigTorch, blocksMovement: false, category: BoardPiece.Category.Wood,
                             allowedTerrain: shallowWaterToVolcano, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 3, mass: 100, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 600, readableName: "big torch", description: "A portable light source. Burns for a long time.");

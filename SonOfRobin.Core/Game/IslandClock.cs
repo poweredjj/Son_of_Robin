@@ -5,7 +5,8 @@ namespace SonOfRobin
 {
     public class IslandClock
     {
-        public enum PartOfDay { Morning, Noon, Afternoon, Evening, Night }
+        public enum PartOfDay
+        { Morning, Noon, Afternoon, Evening, Night }
 
         public static readonly Dictionary<int, PartOfDay> partsOfDayByEndingTime = new Dictionary<int, PartOfDay>
         {
@@ -23,11 +24,16 @@ namespace SonOfRobin
         private bool isPaused;
         private bool initComplete;
         public int multiplier;
-        public TimeSpan IslandTimeElapsed { get { return TimeSpan.FromSeconds(this.ElapsedUpdates * 1.5) + startTimeOffset; } }  // * 1.5
-        public DateTime IslandDateTime { get { return startingDate + this.IslandTimeElapsed - startTimeOffset; } }
-        public TimeSpan TimeOfDay { get { return this.IslandDateTime.TimeOfDay; } }
+        public TimeSpan IslandTimeElapsed
+        { get { return TimeSpan.FromSeconds(this.ElapsedUpdates * 1.5) + startTimeOffset; } }  // * 1.5
+        public DateTime IslandDateTime
+        { get { return startingDate + this.IslandTimeElapsed - startTimeOffset; } }
+        public TimeSpan TimeOfDay
+        { get { return this.IslandDateTime.TimeOfDay; } }
+
         public int CurrentDayNo
         { get { return (int)this.IslandTimeElapsed.TotalDays + 1; } }
+
         public PartOfDay CurrentPartOfDay
         {
             get
@@ -119,6 +125,5 @@ namespace SonOfRobin
                 else this.ElapsedUpdates += amount * this.multiplier;
             }
         }
-
     }
 }

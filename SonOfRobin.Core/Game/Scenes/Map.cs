@@ -22,7 +22,8 @@ namespace SonOfRobin
         private readonly EffectCol effectCol;
         private readonly Sound soundMarkerPlace = new Sound(name: SoundData.Name.Ding4, pitchChange: 0f);
         public readonly Sound soundMarkerRemove = new Sound(name: SoundData.Name.Ding4, pitchChange: -0.3f);
-        public bool FullScreen { get { return this.Mode == MapMode.Full; } }
+        public bool FullScreen
+        { get { return this.Mode == MapMode.Full; } }
 
         private MapMode mode;
         private float scaleMultiplier;
@@ -32,7 +33,8 @@ namespace SonOfRobin
         private RenderTarget2D lowResWholeCombinedGfx;
         public RenderTarget2D FinalMapToDisplay { get; private set; }
         public BoardPiece MapMarker { get; private set; }
-        private float InitialZoom { get { return Preferences.WorldScale / 2; } }
+        private float InitialZoom
+        { get { return Preferences.WorldScale / 2; } }
         private static readonly Color paperColor = BoardGraphics.colorsByName[BoardGraphics.Colors.Beach1];
 
         public Map(World world, TouchLayout touchLayout) : base(inputType: InputTypes.None, priority: 1, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: false, touchLayout: touchLayout, tipsLayout: ControlTips.TipsLayout.Map)
@@ -390,7 +392,7 @@ namespace SonOfRobin
 
             SonOfRobinGame.SpriteBatch.Draw(AnimData.framesForPkgs[AnimData.PkgName.Map].texture, extendedMapRect, Color.White);
 
-            // drawing background 
+            // drawing background
 
             this.effectCol.TurnOnNextEffect(scene: this, currentUpdateToUse: SonOfRobinGame.CurrentUpdate);
 
@@ -517,6 +519,5 @@ namespace SonOfRobin
         {
             // is being drawn in MapOverlay scene
         }
-
     }
 }

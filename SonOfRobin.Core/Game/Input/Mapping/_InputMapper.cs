@@ -54,10 +54,13 @@ namespace SonOfRobin
         public const int defaultRepeatThreshold = 35;
         public const int defaultRepeatFrames = 6;
 
-        public enum AnalogType { Empty, PadLeft, PadRight, VirtLeft, VirtRight, FromKeys }
-        public enum MouseAction { LeftButton, LeftButtonVisOnly, MiddleButton, MiddleButtonVisOnly, RightButton, RightButtonVisOnly, ScrollUp, ScrollDown }
+        public enum AnalogType
+        { Empty, PadLeft, PadRight, VirtLeft, VirtRight, FromKeys }
 
-        protected readonly static Dictionary<Action, Mapping> detailedMappings = new Dictionary<Action, Mapping>();
+        public enum MouseAction
+        { LeftButton, LeftButtonVisOnly, MiddleButton, MiddleButtonVisOnly, RightButton, RightButtonVisOnly, ScrollUp, ScrollDown }
+
+        protected static readonly Dictionary<Action, Mapping> detailedMappings = new Dictionary<Action, Mapping>();
 
         public static readonly InputPackage defaultMappingGamepad = new InputPackage(packageVersion: InputPackage.version, leftStick: AnalogType.PadLeft, rightStick: AnalogType.PadRight, confirm: Buttons.A, cancel: Buttons.B, pauseMenu: Buttons.Start, sprint: Buttons.LeftStick, inventory: Buttons.Y, pickUp: Buttons.X, craft: Buttons.DPadUp, interact: Buttons.A, map: Buttons.DPadRight, useTool: Buttons.RightTrigger, zoomOut: Buttons.LeftTrigger, toolbarPrev: Buttons.LeftShoulder, toolbarNext: Buttons.RightShoulder, invSwitch: Buttons.LeftStick, invPickOne: Buttons.Y, invPickStack: Buttons.X, invSort: Buttons.RightStick, mapToggleMarker: Buttons.A, mapCenterPlayer: Buttons.LeftStick, mapZoomIn: Buttons.RightTrigger, mapZoomOut: Buttons.LeftTrigger);
 
@@ -235,6 +238,7 @@ namespace SonOfRobin
             private readonly int repeatFrames;
             private int buttonHeldCounter;
             private int buttonHeldCurrentFrame; // to avoid multiple increments in one frame
+
             public Mapping(Action action, List<Object> anyInputList, List<Keys> keysToAnalog = null, bool gamepadAnalogAsDigital = false, bool repeat = false, int repeatThreshold = 0, int repeatFrames = 0)
             {
                 this.keyboardKeys = new List<Keys>();
@@ -529,7 +533,8 @@ namespace SonOfRobin
                 return triggerVal;
             }
 
-            private bool TriggerStateLastFrameExists { get { return this.triggerStateForFrame.ContainsKey(SonOfRobinGame.CurrentUpdate - 1); } }
+            private bool TriggerStateLastFrameExists
+            { get { return this.triggerStateForFrame.ContainsKey(SonOfRobinGame.CurrentUpdate - 1); } }
 
             private float TriggerStateLastFrame
             {
@@ -541,6 +546,7 @@ namespace SonOfRobin
                     return triggerStateForFrame[lastFrameNo];
                 }
             }
+
             public List<Texture2D> TextureList
             {
                 get
@@ -592,6 +598,7 @@ namespace SonOfRobin
                     return textureList;
                 }
             }
+
             private Vector2 ConvertKeysToAnalog(Keys left, Keys right, Keys up, Keys down)
             {
                 Vector2 analogState = Vector2.Zero;
@@ -603,6 +610,7 @@ namespace SonOfRobin
 
                 return analogState;
             }
+
             private void UpdateTriggerLastState(float triggerVal)
             {
                 float triggerStateLastFrame = -1f; // initial value, to be changed below
@@ -641,6 +649,5 @@ namespace SonOfRobin
                 return false;
             }
         }
-
     }
 }

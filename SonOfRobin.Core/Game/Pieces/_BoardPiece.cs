@@ -39,7 +39,8 @@ namespace SonOfRobin
             FogMoveRandomly
         }
 
-        public enum Category { Wood, Stone, Metal, SmallPlant, Flesh, Dirt, Crystal, Indestructible }
+        public enum Category
+        { Wood, Stone, Metal, SmallPlant, Flesh, Dirt, Crystal, Indestructible }
 
         protected const float passiveMovementMultiplier = 100f;
 
@@ -72,7 +73,7 @@ namespace SonOfRobin
         public readonly byte stackSize;
         public PieceStorage pieceStorage;
         public BuffEngine buffEngine; // active buffs
-        public List<BuffEngine.Buff> buffList; // buff to be activated when this piece (equip, food, etc.) is used by another piece
+        public List<Buff> buffList; // buff to be activated when this piece (equip, food, etc.) is used by another piece
         public readonly Yield yield;
         public readonly Yield appearDebris; // yield that is used to make debris when placing this piece
         public Scheduler.TaskName boardTask;
@@ -89,7 +90,65 @@ namespace SonOfRobin
         public readonly bool serialize;
         public bool canBeHit;
 
-        public virtual bool ShowStatBars { get { return this.world.CurrentUpdate < this.showStatBarsTillFrame; } }
+        public BoardPiece(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, Dictionary<byte, int> maxMassBySize, string readableName, string description, Category category, State activeState,
+            byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, bool blocksPlantGrowth = false, bool visible = true, bool ignoresCollisions = false, int destructionDelay = 0, int maxAge = 0, bool floatsOnWater = false, int generation = 0, int mass = 1, int staysAfterDeath = 800, float maxHitPoints = 1, byte stackSize = 1, Scheduler.TaskName boardTask = Scheduler.TaskName.Empty, Scheduler.TaskName toolbarTask = Scheduler.TaskName.Empty, bool canBePickedUp = false, Yield yield = null, Yield appearDebris = null, bool indestructible = false, bool rotatesWhenDropped = false, bool movesWhenDropped = true, bool fadeInAnim = false, bool serialize = true, List<Buff> buffList = null, AllowedDensity allowedDensity = null, int strength = 0, LightEngine lightEngine = null, int minDistance = 0, int maxDistance = 100, PieceSoundPack soundPack = null, bool female = false)
+        {
+            this.world = world;
+            this.name = name;
+            this.female = female;
+            this.category = category;
+            this.id = id;
+
+            this.sprite = new Sprite(boardPiece: this, id: this.id, world: this.world, animPackage: animPackage, animSize: animSize, animName: animName, blocksMovement: blocksMovement, blocksPlantGrowth: blocksPlantGrowth, visible: visible, ignoresCollisions: ignoresCollisions, allowedTerrain: allowedTerrain, floatsOnWater: floatsOnWater, fadeInAnim: fadeInAnim, allowedDensity: allowedDensity, lightEngine: lightEngine, minDistance: minDistance, maxDistance: maxDistance);
+
+            this.soundPack = soundPack == null ? new PieceSoundPack() : soundPack;
+            this.soundPack.Activate(this);
+
+            this.stackSize = stackSize;
+            this.destructionDelay = destructionDelay;
+            this.activeState = activeState;
+            this.lastFrameSMProcessed = 0;
+            this.indestructible = indestructible;
+            this.maxHitPoints = maxHitPoints;
+            this.hitPoints = maxHitPoints;
+            this.showStatBarsTillFrame = 0;
+            this.speed = speed;
+            this.strength = strength;
+            this.maxMassBySize = maxMassBySize;
+            this.mass = mass;
+            this.startingMass = mass;
+            this.staysAfterDeath = staysAfterDeath + Random.Next(0, 300);
+            this.generation = generation;
+            this.exists = true;
+            this.alive = true;
+            this.maxAge = maxAge == 0 ? 0 : Random.Next((int)(maxAge * 0.4), (int)(maxAge * 1.6));
+            this.currentAge = 0;
+            this.bioWear = 0; // 0 - 1 valid range
+            this.efficiency = 1; // 0 - 1 valid range
+            this.readableName = readableName;
+            this.description = description;
+            this.pieceStorage = null; // updated in child classes - if needed
+            this.buffEngine = new BuffEngine(piece: this);
+            this.buffList = buffList == null ? new List<Buff> { } : buffList;
+            this.boardTask = boardTask;
+            this.toolbarTask = toolbarTask;
+            this.passiveMovement = Vector2.Zero;
+            this.passiveRotation = 0;
+            this.rotatesWhenDropped = rotatesWhenDropped;
+            this.movesWhenDropped = movesWhenDropped;
+            this.canBePickedUp = canBePickedUp;
+            this.serialize = serialize;
+            this.yield = yield;
+            this.appearDebris = appearDebris;
+            if (this.yield == null && Yield.antiCraftRecipes.ContainsKey(this.name)) this.yield = Yield.antiCraftRecipes[this.name].ConvertToYield();
+            if (this.yield != null) this.yield.AddPiece(this);
+            if (this.appearDebris != null) this.appearDebris.AddPiece(this);
+            this.canBeHit = true;
+        }
+
+        public virtual bool ShowStatBars
+        { get { return this.world.CurrentUpdate < this.showStatBarsTillFrame; } }
+
         public bool AreEnemiesNearby
         {
             get
@@ -128,8 +187,11 @@ namespace SonOfRobin
             }
         }
 
-        public bool IsAnimalOrPlayer { get { return this.GetType() == typeof(Animal) || this.GetType() == typeof(Player); } }
-        public bool IsPlantOrFruit { get { return this.GetType() == typeof(Plant) || this.GetType() == typeof(Fruit); } }
+        public bool IsAnimalOrPlayer
+        { get { return this.GetType() == typeof(Animal) || this.GetType() == typeof(Player); } }
+
+        public bool IsPlantOrFruit
+        { get { return this.GetType() == typeof(Plant) || this.GetType() == typeof(Fruit); } }
 
         public bool IsEquippedByPlayer
         {
@@ -165,7 +227,8 @@ namespace SonOfRobin
             }
         }
 
-        public float HitPointsPercent { get { return this.hitPoints / this.maxHitPoints; } }
+        public float HitPointsPercent
+        { get { return this.hitPoints / this.maxHitPoints; } }
 
         private byte SpriteSize
         {
@@ -188,62 +251,6 @@ namespace SonOfRobin
                 World world = World.GetTopWorld();
                 return world == null ? SonOfRobinGame.random : world.random;
             }
-        }
-
-        public BoardPiece(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, Dictionary<byte, int> maxMassBySize, string readableName, string description, Category category, State activeState,
-            byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, bool blocksPlantGrowth = false, bool visible = true, bool ignoresCollisions = false, int destructionDelay = 0, int maxAge = 0, bool floatsOnWater = false, int generation = 0, int mass = 1, int staysAfterDeath = 800, float maxHitPoints = 1, byte stackSize = 1, Scheduler.TaskName boardTask = Scheduler.TaskName.Empty, Scheduler.TaskName toolbarTask = Scheduler.TaskName.Empty, bool canBePickedUp = false, Yield yield = null, Yield appearDebris = null, bool indestructible = false, bool rotatesWhenDropped = false, bool movesWhenDropped = true, bool fadeInAnim = false, bool serialize = true, List<BuffEngine.Buff> buffList = null, AllowedDensity allowedDensity = null, int strength = 0, LightEngine lightEngine = null, int minDistance = 0, int maxDistance = 100, PieceSoundPack soundPack = null, bool female = false)
-        {
-            this.world = world;
-            this.name = name;
-            this.female = female;
-            this.category = category;
-            this.id = id;
-
-            this.sprite = new Sprite(boardPiece: this, id: this.id, world: this.world, animPackage: animPackage, animSize: animSize, animName: animName, blocksMovement: blocksMovement, blocksPlantGrowth: blocksPlantGrowth, visible: visible, ignoresCollisions: ignoresCollisions, allowedTerrain: allowedTerrain, floatsOnWater: floatsOnWater, fadeInAnim: fadeInAnim, allowedDensity: allowedDensity, lightEngine: lightEngine, minDistance: minDistance, maxDistance: maxDistance);
-
-            this.soundPack = soundPack == null ? new PieceSoundPack() : soundPack;
-            this.soundPack.Activate(this);
-
-            this.stackSize = stackSize;
-            this.destructionDelay = destructionDelay;
-            this.activeState = activeState;
-            this.lastFrameSMProcessed = 0;
-            this.indestructible = indestructible;
-            this.maxHitPoints = maxHitPoints;
-            this.hitPoints = maxHitPoints;
-            this.showStatBarsTillFrame = 0;
-            this.speed = speed;
-            this.strength = strength;
-            this.maxMassBySize = maxMassBySize;
-            this.mass = mass;
-            this.startingMass = mass;
-            this.staysAfterDeath = staysAfterDeath + Random.Next(0, 300);
-            this.generation = generation;
-            this.exists = true;
-            this.alive = true;
-            this.maxAge = maxAge == 0 ? 0 : Random.Next((int)(maxAge * 0.4), (int)(maxAge * 1.6));
-            this.currentAge = 0;
-            this.bioWear = 0; // 0 - 1 valid range
-            this.efficiency = 1; // 0 - 1 valid range
-            this.readableName = readableName;
-            this.description = description;
-            this.pieceStorage = null; // updated in child classes - if needed
-            this.buffEngine = new BuffEngine(piece: this);
-            this.buffList = buffList == null ? new List<BuffEngine.Buff> { } : buffList;
-            this.boardTask = boardTask;
-            this.toolbarTask = toolbarTask;
-            this.passiveMovement = Vector2.Zero;
-            this.passiveRotation = 0;
-            this.rotatesWhenDropped = rotatesWhenDropped;
-            this.movesWhenDropped = movesWhenDropped;
-            this.canBePickedUp = canBePickedUp;
-            this.serialize = serialize;
-            this.yield = yield;
-            this.appearDebris = appearDebris;
-            if (this.yield == null && Yield.antiCraftRecipes.ContainsKey(this.name)) this.yield = Yield.antiCraftRecipes[this.name].ConvertToYield();
-            if (this.yield != null) this.yield.AddPiece(this);
-            if (this.appearDebris != null) this.appearDebris.AddPiece(this);
-            this.canBeHit = true;
         }
 
         public bool PlaceOnBoard(bool randomPlacement, Vector2 position, bool addPlannedDestruction = true, bool addToStateMachines = true, bool ignoreCollisions = false, bool precisePlacement = false, bool closestFreeSpot = false, int minDistanceOverride = -1, int maxDistanceOverride = -1, bool ignoreDensity = false)
@@ -279,30 +286,30 @@ namespace SonOfRobin
         {
             var pieceData = new Dictionary<string, Object>
             {
-                {"base_id", this.id},
-                {"base_female", this.female },
-                {"base_name", this.name},
-                {"base_speed", this.speed},
-                {"base_hitPoints", this.hitPoints},
-                {"base_strength", this.strength},
-                {"base_maxHitPoints", this.maxHitPoints},
-                {"base_showStatBarsTillFrame", this.showStatBarsTillFrame},
-                {"base_mass", this.mass},
-                {"base_alive", this.alive},
-                {"base_maxAge", this.maxAge},
-                {"base_bioWear", this.bioWear},
-                {"base_efficiency", this.efficiency},
-                {"base_activeState", this.activeState},
-                {"base_pieceStorage", this.pieceStorage},
-                {"base_boardTask", this.boardTask},
-                {"base_toolbarTask", this.toolbarTask},
-                {"base_passiveMovementX", this.passiveMovement.X},
-                {"base_passiveMovementY", this.passiveMovement.Y},
-                {"base_passiveRotation", this.passiveRotation},
-                {"base_buffEngine", this.buffEngine.Serialize()},
-                {"base_buffList", this.buffList},
-                {"base_soundPack", this.soundPack.Serialize()},
-                {"base_canBeHit", this.canBeHit},
+                { "base_id", this.id },
+                { "base_female", this.female },
+                { "base_name", this.name },
+                { "base_speed", this.speed },
+                { "base_hitPoints", this.hitPoints },
+                { "base_strength", this.strength },
+                { "base_maxHitPoints", this.maxHitPoints },
+                { "base_showStatBarsTillFrame", this.showStatBarsTillFrame },
+                { "base_mass", this.mass },
+                { "base_alive", this.alive },
+                { "base_maxAge", this.maxAge },
+                { "base_bioWear", this.bioWear },
+                { "base_efficiency", this.efficiency },
+                { "base_activeState", this.activeState },
+                { "base_pieceStorage", this.pieceStorage },
+                { "base_boardTask", this.boardTask },
+                { "base_toolbarTask", this.toolbarTask },
+                { "base_passiveMovementX", this.passiveMovement.X },
+                { "base_passiveMovementY", this.passiveMovement.Y },
+                { "base_passiveRotation", this.passiveRotation },
+                { "base_buffEngine", this.buffEngine.Serialize() },
+                { "base_buffList", this.buffList },
+                { "base_soundPack", this.soundPack.Serialize() },
+                { "base_canBeHit", this.canBeHit },
             };
 
             if (this.pieceStorage != null) pieceData["base_pieceStorage"] = this.pieceStorage.Serialize();
@@ -329,7 +336,7 @@ namespace SonOfRobin
             this.passiveMovement = new Vector2((float)pieceData["base_passiveMovementX"], (float)pieceData["base_passiveMovementY"]);
             this.passiveRotation = (int)pieceData["base_passiveRotation"];
             this.buffEngine = BuffEngine.Deserialize(piece: this, buffEngineData: pieceData["base_buffEngine"]);
-            this.buffList = (List<BuffEngine.Buff>)pieceData["base_buffList"];
+            this.buffList = (List<Buff>)pieceData["base_buffList"];
             this.soundPack.Deserialize(pieceData["base_soundPack"]);
             this.canBeHit = (bool)pieceData["base_canBeHit"];
 
@@ -648,52 +655,6 @@ namespace SonOfRobin
             return true;
         }
 
-        public virtual void SM_PlayerWaitForBuilding()
-        { throw new DivideByZeroException("This method should not be executed."); }
-        public virtual void SM_PlayerControlledWalking()
-        { throw new DivideByZeroException("This method should not be executed."); }
-        public virtual void SM_PlayerControlledShooting()
-        { throw new DivideByZeroException("This method should not be executed."); }
-        public virtual void SM_PlayerControlledSleep()
-        { throw new DivideByZeroException("This method should not be executed."); }
-        public virtual void SM_PlayerControlledBuilding()
-        { throw new DivideByZeroException("This method should not be executed."); }
-        public virtual void SM_PlayerControlledGhosting()
-        { throw new DivideByZeroException("This method should not be executed."); }
-        public virtual void SM_PlayerControlledByCinematic()
-        { throw new DivideByZeroException("This method should not be executed."); }
-        public virtual void SM_FireplaceBurn()
-        { throw new DivideByZeroException("This method should not be executed."); }
-        public virtual void SM_ScarePredatorsAway()
-        { throw new DivideByZeroException("This method should not be executed."); }
-        public virtual void SM_PlayAmbientSound()
-        { throw new DivideByZeroException("This method should not be executed."); }
-        public virtual void SM_FogMoveRandomly()
-        { throw new DivideByZeroException("This method should not be executed."); }
-        public virtual void SM_MapMarkerShowAndCheck()
-        { throw new DivideByZeroException("This method should not be executed."); }
-        public virtual void SM_GrowthAndReproduction()
-        { throw new DivideByZeroException("This method should not be executed."); }
-        public virtual void SM_AnimalWalkAround()
-        { throw new DivideByZeroException("This method should not be executed."); }
-        public virtual void SM_AnimalAssessSituation()
-        { throw new DivideByZeroException("This method should not be executed."); }
-        public virtual void SM_AnimalRest()
-        { throw new DivideByZeroException("This method should not be executed."); }
-        public virtual void SM_AnimalChaseTarget()
-        { throw new DivideByZeroException("This method should not be executed."); }
-        public virtual void SM_AnimalAttack()
-        { throw new DivideByZeroException("This method should not be executed."); }
-        public virtual void SM_AnimalEat()
-        { throw new DivideByZeroException("This method should not be executed."); }
-        public virtual void SM_AnimalMate()
-        { throw new DivideByZeroException("This method should not be executed."); }
-        public virtual void SM_AnimalGiveBirth()
-        { throw new DivideByZeroException("This method should not be executed."); }
-        public virtual void SM_AnimalFlee()
-        { throw new DivideByZeroException("This method should not be executed."); }
-
-
         public bool GoOneStepTowardsGoal(Vector2 goalPosition, float walkSpeed, bool runFrom = false, bool splitXY = false, bool setOrientation = true, bool slowDownInWater = true)
         {
             if (this.sprite.position == goalPosition)
@@ -748,5 +709,70 @@ namespace SonOfRobin
             return hasBeenMoved;
         }
 
+        public virtual void SM_PlayerWaitForBuilding()
+        { throw new DivideByZeroException("This method should not be executed."); }
+
+        public virtual void SM_PlayerControlledWalking()
+        { throw new DivideByZeroException("This method should not be executed."); }
+
+        public virtual void SM_PlayerControlledShooting()
+        { throw new DivideByZeroException("This method should not be executed."); }
+
+        public virtual void SM_PlayerControlledSleep()
+        { throw new DivideByZeroException("This method should not be executed."); }
+
+        public virtual void SM_PlayerControlledBuilding()
+        { throw new DivideByZeroException("This method should not be executed."); }
+
+        public virtual void SM_PlayerControlledGhosting()
+        { throw new DivideByZeroException("This method should not be executed."); }
+
+        public virtual void SM_PlayerControlledByCinematic()
+        { throw new DivideByZeroException("This method should not be executed."); }
+
+        public virtual void SM_FireplaceBurn()
+        { throw new DivideByZeroException("This method should not be executed."); }
+
+        public virtual void SM_ScarePredatorsAway()
+        { throw new DivideByZeroException("This method should not be executed."); }
+
+        public virtual void SM_PlayAmbientSound()
+        { throw new DivideByZeroException("This method should not be executed."); }
+
+        public virtual void SM_FogMoveRandomly()
+        { throw new DivideByZeroException("This method should not be executed."); }
+
+        public virtual void SM_MapMarkerShowAndCheck()
+        { throw new DivideByZeroException("This method should not be executed."); }
+
+        public virtual void SM_GrowthAndReproduction()
+        { throw new DivideByZeroException("This method should not be executed."); }
+
+        public virtual void SM_AnimalWalkAround()
+        { throw new DivideByZeroException("This method should not be executed."); }
+
+        public virtual void SM_AnimalAssessSituation()
+        { throw new DivideByZeroException("This method should not be executed."); }
+
+        public virtual void SM_AnimalRest()
+        { throw new DivideByZeroException("This method should not be executed."); }
+
+        public virtual void SM_AnimalChaseTarget()
+        { throw new DivideByZeroException("This method should not be executed."); }
+
+        public virtual void SM_AnimalAttack()
+        { throw new DivideByZeroException("This method should not be executed."); }
+
+        public virtual void SM_AnimalEat()
+        { throw new DivideByZeroException("This method should not be executed."); }
+
+        public virtual void SM_AnimalMate()
+        { throw new DivideByZeroException("This method should not be executed."); }
+
+        public virtual void SM_AnimalGiveBirth()
+        { throw new DivideByZeroException("This method should not be executed."); }
+
+        public virtual void SM_AnimalFlee()
+        { throw new DivideByZeroException("This method should not be executed."); }
     }
 }

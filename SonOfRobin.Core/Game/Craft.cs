@@ -8,7 +8,8 @@ namespace SonOfRobin
 {
     public class Craft
     {
-        public enum Category { Field, Essential, Basic, Advanced, Master, Alchemy, Furnace, Anvil, LeatherBasic, LeatherAdvanced }
+        public enum Category
+        { Field, Essential, Basic, Advanced, Master, Alchemy, Furnace, Anvil, LeatherBasic, LeatherAdvanced }
 
         public class Recipe
         {
@@ -243,7 +244,6 @@ namespace SonOfRobin
                         if (!pieceInserted)
                         {
                             if (craftOnTheGround) storagesToPutInto[0].AddPiece(piece: piece, dropIfDoesNotFit: true, addMovement: true);
-
                             else throw new ArgumentException($"{pieceInfo.name} could not fit into any storage.");
                         }
                     }
@@ -265,7 +265,7 @@ namespace SonOfRobin
                     }
                 }
 
-                // unlocking other recipes and showing messages          
+                // unlocking other recipes and showing messages
 
                 if (showMessages) this.UnlockNewRecipesAndShowSummary(world);
 
@@ -378,7 +378,8 @@ namespace SonOfRobin
             }
         }
 
-        private static List<Recipe> HiddenRecipes { get { return AllRecipes.Where(recipe => recipe.isHidden).ToList(); } }
+        private static List<Recipe> HiddenRecipes
+        { get { return AllRecipes.Where(recipe => recipe.isHidden).ToList(); } }
 
         public static List<Recipe> GetRecipesForCategory(Category category, bool includeHidden = false, List<PieceTemplate.Name> discoveredRecipes = null)
         {
@@ -487,6 +488,7 @@ namespace SonOfRobin
 
             CheckIfAllRecipesCanBeUnlocked();
         }
+
         private static void CheckIfAllRecipesCanBeUnlocked()
         {
             List<Recipe> allRecipes = AllRecipes;
@@ -546,6 +548,5 @@ namespace SonOfRobin
                 throw new ArgumentException("Not unlockable recipes found: " + String.Join(", ", notUnlockableRecipes.Select(recipe => recipe.pieceToCreate).ToList()));
             }
         }
-
     }
 }

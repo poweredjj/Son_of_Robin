@@ -4,7 +4,8 @@ namespace SonOfRobin
 {
     public class Transition
     {
-        public enum Transform { Linear, Sinus, Cosinus }
+        public enum Transform
+        { Linear, Sinus, Cosinus }
 
         private readonly TransManager transManager;
         private readonly Scene scene;
@@ -13,7 +14,8 @@ namespace SonOfRobin
         private bool outTrans;
 
         private readonly string baseParamName;
-        public string BaseParamName { get { return baseParamName; } }
+        public string BaseParamName
+        { get { return baseParamName; } }
         private readonly string drawParamName;
         private float sourceVal;
         public float TargetVal { get; private set; }
@@ -214,6 +216,5 @@ namespace SonOfRobin
             Helpers.SetProperty(targetObj: this.viewParams, propertyName: this.baseParamName, newValue: drawVal);
             this.SourceVal = drawVal;
         }
-
     }
 }

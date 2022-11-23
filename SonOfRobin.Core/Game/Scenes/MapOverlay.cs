@@ -10,6 +10,7 @@ namespace SonOfRobin
         // Allows for transitions separate from base map.
 
         private readonly Map map;
+
         public MapOverlay(Map map) : base(inputType: InputTypes.None, priority: 1, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty)
         {
             this.map = map;
@@ -94,6 +95,5 @@ namespace SonOfRobin
 
             SonOfRobinGame.SpriteBatch.Draw(this.map.FinalMapToDisplay, this.map.FinalMapToDisplay.Bounds, Color.White * this.viewParams.drawOpacity);
         }
-
     }
 }

@@ -9,7 +9,8 @@ namespace SonOfRobin
 {
     public class MenuTemplate
     {
-        public enum Name { Main, Options, Sound, Graphics, Controls, Gamepad, Keyboard, Scale, OtherOptions, CreateNewIsland, SetSeed, OpenIslandTemplate, Pause, Load, Save, Tutorials, GameOver, Debug, SoundTest, GfxListTest, Shelter, CreateAnyPiece, GenericConfirm, CraftField, CraftEssential, CraftBasic, CraftAdvanced, CraftMaster, CraftAlchemy, CraftFurnace, CraftAnvil, CraftLeatherBasic, CraftLeatherAdvanced }
+        public enum Name
+        { Main, Options, Sound, Graphics, Controls, Gamepad, Keyboard, Scale, OtherOptions, CreateNewIsland, SetSeed, OpenIslandTemplate, Pause, Load, Save, Tutorials, GameOver, Debug, SoundTest, GfxListTest, Shelter, CreateAnyPiece, GenericConfirm, CraftField, CraftEssential, CraftBasic, CraftAdvanced, CraftMaster, CraftAlchemy, CraftFurnace, CraftAnvil, CraftLeatherBasic, CraftLeatherAdvanced }
 
         public static Menu CreateConfirmationMenu(Object confirmationData)
         {
@@ -355,7 +356,6 @@ namespace SonOfRobin
                         new Selector(menu: menu, name: "character", valueDict: new Dictionary<object, object> { { true, AnimData.framesForPkgs[AnimData.PkgName.PlayerFemale].texture }, { false, AnimData.framesForPkgs[AnimData.PkgName.PlayerMale].texture } }, targetObj: preferences, propertyName: "newWorldPlayerFemale", rebuildsAllMenus: true);
 
                         new Separator(menu: menu, name: "", isEmpty: true);
-
 
                         foreach (GridTemplate gridTemplate in GridTemplate.CorrectNonDemoTemplates)
                         {
@@ -740,6 +740,5 @@ namespace SonOfRobin
             new Separator(menu: menu, name: "", isEmpty: true);
             new Invoker(menu: menu, name: "return", closesMenu: true, taskName: Scheduler.TaskName.Empty);
         }
-
     }
 }

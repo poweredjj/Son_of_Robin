@@ -5,14 +5,17 @@ namespace SonOfRobin
 {
     public class Input
     {
-        public enum ControlType { Gamepad, KeyboardAndMouse, Touch }
+        public enum ControlType
+        { Gamepad, KeyboardAndMouse, Touch }
 
         private static bool localInputActive = true;
         private static bool globalInputActive = true;
         private static int globalInputReactivateUpdate = 0;
         public static ControlType currentControlType { get; private set; } = SonOfRobinGame.platform == Platform.Mobile ? ControlType.Touch : ControlType.Gamepad;
 
-        public static bool InputActive { get { return localInputActive == true && globalInputActive == true; } set { localInputActive = value; } }
+        public static bool InputActive
+        { get { return localInputActive == true && globalInputActive == true; } set { localInputActive = value; } }
+
         public static bool GlobalInputActive
         {
             get { return globalInputActive; }
@@ -96,7 +99,7 @@ namespace SonOfRobin
 
         private static void ReactivateGlobalInput()
         {
-            // globalInputActive should only be turned off temporarily 
+            // globalInputActive should only be turned off temporarily
 
             if (GlobalInputActive) return;
             if (SonOfRobinGame.CurrentUpdate >= globalInputReactivateUpdate)
@@ -106,5 +109,4 @@ namespace SonOfRobin
             }
         }
     }
-
 }

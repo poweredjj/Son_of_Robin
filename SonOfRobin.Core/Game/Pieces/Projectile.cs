@@ -7,7 +7,8 @@ namespace SonOfRobin
 {
     public class Projectile : BoardPiece
     {
-        public enum TargetCategory { Wood, Stone, Metal, SmallPlant, Animal }
+        public enum TargetCategory
+        { Wood, Stone, Metal, SmallPlant, Animal }
 
         private readonly int baseHitPower;
         private int realHitPower;
@@ -15,7 +16,7 @@ namespace SonOfRobin
         private readonly bool canBeStuck;
 
         public Projectile(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, Dictionary<byte, int> maxMassBySize, int baseHitPower, int maxHitPoints, byte stackSize, bool canBeStuck, string readableName, string description,
-            byte animSize = 0, string animName = "default", bool blocksMovement = false, ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = true, int generation = 0, bool indestructible = false, Yield yield = null, bool rotatesWhenDropped = true, bool fadeInAnim = false, List<BuffEngine.Buff> buffList = null) :
+            byte animSize = 0, string animName = "default", bool blocksMovement = false, ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = true, int generation = 0, bool indestructible = false, Yield yield = null, bool rotatesWhenDropped = true, bool fadeInAnim = false, List<Buff> buffList = null) :
 
             base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedTerrain: allowedTerrain, floatsOnWater: floatsOnWater, maxMassBySize: maxMassBySize, generation: generation, canBePickedUp: true, yield: yield, maxHitPoints: maxHitPoints, stackSize: stackSize, indestructible: indestructible, rotatesWhenDropped: rotatesWhenDropped, fadeInAnim: fadeInAnim, readableName: readableName, description: description, category: Category.Indestructible, buffList: buffList, activeState: State.Empty)
         {
@@ -27,7 +28,6 @@ namespace SonOfRobin
             this.soundPack.AddAction(action: PieceSoundPack.Action.ArrowFly, sound: new Sound(name: SoundData.Name.ArrowFly, maxPitchVariation: 0.3f));
             this.soundPack.AddAction(action: PieceSoundPack.Action.ArrowHit, sound: new Sound(name: SoundData.Name.ArrowHit, maxPitchVariation: 0.3f));
             this.soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropArrow, maxPitchVariation: 0.3f, cooldown: 20));
-
         }
 
         public void GetThrown(Vector2 startPosition, Vector2 movement, float hitPowerMultiplier, int shootingPower)
@@ -149,7 +149,6 @@ namespace SonOfRobin
             return true;
         }
 
-
         public override Dictionary<string, Object> Serialize()
         {
             Dictionary<string, Object> pieceData = base.Serialize();
@@ -165,6 +164,5 @@ namespace SonOfRobin
             this.realHitPower = (int)pieceData["projectile_realHitPower"];
             this.shootMode = (bool)pieceData["projectile_shootMode"];
         }
-
     }
 }

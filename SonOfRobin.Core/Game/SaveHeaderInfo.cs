@@ -18,6 +18,7 @@ namespace SonOfRobin
         public readonly DateTime saveDate;
         public readonly bool playerFemale;
         private string ElapsedTimeString { get { return this.timePlayed.ToString("hh\\:mm"); } }
+
         private string SaveDateString
         {
             get
@@ -27,6 +28,7 @@ namespace SonOfRobin
                 else return this.saveDate.ToString("yyyy/MM/dd HH:mm");
             }
         }
+
         public string FullDescription
         {
             get
@@ -42,6 +44,7 @@ namespace SonOfRobin
 
         public Texture2D AddInfoTexture
         { get { return this.playerFemale ? AnimData.framesForPkgs[AnimData.PkgName.PlayerFemale].texture : AnimData.framesForPkgs[AnimData.PkgName.PlayerMale].texture; } }
+
         public SaveHeaderInfo(string folderName)
         {
             this.folderName = folderName;
@@ -77,8 +80,8 @@ namespace SonOfRobin
                 }
             }
         }
+
         public void Delete()
         { Directory.Delete(path: this.fullPath, recursive: true); }
     }
-
 }

@@ -7,7 +7,8 @@ namespace SonOfRobin
 {
     public class Preferences
     {
-        public enum WorldSize { small, medium, large, gigantic } // lower case, for proper display in menu
+        public enum WorldSize
+        { small, medium, large, gigantic } // lower case, for proper display in menu
 
         public static readonly Dictionary<Object, Object> namesForResDividers = new Dictionary<Object, Object> { { 12, "low" }, { 8, "medium" }, { 5, "high" }, { 3, "ultra" } };
         public static readonly Dictionary<Object, Object> namesForDarknessRes = new Dictionary<Object, Object> { { 4, "very low" }, { 3, "low" }, { 2, "medium" }, { 1, "high" } };
@@ -26,6 +27,7 @@ namespace SonOfRobin
         public static char seedDigit4 = '0';
 
         public static string neededForMenus = ""; // needed for menus, which display some values, but do not need to set anything
+
         public static int NewWorldSeed
         {
             get
@@ -41,6 +43,7 @@ namespace SonOfRobin
         }
 
         private static bool customizeWorld = false;
+
         public static bool CustomizeWorld
         {
             get { return customizeWorld; }
@@ -59,6 +62,7 @@ namespace SonOfRobin
         private static bool debugMode = false;
 
         private static float globalScale = 1f;
+
         public static float GlobalScale
         {
             get { return globalScale; }
@@ -70,6 +74,7 @@ namespace SonOfRobin
                 Scene.ScheduleAllScenesResize();
             }
         }
+
         public static float menuScale = 0.75f;
         private static float worldScale = 1.5f;
 
@@ -86,7 +91,8 @@ namespace SonOfRobin
             }
         }
 
-        public static bool CanZoomOut { get { return worldScale >= 1; } }
+        public static bool CanZoomOut
+        { get { return worldScale >= 1; } }
 
         private static bool fullScreenMode = false;
         private static bool vSync = true;
@@ -94,6 +100,7 @@ namespace SonOfRobin
         private static bool frameSkip = true;
         public static bool showDemoWorld = true;
         private static bool pointToWalk = false;
+
         public static bool PointToWalk
         {
             get { return pointToWalk; }
@@ -105,6 +112,7 @@ namespace SonOfRobin
         }
 
         private static bool pointToInteract = false;
+
         public static bool PointToInteract
         {
             get { return pointToInteract; }
@@ -127,6 +135,7 @@ namespace SonOfRobin
         public static bool showDebris = true;
         public static bool useMultipleThreads = true;
         private static int darknessResolution = 1;
+
         public static int DarknessResolution
         {
             get { return darknessResolution; }
@@ -142,6 +151,7 @@ namespace SonOfRobin
         public static bool drawShadows = true;
         public static bool drawSunShadows = true;
         private static bool showControlTips = true;
+
         public static bool ShowControlTips
         {
             get { return showControlTips; }
@@ -154,6 +164,7 @@ namespace SonOfRobin
         }
 
         private static bool mouseGesturesEmulateTouch = false;
+
         public static bool MouseGesturesEmulateTouch
         {
             get { return mouseGesturesEmulateTouch; }
@@ -168,18 +179,20 @@ namespace SonOfRobin
                 TouchInput.SetEmulationByMouse();
             }
         }
+
         public static bool ShowTouchTips
         { get { return Input.currentControlType == Input.ControlType.Touch; } }
 
         public static bool enableTouchJoysticks = false;
 
         private static bool enableTouchButtons = false;
+
         public static bool EnableTouchButtons
         {
             get { return enableTouchButtons; }
             set
             {
-                if (SonOfRobinGame.platform == Platform.Mobile && Input.currentControlType == Input.ControlType.Touch) value = true; // when not using joypad / keyboard, mobile should always have touch buttons enabled 
+                if (SonOfRobinGame.platform == Platform.Mobile && Input.currentControlType == Input.ControlType.Touch) value = true; // when not using joypad / keyboard, mobile should always have touch buttons enabled
                 enableTouchButtons = value;
 
                 if (enableTouchButtons)
@@ -246,6 +259,7 @@ namespace SonOfRobin
         }
 
         private static bool showFpsCounter = false;
+
         public static bool ShowFpsCounter
         {
             get { return showFpsCounter; }
@@ -272,6 +286,7 @@ namespace SonOfRobin
 
         // debug variables should not be saved to preferences file
         public static bool debugShowRects = false;
+
         public static bool debugShowCellData = false;
         public static bool debugShowPieceData = false;
         public static bool debugShowAnimalTargets = false;
@@ -300,8 +315,8 @@ namespace SonOfRobin
             }
         }
 
-
         private static WorldSize selectedWorldSize;
+
         public static WorldSize SelectedWorldSize
         {
             get { return selectedWorldSize; }
@@ -336,6 +351,7 @@ namespace SonOfRobin
         }
 
         private static bool debugGodMode = false;
+
         public static bool DebugGodMode
         {
             get { return debugGodMode; }
@@ -462,9 +478,9 @@ namespace SonOfRobin
                     Scene existingStackView = Scene.GetTopSceneOfType(typeof(StackView));
                     if (existingStackView != null) existingStackView.Remove();
                 }
-
             }
         }
+
         public static void Initialize()
         {
             // initial values, that must be set, after setting the platform variable
@@ -548,7 +564,6 @@ namespace SonOfRobin
             prefsData["soundMenuOn"] = Sound.menuOn;
             prefsData["textWindowAnimOn"] = Sound.textWindowAnimOn;
             prefsData["vSync"] = vSync;
-
 
             FileReaderWriter.Save(path: SonOfRobinGame.prefsPath, savedObj: prefsData);
 
@@ -656,6 +671,5 @@ namespace SonOfRobin
                 displayResY = SonOfRobinGame.GfxDev.Adapter.CurrentDisplayMode.Height;
             }
         }
-
     }
 }

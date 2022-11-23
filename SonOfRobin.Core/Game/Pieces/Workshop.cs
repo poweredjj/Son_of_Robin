@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 
-
 namespace SonOfRobin
 {
     public class Workshop : BoardPiece
@@ -43,6 +42,5 @@ namespace SonOfRobin
             this.sprite.AssignNewName(animName: "off");
             if (this.sprite.lightEngine != null) this.sprite.lightEngine.Deactivate();
         }
-
     }
 }

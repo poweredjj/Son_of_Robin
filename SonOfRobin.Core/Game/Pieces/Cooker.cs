@@ -42,10 +42,12 @@ namespace SonOfRobin
             this.CreateAndConfigureStorage();
         }
 
-        private StorageSlot FlameTriggerSlot { get { return this.pieceStorage.GetSlot(0, 0); } }
-        private StorageSlot MealSlot { get { return this.pieceStorage.GetSlot(1, 0); } }
-        private StorageSlot FuelSlot { get { return this.pieceStorage.GetSlot(2, 0); } }
-
+        private StorageSlot FlameTriggerSlot
+        { get { return this.pieceStorage.GetSlot(0, 0); } }
+        private StorageSlot MealSlot
+        { get { return this.pieceStorage.GetSlot(1, 0); } }
+        private StorageSlot FuelSlot
+        { get { return this.pieceStorage.GetSlot(2, 0); } }
 
         private void CreateAndConfigureStorage()
         {
@@ -213,7 +215,7 @@ namespace SonOfRobin
 
             // getting all buffs from boosters
 
-            var buffList = new List<BuffEngine.Buff>();
+            var buffList = new List<Buff>();
 
             foreach (BoardPiece booster in storedBoosters)
             {
@@ -250,7 +252,7 @@ namespace SonOfRobin
 
             // blocking the cooker for "cooking duration"
 
-            Inventory.SetLayout(newLayout: Inventory.Layout.Toolbar, player: this.world.Player);
+            Inventory.SetLayout(newLayout: Inventory.LayoutType.Toolbar, player: this.world.Player);
             this.TurnOn();
             new TextWindow(text: "Cooking...", textColor: Color.White, bgColor: Color.Green, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1);
 
@@ -279,6 +281,5 @@ namespace SonOfRobin
 
             return timeLeftString;
         }
-
     }
 }

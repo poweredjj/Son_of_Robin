@@ -9,37 +9,18 @@ namespace SonOfRobin
 {
     public class BoardGraphics
     {
+        public static readonly Dictionary<Colors, Color> colorsByName = GetColorsByName();
+        public static readonly Dictionary<Colors, List<byte>> colorsByHeight = GetColorsByHeight();
+        public static readonly Dictionary<Colors, List<byte>> colorsByHumidity = GetColorsByHumidity();
+
         private readonly Cell cell;
         public Texture2D Texture { get; private set; }
 
         private bool textureSimulationCalculated;
         private Color textureSimulationColor; // texture "preview" for display when the texture is unloaded
 
-        public Color TextureSimulationColor
-        {
-            get
-            {
-                if (!this.textureSimulationCalculated)
-                {
-                    this.TextureSimulationColor = CreatePixel(grid: this.cell.grid, x: this.cell.xCenter, y: this.cell.yCenter);
-                }
-
-                return this.textureSimulationColor;
-            }
-
-            private set
-            {
-                this.textureSimulationColor = value;
-                this.textureSimulationCalculated = true;
-            }
-        }
-
         private readonly string templatePath;
         private bool savedToDisk;
-
-        public static readonly Dictionary<Colors, Color> colorsByName = GetColorsByName();
-        public static readonly Dictionary<Colors, List<byte>> colorsByHeight = GetColorsByHeight();
-        public static readonly Dictionary<Colors, List<byte>> colorsByHumidity = GetColorsByHumidity();
 
         public enum Colors
         {
@@ -69,6 +50,25 @@ namespace SonOfRobin
             this.templatePath = Path.Combine(grid.gridTemplate.templatePath, $"background_{cell.cellNoX}_{cell.cellNoY}.png");
             this.savedToDisk = File.Exists(this.templatePath);
             this.textureSimulationCalculated = false;
+        }
+
+        public Color TextureSimulationColor
+        {
+            get
+            {
+                if (!this.textureSimulationCalculated)
+                {
+                    this.TextureSimulationColor = CreatePixel(grid: this.cell.grid, x: this.cell.xCenter, y: this.cell.yCenter);
+                }
+
+                return this.textureSimulationColor;
+            }
+
+            private set
+            {
+                this.textureSimulationColor = value;
+                this.textureSimulationCalculated = true;
+            }
         }
 
         public void LoadTexture()

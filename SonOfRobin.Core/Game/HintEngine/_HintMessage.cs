@@ -8,7 +8,8 @@ namespace SonOfRobin
 {
     public struct HintMessage
     {
-        public enum BoxType { Dialogue, GreenBox, BlueBox, LightBlueBox, RedBox, GoldBox }
+        public enum BoxType
+        { Dialogue, GreenBox, BlueBox, LightBlueBox, RedBox, GoldBox }
 
         public readonly string text;
         public readonly List<Texture2D> imageList;

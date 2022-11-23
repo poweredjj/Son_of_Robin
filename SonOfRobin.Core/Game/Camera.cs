@@ -64,8 +64,10 @@ namespace SonOfRobin
         private Sprite trackedSprite;
         private bool trackedSpriteReached;
         private Vector2 trackedPos;
+
         public Vector2 TrackedPos
         { get { return this.trackingMode == TrackingMode.Position ? this.trackedPos : this.trackedSprite.position; } }
+
         public Vector2 CurrentPos { get; private set; }
         public float TargetZoom { get; private set; }
         public float CurrentZoom { get; private set; }
@@ -130,6 +132,7 @@ namespace SonOfRobin
                 return this.trackedSprite.boardPiece.exists;
             }
         }
+
         public BoardPiece TrackedPiece
         {
             get
@@ -138,6 +141,7 @@ namespace SonOfRobin
                 return this.trackedSprite.boardPiece;
             }
         }
+
         public bool IsTrackingPlayer
         {
             get
@@ -148,6 +152,7 @@ namespace SonOfRobin
                 return trackedPiece.name == PieceTemplate.Name.Player && this.trackedSpriteReached;
             }
         }
+
         private enum TrackingMode
         {
             Undefined,
@@ -260,6 +265,7 @@ namespace SonOfRobin
             this.trackedPos = new Vector2(position.X, position.Y);
             this.disableFluidMotionMoveForOneFrame = moveInstantly;
         }
+
         public void ResetZoom(bool setInstantly = false, float zoomSpeedMultiplier = 1f)
         {
             this.SetZoom(zoom: 1f, setInstantly: setInstantly, zoomSpeedMultiplier: zoomSpeedMultiplier);
@@ -309,6 +315,5 @@ namespace SonOfRobin
         {
             return BufferedSpriteSearch.SearchSprites(camera: this, groupName: groupName, compareWithCameraRect: compareWithCameraRect);
         }
-
     }
 }

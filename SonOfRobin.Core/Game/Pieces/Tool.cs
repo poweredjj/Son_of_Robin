@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 
-
 namespace SonOfRobin
 {
     public class Tool : BoardPiece
@@ -15,7 +14,7 @@ namespace SonOfRobin
         private readonly List<PieceTemplate.Name> compatibleAmmo;
 
         public Tool(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, Dictionary<byte, int> maxMassBySize, int hitPower, Dictionary<Category, float> multiplierByCategory, int maxHitPoints, string readableName, string description, Category category,
-            byte animSize = 0, string animName = "default", bool blocksMovement = false, ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = true, int generation = 0, bool indestructible = false, Yield yield = null, bool shootsProjectile = false, List<PieceTemplate.Name> compatibleAmmo = null, bool rotatesWhenDropped = true, bool fadeInAnim = false, int range = 0, List<BuffEngine.Buff> buffList = null) :
+            byte animSize = 0, string animName = "default", bool blocksMovement = false, ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = true, int generation = 0, bool indestructible = false, Yield yield = null, bool shootsProjectile = false, List<PieceTemplate.Name> compatibleAmmo = null, bool rotatesWhenDropped = true, bool fadeInAnim = false, int range = 0, List<Buff> buffList = null) :
 
             base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedTerrain: allowedTerrain, floatsOnWater: floatsOnWater, maxMassBySize: maxMassBySize, generation: generation, canBePickedUp: true, yield: yield, maxHitPoints: maxHitPoints, indestructible: indestructible, rotatesWhenDropped: rotatesWhenDropped, fadeInAnim: fadeInAnim, readableName: readableName, description: description, category: category, buffList: buffList, activeState: State.Empty)
         {
@@ -209,7 +208,7 @@ namespace SonOfRobin
             }
         }
 
-        public static void HitTarget(BoardPiece attacker, BoardPiece target, int hitPower, float targetPushMultiplier, List<BuffEngine.Buff> buffList = null)
+        public static void HitTarget(BoardPiece attacker, BoardPiece target, int hitPower, float targetPushMultiplier, List<Buff> buffList = null)
         {
             World world = attacker.world;
 
@@ -219,7 +218,7 @@ namespace SonOfRobin
             target.hitPoints -= hitPower;
             if (buffList != null)
             {
-                foreach (BuffEngine.Buff buff in buffList)
+                foreach (Buff buff in buffList)
                 {
                     target.buffEngine.AddBuff(buff: buff, world: world);
                 }
@@ -283,6 +282,5 @@ namespace SonOfRobin
             base.Deserialize(pieceData);
             // data to deserialize here
         }
-
     }
 }

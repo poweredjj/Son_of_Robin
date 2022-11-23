@@ -8,7 +8,6 @@ namespace SonOfRobin
         public static KeyboardState CurrentKeyState { get; private set; }
         private static KeyboardState previousKeyState;
 
-
         public static void GetState()
         {
             previousKeyState = CurrentKeyState;

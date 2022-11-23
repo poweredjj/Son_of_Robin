@@ -6,12 +6,14 @@ namespace SonOfRobin
 {
     public class SoundInstanceManager
     {
-        private readonly static Dictionary<string, SoundEffectInstance> activeSoundInstancesByID = new Dictionary<string, SoundEffectInstance>();
-        private readonly static Dictionary<SoundData.Name, List<SoundEffectInstance>> inactiveInstancesByName = new Dictionary<SoundData.Name, List<SoundEffectInstance>>();
-        private readonly static Dictionary<int, SoundData.Name> soundNamesByInstanceHash = new Dictionary<int, SoundData.Name>(); // to keep track what instance plays what sound
+        private static readonly Dictionary<string, SoundEffectInstance> activeSoundInstancesByID = new Dictionary<string, SoundEffectInstance>();
+        private static readonly Dictionary<SoundData.Name, List<SoundEffectInstance>> inactiveInstancesByName = new Dictionary<SoundData.Name, List<SoundEffectInstance>>();
+        private static readonly Dictionary<int, SoundData.Name> soundNamesByInstanceHash = new Dictionary<int, SoundData.Name>(); // to keep track what instance plays what sound
 
         public static int CreatedInstancesCount { get; private set; } = 0;
-        public static int ActiveInstancesCount { get { return activeSoundInstancesByID.Count; } }
+        public static int ActiveInstancesCount
+        { get { return activeSoundInstancesByID.Count; } }
+
         public static int InactiveInstancesCount
         {
             get
@@ -27,7 +29,8 @@ namespace SonOfRobin
             }
         }
 
-        public static int InactiveNamesCount { get { return inactiveInstancesByName.Keys.Count; } }
+        public static int InactiveNamesCount
+        { get { return inactiveInstancesByName.Keys.Count; } }
 
         public static SoundEffectInstance GetPlayingInstance(string id)
         {
@@ -43,7 +46,6 @@ namespace SonOfRobin
             {
                 SoundEffectInstance previousInstance = inactiveInstancesByName[soundName][0];
                 inactiveInstancesByName[soundName].RemoveAt(0);
-
 
                 if (activeSoundInstancesByID.ContainsKey(id))
                 {
@@ -129,6 +131,5 @@ namespace SonOfRobin
             if (!inactiveInstancesByName.ContainsKey(soundName)) inactiveInstancesByName[soundName] = new List<SoundEffectInstance>();
             inactiveInstancesByName[soundName].Add(instance);
         }
-
     }
 }

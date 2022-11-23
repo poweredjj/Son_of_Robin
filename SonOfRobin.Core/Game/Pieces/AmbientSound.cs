@@ -9,7 +9,6 @@ namespace SonOfRobin
         private const float visFullOpacity = 1f;
         private const float visMinOpacity = 0.3f;
 
-
         private readonly int playDelay;
         private readonly int playDelayMaxVariation;
         private readonly int checkDelay;
@@ -34,6 +33,7 @@ namespace SonOfRobin
             this.checkDelay = 100 + Random.Next(0, 60); // to avoid playing all ambient sound in the same frame
             if (this.sprite.Visible) this.sprite.opacity = visMinOpacity;
         }
+
         private bool CanPlayAtThisPartOfDay
         { get { return this.partOfDayList == null ? true : this.partOfDayList.Contains(this.world.islandClock.CurrentPartOfDay); } }
 
@@ -43,11 +43,13 @@ namespace SonOfRobin
             // data to serialize here
             return pieceData;
         }
+
         public override void Deserialize(Dictionary<string, Object> pieceData)
         {
             base.Deserialize(pieceData);
             // data to deserialize here
         }
+
         public override void DrawStatBar()
         {
             Sound sound = this.soundPack.GetSound(PieceSoundPack.Action.Ambient);
@@ -97,6 +99,5 @@ namespace SonOfRobin
                 else this.showStatBarsTillFrame = 2147483647;
             }
         }
-
     }
 }

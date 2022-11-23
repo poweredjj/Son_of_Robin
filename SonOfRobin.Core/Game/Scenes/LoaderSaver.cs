@@ -57,6 +57,7 @@ namespace SonOfRobin
         private string nextStepName;
         private int processedSteps;
         private readonly int allSteps;
+
         private int PiecesFilesCount
         { get { return Directory.GetFiles(this.savePath).Where(file => file.Contains("pieces_")).ToList().Count; } }
 

@@ -6,47 +6,6 @@ using System.Linq;
 
 namespace SonOfRobin
 {
-    public struct CountComparison
-    {
-        public enum Comparison
-        { Greater, GreaterOrEqual, Equal, LessOrEqual, Less }
-
-        public readonly PieceTemplate.Name name;
-        private readonly int count;
-        private readonly Comparison comparison;
-
-        public CountComparison(PieceTemplate.Name name, int count, Comparison comparison = Comparison.GreaterOrEqual)
-        {
-            this.name = name;
-            this.count = count;
-            this.comparison = comparison;
-        }
-
-        public bool Check(int countCrafted)
-        {
-            switch (this.comparison)
-            {
-                case Comparison.Greater:
-                    return countCrafted > this.count;
-
-                case Comparison.GreaterOrEqual:
-                    return countCrafted >= this.count;
-
-                case Comparison.Equal:
-                    return countCrafted == this.count;
-
-                case Comparison.LessOrEqual:
-                    return countCrafted <= this.count;
-
-                case Comparison.Less:
-                    return countCrafted < this.count;
-
-                default:
-                    throw new ArgumentException($"Unsupported comparison - {this.comparison}.");
-            }
-        }
-    }
-
     public struct PieceHint
     {
         public enum Type
@@ -56,30 +15,8 @@ namespace SonOfRobin
         { Greater, GreaterOrEqual, Equal, LessOrEqual, Less }
 
         public static readonly List<PieceHint> pieceHintList = new List<PieceHint>();
-
         private static int nearbyPiecesFrameChecked = 0;
         private static readonly List<BoardPiece> nearbyPieces = new List<BoardPiece>();
-
-        private static List<BoardPiece> GetNearbyPieces(Player player)
-        {
-            if (SonOfRobinGame.CurrentUpdate != nearbyPiecesFrameChecked)
-            {
-                nearbyPieces.Clear();
-
-                var nearbyPiecesTempList = player.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.All, mainSprite: player.sprite, distance: 300).OrderBy(piece => Vector2.Distance(player.sprite.position, piece.sprite.position)).ToList();
-
-                nearbyPieces.AddRange(nearbyPiecesTempList);
-                nearbyPiecesFrameChecked = SonOfRobinGame.CurrentUpdate;
-            }
-
-            return nearbyPieces;
-        }
-
-        public static void RefreshData()
-        {
-            pieceHintList.Clear();
-            pieceHintList.AddRange(PieceHintData.GetData());
-        }
 
         private readonly Type type;
         private readonly List<Type> alsoDisables;
@@ -131,6 +68,27 @@ namespace SonOfRobin
                 if (this.tutorialsToActivate != null) throw new ArgumentException("General hint and tutorial cannot both be active.");
                 if (this.messageList?.Count > 0) throw new ArgumentException("General hint and message list cannot both be active.");
             }
+        }
+
+        public static void RefreshData()
+        {
+            pieceHintList.Clear();
+            pieceHintList.AddRange(PieceHintData.GetData());
+        }
+
+        private static List<BoardPiece> GetNearbyPieces(Player player)
+        {
+            if (SonOfRobinGame.CurrentUpdate != nearbyPiecesFrameChecked)
+            {
+                nearbyPieces.Clear();
+
+                var nearbyPiecesTempList = player.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.All, mainSprite: player.sprite, distance: 300).OrderBy(piece => Vector2.Distance(player.sprite.position, piece.sprite.position)).ToList();
+
+                nearbyPieces.AddRange(nearbyPiecesTempList);
+                nearbyPiecesFrameChecked = SonOfRobinGame.CurrentUpdate;
+            }
+
+            return nearbyPieces;
         }
 
         private List<HintMessage> GetTutorials(List<Tutorials.Type> shownTutorials)

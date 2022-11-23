@@ -24,9 +24,31 @@ namespace SonOfRobin
         private readonly string headerPath;
         public DateTime CreatedDate { get; private set; }
 
-        public bool IsObsolete { get { return this.version != currentVersion; } }
-        public static bool CorrectTemplatesExist { get { return CorrectTemplates.Any(); } }
-        public static bool CorrectNonDemoTemplatesExist { get { return CorrectNonDemoTemplates.Any(); } }
+        public GridTemplate(int seed, int width, int height, int cellWidth, int cellHeight, int resDivider)
+        {
+            this.seed = seed;
+            this.width = width;
+            this.height = height;
+            this.cellWidth = cellWidth;
+            this.cellHeight = cellHeight;
+            this.resDivider = resDivider;
+            this.version = currentVersion;
+            this.CreatedDate = DateTime.Now;
+
+            this.templatePath = this.CheckCreateFolder();
+            this.headerPath = Path.Combine(this.templatePath, headerName);
+
+            this.SaveHeader();
+        }
+
+        public bool IsObsolete
+        { get { return this.version != currentVersion; } }
+
+        public static bool CorrectTemplatesExist
+        { get { return CorrectTemplates.Any(); } }
+
+        public static bool CorrectNonDemoTemplatesExist
+        { get { return CorrectNonDemoTemplates.Any(); } }
 
         public static List<GridTemplate> CorrectTemplates
         {
@@ -49,22 +71,6 @@ namespace SonOfRobin
         public static List<GridTemplate> CorrectNonDemoTemplates
         {
             get { return CorrectTemplates.Where(template => template.seed != demoWorldSeed).ToList(); }
-        }
-        public GridTemplate(int seed, int width, int height, int cellWidth, int cellHeight, int resDivider)
-        {
-            this.seed = seed;
-            this.width = width;
-            this.height = height;
-            this.cellWidth = cellWidth;
-            this.cellHeight = cellHeight;
-            this.resDivider = resDivider;
-            this.version = currentVersion;
-            this.CreatedDate = DateTime.Now;
-
-            this.templatePath = this.CheckCreateFolder();
-            this.headerPath = Path.Combine(this.templatePath, headerName);
-
-            this.SaveHeader();
         }
 
         private bool Equals(GridTemplate gridToCompare)
@@ -122,6 +128,5 @@ namespace SonOfRobin
 
             return templatePath;
         }
-
     }
 }

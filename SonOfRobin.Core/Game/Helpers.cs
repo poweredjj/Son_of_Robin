@@ -13,8 +13,11 @@ namespace SonOfRobin
         public const double Rad2Deg = 180.0 / Math.PI;
         public const double Deg2Rad = Math.PI / 180.0;
 
-        public enum AlignX { Left, Center, Right };
-        public enum AlignY { Top, Center, Bottom };
+        public enum AlignX
+        { Left, Center, Right };
+
+        public enum AlignY
+        { Top, Center, Bottom };
 
         private static int hashCounter = 0;
 
@@ -87,6 +90,7 @@ namespace SonOfRobin
 
             DrawTextInsideRect(font: font, rectangle: rectangle, text: text, color: color, alignX: alignX, alignY: alignY, drawTestRect: drawTestRect);
         }
+
         public static void DrawTextInsideRect(SpriteFont font, Rectangle rectangle, string text, Color color, AlignX alignX = AlignX.Center, AlignY alignY = AlignY.Center, bool drawTestRect = false)
         {
             Vector2 textSize = font.MeasureString(text);
@@ -236,10 +240,12 @@ namespace SonOfRobin
         {
             return (float)Math.Atan2((start.Y - end.Y) * -1f, end.X - start.X);
         }
+
         public static float GetAngleBetweenTwoPoints(Point start, Vector2 end)
         {
             return (float)Math.Atan2((start.Y - end.Y) * -1f, end.X - start.X);
         }
+
         public static float GetAngleBetweenTwoPoints(Point start, Point end)
         {
             return (float)Math.Atan2((start.Y - end.Y) * -1f, end.X - start.X);

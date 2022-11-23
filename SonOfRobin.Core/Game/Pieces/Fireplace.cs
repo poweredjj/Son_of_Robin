@@ -10,11 +10,11 @@ namespace SonOfRobin
         private static readonly Dictionary<PieceTemplate.Name, int> fuelFramesByName = new Dictionary<PieceTemplate.Name, int>
         {
             // number of frames each piece will burn for
-            {PieceTemplate.Name.Stick, 60 * 20},
-            {PieceTemplate.Name.WoodLogRegular, 60 * 60 * 1},
-            {PieceTemplate.Name.WoodLogHard, 60 * 60 * 3},
-            {PieceTemplate.Name.WoodPlank, 60 * 60 * 1},
-            {PieceTemplate.Name.Coal, 60 * 60 * 5},
+            { PieceTemplate.Name.Stick, 60 * 20 },
+            { PieceTemplate.Name.WoodLogRegular, 60 * 60 * 1 },
+            { PieceTemplate.Name.WoodLogHard, 60 * 60 * 3 },
+            { PieceTemplate.Name.WoodPlank, 60 * 60 * 1 },
+            { PieceTemplate.Name.Coal, 60 * 60 * 5 },
         };
 
         private static readonly List<PieceTemplate.Name> fuelNames = fuelFramesByName.Keys.ToList();
@@ -104,10 +104,12 @@ namespace SonOfRobin
                     this.soundPack.Play(PieceSoundPack.Action.TurnOff);
                 }
 
-                if (Inventory.layout == Inventory.Layout.FieldStorage) Inventory.SetLayout(newLayout: Inventory.Layout.Toolbar, player: this.world.Player);
+                if (Inventory.Layout == Inventory.LayoutType.FieldStorage) Inventory.SetLayout(newLayout: Inventory.LayoutType.Toolbar, player: this.world.Player);
             }
         }
-        private List<BoardPiece> StoredFuel { get { return this.pieceStorage.GetAllPieces().Where(piece => fuelNames.Contains(piece.name)).ToList(); } }
+
+        private List<BoardPiece> StoredFuel
+        { get { return this.pieceStorage.GetAllPieces().Where(piece => fuelNames.Contains(piece.name)).ToList(); } }
 
         private bool StartFire(bool showMessage)
         {

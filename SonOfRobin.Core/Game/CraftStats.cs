@@ -90,6 +90,7 @@ namespace SonOfRobin
         {
             return this.craftedPieces.ContainsKey(name);
         }
+
         public int HowManyTimesHasBeenCrafted(Craft.Recipe recipe)
         {
             return this.craftedRecipes.ContainsKey(recipe.id) ? this.craftedRecipes[recipe.id] : 0;

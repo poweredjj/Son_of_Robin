@@ -9,9 +9,10 @@ namespace SonOfRobin
 {
     public class Scheduler
     {
-        public enum TaskName { Empty, CreateNewWorld, CreateNewWorldNow, QuitGame, OpenMenuTemplate, OpenMainMenu, OpenConfirmationMenu, SaveGame, LoadGame, LoadGameNow, ReturnToMainMenu, SavePrefs, ProcessConfirmation, OpenCraftMenu, Craft, Hit, CreateNewPiece, CreateDebugPieces, OpenContainer, DeleteObsoleteSaves, DropFruit, GetEaten, GetDrinked, ExecuteTaskWithDelay, AddWorldEvent, ShowTextWindow, OpenShelterMenu, SleepInsideShelter, SleepOutside, ForceWakeUp, TempoFastForward, TempoStop, TempoPlay, CameraTrackPiece, CameraTrackCoords, CameraSetZoom, ShowCookingProgress, RestoreHints, OpenMainMenuIfSpecialKeysArePressed, CheckForPieceHints, ShowHint, ExecuteTaskChain, ShowTutorialInMenu, ShowTutorialInGame, RemoveScene, ChangeSceneInputType, SetCineMode, AddTransition, SolidColorRemoveAll, SkipCinematics, DeleteTemplates, SetSpectatorMode, SwitchLightSource, ResetControls, SaveControls, CheckForNonSavedControls, RebuildMenu, RebuildAllMenus, CheckForIncorrectPieces, RestartWorld, ResetNewWorldSettings, PlaySound, PlaySoundByName, AllowPieceToBeHit, SetPlayerPointWalkTarget, ShowCraftStats, StopSound, RemoveAllScenesOfType, WaitUntilMorning }
+        public enum TaskName
+        { Empty, CreateNewWorld, CreateNewWorldNow, QuitGame, OpenMenuTemplate, OpenMainMenu, OpenConfirmationMenu, SaveGame, LoadGame, LoadGameNow, ReturnToMainMenu, SavePrefs, ProcessConfirmation, OpenCraftMenu, Craft, Hit, CreateNewPiece, CreateDebugPieces, OpenContainer, DeleteObsoleteSaves, DropFruit, GetEaten, GetDrinked, ExecuteTaskWithDelay, AddWorldEvent, ShowTextWindow, OpenShelterMenu, SleepInsideShelter, SleepOutside, ForceWakeUp, TempoFastForward, TempoStop, TempoPlay, CameraTrackPiece, CameraTrackCoords, CameraSetZoom, ShowCookingProgress, RestoreHints, OpenMainMenuIfSpecialKeysArePressed, CheckForPieceHints, ShowHint, ExecuteTaskChain, ShowTutorialInMenu, ShowTutorialInGame, RemoveScene, ChangeSceneInputType, SetCineMode, AddTransition, SolidColorRemoveAll, SkipCinematics, DeleteTemplates, SetSpectatorMode, SwitchLightSource, ResetControls, SaveControls, CheckForNonSavedControls, RebuildMenu, RebuildAllMenus, CheckForIncorrectPieces, RestartWorld, ResetNewWorldSettings, PlaySound, PlaySoundByName, AllowPieceToBeHit, SetPlayerPointWalkTarget, ShowCraftStats, StopSound, RemoveAllScenesOfType, WaitUntilMorning }
 
-        private readonly static Dictionary<int, List<Task>> queue = new Dictionary<int, List<Task>>();
+        private static readonly Dictionary<int, List<Task>> queue = new Dictionary<int, List<Task>>();
         private static int inputTurnedOffUntilFrame = 0;
 
         public static bool HasTaskChainInQueue
@@ -220,7 +221,7 @@ namespace SonOfRobin
                     case TaskName.CreateNewWorldNow:
                         {
                             // example executeHelper for this task
-                            // var createData = new Dictionary<string, Object> {{ "width", width }, { "height", height }, { "seed", seed }, {"resDivider", resDivider }};                
+                            // var createData = new Dictionary<string, Object> {{ "width", width }, { "height", height }, { "seed", seed }, {"resDivider", resDivider }};
                             int width, height, seed, resDivider;
                             bool playerFemale;
 
@@ -388,7 +389,7 @@ namespace SonOfRobin
                                 }
                             }
 
-                            Inventory.SetLayout(newLayout: Inventory.Layout.FieldStorage, player: world.Player, fieldStorage: container);
+                            Inventory.SetLayout(newLayout: Inventory.LayoutType.FieldStorage, player: world.Player, fieldStorage: container);
                         }
 
                         return;
@@ -405,7 +406,6 @@ namespace SonOfRobin
                             recipe.TryToProducePieces(player: World.GetTopWorld().Player, showMessages: true, craftOnTheGround: craftOnTheGround);
                         }
                         return;
-
 
                     case TaskName.Hit:
                         {
@@ -508,10 +508,10 @@ namespace SonOfRobin
                             player.soundPack.Play(action: PieceSoundPack.Action.Eat, ignore3D: true);
 
                             // adding "generic" regen based on mass (if meal does not contain poison or regen)
-                            if (!BuffEngine.BuffListContainsPoisonOrRegen(food.buffList)) food.buffList.Add(new BuffEngine.Buff(type: BuffEngine.BuffType.RegenPoison, value: (int)(food.Mass / 3), autoRemoveDelay: 60 * 60));
+                            if (!BuffEngine.BuffListContainsPoisonOrRegen(food.buffList)) food.buffList.Add(new Buff(type: BuffEngine.BuffType.RegenPoison, value: (int)(food.Mass / 3), autoRemoveDelay: 60 * 60));
                             player.AcquireEnergy(food.Mass * 40f);
 
-                            foreach (BuffEngine.Buff buff in food.buffList)
+                            foreach (Buff buff in food.buffList)
                             { player.buffEngine.AddBuff(buff: buff, world: world); }
 
                             food.hitPoints = 0;
@@ -546,7 +546,7 @@ namespace SonOfRobin
 
                             // all parameters should be increased using buffs
 
-                            foreach (BuffEngine.Buff buff in potion.buffList)
+                            foreach (Buff buff in potion.buffList)
                             { player.buffEngine.AddBuff(buff: buff, world: world); }
 
                             BoardPiece emptyContainter = PieceTemplate.Create(templateName: potion.convertsToWhenUsed, world: world);
@@ -802,10 +802,9 @@ namespace SonOfRobin
                             }
                             else sleepEngine = SleepEngine.OutdoorSleepDry;
 
-                            player.GoToSleep(sleepEngine: sleepEngine, zzzPos: player.sprite.position, wakeUpBuffs: new List<BuffEngine.Buff> { });
+                            player.GoToSleep(sleepEngine: sleepEngine, zzzPos: player.sprite.position, wakeUpBuffs: new List<Buff> { });
                             return;
                         }
-
 
                     case TaskName.OpenShelterMenu:
                         {
@@ -972,7 +971,6 @@ namespace SonOfRobin
                             }
 
                             if (taskChain.Count == 0) Input.GlobalInputActive = true; // to ensure that input will be active at the end
-
 
                             return;
                         }
@@ -1188,7 +1186,7 @@ namespace SonOfRobin
 
                             if (!firstRun)
                             {
-                                // first run should only turn on progress bar                              
+                                // first run should only turn on progress bar
                                 pathsToDelete.RemoveAt(0);
                                 Directory.Delete(path: currentPath, recursive: true);
                             }
@@ -1383,6 +1381,5 @@ namespace SonOfRobin
                 GC.Collect();
             }
         }
-
     }
 }

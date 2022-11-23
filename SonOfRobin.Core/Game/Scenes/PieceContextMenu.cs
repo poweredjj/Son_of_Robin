@@ -8,7 +8,8 @@ namespace SonOfRobin
 {
     public class PieceContextMenu : Scene
     {
-        protected enum ContextAction { Drop, DropAll, Move, Eat, Drink, Plant, Cook, Switch, Ignite, Extinguish, Upgrade }
+        protected enum ContextAction
+        { Drop, DropAll, Move, Eat, Drink, Plant, Cook, Switch, Ignite, Extinguish, Upgrade }
 
         private static readonly SpriteFont font = SonOfRobinGame.FontTommy40;
         private const float marginPercent = 0.03f;
@@ -27,7 +28,8 @@ namespace SonOfRobin
         private int activeEntry;
         private bool showCursor;
 
-        private int Margin { get { return Convert.ToInt32(SonOfRobinGame.VirtualHeight * marginPercent); } }
+        private int Margin
+        { get { return Convert.ToInt32(SonOfRobinGame.VirtualHeight * marginPercent); } }
 
         private Vector2 MenuPos
         {
@@ -53,7 +55,10 @@ namespace SonOfRobin
                 if (this.activeEntry >= this.actionList.Count) this.activeEntry = 0;
             }
         }
-        private ContextAction ActiveAction { get { return this.actionList[this.ActiveEntry]; } }
+
+        private ContextAction ActiveAction
+        { get { return this.actionList[this.ActiveEntry]; } }
+
         private float TextScale
         {
             get
@@ -245,7 +250,6 @@ namespace SonOfRobin
                         this.Remove();
                         return;
                     }
-
                 }
             }
         }
@@ -348,7 +352,7 @@ namespace SonOfRobin
 
                         Craft.Recipe plantRecipe = new Craft.Recipe(pieceToCreate: plantName, ingredients: new Dictionary<PieceTemplate.Name, byte> { { fruit.name, 1 } }, fatigue: PieceInfo.GetInfo(plantName).blocksMovement ? 100 : 50, maxLevel: 0, durationMultiplier: 1f, fatigueMultiplier: 1f, isReversible: false, checkIfAlreadyAdded: false);
 
-                        Inventory.SetLayout(newLayout: Inventory.Layout.Toolbar, player: player);
+                        Inventory.SetLayout(newLayout: Inventory.LayoutType.Toolbar, player: player);
                         plantRecipe.TryToProducePieces(player: player, showMessages: false);
 
                         return;
@@ -446,6 +450,7 @@ namespace SonOfRobin
                 entryNo++;
             }
         }
+
         private Rectangle GetEntryRect(int entryNo)
         {
             int displayedPos = entryNo + 1;
@@ -454,7 +459,5 @@ namespace SonOfRobin
 
             return new Rectangle(margin, margin + (int)((float)displayedPos * (this.MaxEntrySize.Y + (float)margin)), (int)maxEntrySize.X, (int)maxEntrySize.Y);
         }
-
-
     }
 }

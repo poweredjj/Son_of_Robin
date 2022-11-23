@@ -6,14 +6,15 @@ using System.Collections.Generic;
 
 namespace SonOfRobin
 {
-    class Invoker : Entry
+    internal class Invoker : Entry
     {
         private readonly bool closesMenu;
         private readonly Sound soundInvoke;
         public readonly Scheduler.TaskName taskName;
         public readonly Object executeHelper; // misc variables used in execution stage
         public readonly int taskDelay;
-        public override string DisplayedText { get { return this.name; } }
+        public override string DisplayedText
+        { get { return this.name; } }
 
         public Invoker(Menu menu, string name, Scheduler.TaskName taskName, Object executeHelper = null, int taskDelay = 0, bool closesMenu = false, bool rebuildsMenu = false, List<InfoWindow.TextEntry> infoTextList = null, SoundData.Name sound = SoundData.Name.Empty, bool playSound = true, List<Texture2D> imageList = null) :
 
@@ -66,6 +67,5 @@ namespace SonOfRobin
                 }
             }
         }
-
     }
 }

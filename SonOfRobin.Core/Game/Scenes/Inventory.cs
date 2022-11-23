@@ -9,7 +9,7 @@ namespace SonOfRobin
 {
     public class Inventory : Scene
     {
-        public enum Layout
+        public enum LayoutType
         { None, Toolbar, Inventory, FieldStorage }
 
         public enum TransDirection
@@ -20,6 +20,7 @@ namespace SonOfRobin
 
         private const int minFramesToDragByTouch = 15;
         private const float marginPercent = 0.01f;
+
         private static readonly SpriteFont font = SonOfRobinGame.FontTommy40;
 
         private static readonly Sound soundOpen = new Sound(SoundData.Name.InventoryOpen);
@@ -28,7 +29,7 @@ namespace SonOfRobin
         private static readonly Sound soundEnterContextMenu = new Sound(SoundData.Name.Invoke);
         private static readonly Sound soundPickUp = new Sound(SoundData.Name.PickUpItem, volume: 0.8f);
 
-        public static Layout layout = Layout.None;
+        public static LayoutType Layout { get; private set; } = LayoutType.None;
 
         public readonly Type type;
         private readonly TransDirection transDirection;
@@ -197,7 +198,7 @@ namespace SonOfRobin
             }
         }
 
-        public static void SetLayout(Layout newLayout, BoardPiece fieldStorage = null, Player player = null)
+        public static void SetLayout(LayoutType newLayout, BoardPiece fieldStorage = null, Player player = null)
         {
             if (fieldStorage != null && fieldStorage.pieceStorage.storageType != PieceStorage.StorageType.Fireplace && player != null && !player.CanSeeAnything)
             {
@@ -210,24 +211,24 @@ namespace SonOfRobin
 
             switch (newLayout)
             {
-                case Layout.None:
+                case LayoutType.None:
                     break;
 
-                case Layout.Toolbar:
+                case LayoutType.Toolbar:
                     {
                         new Inventory(piece: player, storage: player.ToolStorage, layout: Type.SingleBottom, inputType: InputTypes.Always, blocksUpdatesBelow: false, transDirection: TransDirection.Down);
 
                         break;
                     }
 
-                case Layout.Inventory:
+                case LayoutType.Inventory:
                     {
                         soundOpen.Play();
 
-                        var virtStoragePackList = new List<VirtualPieceStorage.VirtPieceStoragePack>
+                        var virtStoragePackList = new List<VirtPieceStoragePack>
                         {
-                            new VirtualPieceStorage.VirtPieceStoragePack(storage: player.pieceStorage),
-                            new VirtualPieceStorage.VirtPieceStoragePack(storage: player.ToolStorage, newRow: true),
+                            new VirtPieceStoragePack(storage: player.pieceStorage),
+                            new VirtPieceStoragePack(storage: player.ToolStorage, newRow: true),
                         };
                         PieceStorage virtualStorage = new VirtualPieceStorage(storagePiece: player, virtStoragePackList: virtStoragePackList, label: "Inventory", padding: 1);
 
@@ -239,28 +240,12 @@ namespace SonOfRobin
                         break;
                     }
 
-                //case Layout.Inventory:
-                //    {
-                //        soundOpen.Play();
-
-                //        var virtStoragePackList = new List<VirtualPieceStorage.VirtPieceStoragePack>
-                //        {
-                //            new VirtualPieceStorage.VirtPieceStoragePack(storage: player.pieceStorage),
-                //            new VirtualPieceStorage.VirtPieceStoragePack(storage: player.EquipStorage),
-                //            new VirtualPieceStorage.VirtPieceStoragePack(storage: player.ToolStorage, newRow: true),
-                //        };
-                //        PieceStorage virtualStorage = new VirtualPieceStorage(storagePiece: player, virtStoragePackList: virtStoragePackList, label: "Inventory", padding: 1);
-                //        new Inventory(piece: player, storage: virtualStorage, layout: Type.SingleCenter, transDirection: TransDirection.Up);
-
-                //        break;
-                //    }
-
-                case Layout.FieldStorage:
+                case LayoutType.FieldStorage:
                     {
-                        var virtStoragePackList = new List<VirtualPieceStorage.VirtPieceStoragePack>
+                        var virtStoragePackList = new List<VirtPieceStoragePack>
                         {
-                            new VirtualPieceStorage.VirtPieceStoragePack(storage: player.pieceStorage),
-                            new VirtualPieceStorage.VirtPieceStoragePack(storage: player.ToolStorage, newRow: true),
+                            new VirtPieceStoragePack(storage: player.pieceStorage),
+                            new VirtPieceStoragePack(storage: player.ToolStorage, newRow: true),
                         };
                         PieceStorage virtualStorage = new VirtualPieceStorage(storagePiece: player, virtStoragePackList: virtStoragePackList, label: "Inventory", padding: 1);
 
@@ -275,7 +260,7 @@ namespace SonOfRobin
                     throw new ArgumentException($"Unknown inventory layout '{newLayout}'.");
             }
 
-            layout = newLayout;
+            Layout = newLayout;
         }
 
         private Dictionary<string, float> GetTransitionsParams()
@@ -348,7 +333,7 @@ namespace SonOfRobin
 
             if (selectedPiece.buffList != null)
             {
-                foreach (BuffEngine.Buff buff in selectedPiece.buffList)
+                foreach (Buff buff in selectedPiece.buffList)
                 { entryList.Add(new InfoWindow.TextEntry(text: buff.description, color: buff.isPositive ? Color.Cyan : new Color(255, 120, 70), scale: 1f)); }
             }
 
@@ -749,7 +734,7 @@ namespace SonOfRobin
             if (InputMapper.HasBeenPressed(InputMapper.Action.GlobalCancelReturnSkip))
             {
                 // must go first, to read touch return button!
-                SetLayout(newLayout: Layout.Toolbar, player: this.storage.world.Player);
+                SetLayout(newLayout: LayoutType.Toolbar, player: this.storage.world.Player);
                 return;
             }
 
@@ -866,7 +851,7 @@ namespace SonOfRobin
                 Vector2 touchPos = touch.Position / Preferences.GlobalScale;
                 if (!thisInvBgRect.Contains(touchPos) && !otherInvBgRect.Contains(touchPos))
                 {
-                    SetLayout(newLayout: Layout.Toolbar, player: this.storage.world.Player);
+                    SetLayout(newLayout: LayoutType.Toolbar, player: this.storage.world.Player);
                     return true;
                 }
             }
@@ -880,7 +865,7 @@ namespace SonOfRobin
 
             if (InputMapper.HasBeenPressed(InputMapper.Action.GlobalCancelReturnSkip))
             {
-                SetLayout(newLayout: Layout.Toolbar, player: this.storage.world.Player);
+                SetLayout(newLayout: LayoutType.Toolbar, player: this.storage.world.Player);
                 return;
             }
 

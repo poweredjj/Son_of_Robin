@@ -22,7 +22,8 @@ namespace SonOfRobin
         protected readonly bool rebuildsMenuInstantScroll;
         protected readonly bool rebuildsAllMenus;
         public List<InfoWindow.TextEntry> infoTextList;
-        public virtual string DisplayedText { get { return this.name; } }
+        public virtual string DisplayedText
+        { get { return this.name; } }
 
         public Vector2 Position
         {
@@ -68,7 +69,9 @@ namespace SonOfRobin
                 return new Rectangle(x: (int)position.X, y: (int)position.Y - this.menu.CurrentScrollPosition, width: menu.EntryWidth, height: menu.EntryHeight);
             }
         }
-        protected float OpacityFade { get { return Math.Max((float)this.lastFlashFrame - (float)SonOfRobinGame.CurrentUpdate, 0) * 0.015f; } }
+
+        protected float OpacityFade
+        { get { return Math.Max((float)this.lastFlashFrame - (float)SonOfRobinGame.CurrentUpdate, 0) * 0.015f; } }
 
         public Entry(Menu menu, string name, bool rebuildsMenu = false, bool rebuildsMenuInstantScroll = false, bool rebuildsAllMenus = false, List<InfoWindow.TextEntry> infoTextList = null, List<Texture2D> imageList = null)
         {
@@ -204,6 +207,5 @@ namespace SonOfRobin
 
             SonOfRobinGame.HintWindow.TurnOn(newPosX: (int)windowPos.X, newPosY: (int)windowPos.Y, entryList: this.infoTextList, addTransition: true);
         }
-
     }
 }

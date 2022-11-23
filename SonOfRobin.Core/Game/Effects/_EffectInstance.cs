@@ -27,7 +27,5 @@ namespace SonOfRobin
             if (this.framesLeft > -1) this.framesLeft -= 1;
             effect.CurrentTechnique.Passes[0].Apply();
         }
-
     }
-
 }

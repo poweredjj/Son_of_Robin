@@ -4,7 +4,6 @@ using Studies.Joystick.Input;
 using System;
 using System.Linq;
 
-
 namespace SonOfRobin
 {
     public enum TouchLayout
@@ -27,6 +26,7 @@ namespace SonOfRobin
         TextWindowCancel,
         TextWindowOkCancel,
     }
+
     public class TouchInput
     {
         public static TouchLayout currentLayout;
@@ -54,15 +54,25 @@ namespace SonOfRobin
         private static Vector2 rightStick = new Vector2(0, 0);
 
         private static Vector2 emptyStick = new Vector2(0, 0);
-        public static Vector2 LeftStick { get { return Input.InputActive && Preferences.enableTouchJoysticks ? leftStick : emptyStick; } }
-        public static Vector2 RightStick { get { return Input.InputActive && Preferences.enableTouchJoysticks ? rightStick : emptyStick; } }
+
+        public static Vector2 LeftStick
+        { get { return Input.InputActive && Preferences.enableTouchJoysticks ? leftStick : emptyStick; } }
+
+        public static Vector2 RightStick
+        { get { return Input.InputActive && Preferences.enableTouchJoysticks ? rightStick : emptyStick; } }
 
         private static TouchCollection lastFrameTouchPanelState = new TouchCollection { };
         private static TouchCollection touchPanelState = new TouchCollection { };
         private static readonly TouchCollection emptyTouchList = new TouchCollection { };
-        public static TouchCollection TouchPanelState { get { return Input.InputActive ? touchPanelState : emptyTouchList; } }
-        public static bool IsGestureAvailable { get { return Input.InputActive && TouchPanel.IsGestureAvailable; } } // should be used before reading gesture directly
-        public static bool IsBeingTouchedInAnyWay { get { return TouchPanelState.Count > 0; } }
+
+        public static TouchCollection TouchPanelState
+        { get { return Input.InputActive ? touchPanelState : emptyTouchList; } }
+
+        public static bool IsGestureAvailable
+        { get { return Input.InputActive && TouchPanel.IsGestureAvailable; } } // should be used before reading gesture directly
+
+        public static bool IsBeingTouchedInAnyWay
+        { get { return TouchPanelState.Count > 0; } }
 
         private static DateTime lastPressedTime = DateTime.Now;
         private static Vector2 lastPressPos = new Vector2(-100, -100); //  (-100, -100) == null equivalent
@@ -189,14 +199,16 @@ namespace SonOfRobin
             return zoomDelta;
         }
 
-
         public static bool IsStateAvailable(TouchLocationState state)
         {
             var matchingTypes = TouchPanelState.Where(touch => touch.State == state).ToList();
             return matchingTypes.Count > 0;
         }
+
         private static int lastFrameLayoutChanged = 0;
-        public static int FramesSinceLayoutChanged { get { return SonOfRobinGame.CurrentUpdate - lastFrameLayoutChanged; } }
+
+        public static int FramesSinceLayoutChanged
+        { get { return SonOfRobinGame.CurrentUpdate - lastFrameLayoutChanged; } }
 
         public static void GetState(GameTime gameTime)
         {

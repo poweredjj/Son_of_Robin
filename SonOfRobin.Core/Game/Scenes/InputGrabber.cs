@@ -18,6 +18,7 @@ namespace SonOfRobin
         private readonly string targetPropertyName;
 
         private int waitFramesLeft;
+
         public static bool GrabberIsActive
         { get { return GetTopSceneOfType(typeof(InputGrabber)) != null; } }
 

@@ -34,6 +34,7 @@ namespace SonOfRobin
                  new BiomeConstrain(terrainName: Terrain.Name.Humidity, min: 80, max: 255),
             } }
         };
+
         public Grid Grid { get; private set; }
 
         private readonly Dictionary<Name, BitArray> extDataByProperty;
@@ -70,6 +71,7 @@ namespace SonOfRobin
                 this.loadedFromTemplate = true;
             }
         }
+
         public void AttachToNewGrid(Grid grid)
         {
             this.Grid = grid;

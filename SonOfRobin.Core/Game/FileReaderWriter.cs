@@ -3,7 +3,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 
 namespace SonOfRobin
 {
-    class FileReaderWriter
+    internal class FileReaderWriter
     {
         public static void Save(object savedObj, string path)
         {
@@ -34,16 +34,12 @@ namespace SonOfRobin
             }
             catch (System.Runtime.Serialization.SerializationException)
             { return null; } // file corrupted
-
             catch (System.Text.DecoderFallbackException)
             { return null; } // file corrupted
-
             catch (FileNotFoundException)
             { return null; }
-
             catch (DirectoryNotFoundException)
             { return null; }
         }
-
     }
 }

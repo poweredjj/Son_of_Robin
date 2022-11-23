@@ -49,6 +49,5 @@ namespace SonOfRobin
                 else scene.Remove();
             }
         }
-
     }
 }

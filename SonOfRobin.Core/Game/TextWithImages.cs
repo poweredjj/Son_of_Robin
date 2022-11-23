@@ -46,11 +46,13 @@ namespace SonOfRobin
         public static readonly string imageMarker = "|";
 
         private readonly SpriteFont font;
-        public string TextOriginal { get { return this.textOriginal; } }
+        public string TextOriginal
+        { get { return this.textOriginal; } }
         private readonly string textOriginal;
         private readonly string textWithResizedMarkers;
         private readonly List<ImageInfo> imageInfoList;
-        private List<Texture2D> ImageList { get { return this.imageInfoList.Select(info => info.texture).ToList(); } }
+        private List<Texture2D> ImageList
+        { get { return this.imageInfoList.Select(info => info.texture).ToList(); } }
         private readonly bool treatImagesAsSquares;
         private readonly bool animate;
         private readonly Sound animSound;
@@ -64,8 +66,10 @@ namespace SonOfRobin
         public bool AnimationFinished { get; private set; }
         private readonly int framesPerChar;
         private readonly int charsPerFrame;
-        public string Text { get { return this.textWithResizedMarkers; } }
-        private string AnimatedText { get { return this.textWithResizedMarkers.Substring(0, this.charCounter); } }
+        public string Text
+        { get { return this.textWithResizedMarkers; } }
+        private string AnimatedText
+        { get { return this.textWithResizedMarkers.Substring(0, this.charCounter); } }
 
         public TextWithImages(SpriteFont font, string text, List<Texture2D> imageList, bool animate = false, int framesPerChar = 0, int charsPerFrame = 1, Sound animSound = null, bool treatImagesAsSquares = false)
         {
@@ -110,6 +114,7 @@ namespace SonOfRobin
 
             return true;
         }
+
         public bool ImageListEqual(List<Texture2D> imageListToCompare)
         {
             if (!this.imageInfoList.Any() && imageListToCompare == null) return true;
@@ -177,6 +182,7 @@ namespace SonOfRobin
 
             return (newText, newImageInfoList);
         }
+
         private static string GetResizedMarker(SpriteFont font, Texture2D image, bool treatImagesAsSquares)
         {
             float imageScale = (float)image.Height / font.MeasureString(" ").Y;
@@ -288,6 +294,5 @@ namespace SonOfRobin
                 imageNo++;
             }
         }
-
     }
 }

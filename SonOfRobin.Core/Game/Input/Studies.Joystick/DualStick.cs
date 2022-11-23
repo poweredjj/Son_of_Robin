@@ -12,19 +12,26 @@ namespace Studies.Joystick.Input
     {
         // How quickly the touch stick follows in FreeFollow mode
         public readonly float aliveZoneFollowSpeed;
+
         // How far from the alive zone we can get before the touch stick starts to follow in FreeFollow mode
         public readonly float aliveZoneFollowFactor;
+
         // If we let the touch origin get too close to the screen edge,
         // the direction is less accurate, so push it away from the edge.
         public readonly float edgeSpacing;
+
         // Where touches register, if they first land beyond this point,
         // the touch wont be registered as occuring inside the stick
         public readonly float aliveZoneSize;
+
         // Keeps information of last 4 taps
         private readonly TapStart[] tapStarts = new TapStart[4];
+
         private int tapStartCount = 0;
+
         // this keeps counting, no ideia why i cant reset it
         private double totalTime;
+
         public DualStick(float aliveZoneFollowFactor = 1.3f, float aliveZoneFollowSpeed = 0.05f, float edgeSpacing = 25f, float aliveZoneSize = 65f, float deadZoneSize = 5f)
         {
             this.aliveZoneFollowFactor = aliveZoneFollowFactor;
@@ -48,8 +55,10 @@ namespace Studies.Joystick.Input
             //TouchPanel.EnabledGestures = GestureType.None;
             //TouchPanel.DisplayOrientation = DisplayOrientation.LandscapeLeft;
         }
+
         public Stick RightStick { get; set; }
         public Stick LeftStick { get; set; }
+
         public void Update(GameTime gameTime)
         {
             var dt = (float)gameTime.ElapsedGameTime.TotalMilliseconds;
@@ -212,6 +221,5 @@ namespace Studies.Joystick.Input
 
             return destinationRectangle;
         }
-
     }
 }

@@ -38,6 +38,7 @@ namespace SonOfRobin
         {
             return this.Min <= value && value <= this.Max;
         }
+
         public AllowedRange GetRangeCopy(bool isReadOnly)
         {
             var rangeCopy = new AllowedRange(min: this.Min, max: this.Max);
@@ -45,6 +46,5 @@ namespace SonOfRobin
 
             return rangeCopy;
         }
-
     }
 }

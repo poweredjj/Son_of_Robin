@@ -5,7 +5,8 @@ namespace SonOfRobin
 {
     public class ButtonScheme
     {
-        public enum Type { Xbox360, XboxSeries, DualShock4, DualSense, SwitchProController }
+        public enum Type
+        { Xbox360, XboxSeries, DualShock4, DualSense, SwitchProController }
 
         private static Type currentType;
 
@@ -174,8 +175,8 @@ namespace SonOfRobin
 
                     leftStick = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/Switch/Switch_Left_Stick");
                     rightStick = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/Switch/Switch_Right_Stick");
-                    leftStickClick = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/Xbox 360/360_Left_Stick_Click"); // graphics missing 
-                    rightStickClick = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/Xbox 360/360_Right_Stick_Click");  // graphics missing 
+                    leftStickClick = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/Xbox 360/360_Left_Stick_Click"); // graphics missing
+                    rightStickClick = SonOfRobinGame.ContentMgr.Load<Texture2D>("gfx/Xbox 360/360_Right_Stick_Click");  // graphics missing
 
                     break;
 
@@ -185,6 +186,5 @@ namespace SonOfRobin
 
             SonOfRobinGame.ControlTips.RefreshLayout();
         }
-
     }
 }

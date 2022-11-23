@@ -22,15 +22,19 @@ namespace SonOfRobin
                 {
                     case Input.ControlType.Touch:
                         return new List<Texture2D>();
+
                     case Input.ControlType.Gamepad:
                         return GetAnalogTextureList(InputMapper.currentMappingGamepad.leftStick);
+
                     case Input.ControlType.KeyboardAndMouse:
                         return GetAnalogTextureList(InputMapper.currentMappingKeyboard.leftStick);
+
                     default:
                         throw new ArgumentException($"Unsupported tipsTypeToShow - '{Input.currentControlType}'.");
                 }
             }
         }
+
         public static List<Texture2D> RightStickTextureList
         {
             get
@@ -39,10 +43,13 @@ namespace SonOfRobin
                 {
                     case Input.ControlType.Touch:
                         return new List<Texture2D>();
+
                     case Input.ControlType.Gamepad:
                         return GetAnalogTextureList(InputMapper.currentMappingGamepad.rightStick);
+
                     case Input.ControlType.KeyboardAndMouse:
                         return GetAnalogTextureList(InputMapper.currentMappingKeyboard.rightStick);
+
                     default:
                         throw new ArgumentException($"Unsupported tipsTypeToShow - '{Input.currentControlType}'.");
                 }
@@ -187,5 +194,4 @@ namespace SonOfRobin
             buttonTextures[Buttons.RightTrigger] = ButtonScheme.buttonRT;
         }
     }
-
 }

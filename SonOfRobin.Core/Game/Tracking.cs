@@ -6,7 +6,6 @@ using System.Linq;
 namespace SonOfRobin
 
 {
-
     public enum XAlign
     {
         Center,
@@ -20,6 +19,7 @@ namespace SonOfRobin
         Top,
         Bottom
     }
+
     public class Tracking
     {
         public readonly bool isCorrect;
@@ -35,6 +35,7 @@ namespace SonOfRobin
         private readonly int lastTrackingFrame;
         private readonly bool bounceWhenRemoved;
         private readonly int followSlowDown;
+
         public bool BothSpritesExistAndOnBoard
         {
             get
@@ -45,6 +46,7 @@ namespace SonOfRobin
                     this.followingSprite.boardPiece.sprite.IsOnBoard;
             }
         }
+
         public bool ShouldBeRemoved
         {
             get
@@ -89,7 +91,6 @@ namespace SonOfRobin
             this.AddToTrackingQueue();
         }
 
-
         public Dictionary<string, Object> Serialize()
         {
             var trackingData = new Dictionary<string, Object> {
@@ -107,7 +108,6 @@ namespace SonOfRobin
                 {"lastTrackingFrame", this.lastTrackingFrame},
                 {"bounceWhenRemoved", this.bounceWhenRemoved},
                 {"followSlowDown", this.followSlowDown},
-
             };
 
             return trackingData;
@@ -169,7 +169,6 @@ namespace SonOfRobin
                 else tracking.SetPosition();
             }
         }
-
 
         private void SetPosition()
         {
@@ -246,7 +245,5 @@ namespace SonOfRobin
 
             return new Vector2(targetX - sprite.position.X, targetY - sprite.position.Y);
         }
-
-
     }
 }

@@ -201,6 +201,5 @@ namespace SonOfRobin
 
             Helpers.DrawTextureInsideRect(texture: this.texture, rectangle: destBoundsRect, color: color * opacity);
         }
-
     }
 }

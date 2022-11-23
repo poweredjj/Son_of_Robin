@@ -30,6 +30,7 @@ namespace SonOfRobin
 
             tipCollection[this.text] = this;
         }
+
         private Vector2 WholeSize
         {
             get
@@ -53,6 +54,7 @@ namespace SonOfRobin
                 return new Vector2(sumWidth, sumHeight);
             }
         }
+
         public void Draw(ControlTips controlTips, int drawOffsetX)
         {
             Vector2 basePos = new Vector2(drawOffsetX, 0);

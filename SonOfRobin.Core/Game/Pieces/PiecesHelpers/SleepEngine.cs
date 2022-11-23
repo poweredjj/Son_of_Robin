@@ -32,6 +32,5 @@ namespace SonOfRobin
             if (this.hitPointsChange > 0) player.hitPoints = Math.Min(player.hitPoints, player.maxHitPoints);
             else player.hitPoints = Math.Max(player.hitPoints, player.maxHitPoints * 0.15f);
         }
-
     }
 }

@@ -18,8 +18,23 @@ namespace SonOfRobin
         public readonly bool castShadows;
         public int tempShadowMaskIndex;
 
+        public LightEngine(float opacity, Color color, bool colorActive, bool castShadows, float addedGfxRectMultiplier = 0f, bool isActive = true, Sprite sprite = null, int width = 0, int height = 0, int size = 0, bool glowOnlyAtNight = false)
+        {
+            this.IsActive = isActive;
+            this.sprite = sprite;
+            this.width = size == 0 ? width : size;
+            this.height = size == 0 ? height : size;
+            this.opacity = opacity;
+            this.color = color;
+            this.colorActive = colorActive;
+            this.addedGfxRectMultiplier = addedGfxRectMultiplier;
+            this.glowOnlyAtNight = glowOnlyAtNight;
+            this.castShadows = castShadows;
+        }
+
         public int Width
         { get { return (int)(this.sprite.gfxRect.Width * this.addedGfxRectMultiplier) + width; } set { this.width = value; } }
+
         public int Height
         { get { return (int)(this.sprite.gfxRect.Height * this.addedGfxRectMultiplier) + height; } set { this.height = value; } }
 
@@ -66,20 +81,6 @@ namespace SonOfRobin
             }
         }
 
-        public LightEngine(float opacity, Color color, bool colorActive, bool castShadows, float addedGfxRectMultiplier = 0f, bool isActive = true, Sprite sprite = null, int width = 0, int height = 0, int size = 0, bool glowOnlyAtNight = false)
-        {
-            this.IsActive = isActive;
-            this.sprite = sprite;
-            this.width = size == 0 ? width : size;
-            this.height = size == 0 ? height : size;
-            this.opacity = opacity;
-            this.color = color;
-            this.colorActive = colorActive;
-            this.addedGfxRectMultiplier = addedGfxRectMultiplier;
-            this.glowOnlyAtNight = glowOnlyAtNight;
-            this.castShadows = castShadows;
-        }
-
         public void AssignSprite(Sprite newSprite)
         {
             if (this.sprite != null) throw new ArgumentException($"Trying to assign new sprite '({this.sprite.boardPiece.readableName})' to lightEngine that already has sprite '({newSprite.boardPiece.readableName}') ");
@@ -108,15 +109,15 @@ namespace SonOfRobin
         {
             Dictionary<string, Object> lightData = new Dictionary<string, object>
             {
-                {"width", this.width },
-                {"height", this.height },
-                {"opacity", this.opacity },
-                {"color", new List<Byte>{color.R, color.G, color.B, color.A}},
-                {"colorActive", this.colorActive },
-                {"addedGfxRectMultiplier", this.addedGfxRectMultiplier },
-                {"isActive", this.IsActive },
-                {"glowOnlyAtNight", this.glowOnlyAtNight },
-                {"castShadows", this.castShadows },
+                { "width", this.width },
+                { "height", this.height },
+                { "opacity", this.opacity },
+                { "color", new List<Byte>{color.R, color.G, color.B, color.A} },
+                { "colorActive", this.colorActive },
+                { "addedGfxRectMultiplier", this.addedGfxRectMultiplier },
+                { "isActive", this.IsActive },
+                { "glowOnlyAtNight", this.glowOnlyAtNight },
+                { "castShadows", this.castShadows },
             };
 
             return lightData;

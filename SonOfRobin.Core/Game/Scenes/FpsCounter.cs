@@ -83,7 +83,8 @@ namespace SonOfRobin
 
         private FpsHistory fpsHistory;
         private int counterValue;
-        private string CounterText { get { return $"FPS {this.counterValue}"; } }
+        private string CounterText
+        { get { return $"FPS {this.counterValue}"; } }
 
         private Color CounterColor
         {
@@ -202,7 +203,6 @@ namespace SonOfRobin
                     lastYOffset = barYOffset;
                 }
             }
-
         }
     }
 }

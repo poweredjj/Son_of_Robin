@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 
-
 namespace SonOfRobin
 {
     public class Container : BoardPiece
@@ -19,7 +18,8 @@ namespace SonOfRobin
             this.pieceStorage = new PieceStorage(width: storageWidth, height: storageHeight, storagePiece: this, storageType: PieceStorage.StorageType.Chest);
         }
 
-        public override bool ShowStatBars { get { return true; } }
+        public override bool ShowStatBars
+        { get { return true; } }
 
         public override void DrawStatBar()
         {

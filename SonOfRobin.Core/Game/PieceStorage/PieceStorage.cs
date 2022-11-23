@@ -14,18 +14,37 @@ namespace SonOfRobin
         public readonly StorageType storageType;
         public readonly BoardPiece storagePiece;
         private readonly string label;
-        public string Label
-        { get { return this.label == null ? Convert.ToString(this.storageType) : this.label; } }
-        public byte Width { get; protected set; }
-        public byte Height { get; protected set; }
 
         protected StorageSlot[,] slots;
         protected Dictionary<string, Point> slotPosByID;
         private readonly byte stackLimit;
+        public StorageSlot lastUsedSlot; // last used by Inventory class
 
         public List<PieceTemplate.Name> AllowedPieceNames { get; private set; }
+        public byte Width { get; protected set; }
+        public byte Height { get; protected set; }
 
-        public StorageSlot lastUsedSlot; // last used by Inventory class
+        public PieceStorage(byte width, byte height, BoardPiece storagePiece, StorageType storageType, byte stackLimit = 255, List<PieceTemplate.Name> allowedPieceNames = null, string label = null)
+        {
+            if (width < 1) throw new ArgumentException($"Width {width} cannot be less than 1.");
+            if (height < 1) throw new ArgumentException($"Height {height} cannot be less than 1.");
+
+            this.storagePiece = storagePiece;
+            this.world = storagePiece.world;
+            this.storageType = storageType;
+            this.label = label;
+            this.stackLimit = stackLimit;
+            this.Width = width;
+            this.Height = height;
+            this.AllowedPieceNames = allowedPieceNames;
+
+            this.slots = this.MakeEmptySlots();
+            this.slotPosByID = new Dictionary<string, Point>();
+            this.UpdateSlotPosByID();
+        }
+
+        public string Label
+        { get { return this.label == null ? Convert.ToString(this.storageType) : this.label; } }
 
         public int AllSlotsCount
         { get { return this.Width * this.Height; } }
@@ -90,25 +109,6 @@ namespace SonOfRobin
                 }
                 return allSlots;
             }
-        }
-
-        public PieceStorage(byte width, byte height, BoardPiece storagePiece, StorageType storageType, byte stackLimit = 255, List<PieceTemplate.Name> allowedPieceNames = null, string label = null)
-        {
-            if (width < 1) throw new ArgumentException($"Width {width} cannot be less than 1.");
-            if (height < 1) throw new ArgumentException($"Height {height} cannot be less than 1.");
-
-            this.storagePiece = storagePiece;
-            this.world = storagePiece.world;
-            this.storageType = storageType;
-            this.label = label;
-            this.stackLimit = stackLimit;
-            this.Width = width;
-            this.Height = height;
-            this.AllowedPieceNames = allowedPieceNames;
-
-            this.slots = this.MakeEmptySlots();
-            this.slotPosByID = new Dictionary<string, Point>();
-            this.UpdateSlotPosByID();
         }
 
         public void AssignAllowedPieceNames(List<PieceTemplate.Name> allowedPieceNames)

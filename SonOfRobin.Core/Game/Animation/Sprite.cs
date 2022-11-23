@@ -10,12 +10,7 @@ namespace SonOfRobin
     {
         public enum Orientation
         {
-            // must be lowercase, to match animName
-            left,
-
-            right,
-            up,
-            down
+            left, right, up, down // must be lowercase, to match animName
         }
 
         public enum AdditionalMoveType
@@ -24,34 +19,89 @@ namespace SonOfRobin
         public readonly string id;
         public readonly BoardPiece boardPiece;
         public readonly World world;
+
         public Vector2 position;
         public Orientation orientation;
         public float rotation;
+
         public float opacity;
+        public OpacityFade opacityFade;
+
         public AnimFrame frame;
         public Color color;
+        private bool visible;
+
         public LightEngine lightEngine;
+
         public AnimData.PkgName animPackage;
         public byte animSize;
         public string animName;
+
         private byte currentFrameIndex;
         private ushort currentFrameTimeLeft; // measured in game frames
-        public OpacityFade opacityFade;
+
         public Rectangle gfxRect;
         public Rectangle colRect;
+
         public readonly bool blocksMovement;
         public readonly bool blocksPlantGrowth;
         public readonly bool ignoresCollisions;
+
         public AllowedTerrain allowedTerrain;
         private readonly AllowedDensity allowedDensity;
+
         private readonly int minDistance;
         private readonly int maxDistance;
+
         private readonly bool floatsOnWater;
         public bool hasBeenDiscovered;
         public readonly EffectCol effectCol;
         public List<Cell.Group> gridGroups;
         public Cell currentCell; // current cell, that is containing the sprite
         public bool IsOnBoard { get; private set; }
+
+        public Sprite(World world, string id, BoardPiece boardPiece, AnimData.PkgName animPackage, byte animSize, string animName, bool ignoresCollisions, AllowedTerrain allowedTerrain, bool blocksMovement = true, bool visible = true, bool floatsOnWater = false, bool fadeInAnim = true, AllowedDensity allowedDensity = null, LightEngine lightEngine = null, int minDistance = 0, int maxDistance = 100, bool blocksPlantGrowth = false)
+        {
+            this.id = id; // duplicate from BoardPiece class
+            this.boardPiece = boardPiece;
+            this.world = world;
+            this.rotation = 0f;
+            this.orientation = Orientation.right;
+            this.animPackage = animPackage;
+            this.animSize = animSize;
+            this.animName = animName;
+            this.color = Color.White;
+            this.floatsOnWater = floatsOnWater;
+            this.currentFrameIndex = 0;
+            this.currentFrameTimeLeft = 0;
+            this.gfxRect = Rectangle.Empty;
+            this.colRect = Rectangle.Empty;
+            this.blocksMovement = blocksMovement;
+            this.ignoresCollisions = ignoresCollisions;
+            this.blocksPlantGrowth = blocksPlantGrowth;
+            this.allowedTerrain = allowedTerrain;
+            this.allowedDensity = allowedDensity;
+            this.minDistance = minDistance;
+            this.maxDistance = maxDistance;
+            if (this.allowedDensity != null) this.allowedDensity.FinishCreation(piece: this.boardPiece, sprite: this);
+            this.visible = visible; // initially it is assigned normally
+            this.effectCol = new EffectCol(world: world);
+            this.hasBeenDiscovered = false;
+            this.currentCell = null;
+            this.IsOnBoard = false;
+            if (fadeInAnim)
+            {
+                this.opacity = 0f;
+                this.opacityFade = new OpacityFade(sprite: this, destOpacity: 1f);
+            }
+            else this.opacity = 1f;
+
+            this.AssignFrame(checkForCollision: false);
+            this.gridGroups = this.GetGridGroups();
+
+            this.lightEngine = lightEngine;
+            if (this.lightEngine != null) this.lightEngine.AssignSprite(this);
+        }
 
         public string CompleteAnimID
         { get { return GetCompleteAnimId(animPackage: this.animPackage, animSize: this.animSize, animName: this.animName); } }
@@ -73,8 +123,6 @@ namespace SonOfRobin
                 return false;
             }
         }
-
-        private bool visible;
 
         public bool IsInWater
         { get { return this.GetFieldValue(Terrain.Name.Height) < Terrain.waterLevelMax; } }
@@ -142,49 +190,6 @@ namespace SonOfRobin
                 if (!this.blocksMovement || this.position.Y < trackedPiece.sprite.position.Y || this.boardPiece.id == trackedPiece.id) return false;
                 return this.gfxRect.Contains(trackedPiece.sprite.position);
             }
-        }
-
-        public Sprite(World world, string id, BoardPiece boardPiece, AnimData.PkgName animPackage, byte animSize, string animName, bool ignoresCollisions, AllowedTerrain allowedTerrain, bool blocksMovement = true, bool visible = true, bool floatsOnWater = false, bool fadeInAnim = true, AllowedDensity allowedDensity = null, LightEngine lightEngine = null, int minDistance = 0, int maxDistance = 100, bool blocksPlantGrowth = false)
-        {
-            this.id = id; // duplicate from BoardPiece class
-            this.boardPiece = boardPiece;
-            this.world = world;
-            this.rotation = 0f;
-            this.orientation = Orientation.right;
-            this.animPackage = animPackage;
-            this.animSize = animSize;
-            this.animName = animName;
-            this.color = Color.White;
-            this.floatsOnWater = floatsOnWater;
-            this.currentFrameIndex = 0;
-            this.currentFrameTimeLeft = 0;
-            this.gfxRect = Rectangle.Empty;
-            this.colRect = Rectangle.Empty;
-            this.blocksMovement = blocksMovement;
-            this.ignoresCollisions = ignoresCollisions;
-            this.blocksPlantGrowth = blocksPlantGrowth;
-            this.allowedTerrain = allowedTerrain;
-            this.allowedDensity = allowedDensity;
-            this.minDistance = minDistance;
-            this.maxDistance = maxDistance;
-            if (this.allowedDensity != null) this.allowedDensity.FinishCreation(piece: this.boardPiece, sprite: this);
-            this.visible = visible; // initially it is assigned normally
-            this.effectCol = new EffectCol(world: world);
-            this.hasBeenDiscovered = false;
-            this.currentCell = null;
-            this.IsOnBoard = false;
-            if (fadeInAnim)
-            {
-                this.opacity = 0f;
-                this.opacityFade = new OpacityFade(sprite: this, destOpacity: 1f);
-            }
-            else this.opacity = 1f;
-
-            this.AssignFrame(checkForCollision: false);
-            this.gridGroups = this.GetGridGroups();
-
-            this.lightEngine = lightEngine;
-            if (this.lightEngine != null) this.lightEngine.AssignSprite(this);
         }
 
         public bool PlaceOnBoard(bool randomPlacement, Vector2 position, bool ignoreCollisions = false, bool precisePlacement = false, bool closestFreeSpot = false, int minDistanceOverride = -1, int maxDistanceOverride = -1, bool ignoreDensity = false)

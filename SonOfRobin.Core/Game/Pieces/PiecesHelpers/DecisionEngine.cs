@@ -17,6 +17,7 @@ namespace SonOfRobin
             public Action action;
             public float priority;
             public BoardPiece piece;
+
             public Choice(float priority, BoardPiece piece, Action action)
             {
                 this.priority = priority;
@@ -41,6 +42,5 @@ namespace SonOfRobin
             if (possibleChoices.Count > 0) return possibleChoices[0];
             else return null;
         }
-
     }
 }

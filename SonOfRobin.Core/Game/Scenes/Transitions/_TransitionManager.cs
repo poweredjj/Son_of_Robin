@@ -20,7 +20,9 @@ namespace SonOfRobin
             }
         }
 
-        public bool HasAnyTransition { get { return this.transitions.Count > 0; } }
+        public bool HasAnyTransition
+        { get { return this.transitions.Count > 0; } }
+
         public TransManager(Scene scene)
         {
             this.scene = scene;
@@ -84,6 +86,5 @@ namespace SonOfRobin
 
             return -99999;
         }
-
     }
 }

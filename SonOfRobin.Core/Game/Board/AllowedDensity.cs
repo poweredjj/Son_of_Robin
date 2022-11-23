@@ -56,6 +56,5 @@ namespace SonOfRobin
         {
             return nearbyPieces.Where(piece => piece.sprite.blocksMovement).ToList().Count;
         }
-
     }
 }

@@ -8,6 +8,7 @@ namespace SonOfRobin
         private readonly string coupledVarName;
         private readonly bool isOn;
         private bool isOnForOneFrame;
+
         public bool IsOn
         {
             get
@@ -41,6 +42,5 @@ namespace SonOfRobin
             this.FailIfCoupledPrefIsSet();
             this.isOnForOneFrame = true;
         }
-
     }
 }
