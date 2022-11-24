@@ -656,7 +656,7 @@ namespace SonOfRobin
                     rectColor = Color.Pink;
                     textColor = Color.Black;
 
-                    descriptionTextList.Add("Skilled cook.");
+                    descriptionTextList.Add("Better cooking, smart crafting.");
                     descriptionTextList.Add("Bigger inventory and toolbar.");
 
                     break;

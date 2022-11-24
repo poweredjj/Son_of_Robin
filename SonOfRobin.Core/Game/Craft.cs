@@ -219,7 +219,25 @@ namespace SonOfRobin
 
                 world.craftStats.AddRecipe(recipe: this, craftCount: 1);
 
-                PieceStorage.DestroySpecifiedPiecesInMultipleStorages(storageList: storagesToTakeFrom, quantityByPiece: this.ingredients);
+                var ingredientsCopy = new Dictionary<PieceTemplate.Name, byte>(this.ingredients); // copy - to allow reducing ingredient count
+                if (player.smartCrafting && world.random.Next(0, 4) == 0) // (0, 4)
+                {
+                    // smart crafting - randomly reducing used ingredients count
+                    List<PieceTemplate.Name> multipleIngredientNames = this.ingredients.Where(kvp => kvp.Value > 1).ToDictionary(kvp => kvp.Key, kvp => kvp.Value).Keys.ToList();
+
+                    if (multipleIngredientNames.Any())
+                    {
+                        PieceTemplate.Name randomNameToReduce = multipleIngredientNames[world.random.Next(0, multipleIngredientNames.Count)];
+                        byte quantity = ingredientsCopy[randomNameToReduce];
+
+                        float reduceMultiplier = (float)(0.2 + (world.random.NextDouble() * 0.3)); // 0.2 - 0.5
+                        byte amountToReduce = Math.Max((byte)(quantity * reduceMultiplier), (byte)1);
+                        ingredientsCopy[randomNameToReduce] -= amountToReduce;
+                        world.craftStats.AddSmartCraftingReducedAmount(ingredientName: randomNameToReduce, reducedAmount: amountToReduce);
+                    }
+                }
+
+                PieceStorage.DestroySpecifiedPiecesInMultipleStorages(storageList: storagesToTakeFrom, quantityByPiece: ingredientsCopy);
 
                 if (canBePickedUp)
                 {
@@ -290,6 +308,14 @@ namespace SonOfRobin
 
                 taskChain.Add(new HintMessage(text: message, boxType: HintMessage.BoxType.GreenBox, delay: 0, blockInput: false, useTransition: true,
                     imageList: new List<Texture2D> { PieceInfo.GetInfo(this.pieceToCreate).texture }, startingSound: soundName).ConvertToTask());
+
+                if (world.craftStats.LastCraftWasSmart)
+                {
+                    taskChain.Add(new HintMessage(text: $"Used less ingredients: | x{world.craftStats.LastSmartCraftReducedIngredientCount}", boxType: HintMessage.BoxType.GreenBox, delay: 0, blockInput: false, useTransition: true,
+                        imageList: new List<Texture2D> { PieceInfo.GetInfo(world.craftStats.LastSmartCraftReducedIngredientName).texture }, startingSound: SoundData.Name.Ding1).ConvertToTask());
+
+                    world.craftStats.ResetLastSmartCraft();
+                }
 
                 HintEngine hintEngine = world.HintEngine;
 

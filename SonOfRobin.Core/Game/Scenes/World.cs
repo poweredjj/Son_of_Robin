@@ -575,6 +575,7 @@ namespace SonOfRobin
                             this.Player.InvHeight += 1;
                             this.Player.ToolbarWidth += 1;
                             this.Player.cookingSkill *= 1.4f;
+                            this.Player.smartCrafting = true;
 
                             break;
 

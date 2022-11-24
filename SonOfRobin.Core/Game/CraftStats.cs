@@ -11,10 +11,15 @@ namespace SonOfRobin
         public int TotalNoOfCrafts { get; private set; }
         public int CraftedPiecesTotal { get; private set; }
         public int UsedIngredientsTotal { get; private set; }
+        public int SmartCraftingReducedIngredientCount { get; private set; }
 
         private Dictionary<string, int> craftedRecipes;
         private Dictionary<PieceTemplate.Name, int> craftedPieces;
         private Dictionary<PieceTemplate.Name, int> usedIngredients;
+
+        public bool LastCraftWasSmart { get; private set; }
+        public PieceTemplate.Name LastSmartCraftReducedIngredientName { get; private set; }
+        public byte LastSmartCraftReducedIngredientCount { get; private set; }
 
         public CraftStats()
         {
@@ -24,6 +29,18 @@ namespace SonOfRobin
             this.usedIngredients = new Dictionary<PieceTemplate.Name, int>();
             this.CraftedPiecesTotal = 0;
             this.UsedIngredientsTotal = 0;
+            this.SmartCraftingReducedIngredientCount = 0;
+
+            this.ResetLastSmartCraft();
+        }
+
+        public void ResetLastSmartCraft()
+        {
+            // has to be called after displaying smart craft messages
+
+            this.LastCraftWasSmart = false;
+            this.LastSmartCraftReducedIngredientName = PieceTemplate.Name.Empty;
+            this.LastSmartCraftReducedIngredientCount = 0;
         }
 
         public void AddRecipe(Craft.Recipe recipe, int craftCount = 1)
@@ -56,6 +73,15 @@ namespace SonOfRobin
             }
         }
 
+        public void AddSmartCraftingReducedAmount(PieceTemplate.Name ingredientName, byte reducedAmount)
+        {
+            this.LastCraftWasSmart = true;
+            this.LastSmartCraftReducedIngredientName = ingredientName;
+            this.LastSmartCraftReducedIngredientCount = reducedAmount;
+
+            this.SmartCraftingReducedIngredientCount += reducedAmount;
+        }
+
         public Dictionary<string, object> Serialize()
         {
             var statsData = new Dictionary<string, object>
@@ -66,6 +92,7 @@ namespace SonOfRobin
                 { "usedIngredients", this.usedIngredients },
                 { "CraftedPiecesTotal", this.CraftedPiecesTotal },
                 { "UsedIngredientsTotal", this.UsedIngredientsTotal },
+                { "SmartCraftingReducedIngredientCount", this.SmartCraftingReducedIngredientCount },
             };
 
             return statsData;
@@ -79,6 +106,7 @@ namespace SonOfRobin
             this.usedIngredients = (Dictionary<PieceTemplate.Name, int>)statsData["usedIngredients"];
             this.CraftedPiecesTotal = (int)statsData["CraftedPiecesTotal"];
             this.UsedIngredientsTotal = (int)statsData["UsedIngredientsTotal"];
+            this.SmartCraftingReducedIngredientCount = (int)statsData["SmartCraftingReducedIngredientCount"];
         }
 
         public bool HasBeenCrafted(Craft.Recipe recipe)
@@ -180,6 +208,11 @@ namespace SonOfRobin
                     currentPagePiecesCount = 0;
                     pageNo++;
                 }
+            }
+
+            if (this.SmartCraftingReducedIngredientCount > 0)
+            {
+                taskChain.Add(new HintMessage(text: $"Smart craft\nreduced ingredient count: {this.SmartCraftingReducedIngredientCount}", boxType: HintMessage.BoxType.BlueBox, delay: 0).ConvertToTask());
             }
 
             new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteTaskChain, turnOffInputUntilExecution: true, executeHelper: taskChain);
