@@ -16,7 +16,7 @@ namespace SonOfRobin
         private readonly IslandClock frozenClock;
         private readonly TimeSpan timePlayed;
         public readonly DateTime saveDate;
-        public readonly bool playerFemale;
+        public readonly World.PlayerType playerType;
         private string ElapsedTimeString { get { return this.timePlayed.ToString("hh\\:mm"); } }
 
         private string SaveDateString
@@ -43,7 +43,28 @@ namespace SonOfRobin
         { get { return $"seed: {String.Format("{0:0000}", this.seed)}   {this.width}x{this.height}"; } }
 
         public Texture2D AddInfoTexture
-        { get { return this.playerFemale ? AnimData.framesForPkgs[AnimData.PkgName.PlayerFemale].texture : AnimData.framesForPkgs[AnimData.PkgName.PlayerMale].texture; } }
+        {
+            get
+            {
+                Texture2D playerTexture;
+
+                switch (this.playerType)
+                {
+                    case World.PlayerType.Male:
+                        playerTexture = AnimData.framesForPkgs[AnimData.PkgName.PlayerMale].texture;
+                        break;
+
+                    case World.PlayerType.Female:
+                        playerTexture = AnimData.framesForPkgs[AnimData.PkgName.PlayerFemale].texture;
+                        break;
+
+                    default:
+                        throw new ArgumentException($"Unsupported playerType - {this.playerType}.");
+                }
+
+                return playerTexture;
+            }
+        }
 
         public SaveHeaderInfo(string folderName)
         {
@@ -62,7 +83,7 @@ namespace SonOfRobin
             this.height = -1;
             this.frozenClock = null;
             this.timePlayed = TimeSpan.FromSeconds(0);
-            this.playerFemale = false;
+            this.playerType = World.PlayerType.Male;
 
             if (!this.folderName.StartsWith(LoaderSaver.tempPrefix) && headerData != null && headerData.ContainsKey("saveVersion"))
             {
@@ -76,7 +97,7 @@ namespace SonOfRobin
                     this.height = (int)headerData["height"];
                     this.frozenClock = new IslandClock(elapsedUpdates: (int)headerData["clockTimeElapsed"]);
                     this.timePlayed = (TimeSpan)headerData["TimePlayed"];
-                    this.playerFemale = (bool)headerData["playerFemale"];
+                    this.playerType = (World.PlayerType)headerData["playerType"];
                 }
             }
         }

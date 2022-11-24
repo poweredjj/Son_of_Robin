@@ -9,6 +9,8 @@ namespace SonOfRobin
 {
     public class World : Scene
     {
+        public enum PlayerType { Male, Female }
+
         public Vector2 analogMovementLeftStick;
         public Vector2 analogMovementRightStick;
         public Vector2 analogCameraCorrection;
@@ -26,7 +28,7 @@ namespace SonOfRobin
         public DateTime creationEnd;
         public TimeSpan creationDuration;
         public readonly bool demoMode;
-        public readonly bool playerFemale;
+        public readonly PlayerType playerType;
 
         private Object saveGameData;
         public bool createMissingPiecesOutsideCamera;
@@ -53,7 +55,7 @@ namespace SonOfRobin
 
                     this.Player.RemoveFromStateMachines();
 
-                    BoardPiece spectator = PieceTemplate.CreateAndPlaceOnBoard(world: this, position: this.camera.TrackedPos, templateName: PieceTemplate.Name.PlayerGhost, closestFreeSpot: true, female: this.playerFemale, randomSex: false);
+                    BoardPiece spectator = PieceTemplate.CreateAndPlaceOnBoard(world: this, position: this.camera.TrackedPos, templateName: PieceTemplate.Name.PlayerGhost, closestFreeSpot: true, playerType: playerType);
 
                     spectator.sprite.orientation = this.Player != null ? this.Player.sprite.orientation : Sprite.Orientation.right;
 
@@ -261,11 +263,11 @@ namespace SonOfRobin
             }
         }
 
-        public World(int width, int height, int seed, int resDivider, bool playerFemale, Object saveGameData = null, bool demoMode = false) :
+        public World(int width, int height, int seed, int resDivider, PlayerType playerType, Object saveGameData = null, bool demoMode = false) :
               base(inputType: InputTypes.Normal, priority: 1, blocksUpdatesBelow: true, blocksDrawsBelow: true, touchLayout: TouchLayout.QuitLoading, tipsLayout: ControlTips.TipsLayout.QuitLoading)
         {
             this.demoMode = demoMode;
-            this.playerFemale = playerFemale;
+            this.playerType = playerType;
             this.cineMode = false;
             this.BuildMode = false;
             this.spectatorMode = false;
@@ -546,7 +548,7 @@ namespace SonOfRobin
         {
             for (int tryIndex = 0; tryIndex < 65535; tryIndex++)
             {
-                Player = (Player)PieceTemplate.CreateAndPlaceOnBoard(world: this, randomPlacement: true, position: Vector2.Zero, templateName: PieceTemplate.Name.Player, randomSex: false, female: this.playerFemale);
+                Player = (Player)PieceTemplate.CreateAndPlaceOnBoard(world: this, randomPlacement: true, position: Vector2.Zero, templateName: PieceTemplate.Name.Player, playerType: this.playerType);
                 if (Player.sprite.IsOnBoard)
                 {
                     Player.sprite.orientation = Sprite.Orientation.up;

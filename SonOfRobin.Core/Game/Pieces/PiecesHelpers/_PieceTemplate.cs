@@ -246,11 +246,11 @@ namespace SonOfRobin
             return CreatePiece(templateName: templateName, world: world, id: id, female: female, generation: generation);
         }
 
-        public static BoardPiece CreateAndPlaceOnBoard(Name templateName, World world, Vector2 position, bool randomPlacement = false, int generation = 0, bool ignoreCollisions = false, string id = null, bool closestFreeSpot = false, int minDistanceOverride = -1, int maxDistanceOverride = -1, bool ignoreDensity = false, bool randomSex = true, bool female = false)
+        public static BoardPiece CreateAndPlaceOnBoard(Name templateName, World world, Vector2 position, bool randomPlacement = false, int generation = 0, bool ignoreCollisions = false, string id = null, bool closestFreeSpot = false, int minDistanceOverride = -1, int maxDistanceOverride = -1, bool ignoreDensity = false, bool randomSex = true, bool female = false, World.PlayerType playerType = World.PlayerType.Male)
         {
             if (randomSex) female = BoardPiece.Random.Next(2) == 1;
 
-            BoardPiece boardPiece = CreatePiece(templateName: templateName, world: world, id: id, female: female, generation: generation);
+            BoardPiece boardPiece = CreatePiece(templateName: templateName, world: world, id: id, female: female, generation: generation, playerType: playerType);
 
             boardPiece.PlaceOnBoard(randomPlacement: randomPlacement, position: position, ignoreCollisions: ignoreCollisions, closestFreeSpot: closestFreeSpot, minDistanceOverride: minDistanceOverride, maxDistanceOverride: maxDistanceOverride, ignoreDensity: ignoreDensity);
 
@@ -263,7 +263,7 @@ namespace SonOfRobin
             return boardPiece;
         }
 
-        private static BoardPiece CreatePiece(Name templateName, World world, bool female, int generation = 0, string id = null)
+        private static BoardPiece CreatePiece(Name templateName, World world, bool female, int generation = 0, string id = null, World.PlayerType playerType = World.PlayerType.Male)
         {
             if (id == null) id = Helpers.GetUniqueHash();
 
@@ -302,22 +302,42 @@ namespace SonOfRobin
 
                         soundPack.AddAction(action: PieceSoundPack.Action.PlayerPant, sound: new Sound(name: female ? SoundData.Name.PantFemale : SoundData.Name.PantMale, maxPitchVariation: 0.3f, ignore3DAlways: true, volume: 0.8f));
 
-                        if (!female)
+                        AnimData.PkgName animPkg;
+
+                        switch (playerType)
                         {
-                            soundPack.AddAction(action: PieceSoundPack.Action.Cry, sound: new Sound(nameList: new List<SoundData.Name> { SoundData.Name.CryPlayerMale1, SoundData.Name.CryPlayerMale2, SoundData.Name.CryPlayerMale3, SoundData.Name.CryPlayerMale4 }, maxPitchVariation: 0.2f));
-                            soundPack.AddAction(action: PieceSoundPack.Action.Die, sound: new Sound(name: SoundData.Name.DeathPlayerMale));
+                            case World.PlayerType.Male:
+                                female = false;
+                                animPkg = AnimData.PkgName.PlayerMale;
+
+                                break;
+
+                            case World.PlayerType.Female:
+                                female = true;
+                                animPkg = AnimData.PkgName.PlayerFemale;
+
+                                break;
+
+                            default:
+                                throw new ArgumentException($"Unsupported playerType - {playerType}.");
                         }
-                        else
+
+                        if (female)
                         {
                             soundPack.AddAction(action: PieceSoundPack.Action.Cry, sound: new Sound(nameList: new List<SoundData.Name> { SoundData.Name.CryPlayerFemale1, SoundData.Name.CryPlayerFemale2, SoundData.Name.CryPlayerFemale3, SoundData.Name.CryPlayerFemale4 }, maxPitchVariation: 0.2f));
                             soundPack.AddAction(action: PieceSoundPack.Action.Die, sound: new Sound(name: SoundData.Name.DeathPlayerFemale));
+                        }
+                        else
+                        {
+                            soundPack.AddAction(action: PieceSoundPack.Action.Cry, sound: new Sound(nameList: new List<SoundData.Name> { SoundData.Name.CryPlayerMale1, SoundData.Name.CryPlayerMale2, SoundData.Name.CryPlayerMale3, SoundData.Name.CryPlayerMale4 }, maxPitchVariation: 0.2f));
+                            soundPack.AddAction(action: PieceSoundPack.Action.Die, sound: new Sound(name: SoundData.Name.DeathPlayerMale));
                         }
 
                         soundPack.AddAction(action: PieceSoundPack.Action.PlayerSpeak, sound: new Sound(name: SoundData.Name.Beep, cooldown: 4, volume: 0.12f, pitchChange: female ? 0.5f : -0.5f, maxPitchVariation: 0.07f, ignore3DAlways: true));
 
                         soundPack.AddAction(action: PieceSoundPack.Action.PlayerPulse, sound: new Sound(name: SoundData.Name.Pulse, isLooped: true, ignore3DAlways: true, volume: 0.7f));
 
-                        return new Player(name: templateName, world: world, id: id, animPackage: female ? AnimData.PkgName.PlayerFemale : AnimData.PkgName.PlayerMale, speed: 3, allowedTerrain: allowedTerrain, minDistance: 0, maxDistance: 65535, generation: generation, invWidth: 4, invHeight: 2, toolbarWidth: 3, toolbarHeight: 1, readableName: "player", description: "This is you.", yield: yield, activeState: BoardPiece.State.PlayerControlledWalking, lightEngine: new LightEngine(size: 300, opacity: 0.9f, colorActive: true, color: Color.Orange * 0.2f, isActive: false, castShadows: true), soundPack: soundPack, female: female);
+                        return new Player(name: templateName, world: world, id: id, animPackage: animPkg, speed: 3, allowedTerrain: allowedTerrain, minDistance: 0, maxDistance: 65535, generation: generation, invWidth: 4, invHeight: 2, toolbarWidth: 3, toolbarHeight: 1, readableName: "player", description: "This is you.", yield: yield, activeState: BoardPiece.State.PlayerControlledWalking, lightEngine: new LightEngine(size: 300, opacity: 0.9f, colorActive: true, color: Color.Orange * 0.2f, isActive: false, castShadows: true), soundPack: soundPack, female: female);
                     }
 
                 case Name.PlayerGhost:
@@ -329,7 +349,7 @@ namespace SonOfRobin
                             soundPack.AddAction(action: action, sound: new Sound(name: SoundData.Name.StepGhost, cooldown: 30, ignore3DAlways: true, volume: 0.8f, maxPitchVariation: 0.2f));
                         }
 
-                        Player spectator = new Player(name: templateName, world: world, id: id, animPackage: female ? AnimData.PkgName.PlayerFemale : AnimData.PkgName.PlayerMale, speed: 3, allowedTerrain: new AllowedTerrain(), minDistance: 0, maxDistance: 65535, generation: generation, invWidth: 4, invHeight: 2, toolbarWidth: 3, toolbarHeight: 1, readableName: "player ghost", description: "A metaphysical representation of player's soul.", blocksMovement: false, ignoresCollisions: true, floatsOnWater: true, activeState: BoardPiece.State.PlayerControlledGhosting, lightEngine: new LightEngine(size: 650, opacity: 1.4f, colorActive: true, color: Color.Blue * 5f, isActive: true, castShadows: true), soundPack: soundPack, female: false);
+                        Player spectator = new Player(name: templateName, world: world, id: id, animPackage: female ? AnimData.PkgName.PlayerFemale : AnimData.PkgName.PlayerMale, speed: 3, allowedTerrain: new AllowedTerrain(), minDistance: 0, maxDistance: 65535, generation: generation, invWidth: 4, invHeight: 2, toolbarWidth: 3, toolbarHeight: 1, readableName: "player ghost", description: "A metaphysical representation of player's soul.", blocksMovement: false, ignoresCollisions: true, floatsOnWater: true, activeState: BoardPiece.State.PlayerControlledGhosting, lightEngine: new LightEngine(size: 650, opacity: 1.4f, colorActive: true, color: Color.Blue * 5f, isActive: true, castShadows: true), soundPack: soundPack, female: female);
 
                         spectator.speed = 5;
                         spectator.sprite.opacity = 0.5f;

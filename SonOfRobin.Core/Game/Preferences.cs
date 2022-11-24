@@ -18,7 +18,7 @@ namespace SonOfRobin
         public static int newWorldSize;
 
         public static int newWorldResDivider;
-        public static bool newWorldPlayerFemale;
+        public static World.PlayerType newWorldPlayerType;
 
         public static bool randomSeed;
         public static char seedDigit1 = '0';
@@ -444,9 +444,8 @@ namespace SonOfRobin
 
         public static void ResetNewWorldSettings()
         {
-            newWorldPlayerFemale = false;
+            newWorldPlayerType = World.PlayerType.Male;
             SelectedWorldSize = WorldSize.medium;
-            newWorldPlayerFemale = false;
             CustomizeWorld = false;
         }
 
@@ -521,7 +520,7 @@ namespace SonOfRobin
             prefsData["newWorldResDivider"] = newWorldResDivider;
             prefsData["selectedWorldSize"] = SelectedWorldSize;
             prefsData["newWorldSize"] = newWorldSize;
-            prefsData["newWorldPlayerFemale"] = newWorldPlayerFemale;
+            prefsData["newWorldPlayerType"] = newWorldPlayerType;
             prefsData["randomSeed"] = randomSeed;
             prefsData["seedDigit1"] = seedDigit1;
             prefsData["seedDigit2"] = seedDigit2;
@@ -584,7 +583,7 @@ namespace SonOfRobin
                     SelectedWorldSize = (WorldSize)prefsData["selectedWorldSize"];
                     newWorldResDivider = (int)prefsData["newWorldResDivider"];
                     newWorldSize = (int)prefsData["newWorldSize"];
-                    newWorldPlayerFemale = (bool)prefsData["newWorldPlayerFemale"];
+                    newWorldPlayerType = (World.PlayerType)prefsData["newWorldPlayerType"];
                     randomSeed = (bool)prefsData["randomSeed"];
                     seedDigit1 = (char)prefsData["seedDigit1"];
                     seedDigit2 = (char)prefsData["seedDigit2"];

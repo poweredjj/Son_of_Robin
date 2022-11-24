@@ -287,7 +287,7 @@ namespace SonOfRobin
                         new Invoker(menu: menu, name: "reset settings", closesMenu: false, taskName: Scheduler.TaskName.ResetNewWorldSettings, rebuildsMenu: true);
                         new Separator(menu: menu, name: "", isEmpty: true);
 
-                        new Selector(menu: menu, name: "character", valueDict: new Dictionary<object, object> { { true, AnimData.framesForPkgs[AnimData.PkgName.PlayerFemale].texture }, { false, AnimData.framesForPkgs[AnimData.PkgName.PlayerMale].texture } }, targetObj: preferences, propertyName: "newWorldPlayerFemale", rebuildsAllMenus: true);
+                        new Selector(menu: menu, name: "character", valueDict: new Dictionary<object, object> { { World.PlayerType.Male, AnimData.framesForPkgs[AnimData.PkgName.PlayerMale].texture }, { World.PlayerType.Female, AnimData.framesForPkgs[AnimData.PkgName.PlayerFemale].texture } }, targetObj: preferences, propertyName: "newWorldPlayerType", rebuildsAllMenus: true);
 
                         new Separator(menu: menu, name: "", isEmpty: true);
                         new Selector(menu: menu, name: "customize", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "CustomizeWorld", rebuildsMenu: true);
@@ -353,7 +353,7 @@ namespace SonOfRobin
                     {
                         Menu menu = new Menu(templateName: templateName, name: "CREATE ISLAND FROM TEMPLATE", blocksUpdatesBelow: false, canBeClosedManually: true, templateExecuteHelper: executeHelper);
 
-                        new Selector(menu: menu, name: "character", valueDict: new Dictionary<object, object> { { true, AnimData.framesForPkgs[AnimData.PkgName.PlayerFemale].texture }, { false, AnimData.framesForPkgs[AnimData.PkgName.PlayerMale].texture } }, targetObj: preferences, propertyName: "newWorldPlayerFemale", rebuildsAllMenus: true);
+                        new Selector(menu: menu, name: "character", valueDict: new Dictionary<object, object> { { World.PlayerType.Male, AnimData.framesForPkgs[AnimData.PkgName.PlayerMale].texture }, { World.PlayerType.Female, AnimData.framesForPkgs[AnimData.PkgName.PlayerFemale].texture } }, targetObj: preferences, propertyName: "newWorldPlayerType", rebuildsAllMenus: true);
 
                         new Separator(menu: menu, name: "", isEmpty: true);
 
@@ -361,7 +361,7 @@ namespace SonOfRobin
                         {
                             string detailLevelName = Preferences.namesForResDividers.ContainsKey(gridTemplate.resDivider) ? (string)Preferences.namesForResDividers[gridTemplate.resDivider] : $"{gridTemplate.resDivider}";
 
-                            new Invoker(menu: menu, name: $"{gridTemplate.width}x{gridTemplate.height}  seed  {String.Format("{0:0000}", gridTemplate.seed)}  detail {detailLevelName}", closesMenu: true, taskName: Scheduler.TaskName.CreateNewWorld, executeHelper: new Dictionary<string, Object> { { "width", gridTemplate.width }, { "height", gridTemplate.height }, { "seed", gridTemplate.seed }, { "resDivider", gridTemplate.resDivider }, { "playerFemale", Preferences.newWorldPlayerFemale } }, sound: SoundData.Name.NewGameStart);
+                            new Invoker(menu: menu, name: $"{gridTemplate.width}x{gridTemplate.height}  seed  {String.Format("{0:0000}", gridTemplate.seed)}  detail {detailLevelName}", closesMenu: true, taskName: Scheduler.TaskName.CreateNewWorld, executeHelper: new Dictionary<string, Object> { { "width", gridTemplate.width }, { "height", gridTemplate.height }, { "seed", gridTemplate.seed }, { "resDivider", gridTemplate.resDivider }, { "playerType", Preferences.newWorldPlayerType } }, sound: SoundData.Name.NewGameStart);
                         }
 
                         new Separator(menu: menu, name: "", isEmpty: true);
