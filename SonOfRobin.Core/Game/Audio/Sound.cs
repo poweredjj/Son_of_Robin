@@ -158,6 +158,8 @@ namespace SonOfRobin
                 this.UpdatePosition(instance);
             }
 
+            // MessageLog.AddMessage(msgType: MsgType.User, message: $"Playing {soundName} Volume {instance.Volume} Pitch {instance.Pitch}"); // for testing
+
             try
             {
                 instance.Play();
@@ -273,10 +275,10 @@ namespace SonOfRobin
             instance.Apply3D(audioListener, audioEmitter);
         }
 
-        public static void QuickPlay(SoundData.Name name, float volume = 1f)
+        public static void QuickPlay(SoundData.Name name, float volume = 1f, float pitchChange = 0f)
         {
             if (name == SoundData.Name.Empty) return;
-            new Sound(name: name, volume: volume).Play();
+            new Sound(name: name, volume: volume, pitchChange: pitchChange).Play();
         }
     }
 }

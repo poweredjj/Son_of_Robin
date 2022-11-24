@@ -15,11 +15,7 @@ namespace SonOfRobin
         public Vector2 analogMovementLeftStick;
         public Vector2 analogMovementRightStick;
         public Vector2 analogCameraCorrection;
-
         public bool WorldCreationInProgress { get; private set; }
-
-        public bool PiecesCreationInProgress
-        { get { return this.initialPiecesCreationFramesLeft > 0; } }
 
         private bool plantsProcessing;
         private const int initialPiecesCreationFramesTotal = 20;
@@ -39,6 +35,188 @@ namespace SonOfRobin
         public bool BuildMode { get; private set; }
 
         private bool spectatorMode;
+
+        private bool cineMode;
+
+        public readonly int seed;
+        public readonly int resDivider;
+        public int maxAnimalsPerName;
+        public readonly Random random;
+        public readonly int width;
+        public readonly int height;
+        public readonly Camera camera;
+        private RenderTarget2D darknessMask;
+        public readonly Map map;
+        public readonly PlayerPanel playerPanel;
+        public readonly SolidColorManager solidColorManager;
+        public readonly SMTypesManager stateMachineTypesManager;
+        public readonly CraftStats craftStats;
+        public List<PieceTemplate.Name> identifiedPieces; // pieces that were "looked at" in inventory
+        private bool mapEnabled;
+
+        public Player Player { get; private set; }
+        public HintEngine HintEngine { get; private set; }
+        public Dictionary<PieceTemplate.Name, int> pieceCountByName;
+        public Dictionary<Type, int> pieceCountByClass;
+        private List<PieceCreationData> creationDataList;
+        public Dictionary<string, Tracking> trackingQueue;
+        public List<Cell> plantCellsQueue;
+        public List<Sprite> plantSpritesQueue;
+        public List<Sprite> nonPlantSpritesQueue;
+        public Dictionary<int, List<WorldEvent>> eventQueue;
+        public Grid Grid { get; private set; }
+        public int CurrentFrame { get; private set; }
+        public int CurrentUpdate { get; private set; } // can be used to measure time elapsed on island
+        public int updateMultiplier;
+        public readonly IslandClock islandClock;
+        public string debugText;
+        public int ProcessedNonPlantsCount { get; private set; }
+        public int ProcessedPlantsCount { get; private set; }
+        private readonly List<Sprite> blockingLightSpritesList;
+        private readonly List<Sprite> lightSprites;
+        public List<PieceTemplate.Name> doNotCreatePiecesList;
+        public List<PieceTemplate.Name> discoveredRecipesForPieces;
+        public readonly DateTime createdTime; // for calculating time spent in game
+        private TimeSpan timePlayed; // real time spent while playing (differs from currentUpdate because of island time compression via updateMultiplier)
+
+        public World(int width, int height, int seed, int resDivider, PlayerType playerType, Object saveGameData = null, bool demoMode = false) :
+            base(inputType: InputTypes.Normal, priority: 1, blocksUpdatesBelow: true, blocksDrawsBelow: true, touchLayout: TouchLayout.QuitLoading, tipsLayout: ControlTips.TipsLayout.QuitLoading)
+        {
+            this.demoMode = demoMode;
+            this.playerType = playerType;
+            this.cineMode = false;
+            this.BuildMode = false;
+            this.spectatorMode = false;
+            if (this.demoMode)
+            {
+                this.InputType = InputTypes.None;
+                this.soundActive = false;
+            }
+            this.saveGameData = saveGameData;
+            this.createMissingPiecesOutsideCamera = false;
+            this.lastSaved = DateTime.Now;
+            this.WorldCreationInProgress = true;
+            this.plantsProcessing = false;
+            this.initialPiecesCreationFramesLeft = initialPiecesCreationFramesTotal;
+            this.creationStart = DateTime.Now;
+
+            if (seed < 0) throw new ArgumentException($"Seed value cannot be negative - {seed}.");
+
+            this.resDivider = resDivider;
+            this.seed = seed;
+            this.random = new Random(seed);
+            this.CurrentFrame = 0;
+            this.CurrentUpdate = 0;
+            this.createdTime = DateTime.Now;
+            this.TimePlayed = TimeSpan.Zero;
+            this.updateMultiplier = 1;
+            this.islandClock = this.saveGameData == null ? new IslandClock(0) : new IslandClock();
+
+            this.width = width;
+            this.height = height;
+            this.viewParams.Width = width; // it does not need to be updated, because world size is constant
+            this.viewParams.Height = height; // it does not need to be updated, because world size is constant
+
+            this.maxAnimalsPerName = (int)(this.width * this.height * 0.0000004);
+            MessageLog.AddMessage(msgType: MsgType.Debug, message: $"maxAnimalsPerName {maxAnimalsPerName}");
+            this.creationDataList = PieceCreationData.CreateDataList(maxAnimalsPerName: this.maxAnimalsPerName);
+
+            this.pieceCountByName = new Dictionary<PieceTemplate.Name, int>();
+            foreach (PieceTemplate.Name templateName in PieceTemplate.allNames) this.pieceCountByName[templateName] = 0;
+            this.pieceCountByClass = new Dictionary<Type, int> { };
+
+            this.trackingQueue = new Dictionary<string, Tracking>();
+            this.eventQueue = new Dictionary<int, List<WorldEvent>>();
+            this.HintEngine = new HintEngine(world: this);
+
+            this.plantSpritesQueue = new List<Sprite>();
+            this.nonPlantSpritesQueue = new List<Sprite>();
+            this.plantCellsQueue = new List<Cell>();
+            this.ProcessedNonPlantsCount = 0;
+            this.ProcessedPlantsCount = 0;
+            this.blockingLightSpritesList = new List<Sprite>();
+            this.lightSprites = new List<Sprite>();
+            this.doNotCreatePiecesList = new List<PieceTemplate.Name> { };
+            this.discoveredRecipesForPieces = new List<PieceTemplate.Name> { };
+            this.camera = new Camera(world: this, useWorldScale: true, useFluidMotionForMove: true, useFluidMotionForZoom: true);
+            this.camera.TrackCoords(new Vector2(0, 0));
+            this.MapEnabled = false;
+            this.map = new Map(world: this, touchLayout: TouchLayout.Map);
+            this.playerPanel = new PlayerPanel(world: this);
+            this.debugText = "";
+            if (saveGameData == null) this.Grid = new Grid(world: this, resDivider: resDivider);
+            else this.Deserialize(gridOnly: true);
+
+            this.AddLinkedScene(this.map);
+            this.AddLinkedScene(this.playerPanel);
+
+            this.solidColorManager = new SolidColorManager(this);
+            this.stateMachineTypesManager = new SMTypesManager(this);
+            this.craftStats = new CraftStats();
+            this.identifiedPieces = new List<PieceTemplate.Name> { PieceTemplate.Name.Hand };
+            if (this.demoMode) this.solidColorManager.Add(new SolidColor(color: Color.White, viewOpacity: 0.4f, clearScreen: false, priority: 1));
+            this.soundPaused = false;
+
+            SonOfRobinGame.Game.IsFixedTimeStep = false; // speeds up the creation process
+        }
+
+        public bool PiecesCreationInProgress
+        { get { return this.initialPiecesCreationFramesLeft > 0; } }
+
+        public bool MapEnabled
+        {
+            get { return this.mapEnabled; }
+            set
+            {
+                if (this.mapEnabled == value) return;
+                this.mapEnabled = value;
+
+                if (this.mapEnabled) this.ToggleMapMode();
+                else this.map.TurnOff();
+            }
+        }
+
+        public Sound DialogueSound
+        { get { return this.Player.soundPack.GetSound(PieceSoundPack.Action.PlayerSpeak); } }
+
+        public bool CineMode
+        {
+            get { return cineMode; }
+            set
+            {
+                cineMode = value;
+
+                if (cineMode)
+                {
+                    this.touchLayout = TouchLayout.Empty; // CineSkip should not be used here, because World class cannot execute the skip properly
+                    this.tipsLayout = ControlTips.TipsLayout.Empty;
+                    this.InputType = InputTypes.None;
+
+                    new Scheduler.Task(taskName: Scheduler.TaskName.TempoStop, delay: 0, executeHelper: null);
+                    this.stateMachineTypesManager.SetOnlyTheseTypes(enabledTypes: new List<Type> { typeof(Player), typeof(AmbientSound) }, everyFrame: true, nthFrame: true);
+
+                    this.Player.activeState = BoardPiece.State.PlayerControlledByCinematic;
+                    this.Player.pointWalkTarget = Vector2.Zero;
+                    this.Player.sprite.CharacterStand(); // to avoid playing walk animation while standing
+                }
+                else
+                {
+                    this.touchLayout = TouchLayout.WorldMain;
+                    this.tipsLayout = ControlTips.TipsLayout.WorldMain;
+                    this.InputType = InputTypes.Normal;
+
+                    this.Player.activeState = BoardPiece.State.PlayerControlledWalking;
+                    this.Player.pointWalkTarget = Vector2.Zero;
+
+                    this.solidColorManager.RemoveAll(0);
+
+                    this.camera.SetZoom(zoom: 1f, zoomSpeedMultiplier: 1f);
+                    this.camera.TrackPiece(this.Player);
+
+                    new Scheduler.Task(taskName: Scheduler.TaskName.TempoPlay, delay: 0, executeHelper: null);
+                }
+            }
+        }
 
         public bool SpectatorMode
         {
@@ -121,104 +299,6 @@ namespace SonOfRobin
             }
         }
 
-        private bool cineMode;
-
-        public bool CineMode
-        {
-            get { return cineMode; }
-            set
-            {
-                cineMode = value;
-
-                if (cineMode)
-                {
-                    this.touchLayout = TouchLayout.Empty; // CineSkip should not be used here, because World class cannot execute the skip properly
-                    this.tipsLayout = ControlTips.TipsLayout.Empty;
-                    this.InputType = InputTypes.None;
-
-                    new Scheduler.Task(taskName: Scheduler.TaskName.TempoStop, delay: 0, executeHelper: null);
-                    this.stateMachineTypesManager.SetOnlyTheseTypes(enabledTypes: new List<Type> { typeof(Player), typeof(AmbientSound) }, everyFrame: true, nthFrame: true);
-
-                    this.Player.activeState = BoardPiece.State.PlayerControlledByCinematic;
-                    this.Player.pointWalkTarget = Vector2.Zero;
-                    this.Player.sprite.CharacterStand(); // to avoid playing walk animation while standing
-                }
-                else
-                {
-                    this.touchLayout = TouchLayout.WorldMain;
-                    this.tipsLayout = ControlTips.TipsLayout.WorldMain;
-                    this.InputType = InputTypes.Normal;
-
-                    this.Player.activeState = BoardPiece.State.PlayerControlledWalking;
-                    this.Player.pointWalkTarget = Vector2.Zero;
-
-                    this.solidColorManager.RemoveAll(0);
-
-                    this.camera.SetZoom(zoom: 1f, zoomSpeedMultiplier: 1f);
-                    this.camera.TrackPiece(this.Player);
-
-                    new Scheduler.Task(taskName: Scheduler.TaskName.TempoPlay, delay: 0, executeHelper: null);
-                }
-            }
-        }
-
-        public readonly int seed;
-        public readonly int resDivider;
-        public int maxAnimalsPerName;
-        public readonly Random random;
-        public readonly int width;
-        public readonly int height;
-        public readonly Camera camera;
-        private RenderTarget2D darknessMask;
-        public readonly Map map;
-        public readonly PlayerPanel playerPanel;
-        public readonly SolidColorManager solidColorManager;
-        public readonly SMTypesManager stateMachineTypesManager;
-        public readonly CraftStats craftStats;
-        public List<PieceTemplate.Name> identifiedPieces; // pieces that were "looked at" in inventory
-        private bool mapEnabled;
-
-        public bool MapEnabled
-        {
-            get { return this.mapEnabled; }
-            set
-            {
-                if (this.mapEnabled == value) return;
-                this.mapEnabled = value;
-
-                if (this.mapEnabled) this.ToggleMapMode();
-                else this.map.TurnOff();
-            }
-        }
-
-        public Sound DialogueSound
-        { get { return this.Player.soundPack.GetSound(PieceSoundPack.Action.PlayerSpeak); } }
-
-        public Player Player { get; private set; }
-        public HintEngine HintEngine { get; private set; }
-        public Dictionary<PieceTemplate.Name, int> pieceCountByName;
-        public Dictionary<Type, int> pieceCountByClass;
-        private List<PieceCreationData> creationDataList;
-        public Dictionary<string, Tracking> trackingQueue;
-        public List<Cell> plantCellsQueue;
-        public List<Sprite> plantSpritesQueue;
-        public List<Sprite> nonPlantSpritesQueue;
-        public Dictionary<int, List<WorldEvent>> eventQueue;
-        public Grid Grid { get; private set; }
-        public int CurrentFrame { get; private set; }
-        public int CurrentUpdate { get; private set; } // can be used to measure time elapsed on island
-        public int updateMultiplier;
-        public readonly IslandClock islandClock;
-        public string debugText;
-        public int ProcessedNonPlantsCount { get; private set; }
-        public int ProcessedPlantsCount { get; private set; }
-        private readonly List<Sprite> blockingLightSpritesList;
-        private readonly List<Sprite> lightSprites;
-        public List<PieceTemplate.Name> doNotCreatePiecesList;
-        public List<PieceTemplate.Name> discoveredRecipesForPieces;
-        public readonly DateTime createdTime; // for calculating time spent in game
-        private TimeSpan timePlayed; // real time spent while playing (differs from currentUpdate because of island time compression via updateMultiplier)
-
         public TimeSpan TimePlayed
         {
             get
@@ -262,87 +342,6 @@ namespace SonOfRobin
 
                 return new Vector2((float)extendedViewRect.Width / (float)maxDarknessWidth, (float)extendedViewRect.Height / (float)maxDarknessHeight);
             }
-        }
-
-        public World(int width, int height, int seed, int resDivider, PlayerType playerType, Object saveGameData = null, bool demoMode = false) :
-              base(inputType: InputTypes.Normal, priority: 1, blocksUpdatesBelow: true, blocksDrawsBelow: true, touchLayout: TouchLayout.QuitLoading, tipsLayout: ControlTips.TipsLayout.QuitLoading)
-        {
-            this.demoMode = demoMode;
-            this.playerType = playerType;
-            this.cineMode = false;
-            this.BuildMode = false;
-            this.spectatorMode = false;
-            if (this.demoMode)
-            {
-                this.InputType = InputTypes.None;
-                this.soundActive = false;
-            }
-            this.saveGameData = saveGameData;
-            this.createMissingPiecesOutsideCamera = false;
-            this.lastSaved = DateTime.Now;
-            this.WorldCreationInProgress = true;
-            this.plantsProcessing = false;
-            this.initialPiecesCreationFramesLeft = initialPiecesCreationFramesTotal;
-            this.creationStart = DateTime.Now;
-
-            if (seed < 0) throw new ArgumentException($"Seed value cannot be negative - {seed}.");
-
-            this.resDivider = resDivider;
-            this.seed = seed;
-            this.random = new Random(seed);
-            this.CurrentFrame = 0;
-            this.CurrentUpdate = 0;
-            this.createdTime = DateTime.Now;
-            this.TimePlayed = TimeSpan.Zero;
-            this.updateMultiplier = 1;
-            this.islandClock = this.saveGameData == null ? new IslandClock(0) : new IslandClock();
-
-            this.width = width;
-            this.height = height;
-            this.viewParams.Width = width; // it does not need to be updated, because world size is constant
-            this.viewParams.Height = height; // it does not need to be updated, because world size is constant
-
-            this.maxAnimalsPerName = (int)(this.width * this.height * 0.0000004);
-            MessageLog.AddMessage(msgType: MsgType.Debug, message: $"maxAnimalsPerName {maxAnimalsPerName}");
-            this.creationDataList = PieceCreationData.CreateDataList(maxAnimalsPerName: this.maxAnimalsPerName);
-
-            this.pieceCountByName = new Dictionary<PieceTemplate.Name, int>();
-            foreach (PieceTemplate.Name templateName in PieceTemplate.allNames) this.pieceCountByName[templateName] = 0;
-            this.pieceCountByClass = new Dictionary<Type, int> { };
-
-            this.trackingQueue = new Dictionary<string, Tracking>();
-            this.eventQueue = new Dictionary<int, List<WorldEvent>>();
-            this.HintEngine = new HintEngine(world: this);
-
-            this.plantSpritesQueue = new List<Sprite>();
-            this.nonPlantSpritesQueue = new List<Sprite>();
-            this.plantCellsQueue = new List<Cell>();
-            this.ProcessedNonPlantsCount = 0;
-            this.ProcessedPlantsCount = 0;
-            this.blockingLightSpritesList = new List<Sprite>();
-            this.lightSprites = new List<Sprite>();
-            this.doNotCreatePiecesList = new List<PieceTemplate.Name> { };
-            this.discoveredRecipesForPieces = new List<PieceTemplate.Name> { };
-            this.camera = new Camera(world: this, useWorldScale: true, useFluidMotionForMove: true, useFluidMotionForZoom: true);
-            this.camera.TrackCoords(new Vector2(0, 0));
-            this.MapEnabled = false;
-            this.map = new Map(world: this, touchLayout: TouchLayout.Map);
-            this.playerPanel = new PlayerPanel(world: this);
-            this.debugText = "";
-            if (saveGameData == null) this.Grid = new Grid(world: this, resDivider: resDivider);
-            else this.Deserialize(gridOnly: true);
-
-            this.AddLinkedScene(this.map);
-            this.AddLinkedScene(this.playerPanel);
-
-            this.solidColorManager = new SolidColorManager(this);
-            this.stateMachineTypesManager = new SMTypesManager(this);
-            this.craftStats = new CraftStats();
-            this.identifiedPieces = new List<PieceTemplate.Name> { PieceTemplate.Name.Hand };
-            if (this.demoMode) this.solidColorManager.Add(new SolidColor(color: Color.White, viewOpacity: 0.4f, clearScreen: false, priority: 1));
-            this.soundPaused = false;
-
-            SonOfRobinGame.Game.IsFixedTimeStep = false; // speeds up the creation process
         }
 
         public void CompleteCreation()
@@ -414,7 +413,8 @@ namespace SonOfRobin
                 else
                 {
                     this.CreateAndPlacePlayer();
-                    PieceTemplate.CreateAndPlaceOnBoard(world: this, position: this.Player.sprite.position, templateName: PieceTemplate.Name.CrateStarting, closestFreeSpot: true);
+
+                    if (this.playerType != PlayerType.TestDemoness) PieceTemplate.CreateAndPlaceOnBoard(world: this, position: this.Player.sprite.position, templateName: PieceTemplate.Name.CrateStarting, closestFreeSpot: true);
                     PieceTemplate.CreateAndPlaceOnBoard(world: this, position: this.Player.sprite.position, templateName: PieceTemplate.Name.PredatorRepellant, closestFreeSpot: true);
                 }
             }
@@ -599,6 +599,15 @@ namespace SonOfRobin
                             {
                                 BoardPiece piece = PieceTemplate.Create(world: this, templateName: name);
                                 this.Player.EquipStorage.AddPiece(piece);
+                            }
+
+                            var pieceNamesForToolbar = new List<PieceTemplate.Name> {PieceTemplate.Name.AxeCrystal, PieceTemplate.Name.PickaxeCrystal, PieceTemplate.Name.SpearCrystal, PieceTemplate.Name.TorchBig, PieceTemplate.Name.ScytheCrystal, PieceTemplate.Name.ShovelCrystal
+                            };
+
+                            foreach (PieceTemplate.Name name in pieceNamesForToolbar)
+                            {
+                                BoardPiece piece = PieceTemplate.Create(world: this, templateName: name);
+                                this.Player.ToolStorage.AddPiece(piece);
                             }
 
                             foreach (PieceTemplate.Name name in PieceTemplate.allNames) this.discoveredRecipesForPieces.Add(name);

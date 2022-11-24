@@ -635,25 +635,20 @@ namespace SonOfRobin
 
         private static void CreateCharacterSelection(Menu menu)
         {
-            new Selector(menu: menu, name: "character", valueDict: new Dictionary<object, object> {
-                { World.PlayerType.Male, AnimData.framesForPkgs[AnimData.PkgName.PlayerMale].texture },
-                { World.PlayerType.Female, AnimData.framesForPkgs[AnimData.PkgName.PlayerFemale].texture },
-                { World.PlayerType.TestDemoness, AnimData.framesForPkgs[AnimData.PkgName.PlayerDemoness].texture }
-            },
-            targetObj: new Preferences(), propertyName: "newWorldPlayerType", rebuildsAllMenus: true);
-
             // description should match World.CreateAndPlacePlayer()
 
             Color rectColor, textColor;
 
+            List<string> descriptionTextList = new List<string>();
+
             switch (Preferences.newWorldPlayerType)
             {
                 case World.PlayerType.Male:
-                    rectColor = Color.Cyan;
+                    rectColor = Color.LightBlue;
                     textColor = Color.Black;
 
-                    new Separator(menu: menu, name: "Stronger, faster. More health, more stamina.", rectColor: rectColor, textColor: textColor);
-                    new Separator(menu: menu, name: "Gets tired more slowly.", rectColor: rectColor, textColor: textColor);
+                    descriptionTextList.Add("Stronger, faster. More health, more stamina.");
+                    descriptionTextList.Add("Gets tired more slowly.");
 
                     break;
 
@@ -661,8 +656,8 @@ namespace SonOfRobin
                     rectColor = Color.Pink;
                     textColor = Color.Black;
 
-                    new Separator(menu: menu, name: "Skilled cook.", rectColor: rectColor, textColor: textColor);
-                    new Separator(menu: menu, name: "Bigger inventory and toolbar.", rectColor: rectColor, textColor: textColor);
+                    descriptionTextList.Add("Skilled cook.");
+                    descriptionTextList.Add("Bigger inventory and toolbar.");
 
                     break;
 
@@ -670,8 +665,8 @@ namespace SonOfRobin
                     rectColor = Color.Violet;
                     textColor = Color.Black;
 
-                    new Separator(menu: menu, name: "Makes earth tremble, shatters the heavens.", rectColor: rectColor, textColor: textColor);
-                    new Separator(menu: menu, name: "Is a demigod, will ruin your game.", rectColor: rectColor, textColor: textColor);
+                    descriptionTextList.Add("Makes earth tremble, shatters the heavens.");
+                    descriptionTextList.Add("Is a demigod, will ruin your game.");
 
                     break;
 
@@ -679,6 +674,26 @@ namespace SonOfRobin
                     throw new ArgumentException($"Unsupported playerType - {Preferences.newWorldPlayerType}.");
             }
 
+            var infoTextList = new List<InfoWindow.TextEntry>();
+            foreach (string text in descriptionTextList)
+            {
+                infoTextList.Add(new InfoWindow.TextEntry(text: text, color: Color.White, scale: 1f));
+            }
+
+            new Selector(menu: menu, name: "character", infoTextList: infoTextList, valueDict: new Dictionary<object, object> {
+                { World.PlayerType.Male, AnimData.framesForPkgs[AnimData.PkgName.PlayerMale].texture },
+                { World.PlayerType.Female, AnimData.framesForPkgs[AnimData.PkgName.PlayerFemale].texture },
+                { World.PlayerType.TestDemoness, AnimData.framesForPkgs[AnimData.PkgName.PlayerDemoness].texture }
+            },
+            targetObj: new Preferences(), propertyName: "newWorldPlayerType", rebuildsAllMenus: true);
+
+            if (Input.currentControlType == Input.ControlType.Touch) // mobile users will not see InfoWindow, using separators instead
+            {
+                foreach (string text in descriptionTextList)
+                {
+                    new Separator(menu: menu, name: text, rectColor: rectColor, textColor: textColor);
+                }
+            }
         }
 
         private static Menu CreateCraftMenu(Name templateName, Craft.Category category, string label, SoundData.Name soundOpen)

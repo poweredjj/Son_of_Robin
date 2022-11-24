@@ -8,14 +8,16 @@ namespace SonOfRobin
     {
         private readonly bool isEmpty;
 
-        public Separator(Menu menu, string name, bool isEmpty = false) : base(menu: menu, name: name)
+        public Separator(Menu menu, string name, bool isEmpty = false, List<InfoWindow.TextEntry> infoTextList = null) :
+            base(menu: menu, name: name, infoTextList: isEmpty ? null : infoTextList)
         {
             this.textColor = new Color(70, 70, 70, 255);
             this.rectColor = Color.White;
             this.isEmpty = isEmpty;
         }
 
-        public Separator(Menu menu, string name, Color textColor, Color rectColor) : base(menu: menu, name: name)
+        public Separator(Menu menu, string name, Color textColor, Color rectColor, List<InfoWindow.TextEntry> infoTextList = null) :
+            base(menu: menu, name: name, infoTextList: infoTextList)
         {
             this.textColor = textColor;
             this.rectColor = rectColor;
