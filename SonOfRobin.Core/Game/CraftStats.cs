@@ -153,7 +153,7 @@ namespace SonOfRobin
         {
             int craftCount = this.HowManyTimesHasBeenCrafted(recipe);
             float recipeLevel = (float)craftCount / (float)recipe.craftCountToLevelUp;
-            return (int)(Math.Min(recipeLevel, recipe.maxLevel));
+            return (int)Math.Min(recipeLevel, recipe.maxLevel);
         }
 
         public bool RecipeJustLevelledUp(Craft.Recipe recipe)
