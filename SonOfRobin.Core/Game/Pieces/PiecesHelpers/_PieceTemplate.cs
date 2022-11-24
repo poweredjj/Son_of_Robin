@@ -349,7 +349,27 @@ namespace SonOfRobin
                             soundPack.AddAction(action: action, sound: new Sound(name: SoundData.Name.StepGhost, cooldown: 30, ignore3DAlways: true, volume: 0.8f, maxPitchVariation: 0.2f));
                         }
 
-                        Player spectator = new Player(name: templateName, world: world, id: id, animPackage: female ? AnimData.PkgName.PlayerFemale : AnimData.PkgName.PlayerMale, speed: 3, allowedTerrain: new AllowedTerrain(), minDistance: 0, maxDistance: 65535, generation: generation, invWidth: 4, invHeight: 2, toolbarWidth: 3, toolbarHeight: 1, readableName: "player ghost", description: "A metaphysical representation of player's soul.", blocksMovement: false, ignoresCollisions: true, floatsOnWater: true, activeState: BoardPiece.State.PlayerControlledGhosting, lightEngine: new LightEngine(size: 650, opacity: 1.4f, colorActive: true, color: Color.Blue * 5f, isActive: true, castShadows: true), soundPack: soundPack, female: female);
+                        AnimData.PkgName animPkg;
+
+                        switch (playerType)
+                        {
+                            case World.PlayerType.Male:
+                                female = false;
+                                animPkg = AnimData.PkgName.PlayerMale;
+
+                                break;
+
+                            case World.PlayerType.Female:
+                                female = true;
+                                animPkg = AnimData.PkgName.PlayerFemale;
+
+                                break;
+
+                            default:
+                                throw new ArgumentException($"Unsupported playerType - {playerType}.");
+                        }
+
+                        Player spectator = new Player(name: templateName, world: world, id: id, animPackage: animPkg, speed: 3, allowedTerrain: new AllowedTerrain(), minDistance: 0, maxDistance: 65535, generation: generation, invWidth: 4, invHeight: 2, toolbarWidth: 3, toolbarHeight: 1, readableName: "player ghost", description: "A metaphysical representation of player's soul.", blocksMovement: false, ignoresCollisions: true, floatsOnWater: true, activeState: BoardPiece.State.PlayerControlledGhosting, lightEngine: new LightEngine(size: 650, opacity: 1.4f, colorActive: true, color: Color.Blue * 5f, isActive: true, castShadows: true), soundPack: soundPack, female: female);
 
                         spectator.speed = 5;
                         spectator.sprite.opacity = 0.5f;

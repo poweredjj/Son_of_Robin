@@ -9,7 +9,8 @@ namespace SonOfRobin
 {
     public class World : Scene
     {
-        public enum PlayerType { Male, Female }
+        public enum PlayerType
+        { Male, Female }
 
         public Vector2 analogMovementLeftStick;
         public Vector2 analogMovementRightStick;
@@ -55,7 +56,7 @@ namespace SonOfRobin
 
                     this.Player.RemoveFromStateMachines();
 
-                    BoardPiece spectator = PieceTemplate.CreateAndPlaceOnBoard(world: this, position: this.camera.TrackedPos, templateName: PieceTemplate.Name.PlayerGhost, closestFreeSpot: true, playerType: playerType);
+                    BoardPiece spectator = PieceTemplate.CreateAndPlaceOnBoard(world: this, position: this.camera.TrackedPos, templateName: PieceTemplate.Name.PlayerGhost, closestFreeSpot: true, playerType: this.playerType);
 
                     spectator.sprite.orientation = this.Player != null ? this.Player.sprite.orientation : Sprite.Orientation.right;
 
@@ -498,7 +499,7 @@ namespace SonOfRobin
                     female = (bool)pieceData["base_female"];
                 }
 
-                var newBoardPiece = PieceTemplate.CreateAndPlaceOnBoard(world: this, position: new Vector2((float)pieceData["sprite_positionX"], (float)pieceData["sprite_positionY"]), templateName: templateName, female: female, randomSex: randomSex, ignoreCollisions: true, id: (string)pieceData["base_id"]);
+                var newBoardPiece = PieceTemplate.CreateAndPlaceOnBoard(world: this, position: new Vector2((float)pieceData["sprite_positionX"], (float)pieceData["sprite_positionY"]), templateName: templateName, female: female, randomSex: randomSex, ignoreCollisions: true, id: (string)pieceData["base_id"], playerType: this.playerType);
                 if (!newBoardPiece.sprite.IsOnBoard) throw new ArgumentException($"{newBoardPiece.name} could not be placed correctly.");
 
                 newBoardPiece.Deserialize(pieceData: pieceData);
@@ -555,6 +556,7 @@ namespace SonOfRobin
                     Player.sprite.CharacterStand();
                     Player.sprite.allowedTerrain.RemoveTerrain(Terrain.Name.Biome); // player should be spawned in a safe place, but able to go everywhere afterwards
                     Player.sprite.allowedTerrain.ClearExtProperties();
+
                     return Player;
                 }
             }
