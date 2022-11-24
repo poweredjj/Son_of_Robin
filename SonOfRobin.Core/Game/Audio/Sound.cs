@@ -158,8 +158,6 @@ namespace SonOfRobin
                 this.UpdatePosition(instance);
             }
 
-            // MessageLog.AddMessage(msgType: MsgType.User, message: $"Playing {soundName} Volume {instance.Volume} Pitch {instance.Pitch}"); // for testing
-
             try
             {
                 instance.Play();

@@ -313,15 +313,29 @@ namespace SonOfRobin
 
             //if (Keyboard.HasBeenPressed(Keys.F1)) new TextWindow(text: "Line 1\nLine 2\nThis is button A | and button B |.\nBelt here >|<\nLast line.", animate: false, useTransition: false, bgColor: Color.DeepSkyBlue, textColor: Color.White, imageList: new List<Texture2D> { ButtonScheme.buttonA, ButtonScheme.buttonB, AnimData.framesForPkgs[AnimData.PkgName.BeltMedium].texture });
 
-            if (Keyboard.HasBeenPressed(Keys.F1)) new TextWindow(text: "If I had more | leather, I could make a | backpack or a | belt.\n>|1|2|3|4|5<", animate: true, useTransition: false, framesPerChar: 1, bgColor: Color.DeepSkyBlue, textColor: Color.White, imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Leather), PieceInfo.GetTexture(PieceTemplate.Name.BackpackSmall), PieceInfo.GetTexture(PieceTemplate.Name.BeltBig), PieceInfo.GetTexture(PieceTemplate.Name.BeltBig), PieceInfo.GetTexture(PieceTemplate.Name.BeltBig), PieceInfo.GetTexture(PieceTemplate.Name.BeltBig), PieceInfo.GetTexture(PieceTemplate.Name.BeltBig), PieceInfo.GetTexture(PieceTemplate.Name.BeltBig) });
+            //if (Keyboard.HasBeenPressed(Keys.F1)) new TextWindow(text: "If I had more | leather, I could make a | backpack or a | belt.\n>|1|2|3|4|5<", animate: true, useTransition: false, framesPerChar: 1, bgColor: Color.DeepSkyBlue, textColor: Color.White, imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Leather), PieceInfo.GetTexture(PieceTemplate.Name.BackpackSmall), PieceInfo.GetTexture(PieceTemplate.Name.BeltBig), PieceInfo.GetTexture(PieceTemplate.Name.BeltBig), PieceInfo.GetTexture(PieceTemplate.Name.BeltBig), PieceInfo.GetTexture(PieceTemplate.Name.BeltBig), PieceInfo.GetTexture(PieceTemplate.Name.BeltBig), PieceInfo.GetTexture(PieceTemplate.Name.BeltBig) });
+
+            //if (Keyboard.HasBeenPressed(Keys.F2))
+            //{
+            //    if (world == null) return;
+
+            //    world.HintEngine.ShowGeneralHint(type: HintEngine.Type.CantShootInWater, ignoreDelay: true);
+            //    world.HintEngine.ShowGeneralHint(type: HintEngine.Type.CineSmallBase, ignoreDelay: true);
+            //    world.HintEngine.ShowGeneralHint(type: HintEngine.Type.Lava, ignoreDelay: true);
+            //}
+
+            if (Keyboard.HasBeenPressed(Keys.F1))
+            {
+                Sound dialogueSound = new Sound(name: SoundData.Name.Beep, cooldown: 4, volume: 0.12f, pitchChange: 0.5f, maxPitchVariation: 0.07f, ignore3DAlways: true);
+
+                new TextWindow(text: "This is a test message.\nLong test message.\nEven longer test message.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, priority: 0, animSound: dialogueSound);
+            }
 
             if (Keyboard.HasBeenPressed(Keys.F2))
             {
                 if (world == null) return;
 
-                world.HintEngine.ShowGeneralHint(type: HintEngine.Type.CantShootInWater, ignoreDelay: true);
-                world.HintEngine.ShowGeneralHint(type: HintEngine.Type.CineSmallBase, ignoreDelay: true);
-                world.HintEngine.ShowGeneralHint(type: HintEngine.Type.Lava, ignoreDelay: true);
+                new TextWindow(text: "This is a test message.\nLong test message.\nEven longer test message.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, priority: 0, animSound: world.DialogueSound);
             }
 
             if (Keyboard.HasBeenPressed(Keys.F3) || VirtButton.HasButtonBeenPressed(VButName.DebugClockAdvance))
