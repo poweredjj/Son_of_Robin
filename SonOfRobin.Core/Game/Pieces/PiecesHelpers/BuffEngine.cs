@@ -423,7 +423,7 @@ namespace SonOfRobin
                         Player player = (Player)this.piece;
 
                         if (add) player.Fatigue = Math.Max(0, player.Fatigue + (float)buff.value);
-                        else player.Fatigue = Math.Min(player.MaxFatigue, player.Fatigue - (float)buff.value);
+                        else player.Fatigue = Math.Min(player.maxFatigue, player.Fatigue - (float)buff.value);
 
                         return true;
                     }

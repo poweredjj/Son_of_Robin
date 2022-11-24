@@ -58,6 +58,10 @@ namespace SonOfRobin
                         playerTexture = AnimData.framesForPkgs[AnimData.PkgName.PlayerFemale].texture;
                         break;
 
+                    case World.PlayerType.TestDemoness:
+                        playerTexture = AnimData.framesForPkgs[AnimData.PkgName.PlayerFemale].texture;
+                        break;
+
                     default:
                         throw new ArgumentException($"Unsupported playerType - {this.playerType}.");
                 }

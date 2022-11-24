@@ -10,7 +10,7 @@ namespace SonOfRobin
     public class World : Scene
     {
         public enum PlayerType
-        { Male, Female }
+        { Male, Female, TestDemoness }
 
         public Vector2 analogMovementLeftStick;
         public Vector2 analogMovementRightStick;
@@ -78,7 +78,7 @@ namespace SonOfRobin
                         "Time to meet my maker.\nBut I don't see him anywhere...",
                         "What happened? Why I'm floating in the air?\nOh, I see. I'm dead.",
                         "This is not the endgame I was hoping for.\nAt least the weather is fine.",
-                        "I was trying to escape this island, not this life.\nWell, shit..."
+                        "I was trying to escape this island, not this life.\nDamn..."
                     };
                     var text = textList[this.random.Next(0, textList.Count)];
 
@@ -103,7 +103,7 @@ namespace SonOfRobin
 
                     if (!playerFound)
                     {
-                        this.Player = (Player)this.PlacePlayer();
+                        this.CreateAndPlacePlayer();
                         this.Player.sprite.MoveToClosestFreeSpot(this.camera.TrackedPos);
                         this.camera.TrackPiece(this.Player);
                         if (spectator != null) this.Player.sprite.orientation = spectator.sprite.orientation;
@@ -413,7 +413,7 @@ namespace SonOfRobin
                 if (this.demoMode) this.camera.TrackLiveAnimal(fluidMotion: false);
                 else
                 {
-                    this.Player = (Player)this.PlacePlayer();
+                    this.CreateAndPlacePlayer();
                     PieceTemplate.CreateAndPlaceOnBoard(world: this, position: this.Player.sprite.position, templateName: PieceTemplate.Name.CrateStarting, closestFreeSpot: true);
                     PieceTemplate.CreateAndPlaceOnBoard(world: this, position: this.Player.sprite.position, templateName: PieceTemplate.Name.PredatorRepellant, closestFreeSpot: true);
                 }
@@ -545,19 +545,71 @@ namespace SonOfRobin
             MessageLog.AddMessage(msgType: MsgType.User, message: "Game has been loaded.", color: Color.Cyan);
         }
 
-        private BoardPiece PlacePlayer()
+        private void CreateAndPlacePlayer()
         {
             for (int tryIndex = 0; tryIndex < 65535; tryIndex++)
             {
-                Player = (Player)PieceTemplate.CreateAndPlaceOnBoard(world: this, randomPlacement: true, position: Vector2.Zero, templateName: PieceTemplate.Name.Player, playerType: this.playerType);
-                if (Player.sprite.IsOnBoard)
-                {
-                    Player.sprite.orientation = Sprite.Orientation.up;
-                    Player.sprite.CharacterStand();
-                    Player.sprite.allowedTerrain.RemoveTerrain(Terrain.Name.Biome); // player should be spawned in a safe place, but able to go everywhere afterwards
-                    Player.sprite.allowedTerrain.ClearExtProperties();
+                this.Player = (Player)PieceTemplate.CreateAndPlaceOnBoard(world: this, randomPlacement: true, position: Vector2.Zero, templateName: PieceTemplate.Name.Player, playerType: this.playerType);
 
-                    return Player;
+                if (this.Player.sprite.IsOnBoard)
+                {
+                    this.Player.sprite.orientation = Sprite.Orientation.up;
+                    this.Player.sprite.CharacterStand();
+                    this.Player.sprite.allowedTerrain.RemoveTerrain(Terrain.Name.Biome); // player should be spawned in a safe place, but able to go everywhere afterwards
+                    this.Player.sprite.allowedTerrain.ClearExtProperties();
+
+                    switch (playerType)
+                    {
+                        case PlayerType.Male:
+                            this.Player.strength += 1;
+                            this.Player.speed += 1;
+                            this.Player.maxHitPoints *= 1.3f;
+                            this.Player.hitPoints = this.Player.maxHitPoints;
+                            this.Player.maxStamina *= 1.3f;
+                            this.Player.stamina = this.Player.maxStamina;
+                            this.Player.maxFatigue *= 1.3f;
+
+                            break;
+
+                        case PlayerType.Female:
+                            this.Player.InvHeight += 1;
+                            this.Player.ToolbarWidth += 1;
+                            this.Player.cookingSkill *= 1.4f;
+
+                            break;
+
+                        case PlayerType.TestDemoness:
+                            this.Player.InvWidth += 2;
+                            this.Player.InvHeight += 2;
+                            this.Player.ToolbarWidth += 2;
+                            this.Player.cookingSkill *= 5f;
+                            this.Player.strength += 100;
+                            this.Player.speed += 5;
+                            this.Player.maxHitPoints *= 200f;
+                            this.Player.hitPoints = this.Player.maxHitPoints;
+                            this.Player.maxStamina *= 200f;
+                            this.Player.stamina = this.Player.maxStamina;
+                            this.Player.maxFatigue *= 10f;
+
+                            var pieceNamesToEquip = new List<PieceTemplate.Name> {
+                                PieceTemplate.Name.BootsProtective, PieceTemplate.Name.Map, PieceTemplate.Name.BackpackBig, PieceTemplate.Name.BeltBig, PieceTemplate.Name.HatSimple
+                            };
+
+                            foreach (PieceTemplate.Name name in pieceNamesToEquip)
+                            {
+                                BoardPiece piece = PieceTemplate.Create(world: this, templateName: name);
+                                this.Player.EquipStorage.AddPiece(piece);
+                            }
+
+                            foreach (PieceTemplate.Name name in PieceTemplate.allNames) this.discoveredRecipesForPieces.Add(name);
+
+                            break;
+
+                        default:
+                            throw new ArgumentException($"Unsupported playerType - {playerType}.");
+                    }
+
+                    return;
                 }
             }
 

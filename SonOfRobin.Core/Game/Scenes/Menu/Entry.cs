@@ -22,6 +22,27 @@ namespace SonOfRobin
         protected readonly bool rebuildsMenuInstantScroll;
         protected readonly bool rebuildsAllMenus;
         public List<InfoWindow.TextEntry> infoTextList;
+
+        public Entry(Menu menu, string name, bool rebuildsMenu = false, bool rebuildsMenuInstantScroll = false, bool rebuildsAllMenus = false, List<InfoWindow.TextEntry> infoTextList = null, List<Texture2D> imageList = null)
+        {
+            this.menu = menu;
+            this.name = name;
+            this.imageList = imageList;
+            this.textWithImages = null;
+            this.index = this.menu.entryList.Count;
+            this.rebuildsMenu = rebuildsMenu;
+            this.rebuildsMenuInstantScroll = rebuildsMenuInstantScroll;
+            this.rebuildsAllMenus = rebuildsAllMenus;
+            this.textColor = Color.White;
+            this.rectColor = Color.Black;
+            this.outlineColor = Color.White;
+            this.infoTextList = infoTextList;
+
+            this.menu.entryList.Add(this);
+
+            if (this.menu.activeIndex == -1 && this.GetType() != typeof(Separator)) this.menu.activeIndex = this.index;
+        }
+
         public virtual string DisplayedText
         { get { return this.name; } }
 
@@ -72,26 +93,6 @@ namespace SonOfRobin
 
         protected float OpacityFade
         { get { return Math.Max((float)this.lastFlashFrame - (float)SonOfRobinGame.CurrentUpdate, 0) * 0.015f; } }
-
-        public Entry(Menu menu, string name, bool rebuildsMenu = false, bool rebuildsMenuInstantScroll = false, bool rebuildsAllMenus = false, List<InfoWindow.TextEntry> infoTextList = null, List<Texture2D> imageList = null)
-        {
-            this.menu = menu;
-            this.name = name;
-            this.imageList = imageList;
-            this.textWithImages = null;
-            this.index = this.menu.entryList.Count;
-            this.rebuildsMenu = rebuildsMenu;
-            this.rebuildsMenuInstantScroll = rebuildsMenuInstantScroll;
-            this.rebuildsAllMenus = rebuildsAllMenus;
-            this.textColor = Color.White;
-            this.rectColor = Color.Black;
-            this.outlineColor = Color.White;
-            this.infoTextList = infoTextList;
-
-            this.menu.entryList.Add(this);
-
-            if (this.menu.activeIndex == -1 && this.GetType() != typeof(Separator)) this.menu.activeIndex = this.index;
-        }
 
         public virtual void NextValue(bool touchMode)
         {

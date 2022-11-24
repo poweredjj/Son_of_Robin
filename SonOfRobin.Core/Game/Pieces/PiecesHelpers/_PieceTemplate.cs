@@ -318,6 +318,12 @@ namespace SonOfRobin
 
                                 break;
 
+                            case World.PlayerType.TestDemoness:
+                                female = true;
+                                animPkg = AnimData.PkgName.PlayerDemoness;
+
+                                break;
+
                             default:
                                 throw new ArgumentException($"Unsupported playerType - {playerType}.");
                         }
@@ -362,6 +368,12 @@ namespace SonOfRobin
                             case World.PlayerType.Female:
                                 female = true;
                                 animPkg = AnimData.PkgName.PlayerFemale;
+
+                                break;
+
+                            case World.PlayerType.TestDemoness:
+                                female = true;
+                                animPkg = AnimData.PkgName.PlayerDemoness;
 
                                 break;
 

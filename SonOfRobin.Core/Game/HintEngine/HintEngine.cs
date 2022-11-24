@@ -252,10 +252,7 @@ namespace SonOfRobin
                         this.Disable(type: type, delay: 0);
 
                         this.world.CineMode = true;
-                        this.world.camera.SetZoom(zoom: 3f, setInstantly: true);
 
-                        SolidColor whiteOverlay = new SolidColor(color: Color.White, viewOpacity: 1f);
-                        this.world.solidColorManager.Add(whiteOverlay);
 
                         Player player = this.world.Player;
                         var dialogue = HintMessage.BoxType.Dialogue;
@@ -263,45 +260,70 @@ namespace SonOfRobin
                         // HintMessage.ConvertToTasks() could be used here, but adding one by one makes it easier to add other task types between text.
                         var taskChain = new List<Object>();
 
-                        taskChain.Add(new HintMessage(text: "Where am I?", boxType: dialogue, delay: 80, blockInput: false).ConvertToTask());
+                        if (this.world.playerType == World.PlayerType.TestDemoness)
+                        {
+                            this.world.camera.SetZoom(zoom: 1f, setInstantly: true);
 
-                        taskChain.Add(new HintMessage(text: "    ...    ", boxType: dialogue, delay: 120, blockInput: false).ConvertToTask());
+                            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetZoom, delay: 30, executeHelper: new Dictionary<string, Object> { { "zoom", 3f }, { "zoomSpeedMultiplier", 0.5f } }, storeForLaterUse: true));
 
-                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SolidColorRemoveAll, delay: 0, executeHelper: new Dictionary<string, Object> { { "manager", this.world.solidColorManager }, { "delay", 700 } }, storeForLaterUse: true));
+                            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetPlayerPointWalkTarget, delay: 170, executeHelper: new Dictionary<Player, Vector2> { { this.world.Player, player.sprite.position + new Vector2(0, 10) } }, storeForLaterUse: true));
 
-                        taskChain.Add(new HintMessage(text: "The last thing I remember...?", boxType: dialogue, delay: 60, blockInput: false).ConvertToTask());
-                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetZoom, delay: 30, executeHelper: new Dictionary<string, Object> { { "zoom", 1f }, { "zoomSpeedMultiplier", 0.1f } }, storeForLaterUse: true));
-                        taskChain.Add(new HintMessage(text: "Hmm...\n...\n...", boxType: dialogue, delay: 60, blockInput: false).ConvertToTask());
-                        taskChain.Add(new HintMessage(text: "There was... a terrible storm....", boxType: dialogue, delay: 90, blockInput: false).ConvertToTask());
+                            taskChain.Add(new HintMessage(text: "Hello there, human.", boxType: dialogue, delay: 30, blockInput: false).ConvertToTask());
+                            taskChain.Add(new HintMessage(text: "Didn't you learn to read?", boxType: dialogue, delay: 30, blockInput: false).ConvertToTask());
+                            taskChain.Add(new HintMessage(text: "It was clearly written, that i will BREAK your game.", boxType: dialogue, delay: 80, blockInput: false).ConvertToTask());
 
-                        Vector2 seaOffset = new Vector2(SonOfRobinGame.VirtualWidth * 0.65f, SonOfRobinGame.VirtualHeight * 0.65f);
+                            taskChain.Add(new HintMessage(text: "And I WILL RUIN your game experience.\nWith pleasure |.", imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.Heart].texture }, boxType: dialogue, delay: 0).ConvertToTask());
 
-                        int edgeDistLeft = (int)player.sprite.position.X;
-                        int edgeDistRight = (int)(this.world.width - player.sprite.position.X);
-                        int edgeDistUp = (int)player.sprite.position.Y;
-                        int edgeDistDown = (int)(this.world.height - player.sprite.position.Y);
-                        int edgeDistX = edgeDistLeft < edgeDistRight ? -edgeDistLeft : edgeDistRight;
-                        int edgeDistY = edgeDistUp < edgeDistDown ? -edgeDistUp : edgeDistDown;
-                        if (edgeDistX < 0) seaOffset.X *= -1;
-                        if (edgeDistY < 0) seaOffset.Y *= -1;
-                        if (Math.Abs(edgeDistX) < Math.Abs(edgeDistY)) seaOffset.Y = 0;
-                        else seaOffset.X = 0;
-                        Vector2 seaPos = player.sprite.position + seaOffset;
+                            taskChain.Add(new HintMessage(text: "Is that clear? Yeah?\nThen let's get started!", boxType: dialogue, delay: 80, blockInput: false).ConvertToTask());
+                        }
+                        else
+                        {
+                            this.world.camera.SetZoom(zoom: 3f, setInstantly: true);
 
-                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetPlayerPointWalkTarget, delay: 170, executeHelper: new Dictionary<Player, Vector2> { { this.world.Player, player.sprite.position + (seaOffset * 0.1f) } }, storeForLaterUse: true));
+                            SolidColor whiteOverlay = new SolidColor(color: Color.White, viewOpacity: 1f);
+                            this.world.solidColorManager.Add(whiteOverlay);
 
-                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraTrackCoords, delay: 40, executeHelper: seaPos, storeForLaterUse: true));
+                            taskChain.Add(new HintMessage(text: "Where am I?", boxType: dialogue, delay: 80, blockInput: false).ConvertToTask());
 
-                        taskChain.Add(new HintMessage(text: "What happened to the ship?", boxType: dialogue, delay: 0).ConvertToTask());
-                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraTrackPiece, delay: 60, executeHelper: world.Player, storeForLaterUse: true));
-                        taskChain.Add(new HintMessage(text: "I can't see it anywhere...", boxType: dialogue, delay: 0).ConvertToTask());
+                            taskChain.Add(new HintMessage(text: "    ...    ", boxType: dialogue, delay: 120, blockInput: false).ConvertToTask());
 
-                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetPlayerPointWalkTarget, delay: 40, executeHelper: new Dictionary<Player, Vector2> { { this.world.Player, player.sprite.position } }, storeForLaterUse: true));
+                            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SolidColorRemoveAll, delay: 0, executeHelper: new Dictionary<string, Object> { { "manager", this.world.solidColorManager }, { "delay", 700 } }, storeForLaterUse: true));
 
-                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetZoom, delay: 60, executeHelper: new Dictionary<string, Object> { { "zoom", 0.55f }, { "zoomSpeedMultiplier", 3f } }, storeForLaterUse: true));
+                            taskChain.Add(new HintMessage(text: "The last thing I remember...?", boxType: dialogue, delay: 60, blockInput: false).ConvertToTask());
+                            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetZoom, delay: 30, executeHelper: new Dictionary<string, Object> { { "zoom", 1f }, { "zoomSpeedMultiplier", 0.1f } }, storeForLaterUse: true));
+                            taskChain.Add(new HintMessage(text: "Hmm...\n...\n...", boxType: dialogue, delay: 60, blockInput: false).ConvertToTask());
+                            taskChain.Add(new HintMessage(text: "There was... a terrible storm....", boxType: dialogue, delay: 90, blockInput: false).ConvertToTask());
 
-                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.PlaySoundByName, delay: 0, executeHelper: SoundData.Name.DunDunDun, storeForLaterUse: true));
-                        taskChain.Add(new HintMessage(text: "I guess I'm stranded | here.", imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.PalmTree].texture }, boxType: dialogue, delay: 0).ConvertToTask());
+                            Vector2 seaOffset = new Vector2(SonOfRobinGame.VirtualWidth * 0.65f, SonOfRobinGame.VirtualHeight * 0.65f);
+
+                            int edgeDistLeft = (int)player.sprite.position.X;
+                            int edgeDistRight = (int)(this.world.width - player.sprite.position.X);
+                            int edgeDistUp = (int)player.sprite.position.Y;
+                            int edgeDistDown = (int)(this.world.height - player.sprite.position.Y);
+                            int edgeDistX = edgeDistLeft < edgeDistRight ? -edgeDistLeft : edgeDistRight;
+                            int edgeDistY = edgeDistUp < edgeDistDown ? -edgeDistUp : edgeDistDown;
+                            if (edgeDistX < 0) seaOffset.X *= -1;
+                            if (edgeDistY < 0) seaOffset.Y *= -1;
+                            if (Math.Abs(edgeDistX) < Math.Abs(edgeDistY)) seaOffset.Y = 0;
+                            else seaOffset.X = 0;
+                            Vector2 seaPos = player.sprite.position + seaOffset;
+
+                            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetPlayerPointWalkTarget, delay: 170, executeHelper: new Dictionary<Player, Vector2> { { this.world.Player, player.sprite.position + (seaOffset * 0.1f) } }, storeForLaterUse: true));
+
+                            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraTrackCoords, delay: 40, executeHelper: seaPos, storeForLaterUse: true));
+
+                            taskChain.Add(new HintMessage(text: "What happened to the ship?", boxType: dialogue, delay: 0).ConvertToTask());
+                            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraTrackPiece, delay: 60, executeHelper: world.Player, storeForLaterUse: true));
+                            taskChain.Add(new HintMessage(text: "I can't see it anywhere...", boxType: dialogue, delay: 0).ConvertToTask());
+
+                            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetPlayerPointWalkTarget, delay: 40, executeHelper: new Dictionary<Player, Vector2> { { this.world.Player, player.sprite.position } }, storeForLaterUse: true));
+
+                            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetZoom, delay: 60, executeHelper: new Dictionary<string, Object> { { "zoom", 0.55f }, { "zoomSpeedMultiplier", 3f } }, storeForLaterUse: true));
+
+                            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.PlaySoundByName, delay: 0, executeHelper: SoundData.Name.DunDunDun, storeForLaterUse: true));
+                            taskChain.Add(new HintMessage(text: "I guess I'm stranded | here.", imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.PalmTree].texture }, boxType: dialogue, delay: 0).ConvertToTask());
+                        }
+
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetCineMode, delay: 0, executeHelper: false, storeForLaterUse: true));
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CheckForPieceHints, delay: 10, executeHelper: new Dictionary<string, Object> { { "typesToCheckOnly", new List<PieceHint.Type> { PieceHint.Type.CrateStarting } } }, storeForLaterUse: true));
 

@@ -19,7 +19,8 @@ namespace SonOfRobin
         public float maxStamina;
         public float stamina;
         private float fatigue;
-        public float MaxFatigue { get; private set; }
+        public float cookingSkill;
+        public float maxFatigue;
         public float ShootingAngle { get; private set; }
         private int shootingPower;
         private SleepEngine sleepEngine;
@@ -179,7 +180,7 @@ namespace SonOfRobin
                 float fatigueDifference = value - this.fatigue;
                 if (fatigueDifference > 0 && this.buffEngine.HasBuff(BuffEngine.BuffType.Heat)) fatigueDifference *= 2;
 
-                this.fatigue = Math.Min(Math.Max(this.fatigue + fatigueDifference, 0), this.MaxFatigue);
+                this.fatigue = Math.Min(Math.Max(this.fatigue + fatigueDifference, 0), this.maxFatigue);
 
                 if (this.IsVeryTired)
                 {
@@ -195,7 +196,7 @@ namespace SonOfRobin
                 if (this.FatiguePercent > 0.95f) this.world.HintEngine.ShowGeneralHint(HintEngine.Type.VeryTired);
                 if (this.FatiguePercent < 0.8f) this.world.HintEngine.Enable(HintEngine.Type.VeryTired);
 
-                if (this.fatigue == this.MaxFatigue) new Scheduler.Task(taskName: Scheduler.TaskName.SleepOutside, delay: 0, executeHelper: null);
+                if (this.fatigue == this.maxFatigue) new Scheduler.Task(taskName: Scheduler.TaskName.SleepOutside, delay: 0, executeHelper: null);
             }
         }
 
@@ -230,7 +231,7 @@ namespace SonOfRobin
         }
 
         public float FatiguePercent
-        { get { return (float)this.Fatigue / (float)this.MaxFatigue; } }
+        { get { return (float)this.Fatigue / (float)this.maxFatigue; } }
         public bool IsVeryTired
         { get { return this.FatiguePercent > 0.75f; } }
         public bool CanWakeNow
@@ -248,8 +249,9 @@ namespace SonOfRobin
             this.fedLevel = maxFedLevel;
             this.maxStamina = 300;
             this.stamina = maxStamina;
-            this.MaxFatigue = 2000;
+            this.maxFatigue = 2000;
             this.fatigue = 0;
+            this.cookingSkill = 1f;
             this.sleepEngine = SleepEngine.OutdoorSleepDry; // to be changed later
 
             var allowedToolbarPieces = new List<PieceTemplate.Name>();
@@ -391,7 +393,8 @@ namespace SonOfRobin
             pieceData["player_stamina"] = this.stamina;
             pieceData["player_maxStamina"] = this.maxStamina;
             pieceData["player_fatigue"] = this.fatigue;
-            pieceData["player_maxFatigue"] = this.MaxFatigue;
+            pieceData["player_maxFatigue"] = this.maxFatigue;
+            pieceData["player_cookingSkill"] = this.cookingSkill;
             pieceData["player_sleepEngine"] = this.sleepEngine;
             pieceData["player_toolStorage"] = this.ToolStorage.Serialize();
             pieceData["player_equipStorage"] = this.EquipStorage.Serialize();
@@ -407,7 +410,8 @@ namespace SonOfRobin
             this.stamina = (float)pieceData["player_stamina"];
             this.maxStamina = (float)pieceData["player_maxStamina"];
             this.fatigue = (float)pieceData["player_fatigue"];
-            this.MaxFatigue = (float)pieceData["player_maxFatigue"];
+            this.maxFatigue = (float)pieceData["player_maxFatigue"];
+            this.cookingSkill = (float)pieceData["player_cookingSkill"];
             this.sleepEngine = (SleepEngine)pieceData["player_sleepEngine"];
             this.ToolStorage = PieceStorage.Deserialize(storageData: pieceData["player_toolStorage"], world: this.world, storagePiece: this);
             this.EquipStorage = PieceStorage.Deserialize(storageData: pieceData["player_equipStorage"], world: this.world, storagePiece: this);
@@ -510,7 +514,7 @@ namespace SonOfRobin
 
             this.world.islandClock.Advance(amount: this.buildDurationForOneFrame, ignorePause: true);
             this.Fatigue += this.buildFatigueForOneFrame;
-            world.Player.Fatigue = Math.Min(world.Player.Fatigue, world.Player.MaxFatigue - 20); // to avoid falling asleep just after crafting
+            world.Player.Fatigue = Math.Min(world.Player.Fatigue, world.Player.maxFatigue - 20); // to avoid falling asleep just after crafting
         }
 
         public override void SM_PlayerControlledGhosting()
@@ -847,7 +851,7 @@ namespace SonOfRobin
             if (this.sleepMode == SleepMode.WaitIndefinitely) sleepModeText = "Waiting indefinitely...";
 
             this.sleepEngine.Execute(player: this);
-            if (this.world.CurrentUpdate % 10 == 0) SonOfRobinGame.ProgressBar.TurnOn(curVal: (int)(this.MaxFatigue - this.Fatigue), maxVal: (int)this.MaxFatigue, text: sleepModeText);
+            if (this.world.CurrentUpdate % 10 == 0) SonOfRobinGame.ProgressBar.TurnOn(curVal: (int)(this.maxFatigue - this.Fatigue), maxVal: (int)this.maxFatigue, text: sleepModeText);
         }
 
         public void GoToSleep(SleepEngine sleepEngine, Vector2 zzzPos, List<Buff> wakeUpBuffs)

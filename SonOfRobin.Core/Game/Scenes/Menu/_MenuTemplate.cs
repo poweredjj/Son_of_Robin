@@ -287,7 +287,7 @@ namespace SonOfRobin
                         new Invoker(menu: menu, name: "reset settings", closesMenu: false, taskName: Scheduler.TaskName.ResetNewWorldSettings, rebuildsMenu: true);
                         new Separator(menu: menu, name: "", isEmpty: true);
 
-                        new Selector(menu: menu, name: "character", valueDict: new Dictionary<object, object> { { World.PlayerType.Male, AnimData.framesForPkgs[AnimData.PkgName.PlayerMale].texture }, { World.PlayerType.Female, AnimData.framesForPkgs[AnimData.PkgName.PlayerFemale].texture } }, targetObj: preferences, propertyName: "newWorldPlayerType", rebuildsAllMenus: true);
+                        CreateCharacterSelection(menu);
 
                         new Separator(menu: menu, name: "", isEmpty: true);
                         new Selector(menu: menu, name: "customize", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "CustomizeWorld", rebuildsMenu: true);
@@ -353,7 +353,7 @@ namespace SonOfRobin
                     {
                         Menu menu = new Menu(templateName: templateName, name: "CREATE ISLAND FROM TEMPLATE", blocksUpdatesBelow: false, canBeClosedManually: true, templateExecuteHelper: executeHelper);
 
-                        new Selector(menu: menu, name: "character", valueDict: new Dictionary<object, object> { { World.PlayerType.Male, AnimData.framesForPkgs[AnimData.PkgName.PlayerMale].texture }, { World.PlayerType.Female, AnimData.framesForPkgs[AnimData.PkgName.PlayerFemale].texture } }, targetObj: preferences, propertyName: "newWorldPlayerType", rebuildsAllMenus: true);
+                        CreateCharacterSelection(menu);
 
                         new Separator(menu: menu, name: "", isEmpty: true);
 
@@ -631,6 +631,54 @@ namespace SonOfRobin
                 default:
                     throw new ArgumentException($"Unsupported menu templateName - {templateName}.");
             }
+        }
+
+        private static void CreateCharacterSelection(Menu menu)
+        {
+            new Selector(menu: menu, name: "character", valueDict: new Dictionary<object, object> {
+                { World.PlayerType.Male, AnimData.framesForPkgs[AnimData.PkgName.PlayerMale].texture },
+                { World.PlayerType.Female, AnimData.framesForPkgs[AnimData.PkgName.PlayerFemale].texture },
+                { World.PlayerType.TestDemoness, AnimData.framesForPkgs[AnimData.PkgName.PlayerDemoness].texture }
+            },
+            targetObj: new Preferences(), propertyName: "newWorldPlayerType", rebuildsAllMenus: true);
+
+            // description should match World.CreateAndPlacePlayer()
+
+            Color rectColor, textColor;
+
+            switch (Preferences.newWorldPlayerType)
+            {
+                case World.PlayerType.Male:
+                    rectColor = Color.Cyan;
+                    textColor = Color.Black;
+
+                    new Separator(menu: menu, name: "Stronger, faster. More health, more stamina.", rectColor: rectColor, textColor: textColor);
+                    new Separator(menu: menu, name: "Gets tired more slowly.", rectColor: rectColor, textColor: textColor);
+
+                    break;
+
+                case World.PlayerType.Female:
+                    rectColor = Color.Pink;
+                    textColor = Color.Black;
+
+                    new Separator(menu: menu, name: "Skilled cook.", rectColor: rectColor, textColor: textColor);
+                    new Separator(menu: menu, name: "Bigger inventory and toolbar.", rectColor: rectColor, textColor: textColor);
+
+                    break;
+
+                case World.PlayerType.TestDemoness:
+                    rectColor = Color.Violet;
+                    textColor = Color.Black;
+
+                    new Separator(menu: menu, name: "Makes earth tremble, shatters the heavens.", rectColor: rectColor, textColor: textColor);
+                    new Separator(menu: menu, name: "Is a demigod, will ruin your game.", rectColor: rectColor, textColor: textColor);
+
+                    break;
+
+                default:
+                    throw new ArgumentException($"Unsupported playerType - {Preferences.newWorldPlayerType}.");
+            }
+
         }
 
         private static Menu CreateCraftMenu(Name templateName, Craft.Category category, string label, SoundData.Name soundOpen)

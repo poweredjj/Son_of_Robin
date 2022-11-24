@@ -13,8 +13,6 @@ namespace SonOfRobin
         public readonly Scheduler.TaskName taskName;
         public readonly Object executeHelper; // misc variables used in execution stage
         public readonly int taskDelay;
-        public override string DisplayedText
-        { get { return this.name; } }
 
         public Invoker(Menu menu, string name, Scheduler.TaskName taskName, Object executeHelper = null, int taskDelay = 0, bool closesMenu = false, bool rebuildsMenu = false, List<InfoWindow.TextEntry> infoTextList = null, SoundData.Name sound = SoundData.Name.Empty, bool playSound = true, List<Texture2D> imageList = null) :
 
@@ -28,6 +26,9 @@ namespace SonOfRobin
             this.soundInvoke = sound == SoundData.Name.Empty ? this.menu.soundInvoke : new Sound(sound);
             if (!playSound) this.soundInvoke = new Sound(SoundData.Name.Empty);
         }
+
+        public override string DisplayedText
+        { get { return this.name; } }
 
         public override void Invoke()
         {
