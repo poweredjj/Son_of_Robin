@@ -16,7 +16,7 @@ namespace SonOfRobin
         private readonly IslandClock frozenClock;
         private readonly TimeSpan timePlayed;
         public readonly DateTime saveDate;
-        public readonly World.PlayerType playerType;
+        public readonly Player.PlayerType playerType;
         private string ElapsedTimeString { get { return this.timePlayed.ToString("hh\\:mm"); } }
 
         private string SaveDateString
@@ -50,15 +50,15 @@ namespace SonOfRobin
 
                 switch (this.playerType)
                 {
-                    case World.PlayerType.Male:
+                    case Player.PlayerType.Male:
                         playerTexture = AnimData.framesForPkgs[AnimData.PkgName.PlayerMale].texture;
                         break;
 
-                    case World.PlayerType.Female:
+                    case Player.PlayerType.Female:
                         playerTexture = AnimData.framesForPkgs[AnimData.PkgName.PlayerFemale].texture;
                         break;
 
-                    case World.PlayerType.TestDemoness:
+                    case Player.PlayerType.TestDemoness:
                         playerTexture = AnimData.framesForPkgs[AnimData.PkgName.PlayerFemale].texture;
                         break;
 
@@ -87,7 +87,7 @@ namespace SonOfRobin
             this.height = -1;
             this.frozenClock = null;
             this.timePlayed = TimeSpan.FromSeconds(0);
-            this.playerType = World.PlayerType.Male;
+            this.playerType = Player.PlayerType.Male;
 
             if (!this.folderName.StartsWith(LoaderSaver.tempPrefix) && headerData != null && headerData.ContainsKey("saveVersion"))
             {
@@ -101,7 +101,7 @@ namespace SonOfRobin
                     this.height = (int)headerData["height"];
                     this.frozenClock = new IslandClock(elapsedUpdates: (int)headerData["clockTimeElapsed"]);
                     this.timePlayed = (TimeSpan)headerData["TimePlayed"];
-                    this.playerType = (World.PlayerType)headerData["playerType"];
+                    this.playerType = (Player.PlayerType)headerData["playerType"];
                 }
             }
         }

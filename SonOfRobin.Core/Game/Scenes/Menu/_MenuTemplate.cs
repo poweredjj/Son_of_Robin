@@ -643,7 +643,7 @@ namespace SonOfRobin
 
             switch (Preferences.newWorldPlayerType)
             {
-                case World.PlayerType.Male:
+                case Player.PlayerType.Male:
                     rectColor = Color.LightBlue;
                     textColor = Color.Black;
 
@@ -652,7 +652,7 @@ namespace SonOfRobin
 
                     break;
 
-                case World.PlayerType.Female:
+                case Player.PlayerType.Female:
                     rectColor = Color.Pink;
                     textColor = Color.Black;
 
@@ -661,7 +661,7 @@ namespace SonOfRobin
 
                     break;
 
-                case World.PlayerType.TestDemoness:
+                case Player.PlayerType.TestDemoness:
                     rectColor = Color.Violet;
                     textColor = Color.Black;
 
@@ -681,9 +681,9 @@ namespace SonOfRobin
             }
 
             new Selector(menu: menu, name: "character", infoTextList: infoTextList, valueDict: new Dictionary<object, object> {
-                { World.PlayerType.Male, AnimData.framesForPkgs[AnimData.PkgName.PlayerMale].texture },
-                { World.PlayerType.Female, AnimData.framesForPkgs[AnimData.PkgName.PlayerFemale].texture },
-                { World.PlayerType.TestDemoness, AnimData.framesForPkgs[AnimData.PkgName.PlayerDemoness].texture }
+                { Player.PlayerType.Male, AnimData.framesForPkgs[AnimData.PkgName.PlayerMale].texture },
+                { Player.PlayerType.Female, AnimData.framesForPkgs[AnimData.PkgName.PlayerFemale].texture },
+                { Player.PlayerType.TestDemoness, AnimData.framesForPkgs[AnimData.PkgName.PlayerDemoness].texture }
             },
             targetObj: new Preferences(), propertyName: "newWorldPlayerType", rebuildsAllMenus: true);
 

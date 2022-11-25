@@ -246,11 +246,11 @@ namespace SonOfRobin
             return CreatePiece(templateName: templateName, world: world, id: id, female: female, generation: generation);
         }
 
-        public static BoardPiece CreateAndPlaceOnBoard(Name templateName, World world, Vector2 position, bool randomPlacement = false, int generation = 0, bool ignoreCollisions = false, string id = null, bool closestFreeSpot = false, int minDistanceOverride = -1, int maxDistanceOverride = -1, bool ignoreDensity = false, bool randomSex = true, bool female = false, World.PlayerType playerType = World.PlayerType.Male)
+        public static BoardPiece CreateAndPlaceOnBoard(Name templateName, World world, Vector2 position, bool randomPlacement = false, int generation = 0, bool ignoreCollisions = false, string id = null, bool closestFreeSpot = false, int minDistanceOverride = -1, int maxDistanceOverride = -1, bool ignoreDensity = false, bool randomSex = true, bool female = false, object creationHelper = null)
         {
             if (randomSex) female = BoardPiece.Random.Next(2) == 1;
 
-            BoardPiece boardPiece = CreatePiece(templateName: templateName, world: world, id: id, female: female, generation: generation, creationHelper: playerType);
+            BoardPiece boardPiece = CreatePiece(templateName: templateName, world: world, id: id, female: female, generation: generation, creationHelper: creationHelper);
 
             boardPiece.PlaceOnBoard(randomPlacement: randomPlacement, position: position, ignoreCollisions: ignoreCollisions, closestFreeSpot: closestFreeSpot, minDistanceOverride: minDistanceOverride, maxDistanceOverride: maxDistanceOverride, ignoreDensity: ignoreDensity);
 
@@ -278,23 +278,23 @@ namespace SonOfRobin
                     {
                         AnimData.PkgName animPkg;
 
-                        World.PlayerType playerType = creationHelper == null ? World.PlayerType.Male : (World.PlayerType)creationHelper;
+                        Player.PlayerType playerType = creationHelper == null ? Player.PlayerType.Male : (Player.PlayerType)creationHelper;
 
                         switch (playerType)
                         {
-                            case World.PlayerType.Male:
+                            case Player.PlayerType.Male:
                                 female = false;
                                 animPkg = AnimData.PkgName.PlayerMale;
 
                                 break;
 
-                            case World.PlayerType.Female:
+                            case Player.PlayerType.Female:
                                 female = true;
                                 animPkg = AnimData.PkgName.PlayerFemale;
 
                                 break;
 
-                            case World.PlayerType.TestDemoness:
+                            case Player.PlayerType.TestDemoness:
                                 female = true;
                                 animPkg = AnimData.PkgName.PlayerDemoness;
 
@@ -359,23 +359,23 @@ namespace SonOfRobin
 
                         AnimData.PkgName animPkg;
 
-                        World.PlayerType playerType = creationHelper == null ? World.PlayerType.Male : (World.PlayerType)creationHelper;
+                        Player.PlayerType playerType = creationHelper == null ? Player.PlayerType.Male : (Player.PlayerType)creationHelper;
 
                         switch (playerType)
                         {
-                            case World.PlayerType.Male:
+                            case Player.PlayerType.Male:
                                 female = false;
                                 animPkg = AnimData.PkgName.PlayerMale;
 
                                 break;
 
-                            case World.PlayerType.Female:
+                            case Player.PlayerType.Female:
                                 female = true;
                                 animPkg = AnimData.PkgName.PlayerFemale;
 
                                 break;
 
-                            case World.PlayerType.TestDemoness:
+                            case Player.PlayerType.TestDemoness:
                                 female = true;
                                 animPkg = AnimData.PkgName.PlayerDemoness;
 

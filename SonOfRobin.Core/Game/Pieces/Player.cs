@@ -12,6 +12,8 @@ namespace SonOfRobin
         public enum SleepMode
         { Awake, Sleep, WaitMorning, WaitIndefinitely };
 
+        public enum PlayerType { Male, Female, TestDemoness }; // calling this enum "Type" will break other things
+
         private const int maxShootingPower = 90;
 
         public int maxFedLevel;

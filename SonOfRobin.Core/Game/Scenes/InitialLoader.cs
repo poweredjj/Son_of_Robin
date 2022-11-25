@@ -102,7 +102,7 @@ namespace SonOfRobin
                 case Step.MakeDemoWorld:
                     if (Preferences.showDemoWorld && SonOfRobinGame.LicenceValid)
                     {
-                        if (World.GetTopWorld() == null) new World(seed: GridTemplate.demoWorldSeed, width: 4000, height: 4000, resDivider: 5, demoMode: true, playerType: World.PlayerType.Male);
+                        if (World.GetTopWorld() == null) new World(seed: GridTemplate.demoWorldSeed, width: 4000, height: 4000, resDivider: 5, demoMode: true, playerType: Player.PlayerType.Male);
 
                         World demoWorld = World.GetTopWorld();
 
