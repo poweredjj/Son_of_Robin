@@ -21,7 +21,7 @@ namespace SonOfRobin
         private float fatigue;
         public float cookingSkill;
         public float maxFatigue;
-        public bool smartCrafting;
+        public int craftLevel;
         public float ShootingAngle { get; private set; }
         private int shootingPower;
         private SleepEngine sleepEngine;
@@ -253,7 +253,7 @@ namespace SonOfRobin
             this.maxFatigue = 2000;
             this.fatigue = 0;
             this.cookingSkill = 1f;
-            this.smartCrafting = false;
+            this.craftLevel = 1;
             this.sleepEngine = SleepEngine.OutdoorSleepDry; // to be changed later
 
             var allowedToolbarPieces = new List<PieceTemplate.Name>();
@@ -397,7 +397,7 @@ namespace SonOfRobin
             pieceData["player_fatigue"] = this.fatigue;
             pieceData["player_maxFatigue"] = this.maxFatigue;
             pieceData["player_cookingSkill"] = this.cookingSkill;
-            pieceData["player_smartCrafting"] = this.smartCrafting;
+            pieceData["player_craftLevel"] = this.craftLevel;
             pieceData["player_sleepEngine"] = this.sleepEngine;
             pieceData["player_toolStorage"] = this.ToolStorage.Serialize();
             pieceData["player_equipStorage"] = this.EquipStorage.Serialize();
@@ -415,7 +415,7 @@ namespace SonOfRobin
             this.fatigue = (float)pieceData["player_fatigue"];
             this.maxFatigue = (float)pieceData["player_maxFatigue"];
             this.cookingSkill = (float)pieceData["player_cookingSkill"];
-            this.smartCrafting = (bool)pieceData["player_smartCrafting"];
+            this.craftLevel = (int)pieceData["player_craftLevel"];
             this.sleepEngine = (SleepEngine)pieceData["player_sleepEngine"];
             this.ToolStorage = PieceStorage.Deserialize(storageData: pieceData["player_toolStorage"], world: this.world, storagePiece: this);
             this.EquipStorage = PieceStorage.Deserialize(storageData: pieceData["player_equipStorage"], world: this.world, storagePiece: this);

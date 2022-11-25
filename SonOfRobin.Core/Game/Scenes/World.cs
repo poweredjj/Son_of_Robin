@@ -562,7 +562,7 @@ namespace SonOfRobin
                     {
                         case PlayerType.Male:
                             this.Player.strength += 1;
-                            this.Player.speed += 1;
+                            this.Player.speed += 0.5f;
                             this.Player.maxHitPoints *= 1.3f;
                             this.Player.hitPoints = this.Player.maxHitPoints;
                             this.Player.maxStamina *= 1.3f;
@@ -575,7 +575,7 @@ namespace SonOfRobin
                             this.Player.InvHeight += 1;
                             this.Player.ToolbarWidth += 1;
                             this.Player.cookingSkill *= 1.4f;
-                            this.Player.smartCrafting = true;
+                            this.Player.craftLevel += 2;
 
                             break;
 

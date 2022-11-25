@@ -219,30 +219,30 @@ namespace SonOfRobin
 
                 world.craftStats.AddRecipe(recipe: this, craftCount: 1);
 
+                // checking smart crafting - randomly reducing used ingredients count
+
                 var ingredientsCopy = new Dictionary<PieceTemplate.Name, byte>(this.ingredients); // copy - to allow reducing ingredient count
 
-                if (player.smartCrafting) // smart crafting - randomly reducing used ingredients count
+                int smartCraftChance = 30; // smaller number == higher chance
+                smartCraftChance /= player.craftLevel;
+
+                int recipeLevel = world.craftStats.GetRecipeLevel(this);
+                if (recipeLevel > 0 || recipeLevel < this.maxLevel) smartCraftChance /= 2;
+                if (recipeLevel == this.maxLevel) smartCraftChance /= 3;
+
+                if (world.random.Next(0, smartCraftChance) == 0)
                 {
-                    int randomChance = 10; // smaller number == higher chance
+                    List<PieceTemplate.Name> multipleIngredientNames = this.ingredients.Where(kvp => kvp.Value > 1).ToDictionary(kvp => kvp.Key, kvp => kvp.Value).Keys.ToList();
 
-                    int recipeLevel = world.craftStats.GetRecipeLevel(this);
-                    if (recipeLevel > 0 || recipeLevel < this.maxLevel) randomChance /= 2;
-                    if (recipeLevel == this.maxLevel) randomChance /= 3;
-
-                    if (player.smartCrafting && world.random.Next(0, randomChance) == 0)
+                    if (multipleIngredientNames.Any())
                     {
-                        List<PieceTemplate.Name> multipleIngredientNames = this.ingredients.Where(kvp => kvp.Value > 1).ToDictionary(kvp => kvp.Key, kvp => kvp.Value).Keys.ToList();
+                        PieceTemplate.Name randomNameToReduce = multipleIngredientNames[world.random.Next(0, multipleIngredientNames.Count)];
+                        byte quantity = ingredientsCopy[randomNameToReduce];
 
-                        if (multipleIngredientNames.Any())
-                        {
-                            PieceTemplate.Name randomNameToReduce = multipleIngredientNames[world.random.Next(0, multipleIngredientNames.Count)];
-                            byte quantity = ingredientsCopy[randomNameToReduce];
-
-                            float reduceMultiplier = (float)(0.2 + (world.random.NextDouble() * 0.3)); // 0.2 - 0.5
-                            byte amountToReduce = Math.Max((byte)(quantity * reduceMultiplier), (byte)1);
-                            ingredientsCopy[randomNameToReduce] -= amountToReduce;
-                            world.craftStats.AddSmartCraftingReducedAmount(ingredientName: randomNameToReduce, reducedAmount: amountToReduce);
-                        }
+                        float reduceMultiplier = (float)(0.2 + (world.random.NextDouble() * 0.3)); // 0.2 - 0.5
+                        byte amountToReduce = Math.Max((byte)(quantity * reduceMultiplier), (byte)1);
+                        ingredientsCopy[randomNameToReduce] -= amountToReduce;
+                        world.craftStats.AddSmartCraftingReducedAmount(ingredientName: randomNameToReduce, reducedAmount: amountToReduce);
                     }
                 }
 
