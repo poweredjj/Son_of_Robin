@@ -16,7 +16,7 @@ namespace SonOfRobin
         private readonly IslandClock frozenClock;
         private readonly TimeSpan timePlayed;
         public readonly DateTime saveDate;
-        public readonly Player.PlayerType playerType;
+        public readonly World.PlayerType playerType;
         private string ElapsedTimeString { get { return this.timePlayed.ToString("hh\\:mm"); } }
 
         private string SaveDateString
@@ -50,15 +50,15 @@ namespace SonOfRobin
 
                 switch (this.playerType)
                 {
-                    case Player.PlayerType.Male:
+                    case World.PlayerType.Male:
                         playerTexture = AnimData.framesForPkgs[AnimData.PkgName.PlayerMale].texture;
                         break;
 
-                    case Player.PlayerType.Female:
+                    case World.PlayerType.Female:
                         playerTexture = AnimData.framesForPkgs[AnimData.PkgName.PlayerFemale].texture;
                         break;
 
-                    case Player.PlayerType.TestDemoness:
+                    case World.PlayerType.TestDemoness:
                         playerTexture = AnimData.framesForPkgs[AnimData.PkgName.PlayerFemale].texture;
                         break;
 
@@ -87,7 +87,7 @@ namespace SonOfRobin
             this.height = -1;
             this.frozenClock = null;
             this.timePlayed = TimeSpan.FromSeconds(0);
-            this.playerType = Player.PlayerType.Male;
+            this.playerType = World.PlayerType.Male;
 
             if (!this.folderName.StartsWith(LoaderSaver.tempPrefix) && headerData != null && headerData.ContainsKey("saveVersion"))
             {
@@ -101,7 +101,7 @@ namespace SonOfRobin
                     this.height = (int)headerData["height"];
                     this.frozenClock = new IslandClock(elapsedUpdates: (int)headerData["clockTimeElapsed"]);
                     this.timePlayed = (TimeSpan)headerData["TimePlayed"];
-                    this.playerType = (Player.PlayerType)headerData["playerType"];
+                    this.playerType = (World.PlayerType)headerData["playerType"];
                 }
             }
         }

@@ -278,23 +278,23 @@ namespace SonOfRobin
                     {
                         AnimData.PkgName animPkg;
 
-                        Player.PlayerType playerType = creationHelper == null ? Player.PlayerType.Male : (Player.PlayerType)creationHelper;
+                        World.PlayerType playerType = creationHelper == null ? World.PlayerType.Male : (World.PlayerType)creationHelper;
 
                         switch (playerType)
                         {
-                            case Player.PlayerType.Male:
+                            case World.PlayerType.Male:
                                 female = false;
                                 animPkg = AnimData.PkgName.PlayerMale;
 
                                 break;
 
-                            case Player.PlayerType.Female:
+                            case World.PlayerType.Female:
                                 female = true;
                                 animPkg = AnimData.PkgName.PlayerFemale;
 
                                 break;
 
-                            case Player.PlayerType.TestDemoness:
+                            case World.PlayerType.TestDemoness:
                                 female = true;
                                 animPkg = AnimData.PkgName.PlayerDemoness;
 
@@ -359,23 +359,23 @@ namespace SonOfRobin
 
                         AnimData.PkgName animPkg;
 
-                        Player.PlayerType playerType = creationHelper == null ? Player.PlayerType.Male : (Player.PlayerType)creationHelper;
+                        World.PlayerType playerType = creationHelper == null ? World.PlayerType.Male : (World.PlayerType)creationHelper;
 
                         switch (playerType)
                         {
-                            case Player.PlayerType.Male:
+                            case World.PlayerType.Male:
                                 female = false;
                                 animPkg = AnimData.PkgName.PlayerMale;
 
                                 break;
 
-                            case Player.PlayerType.Female:
+                            case World.PlayerType.Female:
                                 female = true;
                                 animPkg = AnimData.PkgName.PlayerFemale;
 
                                 break;
 
-                            case Player.PlayerType.TestDemoness:
+                            case World.PlayerType.TestDemoness:
                                 female = true;
                                 animPkg = AnimData.PkgName.PlayerDemoness;
 

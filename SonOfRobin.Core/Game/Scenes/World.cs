@@ -9,6 +9,8 @@ namespace SonOfRobin
 {
     public class World : Scene
     {
+        public enum PlayerType { Male, Female, TestDemoness };
+
         public Vector2 analogMovementLeftStick;
         public Vector2 analogMovementRightStick;
         public Vector2 analogCameraCorrection;
@@ -22,7 +24,7 @@ namespace SonOfRobin
         public DateTime creationEnd;
         public TimeSpan creationDuration;
         public readonly bool demoMode;
-        public readonly Player.PlayerType playerType;
+        public readonly PlayerType playerType;
 
         private Object saveGameData;
         public bool createMissingPiecesOutsideCamera;
@@ -76,7 +78,7 @@ namespace SonOfRobin
         public readonly DateTime createdTime; // for calculating time spent in game
         private TimeSpan timePlayed; // real time spent while playing (differs from currentUpdate because of island time compression via updateMultiplier)
 
-        public World(int width, int height, int seed, int resDivider, Player.PlayerType playerType, Object saveGameData = null, bool demoMode = false) :
+        public World(int width, int height, int seed, int resDivider, PlayerType playerType, Object saveGameData = null, bool demoMode = false) :
             base(inputType: InputTypes.Normal, priority: 1, blocksUpdatesBelow: true, blocksDrawsBelow: true, touchLayout: TouchLayout.QuitLoading, tipsLayout: ControlTips.TipsLayout.QuitLoading)
         {
             this.demoMode = demoMode;
@@ -245,7 +247,7 @@ namespace SonOfRobin
 
                     string text;
 
-                    if (this.playerType == Player.PlayerType.TestDemoness)
+                    if (this.playerType == PlayerType.TestDemoness)
                     {
                         text = "How can this be? I was supposed to be immortal!";
                     }
@@ -420,7 +422,7 @@ namespace SonOfRobin
                 {
                     this.CreateAndPlacePlayer();
 
-                    if (this.playerType != Player.PlayerType.TestDemoness) PieceTemplate.CreateAndPlaceOnBoard(world: this, position: this.Player.sprite.position, templateName: PieceTemplate.Name.CrateStarting, closestFreeSpot: true);
+                    if (this.playerType != PlayerType.TestDemoness) PieceTemplate.CreateAndPlaceOnBoard(world: this, position: this.Player.sprite.position, templateName: PieceTemplate.Name.CrateStarting, closestFreeSpot: true);
                     PieceTemplate.CreateAndPlaceOnBoard(world: this, position: this.Player.sprite.position, templateName: PieceTemplate.Name.PredatorRepellant, closestFreeSpot: true);
                 }
             }
@@ -569,7 +571,7 @@ namespace SonOfRobin
 
                     switch (playerType)
                     {
-                        case Player.PlayerType.Male:
+                        case PlayerType.Male:
                             this.Player.strength += 1;
                             this.Player.speed += 0.5f;
                             this.Player.maxHitPoints *= 1.3f;
@@ -580,7 +582,7 @@ namespace SonOfRobin
 
                             break;
 
-                        case Player.PlayerType.Female:
+                        case PlayerType.Female:
                             this.Player.InvHeight += 1;
                             this.Player.ToolbarWidth += 1;
                             this.Player.cookingSkill *= 1.4f;
@@ -588,7 +590,7 @@ namespace SonOfRobin
 
                             break;
 
-                        case Player.PlayerType.TestDemoness:
+                        case PlayerType.TestDemoness:
                             this.Player.InvWidth += 2;
                             this.Player.InvHeight += 2;
                             this.Player.ToolbarWidth += 2;

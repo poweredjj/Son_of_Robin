@@ -12,8 +12,6 @@ namespace SonOfRobin
         public enum SleepMode
         { Awake, Sleep, WaitMorning, WaitIndefinitely };
 
-        public enum PlayerType { Male, Female, TestDemoness }; // calling this enum "Type" will break other things
-
         private const int maxShootingPower = 90;
 
         public int maxFedLevel;
@@ -81,9 +79,9 @@ namespace SonOfRobin
 
             BoardPiece handTool = PieceTemplate.Create(templateName: PieceTemplate.Name.Hand, world: this.world);
 
-            StorageSlot slotToLock = this.ToolStorage.FindCorrectSlot(handTool);
+            StorageSlot handSlot = this.ToolStorage.FindCorrectSlot(handTool);
             this.ToolStorage.AddPiece(handTool);
-            slotToLock.locked = true;
+            handSlot.locked = true;
         }
 
         public override bool ShowStatBars

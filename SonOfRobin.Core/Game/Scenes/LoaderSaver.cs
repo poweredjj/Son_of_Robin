@@ -547,7 +547,7 @@ namespace SonOfRobin
             int width = (int)this.headerData["width"];
             int height = (int)this.headerData["height"];
             int resDivider = (int)this.headerData["resDivider"];
-            Player.PlayerType playerType = (Player.PlayerType)this.headerData["playerType"];
+            World.PlayerType playerType = (World.PlayerType)this.headerData["playerType"];
 
             this.world = new World(width: width, height: height, seed: seed, saveGameData: this.SaveGameData, playerType: playerType, resDivider: resDivider);
             this.MoveToTop();

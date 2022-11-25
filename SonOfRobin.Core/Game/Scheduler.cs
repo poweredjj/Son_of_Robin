@@ -224,7 +224,7 @@ namespace SonOfRobin
                             // var createData = new Dictionary<string, Object> { { "width", width }, { "height", height }, { "seed", seed }, { "resDivider", resDivider }, { "playerType", World.PlayerType.Male } }
 
                             int width, height, seed, resDivider;
-                            Player.PlayerType playerType;
+                            World.PlayerType playerType;
 
                             if (this.ExecuteHelper == null)
                             {
@@ -241,7 +241,7 @@ namespace SonOfRobin
                                 height = (int)createData["height"];
                                 seed = (int)createData["seed"];
                                 resDivider = (int)createData["resDivider"];
-                                playerType = (Player.PlayerType)createData["playerType"];
+                                playerType = (World.PlayerType)createData["playerType"];
                             }
 
                             new World(width: width, height: height, seed: seed, resDivider: resDivider, playerType: playerType);
@@ -253,7 +253,7 @@ namespace SonOfRobin
                         {
                             Scene.RemoveAllScenesOfType(typeof(Menu));
                             World oldWorld = (World)this.ExecuteHelper;
-                            Player.PlayerType playerType = oldWorld.playerType;
+                            World.PlayerType playerType = oldWorld.playerType;
 
                             new World(width: oldWorld.width, height: oldWorld.height, seed: oldWorld.seed, resDivider: oldWorld.resDivider, playerType: playerType);
                             oldWorld.Remove();
