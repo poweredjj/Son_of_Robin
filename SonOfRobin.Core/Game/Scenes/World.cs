@@ -614,6 +614,8 @@ namespace SonOfRobin
                                 this.Player.EquipStorage.AddPiece(piece);
                             }
 
+                            this.map.TurnOff();
+
                             var pieceNamesForToolbar = new List<PieceTemplate.Name> {PieceTemplate.Name.AxeCrystal, PieceTemplate.Name.PickaxeCrystal, PieceTemplate.Name.SpearCrystal, PieceTemplate.Name.TorchBig, PieceTemplate.Name.ScytheCrystal, PieceTemplate.Name.ShovelCrystal
                             };
 
@@ -654,8 +656,6 @@ namespace SonOfRobin
                                 }
                                 if (!pieceAdded) break;
                             }
-
-                            foreach (PieceTemplate.Name name in PieceTemplate.allNames) this.discoveredRecipesForPieces.Add(name);
 
                             break;
 
