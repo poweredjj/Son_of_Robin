@@ -311,6 +311,8 @@ namespace SonOfRobin
                     $"|  {pieceName} has been {creationType}." :
                     $"|  {pieceName} x{this.amountToCreate} has been {creationType}.";
 
+                bool tutorialAdded = false;
+
                 var taskChain = new List<Object>();
 
                 SoundData.Name soundName = !pieceInfo.canBePickedUp && pieceInfo.type != typeof(Plant) ? SoundData.Name.Ding1 : SoundData.Name.Ding3;
@@ -322,6 +324,13 @@ namespace SonOfRobin
                 {
                     taskChain.Add(new HintMessage(text: $"Used less ingredients: | x{world.craftStats.LastSmartCraftReducedIngredientCount}", boxType: HintMessage.BoxType.GreenBox, delay: 0, blockInput: false, useTransition: true,
                         imageList: new List<Texture2D> { PieceInfo.GetInfo(world.craftStats.LastSmartCraftReducedIngredientName).texture }, startingSound: SoundData.Name.Ding1).ConvertToTask());
+
+                    if (!tutorialAdded && !world.HintEngine.shownTutorials.Contains(Tutorials.Type.SmartCrafting))
+                    {
+                        var tutorialData = new Dictionary<string, Object> { { "tutorial", Tutorials.Type.SmartCrafting }, { "world", world }, { "ignoreHintsSetting", false }, { "ignoreDelay", true }, { "ignoreIfShown", true } };
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ShowTutorialInGame, delay: 0, storeForLaterUse: true, executeHelper: tutorialData));
+                        tutorialAdded = true;
+                    }
 
                     world.craftStats.ResetLastSmartCraft();
                 }
@@ -385,10 +394,11 @@ namespace SonOfRobin
                 if (pieceInfo.canBePickedUp) executeHelper["newOwnedPiece"] = this.pieceToCreate;
                 else executeHelper["fieldPiece"] = this.pieceToCreate;
 
-                if (recipeLevelUp)
+                if (recipeLevelUp && !tutorialAdded && !world.HintEngine.shownTutorials.Contains(Tutorials.Type.SmartCrafting))
                 {
                     var tutorialData = new Dictionary<string, Object> { { "tutorial", Tutorials.Type.CraftLevels }, { "world", world }, { "ignoreHintsSetting", false }, { "ignoreDelay", true }, { "ignoreIfShown", true } };
                     taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ShowTutorialInGame, delay: 0, storeForLaterUse: true, executeHelper: tutorialData));
+                    tutorialAdded = true;
                 }
 
                 taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CheckForPieceHints, delay: 0, storeForLaterUse: true, executeHelper: executeHelper));

@@ -7,7 +7,7 @@ namespace SonOfRobin
     public class Tutorials
     {
         public enum Type
-        { BreakThing, Equip, BuildWorkshop, GetWood, Mine, Interact, PickUp, Hit, Craft, KeepingAnimalsAway, ShootProjectile, Cook, ShakeFruit, AnimalAttacking, Torch, Fireplace, TooDarkToReadMap, TooDarkToSeeAnything, Heat, CraftLevels, SwampPoison }
+        { BreakThing, Equip, BuildWorkshop, GetWood, Mine, Interact, PickUp, Hit, Craft, KeepingAnimalsAway, ShootProjectile, Cook, ShakeFruit, AnimalAttacking, Torch, Fireplace, TooDarkToReadMap, TooDarkToSeeAnything, Heat, CraftLevels, SwampPoison, SmartCrafting }
 
         private static readonly HintMessage.BoxType messageHeaderType = HintMessage.BoxType.BlueBox;
         private static readonly HintMessage.BoxType messageTextType = HintMessage.BoxType.LightBlueBox;
@@ -223,7 +223,6 @@ namespace SonOfRobin
                     new HintMessage(text: "Every craft recipe has a skill level.", boxType: messageTextType),
                     new HintMessage(text: "After being crafted a certain number of times,\nthe recipe will level up.", boxType: messageTextType),
                     new HintMessage(text: "With every recipe level, crafting it will require less time and effort.", boxType: messageTextType),
-                    new HintMessage(text: "Required ingredient amount will not change,\neven at |MASTER level.", imageList: new List<Texture2D> { PieceInfo.GetInfo(PieceTemplate.Name.DebrisStar).texture }, boxType: messageTextType),
                 });
 
             new Tutorial(type: Type.KeepingAnimalsAway, name: "keeping animals away", title: "Keeping animals away.",
@@ -296,6 +295,14 @@ namespace SonOfRobin
                     new HintMessage(text: "You need | protective boots, to walk there safely.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.BootsProtective)}, boxType: messageTextType),
                     new HintMessage(text: "To get rid of the poison, you can eat | | | something.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Apple), PieceInfo.GetTexture(PieceTemplate.Name.MeatRaw), PieceInfo.GetTexture(PieceTemplate.Name.Meal)}, boxType: messageTextType),
                     });
+
+            new Tutorial(type: Type.SmartCrafting, name: "smart crafting", title: "Smart crafting.",
+               messages: new List<HintMessage>  {
+
+                    new HintMessage(text: "Sometimes you will use less | | | materials when crafting.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.WoodLogRegular), PieceInfo.GetTexture(PieceTemplate.Name.Nail), PieceInfo.GetTexture(PieceTemplate.Name.Granite)}, boxType: messageTextType),
+                    new HintMessage(text: "This is called 'smart crafting'.", boxType: messageTextType),
+                    new HintMessage(text: "It depends on each recipe craft level |\nand on your base craft skill.", imageList: new List<Texture2D> { PieceInfo.GetInfo(PieceTemplate.Name.DebrisStar).texture }, boxType: messageTextType),
+                   });
         }
     }
 }
