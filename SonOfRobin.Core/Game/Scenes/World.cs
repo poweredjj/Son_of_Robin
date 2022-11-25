@@ -9,7 +9,8 @@ namespace SonOfRobin
 {
     public class World : Scene
     {
-        public enum PlayerType { Male, Female, TestDemoness };
+        public enum PlayerType
+        { Male, Female, TestDemoness };
 
         public Vector2 analogMovementLeftStick;
         public Vector2 analogMovementRightStick;
@@ -620,6 +621,38 @@ namespace SonOfRobin
                             {
                                 BoardPiece piece = PieceTemplate.Create(world: this, templateName: name);
                                 this.Player.ToolStorage.AddPiece(piece);
+                            }
+
+                            var piecesForInventoryWithCount = new Dictionary<PieceTemplate.Name, int>();
+
+                            foreach (PieceTemplate.Name name in PieceTemplate.allNames)
+                            {
+                                Craft.Recipe recipe = Craft.GetRecipe(name);
+                                if (recipe != null)
+                                {
+                                    foreach (PieceTemplate.Name ingredientName in recipe.ingredients.Keys)
+                                    {
+                                        if (!piecesForInventoryWithCount.ContainsKey(ingredientName))
+                                        {
+                                            piecesForInventoryWithCount[ingredientName] = PieceInfo.GetInfo(ingredientName).stackSize * 2;
+                                        }
+                                    }
+                                }
+                            }
+
+                            foreach (var kvp in piecesForInventoryWithCount)
+                            {
+                                PieceTemplate.Name name = kvp.Key;
+                                int count = kvp.Value;
+
+                                bool pieceAdded = false;
+                                for (int i = 0; i < count; i++)
+                                {
+                                    BoardPiece piece = PieceTemplate.Create(world: this, templateName: name);
+                                    pieceAdded = this.Player.PieceStorage.AddPiece(piece);
+                                    if (!pieceAdded) break;
+                                }
+                                if (!pieceAdded) break;
                             }
 
                             foreach (PieceTemplate.Name name in PieceTemplate.allNames) this.discoveredRecipesForPieces.Add(name);

@@ -43,11 +43,11 @@ namespace SonOfRobin
         }
 
         private StorageSlot FlameTriggerSlot
-        { get { return this.pieceStorage.GetSlot(0, 0); } }
+        { get { return this.PieceStorage.GetSlot(0, 0); } }
         private StorageSlot MealSlot
-        { get { return this.pieceStorage.GetSlot(1, 0); } }
+        { get { return this.PieceStorage.GetSlot(1, 0); } }
         private StorageSlot FuelSlot
-        { get { return this.pieceStorage.GetSlot(2, 0); } }
+        { get { return this.PieceStorage.GetSlot(2, 0); } }
 
         private void CreateAndConfigureStorage()
         {
@@ -55,9 +55,9 @@ namespace SonOfRobin
             storageWidth = Math.Max(storageWidth, (byte)3);
             byte storageHeight = 3;
 
-            this.pieceStorage = new PieceStorage(width: storageWidth, height: storageHeight, storagePiece: this, storageType: PieceStorage.StorageType.Cooking, stackLimit: 1);
+            this.PieceStorage = new PieceStorage(width: storageWidth, height: storageHeight, storagePiece: this, storageType: PieceStorage.StorageType.Cooking, stackLimit: 1);
 
-            foreach (StorageSlot slot in this.pieceStorage.AllSlots)
+            foreach (StorageSlot slot in this.PieceStorage.AllSlots)
             {
                 slot.locked = true;
                 slot.hidden = true;
@@ -86,7 +86,7 @@ namespace SonOfRobin
 
             for (int x = 0; x < this.ingredientSpace; x++)
             {
-                StorageSlot ingredientSlot = this.pieceStorage.GetSlot(x, 1);
+                StorageSlot ingredientSlot = this.PieceStorage.GetSlot(x, 1);
                 ingredientSlot.locked = false;
                 ingredientSlot.hidden = false;
                 ingredientSlot.label = "ingredient";
@@ -95,7 +95,7 @@ namespace SonOfRobin
 
             for (int x = 0; x < this.boosterSpace; x++)
             {
-                StorageSlot boosterSlot = this.pieceStorage.GetSlot(x, 2);
+                StorageSlot boosterSlot = this.PieceStorage.GetSlot(x, 2);
                 boosterSlot.locked = false;
                 boosterSlot.hidden = false;
                 boosterSlot.label = "booster";
@@ -162,9 +162,9 @@ namespace SonOfRobin
                 return;
             }
 
-            var storedIngredients = this.pieceStorage.GetAllPieces().Where(piece => ingredientNames.Contains(piece.name)).ToList();
-            var storedBoosters = this.pieceStorage.GetAllPieces().Where(piece => boosterNames.Contains(piece.name)).ToList();
-            var storedFuel = this.pieceStorage.GetAllPieces().Where(piece => fuelNames.Contains(piece.name)).ToList();
+            var storedIngredients = this.PieceStorage.GetAllPieces().Where(piece => ingredientNames.Contains(piece.name)).ToList();
+            var storedBoosters = this.PieceStorage.GetAllPieces().Where(piece => boosterNames.Contains(piece.name)).ToList();
+            var storedFuel = this.PieceStorage.GetAllPieces().Where(piece => fuelNames.Contains(piece.name)).ToList();
 
             if (storedIngredients.Count == 0 && storedFuel.Count == 0)
             {
@@ -232,7 +232,7 @@ namespace SonOfRobin
             BoardPiece meal = PieceTemplate.Create(templateName: PieceTemplate.Name.Meal, world: this.world);
             buffList = BuffEngine.MergeSameTypeBuffsInList(world: this.world, buffList: buffList); // merging the same buffs (to add values of non-stackable buffs)
             meal.buffList = buffList;
-            this.pieceStorage.AddPiece(piece: meal, dropIfDoesNotFit: true);
+            this.PieceStorage.AddPiece(piece: meal, dropIfDoesNotFit: true);
 
             // destroying every inserted piece
 
@@ -248,7 +248,7 @@ namespace SonOfRobin
                 else piecesToDestroyDict[pieceToDestroy.name] = 1;
             }
 
-            this.pieceStorage.DestroySpecifiedPieces(piecesToDestroyDict);
+            this.PieceStorage.DestroySpecifiedPieces(piecesToDestroyDict);
 
             // blocking the cooker for "cooking duration"
 

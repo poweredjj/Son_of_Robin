@@ -262,7 +262,7 @@ namespace SonOfRobin
                 if (this.fieldPiecesNearby.Contains(piece.name))
                 {
                     // fieldPieceHasNotEmptyStorage can be used for checking fruits
-                    if (!this.fieldPieceHasNotEmptyStorage || piece.pieceStorage?.OccupiedSlotsCount > 0) return piece;
+                    if (!this.fieldPieceHasNotEmptyStorage || piece.PieceStorage?.OccupiedSlotsCount > 0) return piece;
                 }
             }
 
@@ -271,7 +271,7 @@ namespace SonOfRobin
 
         private static bool CheckIfPlayerOwnsPiece(Player player, PieceTemplate.Name name)
         {
-            var playerStorages = new List<PieceStorage> { player.ToolStorage, player.pieceStorage };
+            var playerStorages = new List<PieceStorage> { player.ToolStorage, player.PieceStorage };
 
             foreach (PieceStorage currentStorage in playerStorages)
             {

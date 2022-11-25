@@ -11,11 +11,11 @@ namespace SonOfRobin
         private static readonly List<PieceTemplate.Name> boosterNames = new List<PieceTemplate.Name> { PieceTemplate.Name.PotionPoison, PieceTemplate.Name.PotionSlowdown, PieceTemplate.Name.PotionWeakness, PieceTemplate.Name.PotionMaxHPDecrease, PieceTemplate.Name.EmptyBottle };
 
         private StorageSlot UpgradeTriggerSlot
-        { get { return this.pieceStorage.GetSlot(0, 0); } }
+        { get { return this.PieceStorage.GetSlot(0, 0); } }
         private StorageSlot MainSlot
-        { get { return this.pieceStorage.GetSlot(1, 0); } }
+        { get { return this.PieceStorage.GetSlot(1, 0); } }
         private StorageSlot BoosterSlot
-        { get { return this.pieceStorage.GetSlot(2, 0); } }
+        { get { return this.PieceStorage.GetSlot(2, 0); } }
 
         public UpgradeBench(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, Dictionary<byte, int> maxMassBySize, string readableName, string description, Category category,
             byte animSize = 0, string animName = "off", bool blocksMovement = true, ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = false, int generation = 0, Yield yield = null, int maxHitPoints = 1, bool fadeInAnim = false, PieceSoundPack soundPack = null) :
@@ -26,7 +26,7 @@ namespace SonOfRobin
 
             this.boardTask = Scheduler.TaskName.OpenContainer;
 
-            this.pieceStorage = new PieceStorage(width: 3, height: 1, storagePiece: this, storageType: PieceStorage.StorageType.Upgrade);
+            this.PieceStorage = new PieceStorage(width: 3, height: 1, storagePiece: this, storageType: PieceStorage.StorageType.Upgrade);
 
             StorageSlot upgradeTriggerSlot = this.UpgradeTriggerSlot;
             BoardPiece upgradeTrigger = PieceTemplate.Create(templateName: PieceTemplate.Name.UpgradeTrigger, world: this.world);

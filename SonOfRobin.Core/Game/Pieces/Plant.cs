@@ -44,7 +44,7 @@ namespace SonOfRobin
             if (this.fruitEngine != null)
             {
                 this.fruitEngine.plant = this;
-                this.pieceStorage = new PieceStorage(width: this.fruitEngine.maxNumber, height: 1, storagePiece: this, storageType: PieceStorage.StorageType.Fruits, stackLimit: 1);
+                this.PieceStorage = new PieceStorage(width: this.fruitEngine.maxNumber, height: 1, storagePiece: this, storageType: PieceStorage.StorageType.Fruits, stackLimit: 1);
             }
         }
 
@@ -87,7 +87,7 @@ namespace SonOfRobin
 
         public void DropFruit()
         {
-            var occupiedSlots = this.pieceStorage.OccupiedSlots;
+            var occupiedSlots = this.PieceStorage.OccupiedSlots;
             if (occupiedSlots.Count == 0)
             {
                 new TextWindow(text: "There is nothing left to shake off.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1, animSound: this.world.DialogueSound);
@@ -103,7 +103,7 @@ namespace SonOfRobin
             debrisYield.DropDebris();
             Sound.QuickPlay(SoundData.Name.DropPlant);
 
-            this.pieceStorage.DropPiecesFromSlot(slot: occupiedSlots[0], addMovement: true);
+            this.PieceStorage.DropPiecesFromSlot(slot: occupiedSlots[0], addMovement: true);
         }
 
         public override void SM_GrowthAndReproduction()
@@ -111,7 +111,7 @@ namespace SonOfRobin
             float massTaken = this.OccupiedFieldWealth * this.massTakenMultiplier * this.efficiency * 25;
             if (this.fruitEngine != null)
             {
-                if (this.pieceStorage.EmptySlotsCount > 0 || this.world.random.Next(0, 100) == 0)
+                if (this.PieceStorage.EmptySlotsCount > 0 || this.world.random.Next(0, 100) == 0)
                 {
                     this.fruitEngine.AddMass(massTaken / 90); // some mass is "copied" to fruit
                     if (this.Mass > this.reproduction.massNeeded / 2) this.fruitEngine.TryToConvertMassIntoFruit();

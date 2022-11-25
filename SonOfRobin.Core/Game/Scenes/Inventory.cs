@@ -200,7 +200,7 @@ namespace SonOfRobin
 
         public static void SetLayout(LayoutType newLayout, BoardPiece fieldStorage = null, Player player = null)
         {
-            if (fieldStorage != null && fieldStorage.pieceStorage.storageType != PieceStorage.StorageType.Fireplace && player != null && !player.CanSeeAnything)
+            if (fieldStorage != null && fieldStorage.PieceStorage.storageType != PieceStorage.StorageType.Fireplace && player != null && !player.CanSeeAnything)
             {
                 new TextWindow(text: $"It is too dark to use the | {fieldStorage.readableName}...", imageList: new List<Texture2D> { PieceInfo.GetTexture(fieldStorage.name) }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: InputTypes.None, blockInputDuration: 45, priority: 1, animSound: player.world.DialogueSound);
 
@@ -227,7 +227,7 @@ namespace SonOfRobin
 
                         var virtStoragePackList = new List<VirtPieceStoragePack>
                         {
-                            new VirtPieceStoragePack(storage: player.pieceStorage),
+                            new VirtPieceStoragePack(storage: player.PieceStorage),
                             new VirtPieceStoragePack(storage: player.ToolStorage, newRow: true),
                         };
                         PieceStorage virtualStorage = new VirtualPieceStorage(storagePiece: player, virtStoragePackList: virtStoragePackList, label: "Inventory", padding: 1);
@@ -244,13 +244,13 @@ namespace SonOfRobin
                     {
                         var virtStoragePackList = new List<VirtPieceStoragePack>
                         {
-                            new VirtPieceStoragePack(storage: player.pieceStorage),
+                            new VirtPieceStoragePack(storage: player.PieceStorage),
                             new VirtPieceStoragePack(storage: player.ToolStorage, newRow: true),
                         };
                         PieceStorage virtualStorage = new VirtualPieceStorage(storagePiece: player, virtStoragePackList: virtStoragePackList, label: "Inventory", padding: 1);
 
                         Inventory inventoryLeft = new Inventory(piece: player, storage: virtualStorage, layout: Type.DualLeft, transDirection: TransDirection.Left);
-                        Inventory inventoryRight = new Inventory(piece: fieldStorage, storage: fieldStorage.pieceStorage, layout: Type.DualRight, otherInventory: inventoryLeft, transDirection: TransDirection.Right);
+                        Inventory inventoryRight = new Inventory(piece: fieldStorage, storage: fieldStorage.PieceStorage, layout: Type.DualRight, otherInventory: inventoryLeft, transDirection: TransDirection.Right);
                         inventoryLeft.otherInventory = inventoryRight;
 
                         break;

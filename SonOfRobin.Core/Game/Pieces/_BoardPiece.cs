@@ -71,7 +71,7 @@ namespace SonOfRobin
         public float maxHitPoints;
         public readonly bool indestructible;
         public readonly byte stackSize;
-        public PieceStorage pieceStorage;
+        public PieceStorage PieceStorage { get; protected set; }
         public BuffEngine buffEngine; // active buffs
         public List<Buff> buffList; // buff to be activated when this piece (equip, food, etc.) is used by another piece
         public readonly Yield yield;
@@ -127,7 +127,7 @@ namespace SonOfRobin
             this.efficiency = 1; // 0 - 1 valid range
             this.readableName = readableName;
             this.description = description;
-            this.pieceStorage = null; // updated in child classes - if needed
+            this.PieceStorage = null; // updated in child classes - if needed
             this.buffEngine = new BuffEngine(piece: this);
             this.buffList = buffList == null ? new List<Buff> { } : buffList;
             this.boardTask = boardTask;
@@ -219,7 +219,7 @@ namespace SonOfRobin
                 this.mass = value;
                 int previousSpriteSize = this.sprite.animSize;
                 this.SetSpriteSizeByMass();
-                if (previousSpriteSize != this.sprite.animSize && this.pieceStorage != null && this.GetType() == typeof(Plant))
+                if (previousSpriteSize != this.sprite.animSize && this.PieceStorage != null && this.GetType() == typeof(Plant))
                 {
                     Plant plant = (Plant)this;
                     plant.fruitEngine.SetAllFruitPosAgain();
@@ -300,7 +300,7 @@ namespace SonOfRobin
                 { "base_bioWear", this.bioWear },
                 { "base_efficiency", this.efficiency },
                 { "base_activeState", this.activeState },
-                { "base_pieceStorage", this.pieceStorage },
+                { "base_pieceStorage", this.PieceStorage },
                 { "base_boardTask", this.boardTask },
                 { "base_toolbarTask", this.toolbarTask },
                 { "base_passiveMovementX", this.passiveMovement.X },
@@ -312,7 +312,7 @@ namespace SonOfRobin
                 { "base_canBeHit", this.canBeHit },
             };
 
-            if (this.pieceStorage != null) pieceData["base_pieceStorage"] = this.pieceStorage.Serialize();
+            if (this.PieceStorage != null) pieceData["base_pieceStorage"] = this.PieceStorage.Serialize();
             this.sprite.Serialize(pieceData);
 
             return pieceData;
@@ -330,7 +330,7 @@ namespace SonOfRobin
             this.efficiency = (float)pieceData["base_efficiency"];
             this.activeState = (State)pieceData["base_activeState"];
             this.maxAge = (int)pieceData["base_maxAge"];
-            this.pieceStorage = PieceStorage.Deserialize(storageData: pieceData["base_pieceStorage"], world: this.world, storagePiece: this);
+            this.PieceStorage = PieceStorage.Deserialize(storageData: pieceData["base_pieceStorage"], world: this.world, storagePiece: this);
             this.boardTask = (Scheduler.TaskName)pieceData["base_boardTask"];
             this.toolbarTask = (Scheduler.TaskName)pieceData["base_toolbarTask"];
             this.passiveMovement = new Vector2((float)pieceData["base_passiveMovementX"], (float)pieceData["base_passiveMovementY"]);
@@ -391,7 +391,7 @@ namespace SonOfRobin
             }
             if (this.visualAid != null) this.visualAid.Destroy();
             this.alive = false;
-            if (this.pieceStorage != null) this.pieceStorage.DropAllPiecesToTheGround(addMovement: true);
+            if (this.PieceStorage != null) this.PieceStorage.DropAllPiecesToTheGround(addMovement: true);
             this.RemoveFromStateMachines();
             this.sprite.Kill();
             if (addDestroyEvent) new WorldEvent(eventName: WorldEvent.EventName.Destruction, world: this.world, delay: this.staysAfterDeath, boardPiece: this);

@@ -42,27 +42,27 @@ namespace SonOfRobin
             this.currentCycleBurningFramesLeft = 0;
             this.burnAllFuelEndFrame = 0;
 
-            this.pieceStorage = new PieceStorage(width: storageWidth, height: (byte)(storageHeight + 1), storagePiece: this, storageType: PieceStorage.StorageType.Fireplace);
+            this.PieceStorage = new PieceStorage(width: storageWidth, height: (byte)(storageHeight + 1), storagePiece: this, storageType: PieceStorage.StorageType.Fireplace);
 
             var allowedPieceNames = new List<PieceTemplate.Name>(fuelNames);
             allowedPieceNames.Add(PieceTemplate.Name.FireplaceTriggerOn);
             allowedPieceNames.Add(PieceTemplate.Name.FireplaceTriggerOff);
-            this.pieceStorage.AssignAllowedPieceNames(allowedPieceNames);
+            this.PieceStorage.AssignAllowedPieceNames(allowedPieceNames);
 
             BoardPiece flameTrigger = PieceTemplate.Create(templateName: PieceTemplate.Name.FireplaceTriggerOn, world: this.world);
 
-            StorageSlot flameSlot = this.pieceStorage.GetSlot(0, 0);
-            this.pieceStorage.AddPiece(flameTrigger);
+            StorageSlot flameSlot = this.PieceStorage.GetSlot(0, 0);
+            this.PieceStorage.AddPiece(flameTrigger);
             flameSlot.locked = true;
 
             BoardPiece waterTrigger = PieceTemplate.Create(templateName: PieceTemplate.Name.FireplaceTriggerOff, world: this.world);
-            StorageSlot waterSlot = this.pieceStorage.GetSlot(1, 0);
-            this.pieceStorage.AddPiece(waterTrigger);
+            StorageSlot waterSlot = this.PieceStorage.GetSlot(1, 0);
+            this.PieceStorage.AddPiece(waterTrigger);
             waterSlot.locked = true;
 
             for (int x = 2; x < storageWidth; x++) // locking and hiding the rest of the slots in first row
             {
-                StorageSlot slot = this.pieceStorage.GetSlot(x, 0);
+                StorageSlot slot = this.PieceStorage.GetSlot(x, 0);
                 slot.hidden = true;
                 slot.locked = true;
             }
@@ -109,7 +109,7 @@ namespace SonOfRobin
         }
 
         private List<BoardPiece> StoredFuel
-        { get { return this.pieceStorage.GetAllPieces().Where(piece => fuelNames.Contains(piece.name)).ToList(); } }
+        { get { return this.PieceStorage.GetAllPieces().Where(piece => fuelNames.Contains(piece.name)).ToList(); } }
 
         private bool StartFire(bool showMessage)
         {
@@ -126,7 +126,7 @@ namespace SonOfRobin
             BoardPiece fuel = storedFuel[0];
             storedFuel.RemoveAt(0);
 
-            this.pieceStorage.DestroyOneSpecifiedPiece(fuel.name);
+            this.PieceStorage.DestroyOneSpecifiedPiece(fuel.name);
             this.currentCycleBurningFramesLeft = fuelFramesByName[fuel.name];
             this.soundPack.Play(PieceSoundPack.Action.TurnOn);
 

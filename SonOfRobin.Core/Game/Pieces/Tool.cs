@@ -30,7 +30,7 @@ namespace SonOfRobin
         public Projectile CheckForAmmo(bool removePiece)
         {
             // toolStorage should be checked first (so that the player could place preferred ammo there)
-            var ammoStorages = new List<PieceStorage> { this.world.Player.ToolStorage, this.world.Player.pieceStorage };
+            var ammoStorages = new List<PieceStorage> { this.world.Player.ToolStorage, this.world.Player.PieceStorage };
 
             foreach (PieceStorage ammoStorage in ammoStorages)
             {

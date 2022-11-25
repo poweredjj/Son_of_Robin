@@ -65,7 +65,7 @@ namespace SonOfRobin
             }
             else allowedToolbarPieces.Add(PieceTemplate.Name.Hand);
 
-            this.pieceStorage = new PieceStorage(width: invWidth, height: invHeight, storagePiece: this, storageType: PieceStorage.StorageType.Inventory);
+            this.PieceStorage = new PieceStorage(width: invWidth, height: invHeight, storagePiece: this, storageType: PieceStorage.StorageType.Inventory);
             this.ToolStorage = new PieceStorage(width: toolbarWidth, height: toolbarHeight, storagePiece: this, storageType: PieceStorage.StorageType.Tools, allowedPieceNames: allowedToolbarPieces);
             this.EquipStorage = new PieceStorage(width: 3, height: 3, storagePiece: this, storageType: PieceStorage.StorageType.Equip);
             this.ConfigureEquip();
@@ -100,21 +100,21 @@ namespace SonOfRobin
 
         public byte InvWidth
         {
-            get { return this.pieceStorage.Width; }
+            get { return this.PieceStorage.Width; }
             set
             {
-                if (this.pieceStorage.Width == value) return;
-                this.pieceStorage.Resize(value, this.InvHeight);
+                if (this.PieceStorage.Width == value) return;
+                this.PieceStorage.Resize(value, this.InvHeight);
             }
         }
 
         public byte InvHeight
         {
-            get { return this.pieceStorage.Height; }
+            get { return this.PieceStorage.Height; }
             set
             {
-                if (this.pieceStorage.Height == value) return;
-                this.pieceStorage.Resize(this.InvWidth, value);
+                if (this.PieceStorage.Height == value) return;
+                this.PieceStorage.Resize(this.InvWidth, value);
             }
         }
 
@@ -143,10 +143,10 @@ namespace SonOfRobin
         public SleepMode sleepMode;
 
         public List<PieceStorage> CraftStorages
-        { get { return new List<PieceStorage> { this.pieceStorage, this.ToolStorage, this.EquipStorage }; } }
+        { get { return new List<PieceStorage> { this.PieceStorage, this.ToolStorage, this.EquipStorage }; } }
 
         public List<PieceStorage> CraftStoragesToolbarFirst
-        { get { return new List<PieceStorage> { this.ToolStorage, this.pieceStorage, this.EquipStorage }; } } // the same as above, changed order
+        { get { return new List<PieceStorage> { this.ToolStorage, this.PieceStorage, this.EquipStorage }; } } // the same as above, changed order
 
         public StorageSlot ActiveSlot
         { get { return this.ToolStorage?.lastUsedSlot; } }
@@ -983,7 +983,7 @@ namespace SonOfRobin
         public bool PickUpPiece(BoardPiece piece)
         {
             bool pieceCollected = this.ToolStorage.AddPiece(piece);
-            if (!pieceCollected) pieceCollected = this.pieceStorage.AddPiece(piece);
+            if (!pieceCollected) pieceCollected = this.PieceStorage.AddPiece(piece);
 
             return pieceCollected;
         }

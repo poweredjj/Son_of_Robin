@@ -63,8 +63,8 @@ namespace SonOfRobin
 
             if (!this.CanFitThisPiece(piece)) throw new ArgumentException($"This piece '{piece.name}' cannot fit in this slot.");
 
-            if (piece?.pieceStorage?.OccupiedSlotsCount > 0)
-            { piece.pieceStorage.DropAllPiecesToTheGround(addMovement: true); }
+            if (piece?.PieceStorage?.OccupiedSlotsCount > 0)
+            { piece.PieceStorage.DropAllPiecesToTheGround(addMovement: true); }
 
             this.pieceList.Add(piece);
             this.AddRemoveBuffs(piece: piece, add: true);

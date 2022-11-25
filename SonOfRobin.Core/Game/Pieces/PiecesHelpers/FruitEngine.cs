@@ -84,14 +84,14 @@ namespace SonOfRobin
         {
             Fruit fruit = (Fruit)PieceTemplate.Create(templateName: this.fruitName, world: this.plant.world);
 
-            if (this.plant.pieceStorage.FindCorrectSlot(piece: fruit) == null)
+            if (this.plant.PieceStorage.FindCorrectSlot(piece: fruit) == null)
             {
-                List<StorageSlot> notEmptySlots = this.plant.pieceStorage.OccupiedSlots;
+                List<StorageSlot> notEmptySlots = this.plant.PieceStorage.OccupiedSlots;
                 StorageSlot slot = notEmptySlots[this.plant.world.random.Next(0, notEmptySlots.Count)];
-                this.plant.pieceStorage.RemoveAllPiecesFromSlot(slot: slot, dropToTheGround: true);
+                this.plant.PieceStorage.RemoveAllPiecesFromSlot(slot: slot, dropToTheGround: true);
             }
 
-            this.plant.pieceStorage.AddPiece(piece: fruit, dropIfDoesNotFit: true, addMovement: true);
+            this.plant.PieceStorage.AddPiece(piece: fruit, dropIfDoesNotFit: true, addMovement: true);
             this.SetFruitPos(fruit: fruit);
             this.currentMass = 0;
         }
@@ -110,7 +110,7 @@ namespace SonOfRobin
 
         private void PutAllFruitsOnBoardAgain()
         {
-            foreach (BoardPiece fruit in this.plant.pieceStorage.GetAllPieces())
+            foreach (BoardPiece fruit in this.plant.PieceStorage.GetAllPieces())
             {
                 this.PutFruitOnBoard(fruit: fruit, position: fruit.sprite.position);
             }
@@ -126,7 +126,7 @@ namespace SonOfRobin
 
         public void SetAllFruitPosAgain()
         {
-            foreach (BoardPiece fruit in this.plant.pieceStorage.GetAllPieces())
+            foreach (BoardPiece fruit in this.plant.PieceStorage.GetAllPieces())
             {
                 this.SetFruitPos(fruit: fruit);
             }

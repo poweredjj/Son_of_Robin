@@ -15,7 +15,7 @@ namespace SonOfRobin
             this.soundPack.AddAction(action: PieceSoundPack.Action.Close, sound: new Sound(name: SoundData.Name.ChestClose));
 
             this.boardTask = Scheduler.TaskName.OpenContainer;
-            this.pieceStorage = new PieceStorage(width: storageWidth, height: storageHeight, storagePiece: this, storageType: PieceStorage.StorageType.Chest);
+            this.PieceStorage = new PieceStorage(width: storageWidth, height: storageHeight, storagePiece: this, storageType: PieceStorage.StorageType.Chest);
         }
 
         public override bool ShowStatBars
@@ -23,11 +23,11 @@ namespace SonOfRobin
 
         public override void DrawStatBar()
         {
-            int notEmptySlotsCount = this.pieceStorage.OccupiedSlotsCount;
+            int notEmptySlotsCount = this.PieceStorage.OccupiedSlotsCount;
 
             if (notEmptySlotsCount > 0)
             {
-                new StatBar(label: "", value: notEmptySlotsCount, valueMax: this.pieceStorage.AllSlotsCount, colorMin: new Color(0, 255, 255), colorMax: new Color(0, 128, 255), posX: this.sprite.gfxRect.Center.X, posY: this.sprite.gfxRect.Bottom, ignoreIfAtMax: false, texture: AnimData.framesForPkgs[AnimData.PkgName.ChestIron].texture);
+                new StatBar(label: "", value: notEmptySlotsCount, valueMax: this.PieceStorage.AllSlotsCount, colorMin: new Color(0, 255, 255), colorMax: new Color(0, 128, 255), posX: this.sprite.gfxRect.Center.X, posY: this.sprite.gfxRect.Bottom, ignoreIfAtMax: false, texture: AnimData.framesForPkgs[AnimData.PkgName.ChestIron].texture);
             }
 
             base.DrawStatBar();
@@ -55,7 +55,7 @@ namespace SonOfRobin
 
         public void Close()
         {
-            if (this.pieceStorage.OccupiedSlots.Count == 0 || this.sprite.animName == "closing") return;
+            if (this.PieceStorage.OccupiedSlots.Count == 0 || this.sprite.animName == "closing") return;
             this.soundPack.Play(PieceSoundPack.Action.Close);
             this.sprite.AssignNewName(animName: "closing");
         }

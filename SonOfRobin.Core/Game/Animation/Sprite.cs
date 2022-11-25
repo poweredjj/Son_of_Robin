@@ -805,7 +805,7 @@ namespace SonOfRobin
                 this.frame.DrawWithRotation(position: new Vector2(destRect.Center.X, destRect.Center.Y), color: this.color, rotation: this.rotation, opacity: this.opacity);
             }
 
-            if (this.boardPiece.pieceStorage != null && this.boardPiece.GetType() == typeof(Plant)) this.DrawFruits();
+            if (this.boardPiece.PieceStorage != null && this.boardPiece.GetType() == typeof(Plant)) this.DrawFruits();
         }
 
         private void DrawFruits()
@@ -813,8 +813,8 @@ namespace SonOfRobin
             Plant plant = (Plant)this.boardPiece;
             if (Preferences.debugShowFruitRects) SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, plant.fruitEngine.FruitAreaRect, Color.Cyan * 0.4f);
 
-            if (plant.pieceStorage.OccupiedSlotsCount == 0) return;
-            var fruitList = plant.pieceStorage.GetAllPieces();
+            if (plant.PieceStorage.OccupiedSlotsCount == 0) return;
+            var fruitList = plant.PieceStorage.GetAllPieces();
             foreach (BoardPiece fruit in fruitList)
             { fruit.sprite.Draw(calculateSubmerge: false); }
         }

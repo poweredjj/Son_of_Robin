@@ -1151,8 +1151,8 @@ namespace SonOfRobin
                             {
                                 foreach (BoardPiece piece in chestContents)
                                 {
-                                    treasureChest.pieceStorage.AddPiece(piece);
-                                    if (treasureChest.pieceStorage.EmptySlotsCount == 0) break;
+                                    treasureChest.PieceStorage.AddPiece(piece);
+                                    if (treasureChest.PieceStorage.EmptySlotsCount == 0) break;
                                 }
                                 break;
                             }
@@ -1207,8 +1207,8 @@ namespace SonOfRobin
                             {
                                 foreach (BoardPiece piece in chestContents)
                                 {
-                                    treasureChest.pieceStorage.AddPiece(piece);
-                                    if (treasureChest.pieceStorage.EmptySlotsCount == 0) break;
+                                    treasureChest.PieceStorage.AddPiece(piece);
+                                    if (treasureChest.PieceStorage.EmptySlotsCount == 0) break;
                                 }
                                 break;
                             }

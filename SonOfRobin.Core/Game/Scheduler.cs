@@ -1252,7 +1252,7 @@ namespace SonOfRobin
                                 if (piecesByID.ContainsKey(sprite.id)) piecesByID[sprite.id].Add(sprite.boardPiece);
                                 else piecesByID[sprite.id] = new List<BoardPiece> { sprite.boardPiece };
 
-                                var storageList = new List<PieceStorage> { sprite.boardPiece.pieceStorage };
+                                var storageList = new List<PieceStorage> { sprite.boardPiece.PieceStorage };
 
                                 if (sprite.boardPiece.GetType() == typeof(Player)) // need to be updated with new classes using storages other than "this.pieceStorage"
                                 {
