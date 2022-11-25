@@ -30,6 +30,60 @@ namespace SonOfRobin
         public BoardPiece simulatedPieceToBuild;
         public int buildDurationForOneFrame;
         public float buildFatigueForOneFrame;
+        public PieceStorage ToolStorage { get; private set; }
+        public PieceStorage EquipStorage { get; private set; }
+
+        public Player(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, byte invWidth, byte invHeight, byte toolbarWidth, byte toolbarHeight, string readableName, string description, State activeState, bool female,
+            byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, bool ignoresCollisions = false, int destructionDelay = 0, bool floatsOnWater = false, int generation = 0, Yield yield = null, int minDistance = 0, int maxDistance = 100, LightEngine lightEngine = null, PieceSoundPack soundPack = null) :
+
+            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, speed: speed, blocksMovement: blocksMovement, name: name, destructionDelay: destructionDelay, allowedTerrain: allowedTerrain, floatsOnWater: floatsOnWater, mass: 50000, maxMassBySize: null, generation: generation, canBePickedUp: false, maxHitPoints: 400, fadeInAnim: false, readableName: readableName, description: description, yield: yield, strength: 1, category: Category.Flesh, lightEngine: lightEngine, ignoresCollisions: ignoresCollisions, minDistance: minDistance, maxDistance: maxDistance, activeState: activeState, soundPack: soundPack, female: female)
+        {
+            this.maxFedLevel = 40000;
+            this.fedLevel = maxFedLevel;
+            this.maxStamina = 300;
+            this.stamina = maxStamina;
+            this.maxFatigue = 2000;
+            this.fatigue = 0;
+            this.cookingSkill = 1f;
+            this.craftLevel = 1;
+            this.sleepEngine = SleepEngine.OutdoorSleepDry; // to be changed later
+
+            var allowedToolbarPieces = new List<PieceTemplate.Name>();
+
+            if (PieceInfo.HasBeenInitialized)
+            {
+                List<Type> typeList = new List<Type> { typeof(Tool), typeof(Fruit), typeof(Tool), typeof(PortableLight), typeof(Projectile) };
+
+                foreach (PieceTemplate.Name pieceName in PieceTemplate.allNames)
+                {
+                    PieceInfo.Info pieceInfo = PieceInfo.GetInfo(pieceName);
+
+                    if (pieceInfo.toolbarTask == Scheduler.TaskName.GetEaten ||
+                        pieceInfo.toolbarTask == Scheduler.TaskName.GetDrinked ||
+                        typeList.Contains(pieceInfo.type)) allowedToolbarPieces.Add(pieceName);
+                }
+            }
+            else allowedToolbarPieces.Add(PieceTemplate.Name.Hand);
+
+            this.pieceStorage = new PieceStorage(width: invWidth, height: invHeight, storagePiece: this, storageType: PieceStorage.StorageType.Inventory);
+            this.ToolStorage = new PieceStorage(width: toolbarWidth, height: toolbarHeight, storagePiece: this, storageType: PieceStorage.StorageType.Tools, allowedPieceNames: allowedToolbarPieces);
+            this.EquipStorage = new PieceStorage(width: 3, height: 3, storagePiece: this, storageType: PieceStorage.StorageType.Equip);
+            this.ConfigureEquip();
+            this.ShootingAngle = -100; // -100 == no real value
+            this.shootingPower = 0;
+            this.wentToSleepFrame = 0;
+            this.sleepingInsideShelter = false;
+            this.sleepMode = SleepMode.Awake;
+            this.recipeToBuild = null;
+            this.simulatedPieceToBuild = null;
+
+            BoardPiece handTool = PieceTemplate.Create(templateName: PieceTemplate.Name.Hand, world: this.world);
+
+            StorageSlot slotToLock = this.ToolStorage.FindCorrectSlot(handTool);
+            this.ToolStorage.AddPiece(handTool);
+            slotToLock.locked = true;
+        }
+
         public override bool ShowStatBars
         { get { return true; } }
 
@@ -87,8 +141,10 @@ namespace SonOfRobin
         public int wentToSleepFrame;
         public bool sleepingInsideShelter;
         public SleepMode sleepMode;
+
         public List<PieceStorage> CraftStorages
         { get { return new List<PieceStorage> { this.pieceStorage, this.ToolStorage, this.EquipStorage }; } }
+
         public List<PieceStorage> CraftStoragesToolbarFirst
         { get { return new List<PieceStorage> { this.ToolStorage, this.pieceStorage, this.EquipStorage }; } } // the same as above, changed order
 
@@ -171,6 +227,8 @@ namespace SonOfRobin
             }
         }
 
+
+
         public float Fatigue
         {
             get { return this.fatigue; }
@@ -233,64 +291,12 @@ namespace SonOfRobin
 
         public float FatiguePercent
         { get { return (float)this.Fatigue / (float)this.maxFatigue; } }
+
         public bool IsVeryTired
         { get { return this.FatiguePercent > 0.75f; } }
+
         public bool CanWakeNow
         { get { return this.sleepingInsideShelter || this.FatiguePercent < 0.85f; } }
-
-        public PieceStorage ToolStorage { get; private set; }
-        public PieceStorage EquipStorage { get; private set; }
-
-        public Player(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, byte invWidth, byte invHeight, byte toolbarWidth, byte toolbarHeight, string readableName, string description, State activeState, bool female,
-            byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, bool ignoresCollisions = false, int destructionDelay = 0, bool floatsOnWater = false, int generation = 0, Yield yield = null, int minDistance = 0, int maxDistance = 100, LightEngine lightEngine = null, PieceSoundPack soundPack = null) :
-
-            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, speed: speed, blocksMovement: blocksMovement, name: name, destructionDelay: destructionDelay, allowedTerrain: allowedTerrain, floatsOnWater: floatsOnWater, mass: 50000, maxMassBySize: null, generation: generation, canBePickedUp: false, maxHitPoints: 400, fadeInAnim: false, readableName: readableName, description: description, yield: yield, strength: 1, category: Category.Flesh, lightEngine: lightEngine, ignoresCollisions: ignoresCollisions, minDistance: minDistance, maxDistance: maxDistance, activeState: activeState, soundPack: soundPack, female: female)
-        {
-            this.maxFedLevel = 40000;
-            this.fedLevel = maxFedLevel;
-            this.maxStamina = 300;
-            this.stamina = maxStamina;
-            this.maxFatigue = 2000;
-            this.fatigue = 0;
-            this.cookingSkill = 1f;
-            this.craftLevel = 1;
-            this.sleepEngine = SleepEngine.OutdoorSleepDry; // to be changed later
-
-            var allowedToolbarPieces = new List<PieceTemplate.Name>();
-
-            if (PieceInfo.HasBeenInitialized)
-            {
-                List<Type> typeList = new List<Type> { typeof(Tool), typeof(Fruit), typeof(Tool), typeof(PortableLight), typeof(Projectile) };
-
-                foreach (PieceTemplate.Name pieceName in PieceTemplate.allNames)
-                {
-                    PieceInfo.Info pieceInfo = PieceInfo.GetInfo(pieceName);
-
-                    if (pieceInfo.toolbarTask == Scheduler.TaskName.GetEaten ||
-                        pieceInfo.toolbarTask == Scheduler.TaskName.GetDrinked ||
-                        typeList.Contains(pieceInfo.type)) allowedToolbarPieces.Add(pieceName);
-                }
-            }
-            else allowedToolbarPieces.Add(PieceTemplate.Name.Hand);
-
-            this.pieceStorage = new PieceStorage(width: invWidth, height: invHeight, storagePiece: this, storageType: PieceStorage.StorageType.Inventory);
-            this.ToolStorage = new PieceStorage(width: toolbarWidth, height: toolbarHeight, storagePiece: this, storageType: PieceStorage.StorageType.Tools, allowedPieceNames: allowedToolbarPieces);
-            this.EquipStorage = new PieceStorage(width: 3, height: 3, storagePiece: this, storageType: PieceStorage.StorageType.Equip);
-            this.ConfigureEquip();
-            this.ShootingAngle = -100; // -100 == no real value
-            this.shootingPower = 0;
-            this.wentToSleepFrame = 0;
-            this.sleepingInsideShelter = false;
-            this.sleepMode = SleepMode.Awake;
-            this.recipeToBuild = null;
-            this.simulatedPieceToBuild = null;
-
-            BoardPiece handTool = PieceTemplate.Create(templateName: PieceTemplate.Name.Hand, world: this.world);
-
-            StorageSlot slotToLock = this.ToolStorage.FindCorrectSlot(handTool);
-            this.ToolStorage.AddPiece(handTool);
-            slotToLock.locked = true;
-        }
 
         private void ConfigureEquip()
         {

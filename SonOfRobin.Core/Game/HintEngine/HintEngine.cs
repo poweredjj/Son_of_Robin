@@ -253,7 +253,6 @@ namespace SonOfRobin
 
                         this.world.CineMode = true;
 
-
                         Player player = this.world.Player;
                         var dialogue = HintMessage.BoxType.Dialogue;
 
@@ -262,19 +261,25 @@ namespace SonOfRobin
 
                         if (this.world.playerType == World.PlayerType.TestDemoness)
                         {
+                            var invertedDialogue = HintMessage.BoxType.InvertedDialogue;
+
                             this.world.camera.SetZoom(zoom: 1f, setInstantly: true);
 
                             taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetZoom, delay: 30, executeHelper: new Dictionary<string, Object> { { "zoom", 3f }, { "zoomSpeedMultiplier", 0.5f } }, storeForLaterUse: true));
 
                             taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetPlayerPointWalkTarget, delay: 170, executeHelper: new Dictionary<Player, Vector2> { { this.world.Player, player.sprite.position + new Vector2(0, 10) } }, storeForLaterUse: true));
 
-                            taskChain.Add(new HintMessage(text: "Hello there, human.", boxType: dialogue, delay: 30, blockInput: false).ConvertToTask());
-                            taskChain.Add(new HintMessage(text: "Didn't you learn to read?", boxType: dialogue, delay: 30, blockInput: false).ConvertToTask());
-                            taskChain.Add(new HintMessage(text: "It was clearly written, that i will BREAK your game.", boxType: dialogue, delay: 80, blockInput: false).ConvertToTask());
+                            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SolidColorAddOverlay, delay: 0, executeHelper: new Dictionary<string, Object> { { "color", Color.Red }, { "opacity", 0.5f } }, storeForLaterUse: true));
 
-                            taskChain.Add(new HintMessage(text: "And I WILL | RUIN your game experience.\nWith pleasure |.", imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.SkullAndBones].texture, AnimData.framesForPkgs[AnimData.PkgName.Heart].texture }, boxType: dialogue, delay: 0).ConvertToTask());
+                            taskChain.Add(new HintMessage(text: "Hello there, human.", boxType: invertedDialogue, delay: 30, blockInput: false).ConvertToTask());
+                            taskChain.Add(new HintMessage(text: "Don't you know how to read?", boxType: invertedDialogue, delay: 30, blockInput: false).ConvertToTask());
+                            taskChain.Add(new HintMessage(text: "It was clearly written, that i will BREAK your game.", boxType: invertedDialogue, delay: 80, blockInput: false).ConvertToTask());
 
-                            taskChain.Add(new HintMessage(text: "Is that clear? Yeah?\nThen let's get started!", boxType: dialogue, delay: 80, blockInput: false).ConvertToTask());
+                            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SolidColorRemoveAll, delay: 0, executeHelper: new Dictionary<string, Object> { { "manager", this.world.solidColorManager }, { "delay", 300 } }, storeForLaterUse: true));
+
+                            taskChain.Add(new HintMessage(text: "And I WILL | RUIN your game experience.\nWith pleasure |.", imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.SkullAndBones].texture, AnimData.framesForPkgs[AnimData.PkgName.Heart].texture }, boxType: invertedDialogue, delay: 0).ConvertToTask());
+
+                            taskChain.Add(new HintMessage(text: "Is that clear? Yeah?\nThen let's get started!", boxType: dialogue, delay: 30, blockInput: false).ConvertToTask());
                         }
                         else
                         {

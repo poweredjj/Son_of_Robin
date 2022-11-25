@@ -250,7 +250,7 @@ namespace SonOfRobin
         {
             if (randomSex) female = BoardPiece.Random.Next(2) == 1;
 
-            BoardPiece boardPiece = CreatePiece(templateName: templateName, world: world, id: id, female: female, generation: generation, playerType: playerType);
+            BoardPiece boardPiece = CreatePiece(templateName: templateName, world: world, id: id, female: female, generation: generation, creationHelper: playerType);
 
             boardPiece.PlaceOnBoard(randomPlacement: randomPlacement, position: position, ignoreCollisions: ignoreCollisions, closestFreeSpot: closestFreeSpot, minDistanceOverride: minDistanceOverride, maxDistanceOverride: maxDistanceOverride, ignoreDensity: ignoreDensity);
 
@@ -263,7 +263,7 @@ namespace SonOfRobin
             return boardPiece;
         }
 
-        private static BoardPiece CreatePiece(Name templateName, World world, bool female, int generation = 0, string id = null, World.PlayerType playerType = World.PlayerType.Male)
+        private static BoardPiece CreatePiece(Name templateName, World world, bool female, int generation = 0, string id = null, object creationHelper = null)
         {
             if (id == null) id = Helpers.GetUniqueHash();
 
@@ -277,6 +277,8 @@ namespace SonOfRobin
                 case Name.Player:
                     {
                         AnimData.PkgName animPkg;
+
+                        World.PlayerType playerType = creationHelper == null ? World.PlayerType.Male : (World.PlayerType)creationHelper;
 
                         switch (playerType)
                         {
@@ -356,6 +358,8 @@ namespace SonOfRobin
                         }
 
                         AnimData.PkgName animPkg;
+
+                        World.PlayerType playerType = creationHelper == null ? World.PlayerType.Male : (World.PlayerType)creationHelper;
 
                         switch (playerType)
                         {

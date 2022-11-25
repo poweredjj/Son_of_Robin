@@ -9,7 +9,7 @@ namespace SonOfRobin
     public struct HintMessage
     {
         public enum BoxType
-        { Dialogue, GreenBox, BlueBox, LightBlueBox, RedBox, GoldBox }
+        { Dialogue, InvertedDialogue, GreenBox, BlueBox, LightBlueBox, RedBox, GoldBox }
 
         public readonly string text;
         public readonly List<Texture2D> imageList;
@@ -54,6 +54,11 @@ namespace SonOfRobin
                     textColor = Color.Black;
                     break;
 
+                case BoxType.InvertedDialogue:
+                    bgColor = Color.Black;
+                    textColor = Color.White;
+                    break;
+
                 case BoxType.GreenBox:
                     bgColor = Color.Green;
                     textColor = Color.White;
@@ -83,7 +88,7 @@ namespace SonOfRobin
                     { throw new ArgumentException($"Unsupported hint boxType - {boxType}."); }
             }
 
-            Sound animSound = this.boxType == BoxType.Dialogue ? World.GetTopWorld().DialogueSound : null;
+            Sound animSound = this.boxType == BoxType.Dialogue || this.boxType == BoxType.InvertedDialogue ? World.GetTopWorld().DialogueSound : null;
 
             var textWindowData = new Dictionary<string, Object> {
                 { "text", this.text },

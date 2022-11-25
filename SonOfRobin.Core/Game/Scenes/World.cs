@@ -246,7 +246,15 @@ namespace SonOfRobin
                     this.tipsLayout = ControlTips.TipsLayout.WorldSpectator;
                     this.touchLayout = TouchLayout.WorldSpectator;
 
-                    var textList = new List<string> {
+                    string text;
+
+                    if (this.playerType == PlayerType.TestDemoness)
+                    {
+                        text = "How can this be? I was supposed to be immortal!";
+                    }
+                    else
+                    {
+                        var textList = new List<string> {
                         "What is this? Am I a ghost?\nIt seems that life on the island goes on...\nI might as well go sightseeing.",
                         "Is this the end? I don't see any white light...",
                         "I have died and STILL am forced to stay on this island?\nNooooooooooooooo...",
@@ -258,7 +266,8 @@ namespace SonOfRobin
                         "This is not the endgame I was hoping for.\nAt least the weather is fine.",
                         "I was trying to escape this island, not this life.\nDamn..."
                     };
-                    var text = textList[this.random.Next(0, textList.Count)];
+                        text = textList[this.random.Next(0, textList.Count)];
+                    }
 
                     new TextWindow(text: text, textColor: Color.Black, bgColor: Color.White, useTransition: true, animate: true, checkForDuplicate: true, autoClose: true, inputType: InputTypes.None, blockInputDuration: 60 * 6, priority: 1, animSound: this.DialogueSound);
                 }
