@@ -262,7 +262,9 @@ namespace SonOfRobin
 
             // MessageLog.AddMessage(msgType: MsgType.User, message: $"Distance {Vector3.Distance(audioEmitter.Position, audioListener.Position)}");
 
+            float pitch = instance.Pitch;
             instance.Apply3D(audioListener, audioEmitter);
+            instance.Pitch = pitch; // fixing Pitch reset glitch on Windows
         }
 
         public static void QuickPlay(SoundData.Name name, float volume = 1f, float pitchChange = 0f)
