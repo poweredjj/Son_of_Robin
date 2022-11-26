@@ -265,13 +265,19 @@ namespace SonOfRobin
 
                             this.world.camera.SetZoom(zoom: 1f, setInstantly: true);
 
-                            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetZoom, delay: 30, executeHelper: new Dictionary<string, Object> { { "zoom", 3f }, { "zoomSpeedMultiplier", 0.5f } }, storeForLaterUse: true));
+                            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetZoom, delay: 30, executeHelper: new Dictionary<string, Object> { { "zoom", 2f }, { "zoomSpeedMultiplier", 0.5f } }, storeForLaterUse: true));
 
                             taskChain.Add(new HintMessage(text: "   ...    ", boxType: dialogue, delay: 0, blockInput: false).ConvertToTask());
 
                             taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetPlayerPointWalkTarget, delay: 170, executeHelper: new Dictionary<Player, Vector2> { { this.world.Player, player.sprite.position + new Vector2(0, 10) } }, storeForLaterUse: true));
 
-                            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SolidColorAddOverlay, delay: 0, executeHelper: new Dictionary<string, Object> { { "color", Color.Red }, { "opacity", 0.5f } }, storeForLaterUse: true));
+                            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SolidColorAddOverlay, delay: 0, executeHelper: new Dictionary<string, Object> { { "color", Color.Red }, { "opacity", 0.35f } }, storeForLaterUse: true));
+
+                            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ActivateLightEngine, delay: 0, executeHelper: this.world.Player.sprite.lightEngine, storeForLaterUse: true));
+
+                            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.PlaySoundByName, delay: 0, executeHelper: SoundData.Name.FireBurst, storeForLaterUse: true));
+
+                            taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetZoom, delay: 0, executeHelper: new Dictionary<string, Object> { { "zoom", 3.5f }, { "zoomSpeedMultiplier", 3f } }, storeForLaterUse: true));
 
                             taskChain.Add(new HintMessage(text: "Hello there, human.", boxType: invertedDialogue, delay: 30, blockInput: false).ConvertToTask());
                             taskChain.Add(new HintMessage(text: "Don't you know how to read?", boxType: invertedDialogue, delay: 30, blockInput: false).ConvertToTask());
@@ -281,7 +287,7 @@ namespace SonOfRobin
 
                             taskChain.Add(new HintMessage(text: "And I WILL | RUIN your game experience.\nWith pleasure |.", imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.SkullAndBones].texture, AnimData.framesForPkgs[AnimData.PkgName.Heart].texture }, boxType: invertedDialogue, delay: 0).ConvertToTask());
 
-                            taskChain.Add(new HintMessage(text: "Is that clear? Yeah?\nThen let's get started!", boxType: invertedDialogue, delay: 30, blockInput: false).ConvertToTask());
+                            taskChain.Add(new HintMessage(text: "Is that clear? Yeah?\nThen let's get started |!", imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.Flame].texture }, boxType: invertedDialogue, delay: 0).ConvertToTask());
                         }
                         else
                         {

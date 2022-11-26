@@ -303,7 +303,7 @@ namespace SonOfRobin
                         var soundPack = new PieceSoundPack();
                         AddPlayerCommonSounds(soundPack: soundPack, female: female);
 
-                        return new Player(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PlayerTestDemoness, speed: 3, allowedTerrain: CreatePlayerAllowedTerrain(), minDistance: 0, maxDistance: 65535, generation: generation, invWidth: 4, invHeight: 2, toolbarWidth: 3, toolbarHeight: 1, readableName: "player", description: "This is you.", yield: CreatePlayerYield(), activeState: BoardPiece.State.PlayerControlledWalking, lightEngine: new LightEngine(size: 300, opacity: 0.9f, colorActive: true, color: Color.Orange * 0.2f, isActive: false, castShadows: true), soundPack: soundPack, female: female);
+                        return new Player(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PlayerTestDemoness, speed: 3, allowedTerrain: CreatePlayerAllowedTerrain(), minDistance: 0, maxDistance: 65535, generation: generation, invWidth: 4, invHeight: 2, toolbarWidth: 3, toolbarHeight: 1, readableName: "player", description: "This is you.", yield: CreatePlayerYield(), activeState: BoardPiece.State.PlayerControlledWalking, lightEngine: new LightEngine(size: 500, opacity: 1.0f, colorActive: true, color: Color.Red * 1f, isActive: false, castShadows: true), soundPack: soundPack, female: female);
                     }
 
                 case Name.PlayerGhost:
