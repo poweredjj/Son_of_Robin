@@ -364,11 +364,7 @@ namespace SonOfRobin
                             this.cellsToProcessOnStart.RemoveAt(0);
                             cell.boardGraphics.LoadTexture();
 
-                            if (this.ProcessingStageComplete)
-                            {
-                                this.CreationInProgress = false;
-                                return;
-                            }
+                            if (this.ProcessingStageComplete) break;
 
                             if (Scene.UpdateTimeElapsed.Milliseconds > 600) break;
                         }
@@ -376,8 +372,6 @@ namespace SonOfRobin
                     else
                     {
                         this.cellsToProcessOnStart.Clear();
-                        this.CreationInProgress = false;
-                        return;
                     }
 
                     break;
@@ -385,14 +379,15 @@ namespace SonOfRobin
                 case Stage.StartGame:
                     // to show "starting game" on progress bar
                     this.cellsToProcessOnStart.Clear();
+
                     break;
 
                 default:
                     if ((int)this.currentStage < allStagesCount) throw new ArgumentException("Not all steps has been processed.");
-
-                    this.CreationInProgress = false;
                     break;
             }
+
+            if (this.ProcessingStageComplete && (int)this.currentStage == allStagesCount - 1) this.CreationInProgress = false;
 
             this.UpdateProgressBar();
 
