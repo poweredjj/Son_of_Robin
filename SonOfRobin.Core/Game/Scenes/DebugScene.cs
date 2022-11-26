@@ -485,7 +485,7 @@ namespace SonOfRobin
 
                 while (true)
                 {
-                    var packageNames = new List<AnimData.PkgName> { AnimData.PkgName.PlayerMale, AnimData.PkgName.PlayerFemale, AnimData.PkgName.FoxGinger, AnimData.PkgName.Frog1, AnimData.PkgName.CrabGreen, AnimData.PkgName.TigerWhite };
+                    var packageNames = new List<AnimData.PkgName> { AnimData.PkgName.PlayerBoy, AnimData.PkgName.PlayerGirl, AnimData.PkgName.FoxGinger, AnimData.PkgName.Frog1, AnimData.PkgName.CrabGreen, AnimData.PkgName.TigerWhite };
                     var packageName = packageNames[BoardPiece.Random.Next(0, packageNames.Count)];
                     if (packageName != currentPackageName)
                     {

@@ -361,7 +361,7 @@ namespace SonOfRobin
                         {
                             string detailLevelName = Preferences.namesForResDividers.ContainsKey(gridTemplate.resDivider) ? (string)Preferences.namesForResDividers[gridTemplate.resDivider] : $"{gridTemplate.resDivider}";
 
-                            new Invoker(menu: menu, name: $"{gridTemplate.width}x{gridTemplate.height}  seed  {String.Format("{0:0000}", gridTemplate.seed)}  detail {detailLevelName}", closesMenu: true, taskName: Scheduler.TaskName.CreateNewWorld, executeHelper: new Dictionary<string, Object> { { "width", gridTemplate.width }, { "height", gridTemplate.height }, { "seed", gridTemplate.seed }, { "resDivider", gridTemplate.resDivider }, { "playerType", Preferences.newWorldPlayerType } }, sound: SoundData.Name.NewGameStart);
+                            new Invoker(menu: menu, name: $"{gridTemplate.width}x{gridTemplate.height}  seed  {String.Format("{0:0000}", gridTemplate.seed)}  detail {detailLevelName}", closesMenu: true, taskName: Scheduler.TaskName.CreateNewWorld, executeHelper: new Dictionary<string, Object> { { "width", gridTemplate.width }, { "height", gridTemplate.height }, { "seed", gridTemplate.seed }, { "resDivider", gridTemplate.resDivider }, { "playerName", Preferences.newWorldPlayerName } }, sound: SoundData.Name.NewGameStart);
                         }
 
                         new Separator(menu: menu, name: "", isEmpty: true);
@@ -641,9 +641,9 @@ namespace SonOfRobin
 
             List<string> descriptionTextList = new List<string>();
 
-            switch (Preferences.newWorldPlayerType)
+            switch (Preferences.newWorldPlayerName)
             {
-                case World.PlayerType.Male:
+                case PieceTemplate.Name.PlayerBoy:
                     rectColor = Color.LightBlue;
                     textColor = Color.Black;
 
@@ -652,7 +652,7 @@ namespace SonOfRobin
 
                     break;
 
-                case World.PlayerType.Female:
+                case PieceTemplate.Name.PlayerGirl:
                     rectColor = Color.Pink;
                     textColor = Color.Black;
 
@@ -661,7 +661,7 @@ namespace SonOfRobin
 
                     break;
 
-                case World.PlayerType.TestDemoness:
+                case PieceTemplate.Name.PlayerTestDemoness:
                     rectColor = Color.Violet;
                     textColor = Color.Black;
 
@@ -671,7 +671,7 @@ namespace SonOfRobin
                     break;
 
                 default:
-                    throw new ArgumentException($"Unsupported playerType - {Preferences.newWorldPlayerType}.");
+                    throw new ArgumentException($"Unsupported newWorldPlayerName - {Preferences.newWorldPlayerName}.");
             }
 
             var infoTextList = new List<InfoWindow.TextEntry>();
@@ -680,12 +680,13 @@ namespace SonOfRobin
                 infoTextList.Add(new InfoWindow.TextEntry(text: text, color: Color.White, scale: 1f));
             }
 
-            new Selector(menu: menu, name: "character", infoTextList: infoTextList, valueDict: new Dictionary<object, object> {
-                { World.PlayerType.Male, AnimData.framesForPkgs[AnimData.PkgName.PlayerMale].texture },
-                { World.PlayerType.Female, AnimData.framesForPkgs[AnimData.PkgName.PlayerFemale].texture },
-                { World.PlayerType.TestDemoness, AnimData.framesForPkgs[AnimData.PkgName.PlayerDemoness].texture }
-            },
-            targetObj: new Preferences(), propertyName: "newWorldPlayerType", rebuildsAllMenus: true);
+            var selectorValueDict = new Dictionary<object, object>();
+            foreach (PieceTemplate.Name playerName in PieceInfo.GetPlayerNames())
+            {
+                selectorValueDict[playerName] = PieceInfo.GetTexture(playerName);
+            }
+
+            new Selector(menu: menu, name: "character", infoTextList: infoTextList, valueDict: selectorValueDict, targetObj: new Preferences(), propertyName: "newWorldPlayerName", rebuildsAllMenus: true);
 
             if (Input.currentControlType == Input.ControlType.Touch) // mobile users will not see InfoWindow, using separators instead
             {

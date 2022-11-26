@@ -11,7 +11,7 @@ namespace SonOfRobin
     public class Grid
     {
         public enum Stage
-        { LoadTerrain, GenerateTerrain, CheckExtData, SetExtDataSea, SetExtDataBeach, SetExtDataBiomes, SetExtDataBiomesConstrains, SetExtDataFinish, FillAllowedNames, ProcessTextures, LoadTextures }
+        { LoadTerrain, GenerateTerrain, CheckExtData, SetExtDataSea, SetExtDataBeach, SetExtDataBiomes, SetExtDataBiomesConstrains, SetExtDataFinish, FillAllowedNames, ProcessTextures, LoadTextures, StartGame }
 
         private static readonly int allStagesCount = ((Stage[])Enum.GetValues(typeof(Stage))).Length;
 
@@ -27,6 +27,7 @@ namespace SonOfRobin
             { Stage.FillAllowedNames, "filling lists of allowed names" },
             { Stage.ProcessTextures, "processing textures" },
             { Stage.LoadTextures, "loading textures" },
+            { Stage.StartGame, "starting the game" },
         };
 
         private Stage currentStage;
@@ -379,6 +380,11 @@ namespace SonOfRobin
                         return;
                     }
 
+                    break;
+
+                case Stage.StartGame:
+                    // to show "starting game" on progress bar
+                    this.cellsToProcessOnStart.Clear();
                     break;
 
                 default:

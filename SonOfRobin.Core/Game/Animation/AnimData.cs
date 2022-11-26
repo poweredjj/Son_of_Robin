@@ -211,9 +211,9 @@ namespace SonOfRobin
             GlassSand,
             Crystal,
 
-            PlayerMale,
-            PlayerFemale,
-            PlayerDemoness,
+            PlayerBoy,
+            PlayerGirl,
+            PlayerTestDemoness,
 
             CrabBeige,
             CrabBrown,
@@ -946,9 +946,9 @@ namespace SonOfRobin
             AddFrameList(animPackage: PkgName.MapMarker, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "map_marker", layer: 2, crop: false, padding: 0));
 
             // RPGMaker characters
-            AddRPGMakerPackageV1(packageName: PkgName.PlayerMale, atlasName: "actor29rec4", setNoX: 0, setNoY: 0, animSize: 0);
-            AddRPGMakerPackageV1(packageName: PkgName.PlayerFemale, atlasName: "recolor_pt2", setNoX: 0, setNoY: 0, animSize: 0);
-            AddRPGMakerPackageV1(packageName: PkgName.PlayerDemoness, atlasName: "demoness", setNoX: 0, setNoY: 0, animSize: 0);
+            AddRPGMakerPackageV1(packageName: PkgName.PlayerBoy, atlasName: "actor29rec4", setNoX: 0, setNoY: 0, animSize: 0);
+            AddRPGMakerPackageV1(packageName: PkgName.PlayerGirl, atlasName: "recolor_pt2", setNoX: 0, setNoY: 0, animSize: 0);
+            AddRPGMakerPackageV1(packageName: PkgName.PlayerTestDemoness, atlasName: "demoness", setNoX: 0, setNoY: 0, animSize: 0);
 
             foreach (var kvp in new Dictionary<byte, float> { { 0, 0.6f }, { 1, 0.8f }, { 2, 1.0f } })
             {

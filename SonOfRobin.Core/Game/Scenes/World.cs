@@ -9,9 +9,6 @@ namespace SonOfRobin
 {
     public class World : Scene
     {
-        public enum PlayerType
-        { Male, Female, TestDemoness };
-
         public Vector2 analogMovementLeftStick;
         public Vector2 analogMovementRightStick;
         public Vector2 analogCameraCorrection;
@@ -25,7 +22,6 @@ namespace SonOfRobin
         public DateTime creationEnd;
         public TimeSpan creationDuration;
         public readonly bool demoMode;
-        public readonly PlayerType playerType;
 
         private Object saveGameData;
         public bool createMissingPiecesOutsideCamera;
@@ -79,11 +75,13 @@ namespace SonOfRobin
         public readonly DateTime createdTime; // for calculating time spent in game
         private TimeSpan timePlayed; // real time spent while playing (differs from currentUpdate because of island time compression via updateMultiplier)
 
-        public World(int width, int height, int seed, int resDivider, PlayerType playerType, Object saveGameData = null, bool demoMode = false) :
+        public World(int width, int height, int seed, int resDivider, PieceTemplate.Name playerName, Object saveGameData = null, bool demoMode = false) :
             base(inputType: InputTypes.Normal, priority: 1, blocksUpdatesBelow: true, blocksDrawsBelow: true, touchLayout: TouchLayout.QuitLoading, tipsLayout: ControlTips.TipsLayout.QuitLoading)
         {
+            this.seed = seed;
+            this.random = new Random(seed);
+
             this.demoMode = demoMode;
-            this.playerType = playerType;
             this.cineMode = false;
             this.BuildMode = false;
             this.spectatorMode = false;
@@ -103,8 +101,6 @@ namespace SonOfRobin
             if (seed < 0) throw new ArgumentException($"Seed value cannot be negative - {seed}.");
 
             this.resDivider = resDivider;
-            this.seed = seed;
-            this.random = new Random(seed);
             this.CurrentFrame = 0;
             this.CurrentUpdate = 0;
             this.createdTime = DateTime.Now;
@@ -144,7 +140,11 @@ namespace SonOfRobin
             this.map = new Map(world: this, touchLayout: TouchLayout.Map);
             this.playerPanel = new PlayerPanel(world: this);
             this.debugText = "";
-            if (saveGameData == null) this.Grid = new Grid(world: this, resDivider: resDivider);
+            if (saveGameData == null)
+            {
+                this.Player = (Player)PieceTemplate.Create(templateName: playerName, world: this); // temporary boardPiece, to store playerName only
+                this.Grid = new Grid(world: this, resDivider: resDivider);
+            }
             else this.Deserialize(gridOnly: true);
 
             this.AddLinkedScene(this.map);
@@ -158,6 +158,15 @@ namespace SonOfRobin
             this.soundPaused = false;
 
             SonOfRobinGame.Game.IsFixedTimeStep = false; // speeds up the creation process
+        }
+
+        public PieceTemplate.Name PlayerName
+        {
+            get
+            {
+                Player player = this.Player;
+                return player == null ? PieceTemplate.Name.Empty : this.Player.name;
+            }
         }
 
         public bool PiecesCreationInProgress
@@ -234,9 +243,11 @@ namespace SonOfRobin
 
                     this.Player.RemoveFromStateMachines();
 
-                    BoardPiece spectator = PieceTemplate.CreateAndPlaceOnBoard(world: this, position: this.camera.TrackedPos, templateName: PieceTemplate.Name.PlayerGhost, closestFreeSpot: true, creationHelper: this.playerType);
+                    BoardPiece spectator = PieceTemplate.CreateAndPlaceOnBoard(world: this, position: this.camera.TrackedPos, templateName: PieceTemplate.Name.PlayerGhost, closestFreeSpot: true, creationHelper: this.Player.sprite.animPackage);
 
                     spectator.sprite.orientation = this.Player != null ? this.Player.sprite.orientation : Sprite.Orientation.right;
+
+                    bool isTestDemoness = this.PlayerName == PieceTemplate.Name.PlayerTestDemoness;
 
                     this.Player = (Player)spectator;
 
@@ -248,7 +259,7 @@ namespace SonOfRobin
 
                     string text;
 
-                    if (this.playerType == PlayerType.TestDemoness)
+                    if (isTestDemoness)
                     {
                         text = "How can this be? I was supposed to be immortal!";
                     }
@@ -423,7 +434,7 @@ namespace SonOfRobin
                 {
                     this.CreateAndPlacePlayer();
 
-                    if (this.playerType != PlayerType.TestDemoness) PieceTemplate.CreateAndPlaceOnBoard(world: this, position: this.Player.sprite.position, templateName: PieceTemplate.Name.CrateStarting, closestFreeSpot: true);
+                    if (this.PlayerName != PieceTemplate.Name.PlayerTestDemoness) PieceTemplate.CreateAndPlaceOnBoard(world: this, position: this.Player.sprite.position, templateName: PieceTemplate.Name.CrateStarting, closestFreeSpot: true);
                     PieceTemplate.CreateAndPlaceOnBoard(world: this, position: this.Player.sprite.position, templateName: PieceTemplate.Name.PredatorRepellant, closestFreeSpot: true);
                 }
             }
@@ -508,10 +519,7 @@ namespace SonOfRobin
                     female = (bool)pieceData["base_female"];
                 }
 
-                object creationHelper = null;
-                if (PieceInfo.IsPlayer(templateName)) creationHelper = this.playerType;
-
-                var newBoardPiece = PieceTemplate.CreateAndPlaceOnBoard(world: this, position: new Vector2((float)pieceData["sprite_positionX"], (float)pieceData["sprite_positionY"]), templateName: templateName, female: female, randomSex: randomSex, ignoreCollisions: true, id: (string)pieceData["base_id"], creationHelper: creationHelper);
+                var newBoardPiece = PieceTemplate.CreateAndPlaceOnBoard(world: this, position: new Vector2((float)pieceData["sprite_positionX"], (float)pieceData["sprite_positionY"]), templateName: templateName, female: female, randomSex: randomSex, ignoreCollisions: true, id: (string)pieceData["base_id"]);
                 if (!newBoardPiece.sprite.IsOnBoard) throw new ArgumentException($"{newBoardPiece.name} could not be placed correctly.");
 
                 newBoardPiece.Deserialize(pieceData: pieceData);
@@ -563,7 +571,9 @@ namespace SonOfRobin
         {
             for (int tryIndex = 0; tryIndex < 65535; tryIndex++)
             {
-                this.Player = (Player)PieceTemplate.CreateAndPlaceOnBoard(world: this, randomPlacement: true, position: Vector2.Zero, templateName: PieceTemplate.Name.Player, creationHelper: this.playerType);
+                PieceTemplate.Name playerName = this.PlayerName; // taken from a temporary Player boardPiece
+
+                this.Player = (Player)PieceTemplate.CreateAndPlaceOnBoard(world: this, randomPlacement: true, position: Vector2.Zero, templateName: playerName);
 
                 if (this.Player.sprite.IsOnBoard)
                 {
@@ -572,9 +582,9 @@ namespace SonOfRobin
                     this.Player.sprite.allowedTerrain.RemoveTerrain(Terrain.Name.Biome); // player should be spawned in a safe place, but able to go everywhere afterwards
                     this.Player.sprite.allowedTerrain.ClearExtProperties();
 
-                    switch (playerType)
+                    switch (playerName)
                     {
-                        case PlayerType.Male:
+                        case PieceTemplate.Name.PlayerBoy:
                             this.Player.strength += 1;
                             this.Player.speed += 0.5f;
                             this.Player.maxHitPoints *= 1.3f;
@@ -585,7 +595,7 @@ namespace SonOfRobin
 
                             break;
 
-                        case PlayerType.Female:
+                        case PieceTemplate.Name.PlayerGirl:
                             this.Player.InvHeight += 1;
                             this.Player.ToolbarWidth += 1;
                             this.Player.cookingSkill *= 1.4f;
@@ -593,7 +603,7 @@ namespace SonOfRobin
 
                             break;
 
-                        case PlayerType.TestDemoness:
+                        case PieceTemplate.Name.PlayerTestDemoness:
                             this.Player.InvWidth += 2;
                             this.Player.InvHeight += 2;
                             this.Player.ToolbarWidth += 2;
@@ -662,7 +672,7 @@ namespace SonOfRobin
                             break;
 
                         default:
-                            throw new ArgumentException($"Unsupported playerType - {playerType}.");
+                            throw new ArgumentException($"Unsupported playerName - {playerName}.");
                     }
 
                     return;

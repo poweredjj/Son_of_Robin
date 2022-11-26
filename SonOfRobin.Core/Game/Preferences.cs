@@ -18,7 +18,7 @@ namespace SonOfRobin
         public static int newWorldSize;
 
         public static int newWorldResDivider;
-        public static World.PlayerType newWorldPlayerType;
+        public static PieceTemplate.Name newWorldPlayerName;
 
         public static bool randomSeed;
         public static char seedDigit1 = '0';
@@ -99,7 +99,7 @@ namespace SonOfRobin
         public static bool loadWholeMap = false;
         private static bool frameSkip = true;
         public static bool showDemoWorld = true;
-        private static bool pointToWalk = false;
+        private static bool pointToWalk = true;
 
         public static bool PointToWalk
         {
@@ -111,7 +111,7 @@ namespace SonOfRobin
             }
         }
 
-        private static bool pointToInteract = false;
+        private static bool pointToInteract = true;
 
         public static bool PointToInteract
         {
@@ -444,7 +444,7 @@ namespace SonOfRobin
 
         public static void ResetNewWorldSettings()
         {
-            newWorldPlayerType = World.PlayerType.Male;
+            newWorldPlayerName = PieceTemplate.Name.PlayerBoy;
             SelectedWorldSize = WorldSize.medium;
             CustomizeWorld = false;
         }
@@ -520,7 +520,7 @@ namespace SonOfRobin
             prefsData["newWorldResDivider"] = newWorldResDivider;
             prefsData["selectedWorldSize"] = SelectedWorldSize;
             prefsData["newWorldSize"] = newWorldSize;
-            prefsData["newWorldPlayerType"] = newWorldPlayerType;
+            prefsData["newWorldPlayerName"] = newWorldPlayerName;
             prefsData["randomSeed"] = randomSeed;
             prefsData["seedDigit1"] = seedDigit1;
             prefsData["seedDigit2"] = seedDigit2;
@@ -583,7 +583,7 @@ namespace SonOfRobin
                     SelectedWorldSize = (WorldSize)prefsData["selectedWorldSize"];
                     newWorldResDivider = (int)prefsData["newWorldResDivider"];
                     newWorldSize = (int)prefsData["newWorldSize"];
-                    newWorldPlayerType = (World.PlayerType)prefsData["newWorldPlayerType"];
+                    newWorldPlayerName = (PieceTemplate.Name)prefsData["newWorldPlayerName"];
                     randomSeed = (bool)prefsData["randomSeed"];
                     seedDigit1 = (char)prefsData["seedDigit1"];
                     seedDigit2 = (char)prefsData["seedDigit2"];

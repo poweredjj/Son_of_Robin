@@ -221,10 +221,10 @@ namespace SonOfRobin
                     case TaskName.CreateNewWorldNow:
                         {
                             // example executeHelper for this task
-                            // var createData = new Dictionary<string, Object> { { "width", width }, { "height", height }, { "seed", seed }, { "resDivider", resDivider }, { "playerType", World.PlayerType.Male } }
+                            // var createData = new Dictionary<string, Object> { { "width", width }, { "height", height }, { "seed", seed }, { "resDivider", resDivider }, { "playerName", PieceTemplate.Name.PlayerBoy } }
 
                             int width, height, seed, resDivider;
-                            World.PlayerType playerType;
+                            PieceTemplate.Name playerName;
 
                             if (this.ExecuteHelper == null)
                             {
@@ -232,7 +232,7 @@ namespace SonOfRobin
                                 height = Preferences.newWorldSize;
                                 seed = Preferences.NewWorldSeed;
                                 resDivider = Preferences.newWorldResDivider;
-                                playerType = Preferences.newWorldPlayerType;
+                                playerName = Preferences.newWorldPlayerName;
                             }
                             else
                             {
@@ -241,10 +241,10 @@ namespace SonOfRobin
                                 height = (int)createData["height"];
                                 seed = (int)createData["seed"];
                                 resDivider = (int)createData["resDivider"];
-                                playerType = (World.PlayerType)createData["playerType"];
+                                playerName = (PieceTemplate.Name)createData["playerName"];
                             }
 
-                            new World(width: width, height: height, seed: seed, resDivider: resDivider, playerType: playerType);
+                            new World(width: width, height: height, seed: seed, resDivider: resDivider, playerName: playerName);
 
                             return;
                         }
@@ -253,9 +253,9 @@ namespace SonOfRobin
                         {
                             Scene.RemoveAllScenesOfType(typeof(Menu));
                             World oldWorld = (World)this.ExecuteHelper;
-                            World.PlayerType playerType = oldWorld.playerType;
+                            PieceTemplate.Name playerName = oldWorld.PlayerName;
 
-                            new World(width: oldWorld.width, height: oldWorld.height, seed: oldWorld.seed, resDivider: oldWorld.resDivider, playerType: playerType);
+                            new World(width: oldWorld.width, height: oldWorld.height, seed: oldWorld.seed, resDivider: oldWorld.resDivider, playerName: playerName);
                             oldWorld.Remove();
 
                             return;

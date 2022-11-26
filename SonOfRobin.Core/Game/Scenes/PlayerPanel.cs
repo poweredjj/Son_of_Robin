@@ -75,7 +75,8 @@ namespace SonOfRobin
                 return this.world.map.FullScreen ||
                     this.world.CineMode ||
                     this.world.SpectatorMode ||
-                    this.world.Player == null;
+                    this.world.Player == null ||
+                    !this.world.Player.sprite.IsOnBoard;
             }
         }
 

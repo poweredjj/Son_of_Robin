@@ -263,7 +263,7 @@ namespace SonOfRobin
                     { "width", this.world.width },
                     { "height", this.world.height },
                     { "maxAnimalsPerName", this.world.maxAnimalsPerName },
-                    { "playerType", this.world.playerType },
+                    { "playerName", this.world.PlayerName },
                     { "resDivider", this.world.resDivider },
                     { "currentFrame", this.world.CurrentFrame },
                     { "currentUpdate", this.world.CurrentUpdate },
@@ -547,9 +547,9 @@ namespace SonOfRobin
             int width = (int)this.headerData["width"];
             int height = (int)this.headerData["height"];
             int resDivider = (int)this.headerData["resDivider"];
-            World.PlayerType playerType = (World.PlayerType)this.headerData["playerType"];
+            PieceTemplate.Name playerName = (PieceTemplate.Name)this.headerData["playerName"];
 
-            this.world = new World(width: width, height: height, seed: seed, saveGameData: this.SaveGameData, playerType: playerType, resDivider: resDivider);
+            this.world = new World(width: width, height: height, seed: seed, saveGameData: this.SaveGameData, playerName: playerName, resDivider: resDivider);
             this.MoveToTop();
 
             MessageLog.AddMessage(msgType: MsgType.User, message: $"Game has been loaded from slot {saveSlotName} (time elapsed {this.TimeElapsed}s).", color: Color.LightBlue);

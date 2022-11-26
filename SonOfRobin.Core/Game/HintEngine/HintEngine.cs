@@ -259,7 +259,7 @@ namespace SonOfRobin
                         // HintMessage.ConvertToTasks() could be used here, but adding one by one makes it easier to add other task types between text.
                         var taskChain = new List<Object>();
 
-                        if (this.world.playerType == World.PlayerType.TestDemoness)
+                        if (this.world.PlayerName == PieceTemplate.Name.PlayerTestDemoness)
                         {
                             var invertedDialogue = HintMessage.BoxType.InvertedDialogue;
 
@@ -372,7 +372,7 @@ namespace SonOfRobin
 
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetZoom, delay: 0, executeHelper: new Dictionary<string, Object> { { "zoom", 0.8f }, { "zoomSpeedMultiplier", 2f } }, storeForLaterUse: true));
 
-                        if (this.world.playerType == World.PlayerType.TestDemoness)
+                        if (this.world.PlayerName == PieceTemplate.Name.PlayerTestDemoness)
                         {
                             taskChain.Add(new HintMessage(text: "This camp | | looks like shit.\nDo lowly humans really live in such pitiful conditions?", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.TentMedium), PieceInfo.GetTexture(PieceTemplate.Name.WorkshopEssential) }, boxType: dialogue, delay: 30).ConvertToTask());
                         }
