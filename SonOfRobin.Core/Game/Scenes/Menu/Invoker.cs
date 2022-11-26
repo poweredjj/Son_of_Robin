@@ -55,7 +55,7 @@ namespace SonOfRobin
             {
                 Vector2 position = touch.Position / Preferences.GlobalScale;
 
-                if (rect.Contains(position) && touch.State == TouchLocationState.Released && Menu.CanInterpretTouchReleaseAsButtonPress)
+                if (rect.Contains(position) && touch.State == TouchLocationState.Released && this.menu.CanInterpretTouchReleaseAsButtonPress)
                 {
                     if (this == this.menu.lastTouchedEntry || this.GetType() != typeof(CraftInvoker)) this.Invoke();
                     else

@@ -9,12 +9,13 @@ namespace SonOfRobin
 {
     public class Menu : Scene
     {
-        public static bool nextMenuNoStartTransition = false;
-        private const float baseScrollSpeed = 20f;
-
         public enum Layout
         { Middle, Left, Right }
 
+        public static bool nextMenuNoStartTransition = false;
+        private const float baseScrollSpeed = 20f;
+
+        private readonly DateTime createdAt;
         public readonly MenuTemplate.Name templateName;
         private readonly string name;
         public readonly bool canBeClosedManually;
@@ -35,6 +36,41 @@ namespace SonOfRobin
         public readonly Sound soundSelect;
         public readonly Sound soundInvoke;
         public readonly object templateExecuteHelper; // needed for correct rebuild
+
+        public Menu(MenuTemplate.Name templateName, bool blocksUpdatesBelow, bool canBeClosedManually, string name, object templateExecuteHelper, bool alwaysShowSelectedEntry = false, Layout layout = Layout.Right, Scheduler.TaskName closingTask = Scheduler.TaskName.Empty, Object closingTaskHelper = null, int priority = 1, SoundData.Name soundNavigate = SoundData.Name.Navigation, SoundData.Name soundOpen = SoundData.Name.Empty, SoundData.Name soundClose = SoundData.Name.Navigation, SoundData.Name soundSelect = SoundData.Name.Select, SoundData.Name soundInvoke = SoundData.Name.Invoke) : base(inputType: InputTypes.Normal, priority: priority, blocksUpdatesBelow: blocksUpdatesBelow, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, hidesSameScenesBelow: true, touchLayout: TouchLayout.Empty, tipsLayout: canBeClosedManually ? ControlTips.TipsLayout.Menu : ControlTips.TipsLayout.MenuWithoutClosing)
+        {
+            this.createdAt = DateTime.Now;
+            this.layout = layout;
+            this.alwaysShowSelectedEntry = alwaysShowSelectedEntry;
+            this.touchMode = Input.currentControlType == Input.ControlType.Touch;
+            this.lastTouchedEntry = null;
+            this.templateName = templateName;
+            this.name = name;
+            this.activeIndex = -1; // dummy value, to be changed
+            this.currentScrollPosition = 0;
+            this.entryList = new List<Entry> { };
+            this.canBeClosedManually = canBeClosedManually;
+            this.closingTask = closingTask;
+            this.closingTaskHelper = closingTaskHelper;
+            this.SetViewPosAndSize();
+            this.bgColor = Color.Black * 0.6f;
+            this.scrollSpeed = baseScrollSpeed;
+            this.instantScrollForOneFrame = false;
+            this.templateExecuteHelper = templateExecuteHelper;
+
+            if (Sound.menuOn && soundOpen != SoundData.Name.Empty && !this.ThisMenuIsBeingRebuilt) Sound.QuickPlay(soundOpen);
+
+            this.soundClose = new Sound(soundClose);
+            this.soundNavigate = new Sound(soundNavigate);
+            this.soundSelect = new Sound(soundSelect);
+            this.soundInvoke = new Sound(soundInvoke);
+
+            new Separator(menu: this, name: this.name);
+            this.SetTouchLayout();
+            this.AddStartTransitions();
+
+            // MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Menu {this.name} - created with closing task '{this.closingTask}'.");
+        }
 
         public int EntryBgWidth
         {
@@ -92,42 +128,56 @@ namespace SonOfRobin
             }
         }
 
-        public static bool CanInterpretTouchReleaseAsButtonPress
+        public bool CanInterpretTouchReleaseAsButtonPress
         {
             get
             {
-                return TouchInput.IsPressedReleasedWithinDistanceAndDuration(maxDistance: (int)(SonOfRobinGame.VirtualHeight * 0.03), maxDuration: TimeSpan.FromMilliseconds(400));
+                return TouchInput.IsPressedReleasedWithinDistanceAndDuration(maxDistance: (int)(SonOfRobinGame.VirtualHeight * 0.03), maxDuration: TimeSpan.FromMilliseconds(400), ignorePressesBefore: this.createdAt);
             }
         }
 
         public bool ScrollActive
         { get { return this.FullyVisibleEntries.Count < this.entryList.Count || this.PartiallyVisibleEntries.Count > 0; } }
+
         private float ScrollbarVisiblePercent
         { get { return (float)this.viewParams.Height / (((float)this.EntryHeight + (float)this.EntryMargin) * (float)this.entryList.Count); } }
+
         private int ScrollbarWidgetHeight
         { get { return (int)(this.ScrollbarVisiblePercent * this.viewParams.Height); } }
+
         public int ScrollbarPosX
         { get { return this.EntryBgWidth - this.ScrollbarWidth; } }
+
         public int ScrollbarWidth
         { get { return this.ScrollActive ? Convert.ToInt32(EntryBgWidth * 0.08f) : 0; } }
+
         public float ScrollbarMultiplier
         { get { return (float)this.viewParams.Height / ((float)this.MaxScrollPos + (float)this.viewParams.Height); } }
+
         private Rectangle ScrollWholeRect
         { get { return new Rectangle(this.ScrollbarPosX, 0, this.ScrollbarWidth, this.viewParams.Height); } }
+
         public int EntryWidth
         { get { return Convert.ToInt32(EntryBgWidth * 0.8f); } }
+
         public int EntryHeight
         { get { return Convert.ToInt32(SonOfRobinGame.VirtualHeight * 0.08f * Preferences.menuScale); } }
+
         public int EntryMargin
         { get { return Convert.ToInt32(SonOfRobinGame.VirtualHeight * 0.025f * Preferences.menuScale); } }
+
         private Rectangle BgRect
         { get { return new Rectangle(0, 0, this.EntryBgWidth, SonOfRobinGame.VirtualHeight); } }
+
         public Entry ActiveEntry
         { get { return this.entryList[activeIndex]; } }
+
         public List<Entry> VisibleEntries
         { get { return this.entryList.Where(entry => entry.IsVisible).ToList(); } }
+
         public List<Entry> PartiallyVisibleEntries
         { get { return this.entryList.Where(entry => entry.IsPartiallyVisible).ToList(); } }
+
         public List<Entry> FullyVisibleEntries
         { get { return this.entryList.Where(entry => entry.IsFullyVisible).ToList(); } }
 
@@ -177,40 +227,6 @@ namespace SonOfRobin
                 float posDiff = targetPos - currentScrollPosition;
                 currentScrollPosition += posDiff / this.scrollSpeed;
             }
-        }
-
-        public Menu(MenuTemplate.Name templateName, bool blocksUpdatesBelow, bool canBeClosedManually, string name, object templateExecuteHelper, bool alwaysShowSelectedEntry = false, Layout layout = Layout.Right, Scheduler.TaskName closingTask = Scheduler.TaskName.Empty, Object closingTaskHelper = null, int priority = 1, SoundData.Name soundNavigate = SoundData.Name.Navigation, SoundData.Name soundOpen = SoundData.Name.Empty, SoundData.Name soundClose = SoundData.Name.Navigation, SoundData.Name soundSelect = SoundData.Name.Select, SoundData.Name soundInvoke = SoundData.Name.Invoke) : base(inputType: InputTypes.Normal, priority: priority, blocksUpdatesBelow: blocksUpdatesBelow, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, hidesSameScenesBelow: true, touchLayout: TouchLayout.Empty, tipsLayout: canBeClosedManually ? ControlTips.TipsLayout.Menu : ControlTips.TipsLayout.MenuWithoutClosing)
-        {
-            this.layout = layout;
-            this.alwaysShowSelectedEntry = alwaysShowSelectedEntry;
-            this.touchMode = Input.currentControlType == Input.ControlType.Touch;
-            this.lastTouchedEntry = null;
-            this.templateName = templateName;
-            this.name = name;
-            this.activeIndex = -1; // dummy value, to be changed
-            this.currentScrollPosition = 0;
-            this.entryList = new List<Entry> { };
-            this.canBeClosedManually = canBeClosedManually;
-            this.closingTask = closingTask;
-            this.closingTaskHelper = closingTaskHelper;
-            this.SetViewPosAndSize();
-            this.bgColor = Color.Black * 0.6f;
-            this.scrollSpeed = baseScrollSpeed;
-            this.instantScrollForOneFrame = false;
-            this.templateExecuteHelper = templateExecuteHelper;
-
-            if (Sound.menuOn && soundOpen != SoundData.Name.Empty && !this.ThisMenuIsBeingRebuilt) Sound.QuickPlay(soundOpen);
-
-            this.soundClose = new Sound(soundClose);
-            this.soundNavigate = new Sound(soundNavigate);
-            this.soundSelect = new Sound(soundSelect);
-            this.soundInvoke = new Sound(soundInvoke);
-
-            new Separator(menu: this, name: this.name);
-            this.SetTouchLayout();
-            this.AddStartTransitions();
-
-            // MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Menu {this.name} - created with closing task '{this.closingTask}'.");
         }
 
         private bool ThisMenuIsBeingRebuilt

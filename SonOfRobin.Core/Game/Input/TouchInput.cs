@@ -99,17 +99,18 @@ namespace SonOfRobin
             }
         }
 
-        public static bool IsPressedReleasedWithinDistanceAndDuration(int maxDistance, TimeSpan maxDuration)
+        public static bool IsPressedReleasedWithinDistanceAndDuration(int maxDistance, TimeSpan maxDuration, DateTime ignorePressesBefore)
         {
             if (!Input.InputActive ||
                 (lastPressPos.X == -100 && lastPressPos.Y == -100) ||
-                (lastReleasedPos.X == -100 && lastReleasedPos.Y == -100)) return false;
+                (lastReleasedPos.X == -100 && lastReleasedPos.Y == -100) ||
+                lastPressedTime < ignorePressesBefore) return false;
 
             float distance = Vector2.Distance(lastPressPos, lastReleasedPos);
 
             TimeSpan pressReleaseDuration = DateTime.Now - lastPressedTime;
 
-            MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Press release distance {distance}, max {maxDistance}, duration {pressReleaseDuration.Milliseconds} ms, max {maxDuration.Milliseconds} ms.");
+            MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Press release distance {distance}, max dist {maxDistance}, duration {pressReleaseDuration.Milliseconds} ms, maxDuration {maxDuration.Milliseconds} ms.");
 
             return distance <= maxDistance && pressReleaseDuration <= maxDuration;
         }
