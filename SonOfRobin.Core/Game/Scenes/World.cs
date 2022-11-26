@@ -575,6 +575,8 @@ namespace SonOfRobin
 
                 this.Player = (Player)PieceTemplate.CreateAndPlaceOnBoard(world: this, randomPlacement: true, position: Vector2.Zero, templateName: playerName);
 
+                // adding each character assets
+
                 if (this.Player.sprite.IsOnBoard)
                 {
                     this.Player.sprite.orientation = Sprite.Orientation.up;
@@ -672,6 +674,14 @@ namespace SonOfRobin
                                     if (!pieceAdded) break;
                                 }
                                 if (!pieceAdded) break;
+                            }
+
+                            foreach (PieceStorage storage in this.Player.CraftStorages)
+                            {
+                                foreach (BoardPiece piece in storage.GetAllPieces())
+                                {
+                                    if (!this.identifiedPieces.Contains(piece.name)) this.identifiedPieces.Add(piece.name);
+                                }
                             }
 
                             break;
