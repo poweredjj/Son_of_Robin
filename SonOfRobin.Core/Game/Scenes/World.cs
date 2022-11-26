@@ -575,10 +575,10 @@ namespace SonOfRobin
 
                 this.Player = (Player)PieceTemplate.CreateAndPlaceOnBoard(world: this, randomPlacement: true, position: Vector2.Zero, templateName: playerName);
 
-                // adding each character assets
 
                 if (this.Player.sprite.IsOnBoard)
                 {
+
                     this.Player.sprite.orientation = Sprite.Orientation.up;
                     this.Player.sprite.CharacterStand();
                     this.Player.sprite.allowedTerrain.RemoveTerrain(Terrain.Name.Biome); // player should be spawned in a safe place, but able to go everywhere afterwards
@@ -586,38 +586,17 @@ namespace SonOfRobin
 
                     switch (playerName)
                     {
-                        case PieceTemplate.Name.PlayerBoy:
-                            this.Player.strength += 1;
-                            this.Player.speed += 0.5f;
-                            this.Player.maxHitPoints *= 1.3f;
-                            this.Player.hitPoints = this.Player.maxHitPoints;
-                            this.Player.maxStamina *= 1.3f;
-                            this.Player.stamina = this.Player.maxStamina;
-                            this.Player.maxFatigue *= 1.3f;
+                        // adding character bonuses, that would not be possible to add in PieceTemplate.Create()
 
+                        case PieceTemplate.Name.PlayerBoy:
+                            // bonuses creation placeholder
                             break;
 
                         case PieceTemplate.Name.PlayerGirl:
-                            this.Player.InvHeight += 1;
-                            this.Player.ToolbarWidth += 1;
-                            this.Player.cookingSkill *= 1.4f;
-                            this.Player.craftLevel += 2;
-
+                            // bonuses creation placeholder
                             break;
 
                         case PieceTemplate.Name.PlayerTestDemoness:
-                            this.Player.InvWidth += 2;
-                            this.Player.InvHeight += 2;
-                            this.Player.ToolbarWidth += 2;
-                            this.Player.cookingSkill *= 5f;
-                            this.Player.strength += 100;
-                            this.Player.speed += 5;
-                            this.Player.maxHitPoints *= 200f;
-                            this.Player.hitPoints = this.Player.maxHitPoints;
-                            this.Player.maxStamina *= 200f;
-                            this.Player.stamina = this.Player.maxStamina;
-                            this.Player.maxFatigue *= 10f;
-
                             var pieceNamesToEquip = new List<PieceTemplate.Name> {
                                 PieceTemplate.Name.BootsProtective, PieceTemplate.Name.Map, PieceTemplate.Name.BackpackBig, PieceTemplate.Name.BeltBig, PieceTemplate.Name.HatSimple
                             };
@@ -687,7 +666,7 @@ namespace SonOfRobin
                             break;
 
                         default:
-                            throw new ArgumentException($"Unsupported playerName - {playerName}.");
+                            break;
                     }
 
                     return;

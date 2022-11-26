@@ -64,6 +64,9 @@ namespace SonOfRobin
         public static bool ThisIsWorkMachine
         { get { return gameDataPath.Contains("msmidowi"); } }
 
+        public static bool ThisIsHomeMachine
+        { get { return gameDataPath.Contains("Users\\Marcin"); } }
+
         public static bool quitGame = false;
 
         public static readonly int initialWindowWidth = ThisIsWorkMachine ? 700 : 1280;

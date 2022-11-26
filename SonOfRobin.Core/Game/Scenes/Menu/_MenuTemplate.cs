@@ -297,7 +297,7 @@ namespace SonOfRobin
                             List<Object> sizeList = new List<Object> { 10000, 15000, 20000, 25000, 30000, 40000 };
                             if (SonOfRobinGame.platform == Platform.Desktop) sizeList.AddRange(new List<Object> { 50000, 60000, 70000, 80000, 90000, 100000 });
 
-                            if (SonOfRobinGame.ThisIsWorkMachine) sizeList.InsertRange(0, new List<Object> { 1000, 2000, 4000, 8000 });
+                            if (SonOfRobinGame.ThisIsWorkMachine || SonOfRobinGame.ThisIsHomeMachine) sizeList.InsertRange(0, new List<Object> { 1000, 2000, 4000, 8000 });
 
                             new Selector(menu: menu, name: "size", valueList: sizeList, targetObj: preferences, propertyName: "newWorldSize");
                             new Selector(menu: menu, name: "terrain detail", valueDict: Preferences.namesForResDividers, targetObj: preferences, propertyName: "newWorldResDivider");
@@ -656,7 +656,7 @@ namespace SonOfRobin
                     rectColor = Color.Pink;
                     textColor = Color.Black;
 
-                    descriptionTextList.Add("Better cooking, smart crafting.");
+                    descriptionTextList.Add("Smart crafting, better cooking.");
                     descriptionTextList.Add("Bigger inventory and toolbar.");
 
                     break;

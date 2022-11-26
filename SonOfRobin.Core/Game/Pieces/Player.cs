@@ -18,9 +18,9 @@ namespace SonOfRobin
         public int fedLevel;
         public float maxStamina;
         public float stamina;
-        private float fatigue;
         public float cookingSkill;
         public float maxFatigue;
+        private float fatigue;
         public int craftLevel;
         public float ShootingAngle { get; private set; }
         private int shootingPower;
@@ -33,19 +33,19 @@ namespace SonOfRobin
         public PieceStorage ToolStorage { get; private set; }
         public PieceStorage EquipStorage { get; private set; }
 
-        public Player(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, byte invWidth, byte invHeight, byte toolbarWidth, byte toolbarHeight, string readableName, string description, State activeState, bool female,
-            byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, bool ignoresCollisions = false, int destructionDelay = 0, bool floatsOnWater = false, int generation = 0, Yield yield = null, int minDistance = 0, int maxDistance = 100, LightEngine lightEngine = null, PieceSoundPack soundPack = null) :
+        public Player(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, State activeState, bool female, int strength, float speed, float maxStamina, float maxHitPoints, float maxFatigue, int craftLevel, float cookingSkill, byte invWidth, byte invHeight, byte toolbarWidth, byte toolbarHeight,
+            byte animSize = 0, string animName = "default", bool blocksMovement = true, bool ignoresCollisions = false, int destructionDelay = 0, bool floatsOnWater = false, int generation = 0, Yield yield = null, int minDistance = 0, int maxDistance = 100, LightEngine lightEngine = null, PieceSoundPack soundPack = null) :
 
-            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, speed: speed, blocksMovement: blocksMovement, name: name, destructionDelay: destructionDelay, allowedTerrain: allowedTerrain, floatsOnWater: floatsOnWater, mass: 50000, maxMassBySize: null, generation: generation, canBePickedUp: false, maxHitPoints: 400, fadeInAnim: false, readableName: readableName, description: description, yield: yield, strength: 1, category: Category.Flesh, lightEngine: lightEngine, ignoresCollisions: ignoresCollisions, minDistance: minDistance, maxDistance: maxDistance, activeState: activeState, soundPack: soundPack, female: female)
+            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, speed: speed, blocksMovement: blocksMovement, name: name, destructionDelay: destructionDelay, allowedTerrain: allowedTerrain, floatsOnWater: floatsOnWater, mass: 50000, maxMassBySize: null, generation: generation, canBePickedUp: false, maxHitPoints: maxHitPoints, fadeInAnim: false, readableName: readableName, description: description, yield: yield, strength: strength, category: Category.Flesh, lightEngine: lightEngine, ignoresCollisions: ignoresCollisions, minDistance: minDistance, maxDistance: maxDistance, activeState: activeState, soundPack: soundPack, female: female)
         {
             this.maxFedLevel = 40000;
             this.fedLevel = maxFedLevel;
-            this.maxStamina = 300;
+            this.maxStamina = maxStamina;
             this.stamina = maxStamina;
-            this.maxFatigue = 2000;
+            this.maxFatigue = maxFatigue;
             this.fatigue = 0;
-            this.cookingSkill = 1f;
-            this.craftLevel = 1;
+            this.cookingSkill = cookingSkill;
+            this.craftLevel = craftLevel;
             this.sleepEngine = SleepEngine.OutdoorSleepDry; // to be changed later
 
             var allowedToolbarPieces = new List<PieceTemplate.Name>();

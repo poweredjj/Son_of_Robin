@@ -326,9 +326,8 @@ namespace SonOfRobin
 
             if (Keyboard.HasBeenPressed(Keys.F1))
             {
-                Sound dialogueSound = new Sound(name: SoundData.Name.Beep, cooldown: 4, volume: 0.12f, pitchChange: 0.5f, maxPitchVariation: 0.07f, ignore3DAlways: true);
-
-                new TextWindow(text: "This is a test message.\nLong test message.\nEven longer test message.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, priority: 0, animSound: dialogueSound);
+                if (world == null) return;
+                world.SpectatorMode = !world.SpectatorMode;
             }
 
             if (Keyboard.HasBeenPressed(Keys.F2))
