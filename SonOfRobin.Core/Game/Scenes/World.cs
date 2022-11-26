@@ -637,6 +637,11 @@ namespace SonOfRobin
                                 this.Player.ToolStorage.AddPiece(piece);
                             }
 
+                            foreach (Cell cell in this.Grid.allCells)
+                            {
+                                cell.SetAsVisited();
+                            }
+
                             var piecesForInventoryWithCount = new Dictionary<PieceTemplate.Name, int>();
 
                             foreach (PieceTemplate.Name name in PieceTemplate.allNames)
