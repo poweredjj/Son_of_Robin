@@ -8,8 +8,6 @@ namespace SonOfRobin
     public class PieceInfo
     {
         private static readonly Dictionary<PieceTemplate.Name, Info> info = new Dictionary<PieceTemplate.Name, Info> { };
-        public static List<Info> AllInfo
-        { get { return info.Values.ToList(); } }
         public static bool HasBeenInitialized { get; private set; } = false;
 
         public class Info
@@ -93,6 +91,9 @@ namespace SonOfRobin
             }
         }
 
+        public static List<Info> AllInfo
+        { get { return info.Values.ToList(); } }
+
         public static Info GetInfo(PieceTemplate.Name pieceName)
         {
             return info[pieceName];
@@ -122,7 +123,7 @@ namespace SonOfRobin
                 if (potentialPrey.eats != null)
                 {
                     // animal will either hunt the player or run away
-                    if (!potentialPrey.eats.Contains(PieceTemplate.Name.Player)) potentialPrey.isEatenBy.Add(PieceTemplate.Name.Player);
+                    if (!ContainsPlayer(potentialPrey.eats)) potentialPrey.isEatenBy.AddRange(PieceInfo.GetPlayerNames());
 
                     foreach (Info potentialPredator in info.Values)
                     {
@@ -150,6 +151,31 @@ namespace SonOfRobin
             if (info.ContainsKey(name) && info[name].isEatenBy != null) return info[name].isEatenBy;
 
             return new List<PieceTemplate.Name> { };
+        }
+
+        public static bool IsPlayer(PieceTemplate.Name pieceName)
+        {
+            return info[pieceName].type == typeof(Player) && pieceName != PieceTemplate.Name.PlayerGhost;
+        }
+
+        public static bool ContainsPlayer(List<PieceTemplate.Name> pieceNameList)
+        {
+            foreach (PieceTemplate.Name pieceName in pieceNameList)
+            {
+                if (IsPlayer(pieceName)) return true;
+            }
+            return false;
+        }
+
+        public static List<PieceTemplate.Name> GetPlayerNames()
+        {
+            var playerNameList = new List<PieceTemplate.Name>();
+            foreach (Info info in AllInfo)
+            {
+                if (IsPlayer(info.name)) playerNameList.Add(info.name);
+            }
+
+            return playerNameList;
         }
     }
 }

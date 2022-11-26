@@ -281,7 +281,7 @@ namespace SonOfRobin
 
                             taskChain.Add(new HintMessage(text: "And I WILL | RUIN your game experience.\nWith pleasure |.", imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.SkullAndBones].texture, AnimData.framesForPkgs[AnimData.PkgName.Heart].texture }, boxType: invertedDialogue, delay: 0).ConvertToTask());
 
-                            taskChain.Add(new HintMessage(text: "Is that clear? Yeah?\nThen let's get started!", boxType: dialogue, delay: 30, blockInput: false).ConvertToTask());
+                            taskChain.Add(new HintMessage(text: "Is that clear? Yeah?\nThen let's get started!", boxType: invertedDialogue, delay: 30, blockInput: false).ConvertToTask());
                         }
                         else
                         {

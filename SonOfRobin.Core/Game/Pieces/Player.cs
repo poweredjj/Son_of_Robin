@@ -373,7 +373,7 @@ namespace SonOfRobin
 
         public override void Kill(bool addDestroyEvent = true)
         {
-            if (Preferences.DebugGodMode || this.name != PieceTemplate.Name.Player) return;
+            if (Preferences.DebugGodMode || !PieceInfo.IsPlayer(this.name)) return;
 
             foreach (PieceStorage storage in this.CraftStorages)
             { storage.DropAllPiecesToTheGround(addMovement: true); }

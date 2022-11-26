@@ -149,7 +149,7 @@ namespace SonOfRobin
                 BoardPiece trackedPiece = this.TrackedPiece;
                 if (trackedPiece == null) return false;
 
-                return trackedPiece.name == PieceTemplate.Name.Player && this.trackedSpriteReached;
+                return trackedPiece.GetType() == typeof(Player) && this.trackedSpriteReached;
             }
         }
 

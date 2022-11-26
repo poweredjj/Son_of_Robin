@@ -278,7 +278,7 @@ namespace SonOfRobin
                     bool playerFound = false;
                     foreach (Sprite sprite in this.Grid.GetSpritesFromAllCells(Cell.Group.All))
                     {
-                        if (sprite.boardPiece.name == PieceTemplate.Name.Player && sprite.boardPiece.alive)
+                        if (PieceInfo.IsPlayer(sprite.boardPiece.name) && sprite.boardPiece.alive)
                         {
                             this.Player = (Player)sprite.boardPiece;
                             this.Player.AddToStateMachines();
@@ -509,14 +509,14 @@ namespace SonOfRobin
                 }
 
                 object creationHelper = null;
-                if (templateName == PieceTemplate.Name.Player) creationHelper = this.playerType;
+                if (PieceInfo.IsPlayer(templateName)) creationHelper = this.playerType;
 
                 var newBoardPiece = PieceTemplate.CreateAndPlaceOnBoard(world: this, position: new Vector2((float)pieceData["sprite_positionX"], (float)pieceData["sprite_positionY"]), templateName: templateName, female: female, randomSex: randomSex, ignoreCollisions: true, id: (string)pieceData["base_id"], creationHelper: creationHelper);
                 if (!newBoardPiece.sprite.IsOnBoard) throw new ArgumentException($"{newBoardPiece.name} could not be placed correctly.");
 
                 newBoardPiece.Deserialize(pieceData: pieceData);
 
-                if (templateName == PieceTemplate.Name.Player)
+                if (PieceInfo.IsPlayer(templateName))
                 {
                     this.Player = (Player)newBoardPiece;
                     this.camera.TrackPiece(trackedPiece: this.Player, moveInstantly: true);
@@ -525,7 +525,9 @@ namespace SonOfRobin
                 piecesByID[newBoardPiece.id] = newBoardPiece;
 
                 if (newBoardPiece.GetType() == typeof(Animal) && pieceData["animal_target_id"] != null)
-                { animalsByTargetID[(string)pieceData["animal_target_id"]] = newBoardPiece; }
+                {
+                    animalsByTargetID[(string)pieceData["animal_target_id"]] = newBoardPiece;
+                }
             }
 
             foreach (var kvp in animalsByTargetID)

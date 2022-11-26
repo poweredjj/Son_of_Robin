@@ -570,7 +570,7 @@ namespace SonOfRobin
                         redOverlay.transManager.AddTransition(new Transition(transManager: redOverlay.transManager, outTrans: true, duration: 20, playCount: 1, stageTransform: Transition.Transform.Sinus, baseParamName: "Opacity", targetVal: 0.5f, endRemoveScene: true));
                         this.world.solidColorManager.Add(redOverlay);
 
-                        if (!this.eats.Contains(PieceTemplate.Name.Player)) this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.AnimalCounters, ignoreDelay: true, piece: this);
+                        if (!PieceInfo.ContainsPlayer(this.eats)) this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.AnimalCounters, ignoreDelay: true, piece: this);
                     }
                 }
             }

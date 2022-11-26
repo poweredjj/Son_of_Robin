@@ -33,7 +33,7 @@ namespace SonOfRobin
                 // isEmpty is not really used - this constructor is for making an "empty" entry
                 this.isMain = false;
                 this.isEmpty = true;
-                this.name = PieceTemplate.Name.Player;
+                this.name = PieceTemplate.Name.Empty;
                 this.frame = PieceInfo.GetInfo(name).frame;
                 this.text = "";
                 this.bgColor = Color.White;

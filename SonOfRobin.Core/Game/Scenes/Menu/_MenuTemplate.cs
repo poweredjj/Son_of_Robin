@@ -462,7 +462,7 @@ namespace SonOfRobin
 
                         foreach (PieceTemplate.Name pieceName in pieceCounterDict.Keys)
                         {
-                            if (pieceName == PieceTemplate.Name.Player || pieceName == PieceTemplate.Name.PlayerGhost) continue; // creating these pieces would cause many glitches
+                            if (PieceInfo.GetInfo(pieceName).type == typeof(Player)) continue; // creating these pieces would cause many glitches
 
                             var imageList = new List<Texture2D> { PieceInfo.GetTexture(pieceName) };
                             Dictionary<string, Object> createData = new Dictionary<string, Object> { { "position", world.Player.sprite.position }, { "templateName", pieceName } };
