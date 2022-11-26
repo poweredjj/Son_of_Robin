@@ -158,10 +158,10 @@ namespace SonOfRobin
         { get { return new Rectangle(this.ScrollbarPosX, 0, this.ScrollbarWidth, this.viewParams.Height); } }
 
         public int EntryWidth
-        { get { return Convert.ToInt32(EntryBgWidth * 0.8f); } }
+        { get { return (int)(EntryBgWidth * 0.8f); } }
 
         public int EntryHeight
-        { get { return Convert.ToInt32(SonOfRobinGame.VirtualHeight * 0.08f * Preferences.menuScale); } }
+        { get { return Math.Max((int)(SonOfRobinGame.VirtualHeight * 0.08f * Preferences.menuScale), 30); } }
 
         public int EntryMargin
         { get { return Convert.ToInt32(SonOfRobinGame.VirtualHeight * 0.025f * Preferences.menuScale); } }
