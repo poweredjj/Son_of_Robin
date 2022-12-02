@@ -6,60 +6,60 @@ using Microsoft.Xna.Framework;
 
 namespace SonOfRobin.Android
 {
-    [Activity(
-        Label = "SonOfRobin",
-        MainLauncher = true,
-        Icon = "@drawable/icon",
-        Theme = "@style/Theme.Splash",
-        AlwaysRetainTaskState = true,
-        LaunchMode = LaunchMode.SingleInstance,
-        ScreenOrientation = ScreenOrientation.SensorLandscape,
-        ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.Keyboard | ConfigChanges.KeyboardHidden
+	[Activity(
+		Label = "SonOfRobin",
+		MainLauncher = true,
+		Icon = "@drawable/icon",
+		Theme = "@style/Theme.Splash",
+		AlwaysRetainTaskState = true,
+		LaunchMode = LaunchMode.SingleInstance,
+		ScreenOrientation = ScreenOrientation.SensorLandscape,
+		ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.Keyboard | ConfigChanges.KeyboardHidden
 
-    )]
-    public class Activity1 : AndroidGameActivity
-    {
-        private SonOfRobinGame _game;
-        private View _view;
+	)]
+	public class Activity1 : AndroidGameActivity
+	{
+		private SonOfRobinGame _game;
+		private View _view;
 
-        protected override void OnCreate(Bundle bundle)
-        {
-            base.OnCreate(bundle);
+		protected override void OnCreate(Bundle bundle)
+		{
+			base.OnCreate(bundle);
 
-            Xamarin.Essentials.Platform.Init(this, bundle);
+			Xamarin.Essentials.Platform.Init(this, bundle);
 
-            if (Build.VERSION.SdkInt >= BuildVersionCodes.P)
-            { Window.Attributes.LayoutInDisplayCutoutMode = LayoutInDisplayCutoutMode.ShortEdges; }
+			if (Build.VERSION.SdkInt >= BuildVersionCodes.P)
+			{ Window.Attributes.LayoutInDisplayCutoutMode = LayoutInDisplayCutoutMode.ShortEdges; }
 
-            _game = new SonOfRobinGame();
+			_game = new SonOfRobinGame();
 
-            SonOfRobinGame.platform = Platform.Mobile;
+			SonOfRobinGame.platform = Platform.Mobile;
 			SonOfRobinGame.os = OS.Android;
-            SonOfRobinGame.fakeMobileMode = false;
+			SonOfRobinGame.fakeMobileMode = false;
 
-            _view = _game.Services.GetService(typeof(View)) as View;
+			_view = _game.Services.GetService(typeof(View)) as View;
 
-            SetContentView(_view);
+			SetContentView(_view);
 
-            _game.Run();
-        }
+			_game.Run();
+		}
 
-        protected void OnWindowFocusChanged()
-        {
-            base.OnWindowFocusChanged(true);
-            GoTrueFullScreen();
-        }
+		protected void OnWindowFocusChanged()
+		{
+			base.OnWindowFocusChanged(true);
+			GoTrueFullScreen();
+		}
 
 
-        protected override void OnResume()
-        {
-            base.OnResume();
-            GoTrueFullScreen();
-        }
+		protected override void OnResume()
+		{
+			base.OnResume();
+			GoTrueFullScreen();
+		}
 
-        private void GoTrueFullScreen()
-        {
-            _view.SystemUiVisibility = (StatusBarVisibility)(SystemUiFlags.LayoutStable | SystemUiFlags.LayoutHideNavigation | SystemUiFlags.LayoutFullscreen | SystemUiFlags.HideNavigation | SystemUiFlags.Fullscreen | SystemUiFlags.ImmersiveSticky);
-        }
-    }
+		private void GoTrueFullScreen()
+		{
+			_view.SystemUiVisibility = (StatusBarVisibility)(SystemUiFlags.LayoutStable | SystemUiFlags.LayoutHideNavigation | SystemUiFlags.LayoutFullscreen | SystemUiFlags.HideNavigation | SystemUiFlags.Fullscreen | SystemUiFlags.ImmersiveSticky);
+		}
+	}
 }
