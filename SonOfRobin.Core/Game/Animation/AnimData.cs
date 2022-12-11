@@ -882,14 +882,14 @@ namespace SonOfRobin
             AddFrameList(animPackage: PkgName.Miss, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "miss", layer: 2));
             AddFrameList(animPackage: PkgName.Zzz, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "zzz", layer: 2));
             AddFrameList(animPackage: PkgName.Heart, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "heart_16x16", layer: 2));
-            AddFrameList(animPackage: PkgName.Fog1, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "fog_1", layer: 2, scale: 1.4f));
-            AddFrameList(animPackage: PkgName.Fog2, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "fog_2", layer: 2, scale: 1.4f));
-            AddFrameList(animPackage: PkgName.Fog3, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "fog_3", layer: 2, scale: 1.4f));
-            AddFrameList(animPackage: PkgName.Fog4, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "fog_4", layer: 2, scale: 1.4f));
-            AddFrameList(animPackage: PkgName.Fog5, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "fog_1", layer: 2, scale: 1.8f));
-            AddFrameList(animPackage: PkgName.Fog6, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "fog_2", layer: 2, scale: 1.8f));
-            AddFrameList(animPackage: PkgName.Fog7, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "fog_3", layer: 2, scale: 1.8f));
-            AddFrameList(animPackage: PkgName.Fog8, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "fog_4", layer: 2, scale: 1.8f));
+            AddFrameList(animPackage: PkgName.Fog1, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "fog_1", layer: 2, scale: 1.4f, ignoreWhenCalculatingMaxSize: true));
+            AddFrameList(animPackage: PkgName.Fog2, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "fog_2", layer: 2, scale: 1.4f, ignoreWhenCalculatingMaxSize: true));
+            AddFrameList(animPackage: PkgName.Fog3, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "fog_3", layer: 2, scale: 1.4f, ignoreWhenCalculatingMaxSize: true));
+            AddFrameList(animPackage: PkgName.Fog4, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "fog_4", layer: 2, scale: 1.4f, ignoreWhenCalculatingMaxSize: true));
+            AddFrameList(animPackage: PkgName.Fog5, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "fog_1", layer: 2, scale: 1.8f, ignoreWhenCalculatingMaxSize: true));
+            AddFrameList(animPackage: PkgName.Fog6, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "fog_2", layer: 2, scale: 1.8f, ignoreWhenCalculatingMaxSize: true));
+            AddFrameList(animPackage: PkgName.Fog7, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "fog_3", layer: 2, scale: 1.8f, ignoreWhenCalculatingMaxSize: true));
+            AddFrameList(animPackage: PkgName.Fog8, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "fog_4", layer: 2, scale: 1.8f, ignoreWhenCalculatingMaxSize: true));
             AddFrameList(animPackage: PkgName.DebrisStar1, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "star", layer: 0, scale: 0.1f));
             AddFrameList(animPackage: PkgName.DebrisStar2, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "star", layer: 0, scale: 0.12f));
             AddFrameList(animPackage: PkgName.DebrisStar3, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "star", layer: 0, scale: 0.05f));
@@ -1045,22 +1045,22 @@ namespace SonOfRobin
             }
         }
 
-        public static List<AnimFrame> ConvertImageToFrameList(string atlasName, byte layer, ushort x = 0, ushort y = 0, ushort width = 0, ushort height = 0, bool crop = true, float scale = 1f, float depthPercent = 0.25f, int padding = 1)
+        public static List<AnimFrame> ConvertImageToFrameList(string atlasName, byte layer, ushort x = 0, ushort y = 0, ushort width = 0, ushort height = 0, bool crop = true, float scale = 1f, float depthPercent = 0.25f, int padding = 1, bool ignoreWhenCalculatingMaxSize = false)
         {
             List<AnimFrame> frameList = new List<AnimFrame>
             {
-                ConvertImageToFrame(atlasName: atlasName, layer: layer, x: x, y: y, width: width, height: height, crop: crop, duration: 0, scale: scale, depthPercent: depthPercent, padding: padding)
+                ConvertImageToFrame(atlasName: atlasName, layer: layer, x: x, y: y, width: width, height: height, crop: crop, duration: 0, scale: scale, depthPercent: depthPercent, padding: padding, ignoreWhenCalculatingMaxSize: ignoreWhenCalculatingMaxSize)
             };
             return frameList;
         }
 
-        public static AnimFrame ConvertImageToFrame(string atlasName, byte layer, ushort x = 0, ushort y = 0, ushort width = 0, ushort height = 0, byte duration = 0, bool crop = true, float scale = 1f, float depthPercent = 0.25f, int padding = 1)
+        public static AnimFrame ConvertImageToFrame(string atlasName, byte layer, ushort x = 0, ushort y = 0, ushort width = 0, ushort height = 0, byte duration = 0, bool crop = true, float scale = 1f, float depthPercent = 0.25f, int padding = 1, bool ignoreWhenCalculatingMaxSize = false)
         {
             Texture2D atlasTexture = SonOfRobinGame.textureByName[atlasName];
             if (width == 0) width = (ushort)atlasTexture.Width;
             if (height == 0) height = (ushort)atlasTexture.Height;
 
-            return new AnimFrame(atlasName: atlasName, atlasX: x, atlasY: y, width: width, height: height, layer: layer, duration: duration, crop: crop, scale: scale, depthPercent: depthPercent, padding: padding);
+            return new AnimFrame(atlasName: atlasName, atlasX: x, atlasY: y, width: width, height: height, layer: layer, duration: duration, crop: crop, scale: scale, depthPercent: depthPercent, padding: padding, ignoreWhenCalculatingMaxSize: ignoreWhenCalculatingMaxSize);
         }
 
         public static void AddRPGMakerPackageV1(PkgName packageName, string atlasName, byte setNoX, byte setNoY, byte animSize, bool crop = false, float scale = 1f)

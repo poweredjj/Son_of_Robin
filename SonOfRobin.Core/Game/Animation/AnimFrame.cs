@@ -26,8 +26,9 @@ namespace SonOfRobin
         public readonly byte layer;
         public readonly byte duration;
         public readonly float scale;
+        public readonly bool ignoreWhenCalculatingMaxSize;
 
-        public AnimFrame(string atlasName, int atlasX, int atlasY, int width, int height, byte layer, byte duration, bool crop = false, float scale = 1f, float depthPercent = 0.25f, int padding = 1)
+        public AnimFrame(string atlasName, int atlasX, int atlasY, int width, int height, byte layer, byte duration, bool crop = false, float scale = 1f, float depthPercent = 0.25f, int padding = 1, bool ignoreWhenCalculatingMaxSize = false)
         {
             this.id = $"{atlasName}_{atlasX},{atlasY}_{width}x{height}_{layer}_{duration}_{crop}_{scale}_{depthPercent}";
             AnimData.frameById[this.id] = this;
@@ -70,6 +71,7 @@ namespace SonOfRobin
             this.gfxOffset *= scale;
 
             this.duration = duration; // duration == 0 will stop the animation
+            this.ignoreWhenCalculatingMaxSize = ignoreWhenCalculatingMaxSize;
         }
 
         public static void DeleteUsedAtlases()

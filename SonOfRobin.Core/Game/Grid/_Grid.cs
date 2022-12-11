@@ -1184,7 +1184,9 @@ namespace SonOfRobin
                     int currentCellX = cell.cellNoX + offsetX;
                     int currentCellY = cell.cellNoY + offsetY;
                     if (currentCellX >= 0 && currentCellX < this.noOfCellsX && currentCellY >= 0 && currentCellY < this.noOfCellsY)
-                    { cellsWithinDistance.Add(this.cellGrid[currentCellX, currentCellY]); }
+                    {
+                        cellsWithinDistance.Add(this.cellGrid[currentCellX, currentCellY]);
+                    }
                 }
             }
 
@@ -1200,6 +1202,8 @@ namespace SonOfRobin
             {
                 foreach (AnimFrame frame in frameList.Value)
                 {
+                    if (frame.ignoreWhenCalculatingMaxSize) continue;
+
                     int scaledWidth = (int)(frame.gfxWidth * frame.scale);
                     int scaledHeight = (int)(frame.gfxHeight * frame.scale);
 
