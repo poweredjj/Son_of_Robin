@@ -18,9 +18,10 @@ namespace SonOfRobin
 
     public class SonOfRobinGame : Game
     {
-        public const float version = 9.6f;
-        public static readonly DateTime lastChanged = new DateTime(2022, 12, 11);
-        public static ContentManager ContentMgr { get; private set; }
+        public const float version = 9.7f;
+        public static readonly DateTime lastChanged = new DateTime(2023, 01, 02);
+        public static ContentManager PersistentContentMgr { get; private set; }
+        public static ContentManager DisposableContentMgr { get; private set; }
         public static Game Game { get; private set; }
 
         public static Platform platform;
@@ -96,7 +97,6 @@ namespace SonOfRobin
         public SonOfRobinGame()
         {
             GfxDevMgr = new GraphicsDeviceManager(this);
-            Content.RootDirectory = "Content";
         }
 
         protected override void Initialize()
@@ -109,7 +109,7 @@ namespace SonOfRobin
             WhiteRectangle = new Texture2D(base.GraphicsDevice, 1, 1);
             WhiteRectangle.SetData(new[] { Color.White });
 
-            SplashScreenTexture = ContentMgr.Load<Texture2D>("gfx/loading_gfx");
+            SplashScreenTexture = PersistentContentMgr.Load<Texture2D>("gfx/loading_gfx");
 
             if (!Directory.Exists(gameDataPath)) Directory.CreateDirectory(gameDataPath);
             if (!Directory.Exists(worldTemplatesPath)) Directory.CreateDirectory(worldTemplatesPath);
@@ -168,25 +168,26 @@ namespace SonOfRobin
         protected override void LoadContent()
         {
             SpriteBatch = new SpriteBatch(base.GraphicsDevice);
-            ContentMgr = Content;
+            PersistentContentMgr = new ContentManager(Services, "Content");
+            DisposableContentMgr = new ContentManager(Services, "Content");
 
-            FontPressStart2P5 = ContentMgr.Load<SpriteFont>("fonts/PressStart2P"); // needed for InitialLoader
+            FontPressStart2P5 = PersistentContentMgr.Load<SpriteFont>("fonts/PressStart2P"); // needed for InitialLoader
         }
 
         public static void LoadFonts()
         {
-            FontPixelMix5 = ContentMgr.Load<SpriteFont>("fonts/PixelMix");
-            FontFreeSansBold12 = ContentMgr.Load<SpriteFont>("fonts/FreeSansBold12");
-            FontFreeSansBold24 = ContentMgr.Load<SpriteFont>("fonts/FreeSansBold24");
-            FontTommy20 = ContentMgr.Load<SpriteFont>("fonts/Tommy20");
-            FontTommy40 = ContentMgr.Load<SpriteFont>("fonts/Tommy40");
+            FontPixelMix5 = PersistentContentMgr.Load<SpriteFont>("fonts/PixelMix");
+            FontFreeSansBold12 = PersistentContentMgr.Load<SpriteFont>("fonts/FreeSansBold12");
+            FontFreeSansBold24 = PersistentContentMgr.Load<SpriteFont>("fonts/FreeSansBold24");
+            FontTommy20 = PersistentContentMgr.Load<SpriteFont>("fonts/Tommy20");
+            FontTommy40 = PersistentContentMgr.Load<SpriteFont>("fonts/Tommy40");
         }
 
         public static void LoadEffects()
         {
-            EffectColorize = ContentMgr.Load<Effect>("effects/Colorize");
-            EffectBorder = ContentMgr.Load<Effect>("effects/Border");
-            EffectSketch = ContentMgr.Load<Effect>("effects/Sketch");
+            EffectColorize = PersistentContentMgr.Load<Effect>("effects/Colorize");
+            EffectBorder = PersistentContentMgr.Load<Effect>("effects/Border");
+            EffectSketch = PersistentContentMgr.Load<Effect>("effects/Sketch");
         }
 
         public static void CreateHintAndProgressWindows()

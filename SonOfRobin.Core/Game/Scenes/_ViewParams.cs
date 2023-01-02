@@ -5,34 +5,42 @@ namespace SonOfRobin
     public class ViewParams
     {
         private float rot;
+
         public float Rot
         { get { return rot; } set { rot = value; drawRot = value; } }
 
         private float posX;
+
         public float PosX
         { get { return posX; } set { posX = value; drawPosX = value; } }
 
         private float posY;
+
         public float PosY
         { get { return posY; } set { posY = value; drawPosY = value; } }
 
         private float scaleX;
+
         public float ScaleX
         { get { return scaleX; } set { scaleX = value; drawScaleX = value; } }
 
         private float scaleY;
+
         public float ScaleY
         { get { return scaleY; } set { scaleY = value; drawScaleY = value; } }
 
         private float opacity;
+
         public float Opacity
         { get { return opacity; } set { opacity = value; drawOpacity = value; } }
 
         private int width;
+
         public int Width
         { get { return width; } set { width = value; drawWidth = value; } }
 
         private int height;
+
         public int Height
         { get { return height; } set { height = value; drawHeight = value; } }
 
@@ -44,8 +52,10 @@ namespace SonOfRobin
         public float drawOpacity;
         public int drawWidth;
         public int drawHeight;
+
         public int CenterPosX
         { get { return (int)(((SonOfRobinGame.VirtualWidth * this.scaleX) - this.width) / 2); } }
+
         public int CenterPosY
         { get { return (int)(((SonOfRobinGame.VirtualHeight * this.scaleY) - this.height) / 2); } }
 
@@ -72,7 +82,7 @@ namespace SonOfRobin
             }
         }
 
-        public bool IsIntTheTopHalf
+        public bool IsInTheTopHalf
         {
             get
             {

@@ -324,17 +324,31 @@ namespace SonOfRobin
             //    world.HintEngine.ShowGeneralHint(type: HintEngine.Type.Lava, ignoreDelay: true);
             //}
 
+            //if (Keyboard.HasBeenPressed(Keys.F1))
+            //{
+            //    if (world == null) return;
+            //    world.SpectatorMode = !world.SpectatorMode;
+            //}
+
+            //if (Keyboard.HasBeenPressed(Keys.F2))
+            //{
+            //    if (world == null) return;
+
+            //    new TextWindow(text: "This is a test message.\nLong test message.\nEven longer test message.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, priority: 0, animSound: world.DialogueSound);
+            //}
+
             if (Keyboard.HasBeenPressed(Keys.F1))
             {
-                if (world == null) return;
-                world.SpectatorMode = !world.SpectatorMode;
+                Scene progressBarScene = GetTopSceneOfType(typeof(FullScreenProgressBar));
+                if (progressBarScene != null) progressBarScene.Remove();
+
+                new FullScreenProgressBar();
             }
 
             if (Keyboard.HasBeenPressed(Keys.F2))
             {
-                if (world == null) return;
-
-                new TextWindow(text: "This is a test message.\nLong test message.\nEven longer test message.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, priority: 0, animSound: world.DialogueSound);
+                Scene progressBarScene = GetTopSceneOfType(typeof(FullScreenProgressBar));
+                if (progressBarScene != null) progressBarScene.Remove();
             }
 
             if (Keyboard.HasBeenPressed(Keys.F3) || VirtButton.HasButtonBeenPressed(VButName.DebugClockAdvance))

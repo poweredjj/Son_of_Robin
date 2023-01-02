@@ -14,7 +14,7 @@ namespace SonOfRobin
 
             foreach (var kvp in soundFilenamesDict)
             {
-                soundsDict[kvp.Key] = SonOfRobinGame.ContentMgr.Load<SoundEffect>($"sound/{kvp.Value}");
+                soundsDict[kvp.Key] = SonOfRobinGame.PersistentContentMgr.Load<SoundEffect>($"sound/{kvp.Value}");
             }
         }
 
