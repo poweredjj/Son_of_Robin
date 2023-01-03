@@ -119,7 +119,7 @@ namespace SonOfRobin
         {
             foreach (Keys key in keyList)
             {
-                KeyTextures[key] = SonOfRobinGame.PersistentContentMgr.Load<Texture2D>($"gfx/Keyboard/{keyNames[key]}");
+                KeyTextures[key] = SonOfRobinGame.ContentMgr.Load<Texture2D>($"gfx/Keyboard/{keyNames[key]}");
             }
         }
 
