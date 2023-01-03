@@ -337,26 +337,39 @@ namespace SonOfRobin
             //    new TextWindow(text: "This is a test message.\nLong test message.\nEven longer test message.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, priority: 0, animSound: world.DialogueSound);
             //}
 
+            //if (Keyboard.HasBeenPressed(Keys.F3) || VirtButton.HasButtonBeenPressed(VButName.DebugClockAdvance))
+            //{
+            //    if (world == null) return;
+
+            //    world.islandClock.Advance(amount: 60 * 60 * 1, ignorePause: true);
+            //}
+
             if (Keyboard.HasBeenPressed(Keys.F1))
             {
                 Scene progressBarScene = GetTopSceneOfType(typeof(FullScreenProgressBar));
+
                 if (progressBarScene != null) progressBarScene.Remove();
 
                 FullScreenProgressBar fullScreenProgressBar = new FullScreenProgressBar();
-                fullScreenProgressBar.UpdateProgressBar(percentage: 1f, text: "Some tips about the game, like how to play and all that. Useful stuff mostly.");
+                fullScreenProgressBar.UpdateProgressBar(percentage: 0.1f, text: "Some tips about the game, like how to play and all that. Useful stuff mostly.");
             }
 
             if (Keyboard.HasBeenPressed(Keys.F2))
             {
                 Scene progressBarScene = GetTopSceneOfType(typeof(FullScreenProgressBar));
-                if (progressBarScene != null) progressBarScene.Remove();
+                if (progressBarScene != null)
+                {
+                    FullScreenProgressBar fullScreenProgressBar = (FullScreenProgressBar)progressBarScene;
+
+                    fullScreenProgressBar.UpdateProgressBar(percentage: Math.Min(fullScreenProgressBar.ProgressBarPercentage + 0.1f, 1f), text: "Some other tips about the game, like how to play and all that. Git gud.");
+                    fullScreenProgressBar.UpdateTexture("loading_4");
+                }
             }
 
-            if (Keyboard.HasBeenPressed(Keys.F3) || VirtButton.HasButtonBeenPressed(VButName.DebugClockAdvance))
+            if (Keyboard.HasBeenPressed(Keys.F3))
             {
-                if (world == null) return;
-
-                world.islandClock.Advance(amount: 60 * 60 * 1, ignorePause: true);
+                Scene progressBarScene = GetTopSceneOfType(typeof(FullScreenProgressBar));
+                if (progressBarScene != null) progressBarScene.Remove();
             }
 
             if (Keyboard.HasBeenPressed(Keys.F4))

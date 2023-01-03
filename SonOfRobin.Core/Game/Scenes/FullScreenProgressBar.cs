@@ -8,18 +8,20 @@ namespace SonOfRobin
     public class FullScreenProgressBar : Scene
     {
         private static ContentManager privateContentManager;
+        private static Color barAndTextColor = new Color(104, 195, 252);
 
-        private readonly Texture2D backgroundTexture;
-        private float progressBarPercentage; // 0-1 range
+        private Texture2D backgroundTexture;
+        public float ProgressBarPercentage { get; private set; }
+
         private string progressBarText;
 
         public FullScreenProgressBar(string textureName = null) : base(inputType: InputTypes.None, priority: 1, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty, blocksDrawsBelow: true)
         {
             if (textureName == null) textureName = AnimData.loadingGfxNames[SonOfRobinGame.random.Next(0, AnimData.loadingGfxNames.Count)];
 
-            this.backgroundTexture = privateContentManager.Load<Texture2D>($"gfx/Loading/{textureName}");
+            this.UpdateTexture(textureName);
 
-            this.progressBarPercentage = 0.01f;
+            this.ProgressBarPercentage = 0.01f;
             this.progressBarText = "";
         }
 
@@ -31,9 +33,16 @@ namespace SonOfRobin
         public void UpdateProgressBar(float percentage, string text)
         {
             if (percentage < 0 || percentage > 1) throw new ArgumentException($"Invalid percentage value - {percentage}.");
-            this.progressBarPercentage = percentage;
+            this.ProgressBarPercentage = percentage;
 
             if (text != null) this.progressBarText = text;
+        }
+
+        public void UpdateTexture(string textureName)
+        {
+            privateContentManager.Unload(); // will unload every texture in privateContentManager
+
+            this.backgroundTexture = privateContentManager.Load<Texture2D>($"gfx/Loading/{textureName}");
         }
 
         public override void Remove()
@@ -55,7 +64,7 @@ namespace SonOfRobin
 
             Rectangle imageRect = new Rectangle(x: 0, y: 0, width: SonOfRobinGame.VirtualWidth, height: SonOfRobinGame.VirtualHeight - progressRectHeight);
             Rectangle progressRect = new Rectangle(x: 0, y: imageRect.Height, width: SonOfRobinGame.VirtualWidth, height: progressRectHeight);
-            progressRect.Offset(0, -progressRectHeight * 0.2f);
+            progressRect.Offset(0, -progressRectHeight * 0.25f); // should be slightly above the "correct" position
 
             Rectangle offScreenImageRect = imageRect; // imageRect wider than the screen
             offScreenImageRect.Inflate(offScreenImageRect.Width, 0);
@@ -95,12 +104,10 @@ namespace SonOfRobin
                 width: progressRect.Width, height: progressRect.Height / 2);
 
             progressBarRect.Inflate(-progressBarRect.Width * 0.05f, -progressBarRect.Height * 0.42f);
-            progressBarRect.Width = (int)(progressBarRect.Width * this.progressBarPercentage);
+            progressBarRect.Width = (int)(progressBarRect.Width * this.ProgressBarPercentage);
 
             // Helpers.DrawRectangleOutline(rect: textRect, color: Color.Blue, borderWidth: 1); // for testing
             // Helpers.DrawRectangleOutline(rect: progressBarRect, color: Color.Cyan, borderWidth: 1); // for testing
-
-            Color barAndTextColor = Color.LightSeaGreen;
 
             Helpers.DrawTextInsideRect(font: SonOfRobinGame.FontTommy40, text: this.progressBarText, rectangle: textRect, color: barAndTextColor, alignX: Helpers.AlignX.Left, alignY: Helpers.AlignY.Bottom);
 
