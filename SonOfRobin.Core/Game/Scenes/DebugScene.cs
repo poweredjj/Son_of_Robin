@@ -342,7 +342,8 @@ namespace SonOfRobin
                 Scene progressBarScene = GetTopSceneOfType(typeof(FullScreenProgressBar));
                 if (progressBarScene != null) progressBarScene.Remove();
 
-                new FullScreenProgressBar();
+                FullScreenProgressBar fullScreenProgressBar = new FullScreenProgressBar();
+                fullScreenProgressBar.UpdateProgressBar(percentage: 1f, text: "Some tips about the game, like how to play and all that. Useful stuff mostly.");
             }
 
             if (Keyboard.HasBeenPressed(Keys.F2))
