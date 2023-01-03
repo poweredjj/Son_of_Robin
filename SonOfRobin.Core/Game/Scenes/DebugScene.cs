@@ -346,33 +346,16 @@ namespace SonOfRobin
 
             if (Keyboard.HasBeenPressed(Keys.F1))
             {
-                Scene progressBarScene = GetTopSceneOfType(typeof(FullScreenProgressBar));
-
-                if (progressBarScene != null) progressBarScene.Remove();
-
-                FullScreenProgressBar fullScreenProgressBar = new FullScreenProgressBar();
-                fullScreenProgressBar.UpdateText("Some tips about the game, like how to play and all that. Useful stuff mostly.");
+                SonOfRobinGame.FullScreenProgressBar.TurnOn(text: "Some tips about the game, like how to play and all that. Useful stuff mostly.");
             }
 
             if (Keyboard.HasBeenPressed(Keys.F2))
             {
-                Scene progressBarScene = GetTopSceneOfType(typeof(FullScreenProgressBar));
-                if (progressBarScene != null)
-                {
-                    FullScreenProgressBar fullScreenProgressBar = (FullScreenProgressBar)progressBarScene;
-
-                    fullScreenProgressBar.UpdateText("Some other tips about the game, like how to play and all that. Git gud.");
-                    fullScreenProgressBar.AdvancePercentageALittle();
-
-                    fullScreenProgressBar.UpdateTexture("loading_4");
-                }
+                SonOfRobinGame.FullScreenProgressBar.TurnOn(text: "Some other tips about the game, like how to play and all that. Git gud.");
+                SonOfRobinGame.FullScreenProgressBar.AdvancePercentageALittle();
             }
 
-            if (Keyboard.HasBeenPressed(Keys.F3))
-            {
-                Scene progressBarScene = GetTopSceneOfType(typeof(FullScreenProgressBar));
-                if (progressBarScene != null) progressBarScene.Remove();
-            }
+            if (Keyboard.HasBeenPressed(Keys.F3)) SonOfRobinGame.FullScreenProgressBar.TurnOff();
 
             if (Keyboard.HasBeenPressed(Keys.F4))
             {

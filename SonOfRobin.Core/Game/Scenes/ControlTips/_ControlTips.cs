@@ -40,9 +40,9 @@ namespace SonOfRobin
             this.SwitchToLayout(tipsLayout: TipsLayout.Empty);
         }
 
+
         public static ControlTips GetTopTips()
         {
-            ControlTips tips;
             var tipsScene = GetTopSceneOfType(typeof(ControlTips));
             if (tipsScene == null)
             {
@@ -50,8 +50,7 @@ namespace SonOfRobin
                 return null;
             }
 
-            tips = (ControlTips)tipsScene;
-            return tips;
+            return (ControlTips)tipsScene;
         }
 
         public static void TipHighlightOnNextFrame(string tipName)

@@ -899,11 +899,8 @@ namespace SonOfRobin
 
         public static World GetTopWorld()
         {
-            World world;
             var worldScene = GetTopSceneOfType(typeof(World));
-            if (worldScene == null) return null;
-            world = (World)worldScene;
-            return world;
+            return worldScene == null ? null : (World)worldScene;
         }
 
         private void StateMachinesProcessCameraView()

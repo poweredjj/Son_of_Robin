@@ -10,24 +10,67 @@ namespace SonOfRobin
         private static ContentManager privateContentManager;
         private static Color barAndTextColor = new Color(104, 195, 252);
 
-        private Texture2D backgroundTexture;
+        private bool isActive;
+
         public float ProgressBarPercentage { get; private set; }
-
         private string progressBarText;
+        private Texture2D texture;
+        private string textureName;
 
-        public FullScreenProgressBar(string textureName = null) : base(inputType: InputTypes.None, priority: 1, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty, blocksDrawsBelow: true)
+        public FullScreenProgressBar() : base(inputType: InputTypes.None, priority: 0, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty)
         {
-            if (textureName == null) textureName = AnimData.loadingGfxNames[SonOfRobinGame.random.Next(0, AnimData.loadingGfxNames.Count)];
+            this.isActive = false;
 
-            this.UpdateTexture(textureName);
-
-            this.ProgressBarPercentage = 0.01f;
+            this.textureName = "";
+            this.ProgressBarPercentage = 0.005f;
             this.progressBarText = "";
         }
 
         public static void AssignContentManager(ContentManager contentManager)
         {
             privateContentManager = contentManager;
+        }
+
+        public void TurnOn(string textureName = null, float percentage = -1f, string text = null)
+        {
+            this.blocksDrawsBelow = true;
+
+            if (!this.isActive && textureName == null) textureName = AnimData.loadingGfxNames[SonOfRobinGame.random.Next(0, AnimData.loadingGfxNames.Count)];
+            if (textureName != null) this.UpdateTexture(textureName);
+
+            if (percentage != -1f)
+            {
+                if (percentage < 0 || percentage > 1) throw new ArgumentException($"Invalid percentage value - {percentage}.");
+                this.ProgressBarPercentage = percentage;
+            }
+
+            if (text != null) this.progressBarText = text;
+
+            this.isActive = true;
+        }
+
+        public void TurnOff()
+        {
+            if (!this.isActive) return;
+
+            this.blocksDrawsBelow = false;
+
+            this.textureName = "";
+            this.texture.Dispose();
+            this.texture = null;
+            privateContentManager.Unload(); // will unload every texture in privateContentManager
+
+            this.isActive = false;
+        }
+
+        public void UpdateTexture(string textureName)
+        {
+            if (this.textureName == textureName) return;
+
+            privateContentManager.Unload(); // will unload every texture in privateContentManager
+
+            this.texture = privateContentManager.Load<Texture2D>($"gfx/Loading/{textureName}");
+            this.textureName = textureName;
         }
 
         public void AdvancePercentageALittle()
@@ -37,36 +80,21 @@ namespace SonOfRobin
             this.ProgressBarPercentage += percentageLeft * multiplier;
         }
 
-        public void UpdatePercentage(float percentage)
-        {
-            if (percentage < 0 || percentage > 1) throw new ArgumentException($"Invalid percentage value - {percentage}.");
-            this.ProgressBarPercentage = percentage;
-        }
-
-        public void UpdateText(string text)
-        {
-            this.progressBarText = text;
-        }
-
-        public void UpdateTexture(string textureName)
-        {
-            privateContentManager.Unload(); // will unload every texture in privateContentManager
-
-            this.backgroundTexture = privateContentManager.Load<Texture2D>($"gfx/Loading/{textureName}");
-        }
-
         public override void Remove()
         {
+            this.TurnOff();
             base.Remove();
-
-            privateContentManager.Unload(); // will unload every texture in privateContentManager
         }
 
         public override void Update(GameTime gameTime)
-        { }
+        {
+            if (!this.isActive) return;
+        }
 
         public override void Draw()
         {
+            if (!this.isActive) return;
+
             Color bgColor = new Color(252, 252, 246);
 
             SonOfRobinGame.GfxDev.Clear(bgColor);
@@ -80,7 +108,7 @@ namespace SonOfRobin
             Rectangle offScreenImageRect = imageRect; // imageRect wider than the screen
             offScreenImageRect.Inflate(offScreenImageRect.Width, 0);
 
-            Rectangle realImageRect = Helpers.DrawTextureInsideRect(texture: this.backgroundTexture, rectangle: offScreenImageRect, color: Color.White * 0.6f);
+            Rectangle realImageRect = Helpers.DrawTextureInsideRect(texture: this.texture, rectangle: offScreenImageRect, color: Color.White * 0.6f);
             Rectangle bottomGradRect = realImageRect;
 
             int bottomGradRectHeight = (int)(bottomGradRect.Height * 0.95);
