@@ -351,7 +351,7 @@ namespace SonOfRobin
                 if (progressBarScene != null) progressBarScene.Remove();
 
                 FullScreenProgressBar fullScreenProgressBar = new FullScreenProgressBar();
-                fullScreenProgressBar.UpdateProgressBar(percentage: 0.1f, text: "Some tips about the game, like how to play and all that. Useful stuff mostly.");
+                fullScreenProgressBar.UpdateText("Some tips about the game, like how to play and all that. Useful stuff mostly.");
             }
 
             if (Keyboard.HasBeenPressed(Keys.F2))
@@ -361,7 +361,9 @@ namespace SonOfRobin
                 {
                     FullScreenProgressBar fullScreenProgressBar = (FullScreenProgressBar)progressBarScene;
 
-                    fullScreenProgressBar.UpdateProgressBar(percentage: Math.Min(fullScreenProgressBar.ProgressBarPercentage + 0.1f, 1f), text: "Some other tips about the game, like how to play and all that. Git gud.");
+                    fullScreenProgressBar.UpdateText("Some other tips about the game, like how to play and all that. Git gud.");
+                    fullScreenProgressBar.AdvancePercentageALittle();
+
                     fullScreenProgressBar.UpdateTexture("loading_4");
                 }
             }

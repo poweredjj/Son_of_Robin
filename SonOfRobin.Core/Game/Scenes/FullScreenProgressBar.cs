@@ -30,12 +30,22 @@ namespace SonOfRobin
             privateContentManager = contentManager;
         }
 
-        public void UpdateProgressBar(float percentage, string text)
+        public void AdvancePercentageALittle()
+        {
+            float percentageLeft = 1f - this.ProgressBarPercentage;
+            float multiplier = percentageLeft > 0.5f ? 0.02f : 0.04f;
+            this.ProgressBarPercentage += percentageLeft * multiplier;
+        }
+
+        public void UpdatePercentage(float percentage)
         {
             if (percentage < 0 || percentage > 1) throw new ArgumentException($"Invalid percentage value - {percentage}.");
             this.ProgressBarPercentage = percentage;
+        }
 
-            if (text != null) this.progressBarText = text;
+        public void UpdateText(string text)
+        {
+            this.progressBarText = text;
         }
 
         public void UpdateTexture(string textureName)
