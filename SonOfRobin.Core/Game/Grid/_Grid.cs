@@ -13,7 +13,7 @@ namespace SonOfRobin
         public enum Stage
         { LoadTerrain, GenerateTerrain, CheckExtData, SetExtDataSea, SetExtDataBeach, SetExtDataBiomes, SetExtDataBiomesConstrains, SetExtDataFinish, FillAllowedNames, ProcessTextures, LoadTextures, StartGame }
 
-        private static readonly int allStagesCount = ((Stage[])Enum.GetValues(typeof(Stage))).Length;
+        public static readonly int allStagesCount = ((Stage[])Enum.GetValues(typeof(Stage))).Length;
 
         private static readonly Dictionary<Stage, string> namesForStages = new Dictionary<Stage, string> {
             { Stage.LoadTerrain, "loading terrain" },
@@ -731,13 +731,14 @@ namespace SonOfRobin
             TimeSpan timeLeft = CalculateTimeLeft(startTime: this.stageStartTime, completeAmount: this.allCells.Count - this.cellsToProcessOnStart.Count, totalAmount: this.allCells.Count);
             string timeLeftString = timeLeft == TimeSpan.FromSeconds(0) ? "" : TimeSpanToString(timeLeft + TimeSpan.FromSeconds(1));
 
-            string seedText = String.Format("{0:0000}", this.world.seed);
-            string message = $"preparing island\nstep {(int)this.currentStage + 1}/{allStagesCount}\nseed {seedText}\n{this.world.width} x {this.world.height}\n{namesForStages[this.currentStage]} {timeLeftString}";
+            string detailedMessage = $"{namesForStages[this.currentStage]} {timeLeftString}...";
 
-            SonOfRobinGame.ProgressBar.TurnOn(
-                            curVal: this.allCells.Count - this.cellsToProcessOnStart.Count,
-                            maxVal: this.allCells.Count,
-                            text: message);
+            float percentage = FullScreenProgressBar.CalculatePercentage(currentLocalStep: this.allCells.Count - this.cellsToProcessOnStart.Count, totalLocalSteps: this.allCells.Count, currentGlobalStep: (int)this.currentStage + 1, totalGlobalSteps: SonOfRobinGame.enteringIslandGlobalSteps);
+
+            string currentTip = "Some tips about the game, like how to play and all that. Useful stuff mostly."; // TODO replace with proper tips system
+            if (Preferences.progressBarShowDetails) currentTip += $"\n{detailedMessage}";
+
+            SonOfRobinGame.FullScreenProgressBar.TurnOn(percentage: percentage, text: currentTip);
         }
 
         private static TimeSpan CalculateTimeLeft(DateTime startTime, int completeAmount, int totalAmount)

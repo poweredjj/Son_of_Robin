@@ -421,7 +421,7 @@ namespace SonOfRobin
 
             if (Keyboard.HasBeenPressed(Keys.F9))
             {
-                SonOfRobinGame.ProgressBar.TurnOn(newPosX: 0, newPosY: 0, centerHoriz: true, centerVert: true, addTransition: true, entryList: new List<InfoWindow.TextEntry> {
+                SonOfRobinGame.SmallProgressBar.TurnOn(newPosX: 0, newPosY: 0, centerHoriz: true, centerVert: true, addTransition: true, entryList: new List<InfoWindow.TextEntry> {
                         new InfoWindow.TextEntry(text: "| First line.", color: Color.White, imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.CoalDeposit) }),
                         new InfoWindow.TextEntry(text: "| Second line.", color: Color.Green, scale: 1.5f, imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.CoalDeposit) }, justify: InfoWindow.TextEntry.Justify.Center),
                         new InfoWindow.TextEntry(color: Color.White, progressCurrentVal: 2, progressMaxVal: 5),
@@ -432,7 +432,7 @@ namespace SonOfRobin
 
             if (Keyboard.HasBeenPressed(Keys.F10))
             {
-                SonOfRobinGame.ProgressBar.TurnOn(newPosX: 0, newPosY: 0,
+                SonOfRobinGame.SmallProgressBar.TurnOn(newPosX: 0, newPosY: 0,
                     entryList: new List<InfoWindow.TextEntry> {
                         new InfoWindow.TextEntry(text: "Second line.", color: Color.Green),
                         new InfoWindow.TextEntry(text: "And this is third line.", color: Color.LightBlue),
@@ -440,7 +440,7 @@ namespace SonOfRobin
                 });
             }
 
-            if (Keyboard.HasBeenPressed(Keys.F11)) SonOfRobinGame.ProgressBar.TurnOff();
+            if (Keyboard.HasBeenPressed(Keys.F11)) SonOfRobinGame.SmallProgressBar.TurnOff();
 
             if (Keyboard.HasBeenPressed(Keys.F12)) RemoveTopScene();
 

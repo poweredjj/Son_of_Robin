@@ -370,7 +370,6 @@ namespace SonOfRobin
             {
                 SonOfRobinGame.Game.IsFixedTimeStep = Preferences.FrameSkip;
 
-                SonOfRobinGame.ProgressBar.TurnOff(addTransition: true);
                 SonOfRobinGame.FullScreenProgressBar.TurnOff();
                 bool menuFound = GetTopSceneOfType(typeof(Menu)) != null;
 
@@ -397,7 +396,7 @@ namespace SonOfRobin
                 {
                     string seedText = String.Format("{0:0000}", this.seed);
 
-                    SonOfRobinGame.ProgressBar.TurnOn(
+                    SonOfRobinGame.SmallProgressBar.TurnOn(
                     curVal: initialPiecesCreationFramesTotal - this.initialPiecesCreationFramesLeft,
                     maxVal: initialPiecesCreationFramesTotal,
                     text: $"preparing island\nseed {seedText}\n{this.width} x {this.height}\npopulating...");
@@ -413,7 +412,6 @@ namespace SonOfRobin
                 }
             }
 
-            SonOfRobinGame.ProgressBar.TurnOff(addTransition: true);
             SonOfRobinGame.FullScreenProgressBar.TurnOff();
             this.touchLayout = TouchLayout.WorldMain;
             this.tipsLayout = ControlTips.TipsLayout.WorldMain;

@@ -310,7 +310,8 @@ namespace SonOfRobin
             }
 
             SonOfRobinGame.HintWindow.TurnOff();
-            SonOfRobinGame.ProgressBar.TurnOff();
+            SonOfRobinGame.SmallProgressBar.TurnOff();
+            SonOfRobinGame.FullScreenProgressBar.TurnOff();
             base.Remove();
             // MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Menu {this.name} - executing closing task '{this.closingTask}'.");
 
@@ -447,7 +448,8 @@ namespace SonOfRobin
 
         public override void Update(GameTime gameTime)
         {
-            SonOfRobinGame.ProgressBar.TurnOff();
+            SonOfRobinGame.SmallProgressBar.TurnOff();
+            SonOfRobinGame.FullScreenProgressBar.TurnOff();
 
             if (this.activeIndex == -1) this.NextItem(); // searching for first non-separator menu item
             this.CurrentScrollPosition = this.TargetScrollPosition;

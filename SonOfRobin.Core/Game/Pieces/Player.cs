@@ -861,7 +861,7 @@ namespace SonOfRobin
             if (this.sleepMode == SleepMode.WaitIndefinitely) sleepModeText = "Waiting indefinitely...";
 
             this.sleepEngine.Execute(player: this);
-            if (this.world.CurrentUpdate % 10 == 0) SonOfRobinGame.ProgressBar.TurnOn(curVal: (int)(this.maxFatigue - this.Fatigue), maxVal: (int)this.maxFatigue, text: sleepModeText);
+            if (this.world.CurrentUpdate % 10 == 0) SonOfRobinGame.SmallProgressBar.TurnOn(curVal: (int)(this.maxFatigue - this.Fatigue), maxVal: (int)this.maxFatigue, text: sleepModeText);
         }
 
         public void GoToSleep(SleepEngine sleepEngine, Vector2 zzzPos, List<Buff> wakeUpBuffs)
@@ -902,7 +902,7 @@ namespace SonOfRobin
                 return;
             }
 
-            SonOfRobinGame.ProgressBar.TurnOff();
+            SonOfRobinGame.SmallProgressBar.TurnOff();
 
             foreach (Buff buff in this.buffList)
             { this.buffEngine.AddBuff(buff: buff, world: this.world); }

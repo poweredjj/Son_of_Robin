@@ -87,11 +87,11 @@ namespace SonOfRobin
 
             ViewParams sceneViewParams;
 
-            if (this.currentLayout == TipsLayout.QuitLoading || this.currentLayout == TipsLayout.WorldSleep)
+            if (this.currentLayout == TipsLayout.WorldSleep)
             {
                 // in this case, tips should be aligned with progress bar
-                sceneViewParams = SonOfRobinGame.ProgressBar.viewParams;
-                SonOfRobinGame.ProgressBar.transManager.Update();
+                sceneViewParams = SonOfRobinGame.SmallProgressBar.viewParams;
+                SonOfRobinGame.SmallProgressBar.transManager.Update();
             }
             else
             {

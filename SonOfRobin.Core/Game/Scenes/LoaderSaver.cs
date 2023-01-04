@@ -198,7 +198,6 @@ namespace SonOfRobin
             if (Preferences.FrameSkip) SonOfRobinGame.Game.IsFixedTimeStep = true;
             if (this.saveMode)
             {
-                SonOfRobinGame.ProgressBar.TurnOff(addTransition: false);
                 SonOfRobinGame.FullScreenProgressBar.TurnOff();
             }
             base.Remove();
@@ -217,7 +216,6 @@ namespace SonOfRobin
             if (InputMapper.IsPressed(InputMapper.Action.GlobalCancelReturnSkip))
             {
                 if (this.saveMode) DeleteAllSaveTemps();
-                // SonOfRobinGame.ProgressBar.TurnOff(addTransition: true);
                 SonOfRobinGame.FullScreenProgressBar.TurnOff();
                 this.Remove();
 
@@ -234,16 +232,15 @@ namespace SonOfRobin
         private void UpdateProgressBar()
         {
             int currentGlobalStep = 0;
-            int totalGlobalSteps = this.saveMode ? 1 : 5; // TODO change 5 to a correct value
+            int totalGlobalSteps = this.saveMode ? 1 : SonOfRobinGame.enteringIslandGlobalSteps;
 
             float percentage = FullScreenProgressBar.CalculatePercentage(currentLocalStep: this.processedSteps, totalLocalSteps: this.allSteps, currentGlobalStep: currentGlobalStep, totalGlobalSteps: totalGlobalSteps);
 
-            string currentTip = "Some tips about the game, like how to play and all that. Useful stuff mostly.";
+            string currentTip = "Some tips about the game, like how to play and all that. Useful stuff mostly."; // TODO replace with proper tips system
             if (Preferences.progressBarShowDetails) currentTip += $"\n{this.modeText} game - {this.nextStepName}...";
 
             SonOfRobinGame.FullScreenProgressBar.TurnOn(percentage: percentage, text: currentTip);
 
-            // SonOfRobinGame.ProgressBar.TurnOn(curVal: this.processedSteps, maxVal: this.allSteps, text: $"{this.modeText} game - {this.nextStepName}...");
             // new TextWindow(text: $"{this.modeText} game - {this.nextStepName}...", textColor: Color.White, bgColor: Color.DarkBlue, useTransition: false, animate: false, blocksUpdatesBelow: true); // testing
         }
 

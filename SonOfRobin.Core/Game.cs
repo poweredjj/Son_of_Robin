@@ -20,6 +20,8 @@ namespace SonOfRobin
     {
         public const float version = 9.7f;
         public static readonly DateTime lastChanged = new DateTime(2023, 01, 04);
+
+        public static readonly int enteringIslandGlobalSteps = 3 + Grid.allStagesCount;
         public static ContentManager ContentMgr { get; private set; }
         public static Game Game { get; private set; }
 
@@ -33,7 +35,7 @@ namespace SonOfRobin
         public static Effect EffectBorder { get; private set; }
         public static Effect EffectSketch { get; private set; }
         public static InfoWindow HintWindow { get; private set; }
-        public static InfoWindow ProgressBar { get; private set; }
+        public static InfoWindow SmallProgressBar { get; private set; }
         public static FullScreenProgressBar FullScreenProgressBar { get; private set; }
         public static ControlTips ControlTips { get; private set; }
         public static TouchOverlay touchOverlay;
@@ -204,7 +206,7 @@ namespace SonOfRobin
         public static void CreateHintAndProgressWindows()
         {
             HintWindow = new InfoWindow(bgColor: Color.RoyalBlue, bgOpacity: 0.85f);
-            ProgressBar = new InfoWindow(bgColor: Color.SeaGreen, bgOpacity: 0.85f);
+            SmallProgressBar = new InfoWindow(bgColor: Color.SeaGreen, bgOpacity: 0.85f);
             FullScreenProgressBar = new FullScreenProgressBar();
         }
 

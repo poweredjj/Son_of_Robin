@@ -1202,7 +1202,7 @@ namespace SonOfRobin
 
                             string currentPath = pathsToDelete[0];
 
-                            SonOfRobinGame.ProgressBar.TurnOn(curVal: pathCount - pathsToDelete.Count + 1, maxVal: pathCount, text: $"Deleting templates...\n{Path.GetFileName(currentPath)}", addTransition: false, turnOffInput: true);
+                            SonOfRobinGame.SmallProgressBar.TurnOn(curVal: pathCount - pathsToDelete.Count + 1, maxVal: pathCount, text: $"Deleting templates...\n{Path.GetFileName(currentPath)}", addTransition: false, turnOffInput: true);
 
                             if (!firstRun)
                             {
@@ -1214,7 +1214,7 @@ namespace SonOfRobin
                             if (pathsToDelete.Count == 0)
                             {
                                 if (Preferences.FrameSkip) SonOfRobinGame.Game.IsFixedTimeStep = true;
-                                SonOfRobinGame.ProgressBar.TurnOff();
+                                SonOfRobinGame.SmallProgressBar.TurnOff();
                                 return;
                             }
 
