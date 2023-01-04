@@ -733,10 +733,9 @@ namespace SonOfRobin
 
             float percentage = FullScreenProgressBar.CalculatePercentage(currentLocalStep: this.allCells.Count - this.cellsToProcessOnStart.Count, totalLocalSteps: this.allCells.Count, currentGlobalStep: 1 + (int)this.currentStage, totalGlobalSteps: SonOfRobinGame.enteringIslandGlobalSteps);
 
-            string currentTip = "Some tips about the game, like how to play and all that. Useful stuff mostly."; // TODO replace with proper tips system
             string detailedInfo = Preferences.progressBarShowDetails ? $"{namesForStages[this.currentStage]} {timeLeftString}..." : null;
 
-            SonOfRobinGame.FullScreenProgressBar.TurnOn(percentage: percentage, text: currentTip, optionalText: detailedInfo);
+            SonOfRobinGame.FullScreenProgressBar.TurnOn(percentage: percentage, text: LoadingTips.GetTip(), optionalText: detailedInfo);
         }
 
         private static TimeSpan CalculateTimeLeft(DateTime startTime, int completeAmount, int totalAmount)

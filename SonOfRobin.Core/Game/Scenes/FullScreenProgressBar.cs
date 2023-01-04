@@ -165,9 +165,11 @@ namespace SonOfRobin
             {
                 Rectangle optionalTextRect = textRect;
                 textRect.Offset(0, -textRect.Height); // main text should be moved up
-                textRect.Offset(0, textRect.Height / 4); // main text should be moved up
+                optionalTextRect.Offset(0, textRect.Height / 3);
 
                 Helpers.DrawTextInsideRect(font: SonOfRobinGame.FontFreeSansBold24, text: this.optionalText, rectangle: optionalTextRect, color: barAndTextColor, alignX: Helpers.AlignX.Center, alignY: Helpers.AlignY.Bottom);
+
+                // Helpers.DrawRectangleOutline(rect: optionalTextRect, color: Color.Cyan, borderWidth: 1); // for testing
             }
 
             Rectangle progressBarRect = new Rectangle(

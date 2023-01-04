@@ -193,7 +193,7 @@ namespace SonOfRobin
                     {
                         this.Disable(type: type, delay: 0);
                         ShowMessageDuringPause(new List<HintMessage> {
-                            new HintMessage(text: $"My | {text} is getting worn out.", blockInput: true, imageList: new List<Texture2D> { texture }),
+                            new HintMessage(text: $"My | {text} is getting damaged. It won't last forever.", blockInput: true, imageList: new List<Texture2D> { texture }),
                             new HintMessage(text: "I should watch my tools durability.", blockInput: true),
                         });
                         break;

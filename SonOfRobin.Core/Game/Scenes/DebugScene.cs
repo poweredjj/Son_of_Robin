@@ -346,16 +346,18 @@ namespace SonOfRobin
 
             if (Keyboard.HasBeenPressed(Keys.F1))
             {
-                SonOfRobinGame.FullScreenProgressBar.TurnOn(percentage: 0.005f, text: "Some tips about the game, like how to play and all that. Useful stuff mostly.");
+                float percentage = Math.Min(SonOfRobinGame.FullScreenProgressBar.ProgressBarPercentage + 0.05f, 1f);
+                if (percentage == 1) percentage = 0.005f;
+                SonOfRobinGame.FullScreenProgressBar.TurnOn(percentage: percentage, text: LoadingTips.GetTip());
             }
 
             if (Keyboard.HasBeenPressed(Keys.F2))
             {
                 float percentage = Math.Min(SonOfRobinGame.FullScreenProgressBar.ProgressBarPercentage + 0.05f, 1f);
-                SonOfRobinGame.FullScreenProgressBar.TurnOn(percentage: percentage, text: "Some other tips about the game, like how to play and all that. Git gud.", optionalText: "loading game...");
+                SonOfRobinGame.FullScreenProgressBar.TurnOn(percentage: percentage, text: LoadingTips.GetTip(), optionalText: "loading game...");
             }
 
-            if (Keyboard.HasBeenPressed(Keys.F3)) SonOfRobinGame.FullScreenProgressBar.TurnOff();
+            if (Keyboard.HasBeenPressed(Keys.F2)) SonOfRobinGame.FullScreenProgressBar.TurnOff();
 
             if (Keyboard.HasBeenPressed(Keys.F4))
             {

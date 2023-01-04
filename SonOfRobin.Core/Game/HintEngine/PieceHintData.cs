@@ -75,13 +75,13 @@ namespace SonOfRobin
                 new PieceHint(
                     type: PieceHint.Type.ClamInventory,
                     alsoDisables: new List<PieceHint.Type> { PieceHint.Type.ClamField },
-                    message: "This | is no ordinary sand!\nIt can be used to make glass.",
-                    imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.GlassSand)},
-                    playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.GlassSand}),
+                    message: $"I cannot eat this | { PieceInfo.GetInfo(PieceTemplate.Name.Clam).readableName } raw.",
+                    imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.Clam)},
+                    playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.Clam}),
 
                 new PieceHint(
                     type: PieceHint.Type.ClamField,
-                    message: "This | clam should be edible after cooking.",
+                    message: $"This | { PieceInfo.GetInfo(PieceTemplate.Name.Clam).readableName } should be edible after cooking.",
                     imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.Clam)},
                     fieldPiecesNearby: new List<PieceTemplate.Name> {PieceTemplate.Name.Clam}),
 
