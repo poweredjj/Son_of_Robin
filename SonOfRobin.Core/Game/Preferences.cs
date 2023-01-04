@@ -98,6 +98,7 @@ namespace SonOfRobin
         private static bool vSync = true;
         public static bool loadWholeMap = false;
         private static bool frameSkip = true;
+        public static bool progressBarShowDetails = false;
         public static bool showDemoWorld = true;
         private static bool pointToWalk = true;
 
@@ -286,7 +287,6 @@ namespace SonOfRobin
 
         // debug variables should not be saved to preferences file
         public static bool debugShowRects = false;
-
         public static bool debugShowCellData = false;
         public static bool debugShowPieceData = false;
         public static bool debugShowAnimalTargets = false;
@@ -563,6 +563,7 @@ namespace SonOfRobin
             prefsData["soundMenuOn"] = Sound.menuOn;
             prefsData["textWindowAnimOn"] = Sound.textWindowAnimOn;
             prefsData["vSync"] = vSync;
+            prefsData["progressBarShowDetails"] = progressBarShowDetails;
 
             FileReaderWriter.Save(path: SonOfRobinGame.prefsPath, savedObj: prefsData);
 
@@ -630,6 +631,7 @@ namespace SonOfRobin
                     Sound.menuOn = (bool)prefsData["soundMenuOn"];
                     Sound.textWindowAnimOn = (bool)prefsData["textWindowAnimOn"];
                     vSync = (bool)prefsData["vSync"];
+                    progressBarShowDetails = (bool)prefsData["progressBarShowDetails"];
 
                     prefsLoaded = true;
                 }

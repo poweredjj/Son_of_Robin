@@ -10,20 +10,15 @@ namespace SonOfRobin
         private static ContentManager privateContentManager;
         private static Color barAndTextColor = new Color(104, 195, 252);
 
-        private bool isActive;
-
         public float ProgressBarPercentage { get; private set; }
+        private bool isActive;
         private string progressBarText;
-        private Texture2D texture;
         private string textureName;
+        private Texture2D texture;
 
         public FullScreenProgressBar() : base(inputType: InputTypes.None, priority: 0, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty)
         {
-            this.isActive = false;
-
-            this.textureName = "";
-            this.ProgressBarPercentage = 0.005f;
-            this.progressBarText = "";
+            this.TurnOff(force: true);
         }
 
         public static void AssignContentManager(ContentManager contentManager)
@@ -49,21 +44,26 @@ namespace SonOfRobin
             this.isActive = true;
         }
 
-        public void TurnOff()
+        public void TurnOff(bool force = false)
         {
-            if (!this.isActive) return;
+            if (!this.isActive && !force) return;
 
             this.blocksDrawsBelow = false;
 
             this.textureName = "";
-            this.texture.Dispose();
-            this.texture = null;
-            privateContentManager.Unload(); // will unload every texture in privateContentManager
+            if (this.texture != null)
+            {
+                this.texture.Dispose();
+                this.texture = null;
+                privateContentManager.Unload(); // will unload every texture in privateContentManager
+            }
+            this.ProgressBarPercentage = 0.005f;
+            this.progressBarText = "";
 
             this.isActive = false;
         }
 
-        public void UpdateTexture(string textureName)
+        private void UpdateTexture(string textureName)
         {
             if (this.textureName == textureName) return;
 
@@ -78,6 +78,24 @@ namespace SonOfRobin
             float percentageLeft = 1f - this.ProgressBarPercentage;
             float multiplier = percentageLeft > 0.5f ? 0.02f : 0.04f;
             this.ProgressBarPercentage += percentageLeft * multiplier;
+        }
+
+        public static float CalculatePercentage(int currentLocalStep, int totalLocalSteps, int currentGlobalStep, int totalGlobalSteps)
+        {
+            if (currentLocalStep < 0) throw new ArgumentException($"CurrentStep cannot be negative - {currentLocalStep}.");
+            if (totalLocalSteps < 0) throw new ArgumentException($"TotalLocalSteps cannot be negative - {totalLocalSteps}.");
+            if (totalLocalSteps < currentLocalStep) throw new ArgumentException($"TotalLocalSteps {totalLocalSteps} cannot be less than currentLocalStep {currentLocalStep}.");
+
+            if (currentGlobalStep < 0) throw new ArgumentException($"CurrentGlobalStep cannot be negative - {currentGlobalStep}.");
+            if (totalGlobalSteps < 0) throw new ArgumentException($"TotalGlobalSteps cannot be negative - {totalGlobalSteps}.");
+            if (totalGlobalSteps < currentGlobalStep) throw new ArgumentException($"TotalGlobalSteps {totalGlobalSteps} cannot be less than currentGlobalStep {currentGlobalStep}.");
+
+            float globalPercentage = (float)currentGlobalStep / (float)totalGlobalSteps;
+            float localPercentage = (float)currentLocalStep / (float)totalLocalSteps;
+
+            float totalPercentage = globalPercentage + (localPercentage / (float)totalGlobalSteps);
+
+            return totalPercentage;
         }
 
         public override void Remove()
@@ -134,7 +152,9 @@ namespace SonOfRobin
 
             Rectangle textRect = new Rectangle(
                 x: progressRect.X, y: progressRect.Y + (int)(progressRect.Height * 0.32f),
-                width: progressRect.Width, height: (int)(progressRect.Height * 0.22f));
+                width: progressRect.Width, height: (int)(progressRect.Height * 0.25f));
+
+            if (SonOfRobinGame.platform == Platform.Desktop) textRect.Inflate(0, -textRect.Height * 0.22f);
 
             textRect.Inflate(-textRect.Width * 0.05f, 0);
 
