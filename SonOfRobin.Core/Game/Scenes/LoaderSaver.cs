@@ -237,9 +237,9 @@ namespace SonOfRobin
             float percentage = FullScreenProgressBar.CalculatePercentage(currentLocalStep: this.processedSteps, totalLocalSteps: this.allSteps, currentGlobalStep: currentGlobalStep, totalGlobalSteps: totalGlobalSteps);
 
             string currentTip = "Some tips about the game, like how to play and all that. Useful stuff mostly."; // TODO replace with proper tips system
-            if (Preferences.progressBarShowDetails) currentTip += $"\n{this.modeText} game - {this.nextStepName}...";
+            string detailedInfo = Preferences.progressBarShowDetails || this.saveMode ? $"{this.modeText} game - {this.nextStepName}..." : null;
 
-            SonOfRobinGame.FullScreenProgressBar.TurnOn(percentage: percentage, text: currentTip);
+            SonOfRobinGame.FullScreenProgressBar.TurnOn(percentage: percentage, text: currentTip, optionalText: detailedInfo);
         }
 
         private static void DeleteAllSaveTemps()

@@ -13,6 +13,7 @@ namespace SonOfRobin
         public float ProgressBarPercentage { get; private set; }
         private bool isActive;
         private string progressBarText;
+        private string optionalText;
         private string textureName;
         private Texture2D texture;
 
@@ -26,7 +27,7 @@ namespace SonOfRobin
             privateContentManager = contentManager;
         }
 
-        public void TurnOn(string textureName = null, float percentage = -1f, string text = null)
+        public void TurnOn(string text, string optionalText = null, string textureName = null, float percentage = -1f)
         {
             this.blocksDrawsBelow = true;
 
@@ -39,7 +40,11 @@ namespace SonOfRobin
                 this.ProgressBarPercentage = percentage;
             }
 
-            if (text != null) this.progressBarText = text;
+            this.progressBarText = text;
+            if (text.Contains("\n")) throw new ArgumentException($"ProgressBarText cannot contain newline - '{this.progressBarText}'.");
+
+            this.optionalText = optionalText;
+            if (this.optionalText != null && this.optionalText.Contains("\n")) throw new ArgumentException($"OptionalText cannot contain newline - '{this.optionalText}'.");
 
             this.isActive = true;
         }
@@ -59,6 +64,7 @@ namespace SonOfRobin
             }
             this.ProgressBarPercentage = 0.005f;
             this.progressBarText = "";
+            this.optionalText = null;
 
             this.isActive = false;
         }
@@ -71,13 +77,6 @@ namespace SonOfRobin
 
             this.texture = privateContentManager.Load<Texture2D>($"gfx/Loading/{textureName}");
             this.textureName = textureName;
-        }
-
-        public void AdvancePercentageALittle()
-        {
-            float percentageLeft = 1f - this.ProgressBarPercentage;
-            float multiplier = percentageLeft > 0.5f ? 0.02f : 0.04f;
-            this.ProgressBarPercentage += percentageLeft * multiplier;
         }
 
         public static float CalculatePercentage(int currentLocalStep, int totalLocalSteps, int currentGlobalStep, int totalGlobalSteps)
@@ -125,7 +124,7 @@ namespace SonOfRobin
 
             Rectangle imageRect = new Rectangle(x: 0, y: 0, width: SonOfRobinGame.VirtualWidth, height: SonOfRobinGame.VirtualHeight - progressRectHeight);
             Rectangle progressRect = new Rectangle(x: 0, y: imageRect.Height, width: SonOfRobinGame.VirtualWidth, height: progressRectHeight);
-            progressRect.Offset(0, -progressRectHeight * 0.35f); // should be slightly above the "correct" position
+            progressRect.Offset(0, -progressRectHeight * 0.1f); // should be slightly above the "correct" position
 
             Rectangle offScreenImageRect = imageRect; // imageRect wider than the screen
             offScreenImageRect.Inflate(offScreenImageRect.Width, 0);
@@ -159,14 +158,17 @@ namespace SonOfRobin
                 width: progressRect.Width, height: (int)(progressRect.Height * 0.25f));
 
             if (SonOfRobinGame.platform == Platform.Desktop) textRect.Inflate(0, -textRect.Height * 0.22f);
-            if (this.progressBarText.Contains("\n"))
-            {
-                int expansion = textRect.Height;
-                textRect.Height += expansion;
-                textRect.Y -= expansion;
-            }
 
             textRect.Inflate(-textRect.Width * 0.05f, 0);
+
+            if (this.optionalText != null)
+            {
+                Rectangle optionalTextRect = textRect;
+                textRect.Offset(0, -textRect.Height); // main text should be moved up
+                textRect.Offset(0, textRect.Height / 4); // main text should be moved up
+
+                Helpers.DrawTextInsideRect(font: SonOfRobinGame.FontFreeSansBold24, text: this.optionalText, rectangle: optionalTextRect, color: barAndTextColor, alignX: Helpers.AlignX.Center, alignY: Helpers.AlignY.Bottom);
+            }
 
             Rectangle progressBarRect = new Rectangle(
                 x: progressRect.X, y: progressRect.Y + (progressRect.Height / 2),
@@ -175,12 +177,12 @@ namespace SonOfRobin
             progressBarRect.Inflate(-progressBarRect.Width * 0.05f, -progressBarRect.Height * 0.43f);
             progressBarRect.Width = (int)(progressBarRect.Width * this.ProgressBarPercentage);
 
-            // Helpers.DrawRectangleOutline(rect: textRect, color: Color.Blue, borderWidth: 1); // for testing
-            // Helpers.DrawRectangleOutline(rect: progressBarRect, color: Color.Cyan, borderWidth: 1); // for testing
-
-            Helpers.DrawTextInsideRect(font: SonOfRobinGame.FontFreeSansBold24, text: this.progressBarText, rectangle: textRect, color: barAndTextColor, alignX: Helpers.AlignX.Left, alignY: Helpers.AlignY.Bottom);
+            Helpers.DrawTextInsideRect(font: SonOfRobinGame.FontFreeSansBold24, text: this.progressBarText, rectangle: textRect, color: barAndTextColor, alignX: Helpers.AlignX.Center, alignY: Helpers.AlignY.Bottom);
 
             SonOfRobinGame.SpriteBatch.Draw(texture: SonOfRobinGame.WhiteRectangle, destinationRectangle: progressBarRect, color: barAndTextColor);
+
+            // Helpers.DrawRectangleOutline(rect: textRect, color: Color.Blue, borderWidth: 1); // for testing
+            // Helpers.DrawRectangleOutline(rect: progressBarRect, color: Color.Cyan, borderWidth: 1); // for testing
         }
     }
 }
