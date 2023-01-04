@@ -240,8 +240,6 @@ namespace SonOfRobin
             if (Preferences.progressBarShowDetails) currentTip += $"\n{this.modeText} game - {this.nextStepName}...";
 
             SonOfRobinGame.FullScreenProgressBar.TurnOn(percentage: percentage, text: currentTip);
-
-            // new TextWindow(text: $"{this.modeText} game - {this.nextStepName}...", textColor: Color.White, bgColor: Color.DarkBlue, useTransition: false, animate: false, blocksUpdatesBelow: true); // testing
         }
 
         private static void DeleteAllSaveTemps()

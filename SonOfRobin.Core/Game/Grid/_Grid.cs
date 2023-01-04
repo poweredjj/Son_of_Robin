@@ -733,7 +733,7 @@ namespace SonOfRobin
 
             string detailedMessage = $"{namesForStages[this.currentStage]} {timeLeftString}...";
 
-            float percentage = FullScreenProgressBar.CalculatePercentage(currentLocalStep: this.allCells.Count - this.cellsToProcessOnStart.Count, totalLocalSteps: this.allCells.Count, currentGlobalStep: (int)this.currentStage + 1, totalGlobalSteps: SonOfRobinGame.enteringIslandGlobalSteps);
+            float percentage = FullScreenProgressBar.CalculatePercentage(currentLocalStep: this.allCells.Count - this.cellsToProcessOnStart.Count, totalLocalSteps: this.allCells.Count, currentGlobalStep: 1 + (int)this.currentStage, totalGlobalSteps: SonOfRobinGame.enteringIslandGlobalSteps);
 
             string currentTip = "Some tips about the game, like how to play and all that. Useful stuff mostly."; // TODO replace with proper tips system
             if (Preferences.progressBarShowDetails) currentTip += $"\n{detailedMessage}";

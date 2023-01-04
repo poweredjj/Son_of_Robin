@@ -394,12 +394,12 @@ namespace SonOfRobin
                 }
                 else
                 {
-                    string seedText = String.Format("{0:0000}", this.seed);
+                    float percentage = FullScreenProgressBar.CalculatePercentage(currentLocalStep: initialPiecesCreationFramesTotal - this.initialPiecesCreationFramesLeft, totalLocalSteps: initialPiecesCreationFramesTotal, currentGlobalStep: 1 + Grid.allStagesCount, totalGlobalSteps: SonOfRobinGame.enteringIslandGlobalSteps);
 
-                    SonOfRobinGame.SmallProgressBar.TurnOn(
-                    curVal: initialPiecesCreationFramesTotal - this.initialPiecesCreationFramesLeft,
-                    maxVal: initialPiecesCreationFramesTotal,
-                    text: $"preparing island\nseed {seedText}\n{this.width} x {this.height}\npopulating...");
+                    string currentTip = "Some tips about the game, like how to play and all that. Useful stuff mostly."; // TODO replace with proper tips system
+                    if (Preferences.progressBarShowDetails) currentTip += "\npopulating...";
+
+                    SonOfRobinGame.FullScreenProgressBar.TurnOn(percentage: percentage, text: currentTip);
 
                     if (this.initialPiecesCreationFramesLeft != initialPiecesCreationFramesTotal) // first iteration should only display progress bar
                     {
