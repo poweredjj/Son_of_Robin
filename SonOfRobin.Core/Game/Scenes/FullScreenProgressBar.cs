@@ -90,12 +90,16 @@ namespace SonOfRobin
             if (totalGlobalSteps < 0) throw new ArgumentException($"TotalGlobalSteps cannot be negative - {totalGlobalSteps}.");
             if (totalGlobalSteps < currentGlobalStep) throw new ArgumentException($"TotalGlobalSteps {totalGlobalSteps} cannot be less than currentGlobalStep {currentGlobalStep}.");
 
-            float globalPercentage = (float)currentGlobalStep / (float)totalGlobalSteps;
-            float localPercentage = (float)currentLocalStep / (float)totalLocalSteps;
+            float globalPercentage = 0;
+            float localPercentage = 0;
 
-            float totalPercentage = globalPercentage + (localPercentage / (float)totalGlobalSteps);
+            try { globalPercentage = (float)currentGlobalStep / (float)totalGlobalSteps; } catch (DivideByZeroException) { }
+            try { localPercentage = (float)currentLocalStep / (float)totalLocalSteps; } catch (DivideByZeroException) { }
 
-            return totalPercentage;
+            float localPercentageDivided = localPercentage;
+            try { localPercentageDivided = localPercentage / (float)totalGlobalSteps; } catch (DivideByZeroException) { }
+
+            return globalPercentage + localPercentageDivided;
         }
 
         public override void Remove()
@@ -155,6 +159,12 @@ namespace SonOfRobin
                 width: progressRect.Width, height: (int)(progressRect.Height * 0.25f));
 
             if (SonOfRobinGame.platform == Platform.Desktop) textRect.Inflate(0, -textRect.Height * 0.22f);
+            if (this.progressBarText.Contains("\n"))
+            {
+                int expansion = textRect.Height;
+                textRect.Height += expansion;
+                textRect.Y -= expansion;
+            }
 
             textRect.Inflate(-textRect.Width * 0.05f, 0);
 

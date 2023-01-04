@@ -371,6 +371,7 @@ namespace SonOfRobin
                 SonOfRobinGame.Game.IsFixedTimeStep = Preferences.FrameSkip;
 
                 SonOfRobinGame.ProgressBar.TurnOff(addTransition: true);
+                SonOfRobinGame.FullScreenProgressBar.TurnOff();
                 bool menuFound = GetTopSceneOfType(typeof(Menu)) != null;
 
                 this.Remove();
@@ -413,6 +414,7 @@ namespace SonOfRobin
             }
 
             SonOfRobinGame.ProgressBar.TurnOff(addTransition: true);
+            SonOfRobinGame.FullScreenProgressBar.TurnOff();
             this.touchLayout = TouchLayout.WorldMain;
             this.tipsLayout = ControlTips.TipsLayout.WorldMain;
             this.WorldCreationInProgress = false;
@@ -563,8 +565,6 @@ namespace SonOfRobin
             // finalizing
 
             this.saveGameData = null;
-
-            MessageLog.AddMessage(msgType: MsgType.User, message: "Game has been loaded.", color: Color.Cyan);
         }
 
         private void CreateAndPlacePlayer()

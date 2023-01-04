@@ -59,7 +59,7 @@ namespace SonOfRobin
         private readonly int allSteps;
 
         private int PiecesFilesCount
-        { get { return Directory.GetFiles(this.savePath).Where(file => file.Contains("pieces_")).ToList().Count; } }
+        { get { return Directory.GetFiles(this.savePath).Where(path => path.Contains("pieces_")).ToList().Count; } }
 
         private static List<string> SaveTempPaths
         {
@@ -196,7 +196,11 @@ namespace SonOfRobin
         public override void Remove()
         {
             if (Preferences.FrameSkip) SonOfRobinGame.Game.IsFixedTimeStep = true;
-            if (this.saveMode) SonOfRobinGame.ProgressBar.TurnOff(addTransition: false);
+            if (this.saveMode)
+            {
+                SonOfRobinGame.ProgressBar.TurnOff(addTransition: false);
+                SonOfRobinGame.FullScreenProgressBar.TurnOff();
+            }
             base.Remove();
             if (this.saveMode && this.quitGameAfterSaving) SonOfRobinGame.quitGame = true;
             Menu.RebuildAllMenus();
@@ -213,7 +217,8 @@ namespace SonOfRobin
             if (InputMapper.IsPressed(InputMapper.Action.GlobalCancelReturnSkip))
             {
                 if (this.saveMode) DeleteAllSaveTemps();
-                SonOfRobinGame.ProgressBar.TurnOff(addTransition: true);
+                // SonOfRobinGame.ProgressBar.TurnOff(addTransition: true);
+                SonOfRobinGame.FullScreenProgressBar.TurnOff();
                 this.Remove();
 
                 new TextWindow(text: $"{this.modeText} has been cancelled.", textColor: Color.White, bgColor: Color.DarkRed, useTransition: true, animate: true, closingTask: this.TextWindowTask);
@@ -223,12 +228,22 @@ namespace SonOfRobin
             if (this.saveMode) this.ProcessNextSavingStep();
             else this.ProcessNextLoadingStep();
 
-            if (!this.ErrorOccured) this.UpdateProgressBar();
+            if (!this.ErrorOccured && !this.processingComplete) this.UpdateProgressBar();
         }
 
         private void UpdateProgressBar()
         {
-            SonOfRobinGame.ProgressBar.TurnOn(curVal: this.processedSteps, maxVal: this.allSteps, text: $"{this.modeText} game - {this.nextStepName}...");
+            int currentGlobalStep = 0;
+            int totalGlobalSteps = this.saveMode ? 1 : 5; // TODO change 5 to a correct value
+
+            float percentage = FullScreenProgressBar.CalculatePercentage(currentLocalStep: this.processedSteps, totalLocalSteps: this.allSteps, currentGlobalStep: currentGlobalStep, totalGlobalSteps: totalGlobalSteps);
+
+            string currentTip = "Some tips about the game, like how to play and all that. Useful stuff mostly.";
+            if (Preferences.progressBarShowDetails) currentTip += $"\n{this.modeText} game - {this.nextStepName}...";
+
+            SonOfRobinGame.FullScreenProgressBar.TurnOn(percentage: percentage, text: currentTip);
+
+            // SonOfRobinGame.ProgressBar.TurnOn(curVal: this.processedSteps, maxVal: this.allSteps, text: $"{this.modeText} game - {this.nextStepName}...");
             // new TextWindow(text: $"{this.modeText} game - {this.nextStepName}...", textColor: Color.White, bgColor: Color.DarkBlue, useTransition: false, animate: false, blocksUpdatesBelow: true); // testing
         }
 
@@ -241,8 +256,6 @@ namespace SonOfRobin
         private void ProcessNextSavingStep()
         {
             this.processedSteps++;
-
-            this.world.lastSaved = DateTime.Now; // To avoid another autosaving prompt after cancelling saving; will be updated after saving.
 
             // preparing save directory
             if (!this.directoryChecked)
@@ -409,7 +422,7 @@ namespace SonOfRobin
                 new TextWindow(text: "Game has been saved.", textColor: Color.White, bgColor: Color.DarkGreen, useTransition: false, animate: false);
                 Sound.QuickPlay(name: SoundData.Name.Ding2, volume: 1f);
             }
-            MessageLog.AddMessage(msgType: MsgType.User, message: $"Game saved in slot {saveSlotName} (time elapsed {this.TimeElapsed}s).", color: Color.LightBlue);
+            MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Game saved in slot {saveSlotName} (time elapsed {this.TimeElapsed}s).", color: Color.LightBlue);
 
             this.world.lastSaved = DateTime.Now;
             this.processingComplete = true;
@@ -552,7 +565,7 @@ namespace SonOfRobin
             this.world = new World(width: width, height: height, seed: seed, saveGameData: this.SaveGameData, playerName: playerName, resDivider: resDivider);
             this.MoveToTop();
 
-            MessageLog.AddMessage(msgType: MsgType.User, message: $"Game has been loaded from slot {saveSlotName} (time elapsed {this.TimeElapsed}s).", color: Color.LightBlue);
+            MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Game has been loaded from slot {saveSlotName} (time elapsed {this.TimeElapsed}s).", color: Color.LightBlue);
 
             // deleting other non-demo worlds
             var existingWorlds = GetAllScenesOfType(typeof(World));

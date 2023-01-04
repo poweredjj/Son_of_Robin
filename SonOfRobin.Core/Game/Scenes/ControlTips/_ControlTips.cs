@@ -78,7 +78,8 @@ namespace SonOfRobin
                 this.currentLayout == TipsLayout.WorldBuild ||
                 this.currentLayout == TipsLayout.Map ||
                 this.currentLayout == TipsLayout.InventorySelect ||
-                this.currentLayout == TipsLayout.InventoryDrag;
+                this.currentLayout == TipsLayout.InventoryDrag ||
+                this.currentLayout == TipsLayout.QuitLoading;
 
             // To take original scene transition into account:
             // 1. Scene transformations have to be applied manually (because normally it would be invoked after all scenes Update()).
