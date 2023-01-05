@@ -26,7 +26,7 @@ namespace SonOfRobin
 
                 new PieceHint(
                     type: PieceHint.Type.ShellIsNotUseful,
-                    message: "This | shell is pretty, but I don't think it will be useful.",
+                    message: $"This | { PieceInfo.GetInfo(PieceTemplate.Name.Shell).readableName } is pretty, but I don't think it will be useful.",
                     imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.Shell) },
                     playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.Shell}),
 
@@ -87,7 +87,7 @@ namespace SonOfRobin
 
                 new PieceHint(
                     type: PieceHint.Type.Acorn,
-                    message: "After cooking, this | acorn should be edible.",
+                    message: $"After cooking, this | { PieceInfo.GetInfo(PieceTemplate.Name.Acorn).readableName } should be edible.",
                     imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.Acorn)},
                     playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.Acorn}),
 
@@ -101,13 +101,13 @@ namespace SonOfRobin
                 new PieceHint(
                     type: PieceHint.Type.LeatherPositive,
                     messageList: new List<HintMessage> {
-                    new HintMessage(text: $"I can use this | leather to make a | map.\nBut I need a | { PieceInfo.GetInfo(PieceTemplate.Name.WorkshopLeatherBasic).readableName } to make it.", imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.Leather), PieceInfo.GetTexture(PieceTemplate.Name.Map), PieceInfo.GetTexture(PieceTemplate.Name.WorkshopLeatherBasic)}, boxType: HintMessage.BoxType.Dialogue, blockInput: true),
-                    new HintMessage(text: "If I had more | leather,\nI could make a | backpack or a | belt.", imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.Leather), PieceInfo.GetTexture(PieceTemplate.Name.BackpackSmall), PieceInfo.GetTexture(PieceTemplate.Name.BeltSmall)}, boxType: HintMessage.BoxType.Dialogue, blockInput: true)},
+                    new HintMessage(text: $"I can use this | { PieceInfo.GetInfo(PieceTemplate.Name.Leather).readableName } to make a | map.\nBut I need a | { PieceInfo.GetInfo(PieceTemplate.Name.WorkshopLeatherBasic).readableName } to make it.", imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.Leather), PieceInfo.GetTexture(PieceTemplate.Name.Map), PieceInfo.GetTexture(PieceTemplate.Name.WorkshopLeatherBasic)}, boxType: HintMessage.BoxType.Dialogue, blockInput: true),
+                    new HintMessage(text: $"If I had more | { PieceInfo.GetInfo(PieceTemplate.Name.Leather).readableName },\nI could make a | backpack or a | belt.", imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.Leather), PieceInfo.GetTexture(PieceTemplate.Name.BackpackSmall), PieceInfo.GetTexture(PieceTemplate.Name.BeltSmall)}, boxType: HintMessage.BoxType.Dialogue, blockInput: true)},
                     playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.Leather}),
 
                 new PieceHint(
                     type: PieceHint.Type.MapPositive,
-                    message: "I should equip this map | to use it.",
+                    message: $"I should equip this { PieceInfo.GetInfo(PieceTemplate.Name.Map).readableName } | to use it.",
                     imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.Map) },
                     playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> { PieceTemplate.Name.Map },
                     tutorialsToActivate: new List<Tutorials.Type> { Tutorials.Type.Equip }),
@@ -142,7 +142,7 @@ namespace SonOfRobin
                     playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.AxeWood, PieceTemplate.Name.AxeStone, PieceTemplate.Name.AxeIron, PieceTemplate.Name.AxeCrystal}),
 
                 new PieceHint(
-                    type: PieceHint.Type.AnimalBat,
+                    type: PieceHint.Type.AnimalSpear,
                     fieldPiecesNearby: new List<PieceTemplate.Name> {PieceTemplate.Name.Frog, PieceTemplate.Name.Rabbit, PieceTemplate.Name.Fox},
                     message: $"My | {PieceInfo.GetInfo(PieceTemplate.Name.SpearWood).readableName} should be great for animal hunting.",
                     imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.SpearWood) },
@@ -165,7 +165,7 @@ namespace SonOfRobin
                 new PieceHint(
                     type: PieceHint.Type.DigSitePositive,  fieldPiecesNearby: new List<PieceTemplate.Name> { PieceTemplate.Name.ForestDigSite },
                     message: "I could use my | shovel to dig | here.",
-                    imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.ShovelStone), PieceInfo.GetTexture(PieceTemplate.Name.BeachDigSite) },
+                    imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.ShovelStone), PieceInfo.GetTexture(PieceTemplate.Name.ForestDigSite) },
                     alsoDisables: new List<PieceHint.Type> { PieceHint.Type.DigSiteNegative },
                     playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.ShovelStone, PieceTemplate.Name.ShovelIron, PieceTemplate.Name.ShovelCrystal }),
 
@@ -211,7 +211,7 @@ namespace SonOfRobin
 
                 new PieceHint(
                     type: PieceHint.Type.CrystalNegative, fieldPiecesNearby: new List<PieceTemplate.Name> { PieceTemplate.Name.CrystalDepositBig },
-                    message: $"Wow, this | crystal looks very strong.\nI think that a low level pickaxe would be too weak to break it.\nMaybe an | {PieceInfo.GetInfo(PieceTemplate.Name.PickaxeIron).readableName} could work, though?",
+                    message: $"Wow, this | crystal looks very strong.\nI think that a pickaxe made of wood or stone would be too weak to break it.\nMaybe an | {PieceInfo.GetInfo(PieceTemplate.Name.PickaxeIron).readableName} could work, though?",
                     imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.CrystalDepositBig), PieceInfo.GetTexture(PieceTemplate.Name.PickaxeIron) },
                     playerDoesNotOwnAnyOfThesePieces: new List<PieceTemplate.Name> { PieceTemplate.Name.PickaxeIron }),
 
@@ -264,9 +264,16 @@ namespace SonOfRobin
                     tutorialsToActivate: new List<Tutorials.Type> {Tutorials.Type.ShakeFruit}),
 
                 new PieceHint(
+                    type: PieceHint.Type.HotPlate, fieldPiecesNearby: new List<PieceTemplate.Name> {PieceTemplate.Name.HotPlate},
+                    message: "| I can cook simple meals now!",
+                    imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.HotPlate) },
+                    tutorialsToActivate: new List<Tutorials.Type> {Tutorials.Type.Cook}),
+
+                new PieceHint(
                     type: PieceHint.Type.Cooker, fieldPiecesNearby: new List<PieceTemplate.Name> {PieceTemplate.Name.CookingPot},
-                    message: "| I can cook now!",
+                    message: "| Now I can cook like a pro!",
                     imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.CookingPot)},
+                    alsoDisables: new List<PieceHint.Type> {PieceHint.Type.HotPlate },
                     tutorialsToActivate: new List<Tutorials.Type> {Tutorials.Type.Cook}),
 
                 new PieceHint(

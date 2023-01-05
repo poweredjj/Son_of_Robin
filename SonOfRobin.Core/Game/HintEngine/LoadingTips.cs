@@ -12,8 +12,7 @@ namespace SonOfRobin
 
         private static readonly List<string> allTips = new List<string>
         {
-            "Opened chests are always empty.",
-            "Some food must be cooked before eating.",
+            "Some food types must be cooked before eating.",
             "Crates washed ashore contain valuable items.",
             "Herbs can be used to make potions and during cooking.",
             "Poisoned meal can be used to poison an animal.",
@@ -23,8 +22,19 @@ namespace SonOfRobin
             "You can make a bigger belt to carry more tools.",
             "Dig sites contain different items, depending on the area.",
             "Tools will eventually break down from use.",
-
-            // TODO add more tips
+            "You can use a regular axe to mine stones, but it will be less effective than a pickaxe.",
+            "Wood and stone pickaxes are too weak to mine crystals.",
+            "You need a shovel to dig up treasure.",
+            "To get herbs, cut down plants with a scythe.",
+            "You can find mineral deposits in the mountains.",
+            "You need protective boots, to walk safely on swamp areas.",
+            "Fruits can be eaten or planted.",
+            "A campfire scares off animals at night.",
+            "Workshops are needed to make most things.",
+            "Sometimes you will use less ingredients when crafting - it is called 'smart crafting'.",
+            "If you run out of tools, you can acquire wood by using your bare hands.",
+            "At noon, you will get tired much faster.",
+            "You can get rid of poison by eating food.",
         };
 
         private static List<string> tipsToDisplay = new List<string>();

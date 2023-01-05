@@ -177,7 +177,7 @@ namespace SonOfRobin
                     {
                         this.Disable(type: type, delay: 0);
                         ShowMessageDuringPause(new List<HintMessage> {
-                            new HintMessage(text: $"I don't have a map.\nIf I had some | leather and an | {PieceInfo.GetInfo(PieceTemplate.Name.WorkshopBasic).readableName} - I could make one.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Leather), PieceInfo.GetTexture(PieceTemplate.Name.WorkshopBasic)}, blockInput: true) });
+                            new HintMessage(text: $"I don't have a map.\nIf I had some | leather and a | {PieceInfo.GetInfo(PieceTemplate.Name.WorkshopLeatherBasic).readableName} - I could make one.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Leather), PieceInfo.GetTexture(PieceTemplate.Name.WorkshopLeatherBasic) }, blockInput: true) });
                         break;
                     }
 
