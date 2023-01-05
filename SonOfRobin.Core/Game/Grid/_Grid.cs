@@ -176,16 +176,17 @@ namespace SonOfRobin
             return grid;
         }
 
-        public bool CopyBoardFromTemplate()
+        public Grid GetMatchingTemplateFromSceneStack()
         {
             var existingWorlds = Scene.GetAllScenesOfType(typeof(World));
-            if (existingWorlds.Count == 0) return false;
+            if (!existingWorlds.Any()) return null;
 
             World newWorld = this.world;
 
             foreach (Scene scene in existingWorlds)
             {
                 World oldWorld = (World)scene;
+
                 if (!oldWorld.WorldCreationInProgress &&
                     oldWorld.Grid != null &&
                     !oldWorld.Grid.CreationInProgress &&
@@ -193,33 +194,40 @@ namespace SonOfRobin
                     newWorld.width == oldWorld.width &&
                     newWorld.height == oldWorld.height)
                 {
-                    Grid templateGrid = oldWorld.Grid;
-
-                    foreach (var kvp in templateGrid.terrainByName)
-                    {
-                        Terrain.Name terrainName = kvp.Key;
-                        Terrain terrain = kvp.Value;
-                        this.terrainByName[terrainName] = terrain;
-                        this.terrainByName[terrainName].AttachToNewGrid(this);
-                    }
-
-                    this.extBoardProps = templateGrid.extBoardProps;
-                    this.extBoardProps.AttachToNewGrid(this);
-
-                    for (int x = 0; x < templateGrid.noOfCellsX; x++)
-                    {
-                        for (int y = 0; y < templateGrid.noOfCellsY; y++)
-                            this.cellGrid[x, y].CopyFromTemplate(templateGrid.cellGrid[x, y]);
-                    }
-
-                    this.loadedTexturesCount = this.allCells.Where(cell => cell.boardGraphics.Texture != null).ToList().Count;
-
-                    this.FillCellListsForPieceNames();
-
-                    return true;
+                    return oldWorld.Grid;
                 }
             }
-            return false;
+
+            return null;
+        }
+
+        public bool CopyBoardFromTemplate()
+        {
+            Grid templateGrid = this.GetMatchingTemplateFromSceneStack();
+            if (templateGrid == null) return false;
+
+            foreach (var kvp in templateGrid.terrainByName)
+            {
+                Terrain.Name terrainName = kvp.Key;
+                Terrain terrain = kvp.Value;
+                this.terrainByName[terrainName] = terrain;
+                this.terrainByName[terrainName].AttachToNewGrid(this);
+            }
+
+            this.extBoardProps = templateGrid.extBoardProps;
+            this.extBoardProps.AttachToNewGrid(this);
+
+            for (int x = 0; x < templateGrid.noOfCellsX; x++)
+            {
+                for (int y = 0; y < templateGrid.noOfCellsY; y++)
+                    this.cellGrid[x, y].CopyFromTemplate(templateGrid.cellGrid[x, y]);
+            }
+
+            this.loadedTexturesCount = this.allCells.Where(cell => cell.boardGraphics.Texture != null).ToList().Count;
+
+            this.FillCellListsForPieceNames();
+
+            return true;
         }
 
         public void ProcessNextCreationStage()
