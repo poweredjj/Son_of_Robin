@@ -8,7 +8,6 @@ namespace SonOfRobin
     public class FullScreenProgressBar : Scene
     {
         private static ContentManager privateContentManager;
-        private static Color barAndTextColor = new Color(104, 195, 252);
 
         public float ProgressBarPercentage { get; private set; }
         private bool isActive;
@@ -161,13 +160,19 @@ namespace SonOfRobin
 
             textRect.Inflate(-textRect.Width * 0.05f, 0);
 
+            Color primaryTextColor = new Color(105, 215, 252);
+            Color barColor = primaryTextColor;
+
             if (this.optionalText != null)
             {
+                Color optionalTextColor = new Color(156, 181, 252);
+                barColor = optionalTextColor;
+
                 Rectangle optionalTextRect = textRect;
                 textRect.Offset(0, -textRect.Height); // main text should be moved up
                 optionalTextRect.Offset(0, textRect.Height / 3);
 
-                Helpers.DrawTextInsideRect(font: SonOfRobinGame.FontFreeSansBold24, text: this.optionalText, rectangle: optionalTextRect, color: barAndTextColor, alignX: Helpers.AlignX.Center, alignY: Helpers.AlignY.Bottom);
+                Helpers.DrawTextInsideRect(font: SonOfRobinGame.FontFreeSansBold24, text: this.optionalText, rectangle: optionalTextRect, color: optionalTextColor, alignX: Helpers.AlignX.Center, alignY: Helpers.AlignY.Bottom);
 
                 // Helpers.DrawRectangleOutline(rect: optionalTextRect, color: Color.Cyan, borderWidth: 1); // for testing
             }
@@ -179,9 +184,9 @@ namespace SonOfRobin
             progressBarRect.Inflate(-progressBarRect.Width * 0.05f, -progressBarRect.Height * 0.43f);
             progressBarRect.Width = (int)(progressBarRect.Width * this.ProgressBarPercentage);
 
-            Helpers.DrawTextInsideRect(font: SonOfRobinGame.FontFreeSansBold24, text: this.progressBarText, rectangle: textRect, color: barAndTextColor, alignX: Helpers.AlignX.Center, alignY: Helpers.AlignY.Bottom);
+            Helpers.DrawTextInsideRect(font: SonOfRobinGame.FontFreeSansBold24, text: this.progressBarText, rectangle: textRect, color: primaryTextColor, alignX: Helpers.AlignX.Center, alignY: Helpers.AlignY.Bottom);
 
-            SonOfRobinGame.SpriteBatch.Draw(texture: SonOfRobinGame.WhiteRectangle, destinationRectangle: progressBarRect, color: barAndTextColor);
+            SonOfRobinGame.SpriteBatch.Draw(texture: SonOfRobinGame.WhiteRectangle, destinationRectangle: progressBarRect, color: barColor);
 
             // Helpers.DrawRectangleOutline(rect: textRect, color: Color.Blue, borderWidth: 1); // for testing
             // Helpers.DrawRectangleOutline(rect: progressBarRect, color: Color.Cyan, borderWidth: 1); // for testing
