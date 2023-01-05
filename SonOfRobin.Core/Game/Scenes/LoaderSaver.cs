@@ -198,11 +198,8 @@ namespace SonOfRobin
         public override void Remove()
         {
             if (Preferences.FrameSkip) SonOfRobinGame.Game.IsFixedTimeStep = true;
-            if (this.saveMode)
-            {
-                SonOfRobinGame.FullScreenProgressBar.TurnOff();
-                LoadingTips.GetNextTip();
-            }
+            if (this.saveMode) SonOfRobinGame.FullScreenProgressBar.TurnOff();
+
             base.Remove();
             if (this.saveMode && this.quitGameAfterSaving) SonOfRobinGame.quitGame = true;
             Menu.RebuildAllMenus();
@@ -220,7 +217,6 @@ namespace SonOfRobin
             {
                 if (this.saveMode) DeleteAllSaveTemps();
                 SonOfRobinGame.FullScreenProgressBar.TurnOff();
-                LoadingTips.GetNextTip();
                 this.Remove();
 
                 new TextWindow(text: $"{this.modeText} has been cancelled.", textColor: Color.White, bgColor: Color.DarkRed, useTransition: true, animate: true, closingTask: this.TextWindowTask);
@@ -463,7 +459,7 @@ namespace SonOfRobin
                 }
                 else
                 {
-                    Grid templateGrid = Grid.GetMatchingTemplateFromSceneStack(seed: (int)this.headerData["seed"], width: (int)this.headerData["width"], height: (int)this.headerData["height"]);
+                    Grid templateGrid = Grid.GetMatchingTemplateFromSceneStack(seed: (int)this.headerData["seed"], width: (int)this.headerData["width"], height: (int)this.headerData["height"], ignoreCellSize: true);
 
                     this.gridTemplateFound = templateGrid != null;
                 }

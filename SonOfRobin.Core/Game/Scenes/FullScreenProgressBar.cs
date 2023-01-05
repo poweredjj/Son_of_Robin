@@ -66,6 +66,8 @@ namespace SonOfRobin
             this.optionalText = null;
 
             this.isActive = false;
+
+            LoadingTips.GetNextTip();
         }
 
         private void UpdateTexture(string textureName)

@@ -11,7 +11,7 @@ namespace SonOfRobin
         public static readonly Dictionary<string, List<AnimFrame>> frameListById = new Dictionary<string, List<AnimFrame>>();
         public static readonly Dictionary<PkgName, AnimFrame> framesForPkgs = new Dictionary<PkgName, AnimFrame>(); // default frames for packages
 
-        public static readonly List<string> loadingGfxNames = Enumerable.Range(1, 9) // to be loaded on demand
+        public static readonly List<string> loadingGfxNames = Enumerable.Range(1, 38) // to be loaded on demand
             .Select(i => $"loading_{i}") // numbering scheme
             .Concat(new List<string> { }) // "original" names can be placed here
             .ToList();
