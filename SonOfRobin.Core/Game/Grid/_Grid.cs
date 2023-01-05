@@ -734,12 +734,16 @@ namespace SonOfRobin
         {
             if (this.world.demoMode) return;
 
-            TimeSpan timeLeft = CalculateTimeLeft(startTime: this.stageStartTime, completeAmount: this.allCells.Count - this.cellsToProcessOnStart.Count, totalAmount: this.allCells.Count);
-            string timeLeftString = timeLeft == TimeSpan.FromSeconds(0) ? "" : TimeSpanToString(timeLeft + TimeSpan.FromSeconds(1));
-
             float percentage = FullScreenProgressBar.CalculatePercentage(currentLocalStep: this.allCells.Count - this.cellsToProcessOnStart.Count, totalLocalSteps: this.allCells.Count, currentGlobalStep: 1 + (int)this.currentStage, totalGlobalSteps: SonOfRobinGame.enteringIslandGlobalSteps);
 
-            string detailedInfo = Preferences.progressBarShowDetails ? $"{namesForStages[this.currentStage]} {timeLeftString}..." : null;
+            string detailedInfo = null;
+            if (Preferences.progressBarShowDetails)
+            {
+                TimeSpan timeLeft = CalculateTimeLeft(startTime: this.stageStartTime, completeAmount: this.allCells.Count - this.cellsToProcessOnStart.Count, totalAmount: this.allCells.Count);
+                string timeLeftString = timeLeft == TimeSpan.FromSeconds(0) ? "" : $" (time left {TimeSpanToString(timeLeft + TimeSpan.FromSeconds(1))})";
+
+                detailedInfo = $"{namesForStages[this.currentStage]}{timeLeftString}...";
+            }
 
             SonOfRobinGame.FullScreenProgressBar.TurnOn(percentage: percentage, text: LoadingTips.GetTip(), optionalText: detailedInfo);
         }

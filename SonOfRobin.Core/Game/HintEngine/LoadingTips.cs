@@ -29,7 +29,7 @@ namespace SonOfRobin
             "You can find mineral deposits in the mountains.",
             "You need protective boots, to walk safely on swamp areas.",
             "Fruits can be eaten or planted.",
-            "A campfire scares off animals at night.",
+            "A campfire scares animals away at night.",
             "Workshops are needed to make most things.",
             "Sometimes you will use less ingredients when crafting - it is called 'smart crafting'.",
             "If you run out of tools, you can acquire wood by using your bare hands.",
