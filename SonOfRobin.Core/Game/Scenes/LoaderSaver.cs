@@ -201,6 +201,7 @@ namespace SonOfRobin
             if (this.saveMode)
             {
                 SonOfRobinGame.FullScreenProgressBar.TurnOff();
+                LoadingTips.GetNextTip();
             }
             base.Remove();
             if (this.saveMode && this.quitGameAfterSaving) SonOfRobinGame.quitGame = true;
@@ -219,6 +220,7 @@ namespace SonOfRobin
             {
                 if (this.saveMode) DeleteAllSaveTemps();
                 SonOfRobinGame.FullScreenProgressBar.TurnOff();
+                LoadingTips.GetNextTip();
                 this.Remove();
 
                 new TextWindow(text: $"{this.modeText} has been cancelled.", textColor: Color.White, bgColor: Color.DarkRed, useTransition: true, animate: true, closingTask: this.TextWindowTask);
@@ -238,9 +240,16 @@ namespace SonOfRobin
 
             float percentage = FullScreenProgressBar.CalculatePercentage(currentLocalStep: this.processedSteps, totalLocalSteps: this.allSteps, currentGlobalStep: currentGlobalStep, totalGlobalSteps: totalGlobalSteps);
 
-            string detailedInfo = Preferences.progressBarShowDetails || this.saveMode ? $"{this.modeText} game - {this.nextStepName}..." : null;
+            string text = LoadingTips.GetTip();
+            string optionalText = Preferences.progressBarShowDetails ? $"{this.modeText} game - {this.nextStepName}..." : null;
 
-            SonOfRobinGame.FullScreenProgressBar.TurnOn(percentage: percentage, text: LoadingTips.GetTip(), optionalText: detailedInfo);
+            if (this.saveMode && !Preferences.progressBarShowDetails)
+            {
+                text = "Saving game...";
+                optionalText = null;
+            }
+
+            SonOfRobinGame.FullScreenProgressBar.TurnOn(percentage: percentage, text: text, optionalText: optionalText);
         }
 
         private static void DeleteAllSaveTemps()

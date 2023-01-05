@@ -39,6 +39,11 @@ namespace SonOfRobin
 
         private static List<string> tipsToDisplay = new List<string>();
 
+        public static void GetNextTip()
+        {
+            lastTipGenerated = new DateTime(1900, 1, 1); // this will force getting next tip at GetTip()
+        }
+
         public static string GetTip()
         {
             if (DateTime.Now - lastTipGenerated < singleTipMaxDuration) return currentTip;

@@ -371,6 +371,7 @@ namespace SonOfRobin
                 SonOfRobinGame.Game.IsFixedTimeStep = Preferences.FrameSkip;
 
                 SonOfRobinGame.FullScreenProgressBar.TurnOff();
+                LoadingTips.GetNextTip();
                 bool menuFound = GetTopSceneOfType(typeof(Menu)) != null;
 
                 this.Remove();
@@ -412,6 +413,7 @@ namespace SonOfRobin
             }
 
             SonOfRobinGame.FullScreenProgressBar.TurnOff();
+            LoadingTips.GetNextTip();
             this.touchLayout = TouchLayout.WorldMain;
             this.tipsLayout = ControlTips.TipsLayout.WorldMain;
             this.WorldCreationInProgress = false;
