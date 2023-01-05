@@ -35,6 +35,7 @@ namespace SonOfRobin
         private bool allPiecesProcessed;
 
         private bool directoryChecked;
+        private bool gridTemplateFound;
 
         // loading mode uses data variables
         private Dictionary<string, Object> headerData;
@@ -137,6 +138,7 @@ namespace SonOfRobin
             this.ErrorOccured = false;
             this.nextStepName = "";
             this.directoryChecked = false;
+            this.gridTemplateFound = false;
             this.headerSaved = false;
             this.hintsSaved = false;
             this.gridSaved = false;
@@ -232,7 +234,7 @@ namespace SonOfRobin
         private void UpdateProgressBar()
         {
             int currentGlobalStep = 0;
-            int totalGlobalSteps = this.saveMode ? 1 : SonOfRobinGame.enteringIslandGlobalSteps;
+            int totalGlobalSteps = this.saveMode || this.gridTemplateFound ? 1 : SonOfRobinGame.enteringIslandGlobalSteps;
 
             float percentage = FullScreenProgressBar.CalculatePercentage(currentLocalStep: this.processedSteps, totalLocalSteps: this.allSteps, currentGlobalStep: currentGlobalStep, totalGlobalSteps: totalGlobalSteps);
 
@@ -445,11 +447,18 @@ namespace SonOfRobin
                 string headerPath = Path.Combine(this.savePath, headerName);
                 this.headerData = (Dictionary<string, Object>)FileReaderWriter.Load(path: headerPath);
 
-                if (headerData == null)
+                if (this.headerData == null)
                 {
                     new TextWindow(text: $"Error while reading save header for slot {saveSlotName}.", textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false, closingTask: this.TextWindowTask);
                     this.ErrorOccured = true;
                 }
+                else
+                {
+                    Grid templateGrid = Grid.GetMatchingTemplateFromSceneStack(seed: (int)this.headerData["seed"], width: (int)this.headerData["width"], height: (int)this.headerData["height"]);
+
+                    this.gridTemplateFound = templateGrid != null;
+                }
+
                 this.nextStepName = "grid";
                 return;
             }

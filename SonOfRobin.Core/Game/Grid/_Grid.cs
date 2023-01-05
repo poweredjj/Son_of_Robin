@@ -176,25 +176,23 @@ namespace SonOfRobin
             return grid;
         }
 
-        public Grid GetMatchingTemplateFromSceneStack()
+        public static Grid GetMatchingTemplateFromSceneStack(int seed, int width, int height)
         {
             var existingWorlds = Scene.GetAllScenesOfType(typeof(World));
             if (!existingWorlds.Any()) return null;
 
-            World newWorld = this.world;
-
             foreach (Scene scene in existingWorlds)
             {
-                World oldWorld = (World)scene;
+                World existingWorld = (World)scene;
 
-                if (!oldWorld.WorldCreationInProgress &&
-                    oldWorld.Grid != null &&
-                    !oldWorld.Grid.CreationInProgress &&
-                    newWorld.seed == oldWorld.seed &&
-                    newWorld.width == oldWorld.width &&
-                    newWorld.height == oldWorld.height)
+                if (!existingWorld.WorldCreationInProgress &&
+                    existingWorld.Grid != null &&
+                    !existingWorld.Grid.CreationInProgress &&
+                    seed == existingWorld.seed &&
+                    width == existingWorld.width &&
+                    height == existingWorld.height)
                 {
-                    return oldWorld.Grid;
+                    return existingWorld.Grid;
                 }
             }
 
@@ -203,7 +201,7 @@ namespace SonOfRobin
 
         public bool CopyBoardFromTemplate()
         {
-            Grid templateGrid = this.GetMatchingTemplateFromSceneStack();
+            Grid templateGrid = GetMatchingTemplateFromSceneStack(seed: this.world.seed, width: this.world.width, height: this.world.height);
             if (templateGrid == null) return false;
 
             foreach (var kvp in templateGrid.terrainByName)
