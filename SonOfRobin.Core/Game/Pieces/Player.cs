@@ -837,6 +837,7 @@ namespace SonOfRobin
             {
                 this.sleepMode = SleepMode.WaitIndefinitely;
                 this.soundPack.Stop(PieceSoundPack.Action.PlayerSnore);
+                this.world.islandClock.multiplier *= 3; // to speed up waiting
 
                 this.visualAid.Destroy();
                 this.visualAid = null;
@@ -942,7 +943,7 @@ namespace SonOfRobin
             this.soundPack.Stop(PieceSoundPack.Action.PlayerSnore);
             this.sleepMode = SleepMode.Awake;
 
-            world.updateMultiplier = 1;
+            this.world.updateMultiplier = 1;
             SonOfRobinGame.Game.IsFixedTimeStep = Preferences.FrameSkip;
             Scheduler.RemoveAllTasksOfName(Scheduler.TaskName.TempoFastForward); // to prevent fast forward, when waking up before this task was executed
 
