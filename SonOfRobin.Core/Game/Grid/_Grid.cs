@@ -62,11 +62,13 @@ namespace SonOfRobin
         private Dictionary<ExtBoardProps.Name, ConcurrentBag<Point>> tempPointsForCreatedBiomes;
         private readonly Dictionary<ExtBoardProps.Name, int> biomeCountByName; // to ensure biome diversity
         public int loadedTexturesCount;
+        private DateTime lastUnloadedTime;
 
         public Grid(World world, int resDivider, int cellWidth = 0, int cellHeight = 0)
         {
             this.CreationInProgress = true;
             this.currentStage = 0;
+            this.lastUnloadedTime = DateTime.Now;
 
             this.world = world;
             this.resDivider = resDivider;
@@ -1257,7 +1259,7 @@ namespace SonOfRobin
 
         public void UnloadTexturesIfMemoryLow(Camera camera)
         {
-            if (Preferences.loadWholeMap) return;
+            if (Preferences.loadWholeMap || DateTime.Now - this.lastUnloadedTime < TimeSpan.FromSeconds(60)) return;
 
             switch (SonOfRobinGame.platform)
             {
@@ -1283,6 +1285,7 @@ namespace SonOfRobin
             }
             MessageLog.AddMessage(msgType: MsgType.Debug, message: "Finished unloading textures.", color: Color.Pink);
             GC.Collect();
+            this.lastUnloadedTime = DateTime.Now;
         }
 
         public void UnloadAllTextures()
@@ -1293,6 +1296,7 @@ namespace SonOfRobin
                 MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Unloaded texture from cell {cell.cellNoX},{cell.cellNoY}.", color: Color.Pink);
             }
             GC.Collect();
+            this.lastUnloadedTime = DateTime.Now;
         }
     }
 }

@@ -220,11 +220,10 @@ namespace SonOfRobin
 
             var entryList = new List<TextEntry> { };
 
-            float scale;
             int lineCounter = 0;
             foreach (string line in text.Split('\n'))
             {
-                scale = lineCounter == 0 ? 1.3f : 1f;
+                float scale = lineCounter == 0 ? 1.3f : 1f;
 
                 entryList.Add(new TextEntry(text: line, color: Color.White, scale: scale, justify: TextEntry.Justify.Center));
                 lineCounter++;

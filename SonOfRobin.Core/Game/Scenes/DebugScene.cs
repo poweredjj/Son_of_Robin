@@ -3,7 +3,6 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 
 namespace SonOfRobin
@@ -337,13 +336,6 @@ namespace SonOfRobin
             //    new TextWindow(text: "This is a test message.\nLong test message.\nEven longer test message.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, priority: 0, animSound: world.DialogueSound);
             //}
 
-            if (Keyboard.HasBeenPressed(Keys.F3) || VirtButton.HasButtonBeenPressed(VButName.DebugClockAdvance))
-            {
-                if (world == null) return;
-
-                world.islandClock.Advance(amount: 60 * 60 * 1, ignorePause: true);
-            }
-
             if (Keyboard.HasBeenPressed(Keys.F1))
             {
                 float percentage = Math.Min(SonOfRobinGame.FullScreenProgressBar.ProgressBarPercentage + 0.05f, 1f);
@@ -351,33 +343,49 @@ namespace SonOfRobin
                 SonOfRobinGame.FullScreenProgressBar.TurnOn(percentage: percentage, text: LoadingTips.GetTip());
             }
 
-            if (Keyboard.HasBeenPressed(Keys.F2))
-            {
-                float percentage = Math.Min(SonOfRobinGame.FullScreenProgressBar.ProgressBarPercentage + 0.05f, 1f);
-                SonOfRobinGame.FullScreenProgressBar.TurnOn(percentage: percentage, text: LoadingTips.GetTip(), optionalText: "loading game...");
-            }
+            //if (Keyboard.HasBeenPressed(Keys.F2))
+            //{
+            //    float percentage = Math.Min(SonOfRobinGame.FullScreenProgressBar.ProgressBarPercentage + 0.05f, 1f);
+            //    SonOfRobinGame.FullScreenProgressBar.TurnOn(percentage: percentage, text: LoadingTips.GetTip(), optionalText: "loading game...");
+            //}
 
             if (Keyboard.HasBeenPressed(Keys.F2)) SonOfRobinGame.FullScreenProgressBar.TurnOff();
 
-            if (Keyboard.HasBeenPressed(Keys.F4))
+            if (Keyboard.HasBeenPressed(Keys.F3) || VirtButton.HasButtonBeenPressed(VButName.DebugClockAdvance))
             {
-                string sourcePngName = "upscale_test_small.png";
-                string targetPngName = "upscale_test_big.png";
+                if (world == null) return;
 
-                Texture2D textureToUpscale = GfxConverter.LoadTextureFromPNG(Path.Combine(SonOfRobinGame.gameDataPath, sourcePngName));
-
-                if (textureToUpscale == null)
-                {
-                    MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Source filename {sourcePngName} not found.");
-                    return;
-                }
-
-                Texture2D upscaledTexture = BoardTextureUpscaler3x.UpscaleTexture(textureToUpscale);
-
-                GfxConverter.SaveTextureAsPNG(filename: Path.Combine(SonOfRobinGame.gameDataPath, targetPngName), upscaledTexture);
-
-                new TextWindow(text: "Original vs upscaled: | |", imageList: new List<Texture2D> { textureToUpscale, upscaledTexture }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: false);
+                world.islandClock.Advance(amount: 60 * 60 * 1, ignorePause: true);
             }
+
+            if (Keyboard.HasBeenPressed(Keys.F4) || VirtButton.HasButtonBeenPressed(VButName.DebugClockAdvance))
+            {
+                if (world == null) return;
+
+                TimeSpan timeUntil = world.islandClock.TimeUntilPartOfDay(IslandClock.PartOfDay.Morning);
+
+                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Time until: {timeUntil}");
+            }
+
+            //if (Keyboard.HasBeenPressed(Keys.F4))
+            //{
+            //    string sourcePngName = "upscale_test_small.png";
+            //    string targetPngName = "upscale_test_big.png";
+
+            //    Texture2D textureToUpscale = GfxConverter.LoadTextureFromPNG(Path.Combine(SonOfRobinGame.gameDataPath, sourcePngName));
+
+            //    if (textureToUpscale == null)
+            //    {
+            //        MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Source filename {sourcePngName} not found.");
+            //        return;
+            //    }
+
+            //    Texture2D upscaledTexture = BoardTextureUpscaler3x.UpscaleTexture(textureToUpscale);
+
+            //    GfxConverter.SaveTextureAsPNG(filename: Path.Combine(SonOfRobinGame.gameDataPath, targetPngName), upscaledTexture);
+
+            //    new TextWindow(text: "Original vs upscaled: | |", imageList: new List<Texture2D> { textureToUpscale, upscaledTexture }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: false);
+            //}
 
             if (Keyboard.HasBeenPressed(Keys.F5))
             {

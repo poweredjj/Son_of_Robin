@@ -227,8 +227,6 @@ namespace SonOfRobin
             }
         }
 
-
-
         public float Fatigue
         {
             get { return this.fatigue; }
@@ -846,7 +844,8 @@ namespace SonOfRobin
                 var optionList = new List<object>();
 
                 optionList.Add(new Dictionary<string, object> { { "label", "go out" }, { "taskName", Scheduler.TaskName.ForceWakeUp }, { "executeHelper", this } });
-                optionList.Add(new Dictionary<string, object> { { "label", "wait until morning" }, { "taskName", Scheduler.TaskName.WaitUntilMorning }, { "executeHelper", this } });
+
+                if (this.world.islandClock.CurrentPartOfDay == IslandClock.PartOfDay.Night) optionList.Add(new Dictionary<string, object> { { "label", "wait until morning" }, { "taskName", Scheduler.TaskName.WaitUntilMorning }, { "executeHelper", this } });
                 optionList.Add(new Dictionary<string, object> { { "label", "wait indefinitely" }, { "taskName", Scheduler.TaskName.Empty }, { "executeHelper", null } });
 
                 var confirmationData = new Dictionary<string, Object> { { "blocksUpdatesBelow", true }, { "question", "You are fully rested." }, { "customOptionList", optionList } };
@@ -861,7 +860,32 @@ namespace SonOfRobin
             if (this.sleepMode == SleepMode.WaitIndefinitely) sleepModeText = "Waiting indefinitely...";
 
             this.sleepEngine.Execute(player: this);
-            if (this.world.CurrentUpdate % 10 == 0) SonOfRobinGame.SmallProgressBar.TurnOn(curVal: (int)(this.maxFatigue - this.Fatigue), maxVal: (int)this.maxFatigue, text: sleepModeText);
+            if (this.world.CurrentUpdate % 10 == 0)
+            {
+                switch (this.sleepMode)
+                {
+                    case SleepMode.Sleep:
+                        SonOfRobinGame.SmallProgressBar.TurnOn(curVal: (int)(this.maxFatigue - this.Fatigue), maxVal: (int)this.maxFatigue, text: sleepModeText, addTransition: false, addNumbers: false);
+                        break;
+
+                    case SleepMode.WaitMorning:
+
+                        TimeSpan maxWaitingTime = TimeSpan.FromHours(9); // should match the timespan between night and morning
+                        TimeSpan timeUntilMorning = world.islandClock.TimeUntilPartOfDay(IslandClock.PartOfDay.Morning);
+
+                        SonOfRobinGame.SmallProgressBar.TurnOn(curVal: (int)(maxWaitingTime.TotalMinutes - timeUntilMorning.TotalMinutes), maxVal: (int)maxWaitingTime.TotalMinutes, text: sleepModeText, addNumbers: false);
+
+                        break;
+
+                    case SleepMode.WaitIndefinitely:
+                        SonOfRobinGame.SmallProgressBar.TurnOn(newPosX: 0, newPosY: 0, centerHoriz: true, centerVert: true, addTransition: false,
+                            entryList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: "Waiting...", color: Color.White) });
+                        break;
+
+                    default:
+                        throw new ArgumentException($"Unsupported sleepMode - {this.sleepMode}.");
+                }
+            }
         }
 
         public void GoToSleep(SleepEngine sleepEngine, Vector2 zzzPos, List<Buff> wakeUpBuffs)
