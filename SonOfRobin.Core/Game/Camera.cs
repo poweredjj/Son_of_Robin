@@ -203,8 +203,8 @@ namespace SonOfRobin
                 float cameraDistX = Math.Abs(this.viewRect.Center.X - currentTargetPos.X);
                 float cameraDistY = Math.Abs(this.viewRect.Center.Y - currentTargetPos.Y);
 
-                float movementSlowdownFactorX = (float)Helpers.ConvertRange(oldMin: 0, oldMax: 135, newMin: 0, newMax: 20, oldVal: cameraDistX, clampToEdges: true);
-                float movementSlowdownFactorY = (float)Helpers.ConvertRange(oldMin: 0, oldMax: 135, newMin: 0, newMax: 20, oldVal: cameraDistY, clampToEdges: true);
+                float movementSlowdownFactorX = (float)Helpers.ConvertRange(oldMin: 0, oldMax: 400, newMin: 0, newMax: 20, oldVal: cameraDistX, clampToEdges: true);
+                float movementSlowdownFactorY = (float)Helpers.ConvertRange(oldMin: 0, oldMax: 400, newMin: 0, newMax: 20, oldVal: cameraDistY, clampToEdges: true);
 
                 movementSlowdownFactorX = Math.Max(movementSlowdown - movementSlowdownFactorX, 1);
                 movementSlowdownFactorY = Math.Max(movementSlowdown - movementSlowdownFactorY, 1);
