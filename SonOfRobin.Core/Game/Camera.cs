@@ -200,8 +200,19 @@ namespace SonOfRobin
 
             if (this.useFluidMotionForMove && !this.disableFluidMotionMoveForOneFrame)
             {
-                viewCenter.X = this.CurrentPos.X + ((currentTargetPos.X - this.CurrentPos.X) / movementSlowdown);
-                viewCenter.Y = this.CurrentPos.Y + ((currentTargetPos.Y - this.CurrentPos.Y) / movementSlowdown);
+                float cameraDistX = Math.Abs(this.viewRect.Center.X - currentTargetPos.X);
+                float cameraDistY = Math.Abs(this.viewRect.Center.Y - currentTargetPos.Y);
+
+                float movementSlowdownFactorX = (float)Helpers.ConvertRange(oldMin: 0, oldMax: 135, newMin: 0, newMax: 20, oldVal: cameraDistX, clampToEdges: true);
+                float movementSlowdownFactorY = (float)Helpers.ConvertRange(oldMin: 0, oldMax: 135, newMin: 0, newMax: 20, oldVal: cameraDistY, clampToEdges: true);
+
+                movementSlowdownFactorX = Math.Max(movementSlowdown - movementSlowdownFactorX, 1);
+                movementSlowdownFactorY = Math.Max(movementSlowdown - movementSlowdownFactorY, 1);
+
+                // MessageLog.AddMessage(msgType: MsgType.User, message: $"cameraDist {(int)cameraDistX} {(int)cameraDistY} factor {(int)movementSlowdownFactorX} {(int)movementSlowdownFactorY}"); // for testing
+
+                viewCenter.X = this.CurrentPos.X + ((currentTargetPos.X - this.CurrentPos.X) / movementSlowdownFactorX);
+                viewCenter.Y = this.CurrentPos.Y + ((currentTargetPos.Y - this.CurrentPos.Y) / movementSlowdownFactorY);
             }
             else
             {

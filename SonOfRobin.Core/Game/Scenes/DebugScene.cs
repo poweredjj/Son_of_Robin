@@ -422,11 +422,11 @@ namespace SonOfRobin
                 // int value = world.random.Next(-30, 30);
                 //  world.player.buffEngine.AddBuff(world: world, buff: new Buff(type: BuffEngine.BuffType.Strength, value: value, autoRemoveDelay: world.random.Next(100, 500), isPositive: value > 0));
 
-                //    world.player.buffEngine.AddBuff(world: world, buff: new Buff(type: BuffEngine.BuffType.RegenPoison, value: value, autoRemoveDelay: world.random.Next(600, 1200), canKill: true));
+                // world.player.buffEngine.AddBuff(world: world, buff: new Buff(type: BuffEngine.BuffType.RegenPoison, value: value, autoRemoveDelay: world.random.Next(600, 1200), canKill: true));
 
-                world.Player.buffEngine.AddBuff(world: world, buff: new Buff(type: BuffEngine.BuffType.Haste, value: 2, autoRemoveDelay: 300));
+                //world.Player.buffEngine.AddBuff(world: world, buff: new Buff(type: BuffEngine.BuffType.Haste, value: 2, autoRemoveDelay: 300));
 
-                // world.player.buffEngine.AddBuff(buff: new Buff(type: BuffEngine.BuffType.Sprint, autoRemoveDelay: 4 * 60, value: world.player.speed), world: world);
+                 world.Player.buffEngine.AddBuff(buff: new Buff(type: BuffEngine.BuffType.Speed, autoRemoveDelay: 4 * 60, value: 3f), world: world);
             }
 
             if (Keyboard.HasBeenPressed(Keys.F9))
