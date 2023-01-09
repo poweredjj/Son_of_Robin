@@ -188,6 +188,8 @@ namespace SonOfRobin
             {
                 for (int j = 0; j < noOfTries; j++)
                 {
+                    yieldPiece.sprite.allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.WaterShallow, AllowedTerrain.RangeName.WaterMedium, AllowedTerrain.RangeName.GroundAll }); // to avoid restricting placement
+
                     yieldPiece.PlaceOnBoard(randomPlacement: false, position: this.mainPiece.sprite.position, closestFreeSpot: true);
 
                     if (yieldPiece.sprite.IsOnBoard)

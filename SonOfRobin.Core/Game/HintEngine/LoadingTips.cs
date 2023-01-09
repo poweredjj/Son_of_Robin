@@ -31,6 +31,8 @@ namespace SonOfRobin
             "Fruits can be eaten or planted.",
             "A campfire scares animals away at night.",
             "Workshops are needed to make most things.",
+            "Potions can be made in alchemy lab.",
+            "Equipment can be made using leather workshop.",
             "Sometimes you will use less ingredients when crafting - it is called 'smart crafting'.",
             "If you run out of tools, you can acquire wood by using your bare hands.",
             "At noon, you will get tired much faster.",
