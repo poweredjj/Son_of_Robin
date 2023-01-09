@@ -192,6 +192,13 @@ namespace SonOfRobin
 
                     if (yieldPiece.sprite.IsOnBoard)
                     {
+                        // duplicated in PieceTemplate
+                        yieldPiece.soundPack.Play(PieceSoundPack.Action.HasAppeared);
+                        if (yieldPiece.appearDebris != null) yieldPiece.appearDebris.DropDebris(ignoreProcessingTime: true);
+                    }
+
+                    if (yieldPiece.sprite.IsOnBoard)
+                    {
                         //  MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Yield - {yieldPiece.readableName} ID {yieldPiece.id} dropped.");
 
                         yieldPiece.sprite.allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.WaterShallow, AllowedTerrain.RangeName.WaterMedium, AllowedTerrain.RangeName.GroundAll }); // where player can go
