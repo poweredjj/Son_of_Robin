@@ -105,25 +105,16 @@ namespace SonOfRobin
 
         public TimeSpan TimeUntilPartOfDay(PartOfDay partOfDayToCalculate)
         {
-            PartOfDay currentPartOfDay = this.CurrentPartOfDay;
-            bool currentPartOfDayFound = false;
-
-            foreach (TimeSpan timeOffset in new List<TimeSpan> { TimeSpan.FromHours(0), TimeSpan.FromHours(24) })
+            foreach (var kvp in partsOfDayByStartTimeAscending)
             {
-                foreach (var kvp in partsOfDayByStartTimeAscending)
+                PartOfDay partOfDayToCheck = kvp.Value;
+
+                if (partOfDayToCheck == partOfDayToCalculate)
                 {
-                    TimeSpan startTimeToCheck = timeOffset + kvp.Key;
-                    PartOfDay partOfDayToCheck = kvp.Value;
+                    TimeSpan timeLeft = kvp.Key - this.TimeOfDay;
+                    if (TimeSpan.Compare(timeLeft, TimeSpan.Zero) < 0) timeLeft += TimeSpan.FromHours(24);
 
-                    if (partOfDayToCheck == currentPartOfDay) currentPartOfDayFound = true;
-
-                    if (currentPartOfDayFound && partOfDayToCheck == partOfDayToCalculate)
-                    {
-                        TimeSpan timeLeft = (timeOffset + kvp.Key) - this.TimeOfDay;
-                        if (TimeSpan.Compare(timeLeft, TimeSpan.Zero) < 0) timeLeft += TimeSpan.FromHours(24);
-
-                        return timeLeft;
-                    }
+                    return timeLeft;
                 }
             }
 

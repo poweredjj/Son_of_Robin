@@ -1172,14 +1172,10 @@ namespace SonOfRobin
         {
             string timeLeftString;
 
-            if (timeSpan < TimeSpan.FromMinutes(1))
-            { timeLeftString = timeSpan.ToString("ss"); }
-            else if (timeSpan < TimeSpan.FromHours(1))
-            { timeLeftString = timeSpan.ToString("mm\\:ss"); }
-            else if (timeSpan < TimeSpan.FromDays(1))
-            { timeLeftString = timeSpan.ToString("hh\\:mm\\:ss"); }
-            else
-            { timeLeftString = timeSpan.ToString("dd\\:hh\\:mm\\:ss"); }
+            if (timeSpan < TimeSpan.FromMinutes(1)) timeLeftString = timeSpan.ToString("ss");
+            else if (timeSpan < TimeSpan.FromHours(1)) timeLeftString = timeSpan.ToString("mm\\:ss");
+            else if (timeSpan < TimeSpan.FromDays(1)) timeLeftString = timeSpan.ToString("hh\\:mm\\:ss");
+            else timeLeftString = timeSpan.ToString("dd\\:hh\\:mm\\:ss");
 
             return timeLeftString;
         }

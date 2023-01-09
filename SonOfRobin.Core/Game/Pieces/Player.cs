@@ -869,7 +869,6 @@ namespace SonOfRobin
                         break;
 
                     case SleepMode.WaitMorning:
-
                         TimeSpan maxWaitingTime = TimeSpan.FromHours(9); // should match the timespan between night and morning
                         TimeSpan timeUntilMorning = world.islandClock.TimeUntilPartOfDay(IslandClock.PartOfDay.Morning);
 
