@@ -337,12 +337,12 @@ namespace SonOfRobin
             //    new TextWindow(text: "This is a test message.\nLong test message.\nEven longer test message.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, priority: 0, animSound: world.DialogueSound);
             //}
 
-            //if (Keyboard.HasBeenPressed(Keys.F3) || VirtButton.HasButtonBeenPressed(VButName.DebugClockAdvance))
-            //{
-            //    if (world == null) return;
+            if (Keyboard.HasBeenPressed(Keys.F3) || VirtButton.HasButtonBeenPressed(VButName.DebugClockAdvance))
+            {
+                if (world == null) return;
 
-            //    world.islandClock.Advance(amount: 60 * 60 * 1, ignorePause: true);
-            //}
+                world.islandClock.Advance(amount: 60 * 60 * 1, ignorePause: true);
+            }
 
             if (Keyboard.HasBeenPressed(Keys.F1))
             {

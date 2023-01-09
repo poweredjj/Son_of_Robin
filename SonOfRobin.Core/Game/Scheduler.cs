@@ -356,6 +356,7 @@ namespace SonOfRobin
 
                     case TaskName.LoadGameNow:
                         {
+                            SonOfRobinGame.SmallProgressBar.TurnOff(); // in case there was a progress bar (sleeping, etc.)
                             Sound.StopAll(); // no point in playing any sounds here - loading process glitches sound for a while
                             new LoaderSaver(saveMode: false, saveSlotName: (string)this.ExecuteHelper);
 
@@ -1041,10 +1042,12 @@ namespace SonOfRobin
                         }
 
                     case TaskName.ReturnToMainMenu:
+                        SonOfRobinGame.SmallProgressBar.TurnOff();
                         CloseGame(quitGame: false);
                         return;
 
                     case TaskName.QuitGame:
+                        SonOfRobinGame.SmallProgressBar.TurnOff();
                         CloseGame(quitGame: true);
                         return;
 
