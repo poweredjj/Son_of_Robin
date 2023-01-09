@@ -125,7 +125,7 @@ namespace SonOfRobin
 
             Rectangle imageRect = new Rectangle(x: 0, y: 0, width: SonOfRobinGame.VirtualWidth, height: SonOfRobinGame.VirtualHeight - progressRectHeight);
             Rectangle progressRect = new Rectangle(x: 0, y: imageRect.Height, width: SonOfRobinGame.VirtualWidth, height: progressRectHeight);
-            progressRect.Offset(0, -progressRectHeight * 0.1f); // should be slightly above the "correct" position
+            progressRect.Offset(0, -progressRectHeight * 0.35f); // should be slightly above the "correct" position
 
             Rectangle offScreenImageRect = imageRect; // imageRect wider than the screen
             offScreenImageRect.Inflate(offScreenImageRect.Width, 0);
@@ -152,10 +152,8 @@ namespace SonOfRobin
                 SonOfRobinGame.SpriteBatch.Draw(texture: SonOfRobinGame.GradientRight, destinationRectangle: rightGradRect, color: bgColor);
             }
 
-            // SonOfRobinGame.SpriteBatch.Draw(texture: SonOfRobinGame.WhiteRectangle, destinationRectangle: progressRect, color: Color.Brown * 0.25f); // for testing
-
             Rectangle textRect = new Rectangle(
-                x: progressRect.X, y: progressRect.Y + (int)(progressRect.Height * 0.32f),
+                x: progressRect.X, y: progressRect.Y + (int)(progressRect.Height * 0.36f),
                 width: progressRect.Width, height: (int)(progressRect.Height * 0.25f));
 
             if (SonOfRobinGame.platform == Platform.Desktop) textRect.Inflate(0, -textRect.Height * 0.22f);
@@ -190,6 +188,8 @@ namespace SonOfRobin
 
             SonOfRobinGame.SpriteBatch.Draw(texture: SonOfRobinGame.WhiteRectangle, destinationRectangle: progressBarRect, color: barColor);
 
+            // Helpers.DrawRectangleOutline(rect: progressRect, color: Color.Green, borderWidth: 1); // for testing
+            // Helpers.DrawRectangleOutline(rect: bottomGradRect, color: Color.Pink, borderWidth: 1); // for testing
             // Helpers.DrawRectangleOutline(rect: textRect, color: Color.Blue, borderWidth: 1); // for testing
             // Helpers.DrawRectangleOutline(rect: progressBarRect, color: Color.Cyan, borderWidth: 1); // for testing
         }

@@ -35,6 +35,7 @@ namespace SonOfRobin
             "If you run out of tools, you can acquire wood by using your bare hands.",
             "At noon, you will get tired much faster.",
             "You can get rid of poison by eating food.",
+            "You are immune to heat, while being wet.",
         };
 
         private static List<string> tipsToDisplay = new List<string>();
