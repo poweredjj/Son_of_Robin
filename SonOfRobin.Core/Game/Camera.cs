@@ -203,11 +203,11 @@ namespace SonOfRobin
                 float cameraDistX = Math.Abs(this.viewRect.Center.X - currentTargetPos.X);
                 float cameraDistY = Math.Abs(this.viewRect.Center.Y - currentTargetPos.Y);
 
-                float movementSlowdownFactorX = (float)Helpers.ConvertRange(oldMin: 0, oldMax: 400, newMin: 0, newMax: 20, oldVal: cameraDistX, clampToEdges: true);
-                float movementSlowdownFactorY = (float)Helpers.ConvertRange(oldMin: 0, oldMax: 400, newMin: 0, newMax: 20, oldVal: cameraDistY, clampToEdges: true);
+                float movementSlowdownFactorX = (float)Helpers.ConvertRange(oldMin: 0, oldMax: this.viewRect.Width / 1.7, newMin: 0, newMax: 20, oldVal: cameraDistX, clampToEdges: true);
+                float movementSlowdownFactorY = (float)Helpers.ConvertRange(oldMin: 0, oldMax: this.viewRect.Height / 1.7, newMin: 0, newMax: 20, oldVal: cameraDistY, clampToEdges: true);
 
-                movementSlowdownFactorX = Math.Max(movementSlowdown - movementSlowdownFactorX, 1);
-                movementSlowdownFactorY = Math.Max(movementSlowdown - movementSlowdownFactorY, 1);
+                movementSlowdownFactorX = Math.Max(movementSlowdown - movementSlowdownFactorX, 4);
+                movementSlowdownFactorY = Math.Max(movementSlowdown - movementSlowdownFactorY, 4);
 
                 // MessageLog.AddMessage(msgType: MsgType.User, message: $"cameraDist {(int)cameraDistX} {(int)cameraDistY} factor {(int)movementSlowdownFactorX} {(int)movementSlowdownFactorY}"); // for testing
 
