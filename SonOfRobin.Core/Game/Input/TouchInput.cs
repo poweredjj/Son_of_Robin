@@ -35,6 +35,10 @@ namespace SonOfRobin
         private static int screenWidth = -100;
         private static int screenHeight = -100;
 
+        private static int emulatedTouchID = 0;
+        private static Vector2 emulatedTouchLastPos = Vector2.Zero;
+        private static TouchLocationState emulatedTouchLastState = TouchLocationState.Invalid;
+
         public static bool ShowSticks
         {
             get { return ShowLeftStick || ShowRightStick; }
@@ -214,7 +218,7 @@ namespace SonOfRobin
         public static void GetState(GameTime gameTime)
         {
             lastFrameTouchPanelState = touchPanelState;
-            touchPanelState = TouchPanel.GetState();
+            touchPanelState = SonOfRobinGame.platform == Platform.Desktop && SonOfRobinGame.os != OS.Windows ? ConvertMouseToTouch() : TouchPanel.GetState();
             UpdateLastPressedReleasedPos();
 
             // ShowDebugTouchMessages(touchPanelState); // for testing only
@@ -228,6 +232,46 @@ namespace SonOfRobin
             rightStick = dualStick.RightStick.GetRelativeVector(dualStick.aliveZoneSize) / dualStick.aliveZoneSize;
 
             VirtButton.UpdateAll();
+        }
+
+        private static TouchCollection ConvertMouseToTouch()
+        {
+            // Automatic touch to mouse conversion works only in WindowsDX build.
+            // In other cases (DesktopGL), this emulation does the job.
+
+            Vector2 mousePos = new Vector2(Mouse.XValue, Mouse.YValue);
+
+            if (Mouse.LeftHasBeenPressed)
+            {
+                emulatedTouchID++;
+                emulatedTouchLastPos = mousePos;
+                emulatedTouchLastState = TouchLocationState.Pressed;
+
+                TouchLocation[] touches = { new TouchLocation(id: emulatedTouchID, state: TouchLocationState.Pressed, position: mousePos) };
+                return new TouchCollection(touches: touches);
+            }
+
+            if (!Mouse.LeftHasBeenPressed && Mouse.LeftIsDown)
+            {
+                TouchLocation[] touches = { new TouchLocation(id: emulatedTouchID, state: TouchLocationState.Moved, previousState: emulatedTouchLastState, position: mousePos, previousPosition: emulatedTouchLastPos) };
+
+                emulatedTouchLastPos = mousePos;
+                emulatedTouchLastState = TouchLocationState.Moved;
+
+                return new TouchCollection(touches: touches);
+            }
+
+            if (Mouse.LeftHasBeenReleased)
+            {
+                TouchLocation[] touches = { new TouchLocation(id: emulatedTouchID, state: TouchLocationState.Released, previousState: emulatedTouchLastState, position: mousePos, previousPosition: emulatedTouchLastPos) };
+
+                emulatedTouchLastPos = Vector2.Zero;
+                emulatedTouchLastState = TouchLocationState.Invalid;
+
+                return new TouchCollection(touches: touches);
+            }
+
+            return new TouchCollection();
         }
 
         private static void ShowDebugTouchMessages(TouchCollection touchPanelState)
