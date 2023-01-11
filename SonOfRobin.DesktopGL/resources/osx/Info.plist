@@ -7,7 +7,7 @@
     <key>CFBundleExecutable</key>
     <string>SonOfRobin.DesktopGL</string>
     <key>CFBundleIconFile</key>
-    <string>Son of Robin</string>
+    <string>Icon</string>
     <key>CFBundleIdentifier</key>
     <string>com.your-domain.SonOfRobin</string>
     <key>CFBundleInfoDictionaryVersion</key>
