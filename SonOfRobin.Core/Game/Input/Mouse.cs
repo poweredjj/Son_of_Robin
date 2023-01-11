@@ -16,13 +16,7 @@ namespace SonOfRobin
         { get { return Input.InputActive && currentMouseState.LeftButton == ButtonState.Pressed && previousMouseState.LeftButton == ButtonState.Released; } }
 
         public static bool LeftHasBeenReleased
-        {
-            get
-            {
-                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Left mouse button has been released (position {Position}).", color: Color.Orange);
-                return Input.InputActive && currentMouseState.LeftButton == ButtonState.Released && previousMouseState.LeftButton == ButtonState.Pressed;
-            }
-        }
+        { get { return Input.InputActive && currentMouseState.LeftButton == ButtonState.Released && previousMouseState.LeftButton == ButtonState.Pressed; } }
 
         public static bool MiddleIsDown
         { get { return Input.InputActive && currentMouseState.MiddleButton == ButtonState.Pressed; } }
