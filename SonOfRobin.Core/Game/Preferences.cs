@@ -101,6 +101,7 @@ namespace SonOfRobin
         public static bool progressBarShowDetails = false;
         public static bool showDemoWorld = true;
         private static bool pointToWalk = true;
+        public static bool swapMouseButtons = false;
 
         public static bool PointToWalk
         {
@@ -501,8 +502,9 @@ namespace SonOfRobin
                 showFieldControlTips = true;
             }
 
-            if (SonOfRobinGame.os == OS.Linux || SonOfRobinGame.os == OS.OSX)
+            if (SonOfRobinGame.os == OS.DesktopGL)
             {
+                swapMouseButtons = true;
                 pointToInteract = false;
                 pointToWalk = false;
             }
@@ -564,6 +566,7 @@ namespace SonOfRobin
             prefsData["textWindowAnimOn"] = Sound.textWindowAnimOn;
             prefsData["vSync"] = vSync;
             prefsData["progressBarShowDetails"] = progressBarShowDetails;
+            prefsData["swapMouseButtons"] = swapMouseButtons;
 
             FileReaderWriter.Save(path: SonOfRobinGame.prefsPath, savedObj: prefsData);
 
@@ -632,6 +635,7 @@ namespace SonOfRobin
                     Sound.textWindowAnimOn = (bool)prefsData["textWindowAnimOn"];
                     vSync = (bool)prefsData["vSync"];
                     progressBarShowDetails = (bool)prefsData["progressBarShowDetails"];
+                    swapMouseButtons = (bool)prefsData["swapMouseButtons"];
 
                     prefsLoaded = true;
                 }

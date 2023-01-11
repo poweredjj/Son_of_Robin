@@ -222,6 +222,8 @@ namespace SonOfRobin
 
                         if (Input.currentControlType != Input.ControlType.Touch || SonOfRobinGame.platform != Platform.Mobile) new Selector(menu: menu, name: "on screen buttons", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "EnableTouchButtons", rebuildsMenu: true);
 
+                        if (Input.currentControlType != Input.ControlType.Touch) new Selector(menu: menu, name: "swap mouse buttons", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "swapMouseButtons");
+
                         if (Preferences.EnableTouchButtons)
                         {
                             new Selector(menu: menu, name: "on screen joysticks", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "enableTouchJoysticks");

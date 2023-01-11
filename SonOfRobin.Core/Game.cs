@@ -14,7 +14,7 @@ namespace SonOfRobin
     { Desktop, Mobile }
 
     public enum OS
-    { Windows, Linux, OSX, Android, iOS }
+    { Windows, DesktopGL, Android, iOS }
 
     public class SonOfRobinGame : Game
     {

@@ -64,6 +64,12 @@ namespace SonOfRobin
         {
             previousMouseState = currentMouseState;
             currentMouseState = Microsoft.Xna.Framework.Input.Mouse.GetState();
+
+            if (Preferences.swapMouseButtons)
+            { // reversing swapped mouse buttons
+                currentMouseState = new MouseState(x: currentMouseState.X, y: currentMouseState.Y, scrollWheel: currentMouseState.ScrollWheelValue, leftButton: currentMouseState.RightButton, middleButton: currentMouseState.MiddleButton, rightButton: currentMouseState.LeftButton, xButton1: currentMouseState.XButton1, xButton2: currentMouseState.XButton2);
+            }
+
             return previousMouseState;
         }
     }

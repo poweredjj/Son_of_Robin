@@ -86,9 +86,9 @@ namespace SonOfRobin
         {
             World world = World.GetTopWorld();
 
-            if (Mouse.LeftIsDown) MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{SonOfRobinGame.CurrentUpdate} left mouse button");
-            if (Mouse.MiddleIsDown) MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{SonOfRobinGame.CurrentUpdate} middle mouse button");
-            if (Mouse.RightIsDown) MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{SonOfRobinGame.CurrentUpdate} right mouse button");
+            // if (Mouse.LeftIsDown) MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{SonOfRobinGame.CurrentUpdate} left mouse button");
+            // if (Mouse.MiddleIsDown) MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{SonOfRobinGame.CurrentUpdate} middle mouse button");
+            // if (Mouse.RightIsDown) MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{SonOfRobinGame.CurrentUpdate} right mouse button");
 
             if (world != null)
             {
