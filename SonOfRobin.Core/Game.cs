@@ -85,13 +85,13 @@ namespace SonOfRobin
         public static int VirtualHeight
         { get { return Convert.ToInt32(GfxDevMgr.PreferredBackBufferHeight / Preferences.GlobalScale); } }
 
-        public static PerformanceCounter ramCounter = new PerformanceCounter("Memory", "Available MBytes"); // THIS LINE MUST BE COMMENTED OUT WHEN COMPILING FOR ANDROID
+        public static PerformanceCounter ramCounter = new PerformanceCounter("Memory", "Available MBytes"); // THIS LINE MUST BE COMMENTED OUT WHEN COMPILING FOR ANDROID AND LINUX
 
         public static bool DesktopMemoryLow
         {
             get
             {
-                if (platform == Platform.Desktop) return ramCounter.NextValue() < 800; // THIS LINE MUST BE COMMENTED OUT WHEN COMPILING FOR ANDROID
+                if (platform == Platform.Desktop) return ramCounter.NextValue() < 800; // THIS LINE MUST BE COMMENTED OUT WHEN COMPILING FOR ANDROID AND LINUX
                 return false; // for compatibility with mobile
             }
         }

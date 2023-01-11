@@ -502,13 +502,6 @@ namespace SonOfRobin
                 showFieldControlTips = true;
             }
 
-            if (SonOfRobinGame.os == OS.DesktopGL)
-            {
-                swapMouseButtons = true;
-                pointToInteract = false;
-                pointToWalk = false;
-            }
-
             EnableTouchButtons = SonOfRobinGame.platform == Platform.Mobile;
             MouseGesturesEmulateTouch = true; // mouse input is used through touch emulation
         }
