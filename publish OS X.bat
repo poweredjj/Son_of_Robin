@@ -62,5 +62,5 @@ attrib +R +X ".\SonOfRobin.DesktopGL\bin\Release\osx-64\SonOfRobin.app\Contents\
 
 7z.exe a SonOfRobin_OSX.zip ".\SonOfRobin.DesktopGL\bin\Release\osx-64\SonOfRobin.app" -tzip -mx=9
 
-::rmdir /S /Q .\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1\osx-x64
-::rmdir /S /Q .\SonOfRobin.DesktopGL\bin\Release\osx-x64
+rmdir /S /Q .\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1
+rmdir /S /Q .\SonOfRobin.DesktopGL\bin\Release\osx-x64

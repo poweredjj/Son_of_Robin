@@ -91,15 +91,15 @@ namespace SonOfRobin
         {
             get
             {
-                if (ramCounter == null) ramCounter = new PerformanceCounter("Memory", "Available MBytes"); // comment this line on ANDROID, MAC and LINUX
-                return ((PerformanceCounter)ramCounter).NextValue(); // comment this line on ANDROID, MAC and LINUX
-                // return -100; // uncomment this line on ANDROID, MAC AND LINUX
+                if (ramCounter == null) ramCounter = new PerformanceCounter("Memory", "Available MBytes"); // comment this line on platforms other than Windows
+                if (os == OS.Windows) return ((PerformanceCounter)ramCounter).NextValue(); // comment this line on platforms other than Windows
+                return -100;
             }
         }
 
         private static void MoveWindowOnWorkMachine(Game game) // method used, to make the code to be commented closer
         {
-            if (ThisIsWorkMachine) game.Window.Position = new Point(-10, 758); // comment this line WHEN COMPILING FOR ANDROID
+            if (ThisIsWorkMachine) game.Window.Position = new Point(-10, 758); // comment this line on ANDROID
         }
 
         public static bool WindowsMemoryLow
