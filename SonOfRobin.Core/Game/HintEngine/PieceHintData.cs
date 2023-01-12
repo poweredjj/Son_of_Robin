@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
 
 namespace SonOfRobin
@@ -211,7 +212,7 @@ namespace SonOfRobin
 
                 new PieceHint(
                     type: PieceHint.Type.CrystalNegative, fieldPiecesNearby: new List<PieceTemplate.Name> { PieceTemplate.Name.CrystalDepositBig },
-                    message: $"Wow, this | crystal looks very strong.\nI think that a pickaxe made of wood or stone would be too weak to break it.\nMaybe an | {PieceInfo.GetInfo(PieceTemplate.Name.PickaxeIron).readableName} could work, though?",
+                    message: $"Wow, this | crystal looks very strong.\nI think that a pickaxe made of wood or stone\nwould be too weak to break it.\nMaybe an | {PieceInfo.GetInfo(PieceTemplate.Name.PickaxeIron).readableName} could work, though?",
                     imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.CrystalDepositBig), PieceInfo.GetTexture(PieceTemplate.Name.PickaxeIron) },
                     playerDoesNotOwnAnyOfThesePieces: new List<PieceTemplate.Name> { PieceTemplate.Name.PickaxeIron }),
 
@@ -323,7 +324,29 @@ namespace SonOfRobin
                     imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.Tiger) }),
                 };
 
+
+            CheckData(newPieceHintList);
+
             return newPieceHintList;
+        }
+
+        private static void CheckData(List<PieceHint> pieceHintList)
+        {
+            foreach (PieceHint.Type type in (PieceHint.Type[])Enum.GetValues(typeof(PieceHint.Type)))
+            {
+                bool hintFound = false;
+
+                foreach (PieceHint pieceHint in pieceHintList)
+                {
+                    if (pieceHint.type == type)
+                    {
+                        hintFound = true;
+                        break;
+                    }
+                }
+
+                if (!hintFound) throw new ArgumentException($"No pieceHint for type {type}.");
+            }
         }
     }
 }

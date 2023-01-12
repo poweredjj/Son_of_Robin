@@ -18,7 +18,7 @@ namespace SonOfRobin
         private static int nearbyPiecesFrameChecked = 0;
         private static readonly List<BoardPiece> nearbyPieces = new List<BoardPiece>();
 
-        private readonly Type type;
+        public readonly Type type;
         private readonly List<Type> alsoDisables;
         private readonly List<HintMessage> messageList;
         private readonly List<PieceTemplate.Name> fieldPiecesNearby;

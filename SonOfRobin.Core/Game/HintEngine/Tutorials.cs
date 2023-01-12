@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -7,7 +8,7 @@ namespace SonOfRobin
     public class Tutorials
     {
         public enum Type
-        { BreakThing, Equip, BuildWorkshop, GetWood, Mine, Interact, PickUp, Hit, Craft, KeepingAnimalsAway, ShootProjectile, Cook, ShakeFruit, AnimalAttacking, Torch, Fireplace, TooDarkToReadMap, TooDarkToSeeAnything, Heat, CraftLevels, SwampPoison, SmartCrafting }
+        { BreakThing, Equip, BuildWorkshop, GetWood, Mine, Interact, PickUp, Hit, Craft, KeepingAnimalsAway, ShootProjectile, Cook, ShakeFruit, AnimalAttacking, Torch, Fireplace, TooDarkToReadMap, TooDarkToSeeAnything, Heat, CraftLevels, SwampPoison, SmartCrafting, HowToSave }
 
         private static readonly HintMessage.BoxType messageHeaderType = HintMessage.BoxType.BlueBox;
         private static readonly HintMessage.BoxType messageTextType = HintMessage.BoxType.LightBlueBox;
@@ -298,11 +299,27 @@ namespace SonOfRobin
 
             new Tutorial(type: Type.SmartCrafting, name: "smart crafting", title: "Smart crafting.",
                messages: new List<HintMessage>  {
-
                     new HintMessage(text: "Sometimes you will use less | | | materials when crafting.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.WoodLogRegular), PieceInfo.GetTexture(PieceTemplate.Name.Nail), PieceInfo.GetTexture(PieceTemplate.Name.Granite)}, boxType: messageTextType),
                     new HintMessage(text: "This is called 'smart crafting'.", boxType: messageTextType),
                     new HintMessage(text: "It depends on each recipe craft level |\nand on your base craft skill.", imageList: new List<Texture2D> { PieceInfo.GetInfo(PieceTemplate.Name.DebrisStar).texture }, boxType: messageTextType),
                    });
+
+            new Tutorial(type: Type.HowToSave, name: "saving", title: "Saving the game.",
+                messages: new List<HintMessage> {
+                new HintMessage(text: "I'm starting to get tired...", boxType: HintMessage.BoxType.Dialogue, fieldOnly: true),
+                new HintMessage(text: "You can rest and save your game inside shelter |.",imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.TentSmall) }, boxType: messageTextType),
+                new HintMessage(text: "You can make one using crafting menu.", boxType: messageTextType)
+    });
+
+            CheckData();
+        }
+
+        private static void CheckData()
+        {
+            foreach (Type type in (Type[])Enum.GetValues(typeof(Type)))
+            {
+                if (!tutorials.ContainsKey(type)) throw new ArgumentException($"No tutorial for type {type}.");
+            }
         }
     }
 }

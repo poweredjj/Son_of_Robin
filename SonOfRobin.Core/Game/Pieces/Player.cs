@@ -248,7 +248,10 @@ namespace SonOfRobin
                     if (this.buffEngine.HasBuff(BuffEngine.BuffType.Tired)) this.buffEngine.RemoveEveryBuffOfType(BuffEngine.BuffType.Tired);
                 }
 
+                if (this.IsStartingToGetTired) Tutorials.ShowTutorialOnTheField(type: Tutorials.Type.HowToSave, world: this.world, ignoreDelay: true);
+
                 if (this.IsVeryTired) this.world.HintEngine.ShowGeneralHint(HintEngine.Type.Tired);
+
                 if (this.FatiguePercent < 0.2f) this.world.HintEngine.Enable(HintEngine.Type.Tired);
                 if (this.FatiguePercent > 0.95f) this.world.HintEngine.ShowGeneralHint(HintEngine.Type.VeryTired);
                 if (this.FatiguePercent < 0.8f) this.world.HintEngine.Enable(HintEngine.Type.VeryTired);
@@ -289,6 +292,9 @@ namespace SonOfRobin
 
         public float FatiguePercent
         { get { return (float)this.Fatigue / (float)this.maxFatigue; } }
+
+        public bool IsStartingToGetTired
+        { get { return this.FatiguePercent > 0.45f; } }
 
         public bool IsVeryTired
         { get { return this.FatiguePercent > 0.75f; } }
