@@ -130,7 +130,7 @@ namespace SonOfRobin
             Rectangle offScreenImageRect = imageRect; // imageRect wider than the screen
             offScreenImageRect.Inflate(offScreenImageRect.Width, 0);
 
-            Rectangle realImageRect = Helpers.DrawTextureInsideRect(texture: this.texture, rectangle: offScreenImageRect, color: Color.White * 0.6f);
+            Rectangle realImageRect = Helpers.DrawTextureInsideRect(texture: this.texture, rectangle: offScreenImageRect, color: Color.White * 1f);
             Rectangle bottomGradRect = realImageRect;
 
             int bottomGradRectHeight = (int)(bottomGradRect.Height * 0.95);

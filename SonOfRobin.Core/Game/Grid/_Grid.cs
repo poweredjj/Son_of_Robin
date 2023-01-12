@@ -1257,18 +1257,13 @@ namespace SonOfRobin
         {
             if (Preferences.loadWholeMap || DateTime.Now - this.lastUnloadedTime < TimeSpan.FromSeconds(60)) return;
 
-            switch (SonOfRobinGame.platform)
+            if (SonOfRobinGame.os == OS.Windows)
             {
-                case Platform.Desktop:
-                    if (!SonOfRobinGame.DesktopMemoryLow) return;
-                    break;
-
-                case Platform.Mobile:
-                    if (this.loadedTexturesCount < Preferences.mobileMaxLoadedTextures) return;
-                    break;
-
-                default:
-                    throw new ArgumentException($"Textures unloading - unsupported platform {SonOfRobinGame.platform}.");
+                if (!SonOfRobinGame.WindowsMemoryLow) return;
+            }
+            else
+            {
+                if (this.loadedTexturesCount < Preferences.maxTexturesToLoad) return;
             }
 
             var cellsInCameraView = this.GetCellsInsideRect(camera.viewRect);

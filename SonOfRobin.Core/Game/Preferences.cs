@@ -125,7 +125,7 @@ namespace SonOfRobin
             }
         }
 
-        public static int mobileMaxLoadedTextures = 1000;
+        public static int maxTexturesToLoad = 1000;
         public static int displayResX = 1920;
         public static int displayResY = 1080;
         public static bool showFieldControlTips = true;
@@ -528,7 +528,6 @@ namespace SonOfRobin
             prefsData["fullScreenMode"] = fullScreenMode;
             prefsData["frameSkip"] = frameSkip;
             prefsData["showDemoWorld"] = showDemoWorld;
-            prefsData["mobileMaxLoadedTextures"] = mobileMaxLoadedTextures;
             prefsData["displayResX"] = displayResX;
             prefsData["displayResY"] = displayResY;
             prefsData["showControlTips"] = showControlTips;
@@ -560,6 +559,7 @@ namespace SonOfRobin
             prefsData["vSync"] = vSync;
             prefsData["progressBarShowDetails"] = progressBarShowDetails;
             prefsData["swapMouseButtons"] = swapMouseButtons;
+            prefsData["maxTexturesToLoad"] = maxTexturesToLoad;
 
             FileReaderWriter.Save(path: SonOfRobinGame.prefsPath, savedObj: prefsData);
 
@@ -593,7 +593,6 @@ namespace SonOfRobin
                     loadWholeMap = (bool)prefsData["loadWholeMap"];
                     frameSkip = (bool)prefsData["frameSkip"];
                     showDemoWorld = (bool)prefsData["showDemoWorld"];
-                    mobileMaxLoadedTextures = (int)prefsData["mobileMaxLoadedTextures"];
                     displayResX = (int)prefsData["displayResX"];
                     displayResY = (int)prefsData["displayResY"];
                     showControlTips = (bool)prefsData["showControlTips"];
@@ -629,6 +628,7 @@ namespace SonOfRobin
                     vSync = (bool)prefsData["vSync"];
                     progressBarShowDetails = (bool)prefsData["progressBarShowDetails"];
                     swapMouseButtons = (bool)prefsData["swapMouseButtons"];
+                    maxTexturesToLoad = (int)prefsData["maxTexturesToLoad"];
 
                     prefsLoaded = true;
                 }

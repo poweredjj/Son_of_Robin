@@ -85,16 +85,25 @@ namespace SonOfRobin
         public static int VirtualHeight
         { get { return Convert.ToInt32(GfxDevMgr.PreferredBackBufferHeight / Preferences.GlobalScale); } }
 
-        public static PerformanceCounter ramCounter = new PerformanceCounter("Memory", "Available MBytes"); // THIS LINE MUST BE COMMENTED OUT WHEN COMPILING FOR ANDROID AND LINUX
+        public static object ramCounter = null;
 
-        public static bool DesktopMemoryLow
+        public static float FreeRamMegabytesLeft
         {
             get
             {
-                if (platform == Platform.Desktop) return ramCounter.NextValue() < 800; // THIS LINE MUST BE COMMENTED OUT WHEN COMPILING FOR ANDROID AND LINUX
-                return false; // for compatibility with mobile
+                if (ramCounter == null) ramCounter = new PerformanceCounter("Memory", "Available MBytes"); // comment this line on ANDROID, MAC and LINUX
+                return ((PerformanceCounter)ramCounter).NextValue(); // comment this line on ANDROID, MAC and LINUX
+                // return -100; // uncomment this line on ANDROID, MAC AND LINUX
             }
         }
+
+        private static void MoveWindowOnWorkMachine(Game game) // method used, to make the code to be commented closer
+        {
+            if (ThisIsWorkMachine) game.Window.Position = new Point(-10, 758); // comment this line WHEN COMPILING FOR ANDROID
+        }
+
+        public static bool WindowsMemoryLow
+        { get { return os == OS.Windows ? FreeRamMegabytesLeft < 800 : false; } }
 
         public static bool LicenceValid
         { get { return DateTime.Now - lastChanged < TimeSpan.FromDays(90); } }
@@ -159,7 +168,7 @@ namespace SonOfRobin
             GfxDevMgr.SynchronizeWithVerticalRetrace = Preferences.VSync;
             GfxDevMgr.ApplyChanges();
 
-            if (ThisIsWorkMachine) this.Window.Position = new Point(-10, 758); // THIS LINE MUST BE COMMENTED OUT WHEN COMPILING FOR ANDROID
+            MoveWindowOnWorkMachine(this);
             this.Window.AllowUserResizing = true;
             Window.ClientSizeChanged += OnResize;
 
