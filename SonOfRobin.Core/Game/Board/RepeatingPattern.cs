@@ -9,30 +9,33 @@ namespace SonOfRobin
     {
         public enum Name
         { // lowercase to match filenames
-            grass,
-            water_supershallow,
-            sand, water_shallow,
-            water_medium,
-            water_deep,
+            grass_good,
+            grass_bad,
+            sea_supershallow,
+            sea_shallow,
+            sea_medium,
+            sea_deep,
             mountain_low,
             mountain_medium,
             mountain_high,
             ground,
+            sand,
             beach_bright,
             beach_dark,
             swamp,
             lava_bright,
             lava_dark,
+            volcano_edge,
         };
 
         private static Dictionary<int, Name> namesForBaseColors = new Dictionary<int, Name>
         {
-            { new Color(11,46,176,255).GetHashCode(), Name.water_deep },
-            { new Color(35,78,207,255).GetHashCode(), Name.water_medium },
-            { new Color(65,105,225,255).GetHashCode(), Name.water_shallow },
-            { new Color(85,125,245,255).GetHashCode(), Name.water_supershallow },
-            { new Color(141,181,67,255).GetHashCode(), Name.grass },
-            { new Color(78,186,0,255).GetHashCode(), Name.grass },
+            { new Color(11,46,176,255).GetHashCode(), Name.sea_deep },
+            { new Color(35,78,207,255).GetHashCode(), Name.sea_medium },
+            { new Color(65,105,225,255).GetHashCode(), Name.sea_shallow },
+            { new Color(85,125,245,255).GetHashCode(), Name.sea_supershallow },
+            { new Color(141,181,67,255).GetHashCode(), Name.grass_bad },
+            { new Color(78,186,0,255).GetHashCode(), Name.grass_good },
             { new Color(180,180,180,255).GetHashCode(), Name.mountain_low },
             { new Color(209,209,209,255).GetHashCode(), Name.mountain_medium },
             { new Color(225,225,225,255).GetHashCode(), Name.mountain_high },
@@ -44,6 +47,7 @@ namespace SonOfRobin
             { new Color(83, 97, 55, 128).GetHashCode(), Name.swamp },
             { new Color(255,81,0,255).GetHashCode(), Name.lava_dark },
             { new Color(255,179,0,255).GetHashCode(), Name.lava_bright },
+            { new Color(64,64,64,255).GetHashCode(), Name.volcano_edge },
         };
 
         public static readonly Name[] allNames = (Name[])Enum.GetValues(typeof(Name));
@@ -106,8 +110,6 @@ namespace SonOfRobin
 
         public static Color GetValueForBaseColor(Color baseColor, int x, int y)
         {
-            baseColor.GetHashCode();
-
             RepeatingPattern pattern = GetPatternForBaseColor(baseColor);
 
             return pattern == null ? baseColor : pattern.GetValue(x, y);

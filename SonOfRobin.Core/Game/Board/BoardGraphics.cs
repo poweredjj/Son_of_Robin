@@ -123,7 +123,7 @@ namespace SonOfRobin
             {
                 for (int x = 0; x < width; x++)
                 {
-                    colorArray[(y * width) + x] = CreatePixel(grid: grid, x: (int)(x / multiplier), y: (int)(y / multiplier));
+                    colorArray[(y * width) + x] = CreatePixel(grid: grid, x: (int)(x / multiplier), y: (int)(y / multiplier), convertToFinalTexture: true);
                 }
             }
 
@@ -276,7 +276,7 @@ namespace SonOfRobin
             return upscaledColorGrid;
         }
 
-        private static Color CreatePixel(Grid grid, int x, int y)
+        private static Color CreatePixel(Grid grid, int x, int y, bool convertToFinalTexture = false)
         {
             byte pixelHeight = grid.GetFieldValue(terrainName: Terrain.Name.Height, x: x, y: y);
             byte pixelHumidity = grid.GetFieldValue(terrainName: Terrain.Name.Humidity, x: x, y: y);
@@ -316,6 +316,8 @@ namespace SonOfRobin
             // if (extDataValDict[ExtBoardProps.ExtPropName.OuterBeach]) pixel = Blend2Colors(bottomColor: pixel, topColor: Color.Cyan * 0.8f); // for testing
             // if (extDataValDict[ExtBoardProps.ExtPropName.Sea]) pixel = Blend2Colors(bottomColor: pixel, topColor: Color.Red * 0.8f); // for testing
             // if (extDataValDict[ExtBoardProps.ExtPropName.BiomeSwamp]) pixel = Blend2Colors(bottomColor: pixel, topColor: Color.Green * 0.8f); // for testing
+
+            if (convertToFinalTexture) pixel = RepeatingPattern.GetValueForBaseColor(baseColor: pixel, x: x, y: y);
 
             return pixel;
         }
