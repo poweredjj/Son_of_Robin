@@ -246,6 +246,12 @@ namespace SonOfRobin
                 for (int x = 0; x < targetWidth; x++)
                 {
                     Color pixel = upscaledColorGrid[x, y];
+
+                    //pixel = RepeatingPattern.GetValueForBaseColor(
+                    //    baseColor: pixel,
+                    //    x: this.cell.xMin + (x * resDivider / BoardTextureUpscaler3x.resizeFactor),
+                    //    y: this.cell.yMin + (y * resDivider / BoardTextureUpscaler3x.resizeFactor)); // for testing
+
                     builder.SetPixel(pixel.R, pixel.G, pixel.B, x, y);
                 }
             }

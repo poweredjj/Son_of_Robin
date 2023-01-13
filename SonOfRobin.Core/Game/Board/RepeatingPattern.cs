@@ -7,25 +7,43 @@ namespace SonOfRobin
 {
     public class RepeatingPattern
     {
-        private static readonly Dictionary<string, RepeatingPattern> patternDict = new Dictionary<string, RepeatingPattern>();
+        public enum Name
+        { grass, stones, water, ground, sand }; // lowercase to match filenames
 
-        public readonly string name;
+        private static Dictionary<Color, Name> namesForBaseColors = new Dictionary<Color, Name>
+        {
+            { new Color(11,46,176,255), Name.water },
+            { new Color(35,78,207,255), Name.water },
+            { new Color(65,105,225,255), Name.water },
+            { new Color(141,181,67,255), Name.grass },
+            { new Color(78,186,0,255), Name.grass },
+            { new Color(180,180,180,255), Name.stones },
+            { new Color(209,209,209,255), Name.stones },
+            { new Color(225,225,225,255), Name.stones },
+            { new Color(207,167,58,255), Name.ground },
+            { new Color(173,128,54,255), Name.ground },
+            { new Color(214,199,133,255), Name.sand },
+        };
+
+        public static readonly Name[] allNames = (Name[])Enum.GetValues(typeof(Name));
+
+        public static readonly Dictionary<Name, RepeatingPattern> patternDict = new Dictionary<Name, RepeatingPattern>();
+
+        public readonly Name name;
         private readonly Color[,] colorGrid;
         private readonly int width;
         private readonly int height;
 
         public static void ConvertAllTexturesToPatterns()
         {
-            var nameList = new List<string> { "sample" };
-
-            foreach (string textureName in nameList)
+            foreach (Name name in allNames)
             {
-                Texture2D texture = SonOfRobinGame.ContentMgr.Load<Texture2D>($"gfx/repeating textures/{textureName}");
-                new RepeatingPattern(name: textureName, texture: texture);
+                Texture2D texture = SonOfRobinGame.ContentMgr.Load<Texture2D>($"gfx/repeating textures/{name}");
+                new RepeatingPattern(name: name, texture: texture);
             }
         }
 
-        public RepeatingPattern(string name, Texture2D texture)
+        public RepeatingPattern(Name name, Texture2D texture)
         {
             if (patternDict.ContainsKey(name)) throw new ArgumentException($"Repeating pattern has already been added for '{name}'.");
 
@@ -51,6 +69,25 @@ namespace SonOfRobin
         public Color GetValue(int x, int y)
         {
             return colorGrid[x % width, y % height];
+        }
+
+        private static RepeatingPattern GetPatternForBaseColor(Color baseColor)
+        {
+            try
+            {
+                return patternDict[namesForBaseColors[baseColor]];
+            }
+            catch (KeyNotFoundException)
+            {
+                return null;
+            }
+        }
+
+        public static Color GetValueForBaseColor(Color baseColor, int x, int y)
+        {
+            RepeatingPattern pattern = GetPatternForBaseColor(baseColor);
+
+            return pattern == null ? baseColor : pattern.GetValue(x, y);
         }
     }
 }
