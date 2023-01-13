@@ -35,7 +35,7 @@ namespace SonOfRobin
         public BoardPiece MapMarker { get; private set; }
         private float InitialZoom
         { get { return Preferences.WorldScale / 2; } }
-        private static readonly Color paperColor = BoardGraphics.colorsByName[BoardGraphics.Colors.Beach1];
+        private static readonly Color paperColor = new Color(214, 199, 133, 255);
 
         public Map(World world, TouchLayout touchLayout) : base(inputType: InputTypes.None, priority: 1, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: false, touchLayout: touchLayout, tipsLayout: ControlTips.TipsLayout.Map)
         {

@@ -27,13 +27,13 @@ namespace SonOfRobin
             WaterDeep,
             WaterMedium,
             WaterShallow,
-            Beach1,
-            Beach2,
+            WaterSuperShallow,
+            BeachDark,
+            BeachBright,
             Ground,
             Mountains1,
             Mountains2,
             Mountains3,
-            Mountains4,
             VolcanoEdge,
             VolcanoInside1,
             VolcanoInside2,
@@ -41,7 +41,8 @@ namespace SonOfRobin
             GroundBad,
             GroundGood,
             GrassBad,
-            GrassGood
+            GrassGood,
+            BiomeSwamp
         }
 
         public BoardGraphics(Grid grid, Cell cell)
@@ -247,10 +248,10 @@ namespace SonOfRobin
                 {
                     Color pixel = upscaledColorGrid[x, y];
 
-                    //pixel = RepeatingPattern.GetValueForBaseColor(
-                    //    baseColor: pixel,
-                    //    x: this.cell.xMin + (x * resDivider / BoardTextureUpscaler3x.resizeFactor),
-                    //    y: this.cell.yMin + (y * resDivider / BoardTextureUpscaler3x.resizeFactor)); // for testing
+                    pixel = RepeatingPattern.GetValueForBaseColor(
+                        baseColor: pixel,
+                        x: this.cell.xMin + (x * resDivider / BoardTextureUpscaler3x.resizeFactor),
+                        y: this.cell.yMin + (y * resDivider / BoardTextureUpscaler3x.resizeFactor));
 
                     builder.SetPixel(pixel.R, pixel.G, pixel.B, x, y);
                 }
@@ -307,19 +308,9 @@ namespace SonOfRobin
 
             if (pixelBiome >= Terrain.biomeMin)
             {
-                if (extDataValDict[ExtBoardProps.Name.BiomeSwamp])
-                {
-                    float pixelMultiplier = 0.6f;
+                if (extDataValDict[ExtBoardProps.Name.BiomeSwamp]) pixel = colorsByName[Colors.BiomeSwamp];
 
-                    pixel = new Color(
-                        r: (byte)(pixel.R * pixelMultiplier),
-                        g: (byte)(pixel.G * pixelMultiplier),
-                        b: (byte)(pixel.B * pixelMultiplier),
-                        alpha: pixel.A);
-
-                    Color biomeColor = new Color(83, 97, 55, 128);
-                    pixel = Blend2Colors(bottomColor: pixel, topColor: biomeColor);
-                }
+                // future biome colors should be defined here
             }
 
             // if (extDataValDict[ExtBoardProps.ExtPropName.OuterBeach]) pixel = Blend2Colors(bottomColor: pixel, topColor: Color.Cyan * 0.8f); // for testing
@@ -351,13 +342,13 @@ namespace SonOfRobin
                 { Colors.WaterDeep, new Color(11,46,176,255) },
                 { Colors.WaterMedium, new Color(35,78,207,255) },
                 { Colors.WaterShallow, new Color(65,105,225,255) },
-                { Colors.Beach1, new Color(214,199,133,255) },
-                { Colors.Beach2, new Color(214,199,133,128) },
+                { Colors.WaterSuperShallow, new Color(85,125,245,255) },
+                { Colors.BeachDark, new Color(214,199,133,255) },
+                { Colors.BeachBright, new Color(240,230,153,255) },
                 { Colors.Ground, new Color(0,0,0,0) },
-                { Colors.Mountains1, new Color(180,180,180,128) },
-                { Colors.Mountains2, new Color(180,180,180,255) },
-                { Colors.Mountains3, new Color(209,209,209,255) },
-                { Colors.Mountains4, new Color(225,225,225,255) },
+                { Colors.Mountains1, new Color(180,180,180,255) },
+                { Colors.Mountains2, new Color(209,209,209,255) },
+                { Colors.Mountains3, new Color(225,225,225,255) },
                 { Colors.VolcanoEdge, new Color(64,64,64,255) },
                 { Colors.VolcanoInside1, new Color(255,81,0,255) },
                 { Colors.VolcanoInside2, new Color(255,179,0,255) },
@@ -368,6 +359,9 @@ namespace SonOfRobin
                 { Colors.GroundGood, new Color(173,128,54,255) },
                 { Colors.GrassBad, new Color(141,181,67,255) },
                 { Colors.GrassGood, new Color(78,186,0,255) },
+
+                // other definitions
+                { Colors.BiomeSwamp, new Color(83, 97, 55, 128) },
             };
 
             return colorsByName;
@@ -378,14 +372,14 @@ namespace SonOfRobin
             return new Dictionary<Colors, List<byte>>() {
                 { Colors.WaterDeep, new List<byte>(){0,(byte)(Terrain.waterLevelMax / 3)} },
                 { Colors.WaterMedium, new List<byte>(){ (byte)(Terrain.waterLevelMax / 3), (byte)(Terrain.waterLevelMax / 3 * 2)} },
-                { Colors.WaterShallow, new List<byte>(){ (byte)(Terrain.waterLevelMax / 3 * 2), Terrain.waterLevelMax} },
-                { Colors.Beach1, new List<byte>(){Terrain.waterLevelMax, 100} },
-                { Colors.Beach2, new List<byte>(){100, 105} },
+                { Colors.WaterShallow, new List<byte>(){ (byte)(Terrain.waterLevelMax / 3 * 2), Terrain.waterLevelMax - 2} },
+                { Colors.WaterSuperShallow, new List<byte>(){ Terrain.waterLevelMax - 1, Terrain.waterLevelMax} },
+                { Colors.BeachDark, new List<byte>(){Terrain.waterLevelMax, 95} },
+                { Colors.BeachBright, new List<byte>(){96, 105} },
                 { Colors.Ground, new List<byte>(){105, 160} },
-                { Colors.Mountains1, new List<byte>(){160, 163} },
-                { Colors.Mountains2, new List<byte>(){163, 178} },
-                { Colors.Mountains3, new List<byte>(){178, 194} },
-                { Colors.Mountains4, new List<byte>(){194, Terrain.volcanoEdgeMin} },
+                { Colors.Mountains1, new List<byte>(){160, 178} },
+                { Colors.Mountains2, new List<byte>(){178, 194} },
+                { Colors.Mountains3, new List<byte>(){194, Terrain.volcanoEdgeMin} },
                 { Colors.VolcanoEdge, new List<byte>(){Terrain.volcanoEdgeMin, Terrain.lavaMin} },
                 { Colors.VolcanoInside1, new List<byte>(){Terrain.lavaMin, 225} },
                 { Colors.VolcanoInside2, new List<byte>(){225, 255} },
@@ -395,8 +389,8 @@ namespace SonOfRobin
         private static Dictionary<Colors, List<byte>> GetColorsByHumidity()
         {
             return new Dictionary<Colors, List<byte>>() {
-                { Colors.Sand, new List<byte>(){0, 80} },
-                { Colors.GroundBad, new List<byte>(){80, 115} },
+                { Colors.Sand, new List<byte>(){0, 75} },
+                { Colors.GroundBad, new List<byte>(){75, 115} },
                 { Colors.GroundGood, new List<byte>(){115, 150} },
                 { Colors.GrassBad, new List<byte>(){150, 200} },
                 { Colors.GrassGood, new List<byte>(){200, 255} },
