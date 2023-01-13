@@ -76,7 +76,7 @@ namespace SonOfRobin
 
         public static void DeleteUsedAtlases()
         {
-            // Should be used after loading textures from all atlases.
+            // Should be used after loading textures from all atlasses.
             // Deleted textures will not be available for use any longer.
 
             foreach (string atlasName in usedAtlasNames)

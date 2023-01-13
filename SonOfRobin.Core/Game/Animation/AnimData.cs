@@ -16,7 +16,7 @@ namespace SonOfRobin
             .Concat(new List<string> { }) // "original" names can be placed here
             .ToList();
 
-        public static readonly string[] gfxNames = { "no_anim", "fox", "tile_custom01", "actor29rec4", "tileb", "tile_19ba32a6", "backlight_1", "backlight_2", "backlight_3", "backlight_4", "crabs_small", "crabs_big", "frogs_small", "frogs_big", "flowers", "8f296dbbaf43865bc29e99660fe7b5af_2x", "qYFvsmq", "NicePng_pine-tree-clipart-png_1446450", "palmtree_small", "tilees by guth_zpsfn3wpjdu_2x", "attack", "miss", "zzz", "heart_16x16", "rabbits", "virtual_joypad_background", "virtual_joypad_stick", "virtual_button", "virtual_button_pressed", "cursor", "chests", "chest_stone", "d9ffec650d3104f5c4564c9055787530", "sticks1", "sticks2", "axe_wooden", "hand", "tools_gravel", "stones", "fancy_food", "fancy_food2", "celianna_farmnature_crops_transparent", "big_icons_candacis", "Candacis_flames1", "gems__rpg_maker_mv__by_petschko-d9euoxr", "mv_blacksmith_by_schwarzenacht_dapf6ek", "bow", "arrow_wood", "arrow_iron", "crosshair", "stone_small", "craft_items", "tent_big", "tent_medium", "flames", "backpack_small", "backpack_medium", "backpack_medium_outline", "backpack_big", "belt_small", "belt_medium", "belt_big", "parchment", "exclamation", "scythe_stone", "scythe_iron", "grass_blade", "tiger", "plus", "acorn", "light_white", "small_torch_on", "small_torch_off", "big_torch_on", "big_torch_off", "water_drop", "tile_rtp-addons", "bottle_empty", "herbs_black", "herbs_blue", "herbs_cyan", "herbs_green", "herbs_red", "herbs_violet", "herbs_yellow", "rpg_maker_vx_ace_tilesets_1_by_hishimy_d8e7pjd", "Mouse/Mouse_Left_Key_Light", "Mouse/Mouse_Middle_Key_Light", "Mouse/Mouse_Right_Key_Light", "Mouse/Mouse_Scroll_Up_Light", "Mouse/Mouse_Scroll_Down_Light", "potion_black", "potion_dark_violet", "potion_dark_yellow", "potion_dark_green", "spear_wood", "spear_stone", "spear_iron", "alchemy_lab", "workshop_basic", "workshop_advanced", "workshop_essential", "workshop_master", "piece_of_fat", "bottle_oil", "burger", "biceps", "bed", "leaf_1", "leaf_2", "leaf_3", "crystal_deposit_big", "crystal_deposit_small", "crystal_shard", "crystal", "stone", "axe_crystal", "spear_crystal", "scythe_crystal", "arrow_crystal", "arrow_stone", "anvil", "iron_rod", "iron_plate", "skull_and_bones", "wood_regular", "wood_hard", "dig_site", "shovel_stone", "shovel_iron", "shovel_crystal", "clay", "hole", "meat_raw", "meat_dried", "jar_sealed", "jar_broken", "tree_stump", "debris_ceramic_1", "debris_ceramic_2", "granite", "hot_plate_off", "hot_plate_on_1", "hot_plate_on_2", "hot_plate_on_3", "music_note", "recolor_pt2", "star", "white_spot", "new", "upgrade_bench", "upgrade", "workshop_leather_basic", "workshop_leather_advanced", "rope", "hat_simple", "map_marker", "parchment_edges", "boots_protective", "fog_1", "fog_2", "fog_3", "fog_4", "plant_poison", "minerals_big_1", "minerals_big_2", "minerals_big_3", "minerals_small_1", "minerals_small_2", "minerals_small_3", "mossy_minerals_big_1", "mossy_minerals_big_2", "mossy_minerals_big_3", "mossy_minerals_big_4", "mossy_minerals_small_1", "mossy_minerals_small_2", "mossy_minerals_small_3", "mossy_minerals_small_4", "demoness" };
+        public static readonly string[] gfxNames = { "no_anim", "characters/fox", "tile_custom01", "characters/actor29rec4", "tileb", "tile_19ba32a6", "backlight_1", "backlight_2", "backlight_3", "backlight_4", "characters/crabs_small", "characters/crabs_big", "characters/frogs_small", "characters/frogs_big", "flowers", "8f296dbbaf43865bc29e99660fe7b5af_2x", "qYFvsmq", "NicePng_pine-tree-clipart-png_1446450", "palmtree_small", "tilees by guth_zpsfn3wpjdu_2x", "attack", "miss", "zzz", "heart_16x16", "characters/rabbits", "virtual_joypad_background", "virtual_joypad_stick", "virtual_button", "virtual_button_pressed", "cursor", "chests", "chest_stone", "d9ffec650d3104f5c4564c9055787530", "sticks1", "sticks2", "axe_wooden", "hand", "tools_gravel", "stones", "fancy_food", "fancy_food2", "celianna_farmnature_crops_transparent", "big_icons_candacis", "Candacis_flames1", "gems__rpg_maker_mv__by_petschko-d9euoxr", "mv_blacksmith_by_schwarzenacht_dapf6ek", "bow", "arrow_wood", "arrow_iron", "crosshair", "stone_small", "craft_items", "tent_big", "tent_medium", "flames", "backpack_small", "backpack_medium", "backpack_medium_outline", "backpack_big", "belt_small", "belt_medium", "belt_big", "parchment", "exclamation", "scythe_stone", "scythe_iron", "grass_blade", "characters/tiger", "acorn", "light_white", "small_torch_on", "small_torch_off", "big_torch_on", "big_torch_off", "water_drop", "tile_rtp-addons", "bottle_empty", "herbs_black", "herbs_blue", "herbs_cyan", "herbs_green", "herbs_red", "herbs_violet", "herbs_yellow", "rpg_maker_vx_ace_tilesets_1_by_hishimy_d8e7pjd", "input/Mouse/Mouse_Left_Key_Light", "input/Mouse/Mouse_Middle_Key_Light", "input/Mouse/Mouse_Right_Key_Light", "input/Mouse/Mouse_Scroll_Up_Light", "input/Mouse/Mouse_Scroll_Down_Light", "potion_black", "potion_dark_violet", "potion_dark_yellow", "potion_dark_green", "spear_wood", "spear_stone", "spear_iron", "alchemy_lab", "workshop_basic", "workshop_advanced", "workshop_essential", "workshop_master", "piece_of_fat", "bottle_oil", "burger", "biceps", "bed", "leaf_1", "leaf_2", "leaf_3", "crystal_deposit_big", "crystal_deposit_small", "crystal_shard", "crystal", "stone", "axe_crystal", "spear_crystal", "scythe_crystal", "arrow_crystal", "arrow_stone", "anvil", "iron_rod", "iron_plate", "skull_and_bones", "wood_regular", "wood_hard", "dig_site", "shovel_stone", "shovel_iron", "shovel_crystal", "clay", "hole", "meat_raw", "meat_dried", "jar_sealed", "jar_broken", "tree_stump", "debris_ceramic_1", "debris_ceramic_2", "granite", "hot_plate_off", "hot_plate_on_1", "hot_plate_on_2", "hot_plate_on_3", "music_note", "characters/recolor_pt2", "star", "white_spot", "new", "upgrade_bench", "upgrade", "workshop_leather_basic", "workshop_leather_advanced", "rope", "hat_simple", "map_marker", "parchment_edges", "boots_protective", "fog_1", "fog_2", "fog_3", "fog_4", "plant_poison", "minerals_big_1", "minerals_big_2", "minerals_big_3", "minerals_small_1", "minerals_small_2", "minerals_small_3", "mossy_minerals_big_1", "mossy_minerals_big_2", "mossy_minerals_big_3", "mossy_minerals_big_4", "mossy_minerals_small_1", "mossy_minerals_small_2", "mossy_minerals_small_3", "mossy_minerals_small_4", "characters/demoness", "repeating textures/sample" };
 
         public static void LoadAllTextures()
         {
@@ -952,13 +952,13 @@ namespace SonOfRobin
             AddFrameList(animPackage: PkgName.MapMarker, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "map_marker", layer: 2, crop: false, padding: 0));
 
             // RPGMaker characters
-            AddRPGMakerPackageV1(packageName: PkgName.PlayerBoy, atlasName: "actor29rec4", setNoX: 0, setNoY: 0, animSize: 0);
-            AddRPGMakerPackageV1(packageName: PkgName.PlayerGirl, atlasName: "recolor_pt2", setNoX: 0, setNoY: 0, animSize: 0);
-            AddRPGMakerPackageV1(packageName: PkgName.PlayerTestDemoness, atlasName: "demoness", setNoX: 0, setNoY: 0, animSize: 0);
+            AddRPGMakerPackageV1(packageName: PkgName.PlayerBoy, atlasName: "characters/actor29rec4", setNoX: 0, setNoY: 0, animSize: 0);
+            AddRPGMakerPackageV1(packageName: PkgName.PlayerGirl, atlasName: "characters/recolor_pt2", setNoX: 0, setNoY: 0, animSize: 0);
+            AddRPGMakerPackageV1(packageName: PkgName.PlayerTestDemoness, atlasName: "characters/demoness", setNoX: 0, setNoY: 0, animSize: 0);
 
             foreach (var kvp in new Dictionary<byte, float> { { 0, 0.6f }, { 1, 0.8f }, { 2, 1.0f } })
             {
-                string atlasName = "rabbits";
+                string atlasName = "characters/rabbits";
                 byte animSize = kvp.Key;
                 float scale = kvp.Value;
 
@@ -974,7 +974,7 @@ namespace SonOfRobin
 
             foreach (var kvp in new Dictionary<byte, float> { { 0, 0.6f }, { 1, 0.8f }, { 2, 1.0f } })
             {
-                string atlasName = "fox";
+                string atlasName = "characters/fox";
                 byte animSize = kvp.Key;
                 float scale = kvp.Value;
 
@@ -990,7 +990,7 @@ namespace SonOfRobin
 
             foreach (var kvp in new Dictionary<byte, float> { { 0, 0.6f }, { 1, 1.0f }, { 2, 1.3f } })
             {
-                string atlasName = "tiger";
+                string atlasName = "characters/tiger";
                 byte animSize = kvp.Key;
                 float scale = kvp.Value;
 
@@ -1005,19 +1005,20 @@ namespace SonOfRobin
             }
             {
                 float scale = 1f;
-                AddRPGMakerPackageV2(packageName: PkgName.Frog1, atlasName: "frogs_small", setNoX: 0, setNoY: 0, animSize: 0, scale: scale);
-                AddRPGMakerPackageV2(packageName: PkgName.Frog2, atlasName: "frogs_small", setNoX: 1, setNoY: 0, animSize: 0, scale: scale);
-                AddRPGMakerPackageV2(packageName: PkgName.Frog3, atlasName: "frogs_small", setNoX: 2, setNoY: 0, animSize: 0, scale: scale);
-                AddRPGMakerPackageV2(packageName: PkgName.Frog4, atlasName: "frogs_small", setNoX: 3, setNoY: 0, animSize: 0, scale: scale);
-                AddRPGMakerPackageV2(packageName: PkgName.Frog5, atlasName: "frogs_small", setNoX: 0, setNoY: 1, animSize: 0, scale: scale);
-                AddRPGMakerPackageV2(packageName: PkgName.Frog6, atlasName: "frogs_small", setNoX: 1, setNoY: 1, animSize: 0, scale: scale);
-                AddRPGMakerPackageV2(packageName: PkgName.Frog7, atlasName: "frogs_small", setNoX: 2, setNoY: 1, animSize: 0, scale: scale);
-                AddRPGMakerPackageV2(packageName: PkgName.Frog8, atlasName: "frogs_small", setNoX: 3, setNoY: 1, animSize: 0, scale: scale);
+                string atlasName = "characters/frogs_small";
+                AddRPGMakerPackageV2(packageName: PkgName.Frog1, atlasName: atlasName, setNoX: 0, setNoY: 0, animSize: 0, scale: scale);
+                AddRPGMakerPackageV2(packageName: PkgName.Frog2, atlasName: atlasName, setNoX: 1, setNoY: 0, animSize: 0, scale: scale);
+                AddRPGMakerPackageV2(packageName: PkgName.Frog3, atlasName: atlasName, setNoX: 2, setNoY: 0, animSize: 0, scale: scale);
+                AddRPGMakerPackageV2(packageName: PkgName.Frog4, atlasName: atlasName, setNoX: 3, setNoY: 0, animSize: 0, scale: scale);
+                AddRPGMakerPackageV2(packageName: PkgName.Frog5, atlasName: atlasName, setNoX: 0, setNoY: 1, animSize: 0, scale: scale);
+                AddRPGMakerPackageV2(packageName: PkgName.Frog6, atlasName: atlasName, setNoX: 1, setNoY: 1, animSize: 0, scale: scale);
+                AddRPGMakerPackageV2(packageName: PkgName.Frog7, atlasName: atlasName, setNoX: 2, setNoY: 1, animSize: 0, scale: scale);
+                AddRPGMakerPackageV2(packageName: PkgName.Frog8, atlasName: atlasName, setNoX: 3, setNoY: 1, animSize: 0, scale: scale);
             }
 
             foreach (var kvp in new Dictionary<byte, float> { { 1, 0.6f }, { 2, 1.0f } })
             {
-                string atlasName = "frogs_big";
+                string atlasName = "characters/frogs_big";
                 byte animSize = kvp.Key;
                 float scale = kvp.Value;
 
@@ -1032,22 +1033,25 @@ namespace SonOfRobin
             }
 
             {
-                AddRPGMakerPackageV2(packageName: PkgName.CrabRed, atlasName: "crabs_small", setNoX: 0, setNoY: 0, animSize: 0, crop: true);
-                AddRPGMakerPackageV2(packageName: PkgName.CrabRed, atlasName: "crabs_big", setNoX: 0, setNoY: 0, animSize: 1);
-                AddRPGMakerPackageV2(packageName: PkgName.CrabBrown, atlasName: "crabs_small", setNoX: 1, setNoY: 0, animSize: 0, crop: true);
-                AddRPGMakerPackageV2(packageName: PkgName.CrabBrown, atlasName: "crabs_big", setNoX: 1, setNoY: 0, animSize: 1);
-                AddRPGMakerPackageV2(packageName: PkgName.CrabGreen, atlasName: "crabs_small", setNoX: 2, setNoY: 0, animSize: 0, crop: true);
-                AddRPGMakerPackageV2(packageName: PkgName.CrabGreen, atlasName: "crabs_big", setNoX: 2, setNoY: 0, animSize: 1);
-                AddRPGMakerPackageV2(packageName: PkgName.CrabLightBlue, atlasName: "crabs_small", setNoX: 3, setNoY: 0, animSize: 0, crop: true);
-                AddRPGMakerPackageV2(packageName: PkgName.CrabLightBlue, atlasName: "crabs_big", setNoX: 3, setNoY: 0, animSize: 1);
-                AddRPGMakerPackageV2(packageName: PkgName.CrabGray, atlasName: "crabs_small", setNoX: 0, setNoY: 1, animSize: 0, crop: true);
-                AddRPGMakerPackageV2(packageName: PkgName.CrabGray, atlasName: "crabs_big", setNoX: 0, setNoY: 1, animSize: 1);
-                AddRPGMakerPackageV2(packageName: PkgName.CrabGray, atlasName: "crabs_small", setNoX: 1, setNoY: 1, animSize: 0, crop: true);
-                AddRPGMakerPackageV2(packageName: PkgName.CrabYellow, atlasName: "crabs_big", setNoX: 1, setNoY: 1, animSize: 1);
-                AddRPGMakerPackageV2(packageName: PkgName.CrabYellow, atlasName: "crabs_small", setNoX: 2, setNoY: 1, animSize: 0, crop: true);
-                AddRPGMakerPackageV2(packageName: PkgName.CrabBeige, atlasName: "crabs_big", setNoX: 2, setNoY: 1, animSize: 1);
-                AddRPGMakerPackageV2(packageName: PkgName.CrabDarkBrown, atlasName: "crabs_small", setNoX: 3, setNoY: 1, animSize: 0, crop: true);
-                AddRPGMakerPackageV2(packageName: PkgName.CrabDarkBrown, atlasName: "crabs_big", setNoX: 3, setNoY: 1, animSize: 1);
+                string atlasNameSmall = "characters/crabs_small";
+                string atlasNameBig = "characters/crabs_big";
+
+                AddRPGMakerPackageV2(packageName: PkgName.CrabRed, atlasName: atlasNameSmall, setNoX: 0, setNoY: 0, animSize: 0, crop: true);
+                AddRPGMakerPackageV2(packageName: PkgName.CrabRed, atlasName: atlasNameBig, setNoX: 0, setNoY: 0, animSize: 1);
+                AddRPGMakerPackageV2(packageName: PkgName.CrabBrown, atlasName: atlasNameSmall, setNoX: 1, setNoY: 0, animSize: 0, crop: true);
+                AddRPGMakerPackageV2(packageName: PkgName.CrabBrown, atlasName: atlasNameBig, setNoX: 1, setNoY: 0, animSize: 1);
+                AddRPGMakerPackageV2(packageName: PkgName.CrabGreen, atlasName: atlasNameSmall, setNoX: 2, setNoY: 0, animSize: 0, crop: true);
+                AddRPGMakerPackageV2(packageName: PkgName.CrabGreen, atlasName: atlasNameBig, setNoX: 2, setNoY: 0, animSize: 1);
+                AddRPGMakerPackageV2(packageName: PkgName.CrabLightBlue, atlasName: atlasNameSmall, setNoX: 3, setNoY: 0, animSize: 0, crop: true);
+                AddRPGMakerPackageV2(packageName: PkgName.CrabLightBlue, atlasName: atlasNameBig, setNoX: 3, setNoY: 0, animSize: 1);
+                AddRPGMakerPackageV2(packageName: PkgName.CrabGray, atlasName: atlasNameSmall, setNoX: 0, setNoY: 1, animSize: 0, crop: true);
+                AddRPGMakerPackageV2(packageName: PkgName.CrabGray, atlasName: atlasNameBig, setNoX: 0, setNoY: 1, animSize: 1);
+                AddRPGMakerPackageV2(packageName: PkgName.CrabGray, atlasName: atlasNameSmall, setNoX: 1, setNoY: 1, animSize: 0, crop: true);
+                AddRPGMakerPackageV2(packageName: PkgName.CrabYellow, atlasName: atlasNameBig, setNoX: 1, setNoY: 1, animSize: 1);
+                AddRPGMakerPackageV2(packageName: PkgName.CrabYellow, atlasName: atlasNameSmall, setNoX: 2, setNoY: 1, animSize: 0, crop: true);
+                AddRPGMakerPackageV2(packageName: PkgName.CrabBeige, atlasName: atlasNameBig, setNoX: 2, setNoY: 1, animSize: 1);
+                AddRPGMakerPackageV2(packageName: PkgName.CrabDarkBrown, atlasName: atlasNameSmall, setNoX: 3, setNoY: 1, animSize: 0, crop: true);
+                AddRPGMakerPackageV2(packageName: PkgName.CrabDarkBrown, atlasName: atlasNameBig, setNoX: 3, setNoY: 1, animSize: 1);
             }
         }
 

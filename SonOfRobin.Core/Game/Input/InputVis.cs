@@ -134,28 +134,28 @@ namespace SonOfRobin
             switch (mouseAction)
             {
                 case InputMapper.MouseAction.LeftButton:
-                    return SonOfRobinGame.textureByName["Mouse/Mouse_Left_Key_Light"];
+                    return SonOfRobinGame.textureByName["input/Mouse/Mouse_Left_Key_Light"];
 
                 case InputMapper.MouseAction.LeftButtonVisOnly:
-                    return SonOfRobinGame.textureByName["Mouse/Mouse_Left_Key_Light"];
+                    return SonOfRobinGame.textureByName["input/Mouse/Mouse_Left_Key_Light"];
 
                 case InputMapper.MouseAction.MiddleButton:
-                    return SonOfRobinGame.textureByName["Mouse/Mouse_Middle_Key_Light"];
+                    return SonOfRobinGame.textureByName["input/Mouse/Mouse_Middle_Key_Light"];
 
                 case InputMapper.MouseAction.MiddleButtonVisOnly:
-                    return SonOfRobinGame.textureByName["Mouse/Mouse_Middle_Key_Light"];
+                    return SonOfRobinGame.textureByName["input/Mouse/Mouse_Middle_Key_Light"];
 
                 case InputMapper.MouseAction.RightButton:
-                    return SonOfRobinGame.textureByName["Mouse/Mouse_Right_Key_Light"];
+                    return SonOfRobinGame.textureByName["input/Mouse/Mouse_Right_Key_Light"];
 
                 case InputMapper.MouseAction.RightButtonVisOnly:
-                    return SonOfRobinGame.textureByName["Mouse/Mouse_Right_Key_Light"];
+                    return SonOfRobinGame.textureByName["input/Mouse/Mouse_Right_Key_Light"];
 
                 case InputMapper.MouseAction.ScrollUp:
-                    return SonOfRobinGame.textureByName["Mouse/Mouse_Scroll_Up_Light"];
+                    return SonOfRobinGame.textureByName["input/Mouse/Mouse_Scroll_Up_Light"];
 
                 case InputMapper.MouseAction.ScrollDown:
-                    return SonOfRobinGame.textureByName["Mouse/Mouse_Scroll_Down_Light"];
+                    return SonOfRobinGame.textureByName["input/Mouse/Mouse_Scroll_Down_Light"];
 
                 default:
                     throw new ArgumentException($"Unsupported mouseAction - '{mouseAction}'.");
