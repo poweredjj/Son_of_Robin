@@ -37,7 +37,7 @@ namespace SonOfRobin
             Keyboard.GetState();
             GamePad.GetPreviousState(PlayerIndex.One);
             TouchInput.GetState(gameTime: gameTime);
-            RefreshTipsType();
+            RefreshControlType();
 
             globalInputActive = savedGlobalInput;
             localInputActive = savedLocalInput;
@@ -45,7 +45,7 @@ namespace SonOfRobin
             ReactivateGlobalInput();
         }
 
-        private static void RefreshTipsType()
+        private static void RefreshControlType()
         {
             if (SonOfRobinGame.CurrentUpdate % 12 != 0) return;
 

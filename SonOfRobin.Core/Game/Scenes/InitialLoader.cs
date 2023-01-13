@@ -8,7 +8,7 @@ namespace SonOfRobin
     public class InitialLoader : Scene
     {
         public enum Step
-        { Initial, LoadEffects, LoadFonts, CreateControlTips, LoadSounds, LoadTextures, CreateAnims, LoadKeysGfx, CreateScenes, MakeItemsInfo, MakeCraftRecipes, MakeDemoWorld, SetControlTips, OpenMainMenu }
+        { Initial, LoadEffects, LoadFonts, CreateControlTips, LoadSounds, LoadTextures, CreateSeamless, CreateAnims, LoadKeysGfx, CreateScenes, MakeItemsInfo, MakeCraftRecipes, MakeDemoWorld, SetControlTips, OpenMainMenu }
 
         private static readonly int allStepsCount = ((Step[])Enum.GetValues(typeof(Step))).Length;
 
@@ -19,6 +19,7 @@ namespace SonOfRobin
             { Step.CreateControlTips, "creating control tips" },
             { Step.LoadSounds, "loading sounds" },
             { Step.LoadTextures, "loading textures" },
+            { Step.CreateSeamless, "creating seamless textures" },
             { Step.CreateAnims, "creating animations" },
             { Step.LoadKeysGfx, "loading keyboard textures" },
             { Step.CreateScenes, "creating helper scenes" },
@@ -71,6 +72,10 @@ namespace SonOfRobin
 
                 case Step.LoadTextures:
                     AnimData.LoadAllTextures();
+                    break;
+
+                case Step.CreateSeamless:
+                    RepeatingPattern.ConvertAllTexturesToPatterns();
                     break;
 
                 case Step.CreateAnims:
