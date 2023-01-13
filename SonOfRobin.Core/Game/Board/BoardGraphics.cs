@@ -35,8 +35,7 @@ namespace SonOfRobin
             Mountains2,
             Mountains3,
             VolcanoEdge,
-            VolcanoInside1,
-            VolcanoInside2,
+            VolcanoInside,
             Sand,
             GroundBad,
             GroundGood,
@@ -357,8 +356,7 @@ namespace SonOfRobin
                 { Colors.Mountains2, new Color(209,209,209,255) },
                 { Colors.Mountains3, new Color(225,225,225,255) },
                 { Colors.VolcanoEdge, new Color(64,64,64,255) },
-                { Colors.VolcanoInside1, new Color(255,81,0,255) },
-                { Colors.VolcanoInside2, new Color(255,179,0,255) },
+                { Colors.VolcanoInside, new Color(255,81,0,255) },
 
                 // humidity definitions
                 { Colors.Sand, new Color(227,210,102,255) },
@@ -388,8 +386,7 @@ namespace SonOfRobin
                 { Colors.Mountains2, new List<byte>(){178, 194} },
                 { Colors.Mountains3, new List<byte>(){194, Terrain.volcanoEdgeMin} },
                 { Colors.VolcanoEdge, new List<byte>(){Terrain.volcanoEdgeMin, Terrain.lavaMin} },
-                { Colors.VolcanoInside1, new List<byte>(){Terrain.lavaMin, 235} },
-                { Colors.VolcanoInside2, new List<byte>(){245, 255} },
+                { Colors.VolcanoInside, new List<byte>(){Terrain.lavaMin, 255} },
             };
         }
 

@@ -229,6 +229,7 @@ namespace SonOfRobin
 
             LavaLight,
             SwampGas,
+            LavaGas,
 
             SoundSeaWaves,
             SoundLakeWaves,
@@ -2585,6 +2586,26 @@ namespace SonOfRobin
 
                         visualEffect.sprite.color = Color.LimeGreen;
                         visualEffect.sprite.opacity = 0.3f;
+
+                        return visualEffect;
+                    }
+
+                case Name.LavaGas:
+                    {
+                        var packageNames = new List<AnimData.PkgName> { AnimData.PkgName.Fog1, AnimData.PkgName.Fog2, AnimData.PkgName.Fog3, AnimData.PkgName.Fog4, AnimData.PkgName.Fog5, AnimData.PkgName.Fog6, AnimData.PkgName.Fog7, AnimData.PkgName.Fog8 };
+                        var animPkg = packageNames[random.Next(0, packageNames.Count)];
+
+                        var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
+                            { Terrain.Name.Height, new AllowedRange(min: (byte)(Terrain.lavaMin + 1), max: 255) },
+                            { Terrain.Name.Biome, new AllowedRange(min: 0, max: (byte)(Terrain.biomeMin - 1)) },
+                        });
+
+                        AllowedDensity allowedDensity = new AllowedDensity(radious: 400, maxNoOfPiecesSameName: 3);
+
+                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: animPkg, destructionDelay: 0, allowedTerrain: allowedTerrain, allowedDensity: allowedDensity, minDistance: 0, maxDistance: 0, generation: generation, fadeInAnim: false, readableName: "gas", description: "Lava gas.", activeState: BoardPiece.State.FogMoveRandomly, serialize: true, ignoresCollisions: false, visible: true);
+
+                        visualEffect.sprite.color = new Color(255, 206, 28);
+                        visualEffect.sprite.opacity = 0.45f;
 
                         return visualEffect;
                     }

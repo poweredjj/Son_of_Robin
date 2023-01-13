@@ -24,8 +24,7 @@ namespace SonOfRobin
             beach_bright,
             beach_dark,
             swamp,
-            lava_bright,
-            lava_dark,
+            lava,
             volcano_edge,
         };
 
@@ -46,8 +45,7 @@ namespace SonOfRobin
             { new Color(214,199,133,255).GetHashCode(), Name.beach_dark },
             { new Color(227,210,102,255).GetHashCode(), Name.sand },
             { new Color(83, 97, 55, 128).GetHashCode(), Name.swamp },
-            { new Color(255,81,0,255).GetHashCode(), Name.lava_dark },
-            { new Color(255,179,0,255).GetHashCode(), Name.lava_bright },
+            { new Color(255,81,0,255).GetHashCode(), Name.lava },
             { new Color(64,64,64,255).GetHashCode(), Name.volcano_edge },
         };
 
@@ -64,7 +62,7 @@ namespace SonOfRobin
         {
             foreach (Name name in allNames)
             {
-                Texture2D texture = SonOfRobinGame.ContentMgr.Load<Texture2D>($"gfx/repeating textures/{name}");
+                Texture2D texture = SonOfRobinGame.ContentMgr.Load<Texture2D>($"gfx/ground textures/{name}");
                 new RepeatingPattern(name: name, texture: texture);
             }
         }
