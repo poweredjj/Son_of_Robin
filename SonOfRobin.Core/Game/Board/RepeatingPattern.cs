@@ -8,7 +8,22 @@ namespace SonOfRobin
     public class RepeatingPattern
     {
         public enum Name
-        { grass, stones, water_supershallow, sand, water_shallow, water_medium, water_deep, ground, beach_bright, beach_dark, swamp }; // lowercase to match filenames
+        { // lowercase to match filenames
+            grass,
+            water_supershallow,
+            sand, water_shallow,
+            water_medium,
+            water_deep,
+            mountain_low,
+            mountain_medium,
+            mountain_high,
+            ground,
+            beach_bright,
+            beach_dark,
+            swamp,
+            lava_bright,
+            lava_dark,
+        };
 
         private static Dictionary<int, Name> namesForBaseColors = new Dictionary<int, Name>
         {
@@ -18,15 +33,17 @@ namespace SonOfRobin
             { new Color(85,125,245,255).GetHashCode(), Name.water_supershallow },
             { new Color(141,181,67,255).GetHashCode(), Name.grass },
             { new Color(78,186,0,255).GetHashCode(), Name.grass },
-            { new Color(180,180,180,255).GetHashCode(), Name.stones },
-            { new Color(209,209,209,255).GetHashCode(), Name.stones },
-            { new Color(225,225,225,255).GetHashCode(), Name.stones },
+            { new Color(180,180,180,255).GetHashCode(), Name.mountain_low },
+            { new Color(209,209,209,255).GetHashCode(), Name.mountain_medium },
+            { new Color(225,225,225,255).GetHashCode(), Name.mountain_high },
             { new Color(207,167,58,255).GetHashCode(), Name.ground },
             { new Color(173,128,54,255).GetHashCode(), Name.ground },
             { new Color(240,230,153,255).GetHashCode(), Name.beach_bright },
             { new Color(214,199,133,255).GetHashCode(), Name.beach_dark },
             { new Color(227,210,102,255).GetHashCode(), Name.sand },
             { new Color(83, 97, 55, 128).GetHashCode(), Name.swamp },
+            { new Color(255,81,0,255).GetHashCode(), Name.lava_dark },
+            { new Color(255,179,0,255).GetHashCode(), Name.lava_bright },
         };
 
         public static readonly Name[] allNames = (Name[])Enum.GetValues(typeof(Name));

@@ -381,8 +381,8 @@ namespace SonOfRobin
                 { Colors.Mountains2, new List<byte>(){178, 194} },
                 { Colors.Mountains3, new List<byte>(){194, Terrain.volcanoEdgeMin} },
                 { Colors.VolcanoEdge, new List<byte>(){Terrain.volcanoEdgeMin, Terrain.lavaMin} },
-                { Colors.VolcanoInside1, new List<byte>(){Terrain.lavaMin, 225} },
-                { Colors.VolcanoInside2, new List<byte>(){225, 255} },
+                { Colors.VolcanoInside1, new List<byte>(){Terrain.lavaMin, 235} },
+                { Colors.VolcanoInside2, new List<byte>(){245, 255} },
             };
         }
 
