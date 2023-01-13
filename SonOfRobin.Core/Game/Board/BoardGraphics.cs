@@ -59,7 +59,7 @@ namespace SonOfRobin
             {
                 if (!this.textureSimulationCalculated)
                 {
-                    this.TextureSimulationColor = CreatePixel(grid: this.cell.grid, x: this.cell.xCenter, y: this.cell.yCenter);
+                    this.TextureSimulationColor = CreateTexturedPixel(grid: this.cell.grid, x: this.cell.xCenter, y: this.cell.yCenter);
                 }
 
                 return this.textureSimulationColor;
@@ -123,7 +123,7 @@ namespace SonOfRobin
             {
                 for (int x = 0; x < width; x++)
                 {
-                    colorArray[(y * width) + x] = CreatePixel(grid: grid, x: (int)(x / multiplier), y: (int)(y / multiplier), convertToFinalTexture: true);
+                    colorArray[(y * width) + x] = CreateTexturedPixel(grid: grid, x: (int)(x / multiplier), y: (int)(y / multiplier));
                 }
             }
 
@@ -276,7 +276,7 @@ namespace SonOfRobin
             return upscaledColorGrid;
         }
 
-        private static Color CreatePixel(Grid grid, int x, int y, bool convertToFinalTexture = false)
+        private static Color CreatePixel(Grid grid, int x, int y)
         {
             byte pixelHeight = grid.GetFieldValue(terrainName: Terrain.Name.Height, x: x, y: y);
             byte pixelHumidity = grid.GetFieldValue(terrainName: Terrain.Name.Humidity, x: x, y: y);
@@ -317,9 +317,14 @@ namespace SonOfRobin
             // if (extDataValDict[ExtBoardProps.ExtPropName.Sea]) pixel = Blend2Colors(bottomColor: pixel, topColor: Color.Red * 0.8f); // for testing
             // if (extDataValDict[ExtBoardProps.ExtPropName.BiomeSwamp]) pixel = Blend2Colors(bottomColor: pixel, topColor: Color.Green * 0.8f); // for testing
 
-            if (convertToFinalTexture) pixel = RepeatingPattern.GetValueForBaseColor(baseColor: pixel, x: x, y: y);
-
             return pixel;
+        }
+
+        public static Color CreateTexturedPixel(Grid grid, int x, int y)
+        {
+            Color pixel = CreatePixel(grid: grid, x: x, y: y);
+            return RepeatingPattern.GetValueForBaseColor(baseColor: pixel, x: x, y: y);
+
         }
 
         public static Color Blend2Colors(Color bottomColor, Color topColor)
@@ -376,8 +381,8 @@ namespace SonOfRobin
                 { Colors.WaterMedium, new List<byte>(){ (byte)(Terrain.waterLevelMax / 3), (byte)(Terrain.waterLevelMax / 3 * 2)} },
                 { Colors.WaterShallow, new List<byte>(){ (byte)(Terrain.waterLevelMax / 3 * 2), Terrain.waterLevelMax - 2} },
                 { Colors.WaterSuperShallow, new List<byte>(){ Terrain.waterLevelMax - 1, Terrain.waterLevelMax} },
-                { Colors.BeachDark, new List<byte>(){Terrain.waterLevelMax, 95} },
-                { Colors.BeachBright, new List<byte>(){96, 105} },
+                { Colors.BeachBright, new List<byte>(){Terrain.waterLevelMax, 95} },
+                { Colors.BeachDark, new List<byte>(){96, 105} },
                 { Colors.Ground, new List<byte>(){105, 160} },
                 { Colors.Mountains1, new List<byte>(){160, 178} },
                 { Colors.Mountains2, new List<byte>(){178, 194} },
@@ -393,9 +398,9 @@ namespace SonOfRobin
             return new Dictionary<Colors, List<byte>>() {
                 { Colors.Sand, new List<byte>(){0, 75} },
                 { Colors.GroundBad, new List<byte>(){75, 115} },
-                { Colors.GroundGood, new List<byte>(){115, 150} },
-                { Colors.GrassBad, new List<byte>(){150, 200} },
-                { Colors.GrassGood, new List<byte>(){200, 255} },
+                { Colors.GroundGood, new List<byte>(){115, 120} },
+                { Colors.GrassBad, new List<byte>(){120, 160} },
+                { Colors.GrassGood, new List<byte>(){160, 255} },
             };
         }
     }

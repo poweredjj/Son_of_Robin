@@ -4,7 +4,6 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using Xamarin.Essentials;
 
@@ -91,15 +90,15 @@ namespace SonOfRobin
         {
             get
             {
-                if (ramCounter == null) ramCounter = new PerformanceCounter("Memory", "Available MBytes"); // COMMENT THIS LINE on platforms other than Windows
-                if (os == OS.Windows) return ((PerformanceCounter)ramCounter).NextValue(); // COMMENT THIS LINE on platforms other than Windows
+                // if (ramCounter == null) ramCounter = new PerformanceCounter("Memory", "Available MBytes"); // COMMENT THIS LINE on platforms other than Windows
+                // if (os == OS.Windows) return ((PerformanceCounter)ramCounter).NextValue(); // COMMENT THIS LINE on platforms other than Windows
                 return -100;
             }
         }
 
         private static void MoveWindowOnWorkMachine(Game game) // method used, to make the code to be commented closer
         {
-            if (ThisIsWorkMachine) game.Window.Position = new Point(-10, 758); // COMMENT THIS LINE on ANDROID
+            // if (ThisIsWorkMachine) game.Window.Position = new Point(-10, 758); // COMMENT THIS LINE on ANDROID
         }
 
         public static bool WindowsMemoryLow
