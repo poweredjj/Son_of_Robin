@@ -45,8 +45,6 @@ xcopy "bin\Release\netcoreapp3.1\osx-x64\publish" "bin\Release\osx-64\SonOfRobin
 
 :: Remove the content directory from Contents\MacOS - it have been copied with everything else and we don't need it there 
 
-::rd /s /q bin\Release\osx-64\SonOfRobin.app\Contents\MacOS\Content\
-
 :: Copy the Info.plist file to the correct place (you may have have it somewhere other than resources\osx\)
 copy resources\osx\Info.plist bin\Release\osx-64\SonOfRobin.app\Contents\
 
@@ -55,6 +53,8 @@ copy resources\osx\Icon.icns bin\Release\osx-64\SonOfRobin.app\Contents\Resource
 
 :: If debugging Steamworks APIs you may need this file, otherwise you can ignore this line
 ::copy resources\osx\steam_appid.txt bin\Release\osx-64\SonOfRobin.app\Contents\MacOS\
+
+move bin\Release\osx-64\SonOfRobin.app\Contents\MacOS\Content bin\Release\osx-64\SonOfRobin.app\Contents\Resources
 
 cd ..
 
