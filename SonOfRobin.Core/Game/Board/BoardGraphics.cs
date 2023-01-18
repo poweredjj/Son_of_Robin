@@ -231,45 +231,37 @@ namespace SonOfRobin
             byte pixelHeight = grid.GetFieldValue(terrainName: Terrain.Name.Height, x: x, y: y);
             byte pixelHumidity = grid.GetFieldValue(terrainName: Terrain.Name.Humidity, x: x, y: y);
             byte pixelBiome = grid.GetFieldValue(terrainName: Terrain.Name.Biome, x: x, y: y);
-            Dictionary<ExtBoardProps.Name, bool> extDataValDict = grid.GetExtValueDict(x, y);
 
-            RepeatingPattern.Name patternName = RepeatingPattern.Name.white;
-            bool heightPatternFound = false;
+            //{ // for testing
+            //    Dictionary<ExtBoardProps.Name, bool> extDataValDict = grid.GetExtValueDict(x, y);
+            //    if (extDataValDict[ExtBoardProps.Name.OuterBeach]) return RepeatingPattern.Name.just_red;
+            //    if (extDataValDict[ExtBoardProps.Name.Sea]) return RepeatingPattern.Name.just_cyan;
+            //    if (extDataValDict[ExtBoardProps.Name.BiomeSwamp]) return RepeatingPattern.Name.just_blue;
+            //} // for testing
+
+            if (pixelBiome >= Terrain.biomeMin)
+            {
+                Dictionary<ExtBoardProps.Name, bool> extDataValDict = grid.GetExtValueDict(x, y);
+
+                if (extDataValDict[ExtBoardProps.Name.BiomeSwamp]) return RepeatingPattern.Name.swamp;
+
+                // future biome colors should be defined here
+            }
 
             foreach (var kvp in patternNamesByHeight)
             {
                 if (kvp.Value[1] >= pixelHeight && pixelHeight >= kvp.Value[0])
                 {
-                    patternName = kvp.Key;
-                    heightPatternFound = true;
-                    break;
+                    return kvp.Key;
                 }
             }
 
-            if (!heightPatternFound)
+            foreach (var kvp in patternNamesByHumidity)
             {
-                foreach (var kvp in patternNamesByHumidity)
-                {
-                    if (kvp.Value[1] >= pixelHumidity && pixelHumidity >= kvp.Value[0])
-                    {
-                        patternName = kvp.Key;
-                        break;
-                    }
-                }
+                if (kvp.Value[1] >= pixelHumidity && pixelHumidity >= kvp.Value[0]) return kvp.Key;
             }
 
-            if (pixelBiome >= Terrain.biomeMin)
-            {
-                if (extDataValDict[ExtBoardProps.Name.BiomeSwamp]) patternName = RepeatingPattern.Name.swamp;
-
-                // future biome colors should be defined here
-            }
-
-            // if (extDataValDict[ExtBoardProps.ExtPropName.OuterBeach]) pixel = Blend2Colors(bottomColor: pixel, topColor: Color.Cyan * 0.8f); // for testing
-            // if (extDataValDict[ExtBoardProps.ExtPropName.Sea]) pixel = Blend2Colors(bottomColor: pixel, topColor: Color.Red * 0.8f); // for testing
-            // if (extDataValDict[ExtBoardProps.ExtPropName.BiomeSwamp]) pixel = Blend2Colors(bottomColor: pixel, topColor: Color.Green * 0.8f); // for testing
-
-            return patternName;
+            return RepeatingPattern.Name.just_red;
         }
 
         public static Color CreateTexturedPixel(Grid grid, int x, int y)
