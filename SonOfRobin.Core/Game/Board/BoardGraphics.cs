@@ -55,11 +55,12 @@ namespace SonOfRobin
             this.Texture = GfxConverter.LoadTextureFromPNG(this.templatePath);
             if (this.Texture == null)
             {
-                this.CreateBitmapFromTerrain();
+                this.CreateBitmapFromTerrain(getColorGrid: false, saveAsPNG: true);
                 this.Texture = GfxConverter.LoadTextureFromPNG(this.templatePath); // trying to create texture on disk first...
                 if (this.Texture == null)
                 {
-                    Color[,] colorGrid = this.CreateBitmapFromTerrain(); // ...if this fails (disk error, locked file, etc.), get texture data directly
+                    // ...if this fails (disk error, locked file, etc.), get texture data directly
+                    Color[,] colorGrid = this.CreateBitmapFromTerrain(getColorGrid: true, saveAsPNG: false);
                     this.Texture = GfxConverter.Convert2DArrayToTexture(colorGrid);
                 }
             }
@@ -87,7 +88,7 @@ namespace SonOfRobin
         {
             if (this.savedToDisk) return;
 
-            this.CreateBitmapFromTerrain();
+            this.CreateBitmapFromTerrain(getColorGrid: false, saveAsPNG: true);
             this.savedToDisk = true;
         }
 
@@ -108,7 +109,7 @@ namespace SonOfRobin
             return texture;
         }
 
-        private Color[,] CreateBitmapFromTerrain()
+        private Color[,] CreateBitmapFromTerrain(bool getColorGrid, bool saveAsPNG)
         {
             // can be run in parallel, because it does not use graphicsDevice
 
@@ -187,39 +188,37 @@ namespace SonOfRobin
 
             // putting upscaled color grid into PngBuilder
 
-            Color[,] upscaledColorGrid = new Color[targetWidth, targetHeight];
+            Color[,] upscaledColorGrid = getColorGrid ? new Color[targetWidth, targetHeight] : new Color[1, 1];
 
             var builder = PngBuilder.Create(width: targetWidth, height: targetHeight, hasAlphaChannel: true);
+
+            double multiplier = (float)resDivider / (float)BoardTextureUpscaler3x.resizeFactor;
 
             for (int y = 0; y < targetHeight; y++)
             {
                 for (int x = 0; x < targetWidth; x++)
                 {
-                    RepeatingPattern.Name patternName = upscaledGrid[x, y];
+                    Color pixel = RepeatingPattern.patternDict[upscaledGrid[x, y]].GetValue(
+                        x: this.cell.xMin + (int)((float)x * multiplier),
+                        y: this.cell.yMin + (int)((float)y * multiplier));
 
-                    Color pixel = RepeatingPattern.patternDict[patternName].GetValue(
-                        x: this.cell.xMin + (x * resDivider / BoardTextureUpscaler3x.resizeFactor),
-                        y: this.cell.yMin + (y * resDivider / BoardTextureUpscaler3x.resizeFactor));
-
-                    upscaledColorGrid[x, y] = pixel;
-
-                    builder.SetPixel(pixel.R, pixel.G, pixel.B, x, y);
+                    if (getColorGrid) upscaledColorGrid[x, y] = pixel;
+                    if (saveAsPNG) builder.SetPixel(pixel.R, pixel.G, pixel.B, x, y);
                 }
             }
 
             // saving PngBuilder to file
-
-            using (var memoryStream = new MemoryStream())
+            if (saveAsPNG)
             {
-                builder.Save(memoryStream);
+                using (var memoryStream = new MemoryStream())
+                {
+                    builder.Save(memoryStream);
 
-                try
-                {
-                    FileReaderWriter.SaveMemoryStream(memoryStream: memoryStream, this.templatePath);
-                }
-                catch (IOException)
-                {
-                    // write error
+                    try
+                    {
+                        FileReaderWriter.SaveMemoryStream(memoryStream: memoryStream, this.templatePath);
+                    }
+                    catch (IOException) { } // write error 
                 }
             }
 
