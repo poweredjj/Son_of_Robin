@@ -371,7 +371,7 @@ namespace SonOfRobin
                 SonOfRobinGame.Game.IsFixedTimeStep = Preferences.FrameSkip;
 
                 SonOfRobinGame.FullScreenProgressBar.TurnOff();
-                
+
                 bool menuFound = GetTopSceneOfType(typeof(Menu)) != null;
 
                 this.Remove();
@@ -1188,7 +1188,7 @@ namespace SonOfRobin
         public override void Draw()
         {
             // drawing blue background (to ensure drawing even if screen is larger than map)
-            SonOfRobinGame.GfxDev.Clear(BoardGraphics.colorsByName[BoardGraphics.Colors.WaterDeep]);
+            SonOfRobinGame.GfxDev.Clear(Color.Black);
 
             if (this.WorldCreationInProgress) return;
 

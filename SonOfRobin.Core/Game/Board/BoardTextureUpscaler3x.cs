@@ -40,7 +40,7 @@ namespace SonOfRobin
                 {
                     try
                     {
-                        Upscale3x3Grid(source: sourceGrid, target: upscaledGrid, sourceOffsetX: baseX - 1, sourceOffsetY: baseY - 1, targetOffsetX: baseX * resizeFactor, targetOffsetY: targetOffsetY);
+                        Upscale3x3ColorGrid(source: sourceGrid, target: upscaledGrid, sourceOffsetX: baseX - 1, sourceOffsetY: baseY - 1, targetOffsetX: baseX * resizeFactor, targetOffsetY: targetOffsetY);
                     }
                     catch (IndexOutOfRangeException)
                     {
@@ -70,13 +70,38 @@ namespace SonOfRobin
                     }
                 }
 
-                Upscale3x3Grid(source: workingGrid3x3, target: upscaledGrid, targetOffsetX: point.X * resizeFactor, targetOffsetY: point.Y * resizeFactor);
+                Upscale3x3ColorGrid(source: workingGrid3x3, target: upscaledGrid, targetOffsetX: point.X * resizeFactor, targetOffsetY: point.Y * resizeFactor);
             }
 
             return upscaledGrid;
         }
 
-        public static Color[,] Upscale3x3Grid(Color[,] source, Color[,] target, int targetOffsetX = 0, int targetOffsetY = 0, int sourceOffsetX = 0, int sourceOffsetY = 0)
+        public static RepeatingPattern.Name[,] Upscale3x3PatternNameGrid(RepeatingPattern.Name[,] source, RepeatingPattern.Name[,] target, int targetOffsetX = 0, int targetOffsetY = 0, int sourceOffsetX = 0, int sourceOffsetY = 0)
+        {
+            RepeatingPattern.Name leftTop = source[sourceOffsetX, sourceOffsetY];
+            RepeatingPattern.Name middleTop = source[1 + sourceOffsetX, sourceOffsetY];
+            RepeatingPattern.Name rightTop = source[2 + sourceOffsetX, sourceOffsetY];
+            RepeatingPattern.Name leftMiddle = source[sourceOffsetX, 1 + sourceOffsetY];
+            RepeatingPattern.Name center = source[1 + sourceOffsetX, 1 + sourceOffsetY];
+            RepeatingPattern.Name rightMiddle = source[2 + sourceOffsetX, 1 + sourceOffsetY];
+            RepeatingPattern.Name leftBottom = source[sourceOffsetX, 2 + sourceOffsetY];
+            RepeatingPattern.Name middleBottom = source[1 + sourceOffsetX, 2 + sourceOffsetY];
+            RepeatingPattern.Name rightBottom = source[2 + sourceOffsetX, 2 + sourceOffsetY];
+
+            target[targetOffsetX, targetOffsetY] = leftMiddle == middleTop && leftMiddle != middleBottom && middleTop != rightMiddle ? leftMiddle : center;
+            target[1 + targetOffsetX, targetOffsetY] = (leftMiddle == middleTop && leftMiddle != middleBottom && middleTop != rightMiddle && center != rightTop) || (middleTop == rightMiddle && middleTop != leftMiddle && rightMiddle != middleBottom && center != leftTop) ? middleTop : center;
+            target[2 + targetOffsetX, targetOffsetY] = (middleTop == rightMiddle && middleTop != leftMiddle && rightMiddle != middleBottom) ? rightMiddle : center;
+            target[targetOffsetX, 1 + targetOffsetY] = (middleBottom == leftMiddle && middleBottom != rightMiddle && leftMiddle != middleTop && center != leftTop) || (leftMiddle == middleTop && leftMiddle != middleBottom && middleTop != rightMiddle && center != leftBottom) ? leftMiddle : center;
+            target[1 + targetOffsetX, 1 + targetOffsetY] = center;
+            target[2 + targetOffsetX, 1 + targetOffsetY] = (middleTop == rightMiddle && middleTop != leftMiddle && rightMiddle != middleBottom && center != rightBottom) || (rightMiddle == middleBottom && rightMiddle != middleTop && middleBottom != leftMiddle && center != rightTop) ? rightMiddle : center;
+            target[targetOffsetX, 2 + targetOffsetY] = middleBottom == leftMiddle && middleBottom != rightMiddle && leftMiddle != middleTop ? leftMiddle : center;
+            target[1 + targetOffsetX, 2 + targetOffsetY] = (rightMiddle == middleBottom && rightMiddle != middleTop && middleBottom != leftMiddle && center != leftBottom) || (middleBottom == leftMiddle && middleBottom != rightMiddle && leftMiddle != middleTop && center != rightBottom) ? middleBottom : center;
+            target[2 + targetOffsetX, 2 + targetOffsetY] = rightMiddle == middleBottom && rightMiddle != middleTop && middleBottom != leftMiddle ? rightMiddle : center;
+
+            return target;
+        }
+
+        public static Color[,] Upscale3x3ColorGrid(Color[,] source, Color[,] target, int targetOffsetX = 0, int targetOffsetY = 0, int sourceOffsetX = 0, int sourceOffsetY = 0)
         {
             Color leftTop = source[sourceOffsetX, sourceOffsetY];
             Color middleTop = source[1 + sourceOffsetX, sourceOffsetY];
@@ -100,5 +125,7 @@ namespace SonOfRobin
 
             return target;
         }
+
+
     }
 }
