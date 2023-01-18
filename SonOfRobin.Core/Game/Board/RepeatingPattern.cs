@@ -9,12 +9,17 @@ namespace SonOfRobin
     {
         public enum Name
         { // lowercase to match filenames
+            just_red,
+            just_blue,
+            just_white,
+            just_green,
+            just_cyan,
             grass_good,
             grass_bad,
-            sea_supershallow,
-            sea_shallow,
-            sea_medium,
-            sea_deep,
+            water_supershallow,
+            water_shallow,
+            water_medium,
+            water_deep,
             mountain_low,
             mountain_medium,
             mountain_high,
@@ -26,27 +31,6 @@ namespace SonOfRobin
             swamp,
             lava,
             volcano_edge,
-        };
-
-        private static Dictionary<int, Name> namesForBaseColors = new Dictionary<int, Name>
-        {
-            { new Color(11,46,176,255).GetHashCode(), Name.sea_deep },
-            { new Color(35,78,207,255).GetHashCode(), Name.sea_medium },
-            { new Color(65,105,225,255).GetHashCode(), Name.sea_shallow },
-            { new Color(85,125,245,255).GetHashCode(), Name.sea_supershallow },
-            { new Color(141,181,67,255).GetHashCode(), Name.grass_bad },
-            { new Color(78,186,0,255).GetHashCode(), Name.grass_good },
-            { new Color(180,180,180,255).GetHashCode(), Name.mountain_low },
-            { new Color(209,209,209,255).GetHashCode(), Name.mountain_medium },
-            { new Color(225,225,225,255).GetHashCode(), Name.mountain_high },
-            { new Color(207,167,58,255).GetHashCode(), Name.ground_bad },
-            { new Color(173,128,54,255).GetHashCode(), Name.ground_good },
-            { new Color(240,230,153,255).GetHashCode(), Name.beach_bright },
-            { new Color(214,199,133,255).GetHashCode(), Name.beach_dark },
-            { new Color(227,210,102,255).GetHashCode(), Name.sand },
-            { new Color(83, 97, 55, 128).GetHashCode(), Name.swamp },
-            { new Color(255,81,0,255).GetHashCode(), Name.lava },
-            { new Color(64,64,64,255).GetHashCode(), Name.volcano_edge },
         };
 
         public static readonly Name[] allNames = (Name[])Enum.GetValues(typeof(Name));
@@ -93,25 +77,6 @@ namespace SonOfRobin
         public Color GetValue(int x, int y)
         {
             return colorGrid[x % width, y % height];
-        }
-
-        private static RepeatingPattern GetPatternForBaseColor(Color baseColor)
-        {
-            try
-            {
-                return patternDict[namesForBaseColors[baseColor.GetHashCode()]];
-            }
-            catch (KeyNotFoundException)
-            {
-                return null;
-            }
-        }
-
-        public static Color GetValueForBaseColor(Color baseColor, int x, int y)
-        {
-            RepeatingPattern pattern = GetPatternForBaseColor(baseColor);
-
-            return pattern == null ? baseColor : pattern.GetValue(x, y);
         }
     }
 }

@@ -9,9 +9,8 @@ namespace SonOfRobin
 {
     public class BoardGraphics
     {
-        public static readonly Dictionary<Colors, Color> colorsByName = GetColorsByName();
-        public static readonly Dictionary<Colors, List<byte>> colorsByHeight = GetColorsByHeight();
-        public static readonly Dictionary<Colors, List<byte>> colorsByHumidity = GetColorsByHumidity();
+        public static readonly Dictionary<RepeatingPattern.Name, List<byte>> patternNamesByHeight = GetColorsByHeight();
+        public static readonly Dictionary<RepeatingPattern.Name, List<byte>> patternNamesByHumidity = GetColorsByHumidity();
 
         private readonly Cell cell;
         public Texture2D Texture { get; private set; }
@@ -21,28 +20,6 @@ namespace SonOfRobin
 
         private readonly string templatePath;
         private bool savedToDisk;
-
-        public enum Colors
-        {
-            WaterDeep,
-            WaterMedium,
-            WaterShallow,
-            WaterSuperShallow,
-            BeachDark,
-            BeachBright,
-            Ground,
-            Mountains1,
-            Mountains2,
-            Mountains3,
-            VolcanoEdge,
-            VolcanoInside,
-            Sand,
-            GroundBad,
-            GroundGood,
-            GrassBad,
-            GrassGood,
-            BiomeSwamp
-        }
 
         public BoardGraphics(Grid grid, Cell cell)
         {
@@ -78,11 +55,12 @@ namespace SonOfRobin
             this.Texture = GfxConverter.LoadTextureFromPNG(this.templatePath);
             if (this.Texture == null)
             {
-                this.CreateBitmapFromTerrain();
+                this.CreateBitmapFromTerrain(getColorGrid: false, saveAsPNG: true);
                 this.Texture = GfxConverter.LoadTextureFromPNG(this.templatePath); // trying to create texture on disk first...
                 if (this.Texture == null)
                 {
-                    Color[,] colorGrid = this.CreateBitmapFromTerrain(); // ...if this fails (disk error, locked file, etc.), get texture data directly
+                    // ...if this fails (disk error, locked file, etc.), get texture data directly
+                    Color[,] colorGrid = this.CreateBitmapFromTerrain(getColorGrid: true, saveAsPNG: false);
                     this.Texture = GfxConverter.Convert2DArrayToTexture(colorGrid);
                 }
             }
@@ -110,7 +88,7 @@ namespace SonOfRobin
         {
             if (this.savedToDisk) return;
 
-            this.CreateBitmapFromTerrain();
+            this.CreateBitmapFromTerrain(getColorGrid: false, saveAsPNG: true);
             this.savedToDisk = true;
         }
 
@@ -131,7 +109,7 @@ namespace SonOfRobin
             return texture;
         }
 
-        private Color[,] CreateBitmapFromTerrainTest() // for visual testing without upscaling turned on
+        private Color[,] CreateBitmapFromTerrain(bool getColorGrid, bool saveAsPNG)
         {
             // can be run in parallel, because it does not use graphicsDevice
 
@@ -141,42 +119,13 @@ namespace SonOfRobin
             int sourceHeight = this.cell.height / this.cell.grid.resDivider;
             int resDivider = this.cell.grid.resDivider;
 
-            Color[,] smallColorGrid = new Color[sourceWidth, sourceHeight];
+            RepeatingPattern.Name[,] smallGrid = new RepeatingPattern.Name[sourceWidth, sourceHeight];
 
             for (int localX = 0; localX < sourceWidth + 0; localX++)
             {
                 for (int localY = 0; localY < sourceHeight + 0; localY++)
                 {
-                    int worldSpaceX = this.cell.xMin + (localX * resDivider);
-                    int worldSpaceY = this.cell.yMin + (localY * resDivider);
-
-                    worldSpaceX = Math.Min(Math.Max(worldSpaceX, 0), this.cell.grid.width - 1);
-                    worldSpaceY = Math.Min(Math.Max(worldSpaceY, 0), this.cell.grid.height - 1);
-
-                    smallColorGrid[localX, localY] = CreatePixel(grid: this.cell.grid, x: worldSpaceX, y: worldSpaceY);
-                }
-            }
-
-            return smallColorGrid;
-        }
-
-        private Color[,] CreateBitmapFromTerrain()
-        {
-            // can be run in parallel, because it does not use graphicsDevice
-
-            // creating base 2D color array with rgb color data
-
-            int sourceWidth = this.cell.width / this.cell.grid.resDivider;
-            int sourceHeight = this.cell.height / this.cell.grid.resDivider;
-            int resDivider = this.cell.grid.resDivider;
-
-            Color[,] smallColorGrid = new Color[sourceWidth, sourceHeight];
-
-            for (int localX = 0; localX < sourceWidth + 0; localX++)
-            {
-                for (int localY = 0; localY < sourceHeight + 0; localY++)
-                {
-                    smallColorGrid[localX, localY] = CreatePixel(grid: this.cell.grid, x: this.cell.xMin + (localX * resDivider), y: this.cell.yMin + (localY * resDivider));
+                    smallGrid[localX, localY] = FindPatternNameForPixel(grid: this.cell.grid, x: this.cell.xMin + (localX * resDivider), y: this.cell.yMin + (localY * resDivider));
                 }
             }
 
@@ -188,7 +137,7 @@ namespace SonOfRobin
             int targetWidth = sourceWidth * resizeFactor;
             int targetHeight = sourceHeight * resizeFactor;
 
-            Color[,] upscaledColorGrid = new Color[targetWidth, targetHeight];
+            RepeatingPattern.Name[,] upscaledGrid = new RepeatingPattern.Name[targetWidth, targetHeight];
 
             // filling upscaled grid
 
@@ -200,7 +149,7 @@ namespace SonOfRobin
                 {
                     try
                     {
-                        BoardTextureUpscaler3x.Upscale3x3Grid(source: smallColorGrid, target: upscaledColorGrid, sourceOffsetX: localX - 1, sourceOffsetY: localY - 1, targetOffsetX: localX * resizeFactor, targetOffsetY: localY * resizeFactor);
+                        BoardTextureUpscaler3x.Upscale3x3PatternNameGrid(source: smallGrid, target: upscaledGrid, sourceOffsetX: localX - 1, sourceOffsetY: localY - 1, targetOffsetX: localX * resizeFactor, targetOffsetY: localY * resizeFactor);
                     }
                     catch (IndexOutOfRangeException)
                     {
@@ -211,7 +160,7 @@ namespace SonOfRobin
 
             // filling edges
 
-            Color[,] workingGrid3x3 = new Color[3, 3]; // working grid is needed, because the edges are missing and using sourceOffset will not work
+            RepeatingPattern.Name[,] workingGrid3x3 = new RepeatingPattern.Name[3, 3]; // working grid is needed, because the edges are missing and using sourceOffset will not work
 
             foreach (Point point in edgePointList)
             {
@@ -224,106 +173,100 @@ namespace SonOfRobin
 
                         try
                         {
-                            workingGrid3x3[xOffset + 1, yOffset + 1] = CreatePixel(grid: this.cell.grid, x: worldSpaceX, y: worldSpaceY);
+                            workingGrid3x3[xOffset + 1, yOffset + 1] = FindPatternNameForPixel(grid: this.cell.grid, x: worldSpaceX, y: worldSpaceY);
                         }
                         catch (IndexOutOfRangeException)
                         {
                             // pixel outside world bounds - inserting the nearest correct position
-                            workingGrid3x3[xOffset + 1, yOffset + 1] = smallColorGrid[point.X, point.Y];
+                            workingGrid3x3[xOffset + 1, yOffset + 1] = smallGrid[point.X, point.Y];
                         }
                     }
                 }
 
-                BoardTextureUpscaler3x.Upscale3x3Grid(source: workingGrid3x3, target: upscaledColorGrid, targetOffsetX: point.X * resizeFactor, targetOffsetY: point.Y * resizeFactor);
+                BoardTextureUpscaler3x.Upscale3x3PatternNameGrid(source: workingGrid3x3, target: upscaledGrid, targetOffsetX: point.X * resizeFactor, targetOffsetY: point.Y * resizeFactor);
             }
 
             // putting upscaled color grid into PngBuilder
 
+            Color[,] upscaledColorGrid = getColorGrid ? new Color[targetWidth, targetHeight] : new Color[1, 1];
+
             var builder = PngBuilder.Create(width: targetWidth, height: targetHeight, hasAlphaChannel: true);
+
+            double multiplier = (float)resDivider / (float)BoardTextureUpscaler3x.resizeFactor;
 
             for (int y = 0; y < targetHeight; y++)
             {
                 for (int x = 0; x < targetWidth; x++)
                 {
-                    Color pixel = upscaledColorGrid[x, y];
+                    Color pixel = RepeatingPattern.patternDict[upscaledGrid[x, y]].GetValue(
+                        x: this.cell.xMin + (int)((float)x * multiplier),
+                        y: this.cell.yMin + (int)((float)y * multiplier));
 
-                    pixel = RepeatingPattern.GetValueForBaseColor(
-                        baseColor: pixel,
-                        x: this.cell.xMin + (x * resDivider / BoardTextureUpscaler3x.resizeFactor),
-                        y: this.cell.yMin + (y * resDivider / BoardTextureUpscaler3x.resizeFactor));
-
-                    builder.SetPixel(pixel.R, pixel.G, pixel.B, x, y);
+                    if (getColorGrid) upscaledColorGrid[x, y] = pixel;
+                    if (saveAsPNG) builder.SetPixel(pixel.R, pixel.G, pixel.B, x, y);
                 }
             }
 
             // saving PngBuilder to file
-
-            using (var memoryStream = new MemoryStream())
+            if (saveAsPNG)
             {
-                builder.Save(memoryStream);
+                using (var memoryStream = new MemoryStream())
+                {
+                    builder.Save(memoryStream);
 
-                try
-                {
-                    FileReaderWriter.SaveMemoryStream(memoryStream: memoryStream, this.templatePath);
-                }
-                catch (IOException)
-                {
-                    // write error
+                    try
+                    {
+                        FileReaderWriter.SaveMemoryStream(memoryStream: memoryStream, this.templatePath);
+                    }
+                    catch (IOException) { } // write error 
                 }
             }
 
             return upscaledColorGrid;
         }
 
-        private static Color CreatePixel(Grid grid, int x, int y)
+        private static RepeatingPattern.Name FindPatternNameForPixel(Grid grid, int x, int y)
         {
             byte pixelHeight = grid.GetFieldValue(terrainName: Terrain.Name.Height, x: x, y: y);
             byte pixelHumidity = grid.GetFieldValue(terrainName: Terrain.Name.Humidity, x: x, y: y);
             byte pixelBiome = grid.GetFieldValue(terrainName: Terrain.Name.Biome, x: x, y: y);
-            Dictionary<ExtBoardProps.Name, bool> extDataValDict = grid.GetExtValueDict(x, y);
 
-            Color pixel = new Color();
-
-            foreach (var kvp in colorsByHeight)
-            {
-                if (kvp.Value[1] >= pixelHeight && pixelHeight >= kvp.Value[0])
-                {
-                    pixel = colorsByName[kvp.Key];
-                    break;
-                }
-            }
-
-            if (pixel.A < 255)
-            {
-                foreach (var kvp in colorsByHumidity)
-                {
-                    if (kvp.Value[1] >= pixelHumidity && pixelHumidity >= kvp.Value[0])
-                    {
-                        pixel = Blend2Colors(bottomColor: colorsByName[kvp.Key], topColor: pixel);
-                        break;
-                    }
-                }
-            }
+            //{ // for testing
+            //    Dictionary<ExtBoardProps.Name, bool> extDataValDict = grid.GetExtValueDict(x, y);
+            //    if (extDataValDict[ExtBoardProps.Name.OuterBeach]) return RepeatingPattern.Name.just_red;
+            //    if (extDataValDict[ExtBoardProps.Name.Sea]) return RepeatingPattern.Name.just_cyan;
+            //    if (extDataValDict[ExtBoardProps.Name.BiomeSwamp]) return RepeatingPattern.Name.just_blue;
+            //} // for testing
 
             if (pixelBiome >= Terrain.biomeMin)
             {
-                if (extDataValDict[ExtBoardProps.Name.BiomeSwamp]) pixel = colorsByName[Colors.BiomeSwamp];
+                Dictionary<ExtBoardProps.Name, bool> extDataValDict = grid.GetExtValueDict(x, y);
+
+                if (extDataValDict[ExtBoardProps.Name.BiomeSwamp]) return RepeatingPattern.Name.swamp;
 
                 // future biome colors should be defined here
             }
 
-            // if (extDataValDict[ExtBoardProps.ExtPropName.OuterBeach]) pixel = Blend2Colors(bottomColor: pixel, topColor: Color.Cyan * 0.8f); // for testing
-            // if (extDataValDict[ExtBoardProps.ExtPropName.Sea]) pixel = Blend2Colors(bottomColor: pixel, topColor: Color.Red * 0.8f); // for testing
-            // if (extDataValDict[ExtBoardProps.ExtPropName.BiomeSwamp]) pixel = Blend2Colors(bottomColor: pixel, topColor: Color.Green * 0.8f); // for testing
+            foreach (var kvp in patternNamesByHeight)
+            {
+                if (kvp.Value[1] >= pixelHeight && pixelHeight >= kvp.Value[0])
+                {
+                    return kvp.Key;
+                }
+            }
 
-            return pixel;
+            foreach (var kvp in patternNamesByHumidity)
+            {
+                if (kvp.Value[1] >= pixelHumidity && pixelHumidity >= kvp.Value[0]) return kvp.Key;
+            }
+
+            return RepeatingPattern.Name.just_red;
         }
 
         public static Color CreateTexturedPixel(Grid grid, int x, int y)
         {
-            Color pixel = CreatePixel(grid: grid, x: x, y: y);
-            return RepeatingPattern.GetValueForBaseColor(baseColor: pixel, x: x, y: y);
-
+            RepeatingPattern.Name patternName = FindPatternNameForPixel(grid: grid, x: x, y: y);
+            return RepeatingPattern.patternDict[patternName].GetValue(x, y);
         }
 
         public static Color Blend2Colors(Color bottomColor, Color topColor)
@@ -340,64 +283,31 @@ namespace SonOfRobin
                 (byte)255);
         }
 
-        private static Dictionary<Colors, Color> GetColorsByName()
+        private static Dictionary<RepeatingPattern.Name, List<byte>> GetColorsByHeight()
         {
-            var colorsByName = new Dictionary<Colors, Color>()
-            {
-                // height definitions
-                { Colors.WaterDeep, new Color(11,46,176,255) },
-                { Colors.WaterMedium, new Color(35,78,207,255) },
-                { Colors.WaterShallow, new Color(65,105,225,255) },
-                { Colors.WaterSuperShallow, new Color(85,125,245,255) },
-                { Colors.BeachDark, new Color(214,199,133,255) },
-                { Colors.BeachBright, new Color(240,230,153,255) },
-                { Colors.Ground, new Color(0,0,0,0) },
-                { Colors.Mountains1, new Color(180,180,180,255) },
-                { Colors.Mountains2, new Color(209,209,209,255) },
-                { Colors.Mountains3, new Color(225,225,225,255) },
-                { Colors.VolcanoEdge, new Color(64,64,64,255) },
-                { Colors.VolcanoInside, new Color(255,81,0,255) },
-
-                // humidity definitions
-                { Colors.Sand, new Color(227,210,102,255) },
-                { Colors.GroundBad, new Color(207,167,58,255) },
-                { Colors.GroundGood, new Color(173,128,54,255) },
-                { Colors.GrassBad, new Color(141,181,67,255) },
-                { Colors.GrassGood, new Color(78,186,0,255) },
-
-                // other definitions
-                { Colors.BiomeSwamp, new Color(83, 97, 55, 128) },
-            };
-
-            return colorsByName;
-        }
-
-        private static Dictionary<Colors, List<byte>> GetColorsByHeight()
-        {
-            return new Dictionary<Colors, List<byte>>() {
-                { Colors.WaterDeep, new List<byte>(){0,(byte)(Terrain.waterLevelMax / 3)} },
-                { Colors.WaterMedium, new List<byte>(){ (byte)(Terrain.waterLevelMax / 3), (byte)(Terrain.waterLevelMax / 3 * 2)} },
-                { Colors.WaterShallow, new List<byte>(){ (byte)(Terrain.waterLevelMax / 3 * 2), Terrain.waterLevelMax - 2} },
-                { Colors.WaterSuperShallow, new List<byte>(){ Terrain.waterLevelMax - 1, Terrain.waterLevelMax} },
-                { Colors.BeachBright, new List<byte>(){Terrain.waterLevelMax, 95} },
-                { Colors.BeachDark, new List<byte>(){96, 105} },
-                { Colors.Ground, new List<byte>(){105, 160} },
-                { Colors.Mountains1, new List<byte>(){160, 178} },
-                { Colors.Mountains2, new List<byte>(){178, 194} },
-                { Colors.Mountains3, new List<byte>(){194, Terrain.volcanoEdgeMin} },
-                { Colors.VolcanoEdge, new List<byte>(){Terrain.volcanoEdgeMin, Terrain.lavaMin} },
-                { Colors.VolcanoInside, new List<byte>(){Terrain.lavaMin, 255} },
+            return new Dictionary<RepeatingPattern.Name, List<byte>>() {
+                { RepeatingPattern.Name.water_deep, new List<byte>(){0,(byte)(Terrain.waterLevelMax / 3)} },
+                { RepeatingPattern.Name.water_medium, new List<byte>(){ (byte)(Terrain.waterLevelMax / 3), (byte)(Terrain.waterLevelMax / 3 * 2)} },
+                { RepeatingPattern.Name.water_shallow, new List<byte>(){ (byte)(Terrain.waterLevelMax / 3 * 2), Terrain.waterLevelMax - 2} },
+                { RepeatingPattern.Name.water_supershallow, new List<byte>(){ Terrain.waterLevelMax - 1, Terrain.waterLevelMax} },
+                { RepeatingPattern.Name.beach_bright, new List<byte>(){Terrain.waterLevelMax, 95} },
+                { RepeatingPattern.Name.beach_dark, new List<byte>(){96, 105} },
+                { RepeatingPattern.Name.mountain_low, new List<byte>(){160, 178} },
+                { RepeatingPattern.Name.mountain_medium, new List<byte>(){178, 194} },
+                { RepeatingPattern.Name.mountain_high, new List<byte>(){194, Terrain.volcanoEdgeMin} },
+                { RepeatingPattern.Name.volcano_edge, new List<byte>(){Terrain.volcanoEdgeMin, Terrain.lavaMin} },
+                { RepeatingPattern.Name.lava, new List<byte>(){Terrain.lavaMin, 255} },
             };
         }
 
-        private static Dictionary<Colors, List<byte>> GetColorsByHumidity()
+        private static Dictionary<RepeatingPattern.Name, List<byte>> GetColorsByHumidity()
         {
-            return new Dictionary<Colors, List<byte>>() {
-                { Colors.Sand, new List<byte>(){0, 75} },
-                { Colors.GroundBad, new List<byte>(){75, 115} },
-                { Colors.GroundGood, new List<byte>(){115, 120} },
-                { Colors.GrassBad, new List<byte>(){120, 160} },
-                { Colors.GrassGood, new List<byte>(){160, 255} },
+            return new Dictionary<RepeatingPattern.Name, List<byte>>() {
+                { RepeatingPattern.Name.sand, new List<byte>(){0, 75} },
+                { RepeatingPattern.Name.ground_bad, new List<byte>(){75, 115} },
+                { RepeatingPattern.Name.ground_good, new List<byte>(){115, 120} },
+                { RepeatingPattern.Name.grass_bad, new List<byte>(){120, 160} },
+                { RepeatingPattern.Name.grass_good, new List<byte>(){160, 255} },
             };
         }
     }
