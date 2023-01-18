@@ -386,11 +386,10 @@ namespace SonOfRobin
                     {
                         while (true)
                         {
-                            if (keepContainers && PieceInfo.GetInfo(pieceName).convertsWhenUsed)
+                            if (PieceInfo.GetInfo(pieceName).convertsWhenUsed && keepContainers)
                             {
                                 BoardPiece emptyContainter = PieceTemplate.Create(templateName: PieceInfo.GetInfo(pieceName).convertsToWhenUsed, world: storage.world);
                                 slot.DestroyPieceAndReplaceWithAnother(emptyContainter);
-                                break; // this slot should not contain more items of this kind
                             }
                             else
                             {
