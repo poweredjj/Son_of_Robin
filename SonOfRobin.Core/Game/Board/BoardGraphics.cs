@@ -249,10 +249,7 @@ namespace SonOfRobin
 
             foreach (var kvp in patternNamesByHeight)
             {
-                if (kvp.Value[1] >= pixelHeight && pixelHeight >= kvp.Value[0])
-                {
-                    return kvp.Key;
-                }
+                if (kvp.Value[1] >= pixelHeight && pixelHeight >= kvp.Value[0]) return kvp.Key;
             }
 
             foreach (var kvp in patternNamesByHumidity)
