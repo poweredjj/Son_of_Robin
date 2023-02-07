@@ -488,6 +488,7 @@ namespace SonOfRobin
                         new Invoker(menu: menu, name: "sound test", taskName: Scheduler.TaskName.OpenMenuTemplate, executeHelper: new Dictionary<string, Object> { { "templateName", Name.SoundTest } });
                         new Invoker(menu: menu, name: "graphics list", taskName: Scheduler.TaskName.OpenMenuTemplate, executeHelper: new Dictionary<string, Object> { { "templateName", Name.GfxListTest } });
                         new Selector(menu: menu, name: "save everywhere", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugSaveEverywhere", rebuildsAllMenus: true);
+                        new Selector(menu: menu, name: "enable test characters", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugEnableTestCharacters", rebuildsAllMenus: true);
                         new Selector(menu: menu, name: "create missing pieces", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugCreateMissingPieces");
                         new Selector(menu: menu, name: "god mode", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "DebugGodMode", rebuildsMenu: true);
                         new Selector(menu: menu, name: "show whole map", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "DebugShowWholeMap");
@@ -635,7 +636,7 @@ namespace SonOfRobin
 
         private static void CreateCharacterSelection(Menu menu)
         {
-            // description should match World.CreateAndPlacePlayer()
+            // description should match stats updated in World.CreateAndPlacePlayer()
 
             Color rectColor, textColor;
 
@@ -681,7 +682,11 @@ namespace SonOfRobin
             }
 
             var selectorValueDict = new Dictionary<object, object>();
-            foreach (PieceTemplate.Name playerName in PieceInfo.GetPlayerNames())
+
+            List<PieceTemplate.Name> playerNames = PieceInfo.GetPlayerNames();
+            if (!Preferences.debugEnableTestCharacters) playerNames.Remove(PieceTemplate.Name.PlayerTestDemoness); // add every test character here
+
+            foreach (PieceTemplate.Name playerName in playerNames)
             {
                 selectorValueDict[playerName] = PieceInfo.GetTexture(playerName);
             }

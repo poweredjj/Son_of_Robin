@@ -573,10 +573,8 @@ namespace SonOfRobin
 
                 this.Player = (Player)PieceTemplate.CreateAndPlaceOnBoard(world: this, randomPlacement: true, position: Vector2.Zero, templateName: playerName);
 
-
                 if (this.Player.sprite.IsOnBoard)
                 {
-
                     this.Player.sprite.orientation = Sprite.Orientation.up;
                     this.Player.sprite.CharacterStand();
                     this.Player.sprite.allowedTerrain.RemoveTerrain(Terrain.Name.Biome); // player should be spawned in a safe place, but able to go everywhere afterwards

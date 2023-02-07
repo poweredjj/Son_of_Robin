@@ -302,6 +302,7 @@ namespace SonOfRobin
         public static bool debugDisablePlayerPanel = false;
         public static bool debugAllowMapAnimation = false;
         public static bool debugShowPlantGrowthInCamera = false;
+        public static bool debugEnableTestCharacters = false;
 
         public static bool DebugShowWholeMap
         {
@@ -501,6 +502,8 @@ namespace SonOfRobin
                 showControlTips = true;
                 showFieldControlTips = true;
             }
+
+            if (!debugEnableTestCharacters && (SonOfRobinGame.ThisIsHomeMachine || SonOfRobinGame.ThisIsWorkMachine)) debugEnableTestCharacters = true;
 
             EnableTouchButtons = SonOfRobinGame.platform == Platform.Mobile;
             MouseGesturesEmulateTouch = true; // mouse input is used through touch emulation
