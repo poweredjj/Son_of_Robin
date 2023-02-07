@@ -61,10 +61,21 @@ namespace SonOfRobin
                         new Invoker(menu: menu, name: "options", taskName: Scheduler.TaskName.OpenMenuTemplate, new Dictionary<string, Object> { { "templateName", Name.Options } },
                             infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: "options, settings, etc.", color: Color.White, scale: 1f) });
 
-                        string text = $"Son of Robin {SonOfRobinGame.version.ToString().Replace(",", ".")}\nLast updated: {SonOfRobinGame.lastChanged:yyyy-MM-dd.}\n\nThis is a very early alpha version of the game.\nCode: Marcin Smidowicz.\nFastNoiseLite: Jordan Peck.\nSounds: freesound.org.\nController icons: Nicolae (Xelu) Berbece.\nStudies.Joystick: Luiz Ossinho.\nPNG library 'Big Gustave': Eliot Jones.\nVarious free graphics assets used.";
+                        var aboutTaskChain = new List<object>();
 
-                        var textWindowData = new Dictionary<string, Object> { { "text", text } };
-                        new Invoker(menu: menu, name: "about", taskName: Scheduler.TaskName.ShowTextWindow, executeHelper: textWindowData,
+                        aboutTaskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ShowTextWindow, turnOffInputUntilExecution: true, delay: 0, executeHelper: new Dictionary<string, Object> {
+                            { "text", $"Son of Robin {SonOfRobinGame.version.ToString().Replace(",", ".")}\nLast updated: {SonOfRobinGame.lastChanged:yyyy-MM-dd.}\n\nThis is a very early alpha version of the game.\nCode: Marcin Smidowicz.\nFastNoiseLite: Jordan Peck.\nSounds: | freesound.org.\nController icons: | Nicolae (Xelu) Berbece.\nStudies.Joystick: Luiz Ossinho.\nPNG library 'Big Gustave': Eliot Jones.\nVarious free graphics assets used." },
+                            { "imageList", new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.MusicNote), ButtonScheme.dpad } },
+                            { "bgColor", new List<Byte> { 63, 167, 212 } }
+                            }, storeForLaterUse: true));
+
+                        aboutTaskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ShowTextWindow, turnOffInputUntilExecution: true, delay: 0, executeHelper: new Dictionary<string, Object> {
+                            { "text", $"| | Testers | |\n\nFaye\nRetro Marek\nkolowskyyy" },
+                            { "imageList", new List<Texture2D> { ButtonScheme.buttonA, ButtonScheme.buttonB, ButtonScheme.buttonX, ButtonScheme.buttonY } },
+                            { "bgColor", new List<Byte> { 85, 189, 113 } }
+                            }, storeForLaterUse: true));
+
+                        new Invoker(menu: menu, name: "about", taskName: Scheduler.TaskName.ExecuteTaskChain, executeHelper: aboutTaskChain,
                             infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: "information about the game", color: Color.White, scale: 1f) });
 
                         if (SonOfRobinGame.platform != Platform.Mobile) new Invoker(menu: menu, name: "quit game", closesMenu: true, taskName: Scheduler.TaskName.QuitGame);

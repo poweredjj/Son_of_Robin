@@ -943,7 +943,8 @@ namespace SonOfRobin
 
                     case TaskName.ExecuteTaskChain:
                         {
-                            List<Object> taskChain = (List<Object>)this.ExecuteHelper;
+                            // making a copy of the original taskChain, to avoid modifying it - needed for menus
+                            List<Object> taskChain = new List<Object>((List<Object>)this.ExecuteHelper);
 
                             Task currentTask = (Task)taskChain[0];
                             taskChain.RemoveAt(0);

@@ -93,7 +93,7 @@ namespace SonOfRobin
             var textWindowData = new Dictionary<string, Object> {
                 { "text", this.text },
                 { "imageList", this.imageList },
-                { "bgColor", new List<byte> {bgColor.R, bgColor.G, bgColor.B } },
+                { "bgColor", new List<byte> { bgColor.R, bgColor.G, bgColor.B } },
                 { "textColor", new List<byte> {textColor.R, textColor.G, textColor.B }  },
                 { "checkForDuplicate", true },
                 { "animate", this.animate },
