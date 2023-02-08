@@ -60,7 +60,10 @@ cd ..
 
 attrib +R +X ".\SonOfRobin.DesktopGL\bin\Release\osx-64\SonOfRobin.app\Contents\MacOS\SonOfRobin.DesktopGL"
 
-7z.exe a SonOfRobin_OSX.zip ".\SonOfRobin.DesktopGL\bin\Release\osx-64\SonOfRobin.app" -tzip -mx=9
+7z.exe a -ttar SonOfRobin_OSX.tar ".\SonOfRobin.DesktopGL\bin\Release\osx-64\SonOfRobin.app" -mx=5
+7z.exe a SonOfRobin_OSX.tar.gz SonOfRobin_OSX.tar -mx=5
+
+del SonOfRobin_OSX.tar
 
 rmdir /S /Q .\SonOfRobin.DesktopGL\bin\Release\netcoreapp3.1
-rmdir /S /Q .\SonOfRobin.DesktopGL\bin\Release\osx-x64
+rmdir /S /Q .\SonOfRobin.DesktopGL\bin\Release\osx-64
