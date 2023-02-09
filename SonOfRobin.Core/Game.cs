@@ -19,7 +19,7 @@ namespace SonOfRobin
     public class SonOfRobinGame : Game
     {
         public const float version = 9.7f;
-        public static readonly DateTime lastChanged = new DateTime(2023, 02, 07);
+        public static readonly DateTime lastChanged = new DateTime(2023, 02, 09);
 
         public static readonly int enteringIslandGlobalSteps = 3 + Grid.allStagesCount;
         public static ContentManager ContentMgr { get; private set; }

@@ -70,8 +70,8 @@ namespace SonOfRobin
                             }, storeForLaterUse: true));
 
                         aboutTaskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ShowTextWindow, turnOffInputUntilExecution: true, delay: 0, executeHelper: new Dictionary<string, Object> {
-                            { "text", $"| | Testers | |\n\nFaye\nRetro Marek\nkolowskyyy" },
-                            { "imageList", new List<Texture2D> { ButtonScheme.buttonA, ButtonScheme.buttonB, ButtonScheme.buttonX, ButtonScheme.buttonY } },
+                            { "text", $"| Testers |\n\nFaye\nGlonfindel\nKolowskyyy\nRetro Marek\nShaobell" },
+                            { "imageList", new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.DebrisStar), PieceInfo.GetTexture(PieceTemplate.Name.DebrisStar) } },
                             { "bgColor", new List<Byte> { 85, 189, 113 } }
                             }, storeForLaterUse: true));
 
