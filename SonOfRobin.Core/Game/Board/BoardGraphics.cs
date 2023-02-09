@@ -203,7 +203,7 @@ namespace SonOfRobin
                         y: this.cell.yMin + (int)((float)y * multiplier));
 
                     if (getColorGrid) upscaledColorGrid[x, y] = pixel;
-                    if (saveAsPNG) builder.SetPixel(pixel.R, pixel.G, pixel.B, x, y);
+                    if (saveAsPNG) builder.SetPixel(pixel: new Pixel(r: pixel.R, g: pixel.G, b: pixel.B, a: pixel.A, isGrayscale: false), x: x, y: y);
                 }
             }
 
