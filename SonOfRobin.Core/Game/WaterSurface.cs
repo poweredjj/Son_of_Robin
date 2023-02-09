@@ -5,18 +5,15 @@ using System;
 
 namespace SonOfRobin
 {
-    public class WaterSurfaceCollection
+    public class WaterSurfaceManager
     {
         private readonly WaterSurface waterSurface1;
         private readonly WaterSurface waterSurface2;
 
-        public WaterSurfaceCollection(World world)
+        public WaterSurfaceManager(World world)
         {
             Texture2D texture1 = SonOfRobinGame.textureByName["water textures/water_texture1"];
             Texture2D texture2 = SonOfRobinGame.textureByName["water textures/water_texture2"];
-
-            if (texture1.Width != texture2.Width) throw new ArgumentException("Water texture width mismatch.");
-            if (texture1.Height != texture2.Height) throw new ArgumentException("Water texture height mismatch.");
 
             this.waterSurface1 = new WaterSurface(world: world, texture: texture1);
             this.waterSurface2 = new WaterSurface(world: world, texture: texture2);
@@ -25,7 +22,7 @@ namespace SonOfRobin
         public void Draw()
         {
             this.waterSurface1.Draw(opacity: 1f);
-            //this.waterSurface2.Draw(opacity: 0.5f); // TODO enable
+            this.waterSurface2.Draw(opacity: 0.5f);
         }
     }
 
@@ -34,9 +31,8 @@ namespace SonOfRobin
         private readonly Texture2D texture;
 
         private readonly World world;
-        private Point offset;
 
-        private readonly Vector2 segmentSize; // the size of a single texture
+        public Vector2 offset;
 
         private readonly int columns;
         private readonly int rows;
@@ -48,23 +44,21 @@ namespace SonOfRobin
             this.world = world;
             this.texture = texture;
 
-            this.segmentSize = new Vector2(this.texture.Width, this.texture.Height);
+            this.offset = new Vector2(0, 0);
 
-            this.offset = Point.Zero;
-
-            this.rows = (int)(this.world.width / segmentSize.X);
-            this.columns = (int)(this.world.height / segmentSize.Y);
+            this.rows = (int)(this.world.width / this.texture.Width);
+            this.columns = (int)(this.world.height / this.texture.Height);
 
             this.tweener = new Tweener();
 
             int maxDistance = 100;
 
-            Point newPos = this.offset + new Point(this.world.random.Next(-maxDistance, maxDistance), this.world.random.Next(-maxDistance, maxDistance));
+            Vector2 newPos = this.offset + new Vector2(this.world.random.Next(-maxDistance, maxDistance), this.world.random.Next(-maxDistance, maxDistance));
 
-            //this.tweener.TweenTo(target: this, expression: waterSurface => waterSurface.offset, toValue: newPos, duration: this.world.random.Next(3, 6), delay: 0)
-            //       .RepeatForever(repeatDelay: 0.0f)
-            //       .AutoReverse()
-            //       .Easing(EasingFunctions.QuadraticInOut);
+            this.tweener.TweenTo(target: this, expression: waterSurface => waterSurface.offset, toValue: newPos, duration: this.world.random.Next(2, 15), delay: 0)
+                   .RepeatForever(repeatDelay: 0.0f)
+                   .AutoReverse()
+                   .Easing(EasingFunctions.QuadraticInOut);
         }
 
         public void Draw(float opacity)
@@ -73,19 +67,22 @@ namespace SonOfRobin
 
             Rectangle viewRect = this.world.camera.viewRect;
 
+            int offsetX = (int)this.offset.X;
+            int offsetY = (int)this.offset.Y;
+
             Color drawColor = Color.White * opacity;
 
-            int startColumn = (int)((viewRect.X - this.offset.X) / segmentSize.X);
-            int startRow = (int)((viewRect.Y - this.offset.Y) / segmentSize.Y);
-            int endColumn = Math.Max(columns, startColumn + (int)(viewRect.Width / segmentSize.X) + 1);
-            int endRow = Math.Max(rows, startRow + (int)(viewRect.Height / segmentSize.Y) + 1);
+            int startColumn = (int)((viewRect.X - this.offset.X) / this.texture.Width);
+            int startRow = (int)((viewRect.Y - this.offset.Y) / this.texture.Height);
+            int endColumn = Math.Max(columns, startColumn + (int)(viewRect.Width / this.texture.Width) + 1);
+            int endRow = Math.Max(rows, startRow + (int)(viewRect.Height / this.texture.Height) + 1);
 
             for (int i = startRow; i <= endRow; i++)
             {
                 for (int j = startColumn; j <= endColumn; j++)
                 {
-                    int x = (int)(j * segmentSize.X) + this.offset.X;
-                    int y = (int)(i * segmentSize.Y) + this.offset.Y;
+                    int x = (int)(j * this.texture.Width) + offsetX;
+                    int y = (int)(i * this.texture.Height) + offsetY;
 
                     SonOfRobinGame.SpriteBatch.Draw(this.texture, new Vector2(x, y), drawColor);
                 }

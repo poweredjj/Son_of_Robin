@@ -65,7 +65,7 @@ namespace SonOfRobin
         public int CurrentUpdate { get; private set; } // can be used to measure time elapsed on island
         public int updateMultiplier;
         public readonly IslandClock islandClock;
-        private readonly WaterSurfaceCollection waterSurfaceCollection;
+        private readonly WaterSurfaceManager waterSurfaceManager;
         public string debugText;
         public int ProcessedNonPlantsCount { get; private set; }
         public int ProcessedPlantsCount { get; private set; }
@@ -108,7 +108,7 @@ namespace SonOfRobin
             this.TimePlayed = TimeSpan.Zero;
             this.updateMultiplier = 1;
             this.islandClock = this.saveGameData == null ? new IslandClock(0) : new IslandClock();
-            this.waterSurfaceCollection = new WaterSurfaceCollection(world: this);
+            this.waterSurfaceManager = new WaterSurfaceManager(world: this);
 
             this.width = width;
             this.height = height;
@@ -1193,7 +1193,7 @@ namespace SonOfRobin
             if (this.WorldCreationInProgress) return;
 
             // drawing water surface
-            this.waterSurfaceCollection.Draw();
+            this.waterSurfaceManager.Draw();
 
             // drawing background (ground, leaving "holes" for water)
             this.Grid.DrawBackground(camera: this.camera);
