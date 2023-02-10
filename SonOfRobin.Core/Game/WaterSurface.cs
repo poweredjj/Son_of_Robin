@@ -7,36 +7,62 @@ namespace SonOfRobin
 {
     public class WaterSurfaceManager
     {
-        private readonly WaterSurface waterSurface1;
-        private readonly WaterSurface waterSurface2;
+        private static readonly Color waterColor = new Color(12, 122, 156);
+        private readonly WaterSurface waterBottom;
+        private readonly WaterSurface waterCaustics1;
+        private readonly WaterSurface waterCaustics2;
+        public readonly World world;
 
         public WaterSurfaceManager(World world)
         {
-            Texture2D texture1 = SonOfRobinGame.textureByName["water textures/water_texture1"];
-            Texture2D texture2 = SonOfRobinGame.textureByName["water textures/water_texture2"];
+            this.world = world;
 
-            this.waterSurface1 = new WaterSurface(world: world, texture: texture1);
-            this.waterSurface2 = new WaterSurface(world: world, texture: texture2);
+            this.waterBottom = new WaterSurface(world: world, texture: SonOfRobinGame.textureByName["water textures/water_bottom"]);
+            this.waterCaustics1 = new WaterSurface(world: world, texture: SonOfRobinGame.textureByName["water textures/water_caustics1"]);
+            this.waterCaustics2 = new WaterSurface(world: world, texture: SonOfRobinGame.textureByName["water textures/water_caustics2"]);
         }
 
         public void Update()
         {
-            this.waterSurface1.Update();
-            this.waterSurface2.Update();
+            this.waterBottom.Update();
+            this.waterCaustics1.Update();
+            this.waterCaustics2.Update();
         }
 
         public void Draw()
         {
-            this.waterSurface1.Draw(opacity: 1f);
-            this.waterSurface2.Draw(opacity: 0.5f);
+            SonOfRobinGame.GfxDev.Clear(waterColor);
+
+            this.waterBottom.Draw(opacity: 0.3f);
+
+            SonOfRobinGame.SpriteBatch.End();
+
+            BlendState waterBlend = new BlendState
+            {
+                AlphaBlendFunction = BlendFunction.Add,
+                AlphaSourceBlend = Blend.One,
+                AlphaDestinationBlend = Blend.One,
+
+                ColorBlendFunction = BlendFunction.Add,
+                ColorSourceBlend = Blend.One,
+                ColorDestinationBlend = Blend.One,
+            };
+
+            SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.world.TransformMatrix, blendState: waterBlend);
+
+            this.waterCaustics1.Draw(opacity: 0.2f);
+            this.waterCaustics2.Draw(opacity: 0.2f);
+
+            SonOfRobinGame.SpriteBatch.End();
+
+            SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.world.TransformMatrix);
         }
     }
 
     public class WaterSurface
     {
-        private readonly Texture2D texture;
-
         private readonly World world;
+        private readonly Texture2D texture;
 
         public Vector2 offset;
 
