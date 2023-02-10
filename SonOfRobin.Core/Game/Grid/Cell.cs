@@ -273,6 +273,11 @@ namespace SonOfRobin
             }
         }
 
+        public void DrawBackgroundWaterSimulation(Color waterColor)
+        {
+            if (this.boardGraphics.Texture != null) SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, this.rect, waterColor);
+        }
+
         public void DrawBackground(bool drawSimulation, float opacity = 1f)
         {
             if (this.boardGraphics.Texture != null)

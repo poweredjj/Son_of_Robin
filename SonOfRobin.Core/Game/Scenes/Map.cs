@@ -22,6 +22,7 @@ namespace SonOfRobin
         private readonly EffInstance sketchEffect;
         private readonly Sound soundMarkerPlace = new Sound(name: SoundData.Name.Ding4, pitchChange: 0f);
         public readonly Sound soundMarkerRemove = new Sound(name: SoundData.Name.Ding4, pitchChange: -0.3f);
+
         public bool FullScreen
         { get { return this.Mode == MapMode.Full; } }
 
@@ -33,8 +34,10 @@ namespace SonOfRobin
         private RenderTarget2D lowResWholeCombinedGfx;
         public RenderTarget2D FinalMapToDisplay { get; private set; }
         public BoardPiece MapMarker { get; private set; }
+
         private float InitialZoom
         { get { return Preferences.WorldScale / 2; } }
+
         private static readonly Color paperColor = new Color(214, 199, 133, 255);
         public static readonly Color waterColor = new Color(8, 108, 160, 255);
 
@@ -430,17 +433,17 @@ namespace SonOfRobin
 
             if (showDetailedMap)
             {
-                // have to be drawn without the shader (will not display correctly otherwise), but have to retain lowResWholeCombinedGfx water color (changed by shader)
+                // Water have to be drawn without the shader (will not display correctly otherwise),
+                // but have to retain lowResWholeCombinedGfx water color (changed by shader).
                 Color waterColorWithShader = new Color(89, 99, 81);
 
-                this.StartNewSpriteBatch(enableEffects: false); // turning off effects for drawing water rectangles
+                this.StartNewSpriteBatch(enableEffects: true); // starting new spriteBatch, to turn off effects turning off effects for drawing water rectangles
                 foreach (Cell cell in cellsToDraw)
                 {
-                    SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, cell.rect, waterColorWithShader);
+                    cell.DrawBackgroundWaterSimulation(waterColor: waterColorWithShader);
                 }
 
-                StartNewSpriteBatch(enableEffects: true);
-                this.sketchEffect.TurnOn(currentUpdate: SonOfRobinGame.CurrentUpdate); // turning back on
+                this.sketchEffect.TurnOn(currentUpdate: SonOfRobinGame.CurrentUpdate); // turning effects back on
 
                 foreach (Cell cell in cellsToDraw)
                 {
