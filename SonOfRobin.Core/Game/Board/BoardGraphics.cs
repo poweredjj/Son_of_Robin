@@ -100,7 +100,9 @@ namespace SonOfRobin
             {
                 for (int x = 0; x < width; x++)
                 {
-                    colorArray[(y * width) + x] = CreateTexturedPixel(grid: grid, x: (int)(x / multiplier), y: (int)(y / multiplier));
+                    Color pixel = CreateTexturedPixel(grid: grid, x: (int)(x / multiplier), y: (int)(y / multiplier));
+                    if (pixel.A < 255) pixel = Blend2Colors(bottomColor: Map.waterColor, topColor: pixel);
+                    colorArray[(y * width) + x] = pixel;
                 }
             }
 

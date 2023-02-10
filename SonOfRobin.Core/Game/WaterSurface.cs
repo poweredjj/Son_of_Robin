@@ -35,7 +35,7 @@ namespace SonOfRobin
 
             if (!Preferences.highQualityWater) return;
 
-            this.waterBottom.Draw(opacity: 0.7f);
+            this.waterBottom.Draw(opacity: 0.85f);
 
             SonOfRobinGame.SpriteBatch.End();
 

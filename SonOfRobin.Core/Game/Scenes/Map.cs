@@ -19,7 +19,7 @@ namespace SonOfRobin
         private readonly Camera camera;
         private readonly Rectangle worldRect;
         private readonly MapOverlay mapOverlay;
-        private readonly EffectCol effectCol;
+        private readonly EffInstance sketchEffect;
         private readonly Sound soundMarkerPlace = new Sound(name: SoundData.Name.Ding4, pitchChange: 0f);
         public readonly Sound soundMarkerRemove = new Sound(name: SoundData.Name.Ding4, pitchChange: -0.3f);
         public bool FullScreen
@@ -36,6 +36,7 @@ namespace SonOfRobin
         private float InitialZoom
         { get { return Preferences.WorldScale / 2; } }
         private static readonly Color paperColor = new Color(214, 199, 133, 255);
+        public static readonly Color waterColor = new Color(8, 108, 160, 255);
 
         public Map(World world, TouchLayout touchLayout) : base(inputType: InputTypes.None, priority: 1, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: false, touchLayout: touchLayout, tipsLayout: ControlTips.TipsLayout.Map)
         {
@@ -46,8 +47,7 @@ namespace SonOfRobin
             this.camera = new Camera(world: this.world, useWorldScale: false, useFluidMotionForMove: false, useFluidMotionForZoom: true, keepInWorldBounds: false);
             this.mode = MapMode.Off;
             this.dirtyFog = true;
-            this.effectCol = new EffectCol(world: null);
-            this.effectCol.AddEffect(new SketchInstance(fgColor: new Color(107, 98, 87, 255), bgColor: paperColor, framesLeft: -1));
+            this.sketchEffect = new SketchInstance(fgColor: new Color(107, 98, 87, 255), bgColor: paperColor, framesLeft: -1);
         }
 
         public override void Remove()
@@ -383,7 +383,7 @@ namespace SonOfRobin
             // filling with water color
 
             SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
-            SonOfRobinGame.GfxDev.Clear(Color.Black);
+            SonOfRobinGame.GfxDev.Clear(waterColor);
 
             // drawing paper map background texture
 
@@ -393,8 +393,6 @@ namespace SonOfRobin
             SonOfRobinGame.SpriteBatch.Draw(AnimData.framesForPkgs[AnimData.PkgName.Map].texture, extendedMapRect, Color.White);
 
             // drawing background
-
-            this.effectCol.TurnOnNextEffect(scene: this, currentUpdateToUse: SonOfRobinGame.CurrentUpdate);
 
             float showDetailedMapAtZoom = (float)SonOfRobinGame.VirtualWidth / (float)this.world.width * 1.4f;
             bool showDetailedMap = this.camera.CurrentZoom >= showDetailedMapAtZoom;
@@ -425,10 +423,25 @@ namespace SonOfRobin
                 }
             }
 
+            StartNewSpriteBatch(enableEffects: true);
+            this.sketchEffect.TurnOn(currentUpdate: SonOfRobinGame.CurrentUpdate);
+
             if (!showDetailedMap || foundCellsWithMissingTextures) SonOfRobinGame.SpriteBatch.Draw(this.lowResWholeCombinedGfx, this.worldRect, Color.White);
 
             if (showDetailedMap)
             {
+                // have to be drawn without the shader (will not display correctly otherwise), but have to retain lowResWholeCombinedGfx water color (changed by shader)
+                Color waterColorWithShader = new Color(89, 99, 81);
+
+                this.StartNewSpriteBatch(enableEffects: false); // turning off effects for drawing water rectangles
+                foreach (Cell cell in cellsToDraw)
+                {
+                    SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, cell.rect, waterColorWithShader);
+                }
+
+                StartNewSpriteBatch(enableEffects: true);
+                this.sketchEffect.TurnOn(currentUpdate: SonOfRobinGame.CurrentUpdate); // turning back on
+
                 foreach (Cell cell in cellsToDraw)
                 {
                     cell.DrawBackground(drawSimulation: false, opacity: 1f);
