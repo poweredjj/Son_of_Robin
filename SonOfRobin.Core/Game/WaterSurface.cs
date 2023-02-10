@@ -33,6 +33,8 @@ namespace SonOfRobin
         {
             SonOfRobinGame.GfxDev.Clear(waterColor);
 
+            if (!Preferences.highQualityWater) return;
+
             this.waterBottom.Draw(opacity: 0.7f);
 
             SonOfRobinGame.SpriteBatch.End();

@@ -135,6 +135,7 @@ namespace SonOfRobin
         public static bool showHints = true;
         public static bool showLighting = true;
         public static bool showDebris = true;
+        public static bool highQualityWater = true;
         public static bool useMultipleThreads = true;
         private static int darknessResolution = 1;
 
@@ -563,6 +564,7 @@ namespace SonOfRobin
             prefsData["progressBarShowDetails"] = progressBarShowDetails;
             prefsData["swapMouseButtons"] = swapMouseButtons;
             prefsData["maxTexturesToLoad"] = maxTexturesToLoad;
+            prefsData["highQualityWater"] = highQualityWater;
 
             FileReaderWriter.Save(path: SonOfRobinGame.prefsPath, savedObj: prefsData);
 
@@ -632,6 +634,7 @@ namespace SonOfRobin
                     progressBarShowDetails = (bool)prefsData["progressBarShowDetails"];
                     swapMouseButtons = (bool)prefsData["swapMouseButtons"];
                     maxTexturesToLoad = (int)prefsData["maxTexturesToLoad"];
+                    highQualityWater = (bool)prefsData["highQualityWater"];
 
                     prefsLoaded = true;
                 }
