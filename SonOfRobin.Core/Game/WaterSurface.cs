@@ -17,9 +17,9 @@ namespace SonOfRobin
         {
             this.world = world;
 
-            this.waterBottom = new WaterSurface(world: world, texture: SonOfRobinGame.textureByName["water textures/water_bottom"]);
-            this.waterCaustics1 = new WaterSurface(world: world, texture: SonOfRobinGame.textureByName["water textures/water_caustics1"]);
-            this.waterCaustics2 = new WaterSurface(world: world, texture: SonOfRobinGame.textureByName["water textures/water_caustics2"]);
+            this.waterBottom = new WaterSurface(tweenOpacity: false, world: world, texture: SonOfRobinGame.textureByName["water textures/water_bottom"]);
+            this.waterCaustics1 = new WaterSurface(tweenOpacity: true, world: world, texture: SonOfRobinGame.textureByName["water textures/water_caustics1"]);
+            this.waterCaustics2 = new WaterSurface(tweenOpacity: true, world: world, texture: SonOfRobinGame.textureByName["water textures/water_caustics2"]);
         }
 
         public void Update()
@@ -65,6 +65,7 @@ namespace SonOfRobin
     {
         private readonly World world;
         private readonly Texture2D texture;
+        private readonly bool tweenOpacity;
 
         public Vector2 offset;
         public float baseOpacity;
@@ -74,10 +75,11 @@ namespace SonOfRobin
 
         private readonly Tweener tweener;
 
-        public WaterSurface(World world, Texture2D texture)
+        public WaterSurface(World world, Texture2D texture, bool tweenOpacity)
         {
             this.world = world;
             this.texture = texture;
+            this.tweenOpacity = tweenOpacity;
 
             this.offset = new Vector2(0, 0);
             this.baseOpacity = 1f;
@@ -110,12 +112,12 @@ namespace SonOfRobin
 
             Tween tweenOpacity = this.tweener.FindTween(target: this, memberName: "baseOpacity");
 
-            if (tweenOpacity == null || !tweenOpacity.IsAlive)
+            if (this.tweenOpacity && (tweenOpacity == null || !tweenOpacity.IsAlive))
             {
                 this.tweener.TweenTo(target: this, expression: waterSurface => waterSurface.baseOpacity, toValue: 0.2f, duration: this.world.random.Next(3, 12), delay: this.world.random.Next(5, 8))
-                              .AutoReverse()
-                              .Easing(EasingFunctions.SineInOut)
-                              .OnEnd(t => this.SetTweener());
+                    .AutoReverse()
+                    .Easing(EasingFunctions.SineInOut)
+                    .OnEnd(t => this.SetTweener());
             }
         }
 
