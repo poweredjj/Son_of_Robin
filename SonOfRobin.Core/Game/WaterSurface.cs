@@ -33,13 +33,13 @@ namespace SonOfRobin
         {
             SonOfRobinGame.GfxDev.Clear(waterColor);
 
-            this.waterBottom.Draw(opacity: 0.3f);
+            this.waterBottom.Draw(opacity: 0.7f);
 
             SonOfRobinGame.SpriteBatch.End();
 
             BlendState waterBlend = new BlendState
             {
-                AlphaBlendFunction = BlendFunction.Add,
+                AlphaBlendFunction = BlendFunction.ReverseSubtract,
                 AlphaSourceBlend = Blend.One,
                 AlphaDestinationBlend = Blend.One,
 
@@ -50,8 +50,8 @@ namespace SonOfRobin
 
             SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.world.TransformMatrix, blendState: waterBlend);
 
-            this.waterCaustics1.Draw(opacity: 0.2f);
-            this.waterCaustics2.Draw(opacity: 0.2f);
+            this.waterCaustics1.Draw(opacity: 0.15f);
+            this.waterCaustics2.Draw(opacity: 0.15f);
 
             SonOfRobinGame.SpriteBatch.End();
 
@@ -65,6 +65,7 @@ namespace SonOfRobin
         private readonly Texture2D texture;
 
         public Vector2 offset;
+        public float baseOpacity;
 
         private readonly int columns;
         private readonly int rows;
@@ -77,6 +78,7 @@ namespace SonOfRobin
             this.texture = texture;
 
             this.offset = new Vector2(0, 0);
+            this.baseOpacity = 1f;
 
             this.rows = (int)(this.world.width / this.texture.Width);
             this.columns = (int)(this.world.height / this.texture.Height);
@@ -88,13 +90,13 @@ namespace SonOfRobin
 
         private void SetTweener()
         {
-            Tween tween = this.tweener.FindTween(target: this, memberName: "offset");
+            Tween tweenOffset = this.tweener.FindTween(target: this, memberName: "offset");
 
-            if (tween == null || !tween.IsAlive)
+            if (tweenOffset == null || !tweenOffset.IsAlive)
             {
                 Vector2 newPos = Vector2.Zero;
 
-                int maxDistance = 200;
+                int maxDistance = 150;
 
                 newPos = this.offset + new Vector2(this.world.random.Next(-maxDistance, maxDistance), this.world.random.Next(-maxDistance, maxDistance));
 
@@ -102,6 +104,16 @@ namespace SonOfRobin
                     .AutoReverse()
                     .Easing(EasingFunctions.QuadraticInOut)
                     .OnEnd(t => this.SetTweener());
+            }
+
+            Tween tweenOpacity = this.tweener.FindTween(target: this, memberName: "baseOpacity");
+
+            if (tweenOpacity == null || !tweenOpacity.IsAlive)
+            {
+                this.tweener.TweenTo(target: this, expression: waterSurface => waterSurface.baseOpacity, toValue: 0.2f, duration: this.world.random.Next(3, 12), delay: this.world.random.Next(5, 8))
+                              .AutoReverse()
+                              .Easing(EasingFunctions.SineInOut)
+                              .OnEnd(t => this.SetTweener());
             }
         }
 
@@ -117,7 +129,7 @@ namespace SonOfRobin
             int offsetX = (int)this.offset.X;
             int offsetY = (int)this.offset.Y;
 
-            Color drawColor = Color.White * opacity;
+            Color drawColor = Color.White * opacity * this.baseOpacity;
 
             int startColumn = (int)((viewRect.X - this.offset.X) / this.texture.Width);
             int startRow = (int)((viewRect.Y - this.offset.Y) / this.texture.Height);
