@@ -50,7 +50,7 @@ namespace SonOfRobin
         {
             foreach (Name name in allNames)
             {
-                Texture2D texture = SonOfRobinGame.ContentMgr.Load<Texture2D>($"gfx/ground textures/{name}");
+                Texture2D texture = SonOfRobinGame.ContentMgr.Load<Texture2D>($"gfx/repeating textures/{name}");
                 new RepeatingPattern(name: name, texture: texture);
             }
         }
