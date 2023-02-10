@@ -51,14 +51,26 @@ namespace SonOfRobin
 
             this.tweener = new Tweener();
 
-            int maxDistance = 100;
+            this.SetTweener();
+        }
 
-            Vector2 newPos = this.offset + new Vector2(this.world.random.Next(-maxDistance, maxDistance), this.world.random.Next(-maxDistance, maxDistance));
+        private void SetTweener()
+        {
+            Tween tween = this.tweener.FindTween(target: this, memberName: "offset");
 
-            this.tweener.TweenTo(target: this, expression: waterSurface => waterSurface.offset, toValue: newPos, duration: this.world.random.Next(2, 15), delay: 0)
-                   .RepeatForever(repeatDelay: 0.0f)
-                   .AutoReverse()
-                   .Easing(EasingFunctions.QuadraticInOut);
+            if (tween == null || !tween.IsAlive)
+            {
+                Vector2 newPos = Vector2.Zero;
+
+                int maxDistance = 200;
+
+                newPos = this.offset + new Vector2(this.world.random.Next(-maxDistance, maxDistance), this.world.random.Next(-maxDistance, maxDistance));
+
+                this.tweener.TweenTo(target: this, expression: waterSurface => waterSurface.offset, toValue: newPos, duration: this.world.random.Next(3, 8), delay: 0)
+                    .AutoReverse()
+                    .Easing(EasingFunctions.QuadraticInOut)
+                    .OnEnd(t => this.SetTweener());
+            }
         }
 
         public void Draw(float opacity)
