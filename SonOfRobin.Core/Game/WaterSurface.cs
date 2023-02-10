@@ -19,6 +19,12 @@ namespace SonOfRobin
             this.waterSurface2 = new WaterSurface(world: world, texture: texture2);
         }
 
+        public void Update()
+        {
+            this.waterSurface1.Update();
+            this.waterSurface2.Update();
+        }
+
         public void Draw()
         {
             this.waterSurface1.Draw(opacity: 1f);
@@ -73,10 +79,13 @@ namespace SonOfRobin
             }
         }
 
-        public void Draw(float opacity)
+        public void Update()
         {
             this.tweener.Update((float)Scene.CurrentGameTime.ElapsedGameTime.TotalSeconds);
+        }
 
+        public void Draw(float opacity)
+        {
             Rectangle viewRect = this.world.camera.viewRect;
 
             int offsetX = (int)this.offset.X;
@@ -89,12 +98,15 @@ namespace SonOfRobin
             int endColumn = Math.Max(columns, startColumn + (int)(viewRect.Width / this.texture.Width) + 1);
             int endRow = Math.Max(rows, startRow + (int)(viewRect.Height / this.texture.Height) + 1);
 
+            if (viewRect.X < (startColumn * this.texture.Width) + offsetX) startColumn--;
+            if (viewRect.Y < (startRow * this.texture.Height) + offsetY) startRow--;
+
             for (int i = startRow; i <= endRow; i++)
             {
                 for (int j = startColumn; j <= endColumn; j++)
                 {
-                    int x = (int)(j * this.texture.Width) + offsetX;
-                    int y = (int)(i * this.texture.Height) + offsetY;
+                    int x = (j * this.texture.Width) + offsetX;
+                    int y = (i * this.texture.Height) + offsetY;
 
                     SonOfRobinGame.SpriteBatch.Draw(this.texture, new Vector2(x, y), drawColor);
                 }

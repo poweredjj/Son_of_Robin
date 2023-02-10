@@ -777,6 +777,8 @@ namespace SonOfRobin
             this.Grid.UnloadTexturesIfMemoryLow(this.camera);
             this.Grid.LoadClosestTexturesInCameraView(camera: this.camera, visitedByPlayerOnly: false, loadMoreThanOne: false);
 
+            this.waterSurfaceManager.Update();
+
             if (this.demoMode) this.camera.TrackLiveAnimal(fluidMotion: true);
 
             bool createMissingPieces = this.CurrentUpdate % 200 == 0 && Preferences.debugCreateMissingPieces && !this.CineMode && !this.BuildMode;
