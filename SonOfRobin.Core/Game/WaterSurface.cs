@@ -17,9 +17,9 @@ namespace SonOfRobin
         {
             this.world = world;
 
-            this.oceanFloor = new WaterSurface(useTweenForOpacity: true, opacityBaseVal: 0.8f, opacityTweenVal: 0.4f, useTweenForOffset: false, world: world, texture: SonOfRobinGame.textureByName["water textures/ocean_floor"]);
-            this.waterCaustics1 = new WaterSurface(useTweenForOpacity: true, opacityBaseVal: 0.16f, opacityTweenVal: 0.05f, useTweenForOffset: true, world: world, texture: SonOfRobinGame.textureByName["water textures/water_caustics1"]);
-            this.waterCaustics2 = new WaterSurface(useTweenForOpacity: true, opacityBaseVal: 0.16f, opacityTweenVal: 0.05f, useTweenForOffset: true, world: world, texture: SonOfRobinGame.textureByName["water textures/water_caustics2"]);
+            this.oceanFloor = new WaterSurface(useTweenForOpacity: true, opacityBaseVal: 0.55f, opacityTweenVal: 0.25f, useTweenForOffset: false, world: world, texture: SonOfRobinGame.textureByName["water textures/ocean_floor"]);
+            this.waterCaustics1 = new WaterSurface(useTweenForOpacity: true, opacityBaseVal: 0.2f, opacityTweenVal: 0.05f, useTweenForOffset: true, world: world, texture: SonOfRobinGame.textureByName["water textures/water_caustics1"]);
+            this.waterCaustics2 = new WaterSurface(useTweenForOpacity: true, opacityBaseVal: 0.2f, opacityTweenVal: 0.05f, useTweenForOffset: true, world: world, texture: SonOfRobinGame.textureByName["water textures/water_caustics2"]);
         }
 
         public void Update()
