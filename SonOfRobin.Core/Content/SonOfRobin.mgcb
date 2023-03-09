@@ -5252,7 +5252,7 @@
 /processorParam:TextureFormat=Color
 /build:gfx/virtual_joypad_stick.png
 
-#begin gfx/water textures/water_bottom.png
+#begin gfx/water textures/ocean_floor.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -5262,7 +5262,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/water textures/water_bottom.png
+/build:gfx/water textures/ocean_floor.png
 
 #begin gfx/water textures/water_caustics1.png
 /importer:TextureImporter
