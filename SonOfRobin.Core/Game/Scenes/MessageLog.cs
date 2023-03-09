@@ -66,6 +66,8 @@ namespace SonOfRobin
 
         public override void Draw()
         {
+            this.StartNewSpriteBatch();
+
             if (messages.Count == 0) return;
 
             int currentFrame = SonOfRobinGame.CurrentUpdate;

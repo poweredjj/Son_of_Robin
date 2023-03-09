@@ -622,6 +622,8 @@ namespace SonOfRobin
 
         public override void Draw()
         {
+            this.StartNewSpriteBatch();
+
             SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, this.BgRect, this.bgColor);
 
             var visibleEntries = VisibleEntries;

@@ -1189,6 +1189,8 @@ namespace SonOfRobin
 
         public override void Draw()
         {
+            this.StartNewSpriteBatch();
+
             // drawing blue background (to ensure drawing even if screen is larger than map)
             SonOfRobinGame.GfxDev.Clear(Color.Black);
 

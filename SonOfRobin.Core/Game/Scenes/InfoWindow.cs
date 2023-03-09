@@ -337,6 +337,8 @@ namespace SonOfRobin
 
         public override void Draw()
         {
+            this.StartNewSpriteBatch();
+
             Rectangle bgRect = this.BgRect;
             int margin = this.Margin;
 

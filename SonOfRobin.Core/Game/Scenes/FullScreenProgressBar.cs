@@ -115,6 +115,8 @@ namespace SonOfRobin
 
         public override void Draw()
         {
+            this.StartNewSpriteBatch();
+
             if (!this.isActive) return;
 
             Color bgColor = new Color(252, 252, 246);

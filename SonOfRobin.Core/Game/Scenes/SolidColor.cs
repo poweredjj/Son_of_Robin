@@ -19,6 +19,8 @@ namespace SonOfRobin
 
         public override void Draw()
         {
+            this.StartNewSpriteBatch();
+
             if (this.clearScreen) SonOfRobinGame.GfxDev.Clear(this.color * this.viewParams.drawOpacity);
             else
             {

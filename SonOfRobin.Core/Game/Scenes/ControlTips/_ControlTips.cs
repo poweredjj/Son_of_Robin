@@ -124,6 +124,8 @@ namespace SonOfRobin
 
         public override void Draw()
         {
+            this.StartNewSpriteBatch();
+
             if (!Preferences.ShowControlTips || Input.currentControlType == Input.ControlType.Touch) return;
 
             int drawOffsetX = 0;
