@@ -56,7 +56,6 @@ namespace SonOfRobin
             this.waterCaustics2.Draw();
 
             SonOfRobinGame.SpriteBatch.End();
-
             SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.world.TransformMatrix);
         }
     }

@@ -90,7 +90,7 @@ namespace SonOfRobin
         {
             if ((this.map.Mode == Map.MapMode.Off && !this.transManager.HasAnyTransition) || this.map.FinalMapToDisplay == null) return;
 
-            this.StartNewSpriteBatch();
+            SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
             SonOfRobinGame.SpriteBatch.Draw(this.map.FinalMapToDisplay, this.map.FinalMapToDisplay.Bounds, Color.White * this.viewParams.drawOpacity);
             SonOfRobinGame.SpriteBatch.End();
         }

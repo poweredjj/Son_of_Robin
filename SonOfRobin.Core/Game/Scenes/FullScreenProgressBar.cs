@@ -117,7 +117,7 @@ namespace SonOfRobin
         {
             if (!this.isActive) return;
 
-            this.StartNewSpriteBatch();
+            SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
 
             Color bgColor = new Color(252, 252, 246);
 

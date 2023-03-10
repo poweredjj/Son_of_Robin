@@ -411,7 +411,7 @@ namespace SonOfRobin
 
         public override void Draw()
         {
-            this.StartNewSpriteBatch();
+            SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
 
             Rectangle bgRect = this.BgRect;
             float margin = this.Margin;

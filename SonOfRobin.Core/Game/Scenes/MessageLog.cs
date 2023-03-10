@@ -69,7 +69,7 @@ namespace SonOfRobin
         {
             if (messages.Count == 0) return;
 
-            this.StartNewSpriteBatch();
+            SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
 
             int currentFrame = SonOfRobinGame.CurrentUpdate;
 

@@ -428,7 +428,7 @@ namespace SonOfRobin
 
             if (!showDetailedMap || foundCellsWithMissingTextures)
             {
-                StartNewSpriteBatch(enableEffects: true);
+                SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix, sortMode: SpriteSortMode.Immediate);
                 this.sketchEffect.TurnOn(currentUpdate: SonOfRobinGame.CurrentUpdate);
 
                 SonOfRobinGame.SpriteBatch.Draw(this.lowResWholeCombinedGfx, this.worldRect, Color.White);
@@ -441,7 +441,7 @@ namespace SonOfRobin
                 // but have to retain lowResWholeCombinedGfx water color (changed by shader).
                 Color waterColorWithShader = new Color(89, 99, 81);
 
-                this.StartNewSpriteBatch(enableEffects: true); // starting new spriteBatch, to turn off effects turning off effects for drawing water rectangles
+                SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix); // starting new spriteBatch, to turn off effects for drawing water rectangles
                 foreach (Cell cell in cellsToDraw)
                 {
                     cell.DrawBackgroundWaterSimulation(waterColor: waterColorWithShader);
@@ -457,9 +457,9 @@ namespace SonOfRobin
                 SonOfRobinGame.SpriteBatch.End();
             }
 
-            this.StartNewSpriteBatch(enableEffects: false); // turning off effects
+            // drawing pieces (without effects)
 
-            // drawing pieces
+            SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
 
             Rectangle worldCameraRectForSpriteSearch = this.camera.viewRect;
             // mini map displays far pieces on the sides

@@ -622,7 +622,7 @@ namespace SonOfRobin
 
         public override void Draw()
         {
-            this.StartNewSpriteBatch();
+            SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
 
             SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, this.BgRect, this.bgColor);
 

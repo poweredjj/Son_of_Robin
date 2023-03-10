@@ -485,15 +485,6 @@ namespace SonOfRobin
             // MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Draw time elapsed {DrawTimeElapsed.Milliseconds}ms.", color: Color.LightCyan);
         }
 
-        public void StartNewSpriteBatch(bool enableEffects = false)
-        {
-            // SpriteSortMode.Immediate enables use of effects, but is slow.
-            // It is best to use it only if necessary.
-
-            SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix, samplerState: SamplerState.AnisotropicClamp,
-                sortMode: enableEffects ? SpriteSortMode.Immediate : SpriteSortMode.Deferred);
-        }
-
         public static void SetRenderTarget(RenderTarget2D newRenderTarget)
         {
             if (ProcessingMode == ProcessingModes.Draw) throw new ArgumentException($"Cannot set RenderTarget during {ProcessingMode}.");

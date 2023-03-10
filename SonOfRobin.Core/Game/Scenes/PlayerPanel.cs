@@ -103,7 +103,7 @@ namespace SonOfRobin
 
             this.AdaptToNewSize();
 
-            this.StartNewSpriteBatch();
+            SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
 
             Player player = world.Player;
             int width = this.BarWidth;

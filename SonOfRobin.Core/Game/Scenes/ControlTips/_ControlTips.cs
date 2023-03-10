@@ -126,7 +126,7 @@ namespace SonOfRobin
         {
             if (!Preferences.ShowControlTips || Input.currentControlType == Input.ControlType.Touch) return;
 
-            this.StartNewSpriteBatch();
+            SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
 
             int drawOffsetX = 0;
 

@@ -1191,7 +1191,7 @@ namespace SonOfRobin
         {
             if (this.WorldCreationInProgress) return;
 
-            this.StartNewSpriteBatch();
+            SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
 
             // drawing water surface
             this.waterSurfaceManager.Draw();
@@ -1216,7 +1216,7 @@ namespace SonOfRobin
             // drawing field tips
             if (Preferences.ShowControlTips && Preferences.showFieldControlTips)
             {
-                this.StartNewSpriteBatch();
+                SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
                 FieldTip.DrawFieldTips(world: this);
                 SonOfRobinGame.SpriteBatch.End();
             }

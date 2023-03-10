@@ -966,7 +966,7 @@ namespace SonOfRobin
         {
             if (this.IgnoreUpdateAndDraw) return;
 
-            this.StartNewSpriteBatch();
+            SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
 
             int margin = this.Margin;
             int tileSize = this.TileSize;
