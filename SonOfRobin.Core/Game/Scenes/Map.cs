@@ -122,7 +122,6 @@ namespace SonOfRobin
                 Texture2D mapTexture = BoardGraphics.CreateEntireMapTexture(grid: this.world.Grid, width: width, height: height, multiplier: this.scaleMultiplier);
                 Rectangle sourceRectangle = new Rectangle(0, 0, width, height);
                 SonOfRobinGame.SpriteBatch.Draw(mapTexture, sourceRectangle, sourceRectangle, Color.White);
-
                 SonOfRobinGame.SpriteBatch.End();
 
                 this.dirtyBackground = false;
@@ -394,6 +393,7 @@ namespace SonOfRobin
             extendedMapRect.Inflate(extendedMapRect.Width * 0.1f, extendedMapRect.Height * 0.1f);
 
             SonOfRobinGame.SpriteBatch.Draw(AnimData.framesForPkgs[AnimData.PkgName.Map].texture, extendedMapRect, Color.White);
+            SonOfRobinGame.SpriteBatch.End();
 
             // drawing background
 
@@ -426,10 +426,14 @@ namespace SonOfRobin
                 }
             }
 
-            StartNewSpriteBatch(enableEffects: true);
-            this.sketchEffect.TurnOn(currentUpdate: SonOfRobinGame.CurrentUpdate);
+            if (!showDetailedMap || foundCellsWithMissingTextures)
+            {
+                SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix, sortMode: SpriteSortMode.Immediate);
+                this.sketchEffect.TurnOn(currentUpdate: SonOfRobinGame.CurrentUpdate);
 
-            if (!showDetailedMap || foundCellsWithMissingTextures) SonOfRobinGame.SpriteBatch.Draw(this.lowResWholeCombinedGfx, this.worldRect, Color.White);
+                SonOfRobinGame.SpriteBatch.Draw(this.lowResWholeCombinedGfx, this.worldRect, Color.White);
+                SonOfRobinGame.SpriteBatch.End();
+            }
 
             if (showDetailedMap)
             {
@@ -437,23 +441,26 @@ namespace SonOfRobin
                 // but have to retain lowResWholeCombinedGfx water color (changed by shader).
                 Color waterColorWithShader = new Color(89, 99, 81);
 
-                this.StartNewSpriteBatch(enableEffects: true); // starting new spriteBatch, to turn off effects turning off effects for drawing water rectangles
+                SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix); // starting new spriteBatch, to turn off effects for drawing water rectangles
                 foreach (Cell cell in cellsToDraw)
                 {
                     cell.DrawBackgroundWaterSimulation(waterColor: waterColorWithShader);
                 }
+                SonOfRobinGame.SpriteBatch.End();
 
+                SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix, sortMode: SpriteSortMode.Immediate);
                 this.sketchEffect.TurnOn(currentUpdate: SonOfRobinGame.CurrentUpdate); // turning effects back on
-
                 foreach (Cell cell in cellsToDraw)
                 {
                     cell.DrawBackground(drawSimulation: false, opacity: 1f);
                 }
+
+                SonOfRobinGame.SpriteBatch.End();
             }
 
-            this.StartNewSpriteBatch(enableEffects: false); // turning off effects
+            // drawing pieces (without effects)
 
-            // drawing pieces
+            SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
 
             Rectangle worldCameraRectForSpriteSearch = this.camera.viewRect;
             // mini map displays far pieces on the sides

@@ -83,6 +83,7 @@ namespace SonOfRobin
 
         private FpsHistory fpsHistory;
         private int counterValue;
+
         private string CounterText
         { get { return $"FPS {this.counterValue}"; } }
 
@@ -167,6 +168,8 @@ namespace SonOfRobin
 
         public override void Draw()
         {
+            SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
+
             // background
 
             SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, this.bgRect, Color.Black * 0.6f * this.viewParams.drawOpacity);
@@ -203,6 +206,8 @@ namespace SonOfRobin
                     lastYOffset = barYOffset;
                 }
             }
+
+            SonOfRobinGame.SpriteBatch.End();
         }
     }
 }

@@ -117,6 +117,8 @@ namespace SonOfRobin
         {
             if (!this.isActive) return;
 
+            SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
+
             Color bgColor = new Color(252, 252, 246);
 
             SonOfRobinGame.GfxDev.Clear(bgColor);
@@ -192,6 +194,8 @@ namespace SonOfRobin
             // Helpers.DrawRectangleOutline(rect: bottomGradRect, color: Color.Pink, borderWidth: 1); // for testing
             // Helpers.DrawRectangleOutline(rect: textRect, color: Color.Blue, borderWidth: 1); // for testing
             // Helpers.DrawRectangleOutline(rect: progressBarRect, color: Color.Cyan, borderWidth: 1); // for testing
+
+            SonOfRobinGame.SpriteBatch.End();
         }
     }
 }

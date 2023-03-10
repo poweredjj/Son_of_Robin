@@ -260,6 +260,8 @@ namespace SonOfRobin
 
         public override void Draw()
         {
+            SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
+
             int margin = this.Margin;
             int bgShadowOffset = (int)(SonOfRobinGame.VirtualHeight * 0.02f);
             int textShadowOffset = (int)Math.Max(SonOfRobinGame.VirtualHeight * 0.003f, 1);
@@ -281,6 +283,8 @@ namespace SonOfRobin
             {
                 this.textWithImages.Draw(position: textPos, color: this.textColor, imageOpacity: this.viewParams.drawOpacity, textScale: this.textScale);
             }
+
+            SonOfRobinGame.SpriteBatch.End();
         }
     }
 }

@@ -19,12 +19,16 @@ namespace SonOfRobin
 
         public override void Draw()
         {
+            SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
+
             if (this.clearScreen) SonOfRobinGame.GfxDev.Clear(this.color * this.viewParams.drawOpacity);
             else
             {
                 Rectangle rect = new Rectangle(0, 0, SonOfRobinGame.VirtualWidth, SonOfRobinGame.VirtualHeight);
                 SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, rect, this.color * this.viewParams.drawOpacity);
             }
+
+            SonOfRobinGame.SpriteBatch.End();
         }
     }
 }

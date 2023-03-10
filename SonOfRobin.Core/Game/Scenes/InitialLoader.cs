@@ -159,6 +159,8 @@ namespace SonOfRobin
 
         public override void Draw()
         {
+            SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
+
             SonOfRobinGame.GfxDev.Clear(Color.DarkBlue);
 
             Rectangle splashRect = new Rectangle(x: 0, y: -SonOfRobinGame.VirtualHeight / 8, width: SonOfRobinGame.VirtualWidth, height: SonOfRobinGame.VirtualHeight);
@@ -185,6 +187,8 @@ namespace SonOfRobin
 
             SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, progressBarFullRect, Color.White * 0.5f);
             SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, progressBarFilledRect, Color.White * 1f);
+
+            SonOfRobinGame.SpriteBatch.End();
         }
     }
 }

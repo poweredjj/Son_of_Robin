@@ -966,6 +966,8 @@ namespace SonOfRobin
         {
             if (this.IgnoreUpdateAndDraw) return;
 
+            SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
+
             int margin = this.Margin;
             int tileSize = this.TileSize;
             int spriteSize = Convert.ToInt32((float)tileSize * 0.7f);
@@ -1008,6 +1010,8 @@ namespace SonOfRobin
             }
 
             if (this.InputType != InputTypes.Always) this.DrawCursor();
+
+            SonOfRobinGame.SpriteBatch.End();
         }
 
         private void DrawSlotLabel(StorageSlot slot, Rectangle tileRect)

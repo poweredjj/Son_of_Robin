@@ -179,6 +179,9 @@ namespace SonOfRobin
             int correctedSourceHeight = this.texture.Height;
             if (submergeCorrection > 0)
             {
+                // first pass - whole sprite visible through water
+                SonOfRobinGame.SpriteBatch.Draw(this.texture, destRect, this.textureRect, Color.Blue * opacity * 0.2f);
+
                 correctedSourceHeight = Math.Max(this.texture.Height / 2, this.texture.Height - submergeCorrection);
                 destRect.Height = (int)(correctedSourceHeight * this.scale);
             }

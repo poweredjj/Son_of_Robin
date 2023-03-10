@@ -98,15 +98,9 @@ namespace SonOfRobin
         {
             thisFrameSpritesShown.Clear();
 
-            if (Preferences.ShowControlTips && Preferences.showFieldControlTips)
+            foreach (FieldTip fieldTip in tipsDict.Values.ToList())
             {
-                SonOfRobinGame.SpriteBatch.End();
-                SonOfRobinGame.SpriteBatch.Begin(transformMatrix: world.TransformMatrix);
-
-                foreach (FieldTip fieldTip in tipsDict.Values.ToList())
-                {
-                    fieldTip.UpdateAndDraw(world);
-                }
+                fieldTip.UpdateAndDraw(world);
             }
         }
 

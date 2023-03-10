@@ -767,7 +767,8 @@ namespace SonOfRobin
 
                     if (!thereWillBeMoreEffects)
                     {
-                        this.world.StartNewSpriteBatch(enableEffects: false);
+                        SonOfRobinGame.SpriteBatch.End();
+                        SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.world.TransformMatrix);
                         break;
                     }
                 }

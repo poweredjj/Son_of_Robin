@@ -337,6 +337,8 @@ namespace SonOfRobin
 
         public override void Draw()
         {
+            SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
+
             Rectangle bgRect = this.BgRect;
             int margin = this.Margin;
 
@@ -398,6 +400,8 @@ namespace SonOfRobin
 
                 posY += (int)((entry.Height * globalScale) + margin);
             }
+
+            SonOfRobinGame.SpriteBatch.End();
         }
     }
 }

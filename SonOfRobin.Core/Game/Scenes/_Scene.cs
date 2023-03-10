@@ -56,10 +56,13 @@ namespace SonOfRobin
 
         public static DateTime startUpdateTime;
         public static DateTime startDrawTime;
+
         public static TimeSpan UpdateTimeElapsed
         { get { return DateTime.Now - startUpdateTime; } }
+
         public static TimeSpan DrawTimeElapsed
         { get { return DateTime.Now - startDrawTime; } }
+
         public InputTypes InputType { get; set; }
 
         private bool OtherScenesOfThisTypePresent
@@ -115,7 +118,7 @@ namespace SonOfRobin
 
                     if (hiddenTypes.Contains(sceneType)) continue;
 
-                    if (scene.drawActive || scene.alwaysDraws)
+                    if ((scene.drawActive || scene.alwaysDraws) && scene.viewParams.drawOpacity > 0f)
                     {
                         createdStack.Add(scene);
                         if (scene.hidesSameScenesBelow && !hiddenTypes.Contains(sceneType)) hiddenTypes.Add(sceneType);
@@ -470,53 +473,16 @@ namespace SonOfRobin
 
             ProcessingMode = ProcessingModes.Draw;
 
-            Scene previousScene = DrawStack[0];
-
-            bool spriteBatchNotEnded = false;
-            bool firstSpriteBatchStarted = false;
-
             currentlyProcessedScene = null;
 
             foreach (Scene scene in drawStack)
             {
                 currentlyProcessedScene = scene;
 
-                if (scene.viewParams.drawOpacity == 0f) continue;
-
-                bool createNewMatrix = !firstSpriteBatchStarted ||
-                                      (!(scene.viewParams.DrawPos == previousScene.viewParams.DrawPos &&
-                                         scene.viewParams.drawRot == previousScene.viewParams.drawRot &&
-                                         scene.viewParams.drawScaleX == previousScene.viewParams.drawScaleX &&
-                                         scene.viewParams.drawScaleY == previousScene.viewParams.drawScaleY
-                                         ));
-
-                if (!firstSpriteBatchStarted || createNewMatrix)
-                {
-                    scene.StartNewSpriteBatch(end: spriteBatchNotEnded);
-
-                    spriteBatchNotEnded = true;
-                    firstSpriteBatchStarted = true;
-                }
-
                 scene.Draw();
-
-                previousScene = scene;
             }
 
-            if (spriteBatchNotEnded) SonOfRobinGame.SpriteBatch.End();
-
-            //MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Draw time elapsed {DrawTimeElapsed.Milliseconds}ms.", color: Color.LightCyan);
-        }
-
-        public void StartNewSpriteBatch(bool end = true, bool enableEffects = false)
-        {
-            if (end) SonOfRobinGame.SpriteBatch.End();
-
-            // SpriteSortMode.Immediate enables use of effects, but is slow.
-            // It is best to use it only if necessary.
-
-            SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix, samplerState: SamplerState.AnisotropicClamp,
-                sortMode: enableEffects ? SpriteSortMode.Immediate : SpriteSortMode.Deferred);
+            // MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Draw time elapsed {DrawTimeElapsed.Milliseconds}ms.", color: Color.LightCyan);
         }
 
         public static void SetRenderTarget(RenderTarget2D newRenderTarget)

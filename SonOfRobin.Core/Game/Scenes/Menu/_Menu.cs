@@ -622,6 +622,7 @@ namespace SonOfRobin
 
         public override void Draw()
         {
+            SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
             SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, this.BgRect, this.bgColor);
 
             var visibleEntries = VisibleEntries;
@@ -634,6 +635,8 @@ namespace SonOfRobin
             }
 
             this.DrawScrollbar();
+
+            SonOfRobinGame.SpriteBatch.End();
         }
 
         private void DrawScrollbar()

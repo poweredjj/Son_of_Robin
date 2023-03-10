@@ -126,6 +126,8 @@ namespace SonOfRobin
         {
             if (!Preferences.ShowControlTips || Input.currentControlType == Input.ControlType.Touch) return;
 
+            SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
+
             int drawOffsetX = 0;
 
             foreach (ButtonTip tip in this.tipCollection.Values)
@@ -138,6 +140,8 @@ namespace SonOfRobin
             {
                 Helpers.DrawTextWithOutline(font: SonOfRobinGame.FontPressStart2P5, text: $"{this.currentLayout}", pos: Vector2.Zero, color: Color.White, outlineColor: Color.Black, outlineSize: 1);
             }
+
+            SonOfRobinGame.SpriteBatch.End();
         }
 
         public static void RefreshTopTipsLayout()
