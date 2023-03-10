@@ -446,9 +446,10 @@ namespace SonOfRobin
                 {
                     cell.DrawBackgroundWaterSimulation(waterColor: waterColorWithShader);
                 }
+                SonOfRobinGame.SpriteBatch.End();
 
+                SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix, sortMode: SpriteSortMode.Immediate);
                 this.sketchEffect.TurnOn(currentUpdate: SonOfRobinGame.CurrentUpdate); // turning effects back on
-
                 foreach (Cell cell in cellsToDraw)
                 {
                     cell.DrawBackground(drawSimulation: false, opacity: 1f);
