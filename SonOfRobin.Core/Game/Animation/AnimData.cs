@@ -1054,16 +1054,6 @@ namespace SonOfRobin
                 AddRPGMakerPackageV2(packageName: PkgName.CrabDarkBrown, atlasName: atlasNameSmall, setNoX: 3, setNoY: 1, animSize: 0, crop: true);
                 AddRPGMakerPackageV2(packageName: PkgName.CrabDarkBrown, atlasName: atlasNameBig, setNoX: 3, setNoY: 1, animSize: 1);
             }
-
-            ProcessAllAnimFrames();
-        }
-
-        private static void ProcessAllAnimFrames()
-        {
-            Parallel.ForEach(frameById.Values, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, animFrame =>
-            {
-                animFrame.Process();
-            });
         }
 
         public static List<AnimFrame> ConvertImageToFrameList(string atlasName, byte layer, int x = 0, int y = 0, int width = 0, int height = 0, bool crop = true, float scale = 1f, float depthPercent = 0.25f, int padding = 1, bool ignoreWhenCalculatingMaxSize = false)

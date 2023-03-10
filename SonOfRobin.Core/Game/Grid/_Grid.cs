@@ -1211,8 +1211,8 @@ namespace SonOfRobin
                 {
                     if (frame.ignoreWhenCalculatingMaxSize) continue;
 
-                    int scaledWidth = (int)(frame.GfxWidth * frame.scale);
-                    int scaledHeight = (int)(frame.GfxHeight * frame.scale);
+                    int scaledWidth = (int)(frame.gfxWidth * frame.scale);
+                    int scaledHeight = (int)(frame.gfxHeight * frame.scale);
 
                     if (scaledWidth > frameMaxWidth) frameMaxWidth = scaledWidth;
                     if (scaledHeight > frameMaxHeight) frameMaxHeight = scaledHeight;

@@ -611,15 +611,15 @@ namespace SonOfRobin
 
         private void UpdateRects()
         {
-            this.gfxRect.X = (int)(position.X + this.frame.GfxOffset.X);
-            this.gfxRect.Y = (int)(position.Y + this.frame.GfxOffset.Y);
-            this.gfxRect.Width = this.frame.GfxWidth;
-            this.gfxRect.Height = this.frame.GfxHeight;
+            this.gfxRect.X = (int)(position.X + this.frame.gfxOffset.X);
+            this.gfxRect.Y = (int)(position.Y + this.frame.gfxOffset.Y);
+            this.gfxRect.Width = this.frame.gfxWidth;
+            this.gfxRect.Height = this.frame.gfxHeight;
 
-            this.colRect.X = (int)(position.X + this.frame.ColOffset.X);
-            this.colRect.Y = (int)(position.Y + this.frame.ColOffset.Y);
-            this.colRect.Width = this.frame.ColWidth;
-            this.colRect.Height = this.frame.ColHeight;
+            this.colRect.X = (int)(position.X + this.frame.colOffset.X);
+            this.colRect.Y = (int)(position.Y + this.frame.colOffset.Y);
+            this.colRect.Width = this.frame.colWidth;
+            this.colRect.Height = this.frame.colHeight;
         }
 
         public void AssignNewPackage(AnimData.PkgName animPackage, bool setEvenIfMissing = true)
@@ -872,13 +872,13 @@ namespace SonOfRobin
                 if (yScaleForce != 0) yScale = frame.scale * yScaleForce;
 
                 SonOfRobinGame.SpriteBatch.Draw(
-                    frame.Texture,
+                    frame.texture,
                     position:
                     new Vector2(shadowSprite.position.X + drawOffsetX, shadowSprite.position.Y + drawOffsetY),
-                    sourceRectangle: frame.TextureRect,
+                    sourceRectangle: frame.textureRect,
                     color: color * shadowSprite.opacity,
                     rotation: shadowSprite.rotation + shadowAngle + (float)(Math.PI / 2f),
-                    origin: new Vector2(-frame.GfxOffset.X / frame.scale, -(frame.GfxOffset.Y + frame.ColOffset.Y) / frame.scale),
+                    origin: new Vector2(-frame.gfxOffset.X / frame.scale, -(frame.gfxOffset.Y + frame.colOffset.Y) / frame.scale),
                     scale: new Vector2(xScale, yScale),
                     effects: SpriteEffects.None,
                     layerDepth: 0);

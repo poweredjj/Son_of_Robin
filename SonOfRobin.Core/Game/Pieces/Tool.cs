@@ -52,7 +52,7 @@ namespace SonOfRobin
             if (!this.indestructible)
             {
                 this.hitPoints = Math.Max(0, this.hitPoints - this.world.random.Next(1, 5));
-                if (this.hitPoints == 0) this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.BrokenItem, ignoreDelay: true, text: this.readableName, texture: this.sprite.frame.Texture);
+                if (this.hitPoints == 0) this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.BrokenItem, ignoreDelay: true, text: this.readableName, texture: this.sprite.frame.texture);
             }
 
             float angle = this.world.Player.ShootingAngle;
@@ -64,7 +64,7 @@ namespace SonOfRobin
             Vector2 movement = new Vector2((int)Math.Round(movementDist * Math.Cos(angle)), (int)Math.Round(movementDist * Math.Sin(angle)));
 
             Sprite playerSprite = this.world.Player.sprite;
-            Vector2 startingPos = playerSprite.position + new Vector2(offset.X * playerSprite.frame.ColWidth * 1.5f, offset.Y * playerSprite.frame.ColHeight * 1.5f);
+            Vector2 startingPos = playerSprite.position + new Vector2(offset.X * playerSprite.frame.colWidth * 1.5f, offset.Y * playerSprite.frame.colHeight * 1.5f);
             projectile.GetThrown(startPosition: startingPos, movement: movement, hitPowerMultiplier: this.hitPower + this.world.Player.strength, shootingPower: shootingPower);
         }
 
@@ -175,7 +175,7 @@ namespace SonOfRobin
                 if (highlightOnly)
                 {
                     Tutorials.ShowTutorialOnTheField(type: Tutorials.Type.Hit, world: this.world);
-                    currentTarget.sprite.effectCol.AddEffect(new BorderInstance(outlineColor: Color.Red, textureSize: currentTarget.sprite.frame.TextureSize, priority: 0));
+                    currentTarget.sprite.effectCol.AddEffect(new BorderInstance(outlineColor: Color.Red, textureSize: currentTarget.sprite.frame.textureSize, priority: 0));
 
                     VirtButton.ButtonHighlightOnNextFrame(VButName.UseTool);
                     ControlTips.TipHighlightOnNextFrame(tipName: "use item");
@@ -202,8 +202,8 @@ namespace SonOfRobin
                     this.hitPoints -= 1;
                     this.hitPoints = Math.Max(0, this.hitPoints);
 
-                    if (this.HitPointsPercent < 0.4f && this.hitPoints > 0) this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.BreakingItem, ignoreDelay: true, text: this.readableName, texture: this.sprite.frame.Texture);
-                    if (this.hitPoints == 0) this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.BrokenItem, ignoreDelay: true, text: this.readableName, texture: this.sprite.frame.Texture);
+                    if (this.HitPointsPercent < 0.4f && this.hitPoints > 0) this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.BreakingItem, ignoreDelay: true, text: this.readableName, texture: this.sprite.frame.texture);
+                    if (this.hitPoints == 0) this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.BrokenItem, ignoreDelay: true, text: this.readableName, texture: this.sprite.frame.texture);
                 }
             }
         }
@@ -238,8 +238,8 @@ namespace SonOfRobin
                 if (target.category == Category.SmallPlant) numberOfExplosions = 0;
                 for (int i = 0; i < numberOfExplosions; i++)
                 {
-                    Vector2 posOffset = new Vector2(world.random.Next(0, target.sprite.frame.GfxWidth), world.random.Next(0, target.sprite.frame.GfxHeight));
-                    posOffset += target.sprite.frame.GfxOffset;
+                    Vector2 posOffset = new Vector2(world.random.Next(0, target.sprite.frame.gfxWidth), world.random.Next(0, target.sprite.frame.gfxHeight));
+                    posOffset += target.sprite.frame.gfxOffset;
 
                     var attack = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: target.sprite.position + posOffset, templateName: PieceTemplate.Name.Attack);
                     attack.sprite.color = Color.LightSteelBlue;

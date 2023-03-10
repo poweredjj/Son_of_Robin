@@ -106,12 +106,12 @@ namespace SonOfRobin
             int posX = this.sprite.gfxRect.Center.X;
             int posY = this.sprite.gfxRect.Bottom;
 
-            new StatBar(label: "hp", value: (int)this.hitPoints, valueMax: (int)this.maxHitPoints, colorMin: new Color(255, 0, 0), colorMax: new Color(0, 255, 0), posX: posX, posY: posY, texture: AnimData.framesForPkgs[AnimData.PkgName.Heart].Texture);
+            new StatBar(label: "hp", value: (int)this.hitPoints, valueMax: (int)this.maxHitPoints, colorMin: new Color(255, 0, 0), colorMax: new Color(0, 255, 0), posX: posX, posY: posY, texture: AnimData.framesForPkgs[AnimData.PkgName.Heart].texture);
 
             if (Preferences.debugShowStatBars)
             {
-                new StatBar(label: "stam", value: (int)this.stamina, valueMax: (int)this.maxStamina, colorMin: new Color(100, 100, 100), colorMax: new Color(255, 255, 255), posX: posX, posY: posY, texture: AnimData.framesForPkgs[AnimData.PkgName.Biceps].Texture);
-                new StatBar(label: "food", value: (int)this.fedLevel, valueMax: (int)this.maxFedLevel, colorMin: new Color(0, 128, 255), colorMax: new Color(0, 255, 255), posX: posX, posY: posY, texture: AnimData.framesForPkgs[AnimData.PkgName.Burger].Texture);
+                new StatBar(label: "stam", value: (int)this.stamina, valueMax: (int)this.maxStamina, colorMin: new Color(100, 100, 100), colorMax: new Color(255, 255, 255), posX: posX, posY: posY, texture: AnimData.framesForPkgs[AnimData.PkgName.Biceps].texture);
+                new StatBar(label: "food", value: (int)this.fedLevel, valueMax: (int)this.maxFedLevel, colorMin: new Color(0, 128, 255), colorMax: new Color(0, 255, 255), posX: posX, posY: posY, texture: AnimData.framesForPkgs[AnimData.PkgName.Burger].texture);
                 new StatBar(label: "age", value: (int)this.currentAge, valueMax: (int)this.maxAge, colorMin: new Color(180, 0, 0), colorMax: new Color(255, 0, 0), posX: posX, posY: posY);
                 new StatBar(label: "weight", value: (int)this.Mass, valueMax: (int)this.maxMass, colorMin: new Color(0, 128, 255), colorMax: new Color(0, 255, 255), posX: posX, posY: posY);
             }

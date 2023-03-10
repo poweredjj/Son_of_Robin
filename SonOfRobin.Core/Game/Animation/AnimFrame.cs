@@ -5,50 +5,25 @@ using System.Collections.Generic;
 
 namespace SonOfRobin
 {
-    public struct AnimFrameTemplateData
-    {
-        // used to store anim frame data needed for further processing
-
-        public readonly int atlasX;
-        public readonly int atlasY;
-        public readonly int width;
-        public readonly int height;
-        public readonly bool crop;
-        public readonly int padding;
-
-        public AnimFrameTemplateData(int atlasX, int atlasY, int width, int height, bool crop, int padding)
-        {
-            this.atlasX = atlasX;
-            this.atlasY = atlasY;
-            this.width = width;
-            this.height = height;
-            this.crop = crop;
-            this.padding = padding;
-        }
-    }
-
     public class AnimFrame
     {
         public readonly string atlasName;
-        private readonly AnimFrameTemplateData animFrameTemplateData;
-        public Texture2D Texture { get; private set; }
-        public Vector2 RotationOrigin { get; private set; }
-        public Vector2 TextureSize { get; private set; }
-        public Rectangle TextureRect { get; private set; }
-        public bool HasBeenProcessed { get; private set; }
-        public int GfxWidth { get; private set; }
-        public int GfxHeight { get; private set; }
-        public int ColWidth { get; private set; }
-        public int ColHeight { get; private set; }
-        public Vector2 GfxOffset { get; private set; }
-        public Vector2 ColOffset { get; private set; }
-
         public readonly string id;
         private readonly float depthPercent;
+        public readonly int gfxWidth;
+        public readonly int gfxHeight;
+        public readonly int colWidth;
+        public readonly int colHeight;
+        public readonly Vector2 gfxOffset;
+        public readonly Vector2 colOffset;
         public readonly byte layer;
         public readonly byte duration;
         public readonly float scale;
         public readonly bool ignoreWhenCalculatingMaxSize;
+        public readonly Texture2D texture;
+        public readonly Vector2 textureSize;
+        public readonly Rectangle textureRect;
+        public readonly Vector2 rotationOrigin;
 
         public static AnimFrame GetFrame(string atlasName, int atlasX, int atlasY, int width, int height, byte layer, byte duration, bool crop = false, float scale = 1f, float depthPercent = 0.25f, int padding = 1, bool ignoreWhenCalculatingMaxSize = false)
         {
@@ -69,11 +44,9 @@ namespace SonOfRobin
         {
             // should not be invoked from other classes directly
 
-            this.HasBeenProcessed = false;
             this.id = GetID(atlasName: atlasName, atlasX: atlasX, atlasY: atlasY, width: width, height: height, layer: layer, duration: duration, crop: crop, scale: scale, depthPercent: depthPercent);
 
             AnimData.frameById[this.id] = this;
-            this.animFrameTemplateData = new AnimFrameTemplateData(atlasX: atlasX, atlasY: atlasY, width: width, height: height, crop: crop, padding: padding);
 
             this.depthPercent = depthPercent;
             this.atlasName = atlasName;
@@ -81,39 +54,33 @@ namespace SonOfRobin
             this.layer = layer;
             this.duration = duration; // duration == 0 will stop the animation
             this.ignoreWhenCalculatingMaxSize = ignoreWhenCalculatingMaxSize;
-        }
-
-        public void Process()
-        {
-            if (this.HasBeenProcessed) throw new ArgumentException($"AnimFrame has already been processed - {this.id}.");
 
             Texture2D atlasTexture = SonOfRobinGame.textureByName[this.atlasName];
-            Rectangle cropRect = GetCropRect(texture: atlasTexture, textureX: this.animFrameTemplateData.atlasX, textureY: this.animFrameTemplateData.atlasY, width: this.animFrameTemplateData.width, height: this.animFrameTemplateData.height, crop: this.animFrameTemplateData.crop);
+            Rectangle cropRect = GetCropRect(texture: atlasTexture, textureX: atlasX, textureY: atlasY, width: width, height: height, crop: crop);
 
             // padding makes the edge texture filtering smooth and allows for border effects outside original texture edges
-            this.Texture = GfxConverter.CropTextureAndAddPadding(baseTexture: atlasTexture, cropRect: cropRect, padding: this.animFrameTemplateData.padding);
+            this.texture = GfxConverter.CropTextureAndAddPadding(baseTexture: atlasTexture, cropRect: cropRect, padding: padding);
 
-            this.RotationOrigin = new Vector2(this.Texture.Width / 2f, this.Texture.Height / 2f);
+            this.rotationOrigin = new Vector2(this.texture.Width / 2f, this.texture.Height / 2f);
 
-            this.TextureSize = new Vector2(this.Texture.Width, this.Texture.Height);
-            this.TextureRect = new Rectangle(x: 0, y: 0, width: this.Texture.Width, height: this.Texture.Height);
+            this.textureSize = new Vector2(this.texture.Width, this.texture.Height);
+            this.textureRect = new Rectangle(x: 0, y: 0, width: this.texture.Width, height: this.texture.Height);
 
             Rectangle colBounds = this.FindCollisionBounds();
 
-            this.ColWidth = (int)(colBounds.Width * scale);
-            this.ColHeight = (int)(colBounds.Height * scale);
+            this.colWidth = (int)(colBounds.Width * scale);
+            this.colHeight = (int)(colBounds.Height * scale);
 
-            this.GfxWidth = (int)(this.Texture.Width * scale);
-            this.GfxHeight = (int)(this.Texture.Height * scale);
+            this.gfxWidth = (int)(this.texture.Width * scale);
+            this.gfxHeight = (int)(this.texture.Height * scale);
 
-            this.ColOffset = new Vector2(-(int)(colBounds.Width * 0.5f), -(int)(colBounds.Height * 0.5f)); // has to go first...
-            this.GfxOffset = new Vector2(this.ColOffset.X - colBounds.X, this.ColOffset.Y - colBounds.Y); // because it is used here
+            this.colOffset = new Vector2(-(int)(colBounds.Width * 0.5f), -(int)(colBounds.Height * 0.5f)); // has to go first...
+            this.gfxOffset = new Vector2(this.colOffset.X - colBounds.X, this.colOffset.Y - colBounds.Y); // because it is used here
 
-            this.ColOffset *= scale;
-            this.GfxOffset *= scale;
-
-            this.HasBeenProcessed = true;
+            this.colOffset *= scale;
+            this.gfxOffset *= scale;
         }
+
 
         public static void DeleteUsedAtlases()
         {
@@ -141,15 +108,15 @@ namespace SonOfRobin
         {
             // checking bottom part of the frame for collision bounds
 
-            int bottomPartHeight = Math.Max((int)(this.Texture.Width * this.depthPercent), 20);
-            bottomPartHeight = Math.Min(bottomPartHeight, this.Texture.Height);
+            int bottomPartHeight = Math.Max((int)(this.texture.Width * this.depthPercent), 20);
+            bottomPartHeight = Math.Min(bottomPartHeight, this.texture.Height);
 
-            int sliceWidth = this.Texture.Width;
-            int sliceHeight = this.layer == 1 ? bottomPartHeight : this.Texture.Height;
+            int sliceWidth = this.texture.Width;
+            int sliceHeight = this.layer == 1 ? bottomPartHeight : this.texture.Height;
             int sliceX = 0;
-            int sliceY = this.Texture.Height - sliceHeight;
+            int sliceY = this.texture.Height - sliceHeight;
 
-            var boundsRect = FindNonTransparentPixelsRect(texture: this.Texture, textureX: sliceX, textureY: sliceY, width: sliceWidth, height: sliceHeight, minAlpha: 240); // 240
+            var boundsRect = FindNonTransparentPixelsRect(texture: this.texture, textureX: sliceX, textureY: sliceY, width: sliceWidth, height: sliceHeight, minAlpha: 240); // 240
 
             // bounds value would be incorrect without adding the base slice value
 
@@ -224,35 +191,35 @@ namespace SonOfRobin
         {
             // invoke from Sprite class
 
-            int correctedSourceHeight = this.Texture.Height;
+            int correctedSourceHeight = this.texture.Height;
             if (submergeCorrection > 0)
             {
                 // first pass - whole sprite visible through water
-                SonOfRobinGame.SpriteBatch.Draw(this.Texture, destRect, this.TextureRect, Color.Blue * opacity * 0.2f);
+                SonOfRobinGame.SpriteBatch.Draw(this.texture, destRect, this.textureRect, Color.Blue * opacity * 0.2f);
 
-                correctedSourceHeight = Math.Max(this.Texture.Height / 2, this.Texture.Height - submergeCorrection);
+                correctedSourceHeight = Math.Max(this.texture.Height / 2, this.texture.Height - submergeCorrection);
                 destRect.Height = (int)(correctedSourceHeight * this.scale);
             }
 
-            Rectangle sourceRectangle = new Rectangle(x: 0, y: 0, width: this.Texture.Width, correctedSourceHeight);
+            Rectangle sourceRectangle = new Rectangle(x: 0, y: 0, width: this.texture.Width, correctedSourceHeight);
 
             // Helpers.DrawRectangleOutline(rect: destRect, color: Color.YellowGreen, borderWidth: 2); // testing rect size
 
-            SonOfRobinGame.SpriteBatch.Draw(this.Texture, destRect, sourceRectangle, color * opacity);
+            SonOfRobinGame.SpriteBatch.Draw(this.texture, destRect, sourceRectangle, color * opacity);
         }
 
         public void DrawWithRotation(Vector2 position, Color color, float rotation, float opacity)
         {
             // invoke from Sprite class
 
-            SonOfRobinGame.SpriteBatch.Draw(this.Texture, position: position, sourceRectangle: this.TextureRect, color: color * opacity, rotation: rotation, origin: this.RotationOrigin, scale: this.scale, effects: SpriteEffects.None, layerDepth: 0);
+            SonOfRobinGame.SpriteBatch.Draw(this.texture, position: position, sourceRectangle: this.textureRect, color: color * opacity, rotation: rotation, origin: this.rotationOrigin, scale: this.scale, effects: SpriteEffects.None, layerDepth: 0);
         }
 
         public void DrawAndKeepInRectBounds(Rectangle destBoundsRect, Color color, float opacity = 1f)
         {
             // general use
 
-            Helpers.DrawTextureInsideRect(texture: this.Texture, rectangle: destBoundsRect, color: color * opacity);
+            Helpers.DrawTextureInsideRect(texture: this.texture, rectangle: destBoundsRect, color: color * opacity);
         }
     }
 }

@@ -205,7 +205,7 @@ namespace SonOfRobin
                         this.boardPiece.hitPoints = Math.Max(this.boardPiece.hitPoints - damage, 0);
                         if (this.boardPiece.hitPoints <= 0)
                         {
-                            this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.BurntOutTorch, ignoreDelay: true, text: portableLight.readableName, texture: portableLight.sprite.frame.Texture);
+                            this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.BurntOutTorch, ignoreDelay: true, text: portableLight.readableName, texture: portableLight.sprite.frame.texture);
                             MessageLog.AddMessage(msgType: MsgType.User, message: $"{Helpers.FirstCharToUpperCase(this.boardPiece.readableName)} has burnt out.", color: Color.White);
 
                             portableLight.IsOn = false;

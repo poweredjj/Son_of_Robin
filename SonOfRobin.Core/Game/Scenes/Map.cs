@@ -392,7 +392,7 @@ namespace SonOfRobin
             Rectangle extendedMapRect = this.worldRect;
             extendedMapRect.Inflate(extendedMapRect.Width * 0.1f, extendedMapRect.Height * 0.1f);
 
-            SonOfRobinGame.SpriteBatch.Draw(AnimData.framesForPkgs[AnimData.PkgName.Map].Texture, extendedMapRect, Color.White);
+            SonOfRobinGame.SpriteBatch.Draw(AnimData.framesForPkgs[AnimData.PkgName.Map].texture, extendedMapRect, Color.White);
             SonOfRobinGame.SpriteBatch.End();
 
             // drawing background
@@ -521,7 +521,7 @@ namespace SonOfRobin
 
             // drawing map edges over everything
 
-            SonOfRobinGame.SpriteBatch.Draw(AnimData.framesForPkgs[AnimData.PkgName.MapEdges].Texture, extendedMapRect, Color.White);
+            SonOfRobinGame.SpriteBatch.Draw(AnimData.framesForPkgs[AnimData.PkgName.MapEdges].texture, extendedMapRect, Color.White);
 
             // drawing crosshair
 

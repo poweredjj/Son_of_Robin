@@ -492,7 +492,7 @@ namespace SonOfRobin
                 }
             }
 
-            int pieceSize = Math.Max(this.simulatedPieceToBuild.sprite.frame.ColWidth, this.simulatedPieceToBuild.sprite.frame.ColHeight);
+            int pieceSize = Math.Max(this.simulatedPieceToBuild.sprite.frame.colWidth, this.simulatedPieceToBuild.sprite.frame.colHeight);
 
             float buildDistance = Vector2.Distance(this.sprite.position, newPos);
             if (buildDistance <= 200 + pieceSize) this.simulatedPieceToBuild.sprite.SetNewPosition(newPos: newPos, ignoreCollisions: true);
@@ -507,7 +507,7 @@ namespace SonOfRobin
             Color color = canBuildHere ? Color.Green : Color.Red;
 
             this.simulatedPieceToBuild.sprite.effectCol.AddEffect(new ColorizeInstance(color: color));
-            this.simulatedPieceToBuild.sprite.effectCol.AddEffect(new BorderInstance(outlineColor: Color.White, textureSize: this.simulatedPieceToBuild.sprite.frame.TextureSize, priority: 0));
+            this.simulatedPieceToBuild.sprite.effectCol.AddEffect(new BorderInstance(outlineColor: Color.White, textureSize: this.simulatedPieceToBuild.sprite.frame.textureSize, priority: 0));
 
             if (InputMapper.HasBeenPressed(InputMapper.Action.GlobalCancelReturnSkip))
             {
@@ -518,7 +518,7 @@ namespace SonOfRobin
             if (InputMapper.HasBeenPressed(InputMapper.Action.GlobalConfirm))
             {
                 if (canBuildHere) this.world.BuildPiece();
-                else new TextWindow(text: $"|  {Helpers.FirstCharToUpperCase(this.simulatedPieceToBuild.readableName)} can't be placed here.", imageList: new List<Texture2D> { this.simulatedPieceToBuild.sprite.frame.Texture }, textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false, checkForDuplicate: true, autoClose: false, inputType: Scene.InputTypes.Normal, priority: 1, blocksUpdatesBelow: false, startingSound: SoundData.Name.Error);
+                else new TextWindow(text: $"|  {Helpers.FirstCharToUpperCase(this.simulatedPieceToBuild.readableName)} can't be placed here.", imageList: new List<Texture2D> { this.simulatedPieceToBuild.sprite.frame.texture }, textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false, checkForDuplicate: true, autoClose: false, inputType: Scene.InputTypes.Normal, priority: 1, blocksUpdatesBelow: false, startingSound: SoundData.Name.Error);
             }
         }
 
@@ -583,7 +583,7 @@ namespace SonOfRobin
                 {
                     Tutorials.ShowTutorialOnTheField(type: Tutorials.Type.PickUp, world: this.world);
                     pieceToPickUp.sprite.effectCol.AddEffect(new ColorizeInstance(color: Color.DodgerBlue));
-                    pieceToPickUp.sprite.effectCol.AddEffect(new BorderInstance(outlineColor: Color.White, textureSize: pieceToPickUp.sprite.frame.TextureSize, priority: 0));
+                    pieceToPickUp.sprite.effectCol.AddEffect(new BorderInstance(outlineColor: Color.White, textureSize: pieceToPickUp.sprite.frame.textureSize, priority: 0));
                     VirtButton.ButtonHighlightOnNextFrame(VButName.PickUp);
                     ControlTips.TipHighlightOnNextFrame(tipName: "pick up");
                     FieldTip.AddUpdateTip(world: this.world, texture: InputMapper.GetTexture(InputMapper.Action.WorldPickUp), targetSprite: pieceToPickUp.sprite, alignment: this.sprite.position.Y > pieceToPickUp.sprite.position.Y ? FieldTip.Alignment.TopOut : FieldTip.Alignment.BottomOut);
