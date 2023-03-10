@@ -163,7 +163,7 @@ namespace SonOfRobin
                     int rectOffset = (int)(rectSize * 0.2f);
 
                     Rectangle newRect = new Rectangle(x: outerEntryRect.X - rectOffset, y: outerEntryRect.Y - rectOffset, width: (int)(outerEntryRect.Height * 0.6f), height: (int)(outerEntryRect.Height * 0.6f));
-                    Texture2D newIconTexture = AnimData.framesForPkgs[AnimData.PkgName.NewIcon].texture;
+                    Texture2D newIconTexture = AnimData.framesForPkgs[AnimData.PkgName.NewIcon].Texture;
 
                     Helpers.DrawTextureInsideRect(texture: newIconTexture, rectangle: newRect, color: Color.White * this.menu.viewParams.Opacity, alignX: Helpers.AlignX.Left, alignY: Helpers.AlignY.Top);
                 }

@@ -325,7 +325,7 @@ namespace SonOfRobin
             }
 
             var entryList = new List<InfoWindow.TextEntry> {
-                new InfoWindow.TextEntry(imageList: new List<Texture2D> {selectedPiece.sprite.frame.texture}, text: $"| {Helpers.FirstCharToUpperCase(selectedPiece.readableName)}" , color: Color.White, scale: 1.5f),
+                new InfoWindow.TextEntry(imageList: new List<Texture2D> {selectedPiece.sprite.frame.Texture}, text: $"| {Helpers.FirstCharToUpperCase(selectedPiece.readableName)}" , color: Color.White, scale: 1.5f),
                 new InfoWindow.TextEntry(text: selectedPiece.description, color: Color.White)
             };
 

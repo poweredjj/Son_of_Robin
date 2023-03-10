@@ -327,7 +327,7 @@ namespace SonOfRobin
                         spectator.speed = 5;
                         spectator.sprite.opacity = 0.5f;
                         spectator.sprite.color = new Color(150, 255, 255);
-                        spectator.sprite.effectCol.AddEffect(new BorderInstance(outlineColor: Color.SkyBlue * 0.7f, textureSize: spectator.sprite.frame.textureSize, priority: 0, framesLeft: -1));
+                        spectator.sprite.effectCol.AddEffect(new BorderInstance(outlineColor: Color.SkyBlue * 0.7f, textureSize: spectator.sprite.frame.TextureSize, priority: 0, framesLeft: -1));
 
                         return spectator;
                     }

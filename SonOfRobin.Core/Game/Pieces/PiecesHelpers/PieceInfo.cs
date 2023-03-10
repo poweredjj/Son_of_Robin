@@ -49,7 +49,7 @@ namespace SonOfRobin
                 this.stackSize = piece.stackSize;
                 this.buffList = piece.buffList;
                 this.frame = piece.sprite.frame;
-                this.texture = this.frame.texture;
+                this.texture = this.frame.Texture;
                 this.toolbarTask = piece.toolbarTask;
                 this.boardTask = piece.boardTask;
                 if (piece.GetType() == typeof(Animal)) this.eats = ((Animal)piece).eats;

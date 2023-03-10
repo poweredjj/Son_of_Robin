@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace SonOfRobin
 {
@@ -1053,9 +1054,19 @@ namespace SonOfRobin
                 AddRPGMakerPackageV2(packageName: PkgName.CrabDarkBrown, atlasName: atlasNameSmall, setNoX: 3, setNoY: 1, animSize: 0, crop: true);
                 AddRPGMakerPackageV2(packageName: PkgName.CrabDarkBrown, atlasName: atlasNameBig, setNoX: 3, setNoY: 1, animSize: 1);
             }
+
+            ProcessAllAnimFrames();
         }
 
-        public static List<AnimFrame> ConvertImageToFrameList(string atlasName, byte layer, ushort x = 0, ushort y = 0, ushort width = 0, ushort height = 0, bool crop = true, float scale = 1f, float depthPercent = 0.25f, int padding = 1, bool ignoreWhenCalculatingMaxSize = false)
+        private static void ProcessAllAnimFrames()
+        {
+            Parallel.ForEach(frameById.Values, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, animFrame =>
+            {
+                animFrame.Process();
+            });
+        }
+
+        public static List<AnimFrame> ConvertImageToFrameList(string atlasName, byte layer, int x = 0, int y = 0, int width = 0, int height = 0, bool crop = true, float scale = 1f, float depthPercent = 0.25f, int padding = 1, bool ignoreWhenCalculatingMaxSize = false)
         {
             List<AnimFrame> frameList = new List<AnimFrame>
             {
@@ -1064,21 +1075,21 @@ namespace SonOfRobin
             return frameList;
         }
 
-        public static AnimFrame ConvertImageToFrame(string atlasName, byte layer, ushort x = 0, ushort y = 0, ushort width = 0, ushort height = 0, byte duration = 0, bool crop = true, float scale = 1f, float depthPercent = 0.25f, int padding = 1, bool ignoreWhenCalculatingMaxSize = false)
+        public static AnimFrame ConvertImageToFrame(string atlasName, byte layer, int x = 0, int y = 0, int width = 0, int height = 0, byte duration = 0, bool crop = true, float scale = 1f, float depthPercent = 0.25f, int padding = 1, bool ignoreWhenCalculatingMaxSize = false)
         {
             Texture2D atlasTexture = SonOfRobinGame.textureByName[atlasName];
-            if (width == 0) width = (ushort)atlasTexture.Width;
-            if (height == 0) height = (ushort)atlasTexture.Height;
+            if (width == 0) width = atlasTexture.Width;
+            if (height == 0) height = atlasTexture.Height;
 
-            return new AnimFrame(atlasName: atlasName, atlasX: x, atlasY: y, width: width, height: height, layer: layer, duration: duration, crop: crop, scale: scale, depthPercent: depthPercent, padding: padding, ignoreWhenCalculatingMaxSize: ignoreWhenCalculatingMaxSize);
+            return AnimFrame.GetFrame(atlasName: atlasName, atlasX: x, atlasY: y, width: width, height: height, layer: layer, duration: duration, crop: crop, scale: scale, depthPercent: depthPercent, padding: padding, ignoreWhenCalculatingMaxSize: ignoreWhenCalculatingMaxSize);
         }
 
         public static void AddRPGMakerPackageV1(PkgName packageName, string atlasName, byte setNoX, byte setNoY, byte animSize, bool crop = false, float scale = 1f)
         {
-            ushort offsetX = (ushort)(setNoX * 96);
-            ushort offsetY = (ushort)(setNoY * 128);
-            ushort width = 32;
-            ushort height = 32;
+            int offsetX = setNoX * 96;
+            int offsetY = setNoY * 128;
+            int width = 32;
+            int height = 32;
 
             var yByDirection = new Dictionary<string, int>(){
                 { "down", 0 },
@@ -1092,8 +1103,7 @@ namespace SonOfRobin
             {
                 List<AnimFrame> frameList = new List<AnimFrame>
                 {
-                    new AnimFrame(atlasName: atlasName, atlasX: Convert.ToUInt16(width + offsetX), atlasY: Convert.ToUInt16(kvp.Value + offsetY),
-                    width: width, height: height, layer: 1, duration: 0, crop: crop, scale: scale)
+                     AnimFrame.GetFrame(atlasName: atlasName, atlasX: width + offsetX, atlasY: kvp.Value + offsetY, width: width, height: height, layer: 1, duration: 0, crop: crop, scale: scale)
                 };
 
                 AddFrameList(animPackage: packageName, animSize: animSize, animName: $"stand-{kvp.Key}", frameList: frameList);
@@ -1104,11 +1114,9 @@ namespace SonOfRobin
             {
                 List<AnimFrame> frameList = new List<AnimFrame>
                 {
-                    new AnimFrame(atlasName: atlasName, atlasX: Convert.ToUInt16(width + offsetX), atlasY: Convert.ToUInt16(kvp.Value + offsetY),
-                    width: width, height: height, layer: 1, duration: 8, crop: crop, scale: scale),
+                    AnimFrame.GetFrame(atlasName: atlasName, atlasX: width + offsetX, atlasY: kvp.Value + offsetY, width: width, height: height, layer: 1, duration: 8, crop: crop, scale: scale),
 
-                    new AnimFrame(atlasName: atlasName, atlasX: Convert.ToUInt16((width * 2) + offsetX), atlasY: Convert.ToUInt16(kvp.Value + offsetY),
-                    width: width, height: height, layer: 1, duration: 8, crop: crop, scale: scale)
+                    AnimFrame.GetFrame(atlasName: atlasName, atlasX: (width * 2) + offsetX, atlasY: kvp.Value + offsetY, width: width, height: height, layer: 1, duration: 8, crop: crop, scale: scale)
                 };
 
                 AddFrameList(animPackage: packageName, animSize: animSize, animName: $"walk-{kvp.Key}", frameList: frameList);
@@ -1119,10 +1127,10 @@ namespace SonOfRobin
 
         public static void AddRPGMakerPackageV2(PkgName packageName, string atlasName, byte setNoX, byte setNoY, byte animSize, bool crop = false, float scale = 1f)
         {
-            ushort offsetX = (ushort)(setNoX * 144);
-            ushort offsetY = (ushort)(setNoY * 192);
-            ushort width = 48;
-            ushort height = 48;
+            int offsetX = setNoX * 144;
+            int offsetY = setNoY * 192;
+            int width = 48;
+            int height = 48;
 
             var yByDirection = new Dictionary<string, int>(){
                 { "down", 0 },
@@ -1136,8 +1144,7 @@ namespace SonOfRobin
             {
                 List<AnimFrame> frameList = new List<AnimFrame>
                 {
-                    new AnimFrame(atlasName: atlasName, atlasX: Convert.ToUInt16(width + offsetX), atlasY: Convert.ToUInt16(kvp.Value + offsetY),
-                    width: width, height: height, layer: 1, duration: 0, crop: crop, scale: scale)
+                    AnimFrame.GetFrame(atlasName: atlasName, atlasX: width + offsetX, atlasY: kvp.Value + offsetY, width: width, height: height, layer: 1, duration: 0, crop: crop, scale: scale)
                 };
 
                 AddFrameList(animPackage: packageName, animSize: animSize, animName: $"stand-{kvp.Key}", frameList: frameList);
@@ -1148,16 +1155,16 @@ namespace SonOfRobin
             {
                 List<AnimFrame> frameList = new List<AnimFrame>
                 {
-                    new AnimFrame(atlasName: atlasName, atlasX: Convert.ToUInt16(0 + offsetX), atlasY: Convert.ToUInt16(kvp.Value + offsetY),
+                    AnimFrame.GetFrame(atlasName: atlasName, atlasX: 0 + offsetX, atlasY: kvp.Value + offsetY,
                     width: width, height: height, layer: 1, duration: 8, crop: crop, scale: scale),
 
-                    new AnimFrame(atlasName: atlasName, atlasX: Convert.ToUInt16(width + offsetX), atlasY: Convert.ToUInt16(kvp.Value + offsetY),
+                    AnimFrame.GetFrame(atlasName: atlasName, atlasX: width + offsetX, atlasY: kvp.Value + offsetY,
                     width: width, height: height, layer: 1, duration: 8, crop: crop, scale: scale),
 
-                    new AnimFrame(atlasName: atlasName, atlasX: Convert.ToUInt16((width * 2) + offsetX), atlasY: Convert.ToUInt16(kvp.Value + offsetY),
+                    AnimFrame.GetFrame(atlasName: atlasName, atlasX: (width * 2) + offsetX, atlasY: kvp.Value + offsetY,
                     width: width, height: height, layer: 1, duration: 8, crop: crop, scale: scale),
 
-                    new AnimFrame(atlasName: atlasName, atlasX: Convert.ToUInt16(width + offsetX), atlasY: Convert.ToUInt16(kvp.Value + offsetY),
+                    AnimFrame.GetFrame(atlasName: atlasName, atlasX: width + offsetX, atlasY: kvp.Value + offsetY,
                     width: width, height: height, layer: 1, duration: 8, crop: crop, scale: scale)
                 };
 

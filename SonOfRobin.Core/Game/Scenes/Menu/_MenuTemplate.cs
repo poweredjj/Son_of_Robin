@@ -628,14 +628,14 @@ namespace SonOfRobin
                                 int counter = 0;
                                 foreach (AnimFrame frame in kvp.Value)
                                 {
-                                    textureByName[$"{kvp.Key} - {frame}"] = frame.texture;
+                                    textureByName[$"{kvp.Key} - {frame}"] = frame.Texture;
                                     counter++;
                                 }
                             }
 
                             if (textureByName.Count == 0) new Invoker(menu: menu, name: $"{pkgName} NO FRAMES", taskName: Scheduler.TaskName.Empty, playSound: false);
                             else if (textureByName.Count > 1) new Selector(menu: menu, name: pkgName.ToString(), valueDict: textureByName, targetObj: preferences, propertyName: "neededForMenus");
-                            else new Invoker(menu: menu, name: $"{pkgName}  |", imageList: new List<Texture2D> { AnimData.framesForPkgs[pkgName].texture }, taskName: Scheduler.TaskName.Empty, playSound: false);
+                            else new Invoker(menu: menu, name: $"{pkgName}  |", imageList: new List<Texture2D> { AnimData.framesForPkgs[pkgName].Texture }, taskName: Scheduler.TaskName.Empty, playSound: false);
                         }
 
                         new Separator(menu: menu, name: "", isEmpty: true);
