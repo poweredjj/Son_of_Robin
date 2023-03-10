@@ -52,7 +52,7 @@ namespace SonOfRobin
 
         public static AnimFrame GetFrame(string atlasName, int atlasX, int atlasY, int width, int height, byte layer, byte duration, bool crop = false, float scale = 1f, float depthPercent = 0.25f, int padding = 1, bool ignoreWhenCalculatingMaxSize = false)
         {
-            // Some frames are duplicated and can be reused.
+            // some frames are duplicated and can be reused (this can be verified by checking ID)
 
             string id = GetID(atlasName: atlasName, atlasX: atlasX, atlasY: atlasY, width: width, height: height, layer: layer, duration: duration, crop: crop, scale: scale, depthPercent: depthPercent);
 
@@ -67,6 +67,8 @@ namespace SonOfRobin
 
         private AnimFrame(string atlasName, int atlasX, int atlasY, int width, int height, byte layer, byte duration, bool crop, float scale, float depthPercent, int padding, bool ignoreWhenCalculatingMaxSize)
         {
+            // should not be invoked from other classes directly
+
             this.HasBeenProcessed = false;
             this.id = GetID(atlasName: atlasName, atlasX: atlasX, atlasY: atlasY, width: width, height: height, layer: layer, duration: duration, crop: crop, scale: scale, depthPercent: depthPercent);
 
