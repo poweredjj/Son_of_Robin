@@ -1183,18 +1183,15 @@ namespace SonOfRobin
                 this.blockingLightSpritesList.AddRange(this.camera.GetVisibleSprites(groupName: Cell.Group.ColMovement).OrderBy(o => o.gfxRect.Bottom));
             }
 
-            var lightSpritesToAdd = this.UpdateDarknessMask(blockingLightSpritesList: blockingLightSpritesList); // Has to be called first, because calling SetRenderTarget() after any draw will wipe the screen black.
+            var lightSpritesToAdd = this.UpdateDarknessMask(blockingLightSpritesList: blockingLightSpritesList);
             this.lightSprites.AddRange(lightSpritesToAdd);
         }
 
         public override void Draw()
         {
-            this.StartNewSpriteBatch();
-
-            // drawing blue background (to ensure drawing even if screen is larger than map)
-            SonOfRobinGame.GfxDev.Clear(Color.Black);
-
             if (this.WorldCreationInProgress) return;
+
+            this.StartNewSpriteBatch();
 
             // drawing water surface
             this.waterSurfaceManager.Draw();
@@ -1205,17 +1202,24 @@ namespace SonOfRobin
             // drawing sprites
             var noOfDisplayedSprites = this.Grid.DrawSprites(camera: this.camera, blockingLightSpritesList: this.blockingLightSpritesList);
 
+            // updating debugText
+            if (Preferences.DebugMode) this.debugText = $"objects {this.PieceCount}, visible {noOfDisplayedSprites}";
+
             // drawing debug cell data
             this.Grid.DrawDebugData(drawCellData: Preferences.debugShowCellData, drawPieceData: Preferences.debugShowPieceData);
 
             // drawing light and darkness
+            SonOfRobinGame.SpriteBatch.End();
+
             this.DrawLightAndDarkness(lightSprites);
 
             // drawing field tips
-            FieldTip.DrawFieldTips(world: this);
-
-            // updating debugText
-            if (Preferences.DebugMode) this.debugText = $"objects {this.PieceCount}, visible {noOfDisplayedSprites}";
+            if (Preferences.ShowControlTips && Preferences.showFieldControlTips)
+            {
+                this.StartNewSpriteBatch();
+                FieldTip.DrawFieldTips(world: this);
+                SonOfRobinGame.SpriteBatch.End();
+            }
 
             this.CurrentFrame++;
         }
@@ -1412,7 +1416,6 @@ namespace SonOfRobin
 
             // drawing ambient light
 
-            SonOfRobinGame.SpriteBatch.End();
             BlendState ambientBlend = new BlendState
             {
                 ColorBlendFunction = BlendFunction.Add,
@@ -1454,6 +1457,8 @@ namespace SonOfRobin
 
                 SonOfRobinGame.SpriteBatch.Draw(this.darknessMask, new Rectangle(x: extendedViewRect.X, y: extendedViewRect.Y, width: (int)(this.darknessMask.Width * darknessMaskScale.X), height: (int)(this.darknessMask.Height * darknessMaskScale.Y)), Color.White);
             }
+
+            SonOfRobinGame.SpriteBatch.End();
         }
     }
 }

@@ -636,6 +636,8 @@ namespace SonOfRobin
             }
 
             this.DrawScrollbar();
+
+            SonOfRobinGame.SpriteBatch.End();
         }
 
         private void DrawScrollbar()

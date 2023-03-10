@@ -104,6 +104,8 @@ namespace SonOfRobin
 
         public override void Draw()
         {
+            this.StartNewSpriteBatch();
+
             var textByScene = TextByScene;
 
             int sceneNo = 0;
@@ -122,6 +124,8 @@ namespace SonOfRobin
 
                 sceneNo++;
             }
+
+            SonOfRobinGame.SpriteBatch.End();
         }
 
         private static string GetSceneText(Scene scene, bool updates, bool draws, bool waits)

@@ -400,6 +400,8 @@ namespace SonOfRobin
 
                 posY += (int)((entry.Height * globalScale) + margin);
             }
+
+            SonOfRobinGame.SpriteBatch.End();
         }
     }
 }

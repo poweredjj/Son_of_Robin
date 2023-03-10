@@ -122,7 +122,6 @@ namespace SonOfRobin
                 Texture2D mapTexture = BoardGraphics.CreateEntireMapTexture(grid: this.world.Grid, width: width, height: height, multiplier: this.scaleMultiplier);
                 Rectangle sourceRectangle = new Rectangle(0, 0, width, height);
                 SonOfRobinGame.SpriteBatch.Draw(mapTexture, sourceRectangle, sourceRectangle, Color.White);
-
                 SonOfRobinGame.SpriteBatch.End();
 
                 this.dirtyBackground = false;
@@ -394,6 +393,7 @@ namespace SonOfRobin
             extendedMapRect.Inflate(extendedMapRect.Width * 0.1f, extendedMapRect.Height * 0.1f);
 
             SonOfRobinGame.SpriteBatch.Draw(AnimData.framesForPkgs[AnimData.PkgName.Map].texture, extendedMapRect, Color.White);
+            SonOfRobinGame.SpriteBatch.End();
 
             // drawing background
 
@@ -426,10 +426,14 @@ namespace SonOfRobin
                 }
             }
 
-            StartNewSpriteBatch(enableEffects: true);
-            this.sketchEffect.TurnOn(currentUpdate: SonOfRobinGame.CurrentUpdate);
+            if (!showDetailedMap || foundCellsWithMissingTextures)
+            {
+                StartNewSpriteBatch(enableEffects: true);
+                this.sketchEffect.TurnOn(currentUpdate: SonOfRobinGame.CurrentUpdate);
 
-            if (!showDetailedMap || foundCellsWithMissingTextures) SonOfRobinGame.SpriteBatch.Draw(this.lowResWholeCombinedGfx, this.worldRect, Color.White);
+                SonOfRobinGame.SpriteBatch.Draw(this.lowResWholeCombinedGfx, this.worldRect, Color.White);
+                SonOfRobinGame.SpriteBatch.End();
+            }
 
             if (showDetailedMap)
             {
@@ -449,6 +453,8 @@ namespace SonOfRobin
                 {
                     cell.DrawBackground(drawSimulation: false, opacity: 1f);
                 }
+
+                SonOfRobinGame.SpriteBatch.End();
             }
 
             this.StartNewSpriteBatch(enableEffects: false); // turning off effects

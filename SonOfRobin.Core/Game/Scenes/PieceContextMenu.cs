@@ -411,6 +411,8 @@ namespace SonOfRobin
 
         public override void Draw()
         {
+            this.StartNewSpriteBatch();
+
             Rectangle bgRect = this.BgRect;
             float margin = this.Margin;
             Vector2 maxEntrySize = this.MaxEntrySize;
@@ -423,25 +425,19 @@ namespace SonOfRobin
             Rectangle pieceRect = new Rectangle(bgRect.X + (int)margin, bgRect.Y + (int)margin, (int)maxEntrySize.Y, (int)maxEntrySize.Y);
             this.piece.sprite.DrawAndKeepInRectBounds(destRect: pieceRect, opacity: viewParams.drawOpacity);
 
-            int displayedPos;
-            string actionLabel;
-            bool isActive;
-            Color textColor;
-            Vector2 textPos, shadowPos;
-            Rectangle entryRect;
             float shadowOffset = Math.Max(maxEntrySize.Y * 0.05f, 1);
             int entryNo = 0;
 
             foreach (ContextAction action in this.actionList)
             {
-                displayedPos = entryNo + 1;
-                isActive = entryNo == this.ActiveEntry && showCursor;
-                textColor = isActive ? Color.White : Color.LightSkyBlue;
-                actionLabel = this.GetActionLabel(action);
+                int displayedPos = entryNo + 1;
+                bool isActive = entryNo == this.ActiveEntry && showCursor;
+                Color textColor = isActive ? Color.White : Color.LightSkyBlue;
+                string actionLabel = this.GetActionLabel(action);
 
-                entryRect = this.GetEntryRect(entryNo);
-                textPos = new Vector2(entryRect.X, entryRect.Y);
-                shadowPos = new Vector2(textPos.X + shadowOffset, textPos.Y + shadowOffset);
+                Rectangle entryRect = this.GetEntryRect(entryNo);
+                Vector2 textPos = new Vector2(entryRect.X, entryRect.Y);
+                Vector2 shadowPos = new Vector2(textPos.X + shadowOffset, textPos.Y + shadowOffset);
 
                 SonOfRobinGame.SpriteBatch.DrawString(font, actionLabel, position: shadowPos, color: Color.MidnightBlue * this.viewParams.drawOpacity * 0.7f, origin: Vector2.Zero, scale: textScale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
 
@@ -449,6 +445,8 @@ namespace SonOfRobin
 
                 entryNo++;
             }
+
+            SonOfRobinGame.SpriteBatch.End();
         }
 
         private Rectangle GetEntryRect(int entryNo)

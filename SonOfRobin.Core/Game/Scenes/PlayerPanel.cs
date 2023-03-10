@@ -103,6 +103,8 @@ namespace SonOfRobin
 
             this.AdaptToNewSize();
 
+            this.StartNewSpriteBatch();
+
             Player player = world.Player;
             int width = this.BarWidth;
             int height = this.BarHeight;
@@ -112,7 +114,6 @@ namespace SonOfRobin
             // drawing stat bars
             {
                 int posX = 0;
-
                 int vOffsetCorrection = 4;
 
                 StatBar.ChangeBatchFont(spriteFont: SonOfRobinGame.FontFreeSansBold12);
@@ -279,6 +280,8 @@ namespace SonOfRobin
 
                 SonOfRobinGame.SpriteBatch.Draw(texture: markerTexture, position: markerScreenPos, scale: markerDrawScale, sourceRectangle: markerTexture.Bounds, color: Color.White, rotation: 0, origin: Vector2.Zero, effects: SpriteEffects.None, layerDepth: 0);
             }
+
+            SonOfRobinGame.SpriteBatch.End();
         }
     }
 }

@@ -124,9 +124,9 @@ namespace SonOfRobin
 
         public override void Draw()
         {
-            this.StartNewSpriteBatch();
-
             if (!Preferences.ShowControlTips || Input.currentControlType == Input.ControlType.Touch) return;
+
+            this.StartNewSpriteBatch();
 
             int drawOffsetX = 0;
 
@@ -140,6 +140,8 @@ namespace SonOfRobin
             {
                 Helpers.DrawTextWithOutline(font: SonOfRobinGame.FontPressStart2P5, text: $"{this.currentLayout}", pos: Vector2.Zero, color: Color.White, outlineColor: Color.Black, outlineSize: 1);
             }
+
+            SonOfRobinGame.SpriteBatch.End();
         }
 
         public static void RefreshTopTipsLayout()

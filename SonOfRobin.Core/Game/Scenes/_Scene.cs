@@ -479,15 +479,7 @@ namespace SonOfRobin
             {
                 currentlyProcessedScene = scene;
 
-                // scene.StartNewSpriteBatch();
                 scene.Draw();
-
-                try
-                {
-                    SonOfRobinGame.SpriteBatch.End();
-                }
-                catch (InvalidOperationException)
-                { }
             }
 
             // MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Draw time elapsed {DrawTimeElapsed.Milliseconds}ms.", color: Color.LightCyan);

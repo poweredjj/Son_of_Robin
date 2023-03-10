@@ -115,9 +115,9 @@ namespace SonOfRobin
 
         public override void Draw()
         {
-            this.StartNewSpriteBatch();
-
             if (!this.isActive) return;
+
+            this.StartNewSpriteBatch();
 
             Color bgColor = new Color(252, 252, 246);
 
@@ -194,6 +194,8 @@ namespace SonOfRobin
             // Helpers.DrawRectangleOutline(rect: bottomGradRect, color: Color.Pink, borderWidth: 1); // for testing
             // Helpers.DrawRectangleOutline(rect: textRect, color: Color.Blue, borderWidth: 1); // for testing
             // Helpers.DrawRectangleOutline(rect: progressBarRect, color: Color.Cyan, borderWidth: 1); // for testing
+
+            SonOfRobinGame.SpriteBatch.End();
         }
     }
 }

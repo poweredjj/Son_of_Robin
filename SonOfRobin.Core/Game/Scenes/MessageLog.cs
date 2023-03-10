@@ -43,6 +43,7 @@ namespace SonOfRobin
 
         private static readonly List<MsgType> displayedLevelsTemplateDebug = new List<MsgType> { MsgType.User, MsgType.Debug };
         private static readonly List<MsgType> displayedLevelsTemplateUser = new List<MsgType> { MsgType.User };
+
         private static List<MsgType> DisplayedLevels
         { get { return Preferences.DebugMode ? displayedLevelsTemplateDebug : displayedLevelsTemplateUser; } }
 
@@ -66,9 +67,9 @@ namespace SonOfRobin
 
         public override void Draw()
         {
-            this.StartNewSpriteBatch();
-
             if (messages.Count == 0) return;
+
+            this.StartNewSpriteBatch();
 
             int currentFrame = SonOfRobinGame.CurrentUpdate;
 
@@ -86,15 +87,19 @@ namespace SonOfRobin
                 Vector2 txtSize = font.MeasureString(currentLineOfText);
                 currentOffsetY += (int)txtSize.Y + txtSeparator;
 
-                if (this.screenHeight - currentOffsetY < freePixelsAboveMessages) return;
+                if (this.screenHeight - currentOffsetY >= freePixelsAboveMessages)
+                {
+                    Vector2 txtPos = new Vector2(this.marginX, Convert.ToInt16(this.screenHeight - (currentOffsetY + this.marginY)));
 
-                Vector2 txtPos = new Vector2(this.marginX, Convert.ToInt16(this.screenHeight - (currentOffsetY + this.marginY)));
+                    float textOpacity = Math.Min(Math.Max((float)(message.deletionFrame - currentFrame) / 30f, 0), 1);
+                    float outlineOpacity = (textOpacity == 1) ? 1 : textOpacity / 4;
 
-                float textOpacity = Math.Min(Math.Max((float)(message.deletionFrame - currentFrame) / 30f, 0), 1);
-                float outlineOpacity = (textOpacity == 1) ? 1 : textOpacity / 4;
-
-                Helpers.DrawTextWithOutline(font: font, text: currentLineOfText, pos: txtPos, color: message.color * textOpacity, outlineColor: Color.Black * outlineOpacity, outlineSize: 1);
+                    Helpers.DrawTextWithOutline(font: font, text: currentLineOfText, pos: txtPos, color: message.color * textOpacity, outlineColor: Color.Black * outlineOpacity, outlineSize: 1);
+                }
+                else break;
             }
+
+            SonOfRobinGame.SpriteBatch.End();
         }
 
         private static bool CheckIfDuplicate(string text)

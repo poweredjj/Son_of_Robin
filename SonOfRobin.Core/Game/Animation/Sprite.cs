@@ -767,6 +767,7 @@ namespace SonOfRobin
 
                     if (!thereWillBeMoreEffects)
                     {
+                        SonOfRobinGame.SpriteBatch.End();
                         this.world.StartNewSpriteBatch(enableEffects: false);
                         break;
                     }

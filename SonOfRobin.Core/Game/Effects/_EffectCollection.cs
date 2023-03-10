@@ -60,6 +60,7 @@ namespace SonOfRobin
 
             foreach (EffInstance effInstance in effectsLeftToRender)
             {
+                SonOfRobinGame.SpriteBatch.End();
                 scene.StartNewSpriteBatch(enableEffects: true);
                 effInstance.TurnOn(currentUpdateToUse);
                 if (effInstance.framesLeft == 0)

@@ -206,6 +206,8 @@ namespace SonOfRobin
                     lastYOffset = barYOffset;
                 }
             }
+
+            SonOfRobinGame.SpriteBatch.End();
         }
     }
 }

@@ -187,6 +187,8 @@ namespace SonOfRobin
 
             SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, progressBarFullRect, Color.White * 0.5f);
             SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, progressBarFilledRect, Color.White * 1f);
+
+            SonOfRobinGame.SpriteBatch.End();
         }
     }
 }

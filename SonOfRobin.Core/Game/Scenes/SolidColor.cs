@@ -27,6 +27,8 @@ namespace SonOfRobin
                 Rectangle rect = new Rectangle(0, 0, SonOfRobinGame.VirtualWidth, SonOfRobinGame.VirtualHeight);
                 SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, rect, this.color * this.viewParams.drawOpacity);
             }
+
+            SonOfRobinGame.SpriteBatch.End();
         }
     }
 }

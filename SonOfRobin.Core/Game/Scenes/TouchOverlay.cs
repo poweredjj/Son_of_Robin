@@ -19,8 +19,12 @@ namespace SonOfRobin
 
         public override void Draw()
         {
+            this.StartNewSpriteBatch();
+
             if (TouchInput.ShowSticks && Preferences.enableTouchJoysticks) TouchInput.dualStick.Draw(spriteBatch: SonOfRobinGame.SpriteBatch, drawLeftStick: TouchInput.ShowLeftStick, drawRightStick: TouchInput.ShowRightStick);
             VirtButton.DrawAll();
+
+            SonOfRobinGame.SpriteBatch.End();
         }
     }
 }
