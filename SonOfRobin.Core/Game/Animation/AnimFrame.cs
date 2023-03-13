@@ -207,7 +207,7 @@ namespace SonOfRobin
             SonOfRobinGame.SpriteBatch.Draw(this.texture, destRect, sourceRectangle, color * opacity);
         }
 
-        public void DrawWithRotation(Vector2 position, Color color, float rotation, float opacity, Vector2 rotationOriginOverride)
+        public void DrawWithRotation(Vector2 position, Color color, float rotation, float opacity, Vector2 rotationOriginOverride, bool rotationOriginPosCorrection = false)
         {
             // invoke from Sprite class
 
@@ -216,10 +216,12 @@ namespace SonOfRobin
             if (rotationOriginOverride != Vector2.Zero)
             {
                 rotationOrigin = rotationOriginOverride;
-                position += rotationOrigin - this.rotationOrigin;
+                if (rotationOriginPosCorrection) position += rotationOrigin - this.rotationOrigin;
             }
 
             SonOfRobinGame.SpriteBatch.Draw(this.texture, position: position, sourceRectangle: this.textureRect, color: color * opacity, rotation: rotation, origin: rotationOrigin, scale: this.scale, effects: SpriteEffects.None, layerDepth: 0);
+
+            Helpers.DrawRectangleOutline(new Rectangle((int)position.X + (int)rotationOriginOverride.X, (int)position.Y + (int)rotationOriginOverride.Y, 1, 1), rotationOriginPosCorrection ? Color.Yellow : Color.Red, borderWidth: 1); // for testing
         }
 
         public void DrawAndKeepInRectBounds(Rectangle destBoundsRect, Color color, float opacity = 1f)

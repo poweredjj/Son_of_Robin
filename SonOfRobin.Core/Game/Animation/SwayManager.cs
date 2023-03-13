@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 
 namespace SonOfRobin
@@ -22,14 +23,7 @@ namespace SonOfRobin
 
             foreach (Sprite targetSprite in collidingSpritesList)
             {
-                if (swayEventsBySpriteID.ContainsKey(targetSprite.id))
-                {
-                    if (swayEventsBySpriteID[targetSprite.id].sourceSprite.id != sourceSprite.id) return;
-
-                    swayEventsBySpriteID[targetSprite.id].Finish();
-                    swayEventsBySpriteID.Remove(targetSprite.id);
-                }
-                this.AddSwayEvent(sourceSprite: sourceSprite, targetSprite: targetSprite);
+                if (!swayEventsBySpriteID.ContainsKey(targetSprite.id)) this.AddSwayEvent(sourceSprite: sourceSprite, targetSprite: targetSprite);
             }
         }
 
@@ -84,29 +78,43 @@ namespace SonOfRobin
             this.targetSprite = targetSprite;
 
             this.originalRotation = this.sourceSprite.rotation;
-            this.targetSprite.rotationOriginOverride = new Vector2(targetSprite.frame.texture.Width / 2f, targetSprite.frame.texture.Height);
+            this.targetSprite.rotationOriginOverride = new Vector2(targetSprite.frame.textureSize.X / 2f, targetSprite.frame.textureSize.Y);
 
             this.Update();
         }
 
         public void Update()
         {
-            if (!this.targetSprite.colRect.Intersects(this.sourceSprite.colRect) || !this.targetSprite.boardPiece.exists)
+            if (!this.targetSprite.IsInCameraRect || !this.targetSprite.boardPiece.exists)
             {
                 this.Finish();
                 return;
             }
 
-            Vector2 sourceOffset = sourceSprite.position - targetSprite.position;
-            float distance = Vector2.Distance(targetSprite.position, sourceSprite.position);
-            float maxDistance = (sourceSprite.colRect.Width / 2) + (targetSprite.colRect.Width / 2);
-            float distanceFactor = 1f - (distance / maxDistance);
+            if (this.targetSprite.colRect.Intersects(this.sourceSprite.colRect))
+            {
+                Vector2 sourceOffset = sourceSprite.position - targetSprite.position;
+                float distance = Vector2.Distance(targetSprite.position, sourceSprite.position);
+                float maxDistance = (sourceSprite.colRect.Width / 2) + (targetSprite.colRect.Width / 2);
+                float distanceFactor = 1f - (distance / maxDistance);
 
-            float rotationChange = 1.2f * distanceFactor;
-            if (sourceOffset.X > 0) rotationChange *= -1;
+                float rotationChange = 1.2f * distanceFactor;
+                if (sourceOffset.X > 0) rotationChange *= -1;
 
-            this.targetRotation = this.originalRotation + rotationChange;
-            this.targetSprite.rotation += (this.targetRotation - this.targetSprite.rotation) / 3; // to smooth movement
+                this.targetRotation = this.originalRotation + rotationChange;
+            }
+            else
+            {
+                this.targetRotation = this.originalRotation;
+
+                if (Math.Abs(this.targetSprite.rotation - this.targetRotation) < 0.01)
+                {
+                    this.Finish();
+                    return;
+                }
+            }
+
+            this.targetSprite.rotation += (this.targetRotation - this.targetSprite.rotation) / 4; // movement smoothing
         }
 
         public void Finish()

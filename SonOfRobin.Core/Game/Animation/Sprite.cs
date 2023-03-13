@@ -808,7 +808,7 @@ namespace SonOfRobin
             }
             else
             {
-                this.frame.DrawWithRotation(position: new Vector2(destRect.Center.X, destRect.Center.Y), color: this.color, rotation: this.rotation, rotationOriginOverride: this.rotationOriginOverride, opacity: this.opacity);
+                this.frame.DrawWithRotation(position: new Vector2(destRect.Center.X, destRect.Center.Y), color: this.color, rotation: this.rotation, rotationOriginOverride: this.rotationOriginOverride, opacity: this.opacity, rotationOriginPosCorrection: true);
             }
 
             if (this.boardPiece.PieceStorage != null && this.boardPiece.GetType() == typeof(Plant)) this.DrawFruits();
@@ -820,9 +820,6 @@ namespace SonOfRobin
             if (Preferences.debugShowFruitRects) SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, plant.fruitEngine.FruitAreaRect, Color.Cyan * 0.4f);
 
             if (plant.PieceStorage.OccupiedSlotsCount == 0) return;
-
-            Vector2 drawOffset = Vector2.Zero;
-            //  drawOffset += this.rotationOriginOverride - this.frame.rotationOrigin;
 
             var fruitList = plant.PieceStorage.GetAllPieces();
             foreach (BoardPiece fruit in fruitList)
@@ -836,13 +833,26 @@ namespace SonOfRobin
                 {
                     // taking sway into account
 
+                    Vector2 rotationOriginOverride = Vector2.Zero;
+                    rotationOriginOverride += this.position - fruit.sprite.position;
+                    rotationOriginOverride += new Vector2(this.frame.textureSize.X / 2f, this.frame.textureSize.Y);
+
+                    rotationOriginOverride += fruit.sprite.frame.rotationOrigin;
+
+                    Vector2 offset = Vector2.Zero;
+                    // offset += fruit.sprite.frame.rotationOrigin / 2;
+                    // offset.X = 0;
+
+                    // Vector2 offset = rotationOriginOverride - this.rotationOriginOverride;
+
+                    // offset.Y += this.frame.textureSize.Y / 2;
+
                     float originalFruitRotation = fruit.sprite.rotation;
                     fruit.sprite.rotation = this.rotation;
 
-                    Vector2 rotationOriginOverride = new Vector2(this.position.X - fruit.sprite.position.X, this.position.Y - fruit.sprite.position.Y + (this.frame.textureSize.Y / 2));
-                    rotationOriginOverride += fruit.sprite.frame.rotationOrigin;
+                    Vector2 position = fruit.sprite.position + offset;
 
-                    fruit.sprite.frame.DrawWithRotation(position: fruit.sprite.position, color: fruit.sprite.color, rotation: this.rotation, rotationOriginOverride: rotationOriginOverride, opacity: this.opacity);
+                    fruit.sprite.frame.DrawWithRotation(position: position, color: fruit.sprite.color, rotation: this.rotation, rotationOriginOverride: rotationOriginOverride, rotationOriginPosCorrection: false, opacity: this.opacity);
 
                     fruit.sprite.rotation = originalFruitRotation;
                 }
