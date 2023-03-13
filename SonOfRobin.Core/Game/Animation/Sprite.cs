@@ -801,7 +801,7 @@ namespace SonOfRobin
                 int submergeCorrection = 0;
                 if (!this.floatsOnWater && calculateSubmerge && this.IsInWater)
                 {
-                    submergeCorrection = (int)Helpers.ConvertRange(oldMin: 0, oldMax: Terrain.waterLevelMax, newMin: 4, newMax: this.frame.textureSize.Y, oldVal: Terrain.waterLevelMax - this.GetFieldValue(Terrain.Name.Height), clampToEdges: true);
+                    submergeCorrection = (int)Helpers.ConvertRange(oldMin: 0, oldMax: Terrain.waterLevelMax, newMin: 4, newMax: this.frame.gfxHeight, oldVal: Terrain.waterLevelMax - this.GetFieldValue(Terrain.Name.Height), clampToEdges: true);
                 }
 
                 this.frame.Draw(destRect: destRect, color: this.color, submergeCorrection: submergeCorrection, opacity: this.opacity);
@@ -833,34 +833,28 @@ namespace SonOfRobin
                 {
                     // taking sway into account
 
-                    Vector2 rotationOriginOverride = Vector2.Zero;
-                    rotationOriginOverride += this.position - fruit.sprite.position;
-                    rotationOriginOverride += new Vector2(this.frame.textureSize.X / 2f, this.frame.textureSize.Y);
+                    Sprite fruitSprite = fruit.sprite;
 
-                    rotationOriginOverride += fruit.sprite.frame.rotationOrigin;
+                    Vector2 rotationOriginOverride = this.position + this.frame.gfxOffset - (fruitSprite.position + fruitSprite.frame.gfxOffset);
+                    rotationOriginOverride += new Vector2((float)this.frame.gfxWidth * 0.5f, this.frame.gfxHeight);
 
-                    Vector2 offset = Vector2.Zero;
-                    // offset += fruit.sprite.frame.rotationOrigin / 2;
-                    // offset.X = 0;
+                    Vector2 offset = rotationOriginOverride - fruitSprite.frame.rotationOrigin;
+                    offset *= fruitSprite.frame.scale / this.frame.scale;
 
-                    // Vector2 offset = rotationOriginOverride - this.rotationOriginOverride;
+                    float originalFruitRotation = fruitSprite.rotation;
+                    fruitSprite.rotation = this.rotation;
 
-                    // offset.Y += this.frame.textureSize.Y / 2;
+                    fruitSprite.frame.DrawWithRotation(position: fruitSprite.position + offset, color: fruitSprite.color, rotation: this.rotation, rotationOriginOverride: rotationOriginOverride, rotationOriginPosCorrection: false, opacity: this.opacity);
 
-                    float originalFruitRotation = fruit.sprite.rotation;
-                    fruit.sprite.rotation = this.rotation;
-
-                    Vector2 position = fruit.sprite.position + offset;
-
-                    fruit.sprite.frame.DrawWithRotation(position: position, color: fruit.sprite.color, rotation: this.rotation, rotationOriginOverride: rotationOriginOverride, rotationOriginPosCorrection: false, opacity: this.opacity);
-
-                    fruit.sprite.rotation = originalFruitRotation;
+                    fruitSprite.rotation = originalFruitRotation;
                 }
             }
         }
 
         public void DrawAndKeepInRectBounds(Rectangle destRect, float opacity)
-        { this.frame.DrawAndKeepInRectBounds(destBoundsRect: destRect, color: this.color * opacity); }
+        {
+            this.frame.DrawAndKeepInRectBounds(destBoundsRect: destRect, color: this.color * opacity);
+        }
 
         private void DrawState()
         {

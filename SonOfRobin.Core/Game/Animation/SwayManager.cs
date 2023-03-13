@@ -78,7 +78,7 @@ namespace SonOfRobin
             this.targetSprite = targetSprite;
 
             this.originalRotation = this.sourceSprite.rotation;
-            this.targetSprite.rotationOriginOverride = new Vector2(targetSprite.frame.textureSize.X / 2f, targetSprite.frame.textureSize.Y);
+            this.targetSprite.rotationOriginOverride = new Vector2(targetSprite.frame.gfxWidth * 0.5f, targetSprite.frame.gfxHeight);
 
             this.Update();
         }
