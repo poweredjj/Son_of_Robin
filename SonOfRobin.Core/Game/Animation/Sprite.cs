@@ -23,6 +23,7 @@ namespace SonOfRobin
         public Vector2 position;
         public Orientation orientation;
         public float rotation;
+        public Vector2 rotationOriginOverride; // used for custom rotation origin, different from the default
 
         public float opacity;
         public OpacityFade opacityFade;
@@ -66,6 +67,7 @@ namespace SonOfRobin
             this.boardPiece = boardPiece;
             this.world = world;
             this.rotation = 0f;
+            this.rotationOriginOverride = Vector2.Zero;
             this.orientation = Orientation.right;
             this.animPackage = animPackage;
             this.animSize = animSize;
@@ -803,7 +805,7 @@ namespace SonOfRobin
             }
             else
             {
-                this.frame.DrawWithRotation(position: new Vector2(destRect.Center.X, destRect.Center.Y), color: this.color, rotation: this.rotation, opacity: this.opacity);
+                this.frame.DrawWithRotation(position: new Vector2(destRect.Center.X, destRect.Center.Y), color: this.color, rotation: this.rotation, rotationOriginOverride: this.rotationOriginOverride, opacity: this.opacity);
             }
 
             if (this.boardPiece.PieceStorage != null && this.boardPiece.GetType() == typeof(Plant)) this.DrawFruits();
