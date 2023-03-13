@@ -1,11 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
-using MonoGame.Extended.Tweening;
 using System.Collections.Generic;
 
 namespace SonOfRobin
 {
     public class SwayManager
     {
+        public int SwayEventsCount
+        { get { return swayEventsBySpriteID.Count; } }
         private readonly Dictionary<string, SwayEvent> swayEventsBySpriteID;
 
         public SwayManager()
@@ -73,7 +74,6 @@ namespace SonOfRobin
         private readonly float originalRotation;
         public readonly Sprite sourceSprite;
         public readonly Sprite targetSprite;
-        private readonly Tweener tweener;
         public bool HasEnded { get; private set; }
 
         public SwayEvent(Sprite sourceSprite, Sprite targetSprite)
@@ -81,25 +81,30 @@ namespace SonOfRobin
             this.HasEnded = false;
             this.sourceSprite = sourceSprite;
             this.targetSprite = targetSprite;
-            this.tweener = new Tweener();
-
-            Vector2 sourceOffset = sourceSprite.position - targetSprite.position;
 
             this.originalRotation = this.sourceSprite.rotation;
             this.targetSprite.rotationOriginOverride = new Vector2(targetSprite.frame.texture.Width / 2f, targetSprite.frame.texture.Height);
 
-            float targetRotation = this.originalRotation + 0.3f; // TODO add proper calculations
-
-            if (sourceOffset.X > 0) targetRotation *= -1;
-
-            float targetDuation = 0.5f; // TODO add proper calculations
-
-            this.tweener.TweenTo(target: this.targetSprite, expression: sprite => sprite.rotation, toValue: targetRotation, duration: targetDuation, delay: 0)
-                .AutoReverse()
-                .Easing(EasingFunctions.CubicInOut)
-                .OnEnd(t => this.Finish());
-
             this.Update();
+        }
+
+        public void Update()
+        {
+            if (!this.targetSprite.colRect.Intersects(this.sourceSprite.colRect) || !this.targetSprite.boardPiece.exists)
+            {
+                this.Finish();
+                return;
+            }
+
+            Vector2 sourceOffset = sourceSprite.position - targetSprite.position;
+            float distance = Vector2.Distance(targetSprite.position, sourceSprite.position);
+            float maxDistance = (sourceSprite.colRect.Width / 2) + (targetSprite.colRect.Width / 2);
+            float distanceFactor = 1f - (distance / maxDistance);
+
+            float rotationChange = 0.6f * distanceFactor;
+            if (sourceOffset.X > 0) rotationChange *= 1;
+
+            this.targetSprite.rotation = this.originalRotation + rotationChange;
         }
 
         public void Finish()
@@ -107,17 +112,6 @@ namespace SonOfRobin
             this.HasEnded = true;
             this.targetSprite.rotation = this.originalRotation;
             this.targetSprite.rotationOriginOverride = Vector2.Zero;
-        }
-
-        public void Update()
-        {
-            if (!this.targetSprite.boardPiece.exists)
-            {
-                this.Finish();
-                return;
-            }
-
-            this.tweener.Update((float)Scene.CurrentGameTime.ElapsedGameTime.TotalSeconds);
         }
     }
 }

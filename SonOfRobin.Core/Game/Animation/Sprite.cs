@@ -798,8 +798,11 @@ namespace SonOfRobin
 
             if (this.rotation == 0)
             {
-                int submergeCorrection = !this.floatsOnWater && this.IsInWater && calculateSubmerge ?
-                    (Terrain.waterLevelMax - this.GetFieldValue(Terrain.Name.Height)) / 2 : 0;
+                int submergeCorrection = 0;
+                if (!this.floatsOnWater && calculateSubmerge && this.IsInWater)
+                {
+                    submergeCorrection = (int)Helpers.ConvertRange(oldMin: 0, oldMax: Terrain.waterLevelMax, newMin: 4, newMax: this.frame.textureSize.Y, oldVal: Terrain.waterLevelMax - this.GetFieldValue(Terrain.Name.Height), clampToEdges: true);
+                }
 
                 this.frame.Draw(destRect: destRect, color: this.color, submergeCorrection: submergeCorrection, opacity: this.opacity);
             }

@@ -216,9 +216,8 @@ namespace SonOfRobin
             if (rotationOriginOverride != Vector2.Zero)
             {
                 rotationOrigin = rotationOriginOverride;
-                position = position + (rotationOrigin - this.rotationOrigin);
+                position += rotationOrigin - this.rotationOrigin;
             }
-
 
             SonOfRobinGame.SpriteBatch.Draw(this.texture, position: position, sourceRectangle: this.textureRect, color: color * opacity, rotation: rotation, origin: rotationOrigin, scale: this.scale, effects: SpriteEffects.None, layerDepth: 0);
         }
