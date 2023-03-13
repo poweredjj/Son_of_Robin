@@ -5,9 +5,9 @@ namespace SonOfRobin
 {
     public class SwayManager
     {
+        private readonly Dictionary<string, SwayEvent> swayEventsBySpriteID;
         public int SwayEventsCount
         { get { return swayEventsBySpriteID.Count; } }
-        private readonly Dictionary<string, SwayEvent> swayEventsBySpriteID;
 
         public SwayManager()
         {
@@ -72,6 +72,7 @@ namespace SonOfRobin
     public class SwayEvent
     {
         private readonly float originalRotation;
+        private float targetRotation;
         public readonly Sprite sourceSprite;
         public readonly Sprite targetSprite;
         public bool HasEnded { get; private set; }
@@ -101,10 +102,11 @@ namespace SonOfRobin
             float maxDistance = (sourceSprite.colRect.Width / 2) + (targetSprite.colRect.Width / 2);
             float distanceFactor = 1f - (distance / maxDistance);
 
-            float rotationChange = 0.6f * distanceFactor;
-            if (sourceOffset.X > 0) rotationChange *= 1;
+            float rotationChange = 1.2f * distanceFactor;
+            if (sourceOffset.X > 0) rotationChange *= -1;
 
-            this.targetSprite.rotation = this.originalRotation + rotationChange;
+            this.targetRotation = this.originalRotation + rotationChange;
+            this.targetSprite.rotation += (this.targetRotation - this.targetSprite.rotation) / 3; // to smooth movement
         }
 
         public void Finish()

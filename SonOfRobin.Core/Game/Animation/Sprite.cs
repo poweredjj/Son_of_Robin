@@ -778,8 +778,8 @@ namespace SonOfRobin
 
             if (Preferences.debugShowRects)
             {
-                SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, new Rectangle(Convert.ToInt32(this.colRect.X), Convert.ToInt32(this.colRect.Y), this.colRect.Width, this.colRect.Height), this.colRect, Color.Red * 0.7f);
-                SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, new Rectangle(Convert.ToInt32((this.position.X) - 1), Convert.ToInt32(this.position.Y - 1), 2, 2), Color.White);
+                SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, new Rectangle(this.colRect.X, this.colRect.Y, this.colRect.Width, this.colRect.Height), this.colRect, Color.Red * 0.7f);
+                SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, new Rectangle((int)(this.position.X - 1), (int)(this.position.Y - 1), 2, 2), Color.White);
             }
 
             if (Preferences.debugShowStates && this.boardPiece.GetType() == typeof(Animal) && this.boardPiece.alive) this.DrawState();
@@ -822,7 +822,9 @@ namespace SonOfRobin
             if (plant.PieceStorage.OccupiedSlotsCount == 0) return;
             var fruitList = plant.PieceStorage.GetAllPieces();
             foreach (BoardPiece fruit in fruitList)
-            { fruit.sprite.Draw(calculateSubmerge: false); }
+            {
+                fruit.sprite.Draw(calculateSubmerge: false);
+            }
         }
 
         public void DrawAndKeepInRectBounds(Rectangle destRect, float opacity)
