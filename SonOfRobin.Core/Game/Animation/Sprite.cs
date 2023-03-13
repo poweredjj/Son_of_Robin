@@ -820,10 +820,32 @@ namespace SonOfRobin
             if (Preferences.debugShowFruitRects) SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, plant.fruitEngine.FruitAreaRect, Color.Cyan * 0.4f);
 
             if (plant.PieceStorage.OccupiedSlotsCount == 0) return;
+
+            Vector2 drawOffset = Vector2.Zero;
+            //  drawOffset += this.rotationOriginOverride - this.frame.rotationOrigin;
+
             var fruitList = plant.PieceStorage.GetAllPieces();
             foreach (BoardPiece fruit in fruitList)
             {
-                fruit.sprite.Draw(calculateSubmerge: false);
+                if (this.rotationOriginOverride == Vector2.Zero)
+                {
+                    // regular drawing
+                    fruit.sprite.Draw(calculateSubmerge: false);
+                }
+                else
+                {
+                    // taking sway into account
+
+                    float originalFruitRotation = fruit.sprite.rotation;
+                    fruit.sprite.rotation = this.rotation;
+
+                    Vector2 rotationOriginOverride = new Vector2(this.position.X - fruit.sprite.position.X, this.position.Y - fruit.sprite.position.Y + (this.frame.textureSize.Y / 2));
+                    rotationOriginOverride += fruit.sprite.frame.rotationOrigin;
+
+                    fruit.sprite.frame.DrawWithRotation(position: fruit.sprite.position, color: fruit.sprite.color, rotation: this.rotation, rotationOriginOverride: rotationOriginOverride, opacity: this.opacity);
+
+                    fruit.sprite.rotation = originalFruitRotation;
+                }
             }
         }
 
