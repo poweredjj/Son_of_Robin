@@ -110,7 +110,7 @@ namespace SonOfRobin
             this.updateMultiplier = 1;
             this.islandClock = this.saveGameData == null ? new IslandClock(0) : new IslandClock();
             this.waterSurfaceManager = new WaterSurfaceManager(world: this);
-            this.swayManager = new SwayManager(world: this);
+            this.swayManager = new SwayManager();
 
             this.width = width;
             this.height = height;
@@ -769,6 +769,7 @@ namespace SonOfRobin
 
             this.ProcessInput();
             this.UpdateViewParams();
+            this.swayManager.Update();
 
             if (this.soundPaused && this.inputActive)
             {
@@ -1192,8 +1193,6 @@ namespace SonOfRobin
         public override void Draw()
         {
             if (this.WorldCreationInProgress) return;
-
-            this.swayManager.Update();
 
             SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
 

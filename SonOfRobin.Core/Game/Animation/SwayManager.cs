@@ -8,7 +8,7 @@ namespace SonOfRobin
     {
         private readonly Dictionary<string, SwayEvent> swayEventsBySpriteID;
 
-        public SwayManager(World world)
+        public SwayManager()
         {
             this.swayEventsBySpriteID = new Dictionary<string, SwayEvent>();
         }
@@ -23,6 +23,8 @@ namespace SonOfRobin
             {
                 if (swayEventsBySpriteID.ContainsKey(targetSprite.id))
                 {
+                    if (swayEventsBySpriteID[targetSprite.id].sourceSprite.id != sourceSprite.id) return;
+
                     swayEventsBySpriteID[targetSprite.id].Finish();
                     swayEventsBySpriteID.Remove(targetSprite.id);
                 }
@@ -33,6 +35,16 @@ namespace SonOfRobin
         public void AddSwayEvent(Sprite sourceSprite, Sprite targetSprite)
         {
             this.swayEventsBySpriteID[targetSprite.id] = new SwayEvent(sourceSprite: sourceSprite, targetSprite: targetSprite);
+        }
+
+        public void FinishAndRemoveAllEvents()
+        {
+            foreach (SwayEvent swayEvent in this.swayEventsBySpriteID.Values)
+            {
+                swayEvent.Finish();
+            }
+
+            this.swayEventsBySpriteID.Clear();
         }
 
         public void Update()
@@ -59,8 +71,8 @@ namespace SonOfRobin
     public class SwayEvent
     {
         private readonly float originalRotation;
-        private readonly Sprite sourceSprite;
-        private readonly Sprite targetSprite;
+        public readonly Sprite sourceSprite;
+        public readonly Sprite targetSprite;
         private readonly Tweener tweener;
         public bool HasEnded { get; private set; }
 
@@ -74,15 +86,20 @@ namespace SonOfRobin
             Vector2 sourceOffset = sourceSprite.position - targetSprite.position;
 
             this.originalRotation = this.sourceSprite.rotation;
-            // this.targetSprite.rotationOriginOverride = new Vector2(targetSprite.frame.texture.Width / 2f, targetSprite.frame.texture.Height);
+            this.targetSprite.rotationOriginOverride = new Vector2(targetSprite.frame.texture.Width / 2f, targetSprite.frame.texture.Height);
 
             float targetRotation = this.originalRotation + 0.3f; // TODO add proper calculations
+
+            if (sourceOffset.X > 0) targetRotation *= -1;
+
             float targetDuation = 0.5f; // TODO add proper calculations
 
             this.tweener.TweenTo(target: this.targetSprite, expression: sprite => sprite.rotation, toValue: targetRotation, duration: targetDuation, delay: 0)
                 .AutoReverse()
                 .Easing(EasingFunctions.CubicInOut)
                 .OnEnd(t => this.Finish());
+
+            this.Update();
         }
 
         public void Finish()

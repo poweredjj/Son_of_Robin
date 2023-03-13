@@ -81,7 +81,6 @@ namespace SonOfRobin
             this.gfxOffset *= scale;
         }
 
-
         public static void DeleteUsedAtlases()
         {
             // Should be used after loading textures from all atlasses.
@@ -212,7 +211,16 @@ namespace SonOfRobin
         {
             // invoke from Sprite class
 
-            SonOfRobinGame.SpriteBatch.Draw(this.texture, position: position, sourceRectangle: this.textureRect, color: color * opacity, rotation: rotation, origin: rotationOriginOverride == Vector2.Zero ? this.rotationOrigin : rotationOriginOverride, scale: this.scale, effects: SpriteEffects.None, layerDepth: 0);
+            Vector2 rotationOrigin = this.rotationOrigin;
+
+            if (rotationOriginOverride != Vector2.Zero)
+            {
+                rotationOrigin = rotationOriginOverride;
+                position = position + (rotationOrigin - this.rotationOrigin);
+            }
+
+
+            SonOfRobinGame.SpriteBatch.Draw(this.texture, position: position, sourceRectangle: this.textureRect, color: color * opacity, rotation: rotation, origin: rotationOrigin, scale: this.scale, effects: SpriteEffects.None, layerDepth: 0);
         }
 
         public void DrawAndKeepInRectBounds(Rectangle destBoundsRect, Color color, float opacity = 1f)
