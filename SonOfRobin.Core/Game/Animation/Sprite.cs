@@ -838,8 +838,15 @@ namespace SonOfRobin
 
                     Sprite fruitSprite = fruit.sprite;
 
-                    Vector2 rotationOriginOverride = this.position + this.frame.gfxOffset - (fruitSprite.position + fruitSprite.frame.gfxOffset);
-                    rotationOriginOverride += new Vector2((float)this.frame.gfxWidth * 0.5f, this.frame.gfxHeight) / fruitSprite.frame.scale;
+                    // Vector2 rotationOriginOverride = this.position + this.frame.gfxOffset - (fruitSprite.position + fruitSprite.frame.gfxOffset);
+                    // rotationOriginOverride += new Vector2((float)this.frame.gfxWidth * 0.5f, this.frame.gfxHeight) / fruitSprite.frame.scale;
+
+
+                    Vector2 rotationOriginOverride = new Vector2(this.gfxRect.Left, this.gfxRect.Top) - new Vector2(fruitSprite.gfxRect.Left, fruitSprite.gfxRect.Top);
+                    // Vector2 rotationOriginOverride = this.position - fruitSprite.position;
+
+                    rotationOriginOverride += new Vector2((float)this.frame.gfxWidth * 0.5f, this.frame.gfxHeight);
+                    rotationOriginOverride /= fruitSprite.frame.scale;
 
                     float originalFruitRotation = fruitSprite.rotation;
                     fruitSprite.rotation = this.rotation;
