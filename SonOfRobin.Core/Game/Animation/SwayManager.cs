@@ -7,6 +7,7 @@ namespace SonOfRobin
     public class SwayManager
     {
         private readonly Dictionary<string, SwayEvent> swayEventsBySpriteID;
+
         public int SwayEventsCount
         { get { return swayEventsBySpriteID.Count; } }
 
@@ -23,13 +24,14 @@ namespace SonOfRobin
 
             foreach (Sprite targetSprite in collidingSpritesList)
             {
-                if (!swayEventsBySpriteID.ContainsKey(targetSprite.id)) this.AddSwayEvent(sourceSprite: sourceSprite, targetSprite: targetSprite);
+                this.AddSwayEvent(sourceSprite: sourceSprite, targetSprite: targetSprite, playSound: true);
             }
         }
 
-        public void AddSwayEvent(Sprite sourceSprite, Sprite targetSprite)
+        public void AddSwayEvent(Sprite targetSprite, Sprite sourceSprite = null, float targetRotation = 0f, bool playSound = true)
         {
-            this.swayEventsBySpriteID[targetSprite.id] = new SwayEvent(sourceSprite: sourceSprite, targetSprite: targetSprite);
+            if (swayEventsBySpriteID.ContainsKey(targetSprite.id)) return;
+            this.swayEventsBySpriteID[targetSprite.id] = new SwayEvent(sourceSprite: sourceSprite, targetSprite: targetSprite, targetRotation: targetRotation, playSound: playSound);
         }
 
         public void FinishAndRemoveAllEvents()
@@ -71,18 +73,22 @@ namespace SonOfRobin
         public readonly Sprite targetSprite;
         public bool HasEnded { get; private set; }
 
-        public SwayEvent(Sprite sourceSprite, Sprite targetSprite)
+        public SwayEvent(Sprite targetSprite, Sprite sourceSprite, float targetRotation = 0, bool playSound = true)
         {
             this.HasEnded = false;
             this.sourceSprite = sourceSprite;
             this.targetSprite = targetSprite;
 
-            this.originalRotation = this.sourceSprite.rotation;
+            this.originalRotation = this.targetSprite.rotation;
             this.targetSprite.rotationOriginOverride = new Vector2(targetSprite.frame.textureSize.X * 0.5f, targetSprite.frame.textureSize.Y);
+            this.targetRotation = targetRotation;
 
-            bool isPlayer = this.sourceSprite.boardPiece.GetType() == typeof(Player);
+            if (playSound)
+            {
+                bool isPlayer = this.sourceSprite != null && this.sourceSprite.boardPiece.GetType() == typeof(Player);
 
-            new Sound(nameList: new List<SoundData.Name> { SoundData.Name.HitSmallPlant1, SoundData.Name.HitSmallPlant2, SoundData.Name.HitSmallPlant3 }, boardPiece: this.targetSprite.boardPiece, ignore3DAlways: isPlayer, maxPitchVariation: 0.3f, volume: isPlayer ? 0.35f : 1f).Play();
+                new Sound(nameList: new List<SoundData.Name> { SoundData.Name.HitSmallPlant1, SoundData.Name.HitSmallPlant2, SoundData.Name.HitSmallPlant3 }, boardPiece: this.targetSprite.boardPiece, ignore3DAlways: isPlayer, maxPitchVariation: 0.3f, volume: isPlayer ? 0.35f : 1f).Play();
+            }
 
             this.Update();
         }
@@ -95,7 +101,7 @@ namespace SonOfRobin
                 return;
             }
 
-            if (this.targetSprite.colRect.Intersects(this.sourceSprite.colRect))
+            if (this.sourceSprite != null && this.targetSprite.colRect.Intersects(this.sourceSprite.colRect))
             {
                 Vector2 sourceOffset = sourceSprite.position - targetSprite.position;
                 float distance = Vector2.Distance(targetSprite.position, sourceSprite.position);
@@ -109,10 +115,16 @@ namespace SonOfRobin
             }
             else
             {
-                this.targetRotation = this.originalRotation;
+                if (this.sourceSprite != null) this.targetRotation = this.originalRotation;
 
                 if (Math.Abs(this.targetSprite.rotation - this.targetRotation) < 0.01)
                 {
+                    if (this.sourceSprite == null && this.targetRotation != this.originalRotation)
+                    {
+                        this.targetRotation = this.originalRotation;
+                        return;
+                    }
+
                     this.Finish();
                     return;
                 }
