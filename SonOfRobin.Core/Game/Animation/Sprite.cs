@@ -754,8 +754,8 @@ namespace SonOfRobin
             if (this.ObstructsCameraTarget && this.opacityFade == null) this.opacityFade = new OpacityFade(sprite: this, destOpacity: 0.5f, duration: 10, mode: OpacityFade.Mode.CameraTargetObstruct);
             if (Scene.UpdateStack.Contains(this.world)) this.opacityFade?.Process();
 
-            if (Preferences.debugShowRects)
-            { SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, new Rectangle(Convert.ToInt32(this.gfxRect.X), Convert.ToInt32(this.gfxRect.Y), this.gfxRect.Width, this.gfxRect.Height), this.gfxRect, Color.White * 0.5f); }
+            if (Preferences.debugShowRects) SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, this.gfxRect, this.gfxRect, Color.White * 0.35f);
+
 
             bool effectsShouldBeEnabled = this.effectCol.ThereAreEffectsToRender;
             if (!effectsShouldBeEnabled) this.DrawRoutine(calculateSubmerge);
@@ -778,8 +778,11 @@ namespace SonOfRobin
 
             if (Preferences.debugShowRects)
             {
-                SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, new Rectangle(this.colRect.X, this.colRect.Y, this.colRect.Width, this.colRect.Height), this.colRect, Color.Red * 0.7f);
-                SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, new Rectangle((int)(this.position.X - 1), (int)(this.position.Y - 1), 2, 2), Color.White);
+                SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, new Rectangle(this.colRect.X, this.colRect.Y, this.colRect.Width, this.colRect.Height), this.colRect, Color.Red * 0.55f);
+
+                Helpers.DrawRectangleOutline(new Rectangle((int)this.position.X, (int)this.position.Y, 1, 1), Color.Blue, borderWidth: 2);
+
+                SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, new Rectangle((int)this.position.X, (int)this.position.Y, 1, 1), Color.White);
             }
 
             if (Preferences.debugShowStates && this.boardPiece.GetType() == typeof(Animal) && this.boardPiece.alive) this.DrawState();
@@ -824,27 +827,28 @@ namespace SonOfRobin
             var fruitList = plant.PieceStorage.GetAllPieces();
             foreach (BoardPiece fruit in fruitList)
             {
-                if (this.rotationOriginOverride == Vector2.Zero)
+                if (this.rotation == 0)
                 {
                     // regular drawing
                     fruit.sprite.Draw(calculateSubmerge: false);
                 }
                 else
                 {
-                    // taking sway into account
+                    // drawing with rotation, taking sway into account
 
                     Sprite fruitSprite = fruit.sprite;
 
                     Vector2 rotationOriginOverride = this.position + this.frame.gfxOffset - (fruitSprite.position + fruitSprite.frame.gfxOffset);
                     rotationOriginOverride += new Vector2((float)this.frame.gfxWidth * 0.5f, this.frame.gfxHeight);
 
-                    Vector2 offset = rotationOriginOverride - fruitSprite.frame.rotationOrigin;
-                    offset *= fruitSprite.frame.scale / this.frame.scale;
+                    Vector2 offset = (rotationOriginOverride - fruitSprite.frame.rotationOrigin) * fruitSprite.frame.scale;
 
                     float originalFruitRotation = fruitSprite.rotation;
                     fruitSprite.rotation = this.rotation;
 
-                    fruitSprite.frame.DrawWithRotation(position: fruitSprite.position + offset, color: fruitSprite.color, rotation: this.rotation, rotationOriginOverride: rotationOriginOverride, rotationOriginPosCorrection: false, opacity: this.opacity);
+                    Vector2 fruitDrawPos = new Vector2(fruitSprite.gfxRect.Center.X, fruitSprite.gfxRect.Center.Y) + offset;
+
+                    fruitSprite.frame.DrawWithRotation(position: fruitDrawPos, color: fruitSprite.color, rotation: this.rotation, rotationOriginOverride: rotationOriginOverride, rotationOriginPosCorrection: false, opacity: this.opacity);
 
                     fruitSprite.rotation = originalFruitRotation;
                 }

@@ -63,6 +63,7 @@ namespace SonOfRobin
 
             this.textureSize = new Vector2(this.texture.Width, this.texture.Height);
             this.textureRect = new Rectangle(x: 0, y: 0, width: this.texture.Width, height: this.texture.Height);
+            this.rotationOrigin = new Vector2(this.textureSize.X * 0.5f, this.textureSize.Y * 0.5f); // rotationOrigin must not take scale into account, to work properly
 
             Rectangle colBounds = this.FindCollisionBounds();
 
@@ -77,7 +78,6 @@ namespace SonOfRobin
 
             this.colOffset *= scale;
             this.gfxOffset *= scale;
-            this.rotationOrigin = new Vector2(this.gfxWidth * 0.5f, this.gfxHeight * 0.5f);
         }
 
         public static void DeleteUsedAtlases()
@@ -210,14 +210,12 @@ namespace SonOfRobin
         {
             // invoke from Sprite class
 
-            // Helpers.DrawRectangleOutline(new Rectangle((int)position.X, (int)position.Y, 1, 1), rotationOriginPosCorrection ? Color.Yellow : Color.Red, borderWidth: 1); // for testing
-
             Vector2 rotationOriginToUse = this.rotationOrigin;
 
             if (rotationOriginOverride != Vector2.Zero)
             {
                 rotationOriginToUse = rotationOriginOverride;
-                if (rotationOriginPosCorrection) position += rotationOriginToUse - this.rotationOrigin;
+                if (rotationOriginPosCorrection) position += (rotationOriginToUse - this.rotationOrigin) * this.scale;
             }
 
             SonOfRobinGame.SpriteBatch.Draw(this.texture, position: position, sourceRectangle: this.textureRect, color: color * opacity, rotation: rotation, origin: rotationOriginToUse, scale: this.scale, effects: SpriteEffects.None, layerDepth: 0);
