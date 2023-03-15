@@ -61,10 +61,9 @@ namespace SonOfRobin
             // padding makes the edge texture filtering smooth and allows for border effects outside original texture edges
             this.texture = GfxConverter.CropTextureAndAddPadding(baseTexture: atlasTexture, cropRect: cropRect, padding: padding);
 
-            this.rotationOrigin = new Vector2(this.texture.Width / 2f, this.texture.Height / 2f);
-
             this.textureSize = new Vector2(this.texture.Width, this.texture.Height);
             this.textureRect = new Rectangle(x: 0, y: 0, width: this.texture.Width, height: this.texture.Height);
+            this.rotationOrigin = new Vector2(this.textureSize.X * 0.5f, this.textureSize.Y * 0.5f); // rotationOrigin must not take scale into account, to work properly
 
             Rectangle colBounds = this.FindCollisionBounds();
 
@@ -80,7 +79,6 @@ namespace SonOfRobin
             this.colOffset *= scale;
             this.gfxOffset *= scale;
         }
-
 
         public static void DeleteUsedAtlases()
         {
@@ -203,16 +201,22 @@ namespace SonOfRobin
 
             Rectangle sourceRectangle = new Rectangle(x: 0, y: 0, width: this.texture.Width, correctedSourceHeight);
 
-            // Helpers.DrawRectangleOutline(rect: destRect, color: Color.YellowGreen, borderWidth: 2); // testing rect size
-
             SonOfRobinGame.SpriteBatch.Draw(this.texture, destRect, sourceRectangle, color * opacity);
         }
 
-        public void DrawWithRotation(Vector2 position, Color color, float rotation, float opacity)
+        public void DrawWithRotation(Vector2 position, Color color, float rotation, float opacity, Vector2 rotationOriginOverride)
         {
             // invoke from Sprite class
 
-            SonOfRobinGame.SpriteBatch.Draw(this.texture, position: position, sourceRectangle: this.textureRect, color: color * opacity, rotation: rotation, origin: this.rotationOrigin, scale: this.scale, effects: SpriteEffects.None, layerDepth: 0);
+            Vector2 rotationOriginToUse = this.rotationOrigin;
+
+            if (rotationOriginOverride != Vector2.Zero)
+            {
+                rotationOriginToUse = rotationOriginOverride;
+                position += (rotationOriginToUse - this.rotationOrigin) * this.scale;
+            }
+
+            SonOfRobinGame.SpriteBatch.Draw(this.texture, position: position, sourceRectangle: this.textureRect, color: color * opacity, rotation: rotation, origin: rotationOriginToUse, scale: this.scale, effects: SpriteEffects.None, layerDepth: 0);
         }
 
         public void DrawAndKeepInRectBounds(Rectangle destBoundsRect, Color color, float opacity = 1f)

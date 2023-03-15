@@ -129,7 +129,11 @@ namespace SonOfRobin
             this.quitGameAfterSaving = quitGameAfterSaving;
             this.processingComplete = false;
             this.world = world;
-            if (this.world != null) this.piecePackagesToSave = this.PreparePiecePackages();
+            if (this.world != null)
+            {
+                this.world.swayManager.FinishAndRemoveAllEvents(); // all SwayEvents should be cleared, to ensure that original values will be saved
+                this.piecePackagesToSave = this.PreparePiecePackages();
+            }
 
             this.processedSteps = 0;
             this.saveSlotName = saveSlotName;

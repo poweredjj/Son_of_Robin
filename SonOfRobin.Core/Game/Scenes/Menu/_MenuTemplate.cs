@@ -110,7 +110,11 @@ namespace SonOfRobin
                         Menu menu = new Menu(templateName: templateName, name: "SCALE", blocksUpdatesBelow: false, canBeClosedManually: true, closingTask: Scheduler.TaskName.SavePrefs, templateExecuteHelper: executeHelper);
 
                         var worldScaleList = new List<Object> { 0.5f, 0.75f, 1f, 1.25f, 1.5f, 2f };
-                        if (SonOfRobinGame.ThisIsWorkMachine) worldScaleList.InsertRange(0, new List<Object> { 0.125f, 0.25f });
+                        if (SonOfRobinGame.ThisIsWorkMachine || SonOfRobinGame.ThisIsHomeMachine)
+                        {
+                            worldScaleList.InsertRange(0, new List<Object> { 0.125f, 0.25f });
+                            worldScaleList.AddRange(new List<Object> { 2.5f, 3f });
+                        }
                         new Selector(menu: menu, name: "world scale", valueList: worldScaleList, targetObj: preferences, propertyName: "WorldScale");
 
                         new Selector(menu: menu, name: "global scale", valueList: new List<Object> { 1f, 1.5f, 2f }, targetObj: preferences, propertyName: "GlobalScale", rebuildsMenu: true, rebuildsMenuInstantScroll: true);
@@ -187,7 +191,9 @@ namespace SonOfRobin
 
                         new Selector(menu: menu, name: "debris", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "showDebris", infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: "show small debris when hitting objects", color: Color.White, scale: 1f) });
 
-                        new Selector(menu: menu, name: "high quality water", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "highQualityWater", infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: "animated water", color: Color.White, scale: 1f) });
+                        new Selector(menu: menu, name: "high quality water", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "highQualityWater", infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: "show water animations", color: Color.White, scale: 1f) });
+
+                        new Selector(menu: menu, name: "plants sway", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "plantsSway");
 
                         new Separator(menu: menu, name: "", isEmpty: true);
                         new Invoker(menu: menu, name: "return", closesMenu: true, taskName: Scheduler.TaskName.SavePrefs);

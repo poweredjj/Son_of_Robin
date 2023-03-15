@@ -23,6 +23,7 @@ namespace SonOfRobin
         public Vector2 position;
         public Orientation orientation;
         public float rotation;
+        public Vector2 rotationOriginOverride; // used for custom rotation origin, different from the default
 
         public float opacity;
         public OpacityFade opacityFade;
@@ -66,6 +67,7 @@ namespace SonOfRobin
             this.boardPiece = boardPiece;
             this.world = world;
             this.rotation = 0f;
+            this.rotationOriginOverride = Vector2.Zero;
             this.orientation = Orientation.right;
             this.animPackage = animPackage;
             this.animSize = animSize;
@@ -752,8 +754,7 @@ namespace SonOfRobin
             if (this.ObstructsCameraTarget && this.opacityFade == null) this.opacityFade = new OpacityFade(sprite: this, destOpacity: 0.5f, duration: 10, mode: OpacityFade.Mode.CameraTargetObstruct);
             if (Scene.UpdateStack.Contains(this.world)) this.opacityFade?.Process();
 
-            if (Preferences.debugShowRects)
-            { SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, new Rectangle(Convert.ToInt32(this.gfxRect.X), Convert.ToInt32(this.gfxRect.Y), this.gfxRect.Width, this.gfxRect.Height), this.gfxRect, Color.White * 0.5f); }
+            if (Preferences.debugShowRects) SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, this.gfxRect, this.gfxRect, Color.White * 0.35f);
 
             bool effectsShouldBeEnabled = this.effectCol.ThereAreEffectsToRender;
             if (!effectsShouldBeEnabled) this.DrawRoutine(calculateSubmerge);
@@ -776,8 +777,11 @@ namespace SonOfRobin
 
             if (Preferences.debugShowRects)
             {
-                SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, new Rectangle(Convert.ToInt32(this.colRect.X), Convert.ToInt32(this.colRect.Y), this.colRect.Width, this.colRect.Height), this.colRect, Color.Red * 0.7f);
-                SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, new Rectangle(Convert.ToInt32((this.position.X) - 1), Convert.ToInt32(this.position.Y - 1), 2, 2), Color.White);
+                SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, new Rectangle(this.colRect.X, this.colRect.Y, this.colRect.Width, this.colRect.Height), this.colRect, Color.Red * 0.55f);
+
+                Helpers.DrawRectangleOutline(new Rectangle((int)this.position.X, (int)this.position.Y, 1, 1), Color.Blue, borderWidth: 2);
+
+                SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, new Rectangle((int)this.position.X, (int)this.position.Y, 1, 1), Color.White);
             }
 
             if (Preferences.debugShowStates && this.boardPiece.GetType() == typeof(Animal) && this.boardPiece.alive) this.DrawState();
@@ -796,14 +800,17 @@ namespace SonOfRobin
 
             if (this.rotation == 0)
             {
-                int submergeCorrection = !this.floatsOnWater && this.IsInWater && calculateSubmerge ?
-                    (Terrain.waterLevelMax - this.GetFieldValue(Terrain.Name.Height)) / 2 : 0;
+                int submergeCorrection = 0;
+                if (!this.floatsOnWater && calculateSubmerge && this.IsInWater)
+                {
+                    submergeCorrection = (int)Helpers.ConvertRange(oldMin: 0, oldMax: Terrain.waterLevelMax, newMin: 4, newMax: this.frame.gfxHeight, oldVal: Terrain.waterLevelMax - this.GetFieldValue(Terrain.Name.Height), clampToEdges: true);
+                }
 
                 this.frame.Draw(destRect: destRect, color: this.color, submergeCorrection: submergeCorrection, opacity: this.opacity);
             }
             else
             {
-                this.frame.DrawWithRotation(position: new Vector2(destRect.Center.X, destRect.Center.Y), color: this.color, rotation: this.rotation, opacity: this.opacity);
+                this.frame.DrawWithRotation(position: new Vector2(destRect.Center.X, destRect.Center.Y), color: this.color, rotation: this.rotation, rotationOriginOverride: this.rotationOriginOverride, opacity: this.opacity);
             }
 
             if (this.boardPiece.PieceStorage != null && this.boardPiece.GetType() == typeof(Plant)) this.DrawFruits();
@@ -815,13 +822,39 @@ namespace SonOfRobin
             if (Preferences.debugShowFruitRects) SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, plant.fruitEngine.FruitAreaRect, Color.Cyan * 0.4f);
 
             if (plant.PieceStorage.OccupiedSlotsCount == 0) return;
+
             var fruitList = plant.PieceStorage.GetAllPieces();
             foreach (BoardPiece fruit in fruitList)
-            { fruit.sprite.Draw(calculateSubmerge: false); }
+            {
+                if (this.rotation == 0)
+                {
+                    // regular drawing
+                    fruit.sprite.Draw(calculateSubmerge: false);
+                }
+                else
+                {
+                    // drawing with rotation, taking sway into account
+
+                    Sprite fruitSprite = fruit.sprite;
+
+                    Vector2 rotationOriginOverride = new Vector2(this.gfxRect.Left, this.gfxRect.Top) - new Vector2(fruitSprite.gfxRect.Left, fruitSprite.gfxRect.Top);
+                    rotationOriginOverride += new Vector2((float)this.frame.gfxWidth * 0.5f, this.frame.gfxHeight);
+                    rotationOriginOverride /= fruitSprite.frame.scale; // DrawWithRotation() will multiply rotationOriginOverride by target frame scale
+
+                    float originalFruitRotation = fruitSprite.rotation;
+                    fruitSprite.rotation = this.rotation;
+
+                    fruitSprite.frame.DrawWithRotation(position: new Vector2(fruitSprite.gfxRect.Center.X, fruitSprite.gfxRect.Center.Y), color: fruitSprite.color, rotation: this.rotation, rotationOriginOverride: rotationOriginOverride, opacity: this.opacity);
+
+                    fruitSprite.rotation = originalFruitRotation;
+                }
+            }
         }
 
         public void DrawAndKeepInRectBounds(Rectangle destRect, float opacity)
-        { this.frame.DrawAndKeepInRectBounds(destBoundsRect: destRect, color: this.color * opacity); }
+        {
+            this.frame.DrawAndKeepInRectBounds(destBoundsRect: destRect, color: this.color * opacity);
+        }
 
         private void DrawState()
         {
