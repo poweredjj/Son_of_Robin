@@ -811,7 +811,7 @@ namespace SonOfRobin
             }
             else
             {
-                this.frame.DrawWithRotation(position: new Vector2(destRect.Center.X, destRect.Center.Y), color: this.color, rotation: this.rotation, rotationOriginOverride: this.rotationOriginOverride, opacity: this.opacity, rotationOriginPosCorrection: true);
+                this.frame.DrawWithRotation(position: new Vector2(destRect.Center.X, destRect.Center.Y), color: this.color, rotation: this.rotation, rotationOriginOverride: this.rotationOriginOverride, opacity: this.opacity);
             }
 
             if (this.boardPiece.PieceStorage != null && this.boardPiece.GetType() == typeof(Plant)) this.DrawFruits();
@@ -839,16 +839,12 @@ namespace SonOfRobin
                     Sprite fruitSprite = fruit.sprite;
 
                     Vector2 rotationOriginOverride = this.position + this.frame.gfxOffset - (fruitSprite.position + fruitSprite.frame.gfxOffset);
-                    rotationOriginOverride += new Vector2((float)this.frame.gfxWidth * 0.5f, this.frame.gfxHeight);
-
-                    Vector2 offset = (rotationOriginOverride - fruitSprite.frame.rotationOrigin) * fruitSprite.frame.scale;
+                    rotationOriginOverride += new Vector2((float)this.frame.gfxWidth * 0.5f, this.frame.gfxHeight) / fruitSprite.frame.scale;
 
                     float originalFruitRotation = fruitSprite.rotation;
                     fruitSprite.rotation = this.rotation;
 
-                    Vector2 fruitDrawPos = new Vector2(fruitSprite.gfxRect.Center.X, fruitSprite.gfxRect.Center.Y) + offset;
-
-                    fruitSprite.frame.DrawWithRotation(position: fruitDrawPos, color: fruitSprite.color, rotation: this.rotation, rotationOriginOverride: rotationOriginOverride, rotationOriginPosCorrection: false, opacity: this.opacity);
+                    fruitSprite.frame.DrawWithRotation(position: new Vector2(fruitSprite.gfxRect.Center.X, fruitSprite.gfxRect.Center.Y), color: fruitSprite.color, rotation: this.rotation, rotationOriginOverride: rotationOriginOverride, opacity: this.opacity);
 
                     fruitSprite.rotation = originalFruitRotation;
                 }
