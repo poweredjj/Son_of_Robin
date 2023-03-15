@@ -756,7 +756,6 @@ namespace SonOfRobin
 
             if (Preferences.debugShowRects) SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, this.gfxRect, this.gfxRect, Color.White * 0.35f);
 
-
             bool effectsShouldBeEnabled = this.effectCol.ThereAreEffectsToRender;
             if (!effectsShouldBeEnabled) this.DrawRoutine(calculateSubmerge);
             else
@@ -838,15 +837,9 @@ namespace SonOfRobin
 
                     Sprite fruitSprite = fruit.sprite;
 
-                    // Vector2 rotationOriginOverride = this.position + this.frame.gfxOffset - (fruitSprite.position + fruitSprite.frame.gfxOffset);
-                    // rotationOriginOverride += new Vector2((float)this.frame.gfxWidth * 0.5f, this.frame.gfxHeight) / fruitSprite.frame.scale;
-
-
                     Vector2 rotationOriginOverride = new Vector2(this.gfxRect.Left, this.gfxRect.Top) - new Vector2(fruitSprite.gfxRect.Left, fruitSprite.gfxRect.Top);
-                    // Vector2 rotationOriginOverride = this.position - fruitSprite.position;
-
                     rotationOriginOverride += new Vector2((float)this.frame.gfxWidth * 0.5f, this.frame.gfxHeight);
-                    rotationOriginOverride /= fruitSprite.frame.scale;
+                    rotationOriginOverride /= fruitSprite.frame.scale; // DrawWithRotation() will multiply rotationOriginOverride by target frame scale
 
                     float originalFruitRotation = fruitSprite.rotation;
                     fruitSprite.rotation = this.rotation;

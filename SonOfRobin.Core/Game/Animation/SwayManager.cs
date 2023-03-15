@@ -80,6 +80,10 @@ namespace SonOfRobin
             this.originalRotation = this.sourceSprite.rotation;
             this.targetSprite.rotationOriginOverride = new Vector2(targetSprite.frame.textureSize.X * 0.5f, targetSprite.frame.textureSize.Y);
 
+            bool isPlayer = this.sourceSprite.boardPiece.GetType() == typeof(Player);
+
+            new Sound(nameList: new List<SoundData.Name> { SoundData.Name.HitSmallPlant1, SoundData.Name.HitSmallPlant2, SoundData.Name.HitSmallPlant3 }, boardPiece: this.targetSprite.boardPiece, ignore3DAlways: isPlayer, maxPitchVariation: 0.3f, volume: isPlayer ? 0.35f : 1f).Play();
+
             this.Update();
         }
 
