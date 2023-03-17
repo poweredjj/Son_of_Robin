@@ -6,7 +6,28 @@ namespace SonOfRobin
 {
     public class SwayManager
     {
+        public struct WaitingSwayEvent
+        {
+            // must match AddSwayEvent() parameters
+
+            public readonly int startFrame;
+            public readonly Sprite targetSprite;
+            public readonly Sprite sourceSprite;
+            public readonly float targetRotation;
+            public readonly bool playSound;
+
+            public WaitingSwayEvent(int startFrame, Sprite targetSprite, Sprite sourceSprite, float targetRotation, bool playSound)
+            {
+                this.startFrame = startFrame;
+                this.targetSprite = targetSprite;
+                this.sourceSprite = sourceSprite;
+                this.targetRotation = targetRotation;
+                this.playSound = playSound;
+            }
+        }
+
         private readonly Dictionary<string, SwayEvent> swayEventsBySpriteID;
+        private List<WaitingSwayEvent> waitingEvents;
 
         public int SwayEventsCount
         { get { return swayEventsBySpriteID.Count; } }
@@ -14,9 +35,10 @@ namespace SonOfRobin
         public SwayManager()
         {
             this.swayEventsBySpriteID = new Dictionary<string, SwayEvent>();
+            this.waitingEvents = new List<WaitingSwayEvent>();
         }
 
-        public void CheckForSwayEvents(Sprite sourceSprite)
+        public void MakeSmallPlantsReactToStep(Sprite sourceSprite)
         {
             if (!Preferences.plantsSway) return;
 
@@ -28,8 +50,14 @@ namespace SonOfRobin
             }
         }
 
-        public void AddSwayEvent(Sprite targetSprite, Sprite sourceSprite = null, float targetRotation = 0f, bool playSound = true)
+        public void AddSwayEvent(Sprite targetSprite, Sprite sourceSprite = null, float targetRotation = 0f, bool playSound = true, int delayFrames = 0)
         {
+            if (delayFrames > 0)
+            {
+                this.waitingEvents.Add(new WaitingSwayEvent(startFrame: targetSprite.world.CurrentUpdate + delayFrames, targetSprite: targetSprite, sourceSprite: sourceSprite, targetRotation: targetRotation, playSound: playSound));
+                return;
+            }
+
             if (swayEventsBySpriteID.ContainsKey(targetSprite.id)) return;
             this.swayEventsBySpriteID[targetSprite.id] = new SwayEvent(sourceSprite: sourceSprite, targetSprite: targetSprite, targetRotation: targetRotation, playSound: playSound);
         }
@@ -44,9 +72,11 @@ namespace SonOfRobin
             this.swayEventsBySpriteID.Clear();
         }
 
-        public void Update()
+        public void Update(World world)
         {
             if (!Preferences.plantsSway) return;
+
+            this.ProcessWaitingEvents(world);
 
             List<string> spriteIDsToRemove = new List<string>();
 
@@ -62,6 +92,22 @@ namespace SonOfRobin
             {
                 this.swayEventsBySpriteID.Remove(spriteID);
             }
+        }
+
+        private void ProcessWaitingEvents(World world)
+        {
+            var newWaitingEvents = new List<WaitingSwayEvent>();
+
+            foreach (WaitingSwayEvent waitingSwayEvent in this.waitingEvents)
+            {
+                if (world.CurrentUpdate >= waitingSwayEvent.startFrame)
+                {
+                    if (waitingSwayEvent.targetSprite.IsInCameraRect) this.AddSwayEvent(targetSprite: waitingSwayEvent.targetSprite, sourceSprite: waitingSwayEvent.sourceSprite, targetRotation: waitingSwayEvent.targetRotation, playSound: waitingSwayEvent.playSound, delayFrames: 0);
+                }
+                else newWaitingEvents.Add(waitingSwayEvent);
+            }
+
+            this.waitingEvents = newWaitingEvents;
         }
     }
 

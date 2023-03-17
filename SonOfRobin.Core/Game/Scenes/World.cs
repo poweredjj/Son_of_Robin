@@ -769,7 +769,7 @@ namespace SonOfRobin
 
             this.ProcessInput();
             this.UpdateViewParams();
-            this.swayManager.Update();
+            this.swayManager.Update(world: this);
 
             if (this.soundPaused && this.inputActive)
             {

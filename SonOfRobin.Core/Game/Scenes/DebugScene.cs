@@ -353,13 +353,47 @@ namespace SonOfRobin
 
             if (Keyboard.HasBeenPressed(Keys.F1))
             {
+                if (world == null) return;
+
+                var xList = new List<int> { world.camera.viewRect.Left, world.camera.viewRect.Right };
+                var yList = new List<int> { world.camera.viewRect.Top, world.camera.viewRect.Bottom };
+
+                int x = xList[SonOfRobinGame.random.Next(0, xList.Count)];
+                int y = yList[SonOfRobinGame.random.Next(0, yList.Count)];
+
+                Vector2 windOriginLocation = new Vector2(x, y);
+
                 var plantSpriteList = new List<Sprite>();
                 world.Grid.GetSpritesInCameraViewAndPutIntoList(camera: world.camera, groupName: Cell.Group.ColPlantGrowth, spriteListToFill: plantSpriteList);
 
-                foreach (Sprite plantSprite in plantSpriteList)
+                foreach (Sprite sprite in plantSpriteList)
                 {
-                    if (!plantSprite.blocksMovement)
-                        world.swayManager.AddSwayEvent(targetSprite: plantSprite, sourceSprite: null, targetRotation: 0.5f, playSound: false);
+                    if (!sprite.blocksMovement)
+                    {
+                        float distance = Vector2.Distance(windOriginLocation, sprite.position);
+
+                        world.swayManager.AddSwayEvent(targetSprite: sprite, sourceSprite: null, targetRotation: (sprite.position - windOriginLocation).X > 0 ? 0.25f : -0.25f, playSound: false, delayFrames: (int)distance / 20);
+                    }
+                }
+            }
+
+            if (Keyboard.HasBeenPressed(Keys.F2))
+            {
+                if (world == null) return;
+
+                Vector2 windOriginLocation = world.Player.sprite.position;
+
+                var plantSpriteList = new List<Sprite>();
+                world.Grid.GetSpritesInCameraViewAndPutIntoList(camera: world.camera, groupName: Cell.Group.ColPlantGrowth, spriteListToFill: plantSpriteList);
+
+                foreach (Sprite sprite in plantSpriteList)
+                {
+                    if (!sprite.boardPiece.canBePickedUp)
+                    {
+                        float distance = Vector2.Distance(windOriginLocation, sprite.position);
+
+                        world.swayManager.AddSwayEvent(targetSprite: sprite, sourceSprite: null, targetRotation: (sprite.position - windOriginLocation).X > 0 ? 0.25f : -0.25f, playSound: false, delayFrames: (int)distance / 20);
+                    }
                 }
             }
 
@@ -369,7 +403,7 @@ namespace SonOfRobin
             //    SonOfRobinGame.FullScreenProgressBar.TurnOn(percentage: percentage, text: LoadingTips.GetTip(), optionalText: "loading game...");
             //}
 
-            if (Keyboard.HasBeenPressed(Keys.F2)) SonOfRobinGame.FullScreenProgressBar.TurnOff();
+            //if (Keyboard.HasBeenPressed(Keys.F2)) SonOfRobinGame.FullScreenProgressBar.TurnOff();
 
             if (Keyboard.HasBeenPressed(Keys.F3) || VirtButton.HasButtonBeenPressed(VButName.DebugClockAdvance))
             {
