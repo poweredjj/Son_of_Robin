@@ -53,7 +53,7 @@ namespace SonOfRobin
             {
                 debugLines.Add($"proc. animals: {world.ProcessedNonPlantsCount} plants: {world.ProcessedPlantsCount}");
                 debugLines.Add($"loaded textures {world.Grid.loadedTexturesCount}");
-                debugLines.Add($"tracking count {world.trackingQueue.Count} swaySprites {world.swayManager.SwaySpriteCount} (forces: {world.swayManager.SwayForceCount})");
+                debugLines.Add($"tracking count {world.trackingQueue.Count} swaySprites {world.swayManager.SwaySpriteCount} (forces: {world.swayManager.SwayForceCount}, sounds: {world.swayManager.SoundCount})");
                 if (world.trackingQueue.Count > 5000) debugLines.Add("WARNING, CHECK IF CORRECT!");
             }
 
@@ -365,7 +365,7 @@ namespace SonOfRobin
                     if (!plantSprite.blocksMovement)
                     {
                         float distance = Vector2.Distance(windOriginLocation, plantSprite.position);
-                        world.swayManager.AddGenericForce(targetSprite: plantSprite, angle: 0.4f, strength: 0.2f, duration: 0.2f, delay: distance / 400f);
+                        world.swayManager.AddGenericForce(world: world, targetSprite: plantSprite, targetAngle: 0.4f, strength: 0.2f, durationFrames: 12, delayFrames: (int)distance / 10);
                     }
                 }
             }

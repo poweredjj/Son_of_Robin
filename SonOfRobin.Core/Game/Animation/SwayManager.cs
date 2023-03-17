@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using MonoGame.Extended.Tweening;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,10 +31,15 @@ namespace SonOfRobin
             }
         }
 
+        private const float maxRotation = 1.3f;
         private readonly Dictionary<Sprite, SwayData> swayDataBySprite;
+        private Dictionary<Sprite, Sound> hitSoundBySourceSprite;
 
         public int SwaySpriteCount
         { get { return swayDataBySprite.Count; } }
+
+        public int SoundCount
+        { get { return hitSoundBySourceSprite.Count; } }
 
         public int SwayForceCount
         {
@@ -54,42 +58,45 @@ namespace SonOfRobin
         public SwayManager()
         {
             this.swayDataBySprite = new Dictionary<Sprite, SwayData>();
+            this.hitSoundBySourceSprite = new Dictionary<Sprite, Sound>();
         }
 
-        public void MakeSmallPlantsReactToStep(Sprite sourceSprite)
+        public void MakeSmallPlantsReactToStep(World world, Sprite sourceSprite)
         {
             if (!Preferences.plantsSway) return;
 
             List<Sprite> collidingSpritesList = sourceSprite.GetCollidingSpritesAtPosition(positionToCheck: sourceSprite.position, cellGroupsToCheck: new List<Cell.Group> { Cell.Group.ColPlantGrowth });
 
+            if (!collidingSpritesList.Any()) return;
+
+            if (!this.hitSoundBySourceSprite.ContainsKey(sourceSprite))
+            {
+                bool isPlayer = sourceSprite.boardPiece.GetType() == typeof(Player);
+
+                Sound hitSound = new Sound(nameList: new List<SoundData.Name> { SoundData.Name.HitSmallPlant1, SoundData.Name.HitSmallPlant2, SoundData.Name.HitSmallPlant3 }, boardPiece: sourceSprite.boardPiece, ignore3DAlways: isPlayer, maxPitchVariation: 0.3f, volume: isPlayer ? 0.4f : 0.25f, cooldown: 16);
+                hitSoundBySourceSprite[sourceSprite] = hitSound;
+            }
+            hitSoundBySourceSprite[sourceSprite].Play();
+
             foreach (Sprite targetSprite in collidingSpritesList)
             {
-                this.AddStepForce(sourceSprite: sourceSprite, targetSprite: targetSprite);
+                Vector2 sourceOffset = sourceSprite.position - targetSprite.position;
+                float distance = Vector2.Distance(targetSprite.position, sourceSprite.position);
+                float maxDistance = (sourceSprite.colRect.Width / 2) + (targetSprite.colRect.Width / 2);
+                float strength = 1f - (distance / maxDistance);
+
+                this.AddGenericForce(world: world, targetSprite: targetSprite, targetAngle: -sourceOffset.X, strength: strength, durationFrames: 2);
             }
         }
 
-        private void AddStepForce(Sprite sourceSprite, Sprite targetSprite)
-        {
-            Vector2 sourceOffset = sourceSprite.position - targetSprite.position;
-            float distance = Vector2.Distance(targetSprite.position, sourceSprite.position);
-            float maxDistance = (sourceSprite.colRect.Width / 2) + (targetSprite.colRect.Width / 2);
-            float strength = 1f - (distance / maxDistance);
-
-            bool isPlayer = sourceSprite.boardPiece.GetType() == typeof(Player);
-
-            this.AddGenericForce(targetSprite: targetSprite, angle: -sourceOffset.X, strength: strength, playSound: true, soundIgnore3D: isPlayer, soundVolume: isPlayer ? 0.35f : 0.2f);
-        }
-
-        public void AddGenericForce(Sprite targetSprite, float angle, float strength, float delay = 0f, float duration = 0.033f, bool playSound = false, bool soundIgnore3D = false, float soundVolume = 1f)
+        public void AddGenericForce(World world, Sprite targetSprite, float targetAngle, float strength, int durationFrames, int delayFrames = 0)
         {
             if (!this.swayDataBySprite.ContainsKey(targetSprite))
             {
                 this.swayDataBySprite[targetSprite] = new SwayData(swayDataBySprite: this.swayDataBySprite, targetSprite: targetSprite);
-
-                if (playSound) new Sound(nameList: new List<SoundData.Name> { SoundData.Name.HitSmallPlant1, SoundData.Name.HitSmallPlant2, SoundData.Name.HitSmallPlant3 }, boardPiece: targetSprite.boardPiece, ignore3DAlways: soundIgnore3D, maxPitchVariation: 0.3f, volume: soundVolume).Play();
             }
 
-            this.swayDataBySprite[targetSprite].swayForceList.Add(new SwayForce(angle: angle, strength: strength, delay: delay, duration: duration));
+            this.swayDataBySprite[targetSprite].swayForceList.Add(new SwayForce(world: world, targetAngle: targetAngle, strength: strength, delayFrames: delayFrames, durationFrames: durationFrames));
         }
 
         public void FinishAndRemoveAllEvents()
@@ -124,13 +131,13 @@ namespace SonOfRobin
                     {
                         swayForce.Update();
                         if (swayForce.HasEnded) forcesToRemove.Add(swayForce);
-                        else averageRotation += swayForce.targetAngle;
+                        else averageRotation += swayForce.currentAngle;
                     }
 
                     if (!swayData.swayForceList.Any() && Math.Abs(targetSprite.rotation - swayData.targetRotation) < 0.01) spritesToRemove.Add(targetSprite);
                     else
                     {
-                        swayData.targetRotation = Math.Min(Math.Max(averageRotation, -1.2f), 1.2f);
+                        swayData.targetRotation = Math.Min(Math.Max(averageRotation, -maxRotation), maxRotation);
                         targetSprite.rotation += (swayData.targetRotation - targetSprite.rotation) / 4; // movement smoothing
                     }
                 }
@@ -140,35 +147,48 @@ namespace SonOfRobin
             {
                 swayDataBySprite[sprite].Remove();
             }
+
+            this.hitSoundBySourceSprite = this.hitSoundBySourceSprite.Where(kvp => kvp.Value.IsPlaying).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
         }
     }
 
     public class SwayForce
     {
+        private readonly World world;
+        public readonly float strength;
+        public readonly float targetAngle;
+        public float currentAngle;
+
+        private readonly int startFrame;
+        private readonly int endFrame;
+        private readonly float frameFactor;
         public bool HasEnded { get; private set; }
-        public float strength;
-        public float targetAngle;
-        private readonly Tweener tweener;
 
-        public SwayForce(float angle, float strength, float duration, float delay = 0)
+        public SwayForce(World world, float targetAngle, float strength, int durationFrames, int delayFrames = 0)
         {
-            this.strength = strength;
-            this.targetAngle = 0f;
+            this.world = world;
+            this.HasEnded = false;
 
-            this.tweener = new Tweener();
-            this.tweener.TweenTo(target: this, expression: force => force.targetAngle, toValue: angle, duration: duration, delay: delay)
-               .Easing(EasingFunctions.Linear)
-               .OnEnd(t => this.End());
+            this.strength = strength;
+            this.currentAngle = 0f;
+            this.targetAngle = targetAngle;
+
+            this.startFrame = world.CurrentUpdate + delayFrames;
+            this.endFrame = this.startFrame + durationFrames;
+            this.frameFactor = (float)(this.currentAngle - this.targetAngle) / (float)durationFrames;
+
+            this.Update();
         }
 
         public void Update()
         {
-            this.tweener.Update((float)Scene.CurrentGameTime.ElapsedGameTime.TotalSeconds);
-        }
+            if (this.world.CurrentUpdate > this.endFrame)
+            {
+                this.HasEnded = true;
+                return;
+            }
 
-        public void End()
-        {
-            this.HasEnded = true;
+            if (this.world.CurrentUpdate >= this.startFrame) this.currentAngle += this.frameFactor;
         }
     }
 }

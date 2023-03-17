@@ -703,7 +703,7 @@ namespace SonOfRobin
             {
                 this.sprite.CharacterWalk();
                 this.soundPack.Play(action: this.sprite.WalkSoundAction);
-                if (this.sprite.IsInCameraRect) this.world.swayManager.MakeSmallPlantsReactToStep(this.sprite);
+                if (this.sprite.IsInCameraRect) this.world.swayManager.MakeSmallPlantsReactToStep(world: this.world, sourceSprite: this.sprite);
             }
             else this.sprite.CharacterStand();
 
