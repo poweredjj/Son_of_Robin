@@ -53,7 +53,7 @@ namespace SonOfRobin
             {
                 debugLines.Add($"proc. animals: {world.ProcessedNonPlantsCount} plants: {world.ProcessedPlantsCount}");
                 debugLines.Add($"loaded textures {world.Grid.loadedTexturesCount}");
-                debugLines.Add($"tracking count {world.trackingQueue.Count} swaySprites {world.swayManager.SwaySpriteCount} (forces: {world.swayManager.SwayForceCount}, sounds: {world.swayManager.SoundCount})");
+                debugLines.Add($"tracking count {world.trackingQueue.Count} swayCount {world.swayManager.SwayEventsCount}");
                 if (world.trackingQueue.Count > 5000) debugLines.Add("WARNING, CHECK IF CORRECT!");
             }
 
@@ -353,20 +353,13 @@ namespace SonOfRobin
 
             if (Keyboard.HasBeenPressed(Keys.F1))
             {
-                if (world == null) return;
-
                 var plantSpriteList = new List<Sprite>();
                 world.Grid.GetSpritesInCameraViewAndPutIntoList(camera: world.camera, groupName: Cell.Group.ColPlantGrowth, spriteListToFill: plantSpriteList);
-
-                Vector2 windOriginLocation = new Vector2(world.camera.viewRect.Left, world.camera.viewRect.Bottom);
 
                 foreach (Sprite plantSprite in plantSpriteList)
                 {
                     if (!plantSprite.blocksMovement)
-                    {
-                        float distance = Vector2.Distance(windOriginLocation, plantSprite.position);
-                        world.swayManager.AddGenericForce(world: world, targetSprite: plantSprite, targetAngle: 1.2f, strength: 0.08f, durationFrames: 14, delayFrames: (int)distance / 10);
-                    }
+                        world.swayManager.AddSwayEvent(targetSprite: plantSprite, sourceSprite: null, targetRotation: 0.5f, playSound: false);
                 }
             }
 

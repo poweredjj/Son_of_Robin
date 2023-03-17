@@ -1,176 +1,143 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace SonOfRobin
 {
     public class SwayManager
     {
-        public class SwayData
-        {
-            private readonly Dictionary<Sprite, SwayData> swayDataBySprite;
-            private readonly Sprite targetSprite;
-            public readonly float originalRotation;
-            public List<SwayForce> swayForceList;
+        private readonly Dictionary<string, SwayEvent> swayEventsBySpriteID;
 
-            public SwayData(Dictionary<Sprite, SwayData> swayDataBySprite, Sprite targetSprite)
-            {
-                this.swayDataBySprite = swayDataBySprite;
-                this.targetSprite = targetSprite;
-                this.originalRotation = this.targetSprite.rotation;
-                this.swayForceList = new List<SwayForce>();
-            }
-
-            public void RefreshForceList()
-            {
-                this.swayForceList = this.swayForceList.Where(force => !force.HasEnded).ToList();
-            }
-
-            public void Remove()
-            {
-                this.targetSprite.rotation = this.originalRotation;
-                this.swayDataBySprite.Remove(this.targetSprite);
-            }
-        }
-
-        private const float maxRotation = 1.4f;
-        private readonly Dictionary<Sprite, SwayData> swayDataBySprite;
-        private Dictionary<Sprite, Sound> hitSoundBySourceSprite;
-
-        public int SwaySpriteCount
-        { get { return swayDataBySprite.Count; } }
-
-        public int SoundCount
-        { get { return hitSoundBySourceSprite.Count; } }
-
-        public int SwayForceCount
-        {
-            get
-            {
-                int forceCount = 0;
-                foreach (SwayData swayData in swayDataBySprite.Values)
-                {
-                    forceCount += swayData.swayForceList.Count;
-                }
-
-                return forceCount;
-            }
-        }
+        public int SwayEventsCount
+        { get { return swayEventsBySpriteID.Count; } }
 
         public SwayManager()
         {
-            this.swayDataBySprite = new Dictionary<Sprite, SwayData>();
-            this.hitSoundBySourceSprite = new Dictionary<Sprite, Sound>();
+            this.swayEventsBySpriteID = new Dictionary<string, SwayEvent>();
         }
 
-        public void MakeSmallPlantsReactToStep(World world, Sprite sourceSprite)
+        public void CheckForSwayEvents(Sprite sourceSprite)
         {
             if (!Preferences.plantsSway) return;
 
             List<Sprite> collidingSpritesList = sourceSprite.GetCollidingSpritesAtPosition(positionToCheck: sourceSprite.position, cellGroupsToCheck: new List<Cell.Group> { Cell.Group.ColPlantGrowth });
 
-            if (!collidingSpritesList.Any()) return;
-
-            if (!this.hitSoundBySourceSprite.ContainsKey(sourceSprite))
-            {
-                bool isPlayer = sourceSprite.boardPiece.GetType() == typeof(Player);
-
-                Sound hitSound = new Sound(nameList: new List<SoundData.Name> { SoundData.Name.HitSmallPlant1, SoundData.Name.HitSmallPlant2, SoundData.Name.HitSmallPlant3 }, boardPiece: sourceSprite.boardPiece, ignore3DAlways: isPlayer, maxPitchVariation: 0.3f, volume: isPlayer ? 0.4f : 0.25f, cooldown: 16);
-                hitSoundBySourceSprite[sourceSprite] = hitSound;
-            }
-            hitSoundBySourceSprite[sourceSprite].Play();
-
             foreach (Sprite targetSprite in collidingSpritesList)
             {
-                Vector2 sourceOffset = sourceSprite.position - targetSprite.position;
-                float distance = Vector2.Distance(targetSprite.position, sourceSprite.position);
-                float maxDistance = (sourceSprite.colRect.Width / 2) + (targetSprite.colRect.Width / 2);
-                float strength = 1f - (distance / maxDistance);
-
-                this.AddGenericForce(world: world, targetSprite: targetSprite, targetAngle: -sourceOffset.X, strength: strength, durationFrames: 1);
+                this.AddSwayEvent(sourceSprite: sourceSprite, targetSprite: targetSprite, playSound: true);
             }
         }
 
-        public void AddGenericForce(World world, Sprite targetSprite, float targetAngle, float strength, int durationFrames, int delayFrames = 0)
+        public void AddSwayEvent(Sprite targetSprite, Sprite sourceSprite = null, float targetRotation = 0f, bool playSound = true)
         {
-            if (!this.swayDataBySprite.ContainsKey(targetSprite))
-            {
-                this.swayDataBySprite[targetSprite] = new SwayData(swayDataBySprite: this.swayDataBySprite, targetSprite: targetSprite);
-            }
-
-            this.swayDataBySprite[targetSprite].swayForceList.Add(new SwayForce(world: world, targetAngle: targetAngle, strength: strength, delayFrames: delayFrames, durationFrames: durationFrames));
+            if (swayEventsBySpriteID.ContainsKey(targetSprite.id)) return;
+            this.swayEventsBySpriteID[targetSprite.id] = new SwayEvent(sourceSprite: sourceSprite, targetSprite: targetSprite, targetRotation: targetRotation, playSound: playSound);
         }
 
         public void FinishAndRemoveAllEvents()
         {
-            foreach (SwayData swayData in this.swayDataBySprite.Values)
+            foreach (SwayEvent swayEvent in this.swayEventsBySpriteID.Values)
             {
-                swayData.Remove();
+                swayEvent.Finish();
             }
 
-            this.swayDataBySprite.Clear();
+            this.swayEventsBySpriteID.Clear();
         }
 
         public void Update()
         {
             if (!Preferences.plantsSway) return;
 
-            List<Sprite> spritesToRemove = new List<Sprite>();
+            List<string> spriteIDsToRemove = new List<string>();
 
-            foreach (var kvp in this.swayDataBySprite)
+            foreach (var kvp in this.swayEventsBySpriteID)
             {
-                Sprite targetSprite = kvp.Key;
+                SwayEvent swayEvent = kvp.Value;
 
-                if (!targetSprite.IsInCameraRect) spritesToRemove.Add(targetSprite);
-                else
-                {
-                    SwayData swayData = kvp.Value;
-                    swayData.RefreshForceList();
-
-                    foreach (SwayForce swayForce in swayData.swayForceList)
-                    {
-                        if (swayForce.IsActive) targetSprite.rotation += (swayForce.targetAngle - targetSprite.rotation) * swayForce.strength;
-                    }
-
-                    targetSprite.rotation += (swayData.originalRotation - targetSprite.rotation) * 0.3f; // additional force, that returns to original rotation
-
-                    if (!swayData.swayForceList.Any() && Math.Abs(targetSprite.rotation - swayData.originalRotation) < 0.01f) spritesToRemove.Add(targetSprite);
-                }
+                swayEvent.Update();
+                if (swayEvent.HasEnded) spriteIDsToRemove.Add(kvp.Key);
             }
 
-            foreach (Sprite sprite in spritesToRemove)
+            foreach (string spriteID in spriteIDsToRemove)
             {
-                swayDataBySprite[sprite].Remove();
+                this.swayEventsBySpriteID.Remove(spriteID);
             }
-
-            this.hitSoundBySourceSprite = this.hitSoundBySourceSprite.Where(kvp => kvp.Value.IsPlaying).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
         }
     }
 
-    public class SwayForce
+    public class SwayEvent
     {
-        private readonly World world;
-        public readonly float strength;
-        public readonly float targetAngle;
+        private readonly float originalRotation;
+        private float targetRotation;
+        public readonly Sprite sourceSprite;
+        public readonly Sprite targetSprite;
+        public bool HasEnded { get; private set; }
 
-        private readonly int startFrame;
-        private readonly int endFrame;
-
-        public bool IsActive { get { return this.world.CurrentUpdate >= this.startFrame && !this.HasEnded; } }
-        public bool HasEnded { get { return this.world.CurrentUpdate > this.endFrame; } }
-
-        public SwayForce(World world, float targetAngle, float strength, int durationFrames, int delayFrames = 0)
+        public SwayEvent(Sprite targetSprite, Sprite sourceSprite, float targetRotation = 0, bool playSound = true)
         {
-            this.world = world;
+            this.HasEnded = false;
+            this.sourceSprite = sourceSprite;
+            this.targetSprite = targetSprite;
 
-            if (strength > 1f) throw new ArgumentException($"Force strength cannot be more than 1 - {strength}.");
+            this.originalRotation = this.targetSprite.rotation;
+            this.targetSprite.rotationOriginOverride = new Vector2(targetSprite.frame.textureSize.X * 0.5f, targetSprite.frame.textureSize.Y);
+            this.targetRotation = targetRotation;
 
-            this.strength = strength;
-            this.targetAngle = targetAngle;
+            if (playSound)
+            {
+                bool isPlayer = this.sourceSprite != null && this.sourceSprite.boardPiece.GetType() == typeof(Player);
 
-            this.startFrame = world.CurrentUpdate + delayFrames;
-            this.endFrame = this.startFrame + durationFrames;
+                new Sound(nameList: new List<SoundData.Name> { SoundData.Name.HitSmallPlant1, SoundData.Name.HitSmallPlant2, SoundData.Name.HitSmallPlant3 }, boardPiece: this.targetSprite.boardPiece, ignore3DAlways: isPlayer, maxPitchVariation: 0.3f, volume: isPlayer ? 0.35f : 0.2f).Play();
+            }
+
+            this.Update();
+        }
+
+        public void Update()
+        {
+            if (!this.targetSprite.IsInCameraRect || !this.targetSprite.boardPiece.exists)
+            {
+                this.Finish();
+                return;
+            }
+
+            if (this.sourceSprite != null && this.targetSprite.colRect.Intersects(this.sourceSprite.colRect))
+            {
+                Vector2 sourceOffset = sourceSprite.position - targetSprite.position;
+                float distance = Vector2.Distance(targetSprite.position, sourceSprite.position);
+                float maxDistance = (sourceSprite.colRect.Width / 2) + (targetSprite.colRect.Width / 2);
+                float distanceFactor = 1f - (distance / maxDistance);
+
+                float rotationChange = 1.2f * distanceFactor;
+                if (sourceOffset.X > 0) rotationChange *= -1;
+
+                this.targetRotation = this.originalRotation + rotationChange;
+            }
+            else
+            {
+                if (this.sourceSprite != null) this.targetRotation = this.originalRotation;
+
+                if (Math.Abs(this.targetSprite.rotation - this.targetRotation) < 0.01)
+                {
+                    if (this.sourceSprite == null && this.targetRotation != this.originalRotation)
+                    {
+                        this.targetRotation = this.originalRotation;
+                        return;
+                    }
+
+                    this.Finish();
+                    return;
+                }
+            }
+
+            this.targetSprite.rotation += (this.targetRotation - this.targetSprite.rotation) / 4; // movement smoothing
+        }
+
+        public void Finish()
+        {
+            this.HasEnded = true;
+            this.targetSprite.rotation = this.originalRotation;
+            this.targetSprite.rotationOriginOverride = Vector2.Zero;
         }
     }
 }
