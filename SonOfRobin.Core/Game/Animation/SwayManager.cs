@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using MonoGame.Extended.Tweening;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -9,13 +10,15 @@ namespace SonOfRobin
     {
         public class SwayData
         {
+            private readonly Dictionary<Sprite, SwayData> swayDataBySprite;
             private readonly Sprite targetSprite;
             private readonly float originalRotation;
             public float targetRotation;
             public List<SwayForce> swayForceList;
 
-            public SwayData(Sprite targetSprite)
+            public SwayData(Dictionary<Sprite, SwayData> swayDataBySprite, Sprite targetSprite)
             {
+                this.swayDataBySprite = swayDataBySprite;
                 this.targetSprite = targetSprite;
                 this.originalRotation = this.targetSprite.rotation;
                 this.targetRotation = 0f;
@@ -25,6 +28,7 @@ namespace SonOfRobin
             public void Remove()
             {
                 this.targetSprite.rotation = this.originalRotation;
+                this.swayDataBySprite.Remove(this.targetSprite);
             }
         }
 
@@ -71,22 +75,21 @@ namespace SonOfRobin
             float maxDistance = (sourceSprite.colRect.Width / 2) + (targetSprite.colRect.Width / 2);
             float strength = 1f - (distance / maxDistance);
 
-            bool isLeft = sourceOffset.X <= 0;
             bool isPlayer = sourceSprite.boardPiece.GetType() == typeof(Player);
 
-            this.AddGenericForce(targetSprite: targetSprite, isLeft: isLeft, strength: strength, soundIgnore3D: isPlayer, soundVolume: isPlayer ? 0.35f : 0.2f);
+            this.AddGenericForce(targetSprite: targetSprite, angle: -sourceOffset.X, strength: strength, playSound: true, soundIgnore3D: isPlayer, soundVolume: isPlayer ? 0.35f : 0.2f);
         }
 
-        public void AddGenericForce(Sprite targetSprite, bool isLeft, float strength, int delay = 0, int duration = 1, bool playSound = false, bool soundIgnore3D = false, float soundVolume = 1f)
+        public void AddGenericForce(Sprite targetSprite, float angle, float strength, int delay = 0, float duration = 0.033f, bool playSound = false, bool soundIgnore3D = false, float soundVolume = 1f)
         {
             if (!this.swayDataBySprite.ContainsKey(targetSprite))
             {
-                this.swayDataBySprite[targetSprite] = new SwayData(targetSprite);
+                this.swayDataBySprite[targetSprite] = new SwayData(swayDataBySprite: this.swayDataBySprite, targetSprite: targetSprite);
 
                 if (playSound) new Sound(nameList: new List<SoundData.Name> { SoundData.Name.HitSmallPlant1, SoundData.Name.HitSmallPlant2, SoundData.Name.HitSmallPlant3 }, boardPiece: targetSprite.boardPiece, ignore3DAlways: soundIgnore3D, maxPitchVariation: 0.3f, volume: soundVolume).Play();
             }
 
-            this.swayDataBySprite[targetSprite].swayForceList.Add(new SwayForce(isLeft: isLeft, strength: strength, delay: delay, duration: duration));
+            this.swayDataBySprite[targetSprite].swayForceList.Add(new SwayForce(angle: angle, strength: strength, delay: delay, duration: duration));
         }
 
         public void FinishAndRemoveAllEvents()
@@ -121,13 +124,13 @@ namespace SonOfRobin
                     {
                         swayForce.Update();
                         if (swayForce.HasEnded) forcesToRemove.Add(swayForce);
-                        else averageRotation += swayForce.TargetRotation;
+                        else averageRotation += swayForce.targetAngle;
                     }
 
-                    if (!swayData.swayForceList.Any()) spritesToRemove.Add(targetSprite);
+                    if (!swayData.swayForceList.Any() && Math.Abs(targetSprite.rotation - swayData.targetRotation) < 0.01) spritesToRemove.Add(targetSprite);
                     else
                     {
-                        swayData.targetRotation = averageRotation;
+                        swayData.targetRotation = Math.Min(Math.Max(averageRotation, -1.2f), 1.2f);
                         targetSprite.rotation += (swayData.targetRotation - targetSprite.rotation) / 4; // movement smoothing
                     }
                 }
@@ -144,22 +147,19 @@ namespace SonOfRobin
     {
         public bool HasEnded { get; private set; }
         public float strength;
-        public readonly bool isLeft;
-
-        public float TargetRotation
-        { get { return 1.2f * (this.isLeft ? 1f : -1f); } }
-
+        public float targetAngle;
         private readonly Tweener tweener;
 
-        public SwayForce(bool isLeft, float strength, int delay = 0, int duration = 1)
+        public SwayForce(float angle, float strength, float duration, int delay = 0)
         {
-            this.isLeft = isLeft;
             this.strength = strength;
 
             this.tweener = new Tweener();
 
-            this.tweener.TweenTo(target: this, expression: force => force.strength, toValue: strength, duration: duration, delay: delay)
-               .Easing(EasingFunctions.QuadraticInOut)
+            this.targetAngle = 0f;
+
+            this.tweener.TweenTo(target: this, expression: force => force.targetAngle, toValue: angle, duration: duration, delay: delay)
+               .Easing(EasingFunctions.Linear)
                .OnEnd(t => this.End());
         }
 

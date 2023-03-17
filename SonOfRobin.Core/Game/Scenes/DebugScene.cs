@@ -364,7 +364,7 @@ namespace SonOfRobin
                     {
                         float distance = Vector2.Distance(windOriginLocation, plantSprite.position);
 
-                        world.swayManager.AddGenericForce(targetSprite: plantSprite, isLeft: true, strength: 0.2f, delay: (int)(distance * 4));
+                        world.swayManager.AddGenericForce(targetSprite: plantSprite, angle: 0.3f, strength: 0.2f, duration: 1f, delay: (int)(distance * 400));
                     }
                 }
             }
