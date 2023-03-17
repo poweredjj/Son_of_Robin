@@ -365,7 +365,7 @@ namespace SonOfRobin
                     if (!plantSprite.blocksMovement)
                     {
                         float distance = Vector2.Distance(windOriginLocation, plantSprite.position);
-                        world.swayManager.AddGenericForce(world: world, targetSprite: plantSprite, targetAngle: 0.4f, strength: 0.2f, durationFrames: 12, delayFrames: (int)distance / 10);
+                        world.swayManager.AddGenericForce(world: world, targetSprite: plantSprite, targetAngle: 1.2f, strength: 0.08f, durationFrames: 14, delayFrames: (int)distance / 10);
                     }
                 }
             }

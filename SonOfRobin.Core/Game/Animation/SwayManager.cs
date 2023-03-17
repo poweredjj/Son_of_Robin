@@ -11,8 +11,7 @@ namespace SonOfRobin
         {
             private readonly Dictionary<Sprite, SwayData> swayDataBySprite;
             private readonly Sprite targetSprite;
-            private readonly float originalRotation;
-            public float targetRotation;
+            public readonly float originalRotation;
             public List<SwayForce> swayForceList;
 
             public SwayData(Dictionary<Sprite, SwayData> swayDataBySprite, Sprite targetSprite)
@@ -20,8 +19,12 @@ namespace SonOfRobin
                 this.swayDataBySprite = swayDataBySprite;
                 this.targetSprite = targetSprite;
                 this.originalRotation = this.targetSprite.rotation;
-                this.targetRotation = 0f;
                 this.swayForceList = new List<SwayForce>();
+            }
+
+            public void RefreshForceList()
+            {
+                this.swayForceList = this.swayForceList.Where(force => !force.HasEnded).ToList();
             }
 
             public void Remove()
@@ -31,7 +34,7 @@ namespace SonOfRobin
             }
         }
 
-        private const float maxRotation = 1.3f;
+        private const float maxRotation = 1.4f;
         private readonly Dictionary<Sprite, SwayData> swayDataBySprite;
         private Dictionary<Sprite, Sound> hitSoundBySourceSprite;
 
@@ -85,7 +88,7 @@ namespace SonOfRobin
                 float maxDistance = (sourceSprite.colRect.Width / 2) + (targetSprite.colRect.Width / 2);
                 float strength = 1f - (distance / maxDistance);
 
-                this.AddGenericForce(world: world, targetSprite: targetSprite, targetAngle: -sourceOffset.X, strength: strength, durationFrames: 2);
+                this.AddGenericForce(world: world, targetSprite: targetSprite, targetAngle: -sourceOffset.X, strength: strength, durationFrames: 1);
             }
         }
 
@@ -123,23 +126,16 @@ namespace SonOfRobin
                 else
                 {
                     SwayData swayData = kvp.Value;
-                    List<SwayForce> forcesToRemove = new List<SwayForce>();
-
-                    float averageRotation = 0f;
+                    swayData.RefreshForceList();
 
                     foreach (SwayForce swayForce in swayData.swayForceList)
                     {
-                        swayForce.Update();
-                        if (swayForce.HasEnded) forcesToRemove.Add(swayForce);
-                        else averageRotation += swayForce.currentAngle;
+                        if (swayForce.IsActive) targetSprite.rotation += (swayForce.targetAngle - targetSprite.rotation) * swayForce.strength;
                     }
 
-                    if (!swayData.swayForceList.Any() && Math.Abs(targetSprite.rotation - swayData.targetRotation) < 0.01) spritesToRemove.Add(targetSprite);
-                    else
-                    {
-                        swayData.targetRotation = Math.Min(Math.Max(averageRotation, -maxRotation), maxRotation);
-                        targetSprite.rotation += (swayData.targetRotation - targetSprite.rotation) / 4; // movement smoothing
-                    }
+                    targetSprite.rotation += (swayData.originalRotation - targetSprite.rotation) * 0.3f; // additional force, that returns to original rotation
+
+                    if (!swayData.swayForceList.Any() && Math.Abs(targetSprite.rotation - swayData.originalRotation) < 0.01f) spritesToRemove.Add(targetSprite);
                 }
             }
 
@@ -157,38 +153,24 @@ namespace SonOfRobin
         private readonly World world;
         public readonly float strength;
         public readonly float targetAngle;
-        public float currentAngle;
 
         private readonly int startFrame;
         private readonly int endFrame;
-        private readonly float frameFactor;
-        public bool HasEnded { get; private set; }
+
+        public bool IsActive { get { return this.world.CurrentUpdate >= this.startFrame && !this.HasEnded; } }
+        public bool HasEnded { get { return this.world.CurrentUpdate > this.endFrame; } }
 
         public SwayForce(World world, float targetAngle, float strength, int durationFrames, int delayFrames = 0)
         {
             this.world = world;
-            this.HasEnded = false;
+
+            if (strength > 1f) throw new ArgumentException($"Force strength cannot be more than 1 - {strength}.");
 
             this.strength = strength;
-            this.currentAngle = 0f;
             this.targetAngle = targetAngle;
 
             this.startFrame = world.CurrentUpdate + delayFrames;
             this.endFrame = this.startFrame + durationFrames;
-            this.frameFactor = (float)(this.currentAngle - this.targetAngle) / (float)durationFrames;
-
-            this.Update();
-        }
-
-        public void Update()
-        {
-            if (this.world.CurrentUpdate > this.endFrame)
-            {
-                this.HasEnded = true;
-                return;
-            }
-
-            if (this.world.CurrentUpdate >= this.startFrame) this.currentAngle += this.frameFactor;
         }
     }
 }
