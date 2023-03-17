@@ -80,7 +80,7 @@ namespace SonOfRobin
             this.AddGenericForce(targetSprite: targetSprite, angle: -sourceOffset.X, strength: strength, playSound: true, soundIgnore3D: isPlayer, soundVolume: isPlayer ? 0.35f : 0.2f);
         }
 
-        public void AddGenericForce(Sprite targetSprite, float angle, float strength, int delay = 0, float duration = 0.033f, bool playSound = false, bool soundIgnore3D = false, float soundVolume = 1f)
+        public void AddGenericForce(Sprite targetSprite, float angle, float strength, float delay = 0f, float duration = 0.033f, bool playSound = false, bool soundIgnore3D = false, float soundVolume = 1f)
         {
             if (!this.swayDataBySprite.ContainsKey(targetSprite))
             {
@@ -150,14 +150,12 @@ namespace SonOfRobin
         public float targetAngle;
         private readonly Tweener tweener;
 
-        public SwayForce(float angle, float strength, float duration, int delay = 0)
+        public SwayForce(float angle, float strength, float duration, float delay = 0)
         {
             this.strength = strength;
-
-            this.tweener = new Tweener();
-
             this.targetAngle = 0f;
 
+            this.tweener = new Tweener();
             this.tweener.TweenTo(target: this, expression: force => force.targetAngle, toValue: angle, duration: duration, delay: delay)
                .Easing(EasingFunctions.Linear)
                .OnEnd(t => this.End());

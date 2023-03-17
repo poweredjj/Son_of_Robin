@@ -353,6 +353,8 @@ namespace SonOfRobin
 
             if (Keyboard.HasBeenPressed(Keys.F1))
             {
+                if (world == null) return;
+
                 var plantSpriteList = new List<Sprite>();
                 world.Grid.GetSpritesInCameraViewAndPutIntoList(camera: world.camera, groupName: Cell.Group.ColPlantGrowth, spriteListToFill: plantSpriteList);
 
@@ -363,8 +365,7 @@ namespace SonOfRobin
                     if (!plantSprite.blocksMovement)
                     {
                         float distance = Vector2.Distance(windOriginLocation, plantSprite.position);
-
-                        world.swayManager.AddGenericForce(targetSprite: plantSprite, angle: 0.3f, strength: 0.2f, duration: 1f, delay: (int)(distance * 400));
+                        world.swayManager.AddGenericForce(targetSprite: plantSprite, angle: 0.4f, strength: 0.2f, duration: 0.2f, delay: distance / 400f);
                     }
                 }
             }
