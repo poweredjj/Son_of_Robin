@@ -356,10 +356,16 @@ namespace SonOfRobin
                 var plantSpriteList = new List<Sprite>();
                 world.Grid.GetSpritesInCameraViewAndPutIntoList(camera: world.camera, groupName: Cell.Group.ColPlantGrowth, spriteListToFill: plantSpriteList);
 
+                Vector2 windOriginLocation = new Vector2(world.camera.viewRect.Left, world.camera.viewRect.Bottom);
+
                 foreach (Sprite plantSprite in plantSpriteList)
                 {
                     if (!plantSprite.blocksMovement)
-                        world.swayManager.AddSwayEvent(targetSprite: plantSprite, sourceSprite: null, targetRotation: 0.5f, playSound: false);
+                    {
+                        float distance = Vector2.Distance(windOriginLocation, plantSprite.position);
+
+                        world.swayManager.AddGenericForce(targetSprite: plantSprite, isLeft: true, strength: 0.2f, delay: (int)(distance * 4));
+                    }
                 }
             }
 
