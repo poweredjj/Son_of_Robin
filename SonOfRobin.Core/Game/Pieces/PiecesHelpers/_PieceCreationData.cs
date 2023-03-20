@@ -7,15 +7,13 @@ namespace SonOfRobin
         public readonly PieceTemplate.Name name;
         public readonly float multiplier;
         public readonly int maxAmount;
-        public readonly bool doNotReplenish;
         public readonly bool temporaryDecoration;
 
-        public PieceCreationData(PieceTemplate.Name name, float multiplier = 1, int maxAmount = -1, bool doNotReplenish = false, bool temporaryDecoration = false)
+        public PieceCreationData(PieceTemplate.Name name, float multiplier = 1, int maxAmount = -1, bool temporaryDecoration = false)
         {
             this.name = name;
             this.multiplier = multiplier;
             this.maxAmount = maxAmount; // -1 == no limit
-            this.doNotReplenish = doNotReplenish; // create missing after world creation
             this.temporaryDecoration = temporaryDecoration; // only created dynamically in camera view and not saved or stored
         }
 
