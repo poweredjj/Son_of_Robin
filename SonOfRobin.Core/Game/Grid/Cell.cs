@@ -28,6 +28,7 @@ namespace SonOfRobin
 
         public List<Cell> surroundingCells;
         public bool VisitedByPlayer { get; private set; }
+        public bool temporaryDecorationsCreated;
 
         public readonly Dictionary<Group, Dictionary<string, Sprite>> spriteGroups;
         public BoardGraphics boardGraphics;
@@ -70,6 +71,7 @@ namespace SonOfRobin
 
             this.surroundingCells = new List<Cell>();
             this.VisitedByPlayer = false;
+            this.temporaryDecorationsCreated = false;
 
             this.spriteGroups = new Dictionary<Group, Dictionary<string, Sprite>> { };
             foreach (Group groupName in allGroups)

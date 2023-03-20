@@ -18,9 +18,9 @@ namespace SonOfRobin
         private int waitUntilFrame;
 
         public AmbientSound(World world, string id, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, Sound sound, int playDelay,
-           int destructionDelay = 0, bool serialize = true, bool visible = false, AllowedDensity allowedDensity = null, int playDelayMaxVariation = 0, List<IslandClock.PartOfDay> partOfDayList = null) :
+           int destructionDelay = 0, bool visible = false, AllowedDensity allowedDensity = null, int playDelayMaxVariation = 0, List<IslandClock.PartOfDay> partOfDayList = null) :
 
-            base(world: world, id: id, animPackage: AnimData.PkgName.MusicNoteBig, animSize: 0, animName: "default", blocksMovement: false, minDistance: 0, maxDistance: 100, ignoresCollisions: false, name: name, destructionDelay: destructionDelay, allowedTerrain: allowedTerrain, floatsOnWater: true, maxMassBySize: null, generation: 0, canBePickedUp: false, fadeInAnim: false, serialize: serialize, readableName: readableName, description: description, category: Category.Indestructible, visible: visible, activeState: State.PlayAmbientSound, allowedDensity: allowedDensity)
+            base(world: world, id: id, animPackage: AnimData.PkgName.MusicNoteBig, animSize: 0, animName: "default", blocksMovement: false, minDistance: 0, maxDistance: 100, ignoresCollisions: false, name: name, destructionDelay: destructionDelay, allowedTerrain: allowedTerrain, floatsOnWater: true, maxMassBySize: null, generation: 0, canBePickedUp: false, fadeInAnim: false, serialize: false, readableName: readableName, description: description, category: Category.Indestructible, visible: visible, activeState: State.PlayAmbientSound, allowedDensity: allowedDensity)
         {
             this.soundPack.AddAction(action: PieceSoundPack.Action.Ambient, sound: sound);
 

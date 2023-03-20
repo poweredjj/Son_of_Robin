@@ -18,6 +18,7 @@ namespace SonOfRobin
             public readonly AllowedTerrain allowedTerrain;
             public readonly int stackSize;
             public readonly Type type;
+            public readonly bool serialize;
             public readonly bool blocksMovement;
             public readonly bool convertsWhenUsed;
             public readonly PieceTemplate.Name convertsToWhenUsed;
@@ -43,6 +44,7 @@ namespace SonOfRobin
                 this.allowedTerrain = piece.sprite.allowedTerrain;
                 this.canBePickedUp = piece.canBePickedUp;
                 this.type = piece.GetType();
+                this.serialize = piece.serialize;
                 this.blocksMovement = piece.sprite.blocksMovement;
                 this.readableName = piece.readableName;
                 this.description = piece.description;

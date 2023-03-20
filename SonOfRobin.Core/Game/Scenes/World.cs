@@ -54,7 +54,8 @@ namespace SonOfRobin
         public HintEngine HintEngine { get; private set; }
         public Dictionary<PieceTemplate.Name, int> pieceCountByName;
         public Dictionary<Type, int> pieceCountByClass;
-        private List<PieceCreationData> creationDataList;
+        private List<PieceCreationData> creationDataListRegular;
+        private List<PieceCreationData> creationDataListTemporaryDecorations;
         public Dictionary<string, Tracking> trackingQueue;
         public List<Cell> plantCellsQueue;
         public List<Sprite> plantSpritesQueue;
@@ -119,7 +120,15 @@ namespace SonOfRobin
 
             this.maxAnimalsPerName = (int)(this.width * this.height * 0.0000004);
             MessageLog.AddMessage(msgType: MsgType.Debug, message: $"maxAnimalsPerName {maxAnimalsPerName}");
-            this.creationDataList = PieceCreationData.CreateDataList(maxAnimalsPerName: this.maxAnimalsPerName);
+
+            var creationDataList = PieceCreationData.CreateDataList(maxAnimalsPerName: this.maxAnimalsPerName);
+            this.creationDataListRegular = creationDataList.Where(data => !data.temporaryDecoration).ToList();
+            this.creationDataListTemporaryDecorations = creationDataList.Where(data => data.temporaryDecoration).ToList();
+
+            foreach (PieceCreationData pieceCreationData in this.creationDataListTemporaryDecorations)
+            {
+                if (PieceInfo.GetInfo(pieceCreationData.name).serialize) throw new ArgumentException($"Serialized piece cannot be temporary - {pieceCreationData.name}.");
+            }
 
             this.pieceCountByName = new Dictionary<PieceTemplate.Name, int>();
             foreach (PieceTemplate.Name templateName in PieceTemplate.allNames) this.pieceCountByName[templateName] = 0;
@@ -455,6 +464,7 @@ namespace SonOfRobin
             this.CreateNewDarknessMask();
             this.Grid.LoadAllTexturesInCameraView();
             if (!this.demoMode) this.map.ForceRender();
+            this.CreateTemporaryDecorations(ignoreDuration: true);
 
             SonOfRobinGame.Game.IsFixedTimeStep = Preferences.FrameSkip;
 
@@ -679,14 +689,12 @@ namespace SonOfRobin
         public bool CreateMissingPieces(bool initialCreation, uint maxAmountToCreateAtOnce = 300000, bool outsideCamera = false, float multiplier = 1.0f, bool clearDoNotCreateList = false, bool addToDoNotCreateList = true)
         {
             if (clearDoNotCreateList) doNotCreatePiecesList.Clear();
-
             if (!initialCreation && !this.CanProcessMorePlantsNow) return false;
 
             int minPieceAmount = Math.Max(Convert.ToInt32((long)width * (long)height / 300000 * multiplier), 0); // 300000
-
             var amountToCreateByName = new Dictionary<PieceTemplate.Name, int> { };
 
-            foreach (PieceCreationData creationData in creationDataList)
+            foreach (PieceCreationData creationData in creationDataListRegular)
             {
                 if (doNotCreatePiecesList.Contains(creationData.name) || creationData.doNotReplenish && !initialCreation) continue;
 
@@ -749,6 +757,45 @@ namespace SonOfRobin
             return piecesCreated > 0;
         }
 
+        private void CreateTemporaryDecorations(bool ignoreDuration)
+        {
+            if (!ignoreDuration && !this.CanProcessMoreNonPlantsNow) return;
+
+            int createdDecorationsCount = 0;
+            DateTime creationStarted = DateTime.Now;
+
+            var cellsToProcess = this.Grid.GetCellsInsideRect(camera.viewRect).Where(cell => !cell.temporaryDecorationsCreated).OrderBy(x => this.random.Next());
+            foreach (Cell cell in cellsToProcess)
+            {
+                foreach (PieceCreationData pieceCreationData in this.creationDataListTemporaryDecorations)
+                {
+                    if (cell.allowedNames.Contains(pieceCreationData.name))
+                    {
+                        for (int i = 0; i < 4; i++)
+                        {
+                            Vector2 randomPosition = new Vector2(this.random.Next(cell.xMin, cell.xMax), this.random.Next(cell.yMin, cell.yMax));
+
+                            var newBoardPiece = PieceTemplate.CreateAndPlaceOnBoard(templateName: pieceCreationData.name, world: this, position: randomPosition);
+                            if (newBoardPiece.sprite.IsOnBoard)
+                            {
+                                createdDecorationsCount++;
+                                break;
+                            }
+                        }
+                        if (!ignoreDuration && !this.CanProcessMoreNonPlantsNow) break;
+                    }
+                }
+
+                cell.temporaryDecorationsCreated = true;
+            }
+
+            if (createdDecorationsCount > 0)
+            {
+                TimeSpan tempDecorCreationDuration = DateTime.Now - creationStarted;
+                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Temp decors created: {createdDecorationsCount} (duration {tempDecorCreationDuration:\\:ss\\.fff}).");
+            }
+        }
+
         public void UpdateViewParams()
         {
             this.camera.Update(cameraCorrection: this.analogCameraCorrection);
@@ -786,6 +833,8 @@ namespace SonOfRobin
 
             bool createMissingPieces = this.CurrentUpdate % 200 == 0 && Preferences.debugCreateMissingPieces && !this.CineMode && !this.BuildMode;
             if (createMissingPieces) this.CreateMissingPieces(initialCreation: false, maxAmountToCreateAtOnce: 100, outsideCamera: true, multiplier: 0.1f);
+
+            if (!createMissingPieces && this.CurrentUpdate % 59 == 0) this.CreateTemporaryDecorations(ignoreDuration: false);
 
             for (int i = 0; i < this.updateMultiplier; i++)
             {
