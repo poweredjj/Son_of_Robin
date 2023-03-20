@@ -50,7 +50,9 @@ namespace SonOfRobin
 
         public override void SM_FogMoveRandomly()
         {
-            // suitable only for passive decorations, that will never be moved "manually"
+            // Suitable only for passive temporary decorations, that will never be moved "manually".
+            // Position and rotation change will cause drift over time, if such a piece be serialized and saved multiple times.
+            // So it should only be used for temporary decorations or pieces that will not get saved.
 
             if (!this.sprite.IsInCameraRect) return;
 
