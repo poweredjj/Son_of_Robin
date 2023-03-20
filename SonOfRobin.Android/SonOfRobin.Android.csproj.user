@@ -4,5 +4,6 @@
     <SelectedDevice>Emulator systemu Android</SelectedDevice>
     <ActiveDebugProfile>Emulator systemu Android</ActiveDebugProfile>
     <DefaultDevice>pixel_2_pie_9_0_-_api_28</DefaultDevice>
+    <SelectedPlatformGroup>Emulator</SelectedPlatformGroup>
   </PropertyGroup>
 </Project>
