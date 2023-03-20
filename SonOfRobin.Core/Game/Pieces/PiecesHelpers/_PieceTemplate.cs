@@ -2616,7 +2616,7 @@ namespace SonOfRobin
                             rangeNameList: new List<AllowedTerrain.RangeName>() { AllowedTerrain.RangeName.WaterShallow, AllowedTerrain.RangeName.WaterMedium },
                             extPropertiesDict: new Dictionary<ExtBoardProps.Name, bool> { { ExtBoardProps.Name.Sea, true } });
 
-                        AllowedDensity allowedDensity = new AllowedDensity(radious: 150, maxNoOfPiecesSameName: 1);
+                        AllowedDensity allowedDensity = new AllowedDensity(radious: 210, maxNoOfPiecesSameName: 0);
 
                         Sound sound = new Sound(nameList: new List<SoundData.Name> { SoundData.Name.SeaWave1, SoundData.Name.SeaWave2, SoundData.Name.SeaWave3, SoundData.Name.SeaWave4, SoundData.Name.SeaWave5, SoundData.Name.SeaWave6, SoundData.Name.SeaWave7, SoundData.Name.SeaWave8, SoundData.Name.SeaWave9, SoundData.Name.SeaWave10, SoundData.Name.SeaWave11, SoundData.Name.SeaWave12, SoundData.Name.SeaWave13 }, maxPitchVariation: 0.8f, volume: 0.7f);
 
@@ -2632,7 +2632,7 @@ namespace SonOfRobin
                         AllowedTerrain allowedTerrain = new AllowedTerrain(
                             extPropertiesDict: new Dictionary<ExtBoardProps.Name, bool> { { ExtBoardProps.Name.Sea, true } });
 
-                        AllowedDensity allowedDensity = new AllowedDensity(radious: 150, maxNoOfPiecesSameName: 1);
+                        AllowedDensity allowedDensity = new AllowedDensity(radious: 250, maxNoOfPiecesSameName: 0);
 
                         Sound sound = new Sound(name: SoundData.Name.SeaWind, maxPitchVariation: 0.5f, volume: 0.6f, isLooped: true, volumeFadeFrames: 60);
 
@@ -2649,7 +2649,7 @@ namespace SonOfRobin
                             { Terrain.Name.Height, new AllowedRange(min: 105, max: 160) },
                             { Terrain.Name.Humidity, new AllowedRange(min: 0, max: 115) }});
 
-                        AllowedDensity allowedDensity = new AllowedDensity(radious: 170, maxNoOfPiecesSameName: 0);
+                        AllowedDensity allowedDensity = new AllowedDensity(radious: 280, maxNoOfPiecesSameName: 0);
 
                         Sound sound = new Sound(name: SoundData.Name.DesertWind, maxPitchVariation: 0.5f, volume: 0.2f, isLooped: true, volumeFadeFrames: 60);
 

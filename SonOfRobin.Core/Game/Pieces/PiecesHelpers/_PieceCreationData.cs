@@ -10,7 +10,7 @@ namespace SonOfRobin
         public readonly bool doNotReplenish;
         public readonly bool temporaryDecoration;
 
-        public PieceCreationData(PieceTemplate.Name name, float multiplier, int maxAmount = -1, bool doNotReplenish = false, bool temporaryDecoration = false)
+        public PieceCreationData(PieceTemplate.Name name, float multiplier = 1, int maxAmount = -1, bool doNotReplenish = false, bool temporaryDecoration = false)
         {
             this.name = name;
             this.multiplier = multiplier;
@@ -66,17 +66,17 @@ namespace SonOfRobin
                 new PieceCreationData(name: PieceTemplate.Name.Tiger, multiplier: 0.4f, maxAmount: maxAnimalsPerName),
                 new PieceCreationData(name: PieceTemplate.Name.Frog, multiplier: 0.2f, maxAmount: maxAnimalsPerName),
 
-                new PieceCreationData(name: PieceTemplate.Name.LavaLight, multiplier: 0.5f,  temporaryDecoration: true),
-                new PieceCreationData(name: PieceTemplate.Name.SwampGas, multiplier: 0.6f, temporaryDecoration: true),
-                new PieceCreationData(name: PieceTemplate.Name.LavaGas, multiplier: 0.2f, temporaryDecoration: true),
+                new PieceCreationData(name: PieceTemplate.Name.LavaLight, temporaryDecoration: true),
+                new PieceCreationData(name: PieceTemplate.Name.SwampGas, temporaryDecoration: true),
+                new PieceCreationData(name: PieceTemplate.Name.LavaGas, temporaryDecoration: true),
 
-                new PieceCreationData(name: PieceTemplate.Name.SoundSeaWaves, multiplier: 0f, temporaryDecoration: true),
-                new PieceCreationData(name: PieceTemplate.Name.SoundSeaWind, multiplier: 0f, temporaryDecoration: true),
-                new PieceCreationData(name: PieceTemplate.Name.SoundLakeWaves, multiplier: 0f, temporaryDecoration: true),
-                new PieceCreationData(name: PieceTemplate.Name.SoundDesertWind, multiplier: 0.8f, temporaryDecoration: true),
-                new PieceCreationData(name: PieceTemplate.Name.SoundNightCrickets, multiplier: 0.8f, temporaryDecoration: true),
-                new PieceCreationData(name: PieceTemplate.Name.SoundNoonCicadas, multiplier: 0.8f, temporaryDecoration: true),
-                new PieceCreationData(name: PieceTemplate.Name.SoundLava, multiplier: 0.8f, temporaryDecoration: true),
+                new PieceCreationData(name: PieceTemplate.Name.SoundSeaWaves, temporaryDecoration: true),
+                new PieceCreationData(name: PieceTemplate.Name.SoundSeaWind, temporaryDecoration: true),
+                new PieceCreationData(name: PieceTemplate.Name.SoundLakeWaves, temporaryDecoration: true),
+                new PieceCreationData(name: PieceTemplate.Name.SoundDesertWind, temporaryDecoration: true),
+                new PieceCreationData(name: PieceTemplate.Name.SoundNightCrickets, temporaryDecoration: true),
+                new PieceCreationData(name: PieceTemplate.Name.SoundNoonCicadas, temporaryDecoration: true),
+                new PieceCreationData(name: PieceTemplate.Name.SoundLava, temporaryDecoration: true),
                 };
 
             //{ // for testing creation of selected pieces

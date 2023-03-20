@@ -464,6 +464,7 @@ namespace SonOfRobin
             this.CreateNewDarknessMask();
             this.Grid.LoadAllTexturesInCameraView();
             if (!this.demoMode) this.map.ForceRender();
+            this.CreateTemporaryDecorations(ignoreDuration: true);
 
             SonOfRobinGame.Game.IsFixedTimeStep = Preferences.FrameSkip;
 
@@ -756,9 +757,12 @@ namespace SonOfRobin
             return piecesCreated > 0;
         }
 
-        private void CreateTemporaryDecorations()
+        private void CreateTemporaryDecorations(bool ignoreDuration)
         {
+            if (!ignoreDuration && !this.CanProcessMoreNonPlantsNow) return;
+
             int createdDecorationsCount = 0;
+            DateTime creationStarted = DateTime.Now;
 
             foreach (Cell cell in this.Grid.GetCellsInsideRect(camera.viewRect).Where(cell => !cell.temporaryDecorationsCreated))
             {
@@ -766,7 +770,7 @@ namespace SonOfRobin
                 {
                     if (cell.allowedNames.Contains(pieceCreationData.name))
                     {
-                        for (int i = 0; i < 3; i++)
+                        for (int i = 0; i < 4; i++)
                         {
                             Vector2 randomPosition = new Vector2(this.random.Next(cell.xMin, cell.xMax), this.random.Next(cell.yMin, cell.yMax));
 
@@ -777,14 +781,18 @@ namespace SonOfRobin
                                 break;
                             }
                         }
-                        if (!this.CanProcessMoreNonPlantsNow) break;
+                        if (!ignoreDuration && !this.CanProcessMoreNonPlantsNow) break;
                     }
                 }
 
                 cell.temporaryDecorationsCreated = true;
             }
 
-            if (createdDecorationsCount > 0) MessageLog.AddMessage(msgType: MsgType.User, message: $"Temporary decorations created: {createdDecorationsCount}.", color: Color.GreenYellow);
+            if (createdDecorationsCount > 0)
+            {
+                TimeSpan tempDecorCreationDuration = DateTime.Now - creationStarted;
+                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Temp decors created: {createdDecorationsCount} (duration {tempDecorCreationDuration:\\:ss\\.fff}).");
+            }
         }
 
         public void UpdateViewParams()
@@ -825,7 +833,7 @@ namespace SonOfRobin
             bool createMissingPieces = this.CurrentUpdate % 200 == 0 && Preferences.debugCreateMissingPieces && !this.CineMode && !this.BuildMode;
             if (createMissingPieces) this.CreateMissingPieces(initialCreation: false, maxAmountToCreateAtOnce: 100, outsideCamera: true, multiplier: 0.1f);
 
-            if (!createMissingPieces && this.CurrentUpdate % 59 == 0) this.CreateTemporaryDecorations();
+            if (!createMissingPieces && this.CurrentUpdate % 59 == 0) this.CreateTemporaryDecorations(ignoreDuration: false);
 
             for (int i = 0; i < this.updateMultiplier; i++)
             {

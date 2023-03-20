@@ -1,15 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
 using MonoGame.Extended.Tweening;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace SonOfRobin
 {
     public class VisualEffect : BoardPiece
     {
-        private Vector2 startPos;
-        private float startRot;
         private Tweener tweener;
 
         public VisualEffect(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, State activeState, bool serialize,
@@ -17,30 +14,6 @@ namespace SonOfRobin
 
             base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, blocksMovement: false, minDistance: minDistance, maxDistance: maxDistance, ignoresCollisions: ignoresCollisions, name: name, destructionDelay: destructionDelay, allowedTerrain: allowedTerrain, floatsOnWater: floatsOnWater, maxMassBySize: null, generation: generation, canBePickedUp: canBePickedUp, fadeInAnim: fadeInAnim, serialize: serialize, readableName: readableName, description: description, category: Category.Indestructible, visible: visible, activeState: activeState, lightEngine: lightEngine, allowedDensity: allowedDensity)
         {
-        }
-
-        public override Dictionary<string, Object> Serialize()
-        {
-            float rotation = this.sprite.rotation;
-            Vector2 position = this.sprite.position;
-
-            if (this.sprite.IsOnBoard && this.tweener != null)
-            {
-                // tweener will change parameters and original values must be restored first
-                this.sprite.rotation = this.startRot;
-                this.sprite.SetNewPosition(newPos: this.startPos, ignoreCollisions: true);
-            }
-
-            Dictionary<string, Object> pieceData = base.Serialize(); // serializing with proper values
-
-            if (this.sprite.IsOnBoard && this.tweener != null)
-            {
-                // restoring "temporary" values after serializing
-                this.sprite.rotation = rotation;
-                this.sprite.SetNewPosition(newPos: position, ignoreCollisions: true);
-            }
-
-            return pieceData;
         }
 
         public override void SM_ScarePredatorsAway()
@@ -84,9 +57,6 @@ namespace SonOfRobin
             if (this.tweener == null)
             {
                 this.tweener = new Tweener();
-
-                this.startPos = this.sprite.position;
-                this.startRot = this.sprite.rotation;
 
                 int maxDistance = 100;
 
