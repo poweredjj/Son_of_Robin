@@ -89,6 +89,7 @@ namespace SonOfRobin
         public readonly string description;
         public readonly bool serialize;
         public bool canBeHit;
+        public bool isTemporaryDecoration;
 
         public BoardPiece(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, Dictionary<byte, int> maxMassBySize, string readableName, string description, Category category, State activeState,
             byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, bool blocksPlantGrowth = false, bool visible = true, bool ignoresCollisions = false, int destructionDelay = 0, int maxAge = 0, bool floatsOnWater = false, int generation = 0, int mass = 1, int staysAfterDeath = 800, float maxHitPoints = 1, byte stackSize = 1, Scheduler.TaskName boardTask = Scheduler.TaskName.Empty, Scheduler.TaskName toolbarTask = Scheduler.TaskName.Empty, bool canBePickedUp = false, Yield yield = null, Yield appearDebris = null, bool indestructible = false, bool rotatesWhenDropped = false, bool movesWhenDropped = true, bool fadeInAnim = false, bool serialize = true, List<Buff> buffList = null, AllowedDensity allowedDensity = null, int strength = 0, LightEngine lightEngine = null, int minDistance = 0, int maxDistance = 100, PieceSoundPack soundPack = null, bool female = false)
@@ -144,6 +145,7 @@ namespace SonOfRobin
             if (this.yield != null) this.yield.AddPiece(this);
             if (this.appearDebris != null) this.appearDebris.AddPiece(this);
             this.canBeHit = true;
+            this.isTemporaryDecoration = false; // to be set later
         }
 
         public virtual bool ShowStatBars

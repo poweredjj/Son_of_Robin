@@ -14,7 +14,7 @@ namespace SonOfRobin
             this.name = name;
             this.multiplier = multiplier;
             this.maxAmount = maxAmount; // -1 == no limit
-            this.temporaryDecoration = temporaryDecoration; // only created dynamically in camera view and not saved or stored
+            this.temporaryDecoration = temporaryDecoration; // only created dynamically in camera view and not saved (ignores multiplier and maxAmount)
         }
 
         public static List<PieceCreationData> CreateDataList(int maxAnimalsPerName)
