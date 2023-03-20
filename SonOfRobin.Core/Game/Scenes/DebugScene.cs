@@ -353,6 +353,8 @@ namespace SonOfRobin
 
             if (Keyboard.HasBeenPressed(Keys.F1))
             {
+                // wind blowing from random direction
+
                 if (world == null) return;
 
                 var xList = new List<int> { world.camera.viewRect.Left, world.camera.viewRect.Right };
@@ -379,6 +381,8 @@ namespace SonOfRobin
 
             if (Keyboard.HasBeenPressed(Keys.F2))
             {
+                // a shockwave
+
                 if (world == null) return;
 
                 Vector2 windOriginLocation = world.Player.sprite.position;
