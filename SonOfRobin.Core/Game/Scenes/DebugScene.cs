@@ -51,7 +51,7 @@ namespace SonOfRobin
 
             if (worldActive)
             {
-                debugLines.Add($"proc. animals: {world.ProcessedNonPlantsCount} plants: {world.ProcessedPlantsCount}");
+                debugLines.Add($"proc. non-plants: {world.ProcessedNonPlantsCount} plants: {world.ProcessedPlantsCount}");
                 debugLines.Add($"loaded textures {world.Grid.loadedTexturesCount}");
                 debugLines.Add($"tracking count {world.trackingQueue.Count} swayCount {world.swayManager.SwayEventsCount}");
                 if (world.trackingQueue.Count > 5000) debugLines.Add("WARNING, CHECK IF CORRECT!");

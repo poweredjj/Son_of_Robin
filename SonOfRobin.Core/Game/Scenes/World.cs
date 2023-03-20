@@ -57,7 +57,6 @@ namespace SonOfRobin
         private readonly List<PieceCreationData> creationDataListRegular;
         private readonly List<PieceCreationData> creationDataListTemporaryDecorations;
         private readonly List<Sprite> temporaryDecorationSprites;
-        private readonly List<Cell> temporaryDecorationCells;
         public Dictionary<string, Tracking> trackingQueue;
         public List<Cell> plantCellsQueue;
         public List<Sprite> plantSpritesQueue;
@@ -131,7 +130,6 @@ namespace SonOfRobin
             {
                 if (PieceInfo.GetInfo(pieceCreationData.name).serialize) throw new ArgumentException($"Serialized piece cannot be temporary - {pieceCreationData.name}.");
             }
-            this.temporaryDecorationCells = new List<Cell>();
             this.temporaryDecorationSprites = new List<Sprite>();
 
             this.pieceCountByName = new Dictionary<PieceTemplate.Name, int>();
@@ -768,14 +766,13 @@ namespace SonOfRobin
             DateTime creationStarted = DateTime.Now;
             int createdDecorationsCount = 0;
 
-            var cellsToProcess = this.Grid.GetCellsInsideRect(camera.viewRect).Where(cell => !cell.temporaryDecorationsCreated).OrderBy(x => this.random.Next());
-            foreach (Cell cell in cellsToProcess)
+            foreach (Cell cell in this.Grid.GetCellsInsideRect(camera.viewRect).Where(cell => !cell.temporaryDecorationsCreated).OrderBy(x => this.random.Next()))
             {
                 foreach (PieceCreationData pieceCreationData in this.creationDataListTemporaryDecorations)
                 {
                     if (cell.allowedNames.Contains(pieceCreationData.name))
                     {
-                        for (int i = 0; i < 4; i++)
+                        for (int i = 0; i < 3; i++)
                         {
                             Vector2 randomPosition = new Vector2(this.random.Next(cell.xMin, cell.xMax), this.random.Next(cell.yMin, cell.yMax));
 
@@ -793,43 +790,44 @@ namespace SonOfRobin
                 }
 
                 cell.temporaryDecorationsCreated = true;
-                this.temporaryDecorationCells.Add(cell);
             }
 
             if (createdDecorationsCount > 0)
             {
                 TimeSpan tempDecorCreationDuration = DateTime.Now - creationStarted;
-                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Temp decors created: {createdDecorationsCount}/{this.temporaryDecorationSprites.Count} (duration {tempDecorCreationDuration:\\:ss\\.fff}).");
+                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Temp decors created: {createdDecorationsCount} total: {this.temporaryDecorationSprites.Count} duration: {tempDecorCreationDuration:\\:ss\\.fff}");
             }
         }
 
         private void DestroyTemporaryDecorationsOutsideCamera()
         {
-            if (this.temporaryDecorationSprites.Count < 100) return;
+            if (!this.CanProcessMoreNonPlantsNow) return;
 
-            int destroyedPieces = 0;
+            DateTime creationStarted = DateTime.Now;
+            int destroyedDecorationsCount = 0;
 
-            foreach (Sprite sprite in this.temporaryDecorationSprites)
+            Rectangle extendedCameraRect = this.camera.viewRect;
+            extendedCameraRect.Inflate(this.camera.viewRect.Width, this.camera.viewRect.Height); // to destroying newly created pieces around camera edge
+
+            foreach (Sprite sprite in this.temporaryDecorationSprites.ToList())
             {
-                if (!sprite.IsInCameraRect)
+                if (!extendedCameraRect.Contains(sprite.position) && sprite.boardPiece.exists)
                 {
+                    if (sprite.currentCell != null) sprite.currentCell.temporaryDecorationsCreated = false;
                     sprite.boardPiece.Destroy();
-                    destroyedPieces++;
+                    this.temporaryDecorationSprites.Remove(sprite);
+                    destroyedDecorationsCount++;
                 }
-            }
-            this.temporaryDecorationSprites.Clear();
 
-            List<Cell> cellsInCamera = this.Grid.GetCellsInsideRect(camera.viewRect);
-            foreach (Cell cell in this.temporaryDecorationCells)
+                if (!this.CanProcessMoreNonPlantsNow) break;
+            }
+
+            if (destroyedDecorationsCount > 0)
             {
-                if (!cellsInCamera.Contains(cell))
-                {
-                    cell.temporaryDecorationsCreated = false;
-                }
+                TimeSpan tempDecorDestroyDuration = DateTime.Now - creationStarted;
+                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Temp decors destroyed: {destroyedDecorationsCount} duration: {tempDecorDestroyDuration:\\:ss\\.fff}");
             }
-            this.temporaryDecorationCells.Clear();
-
-            MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Temp decors destroyed: {destroyedPieces}.");
+            return;
         }
 
         public void UpdateViewParams()
@@ -870,7 +868,7 @@ namespace SonOfRobin
             bool createMissingPieces = this.CurrentUpdate % 200 == 0 && Preferences.debugCreateMissingPieces && !this.CineMode && !this.BuildMode;
             if (createMissingPieces) this.CreateMissingPieces(initialCreation: false, maxAmountToCreateAtOnce: 100, outsideCamera: true, multiplier: 0.1f);
 
-            if (!createMissingPieces && this.CurrentUpdate % 59 == 0)
+            if (!createMissingPieces && this.CurrentUpdate % 62 == 0)
             {
                 this.DestroyTemporaryDecorationsOutsideCamera();
                 this.CreateTemporaryDecorations(ignoreDuration: false);
