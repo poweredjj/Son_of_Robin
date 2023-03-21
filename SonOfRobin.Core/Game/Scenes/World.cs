@@ -112,7 +112,7 @@ namespace SonOfRobin
             this.TimePlayed = TimeSpan.Zero;
             this.updateMultiplier = 1;
             this.islandClock = this.saveGameData == null ? new IslandClock(0) : new IslandClock();
-            this.weather = new Weather(islandClock: this.islandClock);
+            this.weather = new Weather(random: this.random, islandClock: this.islandClock);
             this.waterSurfaceManager = new WaterSurfaceManager(world: this);
             this.swayManager = new SwayManager();
 
@@ -862,7 +862,6 @@ namespace SonOfRobin
 
             this.ProcessInput();
             this.UpdateViewParams();
-            this.swayManager.Update(world: this);
             this.weather.Update();
 
             if (this.soundPaused && this.inputActive)
@@ -908,6 +907,8 @@ namespace SonOfRobin
                 this.CurrentUpdate++;
                 this.islandClock.Advance();
             }
+
+            this.swayManager.Update(world: this);
         }
 
         private void ProcessInput()
