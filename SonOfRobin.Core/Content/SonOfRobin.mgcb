@@ -31,6 +31,13 @@
 /processorParam:DebugMode=Auto
 /build:effects/Sketch.fx
 
+#begin fonts/FreeSansBold10.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:fonts/FreeSansBold10.spritefont
+
 #begin fonts/FreeSansBold12.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
@@ -44,13 +51,6 @@
 /processorParam:PremultiplyAlpha=True
 /processorParam:TextureFormat=Compressed
 /build:fonts/FreeSansBold24.spritefont
-
-#begin fonts/FreeSansBold9.spritefont
-/importer:FontDescriptionImporter
-/processor:FontDescriptionProcessor
-/processorParam:PremultiplyAlpha=True
-/processorParam:TextureFormat=Compressed
-/build:fonts/FreeSansBold9.spritefont
 
 #begin fonts/PixelMix.spritefont
 /importer:FontDescriptionImporter

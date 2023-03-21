@@ -42,6 +42,7 @@ namespace SonOfRobin
         public static FpsCounter fpsCounter;
         public static SpriteFont FontPixelMix5 { get; private set; }
         public static SpriteFont FontPressStart2P5 { get; private set; }
+        public static SpriteFont FontFreeSansBold10 { get; private set; }
         public static SpriteFont FontFreeSansBold12 { get; private set; }
         public static SpriteFont FontFreeSansBold24 { get; private set; }
         public static SpriteFont FontTommy20 { get; private set; }
@@ -200,6 +201,7 @@ namespace SonOfRobin
         public static void LoadFonts()
         {
             FontPixelMix5 = ContentMgr.Load<SpriteFont>("fonts/PixelMix");
+            FontFreeSansBold10 = ContentMgr.Load<SpriteFont>("fonts/FreeSansBold10");
             FontFreeSansBold12 = ContentMgr.Load<SpriteFont>("fonts/FreeSansBold12");
             FontFreeSansBold24 = ContentMgr.Load<SpriteFont>("fonts/FreeSansBold24");
             FontTommy20 = ContentMgr.Load<SpriteFont>("fonts/Tommy20");
