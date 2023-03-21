@@ -67,6 +67,7 @@ namespace SonOfRobin
         public int CurrentUpdate { get; private set; } // can be used to measure time elapsed on island
         public int updateMultiplier;
         public readonly IslandClock islandClock;
+        public readonly Weather weather;
         private readonly WaterSurfaceManager waterSurfaceManager;
         public readonly SwayManager swayManager;
         public string debugText;
@@ -111,6 +112,7 @@ namespace SonOfRobin
             this.TimePlayed = TimeSpan.Zero;
             this.updateMultiplier = 1;
             this.islandClock = this.saveGameData == null ? new IslandClock(0) : new IslandClock();
+            this.weather = new Weather(islandClock: this.islandClock);
             this.waterSurfaceManager = new WaterSurfaceManager(world: this);
             this.swayManager = new SwayManager();
 
@@ -485,95 +487,105 @@ namespace SonOfRobin
             var saveGameDataDict = (Dictionary<string, Object>)this.saveGameData;
 
             // deserializing grid
-
-            if (gridOnly) // grid has to be deserialized first
             {
-                var gridData = (Dictionary<string, Object>)saveGameDataDict["grid"];
-                this.Grid = Grid.Deserialize(world: this, gridData: gridData, resDivider: this.resDivider);
-                return;
+                if (gridOnly) // grid has to be deserialized first
+                {
+                    var gridData = (Dictionary<string, Object>)saveGameDataDict["grid"];
+                    this.Grid = Grid.Deserialize(world: this, gridData: gridData, resDivider: this.resDivider);
+                    return;
+                }
             }
 
             // deserializing header
+            {
+                var headerData = (Dictionary<string, Object>)saveGameDataDict["header"];
 
-            var headerData = (Dictionary<string, Object>)saveGameDataDict["header"];
-
-            this.CurrentFrame = (int)headerData["currentFrame"];
-            this.CurrentUpdate = (int)headerData["currentUpdate"];
-            this.islandClock.Initialize((int)headerData["clockTimeElapsed"]);
-            this.TimePlayed = (TimeSpan)headerData["TimePlayed"];
-            this.mapEnabled = (bool)headerData["MapEnabled"];
-            this.maxAnimalsPerName = (int)headerData["maxAnimalsPerName"];
-            this.doNotCreatePiecesList = (List<PieceTemplate.Name>)headerData["doNotCreatePiecesList"];
-            this.discoveredRecipesForPieces = (List<PieceTemplate.Name>)headerData["discoveredRecipesForPieces"];
-            this.stateMachineTypesManager.Deserialize((Dictionary<string, Object>)headerData["stateMachineTypesManager"]);
-            this.craftStats.Deserialize((Dictionary<string, Object>)headerData["craftStats"]);
-            this.identifiedPieces = (List<PieceTemplate.Name>)headerData["identifiedPieces"];
+                this.CurrentFrame = (int)headerData["currentFrame"];
+                this.CurrentUpdate = (int)headerData["currentUpdate"];
+                this.islandClock.Initialize((int)headerData["clockTimeElapsed"]);
+                this.TimePlayed = (TimeSpan)headerData["TimePlayed"];
+                this.mapEnabled = (bool)headerData["MapEnabled"];
+                this.maxAnimalsPerName = (int)headerData["maxAnimalsPerName"];
+                this.doNotCreatePiecesList = (List<PieceTemplate.Name>)headerData["doNotCreatePiecesList"];
+                this.discoveredRecipesForPieces = (List<PieceTemplate.Name>)headerData["discoveredRecipesForPieces"];
+                this.stateMachineTypesManager.Deserialize((Dictionary<string, Object>)headerData["stateMachineTypesManager"]);
+                this.craftStats.Deserialize((Dictionary<string, Object>)headerData["craftStats"]);
+                this.identifiedPieces = (List<PieceTemplate.Name>)headerData["identifiedPieces"];
+            }
 
             // deserializing hints
+            {
+                var hintsData = (Dictionary<string, Object>)saveGameDataDict["hints"];
+                this.HintEngine.Deserialize(hintsData);
+            }
 
-            var hintsData = (Dictionary<string, Object>)saveGameDataDict["hints"];
-            this.HintEngine.Deserialize(hintsData);
+            // deserializing weather
+            {
+                var weatherData = (Dictionary<string, Object>)saveGameDataDict["weather"];
+                this.weather.Deserialize(weatherData);
+            }
 
             // deserializing pieces
-
-            var pieceDataBag = (ConcurrentBag<Object>)saveGameDataDict["pieces"];
-            var piecesByID = new Dictionary<string, BoardPiece> { };
-            var animalsByTargetID = new Dictionary<string, BoardPiece> { };
-
-            foreach (Dictionary<string, Object> pieceData in pieceDataBag)
             {
-                // repeated in StorageSlot
+                var pieceDataBag = (ConcurrentBag<Object>)saveGameDataDict["pieces"];
+                var piecesByID = new Dictionary<string, BoardPiece> { };
+                var animalsByTargetID = new Dictionary<string, BoardPiece> { };
 
-                PieceTemplate.Name templateName = (PieceTemplate.Name)pieceData["base_name"];
-
-                bool female = false;
-                bool randomSex = true;
-
-                if (pieceData.ContainsKey("base_female"))
+                foreach (Dictionary<string, Object> pieceData in pieceDataBag)
                 {
-                    randomSex = false;
-                    female = (bool)pieceData["base_female"];
+                    // repeated in StorageSlot
+
+                    PieceTemplate.Name templateName = (PieceTemplate.Name)pieceData["base_name"];
+
+                    bool female = false;
+                    bool randomSex = true;
+
+                    if (pieceData.ContainsKey("base_female"))
+                    {
+                        randomSex = false;
+                        female = (bool)pieceData["base_female"];
+                    }
+
+                    var newBoardPiece = PieceTemplate.CreateAndPlaceOnBoard(world: this, position: new Vector2((float)pieceData["sprite_positionX"], (float)pieceData["sprite_positionY"]), templateName: templateName, female: female, randomSex: randomSex, ignoreCollisions: true, id: (string)pieceData["base_id"]);
+                    if (!newBoardPiece.sprite.IsOnBoard) throw new ArgumentException($"{newBoardPiece.name} could not be placed correctly.");
+
+                    newBoardPiece.Deserialize(pieceData: pieceData);
+
+                    if (PieceInfo.IsPlayer(templateName))
+                    {
+                        this.Player = (Player)newBoardPiece;
+                        this.camera.TrackPiece(trackedPiece: this.Player, moveInstantly: true);
+                    }
+
+                    piecesByID[newBoardPiece.id] = newBoardPiece;
+
+                    if (newBoardPiece.GetType() == typeof(Animal) && pieceData["animal_target_id"] != null)
+                    {
+                        animalsByTargetID[(string)pieceData["animal_target_id"]] = newBoardPiece;
+                    }
                 }
 
-                var newBoardPiece = PieceTemplate.CreateAndPlaceOnBoard(world: this, position: new Vector2((float)pieceData["sprite_positionX"], (float)pieceData["sprite_positionY"]), templateName: templateName, female: female, randomSex: randomSex, ignoreCollisions: true, id: (string)pieceData["base_id"]);
-                if (!newBoardPiece.sprite.IsOnBoard) throw new ArgumentException($"{newBoardPiece.name} could not be placed correctly.");
-
-                newBoardPiece.Deserialize(pieceData: pieceData);
-
-                if (PieceInfo.IsPlayer(templateName))
+                foreach (var kvp in animalsByTargetID)
                 {
-                    this.Player = (Player)newBoardPiece;
-                    this.camera.TrackPiece(trackedPiece: this.Player, moveInstantly: true);
+                    Animal newAnimal = (Animal)kvp.Value;
+                    if (piecesByID.ContainsKey(kvp.Key)) newAnimal.target = piecesByID[kvp.Key];
                 }
 
-                piecesByID[newBoardPiece.id] = newBoardPiece;
+                // deserializing tracking
 
-                if (newBoardPiece.GetType() == typeof(Animal) && pieceData["animal_target_id"] != null)
+                var trackingDataList = (List<Object>)saveGameDataDict["tracking"];
+                foreach (Dictionary<string, Object> trackingData in trackingDataList)
                 {
-                    animalsByTargetID[(string)pieceData["animal_target_id"]] = newBoardPiece;
+                    Tracking.Deserialize(world: this, trackingData: trackingData, piecesByID: piecesByID);
                 }
-            }
 
-            foreach (var kvp in animalsByTargetID)
-            {
-                Animal newAnimal = (Animal)kvp.Value;
-                if (piecesByID.ContainsKey(kvp.Key)) newAnimal.target = piecesByID[kvp.Key];
-            }
+                // deserializing planned events
 
-            // deserializing tracking
-
-            var trackingDataList = (List<Object>)saveGameDataDict["tracking"];
-            foreach (Dictionary<string, Object> trackingData in trackingDataList)
-            {
-                Tracking.Deserialize(world: this, trackingData: trackingData, piecesByID: piecesByID);
-            }
-
-            // deserializing planned events
-
-            var eventDataList = (List<Object>)saveGameDataDict["events"];
-            foreach (Dictionary<string, Object> eventData in eventDataList)
-            {
-                WorldEvent.Deserialize(world: this, eventData: eventData, piecesByID: piecesByID);
+                var eventDataList = (List<Object>)saveGameDataDict["events"];
+                foreach (Dictionary<string, Object> eventData in eventDataList)
+                {
+                    WorldEvent.Deserialize(world: this, eventData: eventData, piecesByID: piecesByID);
+                }
             }
 
             // finalizing
@@ -851,6 +863,7 @@ namespace SonOfRobin
             this.ProcessInput();
             this.UpdateViewParams();
             this.swayManager.Update(world: this);
+            this.weather.Update();
 
             if (this.soundPaused && this.inputActive)
             {

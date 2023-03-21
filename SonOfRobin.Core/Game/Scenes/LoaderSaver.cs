@@ -15,6 +15,7 @@ namespace SonOfRobin
         private const string hintsName = "hints.sav";
         private const string trackingName = "tracking.sav";
         private const string eventsName = "events.sav";
+        private const string weatherName = "weather.sav";
         private const string gridName = "grid.sav";
         public const string tempPrefix = "_save_temp_";
 
@@ -41,6 +42,7 @@ namespace SonOfRobin
         private Dictionary<string, Object> headerData;
 
         private Dictionary<string, Object> hintsData;
+        private Dictionary<string, Object> weatherData;
         private Dictionary<string, Object> gridData;
         private List<Object> trackingData;
         private List<Object> eventsData;
@@ -50,6 +52,7 @@ namespace SonOfRobin
         private bool headerSaved;
 
         private bool hintsSaved;
+        private bool weatherSaved;
         private bool gridSaved;
         private bool trackingSaved;
         private bool eventsSaved;
@@ -110,6 +113,7 @@ namespace SonOfRobin
                 return new Dictionary<string, Object> {
                     { "header", this.headerData },
                     { "hints", this.hintsData },
+                    { "weather", this.weatherData },
                     { "grid", this.gridData },
                     { "pieces", this.piecesData },
                     { "tracking", this.trackingData },
@@ -145,6 +149,7 @@ namespace SonOfRobin
             this.gridTemplateFound = false;
             this.headerSaved = false;
             this.hintsSaved = false;
+            this.weatherSaved = false;
             this.gridSaved = false;
             this.trackingSaved = false;
             this.eventsSaved = false;
@@ -202,7 +207,7 @@ namespace SonOfRobin
         public override void Remove()
         {
             if (Preferences.FrameSkip) SonOfRobinGame.Game.IsFixedTimeStep = true;
-            if (this.saveMode) SonOfRobinGame.FullScreenProgressBar.TurnOff();
+            if (this.saveMode || this.ErrorOccured) SonOfRobinGame.FullScreenProgressBar.TurnOff();
 
             base.Remove();
             if (this.saveMode && this.quitGameAfterSaving) SonOfRobinGame.quitGame = true;
@@ -231,6 +236,7 @@ namespace SonOfRobin
             else this.ProcessNextLoadingStep();
 
             if (!this.ErrorOccured && !this.processingComplete) this.UpdateProgressBar();
+            if (this.ErrorOccured) this.Remove();
         }
 
         private void UpdateProgressBar()
@@ -313,6 +319,18 @@ namespace SonOfRobin
                 FileReaderWriter.Save(path: hintsPath, savedObj: hintsData);
 
                 this.hintsSaved = true;
+                this.nextStepName = "weather";
+                return;
+            }
+
+            // saving weather data
+            if (!this.weatherSaved)
+            {
+                string weatherPath = Path.Combine(this.saveTempPath, weatherName);
+                var weatherData = this.world.weather.Serialize();
+                FileReaderWriter.Save(path: weatherPath, savedObj: weatherData);
+
+                this.weatherSaved = true;
                 this.nextStepName = "grid";
                 return;
             }
@@ -496,6 +514,21 @@ namespace SonOfRobin
                 if (hintsData == null)
                 {
                     new TextWindow(text: $"Error while reading hints for slot {saveSlotName}.", textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false, closingTask: this.TextWindowTask);
+                    this.ErrorOccured = true;
+                }
+                this.nextStepName = "weather";
+                return;
+            }
+
+            // loading hints
+            if (this.weatherData == null)
+            {
+                string weatherPath = Path.Combine(this.savePath, weatherName);
+                this.weatherData = (Dictionary<string, Object>)FileReaderWriter.Load(path: weatherPath);
+
+                if (weatherData == null)
+                {
+                    new TextWindow(text: $"Error while reading weather for slot {saveSlotName}.", textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false, closingTask: this.TextWindowTask);
                     this.ErrorOccured = true;
                 }
                 this.nextStepName = "tracking";

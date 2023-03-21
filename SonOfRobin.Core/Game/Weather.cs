@@ -55,21 +55,9 @@ namespace SonOfRobin
 
         public Weather(IslandClock islandClock)
         {
-            // creating new
-
             this.islandClock = islandClock;
             this.weatherEvents = new List<Event>();
             this.forecastEnd = new DateTime(1900, 1, 1); // to ensure first update
-            this.Update();
-        }
-
-        public Weather(IslandClock islandClock, List<Event> weatherEvents, DateTime forecastEnd)
-        {
-            // deserializing
-
-            this.islandClock = islandClock;
-            this.weatherEvents = weatherEvents == null ? new List<Event>() : weatherEvents;
-            this.forecastEnd = forecastEnd;
             this.Update();
         }
 
@@ -95,12 +83,13 @@ namespace SonOfRobin
             return weatherData;
         }
 
-        public static Weather Deserialize(IslandClock islandClock, Dictionary<string, Object> weatherData)
+        public void Deserialize(Dictionary<string, Object> weatherData)
         {
             var weatherEvents = (List<Event>)weatherData["weatherEvents"];
             var forecastEnd = (DateTime)weatherData["forecastEnd"];
 
-            return new Weather(islandClock: islandClock, weatherEvents: weatherEvents, forecastEnd: forecastEnd);
+            this.weatherEvents.AddRange(weatherEvents);
+            this.forecastEnd = forecastEnd;
         }
     }
 }
