@@ -44,7 +44,7 @@ namespace SonOfRobin
             else if (elapsedTime > transitionLength && elapsedTime < transitionLength + duration)
             {
                 // between transitions
-                transitionProgress = 1;
+                transitionProgress = 1f;
             }
             else
             {
@@ -55,7 +55,7 @@ namespace SonOfRobin
 
             if (transitionProgress < 0 || transitionProgress > 1) throw new InvalidOperationException("Invalid transition progress.");
 
-            return Math.Min(1f, transitionProgress) * intensity;
+            return intensity * transitionProgress;
         }
     }
 
