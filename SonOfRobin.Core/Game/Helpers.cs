@@ -316,5 +316,10 @@ namespace SonOfRobin
         {
             return (x != 0) && ((x & (x - 1)) == 0);
         }
+
+        public static float GetRandomFloatForRange(Random random, float minVal, float maxVal)
+        {
+            return (float)(random.NextDouble() * (maxVal - minVal) + minVal);
+        }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SonOfRobin
 {
@@ -32,8 +33,25 @@ namespace SonOfRobin
             if (datetime < startTime || datetime > endTime) return 0;
 
             TimeSpan elapsedTime = datetime - startTime;
-            TimeSpan timeInTransition = TimeSpan.FromSeconds(Math.Max(0, (elapsedTime - this.duration).TotalSeconds + transitionLength.TotalSeconds));
-            float transitionProgress = (float)timeInTransition.TotalSeconds / (float)transitionLength.TotalSeconds;
+            float transitionProgress;
+
+            if (elapsedTime < transitionLength)
+            {
+                // start transition
+                TimeSpan timeInTransition = TimeSpan.FromSeconds(Math.Max(0, (elapsedTime - duration).TotalSeconds + transitionLength.TotalSeconds));
+                transitionProgress = (float)timeInTransition.TotalSeconds / (float)transitionLength.TotalSeconds;
+            }
+            else if (elapsedTime > transitionLength && elapsedTime < transitionLength + duration)
+            {
+                // between transitions
+                transitionProgress = 1;
+            }
+            else
+            {
+                // end transition
+                TimeSpan timeInTransition = TimeSpan.FromSeconds(Math.Max(0, datetime.Subtract(endTime.Add(-duration)).TotalSeconds + transitionLength.TotalSeconds));
+                transitionProgress = 1f - (float)timeInTransition.TotalSeconds / (float)transitionLength.TotalSeconds;
+            }
 
             if (transitionProgress < 0 || transitionProgress > 1) throw new InvalidOperationException("Invalid transition progress.");
 
@@ -78,6 +96,11 @@ namespace SonOfRobin
             return this.currentIntensityForType[type];
         }
 
+        public Dictionary<WeatherType, float> GetIntensityForAllWeatherTypes()
+        {
+            return this.currentIntensityForType;
+        }
+
         public float GetIntensityForWeatherType(WeatherType type, DateTime dateTime)
         {
             if (dateTime > this.forecastEnd)
@@ -95,12 +118,6 @@ namespace SonOfRobin
             return intensity;
         }
 
-        private void AddNewWeatherEvents(WeatherType type, DateTime startTime, DateTime endTime)
-        {
-
-
-        }
-
         public void Update()
         {
             DateTime islandDateTime = this.islandClock.IslandDateTime;
@@ -110,55 +127,49 @@ namespace SonOfRobin
 
             if (this.forecastEnd > islandDateTime + minForecastDuration) return;
 
-            // Generate new weather events
-            DateTime eventStartTime = islandDateTime + minForecastDuration;
-            DateTime eventEndTime = islandDateTime + maxForecastDuration;
+            DateTime forecastStartTime = islandDateTime + minForecastDuration;
+            DateTime forecastEndTime = islandDateTime + maxForecastDuration;
 
-            while (eventEndTime < islandDateTime + maxForecastDuration)
+            float cloudsMaxIntensity = Helpers.GetRandomFloatForRange(random: this.random, minVal: 0.3f, maxVal: 1);
+            float windMaxIntensity = Helpers.GetRandomFloatForRange(random: this.random, minVal: 0.3f, maxVal: 1);
+            float rainMaxIntensity = Helpers.GetRandomFloatForRange(random: this.random, minVal: 0.3f, maxVal: 1);
+
+            float badWeatherFactor = Helpers.GetRandomFloatForRange(random: this.random, minVal: 0.0f, maxVal: 0.5f);
+            cloudsMaxIntensity = Math.Min(cloudsMaxIntensity + badWeatherFactor, 1);
+            windMaxIntensity = Math.Min(windMaxIntensity + badWeatherFactor, 1);
+            rainMaxIntensity = Math.Min(rainMaxIntensity + badWeatherFactor, 1);
+
+            this.AddNewWeatherEvents(type: WeatherType.Clouds, startTime: forecastStartTime, endTime: forecastEndTime, minDuration: TimeSpan.FromHours(0), maxDuration: TimeSpan.FromHours(8), minGap: TimeSpan.FromMinutes(30), maxGap: TimeSpan.FromHours(10), maxIntensity: cloudsMaxIntensity);
+
+            this.forecastEnd = forecastEndTime;
+        }
+
+        private void AddNewWeatherEvents(WeatherType type, DateTime startTime, DateTime endTime, TimeSpan minDuration, TimeSpan maxDuration, TimeSpan minGap, TimeSpan maxGap, float maxIntensity)
+        {
+            DateTime currentSegmentStart = startTime;
+
+            while (true)
             {
-                //WeatherType eventType = WeatherType.Clouds;
-                //float intensity = (float)this.random.NextDouble();
+                TimeSpan gap = TimeSpan.FromTicks((long)(random.NextDouble() * (maxGap - minGap).Ticks) + minGap.Ticks);
+                TimeSpan duration = TimeSpan.FromTicks((long)(random.NextDouble() * (maxDuration - minDuration).Ticks) + minDuration.Ticks);
 
-                //// Increase wind probability when it is cloudy
-                //if (eventType == WeatherType.Clouds)
-                //{
-                //    if (this.random.NextDouble() < 0.7)
-                //    {
-                //        eventType = WeatherType.Wind;
-                //    }
-                //}
+                TimeSpan maxTransition = TimeSpan.FromTicks((long)(duration.Ticks / 4));
+                TimeSpan minTransition = TimeSpan.FromTicks((long)(maxTransition.Ticks / 3));
+                TimeSpan transition = TimeSpan.FromTicks((long)(random.NextDouble() * (maxTransition - minTransition).Ticks) + minTransition.Ticks);
 
-                //// Add new event type "Rain"
-                //if (eventType == WeatherType.Clouds)
-                //{
-                //    if (this.random.NextDouble() < 0.3)
-                //    {
-                //        eventType = WeatherType.Rain;
-                //    }
-                //}
+                DateTime eventStart = currentSegmentStart + gap;
+                float intensity = Helpers.GetRandomFloatForRange(random: this.random, minVal: 0.5f, maxVal: maxIntensity);
 
-                //// Make sure it only rains when cloudy
-                //if (eventType == WeatherType.Rain)
-                //{
-                //    intensity = (float)this.random.NextDouble() * 0.5f;
-                //}
+                this.weatherEvents.Add(new WeatherEvent(type: type, intensity: intensity, startTime: eventStart, duration: duration, transitionLength: transition));
 
-                //TimeSpan duration = TimeSpan.FromHours(this.random.Next(6, 24));
-                //TimeSpan transitionLength = TimeSpan.FromMinutes(this.random.Next(5, 30));
-
-                //WeatherEvent newEvent = new WeatherEvent(eventType, intensity, eventStartTime, duration, transitionLength);
-                //this.weatherEvents.Add(newEvent);
-
-                //eventStartTime = eventEndTime;
-                //eventEndTime = eventStartTime.Add(duration).Add(transitionLength);
+                currentSegmentStart += gap + duration;
+                if (currentSegmentStart >= endTime) break;
             }
-
-            this.forecastEnd = eventEndTime;
         }
 
         private void UpdateCurrentIntensities(DateTime dateTime)
         {
-            foreach (WeatherType type in this.currentIntensityForType.Keys) this.currentIntensityForType[type] = 0;
+            foreach (WeatherType type in this.currentIntensityForType.Keys.ToList()) this.currentIntensityForType[type] = 0;
 
             foreach (WeatherEvent weatherEvent in this.weatherEvents)
             {

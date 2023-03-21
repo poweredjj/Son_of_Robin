@@ -9,7 +9,7 @@ namespace SonOfRobin
 {
     public class DebugScene : Scene
     {
-        public static readonly SpriteFont font = SonOfRobinGame.FontFreeSansBold12;
+        public static readonly SpriteFont font = SonOfRobinGame.FontFreeSansBold10;
         public static string debugText = "";
 
         public DebugScene() : base(inputType: InputTypes.Always, tipsLayout: ControlTips.TipsLayout.Empty, priority: -1, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: true, alwaysDraws: true, touchLayout: TouchLayout.Empty)
@@ -63,9 +63,19 @@ namespace SonOfRobin
 
             if (SonOfRobinGame.FreeRamMegabytesLeft >= 0) debugLines.Add($"ram free: {SonOfRobinGame.FreeRamMegabytesLeft}");
 
-            if (worldActive) debugLines.Add($"real time elapsed {world.TimePlayed:hh\\:mm\\:ss}");
-            if (worldActive) debugLines.Add($"island time elapsed {world.islandClock.IslandTimeElapsed:hh\\:mm\\:ss} (x{world.updateMultiplier})");
-            if (worldActive) debugLines.Add($"island day {world.islandClock.CurrentDayNo} clock {world.islandClock.TimeOfDay:hh\\:mm\\:ss} ({Convert.ToString(world.islandClock.CurrentPartOfDay).ToLower()})");
+            if (worldActive)
+            {
+                string weatherText = "";
+
+                foreach (var kvp in world.weather.GetIntensityForAllWeatherTypes())
+                {
+                    if (kvp.Value > 0) weatherText += $"{kvp.Key}: {kvp.Value} ";
+                }
+
+                debugLines.Add($"real time elapsed {world.TimePlayed:hh\\:mm\\:ss} {weatherText}");
+                debugLines.Add($"island time elapsed {world.islandClock.IslandTimeElapsed:hh\\:mm\\:ss} (x{world.updateMultiplier})");
+                debugLines.Add($"island day {world.islandClock.CurrentDayNo} clock {world.islandClock.TimeOfDay:hh\\:mm\\:ss} ({Convert.ToString(world.islandClock.CurrentPartOfDay).ToLower()})");
+            }
 
             SimpleFps fps = SonOfRobinGame.fps;
             debugLines.Add($"FPS: {fps.FPS} updates: {fps.Updates} frames: {fps.Frames}");
