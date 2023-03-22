@@ -157,7 +157,7 @@ namespace SonOfRobin
             this.currentPiecePackageNo = 0;
             this.allPiecesProcessed = false;
             this.piecesData = new ConcurrentBag<object> { };
-            this.allSteps = this.saveMode ? 7 + this.piecePackagesToSave.Count : 6 + this.PiecesFilesCount;
+            this.allSteps = this.saveMode ? 8 + this.piecePackagesToSave.Count : 7 + this.PiecesFilesCount;
 
             if (this.saveMode) DeleteAllSaveTemps();
         }

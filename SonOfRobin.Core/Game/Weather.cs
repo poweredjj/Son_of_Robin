@@ -30,39 +30,37 @@ namespace SonOfRobin
 
         public float GetIntensity(DateTime datetime)
         {
-            if (datetime < startTime || datetime > endTime) return 0;
+            if (datetime < this.startTime || datetime > this.endTime) return 0;
 
-            TimeSpan elapsedTime = datetime - startTime;
+            TimeSpan elapsedTime = datetime - this.startTime;
             float transitionProgress;
 
-            if (elapsedTime < transitionLength)
+            if (elapsedTime <= this.transitionLength)
             {
                 // start transition
-                TimeSpan timeInTransition = TimeSpan.FromSeconds(Math.Max(0, (elapsedTime - duration).TotalSeconds + transitionLength.TotalSeconds));
-                transitionProgress = (float)timeInTransition.TotalSeconds / (float)transitionLength.TotalSeconds;
+                transitionProgress = (float)Helpers.ConvertRange(oldMin: 0, oldMax: this.transitionLength.TotalSeconds, newMin: 0, newMax: 1, oldVal: elapsedTime.TotalSeconds, clampToEdges: true);
             }
-            else if (elapsedTime > transitionLength && elapsedTime < transitionLength + duration)
+            else if (elapsedTime > this.transitionLength && elapsedTime < this.duration - this.transitionLength)
             {
-                // between transitions
+                // between transitions (full intensity)
                 transitionProgress = 1f;
             }
             else
             {
                 // end transition
-                TimeSpan timeInTransition = TimeSpan.FromSeconds(Math.Max(0, datetime.Subtract(endTime.Add(-duration)).TotalSeconds + transitionLength.TotalSeconds));
-                transitionProgress = 1f - (float)timeInTransition.TotalSeconds / (float)transitionLength.TotalSeconds;
+                transitionProgress = 1f - (float)Helpers.ConvertRange(oldMin: this.duration.TotalSeconds - this.transitionLength.TotalSeconds, oldMax: this.duration.TotalSeconds, newMin: 0, newMax: 1, oldVal: elapsedTime.TotalSeconds, clampToEdges: true);
             }
 
-            if (transitionProgress < 0 || transitionProgress > 1) throw new InvalidOperationException("Invalid transition progress.");
+            if (transitionProgress < 0 || transitionProgress > 1) throw new ArgumentOutOfRangeException("Invalid transition progress.");
 
-            return intensity * transitionProgress;
+            return this.intensity * transitionProgress;
         }
     }
 
     public class Weather
     {
         public enum WeatherType
-        { Wind, Clouds, Rain }
+        { Wind, Clouds, Fog }
 
         public static readonly WeatherType[] allTypes = (WeatherType[])Enum.GetValues(typeof(WeatherType));
 
@@ -193,8 +191,14 @@ namespace SonOfRobin
             var weatherEvents = (List<WeatherEvent>)weatherData["weatherEvents"];
             var forecastEnd = (DateTime)weatherData["forecastEnd"];
 
+            this.weatherEvents.Clear();
             this.weatherEvents.AddRange(weatherEvents);
             this.forecastEnd = forecastEnd;
+        }
+
+        public void AddEvent(WeatherEvent weatherEvent)
+        {
+            this.weatherEvents.Add(weatherEvent);
         }
     }
 }

@@ -66,13 +66,12 @@ namespace SonOfRobin
             if (worldActive)
             {
                 string weatherText = "";
-
                 foreach (var kvp in world.weather.GetIntensityForAllWeatherTypes())
                 {
-                    if (kvp.Value > 0) weatherText += $"{kvp.Key}: {kvp.Value} ";
+                    weatherText += $"{kvp.Key}: {kvp.Value} ";
                 }
-
-                debugLines.Add($"real time elapsed {world.TimePlayed:hh\\:mm\\:ss} {weatherText}");
+                debugLines.Add($"weather {weatherText}");
+                debugLines.Add($"real time elapsed {world.TimePlayed:hh\\:mm\\:ss}");
                 debugLines.Add($"island time elapsed {world.islandClock.IslandTimeElapsed:hh\\:mm\\:ss} (x{world.updateMultiplier})");
                 debugLines.Add($"island day {world.islandClock.CurrentDayNo} clock {world.islandClock.TimeOfDay:hh\\:mm\\:ss} ({Convert.ToString(world.islandClock.CurrentPartOfDay).ToLower()})");
             }
@@ -147,7 +146,7 @@ namespace SonOfRobin
 
                 if (Keyboard.HasBeenPressed(Keys.D8))
                 {
-                    // not used
+                    world.weather.AddEvent(new WeatherEvent(type: Weather.WeatherType.Clouds, intensity: 1f, startTime: world.islandClock.IslandDateTime, duration: TimeSpan.FromMinutes(6), transitionLength: TimeSpan.FromMinutes(2)));
                 }
 
                 if (Keyboard.HasBeenPressed(Keys.D9))
