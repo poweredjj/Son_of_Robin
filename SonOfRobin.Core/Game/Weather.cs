@@ -27,7 +27,7 @@ namespace SonOfRobin
             this.endTime = startTime + duration;
             this.transitionLength = transitionLength;
 
-            MessageLog.AddMessage(msgType: MsgType.User, message: $"New WeatherEvent {this.type}, {this.startTime:HH\\:mm} - {(this.startTime + this.duration):HH\\:mm} ({this.duration:hh\\:mm}), transLength {transitionLength:hh\\:mm}, intensity {intensity}"); // for testing
+            MessageLog.AddMessage(msgType: MsgType.User, message: $"New WeatherEvent {this.type}, {this.startTime:HH\\:mm} - {this.endTime:HH\\:mm} ({this.duration:hh\\:mm}), transLength {transitionLength:hh\\:mm}, intensity {intensity}"); // for testing
         }
 
         public float GetIntensity(DateTime datetime)
@@ -62,7 +62,7 @@ namespace SonOfRobin
     public class Weather
     {
         public enum WeatherType
-        { Wind, Clouds, Fog }
+        { Wind, Clouds, Rain, Fog }
 
         public static readonly WeatherType[] allTypes = (WeatherType[])Enum.GetValues(typeof(WeatherType));
 
@@ -133,16 +133,34 @@ namespace SonOfRobin
             DateTime forecastStartTime = islandDateTime + minForecastDuration;
             DateTime forecastEndTime = islandDateTime + maxForecastDuration;
 
-            float cloudsMaxIntensity = Helpers.GetRandomFloatForRange(random: this.random, minVal: 0.3f, maxVal: 1);
-            float windMaxIntensity = Helpers.GetRandomFloatForRange(random: this.random, minVal: 0.3f, maxVal: 1);
-            float fogMaxIntensity = Helpers.GetRandomFloatForRange(random: this.random, minVal: 0.3f, maxVal: 1);
+            float minVal = 0.2f;
+            float maxVal = 1f;
 
-            float badWeatherFactor = Helpers.GetRandomFloatForRange(random: this.random, minVal: 0.0f, maxVal: 0.5f);
-            cloudsMaxIntensity = Math.Min(cloudsMaxIntensity + badWeatherFactor, 1);
-            windMaxIntensity = Math.Min(windMaxIntensity + badWeatherFactor, 1);
-            fogMaxIntensity = Math.Min(fogMaxIntensity + badWeatherFactor, 1);
+            if (this.random.Next(0, 4) != 0)
+            {
+                minVal += Helpers.GetRandomFloatForRange(random: this.random, minVal: 0.0f, maxVal: 0.5f);
+            }
 
+            float cloudsMaxIntensity = Helpers.GetRandomFloatForRange(random: this.random, minVal: minVal, maxVal: maxVal);
+            float rainMaxIntensity = Helpers.GetRandomFloatForRange(random: this.random, minVal: minVal, maxVal: maxVal);
+            float windMaxIntensity = Helpers.GetRandomFloatForRange(random: this.random, minVal: minVal, maxVal: maxVal);
+            float fogMaxIntensity = Helpers.GetRandomFloatForRange(random: this.random, minVal: minVal, maxVal: maxVal);
+
+            // adding clouds
             this.AddNewWeatherEvents(type: WeatherType.Clouds, startTime: forecastStartTime, endTime: forecastEndTime, minDuration: TimeSpan.FromHours(0), maxDuration: TimeSpan.FromHours(8), minGap: TimeSpan.FromMinutes(30), maxGap: TimeSpan.FromHours(10), maxIntensity: cloudsMaxIntensity);
+
+            // adding rain
+            foreach (WeatherEvent weatherEvent in this.weatherEvents.ToList())
+            {
+                if (weatherEvent.type == WeatherType.Clouds && weatherEvent.intensity >= 0.5f)
+                {
+                    TimeSpan minDuration = TimeSpan.FromTicks((long)(weatherEvent.duration.Ticks * 0.4d));
+                    TimeSpan maxDuration = TimeSpan.FromTicks((long)(weatherEvent.duration.Ticks * 0.9d));
+                    TimeSpan maxGap = TimeSpan.FromTicks(weatherEvent.duration.Ticks - maxDuration.Ticks);
+
+                    this.AddNewWeatherEvents(type: WeatherType.Rain, startTime: weatherEvent.startTime, endTime: weatherEvent.endTime, minDuration: minDuration, maxDuration: maxDuration, minGap: TimeSpan.FromMinutes(0), maxGap: maxGap, maxIntensity: cloudsMaxIntensity);
+                }
+            }
 
             this.forecastEnd = forecastEndTime;
         }
