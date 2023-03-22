@@ -26,6 +26,8 @@ namespace SonOfRobin
             this.duration = duration;
             this.endTime = startTime + duration;
             this.transitionLength = transitionLength;
+
+            MessageLog.AddMessage(msgType: MsgType.User, message: $"New WeatherEvent {this.type}, {this.startTime:HH\\:mm} - {(this.startTime + this.duration):HH\\:mm} ({this.duration:hh\\:mm}), transLength {transitionLength:hh\\:mm}, intensity {intensity}"); // for testing
         }
 
         public float GetIntensity(DateTime datetime)
@@ -38,7 +40,7 @@ namespace SonOfRobin
             if (elapsedTime <= this.transitionLength)
             {
                 // start transition
-                transitionProgress = (float)Helpers.ConvertRange(oldMin: 0, oldMax: this.transitionLength.TotalSeconds, newMin: 0, newMax: 1, oldVal: elapsedTime.TotalSeconds, clampToEdges: true);
+                transitionProgress = (float)Helpers.ConvertRange(oldMin: 0, oldMax: this.transitionLength.Ticks, newMin: 0, newMax: 1, oldVal: elapsedTime.Ticks, clampToEdges: true);
             }
             else if (elapsedTime > this.transitionLength && elapsedTime < this.duration - this.transitionLength)
             {
@@ -48,10 +50,10 @@ namespace SonOfRobin
             else
             {
                 // end transition
-                transitionProgress = 1f - (float)Helpers.ConvertRange(oldMin: this.duration.TotalSeconds - this.transitionLength.TotalSeconds, oldMax: this.duration.TotalSeconds, newMin: 0, newMax: 1, oldVal: elapsedTime.TotalSeconds, clampToEdges: true);
+                transitionProgress = 1f - (float)Helpers.ConvertRange(oldMin: this.duration.Ticks - this.transitionLength.Ticks, oldMax: this.duration.Ticks, newMin: 0, newMax: 1, oldVal: elapsedTime.Ticks, clampToEdges: true);
             }
 
-            if (transitionProgress < 0 || transitionProgress > 1) throw new ArgumentOutOfRangeException("Invalid transition progress.");
+            if (transitionProgress < 0 || transitionProgress > 1) throw new ArgumentOutOfRangeException($"Invalid transition progress {transitionProgress}.");
 
             return this.intensity * transitionProgress;
         }
@@ -85,8 +87,6 @@ namespace SonOfRobin
             {
                 this.currentIntensityForType[type] = 0;
             }
-
-            this.Update();
         }
 
         public float GetIntensityForWeatherType(WeatherType type)
@@ -121,21 +121,26 @@ namespace SonOfRobin
             DateTime islandDateTime = this.islandClock.IslandDateTime;
             weatherEvents.RemoveAll(e => e.endTime < islandDateTime);
 
-            this.UpdateCurrentIntensities(islandDateTime);
+            this.UpdateCurrentIntensities();
 
-            if (this.forecastEnd > islandDateTime + minForecastDuration) return;
+            if (this.forecastEnd < islandDateTime + minForecastDuration) this.GenerateForecast();
+        }
+
+        private void GenerateForecast()
+        {
+            DateTime islandDateTime = this.islandClock.IslandDateTime;
 
             DateTime forecastStartTime = islandDateTime + minForecastDuration;
             DateTime forecastEndTime = islandDateTime + maxForecastDuration;
 
             float cloudsMaxIntensity = Helpers.GetRandomFloatForRange(random: this.random, minVal: 0.3f, maxVal: 1);
             float windMaxIntensity = Helpers.GetRandomFloatForRange(random: this.random, minVal: 0.3f, maxVal: 1);
-            float rainMaxIntensity = Helpers.GetRandomFloatForRange(random: this.random, minVal: 0.3f, maxVal: 1);
+            float fogMaxIntensity = Helpers.GetRandomFloatForRange(random: this.random, minVal: 0.3f, maxVal: 1);
 
             float badWeatherFactor = Helpers.GetRandomFloatForRange(random: this.random, minVal: 0.0f, maxVal: 0.5f);
             cloudsMaxIntensity = Math.Min(cloudsMaxIntensity + badWeatherFactor, 1);
             windMaxIntensity = Math.Min(windMaxIntensity + badWeatherFactor, 1);
-            rainMaxIntensity = Math.Min(rainMaxIntensity + badWeatherFactor, 1);
+            fogMaxIntensity = Math.Min(fogMaxIntensity + badWeatherFactor, 1);
 
             this.AddNewWeatherEvents(type: WeatherType.Clouds, startTime: forecastStartTime, endTime: forecastEndTime, minDuration: TimeSpan.FromHours(0), maxDuration: TimeSpan.FromHours(8), minGap: TimeSpan.FromMinutes(30), maxGap: TimeSpan.FromHours(10), maxIntensity: cloudsMaxIntensity);
 
@@ -165,13 +170,15 @@ namespace SonOfRobin
             }
         }
 
-        private void UpdateCurrentIntensities(DateTime dateTime)
+        private void UpdateCurrentIntensities()
         {
+            DateTime islandDateTime = this.islandClock.IslandDateTime;
+
             foreach (WeatherType type in this.currentIntensityForType.Keys.ToList()) this.currentIntensityForType[type] = 0;
 
             foreach (WeatherEvent weatherEvent in this.weatherEvents)
             {
-                this.currentIntensityForType[weatherEvent.type] = Math.Min(this.currentIntensityForType[weatherEvent.type] + weatherEvent.GetIntensity(dateTime), 1);
+                this.currentIntensityForType[weatherEvent.type] = Math.Min(this.currentIntensityForType[weatherEvent.type] + weatherEvent.GetIntensity(islandDateTime), 1);
             }
         }
 
