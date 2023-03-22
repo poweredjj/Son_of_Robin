@@ -168,29 +168,35 @@ namespace SonOfRobin
 
         private void AddNewWeatherEvents(WeatherType type, DateTime startTime, DateTime endTime, TimeSpan minDuration, TimeSpan maxDuration, TimeSpan minGap, TimeSpan maxGap, float maxIntensity)
         {
-            DateTime currentSegmentStart = startTime;
+            DateTime timeCursor = startTime;
 
             while (true)
             {
                 TimeSpan gap = TimeSpan.FromTicks((long)(random.NextDouble() * (maxGap - minGap).Ticks) + minGap.Ticks);
+                timeCursor += gap;
+
+                if (timeCursor >= endTime) return; // no point in adding event, if timeCursor is outside range
+
+                if (timeCursor + maxDuration > endTime || timeCursor + minDuration > endTime)
+                {
+                    maxDuration = endTime - timeCursor;
+                    minDuration = TimeSpan.FromTicks(maxDuration.Ticks / 3);
+
+                    if (minDuration < TimeSpan.FromMinutes(10)) return;
+                }
+
                 TimeSpan duration = TimeSpan.FromTicks((long)(random.NextDouble() * (maxDuration - minDuration).Ticks) + minDuration.Ticks);
-
-                if (currentSegmentStart + gap >= endTime) return; // no point in adding event, if gap is outside the range
-
-                DateTime eventEnd = currentSegmentStart + gap + duration;
-                if (eventEnd >= endTime) duration -= eventEnd - endTime;
 
                 TimeSpan maxTransition = TimeSpan.FromTicks((long)(duration.Ticks / 4));
                 TimeSpan minTransition = TimeSpan.FromTicks((long)(maxTransition.Ticks / 3));
                 TimeSpan transition = TimeSpan.FromTicks((long)(random.NextDouble() * (maxTransition - minTransition).Ticks) + minTransition.Ticks);
 
-                DateTime eventStart = currentSegmentStart + gap;
                 float intensity = Helpers.GetRandomFloatForRange(random: this.random, minVal: 0.5f, maxVal: maxIntensity);
 
-                this.weatherEvents.Add(new WeatherEvent(type: type, intensity: intensity, startTime: eventStart, duration: duration, transitionLength: transition));
+                this.weatherEvents.Add(new WeatherEvent(type: type, intensity: intensity, startTime: timeCursor, duration: duration, transitionLength: transition));
 
-                currentSegmentStart += gap + duration;
-                if (currentSegmentStart >= endTime) return;
+                timeCursor += duration;
+                if (timeCursor >= endTime) return;
             }
         }
 
