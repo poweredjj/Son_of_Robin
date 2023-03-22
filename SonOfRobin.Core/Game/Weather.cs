@@ -134,11 +134,12 @@ namespace SonOfRobin
             DateTime forecastEndTime = islandDateTime + maxForecastDuration;
 
             float minVal = 0.2f;
-            float maxVal = 1f;
+            float maxVal = 0.8f;
 
             if (this.random.Next(0, 4) != 0)
             {
                 minVal += Helpers.GetRandomFloatForRange(random: this.random, minVal: 0.0f, maxVal: 0.5f);
+                maxVal = 1.0f;
             }
 
             float cloudsMaxIntensity = Helpers.GetRandomFloatForRange(random: this.random, minVal: minVal, maxVal: maxVal);
@@ -158,7 +159,7 @@ namespace SonOfRobin
                     TimeSpan maxDuration = TimeSpan.FromTicks((long)(weatherEvent.duration.Ticks * 0.9d));
                     TimeSpan maxGap = TimeSpan.FromTicks(weatherEvent.duration.Ticks - maxDuration.Ticks);
 
-                    this.AddNewWeatherEvents(type: WeatherType.Rain, startTime: weatherEvent.startTime, endTime: weatherEvent.endTime, minDuration: minDuration, maxDuration: maxDuration, minGap: TimeSpan.FromMinutes(0), maxGap: maxGap, maxIntensity: cloudsMaxIntensity);
+                    this.AddNewWeatherEvents(type: WeatherType.Rain, startTime: weatherEvent.startTime, endTime: weatherEvent.endTime, minDuration: minDuration, maxDuration: maxDuration, minGap: TimeSpan.FromMinutes(0), maxGap: maxGap, maxIntensity: rainMaxIntensity);
                 }
             }
 
@@ -174,6 +175,11 @@ namespace SonOfRobin
                 TimeSpan gap = TimeSpan.FromTicks((long)(random.NextDouble() * (maxGap - minGap).Ticks) + minGap.Ticks);
                 TimeSpan duration = TimeSpan.FromTicks((long)(random.NextDouble() * (maxDuration - minDuration).Ticks) + minDuration.Ticks);
 
+                if (currentSegmentStart + gap >= endTime) return; // no point in adding event, if gap is outside the range
+
+                DateTime eventEnd = currentSegmentStart + gap + duration;
+                if (eventEnd >= endTime) duration -= eventEnd - endTime;
+
                 TimeSpan maxTransition = TimeSpan.FromTicks((long)(duration.Ticks / 4));
                 TimeSpan minTransition = TimeSpan.FromTicks((long)(maxTransition.Ticks / 3));
                 TimeSpan transition = TimeSpan.FromTicks((long)(random.NextDouble() * (maxTransition - minTransition).Ticks) + minTransition.Ticks);
@@ -184,7 +190,7 @@ namespace SonOfRobin
                 this.weatherEvents.Add(new WeatherEvent(type: type, intensity: intensity, startTime: eventStart, duration: duration, transitionLength: transition));
 
                 currentSegmentStart += gap + duration;
-                if (currentSegmentStart >= endTime) break;
+                if (currentSegmentStart >= endTime) return;
             }
         }
 
