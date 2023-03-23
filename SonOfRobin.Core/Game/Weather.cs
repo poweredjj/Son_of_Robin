@@ -67,7 +67,6 @@ namespace SonOfRobin
 
         public static readonly WeatherType[] allTypes = (WeatherType[])Enum.GetValues(typeof(WeatherType));
         private static readonly DateTime veryOldDate = new DateTime(1900, 1, 1);
-
         private static readonly TimeSpan minForecastDuration = TimeSpan.FromDays(1);
         private static readonly TimeSpan maxForecastDuration = minForecastDuration + minForecastDuration;
 
@@ -77,6 +76,7 @@ namespace SonOfRobin
         private DateTime forecastEnd;
         private readonly Dictionary<WeatherType, float> currentIntensityForType;
         private bool firstForecastCreated;
+        private readonly Sound windSound;
 
         public float CloudsPercentage { get; private set; }
         public float FogPercentage { get; private set; }
@@ -107,6 +107,8 @@ namespace SonOfRobin
             {
                 this.currentIntensityForType[type] = 0;
             }
+
+            this.windSound = new Sound(name: SoundData.Name.DesertWind, maxPitchVariation: 0.5f, volume: 0.2f, isLooped: true, ignore3DAlways: true);
         }
 
         public float GetIntensityForWeatherType(WeatherType type)
@@ -155,11 +157,15 @@ namespace SonOfRobin
 
         private void ProcessWind(DateTime islandDateTime)
         {
+            this.windSound.volume = this.WindPercentage * 0.5f;
+
             if (this.WindPercentage == 0)
             {
                 this.WindOriginX = -1;
                 this.WindOriginY = -1;
                 this.NextWindBlow = veryOldDate;
+
+                if (this.windSound.IsPlaying) this.windSound.Stop();
 
                 return;
             }
@@ -172,8 +178,10 @@ namespace SonOfRobin
                 this.WindOriginY = (float)this.world.random.NextDouble();
             }
 
-            TimeSpan minCooldown = TimeSpan.FromMinutes(1);
-            TimeSpan maxCooldown = TimeSpan.FromMinutes(5);
+            if (!this.windSound.IsPlaying) this.windSound.Play(ignore3DThisPlay: true);
+
+            TimeSpan minCooldown = TimeSpan.FromMinutes(2 - (this.WindPercentage * 1));
+            TimeSpan maxCooldown = TimeSpan.FromMinutes(15 - (this.WindPercentage * 3));
             TimeSpan windCooldown = TimeSpan.FromTicks((long)(this.world.random.NextDouble() * (maxCooldown - minCooldown).Ticks) + minCooldown.Ticks);
 
             this.NextWindBlow = islandDateTime + windCooldown;
@@ -185,18 +193,26 @@ namespace SonOfRobin
             int y = extendedCameraRect.Y + (int)(extendedCameraRect.Height * WindOriginY);
             Vector2 windOriginLocation = new Vector2(x, y);
 
-            var plantSpriteList = new List<Sprite>();
-            this.world.Grid.GetSpritesInCameraViewAndPutIntoList(camera: this.world.camera, groupName: Cell.Group.ColPlantGrowth, spriteListToFill: plantSpriteList);
+            var affectedSpriteList = new List<Sprite>();
+            this.world.Grid.GetSpritesInCameraViewAndPutIntoList(camera: this.world.camera, groupName: Cell.Group.ColPlantGrowth, spriteListToFill: affectedSpriteList);
 
-            float targetRotation = 0.35f * this.WindPercentage;
+            float targetRotation = 0.38f * this.WindPercentage;
 
-            foreach (Sprite sprite in plantSpriteList)
+            int swayCount = this.world.random.Next(1, 3);
+            int rotationSlowdown = this.world.random.Next(4, 9);
+
+            bool affectsBigPlants = this.WindPercentage > 0.8f;
+
+            foreach (Sprite sprite in affectedSpriteList)
             {
-                if (!sprite.blocksMovement)
+                if (!sprite.blocksMovement || (affectsBigPlants && sprite.boardPiece.GetType() == typeof(Plant)))
                 {
                     float distance = Vector2.Distance(windOriginLocation, sprite.position);
 
-                    this.world.swayManager.AddSwayEvent(targetSprite: sprite, sourceSprite: null, targetRotation: (sprite.position - windOriginLocation).X > 0 ? targetRotation : -targetRotation, playSound: false, delayFrames: (int)distance / 20);
+                    for (int swayNo = 0; swayNo < swayCount; swayNo++)
+                    {
+                        this.world.swayManager.AddSwayEvent(targetSprite: sprite, sourceSprite: null, targetRotation: (sprite.position - windOriginLocation).X > 0 ? targetRotation : -targetRotation, playSound: false, delayFrames: (swayNo * rotationSlowdown * 8) + (int)distance / 20, rotationSlowdown: rotationSlowdown);
+                    }
                 }
             }
         }

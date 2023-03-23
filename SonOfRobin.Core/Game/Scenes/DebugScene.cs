@@ -146,7 +146,7 @@ namespace SonOfRobin
 
                 if (Keyboard.HasBeenPressed(Keys.D8))
                 {
-                    world.weather.AddEvent(new WeatherEvent(type: Weather.WeatherType.Wind, intensity: 1f, startTime: world.islandClock.IslandDateTime, duration: TimeSpan.FromMinutes(6), transitionLength: TimeSpan.FromMinutes(2)));
+                    // not used
                 }
 
                 if (Keyboard.HasBeenPressed(Keys.D9))
@@ -362,53 +362,35 @@ namespace SonOfRobin
 
             if (Keyboard.HasBeenPressed(Keys.F1))
             {
-                // wind blowing from random direction
-
-                if (world == null) return;
-
-                var xList = new List<int> { world.camera.viewRect.Left, world.camera.viewRect.Right };
-                var yList = new List<int> { world.camera.viewRect.Top, world.camera.viewRect.Bottom };
-
-                int x = xList[SonOfRobinGame.random.Next(0, xList.Count)];
-                int y = yList[SonOfRobinGame.random.Next(0, yList.Count)];
-
-                Vector2 windOriginLocation = new Vector2(x, y);
-
-                var plantSpriteList = new List<Sprite>();
-                world.Grid.GetSpritesInCameraViewAndPutIntoList(camera: world.camera, groupName: Cell.Group.ColPlantGrowth, spriteListToFill: plantSpriteList);
-
-                foreach (Sprite sprite in plantSpriteList)
-                {
-                    if (!sprite.blocksMovement)
-                    {
-                        float distance = Vector2.Distance(windOriginLocation, sprite.position);
-
-                        world.swayManager.AddSwayEvent(targetSprite: sprite, sourceSprite: null, targetRotation: (sprite.position - windOriginLocation).X > 0 ? 0.25f : -0.25f, playSound: false, delayFrames: (int)distance / 20);
-                    }
-                }
+                world.weather.AddEvent(new WeatherEvent(type: Weather.WeatherType.Wind, intensity: 0.5f, startTime: world.islandClock.IslandDateTime, duration: TimeSpan.FromMinutes(15), transitionLength: TimeSpan.FromMinutes(1)));
             }
 
             if (Keyboard.HasBeenPressed(Keys.F2))
             {
-                // a shockwave
-
-                if (world == null) return;
-
-                Vector2 windOriginLocation = world.Player.sprite.position;
-
-                var plantSpriteList = new List<Sprite>();
-                world.Grid.GetSpritesInCameraViewAndPutIntoList(camera: world.camera, groupName: Cell.Group.ColPlantGrowth, spriteListToFill: plantSpriteList);
-
-                foreach (Sprite sprite in plantSpriteList)
-                {
-                    if (!sprite.boardPiece.canBePickedUp)
-                    {
-                        float distance = Vector2.Distance(windOriginLocation, sprite.position);
-
-                        world.swayManager.AddSwayEvent(targetSprite: sprite, sourceSprite: null, targetRotation: (sprite.position - windOriginLocation).X > 0 ? 0.25f : -0.25f, playSound: false, delayFrames: (int)distance / 20);
-                    }
-                }
+                world.weather.AddEvent(new WeatherEvent(type: Weather.WeatherType.Wind, intensity: 1f, startTime: world.islandClock.IslandDateTime, duration: TimeSpan.FromMinutes(15), transitionLength: TimeSpan.FromMinutes(1)));
             }
+
+            //if (Keyboard.HasBeenPressed(Keys.F2))
+            //{
+            //    // a shockwave
+
+            //    if (world == null) return;
+
+            //    Vector2 windOriginLocation = world.Player.sprite.position;
+
+            //    var plantSpriteList = new List<Sprite>();
+            //    world.Grid.GetSpritesInCameraViewAndPutIntoList(camera: world.camera, groupName: Cell.Group.ColPlantGrowth, spriteListToFill: plantSpriteList);
+
+            //    foreach (Sprite sprite in plantSpriteList)
+            //    {
+            //        if (!sprite.boardPiece.canBePickedUp)
+            //        {
+            //            float distance = Vector2.Distance(windOriginLocation, sprite.position);
+
+            //            world.swayManager.AddSwayEvent(targetSprite: sprite, sourceSprite: null, targetRotation: (sprite.position - windOriginLocation).X > 0 ? 0.25f : -0.25f, playSound: false, delayFrames: (int)distance / 20);
+            //        }
+            //    }
+            //}
 
             //if (Keyboard.HasBeenPressed(Keys.F2))
             //{

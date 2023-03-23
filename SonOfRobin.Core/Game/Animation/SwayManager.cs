@@ -15,13 +15,15 @@ namespace SonOfRobin
             public readonly Sprite sourceSprite;
             public readonly float targetRotation;
             public readonly bool playSound;
+            public readonly int rotationSlowdown;
 
-            public WaitingSwayEvent(int startFrame, Sprite targetSprite, Sprite sourceSprite, float targetRotation, bool playSound)
+            public WaitingSwayEvent(int startFrame, Sprite targetSprite, Sprite sourceSprite, float targetRotation, bool playSound, int rotationSlowdown)
             {
                 this.startFrame = startFrame;
                 this.targetSprite = targetSprite;
                 this.sourceSprite = sourceSprite;
                 this.targetRotation = targetRotation;
+                this.rotationSlowdown = rotationSlowdown;
                 this.playSound = playSound;
             }
         }
@@ -50,16 +52,16 @@ namespace SonOfRobin
             }
         }
 
-        public void AddSwayEvent(Sprite targetSprite, Sprite sourceSprite = null, float targetRotation = 0f, bool playSound = true, int delayFrames = 0)
+        public void AddSwayEvent(Sprite targetSprite, Sprite sourceSprite = null, float targetRotation = 0f, bool playSound = true, int delayFrames = 0, int rotationSlowdown = 4)
         {
             if (delayFrames > 0)
             {
-                this.waitingEvents.Add(new WaitingSwayEvent(startFrame: targetSprite.world.CurrentUpdate + delayFrames, targetSprite: targetSprite, sourceSprite: sourceSprite, targetRotation: targetRotation, playSound: playSound));
+                this.waitingEvents.Add(new WaitingSwayEvent(startFrame: targetSprite.world.CurrentUpdate + delayFrames, targetSprite: targetSprite, sourceSprite: sourceSprite, targetRotation: targetRotation, playSound: playSound, rotationSlowdown: rotationSlowdown));
                 return;
             }
 
             if (swayEventsBySpriteID.ContainsKey(targetSprite.id)) return;
-            this.swayEventsBySpriteID[targetSprite.id] = new SwayEvent(sourceSprite: sourceSprite, targetSprite: targetSprite, targetRotation: targetRotation, playSound: playSound);
+            this.swayEventsBySpriteID[targetSprite.id] = new SwayEvent(sourceSprite: sourceSprite, targetSprite: targetSprite, targetRotation: targetRotation, playSound: playSound, rotationSlowdown: rotationSlowdown);
         }
 
         public void FinishAndRemoveAllEvents()
@@ -102,7 +104,7 @@ namespace SonOfRobin
             {
                 if (world.CurrentUpdate >= waitingSwayEvent.startFrame)
                 {
-                    if (waitingSwayEvent.targetSprite.IsInCameraRect) this.AddSwayEvent(targetSprite: waitingSwayEvent.targetSprite, sourceSprite: waitingSwayEvent.sourceSprite, targetRotation: waitingSwayEvent.targetRotation, playSound: waitingSwayEvent.playSound, delayFrames: 0);
+                    if (waitingSwayEvent.targetSprite.IsInCameraRect) this.AddSwayEvent(targetSprite: waitingSwayEvent.targetSprite, sourceSprite: waitingSwayEvent.sourceSprite, targetRotation: waitingSwayEvent.targetRotation, playSound: waitingSwayEvent.playSound, delayFrames: 0, rotationSlowdown: waitingSwayEvent.rotationSlowdown);
                 }
                 else newWaitingEvents.Add(waitingSwayEvent);
             }
@@ -117,10 +119,13 @@ namespace SonOfRobin
         private float targetRotation;
         public readonly Sprite sourceSprite;
         public readonly Sprite targetSprite;
+        public readonly int rotationSlowdown;
         public bool HasEnded { get; private set; }
 
-        public SwayEvent(Sprite targetSprite, Sprite sourceSprite, float targetRotation = 0, bool playSound = true)
+        public SwayEvent(Sprite targetSprite, Sprite sourceSprite, float targetRotation = 0, bool playSound = true, int rotationSlowdown = 4)
         {
+            if (rotationSlowdown < 1) throw new ArgumentOutOfRangeException($"Rotation slowdown cannot be less than 1 - {rotationSlowdown}");
+
             this.HasEnded = false;
             this.sourceSprite = sourceSprite;
             this.targetSprite = targetSprite;
@@ -128,6 +133,7 @@ namespace SonOfRobin
             this.originalRotation = this.targetSprite.rotation;
             this.targetSprite.rotationOriginOverride = new Vector2(targetSprite.frame.textureSize.X * 0.5f, targetSprite.frame.textureSize.Y);
             this.targetRotation = targetRotation;
+            this.rotationSlowdown = rotationSlowdown;
 
             if (playSound)
             {
@@ -176,7 +182,7 @@ namespace SonOfRobin
                 }
             }
 
-            this.targetSprite.rotation += (this.targetRotation - this.targetSprite.rotation) / 4; // movement smoothing
+            this.targetSprite.rotation += (this.targetRotation - this.targetSprite.rotation) / this.rotationSlowdown; // movement smoothing
         }
 
         public void Finish()

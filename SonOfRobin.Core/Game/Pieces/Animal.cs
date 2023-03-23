@@ -324,7 +324,7 @@ namespace SonOfRobin
                             animalTarget.target = this;
                             animalTarget.aiData.Reset(this);
 
-                            animalTarget.activeState = (animalTarget.pregnancyMass > 0 || (animalTarget.HitPointsPercent > 0.4f && world.random.Next(0, 5) == 0)) ?
+                            animalTarget.activeState = (animalTarget.pregnancyMass > 0 || (animalTarget.HitPointsPercent > 0.4f && this.world.random.Next(0, 5) == 0)) ?
                                 State.AnimalChaseTarget : State.AnimalFlee; // sometimes the target will attack the predator
                         }
                     }

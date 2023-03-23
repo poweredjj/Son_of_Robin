@@ -105,7 +105,7 @@ namespace SonOfRobin
         }
 
         public static bool WindowsMemoryLow
-        { get { return os == OS.Windows ? FreeRamMegabytesLeft < 800 : false; } }
+        { get { return os == OS.Windows && FreeRamMegabytesLeft < 800; } }
 
         public static bool LicenceValid
         { get { return DateTime.Now - lastChanged < TimeSpan.FromDays(90); } }

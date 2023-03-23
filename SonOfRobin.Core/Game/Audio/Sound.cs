@@ -15,7 +15,7 @@ namespace SonOfRobin
         public static float globalVolume = 1f;
         public static Dictionary<string, Sound> currentlyPlaying = new Dictionary<string, Sound>();
         public SoundData.Name Name { get; private set; }
-        private readonly float volume;
+        public float volume;
         public float FadeVolume { get; private set; }
         public float TargetVolume { get; private set; }
         public readonly bool isLooped;
