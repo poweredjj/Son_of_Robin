@@ -125,14 +125,13 @@ namespace SonOfRobin
             AmbientLightData rawAmbientLightData = CalculateRawLightAndDarknessColors(currentDateTime);
 
             float cloudsPercentage = weather.CloudsPercentage;
-
             if (cloudsPercentage == 0) return rawAmbientLightData;
 
-            Color darknessColor = Helpers.Blend2Colors(firstColor: rawAmbientLightData.darknessColor, secondColor: Color.Black * 0.4f, firstColorOpacity: 1 - cloudsPercentage, secondColorOpacity: cloudsPercentage);
+            Color lightColor = Helpers.Blend2Colors(firstColor: rawAmbientLightData.lightColor, secondColor: Color.Transparent, firstColorOpacity: 1 - cloudsPercentage, secondColorOpacity: cloudsPercentage);
 
-            // Color darknessColor = Helpers.SubtractSecondFromFirstColor(firstColor: rawAmbientLightData.darknessColor, secondColor: Color.Black * cloudsPercentage);
+            Color darknessColor = Helpers.DarkenFirstColorWithSecond(firstColor: rawAmbientLightData.darknessColor, secondColor: Color.Black * 0.4f, firstColorOpacity: 1 - cloudsPercentage, secondColorOpacity: cloudsPercentage);
 
-            return new AmbientLightData(timeOfDay: currentDateTime.TimeOfDay, darknessColor: darknessColor, lightColor: rawAmbientLightData.lightColor);
+            return new AmbientLightData(timeOfDay: currentDateTime.TimeOfDay, darknessColor: darknessColor, lightColor: lightColor);
         }
 
         public static AmbientLightData CalculateRawLightAndDarknessColors(DateTime currentDateTime)
