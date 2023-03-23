@@ -40,13 +40,13 @@ namespace SonOfRobin
 
         public void MakeSmallPlantsReactToStep(Sprite sourceSprite)
         {
-            if (!Preferences.plantsSway) return;
+            if (!Preferences.plantsSway || sourceSprite.boardPiece.name == PieceTemplate.Name.PlayerGhost) return;
 
             List<Sprite> collidingSpritesList = sourceSprite.GetCollidingSpritesAtPosition(positionToCheck: sourceSprite.position, cellGroupsToCheck: new List<Cell.Group> { Cell.Group.ColPlantGrowth });
 
             foreach (Sprite targetSprite in collidingSpritesList)
             {
-                this.AddSwayEvent(sourceSprite: sourceSprite, targetSprite: targetSprite, playSound: true);
+                if (targetSprite.boardPiece.GetType() == typeof(Plant)) this.AddSwayEvent(sourceSprite: sourceSprite, targetSprite: targetSprite, playSound: true);
             }
         }
 
