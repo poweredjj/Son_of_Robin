@@ -31,6 +31,12 @@ namespace SonOfRobin
         private readonly Dictionary<string, SwayEvent> swayEventsBySpriteID;
         private List<WaitingSwayEvent> waitingEvents;
 
+        public float GetOriginalRotationForSprite(Sprite sprite) // for shadows
+        {
+            if (this.swayEventsBySpriteID.ContainsKey(sprite.id)) return swayEventsBySpriteID[sprite.id].originalRotation;
+            else return sprite.rotation;
+        }
+
         public int SwayEventsCount
         { get { return swayEventsBySpriteID.Count; } }
 
@@ -115,7 +121,7 @@ namespace SonOfRobin
 
     public class SwayEvent
     {
-        private readonly float originalRotation;
+        public readonly float originalRotation;
         private float targetRotation;
         public readonly Sprite sourceSprite;
         public readonly Sprite targetSprite;

@@ -181,7 +181,7 @@ namespace SonOfRobin
             if (!this.windSound.IsPlaying) this.windSound.Play(ignore3DThisPlay: true);
 
             TimeSpan minCooldown = TimeSpan.FromMinutes(2 - (this.WindPercentage * 1));
-            TimeSpan maxCooldown = TimeSpan.FromMinutes(15 - (this.WindPercentage * 3));
+            TimeSpan maxCooldown = TimeSpan.FromMinutes(8 - (this.WindPercentage * 3));
             TimeSpan windCooldown = TimeSpan.FromTicks((long)(this.world.random.NextDouble() * (maxCooldown - minCooldown).Ticks) + minCooldown.Ticks);
 
             this.NextWindBlow = islandDateTime + windCooldown;

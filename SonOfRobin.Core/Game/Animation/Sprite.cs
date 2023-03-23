@@ -910,7 +910,7 @@ namespace SonOfRobin
                     new Vector2(shadowSprite.position.X + drawOffsetX, shadowSprite.position.Y + drawOffsetY),
                     sourceRectangle: frame.textureRect,
                     color: color * shadowSprite.opacity,
-                    rotation: shadowSprite.rotation + shadowAngle + (float)(Math.PI / 2f),
+                    rotation: shadowSprite.world.swayManager.GetOriginalRotationForSprite(shadowSprite) + shadowAngle + (float)(Math.PI / 2f),
                     origin: new Vector2(-frame.gfxOffset.X / frame.scale, -(frame.gfxOffset.Y + frame.colOffset.Y) / frame.scale),
                     scale: new Vector2(xScale, yScale),
                     effects: SpriteEffects.None,
