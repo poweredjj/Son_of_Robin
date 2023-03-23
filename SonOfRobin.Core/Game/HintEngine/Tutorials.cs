@@ -174,7 +174,7 @@ namespace SonOfRobin
             new Tutorial(type: Type.Heat, name: "heat", title: "Heat.",
                 messages: new List<HintMessage> {
                 new HintMessage(text: "It is getting really hot.\nI feel dizzy...", boxType: HintMessage.BoxType.Dialogue, fieldOnly: true),
-                new HintMessage(text: "At noon, high temperature makes you get tired much faster.", boxType: messageTextType),
+                new HintMessage(text: "At noon, if no clouds are present,\nhigh temperature makes you get tired much faster.", boxType: messageTextType),
                 new HintMessage(text: "You can cool yourself for a while by entering water |.",imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.WaterDrop].texture }, boxType: messageTextType),
                 new HintMessage(text: "The best solution is to wear equipment, that protects from heat |.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.HatSimple) }, boxType: messageTextType)
                 });

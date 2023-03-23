@@ -112,7 +112,7 @@ namespace SonOfRobin
             this.TimePlayed = TimeSpan.Zero;
             this.updateMultiplier = 1;
             this.islandClock = this.saveGameData == null ? new IslandClock(0) : new IslandClock();
-            this.weather = new Weather(random: this.random, islandClock: this.islandClock);
+            this.weather = new Weather(world: this, islandClock: this.islandClock);
             this.waterSurfaceManager = new WaterSurfaceManager(world: this);
             this.swayManager = new SwayManager();
 
@@ -1560,7 +1560,7 @@ namespace SonOfRobin
 
                 // drawing fog
 
-                if (fogPercentage > 0) SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, extendedViewRect, Color.White * fogPercentage * 0.65f);
+                if (fogPercentage > 0) SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, extendedViewRect, Color.White * fogPercentage * 0.75f);
 
                 // drawing darkness
 

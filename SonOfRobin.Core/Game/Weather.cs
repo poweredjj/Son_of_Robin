@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -65,24 +66,41 @@ namespace SonOfRobin
         { Wind, Clouds, Rain, Fog }
 
         public static readonly WeatherType[] allTypes = (WeatherType[])Enum.GetValues(typeof(WeatherType));
+        private static readonly DateTime veryOldDate = new DateTime(1900, 1, 1);
 
         private static readonly TimeSpan minForecastDuration = TimeSpan.FromDays(1);
         private static readonly TimeSpan maxForecastDuration = minForecastDuration + minForecastDuration;
 
-        private readonly Random random;
+        private readonly World world;
         private readonly IslandClock islandClock;
         private readonly List<WeatherEvent> weatherEvents;
         private DateTime forecastEnd;
         private readonly Dictionary<WeatherType, float> currentIntensityForType;
         private bool firstForecastCreated;
 
-        public Weather(Random random, IslandClock islandClock)
+        public float CloudsPercentage { get; private set; }
+        public float FogPercentage { get; private set; }
+        public float SunVisibility { get; private set; }
+        public float WindPercentage { get; private set; }
+        public float WindOriginX { get; private set; }
+        public float WindOriginY { get; private set; }
+        public DateTime NextWindBlow { get; private set; }
+
+        public Weather(World world, IslandClock islandClock)
         {
-            this.random = random;
+            this.world = world;
             this.islandClock = islandClock;
             this.weatherEvents = new List<WeatherEvent>();
-            this.forecastEnd = new DateTime(1900, 1, 1); // to ensure first update
+            this.forecastEnd = veryOldDate; // to ensure first update
             this.firstForecastCreated = false;
+
+            this.CloudsPercentage = 0f;
+            this.FogPercentage = 0f;
+            this.SunVisibility = 1f;
+            this.WindOriginX = 0f;
+            this.WindOriginY = 0f;
+            this.NextWindBlow = veryOldDate;
+            this.WindPercentage = 0f;
 
             this.currentIntensityForType = new Dictionary<WeatherType, float>();
             foreach (WeatherType type in allTypes)
@@ -123,9 +141,64 @@ namespace SonOfRobin
             DateTime islandDateTime = this.islandClock.IslandDateTime;
             weatherEvents.RemoveAll(e => e.endTime < islandDateTime);
 
+            this.CloudsPercentage = Math.Min(this.GetIntensityForWeatherType(WeatherType.Clouds) * 2, 1);
+            this.FogPercentage = this.GetIntensityForWeatherType(WeatherType.Fog);
+            this.SunVisibility = Math.Max(0, 1f - (this.CloudsPercentage + (this.FogPercentage * 0.5f)));
+
+            this.WindPercentage = this.GetIntensityForWeatherType(WeatherType.Wind);
+            this.ProcessWind(islandDateTime);
+
             this.UpdateCurrentIntensities();
 
             if (this.forecastEnd < islandDateTime + minForecastDuration) this.GenerateForecast();
+        }
+
+        private void ProcessWind(DateTime islandDateTime)
+        {
+            if (this.WindPercentage == 0)
+            {
+                this.WindOriginX = -1;
+                this.WindOriginY = -1;
+                this.NextWindBlow = veryOldDate;
+
+                return;
+            }
+
+            if (this.NextWindBlow > islandDateTime) return;
+
+            if (this.WindOriginX == -1 || this.WindOriginY == -1)
+            {
+                this.WindOriginX = (float)this.world.random.NextDouble();
+                this.WindOriginY = (float)this.world.random.NextDouble();
+            }
+
+            TimeSpan minCooldown = TimeSpan.FromMinutes(1);
+            TimeSpan maxCooldown = TimeSpan.FromMinutes(5);
+            TimeSpan windCooldown = TimeSpan.FromTicks((long)(this.world.random.NextDouble() * (maxCooldown - minCooldown).Ticks) + minCooldown.Ticks);
+
+            this.NextWindBlow = islandDateTime + windCooldown;
+
+            Rectangle extendedCameraRect = this.world.camera.viewRect;
+            extendedCameraRect.Inflate(extendedCameraRect.Width * 1f, extendedCameraRect.Height * 1f);
+
+            int x = extendedCameraRect.X + (int)(extendedCameraRect.Width * WindOriginX);
+            int y = extendedCameraRect.Y + (int)(extendedCameraRect.Height * WindOriginY);
+            Vector2 windOriginLocation = new Vector2(x, y);
+
+            var plantSpriteList = new List<Sprite>();
+            this.world.Grid.GetSpritesInCameraViewAndPutIntoList(camera: this.world.camera, groupName: Cell.Group.ColPlantGrowth, spriteListToFill: plantSpriteList);
+
+            float targetRotation = 0.35f * this.WindPercentage;
+
+            foreach (Sprite sprite in plantSpriteList)
+            {
+                if (!sprite.blocksMovement)
+                {
+                    float distance = Vector2.Distance(windOriginLocation, sprite.position);
+
+                    this.world.swayManager.AddSwayEvent(targetSprite: sprite, sourceSprite: null, targetRotation: (sprite.position - windOriginLocation).X > 0 ? targetRotation : -targetRotation, playSound: false, delayFrames: (int)distance / 20);
+                }
+            }
         }
 
         private void GenerateForecast()
@@ -154,18 +227,18 @@ namespace SonOfRobin
             float maxVal = 0.8f;
             float addChanceFactor = 0.3f; // minimum value in 0 - 1 range, that will generate a single event
 
-            if (this.random.Next(0, 3) == 0)
+            if (this.world.random.Next(0, 3) == 0)
             {
                 // bad weather happens from time to time
-                minVal += Helpers.GetRandomFloatForRange(random: this.random, minVal: 0.0f, maxVal: 0.5f);
+                minVal += Helpers.GetRandomFloatForRange(random: this.world.random, minVal: 0.0f, maxVal: 0.5f);
                 maxVal = 1.0f;
                 addChanceFactor = 0.0f;
             }
 
-            float cloudsMaxIntensity = Helpers.GetRandomFloatForRange(random: this.random, minVal: minVal, maxVal: maxVal);
-            float rainMaxIntensity = Helpers.GetRandomFloatForRange(random: this.random, minVal: minVal, maxVal: maxVal);
-            float windMaxIntensity = Helpers.GetRandomFloatForRange(random: this.random, minVal: minVal, maxVal: maxVal);
-            float fogMaxIntensity = Helpers.GetRandomFloatForRange(random: this.random, minVal: minVal, maxVal: maxVal);
+            float cloudsMaxIntensity = Helpers.GetRandomFloatForRange(random: this.world.random, minVal: minVal, maxVal: maxVal);
+            float rainMaxIntensity = Helpers.GetRandomFloatForRange(random: this.world.random, minVal: minVal, maxVal: maxVal);
+            float windMaxIntensity = Helpers.GetRandomFloatForRange(random: this.world.random, minVal: minVal, maxVal: maxVal);
+            float fogMaxIntensity = Helpers.GetRandomFloatForRange(random: this.world.random, minVal: minVal, maxVal: maxVal);
 
             // adding clouds
             this.AddNewWeatherEvents(type: WeatherType.Clouds, startTime: forecastStartTime, endTime: this.forecastEnd, minDuration: TimeSpan.FromMinutes(20), maxDuration: TimeSpan.FromHours(8), minGap: TimeSpan.FromMinutes(30), maxGap: TimeSpan.FromHours(10), maxIntensity: cloudsMaxIntensity, addChanceFactor: addChanceFactor);
@@ -209,7 +282,7 @@ namespace SonOfRobin
 
             while (true)
             {
-                TimeSpan gap = TimeSpan.FromTicks((long)(random.NextDouble() * (maxGap - minGap).Ticks) + minGap.Ticks);
+                TimeSpan gap = TimeSpan.FromTicks((long)(world.random.NextDouble() * (maxGap - minGap).Ticks) + minGap.Ticks);
                 timeCursor += gap;
 
                 if (timeCursor >= endTime) return; // no point in adding event, if timeCursor is outside range
@@ -222,15 +295,15 @@ namespace SonOfRobin
                     if (minDuration < TimeSpan.FromMinutes(10)) return;
                 }
 
-                TimeSpan duration = TimeSpan.FromTicks((long)(random.NextDouble() * (maxDuration - minDuration).Ticks) + minDuration.Ticks);
+                TimeSpan duration = TimeSpan.FromTicks((long)(world.random.NextDouble() * (maxDuration - minDuration).Ticks) + minDuration.Ticks);
 
                 TimeSpan maxTransition = TimeSpan.FromTicks((long)(duration.Ticks / 4));
                 TimeSpan minTransition = TimeSpan.FromTicks((long)(maxTransition.Ticks / 3));
-                TimeSpan transition = TimeSpan.FromTicks((long)(random.NextDouble() * (maxTransition - minTransition).Ticks) + minTransition.Ticks);
+                TimeSpan transition = TimeSpan.FromTicks((long)(world.random.NextDouble() * (maxTransition - minTransition).Ticks) + minTransition.Ticks);
 
-                float intensity = Helpers.GetRandomFloatForRange(random: this.random, minVal: 0.5f, maxVal: maxIntensity);
+                float intensity = Helpers.GetRandomFloatForRange(random: this.world.random, minVal: 0.5f, maxVal: maxIntensity);
 
-                bool add = addChanceFactor == 0 || random.NextDouble() >= addChanceFactor;
+                bool add = addChanceFactor == 0 || world.random.NextDouble() >= addChanceFactor;
                 if (add) this.weatherEvents.Add(new WeatherEvent(type: type, intensity: intensity, startTime: timeCursor, duration: duration, transitionLength: transition));
 
                 timeCursor += duration;
@@ -249,12 +322,23 @@ namespace SonOfRobin
             }
         }
 
+        //private readonly Dictionary<WeatherType, float> currentIntensityForType;
+
         public Dictionary<string, Object> Serialize()
         {
             Dictionary<string, Object> weatherData = new Dictionary<string, object>
             {
                 { "weatherEvents", this.weatherEvents },
+                { "currentIntensityForType", this.currentIntensityForType },
                 { "forecastEnd", this.forecastEnd },
+                { "firstForecastCreated", this.firstForecastCreated },
+                { "CloudsPercentage", this.CloudsPercentage },
+                { "FogPercentage", this.FogPercentage },
+                { "SunVisibility", this.SunVisibility },
+                { "WindOriginX", this.WindOriginX },
+                { "WindOriginY", this.WindOriginY },
+                { "WindPercentage", this.WindPercentage },
+                { "NextWindBlow", this.NextWindBlow },
             };
 
             return weatherData;
@@ -263,26 +347,29 @@ namespace SonOfRobin
         public void Deserialize(Dictionary<string, Object> weatherData)
         {
             var weatherEvents = (List<WeatherEvent>)weatherData["weatherEvents"];
-            var forecastEnd = (DateTime)weatherData["forecastEnd"];
-
             this.weatherEvents.Clear();
             this.weatherEvents.AddRange(weatherEvents);
-            this.forecastEnd = forecastEnd;
-            this.firstForecastCreated = true;
+
+            this.currentIntensityForType.Clear();
+            foreach (var kvp in (Dictionary<WeatherType, float>)weatherData["currentIntensityForType"])
+            {
+                this.currentIntensityForType[kvp.Key] = kvp.Value;
+            }
+
+            this.forecastEnd = (DateTime)weatherData["forecastEnd"];
+            this.firstForecastCreated = (bool)weatherData["firstForecastCreated"];
+            this.CloudsPercentage = (float)weatherData["CloudsPercentage"];
+            this.FogPercentage = (float)weatherData["FogPercentage"];
+            this.SunVisibility = (float)weatherData["SunVisibility"];
+            this.WindOriginX = (float)weatherData["WindOriginX"];
+            this.WindOriginY = (float)weatherData["WindOriginY"];
+            this.WindPercentage = (float)weatherData["WindPercentage"];
+            this.NextWindBlow = (DateTime)weatherData["NextWindBlow"];
         }
 
         public void AddEvent(WeatherEvent weatherEvent)
         {
             this.weatherEvents.Add(weatherEvent);
         }
-
-        public float CloudsPercentage
-        { get { return Math.Min(this.GetIntensityForWeatherType(WeatherType.Clouds) * 2, 1); } }
-
-        public float FogPercentage
-        { get { return this.GetIntensityForWeatherType(WeatherType.Fog); } }
-
-        public float SunVisibility
-        { get { return Math.Max(0, 1f - (this.CloudsPercentage + (this.FogPercentage * 0.5f))); } }
     }
 }
