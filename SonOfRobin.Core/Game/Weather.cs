@@ -27,7 +27,7 @@ namespace SonOfRobin
             this.endTime = startTime + duration;
             this.transitionLength = transitionLength;
 
-            MessageLog.AddMessage(msgType: MsgType.User, message: $"New WeatherEvent {this.type}, {this.startTime:HH\\:mm} - {this.endTime:HH\\:mm} ({this.duration:hh\\:mm}), transLength {transitionLength:hh\\:mm}, intensity {intensity}"); // for testing
+            MessageLog.AddMessage(msgType: MsgType.User, message: $"New WeatherEvent {this.type}, D {this.startTime:d HH\\:mm} - D {this.endTime:d HH\\:mm} ({this.duration:hh\\:mm}), transLength {transitionLength:hh\\:mm}, intensity {intensity}"); // for testing
         }
 
         public float GetIntensity(DateTime datetime)
@@ -74,6 +74,7 @@ namespace SonOfRobin
         private readonly List<WeatherEvent> weatherEvents;
         private DateTime forecastEnd;
         private readonly Dictionary<WeatherType, float> currentIntensityForType;
+        private bool firstForecastCreated;
 
         public Weather(Random random, IslandClock islandClock)
         {
@@ -81,6 +82,7 @@ namespace SonOfRobin
             this.islandClock = islandClock;
             this.weatherEvents = new List<WeatherEvent>();
             this.forecastEnd = new DateTime(1900, 1, 1); // to ensure first update
+            this.firstForecastCreated = false;
 
             this.currentIntensityForType = new Dictionary<WeatherType, float>();
             foreach (WeatherType type in allTypes)
@@ -131,13 +133,22 @@ namespace SonOfRobin
             DateTime islandDateTime = this.islandClock.IslandDateTime;
 
             DateTime forecastStartTime = islandDateTime;
-            this.forecastEnd = islandDateTime + maxForecastDuration;
 
-            if (this.weatherEvents.Any())
+            if (!this.firstForecastCreated)
             {
-                var weatherEventsByEndTime = this.weatherEvents.OrderByDescending(e => e.endTime).ToList();
-                forecastStartTime = weatherEventsByEndTime[0].endTime;
+                forecastStartTime = islandDateTime + TimeSpan.FromHours(10); // no weather effects for the first few hours
+                this.firstForecastCreated = true;
             }
+            else
+            {
+                if (this.weatherEvents.Any())
+                {
+                    var weatherEventsByEndTime = this.weatherEvents.OrderByDescending(e => e.endTime).ToList();
+                    forecastStartTime = weatherEventsByEndTime[0].endTime;
+                }
+            }
+
+            this.forecastEnd = forecastStartTime + maxForecastDuration;
 
             float minVal = 0.2f;
             float maxVal = 0.8f;
@@ -257,6 +268,7 @@ namespace SonOfRobin
             this.weatherEvents.Clear();
             this.weatherEvents.AddRange(weatherEvents);
             this.forecastEnd = forecastEnd;
+            this.firstForecastCreated = true;
         }
 
         public void AddEvent(WeatherEvent weatherEvent)
@@ -265,9 +277,12 @@ namespace SonOfRobin
         }
 
         public float CloudsPercentage
-        { get { return Math.Min(this.GetIntensityForWeatherType(Weather.WeatherType.Clouds) * 2, 1); } }
+        { get { return Math.Min(this.GetIntensityForWeatherType(WeatherType.Clouds) * 2, 1); } }
+
+        public float FogPercentage
+        { get { return this.GetIntensityForWeatherType(WeatherType.Fog); } }
 
         public float SunVisibility
-        { get { return 1f - this.CloudsPercentage; } }
+        { get { return Math.Max(0, 1f - (this.CloudsPercentage + (this.FogPercentage * 0.5f))); } }
     }
 }

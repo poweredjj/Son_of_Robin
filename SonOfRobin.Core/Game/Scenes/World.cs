@@ -1511,8 +1511,6 @@ namespace SonOfRobin
 
         private void DrawLightAndDarkness(List<Sprite> lightSprites)
         {
-            if (!Preferences.showLighting) return;
-
             Vector2 darknessMaskScale = this.DarknessMaskScale;
 
             AmbientLight.AmbientLightData ambientLightData = AmbientLight.CalculateLightAndDarknessColors(currentDateTime: this.islandClock.IslandDateTime, weather: this.weather);
@@ -1527,7 +1525,7 @@ namespace SonOfRobin
                 ColorDestinationBlend = Blend.One
             };
             SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix, samplerState: SamplerState.AnisotropicClamp, sortMode: SpriteSortMode.Immediate, blendState: ambientBlend);
-            SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, extendedViewRect, ambientLightData.lightColor);
+            if (ambientLightData.lightColor != Color.Transparent) SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, extendedViewRect, ambientLightData.lightColor);
 
             // drawing point lights
 
@@ -1553,13 +1551,20 @@ namespace SonOfRobin
                 }
             }
 
-            // drawing darkness
-            if (ambientLightData.darknessColor != Color.Transparent)
+            float fogPercentage = this.weather.FogPercentage;
+
+            if (ambientLightData.darknessColor != Color.Transparent || fogPercentage > 0)
             {
                 SonOfRobinGame.SpriteBatch.End();
                 SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
 
-                SonOfRobinGame.SpriteBatch.Draw(this.darknessMask, new Rectangle(x: extendedViewRect.X, y: extendedViewRect.Y, width: (int)(this.darknessMask.Width * darknessMaskScale.X), height: (int)(this.darknessMask.Height * darknessMaskScale.Y)), Color.White);
+                // drawing fog
+
+                if (fogPercentage > 0) SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, extendedViewRect, Color.White * fogPercentage * 0.65f);
+
+                // drawing darkness
+
+                if (ambientLightData.darknessColor != Color.Transparent) SonOfRobinGame.SpriteBatch.Draw(this.darknessMask, new Rectangle(x: extendedViewRect.X, y: extendedViewRect.Y, width: (int)(this.darknessMask.Width * darknessMaskScale.X), height: (int)(this.darknessMask.Height * darknessMaskScale.Y)), Color.White);
             }
 
             SonOfRobinGame.SpriteBatch.End();

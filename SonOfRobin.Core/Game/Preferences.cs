@@ -133,7 +133,6 @@ namespace SonOfRobin
         private static ButtonScheme.Type controlTipsScheme = ButtonScheme.Type.XboxSeries;
         public static float mapMarkerScale = 1f;
         public static bool showHints = true;
-        public static bool showLighting = true;
         public static bool showDebris = true;
         public static bool highQualityWater = true;
         public static bool plantsSway = true;
@@ -540,7 +539,6 @@ namespace SonOfRobin
             prefsData["fieldControlTipsScale"] = fieldControlTipsScale;
             prefsData["mapMarkerScale"] = mapMarkerScale;
             prefsData["showHints"] = showHints;
-            prefsData["showLighting"] = showLighting;
             prefsData["showDebris"] = showDebris;
             prefsData["useMultipleThreads"] = useMultipleThreads;
             prefsData["darknessResolution"] = darknessResolution;
@@ -607,7 +605,6 @@ namespace SonOfRobin
                     fieldControlTipsScale = (float)prefsData["fieldControlTipsScale"];
                     mapMarkerScale = (float)prefsData["mapMarkerScale"];
                     showHints = (bool)prefsData["showHints"];
-                    showLighting = (bool)prefsData["showLighting"];
                     showDebris = (bool)prefsData["showDebris"];
                     useMultipleThreads = (bool)prefsData["useMultipleThreads"];
                     darknessResolution = (int)prefsData["darknessResolution"];

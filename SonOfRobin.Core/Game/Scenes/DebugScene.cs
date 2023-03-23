@@ -146,7 +146,7 @@ namespace SonOfRobin
 
                 if (Keyboard.HasBeenPressed(Keys.D8))
                 {
-                    world.weather.AddEvent(new WeatherEvent(type: Weather.WeatherType.Clouds, intensity: 1f, startTime: world.islandClock.IslandDateTime, duration: TimeSpan.FromMinutes(6), transitionLength: TimeSpan.FromMinutes(2)));
+                    world.weather.AddEvent(new WeatherEvent(type: Weather.WeatherType.Fog, intensity: 1f, startTime: world.islandClock.IslandDateTime, duration: TimeSpan.FromMinutes(6), transitionLength: TimeSpan.FromMinutes(2)));
                 }
 
                 if (Keyboard.HasBeenPressed(Keys.D9))

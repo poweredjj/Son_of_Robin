@@ -38,7 +38,6 @@ namespace SonOfRobin
             public static SunLightData CalculateSunLight(DateTime currentDateTime)
             {
                 TimeSpan currentTimeOfDay = currentDateTime.TimeOfDay;
-
                 if (currentTimeOfDay < TimeSpan.FromHours(4) || currentTimeOfDay > TimeSpan.FromHours(20)) return noSun;  // to avoid checking these ranges
 
                 SunLightData prevLightData, nextLightData;
@@ -136,6 +135,8 @@ namespace SonOfRobin
 
         public static AmbientLightData CalculateRawLightAndDarknessColors(DateTime currentDateTime)
         {
+            // raw colors - without taking weather effects into account
+
             TimeSpan currentTimeOfDay = currentDateTime.TimeOfDay;
 
             // return new AmbientLightData(timeOfDay: currentTimeOfDay, darknessColor: Color.Black * 0.7f, lightColor: Color.Transparent); // for testing
