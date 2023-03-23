@@ -321,5 +321,35 @@ namespace SonOfRobin
         {
             return (float)(random.NextDouble() * (maxVal - minVal) + minVal);
         }
+
+        public static Dictionary<DateTime, TimeSpan> GetTimeOfDayOccurrences(DateTime startTime, DateTime endTime, TimeSpan checkTimeStart, TimeSpan checkTimeEnd)
+        {
+            // start example: TimeSpan checkTimeStart = TimeSpan.FromHours(6);
+            // end example: TimeSpan checkTimeEnd = TimeSpan.FromHours(8);
+
+            // Create a dictionary to store the start time and duration of each occurrence
+            Dictionary<DateTime, TimeSpan> occurrences = new Dictionary<DateTime, TimeSpan>();
+
+            // Loop through each day in the specified time range
+            for (DateTime date = startTime.Date; date <= endTime.Date; date = date.AddDays(1))
+            {
+                // Combine the date with the start and end times for the day
+                DateTime dayStart = date + checkTimeStart;
+                DateTime dayEnd = date + checkTimeEnd;
+
+                // Check if the time period overlaps with the specified time range
+                if (dayStart <= endTime && dayEnd >= startTime)
+                {
+                    // Calculate the start and end times for the overlapping time period
+                    DateTime periodStart = dayStart < startTime ? startTime : dayStart;
+                    DateTime periodEnd = dayEnd > endTime ? endTime : dayEnd;
+
+                    // Add the start time and duration of the period to the dictionary
+                    occurrences.Add(periodStart, periodEnd - periodStart);
+                }
+            }
+
+            return occurrences;
+        }
     }
 }

@@ -130,8 +130,14 @@ namespace SonOfRobin
         {
             DateTime islandDateTime = this.islandClock.IslandDateTime;
 
-            DateTime forecastStartTime = islandDateTime + minForecastDuration;
-            DateTime forecastEndTime = islandDateTime + maxForecastDuration;
+            DateTime forecastStartTime = islandDateTime;
+            this.forecastEnd = islandDateTime + maxForecastDuration;
+
+            if (this.weatherEvents.Any())
+            {
+                var weatherEventsByEndTime = this.weatherEvents.OrderByDescending(e => e.endTime).ToList();
+                forecastStartTime = weatherEventsByEndTime[0].endTime;
+            }
 
             float minVal = 0.2f;
             float maxVal = 0.8f;
@@ -151,9 +157,9 @@ namespace SonOfRobin
             float fogMaxIntensity = Helpers.GetRandomFloatForRange(random: this.random, minVal: minVal, maxVal: maxVal);
 
             // adding clouds
-            this.AddNewWeatherEvents(type: WeatherType.Clouds, startTime: forecastStartTime, endTime: forecastEndTime, minDuration: TimeSpan.FromMinutes(20), maxDuration: TimeSpan.FromHours(8), minGap: TimeSpan.FromMinutes(30), maxGap: TimeSpan.FromHours(10), maxIntensity: cloudsMaxIntensity, addChanceFactor: addChanceFactor);
+            this.AddNewWeatherEvents(type: WeatherType.Clouds, startTime: forecastStartTime, endTime: this.forecastEnd, minDuration: TimeSpan.FromMinutes(20), maxDuration: TimeSpan.FromHours(8), minGap: TimeSpan.FromMinutes(30), maxGap: TimeSpan.FromHours(10), maxIntensity: cloudsMaxIntensity, addChanceFactor: addChanceFactor);
 
-            this.AddNewWeatherEvents(type: WeatherType.Wind, startTime: forecastStartTime, endTime: forecastEndTime, minDuration: TimeSpan.FromMinutes(20), maxDuration: TimeSpan.FromHours(2), minGap: TimeSpan.FromMinutes(30), maxGap: TimeSpan.FromHours(6), maxIntensity: windMaxIntensity, addChanceFactor: Math.Min(addChanceFactor + 0.2f, 1.0f));
+            this.AddNewWeatherEvents(type: WeatherType.Wind, startTime: forecastStartTime, endTime: this.forecastEnd, minDuration: TimeSpan.FromMinutes(20), maxDuration: TimeSpan.FromHours(2), minGap: TimeSpan.FromMinutes(30), maxGap: TimeSpan.FromHours(6), maxIntensity: windMaxIntensity, addChanceFactor: Math.Min(addChanceFactor + 0.2f, 1.0f));
 
             // adding rain
             foreach (WeatherEvent weatherEvent in this.weatherEvents.ToList())
@@ -171,9 +177,19 @@ namespace SonOfRobin
             }
 
             // adding fog
-            // TODO add fog (only during these hours: 4-6, 16-18)
+            var morningTimes = Helpers.GetTimeOfDayOccurrences(startTime: islandDateTime, endTime: this.forecastEnd, checkTimeStart: TimeSpan.FromHours(4), checkTimeEnd: TimeSpan.FromHours(6));
+            var eveningTimes = Helpers.GetTimeOfDayOccurrences(startTime: islandDateTime, endTime: this.forecastEnd, checkTimeStart: TimeSpan.FromHours(16), checkTimeEnd: TimeSpan.FromHours(18));
 
-            this.forecastEnd = forecastEndTime;
+            Dictionary<DateTime, TimeSpan> whenFogCanOccur = morningTimes.Union(eveningTimes).ToDictionary(x => x.Key, x => x.Value);
+
+            foreach (var kvp in whenFogCanOccur)
+            {
+                DateTime startTime = kvp.Key;
+                TimeSpan duration = kvp.Value;
+                DateTime endTime = startTime + duration;
+
+                this.AddNewWeatherEvents(type: WeatherType.Fog, startTime: startTime, endTime: endTime, minDuration: TimeSpan.FromTicks(duration.Ticks / 2), maxDuration: duration, minGap: TimeSpan.FromMinutes(0), maxGap: TimeSpan.FromTicks(duration.Ticks / 5), maxIntensity: fogMaxIntensity, addChanceFactor: addChanceFactor);
+            }
         }
 
         private void AddNewWeatherEvents(WeatherType type, DateTime startTime, DateTime endTime, TimeSpan minDuration, TimeSpan maxDuration, TimeSpan minGap, TimeSpan maxGap, float maxIntensity, float addChanceFactor = 1)
@@ -216,7 +232,6 @@ namespace SonOfRobin
             DateTime islandDateTime = this.islandClock.IslandDateTime;
 
             foreach (WeatherType type in this.currentIntensityForType.Keys.ToList()) this.currentIntensityForType[type] = 0;
-
             foreach (WeatherEvent weatherEvent in this.weatherEvents)
             {
                 this.currentIntensityForType[weatherEvent.type] = Math.Min(this.currentIntensityForType[weatherEvent.type] + weatherEvent.GetIntensity(islandDateTime), 1);
