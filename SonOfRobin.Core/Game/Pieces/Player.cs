@@ -696,7 +696,7 @@ namespace SonOfRobin
             // adding and removing heat
             if (this.world.CurrentUpdate % 65 == 0)
             {
-                if (this.world.islandClock.CurrentPartOfDay == IslandClock.PartOfDay.Noon)
+                if (this.world.islandClock.CurrentPartOfDay == IslandClock.PartOfDay.Noon && this.world.weather.SunVisibility >= 0.8f)
                 {
                     this.buffEngine.AddBuff(buff: new Buff(type: BuffEngine.BuffType.Heat, value: null), world: this.world);
                 }

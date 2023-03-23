@@ -351,5 +351,33 @@ namespace SonOfRobin
 
             return occurrences;
         }
+
+        public static Color Blend2Colors(Color firstColor, Color secondColor, float firstColorOpacity, float secondColorOpacity)
+        {
+            return new Color(
+                        (byte)((firstColor.R * firstColorOpacity) + (secondColor.R * secondColorOpacity)),
+                        (byte)((firstColor.G * firstColorOpacity) + (secondColor.G * secondColorOpacity)),
+                        (byte)((firstColor.B * firstColorOpacity) + (secondColor.B * secondColorOpacity)),
+                        (byte)((firstColor.A * firstColorOpacity) + (secondColor.A * secondColorOpacity))
+                        );
+        }
+
+        public static Color SubtractSecondFromFirstColor(Color firstColor, Color secondColor)
+        {
+            return new Color(
+                             (byte)Math.Max(0, Math.Min(255, firstColor.R - (255 - secondColor.R))),
+                             (byte)Math.Max(0, Math.Min(255, firstColor.G - (255 - secondColor.G))),
+                             (byte)Math.Max(0, Math.Min(255, firstColor.B - (255 - secondColor.B))),
+                             firstColor.A
+                );
+
+
+            //return new Color(
+            //            (byte)(firstColor.R + ((255 - secondColor.R) * secondColor.A)),
+            //            (byte)(firstColor.G + ((255 - secondColor.G) * secondColor.A)),
+            //            (byte)(firstColor.B + ((255 - secondColor.B) * secondColor.A)),
+            //            firstColor.A
+            //            );
+        }
     }
 }

@@ -120,23 +120,34 @@ namespace SonOfRobin
             new AmbientLightData(timeOfDay: TimeSpan.FromHours(20), darknessColor: Color.Black * 0.8f, lightColor: Color.Transparent),
         };
 
-        public static AmbientLightData CalculateLightAndDarknessColors(DateTime currentDateTime)
+        public static AmbientLightData CalculateLightAndDarknessColors(DateTime currentDateTime, Weather weather)
+        {
+            AmbientLightData rawAmbientLightData = CalculateRawLightAndDarknessColors(currentDateTime);
+
+            float cloudsPercentage = weather.CloudsPercentage;
+
+            if (cloudsPercentage == 0) return rawAmbientLightData;
+
+            Color darknessColor = Helpers.Blend2Colors(firstColor: rawAmbientLightData.darknessColor, secondColor: Color.Black * 0.4f, firstColorOpacity: 1 - cloudsPercentage, secondColorOpacity: cloudsPercentage);
+
+            // Color darknessColor = Helpers.SubtractSecondFromFirstColor(firstColor: rawAmbientLightData.darknessColor, secondColor: Color.Black * cloudsPercentage);
+
+            return new AmbientLightData(timeOfDay: currentDateTime.TimeOfDay, darknessColor: darknessColor, lightColor: rawAmbientLightData.lightColor);
+        }
+
+        public static AmbientLightData CalculateRawLightAndDarknessColors(DateTime currentDateTime)
         {
             TimeSpan currentTimeOfDay = currentDateTime.TimeOfDay;
 
             // return new AmbientLightData(timeOfDay: currentTimeOfDay, darknessColor: Color.Black * 0.7f, lightColor: Color.Transparent); // for testing
 
-            AmbientLightData prevLightData, nextLightData;
-            float minutesBetween, prevColorOpacity, nextColorOpacity;
-
             for (int i = 1; i <= lightDataList.Count; i++) // from 1 to count of elements, to properly check the whole range
             {
                 // setting next and previous ambient light values
 
-                if (i < lightDataList.Count) nextLightData = lightDataList[i];
-                else nextLightData = AmbientLightData.MakeCopyPlus24H(lightDataList[0]); // after the last element, the first one should be used (with added 24h)
-
-                prevLightData = lightDataList[i - 1];
+                // after the last element, the first one should be used (with added 24h)
+                AmbientLightData nextLightData = i < lightDataList.Count ? lightDataList[i] : AmbientLightData.MakeCopyPlus24H(lightDataList[0]);
+                AmbientLightData prevLightData = lightDataList[i - 1];
 
                 // checking for time match
 
@@ -149,23 +160,13 @@ namespace SonOfRobin
 
                     // calculating final color values
 
-                    minutesBetween = (float)(nextLightData.timeOfDay.TotalMinutes - prevLightData.timeOfDay.TotalMinutes);
-                    prevColorOpacity = 1f - (float)((currentTimeOfDay.TotalMinutes - prevLightData.timeOfDay.TotalMinutes) / minutesBetween);
-                    nextColorOpacity = 1f - (float)((nextLightData.timeOfDay.TotalMinutes - currentTimeOfDay.TotalMinutes) / minutesBetween);
+                    float minutesBetween = (float)(nextLightData.timeOfDay.TotalMinutes - prevLightData.timeOfDay.TotalMinutes);
+                    float prevColorOpacity = 1f - (float)((currentTimeOfDay.TotalMinutes - prevLightData.timeOfDay.TotalMinutes) / minutesBetween);
+                    float nextColorOpacity = 1f - (float)((nextLightData.timeOfDay.TotalMinutes - currentTimeOfDay.TotalMinutes) / minutesBetween);
 
-                    Color newLightColor = new Color(
-                        (byte)((prevLightData.lightColor.R * prevColorOpacity) + (nextLightData.lightColor.R * nextColorOpacity)),
-                        (byte)((prevLightData.lightColor.G * prevColorOpacity) + (nextLightData.lightColor.G * nextColorOpacity)),
-                        (byte)((prevLightData.lightColor.B * prevColorOpacity) + (nextLightData.lightColor.B * nextColorOpacity)),
-                        (byte)((prevLightData.lightColor.A * prevColorOpacity) + (nextLightData.lightColor.A * nextColorOpacity))
-                        );
+                    Color newLightColor = Helpers.Blend2Colors(firstColor: prevLightData.lightColor, secondColor: nextLightData.lightColor, firstColorOpacity: prevColorOpacity, secondColorOpacity: nextColorOpacity);
 
-                    Color newDarkColor = new Color(
-                        (byte)((prevLightData.darknessColor.R * prevColorOpacity) + (nextLightData.darknessColor.R * nextColorOpacity)),
-                        (byte)((prevLightData.darknessColor.G * prevColorOpacity) + (nextLightData.darknessColor.G * nextColorOpacity)),
-                        (byte)((prevLightData.darknessColor.B * prevColorOpacity) + (nextLightData.darknessColor.B * nextColorOpacity)),
-                        (byte)((prevLightData.darknessColor.A * prevColorOpacity) + (nextLightData.darknessColor.A * nextColorOpacity))
-                        );
+                    Color newDarkColor = Helpers.Blend2Colors(firstColor: prevLightData.darknessColor, secondColor: nextLightData.darknessColor, firstColorOpacity: prevColorOpacity, secondColorOpacity: nextColorOpacity);
 
                     return new AmbientLightData(timeOfDay: currentTimeOfDay, darknessColor: newDarkColor, lightColor: newLightColor);
                 }

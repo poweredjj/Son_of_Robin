@@ -1053,12 +1053,18 @@ namespace SonOfRobin
                 AmbientLight.SunLightData sunLightData = AmbientLight.SunLightData.CalculateSunLight(this.world.islandClock.IslandDateTime);
                 if (sunLightData.sunShadowsColor != Color.Transparent)
                 {
-                    foreach (Sprite shadowSprite in blockingLightSpritesList)
+                    float sunVisibility = this.world.weather.SunVisibility;
+                    if (sunVisibility > 0f)
                     {
-                        Vector2 sunPos = new Vector2(shadowSprite.gfxRect.Center.X + sunLightData.sunPos.X, shadowSprite.gfxRect.Bottom + sunLightData.sunPos.Y);
-                        float shadowAngle = Helpers.GetAngleBetweenTwoPoints(start: sunPos, end: shadowSprite.position);
+                        Color sunShadowsColor = sunLightData.sunShadowsColor * sunVisibility;
 
-                        Sprite.DrawShadow(color: sunLightData.sunShadowsColor, shadowSprite: shadowSprite, lightPos: sunPos, shadowAngle: shadowAngle, yScaleForce: sunLightData.sunShadowsLength);
+                        foreach (Sprite shadowSprite in blockingLightSpritesList)
+                        {
+                            Vector2 sunPos = new Vector2(shadowSprite.gfxRect.Center.X + sunLightData.sunPos.X, shadowSprite.gfxRect.Bottom + sunLightData.sunPos.Y);
+                            float shadowAngle = Helpers.GetAngleBetweenTwoPoints(start: sunPos, end: shadowSprite.position);
+
+                            Sprite.DrawShadow(color: sunShadowsColor, shadowSprite: shadowSprite, lightPos: sunPos, shadowAngle: shadowAngle, yScaleForce: sunLightData.sunShadowsLength);
+                        }
                     }
                 }
             }

@@ -263,5 +263,11 @@ namespace SonOfRobin
         {
             this.weatherEvents.Add(weatherEvent);
         }
+
+        public float CloudsPercentage
+        { get { return Math.Min(this.GetIntensityForWeatherType(Weather.WeatherType.Clouds) * 2, 1); } }
+
+        public float SunVisibility
+        { get { return 1f - this.CloudsPercentage; } }
     }
 }

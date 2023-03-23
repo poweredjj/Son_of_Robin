@@ -1282,7 +1282,7 @@ namespace SonOfRobin
             this.lightSprites.Clear();
 
             if ((Preferences.drawSunShadows && AmbientLight.SunLightData.CalculateSunLight(this.islandClock.IslandDateTime).sunShadowsColor != Color.Transparent) ||
-                (Preferences.drawShadows && AmbientLight.CalculateLightAndDarknessColors(this.islandClock.IslandDateTime).darknessColor != Color.Transparent))
+                (Preferences.drawShadows && AmbientLight.CalculateLightAndDarknessColors(currentDateTime: this.islandClock.IslandDateTime, weather: this.weather).darknessColor != Color.Transparent))
             {
                 this.blockingLightSpritesList.AddRange(this.camera.GetVisibleSprites(groupName: Cell.Group.ColMovement).OrderBy(o => o.gfxRect.Bottom));
             }
@@ -1352,7 +1352,7 @@ namespace SonOfRobin
 
             // returning if darkness is transparent
 
-            AmbientLight.AmbientLightData ambientLightData = AmbientLight.CalculateLightAndDarknessColors(this.islandClock.IslandDateTime);
+            AmbientLight.AmbientLightData ambientLightData = AmbientLight.CalculateLightAndDarknessColors(currentDateTime: this.islandClock.IslandDateTime, weather: this.weather);
 
             if (ambientLightData.darknessColor == Color.Transparent)
             {
@@ -1515,7 +1515,7 @@ namespace SonOfRobin
 
             Vector2 darknessMaskScale = this.DarknessMaskScale;
 
-            AmbientLight.AmbientLightData ambientLightData = AmbientLight.CalculateLightAndDarknessColors(this.islandClock.IslandDateTime);
+            AmbientLight.AmbientLightData ambientLightData = AmbientLight.CalculateLightAndDarknessColors(currentDateTime: this.islandClock.IslandDateTime, weather: this.weather);
             Rectangle extendedViewRect = this.camera.ExtendedViewRect;
 
             // drawing ambient light
