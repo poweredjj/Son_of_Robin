@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace SonOfRobin
 {
@@ -109,7 +108,9 @@ namespace SonOfRobin
             Flame,
             Upgrade,
             WaterDrop,
-
+            RainDrop1,
+            RainDrop2,
+            RainDrop3,
             ChestWooden,
             ChestStone,
             ChestIron,
@@ -877,6 +878,9 @@ namespace SonOfRobin
             AddFrameList(animPackage: PkgName.PotionDarkGreen, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "potion_dark_green", layer: 0, scale: 0.5f));
             AddFrameList(animPackage: PkgName.PotionLightYellow, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "bottle_oil", layer: 0, scale: 0.5f));
             AddFrameList(animPackage: PkgName.WaterDrop, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "water_drop", layer: 0, scale: 0.5f));
+            AddFrameList(animPackage: PkgName.RainDrop1, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "water_drop", layer: 2, scale: 0.1f));
+            AddFrameList(animPackage: PkgName.RainDrop2, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "water_drop", layer: 2, scale: 0.05f));
+            AddFrameList(animPackage: PkgName.RainDrop3, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "water_drop", layer: 2, scale: 0.025f));
             AddFrameList(animPackage: PkgName.Exclamation, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "exclamation", layer: 2, scale: 0.2f));
             AddFrameList(animPackage: PkgName.PlantPoison, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "plant_poison", layer: 0, scale: 0.4f));
             AddFrameList(animPackage: PkgName.PlantPoison, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "plant_poison", layer: 1, scale: 0.6f));

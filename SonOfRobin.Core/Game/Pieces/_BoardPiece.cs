@@ -36,7 +36,9 @@ namespace SonOfRobin
             ScareAnimalsAway,
             PlayAmbientSound,
             MapMarkerShowAndCheck,
-            FogMoveRandomly
+            FogMoveRandomly,
+            RainInitialize,
+            RainFall
         }
 
         public enum Category
@@ -601,6 +603,18 @@ namespace SonOfRobin
                         return;
                     }
 
+                case State.RainInitialize:
+                    {
+                        this.SM_RainInitialize();
+                        return;
+                    }
+
+                case State.RainFall:
+                    {
+                        this.SM_RainFall();
+                        return;
+                    }
+
                 case State.Empty: // this state should be removed from execution (for performance reasons)
                     {
                         this.RemoveFromStateMachines();
@@ -611,9 +625,9 @@ namespace SonOfRobin
             }
         }
 
-        public void AddPassiveMovement(Vector2 movement)
+        public void AddPassiveMovement(Vector2 movement, bool force = false)
         {
-            if (!this.movesWhenDropped) return;
+            if (!this.movesWhenDropped && !force) return;
 
             // activeState should not be changed ("empty" will be removed from state machines, other states will run after the movement stops)
             this.passiveMovement += movement;
@@ -743,6 +757,11 @@ namespace SonOfRobin
         { throw new DivideByZeroException("This method should not be executed."); }
 
         public virtual void SM_FogMoveRandomly()
+        { throw new DivideByZeroException("This method should not be executed."); }
+        public virtual void SM_RainInitialize()
+        { throw new DivideByZeroException("This method should not be executed."); }
+
+        public virtual void SM_RainFall()
         { throw new DivideByZeroException("This method should not be executed."); }
 
         public virtual void SM_MapMarkerShowAndCheck()

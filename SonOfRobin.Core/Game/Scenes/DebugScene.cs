@@ -146,7 +146,13 @@ namespace SonOfRobin
 
                 if (Keyboard.HasBeenPressed(Keys.D8))
                 {
-                    // not used
+                    Rectangle extendedViewRect = world.camera.ExtendedViewRect;
+
+                    for (int i = 0; i < 30; i++)
+                    {
+                        Vector2 position = new Vector2(world.random.Next(extendedViewRect.Left, extendedViewRect.Right), world.camera.viewRect.Top);
+                        BoardPiece piece = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: position, templateName: PieceTemplate.Name.RainDrop, closestFreeSpot: true);
+                    }
                 }
 
                 if (Keyboard.HasBeenPressed(Keys.D9))

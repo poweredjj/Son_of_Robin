@@ -1405,7 +1405,7 @@ namespace SonOfRobin
                             BoardPiece piece = (BoardPiece)movementData["boardPiece"];
                             Vector2 movement = (Vector2)movementData["movement"];
 
-                            if (piece.sprite.IsOnBoard) piece.AddPassiveMovement(movement);
+                            if (piece.sprite.IsOnBoard) piece.AddPassiveMovement(movement: movement, force: true);
                             return;
                         }
 

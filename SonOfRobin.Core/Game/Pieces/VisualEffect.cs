@@ -8,11 +8,13 @@ namespace SonOfRobin
     public class VisualEffect : BoardPiece
     {
         private Tweener tweener;
+        private int rainStepsLeft;
+        private Vector2 rainStep;
 
         public VisualEffect(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, State activeState, bool serialize,
             byte animSize = 0, string animName = "default", ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = true, int generation = 0, bool fadeInAnim = false, bool canBePickedUp = false, bool visible = true, LightEngine lightEngine = null, bool ignoresCollisions = true, AllowedDensity allowedDensity = null) :
 
-            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, blocksMovement: false, minDistance: minDistance, maxDistance: maxDistance, ignoresCollisions: ignoresCollisions, name: name, destructionDelay: destructionDelay, allowedTerrain: allowedTerrain, floatsOnWater: floatsOnWater, maxMassBySize: null, generation: generation, canBePickedUp: canBePickedUp, fadeInAnim: fadeInAnim, serialize: serialize, readableName: readableName, description: description, category: Category.Indestructible, visible: visible, activeState: activeState, lightEngine: lightEngine, allowedDensity: allowedDensity)
+            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, blocksMovement: false, minDistance: minDistance, maxDistance: maxDistance, ignoresCollisions: ignoresCollisions, name: name, destructionDelay: destructionDelay, allowedTerrain: allowedTerrain, floatsOnWater: floatsOnWater, maxMassBySize: null, generation: generation, canBePickedUp: canBePickedUp, fadeInAnim: fadeInAnim, serialize: serialize, readableName: readableName, description: description, category: Category.Indestructible, visible: visible, activeState: activeState, lightEngine: lightEngine, allowedDensity: allowedDensity, isAffectedByWind: false)
         {
         }
 
@@ -46,6 +48,36 @@ namespace SonOfRobin
                 this.world.map.soundMarkerRemove.Play();
                 MessageLog.AddMessage(msgType: MsgType.User, message: "Map marker has been reached.");
             }
+        }
+
+        public override void SM_RainInitialize()
+        {
+            int distance = this.world.random.Next(this.world.camera.viewRect.Height / 4, this.world.camera.viewRect.Height);
+
+            Vector2 rainTargetPos = new Vector2(this.sprite.position.X, this.sprite.position.Y + distance);
+
+            this.rainStepsLeft = this.world.random.Next(15, 220);
+            this.rainStep = (rainTargetPos - this.sprite.position) / this.rainStepsLeft;
+
+            this.activeState = State.RainFall;
+        }
+
+        public override void SM_RainFall()
+        {
+            Vector2 currentStep = this.rainStep;
+            float windPercentage = this.world.weather.WindPercentage;
+            if (windPercentage > 0)
+            {
+                int windModifier = (int)(windPercentage * 3);
+                if (this.world.weather.WindOriginX == 1) windModifier *= -1; // wind blowing from the right
+                currentStep.X += windModifier;
+            }
+
+            this.sprite.Move(currentStep);
+
+            this.rainStepsLeft--;
+
+            if (this.rainStepsLeft <= 0) this.Destroy();
         }
 
         public override void SM_FogMoveRandomly()
