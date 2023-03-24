@@ -13,12 +13,13 @@ namespace SonOfRobin
         private readonly int playDelayMaxVariation;
         private readonly int checkDelay;
         private readonly List<IslandClock.PartOfDay> partOfDayList;
+        private readonly bool generatesWind;
 
         private int currentDelay;
         private int waitUntilFrame;
 
         public AmbientSound(World world, string id, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, Sound sound, int playDelay,
-           int destructionDelay = 0, bool visible = false, AllowedDensity allowedDensity = null, int playDelayMaxVariation = 0, List<IslandClock.PartOfDay> partOfDayList = null) :
+           int destructionDelay = 0, bool visible = false, AllowedDensity allowedDensity = null, int playDelayMaxVariation = 0, List<IslandClock.PartOfDay> partOfDayList = null, bool generatesWind = false) :
 
             base(world: world, id: id, animPackage: AnimData.PkgName.MusicNoteBig, animSize: 0, animName: "default", blocksMovement: false, minDistance: 0, maxDistance: 100, ignoresCollisions: false, name: name, destructionDelay: destructionDelay, allowedTerrain: allowedTerrain, floatsOnWater: true, maxMassBySize: null, generation: 0, canBePickedUp: false, fadeInAnim: false, serialize: false, readableName: readableName, description: description, category: Category.Indestructible, visible: visible, activeState: State.PlayAmbientSound, allowedDensity: allowedDensity)
         {
@@ -27,6 +28,7 @@ namespace SonOfRobin
             this.playDelay = playDelay;
             this.playDelayMaxVariation = playDelayMaxVariation;
             this.partOfDayList = partOfDayList;
+            this.generatesWind = generatesWind;
 
             this.waitUntilFrame = 0;
 
@@ -75,6 +77,7 @@ namespace SonOfRobin
                     this.soundPack.Stop(PieceSoundPack.Action.Ambient);
                     if (Preferences.debugShowSounds) this.sprite.opacity = visMinOpacity;
                 }
+                if (this.generatesWind) this.world.weather.AddLocalizedWind(this.sprite.position);
                 return;
             }
 
