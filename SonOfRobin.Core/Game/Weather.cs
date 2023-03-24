@@ -240,17 +240,35 @@ namespace SonOfRobin
             int rotationSlowdown = this.world.random.Next(10, 25);
             rotationSlowdown = (int)((float)rotationSlowdown / this.WindPercentage);
 
-            bool affectsBlockingPieces = this.WindPercentage > 0.8f;
+            bool strongWind = this.WindPercentage >= 0.75f;
 
             foreach (Sprite sprite in affectedSpriteList)
             {
-                if (sprite.isAffectedByWind && (!sprite.blocksMovement || affectsBlockingPieces))
+                if (!sprite.boardPiece.canBePickedUp && sprite.isAffectedByWind && (!sprite.blocksMovement || strongWind))
                 {
                     float distance = Vector2.Distance(windOriginLocation, sprite.position);
                     float finalRotation = (sprite.position - windOriginLocation).X > 0 ? targetRotation : -targetRotation;
                     if (sprite.blocksMovement) finalRotation *= 0.3f;
 
                     this.world.swayManager.AddSwayEvent(targetSprite: sprite, sourceSprite: null, targetRotation: finalRotation, playSound: false, delayFrames: (int)distance / 20, rotationSlowdown: rotationSlowdown);
+                }
+            }
+
+            if (strongWind) // moving pieces
+            {
+                foreach (Sprite sprite in affectedSpriteList)
+                {
+                    Type pieceType = sprite.boardPiece.GetType();
+
+                    if (sprite.boardPiece.canBePickedUp || pieceType == typeof(Animal) || pieceType == typeof(Debris) || pieceType == typeof(Player))
+                    {
+                        Vector2 movement = (sprite.position - windOriginLocation) / this.world.random.Next(1, 3);
+
+                        float distance = Vector2.Distance(windOriginLocation, sprite.position);
+
+                        var movementData = new Dictionary<string, Object> { { "boardPiece", sprite.boardPiece }, { "movement", movement } };
+                        new Scheduler.Task(taskName: Scheduler.TaskName.AddPassiveMovement, delay: (int)distance / 20, executeHelper: movementData);
+                    }
                 }
             }
         }
