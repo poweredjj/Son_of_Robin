@@ -368,12 +368,12 @@ namespace SonOfRobin
 
             if (Keyboard.HasBeenPressed(Keys.F1))
             {
-                world.weather.AddEvent(new WeatherEvent(type: Weather.WeatherType.Rain, intensity: 1f, startTime: world.islandClock.IslandDateTime, duration: TimeSpan.FromMinutes(20), transitionLength: TimeSpan.FromMinutes(4)));
+                world.weather.AddEvent(new WeatherEvent(type: Weather.WeatherType.Clouds, intensity: 0.55f, startTime: world.islandClock.IslandDateTime, duration: TimeSpan.FromMinutes(20), transitionLength: TimeSpan.FromMinutes(4)));
             }
 
             if (Keyboard.HasBeenPressed(Keys.F2))
             {
-                world.weather.AddEvent(new WeatherEvent(type: Weather.WeatherType.Wind, intensity: 1f, startTime: world.islandClock.IslandDateTime, duration: TimeSpan.FromMinutes(20), transitionLength: TimeSpan.FromMinutes(4)));
+                world.weather.AddEvent(new WeatherEvent(type: Weather.WeatherType.Fog, intensity: 0.8f, startTime: world.islandClock.IslandDateTime, duration: TimeSpan.FromMinutes(20), transitionLength: TimeSpan.FromMinutes(4)));
             }
 
             //if (Keyboard.HasBeenPressed(Keys.F2))

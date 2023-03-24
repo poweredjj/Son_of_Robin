@@ -430,7 +430,7 @@ namespace SonOfRobin
             foreach (WeatherType type in this.currentIntensityForType.Keys.ToList()) this.currentIntensityForType[type] = 0;
             foreach (WeatherEvent weatherEvent in this.weatherEvents)
             {
-                this.currentIntensityForType[weatherEvent.type] = Math.Min(this.currentIntensityForType[weatherEvent.type] + weatherEvent.GetIntensity(islandDateTime), 1);
+                this.currentIntensityForType[weatherEvent.type] = Math.Max(this.currentIntensityForType[weatherEvent.type], weatherEvent.GetIntensity(islandDateTime));
             }
         }
 
