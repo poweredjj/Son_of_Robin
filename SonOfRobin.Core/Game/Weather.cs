@@ -208,13 +208,14 @@ namespace SonOfRobin
             float targetRotation = 0.38f * this.WindPercentage;
 
             int swayCount = this.world.random.Next(1, 3);
-            int rotationSlowdown = this.world.random.Next(4, 9);
+            int rotationSlowdown = this.world.random.Next(10, 20);
+            rotationSlowdown = (int)((float)rotationSlowdown / this.WindPercentage);
 
             bool affectsBigPlants = this.WindPercentage > 0.8f;
 
             foreach (Sprite sprite in affectedSpriteList)
             {
-                if (!sprite.blocksMovement || (affectsBigPlants && sprite.boardPiece.GetType() == typeof(Plant)))
+                if (!sprite.blocksMovement || (affectsBigPlants && sprite.boardPiece.GetType() != typeof(Decoration)))
                 {
                     float distance = Vector2.Distance(windOriginLocation, sprite.position);
 

@@ -114,7 +114,7 @@ namespace SonOfRobin
             this.islandClock = this.saveGameData == null ? new IslandClock(0) : new IslandClock();
             this.weather = new Weather(world: this, islandClock: this.islandClock);
             this.waterSurfaceManager = new WaterSurfaceManager(world: this);
-            this.swayManager = new SwayManager();
+            this.swayManager = new SwayManager(this);
 
             this.width = width;
             this.height = height;
@@ -908,7 +908,7 @@ namespace SonOfRobin
                 this.islandClock.Advance();
             }
 
-            this.swayManager.Update(world: this);
+            this.swayManager.Update();
         }
 
         private void ProcessInput()

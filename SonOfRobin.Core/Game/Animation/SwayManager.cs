@@ -28,14 +28,16 @@ namespace SonOfRobin
             }
         }
 
+        private readonly World world;
         private readonly Dictionary<string, SwayEvent> swayEventsBySpriteID;
         private List<WaitingSwayEvent> waitingEvents;
 
         public int SwayEventsCount
         { get { return swayEventsBySpriteID.Count; } }
 
-        public SwayManager()
+        public SwayManager(World world)
         {
+            this.world = world;
             this.swayEventsBySpriteID = new Dictionary<string, SwayEvent>();
             this.waitingEvents = new List<WaitingSwayEvent>();
         }
@@ -61,7 +63,7 @@ namespace SonOfRobin
             }
 
             if (swayEventsBySpriteID.ContainsKey(targetSprite.id)) return;
-            this.swayEventsBySpriteID[targetSprite.id] = new SwayEvent(sourceSprite: sourceSprite, targetSprite: targetSprite, targetRotation: targetRotation, playSound: playSound, rotationSlowdown: rotationSlowdown);
+            this.swayEventsBySpriteID[targetSprite.id] = new SwayEvent(world: this.world, sourceSprite: sourceSprite, targetSprite: targetSprite, targetRotation: targetRotation, playSound: playSound, rotationSlowdown: rotationSlowdown);
         }
 
         public void FinishAndRemoveAllEvents()
@@ -74,11 +76,11 @@ namespace SonOfRobin
             this.swayEventsBySpriteID.Clear();
         }
 
-        public void Update(World world)
+        public void Update()
         {
             if (!Preferences.plantsSway) return;
 
-            this.ProcessWaitingEvents(world);
+            this.ProcessWaitingEvents();
 
             List<string> spriteIDsToRemove = new List<string>();
 
@@ -86,7 +88,7 @@ namespace SonOfRobin
             {
                 SwayEvent swayEvent = kvp.Value;
 
-                swayEvent.Update();
+                swayEvent.Update(this.world);
                 if (swayEvent.HasEnded) spriteIDsToRemove.Add(kvp.Key);
             }
 
@@ -96,7 +98,7 @@ namespace SonOfRobin
             }
         }
 
-        private void ProcessWaitingEvents(World world)
+        private void ProcessWaitingEvents()
         {
             var newWaitingEvents = new List<WaitingSwayEvent>();
 
@@ -122,7 +124,7 @@ namespace SonOfRobin
         public readonly int rotationSlowdown;
         public bool HasEnded { get; private set; }
 
-        public SwayEvent(Sprite targetSprite, Sprite sourceSprite, float targetRotation = 0, bool playSound = true, int rotationSlowdown = 4)
+        public SwayEvent(World world, Sprite targetSprite, Sprite sourceSprite, float targetRotation = 0, bool playSound = true, int rotationSlowdown = 4)
         {
             if (rotationSlowdown < 1) throw new ArgumentOutOfRangeException($"Rotation slowdown cannot be less than 1 - {rotationSlowdown}");
 
@@ -142,10 +144,10 @@ namespace SonOfRobin
                 new Sound(nameList: new List<SoundData.Name> { SoundData.Name.HitSmallPlant1, SoundData.Name.HitSmallPlant2, SoundData.Name.HitSmallPlant3 }, boardPiece: this.targetSprite.boardPiece, ignore3DAlways: isPlayer, maxPitchVariation: 0.3f, volume: isPlayer ? 0.35f : 0.2f).Play();
             }
 
-            this.Update();
+            this.Update(world);
         }
 
-        public void Update()
+        public void Update(World world)
         {
             if (!this.targetSprite.IsInCameraRect || !this.targetSprite.boardPiece.exists)
             {
@@ -182,7 +184,7 @@ namespace SonOfRobin
                 }
             }
 
-            this.targetSprite.rotation += (this.targetRotation - this.targetSprite.rotation) / this.rotationSlowdown; // movement smoothing
+            this.targetSprite.rotation += (this.targetRotation - this.targetSprite.rotation) / (this.rotationSlowdown / world.updateMultiplier); // movement smoothing
         }
 
         public void Finish()
