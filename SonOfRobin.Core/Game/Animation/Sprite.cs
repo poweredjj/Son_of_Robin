@@ -47,6 +47,7 @@ namespace SonOfRobin
         public readonly bool blocksMovement;
         public readonly bool blocksPlantGrowth;
         public readonly bool ignoresCollisions;
+        public readonly bool isAffectedByWind;
 
         public AllowedTerrain allowedTerrain;
         private readonly AllowedDensity allowedDensity;
@@ -61,7 +62,7 @@ namespace SonOfRobin
         public Cell currentCell; // current cell, that is containing the sprite
         public bool IsOnBoard { get; private set; }
 
-        public Sprite(World world, string id, BoardPiece boardPiece, AnimData.PkgName animPackage, byte animSize, string animName, bool ignoresCollisions, AllowedTerrain allowedTerrain, bool blocksMovement = true, bool visible = true, bool floatsOnWater = false, bool fadeInAnim = true, AllowedDensity allowedDensity = null, LightEngine lightEngine = null, int minDistance = 0, int maxDistance = 100, bool blocksPlantGrowth = false)
+        public Sprite(World world, string id, BoardPiece boardPiece, AnimData.PkgName animPackage, byte animSize, string animName, bool ignoresCollisions, AllowedTerrain allowedTerrain, bool blocksMovement = true, bool visible = true, bool floatsOnWater = false, bool fadeInAnim = true, AllowedDensity allowedDensity = null, LightEngine lightEngine = null, int minDistance = 0, int maxDistance = 100, bool blocksPlantGrowth = false, bool isAffectedByWind = true)
         {
             this.id = id; // duplicate from BoardPiece class
             this.boardPiece = boardPiece;
@@ -81,6 +82,7 @@ namespace SonOfRobin
             this.blocksMovement = blocksMovement;
             this.ignoresCollisions = ignoresCollisions;
             this.blocksPlantGrowth = blocksPlantGrowth;
+            this.isAffectedByWind = isAffectedByWind;
             this.allowedTerrain = allowedTerrain;
             this.allowedDensity = allowedDensity;
             this.minDistance = minDistance;

@@ -165,9 +165,9 @@ namespace SonOfRobin
 
             if (this.NextLocalizedWindBlow > islandDateTime) return;
 
-            BoardPiece crossHair = PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: windOriginLocation, templateName: PieceTemplate.Name.Crosshair); // for testing
-            new WorldEvent(eventName: WorldEvent.EventName.Destruction, world: this.world, delay: 120, boardPiece: crossHair); // for testing
-            MessageLog.AddMessage(msgType: MsgType.User, message: $"Adding localized wind at {windOriginLocation.X},{windOriginLocation.Y}"); // for testing
+            // BoardPiece crossHair = PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: windOriginLocation, templateName: PieceTemplate.Name.Crosshair); // for testing
+            // new WorldEvent(eventName: WorldEvent.EventName.Destruction, world: this.world, delay: 120, boardPiece: crossHair); // for testing
+            // MessageLog.AddMessage(msgType: MsgType.User, message: $"Adding localized wind at {windOriginLocation.X},{windOriginLocation.Y}"); // for testing
 
             TimeSpan minCooldown = TimeSpan.FromMinutes(1);
             TimeSpan maxCooldown = TimeSpan.FromMinutes(3);
@@ -244,7 +244,7 @@ namespace SonOfRobin
 
             foreach (Sprite sprite in affectedSpriteList)
             {
-                if (!sprite.blocksMovement || (affectsBlockingPieces && sprite.boardPiece.GetType() != typeof(Decoration)))
+                if (sprite.isAffectedByWind && (!sprite.blocksMovement || affectsBlockingPieces))
                 {
                     float distance = Vector2.Distance(windOriginLocation, sprite.position);
                     float finalRotation = (sprite.position - windOriginLocation).X > 0 ? targetRotation : -targetRotation;
