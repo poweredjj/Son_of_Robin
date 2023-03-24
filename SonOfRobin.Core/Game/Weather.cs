@@ -159,7 +159,7 @@ namespace SonOfRobin
         {
             this.windSound.AdjustVolume(this.WindPercentage);
 
-            if (this.WindPercentage == 0)
+            if (this.WindPercentage < 0.2)
             {
                 this.WindOriginX = -1;
                 this.WindOriginY = -1;
@@ -172,60 +172,44 @@ namespace SonOfRobin
 
             if (!this.windSound.IsPlaying) this.windSound.Play();
 
-
             if (this.NextWindBlow > islandDateTime) return;
 
             if (this.WindOriginX == -1 || this.WindOriginY == -1)
             {
-                if (this.world.random.Next(0, 2) == 0)
-                {
-                    this.WindOriginX = (float)this.world.random.NextDouble();
-                    this.WindOriginY = this.world.random.Next(0, 2);
-                }
-                else
-                {
-                    this.WindOriginX = this.world.random.Next(0, 2);
-                    this.WindOriginY = (float)this.world.random.NextDouble();
-                }
+                this.WindOriginX = this.world.random.Next(0, 2);
+                this.WindOriginY = (float)this.world.random.NextDouble();
             }
 
-            TimeSpan minCooldown = TimeSpan.FromMinutes(2 - (this.WindPercentage * 1));
+            TimeSpan minCooldown = TimeSpan.FromMinutes(1 - (this.WindPercentage * 1));
             TimeSpan maxCooldown = TimeSpan.FromMinutes(8 - (this.WindPercentage * 3));
             TimeSpan windCooldown = TimeSpan.FromTicks((long)(this.world.random.NextDouble() * (maxCooldown - minCooldown).Ticks) + minCooldown.Ticks);
 
             this.NextWindBlow = islandDateTime + windCooldown;
 
-            Rectangle extendedCameraRect = this.world.camera.viewRect;
-            extendedCameraRect.Inflate(extendedCameraRect.Width * 1f, extendedCameraRect.Height * 1f);
-
-            int x = extendedCameraRect.X + (int)(extendedCameraRect.Width * WindOriginX);
-            int y = extendedCameraRect.Y + (int)(extendedCameraRect.Height * WindOriginY);
+            Rectangle cameraRect = this.world.camera.viewRect;
+            int x = cameraRect.X + (int)(cameraRect.Width * WindOriginX);
+            int y = cameraRect.Y + (int)(cameraRect.Height * WindOriginY);
             Vector2 windOriginLocation = new Vector2(x, y);
 
             var affectedSpriteList = new List<Sprite>();
-            this.world.Grid.GetSpritesInCameraViewAndPutIntoList(camera: this.world.camera, groupName: Cell.Group.ColPlantGrowth, spriteListToFill: affectedSpriteList);
+            this.world.Grid.GetSpritesInCameraViewAndPutIntoList(camera: this.world.camera, groupName: Cell.Group.Visible, spriteListToFill: affectedSpriteList);
 
             float targetRotation = 0.38f * this.WindPercentage;
 
-            int swayCount = this.world.random.Next(1, 3);
-            int rotationSlowdown = this.world.random.Next(10, 20);
+            int rotationSlowdown = this.world.random.Next(10, 25);
             rotationSlowdown = (int)((float)rotationSlowdown / this.WindPercentage);
 
-            bool affectsBigPlants = this.WindPercentage > 0.8f;
+            bool affectsBlockingPieces = this.WindPercentage > 0.8f;
 
             foreach (Sprite sprite in affectedSpriteList)
             {
-                if (!sprite.blocksMovement || (affectsBigPlants && sprite.boardPiece.GetType() != typeof(Decoration)))
+                if (!sprite.blocksMovement || (affectsBlockingPieces && sprite.boardPiece.GetType() != typeof(Decoration)))
                 {
                     float distance = Vector2.Distance(windOriginLocation, sprite.position);
+                    float finalRotation = (sprite.position - windOriginLocation).X > 0 ? targetRotation : -targetRotation;
+                    if (sprite.blocksMovement) finalRotation *= 0.3f;
 
-                    for (int swayNo = 0; swayNo < swayCount; swayNo++)
-                    {
-                        float finalRotation = (sprite.position - windOriginLocation).X > 0 ? targetRotation : -targetRotation;
-                        if (sprite.blocksMovement) finalRotation *= 0.3f;
-
-                        this.world.swayManager.AddSwayEvent(targetSprite: sprite, sourceSprite: null, targetRotation: finalRotation, playSound: false, delayFrames: (swayNo * rotationSlowdown * 8) + (int)distance / 20, rotationSlowdown: rotationSlowdown);
-                    }
+                    this.world.swayManager.AddSwayEvent(targetSprite: sprite, sourceSprite: null, targetRotation: finalRotation, playSound: false, delayFrames: (int)distance / 20, rotationSlowdown: rotationSlowdown);
                 }
             }
         }
