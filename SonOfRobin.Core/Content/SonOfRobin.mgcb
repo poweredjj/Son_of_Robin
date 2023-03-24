@@ -6632,6 +6632,12 @@
 /processorParam:Quality=Best
 /build:sound/66778__kevinkace__crate-break-2.ogg
 
+#begin sound/678435__borgory__soft-rain-in-forest-raindrops-fall-on-leaves.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sound/678435__borgory__soft-rain-in-forest-raindrops-fall-on-leaves.ogg
+
 #begin sound/79560__robinhood76__01259-wet-sand-digging-1.ogg
 /importer:OggImporter
 /processor:SoundEffectProcessor

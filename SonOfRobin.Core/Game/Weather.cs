@@ -115,7 +115,7 @@ namespace SonOfRobin
             }
 
             this.windSound = new Sound(name: SoundData.Name.WeatherWind, maxPitchVariation: 0.5f, volume: 0.2f, isLooped: true, ignore3DAlways: true);
-            this.rainSound = new Sound(name: SoundData.Name.Cicadas1, maxPitchVariation: 0.5f, volume: 0.2f, isLooped: true, ignore3DAlways: true); // TODO add real rain sound
+            this.rainSound = new Sound(name: SoundData.Name.Rain, maxPitchVariation: 0.5f, volume: 0.2f, isLooped: true, ignore3DAlways: true);
         }
 
         public float GetIntensityForWeatherType(WeatherType type)

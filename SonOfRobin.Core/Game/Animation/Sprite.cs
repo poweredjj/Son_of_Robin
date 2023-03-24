@@ -882,7 +882,7 @@ namespace SonOfRobin
             var flatShadowNames = new List<AnimData.PkgName> {
                 AnimData.PkgName.WoodLogRegular, AnimData.PkgName.WoodLogHard, AnimData.PkgName.Stone, AnimData.PkgName.WoodPlank, AnimData.PkgName.IronBar, AnimData.PkgName.Clay, AnimData.PkgName.Hole, AnimData.PkgName.Granite, AnimData.PkgName.BeltBig, AnimData.PkgName.HumanSkeleton, AnimData.PkgName.MineralsSmall2, AnimData.PkgName.MineralsMossySmall4 };
 
-            bool flatShadow = flatShadowNames.Contains(shadowSprite.boardPiece.sprite.animPackage); // TODO check if this is really necessary ->  (shadowSprite.rotation != 0);
+            bool flatShadow = flatShadowNames.Contains(shadowSprite.boardPiece.sprite.animPackage);
 
             if (flatShadow)
             {

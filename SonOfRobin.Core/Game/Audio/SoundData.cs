@@ -265,6 +265,7 @@ namespace SonOfRobin
             Lava,
             SeaWind,
             WeatherWind,
+            Rain,
             NightCrickets,
         }
 
@@ -475,6 +476,7 @@ namespace SonOfRobin
             { Name.Lava, "174500__unfa__boiling-towel-loop" },
             { Name.TurnPage, "521114__d-jones__turn-the-page" },
             { Name.SplashMud, "447928__breviceps__muddy-boots" },
+            { Name.Rain, "678435__borgory__soft-rain-in-forest-raindrops-fall-on-leaves" },
             };
     }
 }

@@ -56,7 +56,9 @@ namespace SonOfRobin
 
             Vector2 rainTargetPos = new Vector2(this.sprite.position.X, this.sprite.position.Y + distance);
 
-            this.rainStepsLeft = this.world.random.Next(15, 100);
+            float rainPercentage = this.world.weather.RainPercentage;
+
+            this.rainStepsLeft = (int)(this.world.random.Next(15, 100) / (3 * rainPercentage));
             this.rainStep = (rainTargetPos - this.sprite.position) / this.rainStepsLeft;
 
             this.activeState = State.RainFall;
@@ -71,9 +73,12 @@ namespace SonOfRobin
                 int windModifier = (int)(windPercentage * 3) + world.random.Next(0, 2);
                 if (this.world.weather.WindOriginX == 1) windModifier *= -1; // wind blowing from the right
                 currentStep.X += windModifier;
-            }
 
-            // TODO add rotation
+                float targetRotation = 0.5f * windPercentage;
+                if (this.world.weather.WindOriginX == 0) targetRotation *= -1;
+
+                this.sprite.rotation = targetRotation;
+            }
 
             this.sprite.Move(currentStep);
 
