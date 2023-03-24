@@ -2615,7 +2615,11 @@ namespace SonOfRobin
                         var packageNames = new List<AnimData.PkgName> { AnimData.PkgName.RainDrop1, AnimData.PkgName.RainDrop2 };
                         var animPkg = packageNames[random.Next(0, packageNames.Count)];
 
-                        return new VisualEffect(name: templateName, world: world, id: id, animPackage: animPkg, destructionDelay: 0, allowedTerrain: new AllowedTerrain(), minDistance: 0, maxDistance: 0, generation: generation, fadeInAnim: false, readableName: "rain drop", description: "A single drop of rain.", activeState: BoardPiece.State.RainInitialize, serialize: false, ignoresCollisions: true, visible: true);
+                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: animPkg, destructionDelay: 0, allowedTerrain: new AllowedTerrain(), minDistance: 0, maxDistance: 0, generation: generation, fadeInAnim: false, readableName: "rain drop", description: "A single drop of rain.", activeState: BoardPiece.State.RainInitialize, serialize: false, ignoresCollisions: true, visible: true);
+
+                        visualEffect.sprite.opacity = 0.75f;
+
+                        return visualEffect;
                     }
 
                 case Name.SoundSeaWaves:

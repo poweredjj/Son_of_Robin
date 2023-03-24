@@ -98,7 +98,7 @@ namespace SonOfRobin
             if (Preferences.debugShowSounds)
             {
                 this.sprite.opacity = visFullOpacity;
-                if (!isLooped) this.sprite.opacityFade = new OpacityFade(sprite: this.sprite, destOpacity: visMinOpacity, duration: 60);
+                if (!isLooped) new OpacityFade(sprite: this.sprite, destOpacity: visMinOpacity, duration: 60);
                 else this.showStatBarsTillFrame = 2147483647;
             }
         }

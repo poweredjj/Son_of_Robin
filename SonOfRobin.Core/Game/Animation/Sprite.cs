@@ -96,7 +96,7 @@ namespace SonOfRobin
             if (fadeInAnim)
             {
                 this.opacity = 0f;
-                this.opacityFade = new OpacityFade(sprite: this, destOpacity: 1f);
+                new OpacityFade(sprite: this, destOpacity: 1f);
             }
             else this.opacity = 1f;
 
@@ -753,7 +753,8 @@ namespace SonOfRobin
         {
             if (!this.hasBeenDiscovered && this.world.MapEnabled && this.world.camera.IsTrackingPlayer && this.world.camera.viewRect.Contains(this.gfxRect)) this.hasBeenDiscovered = true;
 
-            if (this.ObstructsCameraTarget && this.opacityFade == null) this.opacityFade = new OpacityFade(sprite: this, destOpacity: 0.5f, duration: 10, mode: OpacityFade.Mode.CameraTargetObstruct);
+            if (this.ObstructsCameraTarget && this.opacityFade == null) new OpacityFade(sprite: this, destOpacity: 0.5f, duration: 10, mode: OpacityFade.Mode.CameraTargetObstruct);
+
             if (Scene.UpdateStack.Contains(this.world)) this.opacityFade?.Process();
 
             if (Preferences.debugShowRects) SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, this.gfxRect, this.gfxRect, Color.White * 0.35f);

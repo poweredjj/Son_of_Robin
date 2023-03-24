@@ -22,7 +22,7 @@ namespace SonOfRobin
 
         public void Reset(BoardPiece piece)
         {
-            if (piece.visualAid != null) piece.visualAid.sprite.opacityFade = new OpacityFade(sprite: piece.visualAid.sprite, destOpacity: 0f, destroyPiece: true);
+            if (piece.visualAid != null) new OpacityFade(sprite: piece.visualAid.sprite, destOpacity: 0f, destroyPiece: true);
             piece.visualAid = null;
 
             this.position = nullPosition;

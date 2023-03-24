@@ -287,8 +287,8 @@ namespace SonOfRobin
 
                 new Tracking(world: world, targetSprite: this.target.sprite, followingSprite: crossHair.sprite);
                 new Tracking(world: world, targetSprite: this.sprite, followingSprite: backlight.sprite, targetYAlign: YAlign.Bottom);
-                crossHair.sprite.opacityFade = new OpacityFade(sprite: crossHair.sprite, destOpacity: 0, duration: 60, destroyPiece: true);
-                backlight.sprite.opacityFade = new OpacityFade(sprite: backlight.sprite, destOpacity: 0, duration: 60, destroyPiece: true);
+                new OpacityFade(sprite: crossHair.sprite, destOpacity: 0, duration: 60, destroyPiece: true);
+                new OpacityFade(sprite: backlight.sprite, destOpacity: 0, duration: 60, destroyPiece: true);
 
                 switch (bestChoice.action)
                 {

@@ -52,11 +52,11 @@ namespace SonOfRobin
 
         public override void SM_RainInitialize()
         {
-            int distance = this.world.random.Next(this.world.camera.viewRect.Height / 4, this.world.camera.viewRect.Height);
+            int distance = this.world.random.Next(this.world.camera.viewRect.Height / 2, this.world.camera.viewRect.Height);
 
             Vector2 rainTargetPos = new Vector2(this.sprite.position.X, this.sprite.position.Y + distance);
 
-            this.rainStepsLeft = this.world.random.Next(15, 220);
+            this.rainStepsLeft = this.world.random.Next(15, 100);
             this.rainStep = (rainTargetPos - this.sprite.position) / this.rainStepsLeft;
 
             this.activeState = State.RainFall;
@@ -68,7 +68,7 @@ namespace SonOfRobin
             float windPercentage = this.world.weather.WindPercentage;
             if (windPercentage > 0)
             {
-                int windModifier = (int)(windPercentage * 3);
+                int windModifier = (int)(windPercentage * 3) + world.random.Next(0, 2);
                 if (this.world.weather.WindOriginX == 1) windModifier *= -1; // wind blowing from the right
                 currentStep.X += windModifier;
             }
@@ -76,8 +76,11 @@ namespace SonOfRobin
             this.sprite.Move(currentStep);
 
             this.rainStepsLeft--;
-
-            if (this.rainStepsLeft <= 0) this.Destroy();
+            if (this.rainStepsLeft <= 0)
+            {
+                new OpacityFade(sprite: this.sprite, destOpacity: 0, duration: 30, destroyPiece: true);
+                this.RemoveFromStateMachines();
+            }
         }
 
         public override void SM_FogMoveRandomly()

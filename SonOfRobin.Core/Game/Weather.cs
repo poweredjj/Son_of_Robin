@@ -131,13 +131,13 @@ namespace SonOfRobin
                 return 0;
             }
 
-            float intensity = 0;
+            float maxIntensity = 0;
             foreach (WeatherEvent weatherEvent in this.weatherEvents)
             {
-                if (weatherEvent.type == type) intensity = Math.Min(intensity + weatherEvent.GetIntensity(dateTime), 1);
+                if (weatherEvent.type == type) maxIntensity = Math.Max(maxIntensity, weatherEvent.GetIntensity(dateTime));
             }
 
-            return intensity;
+            return maxIntensity;
         }
 
         public void Update()

@@ -1195,7 +1195,7 @@ namespace SonOfRobin
             this.Player.simulatedPieceToBuild = null;
 
             builtPiece.sprite.opacity = 0f;
-            builtPiece.sprite.opacityFade = new OpacityFade(sprite: builtPiece.sprite, destOpacity: 1f, duration: buildDuration);
+            new OpacityFade(sprite: builtPiece.sprite, destOpacity: 1f, duration: buildDuration);
 
             new WorldEvent(eventName: WorldEvent.EventName.FinishBuilding, world: this, delay: buildDuration, boardPiece: null);
             new WorldEvent(eventName: WorldEvent.EventName.PlaySoundByName, world: this, delay: buildDuration, boardPiece: null, eventHelper: plantMode ? SoundData.Name.MovingPlant : SoundData.Name.Chime);

@@ -30,6 +30,8 @@ namespace SonOfRobin
             this.fadePerFrame = (destOpacity - this.sprite.opacity) / (float)this.duration;
             this.mode = mode;
             this.destroyPiece = destroyPiece;
+
+            this.sprite.opacityFade = this;
         }
 
         public void Process()
@@ -40,7 +42,7 @@ namespace SonOfRobin
             {
                 if (!this.sprite.ObstructsCameraTarget)
                 {
-                    this.sprite.opacityFade = new OpacityFade(sprite: this.sprite, duration: this.duration, destOpacity: 1f, mode: Mode.CameraTargetObstructRevert);
+                    new OpacityFade(sprite: this.sprite, duration: this.duration, destOpacity: 1f, mode: Mode.CameraTargetObstructRevert);
                     return;
                 }
 

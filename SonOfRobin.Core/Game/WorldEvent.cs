@@ -146,7 +146,7 @@ namespace SonOfRobin
                 case EventName.FadeOutSprite:
                     {
                         int fadeDuration = (int)this.eventHelper;
-                        this.boardPiece.sprite.opacityFade = new OpacityFade(sprite: this.boardPiece.sprite, destOpacity: 0f, duration: fadeDuration);
+                        new OpacityFade(sprite: this.boardPiece.sprite, destOpacity: 0f, duration: fadeDuration);
                         return;
                     }
 
