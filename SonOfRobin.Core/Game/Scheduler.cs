@@ -181,6 +181,13 @@ namespace SonOfRobin
                         {
                             Workshop workshop = (Workshop)this.ExecuteHelper;
 
+                            if (workshop.world.weather.IsRaining && !workshop.canBeUsedDuringRain)
+                            {
+                                new TextWindow(text: $"I can't use {workshop.readableName} during rain.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1, animSound: workshop.world.DialogueSound);
+
+                                return;
+                            }
+
                             Menu menu = MenuTemplate.CreateMenuFromTemplate(templateName: workshop.craftMenuTemplate);
                             if (menu == null) return; // if crafting was impossible at the moment
 
@@ -378,9 +385,17 @@ namespace SonOfRobin
 
                             if (container.GetType() == typeof(Cooker))
                             {
+                                Cooker cooker = (Cooker)container;
+
                                 if (world.Player.AreEnemiesNearby && !world.Player.IsActiveFireplaceNearby)
                                 {
                                     new TextWindow(text: "I can't cook with enemies nearby.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1, closingTask: TaskName.ShowTutorialInGame, closingTaskHelper: new Dictionary<string, Object> { { "tutorial", Tutorials.Type.KeepingAnimalsAway }, { "world", world }, { "ignoreDelay", true } }, animSound: world.DialogueSound);
+                                    return;
+                                }
+
+                                if (world.weather.IsRaining && !cooker.canBeUsedDuringRain)
+                                {
+                                    new TextWindow(text: $"I can't use {cooker.readableName} during rain.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1, animSound: world.DialogueSound);
                                     return;
                                 }
 
