@@ -77,15 +77,18 @@ namespace SonOfRobin
         private readonly Dictionary<WeatherType, float> currentIntensityForType;
         private bool firstForecastCreated;
         private readonly Sound windSound;
+        private readonly Sound rainSound;
 
         public float CloudsPercentage { get; private set; }
         public float FogPercentage { get; private set; }
         public float SunVisibility { get; private set; }
         public float WindPercentage { get; private set; }
+        public float RainPercentage { get; private set; }
         public float WindOriginX { get; private set; }
         public float WindOriginY { get; private set; }
         public DateTime NextGlobalWindBlow { get; private set; }
         public DateTime NextLocalizedWindBlow { get; private set; }
+        private int rainCooldownFramesLeft;
 
         public Weather(World world, IslandClock islandClock)
         {
@@ -102,6 +105,7 @@ namespace SonOfRobin
             this.WindOriginY = 0f;
             this.NextGlobalWindBlow = veryOldDate;
             this.NextLocalizedWindBlow = veryOldDate;
+            this.rainCooldownFramesLeft = -1;
             this.WindPercentage = 0f;
 
             this.currentIntensityForType = new Dictionary<WeatherType, float>();
@@ -111,6 +115,7 @@ namespace SonOfRobin
             }
 
             this.windSound = new Sound(name: SoundData.Name.WeatherWind, maxPitchVariation: 0.5f, volume: 0.2f, isLooped: true, ignore3DAlways: true);
+            this.rainSound = new Sound(name: SoundData.Name.Cicadas1, maxPitchVariation: 0.5f, volume: 0.2f, isLooped: true, ignore3DAlways: true); // TODO add real rain sound
         }
 
         public float GetIntensityForWeatherType(WeatherType type)
@@ -150,47 +155,42 @@ namespace SonOfRobin
             this.SunVisibility = Math.Max(0, 1f - (this.CloudsPercentage + (this.FogPercentage * 0.5f)));
 
             this.WindPercentage = this.GetIntensityForWeatherType(WeatherType.Wind);
+            this.RainPercentage = this.GetIntensityForWeatherType(WeatherType.Rain);
             this.ProcessGlobalWind(islandDateTime);
+            this.ProcessRain();
 
             this.UpdateCurrentIntensities();
 
             if (this.forecastEnd < islandDateTime + minForecastDuration) this.GenerateForecast();
         }
 
-        public void AddLocalizedWind(Vector2 windOriginLocation)
+        private void ProcessRain()
         {
-            if (!Preferences.plantsSway) return;
-
-            DateTime islandDateTime = this.islandClock.IslandDateTime;
-
-            if (this.NextLocalizedWindBlow > islandDateTime) return;
-
-            // BoardPiece crossHair = PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: windOriginLocation, templateName: PieceTemplate.Name.Crosshair); // for testing
-            // new WorldEvent(eventName: WorldEvent.EventName.Destruction, world: this.world, delay: 120, boardPiece: crossHair); // for testing
-            // MessageLog.AddMessage(msgType: MsgType.User, message: $"Adding localized wind at {windOriginLocation.X},{windOriginLocation.Y}"); // for testing
-
-            TimeSpan minCooldown = TimeSpan.FromMinutes(1);
-            TimeSpan maxCooldown = TimeSpan.FromMinutes(3);
-            TimeSpan windCooldown = TimeSpan.FromTicks((long)(this.world.random.NextDouble() * (maxCooldown - minCooldown).Ticks) + minCooldown.Ticks);
-
-            this.NextLocalizedWindBlow = islandDateTime + windCooldown;
-
-            var affectedSpriteList = new List<Sprite>();
-            this.world.Grid.GetSpritesInCameraViewAndPutIntoList(camera: this.world.camera, groupName: Cell.Group.ColPlantGrowth, spriteListToFill: affectedSpriteList);
-
-            float targetRotation = 0.2f;
-
-            foreach (Sprite sprite in affectedSpriteList)
+            if (this.RainPercentage == 0 && this.rainSound.IsPlaying) this.rainSound.Stop();
+            else
             {
-                if (!sprite.blocksMovement)
-                {
-                    float distance = Vector2.Distance(windOriginLocation, sprite.position);
-                    float finalRotation = (sprite.position - windOriginLocation).X > 0 ? targetRotation : -targetRotation;
-                    if (sprite.blocksMovement) finalRotation *= 0.3f;
-
-                    this.world.swayManager.AddSwayEvent(targetSprite: sprite, sourceSprite: null, targetRotation: finalRotation, playSound: false, delayFrames: (int)distance / 20, rotationSlowdown: this.world.random.Next(8, 18));
-                }
+                if (!this.rainSound.IsPlaying) this.rainSound.Play();
+                this.rainSound.AdjustVolume(this.RainPercentage);
             }
+
+            if (this.RainPercentage == 0)
+            {
+                this.rainCooldownFramesLeft = -1;
+                return;
+            }
+
+            this.rainCooldownFramesLeft--;
+            if (this.rainCooldownFramesLeft > 0) return;
+
+            this.rainCooldownFramesLeft = world.random.Next(0, 5); // this.RainPercentage * 30
+
+            Rectangle extendedViewRect = this.world.camera.ExtendedViewRect;
+
+            Vector2 position = new Vector2(this.world.random.Next(extendedViewRect.Left, extendedViewRect.Right), world.camera.viewRect.Top);
+            BoardPiece rainDrop = PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: position, templateName: PieceTemplate.Name.RainDrop, closestFreeSpot: true);
+
+            if (this.RainPercentage >= 0.7) rainDrop.sprite.AssignNewSize(2);
+            else if (this.RainPercentage >= 0.25) rainDrop.sprite.AssignNewSize(1);
         }
 
         private void ProcessGlobalWind(DateTime islandDateTime)
@@ -269,6 +269,42 @@ namespace SonOfRobin
                         var movementData = new Dictionary<string, Object> { { "boardPiece", sprite.boardPiece }, { "movement", movement } };
                         new Scheduler.Task(taskName: Scheduler.TaskName.AddPassiveMovement, delay: (int)distance / 20, executeHelper: movementData);
                     }
+                }
+            }
+        }
+
+        public void AddLocalizedWind(Vector2 windOriginLocation)
+        {
+            if (!Preferences.plantsSway) return;
+
+            DateTime islandDateTime = this.islandClock.IslandDateTime;
+
+            if (this.NextLocalizedWindBlow > islandDateTime) return;
+
+            // BoardPiece crossHair = PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: windOriginLocation, templateName: PieceTemplate.Name.Crosshair); // for testing
+            // new WorldEvent(eventName: WorldEvent.EventName.Destruction, world: this.world, delay: 120, boardPiece: crossHair); // for testing
+            // MessageLog.AddMessage(msgType: MsgType.User, message: $"Adding localized wind at {windOriginLocation.X},{windOriginLocation.Y}"); // for testing
+
+            TimeSpan minCooldown = TimeSpan.FromMinutes(1);
+            TimeSpan maxCooldown = TimeSpan.FromMinutes(3);
+            TimeSpan windCooldown = TimeSpan.FromTicks((long)(this.world.random.NextDouble() * (maxCooldown - minCooldown).Ticks) + minCooldown.Ticks);
+
+            this.NextLocalizedWindBlow = islandDateTime + windCooldown;
+
+            var affectedSpriteList = new List<Sprite>();
+            this.world.Grid.GetSpritesInCameraViewAndPutIntoList(camera: this.world.camera, groupName: Cell.Group.ColPlantGrowth, spriteListToFill: affectedSpriteList);
+
+            float targetRotation = 0.2f;
+
+            foreach (Sprite sprite in affectedSpriteList)
+            {
+                if (!sprite.blocksMovement)
+                {
+                    float distance = Vector2.Distance(windOriginLocation, sprite.position);
+                    float finalRotation = (sprite.position - windOriginLocation).X > 0 ? targetRotation : -targetRotation;
+                    if (sprite.blocksMovement) finalRotation *= 0.3f;
+
+                    this.world.swayManager.AddSwayEvent(targetSprite: sprite, sourceSprite: null, targetRotation: finalRotation, playSound: false, delayFrames: (int)distance / 20, rotationSlowdown: this.world.random.Next(8, 18));
                 }
             }
         }
@@ -410,8 +446,10 @@ namespace SonOfRobin
                 { "WindOriginX", this.WindOriginX },
                 { "WindOriginY", this.WindOriginY },
                 { "WindPercentage", this.WindPercentage },
+                { "RainPercentage", this.RainPercentage },
                 { "NextGlobalWindBlow", this.NextGlobalWindBlow },
                 { "NextLocalizedWindBlow", this.NextLocalizedWindBlow },
+                { "rainCooldownFramesLeft", this.rainCooldownFramesLeft },
             };
 
             return weatherData;
@@ -437,8 +475,10 @@ namespace SonOfRobin
             this.WindOriginX = (float)weatherData["WindOriginX"];
             this.WindOriginY = (float)weatherData["WindOriginY"];
             this.WindPercentage = (float)weatherData["WindPercentage"];
+            this.RainPercentage = (float)weatherData["RainPercentage"];
             this.NextGlobalWindBlow = (DateTime)weatherData["NextGlobalWindBlow"];
             this.NextLocalizedWindBlow = (DateTime)weatherData["NextLocalizedWindBlow"];
+            this.rainCooldownFramesLeft = (int)weatherData["rainCooldownFramesLeft"];
         }
 
         public void AddEvent(WeatherEvent weatherEvent)

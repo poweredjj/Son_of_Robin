@@ -73,6 +73,8 @@ namespace SonOfRobin
                 currentStep.X += windModifier;
             }
 
+            // TODO add rotation
+
             this.sprite.Move(currentStep);
 
             this.rainStepsLeft--;
