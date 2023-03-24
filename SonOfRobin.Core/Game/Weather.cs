@@ -28,7 +28,7 @@ namespace SonOfRobin
             this.endTime = startTime + duration;
             this.transitionLength = transitionLength;
 
-            MessageLog.AddMessage(msgType: MsgType.User, message: $"New WeatherEvent {this.type}, D {this.startTime:d HH\\:mm} - D {this.endTime:d HH\\:mm} ({this.duration:hh\\:mm}), transLength {transitionLength:hh\\:mm}, intensity {intensity}"); // for testing
+            // MessageLog.AddMessage(msgType: MsgType.User, message: $"New WeatherEvent {this.type}, D {this.startTime:d HH\\:mm} - D {this.endTime:d HH\\:mm} ({this.duration:hh\\:mm}), transLength {transitionLength:hh\\:mm}, intensity {intensity}"); // for testing
         }
 
         public float GetIntensity(DateTime datetime)
@@ -108,7 +108,7 @@ namespace SonOfRobin
                 this.currentIntensityForType[type] = 0;
             }
 
-            this.windSound = new Sound(name: SoundData.Name.DesertWind, maxPitchVariation: 0.5f, volume: 0.2f, isLooped: true, ignore3DAlways: true);
+            this.windSound = new Sound(name: SoundData.Name.WeatherWind, maxPitchVariation: 0.5f, volume: 0.2f, isLooped: true, ignore3DAlways: true);
         }
 
         public float GetIntensityForWeatherType(WeatherType type)
@@ -157,7 +157,7 @@ namespace SonOfRobin
 
         private void ProcessWind(DateTime islandDateTime)
         {
-            this.windSound.volume = this.WindPercentage * 0.5f;
+            this.windSound.AdjustVolume(this.WindPercentage);
 
             if (this.WindPercentage == 0)
             {
@@ -170,15 +170,24 @@ namespace SonOfRobin
                 return;
             }
 
+            if (!this.windSound.IsPlaying) this.windSound.Play();
+
+
             if (this.NextWindBlow > islandDateTime) return;
 
             if (this.WindOriginX == -1 || this.WindOriginY == -1)
             {
-                this.WindOriginX = (float)this.world.random.NextDouble();
-                this.WindOriginY = (float)this.world.random.NextDouble();
+                if (this.world.random.Next(0, 2) == 0)
+                {
+                    this.WindOriginX = (float)this.world.random.NextDouble();
+                    this.WindOriginY = this.world.random.Next(0, 2);
+                }
+                else
+                {
+                    this.WindOriginX = this.world.random.Next(0, 2);
+                    this.WindOriginY = (float)this.world.random.NextDouble();
+                }
             }
-
-            if (!this.windSound.IsPlaying) this.windSound.Play(ignore3DThisPlay: true);
 
             TimeSpan minCooldown = TimeSpan.FromMinutes(2 - (this.WindPercentage * 1));
             TimeSpan maxCooldown = TimeSpan.FromMinutes(8 - (this.WindPercentage * 3));
@@ -211,7 +220,10 @@ namespace SonOfRobin
 
                     for (int swayNo = 0; swayNo < swayCount; swayNo++)
                     {
-                        this.world.swayManager.AddSwayEvent(targetSprite: sprite, sourceSprite: null, targetRotation: (sprite.position - windOriginLocation).X > 0 ? targetRotation : -targetRotation, playSound: false, delayFrames: (swayNo * rotationSlowdown * 8) + (int)distance / 20, rotationSlowdown: rotationSlowdown);
+                        float finalRotation = (sprite.position - windOriginLocation).X > 0 ? targetRotation : -targetRotation;
+                        if (sprite.blocksMovement) finalRotation *= 0.3f;
+
+                        this.world.swayManager.AddSwayEvent(targetSprite: sprite, sourceSprite: null, targetRotation: finalRotation, playSound: false, delayFrames: (swayNo * rotationSlowdown * 8) + (int)distance / 20, rotationSlowdown: rotationSlowdown);
                     }
                 }
             }

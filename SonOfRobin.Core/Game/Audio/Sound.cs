@@ -15,7 +15,7 @@ namespace SonOfRobin
         public static float globalVolume = 1f;
         public static Dictionary<string, Sound> currentlyPlaying = new Dictionary<string, Sound>();
         public SoundData.Name Name { get; private set; }
-        public float volume;
+        private float volume;
         public float FadeVolume { get; private set; }
         public float TargetVolume { get; private set; }
         public readonly bool isLooped;
@@ -111,6 +111,18 @@ namespace SonOfRobin
             if (this.boardPiece != null) throw new ArgumentException($"Cannot add boardPiece {boardPieceToAssign.name} {boardPieceToAssign.id} to sound with boardPiece already assigned {this.boardPiece.name} {this.boardPiece.id} ");
 
             this.boardPiece = boardPieceToAssign;
+        }
+
+        public void AdjustVolume(float newVolume)
+        {
+            // for manual volume control (does not go well with TargetVolume, FadeVolume, etc.)
+            if (this.volume == newVolume) return;
+
+            this.volume = newVolume;
+            this.TargetVolume = newVolume;
+
+            SoundEffectInstance instance = SoundInstanceManager.GetPlayingInstance(this.Id);
+            if (instance != null) instance.Volume = this.Volume;
         }
 
         public void Play(bool ignore3DThisPlay = false, bool ignoreCooldown = false)

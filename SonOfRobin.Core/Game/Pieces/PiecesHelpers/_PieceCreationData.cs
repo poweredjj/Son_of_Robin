@@ -71,7 +71,6 @@ namespace SonOfRobin
                 new PieceCreationData(name: PieceTemplate.Name.SoundSeaWaves, temporaryDecoration: true),
                 new PieceCreationData(name: PieceTemplate.Name.SoundSeaWind, temporaryDecoration: true),
                 new PieceCreationData(name: PieceTemplate.Name.SoundLakeWaves, temporaryDecoration: true),
-                new PieceCreationData(name: PieceTemplate.Name.SoundDesertWind, temporaryDecoration: true),
                 new PieceCreationData(name: PieceTemplate.Name.SoundNightCrickets, temporaryDecoration: true),
                 new PieceCreationData(name: PieceTemplate.Name.SoundNoonCicadas, temporaryDecoration: true),
                 new PieceCreationData(name: PieceTemplate.Name.SoundLava, temporaryDecoration: true),

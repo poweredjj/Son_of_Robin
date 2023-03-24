@@ -264,7 +264,7 @@ namespace SonOfRobin
 
             Lava,
             SeaWind,
-            DesertWind,
+            WeatherWind,
             NightCrickets,
         }
 
@@ -451,7 +451,7 @@ namespace SonOfRobin
             { Name.LakeWave7, "530699__szegvari__water-wave-beach-field-recording-200815-0036-7" },
             { Name.SeaWind, "465739__arnaud-coutancier__wind-waves-splashing" },
             { Name.NightCrickets, "60968__ifartinurgeneraldirection__night-sounds" },
-            { Name.DesertWind, "135193__felix-blume__wind-blowing-in-the-bush-on-the-top-of-kitt-peak-mountain" },
+            { Name.WeatherWind, "135193__felix-blume__wind-blowing-in-the-bush-on-the-top-of-kitt-peak-mountain" },
             { Name.PantFemale, "95567__kuroseishin__breathing-female" },
             { Name.PantMale, "489917__falcospizaetus__gasps02" },
             { Name.Cicadas1, "400096__harrietniamh__cicadas" },

@@ -234,7 +234,6 @@ namespace SonOfRobin
             SoundSeaWaves,
             SoundLakeWaves,
             SoundSeaWind,
-            SoundDesertWind,
             SoundNightCrickets,
             SoundNoonCicadas,
             SoundLava,
@@ -2639,23 +2638,6 @@ namespace SonOfRobin
                         AmbientSound ambientSound = new AmbientSound(name: templateName, world: world, id: id, allowedTerrain: allowedTerrain, allowedDensity: allowedDensity, readableName: "ambient sea wind sound", description: "Ambient sound for sea wind.", sound: sound, playDelay: 0, visible: Preferences.debugShowSounds);
 
                         ambientSound.sprite.color = Color.White;
-
-                        return ambientSound;
-                    }
-
-                case Name.SoundDesertWind:
-                    {
-                        var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
-                            { Terrain.Name.Height, new AllowedRange(min: 105, max: 160) },
-                            { Terrain.Name.Humidity, new AllowedRange(min: 0, max: 115) }});
-
-                        AllowedDensity allowedDensity = new AllowedDensity(radious: 200, maxNoOfPiecesSameName: 0);
-
-                        Sound sound = new Sound(name: SoundData.Name.DesertWind, maxPitchVariation: 0.5f, volume: 0.2f, isLooped: true, volumeFadeFrames: 60);
-
-                        AmbientSound ambientSound = new AmbientSound(name: templateName, world: world, id: id, allowedTerrain: allowedTerrain, allowedDensity: allowedDensity, readableName: "ambient desert wind sound", description: "Ambient sound for desert wind.", sound: sound, playDelay: 0, visible: Preferences.debugShowSounds);
-
-                        ambientSound.sprite.color = Color.Orange;
 
                         return ambientSound;
                     }
