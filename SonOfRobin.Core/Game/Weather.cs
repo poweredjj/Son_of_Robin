@@ -78,12 +78,12 @@ namespace SonOfRobin
         private bool firstForecastCreated;
         private readonly Sound windSound;
         private readonly Sound rainSound;
-
         public float CloudsPercentage { get; private set; }
         public float FogPercentage { get; private set; }
         public float SunVisibility { get; private set; }
         public float WindPercentage { get; private set; }
         public float RainPercentage { get; private set; }
+        public bool IsRaining { get { return this.RainPercentage > 0.2f; } }
         public float WindOriginX { get; private set; }
         public float WindOriginY { get; private set; }
         public DateTime NextGlobalWindBlow { get; private set; }
@@ -182,15 +182,19 @@ namespace SonOfRobin
             this.rainCooldownFramesLeft--;
             if (this.rainCooldownFramesLeft > 0) return;
 
-            this.rainCooldownFramesLeft = world.random.Next(0, 5); // this.RainPercentage * 30
+            this.rainCooldownFramesLeft = this.world.random.Next(2, 6) - (int)(this.RainPercentage * 6);
 
             Rectangle extendedViewRect = this.world.camera.ExtendedViewRect;
 
-            Vector2 position = new Vector2(this.world.random.Next(extendedViewRect.Left, extendedViewRect.Right), world.camera.viewRect.Top);
-            BoardPiece rainDrop = PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: position, templateName: PieceTemplate.Name.RainDrop, closestFreeSpot: true);
+            int raindropsCount = 2 + (int)(this.RainPercentage * 6) * (this.world.camera.viewRect.Width / 700);
+            for (int i = 0; i < raindropsCount; i++)
+            {
+                Vector2 position = new Vector2(this.world.random.Next(extendedViewRect.Left, extendedViewRect.Right), world.camera.viewRect.Top);
+                BoardPiece rainDrop = PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: position, templateName: PieceTemplate.Name.RainDrop, closestFreeSpot: true);
 
-            if (this.RainPercentage >= 0.7) rainDrop.sprite.AssignNewSize(2);
-            else if (this.RainPercentage >= 0.25) rainDrop.sprite.AssignNewSize(1);
+                if (this.RainPercentage >= 0.7) rainDrop.sprite.AssignNewSize(2);
+                else if (this.RainPercentage >= 0.25) rainDrop.sprite.AssignNewSize(1);
+            }
         }
 
         private void ProcessGlobalWind(DateTime islandDateTime)
@@ -262,9 +266,9 @@ namespace SonOfRobin
 
                     if (sprite.boardPiece.canBePickedUp || pieceType == typeof(Animal) || pieceType == typeof(Debris) || pieceType == typeof(Player))
                     {
-                        Vector2 movement = (sprite.position - windOriginLocation) / this.world.random.Next(1, 3);
-
                         float distance = Vector2.Distance(windOriginLocation, sprite.position);
+
+                        Vector2 movement = (sprite.position - windOriginLocation) / this.world.random.Next(1, 3);
 
                         var movementData = new Dictionary<string, Object> { { "boardPiece", sprite.boardPiece }, { "movement", movement } };
                         new Scheduler.Task(taskName: Scheduler.TaskName.AddPassiveMovement, delay: (int)distance / 20, executeHelper: movementData);

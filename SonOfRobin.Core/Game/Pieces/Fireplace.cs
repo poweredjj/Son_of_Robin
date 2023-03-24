@@ -113,6 +113,12 @@ namespace SonOfRobin
 
         private bool StartFire(bool showMessage)
         {
+            if (this.world.weather.IsRaining)
+            {
+                if (showMessage) new TextWindow(text: "I cannot use it during rain.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
+                return false;
+            }
+
             var storedFuel = this.StoredFuel;
             if (storedFuel.Count == 0)
             {
@@ -152,7 +158,7 @@ namespace SonOfRobin
         {
             this.currentCycleBurningFramesLeft--;
 
-            bool stopBurning = this.currentCycleBurningFramesLeft <= 0 && !this.StartFire(showMessage: false);
+            bool stopBurning = this.world.weather.IsRaining || (this.currentCycleBurningFramesLeft <= 0 && !this.StartFire(showMessage: false));
             if (stopBurning)
             {
                 this.IsOn = false;

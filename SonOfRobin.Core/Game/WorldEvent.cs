@@ -187,7 +187,7 @@ namespace SonOfRobin
 
                         // breaking damage loop
 
-                        if (this.world.Player == null || !this.world.Player.alive || !this.world.Player.exists || this.world.Player.sprite.IsInWater || !portableLight.IsOnPlayersToolbar || !portableLight.IsOn)
+                        if (this.world.Player == null || !this.world.Player.alive || !this.world.Player.exists || this.world.Player.sprite.IsInWater || !portableLight.IsOnPlayersToolbar || !portableLight.IsOn || (!portableLight.canBeUsedDuringRain && this.world.weather.IsRaining))
                         {
                             portableLight.IsOn = false;
                             return;

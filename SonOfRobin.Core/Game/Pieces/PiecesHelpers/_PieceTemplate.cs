@@ -2495,7 +2495,7 @@ namespace SonOfRobin
                     {
                         var buffList = new List<Buff> { new Buff(type: BuffEngine.BuffType.LightSource, value: 4) };
 
-                        return new PortableLight(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.SmallTorch, blocksMovement: false, category: BoardPiece.Category.Wood,
+                        return new PortableLight(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.SmallTorch, blocksMovement: false, category: BoardPiece.Category.Wood, canBeUsedDuringRain: false,
                             allowedTerrain: shallowWaterToVolcano, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 3, mass: 100, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 250, readableName: "small torch", description: "A portable light source.");
                     }
 
@@ -2503,8 +2503,8 @@ namespace SonOfRobin
                     {
                         var buffList = new List<Buff> { new Buff(type: BuffEngine.BuffType.LightSource, value: 6) };
 
-                        return new PortableLight(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BigTorch, blocksMovement: false, category: BoardPiece.Category.Wood,
-                            allowedTerrain: shallowWaterToVolcano, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 3, mass: 100, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 600, readableName: "big torch", description: "A portable light source. Burns for a long time.");
+                        return new PortableLight(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BigTorch, blocksMovement: false, category: BoardPiece.Category.Wood, canBeUsedDuringRain: true,
+                            allowedTerrain: shallowWaterToVolcano, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 3, mass: 100, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 600, readableName: "big torch", description: "Burns for a long time. Can be used during rain.");
                     }
 
                 case Name.Campfire:

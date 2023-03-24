@@ -58,7 +58,7 @@ namespace SonOfRobin
 
             float rainPercentage = this.world.weather.RainPercentage;
 
-            this.rainStepsLeft = (int)(this.world.random.Next(15, 100) / (3 * rainPercentage));
+            this.rainStepsLeft = (int)(this.world.random.Next(15, 100) / (4 * rainPercentage));
             this.rainStep = (rainTargetPos - this.sprite.position) / this.rainStepsLeft;
 
             this.activeState = State.RainFall;
@@ -70,14 +70,14 @@ namespace SonOfRobin
             float windPercentage = this.world.weather.WindPercentage;
             if (windPercentage > 0)
             {
-                int windModifier = (int)(windPercentage * 3) + world.random.Next(0, 2);
+                int windModifier = (int)(windPercentage * 6) + world.random.Next(0, 2);
                 if (this.world.weather.WindOriginX == 1) windModifier *= -1; // wind blowing from the right
                 currentStep.X += windModifier;
 
-                float targetRotation = 0.5f * windPercentage;
+                float targetRotation = 0.9f * windPercentage;
                 if (this.world.weather.WindOriginX == 0) targetRotation *= -1;
 
-                this.sprite.rotation = targetRotation;
+                if (Math.Abs(this.sprite.rotation) < Math.Abs(targetRotation)) this.sprite.rotation = targetRotation;
             }
 
             this.sprite.Move(currentStep);
@@ -94,7 +94,7 @@ namespace SonOfRobin
         {
             // Suitable only for passive temporary decorations, that will never be moved "manually".
             // Position and rotation change will cause drift over time, if such a piece be serialized and saved multiple times.
-            // So it should only be used for temporary decorations or pieces that will not get saved.
+            // It should only be used for temporary decorations or pieces that will not get saved.
 
             if (!this.sprite.IsInCameraRect) return;
 

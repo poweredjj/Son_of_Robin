@@ -6,8 +6,9 @@ namespace SonOfRobin
     public class PortableLight : BoardPiece
     {
         private bool isOn;
+        public readonly bool canBeUsedDuringRain;
 
-        public PortableLight(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, List<Buff> buffList, string readableName, string description, Category category,
+        public PortableLight(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, List<Buff> buffList, string readableName, string description, Category category, bool canBeUsedDuringRain,
             byte animSize = 0, string animName = "off", bool blocksMovement = false, ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = false, int generation = 0, byte stackSize = 1, Yield yield = null, int maxHitPoints = 1, int mass = 1, Scheduler.TaskName toolbarTask = Scheduler.TaskName.SwitchLightSource, Scheduler.TaskName boardTask = Scheduler.TaskName.Empty, bool rotatesWhenDropped = false, bool fadeInAnim = false) :
 
             base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedTerrain: allowedTerrain, floatsOnWater: floatsOnWater, maxMassBySize: null, generation: generation, stackSize: stackSize, canBePickedUp: true, yield: yield, maxHitPoints: maxHitPoints, mass: mass, toolbarTask: toolbarTask, boardTask: boardTask, rotatesWhenDropped: rotatesWhenDropped, fadeInAnim: fadeInAnim, buffList: buffList, readableName: readableName, description: description, category: category, activeState: State.Empty)
@@ -17,6 +18,7 @@ namespace SonOfRobin
             this.soundPack.AddAction(action: PieceSoundPack.Action.IsOn, sound: new Sound(name: SoundData.Name.Torch, maxPitchVariation: 0.5f, isLooped: true, ignore3DAlways: true));
 
             this.isOn = false;
+            this.canBeUsedDuringRain = canBeUsedDuringRain;
         }
 
         public bool IsOn
