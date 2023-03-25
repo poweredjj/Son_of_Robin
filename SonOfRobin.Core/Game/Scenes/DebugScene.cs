@@ -368,12 +368,23 @@ namespace SonOfRobin
 
             if (Keyboard.HasBeenPressed(Keys.F1))
             {
-                world.weather.AddEvent(new WeatherEvent(type: Weather.WeatherType.Clouds, intensity: 0.55f, startTime: world.islandClock.IslandDateTime, duration: TimeSpan.FromMinutes(20), transitionLength: TimeSpan.FromMinutes(4)));
+                if (world == null) return;
+
+                world.weather.AddEvent(new WeatherEvent(type: Weather.WeatherType.Rain, intensity: 0.45f, startTime: world.islandClock.IslandDateTime, duration: TimeSpan.FromMinutes(30), transitionLength: TimeSpan.FromMinutes(8)));
             }
 
             if (Keyboard.HasBeenPressed(Keys.F2))
             {
-                world.weather.AddEvent(new WeatherEvent(type: Weather.WeatherType.Fog, intensity: 0.8f, startTime: world.islandClock.IslandDateTime, duration: TimeSpan.FromMinutes(20), transitionLength: TimeSpan.FromMinutes(4)));
+                if (world == null) return;
+
+                world.weather.AddEvent(new WeatherEvent(type: Weather.WeatherType.Rain, intensity: 1.0f, startTime: world.islandClock.IslandDateTime, duration: TimeSpan.FromMinutes(30), transitionLength: TimeSpan.FromMinutes(8)));
+            }
+
+            if (Keyboard.HasBeenPressed(Keys.F3) || VirtButton.HasButtonBeenPressed(VButName.DebugClockAdvance))
+            {
+                if (world == null) return;
+
+                world.weather.AddEvent(new WeatherEvent(type: Weather.WeatherType.Wind, intensity: 1.0f, startTime: world.islandClock.IslandDateTime, duration: TimeSpan.FromMinutes(20), transitionLength: TimeSpan.FromMinutes(4)));
             }
 
             //if (Keyboard.HasBeenPressed(Keys.F2))
@@ -406,20 +417,12 @@ namespace SonOfRobin
 
             //if (Keyboard.HasBeenPressed(Keys.F2)) SonOfRobinGame.FullScreenProgressBar.TurnOff();
 
-            if (Keyboard.HasBeenPressed(Keys.F3) || VirtButton.HasButtonBeenPressed(VButName.DebugClockAdvance))
-            {
-                if (world == null) return;
-
-                world.islandClock.Advance(amount: 30 * 60 * 1, ignorePause: true);
-            }
 
             if (Keyboard.HasBeenPressed(Keys.F4) || VirtButton.HasButtonBeenPressed(VButName.DebugClockAdvance))
             {
                 if (world == null) return;
 
-                TimeSpan timeUntil = world.islandClock.TimeUntilPartOfDay(IslandClock.PartOfDay.Morning);
-
-                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Time until: {timeUntil}");
+                world.islandClock.Advance(amount: 30 * 60 * 1, ignorePause: true);
             }
 
             //if (Keyboard.HasBeenPressed(Keys.F4))

@@ -70,7 +70,7 @@ namespace SonOfRobin
             float windPercentage = this.world.weather.WindPercentage;
             if (windPercentage > 0)
             {
-                int windModifier = (int)(windPercentage * 6) + world.random.Next(0, 2);
+                int windModifier = (int)(windPercentage * 13) + world.random.Next(0, 2);
                 if (this.world.weather.WindOriginX == 1) windModifier *= -1; // wind blowing from the right
                 currentStep.X += windModifier;
 
@@ -85,7 +85,7 @@ namespace SonOfRobin
             this.rainStepsLeft--;
             if (this.rainStepsLeft <= 0)
             {
-                new OpacityFade(sprite: this.sprite, destOpacity: 0, duration: 30, destroyPiece: true);
+                new OpacityFade(sprite: this.sprite, destOpacity: 0, duration: 20, destroyPiece: true);
                 this.RemoveFromStateMachines();
             }
         }

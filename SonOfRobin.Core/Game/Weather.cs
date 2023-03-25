@@ -182,18 +182,24 @@ namespace SonOfRobin
             this.rainCooldownFramesLeft--;
             if (this.rainCooldownFramesLeft > 0) return;
 
-            this.rainCooldownFramesLeft = this.world.random.Next(2, 6) - (int)(this.RainPercentage * 6);
+            this.rainCooldownFramesLeft = this.world.random.Next(2, 6) - (int)(this.RainPercentage * 5);
 
             Rectangle extendedViewRect = this.world.camera.ExtendedViewRect;
 
-            int raindropsCount = 2 + (int)(this.RainPercentage * 6) * (this.world.camera.viewRect.Width / 700);
+            byte dropSize = (byte)Helpers.ConvertRange(oldMin: 0, oldMax: 1, newMin: 0, newMax: 7, oldVal: this.RainPercentage, clampToEdges: true);
+
+            int raindropsCount = 2 + (int)(this.RainPercentage * 3) * (this.world.camera.viewRect.Width * this.world.camera.viewRect.Height / 1000000);
+            raindropsCount = Math.Min(raindropsCount, 5);
+
+            int leftCameraEdge = Math.Max(extendedViewRect.Left, 0); // clipping to island edges
+            int rightCameraEdge = Math.Min(extendedViewRect.Right, this.world.width); // clipping to island edges
+
             for (int i = 0; i < raindropsCount; i++)
             {
-                Vector2 position = new Vector2(this.world.random.Next(extendedViewRect.Left, extendedViewRect.Right), world.camera.viewRect.Top);
+                Vector2 position = new Vector2(this.world.random.Next(leftCameraEdge, rightCameraEdge), world.camera.viewRect.Top);
                 BoardPiece rainDrop = PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: position, templateName: PieceTemplate.Name.RainDrop, closestFreeSpot: true);
 
-                if (this.RainPercentage >= 0.7) rainDrop.sprite.AssignNewSize(2);
-                else if (this.RainPercentage >= 0.25) rainDrop.sprite.AssignNewSize(1);
+                rainDrop.sprite.AssignNewSize(dropSize);
             }
         }
 
