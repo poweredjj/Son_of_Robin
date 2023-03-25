@@ -1,5 +1,9 @@
-﻿using System.IO;
+﻿using System.Collections;
+using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace SonOfRobin
 {
@@ -9,8 +13,15 @@ namespace SonOfRobin
         {
             using (Stream stream = File.Open(path, FileMode.Create))
             {
-                BinaryFormatter bformatter = new BinaryFormatter();
-                bformatter.Serialize(stream, savedObj);
+                if (SonOfRobinGame.os == OS.Android)
+                {
+                    Encoding.UTF8.GetBytes(JsonSerializer.Serialize(savedObj, GetJsonSerializerOptions()));
+                }
+                else
+                {
+                    BinaryFormatter bformatter = new BinaryFormatter();
+                    bformatter.Serialize(stream, savedObj);
+                }
             }
         }
 
@@ -28,8 +39,18 @@ namespace SonOfRobin
             {
                 using (Stream stream = File.Open(path, FileMode.Open))
                 {
-                    BinaryFormatter bformatter = new BinaryFormatter();
-                    return bformatter.Deserialize(stream);
+
+                    if (SonOfRobinGame.os == OS.Android)
+                    {
+                        return JsonSerializer.Deserialize<object>(stream, GetJsonSerializerOptions());
+                    }
+                    else
+                    {
+                        BinaryFormatter bformatter = new BinaryFormatter();
+                        return bformatter.Deserialize(stream);
+                    }
+
+                    return null;
                 }
             }
             catch (System.Runtime.Serialization.SerializationException)
@@ -40,6 +61,17 @@ namespace SonOfRobin
             { return null; }
             catch (DirectoryNotFoundException)
             { return null; }
+        }
+
+        private static JsonSerializerOptions GetJsonSerializerOptions()
+        {
+            return new JsonSerializerOptions()
+            {
+                PropertyNamingPolicy = null,
+                WriteIndented = true,
+                AllowTrailingCommas = true,
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+            };
         }
     }
 }
