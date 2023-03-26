@@ -11,7 +11,7 @@ namespace SonOfRobin.Android
         Label = "SonOfRobin",
         MainLauncher = true,
         Icon = "@drawable/icon",
-        // Theme = "@style/Theme.Splash",
+        Theme = "@style/Theme.Splash",
         AlwaysRetainTaskState = true,
         LaunchMode = LaunchMode.SingleInstance,
         ScreenOrientation = ScreenOrientation.SensorLandscape,

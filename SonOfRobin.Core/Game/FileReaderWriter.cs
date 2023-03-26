@@ -15,7 +15,7 @@ namespace SonOfRobin
             {
                 if (SonOfRobinGame.os == OS.Android)
                 {
-                    Encoding.UTF8.GetBytes(JsonSerializer.Serialize(savedObj, GetJsonSerializerOptions()));
+                    //Encoding.UTF8.GetBytes(JsonSerializer.Serialize(savedObj, GetJsonSerializerOptions())); // TODO make it work
                 }
                 else
                 {
@@ -42,15 +42,14 @@ namespace SonOfRobin
 
                     if (SonOfRobinGame.os == OS.Android)
                     {
-                        return JsonSerializer.Deserialize<object>(stream, GetJsonSerializerOptions());
+                        // return JsonSerializer.Deserialize<object>(stream, GetJsonSerializerOptions()); // TODO make it work
+                        return null;
                     }
                     else
                     {
                         BinaryFormatter bformatter = new BinaryFormatter();
                         return bformatter.Deserialize(stream);
                     }
-
-                    return null;
                 }
             }
             catch (System.Runtime.Serialization.SerializationException)
