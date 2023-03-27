@@ -72,7 +72,7 @@ namespace SonOfRobin
         {
             if (this.Texture != null) this.Texture.Dispose();
             this.Texture = texture;
-            if (textureSimulationColor != null) this.TextureSimulationColor = textureSimulationColor;
+            this.TextureSimulationColor = textureSimulationColor;
         }
 
         public void UnloadTexture()
