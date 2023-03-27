@@ -129,7 +129,7 @@ namespace SonOfRobin
             int width = array2D.GetLength(0);
             int height = array2D.GetLength(1);
 
-            var array1D = ConvertArray2DTo1D(width: width, height: height, array2D: array2D);
+            var array1D = ConvertColorArray2DTo1D(width: width, height: height, array2D: array2D);
             var texture = ConvertColorArray1DToTexture(array1D: array1D, width: width, height: height);
             return texture;
         }
@@ -158,13 +158,13 @@ namespace SonOfRobin
             });
 
             var texture = new Texture2D(graphicsDevice: SonOfRobinGame.GfxDev, width: width, height: height);
-            var array1D = ConvertArray2DTo1D(width: width, height: height, array2D: graphics);
+            var array1D = ConvertColorArray2DTo1D(width: width, height: height, array2D: graphics);
             texture.SetData(array1D);
 
             return texture;
         }
 
-        public static Texture2D Convert2DArrayToTexture(Color[,] inputArray)
+        public static Texture2D Convert2DColorArrayToTexture(Color[,] inputArray)
         {
             int width = inputArray.GetLength(0);
             int height = inputArray.GetLength(1);
@@ -180,13 +180,13 @@ namespace SonOfRobin
             }
 
             var texture = new Texture2D(graphicsDevice: SonOfRobinGame.GfxDev, width: width, height: height);
-            var array1D = ConvertArray2DTo1D(width: width, height: height, array2D: graphics);
+            var array1D = ConvertColorArray2DTo1D(width: width, height: height, array2D: graphics);
             texture.SetData(array1D);
 
             return texture;
         }
 
-        public static Color[,] ConvertArray1DTo2D(int width, int height, Color[] array1D)
+        public static Color[,] ConvertColorArray1DTo2D(int width, int height, Color[] array1D)
         {
             Color[,] array2D = new Color[width, height];
 
@@ -202,7 +202,7 @@ namespace SonOfRobin
             return array2D;
         }
 
-        public static Color[] ConvertArray2DTo1D(int width, int height, Color[,] array2D)
+        public static Color[] ConvertColorArray2DTo1D(int width, int height, Color[,] array2D)
         {
             Color[] array1D = new Color[width * height];
 
@@ -221,7 +221,7 @@ namespace SonOfRobin
         {
             var array1D = new Color[width * height];
             texture.GetData(array1D);
-            var array2D = ConvertArray1DTo2D(array1D: array1D, width: width, height: height);
+            var array2D = ConvertColorArray1DTo2D(array1D: array1D, width: width, height: height);
 
             return array2D;
         }
@@ -242,6 +242,42 @@ namespace SonOfRobin
                         });
 
             return byteArray;
+        }
+
+        public static byte[,] ConvertByteArray1DTo2D(int width, int height, byte[] array1D)
+        {
+            byte[,] array2D = new byte[width, height];
+
+            for (int y = 0; y < height; y++)
+            {
+                int yFactor = y * width;
+                for (int x = 0; x < width; x++)
+                {
+                    array2D[x, y] = array1D[(yFactor) + x];
+                }
+            }
+
+            return array2D;
+        }
+
+        public static byte[] ConvertByteArray2DTo1D(byte[,] array2D)
+        {
+            int width = array2D.GetLength(0);
+            int height = array2D.GetLength(1);
+
+            byte[] array1D = new byte[width * height];
+
+            for (int y = 0; y < height; y++)
+            {
+                int yFactor = y * width;
+
+                for (int x = 0; x < width; x++)
+                {
+                    array1D[yFactor + x] = array2D[x, y];
+                }
+            }
+
+            return array1D;
         }
     }
 }

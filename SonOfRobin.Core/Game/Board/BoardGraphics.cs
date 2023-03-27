@@ -61,7 +61,7 @@ namespace SonOfRobin
                 {
                     // ...if this fails (disk error, locked file, etc.), get texture data directly
                     Color[,] colorGrid = this.CreateBitmapFromTerrain(getColorGrid: true, saveAsPNG: false);
-                    this.Texture = GfxConverter.Convert2DArrayToTexture(colorGrid);
+                    this.Texture = GfxConverter.Convert2DColorArrayToTexture(colorGrid);
                 }
             }
 

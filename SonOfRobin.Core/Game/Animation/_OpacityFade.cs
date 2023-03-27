@@ -10,7 +10,7 @@ namespace SonOfRobin
 
         public const int defaultDuration = 30;
 
-        public readonly Sprite sprite;
+        private readonly Sprite sprite;
         private readonly int duration;
         private readonly float destOpacity;
         private readonly float fadePerFrame;
