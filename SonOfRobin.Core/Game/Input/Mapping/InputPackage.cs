@@ -9,7 +9,7 @@ namespace SonOfRobin
     [Serializable]
     public class InputPackage
     {
-        public const float version = 1.07f;
+        public const float version = 1.08f;
 
         private static readonly Dictionary<string, string> readablePropertyNames = new Dictionary<string, string>
             {

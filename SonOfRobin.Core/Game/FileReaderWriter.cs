@@ -42,6 +42,8 @@ namespace SonOfRobin
             { return null; }
             catch (DirectoryNotFoundException)
             { return null; }
+            catch (System.ArgumentOutOfRangeException)
+            { return null; } // file corrupted
         }
     }
 }
