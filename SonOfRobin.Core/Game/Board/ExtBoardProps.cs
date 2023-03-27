@@ -57,21 +57,16 @@ namespace SonOfRobin
             if (serializedData == null)
             {
                 this.extDataByProperty = this.MakeArrayCollection();
+
                 this.containsPropertiesTrueGridCell = new List<Name>[this.Grid.noOfCellsX, this.Grid.noOfCellsY];
                 this.containsPropertiesFalseGridCell = new List<Name>[this.Grid.noOfCellsX, this.Grid.noOfCellsY];
                 this.loadedFromTemplate = false;
             }
             else
             {
-                // conversion is needed, because PowerSerializer cannot serialize 2D arrays properly
-
-                this.containsPropertiesTrueGridCell = ConvertNameListArray1DTo2D(
-                    width: this.Grid.noOfCellsX, height: this.Grid.noOfCellsY, array1D: (List<Name>[])serializedData["containsPropertiesTrueGridCell"]);
-
-                this.containsPropertiesFalseGridCell = ConvertNameListArray1DTo2D(
-                    width: this.Grid.noOfCellsX, height: this.Grid.noOfCellsY, array1D: (List<Name>[])serializedData["containsPropertiesFalseGridCell"]);
-
                 this.extDataByProperty = (Dictionary<Name, BitArray>)serializedData["extDataByProperty"];
+                this.containsPropertiesTrueGridCell = (List<Name>[,])serializedData["containsPropertiesTrueGridCell"];
+                this.containsPropertiesFalseGridCell = (List<Name>[,])serializedData["containsPropertiesFalseGridCell"];
                 this.CreationInProgress = false;
                 this.loadedFromTemplate = true;
             }
@@ -188,47 +183,11 @@ namespace SonOfRobin
             var serializedData = new Dictionary<string, object>
             {
                 { "extDataByProperty", this.extDataByProperty },
-                { "containsPropertiesTrueGridCell", this.ConvertNameListArray2DTo1D(this.containsPropertiesTrueGridCell)},
-                { "containsPropertiesFalseGridCell", this.ConvertNameListArray2DTo1D(this.containsPropertiesFalseGridCell) },
+                { "containsPropertiesTrueGridCell", this.containsPropertiesTrueGridCell },
+                { "containsPropertiesFalseGridCell", this.containsPropertiesFalseGridCell },
             };
 
             return serializedData;
-        }
-
-        private List<Name>[] ConvertNameListArray2DTo1D(List<Name>[,] array2D)
-        {
-            int width = array2D.GetLength(0);
-            int height = array2D.GetLength(1);
-
-            List<Name>[] array1D = new List<Name>[width * height];
-
-            for (int y = 0; y < height; y++)
-            {
-                int yFactor = y * width;
-
-                for (int x = 0; x < width; x++)
-                {
-                    array1D[yFactor + x] = array2D[x, y];
-                }
-            }
-
-            return array1D;
-        }
-
-        private static List<Name>[,] ConvertNameListArray1DTo2D(int width, int height, List<Name>[] array1D)
-        {
-            List<Name>[,] array2D = new List<Name>[width, height];
-
-            for (int y = 0; y < height; y++)
-            {
-                int yFactor = y * width;
-                for (int x = 0; x < width; x++)
-                {
-                    array2D[x, y] = array1D[(yFactor) + x];
-                }
-            }
-
-            return array2D;
         }
     }
 }

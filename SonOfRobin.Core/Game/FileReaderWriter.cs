@@ -1,11 +1,10 @@
-﻿using DouglasDwyer.PowerSerializer;
-using System.IO;
+﻿using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace SonOfRobin
 {
-    public class FileReaderWriter
+    internal class FileReaderWriter
     {
-        private static readonly PowerSerializer powerSerializer = new PowerSerializer();
 
         public static void SaveMemoryStream(MemoryStream memoryStream, string path)
         {
@@ -17,11 +16,10 @@ namespace SonOfRobin
 
         public static void Save(object savedObj, string path)
         {
-            byte[] serializedData = powerSerializer.Serialize(savedObj);
-
-            using (var fileStream = new FileStream(path, FileMode.Create))
+            using (Stream stream = File.Open(path, FileMode.Create))
             {
-                fileStream.Write(serializedData, 0, serializedData.Length);
+                BinaryFormatter bformatter = new BinaryFormatter();
+                bformatter.Serialize(stream, savedObj);
             }
         }
 
@@ -29,21 +27,20 @@ namespace SonOfRobin
         {
             try
             {
-                using (var fileStream = new FileStream(path, FileMode.Open, FileAccess.Read))
+                using (Stream stream = File.Open(path, FileMode.Open))
                 {
-                    byte[] serializedData = new byte[fileStream.Length];
-                    fileStream.Read(serializedData, 0, (int)fileStream.Length);
-                    return powerSerializer.Deserialize(serializedData);
+                    BinaryFormatter bformatter = new BinaryFormatter();
+                    return bformatter.Deserialize(stream);
                 }
             }
+            catch (System.Runtime.Serialization.SerializationException)
+            { return null; } // file corrupted
             catch (System.Text.DecoderFallbackException)
             { return null; } // file corrupted
             catch (FileNotFoundException)
             { return null; }
             catch (DirectoryNotFoundException)
             { return null; }
-            catch (System.ArgumentOutOfRangeException)
-            { return null; } // file corrupted
         }
     }
 }
