@@ -16,7 +16,7 @@ namespace SonOfRobin
             Color[,] sourceRGBGrid = GfxConverter.ConvertTextureToGrid(texture: sourceTexture, x: 0, y: 0, width: sourceTexture.Width, height: sourceTexture.Height);
             Color[,] upscaledRGBGrid = UpscaleColorGrid(sourceGrid: sourceRGBGrid);
 
-            return GfxConverter.Convert2DArrayToTexture(upscaledRGBGrid);
+            return GfxConverter.Convert2DColorArrayToTexture(upscaledRGBGrid);
         }
 
         public static Color[,] UpscaleColorGrid(Color[,] sourceGrid)

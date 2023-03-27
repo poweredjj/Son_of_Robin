@@ -71,7 +71,7 @@ namespace SonOfRobin
 
             if (ignoreIfShown && hintEngine.shownTutorials.Contains(type)) return;
 
-            if (Scheduler.HasTaskChainInQueue || world.Player.sleepMode != Player.SleepMode.Awake) return;
+            if (Scheduler.HasTaskChainInQueue || world.Player.sleepMode != Player.SleepMode.Awake || world.CineMode || world.BuildMode) return;
             // only one tutorial / hint should be shown at once - waitingScenes cause playing next scene after turning off CineMode (playing scene without game being paused)
 
             if (!ignoreDelay)
@@ -309,7 +309,7 @@ namespace SonOfRobin
                 new HintMessage(text: "I'm starting to get tired...", boxType: HintMessage.BoxType.Dialogue, fieldOnly: true),
                 new HintMessage(text: "You can rest and save your game inside shelter |.",imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.TentSmall) }, boxType: messageTextType),
                 new HintMessage(text: "You can make one using crafting menu.", boxType: messageTextType)
-    });
+                });
 
             CheckData();
         }

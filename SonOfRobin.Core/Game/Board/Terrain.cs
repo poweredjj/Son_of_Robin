@@ -83,9 +83,17 @@ namespace SonOfRobin
             }
             else
             {
-                this.mapData = (Byte[,])serializedTerrainData["mapData"];
-                this.minValGridCell = (byte[,])serializedTerrainData["minValGridCell"];
-                this.maxValGridCell = (byte[,])serializedTerrainData["maxValGridCell"];
+                // conversion is needed, because PowerSerializer cannot serialize 2D arrays properly
+
+                this.mapData = GfxConverter.ConvertByteArray1DTo2D(
+                    width: this.Grid.dividedWidth, height: this.Grid.dividedHeight, array1D: (Byte[])serializedTerrainData["mapData"]);
+
+                this.minValGridCell = GfxConverter.ConvertByteArray1DTo2D(
+                    width: this.Grid.noOfCellsX, height: this.Grid.noOfCellsY, array1D: (Byte[])serializedTerrainData["minValGridCell"]);
+
+                this.maxValGridCell = GfxConverter.ConvertByteArray1DTo2D(
+                    width: this.Grid.noOfCellsX, height: this.Grid.noOfCellsY, array1D: (Byte[])serializedTerrainData["maxValGridCell"]);
+
                 this.CreationInProgress = false;
             }
         }
@@ -188,9 +196,9 @@ namespace SonOfRobin
         {
             var serializedMapData = new Dictionary<string, object>
             {
-                { "mapData", this.mapData },
-                { "minValGridCell", this.minValGridCell },
-                { "maxValGridCell", this.maxValGridCell },
+                { "mapData", GfxConverter.ConvertByteArray2DTo1D(this.mapData) },
+                { "minValGridCell", GfxConverter.ConvertByteArray2DTo1D(this.minValGridCell)},
+                { "maxValGridCell", GfxConverter.ConvertByteArray2DTo1D(this.maxValGridCell)},
             };
 
             return serializedMapData;

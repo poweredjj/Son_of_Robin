@@ -1,29 +1,11 @@
-﻿using System.Collections;
+﻿using DouglasDwyer.PowerSerializer;
 using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace SonOfRobin
 {
-    internal class FileReaderWriter
+    public class FileReaderWriter
     {
-        public static void Save(object savedObj, string path)
-        {
-            using (Stream stream = File.Open(path, FileMode.Create))
-            {
-                if (SonOfRobinGame.os == OS.Android)
-                {
-                    //Encoding.UTF8.GetBytes(JsonSerializer.Serialize(savedObj, GetJsonSerializerOptions())); // TODO make it work
-                }
-                else
-                {
-                    BinaryFormatter bformatter = new BinaryFormatter();
-                    bformatter.Serialize(stream, savedObj);
-                }
-            }
-        }
+        private static readonly PowerSerializer powerSerializer = new PowerSerializer();
 
         public static void SaveMemoryStream(MemoryStream memoryStream, string path)
         {
@@ -33,44 +15,35 @@ namespace SonOfRobin
             outStream.Close();
         }
 
+        public static void Save(object savedObj, string path)
+        {
+            byte[] serializedData = powerSerializer.Serialize(savedObj);
+
+            using (var fileStream = new FileStream(path, FileMode.Create))
+            {
+                fileStream.Write(serializedData, 0, serializedData.Length);
+            }
+        }
+
         public static object Load(string path)
         {
             try
             {
-                using (Stream stream = File.Open(path, FileMode.Open))
+                using (var fileStream = new FileStream(path, FileMode.Open, FileAccess.Read))
                 {
-
-                    if (SonOfRobinGame.os == OS.Android)
-                    {
-                        // return JsonSerializer.Deserialize<object>(stream, GetJsonSerializerOptions()); // TODO make it work
-                        return null;
-                    }
-                    else
-                    {
-                        BinaryFormatter bformatter = new BinaryFormatter();
-                        return bformatter.Deserialize(stream);
-                    }
+                    byte[] serializedData = new byte[fileStream.Length];
+                    fileStream.Read(serializedData, 0, (int)fileStream.Length);
+                    return powerSerializer.Deserialize(serializedData);
                 }
             }
-            catch (System.Runtime.Serialization.SerializationException)
-            { return null; } // file corrupted
             catch (System.Text.DecoderFallbackException)
             { return null; } // file corrupted
             catch (FileNotFoundException)
             { return null; }
             catch (DirectoryNotFoundException)
             { return null; }
-        }
-
-        private static JsonSerializerOptions GetJsonSerializerOptions()
-        {
-            return new JsonSerializerOptions()
-            {
-                PropertyNamingPolicy = null,
-                WriteIndented = true,
-                AllowTrailingCommas = true,
-                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-            };
+            catch (System.ArgumentOutOfRangeException)
+            { return null; } // file corrupted
         }
     }
 }

@@ -79,7 +79,7 @@ namespace SonOfRobin
             pieceData["animal_pregnancyMass"] = this.pregnancyMass;
             pieceData["animal_pregnancyFramesLeft"] = this.pregnancyFramesLeft;
             pieceData["animal_isPregnant"] = this.isPregnant;
-            pieceData["animal_aiData"] = this.aiData;
+            pieceData["animal_aiData"] = this.aiData.Serialize();
             pieceData["animal_target_id"] = this.target?.id;
 
             return pieceData;
@@ -95,7 +95,7 @@ namespace SonOfRobin
             this.pregnancyMass = (uint)pieceData["animal_pregnancyMass"];
             this.pregnancyFramesLeft = (int)pieceData["animal_pregnancyFramesLeft"];
             this.isPregnant = (bool)pieceData["animal_isPregnant"];
-            this.aiData = (AiData)pieceData["animal_aiData"];
+            this.aiData = AiData.Deserialize(pieceData["animal_aiData"]);
             this.aiData.UpdatePosition(); // needed to update Vector2
         }
 

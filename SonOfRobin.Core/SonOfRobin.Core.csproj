@@ -12,10 +12,12 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="BigGustave" Version="1.0.6" />
+    <PackageReference Include="DouglasDwyer.PowerSerializer" Version="1.0.0.3" />
     <PackageReference Include="MonoGame.Extended.Tweening" Version="3.8.0" />
     <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.1.303">
       <PrivateAssets>All</PrivateAssets>
     </PackageReference>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="System.Diagnostics.PerformanceCounter" Version="7.0.0" />
     <PackageReference Include="Xamarin.Essentials" Version="1.7.5" />
   </ItemGroup>
