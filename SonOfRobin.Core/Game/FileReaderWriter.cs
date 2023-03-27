@@ -1,4 +1,5 @@
 ﻿using DouglasDwyer.PowerSerializer;
+using System;
 using System.IO;
 
 namespace SonOfRobin
@@ -17,11 +18,21 @@ namespace SonOfRobin
 
         public static void Save(object savedObj, string path)
         {
-            byte[] serializedData = powerSerializer.Serialize(savedObj);
-
-            using (var fileStream = new FileStream(path, FileMode.Create))
+            try
             {
-                fileStream.Write(serializedData, 0, serializedData.Length);
+                byte[] serializedData = powerSerializer.Serialize(savedObj);
+
+                using (var fileStream = new FileStream(path, FileMode.Create))
+                {
+                    fileStream.Write(serializedData, 0, serializedData.Length);
+                }
+            }
+            catch (Exception)
+            {
+
+                var a = 1;
+
+
             }
         }
 

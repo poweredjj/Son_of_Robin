@@ -248,7 +248,7 @@ namespace SonOfRobin
             pieceData["sprite_currentFrameTimeLeft"] = this.currentFrameTimeLeft;
             pieceData["sprite_rotation"] = this.rotation;
             pieceData["sprite_opacity"] = this.opacity;
-            pieceData["sprite_opacityFade"] = this.opacityFade;
+            pieceData["sprite_opacityFade"] = this.opacityFade == null ? null : this.opacityFade.Serialize();
             pieceData["sprite_orientation"] = this.orientation;
             pieceData["sprite_gridGroups"] = this.gridGroups;
             pieceData["sprite_hasBeenDiscovered"] = this.hasBeenDiscovered;
@@ -263,8 +263,7 @@ namespace SonOfRobin
             this.orientation = (Orientation)pieceData["sprite_orientation"];
             this.rotation = (float)pieceData["sprite_rotation"];
             this.opacity = (float)pieceData["sprite_opacity"];
-            this.opacityFade = (OpacityFade)pieceData["sprite_opacityFade"];
-            if (this.opacityFade != null) this.opacityFade.sprite = this;
+            this.opacityFade = OpacityFade.Deserialize(fadeData: pieceData["sprite_opacityFade"], sprite: this);
             this.animPackage = (AnimData.PkgName)pieceData["sprite_animPackage"];
             this.animSize = (byte)pieceData["sprite_animSize"];
             this.animName = (string)pieceData["sprite_animName"];
