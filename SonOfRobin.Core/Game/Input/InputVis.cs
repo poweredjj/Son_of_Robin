@@ -58,14 +58,33 @@ namespace SonOfRobin
 
         public static Texture2D GetTexture(object anyType)
         {
-            if (anyType.GetType() == typeof(InputMapper.AnalogType))
+            Type type = anyType.GetType();
+
+            if (type == typeof(InputMapper.AnalogType))
             {
                 var analogTextureList = GetAnalogTextureList((InputMapper.AnalogType)anyType);
                 return analogTextureList.Count == 0 ? null : analogTextureList[0];
             }
-            else if (anyType.GetType() == typeof(Keys)) return GetTexture((Keys)anyType);
-            else if (anyType.GetType() == typeof(Buttons)) return GetTexture((Buttons)anyType);
-            else throw new ArgumentException($"Unsupported anyType - '{anyType.GetType()}'.");
+            else if (type == typeof(Keys)) return GetTexture((Keys)anyType);
+            else if (type == typeof(Buttons)) return GetTexture((Buttons)anyType);
+
+            else if (type == typeof(StoredInput))
+            {
+                StoredInput storedInput = (StoredInput)anyType;
+                switch (storedInput.type)
+                {
+                    case StoredInput.Type.Key:
+                        return GetTexture(storedInput.Key);
+
+                    case StoredInput.Type.Button:
+                        return GetTexture(storedInput.Button);
+
+                    default:
+                        throw new ArgumentException($"Unsupported type - '{storedInput.type}'.");
+                }
+            }
+
+            else throw new ArgumentException($"Unsupported anyType - '{type}'.");
         }
 
         public static List<Texture2D> GetAnalogTextureList(InputMapper.AnalogType analogType)

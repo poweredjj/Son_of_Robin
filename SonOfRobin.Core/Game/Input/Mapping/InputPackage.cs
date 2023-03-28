@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,9 +8,107 @@ using System.Linq;
 namespace SonOfRobin
 {
     [Serializable]
+    public class StoredInput
+    {
+        public enum Type
+        { Key, Button, VirtButton }
+
+        public readonly Type type;
+        private readonly Keys key;
+        private readonly Buttons button;
+        private readonly VButName virtButton;
+
+        public Keys Key
+        {
+            get
+            {
+                if (this.type != Type.Key) throw new ArgumentException($"Wrong type for key - '{this.type}'.");
+                return this.key;
+            }
+        }
+
+        public Buttons Button
+        {
+            get
+            {
+                if (this.type != Type.Button) throw new ArgumentException($"Wrong type for button - '{this.type}'.");
+                return this.button;
+            }
+        }
+
+        public VButName VirtButton
+        {
+            get
+            {
+                if (this.type != Type.VirtButton) throw new ArgumentException($"Wrong type for virtButton - '{this.type}'.");
+                return this.virtButton;
+            }
+        }
+
+        public StoredInput(Keys key)
+        {
+            this.type = Type.Key;
+            this.key = key;
+        }
+
+        public StoredInput(Buttons button)
+        {
+            this.type = Type.Button;
+            this.button = button;
+        }
+
+        public StoredInput(VButName virtButton)
+        {
+            this.type = Type.VirtButton;
+            this.virtButton = virtButton;
+        }
+
+        public bool Equals(StoredInput mappingToCheck)
+        {
+            if (this.type != mappingToCheck.type) return false;
+
+            switch (this.type)
+            {
+                case Type.Key:
+                    return this.key == mappingToCheck.key;
+
+                case Type.Button:
+                    return this.button == mappingToCheck.button;
+
+                case Type.VirtButton:
+                    return this.virtButton == mappingToCheck.virtButton;
+
+                default:
+                    throw new ArgumentException($"Unsupported type - '{this.type}'.");
+            }
+        }
+
+        public string Name
+        {
+            get
+            {
+                switch (this.type)
+                {
+                    case Type.Key:
+                        return this.key.ToString();
+
+                    case Type.Button:
+                        return this.button.ToString();
+
+                    case Type.VirtButton:
+                        return this.virtButton.ToString();
+
+                    default:
+                        throw new ArgumentException($"Unsupported type - '{this.type}'.");
+                }
+            }
+        }
+    }
+
+    [Serializable]
     public class InputPackage
     {
-        public const float version = 1.08f;
+        public const float version = 1.09f;
 
         private static readonly Dictionary<string, string> readablePropertyNames = new Dictionary<string, string>
             {
@@ -46,36 +145,36 @@ namespace SonOfRobin
         public InputMapper.AnalogType leftStick;
         public InputMapper.AnalogType rightStick;
 
-        public object left;
-        public object right;
-        public object up;
-        public object down;
-        public object confirm;
-        public object cancel;
-        public object pauseMenu;
-        public object sprint;
-        public object inventory;
-        public object pickUp;
-        public object craft;
-        public object interact;
-        public object map;
-        public object useTool;
-        public object zoomOut;
-        public object toolbarPrev;
-        public object toolbarNext;
-        public object invSwitch;
-        public object invPickOne;
-        public object invPickStack;
-        public object invSort;
-        public object mapToggleMarker;
-        public object mapCenterPlayer;
-        public object mapZoomIn;
-        public object mapZoomOut;
+        public StoredInput left;
+        public StoredInput right;
+        public StoredInput up;
+        public StoredInput down;
+        public StoredInput confirm;
+        public StoredInput cancel;
+        public StoredInput pauseMenu;
+        public StoredInput sprint;
+        public StoredInput inventory;
+        public StoredInput pickUp;
+        public StoredInput craft;
+        public StoredInput interact;
+        public StoredInput map;
+        public StoredInput useTool;
+        public StoredInput zoomOut;
+        public StoredInput toolbarPrev;
+        public StoredInput toolbarNext;
+        public StoredInput invSwitch;
+        public StoredInput invPickOne;
+        public StoredInput invPickStack;
+        public StoredInput invSort;
+        public StoredInput mapToggleMarker;
+        public StoredInput mapCenterPlayer;
+        public StoredInput mapZoomIn;
+        public StoredInput mapZoomOut;
 
         public bool IsObsolete
         { get { return this.packageVersion != version; } }
 
-        public InputPackage(float packageVersion, InputMapper.AnalogType leftStick, InputMapper.AnalogType rightStick, object confirm, object cancel, object pauseMenu, object sprint, object inventory, object pickUp, object craft, object interact, object map, object useTool, object zoomOut, object toolbarPrev, object invSwitch, object invSort, object toolbarNext, object invPickOne, object invPickStack, object mapToggleMarker, object mapCenterPlayer, object mapZoomIn, object mapZoomOut, object left = null, object right = null, object up = null, object down = null)
+        public InputPackage(float packageVersion, InputMapper.AnalogType leftStick, InputMapper.AnalogType rightStick, StoredInput confirm, StoredInput cancel, StoredInput pauseMenu, StoredInput sprint, StoredInput inventory, StoredInput pickUp, StoredInput craft, StoredInput interact, StoredInput map, StoredInput useTool, StoredInput zoomOut, StoredInput toolbarPrev, StoredInput invSwitch, StoredInput invSort, StoredInput toolbarNext, StoredInput invPickOne, StoredInput invPickStack, StoredInput mapToggleMarker, StoredInput mapCenterPlayer, StoredInput mapZoomIn, StoredInput mapZoomOut, StoredInput left = null, StoredInput right = null, StoredInput up = null, StoredInput down = null)
         {
             this.packageVersion = packageVersion;
 
@@ -152,31 +251,31 @@ namespace SonOfRobin
                 this.packageVersion == inputPackage.packageVersion &&
                 this.leftStick == inputPackage.leftStick &&
                 this.rightStick == inputPackage.rightStick &&
-                this.confirm == inputPackage.confirm &&
-                this.cancel == inputPackage.cancel &&
-                this.pauseMenu == inputPackage.pauseMenu &&
-                this.sprint == inputPackage.sprint &&
-                this.inventory == inputPackage.inventory &&
-                this.pickUp == inputPackage.pickUp &&
-                this.craft == inputPackage.craft &&
-                this.interact == inputPackage.interact &&
-                this.map == inputPackage.map &&
-                this.useTool == inputPackage.useTool &&
-                this.zoomOut == inputPackage.zoomOut &&
-                this.toolbarPrev == inputPackage.toolbarPrev &&
-                this.toolbarNext == inputPackage.toolbarNext &&
-                this.invSwitch == inputPackage.invSwitch &&
-                this.invPickOne == inputPackage.invPickOne &&
-                this.invPickStack == inputPackage.invPickStack &&
-                this.invSort == inputPackage.invSort &&
-                this.mapToggleMarker == inputPackage.mapToggleMarker &&
-                this.mapCenterPlayer == inputPackage.mapCenterPlayer &&
-                this.mapZoomIn == inputPackage.mapZoomIn &&
-                this.mapZoomOut == inputPackage.mapZoomOut &&
-                this.left == inputPackage.left &&
-                this.right == inputPackage.right &&
-                this.up == inputPackage.up &&
-                this.down == inputPackage.down;
+                this.confirm.Equals(inputPackage.confirm) &&
+                this.cancel.Equals(inputPackage.cancel) &&
+                this.pauseMenu.Equals(inputPackage.pauseMenu) &&
+                this.sprint.Equals(inputPackage.sprint) &&
+                this.inventory.Equals(inputPackage.inventory) &&
+                this.pickUp.Equals(inputPackage.pickUp) &&
+                this.craft.Equals(inputPackage.craft) &&
+                this.interact.Equals(inputPackage.interact) &&
+                this.map.Equals(inputPackage.map) &&
+                this.useTool.Equals(inputPackage.useTool) &&
+                this.zoomOut.Equals(inputPackage.zoomOut) &&
+                this.toolbarPrev.Equals(inputPackage.toolbarPrev) &&
+                this.toolbarNext.Equals(inputPackage.toolbarNext) &&
+                this.invSwitch.Equals(inputPackage.invSwitch) &&
+                this.invPickOne.Equals(inputPackage.invPickOne) &&
+                this.invPickStack.Equals(inputPackage.invPickStack) &&
+                this.invSort.Equals(inputPackage.invSort) &&
+                this.mapToggleMarker.Equals(inputPackage.mapToggleMarker) &&
+                this.mapCenterPlayer.Equals(inputPackage.mapCenterPlayer) &&
+                this.mapZoomIn.Equals(inputPackage.mapZoomIn) &&
+                this.mapZoomOut.Equals(inputPackage.mapZoomOut) &&
+                this.left.Equals(inputPackage.left) &&
+                this.right.Equals(inputPackage.right) &&
+                this.up.Equals(inputPackage.up) &&
+                this.down.Equals(inputPackage.down);
         }
 
         public bool Validate(bool gamepad)

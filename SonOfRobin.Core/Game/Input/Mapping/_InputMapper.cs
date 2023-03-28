@@ -62,9 +62,9 @@ namespace SonOfRobin
 
         protected static readonly Dictionary<Action, Mapping> detailedMappings = new Dictionary<Action, Mapping>();
 
-        public static readonly InputPackage defaultMappingGamepad = new InputPackage(packageVersion: InputPackage.version, leftStick: AnalogType.PadLeft, rightStick: AnalogType.PadRight, confirm: Buttons.A, cancel: Buttons.B, pauseMenu: Buttons.Start, sprint: Buttons.LeftStick, inventory: Buttons.Y, pickUp: Buttons.X, craft: Buttons.DPadUp, interact: Buttons.A, map: Buttons.DPadRight, useTool: Buttons.RightTrigger, zoomOut: Buttons.LeftTrigger, toolbarPrev: Buttons.LeftShoulder, toolbarNext: Buttons.RightShoulder, invSwitch: Buttons.LeftStick, invPickOne: Buttons.Y, invPickStack: Buttons.X, invSort: Buttons.RightStick, mapToggleMarker: Buttons.A, mapCenterPlayer: Buttons.LeftStick, mapZoomIn: Buttons.RightTrigger, mapZoomOut: Buttons.LeftTrigger);
+        public static readonly InputPackage defaultMappingGamepad = new InputPackage(packageVersion: InputPackage.version, leftStick: AnalogType.PadLeft, rightStick: AnalogType.PadRight, confirm: new StoredInput(Buttons.A), cancel: new StoredInput(Buttons.B), pauseMenu: new StoredInput(Buttons.Start), sprint: new StoredInput(Buttons.LeftStick), inventory: new StoredInput(Buttons.Y), pickUp: new StoredInput(Buttons.X), craft: new StoredInput(Buttons.DPadUp), interact: new StoredInput(Buttons.A), map: new StoredInput(Buttons.DPadRight), useTool: new StoredInput(Buttons.RightTrigger), zoomOut: new StoredInput(Buttons.LeftTrigger), toolbarPrev: new StoredInput(Buttons.LeftShoulder), toolbarNext: new StoredInput(Buttons.RightShoulder), invSwitch: new StoredInput(Buttons.LeftStick), invPickOne: new StoredInput(Buttons.Y), invPickStack: new StoredInput(Buttons.X), invSort: new StoredInput(Buttons.RightStick), mapToggleMarker: new StoredInput(Buttons.A), mapCenterPlayer: new StoredInput(Buttons.LeftStick), mapZoomIn: new StoredInput(Buttons.RightTrigger), mapZoomOut: new StoredInput(Buttons.LeftTrigger));
 
-        public static readonly InputPackage defaultMappingKeyboard = new InputPackage(packageVersion: InputPackage.version, leftStick: AnalogType.FromKeys, rightStick: AnalogType.Empty, confirm: Keys.Enter, cancel: Keys.Escape, pauseMenu: Keys.Back, sprint: Keys.NumPad0, inventory: Keys.Enter, pickUp: Keys.RightControl, craft: Keys.NumPad5, interact: Keys.RightShift, map: Keys.M, useTool: Keys.Space, zoomOut: Keys.NumPad1, toolbarPrev: Keys.OemOpenBrackets, toolbarNext: Keys.OemCloseBrackets, invSwitch: Keys.Tab, invPickOne: Keys.RightShift, invPickStack: Keys.Space, invSort: Keys.LeftShift, mapToggleMarker: Keys.Space, mapCenterPlayer: Keys.A, mapZoomIn: Keys.X, mapZoomOut: Keys.Z, left: Keys.Left, right: Keys.Right, up: Keys.Up, down: Keys.Down);
+        public static readonly InputPackage defaultMappingKeyboard = new InputPackage(packageVersion: InputPackage.version, leftStick: AnalogType.FromKeys, rightStick: AnalogType.Empty, confirm: new StoredInput(Keys.Enter), cancel: new StoredInput(Keys.Escape), pauseMenu: new StoredInput(Keys.Back), sprint: new StoredInput(Keys.NumPad0), inventory: new StoredInput(Keys.Enter), pickUp: new StoredInput(Keys.RightControl), craft: new StoredInput(Keys.NumPad5), interact: new StoredInput(Keys.RightShift), map: new StoredInput(Keys.M), useTool: new StoredInput(Keys.Space), zoomOut: new StoredInput(Keys.NumPad1), toolbarPrev: new StoredInput(Keys.OemOpenBrackets), toolbarNext: new StoredInput(Keys.OemCloseBrackets), invSwitch: new StoredInput(Keys.Tab), invPickOne: new StoredInput(Keys.RightShift), invPickStack: new StoredInput(Keys.Space), invSort: new StoredInput(Keys.LeftShift), mapToggleMarker: new StoredInput(Keys.Space), mapCenterPlayer: new StoredInput(Keys.A), mapZoomIn: new StoredInput(Keys.X), mapZoomOut: new StoredInput(Keys.Z), left: new StoredInput(Keys.Left), right: new StoredInput(Keys.Right), up: new StoredInput(Keys.Up), down: new StoredInput(Keys.Down));
 
         public static InputPackage currentMappingGamepad = defaultMappingGamepad.MakeCopy();
         public static InputPackage currentMappingKeyboard = defaultMappingKeyboard.MakeCopy();
@@ -78,7 +78,7 @@ namespace SonOfRobin
 
             InputPackage padMap = currentMappingGamepad;
             InputPackage keybMap = currentMappingKeyboard;
-            var keysToAnalog = new List<Keys> { (Keys)keybMap.left, (Keys)keybMap.right, (Keys)keybMap.up, (Keys)keybMap.down };
+            var keysToAnalog = new List<Keys> { keybMap.left.Key, keybMap.right.Key, keybMap.up.Key, keybMap.down.Key };
 
             // global
             {
@@ -254,7 +254,28 @@ namespace SonOfRobin
 
                     var inputType = input.GetType();
 
-                    if (inputType == typeof(Keys)) this.keyboardKeys.Add((Keys)input);
+                    if (inputType == typeof(StoredInput))
+                    {
+                        StoredInput storedInput = (StoredInput)input;
+                        switch (storedInput.type)
+                        {
+                            case StoredInput.Type.Key:
+                                this.keyboardKeys.Add(storedInput.Key);
+                                break;
+
+                            case StoredInput.Type.Button:
+                                this.gamepadButtons.Add(storedInput.Button);
+                                break;
+
+                            case StoredInput.Type.VirtButton:
+                                this.virtualButtons.Add(storedInput.VirtButton);
+                                break;
+
+                            default:
+                                throw new ArgumentException($"Unsupported type - '{storedInput.type}'.");
+                        }
+                    }
+                    else if (inputType == typeof(Keys)) this.keyboardKeys.Add((Keys)input);
                     else if (inputType == typeof(Buttons)) this.gamepadButtons.Add((Buttons)input);
                     else if (inputType == typeof(VButName)) this.virtualButtons.Add((VButName)input);
                     else if (inputType == typeof(AnalogType)) this.analogTypes.Add((AnalogType)input);
