@@ -1,5 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using System;
 using System.Collections.Generic;
 
@@ -553,8 +555,8 @@ namespace SonOfRobin
             prefsData["enableTouchJoysticks"] = enableTouchJoysticks;
             prefsData["pointToWalk"] = pointToWalk;
             prefsData["pointToInteract"] = pointToInteract;
-            prefsData["currentMappingGamepad"] = InputMapper.currentMappingGamepad;
-            prefsData["currentMappingKeyboard"] = InputMapper.currentMappingKeyboard;
+            prefsData["currentMappingGamepad"] = InputMapper.currentMappingGamepad.Serialize();
+            prefsData["currentMappingKeyboard"] = InputMapper.currentMappingKeyboard.Serialize();
             prefsData["soundGlobalOn"] = Sound.GlobalOn;
             prefsData["soundGlobalVolume"] = Sound.globalVolume;
             prefsData["soundMenuOn"] = Sound.menuOn;
@@ -582,7 +584,14 @@ namespace SonOfRobin
                 {
                     debugMode = (bool)prefsData["debugMode"];
                     CustomizeWorld = (bool)prefsData["customizeWorld"];
-                    SelectedWorldSize = (WorldSize)prefsData["selectedWorldSize"];
+                    //SelectedWorldSize = (WorldSize)prefsData["selectedWorldSize"];
+
+
+                    // SelectedWorldSize = JsonConvert.DeserializeObject<WorldSize>((string)prefsData["selectedWorldSize"], FileReaderWriter.serializerSettings);
+
+                    SelectedWorldSize = JsonConvert.DeserializeObject<WorldSize>(@"""" + (string)prefsData["selectedWorldSize"] + @"""", new StringEnumConverter());
+
+
                     newWorldResDivider = (int)prefsData["newWorldResDivider"];
                     newWorldSize = (int)prefsData["newWorldSize"];
                     newWorldPlayerName = (PieceTemplate.Name)prefsData["newWorldPlayerName"];
@@ -619,8 +628,8 @@ namespace SonOfRobin
                     enableTouchJoysticks = (bool)prefsData["enableTouchJoysticks"];
                     pointToWalk = (bool)prefsData["pointToWalk"];
                     pointToInteract = (bool)prefsData["pointToInteract"];
-                    InputPackage loadedMappingGamepad = (InputPackage)prefsData["currentMappingGamepad"];
-                    InputPackage loadedMappingKeyboard = (InputPackage)prefsData["currentMappingKeyboard"];
+                    InputPackage loadedMappingGamepad = InputPackage.Deserialize(prefsData["currentMappingGamepad"]);
+                    InputPackage loadedMappingKeyboard = InputPackage.Deserialize(prefsData["currentMappingKeyboard"]);
                     if (!loadedMappingGamepad.IsObsolete) InputMapper.currentMappingGamepad = loadedMappingGamepad;
                     if (!loadedMappingKeyboard.IsObsolete) InputMapper.currentMappingKeyboard = loadedMappingKeyboard;
                     InputMapper.newMappingGamepad = InputMapper.currentMappingGamepad.MakeCopy();
@@ -639,7 +648,7 @@ namespace SonOfRobin
                     prefsLoaded = true;
                 }
                 catch (KeyNotFoundException) { MessageLog.AddMessage(msgType: MsgType.Debug, message: "KeyNotFoundException while loading preferences.", color: Color.White); }
-                catch (InvalidCastException) { MessageLog.AddMessage(msgType: MsgType.Debug, message: "InvalidCastException while loading preferences.", color: Color.White); }
+                // catch (InvalidCastException) { MessageLog.AddMessage(msgType: MsgType.Debug, message: "InvalidCastException while loading preferences.", color: Color.White); }
             }
 
             if (!prefsLoaded)

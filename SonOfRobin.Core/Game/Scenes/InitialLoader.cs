@@ -105,20 +105,20 @@ namespace SonOfRobin
                     break;
 
                 case Step.MakeDemoWorld:
-                    if (Preferences.showDemoWorld && SonOfRobinGame.LicenceValid)
-                    {
-                        if (World.GetTopWorld() == null) new World(seed: GridTemplate.demoWorldSeed, width: 4000, height: 4000, resDivider: 5, demoMode: true, playerName: PieceTemplate.Name.PlayerBoy); // playerName is not used in demoWorld
+                    //if (Preferences.showDemoWorld && SonOfRobinGame.LicenceValid)
+                    //{
+                    //    if (World.GetTopWorld() == null) new World(seed: GridTemplate.demoWorldSeed, width: 4000, height: 4000, resDivider: 5, demoMode: true, playerName: PieceTemplate.Name.PlayerBoy); // playerName is not used in demoWorld
 
-                        World demoWorld = World.GetTopWorld();
+                    //    World demoWorld = World.GetTopWorld();
 
-                        while (true)
-                        {
-                            demoWorld.Update(gameTime: gameTime);
+                    //    while (true)
+                    //    {
+                    //        demoWorld.Update(gameTime: gameTime);
 
-                            if (!demoWorld.WorldCreationInProgress && !demoWorld.PiecesCreationInProgress) break;
-                            else SonOfRobinGame.CurrentUpdateAdvance(); // manually changing the counter, to avoid softlock
-                        }
-                    }
+                    //        if (!demoWorld.WorldCreationInProgress && !demoWorld.PiecesCreationInProgress) break;
+                    //        else SonOfRobinGame.CurrentUpdateAdvance(); // manually changing the counter, to avoid softlock
+                    //    }
+                    //}
 
                     break;
 

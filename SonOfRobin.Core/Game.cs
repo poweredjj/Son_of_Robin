@@ -67,7 +67,7 @@ namespace SonOfRobin
         public static readonly string gameDataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "SonOfRobin_data");
         public static readonly string worldTemplatesPath = Path.Combine(gameDataPath, "world_templates");
         public static readonly string saveGamesPath = Path.Combine(gameDataPath, "savegames");
-        public static readonly string prefsPath = Path.Combine(gameDataPath, "preferences.bin");
+        public static readonly string prefsPath = Path.Combine(gameDataPath, "preferences.json");
 
         public static bool ThisIsWorkMachine
         { get { return gameDataPath.Contains("msmidowi"); } }

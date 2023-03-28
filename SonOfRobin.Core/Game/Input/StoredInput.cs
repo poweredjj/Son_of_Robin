@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Input;
 using System;
+using System.Collections.Generic;
 
 namespace SonOfRobin
 {
@@ -7,7 +8,7 @@ namespace SonOfRobin
     public class StoredInput
     {
         public enum Type
-        { Key, Button, LeftStick, Analog }
+        { Key, Button, Analog }
 
         public readonly Type type;
         private readonly Keys key;
@@ -117,24 +118,52 @@ namespace SonOfRobin
             }
         }
 
-        public string Name
+        public Dictionary<string, Object> Serialize()
         {
-            get
+            Dictionary<string, Object> inputData = new Dictionary<string, object>();
+
+            inputData["type"] = this.type;
+
+            switch (this.type)
             {
-                switch (this.type)
-                {
-                    case Type.Key:
-                        return this.key.ToString();
+                case Type.Key:
+                    inputData["key"] = this.key;
+                    break;
 
-                    case Type.Button:
-                        return this.button.ToString();
+                case Type.Button:
+                    inputData["button"] = this.button;
+                    break;
 
-                    case Type.Analog:
-                        return this.analog.ToString();
+                case Type.Analog:
+                    inputData["analog"] = this.analog;
+                    break;
 
-                    default:
-                        throw new ArgumentException($"Unsupported type - '{this.type}'.");
-                }
+                default:
+                    throw new ArgumentException($"Unsupported type - '{type}'.");
+            }
+
+            return inputData;
+        }
+
+        public static StoredInput Deserialize(Object inputData)
+        {
+            if (inputData == null) return null;
+            var inputDict = (Dictionary<string, Object>)inputData;
+
+            Type type = (Type)inputDict["type"];
+            switch (type)
+            {
+                case Type.Key:
+                    return new StoredInput((Keys)inputDict["key"]);
+
+                case Type.Button:
+                    return new StoredInput((Buttons)inputDict["button"]);
+
+                case Type.Analog:
+                    return new StoredInput((InputMapper.AnalogType)inputDict["analog"]);
+
+                default:
+                    throw new ArgumentException($"Unsupported type - '{type}'.");
             }
         }
     }
