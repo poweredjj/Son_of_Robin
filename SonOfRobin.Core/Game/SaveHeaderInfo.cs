@@ -66,17 +66,17 @@ namespace SonOfRobin
 
             if (!this.folderName.StartsWith(LoaderSaver.tempPrefix) && headerData != null && headerData.ContainsKey("saveVersion"))
             {
-                float saveVersion = (float)headerData["saveVersion"];
+                float saveVersion = (float)(double)headerData["saveVersion"];
                 if (saveVersion == SaveHeaderManager.saveVersion)
                 {
                     this.saveIsCorrect = true;
                     this.saveDate = (DateTime)headerData["realDateTime"];
-                    this.seed = (int)headerData["seed"];
-                    this.width = (int)headerData["width"];
-                    this.height = (int)headerData["height"];
-                    this.frozenClock = new IslandClock(elapsedUpdates: (int)headerData["clockTimeElapsed"]);
-                    this.timePlayed = (TimeSpan)headerData["TimePlayed"];
-                    this.playerName = (PieceTemplate.Name)headerData["playerName"];
+                    this.seed = (int)(Int64)headerData["seed"];
+                    this.width = (int)(Int64)headerData["width"];
+                    this.height = (int)(Int64)headerData["height"];
+                    this.frozenClock = new IslandClock(elapsedUpdates: (int)(Int64)headerData["clockTimeElapsed"]);
+                    this.timePlayed = TimeSpan.Parse((string)headerData["TimePlayed"]);
+                    this.playerName = (PieceTemplate.Name)(Int64)headerData["playerName"];
                 }
             }
         }

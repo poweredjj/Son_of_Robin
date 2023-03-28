@@ -58,6 +58,8 @@ namespace SonOfRobin
         {
             Texture2D texture = LoadTextureFromPNG(path);
 
+            if (texture == null) return null;
+
             int width = texture.Width;
             int height = texture.Height;
 

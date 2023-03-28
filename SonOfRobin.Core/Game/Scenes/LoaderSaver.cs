@@ -481,7 +481,7 @@ namespace SonOfRobin
                 }
                 else
                 {
-                    Grid templateGrid = Grid.GetMatchingTemplateFromSceneStack(seed: (int)this.headerData["seed"], width: (int)this.headerData["width"], height: (int)this.headerData["height"], ignoreCellSize: true);
+                    Grid templateGrid = Grid.GetMatchingTemplateFromSceneStack(seed: (int)(Int64)this.headerData["seed"], width: (int)(Int64)this.headerData["width"], height: (int)(Int64)this.headerData["height"], ignoreCellSize: true);
 
                     this.gridTemplateFound = templateGrid != null;
                 }

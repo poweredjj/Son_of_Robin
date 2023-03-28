@@ -40,6 +40,8 @@ namespace SonOfRobin
         private readonly Dictionary<Name, BitArray> extDataByProperty;
         private readonly string templatePath;
         private readonly string templateFolder;
+        private readonly Dictionary<Name, string> pngPathByName;
+
         private readonly bool loadedFromTemplate; // to avoid saving template, after being loaded (needed because saving is not done inside constructor)
 
         private readonly List<Name>[,] containsPropertiesTrueGridCell; // this values are stored in terrain, instead of cell
@@ -53,7 +55,14 @@ namespace SonOfRobin
 
             this.CreationInProgress = true;
             this.templateFolder = this.Grid.gridTemplate.templatePath;
-            this.templatePath = Path.Combine(this.templateFolder, $"properties_ext.json");
+            this.templatePath = Path.Combine(this.templateFolder, $"ext_properties.json");
+
+            this.pngPathByName = new Dictionary<Name, string>();
+
+            foreach (Name name in allExtPropNames)
+            {
+                this.pngPathByName[name] = Path.Combine(this.templateFolder, $"ext_bitmap_{name}.png");
+            }
 
             var serializedData = this.LoadTemplate();
             if (serializedData == null)
@@ -125,7 +134,7 @@ namespace SonOfRobin
             }
 
             this.CreationInProgress = false;
-            if (!this.loadedFromTemplate) this.SaveTemplate();
+            this.SaveTemplate();
         }
 
         public bool CheckIfContainsPropertyForCell(Name name, bool value, int cellNoX, int cellNoY)
@@ -172,17 +181,33 @@ namespace SonOfRobin
         {
             var loadedData = FileReaderWriter.Load(this.templatePath);
             if (loadedData == null) return null;
-            else return (Dictionary<string, object>)loadedData;
+            else
+            {
+                var loadedDict = (Dictionary<string, object>)loadedData;
+                Dictionary<Name, BitArray> extDataByProperty = new Dictionary<Name, BitArray>();
+
+                foreach (Name name in allExtPropNames)
+                {
+                    BitArray bitArray = GfxConverter.LoadPNGAsBitArray(pngPathByName[name]);
+                    if (bitArray == null) return null;
+
+                    extDataByProperty[name] = bitArray;
+                }
+
+                loadedDict["extDataByProperty"] = extDataByProperty;
+                return loadedDict;
+            }
         }
 
         public void SaveTemplate()
         {
+            if (this.loadedFromTemplate) return;
+
             foreach (var kvp in this.extDataByProperty)
             {
                 Name name = kvp.Key;
                 BitArray bitArray = kvp.Value;
-                string savePath = Path.Combine(this.templateFolder, $"ext_{name}.png");
-                GfxConverter.SaveBitArrayToPng(width: this.Grid.dividedWidth, height: this.Grid.dividedHeight, bitArray: bitArray, path: savePath);
+                GfxConverter.SaveBitArrayToPng(width: this.Grid.dividedWidth, height: this.Grid.dividedHeight, bitArray: bitArray, path: this.pngPathByName[name]);
             }
 
             FileReaderWriter.Save(path: this.templatePath, savedObj: this.Serialize());
@@ -192,7 +217,6 @@ namespace SonOfRobin
         {
             var serializedData = new Dictionary<string, object>
             {
-                { "extDataByProperty", this.extDataByProperty },
                 { "containsPropertiesTrueGridCell", this.containsPropertiesTrueGridCell },
                 { "containsPropertiesFalseGridCell", this.containsPropertiesFalseGridCell },
             };
