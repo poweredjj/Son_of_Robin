@@ -67,10 +67,10 @@ namespace SonOfRobin
             }
             else if (type == typeof(Keys)) return GetTexture((Keys)anyType);
             else if (type == typeof(Buttons)) return GetTexture((Buttons)anyType);
-
             else if (type == typeof(StoredInput))
             {
                 StoredInput storedInput = (StoredInput)anyType;
+
                 switch (storedInput.type)
                 {
                     case StoredInput.Type.Key:
@@ -83,7 +83,6 @@ namespace SonOfRobin
                         throw new ArgumentException($"Unsupported type - '{storedInput.type}'.");
                 }
             }
-
             else throw new ArgumentException($"Unsupported anyType - '{type}'.");
         }
 
