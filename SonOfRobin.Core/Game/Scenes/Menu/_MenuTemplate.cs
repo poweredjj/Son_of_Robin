@@ -273,10 +273,10 @@ namespace SonOfRobin
                         foreach (Buttons button in allButtonsList)
                         { allButtonsDict[new StoredInput(button)] = InputVis.GetTexture(button); }
 
-                        var analogSticksList = new List<InputMapper.AnalogType> { InputMapper.AnalogType.PadLeft, InputMapper.AnalogType.PadRight };
+                        var analogSticksList = new List<StoredInput> { new StoredInput(InputMapper.AnalogType.PadLeft), new StoredInput(InputMapper.AnalogType.PadRight) };
                         var analogSticksDict = new Dictionary<object, object>();
-                        foreach (InputMapper.AnalogType analog in analogSticksList)
-                        { analogSticksDict[analog] = InputVis.GetTexture(analog); }
+                        foreach (StoredInput storedInput in analogSticksList)
+                        { analogSticksDict[storedInput] = InputVis.GetTexture(storedInput); }
 
                         CreateControlsMappingEntries(menu: menu, gamepad: true, analogSticksDict: analogSticksDict, keysOrButtonsDict: allButtonsDict);
 

@@ -6,21 +6,13 @@ namespace SonOfRobin
     [Serializable]
     public class StoredInput
     {
-        public static readonly StoredInput empty = new StoredInput();
-
         public enum Type
-        { Empty, Key, Button, VirtButton, LeftStick, Analog }
+        { Key, Button, LeftStick, Analog }
 
         public readonly Type type;
         private readonly Keys key;
         private readonly Buttons button;
-        private readonly VButName virtButton;
         private readonly InputMapper.AnalogType analog;
-
-        public StoredInput()
-        {
-            this.type = Type.Empty;
-        }
 
         public StoredInput(Keys key)
         {
@@ -32,12 +24,6 @@ namespace SonOfRobin
         {
             this.type = Type.Button;
             this.button = button;
-        }
-
-        public StoredInput(VButName virtButton)
-        {
-            this.type = Type.VirtButton;
-            this.virtButton = virtButton;
         }
 
         public StoredInput(InputMapper.AnalogType analog)
@@ -61,15 +47,6 @@ namespace SonOfRobin
             {
                 if (this.type != Type.Button) throw new ArgumentException($"Wrong type for button - '{this.type}'.");
                 return this.button;
-            }
-        }
-
-        public VButName VirtButton
-        {
-            get
-            {
-                if (this.type != Type.VirtButton) throw new ArgumentException($"Wrong type for virtButton - '{this.type}'.");
-                return this.virtButton;
             }
         }
 
@@ -97,17 +74,67 @@ namespace SonOfRobin
                 case Type.Button:
                     return this.button == other.button;
 
-                case Type.VirtButton:
-                    return this.virtButton == other.virtButton;
-
                 case Type.Analog:
                     return this.analog == other.analog;
 
-                case Type.Empty:
-                    return true;
-
                 default:
                     throw new ArgumentException($"Unsupported type - '{type}'.");
+            }
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked // Overflow is fine, just wrap
+            {
+                int hash = 17; // Start with a prime number as the initial hash
+
+                // Multiply the current hash by a prime number, and add the hash code of the enum value for the Type property.
+                hash = hash * 23 + this.type.GetHashCode();
+
+                // Use a switch statement to get the hash code of the appropriate field, based on the value of the Type property.
+                switch (this.type)
+                {
+                    case Type.Key:
+                        // Multiply the current hash by a prime number, and add the hash code of the Key field.
+                        hash = hash * 23 + this.key.GetHashCode();
+                        break;
+
+                    case Type.Button:
+                        // Multiply the current hash by a prime number, and add the hash code of the Button field.
+                        hash = hash * 23 + this.button.GetHashCode();
+                        break;
+
+                    case Type.Analog:
+                        // Multiply the current hash by a prime number, and add the hash code of the Analog field.
+                        hash = hash * 23 + this.analog.GetHashCode();
+                        break;
+
+                    default:
+                        throw new ArgumentException($"Unsupported type - '{this.type}'.");
+                }
+
+                return hash;
+            }
+        }
+
+        public string Name
+        {
+            get
+            {
+                switch (this.type)
+                {
+                    case Type.Key:
+                        return this.key.ToString();
+
+                    case Type.Button:
+                        return this.button.ToString();
+
+                    case Type.Analog:
+                        return this.analog.ToString();
+
+                    default:
+                        throw new ArgumentException($"Unsupported type - '{this.type}'.");
+                }
             }
         }
     }

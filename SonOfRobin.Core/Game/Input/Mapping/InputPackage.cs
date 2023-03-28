@@ -6,11 +6,10 @@ using System.Linq;
 
 namespace SonOfRobin
 {
-
     [Serializable]
     public class InputPackage
     {
-        public const float version = 1.09f;
+        public const float version = 1.11f;
 
         private static readonly Dictionary<string, string> readablePropertyNames = new Dictionary<string, string>
             {
@@ -75,7 +74,7 @@ namespace SonOfRobin
         public bool IsObsolete
         { get { return this.packageVersion != version; } }
 
-        public InputPackage(float packageVersion, StoredInput leftStick, StoredInput rightStick, StoredInput left, StoredInput right, StoredInput up, StoredInput down, StoredInput confirm, StoredInput cancel, StoredInput pauseMenu, StoredInput sprint, StoredInput inventory, StoredInput pickUp, StoredInput craft, StoredInput interact, StoredInput map, StoredInput useTool, StoredInput zoomOut, StoredInput toolbarPrev, StoredInput invSwitch, StoredInput invSort, StoredInput toolbarNext, StoredInput invPickOne, StoredInput invPickStack, StoredInput mapToggleMarker, StoredInput mapCenterPlayer, StoredInput mapZoomIn, StoredInput mapZoomOut)
+        public InputPackage(float packageVersion, StoredInput leftStick, StoredInput rightStick, StoredInput confirm, StoredInput cancel, StoredInput pauseMenu, StoredInput sprint, StoredInput inventory, StoredInput pickUp, StoredInput craft, StoredInput interact, StoredInput map, StoredInput useTool, StoredInput zoomOut, StoredInput toolbarPrev, StoredInput invSwitch, StoredInput invSort, StoredInput toolbarNext, StoredInput invPickOne, StoredInput invPickStack, StoredInput mapToggleMarker, StoredInput mapCenterPlayer, StoredInput mapZoomIn, StoredInput mapZoomOut, StoredInput left = null, StoredInput right = null, StoredInput up = null, StoredInput down = null)
         {
             this.packageVersion = packageVersion;
 
@@ -152,31 +151,31 @@ namespace SonOfRobin
                 this.packageVersion == inputPackage.packageVersion &&
                 this.leftStick == inputPackage.leftStick &&
                 this.rightStick == inputPackage.rightStick &&
-                this.confirm.Equals(inputPackage.confirm) &&
-                this.cancel.Equals(inputPackage.cancel) &&
-                this.pauseMenu.Equals(inputPackage.pauseMenu) &&
-                this.sprint.Equals(inputPackage.sprint) &&
-                this.inventory.Equals(inputPackage.inventory) &&
-                this.pickUp.Equals(inputPackage.pickUp) &&
-                this.craft.Equals(inputPackage.craft) &&
-                this.interact.Equals(inputPackage.interact) &&
-                this.map.Equals(inputPackage.map) &&
-                this.useTool.Equals(inputPackage.useTool) &&
-                this.zoomOut.Equals(inputPackage.zoomOut) &&
-                this.toolbarPrev.Equals(inputPackage.toolbarPrev) &&
-                this.toolbarNext.Equals(inputPackage.toolbarNext) &&
-                this.invSwitch.Equals(inputPackage.invSwitch) &&
-                this.invPickOne.Equals(inputPackage.invPickOne) &&
-                this.invPickStack.Equals(inputPackage.invPickStack) &&
-                this.invSort.Equals(inputPackage.invSort) &&
-                this.mapToggleMarker.Equals(inputPackage.mapToggleMarker) &&
-                this.mapCenterPlayer.Equals(inputPackage.mapCenterPlayer) &&
-                this.mapZoomIn.Equals(inputPackage.mapZoomIn) &&
-                this.mapZoomOut.Equals(inputPackage.mapZoomOut) &&
-                this.left.Equals(inputPackage.left) &&
-                this.right.Equals(inputPackage.right) &&
-                this.up.Equals(inputPackage.up) &&
-                this.down.Equals(inputPackage.down);
+                this.confirm == inputPackage.confirm &&
+                this.cancel == inputPackage.cancel &&
+                this.pauseMenu == inputPackage.pauseMenu &&
+                this.sprint == inputPackage.sprint &&
+                this.inventory == inputPackage.inventory &&
+                this.pickUp == inputPackage.pickUp &&
+                this.craft == inputPackage.craft &&
+                this.interact == inputPackage.interact &&
+                this.map == inputPackage.map &&
+                this.useTool == inputPackage.useTool &&
+                this.zoomOut == inputPackage.zoomOut &&
+                this.toolbarPrev == inputPackage.toolbarPrev &&
+                this.toolbarNext == inputPackage.toolbarNext &&
+                this.invSwitch == inputPackage.invSwitch &&
+                this.invPickOne == inputPackage.invPickOne &&
+                this.invPickStack == inputPackage.invPickStack &&
+                this.invSort == inputPackage.invSort &&
+                this.mapToggleMarker == inputPackage.mapToggleMarker &&
+                this.mapCenterPlayer == inputPackage.mapCenterPlayer &&
+                this.mapZoomIn == inputPackage.mapZoomIn &&
+                this.mapZoomOut == inputPackage.mapZoomOut &&
+                this.left == inputPackage.left &&
+                this.right == inputPackage.right &&
+                this.up == inputPackage.up &&
+                this.down == inputPackage.down;
         }
 
         public bool Validate(bool gamepad)

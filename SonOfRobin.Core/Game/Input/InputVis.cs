@@ -65,8 +65,6 @@ namespace SonOfRobin
                 var analogTextureList = GetAnalogTextureList((InputMapper.AnalogType)anyType);
                 return analogTextureList.Count == 0 ? null : analogTextureList[0];
             }
-            // else if (type == typeof(Keys)) return GetTexture((Keys)anyType);
-            // else if (type == typeof(Buttons)) return GetTexture((Buttons)anyType);
             else if (type == typeof(StoredInput))
             {
                 StoredInput storedInput = (StoredInput)anyType;
@@ -78,6 +76,9 @@ namespace SonOfRobin
 
                     case StoredInput.Type.Button:
                         return GetTexture(storedInput.Button);
+
+                    case StoredInput.Type.Analog:
+                        return GetTexture(storedInput.Analog);
 
                     default:
                         throw new ArgumentException($"Unsupported type - '{storedInput.type}'.");
