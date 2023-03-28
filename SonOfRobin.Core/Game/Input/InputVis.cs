@@ -24,10 +24,10 @@ namespace SonOfRobin
                         return new List<Texture2D>();
 
                     case Input.ControlType.Gamepad:
-                        return GetAnalogTextureList(InputMapper.currentMappingGamepad.leftStick);
+                        return GetAnalogTextureList(InputMapper.currentMappingGamepad.leftStick.Analog);
 
                     case Input.ControlType.KeyboardAndMouse:
-                        return GetAnalogTextureList(InputMapper.currentMappingKeyboard.leftStick);
+                        return GetAnalogTextureList(InputMapper.currentMappingKeyboard.leftStick.Analog);
 
                     default:
                         throw new ArgumentException($"Unsupported tipsTypeToShow - '{Input.currentControlType}'.");
@@ -45,10 +45,10 @@ namespace SonOfRobin
                         return new List<Texture2D>();
 
                     case Input.ControlType.Gamepad:
-                        return GetAnalogTextureList(InputMapper.currentMappingGamepad.rightStick);
+                        return GetAnalogTextureList(InputMapper.currentMappingGamepad.rightStick.Analog);
 
                     case Input.ControlType.KeyboardAndMouse:
-                        return GetAnalogTextureList(InputMapper.currentMappingKeyboard.rightStick);
+                        return GetAnalogTextureList(InputMapper.currentMappingKeyboard.rightStick.Analog);
 
                     default:
                         throw new ArgumentException($"Unsupported tipsTypeToShow - '{Input.currentControlType}'.");
@@ -65,8 +65,8 @@ namespace SonOfRobin
                 var analogTextureList = GetAnalogTextureList((InputMapper.AnalogType)anyType);
                 return analogTextureList.Count == 0 ? null : analogTextureList[0];
             }
-            else if (type == typeof(Keys)) return GetTexture((Keys)anyType);
-            else if (type == typeof(Buttons)) return GetTexture((Buttons)anyType);
+            // else if (type == typeof(Keys)) return GetTexture((Keys)anyType);
+            // else if (type == typeof(Buttons)) return GetTexture((Buttons)anyType);
             else if (type == typeof(StoredInput))
             {
                 StoredInput storedInput = (StoredInput)anyType;

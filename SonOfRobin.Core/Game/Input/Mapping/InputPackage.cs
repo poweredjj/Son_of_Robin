@@ -10,13 +10,45 @@ namespace SonOfRobin
     [Serializable]
     public class StoredInput
     {
+        public static readonly StoredInput empty = new StoredInput();
+
         public enum Type
-        { Key, Button, VirtButton }
+        { Empty, Key, Button, VirtButton, LeftStick, Analog }
 
         public readonly Type type;
         private readonly Keys key;
         private readonly Buttons button;
         private readonly VButName virtButton;
+        private readonly InputMapper.AnalogType analog;
+
+        public StoredInput()
+        {
+            this.type = Type.Empty;
+        }
+
+        public StoredInput(Keys key)
+        {
+            this.type = Type.Key;
+            this.key = key;
+        }
+
+        public StoredInput(Buttons button)
+        {
+            this.type = Type.Button;
+            this.button = button;
+        }
+
+        public StoredInput(VButName virtButton)
+        {
+            this.type = Type.VirtButton;
+            this.virtButton = virtButton;
+        }
+
+        public StoredInput(InputMapper.AnalogType analog)
+        {
+            this.type = Type.Analog;
+            this.analog = analog;
+        }
 
         public Keys Key
         {
@@ -45,22 +77,13 @@ namespace SonOfRobin
             }
         }
 
-        public StoredInput(Keys key)
+        public InputMapper.AnalogType Analog
         {
-            this.type = Type.Key;
-            this.key = key;
-        }
-
-        public StoredInput(Buttons button)
-        {
-            this.type = Type.Button;
-            this.button = button;
-        }
-
-        public StoredInput(VButName virtButton)
-        {
-            this.type = Type.VirtButton;
-            this.virtButton = virtButton;
+            get
+            {
+                if (this.type != Type.Analog) throw new ArgumentException($"Wrong type for analog - '{this.type}'.");
+                return this.analog;
+            }
         }
 
         public bool Equals(StoredInput mappingToCheck)
@@ -70,13 +93,19 @@ namespace SonOfRobin
             switch (this.type)
             {
                 case Type.Key:
-                    return this.key == mappingToCheck.key;
+                    return this.key == mappingToCheck.Key;
 
                 case Type.Button:
-                    return this.button == mappingToCheck.button;
+                    return this.button == mappingToCheck.Button;
 
                 case Type.VirtButton:
-                    return this.virtButton == mappingToCheck.virtButton;
+                    return this.virtButton == mappingToCheck.VirtButton;
+
+                case Type.Analog:
+                    return this.analog == mappingToCheck.Analog;
+
+                case Type.Empty:
+                    return true;
 
                 default:
                     throw new ArgumentException($"Unsupported type - '{this.type}'.");
@@ -97,6 +126,9 @@ namespace SonOfRobin
 
                     case Type.VirtButton:
                         return this.virtButton.ToString();
+
+                    case Type.Analog:
+                        return this.analog.ToString();
 
                     default:
                         throw new ArgumentException($"Unsupported type - '{this.type}'.");
@@ -142,9 +174,8 @@ namespace SonOfRobin
 
         public readonly float packageVersion;
 
-        public InputMapper.AnalogType leftStick;
-        public InputMapper.AnalogType rightStick;
-
+        public StoredInput leftStick;
+        public StoredInput rightStick;
         public StoredInput left;
         public StoredInput right;
         public StoredInput up;
@@ -174,7 +205,7 @@ namespace SonOfRobin
         public bool IsObsolete
         { get { return this.packageVersion != version; } }
 
-        public InputPackage(float packageVersion, InputMapper.AnalogType leftStick, InputMapper.AnalogType rightStick, StoredInput confirm, StoredInput cancel, StoredInput pauseMenu, StoredInput sprint, StoredInput inventory, StoredInput pickUp, StoredInput craft, StoredInput interact, StoredInput map, StoredInput useTool, StoredInput zoomOut, StoredInput toolbarPrev, StoredInput invSwitch, StoredInput invSort, StoredInput toolbarNext, StoredInput invPickOne, StoredInput invPickStack, StoredInput mapToggleMarker, StoredInput mapCenterPlayer, StoredInput mapZoomIn, StoredInput mapZoomOut, StoredInput left = null, StoredInput right = null, StoredInput up = null, StoredInput down = null)
+        public InputPackage(float packageVersion, StoredInput leftStick, StoredInput rightStick, StoredInput left, StoredInput right, StoredInput up, StoredInput down, StoredInput confirm, StoredInput cancel, StoredInput pauseMenu, StoredInput sprint, StoredInput inventory, StoredInput pickUp, StoredInput craft, StoredInput interact, StoredInput map, StoredInput useTool, StoredInput zoomOut, StoredInput toolbarPrev, StoredInput invSwitch, StoredInput invSort, StoredInput toolbarNext, StoredInput invPickOne, StoredInput invPickStack, StoredInput mapToggleMarker, StoredInput mapCenterPlayer, StoredInput mapZoomIn, StoredInput mapZoomOut)
         {
             this.packageVersion = packageVersion;
 
