@@ -51,7 +51,7 @@ namespace SonOfRobin
             this.Grid = grid;
 
             this.CreationInProgress = true;
-            this.templatePath = Path.Combine(this.Grid.gridTemplate.templatePath, $"properties.ext");
+            this.templatePath = Path.Combine(this.Grid.gridTemplate.templatePath, $"properties_ext.json");
 
             var serializedData = this.LoadTemplate();
             if (serializedData == null)

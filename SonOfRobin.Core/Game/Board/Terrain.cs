@@ -64,7 +64,7 @@ namespace SonOfRobin
             this.gain = gain;
             this.addBorder = addBorder;
 
-            this.templatePath = Path.Combine(this.Grid.gridTemplate.templatePath, $"{Convert.ToString(name).ToLower()}.map");
+            this.templatePath = Path.Combine(this.Grid.gridTemplate.templatePath, $"{Convert.ToString(name).ToLower()}.json");
         }
 
         public void TryToLoadSavedTerrain()

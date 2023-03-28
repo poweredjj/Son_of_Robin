@@ -78,7 +78,7 @@ namespace SonOfRobin
 
         public Dictionary<string, Object> Serialize()
         {
-            Dictionary<string, Object> opacityData = new Dictionary<string, object>
+            Dictionary<string, Object> opacityDict = new Dictionary<string, object>
             {
                 { "duration", this.duration },
                 { "destOpacity", this.destOpacity },
@@ -88,7 +88,7 @@ namespace SonOfRobin
                 { "destroyPiece", this.destroyPiece },
             };
 
-            return opacityData;
+            return opacityDict;
         }
 
         public static OpacityFade Deserialize(Object fadeData, Sprite sprite)

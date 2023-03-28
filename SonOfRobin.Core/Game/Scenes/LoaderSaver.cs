@@ -11,12 +11,12 @@ namespace SonOfRobin
 {
     public class LoaderSaver : Scene
     {
-        private const string headerName = "header.sav";
-        private const string hintsName = "hints.sav";
-        private const string trackingName = "tracking.sav";
-        private const string eventsName = "events.sav";
-        private const string weatherName = "weather.sav";
-        private const string gridName = "grid.sav";
+        private const string headerName = "header.json";
+        private const string hintsName = "hints.json";
+        private const string trackingName = "tracking.json";
+        private const string eventsName = "events.json";
+        private const string weatherName = "weather.json";
+        private const string gridName = "grid.json";
         public const string tempPrefix = "_save_temp_";
 
         private const int maxPiecesInPackage = 1000; // using small piece packages lowers ram usage during writing binary files

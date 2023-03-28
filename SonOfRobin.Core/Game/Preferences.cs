@@ -289,6 +289,7 @@ namespace SonOfRobin
 
         // debug variables should not be saved to preferences file
         public static bool debugShowRects = false;
+
         public static bool debugShowCellData = false;
         public static bool debugShowPieceData = false;
         public static bool debugShowAnimalTargets = false;

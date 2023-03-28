@@ -21,12 +21,6 @@ namespace SonOfRobin
 
         public static void Save(object savedObj, string path)
         {
-            //using (Stream stream = File.Open(path, FileMode.Create))
-            //{
-            //    BinaryFormatter bformatter = new BinaryFormatter();
-            //    bformatter.Serialize(stream, savedObj);
-            //}
-
             string json = JsonConvert.SerializeObject(savedObj, serializerSettings);
             File.WriteAllText(path, json);
         }
@@ -35,12 +29,6 @@ namespace SonOfRobin
         {
             try
             {
-                //using (Stream stream = File.Open(path, FileMode.Open))
-                //{
-                //    BinaryFormatter bformatter = new BinaryFormatter();
-                //    return bformatter.Deserialize(stream);
-                //}
-
                 string json = File.ReadAllText(path);
                 return JsonConvert.DeserializeObject(json, serializerSettings);
             }
