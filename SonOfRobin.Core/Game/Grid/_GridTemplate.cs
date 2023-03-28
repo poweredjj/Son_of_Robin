@@ -88,8 +88,11 @@ namespace SonOfRobin
         {
             string checkedHeaderPath = Path.Combine(templatePath, headerName);
 
-            GridTemplate headerData = Deserialize(FileReaderWriter.Load(path: checkedHeaderPath));
-            return headerData;
+            var headerData = FileReaderWriter.Load(path: checkedHeaderPath);
+            if (headerData == null) return null;
+
+            GridTemplate gridTemplate = Deserialize(headerData);
+            return gridTemplate;
         }
 
         private void SaveHeader()
