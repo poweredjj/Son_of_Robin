@@ -39,6 +39,7 @@ namespace SonOfRobin
 
         private readonly Dictionary<Name, BitArray> extDataByProperty;
         private readonly string templatePath;
+        private readonly string templateFolder;
         private readonly bool loadedFromTemplate; // to avoid saving template, after being loaded (needed because saving is not done inside constructor)
 
         private readonly List<Name>[,] containsPropertiesTrueGridCell; // this values are stored in terrain, instead of cell
@@ -51,7 +52,8 @@ namespace SonOfRobin
             this.Grid = grid;
 
             this.CreationInProgress = true;
-            this.templatePath = Path.Combine(this.Grid.gridTemplate.templatePath, $"properties_ext.json");
+            this.templateFolder = this.Grid.gridTemplate.templatePath;
+            this.templatePath = Path.Combine(this.templateFolder, $"properties_ext.json");
 
             var serializedData = this.LoadTemplate();
             if (serializedData == null)
@@ -175,6 +177,14 @@ namespace SonOfRobin
 
         public void SaveTemplate()
         {
+            foreach (var kvp in this.extDataByProperty)
+            {
+                Name name = kvp.Key;
+                BitArray bitArray = kvp.Value;
+                string savePath = Path.Combine(this.templateFolder, $"ext_{name}.png");
+                GfxConverter.SaveBitArrayToPng(width: this.Grid.dividedWidth, height: this.Grid.dividedHeight, bitArray: bitArray, path: savePath);
+            }
+
             FileReaderWriter.Save(path: this.templatePath, savedObj: this.Serialize());
         }
 

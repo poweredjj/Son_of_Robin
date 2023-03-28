@@ -4,7 +4,6 @@ using System.Collections.Generic;
 
 namespace SonOfRobin
 {
-    [Serializable]
     public class StoredInput
     {
         public enum Type

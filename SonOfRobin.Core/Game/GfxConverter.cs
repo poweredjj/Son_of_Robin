@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Collections;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -11,16 +12,13 @@ namespace SonOfRobin
     {
         public static void SaveColorArrayAsPNG(int width, int height, Color[,] colorArray, string pngPath, bool hasAlphaChannel = true)
         {
-            // TODO test if it works correctly
-
             var builder = PngBuilder.Create(width: width, height: height, hasAlphaChannel: hasAlphaChannel);
 
-            Color pixel;
             for (int x = 0; x < width; x++)
             {
                 for (int y = 0; y < height; y++)
                 {
-                    pixel = colorArray[x, y];
+                    Color pixel = colorArray[x, y];
 
                     builder.SetPixel(pixel.R, pixel.G, pixel.B, x, y);
                 }
@@ -31,6 +29,55 @@ namespace SonOfRobin
                 builder.Save(memoryStream);
                 FileReaderWriter.SaveMemoryStream(memoryStream: memoryStream, path: pngPath);
             }
+        }
+
+        public static void SaveBitArrayToPng(int width, int height, BitArray bitArray, string path)
+        {
+            PngBuilder builder = PngBuilder.Create(width: width, height: height, hasAlphaChannel: false);
+
+            for (int y = 0; y < height; y++)
+            {
+                int yFactor = y * width;
+
+                for (int x = 0; x < width; x++)
+                {
+                    bool arrayVal = bitArray[yFactor + x];
+                    Color pixel = arrayVal ? Color.Black : Color.White;
+                    builder.SetPixel(pixel.R, pixel.G, pixel.B, x, y);
+                }
+            }
+
+            using (var memoryStream = new MemoryStream())
+            {
+                builder.Save(memoryStream);
+                FileReaderWriter.SaveMemoryStream(memoryStream: memoryStream, path: path);
+            }
+        }
+
+        public static BitArray LoadPNGAsBitArray(string path)
+        {
+            Texture2D texture = LoadTextureFromPNG(path);
+
+            int width = texture.Width;
+            int height = texture.Height;
+
+            BitArray bitArray = new BitArray(width * height);
+
+            var colorArray1D = new Color[width * height];
+            texture.GetData(colorArray1D);
+
+            for (int y = 0; y < height; y++)
+            {
+                int yFactor = y * width;
+
+                for (int x = 0; x < width; x++)
+                {
+                    Color pixel = colorArray1D[yFactor + x];
+                    bitArray[yFactor + x] = pixel == Color.Black;
+                }
+            }
+
+            return bitArray;
         }
 
         public static Texture2D CropTexture(Texture2D baseTexture, Rectangle cropRect)
@@ -217,8 +264,11 @@ namespace SonOfRobin
             return array1D;
         }
 
-        public static Color[,] ConvertTextureToColorArray(Texture2D texture, int width, int height)
+        public static Color[,] ConvertTextureToColorArray(Texture2D texture)
         {
+            int width = texture.Width;
+            int height = texture.Height;
+
             var array1D = new Color[width * height];
             texture.GetData(array1D);
             var array2D = ConvertColorArray1DTo2D(array1D: array1D, width: width, height: height);
