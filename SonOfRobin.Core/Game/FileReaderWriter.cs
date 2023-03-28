@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using System.IO;
 
 namespace SonOfRobin
@@ -9,7 +8,6 @@ namespace SonOfRobin
         private static readonly JsonSerializerSettings serializerSettings = new JsonSerializerSettings
         {
             TypeNameHandling = TypeNameHandling.All,
-            Converters = new[] { new StringEnumConverter() },
             Formatting = Formatting.Indented,
         };
 

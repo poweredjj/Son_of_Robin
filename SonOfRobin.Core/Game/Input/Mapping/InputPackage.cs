@@ -302,7 +302,7 @@ namespace SonOfRobin
         {
             var inputDict = (Dictionary<string, Object>)inputData;
 
-            float version = (float)inputDict["version"];
+            float version = (float)(double)inputDict["version"];
 
             StoredInput leftStick = StoredInput.Deserialize(inputDict["leftStick"]);
             StoredInput rightStick = StoredInput.Deserialize(inputDict["rightStick"]);

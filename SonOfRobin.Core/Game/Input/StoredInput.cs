@@ -150,17 +150,17 @@ namespace SonOfRobin
             if (inputData == null) return null;
             var inputDict = (Dictionary<string, Object>)inputData;
 
-            Type type = (Type)inputDict["type"];
+            Type type = (Type)(Int64)inputDict["type"];
             switch (type)
             {
                 case Type.Key:
-                    return new StoredInput((Keys)inputDict["key"]);
+                    return new StoredInput((Keys)(Int64)inputDict["key"]);
 
                 case Type.Button:
-                    return new StoredInput((Buttons)inputDict["button"]);
+                    return new StoredInput((Buttons)(Int64)inputDict["button"]);
 
                 case Type.Analog:
-                    return new StoredInput((InputMapper.AnalogType)inputDict["analog"]);
+                    return new StoredInput((InputMapper.AnalogType)(Int64)inputDict["analog"]);
 
                 default:
                     throw new ArgumentException($"Unsupported type - '{type}'.");

@@ -1,7 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using System;
 using System.Collections.Generic;
 
@@ -584,47 +582,40 @@ namespace SonOfRobin
                 {
                     debugMode = (bool)prefsData["debugMode"];
                     CustomizeWorld = (bool)prefsData["customizeWorld"];
-                    //SelectedWorldSize = (WorldSize)prefsData["selectedWorldSize"];
-
-
-                    // SelectedWorldSize = JsonConvert.DeserializeObject<WorldSize>((string)prefsData["selectedWorldSize"], FileReaderWriter.serializerSettings);
-
-                    SelectedWorldSize = JsonConvert.DeserializeObject<WorldSize>(@"""" + (string)prefsData["selectedWorldSize"] + @"""", new StringEnumConverter());
-
-
-                    newWorldResDivider = (int)prefsData["newWorldResDivider"];
-                    newWorldSize = (int)prefsData["newWorldSize"];
-                    newWorldPlayerName = (PieceTemplate.Name)prefsData["newWorldPlayerName"];
+                    SelectedWorldSize = (WorldSize)(Int64)prefsData["selectedWorldSize"];
+                    newWorldResDivider = (int)(Int64)prefsData["newWorldResDivider"];
+                    newWorldSize = (int)(Int64)prefsData["newWorldSize"];
+                    newWorldPlayerName = (PieceTemplate.Name)(Int64)prefsData["newWorldPlayerName"];
                     randomSeed = (bool)prefsData["randomSeed"];
-                    seedDigit1 = (char)prefsData["seedDigit1"];
-                    seedDigit2 = (char)prefsData["seedDigit2"];
-                    seedDigit3 = (char)prefsData["seedDigit3"];
-                    seedDigit4 = (char)prefsData["seedDigit4"];
-                    globalScale = (float)prefsData["globalScale"];
-                    menuScale = (float)prefsData["menuScale"];
-                    worldScale = (float)prefsData["worldScale"];
+                    seedDigit1 = ((string)prefsData["seedDigit1"])[0];
+                    seedDigit2 = ((string)prefsData["seedDigit2"])[0];
+                    seedDigit3 = ((string)prefsData["seedDigit3"])[0];
+                    seedDigit4 = ((string)prefsData["seedDigit4"])[0];
+                    globalScale = (float)(double)prefsData["globalScale"];
+                    menuScale = (float)(double)prefsData["menuScale"];
+                    worldScale = (float)(double)prefsData["worldScale"];
                     fullScreenMode = (bool)prefsData["fullScreenMode"];
                     loadWholeMap = (bool)prefsData["loadWholeMap"];
                     frameSkip = (bool)prefsData["frameSkip"];
                     showDemoWorld = (bool)prefsData["showDemoWorld"];
-                    displayResX = (int)prefsData["displayResX"];
-                    displayResY = (int)prefsData["displayResY"];
+                    displayResX = (int)(Int64)prefsData["displayResX"];
+                    displayResY = (int)(Int64)prefsData["displayResY"];
                     showControlTips = (bool)prefsData["showControlTips"];
                     showFieldControlTips = (bool)prefsData["showFieldControlTips"];
-                    fieldControlTipsScale = (float)prefsData["fieldControlTipsScale"];
-                    mapMarkerScale = (float)prefsData["mapMarkerScale"];
+                    fieldControlTipsScale = (float)(double)prefsData["fieldControlTipsScale"];
+                    mapMarkerScale = (float)(double)prefsData["mapMarkerScale"];
                     showHints = (bool)prefsData["showHints"];
                     showDebris = (bool)prefsData["showDebris"];
                     useMultipleThreads = (bool)prefsData["useMultipleThreads"];
-                    darknessResolution = (int)prefsData["darknessResolution"];
+                    darknessResolution = (int)(Int64)prefsData["darknessResolution"];
                     drawShadows = (bool)prefsData["drawShadows"];
                     drawSunShadows = (bool)prefsData["drawSunShadows"];
-                    controlTipsScheme = (ButtonScheme.Type)prefsData["controlTipsScheme"];
+                    controlTipsScheme = (ButtonScheme.Type)(Int64)prefsData["controlTipsScheme"];
                     EnableTouchButtons = (bool)prefsData["EnableTouchButtons"];
                     showFpsCounter = (bool)prefsData["showFpsCounter"];
                     fpsCounterPosRight = (bool)prefsData["fpsCounterPosRight"];
                     fpsCounterShowGraph = (bool)prefsData["fpsCounterShowGraph"];
-                    FpsCounterGraphLength = (int)prefsData["fpsCounterGraphLength"];
+                    FpsCounterGraphLength = (int)(Int64)prefsData["fpsCounterGraphLength"];
                     enableTouchJoysticks = (bool)prefsData["enableTouchJoysticks"];
                     pointToWalk = (bool)prefsData["pointToWalk"];
                     pointToInteract = (bool)prefsData["pointToInteract"];
@@ -635,20 +626,20 @@ namespace SonOfRobin
                     InputMapper.newMappingGamepad = InputMapper.currentMappingGamepad.MakeCopy();
                     InputMapper.newMappingKeyboard = InputMapper.currentMappingKeyboard.MakeCopy();
                     Sound.GlobalOn = (bool)prefsData["soundGlobalOn"];
-                    Sound.globalVolume = (float)prefsData["soundGlobalVolume"];
+                    Sound.globalVolume = (float)(double)prefsData["soundGlobalVolume"];
                     Sound.menuOn = (bool)prefsData["soundMenuOn"];
                     Sound.textWindowAnimOn = (bool)prefsData["textWindowAnimOn"];
                     vSync = (bool)prefsData["vSync"];
                     progressBarShowDetails = (bool)prefsData["progressBarShowDetails"];
                     swapMouseButtons = (bool)prefsData["swapMouseButtons"];
-                    maxTexturesToLoad = (int)prefsData["maxTexturesToLoad"];
+                    maxTexturesToLoad = (int)(Int64)prefsData["maxTexturesToLoad"];
                     highQualityWater = (bool)prefsData["highQualityWater"];
                     plantsSway = (bool)prefsData["plantsSway"];
 
                     prefsLoaded = true;
                 }
                 catch (KeyNotFoundException) { MessageLog.AddMessage(msgType: MsgType.Debug, message: "KeyNotFoundException while loading preferences.", color: Color.White); }
-                // catch (InvalidCastException) { MessageLog.AddMessage(msgType: MsgType.Debug, message: "InvalidCastException while loading preferences.", color: Color.White); }
+                catch (InvalidCastException) { MessageLog.AddMessage(msgType: MsgType.Debug, message: "InvalidCastException while loading preferences.", color: Color.White); }
             }
 
             if (!prefsLoaded)
