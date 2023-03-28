@@ -1,4 +1,7 @@
-﻿using System;
+﻿using BigGustave;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -38,7 +41,6 @@ namespace SonOfRobin
         public Grid Grid { get; private set; }
 
         private readonly Dictionary<Name, BitArray> extDataByProperty;
-        private readonly string templatePath;
         private readonly string templateFolder;
         private readonly Dictionary<Name, string> pngPathByName;
 
@@ -55,7 +57,6 @@ namespace SonOfRobin
 
             this.CreationInProgress = true;
             this.templateFolder = this.Grid.gridTemplate.templatePath;
-            this.templatePath = Path.Combine(this.templateFolder, $"ext_properties.json");
 
             this.pngPathByName = new Dictionary<Name, string>();
 
@@ -179,24 +180,28 @@ namespace SonOfRobin
 
         private Dictionary<string, object> LoadTemplate()
         {
-            var loadedData = FileReaderWriter.Load(this.templatePath);
-            if (loadedData == null) return null;
-            else
+            var loadedDict = new Dictionary<string, object>();
+            Dictionary<Name, BitArray> extDataByProperty = new Dictionary<Name, BitArray>();
+
+            foreach (Name name in allExtPropNames)
             {
-                var loadedDict = (Dictionary<string, object>)loadedData;
-                Dictionary<Name, BitArray> extDataByProperty = new Dictionary<Name, BitArray>();
+                BitArray bitArray = GfxConverter.LoadPNGAsBitArray(pngPathByName[name]);
+                if (bitArray == null) return null;
 
-                foreach (Name name in allExtPropNames)
-                {
-                    BitArray bitArray = GfxConverter.LoadPNGAsBitArray(pngPathByName[name]);
-                    if (bitArray == null) return null;
-
-                    extDataByProperty[name] = bitArray;
-                }
-
-                loadedDict["extDataByProperty"] = extDataByProperty;
-                return loadedDict;
+                extDataByProperty[name] = bitArray;
             }
+
+            loadedDict["extDataByProperty"] = extDataByProperty;
+
+            var containsTrue = this.LoadNameListFromBitmaps(true);
+            if (containsTrue == null) return null;
+            else loadedDict["containsPropertiesTrueGridCell"] = containsTrue;
+
+            var containsFalse = this.LoadNameListFromBitmaps(false);
+            if (containsFalse == null) return null;
+            else loadedDict["containsPropertiesFalseGridCell"] = containsFalse;
+
+            return loadedDict;
         }
 
         public void SaveTemplate()
@@ -210,7 +215,77 @@ namespace SonOfRobin
                 GfxConverter.SaveBitArrayToPng(width: this.Grid.dividedWidth, height: this.Grid.dividedHeight, bitArray: bitArray, path: this.pngPathByName[name]);
             }
 
-            FileReaderWriter.Save(path: this.templatePath, savedObj: this.Serialize());
+            this.SaveNameListAsBitmaps(true);
+            this.SaveNameListAsBitmaps(false);
+        }
+
+        private void SaveNameListAsBitmaps(bool contains)
+        {
+            var containsPropertiesGridCell = contains ? this.containsPropertiesTrueGridCell : this.containsPropertiesFalseGridCell;
+            string filenamePrefix = $"ext_contains_{contains}";
+
+            int width = this.Grid.noOfCellsX;
+            int height = this.Grid.noOfCellsY;
+
+            foreach (Name name in allExtPropNames)
+            {
+                PngBuilder builder = PngBuilder.Create(width: width, height: height, hasAlphaChannel: false);
+
+                for (int x = 0; x < width; x++)
+                {
+                    for (int y = 0; y < height; y++)
+                    {
+                        Color pixel = containsPropertiesGridCell[x, y].Contains(name) ? Color.Black : Color.White;
+                        builder.SetPixel(pixel.R, pixel.G, pixel.B, x, y);
+                    }
+                }
+
+                using (var memoryStream = new MemoryStream())
+                {
+                    builder.Save(memoryStream);
+                    FileReaderWriter.SaveMemoryStream(memoryStream: memoryStream, path: Path.Combine(this.templateFolder, $"{filenamePrefix}_{name}.png"));
+                }
+            }
+        }
+
+        private List<Name>[,] LoadNameListFromBitmaps(bool contains)
+        {
+            string filenamePrefix = $"ext_contains_{contains}";
+
+            int width = this.Grid.noOfCellsX;
+            int height = this.Grid.noOfCellsY;
+
+            var containsPropertiesGridCell = new List<Name>[this.Grid.noOfCellsX, this.Grid.noOfCellsY];
+            for (int x = 0; x < width; x++)
+            {
+                for (int y = 0; y < height; y++)
+                {
+                    containsPropertiesGridCell[x, y] = new List<Name>();
+                }
+            }
+
+            foreach (Name name in allExtPropNames)
+            {
+                string path = Path.Combine(this.templateFolder, $"{filenamePrefix}_{name}.png");
+                Texture2D texture = GfxConverter.LoadTextureFromPNG(path);
+                if (texture == null) return null;
+
+                var colorArray1D = new Color[width * height];
+                texture.GetData(colorArray1D);
+
+                for (int y = 0; y < height; y++)
+                {
+                    int yFactor = y * width;
+
+                    for (int x = 0; x < width; x++)
+                    {
+                        Color pixel = colorArray1D[yFactor + x];
+                        if (pixel == Color.Black && !containsPropertiesGridCell[x, y].Contains(name)) containsPropertiesGridCell[x, y].Add(name);
+                    }
+                }
+            }
+
+            return containsPropertiesGridCell;
         }
 
         private Dictionary<string, object> Serialize()
