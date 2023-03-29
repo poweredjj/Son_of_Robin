@@ -31,29 +31,6 @@ namespace SonOfRobin
             }
         }
 
-        public static void SaveBitArrayToPng(int width, int height, BitArray bitArray, string path)
-        {
-            PngBuilder builder = PngBuilder.Create(width: width, height: height, hasAlphaChannel: false);
-
-            for (int y = 0; y < height; y++)
-            {
-                int yFactor = y * width;
-
-                for (int x = 0; x < width; x++)
-                {
-                    bool arrayVal = bitArray[yFactor + x];
-                    Color pixel = arrayVal ? Color.Black : Color.White;
-                    builder.SetPixel(pixel.R, pixel.G, pixel.B, x, y);
-                }
-            }
-
-            using (var memoryStream = new MemoryStream())
-            {
-                builder.Save(memoryStream);
-                FileReaderWriter.SaveMemoryStream(memoryStream: memoryStream, path: path);
-            }
-        }
-
         public static BitArray LoadPNGAsBitArray(string path)
         {
             Texture2D texture = LoadTextureFromPNG(path);
@@ -82,7 +59,7 @@ namespace SonOfRobin
             return bitArray;
         }
 
-        public static void Save2DByteArrayToPng(Byte[,] array2D, string path)
+        public static void Save2DByteArrayToPNG(Byte[,] array2D, string path)
         {
             int width = array2D.GetLength(0);
             int height = array2D.GetLength(1);
@@ -205,21 +182,27 @@ namespace SonOfRobin
             { }
         }
 
-        public static Texture2D LoadTextureFromPNG(string filename)
+        public static Texture2D LoadTextureFromPNG(string path)
         {
             try
             {
-                FileStream fileStream = new FileStream(filename, FileMode.Open);
+                FileStream fileStream = new FileStream(path, FileMode.Open);
                 Texture2D loadedTexture = Texture2D.FromStream(SonOfRobinGame.GfxDev, fileStream);
                 fileStream.Dispose();
                 return loadedTexture;
             }
             catch (FileNotFoundException)
-            { }
+            {
+                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"FileNotFoundException while trying to read {Path.GetFileName(path)}.");
+            }
             catch (IOException) // png file corrupted
-            { }
+            {
+                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"IOException while trying to read {Path.GetFileName(path)}.");
+            }
             catch (InvalidOperationException) // png file corrupted
-            { }
+            {
+                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"InvalidOperationException while trying to read {Path.GetFileName(path)}.");
+            }
 
             return null;
         }

@@ -11,12 +11,21 @@ namespace SonOfRobin
             Formatting = Formatting.Indented,
         };
 
-        public static void SaveMemoryStream(MemoryStream memoryStream, string path)
+        public static bool SaveMemoryStream(MemoryStream memoryStream, string path)
         {
-            FileStream outStream = File.OpenWrite(path);
-            memoryStream.WriteTo(outStream);
-            outStream.Flush();
-            outStream.Close();
+            try
+            {
+                FileStream outStream = File.OpenWrite(path);
+                memoryStream.WriteTo(outStream);
+                outStream.Flush();
+                outStream.Close();
+                return true;
+            }
+            catch (IOException)
+            {
+                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"IOException while trying to write {Path.GetFileName(path)}.");
+                return false;
+            }
         }
 
         public static void Save(object savedObj, string path)

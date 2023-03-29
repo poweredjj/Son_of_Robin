@@ -101,7 +101,7 @@ namespace SonOfRobin
 
         private static void MoveWindowOnWorkMachine(Game game) // method used, to make the code to be commented closer
         {
-            if (ThisIsWorkMachine) game.Window.Position = new Point(-10, 788); // COMMENT THIS LINE on ANDROID
+            if (ThisIsWorkMachine) game.Window.Position = new Point(0, 788); // COMMENT THIS LINE on ANDROID
         }
 
         public static bool WindowsMemoryLow

@@ -11,7 +11,7 @@ namespace SonOfRobin
     public class Grid
     {
         public enum Stage
-        { LoadTerrain, GenerateTerrain, CheckExtData, SetExtDataSea, SetExtDataBeach, SetExtDataBiomes, SetExtDataBiomesConstrains, SetExtDataFinish, FillAllowedNames, ProcessTextures, LoadTextures, StartGame }
+        { LoadTerrain, GenerateTerrain, CheckExtData, SetExtDataSea, SetExtDataBeach, SetExtDataBiomes, SetExtDataBiomesConstrains, SetExtDataPropertiesGrid, SetExtDataFinish, FillAllowedNames, ProcessTextures, LoadTextures, StartGame }
 
         public static readonly int allStagesCount = ((Stage[])Enum.GetValues(typeof(Stage))).Length;
 
@@ -23,6 +23,7 @@ namespace SonOfRobin
             { Stage.SetExtDataBeach, "setting extended data (beach)" },
             { Stage.SetExtDataBiomes, "setting extended data (biomes)" },
             { Stage.SetExtDataBiomesConstrains, "setting extended data (constrains)" },
+            { Stage.SetExtDataPropertiesGrid, "setting extended data (properties grid)" },
             { Stage.SetExtDataFinish, "saving extended data" },
             { Stage.FillAllowedNames, "filling lists of allowed names" },
             { Stage.ProcessTextures, "processing textures" },
@@ -320,6 +321,13 @@ namespace SonOfRobin
 
                     if (this.extBoardProps.CreationInProgress) this.ExtApplyBiomeConstrains();
                     else this.cellsToProcessOnStart.Clear();
+
+                    break;
+
+                case Stage.SetExtDataPropertiesGrid:
+
+                    if (this.extBoardProps.CreationInProgress) this.extBoardProps.CreateContainsPropertiesGrid();
+                    this.cellsToProcessOnStart.Clear(); // always needs to be invoked
 
                     break;
 

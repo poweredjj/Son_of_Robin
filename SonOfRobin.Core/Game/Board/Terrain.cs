@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using System;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -76,15 +77,18 @@ namespace SonOfRobin
 
         public void TryToLoadSavedTerrain()
         {
+            byte[,] loadedMinVal;
             byte[,] loadedMaxVal = null;
             byte[,] loadedMapData = null;
 
-            byte[,] loadedMinVal = GfxConverter.LoadPNGAs2DByteArray(this.minValPngPath);
+            loadedMinVal = GfxConverter.LoadPNGAs2DByteArray(this.minValPngPath);
             if (loadedMinVal != null) loadedMaxVal = GfxConverter.LoadPNGAs2DByteArray(this.maxValPngPath);
             if (loadedMaxVal != null) loadedMapData = GfxConverter.LoadPNGAs2DByteArray(this.terrainPngPath);
 
             if (loadedMinVal == null || loadedMaxVal == null || loadedMapData == null)
             {
+                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"terrain {Convert.ToString(name).ToLower()} - creating new", color: Color.Yellow);
+
                 var gradientLines = this.CreateGradientLines();
                 this.gradientLineX = gradientLines.Item1;
                 this.gradientLineY = gradientLines.Item2;
@@ -95,6 +99,8 @@ namespace SonOfRobin
             }
             else
             {
+                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"terrain {Convert.ToString(name).ToLower()} - loaded");
+
                 this.mapData = loadedMapData;
                 this.minValGridCell = loadedMinVal;
                 this.maxValGridCell = loadedMaxVal;
@@ -186,9 +192,9 @@ namespace SonOfRobin
 
         public void SaveTemplate()
         {
-            GfxConverter.Save2DByteArrayToPng(array2D: this.mapData, path: this.terrainPngPath);
-            GfxConverter.Save2DByteArrayToPng(array2D: this.minValGridCell, path: this.minValPngPath);
-            GfxConverter.Save2DByteArrayToPng(array2D: this.maxValGridCell, path: this.maxValPngPath);
+            GfxConverter.Save2DByteArrayToPNG(array2D: this.mapData, path: this.terrainPngPath);
+            GfxConverter.Save2DByteArrayToPNG(array2D: this.minValGridCell, path: this.minValPngPath);
+            GfxConverter.Save2DByteArrayToPNG(array2D: this.maxValGridCell, path: this.maxValPngPath);
         }
 
         private (double[], double[]) CreateGradientLines()
