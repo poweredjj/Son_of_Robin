@@ -161,7 +161,7 @@ namespace SonOfRobin
         public override void Deserialize(Dictionary<string, Object> pieceData)
         {
             base.Deserialize(pieceData);
-            this.realHitPower = (int)pieceData["projectile_realHitPower"];
+            this.realHitPower = (int)(Int64)pieceData["projectile_realHitPower"];
             this.shootMode = (bool)pieceData["projectile_shootMode"];
         }
     }

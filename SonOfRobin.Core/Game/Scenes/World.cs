@@ -500,12 +500,12 @@ namespace SonOfRobin
             {
                 var headerData = (Dictionary<string, Object>)saveGameDataDict["header"];
 
-                this.CurrentFrame = (int)headerData["currentFrame"];
-                this.CurrentUpdate = (int)headerData["currentUpdate"];
-                this.islandClock.Initialize((int)headerData["clockTimeElapsed"]);
-                this.TimePlayed = (TimeSpan)headerData["TimePlayed"];
+                this.CurrentFrame = (int)(Int64)headerData["currentFrame"];
+                this.CurrentUpdate = (int)(Int64)headerData["currentUpdate"];
+                this.islandClock.Initialize((int)(Int64)headerData["clockTimeElapsed"]);
+                this.TimePlayed = TimeSpan.Parse((string)headerData["TimePlayed"]);
                 this.mapEnabled = (bool)headerData["MapEnabled"];
-                this.maxAnimalsPerName = (int)headerData["maxAnimalsPerName"];
+                this.maxAnimalsPerName = (int)(Int64)headerData["maxAnimalsPerName"];
                 this.doNotCreatePiecesList = (List<PieceTemplate.Name>)headerData["doNotCreatePiecesList"];
                 this.discoveredRecipesForPieces = (List<PieceTemplate.Name>)headerData["discoveredRecipesForPieces"];
                 this.stateMachineTypesManager.Deserialize((Dictionary<string, Object>)headerData["stateMachineTypesManager"]);
@@ -535,7 +535,7 @@ namespace SonOfRobin
                 {
                     // repeated in StorageSlot
 
-                    PieceTemplate.Name templateName = (PieceTemplate.Name)pieceData["base_name"];
+                    PieceTemplate.Name templateName = (PieceTemplate.Name)(Int64)pieceData["base_name"];
 
                     bool female = false;
                     bool randomSex = true;
@@ -546,7 +546,7 @@ namespace SonOfRobin
                         female = (bool)pieceData["base_female"];
                     }
 
-                    var newBoardPiece = PieceTemplate.CreateAndPlaceOnBoard(world: this, position: new Vector2((float)pieceData["sprite_positionX"], (float)pieceData["sprite_positionY"]), templateName: templateName, female: female, randomSex: randomSex, ignoreCollisions: true, id: (string)pieceData["base_id"]);
+                    var newBoardPiece = PieceTemplate.CreateAndPlaceOnBoard(world: this, position: new Vector2((float)(double)pieceData["sprite_positionX"], (float)(double)pieceData["sprite_positionY"]), templateName: templateName, female: female, randomSex: randomSex, ignoreCollisions: true, id: (string)pieceData["base_id"]);
                     if (!newBoardPiece.sprite.IsOnBoard) throw new ArgumentException($"{newBoardPiece.name} could not be placed correctly.");
 
                     newBoardPiece.Deserialize(pieceData: pieceData);

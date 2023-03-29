@@ -201,7 +201,7 @@ namespace SonOfRobin
 
         private string GetCurrentPiecesPath(int packageNo)
         {
-            return Path.Combine(this.saveMode ? saveTempPath : savePath, $"pieces_{packageNo}.sav");
+            return Path.Combine(this.saveMode ? saveTempPath : savePath, $"pieces_{packageNo}.json");
         }
 
         public override void Remove()
@@ -601,11 +601,11 @@ namespace SonOfRobin
             }
 
             // creating new world (using header data)
-            int seed = (int)this.headerData["seed"];
-            int width = (int)this.headerData["width"];
-            int height = (int)this.headerData["height"];
-            int resDivider = (int)this.headerData["resDivider"];
-            PieceTemplate.Name playerName = (PieceTemplate.Name)this.headerData["playerName"];
+            int seed = (int)(Int64)this.headerData["seed"];
+            int width = (int)(Int64)this.headerData["width"];
+            int height = (int)(Int64)this.headerData["height"];
+            int resDivider = (int)(Int64)this.headerData["resDivider"];
+            PieceTemplate.Name playerName = (PieceTemplate.Name)(Int64)this.headerData["playerName"];
 
             this.world = new World(width: width, height: height, seed: seed, saveGameData: this.SaveGameData, playerName: playerName, resDivider: resDivider);
             this.MoveToTop();

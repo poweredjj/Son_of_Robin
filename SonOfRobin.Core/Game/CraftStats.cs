@@ -100,13 +100,13 @@ namespace SonOfRobin
 
         public void Deserialize(Dictionary<string, Object> statsData)
         {
-            this.TotalNoOfCrafts = (int)statsData["TotalNoOfCrafts"];
+            this.TotalNoOfCrafts = (int)(Int64)statsData["TotalNoOfCrafts"];
             this.craftedRecipes = (Dictionary<string, int>)statsData["craftedRecipes"];
             this.craftedPieces = (Dictionary<PieceTemplate.Name, int>)statsData["craftedPieces"];
             this.usedIngredients = (Dictionary<PieceTemplate.Name, int>)statsData["usedIngredients"];
-            this.CraftedPiecesTotal = (int)statsData["CraftedPiecesTotal"];
-            this.UsedIngredientsTotal = (int)statsData["UsedIngredientsTotal"];
-            this.SmartCraftingReducedIngredientCount = (int)statsData["SmartCraftingReducedIngredientCount"];
+            this.CraftedPiecesTotal = (int)(Int64)statsData["CraftedPiecesTotal"];
+            this.UsedIngredientsTotal = (int)(Int64)statsData["UsedIngredientsTotal"];
+            this.SmartCraftingReducedIngredientCount = (int)(Int64)statsData["SmartCraftingReducedIngredientCount"];
         }
 
         public bool HasBeenCrafted(Craft.Recipe recipe)

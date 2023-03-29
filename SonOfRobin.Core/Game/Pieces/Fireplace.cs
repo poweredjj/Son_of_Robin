@@ -212,9 +212,9 @@ namespace SonOfRobin
         {
             base.Deserialize(pieceData);
             this.isOn = (bool)pieceData["fireplace_isOn"];
-            this.currentCycleBurningFramesLeft = (int)pieceData["fireplace_currentCycleBurningFramesLeft"];
-            this.burnStartFrame = (int)pieceData["fireplace_burnStartFrame"];
-            this.burnAllFuelEndFrame = (int)pieceData["fireplace_burnAllFuelEndFrame"];
+            this.currentCycleBurningFramesLeft = (int)(Int64)pieceData["fireplace_currentCycleBurningFramesLeft"];
+            this.burnStartFrame = (int)(Int64)pieceData["fireplace_burnStartFrame"];
+            this.burnAllFuelEndFrame = (int)(Int64)pieceData["fireplace_burnAllFuelEndFrame"];
         }
     }
 }

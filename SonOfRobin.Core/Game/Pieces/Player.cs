@@ -418,14 +418,14 @@ namespace SonOfRobin
         public override void Deserialize(Dictionary<string, Object> pieceData)
         {
             base.Deserialize(pieceData);
-            this.fedLevel = (int)pieceData["player_fedLevel"];
-            this.maxFedLevel = (int)pieceData["player_maxFedLevel"];
-            this.stamina = (float)pieceData["player_stamina"];
-            this.maxStamina = (float)pieceData["player_maxStamina"];
-            this.fatigue = (float)pieceData["player_fatigue"];
-            this.maxFatigue = (float)pieceData["player_maxFatigue"];
-            this.cookingSkill = (float)pieceData["player_cookingSkill"];
-            this.craftLevel = (int)pieceData["player_craftLevel"];
+            this.fedLevel = (int)(Int64)pieceData["player_fedLevel"];
+            this.maxFedLevel = (int)(Int64)pieceData["player_maxFedLevel"];
+            this.stamina = (float)(double)pieceData["player_stamina"];
+            this.maxStamina = (float)(double)pieceData["player_maxStamina"];
+            this.fatigue = (float)(double)pieceData["player_fatigue"];
+            this.maxFatigue = (float)(double)pieceData["player_maxFatigue"];
+            this.cookingSkill = (float)(double)pieceData["player_cookingSkill"];
+            this.craftLevel = (int)(Int64)pieceData["player_craftLevel"];
             this.sleepEngine = (SleepEngine)pieceData["player_sleepEngine"];
             this.ToolStorage = PieceStorage.Deserialize(storageData: pieceData["player_toolStorage"], world: this.world, storagePiece: this);
             this.EquipStorage = PieceStorage.Deserialize(storageData: pieceData["player_equipStorage"], world: this.world, storagePiece: this);

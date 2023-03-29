@@ -82,7 +82,7 @@ namespace SonOfRobin
         {
             this.enabledTypesEveryFrame = this.ConvertIntListToTypeList((List<int>)managerData["enabledTypesEveryFrame"]);
             this.enabledTypesNthFrame = this.ConvertIntListToTypeList((List<int>)managerData["enabledTypesNthFrame"]);
-            this.nthFrameMultiplier = (int)managerData["nthFrameMultiplier"];
+            this.nthFrameMultiplier = (int)(Int64)managerData["nthFrameMultiplier"];
         }
 
         public void EnableMultiplier(int multiplier)

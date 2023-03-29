@@ -48,7 +48,7 @@ namespace SonOfRobin
             this.shownGeneralHints = (List<Type>)hintsData["shownGeneralHints"];
             this.shownPieceHints = (List<PieceHint.Type>)hintsData["shownPieceHints"];
             this.shownTutorials = (List<Tutorials.Type>)hintsData["shownTutorials"];
-            this.waitUntilFrame = (int)hintsData["waitUntilFrame"];
+            this.waitUntilFrame = (int)(Int64)hintsData["waitUntilFrame"];
         }
 
         public void UpdateWaitFrame()

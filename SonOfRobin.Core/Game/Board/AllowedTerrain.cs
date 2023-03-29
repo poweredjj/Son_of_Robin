@@ -4,7 +4,6 @@ using System.Collections.Generic;
 
 namespace SonOfRobin
 {
-    [Serializable]
     public class AllowedTerrain
     {
         public enum RangeName
@@ -25,6 +24,18 @@ namespace SonOfRobin
 
             this.initialExtPropertiesDict = extPropertiesDict == null ? new Dictionary<ExtBoardProps.Name, bool>() : extPropertiesDict;
             this.currentExtPropertiesDict = null;
+        }
+
+        public AllowedTerrain(Dictionary<Terrain.Name, AllowedRange> initialRangesByTerrainName, Dictionary<Terrain.Name, AllowedRange> currentRangesByTerrainName, Dictionary<ExtBoardProps.Name, bool> initialExtPropertiesDict, Dictionary<ExtBoardProps.Name, bool> currentExtPropertiesDict)
+        {
+            // for deserialization
+
+            this.initialRangesByTerrainName = initialRangesByTerrainName;
+            this.currentRangesByTerrainName = currentRangesByTerrainName;
+            this.initialExtPropertiesDict = initialExtPropertiesDict;
+            this.currentExtPropertiesDict = currentExtPropertiesDict;
+
+            MakeRangeDictReadOnly(this.initialRangesByTerrainName);
         }
 
         public AllowedTerrain(Dictionary<Terrain.Name, AllowedRange> rangeDict, Dictionary<ExtBoardProps.Name, bool> extPropertiesDict = null)
@@ -206,6 +217,31 @@ namespace SonOfRobin
         public Dictionary<ExtBoardProps.Name, bool> GetInitialExtPropertiesDict()
         {
             return this.initialExtPropertiesDict;
+        }
+
+        public Dictionary<string, Object> Serialize()
+        {
+            Dictionary<string, Object> terrainDict = new Dictionary<string, object>
+            {
+                { "initialRangesByTerrainName", this.initialRangesByTerrainName },
+                { "currentRangesByTerrainName", this.currentRangesByTerrainName },
+                { "initialExtPropertiesDict", this.initialExtPropertiesDict },
+                { "currentExtPropertiesDict", this.currentExtPropertiesDict },
+            };
+
+            return terrainDict;
+        }
+
+        public static AllowedTerrain Deserialize(Object terrainData)
+        {
+            var terrainDict = (Dictionary<string, Object>)terrainData;
+
+            var initialRangesByTerrainName = (Dictionary<Terrain.Name, AllowedRange>)terrainDict["initialRangesByTerrainName"];
+            var currentRangesByTerrainName = (Dictionary<Terrain.Name, AllowedRange>)terrainDict["currentRangesByTerrainName"];
+            var initialExtPropertiesDict = (Dictionary<ExtBoardProps.Name, bool>)terrainDict["initialExtPropertiesDict"];
+            var currentExtPropertiesDict = (Dictionary<ExtBoardProps.Name, bool>)terrainDict["currentExtPropertiesDict"];
+
+            return new AllowedTerrain(initialRangesByTerrainName: initialRangesByTerrainName, currentRangesByTerrainName: currentRangesByTerrainName, initialExtPropertiesDict: initialExtPropertiesDict, currentExtPropertiesDict: currentExtPropertiesDict);
         }
     }
 }

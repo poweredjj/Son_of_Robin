@@ -89,11 +89,11 @@ namespace SonOfRobin
         {
             base.Deserialize(pieceData);
 
-            this.attackCooldown = (int)pieceData["animal_attackCooldown"];
-            this.regenCooldown = (int)pieceData["animal_regenCooldown"];
-            this.fedLevel = (int)pieceData["animal_fedLevel"];
+            this.attackCooldown = (int)(Int64)pieceData["animal_attackCooldown"];
+            this.regenCooldown = (int)(Int64)pieceData["animal_regenCooldown"];
+            this.fedLevel = (int)(Int64)pieceData["animal_fedLevel"];
             this.pregnancyMass = (uint)pieceData["animal_pregnancyMass"];
-            this.pregnancyFramesLeft = (int)pieceData["animal_pregnancyFramesLeft"];
+            this.pregnancyFramesLeft = (int)(Int64)pieceData["animal_pregnancyFramesLeft"];
             this.isPregnant = (bool)pieceData["animal_isPregnant"];
             this.aiData = AiData.Deserialize(pieceData["animal_aiData"]);
             this.aiData.UpdatePosition(); // needed to update Vector2

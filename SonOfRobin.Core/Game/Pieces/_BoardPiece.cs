@@ -324,21 +324,21 @@ namespace SonOfRobin
 
         public virtual void Deserialize(Dictionary<string, Object> pieceData)
         {
-            this.mass = (float)pieceData["base_mass"];
-            this.hitPoints = (float)pieceData["base_hitPoints"];
-            this.speed = (float)pieceData["base_speed"];
-            this.strength = (int)pieceData["base_strength"];
-            this.maxHitPoints = (float)pieceData["base_maxHitPoints"];
-            this.showStatBarsTillFrame = (int)pieceData["base_showStatBarsTillFrame"];
-            this.bioWear = (float)pieceData["base_bioWear"];
-            this.efficiency = (float)pieceData["base_efficiency"];
-            this.activeState = (State)pieceData["base_activeState"];
-            this.maxAge = (int)pieceData["base_maxAge"];
+            this.mass = (float)(double)pieceData["base_mass"];
+            this.hitPoints = (float)(double)pieceData["base_hitPoints"];
+            this.speed = (float)(double)pieceData["base_speed"];
+            this.strength = (int)(Int64)pieceData["base_strength"];
+            this.maxHitPoints = (float)(double)pieceData["base_maxHitPoints"];
+            this.showStatBarsTillFrame = (int)(Int64)pieceData["base_showStatBarsTillFrame"];
+            this.bioWear = (float)(double)pieceData["base_bioWear"];
+            this.efficiency = (float)(double)pieceData["base_efficiency"];
+            this.activeState = (State)(Int64)pieceData["base_activeState"];
+            this.maxAge = (int)(Int64)pieceData["base_maxAge"];
             this.PieceStorage = PieceStorage.Deserialize(storageData: pieceData["base_pieceStorage"], world: this.world, storagePiece: this);
-            this.boardTask = (Scheduler.TaskName)pieceData["base_boardTask"];
-            this.toolbarTask = (Scheduler.TaskName)pieceData["base_toolbarTask"];
-            this.passiveMovement = new Vector2((float)pieceData["base_passiveMovementX"], (float)pieceData["base_passiveMovementY"]);
-            this.passiveRotation = (int)pieceData["base_passiveRotation"];
+            this.boardTask = (Scheduler.TaskName)(Int64)pieceData["base_boardTask"];
+            this.toolbarTask = (Scheduler.TaskName)(Int64)pieceData["base_toolbarTask"];
+            this.passiveMovement = new Vector2((float)(double)pieceData["base_passiveMovementX"], (float)(double)pieceData["base_passiveMovementY"]);
+            this.passiveRotation = (int)(Int64)pieceData["base_passiveRotation"];
             this.buffEngine = BuffEngine.Deserialize(piece: this, buffEngineData: pieceData["base_buffEngine"]);
             this.buffList = (List<Buff>)pieceData["base_buffList"];
             this.soundPack.Deserialize(pieceData["base_soundPack"]);

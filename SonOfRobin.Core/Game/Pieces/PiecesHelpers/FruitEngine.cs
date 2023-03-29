@@ -66,7 +66,7 @@ namespace SonOfRobin
 
         public void Deserialize(Dictionary<string, Object> pieceData)
         {
-            this.currentMass = (float)pieceData["fruitEngine_currentMass"];
+            this.currentMass = (float)(double)pieceData["fruitEngine_currentMass"];
             this.PutAllFruitsOnBoardAgain();
         }
 

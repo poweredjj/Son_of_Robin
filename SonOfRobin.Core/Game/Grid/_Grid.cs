@@ -164,8 +164,8 @@ namespace SonOfRobin
         {
             // this data is included in save file (not in template)
 
-            int cellWidth = (int)gridData["cellWidth"];
-            int cellHeight = (int)gridData["cellHeight"];
+            int cellWidth = (int)(Int64)gridData["cellWidth"];
+            int cellHeight = (int)(Int64)gridData["cellHeight"];
             var cellData = (List<Object>)gridData["cellData"];
 
             Grid grid = new Grid(world: world, cellWidth: cellWidth, cellHeight: cellHeight, resDivider: resDivider);

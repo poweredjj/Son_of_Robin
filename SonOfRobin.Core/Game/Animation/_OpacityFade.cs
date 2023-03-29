@@ -97,11 +97,11 @@ namespace SonOfRobin
 
             var fadeDict = (Dictionary<string, Object>)fadeData;
 
-            int duration = (int)fadeDict["duration"];
-            float destOpacity = (float)fadeDict["destOpacity"];
-            float fadePerFrame = (float)fadeDict["fadePerFrame"];
-            int currentFrame = (int)fadeDict["currentFrame"];
-            Mode mode = (Mode)fadeDict["mode"];
+            int duration = (int)(Int64)fadeDict["duration"];
+            float destOpacity = (float)(double)fadeDict["destOpacity"];
+            float fadePerFrame = (float)(double)fadeDict["fadePerFrame"];
+            int currentFrame = (int)(Int64)fadeDict["currentFrame"];
+            Mode mode = (Mode)(Int64)fadeDict["mode"];
             bool destroyPiece = (bool)fadeDict["destroyPiece"];
 
             return new OpacityFade(sprite: sprite, duration: duration, destroyPiece: destroyPiece, mode: mode, currentFrame: currentFrame, fadePerFrame: fadePerFrame, destOpacity: destOpacity);

@@ -118,8 +118,8 @@ namespace SonOfRobin
         public override void Deserialize(Dictionary<string, Object> pieceData)
         {
             base.Deserialize(pieceData);
-            this.cookingStartFrame = (int)pieceData["cooker_cookingStartFrame"];
-            this.cookingDoneFrame = (int)pieceData["cooker_cookingDoneFrame"];
+            this.cookingStartFrame = (int)(Int64)pieceData["cooker_cookingStartFrame"];
+            this.cookingDoneFrame = (int)(Int64)pieceData["cooker_cookingDoneFrame"];
         }
 
         public void TurnOn()

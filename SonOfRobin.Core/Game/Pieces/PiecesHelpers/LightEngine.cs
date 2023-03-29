@@ -129,9 +129,9 @@ namespace SonOfRobin
 
             var lightDict = (Dictionary<string, Object>)lightData;
 
-            int width = (int)lightDict["width"];
-            int height = (int)lightDict["height"];
-            float opacity = (float)lightDict["opacity"];
+            int width = (int)(Int64)lightDict["width"];
+            int height = (int)(Int64)lightDict["height"];
+            float opacity = (float)(double)lightDict["opacity"];
             var colorData = (List<Byte>)lightDict["color"];
             Color color = new Color(colorData[0], colorData[1], colorData[2], colorData[3]);
             bool colorActive = (bool)lightDict["colorActive"];

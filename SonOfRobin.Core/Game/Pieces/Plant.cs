@@ -81,7 +81,7 @@ namespace SonOfRobin
         public override void Deserialize(Dictionary<string, Object> pieceData)
         {
             base.Deserialize(pieceData);
-            this.massTakenMultiplier = (float)pieceData["plant_massTakenMultiplier"];
+            this.massTakenMultiplier = (float)(double)pieceData["plant_massTakenMultiplier"];
             if (this.fruitEngine != null) this.fruitEngine.Deserialize(pieceData);
         }
 

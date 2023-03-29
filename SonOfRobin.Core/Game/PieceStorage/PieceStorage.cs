@@ -559,9 +559,9 @@ namespace SonOfRobin
 
             var storageDict = (Dictionary<string, Object>)storageData;
 
-            byte width = (byte)storageDict["width"];
-            byte height = (byte)storageDict["height"];
-            byte stackLimit = (byte)storageDict["stackLimit"];
+            byte width = (byte)(Int64)storageDict["width"];
+            byte height = (byte)(Int64)storageDict["height"];
+            byte stackLimit = (byte)(Int64)storageDict["stackLimit"];
             string label = (string)storageDict["label"];
             var slotData = (List<Object>)storageDict["slotData"];
             StorageType storageType = (StorageType)storageDict["storageType"];
