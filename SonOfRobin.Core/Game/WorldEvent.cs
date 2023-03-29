@@ -67,6 +67,16 @@ namespace SonOfRobin
             int delay = Math.Max(startUpdateNo - world.CurrentUpdate, 0);
             Object eventHelper = eventData["eventHelper"];
 
+            if (eventHelper != null)
+            {
+                try
+                {
+                    eventHelper = (int)(Int64)eventHelper; // serialization makes every int stored as int64 (long)
+                }
+                catch (InvalidCastException) // when eventHelper is not an int (or enum)
+                { }
+            }
+
             new WorldEvent(eventName: eventName, world: world, delay: delay, boardPiece: boardPiece, eventHelper: eventHelper);
         }
 
