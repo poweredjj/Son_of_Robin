@@ -175,7 +175,7 @@ namespace SonOfRobin
             this.hidden = (bool)slotDict["hidden"];
             this.label = (string)slotDict["label"];
             this.allowedPieceNames = (List<PieceTemplate.Name>)slotDict["allowedPieceNames"];
-            this.stackLimit = (byte)slotDict["stackLimit"];
+            this.stackLimit = (byte)(Int64)slotDict["stackLimit"];
             var pieceListObj = (List<Object>)slotDict["pieceList"];
 
             // repeated in World
@@ -184,7 +184,7 @@ namespace SonOfRobin
             {
                 var pieceData = (Dictionary<string, Object>)pieceObj;
 
-                PieceTemplate.Name templateName = (PieceTemplate.Name)pieceData["base_name"];
+                PieceTemplate.Name templateName = (PieceTemplate.Name)(Int64)pieceData["base_name"];
 
                 bool female = false;
                 bool randomSex = true;

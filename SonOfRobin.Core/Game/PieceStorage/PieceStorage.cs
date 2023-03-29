@@ -564,14 +564,14 @@ namespace SonOfRobin
             byte stackLimit = (byte)(Int64)storageDict["stackLimit"];
             string label = (string)storageDict["label"];
             var slotData = (List<Object>)storageDict["slotData"];
-            StorageType storageType = (StorageType)storageDict["storageType"];
+            StorageType storageType = (StorageType)(Int64)storageDict["storageType"];
             List<PieceTemplate.Name> allowedPieceNames = (List<PieceTemplate.Name>)storageDict["allowedPieceNames"];
 
             PieceStorage storage = new PieceStorage(width: width, height: height, storagePiece: storagePiece, storageType: storageType, stackLimit: stackLimit, allowedPieceNames: allowedPieceNames, label: label);
             if (storageDict.ContainsKey("lastUsedSlotX") && storageDict.ContainsKey("lastUsedSlotY"))
             {
-                byte lastUsedSlotX = (byte)storageDict["lastUsedSlotX"];
-                byte lastUsedSlotY = (byte)storageDict["lastUsedSlotY"];
+                byte lastUsedSlotX = (byte)(Int64)storageDict["lastUsedSlotX"];
+                byte lastUsedSlotY = (byte)(Int64)storageDict["lastUsedSlotY"];
                 storage.lastUsedSlot = storage.GetSlot(x: lastUsedSlotX, y: lastUsedSlotY);
             }
 

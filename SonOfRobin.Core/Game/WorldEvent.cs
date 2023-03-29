@@ -50,7 +50,7 @@ namespace SonOfRobin
         public static void Deserialize(World world, Dictionary<string, Object> eventData, Dictionary<string, BoardPiece> piecesByID)
         {
             // for events that target a piece, that was already destroyed (and will not be present in saved data)
-            EventName eventName = (EventName)eventData["eventName"];
+            EventName eventName = (EventName)(Int64)eventData["eventName"];
 
             BoardPiece boardPiece;
 
@@ -63,7 +63,7 @@ namespace SonOfRobin
                 boardPiece = piecesByID[(string)eventData["piece_id"]];
             }
 
-            int startUpdateNo = (int)eventData["startUpdateNo"];
+            int startUpdateNo = (int)(Int64)eventData["startUpdateNo"];
             int delay = Math.Max(startUpdateNo - world.CurrentUpdate, 0);
             Object eventHelper = eventData["eventHelper"];
 

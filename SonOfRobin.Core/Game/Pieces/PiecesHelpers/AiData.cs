@@ -81,7 +81,7 @@ namespace SonOfRobin
             float positionY = (float)(double)aiDataDict["positionY"];
             Vector2 position = new Vector2(positionX, positionY);
             bool dontStop = (bool)aiDataDict["dontStop"];
-            short timeLeft = (short)aiDataDict["timeLeft"];
+            short timeLeft = (short)(Int64)aiDataDict["timeLeft"];
 
             AiData aiData = new AiData
             {

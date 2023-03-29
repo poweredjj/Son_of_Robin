@@ -135,7 +135,7 @@ namespace SonOfRobin
             var colorData = (List<Byte>)lightDict["color"];
             Color color = new Color(colorData[0], colorData[1], colorData[2], colorData[3]);
             bool colorActive = (bool)lightDict["colorActive"];
-            float addedGfxRectMultiplier = (float)lightDict["addedGfxRectMultiplier"];
+            float addedGfxRectMultiplier = (float)(double)lightDict["addedGfxRectMultiplier"];
             bool isActive = (bool)lightDict["isActive"];
             bool glowOnlyAtNight = (bool)lightDict["glowOnlyAtNight"];
             bool castShadows = (bool)lightDict["castShadows"];

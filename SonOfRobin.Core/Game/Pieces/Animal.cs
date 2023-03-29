@@ -92,7 +92,7 @@ namespace SonOfRobin
             this.attackCooldown = (int)(Int64)pieceData["animal_attackCooldown"];
             this.regenCooldown = (int)(Int64)pieceData["animal_regenCooldown"];
             this.fedLevel = (int)(Int64)pieceData["animal_fedLevel"];
-            this.pregnancyMass = (uint)pieceData["animal_pregnancyMass"];
+            this.pregnancyMass = (uint)(Int64)pieceData["animal_pregnancyMass"];
             this.pregnancyFramesLeft = (int)(Int64)pieceData["animal_pregnancyFramesLeft"];
             this.isPregnant = (bool)pieceData["animal_isPregnant"];
             this.aiData = AiData.Deserialize(pieceData["animal_aiData"]);
