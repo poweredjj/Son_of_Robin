@@ -82,6 +82,57 @@ namespace SonOfRobin
             return bitArray;
         }
 
+        public static void Save2DByteArrayToPng(Byte[,] array2D, string path)
+        {
+            int width = array2D.GetLength(0);
+            int height = array2D.GetLength(1);
+
+            PngBuilder builder = PngBuilder.Create(width: width, height: height, hasAlphaChannel: false);
+
+            for (int y = 0; y < height; y++)
+            {
+                for (int x = 0; x < width; x++)
+                {
+                    byte arrayVal = array2D[x, y];
+                    builder.SetPixel(arrayVal, arrayVal, arrayVal, x, y);
+                }
+            }
+
+            using (var memoryStream = new MemoryStream())
+            {
+                builder.Save(memoryStream);
+                FileReaderWriter.SaveMemoryStream(memoryStream: memoryStream, path: path);
+            }
+        }
+
+        public static byte[,] LoadPNGAs2DByteArray(string path)
+        {
+            Texture2D texture = LoadTextureFromPNG(path);
+
+            if (texture == null) return null;
+
+            int width = texture.Width;
+            int height = texture.Height;
+
+            var colorArray1D = new Color[width * height];
+            texture.GetData(colorArray1D);
+
+            Byte[,] array2D = new byte[width, height];
+
+            for (int y = 0; y < height; y++)
+            {
+                int yFactor = y * width;
+
+                for (int x = 0; x < width; x++)
+                {
+                    Color pixel = colorArray1D[yFactor + x];
+                    array2D[x, y] = pixel.R;
+                }
+            }
+
+            return array2D;
+        }
+
         public static Texture2D CropTexture(Texture2D baseTexture, Rectangle cropRect)
         {
             // Copy the data from the cropped region into a buffer, then into the new texture

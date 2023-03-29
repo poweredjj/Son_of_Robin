@@ -287,16 +287,5 @@ namespace SonOfRobin
 
             return containsPropertiesGridCell;
         }
-
-        private Dictionary<string, object> Serialize()
-        {
-            var serializedData = new Dictionary<string, object>
-            {
-                { "containsPropertiesTrueGridCell", this.containsPropertiesTrueGridCell },
-                { "containsPropertiesFalseGridCell", this.containsPropertiesFalseGridCell },
-            };
-
-            return serializedData;
-        }
     }
 }
