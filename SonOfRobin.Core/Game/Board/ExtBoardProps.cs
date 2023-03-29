@@ -143,16 +143,6 @@ namespace SonOfRobin
             else return this.containsPropertiesFalseGridCell[name].GetVal(cellNoX, cellNoY);
         }
 
-        private int ConvertRaw2DCoordinatesTo1D(int x, int y)
-        {
-            return (y * this.Grid.dividedWidth) + x;
-        }
-
-        private int Convert2DCoordinatesTo1D(int x, int y)
-        {
-            return (y / this.Grid.resDivider * this.Grid.dividedWidth) + (x / this.Grid.resDivider);
-        }
-
         public Dictionary<Name, bool> GetValueDict(int x, int y, bool xyRaw)
         {
             var valueDict = new Dictionary<Name, bool>();
@@ -216,7 +206,7 @@ namespace SonOfRobin
 
         private string GetContainsPropertiesPNGPath(Name name, bool contains)
         {
-            return Path.Combine(this.templateFolder, $"ext_contains_{contains}_{name}.png");
+            return Path.Combine(this.templateFolder, $"ext_contains_{name}_{contains}.png");
         }
     }
 }
