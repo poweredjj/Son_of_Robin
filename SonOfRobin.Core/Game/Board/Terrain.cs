@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -71,19 +70,20 @@ namespace SonOfRobin
 
             this.templatePath = Path.Combine(templatePath, $"terrain_{Convert.ToString(name).ToLower()}.json");
             this.terrainPngPath = Path.Combine(templatePath, $"terrain_{Convert.ToString(name).ToLower()}.png");
-            this.minValPngPath = Path.Combine(templatePath, $"terrain_minval_{Convert.ToString(name).ToLower()}.png");
-            this.maxValPngPath = Path.Combine(templatePath, $"terrain_maxval_{Convert.ToString(name).ToLower()}.png");
+            this.minValPngPath = Path.Combine(templatePath, $"terrain_val_{Convert.ToString(name).ToLower()}_min.png");
+            this.maxValPngPath = Path.Combine(templatePath, $"terrain_val_{Convert.ToString(name).ToLower()}_max.png");
         }
 
         public void TryToLoadSavedTerrain()
         {
-            byte[,] loadedMapData = GfxConverter.LoadPNGAs2DByteArray(this.terrainPngPath);
+            byte[,] loadedMaxVal = null;
+            byte[,] loadedMapData = null;
 
-            Dictionary<string, object> serializedTerrainData = null;
+            byte[,] loadedMinVal = GfxConverter.LoadPNGAs2DByteArray(this.minValPngPath);
+            if (loadedMinVal != null) loadedMaxVal = GfxConverter.LoadPNGAs2DByteArray(this.maxValPngPath);
+            if (loadedMaxVal != null) loadedMapData = GfxConverter.LoadPNGAs2DByteArray(this.terrainPngPath);
 
-            if (loadedMapData != null) serializedTerrainData = this.LoadTemplate();
-
-            if (loadedMapData == null || serializedTerrainData == null)
+            if (loadedMinVal == null || loadedMaxVal == null || loadedMapData == null)
             {
                 var gradientLines = this.CreateGradientLines();
                 this.gradientLineX = gradientLines.Item1;
@@ -96,8 +96,8 @@ namespace SonOfRobin
             else
             {
                 this.mapData = loadedMapData;
-                this.minValGridCell = (byte[,])serializedTerrainData["minValGridCell"];
-                this.maxValGridCell = (byte[,])serializedTerrainData["maxValGridCell"];
+                this.minValGridCell = loadedMinVal;
+                this.maxValGridCell = loadedMaxVal;
                 this.CreationInProgress = false;
             }
         }
@@ -184,34 +184,12 @@ namespace SonOfRobin
             return this.maxValGridCell[cellNoX, cellNoY];
         }
 
-        private Dictionary<string, object> LoadTemplate()
-        {
-            var loadedData = FileReaderWriter.Load(this.templatePath);
-            if (loadedData == null) return null;
-            else return (Dictionary<string, object>)loadedData;
-        }
-
         public void SaveTemplate()
         {
             GfxConverter.Save2DByteArrayToPng(array2D: this.mapData, path: this.terrainPngPath);
             GfxConverter.Save2DByteArrayToPng(array2D: this.minValGridCell, path: this.minValPngPath);
             GfxConverter.Save2DByteArrayToPng(array2D: this.maxValGridCell, path: this.maxValPngPath);
-
-            FileReaderWriter.Save(path: this.templatePath, savedObj: this.Serialize());
         }
-
-        private Dictionary<string, object> Serialize()
-        {
-            var serializedMapData = new Dictionary<string, object>
-            {
-                { "minValGridCell", this.minValGridCell },
-                { "maxValGridCell", this.maxValGridCell },
-            };
-
-            return serializedMapData;
-        }
-
-
 
         private (double[], double[]) CreateGradientLines()
         {

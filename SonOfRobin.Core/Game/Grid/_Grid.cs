@@ -269,7 +269,7 @@ namespace SonOfRobin
                 case Stage.GenerateTerrain:
 
                     bool processedOneUpdateCycle = false;
-                    int processSegments = 5;
+                    int processSegments = 1 + (int)Math.Log(this.width, 2) - 5;
 
                     foreach (Terrain currentTerrain in this.terrainByName.Values)
                     {
