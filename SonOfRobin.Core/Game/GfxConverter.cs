@@ -10,27 +10,6 @@ namespace SonOfRobin
 {
     public class GfxConverter
     {
-        public static void SaveColorArrayAsPNG(int width, int height, Color[,] colorArray, string pngPath, bool hasAlphaChannel = true)
-        {
-            var builder = PngBuilder.Create(width: width, height: height, hasAlphaChannel: hasAlphaChannel);
-
-            for (int x = 0; x < width; x++)
-            {
-                for (int y = 0; y < height; y++)
-                {
-                    Color pixel = colorArray[x, y];
-
-                    builder.SetPixel(pixel.R, pixel.G, pixel.B, x, y);
-                }
-            }
-
-            using (var memoryStream = new MemoryStream())
-            {
-                builder.Save(memoryStream);
-                FileReaderWriter.SaveMemoryStream(memoryStream: memoryStream, path: pngPath);
-            }
-        }
-
         public static BitArray LoadPNGAsBitArray(string path)
         {
             Texture2D texture = LoadTextureFromPNG(path);
@@ -64,7 +43,11 @@ namespace SonOfRobin
             int width = array2D.GetLength(0);
             int height = array2D.GetLength(1);
 
-            PngBuilder builder = PngBuilder.Create(width: width, height: height, hasAlphaChannel: false);
+            // BigGustave PngBuilder cannot write odd width properly
+            bool widthOdd = width % 2 != 0;
+            int correctedWidth = widthOdd ? width + 1 : width;
+
+            PngBuilder builder = PngBuilder.Create(width: correctedWidth, height: height, hasAlphaChannel: false);
 
             for (int y = 0; y < height; y++)
             {
@@ -72,6 +55,14 @@ namespace SonOfRobin
                 {
                     byte arrayVal = array2D[x, y];
                     builder.SetPixel(arrayVal, arrayVal, arrayVal, x, y);
+                }
+            }
+
+            if (widthOdd) // adding red line along "extra" edge, that it can be detected when opening
+            {
+                for (int y = 0; y < height; y++)
+                {
+                    builder.SetPixel(255, 0, 0, correctedWidth - 1, y);
                 }
             }
 
@@ -84,30 +75,40 @@ namespace SonOfRobin
 
         public static byte[,] LoadPNGAs2DByteArray(string path)
         {
-            Texture2D texture = LoadTextureFromPNG(path);
-
-            if (texture == null) return null;
-
-            int width = texture.Width;
-            int height = texture.Height;
-
-            var colorArray1D = new Color[width * height];
-            texture.GetData(colorArray1D);
-
-            Byte[,] array2D = new byte[width, height];
-
-            for (int y = 0; y < height; y++)
+            try
             {
-                int yFactor = y * width;
-
-                for (int x = 0; x < width; x++)
+                using (var stream = File.OpenRead(path))
                 {
-                    Color pixel = colorArray1D[yFactor + x];
-                    array2D[x, y] = pixel.R;
+                    Png image = Png.Open(stream);
+
+                    int width = image.Width;
+                    int height = image.Height;
+
+                    Pixel topRightEdgePixel = image.GetPixel(width - 1, 0);
+                    Pixel bottomRightEdgePixel = image.GetPixel(width - 1, height - 1);
+                    if (topRightEdgePixel.R == 255 && topRightEdgePixel.G == 0 && topRightEdgePixel.B == 0 &&
+                        bottomRightEdgePixel.R == 255 && bottomRightEdgePixel.G == 0 && bottomRightEdgePixel.B == 0)
+                    {
+                        // detecting and correcting red edge marker (last column, that needs to be ignored)
+                        width--;
+                    }
+
+                    Byte[,] array2D = new byte[width, height];
+
+                    for (int y = 0; y < height; y++)
+                    {
+                        for (int x = 0; x < width; x++)
+                        {
+                            Pixel pixel = image.GetPixel(x, y);
+                            array2D[x, y] = pixel.R;
+                        }
+                    }
+
+                    return array2D;
                 }
             }
-
-            return array2D;
+            catch (FileNotFoundException) { return null; }
+            catch (ArgumentOutOfRangeException) { return null; } // file corrupted
         }
 
         public static Texture2D CropTexture(Texture2D baseTexture, Rectangle cropRect)
