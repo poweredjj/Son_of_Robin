@@ -237,43 +237,50 @@ namespace SonOfRobin
             new Scheduler.Task(taskName: Scheduler.TaskName.AddFadeInAnim, delay: 1, executeHelper: this);
         }
 
-        public void Serialize(Dictionary<string, Object> pieceData)
+        public Dictionary<string, object> Serialize()
         {
-            pieceData["sprite_frame_id"] = this.frame.id;
-            pieceData["sprite_positionX"] = this.position.X;
-            pieceData["sprite_positionY"] = this.position.Y;
-            pieceData["sprite_animPackage"] = this.animPackage;
-            pieceData["sprite_animSize"] = this.animSize;
-            pieceData["sprite_animName"] = this.animName;
-            pieceData["sprite_currentFrameIndex"] = this.currentFrameIndex;
-            pieceData["sprite_currentFrameTimeLeft"] = this.currentFrameTimeLeft;
-            pieceData["sprite_rotation"] = this.rotation;
-            pieceData["sprite_opacity"] = this.opacity;
-            pieceData["sprite_orientation"] = this.orientation;
-            pieceData["sprite_gridGroups"] = this.gridGroups;
-            pieceData["sprite_hasBeenDiscovered"] = this.hasBeenDiscovered;
-            pieceData["sprite_allowedTerrain"] = this.allowedTerrain.Serialize();
-            pieceData["sprite_lightSource"] = this.lightEngine == null ? null : this.lightEngine.Serialize();
-            pieceData["sprite_color"] = new byte[] { this.color.R, this.color.G, this.color.B, this.color.A };
+            Dictionary<string, Object> spriteDataDict = new Dictionary<string, object>
+            {
+                { "frame_id", this.frame.id },
+                { "posX", (int)this.position.X },
+                { "posY", (int)this.position.Y },
+                { "animPackage", this.animPackage },
+                { "animSize", this.animSize },
+                { "animName", this.animName },
+                { "currentFrameIndex", this.currentFrameIndex },
+                { "currentFrameTimeLeft", this.currentFrameTimeLeft },
+                { "rotation", this.rotation },
+                { "opacity", this.opacity },
+                { "orientation", this.orientation },
+                { "gridGroups", this.gridGroups },
+                { "hasBeenDiscovered", this.hasBeenDiscovered },
+                { "allowedTerrain", this.allowedTerrain.Serialize() },
+                { "lightSource", this.lightEngine == null ? null : this.lightEngine.Serialize() },
+                { "color", new byte[] { this.color.R, this.color.G, this.color.B, this.color.A  }
+            } };
+
+            return spriteDataDict;
         }
 
-        public void Deserialize(Dictionary<string, Object> pieceData)
+        public void Deserialize(object spriteData)
         {
-            this.position = new Vector2((float)(double)pieceData["sprite_positionX"], (float)(double)pieceData["sprite_positionY"]);
-            this.orientation = (Orientation)(Int64)pieceData["sprite_orientation"];
-            this.rotation = (float)(double)pieceData["sprite_rotation"];
-            this.opacity = (float)(double)pieceData["sprite_opacity"];
-            this.animPackage = (AnimData.PkgName)(Int64)pieceData["sprite_animPackage"];
-            this.animSize = (byte)(Int64)pieceData["sprite_animSize"];
-            this.animName = (string)pieceData["sprite_animName"];
-            this.currentFrameIndex = (byte)(Int64)pieceData["sprite_currentFrameIndex"];
-            this.currentFrameTimeLeft = (ushort)(Int64)pieceData["sprite_currentFrameTimeLeft"];
-            this.AssignFrameById((string)pieceData["sprite_frame_id"]);
-            this.gridGroups = (List<Cell.Group>)pieceData["sprite_gridGroups"];
-            this.hasBeenDiscovered = (bool)pieceData["sprite_hasBeenDiscovered"];
-            this.allowedTerrain = AllowedTerrain.Deserialize(pieceData["sprite_allowedTerrain"]);
-            this.lightEngine = LightEngine.Deserialize(lightData: pieceData["sprite_lightSource"], sprite: this);
-            var colorArray = (byte[])pieceData["sprite_color"];
+            var spriteDict = (Dictionary<string, Object>)spriteData;
+
+            this.position = new Vector2((int)(Int64)spriteDict["posX"], (int)(Int64)spriteDict["posY"]);
+            this.orientation = (Orientation)(Int64)spriteDict["orientation"];
+            this.rotation = (float)(double)spriteDict["rotation"];
+            this.opacity = (float)(double)spriteDict["opacity"];
+            this.animPackage = (AnimData.PkgName)(Int64)spriteDict["animPackage"];
+            this.animSize = (byte)(Int64)spriteDict["animSize"];
+            this.animName = (string)spriteDict["animName"];
+            this.currentFrameIndex = (byte)(Int64)spriteDict["currentFrameIndex"];
+            this.currentFrameTimeLeft = (ushort)(Int64)spriteDict["currentFrameTimeLeft"];
+            this.AssignFrameById((string)spriteDict["frame_id"]);
+            this.gridGroups = (List<Cell.Group>)spriteDict["gridGroups"];
+            this.hasBeenDiscovered = (bool)spriteDict["hasBeenDiscovered"];
+            this.allowedTerrain = AllowedTerrain.Deserialize(spriteDict["allowedTerrain"]);
+            this.lightEngine = LightEngine.Deserialize(lightData: spriteDict["lightSource"], sprite: this);
+            var colorArray = (byte[])spriteDict["color"];
             this.color = new Color(r: colorArray[0], g: colorArray[1], b: colorArray[2], alpha: colorArray[3]);
         }
 

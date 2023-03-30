@@ -297,7 +297,6 @@ namespace SonOfRobin
                 { "base_hitPoints", this.hitPoints },
                 { "base_strength", this.strength },
                 { "base_maxHitPoints", this.maxHitPoints },
-                { "base_showStatBarsTillFrame", this.showStatBarsTillFrame },
                 { "base_mass", this.mass },
                 { "base_alive", this.alive },
                 { "base_maxAge", this.maxAge },
@@ -314,10 +313,10 @@ namespace SonOfRobin
                 { "base_buffList", this.buffList },
                 { "base_soundPack", this.soundPack.Serialize() },
                 { "base_canBeHit", this.canBeHit },
+                { "base_sprite", this.sprite.Serialize() }
             };
 
             if (this.PieceStorage != null) pieceData["base_pieceStorage"] = this.PieceStorage.Serialize();
-            this.sprite.Serialize(pieceData);
 
             return pieceData;
         }
@@ -329,7 +328,6 @@ namespace SonOfRobin
             this.speed = (float)(double)pieceData["base_speed"];
             this.strength = (int)(Int64)pieceData["base_strength"];
             this.maxHitPoints = (float)(double)pieceData["base_maxHitPoints"];
-            this.showStatBarsTillFrame = (int)(Int64)pieceData["base_showStatBarsTillFrame"];
             this.bioWear = (float)(double)pieceData["base_bioWear"];
             this.efficiency = (float)(double)pieceData["base_efficiency"];
             this.activeState = (State)(Int64)pieceData["base_activeState"];
@@ -343,8 +341,7 @@ namespace SonOfRobin
             this.buffList = (List<Buff>)pieceData["base_buffList"];
             this.soundPack.Deserialize(pieceData["base_soundPack"]);
             this.canBeHit = (bool)pieceData["base_canBeHit"];
-
-            this.sprite.Deserialize(pieceData);
+            this.sprite.Deserialize(pieceData["base_sprite"]);
 
             if (!(bool)pieceData["base_alive"]) this.Kill();
         }
@@ -758,6 +755,7 @@ namespace SonOfRobin
 
         public virtual void SM_FogMoveRandomly()
         { throw new DivideByZeroException("This method should not be executed."); }
+
         public virtual void SM_RainInitialize()
         { throw new DivideByZeroException("This method should not be executed."); }
 

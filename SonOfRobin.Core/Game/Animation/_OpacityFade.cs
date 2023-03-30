@@ -5,7 +5,7 @@
         public enum Mode
         { Normal, CameraTargetObstruct, CameraTargetObstructRevert }
 
-        public const int defaultDuration = 30
+        public const int defaultDuration = 30;
 
         private readonly Sprite sprite;
         private readonly int duration;
