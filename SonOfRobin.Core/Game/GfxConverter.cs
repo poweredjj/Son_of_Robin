@@ -14,34 +14,6 @@ namespace SonOfRobin
 {
     public class GfxConverter
     {
-        public static BitArray LoadPNGAsBitArray(string path)
-        {
-            Texture2D texture = LoadTextureFromPNG(path);
-
-            if (texture == null) return null;
-
-            int width = texture.Width;
-            int height = texture.Height;
-
-            BitArray bitArray = new BitArray(width * height);
-
-            var colorArray1D = new Color[width * height];
-            texture.GetData(colorArray1D);
-
-            for (int y = 0; y < height; y++)
-            {
-                int yFactor = y * width;
-
-                for (int x = 0; x < width; x++)
-                {
-                    Color pixel = colorArray1D[yFactor + x];
-                    bitArray[yFactor + x] = pixel == Color.Black;
-                }
-            }
-
-            return bitArray;
-        }
-
         public static void Save2DByteArrayToPNG(Byte[,] array2D, string path)
         {
             int width = array2D.GetLength(0);
@@ -65,33 +37,32 @@ namespace SonOfRobin
             }
         }
 
-        public static byte[,] LoadPNGAs2DByteArray(string path)
-        {
-            Texture2D texture = LoadTextureFromPNG(path);
-
-            if (texture == null) return null;
-
-            int width = texture.Width;
-            int height = texture.Height;
-
-            var colorArray1D = new Color[width * height];
-            texture.GetData(colorArray1D);
-
-            Byte[,] array2D = new byte[width, height];
-
-            for (int y = 0; y < height; y++)
+    public static byte[,] LoadPNGAs2DByteArray(string path)
+    {
+            try
             {
-                int yFactor = y * width;
-
-                for (int x = 0; x < width; x++)
+                using (var image = Image.Load<L8>(path))
                 {
-                    Color pixel = colorArray1D[yFactor + x];
-                    array2D[x, y] = pixel.R;
+                    int width = image.Width;
+                    int height = image.Height;
+
+                    var array2D = new byte[width, height];
+
+                    for (int y = 0; y < height; y++)
+                    {
+                        for (int x = 0; x < width; x++)
+                        {
+                            array2D[x, y] = image[x, y].PackedValue;
+                        }
+                    }
+
+                    return array2D;
                 }
             }
+            catch (FileNotFoundException) { return null; }
+            catch (UnknownImageFormatException) { return null; } // file corrupted
+    }
 
-            return array2D;
-        }
 
         public static Texture2D CropTexture(Texture2D baseTexture, Rectangle cropRect)
         {

@@ -1,10 +1,8 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using SixLabors.ImageSharp;
+﻿using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats.Png;
 using SixLabors.ImageSharp.PixelFormats;
 using System.Collections;
 using System.IO;
-using Color = Microsoft.Xna.Framework.Color;
 
 namespace SonOfRobin
 {
@@ -71,24 +69,30 @@ namespace SonOfRobin
 
         public static BitArrayWrapper LoadFromPNG(string path)
         {
-            Texture2D texture = GfxConverter.LoadTextureFromPNG(path);
-            if (texture == null) return null;
-
-            int width = texture.Width;
-            int height = texture.Height;
-
-            BitArrayWrapper bitArrayWrapper = new BitArrayWrapper(width: width, height: height);
-
-            Color[] colorArray1D = new Color[width * height];
-            texture.GetData(colorArray1D);
-
-            for (int i = 0; i < bitArrayWrapper.bitArray.Length; i++)
+            try
             {
-                // texture2D data is structured in the same way as bitArray - it just needs to be copied
-                bitArrayWrapper.bitArray.Set(i, colorArray1D[i].R == 0);
-            }
+                using (var image = Image.Load<L8>(path))
+                {
+                    int width = image.Width;
+                    int height = image.Height;
 
-            return bitArrayWrapper;
+                    BitArrayWrapper bitArrayWrapper = new BitArrayWrapper(width: width, height: height);
+
+                    for (int y = 0; y < height; y++)
+                    {
+                        int yFactor = y * width;
+
+                        for (int x = 0; x < width; x++)
+                        {
+                            bitArrayWrapper.bitArray.Set(yFactor + x, image[x, y].PackedValue == 0);
+                        }
+                    }
+
+                    return bitArrayWrapper;
+                }
+            }
+            catch (FileNotFoundException) { return null;}
+            catch (UnknownImageFormatException) { return null;} // file corrupted      
         }
     }
 }

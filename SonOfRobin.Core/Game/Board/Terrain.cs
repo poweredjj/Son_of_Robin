@@ -28,7 +28,6 @@ namespace SonOfRobin
         public bool CreationInProgress { get; private set; }
         private int nextUpdateStartingRow;
 
-        private readonly string templatePath;
         private readonly string terrainPngPath;
         private readonly string minValPngPath;
         private readonly string maxValPngPath;
@@ -68,8 +67,6 @@ namespace SonOfRobin
             this.addBorder = addBorder;
 
             string templatePath = this.Grid.gridTemplate.templatePath;
-
-            this.templatePath = Path.Combine(templatePath, $"terrain_{Convert.ToString(name).ToLower()}.json");
             this.terrainPngPath = Path.Combine(templatePath, $"terrain_{Convert.ToString(name).ToLower()}.png");
             this.minValPngPath = Path.Combine(templatePath, $"terrain__val_{Convert.ToString(name).ToLower()}_min.png");
             this.maxValPngPath = Path.Combine(templatePath, $"terrain__val_{Convert.ToString(name).ToLower()}_max.png");
