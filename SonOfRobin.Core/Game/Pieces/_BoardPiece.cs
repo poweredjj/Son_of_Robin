@@ -220,7 +220,7 @@ namespace SonOfRobin
             get { return this.mass; }
             set
             {
-                this.mass = value;
+                this.mass = Math.Max(value, 0f);
                 int previousSpriteSize = this.sprite.animSize;
                 this.SetSpriteSizeByMass();
                 if (previousSpriteSize != this.sprite.animSize && this.PieceStorage != null && this.GetType() == typeof(Plant))
