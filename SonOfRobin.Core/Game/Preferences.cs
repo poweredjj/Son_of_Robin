@@ -567,7 +567,7 @@ namespace SonOfRobin
             prefsData["highQualityWater"] = highQualityWater;
             prefsData["plantsSway"] = plantsSway;
 
-            FileReaderWriter.Save(path: SonOfRobinGame.prefsPath, savedObj: prefsData);
+            FileReaderWriter.Save(path: SonOfRobinGame.prefsPath, savedObj: prefsData, compress: false);
 
             MessageLog.AddMessage(msgType: MsgType.Debug, message: "Preferences saved.", color: Color.White);
         }

@@ -304,7 +304,7 @@ namespace SonOfRobin
             };
 
                 string headerPath = Path.Combine(this.saveTempPath, headerName);
-                FileReaderWriter.Save(path: headerPath, savedObj: headerData);
+                FileReaderWriter.Save(path: headerPath, savedObj: headerData, compress: false);
 
                 this.headerSaved = true;
                 this.nextStepName = "hints";
@@ -316,7 +316,7 @@ namespace SonOfRobin
             {
                 string hintsPath = Path.Combine(this.saveTempPath, hintsName);
                 var hintsData = this.world.HintEngine.Serialize();
-                FileReaderWriter.Save(path: hintsPath, savedObj: hintsData);
+                FileReaderWriter.Save(path: hintsPath, savedObj: hintsData, compress: true);
 
                 this.hintsSaved = true;
                 this.nextStepName = "weather";
@@ -328,7 +328,7 @@ namespace SonOfRobin
             {
                 string weatherPath = Path.Combine(this.saveTempPath, weatherName);
                 var weatherData = this.world.weather.Serialize();
-                FileReaderWriter.Save(path: weatherPath, savedObj: weatherData);
+                FileReaderWriter.Save(path: weatherPath, savedObj: weatherData, compress: true);
 
                 this.weatherSaved = true;
                 this.nextStepName = "grid";
@@ -340,7 +340,7 @@ namespace SonOfRobin
             {
                 string gridPath = Path.Combine(this.saveTempPath, gridName);
                 var gridData = this.world.Grid.Serialize();
-                FileReaderWriter.Save(path: gridPath, savedObj: gridData);
+                FileReaderWriter.Save(path: gridPath, savedObj: gridData, compress: true);
 
                 this.gridSaved = true;
                 this.nextStepName = "pieces 1";
@@ -375,7 +375,7 @@ namespace SonOfRobin
                         if (piece.exists) pieceDataPackage.Add(piece.Serialize()); // ...so "exists" must be checked afterwards
                     }
 
-                    FileReaderWriter.Save(path: this.GetCurrentPiecesPath(this.currentPiecePackageNo + packageIndex), savedObj: pieceDataPackage);
+                    FileReaderWriter.Save(path: this.GetCurrentPiecesPath(this.currentPiecePackageNo + packageIndex), savedObj: pieceDataPackage, compress: true);
                 });
 
                 this.currentPiecePackageNo += packagesToProcess.Count;
@@ -394,7 +394,7 @@ namespace SonOfRobin
                 { trackingData.Add(tracking.Serialize()); }
 
                 string trackingPath = Path.Combine(this.saveTempPath, trackingName);
-                FileReaderWriter.Save(path: trackingPath, savedObj: trackingData);
+                FileReaderWriter.Save(path: trackingPath, savedObj: trackingData, compress: true);
 
                 this.trackingSaved = true;
                 this.nextStepName = "events";
@@ -411,7 +411,7 @@ namespace SonOfRobin
                     { eventData.Add(plannedEvent.Serialize()); }
                 }
                 string eventPath = Path.Combine(this.saveTempPath, eventsName);
-                FileReaderWriter.Save(path: eventPath, savedObj: eventData);
+                FileReaderWriter.Save(path: eventPath, savedObj: eventData, compress: true);
 
                 this.eventsSaved = true;
                 this.nextStepName = "replacing save slot data";
@@ -461,7 +461,7 @@ namespace SonOfRobin
             {
                 if (!Directory.Exists(this.savePath))
                 {
-                    new TextWindow(text: $"Save slot {saveSlotName} is empty.", textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false, closingTask: this.TextWindowTask);
+                    new TextWindow(text: $"Directori for save slot {saveSlotName} does not exist.", textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false, closingTask: this.TextWindowTask);
                     this.ErrorOccured = true;
                 }
                 this.directoryChecked = true;
@@ -540,7 +540,8 @@ namespace SonOfRobin
             if (this.trackingData == null)
             {
                 string trackingPath = Path.Combine(this.savePath, trackingName);
-                if (!File.Exists(trackingPath))
+
+                if (!FileReaderWriter.PathExists(trackingPath))
                 {
                     new TextWindow(text: "Error while reading tracking data.", textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false, closingTask: this.TextWindowTask);
                     this.ErrorOccured = true;
@@ -554,7 +555,7 @@ namespace SonOfRobin
             if (this.eventsData == null)
             {
                 string eventPath = Path.Combine(this.savePath, eventsName);
-                if (!File.Exists(eventPath))
+                if (!FileReaderWriter.PathExists(eventPath))
                 {
                     new TextWindow(text: "Error while reading events data.", textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false, closingTask: this.TextWindowTask);
                     this.ErrorOccured = true;
@@ -568,7 +569,7 @@ namespace SonOfRobin
             // loading pieces
             if (!this.allPiecesProcessed)
             {
-                if (this.currentPiecePackageNo == 0 && !File.Exists(this.GetCurrentPiecesPath(this.currentPiecePackageNo))) // first check - this save file should exist
+                if (this.currentPiecePackageNo == 0 && !FileReaderWriter.PathExists(this.GetCurrentPiecesPath(this.currentPiecePackageNo))) // first check - this save file should exist
                 {
                     new TextWindow(text: "Error while reading pieces data.", textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false, closingTask: this.TextWindowTask);
                     this.ErrorOccured = true;
@@ -580,7 +581,7 @@ namespace SonOfRobin
                     int packageToLoad = this.currentPiecePackageNo + threadNo;
 
                     string currentPiecesPath = this.GetCurrentPiecesPath(this.currentPiecePackageNo + threadNo);
-                    if (File.Exists(currentPiecesPath))
+                    if (FileReaderWriter.PathExists(currentPiecesPath))
                     {
                         var packageData = (List<Object>)FileReaderWriter.Load(path: currentPiecesPath);
                         foreach (var item in packageData)

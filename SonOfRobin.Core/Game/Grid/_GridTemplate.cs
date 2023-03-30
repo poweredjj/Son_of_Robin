@@ -97,7 +97,7 @@ namespace SonOfRobin
 
         private void SaveHeader()
         {
-            FileReaderWriter.Save(path: this.headerPath, savedObj: this.Serialize());
+            FileReaderWriter.Save(path: this.headerPath, savedObj: this.Serialize(), compress: false);
         }
 
         private string CheckCreateFolder()
