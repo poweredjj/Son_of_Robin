@@ -7,7 +7,7 @@ namespace SonOfRobin
 {
     public class GridTemplate
     {
-        private const float currentVersion = 1.25f;
+        private const float currentVersion = 1.26f;
         private const string headerName = "_template_header.json";
         public const int demoWorldSeed = 777777;
 
