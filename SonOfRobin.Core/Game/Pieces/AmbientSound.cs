@@ -14,12 +14,13 @@ namespace SonOfRobin
         private readonly int checkDelay;
         private readonly List<IslandClock.PartOfDay> partOfDayList;
         private readonly bool generatesWind;
+        private readonly bool playOnlyWhenIsSunny;
 
         private int currentDelay;
         private int waitUntilFrame;
 
         public AmbientSound(World world, string id, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, Sound sound, int playDelay,
-           int destructionDelay = 0, bool visible = false, AllowedDensity allowedDensity = null, int playDelayMaxVariation = 0, List<IslandClock.PartOfDay> partOfDayList = null, bool generatesWind = false) :
+           int destructionDelay = 0, bool visible = false, AllowedDensity allowedDensity = null, int playDelayMaxVariation = 0, List<IslandClock.PartOfDay> partOfDayList = null, bool generatesWind = false, bool playOnlyWhenIsSunny = false) :
 
             base(world: world, id: id, animPackage: AnimData.PkgName.MusicNoteBig, animSize: 0, animName: "default", blocksMovement: false, minDistance: 0, maxDistance: 100, ignoresCollisions: false, name: name, destructionDelay: destructionDelay, allowedTerrain: allowedTerrain, floatsOnWater: true, maxMassBySize: null, generation: 0, canBePickedUp: false, serialize: false, readableName: readableName, description: description, category: Category.Indestructible, visible: visible, activeState: State.PlayAmbientSound, allowedDensity: allowedDensity)
         {
@@ -29,6 +30,7 @@ namespace SonOfRobin
             this.playDelayMaxVariation = playDelayMaxVariation;
             this.partOfDayList = partOfDayList;
             this.generatesWind = generatesWind;
+            this.playOnlyWhenIsSunny = playOnlyWhenIsSunny;
 
             this.waitUntilFrame = 0;
 
@@ -36,8 +38,14 @@ namespace SonOfRobin
             if (this.sprite.Visible) this.sprite.opacity = visMinOpacity;
         }
 
-        private bool CanPlayAtThisPartOfDay
-        { get { return this.partOfDayList == null ? true : this.partOfDayList.Contains(this.world.islandClock.CurrentPartOfDay); } }
+        private bool CanBePlayedNow
+        {
+            get
+            {
+                if (this.playOnlyWhenIsSunny && this.world.weather.SunVisibility < 0.85f) return false;
+                return this.partOfDayList == null ? true : this.partOfDayList.Contains(this.world.islandClock.CurrentPartOfDay);
+            }
+        }
 
         public override Dictionary<string, Object> Serialize()
         {
@@ -72,7 +80,7 @@ namespace SonOfRobin
 
             if (this.soundPack.IsPlaying(PieceSoundPack.Action.Ambient))
             {
-                if (isLooped && (!isInCameraRect || !this.CanPlayAtThisPartOfDay))
+                if (isLooped && (!isInCameraRect || !this.CanBePlayedNow))
                 {
                     this.soundPack.Stop(PieceSoundPack.Action.Ambient);
                     if (Preferences.debugShowSounds) this.sprite.opacity = visMinOpacity;
@@ -83,7 +91,7 @@ namespace SonOfRobin
 
             if (!isInCameraRect) return;
 
-            if (this.world.CurrentUpdate < this.waitUntilFrame || !this.CanPlayAtThisPartOfDay) return;
+            if (this.world.CurrentUpdate < this.waitUntilFrame || !this.CanBePlayedNow) return;
 
             if (this.playDelay > 0 || this.playDelayMaxVariation > 0)
             {
