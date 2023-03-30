@@ -352,7 +352,9 @@ namespace SonOfRobin
 
                 case Stage.ProcessTextures:
 
-                    int texturesCount = Directory.GetFiles(this.gridTemplate.templatePath).Where(file => file.EndsWith(".png")).ToList().Count;
+                    var testFiles = Directory.GetFiles(this.gridTemplate.templatePath);
+
+                    int texturesCount = Directory.GetFiles(this.gridTemplate.templatePath).Where(file => file.Contains("background_") && file.EndsWith(".png")).ToList().Count;
                     bool allTexturesFound = texturesCount == this.allCells.Count;
 
                     cellProcessingQueue = new List<Cell> { };
