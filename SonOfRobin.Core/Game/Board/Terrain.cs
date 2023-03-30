@@ -71,8 +71,8 @@ namespace SonOfRobin
 
             this.templatePath = Path.Combine(templatePath, $"terrain_{Convert.ToString(name).ToLower()}.json");
             this.terrainPngPath = Path.Combine(templatePath, $"terrain_{Convert.ToString(name).ToLower()}.png");
-            this.minValPngPath = Path.Combine(templatePath, $"terrain_val_{Convert.ToString(name).ToLower()}_min.png");
-            this.maxValPngPath = Path.Combine(templatePath, $"terrain_val_{Convert.ToString(name).ToLower()}_max.png");
+            this.minValPngPath = Path.Combine(templatePath, $"terrain__val_{Convert.ToString(name).ToLower()}_min.png");
+            this.maxValPngPath = Path.Combine(templatePath, $"terrain__val_{Convert.ToString(name).ToLower()}_max.png");
         }
 
         public void TryToLoadSavedTerrain()

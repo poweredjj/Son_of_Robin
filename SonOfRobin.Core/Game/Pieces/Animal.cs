@@ -410,8 +410,12 @@ namespace SonOfRobin
             if (this.visualAid == null || this.visualAid.name != PieceTemplate.Name.Zzz)
             {
                 if (this.visualAid != null) this.visualAid.Destroy();
-                this.visualAid = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: this.sprite.position, templateName: PieceTemplate.Name.Zzz);
-                new Tracking(world: world, targetSprite: this.sprite, followingSprite: this.visualAid.sprite);
+
+                if (this.sprite.IsInCameraRect)
+                {
+                    this.visualAid = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: this.sprite.position, templateName: PieceTemplate.Name.Zzz);
+                    new Tracking(world: world, targetSprite: this.sprite, followingSprite: this.visualAid.sprite);
+                }
             }
 
             this.target = null;
