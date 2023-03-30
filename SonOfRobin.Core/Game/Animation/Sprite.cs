@@ -62,7 +62,7 @@ namespace SonOfRobin
         public Cell currentCell; // current cell, that is containing the sprite
         public bool IsOnBoard { get; private set; }
 
-        public Sprite(World world, string id, BoardPiece boardPiece, AnimData.PkgName animPackage, byte animSize, string animName, bool ignoresCollisions, AllowedTerrain allowedTerrain, bool blocksMovement = true, bool visible = true, bool floatsOnWater = false, bool fadeInAnim = true, AllowedDensity allowedDensity = null, LightEngine lightEngine = null, int minDistance = 0, int maxDistance = 100, bool blocksPlantGrowth = false, bool isAffectedByWind = true)
+        public Sprite(World world, string id, BoardPiece boardPiece, AnimData.PkgName animPackage, byte animSize, string animName, bool ignoresCollisions, AllowedTerrain allowedTerrain, bool blocksMovement = true, bool visible = true, bool floatsOnWater = false, AllowedDensity allowedDensity = null, LightEngine lightEngine = null, int minDistance = 0, int maxDistance = 100, bool blocksPlantGrowth = false, bool isAffectedByWind = true)
         {
             this.id = id; // duplicate from BoardPiece class
             this.boardPiece = boardPiece;
@@ -93,12 +93,7 @@ namespace SonOfRobin
             this.hasBeenDiscovered = false;
             this.currentCell = null;
             this.IsOnBoard = false;
-            if (fadeInAnim)
-            {
-                this.opacity = 0f;
-                new OpacityFade(sprite: this, destOpacity: 1f);
-            }
-            else this.opacity = 1f;
+            this.opacity = 1f;
 
             this.AssignFrame(checkForCollision: false);
             this.gridGroups = this.GetGridGroups();
@@ -236,6 +231,12 @@ namespace SonOfRobin
             this.world.Grid.UpdateLocation(this);
         }
 
+        public void AddFadeInAnim()
+        {
+            this.opacity = 0f;
+            new Scheduler.Task(taskName: Scheduler.TaskName.AddFadeInAnim, delay: 1, executeHelper: this);
+        }
+
         public void Serialize(Dictionary<string, Object> pieceData)
         {
             pieceData["sprite_frame_id"] = this.frame.id;
@@ -248,7 +249,6 @@ namespace SonOfRobin
             pieceData["sprite_currentFrameTimeLeft"] = this.currentFrameTimeLeft;
             pieceData["sprite_rotation"] = this.rotation;
             pieceData["sprite_opacity"] = this.opacity;
-            pieceData["sprite_opacityFade"] = this.opacityFade == null ? null : this.opacityFade.Serialize();
             pieceData["sprite_orientation"] = this.orientation;
             pieceData["sprite_gridGroups"] = this.gridGroups;
             pieceData["sprite_hasBeenDiscovered"] = this.hasBeenDiscovered;
@@ -263,7 +263,6 @@ namespace SonOfRobin
             this.orientation = (Orientation)(Int64)pieceData["sprite_orientation"];
             this.rotation = (float)(double)pieceData["sprite_rotation"];
             this.opacity = (float)(double)pieceData["sprite_opacity"];
-            this.opacityFade = OpacityFade.Deserialize(fadeData: pieceData["sprite_opacityFade"], sprite: this);
             this.animPackage = (AnimData.PkgName)(Int64)pieceData["sprite_animPackage"];
             this.animSize = (byte)(Int64)pieceData["sprite_animSize"];
             this.animName = (string)pieceData["sprite_animName"];

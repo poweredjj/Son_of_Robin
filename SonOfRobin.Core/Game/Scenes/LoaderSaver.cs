@@ -371,7 +371,8 @@ namespace SonOfRobin
                     var pieceDataPackage = new List<object> { };
                     foreach (BoardPiece piece in package)
                     {
-                        pieceDataPackage.Add(piece.Serialize());
+                        if (piece.sprite.opacityFade != null) piece.sprite.opacityFade.Finish(); // Finish() might destroy the piece...
+                        if (piece.exists) pieceDataPackage.Add(piece.Serialize()); // ...so "exists" must be checked afterwards
                     }
 
                     FileReaderWriter.Save(path: this.GetCurrentPiecesPath(this.currentPiecePackageNo + packageIndex), savedObj: pieceDataPackage);

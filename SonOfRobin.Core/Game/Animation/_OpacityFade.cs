@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace SonOfRobin
+﻿namespace SonOfRobin
 {
     public class OpacityFade
     {
         public enum Mode
         { Normal, CameraTargetObstruct, CameraTargetObstructRevert }
 
-        public const int defaultDuration = 30;
+        public const int defaultDuration = 30
 
         private readonly Sprite sprite;
         private readonly int duration;
@@ -20,29 +17,12 @@ namespace SonOfRobin
 
         public OpacityFade(Sprite sprite, float destOpacity, int duration = -1, bool destroyPiece = false, Mode mode = Mode.Normal)
         {
-            // normal use
-
             this.sprite = sprite;
             this.duration = duration;
             if (this.duration == -1) this.duration = defaultDuration;
             this.destOpacity = destOpacity;
             this.currentFrame = 0;
             this.fadePerFrame = (destOpacity - this.sprite.opacity) / (float)this.duration;
-            this.mode = mode;
-            this.destroyPiece = destroyPiece;
-
-            this.sprite.opacityFade = this;
-        }
-
-        public OpacityFade(Sprite sprite, int duration, float destOpacity, float fadePerFrame, int currentFrame, Mode mode, bool destroyPiece)
-        {
-            // deserialization
-
-            this.sprite = sprite;
-            this.duration = duration;
-            this.destOpacity = destOpacity;
-            this.currentFrame = currentFrame;
-            this.fadePerFrame = fadePerFrame;
             this.mode = mode;
             this.destroyPiece = destroyPiece;
 
@@ -67,44 +47,19 @@ namespace SonOfRobin
             else
             {
                 this.sprite.opacity += this.fadePerFrame;
+
                 if (this.currentFrame > this.duration)
                 {
-                    this.sprite.opacity = this.destOpacity;
-                    this.sprite.opacityFade = null;
-                    if (this.destroyPiece) this.sprite.boardPiece.Destroy();
+                    this.Finish();
                 }
             }
         }
 
-        public Dictionary<string, Object> Serialize()
+        public void Finish()
         {
-            Dictionary<string, Object> opacityDict = new Dictionary<string, object>
-            {
-                { "duration", this.duration },
-                { "destOpacity", this.destOpacity },
-                { "fadePerFrame", this.fadePerFrame },
-                { "currentFrame", this.currentFrame },
-                { "mode", this.mode },
-                { "destroyPiece", this.destroyPiece },
-            };
-
-            return opacityDict;
-        }
-
-        public static OpacityFade Deserialize(Object fadeData, Sprite sprite)
-        {
-            if (fadeData == null) return null;
-
-            var fadeDict = (Dictionary<string, Object>)fadeData;
-
-            int duration = (int)(Int64)fadeDict["duration"];
-            float destOpacity = (float)(double)fadeDict["destOpacity"];
-            float fadePerFrame = (float)(double)fadeDict["fadePerFrame"];
-            int currentFrame = (int)(Int64)fadeDict["currentFrame"];
-            Mode mode = (Mode)(Int64)fadeDict["mode"];
-            bool destroyPiece = (bool)fadeDict["destroyPiece"];
-
-            return new OpacityFade(sprite: sprite, duration: duration, destroyPiece: destroyPiece, mode: mode, currentFrame: currentFrame, fadePerFrame: fadePerFrame, destOpacity: destOpacity);
+            this.sprite.opacity = this.destOpacity;
+            this.sprite.opacityFade = null;
+            if (this.destroyPiece) this.sprite.boardPiece.Destroy();
         }
     }
 }
