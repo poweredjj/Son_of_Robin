@@ -1,9 +1,12 @@
-﻿using BigGustave;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats.Png;
+using SixLabors.ImageSharp.PixelFormats;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Color = Microsoft.Xna.Framework.Color;
+using Point = Microsoft.Xna.Framework.Point;
 
 namespace SonOfRobin
 {
@@ -192,7 +195,7 @@ namespace SonOfRobin
 
             Color[,] upscaledColorGrid = getColorGrid ? new Color[targetWidth, targetHeight] : new Color[1, 1];
 
-            var builder = PngBuilder.Create(width: targetWidth, height: targetHeight, hasAlphaChannel: true);
+            var image = new Image<Rgba32>(targetWidth, targetHeight);
 
             double multiplier = (float)resDivider / (float)BoardTextureUpscaler3x.resizeFactor;
 
@@ -205,22 +208,20 @@ namespace SonOfRobin
                         y: this.cell.yMin + (int)((float)y * multiplier));
 
                     if (getColorGrid) upscaledColorGrid[x, y] = pixel;
-                    if (saveAsPNG) builder.SetPixel(pixel: new Pixel(r: pixel.R, g: pixel.G, b: pixel.B, a: pixel.A, isGrayscale: false), x: x, y: y);
+                    if (saveAsPNG) image[x, y] = new Rgba32(pixel.R, pixel.G, pixel.B, pixel.A);
                 }
             }
 
             // saving PngBuilder to file
             if (saveAsPNG)
             {
-                using (var memoryStream = new MemoryStream())
+                using (var fileStream = new FileStream(this.templatePath, FileMode.Create))
                 {
-                    builder.Save(memoryStream);
-
                     try
                     {
-                        FileReaderWriter.SaveMemoryStream(memoryStream: memoryStream, this.templatePath);
+                        image.Save(fileStream, new PngEncoder());
                     }
-                    catch (IOException) { } // write error 
+                    catch (IOException) { } // write error
                 }
             }
 

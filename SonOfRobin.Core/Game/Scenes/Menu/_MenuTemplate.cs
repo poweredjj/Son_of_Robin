@@ -64,7 +64,7 @@ namespace SonOfRobin
                         var aboutTaskChain = new List<object>();
 
                         aboutTaskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ShowTextWindow, turnOffInputUntilExecution: true, delay: 0, executeHelper: new Dictionary<string, Object> {
-                            { "text", $"Son of Robin {SonOfRobinGame.version.ToString().Replace(",", ".")}\nLast updated: {SonOfRobinGame.lastChanged:yyyy-MM-dd.}\n\nThis is a very early alpha version of the game.\nCode: Marcin Smidowicz.\nFastNoiseLite: Jordan Peck.\nSounds: | freesound.org.\nController icons: | Nicolae (Xelu) Berbece.\nStudies.Joystick: Luiz Ossinho.\nPNG library 'Big Gustave': Eliot Jones.\nVarious free graphics assets used." },
+                            { "text", $"Son of Robin {SonOfRobinGame.version.ToString().Replace(",", ".")}\nLast updated: {SonOfRobinGame.lastChanged:yyyy-MM-dd.}\n\nThis is a very early alpha version of the game.\nCode: Marcin Smidowicz.\nFastNoiseLite: Jordan Peck.\nSounds: | freesound.org.\nController icons: | Nicolae (Xelu) Berbece.\nStudies.Joystick: Luiz Ossinho.\nImageSharp library: Six Labors.\nVarious free graphics assets used." },
                             { "imageList", new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.MusicNote), ButtonScheme.dpad } },
                             { "bgColor", new List<Byte> { 63, 167, 212 } }
                             }, storeForLaterUse: true));

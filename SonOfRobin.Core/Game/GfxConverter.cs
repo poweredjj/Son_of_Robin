@@ -1,10 +1,14 @@
-﻿using BigGustave;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats.Png;
+using SixLabors.ImageSharp.PixelFormats;
 using System;
 using System.Collections;
 using System.IO;
 using System.Threading.Tasks;
+using Color = Microsoft.Xna.Framework.Color;
+using Rectangle = Microsoft.Xna.Framework.Rectangle;
+
 
 namespace SonOfRobin
 {
@@ -43,72 +47,50 @@ namespace SonOfRobin
             int width = array2D.GetLength(0);
             int height = array2D.GetLength(1);
 
-            // BigGustave PngBuilder cannot write odd width properly
-            bool widthOdd = width % 2 != 0;
-            int correctedWidth = widthOdd ? width + 1 : width;
-
-            PngBuilder builder = PngBuilder.Create(width: correctedWidth, height: height, hasAlphaChannel: false);
-
-            for (int y = 0; y < height; y++)
-            {
-                for (int x = 0; x < width; x++)
-                {
-                    byte arrayVal = array2D[x, y];
-                    builder.SetPixel(arrayVal, arrayVal, arrayVal, x, y);
-                }
-            }
-
-            if (widthOdd) // adding red line along "extra" edge, that it can be detected when opening
+            using (var image = new Image<L8>(width, height))
             {
                 for (int y = 0; y < height; y++)
                 {
-                    builder.SetPixel(255, 0, 0, correctedWidth - 1, y);
+                    for (int x = 0; x < width; x++)
+                    {
+                        byte arrayVal = array2D[x, y];
+                        image[x, y] = new L8(arrayVal);
+                    }
                 }
-            }
 
-            using (var memoryStream = new MemoryStream())
-            {
-                builder.Save(memoryStream);
-                FileReaderWriter.SaveMemoryStream(memoryStream: memoryStream, path: path);
+                using (var fileStream = new FileStream(path, FileMode.Create))
+                {
+                    image.Save(fileStream, new PngEncoder());
+                }
             }
         }
 
         public static byte[,] LoadPNGAs2DByteArray(string path)
         {
-            try
+            Texture2D texture = LoadTextureFromPNG(path);
+
+            if (texture == null) return null;
+
+            int width = texture.Width;
+            int height = texture.Height;
+
+            var colorArray1D = new Color[width * height];
+            texture.GetData(colorArray1D);
+
+            Byte[,] array2D = new byte[width, height];
+
+            for (int y = 0; y < height; y++)
             {
-                using (var stream = File.OpenRead(path))
+                int yFactor = y * width;
+
+                for (int x = 0; x < width; x++)
                 {
-                    Png image = Png.Open(stream);
-
-                    int width = image.Width;
-                    int height = image.Height;
-
-                    Pixel topRightEdgePixel = image.GetPixel(width - 1, 0);
-                    Pixel bottomRightEdgePixel = image.GetPixel(width - 1, height - 1);
-                    if (topRightEdgePixel.R == 255 && topRightEdgePixel.G == 0 && topRightEdgePixel.B == 0 &&
-                        bottomRightEdgePixel.R == 255 && bottomRightEdgePixel.G == 0 && bottomRightEdgePixel.B == 0)
-                    {
-                        // detecting and correcting red edge marker (last column, that needs to be ignored)
-                        width--;
-                    }
-
-                    Byte[,] array2D = new byte[width, height];
-
-                    for (int y = 0; y < height; y++)
-                    {
-                        for (int x = 0; x < width; x++)
-                        {
-                            Pixel pixel = image.GetPixel(x, y);
-                            array2D[x, y] = pixel.R;
-                        }
-                    }
-
-                    return array2D;
+                    Color pixel = colorArray1D[yFactor + x];
+                    array2D[x, y] = pixel.R;
                 }
             }
-            catch (FileNotFoundException) { return null; }
-            catch (ArgumentOutOfRangeException) { return null; } // file corrupted
+
+            return array2D;
         }
 
         public static Texture2D CropTexture(Texture2D baseTexture, Rectangle cropRect)

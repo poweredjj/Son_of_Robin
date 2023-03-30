@@ -115,9 +115,6 @@ namespace SonOfRobin
             this.weather = new Weather(world: this, islandClock: this.islandClock);
             this.waterSurfaceManager = new WaterSurfaceManager(world: this);
             this.swayManager = new SwayManager(this);
-
-            if (width % 2 != 0) throw new ArgumentOutOfRangeException($"Width must be even - {width}.");
-            if (height % 2 != 0) throw new ArgumentOutOfRangeException($"Height must be even - {height}.");
             this.width = width;
             this.height = height;
             this.viewParams.Width = width; // it does not need to be updated, because world size is constant
