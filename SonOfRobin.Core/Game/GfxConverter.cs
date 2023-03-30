@@ -1,36 +1,96 @@
-﻿using BigGustave;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats.Png;
+using SixLabors.ImageSharp.PixelFormats;
 using System;
+using System.Collections;
 using System.IO;
 using System.Threading.Tasks;
+using Color = Microsoft.Xna.Framework.Color;
+using Rectangle = Microsoft.Xna.Framework.Rectangle;
+
 
 namespace SonOfRobin
 {
     public class GfxConverter
     {
-        public static void SaveColorArrayAsPNG(int width, int height, Color[,] colorArray, string pngPath, bool hasAlphaChannel = true)
+        public static BitArray LoadPNGAsBitArray(string path)
         {
-            // TODO test if it works correctly
+            Texture2D texture = LoadTextureFromPNG(path);
 
-            var builder = PngBuilder.Create(width: width, height: height, hasAlphaChannel: hasAlphaChannel);
+            if (texture == null) return null;
 
-            Color pixel;
-            for (int x = 0; x < width; x++)
+            int width = texture.Width;
+            int height = texture.Height;
+
+            BitArray bitArray = new BitArray(width * height);
+
+            var colorArray1D = new Color[width * height];
+            texture.GetData(colorArray1D);
+
+            for (int y = 0; y < height; y++)
             {
-                for (int y = 0; y < height; y++)
-                {
-                    pixel = colorArray[x, y];
+                int yFactor = y * width;
 
-                    builder.SetPixel(pixel.R, pixel.G, pixel.B, x, y);
+                for (int x = 0; x < width; x++)
+                {
+                    Color pixel = colorArray1D[yFactor + x];
+                    bitArray[yFactor + x] = pixel == Color.Black;
                 }
             }
 
-            using (var memoryStream = new MemoryStream())
+            return bitArray;
+        }
+
+        public static void Save2DByteArrayToPNG(Byte[,] array2D, string path)
+        {
+            int width = array2D.GetLength(0);
+            int height = array2D.GetLength(1);
+
+            using (var image = new Image<L8>(width, height))
             {
-                builder.Save(memoryStream);
-                FileReaderWriter.SaveMemoryStream(memoryStream: memoryStream, path: pngPath);
+                for (int y = 0; y < height; y++)
+                {
+                    for (int x = 0; x < width; x++)
+                    {
+                        byte arrayVal = array2D[x, y];
+                        image[x, y] = new L8(arrayVal);
+                    }
+                }
+
+                using (var fileStream = new FileStream(path, FileMode.Create))
+                {
+                    image.Save(fileStream, new PngEncoder());
+                }
             }
+        }
+
+        public static byte[,] LoadPNGAs2DByteArray(string path)
+        {
+            Texture2D texture = LoadTextureFromPNG(path);
+
+            if (texture == null) return null;
+
+            int width = texture.Width;
+            int height = texture.Height;
+
+            var colorArray1D = new Color[width * height];
+            texture.GetData(colorArray1D);
+
+            Byte[,] array2D = new byte[width, height];
+
+            for (int y = 0; y < height; y++)
+            {
+                int yFactor = y * width;
+
+                for (int x = 0; x < width; x++)
+                {
+                    Color pixel = colorArray1D[yFactor + x];
+                    array2D[x, y] = pixel.R;
+                }
+            }
+
+            return array2D;
         }
 
         public static Texture2D CropTexture(Texture2D baseTexture, Rectangle cropRect)
@@ -105,21 +165,27 @@ namespace SonOfRobin
             { }
         }
 
-        public static Texture2D LoadTextureFromPNG(string filename)
+        public static Texture2D LoadTextureFromPNG(string path)
         {
             try
             {
-                FileStream fileStream = new FileStream(filename, FileMode.Open);
+                FileStream fileStream = new FileStream(path, FileMode.Open);
                 Texture2D loadedTexture = Texture2D.FromStream(SonOfRobinGame.GfxDev, fileStream);
                 fileStream.Dispose();
                 return loadedTexture;
             }
             catch (FileNotFoundException)
-            { }
+            {
+                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"FileNotFoundException while trying to read {Path.GetFileName(path)}.");
+            }
             catch (IOException) // png file corrupted
-            { }
+            {
+                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"IOException while trying to read {Path.GetFileName(path)}.");
+            }
             catch (InvalidOperationException) // png file corrupted
-            { }
+            {
+                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"InvalidOperationException while trying to read {Path.GetFileName(path)}.");
+            }
 
             return null;
         }
@@ -217,8 +283,11 @@ namespace SonOfRobin
             return array1D;
         }
 
-        public static Color[,] ConvertTextureToColorArray(Texture2D texture, int width, int height)
+        public static Color[,] ConvertTextureToColorArray(Texture2D texture)
         {
+            int width = texture.Width;
+            int height = texture.Height;
+
             var array1D = new Color[width * height];
             texture.GetData(array1D);
             var array2D = ConvertColorArray1DTo2D(array1D: array1D, width: width, height: height);

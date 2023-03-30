@@ -5,11 +5,10 @@ using System.Linq;
 
 namespace SonOfRobin
 {
-    [Serializable]
     public class GridTemplate
     {
-        private const float currentVersion = 1.24f;
-        private const string headerName = "_template_header.dat";
+        private const float currentVersion = 1.25f;
+        private const string headerName = "_template_header.json";
         public const int demoWorldSeed = 777777;
 
         public readonly int seed;
@@ -24,7 +23,7 @@ namespace SonOfRobin
         private readonly string headerPath;
         public DateTime CreatedDate { get; private set; }
 
-        public GridTemplate(int seed, int width, int height, int cellWidth, int cellHeight, int resDivider)
+        public GridTemplate(int seed, int width, int height, int cellWidth, int cellHeight, int resDivider, float version = currentVersion, string templatePath = "")
         {
             this.seed = seed;
             this.width = width;
@@ -32,10 +31,10 @@ namespace SonOfRobin
             this.cellWidth = cellWidth;
             this.cellHeight = cellHeight;
             this.resDivider = resDivider;
-            this.version = currentVersion;
+            this.version = version;
             this.CreatedDate = DateTime.Now;
 
-            this.templatePath = this.CheckCreateFolder();
+            this.templatePath = templatePath == "" ? this.CheckCreateFolder() : templatePath;
             this.headerPath = Path.Combine(this.templatePath, headerName);
 
             this.SaveHeader();
@@ -89,13 +88,16 @@ namespace SonOfRobin
         {
             string checkedHeaderPath = Path.Combine(templatePath, headerName);
 
-            GridTemplate headerData = (GridTemplate)FileReaderWriter.Load(path: checkedHeaderPath);
-            return headerData;
+            var headerData = FileReaderWriter.Load(path: checkedHeaderPath);
+            if (headerData == null) return null;
+
+            GridTemplate gridTemplate = Deserialize(headerData);
+            return gridTemplate;
         }
 
         private void SaveHeader()
         {
-            FileReaderWriter.Save(path: this.headerPath, savedObj: this);
+            FileReaderWriter.Save(path: this.headerPath, savedObj: this.Serialize());
         }
 
         private string CheckCreateFolder()
@@ -127,6 +129,39 @@ namespace SonOfRobin
             }
 
             return templatePath;
+        }
+
+        public Dictionary<string, Object> Serialize()
+        {
+            Dictionary<string, Object> templateDict = new Dictionary<string, object>
+            {
+                { "seed", this.seed },
+                { "width", this.width },
+                { "height", this.height },
+                { "cellWidth", this.cellWidth },
+                { "cellHeight", this.cellHeight },
+                { "resDivider", this.resDivider },
+                { "version", this.version },
+                { "templatePath", this.templatePath },
+            };
+
+            return templateDict;
+        }
+
+        public static GridTemplate Deserialize(Object templateData)
+        {
+            var templateDict = (Dictionary<string, Object>)templateData;
+
+            int seed = (int)(Int64)templateDict["seed"];
+            int width = (int)(Int64)templateDict["width"];
+            int height = (int)(Int64)templateDict["height"];
+            int cellWidth = (int)(Int64)templateDict["cellWidth"];
+            int cellHeight = (int)(Int64)templateDict["cellHeight"];
+            int resDivider = (int)(Int64)templateDict["resDivider"];
+            float version = (float)(double)templateDict["version"];
+            string templatePath = (string)templateDict["templatePath"];
+
+            return new GridTemplate(seed: seed, width: width, height: height, cellWidth: cellWidth, cellHeight: cellHeight, resDivider: resDivider, version: version, templatePath: templatePath);
         }
     }
 }

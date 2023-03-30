@@ -36,7 +36,7 @@ namespace SonOfRobin
         public Player(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, State activeState, bool female, int strength, float speed, float maxStamina, float maxHitPoints, float maxFatigue, int craftLevel, float cookingSkill, byte invWidth, byte invHeight, byte toolbarWidth, byte toolbarHeight,
             byte animSize = 0, string animName = "default", bool blocksMovement = true, bool ignoresCollisions = false, int destructionDelay = 0, bool floatsOnWater = false, int generation = 0, Yield yield = null, int minDistance = 0, int maxDistance = 100, LightEngine lightEngine = null, PieceSoundPack soundPack = null) :
 
-            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, speed: speed, blocksMovement: blocksMovement, name: name, destructionDelay: destructionDelay, allowedTerrain: allowedTerrain, floatsOnWater: floatsOnWater, mass: 50000, maxMassBySize: null, generation: generation, canBePickedUp: false, maxHitPoints: maxHitPoints, fadeInAnim: false, readableName: readableName, description: description, yield: yield, strength: strength, category: Category.Flesh, lightEngine: lightEngine, ignoresCollisions: ignoresCollisions, minDistance: minDistance, maxDistance: maxDistance, activeState: activeState, soundPack: soundPack, female: female, isAffectedByWind: false)
+            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, speed: speed, blocksMovement: blocksMovement, name: name, destructionDelay: destructionDelay, allowedTerrain: allowedTerrain, floatsOnWater: floatsOnWater, mass: 50000, maxMassBySize: null, generation: generation, canBePickedUp: false, maxHitPoints: maxHitPoints, readableName: readableName, description: description, yield: yield, strength: strength, category: Category.Flesh, lightEngine: lightEngine, ignoresCollisions: ignoresCollisions, minDistance: minDistance, maxDistance: maxDistance, activeState: activeState, soundPack: soundPack, female: female, isAffectedByWind: false)
         {
             this.maxFedLevel = 40000;
             this.fedLevel = maxFedLevel;
@@ -418,14 +418,14 @@ namespace SonOfRobin
         public override void Deserialize(Dictionary<string, Object> pieceData)
         {
             base.Deserialize(pieceData);
-            this.fedLevel = (int)pieceData["player_fedLevel"];
-            this.maxFedLevel = (int)pieceData["player_maxFedLevel"];
-            this.stamina = (float)pieceData["player_stamina"];
-            this.maxStamina = (float)pieceData["player_maxStamina"];
-            this.fatigue = (float)pieceData["player_fatigue"];
-            this.maxFatigue = (float)pieceData["player_maxFatigue"];
-            this.cookingSkill = (float)pieceData["player_cookingSkill"];
-            this.craftLevel = (int)pieceData["player_craftLevel"];
+            this.fedLevel = (int)(Int64)pieceData["player_fedLevel"];
+            this.maxFedLevel = (int)(Int64)pieceData["player_maxFedLevel"];
+            this.stamina = (float)(double)pieceData["player_stamina"];
+            this.maxStamina = (float)(double)pieceData["player_maxStamina"];
+            this.fatigue = (float)(double)pieceData["player_fatigue"];
+            this.maxFatigue = (float)(double)pieceData["player_maxFatigue"];
+            this.cookingSkill = (float)(double)pieceData["player_cookingSkill"];
+            this.craftLevel = (int)(Int64)pieceData["player_craftLevel"];
             this.sleepEngine = (SleepEngine)pieceData["player_sleepEngine"];
             this.ToolStorage = PieceStorage.Deserialize(storageData: pieceData["player_toolStorage"], world: this.world, storagePiece: this);
             this.EquipStorage = PieceStorage.Deserialize(storageData: pieceData["player_equipStorage"], world: this.world, storagePiece: this);

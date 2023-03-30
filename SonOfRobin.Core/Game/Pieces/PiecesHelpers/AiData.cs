@@ -77,11 +77,11 @@ namespace SonOfRobin
             var aiDataDict = (Dictionary<string, Object>)aiDataSerialized;
 
             List<int> coordinates = (List<int>)aiDataDict["coordinates"];
-            float positionX = (float)aiDataDict["positionX"];
-            float positionY = (float)aiDataDict["positionY"];
+            float positionX = (float)(double)aiDataDict["positionX"];
+            float positionY = (float)(double)aiDataDict["positionY"];
             Vector2 position = new Vector2(positionX, positionY);
             bool dontStop = (bool)aiDataDict["dontStop"];
-            short timeLeft = (short)aiDataDict["timeLeft"];
+            short timeLeft = (short)(Int64)aiDataDict["timeLeft"];
 
             AiData aiData = new AiData
             {

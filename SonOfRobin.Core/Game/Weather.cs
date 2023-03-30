@@ -479,16 +479,16 @@ namespace SonOfRobin
 
             this.forecastEnd = (DateTime)weatherData["forecastEnd"];
             this.firstForecastCreated = (bool)weatherData["firstForecastCreated"];
-            this.CloudsPercentage = (float)weatherData["CloudsPercentage"];
-            this.FogPercentage = (float)weatherData["FogPercentage"];
-            this.SunVisibility = (float)weatherData["SunVisibility"];
-            this.WindOriginX = (float)weatherData["WindOriginX"];
-            this.WindOriginY = (float)weatherData["WindOriginY"];
-            this.WindPercentage = (float)weatherData["WindPercentage"];
-            this.RainPercentage = (float)weatherData["RainPercentage"];
+            this.CloudsPercentage = (float)(double)weatherData["CloudsPercentage"];
+            this.FogPercentage = (float)(double)weatherData["FogPercentage"];
+            this.SunVisibility = (float)(double)weatherData["SunVisibility"];
+            this.WindOriginX = (float)(double)weatherData["WindOriginX"];
+            this.WindOriginY = (float)(double)weatherData["WindOriginY"];
+            this.WindPercentage = (float)(double)weatherData["WindPercentage"];
+            this.RainPercentage = (float)(double)weatherData["RainPercentage"];
             this.NextGlobalWindBlow = (DateTime)weatherData["NextGlobalWindBlow"];
             this.NextLocalizedWindBlow = (DateTime)weatherData["NextLocalizedWindBlow"];
-            this.rainCooldownFramesLeft = (int)weatherData["rainCooldownFramesLeft"];
+            this.rainCooldownFramesLeft = (int)(Int64)weatherData["rainCooldownFramesLeft"];
         }
 
         public void AddEvent(WeatherEvent weatherEvent)

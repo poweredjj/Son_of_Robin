@@ -11,7 +11,7 @@ namespace SonOfRobin
     public class Grid
     {
         public enum Stage
-        { LoadTerrain, GenerateTerrain, CheckExtData, SetExtDataSea, SetExtDataBeach, SetExtDataBiomes, SetExtDataBiomesConstrains, SetExtDataFinish, FillAllowedNames, ProcessTextures, LoadTextures, StartGame }
+        { LoadTerrain, GenerateTerrain, CheckExtData, SetExtDataSea, SetExtDataBeach, SetExtDataBiomes, SetExtDataBiomesConstrains, SetExtDataPropertiesGrid, SetExtDataFinish, FillAllowedNames, ProcessTextures, LoadTextures, StartGame }
 
         public static readonly int allStagesCount = ((Stage[])Enum.GetValues(typeof(Stage))).Length;
 
@@ -23,6 +23,7 @@ namespace SonOfRobin
             { Stage.SetExtDataBeach, "setting extended data (beach)" },
             { Stage.SetExtDataBiomes, "setting extended data (biomes)" },
             { Stage.SetExtDataBiomesConstrains, "setting extended data (constrains)" },
+            { Stage.SetExtDataPropertiesGrid, "setting extended data (properties grid)" },
             { Stage.SetExtDataFinish, "saving extended data" },
             { Stage.FillAllowedNames, "filling lists of allowed names" },
             { Stage.ProcessTextures, "processing textures" },
@@ -163,8 +164,8 @@ namespace SonOfRobin
         {
             // this data is included in save file (not in template)
 
-            int cellWidth = (int)gridData["cellWidth"];
-            int cellHeight = (int)gridData["cellHeight"];
+            int cellWidth = (int)(Int64)gridData["cellWidth"];
+            int cellHeight = (int)(Int64)gridData["cellHeight"];
             var cellData = (List<Object>)gridData["cellData"];
 
             Grid grid = new Grid(world: world, cellWidth: cellWidth, cellHeight: cellHeight, resDivider: resDivider);
@@ -255,10 +256,11 @@ namespace SonOfRobin
                         this.terrainByName[Terrain.Name.Biome] = new Terrain(
                             grid: this, name: Terrain.Name.Biome, frequency: 7f, octaves: 3, persistence: 0.7f, lacunarity: 1.4f, gain: 0.3f, addBorder: true);
 
-                        Parallel.ForEach(this.terrainByName.Values, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, terrain =>
+                        foreach (Terrain terrain in this.terrainByName.Values)
                         {
+                            // cannot be read in parallel, because textures are loading with graphicsDevice
                             terrain.TryToLoadSavedTerrain();
-                        });
+                        }
                     }
 
                     this.cellsToProcessOnStart.Clear();
@@ -268,7 +270,7 @@ namespace SonOfRobin
                 case Stage.GenerateTerrain:
 
                     bool processedOneUpdateCycle = false;
-                    int processSegments = 5;
+                    int processSegments = 1 + (int)Math.Log(this.width, 2) - 5;
 
                     foreach (Terrain currentTerrain in this.terrainByName.Values)
                     {
@@ -319,6 +321,13 @@ namespace SonOfRobin
 
                     if (this.extBoardProps.CreationInProgress) this.ExtApplyBiomeConstrains();
                     else this.cellsToProcessOnStart.Clear();
+
+                    break;
+
+                case Stage.SetExtDataPropertiesGrid:
+
+                    if (this.extBoardProps.CreationInProgress) this.extBoardProps.CreateContainsPropertiesGrid();
+                    this.cellsToProcessOnStart.Clear(); // always needs to be invoked
 
                     break;
 

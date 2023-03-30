@@ -19,7 +19,7 @@ namespace SonOfRobin
     public class SonOfRobinGame : Game
     {
         public const float version = 9.7f;
-        public static readonly DateTime lastChanged = new DateTime(2023, 03, 28);
+        public static readonly DateTime lastChanged = new DateTime(2023, 03, 30);
 
         public static readonly int enteringIslandGlobalSteps = 3 + Grid.allStagesCount;
         public static ContentManager ContentMgr { get; private set; }
@@ -67,7 +67,7 @@ namespace SonOfRobin
         public static readonly string gameDataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "SonOfRobin_data");
         public static readonly string worldTemplatesPath = Path.Combine(gameDataPath, "world_templates");
         public static readonly string saveGamesPath = Path.Combine(gameDataPath, "savegames");
-        public static readonly string prefsPath = Path.Combine(gameDataPath, "preferences.bin");
+        public static readonly string prefsPath = Path.Combine(gameDataPath, "preferences.json");
 
         public static bool ThisIsWorkMachine
         { get { return gameDataPath.Contains("msmidowi"); } }
@@ -101,7 +101,7 @@ namespace SonOfRobin
 
         private static void MoveWindowOnWorkMachine(Game game) // method used, to make the code to be commented closer
         {
-            if (ThisIsWorkMachine) game.Window.Position = new Point(-10, 758); // COMMENT THIS LINE on ANDROID
+            if (ThisIsWorkMachine) game.Window.Position = new Point(0, 788); // COMMENT THIS LINE on ANDROID
         }
 
         public static bool WindowsMemoryLow

@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.Xna.Framework;
+using System;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -29,6 +29,9 @@ namespace SonOfRobin
         private int nextUpdateStartingRow;
 
         private readonly string templatePath;
+        private readonly string terrainPngPath;
+        private readonly string minValPngPath;
+        private readonly string maxValPngPath;
 
         private readonly FastNoiseLite noise;
 
@@ -64,15 +67,28 @@ namespace SonOfRobin
             this.gain = gain;
             this.addBorder = addBorder;
 
-            this.templatePath = Path.Combine(this.Grid.gridTemplate.templatePath, $"{Convert.ToString(name).ToLower()}.map");
+            string templatePath = this.Grid.gridTemplate.templatePath;
+
+            this.templatePath = Path.Combine(templatePath, $"terrain_{Convert.ToString(name).ToLower()}.json");
+            this.terrainPngPath = Path.Combine(templatePath, $"terrain_{Convert.ToString(name).ToLower()}.png");
+            this.minValPngPath = Path.Combine(templatePath, $"terrain_val_{Convert.ToString(name).ToLower()}_min.png");
+            this.maxValPngPath = Path.Combine(templatePath, $"terrain_val_{Convert.ToString(name).ToLower()}_max.png");
         }
 
         public void TryToLoadSavedTerrain()
         {
-            Dictionary<string, object> serializedTerrainData = this.LoadTemplate();
+            byte[,] loadedMinVal;
+            byte[,] loadedMaxVal = null;
+            byte[,] loadedMapData = null;
 
-            if (serializedTerrainData == null)
+            loadedMinVal = GfxConverter.LoadPNGAs2DByteArray(this.minValPngPath);
+            if (loadedMinVal != null) loadedMaxVal = GfxConverter.LoadPNGAs2DByteArray(this.maxValPngPath);
+            if (loadedMaxVal != null) loadedMapData = GfxConverter.LoadPNGAs2DByteArray(this.terrainPngPath);
+
+            if (loadedMinVal == null || loadedMaxVal == null || loadedMapData == null)
             {
+                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"terrain {Convert.ToString(name).ToLower()} - creating new", color: Color.Yellow);
+
                 var gradientLines = this.CreateGradientLines();
                 this.gradientLineX = gradientLines.Item1;
                 this.gradientLineY = gradientLines.Item2;
@@ -83,9 +99,11 @@ namespace SonOfRobin
             }
             else
             {
-                this.mapData = (Byte[,])serializedTerrainData["mapData"];
-                this.minValGridCell = (byte[,])serializedTerrainData["minValGridCell"];
-                this.maxValGridCell = (byte[,])serializedTerrainData["maxValGridCell"];
+                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"terrain {Convert.ToString(name).ToLower()} - loaded");
+
+                this.mapData = loadedMapData;
+                this.minValGridCell = loadedMinVal;
+                this.maxValGridCell = loadedMaxVal;
                 this.CreationInProgress = false;
             }
         }
@@ -172,28 +190,11 @@ namespace SonOfRobin
             return this.maxValGridCell[cellNoX, cellNoY];
         }
 
-        private Dictionary<string, object> LoadTemplate()
-        {
-            var loadedData = FileReaderWriter.Load(this.templatePath);
-            if (loadedData == null) return null;
-            else return (Dictionary<string, object>)loadedData;
-        }
-
         public void SaveTemplate()
         {
-            FileReaderWriter.Save(path: this.templatePath, savedObj: this.Serialize());
-        }
-
-        private Dictionary<string, object> Serialize()
-        {
-            var serializedMapData = new Dictionary<string, object>
-            {
-                { "mapData", this.mapData },
-                { "minValGridCell", this.minValGridCell },
-                { "maxValGridCell", this.maxValGridCell },
-            };
-
-            return serializedMapData;
+            GfxConverter.Save2DByteArrayToPNG(array2D: this.mapData, path: this.terrainPngPath);
+            GfxConverter.Save2DByteArrayToPNG(array2D: this.minValGridCell, path: this.minValPngPath);
+            GfxConverter.Save2DByteArrayToPNG(array2D: this.maxValGridCell, path: this.maxValPngPath);
         }
 
         private (double[], double[]) CreateGradientLines()

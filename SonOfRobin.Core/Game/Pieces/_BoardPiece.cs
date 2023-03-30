@@ -94,7 +94,7 @@ namespace SonOfRobin
         public bool isTemporaryDecoration;
 
         public BoardPiece(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, Dictionary<byte, int> maxMassBySize, string readableName, string description, Category category, State activeState,
-            byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, bool blocksPlantGrowth = false, bool visible = true, bool ignoresCollisions = false, int destructionDelay = 0, int maxAge = 0, bool floatsOnWater = false, int generation = 0, int mass = 1, int staysAfterDeath = 800, float maxHitPoints = 1, byte stackSize = 1, Scheduler.TaskName boardTask = Scheduler.TaskName.Empty, Scheduler.TaskName toolbarTask = Scheduler.TaskName.Empty, bool canBePickedUp = false, Yield yield = null, Yield appearDebris = null, bool indestructible = false, bool rotatesWhenDropped = false, bool movesWhenDropped = true, bool fadeInAnim = false, bool serialize = true, List<Buff> buffList = null, AllowedDensity allowedDensity = null, int strength = 0, LightEngine lightEngine = null, int minDistance = 0, int maxDistance = 100, PieceSoundPack soundPack = null, bool female = false, bool isAffectedByWind = true)
+            byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, bool blocksPlantGrowth = false, bool visible = true, bool ignoresCollisions = false, int destructionDelay = 0, int maxAge = 0, bool floatsOnWater = false, int generation = 0, int mass = 1, int staysAfterDeath = 800, float maxHitPoints = 1, byte stackSize = 1, Scheduler.TaskName boardTask = Scheduler.TaskName.Empty, Scheduler.TaskName toolbarTask = Scheduler.TaskName.Empty, bool canBePickedUp = false, Yield yield = null, Yield appearDebris = null, bool indestructible = false, bool rotatesWhenDropped = false, bool movesWhenDropped = true, bool serialize = true, List<Buff> buffList = null, AllowedDensity allowedDensity = null, int strength = 0, LightEngine lightEngine = null, int minDistance = 0, int maxDistance = 100, PieceSoundPack soundPack = null, bool female = false, bool isAffectedByWind = true)
         {
             this.world = world;
             this.name = name;
@@ -102,7 +102,7 @@ namespace SonOfRobin
             this.category = category;
             this.id = id;
 
-            this.sprite = new Sprite(boardPiece: this, id: this.id, world: this.world, animPackage: animPackage, animSize: animSize, animName: animName, blocksMovement: blocksMovement, blocksPlantGrowth: blocksPlantGrowth, visible: visible, ignoresCollisions: ignoresCollisions, allowedTerrain: allowedTerrain, floatsOnWater: floatsOnWater, fadeInAnim: fadeInAnim, allowedDensity: allowedDensity, lightEngine: lightEngine, minDistance: minDistance, maxDistance: maxDistance, isAffectedByWind: isAffectedByWind);
+            this.sprite = new Sprite(boardPiece: this, id: this.id, world: this.world, animPackage: animPackage, animSize: animSize, animName: animName, blocksMovement: blocksMovement, blocksPlantGrowth: blocksPlantGrowth, visible: visible, ignoresCollisions: ignoresCollisions, allowedTerrain: allowedTerrain, floatsOnWater: floatsOnWater, allowedDensity: allowedDensity, lightEngine: lightEngine, minDistance: minDistance, maxDistance: maxDistance, isAffectedByWind: isAffectedByWind);
 
             this.soundPack = soundPack == null ? new PieceSoundPack() : soundPack;
             this.soundPack.Activate(this);
@@ -220,7 +220,7 @@ namespace SonOfRobin
             get { return this.mass; }
             set
             {
-                this.mass = value;
+                this.mass = Math.Max(value, 0f);
                 int previousSpriteSize = this.sprite.animSize;
                 this.SetSpriteSizeByMass();
                 if (previousSpriteSize != this.sprite.animSize && this.PieceStorage != null && this.GetType() == typeof(Plant))
@@ -297,7 +297,6 @@ namespace SonOfRobin
                 { "base_hitPoints", this.hitPoints },
                 { "base_strength", this.strength },
                 { "base_maxHitPoints", this.maxHitPoints },
-                { "base_showStatBarsTillFrame", this.showStatBarsTillFrame },
                 { "base_mass", this.mass },
                 { "base_alive", this.alive },
                 { "base_maxAge", this.maxAge },
@@ -314,37 +313,35 @@ namespace SonOfRobin
                 { "base_buffList", this.buffList },
                 { "base_soundPack", this.soundPack.Serialize() },
                 { "base_canBeHit", this.canBeHit },
+                { "base_sprite", this.sprite.Serialize() }
             };
 
             if (this.PieceStorage != null) pieceData["base_pieceStorage"] = this.PieceStorage.Serialize();
-            this.sprite.Serialize(pieceData);
 
             return pieceData;
         }
 
         public virtual void Deserialize(Dictionary<string, Object> pieceData)
         {
-            this.mass = (float)pieceData["base_mass"];
-            this.hitPoints = (float)pieceData["base_hitPoints"];
-            this.speed = (float)pieceData["base_speed"];
-            this.strength = (int)pieceData["base_strength"];
-            this.maxHitPoints = (float)pieceData["base_maxHitPoints"];
-            this.showStatBarsTillFrame = (int)pieceData["base_showStatBarsTillFrame"];
-            this.bioWear = (float)pieceData["base_bioWear"];
-            this.efficiency = (float)pieceData["base_efficiency"];
-            this.activeState = (State)pieceData["base_activeState"];
-            this.maxAge = (int)pieceData["base_maxAge"];
+            this.mass = (float)(double)pieceData["base_mass"];
+            this.hitPoints = (float)(double)pieceData["base_hitPoints"];
+            this.speed = (float)(double)pieceData["base_speed"];
+            this.strength = (int)(Int64)pieceData["base_strength"];
+            this.maxHitPoints = (float)(double)pieceData["base_maxHitPoints"];
+            this.bioWear = (float)(double)pieceData["base_bioWear"];
+            this.efficiency = (float)(double)pieceData["base_efficiency"];
+            this.activeState = (State)(Int64)pieceData["base_activeState"];
+            this.maxAge = (int)(Int64)pieceData["base_maxAge"];
             this.PieceStorage = PieceStorage.Deserialize(storageData: pieceData["base_pieceStorage"], world: this.world, storagePiece: this);
-            this.boardTask = (Scheduler.TaskName)pieceData["base_boardTask"];
-            this.toolbarTask = (Scheduler.TaskName)pieceData["base_toolbarTask"];
-            this.passiveMovement = new Vector2((float)pieceData["base_passiveMovementX"], (float)pieceData["base_passiveMovementY"]);
-            this.passiveRotation = (int)pieceData["base_passiveRotation"];
+            this.boardTask = (Scheduler.TaskName)(Int64)pieceData["base_boardTask"];
+            this.toolbarTask = (Scheduler.TaskName)(Int64)pieceData["base_toolbarTask"];
+            this.passiveMovement = new Vector2((float)(double)pieceData["base_passiveMovementX"], (float)(double)pieceData["base_passiveMovementY"]);
+            this.passiveRotation = (int)(Int64)pieceData["base_passiveRotation"];
             this.buffEngine = BuffEngine.Deserialize(piece: this, buffEngineData: pieceData["base_buffEngine"]);
             this.buffList = (List<Buff>)pieceData["base_buffList"];
             this.soundPack.Deserialize(pieceData["base_soundPack"]);
             this.canBeHit = (bool)pieceData["base_canBeHit"];
-
-            this.sprite.Deserialize(pieceData);
+            this.sprite.Deserialize(pieceData["base_sprite"]);
 
             if (!(bool)pieceData["base_alive"]) this.Kill();
         }
@@ -758,6 +755,7 @@ namespace SonOfRobin
 
         public virtual void SM_FogMoveRandomly()
         { throw new DivideByZeroException("This method should not be executed."); }
+
         public virtual void SM_RainInitialize()
         { throw new DivideByZeroException("This method should not be executed."); }
 

@@ -115,7 +115,6 @@ namespace SonOfRobin
             this.weather = new Weather(world: this, islandClock: this.islandClock);
             this.waterSurfaceManager = new WaterSurfaceManager(world: this);
             this.swayManager = new SwayManager(this);
-
             this.width = width;
             this.height = height;
             this.viewParams.Width = width; // it does not need to be updated, because world size is constant
@@ -500,12 +499,12 @@ namespace SonOfRobin
             {
                 var headerData = (Dictionary<string, Object>)saveGameDataDict["header"];
 
-                this.CurrentFrame = (int)headerData["currentFrame"];
-                this.CurrentUpdate = (int)headerData["currentUpdate"];
-                this.islandClock.Initialize((int)headerData["clockTimeElapsed"]);
-                this.TimePlayed = (TimeSpan)headerData["TimePlayed"];
+                this.CurrentFrame = (int)(Int64)headerData["currentFrame"];
+                this.CurrentUpdate = (int)(Int64)headerData["currentUpdate"];
+                this.islandClock.Initialize((int)(Int64)headerData["clockTimeElapsed"]);
+                this.TimePlayed = TimeSpan.Parse((string)headerData["TimePlayed"]);
                 this.mapEnabled = (bool)headerData["MapEnabled"];
-                this.maxAnimalsPerName = (int)headerData["maxAnimalsPerName"];
+                this.maxAnimalsPerName = (int)(Int64)headerData["maxAnimalsPerName"];
                 this.doNotCreatePiecesList = (List<PieceTemplate.Name>)headerData["doNotCreatePiecesList"];
                 this.discoveredRecipesForPieces = (List<PieceTemplate.Name>)headerData["discoveredRecipesForPieces"];
                 this.stateMachineTypesManager.Deserialize((Dictionary<string, Object>)headerData["stateMachineTypesManager"]);
@@ -535,7 +534,7 @@ namespace SonOfRobin
                 {
                     // repeated in StorageSlot
 
-                    PieceTemplate.Name templateName = (PieceTemplate.Name)pieceData["base_name"];
+                    PieceTemplate.Name templateName = (PieceTemplate.Name)(Int64)pieceData["base_name"];
 
                     bool female = false;
                     bool randomSex = true;
@@ -546,7 +545,11 @@ namespace SonOfRobin
                         female = (bool)pieceData["base_female"];
                     }
 
-                    var newBoardPiece = PieceTemplate.CreateAndPlaceOnBoard(world: this, position: new Vector2((float)pieceData["sprite_positionX"], (float)pieceData["sprite_positionY"]), templateName: templateName, female: female, randomSex: randomSex, ignoreCollisions: true, id: (string)pieceData["base_id"]);
+                    var spriteData = (Dictionary<string, Object>)pieceData["base_sprite"];
+                    int spritePosX = (int)(Int64)spriteData["posX"];
+                    int spritePosY = (int)(Int64)spriteData["posY"];
+
+                    var newBoardPiece = PieceTemplate.CreateAndPlaceOnBoard(world: this, position: new Vector2(spritePosX, spritePosY), templateName: templateName, female: female, randomSex: randomSex, ignoreCollisions: true, id: (string)pieceData["base_id"]);
                     if (!newBoardPiece.sprite.IsOnBoard) throw new ArgumentException($"{newBoardPiece.name} could not be placed correctly.");
 
                     newBoardPiece.Deserialize(pieceData: pieceData);
@@ -589,6 +592,8 @@ namespace SonOfRobin
             }
 
             // finalizing
+
+            Scheduler.RemoveAllTasksOfName(Scheduler.TaskName.AddFadeInAnim); // to avoid fade in of all pieces visible in camera
 
             this.saveGameData = null;
         }

@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections;
+﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -37,12 +37,14 @@ namespace SonOfRobin
 
         public Grid Grid { get; private set; }
 
-        private readonly Dictionary<Name, BitArray> extDataByProperty;
-        private readonly string templatePath;
+        private readonly string templateFolder;
+        private readonly Dictionary<Name, string> extDataPNGPathByName;
+
         private readonly bool loadedFromTemplate; // to avoid saving template, after being loaded (needed because saving is not done inside constructor)
 
-        private readonly List<Name>[,] containsPropertiesTrueGridCell; // this values are stored in terrain, instead of cell
-        private readonly List<Name>[,] containsPropertiesFalseGridCell; // this values are stored in terrain, instead of cell
+        private readonly Dictionary<Name, BitArrayWrapper> extDataByProperty;
+        private readonly Dictionary<Name, BitArrayWrapper> containsPropertiesTrueGridCell;  // this values are stored in terrain, instead of cell
+        private readonly Dictionary<Name, BitArrayWrapper> containsPropertiesFalseGridCell;  // this values are stored in terrain, instead of cell
 
         public bool CreationInProgress { get; private set; }
 
@@ -51,22 +53,34 @@ namespace SonOfRobin
             this.Grid = grid;
 
             this.CreationInProgress = true;
-            this.templatePath = Path.Combine(this.Grid.gridTemplate.templatePath, $"properties.ext");
+            this.templateFolder = this.Grid.gridTemplate.templatePath;
 
-            var serializedData = this.LoadTemplate();
-            if (serializedData == null)
+            this.extDataPNGPathByName = new Dictionary<Name, string>();
+            this.extDataByProperty = this.MakeArrayCollection();
+            this.containsPropertiesTrueGridCell = new Dictionary<Name, BitArrayWrapper>();
+            this.containsPropertiesFalseGridCell = new Dictionary<Name, BitArrayWrapper>();
+
+            foreach (Name name in allExtPropNames)
             {
-                this.extDataByProperty = this.MakeArrayCollection();
+                this.extDataPNGPathByName[name] = Path.Combine(this.templateFolder, $"ext_bitmap_{name}.png");
+            }
 
-                this.containsPropertiesTrueGridCell = new List<Name>[this.Grid.noOfCellsX, this.Grid.noOfCellsY];
-                this.containsPropertiesFalseGridCell = new List<Name>[this.Grid.noOfCellsX, this.Grid.noOfCellsY];
+            bool loadedCorrectly = this.LoadTemplate();
+            if (!loadedCorrectly)
+            {
+                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"ext - creating new", color: Color.Yellow);
+
+                foreach (Name name in allExtPropNames)
+                {
+                    this.containsPropertiesTrueGridCell[name] = new BitArrayWrapper(this.Grid.noOfCellsX, this.Grid.noOfCellsY);
+                    this.containsPropertiesFalseGridCell[name] = new BitArrayWrapper(this.Grid.noOfCellsX, this.Grid.noOfCellsY);
+                }
+
                 this.loadedFromTemplate = false;
             }
             else
             {
-                this.extDataByProperty = (Dictionary<Name, BitArray>)serializedData["extDataByProperty"];
-                this.containsPropertiesTrueGridCell = (List<Name>[,])serializedData["containsPropertiesTrueGridCell"];
-                this.containsPropertiesFalseGridCell = (List<Name>[,])serializedData["containsPropertiesFalseGridCell"];
+                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"ext - loaded");
                 this.CreationInProgress = false;
                 this.loadedFromTemplate = true;
             }
@@ -77,34 +91,26 @@ namespace SonOfRobin
             this.Grid = grid;
         }
 
-        private Dictionary<Name, BitArray> MakeArrayCollection()
+        private Dictionary<Name, BitArrayWrapper> MakeArrayCollection()
         {
-            var arrayCollection = new Dictionary<Name, BitArray>();
+            var arrayCollection = new Dictionary<Name, BitArrayWrapper>();
 
             foreach (Name extPropName in allExtPropNames)
             {
-                arrayCollection[extPropName] = new BitArray(this.Grid.dividedWidth * this.Grid.dividedHeight);
+                arrayCollection[extPropName] = new BitArrayWrapper(this.Grid.dividedWidth, this.Grid.dividedHeight);
             }
 
             return arrayCollection;
         }
 
-        public void EndCreationAndSave()
+        public void CreateContainsPropertiesGrid()
         {
-            if (!this.CreationInProgress) throw new ArgumentException("Cannot end creation more than once.");
-
             foreach (Cell cell in this.Grid.allCells)
             {
                 int xMinRaw = cell.xMin / this.Grid.resDivider;
                 int xMaxRaw = cell.xMax / this.Grid.resDivider;
                 int yMinRaw = cell.yMin / this.Grid.resDivider;
                 int yMaxRaw = cell.yMax / this.Grid.resDivider;
-
-                this.containsPropertiesTrueGridCell[cell.cellNoX, cell.cellNoY] = new List<Name>();
-                this.containsPropertiesFalseGridCell[cell.cellNoX, cell.cellNoY] = new List<Name>();
-
-                List<Name> containsPropertiesTrue = this.containsPropertiesTrueGridCell[cell.cellNoX, cell.cellNoY];
-                List<Name> containsPropertiesFalse = this.containsPropertiesFalseGridCell[cell.cellNoX, cell.cellNoY];
 
                 foreach (var kvp in this.extDataByProperty)
                 {
@@ -114,38 +120,27 @@ namespace SonOfRobin
                     {
                         for (int rawY = yMinRaw; rawY <= yMaxRaw; rawY++)
                         {
-                            bool value = kvp.Value.Get(ConvertRaw2DCoordinatesTo1D(rawX, rawY));
-                            if (value && !containsPropertiesTrue.Contains(name)) containsPropertiesTrue.Add(name);
-                            if (!value && !containsPropertiesFalse.Contains(name)) containsPropertiesFalse.Add(name);
+                            bool value = kvp.Value.GetVal(rawX, rawY);
+                            if (value) this.containsPropertiesTrueGridCell[name].SetVal(x: cell.cellNoX, y: cell.cellNoY, value: true);
+                            if (!value) this.containsPropertiesFalseGridCell[name].SetVal(x: cell.cellNoX, y: cell.cellNoY, value: true);
                         }
                     }
                 }
             }
+        }
+
+        public void EndCreationAndSave()
+        {
+            if (!this.CreationInProgress) throw new ArgumentException("Cannot end creation more than once.");
 
             this.CreationInProgress = false;
-            if (!this.loadedFromTemplate) this.SaveTemplate();
+            this.SaveTemplate();
         }
 
         public bool CheckIfContainsPropertyForCell(Name name, bool value, int cellNoX, int cellNoY)
         {
-            if (value) return this.containsPropertiesTrueGridCell[cellNoX, cellNoY].Contains(name);
-            else return this.containsPropertiesFalseGridCell[cellNoX, cellNoY].Contains(name);
-        }
-
-        private int ConvertRaw2DCoordinatesTo1D(int x, int y)
-        {
-            return (y * this.Grid.dividedWidth) + x;
-        }
-
-        private int Convert2DCoordinatesTo1D(int x, int y)
-        {
-            return (y / this.Grid.resDivider * this.Grid.dividedWidth) + (x / this.Grid.resDivider);
-        }
-
-        public bool GetValue(Name name, int x, int y, bool xyRaw)
-        {
-            if (xyRaw) return this.extDataByProperty[name].Get(this.ConvertRaw2DCoordinatesTo1D(x, y));
-            else return this.extDataByProperty[name].Get(this.Convert2DCoordinatesTo1D(x, y));
+            if (value) return this.containsPropertiesTrueGridCell[name].GetVal(cellNoX, cellNoY);
+            else return this.containsPropertiesFalseGridCell[name].GetVal(cellNoX, cellNoY);
         }
 
         public Dictionary<Name, bool> GetValueDict(int x, int y, bool xyRaw)
@@ -160,34 +155,58 @@ namespace SonOfRobin
             return valueDict;
         }
 
-        public void SetValue(Name name, bool value, int x, int y, bool xyRaw)
+        public bool GetValue(Name name, int x, int y, bool xyRaw)
         {
-            if (xyRaw) this.extDataByProperty[name].Set(index: this.ConvertRaw2DCoordinatesTo1D(x, y), value: value);
-            else this.extDataByProperty[name].Set(index: this.Convert2DCoordinatesTo1D(x, y), value: value);
+            if (xyRaw) return this.extDataByProperty[name].GetVal(x, y);
+            else return this.extDataByProperty[name].GetVal(x / this.Grid.resDivider, y / this.Grid.resDivider);
         }
 
-        private Dictionary<string, object> LoadTemplate()
+        public void SetValue(Name name, bool value, int x, int y, bool xyRaw)
         {
-            var loadedData = FileReaderWriter.Load(this.templatePath);
-            if (loadedData == null) return null;
-            else return (Dictionary<string, object>)loadedData;
+            if (xyRaw) this.extDataByProperty[name].SetVal(x: x, y: y, value: value);
+            else this.extDataByProperty[name].SetVal(x: x / this.Grid.resDivider, y: y / this.Grid.resDivider, value: value);
+        }
+
+        private bool LoadTemplate()
+        {
+            foreach (Name name in allExtPropNames)
+            {
+                BitArrayWrapper bitArrayWrapper = BitArrayWrapper.LoadFromPNG(extDataPNGPathByName[name]);
+                if (bitArrayWrapper == null) return false;
+
+                this.extDataByProperty[name] = bitArrayWrapper;
+            }
+
+            foreach (Name name in allExtPropNames)
+            {
+                this.containsPropertiesTrueGridCell[name] = BitArrayWrapper.LoadFromPNG(GetContainsPropertiesPNGPath(name: name, contains: true));
+                if (this.containsPropertiesTrueGridCell[name] == null) return false;
+                this.containsPropertiesFalseGridCell[name] = BitArrayWrapper.LoadFromPNG(GetContainsPropertiesPNGPath(name: name, contains: true));
+                if (this.containsPropertiesFalseGridCell[name] == null) return false;
+            }
+
+            return true;
         }
 
         public void SaveTemplate()
         {
-            FileReaderWriter.Save(path: this.templatePath, savedObj: this.Serialize());
+            if (this.loadedFromTemplate) return;
+
+            foreach (var kvp in this.extDataByProperty)
+            {
+                kvp.Value.SaveToPNG(this.extDataPNGPathByName[kvp.Key]);
+            }
+
+            foreach (Name name in allExtPropNames)
+            {
+                this.containsPropertiesTrueGridCell[name].SaveToPNG(GetContainsPropertiesPNGPath(name: name, contains: true));
+                this.containsPropertiesFalseGridCell[name].SaveToPNG(GetContainsPropertiesPNGPath(name: name, contains: false));
+            }
         }
 
-        private Dictionary<string, object> Serialize()
+        private string GetContainsPropertiesPNGPath(Name name, bool contains)
         {
-            var serializedData = new Dictionary<string, object>
-            {
-                { "extDataByProperty", this.extDataByProperty },
-                { "containsPropertiesTrueGridCell", this.containsPropertiesTrueGridCell },
-                { "containsPropertiesFalseGridCell", this.containsPropertiesFalseGridCell },
-            };
-
-            return serializedData;
+            return Path.Combine(this.templateFolder, $"ext_contains_{name}_{contains}.png");
         }
     }
 }

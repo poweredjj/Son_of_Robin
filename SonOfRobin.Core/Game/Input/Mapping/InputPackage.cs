@@ -6,7 +6,6 @@ using System.Linq;
 
 namespace SonOfRobin
 {
-    [Serializable]
     public class InputPackage
     {
         public const float version = 1.11f;
@@ -260,6 +259,80 @@ namespace SonOfRobin
             }
 
             return duplicatesByValues;
+        }
+
+        public Dictionary<string, Object> Serialize()
+        {
+            Dictionary<string, Object> packageData = new Dictionary<string, object>();
+
+            packageData["version"] = version;
+
+            packageData["leftStick"] = leftStick.Serialize();
+            packageData["rightStick"] = rightStick.Serialize();
+            packageData["left"] = left == null ? null : left.Serialize();
+            packageData["right"] = right == null ? null : right.Serialize();
+            packageData["up"] = up == null ? null : up.Serialize();
+            packageData["down"] = down == null ? null : down.Serialize();
+            packageData["confirm"] = confirm.Serialize();
+            packageData["cancel"] = cancel.Serialize();
+            packageData["pauseMenu"] = pauseMenu.Serialize();
+            packageData["sprint"] = sprint.Serialize();
+            packageData["inventory"] = inventory.Serialize();
+            packageData["pickUp"] = pickUp.Serialize();
+            packageData["craft"] = craft.Serialize();
+            packageData["interact"] = interact.Serialize();
+            packageData["map"] = map.Serialize();
+            packageData["useTool"] = useTool.Serialize();
+            packageData["zoomOut"] = zoomOut.Serialize();
+            packageData["toolbarPrev"] = toolbarPrev.Serialize();
+            packageData["toolbarNext"] = toolbarNext.Serialize();
+            packageData["invSwitch"] = invSwitch.Serialize();
+            packageData["invPickOne"] = invPickOne.Serialize();
+            packageData["invPickStack"] = invPickStack.Serialize();
+            packageData["invSort"] = invSort.Serialize();
+            packageData["mapToggleMarker"] = mapToggleMarker.Serialize();
+            packageData["mapCenterPlayer"] = mapCenterPlayer.Serialize();
+            packageData["mapZoomIn"] = mapZoomIn.Serialize();
+            packageData["mapZoomOut"] = mapZoomOut.Serialize();
+
+            return packageData;
+        }
+
+        public static InputPackage Deserialize(Object inputData)
+        {
+            var inputDict = (Dictionary<string, Object>)inputData;
+
+            float version = (float)(double)inputDict["version"];
+
+            StoredInput leftStick = StoredInput.Deserialize(inputDict["leftStick"]);
+            StoredInput rightStick = StoredInput.Deserialize(inputDict["rightStick"]);
+            StoredInput left = StoredInput.Deserialize(inputDict["left"]);
+            StoredInput right = StoredInput.Deserialize(inputDict["right"]);
+            StoredInput up = StoredInput.Deserialize(inputDict["up"]);
+            StoredInput down = StoredInput.Deserialize(inputDict["down"]);
+            StoredInput confirm = StoredInput.Deserialize(inputDict["confirm"]);
+            StoredInput cancel = StoredInput.Deserialize(inputDict["cancel"]);
+            StoredInput pauseMenu = StoredInput.Deserialize(inputDict["pauseMenu"]);
+            StoredInput sprint = StoredInput.Deserialize(inputDict["sprint"]);
+            StoredInput inventory = StoredInput.Deserialize(inputDict["inventory"]);
+            StoredInput pickUp = StoredInput.Deserialize(inputDict["pickUp"]);
+            StoredInput craft = StoredInput.Deserialize(inputDict["craft"]);
+            StoredInput interact = StoredInput.Deserialize(inputDict["interact"]);
+            StoredInput map = StoredInput.Deserialize(inputDict["map"]);
+            StoredInput useTool = StoredInput.Deserialize(inputDict["useTool"]);
+            StoredInput zoomOut = StoredInput.Deserialize(inputDict["zoomOut"]);
+            StoredInput toolbarPrev = StoredInput.Deserialize(inputDict["toolbarPrev"]);
+            StoredInput toolbarNext = StoredInput.Deserialize(inputDict["toolbarNext"]);
+            StoredInput invSwitch = StoredInput.Deserialize(inputDict["invSwitch"]);
+            StoredInput invPickOne = StoredInput.Deserialize(inputDict["invPickOne"]);
+            StoredInput invPickStack = StoredInput.Deserialize(inputDict["invPickStack"]);
+            StoredInput invSort = StoredInput.Deserialize(inputDict["invSort"]);
+            StoredInput mapToggleMarker = StoredInput.Deserialize(inputDict["mapToggleMarker"]);
+            StoredInput mapCenterPlayer = StoredInput.Deserialize(inputDict["mapCenterPlayer"]);
+            StoredInput mapZoomIn = StoredInput.Deserialize(inputDict["mapZoomIn"]);
+            StoredInput mapZoomOut = StoredInput.Deserialize(inputDict["mapZoomOut"]);
+
+            return new InputPackage(packageVersion: version, leftStick: leftStick, rightStick: rightStick, left: left, right: right, up: up, down: down, confirm: confirm, cancel: cancel, pauseMenu: pauseMenu, sprint: sprint, inventory: inventory, pickUp: pickUp, craft: craft, interact: interact, map: map, useTool: useTool, zoomOut: zoomOut, toolbarPrev: toolbarPrev, toolbarNext: toolbarNext, invSwitch: invSwitch, invPickOne: invPickOne, invPickStack: invPickStack, invSort: invSort, mapToggleMarker: mapToggleMarker, mapCenterPlayer: mapCenterPlayer, mapZoomIn: mapZoomIn, mapZoomOut: mapZoomOut);
         }
     }
 }
