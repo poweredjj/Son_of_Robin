@@ -1,6 +1,6 @@
 ﻿using BigGustave;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections;
 using System.IO;
 
@@ -46,7 +46,11 @@ namespace SonOfRobin
 
         public bool SaveToPNG(string path)
         {
-            PngBuilder builder = PngBuilder.Create(width: this.width, height: this.height, hasAlphaChannel: false);
+            // BigGustave PngBuilder cannot write odd width properly
+            bool widthOdd = this.width % 2 != 0;
+            int correctedWidth = widthOdd ? this.width + 1 : this.width;
+
+            PngBuilder builder = PngBuilder.Create(width: correctedWidth, height: this.height, hasAlphaChannel: false);
 
             for (int y = 0; y < this.height; y++)
             {
@@ -54,6 +58,14 @@ namespace SonOfRobin
                 {
                     Color pixel = this.GetVal(x, y) ? Color.Black : Color.White;
                     builder.SetPixel(pixel.R, pixel.G, pixel.B, x, y);
+                }
+            }
+
+            if (widthOdd) // adding red line along "extra" edge, that it can be detected when opening
+            {
+                for (int y = 0; y < this.height; y++)
+                {
+                    builder.SetPixel(255, 0, 0, correctedWidth - 1, y);
                 }
             }
 
@@ -66,24 +78,40 @@ namespace SonOfRobin
 
         public static BitArrayWrapper LoadFromPNG(string path)
         {
-            Texture2D texture = GfxConverter.LoadTextureFromPNG(path);
-            if (texture == null) return null;
-
-            int width = texture.Width;
-            int height = texture.Height;
-
-            BitArrayWrapper bitArrayWrapper = new BitArrayWrapper(width: width, height: height);
-
-            Color[] colorArray1D = new Color[width * height];
-            texture.GetData(colorArray1D);
-
-            for (int i = 0; i < bitArrayWrapper.bitArray.Length; i++)
+            try
             {
-                // texture2D data is structured in the same way as bitArray - it just needs to be copied
-                bitArrayWrapper.bitArray.Set(i, colorArray1D[i] == Color.Black);
-            }
+                using (var stream = File.OpenRead(path))
+                {
+                    Png image = Png.Open(stream);
 
-            return bitArrayWrapper;
+                    int width = image.Width;
+                    int height = image.Height;
+
+                    Pixel topRightEdgePixel = image.GetPixel(width - 1, 0);
+                    Pixel bottomRightEdgePixel = image.GetPixel(width - 1, height - 1);
+                    if (topRightEdgePixel.R == 255 && topRightEdgePixel.G == 0 && topRightEdgePixel.B == 0 &&
+                        bottomRightEdgePixel.R == 255 && bottomRightEdgePixel.G == 0 && bottomRightEdgePixel.B == 0)
+                    {
+                        // detecting and correcting red edge marker (last column, that needs to be ignored)
+                        width--;
+                    }
+
+                    BitArrayWrapper bitArrayWrapper = new BitArrayWrapper(width: width, height: height);
+
+                    for (int y = 0; y < height; y++)
+                    {
+                        for (int x = 0; x < width; x++)
+                        {
+                            Pixel pixel = image.GetPixel(x, y);
+                            bitArrayWrapper.SetVal(x, y, pixel.G != 255); // checking red channel is enough
+                        }
+                    }
+
+                    return bitArrayWrapper;
+                }
+            }
+            catch (FileNotFoundException) { return null; }
+            catch (ArgumentOutOfRangeException) { return null; } // file corrupted
         }
     }
 }
