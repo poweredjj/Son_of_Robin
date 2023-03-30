@@ -63,7 +63,7 @@ namespace SonOfRobin
 
                 using (var fileStream = new FileStream(path, FileMode.Create))
                 {
-                    image.Save(fileStream, new PngEncoder());
+                    image.Save(fileStream, new PngEncoder() { CompressionLevel = PngCompressionLevel.Level9 });
                     return true;
                 }
             }

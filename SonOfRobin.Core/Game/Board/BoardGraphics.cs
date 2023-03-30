@@ -219,7 +219,7 @@ namespace SonOfRobin
                 {
                     try
                     {
-                        image.Save(fileStream, new PngEncoder());
+                        image.Save(fileStream, new PngEncoder() { CompressionLevel = PngCompressionLevel.Level6 });
                     }
                     catch (IOException) { } // write error
                 }
