@@ -21,12 +21,14 @@ namespace SonOfRobin
 
         public Buff(BuffEngine.BuffType type, object value, int autoRemoveDelay = 0, int sleepFramesNeededForActivation = 0, bool isPermanent = false, bool canKill = false, bool increaseIDAtEveryUse = false)
         {
+            this.type = type;
+            value = this.CastValueToCorrectType(value);
+
             this.increaseIDAtEveryUse = increaseIDAtEveryUse; // for buffs that could stack (like sleeping buffs)
             this.id = Helpers.GetUniqueHash();
             // AutoRemoveDelay should not be used for equip!
             // It should only be used for temporary buffs (food, status effects, etc.).
-            this.autoRemoveDelay = autoRemoveDelay;
-            this.type = type;
+            this.autoRemoveDelay = autoRemoveDelay;      
             this.value = value;
             this.canKill = canKill;
             this.isPermanent = isPermanent;
@@ -37,6 +39,70 @@ namespace SonOfRobin
 
             this.endFrame = 0; // to be assigned during activation
             this.activationFrame = 0; // to be assigned during activation
+
+        }
+
+        private object CastValueToCorrectType(object value)
+        {
+            switch (this.type)
+            {
+                case BuffEngine.BuffType.InvWidth:
+                    value = Helpers.CastObjectToByte(value);             
+                    break;
+
+                case BuffEngine.BuffType.InvHeight:
+                    value = Helpers.CastObjectToByte(value);
+                    break;
+
+                case BuffEngine.BuffType.ToolbarWidth:
+                    value = Helpers.CastObjectToByte(value);
+                    break;
+
+                case BuffEngine.BuffType.ToolbarHeight:
+                    value = Helpers.CastObjectToByte(value);
+                    break;
+
+                case BuffEngine.BuffType.Speed:
+                    value = Helpers.CastObjectToFloat(value);
+                    break;
+
+                case BuffEngine.BuffType.Strength:
+                    value = Helpers.CastObjectToInt(value);
+                    break;
+
+                case BuffEngine.BuffType.HP:
+                    value = Helpers.CastObjectToFloat(value);
+                    break;
+
+                case BuffEngine.BuffType.MaxHP:
+                    value = Helpers.CastObjectToFloat(value);
+                    break;
+
+                case BuffEngine.BuffType.MaxStamina:
+                    value = Helpers.CastObjectToFloat(value);
+                    break;
+
+                case BuffEngine.BuffType.LightSource:
+                    value = Helpers.CastObjectToInt(value);
+                    break;
+
+                case BuffEngine.BuffType.RegenPoison:
+                    value = Helpers.CastObjectToInt(value);
+                    break;
+
+                case BuffEngine.BuffType.Haste:
+                    value = Helpers.CastObjectToInt(value);
+                    break;
+
+                case BuffEngine.BuffType.Fatigue:
+                    value = Helpers.CastObjectToFloat(value);
+                    break;
+
+                default:
+                    break;
+            }
+
+            return value;
         }
 
         public bool HadEnoughSleepForBuff(World world)

@@ -71,12 +71,12 @@ namespace SonOfRobin
             {
                 try
                 {
-                    eventHelper = (int)(Int64)eventHelper; // serialization makes every int stored as int64 (long)
+                    eventHelper = Helpers.CastObjectToInt(eventHelper); // serialization makes every int stored as int64 (long)
                 }
-                catch (InvalidCastException) // when eventHelper is not an int (or enum)
-                { }
+                catch (Exception)
+                {}           
             }
-
+            
             new WorldEvent(eventName: eventName, world: world, delay: delay, boardPiece: boardPiece, eventHelper: eventHelper);
         }
 
@@ -155,7 +155,7 @@ namespace SonOfRobin
 
                 case EventName.FadeOutSprite:
                     {
-                        int fadeDuration = (int)this.eventHelper;
+                        int fadeDuration = Helpers.CastObjectToInt(this.eventHelper);
                         new OpacityFade(sprite: this.boardPiece.sprite, destOpacity: 0f, duration: fadeDuration);
                         return;
                     }
@@ -170,7 +170,7 @@ namespace SonOfRobin
 
                 case EventName.RestorePieceCreation:
                     {
-                        var pieceName = (PieceTemplate.Name)this.eventHelper;
+                        var pieceName = (PieceTemplate.Name)Helpers.CastObjectToInt(this.eventHelper);
                         this.world.doNotCreatePiecesList.Remove(pieceName);
 
                         MessageLog.AddMessage(msgType: MsgType.Debug, message: $"'{pieceName}' creation restored.");
@@ -180,7 +180,7 @@ namespace SonOfRobin
 
                 case EventName.RestoreHint:
                     {
-                        var hintType = (HintEngine.Type)this.eventHelper;
+                        var hintType = (HintEngine.Type)Helpers.CastObjectToInt(this.eventHelper);
                         this.world.HintEngine.Enable(hintType);
 
                         MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Hint '{hintType}' restored.");
@@ -207,8 +207,8 @@ namespace SonOfRobin
 
                         var damageData = (Dictionary<string, Object>)this.eventHelper;
 
-                        int delay = (int)damageData["delay"];
-                        int damage = (int)damageData["damage"];
+                        int delay = Helpers.CastObjectToInt(damageData["delay"]);
+                        int damage = Helpers.CastObjectToInt(damageData["damage"]);
 
                         // inflicting damage
 
@@ -238,9 +238,11 @@ namespace SonOfRobin
                         var regenPoisonData = (Dictionary<string, Object>)this.eventHelper;
 
                         string buffID = (string)regenPoisonData["buffID"];
-                        int delay = (int)regenPoisonData["delay"];
-                        int charges = (int)regenPoisonData["charges"];
-                        int hpChange = (int)regenPoisonData["hpChange"];
+
+                        int delay = Helpers.CastObjectToInt(regenPoisonData["delay"]);
+                        int charges = Helpers.CastObjectToInt(regenPoisonData["charges"]);
+                        int hpChange = Helpers.CastObjectToInt(regenPoisonData["hpChange"]); 
+
                         bool canKill = (bool)regenPoisonData["canKill"];
 
                         // breaking the loop
@@ -306,7 +308,7 @@ namespace SonOfRobin
 
                 case EventName.PlaySoundByName:
                     {
-                        Sound.QuickPlay((SoundData.Name)this.eventHelper);
+                        Sound.QuickPlay((SoundData.Name)Helpers.CastObjectToInt(this.eventHelper));
                         return;
                     }
 

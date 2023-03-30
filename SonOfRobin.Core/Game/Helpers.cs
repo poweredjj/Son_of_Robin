@@ -371,5 +371,44 @@ namespace SonOfRobin
                      Math.Max((byte)((firstColor.A * firstColorOpacity) + (secondColor.A * secondColorOpacity)), firstColor.A)
                      );
         }
+
+        public static int CastObjectToInt(object obj)
+        {
+            int convertedObj;
+            try
+            {
+                convertedObj = (int)(Int64)obj;
+            }
+            catch (Exception)
+            { convertedObj = (int)obj; }
+
+            return convertedObj;
+        }
+
+        public static byte CastObjectToByte(object obj)
+        {
+            byte convertedObj;
+            try
+            {
+                convertedObj = (byte)(Int64)obj;
+            }
+            catch (Exception)
+            { convertedObj = (byte)obj; }
+
+            return convertedObj;
+        }
+
+        public static float CastObjectToFloat(object obj)
+        {
+            float convertedObj;
+            try
+            {
+                convertedObj = (float)(double)obj;
+            }
+            catch (Exception)
+            { convertedObj = (float)obj; }
+
+            return convertedObj;
+        }
     }
 }
