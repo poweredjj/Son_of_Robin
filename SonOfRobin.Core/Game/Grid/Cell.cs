@@ -21,7 +21,7 @@ namespace SonOfRobin
         public readonly int yMax;
 
         public readonly Rectangle rect;
-        private Rectangle previewRect; // must match grid.WholeIslandPreviewScale
+        private readonly Rectangle previewRect; // must match grid.WholeIslandPreviewScale
         public readonly Vector2 center;
 
         public readonly int width;
@@ -66,6 +66,9 @@ namespace SonOfRobin
             this.yMax = this.yMin + this.height - 1;
 
             this.rect = new Rectangle(this.xMin, this.yMin, this.width, this.height);
+            float scale = this.grid.wholeIslandPreviewScale;
+            this.previewRect = new Rectangle((int)(this.rect.X * scale), (int)(this.rect.Y * scale), width: (int)(this.width * scale), height: (int)(this.height * scale));
+
             this.xCenter = this.xMin + (this.width / 2);
             this.yCenter = this.yMin + (this.height / 2);
             this.center = new Vector2(this.xCenter, this.yCenter);
@@ -81,12 +84,6 @@ namespace SonOfRobin
             }
 
             this.allowedNames = new List<PieceTemplate.Name>();
-        }
-
-        public void CalculatePreviewRect()
-        {
-            float scale = this.grid.WholeIslandPreviewScale;
-            this.previewRect = new Rectangle((int)(this.rect.X * scale), (int)(this.rect.Y * scale), width: (int)(this.width * scale), height: (int)(this.height * scale));
         }
 
         public void FillAllowedNames()
@@ -160,7 +157,6 @@ namespace SonOfRobin
             this.boardGraphics = new BoardGraphics(grid: this.grid, cell: this);
             this.boardGraphics.ReplaceTexture(texture: templateCell.boardGraphics.Texture);
             this.allowedNames.AddRange(templateCell.allowedNames);
-            this.previewRect = templateCell.previewRect;
         }
 
         public void UpdateBoardGraphics()

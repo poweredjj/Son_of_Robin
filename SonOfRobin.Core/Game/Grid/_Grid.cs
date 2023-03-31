@@ -55,8 +55,10 @@ namespace SonOfRobin
         public readonly int cellWidth;
         public readonly int cellHeight;
         public readonly int resDivider;
+
+        public readonly Point wholeIslandPreviewSize;
+        public readonly float wholeIslandPreviewScale;
         public Texture2D WholeIslandPreviewTexture { get; private set; }
-        public float WholeIslandPreviewScale { get; private set; }
 
         private readonly Dictionary<Terrain.Name, Terrain> terrainByName;
         private ExtBoardProps extBoardProps;
@@ -81,13 +83,15 @@ namespace SonOfRobin
 
             this.world = world;
             this.resDivider = resDivider;
-
             this.terrainByName = new Dictionary<Terrain.Name, Terrain>();
 
             this.width = this.world.width;
             this.height = this.world.height;
             this.dividedWidth = (int)Math.Ceiling((double)this.width / (double)this.resDivider);
             this.dividedHeight = (int)Math.Ceiling((double)this.height / (double)this.resDivider);
+
+            this.wholeIslandPreviewSize = new Point(Math.Min(this.width / this.resDivider, 2000), Math.Min(this.height / this.resDivider, 2000));
+            this.wholeIslandPreviewScale = (float)wholeIslandPreviewSize.X / (float)this.width;
 
             if (cellWidth == 0 && cellHeight == 0)
             {
@@ -426,12 +430,6 @@ namespace SonOfRobin
                     if (!File.Exists(mapImagePath)) BoardGraphics.CreateAndSaveEntireMapImage(this);
 
                     this.WholeIslandPreviewTexture = GfxConverter.LoadTextureFromPNG(mapImagePath);
-                    this.WholeIslandPreviewScale = (float)WholeIslandPreviewTexture.Width / (float)this.width;
-
-                    Parallel.ForEach(this.allCells, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, cell =>
-                    {
-                        cell.CalculatePreviewRect();// needs to be invoked after creating whole map preview texture 
-                    });
 
                     this.cellsToProcessOnStart.Clear();
 

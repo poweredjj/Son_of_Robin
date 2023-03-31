@@ -107,10 +107,7 @@ namespace SonOfRobin
 
             // generating new image
 
-            int targetWidth = Math.Min(grid.width / grid.resDivider, 2000); // map should not exceed real terrain resolution
-            int targetHeight = Math.Min(grid.height / grid.resDivider, 2000); // map should not exceed real terrain resolution
-
-            Point imageSize = Helpers.FitIntoSize(sourceWidth: grid.width, sourceHeight: grid.height, targetWidth: targetWidth, targetHeight: targetHeight);
+            Point imageSize = Helpers.FitIntoSize(sourceWidth: grid.width, sourceHeight: grid.height, targetWidth: grid.wholeIslandPreviewSize.X, targetHeight: grid.wholeIslandPreviewSize.Y);
             int width = imageSize.X;
             int height = imageSize.Y;
 
