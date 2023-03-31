@@ -2,6 +2,7 @@
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats.Png;
 using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Processing;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -95,23 +96,90 @@ namespace SonOfRobin
             this.savedToDisk = true;
         }
 
-        public static Texture2D CreateEntireMapTexture(Grid grid, int width, int height, float multiplier)
+        public static Texture2D GetMapTextureScaledForScreenSize(Grid grid, int width, int height)
         {
             var colorArray = new Color[width * height];
 
-            for (int y = 0; y < height; y++)
+            using (Image<Rgba32> image = CreateAndSaveEntireMapImage(grid))
             {
-                for (int x = 0; x < width; x++)
+                image.Mutate(x => x.Resize(width, height));
+
+                for (int y = 0; y < height; y++)
                 {
-                    Color pixel = CreateTexturedPixel(grid: grid, x: (int)(x / multiplier), y: (int)(y / multiplier));
-                    if (pixel.A < 255) pixel = Blend2Colors(bottomColor: Map.waterColor, topColor: pixel);
-                    colorArray[(y * width) + x] = pixel;
+                    int yFactor = y * width;
+
+                    for (int x = 0; x < width; x++)
+                    {
+                        colorArray[yFactor + x] = new Color(r: image[x, y].R, g: image[x, y].G, b: image[x, y].B, alpha: image[x, y].A);
+                    }
                 }
             }
 
             Texture2D texture = new Texture2D(SonOfRobinGame.GfxDev, width, height);
             texture.SetData(colorArray);
             return texture;
+        }
+
+        public static Image<Rgba32> CreateAndSaveEntireMapImage(Grid grid)
+        {
+            string imagePath = Path.Combine(grid.gridTemplate.templatePath, "whole_island_map.png");
+
+            // trying to load saved image
+
+            try
+            {
+                var loadedImage = Image.Load<Rgba32>(imagePath); // not "using", because it would return a disposed image
+                return loadedImage;
+            }
+            catch (FileNotFoundException) { }
+            catch (UnknownImageFormatException) { } // file corrupted
+
+            // trying to delete old image (in case of corruption)
+
+            try
+            {
+                if (File.Exists(imagePath)) File.Delete(imagePath);
+            }
+            catch (Exception ex)
+            { MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Error deleting file {imagePath}: {ex.Message}"); }
+
+            // generating new image
+
+            int targetWidth = Math.Min(grid.width / grid.resDivider, 2000); // map should not exceed real terrain resolution
+            int targetHeight = Math.Min(grid.height / grid.resDivider, 2000); // map should not exceed real terrain resolution
+
+            Point imageSize = Helpers.FitIntoSize(sourceWidth: grid.width, sourceHeight: grid.height, targetWidth: targetWidth, targetHeight: targetHeight);
+            int width = imageSize.X;
+            int height = imageSize.Y;
+
+            float multiplierX = (float)width / (float)grid.width;
+            float multiplierY = (float)height / (float)grid.height;
+            float scaleMultiplier = Math.Min(multiplierX, multiplierY);
+
+            var image = new Image<Rgba32>(width, height);
+
+            for (int x = 0; x < width; x++)
+            {
+                for (int y = 0; y < height; y++)
+                {
+                    Color pixel = CreateTexturedPixel(grid: grid, x: (int)(x / scaleMultiplier), y: (int)(y / scaleMultiplier));
+                    if (pixel.A < 255) pixel = Blend2Colors(bottomColor: Map.waterColor, topColor: pixel);
+                    image[x, y] = new Rgba32(pixel.R, pixel.G, pixel.B, pixel.A);
+                }
+            }
+
+            // saving image
+
+            using (var fileStream = new FileStream(imagePath, FileMode.Create))
+            {
+                try
+                {
+                    image.Save(fileStream, new PngEncoder() { CompressionLevel = PngCompressionLevel.Level9 });
+                }
+                catch (IOException) { } // write error
+            }
+
+            return image;
         }
 
         private Color[,] CreateBitmapFromTerrain(bool getColorGrid, bool saveAsPNG)
@@ -191,7 +259,7 @@ namespace SonOfRobin
                 BoardTextureUpscaler3x.Upscale3x3PatternNameGrid(source: workingGrid3x3, target: upscaledGrid, targetOffsetX: point.X * resizeFactor, targetOffsetY: point.Y * resizeFactor);
             }
 
-            // putting upscaled color grid into PngBuilder
+            // putting upscaled color grid into image
 
             Color[,] upscaledColorGrid = getColorGrid ? new Color[targetWidth, targetHeight] : new Color[1, 1];
 
@@ -212,7 +280,7 @@ namespace SonOfRobin
                 }
             }
 
-            // saving PngBuilder to file
+            // saving as PNG
             if (saveAsPNG)
             {
                 using (var fileStream = new FileStream(this.templatePath, FileMode.Create))

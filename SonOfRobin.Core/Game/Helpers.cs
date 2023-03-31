@@ -372,7 +372,7 @@ namespace SonOfRobin
                      );
         }
 
-        public static int CastObjectToInt(object obj)
+        public static int CastObjectToInt(object obj) // for json deserialization, because it doesn't store types properly
         {
             int convertedObj;
             try
@@ -385,7 +385,7 @@ namespace SonOfRobin
             return convertedObj;
         }
 
-        public static byte CastObjectToByte(object obj)
+        public static byte CastObjectToByte(object obj) // for json deserialization, because it doesn't store types properly
         {
             byte convertedObj;
             try
@@ -398,7 +398,7 @@ namespace SonOfRobin
             return convertedObj;
         }
 
-        public static float CastObjectToFloat(object obj)
+        public static float CastObjectToFloat(object obj) // for json deserialization, because it doesn't store types properly
         {
             float convertedObj;
             try
@@ -409,6 +409,43 @@ namespace SonOfRobin
             { convertedObj = (float)obj; }
 
             return convertedObj;
+        }
+
+        public static Point FitIntoSize(int sourceWidth, int sourceHeight, int targetWidth, int targetHeight)
+        {
+            double sourceAspectRatio = (double)sourceWidth / sourceHeight;
+            double targetAspectRatio = (double)targetWidth / targetHeight;
+
+            int width, height;
+
+            if (sourceAspectRatio > targetAspectRatio)
+            {
+                // Letterboxing on top and bottom
+                height = targetHeight;
+                width = (int)(height * sourceAspectRatio);
+
+                // Check if the resulting width exceeds the target width
+                if (width > targetWidth)
+                {
+                    width = targetWidth;
+                    height = (int)(width / sourceAspectRatio);
+                }
+            }
+            else
+            {
+                // Letterboxing on left and right
+                width = targetWidth;
+                height = (int)(width / sourceAspectRatio);
+
+                // Check if the resulting height exceeds the target height
+                if (height > targetHeight)
+                {
+                    height = targetHeight;
+                    width = (int)(height * sourceAspectRatio);
+                }
+            }
+
+            return new Point(width, height);
         }
     }
 }

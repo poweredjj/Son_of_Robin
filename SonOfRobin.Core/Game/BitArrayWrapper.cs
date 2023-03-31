@@ -91,8 +91,8 @@ namespace SonOfRobin
                     return bitArrayWrapper;
                 }
             }
-            catch (FileNotFoundException) { return null;}
-            catch (UnknownImageFormatException) { return null;} // file corrupted      
+            catch (FileNotFoundException) { return null; }
+            catch (UnknownImageFormatException) { return null; } // file corrupted
         }
     }
 }

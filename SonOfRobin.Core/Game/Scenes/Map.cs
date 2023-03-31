@@ -111,15 +111,15 @@ namespace SonOfRobin
             {
                 this.SetViewParamsForMiniature();
 
-                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{SonOfRobinGame.CurrentUpdate} updating map background (fullscreen {this.FullScreen})");
-
                 SetRenderTarget(this.lowResWholeTerrainGfx);
                 SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
 
                 int width = (int)(this.world.width * this.scaleMultiplier);
                 int height = (int)(this.world.height * this.scaleMultiplier);
 
-                Texture2D mapTexture = BoardGraphics.CreateEntireMapTexture(grid: this.world.Grid, width: width, height: height, multiplier: this.scaleMultiplier);
+                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{SonOfRobinGame.CurrentUpdate} updating map background {width}x{height} (fullscreen {this.FullScreen})");
+
+                Texture2D mapTexture = BoardGraphics.GetMapTextureScaledForScreenSize(grid: this.world.Grid, width: width, height: height);
                 Rectangle sourceRectangle = new Rectangle(0, 0, width, height);
                 SonOfRobinGame.SpriteBatch.Draw(mapTexture, sourceRectangle, sourceRectangle, Color.White);
                 SonOfRobinGame.SpriteBatch.End();

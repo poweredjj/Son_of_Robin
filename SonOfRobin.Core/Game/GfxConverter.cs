@@ -3,12 +3,10 @@ using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats.Png;
 using SixLabors.ImageSharp.PixelFormats;
 using System;
-using System.Collections;
 using System.IO;
 using System.Threading.Tasks;
 using Color = Microsoft.Xna.Framework.Color;
 using Rectangle = Microsoft.Xna.Framework.Rectangle;
-
 
 namespace SonOfRobin
 {
@@ -37,8 +35,8 @@ namespace SonOfRobin
             }
         }
 
-    public static byte[,] LoadPNGAs2DByteArray(string path)
-    {
+        public static byte[,] LoadPNGAs2DByteArray(string path)
+        {
             try
             {
                 using (var image = Image.Load<L8>(path))
@@ -61,8 +59,7 @@ namespace SonOfRobin
             }
             catch (FileNotFoundException) { return null; }
             catch (UnknownImageFormatException) { return null; } // file corrupted
-    }
-
+        }
 
         public static Texture2D CropTexture(Texture2D baseTexture, Rectangle cropRect)
         {
@@ -146,17 +143,11 @@ namespace SonOfRobin
                 return loadedTexture;
             }
             catch (FileNotFoundException)
-            {
-                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"FileNotFoundException while trying to read {Path.GetFileName(path)}.");
-            }
+            { MessageLog.AddMessage(msgType: MsgType.Debug, message: $"FileNotFoundException while trying to read {Path.GetFileName(path)}."); }
             catch (IOException) // png file corrupted
-            {
-                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"IOException while trying to read {Path.GetFileName(path)}.");
-            }
+            { MessageLog.AddMessage(msgType: MsgType.Debug, message: $"IOException while trying to read {Path.GetFileName(path)}."); }
             catch (InvalidOperationException) // png file corrupted
-            {
-                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"InvalidOperationException while trying to read {Path.GetFileName(path)}.");
-            }
+            { MessageLog.AddMessage(msgType: MsgType.Debug, message: $"InvalidOperationException while trying to read {Path.GetFileName(path)}."); }
 
             return null;
         }

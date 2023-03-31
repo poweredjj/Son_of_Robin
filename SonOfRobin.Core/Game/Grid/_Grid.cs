@@ -11,7 +11,7 @@ namespace SonOfRobin
     public class Grid
     {
         public enum Stage
-        { LoadTerrain, GenerateTerrain, CheckExtData, SetExtDataSea, SetExtDataBeach, SetExtDataBiomes, SetExtDataBiomesConstrains, SetExtDataPropertiesGrid, SetExtDataFinish, FillAllowedNames, ProcessTextures, LoadTextures, StartGame }
+        { LoadTerrain, GenerateTerrain, CheckExtData, SetExtDataSea, SetExtDataBeach, SetExtDataBiomes, SetExtDataBiomesConstrains, SetExtDataPropertiesGrid, SetExtDataFinish, FillAllowedNames, ProcessTextures, LoadTextures, MakeEntireMapImage, StartGame }
 
         public static readonly int allStagesCount = ((Stage[])Enum.GetValues(typeof(Stage))).Length;
 
@@ -28,6 +28,7 @@ namespace SonOfRobin
             { Stage.FillAllowedNames, "filling lists of allowed names" },
             { Stage.ProcessTextures, "processing textures" },
             { Stage.LoadTextures, "loading textures" },
+            { Stage.MakeEntireMapImage, "making entire map image" },
             { Stage.StartGame, "starting the game" },
         };
 
@@ -393,6 +394,13 @@ namespace SonOfRobin
                     {
                         this.cellsToProcessOnStart.Clear();
                     }
+
+                    break;
+
+                case Stage.MakeEntireMapImage:
+
+                    BoardGraphics.CreateAndSaveEntireMapImage(this);
+                    this.cellsToProcessOnStart.Clear();
 
                     break;
 
