@@ -6,6 +6,7 @@ using SixLabors.ImageSharp.Processing;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using Color = Microsoft.Xna.Framework.Color;
 using Point = Microsoft.Xna.Framework.Point;
 
@@ -158,15 +159,24 @@ namespace SonOfRobin
 
             var image = new Image<Rgba32>(width, height);
 
-            for (int x = 0; x < width; x++)
+            Parallel.For(0, height, y =>
             {
-                for (int y = 0; y < height; y++)
+                int sourceY = (int)(y / scaleMultiplier);
+                Color[] rowColors = new Color[width];
+
+                for (int x = 0; x < width; x++)
                 {
-                    Color pixel = CreateTexturedPixel(grid: grid, x: (int)(x / scaleMultiplier), y: (int)(y / scaleMultiplier));
+                    int sourceX = (int)(x / scaleMultiplier);
+                    Color pixel = CreateTexturedPixel(grid: grid, x: sourceX, y: sourceY);
                     if (pixel.A < 255) pixel = Blend2Colors(bottomColor: Map.waterColor, topColor: pixel);
-                    image[x, y] = new Rgba32(pixel.R, pixel.G, pixel.B, pixel.A);
+                    rowColors[x] = pixel;
                 }
-            }
+
+                for (int x = 0; x < width; x++)
+                {
+                    image[x, y] = new Rgba32(rowColors[x].R, rowColors[x].G, rowColors[x].B, rowColors[x].A);
+                }
+            });
 
             // saving image
 
