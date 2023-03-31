@@ -866,7 +866,7 @@ namespace SonOfRobin
             return cell.GetSpritesFromSurroundingCells(groupName);
         }
 
-        public List<Cell> GetCellsInsideRect(Rectangle viewRect, bool addPadding = true)
+        public List<Cell> GetCellsInsideRect(Rectangle viewRect, bool addPadding)
         {
             // addPadding: +1 cell on each side, to ensure visibility of sprites, that cross their cells' boundaries
             int padding = addPadding ? 1 : 0;
@@ -967,7 +967,7 @@ namespace SonOfRobin
 
             Rectangle rect = new Rectangle(x: xMin, y: yMin, width: xMax - xMin, height: yMax - yMin);
 
-            var cellsInsideRect = this.GetCellsInsideRect(rect);
+            var cellsInsideRect = this.GetCellsInsideRect(viewRect: rect, addPadding: true);
 
             var spritesInsideTriangle = new List<Sprite>();
             foreach (Cell cell in cellsInsideRect)
@@ -984,7 +984,7 @@ namespace SonOfRobin
         {
             spriteListToFill.Clear();
 
-            var visibleCells = this.GetCellsInsideRect(camera.viewRect);
+            var visibleCells = this.GetCellsInsideRect(viewRect: camera.viewRect, addPadding: true);
 
             if (compareWithCameraRect)
             {
@@ -1034,7 +1034,7 @@ namespace SonOfRobin
 
         public ConcurrentBag<Sprite> GetSpritesForRect(Cell.Group groupName, Rectangle rectangle, bool visitedByPlayerOnly = false)
         {
-            var cells = this.GetCellsInsideRect(rectangle);
+            var cells = this.GetCellsInsideRect(viewRect: rectangle, addPadding: true);
             if (visitedByPlayerOnly) cells = cells.Where(cell => cell.VisitedByPlayer).ToList();
 
             var allSprites = new ConcurrentBag<Sprite> { };
@@ -1081,7 +1081,7 @@ namespace SonOfRobin
             bool updateFog = false;
             Rectangle cameraRect = camera.viewRect;
 
-            foreach (Cell cell in this.GetCellsInsideRect(camera.viewRect))
+            foreach (Cell cell in this.GetCellsInsideRect(viewRect: camera.viewRect, addPadding: false))
             {
                 cell.DrawBackground();
 
@@ -1135,7 +1135,7 @@ namespace SonOfRobin
         {
             if (!drawCellData && !drawPieceData) return;
 
-            var visibleCells = this.GetCellsInsideRect(this.world.camera.viewRect);
+            var visibleCells = this.GetCellsInsideRect(viewRect: this.world.camera.viewRect, addPadding: false);
 
             foreach (Cell cell in visibleCells)
             {
@@ -1283,7 +1283,7 @@ namespace SonOfRobin
 
             while (true)
             {
-                var cellsInCameraViewWithNoTextures = this.GetCellsInsideRect(camera.viewRect).Where(cell => cell.boardGraphics.Texture == null);
+                var cellsInCameraViewWithNoTextures = this.GetCellsInsideRect(viewRect: camera.viewRect, addPadding: true).Where(cell => cell.boardGraphics.Texture == null);
                 if (visitedByPlayerOnly) cellsInCameraViewWithNoTextures = cellsInCameraViewWithNoTextures.Where(cell => cell.VisitedByPlayer);
                 if (!cellsInCameraViewWithNoTextures.Any()) return;
 
@@ -1301,7 +1301,7 @@ namespace SonOfRobin
         {
             if (Preferences.loadWholeMap) return;
 
-            foreach (Cell cell in this.GetCellsInsideRect(this.world.camera.viewRect))
+            foreach (Cell cell in this.GetCellsInsideRect(viewRect: this.world.camera.viewRect, addPadding: true))
             {
                 // MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Processing cell in camera view {cell.cellNoX},{cell.cellNoY}.", color: Color.White);
                 cell.boardGraphics.LoadTexture();
@@ -1321,7 +1321,7 @@ namespace SonOfRobin
                 if (this.loadedTexturesCount < Preferences.maxTexturesToLoad) return;
             }
 
-            var cellsInCameraView = this.GetCellsInsideRect(camera.viewRect);
+            var cellsInCameraView = this.GetCellsInsideRect(viewRect: camera.viewRect, addPadding: true);
             var cellsToUnload = this.allCells.Where(cell => !cellsInCameraView.Contains(cell) && cell.boardGraphics.Texture != null).ToList();
 
             foreach (Cell cell in cellsToUnload)

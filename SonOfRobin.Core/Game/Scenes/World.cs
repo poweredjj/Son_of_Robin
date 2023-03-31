@@ -786,7 +786,7 @@ namespace SonOfRobin
             DateTime creationStarted = DateTime.Now;
             int createdDecorationsCount = 0;
 
-            foreach (Cell cell in this.Grid.GetCellsInsideRect(camera.viewRect).Where(cell => !cell.temporaryDecorationsCreated).OrderBy(x => this.random.Next()))
+            foreach (Cell cell in this.Grid.GetCellsInsideRect(viewRect: camera.viewRect, addPadding: true).Where(cell => !cell.temporaryDecorationsCreated).OrderBy(x => this.random.Next()))
             {
                 foreach (PieceCreationData pieceCreationData in this.creationDataListTemporaryDecorations)
                 {
