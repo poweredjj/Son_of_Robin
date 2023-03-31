@@ -35,6 +35,17 @@ namespace SonOfRobin
 
             if (!Preferences.highQualityWater) return;
 
+            bool waterFound = false;
+            foreach (Cell cell in this.world.Grid.GetCellsInsideRect(this.world.camera.viewRect, addPadding: false))
+            {
+                if (this.world.Grid.GetMinValueForCell(terrainName: Terrain.Name.Height, cellNoX: cell.cellNoX, cellNoY: cell.cellNoY) <= Terrain.waterLevelMax)
+                {
+                    waterFound = true;
+                    break;
+                } 
+            }
+            if (!waterFound) return;
+
             this.oceanFloor.Draw();
 
             SonOfRobinGame.SpriteBatch.End();
