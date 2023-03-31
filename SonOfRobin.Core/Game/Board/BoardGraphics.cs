@@ -97,33 +97,9 @@ namespace SonOfRobin
             this.savedToDisk = true;
         }
 
-        public static Texture2D GetMapTextureScaledForScreenSize(Grid grid, int width, int height)
-        {
-            var colorArray = new Color[width * height];
-
-            using (Image<Rgba32> image = CreateAndSaveEntireMapImage(grid))
-            {
-                image.Mutate(x => x.Resize(width, height));
-
-                for (int y = 0; y < height; y++)
-                {
-                    int yFactor = y * width;
-
-                    for (int x = 0; x < width; x++)
-                    {
-                        colorArray[yFactor + x] = new Color(r: image[x, y].R, g: image[x, y].G, b: image[x, y].B, alpha: image[x, y].A);
-                    }
-                }
-            }
-
-            Texture2D texture = new Texture2D(SonOfRobinGame.GfxDev, width, height);
-            texture.SetData(colorArray);
-            return texture;
-        }
-
         public static Image<Rgba32> CreateAndSaveEntireMapImage(Grid grid)
         {
-            string imagePath = Path.Combine(grid.gridTemplate.templatePath, "whole_island_map.png");
+            string imagePath = Path.Combine(grid.gridTemplate.templatePath, "whole_island.png");
 
             // trying to load saved image
 
@@ -168,7 +144,6 @@ namespace SonOfRobin
                 {
                     int sourceX = (int)(x / scaleMultiplier);
                     Color pixel = CreateTexturedPixel(grid: grid, x: sourceX, y: sourceY);
-                    if (pixel.A < 255) pixel = Blend2Colors(bottomColor: Map.waterColor, topColor: pixel);
                     rowColors[x] = pixel;
                 }
 
@@ -190,6 +165,32 @@ namespace SonOfRobin
             }
 
             return image;
+        }
+
+        public static Texture2D GetMapTextureScaledForScreenSize(Grid grid, int width, int height)
+        {
+            var colorArray = new Color[width * height];
+
+            using (Image<Rgba32> mapImage = CreateAndSaveEntireMapImage(grid))
+            {
+                var backgroundImage = new Image<Rgba32>(width, height, new Rgba32(Map.waterColor.R, Map.waterColor.G, Map.waterColor.B, Map.waterColor.A));
+                mapImage.Mutate(x => x.Resize(width, height));
+                backgroundImage.Mutate(ctx => ctx.DrawImage(mapImage, 1f)); // must be merged with water color, otherwise it will not look good (because of shaders)
+
+                Parallel.For(0, height, y =>
+                {
+                    int yFactor = y * width;
+
+                    for (int x = 0; x < width; x++)
+                    {
+                        colorArray[yFactor + x] = new Color(r: backgroundImage[x, y].R, g: backgroundImage[x, y].G, b: backgroundImage[x, y].B, alpha: backgroundImage[x, y].A);
+                    }
+                });
+            }
+
+            Texture2D texture = new Texture2D(SonOfRobinGame.GfxDev, width, height);
+            texture.SetData(colorArray);
+            return texture;
         }
 
         private Color[,] CreateBitmapFromTerrain(bool getColorGrid, bool saveAsPNG)
