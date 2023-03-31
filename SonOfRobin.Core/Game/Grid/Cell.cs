@@ -21,6 +21,7 @@ namespace SonOfRobin
         public readonly int yMax;
 
         public readonly Rectangle rect;
+        private Rectangle previewRect; // must match grid.WholeIslandPreviewScale
         public readonly Vector2 center;
 
         public readonly int width;
@@ -80,6 +81,12 @@ namespace SonOfRobin
             }
 
             this.allowedNames = new List<PieceTemplate.Name>();
+        }
+
+        public void CalculatePreviewRect()
+        {
+            float scale = this.grid.WholeIslandPreviewScale;
+            this.previewRect = new Rectangle((int)(this.rect.X * scale), (int)(this.rect.Y * scale), width: (int)(this.width * scale), height: (int)(this.height * scale));
         }
 
         public void FillAllowedNames()
@@ -151,8 +158,9 @@ namespace SonOfRobin
         public void CopyFromTemplate(Cell templateCell)
         {
             this.boardGraphics = new BoardGraphics(grid: this.grid, cell: this);
-            this.boardGraphics.ReplaceTexture(texture: templateCell.boardGraphics.Texture, textureSimulationColor: templateCell.boardGraphics.TextureSimulationColor);
+            this.boardGraphics.ReplaceTexture(texture: templateCell.boardGraphics.Texture);
             this.allowedNames.AddRange(templateCell.allowedNames);
+            this.previewRect = templateCell.previewRect;
         }
 
         public void UpdateBoardGraphics()
@@ -280,19 +288,10 @@ namespace SonOfRobin
             if (this.boardGraphics.Texture != null) SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, this.rect, waterColor);
         }
 
-        public void DrawBackground(bool drawSimulation, float opacity = 1f)
+        public void DrawBackground(float opacity = 1f)
         {
-            if (this.boardGraphics.Texture != null)
-            {
-                SonOfRobinGame.SpriteBatch.Draw(this.boardGraphics.Texture, this.rect, this.boardGraphics.Texture.Bounds, Color.White * opacity);
-            }
-            else
-            {
-                if (drawSimulation)
-                {
-                    SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, this.rect, SonOfRobinGame.WhiteRectangle.Bounds, this.boardGraphics.TextureSimulationColor * opacity);
-                }
-            }
+            if (this.boardGraphics.Texture != null) SonOfRobinGame.SpriteBatch.Draw(this.boardGraphics.Texture, this.rect, this.boardGraphics.Texture.Bounds, Color.White * opacity);
+            else SonOfRobinGame.SpriteBatch.Draw(this.grid.WholeIslandPreviewTexture, this.rect, this.previewRect, Color.White * opacity);
         }
     }
 }

@@ -34,25 +34,6 @@ namespace SonOfRobin
             this.textureSimulationCalculated = false;
         }
 
-        public Color TextureSimulationColor
-        {
-            get
-            {
-                if (!this.textureSimulationCalculated)
-                {
-                    this.TextureSimulationColor = CreateTexturedPixel(grid: this.cell.grid, x: this.cell.xCenter, y: this.cell.yCenter);
-                }
-
-                return this.textureSimulationColor;
-            }
-
-            private set
-            {
-                this.textureSimulationColor = value;
-                this.textureSimulationCalculated = true;
-            }
-        }
-
         public void LoadTexture()
         {
             if (this.Texture != null) return;
@@ -73,11 +54,10 @@ namespace SonOfRobin
             this.cell.grid.loadedTexturesCount++;
         }
 
-        public void ReplaceTexture(Texture2D texture, Color textureSimulationColor)
+        public void ReplaceTexture(Texture2D texture)
         {
             if (this.Texture != null) this.Texture.Dispose();
             this.Texture = texture;
-            this.TextureSimulationColor = textureSimulationColor;
         }
 
         public void UnloadTexture()
@@ -97,15 +77,20 @@ namespace SonOfRobin
             this.savedToDisk = true;
         }
 
+        public static string GetWholeIslandMapPath(Grid grid)
+        {
+            return Path.Combine(grid.gridTemplate.templatePath, "whole_island.png");
+        }
+
         public static Image<Rgba32> CreateAndSaveEntireMapImage(Grid grid)
         {
-            string imagePath = Path.Combine(grid.gridTemplate.templatePath, "whole_island.png");
+            string mapImagePath = GetWholeIslandMapPath(grid);
 
             // trying to load saved image
 
             try
             {
-                var loadedImage = Image.Load<Rgba32>(imagePath); // not "using", because it would return a disposed image
+                var loadedImage = Image.Load<Rgba32>(mapImagePath); // not "using", because it would return a disposed image
                 return loadedImage;
             }
             catch (FileNotFoundException) { }
@@ -115,10 +100,10 @@ namespace SonOfRobin
 
             try
             {
-                if (File.Exists(imagePath)) File.Delete(imagePath);
+                if (File.Exists(mapImagePath)) File.Delete(mapImagePath);
             }
             catch (Exception ex)
-            { MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Error deleting file {imagePath}: {ex.Message}"); }
+            { MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Error deleting file {mapImagePath}: {ex.Message}"); }
 
             // generating new image
 
@@ -133,7 +118,7 @@ namespace SonOfRobin
             float multiplierY = (float)height / (float)grid.height;
             float scaleMultiplier = Math.Min(multiplierX, multiplierY);
 
-            var image = new Image<Rgba32>(width, height);
+            var imageWithTransparency = new Image<Rgba32>(width, height);
 
             Parallel.For(0, height, y =>
             {
@@ -149,22 +134,22 @@ namespace SonOfRobin
 
                 for (int x = 0; x < width; x++)
                 {
-                    image[x, y] = new Rgba32(rowColors[x].R, rowColors[x].G, rowColors[x].B, rowColors[x].A);
+                    imageWithTransparency[x, y] = new Rgba32(rowColors[x].R, rowColors[x].G, rowColors[x].B, rowColors[x].A);
                 }
             });
 
             // saving image
 
-            using (var fileStream = new FileStream(imagePath, FileMode.Create))
+            using (var fileStream = new FileStream(mapImagePath, FileMode.Create))
             {
                 try
                 {
-                    image.Save(fileStream, new PngEncoder() { CompressionLevel = PngCompressionLevel.Level9 });
+                    imageWithTransparency.Save(fileStream, new PngEncoder() { CompressionLevel = PngCompressionLevel.Level9 });
                 }
-                catch (IOException) { } // write error
+                catch (IOException ex) { MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Error saving imagee {mapImagePath}: {ex.Message}"); } // write error
             }
 
-            return image;
+            return imageWithTransparency;
         }
 
         public static Texture2D GetMapTextureScaledForScreenSize(Grid grid, int width, int height)

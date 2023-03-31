@@ -17,7 +17,6 @@ namespace SonOfRobin
 
         private readonly World world;
         private readonly Camera camera;
-        private readonly Rectangle worldRect;
         private readonly MapOverlay mapOverlay;
         private readonly EffInstance sketchEffect;
         private readonly Sound soundMarkerPlace = new Sound(name: SoundData.Name.Ding4, pitchChange: 0f);
@@ -46,7 +45,6 @@ namespace SonOfRobin
             this.mapOverlay = new MapOverlay(this);
             this.AddLinkedScene(this.mapOverlay);
             this.world = world;
-            this.worldRect = new Rectangle(x: 0, y: 0, width: world.width, height: world.height);
             this.camera = new Camera(world: this.world, useWorldScale: false, useFluidMotionForMove: false, useFluidMotionForZoom: true, keepInWorldBounds: false);
             this.mode = MapMode.Off;
             this.dirtyFog = true;
@@ -123,6 +121,7 @@ namespace SonOfRobin
                 Rectangle sourceRectangle = new Rectangle(0, 0, width, height);
                 SonOfRobinGame.SpriteBatch.Draw(mapTexture, sourceRectangle, sourceRectangle, Color.White);
                 SonOfRobinGame.SpriteBatch.End();
+                mapTexture.Dispose();
 
                 this.dirtyBackground = false;
                 this.dirtyFog = true;
@@ -389,7 +388,7 @@ namespace SonOfRobin
 
             // drawing paper map background texture
 
-            Rectangle extendedMapRect = this.worldRect;
+            Rectangle extendedMapRect = this.world.worldRect;
             extendedMapRect.Inflate(extendedMapRect.Width * 0.1f, extendedMapRect.Height * 0.1f);
 
             SonOfRobinGame.SpriteBatch.Draw(AnimData.framesForPkgs[AnimData.PkgName.Map].texture, extendedMapRect, Color.White);
@@ -431,7 +430,7 @@ namespace SonOfRobin
                 SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix, sortMode: SpriteSortMode.Immediate);
                 this.sketchEffect.TurnOn(currentUpdate: SonOfRobinGame.CurrentUpdate);
 
-                SonOfRobinGame.SpriteBatch.Draw(this.lowResWholeCombinedGfx, this.worldRect, Color.White);
+                SonOfRobinGame.SpriteBatch.Draw(this.lowResWholeCombinedGfx, this.world.worldRect, Color.White);
                 SonOfRobinGame.SpriteBatch.End();
             }
 
@@ -452,7 +451,7 @@ namespace SonOfRobin
                 this.sketchEffect.TurnOn(currentUpdate: SonOfRobinGame.CurrentUpdate); // turning effects back on
                 foreach (Cell cell in cellsToDraw)
                 {
-                    cell.DrawBackground(drawSimulation: false, opacity: 1f);
+                    if (cell.boardGraphics.Texture != null) cell.DrawBackground(opacity: 1f);
                 }
 
                 SonOfRobinGame.SpriteBatch.End();

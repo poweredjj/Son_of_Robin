@@ -40,6 +40,7 @@ namespace SonOfRobin
         public readonly Random random;
         public readonly int width;
         public readonly int height;
+        public readonly Rectangle worldRect;
         public readonly Camera camera;
         private RenderTarget2D darknessMask;
         public readonly Map map;
@@ -117,6 +118,7 @@ namespace SonOfRobin
             this.swayManager = new SwayManager(this);
             this.width = width;
             this.height = height;
+            this.worldRect = new Rectangle(x: 0, y: 0, width: this.width, height: this.height);
             this.viewParams.Width = width; // it does not need to be updated, because world size is constant
             this.viewParams.Height = height; // it does not need to be updated, because world size is constant
 
@@ -477,6 +479,7 @@ namespace SonOfRobin
 
         public override void Remove()
         {
+            this.Grid.Destroy();
             Sound.StopAll();
             base.Remove();
         }

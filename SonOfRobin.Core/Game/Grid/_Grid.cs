@@ -1,10 +1,15 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using SixLabors.ImageSharp;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Color = Microsoft.Xna.Framework.Color;
+using Point = Microsoft.Xna.Framework.Point;
+using Rectangle = Microsoft.Xna.Framework.Rectangle;
 
 namespace SonOfRobin
 {
@@ -50,6 +55,8 @@ namespace SonOfRobin
         public readonly int cellWidth;
         public readonly int cellHeight;
         public readonly int resDivider;
+        public Texture2D WholeIslandPreviewTexture { get; private set; }
+        public float WholeIslandPreviewScale { get; private set; }
 
         private readonly Dictionary<Terrain.Name, Terrain> terrainByName;
         private ExtBoardProps extBoardProps;
@@ -129,6 +136,13 @@ namespace SonOfRobin
             }
 
             this.PrepareNextStage();
+        }
+
+        public void Destroy()
+        {
+            // for properly disposing used objects
+            if (this.WholeIslandPreviewTexture != null) this.WholeIslandPreviewTexture.Dispose();
+            this.WholeIslandPreviewTexture = null;
         }
 
         public bool ProcessingStageComplete
@@ -219,6 +233,15 @@ namespace SonOfRobin
 
             this.extBoardProps = templateGrid.extBoardProps;
             this.extBoardProps.AttachToNewGrid(this);
+
+            if (this.WholeIslandPreviewTexture != null) this.WholeIslandPreviewTexture.Dispose();
+
+            this.WholeIslandPreviewTexture = new Texture2D(templateGrid.WholeIslandPreviewTexture.GraphicsDevice, templateGrid.WholeIslandPreviewTexture.Width, templateGrid.WholeIslandPreviewTexture.Height);
+
+            // Copy the pixel data from the original to the new texture
+            Color[] pixelData = new Color[templateGrid.WholeIslandPreviewTexture.Width * templateGrid.WholeIslandPreviewTexture.Height];
+            templateGrid.WholeIslandPreviewTexture.GetData(pixelData);
+            this.WholeIslandPreviewTexture.SetData(pixelData);
 
             for (int x = 0; x < templateGrid.noOfCellsX; x++)
             {
@@ -399,7 +422,17 @@ namespace SonOfRobin
 
                 case Stage.MakeEntireMapImage:
 
-                    BoardGraphics.CreateAndSaveEntireMapImage(this);
+                    string mapImagePath = BoardGraphics.GetWholeIslandMapPath(this);
+                    if (!File.Exists(mapImagePath)) BoardGraphics.CreateAndSaveEntireMapImage(this);
+
+                    this.WholeIslandPreviewTexture = GfxConverter.LoadTextureFromPNG(mapImagePath);
+                    this.WholeIslandPreviewScale = (float)WholeIslandPreviewTexture.Width / (float)this.width;
+
+                    Parallel.ForEach(this.allCells, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, cell =>
+                    {
+                        cell.CalculatePreviewRect();// needs to be invoked after creating whole map preview texture 
+                    });
+
                     this.cellsToProcessOnStart.Clear();
 
                     break;
@@ -1050,10 +1083,9 @@ namespace SonOfRobin
             bool updateFog = false;
             Rectangle cameraRect = camera.viewRect;
 
-            var visibleCells = this.GetCellsInsideRect(camera.viewRect);
-            foreach (Cell cell in visibleCells)
+            foreach (Cell cell in this.GetCellsInsideRect(camera.viewRect))
             {
-                cell.DrawBackground(drawSimulation: true);
+                cell.DrawBackground();
 
                 if (this.world.MapEnabled && !cell.VisitedByPlayer && cameraRect.Intersects(cell.rect) && camera.IsTrackingPlayer && this.world.Player.CanSeeAnything)
                 {
