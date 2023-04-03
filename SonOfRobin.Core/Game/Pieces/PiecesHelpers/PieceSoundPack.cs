@@ -35,8 +35,10 @@ namespace SonOfRobin
         {
             var playingLoopsList = (List<object>)soundPackData;
 
-            foreach (Action action in playingLoopsList)
+            foreach (object actionObj in playingLoopsList)
             {
+                Action action = (Action)(Int64)actionObj;
+
                 Sound sound = this.soundDict[action];
 
                 if (sound.isEmpty) sound.playAfterAssign = true;
