@@ -238,6 +238,8 @@ namespace SonOfRobin
             SoundNightCrickets,
             SoundNoonCicadas,
             SoundLava,
+
+            Lightning,
         }
 
         public static readonly Name[] allNames = (Name[])Enum.GetValues(typeof(Name));
@@ -2583,6 +2585,17 @@ namespace SonOfRobin
                         lavalight.sprite.color = Color.Orange;
 
                         return lavalight;
+                    }
+
+                case Name.Lightning:
+                    {
+                        int destructionDelay = 12;
+
+                        VisualEffect lightning = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Empty, minDistance: 0, maxDistance: 500, destructionDelay: destructionDelay, allowedTerrain: new AllowedTerrain(), generation: generation, readableName: "lightning", description: "Lightning", activeState: BoardPiece.State.Empty, visible: true, lightEngine: new LightEngine(size: 4000, opacity: 0.85f, colorActive: true, color: new Color(181, 237, 255), addedGfxRectMultiplier: 1500f, isActive: true, castShadows: true), ignoresCollisions: true, serialize: false);
+
+                        new OpacityFade(sprite: lightning.sprite, destOpacity: 0, duration: destructionDelay, destroyPiece: true);
+
+                        return lightning;
                     }
 
                 case Name.SwampGas:

@@ -63,7 +63,7 @@ namespace SonOfRobin
     public class Weather
     {
         public enum WeatherType
-        { Wind, Clouds, Rain, Fog }
+        { Wind, Clouds, Rain, Lightning, Fog }
 
         public static readonly WeatherType[] allTypes = (WeatherType[])Enum.GetValues(typeof(WeatherType));
         private static readonly DateTime veryOldDate = new DateTime(1900, 1, 1);
@@ -75,6 +75,7 @@ namespace SonOfRobin
         private readonly List<WeatherEvent> weatherEvents;
         private DateTime forecastEnd;
         private readonly Dictionary<WeatherType, float> currentIntensityForType;
+        private readonly Dictionary<WeatherType, float> lastIntensityForType;
         private bool firstForecastCreated;
         private readonly Sound windSound;
         private readonly Sound rainSound;
@@ -83,12 +84,17 @@ namespace SonOfRobin
         public float SunVisibility { get; private set; }
         public float WindPercentage { get; private set; }
         public float RainPercentage { get; private set; }
-        public bool IsRaining { get { return this.RainPercentage > 0.2f; } }
+        public float LightningPercentage { get; private set; }
+
+        public bool IsRaining
+        { get { return this.RainPercentage > 0.2f; } }
+
         public float WindOriginX { get; private set; }
         public float WindOriginY { get; private set; }
         public DateTime NextGlobalWindBlow { get; private set; }
         public DateTime NextLocalizedWindBlow { get; private set; }
         private int rainCooldownFramesLeft;
+        public Vector2 LightningPosMultiplier { get; private set; } // to be multiplied by sunPos
 
         public Weather(World world, IslandClock islandClock)
         {
@@ -109,9 +115,11 @@ namespace SonOfRobin
             this.WindPercentage = 0f;
 
             this.currentIntensityForType = new Dictionary<WeatherType, float>();
+            this.lastIntensityForType = new Dictionary<WeatherType, float>();
             foreach (WeatherType type in allTypes)
             {
                 this.currentIntensityForType[type] = 0;
+                this.lastIntensityForType[type] = 0;
             }
 
             this.windSound = new Sound(name: SoundData.Name.WeatherWind, maxPitchVariation: 0.5f, volume: 0.2f, isLooped: true, ignore3DAlways: true);
@@ -150,18 +158,35 @@ namespace SonOfRobin
             DateTime islandDateTime = this.islandClock.IslandDateTime;
             weatherEvents.RemoveAll(e => e.endTime < islandDateTime);
 
+            this.UpdateCurrentIntensities();
+
             this.CloudsPercentage = Math.Min(this.GetIntensityForWeatherType(WeatherType.Clouds) * 2, 1);
             this.FogPercentage = this.GetIntensityForWeatherType(WeatherType.Fog);
             this.SunVisibility = Math.Max(0, 1f - (this.CloudsPercentage + (this.FogPercentage * 0.5f)));
-
             this.WindPercentage = this.GetIntensityForWeatherType(WeatherType.Wind);
             this.RainPercentage = this.GetIntensityForWeatherType(WeatherType.Rain);
+            this.LightningPercentage = this.GetIntensityForWeatherType(WeatherType.Lightning);
+
             this.ProcessGlobalWind(islandDateTime);
             this.ProcessRain();
-
-            this.UpdateCurrentIntensities();
+            this.ProcessLightning();
 
             if (this.forecastEnd < islandDateTime + minForecastDuration) this.GenerateForecast();
+        }
+
+        private void ProcessLightning()
+        {
+            if (this.lastIntensityForType[WeatherType.Lightning] > 0 && this.LightningPercentage == 0)
+            {
+                // setting a random camera corner
+                var xList = new List<float> { -1, 1 };
+                var yList = new List<float> { 0, 1 }; // should not be negative
+
+                float x = xList[SonOfRobinGame.random.Next(0, xList.Count)];
+                float y = yList[SonOfRobinGame.random.Next(0, yList.Count)];
+
+                this.LightningPosMultiplier = new Vector2(x, y);
+            }
         }
 
         private void ProcessRain()
@@ -378,6 +403,19 @@ namespace SonOfRobin
                 }
             }
 
+            // adding lightning
+            foreach (WeatherEvent weatherEvent in this.weatherEvents.ToList())
+            {
+                if (weatherEvent.type == WeatherType.Rain && weatherEvent.intensity >= 0.6f)
+                {
+                    TimeSpan minDuration = TimeSpan.FromTicks((long)(weatherEvent.duration.Ticks * 0.4d));
+                    TimeSpan maxDuration = TimeSpan.FromTicks((long)(weatherEvent.duration.Ticks * 0.9d));
+                    TimeSpan maxGap = TimeSpan.FromTicks(weatherEvent.duration.Ticks - maxDuration.Ticks);
+
+                    this.AddNewWeatherEvents(type: WeatherType.Lightning, startTime: weatherEvent.startTime, endTime: weatherEvent.endTime, minDuration: TimeSpan.FromMilliseconds(200), maxDuration: TimeSpan.FromSeconds(2), minGap: TimeSpan.FromSeconds(1), maxGap: TimeSpan.FromMinutes(15), maxIntensity: rainMaxIntensity, addChanceFactor: addChanceFactor);
+                }
+            }
+
             // adding fog
             var morningTimes = Helpers.GetTimeOfDayOccurrences(startTime: islandDateTime, endTime: this.forecastEnd, checkTimeStart: TimeSpan.FromHours(4), checkTimeEnd: TimeSpan.FromHours(6));
             var eveningTimes = Helpers.GetTimeOfDayOccurrences(startTime: islandDateTime, endTime: this.forecastEnd, checkTimeStart: TimeSpan.FromHours(16), checkTimeEnd: TimeSpan.FromHours(18));
@@ -431,16 +469,18 @@ namespace SonOfRobin
 
         private void UpdateCurrentIntensities()
         {
-            DateTime islandDateTime = this.islandClock.IslandDateTime;
+            foreach (WeatherType type in allTypes)
+            {
+                this.lastIntensityForType[type] = this.currentIntensityForType[type];
+                this.currentIntensityForType[type] = 0;
+            }
 
-            foreach (WeatherType type in this.currentIntensityForType.Keys.ToList()) this.currentIntensityForType[type] = 0;
+            DateTime islandDateTime = this.islandClock.IslandDateTime;
             foreach (WeatherEvent weatherEvent in this.weatherEvents)
             {
                 this.currentIntensityForType[weatherEvent.type] = Math.Max(this.currentIntensityForType[weatherEvent.type], weatherEvent.GetIntensity(islandDateTime));
             }
         }
-
-        //private readonly Dictionary<WeatherType, float> currentIntensityForType;
 
         public Dictionary<string, Object> Serialize()
         {
@@ -472,6 +512,12 @@ namespace SonOfRobin
             this.weatherEvents.AddRange(weatherEvents);
 
             this.currentIntensityForType.Clear();
+
+            foreach (WeatherType type in allTypes)
+            {
+                this.currentIntensityForType[type] = 0; // for old saves compatibility
+            }
+
             foreach (var kvp in (Dictionary<WeatherType, float>)weatherData["currentIntensityForType"])
             {
                 this.currentIntensityForType[kvp.Key] = kvp.Value;

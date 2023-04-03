@@ -107,7 +107,14 @@ namespace SonOfRobin
             {
                 if (Keyboard.HasBeenPressed(Keys.D1))
                 {
-                    BoardPiece piece = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: world.Player.sprite.position, templateName: PieceTemplate.Name.ScytheStone, closestFreeSpot: true);
+                    Vector2 position = new Vector2(
+                        world.camera.viewRect.Left + (world.camera.viewRect.Width / 4),
+                        world.camera.viewRect.Top + (world.camera.viewRect.Height / 4));
+
+                    if (world.random.Next(0, 2) == 0) position.X += world.camera.viewRect.Width / 2;
+                    if (world.random.Next(0, 2) == 0) position.Y += world.camera.viewRect.Height / 2;
+
+                    BoardPiece piece = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: position, templateName: PieceTemplate.Name.Lightning, closestFreeSpot: true);
                 }
 
                 if (Keyboard.HasBeenPressed(Keys.D2))
@@ -370,7 +377,7 @@ namespace SonOfRobin
             {
                 if (world == null) return;
 
-                world.weather.AddEvent(new WeatherEvent(type: Weather.WeatherType.Rain, intensity: 0.45f, startTime: world.islandClock.IslandDateTime, duration: TimeSpan.FromMinutes(30), transitionLength: TimeSpan.FromMinutes(8)));
+                world.weather.AddEvent(new WeatherEvent(type: Weather.WeatherType.Lightning, intensity: 1f, startTime: world.islandClock.IslandDateTime, duration: TimeSpan.FromSeconds(61), transitionLength: TimeSpan.FromSeconds(30)));
             }
 
             if (Keyboard.HasBeenPressed(Keys.F2))
@@ -416,7 +423,6 @@ namespace SonOfRobin
             //}
 
             //if (Keyboard.HasBeenPressed(Keys.F2)) SonOfRobinGame.FullScreenProgressBar.TurnOff();
-
 
             if (Keyboard.HasBeenPressed(Keys.F4) || VirtButton.HasButtonBeenPressed(VButName.DebugClockAdvance))
             {

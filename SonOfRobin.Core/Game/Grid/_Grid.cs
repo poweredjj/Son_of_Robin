@@ -1099,7 +1099,7 @@ namespace SonOfRobin
         {
             if (Preferences.drawSunShadows)
             {
-                AmbientLight.SunLightData sunLightData = AmbientLight.SunLightData.CalculateSunLight(this.world.islandClock.IslandDateTime);
+                AmbientLight.SunLightData sunLightData = AmbientLight.SunLightData.CalculateSunLight(currentDateTime: this.world.islandClock.IslandDateTime, weather: this.world.weather);
                 if (sunLightData.sunShadowsColor != Color.Transparent)
                 {
                     float sunVisibility = this.world.weather.SunVisibility;

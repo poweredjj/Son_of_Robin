@@ -59,7 +59,11 @@
         {
             this.sprite.opacity = this.destOpacity;
             this.sprite.opacityFade = null;
-            if (this.destroyPiece) this.sprite.boardPiece.Destroy();
+            if (this.destroyPiece)
+            {
+                if (this.sprite.lightEngine != null) this.sprite.lightEngine.Deactivate(); // to avoid flashing on the last frame
+                this.sprite.boardPiece.Destroy();
+            }
         }
     }
 }
