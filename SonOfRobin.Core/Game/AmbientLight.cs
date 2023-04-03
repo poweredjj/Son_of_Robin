@@ -40,12 +40,12 @@ namespace SonOfRobin
                 TimeSpan currentTimeOfDay = currentDateTime.TimeOfDay;
                 if ((currentTimeOfDay < TimeSpan.FromHours(4) || currentTimeOfDay > TimeSpan.FromHours(20)) && weather.LightningPercentage == 0) return noSun;  // to avoid checking these ranges
 
-                if (weather.LightningPercentage > 0)
+                if (weather.LightningPercentage > 0.1f)
                 {
                     int sunPosX = (int)(weather.LightningPosMultiplier.X * 400);
                     int sunPosY = (int)(weather.LightningPosMultiplier.Y * -400);
 
-                    return new SunLightData(timeOfDay: currentTimeOfDay, sunPos: new Vector2(sunPosX, sunPosY), sunShadowsLength: 2.5f, sunShadowsColor: Color.Black * Math.Min(weather.LightningPercentage * 2, 0.8f));
+                    return new SunLightData(timeOfDay: currentTimeOfDay, sunPos: new Vector2(sunPosX, sunPosY), sunShadowsLength: 2.5f, sunShadowsColor: Color.Black * Math.Min(weather.LightningPercentage * 2, 0.5f));
                 }
 
                 SunLightData prevLightData, nextLightData;
@@ -131,23 +131,27 @@ namespace SonOfRobin
         {
             AmbientLightData rawAmbientLightData = CalculateRawLightAndDarknessColors(currentDateTime: currentDateTime);
 
+            if (weather.CloudsPercentage == 0 && weather.LightningPercentage == 0) return rawAmbientLightData;
+
             float cloudsPercentage = weather.CloudsPercentage;
             float lightningPercentage = weather.LightningPercentage;
 
-            if (cloudsPercentage == 0 && lightningPercentage == 0) return rawAmbientLightData;
-
             Color lightColor = rawAmbientLightData.lightColor;
+            Color darknessColor = rawAmbientLightData.darknessColor;
+
             if (cloudsPercentage > 0)
             {
                 lightColor = Helpers.Blend2Colors(firstColor: lightColor, secondColor: Color.Transparent, firstColorOpacity: 1 - cloudsPercentage, secondColorOpacity: cloudsPercentage);
+
+                darknessColor = Helpers.DarkenFirstColorWithSecond(firstColor: darknessColor, secondColor: Color.Black * 0.4f, firstColorOpacity: 1 - cloudsPercentage, secondColorOpacity: cloudsPercentage);
             }
 
             if (lightningPercentage > 0)
             {
-                lightColor = Helpers.Blend2Colors(firstColor: lightColor, secondColor: Color.White * 1f, firstColorOpacity: 1 - lightningPercentage, secondColorOpacity: lightningPercentage);
-            }
+                lightColor = Helpers.Blend2Colors(firstColor: lightColor, secondColor: new Color(181, 237, 255), firstColorOpacity: 1 - lightningPercentage, secondColorOpacity: lightningPercentage);
 
-            Color darknessColor = Helpers.DarkenFirstColorWithSecond(firstColor: rawAmbientLightData.darknessColor, secondColor: Color.Black * 0.4f, firstColorOpacity: 1 - cloudsPercentage, secondColorOpacity: cloudsPercentage);
+                darknessColor.A = (byte)((1 - lightningPercentage) * darknessColor.A);
+            }
 
             return new AmbientLightData(timeOfDay: currentDateTime.TimeOfDay, darknessColor: darknessColor, lightColor: lightColor);
         }

@@ -1560,8 +1560,9 @@ namespace SonOfRobin
             }
 
             float fogPercentage = this.weather.FogPercentage;
+            float lightningPercentage = this.weather.LightningPercentage;
 
-            if (ambientLightData.darknessColor != Color.Transparent || fogPercentage > 0)
+            if (ambientLightData.darknessColor != Color.Transparent || fogPercentage > 0 || lightningPercentage > 0)
             {
                 SonOfRobinGame.SpriteBatch.End();
                 SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
@@ -1569,6 +1570,7 @@ namespace SonOfRobin
                 // drawing fog
 
                 if (fogPercentage > 0) SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, extendedViewRect, Color.White * fogPercentage * 0.75f);
+                if (lightningPercentage > 0) SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, extendedViewRect, new Color(240, 251, 255) * lightningPercentage * 0.7f);
 
                 // drawing darkness
 

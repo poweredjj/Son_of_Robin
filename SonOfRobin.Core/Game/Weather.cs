@@ -75,7 +75,7 @@ namespace SonOfRobin
         private readonly List<WeatherEvent> weatherEvents;
         private DateTime forecastEnd;
         private readonly Dictionary<WeatherType, float> currentIntensityForType;
-        private readonly Dictionary<WeatherType, float> lastIntensityForType;
+        private readonly Dictionary<WeatherType, float> previousIntensityForType;
         private bool firstForecastCreated;
         private readonly Sound windSound;
         private readonly Sound rainSound;
@@ -115,11 +115,11 @@ namespace SonOfRobin
             this.WindPercentage = 0f;
 
             this.currentIntensityForType = new Dictionary<WeatherType, float>();
-            this.lastIntensityForType = new Dictionary<WeatherType, float>();
+            this.previousIntensityForType = new Dictionary<WeatherType, float>();
             foreach (WeatherType type in allTypes)
             {
                 this.currentIntensityForType[type] = 0;
-                this.lastIntensityForType[type] = 0;
+                this.previousIntensityForType[type] = 0;
             }
 
             this.windSound = new Sound(name: SoundData.Name.WeatherWind, maxPitchVariation: 0.5f, volume: 0.2f, isLooped: true, ignore3DAlways: true);
@@ -166,6 +166,11 @@ namespace SonOfRobin
             this.WindPercentage = this.GetIntensityForWeatherType(WeatherType.Wind);
             this.RainPercentage = this.GetIntensityForWeatherType(WeatherType.Rain);
             this.LightningPercentage = this.GetIntensityForWeatherType(WeatherType.Lightning);
+            if (this.previousIntensityForType[WeatherType.Lightning] < this.currentIntensityForType[WeatherType.Lightning])
+            {
+                // lightning in-transition should be ignored
+                this.LightningPercentage = 0;
+            }
 
             this.ProcessGlobalWind(islandDateTime);
             this.ProcessRain();
@@ -176,7 +181,7 @@ namespace SonOfRobin
 
         private void ProcessLightning()
         {
-            if (this.lastIntensityForType[WeatherType.Lightning] > 0 && this.LightningPercentage == 0)
+            if (this.previousIntensityForType[WeatherType.Lightning] > 0 && this.LightningPercentage == 0)
             {
                 // setting a random camera corner
                 var xList = new List<float> { -1, 1 };
@@ -408,11 +413,7 @@ namespace SonOfRobin
             {
                 if (weatherEvent.type == WeatherType.Rain && weatherEvent.intensity >= 0.6f)
                 {
-                    TimeSpan minDuration = TimeSpan.FromTicks((long)(weatherEvent.duration.Ticks * 0.4d));
-                    TimeSpan maxDuration = TimeSpan.FromTicks((long)(weatherEvent.duration.Ticks * 0.9d));
-                    TimeSpan maxGap = TimeSpan.FromTicks(weatherEvent.duration.Ticks - maxDuration.Ticks);
-
-                    this.AddNewWeatherEvents(type: WeatherType.Lightning, startTime: weatherEvent.startTime, endTime: weatherEvent.endTime, minDuration: TimeSpan.FromMilliseconds(200), maxDuration: TimeSpan.FromSeconds(2), minGap: TimeSpan.FromSeconds(1), maxGap: TimeSpan.FromMinutes(15), maxIntensity: rainMaxIntensity, addChanceFactor: addChanceFactor);
+                    this.AddNewWeatherEvents(type: WeatherType.Lightning, startTime: weatherEvent.startTime, endTime: weatherEvent.endTime, minDuration: TimeSpan.FromSeconds(30), maxDuration: TimeSpan.FromSeconds(50), minGap: TimeSpan.FromSeconds(1), maxGap: TimeSpan.FromMinutes(15), maxIntensity: 1f, addChanceFactor: addChanceFactor, randomizeIntensity: false);
                 }
             }
 
@@ -432,7 +433,7 @@ namespace SonOfRobin
             }
         }
 
-        private void AddNewWeatherEvents(WeatherType type, DateTime startTime, DateTime endTime, TimeSpan minDuration, TimeSpan maxDuration, TimeSpan minGap, TimeSpan maxGap, float maxIntensity, float addChanceFactor = 1)
+        private void AddNewWeatherEvents(WeatherType type, DateTime startTime, DateTime endTime, TimeSpan minDuration, TimeSpan maxDuration, TimeSpan minGap, TimeSpan maxGap, float maxIntensity, float addChanceFactor = 1, bool randomizeIntensity = true)
         {
             DateTime timeCursor = startTime;
 
@@ -457,7 +458,7 @@ namespace SonOfRobin
                 TimeSpan minTransition = TimeSpan.FromTicks((long)(maxTransition.Ticks / 3));
                 TimeSpan transition = TimeSpan.FromTicks((long)(world.random.NextDouble() * (maxTransition - minTransition).Ticks) + minTransition.Ticks);
 
-                float intensity = Helpers.GetRandomFloatForRange(random: this.world.random, minVal: 0.5f, maxVal: maxIntensity);
+                float intensity = randomizeIntensity ? Helpers.GetRandomFloatForRange(random: this.world.random, minVal: 0.5f, maxVal: maxIntensity) : maxIntensity;
 
                 bool add = addChanceFactor == 0 || world.random.NextDouble() >= addChanceFactor;
                 if (add) this.weatherEvents.Add(new WeatherEvent(type: type, intensity: intensity, startTime: timeCursor, duration: duration, transitionLength: transition));
@@ -471,7 +472,7 @@ namespace SonOfRobin
         {
             foreach (WeatherType type in allTypes)
             {
-                this.lastIntensityForType[type] = this.currentIntensityForType[type];
+                this.previousIntensityForType[type] = this.currentIntensityForType[type];
                 this.currentIntensityForType[type] = 0;
             }
 

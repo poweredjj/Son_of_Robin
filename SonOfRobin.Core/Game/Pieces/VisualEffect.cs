@@ -69,6 +69,7 @@ namespace SonOfRobin
             this.rainStep = (rainTargetPos - this.sprite.position) / this.rainStepsLeft;
 
             this.activeState = State.RainFall;
+            new WorldEvent(eventName: WorldEvent.EventName.Destruction, world: this.world, delay: this.rainStepsLeft, boardPiece: this); // to ensure eventual destruction
         }
 
         public override void SM_RainFall()

@@ -107,14 +107,7 @@ namespace SonOfRobin
             {
                 if (Keyboard.HasBeenPressed(Keys.D1))
                 {
-                    Vector2 position = new Vector2(
-                        world.camera.viewRect.Left + (world.camera.viewRect.Width / 4),
-                        world.camera.viewRect.Top + (world.camera.viewRect.Height / 4));
-
-                    if (world.random.Next(0, 2) == 0) position.X += world.camera.viewRect.Width / 2;
-                    if (world.random.Next(0, 2) == 0) position.Y += world.camera.viewRect.Height / 2;
-
-                    BoardPiece piece = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: position, templateName: PieceTemplate.Name.Lightning, closestFreeSpot: true);
+                    BoardPiece piece = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: world.Player.sprite.position, templateName: PieceTemplate.Name.ShovelIron, closestFreeSpot: true);
                 }
 
                 if (Keyboard.HasBeenPressed(Keys.D2))
@@ -377,7 +370,7 @@ namespace SonOfRobin
             {
                 if (world == null) return;
 
-                world.weather.AddEvent(new WeatherEvent(type: Weather.WeatherType.Lightning, intensity: 1f, startTime: world.islandClock.IslandDateTime, duration: TimeSpan.FromSeconds(61), transitionLength: TimeSpan.FromSeconds(30)));
+                world.weather.AddEvent(new WeatherEvent(type: Weather.WeatherType.Lightning, intensity: 1f, startTime: world.islandClock.IslandDateTime, duration: TimeSpan.FromSeconds(50), transitionLength: TimeSpan.FromSeconds(22)));
             }
 
             if (Keyboard.HasBeenPressed(Keys.F2))
