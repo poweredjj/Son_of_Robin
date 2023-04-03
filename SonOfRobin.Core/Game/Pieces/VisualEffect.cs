@@ -57,8 +57,15 @@ namespace SonOfRobin
             Vector2 rainTargetPos = new Vector2(this.sprite.position.X, this.sprite.position.Y + distance);
 
             float rainPercentage = this.world.weather.RainPercentage;
+            if (rainPercentage == 0)
+            {
+                // if the raindrop is processed after the rain has stopped
+                this.Destroy();
+                return;
+            }
 
             this.rainStepsLeft = (int)(this.world.random.Next(15, 100) / (4 * rainPercentage));
+            this.rainStepsLeft = Math.Max(this.rainStepsLeft, 5); // to avoid value 0, that would make the rain stay forever
             this.rainStep = (rainTargetPos - this.sprite.position) / this.rainStepsLeft;
 
             this.activeState = State.RainFall;
