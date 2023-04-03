@@ -2,13 +2,15 @@
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
 namespace SonOfRobin
 {
     public class InitialLoader : Scene
     {
         public enum Step
-        { Initial, LoadEffects, LoadFonts, CreateControlTips, LoadSounds, LoadTextures, CreateSeamless, CreateAnims, LoadKeysGfx, CreateScenes, MakeItemsInfo, MakeCraftRecipes, MakeDemoWorld, SetControlTips, OpenMainMenu }
+        { Initial, LoadEffects, LoadFonts, CreateControlTips, LoadSounds, LoadTextures, CreateSeamless, CreateAnims, LoadKeysGfx, CreateScenes, MakeItemsInfo, MakeCraftRecipes, MakeDemoWorld, SetControlTips, DeleteObsoleteTemplates, OpenMainMenu }
 
         private static readonly int allStepsCount = ((Step[])Enum.GetValues(typeof(Step))).Length;
 
@@ -27,6 +29,7 @@ namespace SonOfRobin
             { Step.MakeCraftRecipes, "preparing craft recipes" },
             { Step.MakeDemoWorld, "making demo world" },
             { Step.SetControlTips, "setting control tips" },
+            { Step.DeleteObsoleteTemplates, "deleting obsolete templates" },
             { Step.OpenMainMenu, "opening main menu" },
         };
 
@@ -124,6 +127,42 @@ namespace SonOfRobin
 
                 case Step.SetControlTips:
                     Preferences.ControlTipsScheme = Preferences.ControlTipsScheme; // to load default control tips
+                    break;
+
+                case Step.DeleteObsoleteTemplates:
+
+
+                    var templatePaths = Directory.GetDirectories(SonOfRobinGame.worldTemplatesPath);
+                    var existingWorlds = Scene.GetAllScenesOfType(typeof(World)).Select(worldScene => (World)worldScene).ToList();
+                    var correctSaves = SaveHeaderManager.CorrectSaves;
+                    var pathsToKeep = new List<string>();
+
+                    foreach (string templatePath in templatePaths)
+                    {
+                        GridTemplate gridTemplate = GridTemplate.LoadHeader(templatePath);
+                        if (gridTemplate == null || gridTemplate.IsObsolete) continue;
+
+                        if (correctSaves.Where(saveHeader =>
+                        saveHeader.seed == gridTemplate.seed &&
+                        saveHeader.width == gridTemplate.width &&
+                        saveHeader.height == gridTemplate.height
+                        ).ToList().Count > 0) pathsToKeep.Add(templatePath);
+
+                        if (existingWorlds.Where(currentWorld =>
+                        currentWorld.seed == gridTemplate.seed &&
+                        currentWorld.width == gridTemplate.width &&
+                        currentWorld.height == gridTemplate.height
+                        ).ToList().Count > 0) pathsToKeep.Add(templatePath);
+                    }
+
+                    List<string> pathsToDelete = templatePaths.Where(path => !pathsToKeep.Contains(path)).ToList();
+
+                    foreach (string templatePathToDelete in templatePaths.Where(path => !pathsToKeep.Contains(path)))
+                    {
+                        Directory.Delete(path: templatePathToDelete, recursive: true);
+                    }
+
+
                     break;
 
                 case Step.OpenMainMenu:

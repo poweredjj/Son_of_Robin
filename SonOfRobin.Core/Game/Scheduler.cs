@@ -2,7 +2,6 @@
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 
 namespace SonOfRobin
@@ -10,7 +9,7 @@ namespace SonOfRobin
     public class Scheduler
     {
         public enum TaskName
-        { Empty, CreateNewWorld, CreateNewWorldNow, QuitGame, OpenMenuTemplate, OpenMainMenu, OpenConfirmationMenu, SaveGame, LoadGame, LoadGameNow, ReturnToMainMenu, SavePrefs, ProcessConfirmation, OpenCraftMenu, Craft, Hit, CreateNewPiece, CreateDebugPieces, OpenContainer, DeleteObsoleteSaves, DropFruit, GetEaten, GetDrinked, ExecuteTaskWithDelay, AddWorldEvent, ShowTextWindow, OpenShelterMenu, SleepInsideShelter, SleepOutside, ForceWakeUp, TempoFastForward, TempoStop, TempoPlay, CameraTrackPiece, CameraTrackCoords, CameraSetZoom, ShowCookingProgress, RestoreHints, OpenMainMenuIfSpecialKeysArePressed, CheckForPieceHints, ShowHint, ExecuteTaskChain, ShowTutorialInMenu, ShowTutorialInGame, RemoveScene, ChangeSceneInputType, SetCineMode, AddTransition, SolidColorAddOverlay, SolidColorRemoveAll, SkipCinematics, DeleteTemplates, SetSpectatorMode, SwitchLightSource, ResetControls, SaveControls, CheckForNonSavedControls, RebuildMenu, RebuildAllMenus, CheckForIncorrectPieces, RestartWorld, ResetNewWorldSettings, PlaySound, PlaySoundByName, AllowPieceToBeHit, SetPlayerPointWalkTarget, ShowCraftStats, StopSound, RemoveAllScenesOfType, WaitUntilMorning, ActivateLightEngine, DeactivateLightEngine, AddPassiveMovement, AddFadeInAnim }
+        { Empty, CreateNewWorld, CreateNewWorldNow, QuitGame, OpenMenuTemplate, OpenMainMenu, OpenConfirmationMenu, SaveGame, LoadGame, LoadGameNow, ReturnToMainMenu, SavePrefs, ProcessConfirmation, OpenCraftMenu, Craft, Hit, CreateNewPiece, CreateDebugPieces, OpenContainer, DeleteObsoleteSaves, DropFruit, GetEaten, GetDrinked, ExecuteTaskWithDelay, AddWorldEvent, ShowTextWindow, OpenShelterMenu, SleepInsideShelter, SleepOutside, ForceWakeUp, TempoFastForward, TempoStop, TempoPlay, CameraTrackPiece, CameraTrackCoords, CameraSetZoom, ShowCookingProgress, RestoreHints, OpenMainMenuIfSpecialKeysArePressed, CheckForPieceHints, ShowHint, ExecuteTaskChain, ShowTutorialInMenu, ShowTutorialInGame, RemoveScene, ChangeSceneInputType, SetCineMode, AddTransition, SolidColorAddOverlay, SolidColorRemoveAll, SkipCinematics, SetSpectatorMode, SwitchLightSource, ResetControls, SaveControls, CheckForNonSavedControls, RebuildMenu, RebuildAllMenus, CheckForIncorrectPieces, RestartWorld, ResetNewWorldSettings, PlaySound, PlaySoundByName, AllowPieceToBeHit, SetPlayerPointWalkTarget, ShowCraftStats, StopSound, RemoveAllScenesOfType, WaitUntilMorning, ActivateLightEngine, DeactivateLightEngine, AddPassiveMovement, AddFadeInAnim }
 
         private static readonly Dictionary<int, List<Task>> queue = new Dictionary<int, List<Task>>();
         private static int inputTurnedOffUntilFrame = 0;
@@ -344,6 +343,7 @@ namespace SonOfRobin
                             if (saveParams.ContainsKey("showMessage")) showMessage = (bool)saveParams["showMessage"];
                             bool quitGameAfterSaving = false;
                             if (saveParams.ContainsKey("quitGameAfterSaving")) quitGameAfterSaving = (bool)saveParams["quitGameAfterSaving"];
+                            world.HintEngine.Disable(Tutorials.Type.HowToSave);
 
                             new LoaderSaver(saveMode: true, saveSlotName: saveSlotName, world: world, showSavedMessage: showMessage, quitGameAfterSaving: quitGameAfterSaving);
 
@@ -1165,80 +1165,6 @@ namespace SonOfRobin
                             }
                             ClearQueue(); // to be sure, that no task will be executed
                             world.CineMode = false;
-
-                            return;
-                        }
-
-                    case TaskName.DeleteTemplates:
-                        {
-                            Dictionary<string, Object> deleteData;
-                            List<string> pathsToDelete;
-                            int pathCount;
-
-                            bool firstRun = this.ExecuteHelper == null;
-
-                            if (firstRun)
-                            {
-                                var templatePaths = Directory.GetDirectories(SonOfRobinGame.worldTemplatesPath);
-                                var existingWorlds = Scene.GetAllScenesOfType(typeof(World)).Select(worldScene => (World)worldScene).ToList();
-                                var correctSaves = SaveHeaderManager.CorrectSaves;
-                                var pathsToKeep = new List<string>();
-
-                                foreach (string templatePath in templatePaths)
-                                {
-                                    GridTemplate gridTemplate = GridTemplate.LoadHeader(templatePath);
-                                    if (gridTemplate == null || gridTemplate.IsObsolete) continue;
-
-                                    if (correctSaves.Where(saveHeader =>
-                                    saveHeader.seed == gridTemplate.seed &&
-                                    saveHeader.width == gridTemplate.width &&
-                                    saveHeader.height == gridTemplate.height
-                                    ).ToList().Count > 0) pathsToKeep.Add(templatePath);
-
-                                    if (existingWorlds.Where(currentWorld =>
-                                    currentWorld.seed == gridTemplate.seed &&
-                                    currentWorld.width == gridTemplate.width &&
-                                    currentWorld.height == gridTemplate.height
-                                    ).ToList().Count > 0) pathsToKeep.Add(templatePath);
-                                }
-
-                                pathsToDelete = templatePaths.Where(path => !pathsToKeep.Contains(path)).ToList();
-
-                                if (pathsToDelete.Count == 0)
-                                {
-                                    new TextWindow(text: "No obsolete templates were found.", textColor: Color.White, bgColor: Color.Blue, useTransition: true, animate: true);
-                                    return;
-                                }
-
-                                this.ExecuteHelper = new Dictionary<string, Object> { { "pathsToDelete", pathsToDelete }, { "pathCount", pathsToDelete.Count } };
-                            }
-
-                            SonOfRobinGame.Game.IsFixedTimeStep = false;
-
-                            deleteData = (Dictionary<string, Object>)this.ExecuteHelper;
-                            pathsToDelete = (List<string>)deleteData["pathsToDelete"];
-                            pathCount = (int)deleteData["pathCount"];
-
-                            string currentPath = pathsToDelete[0];
-
-                            SonOfRobinGame.SmallProgressBar.TurnOn(curVal: pathCount - pathsToDelete.Count + 1, maxVal: pathCount, text: $"Deleting templates...\n{Path.GetFileName(currentPath)}", addTransition: false, turnOffInput: true);
-
-                            if (!firstRun)
-                            {
-                                // first run should only turn on progress bar
-                                pathsToDelete.RemoveAt(0);
-                                Directory.Delete(path: currentPath, recursive: true);
-                            }
-
-                            if (pathsToDelete.Count == 0)
-                            {
-                                if (Preferences.FrameSkip) SonOfRobinGame.Game.IsFixedTimeStep = true;
-                                SonOfRobinGame.SmallProgressBar.TurnOff();
-                                return;
-                            }
-
-                            var newDeleteData = new Dictionary<string, Object> { { "pathsToDelete", pathsToDelete }, { "pathCount", pathCount } };
-                            new Task(taskName: TaskName.DeleteTemplates, turnOffInputUntilExecution: true, delay: 1, executeHelper: newDeleteData);
 
                             return;
                         }
