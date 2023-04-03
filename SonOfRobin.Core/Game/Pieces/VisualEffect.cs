@@ -77,7 +77,7 @@ namespace SonOfRobin
             float windPercentage = this.world.weather.WindPercentage;
             if (windPercentage > 0)
             {
-                int windModifier = (int)(windPercentage * 13) + world.random.Next(0, 2);
+                int windModifier = (int)(windPercentage * 10) + world.random.Next(0, 2);
                 if (this.world.weather.WindOriginX == 1) windModifier *= -1; // wind blowing from the right
                 currentStep.X += windModifier;
 
