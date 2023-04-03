@@ -148,7 +148,7 @@ namespace SonOfRobin
                     message: $"My | {PieceInfo.GetInfo(PieceTemplate.Name.SpearWood).readableName} should be great for animal hunting.",
                     imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.SpearWood) },
                     alsoDisables: new List<PieceHint.Type> {PieceHint.Type.AnimalNegative},
-                    playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.SpearWood, PieceTemplate.Name.SpearStone}),
+                    playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.SpearWood, PieceTemplate.Name.SpearStone, PieceTemplate.Name.SpearIron, PieceTemplate.Name.SpearCrystal}),
 
                 new PieceHint(
                     type: PieceHint.Type.AnimalBow, fieldPiecesNearby: new List<PieceTemplate.Name> {PieceTemplate.Name.Frog, PieceTemplate.Name.Rabbit, PieceTemplate.Name.Fox},
@@ -323,7 +323,6 @@ namespace SonOfRobin
                     message: $"This | {PieceInfo.GetInfo(PieceTemplate.Name.Tiger).readableName} looks very dangerous!\nI'd rather stay away.",
                     imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.Tiger) }),
                 };
-
 
             CheckData(newPieceHintList);
 

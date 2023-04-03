@@ -138,12 +138,8 @@ namespace SonOfRobin
 
                         case Category.Flesh:
                             this.world.HintEngine.Disable(PieceHint.Type.AnimalNegative);
-                            if (this.name == PieceTemplate.Name.SpearStone) this.world.HintEngine.Disable(PieceHint.Type.AnimalSpear);
-
-                            if (this.name == PieceTemplate.Name.AxeWood ||
-                                this.name == PieceTemplate.Name.AxeStone ||
-                                this.name == PieceTemplate.Name.AxeIron)
-                                this.world.HintEngine.Disable(PieceHint.Type.AnimalAxe);
+                            if (this.readableName.Contains("spear")) this.world.HintEngine.Disable(PieceHint.Type.AnimalSpear);
+                            if (this.readableName.Contains("axe")) this.world.HintEngine.Disable(PieceHint.Type.AnimalAxe);
                             break;
 
                         case Category.Indestructible:
