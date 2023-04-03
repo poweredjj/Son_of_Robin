@@ -80,7 +80,7 @@ namespace SonOfRobin
             {
                 int windModifier = (int)(windPercentage * 10) + world.random.Next(0, 2);
                 if (this.world.weather.WindOriginX == 1) windModifier *= -1; // wind blowing from the right
-                currentStep.X += windModifier;
+                currentStep.X += Math.Min(windModifier, currentStep.Y);
 
                 float targetRotation = 0.9f * windPercentage;
                 if (this.world.weather.WindOriginX == 0) targetRotation *= -1;

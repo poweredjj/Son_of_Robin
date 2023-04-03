@@ -371,6 +371,8 @@ namespace SonOfRobin
                 if (world == null) return;
 
                 world.weather.AddEvent(new WeatherEvent(type: Weather.WeatherType.Lightning, intensity: 1f, startTime: world.islandClock.IslandDateTime, duration: TimeSpan.FromSeconds(50), transitionLength: TimeSpan.FromSeconds(22)));
+
+                world.weather.AddEvent(new WeatherEvent(type: Weather.WeatherType.Clouds, intensity: 1f, startTime: world.islandClock.IslandDateTime, duration: TimeSpan.FromSeconds(100), transitionLength: TimeSpan.FromSeconds(5)));
             }
 
             if (Keyboard.HasBeenPressed(Keys.F2))

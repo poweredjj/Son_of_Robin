@@ -1103,6 +1103,8 @@ namespace SonOfRobin
                 if (sunLightData.sunShadowsColor != Color.Transparent)
                 {
                     float sunVisibility = this.world.weather.SunVisibility;
+                    if (this.world.weather.LightningPercentage > 0) sunVisibility = Math.Max(sunVisibility, this.world.weather.LightningPercentage);
+
                     if (sunVisibility > 0f)
                     {
                         Color sunShadowsColor = sunLightData.sunShadowsColor * sunVisibility;
