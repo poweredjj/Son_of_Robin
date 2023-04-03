@@ -89,6 +89,8 @@ namespace SonOfRobin
 
         public static void RemovePieceFromQueue(BoardPiece pieceToRemove, World world)
         {
+            // Pieces removed from the board should not be removed from the queue (cpu intensive) - will be ignored when run.
+
             List<WorldEvent> eventlist;
 
             foreach (var frame in world.eventQueue.Keys.ToList())
@@ -114,6 +116,8 @@ namespace SonOfRobin
 
         private void Execute()
         {
+            if (this.boardPiece != null && !this.boardPiece.exists) return;
+
             switch (this.eventName)
             {
                 case EventName.Birth:  // should only be used for pieces, that are processed every frame
