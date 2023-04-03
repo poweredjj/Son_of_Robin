@@ -267,6 +267,9 @@ namespace SonOfRobin
             WeatherWind,
             Rain,
             NightCrickets,
+
+            Thunder1,
+            Thunder2,
         }
 
         public static readonly Dictionary<Name, string> soundFilenamesDict = new Dictionary<Name, string> {
@@ -477,6 +480,8 @@ namespace SonOfRobin
             { Name.TurnPage, "521114__d-jones__turn-the-page" },
             { Name.SplashMud, "447928__breviceps__muddy-boots" },
             { Name.Rain, "678435__borgory__soft-rain-in-forest-raindrops-fall-on-leaves" },
+            { Name.Thunder1, "195439__littlebrojay__strike-3-sec" },
+            { Name.Thunder2, "475094__josh74000mc__thunder3" },
             };
     }
 }

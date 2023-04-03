@@ -5637,6 +5637,12 @@
 /processorParam:Quality=Best
 /build:sound/194683__kingsrow__breakingvase03.ogg
 
+#begin sound/195439__littlebrojay__strike-3-sec.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sound/195439__littlebrojay__strike-3-sec.ogg
+
 #begin sound/195586__scott-snailham__bonfire-fx-with-whoosh-basic-with-some-crackle-cd-quality.ogg
 /importer:OggImporter
 /processor:SoundEffectProcessor
@@ -6098,6 +6104,12 @@
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:sound/467610__triqystudio__pickupitem.ogg
+
+#begin sound/475094__josh74000mc__thunder3.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sound/475094__josh74000mc__thunder3.ogg
 
 #begin sound/481090__greenfiresound__meat-drop-1.ogg
 /importer:OggImporter

@@ -172,6 +172,14 @@ namespace SonOfRobin
                 this.LightningPercentage = 0;
             }
 
+            if (this.currentIntensityForType[WeatherType.Lightning] == 1 && this.previousIntensityForType[WeatherType.Lightning] < 1)
+            {
+                var thunderNames = new List<SoundData.Name> { SoundData.Name.Thunder1, SoundData.Name.Thunder2 };
+                SoundData.Name thunderName = thunderNames[this.world.random.Next(0, thunderNames.Count)];
+
+                Sound.QuickPlay(name: thunderName, volume: 1f); // TODO add random pitchChange
+            }
+
             this.ProcessGlobalWind(islandDateTime);
             this.ProcessRain();
             this.ProcessLightning();
