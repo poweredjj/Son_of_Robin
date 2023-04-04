@@ -472,7 +472,7 @@ namespace SonOfRobin
                 {
                     int maxSteps = Player.maxLastStepsCount;
 
-                    float opacity = 0.85f;
+                    float opacity = 1f;
                     if (totalSteps >= maxSteps / 2 && stepNo < maxSteps / 2)
                     {
                         float opacityFactor = 1f - (float)Math.Abs(stepNo - (maxSteps / 2)) / (maxSteps / 2);
