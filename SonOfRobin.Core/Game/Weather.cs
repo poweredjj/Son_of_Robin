@@ -422,7 +422,7 @@ namespace SonOfRobin
             {
                 if (weatherEvent.type == WeatherType.Rain && weatherEvent.intensity >= 0.6f)
                 {
-                    this.AddNewWeatherEvents(type: WeatherType.Lightning, startTime: weatherEvent.startTime, endTime: weatherEvent.endTime, minDuration: TimeSpan.FromSeconds(30), maxDuration: TimeSpan.FromSeconds(50), minGap: TimeSpan.FromSeconds(1), maxGap: TimeSpan.FromMinutes(15), maxIntensity: 1f, addChanceFactor: addChanceFactor, randomizeIntensity: false);
+                    this.AddNewWeatherEvents(type: WeatherType.Lightning, startTime: weatherEvent.startTime, endTime: weatherEvent.endTime, minDuration: TimeSpan.FromSeconds(25), maxDuration: TimeSpan.FromSeconds(55), minGap: TimeSpan.FromMinutes(1), maxGap: TimeSpan.FromMinutes(35), maxIntensity: 1f, addChanceFactor: addChanceFactor, randomizeIntensity: false);
                 }
             }
 
