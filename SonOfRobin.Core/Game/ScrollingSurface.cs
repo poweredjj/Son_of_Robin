@@ -5,28 +5,31 @@ using System;
 
 namespace SonOfRobin
 {
-    public class WaterSurfaceManager
+    public class ScrollingSurfaceManager
     {
         private static readonly Color waterColor = new Color(12, 122, 156);
-        private readonly WaterSurface oceanFloor;
-        private readonly WaterSurface waterCaustics1;
-        private readonly WaterSurface waterCaustics2;
+        private readonly ScrollingSurface oceanFloor;
+        private readonly ScrollingSurface waterCaustics1;
+        private readonly ScrollingSurface waterCaustics2;
+        private readonly ScrollingSurface fog;
         public readonly World world;
 
-        public WaterSurfaceManager(World world)
+        public ScrollingSurfaceManager(World world)
         {
             this.world = world;
 
-            this.oceanFloor = new WaterSurface(useTweenForOpacity: true, opacityBaseVal: 0.55f, opacityTweenVal: 0.25f, useTweenForOffset: false, world: world, texture: SonOfRobinGame.textureByName["water textures/ocean_floor"]);
-            this.waterCaustics1 = new WaterSurface(useTweenForOpacity: true, opacityBaseVal: 0.2f, opacityTweenVal: 0.05f, useTweenForOffset: true, world: world, texture: SonOfRobinGame.textureByName["water textures/water_caustics1"]);
-            this.waterCaustics2 = new WaterSurface(useTweenForOpacity: true, opacityBaseVal: 0.2f, opacityTweenVal: 0.05f, useTweenForOffset: true, world: world, texture: SonOfRobinGame.textureByName["water textures/water_caustics2"]);
+            this.oceanFloor = new ScrollingSurface(useTweenForOpacity: true, opacityBaseVal: 0.55f, opacityTweenVal: 0.25f, useTweenForOffset: false, world: world, texture: SonOfRobinGame.textureByName["scrolling textures/ocean_floor"]);
+            this.waterCaustics1 = new ScrollingSurface(useTweenForOpacity: true, opacityBaseVal: 0.2f, opacityTweenVal: 0.05f, useTweenForOffset: true, world: world, texture: SonOfRobinGame.textureByName["scrolling textures/water_caustics1"]);
+            this.waterCaustics2 = new ScrollingSurface(useTweenForOpacity: true, opacityBaseVal: 0.2f, opacityTweenVal: 0.05f, useTweenForOffset: true, world: world, texture: SonOfRobinGame.textureByName["scrolling textures/water_caustics2"]);
+            this.fog = new ScrollingSurface(useTweenForOpacity: false, opacityBaseVal: 1f, opacityTweenVal: 1f, useTweenForOffset: true, maxScrollingOffset: 60, world: world, texture: SonOfRobinGame.textureByName["scrolling textures/fog"]);
         }
 
-        public void Update()
+        public void Update(bool updateFog)
         {
             this.oceanFloor.Update();
             this.waterCaustics1.Update();
             this.waterCaustics2.Update();
+            if (updateFog) this.fog.Update();
         }
 
         public void Draw()
@@ -42,7 +45,7 @@ namespace SonOfRobin
                 {
                     waterFound = true;
                     break;
-                } 
+                }
             }
             if (!waterFound) return;
 
@@ -69,15 +72,21 @@ namespace SonOfRobin
             SonOfRobinGame.SpriteBatch.End();
             SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.world.TransformMatrix);
         }
+
+        public void DrawFog(float opacity)
+        {
+            this.fog.Draw(opacity);
+        }
     }
 
-    public class WaterSurface
+    public class ScrollingSurface
     {
         private readonly World world;
         private readonly Texture2D texture;
         private readonly bool useTweenForOpacity;
         private readonly bool useTweenForOffset;
         private readonly float opacityTweenVal;
+        private readonly int maxScrollingOffset;
 
         public Vector2 offset;
         public float opacity;
@@ -86,7 +95,7 @@ namespace SonOfRobin
         private readonly int rows;
         private readonly Tweener tweener;
 
-        public WaterSurface(World world, Texture2D texture, bool useTweenForOpacity, bool useTweenForOffset, float opacityBaseVal, float opacityTweenVal)
+        public ScrollingSurface(World world, Texture2D texture, bool useTweenForOpacity, bool useTweenForOffset, float opacityBaseVal, float opacityTweenVal, int maxScrollingOffset = 150)
         {
             this.world = world;
             this.texture = texture;
@@ -94,6 +103,7 @@ namespace SonOfRobin
             this.useTweenForOffset = useTweenForOffset;
 
             this.opacityTweenVal = opacityTweenVal;
+            this.maxScrollingOffset = maxScrollingOffset;
 
             this.offset = new Vector2(0, 0);
             this.opacity = opacityBaseVal;
@@ -114,11 +124,11 @@ namespace SonOfRobin
             {
                 Vector2 newPos = Vector2.Zero;
 
-                int maxDistance = 150;
+                newPos = this.offset + new Vector2(
+                    this.world.random.Next(-this.maxScrollingOffset, this.maxScrollingOffset),
+                    this.world.random.Next(-this.maxScrollingOffset, this.maxScrollingOffset));
 
-                newPos = this.offset + new Vector2(this.world.random.Next(-maxDistance, maxDistance), this.world.random.Next(-maxDistance, maxDistance));
-
-                this.tweener.TweenTo(target: this, expression: waterSurface => waterSurface.offset, toValue: newPos, duration: this.world.random.Next(3, 8), delay: 0)
+                this.tweener.TweenTo(target: this, expression: scrollingSurface => scrollingSurface.offset, toValue: newPos, duration: this.world.random.Next(3, 8), delay: 0)
                     .AutoReverse()
                     .Easing(EasingFunctions.QuadraticInOut)
                     .OnEnd(t => this.SetTweener());
@@ -128,7 +138,7 @@ namespace SonOfRobin
 
             if (this.useTweenForOpacity && (tweenOpacity == null || !tweenOpacity.IsAlive))
             {
-                this.tweener.TweenTo(target: this, expression: waterSurface => waterSurface.opacity, toValue: this.opacityTweenVal, duration: this.world.random.Next(3, 12), delay: this.world.random.Next(5, 8))
+                this.tweener.TweenTo(target: this, expression: scrollingSurface => scrollingSurface.opacity, toValue: this.opacityTweenVal, duration: this.world.random.Next(3, 12), delay: this.world.random.Next(5, 8))
                     .AutoReverse()
                     .Easing(EasingFunctions.SineInOut)
                     .OnEnd(t => this.SetTweener());
@@ -140,14 +150,14 @@ namespace SonOfRobin
             this.tweener.Update((float)Scene.CurrentGameTime.ElapsedGameTime.TotalSeconds);
         }
 
-        public void Draw()
+        public void Draw(float opacityOverride = -1f)
         {
             Rectangle viewRect = this.world.camera.viewRect;
 
             int offsetX = (int)this.offset.X;
             int offsetY = (int)this.offset.Y;
 
-            Color drawColor = Color.White * this.opacity;
+            Color drawColor = Color.White * (opacityOverride == 1 ? this.opacity : opacityOverride);
 
             int startColumn = (int)((viewRect.X - this.offset.X) / this.texture.Width);
             int startRow = (int)((viewRect.Y - this.offset.Y) / this.texture.Height);

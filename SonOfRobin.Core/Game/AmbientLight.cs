@@ -148,10 +148,9 @@ namespace SonOfRobin
 
             if (lightningPercentage > 0)
             {
-                lightColor = Helpers.Blend2Colors(firstColor: lightColor, secondColor: new Color(181, 237, 255), firstColorOpacity: 1 - lightningPercentage, secondColorOpacity: lightningPercentage);
+                lightColor = Helpers.Blend2Colors(firstColor: lightColor, secondColor: new Color(181, 237, 255) * 2f, firstColorOpacity: 1 - lightningPercentage, secondColorOpacity: lightningPercentage);
 
                 darknessColor = Helpers.Blend2Colors(firstColor: darknessColor, secondColor: Color.Transparent, firstColorOpacity: 1 - lightningPercentage, secondColorOpacity: lightningPercentage);
-                darknessColor = Color.Transparent;
             }
 
             return new AmbientLightData(timeOfDay: currentDateTime.TimeOfDay, darknessColor: darknessColor, lightColor: lightColor);

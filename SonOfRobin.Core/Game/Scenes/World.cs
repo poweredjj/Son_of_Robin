@@ -69,7 +69,7 @@ namespace SonOfRobin
         public int updateMultiplier;
         public readonly IslandClock islandClock;
         public readonly Weather weather;
-        private readonly WaterSurfaceManager waterSurfaceManager;
+        private readonly ScrollingSurfaceManager scrollingSurfaceManager;
         public readonly SwayManager swayManager;
         public string debugText;
         public int ProcessedNonPlantsCount { get; private set; }
@@ -114,7 +114,7 @@ namespace SonOfRobin
             this.updateMultiplier = 1;
             this.islandClock = this.saveGameData == null ? new IslandClock(0) : new IslandClock();
             this.weather = new Weather(world: this, islandClock: this.islandClock);
-            this.waterSurfaceManager = new WaterSurfaceManager(world: this);
+            this.scrollingSurfaceManager = new ScrollingSurfaceManager(world: this);
             this.swayManager = new SwayManager(this);
             this.width = width;
             this.height = height;
@@ -881,7 +881,7 @@ namespace SonOfRobin
             this.Grid.UnloadTexturesIfMemoryLow(this.camera);
             this.Grid.LoadClosestTexturesInCameraView(camera: this.camera, visitedByPlayerOnly: false, loadMoreThanOne: false);
 
-            this.waterSurfaceManager.Update();
+            this.scrollingSurfaceManager.Update(this.weather.FogPercentage > 0);
 
             if (this.demoMode) this.camera.TrackLiveAnimal(fluidMotion: true);
 
@@ -1306,7 +1306,7 @@ namespace SonOfRobin
             SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
 
             // drawing water surface
-            this.waterSurfaceManager.Draw();
+            this.scrollingSurfaceManager.Draw();
 
             // drawing background (ground, leaving "holes" for water)
             this.Grid.DrawBackground(camera: this.camera);
@@ -1569,7 +1569,10 @@ namespace SonOfRobin
 
                 // drawing fog
 
-                if (fogPercentage > 0) SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, extendedViewRect, Color.White * fogPercentage * 0.75f);
+                if (fogPercentage > 0) this.scrollingSurfaceManager.DrawFog(Math.Min(fogPercentage * 2f, 1f));
+
+                // drawing lightning
+
                 if (lightningPercentage > 0) SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, extendedViewRect, new Color(240, 251, 255) * lightningPercentage * 0.7f);
 
                 // drawing darkness
