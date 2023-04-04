@@ -32,7 +32,7 @@ namespace SonOfRobin
             if (updateFog) this.fog.Update();
         }
 
-        public void Draw()
+        public void DrawAllWater()
         {
             SonOfRobinGame.GfxDev.Clear(waterColor);
 

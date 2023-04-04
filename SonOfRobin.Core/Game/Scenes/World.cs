@@ -1310,7 +1310,7 @@ namespace SonOfRobin
             SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
 
             // drawing water surface
-            this.scrollingSurfaceManager.Draw();
+            this.scrollingSurfaceManager.DrawAllWater();
 
             // drawing background (ground, leaving "holes" for water)
             this.Grid.DrawBackground(camera: this.camera);
