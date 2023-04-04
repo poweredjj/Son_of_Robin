@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input.Touch;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace SonOfRobin
@@ -13,6 +14,7 @@ namespace SonOfRobin
         private const int posY = 4;
 
         private readonly World world;
+        private bool isHidden;
 
         private int CounterSize
         { get { return (int)(SonOfRobinGame.VirtualWidth * 0.05f); } }
@@ -59,7 +61,7 @@ namespace SonOfRobin
         private int IconMargin
         { get { return (int)(BarWidth * 0.03f); } }
 
-        private bool IgnoreUpdateAndDraw
+        private bool ShouldBeHidden
         {
             get
             {
@@ -83,12 +85,13 @@ namespace SonOfRobin
         public PlayerPanel(World world) : base(inputType: InputTypes.None, priority: 1, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty)
         {
             this.world = world;
+            this.isHidden = false;
             this.AdaptToNewSize();
         }
 
         public override void Update(GameTime gameTime)
         {
-            if (this.IgnoreUpdateAndDraw) return;
+            if (this.ShouldBeHidden) return;
         }
 
         protected override void AdaptToNewSize()
@@ -97,9 +100,23 @@ namespace SonOfRobin
             this.viewParams.CenterView(horizontally: true, vertically: false);
         }
 
+        private void HideOrShow(bool hide)
+        {
+            if (this.isHidden != hide)
+            {
+                var paramsToChange = new Dictionary<string, float> { { "PosY", this.viewParams.PosY - (SonOfRobinGame.VirtualHeight / 2) } };
+                this.transManager.AddMultipleTransitions(paramsToChange: paramsToChange, outTrans: !hide, duration: 12, refreshBaseVal: false);
+            }
+
+            this.isHidden = hide;
+        }
+
         public override void Draw()
         {
-            if (this.IgnoreUpdateAndDraw) return;
+            bool shouldBeHidden = this.ShouldBeHidden;
+            this.HideOrShow(!shouldBeHidden);
+
+            if (shouldBeHidden && !this.transManager.HasAnyTransition) return;
 
             this.AdaptToNewSize();
 
