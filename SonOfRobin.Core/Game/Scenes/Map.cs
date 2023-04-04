@@ -39,6 +39,7 @@ namespace SonOfRobin
 
         private static readonly Color paperColor = new Color(214, 199, 133, 255);
         public static readonly Color waterColor = new Color(8, 108, 160, 255);
+        private static readonly Color stepDotColor = new Color(56, 36, 0);
 
         public Map(World world, TouchLayout touchLayout) : base(inputType: InputTypes.None, priority: 1, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: false, touchLayout: touchLayout, tipsLayout: ControlTips.TipsLayout.Map)
         {
@@ -457,9 +458,37 @@ namespace SonOfRobin
                 SonOfRobinGame.SpriteBatch.End();
             }
 
-            // drawing pieces (without effects)
+            // drawing last steps (without effects)
+
+            float spriteSize = 1f / this.camera.CurrentZoom * (this.Mode == MapMode.Mini ? 1f : 0.25f); // to keep sprite size constant, regardless of zoom
 
             SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
+
+            int totalSteps = this.world.Player.LastSteps.Count;
+            int stepNo = 0;
+            foreach (Vector2 stepPos in this.world.Player.LastSteps)
+            {
+                if (this.camera.viewRect.Contains(stepPos))
+                {
+                    int maxSteps = Player.maxLastStepsCount;
+
+                    float opacity = 0.85f;
+                    if (totalSteps >= maxSteps / 2 && stepNo < maxSteps / 2)
+                    {
+                        float opacityFactor = 1f - (float)Math.Abs(stepNo - (maxSteps / 2)) / (maxSteps / 2);
+                        opacity *= opacityFactor;
+                    }
+
+                    int rectSize = 8;
+                    Rectangle blackRect = new Rectangle(x: (int)(stepPos.X - (rectSize / 2)), y: (int)(stepPos.Y - (rectSize / 2)), width: rectSize, height: rectSize);
+                    blackRect.Inflate(blackRect.Width * spriteSize, blackRect.Height * spriteSize);
+
+                    AnimData.framesForPkgs[AnimData.PkgName.SmallWhiteCircle].Draw(blackRect, color: stepDotColor, opacity: opacity);
+                }
+                stepNo++;
+            }
+
+            // drawing pieces (without effects)
 
             Rectangle worldCameraRectForSpriteSearch = this.camera.viewRect;
             // mini map displays far pieces on the sides
@@ -480,8 +509,6 @@ namespace SonOfRobin
             }
 
             if (this.MapMarker != null) spritesBag.Add(this.MapMarker.sprite);
-
-            float spriteSize = 1f / this.camera.CurrentZoom * (this.Mode == MapMode.Mini ? 1f : 0.25f); // to keep sprite size constant, regardless of zoom
 
             // regular "foreach", because spriteBatch is not thread-safe
             foreach (Sprite sprite in spritesBag.OrderBy(o => o.frame.layer).ThenBy(o => o.gfxRect.Bottom))

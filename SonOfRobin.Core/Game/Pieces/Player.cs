@@ -13,6 +13,7 @@ namespace SonOfRobin
         { Awake, Sleep, WaitMorning, WaitIndefinitely };
 
         private const int maxShootingPower = 90;
+        public const int maxLastStepsCount = 100;
 
         public int maxFedLevel;
         public int fedLevel;
@@ -25,6 +26,8 @@ namespace SonOfRobin
         public float ShootingAngle { get; private set; }
         private int shootingPower;
         private SleepEngine sleepEngine;
+        public List<Vector2> LastSteps { get; private set; }
+
         public Vector2 pointWalkTarget;
         public Craft.Recipe recipeToBuild;
         public BoardPiece simulatedPieceToBuild;
@@ -47,6 +50,7 @@ namespace SonOfRobin
             this.cookingSkill = cookingSkill;
             this.craftLevel = craftLevel;
             this.sleepEngine = SleepEngine.OutdoorSleepDry; // to be changed later
+            this.LastSteps = new List<Vector2>();
 
             var allowedToolbarPieces = new List<PieceTemplate.Name>();
 
@@ -411,6 +415,7 @@ namespace SonOfRobin
             pieceData["player_sleepEngine"] = this.sleepEngine;
             pieceData["player_toolStorage"] = this.ToolStorage.Serialize();
             pieceData["player_equipStorage"] = this.EquipStorage.Serialize();
+            pieceData["player_LastSteps"] = this.LastSteps.Select(s => new Point((int)s.X, (int)s.Y)).ToList();
 
             return pieceData;
         }
@@ -429,6 +434,11 @@ namespace SonOfRobin
             this.sleepEngine = (SleepEngine)pieceData["player_sleepEngine"];
             this.ToolStorage = PieceStorage.Deserialize(storageData: pieceData["player_toolStorage"], world: this.world, storagePiece: this);
             this.EquipStorage = PieceStorage.Deserialize(storageData: pieceData["player_equipStorage"], world: this.world, storagePiece: this);
+            if (pieceData.ContainsKey("player_LastSteps"))
+            {
+                List<Point> lastStepsPointList = (List<Point>)pieceData["player_LastSteps"];
+                this.LastSteps = lastStepsPointList.Select(p => new Vector2(p.X, p.Y)).ToList();
+            }
         }
 
         public override void DrawStatBar()
@@ -469,6 +479,15 @@ namespace SonOfRobin
             if (this.FedPercent > 0.8f) this.world.HintEngine.Enable(HintEngine.Type.Hungry);
             if (this.FedPercent > 0.4f) this.world.HintEngine.Enable(HintEngine.Type.VeryHungry);
             if (this.FedPercent > 0.1f) this.world.HintEngine.Enable(HintEngine.Type.Starving);
+        }
+
+        public void UpdateLastSteps()
+        {
+            if (this.world.MapEnabled && (!this.LastSteps.Any() || Vector2.Distance(this.sprite.position, this.LastSteps.Last()) > 180))
+            {
+                this.LastSteps.Add(this.sprite.position);
+                if (this.LastSteps.Count > maxLastStepsCount) this.LastSteps.RemoveAt(0);
+            }
         }
 
         public override void SM_PlayerControlledBuilding()

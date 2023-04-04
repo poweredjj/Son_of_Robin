@@ -900,7 +900,11 @@ namespace SonOfRobin
                 WorldEvent.ProcessQueue(this);
                 if (!this.BuildMode) this.UpdateAllAnims();
 
-                if (this.Player != null) this.ProcessOneNonPlant(this.Player);
+                if (this.Player != null)
+                {
+                    this.ProcessOneNonPlant(this.Player);
+                    this.Player.UpdateLastSteps();
+                }
 
                 this.StateMachinesProcessCameraView();
 
