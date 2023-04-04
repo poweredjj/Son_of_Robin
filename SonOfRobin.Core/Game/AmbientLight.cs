@@ -42,10 +42,10 @@ namespace SonOfRobin
 
                 if (weather.LightningPercentage > 0)
                 {
-                    int sunPosX = (int)(weather.LightningPosMultiplier.X * 400);
-                    int sunPosY = (int)(weather.LightningPosMultiplier.Y * -400);
+                    int sunPosX = (int)(((weather.LightningPosMultiplier.X * 2) - 1f) * 400);
+                    int sunPosY = (int)(((weather.LightningPosMultiplier.Y * 2) - 1f) * 400);
 
-                    return new SunLightData(timeOfDay: currentTimeOfDay, sunPos: new Vector2(sunPosX, sunPosY), sunShadowsLength: 2.5f, sunShadowsColor: Color.Black * Math.Min(weather.LightningPercentage * 2, 0.5f));
+                    return new SunLightData(timeOfDay: currentTimeOfDay, sunPos: new Vector2(sunPosX, sunPosY), sunShadowsLength: 2.5f, sunShadowsColor: Color.Black);
                 }
 
                 SunLightData prevLightData, nextLightData;

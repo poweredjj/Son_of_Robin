@@ -158,7 +158,8 @@ namespace SonOfRobin
             return maxIntensity;
         }
 
-        public bool LightningJustStruck { get { return this.currentIntensityForType[WeatherType.Lightning] == 1 && this.previousIntensityForType[WeatherType.Lightning] < 1; } }
+        public bool LightningJustStruck
+        { get { return this.currentIntensityForType[WeatherType.Lightning] == 1 && this.previousIntensityForType[WeatherType.Lightning] < 1; } }
 
         public void Update()
         {
@@ -179,7 +180,6 @@ namespace SonOfRobin
                 // lightning in-transition should be ignored
                 this.LightningPercentage = 0;
             }
-            if (this.LightningJustStruck) thunderSound.Play();
 
             this.ProcessGlobalWind(islandDateTime);
             this.ProcessRain();
@@ -193,13 +193,42 @@ namespace SonOfRobin
             if (this.previousIntensityForType[WeatherType.Lightning] > 0 && this.LightningPercentage == 0)
             {
                 // setting a random camera corner
-                var xList = new List<float> { -1, 1 };
-                var yList = new List<float> { 0, 1 }; // should not be negative
 
-                float x = xList[SonOfRobinGame.random.Next(0, xList.Count)];
-                float y = yList[SonOfRobinGame.random.Next(0, yList.Count)];
+                float x = (float)this.world.random.NextDouble();
+                float y = (float)this.world.random.NextDouble();
+
+                if (this.world.random.Next(2) == 0) x = (int)x;
+                else y = (int)y;
 
                 this.LightningPosMultiplier = new Vector2(x, y);
+            }
+
+            if (this.LightningJustStruck)
+            {
+                thunderSound.Play();
+
+                if (this.world.random.Next(2) == 0)
+                { }
+
+                Rectangle cameraRect = this.world.camera.viewRect;
+
+                Vector2 lightningOriginLocation = new Vector2(
+                    cameraRect.X + (this.LightningPosMultiplier.X * cameraRect.Width),
+                    cameraRect.Y + (this.LightningPosMultiplier.Y * cameraRect.Height)
+                    );
+
+                var plantSpriteList = new List<Sprite>();
+                world.Grid.GetSpritesInCameraViewAndPutIntoList(camera: world.camera, groupName: Cell.Group.ColPlantGrowth, spriteListToFill: plantSpriteList);
+
+                foreach (Sprite sprite in plantSpriteList)
+                {
+                    if (IsSpriteAffectedByWind(sprite: sprite, strongWind: true))
+                    {
+                        float distance = Vector2.Distance(lightningOriginLocation, sprite.position);
+
+                        world.swayManager.AddSwayEvent(targetSprite: sprite, sourceSprite: null, targetRotation: (sprite.position - lightningOriginLocation).X > 0 ? 0.15f : -0.15f, playSound: false, delayFrames: 20 + ((int)distance / 120));
+                    }
+                }
             }
         }
 
@@ -293,7 +322,7 @@ namespace SonOfRobin
 
             foreach (Sprite sprite in affectedSpriteList)
             {
-                if (!sprite.boardPiece.canBePickedUp && sprite.isAffectedByWind && (!sprite.blocksMovement || strongWind))
+                if (IsSpriteAffectedByWind(sprite: sprite, strongWind: strongWind))
                 {
                     float distance = Vector2.Distance(windOriginLocation, sprite.position);
                     float finalRotation = (sprite.position - windOriginLocation).X > 0 ? targetRotation : -targetRotation;
@@ -320,6 +349,11 @@ namespace SonOfRobin
                     }
                 }
             }
+        }
+
+        private static bool IsSpriteAffectedByWind(Sprite sprite, bool strongWind)
+        {
+            return !sprite.boardPiece.canBePickedUp && sprite.isAffectedByWind && (!sprite.blocksMovement || strongWind);
         }
 
         public void AddLocalizedWind(Vector2 windOriginLocation)
@@ -422,7 +456,7 @@ namespace SonOfRobin
             {
                 if (weatherEvent.type == WeatherType.Rain && weatherEvent.intensity >= 0.6f)
                 {
-                    this.AddNewWeatherEvents(type: WeatherType.Lightning, startTime: weatherEvent.startTime, endTime: weatherEvent.endTime, minDuration: TimeSpan.FromSeconds(25), maxDuration: TimeSpan.FromSeconds(55), minGap: TimeSpan.FromMinutes(1), maxGap: TimeSpan.FromMinutes(35), maxIntensity: 1f, addChanceFactor: addChanceFactor, randomizeIntensity: false);
+                    this.AddNewWeatherEvents(type: WeatherType.Lightning, startTime: weatherEvent.startTime, endTime: weatherEvent.endTime, minDuration: TimeSpan.FromSeconds(25), maxDuration: TimeSpan.FromSeconds(55), minGap: TimeSpan.FromMinutes(1), maxGap: TimeSpan.FromMinutes(15), maxIntensity: 1f, addChanceFactor: addChanceFactor, randomizeIntensity: false);
                 }
             }
 

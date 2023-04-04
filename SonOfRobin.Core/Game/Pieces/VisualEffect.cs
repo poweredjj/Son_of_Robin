@@ -91,7 +91,7 @@ namespace SonOfRobin
             this.sprite.Move(currentStep);
 
             this.rainStepsLeft--;
-            if (this.rainStepsLeft <= 0)
+            if (this.rainStepsLeft <= 0 || this.world.weather.RainPercentage == 0)
             {
                 new OpacityFade(sprite: this.sprite, destOpacity: 0, duration: 20, destroyPiece: true);
                 this.RemoveFromStateMachines();
