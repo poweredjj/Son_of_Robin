@@ -8,12 +8,12 @@ namespace SonOfRobin
     public class HintEngine
     {
         public enum Type
-        { Empty, Hungry, VeryHungry, Starving, Tired, VeryTired, CantShootInWater, SmallInventory, MapNegative, Lava, BreakingItem, BrokenItem, BurntOutTorch, CineIntroduction, CineSmallBase, AnimalScaredOfFire, AnimalCounters, ZoomOutLocked };
+        { Empty, Hungry, VeryHungry, Starving, Tired, VeryTired, CantShootInWater, SmallInventory, MapNegative, Lava, BreakingItem, BrokenItem, BurntOutTorch, CineIntroduction, CineSmallBase, AnimalScaredOfFire, AnimalCounters, ZoomOutLocked, Lightning };
 
         private const int hintDelay = 1 * 60 * 60; // 1 * 60 * 60
         public const int blockInputDuration = 80;
 
-        private static readonly List<Type> typesThatIgnoreShowHintSetting = new List<Type> { Type.CineIntroduction, Type.CineSmallBase, Type.VeryTired, Type.Starving, Type.BrokenItem, Type.BurntOutTorch, Type.Lava };
+        private static readonly List<Type> typesThatIgnoreShowHintSetting = new List<Type> { Type.CineIntroduction, Type.CineSmallBase, Type.VeryTired, Type.Starving, Type.BrokenItem, Type.BurntOutTorch, Type.Lava, Type.Lightning };
 
         public List<Type> shownGeneralHints = new List<Type> { };
         public List<PieceHint.Type> shownPieceHints = new List<PieceHint.Type> { };
@@ -186,6 +186,14 @@ namespace SonOfRobin
                         this.Disable(type: type, delay: 0);
                         ShowMessageDuringPause(new List<HintMessage> {
                             new HintMessage(text: "Ouch! This is | lava!", imageList: new List<Texture2D> {AnimData.framesForPkgs[AnimData.PkgName.Flame].texture}, blockInput: true) });
+                        break;
+                    }
+
+                case Type.Lightning:
+                    {
+                        this.Disable(type: type, delay: 0);
+                        ShowMessageDuringPause(new List<HintMessage> {
+                            new HintMessage(text: "Aaah! Lightning just hit the water.", blockInput: true) });
                         break;
                     }
 

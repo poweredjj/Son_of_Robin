@@ -727,16 +727,30 @@ namespace SonOfRobin
                 }
             }
 
-            if (this.sprite.IsOnLava)
+            bool isOnLava = this.sprite.IsOnLava;
+            if (isOnLava)
             {
                 this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.Lava, ignoreDelay: true);
                 this.hitPoints -= 1;
+                this.soundPack.Play(PieceSoundPack.Action.StepLava);
+            }
+
+            bool gotHitWithLightning = this.world.weather.LightningJustStruck && this.sprite.IsInWater && this.world.random.Next(2) == 0;
+
+            if (gotHitWithLightning)
+            {
+                this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.Lightning, ignoreDelay: true);
+                this.hitPoints -= 80;
+                Sound.QuickPlay(SoundData.Name.ElectricShock);
+            }
+
+            if (isOnLava || gotHitWithLightning)
+            {
                 if (!this.world.solidColorManager.AnySolidColorPresent)
                 {
-                    Vector2 screenShake = new Vector2(world.random.Next(-20, 20), world.random.Next(-20, 20));
-
                     this.soundPack.Play(PieceSoundPack.Action.Cry);
-                    this.soundPack.Play(PieceSoundPack.Action.StepLava);
+
+                    Vector2 screenShake = new Vector2(world.random.Next(-20, 20), world.random.Next(-20, 20));
 
                     world.transManager.AddMultipleTransitions(outTrans: true, duration: world.random.Next(4, 10), playCount: -1, replaceBaseValue: false, stageTransform: Transition.Transform.Sinus, pingPongCycles: false, cycleMultiplier: 0.02f, paramsToChange: new Dictionary<string, float> { { "PosX", screenShake.X }, { "PosY", screenShake.Y } });
 

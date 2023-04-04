@@ -5817,6 +5817,12 @@
 /processorParam:Quality=Best
 /build:sound/321591__macdaddyno1__japanese-cicada.ogg
 
+#begin sound/334047__drukalo__badweatherrec.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sound/334047__drukalo__badweatherrec.ogg
+
 #begin sound/342749__rhodesmas__notification-01.ogg
 /importer:OggImporter
 /processor:SoundEffectProcessor
@@ -5834,6 +5840,12 @@
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:sound/344004__reitanna__heavy-grunt.ogg
+
+#begin sound/345920__dragisharambo21__thunder.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sound/345920__dragisharambo21__thunder.ogg
 
 #begin sound/352650__foolboymedia__piano-notification-4.ogg
 /importer:OggImporter
@@ -6260,6 +6272,12 @@
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:sound/511490__lydmakeren__fx-bow-arrow.ogg
+
+#begin sound/512471__michael_grinnell__electric-zap.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sound/512471__michael_grinnell__electric-zap.ogg
 
 #begin sound/51450__robinhood76__00120-zapalka-1.ogg
 /importer:OggImporter

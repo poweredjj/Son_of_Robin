@@ -70,6 +70,11 @@ namespace SonOfRobin
         private static readonly TimeSpan minForecastDuration = TimeSpan.FromDays(1);
         private static readonly TimeSpan maxForecastDuration = minForecastDuration + minForecastDuration;
 
+        public static readonly List<SoundData.Name> thunderNames = Enum.GetValues(typeof(SoundData.Name))
+            .Cast<SoundData.Name>().Where(x => x.ToString().StartsWith("Thunder")).ToList();
+
+        public static readonly Sound thunderSound = new Sound(nameList: thunderNames, cooldown: 60, ignore3DAlways: true, maxPitchVariation: 0.5f);
+
         private readonly World world;
         private readonly IslandClock islandClock;
         private readonly List<WeatherEvent> weatherEvents;
@@ -153,6 +158,8 @@ namespace SonOfRobin
             return maxIntensity;
         }
 
+        public bool LightningJustStruck { get { return this.currentIntensityForType[WeatherType.Lightning] == 1 && this.previousIntensityForType[WeatherType.Lightning] < 1; } }
+
         public void Update()
         {
             DateTime islandDateTime = this.islandClock.IslandDateTime;
@@ -165,20 +172,14 @@ namespace SonOfRobin
             this.SunVisibility = Math.Max(0, 1f - (this.CloudsPercentage + (this.FogPercentage * 0.5f)));
             this.WindPercentage = this.GetIntensityForWeatherType(WeatherType.Wind);
             this.RainPercentage = this.GetIntensityForWeatherType(WeatherType.Rain);
+
             this.LightningPercentage = this.GetIntensityForWeatherType(WeatherType.Lightning);
             if (this.previousIntensityForType[WeatherType.Lightning] < this.currentIntensityForType[WeatherType.Lightning])
             {
                 // lightning in-transition should be ignored
                 this.LightningPercentage = 0;
             }
-
-            if (this.currentIntensityForType[WeatherType.Lightning] == 1 && this.previousIntensityForType[WeatherType.Lightning] < 1)
-            {
-                var thunderNames = new List<SoundData.Name> { SoundData.Name.Thunder1, SoundData.Name.Thunder2 };
-                SoundData.Name thunderName = thunderNames[this.world.random.Next(0, thunderNames.Count)];
-
-                Sound.QuickPlay(name: thunderName, volume: 1f); // TODO add random pitchChange
-            }
+            if (this.LightningJustStruck) thunderSound.Play();
 
             this.ProcessGlobalWind(islandDateTime);
             this.ProcessRain();

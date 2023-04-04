@@ -40,7 +40,7 @@ namespace SonOfRobin
                 TimeSpan currentTimeOfDay = currentDateTime.TimeOfDay;
                 if ((currentTimeOfDay < TimeSpan.FromHours(4) || currentTimeOfDay > TimeSpan.FromHours(20)) && weather.LightningPercentage == 0) return noSun;  // to avoid checking these ranges
 
-                if (weather.LightningPercentage > 0.1f)
+                if (weather.LightningPercentage > 0)
                 {
                     int sunPosX = (int)(weather.LightningPosMultiplier.X * 400);
                     int sunPosY = (int)(weather.LightningPosMultiplier.Y * -400);

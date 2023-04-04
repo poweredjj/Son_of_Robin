@@ -7,6 +7,7 @@ namespace SonOfRobin
     public class SoundData
     {
         public static readonly Dictionary<Name, SoundEffect> soundsDict = new Dictionary<Name, SoundEffect>();
+        public static readonly Name[] allNames = (Name[])Enum.GetValues(typeof(Name));
 
         public static void LoadAllSounds()
         {
@@ -270,6 +271,9 @@ namespace SonOfRobin
 
             Thunder1,
             Thunder2,
+            Thunder3,
+            Thunder4,
+            ElectricShock,
         }
 
         public static readonly Dictionary<Name, string> soundFilenamesDict = new Dictionary<Name, string> {
@@ -482,6 +486,9 @@ namespace SonOfRobin
             { Name.Rain, "678435__borgory__soft-rain-in-forest-raindrops-fall-on-leaves" },
             { Name.Thunder1, "195439__littlebrojay__strike-3-sec" },
             { Name.Thunder2, "475094__josh74000mc__thunder3" },
+            { Name.Thunder3, "334047__drukalo__badweatherrec" },
+            { Name.Thunder4, "345920__dragisharambo21__thunder" },
+            { Name.ElectricShock, "512471__michael_grinnell__electric-zap" },
             };
     }
 }
