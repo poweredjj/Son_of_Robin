@@ -207,26 +207,28 @@ namespace SonOfRobin
             {
                 thunderSound.Play();
 
-                if (this.world.random.Next(2) == 0)
-                { }
-
-                Rectangle cameraRect = this.world.camera.viewRect;
-
-                Vector2 lightningOriginLocation = new Vector2(
-                    cameraRect.X + (this.LightningPosMultiplier.X * cameraRect.Width),
-                    cameraRect.Y + (this.LightningPosMultiplier.Y * cameraRect.Height)
-                    );
-
-                var plantSpriteList = new List<Sprite>();
-                world.Grid.GetSpritesInCameraViewAndPutIntoList(camera: world.camera, groupName: Cell.Group.ColPlantGrowth, spriteListToFill: plantSpriteList);
-
-                foreach (Sprite sprite in plantSpriteList)
+                if (this.world.random.Next(3) == 0)
                 {
-                    if (IsSpriteAffectedByWind(sprite: sprite, strongWind: true))
-                    {
-                        float distance = Vector2.Distance(lightningOriginLocation, sprite.position);
+                    // making a shockwave
 
-                        world.swayManager.AddSwayEvent(targetSprite: sprite, sourceSprite: null, targetRotation: (sprite.position - lightningOriginLocation).X > 0 ? 0.15f : -0.15f, playSound: false, delayFrames: 20 + ((int)distance / 120));
+                    Rectangle cameraRect = this.world.camera.viewRect;
+
+                    Vector2 lightningOriginLocation = new Vector2(
+                        cameraRect.X + (this.LightningPosMultiplier.X * cameraRect.Width),
+                        cameraRect.Y + (this.LightningPosMultiplier.Y * cameraRect.Height)
+                        );
+
+                    var plantSpriteList = new List<Sprite>();
+                    world.Grid.GetSpritesInCameraViewAndPutIntoList(camera: world.camera, groupName: Cell.Group.ColPlantGrowth, spriteListToFill: plantSpriteList);
+
+                    foreach (Sprite sprite in plantSpriteList)
+                    {
+                        if (IsSpriteAffectedByWind(sprite: sprite, strongWind: true))
+                        {
+                            float distance = Vector2.Distance(lightningOriginLocation, sprite.position);
+
+                            world.swayManager.AddSwayEvent(targetSprite: sprite, sourceSprite: null, targetRotation: (sprite.position - lightningOriginLocation).X > 0 ? 0.15f : -0.15f, playSound: false, delayFrames: 20 + ((int)distance / 120));
+                        }
                     }
                 }
             }
