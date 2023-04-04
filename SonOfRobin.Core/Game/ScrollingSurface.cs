@@ -157,7 +157,7 @@ namespace SonOfRobin
             int offsetX = (int)this.offset.X;
             int offsetY = (int)this.offset.Y;
 
-            Color drawColor = Color.White * (opacityOverride == 1 ? this.opacity : opacityOverride);
+            Color drawColor = Color.White * (opacityOverride == -1f ? this.opacity : opacityOverride);
 
             int startColumn = (int)((viewRect.X - this.offset.X) / this.texture.Width);
             int startRow = (int)((viewRect.Y - this.offset.Y) / this.texture.Height);
