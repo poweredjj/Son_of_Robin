@@ -9,9 +9,9 @@ namespace SonOfRobin
     {
         public enum Name
         { // lowercase to match filenames
-
             // plain colors
             just_red,
+
             just_blue,
             just_white,
             just_green,
@@ -19,6 +19,7 @@ namespace SonOfRobin
 
             // textures
             grass_good,
+
             grass_bad,
             water_supershallow,
             water_shallow,

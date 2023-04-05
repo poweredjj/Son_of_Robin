@@ -14,8 +14,10 @@ namespace SonOfRobin
         private bool outTrans;
 
         private readonly string baseParamName;
+
         public string BaseParamName
         { get { return baseParamName; } }
+
         private readonly string drawParamName;
         private float sourceVal;
         public float TargetVal { get; private set; }

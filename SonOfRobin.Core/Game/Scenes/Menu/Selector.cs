@@ -25,8 +25,10 @@ namespace SonOfRobin
 
         private Object ActiveValue
         { get { return valueDict.Keys.ToList()[activeIndex]; } }
+
         private bool ActiveNameIsTexture
         { get { return this.ActiveName.GetType() == typeof(Texture2D); } }
+
         public override string DisplayedText
         { get { return $"{this.name}   < {this.ActiveName} >"; } }
 

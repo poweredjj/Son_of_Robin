@@ -46,8 +46,10 @@ namespace SonOfRobin
 
         private StorageSlot FlameTriggerSlot
         { get { return this.PieceStorage.GetSlot(0, 0); } }
+
         private StorageSlot MealSlot
         { get { return this.PieceStorage.GetSlot(1, 0); } }
+
         private StorageSlot FuelSlot
         { get { return this.PieceStorage.GetSlot(2, 0); } }
 

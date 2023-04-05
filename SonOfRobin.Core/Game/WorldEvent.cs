@@ -74,9 +74,9 @@ namespace SonOfRobin
                     eventHelper = Helpers.CastObjectToInt(eventHelper); // serialization makes every int stored as int64 (long)
                 }
                 catch (Exception)
-                {}           
+                { }
             }
-            
+
             new WorldEvent(eventName: eventName, world: world, delay: delay, boardPiece: boardPiece, eventHelper: eventHelper);
         }
 
@@ -245,7 +245,7 @@ namespace SonOfRobin
 
                         int delay = Helpers.CastObjectToInt(regenPoisonData["delay"]);
                         int charges = Helpers.CastObjectToInt(regenPoisonData["charges"]);
-                        int hpChange = Helpers.CastObjectToInt(regenPoisonData["hpChange"]); 
+                        int hpChange = Helpers.CastObjectToInt(regenPoisonData["hpChange"]);
 
                         bool canKill = (bool)regenPoisonData["canKill"];
 

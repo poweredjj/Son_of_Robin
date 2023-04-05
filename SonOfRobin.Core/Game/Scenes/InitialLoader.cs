@@ -131,7 +131,6 @@ namespace SonOfRobin
 
                 case Step.DeleteObsoleteTemplates:
 
-
                     var templatePaths = Directory.GetDirectories(SonOfRobinGame.worldTemplatesPath);
                     var existingWorlds = Scene.GetAllScenesOfType(typeof(World)).Select(worldScene => (World)worldScene).ToList();
                     var correctSaves = SaveHeaderManager.CorrectSaves;
@@ -161,7 +160,6 @@ namespace SonOfRobin
                     {
                         Directory.Delete(path: templatePathToDelete, recursive: true);
                     }
-
 
                     break;
 

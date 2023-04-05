@@ -30,8 +30,10 @@ namespace SonOfRobin
 
         private BoardPiece mainPiece;
         private float firstPiecesDivider;
+
         public List<DebrisType> DebrisTypeList
         { get { return this.debrisTypeList; } }
+
         private readonly List<DebrisType> debrisTypeList;
         private readonly List<DroppedPiece> firstDroppedPieces; // during hitting the piece
         private readonly List<DroppedPiece> finalDroppedPieces; // after destroying the piece

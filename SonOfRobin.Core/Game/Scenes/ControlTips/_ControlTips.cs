@@ -40,7 +40,6 @@ namespace SonOfRobin
             this.SwitchToLayout(tipsLayout: TipsLayout.Empty);
         }
 
-
         public static ControlTips GetTopTips()
         {
             var tipsScene = GetTopSceneOfType(typeof(ControlTips));

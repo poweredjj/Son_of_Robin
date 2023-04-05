@@ -98,16 +98,22 @@ namespace SonOfRobin
 
             buttonsByName[name] = this;
         }
+
         private bool HasBeenPressed
         { get { return this.IsActive && !this.wasDownLastFrame; } }
+
         private bool HasBeenReleased
         { get { return !this.IsActive && this.wasDownLastFrame; } }
+
         private bool IsActive
         { get { return this.switchButton ? this.switchedState : this.isDown; } }
+
         private int Width
         { get { return (int)(SonOfRobinGame.VirtualWidth * this.width0to1); } }
+
         private int Height
         { get { return (int)(SonOfRobinGame.VirtualWidth * this.height0to1); } }  // VirtualWidth is repeated to maintain button proportions
+
         private Vector2 PosCenter
         { get { return new Vector2(SonOfRobinGame.VirtualWidth * this.posX0to1, SonOfRobinGame.VirtualHeight * this.posY0to1); } }
 
@@ -152,8 +158,6 @@ namespace SonOfRobin
 
         private bool JustCreated
         { get { return this.frameCreated == SonOfRobinGame.CurrentUpdate; } }
-
-
 
         public static bool HasButtonBeenPressed(VButName buttonName)
         {

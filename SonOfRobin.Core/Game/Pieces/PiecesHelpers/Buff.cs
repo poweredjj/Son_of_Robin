@@ -28,7 +28,7 @@ namespace SonOfRobin
             this.id = Helpers.GetUniqueHash();
             // AutoRemoveDelay should not be used for equip!
             // It should only be used for temporary buffs (food, status effects, etc.).
-            this.autoRemoveDelay = autoRemoveDelay;      
+            this.autoRemoveDelay = autoRemoveDelay;
             this.value = value;
             this.canKill = canKill;
             this.isPermanent = isPermanent;
@@ -39,7 +39,6 @@ namespace SonOfRobin
 
             this.endFrame = 0; // to be assigned during activation
             this.activationFrame = 0; // to be assigned during activation
-
         }
 
         private object CastValueToCorrectType(object value)
@@ -47,7 +46,7 @@ namespace SonOfRobin
             switch (this.type)
             {
                 case BuffEngine.BuffType.InvWidth:
-                    value = Helpers.CastObjectToByte(value);             
+                    value = Helpers.CastObjectToByte(value);
                     break;
 
                 case BuffEngine.BuffType.InvHeight:

@@ -12,8 +12,10 @@ namespace SonOfRobin
 
         private StorageSlot UpgradeTriggerSlot
         { get { return this.PieceStorage.GetSlot(0, 0); } }
+
         private StorageSlot MainSlot
         { get { return this.PieceStorage.GetSlot(1, 0); } }
+
         private StorageSlot BoosterSlot
         { get { return this.PieceStorage.GetSlot(2, 0); } }
 

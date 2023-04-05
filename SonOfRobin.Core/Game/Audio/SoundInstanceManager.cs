@@ -11,6 +11,7 @@ namespace SonOfRobin
         private static readonly Dictionary<int, SoundData.Name> soundNamesByInstanceHash = new Dictionary<int, SoundData.Name>(); // to keep track what instance plays what sound
 
         public static int CreatedInstancesCount { get; private set; } = 0;
+
         public static int ActiveInstancesCount
         { get { return activeSoundInstancesByID.Count; } }
 

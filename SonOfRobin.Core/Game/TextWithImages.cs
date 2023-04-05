@@ -46,13 +46,17 @@ namespace SonOfRobin
         public static readonly string imageMarker = "|";
 
         private readonly SpriteFont font;
+
         public string TextOriginal
         { get { return this.textOriginal; } }
+
         private readonly string textOriginal;
         private readonly string textWithResizedMarkers;
         private readonly List<ImageInfo> imageInfoList;
+
         private List<Texture2D> ImageList
         { get { return this.imageInfoList.Select(info => info.texture).ToList(); } }
+
         private readonly bool treatImagesAsSquares;
         private readonly bool animate;
         private readonly Sound animSound;
@@ -66,8 +70,10 @@ namespace SonOfRobin
         public bool AnimationFinished { get; private set; }
         private readonly int framesPerChar;
         private readonly int charsPerFrame;
+
         public string Text
         { get { return this.textWithResizedMarkers; } }
+
         private string AnimatedText
         { get { return this.textWithResizedMarkers.Substring(0, this.charCounter); } }
 

@@ -22,10 +22,13 @@ namespace SonOfRobin
         private readonly bool useTransitionClose;
         private Scheduler.TaskName closingTask;
         private Object closingTaskHelper;
+
         private int MaxWindowWidth
         { get { return Convert.ToInt32(SonOfRobinGame.VirtualWidth * 0.8f); } }
+
         private int MaxWindowHeight
         { get { return Convert.ToInt32(SonOfRobinGame.VirtualHeight * 0.7f); } }
+
         private int Margin
         { get { return Convert.ToInt32(SonOfRobinGame.VirtualHeight * 0.03f); } }
 
