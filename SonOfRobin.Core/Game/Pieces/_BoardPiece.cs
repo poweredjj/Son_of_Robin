@@ -343,6 +343,8 @@ namespace SonOfRobin
             this.sprite.Deserialize(pieceData["base_sprite"]);
 
             if (!(bool)pieceData["base_alive"]) this.Kill();
+
+            this.world.piecesByOldID[(string)pieceData["base_id"]] = this;
         }
 
         public virtual void DrawStatBar()

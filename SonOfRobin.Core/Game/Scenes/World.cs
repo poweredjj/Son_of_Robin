@@ -24,6 +24,7 @@ namespace SonOfRobin
         public readonly bool demoMode;
 
         private Object saveGameData;
+        public readonly Dictionary<string, BoardPiece> piecesByOldID; // for deserialization only
         public bool createMissingPiecesOutsideCamera;
         public DateTime lastSaved;
 
@@ -97,6 +98,7 @@ namespace SonOfRobin
                 this.soundActive = false;
             }
             this.saveGameData = saveGameData;
+            this.piecesByOldID = new Dictionary<string, BoardPiece>();
             this.createMissingPiecesOutsideCamera = false;
             this.lastSaved = DateTime.Now;
             this.WorldCreationInProgress = true;
@@ -530,7 +532,6 @@ namespace SonOfRobin
             // deserializing pieces
             {
                 var pieceDataBag = (ConcurrentBag<Object>)saveGameDataDict["pieces"];
-                var piecesByID = new Dictionary<string, BoardPiece> { };
                 var animalsByTargetID = new Dictionary<string, BoardPiece> { };
 
                 foreach (Dictionary<string, Object> pieceData in pieceDataBag)
@@ -563,8 +564,6 @@ namespace SonOfRobin
                         this.camera.TrackPiece(trackedPiece: this.Player, moveInstantly: true);
                     }
 
-                    piecesByID[newBoardPiece.id] = newBoardPiece;
-
                     if (newBoardPiece.GetType() == typeof(Animal) && pieceData["animal_target_id"] != null)
                     {
                         animalsByTargetID[(string)pieceData["animal_target_id"]] = newBoardPiece;
@@ -574,7 +573,7 @@ namespace SonOfRobin
                 foreach (var kvp in animalsByTargetID)
                 {
                     Animal newAnimal = (Animal)kvp.Value;
-                    if (piecesByID.ContainsKey(kvp.Key)) newAnimal.target = piecesByID[kvp.Key];
+                    if (this.piecesByOldID.ContainsKey(kvp.Key)) newAnimal.target = this.piecesByOldID[kvp.Key];
                 }
 
                 // deserializing tracking
@@ -582,7 +581,7 @@ namespace SonOfRobin
                 var trackingDataList = (List<Object>)saveGameDataDict["tracking"];
                 foreach (Dictionary<string, Object> trackingData in trackingDataList)
                 {
-                    Tracking.Deserialize(world: this, trackingData: trackingData, piecesByID: piecesByID);
+                    Tracking.Deserialize(world: this, trackingData: trackingData);
                 }
 
                 // deserializing planned events
@@ -590,8 +589,10 @@ namespace SonOfRobin
                 var eventDataList = (List<Object>)saveGameDataDict["events"];
                 foreach (Dictionary<string, Object> eventData in eventDataList)
                 {
-                    WorldEvent.Deserialize(world: this, eventData: eventData, piecesByID: piecesByID);
+                    WorldEvent.Deserialize(world: this, eventData: eventData);
                 }
+
+                this.piecesByOldID.Clear(); // not needed anymore
             }
 
             // finalizing

@@ -47,20 +47,23 @@ namespace SonOfRobin
             return eventData;
         }
 
-        public static void Deserialize(World world, Dictionary<string, Object> eventData, Dictionary<string, BoardPiece> piecesByID)
+        public static void Deserialize(World world, Dictionary<string, Object> eventData)
         {
             // for events that target a piece, that was already destroyed (and will not be present in saved data)
             EventName eventName = (EventName)(Int64)eventData["eventName"];
-
-            BoardPiece boardPiece;
-
+          
             var eventsWithoutPieces = new List<EventName> { EventName.RestorePieceCreation, EventName.RestoreHint, EventName.FinishBuilding };
 
+            BoardPiece boardPiece;
             if (eventsWithoutPieces.Contains(eventName)) boardPiece = null;
             else
             {
-                if (!piecesByID.ContainsKey((string)eventData["piece_id"])) return;
-                boardPiece = piecesByID[(string)eventData["piece_id"]];
+                if (!world.piecesByOldID.ContainsKey((string)eventData["piece_id"]))
+                {
+                    MessageLog.AddMessage(msgType: MsgType.User, message: $"WorldEvent {eventName} - cannot find boardPiece id {(string)eventData["piece_id"]}.", color: Color.Orange);
+                    return;
+                }
+                boardPiece = world.piecesByOldID[(string)eventData["piece_id"]];
             }
 
             int startUpdateNo = (int)(Int64)eventData["startUpdateNo"];
@@ -216,7 +219,7 @@ namespace SonOfRobin
 
                         // inflicting damage
 
-                        // MessageLog.AddMessage(msgType: MsgType.User, message: $"{this.boardPiece.readableName} HP {this.boardPiece.hitPoints} - {damage}"); for testing
+                        // MessageLog.AddMessage(msgType: MsgType.User, message: $"{this.boardPiece.readableName} HP {this.boardPiece.hitPoints} - {damage}"); // for testing
 
                         this.boardPiece.hitPoints = Math.Max(this.boardPiece.hitPoints - damage, 0);
                         if (this.boardPiece.hitPoints <= 0)
