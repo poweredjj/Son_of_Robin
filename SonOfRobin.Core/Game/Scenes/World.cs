@@ -871,6 +871,7 @@ namespace SonOfRobin
             this.ProcessInput();
             this.UpdateViewParams();
             this.weather.Update();
+            this.swayManager.Update();
 
             if (this.soundPaused && this.inputActive)
             {
@@ -919,8 +920,6 @@ namespace SonOfRobin
                 this.CurrentUpdate++;
                 this.islandClock.Advance();
             }
-
-            this.swayManager.Update();
         }
 
         private void ProcessInput()
