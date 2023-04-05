@@ -60,7 +60,7 @@ namespace SonOfRobin
             {
                 if (!world.piecesByOldID.ContainsKey((string)eventData["piece_id"]))
                 {
-                    MessageLog.AddMessage(msgType: MsgType.User, message: $"WorldEvent {eventName} - cannot find boardPiece id {(string)eventData["piece_id"]}.", color: Color.Orange);
+                    MessageLog.AddMessage(msgType: MsgType.Debug, message: $"WorldEvent {eventName} - cannot find boardPiece id {(string)eventData["piece_id"]}.", color: Color.Orange);
                     return;
                 }
                 boardPiece = world.piecesByOldID[(string)eventData["piece_id"]];
