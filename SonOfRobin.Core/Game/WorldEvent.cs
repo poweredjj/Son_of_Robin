@@ -216,6 +216,8 @@ namespace SonOfRobin
 
                         // inflicting damage
 
+                        // MessageLog.AddMessage(msgType: MsgType.User, message: $"{this.boardPiece.readableName} HP {this.boardPiece.hitPoints} - {damage}"); for testing
+
                         this.boardPiece.hitPoints = Math.Max(this.boardPiece.hitPoints - damage, 0);
                         if (this.boardPiece.hitPoints <= 0)
                         {
@@ -223,7 +225,15 @@ namespace SonOfRobin
                             MessageLog.AddMessage(msgType: MsgType.User, message: $"{Helpers.FirstCharToUpperCase(this.boardPiece.readableName)} has burnt out.", color: Color.White);
 
                             portableLight.IsOn = false;
-                            this.world.Player.EquipStorage.DestroyBrokenPieces();
+
+                            if (portableLight.convertsToWhenUsedUp != PieceTemplate.Name.Empty)
+                            {
+                                StorageSlot slot = portableLight.world.Player.ToolStorage.FindSlotContainingThisPiece(portableLight);
+
+                                BoardPiece emptyContainter = PieceTemplate.Create(templateName: portableLight.convertsToWhenUsedUp, world: world);
+                                slot.DestroyPieceAndReplaceWithAnother(emptyContainter);
+                            }
+                            else this.world.Player.EquipStorage.DestroyBrokenPieces();
                         }
 
                         // setting next loop event

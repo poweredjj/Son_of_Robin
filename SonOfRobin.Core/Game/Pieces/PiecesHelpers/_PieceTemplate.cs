@@ -238,6 +238,9 @@ namespace SonOfRobin
             SoundNightCrickets,
             SoundNoonCicadas,
             SoundLava,
+
+            LanternFrame,
+            Lantern,
         }
 
         public static readonly Name[] allNames = (Name[])Enum.GetValues(typeof(Name));
@@ -2515,8 +2518,22 @@ namespace SonOfRobin
                     {
                         var buffList = new List<Buff> { new Buff(type: BuffEngine.BuffType.LightSource, value: 6) };
 
-                        return new PortableLight(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BigTorch, blocksMovement: false, category: BoardPiece.Category.Wood, canBeUsedDuringRain: true,
-                            allowedTerrain: shallowWaterToVolcano, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 3, mass: 100, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 600, readableName: "big torch", description: "Burns for a long time. Can be used during rain.");
+                        return new PortableLight(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BigTorch, blocksMovement: false, category: BoardPiece.Category.Wood, canBeUsedDuringRain: false,
+                            allowedTerrain: shallowWaterToVolcano, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 3, mass: 100, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 600, readableName: "big torch", description: "Burns for a long time.");
+                    }
+
+                case Name.Lantern:
+                    {
+                        var buffList = new List<Buff> { new Buff(type: BuffEngine.BuffType.LightSource, value: 8) };
+
+                        return new PortableLight(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Lantern, blocksMovement: true, category: BoardPiece.Category.Metal, canBeUsedDuringRain: true,
+                            allowedTerrain: shallowWaterToVolcano, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 100, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 500, readableName: "lantern", description: "Can be used during rain. Refillable.", convertsToWhenUsedUp: Name.LanternFrame);
+                    }
+
+                case Name.LanternFrame:
+                    {
+                        return new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.LanternFrame, allowedTerrain: new AllowedTerrain(), category: BoardPiece.Category.Metal,
+                            minDistance: 0, maxDistance: 500, maxMassBySize: null, generation: generation, maxHitPoints: 400, readableName: "lantern frame", description: "Can be used to make a lantern.", movesWhenDropped: true, isAffectedByWind: true, canBePickedUp: true);
                     }
 
                 case Name.Campfire:

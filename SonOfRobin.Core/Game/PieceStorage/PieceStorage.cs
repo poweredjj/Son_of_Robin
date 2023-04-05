@@ -501,6 +501,19 @@ namespace SonOfRobin
             return null;
         }
 
+        public StorageSlot FindSlotContainingThisPiece(BoardPiece piece)
+        {
+            foreach (StorageSlot slot in this.OccupiedSlots)
+            {
+                foreach (BoardPiece checkPiece in slot.pieceList)
+                {
+                    if (checkPiece.id == piece.id) return slot;
+                }
+            }
+
+            return null;
+        }
+
         public virtual void Sort()
         {
             if (this.storageType == StorageType.Equip) return; // equip should not be sorted, to avoid removing and adding buffs
