@@ -80,6 +80,7 @@ namespace SonOfRobin
 
         public static void AddUpdateTip(World world, Texture2D texture, Sprite targetSprite, Alignment alignment)
         {
+            if (texture.Name == null) return;
             if (!tipsDict.ContainsKey(texture.Name) || tipsDict[texture.Name].world != world) new FieldTip(world: world, texture: texture, targetSprite: targetSprite, alignment: alignment);
             else tipsDict[texture.Name].Update(targetSprite: targetSprite, alignment: alignment);
         }
