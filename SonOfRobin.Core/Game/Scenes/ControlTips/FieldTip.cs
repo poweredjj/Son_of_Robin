@@ -16,7 +16,7 @@ namespace SonOfRobin
         private const int movementSlowdown = 6;
         private const int opacitySlowdown = 6;
 
-        private static readonly Dictionary<Texture2D, FieldTip> tipsDict = new Dictionary<Texture2D, FieldTip>();
+        private static readonly Dictionary<string, FieldTip> tipsDict = new Dictionary<string, FieldTip>();
         private static readonly List<Sprite> thisFrameSpritesShown = new List<Sprite>();
 
         private readonly World world;
@@ -26,7 +26,6 @@ namespace SonOfRobin
         private Alignment alignment;
 
         private int lastFrameActive;
-        private bool teleportToTarget;
 
         private Sprite targetSprite;
 
@@ -34,8 +33,10 @@ namespace SonOfRobin
         private Vector2 currentPos;
         private float targetOpacity;
         private float currentOpacity;
+
         private int TextureWidth
         { get { return (int)(this.texture.Width * Preferences.fieldControlTipsScale); } }
+
         private int TextureHeight
         { get { return (int)(this.texture.Height * Preferences.fieldControlTipsScale); } }
 
@@ -52,11 +53,13 @@ namespace SonOfRobin
             this.lastFrameActive = this.world.CurrentUpdate;
 
             this.targetSprite = targetSprite;
-            this.currentPos = this.targetPos;
 
-            this.teleportToTarget = true;
+            tipsDict[texture.Name] = this;
 
-            tipsDict[texture] = this;
+            this.targetPos = this.CalculatePosition();
+            this.currentPos = this.targetPos; // needed for obstruction calculations
+            this.MoveIfObstructsPlayerOrOtherTip();
+            this.currentPos = this.targetPos; // setting non-obstructing position as current, to show at the right place from the start
         }
 
         private void Update(Sprite targetSprite, Alignment alignment)
@@ -72,13 +75,13 @@ namespace SonOfRobin
 
         private void Remove()
         {
-            tipsDict.Remove(this.texture);
+            tipsDict.Remove(this.texture.Name);
         }
 
         public static void AddUpdateTip(World world, Texture2D texture, Sprite targetSprite, Alignment alignment)
         {
-            if (!tipsDict.ContainsKey(texture) || tipsDict[texture].world != world) new FieldTip(world: world, texture: texture, targetSprite: targetSprite, alignment: alignment);
-            else tipsDict[texture].Update(targetSprite: targetSprite, alignment: alignment);
+            if (!tipsDict.ContainsKey(texture.Name) || tipsDict[texture.Name].world != world) new FieldTip(world: world, texture: texture, targetSprite: targetSprite, alignment: alignment);
+            else tipsDict[texture.Name].Update(targetSprite: targetSprite, alignment: alignment);
         }
 
         private void ChangeOpacityIfObstructsTarget()
@@ -120,12 +123,7 @@ namespace SonOfRobin
             if (this.world.CurrentUpdate - this.lastFrameActive > maxInactiveDuration) this.targetOpacity = 0f;
             else this.ChangeOpacityIfObstructsTarget();
 
-            if (this.teleportToTarget)
-            {
-                this.currentPos = this.targetPos;
-                this.teleportToTarget = false;
-            }
-            else this.currentPos += (this.targetPos - this.currentPos) / movementSlowdown;
+            this.currentPos += (this.targetPos - this.currentPos) / movementSlowdown;
 
             this.currentOpacity += (this.targetOpacity - this.currentOpacity) / opacitySlowdown;
             if (this.currentOpacity < 0.05f)
