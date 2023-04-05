@@ -263,6 +263,17 @@ namespace SonOfRobin
                     var movement = (attacker.sprite.position - animalTarget.sprite.position) * targetPushMultiplier * -0.5f * hitPower;
                     animalTarget.AddPassiveMovement(movement: Helpers.VectorAbsMax(vector: movement, maxVal: 400f));
                 }
+                else
+                {
+                    float hitPercentage = Math.Min((float)hitPower / (float)target.maxHitPoints, target.maxHitPoints);
+
+                    float rotationChange = Math.Min(0.5f * hitPercentage, 0.25f);
+                    if ((target.sprite.position - attacker.sprite.position).X > 0) rotationChange *= -1;
+
+                    // MessageLog.AddMessage(msgType: MsgType.User, message: $"rotationChange {rotationChange} hitPower {hitPower} exists {target.exists} hp {target.HitPointsPercent}"); // for testing
+
+                    world.swayManager.AddSwayEvent(targetSprite: target.sprite, sourceSprite: null, targetRotation: target.sprite.rotation - rotationChange, playSound: false);
+                }
             }
         }
 

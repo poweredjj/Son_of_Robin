@@ -56,6 +56,12 @@ namespace SonOfRobin
 
         public void AddSwayEvent(Sprite targetSprite, Sprite sourceSprite = null, float targetRotation = 0f, bool playSound = true, int delayFrames = 0, int rotationSlowdown = 4)
         {
+            if (!targetSprite.IsOnBoard)
+            {
+                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Cannot add SwayEvent to sprite {targetSprite.boardPiece.name} that is not on board - ignoring.");
+                return;
+            }
+
             if (delayFrames > 0)
             {
                 this.waitingEvents.Add(new WaitingSwayEvent(startFrame: targetSprite.world.CurrentUpdate + delayFrames, targetSprite: targetSprite, sourceSprite: sourceSprite, targetRotation: targetRotation, playSound: playSound, rotationSlowdown: rotationSlowdown));
