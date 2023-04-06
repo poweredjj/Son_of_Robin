@@ -897,9 +897,9 @@ namespace SonOfRobin
         {
             if (this.draggedPieces.Count == 0) return;
 
-            this.draggedPieces[0].soundPack.Play(action: PieceSoundPack.Action.IsDropped, ignore3D: true, ignoreCooldown: true);
-
             //MessageLog.AddMessage(msgType: MsgType.Debug, message: $"ReleaseHeldPieces");
+
+            PieceSoundPack firstPieceSoundPack = this.draggedPieces[0].soundPack;
 
             int initialDraggedCount = this.draggedPieces.Count;
             PieceTemplate.Name initialTopPieceName = this.draggedPieces[0].name;
@@ -940,6 +940,12 @@ namespace SonOfRobin
                 this.ReleaseHeldPieces(slot: slot, forceReleaseAll: true); // in case of touch (or mouse) drag, dragged pieces should be released after swap
                 this.disableTouchContextMenuUntilFrame = SonOfRobinGame.CurrentUpdate + 15;
             }
+
+            if (piecesThatDidNotFitIn.Count == initialDraggedCount)
+            {
+                if (!this.draggedByTouch) Sound.QuickPlay(SoundData.Name.Error);
+            }
+            else firstPieceSoundPack.Play(action: PieceSoundPack.Action.IsDropped, ignore3D: true, ignoreCooldown: true);
         }
 
         private void SwapDraggedAndSlotPieces(StorageSlot slot)
