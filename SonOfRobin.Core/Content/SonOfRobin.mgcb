@@ -6645,6 +6645,12 @@
 /processorParam:Quality=Best
 /build:sound/575542__tissman__menu-move7.ogg
 
+#begin sound/581592__samsterbirdies__saw-metal-bounce-1.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sound/581592__samsterbirdies__saw-metal-bounce-1.ogg
+
 #begin sound/583310__fission9__tile-breaking.ogg
 /importer:OggImporter
 /processor:SoundEffectProcessor

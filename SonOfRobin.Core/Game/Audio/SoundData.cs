@@ -274,6 +274,7 @@ namespace SonOfRobin
             Thunder3,
             Thunder4,
             ElectricShock,
+            MetalicClank,
         }
 
         public static readonly Dictionary<Name, string> soundFilenamesDict = new Dictionary<Name, string> {
@@ -489,6 +490,7 @@ namespace SonOfRobin
             { Name.Thunder3, "334047__drukalo__badweatherrec" },
             { Name.Thunder4, "345920__dragisharambo21__thunder" },
             { Name.ElectricShock, "512471__michael_grinnell__electric-zap" },
+            { Name.MetalicClank, "581592__samsterbirdies__saw-metal-bounce-1" },
             };
     }
 }
