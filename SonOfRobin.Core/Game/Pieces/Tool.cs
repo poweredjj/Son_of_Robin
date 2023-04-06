@@ -211,6 +211,11 @@ namespace SonOfRobin
             BoardPiece attackEffect = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: target.sprite.position, templateName: PieceTemplate.Name.Attack);
             new Tracking(world: world, targetSprite: target.sprite, followingSprite: attackEffect.sprite);
 
+            if (target.GetType() == typeof(Plant))
+            {
+                if (target.Mass < ((Plant)target).adultSizeMass) hitPower *= 3; // making the impression of the plant being weaker, without messing with its max HP
+            }
+
             target.hitPoints -= hitPower;
             if (buffList != null)
             {

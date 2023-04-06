@@ -159,6 +159,14 @@ namespace SonOfRobin
                 Animal animal = (Animal)this.mainPiece;
                 extraDroppedPieces = (int)(animal.MaxMassPercentage * 2);
             }
+            else if (this.mainPiece?.GetType() == typeof(Plant))
+            {
+                if (this.mainPiece.Mass < ((Plant)this.mainPiece).adultSizeMass)
+                {
+                    multiplier /= 6f;
+                    // MessageLog.AddMessage(msgType: MsgType.User, message: $"Plant {this.mainPiece.readableName} is not adult, multiplier changed to {multiplier}."); // for testing
+                }
+            }
 
             World world = World.GetTopWorld(); // do not store world, check it every time (otherwise changing world will make creating pieces impossible)
             Random random = BoardPiece.Random;
