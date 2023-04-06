@@ -2512,7 +2512,8 @@ namespace SonOfRobin
                     {
                         var buffList = new List<Buff>
                         {
-                           new Buff(type: BuffEngine.BuffType.MaxHP, value: 100f)
+                           new Buff(type: BuffEngine.BuffType.MaxHP, value: 100f),
+                           new Buff(type: BuffEngine.BuffType.MaxStamina, value: 100f),
                         };
 
                         return new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Dungarees, blocksMovement: false, category: BoardPiece.Category.Flesh,
