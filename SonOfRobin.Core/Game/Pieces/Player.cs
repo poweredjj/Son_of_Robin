@@ -323,7 +323,7 @@ namespace SonOfRobin
             StorageSlot chestSlot = this.EquipStorage.GetSlot(1, 1);
             chestSlot.locked = false;
             chestSlot.hidden = false;
-            chestSlot.allowedPieceNames = new List<PieceTemplate.Name> { }; // TODO add chest equip
+            chestSlot.allowedPieceNames = new List<PieceTemplate.Name> { PieceTemplate.Name.Dungarees };
             chestSlot.label = "chest";
 
             StorageSlot legsSlot = this.EquipStorage.GetSlot(1, 2);
