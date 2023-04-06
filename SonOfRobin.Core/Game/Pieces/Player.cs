@@ -441,6 +441,37 @@ namespace SonOfRobin
             }
         }
 
+        public void RefreshAllowedPiecesForStorages() // for old saves compatibility, to be used from debug menu
+        {
+            Player tempPlayer = (Player)PieceTemplate.Create(templateName: this.name, world: this.world);
+
+            for (int x = 0; x < this.EquipStorage.Width; x++)
+            {
+                for (int y = 0; y < this.EquipStorage.Height; y++)
+                {
+                    this.EquipStorage.GetSlot(x, y).allowedPieceNames = tempPlayer.EquipStorage.GetSlot(x, y).allowedPieceNames;
+                }
+            }
+
+            {
+                var pieceStorageAllowedNames = tempPlayer.PieceStorage.AllowedPieceNames;
+                this.PieceStorage.AssignAllowedPieceNames(pieceStorageAllowedNames);
+                foreach (StorageSlot slot in this.PieceStorage.AllSlots)
+                {
+                    slot.allowedPieceNames = pieceStorageAllowedNames;
+                }
+            }
+
+            {
+                var toolStorageAllowedNames = tempPlayer.ToolStorage.AllowedPieceNames;
+                this.ToolStorage.AssignAllowedPieceNames(toolStorageAllowedNames);
+                foreach (StorageSlot slot in this.ToolStorage.AllSlots)
+                {
+                    slot.allowedPieceNames = toolStorageAllowedNames;
+                }
+            }
+        }
+
         public override void DrawStatBar()
         {
             // the rest of stat bars are drawn in PlayerPanel scene
