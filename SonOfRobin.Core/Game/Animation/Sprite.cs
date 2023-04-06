@@ -704,7 +704,7 @@ namespace SonOfRobin
                 this.frame = AnimData.frameListById["NoAnim-0-default"][0];
             }
 
-            this.currentFrameTimeLeft = this.frame.duration;
+            this.currentFrameTimeLeft = (ushort)this.frame.duration;
             this.UpdateRects();
 
             if (!blocksMovement) return true;
@@ -713,7 +713,7 @@ namespace SonOfRobin
             if (checkForCollision && this.CheckForCollision() && frameCopy != null)
             {
                 this.frame = frameCopy;
-                this.currentFrameTimeLeft = this.frame.duration;
+                this.currentFrameTimeLeft = (ushort)this.frame.duration;
                 this.UpdateRects();
 
                 return false;
@@ -735,14 +735,14 @@ namespace SonOfRobin
                 return;
             }
 
-            this.currentFrameTimeLeft = this.frame.duration;
+            this.currentFrameTimeLeft = (ushort)this.frame.duration;
             this.UpdateRects();
         }
 
         public void RewindAnim()
         {
             this.currentFrameIndex = 0;
-            this.currentFrameTimeLeft = this.frame.duration;
+            this.currentFrameTimeLeft = (ushort)this.frame.duration;
         }
 
         public void UpdateAnimation()

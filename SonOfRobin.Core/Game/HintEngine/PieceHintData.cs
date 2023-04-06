@@ -164,17 +164,22 @@ namespace SonOfRobin
                     playerDoesNotOwnAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.BowWood, PieceTemplate.Name.SpearStone}),
 
                 new PieceHint(
-                    type: PieceHint.Type.DigSitePositive,  fieldPiecesNearby: new List<PieceTemplate.Name> { PieceTemplate.Name.ForestDigSite },
+                    type: PieceHint.Type.DigSitePositive,  fieldPiecesNearby: new List<PieceTemplate.Name> { PieceTemplate.Name.BeachDigSite, PieceTemplate.Name.ForestDigSite, PieceTemplate.Name.SwampDigSite, PieceTemplate.Name.GlassDigSite },
                     message: "I could use my | shovel to dig | here.",
                     imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.ShovelStone), PieceInfo.GetTexture(PieceTemplate.Name.ForestDigSite) },
                     alsoDisables: new List<PieceHint.Type> { PieceHint.Type.DigSiteNegative },
                     playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.ShovelStone, PieceTemplate.Name.ShovelIron, PieceTemplate.Name.ShovelCrystal }),
 
                 new PieceHint(
-                    type: PieceHint.Type.DigSiteNegative, fieldPiecesNearby: new List<PieceTemplate.Name> { PieceTemplate.Name.BeachDigSite, PieceTemplate.Name.ForestDigSite, PieceTemplate.Name.SwampDigSite },
-                    message: "I think that something could be buried | here.\nIf I had a | shovel, I could dig here.",
+                    type: PieceHint.Type.DigSiteNegative, fieldPiecesNearby: new List<PieceTemplate.Name> { PieceTemplate.Name.BeachDigSite, PieceTemplate.Name.ForestDigSite, PieceTemplate.Name.SwampDigSite, PieceTemplate.Name.GlassDigSite },
+                    message: "I think that something could be buried | here.\nIf I had a | shovel, I could dig there.",
                     imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.BeachDigSite),  PieceInfo.GetTexture(PieceTemplate.Name.ShovelStone)},
                     playerDoesNotOwnAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.ShovelStone, PieceTemplate.Name.ShovelIron, PieceTemplate.Name.ShovelCrystal }),
+
+                new PieceHint(
+                    type: PieceHint.Type.DigSiteGlass, fieldPiecesNearby: new List<PieceTemplate.Name> { PieceTemplate.Name.GlassDigSite },
+                    message: "This spot | looks interesting. I might find something useful there.",
+                    imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.GlassDigSite) }),
 
                 new PieceHint(
                     type: PieceHint.Type.WoodNegative, fieldPiecesNearby: new List<PieceTemplate.Name> {PieceTemplate.Name.TreeBig, PieceTemplate.Name.TreeSmall},
