@@ -439,9 +439,10 @@ namespace SonOfRobin
                 List<Point> lastStepsPointList = (List<Point>)pieceData["player_LastSteps"];
                 this.LastSteps = lastStepsPointList.Select(p => new Vector2(p.X, p.Y)).ToList();
             }
+            this.RefreshAllowedPiecesForStorages();
         }
 
-        public void RefreshAllowedPiecesForStorages() // for old saves compatibility, to be used from debug menu
+        public void RefreshAllowedPiecesForStorages() // for old saves compatibility, to ensure that all storages have the right allowedPieceNames
         {
             Player tempPlayer = (Player)PieceTemplate.Create(templateName: this.name, world: this.world);
 

@@ -529,7 +529,6 @@ namespace SonOfRobin
                             new Invoker(menu: menu, name: "show crafted pieces", taskName: Scheduler.TaskName.ShowCraftStats, executeHelper: false);
                             new Invoker(menu: menu, name: "show used ingredients", taskName: Scheduler.TaskName.ShowCraftStats, executeHelper: true);
                             new Invoker(menu: menu, name: "check incorrect pieces", taskName: Scheduler.TaskName.CheckForIncorrectPieces);
-                            new Invoker(menu: menu, name: "refresh player storages", taskName: Scheduler.TaskName.RefreshPlayerStorages, executeHelper: world.Player);
                         }
 
                         new Separator(menu: menu, name: "", isEmpty: true);
