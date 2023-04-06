@@ -104,6 +104,8 @@ namespace SonOfRobin
 
                     new Craft.Recipe(pieceToCreate: PieceTemplate.Name.ShovelIron, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodLogHard, 1 }, { PieceTemplate.Name.IronPlate, 2 }}, fatigue: fatigueItemMedium, isReversible: true, isHidden: true, unlocksWhenCrafted: new List<PieceTemplate.Name> {PieceTemplate.Name.ShovelCrystal }, craftCountToUnlock: 2),
 
+                    new Craft.Recipe(pieceToCreate: PieceTemplate.Name.LanternFrame, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.IronPlate, 2 }, { PieceTemplate.Name.Nail, 25 }, { PieceTemplate.Name.EmptyBottle, 1 } }, fatigue: fatigueItemMedium, isReversible: false),
+
                     new Craft.Recipe(pieceToCreate: PieceTemplate.Name.Lantern, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.LanternFrame, 1 }, { PieceTemplate.Name.Candle, 1 } }, fatigue: fatigueItemMedium, isReversible: false),
 
                     new Craft.Recipe(pieceToCreate: PieceTemplate.Name.ArrowIron, amountToCreate: 10, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stick, 6 }, { PieceTemplate.Name.IronRod, 1 }}, fatigue: fatigueItemMedium, isReversible: false, isHidden: true, unlocksWhenCrafted: new List<PieceTemplate.Name> {PieceTemplate.Name.ArrowCrystal}, craftCountToUnlock: 3),
@@ -171,7 +173,6 @@ namespace SonOfRobin
         {
             return new List<Craft.Recipe> {
                 new Craft.Recipe(pieceToCreate: PieceTemplate.Name.IronRod, amountToCreate: 3, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.IronBar, 1 } }, fatigue: fatigueItemMedium, isReversible: false),
-                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.LanternFrame, amountToCreate: 1, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.IronPlate, 2 }, { PieceTemplate.Name.Nail, 25 } }, fatigue: fatigueItemMedium, isReversible: false),
                 new Craft.Recipe(pieceToCreate: PieceTemplate.Name.IronPlate, amountToCreate: 3, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.IronBar, 1 } }, fatigue: fatigueItemMedium, isReversible: false),
                 new Craft.Recipe(pieceToCreate: PieceTemplate.Name.Nail, amountToCreate: 10, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.IronRod, 1 }}, fatigue: fatigueItemMedium),
                 };

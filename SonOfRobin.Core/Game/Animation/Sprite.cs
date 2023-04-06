@@ -731,7 +731,7 @@ namespace SonOfRobin
             }
             catch (KeyNotFoundException)
             {
-                MessageLog.AddMessage(msgType: MsgType.User, message: $"Cannot use frame '{frameId}' for {this.boardPiece.readableName} - using default.");
+                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Cannot use frame '{frameId}' for {this.boardPiece.readableName} - using default.", color: Color.Orange);
                 return;
             }
 
