@@ -1083,7 +1083,7 @@ namespace SonOfRobin
         {
             if (this.CursorX == -1 || this.CursorY == -1 || !this.inputActive || (this.draggedPieces.Count == 0 && Input.currentControlType == Input.ControlType.Touch)) return;
 
-            Texture2D cursorTexture = SonOfRobinGame.textureByName["cursor"];
+            Texture2D cursorTexture = TextureBank.GetTexture("cursor");
             int tileSize = this.TileSize;
             Vector2 slotPos = this.GetSlotPos(posX: this.CursorX, posY: this.CursorY, tileSize: this.TileSize, margin: this.Margin);
 

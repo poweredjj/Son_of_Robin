@@ -75,8 +75,8 @@ namespace SonOfRobin
             this.bgColorReleased = bgColorReleased;
             this.textColor = textColor;
 
-            this.textureReleased = SonOfRobinGame.textureByName["virtual_button"];
-            this.texturePressed = SonOfRobinGame.textureByName["virtual_button_pressed"];
+            this.textureReleased = TextureBank.GetTexture("virtual_button");
+            this.texturePressed = TextureBank.GetTexture("virtual_button_pressed");
 
             this.hidden = hidden;
 

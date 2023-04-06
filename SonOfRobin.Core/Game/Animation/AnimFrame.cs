@@ -55,7 +55,7 @@ namespace SonOfRobin
             this.duration = duration; // duration == 0 will stop the animation
             this.ignoreWhenCalculatingMaxSize = ignoreWhenCalculatingMaxSize;
 
-            Texture2D atlasTexture = SonOfRobinGame.textureByName[this.atlasName];
+            Texture2D atlasTexture = TextureBank.GetTexture(this.atlasName);
             Rectangle cropRect = GetCropRect(texture: atlasTexture, textureX: atlasX, textureY: atlasY, width: width, height: height, crop: crop);
 
             // padding makes the edge texture filtering smooth and allows for border effects outside original texture edges
@@ -97,8 +97,7 @@ namespace SonOfRobin
 
             foreach (string atlasName in usedAtlasNames)
             {
-                SonOfRobinGame.textureByName[atlasName].Dispose();
-                SonOfRobinGame.textureByName.Remove(atlasName);
+                TextureBank.DisposeTexture(atlasName);
             }
         }
 

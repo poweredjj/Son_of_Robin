@@ -21,7 +21,7 @@ namespace SonOfRobin
         public static readonly DateTime lastChanged = new DateTime(2023, 04, 06);
 
         public static readonly int enteringIslandGlobalSteps = 3 + Grid.allStagesCount;
-        public static ContentManager ContentMgr { get; private set; }
+        public static ContentManager ContentMgr { get; private set; } // for things other than textures (for textures use TextureBank)
         public static Game Game { get; private set; }
 
         public static Platform platform;
@@ -55,8 +55,6 @@ namespace SonOfRobin
 
         public static List<RenderTarget2D> tempShadowMaskList;
         public static Texture2D lightSphere;
-        public static Dictionary<string, Texture2D> textureByName = new Dictionary<string, Texture2D>();
-
         public static readonly SimpleFps fps = new SimpleFps();
         public static readonly Random random = new Random();
         public static int CurrentUpdate { get; private set; }
@@ -127,12 +125,12 @@ namespace SonOfRobin
             WhiteRectangle = new Texture2D(base.GraphicsDevice, 1, 1);
             WhiteRectangle.SetData(new[] { Color.White });
 
-            GradientLeft = ContentMgr.Load<Texture2D>("gfx/gradient_left");
-            GradientRight = ContentMgr.Load<Texture2D>("gfx/gradient_right");
-            GradientTop = ContentMgr.Load<Texture2D>("gfx/gradient_top");
-            GradientBottom = ContentMgr.Load<Texture2D>("gfx/gradient_bottom");
+            GradientLeft = TextureBank.GetTexturePersistent("gradient_left");
+            GradientRight = TextureBank.GetTexturePersistent("gradient_right");
+            GradientTop = TextureBank.GetTexturePersistent("gradient_top");
+            GradientBottom = TextureBank.GetTexturePersistent("gradient_bottom");
 
-            SplashScreenTexture = ContentMgr.Load<Texture2D>("gfx/loading_gfx");
+            SplashScreenTexture = TextureBank.GetTexturePersistent("loading_gfx");
 
             if (!Directory.Exists(gameDataPath)) Directory.CreateDirectory(gameDataPath);
             if (!Directory.Exists(worldTemplatesPath)) Directory.CreateDirectory(worldTemplatesPath);
@@ -192,7 +190,7 @@ namespace SonOfRobin
         {
             SpriteBatch = new SpriteBatch(base.GraphicsDevice);
             ContentMgr = new ContentManager(Services, "Content");
-            FullScreenProgressBar.AssignContentManager(new ContentManager(Services, "Content"));
+            TextureBank.AssignContentManagers(persistentManager: new ContentManager(Services, "Content"), temporaryManager: new ContentManager(Services, "Content"));
 
             FontPressStart2P5 = ContentMgr.Load<SpriteFont>("fonts/PressStart2P"); // needed for InitialLoader
         }

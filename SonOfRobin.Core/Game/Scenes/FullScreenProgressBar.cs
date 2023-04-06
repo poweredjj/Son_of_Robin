@@ -1,13 +1,17 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SonOfRobin
 {
     public class FullScreenProgressBar : Scene
     {
-        private static ContentManager privateContentManager;
+        private static readonly List<string> loadingGfxNames = Enumerable.Range(1, 38) // to be loaded on demand
+            .Select(i => $"loading_{i}") // numbering scheme
+            .Concat(new List<string> { }) // "original" names can be placed here
+            .ToList();
 
         public float ProgressBarPercentage { get; private set; }
         private bool isActive;
@@ -21,16 +25,11 @@ namespace SonOfRobin
             this.TurnOff(force: true);
         }
 
-        public static void AssignContentManager(ContentManager contentManager)
-        {
-            privateContentManager = contentManager;
-        }
-
         public void TurnOn(string text, string optionalText = null, string textureName = null, float percentage = -1f)
         {
             this.blocksDrawsBelow = true;
 
-            if (!this.isActive && textureName == null) textureName = AnimData.loadingGfxNames[SonOfRobinGame.random.Next(0, AnimData.loadingGfxNames.Count)];
+            if (!this.isActive && textureName == null) textureName = loadingGfxNames[SonOfRobinGame.random.Next(0, loadingGfxNames.Count)];
             if (textureName != null) this.UpdateTexture(textureName);
 
             if (percentage != -1f)
@@ -59,7 +58,7 @@ namespace SonOfRobin
             {
                 this.texture.Dispose();
                 this.texture = null;
-                privateContentManager.Unload(); // will unload every texture in privateContentManager
+                TextureBank.FlushTemporaryTextures();
             }
             this.ProgressBarPercentage = 0.005f;
             this.progressBarText = "";
@@ -74,9 +73,9 @@ namespace SonOfRobin
         {
             if (this.textureName == textureName) return;
 
-            privateContentManager.Unload(); // will unload every texture in privateContentManager
+            TextureBank.FlushTemporaryTextures();
 
-            this.texture = privateContentManager.Load<Texture2D>($"gfx/Loading/{textureName}");
+            this.texture = TextureBank.GetTextureTemporary($"Loading/{textureName}");
             this.textureName = textureName;
         }
 

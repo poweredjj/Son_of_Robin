@@ -180,8 +180,8 @@ namespace Studies.Joystick.Input
 
         public List<Rectangle> Draw(SpriteBatch spriteBatch = null, bool getBGRectsOnly = false, bool drawLeftStick = true, bool drawRightStick = true)
         {
-            Texture2D backgroundTx = SonOfRobinGame.textureByName["virtual_joypad_background"];
-            Texture2D stickTx = SonOfRobinGame.textureByName["virtual_joypad_stick"];
+            Texture2D backgroundTx = TextureBank.GetTexture("virtual_joypad_background");
+            Texture2D stickTx = TextureBank.GetTexture("virtual_joypad_stick");
 
             float scale = Preferences.GlobalScale;
             float backgroundSize = aliveZoneSize / scale * 2;

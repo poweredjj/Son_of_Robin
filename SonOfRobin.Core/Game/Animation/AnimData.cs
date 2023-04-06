@@ -1,7 +1,5 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace SonOfRobin
 {
@@ -11,23 +9,9 @@ namespace SonOfRobin
         public static readonly Dictionary<string, List<AnimFrame>> frameListById = new Dictionary<string, List<AnimFrame>>();
         public static readonly Dictionary<PkgName, AnimFrame> framesForPkgs = new Dictionary<PkgName, AnimFrame>(); // default frames for packages
 
-        public static readonly List<string> loadingGfxNames = Enumerable.Range(1, 38) // to be loaded on demand
-            .Select(i => $"loading_{i}") // numbering scheme
-            .Concat(new List<string> { }) // "original" names can be placed here
-            .ToList();
-
-        public static readonly string[] gfxNames = { "no_anim", "characters/fox", "tile_custom01", "characters/actor29rec4", "tileb", "tile_19ba32a6", "backlight_1", "backlight_2", "backlight_3", "backlight_4", "characters/crabs_small", "characters/crabs_big", "characters/frogs_small", "characters/frogs_big", "flowers", "8f296dbbaf43865bc29e99660fe7b5af_2x", "qYFvsmq", "NicePng_pine-tree-clipart-png_1446450", "palmtree_small", "tilees by guth_zpsfn3wpjdu_2x", "attack", "miss", "zzz", "heart_16x16", "characters/rabbits", "virtual_joypad_background", "virtual_joypad_stick", "virtual_button", "virtual_button_pressed", "cursor", "chests", "chest_stone", "d9ffec650d3104f5c4564c9055787530", "sticks1", "sticks2", "axe_wooden", "hand", "tools_gravel", "stones", "fancy_food", "fancy_food2", "celianna_farmnature_crops_transparent", "big_icons_candacis", "Candacis_flames1", "gems__rpg_maker_mv__by_petschko-d9euoxr", "mv_blacksmith_by_schwarzenacht_dapf6ek", "bow", "arrow_wood", "arrow_iron", "crosshair", "stone_small", "craft_items", "tent_big", "tent_medium", "flames", "backpack_small", "backpack_medium", "backpack_medium_outline", "backpack_big", "belt_small", "belt_medium", "belt_big", "parchment", "exclamation", "scythe_stone", "scythe_iron", "grass_blade", "characters/tiger", "acorn", "light_white", "small_torch_on", "small_torch_off", "big_torch_on", "big_torch_off", "tile_rtp-addons", "bottle_empty", "herbs_black", "herbs_blue", "herbs_cyan", "herbs_green", "herbs_red", "herbs_violet", "herbs_yellow", "rpg_maker_vx_ace_tilesets_1_by_hishimy_d8e7pjd", "potion_black", "potion_dark_violet", "potion_dark_yellow", "potion_dark_green", "spear_wood", "spear_stone", "spear_iron", "alchemy_lab", "workshop_basic", "workshop_advanced", "workshop_essential", "workshop_master", "piece_of_fat", "bottle_oil", "burger", "biceps", "bed", "leaf_1", "leaf_2", "leaf_3", "crystal_deposit_big", "crystal_deposit_small", "crystal_shard", "crystal", "stone", "axe_crystal", "spear_crystal", "scythe_crystal", "arrow_crystal", "arrow_stone", "anvil", "iron_rod", "iron_plate", "skull_and_bones", "wood_regular", "wood_hard", "dig_site", "shovel_stone", "shovel_iron", "shovel_crystal", "clay", "hole", "meat_raw", "meat_dried", "jar_sealed", "jar_broken", "tree_stump", "debris_ceramic_1", "debris_ceramic_2", "granite", "hot_plate_off", "hot_plate_on_1", "hot_plate_on_2", "hot_plate_on_3", "music_note", "characters/recolor_pt2", "star", "white_spot", "new", "upgrade_bench", "upgrade", "workshop_leather_basic", "workshop_leather_advanced", "rope", "hat_simple", "map_marker", "parchment_edges", "boots_protective", "fog_1", "fog_2", "fog_3", "fog_4", "plant_poison", "minerals_big_1", "minerals_big_2", "minerals_big_3", "minerals_small_1", "minerals_small_2", "minerals_small_3", "mossy_minerals_big_1", "mossy_minerals_big_2", "mossy_minerals_big_3", "mossy_minerals_big_4", "mossy_minerals_small_1", "mossy_minerals_small_2", "mossy_minerals_small_3", "mossy_minerals_small_4", "characters/demoness", "input/Mouse/Mouse_Left_Key_Light", "input/Mouse/Mouse_Middle_Key_Light", "input/Mouse/Mouse_Right_Key_Light", "input/Mouse/Mouse_Scroll_Up_Light", "input/Mouse/Mouse_Scroll_Down_Light", "scrolling textures/ocean_floor", "scrolling textures/water_caustics1", "scrolling textures/water_caustics2", "scrolling textures/fog", "water drops/water_drop_x1", "water drops/water_drop_x2", "water drops/water_drop_x3", "water drops/water_drop_x4", "water drops/water_drop_x5", "water drops/water_drop_x6", "water drops/water_drop_x7", "water drops/water_drop_x8", "transparent_pixel", "small_white_circle", "lantern_frame", "lantern_off", "lantern_on", "candle", "dungarees", "dig_site_glass", "dig_site_glass_shine_1", "dig_site_glass_shine_2", "dig_site_glass_shine_3" };
-
-        public static void LoadAllTextures()
+        public static void LoadInitialTextures()
         {
-            if (SonOfRobinGame.textureByName.Count > 0) throw new ArgumentException("Textures has already been loaded.");
-
-            foreach (string gfxName in gfxNames)
-            {
-                SonOfRobinGame.textureByName[gfxName] = SonOfRobinGame.ContentMgr.Load<Texture2D>($"gfx/{gfxName}");
-            }
-
-            SonOfRobinGame.lightSphere = SonOfRobinGame.textureByName["light_white"];
+            SonOfRobinGame.lightSphere = TextureBank.GetTexture("light_white");
             SonOfRobinGame.tempShadowMaskList = new List<RenderTarget2D> { };
         }
 
@@ -1105,7 +1089,7 @@ namespace SonOfRobin
 
         public static AnimFrame ConvertImageToFrame(string atlasName, byte layer, int x = 0, int y = 0, int width = 0, int height = 0, int duration = 0, bool crop = true, float scale = 1f, float depthPercent = 0.25f, int padding = 1, bool ignoreWhenCalculatingMaxSize = false)
         {
-            Texture2D atlasTexture = SonOfRobinGame.textureByName[atlasName];
+            Texture2D atlasTexture = TextureBank.GetTexture(atlasName);
             if (width == 0) width = atlasTexture.Width;
             if (height == 0) height = atlasTexture.Height;
 
