@@ -566,7 +566,7 @@ namespace SonOfRobin
             return storageDict;
         }
 
-        public static PieceStorage Deserialize(Object storageData, World world, BoardPiece storagePiece)
+        public static PieceStorage Deserialize(Object storageData, BoardPiece storagePiece)
         {
             if (storageData == null) return null;
 

@@ -331,7 +331,7 @@ namespace SonOfRobin
             this.efficiency = (float)(double)pieceData["base_efficiency"];
             this.activeState = (State)(Int64)pieceData["base_activeState"];
             this.maxAge = (int)(Int64)pieceData["base_maxAge"];
-            this.PieceStorage = PieceStorage.Deserialize(storageData: pieceData["base_pieceStorage"], world: this.world, storagePiece: this);
+            this.PieceStorage = PieceStorage.Deserialize(storageData: pieceData["base_pieceStorage"], storagePiece: this);
             this.boardTask = (Scheduler.TaskName)(Int64)pieceData["base_boardTask"];
             this.toolbarTask = (Scheduler.TaskName)(Int64)pieceData["base_toolbarTask"];
             this.passiveMovement = new Vector2((float)(double)pieceData["base_passiveMovementX"], (float)(double)pieceData["base_passiveMovementY"]);

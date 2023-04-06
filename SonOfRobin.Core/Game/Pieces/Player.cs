@@ -432,8 +432,8 @@ namespace SonOfRobin
             this.cookingSkill = (float)(double)pieceData["player_cookingSkill"];
             this.craftLevel = (int)(Int64)pieceData["player_craftLevel"];
             this.sleepEngine = (SleepEngine)pieceData["player_sleepEngine"];
-            this.ToolStorage = PieceStorage.Deserialize(storageData: pieceData["player_toolStorage"], world: this.world, storagePiece: this);
-            this.EquipStorage = PieceStorage.Deserialize(storageData: pieceData["player_equipStorage"], world: this.world, storagePiece: this);
+            this.ToolStorage = PieceStorage.Deserialize(storageData: pieceData["player_toolStorage"], storagePiece: this);
+            this.EquipStorage = PieceStorage.Deserialize(storageData: pieceData["player_equipStorage"], storagePiece: this);
             if (pieceData.ContainsKey("player_LastSteps"))
             {
                 List<Point> lastStepsPointList = (List<Point>)pieceData["player_LastSteps"];
