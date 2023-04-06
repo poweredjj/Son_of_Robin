@@ -725,7 +725,16 @@ namespace SonOfRobin
         public void AssignFrameById(string frameId)
         // use only when loading game - does not check for collisions
         {
-            this.frame = AnimData.frameById[frameId];
+            try
+            {
+                this.frame = AnimData.frameById[frameId];
+            }
+            catch (KeyNotFoundException)
+            {
+                MessageLog.AddMessage(msgType: MsgType.User, message: $"Cannot use frame '{frameId}' for {this.boardPiece.readableName} - using default.");
+                return;
+            }
+
             this.currentFrameTimeLeft = this.frame.duration;
             this.UpdateRects();
         }
@@ -885,7 +894,7 @@ namespace SonOfRobin
             AnimFrame frame = shadowSprite.frame;
 
             var flatShadowNames = new List<AnimData.PkgName> {
-                AnimData.PkgName.WoodLogRegular, AnimData.PkgName.WoodLogHard, AnimData.PkgName.Stone, AnimData.PkgName.WoodPlank, AnimData.PkgName.IronBar, AnimData.PkgName.Clay, AnimData.PkgName.Hole, AnimData.PkgName.Granite, AnimData.PkgName.BeltBig, AnimData.PkgName.HumanSkeleton, AnimData.PkgName.MineralsSmall2, AnimData.PkgName.MineralsMossySmall4, AnimData.PkgName.Lantern, AnimData.PkgName.LanternFrame };
+                AnimData.PkgName.WoodLogRegular, AnimData.PkgName.WoodLogHard, AnimData.PkgName.Stone, AnimData.PkgName.WoodPlank, AnimData.PkgName.IronBar, AnimData.PkgName.Clay, AnimData.PkgName.Hole, AnimData.PkgName.Granite, AnimData.PkgName.BeltBig, AnimData.PkgName.HumanSkeleton, AnimData.PkgName.MineralsSmall2, AnimData.PkgName.MineralsMossySmall4, AnimData.PkgName.Lantern, AnimData.PkgName.LanternFrame, AnimData.PkgName.Candle };
 
             bool flatShadow = flatShadowNames.Contains(shadowSprite.boardPiece.sprite.animPackage);
 

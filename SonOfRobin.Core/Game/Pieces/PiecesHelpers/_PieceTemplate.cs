@@ -241,6 +241,7 @@ namespace SonOfRobin
 
             LanternFrame,
             Lantern,
+            Candle
         }
 
         public static readonly Name[] allNames = (Name[])Enum.GetValues(typeof(Name));
@@ -2533,7 +2534,13 @@ namespace SonOfRobin
                 case Name.LanternFrame:
                     {
                         return new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.LanternFrame, allowedTerrain: new AllowedTerrain(), category: BoardPiece.Category.Metal,
-                            minDistance: 0, maxDistance: 500, maxMassBySize: null, generation: generation, maxHitPoints: 400, readableName: "lantern frame", description: "Can be used to make a lantern.", movesWhenDropped: true, isAffectedByWind: true, canBePickedUp: true);
+                            minDistance: 0, maxDistance: 500, maxMassBySize: null, generation: generation, maxHitPoints: 400, readableName: "lantern frame", description: "Can be used to make a lantern.", movesWhenDropped: true, rotatesWhenDropped: true, isAffectedByWind: true, canBePickedUp: true);
+                    }
+
+                case Name.Candle:
+                    {
+                        return new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Candle, allowedTerrain: new AllowedTerrain(), category: BoardPiece.Category.Wood,
+                            minDistance: 0, maxDistance: 500, maxMassBySize: null, generation: generation, maxHitPoints: 100, readableName: "candle", description: "Can be put inside lantern.", movesWhenDropped: true, rotatesWhenDropped: true, isAffectedByWind: true, canBePickedUp: true);
                     }
 
                 case Name.Campfire:
