@@ -212,6 +212,12 @@ namespace SonOfRobin
             EffectSketch = ContentMgr.Load<Effect>("effects/Sketch");
         }
 
+        public static void LoadInitialTextures()
+        {
+            lightSphere = TextureBank.GetTexture("light_white");
+            tempShadowMaskList = new List<RenderTarget2D> { };
+        }
+
         public static void CreateHintAndProgressWindows()
         {
             HintWindow = new InfoWindow(bgColor: Color.RoyalBlue, bgOpacity: 0.85f);

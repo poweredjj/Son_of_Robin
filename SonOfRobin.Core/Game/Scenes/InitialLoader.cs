@@ -74,7 +74,7 @@ namespace SonOfRobin
                     break;
 
                 case Step.LoadInitialTextures:
-                    AnimData.LoadInitialTextures();
+                    SonOfRobinGame.LoadInitialTextures();
                     break;
 
                 case Step.CreateSeamless:

@@ -9,12 +9,6 @@ namespace SonOfRobin
         public static readonly Dictionary<string, List<AnimFrame>> frameListById = new Dictionary<string, List<AnimFrame>>();
         public static readonly Dictionary<PkgName, AnimFrame> framesForPkgs = new Dictionary<PkgName, AnimFrame>(); // default frames for packages
 
-        public static void LoadInitialTextures()
-        {
-            SonOfRobinGame.lightSphere = TextureBank.GetTexture("light_white");
-            SonOfRobinGame.tempShadowMaskList = new List<RenderTarget2D> { };
-        }
-
         public enum PkgName
         {
             NoAnim,

@@ -48,7 +48,8 @@ namespace SonOfRobin
 
         public static void FlushTemporaryTextures()
         {
-            temporaryTexturesManager.Unload();
+            temporaryTexturesManager.Unload(); // will make all temporary textures blank
+            textureByNameTemporary.Clear();
         }
     }
 }
