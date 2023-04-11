@@ -56,7 +56,7 @@ namespace SonOfRobin
 
             if (PieceInfo.HasBeenInitialized)
             {
-                List<Type> typeList = new List<Type> { typeof(Tool), typeof(Fruit), typeof(Tool), typeof(PortableLight), typeof(Projectile) };
+                List<Type> typeList = new List<Type> { typeof(Tool), typeof(PortableLight), typeof(Projectile) };
 
                 foreach (PieceTemplate.Name pieceName in PieceTemplate.allNames)
                 {
