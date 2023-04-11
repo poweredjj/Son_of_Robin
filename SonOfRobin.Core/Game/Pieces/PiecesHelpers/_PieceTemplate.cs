@@ -2363,7 +2363,7 @@ namespace SonOfRobin
 
                         var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.All });
 
-                        Debris starDebris = new Debris(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: allowedTerrain, floatsOnWater: true, minDistance: 0, maxDistance: 500, maxMassBySize: null, destructionDelay: 40, destructionDelayMaxOffset: 15, rotatesWhenDropped: true, readableName: "star debris", description: "Floats around after hitting stars. I guess...");
+                        Debris starDebris = new Debris(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: allowedTerrain, floatsOnWater: true, minDistance: 0, maxDistance: 500, maxMassBySize: null, destructionDelay: 40, destructionDelayMaxOffset: 15, rotatesWhenDropped: true, readableName: "star debris", description: "Floats around after hitting stars. I guess...", isAffectedByWind: false);
 
                         var colors = new List<Color> { Color.White, Color.PaleGreen, Color.LightCyan, Color.Linen, Color.SeaShell, Color.LavenderBlush, Color.GhostWhite };
                         Color color = colors[random.Next(0, colors.Count)];
