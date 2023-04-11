@@ -222,7 +222,7 @@ namespace SonOfRobin
                     this.InputType = InputTypes.None;
 
                     new Scheduler.Task(taskName: Scheduler.TaskName.TempoStop, delay: 0, executeHelper: null);
-                    this.stateMachineTypesManager.SetOnlyTheseTypes(enabledTypes: new List<Type> { typeof(Player), typeof(AmbientSound) }, everyFrame: true, nthFrame: true);
+                    this.stateMachineTypesManager.SetOnlyTheseTypes(enabledTypes: new List<Type> { typeof(Player), typeof(AmbientSound), typeof(VisualEffect) }, everyFrame: true, nthFrame: true);
 
                     this.Player.activeState = BoardPiece.State.PlayerControlledByCinematic;
                     this.Player.pointWalkTarget = Vector2.Zero;
@@ -1165,7 +1165,7 @@ namespace SonOfRobin
             this.Player.activeState = BoardPiece.State.PlayerControlledBuilding;
 
             this.stateMachineTypesManager.DisableMultiplier();
-            this.stateMachineTypesManager.SetOnlyTheseTypes(enabledTypes: new List<Type> { typeof(Player) }, everyFrame: true, nthFrame: true);
+            this.stateMachineTypesManager.SetOnlyTheseTypes(enabledTypes: new List<Type> { typeof(Player), typeof(AmbientSound), typeof(VisualEffect) }, everyFrame: true, nthFrame: true);
             this.islandClock.Pause();
 
             Scene craftMenu = GetTopSceneOfType(typeof(Menu));

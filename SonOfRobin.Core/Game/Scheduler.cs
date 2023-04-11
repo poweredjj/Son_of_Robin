@@ -863,7 +863,7 @@ namespace SonOfRobin
                             // world.updateMultiplier = 0 is not used here, to allow for playing ambient sounds
 
                             world.stateMachineTypesManager.DisableMultiplier();
-                            world.stateMachineTypesManager.SetOnlyTheseTypes(enabledTypes: new List<Type> { typeof(AmbientSound) }, everyFrame: true, nthFrame: true);
+                            world.stateMachineTypesManager.SetOnlyTheseTypes(enabledTypes: new List<Type> { typeof(AmbientSound), typeof(VisualEffect) }, everyFrame: true, nthFrame: true);
 
                             world.islandClock.Pause();
 
