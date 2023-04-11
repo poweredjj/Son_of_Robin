@@ -7,6 +7,7 @@ namespace SonOfRobin
     public class FruitEngine
     {
         public readonly byte maxNumber;
+        public readonly bool hiddenFruits;
         public readonly float oneFruitTargetMass;
         private readonly float yOffsetPercent; // -1 to 1
         private readonly float xOffsetPercent; // -1 to 1
@@ -16,9 +17,10 @@ namespace SonOfRobin
         public Plant plant;
         private float currentMass;
 
-        public FruitEngine(byte maxNumber, float oneFruitMass, PieceTemplate.Name fruitName, float xOffsetPercent = 0, float yOffsetPercent = 0, float areaWidthPercent = 1f, float areaHeightPercent = 1f)
+        public FruitEngine(byte maxNumber, float oneFruitMass, PieceTemplate.Name fruitName, float xOffsetPercent = 0, float yOffsetPercent = 0, float areaWidthPercent = 1f, float areaHeightPercent = 1f, bool hiddenFruits = false)
         {
             this.maxNumber = maxNumber;
+            this.hiddenFruits = hiddenFruits;
             this.oneFruitTargetMass = oneFruitMass;
             this.xOffsetPercent = xOffsetPercent;
             this.yOffsetPercent = yOffsetPercent;

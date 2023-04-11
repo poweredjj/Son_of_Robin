@@ -839,6 +839,7 @@ namespace SonOfRobin
             if (Preferences.debugShowFruitRects) SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, plant.fruitEngine.FruitAreaRect, Color.Cyan * 0.4f);
 
             if (plant.PieceStorage.OccupiedSlotsCount == 0) return;
+            if (plant.fruitEngine != null && plant.fruitEngine.hiddenFruits) return;
 
             var fruitList = plant.PieceStorage.GetAllPieces();
             foreach (BoardPiece fruit in fruitList)

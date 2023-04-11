@@ -372,8 +372,6 @@ namespace SonOfRobin
 
         private void SetSpriteSizeByMass(bool growOnly = false)
         {
-            if (growOnly && this.sprite.animSize == this.maxMassForSize.Length) return; // no point in calculating, if it's already at max
-
             byte newSpriteSize = this.SpriteSize;
             if (growOnly && this.sprite.animSize > newSpriteSize) return;
             this.sprite.AssignNewSize(this.SpriteSize);

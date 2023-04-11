@@ -270,6 +270,12 @@ namespace SonOfRobin
                     tutorialsToActivate: new List<Tutorials.Type> {Tutorials.Type.ShakeFruit}),
 
                 new PieceHint(
+                    type: PieceHint.Type.CarrotPlant, fieldPiecesNearby: new List<PieceTemplate.Name> {PieceTemplate.Name.CarrotPlant},
+                    message: "A | carrot... Looks tasty.", fieldPieceHasNotEmptyStorage: true,
+                    imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.Carrot)},
+                    tutorialsToActivate: new List<Tutorials.Type> {Tutorials.Type.ShakeFruit}),
+
+                new PieceHint(
                     type: PieceHint.Type.HotPlate, fieldPiecesNearby: new List<PieceTemplate.Name> {PieceTemplate.Name.HotPlate},
                     message: "| I can cook simple meals now!",
                     imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.HotPlate) },
