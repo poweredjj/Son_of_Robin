@@ -20,9 +20,6 @@ namespace SonOfRobin
         private readonly Cell cell;
         public Texture2D Texture { get; private set; }
 
-        private bool textureSimulationCalculated;
-        private Color textureSimulationColor; // texture "preview" for display when the texture is unloaded
-
         private readonly string templatePath;
         private bool savedToDisk;
 
@@ -31,7 +28,6 @@ namespace SonOfRobin
             this.cell = cell;
             this.templatePath = Path.Combine(grid.gridTemplate.templatePath, $"background_{cell.cellNoX}_{cell.cellNoY}.png");
             this.savedToDisk = File.Exists(this.templatePath);
-            this.textureSimulationCalculated = false;
         }
 
         public void LoadTexture()

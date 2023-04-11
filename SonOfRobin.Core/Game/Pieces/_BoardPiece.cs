@@ -61,7 +61,7 @@ namespace SonOfRobin
         public bool exists;
         public bool alive;
         public int generation;
-        private readonly Dictionary<byte, int> maxMassBySize;
+        private readonly int[] maxMassForSize;
         private readonly int staysAfterDeath;
         public int maxAge;
         public int currentAge;
@@ -93,7 +93,7 @@ namespace SonOfRobin
         public bool canBeHit;
         public bool isTemporaryDecoration;
 
-        public BoardPiece(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, Dictionary<byte, int> maxMassBySize, string readableName, string description, Category category, State activeState,
+        public BoardPiece(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, int[] maxMassForSize, string readableName, string description, Category category, State activeState,
             byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, bool blocksPlantGrowth = false, bool visible = true, bool ignoresCollisions = false, int destructionDelay = 0, int maxAge = 0, bool floatsOnWater = false, int generation = 0, int mass = 1, int staysAfterDeath = 800, float maxHitPoints = 1, byte stackSize = 1, Scheduler.TaskName boardTask = Scheduler.TaskName.Empty, Scheduler.TaskName toolbarTask = Scheduler.TaskName.Empty, bool canBePickedUp = false, Yield yield = null, Yield appearDebris = null, bool indestructible = false, bool rotatesWhenDropped = false, bool movesWhenDropped = true, bool serialize = true, List<Buff> buffList = null, AllowedDensity allowedDensity = null, int strength = 0, LightEngine lightEngine = null, int minDistance = 0, int maxDistance = 100, PieceSoundPack soundPack = null, bool female = false, bool isAffectedByWind = true)
         {
             this.world = world;
@@ -117,7 +117,7 @@ namespace SonOfRobin
             this.showStatBarsTillFrame = 0;
             this.speed = speed;
             this.strength = strength;
-            this.maxMassBySize = maxMassBySize;
+            this.maxMassForSize = maxMassForSize;
             this.mass = mass;
             this.startingMass = mass;
             this.staysAfterDeath = staysAfterDeath + Random.Next(0, 300);
@@ -238,13 +238,14 @@ namespace SonOfRobin
         {
             get
             {
-                if (this.maxMassBySize == null) return 0;
+                if (this.maxMassForSize == null) return 0;
 
-                foreach (var kvp in this.maxMassBySize)
+                for (int s = 0; s < this.maxMassForSize.Length; s++)
                 {
-                    if (this.Mass < kvp.Value) return kvp.Key;
+                    if (this.Mass < this.maxMassForSize[s]) return (byte)s;
                 }
-                return 0;
+
+                return (byte)this.maxMassForSize.Length;
             }
         }
 

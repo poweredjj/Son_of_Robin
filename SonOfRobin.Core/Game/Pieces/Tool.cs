@@ -13,10 +13,10 @@ namespace SonOfRobin
         private readonly Dictionary<Category, float> multiplierByCategory;
         private readonly List<PieceTemplate.Name> compatibleAmmo;
 
-        public Tool(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, Dictionary<byte, int> maxMassBySize, int hitPower, Dictionary<Category, float> multiplierByCategory, int maxHitPoints, string readableName, string description, Category category,
+        public Tool(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, int[] maxMassForSize, int hitPower, Dictionary<Category, float> multiplierByCategory, int maxHitPoints, string readableName, string description, Category category,
             byte animSize = 0, string animName = "default", bool blocksMovement = false, ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = true, int generation = 0, bool indestructible = false, Yield yield = null, bool shootsProjectile = false, List<PieceTemplate.Name> compatibleAmmo = null, bool rotatesWhenDropped = true, int range = 0, List<Buff> buffList = null) :
 
-            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedTerrain: allowedTerrain, floatsOnWater: floatsOnWater, maxMassBySize: maxMassBySize, generation: generation, canBePickedUp: true, yield: yield, maxHitPoints: maxHitPoints, indestructible: indestructible, rotatesWhenDropped: rotatesWhenDropped, readableName: readableName, description: description, category: category, buffList: buffList, activeState: State.Empty)
+            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedTerrain: allowedTerrain, floatsOnWater: floatsOnWater, maxMassForSize: maxMassForSize, generation: generation, canBePickedUp: true, yield: yield, maxHitPoints: maxHitPoints, indestructible: indestructible, rotatesWhenDropped: rotatesWhenDropped, readableName: readableName, description: description, category: category, buffList: buffList, activeState: State.Empty)
         {
             this.hitPower = hitPower;
             this.hitCooldown = 0; // earliest world.currentUpdate, when hitting will be possible
