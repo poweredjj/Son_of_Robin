@@ -74,6 +74,8 @@ namespace SonOfRobin
         public float maxHitPoints;
         public readonly bool indestructible;
         public readonly byte stackSize;
+        public readonly float fireAffinity;
+        private float burnLevel;
         public PieceStorage PieceStorage { get; protected set; }
         public BuffEngine buffEngine; // active buffs
         public List<Buff> buffList; // buff to be activated when this piece (equip, food, etc.) is used by another piece
@@ -94,7 +96,7 @@ namespace SonOfRobin
         public bool canBeHit;
         public bool isTemporaryDecoration;
 
-        public BoardPiece(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, int[] maxMassForSize, string readableName, string description, Category category, State activeState,
+        public BoardPiece(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, int[] maxMassForSize, string readableName, string description, Category category, State activeState, float fireAffinity,
             byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, bool blocksPlantGrowth = false, bool visible = true, bool ignoresCollisions = false, int destructionDelay = 0, int maxAge = 0, bool floatsOnWater = false, int generation = 0, int mass = 1, int staysAfterDeath = 800, float maxHitPoints = 1, byte stackSize = 1, Scheduler.TaskName boardTask = Scheduler.TaskName.Empty, Scheduler.TaskName toolbarTask = Scheduler.TaskName.Empty, bool canBePickedUp = false, Yield yield = null, Yield appearDebris = null, bool indestructible = false, bool rotatesWhenDropped = false, bool movesWhenDropped = true, bool serialize = true, List<Buff> buffList = null, AllowedDensity allowedDensity = null, int strength = 0, LightEngine lightEngine = null, int minDistance = 0, int maxDistance = 100, PieceSoundPack soundPack = null, bool female = false, bool isAffectedByWind = true)
         {
             this.world = world;
@@ -148,6 +150,8 @@ namespace SonOfRobin
             if (this.yield != null) this.yield.AddPiece(this);
             if (this.appearDebris != null) this.appearDebris.AddPiece(this);
             this.canBeHit = true;
+            this.burnLevel = 0f;
+            this.fireAffinity = fireAffinity;
             this.isTemporaryDecoration = false; // to be set later
         }
 
@@ -216,6 +220,30 @@ namespace SonOfRobin
             }
         }
 
+        public bool IsBurning
+        { get { return this.burnLevel >= 0.5f; } }
+
+        public float BurnLevel
+        {
+            get
+            {
+                return this.burnLevel;
+            }
+            set
+            {
+                this.burnLevel = value;
+                if (this.IsBurning)
+                {
+                    // TODO add flame, when there is none
+                }
+                else
+                {
+                    // TODO remove flame, when there is one
+                }
+            }
+        }
+
+
         public float Mass
         {
             get { return this.mass; }
@@ -223,7 +251,7 @@ namespace SonOfRobin
             {
                 this.mass = Math.Max(value, 0f);
                 int previousSpriteSize = this.sprite.animSize;
-                this.SetSpriteSizeByMass(growOnly: true);
+                this.SetSpriteSizeByMass(growOnly: this.GetType() != typeof(Flame));
                 if (previousSpriteSize != this.sprite.animSize && this.PieceStorage != null && this.GetType() == typeof(Plant))
                 {
                     Plant plant = (Plant)this;
@@ -312,6 +340,7 @@ namespace SonOfRobin
                 { "base_buffList", this.buffList },
                 { "base_soundPack", this.soundPack.Serialize() },
                 { "base_canBeHit", this.canBeHit },
+                { "base_burnLevel", this.burnLevel },
                 { "base_sprite", this.sprite.Serialize() }
             };
 
@@ -338,6 +367,8 @@ namespace SonOfRobin
             this.buffList = (List<Buff>)pieceData["base_buffList"];
             this.soundPack.Deserialize(pieceData["base_soundPack"]);
             this.canBeHit = (bool)pieceData["base_canBeHit"];
+            this.canBeHit = (bool)pieceData["base_canBeHit"];
+            if (pieceData.ContainsKey("base_burnLevel")) this.burnLevel = (float)(double)pieceData["base_burnLevel"];
             this.sprite.Deserialize(pieceData["base_sprite"]);
 
             if (!(bool)pieceData["base_alive"]) this.Kill();
