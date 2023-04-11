@@ -141,6 +141,8 @@ namespace SonOfRobin
                         GridTemplate gridTemplate = GridTemplate.LoadHeader(templatePath);
                         if (gridTemplate == null || gridTemplate.IsObsolete) continue;
 
+                        if (gridTemplate.CreatedDate.Date == DateTime.Today) pathsToKeep.Add(templatePath); // templates created today should not be deleted
+
                         if (correctSaves.Where(saveHeader =>
                         saveHeader.seed == gridTemplate.seed &&
                         saveHeader.width == gridTemplate.width &&
@@ -154,6 +156,7 @@ namespace SonOfRobin
                         ).ToList().Count > 0) pathsToKeep.Add(templatePath);
                     }
 
+                    pathsToKeep = pathsToKeep.Distinct().ToList(); // removing duplicates
                     List<string> pathsToDelete = templatePaths.Where(path => !pathsToKeep.Contains(path)).ToList();
 
                     foreach (string templatePathToDelete in templatePaths.Where(path => !pathsToKeep.Contains(path)))

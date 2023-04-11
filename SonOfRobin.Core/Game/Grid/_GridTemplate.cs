@@ -23,7 +23,7 @@ namespace SonOfRobin
         private readonly string headerPath;
         public DateTime CreatedDate { get; private set; }
 
-        public GridTemplate(int seed, int width, int height, int cellWidth, int cellHeight, int resDivider, float version = currentVersion, string templatePath = "")
+        public GridTemplate(int seed, int width, int height, int cellWidth, int cellHeight, int resDivider, DateTime createdDate, float version = currentVersion, string templatePath = "")
         {
             this.seed = seed;
             this.width = width;
@@ -32,7 +32,7 @@ namespace SonOfRobin
             this.cellHeight = cellHeight;
             this.resDivider = resDivider;
             this.version = version;
-            this.CreatedDate = DateTime.Now;
+            this.CreatedDate = createdDate;
 
             this.templatePath = templatePath == "" ? this.CheckCreateFolder() : templatePath;
             this.headerPath = Path.Combine(this.templatePath, headerName);
@@ -143,6 +143,7 @@ namespace SonOfRobin
                 { "resDivider", this.resDivider },
                 { "version", this.version },
                 { "templatePath", this.templatePath },
+                { "createdDate", DateTime.Now },
             };
 
             return templateDict;
@@ -160,8 +161,9 @@ namespace SonOfRobin
             int resDivider = (int)(Int64)templateDict["resDivider"];
             float version = (float)(double)templateDict["version"];
             string templatePath = (string)templateDict["templatePath"];
+            DateTime createdDate = templateDict.ContainsKey("createdDate") ? (DateTime)templateDict["createdDate"] : DateTime.Now;
 
-            return new GridTemplate(seed: seed, width: width, height: height, cellWidth: cellWidth, cellHeight: cellHeight, resDivider: resDivider, version: version, templatePath: templatePath);
+            return new GridTemplate(seed: seed, width: width, height: height, cellWidth: cellWidth, cellHeight: cellHeight, resDivider: resDivider, createdDate: createdDate, version: version, templatePath: templatePath);
         }
     }
 }
