@@ -78,7 +78,7 @@ namespace SonOfRobin
         public List<Buff> buffList; // buff to be activated when this piece (equip, food, etc.) is used by another piece
         public readonly Yield yield;
         public readonly Yield appearDebris; // yield that is used to make debris when placing this piece
-        public Scheduler.TaskName boardTask;
+        public readonly Scheduler.TaskName boardTask;
         public readonly Scheduler.TaskName toolbarTask;
         public readonly bool canBePickedUp;
         protected Vector2 passiveMovement;
@@ -304,7 +304,6 @@ namespace SonOfRobin
                 { "base_efficiency", this.efficiency },
                 { "base_activeState", this.activeState },
                 { "base_pieceStorage", this.PieceStorage },
-                { "base_boardTask", this.boardTask },
                 { "base_passiveMovementX", this.passiveMovement.X },
                 { "base_passiveMovementY", this.passiveMovement.Y },
                 { "base_passiveRotation", this.passiveRotation },
@@ -332,7 +331,6 @@ namespace SonOfRobin
             this.activeState = (State)(Int64)pieceData["base_activeState"];
             this.maxAge = (int)(Int64)pieceData["base_maxAge"];
             this.PieceStorage = PieceStorage.Deserialize(storageData: pieceData["base_pieceStorage"], storagePiece: this);
-            this.boardTask = (Scheduler.TaskName)(Int64)pieceData["base_boardTask"];
             this.passiveMovement = new Vector2((float)(double)pieceData["base_passiveMovementX"], (float)(double)pieceData["base_passiveMovementY"]);
             this.passiveRotation = (int)(Int64)pieceData["base_passiveRotation"];
             this.buffEngine = BuffEngine.Deserialize(piece: this, buffEngineData: pieceData["base_buffEngine"]);

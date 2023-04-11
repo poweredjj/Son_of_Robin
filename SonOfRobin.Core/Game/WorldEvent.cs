@@ -51,7 +51,7 @@ namespace SonOfRobin
         {
             // for events that target a piece, that was already destroyed (and will not be present in saved data)
             EventName eventName = (EventName)(Int64)eventData["eventName"];
-          
+
             var eventsWithoutPieces = new List<EventName> { EventName.RestorePieceCreation, EventName.RestoreHint, EventName.FinishBuilding };
 
             BoardPiece boardPiece;
@@ -156,7 +156,6 @@ namespace SonOfRobin
                     {
                         Cooker cooker = (Cooker)this.boardPiece;
                         cooker.TurnOff();
-                        cooker.boardTask = Scheduler.TaskName.OpenContainer;
                         return;
                     }
 

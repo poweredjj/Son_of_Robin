@@ -21,6 +21,7 @@ namespace SonOfRobin
         private readonly float foodMassMultiplier;
         private int cookingStartFrame;
         private int cookingDoneFrame;
+        public bool IsOn { get; private set; }
 
         private TimeSpan TimeToFinishCooking
         { get { return TimeSpan.FromSeconds((int)(Math.Ceiling((float)(this.cookingDoneFrame - (float)this.world.CurrentUpdate) / 60f))); } }
@@ -28,13 +29,12 @@ namespace SonOfRobin
         public Cooker(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, int[] maxMassForSize, float foodMassMultiplier, string readableName, string description, Category category, int ingredientSpace, int boosterSpace, bool canBeUsedDuringRain,
             byte animSize = 0, string animName = "off", bool blocksMovement = true, ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = false, int generation = 0, Yield yield = null, int maxHitPoints = 1, PieceSoundPack soundPack = null) :
 
-            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedTerrain: allowedTerrain, floatsOnWater: floatsOnWater, maxMassForSize: maxMassForSize, generation: generation, canBePickedUp: false, yield: yield, maxHitPoints: maxHitPoints, readableName: readableName, description: description, category: category, lightEngine: new LightEngine(size: 0, opacity: 0.7f, colorActive: true, color: Color.Orange * 0.25f, addedGfxRectMultiplier: 8f, isActive: false, castShadows: true), activeState: State.Empty, soundPack: soundPack)
+            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedTerrain: allowedTerrain, floatsOnWater: floatsOnWater, maxMassForSize: maxMassForSize, generation: generation, canBePickedUp: false, yield: yield, maxHitPoints: maxHitPoints, readableName: readableName, description: description, category: category, lightEngine: new LightEngine(size: 0, opacity: 0.7f, colorActive: true, color: Color.Orange * 0.25f, addedGfxRectMultiplier: 8f, isActive: false, castShadows: true), activeState: State.Empty, soundPack: soundPack, boardTask: Scheduler.TaskName.InteractWithCooker)
         {
-            this.boardTask = Scheduler.TaskName.OpenContainer;
-
             this.soundPack.AddAction(action: PieceSoundPack.Action.TurnOn, sound: new Sound(name: SoundData.Name.StartFireBig));
             this.soundPack.AddAction(action: PieceSoundPack.Action.TurnOff, sound: new Sound(name: SoundData.Name.EndFire));
 
+            this.IsOn = false;
             this.cookingDoneFrame = 0;
             this.foodMassMultiplier = foodMassMultiplier;
             this.ingredientSpace = ingredientSpace;
@@ -113,6 +113,7 @@ namespace SonOfRobin
 
             pieceData["cooker_cookingStartFrame"] = this.cookingStartFrame;
             pieceData["cooker_cookingDoneFrame"] = this.cookingDoneFrame;
+            pieceData["cooker_IsOn"] = this.IsOn;
 
             return pieceData;
         }
@@ -122,10 +123,12 @@ namespace SonOfRobin
             base.Deserialize(pieceData);
             this.cookingStartFrame = (int)(Int64)pieceData["cooker_cookingStartFrame"];
             this.cookingDoneFrame = (int)(Int64)pieceData["cooker_cookingDoneFrame"];
+            if (pieceData.ContainsKey("cooker_IsOn")) this.IsOn = (bool)pieceData["cooker_IsOn"]; // for compatibility with old saves
         }
 
         public void TurnOn()
         {
+            this.IsOn = true;
             this.sprite.AssignNewName(animName: "on");
             this.sprite.lightEngine.Activate();
             this.soundPack.Play(PieceSoundPack.Action.TurnOn);
@@ -134,6 +137,7 @@ namespace SonOfRobin
 
         public void TurnOff()
         {
+            this.IsOn = false;
             this.sprite.AssignNewName(animName: "off");
             this.sprite.lightEngine.Deactivate();
             this.soundPack.Stop(PieceSoundPack.Action.IsOn);
@@ -262,7 +266,6 @@ namespace SonOfRobin
 
             this.cookingStartFrame = this.world.CurrentUpdate;
             this.cookingDoneFrame = this.world.CurrentUpdate + cookingTime;
-            this.boardTask = Scheduler.TaskName.ShowCookingProgress;
             this.showStatBarsTillFrame = this.world.CurrentUpdate + cookingTime;
 
             new WorldEvent(eventName: WorldEvent.EventName.FinishCooking, world: this.world, delay: cookingTime, boardPiece: this);
