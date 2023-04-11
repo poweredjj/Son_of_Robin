@@ -38,7 +38,8 @@ namespace SonOfRobin
             MapMarkerShowAndCheck,
             FogMoveRandomly,
             RainInitialize,
-            RainFall
+            RainFall,
+            FlameBurn,
         }
 
         public enum Category
@@ -610,6 +611,12 @@ namespace SonOfRobin
                         return;
                     }
 
+                case State.FlameBurn:
+                    {
+                        this.SM_FlameBurn();
+                        return;
+                    }
+
                 case State.Empty: // this state should be removed from execution (for performance reasons)
                     {
                         this.RemoveFromStateMachines();
@@ -758,6 +765,9 @@ namespace SonOfRobin
         { throw new DivideByZeroException("This method should not be executed."); }
 
         public virtual void SM_RainFall()
+        { throw new DivideByZeroException("This method should not be executed."); }
+
+        public virtual void SM_FlameBurn()
         { throw new DivideByZeroException("This method should not be executed."); }
 
         public virtual void SM_MapMarkerShowAndCheck()

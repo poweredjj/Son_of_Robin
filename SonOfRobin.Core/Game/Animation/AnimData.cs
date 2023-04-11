@@ -670,13 +670,69 @@ namespace SonOfRobin
             }
             {
                 PkgName packageName = PkgName.Flame;
-                var frameList = new List<AnimFrame>
                 {
-                    ConvertImageToFrame(atlasName: "flames", layer: 1, duration: 6, x: 432, y: 48, width: 48, height: 48, crop: false),
-                    ConvertImageToFrame(atlasName: "flames", layer: 1, duration: 6, x: 480, y: 48, width: 48, height: 48, crop: false),
-                    ConvertImageToFrame(atlasName: "flames", layer: 1, duration: 6, x: 528, y: 48, width: 48, height: 48, crop: false)
-                };
-                AddFrameList(animPackage: packageName, animSize: 0, frameList: frameList);
+                    var frameList = new List<AnimFrame>
+                    {
+                        ConvertImageToFrame(atlasName: "flames", layer: 1, duration: 6, x: 432, y: 48, width: 48, height: 48, crop: false, scale: 0.25f),
+                        ConvertImageToFrame(atlasName: "flames", layer: 1, duration: 6, x: 480, y: 48, width: 48, height: 48, crop: false, scale: 0.25f),
+                        ConvertImageToFrame(atlasName: "flames", layer: 1, duration: 6, x: 528, y: 48, width: 48, height: 48, crop: false, scale: 0.25f)
+                    };
+                    AddFrameList(animPackage: packageName, animSize: 0, frameList: frameList);
+                }
+                {
+                    var frameList = new List<AnimFrame>
+                    {
+                        ConvertImageToFrame(atlasName: "flames", layer: 1, duration: 6, x: 432, y: 48, width: 48, height: 48, crop: false, scale: 0.5f),
+                        ConvertImageToFrame(atlasName: "flames", layer: 1, duration: 6, x: 480, y: 48, width: 48, height: 48, crop: false, scale: 0.5f),
+                        ConvertImageToFrame(atlasName: "flames", layer: 1, duration: 6, x: 528, y: 48, width: 48, height: 48, crop: false, scale: 0.5f)
+                    };
+                    AddFrameList(animPackage: packageName, animSize: 1, frameList: frameList);
+                }
+                {
+                    var frameList = new List<AnimFrame>
+                    {
+                        ConvertImageToFrame(atlasName: "flames", layer: 1, duration: 6, x: 432, y: 48, width: 48, height: 48, crop: false, scale: 0.75f),
+                        ConvertImageToFrame(atlasName: "flames", layer: 1, duration: 6, x: 480, y: 48, width: 48, height: 48, crop: false, scale: 0.75f),
+                        ConvertImageToFrame(atlasName: "flames", layer: 1, duration: 6, x: 528, y: 48, width: 48, height: 48, crop: false, scale: 0.75f)
+                    };
+                    AddFrameList(animPackage: packageName, animSize: 2, frameList: frameList);
+                }
+                {
+                    var frameList = new List<AnimFrame>
+                    {
+                        ConvertImageToFrame(atlasName: "flames", layer: 1, duration: 6, x: 432, y: 48, width: 48, height: 48, crop: false, scale: 1f),
+                        ConvertImageToFrame(atlasName: "flames", layer: 1, duration: 6, x: 480, y: 48, width: 48, height: 48, crop: false, scale: 1f),
+                        ConvertImageToFrame(atlasName: "flames", layer: 1, duration: 6, x: 528, y: 48, width: 48, height: 48, crop: false, scale: 1f)
+                    };
+                    AddFrameList(animPackage: packageName, animSize: 3, frameList: frameList);
+                }
+                {
+                    var frameList = new List<AnimFrame>
+                    {
+                        ConvertImageToFrame(atlasName: "flames", layer: 1, duration: 6, x: 432, y: 48, width: 48, height: 48, crop: false, scale: 1.25f),
+                        ConvertImageToFrame(atlasName: "flames", layer: 1, duration: 6, x: 480, y: 48, width: 48, height: 48, crop: false, scale: 1.25f),
+                        ConvertImageToFrame(atlasName: "flames", layer: 1, duration: 6, x: 528, y: 48, width: 48, height: 48, crop: false, scale: 1.25f)
+                    };
+                    AddFrameList(animPackage: packageName, animSize: 4, frameList: frameList);
+                }
+                {
+                    var frameList = new List<AnimFrame>
+                    {
+                        ConvertImageToFrame(atlasName: "flames", layer: 1, duration: 6, x: 432, y: 48, width: 48, height: 48, crop: false, scale: 1.6f),
+                        ConvertImageToFrame(atlasName: "flames", layer: 1, duration: 6, x: 480, y: 48, width: 48, height: 48, crop: false, scale: 1.6f),
+                        ConvertImageToFrame(atlasName: "flames", layer: 1, duration: 6, x: 528, y: 48, width: 48, height: 48, crop: false, scale: 1.6f)
+                    };
+                    AddFrameList(animPackage: packageName, animSize: 5, frameList: frameList);
+                }
+                {
+                    var frameList = new List<AnimFrame>
+                    {
+                        ConvertImageToFrame(atlasName: "flames", layer: 1, duration: 6, x: 432, y: 48, width: 48, height: 48, crop: false, scale: 2.0f),
+                        ConvertImageToFrame(atlasName: "flames", layer: 1, duration: 6, x: 480, y: 48, width: 48, height: 48, crop: false, scale: 2.0f),
+                        ConvertImageToFrame(atlasName: "flames", layer: 1, duration: 6, x: 528, y: 48, width: 48, height: 48, crop: false, scale: 2.0f)
+                    };
+                    AddFrameList(animPackage: packageName, animSize: 6, frameList: frameList);
+                }
             }
             {
                 PkgName packageName = PkgName.SmallTorch;
