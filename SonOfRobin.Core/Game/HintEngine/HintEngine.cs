@@ -8,12 +8,12 @@ namespace SonOfRobin
     public class HintEngine
     {
         public enum Type
-        { Empty, Hungry, VeryHungry, Starving, Tired, VeryTired, CantShootInWater, SmallInventory, MapNegative, Lava, BreakingItem, BrokenItem, BurntOutTorch, CineIntroduction, CineSmallBase, AnimalScaredOfFire, AnimalCounters, ZoomOutLocked, Lightning };
+        { Empty, Hungry, VeryHungry, Starving, Tired, VeryTired, CantUseToolsInWater, SmallInventory, MapNegative, Lava, BreakingItem, BrokenItem, BurntOutTorch, CineIntroduction, CineSmallBase, AnimalScaredOfFire, AnimalCounters, ZoomOutLocked, Lightning, TooDarkToUseTools };
 
         private const int hintDelay = 1 * 60 * 60; // 1 * 60 * 60
         public const int blockInputDuration = 80;
 
-        private static readonly List<Type> typesThatIgnoreShowHintSetting = new List<Type> { Type.CineIntroduction, Type.CineSmallBase, Type.VeryTired, Type.Starving, Type.BrokenItem, Type.BurntOutTorch, Type.Lava, Type.Lightning };
+        private static readonly List<Type> typesThatIgnoreShowHintSetting = new List<Type> { Type.CineIntroduction, Type.CineSmallBase, Type.VeryTired, Type.Starving, Type.BrokenItem, Type.BurntOutTorch, Type.Lava, Type.Lightning, Type.CantUseToolsInWater, Type.TooDarkToUseTools };
 
         public List<Type> shownGeneralHints = new List<Type> { };
         public List<PieceHint.Type> shownPieceHints = new List<PieceHint.Type> { };
@@ -158,10 +158,21 @@ namespace SonOfRobin
                         break;
                     }
 
-                case Type.CantShootInWater:
+                case Type.CantUseToolsInWater:
                     {
-                        this.Disable(type: type, delay: 60 * 60 * 10);
-                        ShowMessageDuringPause(new List<HintMessage> { new HintMessage(text: "I cannot | shoot while | swimming.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.BowWood), AnimData.framesForPkgs[AnimData.PkgName.WaterDrop].texture }, blockInput: true) });
+                        // no Disable(), because this hint should be shown every time
+                        ShowMessageDuringPause(new List<HintMessage> {
+                            new HintMessage(text: $"I cannot use my | {text} in water.", blockInput: true, imageList: new List<Texture2D> { texture }),
+                        });
+                        break;
+                    }
+
+                case Type.TooDarkToUseTools:
+                    {
+                        // no Disable(), because this hint should be shown every time
+                        ShowMessageDuringPause(new List<HintMessage> {
+                            new HintMessage(text: $"It's too dark to use my | {text}.", blockInput: true, imageList: new List<Texture2D> { texture }),
+                        });
                         break;
                     }
 

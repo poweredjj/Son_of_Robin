@@ -120,8 +120,8 @@ namespace SonOfRobin
 
             foreach (HintMessage message in messageList)
             {
-                useTransitionOpen = counter == 0;
-                useTransitionClose = counter + 1 == messageList.Count;
+                useTransitionOpen = message.useTransition && counter == 0;
+                useTransitionClose = message.useTransition && counter + 1 == messageList.Count;
 
                 taskChain.Add(message.ConvertToTask(useTransitionOpen: useTransitionOpen, useTransitionClose: useTransitionClose, playSound: playSounds));
 

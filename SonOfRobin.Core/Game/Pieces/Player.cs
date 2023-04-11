@@ -1094,7 +1094,8 @@ namespace SonOfRobin
             {
                 if (this.sprite.CanDrownHere)
                 {
-                    this.world.HintEngine.ShowGeneralHint(HintEngine.Type.CantShootInWater);
+                    this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.CantUseToolsInWater, ignoreDelay: true, text: activeToolbarPiece.readableName, texture: activeToolbarPiece.sprite.frame.texture);
+
                     return false;
                 }
 
@@ -1121,13 +1122,21 @@ namespace SonOfRobin
 
             BoardPiece activeToolbarPiece = this.ActiveToolbarPiece;
 
-            if (activeToolbarPiece?.GetType() != typeof(PortableLight) && !this.CanSeeAnything) return false;
+            if (!this.CanSeeAnything &&
+                activeToolbarPiece?.GetType() != typeof(PortableLight) &&
+                activeToolbarPiece?.toolbarTask != Scheduler.TaskName.GetDrinked &&
+                activeToolbarPiece?.toolbarTask != Scheduler.TaskName.GetEaten)
+            {
+                if (!highlightOnly) this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.TooDarkToUseTools, ignoreDelay: true, text: activeToolbarPiece.readableName, texture: activeToolbarPiece.sprite.frame.texture);
+                return false;
+            }
 
-            Vector2 centerOffset = this.GetCenterOffset();
-            int offsetX = (int)centerOffset.X;
-            int offsetY = (int)centerOffset.Y;
+            if (!highlightOnly && this.sprite.CanDrownHere)
+            {
+                this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.CantUseToolsInWater, ignoreDelay: true, text: activeToolbarPiece.readableName, texture: activeToolbarPiece.sprite.frame.texture);
 
-            if (this.sprite.CanDrownHere) return false;
+                return false;
+            }
 
             if (activeToolbarPiece?.GetType() == typeof(Tool))
             {
@@ -1143,6 +1152,10 @@ namespace SonOfRobin
                     return false;
                 }
             }
+
+            Vector2 centerOffset = this.GetCenterOffset();
+            int offsetX = (int)centerOffset.X;
+            int offsetY = (int)centerOffset.Y;
 
             var executeHelper = new Dictionary<string, Object> {
                     {"player", this},
