@@ -507,7 +507,7 @@
 /processorParam:TextureFormat=Color
 /build:gfx/carrot.png
 
-#begin gfx/carrot_plant.png
+#begin gfx/carrot_plant_empty.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -517,7 +517,19 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/carrot_plant.png
+/build:gfx/carrot_plant_empty.png
+
+#begin gfx/carrot_plant_has_carrot.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/carrot_plant_has_carrot.png
 
 #begin gfx/celianna_farmnature_crops_transparent.png
 /importer:TextureImporter

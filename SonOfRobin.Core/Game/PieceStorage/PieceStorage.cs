@@ -333,7 +333,12 @@ namespace SonOfRobin
 
             if (addMovement && piece.sprite.IsOnBoard)
             {
-                Vector2 passiveMovement = (this.storagePiece.sprite.position - piece.sprite.position) * -1 * this.world.random.Next(3, 25);
+                Vector2 posDiff = this.storagePiece.sprite.position - piece.sprite.position;
+
+                Vector2 passiveMovement = posDiff == Vector2.Zero ? // to ensure minimal movement
+                    new Vector2(this.world.random.Next(-250, 250), this.world.random.Next(-250, 250)) :
+                    posDiff * -1 * this.world.random.Next(3, 25);
+
                 piece.AddPassiveMovement(movement: passiveMovement);
             }
 

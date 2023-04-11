@@ -661,7 +661,7 @@ namespace SonOfRobin
         {
             if (this.animName != animName)
             {
-                if (CheckIfAnimNameExists(animName) || setEvenIfMissing)
+                if (this.CheckIfAnimNameExists(animName) || setEvenIfMissing)
                 {
                     var animNameCopy = this.animName;
 

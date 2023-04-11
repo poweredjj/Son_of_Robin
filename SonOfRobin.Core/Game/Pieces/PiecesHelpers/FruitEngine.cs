@@ -96,6 +96,8 @@ namespace SonOfRobin
             this.plant.PieceStorage.AddPiece(piece: fruit, dropIfDoesNotFit: true, addMovement: true);
             this.SetFruitPos(fruit: fruit);
             this.currentMass = 0;
+
+            if (this.plant.sprite.CheckIfAnimNameExists("has_fruits")) this.plant.sprite.AssignNewName("has_fruits");
         }
 
         public void SetFruitPos(BoardPiece fruit)
@@ -110,20 +112,20 @@ namespace SonOfRobin
             this.PutFruitOnBoard(fruit: fruit, position: fruitPos);
         }
 
-        private void PutAllFruitsOnBoardAgain()
-        {
-            foreach (BoardPiece fruit in this.plant.PieceStorage.GetAllPieces())
-            {
-                this.PutFruitOnBoard(fruit: fruit, position: fruit.sprite.position);
-            }
-        }
-
         private void PutFruitOnBoard(BoardPiece fruit, Vector2 position)
         {
             // Placing the fruit on board (to allow drawing), but not on the grid (to prevent direct interaction).
 
             fruit.sprite.PlaceOnBoard(randomPlacement: false, position: position, ignoreCollisions: true);
             fruit.world.Grid.RemoveSprite(fruit.sprite); // the fruit should be on board, but not on the grid itself (to prevent direct interaction)
+        }
+
+        private void PutAllFruitsOnBoardAgain()
+        {
+            foreach (BoardPiece fruit in this.plant.PieceStorage.GetAllPieces())
+            {
+                this.PutFruitOnBoard(fruit: fruit, position: fruit.sprite.position);
+            }
         }
 
         public void SetAllFruitPosAgain()

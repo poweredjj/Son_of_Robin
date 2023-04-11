@@ -101,6 +101,7 @@ namespace SonOfRobin
 
             if (this.name == PieceTemplate.Name.BananaTree) this.world.HintEngine.Disable(PieceHint.Type.BananaTree);
             if (this.name == PieceTemplate.Name.TomatoPlant) this.world.HintEngine.Disable(PieceHint.Type.TomatoPlant);
+            if (this.name == PieceTemplate.Name.CarrotPlant) this.world.HintEngine.Disable(PieceHint.Type.CarrotPlant);
             if (this.name == PieceTemplate.Name.CherryTree || this.name == PieceTemplate.Name.AppleTree) this.world.HintEngine.Disable(PieceHint.Type.FruitTree);
 
             Yield debrisYield = new Yield(boardPiece: this, debrisTypeList: this.yield.DebrisTypeList);
@@ -108,6 +109,7 @@ namespace SonOfRobin
             Sound.QuickPlay(SoundData.Name.DropPlant);
 
             this.PieceStorage.DropPiecesFromSlot(slot: occupiedSlots[0], addMovement: true);
+            if (this.PieceStorage.OccupiedSlotsCount == 0) this.sprite.AssignNewName("default"); // swapping from "has_fruits", if plant has such animation
         }
 
         public override void SM_GrowthAndReproduction()
@@ -115,7 +117,7 @@ namespace SonOfRobin
             float massTaken = this.OccupiedFieldWealth * this.massTakenMultiplier * this.efficiency * 25;
             if (this.fruitEngine != null)
             {
-                if (this.PieceStorage.EmptySlotsCount > 0 || this.world.random.Next(0, 100) == 0)
+                if (this.PieceStorage.EmptySlotsCount > 0 || this.world.CurrentUpdate % 100 == 0)
                 {
                     this.fruitEngine.AddMass(massTaken / 90); // some mass is "copied" to fruit
                     if (this.Mass > this.reproduction.massNeeded / 2) this.fruitEngine.TryToConvertMassIntoFruit();
