@@ -226,23 +226,31 @@ namespace SonOfRobin
         public float BurnLevel
         {
             get
-            {
-                return this.burnLevel;
-            }
+            { return this.burnLevel; }
             set
             {
+                bool wasBurning = this.IsBurning;
                 this.burnLevel = value;
-                if (this.IsBurning)
+
+                if (wasBurning != this.IsBurning)
                 {
-                    // TODO add flame, when there is none
-                }
-                else
-                {
-                    // TODO remove flame, when there is one
+                    //BoardPiece flamePiece = 
+
+                    var nearbyPieces = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.LightSource, mainSprite: this.sprite, distance: 1, compareWithBottom: true);
+
+
+                    if (this.IsBurning)
+                    {
+
+                        // TODO add flame, when there is none
+                    }
+                    else
+                    {
+                        // TODO remove flame, when there is one
+                    }
                 }
             }
         }
-
 
         public float Mass
         {
