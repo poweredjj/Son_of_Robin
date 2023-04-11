@@ -4959,6 +4959,30 @@
 /processorParam:TextureFormat=Color
 /build:gfx/rpg_maker_vx_ace_tilesets_1_by_hishimy_d8e7pjd.png
 
+#begin gfx/sapling_short.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/sapling_short.png
+
+#begin gfx/sapling_tall.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/sapling_tall.png
+
 #begin gfx/scrolling textures/fog.png
 /importer:TextureImporter
 /processor:TextureProcessor

@@ -755,6 +755,7 @@ namespace SonOfRobin
                                 newPlant.fruitEngine.AddFruit();
                                 newPlant.Mass = newPlant.reproduction.massNeeded / 2;
                             }
+                            else newPlant.Mass = newPlant.adultSizeMass; // to have some fully sized plants (small ones have non-existent yield)
                         }
 
                         piecesCreated++;

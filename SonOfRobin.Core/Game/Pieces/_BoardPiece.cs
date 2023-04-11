@@ -222,7 +222,7 @@ namespace SonOfRobin
             {
                 this.mass = Math.Max(value, 0f);
                 int previousSpriteSize = this.sprite.animSize;
-                this.SetSpriteSizeByMass();
+                this.SetSpriteSizeByMass(growOnly: true);
                 if (previousSpriteSize != this.sprite.animSize && this.PieceStorage != null && this.GetType() == typeof(Plant))
                 {
                     Plant plant = (Plant)this;
@@ -372,6 +372,8 @@ namespace SonOfRobin
 
         private void SetSpriteSizeByMass(bool growOnly = false)
         {
+            if (growOnly && this.sprite.animSize == this.maxMassForSize.Length) return; // no point in calculating, if it's already at max
+
             byte newSpriteSize = this.SpriteSize;
             if (growOnly && this.sprite.animSize > newSpriteSize) return;
             this.sprite.AssignNewSize(this.SpriteSize);
