@@ -34,22 +34,38 @@ namespace SonOfRobin
                 this.targetSpriteChecked = true;
             }
 
-            // checking for water
+            // checking for rain and water
 
-            if (this.burningPiece != null && this.burningPiece.exists && this.burningPiece.sprite.IsInWater)
+            float rainPercentage = this.world.weather.RainPercentage;
+            this.Mass -= rainPercentage * rainPercentage * 0.01f;
+
+            if (this.burningPiece != null && this.burningPiece.exists)
             {
-                this.burningPiece.BurnLevel = 0;
-                this.soundPack.Play(PieceSoundPack.Action.TurnOff); // only when is put out by water
-                this.StopBurning();
-                return;
+                if (this.burningPiece.sprite.IsInWater)
+                {
+                    this.burningPiece.BurnLevel = 0;
+                    this.soundPack.Play(PieceSoundPack.Action.TurnOff); // only when is put out by water
+                    this.StopBurning();
+                    return;
+                }
+
+                if (rainPercentage > 0)
+                {
+                    this.burningPiece.BurnLevel -= rainPercentage * 0.05f;
+                    if (!this.burningPiece.IsBurning)
+                    {
+                        this.StopBurning();
+                        return;
+                    }
+                }
             }
 
             // calculating burn values
 
-            int affectedDistance = Math.Min(Math.Max((int)(this.Mass / 18), 15), 100);
+            int affectedDistance = Math.Min(Math.Max((int)(this.Mass / 15), 18), 170);
 
-            float baseBurnVal = Math.Max(this.Mass / 100f, 1);
-            float baseHitPointsVal = (float)baseBurnVal / 100f;
+            float baseBurnVal = Math.Max(this.Mass / 60f, 1);
+            float baseHitPointsVal = (float)baseBurnVal / 180f;
 
             // warming up nearby pieces
 
@@ -123,8 +139,9 @@ namespace SonOfRobin
                 // cooling down, if no burningPiece is present
 
                 this.Mass *= 0.991f;
-                if (this.Mass <= 10) this.StopBurning();
             }
+
+            if (this.Mass <= 10) this.StopBurning(); // must be less than starting mass
 
             // updating lightEngine
 
