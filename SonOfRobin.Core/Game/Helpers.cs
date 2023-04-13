@@ -376,9 +376,7 @@ namespace SonOfRobin
         {
             int convertedObj;
             try
-            {
-                convertedObj = (int)(Int64)obj;
-            }
+            { convertedObj = (int)(Int64)obj; }
             catch (Exception)
             { convertedObj = (int)obj; }
 
@@ -389,9 +387,7 @@ namespace SonOfRobin
         {
             byte convertedObj;
             try
-            {
-                convertedObj = (byte)(Int64)obj;
-            }
+            { convertedObj = (byte)(Int64)obj; }
             catch (Exception)
             { convertedObj = (byte)obj; }
 
@@ -402,9 +398,7 @@ namespace SonOfRobin
         {
             float convertedObj;
             try
-            {
-                convertedObj = (float)(double)obj;
-            }
+            { convertedObj = (float)(double)obj; }
             catch (Exception)
             { convertedObj = (float)obj; }
 

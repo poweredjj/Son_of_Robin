@@ -8,7 +8,7 @@ namespace SonOfRobin
     public class WorldEvent
     {
         public enum EventName
-        { Birth, Death, Destruction, TurnOffWorkshop, FinishCooking, RestorePieceCreation, FadeOutSprite, RestoreHint, RemoveBuff, BurnOutLightSource, RegenPoison, ChangeActiveState, FinishBuilding, PlaySoundByName, YieldDropDebris }
+        { Birth, Death, Destruction, TurnOffWorkshop, FinishCooking, RestorePieceCreation, FadeOutSprite, RestoreHint, RemoveBuff, BurnOutLightSource, RegenPoison, ChangeActiveState, FinishBuilding, PlaySoundByName, YieldDropDebris, CoolDownAfterBurning }
 
         public readonly World world;
         public readonly BoardPiece boardPiece;
@@ -133,7 +133,7 @@ namespace SonOfRobin
                         return;
                     }
 
-                case EventName.Death: // should only be used for pieces, that are processed every frame
+                case EventName.Death: // should only be used for pieces, that are processed every frame (none right now)
                     {
                         if (this.boardPiece.alive) this.boardPiece.Kill();
                         return;
@@ -333,6 +333,14 @@ namespace SonOfRobin
                         Yield yield = (Yield)this.eventHelper;
                         yield.DropDebris(ignoreProcessingTime: true);
 
+                        return;
+                    }
+
+                case EventName.CoolDownAfterBurning:
+                    {
+                        // if BurnLevel hasn't changed, it means no flame is affecting it and piece can be considered as cooled
+                        float previousBurnLevel = Helpers.CastObjectToFloat(this.eventHelper);
+                        if (this.boardPiece.BurnLevel == previousBurnLevel) this.boardPiece.BurnLevel = 0f;
                         return;
                     }
 

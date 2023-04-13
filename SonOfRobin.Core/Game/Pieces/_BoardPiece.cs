@@ -230,7 +230,12 @@ namespace SonOfRobin
             set
             {
                 bool wasBurning = this.IsBurning;
-                this.burnLevel = value;
+
+                float valDiff = value - this.burnLevel;
+                if (valDiff > 0) valDiff *= this.fireAffinity;
+
+                this.burnLevel += valDiff;
+                this.burnLevel = Math.Max(this.burnLevel, 0);
 
                 if (wasBurning != this.IsBurning && this.IsBurning)
                 {

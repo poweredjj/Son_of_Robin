@@ -20,6 +20,7 @@ namespace SonOfRobin
         {
             this.soundPack.Stop(PieceSoundPack.Action.IsOn);
             this.Destroy();
+            if (this.burningPiece != null) new WorldEvent(eventName: WorldEvent.EventName.CoolDownAfterBurning, world: this.world, delay: 10 * 60, boardPiece: this.burningPiece, eventHelper: this.burningPiece.BurnLevel);
         }
 
         public override void SM_FlameBurn()
@@ -46,22 +47,23 @@ namespace SonOfRobin
 
             var piecesWithinRange = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.Visible, mainSprite: this.sprite, distance: (ushort)(this.Mass / 2), compareWithBottom: true);
 
+            float burnVal = Math.Max(this.Mass / 100, 1);
             foreach (BoardPiece piece in piecesWithinRange)
             {
-                float burnVal = Math.Max(this.Mass / 100, 1);
-
                 piece.BurnLevel += burnVal;
-                if (burnVal > 0)
-                {
-                    piece.hitPoints = Math.Max(piece.hitPoints - (burnVal / 4), 0);
-                    if (piece.hitPoints == 0) piece.Destroy();
-                }
+            }
 
-                this.Mass += burnVal;
+            this.burningPiece.hitPoints = Math.Max(this.burningPiece.hitPoints - (burnVal / 20), 0);
+            this.Mass += burnVal;
+            if (this.burningPiece.hitPoints == 0)
+            {
+                this.burningPiece.Destroy();
+                this.burningPiece = null;
+                this.StopBurning();
             }
 
             this.sprite.lightEngine.Size = Math.Max((int)(this.Mass / 5), 100);
-            if (!this.burningPiece.IsBurning) this.StopBurning();
+            if (this.burningPiece == null || !this.burningPiece.IsBurning) this.StopBurning();
         }
     }
 }
