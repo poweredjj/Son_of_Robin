@@ -956,7 +956,7 @@ namespace SonOfRobin
                     {
                         var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.GroundAll });
 
-                        var maxMassForSize = new int[] { 100, 250, 500, 750, 1000, 2000 };
+                        var maxMassForSize = new int[] { 100, 250, 500, 750, 1000, 2000, 2500 };
 
                         return new Flame(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Flame, destructionDelay: 0, allowedTerrain: allowedTerrain, minDistance: 0, maxDistance: 2, generation: generation, serialize: true, canBePickedUp: false, readableName: "flame", description: "A burning flame.", activeState: BoardPiece.State.FlameBurn, maxMassForSize: maxMassForSize);
                     }

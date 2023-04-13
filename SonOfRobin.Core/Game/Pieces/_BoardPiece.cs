@@ -234,19 +234,21 @@ namespace SonOfRobin
 
                 if (wasBurning != this.IsBurning)
                 {
-                    //BoardPiece flamePiece = 
-
-                    var nearbyPieces = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.LightSource, mainSprite: this.sprite, distance: 1, compareWithBottom: true);
-
-
                     if (this.IsBurning)
                     {
+                        var reallyClosePieces = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.Visible, mainSprite: this.sprite, distance: 30, compareWithBottom: true);
 
-                        // TODO add flame, when there is none
-                    }
-                    else
-                    {
-                        // TODO remove flame, when there is one
+                        bool flameFound = false;
+                        foreach (BoardPiece piece in reallyClosePieces)
+                        {
+                            if (piece.name == PieceTemplate.Name.BurningFlame)
+                            {
+                                flameFound = true;
+                                break;
+                            }
+                        }
+
+                        if (!flameFound) PieceTemplate.CreateAndPlaceOnBoard(world: world, position: this.sprite.position, templateName: PieceTemplate.Name.BurningFlame, closestFreeSpot: true);
                     }
                 }
             }
