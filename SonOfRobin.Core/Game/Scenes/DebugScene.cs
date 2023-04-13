@@ -382,7 +382,7 @@ namespace SonOfRobin
                 var piecesWithinRange = world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.Visible, mainSprite: world.Player.sprite, distance: 50, compareWithBottom: true);
                 foreach (BoardPiece piece in piecesWithinRange)
                 {
-                    piece.BurnLevel += 0.55f;
+                    piece.BurnLevel += 0.65f;
                 }
             }
 

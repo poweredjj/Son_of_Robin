@@ -258,12 +258,11 @@ namespace SonOfRobin
                     {
                         BoardPiece flame = PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: this.sprite.position, templateName: PieceTemplate.Name.BurningFlame, closestFreeSpot: true);
 
-                        int offsetY = (this.GetType() == typeof(Animal) || this.GetType() == typeof(Player)) ?
-                            this.sprite.gfxRect.Bottom - flame.sprite.gfxRect.Bottom + 2 : 0;
+                        int offsetY = this.IsAnimalOrPlayer ? 2 : this.sprite.gfxRect.Bottom - flame.sprite.gfxRect.Bottom + 2;
 
                         new Tracking(world: this.world, targetSprite: this.sprite, followingSprite: flame.sprite, offsetY: offsetY);
 
-                        if (this.GetType() == typeof(Player)) flame.soundPack.Play(PieceSoundPack.Action.TurnOn);
+                        if (this.GetType() == typeof(Player)) Sound.QuickPlay(name: SoundData.Name.StartFireBig);
                     }
                 }
             }
@@ -404,6 +403,8 @@ namespace SonOfRobin
         public virtual void DrawStatBar()
         {
             new StatBar(label: "", value: (int)this.hitPoints, valueMax: (int)this.maxHitPoints, colorMin: new Color(255, 0, 0), colorMax: new Color(0, 255, 0), posX: this.sprite.gfxRect.Center.X, posY: this.sprite.gfxRect.Bottom, ignoreIfAtMax: true, texture: AnimData.framesForPkgs[AnimData.PkgName.Heart].texture);
+
+            if (Preferences.debugShowStatBars && this.BurnLevel > 0) new StatBar(label: "", value: (int)(this.BurnLevel * 100f), valueMax: 100, colorMin: new Color(255, 0, 0), colorMax: new Color(0, 255, 0), posX: this.sprite.gfxRect.Center.X, posY: this.sprite.gfxRect.Bottom, ignoreIfAtMax: true, texture: AnimData.framesForPkgs[AnimData.PkgName.Flame].texture);
 
             StatBar.FinishThisBatch();
         }
