@@ -30,23 +30,30 @@ namespace SonOfRobin
             {
                 var reallyClosePieces = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.Visible, mainSprite: this.sprite, distance: 30, compareWithBottom: true);
 
-                if (!reallyClosePieces.Any()) this.Mass--;
+                if (reallyClosePieces.Any()) this.burningPiece = reallyClosePieces.First();
+                else
+                {
+                    this.StopBurning();
+                    return;
+                }
+            }
 
-                this.burningPiece = reallyClosePieces.First();
+            if (!this.burningPiece.exists || this.burningPiece.sprite.IsInWater)
+            {
+                this.StopBurning();
+                return;
             }
 
             var piecesWithinRange = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.Visible, mainSprite: this.sprite, distance: (ushort)(this.Mass / 2), compareWithBottom: true);
 
             foreach (BoardPiece piece in piecesWithinRange)
             {
-                piece.sprite.color = Color.Red; // for testing
-
-                float burnVal = Math.Max(this.Mass / 100, 1) * piece.fireAffinity;
+                float burnVal = Math.Max(this.Mass / 100, 1);
 
                 piece.BurnLevel += burnVal;
                 if (burnVal > 0)
                 {
-                    piece.hitPoints = Math.Max(piece.hitPoints - burnVal, 0);
+                    piece.hitPoints = Math.Max(piece.hitPoints - (burnVal / 4), 0);
                     if (piece.hitPoints == 0) piece.Destroy();
                 }
 

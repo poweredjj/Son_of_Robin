@@ -120,19 +120,19 @@ namespace SonOfRobin
             if (!world.piecesByOldID.ContainsKey((string)trackingData["followingSprite_id"]) || !world.piecesByOldID.ContainsKey((string)trackingData["targetSprite_id"])) return;
 
             Sprite followingSprite = world.piecesByOldID[(string)trackingData["followingSprite_id"]].sprite;
-            XAlign followingXAlign = (XAlign)trackingData["followingXAlign"];
-            YAlign followingYAlign = (YAlign)trackingData["followingYAlign"];
+            XAlign followingXAlign = (XAlign)(Int64)trackingData["followingXAlign"];
+            YAlign followingYAlign = (YAlign)(Int64)trackingData["followingYAlign"];
 
             Sprite targetSprite = world.piecesByOldID[(string)trackingData["targetSprite_id"]].sprite;
-            XAlign targetXAlign = (XAlign)trackingData["targetXAlign"];
-            YAlign targetYAlign = (YAlign)trackingData["targetYAlign"];
+            XAlign targetXAlign = (XAlign)(Int64)trackingData["targetXAlign"];
+            YAlign targetYAlign = (YAlign)(Int64)trackingData["targetYAlign"];
 
-            int offsetX = (int)trackingData["offsetX"];
-            int offsetY = (int)trackingData["offsetY"];
+            int offsetX = (int)(Int64)trackingData["offsetX"];
+            int offsetY = (int)(Int64)trackingData["offsetY"];
 
             bool bounceWhenRemoved = (bool)trackingData["bounceWhenRemoved"];
-            int followSlowDown = (int)trackingData["followSlowDown"];
-            int lastTrackingFrame = (int)trackingData["lastTrackingFrame"];
+            int followSlowDown = (int)(Int64)trackingData["followSlowDown"];
+            int lastTrackingFrame = (int)(Int64)trackingData["lastTrackingFrame"];
             int delay = Math.Max(world.CurrentUpdate, lastTrackingFrame - world.CurrentUpdate);
 
             new Tracking(world: world, targetSprite: targetSprite, followingSprite: followingSprite, followingXAlign: followingXAlign, followingYAlign: followingYAlign, targetXAlign: targetXAlign, targetYAlign: targetYAlign, offsetX: offsetX, offsetY: offsetY, turnOffDelay: delay, bounceWhenRemoved: bounceWhenRemoved, followSlowDown: followSlowDown);

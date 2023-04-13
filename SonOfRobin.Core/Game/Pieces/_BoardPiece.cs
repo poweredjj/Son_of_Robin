@@ -232,24 +232,26 @@ namespace SonOfRobin
                 bool wasBurning = this.IsBurning;
                 this.burnLevel = value;
 
-                if (wasBurning != this.IsBurning)
+                if (wasBurning != this.IsBurning && this.IsBurning)
                 {
-                    if (this.IsBurning)
+                    var reallyClosePieces = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.Visible, mainSprite: this.sprite, distance: 30, compareWithBottom: true);
+
+                    bool flameFound = false;
+                    foreach (BoardPiece piece in reallyClosePieces)
                     {
-                        var reallyClosePieces = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.Visible, mainSprite: this.sprite, distance: 30, compareWithBottom: true);
-
-                        bool flameFound = false;
-                        foreach (BoardPiece piece in reallyClosePieces)
+                        if (piece.name == PieceTemplate.Name.BurningFlame)
                         {
-                            if (piece.name == PieceTemplate.Name.BurningFlame)
-                            {
-                                flameFound = true;
-                                break;
-                            }
+                            flameFound = true;
+                            break;
                         }
-
-                        if (!flameFound) PieceTemplate.CreateAndPlaceOnBoard(world: world, position: this.sprite.position, templateName: PieceTemplate.Name.BurningFlame, closestFreeSpot: true);
                     }
+
+                    if (!flameFound)
+                    {
+                        BoardPiece flamePiece = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: new Vector2(this.sprite.position.X, this.sprite.position.Y + 1), templateName: PieceTemplate.Name.BurningFlame, closestFreeSpot: true);
+                        new Tracking(world: this.world, targetSprite: this.sprite, followingSprite: flamePiece.sprite);
+                    }
+
                 }
             }
         }
