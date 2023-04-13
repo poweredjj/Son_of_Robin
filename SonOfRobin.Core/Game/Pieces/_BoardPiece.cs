@@ -236,6 +236,7 @@ namespace SonOfRobin
 
                 this.burnLevel += valDiff;
                 this.burnLevel = Math.Max(this.burnLevel, 0);
+                this.burnLevel = Math.Min(this.burnLevel, 1);
 
                 bool isBurning = this.IsBurning;
 

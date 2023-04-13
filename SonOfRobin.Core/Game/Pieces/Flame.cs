@@ -14,6 +14,7 @@ namespace SonOfRobin
             base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, blocksMovement: false, minDistance: minDistance, maxDistance: maxDistance, ignoresCollisions: ignoresCollisions, name: name, destructionDelay: destructionDelay, allowedTerrain: allowedTerrain, floatsOnWater: floatsOnWater, maxMassForSize: maxMassForSize, generation: generation, canBePickedUp: canBePickedUp, serialize: serialize, readableName: readableName, description: description, category: Category.Indestructible, visible: visible, activeState: activeState, allowedDensity: allowedDensity, isAffectedByWind: false, fireAffinity: 0f, lightEngine: new LightEngine(size: 150, opacity: 1.0f, colorActive: true, color: Color.Orange * 0.2f, isActive: false, castShadows: false), mass: 60)
         {
             this.soundPack.AddAction(action: PieceSoundPack.Action.IsOn, sound: new Sound(name: SoundData.Name.Bonfire, maxPitchVariation: 0.5f, isLooped: true));
+            this.soundPack.AddAction(action: PieceSoundPack.Action.TurnOff, sound: new Sound(name: SoundData.Name.EndFire, maxPitchVariation: 0.5f));
             this.targetSpriteChecked = false;
         }
 
@@ -33,34 +34,66 @@ namespace SonOfRobin
 
             if (this.burningPiece != null && this.burningPiece.exists && this.burningPiece.sprite.IsInWater)
             {
+                this.soundPack.Play(PieceSoundPack.Action.TurnOff); // only when put out by water
                 this.StopBurning();
                 return;
             }
 
-            int affectedDistance = Math.Min((int)(this.Mass / 10), 250);
+            int affectedDistance = Math.Min((int)(this.Mass / 15), 300);
+
+            float burnVal = this.Mass / 200;
+            float hitPointsLost = (float)burnVal / 40f;
+
+            var piecesWithinRange = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.Visible, mainSprite: this.sprite, distance: affectedDistance, compareWithBottom: true);
+            foreach (BoardPiece heatedPiece in piecesWithinRange)
+            {
+                if (heatedPiece.fireAffinity > 0 && !heatedPiece.sprite.IsInWater)
+                {
+                    heatedPiece.BurnLevel += burnVal;
+
+                    if (heatedPiece != this.burningPiece && heatedPiece.IsAnimalOrPlayer)
+                    {
+                        if (!heatedPiece.IsBurning) heatedPiece.hitPoints = Math.Max(this.burningPiece.hitPoints - (hitPointsLost / 4), 0); // getting damage before burning
+
+                        if (SonOfRobinGame.CurrentUpdate % 80 == 0)
+                        {
+                            heatedPiece.soundPack.Play(PieceSoundPack.Action.Cry);
+
+                            if (heatedPiece.GetType() == typeof(Player))
+                            {
+                                if (!this.world.solidColorManager.AnySolidColorPresent)
+                                {
+                                    this.world.ShakeScreen();
+                                    this.world.FlashRedOverlay();
+                                }
+                            }
+                        }
+
+                        if (heatedPiece.GetType() == typeof(Animal))
+                        {
+                            Animal animal = (Animal)heatedPiece;
+                            animal.target = this;
+                            animal.aiData.Reset(animal);
+                            animal.activeState = State.AnimalFlee;
+                        }
+                    }
+                }
+            }
 
             if (this.burningPiece != null && this.burningPiece.exists)
             {
-                float burnVal = Math.Max(this.Mass / 200, 1);
+                this.burningPiece.hitPoints = Math.Max(this.burningPiece.hitPoints - hitPointsLost, 0);
 
-                var piecesWithinRange = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.Visible, mainSprite: this.sprite, distance: affectedDistance, compareWithBottom: true);
-                foreach (BoardPiece piece in piecesWithinRange)
+                if (this.burningPiece.IsAnimalOrPlayer && SonOfRobinGame.CurrentUpdate % 60 == 0) this.burningPiece.soundPack.Play(PieceSoundPack.Action.Cry);
+
+                if (this.burningPiece.GetType() == typeof(Player))
                 {
-                    piece.BurnLevel += burnVal;
-
-                    if (piece != this.burningPiece && piece.GetType() == typeof(Animal))
+                    if (!this.world.solidColorManager.AnySolidColorPresent)
                     {
-                        Animal animal = (Animal)piece;
-                        animal.soundPack.Play(PieceSoundPack.Action.Cry);
-                        animal.target = this;
-                        animal.aiData.Reset(animal);
-                        animal.activeState = State.AnimalFlee;
+                        this.world.ShakeScreen();
+                        this.world.FlashRedOverlay();
                     }
                 }
-
-                float hitPointsLost = (float)burnVal / 20f;
-
-                this.burningPiece.hitPoints = Math.Max(this.burningPiece.hitPoints - hitPointsLost, 0);
 
                 this.Mass += burnVal;
                 if (this.burningPiece.hitPoints == 0)

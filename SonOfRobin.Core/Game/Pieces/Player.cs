@@ -800,15 +800,8 @@ namespace SonOfRobin
                 if (!this.world.solidColorManager.AnySolidColorPresent)
                 {
                     this.soundPack.Play(PieceSoundPack.Action.Cry);
-
-                    Vector2 screenShake = new Vector2(world.random.Next(-20, 20), world.random.Next(-20, 20));
-
-                    world.transManager.AddMultipleTransitions(outTrans: true, duration: world.random.Next(4, 10), playCount: -1, replaceBaseValue: false, stageTransform: Transition.Transform.Sinus, pingPongCycles: false, cycleMultiplier: 0.02f, paramsToChange: new Dictionary<string, float> { { "PosX", screenShake.X }, { "PosY", screenShake.Y } });
-
-                    SolidColor redOverlay = new SolidColor(color: Color.Red, viewOpacity: 0.0f);
-                    redOverlay.transManager.AddTransition(new Transition(transManager: redOverlay.transManager, outTrans: true, duration: 20, playCount: 1, stageTransform: Transition.Transform.Sinus, baseParamName: "Opacity", targetVal: 0.5f, endRemoveScene: true));
-
-                    this.world.solidColorManager.Add(redOverlay);
+                    this.world.ShakeScreen();
+                    this.world.FlashRedOverlay();
                 }
             }
         }
