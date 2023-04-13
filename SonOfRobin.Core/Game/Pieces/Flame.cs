@@ -30,40 +30,42 @@ namespace SonOfRobin
             if (this.burningPiece == null)
             {
                 var reallyClosePieces = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.Visible, mainSprite: this.sprite, distance: 30, compareWithBottom: true);
-
                 if (reallyClosePieces.Any()) this.burningPiece = reallyClosePieces.First();
-                else
-                {
-                    this.StopBurning();
-                    return;
-                }
             }
 
-            if (!this.burningPiece.exists || this.burningPiece.sprite.IsInWater)
+            if (this.burningPiece != null && this.burningPiece.exists && this.burningPiece.sprite.IsInWater)
             {
                 this.StopBurning();
                 return;
             }
 
-            var piecesWithinRange = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.Visible, mainSprite: this.sprite, distance: (ushort)(this.Mass / 2), compareWithBottom: true);
-
-            float burnVal = Math.Max(this.Mass / 100, 1);
-            foreach (BoardPiece piece in piecesWithinRange)
+            if (this.burningPiece != null && this.burningPiece.exists)
             {
-                piece.BurnLevel += burnVal;
+                float burnVal = Math.Max(this.Mass / 100, 1);
+
+                int distance = Math.Min((int)(this.Mass / 50), 500);
+
+                var piecesWithinRange = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.Visible, mainSprite: this.sprite, distance: distance, compareWithBottom: true);
+                foreach (BoardPiece piece in piecesWithinRange)
+                {
+                    piece.BurnLevel += burnVal;
+                }
+
+                this.burningPiece.hitPoints = Math.Max(this.burningPiece.hitPoints - (burnVal / 20), 0);
+                this.Mass += burnVal;
+                if (this.burningPiece.hitPoints == 0)
+                {
+                    this.burningPiece.Destroy();
+                    this.burningPiece = null;
+                }
             }
-
-            this.burningPiece.hitPoints = Math.Max(this.burningPiece.hitPoints - (burnVal / 20), 0);
-            this.Mass += burnVal;
-            if (this.burningPiece.hitPoints == 0)
+            else
             {
-                this.burningPiece.Destroy();
-                this.burningPiece = null;
-                this.StopBurning();
+                this.Mass--;
             }
 
             this.sprite.lightEngine.Size = Math.Max((int)(this.Mass / 5), 100);
-            if (this.burningPiece == null || !this.burningPiece.IsBurning) this.StopBurning();
+            if (this.Mass == 0) this.StopBurning();
         }
     }
 }

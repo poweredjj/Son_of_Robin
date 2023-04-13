@@ -887,7 +887,7 @@ namespace SonOfRobin
             return cellsInsideRect;
         }
 
-        public List<Cell> GetCellsWithinDistance(Vector2 position, ushort distance)
+        public List<Cell> GetCellsWithinDistance(Vector2 position, int distance)
         {
             List<Cell> cellsWithinDistance = new List<Cell>();
 
@@ -910,7 +910,7 @@ namespace SonOfRobin
             return cellsWithinDistance;
         }
 
-        public List<Sprite> GetSpritesWithinDistance(Sprite mainSprite, ushort distance, Cell.Group groupName)
+        public List<Sprite> GetSpritesWithinDistance(Sprite mainSprite, int distance, Cell.Group groupName)
         {
             var cellsWithinDistance = this.GetCellsWithinDistance(position: mainSprite.position, distance: distance);
             var spritesWithinDistance = new List<Sprite>();
@@ -926,7 +926,7 @@ namespace SonOfRobin
             return spritesWithinDistance;
         }
 
-        public List<BoardPiece> GetPiecesWithinDistance(Sprite mainSprite, ushort distance, Cell.Group groupName, int offsetX = 0, int offsetY = 0, bool compareWithBottom = false)
+        public List<BoardPiece> GetPiecesWithinDistance(Sprite mainSprite, int distance, Cell.Group groupName, int offsetX = 0, int offsetY = 0, bool compareWithBottom = false)
         {
             var cellsWithinDistance = this.GetCellsWithinDistance(position: mainSprite.position, distance: distance);
             var spritesWithinDistance = new List<Sprite>();
