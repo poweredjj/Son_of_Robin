@@ -237,7 +237,9 @@ namespace SonOfRobin
                 this.burnLevel += valDiff;
                 this.burnLevel = Math.Max(this.burnLevel, 0);
 
-                if (wasBurning != this.IsBurning && this.IsBurning)
+                bool isBurning = this.IsBurning;
+
+                if (isBurning && wasBurning != isBurning)
                 {
                     var reallyClosePieces = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.Visible, mainSprite: this.sprite, distance: 30, compareWithBottom: true);
 
@@ -253,10 +255,8 @@ namespace SonOfRobin
 
                     if (!flameFound)
                     {
-                        BoardPiece flamePiece = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: new Vector2(this.sprite.position.X, this.sprite.position.Y + 1), templateName: PieceTemplate.Name.BurningFlame, closestFreeSpot: true);
-                        new Tracking(world: this.world, targetSprite: this.sprite, followingSprite: flamePiece.sprite);
+                        PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: this.sprite.position, templateName: PieceTemplate.Name.BurningFlame, closestFreeSpot: true);
                     }
-
                 }
             }
         }

@@ -11,16 +11,9 @@ namespace SonOfRobin
         public Flame(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, State activeState, bool serialize,
             byte animSize = 0, string animName = "default", ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = true, int generation = 0, bool canBePickedUp = false, bool visible = true, bool ignoresCollisions = true, AllowedDensity allowedDensity = null, int[] maxMassForSize = null) :
 
-            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, blocksMovement: false, minDistance: minDistance, maxDistance: maxDistance, ignoresCollisions: ignoresCollisions, name: name, destructionDelay: destructionDelay, allowedTerrain: allowedTerrain, floatsOnWater: floatsOnWater, maxMassForSize: maxMassForSize, generation: generation, canBePickedUp: canBePickedUp, serialize: serialize, readableName: readableName, description: description, category: Category.Indestructible, visible: visible, activeState: activeState, allowedDensity: allowedDensity, isAffectedByWind: false, fireAffinity: 0f, lightEngine: new LightEngine(size: 150, opacity: 1.0f, colorActive: true, color: Color.Orange * 0.3f, isActive: true, castShadows: false), mass: 60)
+            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, blocksMovement: false, minDistance: minDistance, maxDistance: maxDistance, ignoresCollisions: ignoresCollisions, name: name, destructionDelay: destructionDelay, allowedTerrain: allowedTerrain, floatsOnWater: floatsOnWater, maxMassForSize: maxMassForSize, generation: generation, canBePickedUp: canBePickedUp, serialize: serialize, readableName: readableName, description: description, category: Category.Indestructible, visible: visible, activeState: activeState, allowedDensity: allowedDensity, isAffectedByWind: false, fireAffinity: 0f, lightEngine: new LightEngine(size: 150, opacity: 1.0f, colorActive: true, color: Color.Orange * 0.3f, isActive: false, castShadows: false), mass: 60)
         {
             this.soundPack.AddAction(action: PieceSoundPack.Action.IsOn, sound: new Sound(name: SoundData.Name.Bonfire, maxPitchVariation: 0.5f, isLooped: true));
-        }
-
-        private void StopBurning()
-        {
-            this.soundPack.Stop(PieceSoundPack.Action.IsOn);
-            this.Destroy();
-            if (this.burningPiece != null) new WorldEvent(eventName: WorldEvent.EventName.CoolDownAfterBurning, world: this.world, delay: 10 * 60, boardPiece: this.burningPiece, eventHelper: this.burningPiece.BurnLevel);
         }
 
         public override void SM_FlameBurn()
@@ -30,7 +23,18 @@ namespace SonOfRobin
             if (this.burningPiece == null)
             {
                 var reallyClosePieces = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.Visible, mainSprite: this.sprite, distance: 30, compareWithBottom: true);
-                if (reallyClosePieces.Any()) this.burningPiece = reallyClosePieces.First();
+                foreach (BoardPiece piece in reallyClosePieces)
+                {
+                    if (piece.IsBurning)
+                    {
+                        this.burningPiece = reallyClosePieces.First();
+
+                        int offsetY = this.burningPiece.sprite.gfxRect.Bottom - this.sprite.gfxRect.Bottom + 2;
+
+                        new Tracking(world: this.world, targetSprite: this.burningPiece.sprite, followingSprite: this.sprite, offsetY: offsetY);
+                        break;
+                    }
+                }
             }
 
             if (this.burningPiece != null && this.burningPiece.exists && this.burningPiece.sprite.IsInWater)
@@ -39,19 +43,22 @@ namespace SonOfRobin
                 return;
             }
 
+            int affectedDistance = Math.Min((int)(this.Mass / 10), 300);
+
             if (this.burningPiece != null && this.burningPiece.exists)
             {
                 float burnVal = Math.Max(this.Mass / 100, 1);
 
-                int distance = Math.Min((int)(this.Mass / 50), 500);
-
-                var piecesWithinRange = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.Visible, mainSprite: this.sprite, distance: distance, compareWithBottom: true);
+                var piecesWithinRange = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.Visible, mainSprite: this.sprite, distance: affectedDistance, compareWithBottom: true);
                 foreach (BoardPiece piece in piecesWithinRange)
                 {
                     piece.BurnLevel += burnVal;
                 }
 
-                this.burningPiece.hitPoints = Math.Max(this.burningPiece.hitPoints - (burnVal / 20), 0);
+                float hitPointsLost = (float)burnVal / 20f;
+
+                this.burningPiece.hitPoints = Math.Max(this.burningPiece.hitPoints - hitPointsLost, 0);
+
                 this.Mass += burnVal;
                 if (this.burningPiece.hitPoints == 0)
                 {
@@ -61,11 +68,20 @@ namespace SonOfRobin
             }
             else
             {
-                this.Mass--;
+                this.Mass *= 0.991f;
+                if (this.Mass <= 10) this.StopBurning();
             }
 
-            this.sprite.lightEngine.Size = Math.Max((int)(this.Mass / 5), 100);
-            if (this.Mass == 0) this.StopBurning();
+            this.sprite.lightEngine.Size = Math.Max(affectedDistance * 6, 50);
+            if (!this.sprite.lightEngine.IsActive) this.sprite.lightEngine.Activate();
+        }
+
+        private void StopBurning()
+        {
+            this.soundPack.Stop(PieceSoundPack.Action.IsOn);
+            if (this.burningPiece != null) new WorldEvent(eventName: WorldEvent.EventName.CoolDownAfterBurning, world: this.world, delay: 10 * 60, boardPiece: this.burningPiece, eventHelper: this.burningPiece.BurnLevel);
+            new OpacityFade(sprite: this.sprite, destOpacity: 0f, duration: 20, destroyPiece: true);
+            this.RemoveFromStateMachines();
         }
     }
 }
