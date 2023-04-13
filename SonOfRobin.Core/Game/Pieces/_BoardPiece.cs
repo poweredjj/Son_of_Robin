@@ -262,6 +262,8 @@ namespace SonOfRobin
                             this.sprite.gfxRect.Bottom - flame.sprite.gfxRect.Bottom + 2 : 0;
 
                         new Tracking(world: this.world, targetSprite: this.sprite, followingSprite: flame.sprite, offsetY: offsetY);
+
+                        if (this.GetType() == typeof(Player)) flame.soundPack.Play(PieceSoundPack.Action.TurnOn);
                     }
                 }
             }

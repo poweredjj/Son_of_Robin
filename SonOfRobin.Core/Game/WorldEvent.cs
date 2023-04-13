@@ -339,6 +339,7 @@ namespace SonOfRobin
                 case EventName.CoolDownAfterBurning:
                     {
                         // if BurnLevel hasn't changed, it means no flame is affecting it and piece can be considered as cooled
+
                         float previousBurnLevel = Helpers.CastObjectToFloat(this.eventHelper);
                         if (this.boardPiece.BurnLevel == previousBurnLevel) this.boardPiece.BurnLevel = 0f;
                         return;
