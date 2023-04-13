@@ -255,7 +255,12 @@ namespace SonOfRobin
 
                     if (!flameFound)
                     {
-                        PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: this.sprite.position, templateName: PieceTemplate.Name.BurningFlame, closestFreeSpot: true);
+                        BoardPiece flame = PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: this.sprite.position, templateName: PieceTemplate.Name.BurningFlame, closestFreeSpot: true);
+
+                        int offsetY = (this.GetType() == typeof(Animal) || this.GetType() == typeof(Player)) ?
+                            this.sprite.gfxRect.Bottom - flame.sprite.gfxRect.Bottom + 2 : 0;
+
+                        new Tracking(world: this.world, targetSprite: this.sprite, followingSprite: flame.sprite, offsetY: offsetY);
                     }
                 }
             }

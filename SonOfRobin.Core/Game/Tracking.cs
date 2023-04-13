@@ -143,6 +143,12 @@ namespace SonOfRobin
             this.world.trackingQueue[this.followingSprite.id] = this;
         }
 
+        public static Sprite GetTargetSprite(World world, Sprite followingSprite)
+        {
+            if (world.trackingQueue.ContainsKey(followingSprite.id)) return world.trackingQueue[followingSprite.id].targetSprite;
+            return null;
+        }
+
         private void RemoveFromTrackingQueue()
         {
             this.world.trackingQueue.Remove(this.followingSprite.id);
