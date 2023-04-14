@@ -941,10 +941,8 @@ namespace SonOfRobin
                 this.disableTouchContextMenuUntilFrame = SonOfRobinGame.CurrentUpdate + 15;
             }
 
-            if (piecesThatDidNotFitIn.Count == initialDraggedCount)
-            {
-                if (!this.draggedByTouch) Sound.QuickPlay(SoundData.Name.Error);
-            }
+            PieceTemplate.Name topPieceName = this.draggedPieces.Any() ? this.draggedPieces[0].name : PieceTemplate.Name.Empty;
+            if (this.draggedPieces.Count == initialDraggedCount && topPieceName == initialTopPieceName) Sound.QuickPlay(SoundData.Name.Error);
             else firstPieceSoundPack.Play(action: PieceSoundPack.Action.IsDropped, ignore3D: true, ignoreCooldown: true);
         }
 
