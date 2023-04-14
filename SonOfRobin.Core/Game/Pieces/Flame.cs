@@ -63,7 +63,7 @@ namespace SonOfRobin
 
             // calculating burn values
 
-            int affectedDistance = Math.Min(Math.Max((int)(this.Mass / 15), 18), 170);
+            int affectedDistance = Math.Min(Math.Max((int)(this.Mass / 20), 25), 110);
 
             float baseBurnVal = Math.Max(this.Mass / 60f, 1);
             float baseHitPointsVal = (float)baseBurnVal / 180f;
