@@ -246,6 +246,7 @@ namespace SonOfRobin
             CarrotPlant,
             Carrot,
             ArrowBurning,
+            Explosion,
         }
 
         public static readonly Name[] allNames = (Name[])Enum.GetValues(typeof(Name));
@@ -2341,7 +2342,7 @@ namespace SonOfRobin
 
                 case Name.ArrowBurning:
                     {
-                        return new Projectile(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ArrowBurning, allowedTerrain: shallowWaterToVolcano, floatsOnWater: false, minDistance: 0, maxDistance: 100, maxMassForSize: null, generation: generation, baseHitPower: 10, indestructible: false, maxHitPoints: 40, stackSize: 15, canBeStuck: true, readableName: "burning arrow", description: "Will start a fire.", fireAffinity: 0.7f, isBurning: true, lightEngine: new LightEngine(size: 100, opacity: 0.8f, colorActive: true, color: Color.Orange * 0.3f, isActive: true, castShadows: true));
+                        return new Projectile(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ArrowBurning, allowedTerrain: shallowWaterToVolcano, floatsOnWater: false, minDistance: 0, maxDistance: 100, maxMassForSize: null, generation: generation, baseHitPower: 10, indestructible: false, maxHitPoints: 40, stackSize: 15, canBeStuck: true, readableName: "burning arrow", description: "Will start a fire.", fireAffinity: 0.7f, isBurning: true, lightEngine: new LightEngine(size: 100, opacity: 0.8f, colorActive: true, color: Color.Orange * 0.3f, isActive: false, castShadows: true));
                     }
 
                 case Name.ArrowCrystal:
@@ -2716,6 +2717,13 @@ namespace SonOfRobin
                         VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.RainDrops, destructionDelay: 0, allowedTerrain: new AllowedTerrain(), minDistance: 0, maxDistance: 0, generation: generation, readableName: "rain drop", description: "A single drop of rain.", activeState: BoardPiece.State.RainInitialize, serialize: false, ignoresCollisions: true, visible: true, fireAffinity: 0f);
 
                         visualEffect.sprite.opacity = 0.75f;
+
+                        return visualEffect;
+                    }
+
+                case Name.Explosion:
+                    {
+                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Explosion, destructionDelay: -1, allowedTerrain: new AllowedTerrain(), minDistance: 0, maxDistance: 0, generation: generation, readableName: "explosion", description: "An explosion.", activeState: BoardPiece.State.Empty, serialize: false, ignoresCollisions: true, visible: true, fireAffinity: 0f, lightEngine: new LightEngine(size: 150, opacity: 1f, colorActive: true, color: Color.Orange * 0.3f, isActive: true, castShadows: true));
 
                         return visualEffect;
                     }

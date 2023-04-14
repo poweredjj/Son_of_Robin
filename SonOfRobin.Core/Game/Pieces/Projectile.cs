@@ -52,7 +52,11 @@ namespace SonOfRobin
             float distanceMultiplier = Math.Max(shootingPower / 50f, 0.4f);
             movement *= distanceMultiplier;
             this.AddPassiveMovement(movement: movement);
-            if (this.isBurning) this.sprite.AssignNewName("burning");
+            if (this.isBurning)
+            {
+                this.sprite.AssignNewName("burning");
+                if (this.sprite.lightEngine != null) this.sprite.lightEngine.Activate();
+            }
 
             this.soundPack.Play(PieceSoundPack.Action.ArrowFly);
 
@@ -157,6 +161,8 @@ namespace SonOfRobin
 
         private void Explode()
         {
+            PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: this.sprite.position, templateName: PieceTemplate.Name.Explosion, closestFreeSpot: true);
+
             var piecesWithinRange = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.Visible, mainSprite: this.sprite, distance: 70, compareWithBottom: true);
             foreach (BoardPiece piece in piecesWithinRange)
             {

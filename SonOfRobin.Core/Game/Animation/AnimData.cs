@@ -326,6 +326,7 @@ namespace SonOfRobin
             CarrotPlant,
             Carrot,
             ArrowBurning,
+            Explosion,
         }
 
         public static void AddFrameList(PkgName animPackage, byte animSize, List<AnimFrame> frameList, string animName = "default")
@@ -730,6 +731,20 @@ namespace SonOfRobin
                 frameList = ConvertImageToFrameList(atlasName: "flames", layer: 1, x: 288, y: 96, width: 48, height: 48, crop: false);
                 AddFrameList(animPackage: packageName, animSize: 0, frameList);
                 AddFrameList(animPackage: packageName, animSize: 0, animName: "off", frameList: frameList);
+            }
+            {
+                PkgName packageName = PkgName.Explosion;
+                var frameList = new List<AnimFrame> { };
+
+                for (int y = 0; y < 4; y++)
+                {
+                    for (int x = 0; x < 4; x++)
+                    {
+                        frameList.Add(ConvertImageToFrame(atlasName: "explosion", layer: 1, duration: 2, x: x * 32, y: y * 32, width: 32, height: 32, scale: 1.5f, crop: false));
+                    }
+                }
+
+                AddFrameList(animPackage: packageName, animSize: 0, animName: "default", frameList: frameList);
             }
 
             AddFrameList(animPackage: PkgName.GlassDigSite, animSize: 0, animName: "default", frameList: new List<AnimFrame>

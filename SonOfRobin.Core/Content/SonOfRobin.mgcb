@@ -927,6 +927,18 @@
 /processorParam:TextureFormat=Color
 /build:gfx/exclamation.png
 
+#begin gfx/explosion.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/explosion.png
+
 #begin gfx/fancy_food.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -5864,6 +5876,12 @@
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:sound/195586__scott-snailham__bonfire-fx-with-whoosh-basic-with-some-crackle-cd-quality.ogg
+
+#begin sound/195586__scott-snailham__bonfire-fx-with-whoosh-basic-with-some-crackle-cd-quality_short.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sound/195586__scott-snailham__bonfire-fx-with-whoosh-basic-with-some-crackle-cd-quality_short.ogg
 
 #begin sound/209399__samulis__bow-release.ogg
 /importer:OggImporter

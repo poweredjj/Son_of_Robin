@@ -201,17 +201,6 @@ namespace SonOfRobin
 
                         PortableLight portableLight = (PortableLight)this.boardPiece;
 
-                        // starting fire, if dropped
-
-                        if (!portableLight.canBeUsedDuringRain && portableLight.sprite.IsOnBoard) // canBeUsedDuringRain means that the fire is separated from the environment
-                        {
-                            var piecesWithinRange = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.Visible, mainSprite: portableLight.sprite, distance: 70, compareWithBottom: true);
-                            foreach (BoardPiece piece in piecesWithinRange)
-                            {
-                                if (piece.GetType() != typeof(Player)) piece.BurnLevel += 3f; // to ensure burning
-                            }
-                        }
-
                         // breaking damage loop
 
                         if (this.world.Player == null || !this.world.Player.alive || !this.world.Player.exists || this.world.Player.sprite.IsInWater || !portableLight.IsOnPlayersToolbar || !portableLight.IsOn || (!portableLight.canBeUsedDuringRain && this.world.weather.IsRaining))
