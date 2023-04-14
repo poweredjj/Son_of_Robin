@@ -108,7 +108,9 @@ namespace SonOfRobin
 
                     new Craft.Recipe(pieceToCreate: PieceTemplate.Name.Lantern, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.LanternFrame, 1 }, { PieceTemplate.Name.Candle, 1 } }, fatigue: fatigueItemMedium, isReversible: false),
 
-                    new Craft.Recipe(pieceToCreate: PieceTemplate.Name.ArrowIron, amountToCreate: 10, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stick, 6 }, { PieceTemplate.Name.IronRod, 1 }}, fatigue: fatigueItemMedium, isReversible: false, isHidden: true, unlocksWhenCrafted: new List<PieceTemplate.Name> {PieceTemplate.Name.ArrowCrystal}, craftCountToUnlock: 3),
+                    new Craft.Recipe(pieceToCreate: PieceTemplate.Name.ArrowIron, amountToCreate: 10, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stick, 6 }, { PieceTemplate.Name.IronRod, 1 }}, fatigue: fatigueItemMedium, isReversible: false, isHidden: true, unlocksWhenCrafted: new List<PieceTemplate.Name> {PieceTemplate.Name.ArrowCrystal, PieceTemplate.Name.ArrowBurning}, craftCountToUnlock: 3),
+
+                    new Craft.Recipe(pieceToCreate: PieceTemplate.Name.ArrowBurning, amountToCreate: 10, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stick, 6 }, { PieceTemplate.Name.IronRod, 1 }, { PieceTemplate.Name.BottleOfOil, 1 }}, fatigue: fatigueItemMedium, isReversible: false, isHidden: true),
                 };
         }
 

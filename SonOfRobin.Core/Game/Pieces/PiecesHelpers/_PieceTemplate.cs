@@ -245,6 +245,7 @@ namespace SonOfRobin
             Dungarees,
             CarrotPlant,
             Carrot,
+            ArrowBurning,
         }
 
         public static readonly Name[] allNames = (Name[])Enum.GetValues(typeof(Name));
@@ -2317,7 +2318,7 @@ namespace SonOfRobin
                 case Name.BowWood:
                     {
                         var multiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Flesh, 5f } };
-                        var compatibleAmmo = new List<PieceTemplate.Name> { Name.ArrowWood, Name.ArrowStone, Name.ArrowIron, Name.ArrowCrystal };
+                        var compatibleAmmo = new List<PieceTemplate.Name> { Name.ArrowWood, Name.ArrowStone, Name.ArrowIron, Name.ArrowCrystal, Name.ArrowBurning };
 
                         return new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BowWood, allowedTerrain: shallowWaterToVolcano, category: BoardPiece.Category.Wood,
                             floatsOnWater: false, minDistance: 0, maxDistance: 100, maxMassForSize: null, generation: generation, hitPower: 5, indestructible: false, multiplierByCategory: multiplierByCategory, maxHitPoints: 150, shootsProjectile: true, compatibleAmmo: compatibleAmmo, readableName: "wooden bow", description: "Projectile weapon, uses arrows for ammo.", fireAffinity: 0.8f);
@@ -2336,6 +2337,11 @@ namespace SonOfRobin
                 case Name.ArrowIron:
                     {
                         return new Projectile(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ArrowIron, allowedTerrain: shallowWaterToVolcano, floatsOnWater: false, minDistance: 0, maxDistance: 100, maxMassForSize: null, generation: generation, baseHitPower: 20, indestructible: false, maxHitPoints: 40, stackSize: 15, canBeStuck: true, readableName: "iron arrow", description: "Strong arrow.", fireAffinity: 0.7f);
+                    }
+
+                case Name.ArrowBurning:
+                    {
+                        return new Projectile(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ArrowBurning, allowedTerrain: shallowWaterToVolcano, floatsOnWater: false, minDistance: 0, maxDistance: 100, maxMassForSize: null, generation: generation, baseHitPower: 10, indestructible: false, maxHitPoints: 40, stackSize: 15, canBeStuck: true, readableName: "burning arrow", description: "Will start a fire.", fireAffinity: 0.7f, isBurning: true, lightEngine: new LightEngine(size: 100, opacity: 0.8f, colorActive: true, color: Color.Orange * 0.3f, isActive: true, castShadows: true));
                     }
 
                 case Name.ArrowCrystal:

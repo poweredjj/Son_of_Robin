@@ -135,6 +135,30 @@
 /processorParam:TextureFormat=Color
 /build:gfx/anvil.png
 
+#begin gfx/arrow_burning_off.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/arrow_burning_off.png
+
+#begin gfx/arrow_burning_on.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/arrow_burning_on.png
+
 #begin gfx/arrow_crystal.png
 /importer:TextureImporter
 /processor:TextureProcessor

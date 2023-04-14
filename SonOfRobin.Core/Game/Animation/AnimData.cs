@@ -325,6 +325,7 @@ namespace SonOfRobin
             GlassDigSite,
             CarrotPlant,
             Carrot,
+            ArrowBurning,
         }
 
         public static void AddFrameList(PkgName animPackage, byte animSize, List<AnimFrame> frameList, string animName = "default")
@@ -743,6 +744,9 @@ namespace SonOfRobin
 
             AddFrameList(animPackage: PkgName.CarrotPlant, animName: "default", animSize: 0, frameList: ConvertImageToFrameList(atlasName: "carrot_plant_empty", layer: 1, scale: 1f));
             AddFrameList(animPackage: PkgName.CarrotPlant, animName: "has_fruits", animSize: 0, frameList: ConvertImageToFrameList(atlasName: "carrot_plant_has_carrot", layer: 1, scale: 1f)); // using different plant graphics when carrot is present, instead of drawing the carrot separately (because the carrot should be underground)
+
+            AddFrameList(animPackage: PkgName.ArrowBurning, animName: "default", animSize: 0, frameList: ConvertImageToFrameList(atlasName: "arrow_burning_off", layer: 0, scale: 0.75f));
+            AddFrameList(animPackage: PkgName.ArrowBurning, animName: "burning", animSize: 0, frameList: ConvertImageToFrameList(atlasName: "arrow_burning_on", layer: 0, scale: 0.75f));
 
             AddFrameList(animPackage: PkgName.DigSite, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "dig_site", layer: 0));
 
