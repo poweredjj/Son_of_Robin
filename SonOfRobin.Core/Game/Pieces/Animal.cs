@@ -312,7 +312,7 @@ namespace SonOfRobin
                     if (this.target.GetType() == typeof(Animal)) // target animal has a chance to flee early
                     {
                         Animal animalTarget = (Animal)this.target;
-                        if (this.world.random.Next(0, Convert.ToInt32(animalTarget.awareness / 3)) == 0)
+                        if (this.world.random.Next(0, (int)(animalTarget.awareness / 3)) == 0)
                         {
                             animalTarget.target = this;
                             animalTarget.aiData.Reset();
@@ -759,7 +759,7 @@ namespace SonOfRobin
 
             if (successfullRunningAway)
             {
-                this.ExpendEnergy(Convert.ToInt32(Math.Max(this.RealSpeed / 2, 1)));
+                this.ExpendEnergy((int)Math.Max(this.RealSpeed / 2, 1));
                 if (Vector2.Distance(this.sprite.position, this.target.sprite.position) > 400)
                 {
                     this.activeState = State.AnimalAssessSituation;
@@ -778,29 +778,39 @@ namespace SonOfRobin
 
         public override void SM_AnimalRunForClosestWater()
         {
+            if (!this.IsBurning)
+            {
+                this.activeState = State.AnimalRest;
+                this.aiData.Reset();
+                return;
+            }
+
             if (!this.aiData.targetPosIsSet)
             {
-                var cellsWithWaterWithinDistance = this.world.Grid.GetCellsWithinDistance(position: this.sprite.position, distance: this.sightRange)
-                    .Where(cell => cell.HasWater && cell != this.sprite.currentCell)
-                    .OrderBy(cell => Vector2.Distance(this.sprite.position, cell.center)).ToList(); // sorting by distance
-
-                if (cellsWithWaterWithinDistance.Any())
+                int searchRange = 0;
+                while (true)
                 {
+                    searchRange += this.sightRange;
 
-                    Cell targetCell;
+                    var cellsWithWaterWithinDistance = this.world.Grid.GetCellsWithinDistance(position: this.sprite.position, distance: searchRange)
+                      .Where(cell => cell.IsAllWater && cell != this.sprite.currentCell)
+                      .OrderBy(cell => Vector2.Distance(this.sprite.position, cell.center)); // sorting by distance
 
-                    if (this.world.random.Next(0, 5) == 0)
+                    if (cellsWithWaterWithinDistance.Any())
                     {
-                        int randomCellNo = this.world.random.Next(0, cellsWithWaterWithinDistance.Count);
-                        targetCell = cellsWithWaterWithinDistance[randomCellNo];
-                    }
-                    else targetCell = cellsWithWaterWithinDistance.First();
+                        Cell targetCell;
 
-                    this.aiData.TargetPos = cellsWithWaterWithinDistance.First().center;
-                }
-                else
-                {
-                    // TODO add random target
+                        if (this.world.random.Next(0, 3) == 0) // sometimes a random cell is chosen
+                        {
+                            int randomCellNo = this.world.random.Next(0, cellsWithWaterWithinDistance.Count());
+                            targetCell = cellsWithWaterWithinDistance.ElementAt(randomCellNo);
+                        }
+                        else targetCell = cellsWithWaterWithinDistance.First();
+
+                        this.aiData.TargetPos = targetCell.center;
+
+                        break;
+                    }
                 }
             }
 

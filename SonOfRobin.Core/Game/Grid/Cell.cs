@@ -34,6 +34,7 @@ namespace SonOfRobin
         public readonly Dictionary<Group, Dictionary<string, Sprite>> spriteGroups;
         public BoardGraphics boardGraphics;
         public bool HasWater { get; private set; }
+        public bool IsAllWater { get; private set; }
         public bool HasLava { get; private set; }
 
         public readonly List<PieceTemplate.Name> allowedNames; // for initial placing only - because possible piece placement can be changed during its lifecycle
@@ -100,6 +101,7 @@ namespace SonOfRobin
             }
 
             this.HasWater = minValForTerrain[Terrain.Name.Height] < Terrain.waterLevelMax;
+            this.IsAllWater = maxValForTerrain[Terrain.Name.Height] < Terrain.waterLevelMax;
             this.HasLava = maxValForTerrain[Terrain.Name.Height] >= Terrain.lavaMin;
         }
 

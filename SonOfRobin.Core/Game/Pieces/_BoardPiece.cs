@@ -245,7 +245,7 @@ namespace SonOfRobin
                 if (isBurning && this.GetType() == typeof(Animal) && this.activeState != State.AnimalRunForClosestWater)
                 {
                     Animal animal = (Animal)this;
-                    animal.activeState = State.AnimalRest;
+                    animal.activeState = State.AnimalRunForClosestWater;
                     animal.aiData.Reset();
                 }
 
