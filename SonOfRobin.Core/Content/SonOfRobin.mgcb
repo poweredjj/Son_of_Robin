@@ -5943,6 +5943,12 @@
 /processorParam:Quality=Best
 /build:sound/233168__jarredgibb__pig-chewing-2-96khz-4.ogg
 
+#begin sound/234083__211redman112__lasgun-fire.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sound/234083__211redman112__lasgun-fire.ogg
+
 #begin sound/237406__squareal__match-sizzle-03.ogg
 /importer:OggImporter
 /processor:SoundEffectProcessor
