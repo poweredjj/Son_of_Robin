@@ -73,8 +73,6 @@ namespace SonOfRobin
         {
             Dictionary<string, Object> pieceData = base.Serialize();
 
-            pieceData["animal_attackCooldown"] = this.attackCooldown;
-            pieceData["animal_regenCooldown"] = this.regenCooldown;
             pieceData["animal_fedLevel"] = this.fedLevel;
             pieceData["animal_pregnancyMass"] = this.pregnancyMass;
             pieceData["animal_pregnancyFramesLeft"] = this.pregnancyFramesLeft;
@@ -88,8 +86,6 @@ namespace SonOfRobin
         {
             base.Deserialize(pieceData);
 
-            this.attackCooldown = (int)(Int64)pieceData["animal_attackCooldown"];
-            this.regenCooldown = (int)(Int64)pieceData["animal_regenCooldown"];
             this.fedLevel = (int)(Int64)pieceData["animal_fedLevel"];
             this.pregnancyMass = (uint)(Int64)pieceData["animal_pregnancyMass"];
             this.pregnancyFramesLeft = (int)(Int64)pieceData["animal_pregnancyFramesLeft"];
