@@ -1352,9 +1352,6 @@ namespace SonOfRobin
 
                     case TaskName.AddFadeInAnim:
                         {
-                            // example executeHelper for this task
-                            // var movementData = new Dictionary<string, Object> { { "boardPiece", piece }, { "movement",  movement }};
-
                             Sprite sprite = (Sprite)this.ExecuteHelper;
                             if (!sprite.IsOnBoard) return;
 

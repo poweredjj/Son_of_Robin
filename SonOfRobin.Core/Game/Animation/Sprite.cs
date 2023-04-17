@@ -233,7 +233,9 @@ namespace SonOfRobin
 
         public void AddFadeInAnim()
         {
-            this.opacity = 0f;
+            if (this.world == null) return; // when created for PieceInfo
+
+            this.opacity = 0f; // to avoid flicker
             new Scheduler.Task(taskName: Scheduler.TaskName.AddFadeInAnim, delay: 1, executeHelper: this);
         }
 

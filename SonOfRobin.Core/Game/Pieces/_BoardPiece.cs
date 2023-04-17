@@ -232,7 +232,7 @@ namespace SonOfRobin
                 bool wasBurning = this.IsBurning;
 
                 float valDiff = value - this.burnLevel;
-                if (valDiff > 0) valDiff *= this.fireAffinity;
+                if (valDiff > 0) valDiff *= this.buffEngine != null && this.buffEngine.HasBuff(BuffEngine.BuffType.Wet) ? this.fireAffinity / 4 : this.fireAffinity;
 
                 this.burnLevel += valDiff;
                 this.burnLevel = Math.Max(this.burnLevel, 0);
@@ -264,6 +264,8 @@ namespace SonOfRobin
 
                         if (this.GetType() == typeof(Player)) Sound.QuickPlay(name: SoundData.Name.StartFireBig);
                     }
+
+                    this.buffEngine?.RemoveEveryBuffOfType(BuffEngine.BuffType.Wet);
                 }
             }
         }

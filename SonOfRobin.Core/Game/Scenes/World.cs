@@ -1353,7 +1353,7 @@ namespace SonOfRobin
                 SonOfRobinGame.SpriteBatch.End();
             }
 
-            this.CurrentFrame++;
+            this.CurrentFrame += Preferences.Cap30FPS ? 2 : 1;
         }
 
         protected override void AdaptToNewSize()

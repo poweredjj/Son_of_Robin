@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
+using System.Collections.Generic;
 
 namespace SonOfRobin
 {
@@ -86,7 +87,7 @@ namespace SonOfRobin
                         float hitPointsToSubtract = baseHitPointsVal * distanceMultiplier;
                         heatedPiece.hitPoints = Math.Max(heatedPiece.hitPoints - hitPointsToSubtract, 0);
 
-                        if (hitPointsToSubtract > 1 && SonOfRobinGame.CurrentUpdate % 15 == 0 && this.world.random.Next(0, 4) == 0)
+                        if (hitPointsToSubtract > 0.1f && SonOfRobinGame.CurrentUpdate % 15 == 0 && this.world.random.Next(0, 4) == 0)
                         {
                             heatedPiece.soundPack.Play(PieceSoundPack.Action.Cry);
 
@@ -114,9 +115,6 @@ namespace SonOfRobin
 
                 this.burningPiece.hitPoints = Math.Max(this.burningPiece.hitPoints - baseHitPointsVal, 0);
 
-                byte brightness = (byte)(55 + (200f * (this.burningPiece.hitPoints / this.burningPiece.maxHitPoints)));
-                this.burningPiece.sprite.color = new Color(brightness, brightness, brightness);
-
                 if (this.burningPiece.IsAnimalOrPlayer && SonOfRobinGame.CurrentUpdate % 40 == 0) this.burningPiece.soundPack.Play(PieceSoundPack.Action.Cry);
 
                 if (this.burningPiece.GetType() == typeof(Player))
@@ -131,7 +129,7 @@ namespace SonOfRobin
                 this.Mass += baseBurnVal;
                 if (this.burningPiece.hitPoints == 0)
                 {
-                    this.burningPiece.yield?.DropDebris(debrisTypeListOverride: new System.Collections.Generic.List<Yield.DebrisType> { Yield.DebrisType.Soot });
+                    this.burningPiece.yield?.DropDebris(debrisTypeListOverride: new List<Yield.DebrisType> { Yield.DebrisType.Soot });
                     this.burningPiece.Destroy();
                     this.burningPiece = null;
                 }
