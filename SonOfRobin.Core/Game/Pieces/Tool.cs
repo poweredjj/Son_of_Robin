@@ -224,13 +224,13 @@ namespace SonOfRobin
                 }
             }
 
-            if (target.yield != null) target.yield.DropFirstPieces(hitPower: hitPower);
+            if (target.yield != null && !target.IsBurning) target.yield.DropFirstPieces(hitPower: hitPower);
             if (target.GetType() == typeof(Animal) && world.random.Next(0, 2) == 0) PieceTemplate.CreateAndPlaceOnBoard(world: world, position: target.sprite.position, templateName: PieceTemplate.Name.BloodSplatter);
 
             if (!target.alive || target.hitPoints <= 0)
             {
                 target.world.Grid.RemoveFromGroup(sprite: target.sprite, groupName: Cell.Group.ColMovement); // to ensure proper yield placement
-                if (target.yield != null && target.exists) target.yield.DropFinalPieces();
+                if (target.yield != null && target.exists && !target.IsBurning) target.yield.DropFinalPieces();
                 target.soundPack.Play(PieceSoundPack.Action.IsDestroyed);
                 target.Destroy();
 
