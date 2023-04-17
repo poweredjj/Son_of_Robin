@@ -262,7 +262,11 @@ namespace SonOfRobin
 
                         new Tracking(world: this.world, targetSprite: this.sprite, followingSprite: flame.sprite, offsetY: offsetY);
 
-                        if (this.GetType() == typeof(Player)) Sound.QuickPlay(name: SoundData.Name.StartFireBig);
+                        if (this.GetType() == typeof(Player))
+                        {
+                            flame.sprite.opacityFade.Finish();
+                            Sound.QuickPlay(name: SoundData.Name.StartFireBig);
+                        }
                     }
 
                     this.buffEngine?.RemoveEveryBuffOfType(BuffEngine.BuffType.Wet);

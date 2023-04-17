@@ -48,8 +48,6 @@ namespace SonOfRobin
                 this.fruitEngine.plant = this;
                 this.PieceStorage = new PieceStorage(width: this.fruitEngine.maxNumber, height: 1, storagePiece: this, storageType: PieceStorage.StorageType.Fruits, stackLimit: 1);
             }
-
-            this.sprite.AddFadeInAnim();
         }
 
         private float OccupiedFieldWealth

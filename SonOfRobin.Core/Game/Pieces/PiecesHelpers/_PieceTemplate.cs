@@ -272,6 +272,15 @@ namespace SonOfRobin
                 // duplicated in Yield
                 boardPiece.soundPack.Play(PieceSoundPack.Action.HasAppeared);
                 if (boardPiece.appearDebris != null) boardPiece.appearDebris.DropDebris(ignoreProcessingTime: true);
+
+                // adding opacityFade
+                var opacityFadeList = new List<Name> { Name.BurningFlame, Name.Zzz, Name.Exclamation, Name.JarTreasure, Name.ChestTreasureNormal, Name.ChestTreasureBig };
+
+                if (boardPiece.sprite.IsInCameraRect && (opacityFadeList.Contains(templateName) || boardPiece.GetType() == typeof(Plant)))
+                {
+                    boardPiece.sprite.opacity = 0f;
+                    new OpacityFade(sprite: boardPiece.sprite, destOpacity: 1f);
+                }
             }
 
             return boardPiece;
@@ -924,7 +933,6 @@ namespace SonOfRobin
                         var allowedTerrain = new AllowedTerrain();
                         VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Zzz, minDistance: 0, maxDistance: 0, destructionDelay: 0, allowedTerrain: allowedTerrain, generation: generation, serialize: false, readableName: "zzz", description: "A visual effect.", activeState: BoardPiece.State.Empty, fireAffinity: 0f);
 
-                        visualEffect.sprite.AddFadeInAnim();
                         return visualEffect;
                     }
 
@@ -951,7 +959,6 @@ namespace SonOfRobin
                         var allowedTerrain = new AllowedTerrain();
                         VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Exclamation, destructionDelay: 0, allowedTerrain: allowedTerrain, minDistance: 0, maxDistance: 2, generation: generation, serialize: false, readableName: "crosshair", description: "A visual effect.", activeState: BoardPiece.State.Empty, fireAffinity: 0f);
 
-                        visualEffect.sprite.AddFadeInAnim();
                         return visualEffect;
                     }
 
@@ -961,8 +968,6 @@ namespace SonOfRobin
                         var maxMassForSize = new int[] { 100, 250, 500, 750, 1000, 2000, 2500 };
 
                         Flame flame = new Flame(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Flame, destructionDelay: 0, allowedTerrain: allowedTerrain, minDistance: 0, maxDistance: 0, generation: generation, serialize: true, canBePickedUp: false, readableName: "flame", description: "A burning flame.", activeState: BoardPiece.State.FlameBurn, maxMassForSize: maxMassForSize);
-
-                        flame.sprite.AddFadeInAnim();
 
                         return flame;
                     }
@@ -1102,8 +1107,6 @@ namespace SonOfRobin
 
                         var treasureChest = new Container(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ChestTreasureBlue, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Metal, floatsOnWater: false, minDistance: 0, maxDistance: 100, maxMassForSize: null, generation: generation, storageWidth: 2, storageHeight: 2, maxHitPoints: 50, readableName: "treasure chest", description: "Contains treasure.", yield: yield, appearDebris: new Yield(debrisType: Yield.DebrisType.Star), animName: "closed", soundPack: soundPack, fireAffinity: 0.3f);
 
-                        treasureChest.sprite.AddFadeInAnim();
-
                         // this yield is used to randomize chest contents every time
                         var chestContentsYield = new Yield(debrisType: Yield.DebrisType.Wood,
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -1159,8 +1162,6 @@ namespace SonOfRobin
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(name: SoundData.Name.DestroyBox, maxPitchVariation: 0.5f));
 
                         var treasureChest = new Container(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ChestTreasureRed, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Metal, floatsOnWater: false, minDistance: 0, maxDistance: 100, maxMassForSize: null, generation: generation, storageWidth: 3, storageHeight: 2, maxHitPoints: 50, readableName: "treasure chest", description: "Contains treasure.", yield: yield, appearDebris: new Yield(debrisType: Yield.DebrisType.Star), animName: "closed", soundPack: soundPack, fireAffinity: 0.3f);
-
-                        treasureChest.sprite.AddFadeInAnim();
 
                         // this yield is used to randomize chest contents every time
                         var chestContentsYield = new Yield(debrisType: Yield.DebrisType.Wood,
@@ -1224,7 +1225,6 @@ namespace SonOfRobin
                         Decoration decoration = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.JarWhole, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Wood,
                             minDistance: 0, maxDistance: 50, maxMassForSize: null, generation: generation, yield: yield, maxHitPoints: 40, readableName: "sealed jar", description: "Contains supplies.", movesWhenDropped: false, soundPack: soundPack, isAffectedByWind: true, fireAffinity: 0.4f);
 
-                        decoration.sprite.AddFadeInAnim();
                         return decoration;
                     }
 

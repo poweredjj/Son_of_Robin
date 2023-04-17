@@ -231,14 +231,6 @@ namespace SonOfRobin
             this.world.Grid.UpdateLocation(this);
         }
 
-        public void AddFadeInAnim()
-        {
-            if (this.world == null) return; // when created for PieceInfo
-
-            this.opacity = 0f; // to avoid flicker
-            new Scheduler.Task(taskName: Scheduler.TaskName.AddFadeInAnim, delay: 1, executeHelper: this);
-        }
-
         public Dictionary<string, object> Serialize()
         {
             Dictionary<string, Object> spriteDataDict = new Dictionary<string, object>
