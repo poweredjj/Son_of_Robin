@@ -8,7 +8,7 @@ namespace SonOfRobin
     public class Yield
     {
         public enum DebrisType
-        { Stone, Wood, Leaf, Blood, Plant, Crystal, Ceramic, Star }
+        { Stone, Wood, Leaf, Blood, Plant, Crystal, Ceramic, Star, Soot }
 
         public static Dictionary<PieceTemplate.Name, Craft.Recipe> antiCraftRecipes = new Dictionary<PieceTemplate.Name, Craft.Recipe> { };
 
@@ -96,9 +96,11 @@ namespace SonOfRobin
             return firstPieces.Concat(finalPieces).ToList();
         }
 
-        public void DropDebris(bool ignoreProcessingTime = false)
+        public void DropDebris(bool ignoreProcessingTime = false, List<DebrisType> debrisTypeListOverride = null)
         {
-            if (!this.debrisTypeList.Any()) return; // to speed up
+            var debrisTypeListToUse = debrisTypeListOverride == null ? this.debrisTypeList : debrisTypeListOverride;
+
+            if (!debrisTypeListToUse.Any()) return; // to speed up
 
             // debris should be created on screen, when there is available CPU time
             if (!Preferences.showDebris ||
@@ -107,7 +109,7 @@ namespace SonOfRobin
 
             var debrisList = new List<DroppedPiece> { };
 
-            foreach (DebrisType debrisType in this.debrisTypeList)
+            foreach (DebrisType debrisType in debrisTypeListToUse)
             {
                 switch (debrisType)
                 {
@@ -143,8 +145,12 @@ namespace SonOfRobin
                         debrisList.Add(new DroppedPiece(pieceName: PieceTemplate.Name.DebrisStar, chanceToDrop: 100, minNumberToDrop: 40, maxNumberToDrop: 70));
                         break;
 
+                    case DebrisType.Soot:
+                        debrisList.Add(new DroppedPiece(pieceName: PieceTemplate.Name.DebrisSoot, chanceToDrop: 100, minNumberToDrop: 8, maxNumberToDrop: 30));
+                        break;
+
                     default:
-                        throw new ArgumentException($"Unsupported debris type - {debrisTypeList}.");
+                        throw new ArgumentException($"Unsupported debris type - {debrisType}.");
                 }
             }
 

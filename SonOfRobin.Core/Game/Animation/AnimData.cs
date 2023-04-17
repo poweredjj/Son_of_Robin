@@ -327,6 +327,10 @@ namespace SonOfRobin
             Carrot,
             ArrowBurning,
             Explosion,
+
+            DebrisSoot1,
+            DebrisSoot2,
+            DebrisSoot3,
         }
 
         public static void AddFrameList(PkgName animPackage, byte animSize, List<AnimFrame> frameList, string animName = "default")
@@ -1004,6 +1008,9 @@ namespace SonOfRobin
             AddFrameList(animPackage: PkgName.Carrot, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "carrot", layer: 0, scale: 0.08f));
             AddFrameList(animPackage: PkgName.DebrisCeramic1, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "debris_ceramic_1", layer: 1, scale: 1f));
             AddFrameList(animPackage: PkgName.DebrisCeramic2, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "debris_ceramic_2", layer: 1, scale: 1f));
+            AddFrameList(animPackage: PkgName.DebrisSoot1, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "debris_soot_1", layer: 1, scale: 0.5f));
+            AddFrameList(animPackage: PkgName.DebrisSoot2, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "debris_soot_2", layer: 1, scale: 0.5f));
+            AddFrameList(animPackage: PkgName.DebrisSoot3, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "debris_soot_3", layer: 1, scale: 0.5f));
             AddFrameList(animPackage: PkgName.MusicNoteSmall, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "music_note", layer: 2));
             AddFrameList(animPackage: PkgName.MusicNoteBig, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "music_note", layer: 2, scale: 2.5f));
             AddFrameList(animPackage: PkgName.WhiteSpot, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "white_spot", layer: 0, scale: 1f));

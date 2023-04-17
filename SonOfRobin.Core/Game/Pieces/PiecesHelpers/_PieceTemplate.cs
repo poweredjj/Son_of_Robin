@@ -247,6 +247,7 @@ namespace SonOfRobin
             Carrot,
             ArrowBurning,
             Explosion,
+            DebrisSoot,
         }
 
         public static readonly Name[] allNames = (Name[])Enum.GetValues(typeof(Name));
@@ -2396,6 +2397,16 @@ namespace SonOfRobin
                         var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.All });
 
                         return new Debris(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: allowedTerrain, floatsOnWater: true, minDistance: 0, maxDistance: 500, maxMassForSize: null, destructionDelay: 180, rotatesWhenDropped: true, readableName: "ceramic debris", description: "Floats around after hitting ceramic things.");
+                    }
+
+                case Name.DebrisSoot:
+                    {
+                        var packageNames = new List<AnimData.PkgName> { AnimData.PkgName.DebrisSoot1, AnimData.PkgName.DebrisSoot2, AnimData.PkgName.DebrisSoot3 };
+                        var animPkg = packageNames[random.Next(0, packageNames.Count)];
+
+                        var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.All });
+
+                        return new Debris(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: allowedTerrain, floatsOnWater: true, minDistance: 0, maxDistance: 500, maxMassForSize: null, destructionDelay: 180, rotatesWhenDropped: true, readableName: "soot debris", description: "Remnants of burning things.");
                     }
 
                 case Name.DebrisStar:

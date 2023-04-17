@@ -131,6 +131,7 @@ namespace SonOfRobin
                 this.Mass += baseBurnVal;
                 if (this.burningPiece.hitPoints == 0)
                 {
+                    this.burningPiece.yield?.DropDebris(debrisTypeListOverride: new System.Collections.Generic.List<Yield.DebrisType> { Yield.DebrisType.Soot });
                     this.burningPiece.Destroy();
                     this.burningPiece = null;
                 }
