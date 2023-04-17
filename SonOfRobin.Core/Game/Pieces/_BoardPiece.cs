@@ -246,7 +246,7 @@ namespace SonOfRobin
                 {
                     Animal animal = (Animal)this;
                     animal.activeState = State.AnimalRest;
-                    animal.aiData.Reset(this);
+                    animal.aiData.Reset();
                 }
 
                 if (isBurning && wasBurning != isBurning)

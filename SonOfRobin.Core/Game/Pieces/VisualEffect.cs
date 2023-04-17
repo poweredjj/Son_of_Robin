@@ -31,7 +31,7 @@ namespace SonOfRobin
 
                 Animal animal = (Animal)piece;
                 animal.target = this;
-                animal.aiData.Reset(animal);
+                animal.aiData.Reset();
                 animal.activeState = State.AnimalFlee;
             }
         }

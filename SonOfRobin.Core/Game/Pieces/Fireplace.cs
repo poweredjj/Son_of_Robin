@@ -176,7 +176,7 @@ namespace SonOfRobin
 
                 Animal animal = (Animal)piece;
                 animal.target = this;
-                animal.aiData.Reset(animal);
+                animal.aiData.Reset();
                 animal.activeState = State.AnimalFlee;
 
                 if (PieceInfo.GetInfo(animal.name).isCarnivorous && animal.sprite.IsInCameraRect) this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.AnimalScaredOfFire, ignoreDelay: true, piece: animal);

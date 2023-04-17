@@ -1,60 +1,44 @@
 ﻿using Microsoft.Xna.Framework;
-using System.Collections.Generic;
 
 namespace SonOfRobin
 {
-    public struct AiData
+    public class AiData
     // contains ai working data
     {
+        private readonly BoardPiece boardPiece;
         private static Vector2 nullPosition = new Vector2(-1, -1);
-        private List<int> coordinates;
-        private Vector2 position;
-
-        public Vector2 Position { get { return position; } }
+        public bool targetPosIsSet { get; private set; }
+        private Vector2 targetPos;
         public bool dontStop;
-        public short timeLeft;
+        public int timeLeft;
 
         // this struct is created without constructor - Reset() should be invoked after creation
 
-        public void Reset(BoardPiece piece)
+        public AiData(BoardPiece boardPiece)
         {
-            if (piece.visualAid != null) new OpacityFade(sprite: piece.visualAid.sprite, destOpacity: 0f, destroyPiece: true);
-            piece.visualAid = null;
+            this.boardPiece = boardPiece;
+            this.Reset();
+        }
 
-            this.position = nullPosition;
-            this.coordinates = null;
+        public void Reset()
+        {
+            if (this.boardPiece.visualAid != null) new OpacityFade(sprite: this.boardPiece.visualAid.sprite, destOpacity: 0f, destroyPiece: true);
+            this.boardPiece.visualAid = null;
+
+            this.targetPos = nullPosition;
+            this.targetPosIsSet = false;
             this.dontStop = false;
             this.timeLeft = 0;
         }
 
-        public List<int> Coordinates
+        public Vector2 TargetPos
         {
-            get { return coordinates; }
+            get { return targetPos; }
             set
             {
-                coordinates = value;
-                UpdatePosition();
+                this.targetPos = value;
+                this.targetPosIsSet = true;
             }
-        }
-
-        public void UpdatePosition()
-        {
-            if (this.coordinates != null) this.position = new Vector2(coordinates[0], coordinates[1]);
-        }
-
-        public void SetCoordinates(List<int> coordinates)
-        {
-            this.Coordinates = coordinates;
-        }
-
-        public void SetDontStop(bool dontStop)
-        {
-            this.dontStop = dontStop;
-        }
-
-        public void SetTimeLeft(short timeLeft)
-        {
-            this.timeLeft = timeLeft;
         }
     }
 }

@@ -33,6 +33,8 @@ namespace SonOfRobin
 
         public readonly Dictionary<Group, Dictionary<string, Sprite>> spriteGroups;
         public BoardGraphics boardGraphics;
+        public bool HasWater { get; private set; }
+        public bool HasLava { get; private set; }
 
         public readonly List<PieceTemplate.Name> allowedNames; // for initial placing only - because possible piece placement can be changed during its lifecycle
 
@@ -84,6 +86,21 @@ namespace SonOfRobin
             }
 
             this.allowedNames = new List<PieceTemplate.Name>();
+        }
+
+        public void FillMiscProperties()
+        {
+            var minValForTerrain = new Dictionary<Terrain.Name, byte>();
+            var maxValForTerrain = new Dictionary<Terrain.Name, byte>();
+
+            foreach (Terrain.Name terrainName in Terrain.allTerrains)
+            {
+                minValForTerrain[terrainName] = this.grid.GetMinValueForCell(terrainName: terrainName, cellNoX: cellNoX, cellNoY: cellNoY);
+                maxValForTerrain[terrainName] = this.grid.GetMaxValueForCell(terrainName: terrainName, cellNoX: cellNoX, cellNoY: cellNoY);
+            }
+
+            this.HasWater = minValForTerrain[Terrain.Name.Height] < Terrain.waterLevelMax;
+            this.HasLava = maxValForTerrain[Terrain.Name.Height] >= Terrain.lavaMin;
         }
 
         public void FillAllowedNames()

@@ -102,7 +102,7 @@ namespace SonOfRobin
                         {
                             Animal animal = (Animal)heatedPiece;
                             animal.target = this;
-                            animal.aiData.Reset(animal);
+                            animal.aiData.Reset();
                             animal.activeState = State.AnimalFlee;
                         }
                     }
@@ -132,7 +132,10 @@ namespace SonOfRobin
                     bool isAnimal = this.burningPiece.GetType() == typeof(Animal);
 
                     Yield.DebrisType debrisType = isAnimal ? Yield.DebrisType.Blood : Yield.DebrisType.Soot;
-                    if (isAnimal) this.burningPiece.soundPack.Play(PieceSoundPack.Action.Die);
+                    if (isAnimal)
+                    {
+                        this.burningPiece.soundPack.Play(PieceSoundPack.Action.IsDestroyed);
+                    }
 
                     this.burningPiece.yield?.DropDebris(debrisTypeListOverride: new List<Yield.DebrisType> { debrisType });
                     this.burningPiece.Destroy();

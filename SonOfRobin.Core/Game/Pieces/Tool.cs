@@ -257,7 +257,7 @@ namespace SonOfRobin
                     Animal animalTarget = (Animal)target;
 
                     animalTarget.target = attacker;
-                    animalTarget.aiData.Reset(animalTarget);
+                    animalTarget.aiData.Reset();
 
                     animalTarget.activeState = (animalTarget.HitPointsPercent > 0.4f && world.random.Next(0, 4) == 0) ?
                         State.AnimalChaseTarget : State.AnimalFlee;

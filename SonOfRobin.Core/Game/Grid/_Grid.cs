@@ -371,6 +371,7 @@ namespace SonOfRobin
                     Parallel.ForEach(this.allCells, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, cell =>
                     {
                         cell.FillAllowedNames(); // needs to be invoked after calculating final terrain and ExtProps
+                        cell.FillMiscProperties();
                     });
 
                     this.FillCellListsForPieceNames();

@@ -129,7 +129,7 @@ namespace SonOfRobin
                         if (!motherAnimal.alive) return;
 
                         motherAnimal.activeState = BoardPiece.State.AnimalGiveBirth;
-                        motherAnimal.aiData.Reset(motherAnimal);
+                        motherAnimal.aiData.Reset();
                         return;
                     }
 
