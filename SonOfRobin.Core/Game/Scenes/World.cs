@@ -911,7 +911,7 @@ namespace SonOfRobin
 
                 this.StateMachinesProcessCameraView();
 
-                if (!createMissingPieces)
+                if (!createMissingPieces && (!Preferences.Cap30FPS || this.CurrentFrame % 2 == 0))
                 {
                     this.StateMachinesProcessNonPlantQueue();
                     this.plantsProcessing = true;

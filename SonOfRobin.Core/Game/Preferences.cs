@@ -98,6 +98,7 @@ namespace SonOfRobin
         private static bool vSync = true;
         public static bool loadWholeMap = false;
         private static bool frameSkip = true;
+        private static bool cap30FPS = false;
         public static bool progressBarShowDetails = false;
         public static bool showDemoWorld = true;
         private static bool pointToWalk = true;
@@ -411,6 +412,28 @@ namespace SonOfRobin
             }
         }
 
+        public static bool Cap30FPS
+        {
+            get { return cap30FPS; }
+            set
+            {
+                if (cap30FPS == value) return;
+
+                cap30FPS = value;
+                if (cap30FPS && !FrameSkip) FrameSkip = true;
+
+                ShowAppliedAfterRestartMessage("FPS cap");
+            }
+        }
+
+        private static void ApplyFPSCap()
+        {
+            SonOfRobinGame.GfxDevMgr.PreparingDeviceSettings += (sender, e) =>
+            {
+                e.GraphicsDeviceInformation.PresentationParameters.PresentationInterval = cap30FPS ? PresentInterval.Two : PresentInterval.One;
+            };
+        }
+
         public static List<Object> AvailableScreenModes
         {
             get
@@ -532,6 +555,7 @@ namespace SonOfRobin
             prefsData["loadWholeMap"] = loadWholeMap;
             prefsData["fullScreenMode"] = fullScreenMode;
             prefsData["frameSkip"] = frameSkip;
+            prefsData["cap30FPS"] = cap30FPS;
             prefsData["showDemoWorld"] = showDemoWorld;
             prefsData["displayResX"] = displayResX;
             prefsData["displayResY"] = displayResY;
@@ -636,6 +660,7 @@ namespace SonOfRobin
                     maxTexturesToLoad = (int)(Int64)prefsData["maxTexturesToLoad"];
                     highQualityWater = (bool)prefsData["highQualityWater"];
                     plantsSway = (bool)prefsData["plantsSway"];
+                    cap30FPS = (bool)prefsData["cap30FPS"];
 
                     prefsLoaded = true;
                 }
@@ -643,7 +668,11 @@ namespace SonOfRobin
                 catch (InvalidCastException) { MessageLog.AddMessage(msgType: MsgType.Debug, message: "InvalidCastException while loading preferences.", color: Color.White); }
             }
 
-            if (!prefsLoaded)
+            if (prefsLoaded)
+            {
+                ApplyFPSCap();
+            }
+            else
             {
                 CustomizeWorld = CustomizeWorld; // to refresh world sizes
             }
