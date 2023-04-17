@@ -532,7 +532,6 @@ namespace SonOfRobin
             // deserializing pieces
             {
                 var pieceDataBag = (ConcurrentBag<Object>)saveGameDataDict["pieces"];
-                var animalsByTargetID = new Dictionary<string, BoardPiece> { };
 
                 foreach (Dictionary<string, Object> pieceData in pieceDataBag)
                 {
@@ -563,17 +562,6 @@ namespace SonOfRobin
                         this.Player = (Player)newBoardPiece;
                         this.camera.TrackPiece(trackedPiece: this.Player, moveInstantly: true);
                     }
-
-                    if (newBoardPiece.GetType() == typeof(Animal) && pieceData["animal_target_id"] != null)
-                    {
-                        animalsByTargetID[(string)pieceData["animal_target_id"]] = newBoardPiece;
-                    }
-                }
-
-                foreach (var kvp in animalsByTargetID)
-                {
-                    Animal newAnimal = (Animal)kvp.Value;
-                    if (this.piecesByOldID.ContainsKey(kvp.Key)) newAnimal.target = this.piecesByOldID[kvp.Key];
                 }
 
                 // deserializing tracking

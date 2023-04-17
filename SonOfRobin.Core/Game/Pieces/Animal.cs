@@ -77,7 +77,6 @@ namespace SonOfRobin
             pieceData["animal_pregnancyMass"] = this.pregnancyMass;
             pieceData["animal_pregnancyFramesLeft"] = this.pregnancyFramesLeft;
             pieceData["animal_isPregnant"] = this.isPregnant;
-            pieceData["animal_target_id"] = this.target?.id;
 
             return pieceData;
         }
