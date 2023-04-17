@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using System;
 using System.Collections.Generic;
 
 namespace SonOfRobin
@@ -56,42 +55,6 @@ namespace SonOfRobin
         public void SetTimeLeft(short timeLeft)
         {
             this.timeLeft = timeLeft;
-        }
-
-        public Dictionary<string, Object> Serialize()
-        {
-            Dictionary<string, Object> aiDataDict = new Dictionary<string, object>
-            {
-                { "coordinates", this.coordinates },
-                { "positionX", this.position.X },
-                { "positionY", this.position.Y },
-                { "dontStop", this.dontStop },
-                { "timeLeft", this.timeLeft },
-            };
-
-            return aiDataDict;
-        }
-
-        public static AiData Deserialize(Object aiDataSerialized)
-        {
-            var aiDataDict = (Dictionary<string, Object>)aiDataSerialized;
-
-            List<int> coordinates = (List<int>)aiDataDict["coordinates"];
-            float positionX = (float)(double)aiDataDict["positionX"];
-            float positionY = (float)(double)aiDataDict["positionY"];
-            Vector2 position = new Vector2(positionX, positionY);
-            bool dontStop = (bool)aiDataDict["dontStop"];
-            short timeLeft = (short)(Int64)aiDataDict["timeLeft"];
-
-            AiData aiData = new AiData
-            {
-                position = position,
-                dontStop = dontStop,
-                timeLeft = timeLeft,
-                coordinates = coordinates
-            };
-
-            return aiData;
         }
     }
 }
