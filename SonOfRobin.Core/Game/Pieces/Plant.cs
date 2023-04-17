@@ -87,14 +87,14 @@ namespace SonOfRobin
             if (this.fruitEngine != null) this.fruitEngine.Deserialize(pieceData);
         }
 
-        public void DropFruit()
+        public bool DropFruit()
         {
             var occupiedSlots = this.PieceStorage.OccupiedSlots;
             if (occupiedSlots.Count == 0)
             {
                 new TextWindow(text: "There is nothing left to shake off.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1, animSound: this.world.DialogueSound);
 
-                return;
+                return false;
             }
 
             if (this.name == PieceTemplate.Name.BananaTree) this.world.HintEngine.Disable(PieceHint.Type.BananaTree);
@@ -108,6 +108,8 @@ namespace SonOfRobin
 
             this.PieceStorage.DropPiecesFromSlot(slot: occupiedSlots[0], addMovement: true);
             if (this.PieceStorage.OccupiedSlotsCount == 0) this.sprite.AssignNewName("default"); // swapping from "has_fruits", if plant has such animation
+
+            return true;
         }
 
         public override void SM_GrowthAndReproduction()

@@ -692,7 +692,17 @@ namespace SonOfRobin
                     case TaskName.DropFruit:
                         {
                             Plant fruitPlant = (Plant)this.ExecuteHelper;
-                            fruitPlant.DropFruit();
+                            bool fruitDropped = fruitPlant.DropFruit();
+
+                            if (fruitDropped)
+                            {
+                                world = fruitPlant.world;
+
+                                float rotationChange = 0.1f;
+                                if ((fruitPlant.sprite.position - world.Player.sprite.position).X > 0) rotationChange *= -1;
+
+                                world.swayManager.AddSwayEvent(targetSprite: fruitPlant.sprite, sourceSprite: null, targetRotation: fruitPlant.sprite.rotation - rotationChange, playSound: false);
+                            }
 
                             return;
                         }
