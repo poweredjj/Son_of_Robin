@@ -248,6 +248,7 @@ namespace SonOfRobin
             ArrowBurning,
             Explosion,
             DebrisSoot,
+            LavaFlame,
         }
 
         public static readonly Name[] allNames = (Name[])Enum.GetValues(typeof(Name));
@@ -967,7 +968,21 @@ namespace SonOfRobin
                         var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.GroundAll });
                         var maxMassForSize = new int[] { 100, 250, 500, 750, 1000, 2000, 2500 };
 
-                        Flame flame = new Flame(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Flame, destructionDelay: 0, allowedTerrain: allowedTerrain, minDistance: 0, maxDistance: 0, generation: generation, serialize: true, canBePickedUp: false, readableName: "flame", description: "A burning flame.", activeState: BoardPiece.State.FlameBurn, maxMassForSize: maxMassForSize);
+                        Flame flame = new Flame(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Flame, destructionDelay: 0, allowedTerrain: allowedTerrain, minDistance: 0, maxDistance: 0, generation: generation, serialize: true, canBePickedUp: false, readableName: "flame", description: "A burning flame.", activeState: BoardPiece.State.FlameBurn, maxMassForSize: maxMassForSize, burnsForever: false);
+
+                        return flame;
+                    }
+
+                case Name.LavaFlame:
+                    {
+                        var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
+                            { Terrain.Name.Height, new AllowedRange(min: (byte)(Terrain.lavaMin + 1), max: 255) },
+                            { Terrain.Name.Biome, new AllowedRange(min: 0, max: (byte)(Terrain.biomeMin - 1)) },
+                        });
+
+                        var maxMassForSize = new int[] { 100, 250, 500, 750, 1000, 2000, 2500 };
+
+                        Flame flame = new Flame(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Flame, destructionDelay: 0, allowedTerrain: allowedTerrain, minDistance: 0, maxDistance: 0, generation: generation, serialize: false, canBePickedUp: false, readableName: "flame", description: "Burns forever.", activeState: BoardPiece.State.FlameBurn, maxMassForSize: maxMassForSize, burnsForever: true);
 
                         return flame;
                     }
