@@ -1360,7 +1360,7 @@ namespace SonOfRobin
                             return;
                         }
 
-                    case TaskName.AddFadeInAnim:
+                    case TaskName.AddFadeInAnim: // not in use at the moment (replaced with PieceTemplate.CreateAndPlaceOnBoard() functionality)
                         {
                             Sprite sprite = (Sprite)this.ExecuteHelper;
                             if (!sprite.IsOnBoard) return;

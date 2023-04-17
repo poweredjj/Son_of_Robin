@@ -775,5 +775,15 @@ namespace SonOfRobin
                 return;
             }
         }
+
+        public override void SM_AnimalRunForClosestWater()
+        {
+            if (this.aiData.Coordinates == null)
+            {
+                var cellsWithinDistance = this.world.Grid.GetCellsWithinDistance(position: this.sprite.position, distance: this.sightRange).OrderBy(cell => Vector2.Distance(this.sprite.position, cell.center)).ToList(); // sorting by distance
+
+                // this.aiData.SetCoordinates(coordinates);
+            }
+        }
     }
 }

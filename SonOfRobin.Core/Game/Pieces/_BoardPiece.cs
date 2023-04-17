@@ -40,6 +40,8 @@ namespace SonOfRobin
             RainInitialize,
             RainFall,
             FlameBurn,
+
+            AnimalRunForClosestWater
         }
 
         public enum Category
@@ -239,6 +241,13 @@ namespace SonOfRobin
                 this.burnLevel = Math.Min(this.burnLevel, 1);
 
                 bool isBurning = this.IsBurning;
+
+                if (isBurning && this.GetType() == typeof(Animal) && this.activeState != State.AnimalRunForClosestWater)
+                {
+                    Animal animal = (Animal)this;
+                    animal.activeState = State.AnimalRest;
+                    animal.aiData.Reset(this);
+                }
 
                 if (isBurning && wasBurning != isBurning)
                 {
@@ -608,6 +617,12 @@ namespace SonOfRobin
                         return;
                     }
 
+                case State.AnimalRunForClosestWater:
+                    {
+                        this.SM_AnimalRunForClosestWater();
+                        return;
+                    }
+
                 case State.PlayerControlledBuilding:
                     {
                         this.SM_PlayerControlledBuilding();
@@ -864,6 +879,9 @@ namespace SonOfRobin
         { throw new DivideByZeroException("This method should not be executed."); }
 
         public virtual void SM_AnimalFlee()
+        { throw new DivideByZeroException("This method should not be executed."); }
+
+        public virtual void SM_AnimalRunForClosestWater()
         { throw new DivideByZeroException("This method should not be executed."); }
     }
 }

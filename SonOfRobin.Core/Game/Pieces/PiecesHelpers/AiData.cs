@@ -42,9 +42,9 @@ namespace SonOfRobin
             if (this.coordinates != null) this.position = new Vector2(coordinates[0], coordinates[1]);
         }
 
-        public void SetCoordinates(List<int> corrdinates)
+        public void SetCoordinates(List<int> coordinates)
         {
-            this.Coordinates = corrdinates;
+            this.Coordinates = coordinates;
         }
 
         public void SetDontStop(bool dontStop)

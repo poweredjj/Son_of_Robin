@@ -129,7 +129,12 @@ namespace SonOfRobin
                 this.Mass += baseBurnVal;
                 if (this.burningPiece.hitPoints == 0)
                 {
-                    this.burningPiece.yield?.DropDebris(debrisTypeListOverride: new List<Yield.DebrisType> { Yield.DebrisType.Soot });
+                    bool isAnimal = this.burningPiece.GetType() == typeof(Animal);
+
+                    Yield.DebrisType debrisType = isAnimal ? Yield.DebrisType.Blood : Yield.DebrisType.Soot;
+                    if (isAnimal) this.burningPiece.soundPack.Play(PieceSoundPack.Action.Die);
+
+                    this.burningPiece.yield?.DropDebris(debrisTypeListOverride: new List<Yield.DebrisType> { debrisType });
                     this.burningPiece.Destroy();
                     this.burningPiece = null;
                 }

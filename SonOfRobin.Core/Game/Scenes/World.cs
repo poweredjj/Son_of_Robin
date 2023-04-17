@@ -585,8 +585,6 @@ namespace SonOfRobin
 
             // finalizing
 
-            Scheduler.RemoveAllTasksOfName(Scheduler.TaskName.AddFadeInAnim); // to avoid fade in of all pieces visible in camera
-
             this.saveGameData = null;
         }
 
