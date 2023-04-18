@@ -82,6 +82,8 @@ namespace SonOfRobin
         }
 
         public void Delete()
-        { Directory.Delete(path: this.fullPath, recursive: true); }
+        {
+            Directory.Delete(path: this.fullPath, recursive: true);
+        }
     }
 }

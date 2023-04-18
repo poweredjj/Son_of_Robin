@@ -20,7 +20,6 @@ namespace SonOfRobin
                 var correctSaves = new List<SaveHeaderInfo> { };
 
                 var saveFolders = Directory.GetDirectories(SonOfRobinGame.saveGamesPath);
-
                 foreach (string folder in saveFolders)
                 {
                     var saveInfo = new SaveHeaderInfo(Path.GetFileName(folder));

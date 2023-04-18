@@ -131,6 +131,52 @@ namespace SonOfRobin
             return templatePath;
         }
 
+        public static void DeleteObsolete()
+        {
+            var templatePaths = Directory.GetDirectories(SonOfRobinGame.worldTemplatesPath);
+            var existingWorlds = Scene.GetAllScenesOfType(typeof(World)).Select(worldScene => (World)worldScene);
+            var correctSaves = SaveHeaderManager.CorrectSaves;
+            var pathsToKeep = new List<string>();
+
+            foreach (string templatePath in templatePaths)
+            {
+                GridTemplate gridTemplate = LoadHeader(templatePath);
+                if (gridTemplate == null || gridTemplate.IsObsolete) continue;
+
+                if (gridTemplate.CreatedDate.Date == DateTime.Today) // templates created today should not be deleted
+                {
+                    pathsToKeep.Add(templatePath);
+                    continue;
+                }
+
+                if (correctSaves.Where(saveHeader =>
+                saveHeader.seed == gridTemplate.seed &&
+                saveHeader.width == gridTemplate.width &&
+                saveHeader.height == gridTemplate.height
+                ).Any())
+                {
+                    pathsToKeep.Add(templatePath);
+                    continue;
+                }
+
+                if (existingWorlds.Where(currentWorld =>
+                currentWorld.seed == gridTemplate.seed &&
+                currentWorld.width == gridTemplate.width &&
+                currentWorld.height == gridTemplate.height
+                ).Any())
+                {
+                    pathsToKeep.Add(templatePath);
+                    continue;
+                }
+            }
+
+            List<string> pathsToDelete = templatePaths.Where(path => !pathsToKeep.Contains(path)).ToList();
+            foreach (string templatePathToDelete in pathsToDelete)
+            {
+                Directory.Delete(path: templatePathToDelete, recursive: true);
+            }
+        }
+
         public Dictionary<string, Object> Serialize()
         {
             Dictionary<string, Object> templateDict = new Dictionary<string, object>

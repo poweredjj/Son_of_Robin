@@ -2,8 +2,6 @@
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 
 namespace SonOfRobin
 {
@@ -130,39 +128,7 @@ namespace SonOfRobin
                     break;
 
                 case Step.DeleteObsoleteTemplates:
-
-                    var templatePaths = Directory.GetDirectories(SonOfRobinGame.worldTemplatesPath);
-                    var existingWorlds = Scene.GetAllScenesOfType(typeof(World)).Select(worldScene => (World)worldScene);
-                    var correctSaves = SaveHeaderManager.CorrectSaves;
-                    var pathsToKeep = new List<string>();
-
-                    foreach (string templatePath in templatePaths)
-                    {
-                        GridTemplate gridTemplate = GridTemplate.LoadHeader(templatePath);
-                        if (gridTemplate == null || gridTemplate.IsObsolete) continue;
-
-                        if (gridTemplate.CreatedDate.Date == DateTime.Today) pathsToKeep.Add(templatePath); // templates created today should not be deleted
-
-                        if (correctSaves.Where(saveHeader =>
-                        saveHeader.seed == gridTemplate.seed &&
-                        saveHeader.width == gridTemplate.width &&
-                        saveHeader.height == gridTemplate.height
-                        ).Any()) pathsToKeep.Add(templatePath);
-
-                        if (existingWorlds.Where(currentWorld =>
-                        currentWorld.seed == gridTemplate.seed &&
-                        currentWorld.width == gridTemplate.width &&
-                        currentWorld.height == gridTemplate.height
-                        ).Any()) pathsToKeep.Add(templatePath);
-                    }
-
-                    pathsToKeep = pathsToKeep.Distinct().ToList(); // removing duplicates
-                    List<string> pathsToDelete = templatePaths.Where(path => !pathsToKeep.Contains(path)).ToList();
-
-                    foreach (string templatePathToDelete in templatePaths.Where(path => !pathsToKeep.Contains(path)))
-                    {
-                        Directory.Delete(path: templatePathToDelete, recursive: true);
-                    }
+                    GridTemplate.DeleteObsolete();
 
                     break;
 
