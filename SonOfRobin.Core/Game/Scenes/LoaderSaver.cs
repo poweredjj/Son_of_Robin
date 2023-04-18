@@ -404,12 +404,8 @@ namespace SonOfRobin
             // saving world event data
             if (!this.eventsSaved)
             {
-                var eventData = new List<Object> { };
-                foreach (var eventList in this.world.eventQueue.Values)
-                {
-                    foreach (var plannedEvent in eventList)
-                    { eventData.Add(plannedEvent.Serialize()); }
-                }
+                var eventData = this.world.worldEventManager.Serialize();
+
                 string eventPath = Path.Combine(this.saveTempPath, eventsName);
                 FileReaderWriter.Save(path: eventPath, savedObj: eventData, compress: true);
 

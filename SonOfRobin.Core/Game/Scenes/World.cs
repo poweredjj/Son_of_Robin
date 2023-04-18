@@ -63,13 +63,13 @@ namespace SonOfRobin
         public List<Cell> plantCellsQueue;
         public List<Sprite> plantSpritesQueue;
         public List<Sprite> nonPlantSpritesQueue;
-        public Dictionary<int, List<WorldEvent>> eventQueue;
         public Grid Grid { get; private set; }
         public int CurrentFrame { get; private set; }
         public int CurrentUpdate { get; private set; } // can be used to measure time elapsed on island
         public int updateMultiplier;
         public readonly IslandClock islandClock;
         public readonly Weather weather;
+        public readonly WorldEventManager worldEventManager;
         private readonly ScrollingSurfaceManager scrollingSurfaceManager;
         public readonly SwayManager swayManager;
         public string debugText;
@@ -115,6 +115,7 @@ namespace SonOfRobin
             this.TimePlayed = TimeSpan.Zero;
             this.updateMultiplier = 1;
             this.islandClock = this.saveGameData == null ? new IslandClock(0) : new IslandClock();
+            this.worldEventManager = new WorldEventManager(this);
             this.weather = new Weather(world: this, islandClock: this.islandClock);
             this.scrollingSurfaceManager = new ScrollingSurfaceManager(world: this);
             this.swayManager = new SwayManager(this);
@@ -142,7 +143,6 @@ namespace SonOfRobin
             this.pieceCountByClass = new Dictionary<Type, int> { };
 
             this.trackingQueue = new Dictionary<string, Tracking>();
-            this.eventQueue = new Dictionary<int, List<WorldEvent>>();
             this.HintEngine = new HintEngine(world: this);
 
             this.plantSpritesQueue = new List<Sprite>();
@@ -575,10 +575,9 @@ namespace SonOfRobin
                 // deserializing planned events
 
                 var eventDataList = (List<Object>)saveGameDataDict["events"];
-                foreach (Dictionary<string, Object> eventData in eventDataList)
-                {
-                    WorldEvent.Deserialize(world: this, eventData: eventData);
-                }
+                this.worldEventManager.Deserialize(eventDataList);
+
+                // removing not needed data
 
                 this.piecesByOldID.Clear(); // not needed anymore
             }
@@ -888,7 +887,7 @@ namespace SonOfRobin
             for (int i = 0; i < this.updateMultiplier; i++)
             {
                 Tracking.ProcessTrackingQueue(this);
-                WorldEvent.ProcessQueue(this);
+                this.worldEventManager.ProcessQueue();
                 if (!this.BuildMode) this.UpdateAllAnims();
 
                 if (this.Player != null)

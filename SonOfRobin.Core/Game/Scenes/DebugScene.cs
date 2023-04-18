@@ -138,7 +138,7 @@ namespace SonOfRobin
                 if (Keyboard.HasBeenPressed(Keys.D7))
                 {
                     var heart = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: world.Player.sprite.position, templateName: PieceTemplate.Name.Heart);
-                    WorldEvent.RemovePieceFromQueue(world: world, pieceToRemove: heart);
+                    world.worldEventManager.RemovePieceFromQueue(heart);
                     heart.sprite.opacityFade = null;
                     heart.sprite.opacity = 1;
                     new Tracking(world: world, targetSprite: world.Player.sprite, followingSprite: heart.sprite, offsetX: 0, offsetY: 0, targetXAlign: XAlign.Right, targetYAlign: YAlign.Top, followingXAlign: XAlign.Left, followingYAlign: YAlign.Bottom, followSlowDown: 5);

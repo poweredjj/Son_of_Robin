@@ -5,34 +5,99 @@ using System.Linq;
 
 namespace SonOfRobin
 {
+    public class WorldEventManager
+    {
+        public readonly World world;
+        private Dictionary<int, List<WorldEvent>> eventQueue;
+
+        public WorldEventManager(World world)
+        {
+            this.world = world;
+            this.eventQueue = new Dictionary<int, List<WorldEvent>>();
+        }
+
+        public void AddToQueue(WorldEvent worldEvent, bool addFadeOut = true)
+        {
+            if (!this.eventQueue.ContainsKey(worldEvent.startUpdateNo)) this.eventQueue[worldEvent.startUpdateNo] = new List<WorldEvent>();
+            this.eventQueue[worldEvent.startUpdateNo].Add(worldEvent);
+
+            if (addFadeOut && worldEvent.eventName == WorldEvent.EventName.Destruction)
+            {
+                int fadeDuration = worldEvent.boardPiece.GetType() == typeof(Animal) ? worldEvent.delay - 1 : OpacityFade.defaultDuration;
+
+                new WorldEvent(eventName: WorldEvent.EventName.FadeOutSprite, delay: worldEvent.delay - fadeDuration, world: world, boardPiece: worldEvent.boardPiece, eventHelper: fadeDuration);
+            }
+        }
+
+        public void RemovePieceFromQueue(BoardPiece pieceToRemove)
+        {
+            // Pieces removed from the board should not be removed from the queue (cpu intensive) - will be ignored when run.
+
+            List<WorldEvent> eventlist;
+
+            foreach (var frame in this.eventQueue.Keys.ToList())
+            {
+                eventlist = this.eventQueue[frame].Where(plannedEvent => plannedEvent.boardPiece != pieceToRemove).ToList();
+                this.eventQueue[frame] = eventlist;
+            }
+        }
+
+        public void ProcessQueue()
+        {
+            var framesToProcess = this.eventQueue.Keys.Where(frameNo => world.CurrentUpdate >= frameNo).ToList();
+            if (framesToProcess.Count == 0) return;
+
+            foreach (int frameNo in framesToProcess)
+            {
+                foreach (WorldEvent currentEvent in this.eventQueue[frameNo])
+                { currentEvent.Execute(this.world); }
+
+                this.eventQueue.Remove(frameNo);
+            }
+        }
+
+        public List<Object> Serialize()
+        {
+            var eventData = new List<Object> { };
+            foreach (var eventList in this.eventQueue.Values)
+            {
+                foreach (var plannedEvent in eventList)
+                { eventData.Add(plannedEvent.Serialize()); }
+            }
+
+            return eventData;
+        }
+
+        public void Deserialize(List<Object> eventDataList)
+        {
+            foreach (Dictionary<string, Object> eventData in eventDataList)
+            {
+                WorldEvent worldEvent = WorldEvent.Deserialize(world: this.world, eventData: eventData);
+                if (worldEvent != null) this.AddToQueue(worldEvent: worldEvent, addFadeOut: false);
+            }
+        }
+    }
+
     public class WorldEvent
     {
         public enum EventName
         { Birth, Death, Destruction, TurnOffWorkshop, FinishCooking, RestorePieceCreation, FadeOutSprite, RestoreHint, RemoveBuff, BurnOutLightSource, RegenPoison, ChangeActiveState, FinishBuilding, PlaySoundByName, YieldDropDebris, CoolDownAfterBurning }
 
-        public readonly World world;
         public readonly BoardPiece boardPiece;
         public readonly int startUpdateNo;
+        public readonly int delay;
         public readonly EventName eventName;
         public readonly Object eventHelper;
 
-        public WorldEvent(EventName eventName, World world, int delay, BoardPiece boardPiece, Object eventHelper = null)
+        public WorldEvent(EventName eventName, World world, int delay, BoardPiece boardPiece, Object eventHelper = null, bool addToQueue = true)
         {
             this.eventName = eventName;
             this.eventHelper = eventHelper;
-            this.world = world;
             this.boardPiece = boardPiece;
-            delay = Math.Max(delay, 0);
-            this.startUpdateNo = this.world.CurrentUpdate + delay;
+            this.delay = Math.Max(delay, 0);
+            this.startUpdateNo = world.CurrentUpdate + this.delay;
 
-            this.AddToQueue();
-
-            if (this.eventName == EventName.Destruction)
-            {
-                int fadeDuration = this.boardPiece.GetType() == typeof(Animal) ? delay - 1 : OpacityFade.defaultDuration;
-
-                new WorldEvent(eventName: EventName.FadeOutSprite, delay: delay - fadeDuration, world: world, boardPiece: boardPiece, eventHelper: fadeDuration);
-            }
+            if (addToQueue) world.worldEventManager.AddToQueue(worldEvent: this, addFadeOut: true);
         }
 
         public Dictionary<string, Object> Serialize()
@@ -47,7 +112,7 @@ namespace SonOfRobin
             return eventData;
         }
 
-        public static void Deserialize(World world, Dictionary<string, Object> eventData)
+        public static WorldEvent Deserialize(World world, Dictionary<string, Object> eventData)
         {
             // for events that target a piece, that was already destroyed (and will not be present in saved data)
             EventName eventName = (EventName)(Int64)eventData["eventName"];
@@ -61,7 +126,7 @@ namespace SonOfRobin
                 if (!world.piecesByOldID.ContainsKey((string)eventData["piece_id"]))
                 {
                     MessageLog.AddMessage(msgType: MsgType.Debug, message: $"WorldEvent {eventName} - cannot find boardPiece id {(string)eventData["piece_id"]}.", color: Color.Orange);
-                    return;
+                    return null;
                 }
                 boardPiece = world.piecesByOldID[(string)eventData["piece_id"]];
             }
@@ -80,44 +145,10 @@ namespace SonOfRobin
                 { }
             }
 
-            new WorldEvent(eventName: eventName, world: world, delay: delay, boardPiece: boardPiece, eventHelper: eventHelper);
+            return new WorldEvent(eventName: eventName, world: world, delay: delay, boardPiece: boardPiece, eventHelper: eventHelper, addToQueue: false);
         }
 
-        private void AddToQueue()
-        {
-            if (!this.world.eventQueue.ContainsKey(this.startUpdateNo)) this.world.eventQueue[this.startUpdateNo] = new List<WorldEvent>();
-
-            this.world.eventQueue[this.startUpdateNo].Add(this);
-        }
-
-        public static void RemovePieceFromQueue(BoardPiece pieceToRemove, World world)
-        {
-            // Pieces removed from the board should not be removed from the queue (cpu intensive) - will be ignored when run.
-
-            List<WorldEvent> eventlist;
-
-            foreach (var frame in world.eventQueue.Keys.ToList())
-            {
-                eventlist = world.eventQueue[frame].Where(plannedEvent => plannedEvent.boardPiece != pieceToRemove).ToList();
-                world.eventQueue[frame] = eventlist;
-            }
-        }
-
-        public static void ProcessQueue(World world)
-        {
-            var framesToProcess = world.eventQueue.Keys.Where(frameNo => world.CurrentUpdate >= frameNo).ToList();
-            if (framesToProcess.Count == 0) return;
-
-            foreach (int frameNo in framesToProcess)
-            {
-                foreach (WorldEvent currentEvent in world.eventQueue[frameNo])
-                { currentEvent.Execute(); }
-
-                world.eventQueue.Remove(frameNo);
-            }
-        }
-
-        private void Execute()
+        public void Execute(World world)
         {
             if (this.boardPiece != null && !this.boardPiece.exists) return;
 
@@ -161,6 +192,8 @@ namespace SonOfRobin
 
                 case EventName.FadeOutSprite:
                     {
+                        if (!this.boardPiece.sprite.IsInCameraRect) return;
+
                         int fadeDuration = Helpers.CastObjectToInt(this.eventHelper);
                         new OpacityFade(sprite: this.boardPiece.sprite, destOpacity: 0f, duration: fadeDuration);
                         return;
@@ -177,7 +210,7 @@ namespace SonOfRobin
                 case EventName.RestorePieceCreation:
                     {
                         var pieceName = (PieceTemplate.Name)Helpers.CastObjectToInt(this.eventHelper);
-                        this.world.doNotCreatePiecesList.Remove(pieceName);
+                        world.doNotCreatePiecesList.Remove(pieceName);
 
                         MessageLog.AddMessage(msgType: MsgType.Debug, message: $"'{pieceName}' creation restored.");
 
@@ -187,7 +220,7 @@ namespace SonOfRobin
                 case EventName.RestoreHint:
                     {
                         var hintType = (HintEngine.Type)Helpers.CastObjectToInt(this.eventHelper);
-                        this.world.HintEngine.Enable(hintType);
+                        world.HintEngine.Enable(hintType);
 
                         MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Hint '{hintType}' restored.");
 
@@ -203,7 +236,13 @@ namespace SonOfRobin
 
                         // breaking damage loop
 
-                        if (this.world.Player == null || !this.world.Player.alive || !this.world.Player.exists || this.world.Player.sprite.IsInWater || !portableLight.IsOnPlayersToolbar || !portableLight.IsOn || (!portableLight.canBeUsedDuringRain && this.world.weather.IsRaining))
+                        if (world.Player == null ||
+                            !world.Player.alive ||
+                            !world.Player.exists ||
+                            world.Player.sprite.IsInWater ||
+                            !portableLight.IsOnPlayersToolbar ||
+                            !portableLight.IsOn ||
+                            (!portableLight.canBeUsedDuringRain && world.weather.IsRaining))
                         {
                             portableLight.IsOn = false;
                             return;
@@ -223,7 +262,7 @@ namespace SonOfRobin
                         this.boardPiece.hitPoints = Math.Max(this.boardPiece.hitPoints - damage, 0);
                         if (this.boardPiece.hitPoints <= 0)
                         {
-                            this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.BurntOutTorch, ignoreDelay: true, text: portableLight.readableName, texture: portableLight.sprite.frame.texture);
+                            world.HintEngine.ShowGeneralHint(type: HintEngine.Type.BurntOutTorch, ignoreDelay: true, text: portableLight.readableName, texture: portableLight.sprite.frame.texture);
                             MessageLog.AddMessage(msgType: MsgType.User, message: $"{Helpers.FirstCharToUpperCase(this.boardPiece.readableName)} has burnt out.", color: Color.White);
 
                             portableLight.IsOn = false;
@@ -235,12 +274,12 @@ namespace SonOfRobin
                                 BoardPiece emptyContainter = PieceTemplate.Create(templateName: portableLight.convertsToWhenUsedUp, world: world);
                                 slot.DestroyPieceAndReplaceWithAnother(emptyContainter);
                             }
-                            else this.world.Player.EquipStorage.DestroyBrokenPieces();
+                            else world.Player.EquipStorage.DestroyBrokenPieces();
                         }
 
                         // setting next loop event
 
-                        new WorldEvent(eventName: EventName.BurnOutLightSource, world: this.world, delay: delay, boardPiece: this.boardPiece, eventHelper: this.eventHelper);
+                        new WorldEvent(eventName: EventName.BurnOutLightSource, world: world, delay: delay, boardPiece: this.boardPiece, eventHelper: this.eventHelper);
                         return;
                     }
 
@@ -275,7 +314,7 @@ namespace SonOfRobin
                         {
                             SolidColor redOverlay = new SolidColor(color: Color.Red * 0.8f, viewOpacity: 0.0f);
                             redOverlay.transManager.AddTransition(new Transition(transManager: redOverlay.transManager, outTrans: true, duration: 16, playCount: 1, stageTransform: Transition.Transform.Sinus, baseParamName: "Opacity", targetVal: 0.5f, endRemoveScene: true));
-                            this.world.solidColorManager.Add(redOverlay);
+                            world.solidColorManager.Add(redOverlay);
                             this.boardPiece.soundPack.Play(PieceSoundPack.Action.IsHit);
                         }
 
@@ -318,7 +357,7 @@ namespace SonOfRobin
 
                 case EventName.FinishBuilding:
                     {
-                        this.world.ExitBuildMode(restoreCraftMenu: false, showCraftMessages: true);
+                        world.ExitBuildMode(restoreCraftMenu: false, showCraftMessages: true);
                         return;
                     }
 
