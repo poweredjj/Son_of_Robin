@@ -22,8 +22,9 @@ namespace SonOfRobin
 
     public class TrackingManager
     {
-        private readonly World world;
-        private Dictionary<string, Tracking> trackingQueue;
+        public readonly World world;
+        private readonly Dictionary<string, Tracking> trackingQueue;
+
         public int TrackingCount
         { get { return trackingQueue.Count; } }
 
@@ -43,7 +44,7 @@ namespace SonOfRobin
             // parallel processing causes data corruption and crashes
             foreach (var tracking in this.trackingQueue.Values.ToList())
             {
-                if (tracking.ShouldBeRemoved) this.RemoveFromQueue(tracking);
+                if (tracking.ShouldThisBeRemoved(this.world)) this.RemoveFromQueue(tracking);
                 else tracking.SetPosition(trackingManager: this);
             }
         }
@@ -94,7 +95,6 @@ namespace SonOfRobin
     public class Tracking
     {
         public readonly bool isCorrect;
-        private readonly World world;
         public readonly Sprite followingSprite;
         public readonly Sprite targetSprite;
         private readonly Vector2 offset;
@@ -118,29 +118,14 @@ namespace SonOfRobin
             }
         }
 
-        public bool ShouldBeRemoved
-        {
-            get
-            {
-                // tracking queue could bloat over time - it may be helpful to add more "remove exceptions" in the future
-
-                return !this.BothSpritesExistAndOnBoard ||
-                    (this.followingSprite.boardPiece.serialize == false &&
-                    this.followingSprite.opacity < 0.05f &&
-                    this.followingSprite.opacityFade != null &&
-                    this.world.CurrentUpdate > this.firstTrackingFrame + 100);
-            }
-        }
-
         public Tracking(World world, Sprite targetSprite, Sprite followingSprite, int offsetX = 0, int offsetY = 0,
             XAlign followingXAlign = XAlign.Center, YAlign followingYAlign = YAlign.Center,
             XAlign targetXAlign = XAlign.Center, YAlign targetYAlign = YAlign.Center,
             int turnOffDelay = 0, bool bounceWhenRemoved = false, int followSlowDown = 0, bool addToQueue = true)
         {
             this.isCorrect = false;
-            this.world = world;
-            this.firstTrackingFrame = this.world.CurrentUpdate;
-            this.lastTrackingFrame = turnOffDelay == 0 ? 0 : this.world.CurrentUpdate + turnOffDelay;
+            this.firstTrackingFrame = world.CurrentUpdate;
+            this.lastTrackingFrame = turnOffDelay == 0 ? 0 : world.CurrentUpdate + turnOffDelay;
             this.bounceWhenRemoved = bounceWhenRemoved;
             this.followSlowDown = followSlowDown;
             if (this.followSlowDown < 0) new ArgumentException($"followSlowDown ({followSlowDown}) cannot be < 0.");
@@ -159,7 +144,7 @@ namespace SonOfRobin
 
             this.isCorrect = true;
 
-            if (addToQueue) this.world.trackingManager.AddToQueue(this);
+            if (addToQueue) world.trackingManager.AddToQueue(this);
         }
 
         public Dictionary<string, Object> Serialize()
@@ -210,11 +195,20 @@ namespace SonOfRobin
             new Tracking(world: world, targetSprite: targetSprite, followingSprite: followingSprite, followingXAlign: followingXAlign, followingYAlign: followingYAlign, targetXAlign: targetXAlign, targetYAlign: targetYAlign, offsetX: offsetX, offsetY: offsetY, turnOffDelay: delay, bounceWhenRemoved: bounceWhenRemoved, followSlowDown: followSlowDown, addToQueue: true);
         }
 
+        public bool ShouldThisBeRemoved(World world)
+        {
+            return !this.BothSpritesExistAndOnBoard ||
+                       (this.followingSprite.boardPiece.serialize == false &&
+                       this.followingSprite.opacity < 0.05f &&
+                       this.followingSprite.opacityFade != null &&
+                       world.CurrentUpdate > this.firstTrackingFrame + 100);
+        }
+
         public void SetPosition(TrackingManager trackingManager)
         {
             if (!this.followingSprite.boardPiece.exists ||
                 !this.targetSprite.boardPiece.exists ||
-                (this.lastTrackingFrame > 0 && this.world.CurrentUpdate >= this.lastTrackingFrame))
+                (this.lastTrackingFrame > 0 && trackingManager.world.CurrentUpdate >= this.lastTrackingFrame))
             {
                 trackingManager.RemoveFromQueue(this);
                 return;
