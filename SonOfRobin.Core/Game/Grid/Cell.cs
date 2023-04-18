@@ -176,6 +176,10 @@ namespace SonOfRobin
             this.boardGraphics = new BoardGraphics(grid: this.grid, cell: this);
             this.boardGraphics.ReplaceTexture(texture: templateCell.boardGraphics.Texture);
             this.allowedNames.AddRange(templateCell.allowedNames);
+
+            this.HasWater = templateCell.HasWater;
+            this.IsAllWater = templateCell.IsAllWater;
+            this.HasLava = templateCell.HasLava;
         }
 
         public void UpdateBoardGraphics()

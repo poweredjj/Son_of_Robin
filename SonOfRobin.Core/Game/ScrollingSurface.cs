@@ -41,7 +41,7 @@ namespace SonOfRobin
             bool waterFound = false;
             foreach (Cell cell in this.world.Grid.GetCellsInsideRect(this.world.camera.viewRect, addPadding: false))
             {
-                if (this.world.Grid.GetMinValueForCell(terrainName: Terrain.Name.Height, cellNoX: cell.cellNoX, cellNoY: cell.cellNoY) <= Terrain.waterLevelMax)
+                if (cell.HasWater)
                 {
                     waterFound = true;
                     break;
