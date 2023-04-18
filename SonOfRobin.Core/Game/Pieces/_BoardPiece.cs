@@ -344,7 +344,7 @@ namespace SonOfRobin
             if (!this.sprite.IsOnBoard) return;
 
             this.sprite.RemoveFromBoard();
-            Tracking.RemoveFromTrackingQueue(world: this.world, pieceToRemove: this);
+            this.world.trackingManager.RemoveFromQueue(this);
             this.RemoveFromPieceCount();
         }
 

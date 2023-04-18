@@ -389,9 +389,7 @@ namespace SonOfRobin
             // saving tracking data
             if (!this.trackingSaved)
             {
-                var trackingData = new List<Object> { };
-                foreach (Tracking tracking in this.world.trackingQueue.Values)
-                { trackingData.Add(tracking.Serialize()); }
+                var trackingData = this.world.trackingManager.Serialize();
 
                 string trackingPath = Path.Combine(this.saveTempPath, trackingName);
                 FileReaderWriter.Save(path: trackingPath, savedObj: trackingData, compress: true);

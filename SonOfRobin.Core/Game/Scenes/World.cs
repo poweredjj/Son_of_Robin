@@ -24,7 +24,7 @@ namespace SonOfRobin
         public readonly bool demoMode;
 
         private Object saveGameData;
-        public readonly Dictionary<string, BoardPiece> piecesByOldID; // for deserialization only
+        public Dictionary<string, BoardPiece> piecesByOldID; // for deserialization only
         public bool createMissingPiecesOutsideCamera;
         public DateTime lastSaved;
 
@@ -59,7 +59,6 @@ namespace SonOfRobin
         private readonly List<PieceCreationData> creationDataListRegular;
         private readonly List<PieceCreationData> creationDataListTemporaryDecorations;
         private readonly List<Sprite> temporaryDecorationSprites;
-        public Dictionary<string, Tracking> trackingQueue;
         public List<Cell> plantCellsQueue;
         public List<Sprite> plantSpritesQueue;
         public List<Sprite> nonPlantSpritesQueue;
@@ -70,6 +69,7 @@ namespace SonOfRobin
         public readonly IslandClock islandClock;
         public readonly Weather weather;
         public readonly WorldEventManager worldEventManager;
+        public readonly TrackingManager trackingManager;
         private readonly ScrollingSurfaceManager scrollingSurfaceManager;
         public readonly SwayManager swayManager;
         public string debugText;
@@ -116,6 +116,7 @@ namespace SonOfRobin
             this.updateMultiplier = 1;
             this.islandClock = this.saveGameData == null ? new IslandClock(0) : new IslandClock();
             this.worldEventManager = new WorldEventManager(this);
+            this.trackingManager = new TrackingManager(this);
             this.weather = new Weather(world: this, islandClock: this.islandClock);
             this.scrollingSurfaceManager = new ScrollingSurfaceManager(world: this);
             this.swayManager = new SwayManager(this);
@@ -141,10 +142,7 @@ namespace SonOfRobin
             this.pieceCountByName = new Dictionary<PieceTemplate.Name, int>();
             foreach (PieceTemplate.Name templateName in PieceTemplate.allNames) this.pieceCountByName[templateName] = 0;
             this.pieceCountByClass = new Dictionary<Type, int> { };
-
-            this.trackingQueue = new Dictionary<string, Tracking>();
             this.HintEngine = new HintEngine(world: this);
-
             this.plantSpritesQueue = new List<Sprite>();
             this.nonPlantSpritesQueue = new List<Sprite>();
             this.plantCellsQueue = new List<Cell>();
@@ -567,10 +565,7 @@ namespace SonOfRobin
                 // deserializing tracking
 
                 var trackingDataList = (List<Object>)saveGameDataDict["tracking"];
-                foreach (Dictionary<string, Object> trackingData in trackingDataList)
-                {
-                    Tracking.Deserialize(world: this, trackingData: trackingData);
-                }
+                this.trackingManager.Deserialize(trackingDataList);
 
                 // deserializing planned events
 
@@ -579,7 +574,7 @@ namespace SonOfRobin
 
                 // removing not needed data
 
-                this.piecesByOldID.Clear(); // not needed anymore
+                this.piecesByOldID = null; // not needed anymore, "null" will make any attempt to access it afterwards crash the game
             }
 
             // finalizing
@@ -886,7 +881,7 @@ namespace SonOfRobin
 
             for (int i = 0; i < this.updateMultiplier; i++)
             {
-                Tracking.ProcessTrackingQueue(this);
+                this.trackingManager.ProcessQueue();
                 this.worldEventManager.ProcessQueue();
                 if (!this.BuildMode) this.UpdateAllAnims();
 

@@ -20,12 +20,83 @@ namespace SonOfRobin
         Bottom
     }
 
+    public class TrackingManager
+    {
+        private readonly World world;
+        private Dictionary<string, Tracking> trackingQueue;
+        public int TrackingCount
+        { get { return trackingQueue.Count; } }
+
+        public TrackingManager(World world)
+        {
+            this.world = world;
+            this.trackingQueue = new Dictionary<string, Tracking>();
+        }
+
+        public void AddToQueue(Tracking tracking)
+        {
+            this.trackingQueue[tracking.followingSprite.id] = tracking;
+        }
+
+        public void ProcessQueue()
+        {
+            // parallel processing causes data corruption and crashes
+            foreach (var tracking in this.trackingQueue.Values.ToList())
+            {
+                if (tracking.ShouldBeRemoved) this.RemoveFromQueue(tracking);
+                else tracking.SetPosition(trackingManager: this);
+            }
+        }
+
+        public void RemoveFromQueue(Tracking tracking)
+        {
+            this.trackingQueue.Remove(tracking.followingSprite.id);
+            if (tracking.bounceWhenRemoved && tracking.followingSprite.boardPiece.exists)
+            {
+                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"'{tracking.followingSprite.boardPiece.name}' removed from tracking queue - adding bounce.");
+
+                Vector2 passiveMovement = new Vector2(this.world.random.Next(-700, 700), this.world.random.Next(-700, 700));
+                tracking.followingSprite.boardPiece.AddPassiveMovement(movement: passiveMovement);
+            }
+        }
+
+        public void RemoveFromQueue(BoardPiece pieceToRemove)
+        {
+            this.trackingQueue.Remove(pieceToRemove.id);
+        }
+
+        public Sprite GetTargetSprite(Sprite followingSprite)
+        {
+            if (this.trackingQueue.ContainsKey(followingSprite.id)) return this.trackingQueue[followingSprite.id].targetSprite;
+            return null;
+        }
+
+        public List<Object> Serialize()
+        {
+            var trackingData = new List<Object> { };
+            foreach (Tracking tracking in this.trackingQueue.Values)
+            {
+                trackingData.Add(tracking.Serialize());
+            }
+
+            return trackingData;
+        }
+
+        public void Deserialize(List<Object> trackingDataList)
+        {
+            foreach (Dictionary<string, Object> trackingData in trackingDataList)
+            {
+                Tracking.Deserialize(world: this.world, trackingData: trackingData);
+            }
+        }
+    }
+
     public class Tracking
     {
         public readonly bool isCorrect;
         private readonly World world;
-        private readonly Sprite followingSprite;
-        private readonly Sprite targetSprite;
+        public readonly Sprite followingSprite;
+        public readonly Sprite targetSprite;
         private readonly Vector2 offset;
         private readonly XAlign followingXAlign;
         private readonly YAlign followingYAlign;
@@ -33,7 +104,7 @@ namespace SonOfRobin
         private readonly YAlign targetYAlign;
         private readonly int firstTrackingFrame;
         private readonly int lastTrackingFrame;
-        private readonly bool bounceWhenRemoved;
+        public readonly bool bounceWhenRemoved;
         private readonly int followSlowDown;
 
         public bool BothSpritesExistAndOnBoard
@@ -64,7 +135,7 @@ namespace SonOfRobin
         public Tracking(World world, Sprite targetSprite, Sprite followingSprite, int offsetX = 0, int offsetY = 0,
             XAlign followingXAlign = XAlign.Center, YAlign followingYAlign = YAlign.Center,
             XAlign targetXAlign = XAlign.Center, YAlign targetYAlign = YAlign.Center,
-            int turnOffDelay = 0, bool bounceWhenRemoved = false, int followSlowDown = 0)
+            int turnOffDelay = 0, bool bounceWhenRemoved = false, int followSlowDown = 0, bool addToQueue = true)
         {
             this.isCorrect = false;
             this.world = world;
@@ -88,7 +159,7 @@ namespace SonOfRobin
 
             this.isCorrect = true;
 
-            this.AddToTrackingQueue();
+            if (addToQueue) this.world.trackingManager.AddToQueue(this);
         }
 
         public Dictionary<string, Object> Serialize()
@@ -117,7 +188,8 @@ namespace SonOfRobin
         // deserialize
         {
             // if object was destroyed, it will no longer be available after loading
-            if (!world.piecesByOldID.ContainsKey((string)trackingData["followingSprite_id"]) || !world.piecesByOldID.ContainsKey((string)trackingData["targetSprite_id"])) return;
+            if (!world.piecesByOldID.ContainsKey((string)trackingData["followingSprite_id"]) ||
+                !world.piecesByOldID.ContainsKey((string)trackingData["targetSprite_id"])) return;
 
             Sprite followingSprite = world.piecesByOldID[(string)trackingData["followingSprite_id"]].sprite;
             XAlign followingXAlign = (XAlign)(Int64)trackingData["followingXAlign"];
@@ -135,54 +207,16 @@ namespace SonOfRobin
             int lastTrackingFrame = (int)(Int64)trackingData["lastTrackingFrame"];
             int delay = Math.Max(world.CurrentUpdate, lastTrackingFrame - world.CurrentUpdate);
 
-            new Tracking(world: world, targetSprite: targetSprite, followingSprite: followingSprite, followingXAlign: followingXAlign, followingYAlign: followingYAlign, targetXAlign: targetXAlign, targetYAlign: targetYAlign, offsetX: offsetX, offsetY: offsetY, turnOffDelay: delay, bounceWhenRemoved: bounceWhenRemoved, followSlowDown: followSlowDown);
+            new Tracking(world: world, targetSprite: targetSprite, followingSprite: followingSprite, followingXAlign: followingXAlign, followingYAlign: followingYAlign, targetXAlign: targetXAlign, targetYAlign: targetYAlign, offsetX: offsetX, offsetY: offsetY, turnOffDelay: delay, bounceWhenRemoved: bounceWhenRemoved, followSlowDown: followSlowDown, addToQueue: true);
         }
 
-        private void AddToTrackingQueue()
-        {
-            this.world.trackingQueue[this.followingSprite.id] = this;
-        }
-
-        public static Sprite GetTargetSprite(World world, Sprite followingSprite)
-        {
-            if (world.trackingQueue.ContainsKey(followingSprite.id)) return world.trackingQueue[followingSprite.id].targetSprite;
-            return null;
-        }
-
-        private void RemoveFromTrackingQueue()
-        {
-            this.world.trackingQueue.Remove(this.followingSprite.id);
-            if (this.bounceWhenRemoved && this.followingSprite.boardPiece.exists)
-            {
-                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"'{this.followingSprite.boardPiece.name}' removed from tracking queue - adding bounce.");
-
-                Vector2 passiveMovement = new Vector2(this.world.random.Next(-700, 700), this.world.random.Next(-700, 700));
-                this.followingSprite.boardPiece.AddPassiveMovement(movement: passiveMovement);
-            }
-        }
-
-        public static void RemoveFromTrackingQueue(BoardPiece pieceToRemove, World world)
-        {
-            world.trackingQueue.Remove(pieceToRemove.id);
-        }
-
-        public static void ProcessTrackingQueue(World world)
-        {
-            // parallel processing causes data corruption and crashes
-            foreach (var tracking in world.trackingQueue.Values.ToList())
-            {
-                if (tracking.ShouldBeRemoved) tracking.RemoveFromTrackingQueue();
-                else tracking.SetPosition();
-            }
-        }
-
-        private void SetPosition()
+        public void SetPosition(TrackingManager trackingManager)
         {
             if (!this.followingSprite.boardPiece.exists ||
                 !this.targetSprite.boardPiece.exists ||
                 (this.lastTrackingFrame > 0 && this.world.CurrentUpdate >= this.lastTrackingFrame))
             {
-                this.RemoveFromTrackingQueue();
+                trackingManager.RemoveFromQueue(this);
                 return;
             }
 

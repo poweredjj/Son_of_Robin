@@ -30,7 +30,7 @@ namespace SonOfRobin
             {
                 // one time check after deserialization, to properly assign burningPiece again
 
-                Sprite burningSprite = Tracking.GetTargetSprite(world: this.world, followingSprite: this.sprite);
+                Sprite burningSprite = this.world.trackingManager.GetTargetSprite(this.sprite);
                 if (burningSprite != null) this.burningPiece = burningSprite.boardPiece;
 
                 this.targetSpriteChecked = true;
