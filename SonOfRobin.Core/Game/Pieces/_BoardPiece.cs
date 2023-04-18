@@ -97,9 +97,10 @@ namespace SonOfRobin
         public readonly bool serialize;
         public bool canBeHit;
         public bool isTemporaryDecoration;
+        private readonly bool canShrink;
 
         public BoardPiece(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, int[] maxMassForSize, string readableName, string description, Category category, State activeState, float fireAffinity,
-            byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, bool blocksPlantGrowth = false, bool visible = true, bool ignoresCollisions = false, int destructionDelay = 0, int maxAge = 0, bool floatsOnWater = false, int generation = 0, int mass = 1, int staysAfterDeath = 800, float maxHitPoints = 1, byte stackSize = 1, Scheduler.TaskName boardTask = Scheduler.TaskName.Empty, Scheduler.TaskName toolbarTask = Scheduler.TaskName.Empty, bool canBePickedUp = false, Yield yield = null, Yield appearDebris = null, bool indestructible = false, bool rotatesWhenDropped = false, bool movesWhenDropped = true, bool serialize = true, List<Buff> buffList = null, AllowedDensity allowedDensity = null, int strength = 0, LightEngine lightEngine = null, int minDistance = 0, int maxDistance = 100, PieceSoundPack soundPack = null, bool female = false, bool isAffectedByWind = true)
+            byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, bool blocksPlantGrowth = false, bool visible = true, bool ignoresCollisions = false, int destructionDelay = 0, int maxAge = 0, bool floatsOnWater = false, int generation = 0, int mass = 1, int staysAfterDeath = 800, float maxHitPoints = 1, byte stackSize = 1, Scheduler.TaskName boardTask = Scheduler.TaskName.Empty, Scheduler.TaskName toolbarTask = Scheduler.TaskName.Empty, bool canBePickedUp = false, Yield yield = null, Yield appearDebris = null, bool indestructible = false, bool rotatesWhenDropped = false, bool movesWhenDropped = true, bool serialize = true, List<Buff> buffList = null, AllowedDensity allowedDensity = null, int strength = 0, LightEngine lightEngine = null, int minDistance = 0, int maxDistance = 100, PieceSoundPack soundPack = null, bool female = false, bool isAffectedByWind = true, bool canShrink = false)
         {
             this.world = world;
             this.name = name;
@@ -154,6 +155,7 @@ namespace SonOfRobin
             this.canBeHit = true;
             this.burnLevel = 0f;
             this.fireAffinity = fireAffinity;
+            this.canShrink = canShrink;
             this.isTemporaryDecoration = false; // to be set later
         }
 
@@ -290,7 +292,7 @@ namespace SonOfRobin
             {
                 this.mass = Math.Max(value, 0f);
                 int previousSpriteSize = this.sprite.animSize;
-                this.SetSpriteSizeByMass(growOnly: this.GetType() != typeof(Flame));
+                this.SetSpriteSizeByMass();
                 if (previousSpriteSize != this.sprite.animSize && this.PieceStorage != null && this.GetType() == typeof(Plant))
                 {
                     Plant plant = (Plant)this;
@@ -443,11 +445,11 @@ namespace SonOfRobin
             this.efficiency = Math.Max(1 - (this.currentAge / (float)this.maxAge) - this.bioWear, 0);
         }
 
-        private void SetSpriteSizeByMass(bool growOnly = false)
+        private void SetSpriteSizeByMass()
         {
             byte newSpriteSize = this.SpriteSize;
-            if (growOnly && this.sprite.animSize > newSpriteSize) return;
-            this.sprite.AssignNewSize(this.SpriteSize);
+            if (!this.canShrink && this.sprite.animSize > newSpriteSize) return;
+            this.sprite.AssignNewSize(newSpriteSize);
         }
 
         public virtual void Kill(bool addDestroyEvent = true)
