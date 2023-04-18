@@ -101,7 +101,7 @@ namespace SonOfRobin
 
                 var ignoredTypes = new List<System.Type> { typeof(TextWindow), typeof(ControlTips), typeof(StackView), typeof(DebugScene), typeof(MessageLog), typeof(InfoWindow), typeof(FullScreenProgressBar), typeof(TouchOverlay), typeof(FpsCounter) };
 
-                var stackToSearch = DrawStack.Where(scene => !ignoredTypes.Contains(scene.GetType()));
+                var stackToSearch = DrawStack.Where(scene => !ignoredTypes.Contains(scene.GetType())).ToList();
                 stackToSearch.Reverse();
                 Scene topScene = stackToSearch.First();
 
