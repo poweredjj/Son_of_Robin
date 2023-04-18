@@ -103,10 +103,10 @@ namespace SonOfRobin
         public Dictionary<string, Object> Serialize()
         {
             var eventData = new Dictionary<string, Object> {
-                {"eventName", this.eventName},
-                {"piece_id", this.boardPiece?.id},
-                {"startUpdateNo", this.startUpdateNo},
-                {"eventHelper", this.eventHelper},
+                { "eventName", this.eventName },
+                { "piece_id", this.boardPiece?.id },
+                { "startUpdateNo", this.startUpdateNo },
+                { "eventHelper", this.eventHelper },
             };
 
             return eventData;
@@ -138,9 +138,7 @@ namespace SonOfRobin
             if (eventHelper != null)
             {
                 try
-                {
-                    eventHelper = Helpers.CastObjectToInt(eventHelper); // serialization makes every int stored as int64 (long)
-                }
+                { eventHelper = Helpers.CastObjectToInt(eventHelper); } // serialization makes every int stored as int64 (long)               
                 catch (Exception)
                 { }
             }
