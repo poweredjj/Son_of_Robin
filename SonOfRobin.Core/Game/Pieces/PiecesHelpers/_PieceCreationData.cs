@@ -65,8 +65,7 @@ namespace SonOfRobin
                 new PieceCreationData(name: PieceTemplate.Name.Tiger, multiplier: 0.4f, maxAmount: maxAnimalsPerName),
                 new PieceCreationData(name: PieceTemplate.Name.Frog, multiplier: 0.2f, maxAmount: maxAnimalsPerName),
 
-                new PieceCreationData(name: PieceTemplate.Name.LavaLight, temporaryDecoration: true),
-                // new PieceCreationData(name: PieceTemplate.Name.LavaFlame, temporaryDecoration: true), // TODO make it work properly
+                new PieceCreationData(name: PieceTemplate.Name.LavaFlame, temporaryDecoration: true),
                 new PieceCreationData(name: PieceTemplate.Name.SwampGas, temporaryDecoration: true),
                 new PieceCreationData(name: PieceTemplate.Name.LavaGas, temporaryDecoration: true),
 

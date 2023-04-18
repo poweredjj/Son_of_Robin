@@ -8,9 +8,8 @@ namespace SonOfRobin
     {
         private BoardPiece burningPiece;
         private bool targetSpriteChecked; // one time check, after deserialization
-        private bool burnsForever;
 
-        public Flame(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, State activeState, bool serialize, bool burnsForever,
+        public Flame(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, State activeState, bool serialize,
             byte animSize = 0, string animName = "default", ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = true, int generation = 0, bool canBePickedUp = false, bool visible = true, bool ignoresCollisions = true, AllowedDensity allowedDensity = null, int[] maxMassForSize = null) :
 
             base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, blocksMovement: false, minDistance: minDistance, maxDistance: maxDistance, ignoresCollisions: ignoresCollisions, name: name, destructionDelay: destructionDelay, allowedTerrain: allowedTerrain, floatsOnWater: floatsOnWater, maxMassForSize: maxMassForSize, generation: generation, canBePickedUp: canBePickedUp, serialize: serialize, readableName: readableName, description: description, category: Category.Indestructible, visible: visible, activeState: activeState, allowedDensity: allowedDensity, isAffectedByWind: false, fireAffinity: 0f, lightEngine: new LightEngine(size: 150, opacity: 1.0f, colorActive: true, color: Color.Orange * 0.2f, isActive: false, castShadows: false), mass: 60)
@@ -18,8 +17,7 @@ namespace SonOfRobin
             // looped sound would populate all sound channels fast, so non-looped short sound is used instead
             this.soundPack.AddAction(action: PieceSoundPack.Action.IsOn, sound: new Sound(name: SoundData.Name.FireBurnShort, maxPitchVariation: 0.5f));
             this.soundPack.AddAction(action: PieceSoundPack.Action.TurnOff, sound: new Sound(name: SoundData.Name.EndFire, maxPitchVariation: 0.5f));
-            this.burnsForever = burnsForever;
-            this.targetSpriteChecked = burnsForever; // should not be checked for flames that burn forever
+            this.targetSpriteChecked = false;
         }
 
         public override void SM_FlameBurn()
@@ -37,8 +35,6 @@ namespace SonOfRobin
 
                 this.targetSpriteChecked = true;
             }
-
-            if (this.burnsForever && this.burningPiece != null) this.burningPiece = null; // flames that burn forever should not have burningPiece
 
             // checking for rain and water
 
@@ -149,9 +145,7 @@ namespace SonOfRobin
             else
             {
                 // cooling down, if no burningPiece is present
-
-                if (this.burnsForever) this.Mass = 300;
-                else this.Mass *= 0.991f;
+                this.Mass *= 0.991f;
             }
 
             if (this.Mass <= 10) this.StopBurning(); // must be less than starting mass
