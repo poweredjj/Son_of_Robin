@@ -73,7 +73,7 @@ namespace SonOfRobin
 
             int currentFrame = SonOfRobinGame.CurrentUpdate;
 
-            var messagesToDisplay = messages;
+            var messagesToDisplay = messages.ToList();
             messagesToDisplay.Reverse();
 
             int currentOffsetY = 0;
@@ -106,7 +106,7 @@ namespace SonOfRobin
         {
             foreach (Message message in messages)
             {
-                if (message.text.ToLower() == text.ToLower()) return true;
+                if (message.text == text) return true;
             }
 
             return false;
