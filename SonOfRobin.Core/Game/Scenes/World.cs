@@ -622,12 +622,18 @@ namespace SonOfRobin
 
                             this.map.TurnOff();
 
-                            var pieceNamesForToolbar = new List<PieceTemplate.Name> {PieceTemplate.Name.AxeCrystal, PieceTemplate.Name.PickaxeCrystal, PieceTemplate.Name.SpearCrystal, PieceTemplate.Name.TorchBig, PieceTemplate.Name.ScytheCrystal, PieceTemplate.Name.ShovelCrystal
+                            var pieceNamesForToolbar = new List<PieceTemplate.Name> {PieceTemplate.Name.AxeCrystal, PieceTemplate.Name.PickaxeCrystal, PieceTemplate.Name.SpearCrystal, PieceTemplate.Name.TorchBig, PieceTemplate.Name.ScytheCrystal, PieceTemplate.Name.ShovelCrystal, PieceTemplate.Name.BowWood
                             };
 
                             foreach (PieceTemplate.Name name in pieceNamesForToolbar)
                             {
                                 BoardPiece piece = PieceTemplate.Create(world: this, templateName: name);
+                                this.Player.ToolStorage.AddPiece(piece);
+                            }
+
+                            for (int i = 0; i < 50; i++)
+                            {
+                                BoardPiece piece = PieceTemplate.Create(world: this, templateName: PieceTemplate.Name.ArrowBurning);
                                 this.Player.ToolStorage.AddPiece(piece);
                             }
 

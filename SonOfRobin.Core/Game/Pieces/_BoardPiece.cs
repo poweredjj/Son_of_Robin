@@ -244,6 +244,12 @@ namespace SonOfRobin
 
                 bool isBurning = this.IsBurning;
 
+                if (isBurning != wasBurning)
+                {
+                    if (isBurning) this.sprite.effectCol.AddEffect(new BurnInstance(color: Color.Red, opacity: (this.BurnLevel - 0.5f), framesLeft: -1));
+                    else this.sprite.effectCol.RemoveEffectsOfType(effect: SonOfRobinGame.EffectBurn);
+                }
+
                 if (isBurning && this.GetType() == typeof(Animal) && this.activeState != State.AnimalRunForClosestWater)
                 {
                     Animal animal = (Animal)this;

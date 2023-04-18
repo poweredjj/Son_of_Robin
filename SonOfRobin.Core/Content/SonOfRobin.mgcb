@@ -19,6 +19,12 @@
 /processorParam:DebugMode=Auto
 /build:effects/Border.fx
 
+#begin effects/Burn.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:effects/Burn.fx
+
 #begin effects/Colorize.fx
 /importer:EffectImporter
 /processor:EffectProcessor

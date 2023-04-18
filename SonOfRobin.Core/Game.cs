@@ -31,6 +31,7 @@ namespace SonOfRobin
         public static GraphicsDevice GfxDev { get; private set; }
         public static SpriteBatch SpriteBatch { get; private set; }
         public static Effect EffectColorize { get; private set; }
+        public static Effect EffectBurn { get; private set; }
         public static Effect EffectBorder { get; private set; }
         public static Effect EffectSketch { get; private set; }
         public static InfoWindow HintWindow { get; private set; }
@@ -208,6 +209,7 @@ namespace SonOfRobin
         public static void LoadEffects()
         {
             EffectColorize = ContentMgr.Load<Effect>("effects/Colorize");
+            EffectBurn = ContentMgr.Load<Effect>("effects/Burn");
             EffectBorder = ContentMgr.Load<Effect>("effects/Border");
             EffectSketch = ContentMgr.Load<Effect>("effects/Sketch");
         }
