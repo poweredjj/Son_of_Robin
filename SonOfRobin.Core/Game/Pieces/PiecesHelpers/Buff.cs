@@ -97,6 +97,10 @@ namespace SonOfRobin
                     value = Helpers.CastObjectToFloat(value);
                     break;
 
+                case BuffEngine.BuffType.Sprint:
+                    value = Helpers.CastObjectToFloat(value);
+                    break;
+
                 default:
                     break;
             }
