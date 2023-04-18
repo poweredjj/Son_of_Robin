@@ -489,8 +489,8 @@ namespace SonOfRobin
         {
             if (Preferences.EnableTouchButtons) return false;
 
-            var pressTouches = TouchInput.TouchPanelState.Where(touch => touch.State == TouchLocationState.Pressed).ToList();
-            if (pressTouches.Count == 0) return false;
+            var pressTouches = TouchInput.TouchPanelState.Where(touch => touch.State == TouchLocationState.Pressed);
+            if (!pressTouches.Any()) return false;
 
             Rectangle menuRect = this.BgRect;
             menuRect.X += (int)this.viewParams.drawPosX;

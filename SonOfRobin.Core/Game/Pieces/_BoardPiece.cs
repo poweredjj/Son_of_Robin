@@ -503,10 +503,9 @@ namespace SonOfRobin
 
             try
             {
-                pieceList = pieceList.OrderBy(piece => Vector2.Distance(center, piece.sprite.position)).ToList();
-                return pieceList[0];
+                return pieceList.OrderBy(piece => Vector2.Distance(center, piece.sprite.position)).First();
             }
-            catch (ArgumentOutOfRangeException)
+            catch (InvalidOperationException)
             { }
 
             return null;

@@ -43,18 +43,18 @@ namespace SonOfRobin
         private int CheckSameNameCount(List<BoardPiece> nearbyPieces)
         {
             PieceTemplate.Name name = this.piece.name;
-            return nearbyPieces.Where(piece => piece.name == name).ToList().Count;
+            return nearbyPieces.Where(piece => piece.name == name).Count();
         }
 
         private int CheckSameClass(List<BoardPiece> nearbyPieces)
         {
             var className = this.piece.GetType();
-            return nearbyPieces.Where(piece => piece.GetType() == className).ToList().Count;
+            return nearbyPieces.Where(piece => piece.GetType() == className).Count();
         }
 
         private int CheckBlocking(List<BoardPiece> nearbyPieces)
         {
-            return nearbyPieces.Where(piece => piece.sprite.blocksMovement).ToList().Count;
+            return nearbyPieces.Where(piece => piece.sprite.blocksMovement).Count();
         }
     }
 }

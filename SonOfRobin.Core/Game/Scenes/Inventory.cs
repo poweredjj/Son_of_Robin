@@ -101,9 +101,9 @@ namespace SonOfRobin
 
                 var ignoredTypes = new List<System.Type> { typeof(TextWindow), typeof(ControlTips), typeof(StackView), typeof(DebugScene), typeof(MessageLog), typeof(InfoWindow), typeof(FullScreenProgressBar), typeof(TouchOverlay), typeof(FpsCounter) };
 
-                var stackToSearch = DrawStack.Where(scene => !ignoredTypes.Contains(scene.GetType())).ToList();
+                var stackToSearch = DrawStack.Where(scene => !ignoredTypes.Contains(scene.GetType()));
                 stackToSearch.Reverse();
-                Scene topScene = stackToSearch[0];
+                Scene topScene = stackToSearch.First();
 
                 return topScene.GetType() != typeof(Inventory);
             }
@@ -831,8 +831,8 @@ namespace SonOfRobin
         {
             if (Preferences.EnableTouchButtons || this.otherInventory == null) return false;
 
-            var pressTouches = TouchInput.TouchPanelState.Where(touch => touch.State == TouchLocationState.Pressed).ToList();
-            if (pressTouches.Count == 0) return false;
+            var pressTouches = TouchInput.TouchPanelState.Where(touch => touch.State == TouchLocationState.Pressed);
+            if (!pressTouches.Any()) return false;
 
             int inflateSize = (int)(SonOfRobinGame.VirtualHeight * 0.02);
 

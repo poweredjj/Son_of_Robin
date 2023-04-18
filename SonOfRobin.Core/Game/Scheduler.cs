@@ -39,8 +39,8 @@ namespace SonOfRobin
         {
             if (SonOfRobinGame.CurrentUpdate >= inputTurnedOffUntilFrame) Input.GlobalInputActive = true;
 
-            var framesToProcess = queue.Keys.Where(frameNo => SonOfRobinGame.CurrentUpdate >= frameNo).ToList();
-            if (framesToProcess.Count == 0) return;
+            var framesToProcess = queue.Keys.Where(frameNo => SonOfRobinGame.CurrentUpdate >= frameNo);
+            if (!framesToProcess.Any()) return;
 
             foreach (int frameNo in framesToProcess)
             {

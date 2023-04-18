@@ -253,7 +253,7 @@ namespace SonOfRobin
                     this.cellGrid[x, y].CopyFromTemplate(templateGrid.cellGrid[x, y]);
             }
 
-            this.loadedTexturesCount = this.allCells.Where(cell => cell.boardGraphics.Texture != null).ToList().Count;
+            this.loadedTexturesCount = this.allCells.Where(cell => cell.boardGraphics.Texture != null).Count();
 
             this.FillCellListsForPieceNames();
 
@@ -383,7 +383,7 @@ namespace SonOfRobin
 
                     var testFiles = Directory.GetFiles(this.gridTemplate.templatePath);
 
-                    int texturesCount = Directory.GetFiles(this.gridTemplate.templatePath).Where(file => file.Contains("background_") && file.EndsWith(".png")).ToList().Count;
+                    int texturesCount = Directory.GetFiles(this.gridTemplate.templatePath).Where(file => file.Contains("background_") && file.EndsWith(".png")).Count();
                     bool allTexturesFound = texturesCount == this.allCells.Count;
 
                     cellProcessingQueue = new List<Cell> { };
@@ -1323,7 +1323,7 @@ namespace SonOfRobin
             }
 
             var cellsInCameraView = this.GetCellsInsideRect(viewRect: camera.viewRect, addPadding: true);
-            var cellsToUnload = this.allCells.Where(cell => !cellsInCameraView.Contains(cell) && cell.boardGraphics.Texture != null).ToList();
+            var cellsToUnload = this.allCells.Where(cell => !cellsInCameraView.Contains(cell) && cell.boardGraphics.Texture != null);
 
             foreach (Cell cell in cellsToUnload)
             {

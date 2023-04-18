@@ -459,8 +459,7 @@ namespace SonOfRobin
         {
             try
             {
-                spriteList = spriteList.OrderBy(s => Vector2.Distance(this.position, s.position)).ToList();
-                return spriteList[0];
+                return spriteList.OrderBy(s => Vector2.Distance(this.position, s.position)).First();
             }
             catch (ArgumentOutOfRangeException)
             { }

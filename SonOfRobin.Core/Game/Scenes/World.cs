@@ -714,7 +714,7 @@ namespace SonOfRobin
                 if (amountToCreate > 0) amountToCreateByName[creationData.name] = amountToCreate;
             }
 
-            if (amountToCreateByName.Keys.ToList().Count == 0) return false;
+            if (!amountToCreateByName.Keys.Any()) return false;
 
             // creating pieces
 
@@ -774,7 +774,9 @@ namespace SonOfRobin
             DateTime creationStarted = DateTime.Now;
             int createdDecorationsCount = 0;
 
-            foreach (Cell cell in this.Grid.GetCellsInsideRect(viewRect: camera.viewRect, addPadding: true).Where(cell => !cell.temporaryDecorationsCreated).OrderBy(x => this.random.Next()))
+            foreach (Cell cell in this.Grid.GetCellsInsideRect(viewRect: camera.viewRect, addPadding: true)
+                .Where(cell => !cell.temporaryDecorationsCreated)
+                .OrderBy(x => this.random.Next()))
             {
                 foreach (PieceCreationData pieceCreationData in this.creationDataListTemporaryDecorations)
                 {
@@ -1096,7 +1098,7 @@ namespace SonOfRobin
 
             this.ProcessedPlantsCount = 0;
 
-            if (this.plantCellsQueue.Count == 0)
+            if (!this.plantCellsQueue.Any())
             {
                 this.plantCellsQueue = new List<Cell>(this.Grid.allCells.ToList());
                 //MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Plants cells queue replenished ({this.plantCellsQueue.Count})");

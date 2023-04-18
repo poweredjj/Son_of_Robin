@@ -408,14 +408,14 @@ namespace SonOfRobin
                 }
             }
 
-            if (quantityLeft.Where(kvp => kvp.Value > 0).ToList().Count != 0) throw new ArgumentException("Not all pieces to destroy were found in multiple storages.");
+            if (quantityLeft.Where(kvp => kvp.Value > 0).Any()) throw new ArgumentException("Not all pieces to destroy were found in multiple storages.");
         }
 
         public static Dictionary<PieceTemplate.Name, byte> CheckMultipleStoragesForSpecifiedPieces(List<PieceStorage> storageList, Dictionary<PieceTemplate.Name, byte> quantityByPiece)
         {
             var quantityLeft = quantityByPiece.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 
-            foreach (PieceTemplate.Name name in quantityLeft.Keys.ToList())
+            foreach (PieceTemplate.Name name in quantityLeft.Keys)
             {
                 foreach (PieceStorage storage in storageList)
                 {

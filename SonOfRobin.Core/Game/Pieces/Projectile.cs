@@ -78,7 +78,7 @@ namespace SonOfRobin
                 this.soundPack.Stop(PieceSoundPack.Action.ArrowFly);
 
                 List<Sprite> collidingSpritesList = this.sprite.GetCollidingSpritesAtPosition(positionToCheck: this.sprite.position + movement, cellGroupsToCheck: new List<Cell.Group> { Cell.Group.ColMovement });
-                List<BoardPiece> collidingPiecesList = collidingSpritesList.Select(s => s.boardPiece).ToList();
+                var collidingPiecesList = collidingSpritesList.Select(s => s.boardPiece);
 
                 var collidingAnimals = collidingPiecesList.Where(piece => piece.GetType() == typeof(Animal)).ToList();
                 BoardPiece closestAnimal = FindClosestPiece(sprite: this.sprite, pieceList: collidingAnimals, offsetX: 0, offsetY: 0);

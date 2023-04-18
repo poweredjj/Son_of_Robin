@@ -206,8 +206,8 @@ namespace SonOfRobin
 
         public static bool IsStateAvailable(TouchLocationState state)
         {
-            var matchingTypes = TouchPanelState.Where(touch => touch.State == state).ToList();
-            return matchingTypes.Count > 0;
+            var matchingTypes = TouchPanelState.Where(touch => touch.State == state);
+            return matchingTypes.Any();
         }
 
         private static int lastFrameLayoutChanged = 0;

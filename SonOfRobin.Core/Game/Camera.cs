@@ -316,10 +316,10 @@ namespace SonOfRobin
             if (this.TrackedSpriteExists) return;
 
             var allSprites = this.world.Grid.GetSpritesFromAllCells(Cell.Group.ColMovement);
-            var animals = allSprites.Where(sprite => sprite.boardPiece.GetType() == typeof(Animal) && sprite.boardPiece.alive).ToList();
-            if (animals.Count == 0) return;
-            var index = BoardPiece.Random.Next(0, animals.Count);
-            this.TrackPiece(trackedPiece: animals[index].boardPiece, moveInstantly: !fluidMotion);
+            var animals = allSprites.Where(sprite => sprite.boardPiece.GetType() == typeof(Animal) && sprite.boardPiece.alive);
+            if (animals.Count() == 0) return;
+            var index = BoardPiece.Random.Next(0, animals.Count());
+            this.TrackPiece(trackedPiece: animals.ElementAt(index).boardPiece, moveInstantly: !fluidMotion);
         }
 
         public List<Sprite> GetVisibleSprites(Cell.Group groupName, bool compareWithCameraRect = false)

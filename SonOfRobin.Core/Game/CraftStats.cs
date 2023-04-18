@@ -179,12 +179,12 @@ namespace SonOfRobin
             string piecesText = "";
             List<Texture2D> imageList = new List<Texture2D>();
 
-            List<PieceTemplate.Name> pieceNames = collectionToShow.Keys.OrderBy(n => PieceInfo.GetInfo(n).readableName).ToList();
+            var pieceNames = collectionToShow.Keys.OrderBy(n => PieceInfo.GetInfo(n).readableName);
             int piecesTotal = collectionToShow.Values.Sum();
 
             int currentPagePiecesCount = 0;
             int pageNo = 1;
-            int totalPages = (int)Math.Ceiling((float)pieceNames.Count / (float)piecesForPage);
+            int totalPages = (int)Math.Ceiling((float)pieceNames.Count() / (float)piecesForPage);
 
             foreach (PieceTemplate.Name pieceName in pieceNames)
             {

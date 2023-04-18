@@ -152,15 +152,15 @@ namespace SonOfRobin
                 piece.name == this.name &&
                 piece.alive &&
                 piece.exists
-                ).ToList();
+                );
 
-            List<Animal> matingPartners = sameSpecies.Cast<Animal>().ToList();
+            var matingPartners = sameSpecies.Cast<Animal>();
 
             matingPartners = matingPartners.Where(animal =>
             animal.female != this.female &&
             animal.pregnancyMass == 0 &&
             animal.currentAge >= animal.matureAge
-            ).ToList();
+            );
 
             return matingPartners.Cast<BoardPiece>().ToList();
         }
@@ -202,9 +202,9 @@ namespace SonOfRobin
 
             // looking around
 
-            List<BoardPiece> seenPieces = this.GetSeenPieces().Where(piece => piece.exists).ToList();
+            var seenPieces = this.GetSeenPieces().Where(piece => piece.exists);
 
-            if (seenPieces.Count == 0)
+            if (!seenPieces.Any())
             {
                 this.activeState = State.AnimalWalkAround;
                 this.aiData.Reset();
@@ -243,8 +243,8 @@ namespace SonOfRobin
             BoardPiece matingPartner = null;
             if (this.currentAge >= matureAge && this.pregnancyMass == 0 && enemyPiece == null)
             {
-                List<BoardPiece> matingPartners = this.AssessAsMatingPartners(seenPieces);
-                if (matingPartners.Count > 0)
+                var matingPartners = this.AssessAsMatingPartners(seenPieces.ToList());
+                if (matingPartners.Any())
                 {
                     if (this.world.random.Next(0, 8) != 0)
                     { matingPartner = FindClosestPiece(sprite: this.sprite, pieceList: matingPartners); }

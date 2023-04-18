@@ -109,10 +109,10 @@ namespace SonOfRobin
             var textByScene = TextByScene;
 
             int sceneNo = 0;
-            for (int i = textByScene.ToList().Count - 1; i >= 0; i--)
+            for (int i = textByScene.Count() - 1; i >= 0; i--)
             {
-                Scene scene = textByScene.Keys.ToList()[i];
-                string sceneTxt = textByScene.Values.ToList()[i];
+                Scene scene = textByScene.Keys.ElementAt(i);
+                string sceneTxt = textByScene.Values.ElementAt(i);
 
                 Vector2 txtSize = font.MeasureString(sceneTxt);
                 Vector2 txtPos = new Vector2(0, sceneNo * (txtSize.Y + margin));

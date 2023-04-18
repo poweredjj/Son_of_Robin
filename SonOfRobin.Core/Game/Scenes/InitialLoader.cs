@@ -132,7 +132,7 @@ namespace SonOfRobin
                 case Step.DeleteObsoleteTemplates:
 
                     var templatePaths = Directory.GetDirectories(SonOfRobinGame.worldTemplatesPath);
-                    var existingWorlds = Scene.GetAllScenesOfType(typeof(World)).Select(worldScene => (World)worldScene).ToList();
+                    var existingWorlds = Scene.GetAllScenesOfType(typeof(World)).Select(worldScene => (World)worldScene);
                     var correctSaves = SaveHeaderManager.CorrectSaves;
                     var pathsToKeep = new List<string>();
 
@@ -147,13 +147,13 @@ namespace SonOfRobin
                         saveHeader.seed == gridTemplate.seed &&
                         saveHeader.width == gridTemplate.width &&
                         saveHeader.height == gridTemplate.height
-                        ).ToList().Count > 0) pathsToKeep.Add(templatePath);
+                        ).Any()) pathsToKeep.Add(templatePath);
 
                         if (existingWorlds.Where(currentWorld =>
                         currentWorld.seed == gridTemplate.seed &&
                         currentWorld.width == gridTemplate.width &&
                         currentWorld.height == gridTemplate.height
-                        ).ToList().Count > 0) pathsToKeep.Add(templatePath);
+                        ).Any()) pathsToKeep.Add(templatePath);
                     }
 
                     pathsToKeep = pathsToKeep.Distinct().ToList(); // removing duplicates

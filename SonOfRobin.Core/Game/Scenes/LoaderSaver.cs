@@ -63,13 +63,13 @@ namespace SonOfRobin
         private readonly int allSteps;
 
         private int PiecesFilesCount
-        { get { return Directory.GetFiles(this.savePath).Where(path => path.Contains("pieces_")).ToList().Count; } }
+        { get { return Directory.GetFiles(this.savePath).Where(path => path.Contains("pieces_")).Count(); } }
 
         private static List<string> SaveTempPaths
         {
             get
             {
-                List<string> tempNames = Directory.GetDirectories(SonOfRobinGame.saveGamesPath).Where(dir => dir.StartsWith(tempPrefix)).ToList();
+                var tempNames = Directory.GetDirectories(SonOfRobinGame.saveGamesPath).Where(dir => dir.StartsWith(tempPrefix));
                 List<string> tempPaths = new List<string> { };
                 foreach (string name in tempNames)
                 {

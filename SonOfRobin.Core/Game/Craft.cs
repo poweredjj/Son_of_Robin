@@ -232,11 +232,11 @@ namespace SonOfRobin
 
                 if (world.random.Next(0, smartCraftChance) == 0)
                 {
-                    List<PieceTemplate.Name> multipleIngredientNames = this.ingredients.Where(kvp => kvp.Value > 1).ToDictionary(kvp => kvp.Key, kvp => kvp.Value).Keys.ToList();
+                    var multipleIngredientNames = this.ingredients.Where(kvp => kvp.Value > 1).ToDictionary(kvp => kvp.Key, kvp => kvp.Value).Keys;
 
                     if (multipleIngredientNames.Any())
                     {
-                        PieceTemplate.Name randomNameToReduce = multipleIngredientNames[world.random.Next(0, multipleIngredientNames.Count)];
+                        PieceTemplate.Name randomNameToReduce = multipleIngredientNames.ElementAt(world.random.Next(0, multipleIngredientNames.Count));
                         byte quantity = ingredientsCopy[randomNameToReduce];
 
                         float reduceMultiplier = (float)(0.2 + (world.random.NextDouble() * 0.3)); // 0.2 - 0.5

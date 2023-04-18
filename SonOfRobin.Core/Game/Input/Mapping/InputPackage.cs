@@ -251,7 +251,7 @@ namespace SonOfRobin
                 else duplicatesByValues[kvp.Value] = new List<string>();
             }
 
-            var duplicatedValues = duplicatesByValues.Keys.ToList();
+            var duplicatedValues = duplicatesByValues.Keys;
 
             foreach (var kvp in valuesByNames)
             {

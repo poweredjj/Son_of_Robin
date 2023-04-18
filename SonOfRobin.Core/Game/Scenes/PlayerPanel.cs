@@ -33,8 +33,8 @@ namespace SonOfRobin
         {
             get
             {
-                var pressTouches = TouchInput.TouchPanelState.Where(touch => touch.State == TouchLocationState.Pressed).ToList();
-                if (pressTouches.Count == 0) return false;
+                var pressTouches = TouchInput.TouchPanelState.Where(touch => touch.State == TouchLocationState.Pressed);
+                if (!pressTouches.Any()) return false;
 
                 Rectangle counterRect = this.CounterRect;
                 counterRect.X += (int)this.viewParams.drawPosX;

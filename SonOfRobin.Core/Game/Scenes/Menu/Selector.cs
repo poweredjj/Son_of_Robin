@@ -21,10 +21,10 @@ namespace SonOfRobin
         private bool captureModeActive;
 
         private Object ActiveName
-        { get { return valueDict.Values.ToList()[activeIndex]; } }
+        { get { return valueDict.Values.ElementAt(activeIndex); } }
 
         private Object ActiveValue
-        { get { return valueDict.Keys.ToList()[activeIndex]; } }
+        { get { return valueDict.Keys.ElementAt(activeIndex); } }
 
         private bool ActiveNameIsTexture
         { get { return this.ActiveName.GetType() == typeof(Texture2D); } }
@@ -108,7 +108,7 @@ namespace SonOfRobin
             base.NextValue(touchMode: touchMode);
             this.menu.ChangeActiveItem(this);
             this.activeIndex++;
-            if (this.activeIndex >= this.valueDict.ToList().Count) this.activeIndex = 0;
+            if (this.activeIndex >= this.valueDict.Count()) this.activeIndex = 0;
 
             this.SetNewValueToTargetObject();
 
@@ -120,7 +120,7 @@ namespace SonOfRobin
             base.PreviousValue(touchMode: touchMode);
             this.menu.ChangeActiveItem(this);
             this.activeIndex--;
-            if (this.activeIndex < 0) this.activeIndex = this.valueDict.ToList().Count - 1;
+            if (this.activeIndex < 0) this.activeIndex = this.valueDict.Count() - 1;
 
             this.SetNewValueToTargetObject();
 

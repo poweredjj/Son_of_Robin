@@ -11,7 +11,7 @@ namespace SonOfRobin
         public static readonly float saveVersion = 1.484f;
 
         public static bool AnySavesExist
-        { get { return Directory.GetDirectories(SonOfRobinGame.saveGamesPath).ToList().Count > 0; } }
+        { get { return Directory.GetDirectories(SonOfRobinGame.saveGamesPath).Any(); } }
 
         public static List<SaveHeaderInfo> CorrectSaves
         {
