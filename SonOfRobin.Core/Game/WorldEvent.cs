@@ -40,23 +40,6 @@ namespace SonOfRobin
             }
         }
 
-
-        public void RemoveAllSpecificEventsForPieceFromQueue(BoardPiece pieceToRemove, WorldEvent.EventName eventName)
-        {
-
-            //foreach (var frame in this.eventQueue.Keys)
-            //{
-            //    this.eventQueue[frame].RemoveAll(plannedEvent => plannedEvent.boardPiece == pieceToRemove && plannedEvent.eventName == eventName);
-            //}
-
-            foreach (int frame in this.eventQueue.Keys.ToList())
-            {
-                List<WorldEvent> eventlist = this.eventQueue[frame]
-                    .Where(plannedEvent => !(plannedEvent.boardPiece == pieceToRemove && plannedEvent.eventName == eventName)).ToList();
-                this.eventQueue[frame] = eventlist;
-            }
-        }
-
         public void ProcessQueue()
         {
             var framesToProcess = this.eventQueue.Keys.Where(frameNo => world.CurrentUpdate >= frameNo).ToList();
@@ -396,7 +379,9 @@ namespace SonOfRobin
                             return;
                         }
 
-                        if (world.CurrentUpdate - this.boardPiece.LastHeated >= 60) this.boardPiece.BurnLevel -= 0.005f;
+                        if (this.boardPiece.LastCooled == world.CurrentUpdate) return; // only one cooling per frame
+
+                        if (world.CurrentUpdate - this.boardPiece.LastHeated >= 60) this.boardPiece.BurnLevel -= 0.003f;
                         if (this.boardPiece.BurnLevel > 0) new WorldEvent(eventName: EventName.BurnCoolDown, world: world, delay: 5, boardPiece: this.boardPiece);
 
                         return;
