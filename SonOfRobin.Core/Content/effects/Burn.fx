@@ -28,21 +28,21 @@ float4 MainPS(VertexShaderOutput input) : COLOR
 {
 	// shaders use color value range 0.0f - 1.0f
 
+	float4 originalColor = tex2D(s0, input.TextureCoordinates);
+	if (originalColor.a <= 0.4) return originalColor;
+
 	float4 fireColor = float4(0.8, 0.0, 0.0, 1.0) * (1.0 - input.TextureCoordinates.y);
 
-	float4 originalColor = tex2D(s0, input.TextureCoordinates);
-	if (originalColor.a <= 0.5) return originalColor;
-
 	// Calculate burning effect
-	float burn = sin((input.TextureCoordinates.y + time) * 5) * 0.1;
-	float3 burnColor = float3(1.0, 0.5, 0.0) * burn * (1.0 - input.TextureCoordinates.y);
+	float burnVal = sin((input.TextureCoordinates.y + time) * 5) * 0.1;
+	float3 burnColor = float3(1.0, 0.5, 0.0) * burnVal * (1.0 - input.TextureCoordinates.y);
 
 	// Modify color calculation to add burning effect
-	float4 gray;
-	gray.rgb = (originalColor.r + originalColor.g + originalColor.b) / 3.0 + burnColor;
-	gray.a = 1;
+	float4 finalColor;
+	finalColor.rgb = ((originalColor.r + originalColor.g + originalColor.b) / 3.0) + burnColor + fireColor;
+	finalColor.a = originalColor.a;
 
-	return (originalColor * (1 - intensity)) + (intensity * (gray + fireColor));
+	return lerp(originalColor, finalColor, intensity);
 }
 
 technique SpriteDrawing

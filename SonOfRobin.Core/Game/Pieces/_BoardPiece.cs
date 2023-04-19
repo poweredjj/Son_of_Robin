@@ -242,19 +242,17 @@ namespace SonOfRobin
                 float valDiff = value - this.burnLevel;
                 if (valDiff > 0) valDiff *= this.buffEngine != null && this.buffEngine.HasBuff(BuffEngine.BuffType.Wet) ? this.fireAffinity / 4 : this.fireAffinity;
 
-                this.sprite.effectCol.RemoveEffectsOfType(effect: SonOfRobinGame.EffectBurn);
+                new WorldEvent(eventName: WorldEvent.EventName.BurnCoolDown, world: this.world, delay: 60, boardPiece: this);
 
-                if (valDiff > 0)
-                {
-                    this.LastHeated = this.world.CurrentUpdate;
-                    this.sprite.effectCol.AddEffect(new BurnInstance(intensity: this.burnLevel, framesLeft: -1));
-                    new WorldEvent(eventName: WorldEvent.EventName.BurnCoolDown, world: this.world, delay: 60, boardPiece: this);
-                }
+                if (valDiff > 0) this.LastHeated = this.world.CurrentUpdate;
                 else this.LastCooled = this.world.CurrentUpdate;
 
                 this.burnLevel += valDiff;
                 this.burnLevel = Math.Max(this.burnLevel, 0);
                 this.burnLevel = Math.Min(this.burnLevel, 1);
+
+                this.sprite.effectCol.RemoveEffectsOfType(effect: SonOfRobinGame.EffectBurn);
+                if (this.burnLevel > 0) this.sprite.effectCol.AddEffect(new BurnInstance(intensity: this.burnLevel, framesLeft: -1));
 
                 bool isBurning = this.IsBurning;
 

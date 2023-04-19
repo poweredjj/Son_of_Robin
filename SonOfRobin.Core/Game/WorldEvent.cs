@@ -381,7 +381,7 @@ namespace SonOfRobin
 
                         if (this.boardPiece.LastCooled == world.CurrentUpdate) return; // only one cooling per frame
 
-                        if (world.CurrentUpdate - this.boardPiece.LastHeated >= 60) this.boardPiece.BurnLevel -= 0.003f;
+                        if (world.CurrentUpdate - this.boardPiece.LastHeated >= 60) this.boardPiece.BurnLevel -= 0.0035f;
                         if (this.boardPiece.BurnLevel > 0) new WorldEvent(eventName: EventName.BurnCoolDown, world: world, delay: 5, boardPiece: this.boardPiece);
 
                         return;
