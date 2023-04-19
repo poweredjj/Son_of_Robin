@@ -172,9 +172,8 @@ namespace SonOfRobin
                         {
                             new Selector(menu: menu, name: "fullscreen mode", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "FullScreenMode", rebuildsMenu: true);
                             if (Preferences.FullScreenMode) new Selector(menu: menu, name: "resolution", valueList: Preferences.AvailableScreenModes, targetObj: preferences, propertyName: "FullScreenResolution");
+                            new Selector(menu: menu, name: "30 FPS cap", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "Cap30FPS", infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: "limit framerate to 30 FPS", color: Color.White, scale: 1f) }, rebuildsMenu: true);
                         }
-
-                        new Selector(menu: menu, name: "30 FPS cap", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "Cap30FPS", infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: "limit framerate to 30 FPS", color: Color.White, scale: 1f) }, rebuildsMenu: true);
 
                         if (!Preferences.Cap30FPS)
                         {

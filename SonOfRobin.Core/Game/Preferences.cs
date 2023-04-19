@@ -426,7 +426,7 @@ namespace SonOfRobin
             }
         }
 
-        private static void ApplyFPSCap()
+        private static void ApplyFPSCap() // doesn't work correctly on mobile
         {
             SonOfRobinGame.GfxDevMgr.PreparingDeviceSettings += (sender, e) =>
             {
