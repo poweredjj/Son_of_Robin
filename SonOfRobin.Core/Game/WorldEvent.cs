@@ -42,6 +42,19 @@ namespace SonOfRobin
             }
         }
 
+        public void RemoveAllSpecificEventsForPieceFromQueue(BoardPiece pieceToRemove, WorldEvent.EventName eventName)
+        {
+            // Pieces removed from the board should not be removed from the queue (cpu intensive) - will be ignored when run.
+
+            List<WorldEvent> eventlist;
+
+            foreach (var frame in this.eventQueue.Keys.ToList())
+            {
+                eventlist = this.eventQueue[frame].Where(plannedEvent => !(plannedEvent.boardPiece == pieceToRemove && plannedEvent.eventName == eventName)).ToList();
+                this.eventQueue[frame] = eventlist;
+            }
+        }
+
         public void ProcessQueue()
         {
             var framesToProcess = this.eventQueue.Keys.Where(frameNo => world.CurrentUpdate >= frameNo).ToList();
@@ -81,7 +94,7 @@ namespace SonOfRobin
     public class WorldEvent
     {
         public enum EventName
-        { Birth, Death, Destruction, TurnOffWorkshop, FinishCooking, RestorePieceCreation, FadeOutSprite, RestoreHint, RemoveBuff, BurnOutLightSource, RegenPoison, ChangeActiveState, FinishBuilding, PlaySoundByName, YieldDropDebris, CoolDownAfterBurning }
+        { Birth, Death, Destruction, TurnOffWorkshop, FinishCooking, RestorePieceCreation, FadeOutSprite, RestoreHint, RemoveBuff, BurnOutLightSource, RegenPoison, ChangeActiveState, FinishBuilding, PlaySoundByName, YieldDropDebris, BurnCoolDown }
 
         public readonly BoardPiece boardPiece;
         public readonly int startUpdateNo;
@@ -373,12 +386,11 @@ namespace SonOfRobin
                         return;
                     }
 
-                case EventName.CoolDownAfterBurning:
+                case EventName.BurnCoolDown:
                     {
-                        // if BurnLevel hasn't changed, it means no flame is affecting it and piece can be considered as cooled
+                        this.boardPiece.BurnLevel -= 0.01f;
+                        if (this.boardPiece.BurnLevel > 0) new WorldEvent(eventName: EventName.BurnCoolDown, world: world, delay: 5, boardPiece: this.boardPiece);
 
-                        float previousBurnLevel = Helpers.CastObjectToFloat(this.eventHelper);
-                        if (this.boardPiece.BurnLevel == previousBurnLevel) this.boardPiece.BurnLevel = 0f;
                         return;
                     }
 

@@ -28,15 +28,15 @@ float4 MainPS(VertexShaderOutput input) : COLOR
 {
 	// shaders use color value range 0.0f - 1.0f
 
-	float4 color = tex2D(s0, input.TextureCoordinates);
-
-	if (color.a <= 0.5) return color;
+	float4 originalColor = tex2D(s0, input.TextureCoordinates);
+	if (originalColor.a <= 0.5) return originalColor;
 	
 	float4 gray;
-	gray.rgb = (color.r + color.g + color.b) / 3.0;
+	gray.rgb = (originalColor.r + originalColor.g + originalColor.b) / 3.0;
 	gray.a = 1;
 
-	return (color * (1 - opacity)) + (opacity * (gray + (newColor * 0.8)));
+	// return ((1 - opacity) * originalColor) + (opacity * newColor);
+	return (originalColor * (1 - opacity)) + (opacity * (gray + (newColor * 0.8)));
 }
 
 technique SpriteDrawing

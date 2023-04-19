@@ -782,7 +782,8 @@ namespace SonOfRobin
             if (isOnLava)
             {
                 this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.Lava, ignoreDelay: true);
-                this.hitPoints -= 1;
+                this.hitPoints -= 0.5f;
+                this.BurnLevel += 0.12f;
                 this.soundPack.Play(PieceSoundPack.Action.StepLava);
             }
 

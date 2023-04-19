@@ -159,7 +159,6 @@ namespace SonOfRobin
         private void StopBurning()
         {
             this.soundPack.Stop(PieceSoundPack.Action.IsOn);
-            if (this.burningPiece != null) new WorldEvent(eventName: WorldEvent.EventName.CoolDownAfterBurning, world: this.world, delay: 10 * 60, boardPiece: this.burningPiece, eventHelper: this.burningPiece.BurnLevel);
             new OpacityFade(sprite: this.sprite, destOpacity: 0f, duration: 20, destroyPiece: true);
             this.RemoveFromStateMachines();
         }

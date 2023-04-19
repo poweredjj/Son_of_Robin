@@ -244,11 +244,8 @@ namespace SonOfRobin
 
                 bool isBurning = this.IsBurning;
 
-                if (isBurning != wasBurning)
-                {
-                    if (isBurning) this.sprite.effectCol.AddEffect(new BurnInstance(color: Color.Red, opacity: (this.BurnLevel - 0.5f), framesLeft: -1));
-                    else this.sprite.effectCol.RemoveEffectsOfType(effect: SonOfRobinGame.EffectBurn);
-                }
+                this.sprite.effectCol.RemoveEffectsOfType(effect: SonOfRobinGame.EffectBurn);
+                if (this.burnLevel > 0) this.sprite.effectCol.AddEffect(new BurnInstance(color: Color.Red, opacity: this.burnLevel, framesLeft: -1));
 
                 if (isBurning && this.GetType() == typeof(Animal) && this.activeState != State.AnimalRunForClosestWater)
                 {
@@ -287,6 +284,12 @@ namespace SonOfRobin
                     }
 
                     this.buffEngine?.RemoveEveryBuffOfType(BuffEngine.BuffType.Wet);
+                }
+
+                if (this.BurnLevel > 0)
+                {
+                    this.world.worldEventManager.RemoveAllSpecificEventsForPieceFromQueue(pieceToRemove: this, eventName: WorldEvent.EventName.BurnCoolDown);
+                    new WorldEvent(eventName: WorldEvent.EventName.BurnCoolDown, world: this.world, delay: 5, boardPiece: this);
                 }
             }
         }
