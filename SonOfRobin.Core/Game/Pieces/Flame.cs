@@ -7,7 +7,8 @@ namespace SonOfRobin
     public class Flame : BoardPiece
     {
         private BoardPiece burningPiece;
-        private bool targetSpriteChecked; // one time check, after deserialization
+        private bool burningPieceChecked; // one time check, after deserialization
+        private int burningFramesLeft;
 
         public Flame(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, State activeState, bool serialize,
             byte animSize = 0, string animName = "default", ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = true, int generation = 0, bool canBePickedUp = false, bool visible = true, bool ignoresCollisions = true, AllowedDensity allowedDensity = null, int[] maxMassForSize = null) :
@@ -17,23 +18,32 @@ namespace SonOfRobin
             // looped sound would populate all sound channels fast, so non-looped short sound is used instead
             this.soundPack.AddAction(action: PieceSoundPack.Action.IsOn, sound: new Sound(name: SoundData.Name.FireBurnShort, maxPitchVariation: 0.5f));
             this.soundPack.AddAction(action: PieceSoundPack.Action.TurnOff, sound: new Sound(name: SoundData.Name.EndFire, maxPitchVariation: 0.5f));
-            this.targetSpriteChecked = false;
+            this.burningPieceChecked = false;
+            this.burningFramesLeft = Random.Next(60, 25 * 60);
         }
 
         public override void SM_FlameBurn()
         {
             if (!this.soundPack.IsPlaying(PieceSoundPack.Action.IsOn)) this.soundPack.Play(PieceSoundPack.Action.IsOn);
 
+            this.burningFramesLeft--;
+
             // attaching burningPiece
 
-            if (this.burningPiece == null && !this.targetSpriteChecked)
+            if (this.burningPiece == null && !this.burningPieceChecked)
             {
                 // one time check after deserialization, to properly assign burningPiece again
 
                 Sprite burningSprite = this.world.trackingManager.GetTargetSprite(this.sprite);
                 if (burningSprite != null) this.burningPiece = burningSprite.boardPiece;
 
-                this.targetSpriteChecked = true;
+                this.burningPieceChecked = true;
+            }
+
+            if (this.burningFramesLeft <= 0 && this.burningPiece != null)
+            {
+                this.burningPiece = null;
+                this.Mass /= 3;
             }
 
             // checking for rain and water
@@ -173,6 +183,22 @@ namespace SonOfRobin
             this.soundPack.Stop(PieceSoundPack.Action.IsOn);
             new OpacityFade(sprite: this.sprite, destOpacity: 0f, duration: 20, destroyPiece: true);
             this.RemoveFromStateMachines();
+        }
+
+        public override Dictionary<string, Object> Serialize()
+        {
+            Dictionary<string, Object> pieceData = base.Serialize();
+
+            pieceData["flame_burningFramesLeft"] = this.burningFramesLeft;
+
+            return pieceData;
+        }
+
+        public override void Deserialize(Dictionary<string, Object> pieceData)
+        {
+            base.Deserialize(pieceData);
+
+            if (pieceData.ContainsKey("flame_burningFramesLeft")) this.burningFramesLeft = (int)(Int64)pieceData["flame_burningFramesLeft"];
         }
     }
 }
