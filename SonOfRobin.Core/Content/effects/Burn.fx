@@ -30,12 +30,11 @@ float4 MainPS(VertexShaderOutput input) : COLOR
 
 	float4 originalColor = tex2D(s0, input.TextureCoordinates);
 	if (originalColor.a <= 0.5) return originalColor;
-	
+
 	float4 gray;
 	gray.rgb = (originalColor.r + originalColor.g + originalColor.b) / 3.0;
 	gray.a = 1;
 
-	// return ((1 - opacity) * originalColor) + (opacity * newColor);
 	return (originalColor * (1 - opacity)) + (opacity * (gray + (newColor * 0.8)));
 }
 

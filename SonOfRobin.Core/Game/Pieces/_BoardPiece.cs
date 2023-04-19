@@ -78,6 +78,7 @@ namespace SonOfRobin
         public readonly byte stackSize;
         public readonly float fireAffinity;
         private float burnLevel;
+        public int LastHeated { get; private set; } // frame, at which it was last heated
         public PieceStorage PieceStorage { get; protected set; }
         public BuffEngine buffEngine; // active buffs
         public List<Buff> buffList; // buff to be activated when this piece (equip, food, etc.) is used by another piece
@@ -154,6 +155,7 @@ namespace SonOfRobin
             if (this.appearDebris != null) this.appearDebris.AddPiece(this);
             this.canBeHit = true;
             this.burnLevel = 0f;
+            this.LastHeated = 0;
             this.fireAffinity = fireAffinity;
             this.canShrink = canShrink;
             this.isTemporaryDecoration = false; // to be set later
@@ -238,14 +240,21 @@ namespace SonOfRobin
                 float valDiff = value - this.burnLevel;
                 if (valDiff > 0) valDiff *= this.buffEngine != null && this.buffEngine.HasBuff(BuffEngine.BuffType.Wet) ? this.fireAffinity / 4 : this.fireAffinity;
 
+                this.sprite.effectCol.RemoveEffectsOfType(effect: SonOfRobinGame.EffectBurn);
+
+                if (valDiff > 0)
+                {
+                    this.LastHeated = this.world.CurrentUpdate;
+                    this.sprite.effectCol.AddEffect(new BurnInstance(color: Color.Red, opacity: this.burnLevel, framesLeft: -1));
+                    this.world.worldEventManager.RemoveAllSpecificEventsForPieceFromQueue(pieceToRemove: this, eventName: WorldEvent.EventName.BurnCoolDown);
+                    new WorldEvent(eventName: WorldEvent.EventName.BurnCoolDown, world: this.world, delay: 60, boardPiece: this);
+                }
+
                 this.burnLevel += valDiff;
                 this.burnLevel = Math.Max(this.burnLevel, 0);
                 this.burnLevel = Math.Min(this.burnLevel, 1);
 
                 bool isBurning = this.IsBurning;
-
-                this.sprite.effectCol.RemoveEffectsOfType(effect: SonOfRobinGame.EffectBurn);
-                if (this.burnLevel > 0) this.sprite.effectCol.AddEffect(new BurnInstance(color: Color.Red, opacity: this.burnLevel, framesLeft: -1));
 
                 if (isBurning && this.GetType() == typeof(Animal) && this.activeState != State.AnimalRunForClosestWater)
                 {
@@ -284,12 +293,6 @@ namespace SonOfRobin
                     }
 
                     this.buffEngine?.RemoveEveryBuffOfType(BuffEngine.BuffType.Wet);
-                }
-
-                if (this.BurnLevel > 0)
-                {
-                    this.world.worldEventManager.RemoveAllSpecificEventsForPieceFromQueue(pieceToRemove: this, eventName: WorldEvent.EventName.BurnCoolDown);
-                    new WorldEvent(eventName: WorldEvent.EventName.BurnCoolDown, world: this.world, delay: 5, boardPiece: this);
                 }
             }
         }

@@ -124,7 +124,7 @@ namespace SonOfRobin
                     }
                 }
 
-                if (this.isBurning) this.Explode();
+                if (this.shootMode && this.isBurning) this.Explode();
 
                 this.shootMode = false;
 
