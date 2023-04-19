@@ -373,7 +373,7 @@ namespace SonOfRobin
 
                 case EventName.BurnCoolDown:
                     {
-                        if (this.boardPiece.sprite.IsInWater)
+                        if (!this.boardPiece.sprite.IsOnBoard || this.boardPiece.sprite.IsInWater)
                         {
                             this.boardPiece.BurnLevel = 0;
                             return;

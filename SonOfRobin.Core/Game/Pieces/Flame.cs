@@ -43,7 +43,14 @@ namespace SonOfRobin
 
             if (this.burningPiece != null && this.burningPiece.exists)
             {
-                if (this.burningPiece.sprite.IsInWater)
+                if (!this.burningPiece.sprite.IsOnBoard)
+                {
+                    this.burningPiece.BurnLevel = 0;
+                    this.StopBurning();
+                    return;
+                }
+
+                if (this.burningPiece.sprite.IsOnBoard && this.burningPiece.sprite.IsInWater)
                 {
                     this.burningPiece.BurnLevel = 0;
                     this.soundPack.Play(PieceSoundPack.Action.TurnOff); // only when is put out by water

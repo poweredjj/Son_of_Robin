@@ -252,7 +252,7 @@ namespace SonOfRobin
                 this.burnLevel = Math.Min(this.burnLevel, 1);
 
                 this.sprite.effectCol.RemoveEffectsOfType(effect: SonOfRobinGame.EffectBurn);
-                if (this.burnLevel > 0) this.sprite.effectCol.AddEffect(new BurnInstance(intensity: this.burnLevel, framesLeft: -1));
+                if (this.burnLevel > 0) this.sprite.effectCol.AddEffect(new BurnInstance(intensity: this.burnLevel, boardPiece: this, framesLeft: -1));
 
                 bool isBurning = this.IsBurning;
 
