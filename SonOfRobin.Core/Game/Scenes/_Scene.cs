@@ -77,12 +77,22 @@ namespace SonOfRobin
             }
         }
 
+        private static int currentUpdateStackUpdateNo = -1;
+        private static List<Scene> currentUpdateStack = new List<Scene>();
+
+        private static int currentDrawStackUpdateNo = -1;
+        private static List<Scene> currentDrawStack = new List<Scene>();
+
         public static List<Scene> UpdateStack
         {
             get
             {
-                var createdStack = new List<Scene> { };
-                if (sceneStack.Count == 0) return createdStack;
+                if (SonOfRobinGame.CurrentUpdate == currentUpdateStackUpdateNo) return currentUpdateStack;
+
+                currentUpdateStackUpdateNo = SonOfRobinGame.CurrentUpdate;
+                currentUpdateStack.Clear();
+
+                if (sceneStack.Count == 0) return currentUpdateStack;
 
                 var sortedSceneStack = sceneStack.OrderByDescending(o => o.priority).ToList();
                 sortedSceneStack.Reverse();
@@ -91,12 +101,12 @@ namespace SonOfRobin
 
                 foreach (Scene scene in sortedSceneStack)
                 {
-                    if ((!ignoreScenes && scene.updateActive) || scene.alwaysUpdates) createdStack.Add(scene);
+                    if ((!ignoreScenes && scene.updateActive) || scene.alwaysUpdates) currentUpdateStack.Add(scene);
                     if (scene.blocksUpdatesBelow) ignoreScenes = true;
                 }
 
-                createdStack.Reverse();
-                return createdStack;
+                currentUpdateStack.Reverse();
+                return currentUpdateStack;
             }
         }
 
@@ -104,8 +114,12 @@ namespace SonOfRobin
         {
             get
             {
-                var createdStack = new List<Scene> { };
-                if (sceneStack.Count == 0) return createdStack;
+                if (SonOfRobinGame.CurrentUpdate == currentDrawStackUpdateNo) return currentDrawStack;
+
+                currentDrawStackUpdateNo = SonOfRobinGame.CurrentUpdate;
+                currentDrawStack.Clear();
+
+                if (sceneStack.Count == 0) return currentDrawStack;
 
                 var sortedSceneStack = sceneStack.OrderByDescending(o => o.priority).ToList();
                 sortedSceneStack.Reverse();
@@ -120,15 +134,15 @@ namespace SonOfRobin
 
                     if ((scene.drawActive || scene.alwaysDraws) && scene.viewParams.drawOpacity > 0f)
                     {
-                        createdStack.Add(scene);
+                        currentDrawStack.Add(scene);
                         if (scene.hidesSameScenesBelow && !hiddenTypes.Contains(sceneType)) hiddenTypes.Add(sceneType);
                     }
 
                     if (scene.blocksDrawsBelow) break;
                 }
 
-                createdStack.Reverse();
-                return createdStack;
+                currentDrawStack.Reverse();
+                return currentDrawStack;
             }
         }
 
