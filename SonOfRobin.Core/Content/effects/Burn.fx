@@ -9,8 +9,8 @@
 
 Texture2D SpriteTexture;
 sampler s0;
-float4 newColor;
-float opacity;
+float intensity;
+float time;
 
 sampler2D SpriteTextureSampler = sampler_state
 {
@@ -28,14 +28,21 @@ float4 MainPS(VertexShaderOutput input) : COLOR
 {
 	// shaders use color value range 0.0f - 1.0f
 
+	float4 fireColor = float4(0.8, 0.0, 0.0, 1.0) * (1.0 - input.TextureCoordinates.y);
+
 	float4 originalColor = tex2D(s0, input.TextureCoordinates);
 	if (originalColor.a <= 0.5) return originalColor;
 
+	// Calculate burning effect
+	float burn = sin((input.TextureCoordinates.y + time) * 5) * 0.1;
+	float3 burnColor = float3(1.0, 0.5, 0.0) * burn * (1.0 - input.TextureCoordinates.y);
+
+	// Modify color calculation to add burning effect
 	float4 gray;
-	gray.rgb = (originalColor.r + originalColor.g + originalColor.b) / 3.0;
+	gray.rgb = (originalColor.r + originalColor.g + originalColor.b) / 3.0 + burnColor;
 	gray.a = 1;
 
-	return (originalColor * (1 - opacity)) + (opacity * (gray + (newColor * 0.8)));
+	return (originalColor * (1 - intensity)) + (intensity * (gray + fireColor));
 }
 
 technique SpriteDrawing

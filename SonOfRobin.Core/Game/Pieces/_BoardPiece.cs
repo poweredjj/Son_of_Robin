@@ -247,7 +247,7 @@ namespace SonOfRobin
                 if (valDiff > 0)
                 {
                     this.LastHeated = this.world.CurrentUpdate;
-                    this.sprite.effectCol.AddEffect(new BurnInstance(color: Color.Red, opacity: this.burnLevel, framesLeft: -1));
+                    this.sprite.effectCol.AddEffect(new BurnInstance(intensity: this.burnLevel, framesLeft: -1));
                     new WorldEvent(eventName: WorldEvent.EventName.BurnCoolDown, world: this.world, delay: 60, boardPiece: this);
                 }
                 else this.LastCooled = this.world.CurrentUpdate;

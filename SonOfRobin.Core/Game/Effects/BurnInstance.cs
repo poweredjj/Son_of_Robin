@@ -1,22 +1,18 @@
-﻿using Microsoft.Xna.Framework;
-
-namespace SonOfRobin
+﻿namespace SonOfRobin
 {
     public class BurnInstance : EffInstance
     {
-        private readonly Vector4 color;
-        private readonly float opacity;
+        private readonly float intensity;
 
-        public BurnInstance(Color color, float opacity, int framesLeft = 1, int priority = 1) : base(effect: SonOfRobinGame.EffectBurn, framesLeft: framesLeft, priority: priority)
+        public BurnInstance(float intensity, int framesLeft = 1, int priority = 1) : base(effect: SonOfRobinGame.EffectBurn, framesLeft: framesLeft, priority: priority)
         {
-            this.color = color.ToVector4();
-            this.opacity = opacity;
+            this.intensity = intensity;
         }
 
         public override void TurnOn(int currentUpdate)
         {
-            this.effect.Parameters["newColor"].SetValue(this.color);
-            this.effect.Parameters["opacity"].SetValue(this.opacity);
+            this.effect.Parameters["intensity"].SetValue(this.intensity);
+            this.effect.Parameters["time"].SetValue(SonOfRobinGame.CurrentUpdate / 35f);
 
             base.TurnOn(currentUpdate);
         }
