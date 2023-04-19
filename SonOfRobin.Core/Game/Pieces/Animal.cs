@@ -785,8 +785,6 @@ namespace SonOfRobin
                 return;
             }
 
-            // TODO find out why animal is stuck in this state sometimes, when in water
-
             if (!this.aiData.targetPosIsSet)
             {
                 int searchRange = 0;
