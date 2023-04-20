@@ -331,6 +331,15 @@ namespace SonOfRobin
             DebrisSoot1,
             DebrisSoot2,
             DebrisSoot3,
+
+            MineralsMossyBig5,
+            MineralsMossyBig6,
+            MineralsMossyBig7,
+            MineralsMossyBig8,
+            MineralsMossyBig9,
+            MineralsMossyBig10,
+            MineralsMossyBig11,
+            MineralsMossyBig12,
         }
 
         public static void AddFrameList(PkgName animPackage, byte animSize, List<AnimFrame> frameList, string animName = "default")
@@ -872,15 +881,23 @@ namespace SonOfRobin
             AddFrameList(animPackage: PkgName.MineralsSmall2, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "minerals_small_2", layer: 1, scale: 0.3f, depthPercent: 0.35f));
             AddFrameList(animPackage: PkgName.MineralsSmall3, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "minerals_small_3", layer: 1, scale: 0.45f, depthPercent: 0.35f));
 
-            AddFrameList(animPackage: PkgName.MineralsMossyBig1, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "mossy_minerals_big_1", layer: 1, scale: 0.6f, depthPercent: 0.6f));
-            AddFrameList(animPackage: PkgName.MineralsMossyBig2, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "mossy_minerals_big_2", layer: 1, scale: 0.5f, depthPercent: 0.6f));
-            AddFrameList(animPackage: PkgName.MineralsMossyBig3, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "mossy_minerals_big_3", layer: 1, scale: 0.5f, depthPercent: 0.6f));
-            AddFrameList(animPackage: PkgName.MineralsMossyBig4, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "mossy_minerals_big_4", layer: 1, scale: 0.45f, depthPercent: 0.6f));
+            AddFrameList(animPackage: PkgName.MineralsMossyBig1, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "mossy_minerals_big_1", layer: 1, scale: 0.28f, depthPercent: 0.6f));
+            AddFrameList(animPackage: PkgName.MineralsMossyBig2, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "mossy_minerals_big_2", layer: 1, scale: 0.28f, depthPercent: 0.6f));
+            AddFrameList(animPackage: PkgName.MineralsMossyBig3, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "mossy_minerals_big_3", layer: 1, scale: 0.28f, depthPercent: 0.6f));
+            AddFrameList(animPackage: PkgName.MineralsMossyBig4, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "mossy_minerals_big_4", layer: 1, scale: 0.28f, depthPercent: 0.6f));
+            AddFrameList(animPackage: PkgName.MineralsMossyBig5, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "mossy_minerals_big_5", layer: 1, scale: 0.28f, depthPercent: 0.6f));
+            AddFrameList(animPackage: PkgName.MineralsMossyBig6, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "mossy_minerals_big_6", layer: 1, scale: 0.28f, depthPercent: 0.6f));
+            AddFrameList(animPackage: PkgName.MineralsMossyBig7, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "mossy_minerals_big_7", layer: 1, scale: 0.28f, depthPercent: 0.6f));
+            AddFrameList(animPackage: PkgName.MineralsMossyBig8, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "mossy_minerals_big_8", layer: 1, scale: 0.28f, depthPercent: 0.6f));
+            AddFrameList(animPackage: PkgName.MineralsMossyBig9, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "mossy_minerals_big_9", layer: 1, scale: 0.28f, depthPercent: 0.6f));
+            AddFrameList(animPackage: PkgName.MineralsMossyBig10, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "mossy_minerals_big_10", layer: 1, scale: 0.28f, depthPercent: 0.6f));
+            AddFrameList(animPackage: PkgName.MineralsMossyBig11, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "mossy_minerals_big_11", layer: 1, scale: 0.28f, depthPercent: 0.6f));
+            AddFrameList(animPackage: PkgName.MineralsMossyBig12, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "mossy_minerals_big_12", layer: 1, scale: 0.28f, depthPercent: 0.6f));
 
-            AddFrameList(animPackage: PkgName.MineralsMossySmall1, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "mossy_minerals_small_1", layer: 1, scale: 0.35f, depthPercent: 0.45f));
-            AddFrameList(animPackage: PkgName.MineralsMossySmall2, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "mossy_minerals_small_2", layer: 1, scale: 0.35f, depthPercent: 0.45f));
-            AddFrameList(animPackage: PkgName.MineralsMossySmall3, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "mossy_minerals_small_3", layer: 1, scale: 0.35f, depthPercent: 0.45f));
-            AddFrameList(animPackage: PkgName.MineralsMossySmall4, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "mossy_minerals_small_4", layer: 1, scale: 0.35f, depthPercent: 0.45f));
+            AddFrameList(animPackage: PkgName.MineralsMossySmall1, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "mossy_minerals_small_1", layer: 1, scale: 0.2f, depthPercent: 0.45f));
+            AddFrameList(animPackage: PkgName.MineralsMossySmall2, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "mossy_minerals_small_2", layer: 1, scale: 0.2f, depthPercent: 0.45f));
+            AddFrameList(animPackage: PkgName.MineralsMossySmall3, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "mossy_minerals_small_3", layer: 1, scale: 0.2f, depthPercent: 0.45f));
+            AddFrameList(animPackage: PkgName.MineralsMossySmall4, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "mossy_minerals_small_4", layer: 1, scale: 0.2f, depthPercent: 0.45f));
 
             AddFrameList(animPackage: PkgName.WaterLily1, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "tile_19ba32a6", layer: 0, x: 384, y: 64, width: 32, height: 32));
             AddFrameList(animPackage: PkgName.WaterLily2, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "tile_19ba32a6", layer: 0, x: 416, y: 0, width: 32, height: 32));
