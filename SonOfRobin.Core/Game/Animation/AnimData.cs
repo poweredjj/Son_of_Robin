@@ -457,11 +457,15 @@ namespace SonOfRobin
             }
             {
                 PkgName packageName = PkgName.TomatoPlant;
-                AddFrameList(animPackage: packageName, animSize: 0,
-                frameList: ConvertImageToFrameList(atlasName: "celianna_farmnature_crops_transparent", layer: 1, x: 297, y: 8, width: 14, height: 13));
-                AddFrameList(animPackage: packageName, animSize: 1,
-                frameList: ConvertImageToFrameList(atlasName: "celianna_farmnature_crops_transparent", layer: 1, x: 328, y: 4, width: 17, height: 24));
+                AddFrameList(animPackage: packageName, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "tomato_plant_small", layer: 1, scale: 0.1f));
+                AddFrameList(animPackage: packageName, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "tomato_plant_medium", layer: 1, scale: 0.08f));
+                AddFrameList(animPackage: packageName, animSize: 2, frameList: ConvertImageToFrameList(atlasName: "tomato_plant_big", layer: 1, scale: 0.08f));
+
+                AddFrameList(animPackage: packageName, animSize: 0, animName: "dead", frameList: ConvertImageToFrameList(atlasName: "tomato_plant_dead_small", layer: 1, scale: 0.1f));
+                AddFrameList(animPackage: packageName, animSize: 1, animName: "dead", frameList: ConvertImageToFrameList(atlasName: "tomato_plant_dead_medium", layer: 1, scale: 0.08f));
+                AddFrameList(animPackage: packageName, animSize: 2, animName: "dead", frameList: ConvertImageToFrameList(atlasName: "tomato_plant_dead_big", layer: 1, scale: 0.08f));
             }
+            AddFrameList(animPackage: PkgName.Tomato, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "tomato", layer: 0, scale: 0.07f));
             {
                 PkgName packageName = PkgName.ChestWooden;
                 AddFrameList(animPackage: packageName, animSize: 0, animName: "open",
@@ -805,9 +809,6 @@ namespace SonOfRobin
 
             AddFrameList(animPackage: PkgName.Shell4, animSize: 0,
                 frameList: ConvertImageToFrameList(atlasName: "8f296dbbaf43865bc29e99660fe7b5af_2x", layer: 0, x: 596, y: 848, width: 33, height: 33, scale: 0.5f));
-
-            AddFrameList(animPackage: PkgName.Tomato, animSize: 0,
-                frameList: ConvertImageToFrameList(atlasName: "fancy_food", layer: 0, x: 232, y: 207, width: 18, height: 18, scale: 0.5f));
 
             AddFrameList(animPackage: PkgName.MealStandard, animSize: 0,
                 frameList: ConvertImageToFrameList(atlasName: "fancy_food2", layer: 0, x: 288, y: 64, width: 32, height: 32, scale: 0.5f));

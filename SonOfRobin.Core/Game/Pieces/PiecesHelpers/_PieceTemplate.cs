@@ -757,9 +757,9 @@ namespace SonOfRobin
                             finalDroppedPieces: new List<Yield.DroppedPiece> { });
 
                         var bestEnvironment = new Dictionary<Terrain.Name, byte>() { { Terrain.Name.Humidity, 150 } };
-                        var maxMassForSize = new int[] { 900 };
+                        var maxMassForSize = new int[] { 450, 900 };
                         var reproduction = new PlantReproductionData(massNeeded: 1300, massLost: 300, bioWear: 0.32f);
-                        var fruitEngine = new FruitEngine(maxNumber: 3, oneFruitMass: 50f, yOffsetPercent: -0.1f, areaWidthPercent: 0.8f, areaHeightPercent: 0.7f, fruitName: Name.Tomato);
+                        var fruitEngine = new FruitEngine(maxNumber: 4, oneFruitMass: 50f, yOffsetPercent: -0.05f, areaWidthPercent: 0.85f, areaHeightPercent: 0.8f, fruitName: Name.Tomato);
 
                         return new Plant(name: templateName, world: world, id: id, blocksMovement: false, animPackage: AnimData.PkgName.TomatoPlant, allowedTerrain: allowedTerrain, category: BoardPiece.Category.SmallPlant,
                            maxHitPoints: 40, minDistance: 20, maxDistance: 200, bestEnvironment: bestEnvironment, mass: 1, maxMassForSize: maxMassForSize, maxAge: 1000, reproduction: reproduction, massToBurn: 9, massTakenMultiplier: 0.855f, generation: generation, staysAfterDeath: 500, fruitEngine: fruitEngine, boardTask: Scheduler.TaskName.DropFruit, readableName: "tomato plant", description: "Tomatoes can grow on it.", allowedDensity: new AllowedDensity(radious: 150, maxNoOfPiecesSameName: 2), yield: yield, fireAffinity: 0.4f);
