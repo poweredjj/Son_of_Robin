@@ -136,7 +136,7 @@ namespace SonOfRobin
             {
                 this.tweener = new Tweener();
 
-                int maxDistance = 100;
+                int maxDistance = 180;
 
                 Vector2 newPos = this.sprite.position + new Vector2(this.world.random.Next(-maxDistance, maxDistance), this.world.random.Next(-maxDistance, maxDistance));
                 newPos = this.sprite.world.KeepVector2InWorldBounds(newPos);

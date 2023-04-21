@@ -7,6 +7,18 @@ namespace SonOfRobin
 {
     public class PieceTemplate
     {
+        private static readonly Dictionary<Name, int> opacityFadeDurationByName = new Dictionary<Name, int> {
+            { Name.BurningFlame, 30 },
+            { Name.Zzz, 30 },
+            { Name.Exclamation, 30 },
+            { Name.JarTreasure, 30 },
+            { Name.ChestTreasureNormal, 30 },
+            { Name.ChestTreasureBig, 30 },
+            { Name.SwampGas, 180 },
+            { Name.LavaGas, 120 },
+            { Name.LavaFlame, 30 },
+            };
+
         public enum Name
         {
             Empty, // to be used instead of null
@@ -274,18 +286,6 @@ namespace SonOfRobin
                 if (boardPiece.appearDebris != null) boardPiece.appearDebris.DropDebris(ignoreProcessingTime: true);
 
                 // adding opacityFade
-
-                var opacityFadeDurationByName = new Dictionary<Name, int> {
-                    { Name.BurningFlame, 30 },
-                    { Name.Zzz, 30 },
-                    { Name.Exclamation, 30 },
-                    { Name.JarTreasure, 30 },
-                    { Name.ChestTreasureNormal, 30 },
-                    { Name.ChestTreasureBig, 30 },
-                    { Name.SwampGas, 180 },
-                    { Name.LavaGas, 120 },
-                    { Name.LavaFlame, 30 },
-                };
 
                 if (boardPiece.sprite.IsInCameraRect && (opacityFadeDurationByName.ContainsKey(templateName) || boardPiece.GetType() == typeof(Plant)))
                 {
