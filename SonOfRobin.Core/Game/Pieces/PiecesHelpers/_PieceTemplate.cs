@@ -274,12 +274,25 @@ namespace SonOfRobin
                 if (boardPiece.appearDebris != null) boardPiece.appearDebris.DropDebris(ignoreProcessingTime: true);
 
                 // adding opacityFade
-                var opacityFadeList = new List<Name> { Name.BurningFlame, Name.Zzz, Name.Exclamation, Name.JarTreasure, Name.ChestTreasureNormal, Name.ChestTreasureBig };
 
-                if (boardPiece.sprite.IsInCameraRect && (opacityFadeList.Contains(templateName) || boardPiece.GetType() == typeof(Plant)))
+                var opacityFadeDurationByName = new Dictionary<Name, int> {
+                    { Name.BurningFlame, 30 },
+                    { Name.Zzz, 30 },
+                    { Name.Exclamation, 30 },
+                    { Name.JarTreasure, 30 },
+                    { Name.ChestTreasureNormal, 30 },
+                    { Name.ChestTreasureBig, 30 },
+                    { Name.SwampGas, 180 },
+                    { Name.LavaGas, 120 },
+                    { Name.LavaFlame, 30 },
+                };
+
+                if (boardPiece.sprite.IsInCameraRect && (opacityFadeDurationByName.ContainsKey(templateName) || boardPiece.GetType() == typeof(Plant)))
                 {
+                    float destOpacity = boardPiece.sprite.opacity;
                     boardPiece.sprite.opacity = 0f;
-                    new OpacityFade(sprite: boardPiece.sprite, destOpacity: 1f);
+                    new OpacityFade(sprite: boardPiece.sprite, destOpacity: destOpacity,
+                        duration: opacityFadeDurationByName.ContainsKey(templateName) ? opacityFadeDurationByName[templateName] : 30);
                 }
             }
 

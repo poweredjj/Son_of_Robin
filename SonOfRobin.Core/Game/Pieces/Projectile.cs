@@ -171,7 +171,7 @@ namespace SonOfRobin
                 if (!ignoredTypesList.Contains(piece.GetType())) piecesToHeat.Add(piece);
             }
 
-            var piecesWithinLargeRange = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.Visible, mainSprite: this.sprite, distance: 160, compareWithBottom: false);
+            var piecesWithinLargeRange = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.Visible, mainSprite: this.sprite, distance: 180, compareWithBottom: false);
             var piecesAffectedInLargeRange = new List<PieceTemplate.Name> { PieceTemplate.Name.SwampGas };
 
             foreach (BoardPiece piece in piecesWithinLargeRange)

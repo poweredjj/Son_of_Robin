@@ -132,7 +132,7 @@ namespace SonOfRobin
 
             if (!this.sprite.IsInCameraRect) return;
 
-            if (this.tweener == null)
+            if (this.tweener == null && this.sprite.opacityFade == null) // tween should not start before opacityFade finishes
             {
                 this.tweener = new Tweener();
 
@@ -157,9 +157,11 @@ namespace SonOfRobin
                     .Easing(EasingFunctions.QuadraticInOut);
             }
 
-            this.tweener.Update((float)Scene.CurrentGameTime.ElapsedGameTime.TotalSeconds);
-
-            this.sprite.SetNewPosition(this.sprite.position); // to update grid, because tweener will change the position directly
+            if (this.tweener != null)
+            {
+                this.tweener.Update((float)Scene.CurrentGameTime.ElapsedGameTime.TotalSeconds);
+                this.sprite.SetNewPosition(this.sprite.position); // to update grid, because tweener will change the position directly
+            }
         }
     }
 }
