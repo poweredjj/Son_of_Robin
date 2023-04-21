@@ -78,8 +78,6 @@ namespace SonOfRobin
         public readonly byte stackSize;
         public readonly float fireAffinity;
         private float burnLevel;
-        public int LastHeated { get; private set; } // frame, at which it was last heated
-        public int LastCooled { get; private set; } // frame, at which it was last cooled
         public PieceStorage PieceStorage { get; protected set; }
         public BuffEngine buffEngine; // active buffs
         public List<Buff> buffList; // buff to be activated when this piece (equip, food, etc.) is used by another piece
@@ -156,8 +154,6 @@ namespace SonOfRobin
             if (this.appearDebris != null) this.appearDebris.AddPiece(this);
             this.canBeHit = true;
             this.burnLevel = 0f;
-            this.LastHeated = 0;
-            this.LastCooled = 0;
             this.fireAffinity = fireAffinity;
             this.canShrink = canShrink;
             this.isTemporaryDecoration = false; // to be set later
@@ -242,14 +238,11 @@ namespace SonOfRobin
                 float valDiff = value - this.burnLevel;
                 if (valDiff > 0) valDiff *= this.buffEngine != null && this.buffEngine.HasBuff(BuffEngine.BuffType.Wet) ? this.fireAffinity / 4 : this.fireAffinity;
 
-                new WorldEvent(eventName: WorldEvent.EventName.BurnCoolDown, world: this.world, delay: 60, boardPiece: this);
-
-                if (valDiff > 0) this.LastHeated = this.world.CurrentUpdate;
-                else this.LastCooled = this.world.CurrentUpdate;
-
                 this.burnLevel += valDiff;
                 this.burnLevel = Math.Max(this.burnLevel, 0);
                 this.burnLevel = Math.Min(this.burnLevel, 1);
+
+                if (this.burnLevel > 0) this.world.coolingManager.AddPiece(this);
 
                 this.sprite.effectCol.RemoveEffectsOfType(effect: SonOfRobinGame.EffectBurn);
                 if (this.burnLevel > 0) this.sprite.effectCol.AddEffect(new BurnInstance(intensity: this.burnLevel, boardPiece: this, framesLeft: -1));

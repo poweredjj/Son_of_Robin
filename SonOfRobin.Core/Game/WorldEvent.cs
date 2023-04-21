@@ -79,7 +79,7 @@ namespace SonOfRobin
     public class WorldEvent
     {
         public enum EventName
-        { Birth, Death, Destruction, TurnOffWorkshop, FinishCooking, RestorePieceCreation, FadeOutSprite, RestoreHint, RemoveBuff, BurnOutLightSource, RegenPoison, ChangeActiveState, FinishBuilding, PlaySoundByName, YieldDropDebris, BurnCoolDown }
+        { Birth, Death, Destruction, TurnOffWorkshop, FinishCooking, RestorePieceCreation, FadeOutSprite, RestoreHint, RemoveBuff, BurnOutLightSource, RegenPoison, ChangeActiveState, FinishBuilding, PlaySoundByName, YieldDropDebris }
 
         public readonly BoardPiece boardPiece;
         public readonly int startUpdateNo;
@@ -367,22 +367,6 @@ namespace SonOfRobin
                     {
                         Yield yield = (Yield)this.eventHelper;
                         yield.DropDebris(ignoreProcessingTime: true);
-
-                        return;
-                    }
-
-                case EventName.BurnCoolDown:
-                    {
-                        if (!this.boardPiece.sprite.IsOnBoard || this.boardPiece.sprite.IsInWater)
-                        {
-                            this.boardPiece.BurnLevel = 0;
-                            return;
-                        }
-
-                        if (this.boardPiece.LastCooled == world.CurrentUpdate) return; // only one cooling per frame
-
-                        if (world.CurrentUpdate - this.boardPiece.LastHeated >= 60) this.boardPiece.BurnLevel -= 0.0035f;
-                        if (this.boardPiece.BurnLevel > 0) new WorldEvent(eventName: EventName.BurnCoolDown, world: world, delay: 5, boardPiece: this.boardPiece);
 
                         return;
                     }

@@ -46,8 +46,7 @@ namespace SonOfRobin
         private RenderTarget2D darknessMask;
         public readonly Map map;
         public readonly PlayerPanel playerPanel;
-        public readonly SolidColorManager solidColorManager;
-        public readonly SMTypesManager stateMachineTypesManager;
+
         public readonly CraftStats craftStats;
         public List<PieceTemplate.Name> identifiedPieces; // pieces that were "looked at" in inventory
         private bool mapEnabled;
@@ -70,6 +69,9 @@ namespace SonOfRobin
         public readonly Weather weather;
         public readonly WorldEventManager worldEventManager;
         public readonly TrackingManager trackingManager;
+        public readonly SolidColorManager solidColorManager;
+        public readonly SMTypesManager stateMachineTypesManager;
+        public readonly CoolingManager coolingManager;
         private readonly ScrollingSurfaceManager scrollingSurfaceManager;
         public readonly SwayManager swayManager;
         public string debugText;
@@ -117,6 +119,7 @@ namespace SonOfRobin
             this.islandClock = this.saveGameData == null ? new IslandClock(0) : new IslandClock();
             this.worldEventManager = new WorldEventManager(this);
             this.trackingManager = new TrackingManager(this);
+            this.coolingManager = new CoolingManager(this);
             this.weather = new Weather(world: this, islandClock: this.islandClock);
             this.scrollingSurfaceManager = new ScrollingSurfaceManager(world: this);
             this.swayManager = new SwayManager(this);
@@ -571,6 +574,11 @@ namespace SonOfRobin
 
                 var eventDataList = (List<Object>)saveGameDataDict["events"];
                 this.worldEventManager.Deserialize(eventDataList);
+
+                // deserializing cooling data
+
+                var coolingData = (Dictionary<string, Object>)saveGameDataDict["cooling"];
+                this.coolingManager.Deserialize(coolingData);
 
                 // removing not needed data
 

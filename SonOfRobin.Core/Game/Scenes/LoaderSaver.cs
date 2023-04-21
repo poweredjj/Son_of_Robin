@@ -15,6 +15,7 @@ namespace SonOfRobin
         private const string hintsName = "hints.json";
         private const string trackingName = "tracking.json";
         private const string eventsName = "events.json";
+        private const string coolingName = "cooling.json";
         private const string weatherName = "weather.json";
         private const string gridName = "grid.json";
         public const string tempPrefix = "_save_temp_";
@@ -46,6 +47,7 @@ namespace SonOfRobin
         private Dictionary<string, Object> gridData;
         private List<Object> trackingData;
         private List<Object> eventsData;
+        private Dictionary<string, Object> coolingData;
         private readonly ConcurrentBag<Object> piecesData;
 
         // saving mode uses flags instead of data variables - to save ram
@@ -56,6 +58,7 @@ namespace SonOfRobin
         private bool gridSaved;
         private bool trackingSaved;
         private bool eventsSaved;
+        private bool coolingSaved;
         private bool piecesSaved;
 
         private string nextStepName;
@@ -118,6 +121,7 @@ namespace SonOfRobin
                     { "pieces", this.piecesData },
                     { "tracking", this.trackingData },
                     { "events", this.eventsData },
+                    { "cooling", this.coolingData },
             };
             }
         }
@@ -408,6 +412,19 @@ namespace SonOfRobin
                 FileReaderWriter.Save(path: eventPath, savedObj: eventData, compress: true);
 
                 this.eventsSaved = true;
+                this.nextStepName = "cooling";
+                return;
+            }
+
+            // saving cooling data
+            if (!this.coolingSaved)
+            {
+                var coolingData = this.world.coolingManager.Serialize();
+
+                string coolingPath = Path.Combine(this.saveTempPath, coolingName);
+                FileReaderWriter.Save(path: coolingPath, savedObj: coolingData, compress: true);
+
+                this.coolingSaved = true;
                 this.nextStepName = "replacing save slot data";
                 return;
             }
@@ -555,6 +572,23 @@ namespace SonOfRobin
                     this.ErrorOccured = true;
                 }
                 else this.eventsData = (List<Object>)FileReaderWriter.Load(path: eventPath);
+
+                this.nextStepName = "cooling";
+                return;
+            }
+
+            // loading cooling data
+            if (this.coolingData == null)
+            {
+                string coolingPath = Path.Combine(this.savePath, coolingName);
+                if (!FileReaderWriter.PathExists(coolingPath))
+                {
+                    // new TextWindow(text: "Error while reading cooling data.", textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false, closingTask: this.TextWindowTask);
+                    // this.ErrorOccured = true;
+
+                    this.coolingData = new Dictionary<string, Object>(); // for compatibility with older saves
+                }
+                else this.coolingData = (Dictionary<string, Object>)FileReaderWriter.Load(path: coolingPath);
 
                 this.nextStepName = "pieces 1";
                 return;
