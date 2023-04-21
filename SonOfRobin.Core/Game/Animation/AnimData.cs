@@ -764,17 +764,21 @@ namespace SonOfRobin
             }
             {
                 PkgName packageName = PkgName.Explosion;
-                var frameList = new List<AnimFrame> { };
 
-                for (int y = 0; y < 4; y++)
+                for (byte size = 0; size < 4; size++)
                 {
-                    for (int x = 0; x < 4; x++)
-                    {
-                        frameList.Add(ConvertImageToFrame(atlasName: "explosion", layer: 1, duration: 2, x: x * 32, y: y * 32, width: 32, height: 32, scale: 1.5f, crop: false));
-                    }
-                }
+                    var frameList = new List<AnimFrame> { };
 
-                AddFrameList(animPackage: packageName, animSize: 0, animName: "default", frameList: frameList);
+                    for (int y = 0; y < 4; y++)
+                    {
+                        for (int x = 0; x < 4; x++)
+                        {
+                            frameList.Add(ConvertImageToFrame(atlasName: "explosion", layer: 1, duration: 2, x: x * 32, y: y * 32, width: 32, height: 32, scale: 1.5f * (size + 1), crop: false));
+                        }
+                    }
+
+                    AddFrameList(animPackage: packageName, animSize: size, animName: "default", frameList: frameList);
+                }
             }
 
             AddFrameList(animPackage: PkgName.GlassDigSite, animSize: 0, animName: "default", frameList: new List<AnimFrame>

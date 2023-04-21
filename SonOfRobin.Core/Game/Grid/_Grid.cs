@@ -867,6 +867,21 @@ namespace SonOfRobin
             return cell.GetSpritesFromSurroundingCells(groupName);
         }
 
+        public List<BoardPiece> GetCollidingPiecesForRect(Cell.Group groupName, Rectangle rectToCheck)
+        {
+            var collidingPieces = new List<BoardPiece>();
+
+            foreach (Cell cell in this.GetCellsInsideRect(viewRect: rectToCheck, addPadding: false))
+            {
+                foreach (Sprite sprite in cell.GetSpritesFromSurroundingCells(groupName))
+                {
+                    if (rectToCheck.Intersects(sprite.colRect)) collidingPieces.Add(sprite.boardPiece);
+                }
+            }
+
+            return collidingPieces;
+        }
+
         public List<Cell> GetCellsInsideRect(Rectangle viewRect, bool addPadding)
         {
             // addPadding: +1 cell on each side, to ensure visibility of sprites, that cross their cells' boundaries

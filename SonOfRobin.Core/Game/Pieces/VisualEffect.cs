@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using MonoGame.Extended.Tweening;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace SonOfRobin
@@ -10,12 +11,14 @@ namespace SonOfRobin
         private Tweener tweener;
         private int rainStepsLeft;
         private Vector2 rainStep;
+        private readonly bool fogExplodesWhenBurns;
 
         public VisualEffect(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, State activeState, bool serialize, float fireAffinity,
-            byte animSize = 0, string animName = "default", ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = true, int generation = 0, bool canBePickedUp = false, bool visible = true, LightEngine lightEngine = null, bool ignoresCollisions = true, AllowedDensity allowedDensity = null, PieceSoundPack soundPack = null) :
+            byte animSize = 0, string animName = "default", ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = true, int generation = 0, bool canBePickedUp = false, bool visible = true, LightEngine lightEngine = null, bool ignoresCollisions = true, AllowedDensity allowedDensity = null, PieceSoundPack soundPack = null, bool fogExplodesWhenBurns = false) :
 
             base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, blocksMovement: false, minDistance: minDistance, maxDistance: maxDistance, ignoresCollisions: ignoresCollisions, name: name, destructionDelay: destructionDelay, allowedTerrain: allowedTerrain, floatsOnWater: floatsOnWater, maxMassForSize: null, generation: generation, canBePickedUp: canBePickedUp, serialize: serialize, readableName: readableName, description: description, category: Category.Indestructible, visible: visible, activeState: activeState, lightEngine: lightEngine, allowedDensity: allowedDensity, isAffectedByWind: false, fireAffinity: fireAffinity, soundPack: soundPack)
         {
+            this.fogExplodesWhenBurns = fogExplodesWhenBurns;
         }
 
         public override void SM_ScarePredatorsAway()
@@ -103,6 +106,29 @@ namespace SonOfRobin
             // Suitable only for passive temporary decorations, that will never be moved "manually".
             // Position and rotation change will cause drift over time, if such a piece be serialized and saved multiple times.
             // It should only be used for temporary decorations or pieces that will not get saved.
+
+            if (this.fogExplodesWhenBurns && this.IsBurning)
+            {
+                BoardPiece explosion = PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: this.sprite.position, templateName: PieceTemplate.Name.Explosion, closestFreeSpot: true);
+                explosion.sprite.AssignNewSize(3);
+
+                var ignoredTypesList = new List<Type> { typeof(Debris), typeof(Flame) };
+
+                var piecesWithinRange = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.Visible, mainSprite: this.sprite, distance: 230, compareWithBottom: true);
+                foreach (BoardPiece piece in piecesWithinRange)
+                {
+                    if (!ignoredTypesList.Contains(piece.GetType())) piece.BurnLevel += 2;
+                }
+
+                this.BurnLevel = 0;
+                this.sprite.color = Color.Yellow;
+                this.sprite.opacity = 1f;
+
+                new OpacityFade(sprite: this.sprite, destOpacity: 0, duration: 60, destroyPiece: true);
+                this.RemoveFromStateMachines();
+
+                return;
+            }
 
             if (!this.sprite.IsInCameraRect) return;
 

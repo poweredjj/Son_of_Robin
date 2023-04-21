@@ -6,13 +6,15 @@ namespace SonOfRobin
     {
         public readonly PieceTemplate.Name name;
         public readonly float multiplier;
+        public readonly int tempDecorMultiplier;
         public readonly int maxAmount;
         public readonly bool temporaryDecoration;
 
-        public PieceCreationData(PieceTemplate.Name name, float multiplier = 1, int maxAmount = -1, bool temporaryDecoration = false)
+        public PieceCreationData(PieceTemplate.Name name, float multiplier = 1, int maxAmount = -1, bool temporaryDecoration = false, int tempDecorMultiplier = 1)
         {
             this.name = name;
             this.multiplier = multiplier;
+            this.tempDecorMultiplier = tempDecorMultiplier;
             this.maxAmount = maxAmount; // -1 == no limit
             this.temporaryDecoration = temporaryDecoration; // only created dynamically in camera view and not saved (ignores multiplier and maxAmount)
         }
@@ -65,16 +67,16 @@ namespace SonOfRobin
                 new PieceCreationData(name: PieceTemplate.Name.Tiger, multiplier: 0.4f, maxAmount: maxAnimalsPerName),
                 new PieceCreationData(name: PieceTemplate.Name.Frog, multiplier: 0.2f, maxAmount: maxAnimalsPerName),
 
-                new PieceCreationData(name: PieceTemplate.Name.LavaFlame, temporaryDecoration: true),
-                new PieceCreationData(name: PieceTemplate.Name.SwampGas, temporaryDecoration: true),
-                new PieceCreationData(name: PieceTemplate.Name.LavaGas, temporaryDecoration: true),
+                new PieceCreationData(name: PieceTemplate.Name.LavaFlame, temporaryDecoration: true, tempDecorMultiplier: 1),
+                new PieceCreationData(name: PieceTemplate.Name.SwampGas, temporaryDecoration: true, tempDecorMultiplier: 6),
+                new PieceCreationData(name: PieceTemplate.Name.LavaGas, temporaryDecoration: true, tempDecorMultiplier: 1),
 
-                new PieceCreationData(name: PieceTemplate.Name.SoundSeaWaves, temporaryDecoration: true),
-                new PieceCreationData(name: PieceTemplate.Name.SoundSeaWind, temporaryDecoration: true),
-                new PieceCreationData(name: PieceTemplate.Name.SoundLakeWaves, temporaryDecoration: true),
-                new PieceCreationData(name: PieceTemplate.Name.SoundNightCrickets, temporaryDecoration: true),
-                new PieceCreationData(name: PieceTemplate.Name.SoundNoonCicadas, temporaryDecoration: true),
-                new PieceCreationData(name: PieceTemplate.Name.SoundLava, temporaryDecoration: true),
+                new PieceCreationData(name: PieceTemplate.Name.SoundSeaWaves, temporaryDecoration: true, tempDecorMultiplier: 1),
+                new PieceCreationData(name: PieceTemplate.Name.SoundSeaWind, temporaryDecoration: true, tempDecorMultiplier: 1),
+                new PieceCreationData(name: PieceTemplate.Name.SoundLakeWaves, temporaryDecoration: true, tempDecorMultiplier: 1),
+                new PieceCreationData(name: PieceTemplate.Name.SoundNightCrickets, temporaryDecoration: true, tempDecorMultiplier: 1),
+                new PieceCreationData(name: PieceTemplate.Name.SoundNoonCicadas, temporaryDecoration: true, tempDecorMultiplier: 1),
+                new PieceCreationData(name: PieceTemplate.Name.SoundLava, temporaryDecoration: true, tempDecorMultiplier: 1),
                 };
 
             //{ // for testing creation of selected pieces

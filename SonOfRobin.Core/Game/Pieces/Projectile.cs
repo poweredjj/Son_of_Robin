@@ -161,14 +161,30 @@ namespace SonOfRobin
 
         private void Explode()
         {
-            PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: this.sprite.position, templateName: PieceTemplate.Name.Explosion, closestFreeSpot: true);
+            var piecesToHeat = new List<BoardPiece>();
 
-            var piecesWithinRange = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.Visible, mainSprite: this.sprite, distance: 70, compareWithBottom: true);
-            foreach (BoardPiece piece in piecesWithinRange)
+            var piecesWithinSmallRange = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.Visible, mainSprite: this.sprite, distance: 70, compareWithBottom: true);
+            var ignoredTypesList = new List<Type> { typeof(Player), typeof(Debris), typeof(Flame) };
+
+            foreach (BoardPiece piece in piecesWithinSmallRange)
             {
-                if (piece.GetType() != typeof(Player)) piece.BurnLevel += this.baseHitPower * 12;
+                if (!ignoredTypesList.Contains(piece.GetType())) piecesToHeat.Add(piece);
             }
 
+            var piecesWithinLargeRange = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.Visible, mainSprite: this.sprite, distance: 160, compareWithBottom: false);
+            var piecesAffectedInLargeRange = new List<PieceTemplate.Name> { PieceTemplate.Name.SwampGas };
+
+            foreach (BoardPiece piece in piecesWithinLargeRange)
+            {
+                if (piecesAffectedInLargeRange.Contains(piece.name) && !piecesToHeat.Contains(piece)) piecesToHeat.Add(piece);
+            }
+
+            foreach (BoardPiece piece in piecesToHeat)
+            {
+                piece.BurnLevel += this.baseHitPower * 12;
+            }
+
+            PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: this.sprite.position, templateName: PieceTemplate.Name.Explosion, closestFreeSpot: true);
             this.Destroy();
         }
 

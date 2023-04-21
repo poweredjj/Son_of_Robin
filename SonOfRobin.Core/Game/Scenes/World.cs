@@ -790,30 +790,43 @@ namespace SonOfRobin
                 {
                     if (cell.allowedNames.Contains(pieceCreationData.name))
                     {
-                        for (int i = 0; i < 3; i++)
+                        for (int count = 0; count < pieceCreationData.tempDecorMultiplier; count++)
                         {
-                            Vector2 randomPosition = new Vector2(this.random.Next(cell.xMin, cell.xMax), this.random.Next(cell.yMin, cell.yMax));
-
-                            var newBoardPiece = PieceTemplate.CreateAndPlaceOnBoard(templateName: pieceCreationData.name, world: this, position: randomPosition);
-                            if (newBoardPiece.sprite.IsOnBoard)
+                            for (int tryNo = 0; tryNo < 3; tryNo++)
                             {
-                                this.temporaryDecorationSprites.Add(newBoardPiece.sprite);
-                                newBoardPiece.isTemporaryDecoration = true;
-                                createdDecorationsCount++;
-                                break;
+                                Vector2 randomPosition = new Vector2(this.random.Next(cell.xMin, cell.xMax), this.random.Next(cell.yMin, cell.yMax));
+
+                                var newBoardPiece = PieceTemplate.CreateAndPlaceOnBoard(templateName: pieceCreationData.name, world: this, position: randomPosition);
+                                if (newBoardPiece.sprite.IsOnBoard)
+                                {
+                                    this.temporaryDecorationSprites.Add(newBoardPiece.sprite);
+                                    newBoardPiece.isTemporaryDecoration = true;
+                                    createdDecorationsCount++;
+                                    break;
+                                }
+
+                                if (!ignoreDuration && !this.CanProcessMoreNonPlantsNow)
+                                {
+                                    this.ShowTempDecorsMessage(createdDecorationsCount: createdDecorationsCount, creationStarted: creationStarted, completed: false);
+                                    return;
+                                }
                             }
                         }
-                        if (!ignoreDuration && !this.CanProcessMoreNonPlantsNow) break;
                     }
                 }
 
                 cell.temporaryDecorationsCreated = true;
             }
 
+            this.ShowTempDecorsMessage(createdDecorationsCount: createdDecorationsCount, creationStarted: creationStarted, completed: true);
+        }
+
+        private void ShowTempDecorsMessage(int createdDecorationsCount, DateTime creationStarted, bool completed)
+        {
             if (createdDecorationsCount > 0)
             {
                 TimeSpan tempDecorCreationDuration = DateTime.Now - creationStarted;
-                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Temp decors created: {createdDecorationsCount} total: {this.temporaryDecorationSprites.Count} duration: {tempDecorCreationDuration:\\:ss\\.fff}");
+                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Temp decors created: {createdDecorationsCount} total: {this.temporaryDecorationSprites.Count} duration: {tempDecorCreationDuration:\\:ss\\.fff} completed: {completed}");
             }
         }
 
@@ -887,7 +900,7 @@ namespace SonOfRobin
             bool createMissingPieces = this.CurrentUpdate % 200 == 0 && Preferences.debugCreateMissingPieces && !this.CineMode && !this.BuildMode;
             if (createMissingPieces) this.CreateMissingPieces(initialCreation: false, maxAmountToCreateAtOnce: 100, outsideCamera: true, multiplier: 0.1f);
 
-            if (!createMissingPieces && this.CurrentUpdate % 62 == 0)
+            if (!createMissingPieces && this.CurrentUpdate % 31 == 0)
             {
                 this.DestroyTemporaryDecorationsOutsideCamera();
                 this.CreateTemporaryDecorations(ignoreDuration: false);
