@@ -49,6 +49,7 @@ namespace SonOfRobin
             // checking for rain and water
 
             float rainPercentage = this.world.weather.RainPercentage;
+            bool isRaining = this.world.weather.IsRaining;
             this.Mass -= rainPercentage * 0.01f;
 
             if (this.burningPiece != null && this.burningPiece.exists)
@@ -80,6 +81,8 @@ namespace SonOfRobin
             int affectedDistance = Math.Min(Math.Max((int)(this.Mass / 20), 25), 110);
 
             float baseBurnVal = Math.Max(this.Mass / 60f, 1);
+            if (isRaining) baseBurnVal /= 4;
+
             float baseHitPointsVal = (float)baseBurnVal / 180f;
 
             // warming up nearby pieces
@@ -140,7 +143,9 @@ namespace SonOfRobin
                         this.world.FlashRedOverlay();
                     }
                 }
-                if (!this.world.weather.IsRaining) this.Mass += baseBurnVal;
+
+                if (isRaining) this.Mass *= 0.985f;
+                else this.Mass += baseBurnVal;
 
                 if (this.burningPiece.hitPoints == 0)
                 {
@@ -171,9 +176,10 @@ namespace SonOfRobin
             }
         }
 
-        private void StopBurning()
+        private void StopBurning(bool playSound = false)
         {
             this.soundPack.Stop(PieceSoundPack.Action.IsOn);
+            if (playSound || this.world.weather.IsRaining) this.soundPack.Play(PieceSoundPack.Action.TurnOff);
             new OpacityFade(sprite: this.sprite, destOpacity: 0f, duration: 20, destroyPiece: true);
             this.RemoveFromStateMachines();
         }

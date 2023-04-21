@@ -27,9 +27,11 @@ namespace SonOfRobin
 
             var idsToRemove = new List<string>();
 
+            bool isRaining = this.world.weather.IsRaining;
+
             foreach (BoardPiece boardPiece in this.pieceByID.Values)
             {
-                bool isCold = this.CoolBoardPiece(boardPiece);
+                bool isCold = this.CoolBoardPiece(boardPiece: boardPiece, isRaining: isRaining);
                 if (isCold) idsToRemove.Add(boardPiece.id);
             }
 
@@ -39,7 +41,7 @@ namespace SonOfRobin
             }
         }
 
-        private bool CoolBoardPiece(BoardPiece boardPiece)
+        private bool CoolBoardPiece(BoardPiece boardPiece, bool isRaining)
         {
             if (!boardPiece.sprite.IsOnBoard ||
                 boardPiece.sprite.IsInWater ||
@@ -49,7 +51,7 @@ namespace SonOfRobin
                 return true;
             }
 
-            boardPiece.BurnLevel -= this.world.weather.IsRaining ? 0.02f : 0.0035f;
+            boardPiece.BurnLevel -= isRaining ? 0.02f : 0.0035f;
 
             return boardPiece.BurnLevel == 0;
         }
