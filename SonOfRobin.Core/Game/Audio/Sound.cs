@@ -163,16 +163,30 @@ namespace SonOfRobin
                 this.UpdatePosition(instance);
             }
 
+            bool instanceStartedCorrectly = false;
+
             try
             {
                 instance.Play();
+                instanceStartedCorrectly = true;
             }
             catch (InstancePlayLimitException)
             {
-                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"InstancePlayLimitException reached, sound '{soundName}' will not be played.");
+                bool instanceStopped = SoundInstanceManager.StopOldestActiveInstance();
+                if (instanceStopped)
+                {
+                    try
+                    {
+                        instance.Play();
+                        instanceStartedCorrectly = true;
+                    }
+                    catch (InstancePlayLimitException)
+                    { }
+                }
             }
 
-            currentlyPlaying[this.Id] = this;
+            if (instanceStartedCorrectly) currentlyPlaying[this.Id] = this;
+            else MessageLog.AddMessage(msgType: MsgType.Debug, message: $"InstancePlayLimitException reached, sound '{soundName}' will not be played.");
         }
 
         private void CreateSoundVisual()
