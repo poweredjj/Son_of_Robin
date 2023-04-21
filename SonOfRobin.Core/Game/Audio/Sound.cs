@@ -179,6 +179,7 @@ namespace SonOfRobin
                     {
                         instance.Play();
                         instanceStartedCorrectly = true;
+                        MessageLog.AddMessage(msgType: MsgType.Debug, message: "Instance stopped correctly.");
                     }
                     catch (InstancePlayLimitException)
                     { }

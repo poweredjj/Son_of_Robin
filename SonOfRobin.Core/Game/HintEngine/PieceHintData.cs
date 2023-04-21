@@ -333,6 +333,12 @@ namespace SonOfRobin
                     type: PieceHint.Type.DangerousTiger, fieldPiecesNearby: new List<PieceTemplate.Name> {PieceTemplate.Name.Tiger},
                     message: $"This | {PieceInfo.GetInfo(PieceTemplate.Name.Tiger).readableName} looks very dangerous!\nI'd rather stay away.",
                     imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.Tiger) }),
+
+                new PieceHint(
+                    type: PieceHint.Type.ExplosiveGas, fieldPiecesNearby: new List<PieceTemplate.Name> { PieceTemplate.Name.SwampGas },
+                    message: $"This gas seems to be | flammable.\nI should take care when using || {PieceInfo.GetInfo(PieceTemplate.Name.ArrowBurning).readableName} there.",
+                    imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.BurningFlame), PieceInfo.GetTexture(PieceTemplate.Name.ArrowBurning), PieceInfo.GetTexture(PieceTemplate.Name.BowWood) },
+                    playerOwnsAllOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.BowWood, PieceTemplate.Name.ArrowBurning }),
                 };
 
             CheckData(newPieceHintList);

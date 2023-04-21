@@ -109,6 +109,8 @@ namespace SonOfRobin
 
             if (this.fogExplodesWhenBurns && this.IsBurning)
             {
+                this.world.HintEngine.Disable(PieceHint.Type.ExplosiveGas);
+
                 BoardPiece explosion = PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: this.sprite.position, templateName: PieceTemplate.Name.Explosion, closestFreeSpot: true);
                 explosion.sprite.AssignNewSize(3);
 

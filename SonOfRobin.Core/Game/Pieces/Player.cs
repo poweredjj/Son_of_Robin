@@ -383,8 +383,8 @@ namespace SonOfRobin
         {
             if (Preferences.DebugGodMode || !PieceInfo.IsPlayer(this.name)) return;
 
-            foreach (PieceStorage storage in this.CraftStorages)
-            { storage.DropAllPiecesToTheGround(addMovement: true); }
+            //foreach (PieceStorage storage in this.CraftStorages) // disabled for now
+            //{ storage.DropAllPiecesToTheGround(addMovement: true); } // disabled for now
 
             if (this.buffEngine.HasBuff(BuffEngine.BuffType.LowHP)) this.buffEngine.RemoveEveryBuffOfType(BuffEngine.BuffType.LowHP);
 
