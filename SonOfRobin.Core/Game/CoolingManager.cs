@@ -23,6 +23,8 @@ namespace SonOfRobin
 
         public void Update()
         {
+            if (this.world.CurrentUpdate % 6 != 0) return;
+
             var idsToRemove = new List<string>();
 
             foreach (BoardPiece boardPiece in this.pieceByID.Values)
@@ -39,13 +41,15 @@ namespace SonOfRobin
 
         private bool CoolBoardPiece(BoardPiece boardPiece)
         {
-            if (!boardPiece.sprite.IsOnBoard || boardPiece.sprite.IsInWater)
+            if (!boardPiece.sprite.IsOnBoard ||
+                boardPiece.sprite.IsInWater ||
+                !boardPiece.exists)
             {
                 boardPiece.BurnLevel = 0;
                 return true;
             }
 
-            boardPiece.BurnLevel -= 0.0035f;
+            boardPiece.BurnLevel -= this.world.weather.IsRaining ? 0.02f : 0.0035f;
 
             return boardPiece.BurnLevel == 0;
         }
@@ -64,17 +68,17 @@ namespace SonOfRobin
         {
             this.pieceByID.Clear();
 
-            if (coolingData.ContainsKey("pieceIDList"))
+            if (coolingData.ContainsKey("pieceIDList")) // for compatibility with older saves
             {
                 List<string> idList = (List<string>)coolingData["pieceIDList"];
 
                 foreach (string pieceID in idList)
                 {
-                    if (!world.piecesByOldID.ContainsKey(pieceID))
+                    if (!this.world.piecesByOldID.ContainsKey(pieceID))
                     {
                         MessageLog.AddMessage(msgType: MsgType.Debug, message: $"CoolingData - cannot find boardPiece id {pieceID}.", color: Color.Orange);
                     }
-                    else this.pieceByID[pieceID] = world.piecesByOldID[pieceID];
+                    else this.pieceByID[pieceID] = this.world.piecesByOldID[pieceID];
                 }
             }
         }

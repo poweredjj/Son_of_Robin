@@ -366,24 +366,13 @@ namespace SonOfRobin
             //    SonOfRobinGame.FullScreenProgressBar.TurnOn(percentage: percentage, text: LoadingTips.GetTip());
             //}
 
-            //if (Keyboard.HasBeenPressed(Keys.F1))
-            //{
-            //    if (world == null) return;
-
-            //    world.weather.AddEvent(new WeatherEvent(type: Weather.WeatherType.Lightning, intensity: 1f, startTime: world.islandClock.IslandDateTime, duration: TimeSpan.FromSeconds(50), transitionLength: TimeSpan.FromSeconds(22)));
-
-            //    world.weather.AddEvent(new WeatherEvent(type: Weather.WeatherType.Clouds, intensity: 1f, startTime: world.islandClock.IslandDateTime, duration: TimeSpan.FromSeconds(100), transitionLength: TimeSpan.FromSeconds(5)));
-            //}
-
             if (Keyboard.HasBeenPressed(Keys.F1))
             {
                 if (world == null) return;
 
-                var piecesWithinRange = world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.Visible, mainSprite: world.Player.sprite, distance: 50, compareWithBottom: true);
-                foreach (BoardPiece piece in piecesWithinRange)
-                {
-                    piece.BurnLevel += 0.65f;
-                }
+                world.weather.AddEvent(new WeatherEvent(type: Weather.WeatherType.Lightning, intensity: 1f, startTime: world.islandClock.IslandDateTime, duration: TimeSpan.FromSeconds(50), transitionLength: TimeSpan.FromSeconds(22)));
+
+                world.weather.AddEvent(new WeatherEvent(type: Weather.WeatherType.Clouds, intensity: 1f, startTime: world.islandClock.IslandDateTime, duration: TimeSpan.FromSeconds(100), transitionLength: TimeSpan.FromSeconds(5)));
             }
 
             if (Keyboard.HasBeenPressed(Keys.F2))

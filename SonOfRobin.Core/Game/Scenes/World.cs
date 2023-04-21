@@ -897,6 +897,7 @@ namespace SonOfRobin
             {
                 this.trackingManager.ProcessQueue();
                 this.worldEventManager.ProcessQueue();
+                this.coolingManager.Update();
                 if (!this.BuildMode) this.UpdateAllAnims();
 
                 if (this.Player != null)

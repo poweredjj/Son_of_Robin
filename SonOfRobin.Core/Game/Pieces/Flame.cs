@@ -49,7 +49,7 @@ namespace SonOfRobin
             // checking for rain and water
 
             float rainPercentage = this.world.weather.RainPercentage;
-            this.Mass -= rainPercentage * rainPercentage * 0.01f;
+            this.Mass -= rainPercentage * 0.01f;
 
             if (this.burningPiece != null && this.burningPiece.exists)
             {
@@ -68,14 +68,10 @@ namespace SonOfRobin
                     return;
                 }
 
-                if (rainPercentage > 0)
+                if (!this.burningPiece.IsBurning)
                 {
-                    this.burningPiece.BurnLevel -= rainPercentage * 0.05f;
-                    if (!this.burningPiece.IsBurning)
-                    {
-                        this.StopBurning();
-                        return;
-                    }
+                    this.StopBurning();
+                    return;
                 }
             }
 
@@ -144,17 +140,14 @@ namespace SonOfRobin
                         this.world.FlashRedOverlay();
                     }
                 }
+                if (!this.world.weather.IsRaining) this.Mass += baseBurnVal;
 
-                this.Mass += baseBurnVal;
                 if (this.burningPiece.hitPoints == 0)
                 {
                     bool isAnimal = this.burningPiece.GetType() == typeof(Animal);
 
+                    if (isAnimal) this.burningPiece.soundPack.Play(PieceSoundPack.Action.IsDestroyed);
                     Yield.DebrisType debrisType = isAnimal ? Yield.DebrisType.Blood : Yield.DebrisType.Soot;
-                    if (isAnimal)
-                    {
-                        this.burningPiece.soundPack.Play(PieceSoundPack.Action.IsDestroyed);
-                    }
 
                     this.burningPiece.yield?.DropDebris(debrisTypeListOverride: new List<Yield.DebrisType> { debrisType });
                     this.burningPiece.Destroy();
