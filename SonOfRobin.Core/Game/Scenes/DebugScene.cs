@@ -57,7 +57,7 @@ namespace SonOfRobin
                 if (world.trackingManager.TrackingCount > 5000) debugLines.Add("WARNING, CHECK IF CORRECT!");
             }
 
-            debugLines.Add($"snd inst. total: {SoundInstanceManager.CreatedInstancesCount} act: {SoundInstanceManager.ActiveInstancesCount} inact: {SoundInstanceManager.InactiveInstancesCount} inact. names: {SoundInstanceManager.InactiveNamesCount}");
+            debugLines.Add($"snd inst. total: {SoundInstanceManager.CreatedInstancesCount} act: {SoundInstanceManager.ActiveInstancesCount} inact: {SoundInstanceManager.InactiveInstancesCount}");
 
             debugLines.Add($"GC {GC.CollectionCount(0)} {GC.CollectionCount(1)} {GC.CollectionCount(2)}");
 

@@ -5,6 +5,125 @@ using System.Linq;
 
 namespace SonOfRobin
 {
+    public class ManagedSoundInstance
+    {
+        private static readonly Dictionary<SoundData.Name, List<ManagedSoundInstance>> instancesByName = new Dictionary<SoundData.Name, List<ManagedSoundInstance>>();
+        private static readonly Dictionary<string, ManagedSoundInstance> instancesByPlayID = new Dictionary<string, ManagedSoundInstance>();
+        public static int CreatedInstancesCount { get; private set; } = 0;
+
+        private readonly SoundData.Name soundName;
+        private readonly SoundEffectInstance instance;
+        private readonly int hash;
+        private DateTime lastPlayed;
+
+        private string currentSoundID;
+
+        public ManagedSoundInstance(SoundData.Name soundName)
+        {
+            this.soundName = soundName;
+            this.instance = SoundData.soundsDict[soundName].CreateInstance();
+            this.hash = this.instance.GetHashCode();
+            this.currentSoundID = null;
+
+            CreatedInstancesCount++;
+        }
+
+        public void AssignSoundID(string id)
+        {
+            this.currentSoundID = id;
+            instancesByPlayID[id] = this;
+        }
+
+        public void Play()
+        {
+            if (this.currentSoundID == null) throw new ArgumentException($"Sound ID for {this.soundName} hasn't been set.");
+
+            try
+            {
+                this.instance.Play();
+                this.lastPlayed = DateTime.Now;
+            }
+            catch (InstancePlayLimitException)
+            {
+                // TODO add code for stopping other, stopped instance
+            }
+        }
+
+        public static bool StopOldestActiveInstance()
+        {
+            CleanUpActiveInstances();
+            ManagedSoundInstance oldestPlayingInstance = GetOldestPlayingInstance();
+            if (oldestPlayingInstance != null) oldestPlayingInstance.Stop();
+
+            return oldestID != null;
+        }
+
+        public static ManagedSoundInstance GetOldestPlayingInstance()
+        {
+            ManagedSoundInstance oldestPlayingInstance = null;
+            if (instancesByPlayID.Any()) oldestPlayingInstance = instancesByPlayID.OrderBy(x => x.Value).Select(x => x.Value).FirstOrDefault();
+
+            return oldestPlayingInstance;
+        }
+
+        public static void CleanUpActiveInstances()
+        {
+            var stoppedInstances = instancesByPlayID.Where(kvp => kvp.Value.instance.State == SoundState.Stopped).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+
+            foreach (var kvp in stoppedInstances)
+            {
+                string id = kvp.Key;
+                ManagedSoundInstance instance = kvp.Value;
+                instancesByPlayID.Remove(id);
+            }
+        }
+
+
+        public void Pause()
+        {
+            if (this.instance.State != SoundState.Stopped) this.instance.Pause();
+        }
+
+        public void Stop()
+        {
+            if (this.instance.State != SoundState.Stopped) this.instance.Stop();
+            instancesByPlayID.Remove(this.currentSoundID);
+            this.currentSoundID = null;
+        }
+
+        public bool IsPlaying
+        { get { return this.instance.State == SoundState.Playing; } }
+
+        public static ManagedSoundInstance GetNewOrStoppedInstance(SoundData.Name soundName)
+        {
+            if (!instancesByName.ContainsKey(soundName)) instancesByName[soundName] = new List<ManagedSoundInstance>();
+
+            foreach (ManagedSoundInstance managedSoundInstance in instancesByName[soundName])
+            {
+                if (!managedSoundInstance.IsPlaying) return managedSoundInstance;
+            }
+
+            ManagedSoundInstance newManagedInstance = new ManagedSoundInstance(soundName);
+            instancesByName[soundName].Add(newManagedInstance);
+
+            return newManagedInstance;
+        }
+
+        public static ManagedSoundInstance GetPlayingInstance(string id)
+        {
+            if (!instancesByPlayID.ContainsKey(id)) return null;
+
+            ManagedSoundInstance managedSoundInstance = instancesByPlayID[id];
+
+            if (managedSoundInstance.instance.State == SoundState.Stopped)
+            {
+                managedSoundInstance.Stop(); // to clear id
+                return null;
+            }
+            else return managedSoundInstance;
+        }
+    }
+
     public class SoundInstanceManager
     {
         private static readonly Dictionary<string, SoundEffectInstance> activeSoundInstancesByID = new Dictionary<string, SoundEffectInstance>();
@@ -33,8 +152,6 @@ namespace SonOfRobin
             }
         }
 
-        public static int InactiveNamesCount
-        { get { return inactiveInstancesByName.Keys.Count; } }
 
         public static SoundEffectInstance GetPlayingInstance(string id)
         {
