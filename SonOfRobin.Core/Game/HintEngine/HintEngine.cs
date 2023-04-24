@@ -10,7 +10,7 @@ namespace SonOfRobin
         public enum Type
         { Empty, Hungry, VeryHungry, Starving, Tired, VeryTired, CantUseToolsInWater, SmallInventory, MapNegative, Lava, BreakingItem, BrokenItem, BurntOutTorch, CineIntroduction, CineSmallBase, AnimalScaredOfFire, AnimalCounters, ZoomOutLocked, Lightning, TooDarkToUseTools };
 
-        private const int hintDelay = 1 * 1 * 60; // 1 * 60 * 60
+        private const int hintDelay = 1 * 60 * 60; // 1 * 60 * 60
         public const int blockInputDuration = 80;
 
         private static readonly List<Type> typesThatIgnoreShowHintSetting = new List<Type> { Type.CineIntroduction, Type.CineSmallBase, Type.VeryTired, Type.Starving, Type.BrokenItem, Type.BurntOutTorch, Type.Lava, Type.Lightning, Type.CantUseToolsInWater, Type.TooDarkToUseTools };
