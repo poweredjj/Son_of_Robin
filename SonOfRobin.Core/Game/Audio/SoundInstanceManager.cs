@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace SonOfRobin
 {
-    public class SoundInstanceManager
+    public class SoundInstanceManager_
     {
         private static readonly Dictionary<string, SoundEffectInstance> activeSoundInstancesByID = new Dictionary<string, SoundEffectInstance>();
         private static readonly Dictionary<string, DateTime> instanceCreationDateByID = new Dictionary<string, DateTime>();

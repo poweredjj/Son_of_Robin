@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SonOfRobin.Core.Game.Audio
+namespace SonOfRobin
 {
     public class ManagedSoundInstance
     {
@@ -103,11 +103,39 @@ namespace SonOfRobin.Core.Game.Audio
             if (this.instance.State == SoundState.Paused) this.instance.Resume();
         }
 
+        public static void Stop(string id)
+        {
+            if (activeInstancesByPlayID.ContainsKey(id)) activeInstancesByPlayID[id].Stop();
+        }
+
         public void Stop()
         {
             if (this.instance.State != SoundState.Stopped) this.instance.Stop();
             activeInstancesByPlayID.Remove(this.currentSoundID);
             this.currentSoundID = null;
+        }
+
+        public float Volume
+        {
+            get { return this.instance.Volume; }
+            set { this.instance.Volume = value; }
+        }
+
+        public float Pitch
+        {
+            get { return this.instance.Pitch; }
+            set { this.instance.Pitch = value; }
+        }
+
+        public bool IsLooped
+        {
+            get { return this.instance.IsLooped; }
+            set { this.instance.IsLooped = value; }
+        }
+
+        public void Apply3D(AudioListener listener, AudioEmitter emitter)
+        {
+            this.instance.Apply3D(listener: listener, emitter: emitter);
         }
 
         public bool IsPlaying

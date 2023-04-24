@@ -85,7 +85,7 @@ namespace SonOfRobin
         { get { return this.boardPiece == null || this.boardPiece.sprite.IsInCameraRect; } }
 
         public bool IsPlaying
-        { get { return SoundInstanceManager.GetPlayingInstance(this.Id) != null; } }
+        { get { return ManagedSoundInstance.GetPlayingInstance(this.Id) != null; } }
 
         private bool VolumeFadeEnded
         { get { return !this.isLooped || this.TargetVolume == this.FadeVolume; } }
@@ -120,8 +120,8 @@ namespace SonOfRobin
             this.volume = newVolume;
             this.TargetVolume = newVolume;
 
-            SoundEffectInstance instance = SoundInstanceManager.GetPlayingInstance(this.Id);
-            if (instance != null) instance.Volume = this.Volume;
+            ManagedSoundInstance managedSoundInstance = ManagedSoundInstance.GetPlayingInstance(this.Id);
+            if (managedSoundInstance != null) managedSoundInstance.Volume = this.Volume;
         }
 
         public void Play(bool ignore3DThisPlay = false, bool ignoreCooldown = false)
@@ -143,7 +143,7 @@ namespace SonOfRobin
             if (this.boardPiece != null && !this.Ignore3D && !this.isLooped && !this.IsInCameraRect) return;
 
             SoundData.Name soundName = this.SoundNameList.Count == 1 ? this.SoundNameList[0] : this.SoundNameList[SonOfRobinGame.random.Next(0, this.SoundNameList.Count)];
-            SoundEffectInstance instance = SoundInstanceManager.GetNewOrStoppedInstance(soundName: soundName, id: this.Id);
+            ManagedSoundInstance managedSoundInstance = ManagedSoundInstance.GetNewOrStoppedInstance(soundName: soundName);
 
             float pitch = this.pitchChange;
             if (this.maxPitchVariation > 0)
@@ -153,39 +153,18 @@ namespace SonOfRobin
                 pitch = Math.Max(Math.Min(pitch, 1), -1);
             }
 
-            instance.Pitch = pitch;
-            instance.Volume = this.Volume;
-            instance.IsLooped = this.isLooped;
+            managedSoundInstance.Pitch = pitch;
+            managedSoundInstance.Volume = this.Volume;
+            managedSoundInstance.IsLooped = this.isLooped;
 
             if (this.boardPiece != null)
             {
                 this.CreateSoundVisual();
-                this.UpdatePosition(instance);
+                this.UpdatePosition(managedSoundInstance);
             }
 
-            bool instanceStartedCorrectly = false;
-
-            try
-            {
-                instance.Play();
-                instanceStartedCorrectly = true;
-            }
-            catch (InstancePlayLimitException)
-            {
-                bool instanceStopped = SoundInstanceManager.StopOldestActiveInstance();
-                if (instanceStopped)
-                {
-                    try
-                    {
-                        instance.Play();
-                        instanceStartedCorrectly = true;
-                        MessageLog.AddMessage(msgType: MsgType.Debug, message: "Instance stopped correctly.");
-                    }
-                    catch (InstancePlayLimitException)
-                    { }
-                }
-            }
-
+            managedSoundInstance.AssignSoundID(this.Id);
+            bool instanceStartedCorrectly = managedSoundInstance.Play();
             if (instanceStartedCorrectly) currentlyPlaying[this.Id] = this;
             else MessageLog.AddMessage(msgType: MsgType.Debug, message: $"InstancePlayLimitException reached, sound '{soundName}' will not be played.");
         }
@@ -200,7 +179,7 @@ namespace SonOfRobin
 
         public static void StopAll()
         {
-            SoundInstanceManager.StopAll();
+            ManagedSoundInstance.StopAll();
             currentlyPlaying.Clear();
         }
 
@@ -216,7 +195,7 @@ namespace SonOfRobin
                 return;
             }
 
-            SoundInstanceManager.StopInstance(this.Id);
+            ManagedSoundInstance.Stop(this.Id);
             if (currentlyPlaying.ContainsKey(this.Id)) currentlyPlaying.Remove(this.Id);
         }
 
@@ -230,7 +209,7 @@ namespace SonOfRobin
 
         private void Update()
         {
-            SoundEffectInstance instance = SoundInstanceManager.GetPlayingInstance(this.Id);
+            ManagedSoundInstance instance = ManagedSoundInstance.GetPlayingInstance(this.Id);
             if (instance == null)
             {
                 currentlyPlaying.Remove(this.Id);
@@ -243,7 +222,7 @@ namespace SonOfRobin
             if (this.boardPiece != null) this.UpdatePosition(instance);
         }
 
-        private void UpdateFade(SoundEffectInstance instance)
+        private void UpdateFade(ManagedSoundInstance instance)
         {
             if (this.VolumeFadeEnded) return;
 
@@ -264,7 +243,7 @@ namespace SonOfRobin
             this.visPiece = null;
         }
 
-        private void UpdatePosition(SoundEffectInstance instance)
+        private void UpdatePosition(ManagedSoundInstance managedSoundInstance)
         {
             if (this.Ignore3D) return;
 
@@ -288,9 +267,9 @@ namespace SonOfRobin
 
             // MessageLog.AddMessage(msgType: MsgType.User, message: $"Distance {Vector3.Distance(audioEmitter.Position, audioListener.Position)}");
 
-            float pitch = instance.Pitch;
-            instance.Apply3D(audioListener, audioEmitter);
-            instance.Pitch = pitch; // fixing Pitch reset glitch on Windows
+            float pitch = managedSoundInstance.Pitch;
+            managedSoundInstance.Apply3D(audioListener, audioEmitter);
+            managedSoundInstance.Pitch = pitch; // fixing Pitch reset glitch on Windows
         }
 
         public static void QuickPlay(SoundData.Name name, float volume = 1f, float pitchChange = 0f)

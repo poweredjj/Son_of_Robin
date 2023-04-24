@@ -886,7 +886,7 @@ namespace SonOfRobin
 
             if (this.soundPaused && this.inputActive)
             {
-                SoundInstanceManager.ResumeAll();
+                ManagedSoundInstance.ResumeAll();
                 this.soundPaused = false;
             }
 
@@ -940,7 +940,7 @@ namespace SonOfRobin
 
             if (InputMapper.HasBeenPressed(InputMapper.Action.WorldPauseMenu))
             {
-                SoundInstanceManager.PauseAll();
+                ManagedSoundInstance.PauseAll();
                 this.soundPaused = true;
 
                 MenuTemplate.CreateMenuFromTemplate(templateName: MenuTemplate.Name.Pause);

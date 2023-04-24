@@ -57,7 +57,7 @@ namespace SonOfRobin
                 if (world.trackingManager.TrackingCount > 5000) debugLines.Add("WARNING, CHECK IF CORRECT!");
             }
 
-            debugLines.Add($"snd inst. total: {SoundInstanceManager.CreatedInstancesCount} act: {SoundInstanceManager.ActiveInstancesCount} inact: {SoundInstanceManager.InactiveInstancesCount}");
+            debugLines.Add($"snd inst. total: {ManagedSoundInstance.CreatedInstancesCount} act: {ManagedSoundInstance.ActiveInstancesCount} inact: {ManagedSoundInstance.InactiveInstancesCount}");
 
             debugLines.Add($"GC {GC.CollectionCount(0)} {GC.CollectionCount(1)} {GC.CollectionCount(2)}");
 
@@ -459,12 +459,12 @@ namespace SonOfRobin
 
             if (Keyboard.HasBeenPressed(Keys.F6))
             {
-                SoundInstanceManager.PauseAll();
+                ManagedSoundInstance.PauseAll();
             }
 
             if (Keyboard.HasBeenPressed(Keys.F7))
             {
-                SoundInstanceManager.ResumeAll();
+                ManagedSoundInstance.ResumeAll();
             }
 
             if (Keyboard.HasBeenPressed(Keys.OemPlus))
