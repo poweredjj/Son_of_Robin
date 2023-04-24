@@ -558,7 +558,7 @@ namespace SonOfRobin
             if (canBuildHere)
             {
                 VirtButton.ButtonHighlightOnNextFrame(VButName.Confirm);
-                ControlTips.TipHighlightOnNextFrame(tipName: "build");
+                ControlTips.TipHighlightOnNextFrame(tipName: "place");
             }
 
             Color color = canBuildHere ? Color.Green : Color.Red;
