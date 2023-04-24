@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using Xamarin.Essentials;
 
@@ -91,8 +92,8 @@ namespace SonOfRobin
         {
             get
             {
-                // if (ramCounter == null) ramCounter = new PerformanceCounter("Memory", "Available MBytes"); // COMMENT THIS LINE on platforms other than Windows
-                // if (os == OS.Windows) return ((PerformanceCounter)ramCounter).NextValue(); // COMMENT THIS LINE on platforms other than Windows
+                 if (ramCounter == null) ramCounter = new PerformanceCounter("Memory", "Available MBytes"); // COMMENT THIS LINE on platforms other than Windows
+                 if (os == OS.Windows) return ((PerformanceCounter)ramCounter).NextValue(); // COMMENT THIS LINE on platforms other than Windows
 
                 return -100;
             }
