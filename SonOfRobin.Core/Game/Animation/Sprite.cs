@@ -471,10 +471,15 @@ namespace SonOfRobin
         {
             this.CharacterStand(setEvenIfMissing: false);
 
-            if (CheckIfAnimNameExists("dead")) this.AssignNewName("dead");
-            else this.color = Color.LightCoral;
+            Type pieceType = this.boardPiece.GetType();
 
-            if (this.boardPiece.GetType() == typeof(Animal)) PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: this.position, templateName: PieceTemplate.Name.BloodSplatter);
+            if (pieceType != typeof(Fruit)) // fruits can't really "die"
+            {
+                if (CheckIfAnimNameExists("dead")) this.AssignNewName("dead");
+                else this.color = Color.LightCoral;
+            }
+
+            if (pieceType == typeof(Animal)) PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: this.position, templateName: PieceTemplate.Name.BloodSplatter);
         }
 
         private List<Cell.Group> GetGridGroups()

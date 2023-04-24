@@ -329,7 +329,7 @@ namespace SonOfRobin
             // the piece should fall naturally to places, where player can go to
             piece.sprite.allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.WaterShallow, AllowedTerrain.RangeName.WaterMedium, AllowedTerrain.RangeName.GroundAll });
 
-            piece.PlaceOnBoard(randomPlacement: false, position: this.storagePiece.sprite.position, closestFreeSpot: true);
+            piece.PlaceOnBoard(randomPlacement: false, position: this.storagePiece.sprite.position, closestFreeSpot: true, addPlannedDestruction: false);
 
             if (addMovement && piece.sprite.IsOnBoard)
             {
