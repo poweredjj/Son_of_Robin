@@ -529,7 +529,17 @@ namespace SonOfRobin
                 {
                     float opacity = 1f;
                     Rectangle destRect = sprite.gfxRect;
+
                     destRect.Inflate(destRect.Width * spriteSize, destRect.Height * spriteSize);
+
+                    int maxWidth = 300; // to avoid sprites being too large (big tent, for example)
+                    if (destRect.Width > maxWidth)
+                    {
+                        float aspect = (float)destRect.Height / (float)destRect.Width;
+
+                        int widthReduction = destRect.Width - maxWidth;
+                        destRect.Inflate(-widthReduction / 2, -(widthReduction * aspect) / 2);
+                    }
 
                     if (this.Mode == MapMode.Mini && !this.camera.viewRect.Contains(destRect))
                     {
