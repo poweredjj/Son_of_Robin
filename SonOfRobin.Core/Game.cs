@@ -268,7 +268,7 @@ namespace SonOfRobin
 
             LastDrawDelay = gameTime.ElapsedGameTime.Milliseconds;
 
-            SoundInstanceManager.CleanUpActiveInstances();
+            ManagedSoundInstance.Update();
             Sound.UpdateAll();
             Scene.AllScenesInStackDraw();
 
