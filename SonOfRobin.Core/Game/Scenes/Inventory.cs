@@ -1025,7 +1025,7 @@ namespace SonOfRobin
             Rectangle labelRect = tileRect;
             labelRect.Inflate(-(int)(tileRect.Width * 0.1), -(int)(tileRect.Height * 0.4));
 
-            Helpers.DrawTextInsideRectWithOutline(font: font, text: slot.label, rectangle: labelRect, color: Color.White, outlineColor: new Color(50, 50, 50), outlineSize: 1, alignX: Helpers.AlignX.Center, alignY: Helpers.AlignY.Center, drawTestRect: false);
+            Helpers.DrawTextInsideRectWithOutline(font: font, text: slot.label, rectangle: labelRect, color: Color.White * this.viewParams.drawOpacity, outlineColor: new Color(50, 50, 50) * this.viewParams.drawOpacity, outlineSize: 1, alignX: Helpers.AlignX.Center, alignY: Helpers.AlignY.Center, drawTestRect: false);
         }
 
         private void DrawMainLabel()

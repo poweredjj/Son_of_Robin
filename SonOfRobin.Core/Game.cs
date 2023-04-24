@@ -59,6 +59,7 @@ namespace SonOfRobin
         public static readonly SimpleFps fps = new SimpleFps();
         public static readonly Random random = new Random();
         public static int CurrentUpdate { get; private set; }
+        public static int CurrentDraw { get; private set; }
         public static float LastUpdateDelay { get; private set; }
         public static float LastDrawDelay { get; private set; }
 
@@ -119,6 +120,9 @@ namespace SonOfRobin
         protected override void Initialize()
         {
             if (fakeMobileMode) platform = Platform.Mobile;
+
+            CurrentUpdate = 0;
+            CurrentDraw = 0;
 
             base.Initialize();
             Game = this;
@@ -260,6 +264,8 @@ namespace SonOfRobin
 
         protected override void Draw(GameTime gameTime)
         {
+            CurrentDraw++;
+
             LastDrawDelay = gameTime.ElapsedGameTime.Milliseconds;
 
             SoundInstanceManager.CleanUpActiveInstances();

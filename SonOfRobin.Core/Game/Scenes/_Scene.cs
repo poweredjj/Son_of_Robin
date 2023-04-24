@@ -80,7 +80,7 @@ namespace SonOfRobin
         private static int currentUpdateStackUpdateNo = -1;
         private static List<Scene> currentUpdateStack = new List<Scene>();
 
-        private static int currentDrawStackUpdateNo = -1;
+        private static int currentDrawStackDrawNo = -1;
         private static List<Scene> currentDrawStack = new List<Scene>();
 
         public static List<Scene> UpdateStack
@@ -101,7 +101,7 @@ namespace SonOfRobin
 
                 foreach (Scene scene in sortedSceneStack)
                 {
-                    if ((!ignoreScenes && scene.updateActive) || scene.alwaysUpdates) currentUpdateStack.Add(scene);
+                    if (!scene.HasBeenRemoved && ((!ignoreScenes && scene.updateActive) || scene.alwaysUpdates)) currentUpdateStack.Add(scene);
                     if (scene.blocksUpdatesBelow) ignoreScenes = true;
                 }
 
@@ -114,9 +114,9 @@ namespace SonOfRobin
         {
             get
             {
-                if (SonOfRobinGame.CurrentUpdate == currentDrawStackUpdateNo) return currentDrawStack;
+                if (SonOfRobinGame.CurrentDraw == currentDrawStackDrawNo) return currentDrawStack;
 
-                currentDrawStackUpdateNo = SonOfRobinGame.CurrentUpdate;
+                currentDrawStackDrawNo = SonOfRobinGame.CurrentDraw;
                 currentDrawStack.Clear();
 
                 if (sceneStack.Count == 0) return currentDrawStack;
@@ -132,7 +132,7 @@ namespace SonOfRobin
 
                     if (hiddenTypes.Contains(sceneType)) continue;
 
-                    if ((scene.drawActive || scene.alwaysDraws) && scene.viewParams.drawOpacity > 0f)
+                    if ((scene.drawActive || scene.alwaysDraws) && scene.viewParams.drawOpacity > 0f && !scene.HasBeenRemoved)
                     {
                         currentDrawStack.Add(scene);
                         if (scene.hidesSameScenesBelow && !hiddenTypes.Contains(sceneType)) hiddenTypes.Add(sceneType);
