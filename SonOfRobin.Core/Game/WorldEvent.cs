@@ -236,6 +236,7 @@ namespace SonOfRobin
                             !world.Player.alive ||
                             !world.Player.exists ||
                             world.Player.sprite.IsInWater ||
+                            world.Player.sleepMode != Player.SleepMode.Awake ||
                             !portableLight.IsOnPlayersToolbar ||
                             !portableLight.IsOn ||
                             (!portableLight.canBeUsedDuringRain && world.weather.IsRaining))
