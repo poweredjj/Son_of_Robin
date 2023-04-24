@@ -469,12 +469,11 @@ namespace SonOfRobin
 
         public void Kill()
         {
-            this.CharacterStand(setEvenIfMissing: false);
-
             Type pieceType = this.boardPiece.GetType();
 
             if (pieceType != typeof(Fruit)) // fruits can't really "die"
             {
+                this.CharacterStand(setEvenIfMissing: false);
                 if (CheckIfAnimNameExists("dead")) this.AssignNewName("dead");
                 else this.color = Color.LightCoral;
             }
