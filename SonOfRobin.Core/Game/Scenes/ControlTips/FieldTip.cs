@@ -121,7 +121,7 @@ namespace SonOfRobin
             this.targetPos = this.CalculatePosition();
             this.MoveIfObstructsPlayerOrOtherTip();
 
-            if (this.world.CurrentUpdate - this.lastFrameActive > maxInactiveDuration) this.targetOpacity = 0f;
+            if (this.world.CurrentUpdate - this.lastFrameActive > maxInactiveDuration || !this.world.inputActive) this.targetOpacity = 0f;
             else this.ChangeOpacityIfObstructsTarget();
 
             this.currentPos += (this.targetPos - this.currentPos) / movementSlowdown;
