@@ -94,6 +94,7 @@ namespace SonOfRobin
 
                 InputVis.Refresh();
                 Preferences.ControlTipsScheme = Preferences.ControlTipsScheme; // to refresh everything that is connected to tips type
+                SonOfRobinGame.Game.IsMouseVisible = currentControlType != ControlType.Gamepad;
             }
         }
 
