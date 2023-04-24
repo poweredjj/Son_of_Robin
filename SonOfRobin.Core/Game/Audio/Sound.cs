@@ -163,8 +163,7 @@ namespace SonOfRobin
                 this.UpdatePosition(managedSoundInstance);
             }
 
-            managedSoundInstance.AssignSoundID(this.Id);
-            bool instanceStartedCorrectly = managedSoundInstance.Play();
+            bool instanceStartedCorrectly = managedSoundInstance.Play(this.Id);
             if (instanceStartedCorrectly) currentlyPlaying[this.Id] = this;
             else MessageLog.AddMessage(msgType: MsgType.Debug, message: $"InstancePlayLimitException reached, sound '{soundName}' will not be played.");
         }
