@@ -38,6 +38,7 @@ namespace SonOfRobin
             GamePad.GetPreviousState(PlayerIndex.One);
             TouchInput.GetState(gameTime: gameTime);
             RefreshControlType();
+            SonOfRobinGame.Game.IsMouseVisible = currentControlType != ControlType.Gamepad;
 
             globalInputActive = savedGlobalInput;
             localInputActive = savedLocalInput;
@@ -94,7 +95,6 @@ namespace SonOfRobin
 
                 InputVis.Refresh();
                 Preferences.ControlTipsScheme = Preferences.ControlTipsScheme; // to refresh everything that is connected to tips type
-                SonOfRobinGame.Game.IsMouseVisible = currentControlType != ControlType.Gamepad;
             }
         }
 
