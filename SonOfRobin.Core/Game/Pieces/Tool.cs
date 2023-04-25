@@ -230,7 +230,11 @@ namespace SonOfRobin
             if (!target.alive || target.hitPoints <= 0)
             {
                 target.world.Grid.RemoveFromGroup(sprite: target.sprite, groupName: Cell.Group.ColMovement); // to ensure proper yield placement
-                if (target.yield != null && target.exists && !target.IsBurning) target.yield.DropFinalPieces();
+                if (target.yield != null && target.exists && !target.IsBurning)
+                {
+                    target.yield.DropFinalPieces();
+                    world.HintEngine.CheckForPieceHintToShow(typesToCheckOnly: new List<PieceHint.Type> { PieceHint.Type.TreasureJar });
+                }
                 target.soundPack.Play(PieceSoundPack.Action.IsDestroyed);
                 target.Destroy();
 

@@ -339,6 +339,11 @@ namespace SonOfRobin
                     message: $"This gas seems to be | flammable.\nI should take care when using || {PieceInfo.GetInfo(PieceTemplate.Name.ArrowBurning).readableName} there.",
                     imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.BurningFlame), PieceInfo.GetTexture(PieceTemplate.Name.ArrowBurning), PieceInfo.GetTexture(PieceTemplate.Name.BowWood) },
                     playerOwnsAllOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.BowWood, PieceTemplate.Name.ArrowBurning }),
+
+                new PieceHint(
+                    type: PieceHint.Type.TreasureJar, fieldPiecesNearby: new List<PieceTemplate.Name> { PieceTemplate.Name.JarTreasure },
+                    message: $"I need to destroy this | {PieceInfo.GetInfo(PieceTemplate.Name.JarTreasure).readableName} to see what's inside.",
+                    imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.JarTreasure) }),
                 };
 
             CheckData(newPieceHintList);
