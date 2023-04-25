@@ -313,7 +313,7 @@ namespace SonOfRobin
                 case ContextAction.Drink:
                     {
                         BoardPiece potion = this.slot.TopPiece;
-                        World world = World.GetTopWorld();
+                        World world = potion.world;
 
                         var executeHelper = new Dictionary<string, Object> { };
                         executeHelper["player"] = world.Player;
@@ -361,6 +361,27 @@ namespace SonOfRobin
                 case ContextAction.Cook:
                     {
                         Cooker cooker = (Cooker)this.storage.storagePiece;
+                        World world = cooker.world;
+                        Player player = world.Player;
+
+                        if (player.AreEnemiesNearby && !player.IsActiveFireplaceNearby)
+                        {
+                            new TextWindow(text: "I cannot cook with enemies nearby.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: InputTypes.None, blockInputDuration: 45, priority: 1, closingTask: Scheduler.TaskName.ShowTutorialInGame, closingTaskHelper: new Dictionary<string, Object> { { "tutorial", Tutorials.Type.KeepingAnimalsAway }, { "world", world }, { "ignoreDelay", true } }, animSound: world.DialogueSound);
+                            return;
+                        }
+
+                        if (world.weather.IsRaining && !cooker.canBeUsedDuringRain)
+                        {
+                            new TextWindow(text: "I cannot cook during rain.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: InputTypes.None, blockInputDuration: 45, priority: 1, animSound: world.DialogueSound);
+                            return;
+                        }
+
+                        if (player.IsVeryTired)
+                        {
+                            new TextWindow(text: "I'm too tired to cook...", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: InputTypes.None, blockInputDuration: 45, priority: 1, animSound: world.DialogueSound);
+                            return;
+                        }
+
                         cooker.Cook();
 
                         return;

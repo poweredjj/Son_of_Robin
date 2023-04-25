@@ -379,33 +379,9 @@ namespace SonOfRobin
                     case TaskName.OpenContainer:
                         {
                             BoardPiece container = (BoardPiece)this.ExecuteHelper;
+                            if (!container.sprite.IsOnBoard) return;
 
-                            world = World.GetTopWorld();
-                            if (world == null) return;
-
-                            if (container.GetType() == typeof(Cooker))
-                            {
-                                Cooker cooker = (Cooker)container;
-
-                                if (world.Player.AreEnemiesNearby && !world.Player.IsActiveFireplaceNearby)
-                                {
-                                    new TextWindow(text: "I can't cook with enemies nearby.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1, closingTask: TaskName.ShowTutorialInGame, closingTaskHelper: new Dictionary<string, Object> { { "tutorial", Tutorials.Type.KeepingAnimalsAway }, { "world", world }, { "ignoreDelay", true } }, animSound: world.DialogueSound);
-                                    return;
-                                }
-
-                                if (world.weather.IsRaining && !cooker.canBeUsedDuringRain)
-                                {
-                                    new TextWindow(text: $"I can't use {cooker.readableName} during rain.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1, animSound: world.DialogueSound);
-                                    return;
-                                }
-
-                                if (world.Player.IsVeryTired)
-                                {
-                                    new TextWindow(text: "I'm too tired to cook...", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1, animSound: world.DialogueSound);
-                                    return;
-                                }
-                            }
-
+                            world = container.world;
                             Inventory.SetLayout(newLayout: Inventory.LayoutType.FieldStorage, player: world.Player, fieldStorage: container);
                         }
 
