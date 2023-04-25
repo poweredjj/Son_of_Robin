@@ -68,7 +68,7 @@ namespace SonOfRobin
             bool loadedCorrectly = this.LoadTemplate();
             if (!loadedCorrectly)
             {
-                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"ext - creating new", color: Color.Yellow);
+                MessageLog.AddMessage(msgType: MsgType.Debug, message: "ext - creating new", color: Color.Yellow);
 
                 foreach (Name name in allExtPropNames)
                 {
@@ -80,7 +80,7 @@ namespace SonOfRobin
             }
             else
             {
-                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"ext - loaded");
+                MessageLog.AddMessage(msgType: MsgType.Debug, message: "ext - loaded");
                 this.CreationInProgress = false;
                 this.loadedFromTemplate = true;
             }
@@ -181,7 +181,7 @@ namespace SonOfRobin
             {
                 this.containsPropertiesTrueGridCell[name] = BitArrayWrapper.LoadFromPNG(GetContainsPropertiesPNGPath(name: name, contains: true));
                 if (this.containsPropertiesTrueGridCell[name] == null) return false;
-                this.containsPropertiesFalseGridCell[name] = BitArrayWrapper.LoadFromPNG(GetContainsPropertiesPNGPath(name: name, contains: true));
+                this.containsPropertiesFalseGridCell[name] = BitArrayWrapper.LoadFromPNG(GetContainsPropertiesPNGPath(name: name, contains: false));
                 if (this.containsPropertiesFalseGridCell[name] == null) return false;
             }
 

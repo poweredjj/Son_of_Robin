@@ -224,8 +224,12 @@ namespace SonOfRobin
 
         public bool CopyBoardFromTemplate()
         {
+            // looking for matching template
+
             Grid templateGrid = GetMatchingTemplateFromSceneStack(seed: this.world.seed, width: this.world.width, height: this.world.height, cellWidth: this.cellWidth, cellHeight: this.cellHeight);
             if (templateGrid == null) return false;
+
+            // copying terrain
 
             foreach (var kvp in templateGrid.terrainByName)
             {
@@ -235,23 +239,30 @@ namespace SonOfRobin
                 this.terrainByName[terrainName].AttachToNewGrid(this);
             }
 
+            // copying ext data
+
             this.extBoardProps = templateGrid.extBoardProps;
             this.extBoardProps.AttachToNewGrid(this);
+
+            // copying whole island texture
 
             if (this.WholeIslandPreviewTexture != null) this.WholeIslandPreviewTexture.Dispose();
 
             this.WholeIslandPreviewTexture = new Texture2D(templateGrid.WholeIslandPreviewTexture.GraphicsDevice, templateGrid.WholeIslandPreviewTexture.Width, templateGrid.WholeIslandPreviewTexture.Height);
 
-            // Copy the pixel data from the original to the new texture
             Color[] pixelData = new Color[templateGrid.WholeIslandPreviewTexture.Width * templateGrid.WholeIslandPreviewTexture.Height];
             templateGrid.WholeIslandPreviewTexture.GetData(pixelData);
             this.WholeIslandPreviewTexture.SetData(pixelData);
+
+            // copying cell data
 
             for (int x = 0; x < templateGrid.noOfCellsX; x++)
             {
                 for (int y = 0; y < templateGrid.noOfCellsY; y++)
                     this.cellGrid[x, y].CopyFromTemplate(templateGrid.cellGrid[x, y]);
             }
+
+            // finishing
 
             this.loadedTexturesCount = this.allCells.Where(cell => cell.boardGraphics.Texture != null).Count();
 

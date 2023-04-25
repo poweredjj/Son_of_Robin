@@ -73,7 +73,7 @@ namespace SonOfRobin
 
                 new PieceCreationData(name: PieceTemplate.Name.SoundSeaWaves, temporaryDecoration: true, tempDecorMultiplier: 1),
                 new PieceCreationData(name: PieceTemplate.Name.SoundSeaWind, temporaryDecoration: true, tempDecorMultiplier: 1),
-                new PieceCreationData(name: PieceTemplate.Name.SoundLakeWaves, temporaryDecoration: true, tempDecorMultiplier: 1),
+                new PieceCreationData(name: PieceTemplate.Name.SoundLakeWaves, temporaryDecoration: true, tempDecorMultiplier: 2),
                 new PieceCreationData(name: PieceTemplate.Name.SoundNightCrickets, temporaryDecoration: true, tempDecorMultiplier: 1),
                 new PieceCreationData(name: PieceTemplate.Name.SoundNoonCicadas, temporaryDecoration: true, tempDecorMultiplier: 1),
                 new PieceCreationData(name: PieceTemplate.Name.SoundLava, temporaryDecoration: true, tempDecorMultiplier: 2),
