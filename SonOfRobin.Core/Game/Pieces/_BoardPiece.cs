@@ -467,7 +467,8 @@ namespace SonOfRobin
             }
             if (this.visualAid != null) this.visualAid.Destroy();
             this.alive = false;
-            if (this.PieceStorage != null) this.PieceStorage.DropAllPiecesToTheGround(addMovement: true);
+            // fruits should be destroyed, not dropped
+            if (this.PieceStorage != null && this.GetType() != typeof(Plant)) this.PieceStorage.DropAllPiecesToTheGround(addMovement: true);
             this.RemoveFromStateMachines();
             this.sprite.Kill();
             if (addDestroyEvent) new WorldEvent(eventName: WorldEvent.EventName.Destruction, world: this.world, delay: this.staysAfterDeath, boardPiece: this);
