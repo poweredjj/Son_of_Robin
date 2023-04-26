@@ -71,6 +71,8 @@ namespace SonOfRobin
             this.rainStepsLeft = Math.Max(this.rainStepsLeft, 5); // to avoid value 0, that would make the rain stay forever
             this.rainStep = (rainTargetPos - this.sprite.position) / this.rainStepsLeft;
 
+            if (this.rainStep.Y < 1f) this.rainStep.Y = 1f; // to ensure minimal movement (otherwise some raindrops will just sit there for a while)
+
             this.activeState = State.RainFall;
             new WorldEvent(eventName: WorldEvent.EventName.Destruction, world: this.world, delay: this.rainStepsLeft, boardPiece: this); // to ensure eventual destruction
         }
