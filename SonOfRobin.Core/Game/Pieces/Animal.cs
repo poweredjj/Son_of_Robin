@@ -16,13 +16,14 @@ namespace SonOfRobin
         private readonly int matureAge;
         private readonly uint pregnancyDuration;
         private readonly byte maxChildren;
-        private uint pregnancyMass;
+        private int pregnancyMass;
         public int pregnancyFramesLeft;
         public bool isPregnant;
         private int attackCooldown;
         private int regenCooldown;
         private readonly int maxFedLevel;
         private int fedLevel;
+        public bool IsFemale { get; private set; }
         private readonly float maxStamina;
         private float stamina;
         private readonly ushort sightRange;
@@ -31,11 +32,13 @@ namespace SonOfRobin
         public readonly List<PieceTemplate.Name> eats;
         private readonly List<PieceTemplate.Name> isEatenBy;
 
-        public Animal(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, int[] maxMassForSize, int mass, int maxMass, byte awareness, bool female, int maxAge, int matureAge, uint pregnancyDuration, byte maxChildren, float maxStamina, int maxHitPoints, ushort sightRange, string readableName, string description, List<PieceTemplate.Name> eats, int strength, float massBurnedMultiplier, float fireAffinity,
+        public Animal(World world, string id, AnimData.PkgName maleAnimPkgName, AnimData.PkgName femaleAnimPkgName, PieceTemplate.Name name, AllowedTerrain allowedTerrain, int[] maxMassForSize, int mass, int maxMass, byte awareness, int maxAge, int matureAge, uint pregnancyDuration, byte maxChildren, float maxStamina, int maxHitPoints, ushort sightRange, string readableName, string description, List<PieceTemplate.Name> eats, int strength, float massBurnedMultiplier, float fireAffinity,
             byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = false, int generation = 0, Yield yield = null, PieceSoundPack soundPack = null) :
 
-            base(world: world, id: id, animPackage: animPackage, mass: mass, animSize: animSize, animName: animName, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedTerrain: allowedTerrain, floatsOnWater: floatsOnWater, maxMassForSize: maxMassForSize, generation: generation, speed: speed, maxAge: maxAge, maxHitPoints: maxHitPoints, yield: yield, readableName: readableName, description: description, staysAfterDeath: 30 * 60, strength: strength, category: Category.Flesh, activeState: State.AnimalAssessSituation, soundPack: soundPack, female: female, isAffectedByWind: false, fireAffinity: fireAffinity)
+            base(world: world, id: id, animPackage: maleAnimPkgName, mass: mass, animSize: animSize, animName: animName, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedTerrain: allowedTerrain, floatsOnWater: floatsOnWater, maxMassForSize: maxMassForSize, generation: generation, speed: speed, maxAge: maxAge, maxHitPoints: maxHitPoints, yield: yield, readableName: readableName, description: description, staysAfterDeath: 30 * 60, strength: strength, category: Category.Flesh, activeState: State.AnimalAssessSituation, soundPack: soundPack, isAffectedByWind: false, fireAffinity: fireAffinity)
         {
+            this.IsFemale = Random.Next(2) == 1;
+            if (this.IsFemale) this.sprite.AssignNewPackage(femaleAnimPkgName);
             this.target = null;
             this.maxMass = maxMass;
             this.massBurnedMultiplier = massBurnedMultiplier;
@@ -73,6 +76,7 @@ namespace SonOfRobin
         {
             Dictionary<string, Object> pieceData = base.Serialize();
 
+            pieceData["animal_IsFemale"] = this.IsFemale;
             pieceData["animal_fedLevel"] = this.fedLevel;
             pieceData["animal_pregnancyMass"] = this.pregnancyMass;
             pieceData["animal_pregnancyFramesLeft"] = this.pregnancyFramesLeft;
@@ -85,8 +89,12 @@ namespace SonOfRobin
         {
             base.Deserialize(pieceData);
 
+            // animPackage does not have to be reassigned - it is set by Sprite.Deserialize()
+            if (pieceData.ContainsKey("animal_IsFemale")) this.IsFemale = (bool)pieceData["animal_IsFemale"];
+            else this.IsFemale = (bool)pieceData["base_female"]; // for compatibility with older saves
+
             this.fedLevel = (int)(Int64)pieceData["animal_fedLevel"];
-            this.pregnancyMass = (uint)(Int64)pieceData["animal_pregnancyMass"];
+            this.pregnancyMass = (int)(Int64)pieceData["animal_pregnancyMass"];
             this.pregnancyFramesLeft = (int)(Int64)pieceData["animal_pregnancyFramesLeft"];
             this.isPregnant = (bool)pieceData["animal_isPregnant"];
             this.activeState = State.AnimalAssessSituation; // to avoid using (non-serialized) aiData
@@ -141,7 +149,7 @@ namespace SonOfRobin
             this.stamina = Math.Min(this.stamina + 1, this.maxStamina);
 
             if (this.pregnancyMass > 0 && this.pregnancyMass < this.startingMass * this.maxChildren)
-            { this.pregnancyMass += (uint)massGained; }
+            { this.pregnancyMass += massGained; }
             else
             { this.Mass = Math.Min(this.Mass + massGained, this.maxMass); }
         }
@@ -157,7 +165,7 @@ namespace SonOfRobin
             var matingPartners = sameSpecies.Cast<Animal>();
 
             matingPartners = matingPartners.Where(animal =>
-            animal.female != this.female &&
+            animal.IsFemale != this.IsFemale &&
             animal.pregnancyMass == 0 &&
             animal.currentAge >= animal.matureAge
             );
@@ -661,9 +669,8 @@ namespace SonOfRobin
             new Tracking(world: world, targetSprite: this.sprite, followingSprite: heart1.sprite);
             new Tracking(world: world, targetSprite: animalMate.sprite, followingSprite: heart2.sprite);
 
-            Animal female = this.female ? this : animalMate;
+            Animal female = this.IsFemale ? this : animalMate;
             female.pregnancyMass = 1; // starting mass should be greater than 0
-
             female.pregnancyFramesLeft = (int)female.pregnancyDuration;
 
             new WorldEvent(world: this.world, delay: (int)female.pregnancyDuration, boardPiece: female, eventName: WorldEvent.EventName.Birth);
@@ -685,17 +692,17 @@ namespace SonOfRobin
 
             this.sprite.CharacterStand();
 
-            // excess fat cam be converted to pregnancy
+            // excess fat can be converted to pregnancy
             if (this.Mass > this.startingMass * 2 && this.pregnancyMass < this.startingMass * this.maxChildren)
             {
                 var missingMass = (this.startingMass * this.maxChildren) - this.pregnancyMass;
                 var convertedFat = Convert.ToInt32(Math.Floor(Math.Min(this.Mass - (this.startingMass * 2), missingMass)));
                 this.Mass -= convertedFat;
-                this.pregnancyMass += (uint)convertedFat;
+                this.pregnancyMass += convertedFat;
             }
 
-            uint noOfChildren = (uint)Math.Min(Math.Floor(this.pregnancyMass / this.startingMass), this.maxChildren);
-            uint childrenBorn = 0;
+            int noOfChildren = (int)Math.Min(Math.Floor(this.pregnancyMass / this.startingMass), this.maxChildren);
+            int childrenBorn = 0;
 
             for (int i = 0; i < noOfChildren; i++)
             {
@@ -714,7 +721,7 @@ namespace SonOfRobin
                 if (child.sprite.IsOnBoard)
                 {
                     childrenBorn++;
-                    this.pregnancyMass -= (uint)this.startingMass;
+                    this.pregnancyMass -= (int)this.startingMass;
 
                     var backlight = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: child.sprite.position, templateName: PieceTemplate.Name.Backlight);
                     new Tracking(world: world, targetSprite: child.sprite, followingSprite: backlight.sprite, targetXAlign: XAlign.Center, targetYAlign: YAlign.Center);

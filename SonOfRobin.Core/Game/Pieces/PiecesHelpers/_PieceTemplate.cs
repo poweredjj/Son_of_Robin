@@ -264,18 +264,14 @@ namespace SonOfRobin
 
         public static readonly Name[] allNames = (Name[])Enum.GetValues(typeof(Name));
 
-        public static BoardPiece Create(Name templateName, World world, int generation = 0, bool randomSex = true, bool female = false, string id = null)
+        public static BoardPiece Create(Name templateName, World world, int generation = 0, string id = null)
         {
-            if (randomSex) female = BoardPiece.Random.Next(2) == 1;
-
-            return CreatePiece(templateName: templateName, world: world, id: id, female: female, generation: generation);
+            return CreatePiece(templateName: templateName, world: world, id: id, generation: generation);
         }
 
-        public static BoardPiece CreateAndPlaceOnBoard(Name templateName, World world, Vector2 position, bool randomPlacement = false, int generation = 0, bool ignoreCollisions = false, string id = null, bool closestFreeSpot = false, int minDistanceOverride = -1, int maxDistanceOverride = -1, bool ignoreDensity = false, bool randomSex = true, bool female = false, object creationHelper = null)
+        public static BoardPiece CreateAndPlaceOnBoard(Name templateName, World world, Vector2 position, bool randomPlacement = false, int generation = 0, bool ignoreCollisions = false, string id = null, bool closestFreeSpot = false, int minDistanceOverride = -1, int maxDistanceOverride = -1, bool ignoreDensity = false, object creationHelper = null)
         {
-            if (randomSex) female = BoardPiece.Random.Next(2) == 1;
-
-            BoardPiece boardPiece = CreatePiece(templateName: templateName, world: world, id: id, female: female, generation: generation, creationHelper: creationHelper);
+            BoardPiece boardPiece = CreatePiece(templateName: templateName, world: world, id: id, generation: generation, creationHelper: creationHelper);
 
             boardPiece.PlaceOnBoard(randomPlacement: randomPlacement, position: position, ignoreCollisions: ignoreCollisions, closestFreeSpot: closestFreeSpot, minDistanceOverride: minDistanceOverride, maxDistanceOverride: maxDistanceOverride, ignoreDensity: ignoreDensity);
 
@@ -299,7 +295,7 @@ namespace SonOfRobin
             return boardPiece;
         }
 
-        private static BoardPiece CreatePiece(Name templateName, World world, bool female, int generation = 0, string id = null, object creationHelper = null)
+        private static BoardPiece CreatePiece(Name templateName, World world, int generation = 0, string id = null, object creationHelper = null)
         {
             if (id == null) id = Helpers.GetUniqueHash();
 
@@ -312,32 +308,26 @@ namespace SonOfRobin
             {
                 case Name.PlayerBoy:
                     {
-                        female = false;
-
                         var soundPack = new PieceSoundPack();
-                        AddPlayerCommonSounds(soundPack: soundPack, female: female);
+                        AddPlayerCommonSounds(soundPack: soundPack, female: false);
 
-                        return new Player(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PlayerBoy, allowedTerrain: CreatePlayerAllowedTerrain(), minDistance: 0, maxDistance: 65535, generation: generation, readableName: "player", description: "This is you.", yield: CreatePlayerYield(), activeState: BoardPiece.State.PlayerControlledWalking, lightEngine: new LightEngine(size: 300, opacity: 0.9f, colorActive: true, color: Color.Orange * 0.2f, isActive: false, castShadows: true), soundPack: soundPack, female: female, strength: 2, speed: 3.5f, maxStamina: 400, maxHitPoints: 600, maxFatigue: 3000, craftLevel: 1, cookingSkill: 1f, invWidth: 4, invHeight: 2, toolbarWidth: 3, toolbarHeight: 1, fireAffinity: 0.5f);
+                        return new Player(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PlayerBoy, allowedTerrain: CreatePlayerAllowedTerrain(), minDistance: 0, maxDistance: 65535, generation: generation, readableName: "player", description: "This is you.", yield: CreatePlayerYield(), activeState: BoardPiece.State.PlayerControlledWalking, lightEngine: new LightEngine(size: 300, opacity: 0.9f, colorActive: true, color: Color.Orange * 0.2f, isActive: false, castShadows: true), soundPack: soundPack, strength: 2, speed: 3.5f, maxStamina: 400, maxHitPoints: 600, maxFatigue: 3000, craftLevel: 1, cookingSkill: 1f, invWidth: 4, invHeight: 2, toolbarWidth: 3, toolbarHeight: 1, fireAffinity: 0.5f);
                     }
 
                 case Name.PlayerGirl:
                     {
-                        female = true;
-
                         var soundPack = new PieceSoundPack();
-                        AddPlayerCommonSounds(soundPack: soundPack, female: female);
+                        AddPlayerCommonSounds(soundPack: soundPack, female: true);
 
-                        return new Player(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PlayerGirl, allowedTerrain: CreatePlayerAllowedTerrain(), minDistance: 0, maxDistance: 65535, generation: generation, readableName: "player", description: "This is you.", yield: CreatePlayerYield(), activeState: BoardPiece.State.PlayerControlledWalking, lightEngine: new LightEngine(size: 300, opacity: 0.9f, colorActive: true, color: Color.Orange * 0.2f, isActive: false, castShadows: true), soundPack: soundPack, female: female, strength: 1, speed: 3, maxStamina: 300, maxHitPoints: 400, maxFatigue: 2000, craftLevel: 3, cookingSkill: 1.5f, invWidth: 4, invHeight: 3, toolbarWidth: 4, toolbarHeight: 1, fireAffinity: 0.5f);
+                        return new Player(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PlayerGirl, allowedTerrain: CreatePlayerAllowedTerrain(), minDistance: 0, maxDistance: 65535, generation: generation, readableName: "player", description: "This is you.", yield: CreatePlayerYield(), activeState: BoardPiece.State.PlayerControlledWalking, lightEngine: new LightEngine(size: 300, opacity: 0.9f, colorActive: true, color: Color.Orange * 0.2f, isActive: false, castShadows: true), soundPack: soundPack, strength: 1, speed: 3, maxStamina: 300, maxHitPoints: 400, maxFatigue: 2000, craftLevel: 3, cookingSkill: 1.5f, invWidth: 4, invHeight: 3, toolbarWidth: 4, toolbarHeight: 1, fireAffinity: 0.5f);
                     }
 
                 case Name.PlayerTestDemoness:
                     {
-                        female = true;
-
                         var soundPack = new PieceSoundPack();
-                        AddPlayerCommonSounds(soundPack: soundPack, female: female);
+                        AddPlayerCommonSounds(soundPack: soundPack, female: true);
 
-                        Player testDemoness = new Player(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PlayerTestDemoness, allowedTerrain: CreatePlayerAllowedTerrain(), minDistance: 0, maxDistance: 65535, generation: generation, readableName: "player", description: "This is you.", yield: CreatePlayerYield(), activeState: BoardPiece.State.PlayerControlledWalking, lightEngine: new LightEngine(size: 500, opacity: 1.0f, colorActive: true, color: Color.Red * 1f, isActive: false, castShadows: true), soundPack: soundPack, female: female, strength: 100, speed: 8, maxStamina: 50000, maxHitPoints: 100000, maxFatigue: 50000, craftLevel: 4, cookingSkill: 5f, invWidth: 6, invHeight: 4, toolbarWidth: 5, toolbarHeight: 1, fireAffinity: 0f);
+                        Player testDemoness = new Player(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PlayerTestDemoness, allowedTerrain: CreatePlayerAllowedTerrain(), minDistance: 0, maxDistance: 65535, generation: generation, readableName: "player", description: "This is you.", yield: CreatePlayerYield(), activeState: BoardPiece.State.PlayerControlledWalking, lightEngine: new LightEngine(size: 500, opacity: 1.0f, colorActive: true, color: Color.Red * 1f, isActive: false, castShadows: true), soundPack: soundPack, strength: 100, speed: 8, maxStamina: 50000, maxHitPoints: 100000, maxFatigue: 50000, craftLevel: 4, cookingSkill: 5f, invWidth: 6, invHeight: 4, toolbarWidth: 5, toolbarHeight: 1, fireAffinity: 0f);
 
                         return testDemoness;
                     }
@@ -353,7 +343,7 @@ namespace SonOfRobin
 
                         AnimData.PkgName animPkg = creationHelper == null ? AnimData.PkgName.NoAnim : (AnimData.PkgName)creationHelper;
 
-                        Player spectator = new Player(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: new AllowedTerrain(), minDistance: 0, maxDistance: 65535, generation: generation, readableName: "player ghost", description: "A metaphysical representation of player's soul.", blocksMovement: false, ignoresCollisions: true, floatsOnWater: true, activeState: BoardPiece.State.PlayerControlledGhosting, lightEngine: new LightEngine(size: 650, opacity: 1.4f, colorActive: true, color: Color.Blue * 5f, isActive: true, castShadows: true), soundPack: soundPack, female: female, strength: 2, speed: 3.5f, maxStamina: 400, maxHitPoints: 400, maxFatigue: 2000, craftLevel: 1, cookingSkill: 1f, invWidth: 1, invHeight: 1, toolbarWidth: 1, toolbarHeight: 1, fireAffinity: 0f);
+                        Player spectator = new Player(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: new AllowedTerrain(), minDistance: 0, maxDistance: 65535, generation: generation, readableName: "player ghost", description: "A metaphysical representation of player's soul.", blocksMovement: false, ignoresCollisions: true, floatsOnWater: true, activeState: BoardPiece.State.PlayerControlledGhosting, lightEngine: new LightEngine(size: 650, opacity: 1.4f, colorActive: true, color: Color.Blue * 5f, isActive: true, castShadows: true), soundPack: soundPack, strength: 2, speed: 3.5f, maxStamina: 400, maxHitPoints: 400, maxFatigue: 2000, craftLevel: 1, cookingSkill: 1f, invWidth: 1, invHeight: 1, toolbarWidth: 1, toolbarHeight: 1, fireAffinity: 0f);
 
                         spectator.speed = 5;
                         spectator.sprite.opacity = 0.5f;
@@ -2064,13 +2054,13 @@ namespace SonOfRobin
 
                 case Name.Rabbit:
                     {
-                        List<AnimData.PkgName> packageNames;
-                        if (female)
-                        { packageNames = new List<AnimData.PkgName> { AnimData.PkgName.RabbitLightGray, AnimData.PkgName.RabbitBeige, AnimData.PkgName.RabbitWhite }; }
-                        else
-                        { packageNames = new List<AnimData.PkgName> { AnimData.PkgName.RabbitBrown, AnimData.PkgName.RabbitDarkBrown, AnimData.PkgName.RabbitGray, AnimData.PkgName.RabbitBlack, AnimData.PkgName.RabbitLightBrown }; }
+                        var malePackageNames = new List<AnimData.PkgName> { AnimData.PkgName.RabbitBrown, AnimData.PkgName.RabbitDarkBrown, AnimData.PkgName.RabbitGray, AnimData.PkgName.RabbitBlack, AnimData.PkgName.RabbitLightBrown };
 
-                        var animPkg = packageNames[random.Next(0, packageNames.Count)];
+                        var femalePackageNames = new List<AnimData.PkgName> { AnimData.PkgName.RabbitLightGray, AnimData.PkgName.RabbitBeige, AnimData.PkgName.RabbitWhite };
+
+                        var maleAnimPkgName = malePackageNames[random.Next(0, malePackageNames.Count)];
+                        var femaleAnimPkgName = femalePackageNames[random.Next(0, femalePackageNames.Count)];
+
                         var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName>() { AllowedTerrain.RangeName.WaterShallow, AllowedTerrain.RangeName.GroundAll });
                         var maxMassForSize = new int[] { 200, 500 };
 
@@ -2082,24 +2072,25 @@ namespace SonOfRobin
                         soundPack.AddAction(action: PieceSoundPack.Action.Cry, sound: new Sound(nameList: new List<SoundData.Name> { SoundData.Name.CrySmallAnimal1, SoundData.Name.CrySmallAnimal2, SoundData.Name.CrySmallAnimal3, SoundData.Name.CrySmallAnimal4 }, maxPitchVariation: 0.3f));
                         soundPack.AddAction(action: PieceSoundPack.Action.Eat, sound: new Sound(nameList: new List<SoundData.Name> { SoundData.Name.EatHerbivore1, SoundData.Name.EatHerbivore2, SoundData.Name.EatHerbivore3, SoundData.Name.EatHerbivore4, SoundData.Name.EatHerbivore5 }, maxPitchVariation: 0.25f, cooldown: 35));
 
-                        return new Animal(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: allowedTerrain, speed: 1.5f,
-                            minDistance: 10, maxDistance: 45, maxHitPoints: 150, mass: 35, maxMass: 5000, massBurnedMultiplier: 1, awareness: 200, female: female, matureAge: 1200, maxAge: 30000, pregnancyDuration: 2000, maxChildren: 8, maxStamina: 300, sightRange: 300, eats: new List<Name> { Name.GrassRegular, Name.GrassDesert, Name.FlowersMountain, Name.FlowersPlain, Name.Apple, Name.Cherry, Name.TomatoPlant, Name.Tomato, Name.Meal, Name.Carrot, Name.CarrotPlant }, strength: 30, maxMassForSize: maxMassForSize, generation: generation, yield: yield, readableName: "rabbit", description: "A small animal.", soundPack: soundPack, fireAffinity: 0.65f);
+                        return new Animal(name: templateName, world: world, id: id, maleAnimPkgName: maleAnimPkgName, femaleAnimPkgName: femaleAnimPkgName, allowedTerrain: allowedTerrain, speed: 1.5f,
+                            minDistance: 10, maxDistance: 45, maxHitPoints: 150, mass: 35, maxMass: 5000, massBurnedMultiplier: 1, awareness: 200, matureAge: 1200, maxAge: 30000, pregnancyDuration: 2000, maxChildren: 8, maxStamina: 300, sightRange: 300, eats: new List<Name> { Name.GrassRegular, Name.GrassDesert, Name.FlowersMountain, Name.FlowersPlain, Name.Apple, Name.Cherry, Name.TomatoPlant, Name.Tomato, Name.Meal, Name.Carrot, Name.CarrotPlant }, strength: 30, maxMassForSize: maxMassForSize, generation: generation, yield: yield, readableName: "rabbit", description: "A small animal.", soundPack: soundPack, fireAffinity: 0.65f);
                     }
 
                 case Name.Fox:
                     {
-                        List<AnimData.PkgName> packageNames;
-                        if (female)
-                        { packageNames = new List<AnimData.PkgName> { AnimData.PkgName.FoxWhite, AnimData.PkgName.FoxGray, AnimData.PkgName.FoxYellow }; }
-                        else
-                        { packageNames = new List<AnimData.PkgName> { AnimData.PkgName.FoxGinger, AnimData.PkgName.FoxRed, AnimData.PkgName.FoxBlack, AnimData.PkgName.FoxChocolate, AnimData.PkgName.FoxBrown }; }
+                        var malePackageNames = new List<AnimData.PkgName> { AnimData.PkgName.FoxGinger, AnimData.PkgName.FoxRed, AnimData.PkgName.FoxBlack, AnimData.PkgName.FoxChocolate, AnimData.PkgName.FoxBrown };
+
+                        var femalePackageNames = new List<AnimData.PkgName> { AnimData.PkgName.FoxWhite, AnimData.PkgName.FoxGray, AnimData.PkgName.FoxYellow };
+
+                        var maleAnimPkgName = malePackageNames[random.Next(0, malePackageNames.Count)];
+                        var femaleAnimPkgName = femalePackageNames[random.Next(0, femalePackageNames.Count)];
+
                         var maxMassForSize = new int[] { 500, 1000 };
 
                         var yield = new Yield(debrisType: Yield.DebrisType.Blood,
                           firstDroppedPieces: new List<Yield.DroppedPiece> { },
                           finalDroppedPieces: new List<Yield.DroppedPiece> { new Yield.DroppedPiece(pieceName: Name.MeatRaw, chanceToDrop: 70, maxNumberToDrop: 2), new Yield.DroppedPiece(pieceName: Name.Fat, chanceToDrop: 60, maxNumberToDrop: 1), new Yield.DroppedPiece(pieceName: Name.Leather, chanceToDrop: 80, maxNumberToDrop: 1) });
 
-                        var animPkg = packageNames[random.Next(0, packageNames.Count)];
                         var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.GroundAll, AllowedTerrain.RangeName.WaterShallow });
 
                         var soundPack = new PieceSoundPack();
@@ -2109,17 +2100,18 @@ namespace SonOfRobin
                         var eats = new List<Name> { Name.Rabbit, Name.MeatRaw, Name.Fat, Name.Burger, Name.MeatDried, Name.Meal };
                         eats.AddRange(PieceInfo.GetPlayerNames());
 
-                        return new Animal(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: allowedTerrain, speed: 1.5f,
-                         minDistance: 5, maxDistance: 30, maxHitPoints: 300, mass: 60, maxMass: 15000, awareness: 80, female: female, massBurnedMultiplier: 1.3f, matureAge: 2000, maxAge: 30000, pregnancyDuration: 4000, maxChildren: 6, maxStamina: 800, sightRange: 450, eats: eats, strength: 30, maxMassForSize: maxMassForSize, generation: generation, yield: yield, readableName: "fox", description: "An animal.", soundPack: soundPack, fireAffinity: 0.65f);
+                        return new Animal(name: templateName, world: world, id: id, maleAnimPkgName: maleAnimPkgName, femaleAnimPkgName: femaleAnimPkgName, allowedTerrain: allowedTerrain, speed: 1.5f,
+                         minDistance: 5, maxDistance: 30, maxHitPoints: 300, mass: 60, maxMass: 15000, awareness: 80, massBurnedMultiplier: 1.3f, matureAge: 2000, maxAge: 30000, pregnancyDuration: 4000, maxChildren: 6, maxStamina: 800, sightRange: 450, eats: eats, strength: 30, maxMassForSize: maxMassForSize, generation: generation, yield: yield, readableName: "fox", description: "An animal.", soundPack: soundPack, fireAffinity: 0.65f);
                     }
 
                 case Name.Tiger:
                     {
-                        List<AnimData.PkgName> packageNames;
-                        if (female)
-                        { packageNames = new List<AnimData.PkgName> { AnimData.PkgName.TigerWhite, AnimData.PkgName.TigerYellow }; }
-                        else
-                        { packageNames = new List<AnimData.PkgName> { AnimData.PkgName.TigerOrangeMedium, AnimData.PkgName.TigerGray, AnimData.PkgName.TigerOrangeLight, AnimData.PkgName.TigerOrangeDark, AnimData.PkgName.TigerBrown, AnimData.PkgName.TigerBlack }; }
+                        var malePackageNames = new List<AnimData.PkgName> { AnimData.PkgName.TigerOrangeMedium, AnimData.PkgName.TigerGray, AnimData.PkgName.TigerOrangeLight, AnimData.PkgName.TigerOrangeDark, AnimData.PkgName.TigerBrown, AnimData.PkgName.TigerBlack };
+
+                        var femalePackageNames = new List<AnimData.PkgName> { AnimData.PkgName.TigerWhite, AnimData.PkgName.TigerYellow };
+
+                        var maleAnimPkgName = malePackageNames[random.Next(0, malePackageNames.Count)];
+                        var femaleAnimPkgName = femalePackageNames[random.Next(0, femalePackageNames.Count)];
 
                         var maxMassForSize = new int[] { 500, 2000 };
 
@@ -2127,7 +2119,6 @@ namespace SonOfRobin
                           firstDroppedPieces: new List<Yield.DroppedPiece> { },
                           finalDroppedPieces: new List<Yield.DroppedPiece> { new Yield.DroppedPiece(pieceName: Name.MeatRaw, chanceToDrop: 100, maxNumberToDrop: 3), new Yield.DroppedPiece(pieceName: Name.Fat, chanceToDrop: 100, maxNumberToDrop: 2), new Yield.DroppedPiece(pieceName: Name.Leather, chanceToDrop: 100, maxNumberToDrop: 2) });
 
-                        var animPkg = packageNames[random.Next(0, packageNames.Count)];
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
                             { Terrain.Name.Height, new AllowedRange(min: 160, max: Terrain.volcanoEdgeMin) },
                             { Terrain.Name.Biome, new AllowedRange(min: 0, max: (byte)(Terrain.biomeMin - 1)) },
@@ -2140,24 +2131,22 @@ namespace SonOfRobin
                         var eats = new List<Name> { Name.Rabbit, Name.MeatRaw, Name.Fat, Name.Burger, Name.MeatDried, Name.Fox, Name.Meal };
                         eats.AddRange(PieceInfo.GetPlayerNames());
 
-                        return new Animal(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: allowedTerrain, speed: 2.4f,
-                         minDistance: 5, maxDistance: 30, maxHitPoints: 1600, mass: 80, maxMass: 15000, awareness: 50, female: female, massBurnedMultiplier: 0.5f, matureAge: 4000, maxAge: 50000, pregnancyDuration: 3500, maxChildren: 5, maxStamina: 1300, sightRange: 700, eats: eats, strength: 140, maxMassForSize: maxMassForSize, generation: generation, yield: yield, readableName: "tiger", description: "Very dangerous animal.", soundPack: soundPack, fireAffinity: 0.3f);
+                        return new Animal(name: templateName, world: world, id: id, maleAnimPkgName: maleAnimPkgName, femaleAnimPkgName: femaleAnimPkgName, allowedTerrain: allowedTerrain, speed: 2.4f,
+                         minDistance: 5, maxDistance: 30, maxHitPoints: 1600, mass: 80, maxMass: 15000, awareness: 50, massBurnedMultiplier: 0.5f, matureAge: 4000, maxAge: 50000, pregnancyDuration: 3500, maxChildren: 5, maxStamina: 1300, sightRange: 700, eats: eats, strength: 140, maxMassForSize: maxMassForSize, generation: generation, yield: yield, readableName: "tiger", description: "Very dangerous animal.", soundPack: soundPack, fireAffinity: 0.3f);
                     }
 
                 case Name.Frog:
                     {
-                        List<AnimData.PkgName> packageNames;
-                        if (female) packageNames = new List<AnimData.PkgName> { AnimData.PkgName.Frog2, AnimData.PkgName.Frog8 };
-                        else
-                        {
-                            packageNames = new List<AnimData.PkgName> { AnimData.PkgName.Frog1, AnimData.PkgName.Frog3, AnimData.PkgName.Frog4, AnimData.PkgName.Frog5, AnimData.PkgName.Frog6, AnimData.PkgName.Frog7 };
-                        }
+                        var malePackageNames = new List<AnimData.PkgName> { AnimData.PkgName.Frog1, AnimData.PkgName.Frog3, AnimData.PkgName.Frog4, AnimData.PkgName.Frog5, AnimData.PkgName.Frog6, AnimData.PkgName.Frog7 };
+
+                        var femalePackageNames = new List<AnimData.PkgName> { AnimData.PkgName.Frog2, AnimData.PkgName.Frog8 };
+
+                        var maleAnimPkgName = malePackageNames[random.Next(0, malePackageNames.Count)];
+                        var femaleAnimPkgName = femalePackageNames[random.Next(0, femalePackageNames.Count)];
 
                         var yield = new Yield(debrisType: Yield.DebrisType.Blood,
                         firstDroppedPieces: new List<Yield.DroppedPiece> { },
                         finalDroppedPieces: new List<Yield.DroppedPiece> { new Yield.DroppedPiece(pieceName: Name.MeatRaw, chanceToDrop: 40, maxNumberToDrop: 1), new Yield.DroppedPiece(pieceName: Name.Fat, chanceToDrop: 60, maxNumberToDrop: 1), });
-
-                        var animPkg = packageNames[random.Next(0, packageNames.Count)];
 
                         var allowedTerrain = new AllowedTerrain(
                             rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.WaterShallow, AllowedTerrain.RangeName.WaterMedium, AllowedTerrain.RangeName.GroundSand }
@@ -2169,8 +2158,8 @@ namespace SonOfRobin
                         soundPack.AddAction(action: PieceSoundPack.Action.Cry, sound: new Sound(nameList: new List<SoundData.Name> { SoundData.Name.CryFrog1, SoundData.Name.CryFrog2, SoundData.Name.CryFrog3, SoundData.Name.CryFrog4, }, maxPitchVariation: 0.5f));
                         soundPack.AddAction(action: PieceSoundPack.Action.Eat, sound: new Sound(nameList: new List<SoundData.Name> { SoundData.Name.EatHerbivore1, SoundData.Name.EatHerbivore2, SoundData.Name.EatHerbivore3, SoundData.Name.EatHerbivore4, SoundData.Name.EatHerbivore5 }, maxPitchVariation: 0.25f, cooldown: 35));
 
-                        return new Animal(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: allowedTerrain, speed: 1.5f,
-                       minDistance: 5, maxDistance: 30, maxHitPoints: 150, mass: 10, maxMass: 1200, massBurnedMultiplier: 1, awareness: 100, female: female, matureAge: 1200, maxAge: 30000, pregnancyDuration: 2000, maxChildren: 8, maxStamina: 200, sightRange: 150, eats: new List<Name> { Name.WaterLily, Name.Rushes }, strength: 30, maxMassForSize: maxMassForSize, generation: generation, yield: yield, readableName: "frog", description: "A water animal.", soundPack: soundPack, fireAffinity: 0.15f);
+                        return new Animal(name: templateName, world: world, id: id, maleAnimPkgName: maleAnimPkgName, femaleAnimPkgName: femaleAnimPkgName, allowedTerrain: allowedTerrain, speed: 1.5f,
+                       minDistance: 5, maxDistance: 30, maxHitPoints: 150, mass: 10, maxMass: 1200, massBurnedMultiplier: 1, awareness: 100, matureAge: 1200, maxAge: 30000, pregnancyDuration: 2000, maxChildren: 8, maxStamina: 200, sightRange: 150, eats: new List<Name> { Name.WaterLily, Name.Rushes }, strength: 30, maxMassForSize: maxMassForSize, generation: generation, yield: yield, readableName: "frog", description: "A water animal.", soundPack: soundPack, fireAffinity: 0.15f);
                     }
 
                 case Name.Hand:

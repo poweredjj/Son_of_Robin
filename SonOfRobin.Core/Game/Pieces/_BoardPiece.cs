@@ -52,7 +52,6 @@ namespace SonOfRobin
         public readonly World world;
         public readonly string id;
         public readonly PieceTemplate.Name name;
-        public readonly bool female;
         public readonly Category category;
         public Sprite sprite;
         public State activeState;
@@ -100,11 +99,10 @@ namespace SonOfRobin
         private readonly bool canShrink;
 
         public BoardPiece(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, int[] maxMassForSize, string readableName, string description, Category category, State activeState, float fireAffinity,
-            byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, bool blocksPlantGrowth = false, bool visible = true, bool ignoresCollisions = false, int destructionDelay = 0, int maxAge = 0, bool floatsOnWater = false, int generation = 0, int mass = 1, int staysAfterDeath = 800, float maxHitPoints = 1, byte stackSize = 1, Scheduler.TaskName boardTask = Scheduler.TaskName.Empty, Scheduler.TaskName toolbarTask = Scheduler.TaskName.Empty, bool canBePickedUp = false, Yield yield = null, Yield appearDebris = null, bool indestructible = false, bool rotatesWhenDropped = false, bool movesWhenDropped = true, bool serialize = true, List<Buff> buffList = null, AllowedDensity allowedDensity = null, int strength = 0, LightEngine lightEngine = null, int minDistance = 0, int maxDistance = 100, PieceSoundPack soundPack = null, bool female = false, bool isAffectedByWind = true, bool canShrink = false)
+            byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, bool blocksPlantGrowth = false, bool visible = true, bool ignoresCollisions = false, int destructionDelay = 0, int maxAge = 0, bool floatsOnWater = false, int generation = 0, int mass = 1, int staysAfterDeath = 800, float maxHitPoints = 1, byte stackSize = 1, Scheduler.TaskName boardTask = Scheduler.TaskName.Empty, Scheduler.TaskName toolbarTask = Scheduler.TaskName.Empty, bool canBePickedUp = false, Yield yield = null, Yield appearDebris = null, bool indestructible = false, bool rotatesWhenDropped = false, bool movesWhenDropped = true, bool serialize = true, List<Buff> buffList = null, AllowedDensity allowedDensity = null, int strength = 0, LightEngine lightEngine = null, int minDistance = 0, int maxDistance = 100, PieceSoundPack soundPack = null, bool isAffectedByWind = true, bool canShrink = false)
         {
             this.world = world;
             this.name = name;
-            this.female = female;
             this.category = category;
             this.id = id;
 
@@ -366,7 +364,6 @@ namespace SonOfRobin
             var pieceData = new Dictionary<string, Object>
             {
                 { "base_id", this.id },
-                { "base_female", this.female },
                 { "base_name", this.name },
                 { "base_speed", this.speed },
                 { "base_hitPoints", this.hitPoints },

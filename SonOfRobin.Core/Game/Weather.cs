@@ -561,7 +561,7 @@ namespace SonOfRobin
 
             foreach (WeatherType type in allTypes)
             {
-                this.currentIntensityForType[type] = 0; // for old saves compatibility
+                this.currentIntensityForType[type] = 0; // for compatibility with older saves
             }
 
             foreach (var kvp in (Dictionary<WeatherType, float>)weatherData["currentIntensityForType"])

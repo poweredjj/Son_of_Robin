@@ -540,20 +540,11 @@ namespace SonOfRobin
 
                     PieceTemplate.Name templateName = (PieceTemplate.Name)(Int64)pieceData["base_name"];
 
-                    bool female = false;
-                    bool randomSex = true;
-
-                    if (pieceData.ContainsKey("base_female"))
-                    {
-                        randomSex = false;
-                        female = (bool)pieceData["base_female"];
-                    }
-
                     var spriteData = (Dictionary<string, Object>)pieceData["base_sprite"];
                     int spritePosX = (int)(Int64)spriteData["posX"];
                     int spritePosY = (int)(Int64)spriteData["posY"];
 
-                    var newBoardPiece = PieceTemplate.CreateAndPlaceOnBoard(world: this, position: new Vector2(spritePosX, spritePosY), templateName: templateName, female: female, randomSex: randomSex, ignoreCollisions: true, id: (string)pieceData["base_id"]);
+                    var newBoardPiece = PieceTemplate.CreateAndPlaceOnBoard(world: this, position: new Vector2(spritePosX, spritePosY), templateName: templateName, ignoreCollisions: true, id: (string)pieceData["base_id"]);
                     if (!newBoardPiece.sprite.IsOnBoard) throw new ArgumentException($"{newBoardPiece.name} could not be placed correctly.");
 
                     newBoardPiece.Deserialize(pieceData: pieceData);

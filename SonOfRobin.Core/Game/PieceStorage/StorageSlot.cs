@@ -186,16 +186,7 @@ namespace SonOfRobin
 
                 PieceTemplate.Name templateName = (PieceTemplate.Name)(Int64)pieceData["base_name"];
 
-                bool female = false;
-                bool randomSex = true;
-
-                if (pieceData.ContainsKey("base_female"))
-                {
-                    randomSex = false;
-                    female = (bool)pieceData["base_female"];
-                }
-
-                var newBoardPiece = PieceTemplate.Create(world: this.storage.world, templateName: templateName, randomSex: randomSex, female: female);
+                var newBoardPiece = PieceTemplate.Create(world: this.storage.world, templateName: templateName);
                 newBoardPiece.Deserialize(pieceData);
                 this.pieceList.Add(newBoardPiece);
             }
