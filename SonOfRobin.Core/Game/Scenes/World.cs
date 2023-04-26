@@ -1077,7 +1077,7 @@ namespace SonOfRobin
 
         private void ProcessOneNonPlant(BoardPiece piece)
         {
-            if (piece.maxAge > 0) piece.GrowOlder();
+            if (piece.maxAge > 0) piece.GrowOlder(timeDelta: 1);
 
             if (piece.GetType() == typeof(Animal))
             {
@@ -1144,7 +1144,6 @@ namespace SonOfRobin
                 if (currentPlant.sprite.IsInCameraRect && !Preferences.debugShowPlantGrowthInCamera) continue;
 
                 currentPlant.StateMachineWork();
-                currentPlant.GrowOlder();
                 if (currentPlant.currentAge >= currentPlant.maxAge || currentPlant.efficiency < 0.2 || currentPlant.Mass < 1) currentPlant.Kill();
                 this.ProcessedPlantsCount++;
 

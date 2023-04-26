@@ -39,8 +39,8 @@ namespace SonOfRobin
                 new PieceCreationData(name: PieceTemplate.Name.AppleTree, multiplier: 0.03f),
                 new PieceCreationData(name: PieceTemplate.Name.CherryTree, multiplier: 0.03f),
                 new PieceCreationData(name: PieceTemplate.Name.BananaTree, multiplier: 0.03f),
-                new PieceCreationData(name: PieceTemplate.Name.TomatoPlant, multiplier: 0.03f),
-                new PieceCreationData(name: PieceTemplate.Name.CarrotPlant, multiplier: 0.03f),
+                new PieceCreationData(name: PieceTemplate.Name.TomatoPlant, multiplier: 0.01f),
+                new PieceCreationData(name: PieceTemplate.Name.CarrotPlant, multiplier: 0.01f),
                 new PieceCreationData(name: PieceTemplate.Name.PalmTree, multiplier: 1.0f),
                 new PieceCreationData(name: PieceTemplate.Name.Cactus, multiplier: 0.2f),
 
@@ -48,8 +48,8 @@ namespace SonOfRobin
                 new PieceCreationData(name: PieceTemplate.Name.MineralsBig, multiplier: 0.1f),
                 new PieceCreationData(name: PieceTemplate.Name.MineralsMossySmall, multiplier: 0.2f),
                 new PieceCreationData(name: PieceTemplate.Name.MineralsMossyBig, multiplier: 0.1f),
-                new PieceCreationData(name: PieceTemplate.Name.IronDeposit, multiplier: 0.02f, maxAmount: 30),
-                new PieceCreationData(name: PieceTemplate.Name.CoalDeposit, multiplier: 0.02f, maxAmount: 30),
+                new PieceCreationData(name: PieceTemplate.Name.IronDeposit, multiplier: 0.02f, maxAmount: 35),
+                new PieceCreationData(name: PieceTemplate.Name.CoalDeposit, multiplier: 0.02f, maxAmount: 35),
                 new PieceCreationData(name: PieceTemplate.Name.CrystalDepositBig, multiplier: 0.01f, maxAmount: 10),
 
                 // new PieceCreationData(name: PieceTemplate.Name.Shell, multiplier: 1f, maxAmount: 25), // turned off until it will be used in some recipe

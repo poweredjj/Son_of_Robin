@@ -441,9 +441,9 @@ namespace SonOfRobin
             this.world.pieceCountByClass[this.GetType()]--;
         }
 
-        public void GrowOlder()
+        public void GrowOlder(int timeDelta)
         {
-            this.currentAge++;
+            this.currentAge += timeDelta;
             this.efficiency = Math.Max(1 - (this.currentAge / (float)this.maxAge) - this.bioWear, 0);
         }
 

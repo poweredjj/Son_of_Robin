@@ -28,6 +28,7 @@ namespace SonOfRobin
         private float occupiedFieldWealth;
         public readonly float adultSizeMass;
         public readonly FruitEngine fruitEngine;
+        private int lastFrameProcessed; // for time delta calculation
 
         public Plant(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, Dictionary<Terrain.Name, byte> bestEnvironment, int[] maxMassForSize, string readableName, string description, Category category, float fireAffinity,
             int maxAge, PlantReproductionData reproduction, byte massToBurn, float massTakenMultiplier,
@@ -35,6 +36,7 @@ namespace SonOfRobin
 
             base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, speed: speed, blocksMovement: blocksMovement, blocksPlantGrowth: true, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedTerrain: allowedTerrain, floatsOnWater: floatsOnWater, mass: mass, maxMassForSize: maxMassForSize, staysAfterDeath: staysAfterDeath, maxAge: maxAge, generation: generation, canBePickedUp: false, yield: yield, maxHitPoints: maxHitPoints, boardTask: boardTask, readableName: readableName, description: description, allowedDensity: allowedDensity, category: category, lightEngine: lightEngine, activeState: State.PlantGrowthAndReproduction, soundPack: soundPack, fireAffinity: fireAffinity)
         {
+            this.lastFrameProcessed = this.world == null ? 0 : world.CurrentUpdate;
             this.bestEnvironment = bestEnvironment;
             this.reproduction = reproduction;
             this.massToBurn = massToBurn;
@@ -114,7 +116,12 @@ namespace SonOfRobin
 
         public override void SM_GrowthAndReproduction()
         {
-            float massTaken = this.OccupiedFieldWealth * this.massTakenMultiplier * this.efficiency * 25;
+            int growthSlowdown = Preferences.debugFastPlantGrowth ? 1 : 10; // 1 - fastest, more - slower
+
+            int timeDelta = Math.Max((this.world.CurrentUpdate - this.lastFrameProcessed) / growthSlowdown, 1); // timeDelta must be slowed down, for reasonable growth rate
+            this.lastFrameProcessed = this.world.CurrentUpdate;
+
+            float massTaken = this.OccupiedFieldWealth * this.massTakenMultiplier * this.efficiency * 25 * timeDelta;
             if (this.fruitEngine != null)
             {
                 if (this.PieceStorage.EmptySlotsCount > 0 || this.world.CurrentUpdate % 100 == 0)
@@ -124,7 +131,7 @@ namespace SonOfRobin
                 }
             }
 
-            this.Mass += -this.massToBurn + massTaken;
+            this.Mass += (-this.massToBurn * timeDelta) + massTaken;
 
             bool canReproduce = this.maxExistingNumber == 0 || this.world.pieceCountByName[this.name] < this.maxExistingNumber;
             if (canReproduce && this.Mass > this.reproduction.massNeeded + this.startingMass)
@@ -136,6 +143,8 @@ namespace SonOfRobin
                     this.bioWear += this.reproduction.bioWear;
                 }
             }
+
+            this.GrowOlder(timeDelta: timeDelta);
         }
     }
 }
