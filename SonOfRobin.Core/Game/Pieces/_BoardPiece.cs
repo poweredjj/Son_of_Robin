@@ -67,7 +67,7 @@ namespace SonOfRobin
                     return PieceInfo.GetTexture(PieceTemplate.Name.GrassRegular);
 
                 case Category.Flesh:
-                    return PieceInfo.GetTexture(PieceTemplate.Name.Rabbit);
+                    return AnimData.framesForPkgs[AnimData.PkgName.Animal].texture;
 
                 case Category.Dirt:
                     return PieceInfo.GetTexture(PieceTemplate.Name.Hole);

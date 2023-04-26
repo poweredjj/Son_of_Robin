@@ -202,8 +202,8 @@ namespace SonOfRobin
 
             var entryList = new List<InfoWindow.TextEntry>();
 
-            string text = "STR ";
-            var imageList = new List<Texture2D>();
+            string text = "|     ";
+            var imageList = new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.Biceps].texture };
 
             foreach (BoardPiece.Category category in BoardPiece.allCategories) // allCategories is used to keep the same order for every tool
             {
