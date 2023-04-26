@@ -45,26 +45,10 @@ namespace SonOfRobin
             AnimalRunForClosestWater
         }
 
+        public static readonly Category[] allCategories = (Category[])Enum.GetValues(typeof(Category));
+
         public enum Category
         { Wood, Stone, Metal, SmallPlant, Flesh, Dirt, Crystal, Indestructible }
-
-        public static string GetReadableNameForCategory(Category category)
-        {
-            switch (category)
-            {
-                case Category.SmallPlant:
-                    return "small plant";
-
-                case Category.Flesh:
-                    return "animal";
-
-                case Category.Dirt:
-                    return "digging";
-
-                default: // every category, which name can be used as is
-                    return category.ToString().ToLower();
-            }
-        }
 
         public static Texture2D GetTextureForCategory(Category category)
         {

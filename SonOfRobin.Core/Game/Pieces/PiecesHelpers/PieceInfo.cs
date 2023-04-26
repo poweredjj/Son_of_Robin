@@ -37,7 +37,7 @@ namespace SonOfRobin
             public readonly bool hasFruit;
             public readonly PieceTemplate.Name fruitName;
             public PieceTemplate.Name isSpawnedBy;
-            public Dictionary<BoardPiece.Category, float> toolMultiplierByCategory;
+            public Dictionary<BoardPiece.Category, float> strengthMultiplierByCategory;
 
             public Info(BoardPiece piece)
             {
@@ -68,8 +68,14 @@ namespace SonOfRobin
                 {
                     Tool tool = (Tool)piece;
                     this.shootsProjectile = tool.shootsProjectile;
-                    this.toolMultiplierByCategory = tool.multiplierByCategory;
+                    this.strengthMultiplierByCategory = tool.multiplierByCategory;
                 }
+                if (piece.GetType() == typeof(Projectile))
+                {
+                    // "emulating" tool multiplier list
+                    this.strengthMultiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Flesh, ((Projectile)piece).baseHitPower } };
+                }
+
                 this.isEatenBy = new List<PieceTemplate.Name> { };
 
                 this.hasFruit = false;
@@ -187,23 +193,28 @@ namespace SonOfRobin
             return playerNameList;
         }
 
-        public static List<InfoWindow.TextEntry> GetToolMultiplierTextEntryList(PieceTemplate.Name pieceName)
+        public static List<InfoWindow.TextEntry> GetCategoryAffinityTextEntryList(PieceTemplate.Name pieceName)
         {
-            Info pieceInfo = info[pieceName];
-            if (pieceInfo.type != typeof(Tool)) return null;
+            var multiplierByCategory = info[pieceName].strengthMultiplierByCategory;
+            if (multiplierByCategory == null) return null;
 
             var entryList = new List<InfoWindow.TextEntry>();
-            foreach (var kvp in pieceInfo.toolMultiplierByCategory)
-            {
-                BoardPiece.Category category = kvp.Key;
-                float multiplier = kvp.Value;
 
-                if (multiplier > 0) entryList.Add(
-                    new InfoWindow.TextEntry(text: $"| {BoardPiece.GetReadableNameForCategory(category)}: {multiplier}",
-                    scale: 0.75f,
-                    imageList: new List<Texture2D> { BoardPiece.GetTextureForCategory(category) },
-                    color: new Color(224, 224, 224))); ;
+            string text = "Str. ";
+            var imageList = new List<Texture2D>();
+
+            foreach (BoardPiece.Category category in BoardPiece.allCategories) // allCategories is used to keep the same order for every tool
+            {
+                if (multiplierByCategory.ContainsKey(category) && multiplierByCategory[category] > 0)
+                {
+                    float multiplier = multiplierByCategory[category];
+
+                    text += $"| {multiplier}  ";
+                    imageList.Add(BoardPiece.GetTextureForCategory(category));
+                }
             }
+
+            entryList.Add(new InfoWindow.TextEntry(text: text, scale: 1f, imageList: imageList, color: new Color(224, 224, 224)));
 
             return entryList;
         }

@@ -232,11 +232,12 @@ namespace SonOfRobin
                         };
                         PieceStorage virtualStorage = new VirtualPieceStorage(storagePiece: player, virtStoragePackList: virtStoragePackList, label: "Inventory", padding: 1);
 
-                        Inventory equip = new Inventory(piece: player, storage: virtualStorage, layout: Type.DualLeft, transDirection: TransDirection.Left);
+                        Inventory inventory = new Inventory(piece: player, storage: player.EquipStorage, layout: Type.DualRight, transDirection: TransDirection.Right);
 
-                        Inventory inventory = new Inventory(piece: player, storage: player.EquipStorage, layout: Type.DualRight, otherInventory: equip, transDirection: TransDirection.Right);
+                        Inventory equip = new Inventory(piece: player, storage: virtualStorage, layout: Type.DualLeft, otherInventory: inventory, transDirection: TransDirection.Left);
 
-                        equip.otherInventory = inventory;
+                        inventory.otherInventory = equip;
+
                         break;
                     }
 
@@ -330,7 +331,7 @@ namespace SonOfRobin
             };
 
             if (!slot.locked) entryList.Add(new InfoWindow.TextEntry(text: $"Max stack size: {selectedPiece.stackSize}.", color: Color.White));
-            if (selectedPiece.GetType() == typeof(Tool)) entryList.AddRange(PieceInfo.GetToolMultiplierTextEntryList(selectedPiece.name));
+            if (selectedPiece.GetType() == typeof(Tool)) entryList.AddRange(PieceInfo.GetCategoryAffinityTextEntryList(selectedPiece.name));
 
             if (selectedPiece.buffList != null)
             {

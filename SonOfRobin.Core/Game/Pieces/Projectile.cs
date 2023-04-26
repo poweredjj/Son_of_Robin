@@ -10,7 +10,7 @@ namespace SonOfRobin
         public enum TargetCategory
         { Wood, Stone, Metal, SmallPlant, Animal }
 
-        private readonly int baseHitPower;
+        public readonly int baseHitPower;
         private int realHitPower;
         private bool shootMode; // true == shoot (can damage target), false == bounce (can't damage anything)
         private readonly bool canBeStuck;
