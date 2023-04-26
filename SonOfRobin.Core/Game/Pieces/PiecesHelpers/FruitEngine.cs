@@ -86,16 +86,13 @@ namespace SonOfRobin
         {
             Fruit fruit = (Fruit)PieceTemplate.Create(templateName: this.fruitName, world: this.plant.world);
 
-            if (this.plant.PieceStorage.FindCorrectSlot(piece: fruit) == null)
+            if (this.plant.PieceStorage.FindCorrectSlot(piece: fruit) != null)
             {
-                List<StorageSlot> notEmptySlots = this.plant.PieceStorage.OccupiedSlots;
-                StorageSlot slot = notEmptySlots[this.plant.world.random.Next(0, notEmptySlots.Count)];
-                this.plant.PieceStorage.RemoveAllPiecesFromSlot(slot: slot, dropToTheGround: true);
+                this.plant.PieceStorage.AddPiece(piece: fruit, dropIfDoesNotFit: true, addMovement: true);
+                this.SetFruitPos(fruit: fruit);
             }
-
-            this.plant.PieceStorage.AddPiece(piece: fruit, dropIfDoesNotFit: true, addMovement: true);
-            this.SetFruitPos(fruit: fruit);
-            this.currentMass = 0;
+            // if there's no room for more fruits - new one should just go to waste, resetting currentMass (to avoid adding fruit every frame from now on)
+            this.currentMass = 0; // resetting whether or not new fruit can fit
 
             if (this.plant.sprite.CheckIfAnimNameExists("has_fruits")) this.plant.sprite.AssignNewName("has_fruits");
         }

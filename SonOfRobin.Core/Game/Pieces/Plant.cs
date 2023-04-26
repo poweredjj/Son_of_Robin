@@ -116,7 +116,7 @@ namespace SonOfRobin
 
         public override void SM_GrowthAndReproduction()
         {
-            int growthSlowdown = Preferences.debugFastPlantGrowth ? 1 : 10; // 1 - fastest, more - slower
+            int growthSlowdown = Preferences.debugFastPlantGrowth ? 1 : 30; // 1 - fastest, more - slower
 
             int timeDelta = Math.Max((this.world.CurrentUpdate - this.lastFrameProcessed) / growthSlowdown, 1); // timeDelta must be slowed down, for reasonable growth rate
             this.lastFrameProcessed = this.world.CurrentUpdate;
