@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,6 +47,54 @@ namespace SonOfRobin
 
         public enum Category
         { Wood, Stone, Metal, SmallPlant, Flesh, Dirt, Crystal, Indestructible }
+
+        public static string GetReadableNameForCategory(Category category)
+        {
+            switch (category)
+            {
+                case Category.SmallPlant:
+                    return "small plant";
+
+                case Category.Flesh:
+                    return "animal";
+
+                case Category.Dirt:
+                    return "digging";
+
+                default: // every category, which name can be used as is
+                    return category.ToString().ToLower();
+            }
+        }
+
+        public static Texture2D GetTextureForCategory(Category category)
+        {
+            switch (category)
+            {
+                case Category.Wood:
+                    return PieceInfo.GetTexture(PieceTemplate.Name.WoodLogRegular);
+
+                case Category.Stone:
+                    return PieceInfo.GetTexture(PieceTemplate.Name.Granite);
+
+                case Category.Metal:
+                    return PieceInfo.GetTexture(PieceTemplate.Name.IronBar);
+
+                case Category.SmallPlant:
+                    return PieceInfo.GetTexture(PieceTemplate.Name.GrassRegular);
+
+                case Category.Flesh:
+                    return PieceInfo.GetTexture(PieceTemplate.Name.Rabbit);
+
+                case Category.Dirt:
+                    return PieceInfo.GetTexture(PieceTemplate.Name.Hole);
+
+                case Category.Crystal:
+                    return PieceInfo.GetTexture(PieceTemplate.Name.Crystal);
+
+                default:
+                    return AnimData.framesForPkgs[AnimData.PkgName.NoAnim].texture;
+            }
+        }
 
         protected const float passiveMovementMultiplier = 100f;
 

@@ -330,6 +330,7 @@ namespace SonOfRobin
             };
 
             if (!slot.locked) entryList.Add(new InfoWindow.TextEntry(text: $"Max stack size: {selectedPiece.stackSize}.", color: Color.White));
+            if (selectedPiece.GetType() == typeof(Tool)) entryList.AddRange(PieceInfo.GetToolMultiplierTextEntryList(selectedPiece.name));
 
             if (selectedPiece.buffList != null)
             {

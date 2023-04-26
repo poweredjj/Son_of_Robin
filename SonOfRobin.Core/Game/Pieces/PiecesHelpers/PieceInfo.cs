@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,6 +37,7 @@ namespace SonOfRobin
             public readonly bool hasFruit;
             public readonly PieceTemplate.Name fruitName;
             public PieceTemplate.Name isSpawnedBy;
+            public Dictionary<BoardPiece.Category, float> toolMultiplierByCategory;
 
             public Info(BoardPiece piece)
             {
@@ -62,7 +64,12 @@ namespace SonOfRobin
                     this.convertsToWhenUsed = ((Potion)piece).convertsToWhenUsed;
                 }
                 this.shootsProjectile = false;
-                if (piece.GetType() == typeof(Tool)) this.shootsProjectile = ((Tool)piece).shootsProjectile;
+                if (piece.GetType() == typeof(Tool))
+                {
+                    Tool tool = (Tool)piece;
+                    this.shootsProjectile = tool.shootsProjectile;
+                    this.toolMultiplierByCategory = tool.multiplierByCategory;
+                }
                 this.isEatenBy = new List<PieceTemplate.Name> { };
 
                 this.hasFruit = false;
@@ -172,12 +179,33 @@ namespace SonOfRobin
         public static List<PieceTemplate.Name> GetPlayerNames()
         {
             var playerNameList = new List<PieceTemplate.Name>();
-            foreach (Info info in AllInfo)
+            foreach (Info currentInfo in AllInfo)
             {
-                if (IsPlayer(info.name)) playerNameList.Add(info.name);
+                if (IsPlayer(currentInfo.name)) playerNameList.Add(currentInfo.name);
             }
 
             return playerNameList;
+        }
+
+        public static List<InfoWindow.TextEntry> GetToolMultiplierTextEntryList(PieceTemplate.Name pieceName)
+        {
+            Info pieceInfo = info[pieceName];
+            if (pieceInfo.type != typeof(Tool)) return null;
+
+            var entryList = new List<InfoWindow.TextEntry>();
+            foreach (var kvp in pieceInfo.toolMultiplierByCategory)
+            {
+                BoardPiece.Category category = kvp.Key;
+                float multiplier = kvp.Value;
+
+                if (multiplier > 0) entryList.Add(
+                    new InfoWindow.TextEntry(text: $"| {BoardPiece.GetReadableNameForCategory(category)}: {multiplier}",
+                    scale: 0.75f,
+                    imageList: new List<Texture2D> { BoardPiece.GetTextureForCategory(category) },
+                    color: new Color(224, 224, 224))); ;
+            }
+
+            return entryList;
         }
     }
 }

@@ -10,7 +10,7 @@ namespace SonOfRobin
         private readonly int hitPower;
         public readonly int range;
         public int hitCooldown;
-        private readonly Dictionary<Category, float> multiplierByCategory;
+        public readonly Dictionary<Category, float> multiplierByCategory;
         private readonly List<PieceTemplate.Name> compatibleAmmo;
 
         public Tool(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, int[] maxMassForSize, int hitPower, Dictionary<Category, float> multiplierByCategory, int maxHitPoints, string readableName, string description, Category category, float fireAffinity,
