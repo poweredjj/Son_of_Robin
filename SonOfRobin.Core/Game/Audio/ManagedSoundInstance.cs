@@ -43,6 +43,8 @@ namespace SonOfRobin
 
         private void AssignSoundID(string soundID)
         {
+            if (activeInstancesBySoundID.ContainsKey(soundID) && activeInstancesBySoundID[soundID] != this) activeInstancesBySoundID[soundID].Stop();
+
             activeInstancesBySoundID[soundID] = this;
             this.currentSoundID = soundID;
         }
