@@ -35,6 +35,7 @@ namespace SonOfRobin
             public List<PieceTemplate.Name> eats;
             public List<PieceTemplate.Name> isEatenBy;
             public readonly bool hasFruit;
+            public readonly float maxHitPoints;
             public readonly PieceTemplate.Name fruitName;
             public PieceTemplate.Name isSpawnedBy;
             public Dictionary<BoardPiece.Category, float> strengthMultiplierByCategory;
@@ -45,6 +46,7 @@ namespace SonOfRobin
                 this.category = piece.category;
                 this.allowedTerrain = piece.sprite.allowedTerrain;
                 this.canBePickedUp = piece.canBePickedUp;
+                this.maxHitPoints = piece.maxHitPoints;
                 this.type = piece.GetType();
                 this.serialize = piece.serialize;
                 this.blocksMovement = piece.sprite.blocksMovement;
@@ -73,7 +75,7 @@ namespace SonOfRobin
                 if (piece.GetType() == typeof(Projectile))
                 {
                     // "emulating" tool multiplier list
-                    this.strengthMultiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Flesh, ((Projectile)piece).baseHitPower } };
+                    this.strengthMultiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Flesh, ((Projectile)piece).baseHitPower / 4 } };
                 }
 
                 this.isEatenBy = new List<PieceTemplate.Name> { };
@@ -200,7 +202,7 @@ namespace SonOfRobin
 
             var entryList = new List<InfoWindow.TextEntry>();
 
-            string text = "Str. ";
+            string text = "Str.: ";
             var imageList = new List<Texture2D>();
 
             foreach (BoardPiece.Category category in BoardPiece.allCategories) // allCategories is used to keep the same order for every tool
@@ -214,7 +216,7 @@ namespace SonOfRobin
                 }
             }
 
-            entryList.Add(new InfoWindow.TextEntry(text: text, scale: 1f, imageList: imageList, color: new Color(224, 224, 224)));
+            entryList.Add(new InfoWindow.TextEntry(text: text, scale: 1f, imageList: imageList, color: Color.White));
 
             return entryList;
         }
