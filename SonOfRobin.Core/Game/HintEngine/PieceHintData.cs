@@ -131,7 +131,7 @@ namespace SonOfRobin
                     type: PieceHint.Type.BowNoAmmo,
                     message: "I need | arrows...",
                     imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.ArrowStone) },
-                    playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> { PieceTemplate.Name.BowBasic, PieceTemplate.Name.BowAdvanced },
+                    playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> { PieceTemplate.Name.BowWood, PieceTemplate.Name.BowAdvanced },
                     playerDoesNotOwnAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.ArrowIron, PieceTemplate.Name.ArrowWood, PieceTemplate.Name.ArrowStone},
                     tutorialsToActivate: new List<Tutorials.Type> {Tutorials.Type.ShootProjectile}),
 
@@ -152,16 +152,16 @@ namespace SonOfRobin
 
                 new PieceHint(
                     type: PieceHint.Type.AnimalBow, fieldPiecesNearby: new List<PieceTemplate.Name> {PieceTemplate.Name.Frog, PieceTemplate.Name.Rabbit, PieceTemplate.Name.Fox},
-                    message: $"My | {PieceInfo.GetInfo(PieceTemplate.Name.BowBasic).readableName} should be great for hunting.",
-                    imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.BowBasic) },
+                    message: $"My | {PieceInfo.GetInfo(PieceTemplate.Name.BowWood).readableName} should be great for hunting.",
+                    imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.BowWood) },
                     alsoDisables: new List<PieceHint.Type> {PieceHint.Type.AnimalNegative},
-                    playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> { PieceTemplate.Name.BowBasic, PieceTemplate.Name.BowAdvanced }),
+                    playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> { PieceTemplate.Name.BowWood, PieceTemplate.Name.BowAdvanced }),
 
                 new PieceHint(
                     type: PieceHint.Type.AnimalNegative, fieldPiecesNearby: new List<PieceTemplate.Name> {PieceTemplate.Name.Frog, PieceTemplate.Name.Rabbit, PieceTemplate.Name.Fox},
                     message: "I think I need some | | weapon to hunt this animal.",
-                    imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.SpearWood), PieceInfo.GetTexture(PieceTemplate.Name.BowBasic) },
-                    playerDoesNotOwnAnyOfThesePieces: new List<PieceTemplate.Name> { PieceTemplate.Name.BowBasic, PieceTemplate.Name.SpearStone, PieceTemplate.Name.BowAdvanced }),
+                    imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.SpearWood), PieceInfo.GetTexture(PieceTemplate.Name.BowWood) },
+                    playerDoesNotOwnAnyOfThesePieces: new List<PieceTemplate.Name> { PieceTemplate.Name.BowWood, PieceTemplate.Name.SpearStone, PieceTemplate.Name.BowAdvanced }),
 
                 new PieceHint(
                     type: PieceHint.Type.DigSitePositive,  fieldPiecesNearby: new List<PieceTemplate.Name> { PieceTemplate.Name.BeachDigSite, PieceTemplate.Name.ForestDigSite, PieceTemplate.Name.SwampDigSite, PieceTemplate.Name.GlassDigSite },
@@ -337,8 +337,8 @@ namespace SonOfRobin
                 new PieceHint(
                     type: PieceHint.Type.ExplosiveGas, fieldPiecesNearby: new List<PieceTemplate.Name> { PieceTemplate.Name.SwampGas },
                     message: $"This gas seems to be | flammable.\nI should take care when using || {PieceInfo.GetInfo(PieceTemplate.Name.ArrowBurning).readableName} there.",
-                    imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.BurningFlame), PieceInfo.GetTexture(PieceTemplate.Name.ArrowBurning), PieceInfo.GetTexture(PieceTemplate.Name.BowBasic) },
-                    playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.BowBasic, PieceTemplate.Name.BowAdvanced },
+                    imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.BurningFlame), PieceInfo.GetTexture(PieceTemplate.Name.ArrowBurning), PieceInfo.GetTexture(PieceTemplate.Name.BowWood) },
+                    playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.BowWood, PieceTemplate.Name.BowAdvanced },
                     playerOwnsAllOfThesePieces: new List<PieceTemplate.Name> { PieceTemplate.Name.ArrowBurning }),
 
                 new PieceHint(
