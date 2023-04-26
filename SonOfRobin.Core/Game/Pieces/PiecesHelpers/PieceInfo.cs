@@ -195,14 +195,14 @@ namespace SonOfRobin
             return playerNameList;
         }
 
-        public static List<InfoWindow.TextEntry> GetCategoryAffinityTextEntryList(PieceTemplate.Name pieceName)
+        public static List<InfoWindow.TextEntry> GetCategoryAffinityTextEntryList(PieceTemplate.Name pieceName, float scale = 1f)
         {
             var multiplierByCategory = info[pieceName].strengthMultiplierByCategory;
             if (multiplierByCategory == null) return null;
 
             var entryList = new List<InfoWindow.TextEntry>();
 
-            string text = "Str.: ";
+            string text = "STR ";
             var imageList = new List<Texture2D>();
 
             foreach (BoardPiece.Category category in BoardPiece.allCategories) // allCategories is used to keep the same order for every tool
@@ -211,12 +211,12 @@ namespace SonOfRobin
                 {
                     float multiplier = multiplierByCategory[category];
 
-                    text += $"| {multiplier}  ";
+                    text += $"| {multiplier}   ";
                     imageList.Add(BoardPiece.GetTextureForCategory(category));
                 }
             }
 
-            entryList.Add(new InfoWindow.TextEntry(text: text, scale: 1f, imageList: imageList, color: Color.White));
+            entryList.Add(new InfoWindow.TextEntry(text: text, scale: scale, imageList: imageList, color: Color.White));
 
             return entryList;
         }

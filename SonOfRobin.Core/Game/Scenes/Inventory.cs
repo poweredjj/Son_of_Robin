@@ -330,15 +330,16 @@ namespace SonOfRobin
                 new InfoWindow.TextEntry(text: selectedPiece.description, color: Color.White)
             };
 
-            if (!slot.locked)
-            {
-                string durabilityText = selectedPiece.GetType() == typeof(Tool) ?
-                    $" durability: {Math.Round(selectedPiece.hitPoints)}/{Math.Round(selectedPiece.maxHitPoints)}" : "";
+            string stackTxt = selectedPiece.stackSize > 1 && !slot.locked ? $"Max stack {selectedPiece.stackSize}" : "";
+            string durabilityText = selectedPiece.GetType() == typeof(Tool) ? $"Durability { Math.Round(selectedPiece.hitPoints)}/{Math.Round(selectedPiece.maxHitPoints) }" : "";
 
-                entryList.Add(new InfoWindow.TextEntry(text: $"Max stack: {selectedPiece.stackSize}{durabilityText}", scale: 0.7f, color: new Color(230, 230, 230)));
+            if (durabilityText != "" || stackTxt != "")
+            {
+                if (durabilityText != "" && stackTxt != "") durabilityText += "   ";
+                entryList.Add(new InfoWindow.TextEntry(text: $"{durabilityText}{stackTxt}", scale: 0.7f, color: new Color(230, 230, 230)));
             }
 
-            var affinityEntries = PieceInfo.GetCategoryAffinityTextEntryList(selectedPiece.name);
+            var affinityEntries = PieceInfo.GetCategoryAffinityTextEntryList(pieceName: selectedPiece.name, scale: 1f);
             if (affinityEntries != null) entryList.AddRange(affinityEntries);
 
             if (selectedPiece.buffList != null)

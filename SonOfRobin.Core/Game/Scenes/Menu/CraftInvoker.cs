@@ -187,6 +187,15 @@ namespace SonOfRobin
                 foreach (Buff buff in pieceInfo.buffList)
                 { entryList.Add(new InfoWindow.TextEntry(text: buff.description, color: Color.Cyan, scale: 1f, animate: true, charsPerFrame: 2)); }
             }
+
+            if (pieceInfo.type == typeof(Tool))
+            {
+                entryList.Add(new InfoWindow.TextEntry(text: $"Durability {Math.Round(pieceInfo.maxHitPoints)}", scale: 0.7f, color: new Color(230, 230, 230)));
+            }
+
+            var affinityEntries = PieceInfo.GetCategoryAffinityTextEntryList(pieceName: this.recipe.pieceToCreate, scale: 0.7f);
+            if (affinityEntries != null) entryList.AddRange(affinityEntries);
+
             if (!canBeCrafted)
             {
                 var missingPiecesDict = PieceStorage.CheckMultipleStoragesForSpecifiedPieces(storageList: this.storageList, quantityByPiece: this.recipe.ingredients);
