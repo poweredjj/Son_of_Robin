@@ -39,7 +39,7 @@ namespace SonOfRobin
         public string animName;
 
         private byte currentFrameIndex;
-        private ushort currentFrameTimeLeft; // measured in game frames
+        private int currentFrameTimeLeft; // measured in game frames
 
         public Rectangle gfxRect;
         public Rectangle colRect;
@@ -241,6 +241,7 @@ namespace SonOfRobin
                 { "animPackage", this.animPackage },
                 { "animSize", this.animSize },
                 { "animName", this.animName },
+                { "colRect", this.colRect },
                 { "currentFrameIndex", this.currentFrameIndex },
                 { "currentFrameTimeLeft", this.currentFrameTimeLeft },
                 { "rotation", this.rotation },
@@ -268,8 +269,9 @@ namespace SonOfRobin
             this.animSize = (byte)(Int64)spriteDict["animSize"];
             this.animName = (string)spriteDict["animName"];
             this.currentFrameIndex = (byte)(Int64)spriteDict["currentFrameIndex"];
-            this.currentFrameTimeLeft = (ushort)(Int64)spriteDict["currentFrameTimeLeft"];
+            this.currentFrameTimeLeft = (int)(Int64)spriteDict["currentFrameTimeLeft"];
             this.AssignFrameById((string)spriteDict["frame_id"]);
+            if (spriteDict.ContainsKey("colRect")) this.colRect = (Rectangle)spriteDict["colRect"]; // to ensure that colRect will be correct
             this.gridGroups = (List<Cell.Group>)spriteDict["gridGroups"];
             this.hasBeenDiscovered = (bool)spriteDict["hasBeenDiscovered"];
             this.allowedTerrain = AllowedTerrain.Deserialize(spriteDict["allowedTerrain"]);
@@ -634,9 +636,8 @@ namespace SonOfRobin
             {
                 if (CheckIfAnimPackageExists(animPackage) || setEvenIfMissing)
                 {
-                    var animPackageCopy = this.animPackage;
                     this.animPackage = animPackage;
-                    if (!AssignFrame(forceRewind: true)) this.animPackage = animPackageCopy;
+                    AssignFrame(forceRewind: true);
                 }
             }
         }
@@ -647,9 +648,8 @@ namespace SonOfRobin
             {
                 if (CheckIFAnimSizeExists(animSize) || setEvenIfMissing)
                 {
-                    var animSizeCopy = this.animSize;
                     this.animSize = animSize;
-                    if (!AssignFrame(forceRewind: true)) this.animSize = animSizeCopy;
+                    AssignFrame(forceRewind: true);
                 }
             }
         }
@@ -660,10 +660,8 @@ namespace SonOfRobin
             {
                 if (this.CheckIfAnimNameExists(animName) || setEvenIfMissing)
                 {
-                    var animNameCopy = this.animName;
-
                     this.animName = animName;
-                    if (!AssignFrame(forceRewind: true)) this.animName = animNameCopy;
+                    AssignFrame(forceRewind: true);
                 }
             }
         }
@@ -686,9 +684,9 @@ namespace SonOfRobin
             return AnimData.frameListById.ContainsKey(newCompleteAnimID);
         }
 
-        public bool AssignFrame(bool forceRewind = false, bool checkForCollision = true)
+        public void AssignFrame(bool forceRewind = false, bool checkForCollision = true)
         {
-            AnimFrame frameCopy = this.frame;
+            Rectangle colRectCopy = this.colRect;
 
             try
             {
@@ -701,22 +699,11 @@ namespace SonOfRobin
                 this.frame = AnimData.frameListById["NoAnim-0-default"][0];
             }
 
-            this.currentFrameTimeLeft = (ushort)this.frame.duration;
+            this.currentFrameTimeLeft = this.frame.duration;
             this.UpdateRects();
 
-            if (!blocksMovement) return true;
-
-            // in case of collision - reverting to a previous, non-colliding frame
-            if (checkForCollision && this.CheckForCollision() && frameCopy != null)
-            {
-                this.frame = frameCopy;
-                this.currentFrameTimeLeft = (ushort)this.frame.duration;
-                this.UpdateRects();
-
-                return false;
-            }
-
-            return true;
+            // in case of collision - reverting to a previous, non-colliding colRect
+            if (this.blocksMovement && checkForCollision && this.CheckForCollision()) this.colRect = colRectCopy;
         }
 
         public void AssignFrameById(string frameId)
@@ -732,14 +719,14 @@ namespace SonOfRobin
                 return;
             }
 
-            this.currentFrameTimeLeft = (ushort)this.frame.duration;
+            this.currentFrameTimeLeft = this.frame.duration;
             this.UpdateRects();
         }
 
         public void RewindAnim()
         {
             this.currentFrameIndex = 0;
-            this.currentFrameTimeLeft = (ushort)this.frame.duration;
+            this.currentFrameTimeLeft = this.frame.duration;
         }
 
         public void UpdateAnimation()
