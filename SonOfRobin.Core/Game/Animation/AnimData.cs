@@ -172,7 +172,7 @@ namespace SonOfRobin
             ShovelIron,
             ShovelCrystal,
 
-            BowWood,
+            BowBasic,
 
             ArrowWood,
             ArrowStone,
@@ -353,6 +353,8 @@ namespace SonOfRobin
             MineralsBig13,
             MineralsBig14,
             MineralsSmall4,
+
+            BowAdvanced,
         }
 
         public static void AddFrameList(PkgName animPackage, byte animSize, List<AnimFrame> frameList, string animName = "default")
@@ -955,7 +957,8 @@ namespace SonOfRobin
             AddFrameList(animPackage: PkgName.Apple, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "fancy_food", layer: 0, x: 160, y: 192, width: 32, height: 32));
             AddFrameList(animPackage: PkgName.Banana, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "fancy_food", layer: 0, x: 192, y: 192, width: 32, height: 32));
             AddFrameList(animPackage: PkgName.Cherry, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "fancy_food", layer: 0, x: 0, y: 192, width: 32, height: 32, scale: 0.75f));
-            AddFrameList(animPackage: PkgName.BowWood, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "bow", layer: 0, scale: 0.25f));
+            AddFrameList(animPackage: PkgName.BowBasic, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "bow_basic", layer: 0, scale: 0.25f));
+            AddFrameList(animPackage: PkgName.BowAdvanced, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "bow_advanced", layer: 0, scale: 0.25f));
             AddFrameList(animPackage: PkgName.WoodLogRegular, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "wood_regular", layer: 1, scale: 0.75f));
             AddFrameList(animPackage: PkgName.WoodLogHard, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "wood_hard", layer: 1, scale: 0.5f));
             AddFrameList(animPackage: PkgName.SkullAndBones, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "skull_and_bones", layer: 2, scale: 1f));

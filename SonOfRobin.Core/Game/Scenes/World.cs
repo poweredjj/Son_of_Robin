@@ -621,7 +621,7 @@ namespace SonOfRobin
 
                             this.map.TurnOff();
 
-                            var pieceNamesForToolbar = new List<PieceTemplate.Name> {PieceTemplate.Name.AxeCrystal, PieceTemplate.Name.PickaxeCrystal, PieceTemplate.Name.SpearCrystal, PieceTemplate.Name.TorchBig, PieceTemplate.Name.ScytheCrystal, PieceTemplate.Name.ShovelCrystal, PieceTemplate.Name.BowWood
+                            var pieceNamesForToolbar = new List<PieceTemplate.Name> {PieceTemplate.Name.AxeCrystal, PieceTemplate.Name.PickaxeCrystal, PieceTemplate.Name.SpearCrystal, PieceTemplate.Name.TorchBig, PieceTemplate.Name.ScytheCrystal, PieceTemplate.Name.ShovelCrystal,  PieceTemplate.Name.BowAdvanced
                             };
 
                             foreach (PieceTemplate.Name name in pieceNamesForToolbar)

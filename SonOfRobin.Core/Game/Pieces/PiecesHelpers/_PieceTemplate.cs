@@ -175,7 +175,7 @@ namespace SonOfRobin
             ShovelIron,
             ShovelCrystal,
 
-            BowWood,
+            BowBasic,
 
             ArrowWood,
             ArrowStone,
@@ -260,6 +260,7 @@ namespace SonOfRobin
             ArrowBurning,
             Explosion,
             DebrisSoot,
+            BowAdvanced,
         }
 
         public static readonly Name[] allNames = (Name[])Enum.GetValues(typeof(Name));
@@ -1116,6 +1117,7 @@ namespace SonOfRobin
                                 new Yield.DroppedPiece(pieceName: Name.ScytheIron, chanceToDrop: 10, maxNumberToDrop: 1),
                                 new Yield.DroppedPiece(pieceName: Name.ShovelIron, chanceToDrop: 10, maxNumberToDrop: 1),
                                 new Yield.DroppedPiece(pieceName: Name.IronBar, chanceToDrop: 10, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: Name.BowAdvanced, chanceToDrop: 15, maxNumberToDrop: 1),
                                 new Yield.DroppedPiece(pieceName: Name.PotionFatigue, chanceToDrop: 20, maxNumberToDrop: 1),
                                 new Yield.DroppedPiece(pieceName: Name.PotionHaste, chanceToDrop: 20, maxNumberToDrop: 1),
                                 new Yield.DroppedPiece(pieceName: Name.PotionHealing, chanceToDrop: 20, maxNumberToDrop: 1),
@@ -1208,7 +1210,8 @@ namespace SonOfRobin
                             finalDroppedPieces: new List<Yield.DroppedPiece> {
                                 new Yield.DroppedPiece(pieceName: Name.JarBroken, chanceToDrop: 100, maxNumberToDrop: 1), // must go first
                                 new Yield.DroppedPiece(pieceName: Name.MeatDried, chanceToDrop: 50, maxNumberToDrop: 3),
-                                new Yield.DroppedPiece(pieceName: Name.BowWood, chanceToDrop: 10, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: Name.BowBasic, chanceToDrop: 10, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: Name.BowAdvanced, chanceToDrop: 2, maxNumberToDrop: 1),
                                 new Yield.DroppedPiece(pieceName: Name.AxeStone, chanceToDrop: 10, maxNumberToDrop: 1),
                                 new Yield.DroppedPiece(pieceName: Name.PickaxeStone, chanceToDrop: 10, maxNumberToDrop: 1),
                                 new Yield.DroppedPiece(pieceName: Name.ScytheStone, chanceToDrop: 10, maxNumberToDrop: 1),
@@ -2314,13 +2317,26 @@ namespace SonOfRobin
                             floatsOnWater: false, minDistance: 0, maxDistance: 100, maxMassForSize: null, generation: generation, hitPower: 1, indestructible: false, multiplierByCategory: multiplierByCategory, maxHitPoints: 250, readableName: "crystal scythe", description: "Brings an end to all small plants.", range: 80, fireAffinity: 0.1f);
                     }
 
-                case Name.BowWood:
+                case Name.BowBasic:
                     {
-                        var multiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Flesh, 5f } };
+                        int hitPower = 3;
+
+                        var multiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Flesh, hitPower } }; // used only for hintWindow
                         var compatibleAmmo = new List<PieceTemplate.Name> { Name.ArrowWood, Name.ArrowStone, Name.ArrowIron, Name.ArrowCrystal, Name.ArrowBurning };
 
-                        return new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BowWood, allowedTerrain: shallowWaterToVolcano, category: BoardPiece.Category.Wood,
-                            floatsOnWater: false, minDistance: 0, maxDistance: 100, maxMassForSize: null, generation: generation, hitPower: 5, indestructible: false, multiplierByCategory: multiplierByCategory, maxHitPoints: 150, shootsProjectile: true, compatibleAmmo: compatibleAmmo, readableName: "wooden bow", description: "Projectile weapon.", fireAffinity: 0.8f);
+                        return new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BowBasic, allowedTerrain: shallowWaterToVolcano, category: BoardPiece.Category.Wood,
+                            floatsOnWater: false, minDistance: 0, maxDistance: 100, maxMassForSize: null, generation: generation, hitPower: hitPower, indestructible: false, multiplierByCategory: multiplierByCategory, maxHitPoints: 150, shootsProjectile: true, compatibleAmmo: compatibleAmmo, readableName: "basic bow", description: "Projectile weapon.", fireAffinity: 0.8f);
+                    }
+
+                case Name.BowAdvanced:
+                    {
+                        int hitPower = 6;
+
+                        var multiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Flesh, hitPower } }; // used only for hintWindow
+                        var compatibleAmmo = new List<PieceTemplate.Name> { Name.ArrowWood, Name.ArrowStone, Name.ArrowIron, Name.ArrowCrystal, Name.ArrowBurning };
+
+                        return new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BowAdvanced, allowedTerrain: shallowWaterToVolcano, category: BoardPiece.Category.Wood,
+                            floatsOnWater: false, minDistance: 0, maxDistance: 100, maxMassForSize: null, generation: generation, hitPower: hitPower, indestructible: false, multiplierByCategory: multiplierByCategory, maxHitPoints: 300, shootsProjectile: true, compatibleAmmo: compatibleAmmo, readableName: "advanced bow", description: "Projectile weapon.", fireAffinity: 0.3f);
                     }
 
                 case Name.ArrowWood:
