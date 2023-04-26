@@ -133,15 +133,20 @@ namespace SonOfRobin
 
             this.Mass += (-this.massToBurn * timeDelta) + massTaken;
 
-            bool canReproduce = this.maxExistingNumber == 0 || this.world.pieceCountByName[this.name] < this.maxExistingNumber;
-            if (canReproduce && this.Mass > this.reproduction.massNeeded + this.startingMass)
+            while (true)
             {
-                BoardPiece newPlant = PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: this.sprite.position, templateName: this.name, generation: this.generation + 1);
-                if (newPlant.sprite.IsOnBoard)
+                bool canReproduce = this.maxExistingNumber == 0 || this.world.pieceCountByName[this.name] < this.maxExistingNumber;
+                if (canReproduce && this.Mass > this.reproduction.massNeeded + this.startingMass)
                 {
-                    this.Mass -= this.reproduction.massLost;
-                    this.bioWear += this.reproduction.bioWear;
+                    BoardPiece newPlant = PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: this.sprite.position, templateName: this.name, generation: this.generation + 1);
+                    if (newPlant.sprite.IsOnBoard)
+                    {
+                        this.Mass -= this.reproduction.massLost;
+                        this.bioWear += this.reproduction.bioWear;
+                    }
                 }
+
+                if (!canReproduce || !this.world.CanProcessMoreNonPlantsNow) break;
             }
 
             this.GrowOlder(timeDelta: timeDelta);
