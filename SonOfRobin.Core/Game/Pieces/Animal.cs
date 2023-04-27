@@ -26,7 +26,7 @@ namespace SonOfRobin
         public bool IsFemale { get; private set; }
         private readonly float maxStamina;
         private float stamina;
-        private readonly ushort sightRange;
+        public readonly ushort sightRange;
         public AiData aiData;
         public BoardPiece target;
         public readonly List<PieceTemplate.Name> eats;
@@ -325,7 +325,7 @@ namespace SonOfRobin
                             animalTarget.target = this;
                             animalTarget.aiData.Reset();
 
-                            animalTarget.activeState = (animalTarget.pregnancyMass > 0 || this.world.random.Next(8) == 0) ?
+                            animalTarget.activeState = (animalTarget.pregnancyMass > 0 || (animalTarget.HitPointsPercent <= 0.38f && world.random.Next(6) == 0)) ?
                                 State.AnimalCallForHelp : State.AnimalFlee; // sometimes the target will call others to attack the predator
                         }
                     }
@@ -830,7 +830,7 @@ namespace SonOfRobin
         {
             this.soundPack.Play(PieceSoundPack.Action.Cry);
 
-            var piecesWithinSoundRange = world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.Visible, mainSprite: this.sprite, distance: this.sightRange * 2);
+            var piecesWithinSoundRange = world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.Visible, mainSprite: this.sprite, distance: this.sightRange * 3);
             var allyList = piecesWithinSoundRange.Where(piece => piece.name == this.name && piece.alive && piece.activeState != State.AnimalCallForHelp);
 
             foreach (BoardPiece allyPiece in allyList)
@@ -843,16 +843,21 @@ namespace SonOfRobin
 
                 if (allyAnimal.visualAid != null) this.visualAid.Destroy();
 
-                allyAnimal.visualAid = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: allyAnimal.sprite.position, templateName: PieceTemplate.Name.ExclamationBlue);
+                allyAnimal.visualAid = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: allyAnimal.sprite.position, templateName: PieceTemplate.Name.ExclamationRed);
                 new Tracking(world: world, targetSprite: allyAnimal.sprite, followingSprite: allyAnimal.visualAid.sprite, targetYAlign: YAlign.Top, targetXAlign: XAlign.Left, followingYAlign: YAlign.Bottom, offsetX: 0, offsetY: 5);
             }
 
             if (this.visualAid != null) this.visualAid.Destroy();
 
-            this.visualAid = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: this.sprite.position, templateName: PieceTemplate.Name.ExclamationRed);
+            this.visualAid = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: this.sprite.position, templateName: PieceTemplate.Name.ExclamationBlue);
             new Tracking(world: world, targetSprite: this.sprite, followingSprite: this.visualAid.sprite, targetYAlign: YAlign.Top, targetXAlign: XAlign.Left, followingYAlign: YAlign.Bottom, offsetX: 0, offsetY: 5);
 
             this.activeState = State.AnimalChaseTarget;
+
+            if (this.world.random.Next(3) == 0) // a chance for a following call for help
+            {
+                new WorldEvent(eventName: WorldEvent.EventName.AnimalCallForHelp, world: world, delay: 250, boardPiece: this, eventHelper: this.target);
+            }
         }
     }
 }

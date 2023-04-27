@@ -79,7 +79,7 @@ namespace SonOfRobin
     public class WorldEvent
     {
         public enum EventName
-        { Birth, Death, Destruction, TurnOffWorkshop, FinishCooking, RestorePieceCreation, FadeOutSprite, RestoreHint, RemoveBuff, BurnOutLightSource, RegenPoison, ChangeActiveState, FinishBuilding, PlaySoundByName, YieldDropDebris }
+        { Birth, Death, Destruction, TurnOffWorkshop, FinishCooking, RestorePieceCreation, FadeOutSprite, RestoreHint, RemoveBuff, BurnOutLightSource, RegenPoison, ChangeActiveState, FinishBuilding, PlaySoundByName, YieldDropDebris, AnimalCallForHelp }
 
         public readonly BoardPiece boardPiece;
         public readonly int startUpdateNo;
@@ -368,6 +368,20 @@ namespace SonOfRobin
                     {
                         Yield yield = (Yield)this.eventHelper;
                         yield.DropDebris(ignoreProcessingTime: true);
+
+                        return;
+                    }
+
+                case EventName.AnimalCallForHelp:
+                    {
+                        Animal animal = (Animal)this.boardPiece;
+                        BoardPiece target = (BoardPiece)this.eventHelper;
+
+                        if (!animal.alive || Vector2.Distance(animal.sprite.position, target.sprite.position) > animal.sightRange) return;
+
+                        animal.target = target;
+                        animal.aiData.Reset();
+                        animal.activeState = BoardPiece.State.AnimalCallForHelp;
 
                         return;
                     }
