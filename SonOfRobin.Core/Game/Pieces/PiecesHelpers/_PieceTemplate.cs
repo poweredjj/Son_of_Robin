@@ -10,7 +10,7 @@ namespace SonOfRobin
         private static readonly Dictionary<Name, int> opacityFadeDurationByName = new Dictionary<Name, int> {
             { Name.BurningFlame, 30 },
             { Name.Zzz, 30 },
-            { Name.Exclamation, 30 },
+            { Name.ExclamationRed, 30 },
             { Name.JarTreasure, 30 },
             { Name.ChestTreasureNormal, 30 },
             { Name.ChestTreasureBig, 30 },
@@ -144,7 +144,7 @@ namespace SonOfRobin
             MapMarker,
             MusicNote,
             Crosshair,
-            Exclamation,
+            ExclamationRed,
             BurningFlame,
             CookingTrigger,
             UpgradeTrigger,
@@ -261,6 +261,7 @@ namespace SonOfRobin
             Explosion,
             DebrisSoot,
             BowAdvanced,
+            ExclamationBlue,
         }
 
         public static readonly Name[] allNames = (Name[])Enum.GetValues(typeof(Name));
@@ -274,7 +275,7 @@ namespace SonOfRobin
         {
             BoardPiece boardPiece = CreatePiece(templateName: templateName, world: world, id: id, generation: generation, creationHelper: creationHelper);
 
-            boardPiece.PlaceOnBoard(randomPlacement: randomPlacement, position: position, ignoreCollisions: ignoreCollisions, closestFreeSpot: closestFreeSpot, minDistanceOverride: minDistanceOverride, maxDistanceOverride: maxDistanceOverride, ignoreDensity: ignoreDensity);
+            boardPiece.PlaceOnBoard(randomPlacement: randomPlacement, position: position, ignoreCollisions: ignoreCollisions, closestFreeSpot: closestFreeSpot, minDistanceOverride: minDistanceOverride, maxDistanceOverride: maxDistanceOverride, ignoreDensity: ignoreDensity, addPlannedDestruction: true);
 
             if (boardPiece.sprite.IsOnBoard)
             {
@@ -964,10 +965,18 @@ namespace SonOfRobin
                         return new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Crosshair, destructionDelay: 0, allowedTerrain: allowedTerrain, minDistance: 0, maxDistance: 2, generation: generation, serialize: false, readableName: "crosshair", description: "A visual effect.", activeState: BoardPiece.State.Empty, fireAffinity: 0f);
                     }
 
-                case Name.Exclamation:
+                case Name.ExclamationRed:
                     {
                         var allowedTerrain = new AllowedTerrain();
-                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Exclamation, destructionDelay: 0, allowedTerrain: allowedTerrain, minDistance: 0, maxDistance: 2, generation: generation, serialize: false, readableName: "crosshair", description: "A visual effect.", activeState: BoardPiece.State.Empty, fireAffinity: 0f);
+                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ExclamationRed, destructionDelay: 0, allowedTerrain: allowedTerrain, minDistance: 0, maxDistance: 2, generation: generation, serialize: false, readableName: "red exclamation", description: "A visual effect.", activeState: BoardPiece.State.Empty, fireAffinity: 0f);
+
+                        return visualEffect;
+                    }
+
+                case Name.ExclamationBlue:
+                    {
+                        var allowedTerrain = new AllowedTerrain();
+                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ExclamationBlue, destructionDelay: 0, allowedTerrain: allowedTerrain, minDistance: 0, maxDistance: 2, generation: generation, serialize: false, readableName: "blue exclamation", description: "A visual effect.", activeState: BoardPiece.State.Empty, fireAffinity: 0f);
 
                         return visualEffect;
                     }

@@ -981,7 +981,7 @@
 /processorParam:TextureFormat=Color
 /build:gfx/dungarees.png
 
-#begin gfx/exclamation.png
+#begin gfx/exclamation_blue.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -991,7 +991,19 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/exclamation.png
+/build:gfx/exclamation_blue.png
+
+#begin gfx/exclamation_red.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/exclamation_red.png
 
 #begin gfx/explosion.png
 /importer:TextureImporter

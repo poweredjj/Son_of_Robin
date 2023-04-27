@@ -95,8 +95,8 @@ namespace SonOfRobin
                 new PieceHint(
                     type: PieceHint.Type.RedExclamation,
                     message: "This animal is | attacking me!",
-                    imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.Exclamation) },
-                    fieldPiecesNearby: new List<PieceTemplate.Name> {PieceTemplate.Name.Exclamation},
+                    imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.ExclamationRed) },
+                    fieldPiecesNearby: new List<PieceTemplate.Name> {PieceTemplate.Name.ExclamationRed},
                     tutorialsToActivate: new List<Tutorials.Type> {Tutorials.Type.AnimalAttacking}),
 
                 new PieceHint(

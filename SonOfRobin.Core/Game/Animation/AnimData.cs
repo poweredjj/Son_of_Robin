@@ -82,7 +82,7 @@ namespace SonOfRobin
             MapMarker,
             Backlight,
             Crosshair,
-            Exclamation,
+            ExclamationRed,
             Flame,
             Upgrade,
             WaterDrop,
@@ -356,6 +356,7 @@ namespace SonOfRobin
 
             BowAdvanced,
             Animal,
+            ExclamationBlue,
         }
 
         public static void AddFrameList(PkgName animPackage, byte animSize, List<AnimFrame> frameList, string animName = "default")
@@ -991,7 +992,8 @@ namespace SonOfRobin
             AddFrameList(animPackage: PkgName.RainDrops, animSize: 5, frameList: ConvertImageToFrameList(atlasName: "water drops/water_drop_x6", layer: 2, scale: 0.31f));
             AddFrameList(animPackage: PkgName.RainDrops, animSize: 6, frameList: ConvertImageToFrameList(atlasName: "water drops/water_drop_x7", layer: 2, scale: 0.32f));
             AddFrameList(animPackage: PkgName.RainDrops, animSize: 7, frameList: ConvertImageToFrameList(atlasName: "water drops/water_drop_x8", layer: 2, scale: 0.33f));
-            AddFrameList(animPackage: PkgName.Exclamation, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "exclamation", layer: 2, scale: 0.2f));
+            AddFrameList(animPackage: PkgName.ExclamationRed, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "exclamation_red", layer: 2, scale: 0.2f));
+            AddFrameList(animPackage: PkgName.ExclamationBlue, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "exclamation_blue", layer: 2, scale: 0.2f));
             AddFrameList(animPackage: PkgName.PlantPoison, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "plant_poison", layer: 0, scale: 0.4f));
             AddFrameList(animPackage: PkgName.PlantPoison, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "plant_poison", layer: 1, scale: 0.6f));
             AddFrameList(animPackage: PkgName.Map, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "parchment", layer: 0, scale: 0.03f));

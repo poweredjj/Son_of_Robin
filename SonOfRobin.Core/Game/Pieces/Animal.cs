@@ -325,15 +325,15 @@ namespace SonOfRobin
                             animalTarget.target = this;
                             animalTarget.aiData.Reset();
 
-                            animalTarget.activeState = (animalTarget.pregnancyMass > 0 || (animalTarget.HitPointsPercent > 0.4f && this.world.random.Next(0, 5) == 0)) ?
-                                State.AnimalChaseTarget : State.AnimalFlee; // sometimes the target will attack the predator
+                            animalTarget.activeState = (animalTarget.pregnancyMass > 0 || this.world.random.Next(8) == 0) ?
+                                State.AnimalCallForHelp : State.AnimalFlee; // sometimes the target will call others to attack the predator
                         }
                     }
 
                     if (this.target.GetType().Equals(typeof(Player)))
                     {
                         if (this.visualAid != null) this.visualAid.Destroy();
-                        this.visualAid = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: this.sprite.position, templateName: PieceTemplate.Name.Exclamation);
+                        this.visualAid = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: this.sprite.position, templateName: PieceTemplate.Name.ExclamationRed);
                         new Tracking(world: world, targetSprite: this.sprite, followingSprite: this.visualAid.sprite, targetYAlign: YAlign.Top, targetXAlign: XAlign.Left, followingYAlign: YAlign.Bottom, offsetX: 0, offsetY: 5);
 
                         this.world.HintEngine.CheckForPieceHintToShow(typesToCheckOnly: new List<PieceHint.Type> { PieceHint.Type.RedExclamation }, fieldPieceNameToCheck: this.visualAid.name);
@@ -553,7 +553,7 @@ namespace SonOfRobin
                 target.soundPack.Play(PieceSoundPack.Action.IsHit);
                 if (target.HitPointsPercent < 0.4f || world.random.Next(0, 2) == 0) target.soundPack.Play(PieceSoundPack.Action.Cry);
 
-                int attackStrength = Convert.ToInt32(this.world.random.Next(Convert.ToInt32(this.strength * 0.75), Convert.ToInt32(this.strength * 1.5)) * this.efficiency);
+                int attackStrength = Convert.ToInt32(this.world.random.Next((int)(this.strength * 0.75f), (int)(this.strength * 1.5f)) * this.efficiency);
                 this.target.hitPoints = Math.Max(0, this.target.hitPoints - attackStrength);
                 if (this.target.hitPoints <= 0 && this.target.IsAnimalOrPlayer) this.target.Kill();
 
@@ -822,8 +822,37 @@ namespace SonOfRobin
             }
 
             // ExpendEnergy is not used, because it is a desperate life-saving measure for an animal
-            bool successfullWalking = this.GoOneStepTowardsGoal(goalPosition: this.aiData.TargetPos, splitXY: false, walkSpeed: Math.Max(this.speed * 1.5f, 1));
+            bool successfullWalking = this.GoOneStepTowardsGoal(goalPosition: this.aiData.TargetPos, splitXY: false, walkSpeed: Math.Max(this.speed * 1.7f, 1));
             if (!successfullWalking) this.aiData.Reset();
+        }
+
+        public override void SM_AnimalCallForHelp()
+        {
+            this.soundPack.Play(PieceSoundPack.Action.Cry);
+
+            var piecesWithinSoundRange = world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.Visible, mainSprite: this.sprite, distance: this.sightRange * 2);
+            var allyList = piecesWithinSoundRange.Where(piece => piece.name == this.name && piece.alive && piece.activeState != State.AnimalCallForHelp);
+
+            foreach (BoardPiece allyPiece in allyList)
+            {
+                Animal allyAnimal = (Animal)allyPiece;
+
+                allyAnimal.target = this.target;
+                allyAnimal.aiData.Reset();
+                allyAnimal.activeState = State.AnimalChaseTarget;
+
+                if (allyAnimal.visualAid != null) this.visualAid.Destroy();
+
+                allyAnimal.visualAid = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: allyAnimal.sprite.position, templateName: PieceTemplate.Name.ExclamationBlue);
+                new Tracking(world: world, targetSprite: allyAnimal.sprite, followingSprite: allyAnimal.visualAid.sprite, targetYAlign: YAlign.Top, targetXAlign: XAlign.Left, followingYAlign: YAlign.Bottom, offsetX: 0, offsetY: 5);
+            }
+
+            if (this.visualAid != null) this.visualAid.Destroy();
+
+            this.visualAid = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: this.sprite.position, templateName: PieceTemplate.Name.ExclamationRed);
+            new Tracking(world: world, targetSprite: this.sprite, followingSprite: this.visualAid.sprite, targetYAlign: YAlign.Top, targetXAlign: XAlign.Left, followingYAlign: YAlign.Bottom, offsetX: 0, offsetY: 5);
+
+            this.activeState = State.AnimalChaseTarget;
         }
     }
 }

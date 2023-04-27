@@ -286,7 +286,7 @@ namespace SonOfRobin
 
             new Tutorial(type: Type.AnimalAttacking, name: "red exclamation mark", title: "Being attacked.",
                 messages: new List<HintMessage>  {
-                    new HintMessage(text: "A | mark means than an animal is attacking you.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Exclamation) }, boxType: messageTextType),
+                    new HintMessage(text: "A | mark means than an animal is attacking you.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.ExclamationRed) }, boxType: messageTextType),
                     new HintMessage(text: "You should run away from it, or try to fight it.", boxType: messageTextType)});
 
             new Tutorial(type: Type.SwampPoison, name: "poisonous swamp", title: "Poisonous swamp.",

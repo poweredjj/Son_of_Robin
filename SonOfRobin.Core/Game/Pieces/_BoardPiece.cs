@@ -42,7 +42,8 @@ namespace SonOfRobin
             RainFall,
             FlameBurn,
 
-            AnimalRunForClosestWater
+            AnimalRunForClosestWater,
+            AnimalCallForHelp,
         }
 
         public static readonly Category[] allCategories = (Category[])Enum.GetValues(typeof(Category));
@@ -660,6 +661,12 @@ namespace SonOfRobin
                         return;
                     }
 
+                case State.AnimalCallForHelp:
+                    {
+                        this.SM_AnimalCallForHelp();
+                        return;
+                    }
+
                 case State.PlayerControlledBuilding:
                     {
                         this.SM_PlayerControlledBuilding();
@@ -919,6 +926,9 @@ namespace SonOfRobin
         { throw new DivideByZeroException("This method should not be executed."); }
 
         public virtual void SM_AnimalRunForClosestWater()
+        { throw new DivideByZeroException("This method should not be executed."); }
+
+        public virtual void SM_AnimalCallForHelp()
         { throw new DivideByZeroException("This method should not be executed."); }
     }
 }

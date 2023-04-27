@@ -197,7 +197,7 @@ namespace SonOfRobin
         {
             if (collectionToShow.Keys.Count == 0)
             {
-                new TextWindow(text: "|  No items has been crafted.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Exclamation) }, textColor: Color.White, bgColor: Color.Blue, useTransition: false, animate: false);
+                new TextWindow(text: "|  No items has been crafted.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.ExclamationRed) }, textColor: Color.White, bgColor: Color.Blue, useTransition: false, animate: false);
                 return;
             }
 
