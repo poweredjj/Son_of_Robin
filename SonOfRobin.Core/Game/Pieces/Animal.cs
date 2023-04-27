@@ -330,7 +330,7 @@ namespace SonOfRobin
                         }
                     }
 
-                    if (this.target.GetType().Equals(typeof(Player)))
+                    if (this.target.GetType() == typeof(Player))
                     {
                         if (this.visualAid != null) this.visualAid.Destroy();
                         this.visualAid = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: this.sprite.position, templateName: PieceTemplate.Name.ExclamationRed);
@@ -833,6 +833,8 @@ namespace SonOfRobin
             var piecesWithinSoundRange = world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.Visible, mainSprite: this.sprite, distance: this.sightRange * 3);
             var allyList = piecesWithinSoundRange.Where(piece => piece.name == this.name && piece.alive && piece.activeState != State.AnimalCallForHelp);
 
+            bool targetIsPlayer = this.target.GetType() == typeof(Player);
+
             foreach (BoardPiece allyPiece in allyList)
             {
                 Animal allyAnimal = (Animal)allyPiece;
@@ -843,14 +845,20 @@ namespace SonOfRobin
 
                 if (allyAnimal.visualAid != null) this.visualAid.Destroy();
 
-                allyAnimal.visualAid = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: allyAnimal.sprite.position, templateName: PieceTemplate.Name.ExclamationRed);
-                new Tracking(world: world, targetSprite: allyAnimal.sprite, followingSprite: allyAnimal.visualAid.sprite, targetYAlign: YAlign.Top, targetXAlign: XAlign.Left, followingYAlign: YAlign.Bottom, offsetX: 0, offsetY: 5);
+                if (targetIsPlayer)
+                {
+                    allyAnimal.visualAid = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: allyAnimal.sprite.position, templateName: PieceTemplate.Name.ExclamationRed);
+                    new Tracking(world: world, targetSprite: allyAnimal.sprite, followingSprite: allyAnimal.visualAid.sprite, targetYAlign: YAlign.Top, targetXAlign: XAlign.Left, followingYAlign: YAlign.Bottom, offsetX: 0, offsetY: 5);
+                }
             }
 
             if (this.visualAid != null) this.visualAid.Destroy();
 
-            this.visualAid = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: this.sprite.position, templateName: PieceTemplate.Name.ExclamationBlue);
-            new Tracking(world: world, targetSprite: this.sprite, followingSprite: this.visualAid.sprite, targetYAlign: YAlign.Top, targetXAlign: XAlign.Left, followingYAlign: YAlign.Bottom, offsetX: 0, offsetY: 5);
+            if (targetIsPlayer)
+            {
+                this.visualAid = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: this.sprite.position, templateName: PieceTemplate.Name.ExclamationBlue);
+                new Tracking(world: world, targetSprite: this.sprite, followingSprite: this.visualAid.sprite, targetYAlign: YAlign.Top, targetXAlign: XAlign.Left, followingYAlign: YAlign.Bottom, offsetX: 0, offsetY: 5);
+            }
 
             this.activeState = State.AnimalChaseTarget;
 
