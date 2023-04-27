@@ -16,6 +16,7 @@ namespace SonOfRobin
             private static readonly Dictionary<string, Recipe> recipeByID = new Dictionary<string, Recipe>();
 
             public readonly string id;
+            public readonly string readableID;
             public readonly PieceTemplate.Name pieceToCreate;
             public readonly int amountToCreate;
             public readonly Dictionary<PieceTemplate.Name, byte> ingredients;
@@ -34,7 +35,8 @@ namespace SonOfRobin
             {
                 this.pieceToCreate = pieceToCreate;
                 this.amountToCreate = amountToCreate;
-                this.id = $"{this.pieceToCreate}_{this.amountToCreate}";
+                this.id = $"{(int)this.pieceToCreate}_{this.amountToCreate}";
+                this.readableID = $"{this.pieceToCreate}_{this.amountToCreate}";
                 this.ingredients = ingredients;
                 this.fatigue = fatigue;
                 this.duration = duration == -1 ? (int)(this.fatigue * 10) : duration; // if duration was not specified, it will be calculated from fatigue
