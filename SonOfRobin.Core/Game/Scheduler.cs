@@ -729,7 +729,7 @@ namespace SonOfRobin
                             bool checkForDuplicate = false;
                             if (textWindowData.ContainsKey("checkForDuplicate")) checkForDuplicate = (bool)textWindowData["checkForDuplicate"];
 
-                            bool useTransition = true;
+                            bool useTransition = false;
                             if (textWindowData.ContainsKey("useTransition")) useTransition = (bool)textWindowData["useTransition"];
 
                             bool useTransitionOpen = false;
@@ -1234,7 +1234,7 @@ namespace SonOfRobin
 
                             // showing message
 
-                            new TextWindow(text: message, animate: true, useTransition: true, bgColor: isCorrect ? Color.Green : Color.DarkRed, textColor: Color.White);
+                            new TextWindow(text: message, animate: false, useTransition: false, bgColor: isCorrect ? Color.Green : Color.DarkRed, textColor: Color.White);
 
                             return;
                         }
