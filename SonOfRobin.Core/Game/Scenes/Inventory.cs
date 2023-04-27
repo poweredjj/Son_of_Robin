@@ -28,7 +28,7 @@ namespace SonOfRobin
         private static readonly Sound soundSwitch = new Sound(SoundData.Name.Select);
         private static readonly Sound soundEnterContextMenu = new Sound(SoundData.Name.Invoke);
         private static readonly Sound soundPickUp = new Sound(SoundData.Name.PickUpItem, volume: 0.8f);
-        private static readonly Sound soundCombine = new Sound(SoundData.Name.AnvilHit);
+        public static readonly Sound soundCombine = new Sound(SoundData.Name.AnvilHit);
 
         public static LayoutType Layout { get; private set; } = LayoutType.None;
 
@@ -906,7 +906,7 @@ namespace SonOfRobin
             }
         }
 
-        private void ReleaseHeldPieces(StorageSlot slot, bool forceReleaseAll = false)
+        public void ReleaseHeldPieces(StorageSlot slot, bool forceReleaseAll = false)
         {
             if (this.draggedPieces.Count == 0) return;
 
@@ -946,7 +946,11 @@ namespace SonOfRobin
 
             this.draggedPieces = piecesThatDidNotFitIn;
 
-            if (this.draggedPieces.Count == initialDraggedCount && this.draggedPieces[0].name == initialTopPieceName) this.SwapDraggedAndSlotPieces(slot: slot);
+            if (this.draggedPieces.Count == initialDraggedCount && this.draggedPieces[0].name == initialTopPieceName)
+            {
+                if (this.TryToCombinePieces(slot)) return; // will display a confirmation menu, if combination is possible
+                this.SwapDraggedAndSlotPieces(slot: slot);
+            }
 
             if (this.draggedByTouch)
             {
@@ -959,29 +963,28 @@ namespace SonOfRobin
             else firstPieceSoundPack.Play(action: PieceSoundPack.Action.IsDropped, ignore3D: true, ignoreCooldown: true);
         }
 
-        private void SwapDraggedAndSlotPieces(StorageSlot slot)
+        private bool TryToCombinePieces(StorageSlot slot)
         {
-            // trying to combine pieces
+            if (this.draggedPieces.Count != 1 || slot.PieceCount != 1) return false;
 
-            if (this.draggedPieces.Count == 1 && slot.PieceCount == 1)
+            BoardPiece combinedPiece = PieceCombiner.TryToCombinePieces(piece1: this.draggedPieces[0], piece2: slot.TopPiece);
+            if (combinedPiece != null)
             {
-                BoardPiece combinedPiece = PieceCombiner.TryToCombinePieces(piece1: this.draggedPieces[0], piece2: slot.TopPiece);
-                if (combinedPiece != null)
-                {
-                    this.draggedPieces.Clear();
-                    slot.RemoveTopPiece();
+                var optionList = new List<object>();
+                optionList.Add(new Dictionary<string, object> { { "label", "yes" }, { "taskName", Scheduler.TaskName.InventoryCombineItems }, { "executeHelper", this } });
+                optionList.Add(new Dictionary<string, object> { { "label", "no" }, { "taskName", this.draggedByTouch ? Scheduler.TaskName.InventoryReleaseHeldPieces : Scheduler.TaskName.Empty }, { "executeHelper", this } });
 
-                    if (slot.CanFitThisPiece(combinedPiece)) slot.AddPiece(combinedPiece);
-                    else this.draggedPieces.Add(combinedPiece);
+                var confirmationData = new Dictionary<string, Object> { { "blocksUpdatesBelow", true }, { "question", "Combine items?" }, { "customOptionList", optionList } };
+                new Scheduler.Task(taskName: Scheduler.TaskName.OpenConfirmationMenu, turnOffInputUntilExecution: true, executeHelper: confirmationData);
 
-                    soundCombine.Play();
-
-                    return;
-                }
+                return true;
             }
 
-            // trying to swap pieces
+            return false;
+        }
 
+        private void SwapDraggedAndSlotPieces(StorageSlot slot)
+        {
             var slotPieces = this.storage.RemoveAllPiecesFromSlot(slot: slot);
 
             bool swapPossible = slot.CanFitThisPiece(piece: this.draggedPieces[0], pieceCount: this.draggedPieces.Count);
