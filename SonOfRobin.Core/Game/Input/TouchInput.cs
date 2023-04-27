@@ -436,7 +436,8 @@ namespace SonOfRobin
 
                         xPos = 0.06f;
                         yPos += yShift;
-                        // xPos and yPos are set for a second row of buttons (currently not used)
+
+                        new VirtButton(name: VButName.StatsMenu, label: "STATS", bgColorPressed: Color.CornflowerBlue, bgColorReleased: Color.White, textColor: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
 
                         return;
                     }
@@ -496,8 +497,6 @@ namespace SonOfRobin
                         xPos -= xShift;
 
                         new VirtButton(name: VButName.Confirm, label: "PLACE", bgColorPressed: Color.LightGreen, bgColorReleased: Color.White, textColor: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size, isHighlighted: false);
-
-                        new VirtButton(name: VButName.PauseMenu, label: "MENU", bgColorPressed: Color.Yellow, bgColorReleased: Color.White, textColor: Color.White, posX0to1: 0.06f, posY0to1: 0.12f, width0to1: size, height0to1: size);
 
                         return;
                     }

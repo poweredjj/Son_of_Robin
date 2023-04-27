@@ -929,12 +929,21 @@ namespace SonOfRobin
         {
             if (this.demoMode || this.CineMode) return;
 
-            if (InputMapper.HasBeenPressed(InputMapper.Action.WorldPauseMenu))
+            if (!this.BuildMode && InputMapper.HasBeenPressed(InputMapper.Action.WorldPauseMenu))
             {
                 ManagedSoundInstance.PauseAll();
                 this.soundPaused = true;
 
                 MenuTemplate.CreateMenuFromTemplate(templateName: MenuTemplate.Name.Pause);
+                return;
+            }
+
+            if (InputMapper.HasBeenPressed(InputMapper.Action.WorldStatsMenu))
+            {
+                ManagedSoundInstance.PauseAll();
+                this.soundPaused = true;
+
+                MenuTemplate.CreateMenuFromTemplate(templateName: MenuTemplate.Name.Stats);
                 return;
             }
 

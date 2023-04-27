@@ -19,6 +19,7 @@ namespace SonOfRobin
         Sprint,
         ZoomOut,
         PauseMenu,
+        StatsMenu,
         Return,
 
         InvDragSingle,

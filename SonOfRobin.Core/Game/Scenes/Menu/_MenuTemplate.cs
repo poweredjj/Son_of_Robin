@@ -10,7 +10,7 @@ namespace SonOfRobin
     public class MenuTemplate
     {
         public enum Name
-        { Main, Options, Sound, Graphics, Controls, Gamepad, Keyboard, Scale, OtherOptions, CreateNewIsland, SetSeed, OpenIslandTemplate, Pause, Load, Save, Tutorials, GameOver, Debug, SoundTest, GfxListTest, Shelter, CreateAnyPiece, GenericConfirm, CraftField, CraftEssential, CraftBasic, CraftAdvanced, CraftMaster, CraftAlchemy, CraftFurnace, CraftAnvil, CraftLeatherBasic, CraftLeatherAdvanced }
+        { Main, Options, Sound, Graphics, Controls, Gamepad, Keyboard, Scale, OtherOptions, CreateNewIsland, SetSeed, OpenIslandTemplate, Pause, Stats, Load, Save, Tutorials, GameOver, Debug, SoundTest, GfxListTest, Shelter, CreateAnyPiece, GenericConfirm, CraftField, CraftEssential, CraftBasic, CraftAdvanced, CraftMaster, CraftAlchemy, CraftFurnace, CraftAnvil, CraftLeatherBasic, CraftLeatherAdvanced }
 
         public static Menu CreateConfirmationMenu(Object confirmationData)
         {
@@ -415,6 +415,34 @@ namespace SonOfRobin
                         return menu;
                     }
 
+                case Name.Stats:
+                    {
+                        World world = World.GetTopWorld();
+
+                        Menu menu = new Menu(templateName: templateName, name: "STATS", blocksUpdatesBelow: true, canBeClosedManually: true, templateExecuteHelper: executeHelper, soundOpen: SoundData.Name.PaperMove1, soundClose: SoundData.Name.PaperMove2, alwaysShowSelectedEntry: true);
+                        new Invoker(menu: menu, name: "return to game", closesMenu: true, taskName: Scheduler.TaskName.Empty);
+
+                        // player stats
+
+                        Player player = world.Player;
+
+                        string characterText = $"|\nSTR: {player.strength}\nSPD: {Math.Round(player.speed)}\nHP: {Math.Round(player.hitPoints)} / {Math.Round(player.maxHitPoints)}";
+                        var characterImageList = new List<Texture2D> { player.sprite.frame.texture };
+
+                        // TODO add more stats
+
+                        var characterInfoTextList = new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: characterText, imageList: characterImageList, color: Color.White, scale: 1f) };
+
+                        new Invoker(menu: menu, name: "player", taskName: Scheduler.TaskName.Empty, playSound: false, infoTextList: characterInfoTextList);
+
+                        // other stats
+
+                        new Invoker(menu: menu, name: "crafted pieces", taskName: Scheduler.TaskName.ShowCraftStats, executeHelper: false);
+                        new Invoker(menu: menu, name: "used ingredients", taskName: Scheduler.TaskName.ShowCraftStats, executeHelper: true);
+
+                        return menu;
+                    }
+
                 case Name.GameOver:
                     {
                         Menu menu = new Menu(templateName: templateName, name: "GAME OVER", blocksUpdatesBelow: false, canBeClosedManually: false, layout: Menu.Layout.Middle, templateExecuteHelper: executeHelper);
@@ -531,8 +559,6 @@ namespace SonOfRobin
 
                         if (nonDemoWorldActive)
                         {
-                            new Invoker(menu: menu, name: "show crafted pieces", taskName: Scheduler.TaskName.ShowCraftStats, executeHelper: false);
-                            new Invoker(menu: menu, name: "show used ingredients", taskName: Scheduler.TaskName.ShowCraftStats, executeHelper: true);
                             new Invoker(menu: menu, name: "check incorrect pieces", taskName: Scheduler.TaskName.CheckForIncorrectPieces);
                         }
 
@@ -806,7 +832,7 @@ namespace SonOfRobin
 
             new Separator(menu: menu, name: "", isEmpty: true);
             new Separator(menu: menu, name: "menus");
-            foreach (string propertyName in new List<string> { "pauseMenu", "craft", "inventory" })
+            foreach (string propertyName in new List<string> { "inventory", "pauseMenu", "craft", "statsMenu" })
             { new Selector(menu: menu, name: newMapping.GetReadablePropertyName(propertyName), valueDict: keysOrButtonsDict, targetObj: newMapping, propertyName: propertyName, captureInput: true, captureKeys: captureKeys, captureButtons: captureButtons); }
 
             new Separator(menu: menu, name: "", isEmpty: true);
