@@ -842,6 +842,7 @@ namespace SonOfRobin
                 allyAnimal.target = this.target;
                 allyAnimal.aiData.Reset();
                 allyAnimal.activeState = State.AnimalChaseTarget;
+                if (!allyAnimal.eats.Contains(this.target.name)) allyAnimal.eats.Add(this.target.name); // the point is to kill the attacker
 
                 if (allyAnimal.visualAid != null) this.visualAid.Destroy();
 
@@ -851,6 +852,8 @@ namespace SonOfRobin
                     new Tracking(world: world, targetSprite: allyAnimal.sprite, followingSprite: allyAnimal.visualAid.sprite, targetYAlign: YAlign.Top, targetXAlign: XAlign.Left, followingYAlign: YAlign.Bottom, offsetX: 0, offsetY: 5);
                 }
             }
+
+            if (!this.eats.Contains(this.target.name)) this.eats.Add(this.target.name);
 
             if (this.visualAid != null) this.visualAid.Destroy();
 
