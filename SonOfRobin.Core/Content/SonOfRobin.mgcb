@@ -6639,6 +6639,12 @@
 /processorParam:Quality=Best
 /build:sound/384362__ali-6868__digging-a-hole-and-shovelling-soil-dirt-2.ogg
 
+#begin sound/386124__ldezem__anvil-lokomo-a-100-kg-combination-of-hot-and-cold-hits.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sound/386124__ldezem__anvil-lokomo-a-100-kg-combination-of-hot-and-cold-hits.ogg
+
 #begin sound/388062__arnaud-coutancier__quick-hammer-blows-on-anvil.ogg
 /importer:OggImporter
 /processor:SoundEffectProcessor

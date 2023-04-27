@@ -251,8 +251,8 @@ namespace SonOfRobin
             SoundNoonCicadas,
             SoundLava,
 
-            LanternFrame,
-            Lantern,
+            LanternEmpty,
+            LanternFull,
             Candle,
             Dungarees,
             CarrotPlant,
@@ -2611,7 +2611,7 @@ namespace SonOfRobin
                             allowedTerrain: shallowWaterToVolcano, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 3, mass: 100, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 600, readableName: "big torch", description: "Burns for a long time.", fireAffinity: 1f);
                     }
 
-                case Name.Lantern:
+                case Name.LanternFull:
                     {
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.MetalicClank, cooldown: 15, maxPitchVariation: 0.3f));
@@ -2619,16 +2619,16 @@ namespace SonOfRobin
                         var buffList = new List<Buff> { new Buff(type: BuffEngine.BuffType.LightSource, value: 8) };
 
                         return new PortableLight(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Lantern, blocksMovement: true, category: BoardPiece.Category.Metal, canBeUsedDuringRain: true,
-                            allowedTerrain: shallowWaterToVolcano, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 100, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 500, readableName: "lantern", description: "Can be used during rain. Refillable.", convertsToWhenUsedUp: Name.LanternFrame, soundPack: soundPack, fireAffinity: 0f);
+                            allowedTerrain: shallowWaterToVolcano, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 100, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 500, readableName: "lantern", description: "Can be used during rain. Refillable.", convertsToWhenUsedUp: Name.LanternEmpty, soundPack: soundPack, fireAffinity: 0f);
                     }
 
-                case Name.LanternFrame:
+                case Name.LanternEmpty:
                     {
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.MetalicClank, cooldown: 15, maxPitchVariation: 0.3f));
 
                         return new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.LanternFrame, allowedTerrain: new AllowedTerrain(), category: BoardPiece.Category.Metal,
-                            minDistance: 0, maxDistance: 500, maxMassForSize: null, generation: generation, maxHitPoints: 400, readableName: "lantern frame", description: "Can be used to make a lantern.", movesWhenDropped: true, rotatesWhenDropped: true, isAffectedByWind: true, canBePickedUp: true, soundPack: soundPack, fireAffinity: 0f);
+                            minDistance: 0, maxDistance: 500, maxMassForSize: null, generation: generation, maxHitPoints: 400, readableName: "empty lantern", description: "Needs a candle to be put inside.", movesWhenDropped: true, rotatesWhenDropped: true, isAffectedByWind: true, canBePickedUp: true, soundPack: soundPack, fireAffinity: 0f);
                     }
 
                 case Name.Candle:

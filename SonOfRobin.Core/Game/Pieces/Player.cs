@@ -52,7 +52,7 @@ namespace SonOfRobin
             this.sleepEngine = SleepEngine.OutdoorSleepDry; // to be changed later
             this.LastSteps = new List<Vector2>();
 
-            var allowedToolbarPieces = new List<PieceTemplate.Name> { PieceTemplate.Name.LanternFrame }; // indivitual cases, that will not be added below
+            var allowedToolbarPieces = new List<PieceTemplate.Name> { PieceTemplate.Name.LanternEmpty }; // indivitual cases, that will not be added below
 
             if (PieceInfo.HasBeenInitialized)
             {

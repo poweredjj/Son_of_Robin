@@ -28,6 +28,7 @@ namespace SonOfRobin
         private static readonly Sound soundSwitch = new Sound(SoundData.Name.Select);
         private static readonly Sound soundEnterContextMenu = new Sound(SoundData.Name.Invoke);
         private static readonly Sound soundPickUp = new Sound(SoundData.Name.PickUpItem, volume: 0.8f);
+        private static readonly Sound soundCombine = new Sound(SoundData.Name.AnvilHit);
 
         public static LayoutType Layout { get; private set; } = LayoutType.None;
 
@@ -960,6 +961,27 @@ namespace SonOfRobin
 
         private void SwapDraggedAndSlotPieces(StorageSlot slot)
         {
+            // trying to combine pieces
+
+            if (this.draggedPieces.Count == 1 && slot.PieceCount == 1)
+            {
+                BoardPiece combinedPiece = PieceCombiner.TryToCombinePieces(piece1: this.draggedPieces[0], piece2: slot.TopPiece);
+                if (combinedPiece != null)
+                {
+                    this.draggedPieces.Clear();
+                    slot.RemoveTopPiece();
+
+                    if (slot.CanFitThisPiece(combinedPiece)) slot.AddPiece(combinedPiece);
+                    else this.draggedPieces.Add(combinedPiece);
+
+                    soundCombine.Play();
+
+                    return;
+                }
+            }
+
+            // trying to swap pieces
+
             var slotPieces = this.storage.RemoveAllPiecesFromSlot(slot: slot);
 
             bool swapPossible = slot.CanFitThisPiece(piece: this.draggedPieces[0], pieceCount: this.draggedPieces.Count);
