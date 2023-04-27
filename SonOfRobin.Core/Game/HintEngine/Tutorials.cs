@@ -8,7 +8,7 @@ namespace SonOfRobin
     public class Tutorials
     {
         public enum Type
-        { BreakThing, Equip, BuildWorkshop, GetWood, Mine, Interact, PickUp, Hit, Craft, KeepingAnimalsAway, ShootProjectile, Cook, ShakeFruit, AnimalAttacking, Torch, Fireplace, TooDarkToReadMap, TooDarkToSeeAnything, Heat, CraftLevels, SwampPoison, SmartCrafting, HowToSave }
+        { BreakThing, Equip, BuildWorkshop, GetWood, Mine, Interact, PickUp, Hit, Craft, KeepingAnimalsAway, ShootProjectile, Cook, ShakeFruit, AnimalAttacking, Torch, Fireplace, TooDarkToReadMap, TooDarkToSeeAnything, Heat, CraftLevels, SwampPoison, SmartCrafting, HowToSave, CombineItems }
 
         private static readonly HintMessage.BoxType messageHeaderType = HintMessage.BoxType.BlueBox;
         private static readonly HintMessage.BoxType messageTextType = HintMessage.BoxType.LightBlueBox;
@@ -307,9 +307,18 @@ namespace SonOfRobin
             new Tutorial(type: Type.HowToSave, name: "saving", title: "Saving the game.",
                 messages: new List<HintMessage> {
                 new HintMessage(text: "I'm starting to get tired...", boxType: HintMessage.BoxType.Dialogue, fieldOnly: true),
-                new HintMessage(text: "You can rest and save your game inside shelter |.",imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.TentSmall) }, boxType: messageTextType),
+                new HintMessage(text: "You can rest and save your game inside shelter |.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.TentSmall) }, boxType: messageTextType),
                 new HintMessage(text: "You can make one using crafting menu.", boxType: messageTextType)
                 });
+
+            new Tutorial(type: Type.CombineItems, name: "combining items", title: "Combining items.",
+                messages: new List<HintMessage> {
+                new HintMessage(text: "You can combine | | two items into | one.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.LanternEmpty), PieceInfo.GetTexture(PieceTemplate.Name.Candle), PieceInfo.GetTexture(PieceTemplate.Name.LanternFull) }, boxType: messageTextType),
+                new HintMessage(text: "1. Open inventory.", boxType: messageTextType),
+                new HintMessage(text: "2. Pick | one item.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Candle) }, boxType: messageTextType),
+                new HintMessage(text: "3. Release it over | the other item.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.LanternEmpty) }, boxType: messageTextType),
+                new HintMessage(text: "After confirmation, a | new item will be created.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.LanternFull) }, boxType: messageTextType),
+    });
 
             CheckData();
         }

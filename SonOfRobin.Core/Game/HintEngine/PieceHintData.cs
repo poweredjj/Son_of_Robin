@@ -345,6 +345,14 @@ namespace SonOfRobin
                     type: PieceHint.Type.TreasureJar, fieldPiecesNearby: new List<PieceTemplate.Name> { PieceTemplate.Name.JarTreasure },
                     message: $"I need to destroy this | {PieceInfo.GetInfo(PieceTemplate.Name.JarTreasure).readableName} to see what's inside.",
                     imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.JarTreasure) }),
+
+                new PieceHint(
+                    type: PieceHint.Type.CandleForLantern,
+                    message: $"This | {PieceInfo.GetInfo(PieceTemplate.Name.LanternEmpty).readableName} will not work without a | {PieceInfo.GetInfo(PieceTemplate.Name.Candle).readableName} inside.",
+                    imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.LanternEmpty), PieceInfo.GetTexture(PieceTemplate.Name.Candle) },
+                    playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> { PieceTemplate.Name.LanternEmpty },
+                    tutorialsToActivate: new List<Tutorials.Type> { Tutorials.Type.CombineItems }),
+
                 };
 
             CheckData(newPieceHintList);
