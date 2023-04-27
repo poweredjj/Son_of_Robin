@@ -87,9 +87,9 @@ namespace SonOfRobin
             var statsData = new Dictionary<string, object>
             {
                 { "TotalNoOfCrafts", this.TotalNoOfCrafts },
-                { "craftedRecipes", this.craftedRecipes },
-                { "craftedPieces", this.craftedPieces },
-                { "usedIngredients", this.usedIngredients },
+                { "craftedRecipesInt", this.craftedRecipes }, // bases on newer recipe.id, that uses int instead of PieceTemplate.Name
+                { "craftedPieces", this.craftedPieces.ToDictionary(kvp => (int)kvp.Key, kvp => kvp.Value) }, // serialized as <int, int>, otherwise enums are serialized as strings
+                { "usedIngredients", this.usedIngredients.ToDictionary(kvp => (int)kvp.Key, kvp => kvp.Value) }, // serialized as <int, int>, otherwise enums are serialized as strings
                 { "CraftedPiecesTotal", this.CraftedPiecesTotal },
                 { "UsedIngredientsTotal", this.UsedIngredientsTotal },
                 { "SmartCraftingReducedIngredientCount", this.SmartCraftingReducedIngredientCount },
@@ -101,9 +101,37 @@ namespace SonOfRobin
         public void Deserialize(Dictionary<string, Object> statsData)
         {
             this.TotalNoOfCrafts = (int)(Int64)statsData["TotalNoOfCrafts"];
-            this.craftedRecipes = (Dictionary<string, int>)statsData["craftedRecipes"];
-            this.craftedPieces = (Dictionary<PieceTemplate.Name, int>)statsData["craftedPieces"];
-            this.usedIngredients = (Dictionary<PieceTemplate.Name, int>)statsData["usedIngredients"];
+
+            if (statsData.ContainsKey("craftedRecipesInt"))
+            {
+                this.craftedRecipes = (Dictionary<string, int>)statsData["craftedRecipesInt"];
+            }
+            else // for compatibility with older saves
+            {
+                var craftedRecipesEnumString = (Dictionary<string, int>)statsData["craftedRecipes"];
+
+                this.craftedRecipes = new Dictionary<string, int>();
+
+                foreach (var kvp in craftedRecipesEnumString)
+                {
+                    string[] parts = kvp.Key.Split('_');
+                    PieceTemplate.Name name = (PieceTemplate.Name)Enum.Parse(typeof(PieceTemplate.Name), parts[0]);
+                    int intValue = int.Parse(parts[1]);
+                    this.craftedRecipes[$"{(int)name}_{intValue}"] = kvp.Value;
+                }
+            }
+
+            try
+            {
+                this.craftedPieces = ((Dictionary<int, int>)statsData["craftedPieces"]).ToDictionary(kvp => (PieceTemplate.Name)kvp.Key, kvp => kvp.Value);
+                this.usedIngredients = ((Dictionary<int, int>)statsData["usedIngredients"]).ToDictionary(kvp => (PieceTemplate.Name)kvp.Key, kvp => kvp.Value);
+            }
+            catch (InvalidCastException) // for compatibility with older saves
+            {
+                this.craftedPieces = (Dictionary<PieceTemplate.Name, int>)statsData["craftedPieces"];
+                this.usedIngredients = (Dictionary<PieceTemplate.Name, int>)statsData["usedIngredients"];
+            }
+
             this.CraftedPiecesTotal = (int)(Int64)statsData["CraftedPiecesTotal"];
             this.UsedIngredientsTotal = (int)(Int64)statsData["UsedIngredientsTotal"];
             this.SmartCraftingReducedIngredientCount = (int)(Int64)statsData["SmartCraftingReducedIngredientCount"];
@@ -169,7 +197,7 @@ namespace SonOfRobin
         {
             if (collectionToShow.Keys.Count == 0)
             {
-                new TextWindow(text: "|  No items has been crafted.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Exclamation) }, textColor: Color.White, bgColor: Color.Blue, useTransition: true, animate: true);
+                new TextWindow(text: "|  No items has been crafted.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Exclamation) }, textColor: Color.White, bgColor: Color.Blue, useTransition: false, animate: false);
                 return;
             }
 
@@ -201,7 +229,7 @@ namespace SonOfRobin
                     string pageText = $"{header} ({piecesTotal}):\n{piecesText}";
                     if (totalPages > 1) pageText += $"\n\npage {pageNo}/{totalPages}";
 
-                    taskChain.Add(new HintMessage(text: pageText, imageList: imageList.ToList(), boxType: HintMessage.BoxType.BlueBox, delay: 0).ConvertToTask());
+                    taskChain.Add(new HintMessage(text: pageText, imageList: imageList.ToList(), boxType: HintMessage.BoxType.BlueBox, delay: 0, animate: false, useTransition: false).ConvertToTask());
 
                     piecesText = "";
                     imageList.Clear();
@@ -212,7 +240,7 @@ namespace SonOfRobin
 
             if (this.SmartCraftingReducedIngredientCount > 0)
             {
-                taskChain.Add(new HintMessage(text: $"Smart craft\nreduced ingredient count: {this.SmartCraftingReducedIngredientCount}", boxType: HintMessage.BoxType.BlueBox, delay: 0).ConvertToTask());
+                taskChain.Add(new HintMessage(text: $"Smart craft\nreduced ingredient count: {this.SmartCraftingReducedIngredientCount}", boxType: HintMessage.BoxType.BlueBox, delay: 0, animate: false, useTransition: false).ConvertToTask());
             }
 
             new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteTaskChain, turnOffInputUntilExecution: true, executeHelper: taskChain);
