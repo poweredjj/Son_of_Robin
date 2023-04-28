@@ -429,7 +429,7 @@ namespace SonOfRobin
                             var textLines = new List<string>();
                             var imageList = new List<Texture2D>();
 
-                            textLines.Add("| player stats\n");
+                            textLines.Add("| Player stats\n");
                             imageList.Add(PieceInfo.GetTexture(player.name));
 
                             textLines.Add($"| Strength: {player.strength}");
@@ -471,7 +471,7 @@ namespace SonOfRobin
                             var textLines = new List<string>();
                             var imageList = new List<Texture2D>();
 
-                            textLines.Add("| general craft stats\n");
+                            textLines.Add("| General craft stats\n");
                             imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.WorkshopAdvanced].texture);
 
                             textLines.Add($"Items crafted: {world.craftStats.CraftedPiecesTotal}");
@@ -487,6 +487,36 @@ namespace SonOfRobin
 
                         new Invoker(menu: menu, name: "crafted pieces", taskName: Scheduler.TaskName.ShowCraftStats, executeHelper: false);
                         new Invoker(menu: menu, name: "used ingredients", taskName: Scheduler.TaskName.ShowCraftStats, executeHelper: true);
+
+                        // island info
+                        {
+                            int plantCount = world.pieceCountByClass.ContainsKey(typeof(Plant)) ? world.pieceCountByClass[typeof(Plant)] : 0;
+                            int animalCount = world.pieceCountByClass.ContainsKey(typeof(Animal)) ? world.pieceCountByClass[typeof(Animal)] : 0;
+
+                            var textLines = new List<string>();
+                            var imageList = new List<Texture2D>();
+
+                            textLines.Add("Island info\n");
+
+                            textLines.Add($"| Size: {world.width}x{world.height}");
+                            imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.Map].texture);
+
+                            textLines.Add($"All Objects: {world.PieceCount}");
+
+                            textLines.Add($"| Plants: {plantCount}");
+                            imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.GrassRegular].texture);
+
+                            textLines.Add($"| Animals: {animalCount}");
+                            imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.FoxGinger].texture);
+
+                            string timePlayedString = string.Format("{0:D2}:{1:D2}", (int)Math.Floor(world.TimePlayed.TotalHours), world.TimePlayed.Minutes);
+                            textLines.Add($"Time played: {timePlayedString}");
+                            textLines.Add($"Island day: {world.islandClock.CurrentDayNo}");
+
+                            var infoTextList = new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: String.Join("\n", textLines), imageList: imageList, color: Color.White, scale: 1f) };
+
+                            new Invoker(menu: menu, name: "island", taskName: Scheduler.TaskName.Empty, playSound: false, infoTextList: infoTextList);
+                        }
 
                         return menu;
                     }
