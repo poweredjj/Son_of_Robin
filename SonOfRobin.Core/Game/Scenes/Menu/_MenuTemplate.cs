@@ -426,12 +426,20 @@ namespace SonOfRobin
 
                         Player player = world.Player;
 
-                        string characterText = $"|\nSTR: {player.strength}\nSPD: {Math.Round(player.speed)}\nHP: {Math.Round(player.hitPoints)} / {Math.Round(player.maxHitPoints)}";
-                        var characterImageList = new List<Texture2D> { player.sprite.frame.texture };
+                        var characterTextLines = new List<string>();
+                        var characterImageList = new List<Texture2D>();
+
+                        characterTextLines.Add("|");
+                        characterImageList.Add(PieceInfo.GetTexture(player.name));
+                        characterTextLines.Add($"Strength: {player.strength}");
+                        characterTextLines.Add($"Speed: {Math.Round(player.speed)}");
+                        characterTextLines.Add($"Stamina: {Math.Round(player.stamina)}");
+                        characterTextLines.Add($"Craft level: {player.craftLevel}");
+                        characterTextLines.Add($"HP: {Math.Round(player.hitPoints)} / {Math.Round(player.maxHitPoints)}");
 
                         // TODO add more stats
 
-                        var characterInfoTextList = new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: characterText, imageList: characterImageList, color: Color.White, scale: 1f) };
+                        var characterInfoTextList = new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: String.Join("\n", characterTextLines), imageList: characterImageList, color: Color.White, scale: 1f) };
 
                         new Invoker(menu: menu, name: "player", taskName: Scheduler.TaskName.Empty, playSound: false, infoTextList: characterInfoTextList);
 
