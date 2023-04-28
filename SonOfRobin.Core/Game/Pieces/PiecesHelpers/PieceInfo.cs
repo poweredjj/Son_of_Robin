@@ -8,7 +8,8 @@ namespace SonOfRobin
 {
     public class PieceInfo
     {
-        private static readonly Dictionary<PieceTemplate.Name, Info> info = new Dictionary<PieceTemplate.Name, Info> { };
+        private static readonly Dictionary<PieceTemplate.Name, Info> info = new Dictionary<PieceTemplate.Name, Info>();
+        public static readonly Dictionary<Type, List<PieceTemplate.Name>> namesForType = new Dictionary<Type, List<PieceTemplate.Name>>();
         public static bool HasBeenInitialized { get; private set; } = false;
 
         public class Info
@@ -163,6 +164,14 @@ namespace SonOfRobin
             foreach (Info fruitSpawnerInfo in info.Values.Where(info => info.hasFruit))
             {
                 info[fruitSpawnerInfo.fruitName].isSpawnedBy = fruitSpawnerInfo.name;
+            }
+
+            // getting names for type data
+
+            foreach (Info currentInfo in info.Values)
+            {
+                if (!namesForType.ContainsKey(currentInfo.type)) namesForType[currentInfo.type] = new List<PieceTemplate.Name>();
+                namesForType[currentInfo.type].Add(currentInfo.name);
             }
 
             HasBeenInitialized = true;

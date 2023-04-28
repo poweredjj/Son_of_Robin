@@ -466,28 +466,6 @@ namespace SonOfRobin
                             new Invoker(menu: menu, name: "player", taskName: Scheduler.TaskName.Empty, playSound: false, infoTextList: infoTextList);
                         }
 
-                        // general craft stats
-                        {
-                            var textLines = new List<string>();
-                            var imageList = new List<Texture2D>();
-
-                            textLines.Add("| General craft stats\n");
-                            imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.WorkshopAdvanced].texture);
-
-                            textLines.Add($"Items crafted: {world.craftStats.CraftedPiecesTotal}");
-                            textLines.Add($"Ingredients used: {world.craftStats.UsedIngredientsTotal}");
-                            textLines.Add($"Ingredients saved (smart craft): {world.craftStats.SmartCraftingReducedIngredientCount}");
-
-                            var infoTextList = new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: String.Join("\n", textLines), imageList: imageList, color: Color.White, scale: 1f) };
-
-                            new Invoker(menu: menu, name: "craft general", taskName: Scheduler.TaskName.Empty, playSound: false, infoTextList: infoTextList);
-                        }
-
-                        // other stats
-
-                        new Invoker(menu: menu, name: "crafted pieces", taskName: Scheduler.TaskName.ShowCraftStats, executeHelper: false);
-                        new Invoker(menu: menu, name: "used ingredients", taskName: Scheduler.TaskName.ShowCraftStats, executeHelper: true);
-
                         // island info
                         {
                             int plantCount = world.pieceCountByClass.ContainsKey(typeof(Plant)) ? world.pieceCountByClass[typeof(Plant)] : 0;
@@ -516,6 +494,62 @@ namespace SonOfRobin
                             var infoTextList = new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: String.Join("\n", textLines), imageList: imageList, color: Color.White, scale: 1f) };
 
                             new Invoker(menu: menu, name: "island", taskName: Scheduler.TaskName.Empty, playSound: false, infoTextList: infoTextList);
+                        }
+
+                        // general craft stats
+                        {
+                            var textLines = new List<string>();
+                            var imageList = new List<Texture2D>();
+
+                            textLines.Add("| General craft stats\n");
+                            imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.WorkshopAdvanced].texture);
+
+                            textLines.Add($"| |  Items crafted: {world.craftStats.CraftedPiecesTotal}");
+                            imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.AxeIron].texture);
+                            imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.TentMedium].texture);
+
+                            textLines.Add($"| |  Ingredients used: {world.craftStats.UsedIngredientsTotal}");
+                            imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.WoodLogRegular].texture);
+                            imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.IronBar].texture);
+
+                            textLines.Add($"|  Ingredients saved (smart craft): {world.craftStats.SmartCraftingReducedIngredientCount}");
+                            imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.ChestIron].texture);
+
+                            var infoTextList = new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: String.Join("\n", textLines), imageList: imageList, color: Color.White, scale: 1f) };
+
+                            new Invoker(menu: menu, name: "craft general", taskName: Scheduler.TaskName.Empty, playSound: false, infoTextList: infoTextList);
+                        }
+
+                        // crafting / planting lists
+                        {
+                            var craftedPiecesListOfInfoTextList = world.craftStats.GetTextEntryListForCraftedPiecesSummary();
+                            var usedIngredientsListOfInfoTextList = world.craftStats.GetTextEntryListForUsedIngredientsSummary();
+                            var vegetationPlantedListOfInfoTextList = world.craftStats.GetTextEntryListForVegetationPlantedSummary();
+
+                            var collectionData = new Dictionary<string, List<List<InfoWindow.TextEntry>>>
+                            {
+                                { "crafted items", craftedPiecesListOfInfoTextList },
+                                { "used ingredients", usedIngredientsListOfInfoTextList },
+                                { "vegetation planted", vegetationPlantedListOfInfoTextList },
+                            };
+
+                            foreach (var kvp in collectionData)
+                            {
+                                string title = kvp.Key;
+                                var listOfInfoTextList = kvp.Value;
+
+                                if (listOfInfoTextList != null)
+                                {
+                                    int pageCounter = 0;
+                                    foreach (List<InfoWindow.TextEntry> infoTextList in listOfInfoTextList)
+                                    {
+                                        pageCounter++;
+
+                                        new Invoker(menu: menu, name: $"{title} - page {pageCounter}",
+                                            taskName: Scheduler.TaskName.Empty, playSound: false, infoTextList: infoTextList);
+                                    }
+                                }
+                            }
                         }
 
                         return menu;

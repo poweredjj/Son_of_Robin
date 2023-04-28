@@ -139,14 +139,19 @@ namespace SonOfRobin
             return this.usedIngredients.ContainsKey(name) ? this.usedIngredients[name] : 0;
         }
 
-        public void DisplayCraftedPiecesSummary()
+        public List<List<InfoWindow.TextEntry>> GetTextEntryListForVegetationPlantedSummary()
         {
-            this.DisplaySummary(collectionToShow: this.craftedPieces, header: "Crafted pieces");
+            return this.GetTextEntryListForSummary(collectionToShow: this.craftedPieces, header: "Vegetation planted", showOnlyPlantsAndFruits: true);
         }
 
-        public void DisplayUsedIngredientsSummary()
+        public List<List<InfoWindow.TextEntry>> GetTextEntryListForCraftedPiecesSummary()
         {
-            this.DisplaySummary(collectionToShow: this.usedIngredients, header: "Used ingredients");
+            return this.GetTextEntryListForSummary(collectionToShow: this.craftedPieces, header: "Crafted items", showOnlyPlantsAndFruits: false);
+        }
+
+        public List<List<InfoWindow.TextEntry>> GetTextEntryListForUsedIngredientsSummary()
+        {
+            return this.GetTextEntryListForSummary(collectionToShow: this.usedIngredients, header: "Used ingredients", showOnlyPlantsAndFruits: false);
         }
 
         public int GetRecipeLevel(Craft.Recipe recipe)
@@ -165,52 +170,54 @@ namespace SonOfRobin
             return recipeLevel > 0 && recipeLevel <= recipe.maxLevel && recipeLevel == Math.Floor(recipeLevel);
         }
 
-        private void DisplaySummary(Dictionary<PieceTemplate.Name, int> collectionToShow, string header)
+        private List<List<InfoWindow.TextEntry>> GetTextEntryListForSummary(Dictionary<PieceTemplate.Name, int> collectionToShow, string header, bool showOnlyPlantsAndFruits)
         {
-            if (collectionToShow.Keys.Count == 0)
-            {
-                new TextWindow(text: "|  No items has been crafted.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.ExclamationRed) }, textColor: Color.White, bgColor: Color.Blue, useTransition: false, animate: false);
-                return;
-            }
+            var listOfInfoTextList = new List<List<InfoWindow.TextEntry>>();
 
-            int piecesForPage = 10;
-            var taskChain = new List<Object>();
+            var plantNames = PieceInfo.namesForType[typeof(Plant)];
+            var fruitNames = PieceInfo.namesForType[typeof(Fruit)];
 
-            string piecesText = "";
-            List<Texture2D> imageList = new List<Texture2D>();
+            var allowedNames = new List<PieceTemplate.Name>();
+            if (showOnlyPlantsAndFruits) allowedNames.AddRange(plantNames);
+            else allowedNames = PieceTemplate.allNames.Where(name => !plantNames.Contains(name) && !fruitNames.Contains(name)).ToList();
 
-            var pieceNames = collectionToShow.Keys.OrderBy(n => PieceInfo.GetInfo(n).readableName);
-            int piecesTotal = collectionToShow.Values.Sum();
+            var pieceNames = collectionToShow.Keys.Where(name => allowedNames.Contains(name)).OrderBy(n => PieceInfo.GetInfo(n).readableName);
+            if (!pieceNames.Any()) return null;
 
-            int currentPagePiecesCount = 0;
-            int pageNo = 1;
-            int totalPages = (int)Math.Ceiling((float)pieceNames.Count() / (float)piecesForPage);
+            int entriesPerPage = 15;
+            int pageCounter = 1;
+            int pieceCounter = 0;
+
+            var textLines = new List<string>();
+            var imageList = new List<Texture2D>();
 
             foreach (PieceTemplate.Name pieceName in pieceNames)
             {
                 int pieceCount = collectionToShow[pieceName];
                 PieceInfo.Info pieceInfo = PieceInfo.GetInfo(pieceName);
 
-                piecesText += $"\n|  x{pieceCount}  {pieceInfo.readableName}";
+                textLines.Add($"|  x{pieceCount}  {pieceInfo.readableName}");
                 imageList.Add(pieceInfo.texture);
 
-                currentPagePiecesCount++;
-
-                if (currentPagePiecesCount >= piecesForPage || pieceName == pieceNames.Last())
+                pieceCounter++;
+                if (pieceCounter >= entriesPerPage || pieceName == pieceNames.Last())
                 {
-                    string pageText = $"{header} ({piecesTotal}):\n{piecesText}";
-                    if (totalPages > 1) pageText += $"\n\npage {pageNo}/{totalPages}";
+                    var currentPageInfoTextList = new List<InfoWindow.TextEntry>
+                    {
+                        new InfoWindow.TextEntry(text: $"{header} - page {pageCounter}", color: Color.White, scale: 1f),
+                        new InfoWindow.TextEntry(text: String.Join("\n", textLines), imageList: imageList.ToList(), color: Color.White, scale: 1f)
+                    };
 
-                    taskChain.Add(new HintMessage(text: pageText, imageList: imageList.ToList(), boxType: HintMessage.BoxType.BlueBox, delay: 0, animate: false, useTransition: false).ConvertToTask());
+                    listOfInfoTextList.Add(currentPageInfoTextList);
 
-                    piecesText = "";
+                    pageCounter++;
+                    pieceCounter = 0;
+                    textLines.Clear();
                     imageList.Clear();
-                    currentPagePiecesCount = 0;
-                    pageNo++;
                 }
             }
 
-            new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteTaskChain, turnOffInputUntilExecution: true, executeHelper: taskChain);
+            return listOfInfoTextList;
         }
     }
 }
