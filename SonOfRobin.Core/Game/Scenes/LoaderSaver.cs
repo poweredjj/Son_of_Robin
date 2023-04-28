@@ -583,10 +583,8 @@ namespace SonOfRobin
                 string coolingPath = Path.Combine(this.savePath, coolingName);
                 if (!FileReaderWriter.PathExists(coolingPath))
                 {
-                    // new TextWindow(text: "Error while reading cooling data.", textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false, closingTask: this.TextWindowTask);
-                    // this.ErrorOccured = true;
-
-                    this.coolingData = new Dictionary<string, Object>(); // for compatibility with older saves
+                    new TextWindow(text: "Error while reading cooling data.", textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false, closingTask: this.TextWindowTask);
+                    this.ErrorOccured = true;
                 }
                 else this.coolingData = (Dictionary<string, Object>)FileReaderWriter.Load(path: coolingPath);
 

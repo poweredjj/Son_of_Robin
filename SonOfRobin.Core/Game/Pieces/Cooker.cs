@@ -123,7 +123,7 @@ namespace SonOfRobin
             base.Deserialize(pieceData);
             this.cookingStartFrame = (int)(Int64)pieceData["cooker_cookingStartFrame"];
             this.cookingDoneFrame = (int)(Int64)pieceData["cooker_cookingDoneFrame"];
-            if (pieceData.ContainsKey("cooker_IsOn")) this.IsOn = (bool)pieceData["cooker_IsOn"]; // for compatibility with older saves
+            this.IsOn = (bool)pieceData["cooker_IsOn"];
         }
 
         public void TurnOn()

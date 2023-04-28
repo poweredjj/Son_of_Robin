@@ -70,18 +70,15 @@ namespace SonOfRobin
         {
             this.pieceByID.Clear();
 
-            if (coolingData.ContainsKey("pieceIDList")) // for compatibility with older saves
-            {
-                List<string> idList = (List<string>)coolingData["pieceIDList"];
+            List<string> idList = (List<string>)coolingData["pieceIDList"];
 
-                foreach (string pieceID in idList)
+            foreach (string pieceID in idList)
+            {
+                if (!this.world.piecesByOldID.ContainsKey(pieceID))
                 {
-                    if (!this.world.piecesByOldID.ContainsKey(pieceID))
-                    {
-                        MessageLog.AddMessage(msgType: MsgType.Debug, message: $"CoolingData - cannot find boardPiece id {pieceID}.", color: Color.Orange);
-                    }
-                    else this.pieceByID[pieceID] = this.world.piecesByOldID[pieceID];
+                    MessageLog.AddMessage(msgType: MsgType.Debug, message: $"CoolingData - cannot find boardPiece id {pieceID}.", color: Color.Orange);
                 }
+                else this.pieceByID[pieceID] = this.world.piecesByOldID[pieceID];
             }
         }
     }

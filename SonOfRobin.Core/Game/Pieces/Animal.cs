@@ -90,9 +90,7 @@ namespace SonOfRobin
             base.Deserialize(pieceData);
 
             // animPackage does not have to be reassigned - it is set by Sprite.Deserialize()
-            if (pieceData.ContainsKey("animal_IsFemale")) this.IsFemale = (bool)pieceData["animal_IsFemale"];
-            else this.IsFemale = (bool)pieceData["base_female"]; // for compatibility with older saves
-
+            this.IsFemale = (bool)pieceData["animal_IsFemale"];
             this.fedLevel = (int)(Int64)pieceData["animal_fedLevel"];
             this.pregnancyMass = (int)(Int64)pieceData["animal_pregnancyMass"];
             this.pregnancyFramesLeft = (int)(Int64)pieceData["animal_pregnancyFramesLeft"];

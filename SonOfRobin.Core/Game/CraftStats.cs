@@ -101,37 +101,9 @@ namespace SonOfRobin
         public void Deserialize(Dictionary<string, Object> statsData)
         {
             this.TotalNoOfCrafts = (int)(Int64)statsData["TotalNoOfCrafts"];
-
-            if (statsData.ContainsKey("craftedRecipesInt"))
-            {
-                this.craftedRecipes = (Dictionary<string, int>)statsData["craftedRecipesInt"];
-            }
-            else // for compatibility with older saves
-            {
-                var craftedRecipesEnumString = (Dictionary<string, int>)statsData["craftedRecipes"];
-
-                this.craftedRecipes = new Dictionary<string, int>();
-
-                foreach (var kvp in craftedRecipesEnumString)
-                {
-                    string[] parts = kvp.Key.Split('_');
-                    PieceTemplate.Name name = (PieceTemplate.Name)Enum.Parse(typeof(PieceTemplate.Name), parts[0]);
-                    int intValue = int.Parse(parts[1]);
-                    this.craftedRecipes[$"{(int)name}_{intValue}"] = kvp.Value;
-                }
-            }
-
-            try
-            {
-                this.craftedPieces = ((Dictionary<int, int>)statsData["craftedPieces"]).ToDictionary(kvp => (PieceTemplate.Name)kvp.Key, kvp => kvp.Value);
-                this.usedIngredients = ((Dictionary<int, int>)statsData["usedIngredients"]).ToDictionary(kvp => (PieceTemplate.Name)kvp.Key, kvp => kvp.Value);
-            }
-            catch (InvalidCastException) // for compatibility with older saves
-            {
-                this.craftedPieces = (Dictionary<PieceTemplate.Name, int>)statsData["craftedPieces"];
-                this.usedIngredients = (Dictionary<PieceTemplate.Name, int>)statsData["usedIngredients"];
-            }
-
+            this.craftedRecipes = (Dictionary<string, int>)statsData["craftedRecipesInt"];
+            this.craftedPieces = ((Dictionary<int, int>)statsData["craftedPieces"]).ToDictionary(kvp => (PieceTemplate.Name)kvp.Key, kvp => kvp.Value);
+            this.usedIngredients = ((Dictionary<int, int>)statsData["usedIngredients"]).ToDictionary(kvp => (PieceTemplate.Name)kvp.Key, kvp => kvp.Value);
             this.CraftedPiecesTotal = (int)(Int64)statsData["CraftedPiecesTotal"];
             this.UsedIngredientsTotal = (int)(Int64)statsData["UsedIngredientsTotal"];
             this.SmartCraftingReducedIngredientCount = (int)(Int64)statsData["SmartCraftingReducedIngredientCount"];
