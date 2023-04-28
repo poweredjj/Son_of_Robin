@@ -463,7 +463,10 @@ namespace SonOfRobin
 
                             var infoTextList = new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: String.Join("\n", textLines), imageList: imageList, color: Color.White, scale: 1f) };
 
-                            new Invoker(menu: menu, name: "player", taskName: Scheduler.TaskName.Empty, playSound: false, infoTextList: infoTextList);
+                            Invoker invoker = new Invoker(menu: menu, name: "player", taskName: Scheduler.TaskName.Empty, playSound: false, infoTextList: infoTextList);
+                            Color color = new Color(31, 197, 219);
+                            invoker.rectColor = color;
+                            invoker.outlineColor = color;
                         }
 
                         // island info
@@ -493,7 +496,10 @@ namespace SonOfRobin
 
                             var infoTextList = new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: String.Join("\n", textLines), imageList: imageList, color: Color.White, scale: 1f) };
 
-                            new Invoker(menu: menu, name: "island", taskName: Scheduler.TaskName.Empty, playSound: false, infoTextList: infoTextList);
+                            Invoker invoker = new Invoker(menu: menu, name: "island", taskName: Scheduler.TaskName.Empty, playSound: false, infoTextList: infoTextList);
+                            Color color = new Color(148, 115, 55);
+                            invoker.rectColor = color;
+                            invoker.outlineColor = color;
                         }
 
                         // general craft stats
@@ -504,20 +510,21 @@ namespace SonOfRobin
                             textLines.Add("| General craft stats\n");
                             imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.WorkshopAdvanced].texture);
 
-                            textLines.Add($"| |  Items crafted: {world.craftStats.CraftedPiecesTotal}");
+                            textLines.Add($"|  Items crafted: {world.craftStats.CraftedPiecesTotal}");
                             imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.AxeIron].texture);
-                            imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.TentMedium].texture);
 
-                            textLines.Add($"| |  Ingredients used: {world.craftStats.UsedIngredientsTotal}");
+                            textLines.Add($"|  Ingredients used: {world.craftStats.UsedIngredientsTotal}");
                             imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.WoodLogRegular].texture);
-                            imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.IronBar].texture);
 
-                            textLines.Add($"|  Ingredients saved (smart craft): {world.craftStats.SmartCraftingReducedIngredientCount}");
+                            textLines.Add($"|  Ingredients saved: {world.craftStats.SmartCraftingReducedIngredientCount}");
                             imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.ChestIron].texture);
 
                             var infoTextList = new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: String.Join("\n", textLines), imageList: imageList, color: Color.White, scale: 1f) };
 
-                            new Invoker(menu: menu, name: "craft general", taskName: Scheduler.TaskName.Empty, playSound: false, infoTextList: infoTextList);
+                            Invoker invoker = new Invoker(menu: menu, name: "craft general", taskName: Scheduler.TaskName.Empty, playSound: false, infoTextList: infoTextList);
+                            Color color = new Color(168, 74, 145);
+                            invoker.rectColor = color;
+                            invoker.outlineColor = color;
                         }
 
                         // crafting / planting lists
@@ -533,6 +540,13 @@ namespace SonOfRobin
                                 { "vegetation planted", vegetationPlantedListOfInfoTextList },
                             };
 
+                            var colorData = new Dictionary<string, Color>
+                            {
+                                { "crafted items", new Color(0, 141, 184) },
+                                { "used ingredients", new Color(152, 67, 217) },
+                                { "vegetation planted",  new Color(41, 145, 0) },
+                            };
+
                             foreach (var kvp in collectionData)
                             {
                                 string title = kvp.Key;
@@ -540,13 +554,19 @@ namespace SonOfRobin
 
                                 if (listOfInfoTextList != null)
                                 {
+                                    bool showPageCounter = listOfInfoTextList.Count > 1;
+
                                     int pageCounter = 0;
                                     foreach (List<InfoWindow.TextEntry> infoTextList in listOfInfoTextList)
                                     {
                                         pageCounter++;
 
-                                        new Invoker(menu: menu, name: $"{title} - page {pageCounter}",
-                                            taskName: Scheduler.TaskName.Empty, playSound: false, infoTextList: infoTextList);
+                                        string nameString = showPageCounter ? $"{title} - page {pageCounter}" : $"{title}";
+                                        Invoker invoker = new Invoker(
+                                            menu: menu, name: nameString, taskName: Scheduler.TaskName.Empty, playSound: false, infoTextList: infoTextList);
+
+                                        invoker.rectColor = colorData[title];
+                                        invoker.outlineColor = colorData[title];
                                     }
                                 }
                             }

@@ -191,6 +191,8 @@ namespace SonOfRobin
             var textLines = new List<string>();
             var imageList = new List<Texture2D>();
 
+            bool showPageCounter = pieceNames.Count() > entriesPerPage;
+
             foreach (PieceTemplate.Name pieceName in pieceNames)
             {
                 int pieceCount = collectionToShow[pieceName];
@@ -202,9 +204,11 @@ namespace SonOfRobin
                 pieceCounter++;
                 if (pieceCounter >= entriesPerPage || pieceName == pieceNames.Last())
                 {
+                    string fullHeader = showPageCounter ? $"{header} - page {pageCounter}" : $"{header}";
+
                     var currentPageInfoTextList = new List<InfoWindow.TextEntry>
                     {
-                        new InfoWindow.TextEntry(text: $"{header} - page {pageCounter}", color: Color.White, scale: 1f),
+                        new InfoWindow.TextEntry(text: fullHeader, color: Color.White, scale: 1f),
                         new InfoWindow.TextEntry(text: String.Join("\n", textLines), imageList: imageList.ToList(), color: Color.White, scale: 1f)
                     };
 
