@@ -429,13 +429,37 @@ namespace SonOfRobin
                         var characterTextLines = new List<string>();
                         var characterImageList = new List<Texture2D>();
 
-                        characterTextLines.Add("|");
+                        characterTextLines.Add("|\n");
                         characterImageList.Add(PieceInfo.GetTexture(player.name));
-                        characterTextLines.Add($"Strength: {player.strength}");
-                        characterTextLines.Add($"Speed: {Math.Round(player.speed)}");
-                        characterTextLines.Add($"Stamina: {Math.Round(player.stamina)}");
-                        characterTextLines.Add($"Craft level: {player.craftLevel}");
-                        characterTextLines.Add($"HP: {Math.Round(player.hitPoints)} / {Math.Round(player.maxHitPoints)}");
+
+                        characterTextLines.Add($"| Strength: {player.strength}");
+                        characterImageList.Add(AnimData.framesForPkgs[AnimData.PkgName.AxeIron].texture);
+
+                        characterTextLines.Add($"| Speed: {Math.Round(player.speed)}");
+                        characterImageList.Add(AnimData.framesForPkgs[AnimData.PkgName.Animal].texture);
+
+                        characterTextLines.Add($"| Stamina: {Math.Round(player.stamina)} / {Math.Round(player.maxStamina)}");
+                        characterImageList.Add(AnimData.framesForPkgs[AnimData.PkgName.Biceps].texture);
+
+                        characterTextLines.Add($"| HP: {Math.Round(player.hitPoints)} / {Math.Round(player.maxHitPoints)}");
+                        characterImageList.Add(AnimData.framesForPkgs[AnimData.PkgName.Heart].texture);
+
+                        characterTextLines.Add($"| Food: {Math.Round(player.FedPercent * 100)}%");
+                        characterImageList.Add(AnimData.framesForPkgs[AnimData.PkgName.Burger].texture);
+
+                        characterTextLines.Add($"| Inventory size: {player.InvWidth}x{player.InvHeight}");
+                        characterImageList.Add(AnimData.framesForPkgs[AnimData.PkgName.BackpackMedium].texture);
+
+                        string toolbarText = $"| Toolbar size: {player.ToolbarWidth}";
+                        if (player.ToolbarHeight > 1) toolbarText += $"x{player.ToolbarHeight}";
+                        characterTextLines.Add(toolbarText);
+                        characterImageList.Add(AnimData.framesForPkgs[AnimData.PkgName.BeltSmall].texture);
+
+                        characterTextLines.Add($"| Craft level: {player.craftLevel}");
+                        characterImageList.Add(AnimData.framesForPkgs[AnimData.PkgName.WorkshopAdvanced].texture);
+
+                        characterTextLines.Add($"| Cooking skill: {player.cookingSkill}");
+                        characterImageList.Add(AnimData.framesForPkgs[AnimData.PkgName.MealStandard].texture);
 
                         // TODO add more stats
 

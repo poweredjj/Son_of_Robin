@@ -314,7 +314,7 @@ namespace SonOfRobin
                         var soundPack = new PieceSoundPack();
                         AddPlayerCommonSounds(soundPack: soundPack, female: false);
 
-                        return new Player(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PlayerBoy, allowedTerrain: CreatePlayerAllowedTerrain(), minDistance: 0, maxDistance: 65535, generation: generation, readableName: "player", description: "This is you.", yield: CreatePlayerYield(), activeState: BoardPiece.State.PlayerControlledWalking, lightEngine: new LightEngine(size: 300, opacity: 0.9f, colorActive: true, color: Color.Orange * 0.2f, isActive: false, castShadows: true), soundPack: soundPack, strength: 2, speed: 3.5f, maxStamina: 400, maxHitPoints: 600, maxFatigue: 3000, craftLevel: 1, cookingSkill: 1f, invWidth: 4, invHeight: 2, toolbarWidth: 3, toolbarHeight: 1, fireAffinity: 0.5f);
+                        return new Player(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PlayerBoy, allowedTerrain: CreatePlayerAllowedTerrain(), minDistance: 0, maxDistance: 65535, generation: generation, readableName: "boy", description: "This is you.", yield: CreatePlayerYield(), activeState: BoardPiece.State.PlayerControlledWalking, lightEngine: new LightEngine(size: 300, opacity: 0.9f, colorActive: true, color: Color.Orange * 0.2f, isActive: false, castShadows: true), soundPack: soundPack, strength: 2, speed: 3.5f, maxStamina: 400, maxHitPoints: 600, maxFatigue: 3000, craftLevel: 1, cookingSkill: 1f, invWidth: 4, invHeight: 2, toolbarWidth: 3, toolbarHeight: 1, fireAffinity: 0.5f);
                     }
 
                 case Name.PlayerGirl:
@@ -322,7 +322,7 @@ namespace SonOfRobin
                         var soundPack = new PieceSoundPack();
                         AddPlayerCommonSounds(soundPack: soundPack, female: true);
 
-                        return new Player(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PlayerGirl, allowedTerrain: CreatePlayerAllowedTerrain(), minDistance: 0, maxDistance: 65535, generation: generation, readableName: "player", description: "This is you.", yield: CreatePlayerYield(), activeState: BoardPiece.State.PlayerControlledWalking, lightEngine: new LightEngine(size: 300, opacity: 0.9f, colorActive: true, color: Color.Orange * 0.2f, isActive: false, castShadows: true), soundPack: soundPack, strength: 1, speed: 3, maxStamina: 300, maxHitPoints: 400, maxFatigue: 2000, craftLevel: 3, cookingSkill: 1.5f, invWidth: 4, invHeight: 3, toolbarWidth: 4, toolbarHeight: 1, fireAffinity: 0.5f);
+                        return new Player(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PlayerGirl, allowedTerrain: CreatePlayerAllowedTerrain(), minDistance: 0, maxDistance: 65535, generation: generation, readableName: "girl", description: "This is you.", yield: CreatePlayerYield(), activeState: BoardPiece.State.PlayerControlledWalking, lightEngine: new LightEngine(size: 300, opacity: 0.9f, colorActive: true, color: Color.Orange * 0.2f, isActive: false, castShadows: true), soundPack: soundPack, strength: 1, speed: 3, maxStamina: 300, maxHitPoints: 400, maxFatigue: 2000, craftLevel: 3, cookingSkill: 1.5f, invWidth: 4, invHeight: 3, toolbarWidth: 4, toolbarHeight: 1, fireAffinity: 0.5f);
                     }
 
                 case Name.PlayerTestDemoness:
@@ -330,7 +330,7 @@ namespace SonOfRobin
                         var soundPack = new PieceSoundPack();
                         AddPlayerCommonSounds(soundPack: soundPack, female: true);
 
-                        Player testDemoness = new Player(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PlayerTestDemoness, allowedTerrain: CreatePlayerAllowedTerrain(), minDistance: 0, maxDistance: 65535, generation: generation, readableName: "player", description: "This is you.", yield: CreatePlayerYield(), activeState: BoardPiece.State.PlayerControlledWalking, lightEngine: new LightEngine(size: 500, opacity: 1.0f, colorActive: true, color: Color.Red * 1f, isActive: false, castShadows: true), soundPack: soundPack, strength: 100, speed: 8, maxStamina: 50000, maxHitPoints: 100000, maxFatigue: 50000, craftLevel: 4, cookingSkill: 5f, invWidth: 6, invHeight: 4, toolbarWidth: 5, toolbarHeight: 1, fireAffinity: 0f);
+                        Player testDemoness = new Player(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PlayerTestDemoness, allowedTerrain: CreatePlayerAllowedTerrain(), minDistance: 0, maxDistance: 65535, generation: generation, readableName: "demoness", description: "This is you.", yield: CreatePlayerYield(), activeState: BoardPiece.State.PlayerControlledWalking, lightEngine: new LightEngine(size: 500, opacity: 1.0f, colorActive: true, color: Color.Red * 1f, isActive: false, castShadows: true), soundPack: soundPack, strength: 100, speed: 8, maxStamina: 50000, maxHitPoints: 100000, maxFatigue: 50000, craftLevel: 4, cookingSkill: 5f, invWidth: 6, invHeight: 4, toolbarWidth: 5, toolbarHeight: 1, fireAffinity: 0f);
 
                         return testDemoness;
                     }
