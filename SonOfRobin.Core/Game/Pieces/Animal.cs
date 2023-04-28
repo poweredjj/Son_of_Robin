@@ -662,10 +662,8 @@ namespace SonOfRobin
                 return;
             }
 
-            var heart1 = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: this.sprite.position, templateName: PieceTemplate.Name.Heart);
-            var heart2 = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: animalMate.sprite.position, templateName: PieceTemplate.Name.Heart);
-            new Tracking(world: world, targetSprite: this.sprite, followingSprite: heart1.sprite);
-            new Tracking(world: world, targetSprite: animalMate.sprite, followingSprite: heart2.sprite);
+            this.yield?.DropDebris(debrisTypeListOverride: new List<Yield.DebrisType> { Yield.DebrisType.Heart });
+            animalMate.yield?.DropDebris(debrisTypeListOverride: new List<Yield.DebrisType> { Yield.DebrisType.Heart });
 
             Animal female = this.IsFemale ? this : animalMate;
             female.pregnancyMass = 1; // starting mass should be greater than 0

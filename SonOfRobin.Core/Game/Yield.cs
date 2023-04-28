@@ -8,7 +8,7 @@ namespace SonOfRobin
     public class Yield
     {
         public enum DebrisType
-        { Stone, Wood, Leaf, Blood, Plant, Crystal, Ceramic, Star, Soot }
+        { Stone, Wood, Leaf, Blood, Plant, Crystal, Ceramic, Star, Soot, Heart }
 
         public static Dictionary<PieceTemplate.Name, Craft.Recipe> antiCraftRecipes = new Dictionary<PieceTemplate.Name, Craft.Recipe> { };
 
@@ -147,6 +147,10 @@ namespace SonOfRobin
 
                     case DebrisType.Soot:
                         debrisList.Add(new DroppedPiece(pieceName: PieceTemplate.Name.DebrisSoot, chanceToDrop: 100, minNumberToDrop: 8, maxNumberToDrop: 30));
+                        break;
+
+                    case DebrisType.Heart:
+                        debrisList.Add(new DroppedPiece(pieceName: PieceTemplate.Name.DebrisHeart, chanceToDrop: 100, minNumberToDrop: 6, maxNumberToDrop: 6));
                         break;
 
                     default:

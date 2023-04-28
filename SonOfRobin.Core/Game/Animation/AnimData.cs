@@ -357,6 +357,9 @@ namespace SonOfRobin
             BowAdvanced,
             Animal,
             ExclamationBlue,
+            DebrisHeart1,
+            DebrisHeart2,
+            DebrisHeart3,
         }
 
         public static void AddFrameList(PkgName animPackage, byte animSize, List<AnimFrame> frameList, string animName = "default")
@@ -1017,6 +1020,9 @@ namespace SonOfRobin
             AddFrameList(animPackage: PkgName.DebrisStar1, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "star", layer: 0, scale: 0.1f));
             AddFrameList(animPackage: PkgName.DebrisStar2, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "star", layer: 0, scale: 0.12f));
             AddFrameList(animPackage: PkgName.DebrisStar3, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "star", layer: 0, scale: 0.05f));
+            AddFrameList(animPackage: PkgName.DebrisHeart1, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "heart_16x16", layer: 0, scale: 0.8f));
+            AddFrameList(animPackage: PkgName.DebrisHeart2, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "heart_16x16", layer: 0, scale: 0.9f));
+            AddFrameList(animPackage: PkgName.DebrisHeart3, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "heart_16x16", layer: 0, scale: 1.0f));
             AddFrameList(animPackage: PkgName.Biceps, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "biceps", layer: 2));
             AddFrameList(animPackage: PkgName.Animal, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "animal", layer: 2));
             AddFrameList(animPackage: PkgName.Bed, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "bed", layer: 2));

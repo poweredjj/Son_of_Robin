@@ -1136,6 +1136,8 @@ namespace SonOfRobin
 
                         foreach (Sprite shadowSprite in blockingLightSpritesList)
                         {
+                            if (!shadowSprite.Visible) continue;
+
                             Vector2 sunPos = new Vector2(shadowSprite.gfxRect.Center.X + sunLightData.sunPos.X, shadowSprite.gfxRect.Bottom + sunLightData.sunPos.Y);
                             float shadowAngle = Helpers.GetAngleBetweenTwoPoints(start: sunPos, end: shadowSprite.position);
 
