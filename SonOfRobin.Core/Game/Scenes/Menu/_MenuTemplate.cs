@@ -422,12 +422,12 @@ namespace SonOfRobin
                         Menu menu = new Menu(templateName: templateName, name: "STATS", blocksUpdatesBelow: true, canBeClosedManually: true, templateExecuteHelper: executeHelper, soundOpen: SoundData.Name.PaperMove1, soundClose: SoundData.Name.PaperMove2, alwaysShowSelectedEntry: true);
                         menu.bgColor = new Color(75, 37, 110) * 0.75f;
 
+                        Player player = world.Player;
+
                         new Invoker(menu: menu, name: "return to game", closesMenu: true, taskName: Scheduler.TaskName.Empty);
 
                         // player stats
                         {
-                            Player player = world.Player;
-
                             var textLines = new List<string>();
                             var imageList = new List<Texture2D>();
 
@@ -494,6 +494,7 @@ namespace SonOfRobin
 
                             string timePlayedString = string.Format("{0:D2}:{1:D2}", (int)Math.Floor(world.TimePlayed.TotalHours), world.TimePlayed.Minutes);
                             textLines.Add($"Time played: {timePlayedString}");
+                            textLines.Add($"Distance walked: {player.DistanceWalkedKilometers} km");
                             textLines.Add($"Island day: {world.islandClock.CurrentDayNo}");
 
                             var infoTextList = new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: String.Join("\n", textLines), imageList: imageList, color: Color.White, scale: 1f) };

@@ -907,6 +907,7 @@ namespace SonOfRobin
                 if (this.Player != null)
                 {
                     this.ProcessOneNonPlant(this.Player);
+                    this.Player.UpdateDistanceWalked();
                     this.Player.UpdateLastSteps();
                 }
 

@@ -27,6 +27,9 @@ namespace SonOfRobin
         private int shootingPower;
         private SleepEngine sleepEngine;
         public List<Vector2> LastSteps { get; private set; }
+        private Vector2 previousStepPos; // used to calculate distanceWalked only
+        private float distanceWalked;
+        public float DistanceWalkedKilometers { get { return (float)Math.Round(this.distanceWalked / 5000, 2); } }
 
         public Vector2 pointWalkTarget;
         public Craft.Recipe recipeToBuild;
@@ -51,6 +54,8 @@ namespace SonOfRobin
             this.craftLevel = craftLevel;
             this.sleepEngine = SleepEngine.OutdoorSleepDry; // to be changed later
             this.LastSteps = new List<Vector2>();
+            this.previousStepPos = new Vector2(-100,-100); // initial value, to be changed later
+            this.distanceWalked = 0;
 
             var allowedToolbarPieces = new List<PieceTemplate.Name> { PieceTemplate.Name.LanternEmpty }; // indivitual cases, that will not be added below
 
@@ -419,6 +424,7 @@ namespace SonOfRobin
             pieceData["player_cookingSkill"] = this.cookingSkill;
             pieceData["player_craftLevel"] = this.craftLevel;
             pieceData["player_sleepEngine"] = this.sleepEngine;
+            pieceData["player_distanceWalked"] = this.distanceWalked;
             pieceData["player_toolStorage"] = this.ToolStorage.Serialize();
             pieceData["player_equipStorage"] = this.EquipStorage.Serialize();
             pieceData["player_LastSteps"] = this.LastSteps.Select(s => new Point((int)s.X, (int)s.Y)).ToList();
@@ -438,13 +444,11 @@ namespace SonOfRobin
             this.cookingSkill = (float)(double)pieceData["player_cookingSkill"];
             this.craftLevel = (int)(Int64)pieceData["player_craftLevel"];
             this.sleepEngine = (SleepEngine)pieceData["player_sleepEngine"];
+            if (pieceData.ContainsKey("player_distanceWalked")) this.distanceWalked = (float)(double)pieceData["player_distanceWalked"];
             this.ToolStorage = PieceStorage.Deserialize(storageData: pieceData["player_toolStorage"], storagePiece: this);
             this.EquipStorage = PieceStorage.Deserialize(storageData: pieceData["player_equipStorage"], storagePiece: this);
-            if (pieceData.ContainsKey("player_LastSteps"))
-            {
-                List<Point> lastStepsPointList = (List<Point>)pieceData["player_LastSteps"];
-                this.LastSteps = lastStepsPointList.Select(p => new Vector2(p.X, p.Y)).ToList();
-            }
+            List<Point> lastStepsPointList = (List<Point>)pieceData["player_LastSteps"];
+            this.LastSteps = lastStepsPointList.Select(p => new Vector2(p.X, p.Y)).ToList();    
             this.RefreshAllowedPiecesForStorages();
         }
 
@@ -517,6 +521,12 @@ namespace SonOfRobin
             if (this.FedPercent > 0.8f) this.world.HintEngine.Enable(HintEngine.Type.Hungry);
             if (this.FedPercent > 0.4f) this.world.HintEngine.Enable(HintEngine.Type.VeryHungry);
             if (this.FedPercent > 0.1f) this.world.HintEngine.Enable(HintEngine.Type.Starving);
+        }
+
+        public void UpdateDistanceWalked()
+        {
+            if (this.previousStepPos.X != -100) this.distanceWalked += Vector2.Distance(this.previousStepPos, this.sprite.position);           
+            this.previousStepPos = this.sprite.position;
         }
 
         public void UpdateLastSteps()
