@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace SonOfRobin
 
@@ -2439,7 +2440,11 @@ namespace SonOfRobin
 
                         var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.All });
 
-                        return new Debris(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: allowedTerrain, floatsOnWater: true, minDistance: 0, maxDistance: 500, maxMassForSize: null, destructionDelay: 120, rotatesWhenDropped: true, readableName: "heart debris", description: "Explosion of love.");
+                        Debris heartDebris = new Debris(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: allowedTerrain, floatsOnWater: true, minDistance: 0, maxDistance: 500, maxMassForSize: null, destructionDelay: 80, rotatesWhenDropped: true, readableName: "heart debris", description: "Explosion of love.");
+
+                        heartDebris.sprite.opacity = 0.7f;
+
+                        return heartDebris;
                     }
 
                 case Name.DebrisStar:
