@@ -175,7 +175,7 @@ namespace SonOfRobin
             ShovelIron,
             ShovelCrystal,
 
-            BowWood, // TODO change to BowBasic after updating serialization of CraftStats
+            BowBasic,
 
             ArrowWood,
             ArrowStone,
@@ -1219,7 +1219,7 @@ namespace SonOfRobin
                             finalDroppedPieces: new List<Yield.DroppedPiece> {
                                 new Yield.DroppedPiece(pieceName: Name.JarBroken, chanceToDrop: 100, maxNumberToDrop: 1), // must go first
                                 new Yield.DroppedPiece(pieceName: Name.MeatDried, chanceToDrop: 50, maxNumberToDrop: 3),
-                                new Yield.DroppedPiece(pieceName: Name.BowWood, chanceToDrop: 10, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: Name.BowBasic, chanceToDrop: 10, maxNumberToDrop: 1),
                                 new Yield.DroppedPiece(pieceName: Name.BowAdvanced, chanceToDrop: 2, maxNumberToDrop: 1),
                                 new Yield.DroppedPiece(pieceName: Name.AxeStone, chanceToDrop: 10, maxNumberToDrop: 1),
                                 new Yield.DroppedPiece(pieceName: Name.PickaxeStone, chanceToDrop: 10, maxNumberToDrop: 1),
@@ -2326,7 +2326,7 @@ namespace SonOfRobin
                             floatsOnWater: false, minDistance: 0, maxDistance: 100, maxMassForSize: null, generation: generation, hitPower: 1, indestructible: false, multiplierByCategory: multiplierByCategory, maxHitPoints: 250, readableName: "crystal scythe", description: "Brings an end to all small plants.", range: 80, fireAffinity: 0.1f);
                     }
 
-                case Name.BowWood:
+                case Name.BowBasic:
                     {
                         int hitPower = 3;
 
