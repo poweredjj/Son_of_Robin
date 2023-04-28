@@ -210,11 +210,6 @@ namespace SonOfRobin
                 }
             }
 
-            if (this.SmartCraftingReducedIngredientCount > 0)
-            {
-                taskChain.Add(new HintMessage(text: $"Smart craft\nreduced ingredient count: {this.SmartCraftingReducedIngredientCount}", boxType: HintMessage.BoxType.BlueBox, delay: 0, animate: false, useTransition: false).ConvertToTask());
-            }
-
             new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteTaskChain, turnOffInputUntilExecution: true, executeHelper: taskChain);
         }
     }

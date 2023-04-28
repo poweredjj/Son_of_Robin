@@ -17,7 +17,7 @@ namespace SonOfRobin
         private readonly TimeSpan timePlayed;
         public readonly DateTime saveDate;
         public readonly PieceTemplate.Name playerName;
-        private string ElapsedTimeString { get { return this.timePlayed.ToString("hh\\:mm"); } }
+        private string ElapsedTimeString { get { return string.Format("{0:D2}:{1:D2}", (int)Math.Floor(this.timePlayed.TotalHours), this.timePlayed.Minutes); } }
 
         private string SaveDateString
         {
