@@ -342,7 +342,10 @@ namespace SonOfRobin
             }
 
             var affinityEntries = PieceInfo.GetCategoryAffinityTextEntryList(pieceName: selectedPiece.name, scale: 1f);
-            if (affinityEntries != null) entryList.AddRange(affinityEntries);
+            entryList.AddRange(affinityEntries);
+
+            var combineEntries = PieceInfo.GetCombinesWithTextEntryList(pieceName: selectedPiece.name, scale: 0.7f);
+            entryList.AddRange(combineEntries);
 
             if (selectedPiece.buffList != null)
             {

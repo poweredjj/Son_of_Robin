@@ -11,9 +11,9 @@ namespace SonOfRobin
 
         public class Combination
         {
-            private readonly PieceTemplate.Name srcName1;
-            private readonly PieceTemplate.Name srcName2;
-            private readonly PieceTemplate.Name resultName;
+            public readonly PieceTemplate.Name srcName1;
+            public readonly PieceTemplate.Name srcName2;
+            public readonly PieceTemplate.Name resultName;
 
             public Combination(PieceTemplate.Name srcName1, PieceTemplate.Name srcName2, PieceTemplate.Name resultName)
             {
@@ -41,6 +41,23 @@ namespace SonOfRobin
             }
 
             return null;
+        }
+
+        public static List<PieceTemplate.Name> CombinesWith(PieceTemplate.Name name)
+        {
+            var combinesWith = new List<PieceTemplate.Name>();
+
+            foreach (Combination combination in combinationList)
+            {
+                PieceTemplate.Name counterpartName = PieceTemplate.Name.Empty;
+
+                if (combination.srcName1 == name) counterpartName = combination.srcName2;
+                if (combination.srcName2 == name) counterpartName = combination.srcName1;
+
+                if (counterpartName != PieceTemplate.Name.Empty && !combinesWith.Contains(counterpartName)) combinesWith.Add(counterpartName);
+            }
+
+            return combinesWith;
         }
     }
 }

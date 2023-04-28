@@ -194,7 +194,7 @@ namespace SonOfRobin
             }
 
             var affinityEntries = PieceInfo.GetCategoryAffinityTextEntryList(pieceName: this.recipe.pieceToCreate, scale: 0.7f);
-            if (affinityEntries != null) entryList.AddRange(affinityEntries);
+            entryList.AddRange(affinityEntries);
 
             if (!canBeCrafted)
             {

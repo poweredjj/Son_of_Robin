@@ -34,6 +34,7 @@ namespace SonOfRobin
             public readonly Scheduler.TaskName boardTask;
             public List<PieceTemplate.Name> eats;
             public List<PieceTemplate.Name> isEatenBy;
+            public List<PieceTemplate.Name> combinesWith;
             public readonly bool hasFruit;
             public readonly float maxHitPoints;
             public readonly PieceTemplate.Name fruitName;
@@ -79,6 +80,8 @@ namespace SonOfRobin
                 }
 
                 this.isEatenBy = new List<PieceTemplate.Name> { };
+
+                this.combinesWith = PieceCombiner.CombinesWith(this.name);
 
                 this.hasFruit = false;
                 if (piece.GetType() == typeof(Plant))
@@ -197,10 +200,10 @@ namespace SonOfRobin
 
         public static List<InfoWindow.TextEntry> GetCategoryAffinityTextEntryList(PieceTemplate.Name pieceName, float scale = 1f)
         {
-            var multiplierByCategory = info[pieceName].strengthMultiplierByCategory;
-            if (multiplierByCategory == null) return null;
-
             var entryList = new List<InfoWindow.TextEntry>();
+
+            var multiplierByCategory = info[pieceName].strengthMultiplierByCategory;
+            if (multiplierByCategory == null) return entryList;
 
             string text = "|     ";
             var imageList = new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.Biceps].texture };
@@ -214,6 +217,27 @@ namespace SonOfRobin
                     text += $"| {multiplier}   ";
                     imageList.Add(BoardPiece.GetTextureForCategory(category));
                 }
+            }
+
+            entryList.Add(new InfoWindow.TextEntry(text: text, scale: scale, imageList: imageList, color: Color.White));
+
+            return entryList;
+        }
+
+        public static List<InfoWindow.TextEntry> GetCombinesWithTextEntryList(PieceTemplate.Name pieceName, float scale = 1f)
+        {
+            var entryList = new List<InfoWindow.TextEntry>();
+
+            var combinesWith = info[pieceName].combinesWith;
+            if (!combinesWith.Any()) return entryList;
+
+            string text = "Combines with: ";
+            var imageList = new List<Texture2D>();
+
+            foreach (PieceTemplate.Name combineName in combinesWith)
+            {
+                text += "| ";
+                imageList.Add(GetTexture(combineName));
             }
 
             entryList.Add(new InfoWindow.TextEntry(text: text, scale: scale, imageList: imageList, color: Color.White));
