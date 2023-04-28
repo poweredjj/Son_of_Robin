@@ -423,49 +423,65 @@ namespace SonOfRobin
                         new Invoker(menu: menu, name: "return to game", closesMenu: true, taskName: Scheduler.TaskName.Empty);
 
                         // player stats
+                        {
+                            Player player = world.Player;
 
-                        Player player = world.Player;
+                            var textLines = new List<string>();
+                            var imageList = new List<Texture2D>();
 
-                        var characterTextLines = new List<string>();
-                        var characterImageList = new List<Texture2D>();
+                            textLines.Add("| player stats\n");
+                            imageList.Add(PieceInfo.GetTexture(player.name));
 
-                        characterTextLines.Add("|\n");
-                        characterImageList.Add(PieceInfo.GetTexture(player.name));
+                            textLines.Add($"| Strength: {player.strength}");
+                            imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.AxeIron].texture);
 
-                        characterTextLines.Add($"| Strength: {player.strength}");
-                        characterImageList.Add(AnimData.framesForPkgs[AnimData.PkgName.AxeIron].texture);
+                            textLines.Add($"| Speed: {Math.Round(player.speed)}");
+                            imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.Animal].texture);
 
-                        characterTextLines.Add($"| Speed: {Math.Round(player.speed)}");
-                        characterImageList.Add(AnimData.framesForPkgs[AnimData.PkgName.Animal].texture);
+                            textLines.Add($"| Stamina: {Math.Round(player.stamina)} / {Math.Round(player.maxStamina)}");
+                            imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.Biceps].texture);
 
-                        characterTextLines.Add($"| Stamina: {Math.Round(player.stamina)} / {Math.Round(player.maxStamina)}");
-                        characterImageList.Add(AnimData.framesForPkgs[AnimData.PkgName.Biceps].texture);
+                            textLines.Add($"| HP: {Math.Round(player.hitPoints)} / {Math.Round(player.maxHitPoints)}");
+                            imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.Heart].texture);
 
-                        characterTextLines.Add($"| HP: {Math.Round(player.hitPoints)} / {Math.Round(player.maxHitPoints)}");
-                        characterImageList.Add(AnimData.framesForPkgs[AnimData.PkgName.Heart].texture);
+                            textLines.Add($"| Food: {Math.Round(player.FedPercent * 100)}%");
+                            imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.Burger].texture);
 
-                        characterTextLines.Add($"| Food: {Math.Round(player.FedPercent * 100)}%");
-                        characterImageList.Add(AnimData.framesForPkgs[AnimData.PkgName.Burger].texture);
+                            textLines.Add($"| Inventory size: {player.InvWidth}x{player.InvHeight}");
+                            imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.BackpackMedium].texture);
 
-                        characterTextLines.Add($"| Inventory size: {player.InvWidth}x{player.InvHeight}");
-                        characterImageList.Add(AnimData.framesForPkgs[AnimData.PkgName.BackpackMedium].texture);
+                            string toolbarText = $"| Toolbar size: {player.ToolbarWidth}";
+                            if (player.ToolbarHeight > 1) toolbarText += $"x{player.ToolbarHeight}";
+                            textLines.Add(toolbarText);
+                            imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.BeltSmall].texture);
 
-                        string toolbarText = $"| Toolbar size: {player.ToolbarWidth}";
-                        if (player.ToolbarHeight > 1) toolbarText += $"x{player.ToolbarHeight}";
-                        characterTextLines.Add(toolbarText);
-                        characterImageList.Add(AnimData.framesForPkgs[AnimData.PkgName.BeltSmall].texture);
+                            textLines.Add($"| Craft level: {player.craftLevel}");
+                            imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.WorkshopAdvanced].texture);
 
-                        characterTextLines.Add($"| Craft level: {player.craftLevel}");
-                        characterImageList.Add(AnimData.framesForPkgs[AnimData.PkgName.WorkshopAdvanced].texture);
+                            textLines.Add($"| Cooking skill: {player.cookingSkill}");
+                            imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.MealStandard].texture);
 
-                        characterTextLines.Add($"| Cooking skill: {player.cookingSkill}");
-                        characterImageList.Add(AnimData.framesForPkgs[AnimData.PkgName.MealStandard].texture);
+                            var infoTextList = new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: String.Join("\n", textLines), imageList: imageList, color: Color.White, scale: 1f) };
 
-                        // TODO add more stats
+                            new Invoker(menu: menu, name: "player", taskName: Scheduler.TaskName.Empty, playSound: false, infoTextList: infoTextList);
+                        }
 
-                        var characterInfoTextList = new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: String.Join("\n", characterTextLines), imageList: characterImageList, color: Color.White, scale: 1f) };
+                        // general craft stats
+                        {
+                            var textLines = new List<string>();
+                            var imageList = new List<Texture2D>();
 
-                        new Invoker(menu: menu, name: "player", taskName: Scheduler.TaskName.Empty, playSound: false, infoTextList: characterInfoTextList);
+                            textLines.Add("| general craft stats\n");
+                            imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.WorkshopAdvanced].texture);
+
+                            textLines.Add($"Items crafted: {world.craftStats.CraftedPiecesTotal}");
+                            textLines.Add($"Ingredients used: {world.craftStats.UsedIngredientsTotal}");
+                            textLines.Add($"Ingredients saved (smart craft): {world.craftStats.SmartCraftingReducedIngredientCount}");
+
+                            var infoTextList = new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: String.Join("\n", textLines), imageList: imageList, color: Color.White, scale: 1f) };
+
+                            new Invoker(menu: menu, name: "craft general", taskName: Scheduler.TaskName.Empty, playSound: false, infoTextList: infoTextList);
+                        }
 
                         // other stats
 
