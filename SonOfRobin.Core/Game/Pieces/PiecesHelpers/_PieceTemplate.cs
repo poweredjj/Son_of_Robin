@@ -2366,7 +2366,7 @@ namespace SonOfRobin
 
                 case Name.ArrowBurning:
                     {
-                        return new Projectile(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ArrowBurning, allowedTerrain: shallowWaterToVolcano, floatsOnWater: false, minDistance: 0, maxDistance: 100, maxMassForSize: null, generation: generation, baseHitPower: 10, indestructible: false, maxHitPoints: 40, stackSize: 15, canBeStuck: true, readableName: "burning arrow", description: "Will start a fire.", fireAffinity: 0.7f, isBurning: true, lightEngine: new LightEngine(size: 100, opacity: 0.8f, colorActive: true, color: Color.Orange * 0.3f, isActive: false, castShadows: true));
+                        return new Projectile(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ArrowBurning, allowedTerrain: shallowWaterToVolcano, floatsOnWater: false, minDistance: 0, maxDistance: 100, maxMassForSize: null, generation: generation, baseHitPower: 10, indestructible: false, maxHitPoints: 1, stackSize: 15, canBeStuck: true, readableName: "burning arrow", description: "Will start a fire.", fireAffinity: 0.7f, isBurning: true, lightEngine: new LightEngine(size: 100, opacity: 0.8f, colorActive: true, color: Color.Orange * 0.3f, isActive: false, castShadows: true));
                     }
 
                 case Name.ArrowCrystal:

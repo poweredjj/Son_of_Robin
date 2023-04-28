@@ -188,7 +188,8 @@ namespace SonOfRobin
                 { entryList.Add(new InfoWindow.TextEntry(text: buff.description, color: Color.Cyan, scale: 1f, animate: true, charsPerFrame: 2)); }
             }
 
-            if (pieceInfo.type == typeof(Tool) || pieceInfo.type == typeof(PortableLight))
+            var durabilityTypeList = new List<System.Type> { typeof(Tool), typeof(PortableLight), typeof(Projectile) };
+            if (durabilityTypeList.Contains(pieceInfo.type))
             {
                 entryList.Add(new InfoWindow.TextEntry(text: $"Durability {Math.Round(pieceInfo.maxHitPoints)}", scale: 0.7f, color: new Color(230, 230, 230)));
             }

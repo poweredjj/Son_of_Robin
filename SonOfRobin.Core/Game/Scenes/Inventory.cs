@@ -332,7 +332,9 @@ namespace SonOfRobin
             };
 
             string stackTxt = selectedPiece.stackSize > 1 && !slot.locked ? $"Max stack {selectedPiece.stackSize}" : "";
-            string durabilityText = selectedPiece.GetType() == typeof(Tool) || selectedPiece.GetType() == typeof(PortableLight) ?
+
+            var durabilityTypeList = new List<System.Type> { typeof(Tool), typeof(PortableLight), typeof(Projectile) };
+            string durabilityText = durabilityTypeList.Contains(selectedPiece.GetType()) ?
                 $"Durability { Math.Round(selectedPiece.hitPoints)}/{Math.Round(selectedPiece.maxHitPoints) }" : "";
 
             if (durabilityText != "" || stackTxt != "")
