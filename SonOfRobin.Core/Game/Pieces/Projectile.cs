@@ -88,7 +88,7 @@ namespace SonOfRobin
                     Animal animal = (Animal)closestAnimal;
                     Tool.HitTarget(attacker: this.world.Player, target: animal, hitPower: this.realHitPower, targetPushMultiplier: 0.06f, buffList: this.buffList);
 
-                    if (!this.indestructible)
+                    if (!this.indestructible && !this.isBurning) // buring arrows should not be destroyed before exploding
                     {
                         this.hitPoints = Math.Max(0, this.hitPoints - this.world.random.Next(10, 35));
                         this.showStatBarsTillFrame = world.CurrentUpdate + 1200;
@@ -111,7 +111,7 @@ namespace SonOfRobin
                 }
                 else // target is not animal
                 {
-                    if (!this.indestructible)
+                    if (!this.indestructible && !this.isBurning) // buring arrows should not be destroyed before exploding
                     {
                         this.hitPoints = Math.Max(0, this.hitPoints - this.world.random.Next(0, 15));
                         this.showStatBarsTillFrame = world.CurrentUpdate + 1200;
