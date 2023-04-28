@@ -43,6 +43,8 @@ namespace SonOfRobin
 
             public Info(BoardPiece piece)
             {
+                if (piece.maxMassForSize != null) piece.Mass = piece.maxMassForSize.Last(); // to show frame of biggest size
+
                 this.name = piece.name;
                 this.category = piece.category;
                 this.allowedTerrain = piece.sprite.allowedTerrain;

@@ -56,13 +56,13 @@ namespace SonOfRobin
             switch (category)
             {
                 case Category.Wood:
-                    return PieceInfo.GetTexture(PieceTemplate.Name.WoodLogRegular);
+                    return PieceInfo.GetTexture(PieceTemplate.Name.TreeBig);
 
                 case Category.Stone:
-                    return PieceInfo.GetTexture(PieceTemplate.Name.Granite);
+                    return AnimData.framesForPkgs[AnimData.PkgName.MineralsSmall3].texture;
 
                 case Category.Metal:
-                    return PieceInfo.GetTexture(PieceTemplate.Name.IronBar);
+                    return PieceInfo.GetTexture(PieceTemplate.Name.Anvil);
 
                 case Category.SmallPlant:
                     return PieceInfo.GetTexture(PieceTemplate.Name.GrassRegular);
@@ -74,7 +74,7 @@ namespace SonOfRobin
                     return PieceInfo.GetTexture(PieceTemplate.Name.Hole);
 
                 case Category.Crystal:
-                    return PieceInfo.GetTexture(PieceTemplate.Name.Crystal);
+                    return PieceInfo.GetTexture(PieceTemplate.Name.CrystalDepositSmall);
 
                 default:
                     return AnimData.framesForPkgs[AnimData.PkgName.NoAnim].texture;
@@ -97,7 +97,7 @@ namespace SonOfRobin
         public bool exists;
         public bool alive;
         public int generation;
-        private readonly int[] maxMassForSize;
+        public readonly int[] maxMassForSize;
         private readonly int staysAfterDeath;
         public int maxAge;
         public int currentAge;
