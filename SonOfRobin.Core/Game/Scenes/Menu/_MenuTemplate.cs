@@ -420,6 +420,8 @@ namespace SonOfRobin
                         World world = World.GetTopWorld();
 
                         Menu menu = new Menu(templateName: templateName, name: "STATS", blocksUpdatesBelow: true, canBeClosedManually: true, templateExecuteHelper: executeHelper, soundOpen: SoundData.Name.PaperMove1, soundClose: SoundData.Name.PaperMove2, alwaysShowSelectedEntry: true);
+                        menu.bgColor = new Color(75, 37, 110) * 0.75f;
+
                         new Invoker(menu: menu, name: "return to game", closesMenu: true, taskName: Scheduler.TaskName.Empty);
 
                         // player stats
