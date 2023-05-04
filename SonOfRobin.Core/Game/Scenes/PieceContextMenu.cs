@@ -332,28 +332,14 @@ namespace SonOfRobin
                         // plant is "crafted" to allow for planning its position
 
                         Seed seeds = (Seed)this.slot.TopPiece;
-                        Player player = seeds.world.Player;
 
-                        if (!player.CanSeeAnything)
-                        {
-                            new TextWindow(text: $"It is too dark to plant | {seeds.readableName}...", imageList: new List<Texture2D> { seeds.sprite.frame.texture }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: InputTypes.None, blockInputDuration: 45, priority: 0, animSound: player.world.DialogueSound);
+                        var executeHelper = new Dictionary<string, Object> { // must be compliant with UseToolbarPiece() dict
+                            { "player", seeds.world.Player },
+                            { "toolbarPiece", seeds },
+                            { "highlightOnly", false },
+                            };
 
-                            return;
-                        }
-
-                        if (player.IsVeryTired)
-                        {
-                            new TextWindow(text: "I'm too tired to plant anything...", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: InputTypes.None, blockInputDuration: 45, priority: 0, animSound: player.world.DialogueSound);
-
-                            return;
-                        }
-
-                        PieceTemplate.Name plantName = seeds.PlantToGrow;
-
-                        Craft.Recipe plantRecipe = new Craft.Recipe(pieceToCreate: plantName, ingredients: new Dictionary<PieceTemplate.Name, byte> { { seeds.name, 1 } }, fatigue: PieceInfo.GetInfo(plantName).blocksMovement ? 100 : 50, maxLevel: 0, durationMultiplier: 1f, fatigueMultiplier: 1f, isReversible: false, isTemporary: true, useOnlyIngredientsWithID: seeds.id);
-
-                        Inventory.SetLayout(newLayout: Inventory.LayoutType.Toolbar, player: player);
-                        plantRecipe.TryToProducePieces(player: player, showMessages: false);
+                        new Scheduler.Task(taskName: Scheduler.TaskName.Plant, executeHelper: executeHelper);
 
                         return;
                     }
