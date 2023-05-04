@@ -323,12 +323,12 @@ namespace SonOfRobin
 
             var equipTypeBySlotCoords = new Dictionary<Point, Equipment.EquipType> {
                 { new Point(1,0), Equipment.EquipType.Head },
-                { new Point(1,1), Equipment.EquipType.Chest  },
-                { new Point(1,2), Equipment.EquipType.Legs  },
-                { new Point(0,1), Equipment.EquipType.Backpack  },
-                { new Point(2,1), Equipment.EquipType.Belt  },
-                { new Point(0,0), Equipment.EquipType.Accessory  },
-                { new Point(2,0), Equipment.EquipType.Accessory  },
+                { new Point(1,1), Equipment.EquipType.Chest },
+                { new Point(1,2), Equipment.EquipType.Legs },
+                { new Point(0,1), Equipment.EquipType.Backpack },
+                { new Point(2,1), Equipment.EquipType.Belt },
+                { new Point(0,0), Equipment.EquipType.Accessory },
+                { new Point(2,0), Equipment.EquipType.Accessory },
             };
 
             foreach (var kvp in equipTypeBySlotCoords)

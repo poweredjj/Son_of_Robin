@@ -95,7 +95,7 @@ namespace SonOfRobin
         {
             if (!this.exists) return;
 
-            if (this.dropSeedChance > 0)
+            if (this.dropSeedChance > 0 && !this.IsBurning)
             {
                 bool dropSeed = this.world.random.Next(this.dropSeedChance) == 0;
                 if (dropSeed)
