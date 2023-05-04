@@ -347,7 +347,7 @@ namespace SonOfRobin
             {
                 Seed seeds = (Seed)selectedPiece;
 
-                entryList.Add(new InfoWindow.TextEntry(text: $"Will grow into | {PieceInfo.GetInfo(seeds.PlantToGrow).readableName}.", imageList: new List<Texture2D> { PieceInfo.GetInfo(seeds.PlantToGrow).texture }, scale: 0.7f, color: new Color(208, 255, 199)));
+                entryList.Add(new InfoWindow.TextEntry(text: $"| {Helpers.FirstCharToUpperCase(PieceInfo.GetInfo(seeds.PlantToGrow).readableName)} seeds.", imageList: new List<Texture2D> { PieceInfo.GetInfo(seeds.PlantToGrow).texture }, scale: 0.7f, color: new Color(208, 255, 199)));
             }
 
             var affinityEntries = PieceInfo.GetCategoryAffinityTextEntryList(pieceName: selectedPiece.name, scale: 1f);

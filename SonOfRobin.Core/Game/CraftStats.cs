@@ -141,17 +141,17 @@ namespace SonOfRobin
 
         public List<List<InfoWindow.TextEntry>> GetTextEntryListForVegetationPlantedSummary()
         {
-            return this.GetTextEntryListForSummary(collectionToShow: this.craftedPieces, header: "Vegetation planted", showOnlyPlantsAndFruits: true);
+            return this.GetTextEntryListForSummary(collectionToShow: this.craftedPieces, header: "Vegetation planted", showOnlyPlants: true);
         }
 
         public List<List<InfoWindow.TextEntry>> GetTextEntryListForCraftedPiecesSummary()
         {
-            return this.GetTextEntryListForSummary(collectionToShow: this.craftedPieces, header: "Crafted items", showOnlyPlantsAndFruits: false);
+            return this.GetTextEntryListForSummary(collectionToShow: this.craftedPieces, header: "Crafted items", showOnlyPlants: false);
         }
 
         public List<List<InfoWindow.TextEntry>> GetTextEntryListForUsedIngredientsSummary()
         {
-            return this.GetTextEntryListForSummary(collectionToShow: this.usedIngredients, header: "Used ingredients", showOnlyPlantsAndFruits: false);
+            return this.GetTextEntryListForSummary(collectionToShow: this.usedIngredients, header: "Used ingredients", showOnlyPlants: false);
         }
 
         public int GetRecipeLevel(Craft.Recipe recipe)
@@ -170,16 +170,16 @@ namespace SonOfRobin
             return recipeLevel > 0 && recipeLevel <= recipe.maxLevel && recipeLevel == Math.Floor(recipeLevel);
         }
 
-        private List<List<InfoWindow.TextEntry>> GetTextEntryListForSummary(Dictionary<PieceTemplate.Name, int> collectionToShow, string header, bool showOnlyPlantsAndFruits)
+        private List<List<InfoWindow.TextEntry>> GetTextEntryListForSummary(Dictionary<PieceTemplate.Name, int> collectionToShow, string header, bool showOnlyPlants)
         {
             var listOfInfoTextList = new List<List<InfoWindow.TextEntry>>();
 
             var plantNames = PieceInfo.namesForType[typeof(Plant)];
-            var fruitNames = PieceInfo.namesForType[typeof(Fruit)];
+            var fruitNames = PieceInfo.namesForType[typeof(Fruit)]; // for compatibility with older saves (using fruits for planting)
 
             var allowedNames = new List<PieceTemplate.Name>();
-            if (showOnlyPlantsAndFruits) allowedNames.AddRange(plantNames);
-            else allowedNames = PieceTemplate.allNames.Where(name => !plantNames.Contains(name) && !fruitNames.Contains(name)).ToList();
+            if (showOnlyPlants) allowedNames.AddRange(plantNames);
+            else allowedNames = PieceTemplate.allNames.Where(name => !plantNames.Contains(name) && !fruitNames.Contains(name) && name != PieceTemplate.Name.Seeds).ToList();
 
             var pieceNames = collectionToShow.Keys.Where(name => allowedNames.Contains(name)).OrderBy(n => PieceInfo.GetInfo(n).readableName);
             if (!pieceNames.Any()) return null;
