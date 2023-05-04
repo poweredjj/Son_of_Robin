@@ -465,6 +465,28 @@ namespace SonOfRobin
 
                             var infoTextList = new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: String.Join("\n", textLines), imageList: imageList, color: Color.White, scale: 1f) };
 
+                            var positiveBuffTextLines = new List<string>();
+                            var negativeBuffTextLines = new List<string>();
+
+                            foreach (Buff buff in player.buffEngine.buffDict.Values)
+                            {
+                                if (buff.iconText != null) // only buffs with visible iconText should be shown
+                                {
+                                    if (buff.isPositive) positiveBuffTextLines.Add(buff.description);
+                                    else negativeBuffTextLines.Add(buff.description);
+                                }
+                            }
+
+                            if (positiveBuffTextLines.Any())
+                            {
+                                infoTextList.Add(new InfoWindow.TextEntry(text: String.Join("\n", positiveBuffTextLines), color: Color.Cyan, scale: 0.75f));
+                            }
+
+                            if (negativeBuffTextLines.Any())
+                            {
+                                infoTextList.Add(new InfoWindow.TextEntry(text: String.Join("\n", negativeBuffTextLines), color: new Color(255, 120, 70), scale: 0.75f));
+                            }
+
                             Invoker invoker = new Invoker(menu: menu, name: "player", taskName: Scheduler.TaskName.Empty, playSound: false, infoTextList: infoTextList);
                             Color color = new Color(31, 197, 219);
                             invoker.rectColor = color;

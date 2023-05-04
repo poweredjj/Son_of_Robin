@@ -248,7 +248,7 @@ namespace SonOfRobin
                     break;
 
                 case BuffEngine.BuffType.LowHP:
-                    description = "Near death.";
+                    description = "Low health.";
                     break;
 
                 case BuffEngine.BuffType.Hungry:
@@ -256,7 +256,7 @@ namespace SonOfRobin
                     break;
 
                 case BuffEngine.BuffType.Heat:
-                    description = "Heat.";
+                    description = "Heat - gets tired easily.";
                     break;
 
                 case BuffEngine.BuffType.HeatProtection:
