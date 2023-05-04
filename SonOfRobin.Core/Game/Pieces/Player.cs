@@ -29,7 +29,9 @@ namespace SonOfRobin
         public List<Vector2> LastSteps { get; private set; }
         private Vector2 previousStepPos; // used to calculate distanceWalked only
         private float distanceWalked;
-        public float DistanceWalkedKilometers { get { return (float)Math.Round(this.distanceWalked / 5000, 2); } }
+
+        public float DistanceWalkedKilometers
+        { get { return (float)Math.Round(this.distanceWalked / 5000, 2); } }
 
         public Vector2 pointWalkTarget;
         public Craft.Recipe recipeToBuild;
@@ -319,68 +321,26 @@ namespace SonOfRobin
                 slot.hidden = true;
             }
 
-            StorageSlot headSlot = this.EquipStorage.GetSlot(1, 0);
-            headSlot.locked = false;
-            headSlot.hidden = false;
-            headSlot.allowedPieceNames = new List<PieceTemplate.Name> { PieceTemplate.Name.HatSimple };
-            headSlot.label = "head";
+            var equipTypeBySlotCoords = new Dictionary<Point, Equipment.EquipType> {
+                { new Point(1,0), Equipment.EquipType.Head },
+                { new Point(1,1), Equipment.EquipType.Chest  },
+                { new Point(1,2), Equipment.EquipType.Legs  },
+                { new Point(0,1), Equipment.EquipType.Backpack  },
+                { new Point(2,1), Equipment.EquipType.Belt  },
+                { new Point(0,0), Equipment.EquipType.Accessory  },
+                { new Point(2,0), Equipment.EquipType.Accessory  },
+            };
 
-            StorageSlot chestSlot = this.EquipStorage.GetSlot(1, 1);
-            chestSlot.locked = false;
-            chestSlot.hidden = false;
-            chestSlot.allowedPieceNames = new List<PieceTemplate.Name> { PieceTemplate.Name.Dungarees };
-            chestSlot.label = "chest";
-
-            StorageSlot legsSlot = this.EquipStorage.GetSlot(1, 2);
-            legsSlot.locked = false;
-            legsSlot.hidden = false;
-            legsSlot.allowedPieceNames = new List<PieceTemplate.Name> { PieceTemplate.Name.BootsProtective };
-            legsSlot.label = "legs";
-
-            StorageSlot backpackSlot = this.EquipStorage.GetSlot(0, 1);
-            backpackSlot.locked = false;
-            backpackSlot.hidden = false;
-            backpackSlot.allowedPieceNames = new List<PieceTemplate.Name>();
-            backpackSlot.label = "backpack";
-
-            foreach (PieceInfo.Info info in PieceInfo.AllInfo)
+            foreach (var kvp in equipTypeBySlotCoords)
             {
-                foreach (Buff buff in info.buffList)
-                {
-                    if (buff.type == BuffEngine.BuffType.InvWidth || buff.type == BuffEngine.BuffType.InvHeight)
-                    {
-                        backpackSlot.allowedPieceNames.Add(info.name);
-                        break;
-                    }
-                }
-            }
+                Point slotCoords = kvp.Key;
+                Equipment.EquipType equipType = kvp.Value;
 
-            StorageSlot beltSlot = this.EquipStorage.GetSlot(2, 1);
-            beltSlot.locked = false;
-            beltSlot.hidden = false;
-            beltSlot.allowedPieceNames = new List<PieceTemplate.Name>();
-            beltSlot.label = "belt";
-
-            foreach (PieceInfo.Info info in PieceInfo.AllInfo)
-            {
-                foreach (Buff buff in info.buffList)
-                {
-                    if (buff.type == BuffEngine.BuffType.ToolbarWidth || buff.type == BuffEngine.BuffType.ToolbarHeight)
-                    {
-                        beltSlot.allowedPieceNames.Add(info.name);
-                        break;
-                    }
-                }
-            }
-
-            var accessorySlotsList = new List<StorageSlot> { this.EquipStorage.GetSlot(0, 0), this.EquipStorage.GetSlot(2, 0) };
-
-            foreach (StorageSlot accessorySlot in accessorySlotsList)
-            {
-                accessorySlot.locked = false;
-                accessorySlot.hidden = false;
-                accessorySlot.allowedPieceNames = new List<PieceTemplate.Name> { PieceTemplate.Name.Map };
-                accessorySlot.label = "accessory";
+                StorageSlot slot = this.EquipStorage.GetSlot(slotCoords.X, slotCoords.Y);
+                slot.locked = false;
+                slot.hidden = false;
+                slot.allowedPieceNames = PieceInfo.GetNamesForEquipType(equipType);
+                slot.label = equipType.ToString().ToLower();
             }
         }
 

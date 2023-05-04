@@ -84,12 +84,12 @@ namespace SonOfRobin
 
         public void AddFruit()
         {
-            Fruit fruit = (Fruit)PieceTemplate.Create(templateName: this.fruitName, world: this.plant.world);
+            BoardPiece fruitPiece = PieceTemplate.Create(templateName: this.fruitName, world: this.plant.world);
 
-            if (this.plant.PieceStorage.FindCorrectSlot(piece: fruit) != null)
+            if (this.plant.PieceStorage.FindCorrectSlot(piece: fruitPiece) != null)
             {
-                this.plant.PieceStorage.AddPiece(piece: fruit, dropIfDoesNotFit: true, addMovement: true);
-                this.SetFruitPos(fruit: fruit);
+                this.plant.PieceStorage.AddPiece(piece: fruitPiece, dropIfDoesNotFit: true, addMovement: true);
+                this.SetFruitPos(fruit: fruitPiece);
             }
             // if there's no room for more fruits - new one should just go to waste, resetting currentMass (to avoid adding fruit every frame from now on)
             this.currentMass = 0; // resetting whether or not new fruit can fit

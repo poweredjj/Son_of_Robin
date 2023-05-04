@@ -25,6 +25,7 @@ namespace SonOfRobin
             public readonly bool convertsWhenUsed;
             public readonly PieceTemplate.Name convertsToWhenUsed;
             public readonly bool shootsProjectile;
+            public readonly Equipment.EquipType equipType;
             public bool isCarnivorous;
             public readonly BoardPiece.Category category;
             public readonly bool canBePickedUp;
@@ -63,12 +64,15 @@ namespace SonOfRobin
                 this.toolbarTask = piece.toolbarTask;
                 this.boardTask = piece.boardTask;
                 if (piece.GetType() == typeof(Animal)) this.eats = ((Animal)piece).eats;
+                this.equipType = piece.GetType() == typeof(Equipment) ? ((Equipment)piece).equipType : Equipment.EquipType.None;
                 this.convertsWhenUsed = false;
+
                 if (piece.GetType() == typeof(Potion))
                 {
                     this.convertsWhenUsed = true;
                     this.convertsToWhenUsed = ((Potion)piece).convertsToWhenUsed;
                 }
+
                 this.shootsProjectile = false;
                 if (piece.GetType() == typeof(Tool))
                 {
@@ -76,6 +80,7 @@ namespace SonOfRobin
                     this.shootsProjectile = tool.shootsProjectile;
                     this.strengthMultiplierByCategory = tool.multiplierByCategory;
                 }
+
                 if (piece.GetType() == typeof(Projectile))
                 {
                     // "emulating" tool multiplier list
@@ -207,6 +212,17 @@ namespace SonOfRobin
             }
 
             return playerNameList;
+        }
+
+        public static List<PieceTemplate.Name> GetNamesForEquipType(Equipment.EquipType equipType)
+        {
+            var equipNameList = new List<PieceTemplate.Name>();
+            foreach (Info currentInfo in AllInfo)
+            {
+                if (currentInfo.equipType == equipType) equipNameList.Add(currentInfo.name);
+            }
+
+            return equipNameList;
         }
 
         public static List<InfoWindow.TextEntry> GetCategoryAffinityTextEntryList(PieceTemplate.Name pieceName, float scale = 1f)
