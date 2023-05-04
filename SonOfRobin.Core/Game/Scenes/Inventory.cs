@@ -343,6 +343,13 @@ namespace SonOfRobin
                 entryList.Add(new InfoWindow.TextEntry(text: $"{durabilityText}{stackTxt}", scale: 0.7f, color: new Color(230, 230, 230)));
             }
 
+            if (selectedPiece.GetType() == typeof(Seed))
+            {
+                Seed seeds = (Seed)selectedPiece;
+
+                entryList.Add(new InfoWindow.TextEntry(text: $"Will grow into | {PieceInfo.GetInfo(seeds.PlantToGrow).readableName}.", imageList: new List<Texture2D> { PieceInfo.GetInfo(seeds.PlantToGrow).texture }, scale: 0.7f, color: new Color(208, 255, 199)));
+            }
+
             var affinityEntries = PieceInfo.GetCategoryAffinityTextEntryList(pieceName: selectedPiece.name, scale: 1f);
             entryList.AddRange(affinityEntries);
 

@@ -346,11 +346,11 @@ namespace SonOfRobin
             //    world.HintEngine.ShowGeneralHint(type: HintEngine.Type.Lava, ignoreDelay: true);
             //}
 
-            //if (Keyboard.HasBeenPressed(Keys.F1))
-            //{
-            //    if (world == null) return;
-            //    world.SpectatorMode = !world.SpectatorMode;
-            //}
+            if (Keyboard.HasBeenPressed(Keys.F1))
+            {
+                if (world == null) return;
+                world.SpectatorMode = !world.SpectatorMode;
+            }
 
             //if (Keyboard.HasBeenPressed(Keys.F2))
             //{
@@ -366,14 +366,14 @@ namespace SonOfRobin
             //    SonOfRobinGame.FullScreenProgressBar.TurnOn(percentage: percentage, text: LoadingTips.GetTip());
             //}
 
-            if (Keyboard.HasBeenPressed(Keys.F1))
-            {
-                if (world == null) return;
+            //if (Keyboard.HasBeenPressed(Keys.F1))
+            //{
+            //    if (world == null) return;
 
-                world.weather.AddEvent(new WeatherEvent(type: Weather.WeatherType.Lightning, intensity: 1f, startTime: world.islandClock.IslandDateTime, duration: TimeSpan.FromSeconds(50), transitionLength: TimeSpan.FromSeconds(22)));
+            //    world.weather.AddEvent(new WeatherEvent(type: Weather.WeatherType.Lightning, intensity: 1f, startTime: world.islandClock.IslandDateTime, duration: TimeSpan.FromSeconds(50), transitionLength: TimeSpan.FromSeconds(22)));
 
-                world.weather.AddEvent(new WeatherEvent(type: Weather.WeatherType.Clouds, intensity: 1f, startTime: world.islandClock.IslandDateTime, duration: TimeSpan.FromSeconds(100), transitionLength: TimeSpan.FromSeconds(5)));
-            }
+            //    world.weather.AddEvent(new WeatherEvent(type: Weather.WeatherType.Clouds, intensity: 1f, startTime: world.islandClock.IslandDateTime, duration: TimeSpan.FromSeconds(100), transitionLength: TimeSpan.FromSeconds(5)));
+            //}
 
             if (Keyboard.HasBeenPressed(Keys.F2))
             {

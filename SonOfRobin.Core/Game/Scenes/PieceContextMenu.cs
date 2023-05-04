@@ -143,7 +143,7 @@ namespace SonOfRobin
 
             if (this.piece.toolbarTask == Scheduler.TaskName.GetEaten) contextActionList.Add(ContextAction.Eat);
             if (this.piece.toolbarTask == Scheduler.TaskName.GetDrinked) contextActionList.Add(ContextAction.Drink);
-            if (this.piece.GetType() == typeof(Fruit)) contextActionList.Add(ContextAction.Plant);
+            if (this.piece.GetType() == typeof(Seed)) contextActionList.Add(ContextAction.Plant);
             if (this.piece.GetType() == typeof(PortableLight) && this.piece.IsOnPlayersToolbar) contextActionList.Add(ContextAction.Switch);
             if (addMove) contextActionList.Add(ContextAction.Move);
             if (addDrop) contextActionList.Add(ContextAction.Drop);
@@ -331,12 +331,12 @@ namespace SonOfRobin
                     {
                         // plant is "crafted" to allow for planning its position
 
-                        Fruit fruit = (Fruit)this.slot.TopPiece;
-                        Player player = fruit.world.Player;
+                        Seed seeds = (Seed)this.slot.TopPiece;
+                        Player player = seeds.world.Player;
 
                         if (!player.CanSeeAnything)
                         {
-                            new TextWindow(text: $"It is too dark to plant | {fruit.readableName}...", imageList: new List<Texture2D> { PieceInfo.GetTexture(fruit.name) }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: InputTypes.None, blockInputDuration: 45, priority: 0, animSound: player.world.DialogueSound);
+                            new TextWindow(text: $"It is too dark to plant | {seeds.readableName}...", imageList: new List<Texture2D> { seeds.sprite.frame.texture }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: InputTypes.None, blockInputDuration: 45, priority: 0, animSound: player.world.DialogueSound);
 
                             return;
                         }
@@ -348,9 +348,9 @@ namespace SonOfRobin
                             return;
                         }
 
-                        PieceTemplate.Name plantName = PieceInfo.GetInfo(fruit.name).isSpawnedBy;
+                        PieceTemplate.Name plantName = seeds.PlantToGrow;
 
-                        Craft.Recipe plantRecipe = new Craft.Recipe(pieceToCreate: plantName, ingredients: new Dictionary<PieceTemplate.Name, byte> { { fruit.name, 1 } }, fatigue: PieceInfo.GetInfo(plantName).blocksMovement ? 100 : 50, maxLevel: 0, durationMultiplier: 1f, fatigueMultiplier: 1f, isReversible: false, checkIfAlreadyAdded: false);
+                        Craft.Recipe plantRecipe = new Craft.Recipe(pieceToCreate: plantName, ingredients: new Dictionary<PieceTemplate.Name, byte> { { seeds.name, 1 } }, fatigue: PieceInfo.GetInfo(plantName).blocksMovement ? 100 : 50, maxLevel: 0, durationMultiplier: 1f, fatigueMultiplier: 1f, isReversible: false, isTemporary: true, useOnlyIngredientsWithID: seeds.id);
 
                         Inventory.SetLayout(newLayout: Inventory.LayoutType.Toolbar, player: player);
                         plantRecipe.TryToProducePieces(player: player, showMessages: false);

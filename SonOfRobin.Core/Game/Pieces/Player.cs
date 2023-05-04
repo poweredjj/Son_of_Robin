@@ -54,10 +54,10 @@ namespace SonOfRobin
             this.craftLevel = craftLevel;
             this.sleepEngine = SleepEngine.OutdoorSleepDry; // to be changed later
             this.LastSteps = new List<Vector2>();
-            this.previousStepPos = new Vector2(-100,-100); // initial value, to be changed later
+            this.previousStepPos = new Vector2(-100, -100); // initial value, to be changed later
             this.distanceWalked = 0;
 
-            var allowedToolbarPieces = new List<PieceTemplate.Name> { PieceTemplate.Name.LanternEmpty }; // indivitual cases, that will not be added below
+            var allowedToolbarPieces = new List<PieceTemplate.Name> { PieceTemplate.Name.LanternEmpty, PieceTemplate.Name.Seeds }; // indivitual cases, that will not be added below
 
             if (PieceInfo.HasBeenInitialized)
             {
@@ -448,7 +448,7 @@ namespace SonOfRobin
             this.ToolStorage = PieceStorage.Deserialize(storageData: pieceData["player_toolStorage"], storagePiece: this);
             this.EquipStorage = PieceStorage.Deserialize(storageData: pieceData["player_equipStorage"], storagePiece: this);
             List<Point> lastStepsPointList = (List<Point>)pieceData["player_LastSteps"];
-            this.LastSteps = lastStepsPointList.Select(p => new Vector2(p.X, p.Y)).ToList();    
+            this.LastSteps = lastStepsPointList.Select(p => new Vector2(p.X, p.Y)).ToList();
             this.RefreshAllowedPiecesForStorages();
         }
 
@@ -525,7 +525,7 @@ namespace SonOfRobin
 
         public void UpdateDistanceWalked()
         {
-            if (this.previousStepPos.X != -100) this.distanceWalked += Vector2.Distance(this.previousStepPos, this.sprite.position);           
+            if (this.previousStepPos.X != -100) this.distanceWalked += Vector2.Distance(this.previousStepPos, this.sprite.position);
             this.previousStepPos = this.sprite.position;
         }
 

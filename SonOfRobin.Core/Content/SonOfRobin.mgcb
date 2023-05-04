@@ -5529,6 +5529,18 @@
 /processorParam:TextureFormat=Color
 /build:gfx/scythe_stone.png
 
+#begin gfx/seed_bag.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/seed_bag.png
+
 #begin gfx/shovel_crystal.png
 /importer:TextureImporter
 /processor:TextureProcessor

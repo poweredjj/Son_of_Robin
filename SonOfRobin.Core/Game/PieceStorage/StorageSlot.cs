@@ -57,6 +57,9 @@ namespace SonOfRobin
         public PieceTemplate.Name PieceName
         { get { return pieceList[0].name; } }
 
+        public string PieceID
+        { get { return pieceList[0].id; } }
+
         public void AddPiece(BoardPiece piece)
         {
             if (this.locked) return;

@@ -508,6 +508,24 @@ namespace SonOfRobin
                             { player.buffEngine.AddBuff(buff: buff, world: world); }
 
                             food.hitPoints = 0;
+
+                            if (food.GetType() == typeof(Fruit) && world.random.Next(12) == 0) // getting seeds
+                            {
+                                PieceTemplate.Name plantName = PieceInfo.GetInfo(food.name).isSpawnedBy;
+                                BoardPiece seedsPiece = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: player.sprite.position, templateName: PieceTemplate.Name.Seeds, closestFreeSpot: true);
+
+                                Seed seeds = (Seed)seedsPiece;
+                                seeds.PlantToGrow = plantName;
+
+                                bool piecePickedUp = player.PickUpPiece(seeds);
+                                if (piecePickedUp)
+                                {
+                                    new Task(taskName: TaskName.PlaySoundByName, delay: 15, executeHelper: SoundData.Name.Ding1);
+
+                                    new TextWindow(text: $"Acquired | seeds for | {PieceInfo.GetInfo(plantName).readableName}.", imageList: new List<Texture2D> { seeds.sprite.frame.texture, PieceInfo.GetTexture(plantName) }, textColor: Color.White, bgColor: Color.Green, useTransition: true, animate: true, checkForDuplicate: true, inputType: Scene.InputTypes.Normal, blocksUpdatesBelow: true, priority: 0);
+                                }
+                                else seeds.Destroy(); // seeds should not appear, if there is no room for them to be stored
+                            }
                         }
                         return;
 

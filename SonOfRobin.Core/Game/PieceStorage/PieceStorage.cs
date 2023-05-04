@@ -375,7 +375,7 @@ namespace SonOfRobin
             return false;
         }
 
-        public static void DestroySpecifiedPiecesInMultipleStorages(List<PieceStorage> storageList, Dictionary<PieceTemplate.Name, byte> quantityByPiece, bool keepContainers = true)
+        public static void DestroySpecifiedPiecesInMultipleStorages(List<PieceStorage> storageList, Dictionary<PieceTemplate.Name, byte> quantityByPiece, bool keepContainers = true, string withThisIDOnly = null)
         {
             // this method does not check if all pieces are present
 
@@ -386,8 +386,9 @@ namespace SonOfRobin
                 foreach (StorageSlot slot in storage.OccupiedSlots)
                 {
                     PieceTemplate.Name pieceName = slot.PieceName;
+                    string pieceID = slot.PieceID;
 
-                    if (quantityLeft.ContainsKey(pieceName) && quantityLeft[pieceName] > 0)
+                    if (quantityLeft.ContainsKey(pieceName) && quantityLeft[pieceName] > 0 && (withThisIDOnly == null || withThisIDOnly == pieceID))
                     {
                         while (true)
                         {

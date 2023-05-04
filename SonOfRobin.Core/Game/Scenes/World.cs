@@ -264,7 +264,8 @@ namespace SonOfRobin
 
                     this.Player.RemoveFromStateMachines();
 
-                    BoardPiece spectator = PieceTemplate.CreateAndPlaceOnBoard(world: this, position: this.camera.TrackedPos, templateName: PieceTemplate.Name.PlayerGhost, closestFreeSpot: true, creationHelper: this.Player.sprite.animPackage);
+                    BoardPiece spectator = PieceTemplate.CreateAndPlaceOnBoard(world: this, position: this.camera.TrackedPos, templateName: PieceTemplate.Name.PlayerGhost, closestFreeSpot: true);
+                    spectator.sprite.AssignNewPackage(this.Player.sprite.animPackage);
 
                     spectator.sprite.orientation = this.Player != null ? this.Player.sprite.orientation : Sprite.Orientation.right;
 

@@ -30,8 +30,9 @@ namespace SonOfRobin
             public readonly int craftCountToUnlock;
             public readonly bool isHidden;
             public readonly bool isReversible;
+            public readonly string useOnlyIngredientsWithID; // for identifying correct seed when planting
 
-            public Recipe(PieceTemplate.Name pieceToCreate, Dictionary<PieceTemplate.Name, byte> ingredients, float fatigue, int duration = -1, bool isReversible = false, int amountToCreate = 1, bool isHidden = false, List<PieceTemplate.Name> unlocksWhenCrafted = null, int craftCountToUnlock = 1, bool checkIfAlreadyAdded = true, int maxLevel = -1, int craftCountToLevelUp = -1, float fatigueMultiplier = 0.5f, float durationMultiplier = 0.5f)
+            public Recipe(PieceTemplate.Name pieceToCreate, Dictionary<PieceTemplate.Name, byte> ingredients, float fatigue, int duration = -1, bool isReversible = false, int amountToCreate = 1, bool isHidden = false, List<PieceTemplate.Name> unlocksWhenCrafted = null, int craftCountToUnlock = 1, int maxLevel = -1, int craftCountToLevelUp = -1, float fatigueMultiplier = 0.5f, float durationMultiplier = 0.5f, bool isTemporary = false, string useOnlyIngredientsWithID = null)
             {
                 this.pieceToCreate = pieceToCreate;
                 this.amountToCreate = amountToCreate;
@@ -51,12 +52,13 @@ namespace SonOfRobin
                 this.craftCountToUnlock = craftCountToUnlock;
                 this.isReversible = isReversible;
                 if (this.isReversible) Yield.antiCraftRecipes[this.pieceToCreate] = this;
+                this.useOnlyIngredientsWithID = useOnlyIngredientsWithID;
 
-                if (checkIfAlreadyAdded && recipeByID.ContainsKey(this.id)) throw new ArgumentException($"Recipe with ID {this.id} has already been added.");
+                if (recipeByID.ContainsKey(this.id)) throw new ArgumentException($"Recipe with ID {this.id} has already been added.");
                 if (this.masterLevelFatigueMultiplier > 1) throw new ArgumentException($"Master level fatigue multiplier ({this.masterLevelFatigueMultiplier}) cannot be greater than 1.");
                 if (this.masterLevelDurationMultiplier > 1) throw new ArgumentException($"Master level duration multiplier ({this.masterLevelDurationMultiplier}) cannot be greater than 1.");
                 if (this.maxLevel < 0) throw new ArgumentException($"Max level ({this.maxLevel}) cannot be less than 0.");
-                recipeByID[this.id] = this;
+                if (!isTemporary) recipeByID[this.id] = this;
             }
 
             public static Recipe GetRecipeByID(string id)
@@ -173,7 +175,6 @@ namespace SonOfRobin
                 if (!this.CheckIfStorageContainsAllIngredients(storageList: storagesToTakeFrom))
                 {
                     new TextWindow(text: "Not enough ingredients.", textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false, startingSound: SoundData.Name.Error);
-                    MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Not enough ingredients to craft '{this.pieceToCreate}'.");
                     return craftedPieces;
                 }
 
@@ -248,7 +249,7 @@ namespace SonOfRobin
                     }
                 }
 
-                PieceStorage.DestroySpecifiedPiecesInMultipleStorages(storageList: storagesToTakeFrom, quantityByPiece: ingredientsCopy);
+                PieceStorage.DestroySpecifiedPiecesInMultipleStorages(storageList: storagesToTakeFrom, quantityByPiece: ingredientsCopy, withThisIDOnly: this.useOnlyIngredientsWithID);
 
                 if (canBePickedUp)
                 {

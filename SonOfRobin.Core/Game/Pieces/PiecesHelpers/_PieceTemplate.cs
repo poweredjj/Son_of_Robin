@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 
 namespace SonOfRobin
 
@@ -264,6 +263,7 @@ namespace SonOfRobin
             BowAdvanced,
             ExclamationBlue,
             DebrisHeart,
+            Seeds,
         }
 
         public static readonly Name[] allNames = (Name[])Enum.GetValues(typeof(Name));
@@ -273,9 +273,9 @@ namespace SonOfRobin
             return CreatePiece(templateName: templateName, world: world, id: id, generation: generation);
         }
 
-        public static BoardPiece CreateAndPlaceOnBoard(Name templateName, World world, Vector2 position, bool randomPlacement = false, int generation = 0, bool ignoreCollisions = false, string id = null, bool closestFreeSpot = false, int minDistanceOverride = -1, int maxDistanceOverride = -1, bool ignoreDensity = false, object creationHelper = null)
+        public static BoardPiece CreateAndPlaceOnBoard(Name templateName, World world, Vector2 position, bool randomPlacement = false, int generation = 0, bool ignoreCollisions = false, string id = null, bool closestFreeSpot = false, int minDistanceOverride = -1, int maxDistanceOverride = -1, bool ignoreDensity = false)
         {
-            BoardPiece boardPiece = CreatePiece(templateName: templateName, world: world, id: id, generation: generation, creationHelper: creationHelper);
+            BoardPiece boardPiece = CreatePiece(templateName: templateName, world: world, id: id, generation: generation);
 
             boardPiece.PlaceOnBoard(randomPlacement: randomPlacement, position: position, ignoreCollisions: ignoreCollisions, closestFreeSpot: closestFreeSpot, minDistanceOverride: minDistanceOverride, maxDistanceOverride: maxDistanceOverride, ignoreDensity: ignoreDensity, addPlannedDestruction: true);
 
@@ -299,7 +299,7 @@ namespace SonOfRobin
             return boardPiece;
         }
 
-        private static BoardPiece CreatePiece(Name templateName, World world, int generation = 0, string id = null, object creationHelper = null)
+        private static BoardPiece CreatePiece(Name templateName, World world, int generation = 0, string id = null)
         {
             if (id == null) id = Helpers.GetUniqueHash();
 
@@ -345,9 +345,7 @@ namespace SonOfRobin
                             soundPack.AddAction(action: action, sound: new Sound(name: SoundData.Name.StepGhost, cooldown: 30, ignore3DAlways: true, volume: 0.8f, maxPitchVariation: 0.2f));
                         }
 
-                        AnimData.PkgName animPkg = creationHelper == null ? AnimData.PkgName.NoAnim : (AnimData.PkgName)creationHelper;
-
-                        Player spectator = new Player(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: new AllowedTerrain(), minDistance: 0, maxDistance: 65535, generation: generation, readableName: "player ghost", description: "A metaphysical representation of player's soul.", blocksMovement: false, ignoresCollisions: true, floatsOnWater: true, activeState: BoardPiece.State.PlayerControlledGhosting, lightEngine: new LightEngine(size: 650, opacity: 1.4f, colorActive: true, color: Color.Blue * 5f, isActive: true, castShadows: true), soundPack: soundPack, strength: 2, speed: 3.5f, maxStamina: 400, maxHitPoints: 400, maxFatigue: 2000, craftLevel: 1, cookingSkill: 1f, invWidth: 1, invHeight: 1, toolbarWidth: 1, toolbarHeight: 1, fireAffinity: 0f);
+                        Player spectator = new Player(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.NoAnim, allowedTerrain: new AllowedTerrain(), minDistance: 0, maxDistance: 65535, generation: generation, readableName: "player ghost", description: "A metaphysical representation of player's soul.", blocksMovement: false, ignoresCollisions: true, floatsOnWater: true, activeState: BoardPiece.State.PlayerControlledGhosting, lightEngine: new LightEngine(size: 650, opacity: 1.4f, colorActive: true, color: Color.Blue * 5f, isActive: true, castShadows: true), soundPack: soundPack, strength: 2, speed: 3.5f, maxStamina: 400, maxHitPoints: 400, maxFatigue: 2000, craftLevel: 1, cookingSkill: 1f, invWidth: 1, invHeight: 1, toolbarWidth: 1, toolbarHeight: 1, fireAffinity: 0f);
 
                         spectator.speed = 5;
                         spectator.sprite.opacity = 0.5f;
@@ -1736,6 +1734,12 @@ namespace SonOfRobin
 
                         return new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.IronPlate, blocksMovement: false, category: BoardPiece.Category.Indestructible,
                             allowedTerrain: allowedTerrain, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 18, floatsOnWater: false, rotatesWhenDropped: true, readableName: "iron plate", description: "Crafting material.", soundPack: soundPack, fireAffinity: 0f);
+                    }
+
+                case Name.Seeds:
+                    {
+                        return new Seed(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.SeedBag, blocksMovement: false, allowedTerrain: shallowWaterToVolcano,
+                            minDistance: 0, maxDistance: 1000, generation: generation, mass: 5, readableName: "seeds", description: "Can be planted.", fireAffinity: 0.4f);
                     }
 
                 case Name.Apple:
