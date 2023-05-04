@@ -235,6 +235,9 @@ namespace SonOfRobin
                     target.yield.DropFinalPieces();
                     world.HintEngine.CheckForPieceHintToShow(typesToCheckOnly: new List<PieceHint.Type> { PieceHint.Type.TreasureJar });
                 }
+
+                if (target.GetType() == typeof(Plant)) ((Plant)target).DropSeeds();
+
                 target.soundPack.Play(PieceSoundPack.Action.IsDestroyed);
                 target.Destroy();
 

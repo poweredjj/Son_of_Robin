@@ -611,7 +611,7 @@ namespace SonOfRobin
 
                         case PieceTemplate.Name.PlayerTestDemoness:
                             var pieceNamesToEquip = new List<PieceTemplate.Name> {
-                                PieceTemplate.Name.BootsProtective, PieceTemplate.Name.Map, PieceTemplate.Name.BackpackBig, PieceTemplate.Name.BeltBig, PieceTemplate.Name.HatSimple
+                                PieceTemplate.Name.BootsProtective, PieceTemplate.Name.Map, PieceTemplate.Name.BackpackBig, PieceTemplate.Name.BeltBig, PieceTemplate.Name.HatSimple, PieceTemplate.Name.Dungarees
                             };
 
                             foreach (PieceTemplate.Name name in pieceNamesToEquip)

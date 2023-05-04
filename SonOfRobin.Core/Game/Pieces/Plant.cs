@@ -91,23 +91,18 @@ namespace SonOfRobin
             if (this.fruitEngine != null) this.fruitEngine.Deserialize(pieceData);
         }
 
-        public override void Destroy()
+        public void DropSeeds()
         {
-            if (!this.exists) return;
+            if (this.dropSeedChance == 0 || this.IsBurning) return;
 
-            if (this.dropSeedChance > 0 && !this.IsBurning)
+            bool dropSeed = this.world.random.Next(this.dropSeedChance) == 0;
+            if (dropSeed)
             {
-                bool dropSeed = this.world.random.Next(this.dropSeedChance) == 0;
-                if (dropSeed)
-                {
-                    BoardPiece seedsPiece = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: this.sprite.position, templateName: PieceTemplate.Name.SeedsGeneric, closestFreeSpot: true);
+                BoardPiece seedsPiece = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: this.sprite.position, templateName: PieceTemplate.Name.SeedsGeneric, closestFreeSpot: true);
 
-                    Seed seeds = (Seed)seedsPiece;
-                    seeds.PlantToGrow = this.name;
-                }
-            }
-
-            base.Destroy();
+                Seed seeds = (Seed)seedsPiece;
+                seeds.PlantToGrow = this.name;
+            }  
         }
 
         public bool DropFruit()

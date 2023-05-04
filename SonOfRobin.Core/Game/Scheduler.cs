@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using static SonOfRobin.Craft;
 
 namespace SonOfRobin
 {
@@ -363,6 +364,7 @@ namespace SonOfRobin
 
                     case TaskName.LoadGameNow:
                         {
+                            Scene.RemoveAllScenesOfType(typeof(Inventory));
                             SonOfRobinGame.SmallProgressBar.TurnOff(); // in case there was a progress bar (sleeping, etc.)
                             Sound.StopAll(); // no point in playing any sounds here - loading process glitches sound for a while
                             new LoaderSaver(saveMode: false, saveSlotName: (string)this.ExecuteHelper);
@@ -508,6 +510,10 @@ namespace SonOfRobin
                             { player.buffEngine.AddBuff(buff: buff, world: world); }
 
                             food.hitPoints = 0;
+                            foreach (PieceStorage storage in player.CraftStorages)
+                            {
+                                storage.DestroyBrokenPieces(); // to destroy "broken" food right now
+                            }
 
                             if (food.GetType() == typeof(Fruit) && world.random.Next(12) == 0) // getting seeds
                             {
@@ -1398,32 +1404,48 @@ namespace SonOfRobin
                             var executeData = (Dictionary<string, Object>)this.ExecuteHelper;
 
                             Player player = (Player)executeData["player"];
+                            world = player.world;
                             Seed seeds = (Seed)executeData["toolbarPiece"];
+                            PieceTemplate.Name plantName = seeds.PlantToGrow;
                             bool highlightOnly = (bool)executeData["highlightOnly"];
 
                             if (!player.CanSeeAnything)
                             {
-                                new TextWindow(text: $"It is too dark to plant | {seeds.readableName}...", imageList: new List<Texture2D> { seeds.sprite.frame.texture }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 0, animSound: player.world.DialogueSound);
+                                if (!highlightOnly) new TextWindow(text: $"It is too dark to plant | { PieceInfo.GetInfo(plantName).readableName }.", imageList: new List<Texture2D> { PieceInfo.GetTexture(plantName) }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: false, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 70, priority: 0, animSound: world.DialogueSound);
 
                                 return;
                             }
 
                             if (player.IsVeryTired)
                             {
-                                new TextWindow(text: "I'm too tired to plant anything...", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 0, animSound: player.world.DialogueSound);
+                                if (!highlightOnly) new TextWindow(text: "I'm too tired to plant anything...", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: false, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 70, priority: 0, animSound: world.DialogueSound);
+
+                                return;
+                            }
+
+                            if (player.AreEnemiesNearby && !player.IsActiveFireplaceNearby)
+                            {
+                                if (!highlightOnly) new TextWindow(text: $"I can't plant | { PieceInfo.GetInfo(plantName).readableName } with enemies nearby.", imageList: new List<Texture2D> { PieceInfo.GetTexture(plantName) }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: false, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 70, priority: 0,  animSound: world.DialogueSound);
 
                                 return;
                             }
 
                             if (highlightOnly)
                             {
-                                VirtButton.ButtonHighlightOnNextFrame(VButName.UseTool);
+                                var simulatedPlantTemp = PieceTemplate.CreateAndPlaceOnBoard(templateName: seeds.PlantToGrow, world: world, position: player.sprite.position, ignoreCollisions: true);
+                                bool canPlantHere = simulatedPlantTemp.sprite.SetNewPosition(newPos: player.sprite.position + new Vector2(0, -player.sprite.colRect.Height), ignoreDensity: true);
+                                simulatedPlantTemp.Destroy();
+
+                                if (canPlantHere)
+                                {
+                                    VirtButton.ButtonHighlightOnNextFrame(VButName.UseTool);
+                                    ControlTips.TipHighlightOnNextFrame(tipName: "use item");
+                                }
+
                                 return;
                             }
 
-                            PieceTemplate.Name plantName = seeds.PlantToGrow;
-
-                            Craft.Recipe plantRecipe = new Craft.Recipe(pieceToCreate: plantName, ingredients: new Dictionary<PieceTemplate.Name, byte> { { seeds.name, 1 } }, fatigue: PieceInfo.GetInfo(plantName).blocksMovement ? 100 : 50, maxLevel: 0, durationMultiplier: 1f, fatigueMultiplier: 1f, isReversible: false, isTemporary: true, useOnlyIngredientsWithID: seeds.id);
+                            Recipe plantRecipe = new Recipe(pieceToCreate: plantName, ingredients: new Dictionary<PieceTemplate.Name, byte> { { seeds.name, 1 } }, fatigue: PieceInfo.GetInfo(plantName).blocksMovement ? 100 : 50, maxLevel: 0, durationMultiplier: 1f, fatigueMultiplier: 1f, isReversible: false, isTemporary: true, useOnlyIngredientsWithID: seeds.id);
 
                             Inventory.SetLayout(newLayout: Inventory.LayoutType.Toolbar, player: player);
                             plantRecipe.TryToProducePieces(player: player, showMessages: false);

@@ -292,7 +292,7 @@ namespace SonOfRobin
                     break;
 
                 case BuffEngine.BuffType.SprintCooldown:
-                    description = $"Cannot sprint for {duration}.";
+                    description = $"Cannot sprint{duration}.";
                     break;
 
                 default:

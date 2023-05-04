@@ -291,7 +291,7 @@ namespace SonOfRobin
 
                     if (piece.GetType() == typeof(Plant))
                     {
-                        ((Plant)piece).massTakenMultiplier *= 1.5f; // when the player plants something, it should grow better than normal
+                        ((Plant)piece).massTakenMultiplier *= 1.7f; // when the player plants something, it should grow better than normal
                     }
                 }
 
