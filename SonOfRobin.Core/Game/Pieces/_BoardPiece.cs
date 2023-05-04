@@ -508,11 +508,10 @@ namespace SonOfRobin
             if (addDestroyEvent) new WorldEvent(eventName: WorldEvent.EventName.Destruction, world: this.world, delay: this.staysAfterDeath, boardPiece: this);
         }
 
-        public void Destroy()
+        public virtual void Destroy()
         {
             if (!this.exists) return;
             if (this.alive) this.Kill(addDestroyEvent: false);
-            if (PieceInfo.IsPlayer(this.name)) this.yield.DropFinalPieces();
             this.soundPack.StopAll(ignoredAction: PieceSoundPack.Action.IsDestroyed);
             this.RemoveFromBoard();
             if (this.visualAid != null) this.visualAid.Destroy();

@@ -44,7 +44,10 @@ namespace SonOfRobin
         {
             base.Deserialize(pieceData);
 
-            this.plantToGrow = (PieceTemplate.Name)(Int64)pieceData["seed_plantToGrow"];
+            if (pieceData.ContainsKey("seed_plantToGrow")) // for compatibility with older saves
+            {
+                this.plantToGrow = (PieceTemplate.Name)(Int64)pieceData["seed_plantToGrow"];
+            }
         }
     }
 }

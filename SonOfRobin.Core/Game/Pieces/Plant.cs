@@ -29,10 +29,11 @@ namespace SonOfRobin
         public readonly float adultSizeMass;
         public readonly FruitEngine fruitEngine;
         private int lastFrameProcessed; // for time delta calculation
+        public readonly int dropSeedChance;
 
         public Plant(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, Dictionary<Terrain.Name, byte> bestEnvironment, int[] maxMassForSize, string readableName, string description, Category category, float fireAffinity,
             int maxAge, PlantReproductionData reproduction, byte massToBurn, float massTakenMultiplier,
-            byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = false, int mass = 1, int staysAfterDeath = 800, int generation = 0, Yield yield = null, int maxHitPoints = 1, FruitEngine fruitEngine = null, Scheduler.TaskName boardTask = Scheduler.TaskName.Empty, AllowedDensity allowedDensity = null, LightEngine lightEngine = null, int maxExistingNumber = 0, PieceSoundPack soundPack = null, float adultSizeMass = 0) :
+            byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = false, int mass = 1, int staysAfterDeath = 800, int generation = 0, Yield yield = null, int maxHitPoints = 1, FruitEngine fruitEngine = null, Scheduler.TaskName boardTask = Scheduler.TaskName.Empty, AllowedDensity allowedDensity = null, LightEngine lightEngine = null, int maxExistingNumber = 0, PieceSoundPack soundPack = null, float adultSizeMass = 0, int dropSeedChance = 0) :
 
             base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, speed: speed, blocksMovement: blocksMovement, blocksPlantGrowth: true, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedTerrain: allowedTerrain, floatsOnWater: floatsOnWater, mass: mass, maxMassForSize: maxMassForSize, staysAfterDeath: staysAfterDeath, maxAge: maxAge, generation: generation, canBePickedUp: false, yield: yield, maxHitPoints: maxHitPoints, boardTask: boardTask, readableName: readableName, description: description, allowedDensity: allowedDensity, category: category, lightEngine: lightEngine, activeState: State.PlantGrowthAndReproduction, soundPack: soundPack, fireAffinity: fireAffinity)
         {
@@ -44,6 +45,7 @@ namespace SonOfRobin
             this.maxExistingNumber = maxExistingNumber;
             this.occupiedFieldWealth = -1f; // to be changed
             this.adultSizeMass = adultSizeMass;
+            this.dropSeedChance = dropSeedChance;
             this.fruitEngine = fruitEngine;
             if (this.fruitEngine != null)
             {
@@ -87,6 +89,25 @@ namespace SonOfRobin
             base.Deserialize(pieceData);
             this.massTakenMultiplier = (float)(double)pieceData["plant_massTakenMultiplier"];
             if (this.fruitEngine != null) this.fruitEngine.Deserialize(pieceData);
+        }
+
+        public override void Destroy()
+        {
+            if (!this.exists) return;
+
+            if (this.dropSeedChance > 0)
+            {
+                bool dropSeed = this.world.random.Next(this.dropSeedChance) == 0;
+                if (dropSeed)
+                {
+                    BoardPiece seedsPiece = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: this.sprite.position, templateName: PieceTemplate.Name.SeedsGeneric, closestFreeSpot: true);
+
+                    Seed seeds = (Seed)seedsPiece;
+                    seeds.PlantToGrow = this.name;
+                }
+            }
+
+            base.Destroy();
         }
 
         public bool DropFruit()

@@ -176,10 +176,11 @@ namespace SonOfRobin
 
             var plantNames = PieceInfo.namesForType[typeof(Plant)];
             var fruitNames = PieceInfo.namesForType[typeof(Fruit)]; // for compatibility with older saves (using fruits for planting)
+            var seedNames = PieceInfo.namesForType[typeof(Seed)]; // for compatibility with older saves (using fruits for planting)
 
             var allowedNames = new List<PieceTemplate.Name>();
             if (showOnlyPlants) allowedNames.AddRange(plantNames);
-            else allowedNames = PieceTemplate.allNames.Where(name => !plantNames.Contains(name) && !fruitNames.Contains(name) && name != PieceTemplate.Name.Seeds).ToList();
+            else allowedNames = PieceTemplate.allNames.Where(name => !plantNames.Contains(name) && !seedNames.Contains(name) && !fruitNames.Contains(name)).ToList();
 
             var pieceNames = collectionToShow.Keys.Where(name => allowedNames.Contains(name)).OrderBy(n => PieceInfo.GetInfo(n).readableName);
             if (!pieceNames.Any()) return null;

@@ -57,11 +57,11 @@ namespace SonOfRobin
             this.previousStepPos = new Vector2(-100, -100); // initial value, to be changed later
             this.distanceWalked = 0;
 
-            var allowedToolbarPieces = new List<PieceTemplate.Name> { PieceTemplate.Name.LanternEmpty, PieceTemplate.Name.Seeds }; // indivitual cases, that will not be added below
+            var allowedToolbarPieces = new List<PieceTemplate.Name> { PieceTemplate.Name.LanternEmpty }; // indivitual cases, that will not be added below
 
             if (PieceInfo.HasBeenInitialized)
             {
-                List<Type> typeList = new List<Type> { typeof(Tool), typeof(PortableLight), typeof(Projectile) };
+                List<Type> typeList = new List<Type> { typeof(Tool), typeof(PortableLight), typeof(Projectile), typeof(Seed) };
 
                 foreach (PieceTemplate.Name pieceName in PieceTemplate.allNames)
                 {
@@ -410,6 +410,13 @@ namespace SonOfRobin
 
             new Scheduler.Task(taskName: Scheduler.TaskName.CameraSetZoom, turnOffInputUntilExecution: true, delay: 0, executeHelper: new Dictionary<string, Object> { { "zoom", 3f } });
             new Scheduler.Task(taskName: Scheduler.TaskName.OpenMenuTemplate, turnOffInputUntilExecution: true, delay: 300, executeHelper: new Dictionary<string, Object> { { "templateName", MenuTemplate.Name.GameOver } });
+        }
+
+        public override void Destroy()
+        {
+            if (!this.exists) return;
+            this.yield.DropFinalPieces();
+            base.Destroy();
         }
 
         public override Dictionary<string, Object> Serialize()

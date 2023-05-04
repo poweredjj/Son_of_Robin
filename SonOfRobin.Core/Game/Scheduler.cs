@@ -512,7 +512,7 @@ namespace SonOfRobin
                             if (food.GetType() == typeof(Fruit) && world.random.Next(12) == 0) // getting seeds
                             {
                                 PieceTemplate.Name plantName = PieceInfo.GetInfo(food.name).isSpawnedBy;
-                                BoardPiece seedsPiece = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: player.sprite.position, templateName: PieceTemplate.Name.Seeds, closestFreeSpot: true);
+                                BoardPiece seedsPiece = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: player.sprite.position, templateName: PieceTemplate.Name.SeedsGeneric, closestFreeSpot: true);
 
                                 Seed seeds = (Seed)seedsPiece;
                                 seeds.PlantToGrow = plantName;

@@ -263,7 +263,7 @@ namespace SonOfRobin
             BowAdvanced,
             ExclamationBlue,
             DebrisHeart,
-            Seeds,
+            SeedsGeneric,
         }
 
         public static readonly Name[] allNames = (Name[])Enum.GetValues(typeof(Name));
@@ -434,7 +434,7 @@ namespace SonOfRobin
                         var reproduction = new PlantReproductionData(massNeeded: 1000, massLost: 190, bioWear: 0.34f);
 
                         return new Plant(name: templateName, world: world, id: id, blocksMovement: false, animPackage: AnimData.PkgName.PlantPoison, allowedTerrain: allowedTerrain, category: BoardPiece.Category.SmallPlant,
-                            minDistance: 30, maxDistance: 90, bestEnvironment: bestEnvironment, mass: 1, maxMassForSize: maxMassForSize, maxAge: 950, reproduction: reproduction, massToBurn: 5, massTakenMultiplier: 0.63f, generation: generation, staysAfterDeath: 300, readableName: "poisonous plant", description: "Poisonous plant.", allowedDensity: new AllowedDensity(radious: 70, maxNoOfPiecesTotal: 4), yield: yield, fireAffinity: 0.3f);
+                            minDistance: 30, maxDistance: 90, bestEnvironment: bestEnvironment, mass: 1, maxMassForSize: maxMassForSize, maxAge: 950, reproduction: reproduction, massToBurn: 5, massTakenMultiplier: 0.63f, generation: generation, staysAfterDeath: 300, readableName: "poisonous plant", description: "Poisonous plant.", allowedDensity: new AllowedDensity(radious: 70, maxNoOfPiecesTotal: 4), yield: yield, fireAffinity: 0.3f, dropSeedChance: 70);
                     }
 
                 case Name.Rushes:
@@ -499,7 +499,7 @@ namespace SonOfRobin
                         var reproduction = new PlantReproductionData(massNeeded: 700, massLost: 600, bioWear: 0.36f);
 
                         return new Plant(name: templateName, world: world, id: id, blocksMovement: false, animPackage: animPkg, allowedTerrain: allowedTerrain, category: BoardPiece.Category.SmallPlant,
-                          minDistance: 0, maxDistance: 100, bestEnvironment: bestEnvironment, mass: 1, maxMassForSize: maxMassForSize, maxAge: 550, reproduction: reproduction, massToBurn: 9, massTakenMultiplier: 1f, generation: generation, staysAfterDeath: 300, readableName: "regular flower", description: "A flower.", allowedDensity: new AllowedDensity(radious: 100, maxNoOfPiecesSameName: 0), yield: yield, fireAffinity: 0.6f);
+                          minDistance: 0, maxDistance: 100, bestEnvironment: bestEnvironment, mass: 1, maxMassForSize: maxMassForSize, maxAge: 550, reproduction: reproduction, massToBurn: 9, massTakenMultiplier: 1f, generation: generation, staysAfterDeath: 300, readableName: "regular flower", description: "A flower.", allowedDensity: new AllowedDensity(radious: 100, maxNoOfPiecesSameName: 0), yield: yield, fireAffinity: 0.6f, dropSeedChance: 40);
                     }
 
                 case Name.FlowersRed:
@@ -519,7 +519,7 @@ namespace SonOfRobin
                         var reproduction = new PlantReproductionData(massNeeded: 700, massLost: 600, bioWear: 0.36f);
 
                         return new Plant(name: templateName, world: world, id: id, blocksMovement: false, animPackage: AnimData.PkgName.FlowersRed, allowedTerrain: allowedTerrain, category: BoardPiece.Category.SmallPlant,
-                          minDistance: 0, maxDistance: 100, bestEnvironment: bestEnvironment, mass: 1, maxMassForSize: maxMassForSize, maxAge: 550, reproduction: reproduction, massToBurn: 9, massTakenMultiplier: 1f, generation: generation, staysAfterDeath: 300, readableName: "red flower", description: "A red flower.", allowedDensity: new AllowedDensity(radious: 100, maxNoOfPiecesSameName: 0), lightEngine: new LightEngine(size: 0, opacity: 0.2f, colorActive: true, color: Color.Red * 1.5f, addedGfxRectMultiplier: 3f, isActive: true, glowOnlyAtNight: true, castShadows: false), yield: yield, fireAffinity: 0.6f);
+                          minDistance: 0, maxDistance: 100, bestEnvironment: bestEnvironment, mass: 1, maxMassForSize: maxMassForSize, maxAge: 550, reproduction: reproduction, massToBurn: 9, massTakenMultiplier: 1f, generation: generation, staysAfterDeath: 300, readableName: "red flower", description: "A red flower.", allowedDensity: new AllowedDensity(radious: 100, maxNoOfPiecesSameName: 0), lightEngine: new LightEngine(size: 0, opacity: 0.2f, colorActive: true, color: Color.Red * 1.5f, addedGfxRectMultiplier: 3f, isActive: true, glowOnlyAtNight: true, castShadows: false), yield: yield, fireAffinity: 0.6f, dropSeedChance: 40);
                     }
 
                 case Name.FlowersMountain:
@@ -538,7 +538,7 @@ namespace SonOfRobin
                         var reproduction = new PlantReproductionData(massNeeded: 2500, massLost: 2000, bioWear: 0.7f);
 
                         return new Plant(name: templateName, world: world, id: id, blocksMovement: false, animPackage: AnimData.PkgName.FlowersYellow2, allowedTerrain: allowedTerrain, category: BoardPiece.Category.SmallPlant,
-                          minDistance: 0, maxDistance: 250, bestEnvironment: bestEnvironment, mass: 1, maxMassForSize: maxMassForSize, maxAge: 4000, reproduction: reproduction, massToBurn: 3, massTakenMultiplier: 0.98f, generation: generation, staysAfterDeath: 300, readableName: "mountain flower", description: "A mountain flower.", allowedDensity: new AllowedDensity(radious: 240, maxNoOfPiecesSameName: 0), yield: yield, fireAffinity: 0.6f);
+                          minDistance: 0, maxDistance: 250, bestEnvironment: bestEnvironment, mass: 1, maxMassForSize: maxMassForSize, maxAge: 4000, reproduction: reproduction, massToBurn: 3, massTakenMultiplier: 0.98f, generation: generation, staysAfterDeath: 300, readableName: "mountain flower", description: "A mountain flower.", allowedDensity: new AllowedDensity(radious: 240, maxNoOfPiecesSameName: 0), yield: yield, fireAffinity: 0.6f, dropSeedChance: 40);
                     }
 
                 case Name.TreeSmall:
@@ -631,7 +631,7 @@ namespace SonOfRobin
                         // adultSizeMass should be greater than animSize for sapling (to avoid showing fruits on sapling)
 
                         return new Plant(name: templateName, world: world, id: id, blocksMovement: true, animPackage: AnimData.PkgName.TreeBig, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Wood,
-                            minDistance: 40, maxDistance: 300, bestEnvironment: bestEnvironment, mass: 1, maxMassForSize: maxMassForSize, maxAge: 30000, reproduction: reproduction, massToBurn: 35, massTakenMultiplier: 3.1f, generation: generation, staysAfterDeath: 15000, yield: yield, maxHitPoints: 100, fruitEngine: fruitEngine, boardTask: Scheduler.TaskName.DropFruit, readableName: "oak", description: "Acorns can grow on it.", allowedDensity: new AllowedDensity(radious: 260, maxNoOfPiecesSameName: 2), soundPack: soundPack, adultSizeMass: maxMassForSize[1], fireAffinity: 0.65f);
+                            minDistance: 40, maxDistance: 300, bestEnvironment: bestEnvironment, mass: 1, maxMassForSize: maxMassForSize, maxAge: 30000, reproduction: reproduction, massToBurn: 35, massTakenMultiplier: 3.1f, generation: generation, staysAfterDeath: 15000, yield: yield, maxHitPoints: 100, fruitEngine: fruitEngine, boardTask: Scheduler.TaskName.DropFruit, readableName: "oak", description: "Acorns can grow on it.", allowedDensity: new AllowedDensity(radious: 260, maxNoOfPiecesSameName: 2), soundPack: soundPack, adultSizeMass: maxMassForSize[1], fireAffinity: 0.65f, dropSeedChance: 20);
                     }
 
                 case Name.AppleTree:
@@ -793,7 +793,7 @@ namespace SonOfRobin
                         var fruitEngine = new FruitEngine(maxNumber: 1, oneFruitMass: 50f, yOffsetPercent: -0.1f, areaWidthPercent: 0.8f, areaHeightPercent: 0.7f, fruitName: Name.Carrot, hiddenFruits: true);
 
                         return new Plant(name: templateName, world: world, id: id, blocksMovement: false, animPackage: AnimData.PkgName.CarrotPlant, allowedTerrain: allowedTerrain, category: BoardPiece.Category.SmallPlant,
-                           maxHitPoints: 40, minDistance: 20, maxDistance: 200, bestEnvironment: bestEnvironment, mass: 1, maxMassForSize: null, maxAge: 1000, reproduction: reproduction, massToBurn: 9, massTakenMultiplier: 0.855f, generation: generation, staysAfterDeath: 500, fruitEngine: fruitEngine, boardTask: Scheduler.TaskName.DropFruit, readableName: "carrot plant", description: "Carrots can grow on it.", allowedDensity: new AllowedDensity(radious: 150, maxNoOfPiecesSameName: 2), yield: yield, fireAffinity: 0.4f);
+                           maxHitPoints: 40, minDistance: 20, maxDistance: 200, bestEnvironment: bestEnvironment, mass: 1, maxMassForSize: null, maxAge: 1000, reproduction: reproduction, massToBurn: 9, massTakenMultiplier: 0.855f, generation: generation, staysAfterDeath: 500, fruitEngine: fruitEngine, boardTask: Scheduler.TaskName.DropFruit, readableName: "carrot plant", description: "Carrots can grow on it.", allowedDensity: new AllowedDensity(radious: 150, maxNoOfPiecesSameName: 2), yield: yield, fireAffinity: 0.4f, dropSeedChance: 8);
                     }
 
                 case Name.Cactus:
@@ -813,7 +813,7 @@ namespace SonOfRobin
                         var reproduction = new PlantReproductionData(massNeeded: 20000, massLost: 18000, bioWear: 0.69f);
 
                         return new Plant(name: templateName, world: world, id: id, blocksMovement: true, animPackage: AnimData.PkgName.Cactus, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Wood,
-                            minDistance: 50, maxDistance: 600, bestEnvironment: bestEnvironment, mass: 1, maxMassForSize: maxMassForSize, maxAge: 30000, reproduction: reproduction, massToBurn: 10, maxHitPoints: 80, massTakenMultiplier: 1.65f, generation: generation, staysAfterDeath: 10000, readableName: "cactus", description: "A desert plant.", allowedDensity: new AllowedDensity(radious: 300, maxNoOfPiecesSameName: 1), yield: yield, fireAffinity: 0.3f);
+                            minDistance: 50, maxDistance: 600, bestEnvironment: bestEnvironment, mass: 1, maxMassForSize: maxMassForSize, maxAge: 30000, reproduction: reproduction, massToBurn: 10, maxHitPoints: 80, massTakenMultiplier: 1.65f, generation: generation, staysAfterDeath: 10000, readableName: "cactus", description: "A desert plant.", allowedDensity: new AllowedDensity(radious: 300, maxNoOfPiecesSameName: 1), yield: yield, fireAffinity: 0.3f, dropSeedChance: 50);
                     }
 
                 case Name.MineralsSmall:
@@ -1736,46 +1736,50 @@ namespace SonOfRobin
                             allowedTerrain: allowedTerrain, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 18, floatsOnWater: false, rotatesWhenDropped: true, readableName: "iron plate", description: "Crafting material.", soundPack: soundPack, fireAffinity: 0f);
                     }
 
-                case Name.Seeds:
+                case Name.SeedsGeneric:
                     {
                         return new Seed(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.SeedBag, blocksMovement: false, allowedTerrain: shallowWaterToVolcano,
                             minDistance: 0, maxDistance: 1000, generation: generation, mass: 5, readableName: "seeds", description: "Can be planted.", fireAffinity: 0.4f);
                     }
 
+                case Name.Acorn:
+                    {
+                        BoardPiece acorn = new Seed(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Acorn, blocksMovement: false, allowedTerrain: shallowWaterToVolcano,
+                            minDistance: 0, maxDistance: 1000, generation: generation, mass: 5, readableName: "acorn", description: "Can be planted or cooked.", fireAffinity: 0.6f);
+
+                        ((Seed)acorn).PlantToGrow = Name.Oak;
+
+                        return acorn;
+                    }
+
                 case Name.Apple:
                     {
-                        return new Fruit(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Apple, blocksMovement: false, allowedTerrain: shallowWaterToVolcano,
+                        return new Fruit(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Apple, blocksMovement: false, allowedTerrain: shallowWaterToVolcano, mightContainSeeds: true,
                             minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 10, mass: 70, readableName: "apple", description: "Can be eaten or cooked.", fireAffinity: 0.15f);
                     }
 
                 case Name.Cherry:
                     {
-                        return new Fruit(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Cherry, blocksMovement: false, allowedTerrain: shallowWaterToVolcano,
+                        return new Fruit(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Cherry, blocksMovement: false, allowedTerrain: shallowWaterToVolcano, mightContainSeeds: true,
                             minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 16, mass: 40, readableName: "cherry", description: "Can be eaten or cooked.", fireAffinity: 0.15f);
                     }
 
                 case Name.Banana:
                     {
-                        return new Fruit(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Banana, blocksMovement: false, allowedTerrain: shallowWaterToVolcano,
+                        return new Fruit(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Banana, blocksMovement: false, allowedTerrain: shallowWaterToVolcano, mightContainSeeds: true,
                             minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 10, mass: 80, readableName: "banana", description: "Can be eaten or cooked.", fireAffinity: 0.15f);
                     }
 
                 case Name.Tomato:
                     {
-                        return new Fruit(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Tomato, blocksMovement: false, allowedTerrain: shallowWaterToVolcano,
+                        return new Fruit(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Tomato, blocksMovement: false, allowedTerrain: shallowWaterToVolcano, mightContainSeeds: true,
                             minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 10, mass: 20, readableName: "tomato", description: "Can be eaten or cooked.", fireAffinity: 0.15f);
                     }
 
                 case Name.Carrot:
                     {
-                        return new Fruit(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Carrot, blocksMovement: false, allowedTerrain: shallowWaterToVolcano,
+                        return new Fruit(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Carrot, blocksMovement: false, allowedTerrain: shallowWaterToVolcano, mightContainSeeds: false,
                             minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 10, mass: 20, readableName: "carrot", description: "Can be eaten or cooked.", fireAffinity: 0.15f);
-                    }
-
-                case Name.Acorn:
-                    {
-                        return new Fruit(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Acorn, blocksMovement: false, allowedTerrain: shallowWaterToVolcano,
-                            minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 10, mass: 100, readableName: "acorn", description: "Have to be cooked before eating.", canBeEatenRaw: false, fireAffinity: 0.6f);
                     }
 
                 case Name.HerbsGreen:
