@@ -310,5 +310,22 @@ namespace SonOfRobin
 
             return array1D;
         }
+
+        public static uint GenerateTextureChecksum(Texture2D texture)
+        {
+            uint hash = 2166136261u;
+
+            // Get the pixel data from the texture
+            Color[] data = new Color[texture.Width * texture.Height];
+            texture.GetData(data);
+
+            // Compute the hash
+            for (int i = 0; i < data.Length; i++)
+            {
+                hash = (hash ^ data[i].PackedValue) * 16777619u;
+            }
+
+            return hash;
+        }
     }
 }

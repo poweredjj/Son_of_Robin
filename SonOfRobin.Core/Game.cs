@@ -66,6 +66,7 @@ namespace SonOfRobin
         public static readonly string gameDataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "SonOfRobin_data");
         public static readonly string worldTemplatesPath = Path.Combine(gameDataPath, "world_templates");
         public static readonly string saveGamesPath = Path.Combine(gameDataPath, "savegames");
+        public static readonly string animDataPath = Path.Combine(gameDataPath, "graphics_cache");
         public static readonly string prefsPath = Path.Combine(gameDataPath, "preferences.json");
 
         public static bool ThisIsWorkMachine
@@ -140,6 +141,7 @@ namespace SonOfRobin
             if (!Directory.Exists(gameDataPath)) Directory.CreateDirectory(gameDataPath);
             if (!Directory.Exists(worldTemplatesPath)) Directory.CreateDirectory(worldTemplatesPath);
             if (!Directory.Exists(saveGamesPath)) Directory.CreateDirectory(saveGamesPath);
+            if (!Directory.Exists(animDataPath)) Directory.CreateDirectory(animDataPath);
 
             Preferences.Initialize(); // to set some default values
             Preferences.Load();

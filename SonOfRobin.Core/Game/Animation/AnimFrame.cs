@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace SonOfRobin
 {
@@ -9,6 +10,8 @@ namespace SonOfRobin
     {
         public readonly string atlasName;
         public readonly string id;
+        public readonly string pngPath;
+        public readonly string jsonPath;
         private readonly float depthPercent;
         public readonly int gfxWidth;
         public readonly int gfxHeight;
@@ -37,7 +40,7 @@ namespace SonOfRobin
 
         private static string GetID(string atlasName, int atlasX, int atlasY, int width, int height, byte layer, int duration, bool crop, float scale, float depthPercent)
         {
-            return $"{atlasName}_{atlasX},{atlasY}_{width}x{height}_{layer}_{duration}_{crop}_{scale}_{depthPercent}";
+            return $"{atlasName.Replace("/", "+")}_{atlasX},{atlasY}_{width}x{height}_{layer}_{duration}_{crop}_{scale}_{depthPercent}";
         }
 
         private AnimFrame(string atlasName, int atlasX, int atlasY, int width, int height, byte layer, int duration, bool crop, float scale, float depthPercent, int padding, bool ignoreWhenCalculatingMaxSize)
@@ -47,6 +50,8 @@ namespace SonOfRobin
             this.id = GetID(atlasName: atlasName, atlasX: atlasX, atlasY: atlasY, width: width, height: height, layer: layer, duration: duration, crop: crop, scale: scale, depthPercent: depthPercent);
 
             AnimData.frameById[this.id] = this;
+            this.pngPath = Path.Combine(SonOfRobinGame.animDataPath, $"{this.id}.png");
+            this.jsonPath = Path.Combine(SonOfRobinGame.animDataPath, $"{this.id}.json");
 
             this.depthPercent = depthPercent;
             this.atlasName = atlasName;
@@ -55,17 +60,51 @@ namespace SonOfRobin
             this.duration = duration; // duration == 0 will stop the animation
             this.ignoreWhenCalculatingMaxSize = ignoreWhenCalculatingMaxSize;
 
-            Texture2D atlasTexture = TextureBank.GetTexture(this.atlasName);
-            Rectangle cropRect = GetCropRect(texture: atlasTexture, textureX: atlasX, textureY: atlasY, width: width, height: height, crop: crop);
+            // TODO finish writing this code
 
-            // padding makes the edge texture filtering smooth and allows for border effects outside original texture edges
-            this.texture = GfxConverter.CropTextureAndAddPadding(baseTexture: atlasTexture, cropRect: cropRect, padding: padding);
+            this.texture = GfxConverter.LoadTextureFromPNG(this.pngPath);
+            var jsonData = (Dictionary<string, Object>)FileReaderWriter.Load(path: this.jsonPath);
+
+            Texture2D atlasTexture = TextureBank.GetTexture(this.atlasName);
+
+            bool atlasTextureChanged = false;
+            //uint atlasTextureChecksum = GfxConverter.GenerateTextureChecksum(atlasTexture);
+
+            //if (jsonData != null)
+            //{
+            //    uint jsonTextureChecksum = (uint)(Int64)jsonData["atlasTextureChecksum"];
+            //    if (atlasTextureChecksum != jsonTextureChecksum) atlasTextureChanged = true;
+            //}
+
+            if (atlasTextureChanged || this.texture == null)
+            {
+                Rectangle cropRect = GetCropRect(texture: atlasTexture, textureX: atlasX, textureY: atlasY, width: width, height: height, crop: crop);
+
+                // padding makes the edge texture filtering smooth and allows for border effects outside original texture edges
+                this.texture = GfxConverter.CropTextureAndAddPadding(baseTexture: atlasTexture, cropRect: cropRect, padding: padding);
+                GfxConverter.SaveTextureAsPNG(filename: this.pngPath, texture: this.texture);
+            }
 
             this.textureSize = new Vector2(this.texture.Width, this.texture.Height);
             this.textureRect = new Rectangle(x: 0, y: 0, width: this.texture.Width, height: this.texture.Height);
             this.rotationOrigin = new Vector2(this.textureSize.X * 0.5f, this.textureSize.Y * 0.5f); // rotationOrigin must not take scale into account, to work properly
 
-            Rectangle colBounds = this.FindCollisionBounds();
+            Rectangle colBounds;
+            if (jsonData == null || atlasTextureChanged)
+            {
+                colBounds = this.FindCollisionBounds();
+
+                var jsonDict = new Dictionary<string, Object> {
+                    { "colBounds", colBounds },
+                    // { "atlasTextureChecksum", atlasTextureChecksum },
+                };
+
+                FileReaderWriter.Save(path: this.jsonPath, savedObj: jsonDict, compress: false);
+            }
+            else
+            {
+                colBounds = (Rectangle)jsonData["colBounds"];
+            }
 
             this.colWidth = (int)(colBounds.Width * scale);
             this.colHeight = (int)(colBounds.Height * scale);

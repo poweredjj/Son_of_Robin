@@ -42,8 +42,13 @@ namespace SonOfRobin
         {
             var textureDict = textureByNameTemporary.ContainsKey(textureName) ? textureByNameTemporary : textureByNamePersistent;
 
-            textureDict[textureName].Dispose();
-            textureDict.Remove(textureName);
+            try
+            {
+                textureDict[textureName].Dispose();
+                textureDict.Remove(textureName);
+            }
+            catch (KeyNotFoundException)
+            { }
         }
 
         public static void FlushTemporaryTextures()
