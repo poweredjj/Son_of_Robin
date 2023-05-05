@@ -230,7 +230,7 @@ namespace SonOfRobin
             PotionStrength,
             PotionHaste,
             PotionMaxStamina,
-            PotionFatigue,
+            PotionCoffee,
             PotionPoison,
             PotionSlowdown,
             PotionWeakness,
@@ -1151,7 +1151,7 @@ namespace SonOfRobin
                                 new Yield.DroppedPiece(pieceName: Name.ShovelIron, chanceToDrop: 10, maxNumberToDrop: 1),
                                 new Yield.DroppedPiece(pieceName: Name.IronBar, chanceToDrop: 10, maxNumberToDrop: 1),
                                 new Yield.DroppedPiece(pieceName: Name.BowAdvanced, chanceToDrop: 15, maxNumberToDrop: 1),
-                                new Yield.DroppedPiece(pieceName: Name.PotionFatigue, chanceToDrop: 20, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: Name.PotionCoffee, chanceToDrop: 20, maxNumberToDrop: 1),
                                 new Yield.DroppedPiece(pieceName: Name.PotionHaste, chanceToDrop: 20, maxNumberToDrop: 1),
                                 new Yield.DroppedPiece(pieceName: Name.PotionHealing, chanceToDrop: 20, maxNumberToDrop: 1),
                                 new Yield.DroppedPiece(pieceName: Name.PotionMaxHPIncrease, chanceToDrop: 20, maxNumberToDrop: 1),
@@ -1207,7 +1207,7 @@ namespace SonOfRobin
                                 new Yield.DroppedPiece(pieceName: Name.ScytheIron, chanceToDrop: 10, maxNumberToDrop: 1),
                                 new Yield.DroppedPiece(pieceName: Name.ShovelIron, chanceToDrop: 10, maxNumberToDrop: 1),
                                 new Yield.DroppedPiece(pieceName: Name.IronBar, chanceToDrop: 10, maxNumberToDrop: 3),
-                                new Yield.DroppedPiece(pieceName: Name.PotionFatigue, chanceToDrop: 20, maxNumberToDrop: 2),
+                                new Yield.DroppedPiece(pieceName: Name.PotionCoffee, chanceToDrop: 20, maxNumberToDrop: 2),
                                 new Yield.DroppedPiece(pieceName: Name.PotionHaste, chanceToDrop: 20, maxNumberToDrop: 2),
                                 new Yield.DroppedPiece(pieceName: Name.PotionHealing, chanceToDrop: 20, maxNumberToDrop: 2),
                                 new Yield.DroppedPiece(pieceName: Name.PotionMaxHPIncrease, chanceToDrop: 20, maxNumberToDrop: 2),
@@ -1789,7 +1789,10 @@ namespace SonOfRobin
 
                 case Name.CoffeeRoasted:
                     {
-                        return new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CoffeeRoasted, blocksMovement: false, allowedTerrain: shallowWaterToVolcano, category: BoardPiece.Category.Indestructible, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 4, floatsOnWater: false, rotatesWhenDropped: true, readableName: "roasted coffee", description: "Potion ingredient.", fireAffinity: 0f);
+                        var buffList = new List<Buff> {
+                             new Buff(type: BuffEngine.BuffType.Fatigue, value: (float)-800, isPermanent: true)};
+
+                        return new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CoffeeRoasted, blocksMovement: false, allowedTerrain: shallowWaterToVolcano, category: BoardPiece.Category.Indestructible, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 4, floatsOnWater: false, rotatesWhenDropped: true, readableName: "roasted coffee", description: "Potion ingredient.", fireAffinity: 0f, buffList: buffList);
                     }
 
                 case Name.Apple:
@@ -2005,7 +2008,7 @@ namespace SonOfRobin
                             minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 200, toolbarTask: Scheduler.TaskName.GetDrinked, rotatesWhenDropped: true, floatsOnWater: false, readableName: "max stamina potion", description: "Increases maximum stamina for a short while.", buffList: buffList, convertsToWhenUsed: Name.EmptyBottle, soundPack: soundPack, fireAffinity: 0f);
                     }
 
-                case Name.PotionFatigue:
+                case Name.PotionCoffee:
                     {
                         var buffList = new List<Buff> {
                              new Buff(type: BuffEngine.BuffType.Fatigue, value: (float)-800, isPermanent: true)};
@@ -2013,8 +2016,8 @@ namespace SonOfRobin
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropGlass, cooldown: 15, maxPitchVariation: 0.3f));
 
-                        return new Potion(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PotionViolet, blocksMovement: false, category: BoardPiece.Category.Indestructible, allowedTerrain: shallowWaterToVolcano,
-                            minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 200, toolbarTask: Scheduler.TaskName.GetDrinked, rotatesWhenDropped: true, floatsOnWater: false, readableName: "fatigue remove potion", description: "Removes fatigue.", buffList: buffList, convertsToWhenUsed: Name.EmptyBottle, soundPack: soundPack, fireAffinity: 0f);
+                        return new Potion(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PotionBrown, blocksMovement: false, category: BoardPiece.Category.Indestructible, allowedTerrain: shallowWaterToVolcano,
+                            minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 200, toolbarTask: Scheduler.TaskName.GetDrinked, rotatesWhenDropped: true, floatsOnWater: false, readableName: "strong coffee", description: "Removes fatigue.", buffList: buffList, convertsToWhenUsed: Name.EmptyBottle, soundPack: soundPack, fireAffinity: 0f);
                     }
 
                 case Name.PotionPoison:

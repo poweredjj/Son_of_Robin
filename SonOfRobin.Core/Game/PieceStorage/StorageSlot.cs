@@ -57,8 +57,8 @@ namespace SonOfRobin
         public PieceTemplate.Name PieceName
         { get { return pieceList[0].name; } }
 
-        public string PieceID
-        { get { return pieceList[0].id; } }
+        public List<string> AllPieceIDs
+        { get { return pieceList.Select(p => p.id).ToList(); } }
 
         public void AddPiece(BoardPiece piece)
         {
@@ -128,6 +128,19 @@ namespace SonOfRobin
                 this.pieceList.Clear();
             }
             return allPieces;
+        }
+
+        public void DestroyPieceWithID(string idToRemove)
+        {
+            if (this.locked) return;
+
+            var piecesToDestroy = this.pieceList.Where(piece => piece.id == idToRemove).ToList();
+            if (piecesToDestroy.Count > 1) throw new ArgumentException($"Found more than one piece with ID {idToRemove}.");
+
+            foreach (BoardPiece piece in piecesToDestroy)
+            { this.AddRemoveBuffs(piece: piece, add: false); }
+
+            this.pieceList = this.pieceList.Where(piece => piece.id != idToRemove).ToList();
         }
 
         public void DestroyBrokenPieces()

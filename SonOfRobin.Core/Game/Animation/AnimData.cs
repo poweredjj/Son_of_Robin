@@ -7,7 +7,7 @@ namespace SonOfRobin
 {
     public class AnimData
     {
-        public const float currentVersion = 1.0000001f; // version number should be incremented with any change of graphics assets
+        public const float currentVersion = 1.0000002f; // version number should be incremented with any change of graphics assets
 
         public static readonly Dictionary<string, AnimFrame> frameById = new Dictionary<string, AnimFrame>(); // needed to access frames directly by id (for loading and saving game)
         public static readonly Dictionary<string, List<AnimFrame>> frameListById = new Dictionary<string, List<AnimFrame>>();
@@ -371,6 +371,7 @@ namespace SonOfRobin
             CoffeeRaw,
             CoffeeRoasted,
             CoffeeShrub,
+            PotionBrown,
         }
 
         public static void AddFrameList(PkgName animPackage, byte animSize, List<AnimFrame> frameList, string animName = "default")
@@ -1006,6 +1007,7 @@ namespace SonOfRobin
             AddFrameList(animPackage: PkgName.PotionDarkViolet, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "potion_dark_violet", layer: 0, scale: 0.5f));
             AddFrameList(animPackage: PkgName.PotionDarkYellow, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "potion_dark_yellow", layer: 0, scale: 0.5f));
             AddFrameList(animPackage: PkgName.PotionDarkGreen, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "potion_dark_green", layer: 0, scale: 0.5f));
+            AddFrameList(animPackage: PkgName.PotionBrown, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "potion_brown", layer: 0, scale: 0.5f));
             AddFrameList(animPackage: PkgName.PotionLightYellow, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "bottle_oil", layer: 0, scale: 0.5f));
             AddFrameList(animPackage: PkgName.WaterDrop, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "water drops/water_drop_x1", layer: 0, scale: 0.5f));
             AddFrameList(animPackage: PkgName.RainDrops, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "water drops/water_drop_x1", layer: 2, scale: 0.06f));

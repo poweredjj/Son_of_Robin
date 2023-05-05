@@ -142,9 +142,9 @@ namespace SonOfRobin
 
                 new Craft.Recipe(pieceToCreate: PieceTemplate.Name.PotionHaste, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.EmptyBottle, 1 }, { PieceTemplate.Name.Acorn, 2 }, { PieceTemplate.Name.HerbsCyan, 3 }}, fatigue: fatigueItemSmall, isReversible: false, isHidden: true),
 
-                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.PotionMaxStamina, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.EmptyBottle, 1 }, { PieceTemplate.Name.Carrot, 2 }, { PieceTemplate.Name.HerbsBlue, 2 }}, fatigue: fatigueItemSmall, isReversible: false,  unlocksWhenCrafted: new List<PieceTemplate.Name> {PieceTemplate.Name.PotionFatigue }, craftCountToUnlock: 3 ),
+                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.PotionMaxStamina, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.EmptyBottle, 1 }, { PieceTemplate.Name.Carrot, 2 }, { PieceTemplate.Name.HerbsBlue, 2 }}, fatigue: fatigueItemSmall, isReversible: false,  unlocksWhenCrafted: new List<PieceTemplate.Name> {PieceTemplate.Name.PotionCoffee }, craftCountToUnlock: 3 ),
 
-                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.PotionFatigue, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.EmptyBottle, 1 }, { PieceTemplate.Name.Cherry, 2 }, { PieceTemplate.Name.HerbsViolet, 2 }}, fatigue: fatigueItemSmall, isReversible: false, isHidden: true),
+                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.PotionCoffee, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.EmptyBottle, 1 }, { PieceTemplate.Name.CoffeeRoasted, 1 }}, fatigue: fatigueItemSmall, isReversible: false, isHidden: true),
 
                 new Craft.Recipe(pieceToCreate: PieceTemplate.Name.BottleOfOil, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.EmptyBottle, 1 }, { PieceTemplate.Name.Fat, 2 }}, fatigue: fatigueItemSmall, isReversible: false, unlocksWhenCrafted: new List<PieceTemplate.Name> { PieceTemplate.Name.TorchBig }),
 

@@ -61,9 +61,15 @@ namespace SonOfRobin
                     imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.HerbsViolet)},
                     playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.HerbsViolet}),
 
+               new PieceHint(
+                    type: PieceHint.Type.CoffeeRaw,
+                    message: $"This is | {PieceInfo.GetInfo(PieceTemplate.Name.CoffeeRaw).readableName}!\nI could roast it in a | {PieceInfo.GetInfo(PieceTemplate.Name.Furnace).readableName}.",
+                    imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.CoffeeRaw), PieceInfo.GetTexture(PieceTemplate.Name.Furnace) },
+                    playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> { PieceTemplate.Name.CoffeeRaw }),
+
                 new PieceHint(
                     type: PieceHint.Type.HerbsBlack,
-                    message: "These | herbs look poisonous.\nIt could be useful.",
+                    message: "These | herbs look poisonous.\nThey could be useful.",
                     imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.HerbsBlack)},
                     playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.HerbsBlack}),
 

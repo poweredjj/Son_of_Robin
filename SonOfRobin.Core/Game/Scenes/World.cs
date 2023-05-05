@@ -653,7 +653,7 @@ namespace SonOfRobin
                                     {
                                         if (!piecesForInventoryWithCount.ContainsKey(ingredientName))
                                         {
-                                            piecesForInventoryWithCount[ingredientName] = PieceInfo.GetInfo(ingredientName).stackSize * 2;
+                                            piecesForInventoryWithCount[ingredientName] = PieceInfo.GetInfo(ingredientName).stackSize * 1;
                                         }
                                     }
                                 }
