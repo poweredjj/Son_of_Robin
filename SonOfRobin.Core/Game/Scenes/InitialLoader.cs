@@ -8,7 +8,7 @@ namespace SonOfRobin
     public class InitialLoader : Scene
     {
         public enum Step
-        { Initial, LoadEffects, LoadFonts, CreateControlTips, LoadSounds, LoadInitialTextures, CreateSeamless, CreateAnims, LoadKeysGfx, CreateScenes, MakeItemsInfo, MakeCraftRecipes, MakeDemoWorld, SetControlTips, DeleteObsoleteTemplates, OpenMainMenu }
+        { Initial, LoadEffects, LoadFonts, CreateControlTips, LoadSounds, LoadInitialTextures, CreateSeamless, LoadAnims, LoadKeysGfx, CreateScenes, MakeItemsInfo, MakeCraftRecipes, MakeDemoWorld, SetControlTips, DeleteObsoleteTemplates, OpenMainMenu }
 
         private static readonly int allStepsCount = ((Step[])Enum.GetValues(typeof(Step))).Length;
 
@@ -20,7 +20,7 @@ namespace SonOfRobin
             { Step.LoadSounds, "loading sounds" },
             { Step.LoadInitialTextures, "loading textures" },
             { Step.CreateSeamless, "creating seamless textures" },
-            { Step.CreateAnims, "creating animations" },
+            { Step.LoadAnims, "loading animations" },
             { Step.LoadKeysGfx, "loading keyboard textures" },
             { Step.CreateScenes, "creating helper scenes" },
             { Step.MakeItemsInfo, "creating items info" },
@@ -79,15 +79,15 @@ namespace SonOfRobin
                     RepeatingPattern.ConvertAllTexturesToPatterns();
                     break;
 
-                case Step.CreateAnims:
+                case Step.LoadAnims:
                     DateTime startTime = DateTime.Now;
 
-                    AnimData.LoadJsonDict();
+                    if (!AnimData.LoadJsonDict()) AnimData.PurgeDiskCache();
                     AnimData.CreateAllAnims();
                     AnimData.SaveJsonDict();
                     AnimData.DeleteUsedAtlases();
-                    AnimData.textureDict.Clear(); // not needed anymore
-                    AnimData.jsonDict.Clear(); // not needed anymore
+                    AnimData.textureDict.Clear(); // not needed afterwards
+                    AnimData.jsonDict.Clear(); // not needed afterwards
 
                     TimeSpan duration = DateTime.Now - startTime;
                     MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Anim creation time: {duration:\\:ss\\.fff}");

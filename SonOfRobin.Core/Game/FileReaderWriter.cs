@@ -19,7 +19,12 @@ namespace SonOfRobin
             if (compress)
             {
                 byte[] compressedBytes = Compress(json);
-                File.WriteAllBytes($"{path}.gzip", compressedBytes);
+                try
+                {
+                    File.WriteAllBytes($"{path}.gzip", compressedBytes);
+                }
+                catch (IOException)
+                { return; }
             }
             else
             {

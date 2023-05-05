@@ -7,14 +7,14 @@ namespace SonOfRobin
 {
     public class AnimData
     {
-        public const float currentVersion = 1.0000001f;
+        public const float currentVersion = 1.0000001f; // version number should be incremented with any change of graphics assets
 
         public static readonly Dictionary<string, AnimFrame> frameById = new Dictionary<string, AnimFrame>(); // needed to access frames directly by id (for loading and saving game)
         public static readonly Dictionary<string, List<AnimFrame>> frameListById = new Dictionary<string, List<AnimFrame>>();
         public static readonly Dictionary<PkgName, AnimFrame> framesForPkgs = new Dictionary<PkgName, AnimFrame>(); // default frames for packages
 
         public static readonly Dictionary<string, Texture2D> textureDict = new Dictionary<string, Texture2D>();
-        public static readonly Dictionary<string, Dictionary<string, Object>> jsonDict = new Dictionary<string, Dictionary<string, object>>();
+        public static Dictionary<string, Object> jsonDict = new Dictionary<string, Object>();
 
         public enum PkgName
         {
@@ -1306,31 +1306,61 @@ namespace SonOfRobin
         private static string JsonDataPath
         { get { return Path.Combine(SonOfRobinGame.animCachePath, "_data.json"); } }
 
-        public static void LoadJsonDict()
+        public static bool LoadJsonDict()
         {
             // one big json is used to speed up loading / saving data
 
-            Dictionary<string, Dictionary<string, Object>> loadedJsonDict = null;
+            Dictionary<string, Object> loadedJsonDict;
 
             try
             {
-                loadedJsonDict = (Dictionary<string, Dictionary<string, Object>>)FileReaderWriter.Load(path: JsonDataPath);
+                var loadedJson = FileReaderWriter.Load(path: JsonDataPath);
+                if (loadedJson == null) return false;
+
+                loadedJsonDict = (Dictionary<string, Object>)loadedJson;
             }
             catch (InvalidCastException)
-            { }
+            { return false; }
 
-            if (loadedJsonDict == null) return;
-
-            foreach (var kvp in loadedJsonDict)
+            try
             {
-                string id = kvp.Key;
-                var subDict = kvp.Value;
-                if (subDict.ContainsKey("animDataVersion") && (float)(double)subDict["animDataVersion"] == currentVersion) jsonDict[id] = subDict;
+                float jsonVersion = (float)(double)loadedJsonDict["currentVersion"];
+                if (jsonVersion != currentVersion) return false;
             }
+            catch (InvalidCastException) { return false; }
+            catch (KeyNotFoundException) { return false; }
+
+            jsonDict = loadedJsonDict;
+            return true;
+        }
+
+        public static void PurgeDiskCache()
+        {
+            try
+            {
+                var directory = new DirectoryInfo(SonOfRobinGame.animCachePath);
+                foreach (var file in directory.GetFiles())
+                {
+                    try
+                    { file.Delete(); }
+                    catch (UnauthorizedAccessException)
+                    { } // ignore read-only files
+                    catch (IOException)
+                    { } // ignore locked files
+                }
+            }
+            catch (Exception ex) when (ex is IOException || ex is UnauthorizedAccessException) // handle other I/O errors
+            {
+                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Failed to purge anim cache: {ex.Message}");
+            }
+
+            MessageLog.AddMessage(msgType: MsgType.Debug, message: "Anim cache purged.");
         }
 
         public static void SaveJsonDict()
         {
+            jsonDict["currentVersion"] = currentVersion;
+
             FileReaderWriter.Save(path: JsonDataPath, savedObj: jsonDict, compress: true);
         }
 

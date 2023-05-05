@@ -62,23 +62,28 @@ namespace SonOfRobin
             if (AnimData.textureDict.ContainsKey(this.textureID)) this.texture = AnimData.textureDict[this.textureID];
             else this.texture = GfxConverter.LoadTextureFromPNG(pngPath);
 
-            var jsonData = AnimData.jsonDict.ContainsKey(this.id) ? AnimData.jsonDict[this.id] : null;
+            Dictionary<string, Object> jsonData = null;
+            try
+            { jsonData = (Dictionary<string, Object>)AnimData.jsonDict[this.id]; }
+            catch (InvalidCastException) { }
+            catch (KeyNotFoundException) { }
 
             bool cacheLoadedCorrectly = false;
             Rectangle colBounds = new Rectangle(0, 0, 1, 1);
 
             if (jsonData != null)
             {
-                float animDataVersion = jsonData.ContainsKey("animDataVersion") ? (float)(double)jsonData["animDataVersion"] : 0f;
-
                 bool colBoundsLoaded = false;
-                if (jsonData.ContainsKey("colBounds"))
+
+                try
                 {
                     colBounds = (Rectangle)jsonData["colBounds"];
                     colBoundsLoaded = true;
                 }
+                catch (InvalidCastException) { }
+                catch (KeyNotFoundException) { }
 
-                if (animDataVersion == AnimData.currentVersion && colBoundsLoaded && this.texture != null) cacheLoadedCorrectly = true;
+                if (this.texture != null && colBoundsLoaded) cacheLoadedCorrectly = true;
             }
 
             if (!cacheLoadedCorrectly)
@@ -91,6 +96,8 @@ namespace SonOfRobin
                 GfxConverter.SaveTextureAsPNG(filename: pngPath, texture: this.texture);
             }
 
+            AnimData.textureDict[this.textureID] = this.texture;
+
             this.textureSize = new Vector2(this.texture.Width, this.texture.Height);
             this.textureRect = new Rectangle(x: 0, y: 0, width: this.texture.Width, height: this.texture.Height);
             this.rotationOrigin = new Vector2(this.textureSize.X * 0.5f, this.textureSize.Y * 0.5f); // rotationOrigin must not take scale into account, to work properly
@@ -101,10 +108,7 @@ namespace SonOfRobin
 
                 AnimData.jsonDict[this.id] = new Dictionary<string, Object> {
                     { "colBounds", colBounds },
-                    { "animDataVersion", AnimData.currentVersion },
                 };
-
-                AnimData.textureDict[this.textureID] = this.texture;
             }
 
             this.colWidth = (int)(colBounds.Width * scale);
