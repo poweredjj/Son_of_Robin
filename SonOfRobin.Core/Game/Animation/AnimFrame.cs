@@ -10,7 +10,7 @@ namespace SonOfRobin
     {
         public readonly string atlasName;
         public readonly string id;
-        public readonly string textureID; // does not take scale into account
+        public readonly string textureID; // some id parameters are irrevelant to the texture itself, so alternative id is used
         private readonly float depthPercent;
         public readonly int gfxWidth;
         public readonly int gfxHeight;
@@ -47,7 +47,7 @@ namespace SonOfRobin
             // should not be invoked from other classes directly
 
             this.id = GetID(atlasName: atlasName, atlasX: atlasX, atlasY: atlasY, width: width, height: height, layer: layer, duration: duration, crop: crop, scale: scale, depthPercent: depthPercent);
-            this.textureID = GetID(atlasName: atlasName, atlasX: atlasX, atlasY: atlasY, width: width, height: height, layer: layer, duration: 0, crop: crop, scale: 0, depthPercent: depthPercent);
+            this.textureID = GetID(atlasName: atlasName, atlasX: atlasX, atlasY: atlasY, width: width, height: height, layer: 0, duration: 0, crop: crop, scale: 0, depthPercent: 0);
 
             AnimData.frameById[this.id] = this;
             string pngPath = Path.Combine(SonOfRobinGame.animCachePath, $"{this.textureID}.png");
@@ -70,9 +70,15 @@ namespace SonOfRobin
             if (jsonData != null)
             {
                 float animDataVersion = jsonData.ContainsKey("animDataVersion") ? (float)(double)jsonData["animDataVersion"] : 0f;
-                colBounds = jsonData.ContainsKey("colBounds") ? (Rectangle)jsonData["colBounds"] : new Rectangle(0, 0, 1, 1);
 
-                if (animDataVersion == AnimData.currentVersion && this.texture != null) cacheLoadedCorrectly = true;
+                bool colBoundsLoaded = false;
+                if (jsonData.ContainsKey("colBounds"))
+                {
+                    colBounds = (Rectangle)jsonData["colBounds"];
+                    colBoundsLoaded = true;
+                }
+
+                if (animDataVersion == AnimData.currentVersion && colBoundsLoaded && this.texture != null) cacheLoadedCorrectly = true;
             }
 
             if (!cacheLoadedCorrectly)

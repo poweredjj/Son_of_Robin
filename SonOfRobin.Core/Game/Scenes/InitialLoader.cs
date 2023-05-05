@@ -80,11 +80,18 @@ namespace SonOfRobin
                     break;
 
                 case Step.CreateAnims:
+                    DateTime startTime = DateTime.Now;
+
                     AnimData.LoadJsonDict();
                     AnimData.CreateAllAnims();
                     AnimData.SaveJsonDict();
                     AnimData.DeleteUsedAtlases();
-                    AnimData.textureDict.Clear();
+                    AnimData.textureDict.Clear(); // not needed anymore
+                    AnimData.jsonDict.Clear(); // not needed anymore
+
+                    TimeSpan duration = DateTime.Now - startTime;
+                    MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Anim creation time: {duration:\\:ss\\.fff}");
+
                     break;
 
                 case Step.LoadKeysGfx:

@@ -503,7 +503,7 @@ namespace SonOfRobin
                     frameList: ConvertImageToFrameList(atlasName: "chests", layer: 1, x: 0, y: 0, width: 32, height: 48));
             }
             {
-                PkgName packageName = PkgName.ChestStone;
+                PkgName packageName = PkgName.ChestIron;
                 AddFrameList(animPackage: packageName, animSize: 0, animName: "open",
                 frameList: ConvertImageToFrameList(atlasName: "chests", layer: 1, x: 32, y: 144, width: 32, height: 48));
                 var frameList = new List<AnimFrame>
@@ -524,7 +524,7 @@ namespace SonOfRobin
                     frameList: ConvertImageToFrameList(atlasName: "chests", layer: 1, x: 32, y: 0, width: 32, height: 48));
             }
             {
-                PkgName packageName = PkgName.ChestIron;
+                PkgName packageName = PkgName.ChestStone;
                 AddFrameList(animPackage: packageName, animSize: 0, animName: "open",
                 frameList: ConvertImageToFrameList(atlasName: "chest_stone", layer: 1, x: 0, y: 144, width: 48, height: 48));
                 var frameList = new List<AnimFrame>
@@ -541,8 +541,7 @@ namespace SonOfRobin
                     ConvertImageToFrame(atlasName: "chest_stone", layer: 1, x: 0, y: 0, width: 48, height: 48, duration: 0)
                 };
                 AddFrameList(animPackage: packageName, animSize: 0, animName: "closing", frameList: frameList);
-                AddFrameList(animPackage: packageName, animSize: 0, animName: "closed",
-                    frameList: ConvertImageToFrameList(atlasName: "chest_stone", layer: 1, x: 0, y: 0, width: 32, height: 48));
+                AddFrameList(animPackage: packageName, animSize: 0, animName: "closed", frameList: ConvertImageToFrameList(atlasName: "chest_stone", layer: 1, x: 0, y: 0, width: 48, height: 48));
             }
             {
                 PkgName packageName = PkgName.ChestTreasureBlue;
@@ -1309,14 +1308,16 @@ namespace SonOfRobin
 
         public static void LoadJsonDict()
         {
-            Dictionary<string, Dictionary<string, Object>> loadedJsonDict;
+            // one big json is used to speed up loading / saving data
+
+            Dictionary<string, Dictionary<string, Object>> loadedJsonDict = null;
 
             try
             {
                 loadedJsonDict = (Dictionary<string, Dictionary<string, Object>>)FileReaderWriter.Load(path: JsonDataPath);
             }
             catch (InvalidCastException)
-            { return; }
+            { }
 
             if (loadedJsonDict == null) return;
 
@@ -1330,7 +1331,7 @@ namespace SonOfRobin
 
         public static void SaveJsonDict()
         {
-            FileReaderWriter.Save(path: JsonDataPath, savedObj: jsonDict, compress: false);
+            FileReaderWriter.Save(path: JsonDataPath, savedObj: jsonDict, compress: true);
         }
 
         public static void DeleteUsedAtlases()

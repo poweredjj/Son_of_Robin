@@ -68,7 +68,7 @@ namespace SonOfRobin
                 string weatherText = "";
                 foreach (var kvp in world.weather.GetIntensityForAllWeatherTypes())
                 {
-                    weatherText += $"{kvp.Key}: {kvp.Value} ";
+                    weatherText += $"{kvp.Key}: {Math.Round(kvp.Value, 2)} ";
                 }
                 debugLines.Add($"weather {weatherText}");
                 debugLines.Add($"real time elapsed {world.TimePlayed:hh\\:mm\\:ss}");
