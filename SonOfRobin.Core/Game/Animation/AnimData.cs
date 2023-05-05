@@ -1,13 +1,20 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace SonOfRobin
 {
     public class AnimData
     {
+        public const float currentVersion = 1.0000001f;
+
         public static readonly Dictionary<string, AnimFrame> frameById = new Dictionary<string, AnimFrame>(); // needed to access frames directly by id (for loading and saving game)
         public static readonly Dictionary<string, List<AnimFrame>> frameListById = new Dictionary<string, List<AnimFrame>>();
         public static readonly Dictionary<PkgName, AnimFrame> framesForPkgs = new Dictionary<PkgName, AnimFrame>(); // default frames for packages
+
+        public static readonly Dictionary<string, Texture2D> textureDict = new Dictionary<string, Texture2D>();
+        public static readonly Dictionary<string, Dictionary<string, Object>> jsonDict = new Dictionary<string, Dictionary<string, object>>();
 
         public enum PkgName
         {
@@ -1295,6 +1302,56 @@ namespace SonOfRobin
             }
 
             AddFrameList(animPackage: packageName, animSize: animSize, frameList: new List<AnimFrame> { framesForPkgs[packageName] }); // adding default frame
+        }
+
+        private static string JsonDataPath
+        { get { return Path.Combine(SonOfRobinGame.animCachePath, "_data.json"); } }
+
+        public static void LoadJsonDict()
+        {
+            Dictionary<string, Dictionary<string, Object>> loadedJsonDict;
+
+            try
+            {
+                loadedJsonDict = (Dictionary<string, Dictionary<string, Object>>)FileReaderWriter.Load(path: JsonDataPath);
+            }
+            catch (InvalidCastException)
+            { return; }
+
+            if (loadedJsonDict == null) return;
+
+            foreach (var kvp in loadedJsonDict)
+            {
+                string id = kvp.Key;
+                var subDict = kvp.Value;
+                if (subDict.ContainsKey("animDataVersion") && (float)(double)subDict["animDataVersion"] == currentVersion) jsonDict[id] = subDict;
+            }
+        }
+
+        public static void SaveJsonDict()
+        {
+            FileReaderWriter.Save(path: JsonDataPath, savedObj: jsonDict, compress: false);
+        }
+
+        public static void DeleteUsedAtlases()
+        {
+            // Should be used after loading textures from all atlasses.
+            // Deleted textures will not be available for use any longer.
+
+            var usedAtlasNames = new List<string>();
+
+            foreach (List<AnimFrame> frameList in frameListById.Values)
+            {
+                foreach (AnimFrame animFrame in frameList)
+                {
+                    if (animFrame.atlasName != null && !usedAtlasNames.Contains(animFrame.atlasName)) usedAtlasNames.Add(animFrame.atlasName);
+                }
+            }
+
+            foreach (string atlasName in usedAtlasNames)
+            {
+                TextureBank.DisposeTexture(atlasName);
+            }
         }
     }
 }

@@ -10,8 +10,7 @@ namespace SonOfRobin
     {
         public readonly string atlasName;
         public readonly string id;
-        public readonly string pngPath;
-        public readonly string jsonPath;
+        public readonly string textureID; // does not take scale into account
         private readonly float depthPercent;
         public readonly int gfxWidth;
         public readonly int gfxHeight;
@@ -48,10 +47,10 @@ namespace SonOfRobin
             // should not be invoked from other classes directly
 
             this.id = GetID(atlasName: atlasName, atlasX: atlasX, atlasY: atlasY, width: width, height: height, layer: layer, duration: duration, crop: crop, scale: scale, depthPercent: depthPercent);
+            this.textureID = GetID(atlasName: atlasName, atlasX: atlasX, atlasY: atlasY, width: width, height: height, layer: layer, duration: 0, crop: crop, scale: 0, depthPercent: depthPercent);
 
             AnimData.frameById[this.id] = this;
-            this.pngPath = Path.Combine(SonOfRobinGame.animDataPath, $"{this.id}.png");
-            this.jsonPath = Path.Combine(SonOfRobinGame.animDataPath, $"{this.id}.json");
+            string pngPath = Path.Combine(SonOfRobinGame.animCachePath, $"{this.textureID}.png");
 
             this.depthPercent = depthPercent;
             this.atlasName = atlasName;
@@ -60,50 +59,46 @@ namespace SonOfRobin
             this.duration = duration; // duration == 0 will stop the animation
             this.ignoreWhenCalculatingMaxSize = ignoreWhenCalculatingMaxSize;
 
-            // TODO finish writing this code
+            if (AnimData.textureDict.ContainsKey(this.textureID)) this.texture = AnimData.textureDict[this.textureID];
+            else this.texture = GfxConverter.LoadTextureFromPNG(pngPath);
 
-            this.texture = GfxConverter.LoadTextureFromPNG(this.pngPath);
-            var jsonData = (Dictionary<string, Object>)FileReaderWriter.Load(path: this.jsonPath);
+            var jsonData = AnimData.jsonDict.ContainsKey(this.id) ? AnimData.jsonDict[this.id] : null;
 
-            Texture2D atlasTexture = TextureBank.GetTexture(this.atlasName);
+            bool cacheLoadedCorrectly = false;
+            Rectangle colBounds = new Rectangle(0, 0, 1, 1);
 
-            bool atlasTextureChanged = false;
-            //uint atlasTextureChecksum = GfxConverter.GenerateTextureChecksum(atlasTexture);
-
-            //if (jsonData != null)
-            //{
-            //    uint jsonTextureChecksum = (uint)(Int64)jsonData["atlasTextureChecksum"];
-            //    if (atlasTextureChecksum != jsonTextureChecksum) atlasTextureChanged = true;
-            //}
-
-            if (atlasTextureChanged || this.texture == null)
+            if (jsonData != null)
             {
+                float animDataVersion = jsonData.ContainsKey("animDataVersion") ? (float)(double)jsonData["animDataVersion"] : 0f;
+                colBounds = jsonData.ContainsKey("colBounds") ? (Rectangle)jsonData["colBounds"] : new Rectangle(0, 0, 1, 1);
+
+                if (animDataVersion == AnimData.currentVersion && this.texture != null) cacheLoadedCorrectly = true;
+            }
+
+            if (!cacheLoadedCorrectly)
+            {
+                Texture2D atlasTexture = TextureBank.GetTexture(this.atlasName);
                 Rectangle cropRect = GetCropRect(texture: atlasTexture, textureX: atlasX, textureY: atlasY, width: width, height: height, crop: crop);
 
                 // padding makes the edge texture filtering smooth and allows for border effects outside original texture edges
                 this.texture = GfxConverter.CropTextureAndAddPadding(baseTexture: atlasTexture, cropRect: cropRect, padding: padding);
-                GfxConverter.SaveTextureAsPNG(filename: this.pngPath, texture: this.texture);
+                GfxConverter.SaveTextureAsPNG(filename: pngPath, texture: this.texture);
             }
 
             this.textureSize = new Vector2(this.texture.Width, this.texture.Height);
             this.textureRect = new Rectangle(x: 0, y: 0, width: this.texture.Width, height: this.texture.Height);
             this.rotationOrigin = new Vector2(this.textureSize.X * 0.5f, this.textureSize.Y * 0.5f); // rotationOrigin must not take scale into account, to work properly
 
-            Rectangle colBounds;
-            if (jsonData == null || atlasTextureChanged)
+            if (!cacheLoadedCorrectly)
             {
                 colBounds = this.FindCollisionBounds();
 
-                var jsonDict = new Dictionary<string, Object> {
+                AnimData.jsonDict[this.id] = new Dictionary<string, Object> {
                     { "colBounds", colBounds },
-                    // { "atlasTextureChecksum", atlasTextureChecksum },
+                    { "animDataVersion", AnimData.currentVersion },
                 };
 
-                FileReaderWriter.Save(path: this.jsonPath, savedObj: jsonDict, compress: false);
-            }
-            else
-            {
-                colBounds = (Rectangle)jsonData["colBounds"];
+                AnimData.textureDict[this.textureID] = this.texture;
             }
 
             this.colWidth = (int)(colBounds.Width * scale);
@@ -117,27 +112,6 @@ namespace SonOfRobin
 
             this.colOffset *= scale;
             this.gfxOffset *= scale;
-        }
-
-        public static void DeleteUsedAtlases()
-        {
-            // Should be used after loading textures from all atlasses.
-            // Deleted textures will not be available for use any longer.
-
-            var usedAtlasNames = new List<string>();
-
-            foreach (List<AnimFrame> frameList in AnimData.frameListById.Values)
-            {
-                foreach (AnimFrame animFrame in frameList)
-                {
-                    if (animFrame.atlasName != null && !usedAtlasNames.Contains(animFrame.atlasName)) usedAtlasNames.Add(animFrame.atlasName);
-                }
-            }
-
-            foreach (string atlasName in usedAtlasNames)
-            {
-                TextureBank.DisposeTexture(atlasName);
-            }
         }
 
         private Rectangle FindCollisionBounds()

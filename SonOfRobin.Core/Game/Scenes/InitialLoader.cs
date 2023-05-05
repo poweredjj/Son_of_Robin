@@ -80,8 +80,11 @@ namespace SonOfRobin
                     break;
 
                 case Step.CreateAnims:
+                    AnimData.LoadJsonDict();
                     AnimData.CreateAllAnims();
-                    AnimFrame.DeleteUsedAtlases();
+                    AnimData.SaveJsonDict();
+                    AnimData.DeleteUsedAtlases();
+                    AnimData.textureDict.Clear();
                     break;
 
                 case Step.LoadKeysGfx:

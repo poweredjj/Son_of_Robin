@@ -4,7 +4,6 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using Xamarin.Essentials;
 
@@ -19,7 +18,7 @@ namespace SonOfRobin
     public class SonOfRobinGame : Game
     {
         public const float version = 9.7f;
-        public static readonly DateTime lastChanged = new DateTime(2023, 05, 04);
+        public static readonly DateTime lastChanged = new DateTime(2023, 05, 05);
 
         public static readonly int enteringIslandGlobalSteps = 3 + Grid.allStagesCount;
         public static ContentManager ContentMgr { get; private set; } // for things other than textures (for textures use TextureBank)
@@ -67,7 +66,7 @@ namespace SonOfRobin
         public static readonly string gameDataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "SonOfRobin_data");
         public static readonly string worldTemplatesPath = Path.Combine(gameDataPath, "world_templates");
         public static readonly string saveGamesPath = Path.Combine(gameDataPath, "savegames");
-        public static readonly string animDataPath = Path.Combine(gameDataPath, "graphics_cache");
+        public static readonly string animCachePath = Path.Combine(gameDataPath, "graphics_cache");
         public static readonly string prefsPath = Path.Combine(gameDataPath, "preferences.json");
 
         public static bool ThisIsWorkMachine
@@ -93,8 +92,8 @@ namespace SonOfRobin
         {
             get
             {
-                if (ramCounter == null) ramCounter = new PerformanceCounter("Memory", "Available MBytes"); // COMMENT THIS LINE on platforms other than Windows
-                if (os == OS.Windows) return ((PerformanceCounter)ramCounter).NextValue(); // COMMENT THIS LINE on platforms other than Windows
+                // if (ramCounter == null) ramCounter = new PerformanceCounter("Memory", "Available MBytes"); // COMMENT THIS LINE on platforms other than Windows
+                // if (os == OS.Windows) return ((PerformanceCounter)ramCounter).NextValue(); // COMMENT THIS LINE on platforms other than Windows
 
                 return -100;
             }
@@ -142,7 +141,7 @@ namespace SonOfRobin
             if (!Directory.Exists(gameDataPath)) Directory.CreateDirectory(gameDataPath);
             if (!Directory.Exists(worldTemplatesPath)) Directory.CreateDirectory(worldTemplatesPath);
             if (!Directory.Exists(saveGamesPath)) Directory.CreateDirectory(saveGamesPath);
-            if (!Directory.Exists(animDataPath)) Directory.CreateDirectory(animDataPath);
+            if (!Directory.Exists(animCachePath)) Directory.CreateDirectory(animCachePath);
 
             Preferences.Initialize(); // to set some default values
             Preferences.Load();

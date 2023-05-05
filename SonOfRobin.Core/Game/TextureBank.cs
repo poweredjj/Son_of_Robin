@@ -6,6 +6,8 @@ namespace SonOfRobin
 {
     public class TextureBank
     {
+        const string gfxFolderName = "gfx";
+
         private static ContentManager persistentTexturesManager;
         private static ContentManager temporaryTexturesManager;
 
@@ -26,14 +28,14 @@ namespace SonOfRobin
 
         public static Texture2D GetTexturePersistent(string textureName)
         {
-            if (!textureByNamePersistent.ContainsKey(textureName)) textureByNamePersistent[textureName] = persistentTexturesManager.Load<Texture2D>($"gfx/{textureName}");
+            if (!textureByNamePersistent.ContainsKey(textureName)) textureByNamePersistent[textureName] = persistentTexturesManager.Load<Texture2D>($"{gfxFolderName}/{textureName}");
 
             return textureByNamePersistent[textureName];
         }
 
         public static Texture2D GetTextureTemporary(string textureName)
         {
-            if (!textureByNameTemporary.ContainsKey(textureName)) textureByNameTemporary[textureName] = temporaryTexturesManager.Load<Texture2D>($"gfx/{textureName}");
+            if (!textureByNameTemporary.ContainsKey(textureName)) textureByNameTemporary[textureName] = temporaryTexturesManager.Load<Texture2D>($"{gfxFolderName}/{textureName}");
 
             return textureByNameTemporary[textureName];
         }
