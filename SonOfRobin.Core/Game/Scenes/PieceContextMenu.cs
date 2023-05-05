@@ -400,7 +400,7 @@ namespace SonOfRobin
                 case ContextAction.Extinguish:
                     {
                         Fireplace fireplace = (Fireplace)this.storage.storagePiece;
-                        Sound.QuickPlay(SoundData.Name.WaterSplash);
+                        if (fireplace.IsOn) Sound.QuickPlay(SoundData.Name.WaterSplash);
                         fireplace.IsOn = false;
 
                         return;

@@ -90,6 +90,7 @@ namespace SonOfRobin
                     this.sprite.AssignNewName(animName: "on");
                     this.sprite.lightEngine.Activate();
                     this.world.HintEngine.Disable(Tutorials.Type.KeepingAnimalsAway);
+                    this.soundPack.Play(PieceSoundPack.Action.TurnOn);
                     this.soundPack.Play(PieceSoundPack.Action.IsOn);
                 }
                 else
@@ -133,7 +134,6 @@ namespace SonOfRobin
 
             this.PieceStorage.DestroyOneSpecifiedPiece(fuel.name);
             this.currentCycleBurningFramesLeft = fuelFramesByName[fuel.name];
-            this.soundPack.Play(PieceSoundPack.Action.TurnOn);
 
             this.UpdateEndFrame(storedFuel);
 
