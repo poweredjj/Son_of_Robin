@@ -2024,9 +2024,9 @@ namespace SonOfRobin
                     {
                         var buffList = new List<Buff> {
                              new Buff(type: BuffEngine.BuffType.Fatigue, value: (float)-800, isPermanent: true),
-                             new Buff(type: BuffEngine.BuffType.Speed, value: 1f),
-                             new Buff(type: BuffEngine.BuffType.Strength, value: 1),
-                             new Buff(type: BuffEngine.BuffType.MaxStamina, value: 80f),
+                             new Buff(type: BuffEngine.BuffType.Speed, value: 1f, autoRemoveDelay: 60 * 60 * 1),
+                             new Buff(type: BuffEngine.BuffType.Strength, value: 1, autoRemoveDelay: 60 * 60 * 1),
+                             new Buff(type: BuffEngine.BuffType.MaxStamina, value: 80f, autoRemoveDelay: 60 * 60 * 1),
                         };
 
                         var soundPack = new PieceSoundPack();
