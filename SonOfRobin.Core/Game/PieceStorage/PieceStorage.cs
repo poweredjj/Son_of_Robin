@@ -523,6 +523,7 @@ namespace SonOfRobin
             if (this.storageType == StorageType.Equip) return; // equip should not be sorted, to avoid removing and adding buffs
 
             int pieceCountInitial = this.StoredPiecesCount;
+            int droppedPiecesCount = 0;
 
             var allPieces = new List<BoardPiece> { };
             foreach (StorageSlot slot in this.AllSlots)
@@ -533,10 +534,11 @@ namespace SonOfRobin
             allPieces = allPieces.OrderBy(piece => piece.readableName).ToList();
             foreach (BoardPiece piece in allPieces)
             {
-                this.AddPiece(piece: piece, dropIfDoesNotFit: true, addMovement: true);
+                bool pieceAddedCorrectly = this.AddPiece(piece: piece, dropIfDoesNotFit: true, addMovement: true);
+                if (!pieceAddedCorrectly) droppedPiecesCount++; // happens when storage params were updated (game update) before sort and now initial stack size > max stack size
             }
 
-            int pieceCountAfterSort = this.StoredPiecesCount;
+            int pieceCountAfterSort = this.StoredPiecesCount + droppedPiecesCount;
 
             if (pieceCountInitial != pieceCountAfterSort) throw new ArgumentException($"Initial piece count ({pieceCountInitial}) has changed after sorting ({pieceCountAfterSort}).");
         }
