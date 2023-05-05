@@ -142,9 +142,11 @@ namespace SonOfRobin
 
                 new Craft.Recipe(pieceToCreate: PieceTemplate.Name.PotionHaste, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.EmptyBottle, 1 }, { PieceTemplate.Name.Acorn, 2 }, { PieceTemplate.Name.HerbsCyan, 3 }}, fatigue: fatigueItemSmall, isReversible: false, isHidden: true),
 
-                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.PotionMaxStamina, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.EmptyBottle, 1 }, { PieceTemplate.Name.Carrot, 2 }, { PieceTemplate.Name.HerbsBlue, 2 }}, fatigue: fatigueItemSmall, isReversible: false,  unlocksWhenCrafted: new List<PieceTemplate.Name> {PieceTemplate.Name.PotionCoffee }, craftCountToUnlock: 3 ),
+                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.PotionMaxStamina, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.EmptyBottle, 1 }, { PieceTemplate.Name.Carrot, 2 }, { PieceTemplate.Name.HerbsBlue, 2 }}, fatigue: fatigueItemSmall, isReversible: false,  unlocksWhenCrafted: new List<PieceTemplate.Name> {PieceTemplate.Name.PotionFatigue }, craftCountToUnlock: 3 ),
 
-                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.PotionCoffee, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.EmptyBottle, 1 }, { PieceTemplate.Name.CoffeeRoasted, 1 }}, fatigue: fatigueItemSmall, isReversible: false, isHidden: true),
+                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.PotionFatigue, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.EmptyBottle, 1 }, { PieceTemplate.Name.Cherry, 2 }, { PieceTemplate.Name.HerbsViolet, 2 }}, fatigue: fatigueItemSmall, isReversible: false, isHidden: true),
+
+                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.PotionCoffee, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.EmptyBottle, 1 }, { PieceTemplate.Name.CoffeeRoasted, 1 }}, fatigue: fatigueItemSmall, isReversible: false),
 
                 new Craft.Recipe(pieceToCreate: PieceTemplate.Name.BottleOfOil, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.EmptyBottle, 1 }, { PieceTemplate.Name.Fat, 2 }}, fatigue: fatigueItemSmall, isReversible: false, unlocksWhenCrafted: new List<PieceTemplate.Name> { PieceTemplate.Name.TorchBig }),
 
@@ -163,7 +165,7 @@ namespace SonOfRobin
         public static List<Craft.Recipe> GetFurnaceRecipes()
         {
             return new List<Craft.Recipe> {
-                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.CoffeeRoasted, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.CoffeeRaw, 1 }, { PieceTemplate.Name.WoodLogHard, 1 }}, fatigue: fatigueItemSmall, isReversible: false),
+                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.CoffeeRoasted, amountToCreate: 3, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.CoffeeRaw, 3 }, { PieceTemplate.Name.Coal, 1 }}, fatigue: fatigueItemSmall, isReversible: false),
 
                 new Craft.Recipe(pieceToCreate: PieceTemplate.Name.IronBar, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.IronOre, 1 }, { PieceTemplate.Name.Coal, 1 }}, fatigue: fatigueItemMedium, isReversible: false),
 
