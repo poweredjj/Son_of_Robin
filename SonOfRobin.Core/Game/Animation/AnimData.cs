@@ -368,6 +368,9 @@ namespace SonOfRobin
             DebrisHeart2,
             DebrisHeart3,
             SeedBag,
+            CoffeeRaw,
+            CoffeeRoasted,
+            CoffeeShrub,
         }
 
         public static void AddFrameList(PkgName animPackage, byte animSize, List<AnimFrame> frameList, string animName = "default")
@@ -481,6 +484,14 @@ namespace SonOfRobin
                 AddFrameList(animPackage: packageName, animSize: 2, animName: "dead", frameList: ConvertImageToFrameList(atlasName: "tomato_plant_dead_big", layer: 1, scale: 0.08f));
             }
             AddFrameList(animPackage: PkgName.Tomato, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "tomato", layer: 0, scale: 0.07f));
+            {
+                PkgName packageName = PkgName.CoffeeShrub;
+                AddFrameList(animPackage: packageName, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "coffee_shrub", layer: 1, scale: 0.06f));
+                AddFrameList(animPackage: packageName, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "coffee_shrub", layer: 1, scale: 0.06f));
+
+                AddFrameList(animPackage: packageName, animSize: 0, animName: "dead", frameList: ConvertImageToFrameList(atlasName: "coffee_shrub_dead", layer: 1, scale: 0.06f));
+                AddFrameList(animPackage: packageName, animSize: 1, animName: "dead", frameList: ConvertImageToFrameList(atlasName: "coffee_shrub_dead", layer: 1, scale: 0.1f));
+            }
             {
                 PkgName packageName = PkgName.ChestWooden;
                 AddFrameList(animPackage: packageName, animSize: 0, animName: "open",
@@ -972,6 +983,8 @@ namespace SonOfRobin
             AddFrameList(animPackage: PkgName.BowBasic, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "bow_basic", layer: 0, scale: 0.25f));
             AddFrameList(animPackage: PkgName.BowAdvanced, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "bow_advanced", layer: 0, scale: 0.25f));
             AddFrameList(animPackage: PkgName.SeedBag, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "seed_bag", layer: 0, scale: 0.6f));
+            AddFrameList(animPackage: PkgName.CoffeeRaw, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "coffee_raw", layer: 0, scale: 1f));
+            AddFrameList(animPackage: PkgName.CoffeeRoasted, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "coffee_roasted", layer: 0, scale: 1f));
             AddFrameList(animPackage: PkgName.WoodLogRegular, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "wood_regular", layer: 1, scale: 0.75f));
             AddFrameList(animPackage: PkgName.WoodLogHard, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "wood_hard", layer: 1, scale: 0.5f));
             AddFrameList(animPackage: PkgName.SkullAndBones, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "skull_and_bones", layer: 2, scale: 1f));

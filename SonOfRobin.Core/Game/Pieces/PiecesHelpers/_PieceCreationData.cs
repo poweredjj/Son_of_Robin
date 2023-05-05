@@ -41,6 +41,7 @@ namespace SonOfRobin
                 new PieceCreationData(name: PieceTemplate.Name.BananaTree, multiplier: 0.03f),
                 new PieceCreationData(name: PieceTemplate.Name.TomatoPlant, multiplier: 0.01f),
                 new PieceCreationData(name: PieceTemplate.Name.CarrotPlant, multiplier: 0.01f),
+                new PieceCreationData(name: PieceTemplate.Name.CoffeeShrub, multiplier: 0.01f),
                 new PieceCreationData(name: PieceTemplate.Name.PalmTree, multiplier: 1.0f),
                 new PieceCreationData(name: PieceTemplate.Name.Cactus, multiplier: 0.2f),
 
