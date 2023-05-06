@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using Xamarin.Essentials;
 
@@ -18,7 +19,7 @@ namespace SonOfRobin
     public class SonOfRobinGame : Game
     {
         public const float version = 9.7f;
-        public static readonly DateTime lastChanged = new DateTime(2023, 05, 05);
+        public static readonly DateTime lastChanged = new DateTime(2023, 05, 06);
 
         public static readonly int enteringIslandGlobalSteps = 3 + Grid.allStagesCount;
         public static ContentManager ContentMgr { get; private set; } // for things other than textures (for textures use TextureBank)
@@ -92,8 +93,8 @@ namespace SonOfRobin
         {
             get
             {
-                // if (ramCounter == null) ramCounter = new PerformanceCounter("Memory", "Available MBytes"); // COMMENT THIS LINE on platforms other than Windows
-                // if (os == OS.Windows) return ((PerformanceCounter)ramCounter).NextValue(); // COMMENT THIS LINE on platforms other than Windows
+                if (ramCounter == null) ramCounter = new PerformanceCounter("Memory", "Available MBytes"); // COMMENT THIS LINE on platforms other than Windows
+                if (os == OS.Windows) return ((PerformanceCounter)ramCounter).NextValue(); // COMMENT THIS LINE on platforms other than Windows
 
                 return -100;
             }

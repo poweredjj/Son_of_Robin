@@ -201,8 +201,12 @@ namespace SonOfRobin
 
         public static void SetLayout(LayoutType newLayout, BoardPiece fieldStorage = null, Player player = null)
         {
-            if (Layout == newLayout && GetTopSceneOfType(typeof(Inventory)) != null) return;
-
+            if (Layout == newLayout)
+            {
+                Inventory topInventory = GetTopInventory();
+                if (topInventory?.piece.world == World.GetTopWorld()) return;          
+            }
+       
             if (fieldStorage != null && fieldStorage.PieceStorage.storageType != PieceStorage.StorageType.Fireplace && player != null && !player.CanSeeAnything)
             {
                 new TextWindow(text: $"It is too dark to use the | {fieldStorage.readableName}...", imageList: new List<Texture2D> { PieceInfo.GetTexture(fieldStorage.name) }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: InputTypes.None, blockInputDuration: 45, priority: 1, animSound: player.world.DialogueSound);
@@ -1015,6 +1019,12 @@ namespace SonOfRobin
                 foreach (BoardPiece piece in slotPieces)
                 { slot.AddPiece(piece); }
             }
+        }
+
+        public static Inventory GetTopInventory()
+        {
+            var inventoryScene = GetTopSceneOfType(typeof(Inventory));
+            return inventoryScene == null ? null : (Inventory)inventoryScene;
         }
 
         public override void Draw()

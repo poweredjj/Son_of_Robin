@@ -364,7 +364,6 @@ namespace SonOfRobin
 
                     case TaskName.LoadGameNow:
                         {
-                            Scene.RemoveAllScenesOfType(typeof(Inventory));
                             SonOfRobinGame.SmallProgressBar.TurnOff(); // in case there was a progress bar (sleeping, etc.)
                             Sound.StopAll(); // no point in playing any sounds here - loading process glitches sound for a while
                             new LoaderSaver(saveMode: false, saveSlotName: (string)this.ExecuteHelper);
