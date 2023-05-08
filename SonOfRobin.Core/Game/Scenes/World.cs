@@ -1088,6 +1088,8 @@ namespace SonOfRobin
 
         private void ProcessOneNonPlant(BoardPiece piece)
         {
+            if (piece.maxAge > 0) piece.GrowOlder(timeDelta: 1);
+
             if (piece.GetType() == typeof(Animal))
             {
                 Animal nonPlant = (Animal)piece;
