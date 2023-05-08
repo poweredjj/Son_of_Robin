@@ -43,23 +43,21 @@ namespace SonOfRobin
             this.LastSmartCraftReducedIngredientCount = 0;
         }
 
-        public void AddRecipe(Craft.Recipe recipe, int craftCount = 1)
+        public void AddRecipe(Craft.Recipe recipe)
         {
-            if (craftCount < 1) throw new ArgumentException($"craftCount ({craftCount}) is less than 1");
-
-            this.TotalNoOfCrafts += craftCount;
+            this.TotalNoOfCrafts++;
 
             {
                 string id = recipe.id;
                 if (!this.craftedRecipes.ContainsKey(id)) this.craftedRecipes[id] = 0;
-                this.craftedRecipes[id] += craftCount;
+                this.craftedRecipes[id]++;
             }
 
             {
                 PieceTemplate.Name craftedPiece = recipe.pieceToCreate;
                 if (!this.craftedPieces.ContainsKey(craftedPiece)) this.craftedPieces[craftedPiece] = 0;
-                this.craftedPieces[craftedPiece] += craftCount;
-                this.CraftedPiecesTotal += craftCount;
+                this.craftedPieces[craftedPiece] += recipe.amountToCreate;
+                this.CraftedPiecesTotal += recipe.amountToCreate;
             }
 
             foreach (var kvp in recipe.ingredients)
@@ -68,8 +66,8 @@ namespace SonOfRobin
                 int ingredientCount = kvp.Value;
 
                 if (!this.usedIngredients.ContainsKey(ingredientName)) this.usedIngredients[ingredientName] = 0;
-                this.usedIngredients[ingredientName] += ingredientCount * craftCount;
-                this.UsedIngredientsTotal += ingredientCount * craftCount;
+                this.usedIngredients[ingredientName] += ingredientCount;
+                this.UsedIngredientsTotal += ingredientCount;
             }
         }
 
