@@ -416,7 +416,7 @@ namespace SonOfRobin
                         new VirtButton(name: VButName.ZoomOut, label: "ZOOM\nOUT", labelTexture: TextureBank.GetTexture("input/VirtButton/zoom_out"), bgColorPressed: Color.Orange, bgColorReleased: Color.White, textColor: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size, switchButton: true, activeCoupledObj: preferences, activeCoupledVarName: "zoomedOut", isHighlighted: false);
 
                         xPos += xShift;
-                        new VirtButton(name: VButName.Sprint, labelTexture: TextureBank.GetTexture("input/VirtButton/sprint"), label: "SPRINT", bgColorPressed: Color.Red, bgColorReleased: Color.White, textColor: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size, isHighlighted: false);
+                        new VirtButton(name: VButName.Sprint, label: "SPRINT", labelTexture: TextureBank.GetTexture("input/VirtButton/sprint"), bgColorPressed: Color.Red, bgColorReleased: Color.White, textColor: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size, isHighlighted: false);
                         yPos += yShift;
 
                         new VirtButton(name: VButName.Interact, label: "INTERACT", labelTexture: TextureBank.GetTexture("input/VirtButton/interact"), bgColorPressed: Color.LightGreen, bgColorReleased: Color.White, textColor: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size, isHighlighted: false);
@@ -474,7 +474,7 @@ namespace SonOfRobin
 
                         new VirtButton(name: VButName.Return, label: "RETURN", labelTexture: TextureBank.GetTexture("input/VirtButton/return"), bgColorPressed: Color.LightGreen, bgColorReleased: Color.White, textColor: Color.White, posX0to1: 0.06f, posY0to1: yPos, width0to1: size, height0to1: size);
 
-                        new VirtButton(name: VButName.InvDragSingle, label: "DRAG\nSINGLE", bgColorPressed: Color.LightGreen, bgColorReleased: Color.White, textColor: Color.White, posX0to1: 0.94f, posY0to1: yPos, width0to1: size, height0to1: size, switchButton: true);
+                        new VirtButton(name: VButName.InvDragSingle, label: "DRAG\nSINGLE", labelTexture: TextureBank.GetTexture("input/VirtButton/drag_single"), bgColorPressed: Color.LightGreen, bgColorReleased: Color.White, textColor: Color.White, posX0to1: 0.94f, posY0to1: yPos, width0to1: size, height0to1: size, switchButton: true);
 
                         new VirtButton(name: VButName.InvSort, label: "SORT", labelTexture: TextureBank.GetTexture("input/VirtButton/sort"), bgColorPressed: Color.CornflowerBlue, bgColorReleased: Color.White, textColor: Color.White, posX0to1: 0.94f, posY0to1: 0.89f, width0to1: size, height0to1: size);
                         return;
@@ -498,13 +498,13 @@ namespace SonOfRobin
                         float xPos = 0.94f;
                         float yPos = 0.32f;
 
-                        new VirtButton(name: VButName.ZoomOut, label: "ZOOM\nOUT", bgColorPressed: Color.Orange, bgColorReleased: Color.White, textColor: Color.White, posX0to1: 0.85f, posY0to1: 0.12f, width0to1: size, height0to1: size, switchButton: true, activeCoupledObj: preferences, activeCoupledVarName: "zoomedOut", isHighlighted: false);
+                        new VirtButton(name: VButName.ZoomOut, label: "ZOOM\nOUT", labelTexture: TextureBank.GetTexture("input/VirtButton/zoom_out"), bgColorPressed: Color.Orange, bgColorReleased: Color.White, textColor: Color.White, posX0to1: 0.85f, posY0to1: 0.12f, width0to1: size, height0to1: size, switchButton: true, activeCoupledObj: preferences, activeCoupledVarName: "zoomedOut", isHighlighted: false);
 
-                        new VirtButton(name: VButName.Return, label: "CANCEL", bgColorPressed: Color.Red, bgColorReleased: Color.White, textColor: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
+                        new VirtButton(name: VButName.Return, label: "CANCEL", labelTexture: TextureBank.GetTexture("input/VirtButton/return"), bgColorPressed: Color.Red, bgColorReleased: Color.White, textColor: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
 
                         xPos -= xShift;
 
-                        new VirtButton(name: VButName.Confirm, label: "PLACE", bgColorPressed: Color.LightGreen, bgColorReleased: Color.White, textColor: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size, isHighlighted: false);
+                        new VirtButton(name: VButName.Confirm, label: "PLACE", labelTexture: TextureBank.GetTexture("input/VirtButton/check_mark"), bgColorPressed: Color.LightGreen, bgColorReleased: Color.White, textColor: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size, isHighlighted: false);
 
                         return;
                     }
@@ -521,7 +521,7 @@ namespace SonOfRobin
 
                         xPos += xShift * 2;
 
-                        new VirtButton(name: VButName.ZoomOut, label: "ZOOM\nOUT", bgColorPressed: Color.Orange, bgColorReleased: Color.White, textColor: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size, switchButton: true, activeCoupledObj: preferences, activeCoupledVarName: "zoomedOut", isHighlighted: false);
+                        new VirtButton(name: VButName.ZoomOut, label: "ZOOM\nOUT", labelTexture: TextureBank.GetTexture("input/VirtButton/zoom_out"), bgColorPressed: Color.Orange, bgColorReleased: Color.White, textColor: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size, switchButton: true, activeCoupledObj: preferences, activeCoupledVarName: "zoomedOut", isHighlighted: false);
 
                         // left side
                         new VirtButton(name: VButName.PauseMenu, label: "MENU", labelTexture: TextureBank.GetTexture("input/VirtButton/pause_menu"), bgColorPressed: Color.Yellow, bgColorReleased: Color.White, textColor: Color.White, posX0to1: 0.06f, posY0to1: 0.12f, width0to1: size, height0to1: size);
@@ -541,11 +541,11 @@ namespace SonOfRobin
 
                         xPos += xShift;
 
-                        new VirtButton(name: VButName.MapCenterPlayer, label: "GO TO\nPLAYER", bgColorPressed: Color.LightGreen, bgColorReleased: Color.White, textColor: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
+                        new VirtButton(name: VButName.MapCenterPlayer, label: "GO TO\nPLAYER", labelTexture: TextureBank.GetTexture("input/VirtButton/go_to_player"), bgColorPressed: Color.LightGreen, bgColorReleased: Color.White, textColor: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
 
                         xPos += xShift;
 
-                        new VirtButton(name: VButName.MapToggleMarker, label: "TOGGLE\nMARKER", bgColorPressed: Color.LightGreen, bgColorReleased: Color.White, textColor: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
+                        new VirtButton(name: VButName.MapToggleMarker, label: "TOGGLE\nMARKER", labelTexture: TextureBank.GetTexture("input/VirtButton/create_marker"), bgColorPressed: Color.LightGreen, bgColorReleased: Color.White, textColor: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
 
                         return;
                     }
@@ -597,7 +597,8 @@ namespace SonOfRobin
                         float xPos = 0.94f;
                         float yPos = 0.85f;
 
-                        new VirtButton(name: VButName.Confirm, label: "CONFIRM", bgColorPressed: Color.LightGreen, bgColorReleased: Color.White, textColor: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
+                        new VirtButton(name: VButName.Confirm, label: "CONFIRM", labelTexture: TextureBank.GetTexture("input/VirtButton/check_mark"), bgColorPressed: Color.LightGreen, bgColorReleased: Color.White, textColor: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
+
                         new VirtButton(name: VButName.Return, label: "hidden\nstart", bgColorPressed: Color.LightGreen, bgColorReleased: Color.White, textColor: Color.White, posX0to1: 0.05f, posY0to1: 0.1f, width0to1: size, height0to1: size, hidden: true);
 
                         return;
@@ -610,7 +611,7 @@ namespace SonOfRobin
                         float xPos = 0.06f;
                         float yPos = 0.85f;
 
-                        new VirtButton(name: VButName.Return, label: "SKIP", bgColorPressed: Color.LightGreen, bgColorReleased: Color.White, textColor: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
+                        new VirtButton(name: VButName.Return, label: "SKIP", labelTexture: TextureBank.GetTexture("input/VirtButton/skip"), bgColorPressed: Color.LightGreen, bgColorReleased: Color.White, textColor: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
 
                         return;
                     }
@@ -621,8 +622,9 @@ namespace SonOfRobin
 
                         float yPos = 0.85f;
 
-                        new VirtButton(name: VButName.Return, label: "SKIP", bgColorPressed: Color.LightGreen, bgColorReleased: Color.White, textColor: Color.White, posX0to1: 0.06f, posY0to1: yPos, width0to1: size, height0to1: size);
-                        new VirtButton(name: VButName.Confirm, label: "CONFIRM", bgColorPressed: Color.LightGreen, bgColorReleased: Color.White, textColor: Color.White, posX0to1: 0.94f, posY0to1: yPos, width0to1: size, height0to1: size);
+                        new VirtButton(name: VButName.Return, label: "SKIP", labelTexture: TextureBank.GetTexture("input/VirtButton/skip"), bgColorPressed: Color.LightGreen, bgColorReleased: Color.White, textColor: Color.White, posX0to1: 0.06f, posY0to1: yPos, width0to1: size, height0to1: size);
+
+                        new VirtButton(name: VButName.Confirm, label: "CONFIRM", labelTexture: TextureBank.GetTexture("input/VirtButton/check_mark"), bgColorPressed: Color.LightGreen, bgColorReleased: Color.White, textColor: Color.White, posX0to1: 0.94f, posY0to1: yPos, width0to1: size, height0to1: size);
 
                         return;
                     }
