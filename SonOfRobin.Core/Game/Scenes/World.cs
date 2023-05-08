@@ -1363,7 +1363,7 @@ namespace SonOfRobin
             this.DrawLightAndDarkness(lightSprites);
 
             // drawing field tips
-            if (Preferences.ShowControlTips && Preferences.showFieldControlTips)
+            if (Preferences.showFieldControlTips)
             {
                 SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
                 FieldTip.DrawFieldTips(world: this);

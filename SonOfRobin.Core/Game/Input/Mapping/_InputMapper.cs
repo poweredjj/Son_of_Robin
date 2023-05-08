@@ -354,8 +354,8 @@ namespace SonOfRobin
 
                 if (triggerAsButton && this.GetTriggerForce(buttonAsTrigger: false) > 0.5f) return true;
 
-                foreach (VButName vbutton in this.virtualButtons)
-                { if (VirtButton.IsButtonDown(vbutton)) return true; }
+                foreach (VButName vButName in this.virtualButtons)
+                { if (VirtButton.IsButtonDown(vButName)) return true; }
 
                 return false;
             }
@@ -410,8 +410,8 @@ namespace SonOfRobin
                     }
                 }
 
-                foreach (VButName vbutton in this.virtualButtons)
-                { if (VirtButton.HasButtonBeenPressed(vbutton)) return true; }
+                foreach (VButName vButName in this.virtualButtons)
+                { if (VirtButton.HasButtonBeenPressed(vButName)) return true; }
 
                 if (triggerAsButton && this.TriggerStateLastFrameExists && this.TriggerStateLastFrame <= 0.5f && this.GetTriggerForce(buttonAsTrigger: false) > 0.5f) return true;
 
@@ -470,8 +470,8 @@ namespace SonOfRobin
                     }
                 }
 
-                foreach (VButName vbutton in this.virtualButtons)
-                { if (VirtButton.HasButtonBeenReleased(vbutton)) return true; }
+                foreach (VButName vButName in this.virtualButtons)
+                { if (VirtButton.HasButtonBeenReleased(vButName)) return true; }
 
                 if (triggerAsButton && this.TriggerStateLastFrameExists && this.TriggerStateLastFrame > 0.5f && (this.GetTriggerForce(buttonAsTrigger: false) <= 0.5f)) return true;
 
@@ -579,9 +579,13 @@ namespace SonOfRobin
                     switch (Input.currentControlType)
                     {
                         case Input.ControlType.Touch:
+
+                            foreach (VButName vButName in this.virtualButtons)
                             {
-                                break;
+                                Texture2D labelTexture = VirtButton.GetLabelTexture(vButName);
+                                if (labelTexture != null) textureList.Add(labelTexture);
                             }
+                            break;
 
                         case Input.ControlType.Gamepad:
                             foreach (Buttons button in gamepadButtons)

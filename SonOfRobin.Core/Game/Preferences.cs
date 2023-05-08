@@ -521,13 +521,11 @@ namespace SonOfRobin
 
                 menuScale = 1.25f;
                 showControlTips = false;
-                showFieldControlTips = false;
                 enableTouchJoysticks = true;
             }
             else
             {
                 showControlTips = true;
-                showFieldControlTips = true;
             }
 
             if (!debugEnableTestCharacters && (SonOfRobinGame.ThisIsHomeMachine || SonOfRobinGame.ThisIsWorkMachine)) debugEnableTestCharacters = true;

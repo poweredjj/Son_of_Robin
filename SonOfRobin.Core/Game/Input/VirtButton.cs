@@ -50,6 +50,7 @@ namespace SonOfRobin
         private readonly float height0to1;
 
         private readonly string label;
+        private readonly Texture2D labelTexture;
 
         private readonly Color bgColorPressed;
         private readonly Color bgColorReleased;
@@ -65,13 +66,14 @@ namespace SonOfRobin
         private readonly Object activeCoupledObj;
         private readonly string activeCoupledVarName;
 
-        public VirtButton(VButName name, string label, float posX0to1, float posY0to1, float width0to1, float height0to1, Color bgColorPressed, Color bgColorReleased, Color textColor, bool switchButton = false, bool hidden = false,
-            Object activeCoupledObj = null, string activeCoupledVarName = "", bool isHighlighted = true, string highlightCoupledVarName = null, Object highlightCoupledObj = null, bool checksTouchFromPrevLayout = false)
+        public VirtButton(VButName name, string label, float posX0to1, float posY0to1, float width0to1, float height0to1, Color bgColorPressed, Color bgColorReleased, Color textColor,
+            Texture2D labelTexture = null, bool switchButton = false, bool hidden = false, Object activeCoupledObj = null, string activeCoupledVarName = "", bool isHighlighted = true, string highlightCoupledVarName = null, Object highlightCoupledObj = null, bool checksTouchFromPrevLayout = false)
         {
             this.frameCreated = SonOfRobinGame.CurrentUpdate;
             this.checksTouchFromPrevLayout = checksTouchFromPrevLayout;
 
             this.label = label;
+            this.labelTexture = labelTexture;
             this.bgColorPressed = bgColorPressed;
             this.bgColorReleased = bgColorReleased;
             this.textColor = textColor;
@@ -176,6 +178,12 @@ namespace SonOfRobin
         {
             if (!Input.InputActive || !buttonsByName.ContainsKey(buttonName)) return false;
             return buttonsByName[buttonName].IsActive;
+        }
+
+        public static Texture2D GetLabelTexture(VButName buttonName)
+        {
+            if (!buttonsByName.ContainsKey(buttonName)) return null;
+            return buttonsByName[buttonName].labelTexture;
         }
 
         public static void ButtonHighlightOnNextFrame(VButName buttonName)
@@ -295,19 +303,26 @@ namespace SonOfRobin
             Rectangle wholeLabelRect = gfxRect;
             wholeLabelRect.Inflate(-wholeLabelRect.Width * 0.08f, -wholeLabelRect.Height * 0.2f);
 
-            var labelLines = this.label.Split('\n');
-            int labelRectHeight = wholeLabelRect.Height / labelLines.Length;
-            int labelRectYOffset = 0;
-
-            SpriteFont font = this.Font;
-
-            foreach (string currentLabel in labelLines)
+            if (this.labelTexture == null)
             {
-                Rectangle currentLabelRect = new Rectangle(x: wholeLabelRect.X, y: wholeLabelRect.Y + labelRectYOffset, width: wholeLabelRect.Width, height: labelRectHeight);
+                var labelLines = this.label.Split('\n');
+                int labelRectHeight = wholeLabelRect.Height / labelLines.Length;
+                int labelRectYOffset = 0;
 
-                Helpers.DrawTextInsideRectWithOutline(font: font, text: currentLabel, rectangle: currentLabelRect, color: this.textColor * opacityMultiplier, outlineColor: new Color(0, 0, 0, 128), outlineSize: 1, alignX: Helpers.AlignX.Center, alignY: Helpers.AlignY.Center, drawTestRect: false);
+                SpriteFont font = this.Font;
 
-                labelRectYOffset += labelRectHeight;
+                foreach (string currentLabel in labelLines)
+                {
+                    Rectangle currentLabelRect = new Rectangle(x: wholeLabelRect.X, y: wholeLabelRect.Y + labelRectYOffset, width: wholeLabelRect.Width, height: labelRectHeight);
+
+                    Helpers.DrawTextInsideRectWithOutline(font: font, text: currentLabel, rectangle: currentLabelRect, color: this.textColor * opacityMultiplier, outlineColor: new Color(0, 0, 0, 128), outlineSize: 1, alignX: Helpers.AlignX.Center, alignY: Helpers.AlignY.Center, drawTestRect: false);
+
+                    labelRectYOffset += labelRectHeight;
+                }
+            }
+            else // labelTexture, instead of label text
+            {
+                Helpers.DrawTextureInsideRect(texture: this.labelTexture, rectangle: wholeLabelRect, color: Color.White * opacityMultiplier);
             }
         }
     }
