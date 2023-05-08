@@ -931,24 +931,6 @@ namespace SonOfRobin
         {
             if (this.demoMode || this.CineMode) return;
 
-            if (!this.BuildMode && InputMapper.HasBeenPressed(InputMapper.Action.WorldPauseMenu))
-            {
-                ManagedSoundInstance.PauseAll();
-                this.soundPaused = true;
-
-                MenuTemplate.CreateMenuFromTemplate(templateName: MenuTemplate.Name.Pause);
-                return;
-            }
-
-            if (InputMapper.HasBeenPressed(InputMapper.Action.WorldStatsMenu))
-            {
-                ManagedSoundInstance.PauseAll();
-                this.soundPaused = true;
-
-                MenuTemplate.CreateMenuFromTemplate(templateName: MenuTemplate.Name.Stats);
-                return;
-            }
-
             // analog movement (left stick)
             this.analogMovementLeftStick = InputMapper.Analog(InputMapper.Action.WorldWalk);
             this.analogMovementLeftStick *= 4;
@@ -984,6 +966,24 @@ namespace SonOfRobin
             }
 
             if (!this.Player.alive || this.Player.activeState != BoardPiece.State.PlayerControlledWalking) return;
+
+            if (!this.BuildMode && InputMapper.HasBeenPressed(InputMapper.Action.WorldPauseMenu))
+            {
+                ManagedSoundInstance.PauseAll();
+                this.soundPaused = true;
+
+                MenuTemplate.CreateMenuFromTemplate(templateName: MenuTemplate.Name.Pause);
+                return;
+            }
+
+            if (!this.BuildMode && InputMapper.HasBeenPressed(InputMapper.Action.WorldStatsMenu))
+            {
+                ManagedSoundInstance.PauseAll();
+                this.soundPaused = true;
+
+                MenuTemplate.CreateMenuFromTemplate(templateName: MenuTemplate.Name.Stats);
+                return;
+            }
 
             if (!this.Player.buffEngine.HasBuff(BuffEngine.BuffType.Sprint) && !this.Player.buffEngine.HasBuff(BuffEngine.BuffType.SprintCooldown))
             {
