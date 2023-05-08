@@ -235,18 +235,13 @@ namespace SonOfRobin
         {
             Dictionary<string, Object> spriteDataDict = new Dictionary<string, object>
             {
-                { "frame_id", this.frame.id },
                 { "posX", (int)this.position.X },
                 { "posY", (int)this.position.Y },
                 { "animPackage", this.animPackage },
                 { "animSize", this.animSize },
                 { "animName", this.animName },
                 { "colRect", this.colRect },
-                { "currentFrameIndex", this.currentFrameIndex },
-                { "currentFrameTimeLeft", this.currentFrameTimeLeft },
-                { "rotation", this.rotation },
                 { "opacity", this.opacity },
-                { "orientation", this.orientation },
                 { "gridGroups", this.gridGroups },
                 { "hasBeenDiscovered", this.hasBeenDiscovered },
                 { "allowedTerrain", this.allowedTerrain.Serialize() },
@@ -262,16 +257,12 @@ namespace SonOfRobin
             var spriteDict = (Dictionary<string, Object>)spriteData;
 
             this.position = new Vector2((int)(Int64)spriteDict["posX"], (int)(Int64)spriteDict["posY"]);
-            this.orientation = (Orientation)(Int64)spriteDict["orientation"];
-            this.rotation = (float)(double)spriteDict["rotation"];
             this.opacity = (float)(double)spriteDict["opacity"];
             this.animPackage = (AnimData.PkgName)(Int64)spriteDict["animPackage"];
             this.animSize = (byte)(Int64)spriteDict["animSize"];
             this.animName = (string)spriteDict["animName"];
-            this.currentFrameIndex = (byte)(Int64)spriteDict["currentFrameIndex"];
-            this.currentFrameTimeLeft = (int)(Int64)spriteDict["currentFrameTimeLeft"];
-            this.AssignFrameById((string)spriteDict["frame_id"]);
-            if (spriteDict.ContainsKey("colRect")) this.colRect = (Rectangle)spriteDict["colRect"]; // to ensure that colRect will be correct
+            this.AssignFrame(checkForCollision: false);
+            this.colRect = (Rectangle)spriteDict["colRect"];
             this.gridGroups = (List<Cell.Group>)spriteDict["gridGroups"];
             this.hasBeenDiscovered = (bool)spriteDict["hasBeenDiscovered"];
             this.allowedTerrain = AllowedTerrain.Deserialize(spriteDict["allowedTerrain"]);
@@ -704,23 +695,6 @@ namespace SonOfRobin
 
             // in case of collision - reverting to a previous, non-colliding colRect
             if (this.blocksMovement && checkForCollision && this.CheckForCollision()) this.colRect = colRectCopy;
-        }
-
-        public void AssignFrameById(string frameId)
-        // use only when loading game - does not check for collisions
-        {
-            try
-            {
-                this.frame = AnimData.frameById[frameId];
-            }
-            catch (KeyNotFoundException)
-            {
-                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Cannot use frame '{frameId}' for {this.boardPiece.readableName} - using default.", color: Color.Orange);
-                return;
-            }
-
-            this.currentFrameTimeLeft = this.frame.duration;
-            this.UpdateRects();
         }
 
         public void RewindAnim()
