@@ -112,7 +112,7 @@ namespace SonOfRobin
                         var worldScaleList = new List<Object> { 0.75f, 1f, 1.25f, 1.5f, 2f };
                         if (Preferences.debugEnableExtremeZoomLevels)
                         {
-                            worldScaleList.InsertRange(0, new List<Object> { 0.125f, 0.25f });
+                            worldScaleList.InsertRange(0, new List<Object> { 0.125f, 0.25f, 0.5f });
                             worldScaleList.AddRange(new List<Object> { 2.5f, 3f, 3.5f });
                         }
                         new Selector(menu: menu, name: "world scale", valueList: worldScaleList, targetObj: preferences, propertyName: "WorldScale");
