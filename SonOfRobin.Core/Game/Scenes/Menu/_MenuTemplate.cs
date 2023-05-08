@@ -109,11 +109,11 @@ namespace SonOfRobin
                     {
                         Menu menu = new Menu(templateName: templateName, name: "SCALE", blocksUpdatesBelow: false, canBeClosedManually: true, closingTask: Scheduler.TaskName.SavePrefs, templateExecuteHelper: executeHelper);
 
-                        var worldScaleList = new List<Object> { 0.5f, 0.75f, 1f, 1.25f, 1.5f, 2f };
-                        if (SonOfRobinGame.ThisIsWorkMachine || SonOfRobinGame.ThisIsHomeMachine)
+                        var worldScaleList = new List<Object> { 0.75f, 1f, 1.25f, 1.5f, 2f };
+                        if (Preferences.debugEnableExtremeZoomLevels)
                         {
                             worldScaleList.InsertRange(0, new List<Object> { 0.125f, 0.25f });
-                            worldScaleList.AddRange(new List<Object> { 2.5f, 3f });
+                            worldScaleList.AddRange(new List<Object> { 2.5f, 3f, 3.5f });
                         }
                         new Selector(menu: menu, name: "world scale", valueList: worldScaleList, targetObj: preferences, propertyName: "WorldScale");
 
@@ -696,6 +696,7 @@ namespace SonOfRobin
                         new Selector(menu: menu, name: "save everywhere", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugSaveEverywhere", rebuildsAllMenus: true);
                         if (SonOfRobinGame.platform != Platform.Mobile) new Selector(menu: menu, name: "vertical sync", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "VSync", rebuildsMenu: true);
                         new Selector(menu: menu, name: "enable test characters", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugEnableTestCharacters", rebuildsAllMenus: true);
+                        new Selector(menu: menu, name: "enable extreme zoom levels", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugEnableExtremeZoomLevels", rebuildsAllMenus: true);
                         new Selector(menu: menu, name: "create missing pieces", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugCreateMissingPieces");
                         new Selector(menu: menu, name: "god mode", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "DebugGodMode", rebuildsMenu: true);
                         new Selector(menu: menu, name: "show whole map", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "DebugShowWholeMap");
