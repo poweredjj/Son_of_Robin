@@ -1077,19 +1077,6 @@ namespace SonOfRobin
             return allSprites;
         }
 
-        public bool SpecifiedPiecesCountIsMet(Dictionary<PieceTemplate.Name, int> piecesToCount)
-        {
-            var countByName = this.CountSpecifiedPieces(piecesToCount.Keys.ToList());
-
-            foreach (var kvp in piecesToCount)
-            {
-                PieceTemplate.Name pieceName = kvp.Key;
-                if (countByName[pieceName] < kvp.Value) return false;
-            }
-
-            return true;
-        }
-
         public Dictionary<PieceTemplate.Name, int> CountSpecifiedPieces(List<PieceTemplate.Name> nameList)
         {
             var countByName = new Dictionary<PieceTemplate.Name, int>();

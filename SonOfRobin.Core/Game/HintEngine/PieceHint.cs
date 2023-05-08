@@ -250,7 +250,7 @@ namespace SonOfRobin
             }
 
             // field pieces anywhere
-            if (this.existingPiecesCount != null && !player.world.Grid.SpecifiedPiecesCountIsMet(this.existingPiecesCount)) return false;
+            if (this.existingPiecesCount != null && !player.world.SpecifiedPiecesCountIsMet(this.existingPiecesCount)) return false;
 
             return true;
         }

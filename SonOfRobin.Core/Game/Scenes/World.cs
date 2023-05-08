@@ -1313,6 +1313,17 @@ namespace SonOfRobin
             return vector2;
         }
 
+        public bool SpecifiedPiecesCountIsMet(Dictionary<PieceTemplate.Name, int> piecesToCount)
+        {
+            foreach (var kvp in piecesToCount)
+            {
+                PieceTemplate.Name pieceName = kvp.Key;
+                if (this.pieceCountByName[pieceName] < kvp.Value) return false;
+            }
+
+            return true;
+        }
+
         public override void RenderToTarget()
         {
             // preparing a list of sprites, that cast shadows

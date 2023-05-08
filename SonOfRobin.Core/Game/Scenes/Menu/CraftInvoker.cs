@@ -43,11 +43,42 @@ namespace SonOfRobin
 
         private readonly Craft.Recipe recipe;
         private readonly List<PieceStorage> storageList;
+        private readonly List<InvokerDrawParams> drawParamsList;
 
-        public CraftInvoker(Menu menu, string name, Scheduler.TaskName taskName, Craft.Recipe recipe, List<PieceStorage> storageList, Object executeHelper = null, bool closesMenu = false, bool rebuildsMenu = false) : base(menu: menu, name: name, taskName: taskName, executeHelper: executeHelper, closesMenu: closesMenu, rebuildsMenu: rebuildsMenu, playSound: false)
+        public CraftInvoker(Menu menu, string name, Scheduler.TaskName taskName, Craft.Recipe recipe, List<PieceStorage> storageList, Object executeHelper = null, bool closesMenu = false, bool rebuildsMenu = true) : base(menu: menu, name: name, taskName: taskName, executeHelper: executeHelper, closesMenu: closesMenu, rebuildsMenu: rebuildsMenu, playSound: false)
         {
             this.recipe = recipe;
             this.storageList = storageList;
+            this.drawParamsList = new List<InvokerDrawParams>();
+
+            bool canBeCrafted = recipe.CheckIfStorageContainsAllIngredients(storageList);
+
+            int mainPieceOwnedCount = PieceInfo.GetInfo(recipe.pieceToCreate).canBePickedUp ?
+                PieceStorage.CountPieceOccurencesInMultipleStorages(storageList: this.storageList, pieceName: recipe.pieceToCreate) :
+                this.storageList[0].world.pieceCountByName[recipe.pieceToCreate];
+
+            this.drawParamsList.Add(new InvokerDrawParams(
+                isMain: true,
+                name: recipe.pieceToCreate,
+                text: $"own\n{ mainPieceOwnedCount }",
+                counter: recipe.amountToCreate,
+                bgColor: canBeCrafted ? Color.Green : Color.Red));
+
+            this.drawParamsList.Add(new InvokerDrawParams(isEmpty: true));
+
+            foreach (var kvp in this.recipe.ingredients)
+            {
+                var pieceName = kvp.Key;
+                var countNeeded = kvp.Value;
+                int pieceCount = PieceStorage.CountPieceOccurencesInMultipleStorages(storageList: this.storageList, pieceName: pieceName);
+
+                this.drawParamsList.Add(new InvokerDrawParams(
+                    isMain: false,
+                    name: pieceName,
+                    text: $"own\n{pieceCount}",
+                    counter: countNeeded,
+                    bgColor: pieceCount >= countNeeded ? Color.Blue * 0.8f : Color.Red));
+            }
         }
 
         public override void Invoke()
@@ -78,34 +109,10 @@ namespace SonOfRobin
 
             // making a set of draw data structs
 
-            var drawParamsList = new List<InvokerDrawParams> { };
-
-            drawParamsList.Add(new InvokerDrawParams(
-                isMain: true,
-                name: recipe.pieceToCreate,
-                text: $"own\n{ PieceStorage.CountPieceOccurencesInMultipleStorages(storageList: this.storageList, pieceName: recipe.pieceToCreate)}",
-                counter: recipe.amountToCreate,
-                bgColor: canBeCrafted ? Color.Green : Color.Red));
-
-            drawParamsList.Add(new InvokerDrawParams(isEmpty: true));
-
-            foreach (var kvp in recipe.ingredients)
-            {
-                var pieceName = kvp.Key;
-                var countNeeded = kvp.Value;
-                int pieceCount = PieceStorage.CountPieceOccurencesInMultipleStorages(storageList: this.storageList, pieceName: pieceName);
-
-                drawParamsList.Add(new InvokerDrawParams(
-                    isMain: false,
-                    name: pieceName,
-                    text: $"own\n{pieceCount}",
-                    counter: countNeeded,
-                    bgColor: pieceCount >= countNeeded ? Color.Blue * 0.8f : Color.Red));
-            }
 
             // calculating rects
-            int rectWidth = (int)(Math.Min(innerEntryRect.Width / ((float)drawParamsList.Count - 0.5f), innerEntryRect.Height * 2));
-            int margin = innerEntryRect.Width / drawParamsList.Count > rectWidth ? (int)innerMargin * 3 : (int)innerMargin;
+            int rectWidth = (int)(Math.Min(innerEntryRect.Width / ((float)this.drawParamsList.Count - 0.5f), innerEntryRect.Height * 2));
+            int margin = innerEntryRect.Width / this.drawParamsList.Count > rectWidth ? (int)innerMargin * 3 : (int)innerMargin;
 
             rectWidth -= margin;
             Rectangle pieceRect;
@@ -117,9 +124,9 @@ namespace SonOfRobin
 
             int rectX = 0;
 
-            for (int i = 0; i < drawParamsList.Count; i++)
+            for (int i = 0; i < this.drawParamsList.Count; i++)
             {
-                InvokerDrawParams drawParams = drawParamsList[i];
+                InvokerDrawParams drawParams = this.drawParamsList[i];
                 if (drawParams.isEmpty)
                 {
                     rectX += (int)(rectWidth * 0.5f);
