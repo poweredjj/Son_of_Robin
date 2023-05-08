@@ -102,7 +102,7 @@ namespace SonOfRobin
 
                 Seed seeds = (Seed)seedsPiece;
                 seeds.PlantToGrow = this.name;
-            }  
+            }
         }
 
         public bool DropFruit()
@@ -125,7 +125,7 @@ namespace SonOfRobin
             Sound.QuickPlay(SoundData.Name.DropPlant);
 
             this.PieceStorage.DropPiecesFromSlot(slot: occupiedSlots[0], addMovement: true);
-            if (this.PieceStorage.OccupiedSlotsCount == 0) this.sprite.AssignNewName("default"); // swapping from "has_fruits", if plant has such animation
+            if (this.alive && this.PieceStorage.OccupiedSlotsCount == 0) this.sprite.AssignNewName("default"); // swapping from "has_fruits", if the plant has such animation
 
             return true;
         }
