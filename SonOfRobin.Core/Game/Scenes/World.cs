@@ -736,12 +736,7 @@ namespace SonOfRobin
                         if (initialCreation && newBoardPiece.GetType() == typeof(Plant) && this.random.Next(2) == 0)
                         {
                             Plant newPlant = (Plant)newBoardPiece;
-                            if (newPlant.fruitEngine != null)
-                            {
-                                newPlant.fruitEngine.AddFruit();
-                                newPlant.Mass = newPlant.reproduction.massNeeded / 2;
-                            }
-                            else newPlant.Mass = newPlant.adultSizeMass; // to have some fully sized plants (small ones have non-existent yield)
+                            newPlant.SimulateUnprocessedGrowth();
                         }
 
                         piecesCreated++;

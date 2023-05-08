@@ -82,7 +82,7 @@ namespace SonOfRobin
             if (this.FruitCanBeAdded) this.AddFruit();
         }
 
-        public void AddFruit()
+        private void AddFruit()
         {
             BoardPiece fruitPiece = PieceTemplate.Create(templateName: this.fruitName, world: this.plant.world);
 

@@ -91,6 +91,11 @@ namespace SonOfRobin
             if (this.fruitEngine != null) this.fruitEngine.Deserialize(pieceData);
         }
 
+        public void SimulateUnprocessedGrowth() // for plants that are placed during world creation
+        {
+            this.lastFrameProcessed -= 60 * 60 * this.world.random.Next(1, 10);
+        }
+
         public void DropSeeds()
         {
             if (this.dropSeedChance == 0 || this.IsBurning) return;
