@@ -30,6 +30,7 @@ namespace SonOfRobin
         public readonly FruitEngine fruitEngine;
         private int lastFrameProcessed; // for time delta calculation
         public readonly int dropSeedChance;
+        private float bioWear;
 
         public Plant(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, Dictionary<Terrain.Name, byte> bestEnvironment, int[] maxMassForSize, string readableName, string description, Category category, float fireAffinity,
             int maxAge, PlantReproductionData reproduction, byte massToBurn, float massTakenMultiplier,
@@ -45,6 +46,7 @@ namespace SonOfRobin
             this.maxExistingNumber = maxExistingNumber;
             this.occupiedFieldWealth = -1f; // to be changed
             this.adultSizeMass = adultSizeMass;
+            this.bioWear = 0; // 0 - 1 valid range
             this.dropSeedChance = dropSeedChance;
             this.fruitEngine = fruitEngine;
             if (this.fruitEngine != null)
@@ -79,6 +81,8 @@ namespace SonOfRobin
             Dictionary<string, Object> pieceData = base.Serialize();
 
             pieceData["plant_massTakenMultiplier"] = this.massTakenMultiplier;
+            pieceData["plant_bioWear"] = this.bioWear;
+
             if (this.fruitEngine != null) this.fruitEngine.Serialize(pieceData);
 
             return pieceData;
@@ -88,7 +92,17 @@ namespace SonOfRobin
         {
             base.Deserialize(pieceData);
             this.massTakenMultiplier = (float)(double)pieceData["plant_massTakenMultiplier"];
+
+            if (pieceData.ContainsKey("plant_bioWear")) this.bioWear = (float)(double)pieceData["plant_bioWear"];
+            else this.bioWear = (float)(double)pieceData["base_bioWear"]; // for compatibility with older saves
+
             if (this.fruitEngine != null) this.fruitEngine.Deserialize(pieceData);
+        }
+
+        private void GrowOlder(int timeDelta)
+        {
+            this.currentAge += timeDelta;
+            this.efficiency = Math.Max(1 - (this.currentAge / (float)this.maxAge) - this.bioWear, 0);
         }
 
         public void DropSeeds()

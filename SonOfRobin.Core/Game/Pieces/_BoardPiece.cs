@@ -101,7 +101,6 @@ namespace SonOfRobin
         private readonly int staysAfterDeath;
         public int maxAge;
         public int currentAge;
-        public float bioWear;
         public float efficiency;
         public float hitPoints;
         public int strength;
@@ -164,7 +163,6 @@ namespace SonOfRobin
             this.alive = true;
             this.maxAge = maxAge == 0 ? 0 : Random.Next((int)(maxAge * 0.4), (int)(maxAge * 1.6));
             this.currentAge = 0;
-            this.bioWear = 0; // 0 - 1 valid range
             this.efficiency = 1; // 0 - 1 valid range
             this.readableName = readableName;
             this.description = description;
@@ -406,7 +404,6 @@ namespace SonOfRobin
                 { "base_mass", this.mass },
                 { "base_alive", this.alive },
                 { "base_maxAge", this.maxAge },
-                { "base_bioWear", this.bioWear },
                 { "base_efficiency", this.efficiency },
                 { "base_activeState", this.activeState },
                 { "base_pieceStorage", this.PieceStorage },
@@ -433,7 +430,6 @@ namespace SonOfRobin
             this.speed = (float)(double)pieceData["base_speed"];
             this.strength = (int)(Int64)pieceData["base_strength"];
             this.maxHitPoints = (float)(double)pieceData["base_maxHitPoints"];
-            this.bioWear = (float)(double)pieceData["base_bioWear"];
             this.efficiency = (float)(double)pieceData["base_efficiency"];
             this.activeState = (State)(Int64)pieceData["base_activeState"];
             this.maxAge = (int)(Int64)pieceData["base_maxAge"];
@@ -473,12 +469,6 @@ namespace SonOfRobin
         {
             this.world.pieceCountByName[this.name]--;
             this.world.pieceCountByClass[this.GetType()]--;
-        }
-
-        public void GrowOlder(int timeDelta)
-        {
-            this.currentAge += timeDelta;
-            this.efficiency = Math.Max(1 - (this.currentAge / (float)this.maxAge) - this.bioWear, 0);
         }
 
         private void SetSpriteSizeByMass()
