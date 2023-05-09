@@ -7,7 +7,7 @@ namespace SonOfRobin
 {
     public class AnimData
     {
-        public const float currentVersion = 1.0000002f; // version number should be incremented with any change of graphics assets
+        public const float currentVersion = 1.0000003f; // version number should be incremented with any change of graphics assets
 
         public static readonly Dictionary<string, AnimFrame> frameById = new Dictionary<string, AnimFrame>(); // needed to access frames directly by id (for loading and saving game)
         public static readonly Dictionary<string, List<AnimFrame>> frameListById = new Dictionary<string, List<AnimFrame>>();
@@ -373,6 +373,7 @@ namespace SonOfRobin
             CoffeeShrub,
             PotionBrown,
             BubbleCraftGreen,
+            ChestCrystal,
         }
 
         public static void AddFrameList(PkgName animPackage, byte animSize, List<AnimFrame> frameList, string animName = "default")
@@ -555,6 +556,26 @@ namespace SonOfRobin
                 };
                 AddFrameList(animPackage: packageName, animSize: 0, animName: "closing", frameList: frameList);
                 AddFrameList(animPackage: packageName, animSize: 0, animName: "closed", frameList: ConvertImageToFrameList(atlasName: "chest_stone", layer: 1, x: 0, y: 0, width: 48, height: 48));
+            }
+            {
+                PkgName packageName = PkgName.ChestCrystal;
+                AddFrameList(animPackage: packageName, animSize: 0, animName: "open",
+                frameList: ConvertImageToFrameList(atlasName: "chest_crystal", layer: 1, x: 0, y: 144, width: 48, height: 48));
+                var frameList = new List<AnimFrame>
+                {
+                    ConvertImageToFrame(atlasName: "chest_crystal", layer: 1, x: 0, y: 48, width: 48, height: 48, duration: 6),
+                    ConvertImageToFrame(atlasName: "chest_crystal", layer: 1, x: 0, y: 96, width: 48, height: 48, duration: 6),
+                    ConvertImageToFrame(atlasName: "chest_crystal", layer: 1, x: 0, y: 144, width: 48, height: 48, duration: 0)
+                };
+                AddFrameList(animPackage: packageName, animSize: 0, animName: "opening", frameList: frameList);
+                frameList = new List<AnimFrame>
+                {
+                    ConvertImageToFrame(atlasName: "chest_crystal", layer: 1, x: 0, y: 96, width: 48, height: 48, duration: 6),
+                    ConvertImageToFrame(atlasName: "chest_crystal", layer: 1, x: 0, y: 48, width: 48, height: 48, duration: 6),
+                    ConvertImageToFrame(atlasName: "chest_crystal", layer: 1, x: 0, y: 0, width: 48, height: 48, duration: 0)
+                };
+                AddFrameList(animPackage: packageName, animSize: 0, animName: "closing", frameList: frameList);
+                AddFrameList(animPackage: packageName, animSize: 0, animName: "closed", frameList: ConvertImageToFrameList(atlasName: "chest_crystal", layer: 1, x: 0, y: 0, width: 48, height: 48));
             }
             {
                 PkgName packageName = PkgName.ChestTreasureBlue;

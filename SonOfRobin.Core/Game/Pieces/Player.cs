@@ -41,6 +41,7 @@ namespace SonOfRobin
         public SleepMode sleepMode;
         public PieceStorage ToolStorage { get; private set; }
         public PieceStorage EquipStorage { get; private set; }
+        public PieceStorage CrystalChestStorage { get; private set; } // one storage shared across all crystal chests
 
         public Player(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, State activeState, int strength, float speed, float maxStamina, float maxHitPoints, float maxFatigue, int craftLevel, float cookingSkill, byte invWidth, byte invHeight, byte toolbarWidth, byte toolbarHeight, float fireAffinity,
             byte animSize = 0, string animName = "default", bool blocksMovement = true, bool ignoresCollisions = false, int destructionDelay = 0, bool floatsOnWater = false, int generation = 0, Yield yield = null, int minDistance = 0, int maxDistance = 100, LightEngine lightEngine = null, PieceSoundPack soundPack = null) :
@@ -80,6 +81,7 @@ namespace SonOfRobin
             this.PieceStorage = new PieceStorage(width: invWidth, height: invHeight, storagePiece: this, storageType: PieceStorage.StorageType.Inventory);
             this.ToolStorage = new PieceStorage(width: toolbarWidth, height: toolbarHeight, storagePiece: this, storageType: PieceStorage.StorageType.Tools, allowedPieceNames: allowedToolbarPieces);
             this.EquipStorage = new PieceStorage(width: 3, height: 3, storagePiece: this, storageType: PieceStorage.StorageType.Equip);
+            this.CrystalChestStorage = new PieceStorage(width: 8, height: 6, storagePiece: this, storageType: PieceStorage.StorageType.Inventory);
             this.ConfigureEquip();
             this.ShootingAngle = -100; // -100 == no real value
             this.shootingPower = 0;
@@ -164,14 +166,14 @@ namespace SonOfRobin
 
                 if (this.ResourcefulCrafter)
                 {
-                    var chestNames = new List<PieceTemplate.Name> { PieceTemplate.Name.ChestWooden, PieceTemplate.Name.ChestStone, PieceTemplate.Name.ChestIron };
+                    var chestNames = new List<PieceTemplate.Name> { PieceTemplate.Name.ChestWooden, PieceTemplate.Name.ChestStone, PieceTemplate.Name.ChestIron, PieceTemplate.Name.ChestCrystal };
 
                     var nearbyPieces = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.ColMovement, mainSprite: this.sprite, distance: 250, compareWithBottom: true);
                     var chestPieces = nearbyPieces.Where(piece => piece.GetType() == typeof(Container) && chestNames.Contains(piece.name));
 
                     foreach (BoardPiece chestPiece in chestPieces)
                     {
-                        craftStorages.Add(chestPiece.PieceStorage);
+                        if (!craftStorages.Contains(chestPiece.PieceStorage)) craftStorages.Add(chestPiece.PieceStorage); // checking to avoid adding shared chest multiple times
 
                         if (chestPiece.visualAid == null || !chestPiece.visualAid.exists)
                         {
@@ -426,6 +428,7 @@ namespace SonOfRobin
             pieceData["player_distanceWalked"] = this.distanceWalked;
             pieceData["player_toolStorage"] = this.ToolStorage.Serialize();
             pieceData["player_equipStorage"] = this.EquipStorage.Serialize();
+            pieceData["player_crystalChest"] = this.CrystalChestStorage.Serialize();
             pieceData["player_LastSteps"] = this.LastSteps.Select(s => new Point((int)s.X, (int)s.Y)).ToList();
 
             return pieceData;
@@ -443,9 +446,10 @@ namespace SonOfRobin
             this.cookingSkill = (float)(double)pieceData["player_cookingSkill"];
             this.craftLevel = (int)(Int64)pieceData["player_craftLevel"];
             this.sleepEngine = (SleepEngine)pieceData["player_sleepEngine"];
-            if (pieceData.ContainsKey("player_distanceWalked")) this.distanceWalked = (float)(double)pieceData["player_distanceWalked"];
+            if (pieceData.ContainsKey("player_distanceWalked")) this.distanceWalked = (float)(double)pieceData["player_distanceWalked"]; // for compatibility with older saves
             this.ToolStorage = PieceStorage.Deserialize(storageData: pieceData["player_toolStorage"], storagePiece: this);
             this.EquipStorage = PieceStorage.Deserialize(storageData: pieceData["player_equipStorage"], storagePiece: this);
+            if (pieceData.ContainsKey("player_crystalChest")) this.CrystalChestStorage = PieceStorage.Deserialize(storageData: pieceData["player_crystalChest"], storagePiece: this); // for compatibility with older saves
             List<Point> lastStepsPointList = (List<Point>)pieceData["player_LastSteps"];
             this.LastSteps = lastStepsPointList.Select(p => new Vector2(p.X, p.Y)).ToList();
             this.RefreshAllowedPiecesForStorages();

@@ -269,6 +269,7 @@ namespace SonOfRobin
             CoffeeShrub,
             PotionCoffee,
             BubbleCraftGreen,
+            ChestCrystal,
         }
 
         public static readonly Name[] allNames = (Name[])Enum.GetValues(typeof(Name));
@@ -1129,6 +1130,20 @@ namespace SonOfRobin
                         byte storageHeight = 4;
 
                         return new Container(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ChestIron, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Metal, floatsOnWater: false, minDistance: 0, maxDistance: 100, maxMassForSize: null, generation: generation, storageWidth: storageWidth, storageHeight: storageHeight, maxHitPoints: 60, readableName: "iron chest", description: $"Can store items ({storageWidth}x{storageHeight}).", soundPack: soundPack, fireAffinity: 0.0f);
+                    }
+
+                case Name.ChestCrystal:
+                    {
+                        var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
+                            { Terrain.Name.Height, new AllowedRange(min: Terrain.waterLevelMax, max: Terrain.volcanoEdgeMin) }});
+
+                        var soundPack = new PieceSoundPack();
+                        soundPack.AddAction(action: PieceSoundPack.Action.IsHit, sound: new Sound(name: SoundData.Name.HitWood, maxPitchVariation: 0.5f));
+                        soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(name: SoundData.Name.DestroyBox, maxPitchVariation: 0.5f));
+
+                        PieceStorage sharedStorage = world != null && world.Player != null ? world.Player.CrystalChestStorage : null;
+
+                        return new Container(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ChestCrystal, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Metal, floatsOnWater: false, minDistance: 0, maxDistance: 100, maxMassForSize: null, generation: generation, storageWidth: 1, storageHeight: 1, maxHitPoints: 60, readableName: "crystal chest", description: $"All crystal chests share their contents.", soundPack: soundPack, fireAffinity: 0.0f, pieceStorageToUse: sharedStorage);
                     }
 
                 case Name.ChestTreasureNormal:

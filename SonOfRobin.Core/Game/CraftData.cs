@@ -42,7 +42,9 @@ namespace SonOfRobin
 
                 new Craft.Recipe(pieceToCreate: PieceTemplate.Name.ChestStone, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Granite, 3 },{ PieceTemplate.Name.WoodPlank, 10 }, { PieceTemplate.Name.Clay, 3 } }, fatigue: fatigueStructureSmall, isReversible: true, isHidden: true, unlocksWhenCrafted: new List<PieceTemplate.Name> {PieceTemplate.Name.ChestIron }, craftCountToUnlock: 2),
 
-                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.ChestIron, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.IronPlate, 2 },{ PieceTemplate.Name.WoodPlank, 4 }, { PieceTemplate.Name.Nail, 10 } }, fatigue: fatigueStructureMedium, isReversible: true, isHidden: true),
+                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.ChestIron, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.IronPlate, 2 },{ PieceTemplate.Name.WoodPlank, 4 }, { PieceTemplate.Name.Nail, 10 } }, fatigue: fatigueStructureMedium, isReversible: true, isHidden: true, unlocksWhenCrafted: new List<PieceTemplate.Name> {PieceTemplate.Name.ChestCrystal }, craftCountToUnlock: 3),
+
+                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.ChestCrystal, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Crystal, 3 },{ PieceTemplate.Name.IronPlate, 3 }, { PieceTemplate.Name.WoodLogHard, 6 }, { PieceTemplate.Name.Nail, 20 } }, fatigue: fatigueStructureMedium, isReversible: true, isHidden: true),
 
                 new Craft.Recipe(pieceToCreate: PieceTemplate.Name.Furnace, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stone, 20 }, { PieceTemplate.Name.Granite, 6 }, { PieceTemplate.Name.WoodPlank, 16 }, { PieceTemplate.Name.Clay, 2 }}, fatigue: fatigueStructureMedium, isReversible: true, isHidden: true, unlocksWhenCrafted: new List<PieceTemplate.Name> { PieceTemplate.Name.Anvil }),
 
