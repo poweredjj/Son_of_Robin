@@ -39,6 +39,8 @@ namespace SonOfRobin
             public List<PieceTemplate.Name> combinesWith;
             public readonly bool hasFruit;
             public readonly float maxHitPoints;
+            public readonly int strength;
+            public readonly float speed;
             public readonly PieceTemplate.Name fruitName;
             public PieceTemplate.Name isSpawnedBy;
             public Dictionary<BoardPiece.Category, float> strengthMultiplierByCategory;
@@ -52,6 +54,8 @@ namespace SonOfRobin
                 this.allowedTerrain = piece.sprite.allowedTerrain;
                 this.canBePickedUp = piece.canBePickedUp;
                 this.maxHitPoints = piece.maxHitPoints;
+                this.strength = piece.strength;
+                this.speed = piece.speed;
                 this.type = piece.GetType();
                 this.serialize = piece.serialize;
                 this.blocksMovement = piece.sprite.blocksMovement;

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SonOfRobin
 {
@@ -27,6 +28,8 @@ namespace SonOfRobin
 
                 if (sound.isLooped && sound.IsPlaying) playingLoopsList.Add(action);
             }
+
+            if (!playingLoopsList.Any()) return null;
 
             return playingLoopsList;
         }

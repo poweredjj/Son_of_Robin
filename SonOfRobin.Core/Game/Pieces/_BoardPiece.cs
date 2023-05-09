@@ -399,29 +399,26 @@ namespace SonOfRobin
             {
                 { "base_id", this.id },
                 { "base_name", this.name },
-                { "base_speed", this.speed },
                 { "base_hitPoints", this.hitPoints },
-                { "base_strength", this.strength },
-                { "base_maxHitPoints", this.maxHitPoints },
                 { "base_mass", this.mass },
                 { "base_alive", this.alive },
                 { "base_maxAge", this.maxAge },
                 { "base_bioWear", this.bioWear },
                 { "base_efficiency", this.efficiency },
                 { "base_activeState", this.activeState },
-                { "base_pieceStorage", this.PieceStorage },
-                { "base_passiveMovementX", this.passiveMovement.X },
-                { "base_passiveMovementY", this.passiveMovement.Y },
-                { "base_passiveRotation", this.passiveRotation },
                 { "base_buffEngine", this.buffEngine.Serialize() },
-                { "base_buffList", this.buffList },
-                { "base_soundPack", this.soundPack.Serialize() },
                 { "base_canBeHit", this.canBeHit },
-                { "base_burnLevel", this.burnLevel },
                 { "base_sprite", this.sprite.Serialize() }
             };
 
             if (this.PieceStorage != null) pieceData["base_pieceStorage"] = this.PieceStorage.Serialize();
+            if (PieceInfo.GetInfo(this.name).maxHitPoints != this.maxHitPoints) pieceData["base_maxHitPoints"] = this.maxHitPoints;
+            if (PieceInfo.GetInfo(this.name).strength != this.strength) pieceData["base_strength"] = this.strength;
+            if (PieceInfo.GetInfo(this.name).speed != this.speed) pieceData["base_speed"] = this.speed;
+            if (this.burnLevel > 0) pieceData["base_burnLevel"] = this.burnLevel;
+            var soundPackSerialized = this.soundPack.Serialize();
+            if (soundPackSerialized != null) pieceData["base_soundPack"] = soundPackSerialized;
+            if (this.buffList.Any()) pieceData["base_buffList"] = this.buffList;
 
             return pieceData;
         }
@@ -430,19 +427,17 @@ namespace SonOfRobin
         {
             this.mass = (float)(double)pieceData["base_mass"];
             this.hitPoints = (float)(double)pieceData["base_hitPoints"];
-            this.speed = (float)(double)pieceData["base_speed"];
-            this.strength = (int)(Int64)pieceData["base_strength"];
-            this.maxHitPoints = (float)(double)pieceData["base_maxHitPoints"];
+            if (pieceData.ContainsKey("base_speed")) this.speed = (float)(double)pieceData["base_speed"];
+            if (pieceData.ContainsKey("base_strength")) this.strength = (int)(Int64)pieceData["base_strength"];
+            if (pieceData.ContainsKey("base_maxHitPoints")) this.maxHitPoints = (float)(double)pieceData["base_maxHitPoints"];
             this.bioWear = (float)(double)pieceData["base_bioWear"];
             this.efficiency = (float)(double)pieceData["base_efficiency"];
             this.activeState = (State)(Int64)pieceData["base_activeState"];
             this.maxAge = (int)(Int64)pieceData["base_maxAge"];
-            this.PieceStorage = PieceStorage.Deserialize(storageData: pieceData["base_pieceStorage"], storagePiece: this);
-            this.passiveMovement = new Vector2((float)(double)pieceData["base_passiveMovementX"], (float)(double)pieceData["base_passiveMovementY"]);
-            this.passiveRotation = (int)(Int64)pieceData["base_passiveRotation"];
+            if (pieceData.ContainsKey("base_pieceStorage")) this.PieceStorage = PieceStorage.Deserialize(storageData: pieceData["base_pieceStorage"], storagePiece: this);
             this.buffEngine = BuffEngine.Deserialize(piece: this, buffEngineData: pieceData["base_buffEngine"]);
-            this.buffList = (List<Buff>)pieceData["base_buffList"];
-            this.soundPack.Deserialize(pieceData["base_soundPack"]);
+            if (pieceData.ContainsKey("base_buffList")) this.buffList = (List<Buff>)pieceData["base_buffList"];
+            if (pieceData.ContainsKey("base_soundPack")) this.soundPack.Deserialize(pieceData["base_soundPack"]);
             this.canBeHit = (bool)pieceData["base_canBeHit"];
             if (pieceData.ContainsKey("base_burnLevel")) this.burnLevel = (float)(double)pieceData["base_burnLevel"];
             this.sprite.Deserialize(pieceData["base_sprite"]);
