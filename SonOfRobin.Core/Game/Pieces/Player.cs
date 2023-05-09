@@ -30,14 +30,15 @@ namespace SonOfRobin
         private Vector2 previousStepPos; // used to calculate distanceWalked only
         private float distanceWalked;
 
-        public float DistanceWalkedKilometers
-        { get { return (float)Math.Round(this.distanceWalked / 5000, 2); } }
-
         public Vector2 pointWalkTarget;
         public Craft.Recipe recipeToBuild;
         public BoardPiece simulatedPieceToBuild;
         public int buildDurationForOneFrame;
         public float buildFatigueForOneFrame;
+
+        public int wentToSleepFrame;
+        public bool sleepingInsideShelter;
+        public SleepMode sleepMode;
         public PieceStorage ToolStorage { get; private set; }
         public PieceStorage EquipStorage { get; private set; }
 
@@ -98,6 +99,9 @@ namespace SonOfRobin
         public override bool ShowStatBars
         { get { return true; } }
 
+        public float DistanceWalkedKilometers
+        { get { return (float)Math.Round(this.distanceWalked / 5000, 2); } }
+
         private bool ShootingModeInputPressed
         {
             get
@@ -149,14 +153,42 @@ namespace SonOfRobin
             }
         }
 
-        public int wentToSleepFrame;
-        public bool sleepingInsideShelter;
-        public SleepMode sleepMode;
+        public bool ResourcefulCrafter
+        { get { return this.world.craftStats.UniqueRecipesCraftedTotal >= 20 && this.world.craftStats.TotalNoOfCrafts >= 150; } }
 
-        public List<PieceStorage> CraftStorages
-        { get { return new List<PieceStorage> { this.PieceStorage, this.ToolStorage, this.EquipStorage }; } }
+        public List<PieceStorage> CraftStoragesToTakeFrom
+        {
+            get
+            {
+                var craftStorages = new List<PieceStorage> { this.PieceStorage, this.ToolStorage, this.EquipStorage };
 
-        public List<PieceStorage> CraftStoragesToolbarFirst
+                if (this.ResourcefulCrafter)
+                {
+                    var chestNames = new List<PieceTemplate.Name> { PieceTemplate.Name.ChestWooden, PieceTemplate.Name.ChestStone, PieceTemplate.Name.ChestIron };
+
+                    var nearbyPieces = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.ColMovement, mainSprite: this.sprite, distance: 250, compareWithBottom: true);
+                    var chestPieces = nearbyPieces.Where(piece => piece.GetType() == typeof(Container) && chestNames.Contains(piece.name));
+
+                    foreach (BoardPiece chestPiece in chestPieces)
+                    {
+                        craftStorages.Add(chestPiece.PieceStorage);
+
+                        if (chestPiece.visualAid == null || !chestPiece.visualAid.exists)
+                        {
+                            BoardPiece usedChestMarker = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: chestPiece.sprite.position, templateName: PieceTemplate.Name.BubbleCraftGreen);
+
+                            new Tracking(world: world, targetSprite: chestPiece.sprite, followingSprite: usedChestMarker.sprite, targetYAlign: YAlign.Top, targetXAlign: XAlign.Left, followingYAlign: YAlign.Bottom, offsetX: 0, offsetY: 5);
+
+                            new WorldEvent(eventName: WorldEvent.EventName.FadeOutSprite, delay: 40, world: world, boardPiece: usedChestMarker, eventHelper: 20);
+                        }
+                    }
+                }
+
+                return craftStorages;
+            }
+        }
+
+        public List<PieceStorage> CraftStoragesToPutInto
         { get { return new List<PieceStorage> { this.ToolStorage, this.PieceStorage, this.EquipStorage }; } } // the same as above, changed order
 
         public StorageSlot ActiveSlot
@@ -349,7 +381,7 @@ namespace SonOfRobin
             if (Preferences.DebugGodMode || !PieceInfo.IsPlayer(this.name)) return;
 
             this.ToolStorage.DropAllPiecesToTheGround(addMovement: true); // only ToolStorage pieces should fall to the ground
-            foreach (PieceStorage storage in this.CraftStorages)
+            foreach (PieceStorage storage in this.CraftStoragesToTakeFrom)
             {
                 foreach (StorageSlot slot in storage.OccupiedSlots)
                 {

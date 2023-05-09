@@ -913,7 +913,7 @@ namespace SonOfRobin
         {
             World world = World.GetTopWorld();
             Player player = world.Player;
-            List<PieceStorage> storageList = player.CraftStorages;
+            List<PieceStorage> storageList = player.CraftStoragesToTakeFrom;
 
             if (player.AreEnemiesNearby && !player.IsActiveFireplaceNearby)
             {

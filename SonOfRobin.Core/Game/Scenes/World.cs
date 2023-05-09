@@ -674,7 +674,7 @@ namespace SonOfRobin
                                 if (!pieceAdded) break;
                             }
 
-                            foreach (PieceStorage storage in this.Player.CraftStorages)
+                            foreach (PieceStorage storage in this.Player.CraftStoragesToTakeFrom)
                             {
                                 foreach (BoardPiece piece in storage.GetAllPieces())
                                 {

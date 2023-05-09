@@ -144,7 +144,11 @@ namespace SonOfRobin
 
             this.isCorrect = true;
 
-            if (addToQueue) world.trackingManager.AddToQueue(this);
+            if (addToQueue)
+            {
+                world.trackingManager.AddToQueue(this);
+                this.SetPosition(trackingManager: world.trackingManager); // to set position right away
+            }
         }
 
         public Dictionary<string, Object> Serialize()

@@ -10,7 +10,7 @@ namespace SonOfRobin
         private static readonly Dictionary<Name, int> opacityFadeDurationByName = new Dictionary<Name, int> {
             { Name.BurningFlame, 30 },
             { Name.Zzz, 30 },
-            { Name.ExclamationRed, 30 },
+            { Name.BubbleExclamationRed, 30 },
             { Name.JarTreasure, 30 },
             { Name.ChestTreasureNormal, 30 },
             { Name.ChestTreasureBig, 30 },
@@ -144,7 +144,7 @@ namespace SonOfRobin
             MapMarker,
             MusicNote,
             Crosshair,
-            ExclamationRed,
+            BubbleExclamationRed,
             BurningFlame,
             CookingTrigger,
             UpgradeTrigger,
@@ -261,13 +261,14 @@ namespace SonOfRobin
             Explosion,
             DebrisSoot,
             BowAdvanced,
-            ExclamationBlue,
+            BubbleExclamationBlue,
             DebrisHeart,
             SeedsGeneric,
             CoffeeRaw,
             CoffeeRoasted,
             CoffeeShrub,
             PotionCoffee,
+            BubbleCraftGreen,
         }
 
         public static readonly Name[] allNames = (Name[])Enum.GetValues(typeof(Name));
@@ -990,18 +991,26 @@ namespace SonOfRobin
                         return new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Crosshair, destructionDelay: 0, allowedTerrain: allowedTerrain, minDistance: 0, maxDistance: 2, generation: generation, serialize: false, readableName: "crosshair", description: "A visual effect.", activeState: BoardPiece.State.Empty, fireAffinity: 0f);
                     }
 
-                case Name.ExclamationRed:
+                case Name.BubbleExclamationRed:
                     {
                         var allowedTerrain = new AllowedTerrain();
-                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ExclamationRed, destructionDelay: 0, allowedTerrain: allowedTerrain, minDistance: 0, maxDistance: 2, generation: generation, serialize: false, readableName: "red exclamation", description: "A visual effect.", activeState: BoardPiece.State.Empty, fireAffinity: 0f);
+                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BubbleExclamationRed, destructionDelay: 0, allowedTerrain: allowedTerrain, minDistance: 0, maxDistance: 2, generation: generation, serialize: false, readableName: "red exclamation", description: "A visual effect.", activeState: BoardPiece.State.Empty, fireAffinity: 0f);
 
                         return visualEffect;
                     }
 
-                case Name.ExclamationBlue:
+                case Name.BubbleExclamationBlue:
                     {
                         var allowedTerrain = new AllowedTerrain();
-                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ExclamationBlue, destructionDelay: 0, allowedTerrain: allowedTerrain, minDistance: 0, maxDistance: 2, generation: generation, serialize: false, readableName: "blue exclamation", description: "A visual effect.", activeState: BoardPiece.State.Empty, fireAffinity: 0f);
+                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BubbleExclamationBlue, destructionDelay: 0, allowedTerrain: allowedTerrain, minDistance: 0, maxDistance: 2, generation: generation, serialize: false, readableName: "blue exclamation", description: "A visual effect.", activeState: BoardPiece.State.Empty, fireAffinity: 0f);
+
+                        return visualEffect;
+                    }
+
+                case Name.BubbleCraftGreen:
+                    {
+                        var allowedTerrain = new AllowedTerrain();
+                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BubbleCraftGreen, destructionDelay: 0, allowedTerrain: allowedTerrain, minDistance: 0, maxDistance: 2, generation: generation, serialize: false, readableName: "green exclamation with plus", description: "A visual effect.", activeState: BoardPiece.State.Empty, fireAffinity: 0f);
 
                         return visualEffect;
                     }

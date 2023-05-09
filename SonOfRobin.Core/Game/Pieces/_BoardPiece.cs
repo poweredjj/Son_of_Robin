@@ -444,7 +444,6 @@ namespace SonOfRobin
             this.buffList = (List<Buff>)pieceData["base_buffList"];
             this.soundPack.Deserialize(pieceData["base_soundPack"]);
             this.canBeHit = (bool)pieceData["base_canBeHit"];
-            this.canBeHit = (bool)pieceData["base_canBeHit"];
             if (pieceData.ContainsKey("base_burnLevel")) this.burnLevel = (float)(double)pieceData["base_burnLevel"];
             this.sprite.Deserialize(pieceData["base_sprite"]);
 

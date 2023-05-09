@@ -170,7 +170,7 @@ namespace SonOfRobin
 
                 var craftedPieces = new List<BoardPiece>();
 
-                var storagesToTakeFrom = player.CraftStorages;
+                var storagesToTakeFrom = player.CraftStoragesToTakeFrom;
 
                 if (!this.CheckIfStorageContainsAllIngredients(storageList: storagesToTakeFrom))
                 {
@@ -253,7 +253,7 @@ namespace SonOfRobin
 
                 if (canBePickedUp)
                 {
-                    var storagesToPutInto = pieceInfo.type == typeof(Tool) || pieceInfo.type == typeof(PortableLight) ? player.CraftStoragesToolbarFirst : player.CraftStorages;
+                    var storagesToPutInto = pieceInfo.type == typeof(Tool) || pieceInfo.type == typeof(PortableLight) ? player.CraftStoragesToPutInto : player.CraftStoragesToTakeFrom;
 
                     for (int i = 0; i < this.amountToCreate; i++)
                     {

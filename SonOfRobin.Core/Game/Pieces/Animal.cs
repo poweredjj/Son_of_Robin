@@ -331,7 +331,7 @@ namespace SonOfRobin
                     if (this.target.GetType() == typeof(Player))
                     {
                         if (this.visualAid != null) this.visualAid.Destroy();
-                        this.visualAid = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: this.sprite.position, templateName: PieceTemplate.Name.ExclamationRed);
+                        this.visualAid = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: this.sprite.position, templateName: PieceTemplate.Name.BubbleExclamationRed);
                         new Tracking(world: world, targetSprite: this.sprite, followingSprite: this.visualAid.sprite, targetYAlign: YAlign.Top, targetXAlign: XAlign.Left, followingYAlign: YAlign.Bottom, offsetX: 0, offsetY: 5);
 
                         this.world.HintEngine.CheckForPieceHintToShow(typesToCheckOnly: new List<PieceHint.Type> { PieceHint.Type.RedExclamation }, fieldPieceNameToCheck: this.visualAid.name);
@@ -844,7 +844,7 @@ namespace SonOfRobin
 
                 if (targetIsPlayer)
                 {
-                    allyAnimal.visualAid = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: allyAnimal.sprite.position, templateName: PieceTemplate.Name.ExclamationRed);
+                    allyAnimal.visualAid = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: allyAnimal.sprite.position, templateName: PieceTemplate.Name.BubbleExclamationRed);
                     new Tracking(world: world, targetSprite: allyAnimal.sprite, followingSprite: allyAnimal.visualAid.sprite, targetYAlign: YAlign.Top, targetXAlign: XAlign.Left, followingYAlign: YAlign.Bottom, offsetX: 0, offsetY: 5);
                 }
             }
@@ -855,7 +855,7 @@ namespace SonOfRobin
 
             if (targetIsPlayer)
             {
-                this.visualAid = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: this.sprite.position, templateName: PieceTemplate.Name.ExclamationBlue);
+                this.visualAid = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: this.sprite.position, templateName: PieceTemplate.Name.BubbleExclamationBlue);
                 new Tracking(world: world, targetSprite: this.sprite, followingSprite: this.visualAid.sprite, targetYAlign: YAlign.Top, targetXAlign: XAlign.Left, followingYAlign: YAlign.Bottom, offsetX: 0, offsetY: 5);
             }
 

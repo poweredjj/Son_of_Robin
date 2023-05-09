@@ -127,6 +127,9 @@ namespace SonOfRobin
             return this.craftedPieces.ContainsKey(name) ? this.craftedPieces[name] : 0;
         }
 
+        public int UniqueRecipesCraftedTotal
+        { get { return this.craftedPieces.Keys.Count; } }
+
         public bool WasThisIngredientUsed(PieceTemplate.Name name)
         {
             return this.usedIngredients.ContainsKey(name);

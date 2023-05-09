@@ -114,7 +114,7 @@ namespace SonOfRobin
                         var hintMessages = new List<HintMessage> {
                             new HintMessage(text: "I'm starving.\nI need to eat | | | something right now\nor else I'm gonna | die...", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Apple), PieceInfo.GetTexture(PieceTemplate.Name.Banana), PieceInfo.GetTexture(PieceTemplate.Name.MeatRaw), AnimData.framesForPkgs[AnimData.PkgName.SkullAndBones].texture}, blockInput: true),
                             new HintMessage(text: "I'm | dying from | hunger.", imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.SkullAndBones].texture, PieceInfo.GetTexture(PieceTemplate.Name.Meal)}, blockInput: true),
-                            new HintMessage(text: "| I have to | eat right now!", imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.ExclamationRed].texture, PieceInfo.GetTexture(PieceTemplate.Name.Meal)}, blockInput: true),
+                            new HintMessage(text: "| I have to | eat right now!", imageList: new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.BubbleExclamationRed].texture, PieceInfo.GetTexture(PieceTemplate.Name.Meal)}, blockInput: true),
                         };
 
                         this.world.Player.soundPack.Play(PieceSoundPack.Action.PlayerStomachGrowl);
