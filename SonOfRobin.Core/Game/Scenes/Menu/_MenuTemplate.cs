@@ -913,7 +913,6 @@ namespace SonOfRobin
         {
             World world = World.GetTopWorld();
             Player player = world.Player;
-            List<PieceStorage> storageList = player.CraftStoragesToTakeFrom;
 
             if (player.AreEnemiesNearby && !player.IsActiveFireplaceNearby)
             {
@@ -935,6 +934,8 @@ namespace SonOfRobin
 
                 return null;
             }
+
+            List<PieceStorage> storageList = player.CraftStoragesToTakeFrom; // after craft checks, to avoid showing chest used markers when can't craft
 
             Tutorials.ShowTutorialOnTheField(type: Tutorials.Type.Craft, world: World.GetTopWorld(), ignoreDelay: true);
 

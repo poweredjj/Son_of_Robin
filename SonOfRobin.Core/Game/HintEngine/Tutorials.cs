@@ -8,7 +8,7 @@ namespace SonOfRobin
     public class Tutorials
     {
         public enum Type
-        { BreakThing, Equip, BuildWorkshop, GetWood, Mine, Interact, PickUp, Hit, Craft, KeepingAnimalsAway, ShootProjectile, Cook, ShakeFruit, AnimalAttacking, Torch, Fireplace, TooDarkToReadMap, TooDarkToSeeAnything, Heat, CraftLevels, SwampPoison, SmartCrafting, HowToSave, CombineItems }
+        { BreakThing, Equip, BuildWorkshop, GetWood, Mine, Interact, PickUp, Hit, Craft, KeepingAnimalsAway, ShootProjectile, Cook, ShakeFruit, AnimalAttacking, Torch, Fireplace, TooDarkToReadMap, TooDarkToSeeAnything, Heat, CraftLevels, SwampPoison, SmartCrafting, HowToSave, CombineItems, ResourcefulCrafting }
 
         private static readonly HintMessage.BoxType messageHeaderType = HintMessage.BoxType.BlueBox;
         private static readonly HintMessage.BoxType messageTextType = HintMessage.BoxType.LightBlueBox;
@@ -303,6 +303,14 @@ namespace SonOfRobin
                     new HintMessage(text: "This is called 'smart crafting'.", boxType: messageTextType),
                     new HintMessage(text: "It depends on each recipe craft level |\nand on your base craft skill.", imageList: new List<Texture2D> { PieceInfo.GetInfo(PieceTemplate.Name.DebrisStar).texture }, boxType: messageTextType),
                    });
+
+            new Tutorial(type: Type.ResourcefulCrafting, name: "resourceful crafting", title: "Resourceful crafting.",
+                messages: new List<HintMessage>  {
+                    new HintMessage(text: "Hmm... I know how to improve my | crafting process.", imageList: new List<Texture2D> { TextureBank.GetTexture("input/VirtButton/craft") }, boxType: HintMessage.BoxType.Dialogue, fieldOnly: true),
+                    new HintMessage(text: "After spending some time | crafting,\nyou will unlock resourceful crafting.",  imageList: new List<Texture2D> { PieceInfo.GetInfo(PieceTemplate.Name.WorkshopMaster).texture }, boxType: messageTextType),
+                    new HintMessage(text: "Then you can use ||| ingredients\nstored inside nearby | chests.", imageList: new List<Texture2D> { PieceInfo.GetInfo(PieceTemplate.Name.WoodLogRegular).texture, PieceInfo.GetInfo(PieceTemplate.Name.Granite).texture, PieceInfo.GetInfo(PieceTemplate.Name.Clay).texture, PieceInfo.GetInfo(PieceTemplate.Name.ChestWooden).texture }, boxType: messageTextType),
+                    new HintMessage(text: "You will see a | marker\nabove every | chest used.", imageList: new List<Texture2D> { PieceInfo.GetInfo(PieceTemplate.Name.BubbleCraftGreen).texture, PieceInfo.GetInfo(PieceTemplate.Name.ChestWooden).texture }, boxType: messageTextType),
+                    });
 
             new Tutorial(type: Type.HowToSave, name: "saving", title: "Saving the game.",
                 messages: new List<HintMessage> {

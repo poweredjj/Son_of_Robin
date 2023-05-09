@@ -397,9 +397,16 @@ namespace SonOfRobin
                 if (pieceInfo.canBePickedUp) executeHelper["newOwnedPiece"] = this.pieceToCreate;
                 else executeHelper["fieldPiece"] = this.pieceToCreate;
 
-                if (recipeLevelUp && !tutorialAdded && !world.HintEngine.shownTutorials.Contains(Tutorials.Type.SmartCrafting))
+                if (!tutorialAdded && recipeLevelUp && !world.HintEngine.shownTutorials.Contains(Tutorials.Type.CraftLevels))
                 {
                     var tutorialData = new Dictionary<string, Object> { { "tutorial", Tutorials.Type.CraftLevels }, { "world", world }, { "ignoreHintsSetting", false }, { "ignoreDelay", true }, { "ignoreIfShown", true } };
+                    taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ShowTutorialInGame, delay: 0, storeForLaterUse: true, executeHelper: tutorialData));
+                    tutorialAdded = true;
+                }
+
+                if (!tutorialAdded && world.Player.ResourcefulCrafter && !world.HintEngine.shownTutorials.Contains(Tutorials.Type.ResourcefulCrafting))
+                {
+                    var tutorialData = new Dictionary<string, Object> { { "tutorial", Tutorials.Type.ResourcefulCrafting }, { "world", world }, { "ignoreHintsSetting", false }, { "ignoreDelay", true }, { "ignoreIfShown", true } };
                     taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ShowTutorialInGame, delay: 0, storeForLaterUse: true, executeHelper: tutorialData));
                     tutorialAdded = true;
                 }
