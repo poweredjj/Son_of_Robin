@@ -1141,9 +1141,7 @@ namespace SonOfRobin
                         soundPack.AddAction(action: PieceSoundPack.Action.IsHit, sound: new Sound(name: SoundData.Name.HitWood, maxPitchVariation: 0.5f));
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDestroyed, sound: new Sound(name: SoundData.Name.DestroyBox, maxPitchVariation: 0.5f));
 
-                        PieceStorage sharedStorage = world != null && world.Player != null ? world.Player.CrystalChestStorage : null;
-
-                        return new Container(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ChestCrystal, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Metal, floatsOnWater: false, minDistance: 0, maxDistance: 100, maxMassForSize: null, generation: generation, storageWidth: 1, storageHeight: 1, maxHitPoints: 60, readableName: "crystal chest", description: $"All crystal chests share their contents.", soundPack: soundPack, fireAffinity: 0.0f, pieceStorageToUse: sharedStorage);
+                        return new Container(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ChestCrystal, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Crystal, floatsOnWater: false, minDistance: 0, maxDistance: 100, maxMassForSize: null, generation: generation, storageWidth: 1, storageHeight: 1, maxHitPoints: 100, readableName: "crystal chest", description: "All crystal chests share their contents.", soundPack: soundPack, fireAffinity: 0.0f, pieceStorageIsGlobal: true);
                     }
 
                 case Name.ChestTreasureNormal:

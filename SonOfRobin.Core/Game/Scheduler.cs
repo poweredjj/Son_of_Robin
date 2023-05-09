@@ -1424,7 +1424,7 @@ namespace SonOfRobin
 
                             if (player.AreEnemiesNearby && !player.IsActiveFireplaceNearby)
                             {
-                                if (!highlightOnly) new TextWindow(text: $"I can't plant | { PieceInfo.GetInfo(plantName).readableName } with enemies nearby.", imageList: new List<Texture2D> { PieceInfo.GetTexture(plantName) }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: false, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 70, priority: 0,  animSound: world.DialogueSound);
+                                if (!highlightOnly) new TextWindow(text: $"I can't plant | { PieceInfo.GetInfo(plantName).readableName } with enemies nearby.", imageList: new List<Texture2D> { PieceInfo.GetTexture(plantName) }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: false, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 70, priority: 0, animSound: world.DialogueSound);
 
                                 return;
                             }

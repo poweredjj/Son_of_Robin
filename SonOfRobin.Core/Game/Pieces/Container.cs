@@ -6,16 +6,28 @@ namespace SonOfRobin
 {
     public class Container : BoardPiece
     {
+        public readonly bool pieceStorageIsGlobal;
+
         public Container(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, int[] maxMassForSize, byte storageWidth, byte storageHeight, string readableName, string description, Category category, float fireAffinity,
-            byte animSize = 0, string animName = "open", bool blocksMovement = true, ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = false, int generation = 0, Yield yield = null, Yield appearDebris = null, int maxHitPoints = 1, PieceSoundPack soundPack = null, PieceStorage pieceStorageToUse = null) :
+            byte animSize = 0, string animName = "open", bool blocksMovement = true, ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = false, int generation = 0, Yield yield = null, Yield appearDebris = null, int maxHitPoints = 1, PieceSoundPack soundPack = null, bool pieceStorageIsGlobal = false) :
 
             base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedTerrain: allowedTerrain, floatsOnWater: floatsOnWater, maxMassForSize: maxMassForSize, generation: generation, canBePickedUp: false, yield: yield, maxHitPoints: maxHitPoints, readableName: readableName, description: description, category: category, activeState: State.Empty, movesWhenDropped: false, soundPack: soundPack, appearDebris: appearDebris, boardTask: Scheduler.TaskName.OpenContainer, fireAffinity: fireAffinity)
         {
+            this.pieceStorageIsGlobal = pieceStorageIsGlobal;
+
             this.soundPack.AddAction(action: PieceSoundPack.Action.Open, sound: new Sound(name: SoundData.Name.ChestOpen));
             this.soundPack.AddAction(action: PieceSoundPack.Action.Close, sound: new Sound(name: SoundData.Name.ChestClose));
 
-            this.PieceStorage = pieceStorageToUse == null ?
-                new PieceStorage(width: storageWidth, height: storageHeight, storagePiece: this, storageType: PieceStorage.StorageType.Chest) : pieceStorageToUse;
+            this.PieceStorage = new PieceStorage(width: storageWidth, height: storageHeight, storagePiece: this, storageType: PieceStorage.StorageType.Chest);
+        }
+
+        public override PieceStorage PieceStorage // makes accessing GlobalChestStorage possible
+        {
+            get
+            {
+                if (this.pieceStorageIsGlobal && this.world?.Player?.GlobalChestStorage != null) return this.world.Player.GlobalChestStorage;
+                return base.PieceStorage;
+            }
         }
 
         public override bool ShowStatBars

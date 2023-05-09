@@ -111,7 +111,7 @@ namespace SonOfRobin
         public readonly byte stackSize;
         public readonly float fireAffinity;
         private float burnLevel;
-        public PieceStorage PieceStorage { get; protected set; }
+        public virtual PieceStorage PieceStorage { get; protected set; }
         public BuffEngine buffEngine; // active buffs
         public List<Buff> buffList; // buff to be activated when this piece (equip, food, etc.) is used by another piece
         public readonly Yield yield;
