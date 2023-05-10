@@ -245,7 +245,7 @@ namespace SonOfRobin
 
             if (this.allowedTerrain.HasBeenChanged) spriteDataDict["allowedTerrain"] = this.allowedTerrain.Serialize();
             if (this.hasBeenDiscovered) spriteDataDict["hasBeenDiscovered"] = this.hasBeenDiscovered;
-            if (this.lightEngine != null) spriteDataDict["lightSource"] = this.lightEngine.Serialize();
+            if (this.lightEngine != null && !this.lightEngine.Equals(pieceInfo.lightEngine)) spriteDataDict["lightSource"] = this.lightEngine.Serialize();
             if (this.color != pieceInfo.color) spriteDataDict["color"] = new byte[] { this.color.R, this.color.G, this.color.B, this.color.A };
             if (this.opacity != pieceInfo.opacity) spriteDataDict["opacity"] = this.opacity;
             if (this.animName != pieceInfo.animName) spriteDataDict["animName"] = this.animName;

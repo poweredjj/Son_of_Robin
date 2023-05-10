@@ -32,6 +32,20 @@ namespace SonOfRobin
             this.castShadows = castShadows;
         }
 
+        public bool Equals(LightEngine lightEngine)
+        {
+            return
+                this.IsActive == lightEngine.IsActive &&
+                this.width == lightEngine.width &&
+                this.height == lightEngine.height &&
+                this.opacity == lightEngine.opacity &&
+                this.color == lightEngine.color &&
+                this.colorActive == lightEngine.colorActive &&
+                this.addedGfxRectMultiplier == lightEngine.addedGfxRectMultiplier &&
+                this.glowOnlyAtNight == lightEngine.glowOnlyAtNight &&
+                this.castShadows == lightEngine.castShadows;
+        }
+
         public int Width
         { get { return (int)(this.sprite.gfxRect.Width * this.addedGfxRectMultiplier) + width; } set { this.width = value; } }
 

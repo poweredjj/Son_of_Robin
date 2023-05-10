@@ -29,7 +29,7 @@ namespace SonOfRobin
             public bool isCarnivorous;
             public readonly BoardPiece.Category category;
             public readonly bool canBePickedUp;
-            public List<Buff> buffList;
+            public readonly List<Buff> buffList;
             public readonly AnimFrame frame;
             public readonly Texture2D texture;
             public readonly Scheduler.TaskName toolbarTask;
@@ -48,6 +48,7 @@ namespace SonOfRobin
             public readonly float speed;
             public readonly Color color;
             public readonly float opacity;
+            public readonly LightEngine lightEngine;
             public readonly string animName;
             public readonly PieceTemplate.Name fruitName;
             public PieceTemplate.Name isSpawnedBy;
@@ -81,6 +82,7 @@ namespace SonOfRobin
                 this.canBeHit = piece.canBeHit;
                 this.color = piece.sprite.color;
                 this.opacity = piece.sprite.opacity;
+                this.lightEngine = piece.sprite.lightEngine;
                 this.animName = piece.sprite.animName;
                 if (piece.GetType() == typeof(Animal)) this.eats = ((Animal)piece).eats;
                 this.equipType = piece.GetType() == typeof(Equipment) ? ((Equipment)piece).equipType : Equipment.EquipType.None;
