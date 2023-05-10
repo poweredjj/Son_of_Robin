@@ -238,7 +238,6 @@ namespace SonOfRobin
                 { "posX", (int)this.position.X },
                 { "posY", (int)this.position.Y },
                 { "animPackage", this.animPackage },
-                { "animSize", this.animSize },
                 { "colRect", this.colRect },
             };
 
@@ -261,7 +260,6 @@ namespace SonOfRobin
             this.position = new Vector2((int)(Int64)spriteDict["posX"], (int)(Int64)spriteDict["posY"]);
             if (spriteDict.ContainsKey("opacity")) this.opacity = (float)(double)spriteDict["opacity"];
             this.animPackage = (AnimData.PkgName)(Int64)spriteDict["animPackage"];
-            this.animSize = (byte)(Int64)spriteDict["animSize"];
             if (spriteDict.ContainsKey("animName")) this.animName = (string)spriteDict["animName"];
             this.AssignFrame(checkForCollision: false);
             this.colRect = (Rectangle)spriteDict["colRect"];

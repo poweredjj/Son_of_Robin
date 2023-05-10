@@ -467,7 +467,7 @@ namespace SonOfRobin
                             var positiveBuffTextLines = new List<string>();
                             var negativeBuffTextLines = new List<string>();
 
-                            foreach (Buff buff in player.buffEngine.buffDict.Values)
+                            foreach (Buff buff in player.buffEngine.BuffList)
                             {
                                 if (buff.iconText != null) // only buffs with visible iconText should be shown
                                 {

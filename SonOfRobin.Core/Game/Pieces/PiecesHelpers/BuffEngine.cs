@@ -10,8 +10,10 @@ namespace SonOfRobin
         public enum BuffType
         { InvWidth, InvHeight, ToolbarWidth, ToolbarHeight, Speed, Strength, HP, MaxHP, MaxStamina, EnableMap, LightSource, RegenPoison, Haste, Fatigue, Sprint, SprintCooldown, LowHP, Tired, Hungry, Heat, HeatProtection, SwampProtection, Wet };
 
-        public readonly Dictionary<string, Buff> buffDict;
+        private readonly Dictionary<string, Buff> buffDict;
         private readonly BoardPiece piece;
+        public List<Buff> BuffList { get { return this.buffDict.Values.ToList(); } }
+        public bool HasAnyBuff { get { return this.buffDict.Any(); } }
 
         public BuffEngine(BoardPiece piece)
         {

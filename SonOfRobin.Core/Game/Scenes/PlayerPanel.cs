@@ -179,9 +179,8 @@ namespace SonOfRobin
                 int iconWidthHeight = this.IconWidthHeight;
                 int margin = this.IconMargin;
 
-                foreach (var kvp in player.buffEngine.buffDict)
+                foreach (Buff buff in player.buffEngine.BuffList)
                 {
-                    Buff buff = kvp.Value;
                     string buffText = buff.iconText;
 
                     if (buffText == null) continue;

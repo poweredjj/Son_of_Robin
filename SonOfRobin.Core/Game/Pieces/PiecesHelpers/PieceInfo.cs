@@ -43,6 +43,7 @@ namespace SonOfRobin
             public readonly float startHitPoints;
             public readonly BoardPiece.State initialActiveState;
             public readonly int strength;
+            public readonly float mass;
             public readonly bool canBeHit;
             public readonly float speed;
             public readonly Color color;
@@ -63,6 +64,7 @@ namespace SonOfRobin
                 this.maxHitPoints = piece.maxHitPoints;
                 this.startHitPoints = piece.hitPoints;
                 this.strength = piece.strength;
+                this.mass = piece.Mass;
                 this.speed = piece.speed;
                 this.type = piece.GetType();
                 this.serialize = piece.serialize;
