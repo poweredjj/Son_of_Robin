@@ -122,7 +122,7 @@ namespace SonOfRobin
             return this.craftedRecipes.ContainsKey(recipe.id) ? this.craftedRecipes[recipe.id] : 0;
         }
 
-        public int HowMuchHasBeenCrafted(PieceTemplate.Name name)
+        public int HowManyHasBeenCrafted(PieceTemplate.Name name)
         {
             return this.craftedPieces.ContainsKey(name) ? this.craftedPieces[name] : 0;
         }

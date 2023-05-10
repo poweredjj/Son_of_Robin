@@ -9,7 +9,7 @@ namespace SonOfRobin
     public struct PieceHint
     {
         public enum Type
-        { CrateStarting, CrateAnother, WoodNegative, WoodPositive, DigSiteNegative, DigSitePositive, StoneNegative, StonePositive, CrystalNegative, CrystalPositive, AnimalNegative, AnimalBow, AnimalSpear, AnimalAxe, BowNoAmmo, ShellIsNotUseful, ClamField, ClamInventory, FruitTree, BananaTree, TomatoPlant, IronDepositNegative, IronDepositPositive, CoalDepositNegative, CoalDepositPositive, HotPlate, Cooker, LeatherPositive, BackpackPositive, BeltPositive, MapPositive, RedExclamation, Acorn, TorchNegative, TorchPositive, Fireplace, HerbsRed, HerbsYellow, HerbsViolet, HerbsCyan, HerbsBlue, HerbsBlack, GlassSand, CanBuildWorkshop, SmallBase, DangerousTiger, DigSiteGlass, CarrotPlant, ExplosiveGas, TreasureJar, CandleForLantern, CoffeeRaw, SharedChest }
+        { CrateStarting, CrateAnother, WoodNegative, WoodPositive, DigSiteNegative, DigSitePositive, StoneNegative, StonePositive, CrystalNegative, CrystalPositive, AnimalNegative, AnimalBow, AnimalSpear, AnimalAxe, BowNoAmmo, ShellIsNotUseful, ClamField, ClamInventory, FruitTree, BananaTree, TomatoPlant, IronDepositNegative, IronDepositPositive, CoalDepositNegative, CoalDepositPositive, HotPlate, Cooker, LeatherPositive, BackpackPositive, BeltPositive, MapPositive, RedExclamation, Acorn, TorchNegative, TorchPositive, Fireplace, HerbsRed, HerbsYellow, HerbsViolet, HerbsCyan, HerbsBlue, HerbsBlack, GlassSand, CanBuildWorkshop, SmallBase, DangerousTiger, DigSiteGlass, CarrotPlant, ExplosiveGas, TreasureJar, CandleForLantern, CoffeeRaw, SharedChest, CanDestroyEssentialWorkshop }
 
         public enum Comparison
         { Greater, GreaterOrEqual, Equal, LessOrEqual, Less }
@@ -232,7 +232,7 @@ namespace SonOfRobin
             {
                 foreach (CountComparison pieceCraftedCount in this.piecesCraftedCount)
                 {
-                    if (!pieceCraftedCount.Check(player.world.craftStats.HowMuchHasBeenCrafted(pieceCraftedCount.name))) return false;
+                    if (!pieceCraftedCount.Check(player.world.craftStats.HowManyHasBeenCrafted(pieceCraftedCount.name))) return false;
                 }
             }
 

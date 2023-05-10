@@ -324,10 +324,18 @@ namespace SonOfRobin
                     fieldPiecesNearby: new List<PieceTemplate.Name> { PieceTemplate.Name.ChestCrystal }),
 
                 new PieceHint(
+                    type: PieceHint.Type.CanDestroyEssentialWorkshop,
+                    message: $"Hmm... Now I could destroy this | { PieceInfo.GetInfo(PieceTemplate.Name.WorkshopEssential).readableName }\nto get back some | construction materials.",
+                    imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.WorkshopEssential), PieceInfo.GetTexture(PieceTemplate.Name.WoodLogRegular) },
+                    fieldPiecesNearby: new List<PieceTemplate.Name> { PieceTemplate.Name.WorkshopEssential },
+                    piecesCraftedCount: new List<CountComparison> {
+                        new CountComparison(name: PieceTemplate.Name.WorkshopBasic, count: 1, comparison: CountComparison.Comparison.GreaterOrEqual) }),
+
+                new PieceHint(
                     type: PieceHint.Type.CanBuildWorkshop,
                     message: $"If I had more | wood, I could build an | { PieceInfo.GetInfo(PieceTemplate.Name.WorkshopEssential).readableName }.",
                     imageList: new List<Texture2D>{ PieceInfo.GetInfo(PieceTemplate.Name.WoodLogRegular).texture, PieceInfo.GetTexture(PieceTemplate.Name.WorkshopEssential) },
-                    tutorialsToActivate: new List<Tutorials.Type> {Tutorials.Type.BuildWorkshop},
+                    tutorialsToActivate: new List<Tutorials.Type> { Tutorials.Type.BuildWorkshop },
                     playerOwnsAllOfThesePieces: new List<PieceTemplate.Name> { PieceTemplate.Name.WoodLogRegular },
                     piecesCraftedCount: new List<CountComparison> {
                         new CountComparison(name: PieceTemplate.Name.WorkshopEssential, count: 0, comparison: CountComparison.Comparison.Equal) }),
