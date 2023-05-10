@@ -325,11 +325,9 @@ namespace SonOfRobin
 
                 new PieceHint(
                     type: PieceHint.Type.CanDestroyEssentialWorkshop,
-                    message: $"Hmm... Now I could destroy this | { PieceInfo.GetInfo(PieceTemplate.Name.WorkshopEssential).readableName }\nto get back some | construction materials.",
-                    imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.WorkshopEssential), PieceInfo.GetTexture(PieceTemplate.Name.WoodLogRegular) },
-                    fieldPiecesNearby: new List<PieceTemplate.Name> { PieceTemplate.Name.WorkshopEssential },
-                    piecesCraftedCount: new List<CountComparison> {
-                        new CountComparison(name: PieceTemplate.Name.WorkshopBasic, count: 1, comparison: CountComparison.Comparison.GreaterOrEqual) }),
+                    message: $"Now that I have this | { PieceInfo.GetInfo(PieceTemplate.Name.WorkshopBasic).readableName },\nI could destroy | { PieceInfo.GetInfo(PieceTemplate.Name.WorkshopEssential).readableName } to get back some | construction materials.",
+                    imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.WorkshopBasic), PieceInfo.GetTexture(PieceTemplate.Name.WorkshopEssential), PieceInfo.GetTexture(PieceTemplate.Name.WoodLogRegular) },
+                    fieldPiecesNearby: new List<PieceTemplate.Name> { PieceTemplate.Name.WorkshopBasic }),
 
                 new PieceHint(
                     type: PieceHint.Type.CanBuildWorkshop,
@@ -372,7 +370,6 @@ namespace SonOfRobin
                     imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.LanternEmpty), PieceInfo.GetTexture(PieceTemplate.Name.Candle) },
                     playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> { PieceTemplate.Name.LanternEmpty },
                     tutorialsToActivate: new List<Tutorials.Type> { Tutorials.Type.CombineItems }),
-
                 };
 
             CheckData(newPieceHintList);
