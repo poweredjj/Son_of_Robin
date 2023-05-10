@@ -418,7 +418,7 @@ namespace SonOfRobin
                     {
                         World world = World.GetTopWorld();
 
-                        Menu menu = new Menu(templateName: templateName, name: "STATS", blocksUpdatesBelow: true, canBeClosedManually: true, templateExecuteHelper: executeHelper, soundOpen: SoundData.Name.PaperMove1, soundClose: SoundData.Name.PaperMove2, alwaysShowSelectedEntry: true);
+                        Menu menu = new Menu(templateName: templateName, name: "STATS", blocksUpdatesBelow: true, canBeClosedManually: true, templateExecuteHelper: executeHelper, soundOpen: SoundData.Name.PaperMove1, soundClose: SoundData.Name.PaperMove2, alwaysShowSelectedEntry: true, soundNavigate: SoundData.Name.Tick, soundInvoke: SoundData.Name.Tick);
                         menu.bgColor = new Color(75, 37, 110) * 0.75f;
 
                         Player player = world.Player;
@@ -486,7 +486,7 @@ namespace SonOfRobin
                                 infoTextList.Add(new InfoWindow.TextEntry(text: String.Join("\n", negativeBuffTextLines), color: new Color(255, 120, 70), scale: 0.75f));
                             }
 
-                            Invoker invoker = new Invoker(menu: menu, name: "player", taskName: Scheduler.TaskName.Empty, playSound: false, infoTextList: infoTextList);
+                            Invoker invoker = new Invoker(menu: menu, name: "player", taskName: Scheduler.TaskName.Empty, infoTextList: infoTextList);
                             Color color = new Color(31, 197, 219);
                             invoker.rectColor = color;
                             invoker.outlineColor = color;
@@ -520,7 +520,7 @@ namespace SonOfRobin
 
                             var infoTextList = new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: String.Join("\n", textLines), imageList: imageList, color: Color.White, scale: 1f) };
 
-                            Invoker invoker = new Invoker(menu: menu, name: "island", taskName: Scheduler.TaskName.Empty, playSound: false, infoTextList: infoTextList);
+                            Invoker invoker = new Invoker(menu: menu, name: "island", taskName: Scheduler.TaskName.Empty, infoTextList: infoTextList);
                             Color color = new Color(148, 115, 55);
                             invoker.rectColor = color;
                             invoker.outlineColor = color;
@@ -545,7 +545,7 @@ namespace SonOfRobin
 
                             var infoTextList = new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: String.Join("\n", textLines), imageList: imageList, color: Color.White, scale: 1f) };
 
-                            Invoker invoker = new Invoker(menu: menu, name: "craft general", taskName: Scheduler.TaskName.Empty, playSound: false, infoTextList: infoTextList);
+                            Invoker invoker = new Invoker(menu: menu, name: "craft general", taskName: Scheduler.TaskName.Empty, infoTextList: infoTextList);
                             Color color = new Color(168, 74, 145);
                             invoker.rectColor = color;
                             invoker.outlineColor = color;
@@ -587,7 +587,7 @@ namespace SonOfRobin
 
                                         string nameString = showPageCounter ? $"{title} - page {pageCounter}" : $"{title}";
                                         Invoker invoker = new Invoker(
-                                            menu: menu, name: nameString, taskName: Scheduler.TaskName.Empty, playSound: false, infoTextList: infoTextList);
+                                            menu: menu, name: nameString, taskName: Scheduler.TaskName.Empty, infoTextList: infoTextList);
 
                                         invoker.rectColor = colorData[title];
                                         invoker.outlineColor = colorData[title];
