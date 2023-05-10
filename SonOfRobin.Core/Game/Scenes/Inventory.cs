@@ -358,9 +358,9 @@ namespace SonOfRobin
 
             if (selectedPiece.toolbarTask == Scheduler.TaskName.GetEaten)
             {
-                float fedPercent = (float)Math.Round(this.piece.world.Player.ConvertMassToFedPercent(selectedPiece.Mass), 2);
+                float fedPercent = (float)Math.Round(this.piece.world.Player.ConvertMassToFedPercent(selectedPiece.Mass) * 100, 2);
 
-                entryList.Add(new InfoWindow.TextEntry(text: $"| {fedPercent}%", imageList: new List<Texture2D> { PieceInfo.GetInfo(PieceTemplate.Name.Burger).texture }, scale: 0.7f, color: new Color(255, 241, 204)));
+                entryList.Add(new InfoWindow.TextEntry(text: $"| +{fedPercent}%", imageList: new List<Texture2D> { PieceInfo.GetInfo(PieceTemplate.Name.Burger).texture }, scale: 0.7f, color: new Color(255, 241, 204)));
             }
 
             var affinityEntries = PieceInfo.GetCategoryAffinityTextEntryList(pieceName: selectedPiece.name, scale: 1f);
