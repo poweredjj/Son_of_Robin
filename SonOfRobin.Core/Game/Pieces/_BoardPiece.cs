@@ -399,21 +399,18 @@ namespace SonOfRobin
             {
                 { "base_id", this.id },
                 { "base_name", this.name },
-                { "base_hitPoints", this.hitPoints },
                 { "base_mass", this.mass },
-                { "base_alive", this.alive },
                 { "base_maxAge", this.maxAge },
-                { "base_bioWear", this.bioWear },
-                { "base_efficiency", this.efficiency },
-                { "base_activeState", this.activeState },
                 { "base_buffEngine", this.buffEngine.Serialize() },
                 { "base_sprite", this.sprite.Serialize() }
             };
 
             PieceInfo.Info pieceInfo = PieceInfo.GetInfo(this.name);
 
+            if (pieceInfo.initialActiveState != this.activeState) pieceData["base_activeState"] = this.activeState;
             if (this.PieceStorage != null) pieceData["base_pieceStorage"] = this.PieceStorage.Serialize();
             if (pieceInfo.maxHitPoints != this.maxHitPoints) pieceData["base_maxHitPoints"] = this.maxHitPoints;
+            if (pieceInfo.startHitPoints != this.hitPoints) pieceData["base_hitPoints"] = this.hitPoints;
             if (pieceInfo.strength != this.strength) pieceData["base_strength"] = this.strength;
             if (pieceInfo.speed != this.speed) pieceData["base_speed"] = this.speed;
             if (this.burnLevel > 0) pieceData["base_burnLevel"] = this.burnLevel;
@@ -421,6 +418,9 @@ namespace SonOfRobin
             if (soundPackSerialized != null) pieceData["base_soundPack"] = soundPackSerialized;
             if (this.buffList.Any()) pieceData["base_buffList"] = this.buffList;
             if (this.canBeHit != pieceInfo.canBeHit) pieceData["base_canBeHit"] = this.canBeHit;
+            if (!this.alive) pieceData["base_alive"] = this.alive;
+            if (this.bioWear > 0) pieceData["base_bioWear"] = this.bioWear;
+            if (this.currentAge > 0) pieceData["base_currentAge"] = this.currentAge;
 
             return pieceData;
         }
@@ -428,13 +428,13 @@ namespace SonOfRobin
         public virtual void Deserialize(Dictionary<string, Object> pieceData)
         {
             this.mass = (float)(double)pieceData["base_mass"];
-            this.hitPoints = (float)(double)pieceData["base_hitPoints"];
+            if (pieceData.ContainsKey("base_hitPoints")) this.hitPoints = (float)(double)pieceData["base_hitPoints"];
             if (pieceData.ContainsKey("base_speed")) this.speed = (float)(double)pieceData["base_speed"];
             if (pieceData.ContainsKey("base_strength")) this.strength = (int)(Int64)pieceData["base_strength"];
             if (pieceData.ContainsKey("base_maxHitPoints")) this.maxHitPoints = (float)(double)pieceData["base_maxHitPoints"];
-            this.bioWear = (float)(double)pieceData["base_bioWear"];
-            this.efficiency = (float)(double)pieceData["base_efficiency"];
-            this.activeState = (State)(Int64)pieceData["base_activeState"];
+            if (pieceData.ContainsKey("base_bioWear")) this.bioWear = (float)(double)pieceData["base_bioWear"];
+            if (pieceData.ContainsKey("base_currentAge")) this.currentAge = (int)(Int64)pieceData["base_currentAge"];
+            if (pieceData.ContainsKey("base_activeState")) this.activeState = (State)(Int64)pieceData["base_activeState"];
             this.maxAge = (int)(Int64)pieceData["base_maxAge"];
             if (pieceData.ContainsKey("base_pieceStorage")) this.PieceStorage = PieceStorage.Deserialize(storageData: pieceData["base_pieceStorage"], storagePiece: this);
             this.buffEngine = BuffEngine.Deserialize(piece: this, buffEngineData: pieceData["base_buffEngine"]);
@@ -444,7 +444,9 @@ namespace SonOfRobin
             if (pieceData.ContainsKey("base_burnLevel")) this.burnLevel = (float)(double)pieceData["base_burnLevel"];
             this.sprite.Deserialize(pieceData["base_sprite"]);
 
-            if (!(bool)pieceData["base_alive"]) this.Kill();
+            this.UpdateEfficiency();
+
+            if (pieceData.ContainsKey("base_alive") && !(bool)pieceData["base_alive"]) this.Kill();
 
             this.world.piecesByOldID[(string)pieceData["base_id"]] = this;
         }
@@ -474,6 +476,11 @@ namespace SonOfRobin
         public void GrowOlder(int timeDelta)
         {
             this.currentAge += timeDelta;
+            this.UpdateEfficiency();
+        }
+
+        private void UpdateEfficiency()
+        {
             this.efficiency = Math.Max(1 - (this.currentAge / (float)this.maxAge) - this.bioWear, 0);
         }
 

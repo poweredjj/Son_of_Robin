@@ -14,6 +14,7 @@ namespace SonOfRobin
 
         private readonly Dictionary<ExtBoardProps.Name, bool> initialExtPropertiesDict;
         private Dictionary<ExtBoardProps.Name, bool> currentExtPropertiesDict;
+        public bool HasBeenChanged { get { return this.currentRangesByTerrainName != null || this.currentExtPropertiesDict != null; } }
 
         public AllowedTerrain(Dictionary<ExtBoardProps.Name, bool> extPropertiesDict = null)
         {

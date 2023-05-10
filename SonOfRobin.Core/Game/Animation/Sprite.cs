@@ -240,11 +240,11 @@ namespace SonOfRobin
                 { "animPackage", this.animPackage },
                 { "animSize", this.animSize },
                 { "colRect", this.colRect },
-                { "allowedTerrain", this.allowedTerrain.Serialize() },
             };
 
             PieceInfo.Info pieceInfo = PieceInfo.GetInfo(this.boardPiece.name);
 
+            if (this.allowedTerrain.HasBeenChanged) spriteDataDict["allowedTerrain"] = this.allowedTerrain.Serialize();
             if (this.hasBeenDiscovered) spriteDataDict["hasBeenDiscovered"] = this.hasBeenDiscovered;
             if (this.lightEngine != null) spriteDataDict["lightSource"] = this.lightEngine.Serialize();
             if (this.color != pieceInfo.color) spriteDataDict["color"] = new byte[] { this.color.R, this.color.G, this.color.B, this.color.A };
@@ -268,7 +268,7 @@ namespace SonOfRobin
             this.colRect = (Rectangle)spriteDict["colRect"];
             if (spriteDict.ContainsKey("gridGroups")) this.gridGroups = (List<Cell.Group>)spriteDict["gridGroups"];
             if (spriteDict.ContainsKey("hasBeenDiscovered")) this.hasBeenDiscovered = (bool)spriteDict["hasBeenDiscovered"];
-            this.allowedTerrain = AllowedTerrain.Deserialize(spriteDict["allowedTerrain"]);
+            if (spriteDict.ContainsKey("allowedTerrain")) this.allowedTerrain = AllowedTerrain.Deserialize(spriteDict["allowedTerrain"]);
             if (spriteDict.ContainsKey("lightSource")) this.lightEngine = LightEngine.Deserialize(lightData: spriteDict["lightSource"], sprite: this);
             if (spriteDict.ContainsKey("color"))
             {

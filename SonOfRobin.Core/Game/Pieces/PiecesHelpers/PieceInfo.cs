@@ -40,6 +40,8 @@ namespace SonOfRobin
             public readonly bool hasFruit;
             public readonly float massTakenMultiplier;
             public readonly float maxHitPoints;
+            public readonly float startHitPoints;
+            public readonly BoardPiece.State initialActiveState;
             public readonly int strength;
             public readonly bool canBeHit;
             public readonly float speed;
@@ -60,10 +62,12 @@ namespace SonOfRobin
                 this.allowedTerrain = piece.sprite.allowedTerrain;
                 this.canBePickedUp = piece.canBePickedUp;
                 this.maxHitPoints = piece.maxHitPoints;
+                this.startHitPoints = piece.hitPoints;
                 this.strength = piece.strength;
                 this.speed = piece.speed;
                 this.type = piece.GetType();
                 this.serialize = piece.serialize;
+                this.initialActiveState = piece.activeState;
                 this.blocksMovement = piece.sprite.blocksMovement;
                 this.readableName = piece.readableName;
                 this.description = piece.description;
