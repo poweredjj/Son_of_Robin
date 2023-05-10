@@ -43,9 +43,16 @@ namespace SonOfRobin
         {
             if (this.world.CurrentUpdate % 10 != 0) return;
 
+            this.sprite.opacity = 1;
+
             if (!this.world.Player.buffEngine.HasBuff(BuffEngine.BuffType.EnableMap) ||
-                !this.world.map.CheckIfPlayerCanReadTheMap(showMessage: false) ||
-                Vector2.Distance(this.sprite.position, this.world.Player.sprite.position) < 100)
+                !this.world.map.CheckIfPlayerCanReadTheMap(showMessage: false))
+            {
+                this.sprite.opacity = 0;
+                return;
+            }
+
+            if (Vector2.Distance(this.sprite.position, this.world.Player.sprite.position) < 100)
             {
                 this.Destroy(); // will be destroyed right away if map was enabled by using god mode
                 this.world.map.soundMarkerRemove.Play();

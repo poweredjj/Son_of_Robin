@@ -250,13 +250,17 @@ namespace SonOfRobin
 
             // drawing map marker
 
-            if (this.world.map.MapMarker != null && this.world.map.MapMarker.exists)
+            if (!this.transManager.HasAnyTransition &&
+                this.world.map.MapMarker != null &&
+                this.world.map.MapMarker.exists &&
+                this.world.map.MapMarker.sprite.opacity > 0)
             {
                 // calculating and drawing everything as Vector2 / float to avoid jerky marker motion
 
                 Camera camera = this.world.camera;
-                Vector2 markerPos = this.world.map.MapMarker.sprite.position;
-                Texture2D markerTexture = this.world.map.MapMarker.sprite.frame.texture;
+                BoardPiece markerPiece = this.world.map.MapMarker;
+                Vector2 markerPos = markerPiece.sprite.position;
+                Texture2D markerTexture = markerPiece.sprite.frame.texture;
 
                 float tipsHeight = 0; // to avoid drawing marker under ControlTips
                 if (Preferences.ShowControlTips)
@@ -294,7 +298,7 @@ namespace SonOfRobin
 
                 float markerDrawScale = (markerScreenPosRightBottom.X - markerScreenPos.X) / (float)markerTexture.Width;
 
-                SonOfRobinGame.SpriteBatch.Draw(texture: markerTexture, position: markerScreenPos, scale: markerDrawScale, sourceRectangle: markerTexture.Bounds, color: Color.White, rotation: 0, origin: Vector2.Zero, effects: SpriteEffects.None, layerDepth: 0);
+                SonOfRobinGame.SpriteBatch.Draw(texture: markerTexture, position: markerScreenPos, scale: markerDrawScale, sourceRectangle: markerTexture.Bounds, color: Color.White * markerPiece.sprite.opacity, rotation: 0, origin: Vector2.Zero, effects: SpriteEffects.None, layerDepth: 0);
             }
 
             SonOfRobinGame.SpriteBatch.End();
