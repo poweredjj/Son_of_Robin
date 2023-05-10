@@ -164,7 +164,7 @@ namespace SonOfRobin
             {
                 var craftStorages = new List<PieceStorage> { this.PieceStorage, this.ToolStorage, this.EquipStorage };
 
-                if (this.ResourcefulCrafter)
+                //if (this.ResourcefulCrafter)
                 {
                     var chestNames = new List<PieceTemplate.Name> { PieceTemplate.Name.ChestWooden, PieceTemplate.Name.ChestStone, PieceTemplate.Name.ChestIron, PieceTemplate.Name.ChestCrystal };
 
@@ -174,15 +174,6 @@ namespace SonOfRobin
                     foreach (BoardPiece chestPiece in chestPieces)
                     {
                         if (!craftStorages.Contains(chestPiece.PieceStorage)) craftStorages.Add(chestPiece.PieceStorage); // checking to avoid adding shared chest multiple times
-
-                        if (chestPiece.visualAid == null || !chestPiece.visualAid.exists)
-                        {
-                            BoardPiece usedChestMarker = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: chestPiece.sprite.position, templateName: PieceTemplate.Name.BubbleCraftGreen);
-
-                            new Tracking(world: world, targetSprite: chestPiece.sprite, followingSprite: usedChestMarker.sprite, targetYAlign: YAlign.Top, targetXAlign: XAlign.Left, followingYAlign: YAlign.Bottom, offsetX: 0, offsetY: 5);
-
-                            new WorldEvent(eventName: WorldEvent.EventName.FadeOutSprite, delay: 40, world: world, boardPiece: usedChestMarker, eventHelper: 20);
-                        }
                     }
                 }
 
@@ -383,7 +374,7 @@ namespace SonOfRobin
             if (Preferences.DebugGodMode || !PieceInfo.IsPlayer(this.name)) return;
 
             this.ToolStorage.DropAllPiecesToTheGround(addMovement: true); // only ToolStorage pieces should fall to the ground
-            foreach (PieceStorage storage in this.CraftStoragesToTakeFrom)
+            foreach (PieceStorage storage in this.CraftStoragesToPutInto)
             {
                 foreach (StorageSlot slot in storage.OccupiedSlots)
                 {

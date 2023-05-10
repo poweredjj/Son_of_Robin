@@ -509,7 +509,7 @@ namespace SonOfRobin
                             { player.buffEngine.AddBuff(buff: buff, world: world); }
 
                             food.hitPoints = 0;
-                            foreach (PieceStorage storage in player.CraftStoragesToTakeFrom)
+                            foreach (PieceStorage storage in player.CraftStoragesToPutInto)
                             {
                                 storage.DestroyBrokenPieces(); // to destroy "broken" food right now
                             }

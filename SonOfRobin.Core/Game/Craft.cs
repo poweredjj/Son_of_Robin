@@ -253,7 +253,7 @@ namespace SonOfRobin
 
                 if (canBePickedUp)
                 {
-                    var storagesToPutInto = pieceInfo.type == typeof(Tool) || pieceInfo.type == typeof(PortableLight) ? player.CraftStoragesToPutInto : player.CraftStoragesToTakeFrom;
+                    var storagesToPutInto = player.CraftStoragesToPutInto;
 
                     for (int i = 0; i < this.amountToCreate; i++)
                     {

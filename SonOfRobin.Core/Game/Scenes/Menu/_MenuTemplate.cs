@@ -935,7 +935,20 @@ namespace SonOfRobin
                 return null;
             }
 
-            List<PieceStorage> storageList = player.CraftStoragesToTakeFrom; // after craft checks, to avoid showing chest used markers when can't craft
+            List<PieceStorage> storageList = player.CraftStoragesToTakeFrom;
+
+            foreach (PieceStorage pieceStorage in storageList)
+            {
+                BoardPiece storagePiece = pieceStorage.storagePiece;
+                if (storagePiece.GetType() == typeof(Container) && (storagePiece.visualAid == null || !storagePiece.visualAid.exists))
+                {
+                    BoardPiece usedChestMarker = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: storagePiece.sprite.position, templateName: PieceTemplate.Name.BubbleCraftGreen);
+
+                    new Tracking(world: world, targetSprite: storagePiece.sprite, followingSprite: usedChestMarker.sprite, targetYAlign: YAlign.Top, targetXAlign: XAlign.Left, followingYAlign: YAlign.Bottom, offsetX: 0, offsetY: 5);
+
+                    new WorldEvent(eventName: WorldEvent.EventName.FadeOutSprite, delay: 40, world: world, boardPiece: usedChestMarker, eventHelper: 20);
+                }
+            }
 
             Tutorials.ShowTutorialOnTheField(type: Tutorials.Type.Craft, world: World.GetTopWorld(), ignoreDelay: true);
 
