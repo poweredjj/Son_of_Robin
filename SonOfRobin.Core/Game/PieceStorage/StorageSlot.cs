@@ -80,7 +80,12 @@ namespace SonOfRobin
             Equipment equipPiece = (Equipment)piece;
 
             if (add) this.storage.storagePiece.buffEngine.AddBuffs(world: piece.world, equipPiece.buffList);
-            else this.storage.storagePiece.buffEngine.RemoveBuffs(equipPiece.buffList);
+            else
+            {
+                // Task allows for adding new buffs now (expanding inventory / toolbar) and removing previous buffs in the next frame
+                new Scheduler.Task(taskName: Scheduler.TaskName.RemoveBuffs, turnOffInputUntilExecution: true, delay: 1,
+                    executeHelper: new Dictionary<string, Object> { { "storagePiece", this.storage.storagePiece }, { "buffList", equipPiece.buffList } });
+            }
         }
 
         public bool CanFitThisPiece(BoardPiece piece, int pieceCount = 1)
