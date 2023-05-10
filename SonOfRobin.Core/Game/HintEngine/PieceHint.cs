@@ -245,7 +245,7 @@ namespace SonOfRobin
                     PieceTemplate.Name ingredientName = kvp.Key;
                     int minimumUsedCount = kvp.Value;
 
-                    if (player.world.craftStats.HowMuchIngredientHasBeenUsed(ingredientName) < minimumUsedCount) return false;
+                    if (player.world.craftStats.HowManyIngredientHasBeenUsed(ingredientName) < minimumUsedCount) return false;
                 }
             }
 

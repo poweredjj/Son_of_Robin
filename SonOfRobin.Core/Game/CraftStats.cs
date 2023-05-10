@@ -135,24 +135,9 @@ namespace SonOfRobin
             return this.usedIngredients.ContainsKey(name);
         }
 
-        public int HowMuchIngredientHasBeenUsed(PieceTemplate.Name name)
+        public int HowManyIngredientHasBeenUsed(PieceTemplate.Name name)
         {
             return this.usedIngredients.ContainsKey(name) ? this.usedIngredients[name] : 0;
-        }
-
-        public List<List<InfoWindow.TextEntry>> GetTextEntryListForVegetationPlantedSummary()
-        {
-            return this.GetTextEntryListForSummary(collectionToShow: this.craftedPieces, header: "Vegetation planted", showOnlyPlants: true);
-        }
-
-        public List<List<InfoWindow.TextEntry>> GetTextEntryListForCraftedPiecesSummary()
-        {
-            return this.GetTextEntryListForSummary(collectionToShow: this.craftedPieces, header: "Crafted items", showOnlyPlants: false);
-        }
-
-        public List<List<InfoWindow.TextEntry>> GetTextEntryListForUsedIngredientsSummary()
-        {
-            return this.GetTextEntryListForSummary(collectionToShow: this.usedIngredients, header: "Used ingredients", showOnlyPlants: false);
         }
 
         public int GetRecipeLevel(Craft.Recipe recipe)
@@ -171,10 +156,23 @@ namespace SonOfRobin
             return recipeLevel > 0 && recipeLevel <= recipe.maxLevel && recipeLevel == Math.Floor(recipeLevel);
         }
 
-        private List<List<InfoWindow.TextEntry>> GetTextEntryListForSummary(Dictionary<PieceTemplate.Name, int> collectionToShow, string header, bool showOnlyPlants)
+        public void CreateMenuEntriesForVegetationPlantedSummary(Menu menu)
         {
-            var listOfInfoTextList = new List<List<InfoWindow.TextEntry>>();
+            this.CreateMenuEntriesForSummary(menu: menu, color: new Color(41, 145, 0), collectionToShow: this.craftedPieces, header: "Vegetation planted", showOnlyPlants: true);
+        }
 
+        public void CreateMenuEntriesForCraftedPiecesSummary(Menu menu)
+        {
+            this.CreateMenuEntriesForSummary(menu: menu, color: new Color(0, 141, 184), collectionToShow: this.craftedPieces, header: "Crafted items", showOnlyPlants: false);
+        }
+
+        public void CreateMenuEntriesForUsedIngredientsSummary(Menu menu)
+        {
+            this.CreateMenuEntriesForSummary(menu: menu, color: new Color(152, 67, 217), collectionToShow: this.usedIngredients, header: "Used ingredients", showOnlyPlants: false);
+        }
+
+        private void CreateMenuEntriesForSummary(Menu menu, Color color, Dictionary<PieceTemplate.Name, int> collectionToShow, string header, bool showOnlyPlants)
+        {
             var plantNames = PieceInfo.namesForType[typeof(Plant)];
             var fruitNames = PieceInfo.namesForType[typeof(Fruit)]; // for compatibility with older saves (using fruits for planting)
             var seedNames = PieceInfo.namesForType[typeof(Seed)]; // for compatibility with older saves (using fruits for planting)
@@ -184,7 +182,7 @@ namespace SonOfRobin
             else allowedNames = PieceTemplate.allNames.Where(name => !plantNames.Contains(name) && !seedNames.Contains(name) && !fruitNames.Contains(name)).ToList();
 
             var pieceNames = collectionToShow.Keys.Where(name => allowedNames.Contains(name)).OrderBy(n => PieceInfo.GetInfo(n).readableName);
-            if (!pieceNames.Any()) return null;
+            if (!pieceNames.Any()) return;
 
             int entriesPerPage = 15;
             int pageCounter = 1;
@@ -208,13 +206,17 @@ namespace SonOfRobin
                 {
                     string fullHeader = showPageCounter ? $"{header} - page {pageCounter}" : $"{header}";
 
-                    var currentPageInfoTextList = new List<InfoWindow.TextEntry>
+                    var infoTextList = new List<InfoWindow.TextEntry>
                     {
                         new InfoWindow.TextEntry(text: fullHeader, color: Color.White, scale: 1f),
                         new InfoWindow.TextEntry(text: String.Join("\n", textLines), imageList: imageList.ToList(), color: Color.White, scale: 1f)
                     };
 
-                    listOfInfoTextList.Add(currentPageInfoTextList);
+                    string nameString = showPageCounter ? $"{header} - page {pageCounter}" : $"{header}";
+                    Invoker invoker = new Invoker(menu: menu, name: nameString, taskName: Scheduler.TaskName.Empty, infoTextList: infoTextList);
+
+                    invoker.rectColor = color;
+                    invoker.outlineColor = color;
 
                     pageCounter++;
                     pieceCounter = 0;
@@ -222,8 +224,6 @@ namespace SonOfRobin
                     imageList.Clear();
                 }
             }
-
-            return listOfInfoTextList;
         }
     }
 }

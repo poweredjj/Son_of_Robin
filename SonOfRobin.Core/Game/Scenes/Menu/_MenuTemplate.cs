@@ -552,49 +552,10 @@ namespace SonOfRobin
                         }
 
                         // crafting / planting lists
-                        {
-                            var craftedPiecesListOfInfoTextList = world.craftStats.GetTextEntryListForCraftedPiecesSummary();
-                            var usedIngredientsListOfInfoTextList = world.craftStats.GetTextEntryListForUsedIngredientsSummary();
-                            var vegetationPlantedListOfInfoTextList = world.craftStats.GetTextEntryListForVegetationPlantedSummary();
 
-                            var collectionData = new Dictionary<string, List<List<InfoWindow.TextEntry>>>
-                            {
-                                { "crafted items", craftedPiecesListOfInfoTextList },
-                                { "used ingredients", usedIngredientsListOfInfoTextList },
-                                { "vegetation planted", vegetationPlantedListOfInfoTextList },
-                            };
-
-                            var colorData = new Dictionary<string, Color>
-                            {
-                                { "crafted items", new Color(0, 141, 184) },
-                                { "used ingredients", new Color(152, 67, 217) },
-                                { "vegetation planted",  new Color(41, 145, 0) },
-                            };
-
-                            foreach (var kvp in collectionData)
-                            {
-                                string title = kvp.Key;
-                                var listOfInfoTextList = kvp.Value;
-
-                                if (listOfInfoTextList != null)
-                                {
-                                    bool showPageCounter = listOfInfoTextList.Count > 1;
-
-                                    int pageCounter = 0;
-                                    foreach (List<InfoWindow.TextEntry> infoTextList in listOfInfoTextList)
-                                    {
-                                        pageCounter++;
-
-                                        string nameString = showPageCounter ? $"{title} - page {pageCounter}" : $"{title}";
-                                        Invoker invoker = new Invoker(
-                                            menu: menu, name: nameString, taskName: Scheduler.TaskName.Empty, infoTextList: infoTextList);
-
-                                        invoker.rectColor = colorData[title];
-                                        invoker.outlineColor = colorData[title];
-                                    }
-                                }
-                            }
-                        }
+                        world.craftStats.CreateMenuEntriesForCraftedPiecesSummary(menu);
+                        world.craftStats.CreateMenuEntriesForUsedIngredientsSummary(menu);
+                        world.craftStats.CreateMenuEntriesForVegetationPlantedSummary(menu);
 
                         return menu;
                     }
