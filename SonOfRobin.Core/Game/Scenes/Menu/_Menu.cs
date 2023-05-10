@@ -451,7 +451,11 @@ namespace SonOfRobin
         {
             if (this.creationComplete) return;
 
-            if (Preferences.ShowControlTips) new Separator(menu: this, name: "", isEmpty: true); // to prevent ControlTips from obstructing the last entry
+            if (Preferences.ShowControlTips && this.entryList.Any() && this.entryList.Last().GetType() != typeof(Separator))
+            {
+                new Separator(menu: this, name: "", isEmpty: true); // to prevent ControlTips from obstructing the last entry
+            }
+
             this.creationComplete = true;
         }
 
