@@ -125,7 +125,7 @@ namespace SonOfRobin
 
         public static LightEngine Deserialize(Object lightData, Sprite sprite)
         {
-            if (lightData == null) return null;
+            if (lightData == null) return null; // for compatibility with older saves
 
             var lightDict = (Dictionary<string, Object>)lightData;
 

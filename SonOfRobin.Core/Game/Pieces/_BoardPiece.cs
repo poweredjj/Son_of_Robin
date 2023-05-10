@@ -407,18 +407,20 @@ namespace SonOfRobin
                 { "base_efficiency", this.efficiency },
                 { "base_activeState", this.activeState },
                 { "base_buffEngine", this.buffEngine.Serialize() },
-                { "base_canBeHit", this.canBeHit },
                 { "base_sprite", this.sprite.Serialize() }
             };
 
+            PieceInfo.Info pieceInfo = PieceInfo.GetInfo(this.name);
+
             if (this.PieceStorage != null) pieceData["base_pieceStorage"] = this.PieceStorage.Serialize();
-            if (PieceInfo.GetInfo(this.name).maxHitPoints != this.maxHitPoints) pieceData["base_maxHitPoints"] = this.maxHitPoints;
-            if (PieceInfo.GetInfo(this.name).strength != this.strength) pieceData["base_strength"] = this.strength;
-            if (PieceInfo.GetInfo(this.name).speed != this.speed) pieceData["base_speed"] = this.speed;
+            if (pieceInfo.maxHitPoints != this.maxHitPoints) pieceData["base_maxHitPoints"] = this.maxHitPoints;
+            if (pieceInfo.strength != this.strength) pieceData["base_strength"] = this.strength;
+            if (pieceInfo.speed != this.speed) pieceData["base_speed"] = this.speed;
             if (this.burnLevel > 0) pieceData["base_burnLevel"] = this.burnLevel;
             var soundPackSerialized = this.soundPack.Serialize();
             if (soundPackSerialized != null) pieceData["base_soundPack"] = soundPackSerialized;
             if (this.buffList.Any()) pieceData["base_buffList"] = this.buffList;
+            if (this.canBeHit != pieceInfo.canBeHit) pieceData["base_canBeHit"] = this.canBeHit;
 
             return pieceData;
         }
@@ -438,7 +440,7 @@ namespace SonOfRobin
             this.buffEngine = BuffEngine.Deserialize(piece: this, buffEngineData: pieceData["base_buffEngine"]);
             if (pieceData.ContainsKey("base_buffList")) this.buffList = (List<Buff>)pieceData["base_buffList"];
             if (pieceData.ContainsKey("base_soundPack")) this.soundPack.Deserialize(pieceData["base_soundPack"]);
-            this.canBeHit = (bool)pieceData["base_canBeHit"];
+            if (pieceData.ContainsKey("base_canBeHit")) this.canBeHit = (bool)pieceData["base_canBeHit"];
             if (pieceData.ContainsKey("base_burnLevel")) this.burnLevel = (float)(double)pieceData["base_burnLevel"];
             this.sprite.Deserialize(pieceData["base_sprite"]);
 

@@ -78,7 +78,9 @@ namespace SonOfRobin
         {
             Dictionary<string, Object> pieceData = base.Serialize();
 
-            pieceData["plant_massTakenMultiplier"] = this.massTakenMultiplier;
+            PieceInfo.Info pieceInfo = PieceInfo.GetInfo(this.name);
+
+            if (pieceInfo.massTakenMultiplier != this.massTakenMultiplier) pieceData["plant_massTakenMultiplier"] = this.massTakenMultiplier;
             if (this.fruitEngine != null) this.fruitEngine.Serialize(pieceData);
 
             return pieceData;
@@ -87,7 +89,7 @@ namespace SonOfRobin
         public override void Deserialize(Dictionary<string, Object> pieceData)
         {
             base.Deserialize(pieceData);
-            this.massTakenMultiplier = (float)(double)pieceData["plant_massTakenMultiplier"];
+            if (pieceData.ContainsKey("plant_massTakenMultiplier")) this.massTakenMultiplier = (float)(double)pieceData["plant_massTakenMultiplier"];
             if (this.fruitEngine != null) this.fruitEngine.Deserialize(pieceData);
         }
 

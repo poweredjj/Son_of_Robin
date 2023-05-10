@@ -38,9 +38,15 @@ namespace SonOfRobin
             public List<PieceTemplate.Name> isEatenBy;
             public List<PieceTemplate.Name> combinesWith;
             public readonly bool hasFruit;
+            public readonly float massTakenMultiplier;
             public readonly float maxHitPoints;
             public readonly int strength;
+            public readonly bool canBeHit;
             public readonly float speed;
+            public readonly Color color;
+            public readonly float opacity;
+            public readonly string animName;
+            public readonly List<Cell.Group> gridGroups;
             public readonly PieceTemplate.Name fruitName;
             public PieceTemplate.Name isSpawnedBy;
             public Dictionary<BoardPiece.Category, float> strengthMultiplierByCategory;
@@ -67,6 +73,11 @@ namespace SonOfRobin
                 this.texture = this.frame.texture;
                 this.toolbarTask = piece.toolbarTask;
                 this.boardTask = piece.boardTask;
+                this.canBeHit = piece.canBeHit;
+                this.color = piece.sprite.color;
+                this.opacity = piece.sprite.opacity;
+                this.animName = piece.sprite.animName;
+                this.gridGroups = piece.sprite.gridGroups;
                 if (piece.GetType() == typeof(Animal)) this.eats = ((Animal)piece).eats;
                 this.equipType = piece.GetType() == typeof(Equipment) ? ((Equipment)piece).equipType : Equipment.EquipType.None;
                 this.convertsWhenUsed = false;
@@ -96,6 +107,7 @@ namespace SonOfRobin
                 this.combinesWith = PieceCombiner.CombinesWith(this.name);
 
                 this.hasFruit = false;
+                this.massTakenMultiplier = 1;
                 if (piece.GetType() == typeof(Plant))
                 {
                     Plant plant = (Plant)piece;
@@ -104,6 +116,7 @@ namespace SonOfRobin
                         this.fruitName = plant.fruitEngine.fruitName;
                         this.hasFruit = true;
                     }
+                    this.massTakenMultiplier = plant.massTakenMultiplier;
                 }
             }
 

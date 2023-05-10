@@ -239,15 +239,18 @@ namespace SonOfRobin
                 { "posY", (int)this.position.Y },
                 { "animPackage", this.animPackage },
                 { "animSize", this.animSize },
-                { "animName", this.animName },
                 { "colRect", this.colRect },
-                { "opacity", this.opacity },
-                { "gridGroups", this.gridGroups },
-                { "hasBeenDiscovered", this.hasBeenDiscovered },
                 { "allowedTerrain", this.allowedTerrain.Serialize() },
-                { "lightSource", this.lightEngine == null ? null : this.lightEngine.Serialize() },
-                { "color", new byte[] { this.color.R, this.color.G, this.color.B, this.color.A  }
-            } };
+            };
+
+            PieceInfo.Info pieceInfo = PieceInfo.GetInfo(this.boardPiece.name);
+
+            if (this.hasBeenDiscovered) spriteDataDict["hasBeenDiscovered"] = this.hasBeenDiscovered;
+            if (this.lightEngine != null) spriteDataDict["lightSource"] = this.lightEngine.Serialize();
+            if (this.color != pieceInfo.color) spriteDataDict["color"] = new byte[] { this.color.R, this.color.G, this.color.B, this.color.A };
+            if (this.opacity != pieceInfo.opacity) spriteDataDict["opacity"] = this.opacity;
+            if (this.animName != pieceInfo.animName) spriteDataDict["animName"] = this.animName;
+            if (this.gridGroups != pieceInfo.gridGroups) spriteDataDict["gridGroups"] = this.gridGroups;
 
             return spriteDataDict;
         }
@@ -257,18 +260,21 @@ namespace SonOfRobin
             var spriteDict = (Dictionary<string, Object>)spriteData;
 
             this.position = new Vector2((int)(Int64)spriteDict["posX"], (int)(Int64)spriteDict["posY"]);
-            this.opacity = (float)(double)spriteDict["opacity"];
+            if (spriteDict.ContainsKey("opacity")) this.opacity = (float)(double)spriteDict["opacity"];
             this.animPackage = (AnimData.PkgName)(Int64)spriteDict["animPackage"];
             this.animSize = (byte)(Int64)spriteDict["animSize"];
-            this.animName = (string)spriteDict["animName"];
+            if (spriteDict.ContainsKey("animName")) this.animName = (string)spriteDict["animName"];
             this.AssignFrame(checkForCollision: false);
             this.colRect = (Rectangle)spriteDict["colRect"];
-            this.gridGroups = (List<Cell.Group>)spriteDict["gridGroups"];
-            this.hasBeenDiscovered = (bool)spriteDict["hasBeenDiscovered"];
+            if (spriteDict.ContainsKey("gridGroups")) this.gridGroups = (List<Cell.Group>)spriteDict["gridGroups"];
+            if (spriteDict.ContainsKey("hasBeenDiscovered")) this.hasBeenDiscovered = (bool)spriteDict["hasBeenDiscovered"];
             this.allowedTerrain = AllowedTerrain.Deserialize(spriteDict["allowedTerrain"]);
-            this.lightEngine = LightEngine.Deserialize(lightData: spriteDict["lightSource"], sprite: this);
-            var colorArray = (byte[])spriteDict["color"];
-            this.color = new Color(r: colorArray[0], g: colorArray[1], b: colorArray[2], alpha: colorArray[3]);
+            if (spriteDict.ContainsKey("lightSource")) this.lightEngine = LightEngine.Deserialize(lightData: spriteDict["lightSource"], sprite: this);
+            if (spriteDict.ContainsKey("color"))
+            {
+                var colorArray = (byte[])spriteDict["color"];
+                this.color = new Color(r: colorArray[0], g: colorArray[1], b: colorArray[2], alpha: colorArray[3]);
+            }
         }
 
         public byte GetFieldValue(Terrain.Name terrainName)
