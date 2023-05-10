@@ -429,7 +429,17 @@ namespace SonOfRobin
                 return;
             }
 
-            if (Directory.Exists(this.savePath)) Directory.Delete(path: this.savePath, recursive: true);
+            if (Directory.Exists(this.savePath))
+            {
+                try
+                { Directory.Delete(path: this.savePath, recursive: true); }
+                catch (IOException)
+                {
+                    new TextWindow(text: "An error occured while deleting previous save directory.", textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false, closingTask: this.TextWindowTask, priority: -1, inputType: InputTypes.Normal);
+                    this.ErrorOccured = true;
+                    return;
+                }
+            }
 
             bool movedCorrectly = false;
             for (int i = 0; i < 15; i++)

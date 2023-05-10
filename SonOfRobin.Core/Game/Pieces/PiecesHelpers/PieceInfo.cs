@@ -48,7 +48,6 @@ namespace SonOfRobin
             public readonly Color color;
             public readonly float opacity;
             public readonly string animName;
-            public readonly List<Cell.Group> gridGroups;
             public readonly PieceTemplate.Name fruitName;
             public PieceTemplate.Name isSpawnedBy;
             public Dictionary<BoardPiece.Category, float> strengthMultiplierByCategory;
@@ -81,7 +80,6 @@ namespace SonOfRobin
                 this.color = piece.sprite.color;
                 this.opacity = piece.sprite.opacity;
                 this.animName = piece.sprite.animName;
-                this.gridGroups = piece.sprite.gridGroups;
                 if (piece.GetType() == typeof(Animal)) this.eats = ((Animal)piece).eats;
                 this.equipType = piece.GetType() == typeof(Equipment) ? ((Equipment)piece).equipType : Equipment.EquipType.None;
                 this.convertsWhenUsed = false;

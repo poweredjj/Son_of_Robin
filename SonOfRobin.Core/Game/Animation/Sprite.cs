@@ -250,7 +250,6 @@ namespace SonOfRobin
             if (this.color != pieceInfo.color) spriteDataDict["color"] = new byte[] { this.color.R, this.color.G, this.color.B, this.color.A };
             if (this.opacity != pieceInfo.opacity) spriteDataDict["opacity"] = this.opacity;
             if (this.animName != pieceInfo.animName) spriteDataDict["animName"] = this.animName;
-            if (this.gridGroups != pieceInfo.gridGroups) spriteDataDict["gridGroups"] = this.gridGroups;
 
             return spriteDataDict;
         }
@@ -266,7 +265,6 @@ namespace SonOfRobin
             if (spriteDict.ContainsKey("animName")) this.animName = (string)spriteDict["animName"];
             this.AssignFrame(checkForCollision: false);
             this.colRect = (Rectangle)spriteDict["colRect"];
-            if (spriteDict.ContainsKey("gridGroups")) this.gridGroups = (List<Cell.Group>)spriteDict["gridGroups"];
             if (spriteDict.ContainsKey("hasBeenDiscovered")) this.hasBeenDiscovered = (bool)spriteDict["hasBeenDiscovered"];
             if (spriteDict.ContainsKey("allowedTerrain")) this.allowedTerrain = AllowedTerrain.Deserialize(spriteDict["allowedTerrain"]);
             if (spriteDict.ContainsKey("lightSource")) this.lightEngine = LightEngine.Deserialize(lightData: spriteDict["lightSource"], sprite: this);
