@@ -622,13 +622,16 @@ namespace SonOfRobin
             if (this.pointWalkTarget != Vector2.Zero)
             {
                 this.GoOneStepTowardsGoal(this.pointWalkTarget, splitXY: true, walkSpeed: this.speed);
-                if (Vector2.Distance(this.sprite.position, this.pointWalkTarget) < 2f)
+                if (this.PointWalkTargetReached)
                 {
                     this.sprite.CharacterStand();
                     this.pointWalkTarget = Vector2.Zero;
                 }
             }
         }
+
+        private bool PointWalkTargetReached
+        { get { return this.pointWalkTarget == Vector2.Zero || Vector2.Distance(this.sprite.position, this.pointWalkTarget) <= 1f * this.speed; } }
 
         public override void SM_PlayerControlledWalking()
         {
@@ -734,15 +737,16 @@ namespace SonOfRobin
                     }
                 }
 
-                if (this.pointWalkTarget != Vector2.Zero)
+                if (!this.PointWalkTargetReached)
                 {
                     movement = this.pointWalkTarget - this.sprite.position;
 
-                    if (Math.Abs(movement.X) < 3) movement.X = 0; // to avoid animation flickering
-                    if (Math.Abs(movement.Y) < 3) movement.Y = 0; // to avoid animation flickering
+                    if (Math.Abs(movement.X) < 4) movement.X = 0; // to avoid animation flickering
+                    if (Math.Abs(movement.Y) < 4) movement.Y = 0; // to avoid animation flickering
 
                     if (movement.X == 0 && movement.Y == 0) this.pointWalkTarget = Vector2.Zero;
                 }
+                else this.pointWalkTarget = Vector2.Zero;
             }
             else this.pointWalkTarget = Vector2.Zero;
 
