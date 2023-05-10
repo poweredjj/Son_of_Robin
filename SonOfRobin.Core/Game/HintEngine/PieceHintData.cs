@@ -325,7 +325,7 @@ namespace SonOfRobin
 
                 new PieceHint(
                     type: PieceHint.Type.CanDestroyEssentialWorkshop,
-                    message: $"Now that I have this | { PieceInfo.GetInfo(PieceTemplate.Name.WorkshopBasic).readableName },\nI could destroy | { PieceInfo.GetInfo(PieceTemplate.Name.WorkshopEssential).readableName } to get back some | construction materials.",
+                    message: $"Now that I have this | { PieceInfo.GetInfo(PieceTemplate.Name.WorkshopBasic).readableName },\nI could destroy | { PieceInfo.GetInfo(PieceTemplate.Name.WorkshopEssential).readableName }\nto get back some | construction materials.",
                     imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.WorkshopBasic), PieceInfo.GetTexture(PieceTemplate.Name.WorkshopEssential), PieceInfo.GetTexture(PieceTemplate.Name.WoodLogRegular) },
                     fieldPiecesNearby: new List<PieceTemplate.Name> { PieceTemplate.Name.WorkshopBasic }),
 
