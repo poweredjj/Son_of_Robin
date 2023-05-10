@@ -204,9 +204,9 @@ namespace SonOfRobin
             if (Layout == newLayout)
             {
                 Inventory topInventory = GetTopInventory();
-                if (topInventory?.piece.world == World.GetTopWorld()) return;          
+                if (topInventory?.piece.world == World.GetTopWorld()) return;
             }
-       
+
             if (fieldStorage != null && fieldStorage.PieceStorage.storageType != PieceStorage.StorageType.Fireplace && player != null && !player.CanSeeAnything)
             {
                 new TextWindow(text: $"It is too dark to use the | {fieldStorage.readableName}...", imageList: new List<Texture2D> { PieceInfo.GetTexture(fieldStorage.name) }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: InputTypes.None, blockInputDuration: 45, priority: 1, animSound: player.world.DialogueSound);
@@ -354,6 +354,13 @@ namespace SonOfRobin
                 Seed seeds = (Seed)selectedPiece;
 
                 entryList.Add(new InfoWindow.TextEntry(text: $"| {Helpers.FirstCharToUpperCase(PieceInfo.GetInfo(seeds.PlantToGrow).readableName)} seeds.", imageList: new List<Texture2D> { PieceInfo.GetInfo(seeds.PlantToGrow).texture }, scale: 0.7f, color: new Color(208, 255, 199)));
+            }
+
+            if (selectedPiece.toolbarTask == Scheduler.TaskName.GetEaten)
+            {
+                float fedPercent = (float)Math.Round(this.piece.world.Player.ConvertMassToFedPercent(selectedPiece.Mass), 2);
+
+                entryList.Add(new InfoWindow.TextEntry(text: $"| {fedPercent}%", imageList: new List<Texture2D> { PieceInfo.GetInfo(PieceTemplate.Name.Burger).texture }, scale: 0.7f, color: new Color(255, 241, 204)));
             }
 
             var affinityEntries = PieceInfo.GetCategoryAffinityTextEntryList(pieceName: selectedPiece.name, scale: 1f);

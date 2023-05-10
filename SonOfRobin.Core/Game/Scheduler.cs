@@ -503,7 +503,7 @@ namespace SonOfRobin
 
                             // adding "generic" regen based on mass (if meal does not contain poison or regen)
                             if (!BuffEngine.BuffListContainsPoisonOrRegen(food.buffList)) food.buffList.Add(new Buff(type: BuffEngine.BuffType.RegenPoison, value: (int)(food.Mass / 3), autoRemoveDelay: 60 * 60));
-                            player.AcquireEnergy(food.Mass * 40f);
+                            player.AcquireEnergy(player.ConvertMassToEnergyAmount(food.Mass));
 
                             foreach (Buff buff in food.buffList)
                             { player.buffEngine.AddBuff(buff: buff, world: world); }

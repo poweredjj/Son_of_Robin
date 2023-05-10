@@ -311,7 +311,7 @@ namespace SonOfRobin
         {
             get
             {
-                float fedPercent = (float)this.fedLevel / (float)this.maxFedLevel;
+                float fedPercent = this.ConvertFedLevelToFedPercent(this.fedLevel);
 
                 if (fedPercent < 0.2f)
                 {
@@ -507,14 +507,34 @@ namespace SonOfRobin
 
         public void AcquireEnergy(float energyAmount)
         {
-            energyAmount *= this.efficiency;
-
-            this.fedLevel = Math.Min(this.fedLevel + Convert.ToInt32(energyAmount * 2), this.maxFedLevel);
+            this.fedLevel = Math.Min(this.fedLevel + this.ConvertEnergyAmountToFedLevel(energyAmount), this.maxFedLevel);
             this.Stamina = this.maxStamina;
 
             if (this.FedPercent > 0.8f) this.world.HintEngine.Enable(HintEngine.Type.Hungry);
             if (this.FedPercent > 0.4f) this.world.HintEngine.Enable(HintEngine.Type.VeryHungry);
             if (this.FedPercent > 0.1f) this.world.HintEngine.Enable(HintEngine.Type.Starving);
+        }
+
+        public float ConvertMassToEnergyAmount(float mass)
+        {
+            return mass * 40f;
+        }
+
+        private int ConvertEnergyAmountToFedLevel(float energyAmount)
+        {
+            return (int)energyAmount * 2;
+        }
+
+        private float ConvertFedLevelToFedPercent(int fedLevel)
+        {
+            return (float)fedLevel / (float)this.maxFedLevel;
+        }
+
+        public float ConvertMassToFedPercent(float mass)
+        {
+            float energyAmount = this.ConvertMassToEnergyAmount(mass);
+            int fedLevel = this.ConvertEnergyAmountToFedLevel(energyAmount);
+            return this.ConvertFedLevelToFedPercent(fedLevel);
         }
 
         public void UpdateDistanceWalked()
