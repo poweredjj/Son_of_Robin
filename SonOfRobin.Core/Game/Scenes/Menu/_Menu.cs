@@ -36,9 +36,11 @@ namespace SonOfRobin
         public readonly Sound soundSelect;
         public readonly Sound soundInvoke;
         public readonly object templateExecuteHelper; // needed for correct rebuild
+        private bool creationComplete;
 
         public Menu(MenuTemplate.Name templateName, bool blocksUpdatesBelow, bool canBeClosedManually, string name, object templateExecuteHelper, bool alwaysShowSelectedEntry = false, Layout layout = Layout.Right, Scheduler.TaskName closingTask = Scheduler.TaskName.Empty, Object closingTaskHelper = null, int priority = 1, SoundData.Name soundNavigate = SoundData.Name.Navigation, SoundData.Name soundOpen = SoundData.Name.Empty, SoundData.Name soundClose = SoundData.Name.Navigation, SoundData.Name soundSelect = SoundData.Name.Select, SoundData.Name soundInvoke = SoundData.Name.Invoke) : base(inputType: InputTypes.Normal, priority: priority, blocksUpdatesBelow: blocksUpdatesBelow, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, hidesSameScenesBelow: true, touchLayout: TouchLayout.Empty, tipsLayout: canBeClosedManually ? ControlTips.TipsLayout.Menu : ControlTips.TipsLayout.MenuWithoutClosing)
         {
+            this.creationComplete = false;
             this.createdAt = DateTime.Now;
             this.layout = layout;
             this.alwaysShowSelectedEntry = alwaysShowSelectedEntry;
@@ -445,8 +447,18 @@ namespace SonOfRobin
             return menuListOfTemplate;
         }
 
+        private void EndCreation()
+        {
+            if (this.creationComplete) return;
+
+            if (Preferences.ShowControlTips) new Separator(menu: this, name: "", isEmpty: true); // to prevent ControlTips from obstructing the last entry
+            this.creationComplete = true;
+        }
+
         public override void Update(GameTime gameTime)
         {
+            this.EndCreation();
+
             SonOfRobinGame.SmallProgressBar.TurnOff();
 
             if (this.activeIndex == -1) this.NextItem(); // searching for first non-separator menu item
