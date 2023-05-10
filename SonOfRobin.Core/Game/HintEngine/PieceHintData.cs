@@ -318,8 +318,14 @@ namespace SonOfRobin
                     fieldPiecesNearby: new List<PieceTemplate.Name> {PieceTemplate.Name.Campfire}),
 
                 new PieceHint(
+                    type: PieceHint.Type.SharedChest,
+                    message: $"This | { PieceInfo.GetInfo(PieceTemplate.Name.ChestCrystal).readableName } defies the laws of physics, somehow.\nEvery other | { PieceInfo.GetInfo(PieceTemplate.Name.ChestCrystal).readableName } will share the items that are stored inside.",
+                    imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.ChestCrystal), PieceInfo.GetTexture(PieceTemplate.Name.ChestCrystal) },
+                    fieldPiecesNearby: new List<PieceTemplate.Name> { PieceTemplate.Name.ChestCrystal }),
+
+                new PieceHint(
                     type: PieceHint.Type.CanBuildWorkshop,
-                    message: $"If I had more | wood, I could build an | { PieceInfo.GetInfo(PieceTemplate.Name.WorkshopEssential).readableName}.",
+                    message: $"If I had more | wood, I could build an | { PieceInfo.GetInfo(PieceTemplate.Name.WorkshopEssential).readableName }.",
                     imageList: new List<Texture2D>{ PieceInfo.GetInfo(PieceTemplate.Name.WoodLogRegular).texture, PieceInfo.GetTexture(PieceTemplate.Name.WorkshopEssential) },
                     tutorialsToActivate: new List<Tutorials.Type> {Tutorials.Type.BuildWorkshop},
                     playerOwnsAllOfThesePieces: new List<PieceTemplate.Name> { PieceTemplate.Name.WoodLogRegular },
