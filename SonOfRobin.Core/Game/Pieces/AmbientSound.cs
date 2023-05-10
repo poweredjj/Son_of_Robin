@@ -47,19 +47,6 @@ namespace SonOfRobin
             }
         }
 
-        public override Dictionary<string, Object> Serialize()
-        {
-            Dictionary<string, Object> pieceData = base.Serialize();
-            // data to serialize here
-            return pieceData;
-        }
-
-        public override void Deserialize(Dictionary<string, Object> pieceData)
-        {
-            base.Deserialize(pieceData);
-            // data to deserialize here
-        }
-
         public override void DrawStatBar()
         {
             Sound sound = this.soundPack.GetSound(PieceSoundPack.Action.Ambient);

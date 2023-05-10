@@ -78,9 +78,12 @@ namespace SonOfRobin
 
             pieceData["animal_IsFemale"] = this.IsFemale;
             pieceData["animal_fedLevel"] = this.fedLevel;
-            pieceData["animal_pregnancyMass"] = this.pregnancyMass;
-            pieceData["animal_pregnancyFramesLeft"] = this.pregnancyFramesLeft;
-            pieceData["animal_isPregnant"] = this.isPregnant;
+            if (this.IsFemale && this.isPregnant)
+            {
+                pieceData["animal_isPregnant"] = this.isPregnant;
+                pieceData["animal_pregnancyMass"] = this.pregnancyMass;
+                pieceData["animal_pregnancyFramesLeft"] = this.pregnancyFramesLeft;
+            }
 
             return pieceData;
         }
@@ -92,9 +95,9 @@ namespace SonOfRobin
             // animPackage does not have to be reassigned - it is set by Sprite.Deserialize()
             this.IsFemale = (bool)pieceData["animal_IsFemale"];
             this.fedLevel = (int)(Int64)pieceData["animal_fedLevel"];
-            this.pregnancyMass = (int)(Int64)pieceData["animal_pregnancyMass"];
-            this.pregnancyFramesLeft = (int)(Int64)pieceData["animal_pregnancyFramesLeft"];
-            this.isPregnant = (bool)pieceData["animal_isPregnant"];
+            if (pieceData.ContainsKey("animal_isPregnant")) this.isPregnant = (bool)pieceData["animal_isPregnant"];
+            if (pieceData.ContainsKey("animal_pregnancyMass")) this.pregnancyMass = (int)(Int64)pieceData["animal_pregnancyMass"];
+            if (pieceData.ContainsKey("animal_pregnancyFramesLeft")) this.pregnancyFramesLeft = (int)(Int64)pieceData["animal_pregnancyFramesLeft"];
             this.activeState = State.AnimalAssessSituation; // to avoid using (non-serialized) aiData
         }
 

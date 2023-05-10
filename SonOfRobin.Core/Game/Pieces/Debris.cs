@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace SonOfRobin
 {
@@ -13,17 +12,5 @@ namespace SonOfRobin
             this.soundPack.RemoveAction(PieceSoundPack.Action.IsDropped);
         }
 
-        public override Dictionary<string, Object> Serialize()
-        {
-            Dictionary<string, Object> pieceData = base.Serialize();
-            // data to serialize here
-            return pieceData;
-        }
-
-        public override void Deserialize(Dictionary<string, Object> pieceData)
-        {
-            base.Deserialize(pieceData);
-            // data to deserialize here
-        }
     }
 }
