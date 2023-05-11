@@ -959,7 +959,7 @@ namespace SonOfRobin
                     case TaskName.ShowBrewingProgress:
                         {
                             AlchemyLab alchemyLab = (AlchemyLab)this.ExecuteHelper;
-                            alchemyLab.ShowCookingProgress();
+                            alchemyLab.ShowBrewingProgress();
 
                             return;
                         }

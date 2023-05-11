@@ -299,7 +299,7 @@ namespace SonOfRobin
             this.TurnOn();
             new TextWindow(text: "Brewing...", textColor: Color.White, bgColor: Color.Green, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1);
 
-            int brewingTime = 60 * 30;
+            int brewingTime = 60 * 15 * (1 + storedBoosters.Count());
 
             this.brewingStartFrame = this.world.CurrentUpdate;
             this.brewingDoneFrame = this.world.CurrentUpdate + brewingTime;
@@ -311,9 +311,9 @@ namespace SonOfRobin
             // this.world.HintEngine.Disable(Tutorials.Type.Cook); // TODO add PotionBrew Tutorial
         }
 
-        public void ShowCookingProgress()
+        public void ShowBrewingProgress()
         {
-            new TextWindow(text: $"Cooking will be done in {TimeSpanToString(this.TimeToFinishBrewing)}.", textColor: Color.White, bgColor: Color.Green, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1);
+            new TextWindow(text: $"Brewing will be done in { TimeSpanToString(this.TimeToFinishBrewing) }.", textColor: Color.White, bgColor: Color.Green, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1);
         }
 
         private static string TimeSpanToString(TimeSpan timeSpan)

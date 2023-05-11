@@ -272,7 +272,7 @@ namespace SonOfRobin
             ChestCrystal,
             PotionGeneric,
             BrewTrigger,
-            AlchemyLab,
+            AlchemyLabStandard,
         }
 
         public static readonly Name[] allNames = (Name[])Enum.GetValues(typeof(Name));
@@ -1415,7 +1415,7 @@ namespace SonOfRobin
                         return cookingPot;
                     }
 
-                case Name.AlchemyLab:
+                case Name.AlchemyLabStandard:
                     {
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
                             { Terrain.Name.Height, new AllowedRange(min: Terrain.waterLevelMax, max: Terrain.volcanoEdgeMin) }});
