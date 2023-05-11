@@ -212,7 +212,7 @@ namespace SonOfRobin
                     imageList.Add(PieceInfo.GetInfo(baseName).texture);
                 }
 
-                new TextWindow(text: $"I don't have any {baseMarkers} bases.", imageList: imageList, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
+                new TextWindow(text: $"I don't have any {baseMarkers} base.", imageList: imageList, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
                 return;
             }
 
