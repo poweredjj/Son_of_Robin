@@ -95,7 +95,7 @@ namespace SonOfRobin
             WorkshopLeatherBasic,
             WorkshopLeatherAdvanced,
 
-            WorkshopAlchemy, // kept for compatibility with older saves
+            WorkshopAlchemyObsolete, // kept for compatibility with older saves
 
             Furnace,
             Anvil,
@@ -1361,7 +1361,7 @@ namespace SonOfRobin
                             floatsOnWater: false, minDistance: 0, maxDistance: 100, maxMassForSize: null, generation: generation, craftMenuTemplate: MenuTemplate.Name.CraftLeatherAdvanced, maxHitPoints: 30, readableName: "advanced leather workshop", description: "For making advanced items out of leather.", canBeUsedDuringRain: true, fireAffinity: 0.8f);
                     }
 
-                case Name.WorkshopAlchemy:
+                case Name.WorkshopAlchemyObsolete:
                     {
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
                             { Terrain.Name.Height, new AllowedRange(min: Terrain.waterLevelMax, max: Terrain.volcanoEdgeMin) }});

@@ -309,7 +309,7 @@ namespace SonOfRobin
             new TextWindow(text: "Brewing...", textColor: Color.White, bgColor: Color.Green, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1);
 
             int brewingTime = 60 * 15 * (1 + storedBoosters.Count());
-            brewingTime = 80; // for testing
+            // brewingTime = 80; // for testing
 
             this.brewingStartFrame = this.world.CurrentUpdate;
             this.brewingDoneFrame = this.world.CurrentUpdate + brewingTime;
@@ -317,8 +317,8 @@ namespace SonOfRobin
 
             new WorldEvent(eventName: WorldEvent.EventName.FinishBrewing, world: this.world, delay: brewingTime, boardPiece: this);
 
-            // this.world.HintEngine.Disable(PieceHint.Type.Cooker); // TODO add AlchemyLab PieceHint
-            // this.world.HintEngine.Disable(Tutorials.Type.Cook); // TODO add PotionBrew Tutorial
+            this.world.HintEngine.Disable(PieceHint.Type.AlchemyLab);
+            this.world.HintEngine.Disable(Tutorials.Type.PotionBrew);
         }
 
         public void ShowBrewingProgress()

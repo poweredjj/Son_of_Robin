@@ -51,7 +51,7 @@ namespace SonOfRobin
 
         private void CreateAndConfigureStorage()
         {
-            byte storageWidth = (byte)this.ingredientSpace;
+            byte storageWidth = (byte)(this.ingredientSpace + 1);
             storageWidth = Math.Max(storageWidth, (byte)3);
             byte storageHeight = 2;
 
@@ -86,7 +86,7 @@ namespace SonOfRobin
 
             for (int x = 0; x < this.ingredientSpace; x++)
             {
-                StorageSlot ingredientSlot = this.PieceStorage.GetSlot(x, 1);
+                StorageSlot ingredientSlot = this.PieceStorage.GetSlot(x + 1, 1);
                 ingredientSlot.locked = false;
                 ingredientSlot.hidden = false;
                 ingredientSlot.label = "ingredient";
