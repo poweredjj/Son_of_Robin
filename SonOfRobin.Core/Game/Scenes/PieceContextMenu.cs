@@ -9,7 +9,7 @@ namespace SonOfRobin
     public class PieceContextMenu : Scene
     {
         protected enum ContextAction
-        { Drop, DropAll, Move, Eat, Drink, Plant, Cook, Switch, Ignite, Extinguish, Upgrade }
+        { Drop, DropAll, Move, Eat, Drink, Plant, Cook, Switch, Ignite, Extinguish, Upgrade, Brew }
 
         private static readonly SpriteFont font = SonOfRobinGame.FontTommy40;
         private const float marginPercent = 0.03f;
@@ -120,7 +120,7 @@ namespace SonOfRobin
             }
         }
 
-        public PieceContextMenu(BoardPiece piece, PieceStorage storage, StorageSlot slot, float percentPosX, float percentPosY, bool addMove = false, bool addDrop = true, bool addCook = false, bool addIgnite = false, bool addExtinguish = false, bool addUpgrade = false) : base(inputType: InputTypes.Normal, priority: 0, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.PieceContext)
+        public PieceContextMenu(BoardPiece piece, PieceStorage storage, StorageSlot slot, float percentPosX, float percentPosY, bool addMove = false, bool addDrop = true, bool addCook = false, bool addBrew = false, bool addIgnite = false, bool addExtinguish = false, bool addUpgrade = false) : base(inputType: InputTypes.Normal, priority: 0, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.PieceContext)
         {
             this.piece = piece;
             this.storage = storage;
@@ -137,7 +137,7 @@ namespace SonOfRobin
                 new Dictionary<string, float> { { "PosY", this.viewParams.PosY + SonOfRobinGame.VirtualHeight }, { "Opacity", 0f } });
         }
 
-        private List<ContextAction> GetContextActionList(bool addMove = false, bool addDrop = false, bool addCook = false, bool addIgnite = false, bool addExtinguish = false, bool addUpgrade = false)
+        private List<ContextAction> GetContextActionList(bool addMove = false, bool addDrop = false, bool addCook = false, bool addBrew = false, bool addIgnite = false, bool addExtinguish = false, bool addUpgrade = false)
         {
             var contextActionList = new List<ContextAction> { };
 
@@ -148,6 +148,7 @@ namespace SonOfRobin
             if (addMove) contextActionList.Add(ContextAction.Move);
             if (addDrop) contextActionList.Add(ContextAction.Drop);
             if (addCook) contextActionList.Add(ContextAction.Cook);
+            if (addBrew) contextActionList.Add(ContextAction.Brew);
             if (addIgnite) contextActionList.Add(ContextAction.Ignite);
             if (addExtinguish) contextActionList.Add(ContextAction.Extinguish);
             if (addUpgrade) contextActionList.Add(ContextAction.Upgrade);
@@ -369,6 +370,35 @@ namespace SonOfRobin
                         }
 
                         cooker.Cook();
+
+                        return;
+                    }
+
+                case ContextAction.Brew:
+                    {
+                        AlchemyLab alchemyLab = (AlchemyLab)this.storage.storagePiece;
+                        World world = alchemyLab.world;
+                        Player player = world.Player;
+
+                        if (player.AreEnemiesNearby && !player.IsActiveFireplaceNearby)
+                        {
+                            new TextWindow(text: "I cannot brew with enemies nearby.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: InputTypes.None, blockInputDuration: 45, priority: 1, closingTask: Scheduler.TaskName.ShowTutorialInGame, closingTaskHelper: new Dictionary<string, Object> { { "tutorial", Tutorials.Type.KeepingAnimalsAway }, { "world", world }, { "ignoreDelay", true } }, animSound: world.DialogueSound);
+                            return;
+                        }
+
+                        if (world.weather.IsRaining && !alchemyLab.canBeUsedDuringRain)
+                        {
+                            new TextWindow(text: "I cannot brew during rain.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: InputTypes.None, blockInputDuration: 45, priority: 1, animSound: world.DialogueSound);
+                            return;
+                        }
+
+                        if (player.IsVeryTired)
+                        {
+                            new TextWindow(text: "I'm too tired to brew...", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: InputTypes.None, blockInputDuration: 45, priority: 1, animSound: world.DialogueSound);
+                            return;
+                        }
+
+                        alchemyLab.Brew();
 
                         return;
                     }

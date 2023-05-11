@@ -278,6 +278,7 @@ namespace SonOfRobin
             FireBurnShort,
             ShootFire,
             AnvilHit,
+            BoilingPotionLoop,
         }
 
         public static readonly Dictionary<Name, string> soundFilenamesDict = new Dictionary<Name, string> {
@@ -497,6 +498,7 @@ namespace SonOfRobin
             { Name.FireBurnShort, "195586__scott-snailham__bonfire-fx-with-whoosh-basic-with-some-crackle-cd-quality_short" },
             { Name.ShootFire, "234083__211redman112__lasgun-fire" },
             { Name.AnvilHit, "386124__ldezem__anvil-lokomo-a-100-kg-combination-of-hot-and-cold-hits" },
+            { Name.BoilingPotionLoop, "62282__robinhood76__00517-alchemist-laboratory-arrangement_loop" },
             };
     }
 }

@@ -79,7 +79,7 @@ namespace SonOfRobin
     public class WorldEvent
     {
         public enum EventName
-        { Birth, Death, Destruction, TurnOffWorkshop, FinishCooking, RestorePieceCreation, FadeOutSprite, RestoreHint, RemoveBuff, BurnOutLightSource, RegenPoison, ChangeActiveState, FinishBuilding, PlaySoundByName, YieldDropDebris, AnimalCallForHelp }
+        { Birth, Death, Destruction, TurnOffWorkshop, FinishCooking, RestorePieceCreation, FadeOutSprite, RestoreHint, RemoveBuff, BurnOutLightSource, RegenPoison, ChangeActiveState, FinishBuilding, PlaySoundByName, YieldDropDebris, AnimalCallForHelp, FinishBrewing }
 
         public readonly BoardPiece boardPiece;
         public readonly int startUpdateNo;
@@ -183,6 +183,13 @@ namespace SonOfRobin
                     {
                         Cooker cooker = (Cooker)this.boardPiece;
                         cooker.TurnOff();
+                        return;
+                    }
+
+                case EventName.FinishBrewing:
+                    {
+                        AlchemyLab alchemyLab = (AlchemyLab)this.boardPiece;
+                        alchemyLab.TurnOff();
                         return;
                     }
 
