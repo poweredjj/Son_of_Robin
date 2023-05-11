@@ -95,7 +95,7 @@ namespace SonOfRobin
             WorkshopLeatherBasic,
             WorkshopLeatherAdvanced,
 
-            WorkshopAlchemy,
+            WorkshopAlchemy, // kept for compatibility with older saves
 
             Furnace,
             Anvil,
@@ -224,16 +224,16 @@ namespace SonOfRobin
             HerbsViolet,
 
             EmptyBottle,
-            PotionHealing,
-            PotionMaxHPIncrease,
-            PotionMaxHPDecrease,
-            PotionStrength,
-            PotionHaste,
-            PotionMaxStamina,
-            PotionFatigue,
-            PotionPoison,
-            PotionSlowdown,
-            PotionWeakness,
+            PotionHealing, // kept for compatibility with older saves
+            PotionMaxHPIncrease, // kept for compatibility with older saves
+            PotionMaxHPDecrease, // kept for compatibility with older saves
+            PotionStrength, // kept for compatibility with older saves
+            PotionHaste, // kept for compatibility with older saves
+            PotionMaxStamina, // kept for compatibility with older saves
+            PotionFatigue, // kept for compatibility with older saves
+            PotionPoison, // kept for compatibility with older saves
+            PotionSlowdown, // kept for compatibility with older saves
+            PotionWeakness, // kept for compatibility with older saves
             BottleOfOil,
 
             Hole,
@@ -272,6 +272,7 @@ namespace SonOfRobin
             ChestCrystal,
             PotionGeneric,
             BrewTrigger,
+            AlchemyLab,
         }
 
         public static readonly Name[] allNames = (Name[])Enum.GetValues(typeof(Name));
@@ -1364,7 +1365,7 @@ namespace SonOfRobin
                     {
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
                             { Terrain.Name.Height, new AllowedRange(min: Terrain.waterLevelMax, max: Terrain.volcanoEdgeMin) }});
-                        return new Workshop(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WorkshopAlchemy, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Wood,
+                        return new Workshop(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.AlchemyLab, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Wood,
                             floatsOnWater: false, minDistance: 0, maxDistance: 100, maxMassForSize: null, generation: generation, craftMenuTemplate: MenuTemplate.Name.CraftAlchemy, maxHitPoints: 30, readableName: "alchemy lab", description: "For potion making.", canBeUsedDuringRain: true, fireAffinity: 0.8f);
                     }
 
@@ -1412,6 +1413,21 @@ namespace SonOfRobin
 
                         cookingPot.sprite.AssignNewName("off");
                         return cookingPot;
+                    }
+
+                case Name.AlchemyLab:
+                    {
+                        var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
+                            { Terrain.Name.Height, new AllowedRange(min: Terrain.waterLevelMax, max: Terrain.volcanoEdgeMin) }});
+
+                        var soundPack = new PieceSoundPack();
+                        soundPack.AddAction(action: PieceSoundPack.Action.IsOn, sound: new Sound(name: SoundData.Name.BoilingPotionLoop, isLooped: true));
+                        soundPack.AddAction(action: PieceSoundPack.Action.Open, sound: new Sound(name: SoundData.Name.BoilingPotion, ignore3DAlways: true));
+
+                        var alchemyLab = new AlchemyLab(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.AlchemyLab, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Metal, floatsOnWater: false, minDistance: 0, maxDistance: 100, maxMassForSize: null, generation: generation, maxHitPoints: 30, readableName: "alchemy lab", description: "For potion brewing.", boosterSpace: 3, soundPack: soundPack, fireAffinity: 0.3f);
+
+                        alchemyLab.sprite.AssignNewName("off");
+                        return alchemyLab;
                     }
 
                 case Name.UpgradeBench:
@@ -2073,7 +2089,7 @@ namespace SonOfRobin
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropGlass, cooldown: 15, maxPitchVariation: 0.3f));
 
-                        return new Potion(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PotionCyan, blocksMovement: false, category: BoardPiece.Category.Indestructible, allowedTerrain: shallowWaterToVolcano,
+                        return new Potion(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PotionTransparent, blocksMovement: false, category: BoardPiece.Category.Indestructible, allowedTerrain: shallowWaterToVolcano,
                             minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 200, toolbarTask: Scheduler.TaskName.GetDrinked, rotatesWhenDropped: true, floatsOnWater: false, readableName: "potion", description: "A potion.", buffList: null, convertsToWhenUsed: Name.EmptyBottle, soundPack: soundPack, fireAffinity: 0f);
                     }
 

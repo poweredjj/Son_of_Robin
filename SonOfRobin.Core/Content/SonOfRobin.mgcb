@@ -5433,6 +5433,18 @@
 /processorParam:TextureFormat=Color
 /build:gfx/potion_dark_yellow.png
 
+#begin gfx/potion_transparent.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/potion_transparent.png
+
 #begin gfx/qYFvsmq.png
 /importer:TextureImporter
 /processor:TextureProcessor

@@ -125,7 +125,7 @@ namespace SonOfRobin
             this.piece = piece;
             this.storage = storage;
             this.slot = slot;
-            this.actionList = this.GetContextActionList(addMove: addMove, addDrop: addDrop, addCook: addCook, addIgnite: addIgnite, addExtinguish: addExtinguish, addUpgrade: addUpgrade);
+            this.actionList = this.GetContextActionList(addMove: addMove, addDrop: addDrop, addCook: addCook, addBrew: addBrew, addIgnite: addIgnite, addExtinguish: addExtinguish, addUpgrade: addUpgrade);
             this.percentPosX = percentPosX;
             this.percentPosY = percentPosY;
             this.activeEntry = 0;
@@ -386,7 +386,7 @@ namespace SonOfRobin
                             return;
                         }
 
-                        if (world.weather.IsRaining && !alchemyLab.canBeUsedDuringRain)
+                        if (world.weather.IsRaining)
                         {
                             new TextWindow(text: "I cannot brew during rain.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: InputTypes.None, blockInputDuration: 45, priority: 1, animSound: world.DialogueSound);
                             return;

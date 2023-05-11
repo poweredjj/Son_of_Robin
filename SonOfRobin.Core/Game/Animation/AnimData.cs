@@ -114,7 +114,7 @@ namespace SonOfRobin
             WorkshopAdvanced,
             WorkshopMaster,
 
-            WorkshopAlchemy,
+            AlchemyLab,
 
             WorkshopLeatherBasic,
             WorkshopLeatherAdvanced,
@@ -374,6 +374,7 @@ namespace SonOfRobin
             PotionBrown,
             BubbleCraftGreen,
             ChestCrystal,
+            PotionTransparent,
         }
 
         public static void AddFrameList(PkgName animPackage, byte animSize, List<AnimFrame> frameList, string animName = "default")
@@ -670,7 +671,7 @@ namespace SonOfRobin
                 AddFrameList(animPackage: packageName, animSize: 0, animName: "on", frameList: ConvertImageToFrameList(atlasName: "workshop_leather_advanced", layer: 1, scale: 0.5f));
             }
             {
-                PkgName packageName = PkgName.WorkshopAlchemy;
+                PkgName packageName = PkgName.AlchemyLab;
                 AddFrameList(animPackage: packageName, animSize: 0, animName: "off", frameList: ConvertImageToFrameList(atlasName: "alchemy_lab", layer: 1, scale: 0.5f));
                 // the same as "off"
                 AddFrameList(animPackage: packageName, animSize: 0, animName: "on", frameList: ConvertImageToFrameList(atlasName: "alchemy_lab", layer: 1, scale: 0.5f));
@@ -1030,6 +1031,7 @@ namespace SonOfRobin
             AddFrameList(animPackage: PkgName.PotionDarkYellow, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "potion_dark_yellow", layer: 0, scale: 0.5f));
             AddFrameList(animPackage: PkgName.PotionDarkGreen, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "potion_dark_green", layer: 0, scale: 0.5f));
             AddFrameList(animPackage: PkgName.PotionBrown, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "potion_brown", layer: 0, scale: 0.5f));
+            AddFrameList(animPackage: PkgName.PotionTransparent, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "potion_transparent", layer: 0, scale: 0.5f));
             AddFrameList(animPackage: PkgName.PotionLightYellow, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "bottle_oil", layer: 0, scale: 0.5f));
             AddFrameList(animPackage: PkgName.WaterDrop, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "water drops/water_drop_x1", layer: 0, scale: 0.5f));
             AddFrameList(animPackage: PkgName.RainDrops, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "water drops/water_drop_x1", layer: 2, scale: 0.06f));
