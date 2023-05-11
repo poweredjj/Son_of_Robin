@@ -47,16 +47,16 @@ namespace SonOfRobin
         { get { return this.PieceStorage.GetSlot(1, 0); } }
 
         private StorageSlot BaseSlot
-        { get { return this.PieceStorage.GetSlot(0, 1); } }
+        { get { return this.PieceStorage.GetSlot(2, 0); } }
 
         private StorageSlot FuelSlot
-        { get { return this.PieceStorage.GetSlot(2, 0); } }
+        { get { return this.PieceStorage.GetSlot(3, 0); } }
 
         private void CreateAndConfigureStorage()
         {
-            byte storageWidth = (byte)this.boosterSpace;
-            storageWidth = Math.Max(storageWidth, (byte)3);
-            byte storageHeight = 3;
+            byte storageWidth = (byte)(this.boosterSpace + 1);
+            storageWidth = Math.Max(storageWidth, (byte)4);
+            byte storageHeight = 2;
 
             this.PieceStorage = new PieceStorage(width: storageWidth, height: storageHeight, storagePiece: this, storageType: PieceStorage.StorageType.Lab, stackLimit: 1);
 
@@ -95,7 +95,7 @@ namespace SonOfRobin
 
             for (int x = 0; x < this.boosterSpace; x++)
             {
-                StorageSlot boosterSlot = this.PieceStorage.GetSlot(x, 2);
+                StorageSlot boosterSlot = this.PieceStorage.GetSlot(x + 1, 1);
                 boosterSlot.locked = false;
                 boosterSlot.hidden = false;
                 boosterSlot.label = "booster";
@@ -144,10 +144,10 @@ namespace SonOfRobin
         {
             if (this.world.CurrentUpdate < this.brewingDoneFrame)
             {
-                int cookingDuration = this.brewingDoneFrame - this.brewingStartFrame;
-                int cookingCurrentFrame = this.world.CurrentUpdate - this.brewingStartFrame;
+                int brewingDuration = this.brewingDoneFrame - this.brewingStartFrame;
+                int brewingCurrentFrame = this.world.CurrentUpdate - this.brewingStartFrame;
 
-                new StatBar(label: "", value: cookingCurrentFrame, valueMax: cookingDuration, colorMin: new Color(255, 0, 0), colorMax: new Color(255, 128, 0), posX: this.sprite.gfxRect.Center.X, posY: this.sprite.gfxRect.Bottom, ignoreIfAtMax: false, texture: AnimData.framesForPkgs[AnimData.PkgName.Flame].texture);
+                new StatBar(label: "", value: brewingCurrentFrame, valueMax: brewingDuration, colorMin: new Color(255, 0, 0), colorMax: new Color(255, 128, 0), posX: this.sprite.gfxRect.Center.X, posY: this.sprite.gfxRect.Bottom, ignoreIfAtMax: false, texture: AnimData.framesForPkgs[AnimData.PkgName.Flame].texture);
             }
 
             base.DrawStatBar();
@@ -178,10 +178,11 @@ namespace SonOfRobin
             var storedBases = this.PieceStorage.GetAllPieces().Where(piece => baseNames.Contains(piece.name)).ToList();
             var storedBoosters = this.PieceStorage.GetAllPieces().Where(piece => boosterNames.Contains(piece.name)).ToList();
             var storedFuel = this.PieceStorage.GetAllPieces().Where(piece => fuelNames.Contains(piece.name)).ToList();
+            var storedPotions = this.PieceStorage.GetAllPieces().Where(piece => potionNames.Contains(piece.name)).ToList();
 
             if (!storedBases.Any() && !storedBoosters.Any() && !storedFuel.Any())
             {
-                new TextWindow(text: "I need at least one | | | base and | fuel to cook.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Apple), PieceInfo.GetTexture(PieceTemplate.Name.Tomato), PieceInfo.GetTexture(PieceTemplate.Name.Banana), PieceInfo.GetTexture(PieceTemplate.Name.WoodLogRegular) }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
+                new TextWindow(text: "I need at least one | | | base and | fuel to brew.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Apple), PieceInfo.GetTexture(PieceTemplate.Name.Tomato), PieceInfo.GetTexture(PieceTemplate.Name.Banana), PieceInfo.GetTexture(PieceTemplate.Name.WoodLogRegular) }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
                 return;
             }
 
@@ -215,18 +216,23 @@ namespace SonOfRobin
                 return;
             }
 
-            // getting all buffs from boosters
+            // getting all buffs from base and boosters
 
-            var buffList = new List<Buff>();
+            var buffList = new List<Buff> { };
 
-            foreach (BoardPiece booster in storedBoosters)
+            var listsToGetBoostersFrom = new List<List<BoardPiece>> { storedBases, storedBoosters };
+
+            foreach (List<BoardPiece> pieceList in listsToGetBoostersFrom)
             {
-                if (booster.buffList == null)
+                foreach (BoardPiece booster in pieceList)
                 {
-                    MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Booster {booster.readableName} has no buffList - ignoring.");
-                    continue;
+                    if (booster.buffList == null)
+                    {
+                        MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Booster {booster.readableName} has no buffList - ignoring.");
+                        continue;
+                    }
+                    buffList.AddRange(booster.buffList);
                 }
-                buffList.AddRange(booster.buffList);
             }
 
             bool customPotion = true;
@@ -256,7 +262,6 @@ namespace SonOfRobin
             BoardPiece potion = PieceTemplate.Create(templateName: potionName, world: this.world);
             buffList = BuffEngine.MergeSameTypeBuffsInList(world: this.world, buffList: buffList); // merging the same buffs (to add values of non-stackable buffs)
             potion.buffList = buffList;
-            this.PieceStorage.AddPiece(piece: potion, dropIfDoesNotFit: true);
 
             // setting potion color
 
@@ -283,6 +288,7 @@ namespace SonOfRobin
             piecesToDestroyList.AddRange(storedBases);
             piecesToDestroyList.AddRange(storedBoosters);
             piecesToDestroyList.AddRange(storedFuel);
+            piecesToDestroyList.AddRange(storedPotions);
 
             var piecesToDestroyDict = new Dictionary<PieceTemplate.Name, byte> { };
             foreach (BoardPiece pieceToDestroy in piecesToDestroyList)
@@ -290,16 +296,20 @@ namespace SonOfRobin
                 if (piecesToDestroyDict.ContainsKey(pieceToDestroy.name)) piecesToDestroyDict[pieceToDestroy.name]++;
                 else piecesToDestroyDict[pieceToDestroy.name] = 1;
             }
-
             this.PieceStorage.DestroySpecifiedPieces(piecesToDestroyDict);
 
-            // blocking the lab for "cooking duration"
+            // inserting potion
+
+            this.PieceStorage.AddPiece(piece: potion, dropIfDoesNotFit: true);
+
+            // blocking the lab for "brewing duration"
 
             Inventory.SetLayout(newLayout: Inventory.LayoutType.Toolbar, player: this.world.Player);
             this.TurnOn();
             new TextWindow(text: "Brewing...", textColor: Color.White, bgColor: Color.Green, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1);
 
             int brewingTime = 60 * 15 * (1 + storedBoosters.Count());
+            brewingTime = 80; // for testing
 
             this.brewingStartFrame = this.world.CurrentUpdate;
             this.brewingDoneFrame = this.world.CurrentUpdate + brewingTime;
