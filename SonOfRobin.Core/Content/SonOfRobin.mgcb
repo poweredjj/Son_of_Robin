@@ -5433,6 +5433,18 @@
 /processorParam:TextureFormat=Color
 /build:gfx/potion_dark_yellow.png
 
+#begin gfx/potion_transparent.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/potion_transparent.png
+
 #begin gfx/qYFvsmq.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -7730,6 +7742,12 @@
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:sound/62282__robinhood76__00517-alchemist-laboratory-arrangement.ogg
+
+#begin sound/62282__robinhood76__00517-alchemist-laboratory-arrangement_loop.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sound/62282__robinhood76__00517-alchemist-laboratory-arrangement_loop.ogg
 
 #begin sound/627927__pandartb3d__smashed-egg.ogg
 /importer:OggImporter

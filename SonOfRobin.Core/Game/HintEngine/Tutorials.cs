@@ -8,7 +8,7 @@ namespace SonOfRobin
     public class Tutorials
     {
         public enum Type
-        { BreakThing, Equip, BuildWorkshop, GetWood, Mine, Interact, PickUp, Hit, Craft, KeepingAnimalsAway, ShootProjectile, Cook, ShakeFruit, AnimalAttacking, Torch, Fireplace, TooDarkToReadMap, TooDarkToSeeAnything, Heat, CraftLevels, SwampPoison, SmartCrafting, HowToSave, CombineItems, ResourcefulCrafting }
+        { BreakThing, Equip, BuildWorkshop, GetWood, Mine, Interact, PickUp, Hit, Craft, KeepingAnimalsAway, ShootProjectile, Cook, ShakeFruit, AnimalAttacking, Torch, Fireplace, TooDarkToReadMap, TooDarkToSeeAnything, Heat, CraftLevels, SwampPoison, SmartCrafting, HowToSave, CombineItems, ResourcefulCrafting, PotionBrew }
 
         private static readonly HintMessage.BoxType messageHeaderType = HintMessage.BoxType.BlueBox;
         private static readonly HintMessage.BoxType messageTextType = HintMessage.BoxType.LightBlueBox;
@@ -267,14 +267,21 @@ namespace SonOfRobin
 
             new Tutorial(type: Type.Cook, name: "cooking", title: "How to cook.",
                 messages: new List<HintMessage>  {
-                    Preferences.ShowTouchTips ?
-                    new HintMessage(text:"1. Stand next to the | cooking site and press 'INTERACT' button.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.CookingPot)}, boxType: messageTextType):
                     new HintMessage(text:"1. Stand next to the | cooking site and press |.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.CookingPot), InputMapper.GetTexture(InputMapper.Action.WorldInteract)}, boxType: messageTextType),
                     new HintMessage(text:"2. Place some | | | ingredients into | the cooking site.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.MeatRaw), PieceInfo.GetTexture(PieceTemplate.Name.Tomato), PieceInfo.GetTexture(PieceTemplate.Name.Clam), PieceInfo.GetTexture(PieceTemplate.Name.CookingPot)}, boxType: messageTextType),
                     new HintMessage(text: "3. You will also need to place some | | fuel\ninto | the cooking site.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.WoodLogRegular), PieceInfo.GetTexture(PieceTemplate.Name.WoodPlank), PieceInfo.GetTexture(PieceTemplate.Name.CookingPot)}, boxType: messageTextType),
                     new HintMessage(text:"4. You can also put some | | | boosters\ninto | the cooking site, if you like.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.HerbsRed), PieceInfo.GetTexture(PieceTemplate.Name.HerbsYellow), PieceInfo.GetTexture(PieceTemplate.Name.HerbsBlue), PieceInfo.GetTexture(PieceTemplate.Name.CookingPot)}, boxType: messageTextType),
                     new HintMessage(text: "5. Use the | flame to start cooking |.", imageList: new List<Texture2D> {AnimData.framesForPkgs[AnimData.PkgName.Flame].texture, PieceInfo.GetTexture(PieceTemplate.Name.Meal)}, boxType: messageTextType),
                     });
+
+            new Tutorial(type: Type.PotionBrew, name: "brewing potions", title: "How to make potions.",
+                messages: new List<HintMessage>  {
+                    new HintMessage(text:$"1. Stand next to the | { PieceInfo.GetInfo(PieceTemplate.Name.AlchemyLabStandard).readableName } and press |.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.AlchemyLabStandard), InputMapper.GetTexture(InputMapper.Action.WorldInteract)}, boxType: messageTextType),
+                    new HintMessage(text:$"2. Place ingredients | | | into | the { PieceInfo.GetInfo(PieceTemplate.Name.AlchemyLabStandard).readableName }.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Banana), PieceInfo.GetTexture(PieceTemplate.Name.Tomato), PieceInfo.GetTexture(PieceTemplate.Name.CoffeeRoasted), PieceInfo.GetTexture(PieceTemplate.Name.AlchemyLabStandard) }, boxType: messageTextType),
+                    new HintMessage(text: "3. You will also need to insert some | | fuel.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.WoodLogRegular), PieceInfo.GetTexture(PieceTemplate.Name.WoodPlank) }, boxType: messageTextType),
+                    new HintMessage(text:"4. Inserting boosters | | |\nboosters is optional, but beneficial.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.HerbsRed), PieceInfo.GetTexture(PieceTemplate.Name.HerbsYellow), PieceInfo.GetTexture(PieceTemplate.Name.HerbsBlue) }, boxType: messageTextType),
+                    new HintMessage(text: "5. Use the | flame to start brewing |.", imageList: new List<Texture2D> {AnimData.framesForPkgs[AnimData.PkgName.Flame].texture, AnimData.framesForPkgs[AnimData.PkgName.PotionRed].texture}, boxType: messageTextType),
+                });
 
             new Tutorial(type: Type.ShakeFruit, name: "getting fruits and vegetables", title: "How to get fruits or vegetables.",
                 messages: new List<HintMessage>  {

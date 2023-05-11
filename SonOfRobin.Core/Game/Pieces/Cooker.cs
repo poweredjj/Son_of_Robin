@@ -10,13 +10,10 @@ namespace SonOfRobin
     {
         public static readonly List<PieceTemplate.Name> ingredientNames = new List<PieceTemplate.Name> { PieceTemplate.Name.MeatRaw, PieceTemplate.Name.Apple, PieceTemplate.Name.Cherry, PieceTemplate.Name.Banana, PieceTemplate.Name.Tomato, PieceTemplate.Name.Carrot, PieceTemplate.Name.Acorn, PieceTemplate.Name.Clam, PieceTemplate.Name.Fat };
 
-        private static readonly List<PieceTemplate.Name> boosterNames = new List<PieceTemplate.Name> { PieceTemplate.Name.HerbsYellow, PieceTemplate.Name.HerbsCyan, PieceTemplate.Name.HerbsBlue, PieceTemplate.Name.HerbsBlack, PieceTemplate.Name.HerbsCyan, PieceTemplate.Name.HerbsViolet, PieceTemplate.Name.HerbsGreen }; // herbs that increase HP should not be accepted here (player should use potions for HP restoration)
-
         private static readonly List<PieceTemplate.Name> fuelNames = new List<PieceTemplate.Name> { PieceTemplate.Name.WoodLogRegular, PieceTemplate.Name.WoodPlank, PieceTemplate.Name.WoodLogHard };
 
         public readonly bool canBeUsedDuringRain;
         private readonly int ingredientSpace;
-        private readonly int boosterSpace;
 
         private readonly float foodMassMultiplier;
         private int cookingStartFrame;
@@ -26,7 +23,7 @@ namespace SonOfRobin
         private TimeSpan TimeToFinishCooking
         { get { return TimeSpan.FromSeconds((int)Math.Ceiling((float)(this.cookingDoneFrame - (float)this.world.CurrentUpdate) / 60f)); } }
 
-        public Cooker(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, int[] maxMassForSize, float foodMassMultiplier, string readableName, string description, Category category, int ingredientSpace, int boosterSpace, bool canBeUsedDuringRain, float fireAffinity,
+        public Cooker(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, int[] maxMassForSize, float foodMassMultiplier, string readableName, string description, Category category, int ingredientSpace, bool canBeUsedDuringRain, float fireAffinity,
             byte animSize = 0, string animName = "off", bool blocksMovement = true, ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = false, int generation = 0, Yield yield = null, int maxHitPoints = 1, PieceSoundPack soundPack = null) :
 
             base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedTerrain: allowedTerrain, floatsOnWater: floatsOnWater, maxMassForSize: maxMassForSize, generation: generation, canBePickedUp: false, yield: yield, maxHitPoints: maxHitPoints, readableName: readableName, description: description, category: category, lightEngine: new LightEngine(size: 0, opacity: 0.7f, colorActive: true, color: Color.Orange * 0.25f, addedGfxRectMultiplier: 8f, isActive: false, castShadows: true), activeState: State.Empty, soundPack: soundPack, boardTask: Scheduler.TaskName.InteractWithCooker, fireAffinity: fireAffinity)
@@ -38,7 +35,6 @@ namespace SonOfRobin
             this.cookingDoneFrame = 0;
             this.foodMassMultiplier = foodMassMultiplier;
             this.ingredientSpace = ingredientSpace;
-            this.boosterSpace = boosterSpace;
             this.canBeUsedDuringRain = canBeUsedDuringRain;
 
             this.CreateAndConfigureStorage();
@@ -55,9 +51,9 @@ namespace SonOfRobin
 
         private void CreateAndConfigureStorage()
         {
-            byte storageWidth = (byte)Math.Max(this.ingredientSpace, this.boosterSpace);
+            byte storageWidth = (byte)(this.ingredientSpace + 1);
             storageWidth = Math.Max(storageWidth, (byte)3);
-            byte storageHeight = 3;
+            byte storageHeight = 2;
 
             this.PieceStorage = new PieceStorage(width: storageWidth, height: storageHeight, storagePiece: this, storageType: PieceStorage.StorageType.Cooking, stackLimit: 1);
 
@@ -90,20 +86,11 @@ namespace SonOfRobin
 
             for (int x = 0; x < this.ingredientSpace; x++)
             {
-                StorageSlot ingredientSlot = this.PieceStorage.GetSlot(x, 1);
+                StorageSlot ingredientSlot = this.PieceStorage.GetSlot(x + 1, 1);
                 ingredientSlot.locked = false;
                 ingredientSlot.hidden = false;
                 ingredientSlot.label = "ingredient";
                 ingredientSlot.allowedPieceNames = ingredientNames;
-            }
-
-            for (int x = 0; x < this.boosterSpace; x++)
-            {
-                StorageSlot boosterSlot = this.PieceStorage.GetSlot(x, 2);
-                boosterSlot.locked = false;
-                boosterSlot.hidden = false;
-                boosterSlot.label = "booster";
-                boosterSlot.allowedPieceNames = boosterNames;
             }
         }
 
@@ -171,7 +158,6 @@ namespace SonOfRobin
             }
 
             var storedIngredients = this.PieceStorage.GetAllPieces().Where(piece => ingredientNames.Contains(piece.name)).ToList();
-            var storedBoosters = this.PieceStorage.GetAllPieces().Where(piece => boosterNames.Contains(piece.name)).ToList();
             var storedFuel = this.PieceStorage.GetAllPieces().Where(piece => fuelNames.Contains(piece.name)).ToList();
 
             if (storedIngredients.Count == 0 && storedFuel.Count == 0)
@@ -221,32 +207,15 @@ namespace SonOfRobin
             int cookingTime = (int)(cookedMass * 6);
             cookedMass *= foodMassMultiplier * this.world.Player.cookingSkill;
 
-            // getting all buffs from boosters
-
-            var buffList = new List<Buff>();
-
-            foreach (BoardPiece booster in storedBoosters)
-            {
-                if (booster.buffList == null)
-                {
-                    MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Booster {booster.readableName} has no buffList - ignoring.");
-                    continue;
-                }
-                buffList.AddRange(booster.buffList);
-            }
-
             // creating meal
 
             BoardPiece meal = PieceTemplate.Create(templateName: PieceTemplate.Name.Meal, world: this.world);
-            buffList = BuffEngine.MergeSameTypeBuffsInList(world: this.world, buffList: buffList); // merging the same buffs (to add values of non-stackable buffs)
-            meal.buffList = buffList;
             this.PieceStorage.AddPiece(piece: meal, dropIfDoesNotFit: true);
 
             // destroying every inserted piece
 
             var piecesToDestroyList = new List<BoardPiece>();
             piecesToDestroyList.AddRange(storedIngredients);
-            piecesToDestroyList.AddRange(storedBoosters);
             piecesToDestroyList.AddRange(storedFuel);
 
             var piecesToDestroyDict = new Dictionary<PieceTemplate.Name, byte> { };

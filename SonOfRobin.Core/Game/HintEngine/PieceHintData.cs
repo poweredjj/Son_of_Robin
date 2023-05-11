@@ -295,6 +295,12 @@ namespace SonOfRobin
                     tutorialsToActivate: new List<Tutorials.Type> {Tutorials.Type.Cook}),
 
                 new PieceHint(
+                    type: PieceHint.Type.AlchemyLab, fieldPiecesNearby: new List<PieceTemplate.Name> { PieceTemplate.Name.AlchemyLabStandard },
+                    message: "| I can start brewing\n| potions now!",
+                    imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.AlchemyLabStandard), AnimData.framesForPkgs[AnimData.PkgName.PotionRed].texture },
+                    tutorialsToActivate: new List<Tutorials.Type> {Tutorials.Type.PotionBrew}),
+
+                new PieceHint(
                     type: PieceHint.Type.TorchPositive,
                     message: "This | torch will make navigating at night a lot easier.",
                     imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.TorchSmall) },

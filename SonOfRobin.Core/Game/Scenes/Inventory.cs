@@ -335,7 +335,7 @@ namespace SonOfRobin
             }
 
             var entryList = new List<InfoWindow.TextEntry> {
-                new InfoWindow.TextEntry(imageList: new List<Texture2D> {selectedPiece.sprite.frame.texture}, text: $"| {Helpers.FirstCharToUpperCase(selectedPiece.readableName)}" , color: Color.White, scale: 1.5f),
+                new InfoWindow.TextEntry(imageList: new List<Texture2D> { AnimData.framesForPkgs[selectedPiece.sprite.animPackage].texture }, text: $"| {Helpers.FirstCharToUpperCase(selectedPiece.readableName)}" , color: Color.White, scale: 1.5f), // AnimData.framesForPkgs is used for texture, to avoid animating (jitter)
                 new InfoWindow.TextEntry(text: selectedPiece.description, color: Color.White)
             };
 
@@ -739,7 +739,7 @@ namespace SonOfRobin
             BoardPiece piece = this.storage.GetTopPiece(slot: slot);
             if (piece == null) return;
 
-            var lockedButWorking = new List<PieceTemplate.Name> { PieceTemplate.Name.CookingTrigger, PieceTemplate.Name.FireplaceTriggerOn, PieceTemplate.Name.FireplaceTriggerOff, PieceTemplate.Name.UpgradeTrigger };
+            var lockedButWorking = new List<PieceTemplate.Name> { PieceTemplate.Name.CookingTrigger, PieceTemplate.Name.BrewTrigger, PieceTemplate.Name.FireplaceTriggerOn, PieceTemplate.Name.FireplaceTriggerOff, PieceTemplate.Name.UpgradeTrigger };
             if (slot.locked && !lockedButWorking.Contains(piece.name)) return;
 
             Vector2 slotPos = this.GetSlotPos(slot: slot, margin: this.Margin, tileSize: this.TileSize);
@@ -750,11 +750,12 @@ namespace SonOfRobin
             bool addMove = this.type != Type.SingleCenter && !slot.locked && this.otherInventory.storage.CanFitThisPiece(piece);
             bool addDrop = !slot.locked;
             bool addCook = piece.name == PieceTemplate.Name.CookingTrigger;
+            bool addBrew = piece.name == PieceTemplate.Name.BrewTrigger;
             bool addIgnite = piece.name == PieceTemplate.Name.FireplaceTriggerOn;
             bool addExtinguish = piece.name == PieceTemplate.Name.FireplaceTriggerOff;
             bool addCombine = piece.name == PieceTemplate.Name.UpgradeTrigger;
 
-            new PieceContextMenu(piece: piece, storage: this.storage, slot: slot, percentPosX: percentPos.X, percentPosY: percentPos.Y, addMove: addMove, addDrop: addDrop, addCook: addCook, addIgnite: addIgnite, addExtinguish: addExtinguish, addUpgrade: addCombine);
+            new PieceContextMenu(piece: piece, storage: this.storage, slot: slot, percentPosX: percentPos.X, percentPosY: percentPos.Y, addMove: addMove, addDrop: addDrop, addCook: addCook, addBrew: addBrew, addIgnite: addIgnite, addExtinguish: addExtinguish, addUpgrade: addCombine);
             return;
         }
 
