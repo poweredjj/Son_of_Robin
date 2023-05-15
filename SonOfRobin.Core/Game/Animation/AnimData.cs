@@ -2,12 +2,13 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace SonOfRobin
 {
     public class AnimData
     {
-        public const float currentVersion = 1.0000003f; // version number should be incremented with any change of graphics assets
+        public const float currentVersion = 1.0000008f; // version number should be incremented with any change of graphics assets
 
         public static readonly Dictionary<string, AnimFrame> frameById = new Dictionary<string, AnimFrame>(); // needed to access frames directly by id (for loading and saving game)
         public static readonly Dictionary<string, List<AnimFrame>> frameListById = new Dictionary<string, List<AnimFrame>>();
@@ -496,132 +497,44 @@ namespace SonOfRobin
                 AddFrameList(animPackage: packageName, animSize: 0, animName: "dead", frameList: ConvertImageToFrameList(atlasName: "coffee_shrub_dead", layer: 1, scale: 0.06f));
                 AddFrameList(animPackage: packageName, animSize: 1, animName: "dead", frameList: ConvertImageToFrameList(atlasName: "coffee_shrub_dead", layer: 1, scale: 0.1f));
             }
-            {
-                PkgName packageName = PkgName.ChestWooden;
-                AddFrameList(animPackage: packageName, animSize: 0, animName: "open",
-                frameList: ConvertImageToFrameList(atlasName: "chests", layer: 1, x: 0, y: 144, width: 32, height: 48));
-                var frameList = new List<AnimFrame>
-                {
-                    ConvertImageToFrame(atlasName: "chests", layer: 1, x: 0, y: 48, width: 32, height: 48, duration: 6),
-                    ConvertImageToFrame(atlasName: "chests", layer: 1, x: 0, y: 96, width: 32, height: 48, duration: 6),
-                    ConvertImageToFrame(atlasName: "chests", layer: 1, x: 0, y: 144, width: 32, height: 48, duration: 0)
-                };
-                AddFrameList(animPackage: packageName, animSize: 0, animName: "opening", frameList: frameList);
-                frameList = new List<AnimFrame>
-                {
-                    ConvertImageToFrame(atlasName: "chests", layer: 1, x: 0, y: 96, width: 32, height: 48, duration: 6),
-                    ConvertImageToFrame(atlasName: "chests", layer: 1, x: 0, y: 48, width: 32, height: 48, duration: 6),
-                    ConvertImageToFrame(atlasName: "chests", layer: 1, x: 0, y: 0, width: 32, height: 48, duration: 0)
-                };
-                AddFrameList(animPackage: packageName, animSize: 0, animName: "closing", frameList: frameList);
-                AddFrameList(animPackage: packageName, animSize: 0, animName: "closed",
-                    frameList: ConvertImageToFrameList(atlasName: "chests", layer: 1, x: 0, y: 0, width: 32, height: 48));
-            }
-            {
-                PkgName packageName = PkgName.ChestIron;
-                AddFrameList(animPackage: packageName, animSize: 0, animName: "open",
-                frameList: ConvertImageToFrameList(atlasName: "chests", layer: 1, x: 32, y: 144, width: 32, height: 48));
-                var frameList = new List<AnimFrame>
-                {
-                    ConvertImageToFrame(atlasName: "chests", layer: 1, x: 32, y: 48, width: 32, height: 48, duration: 6),
-                    ConvertImageToFrame(atlasName: "chests", layer: 1, x: 32, y: 96, width: 32, height: 48, duration: 6),
-                    ConvertImageToFrame(atlasName: "chests", layer: 1, x: 32, y: 144, width: 32, height: 48, duration: 0)
-                };
-                AddFrameList(animPackage: packageName, animSize: 0, animName: "opening", frameList: frameList);
-                frameList = new List<AnimFrame>
-                {
-                    ConvertImageToFrame(atlasName: "chests", layer: 1, x: 32, y: 96, width: 32, height: 48, duration: 6),
-                    ConvertImageToFrame(atlasName: "chests", layer: 1, x: 32, y: 48, width: 32, height: 48, duration: 6),
-                    ConvertImageToFrame(atlasName: "chests", layer: 1, x: 32, y: 0, width: 32, height: 48, duration: 0)
-                };
-                AddFrameList(animPackage: packageName, animSize: 0, animName: "closing", frameList: frameList);
-                AddFrameList(animPackage: packageName, animSize: 0, animName: "closed",
-                    frameList: ConvertImageToFrameList(atlasName: "chests", layer: 1, x: 32, y: 0, width: 32, height: 48));
-            }
-            {
-                PkgName packageName = PkgName.ChestStone;
-                AddFrameList(animPackage: packageName, animSize: 0, animName: "open",
-                frameList: ConvertImageToFrameList(atlasName: "chest_stone", layer: 1, x: 0, y: 144, width: 48, height: 48));
-                var frameList = new List<AnimFrame>
-                {
-                    ConvertImageToFrame(atlasName: "chest_stone", layer: 1, x: 0, y: 48, width: 48, height: 48, duration: 6),
-                    ConvertImageToFrame(atlasName: "chest_stone", layer: 1, x: 0, y: 96, width: 48, height: 48, duration: 6),
-                    ConvertImageToFrame(atlasName: "chest_stone", layer: 1, x: 0, y: 144, width: 48, height: 48, duration: 0)
-                };
-                AddFrameList(animPackage: packageName, animSize: 0, animName: "opening", frameList: frameList);
-                frameList = new List<AnimFrame>
-                {
-                    ConvertImageToFrame(atlasName: "chest_stone", layer: 1, x: 0, y: 96, width: 48, height: 48, duration: 6),
-                    ConvertImageToFrame(atlasName: "chest_stone", layer: 1, x: 0, y: 48, width: 48, height: 48, duration: 6),
-                    ConvertImageToFrame(atlasName: "chest_stone", layer: 1, x: 0, y: 0, width: 48, height: 48, duration: 0)
-                };
-                AddFrameList(animPackage: packageName, animSize: 0, animName: "closing", frameList: frameList);
-                AddFrameList(animPackage: packageName, animSize: 0, animName: "closed", frameList: ConvertImageToFrameList(atlasName: "chest_stone", layer: 1, x: 0, y: 0, width: 48, height: 48));
-            }
-            {
-                PkgName packageName = PkgName.ChestCrystal;
-                AddFrameList(animPackage: packageName, animSize: 0, animName: "open",
-                frameList: ConvertImageToFrameList(atlasName: "chest_crystal", layer: 1, x: 0, y: 144, width: 48, height: 48));
-                var frameList = new List<AnimFrame>
-                {
-                    ConvertImageToFrame(atlasName: "chest_crystal", layer: 1, x: 0, y: 48, width: 48, height: 48, duration: 6),
-                    ConvertImageToFrame(atlasName: "chest_crystal", layer: 1, x: 0, y: 96, width: 48, height: 48, duration: 6),
-                    ConvertImageToFrame(atlasName: "chest_crystal", layer: 1, x: 0, y: 144, width: 48, height: 48, duration: 0)
-                };
-                AddFrameList(animPackage: packageName, animSize: 0, animName: "opening", frameList: frameList);
-                frameList = new List<AnimFrame>
-                {
-                    ConvertImageToFrame(atlasName: "chest_crystal", layer: 1, x: 0, y: 96, width: 48, height: 48, duration: 6),
-                    ConvertImageToFrame(atlasName: "chest_crystal", layer: 1, x: 0, y: 48, width: 48, height: 48, duration: 6),
-                    ConvertImageToFrame(atlasName: "chest_crystal", layer: 1, x: 0, y: 0, width: 48, height: 48, duration: 0)
-                };
-                AddFrameList(animPackage: packageName, animSize: 0, animName: "closing", frameList: frameList);
-                AddFrameList(animPackage: packageName, animSize: 0, animName: "closed", frameList: ConvertImageToFrameList(atlasName: "chest_crystal", layer: 1, x: 0, y: 0, width: 48, height: 48));
-            }
-            {
-                PkgName packageName = PkgName.ChestTreasureBlue;
-                AddFrameList(animPackage: packageName, animSize: 0, animName: "open",
-                frameList: ConvertImageToFrameList(atlasName: "chests", layer: 1, x: 96, y: 144, width: 32, height: 48));
-                var frameList = new List<AnimFrame>
-                {
-                    ConvertImageToFrame(atlasName: "chests", layer: 1, x: 96, y: 48, width: 32, height: 48, duration: 6),
-                    ConvertImageToFrame(atlasName: "chests", layer: 1, x: 96, y: 96, width: 32, height: 48, duration: 6),
-                    ConvertImageToFrame(atlasName: "chests", layer: 1, x: 96, y: 144, width: 32, height: 48, duration: 0)
-                };
-                AddFrameList(animPackage: packageName, animSize: 0, animName: "opening", frameList: frameList);
-                frameList = new List<AnimFrame>
-                {
-                    ConvertImageToFrame(atlasName: "chests", layer: 1, x: 96, y: 96, width: 32, height: 48, duration: 6),
-                    ConvertImageToFrame(atlasName: "chests", layer: 1, x: 96, y: 48, width: 32, height: 48, duration: 6),
-                    ConvertImageToFrame(atlasName: "chests", layer: 1, x: 96, y: 0, width: 32, height: 48, duration: 0)
-                };
-                AddFrameList(animPackage: packageName, animSize: 0, animName: "closing", frameList: frameList);
-                AddFrameList(animPackage: packageName, animSize: 0, animName: "closed",
-                    frameList: ConvertImageToFrameList(atlasName: "chests", layer: 1, x: 96, y: 0, width: 32, height: 48));
-            }
-            {
-                float scale = 1.5f;
 
-                PkgName packageName = PkgName.ChestTreasureRed;
-                AddFrameList(animPackage: packageName, animSize: 0, animName: "open",
-                frameList: ConvertImageToFrameList(atlasName: "chests", layer: 1, x: 64, y: 144, width: 32, height: 48, scale: scale));
-                var frameList = new List<AnimFrame>
+            var chestDict = new Dictionary<PkgName, string> { 
+                { PkgName.ChestWooden, "chest_wooden/chest_wooden_" },
+                { PkgName.ChestStone, "chest_stone/chest_stone_" },
+                { PkgName.ChestIron, "chest_iron/chest_iron_" },
+                { PkgName.ChestCrystal, "chest_crystal/chest_crystal_" },
+                { PkgName.ChestTreasureBlue, "chest_blue/chest_blue_" },
+                { PkgName.ChestTreasureRed, "chest_red/chest_red_" },
+            };
+
+            foreach (var kvp in chestDict)
+            {
+                PkgName packageName = kvp.Key;
+                string chestPath = kvp.Value;
+
+                float scale = 0.18f;
+                bool crop = false;
+                float depthPercent = 0.47f;
+                int duration = 3;
+
+                var openingFrameList = new List<AnimFrame>();
+                for (int i = 2; i <= 6; i++)
                 {
-                    ConvertImageToFrame(atlasName: "chests", layer: 1, x: 64, y: 48, width: 32, height: 48, duration: 6, scale: scale),
-                    ConvertImageToFrame(atlasName: "chests", layer: 1, x: 64, y: 96, width: 32, height: 48, duration: 6, scale: scale),
-                    ConvertImageToFrame(atlasName: "chests", layer: 1, x: 64, y: 144, width: 32, height: 48, duration: 0, scale: scale)
-                };
-                AddFrameList(animPackage: packageName, animSize: 0, animName: "opening", frameList: frameList);
-                frameList = new List<AnimFrame>
+                    openingFrameList.Add(ConvertImageToFrame(atlasName: $"{chestPath}{i}", layer: 1, duration: i < 6 ? duration : 0, crop: crop, scale: scale, depthPercent: depthPercent));
+                }
+                AddFrameList(animPackage: packageName, animSize: 0, animName: "opening", frameList: openingFrameList);
+
+                var closingFrameList = new List<AnimFrame>();
+                for (int i = 5; i >= 1; i--)
                 {
-                    ConvertImageToFrame(atlasName: "chests", layer: 1, x: 64, y: 96, width: 32, height: 48, duration: 6, scale: scale),
-                    ConvertImageToFrame(atlasName: "chests", layer: 1, x: 64, y: 48, width: 32, height: 48, duration: 6, scale: scale),
-                    ConvertImageToFrame(atlasName: "chests", layer: 1, x: 64, y: 0, width: 32, height: 48, duration: 0, scale: scale)
-                };
-                AddFrameList(animPackage: packageName, animSize: 0, animName: "closing", frameList: frameList);
-                AddFrameList(animPackage: packageName, animSize: 0, animName: "closed",
-                    frameList: ConvertImageToFrameList(atlasName: "chests", layer: 1, x: 64, y: 0, width: 32, height: 48, scale: scale));
+                    closingFrameList.Add(ConvertImageToFrame(atlasName: $"{chestPath}{i}", layer: 1, duration: i > 1 ? duration : 0, crop: crop, scale: scale, depthPercent: depthPercent));
+                }
+                AddFrameList(animPackage: packageName, animSize: 0, animName: "closing", frameList: closingFrameList);
+
+                AddFrameList(animPackage: packageName, animSize: 0, animName: "open", frameList: ConvertImageToFrameList(atlasName: $"{chestPath}1", layer: 1, crop: crop, scale: scale, depthPercent: depthPercent));
+                AddFrameList(animPackage: packageName, animSize: 0, animName: "closed", frameList: ConvertImageToFrameList(atlasName: $"{chestPath}6", layer: 1, crop: crop, scale: scale, depthPercent: depthPercent));
             }
+
             {
                 PkgName packageName = PkgName.Crate;
                 AddFrameList(animPackage: packageName, animSize: 0,
