@@ -384,8 +384,16 @@ namespace SonOfRobin
                     playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.MeatRaw}),
 
                 new PieceHint(
-                    type: PieceHint.Type.CanMakeOil,
-                    message: $"I could use | { PieceInfo.GetInfo(PieceTemplate.Name.AlchemyLabStandard).readableName }\nto make | { PieceInfo.GetInfo(PieceTemplate.Name.BottleOfOil).readableName } from | { PieceInfo.GetInfo(PieceTemplate.Name.Fat).readableName }.",
+                    type: PieceHint.Type.MakeOilNegative,
+                    message: $"If I had an | { PieceInfo.GetInfo(PieceTemplate.Name.AlchemyLabStandard).readableName },\nI could make a | { PieceInfo.GetInfo(PieceTemplate.Name.BottleOfOil).readableName } from this | { PieceInfo.GetInfo(PieceTemplate.Name.Fat).readableName }.",
+                    imageList: new List<Texture2D>{ PieceInfo.GetInfo(PieceTemplate.Name.AlchemyLabStandard).texture, PieceInfo.GetTexture(PieceTemplate.Name.BottleOfOil), PieceInfo.GetTexture(PieceTemplate.Name.Fat) },
+                    playerOwnsAllOfThesePieces: new List<PieceTemplate.Name> { PieceTemplate.Name.Fat },
+                    existingPiecesCount: new Dictionary<PieceTemplate.Name, int> { { PieceTemplate.Name.AlchemyLabStandard, 0 } }
+                    ),
+
+                new PieceHint(
+                    type: PieceHint.Type.MakeOilPositive,
+                    message: $"I could use my | { PieceInfo.GetInfo(PieceTemplate.Name.AlchemyLabStandard).readableName }\nto make a | { PieceInfo.GetInfo(PieceTemplate.Name.BottleOfOil).readableName } from this | { PieceInfo.GetInfo(PieceTemplate.Name.Fat).readableName }.",
                     imageList: new List<Texture2D>{ PieceInfo.GetInfo(PieceTemplate.Name.AlchemyLabStandard).texture, PieceInfo.GetTexture(PieceTemplate.Name.BottleOfOil), PieceInfo.GetTexture(PieceTemplate.Name.Fat) },
                     playerOwnsAllOfThesePieces: new List<PieceTemplate.Name> { PieceTemplate.Name.Fat },
                     piecesCraftedCount: new List<CountComparison> {
