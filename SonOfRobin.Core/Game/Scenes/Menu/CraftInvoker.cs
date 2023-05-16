@@ -195,20 +195,40 @@ namespace SonOfRobin
                 { entryList.Add(new InfoWindow.TextEntry(text: buff.description, color: Color.Cyan, scale: 1f, animate: true, charsPerFrame: 2)); }
             }
 
+            float smallScale = 0.7f;
+
+            var extInfoTextList = new List<string>();
+            var extInfoImageList = new List<Texture2D>();
+
             var durabilityTypeList = new List<Type> { typeof(Tool), typeof(PortableLight), typeof(Projectile) };
             if (durabilityTypeList.Contains(pieceInfo.type))
             {
-                entryList.Add(new InfoWindow.TextEntry(text: $"Durability {Math.Round(pieceInfo.maxHitPoints)}", scale: 0.7f, color: new Color(230, 230, 230)));
+                extInfoTextList.Add($"| {Math.Round(pieceInfo.maxHitPoints)}");
+                extInfoImageList.Add(TextureBank.GetTexture("simple_icons/heart"));
             }
 
             int fatigue = (int)(recipe.GetRealFatigue(world.craftStats) / world.Player.maxFatigue * 100);
-            entryList.Add(new InfoWindow.TextEntry(text: $"Fatigue {fatigue}%", scale: 0.7f, color: new Color(230, 230, 230)));
+            extInfoTextList.Add($"| {fatigue}%");
+            extInfoImageList.Add(TextureBank.GetTexture("simple_icons/sleep"));
 
             TimeSpan duration = IslandClock.ConvertUpdatesCountToTimeSpan(recipe.GetRealDuration(world.craftStats));
-            string durationString = string.Format("Duration: {0:D1}:{1:D2}", (int)Math.Floor(duration.TotalHours), duration.Minutes);
-            entryList.Add(new InfoWindow.TextEntry(text: durationString, scale: 0.7f, color: new Color(230, 230, 230)));
+            extInfoTextList.Add(string.Format("| {0:D1}:{1:D2}", (int)Math.Floor(duration.TotalHours), duration.Minutes));
+            extInfoImageList.Add(TextureBank.GetTexture("simple_icons/clock"));
 
-            var affinityEntries = PieceInfo.GetCategoryAffinityTextEntryList(pieceName: this.recipe.pieceToCreate, scale: 0.7f);
+            //MessageLog.AddMessage(msgType: MsgType.User, message: $"{world.islandClock.TimeUntilPartOfDay(IslandClock.PartOfDay.Morning).Hours}");
+
+            //if (duration >= world.islandClock.TimeUntilPartOfDay(IslandClock.PartOfDay.Night))
+            //{
+            //    extInfoTextList.Add("|");
+            //    extInfoImageList.Add(TextureBank.GetTexture("simple_icons/moon"));
+            //}
+
+            // TODO check why TimeUntilPartOfDay values are incorrect
+
+            entryList.Add(new InfoWindow.TextEntry(text: String.Join("  ", extInfoTextList), imageList: extInfoImageList, scale: smallScale, color: new Color(230, 230, 230)));
+
+
+            var affinityEntries = PieceInfo.GetCategoryAffinityTextEntryList(pieceName: this.recipe.pieceToCreate, scale: smallScale);
             entryList.AddRange(affinityEntries);
 
             if (!canBeCrafted)

@@ -339,30 +339,41 @@ namespace SonOfRobin
                 new InfoWindow.TextEntry(text: selectedPiece.description, color: Color.White)
             };
 
-            string stackTxt = selectedPiece.stackSize > 1 && !slot.locked ? $"Max stack {selectedPiece.stackSize}" : "";
+            float smallScale = 0.7f;
+
+            var extInfoTextList = new List<string>();
+            var extInfoImageList = new List<Texture2D>();
+
+            if (selectedPiece.stackSize > 1 && !slot.locked)
+            {
+                extInfoTextList.Add($"| { selectedPiece.stackSize }");
+                extInfoImageList.Add(TextureBank.GetTexture("simple_icons/stack"));
+            }
 
             var durabilityTypeList = new List<System.Type> { typeof(Tool), typeof(PortableLight), typeof(Projectile) };
-            string durabilityText = durabilityTypeList.Contains(selectedPiece.GetType()) ?
-                $"Durability { Math.Round(selectedPiece.hitPoints)}/{Math.Round(selectedPiece.maxHitPoints) }" : "";
-
-            if (durabilityText != "" || stackTxt != "")
+            if (durabilityTypeList.Contains(selectedPiece.GetType()))
             {
-                if (durabilityText != "" && stackTxt != "") durabilityText += "   ";
-                entryList.Add(new InfoWindow.TextEntry(text: $"{durabilityText}{stackTxt}", scale: 0.7f, color: new Color(230, 230, 230)));
+                extInfoTextList.Add($"| { Math.Round(selectedPiece.hitPoints)}/{Math.Round(selectedPiece.maxHitPoints) }");
+                extInfoImageList.Add(TextureBank.GetTexture("simple_icons/heart"));
+            }
+
+            if (selectedPiece.toolbarTask == Scheduler.TaskName.GetEaten)
+            {
+                float fedPercent = (float)Math.Round(this.piece.world.Player.ConvertMassToFedPercent(selectedPiece.Mass) * 100, 2);
+                extInfoTextList.Add($"| +{fedPercent}%");
+                extInfoImageList.Add(TextureBank.GetTexture("simple_icons/burger"));
+            }
+
+            if (extInfoTextList.Any())
+            {
+                entryList.Add(new InfoWindow.TextEntry(text: String.Join("  ", extInfoTextList), imageList: extInfoImageList, scale: smallScale, color: new Color(230, 230, 230)));
             }
 
             if (selectedPiece.GetType() == typeof(Seed))
             {
                 Seed seeds = (Seed)selectedPiece;
 
-                entryList.Add(new InfoWindow.TextEntry(text: $"| {Helpers.FirstCharToUpperCase(PieceInfo.GetInfo(seeds.PlantToGrow).readableName)} seeds.", imageList: new List<Texture2D> { PieceInfo.GetInfo(seeds.PlantToGrow).texture }, scale: 0.7f, color: new Color(208, 255, 199)));
-            }
-
-            if (selectedPiece.toolbarTask == Scheduler.TaskName.GetEaten)
-            {
-                float fedPercent = (float)Math.Round(this.piece.world.Player.ConvertMassToFedPercent(selectedPiece.Mass) * 100, 2);
-
-                entryList.Add(new InfoWindow.TextEntry(text: $"| +{fedPercent}%", imageList: new List<Texture2D> { PieceInfo.GetInfo(PieceTemplate.Name.Burger).texture }, scale: 0.7f, color: new Color(255, 241, 204)));
+                entryList.Add(new InfoWindow.TextEntry(text: $"| {Helpers.FirstCharToUpperCase(PieceInfo.GetInfo(seeds.PlantToGrow).readableName)} seeds.", imageList: new List<Texture2D> { PieceInfo.GetInfo(seeds.PlantToGrow).texture }, scale: smallScale, color: new Color(208, 255, 199)));
             }
 
             var affinityEntries = PieceInfo.GetCategoryAffinityTextEntryList(pieceName: selectedPiece.name, scale: 1f);
