@@ -39,6 +39,27 @@ namespace SonOfRobin
 
     public class VirtButton
     {
+        private static Dictionary<VButName, string> labelTexturesByNames = new Dictionary<VButName, string>
+        {
+            { VButName.Confirm, "check_mark" },
+            { VButName.Interact, "interact" },
+            { VButName.UseTool, "use_item" },
+            { VButName.Shoot, "shoot" },
+            { VButName.PickUp, "pick_up" },
+            { VButName.Inventory, "inventory" },
+            { VButName.FieldCraft, "craft" },
+            { VButName.Map, "map" },
+            { VButName.Sprint, "sprint" },
+            { VButName.ZoomOut, "zoom_out" },
+            { VButName.PauseMenu, "pause_menu" },
+            { VButName.StatsMenu, "stats" },
+            { VButName.Return, "return" },
+            { VButName.InvDragSingle, "drag_single" },
+            { VButName.InvSort, "sort" },
+            { VButName.MapToggleMarker, "create_marker" },
+            { VButName.MapCenterPlayer, "go_to_player" },
+        };
+
         public static Dictionary<VButName, VirtButton> buttonsByName = new Dictionary<VButName, VirtButton> { };
 
         private readonly int frameCreated;
@@ -67,13 +88,13 @@ namespace SonOfRobin
         private readonly string activeCoupledVarName;
 
         public VirtButton(VButName name, string label, float posX0to1, float posY0to1, float width0to1, float height0to1, Color bgColorPressed, Color bgColorReleased, Color textColor,
-            Texture2D labelTexture = null, bool switchButton = false, bool hidden = false, Object activeCoupledObj = null, string activeCoupledVarName = "", bool isHighlighted = true, string highlightCoupledVarName = null, Object highlightCoupledObj = null, bool checksTouchFromPrevLayout = false)
+            bool switchButton = false, bool hidden = false, Object activeCoupledObj = null, string activeCoupledVarName = "", bool isHighlighted = true, string highlightCoupledVarName = null, Object highlightCoupledObj = null, bool checksTouchFromPrevLayout = false)
         {
             this.frameCreated = SonOfRobinGame.CurrentUpdate;
             this.checksTouchFromPrevLayout = checksTouchFromPrevLayout;
 
             this.label = label;
-            this.labelTexture = labelTexture;
+            this.labelTexture = GetLabelTexture(name);
             this.bgColorPressed = bgColorPressed;
             this.bgColorReleased = bgColorReleased;
             this.textColor = textColor;
@@ -100,6 +121,11 @@ namespace SonOfRobin
             this.switchButton = switchButton;
 
             buttonsByName[name] = this;
+        }
+
+        public static Texture2D GetLabelTexture(VButName name)
+        {
+            return labelTexturesByNames.ContainsKey(name) ? TextureBank.GetTexture($"input/VirtButton/{labelTexturesByNames[name]}") : null;
         }
 
         private bool HasBeenPressed
@@ -178,12 +204,6 @@ namespace SonOfRobin
         {
             if (!Input.InputActive || !buttonsByName.ContainsKey(buttonName)) return false;
             return buttonsByName[buttonName].IsActive;
-        }
-
-        public static Texture2D GetLabelTexture(VButName buttonName)
-        {
-            if (!buttonsByName.ContainsKey(buttonName)) return null;
-            return buttonsByName[buttonName].labelTexture;
         }
 
         public static void ButtonHighlightOnNextFrame(VButName buttonName)
