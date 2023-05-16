@@ -383,6 +383,15 @@ namespace SonOfRobin
                     imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.MeatRaw), PieceInfo.GetTexture(PieceTemplate.Name.HotPlate) },
                     playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.MeatRaw}),
 
+                new PieceHint(
+                    type: PieceHint.Type.CanMakeOil,
+                    message: $"I could use | { PieceInfo.GetInfo(PieceTemplate.Name.AlchemyLabStandard).readableName }\nto make | { PieceInfo.GetInfo(PieceTemplate.Name.BottleOfOil).readableName } from | { PieceInfo.GetInfo(PieceTemplate.Name.Fat).readableName }.",
+                    imageList: new List<Texture2D>{ PieceInfo.GetInfo(PieceTemplate.Name.AlchemyLabStandard).texture, PieceInfo.GetTexture(PieceTemplate.Name.BottleOfOil), PieceInfo.GetTexture(PieceTemplate.Name.Fat) },
+                    playerOwnsAllOfThesePieces: new List<PieceTemplate.Name> { PieceTemplate.Name.Fat },
+                    piecesCraftedCount: new List<CountComparison> {
+                        new CountComparison(name: PieceTemplate.Name.AlchemyLabStandard, count: 1, comparison: CountComparison.Comparison.GreaterOrEqual) },
+                    existingPiecesCount: new Dictionary<PieceTemplate.Name, int> { { PieceTemplate.Name.AlchemyLabStandard, 1 } }
+                    ),
                 };
 
             CheckData(newPieceHintList);
