@@ -665,6 +665,7 @@ namespace SonOfRobin
                         new Selector(menu: menu, name: "fast plant growth", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugFastPlantGrowth");
                         new Selector(menu: menu, name: "show sounds", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugShowSounds");
                         new Selector(menu: menu, name: "show all recipes", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugShowAllRecipes");
+                        new Selector(menu: menu, name: "show all tutorials in menu", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugShowAllTutorials");
                         new Invoker(menu: menu, name: "restore all hints", taskName: Scheduler.TaskName.RestoreHints);
                         new Selector(menu: menu, name: "show fruit rects", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugShowFruitRects");
                         new Selector(menu: menu, name: "show sprite rects", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugShowRects");
@@ -742,7 +743,7 @@ namespace SonOfRobin
 
                         foreach (Tutorials.Tutorial tutorial in Tutorials.TutorialsInMenu)
                         {
-                            if (world.HintEngine.shownTutorials.Contains(tutorial.type))
+                            if (world.HintEngine.shownTutorials.Contains(tutorial.type) || Preferences.debugShowAllTutorials)
                             {
                                 new Invoker(menu: menu, name: tutorial.name, taskName: Scheduler.TaskName.ShowTutorialInMenu, executeHelper: tutorial.type);
                             }
