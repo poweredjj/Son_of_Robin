@@ -620,10 +620,6 @@ namespace SonOfRobin
 
             if (this.target.Mass <= 0)
             {
-                foreach (Buff buff in this.target.buffList)
-                { this.buffEngine.AddBuff(buff: buff, world: world); }
-                this.target.buffList.Clear();
-
                 if (this.target.IsAnimalOrPlayer && this.target.yield != null)
                 {
                     target.soundPack.Play(PieceSoundPack.Action.IsHit);

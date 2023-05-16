@@ -376,6 +376,13 @@ namespace SonOfRobin
                     imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.LanternEmpty), PieceInfo.GetTexture(PieceTemplate.Name.Candle) },
                     playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> { PieceTemplate.Name.LanternEmpty },
                     tutorialsToActivate: new List<Tutorials.Type> { Tutorials.Type.CombineItems }),
+
+                new PieceHint(
+                    type: PieceHint.Type.PoisonousMeat,
+                    message: $"This | { PieceInfo.GetInfo(PieceTemplate.Name.MeatRaw).readableName } looks poisonous.\nI should | cook it before eating.",
+                    imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.MeatRaw), PieceInfo.GetTexture(PieceTemplate.Name.HotPlate) },
+                    playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.MeatRaw}),
+
                 };
 
             CheckData(newPieceHintList);

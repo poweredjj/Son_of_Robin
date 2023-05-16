@@ -2129,12 +2129,15 @@ namespace SonOfRobin
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
                             { Terrain.Name.Height, new AllowedRange(min: Terrain.waterLevelMax, max: Terrain.volcanoEdgeMin) }});
 
+                        var buffList = new List<Buff> {
+                            new Buff(type: BuffEngine.BuffType.RegenPoison, value: (int)-30, autoRemoveDelay: 16 * 60, canKill: true, increaseIDAtEveryUse: true)};
+
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(nameList: new List<SoundData.Name> { SoundData.Name.DropMeat1, SoundData.Name.DropMeat2, SoundData.Name.DropMeat3 }, cooldown: 15, maxPitchVariation: 0.8f));
 
                         return new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.MeatRaw, blocksMovement: false, category: BoardPiece.Category.Indestructible,
-                            allowedTerrain: allowedTerrain,
-                            minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 6, mass: 100, toolbarTask: Scheduler.TaskName.GetEaten, rotatesWhenDropped: true, readableName: "raw meat", description: "Can be eaten or cooked.", soundPack: soundPack, fireAffinity: 0.2f);
+                            allowedTerrain: allowedTerrain, buffList: buffList,
+                            minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 6, mass: 100, toolbarTask: Scheduler.TaskName.GetEaten, rotatesWhenDropped: true, readableName: "raw meat", description: "Poisonous, but safe after cooking.", soundPack: soundPack, fireAffinity: 0.2f);
                     }
 
                 case Name.MeatDried:
@@ -2147,7 +2150,7 @@ namespace SonOfRobin
 
                         return new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.MeatDried, blocksMovement: false, category: BoardPiece.Category.Indestructible,
                             allowedTerrain: allowedTerrain,
-                            minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 6, mass: 130, toolbarTask: Scheduler.TaskName.GetEaten, rotatesWhenDropped: true, readableName: "dried meat", description: "Can be eaten. Does not spoil.", soundPack: soundPack, fireAffinity: 0.6f);
+                            minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 6, mass: 130, toolbarTask: Scheduler.TaskName.GetEaten, rotatesWhenDropped: true, readableName: "dried meat", description: "Can be eaten or cooked.", soundPack: soundPack, fireAffinity: 0.6f);
                     }
 
                 case Name.Fat:
