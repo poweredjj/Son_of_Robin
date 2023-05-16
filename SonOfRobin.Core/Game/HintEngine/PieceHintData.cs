@@ -385,7 +385,7 @@ namespace SonOfRobin
 
                 new PieceHint(
                     type: PieceHint.Type.MakeOilNegative,
-                    message: $"If I had an | { PieceInfo.GetInfo(PieceTemplate.Name.AlchemyLabStandard).readableName },\nI could make a | { PieceInfo.GetInfo(PieceTemplate.Name.BottleOfOil).readableName } from this | { PieceInfo.GetInfo(PieceTemplate.Name.Fat).readableName }.",
+                    message: $"If I had an | { PieceInfo.GetInfo(PieceTemplate.Name.AlchemyLabStandard).readableName },\nI could make a | { PieceInfo.GetInfo(PieceTemplate.Name.BottleOfOil).readableName }\nfrom this | { PieceInfo.GetInfo(PieceTemplate.Name.Fat).readableName }.",
                     imageList: new List<Texture2D>{ PieceInfo.GetInfo(PieceTemplate.Name.AlchemyLabStandard).texture, PieceInfo.GetTexture(PieceTemplate.Name.BottleOfOil), PieceInfo.GetTexture(PieceTemplate.Name.Fat) },
                     playerOwnsAllOfThesePieces: new List<PieceTemplate.Name> { PieceTemplate.Name.Fat },
                     existingPiecesCount: new Dictionary<PieceTemplate.Name, int> { { PieceTemplate.Name.AlchemyLabStandard, 0 } }
@@ -393,7 +393,7 @@ namespace SonOfRobin
 
                 new PieceHint(
                     type: PieceHint.Type.MakeOilPositive,
-                    message: $"I could use my | { PieceInfo.GetInfo(PieceTemplate.Name.AlchemyLabStandard).readableName }\nto make a | { PieceInfo.GetInfo(PieceTemplate.Name.BottleOfOil).readableName } from this | { PieceInfo.GetInfo(PieceTemplate.Name.Fat).readableName }.",
+                    message: $"I could use my | { PieceInfo.GetInfo(PieceTemplate.Name.AlchemyLabStandard).readableName }\nto make a | { PieceInfo.GetInfo(PieceTemplate.Name.BottleOfOil).readableName }\nfrom this | { PieceInfo.GetInfo(PieceTemplate.Name.Fat).readableName }.",
                     imageList: new List<Texture2D>{ PieceInfo.GetInfo(PieceTemplate.Name.AlchemyLabStandard).texture, PieceInfo.GetTexture(PieceTemplate.Name.BottleOfOil), PieceInfo.GetTexture(PieceTemplate.Name.Fat) },
                     playerOwnsAllOfThesePieces: new List<PieceTemplate.Name> { PieceTemplate.Name.Fat },
                     piecesCraftedCount: new List<CountComparison> {

@@ -195,11 +195,18 @@ namespace SonOfRobin
                 { entryList.Add(new InfoWindow.TextEntry(text: buff.description, color: Color.Cyan, scale: 1f, animate: true, charsPerFrame: 2)); }
             }
 
-            var durabilityTypeList = new List<System.Type> { typeof(Tool), typeof(PortableLight), typeof(Projectile) };
+            var durabilityTypeList = new List<Type> { typeof(Tool), typeof(PortableLight), typeof(Projectile) };
             if (durabilityTypeList.Contains(pieceInfo.type))
             {
                 entryList.Add(new InfoWindow.TextEntry(text: $"Durability {Math.Round(pieceInfo.maxHitPoints)}", scale: 0.7f, color: new Color(230, 230, 230)));
             }
+
+            int fatigue = (int)(recipe.GetRealFatigue(world.craftStats) / world.Player.maxFatigue * 100);
+            entryList.Add(new InfoWindow.TextEntry(text: $"Fatigue {fatigue}%", scale: 0.7f, color: new Color(230, 230, 230)));
+
+            TimeSpan duration = IslandClock.ConvertUpdatesCountToTimeSpan(recipe.GetRealDuration(world.craftStats));
+            string durationString = string.Format("Duration: {0:D1}:{1:D2}", (int)Math.Floor(duration.TotalHours), duration.Minutes);
+            entryList.Add(new InfoWindow.TextEntry(text: durationString, scale: 0.7f, color: new Color(230, 230, 230)));
 
             var affinityEntries = PieceInfo.GetCategoryAffinityTextEntryList(pieceName: this.recipe.pieceToCreate, scale: 0.7f);
             entryList.AddRange(affinityEntries);

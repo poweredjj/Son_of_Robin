@@ -76,8 +76,11 @@ namespace SonOfRobin
             }
         }
 
+        public static TimeSpan ConvertUpdatesCountToTimeSpan(int updatesCount)
+        { return TimeSpan.FromSeconds(updatesCount * 1.5); } // * 1.5
+
         public TimeSpan IslandTimeElapsed
-        { get { return TimeSpan.FromSeconds(this.ElapsedUpdates * 1.5) + startTimeOffset; } }  // * 1.5
+        { get { return ConvertUpdatesCountToTimeSpan(this.ElapsedUpdates) + startTimeOffset; } }
 
         public DateTime IslandDateTime
         { get { return startingDate + this.IslandTimeElapsed - startTimeOffset; } }
