@@ -60,9 +60,9 @@ namespace SonOfRobin
 
         public void Open()
         {
-            if (this.sprite.animName == "open" || this.sprite.animName == "opening") return;
+            if (this.sprite.animName == "open") return; // "opening" animation is not used, because it won't complete before opening inventory
             this.soundPack.Play(PieceSoundPack.Action.Open);
-            this.sprite.AssignNewName(animName: "opening");
+            this.sprite.AssignNewName(animName: "open");
         }
 
         public void Close()

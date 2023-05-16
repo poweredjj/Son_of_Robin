@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 
 namespace SonOfRobin
 {
@@ -498,7 +497,7 @@ namespace SonOfRobin
                 AddFrameList(animPackage: packageName, animSize: 1, animName: "dead", frameList: ConvertImageToFrameList(atlasName: "coffee_shrub_dead", layer: 1, scale: 0.1f));
             }
 
-            var chestDict = new Dictionary<PkgName, string> { 
+            var chestDict = new Dictionary<PkgName, string> {
                 { PkgName.ChestWooden, "chest_wooden/chest_wooden_" },
                 { PkgName.ChestStone, "chest_stone/chest_stone_" },
                 { PkgName.ChestIron, "chest_iron/chest_iron_" },
@@ -531,8 +530,8 @@ namespace SonOfRobin
                 }
                 AddFrameList(animPackage: packageName, animSize: 0, animName: "closing", frameList: closingFrameList);
 
-                AddFrameList(animPackage: packageName, animSize: 0, animName: "open", frameList: ConvertImageToFrameList(atlasName: $"{chestPath}1", layer: 1, crop: crop, scale: scale, depthPercent: depthPercent));
-                AddFrameList(animPackage: packageName, animSize: 0, animName: "closed", frameList: ConvertImageToFrameList(atlasName: $"{chestPath}6", layer: 1, crop: crop, scale: scale, depthPercent: depthPercent));
+                AddFrameList(animPackage: packageName, animSize: 0, animName: "closed", frameList: ConvertImageToFrameList(atlasName: $"{chestPath}1", layer: 1, crop: crop, scale: scale, depthPercent: depthPercent));
+                AddFrameList(animPackage: packageName, animSize: 0, animName: "open", frameList: ConvertImageToFrameList(atlasName: $"{chestPath}6", layer: 1, crop: crop, scale: scale, depthPercent: depthPercent));
             }
 
             {
