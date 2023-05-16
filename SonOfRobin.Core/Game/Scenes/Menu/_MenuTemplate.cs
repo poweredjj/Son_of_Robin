@@ -459,6 +459,13 @@ namespace SonOfRobin
                             textLines.Add($"| Craft level: {player.craftLevel}");
                             imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.WorkshopAdvanced].texture);
 
+                            if (world.Player.ResourcefulCrafter)
+                            {
+                                textLines.Add($"| Resourceful crafter |");
+                                imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.WorkshopAdvanced].texture);
+                                imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.DebrisStar1].texture);
+                            }
+
                             textLines.Add($"| Cooking skill: {player.cookingSkill}");
                             imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.MealStandard].texture);
 
