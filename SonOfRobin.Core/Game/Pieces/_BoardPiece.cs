@@ -328,12 +328,17 @@ namespace SonOfRobin
             set
             {
                 this.mass = Math.Max(value, 0f);
-                int previousSpriteSize = this.sprite.animSize;
-                this.SetSpriteSizeByMass();
-                if (previousSpriteSize != this.sprite.animSize && this.PieceStorage != null && this.GetType() == typeof(Plant))
+
+                if (this.world != null && !this.sprite.IsInCameraRect) // size change should not be visible
                 {
-                    Plant plant = (Plant)this;
-                    plant.fruitEngine.SetAllFruitPosAgain();
+                    int previousSpriteSize = this.sprite.animSize;
+                    this.SetSpriteSizeByMass();
+
+                    if (previousSpriteSize != this.sprite.animSize && this.PieceStorage != null && this.GetType() == typeof(Plant))
+                    {
+                        Plant plant = (Plant)this;
+                        plant.fruitEngine.SetAllFruitPosAgain();
+                    }
                 }
             }
         }
