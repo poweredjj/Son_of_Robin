@@ -945,69 +945,17 @@ namespace SonOfRobin
             float zoomOutForce = InputMapper.TriggerForce(InputMapper.Action.WorldCameraZoomOut);
 
             // camera zoom control (to keep the current zoom level, when other scene is above the world, that scene must block updates below)
-
-            if (!this.CineMode)
+            if (!Preferences.CanZoomOut)
             {
-                if (!Preferences.CanZoomOut)
-                {
-                    // zoomOutForce combined with worldScale is considered cheating and therefore not allowed
+                // zoomOutForce combined with worldScale is considered cheating and therefore not allowed
 
-                    if (zoomOutForce > 0.4f) this.HintEngine.ShowGeneralHint(type: HintEngine.Type.ZoomOutLocked, ignoreDelay: true); // to avoid showing the message at minimal (accidental, unintended) trigger pressure
+                if (zoomOutForce > 0.4f) this.HintEngine.ShowGeneralHint(type: HintEngine.Type.ZoomOutLocked, ignoreDelay: true); // to avoid showing the message at minimal (accidental, unintended) trigger pressure
 
-                    zoomOutForce = 0;
-                }
-                else VirtButton.ButtonHighlightOnNextFrame(VButName.ZoomOut);
-
-                this.camera.SetZoom(zoom: 1f / (1f + zoomOutForce), zoomSpeedMultiplier: 3f);
+                zoomOutForce = 0;
             }
+            else VirtButton.ButtonHighlightOnNextFrame(VButName.ZoomOut);
 
-            if (!this.Player.alive ||
-                (this.Player.activeState != BoardPiece.State.PlayerControlledWalking && this.Player.activeState != BoardPiece.State.PlayerControlledGhosting)) return;
-
-            if (!this.BuildMode && InputMapper.HasBeenPressed(InputMapper.Action.WorldPauseMenu))
-            {
-                ManagedSoundInstance.PauseAll();
-                this.soundPaused = true;
-
-                MenuTemplate.CreateMenuFromTemplate(templateName: MenuTemplate.Name.Pause);
-                return;
-            }
-
-            if (this.Player.activeState != BoardPiece.State.PlayerControlledWalking) return;
-
-            if (!this.BuildMode && InputMapper.HasBeenPressed(InputMapper.Action.WorldStatsMenu))
-            {
-                ManagedSoundInstance.PauseAll();
-                this.soundPaused = true;
-
-                MenuTemplate.CreateMenuFromTemplate(templateName: MenuTemplate.Name.Stats);
-                return;
-            }
-
-            if (!this.Player.buffEngine.HasBuff(BuffEngine.BuffType.Sprint) && !this.Player.buffEngine.HasBuff(BuffEngine.BuffType.SprintCooldown))
-            {
-                VirtButton.ButtonHighlightOnNextFrame(VButName.Sprint);
-                ControlTips.TipHighlightOnNextFrame(tipName: "sprint");
-                if (InputMapper.HasBeenPressed(InputMapper.Action.WorldSprintToggle)) this.Player.buffEngine.AddBuff(buff: new Buff(type: BuffEngine.BuffType.Sprint, autoRemoveDelay: 3 * 60, value: 2f), world: this);
-            }
-
-            if (InputMapper.HasBeenPressed(InputMapper.Action.WorldFieldCraft))
-            {
-                MenuTemplate.CreateMenuFromTemplate(templateName: MenuTemplate.Name.CraftField);
-                return;
-            }
-
-            if (InputMapper.HasBeenPressed(InputMapper.Action.WorldInventory) || this.playerPanel.IsCounterActivatedByTouch)
-            {
-                Inventory.SetLayout(Inventory.LayoutType.Inventory, player: this.Player);
-                return;
-            }
-
-            if (InputMapper.HasBeenPressed(InputMapper.Action.WorldMapToggle))
-            {
-                this.ToggleMapMode();
-                return;
-            }
+            this.camera.SetZoom(zoom: 1f / (1f + zoomOutForce), zoomSpeedMultiplier: 3f);
         }
 
         public void ToggleMapMode()
@@ -1251,6 +1199,20 @@ namespace SonOfRobin
             }
 
             this.BuildMode = false;
+        }
+
+        public void OpenPauseMenu()
+        {
+            ManagedSoundInstance.PauseAll();
+            this.soundPaused = true;
+            MenuTemplate.CreateMenuFromTemplate(templateName: MenuTemplate.Name.Pause);
+        }
+
+        public void OpenStatsMenu()
+        {
+            ManagedSoundInstance.PauseAll();
+            this.soundPaused = true;
+            MenuTemplate.CreateMenuFromTemplate(templateName: MenuTemplate.Name.Stats);
         }
 
         public void ShakeScreen()

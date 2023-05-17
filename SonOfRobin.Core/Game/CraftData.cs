@@ -14,9 +14,9 @@ namespace SonOfRobin
         public static List<Craft.Recipe> GetFieldRecipes()
         {
             return new List<Craft.Recipe> {
-                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.WorkshopEssential, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodLogRegular, 6 } }, fatigue: fatigueStructureSmall, isReversible: true, unlocksWhenCrafted: new List<PieceTemplate.Name> { PieceTemplate.Name.WorkshopBasic }),
+                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.WorkshopEssential, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodLogRegular, 6 } }, fatigue: fatigueStructureSmall, isReversible: true, unlocksWhenCrafted: new List<PieceTemplate.Name> { PieceTemplate.Name.WorkshopBasic, PieceTemplate.Name.HotPlate }),
 
-                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.WorkshopBasic, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodPlank, 20 }, { PieceTemplate.Name.WoodLogHard, 4 }, { PieceTemplate.Name.Stone, 5 }, { PieceTemplate.Name.Granite, 2 } }, fatigue: fatigueStructureSmall, isReversible: true, isHidden: true, unlocksWhenCrafted: new List<PieceTemplate.Name> { PieceTemplate.Name.WorkshopAdvanced, PieceTemplate.Name.Furnace, PieceTemplate.Name.HotPlate, PieceTemplate.Name.WorkshopLeatherBasic }),
+                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.WorkshopBasic, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodPlank, 20 }, { PieceTemplate.Name.WoodLogHard, 4 }, { PieceTemplate.Name.Stone, 5 }, { PieceTemplate.Name.Granite, 2 } }, fatigue: fatigueStructureSmall, isReversible: true, isHidden: true, unlocksWhenCrafted: new List<PieceTemplate.Name> { PieceTemplate.Name.WorkshopAdvanced, PieceTemplate.Name.Furnace, PieceTemplate.Name.WorkshopLeatherBasic }),
 
                 new Craft.Recipe(pieceToCreate: PieceTemplate.Name.WorkshopAdvanced, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodPlank, 12 },  { PieceTemplate.Name.Nail, 30 },  { PieceTemplate.Name.IronPlate, 2 } }, fatigue: fatigueStructureSmall, isReversible: true, isHidden: true, unlocksWhenCrafted: new List<PieceTemplate.Name> {PieceTemplate.Name.WorkshopMaster, PieceTemplate.Name.AlchemyLabStandard, PieceTemplate.Name.WorkshopLeatherAdvanced }),
 

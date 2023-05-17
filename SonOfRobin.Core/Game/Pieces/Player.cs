@@ -614,6 +614,12 @@ namespace SonOfRobin
 
         public override void SM_PlayerControlledGhosting()
         {
+            if (InputMapper.HasBeenPressed(InputMapper.Action.WorldPauseMenu))
+            {
+                this.world.OpenPauseMenu();
+                return;
+            }
+
             this.Walk(slowDownInWater: false);
         }
 
@@ -635,6 +641,43 @@ namespace SonOfRobin
 
         public override void SM_PlayerControlledWalking()
         {
+            if (InputMapper.HasBeenPressed(InputMapper.Action.WorldPauseMenu))
+            {
+                this.world.OpenPauseMenu();
+                return;
+            }
+
+            if (InputMapper.HasBeenPressed(InputMapper.Action.WorldFieldCraft))
+            {
+                MenuTemplate.CreateMenuFromTemplate(templateName: MenuTemplate.Name.CraftField);
+                return;
+            }
+
+            if (InputMapper.HasBeenPressed(InputMapper.Action.WorldInventory) || this.world.playerPanel.IsCounterActivatedByTouch)
+            {
+                Inventory.SetLayout(Inventory.LayoutType.Inventory, player: this);
+                return;
+            }
+
+            if (InputMapper.HasBeenPressed(InputMapper.Action.WorldMapToggle))
+            {
+                this.world.ToggleMapMode();
+                return;
+            }
+
+            if (InputMapper.HasBeenPressed(InputMapper.Action.WorldStatsMenu))
+            {
+                this.world.OpenStatsMenu();
+                return;
+            }
+
+            if (!this.buffEngine.HasBuff(BuffEngine.BuffType.Sprint) && !this.buffEngine.HasBuff(BuffEngine.BuffType.SprintCooldown))
+            {
+                VirtButton.ButtonHighlightOnNextFrame(VButName.Sprint);
+                ControlTips.TipHighlightOnNextFrame(tipName: "sprint");
+                if (InputMapper.HasBeenPressed(InputMapper.Action.WorldSprintToggle)) this.buffEngine.AddBuff(buff: new Buff(type: BuffEngine.BuffType.Sprint, autoRemoveDelay: 3 * 60, value: 2f), world: this.world);
+            }
+
             if (this.world.CurrentUpdate % 121 == 0) this.world.HintEngine.CheckForPieceHintToShow();
 
             this.ExpendEnergy(0.1f);
