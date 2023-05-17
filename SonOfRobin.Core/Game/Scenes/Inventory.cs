@@ -344,10 +344,11 @@ namespace SonOfRobin
             var extInfoTextList = new List<string>();
             var extInfoImageList = new List<Texture2D>();
 
-            if (selectedPiece.stackSize > 1 && !slot.locked)
+            if (selectedPiece.toolbarTask == Scheduler.TaskName.GetEaten)
             {
-                extInfoTextList.Add($"| { selectedPiece.stackSize }");
-                extInfoImageList.Add(TextureBank.GetTexture("simple_icons/stack"));
+                float fedPercent = (float)Math.Round(this.piece.world.Player.ConvertMassToFedPercent(selectedPiece.Mass) * 100, 2);
+                extInfoTextList.Add($"| +{fedPercent}%");
+                extInfoImageList.Add(TextureBank.GetTexture("simple_icons/burger"));
             }
 
             var durabilityTypeList = new List<System.Type> { typeof(Tool), typeof(PortableLight), typeof(Projectile) };
@@ -357,11 +358,10 @@ namespace SonOfRobin
                 extInfoImageList.Add(TextureBank.GetTexture("simple_icons/heart"));
             }
 
-            if (selectedPiece.toolbarTask == Scheduler.TaskName.GetEaten)
+            if (selectedPiece.stackSize > 1 && !slot.locked)
             {
-                float fedPercent = (float)Math.Round(this.piece.world.Player.ConvertMassToFedPercent(selectedPiece.Mass) * 100, 2);
-                extInfoTextList.Add($"| +{fedPercent}%");
-                extInfoImageList.Add(TextureBank.GetTexture("simple_icons/burger"));
+                extInfoTextList.Add($"| { selectedPiece.stackSize }");
+                extInfoImageList.Add(TextureBank.GetTexture("simple_icons/stack"));
             }
 
             if (extInfoTextList.Any())

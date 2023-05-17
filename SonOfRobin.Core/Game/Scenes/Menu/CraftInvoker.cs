@@ -212,21 +212,18 @@ namespace SonOfRobin
             extInfoImageList.Add(TextureBank.GetTexture("simple_icons/sleep"));
 
             TimeSpan duration = IslandClock.ConvertUpdatesCountToTimeSpan(recipe.GetRealDuration(world.craftStats));
-            extInfoTextList.Add(string.Format("| {0:D1}:{1:D2}", (int)Math.Floor(duration.TotalHours), duration.Minutes));
-            extInfoImageList.Add(TextureBank.GetTexture("simple_icons/clock"));
-
-            //MessageLog.AddMessage(msgType: MsgType.User, message: $"{world.islandClock.TimeUntilPartOfDay(IslandClock.PartOfDay.Morning).Hours}");
-
-            if (duration >= world.islandClock.TimeUntilPartOfDay(IslandClock.PartOfDay.Night))
+            bool endsAtNight = duration >= world.islandClock.TimeUntilPartOfDay(IslandClock.PartOfDay.Night);
+            string durationString = string.Format("| {0:D1}:{1:D2}", (int)Math.Floor(duration.TotalHours), duration.Minutes);
+            if (endsAtNight) durationString = $"{durationString} | |";
+            extInfoTextList.Add(durationString);
+            extInfoImageList.Add(TextureBank.GetTexture("simple_icons/hourglass"));
+            if (endsAtNight)
             {
-                extInfoTextList.Add("|");
+                extInfoImageList.Add(TextureBank.GetTexture("simple_icons/arrow_right"));
                 extInfoImageList.Add(TextureBank.GetTexture("simple_icons/moon"));
             }
 
-            // TODO check why TimeUntilPartOfDay values are incorrect
-
             entryList.Add(new InfoWindow.TextEntry(text: String.Join("  ", extInfoTextList), imageList: extInfoImageList, scale: smallScale, color: new Color(230, 230, 230)));
-
 
             var affinityEntries = PieceInfo.GetCategoryAffinityTextEntryList(pieceName: this.recipe.pieceToCreate, scale: smallScale);
             entryList.AddRange(affinityEntries);
