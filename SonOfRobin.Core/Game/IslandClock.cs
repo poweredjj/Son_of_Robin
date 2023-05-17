@@ -9,18 +9,6 @@ namespace SonOfRobin
         public enum PartOfDay
         { Morning, Noon, Afternoon, Evening, Night }
 
-        public static readonly Dictionary<TimeSpan, PartOfDay> partsOfDayByStartTimeAscending = new Dictionary<TimeSpan, PartOfDay>
-        {
-            { TimeSpan.FromHours(0), PartOfDay.Night },
-            { TimeSpan.FromHours(4), PartOfDay.Morning },
-            { TimeSpan.FromHours(11), PartOfDay.Noon },
-            { TimeSpan.FromHours(14), PartOfDay.Evening },
-            { TimeSpan.FromHours(19), PartOfDay.Night },
-        }.OrderBy(t => t.Key).ToDictionary(t => t.Key, t => t.Value);
-
-        public static readonly Dictionary<TimeSpan, PartOfDay> partsOfDayByStartTimeDescending = partsOfDayByStartTimeAscending.OrderByDescending(t => t.Key)
-            .ToDictionary(t => t.Key, t => t.Value);
-
         public static readonly TimeSpan startTimeOffset = TimeSpan.FromHours(7); // 7 - to start the game in the morning, not at midnight
         public static readonly DateTime startingDate = new DateTime(year: 2020, month: 1, day: 1, hour: 0, minute: 0, second: 0) + startTimeOffset;
         public int ElapsedUpdates { get; private set; }
@@ -92,37 +80,16 @@ namespace SonOfRobin
         { get { return (int)this.IslandTimeElapsed.TotalDays + 1; } }
 
         public PartOfDay CurrentPartOfDay
-        {
-            get
-            {
-                TimeSpan timeOfDay = this.TimeOfDay;
+        { get { return GetPartOfDayForDateTime(this.IslandDateTime); } }
 
-                foreach (var kvp in partsOfDayByStartTimeDescending)
-                {
-                    if (timeOfDay >= kvp.Key) return kvp.Value;
-                }
+        public static PartOfDay GetPartOfDayForDateTime(DateTime dateTime)
+        { return PartOfDayDefinition.GetPartOfDayForDateTime(dateTime); }
 
-                throw new ArgumentException($"Cannot calculate CurrentPartOfDay for '{this.TimeOfDay}'.");
-            }
-        }
+        public static TimeSpan GetTimeUntilPartOfDayForDateTime(DateTime dateTime, PartOfDay partOfDayToCalculate)
+        { return PartOfDayDefinition.GetTimeUntilPartOfDay(dateTime: dateTime, partOfDayToCalculate: partOfDayToCalculate); }
 
         public TimeSpan TimeUntilPartOfDay(PartOfDay partOfDayToCalculate)
-        {
-            foreach (var kvp in partsOfDayByStartTimeAscending)
-            {
-                PartOfDay partOfDayToCheck = kvp.Value;
-
-                if (partOfDayToCheck == partOfDayToCalculate)
-                {
-                    TimeSpan timeLeft = kvp.Key - this.TimeOfDay;
-                    if (TimeSpan.Compare(timeLeft, TimeSpan.Zero) < 0) timeLeft += TimeSpan.FromHours(24);
-
-                    return timeLeft;
-                }
-            }
-
-            throw new ArgumentException($"Cannot calculate TimeUntilPartOfDay for '{partOfDayToCalculate}'.");
-        }
+        { return PartOfDayDefinition.GetTimeUntilPartOfDay(dateTime: this.IslandDateTime, partOfDayToCalculate: partOfDayToCalculate); }
 
         public string CurrentPartOfDaySentence
         {
@@ -150,6 +117,65 @@ namespace SonOfRobin
                     default:
                         throw new ArgumentException($"Unsupported PartOfDay - '{currentPartOfDay}'.");
                 }
+            }
+        }
+
+        public struct PartOfDayDefinition
+        {
+            private static readonly List<PartOfDayDefinition> allDefinitions = new List<PartOfDayDefinition> {
+                new PartOfDayDefinition(partOfDay: PartOfDay.Night, startTime: TimeSpan.FromHours(0), endTime: TimeSpan.FromHours(4)),
+                new PartOfDayDefinition(partOfDay: PartOfDay.Morning, startTime: TimeSpan.FromHours(4), endTime: TimeSpan.FromHours(11)),
+                new PartOfDayDefinition(partOfDay: PartOfDay.Noon, startTime: TimeSpan.FromHours(11), endTime: TimeSpan.FromHours(13)),
+                new PartOfDayDefinition(partOfDay: PartOfDay.Afternoon, startTime: TimeSpan.FromHours(13), endTime: TimeSpan.FromHours(16)),
+                new PartOfDayDefinition(partOfDay: PartOfDay.Evening, startTime: TimeSpan.FromHours(16), endTime: TimeSpan.FromHours(19)),
+                new PartOfDayDefinition(partOfDay: PartOfDay.Night, startTime: TimeSpan.FromHours(19), endTime: TimeSpan.FromHours(24)),
+            }.OrderByDescending(t => t.startTime).ToList();
+
+            public readonly PartOfDay partOfDay;
+            public readonly TimeSpan startTime;
+            public readonly TimeSpan endTime;
+
+            public PartOfDayDefinition(PartOfDay partOfDay, TimeSpan startTime, TimeSpan endTime)
+            {
+                this.partOfDay = partOfDay;
+                this.startTime = startTime;
+                this.endTime = endTime;
+            }
+
+            private bool ContainsThisTimeOfDay(TimeSpan timeOfDay)
+            {
+                return timeOfDay >= this.startTime && timeOfDay < this.endTime;
+            }
+
+            public static PartOfDay GetPartOfDayForDateTime(DateTime dateTime)
+            {
+                TimeSpan timeOfDay = dateTime.TimeOfDay;
+
+                foreach (PartOfDayDefinition definition in allDefinitions)
+                {
+                    if (definition.ContainsThisTimeOfDay(timeOfDay)) return definition.partOfDay;
+                }
+
+                throw new ArgumentException($"Cannot calculate PartOfDay for '{dateTime}'.");
+            }
+
+            public static TimeSpan GetTimeUntilPartOfDay(DateTime dateTime, PartOfDay partOfDayToCalculate)
+            {
+                TimeSpan timeOfDay = dateTime.TimeOfDay;
+
+                foreach (int hoursToAdd in new List<int> { 0, 24 })
+                {
+                    foreach (PartOfDayDefinition definition in allDefinitions)
+                    {
+                        if (definition.partOfDay == partOfDayToCalculate)
+                        {
+                            TimeSpan startTime = definition.startTime + TimeSpan.FromHours(hoursToAdd);
+                            if (startTime > timeOfDay) return startTime - timeOfDay;
+                        }
+                    }
+                }
+
+                throw new ArgumentException($"Cannot calculate TimeUntilPartOfDay for '{dateTime}'.");
             }
         }
     }

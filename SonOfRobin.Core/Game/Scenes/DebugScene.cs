@@ -70,10 +70,15 @@ namespace SonOfRobin
                 {
                     weatherText += $"{kvp.Key}: {Math.Round(kvp.Value, 2)} ";
                 }
-                debugLines.Add($"weather {weatherText}");
-                debugLines.Add($"real time elapsed {world.TimePlayed:hh\\:mm\\:ss}");
-                debugLines.Add($"island time elapsed {world.islandClock.IslandTimeElapsed:hh\\:mm\\:ss} (x{world.updateMultiplier})");
+                // debugLines.Add($"weather {weatherText}");
+                // debugLines.Add($"real time elapsed {world.TimePlayed:hh\\:mm\\:ss}");
+                // debugLines.Add($"island time elapsed {world.islandClock.IslandTimeElapsed:hh\\:mm\\:ss} (x{world.updateMultiplier})");
                 debugLines.Add($"island day {world.islandClock.CurrentDayNo} clock {world.islandClock.TimeOfDay:hh\\:mm\\:ss} ({Convert.ToString(world.islandClock.CurrentPartOfDay).ToLower()})");
+                debugLines.Add($"time until morning: {world.islandClock.TimeUntilPartOfDay(IslandClock.PartOfDay.Morning).TotalMinutes}");
+                debugLines.Add($"time until noon: {world.islandClock.TimeUntilPartOfDay(IslandClock.PartOfDay.Noon).TotalMinutes}");
+                debugLines.Add($"time until afternoon: {world.islandClock.TimeUntilPartOfDay(IslandClock.PartOfDay.Afternoon).TotalMinutes}");
+                debugLines.Add($"time until evening: {world.islandClock.TimeUntilPartOfDay(IslandClock.PartOfDay.Evening).TotalMinutes}");
+                debugLines.Add($"time until night: {world.islandClock.TimeUntilPartOfDay(IslandClock.PartOfDay.Night).TotalMinutes}");
             }
 
             SimpleFps fps = SonOfRobinGame.fps;

@@ -217,11 +217,11 @@ namespace SonOfRobin
 
             //MessageLog.AddMessage(msgType: MsgType.User, message: $"{world.islandClock.TimeUntilPartOfDay(IslandClock.PartOfDay.Morning).Hours}");
 
-            //if (duration >= world.islandClock.TimeUntilPartOfDay(IslandClock.PartOfDay.Night))
-            //{
-            //    extInfoTextList.Add("|");
-            //    extInfoImageList.Add(TextureBank.GetTexture("simple_icons/moon"));
-            //}
+            if (duration >= world.islandClock.TimeUntilPartOfDay(IslandClock.PartOfDay.Night))
+            {
+                extInfoTextList.Add("|");
+                extInfoImageList.Add(TextureBank.GetTexture("simple_icons/moon"));
+            }
 
             // TODO check why TimeUntilPartOfDay values are incorrect
 
