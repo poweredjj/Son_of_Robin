@@ -43,7 +43,7 @@ namespace SonOfRobin
             this.LastSmartCraftReducedIngredientCount = 0;
         }
 
-        public void AddRecipe(Craft.Recipe recipe)
+        public void RegisterRecipeUse(Craft.Recipe recipe)
         {
             this.TotalNoOfCrafts++;
 
@@ -212,7 +212,7 @@ namespace SonOfRobin
                         new InfoWindow.TextEntry(text: String.Join("\n", textLines), imageList: imageList.ToList(), color: Color.White, scale: 1f)
                     };
 
-                    string nameString = showPageCounter ? $"{header} - page {pageCounter}" : $"{header}";
+                    string nameString = showPageCounter ? $"{header.ToLower()} - page {pageCounter}" : $"{header.ToLower()}";
                     Invoker invoker = new Invoker(menu: menu, name: nameString, taskName: Scheduler.TaskName.Empty, infoTextList: infoTextList);
 
                     invoker.rectColor = color;

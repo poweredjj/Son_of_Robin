@@ -564,6 +564,62 @@ namespace SonOfRobin
                         world.craftStats.CreateMenuEntriesForUsedIngredientsSummary(menu);
                         world.craftStats.CreateMenuEntriesForVegetationPlantedSummary(menu);
 
+                        // cooking stats
+                        {
+                            var textLines = new List<string>();
+                            var imageList = new List<Texture2D>();
+
+                            textLines.Add("| Cooking stats\n");
+                            imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.CookingPot].texture);
+
+                            textLines.Add($"| Cooked meals: {world.cookStats.TotalCookCount}");
+                            imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.MealStandard].texture);
+
+                            textLines.Add($"| Ingredients used (total): {world.cookStats.AllIngredientsCount}");
+                            imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.Banana].texture);
+
+                            textLines.Add($"| Ingredients used (types): {world.cookStats.IngredientNamesCount}");
+                            imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.MeatRaw].texture);
+
+                            var infoTextList = new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: String.Join("\n", textLines), imageList: imageList, color: Color.White, scale: 1f) };
+
+                            Invoker invoker = new Invoker(menu: menu, name: "cooking stats", taskName: Scheduler.TaskName.Empty, infoTextList: infoTextList);
+                            Color color = new Color(168, 74, 145);
+                            invoker.rectColor = color;
+                            invoker.outlineColor = color;
+                        }
+
+                        // brewing stats
+                        {
+                            var textLines = new List<string>();
+                            var imageList = new List<Texture2D>();
+
+                            textLines.Add("| Potion brewing stats\n");
+                            imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.AlchemyLab].texture);
+
+                            textLines.Add($"| Potions made: {world.brewStats.TotalCookCount}");
+                            imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.PotionRed].texture);
+
+                            textLines.Add($"| Ingredients used (total): {world.brewStats.AllIngredientsCount}");
+                            imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.HerbsCyan].texture);
+
+                            textLines.Add($"| Ingredients used (types): {world.brewStats.IngredientNamesCount}");
+                            imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.HerbsRed].texture);
+
+                            textLines.Add($"| Ingredients used (bases total): {world.brewStats.BaseCount}");
+                            imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.Apple].texture);
+
+                            textLines.Add($"| Ingredients used (boosters total): {world.brewStats.BoosterCount}");
+                            imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.HerbsCyan].texture);
+
+                            var infoTextList = new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: String.Join("\n", textLines), imageList: imageList, color: Color.White, scale: 1f) };
+
+                            Invoker invoker = new Invoker(menu: menu, name: "potion brewing stats", taskName: Scheduler.TaskName.Empty, infoTextList: infoTextList);
+                            Color color = new Color(168, 74, 145);
+                            invoker.rectColor = color;
+                            invoker.outlineColor = color;
+                        }
+
                         return menu;
                     }
 

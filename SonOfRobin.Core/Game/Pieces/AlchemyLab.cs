@@ -216,6 +216,10 @@ namespace SonOfRobin
                 return;
             }
 
+            // registering stats
+
+            this.world.brewStats.RegisterCooking(baseList: storedBases, boosterList: storedBoosters);
+
             // getting all buffs from base and boosters
 
             var buffList = new List<Buff> { };

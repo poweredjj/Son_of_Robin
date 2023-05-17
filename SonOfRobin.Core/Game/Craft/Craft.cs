@@ -220,7 +220,7 @@ namespace SonOfRobin
 
                 // crafting
 
-                world.craftStats.AddRecipe(recipe: this);
+                world.craftStats.RegisterRecipeUse(recipe: this);
 
                 // checking smart crafting - randomly reducing used ingredients count
 

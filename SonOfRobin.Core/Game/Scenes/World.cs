@@ -48,6 +48,9 @@ namespace SonOfRobin
         public readonly PlayerPanel playerPanel;
 
         public readonly CraftStats craftStats;
+        public readonly KitchenStats cookStats;
+        public readonly KitchenStats brewStats;
+
         public List<PieceTemplate.Name> identifiedPieces; // pieces that were "looked at" in inventory
         private bool mapEnabled;
 
@@ -174,6 +177,8 @@ namespace SonOfRobin
             this.solidColorManager = new SolidColorManager(this);
             this.stateMachineTypesManager = new SMTypesManager(this);
             this.craftStats = new CraftStats();
+            this.cookStats = new KitchenStats();
+            this.brewStats = new KitchenStats();
             this.identifiedPieces = new List<PieceTemplate.Name> { PieceTemplate.Name.Hand };
             if (this.demoMode) this.solidColorManager.Add(new SolidColor(color: Color.White, viewOpacity: 0.4f, clearScreen: false, priority: 1));
             this.soundPaused = false;
@@ -516,6 +521,8 @@ namespace SonOfRobin
                 this.discoveredRecipesForPieces = (List<PieceTemplate.Name>)headerData["discoveredRecipesForPieces"];
                 this.stateMachineTypesManager.Deserialize((Dictionary<string, Object>)headerData["stateMachineTypesManager"]);
                 this.craftStats.Deserialize((Dictionary<string, Object>)headerData["craftStats"]);
+                if (headerData.ContainsKey("cookStats")) this.cookStats.Deserialize((Dictionary<string, Object>)headerData["cookStats"]); // for compatibility with older saves
+                if (headerData.ContainsKey("brewStats")) this.brewStats.Deserialize((Dictionary<string, Object>)headerData["brewStats"]); // for compatibility with older saves
                 this.identifiedPieces = (List<PieceTemplate.Name>)headerData["identifiedPieces"];
             }
 

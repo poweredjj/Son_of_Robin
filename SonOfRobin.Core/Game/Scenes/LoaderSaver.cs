@@ -303,6 +303,8 @@ namespace SonOfRobin
                     { "discoveredRecipesForPieces", this.world.discoveredRecipesForPieces },
                     { "stateMachineTypesManager", this.world.stateMachineTypesManager.Serialize() },
                     { "craftStats", this.world.craftStats.Serialize() },
+                    { "cookStats", this.world.cookStats.Serialize() },
+                    { "brewStats", this.world.brewStats.Serialize() },
                     { "identifiedPieces", this.world.identifiedPieces },
                     { "saveVersion", SaveHeaderManager.saveVersion },
             };

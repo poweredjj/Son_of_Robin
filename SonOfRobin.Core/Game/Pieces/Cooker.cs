@@ -212,6 +212,10 @@ namespace SonOfRobin
             BoardPiece meal = PieceTemplate.Create(templateName: PieceTemplate.Name.Meal, world: this.world);
             this.PieceStorage.AddPiece(piece: meal, dropIfDoesNotFit: true);
 
+            // registering stats
+
+            this.world.cookStats.RegisterCooking(baseList: storedIngredients);
+
             // destroying every inserted piece
 
             var piecesToDestroyList = new List<BoardPiece>();
