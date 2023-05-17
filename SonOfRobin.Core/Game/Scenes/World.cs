@@ -961,7 +961,8 @@ namespace SonOfRobin
                 this.camera.SetZoom(zoom: 1f / (1f + zoomOutForce), zoomSpeedMultiplier: 3f);
             }
 
-            if (!this.Player.alive || this.Player.activeState != BoardPiece.State.PlayerControlledWalking) return;
+            if (!this.Player.alive ||
+                (this.Player.activeState != BoardPiece.State.PlayerControlledWalking && this.Player.activeState != BoardPiece.State.PlayerControlledGhosting)) return;
 
             if (!this.BuildMode && InputMapper.HasBeenPressed(InputMapper.Action.WorldPauseMenu))
             {
@@ -971,6 +972,8 @@ namespace SonOfRobin
                 MenuTemplate.CreateMenuFromTemplate(templateName: MenuTemplate.Name.Pause);
                 return;
             }
+
+            if (this.Player.activeState != BoardPiece.State.PlayerControlledWalking) return;
 
             if (!this.BuildMode && InputMapper.HasBeenPressed(InputMapper.Action.WorldStatsMenu))
             {
