@@ -207,6 +207,12 @@ namespace SonOfRobin
                 extInfoImageList.Add(TextureBank.GetTexture("simple_icons/heart"));
             }
 
+            if (pieceInfo.cookerFoodMassMultiplier > 0)
+            {
+                extInfoTextList.Add($"| x{ pieceInfo.cookerFoodMassMultiplier }");
+                extInfoImageList.Add(TextureBank.GetTexture("simple_icons/burger"));
+            }
+
             int fatigue = (int)(recipe.GetRealFatigue(world.craftStats) / world.Player.maxFatigue * 100);
             extInfoTextList.Add($"| {fatigue}%");
             extInfoImageList.Add(TextureBank.GetTexture("simple_icons/sleep"));

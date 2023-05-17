@@ -584,7 +584,7 @@ namespace SonOfRobin
                             var infoTextList = new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: String.Join("\n", textLines), imageList: imageList, color: Color.White, scale: 1f) };
 
                             Invoker invoker = new Invoker(menu: menu, name: "cooking stats", taskName: Scheduler.TaskName.Empty, infoTextList: infoTextList);
-                            Color color = new Color(168, 74, 145);
+                            Color color = new Color(181, 22, 83);
                             invoker.rectColor = color;
                             invoker.outlineColor = color;
                         }
@@ -604,18 +604,18 @@ namespace SonOfRobin
                             imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.HerbsCyan].texture);
 
                             textLines.Add($"| Ingredients used (types): {world.brewStats.IngredientNamesCount}");
-                            imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.HerbsRed].texture);
+                            imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.HerbsYellow].texture);
 
                             textLines.Add($"| Ingredients used (bases total): {world.brewStats.BaseCount}");
                             imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.Apple].texture);
 
                             textLines.Add($"| Ingredients used (boosters total): {world.brewStats.BoosterCount}");
-                            imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.HerbsCyan].texture);
+                            imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.HerbsGreen].texture);
 
                             var infoTextList = new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: String.Join("\n", textLines), imageList: imageList, color: Color.White, scale: 1f) };
 
                             Invoker invoker = new Invoker(menu: menu, name: "potion brewing stats", taskName: Scheduler.TaskName.Empty, infoTextList: infoTextList);
-                            Color color = new Color(168, 74, 145);
+                            Color color = new Color(102, 212, 157);
                             invoker.rectColor = color;
                             invoker.outlineColor = color;
                         }

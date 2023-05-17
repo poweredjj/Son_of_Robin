@@ -15,7 +15,7 @@ namespace SonOfRobin
         public readonly bool canBeUsedDuringRain;
         private readonly int ingredientSpace;
 
-        private readonly float foodMassMultiplier;
+        public readonly float foodMassMultiplier;
         private int cookingStartFrame;
         private int cookingDoneFrame;
         public bool IsOn { get; private set; }

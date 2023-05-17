@@ -312,7 +312,7 @@ namespace SonOfRobin
             this.TurnOn();
             new TextWindow(text: "Brewing...", textColor: Color.White, bgColor: Color.Green, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1);
 
-            int brewingTime = 60 * 15 * (1 + storedBoosters.Count());
+            int brewingTime = 60 * 10 * (1 + storedBoosters.Count);
             // brewingTime = 80; // for testing
 
             this.brewingStartFrame = this.world.CurrentUpdate;
