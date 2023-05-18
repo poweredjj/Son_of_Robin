@@ -227,7 +227,7 @@ namespace SonOfRobin
                 var ingredientsCopy = new Dictionary<PieceTemplate.Name, byte>(this.ingredients); // copy - to allow reducing ingredient count
 
                 int smartCraftChance = 30; // smaller number == higher chance
-                smartCraftChance /= player.craftLevel;
+                smartCraftChance /= player.CraftLevel;
 
                 int recipeLevel = world.craftStats.GetRecipeLevel(this);
                 if (recipeLevel > 0 || recipeLevel < this.maxLevel) smartCraftChance /= 2;

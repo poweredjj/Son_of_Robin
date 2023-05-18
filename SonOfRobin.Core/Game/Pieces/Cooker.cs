@@ -205,7 +205,7 @@ namespace SonOfRobin
                 cookedMass += ingredient.Mass;
             }
             int cookingTime = (int)(cookedMass * 6);
-            cookedMass *= foodMassMultiplier * this.world.Player.cookingSkill;
+            cookedMass *= foodMassMultiplier;
 
             // creating meal
 

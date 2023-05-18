@@ -456,7 +456,7 @@ namespace SonOfRobin
                             textLines.Add(toolbarText);
                             imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.BeltSmall].texture);
 
-                            textLines.Add($"| Craft level: {player.craftLevel}");
+                            textLines.Add($"| Craft level: {player.CraftLevel}");
                             imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.WorkshopAdvanced].texture);
 
                             if (world.Player.ResourcefulCrafter)
@@ -466,8 +466,11 @@ namespace SonOfRobin
                                 imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.DebrisStar1].texture);
                             }
 
-                            textLines.Add($"| Cooking skill: {player.cookingSkill}");
+                            textLines.Add($"| Cooking level: {player.CookLevel}");
                             imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.MealStandard].texture);
+
+                            textLines.Add($"| Brewing level: {player.BrewLevel}");
+                            imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.PotionRed].texture);
 
                             var infoTextList = new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: String.Join("\n", textLines), imageList: imageList, color: Color.White, scale: 1f) };
 
@@ -572,14 +575,14 @@ namespace SonOfRobin
                             textLines.Add("| Cooking stats\n");
                             imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.CookingPot].texture);
 
-                            textLines.Add($"| Cooked meals: {world.cookStats.TotalCookCount}");
+                            textLines.Add($"| Meals made: {world.cookStats.TotalCookCount}");
                             imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.MealStandard].texture);
 
-                            textLines.Add($"| Ingredients used (total): {world.cookStats.AllIngredientsCount}");
-                            imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.Banana].texture);
+                            textLines.Add($"\n| Ingredients used:");
+                            imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.HerbsCyan].texture);
 
-                            textLines.Add($"| Ingredients used (types): {world.cookStats.IngredientNamesCount}");
-                            imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.MeatRaw].texture);
+                            textLines.Add($"Unique types: {world.cookStats.IngredientNamesCount}");
+                            textLines.Add($"Total: {world.cookStats.AllIngredientsCount}");
 
                             var infoTextList = new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: String.Join("\n", textLines), imageList: imageList, color: Color.White, scale: 1f) };
 
@@ -600,17 +603,13 @@ namespace SonOfRobin
                             textLines.Add($"| Potions made: {world.brewStats.TotalCookCount}");
                             imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.PotionRed].texture);
 
-                            textLines.Add($"| Ingredients used (total): {world.brewStats.AllIngredientsCount}");
+                            textLines.Add($"\n| Ingredients used:");
                             imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.HerbsCyan].texture);
 
-                            textLines.Add($"| Ingredients used (types): {world.brewStats.IngredientNamesCount}");
-                            imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.HerbsYellow].texture);
-
-                            textLines.Add($"| Ingredients used (bases total): {world.brewStats.BaseCount}");
-                            imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.Apple].texture);
-
-                            textLines.Add($"| Ingredients used (boosters total): {world.brewStats.BoosterCount}");
-                            imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.HerbsGreen].texture);
+                            textLines.Add($"Unique types: {world.brewStats.IngredientNamesCount}");
+                            textLines.Add($"Total: {world.brewStats.AllIngredientsCount}");
+                            textLines.Add($"Bases: {world.brewStats.BaseCount}");
+                            textLines.Add($"Boosters: {world.brewStats.BoosterCount}");
 
                             var infoTextList = new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: String.Join("\n", textLines), imageList: imageList, color: Color.White, scale: 1f) };
 

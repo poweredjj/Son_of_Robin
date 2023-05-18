@@ -12,7 +12,6 @@ namespace SonOfRobin
         public int BaseCount { get; private set; }
         public int BoosterCount { get; private set; }
         public int TotalCookCount { get; private set; }
-
         public int IngredientNamesCount
         { get { return usedBases.Count + usedBoosters.Count; } }
 

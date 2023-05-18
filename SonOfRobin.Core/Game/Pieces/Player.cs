@@ -19,10 +19,11 @@ namespace SonOfRobin
         public int fedLevel;
         public float maxStamina;
         public float stamina;
-        public float cookingSkill;
         public float maxFatigue;
         private float fatigue;
-        public int craftLevel;
+        public int CraftLevel { get; private set; }
+        public int CookLevel { get; private set; }
+        public int BrewLevel { get; private set; }
         public float ShootingAngle { get; private set; }
         private int shootingPower;
         private SleepEngine sleepEngine;
@@ -43,8 +44,8 @@ namespace SonOfRobin
         public PieceStorage EquipStorage { get; private set; }
         public PieceStorage GlobalChestStorage { get; private set; } // one storage shared across all crystal chests
 
-        public Player(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, State activeState, int strength, float speed, float maxStamina, float maxHitPoints, float maxFatigue, int craftLevel, float cookingSkill, byte invWidth, byte invHeight, byte toolbarWidth, byte toolbarHeight, float fireAffinity,
-            byte animSize = 0, string animName = "default", bool blocksMovement = true, bool ignoresCollisions = false, int destructionDelay = 0, bool floatsOnWater = false, int generation = 0, Yield yield = null, int minDistance = 0, int maxDistance = 100, LightEngine lightEngine = null, PieceSoundPack soundPack = null) :
+        public Player(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, State activeState, int strength, float speed, float maxStamina, float maxHitPoints, float maxFatigue, int craftLevel, byte invWidth, byte invHeight, byte toolbarWidth, byte toolbarHeight, float fireAffinity,
+            byte animSize = 0, string animName = "default", bool blocksMovement = true, bool ignoresCollisions = false, int destructionDelay = 0, bool floatsOnWater = false, int generation = 0, Yield yield = null, int minDistance = 0, int maxDistance = 100, LightEngine lightEngine = null, PieceSoundPack soundPack = null, int cookLevel = 1, int brewLevel = 1) :
 
             base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, speed: speed, blocksMovement: blocksMovement, name: name, destructionDelay: destructionDelay, allowedTerrain: allowedTerrain, floatsOnWater: floatsOnWater, mass: 50000, maxMassForSize: null, generation: generation, canBePickedUp: false, maxHitPoints: maxHitPoints, readableName: readableName, description: description, yield: yield, strength: strength, category: Category.Flesh, lightEngine: lightEngine, ignoresCollisions: ignoresCollisions, minDistance: minDistance, maxDistance: maxDistance, activeState: activeState, soundPack: soundPack, isAffectedByWind: false, fireAffinity: fireAffinity)
         {
@@ -54,8 +55,9 @@ namespace SonOfRobin
             this.stamina = maxStamina;
             this.maxFatigue = maxFatigue;
             this.fatigue = 0;
-            this.cookingSkill = cookingSkill;
-            this.craftLevel = craftLevel;
+            this.CraftLevel = craftLevel;
+            this.CookLevel = cookLevel;
+            this.BrewLevel = brewLevel;
             this.sleepEngine = SleepEngine.OutdoorSleepDry; // to be changed later
             this.LastSteps = new List<Vector2>();
             this.previousStepPos = new Vector2(-100, -100); // initial value, to be changed later
@@ -413,8 +415,9 @@ namespace SonOfRobin
             pieceData["player_maxStamina"] = this.maxStamina;
             pieceData["player_fatigue"] = this.fatigue;
             pieceData["player_maxFatigue"] = this.maxFatigue;
-            pieceData["player_cookingSkill"] = this.cookingSkill;
-            pieceData["player_craftLevel"] = this.craftLevel;
+            pieceData["player_craftLevel"] = this.CraftLevel;
+            pieceData["player_cookLevel"] = this.CookLevel;
+            pieceData["player_brewLevel"] = this.BrewLevel;
             pieceData["player_sleepEngine"] = this.sleepEngine;
             pieceData["player_distanceWalked"] = this.distanceWalked;
             pieceData["player_toolStorage"] = this.ToolStorage.Serialize();
@@ -434,8 +437,9 @@ namespace SonOfRobin
             this.maxStamina = (float)(double)pieceData["player_maxStamina"];
             this.fatigue = (float)(double)pieceData["player_fatigue"];
             this.maxFatigue = (float)(double)pieceData["player_maxFatigue"];
-            this.cookingSkill = (float)(double)pieceData["player_cookingSkill"];
-            this.craftLevel = (int)(Int64)pieceData["player_craftLevel"];
+            if (pieceData.ContainsKey("player_craftLevel")) this.CraftLevel = (int)(Int64)pieceData["player_craftLevel"]; // for compatibility with older saves
+            if (pieceData.ContainsKey("player_cookLevel")) this.CookLevel = (int)(Int64)pieceData["player_cookLevel"]; // for compatibility with older saves
+            if (pieceData.ContainsKey("player_brewLevel")) this.BrewLevel = (int)(Int64)pieceData["player_brewLevel"]; // for compatibility with older saves
             this.sleepEngine = (SleepEngine)pieceData["player_sleepEngine"];
             if (pieceData.ContainsKey("player_distanceWalked")) this.distanceWalked = (float)(double)pieceData["player_distanceWalked"]; // for compatibility with older saves
             this.ToolStorage = PieceStorage.Deserialize(storageData: pieceData["player_toolStorage"], storagePiece: this);
@@ -1241,6 +1245,51 @@ namespace SonOfRobin
 
             new Scheduler.Task(taskName: activeToolbarPiece.toolbarTask, delay: 0, executeHelper: executeHelper);
             return true;
+        }
+
+        public bool CheckForCookLevelUp()
+        {
+            var levelUpData = new Dictionary<int, Dictionary<string, int>>
+            {
+                { 2, new Dictionary<string, int> { { "minTotalCookCount", 3 }, { "minIngredientNamesCount", 2 } } },
+                { 3, new Dictionary<string, int> { { "minTotalCookCount", 23 }, { "minIngredientNamesCount", 4 } } },
+                { 4, new Dictionary<string, int> { { "minTotalCookCount", 123 }, { "minIngredientNamesCount", 6 } } },
+                { 5, new Dictionary<string, int> { { "minTotalCookCount", 223 }, { "minIngredientNamesCount", 9 } } },
+            };
+
+            int nextLevel = this.CookLevel + 1;
+            if (!levelUpData.ContainsKey(nextLevel)) return false;
+
+            var levelDict = levelUpData[nextLevel];
+
+            int minTotalCookCount = levelDict["minTotalCookCount"];
+            int minIngredientNamesCount = levelDict["minIngredientNamesCount"];
+
+            bool levelUp =
+                this.world.cookStats.TotalCookCount >= minTotalCookCount &&
+                this.world.cookStats.IngredientNamesCount >= minIngredientNamesCount;
+
+            if (levelUp)
+            {
+                bool levelMaster = nextLevel == levelUpData.Keys.Max();
+
+                string newLevelName = levelMaster ? "master |" : $"{this.CookLevel}";
+
+                var imageList = new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.MealStandard].texture };
+                if (levelMaster) imageList.Add(PieceInfo.GetInfo(PieceTemplate.Name.DebrisStar).texture);
+
+                MessageLog.AddMessage(msgType: MsgType.User, message: $"| cooking level up {nextLevel} -> {newLevelName}");
+
+                var taskChain = new List<Object>();
+
+                taskChain.Add(new HintMessage(text: $"| cooking level up {nextLevel} -> {newLevelName}", imageList: imageList, boxType: levelMaster ? HintMessage.BoxType.GoldBox : HintMessage.BoxType.LightBlueBox, delay: 0, blockInput: false, animate: true, useTransition: true, startingSound: levelMaster ? SoundData.Name.Chime : SoundData.Name.Notification1).ConvertToTask());
+
+                new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteTaskChain, executeHelper: taskChain);
+
+                this.CookLevel = nextLevel;
+            }
+
+            return levelUp;
         }
     }
 }
