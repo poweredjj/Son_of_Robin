@@ -354,7 +354,7 @@ namespace SonOfRobin
                     case TaskName.LoadGame:
                         {
                             Scene.RemoveAllScenesOfType(typeof(Menu));
-                            Scene.RemoveAllScenesOfType(typeof(TextWindow));
+                            Scene.RemoveAllScenesOfType(typeof(TextWindow), includeWaiting: true);
                             Sound.QuickPlay(SoundData.Name.Select); // this sound should be short, because it will be silenced by LoadGameNow task
 
                             new Task(taskName: TaskName.LoadGameNow, turnOffInputUntilExecution: true, delay: 17, executeHelper: this.ExecuteHelper);
@@ -364,6 +364,7 @@ namespace SonOfRobin
 
                     case TaskName.LoadGameNow:
                         {
+                            Scene.RemoveAllScenesOfType(typeof(TextWindow), includeWaiting: true);
                             SonOfRobinGame.SmallProgressBar.TurnOff(); // in case there was a progress bar (sleeping, etc.)
                             Sound.StopAll(); // no point in playing any sounds here - loading process glitches sound for a while
                             new LoaderSaver(saveMode: false, saveSlotName: (string)this.ExecuteHelper);

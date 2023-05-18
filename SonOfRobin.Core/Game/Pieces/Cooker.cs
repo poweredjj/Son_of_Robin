@@ -210,6 +210,8 @@ namespace SonOfRobin
             int cookingTime = (int)(cookedMass * (7 - cookLevel));
             cookedMass *= this.foodMassMultiplier + (0.2f * ((float)cookLevel - 1));
 
+            // cookingTime = 10; // for testing
+
             // creating meal
 
             BoardPiece meal = PieceTemplate.Create(templateName: PieceTemplate.Name.Meal, world: this.world);
@@ -217,7 +219,7 @@ namespace SonOfRobin
 
             // adding buffs
 
-            if (this.world.random.Next(30 - ((cookLevel - 1) * 3)) == 0)
+            if (this.world.random.Next(14 - ((cookLevel - 1) * 3)) == 0)
             {
                 var buffList = new List<Buff>();
 
@@ -230,23 +232,31 @@ namespace SonOfRobin
                 {
                     BuffEngine.BuffType buffType = possibleBuffTypes[this.world.random.Next(0, possibleBuffTypes.Count)];
 
+                    int maxDuration = cookLevel * 60 * 60;
+                    int duration = this.world.random.Next(30 * 60, maxDuration);
+
+                    float valueMultiplier = (float)((1 + this.world.random.NextDouble()) * (cookLevel * 0.5f));
+
                     switch (buffType)
                     {
                         case BuffEngine.BuffType.MaxHP:
-
-                            buffList.Add(new Buff(type: BuffEngine.BuffType.MaxHP, value: 50f, autoRemoveDelay: 5 * 60 * 60));
+                            buffList.Add(new Buff(type: buffType, value: Math.Round(80f * valueMultiplier), autoRemoveDelay: duration));
                             break;
 
                         case BuffEngine.BuffType.MaxStamina:
+                            buffList.Add(new Buff(type: buffType, value: Math.Round(50f * valueMultiplier), autoRemoveDelay: duration));
                             break;
 
                         case BuffEngine.BuffType.Fatigue:
+                            buffList.Add(new Buff(type: buffType, value: Math.Round((float)-300 * valueMultiplier), isPermanent: true));
                             break;
 
                         case BuffEngine.BuffType.Speed:
+                            buffList.Add(new Buff(type: buffType, value: Math.Round(1f * valueMultiplier, 1), autoRemoveDelay: duration));
                             break;
 
                         case BuffEngine.BuffType.Strength:
+                            buffList.Add(new Buff(type: buffType, value: (int)(1 * valueMultiplier), autoRemoveDelay: duration));
                             break;
 
                         default:
