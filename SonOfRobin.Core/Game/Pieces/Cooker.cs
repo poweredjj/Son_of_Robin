@@ -196,6 +196,9 @@ namespace SonOfRobin
                 return;
             }
 
+            Player player = this.world.Player;
+            int cookLevel = player.CookLevel;
+
             // calculating meal mass
 
             float cookedMass = 0;
@@ -205,7 +208,7 @@ namespace SonOfRobin
                 cookedMass += ingredient.Mass;
             }
             int cookingTime = (int)(cookedMass * 6);
-            cookedMass *= foodMassMultiplier;
+            cookedMass *= this.foodMassMultiplier + (0.2f * (float)cookLevel);
 
             // creating meal
 
@@ -245,6 +248,8 @@ namespace SonOfRobin
 
             this.world.HintEngine.Disable(PieceHint.Type.Cooker);
             this.world.HintEngine.Disable(Tutorials.Type.Cook);
+
+            player.CheckForCookLevelUp();
         }
 
         public void ShowCookingProgress()

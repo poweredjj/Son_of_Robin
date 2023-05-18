@@ -1251,10 +1251,11 @@ namespace SonOfRobin
         {
             var levelUpData = new Dictionary<int, Dictionary<string, int>>
             {
-                { 2, new Dictionary<string, int> { { "minTotalCookCount", 3 }, { "minIngredientNamesCount", 2 } } },
-                { 3, new Dictionary<string, int> { { "minTotalCookCount", 23 }, { "minIngredientNamesCount", 4 } } },
-                { 4, new Dictionary<string, int> { { "minTotalCookCount", 123 }, { "minIngredientNamesCount", 6 } } },
-                { 5, new Dictionary<string, int> { { "minTotalCookCount", 223 }, { "minIngredientNamesCount", 9 } } },
+                // { 2, new Dictionary<string, int> { { "minTotalCookCount", 1 }, { "minIngredientNamesCount", 1 }, { "minAllIngredientsCount", 1 } } }, // for testing
+                { 2, new Dictionary<string, int> { { "minTotalCookCount", 3 }, { "minIngredientNamesCount", 2 }, { "minAllIngredientsCount", 3 } } },
+                { 3, new Dictionary<string, int> { { "minTotalCookCount", 23 }, { "minIngredientNamesCount", 4 }, { "minAllIngredientsCount", 23 } } },
+                { 4, new Dictionary<string, int> { { "minTotalCookCount", 123 }, { "minIngredientNamesCount", 6 }, { "minAllIngredientsCount", 263 } } },
+                { 5, new Dictionary<string, int> { { "minTotalCookCount", 223 }, { "minIngredientNamesCount", 9 }, { "minAllIngredientsCount", 300 } } },
             };
 
             int nextLevel = this.CookLevel + 1;
@@ -1264,27 +1265,24 @@ namespace SonOfRobin
 
             int minTotalCookCount = levelDict["minTotalCookCount"];
             int minIngredientNamesCount = levelDict["minIngredientNamesCount"];
+            int minAllIngredientsCount = levelDict["minAllIngredientsCount"];
 
             bool levelUp =
                 this.world.cookStats.TotalCookCount >= minTotalCookCount &&
-                this.world.cookStats.IngredientNamesCount >= minIngredientNamesCount;
+                this.world.cookStats.IngredientNamesCount >= minIngredientNamesCount &&
+                this.world.cookStats.AllIngredientsCount >= minAllIngredientsCount;
 
             if (levelUp)
             {
                 bool levelMaster = nextLevel == levelUpData.Keys.Max();
+                // levelMaster = true; // for testing
 
-                string newLevelName = levelMaster ? "master |" : $"{this.CookLevel}";
+                string newLevelName = levelMaster ? "master |" : $"{nextLevel}";
 
                 var imageList = new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.MealStandard].texture };
                 if (levelMaster) imageList.Add(PieceInfo.GetInfo(PieceTemplate.Name.DebrisStar).texture);
 
-                MessageLog.AddMessage(msgType: MsgType.User, message: $"| cooking level up {nextLevel} -> {newLevelName}");
-
-                var taskChain = new List<Object>();
-
-                taskChain.Add(new HintMessage(text: $"| cooking level up {nextLevel} -> {newLevelName}", imageList: imageList, boxType: levelMaster ? HintMessage.BoxType.GoldBox : HintMessage.BoxType.LightBlueBox, delay: 0, blockInput: false, animate: true, useTransition: true, startingSound: levelMaster ? SoundData.Name.Chime : SoundData.Name.Notification1).ConvertToTask());
-
-                new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteTaskChain, executeHelper: taskChain);
+                new TextWindow(text: $"| Cooking level up!\n       Level {this.CookLevel} -> {newLevelName}", imageList: imageList, textColor: levelMaster ? Color.PaleGoldenrod : Color.White, bgColor: levelMaster ? Color.DarkGoldenrod : Color.DodgerBlue, useTransition: true, animate: true, blocksUpdatesBelow: true, blockInputDuration: 100, priority: 1, startingSound: levelMaster ? SoundData.Name.Chime : SoundData.Name.Notification1);
 
                 this.CookLevel = nextLevel;
             }
