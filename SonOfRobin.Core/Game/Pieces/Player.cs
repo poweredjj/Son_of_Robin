@@ -1285,6 +1285,8 @@ namespace SonOfRobin
                 new TextWindow(text: $"| Cooking level up!\n       Level {this.CookLevel} -> {newLevelName}", imageList: imageList, textColor: levelMaster ? Color.PaleGoldenrod : Color.White, bgColor: levelMaster ? Color.DarkGoldenrod : Color.DodgerBlue, useTransition: true, animate: true, blocksUpdatesBelow: true, blockInputDuration: 100, priority: 1, startingSound: levelMaster ? SoundData.Name.Chime : SoundData.Name.Notification1);
 
                 this.CookLevel = nextLevel;
+
+                Tutorials.ShowTutorialOnTheField(type: Tutorials.Type.CookLevels, world: this.world, ignoreDelay: true, ignoreHintsSetting: true);
             }
 
             return levelUp;

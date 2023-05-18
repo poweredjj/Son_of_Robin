@@ -8,7 +8,7 @@ namespace SonOfRobin
     public class Tutorials
     {
         public enum Type
-        { BreakThing, Equip, BuildWorkshop, GetWood, Mine, Interact, PickUp, Hit, Craft, KeepingAnimalsAway, ShootProjectile, Cook, ShakeFruit, AnimalAttacking, Torch, Fireplace, TooDarkToReadMap, TooDarkToSeeAnything, Heat, CraftLevels, SwampPoison, SmartCrafting, HowToSave, CombineItems, ResourcefulCrafting, PotionBrew }
+        { BreakThing, Equip, BuildWorkshop, GetWood, Mine, Interact, PickUp, Hit, Craft, KeepingAnimalsAway, ShootProjectile, Cook, ShakeFruit, AnimalAttacking, Torch, Fireplace, TooDarkToReadMap, TooDarkToSeeAnything, Heat, CraftLevels, SwampPoison, SmartCrafting, HowToSave, CombineItems, ResourcefulCrafting, PotionBrew, CookLevels }
 
         private static readonly HintMessage.BoxType messageHeaderType = HintMessage.BoxType.BlueBox;
         private static readonly HintMessage.BoxType messageTextType = HintMessage.BoxType.LightBlueBox;
@@ -195,9 +195,16 @@ namespace SonOfRobin
 
             new Tutorial(type: Type.CraftLevels, name: "craft levels", title: "Craft skill levels.",
                 messages: new List<HintMessage> {
-                    new HintMessage(text: "Every craft recipe has a skill level.", boxType: messageTextType),
+                    new HintMessage(text: "Every | craft recipe has a skill level.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.WorkshopMaster) }, boxType: messageTextType),
                     new HintMessage(text: "After being crafted a certain number of times,\nthe recipe will level up.", boxType: messageTextType),
                     new HintMessage(text: "With every recipe level, crafting it will require less time and effort.", boxType: messageTextType),
+                });
+
+            new Tutorial(type: Type.CookLevels, name: "cooking levels", title: "Cooking skill levels.",
+                messages: new List<HintMessage> {
+                    new HintMessage(text: "Your | cooking skills get better over time.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.CookingPot) }, boxType: messageTextType),
+                    new HintMessage(text: "Increasing your cooking level will make your | meals:\n- | prepared faster\n- | have more nutritious value\n- | have beneficial effects more often", imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.Meal), TextureBank.GetTexture("simple_icons/hourglass"), TextureBank.GetTexture("simple_icons/burger"), TextureBank.GetTexture("simple_icons/arrow_up") }, boxType: messageTextType),
+                    new HintMessage(text: "Try using | | | unique ingredients, to level up faster.", imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.MeatRaw), PieceInfo.GetTexture(PieceTemplate.Name.Carrot), PieceInfo.GetTexture(PieceTemplate.Name.Acorn) }, boxType: messageTextType),
                 });
 
             new Tutorial(type: Type.KeepingAnimalsAway, name: "keeping animals away", title: "Keeping animals away.",

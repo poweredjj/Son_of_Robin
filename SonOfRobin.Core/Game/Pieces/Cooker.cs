@@ -207,8 +207,8 @@ namespace SonOfRobin
             {
                 cookedMass += ingredient.Mass;
             }
-            int cookingTime = (int)(cookedMass * 6);
-            cookedMass *= this.foodMassMultiplier + (0.2f * (float)cookLevel);
+            int cookingTime = (int)(cookedMass * (7 - cookLevel));
+            cookedMass *= this.foodMassMultiplier + (0.2f * ((float)cookLevel - 1));
 
             // creating meal
 

@@ -6321,6 +6321,18 @@
 /processorParam:TextureFormat=Color
 /build:gfx/simple_icons/arrow_right.png
 
+#begin gfx/simple_icons/arrow_up.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/simple_icons/arrow_up.png
+
 #begin gfx/simple_icons/burger.png
 /importer:TextureImporter
 /processor:TextureProcessor
