@@ -171,6 +171,8 @@ namespace SonOfRobin
                 var craftedPieces = new List<BoardPiece>();
 
                 var storagesToTakeFrom = player.CraftStoragesToTakeFrom;
+                var storagesToPutInto = player.CraftStoragesToPutInto;
+
 
                 if (!this.CheckIfStorageContainsAllIngredients(storageList: storagesToTakeFrom))
                 {
@@ -181,11 +183,11 @@ namespace SonOfRobin
                 PieceInfo.Info pieceInfo = PieceInfo.GetInfo(this.pieceToCreate);
                 bool canBePickedUp = pieceInfo.canBePickedUp;
 
-                if (canBePickedUp && !PieceStorage.StorageListCanFitSpecifiedPieces(storageList: storagesToTakeFrom, pieceName: this.pieceToCreate, quantity: this.amountToCreate))
+                if (canBePickedUp && !PieceStorage.StorageListCanFitSpecifiedPieces(storageList: storagesToPutInto, pieceName: this.pieceToCreate, quantity: this.amountToCreate))
                 {
-                    foreach (PieceStorage storage in storagesToTakeFrom) storage.Sort(); // trying to make room in storages by sorting pieces
+                    foreach (PieceStorage storage in storagesToPutInto) storage.Sort(); // trying to make room in storages by sorting pieces
 
-                    if (!craftOnTheGround && !PieceStorage.StorageListCanFitSpecifiedPieces(storageList: storagesToTakeFrom, pieceName: this.pieceToCreate, quantity: this.amountToCreate))
+                    if (!craftOnTheGround && !PieceStorage.StorageListCanFitSpecifiedPieces(storageList: storagesToPutInto, pieceName: this.pieceToCreate, quantity: this.amountToCreate))
                     {
                         var craftParams = new Dictionary<string, object> { { "recipe", this }, { "craftOnTheGround", true } };
 
@@ -253,8 +255,6 @@ namespace SonOfRobin
 
                 if (canBePickedUp)
                 {
-                    var storagesToPutInto = player.CraftStoragesToPutInto;
-
                     for (int i = 0; i < this.amountToCreate; i++)
                     {
                         BoardPiece piece = PieceTemplate.Create(templateName: this.pieceToCreate, world: world);
