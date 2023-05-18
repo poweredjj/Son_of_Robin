@@ -222,7 +222,7 @@ namespace SonOfRobin
 
             // getting all buffs from base and boosters
 
-            var buffList = new List<Buff> { };
+            var buffList = new List<Buff>();
 
             var listsToGetBoostersFrom = new List<List<BoardPiece>> { storedBases, storedBoosters };
 

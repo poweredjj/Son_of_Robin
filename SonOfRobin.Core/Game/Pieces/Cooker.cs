@@ -215,6 +215,48 @@ namespace SonOfRobin
             BoardPiece meal = PieceTemplate.Create(templateName: PieceTemplate.Name.Meal, world: this.world);
             this.PieceStorage.AddPiece(piece: meal, dropIfDoesNotFit: true);
 
+            // adding buffs
+
+            if (this.world.random.Next(30 - ((cookLevel - 1) * 3)) == 0)
+            {
+                var buffList = new List<Buff>();
+
+                int maxBuffsToAdd = (cookLevel + 1) / 2;
+                int buffsToAddCount = this.world.random.Next(1, maxBuffsToAdd);
+
+                var possibleBuffTypes = new List<BuffEngine.BuffType> { BuffEngine.BuffType.MaxHP, BuffEngine.BuffType.MaxStamina, BuffEngine.BuffType.Fatigue, BuffEngine.BuffType.Speed, BuffEngine.BuffType.Strength };
+
+                for (int i = 0; i < buffsToAddCount; i++)
+                {
+                    BuffEngine.BuffType buffType = possibleBuffTypes[this.world.random.Next(0, possibleBuffTypes.Count)];
+
+                    switch (buffType)
+                    {
+                        case BuffEngine.BuffType.MaxHP:
+
+                            buffList.Add(new Buff(type: BuffEngine.BuffType.MaxHP, value: 50f, autoRemoveDelay: 5 * 60 * 60));
+                            break;
+
+                        case BuffEngine.BuffType.MaxStamina:
+                            break;
+
+                        case BuffEngine.BuffType.Fatigue:
+                            break;
+
+                        case BuffEngine.BuffType.Speed:
+                            break;
+
+                        case BuffEngine.BuffType.Strength:
+                            break;
+
+                        default:
+                            throw new ArgumentException($"Unsupported buffType - {buffType}.");
+                    }
+                }
+
+                meal.buffList = buffList;
+            }
+
             // registering stats
 
             this.world.cookStats.RegisterCooking(baseList: storedIngredients);
