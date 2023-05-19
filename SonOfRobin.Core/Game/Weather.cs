@@ -334,7 +334,7 @@ namespace SonOfRobin
                 }
             }
 
-            if (strongWind) // moving pieces
+            if (strongWind && !this.world.BuildMode && !this.world.CineMode) // moving pieces
             {
                 foreach (Sprite sprite in affectedSpriteList)
                 {

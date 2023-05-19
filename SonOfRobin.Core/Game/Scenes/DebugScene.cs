@@ -338,20 +338,19 @@ namespace SonOfRobin
 
             //if (Keyboard.HasBeenPressed(Keys.F1)) new TextWindow(text: "If I had more | leather, I could make a | backpack or a | belt.\n>|1|2|3|4|5<", animate: true, useTransition: false, framesPerChar: 1, bgColor: Color.DeepSkyBlue, textColor: Color.White, imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Leather), PieceInfo.GetTexture(PieceTemplate.Name.BackpackSmall), PieceInfo.GetTexture(PieceTemplate.Name.BeltBig), PieceInfo.GetTexture(PieceTemplate.Name.BeltBig), PieceInfo.GetTexture(PieceTemplate.Name.BeltBig), PieceInfo.GetTexture(PieceTemplate.Name.BeltBig), PieceInfo.GetTexture(PieceTemplate.Name.BeltBig), PieceInfo.GetTexture(PieceTemplate.Name.BeltBig) });
 
-            //if (Keyboard.HasBeenPressed(Keys.F2))
-            //{
-            //    if (world == null) return;
-
-            //    world.HintEngine.ShowGeneralHint(type: HintEngine.Type.CantShootInWater, ignoreDelay: true);
-            //    world.HintEngine.ShowGeneralHint(type: HintEngine.Type.CineSmallBase, ignoreDelay: true);
-            //    world.HintEngine.ShowGeneralHint(type: HintEngine.Type.Lava, ignoreDelay: true);
-            //}
-
             if (Keyboard.HasBeenPressed(Keys.F1))
             {
                 if (world == null) return;
-                world.SpectatorMode = !world.SpectatorMode;
+
+                world.HintEngine.ShowGeneralHint(type: HintEngine.Type.CineSmallBase, ignoreDelay: true);
+                world.HintEngine.ShowGeneralHint(type: HintEngine.Type.Lava, ignoreDelay: true);
             }
+
+            //if (Keyboard.HasBeenPressed(Keys.F1))
+            //{
+            //    if (world == null) return;
+            //    world.SpectatorMode = !world.SpectatorMode;
+            //}
 
             //if (Keyboard.HasBeenPressed(Keys.F2))
             //{
@@ -387,7 +386,7 @@ namespace SonOfRobin
             {
                 if (world == null) return;
 
-                world.weather.AddEvent(new WeatherEvent(type: Weather.WeatherType.Wind, intensity: 1.0f, startTime: world.islandClock.IslandDateTime, duration: TimeSpan.FromMinutes(20), transitionLength: TimeSpan.FromMinutes(4)));
+                world.weather.AddEvent(new WeatherEvent(type: Weather.WeatherType.Wind, intensity: 1.0f, startTime: world.islandClock.IslandDateTime, duration: TimeSpan.FromMinutes(60), transitionLength: TimeSpan.FromMinutes(4)));
             }
 
             //if (Keyboard.HasBeenPressed(Keys.F2))
