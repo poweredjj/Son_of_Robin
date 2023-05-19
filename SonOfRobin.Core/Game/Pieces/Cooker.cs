@@ -210,7 +210,7 @@ namespace SonOfRobin
             int cookingTime = (int)(cookedMass * (7 - cookLevel));
             cookedMass *= this.foodMassMultiplier + (0.2f * ((float)cookLevel - 1));
 
-            // cookingTime = 10; // for testing
+            // cookingTime = 80; // for testing
 
             // creating meal
 

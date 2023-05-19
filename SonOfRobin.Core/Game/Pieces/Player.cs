@@ -1309,8 +1309,8 @@ namespace SonOfRobin
         {
             var levelUpData = new Dictionary<int, Dictionary<string, int>>
             {
-                { 2, new Dictionary<string, int> { { "minTotalCookCount", 1 }, { "minIngredientNamesCount", 1 }, { "minAllIngredientsCount", 1 } } }, // for testing
-                //{ 2, new Dictionary<string, int> { { "minTotalCookCount", 3 }, { "minIngredientNamesCount", 2 }, { "minAllIngredientsCount", 3 } } },
+                //{ 2, new Dictionary<string, int> { { "minTotalCookCount", 1 }, { "minIngredientNamesCount", 1 }, { "minAllIngredientsCount", 1 } } }, // for testing
+                { 2, new Dictionary<string, int> { { "minTotalCookCount", 3 }, { "minIngredientNamesCount", 2 }, { "minAllIngredientsCount", 3 } } },
                 { 3, new Dictionary<string, int> { { "minTotalCookCount", 23 }, { "minIngredientNamesCount", 4 }, { "minAllIngredientsCount", 23 } } },
                 { 4, new Dictionary<string, int> { { "minTotalCookCount", 123 }, { "minIngredientNamesCount", 6 }, { "minAllIngredientsCount", 263 } } },
                 { 5, new Dictionary<string, int> { { "minTotalCookCount", 223 }, { "minIngredientNamesCount", 9 }, { "minAllIngredientsCount", 300 } } },

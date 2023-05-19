@@ -261,11 +261,28 @@ namespace SonOfRobin
                 }
             }
 
+            Player player = this.world.Player;
+            int brewLevel = player.BrewLevel;
+
+            // brewLevel = 5; // for testing
+
             // creating potion
 
             BoardPiece potion = PieceTemplate.Create(templateName: potionName, world: this.world);
             buffList = BuffEngine.MergeSameTypeBuffsInList(world: this.world, buffList: buffList); // merging the same buffs (to add values of non-stackable buffs)
-            potion.buffList = buffList;
+
+            var adjustedBuffList = new List<Buff>();
+
+            foreach (Buff buff in buffList)
+            {
+                float durationMultiplier = 1f + (float)(this.world.random.NextDouble() * ((brewLevel - 1) / 2));
+
+                Buff adjustedBuff = new Buff(type: buff.type, value: buff.value, autoRemoveDelay: (int)(buff.autoRemoveDelay * durationMultiplier), isPermanent: buff.isPermanent, canKill: buff.canKill, increaseIDAtEveryUse: buff.increaseIDAtEveryUse);
+
+                adjustedBuffList.Add(adjustedBuff);
+            }
+
+            potion.buffList = adjustedBuffList;
 
             // setting potion color
 
@@ -308,12 +325,12 @@ namespace SonOfRobin
 
             // blocking the lab for "brewing duration"
 
-            Inventory.SetLayout(newLayout: Inventory.LayoutType.Toolbar, player: this.world.Player);
+            Inventory.SetLayout(newLayout: Inventory.LayoutType.Toolbar, player: player);
             this.TurnOn();
             new TextWindow(text: "Brewing...", textColor: Color.White, bgColor: Color.Green, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1);
 
-            int brewingTime = 60 * 10 * (1 + storedBoosters.Count);
-            // brewingTime = 80; // for testing
+            int brewingTime = 60 * (13 + (storedBoosters.Count * 2) - (brewLevel * 2));
+            // brewingTime = 30; // for testing
 
             this.brewingStartFrame = this.world.CurrentUpdate;
             this.brewingDoneFrame = this.world.CurrentUpdate + brewingTime;
@@ -324,7 +341,7 @@ namespace SonOfRobin
             this.world.HintEngine.Disable(PieceHint.Type.AlchemyLab);
             this.world.HintEngine.Disable(Tutorials.Type.PotionBrew);
 
-            this.world.Player.CheckForAlchemyLevelUp();
+            player.CheckForAlchemyLevelUp();
         }
 
         public void ShowBrewingProgress()
