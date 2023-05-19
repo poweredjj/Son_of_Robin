@@ -75,7 +75,20 @@ namespace SonOfRobin
 
                     if (pieceInfo.toolbarTask == Scheduler.TaskName.GetEaten ||
                         pieceInfo.toolbarTask == Scheduler.TaskName.GetDrinked ||
-                        typeList.Contains(pieceInfo.type)) allowedToolbarPieces.Add(pieceName);
+                        typeList.Contains(pieceInfo.type))
+                    {
+                        bool poisonFound = false;
+                        foreach (Buff buff in pieceInfo.buffList)
+                        {
+                            if (!buff.isPositive && buff.type == BuffEngine.BuffType.RegenPoison)
+                            {
+                                poisonFound = true;
+                                break;
+                            }
+                        }
+
+                        if (!poisonFound) allowedToolbarPieces.Add(pieceName);
+                    }
                 }
             }
             else allowedToolbarPieces.Add(PieceTemplate.Name.Hand);
