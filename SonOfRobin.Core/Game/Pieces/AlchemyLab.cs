@@ -323,6 +323,8 @@ namespace SonOfRobin
 
             this.world.HintEngine.Disable(PieceHint.Type.AlchemyLab);
             this.world.HintEngine.Disable(Tutorials.Type.PotionBrew);
+
+            this.world.Player.CheckForAlchemyLevelUp();
         }
 
         public void ShowBrewingProgress()

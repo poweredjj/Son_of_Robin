@@ -1304,5 +1304,50 @@ namespace SonOfRobin
 
             return levelUp;
         }
+
+        public bool CheckForAlchemyLevelUp()
+        {
+            var levelUpData = new Dictionary<int, Dictionary<string, int>>
+            {
+                { 2, new Dictionary<string, int> { { "minTotalCookCount", 1 }, { "minIngredientNamesCount", 1 }, { "minAllIngredientsCount", 1 } } }, // for testing
+                //{ 2, new Dictionary<string, int> { { "minTotalCookCount", 3 }, { "minIngredientNamesCount", 2 }, { "minAllIngredientsCount", 3 } } },
+                { 3, new Dictionary<string, int> { { "minTotalCookCount", 23 }, { "minIngredientNamesCount", 4 }, { "minAllIngredientsCount", 23 } } },
+                { 4, new Dictionary<string, int> { { "minTotalCookCount", 123 }, { "minIngredientNamesCount", 6 }, { "minAllIngredientsCount", 263 } } },
+                { 5, new Dictionary<string, int> { { "minTotalCookCount", 223 }, { "minIngredientNamesCount", 9 }, { "minAllIngredientsCount", 300 } } },
+            };
+
+            int nextLevel = this.BrewLevel + 1;
+            if (!levelUpData.ContainsKey(nextLevel)) return false;
+
+            var levelDict = levelUpData[nextLevel];
+
+            int minTotalCookCount = levelDict["minTotalCookCount"];
+            int minIngredientNamesCount = levelDict["minIngredientNamesCount"];
+            int minAllIngredientsCount = levelDict["minAllIngredientsCount"];
+
+            bool levelUp =
+                this.world.brewStats.TotalCookCount >= minTotalCookCount &&
+                this.world.brewStats.IngredientNamesCount >= minIngredientNamesCount &&
+                this.world.brewStats.AllIngredientsCount >= minAllIngredientsCount;
+
+            if (levelUp)
+            {
+                bool levelMaster = nextLevel == levelUpData.Keys.Max();
+                // levelMaster = true; // for testing
+
+                string newLevelName = levelMaster ? "master |" : $"{nextLevel}";
+
+                var imageList = new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.PotionRed].texture };
+                if (levelMaster) imageList.Add(PieceInfo.GetInfo(PieceTemplate.Name.DebrisStar).texture);
+
+                new TextWindow(text: $"| Alchemy level up!\n       Level {this.BrewLevel} -> {newLevelName}", imageList: imageList, textColor: levelMaster ? Color.PaleGoldenrod : Color.White, bgColor: levelMaster ? Color.DarkGoldenrod : Color.DodgerBlue, useTransition: true, animate: true, blocksUpdatesBelow: true, blockInputDuration: 100, priority: 1, startingSound: levelMaster ? SoundData.Name.Chime : SoundData.Name.Notification1);
+
+                this.BrewLevel = nextLevel;
+
+                Tutorials.ShowTutorialOnTheField(type: Tutorials.Type.BrewLevels, world: this.world, ignoreDelay: true, ignoreHintsSetting: true);
+            }
+
+            return levelUp;
+        }
     }
 }
