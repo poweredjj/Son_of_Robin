@@ -86,8 +86,8 @@ namespace SonOfRobin
 
             public float GetRealFatigue(CraftStats craftStats, Player player)
             {
-                float recipeLevelMultiplier = this.GetRecipeLevelMultiplier(craftStats) * 0.7f;
-                float craftLevelMultiplier = player.CraftLevel / Player.maxCraftLevel * 0.3f;
+                float recipeLevelMultiplier = this.GetRecipeLevelMultiplier(craftStats) * 0.6f;
+                float craftLevelMultiplier = player.CraftLevel / Player.maxCraftLevel * 0.4f;
                 // max possible sum of both multipliers should == 1
 
                 float fatigueDifferenceForMasterLevel = this.fatigue * (1f - this.masterLevelFatigueMultiplier);
@@ -101,8 +101,8 @@ namespace SonOfRobin
 
             public int GetRealDuration(CraftStats craftStats, Player player)
             {
-                float recipeLevelMultiplier = this.GetRecipeLevelMultiplier(craftStats) * 0.7f;
-                float craftLevelMultiplier = player.CraftLevel / Player.maxCraftLevel * 0.3f;
+                float recipeLevelMultiplier = this.GetRecipeLevelMultiplier(craftStats) * 0.6f;
+                float craftLevelMultiplier = player.CraftLevel / Player.maxCraftLevel * 0.4f;
                 // max possible sum of both multipliers should == 1
 
                 float durationDifferenceForMasterLevel = this.duration * (1f - this.masterLevelDurationMultiplier);
@@ -270,6 +270,17 @@ namespace SonOfRobin
                     for (int i = 0; i < this.amountToCreate; i++)
                     {
                         BoardPiece piece = PieceTemplate.Create(templateName: this.pieceToCreate, world: world);
+
+                        if (world.random.Next(14 - ((world.Player.CraftLevel - 1) * 3)) == 0)
+                        {
+                            int bonusHitPoints = world.random.Next((int)(piece.maxHitPoints * 0.2f), (int)(piece.maxHitPoints * 0.5f));
+
+                            MessageLog.AddMessage(msgType: MsgType.User, message: $"{ Helpers.FirstCharToUpperCase(piece.readableName) }: bonus hit points added  { piece.maxHitPoints } -> {piece.maxHitPoints + bonusHitPoints}.");
+
+                            piece.maxHitPoints += bonusHitPoints;
+                            piece.hitPoints = piece.maxHitPoints;
+                        }
+
                         craftedPieces.Add(piece);
                         bool pieceInserted = false;
 

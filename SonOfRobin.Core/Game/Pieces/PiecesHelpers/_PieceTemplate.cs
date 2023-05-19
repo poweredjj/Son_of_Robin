@@ -2418,7 +2418,7 @@ namespace SonOfRobin
                         var multiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Metal, 3f }, { BoardPiece.Category.Stone, 15f }, { BoardPiece.Category.Wood, 3f }, { BoardPiece.Category.Crystal, 3f } };
 
                         return new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PickaxeIron, allowedTerrain: shallowWaterToVolcano, category: BoardPiece.Category.Metal,
-                            floatsOnWater: false, minDistance: 0, maxDistance: 100, maxMassForSize: null, generation: generation, hitPower: 1, indestructible: false, multiplierByCategory: multiplierByCategory, maxHitPoints: 170, readableName: "iron pickaxe", description: "Advanced mining tool. Can break crystals.", fireAffinity: 0.2f);
+                            floatsOnWater: false, minDistance: 0, maxDistance: 100, maxMassForSize: null, generation: generation, hitPower: 1, indestructible: false, multiplierByCategory: multiplierByCategory, maxHitPoints: 170, readableName: "iron pickaxe", description: "Advanced mining tool.", fireAffinity: 0.2f);
                     }
 
                 case Name.PickaxeCrystal:

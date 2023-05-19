@@ -196,7 +196,7 @@ namespace SonOfRobin
             new Tutorial(type: Type.GeneralCraftLevels, name: "general crafting levels", title: "General crafting skill levels.",
                 messages: new List<HintMessage> {
                     new HintMessage(text: "Your | crafting skills will slowly get better.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.WorkshopMaster) }, boxType: messageTextType),
-                    new HintMessage(text: "Increasing your general crafting level will make crafting:\n- | faster\n- | less tiresome", imageList: new List<Texture2D>{ TextureBank.GetTexture("simple_icons/hourglass"), TextureBank.GetTexture("simple_icons/sleep") }, boxType: messageTextType),
+                    new HintMessage(text: "Increasing your general crafting level will make crafting:\n- | faster\n- | less tiresome\n - | make stronger items sometimes ", imageList: new List<Texture2D>{ TextureBank.GetTexture("simple_icons/hourglass"), TextureBank.GetTexture("simple_icons/sleep"), TextureBank.GetTexture("simple_icons/arrow_up") }, boxType: messageTextType),
                  });
 
             new Tutorial(type: Type.CraftRecipeLevels, name: "craft recipe levels", title: "Craft recipe skill levels.",
