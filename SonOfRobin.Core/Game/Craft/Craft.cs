@@ -75,7 +75,7 @@ namespace SonOfRobin
                 return recipeByID[id];
             }
 
-            private float GetLevelMultiplier(CraftStats craftStats)
+            private float GetRecipeLevelMultiplier(CraftStats craftStats)
             {
                 if (this.maxLevel == 0) return 0;
 
@@ -84,12 +84,14 @@ namespace SonOfRobin
                 return levelMultiplier;
             }
 
-            public float GetRealFatigue(CraftStats craftStats)
+            public float GetRealFatigue(CraftStats craftStats, Player player)
             {
-                float levelMultiplier = this.GetLevelMultiplier(craftStats);
+                float recipeLevelMultiplier = this.GetRecipeLevelMultiplier(craftStats) * 0.7f;
+                float craftLevelMultiplier = player.CraftLevel / Player.maxCraftLevel * 0.3f;
+                // max possible sum of both multipliers should == 1
 
                 float fatigueDifferenceForMasterLevel = this.fatigue * (1f - this.masterLevelFatigueMultiplier);
-                float fatigueDifference = fatigueDifferenceForMasterLevel * levelMultiplier;
+                float fatigueDifference = fatigueDifferenceForMasterLevel * (recipeLevelMultiplier + craftLevelMultiplier);
 
                 float realFatigue = this.fatigue - fatigueDifference;
                 MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{SonOfRobinGame.CurrentUpdate} real fatigue {realFatigue}");
@@ -97,12 +99,14 @@ namespace SonOfRobin
                 return realFatigue;
             }
 
-            public int GetRealDuration(CraftStats craftStats)
+            public int GetRealDuration(CraftStats craftStats, Player player)
             {
-                float levelMultiplier = this.GetLevelMultiplier(craftStats);
+                float recipeLevelMultiplier = this.GetRecipeLevelMultiplier(craftStats) * 0.7f;
+                float craftLevelMultiplier = player.CraftLevel / Player.maxCraftLevel * 0.3f;
+                // max possible sum of both multipliers should == 1
 
                 float durationDifferenceForMasterLevel = this.duration * (1f - this.masterLevelDurationMultiplier);
-                float durationDifference = durationDifferenceForMasterLevel * levelMultiplier;
+                float durationDifference = durationDifferenceForMasterLevel * (recipeLevelMultiplier + craftLevelMultiplier);
 
                 int realDuration = (int)(this.duration - durationDifference);
                 MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{SonOfRobinGame.CurrentUpdate} real duration {realDuration}");
@@ -223,8 +227,8 @@ namespace SonOfRobin
                 // build mode advances island clock (and adds fatigue) gradually, not all at once
                 if (canBePickedUp)
                 {
-                    world.islandClock.Advance(amount: this.GetRealDuration(world.craftStats), ignorePause: true);
-                    player.Fatigue += this.GetRealFatigue(world.craftStats);
+                    world.islandClock.Advance(amount: this.GetRealDuration(craftStats: world.craftStats, player: world.Player), ignorePause: true);
+                    player.Fatigue += this.GetRealFatigue(craftStats: world.craftStats, player: world.Player);
                     player.Fatigue = Math.Min(world.Player.Fatigue, world.Player.maxFatigue - 20); // to avoid falling asleep just after crafting
                 }
 
@@ -365,7 +369,6 @@ namespace SonOfRobin
                 }
 
                 bool recipeLevelUp = world.craftStats.RecipeJustLevelledUp(this);
-
                 if (recipeLevelUp)
                 {
                     int recipeLevel = world.craftStats.GetRecipeLevel(this);
@@ -395,6 +398,22 @@ namespace SonOfRobin
                     taskChain.Add(new HintMessage(text: unlockedRecipesMessage, imageList: imageList, boxType: HintMessage.BoxType.LightBlueBox, delay: 0, blockInput: false, animate: true, useTransition: true, startingSound: SoundData.Name.Notification1).ConvertToTask());
                 }
 
+                bool craftLevelUp = world.Player.CheckForCraftLevelUp();
+                if (craftLevelUp)
+                {
+                    Player player = world.Player;
+
+                    bool levelMaster = player.CraftLevel == Player.maxCraftLevel;
+                    // levelMaster = true; // for testing
+
+                    string newLevelName = levelMaster ? "master |" : $"{player.CraftLevel}";
+
+                    var imageList = new List<Texture2D> { PieceInfo.GetInfo(PieceTemplate.Name.WorkshopMaster).texture };
+                    if (levelMaster) imageList.Add(PieceInfo.GetInfo(PieceTemplate.Name.DebrisStar).texture);
+
+                    taskChain.Add(new HintMessage(text: $"| Craft level up!\n       Level {player.CraftLevel - 1} -> {newLevelName}", imageList: imageList, boxType: levelMaster ? HintMessage.BoxType.GoldBox : HintMessage.BoxType.LightBlueBox, delay: 0, blockInput: false, animate: true, useTransition: true, startingSound: levelMaster ? SoundData.Name.Chime : SoundData.Name.Notification1).ConvertToTask());
+                }
+
                 if (!pieceInfo.canBePickedUp)
                 {
                     taskChain.Insert(0, new Scheduler.Task(taskName: Scheduler.TaskName.TempoStop, delay: 0, executeHelper: null, storeForLaterUse: true));
@@ -405,9 +424,16 @@ namespace SonOfRobin
                 if (pieceInfo.canBePickedUp) executeHelper["newOwnedPiece"] = this.pieceToCreate;
                 else executeHelper["fieldPiece"] = this.pieceToCreate;
 
-                if (!tutorialAdded && recipeLevelUp && !world.HintEngine.shownTutorials.Contains(Tutorials.Type.CraftLevels))
+                if (!tutorialAdded && craftLevelUp && !world.HintEngine.shownTutorials.Contains(Tutorials.Type.GeneralCraftLevels))
                 {
-                    var tutorialData = new Dictionary<string, Object> { { "tutorial", Tutorials.Type.CraftLevels }, { "world", world }, { "ignoreHintsSetting", false }, { "ignoreDelay", true }, { "ignoreIfShown", true } };
+                    var tutorialData = new Dictionary<string, Object> { { "tutorial", Tutorials.Type.GeneralCraftLevels }, { "world", world }, { "ignoreHintsSetting", false }, { "ignoreDelay", true }, { "ignoreIfShown", true } };
+                    taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ShowTutorialInGame, delay: 0, storeForLaterUse: true, executeHelper: tutorialData));
+                    tutorialAdded = true;
+                }
+
+                if (!tutorialAdded && recipeLevelUp && !world.HintEngine.shownTutorials.Contains(Tutorials.Type.CraftRecipeLevels))
+                {
+                    var tutorialData = new Dictionary<string, Object> { { "tutorial", Tutorials.Type.CraftRecipeLevels }, { "world", world }, { "ignoreHintsSetting", false }, { "ignoreDelay", true }, { "ignoreIfShown", true } };
                     taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ShowTutorialInGame, delay: 0, storeForLaterUse: true, executeHelper: tutorialData));
                     tutorialAdded = true;
                 }
@@ -539,6 +565,8 @@ namespace SonOfRobin
 
         private static void CheckIfRecipesAreCorrect()
         {
+            var a = recipesByCategory;
+
             foreach (List<Recipe> recipeList in recipesByCategory.Values)
             {
                 foreach (Recipe recipe in recipeList)

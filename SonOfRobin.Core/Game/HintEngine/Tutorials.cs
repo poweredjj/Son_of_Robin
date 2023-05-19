@@ -8,7 +8,7 @@ namespace SonOfRobin
     public class Tutorials
     {
         public enum Type
-        { BreakThing, Equip, BuildWorkshop, GetWood, Mine, Interact, PickUp, Hit, Craft, KeepingAnimalsAway, ShootProjectile, Cook, ShakeFruit, AnimalAttacking, Torch, Fireplace, TooDarkToReadMap, TooDarkToSeeAnything, Heat, CraftLevels, SwampPoison, SmartCrafting, HowToSave, CombineItems, ResourcefulCrafting, PotionBrew, CookLevels, BrewLevels }
+        { BreakThing, Equip, BuildWorkshop, GetWood, Mine, Interact, PickUp, Hit, Craft, KeepingAnimalsAway, ShootProjectile, Cook, ShakeFruit, AnimalAttacking, Torch, Fireplace, TooDarkToReadMap, TooDarkToSeeAnything, Heat, CraftRecipeLevels, SwampPoison, SmartCrafting, HowToSave, CombineItems, ResourcefulCrafting, PotionBrew, CookLevels, BrewLevels, GeneralCraftLevels }
 
         private static readonly HintMessage.BoxType messageHeaderType = HintMessage.BoxType.BlueBox;
         private static readonly HintMessage.BoxType messageTextType = HintMessage.BoxType.LightBlueBox;
@@ -193,7 +193,13 @@ namespace SonOfRobin
                     new HintMessage(text: "2. Activate craft by pressing |.", imageList: new List<Texture2D> {InputMapper.GetTexture(InputMapper.Action.GlobalConfirm)}, boxType: messageTextType),
                     new HintMessage(text: "3. If you have all necessary ingredients and some free space\nthe item will be crafted.", boxType: messageTextType)});
 
-            new Tutorial(type: Type.CraftLevels, name: "craft levels", title: "Craft skill levels.",
+            new Tutorial(type: Type.GeneralCraftLevels, name: "general crafting levels", title: "General crafting skill levels.",
+                messages: new List<HintMessage> {
+                    new HintMessage(text: "Your | crafting skills will slowly get better.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.WorkshopMaster) }, boxType: messageTextType),
+                    new HintMessage(text: "Increasing your general crafting level will make crafting:\n- | faster\n- | less tiresome", imageList: new List<Texture2D>{ TextureBank.GetTexture("simple_icons/hourglass"), TextureBank.GetTexture("simple_icons/sleep") }, boxType: messageTextType),
+                 });
+
+            new Tutorial(type: Type.CraftRecipeLevels, name: "craft recipe levels", title: "Craft recipe skill levels.",
                 messages: new List<HintMessage> {
                     new HintMessage(text: "Every | craft recipe has a skill level.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.WorkshopMaster) }, boxType: messageTextType),
                     new HintMessage(text: "After being crafted a certain number of times,\nthe recipe will level up.", boxType: messageTextType),

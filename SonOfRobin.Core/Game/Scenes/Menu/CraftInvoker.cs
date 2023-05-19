@@ -213,11 +213,11 @@ namespace SonOfRobin
                 extInfoImageList.Add(TextureBank.GetTexture("simple_icons/burger"));
             }
 
-            int fatigue = (int)(recipe.GetRealFatigue(world.craftStats) / world.Player.maxFatigue * 100);
+            int fatigue = (int)(recipe.GetRealFatigue(craftStats: world.craftStats, player: world.Player) / world.Player.maxFatigue * 100);
             extInfoTextList.Add($"| {fatigue}%");
             extInfoImageList.Add(TextureBank.GetTexture("simple_icons/sleep"));
 
-            TimeSpan duration = IslandClock.ConvertUpdatesCountToTimeSpan(recipe.GetRealDuration(world.craftStats));
+            TimeSpan duration = IslandClock.ConvertUpdatesCountToTimeSpan(recipe.GetRealDuration(craftStats: world.craftStats, player: world.Player));
             bool endsAtNight = duration >= world.islandClock.TimeUntilPartOfDay(IslandClock.PartOfDay.Night);
             string durationString = string.Format("| {0:D1}:{1:D2}", (int)Math.Floor(duration.TotalHours), duration.Minutes);
             if (endsAtNight) durationString = $"{durationString} | |";

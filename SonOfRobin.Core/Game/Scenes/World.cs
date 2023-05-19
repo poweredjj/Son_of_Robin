@@ -1140,8 +1140,8 @@ namespace SonOfRobin
             this.Player.recipeToBuild = recipe;
             this.Player.simulatedPieceToBuild = PieceTemplate.CreateAndPlaceOnBoard(templateName: recipe.pieceToCreate, world: this, position: this.Player.sprite.position, ignoreCollisions: true); // "template" piece should be placed - collisions doesn't matter...
             this.Player.simulatedPieceToBuild.sprite.MoveToClosestFreeSpot(this.Player.sprite.position); // ...but the starting position should be correct for building, if possible
-            this.Player.buildDurationForOneFrame = recipe.GetRealDuration(this.craftStats) / buildDuration;
-            this.Player.buildFatigueForOneFrame = recipe.GetRealFatigue(this.craftStats) / buildDuration;
+            this.Player.buildDurationForOneFrame = recipe.GetRealDuration(craftStats: this.craftStats, player: this.Player) / buildDuration;
+            this.Player.buildFatigueForOneFrame = recipe.GetRealFatigue(craftStats: this.craftStats, player: this.Player) / buildDuration;
         }
 
         public void BuildPiece()

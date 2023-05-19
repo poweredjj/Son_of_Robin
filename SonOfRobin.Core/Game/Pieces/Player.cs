@@ -14,6 +14,7 @@ namespace SonOfRobin
 
         private const int maxShootingPower = 90;
         public const int maxLastStepsCount = 100;
+        public const int maxCraftLevel = 5;
 
         public int maxFedLevel;
         public int fedLevel;
@@ -171,7 +172,7 @@ namespace SonOfRobin
         }
 
         public bool ResourcefulCrafter
-        { get { return this.world.craftStats.UniqueRecipesCraftedTotal >= 20 && this.world.craftStats.TotalNoOfCrafts >= 150; } }
+        { get { return this.CraftLevel >= 3; } }
 
         public List<PieceStorage> CraftStoragesToTakeFrom
         {
@@ -179,11 +180,11 @@ namespace SonOfRobin
             {
                 var craftStorages = new List<PieceStorage> { this.PieceStorage, this.ToolStorage, this.EquipStorage };
 
-                //if (this.ResourcefulCrafter)
+                if (this.ResourcefulCrafter)
                 {
                     var chestNames = new List<PieceTemplate.Name> { PieceTemplate.Name.ChestWooden, PieceTemplate.Name.ChestStone, PieceTemplate.Name.ChestIron, PieceTemplate.Name.ChestCrystal };
 
-                    var nearbyPieces = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.ColMovement, mainSprite: this.sprite, distance: 250, compareWithBottom: true);
+                    var nearbyPieces = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.ColMovement, mainSprite: this.sprite, distance: 90 * this.CraftLevel, compareWithBottom: true);
                     var chestPieces = nearbyPieces.Where(piece => piece.GetType() == typeof(Container) && chestNames.Contains(piece.name));
 
                     foreach (BoardPiece chestPiece in chestPieces)
@@ -1346,6 +1347,36 @@ namespace SonOfRobin
 
                 Tutorials.ShowTutorialOnTheField(type: Tutorials.Type.BrewLevels, world: this.world, ignoreDelay: true, ignoreHintsSetting: true);
             }
+
+            return levelUp;
+        }
+
+        public bool CheckForCraftLevelUp()
+        {
+            var levelUpData = new Dictionary<int, Dictionary<string, int>>
+            {
+                // { 2, new Dictionary<string, int> { { "minUniqueRecipesCraftedTotal", 1 }, { "minTotalNoOfCrafts", 2 } } }, // for testing
+                { 2, new Dictionary<string, int> { { "minUniqueRecipesCraftedTotal", 6 }, { "minTotalNoOfCrafts", 10 } } },
+                { 3, new Dictionary<string, int> { { "minUniqueRecipesCraftedTotal", 15 }, { "minTotalNoOfCrafts", 30 } } },
+                { 4, new Dictionary<string, int> { { "minUniqueRecipesCraftedTotal", 30 }, { "minTotalNoOfCrafts", 150 } } },
+                { 5, new Dictionary<string, int> { { "minUniqueRecipesCraftedTotal", 60 }, { "minTotalNoOfCrafts", 350 } } },
+            };
+
+            if (levelUpData.Keys.Max() != maxCraftLevel) throw new ArgumentException($"LevelUpData {levelUpData.Keys.Max()} does not match maxCraftLevel {maxCraftLevel}.");
+
+            int nextLevel = this.CraftLevel + 1;
+            if (!levelUpData.ContainsKey(nextLevel)) return false;
+
+            var levelDict = levelUpData[nextLevel];
+
+            int minUniqueRecipesCraftedTotal = levelDict["minUniqueRecipesCraftedTotal"];
+            int minTotalNoOfCrafts = levelDict["minTotalNoOfCrafts"];
+
+            bool levelUp =
+                this.world.craftStats.UniqueRecipesCraftedTotal >= minUniqueRecipesCraftedTotal &&
+                this.world.craftStats.TotalNoOfCrafts >= minTotalNoOfCrafts;
+
+            if (levelUp) this.CraftLevel = nextLevel;
 
             return levelUp;
         }
