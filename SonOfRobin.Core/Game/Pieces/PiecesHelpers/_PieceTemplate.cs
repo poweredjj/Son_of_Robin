@@ -1829,7 +1829,7 @@ namespace SonOfRobin
 
                 case Name.CoffeeRaw:
                     {
-                        BoardPiece coffeeRaw = new Seed(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CoffeeRaw, blocksMovement: false, allowedTerrain: shallowWaterToVolcano, stackSize: 4,
+                        BoardPiece coffeeRaw = new Seed(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CoffeeRaw, blocksMovement: false, allowedTerrain: shallowWaterToVolcano, stackSize: 12,
                             minDistance: 0, maxDistance: 1000, generation: generation, mass: 5, readableName: "raw coffee", description: "Can be planted or roasted.", fireAffinity: 0.6f);
 
                         ((Seed)coffeeRaw).PlantToGrow = Name.CoffeeShrub; // every "non-generic" seed must have its PlantToGrow attribute set
@@ -1843,7 +1843,7 @@ namespace SonOfRobin
                              new Buff(type: BuffEngine.BuffType.MaxStamina, value: 80f, autoRemoveDelay: 60 * 60 * 1),
                         };
 
-                        return new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CoffeeRoasted, blocksMovement: false, allowedTerrain: shallowWaterToVolcano, category: BoardPiece.Category.Indestructible, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 4, floatsOnWater: false, rotatesWhenDropped: true, readableName: "roasted coffee", description: "Potion ingredient.", fireAffinity: 0f, buffList: buffList);
+                        return new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CoffeeRoasted, blocksMovement: false, allowedTerrain: shallowWaterToVolcano, category: BoardPiece.Category.Indestructible, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 12, floatsOnWater: false, rotatesWhenDropped: true, readableName: "roasted coffee", description: "Potion ingredient.", fireAffinity: 0f, buffList: buffList);
                     }
 
                 case Name.Apple:
