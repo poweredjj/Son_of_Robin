@@ -309,6 +309,7 @@ namespace SonOfRobin
         public static bool debugFastPlantGrowth = false;
         public static bool debugEnableTestCharacters = false;
         public static bool debugEnableExtremeZoomLevels = false;
+        public static bool debugInstantCookBrew = false;
 
         public static bool DebugShowWholeMap
         {

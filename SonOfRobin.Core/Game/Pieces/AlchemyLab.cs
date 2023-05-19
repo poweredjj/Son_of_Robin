@@ -275,9 +275,21 @@ namespace SonOfRobin
 
             foreach (Buff buff in buffList)
             {
+                object buffVal = buff.value;
+                Type valueType = buffVal.GetType();
+
+                float valueMultiplier = 1f + (float)(this.world.random.NextDouble() * ((brewLevel - 1) / 2));
+
+                if (valueType == typeof(byte)) buffVal = (byte)Math.Round((byte)buffVal * valueMultiplier, 0);
+                else if (valueType == typeof(short)) buffVal = (short)Math.Round((short)buffVal * valueMultiplier, 0);
+                else if (valueType == typeof(int)) buffVal = (int)Math.Round((int)buffVal * valueMultiplier, 0);
+                else if (valueType == typeof(float)) buffVal = (float)Math.Round((float)buffVal * valueMultiplier, 1);
+                else if (valueType == typeof(double)) buffVal = (double)Math.Round((double)buffVal * valueMultiplier, 1);
+                else throw new ArgumentException($"Unsupported valueType for buff type {buff.type} - {valueType}.");
+
                 float durationMultiplier = 1f + (float)(this.world.random.NextDouble() * ((brewLevel - 1) / 2));
 
-                Buff adjustedBuff = new Buff(type: buff.type, value: buff.value, autoRemoveDelay: (int)(buff.autoRemoveDelay * durationMultiplier), isPermanent: buff.isPermanent, canKill: buff.canKill, increaseIDAtEveryUse: buff.increaseIDAtEveryUse);
+                Buff adjustedBuff = new Buff(type: buff.type, value: buffVal, autoRemoveDelay: (int)(buff.autoRemoveDelay * durationMultiplier), isPermanent: buff.isPermanent, canKill: buff.canKill, increaseIDAtEveryUse: buff.increaseIDAtEveryUse);
 
                 adjustedBuffList.Add(adjustedBuff);
             }
@@ -330,7 +342,7 @@ namespace SonOfRobin
             new TextWindow(text: "Brewing...", textColor: Color.White, bgColor: Color.Green, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1);
 
             int brewingTime = 60 * (13 + (storedBoosters.Count * 2) - (brewLevel * 2));
-            // brewingTime = 30; // for testing
+            if (Preferences.debugInstantCookBrew) brewingTime = 30;
 
             this.brewingStartFrame = this.world.CurrentUpdate;
             this.brewingDoneFrame = this.world.CurrentUpdate + brewingTime;
