@@ -57,11 +57,11 @@ namespace SonOfRobin
                 new PieceCreationData(name: PieceTemplate.Name.Clam, multiplier: 1f, maxAmount: 25),
                 new PieceCreationData(name: PieceTemplate.Name.CrateRegular, multiplier: 0.1f, maxAmount: 2),
 
-                new PieceCreationData(name: PieceTemplate.Name.BeachDigSite, multiplier: 0.8f),
-                new PieceCreationData(name: PieceTemplate.Name.ForestDigSite, multiplier: 0.3f),
-                new PieceCreationData(name: PieceTemplate.Name.DesertDigSite, multiplier: 0.2f),
-                new PieceCreationData(name: PieceTemplate.Name.GlassDigSite, multiplier: 0.1f, maxAmount: 200),
-                new PieceCreationData(name: PieceTemplate.Name.SwampDigSite, multiplier: 0.15f),
+                new PieceCreationData(name: PieceTemplate.Name.BeachDigSite, multiplier: 0.3f),
+                new PieceCreationData(name: PieceTemplate.Name.ForestDigSite, multiplier: 0.22f),
+                new PieceCreationData(name: PieceTemplate.Name.DesertDigSite, multiplier: 0.1f),
+                new PieceCreationData(name: PieceTemplate.Name.GlassDigSite, multiplier: 0.08f, maxAmount: 200),
+                new PieceCreationData(name: PieceTemplate.Name.SwampDigSite, multiplier: 0.11f),
 
                 new PieceCreationData(name: PieceTemplate.Name.Rabbit, multiplier: 0.6f, maxAmount: maxAnimalsPerName),
                 new PieceCreationData(name: PieceTemplate.Name.Fox, multiplier: 0.4f, maxAmount: maxAnimalsPerName),
