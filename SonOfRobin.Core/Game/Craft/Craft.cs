@@ -41,10 +41,19 @@ namespace SonOfRobin
                 this.ingredients = ingredients;
                 this.fatigue = fatigue;
                 this.duration = duration == -1 ? (int)(this.fatigue * 10) : duration; // if duration was not specified, it will be calculated from fatigue
-                if (maxLevel == -1) maxLevel = PieceInfo.GetInfo(pieceToCreate).canBePickedUp ? 4 : 2;
+
+                PieceInfo.Info pieceInfo = PieceInfo.GetInfo(pieceToCreate);
+                bool isEquip = pieceInfo.type == typeof(Equipment);
+
+                if (maxLevel == -1)
+                {
+                    maxLevel = pieceInfo.canBePickedUp ? 4 : 2;
+                    if (isEquip) maxLevel = 1;
+                }
                 this.maxLevel = maxLevel;
-                if (craftCountToLevelUp == -1) craftCountToLevelUp = PieceInfo.GetInfo(pieceToCreate).canBePickedUp ? 3 : 1;
+                if (craftCountToLevelUp == -1) craftCountToLevelUp = pieceInfo.canBePickedUp && !isEquip ? 3 : 1;
                 this.craftCountToLevelUp = craftCountToLevelUp;
+
                 this.masterLevelFatigueMultiplier = fatigueMultiplier;
                 this.masterLevelDurationMultiplier = durationMultiplier;
                 this.isHidden = isHidden;
@@ -172,7 +181,6 @@ namespace SonOfRobin
 
                 var storagesToTakeFrom = player.CraftStoragesToTakeFrom;
                 var storagesToPutInto = player.CraftStoragesToPutInto;
-
 
                 if (!this.CheckIfStorageContainsAllIngredients(storageList: storagesToTakeFrom))
                 {
