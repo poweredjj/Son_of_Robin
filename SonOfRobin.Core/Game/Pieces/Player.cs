@@ -386,7 +386,7 @@ namespace SonOfRobin
 
             if (this.buffEngine.HasBuff(BuffEngine.BuffType.LowHP)) this.buffEngine.RemoveEveryBuffOfType(BuffEngine.BuffType.LowHP);
 
-            base.Kill();
+            base.Kill(addDestroyEvent);
 
             Scene.RemoveAllScenesOfType(typeof(TextWindow));
 

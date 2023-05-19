@@ -322,6 +322,14 @@ namespace SonOfRobin
             }
         }
 
+        public void DestroyAllPieces()
+        {
+            foreach (StorageSlot slot in this.AllSlots)
+            {
+                slot.GetAllPieces(remove: true);
+            }
+        }
+
         public bool DropPieceToTheGround(BoardPiece piece, bool addMovement)
         {
             if (piece.GetType() == typeof(Player)) MessageLog.AddMessage(msgType: MsgType.Debug, message: "Dropping piece...", color: Color.White);

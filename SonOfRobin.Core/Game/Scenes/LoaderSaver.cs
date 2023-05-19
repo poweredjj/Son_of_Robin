@@ -20,7 +20,7 @@ namespace SonOfRobin
         private const string gridName = "grid.json";
         public const string tempPrefix = "_save_temp_";
 
-        private const int maxPiecesInPackage = 1000; // using small piece packages lowers ram usage during writing binary files
+        private const int maxPiecesInPackage = 3000; // using small piece packages lowers ram usage during writing binary files
 
         private readonly DateTime createdTime;
         private readonly bool quitGameAfterSaving;
