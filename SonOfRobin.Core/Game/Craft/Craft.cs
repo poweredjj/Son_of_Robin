@@ -269,17 +269,7 @@ namespace SonOfRobin
                 {
                     for (int i = 0; i < this.amountToCreate; i++)
                     {
-                        BoardPiece piece = PieceTemplate.Create(templateName: this.pieceToCreate, world: world);
-
-                        if (world.random.Next(14 - ((world.Player.CraftLevel - 1) * 3)) == 0)
-                        {
-                            int bonusHitPoints = world.random.Next((int)(piece.maxHitPoints * 0.2f), (int)(piece.maxHitPoints * 0.5f));
-
-                            MessageLog.AddMessage(msgType: MsgType.User, message: $"{ Helpers.FirstCharToUpperCase(piece.readableName) }: bonus hit points added  { piece.maxHitPoints } -> {piece.maxHitPoints + bonusHitPoints}.");
-
-                            piece.maxHitPoints += bonusHitPoints;
-                            piece.hitPoints = piece.maxHitPoints;
-                        }
+                        BoardPiece piece = PieceTemplate.Create(templateName: this.pieceToCreate, world: world);                     
 
                         craftedPieces.Add(piece);
                         bool pieceInserted = false;
@@ -320,12 +310,12 @@ namespace SonOfRobin
 
                 // unlocking other recipes and showing messages
 
-                if (showMessages) this.UnlockNewRecipesAndShowSummary(world);
+                if (showMessages) this.UnlockNewRecipesAndShowSummary(world: world, craftedPieces: craftedPieces);
 
                 return craftedPieces;
             }
 
-            public void UnlockNewRecipesAndShowSummary(World world)
+            public void UnlockNewRecipesAndShowSummary(World world, List<BoardPiece> craftedPieces = null)
             {
                 PieceInfo.Info pieceInfo = PieceInfo.GetInfo(this.pieceToCreate);
 
@@ -359,6 +349,24 @@ namespace SonOfRobin
                     }
 
                     world.craftStats.ResetLastSmartCraft();
+                }
+
+                if (craftedPieces != null)
+                {
+                    foreach (BoardPiece craftedPiece in craftedPieces)
+                    {
+                        if ((craftedPiece.GetType() == typeof(Tool) || craftedPiece.GetType() == typeof(Projectile)) &&
+                            world.random.Next(14 - ((world.Player.CraftLevel - 1) * 3)) == 0)
+                        {
+                            int bonusHitPoints = world.random.Next((int)(craftedPiece.maxHitPoints * 0.2f), (int)(craftedPiece.maxHitPoints * 0.7f));
+
+                            taskChain.Add(new HintMessage(text: $"| {Helpers.FirstCharToUpperCase(craftedPiece.readableName)}\n| +{bonusHitPoints} bonus hit points!\n| {craftedPiece.maxHitPoints} | {craftedPiece.maxHitPoints + bonusHitPoints}", boxType: HintMessage.BoxType.GreenBox, delay: 0, blockInput: false, useTransition: true,
+                                imageList: new List<Texture2D> { craftedPiece.sprite.frame.texture, TextureBank.GetTexture("simple_icons/arrow_up"), TextureBank.GetTexture("simple_icons/heart"), TextureBank.GetTexture("simple_icons/arrow_right") }, startingSound: SoundData.Name.Ding1).ConvertToTask());
+
+                            craftedPiece.maxHitPoints += bonusHitPoints;
+                            craftedPiece.hitPoints = craftedPiece.maxHitPoints;
+                        }
+                    }
                 }
 
                 HintEngine hintEngine = world.HintEngine;
