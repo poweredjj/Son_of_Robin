@@ -448,9 +448,9 @@ namespace SonOfRobin
 
             if (Keyboard.HasBeenPressed(Keys.F5))
             {
-                new TextWindow(text: "I don't have map equipped.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: InputTypes.None, blockInputDuration: 45, priority: 1);
+                new TextWindow(text: "Test 1", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: InputTypes.None, blockInputDuration: 45, priority: 1);
 
-                new TextWindow(text: "I don't have map equipped.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: InputTypes.None, blockInputDuration: 45, priority: 1);
+                new TextWindow(text: "Test 2.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: InputTypes.None, blockInputDuration: 45, priority: 1);
 
                 //new TextWindow(text: "Text window 1", animate: false, useTransition: true, bgColor: Color.DeepSkyBlue, textColor: Color.White, startingSound: SoundData.Name.Tick);
                 //new TextWindow(text: "Text window 2", animate: false, useTransition: true, bgColor: Color.DeepSkyBlue, textColor: Color.White, startingSound: SoundData.Name.ChestOpen);

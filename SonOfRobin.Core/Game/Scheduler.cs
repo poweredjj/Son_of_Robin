@@ -1392,14 +1392,16 @@ namespace SonOfRobin
                             StorageSlot activeSlot = inventory.ActiveSlot;
 
                             BoardPiece piece1 = inventory.draggedPieces[0];
+                            inventory.draggedPieces.RemoveAt(0);
                             BoardPiece piece2 = activeSlot.TopPiece;
 
                             BoardPiece combinedPiece = PieceCombiner.TryToCombinePieces(piece1: piece1, piece2: piece2);
                             if (combinedPiece == null) throw new ArgumentNullException($"Previously checked combination of {piece1.readableName} and {piece2.readableName} failed.");
 
-                            inventory.draggedPieces.Clear();
                             activeSlot.RemoveTopPiece();
-                            activeSlot.AddPiece(combinedPiece); // slot.allowedPieceNames should contain combinedPiece name for it to behave properly
+
+                            if (activeSlot.CanFitThisPiece(combinedPiece)) activeSlot.AddPiece(combinedPiece);
+                            else activeSlot.storage.AddPiece(piece: combinedPiece, dropIfDoesNotFit: true);
 
                             Inventory.soundCombine.Play();
 

@@ -53,7 +53,6 @@ namespace SonOfRobin
 
         public List<PieceTemplate.Name> identifiedPieces; // pieces that were "looked at" in inventory
         private bool mapEnabled;
-
         public Player Player { get; private set; }
         public HintEngine HintEngine { get; private set; }
         public Dictionary<PieceTemplate.Name, int> pieceCountByName;

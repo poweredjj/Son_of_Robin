@@ -2778,7 +2778,7 @@ namespace SonOfRobin
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropGeneric, cooldown: 15, maxPitchVariation: 0.4f));
 
                         Decoration decoration = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Candle, allowedTerrain: new AllowedTerrain(), category: BoardPiece.Category.Wood,
-                            minDistance: 0, maxDistance: 500, maxMassForSize: null, generation: generation, maxHitPoints: 100, readableName: "candle", description: "Can be put inside lantern.", movesWhenDropped: true, rotatesWhenDropped: true, isAffectedByWind: true, canBePickedUp: true, soundPack: soundPack, fireAffinity: 0.2f);
+                            minDistance: 0, maxDistance: 500, maxMassForSize: null, generation: generation, stackSize: 6, maxHitPoints: 100, readableName: "candle", description: "Can be put inside lantern.", movesWhenDropped: true, rotatesWhenDropped: true, isAffectedByWind: true, canBePickedUp: true, soundPack: soundPack, fireAffinity: 0.2f);
 
                         return decoration;
                     }

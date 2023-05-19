@@ -1004,7 +1004,7 @@ namespace SonOfRobin
 
         private bool TryToCombinePieces(StorageSlot slot)
         {
-            if (this.draggedPieces.Count != 1 || slot.PieceCount != 1) return false;
+            if (!this.draggedPieces.Any() || slot.PieceCount == 0) return false;
 
             BoardPiece combinedPiece = PieceCombiner.TryToCombinePieces(piece1: this.draggedPieces[0], piece2: slot.TopPiece);
             if (combinedPiece != null)
