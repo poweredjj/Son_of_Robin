@@ -87,7 +87,7 @@ namespace SonOfRobin
             public float GetRealFatigue(CraftStats craftStats, Player player)
             {
                 float recipeLevelMultiplier = this.GetRecipeLevelMultiplier(craftStats) * 0.6f;
-                float craftLevelMultiplier = player.CraftLevel / Player.maxCraftLevel * 0.4f;
+                float craftLevelMultiplier = (float)player.CraftLevel / (float)Player.maxCraftLevel * 0.4f;
                 // max possible sum of both multipliers should == 1
 
                 float fatigueDifferenceForMasterLevel = this.fatigue * (1f - this.masterLevelFatigueMultiplier);
@@ -102,7 +102,7 @@ namespace SonOfRobin
             public int GetRealDuration(CraftStats craftStats, Player player)
             {
                 float recipeLevelMultiplier = this.GetRecipeLevelMultiplier(craftStats) * 0.6f;
-                float craftLevelMultiplier = player.CraftLevel / Player.maxCraftLevel * 0.4f;
+                float craftLevelMultiplier = (float)player.CraftLevel / (float)Player.maxCraftLevel * 0.4f;
                 // max possible sum of both multipliers should == 1
 
                 float durationDifferenceForMasterLevel = this.duration * (1f - this.masterLevelDurationMultiplier);
