@@ -520,8 +520,8 @@ namespace SonOfRobin
                 this.discoveredRecipesForPieces = (List<PieceTemplate.Name>)headerData["discoveredRecipesForPieces"];
                 this.stateMachineTypesManager.Deserialize((Dictionary<string, Object>)headerData["stateMachineTypesManager"]);
                 this.craftStats.Deserialize((Dictionary<string, Object>)headerData["craftStats"]);
-                if (headerData.ContainsKey("cookStats")) this.cookStats.Deserialize((Dictionary<string, Object>)headerData["cookStats"]); // for compatibility with older saves
-                if (headerData.ContainsKey("brewStats")) this.brewStats.Deserialize((Dictionary<string, Object>)headerData["brewStats"]); // for compatibility with older saves
+                this.cookStats.Deserialize((Dictionary<string, Object>)headerData["cookStats"]);
+                this.brewStats.Deserialize((Dictionary<string, Object>)headerData["brewStats"]);
                 this.identifiedPieces = (List<PieceTemplate.Name>)headerData["identifiedPieces"];
             }
 

@@ -7,7 +7,7 @@ namespace SonOfRobin
 {
     public class AnimData
     {
-        public const float currentVersion = 1.0000008f; // version number should be incremented with any change of graphics assets
+        public const float currentVersion = 1.0000009f; // version number should be incremented with any change of graphics assets
 
         public static readonly Dictionary<string, AnimFrame> frameById = new Dictionary<string, AnimFrame>(); // needed to access frames directly by id (for loading and saving game)
         public static readonly Dictionary<string, List<AnimFrame>> frameListById = new Dictionary<string, List<AnimFrame>>();
@@ -19,9 +19,7 @@ namespace SonOfRobin
         public enum PkgName
         {
             NoAnim,
-            BloodSplatter1,
-            BloodSplatter2,
-            BloodSplatter3,
+            Empty,
 
             Cactus,
 
@@ -30,38 +28,20 @@ namespace SonOfRobin
             FlowersYellow2,
             FlowersRed,
 
+            Rushes,
             GrassDesert,
             GrassRegular,
             PlantPoison,
-
-            MineralsBig1,
-            MineralsBig2,
-            MineralsBig3,
-            MineralsSmall1,
-            MineralsSmall2,
-            MineralsSmall3,
-
-            MineralsMossyBig1,
-            MineralsMossyBig2,
-            MineralsMossyBig3,
-            MineralsMossyBig4,
-            MineralsMossySmall1,
-            MineralsMossySmall2,
-            MineralsMossySmall3,
-            MineralsMossySmall4,
+            CoffeeShrub,
+            CarrotPlant,
+            TomatoPlant,
 
             PalmTree,
-            Rushes,
-
-            Clam,
-            Shell1,
-            Shell2,
-            Shell3,
-            Shell4,
-
             TreeBig,
             TreeSmall1,
             TreeSmall2,
+
+            TreeStump,
 
             WaterLily1,
             WaterLily2,
@@ -79,24 +59,51 @@ namespace SonOfRobin
             Fog7,
             Fog8,
 
-            MusicNoteSmall,
-            MusicNoteBig,
+            MineralsBig1,
+            MineralsBig2,
+            MineralsBig3,
+            MineralsBig4,
+            MineralsBig5,
+            MineralsBig6,
+            MineralsBig7,
+            MineralsBig8,
+            MineralsBig9,
+            MineralsBig10,
+            MineralsBig11,
+            MineralsBig12,
+            MineralsBig13,
+            MineralsBig14,
 
-            Biceps,
-            Bed,
-            Miss,
-            Attack,
-            MapMarker,
-            Backlight,
-            Crosshair,
-            BubbleExclamationRed,
-            Flame,
-            Upgrade,
-            WaterDrop,
-            RainDrops,
+            MineralsSmall1,
+            MineralsSmall2,
+            MineralsSmall3,
+            MineralsSmall4,
+
+            MineralsMossyBig1,
+            MineralsMossyBig2,
+            MineralsMossyBig3,
+            MineralsMossyBig4,
+            MineralsMossyBig5,
+            MineralsMossyBig6,
+            MineralsMossyBig7,
+            MineralsMossyBig8,
+            MineralsMossyBig9,
+            MineralsMossyBig10,
+            MineralsMossyBig11,
+            MineralsMossyBig12,
+
+            MineralsMossySmall1,
+            MineralsMossySmall2,
+            MineralsMossySmall3,
+            MineralsMossySmall4,
+
+            JarWhole,
+            JarBroken,
+
             ChestWooden,
             ChestStone,
             ChestIron,
+            ChestCrystal,
             ChestTreasureBlue,
             ChestTreasureRed,
 
@@ -106,7 +113,6 @@ namespace SonOfRobin
 
             Nail,
             Rope,
-
             Crate,
 
             WorkshopEssential,
@@ -114,7 +120,8 @@ namespace SonOfRobin
             WorkshopAdvanced,
             WorkshopMaster,
 
-            AlchemyLab,
+            AlchemyLabStandard,
+            AlchemyLabAdvanced,
 
             WorkshopLeatherBasic,
             WorkshopLeatherAdvanced,
@@ -143,7 +150,14 @@ namespace SonOfRobin
             Banana,
             Cherry,
             Tomato,
+            Carrot,
             Acorn,
+
+            SeedBag,
+            CoffeeRaw,
+            CoffeeRoasted,
+
+            Clam,
 
             MeatRaw,
             MeatDried,
@@ -152,7 +166,6 @@ namespace SonOfRobin
             MealStandard,
             Leather,
 
-            TomatoPlant,
 
             Hand,
 
@@ -180,11 +193,13 @@ namespace SonOfRobin
             ShovelCrystal,
 
             BowBasic,
+            BowAdvanced,
 
             ArrowWood,
             ArrowStone,
             ArrowIron,
             ArrowCrystal,
+            ArrowBurning,
 
             CoalDeposit,
             IronDeposit,
@@ -193,6 +208,7 @@ namespace SonOfRobin
             CrystalDepositBig,
 
             DigSite,
+            DigSiteGlass,
 
             Coal,
             IronOre,
@@ -257,12 +273,21 @@ namespace SonOfRobin
             DebrisCrystal,
             DebrisCeramic1,
             DebrisCeramic2,
+            DebrisLeaf1,
+            DebrisLeaf2,
+            DebrisLeaf3,
             BloodDrop1,
             BloodDrop2,
             BloodDrop3,
             DebrisStar1,
             DebrisStar2,
             DebrisStar3,
+            DebrisHeart1,
+            DebrisHeart2,
+            DebrisHeart3,
+            DebrisSoot1,
+            DebrisSoot2,
+            DebrisSoot3,
 
             TentSmall,
             TentMedium,
@@ -281,6 +306,11 @@ namespace SonOfRobin
 
             HatSimple,
             BootsProtective,
+            Dungarees,
+
+            LanternFrame,
+            Lantern,
+            Candle,
 
             SmallTorch,
             BigTorch,
@@ -294,9 +324,6 @@ namespace SonOfRobin
             HerbsRed,
             HerbsViolet,
 
-            HumanSkeleton,
-            SkullAndBones,
-
             EmptyBottle,
             PotionRed,
             PotionBlue,
@@ -309,72 +336,40 @@ namespace SonOfRobin
             PotionDarkYellow,
             PotionDarkGreen,
             PotionLightYellow,
+            PotionTransparent,
+            PotionBrown,
 
-            Leaf1,
-            Leaf2,
-            Leaf3,
+            BloodSplatter1,
+            BloodSplatter2,
+            BloodSplatter3,
+
+            HumanSkeleton,
 
             Hole,
-            JarWhole,
-            JarBroken,
-            TreeStump,
 
             WhiteSpot,
             NewIcon,
             MapEdges,
             SmallWhiteCircle,
-
-            Empty,
-            LanternFrame,
-            Lantern,
-            Candle,
-            Dungarees,
-            GlassDigSite,
-            CarrotPlant,
-            Carrot,
-            ArrowBurning,
             Explosion,
-
-            DebrisSoot1,
-            DebrisSoot2,
-            DebrisSoot3,
-
-            MineralsMossyBig5,
-            MineralsMossyBig6,
-            MineralsMossyBig7,
-            MineralsMossyBig8,
-            MineralsMossyBig9,
-            MineralsMossyBig10,
-            MineralsMossyBig11,
-            MineralsMossyBig12,
-
-            MineralsBig4,
-            MineralsBig5,
-            MineralsBig6,
-            MineralsBig7,
-            MineralsBig8,
-            MineralsBig9,
-            MineralsBig10,
-            MineralsBig11,
-            MineralsBig12,
-            MineralsBig13,
-            MineralsBig14,
-            MineralsSmall4,
-
-            BowAdvanced,
-            Animal,
+            AnimalIcon,
+            SkullAndBones,
+            MusicNoteSmall,
+            MusicNoteBig,
+            Biceps,
+            Bed,
+            Miss,
+            Attack,
+            MapMarker,
+            Backlight,
+            Crosshair,
+            Flame,
+            Upgrade,
+            WaterDrop,
+            RainDrops,
+            BubbleExclamationRed,
             BubbleExclamationBlue,
-            DebrisHeart1,
-            DebrisHeart2,
-            DebrisHeart3,
-            SeedBag,
-            CoffeeRaw,
-            CoffeeRoasted,
-            CoffeeShrub,
-            PotionBrown,
             BubbleCraftGreen,
-            ChestCrystal,
-            PotionTransparent,
         }
 
         public static void AddFrameList(PkgName animPackage, byte animSize, List<AnimFrame> frameList, string animName = "default")
@@ -583,10 +578,16 @@ namespace SonOfRobin
                 AddFrameList(animPackage: packageName, animSize: 0, animName: "on", frameList: ConvertImageToFrameList(atlasName: "workshop_leather_advanced", layer: 1, scale: 0.5f));
             }
             {
-                PkgName packageName = PkgName.AlchemyLab;
-                AddFrameList(animPackage: packageName, animSize: 0, animName: "off", frameList: ConvertImageToFrameList(atlasName: "alchemy_lab", layer: 1, scale: 0.5f));
+                PkgName packageName = PkgName.AlchemyLabStandard;
+                AddFrameList(animPackage: packageName, animSize: 0, animName: "off", frameList: ConvertImageToFrameList(atlasName: "alchemy_lab_standard", layer: 1, scale: 0.5f));
                 // the same as "off"
-                AddFrameList(animPackage: packageName, animSize: 0, animName: "on", frameList: ConvertImageToFrameList(atlasName: "alchemy_lab", layer: 1, scale: 0.5f));
+                AddFrameList(animPackage: packageName, animSize: 0, animName: "on", frameList: ConvertImageToFrameList(atlasName: "alchemy_lab_standard", layer: 1, scale: 0.5f));
+            }
+            {
+                PkgName packageName = PkgName.AlchemyLabAdvanced;
+                AddFrameList(animPackage: packageName, animSize: 0, animName: "off", frameList: ConvertImageToFrameList(atlasName: "alchemy_lab_advanced", layer: 1, scale: 0.5f));
+                // the same as "off"
+                AddFrameList(animPackage: packageName, animSize: 0, animName: "on", frameList: ConvertImageToFrameList(atlasName: "alchemy_lab_advanced", layer: 1, scale: 0.5f));
             }
             {
                 PkgName packageName = PkgName.UpgradeBench;
@@ -742,7 +743,7 @@ namespace SonOfRobin
                 }
             }
 
-            AddFrameList(animPackage: PkgName.GlassDigSite, animSize: 0, animName: "default", frameList: new List<AnimFrame>
+            AddFrameList(animPackage: PkgName.DigSiteGlass, animSize: 0, animName: "default", frameList: new List<AnimFrame>
                 {
                     ConvertImageToFrame(atlasName: "dig_site_glass", layer: 0, duration: 450),
                     ConvertImageToFrame(atlasName: "dig_site_glass_shine_1", layer: 0, duration: 1),
@@ -762,18 +763,6 @@ namespace SonOfRobin
 
             AddFrameList(animPackage: PkgName.Clam, animSize: 0,
                 frameList: ConvertImageToFrameList(atlasName: "tilees by guth_zpsfn3wpjdu_2x", layer: 0, x: 128, y: 256, width: 64, height: 64, scale: 0.5f));
-
-            AddFrameList(animPackage: PkgName.Shell1, animSize: 0,
-                frameList: ConvertImageToFrameList(atlasName: "tilees by guth_zpsfn3wpjdu_2x", layer: 0, x: 192, y: 256, width: 64, height: 64, scale: 0.5f));
-
-            AddFrameList(animPackage: PkgName.Shell2, animSize: 0,
-                frameList: ConvertImageToFrameList(atlasName: "tilees by guth_zpsfn3wpjdu_2x", layer: 0, x: 192, y: 320, width: 64, height: 64, scale: 0.5f));
-
-            AddFrameList(animPackage: PkgName.Shell3, animSize: 0,
-                frameList: ConvertImageToFrameList(atlasName: "8f296dbbaf43865bc29e99660fe7b5af_2x", layer: 0, x: 594, y: 975, width: 28, height: 37, scale: 0.5f));
-
-            AddFrameList(animPackage: PkgName.Shell4, animSize: 0,
-                frameList: ConvertImageToFrameList(atlasName: "8f296dbbaf43865bc29e99660fe7b5af_2x", layer: 0, x: 596, y: 848, width: 33, height: 33, scale: 0.5f));
 
             AddFrameList(animPackage: PkgName.MealStandard, animSize: 0,
                 frameList: ConvertImageToFrameList(atlasName: "fancy_food2", layer: 0, x: 288, y: 64, width: 32, height: 32, scale: 0.5f));
@@ -934,9 +923,9 @@ namespace SonOfRobin
             AddFrameList(animPackage: PkgName.CrystalDepositBig, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "crystal_deposit_big", layer: 1));
             AddFrameList(animPackage: PkgName.DigSite, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "dig_site", layer: 0));
             AddFrameList(animPackage: PkgName.DebrisCrystal, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "crystal_shard", layer: 0, scale: 0.5f));
-            AddFrameList(animPackage: PkgName.Leaf1, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "leaf_1", layer: 0, scale: 0.25f));
-            AddFrameList(animPackage: PkgName.Leaf2, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "leaf_2", layer: 0, scale: 0.25f));
-            AddFrameList(animPackage: PkgName.Leaf3, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "leaf_3", layer: 0, scale: 0.25f));
+            AddFrameList(animPackage: PkgName.DebrisLeaf1, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "leaf_1", layer: 0, scale: 0.25f));
+            AddFrameList(animPackage: PkgName.DebrisLeaf2, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "leaf_2", layer: 0, scale: 0.25f));
+            AddFrameList(animPackage: PkgName.DebrisLeaf3, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "leaf_3", layer: 0, scale: 0.25f));
             AddFrameList(animPackage: PkgName.Burger, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "burger", layer: 0, scale: 0.5f));
             AddFrameList(animPackage: PkgName.PotionBlack, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "potion_black", layer: 0, scale: 0.5f));
             AddFrameList(animPackage: PkgName.PotionDarkViolet, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "potion_dark_violet", layer: 0, scale: 0.5f));
@@ -984,7 +973,7 @@ namespace SonOfRobin
             AddFrameList(animPackage: PkgName.DebrisHeart2, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "heart_16x16", layer: 2, scale: 0.9f)); // layer 2 to appear above everything
             AddFrameList(animPackage: PkgName.DebrisHeart3, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "heart_16x16", layer: 2, scale: 1.0f)); // layer 2 to appear above everything
             AddFrameList(animPackage: PkgName.Biceps, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "biceps", layer: 2));
-            AddFrameList(animPackage: PkgName.Animal, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "animal", layer: 2));
+            AddFrameList(animPackage: PkgName.AnimalIcon, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "animal", layer: 2));
             AddFrameList(animPackage: PkgName.Bed, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "bed", layer: 2));
             AddFrameList(animPackage: PkgName.Crosshair, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "crosshair", layer: 2));
             AddFrameList(animPackage: PkgName.ScytheStone, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "scythe_stone", layer: 0));

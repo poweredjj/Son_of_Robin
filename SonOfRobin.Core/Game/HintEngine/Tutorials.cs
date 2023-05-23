@@ -298,7 +298,7 @@ namespace SonOfRobin
 
             new Tutorial(type: Type.SmartCrafting, name: "smart crafting", title: "Smart crafting.",
                messages: new List<HintMessage>  {
-                    new HintMessage(text: "Sometimes you will use less | | | materials when crafting.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.WoodLogRegular), PieceInfo.GetTexture(PieceTemplate.Name.Nail), PieceInfo.GetTexture(PieceTemplate.Name.Granite)}, boxType: messageTextType),
+                    new HintMessage(text: "Sometimes you will use less | | | materials when crafting.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.WoodLogRegular), PieceInfo.GetTexture(PieceTemplate.Name.IronNail), PieceInfo.GetTexture(PieceTemplate.Name.Granite)}, boxType: messageTextType),
                     new HintMessage(text: "This is called 'smart crafting'.", boxType: messageTextType),
                     new HintMessage(text: "It depends on each recipe craft level |\nand on your base craft skill.", imageList: new List<Texture2D> { PieceInfo.GetInfo(PieceTemplate.Name.DebrisStar).texture }, boxType: messageTextType),
                    });

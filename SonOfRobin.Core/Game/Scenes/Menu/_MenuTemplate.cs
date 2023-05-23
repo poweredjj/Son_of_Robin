@@ -10,7 +10,7 @@ namespace SonOfRobin
     public class MenuTemplate
     {
         public enum Name
-        { Main, Options, Sound, Graphics, Controls, Gamepad, Keyboard, Scale, OtherOptions, CreateNewIsland, SetSeed, OpenIslandTemplate, Pause, Stats, Load, Save, Tutorials, GameOver, Debug, SoundTest, GfxListTest, Shelter, CreateAnyPiece, GenericConfirm, CraftField, CraftEssential, CraftBasic, CraftAdvanced, CraftMaster, CraftAlchemy, CraftFurnace, CraftAnvil, CraftLeatherBasic, CraftLeatherAdvanced }
+        { Main, Options, Sound, Graphics, Controls, Gamepad, Keyboard, Scale, OtherOptions, CreateNewIsland, SetSeed, OpenIslandTemplate, Pause, Stats, Load, Save, Tutorials, GameOver, Debug, SoundTest, GfxListTest, Shelter, CreateAnyPiece, GenericConfirm, CraftField, CraftEssential, CraftBasic, CraftAdvanced, CraftMaster, CraftFurnace, CraftAnvil, CraftLeatherBasic, CraftLeatherAdvanced }
 
         public static Menu CreateConfirmationMenu(Object confirmationData)
         {
@@ -437,7 +437,7 @@ namespace SonOfRobin
                             imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.AxeIron].texture);
 
                             textLines.Add($"| Speed: {Math.Round(player.speed)}");
-                            imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.Animal].texture);
+                            imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.AnimalIcon].texture);
 
                             textLines.Add($"| Stamina: {Math.Round(player.stamina)} / {Math.Round(player.maxStamina)}");
                             imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.Biceps].texture);
@@ -598,7 +598,7 @@ namespace SonOfRobin
                             var imageList = new List<Texture2D>();
 
                             textLines.Add("| Potion brewing stats\n");
-                            imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.AlchemyLab].texture);
+                            imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.AlchemyLabStandard].texture);
 
                             textLines.Add($"| Potions made: {world.brewStats.TotalCookCount}");
                             imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.PotionRed].texture);
@@ -783,9 +783,6 @@ namespace SonOfRobin
 
                 case Name.CraftMaster:
                     return CreateCraftMenu(templateName: templateName, category: Craft.Category.Master, label: "MASTER WORKSHOP", soundOpen: SoundData.Name.ToolsMove);
-
-                case Name.CraftAlchemy:
-                    return CreateCraftMenu(templateName: templateName, category: Craft.Category.Alchemy, label: "ALCHEMY", soundOpen: SoundData.Name.BoilingPotion);
 
                 case Name.CraftFurnace:
                     return CreateCraftMenu(templateName: templateName, category: Craft.Category.Furnace, label: "FURNACE", soundOpen: SoundData.Name.FireBurst);

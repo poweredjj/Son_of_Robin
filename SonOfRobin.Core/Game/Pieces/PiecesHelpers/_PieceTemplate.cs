@@ -42,6 +42,10 @@ namespace SonOfRobin
 
             Cactus,
 
+            SeedsGeneric,
+            CoffeeRaw,
+            CoffeeRoasted,
+
             TreeSmall,
             TreeBig,
             PalmTree,
@@ -50,14 +54,16 @@ namespace SonOfRobin
             CherryTree,
             BananaTree,
 
+            CarrotPlant,
             TomatoPlant,
+            CoffeeShrub,
 
             Apple,
             Banana,
             Cherry,
             Tomato,
+            Carrot,
             Acorn,
-
             MeatRaw,
             MeatDried,
             Fat,
@@ -76,16 +82,19 @@ namespace SonOfRobin
             MineralsMossyBig,
             MineralsMossySmall,
 
-            ChestWooden,
-            ChestStone,
-            ChestIron,
-            ChestTreasureNormal,
-            ChestTreasureBig,
-
             JarTreasure,
             JarBroken,
             CrateStarting,
             CrateRegular,
+
+            ChestWooden,
+            ChestStone,
+            ChestIron,
+            ChestCrystal,
+            ChestTreasureNormal,
+            ChestTreasureBig,
+
+            Campfire,
 
             WorkshopEssential,
             WorkshopBasic,
@@ -95,7 +104,8 @@ namespace SonOfRobin
             WorkshopLeatherBasic,
             WorkshopLeatherAdvanced,
 
-            WorkshopAlchemyObsolete, // kept for compatibility with older saves
+            AlchemyLabStandard,
+            AlchemyLabAdvanced,
 
             Furnace,
             Anvil,
@@ -103,16 +113,15 @@ namespace SonOfRobin
             CookingPot,
             UpgradeBench,
 
+
             Stick,
+            WoodLogRegular,
+            WoodLogHard,
+            WoodPlank,
             Stone,
             Granite,
             Clay,
             Rope,
-            WoodLogRegular,
-            WoodLogHard,
-            WoodPlank,
-            Nail,
-            Shell,
             Clam,
 
             CoalDeposit,
@@ -131,6 +140,7 @@ namespace SonOfRobin
             IronOre,
             IronBar,
             IronRod,
+            IronNail,
             IronPlate,
             GlassSand,
             Crystal,
@@ -144,10 +154,18 @@ namespace SonOfRobin
             MapMarker,
             MusicNote,
             Crosshair,
+
             BubbleExclamationRed,
+            BubbleExclamationBlue,
+            BubbleCraftGreen,
+
+            RainDrop,
+            Explosion,
             BurningFlame,
+
             CookingTrigger,
             UpgradeTrigger,
+            BrewTrigger,
             FireplaceTriggerOn,
             FireplaceTriggerOff,
 
@@ -176,11 +194,13 @@ namespace SonOfRobin
             ShovelCrystal,
 
             BowBasic,
+            BowAdvanced,
 
             ArrowWood,
             ArrowStone,
             ArrowIron,
             ArrowCrystal,
+            ArrowBurning,
 
             DebrisPlant,
             DebrisStone,
@@ -189,6 +209,8 @@ namespace SonOfRobin
             DebrisCrystal,
             DebrisCeramic,
             DebrisStar,
+            DebrisSoot,
+            DebrisHeart,
             BloodDrop,
 
             TentSmall,
@@ -204,13 +226,16 @@ namespace SonOfRobin
             BeltBig,
             Map,
 
+            Dungarees,
             HatSimple,
             BootsProtective,
 
             TorchSmall,
             TorchBig,
 
-            Campfire,
+            LanternEmpty,
+            LanternFull,
+            Candle,
 
             HumanSkeleton,
             PredatorRepellant,
@@ -224,16 +249,9 @@ namespace SonOfRobin
             HerbsViolet,
 
             EmptyBottle,
-            PotionHealing, // kept for compatibility with older saves
-            PotionMaxHPIncrease, // kept for compatibility with older saves
-            PotionMaxHPDecrease, // kept for compatibility with older saves
-            PotionStrength, // kept for compatibility with older saves
-            PotionHaste, // kept for compatibility with older saves
-            PotionMaxStamina, // kept for compatibility with older saves
-            PotionFatigue, // kept for compatibility with older saves
-            PotionPoison, // kept for compatibility with older saves
-            PotionSlowdown, // kept for compatibility with older saves
-            PotionWeakness, // kept for compatibility with older saves
+
+            PotionGeneric,
+            PotionCoffee,
             BottleOfOil,
 
             Hole,
@@ -242,7 +260,6 @@ namespace SonOfRobin
             LavaFlame,
             SwampGas,
             LavaGas,
-            RainDrop,
 
             SoundSeaWaves,
             SoundLakeWaves,
@@ -250,29 +267,6 @@ namespace SonOfRobin
             SoundNightCrickets,
             SoundNoonCicadas,
             SoundLava,
-
-            LanternEmpty,
-            LanternFull,
-            Candle,
-            Dungarees,
-            CarrotPlant,
-            Carrot,
-            ArrowBurning,
-            Explosion,
-            DebrisSoot,
-            BowAdvanced,
-            BubbleExclamationBlue,
-            DebrisHeart,
-            SeedsGeneric,
-            CoffeeRaw,
-            CoffeeRoasted,
-            CoffeeShrub,
-            PotionCoffee,
-            BubbleCraftGreen,
-            ChestCrystal,
-            PotionGeneric,
-            BrewTrigger,
-            AlchemyLabStandard,
         }
 
         public static readonly Name[] allNames = (Name[])Enum.GetValues(typeof(Name));
@@ -1163,7 +1157,7 @@ namespace SonOfRobin
                             finalDroppedPieces: new List<Yield.DroppedPiece> {
                                 new Yield.DroppedPiece(pieceName: Name.IronPlate, chanceToDrop: 100, maxNumberToDrop: 1),
                                 new Yield.DroppedPiece(pieceName: Name.WoodPlank, chanceToDrop: 100, maxNumberToDrop: 2),
-                                new Yield.DroppedPiece(pieceName: Name.Nail, chanceToDrop: 100, maxNumberToDrop: 5),
+                                new Yield.DroppedPiece(pieceName: Name.IronNail, chanceToDrop: 100, maxNumberToDrop: 5),
                                 });
 
                         var soundPack = new PieceSoundPack();
@@ -1183,13 +1177,7 @@ namespace SonOfRobin
                                 new Yield.DroppedPiece(pieceName: Name.ShovelIron, chanceToDrop: 10, maxNumberToDrop: 1),
                                 new Yield.DroppedPiece(pieceName: Name.IronBar, chanceToDrop: 10, maxNumberToDrop: 1),
                                 new Yield.DroppedPiece(pieceName: Name.BowAdvanced, chanceToDrop: 15, maxNumberToDrop: 1),
-                                new Yield.DroppedPiece(pieceName: Name.PotionFatigue, chanceToDrop: 20, maxNumberToDrop: 1),
                                 new Yield.DroppedPiece(pieceName: Name.PotionCoffee, chanceToDrop: 1, maxNumberToDrop: 1),
-                                new Yield.DroppedPiece(pieceName: Name.PotionHaste, chanceToDrop: 20, maxNumberToDrop: 1),
-                                new Yield.DroppedPiece(pieceName: Name.PotionHealing, chanceToDrop: 20, maxNumberToDrop: 1),
-                                new Yield.DroppedPiece(pieceName: Name.PotionMaxHPIncrease, chanceToDrop: 20, maxNumberToDrop: 1),
-                                new Yield.DroppedPiece(pieceName: Name.PotionMaxStamina, chanceToDrop: 20, maxNumberToDrop: 1),
-                                new Yield.DroppedPiece(pieceName: Name.PotionStrength, chanceToDrop: 20, maxNumberToDrop: 1),
                                 new Yield.DroppedPiece(pieceName: Name.Crystal, chanceToDrop: 10, maxNumberToDrop: 1),
                             });
 
@@ -1221,7 +1209,7 @@ namespace SonOfRobin
                             finalDroppedPieces: new List<Yield.DroppedPiece> {
                                 new Yield.DroppedPiece(pieceName: Name.IronPlate, chanceToDrop: 100, maxNumberToDrop: 2),
                                 new Yield.DroppedPiece(pieceName: Name.WoodPlank, chanceToDrop: 100, maxNumberToDrop: 4),
-                                new Yield.DroppedPiece(pieceName: Name.Nail, chanceToDrop: 100, maxNumberToDrop: 10),
+                                new Yield.DroppedPiece(pieceName: Name.IronNail, chanceToDrop: 100, maxNumberToDrop: 10),
                                 });
 
                         var soundPack = new PieceSoundPack();
@@ -1240,13 +1228,7 @@ namespace SonOfRobin
                                 new Yield.DroppedPiece(pieceName: Name.ScytheIron, chanceToDrop: 10, maxNumberToDrop: 1),
                                 new Yield.DroppedPiece(pieceName: Name.ShovelIron, chanceToDrop: 10, maxNumberToDrop: 1),
                                 new Yield.DroppedPiece(pieceName: Name.IronBar, chanceToDrop: 10, maxNumberToDrop: 3),
-                                new Yield.DroppedPiece(pieceName: Name.PotionFatigue, chanceToDrop: 20, maxNumberToDrop: 2),
                                 new Yield.DroppedPiece(pieceName: Name.PotionCoffee, chanceToDrop: 4, maxNumberToDrop: 2),
-                                new Yield.DroppedPiece(pieceName: Name.PotionHaste, chanceToDrop: 20, maxNumberToDrop: 2),
-                                new Yield.DroppedPiece(pieceName: Name.PotionHealing, chanceToDrop: 20, maxNumberToDrop: 2),
-                                new Yield.DroppedPiece(pieceName: Name.PotionMaxHPIncrease, chanceToDrop: 20, maxNumberToDrop: 2),
-                                new Yield.DroppedPiece(pieceName: Name.PotionMaxStamina, chanceToDrop: 20, maxNumberToDrop: 2),
-                                new Yield.DroppedPiece(pieceName: Name.PotionStrength, chanceToDrop: 20, maxNumberToDrop: 2),
                                 new Yield.DroppedPiece(pieceName: Name.Crystal, chanceToDrop: 10, maxNumberToDrop: 3),
                             });
 
@@ -1361,14 +1343,6 @@ namespace SonOfRobin
                             floatsOnWater: false, minDistance: 0, maxDistance: 100, maxMassForSize: null, generation: generation, craftMenuTemplate: MenuTemplate.Name.CraftLeatherAdvanced, maxHitPoints: 30, readableName: "advanced leather workshop", description: "For making advanced items out of leather.", canBeUsedDuringRain: true, fireAffinity: 0.8f);
                     }
 
-                case Name.WorkshopAlchemyObsolete:
-                    {
-                        var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
-                            { Terrain.Name.Height, new AllowedRange(min: Terrain.waterLevelMax, max: Terrain.volcanoEdgeMin) }});
-                        return new Workshop(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.AlchemyLab, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Wood,
-                            floatsOnWater: false, minDistance: 0, maxDistance: 100, maxMassForSize: null, generation: generation, craftMenuTemplate: MenuTemplate.Name.CraftAlchemy, maxHitPoints: 30, readableName: "obsolete alchemy lab", description: "For potion making.", canBeUsedDuringRain: true, fireAffinity: 0.8f);
-                    }
-
                 case Name.Furnace:
                     {
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
@@ -1424,7 +1398,22 @@ namespace SonOfRobin
                         soundPack.AddAction(action: PieceSoundPack.Action.IsOn, sound: new Sound(name: SoundData.Name.BoilingPotionLoop, isLooped: true));
                         soundPack.AddAction(action: PieceSoundPack.Action.Open, sound: new Sound(name: SoundData.Name.BoilingPotion, ignore3DAlways: true));
 
-                        var alchemyLab = new AlchemyLab(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.AlchemyLab, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Metal, floatsOnWater: false, minDistance: 0, maxDistance: 100, maxMassForSize: null, generation: generation, maxHitPoints: 30, readableName: "alchemy lab", description: "For potion brewing.", boosterSpace: 1, soundPack: soundPack, fireAffinity: 0.3f);
+                        var alchemyLab = new AlchemyLab(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.AlchemyLabStandard, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Metal, floatsOnWater: false, minDistance: 0, maxDistance: 100, maxMassForSize: null, generation: generation, maxHitPoints: 30, readableName: "alchemy lab", description: "For potion brewing.", boosterSpace: 1, soundPack: soundPack, fireAffinity: 0.3f);
+
+                        alchemyLab.sprite.AssignNewName("off");
+                        return alchemyLab;
+                    }
+
+                case Name.AlchemyLabAdvanced:
+                    {
+                        var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
+                            { Terrain.Name.Height, new AllowedRange(min: Terrain.waterLevelMax, max: Terrain.volcanoEdgeMin) }});
+
+                        var soundPack = new PieceSoundPack();
+                        soundPack.AddAction(action: PieceSoundPack.Action.IsOn, sound: new Sound(name: SoundData.Name.BoilingPotionLoop, isLooped: true));
+                        soundPack.AddAction(action: PieceSoundPack.Action.Open, sound: new Sound(name: SoundData.Name.BoilingPotion, ignore3DAlways: true));
+
+                        var alchemyLab = new AlchemyLab(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.AlchemyLabAdvanced, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Metal, floatsOnWater: false, minDistance: 0, maxDistance: 100, maxMassForSize: null, generation: generation, maxHitPoints: 30, readableName: "advanced alchemy lab", description: "For advanced potion brewing.", boosterSpace: 3, soundPack: soundPack, fireAffinity: 0.3f);
 
                         alchemyLab.sprite.AssignNewName("off");
                         return alchemyLab;
@@ -1452,20 +1441,6 @@ namespace SonOfRobin
                         return new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Clam, blocksMovement: false, allowedTerrain: allowedTerrain,
                             category: BoardPiece.Category.Indestructible,
                             minDistance: 0, maxDistance: 200, generation: generation, mass: 100, stackSize: 6, rotatesWhenDropped: true, readableName: "clam", description: "Have to be cooked before eating.", fireAffinity: 0.3f);
-                    }
-
-                case Name.Shell:
-                    {
-                        var packageNames = new List<AnimData.PkgName> { AnimData.PkgName.Shell1, AnimData.PkgName.Shell2, AnimData.PkgName.Shell3, AnimData.PkgName.Shell4 };
-
-                        var animPkg = packageNames[random.Next(0, packageNames.Count)];
-
-                        var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.GroundAll },
-                            extPropertiesDict: new Dictionary<ExtBoardProps.Name, bool> { { ExtBoardProps.Name.OuterBeach, true } });
-
-                        return new Collectible(name: templateName, world: world, id: id, animPackage: animPkg, blocksMovement: false, allowedTerrain: allowedTerrain,
-                            category: BoardPiece.Category.Indestructible,
-                            minDistance: 0, maxDistance: 200, generation: generation, stackSize: 6, rotatesWhenDropped: true, readableName: "shell", description: "Not really useful.", fireAffinity: 0.3f);
                     }
 
                 case Name.Stick:
@@ -1547,7 +1522,7 @@ namespace SonOfRobin
                             allowedTerrain: allowedTerrain, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 12, floatsOnWater: false, yield: null, maxHitPoints: 5, rotatesWhenDropped: true, readableName: "wood plank", description: "Crafting material.", fireAffinity: 1.0f);
                     }
 
-                case Name.Nail:
+                case Name.IronNail:
                     {
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
                             { Terrain.Name.Height, new AllowedRange(min: Terrain.waterLevelMax, max: Terrain.volcanoEdgeMin) }});
@@ -1631,7 +1606,7 @@ namespace SonOfRobin
                                     new Yield.DroppedPiece(pieceName: Name.GlassSand, chanceToDrop: 100, maxNumberToDrop: 4),
                                     new Yield.DroppedPiece(pieceName: Name.Stone, chanceToDrop: 30, maxNumberToDrop: 2)});
 
-                        return new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.GlassDigSite, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Dirt, blocksMovement: false,
+                        return new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.DigSiteGlass, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Dirt, blocksMovement: false,
                           minDistance: 0, maxDistance: 1000, maxMassForSize: null, generation: generation, yield: yield, maxHitPoints: 30, readableName: "dig site", description: "May contain some buried items.", isAffectedByWind: false, fireAffinity: 0f);
                     }
 
@@ -1977,102 +1952,6 @@ namespace SonOfRobin
                             minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 3, mass: 100, rotatesWhenDropped: true, floatsOnWater: false, readableName: "empty bottle", description: "Can be used to make a potion.", soundPack: soundPack, fireAffinity: 0f);
                     }
 
-                case Name.PotionHealing:
-                    {
-                        var buffList = new List<Buff> {
-                             new Buff(type: BuffEngine.BuffType.HP, value: (float)200, isPermanent: true)};
-
-                        var soundPack = new PieceSoundPack();
-                        soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropGlass, cooldown: 15, maxPitchVariation: 0.3f));
-
-                        return new Potion(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PotionRed, blocksMovement: false, category: BoardPiece.Category.Indestructible, allowedTerrain: shallowWaterToVolcano,
-                            minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 200, toolbarTask: Scheduler.TaskName.GetDrinked, rotatesWhenDropped: true, floatsOnWater: false, readableName: "healing potion", description: "Restores hit points.", buffList: buffList, convertsToWhenUsed: Name.EmptyBottle, soundPack: soundPack, fireAffinity: 0f);
-                    }
-
-                case Name.PotionMaxHPIncrease:
-                    {
-                        var buffList = new List<Buff> {
-                             new Buff(type: BuffEngine.BuffType.MaxHP, value: 200f, autoRemoveDelay: 5 * 60 * 60)};
-
-                        var soundPack = new PieceSoundPack();
-                        soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropGlass, cooldown: 15, maxPitchVariation: 0.3f));
-
-                        return new Potion(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PotionGreen, blocksMovement: false, category: BoardPiece.Category.Indestructible, allowedTerrain: shallowWaterToVolcano,
-                            minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 200, toolbarTask: Scheduler.TaskName.GetDrinked, rotatesWhenDropped: true, floatsOnWater: false, readableName: "max health increase potion", description: "Increases max health for some time.", buffList: buffList, convertsToWhenUsed: Name.EmptyBottle, soundPack: soundPack, fireAffinity: 0f);
-                    }
-
-                case Name.PotionMaxHPDecrease:
-                    {
-                        var buffList = new List<Buff> {
-                             new Buff(type: BuffEngine.BuffType.MaxHP, value: -50f, autoRemoveDelay: 1 * 60 * 60)};
-
-                        var soundPack = new PieceSoundPack();
-                        soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropGlass, cooldown: 15, maxPitchVariation: 0.3f));
-
-                        return new Potion(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PotionDarkGreen, blocksMovement: false, category: BoardPiece.Category.Indestructible, allowedTerrain: shallowWaterToVolcano,
-                            minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 200, toolbarTask: Scheduler.TaskName.GetDrinked, rotatesWhenDropped: true, floatsOnWater: false, readableName: "max health decrease potion", description: "Decreases max health for some time.", buffList: buffList, convertsToWhenUsed: Name.EmptyBottle, soundPack: soundPack, fireAffinity: 0f);
-                    }
-
-                case Name.PotionStrength:
-                    {
-                        var buffList = new List<Buff> {
-                             new Buff(type: BuffEngine.BuffType.Strength, value: (int)5, autoRemoveDelay: 60 * 60 * 3)};
-
-                        var soundPack = new PieceSoundPack();
-                        soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropGlass, cooldown: 15, maxPitchVariation: 0.3f));
-
-                        return new Potion(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PotionYellow, blocksMovement: false, category: BoardPiece.Category.Indestructible, allowedTerrain: shallowWaterToVolcano,
-                            minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 200, toolbarTask: Scheduler.TaskName.GetDrinked, rotatesWhenDropped: true, floatsOnWater: false, readableName: "strength potion", description: "Increases strength for a short while.", buffList: buffList, convertsToWhenUsed: Name.EmptyBottle, soundPack: soundPack, fireAffinity: 0f);
-                    }
-
-                case Name.PotionWeakness:
-                    {
-                        var buffList = new List<Buff> {
-                             new Buff(type: BuffEngine.BuffType.Strength, value: (int)-2, autoRemoveDelay: 60 * 60 * 1, increaseIDAtEveryUse: true)};
-
-                        var soundPack = new PieceSoundPack();
-                        soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropGlass, cooldown: 15, maxPitchVariation: 0.3f));
-
-                        return new Potion(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PotionDarkYellow, blocksMovement: false, category: BoardPiece.Category.Indestructible, allowedTerrain: shallowWaterToVolcano,
-                            minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 200, toolbarTask: Scheduler.TaskName.GetDrinked, rotatesWhenDropped: true, floatsOnWater: false, readableName: "weakness potion", description: "Decreases strength for a short while.", buffList: buffList, convertsToWhenUsed: Name.EmptyBottle, soundPack: soundPack, fireAffinity: 0f);
-                    }
-
-                case Name.PotionHaste:
-                    {
-                        var buffList = new List<Buff> {
-                             new Buff(type: BuffEngine.BuffType.Haste, value: (int)4, autoRemoveDelay: 60 * 30)};
-
-                        var soundPack = new PieceSoundPack();
-                        soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropGlass, cooldown: 15, maxPitchVariation: 0.3f));
-
-                        return new Potion(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PotionCyan, blocksMovement: false, category: BoardPiece.Category.Indestructible, allowedTerrain: shallowWaterToVolcano,
-                            minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 200, toolbarTask: Scheduler.TaskName.GetDrinked, rotatesWhenDropped: true, floatsOnWater: false, readableName: "haste potion", description: "Gives inhuman speed for a short while.", buffList: buffList, convertsToWhenUsed: Name.EmptyBottle, soundPack: soundPack, fireAffinity: 0f);
-                    }
-
-                case Name.PotionMaxStamina:
-                    {
-                        var buffList = new List<Buff> {
-                             new Buff(type: BuffEngine.BuffType.MaxStamina, value: 200f, autoRemoveDelay: 60 * 60 * 3)};
-
-                        var soundPack = new PieceSoundPack();
-                        soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropGlass, cooldown: 15, maxPitchVariation: 0.3f));
-
-                        return new Potion(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PotionBlue, blocksMovement: false, category: BoardPiece.Category.Indestructible, allowedTerrain: shallowWaterToVolcano,
-                            minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 200, toolbarTask: Scheduler.TaskName.GetDrinked, rotatesWhenDropped: true, floatsOnWater: false, readableName: "max stamina potion", description: "Increases maximum stamina for a short while.", buffList: buffList, convertsToWhenUsed: Name.EmptyBottle, soundPack: soundPack, fireAffinity: 0f);
-                    }
-
-                case Name.PotionFatigue:
-                    {
-                        var buffList = new List<Buff> {
-                            new Buff(type: BuffEngine.BuffType.Fatigue, value: (float)-800, isPermanent: true)};
-
-                        var soundPack = new PieceSoundPack();
-                        soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropGlass, cooldown: 15, maxPitchVariation: 0.3f));
-
-                        return new Potion(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PotionViolet, blocksMovement: false, category: BoardPiece.Category.Indestructible, allowedTerrain: shallowWaterToVolcano,
-                            minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 200, toolbarTask: Scheduler.TaskName.GetDrinked, rotatesWhenDropped: true, floatsOnWater: false, readableName: "fatigue remove potion", description: "Removes fatigue.", buffList: buffList, convertsToWhenUsed: Name.EmptyBottle, soundPack: soundPack, fireAffinity: 0f);
-                    }
-
                 case Name.PotionCoffee:
                     {
                         var soundPack = new PieceSoundPack();
@@ -2091,30 +1970,6 @@ namespace SonOfRobin
 
                         return new Potion(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PotionTransparent, blocksMovement: false, category: BoardPiece.Category.Indestructible, allowedTerrain: shallowWaterToVolcano,
                             minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 200, toolbarTask: Scheduler.TaskName.GetDrinked, rotatesWhenDropped: true, floatsOnWater: false, readableName: "potion", description: "A potion.", buffList: null, convertsToWhenUsed: Name.EmptyBottle, soundPack: soundPack, fireAffinity: 0f);
-                    }
-
-                case Name.PotionPoison:
-                    {
-                        var buffList = new List<Buff> {
-                            new Buff(type: BuffEngine.BuffType.RegenPoison, value: (int)-30, autoRemoveDelay: 30 * 60, canKill: true, increaseIDAtEveryUse: true)};
-
-                        var soundPack = new PieceSoundPack();
-                        soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropGlass, cooldown: 15, maxPitchVariation: 0.3f));
-
-                        return new Potion(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PotionBlack, blocksMovement: false, category: BoardPiece.Category.Indestructible, allowedTerrain: shallowWaterToVolcano,
-                            minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 200, toolbarTask: Scheduler.TaskName.GetDrinked, rotatesWhenDropped: true, floatsOnWater: false, readableName: "poison potion", description: "Contains poison.", buffList: buffList, convertsToWhenUsed: Name.EmptyBottle, soundPack: soundPack, fireAffinity: 0f);
-                    }
-
-                case Name.PotionSlowdown:
-                    {
-                        var buffList = new List<Buff> {
-                            new Buff(type: BuffEngine.BuffType.Speed, value: -1f, autoRemoveDelay: 30 * 60, increaseIDAtEveryUse: true)};
-
-                        var soundPack = new PieceSoundPack();
-                        soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropGlass, cooldown: 15, maxPitchVariation: 0.3f));
-
-                        return new Potion(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PotionDarkViolet, blocksMovement: false, category: BoardPiece.Category.Indestructible, allowedTerrain: shallowWaterToVolcano,
-                            minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 200, toolbarTask: Scheduler.TaskName.GetDrinked, rotatesWhenDropped: true, floatsOnWater: false, readableName: "slowdown potion", description: "Decreases speed.", buffList: buffList, convertsToWhenUsed: Name.EmptyBottle, soundPack: soundPack, fireAffinity: 0f);
                     }
 
                 case Name.BottleOfOil:
@@ -2525,7 +2380,7 @@ namespace SonOfRobin
 
                 case Name.DebrisLeaf:
                     {
-                        var packageNames = new List<AnimData.PkgName> { AnimData.PkgName.Leaf1, AnimData.PkgName.Leaf2, AnimData.PkgName.Leaf3 };
+                        var packageNames = new List<AnimData.PkgName> { AnimData.PkgName.DebrisLeaf1, AnimData.PkgName.DebrisLeaf2, AnimData.PkgName.DebrisLeaf3 };
                         var animPkg = packageNames[random.Next(0, packageNames.Count)];
 
                         var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.All });

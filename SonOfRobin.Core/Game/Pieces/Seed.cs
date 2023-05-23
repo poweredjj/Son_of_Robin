@@ -34,7 +34,6 @@ namespace SonOfRobin
         public override Dictionary<string, Object> Serialize()
         {
             Dictionary<string, Object> pieceData = base.Serialize();
-
             pieceData["seed_plantToGrow"] = this.plantToGrow;
 
             return pieceData;
@@ -43,11 +42,7 @@ namespace SonOfRobin
         public override void Deserialize(Dictionary<string, Object> pieceData)
         {
             base.Deserialize(pieceData);
-
-            if (pieceData.ContainsKey("seed_plantToGrow")) // for compatibility with older saves
-            {
-                this.plantToGrow = (PieceTemplate.Name)(Int64)pieceData["seed_plantToGrow"];
-            }
+            this.plantToGrow = (PieceTemplate.Name)(Int64)pieceData["seed_plantToGrow"];
         }
     }
 }

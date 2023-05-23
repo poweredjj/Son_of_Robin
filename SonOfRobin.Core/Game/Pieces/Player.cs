@@ -451,14 +451,14 @@ namespace SonOfRobin
             this.maxStamina = (float)(double)pieceData["player_maxStamina"];
             this.fatigue = (float)(double)pieceData["player_fatigue"];
             this.maxFatigue = (float)(double)pieceData["player_maxFatigue"];
-            if (pieceData.ContainsKey("player_craftLevel")) this.CraftLevel = (int)(Int64)pieceData["player_craftLevel"]; // for compatibility with older saves
-            if (pieceData.ContainsKey("player_cookLevel")) this.CookLevel = (int)(Int64)pieceData["player_cookLevel"]; // for compatibility with older saves
-            if (pieceData.ContainsKey("player_brewLevel")) this.BrewLevel = (int)(Int64)pieceData["player_brewLevel"]; // for compatibility with older saves
+            this.CraftLevel = (int)(Int64)pieceData["player_craftLevel"];
+            this.CookLevel = (int)(Int64)pieceData["player_cookLevel"];
+            this.BrewLevel = (int)(Int64)pieceData["player_brewLevel"];
             this.sleepEngine = (SleepEngine)pieceData["player_sleepEngine"];
-            if (pieceData.ContainsKey("player_distanceWalked")) this.distanceWalked = (float)(double)pieceData["player_distanceWalked"]; // for compatibility with older saves
+            this.distanceWalked = (float)(double)pieceData["player_distanceWalked"];
             this.ToolStorage = PieceStorage.Deserialize(storageData: pieceData["player_toolStorage"], storagePiece: this);
             this.EquipStorage = PieceStorage.Deserialize(storageData: pieceData["player_equipStorage"], storagePiece: this);
-            if (pieceData.ContainsKey("player_globalChestStorage")) this.GlobalChestStorage = PieceStorage.Deserialize(storageData: pieceData["player_globalChestStorage"], storagePiece: this); // for compatibility with older saves
+            this.GlobalChestStorage = PieceStorage.Deserialize(storageData: pieceData["player_globalChestStorage"], storagePiece: this);
             List<Point> lastStepsPointList = (List<Point>)pieceData["player_LastSteps"];
             this.LastSteps = lastStepsPointList.Select(p => new Vector2(p.X, p.Y)).ToList();
             this.RefreshAllowedPiecesForStorages();

@@ -26,12 +26,6 @@ namespace SonOfRobin
                     tutorialsToActivate: new List<Tutorials.Type> {Tutorials.Type.BreakThing}),
 
                 new PieceHint(
-                    type: PieceHint.Type.ShellIsNotUseful,
-                    message: $"This | { PieceInfo.GetInfo(PieceTemplate.Name.Shell).readableName } is pretty, but I don't think it will be useful.",
-                    imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.Shell) },
-                    playerOwnsAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.Shell}),
-
-                new PieceHint(
                     type: PieceHint.Type.HerbsRed,
                     message: "I think I could use these | herbs to make a healing potion.",
                     imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.HerbsRed) },

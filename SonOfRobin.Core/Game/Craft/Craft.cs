@@ -9,7 +9,7 @@ namespace SonOfRobin
     public class Craft
     {
         public enum Category
-        { Field, Essential, Basic, Advanced, Master, Alchemy, Furnace, Anvil, LeatherBasic, LeatherAdvanced }
+        { Field, Essential, Basic, Advanced, Master, Furnace, Anvil, LeatherBasic, LeatherAdvanced }
 
         public class Recipe
         {
@@ -269,7 +269,7 @@ namespace SonOfRobin
                 {
                     for (int i = 0; i < this.amountToCreate; i++)
                     {
-                        BoardPiece piece = PieceTemplate.Create(templateName: this.pieceToCreate, world: world);                     
+                        BoardPiece piece = PieceTemplate.Create(templateName: this.pieceToCreate, world: world);
 
                         craftedPieces.Add(piece);
                         bool pieceInserted = false;
@@ -545,13 +545,6 @@ namespace SonOfRobin
                 masterRecipes.InsertRange(0, advancedRecipes);
 
                 AddCategory(category: Category.Master, recipeList: masterRecipes);
-            }
-
-            {
-                // alchemy
-
-                var alchemyRecipes = CraftData.GetAlchemyRecipes();
-                AddCategory(category: Category.Alchemy, recipeList: alchemyRecipes);
             }
 
             {

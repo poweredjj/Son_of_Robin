@@ -117,7 +117,7 @@
 /processorParam:TextureFormat=Color
 /build:gfx/acorn.png
 
-#begin gfx/alchemy_lab.png
+#begin gfx/alchemy_lab_advanced.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -127,7 +127,19 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/alchemy_lab.png
+/build:gfx/alchemy_lab_advanced.png
+
+#begin gfx/alchemy_lab_standard.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/alchemy_lab_standard.png
 
 #begin gfx/animal.png
 /importer:TextureImporter

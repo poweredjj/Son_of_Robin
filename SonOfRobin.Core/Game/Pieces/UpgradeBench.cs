@@ -8,7 +8,7 @@ namespace SonOfRobin
     public class UpgradeBench : BoardPiece
     {
         public static readonly List<PieceTemplate.Name> mainNames = new List<PieceTemplate.Name>(); // to be updated during first use
-        private static readonly List<PieceTemplate.Name> boosterNames = new List<PieceTemplate.Name> { PieceTemplate.Name.PotionPoison, PieceTemplate.Name.PotionSlowdown, PieceTemplate.Name.PotionWeakness, PieceTemplate.Name.PotionMaxHPDecrease, PieceTemplate.Name.EmptyBottle };
+        private static readonly List<PieceTemplate.Name> boosterNames = new List<PieceTemplate.Name> { PieceTemplate.Name.PotionGeneric, PieceTemplate.Name.PotionCoffee };
 
         private StorageSlot UpgradeTriggerSlot
         { get { return this.PieceStorage.GetSlot(0, 0); } }
