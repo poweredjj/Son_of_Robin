@@ -174,27 +174,39 @@ namespace SonOfRobin
         public bool ResourcefulCrafter
         { get { return this.CraftLevel >= 3; } }
 
-        public List<PieceStorage> CraftStoragesToTakeFrom
+        public List<PieceStorage> GetCraftStoragesToTakeFrom(bool showCraftMarker)
         {
-            get
+            var craftStorages = new List<PieceStorage> { this.PieceStorage, this.ToolStorage, this.EquipStorage };
+
+            if (this.ResourcefulCrafter)
             {
-                var craftStorages = new List<PieceStorage> { this.PieceStorage, this.ToolStorage, this.EquipStorage };
+                var chestNames = new List<PieceTemplate.Name> { PieceTemplate.Name.ChestWooden, PieceTemplate.Name.ChestStone, PieceTemplate.Name.ChestIron, PieceTemplate.Name.ChestCrystal };
 
-                if (this.ResourcefulCrafter)
+                var nearbyPieces = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.ColMovement, mainSprite: this.sprite, distance: 90 * this.CraftLevel, compareWithBottom: true);
+                var chestPieces = nearbyPieces.Where(piece => piece.GetType() == typeof(Container) && chestNames.Contains(piece.name));
+
+                foreach (BoardPiece chestPiece in chestPieces)
                 {
-                    var chestNames = new List<PieceTemplate.Name> { PieceTemplate.Name.ChestWooden, PieceTemplate.Name.ChestStone, PieceTemplate.Name.ChestIron, PieceTemplate.Name.ChestCrystal };
-
-                    var nearbyPieces = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.ColMovement, mainSprite: this.sprite, distance: 90 * this.CraftLevel, compareWithBottom: true);
-                    var chestPieces = nearbyPieces.Where(piece => piece.GetType() == typeof(Container) && chestNames.Contains(piece.name));
-
-                    foreach (BoardPiece chestPiece in chestPieces)
-                    {
-                        if (!craftStorages.Contains(chestPiece.PieceStorage)) craftStorages.Add(chestPiece.PieceStorage); // checking to avoid adding shared chest multiple times
-                    }
+                    if (!craftStorages.Contains(chestPiece.PieceStorage)) craftStorages.Add(chestPiece.PieceStorage); // checking to avoid adding shared chest multiple times
                 }
 
-                return craftStorages;
+                if (showCraftMarker)
+                {
+                    foreach (BoardPiece chestPiece in chestPieces)
+                    {
+                        if (chestPiece.visualAid == null || !chestPiece.visualAid.exists)
+                        {
+                            BoardPiece usedChestMarker = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: chestPiece.sprite.position, templateName: PieceTemplate.Name.BubbleCraftGreen);
+
+                            new Tracking(world: world, targetSprite: chestPiece.sprite, followingSprite: usedChestMarker.sprite, targetYAlign: YAlign.Top, targetXAlign: XAlign.Left, followingYAlign: YAlign.Bottom, offsetX: 0, offsetY: 5);
+
+                            new WorldEvent(eventName: WorldEvent.EventName.FadeOutSprite, delay: 40, world: world, boardPiece: usedChestMarker, eventHelper: 20);
+                        }
+                    }
+                }
             }
+
+            return craftStorages;
         }
 
         public List<PieceStorage> CraftStoragesToPutInto

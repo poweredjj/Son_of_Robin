@@ -957,22 +957,9 @@ namespace SonOfRobin
                 return null;
             }
 
-            List<PieceStorage> storageList = player.CraftStoragesToTakeFrom;
-
-            foreach (PieceStorage pieceStorage in storageList)
-            {
-                BoardPiece storagePiece = pieceStorage.storagePiece;
-                if (storagePiece.GetType() == typeof(Container) && (storagePiece.visualAid == null || !storagePiece.visualAid.exists))
-                {
-                    BoardPiece usedChestMarker = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: storagePiece.sprite.position, templateName: PieceTemplate.Name.BubbleCraftGreen);
-
-                    new Tracking(world: world, targetSprite: storagePiece.sprite, followingSprite: usedChestMarker.sprite, targetYAlign: YAlign.Top, targetXAlign: XAlign.Left, followingYAlign: YAlign.Bottom, offsetX: 0, offsetY: 5);
-
-                    new WorldEvent(eventName: WorldEvent.EventName.FadeOutSprite, delay: 40, world: world, boardPiece: usedChestMarker, eventHelper: 20);
-                }
-            }
-
             Tutorials.ShowTutorialOnTheField(type: Tutorials.Type.Craft, world: World.GetTopWorld(), ignoreDelay: true);
+
+            List<PieceStorage> storageList = player.GetCraftStoragesToTakeFrom(showCraftMarker: true);
 
             Menu menu = new Menu(templateName: templateName, name: label, blocksUpdatesBelow: true, canBeClosedManually: true, layout: SonOfRobinGame.platform == Platform.Mobile ? Menu.Layout.Right : Menu.Layout.Left, alwaysShowSelectedEntry: true, templateExecuteHelper: null, soundOpen: soundOpen);
             menu.bgColor = Color.LemonChiffon * 0.5f;

@@ -183,7 +183,7 @@ namespace SonOfRobin
 
                 var craftedPieces = new List<BoardPiece>();
 
-                var storagesToTakeFrom = player.CraftStoragesToTakeFrom;
+                var storagesToTakeFrom = player.GetCraftStoragesToTakeFrom(showCraftMarker: false);
                 var storagesToPutInto = player.CraftStoragesToPutInto;
 
                 if (!this.CheckIfStorageContainsAllIngredients(storageList: storagesToTakeFrom))
