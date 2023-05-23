@@ -92,7 +92,7 @@ namespace SonOfRobin
                     }
                 }
             }
-            else allowedToolbarPieces.Add(PieceTemplate.Name.Hand);
+            else allowedToolbarPieces.Add(PieceTemplate.Name.KnifeSimple);
 
             this.PieceStorage = new PieceStorage(width: invWidth, height: invHeight, storagePiece: this, storageType: PieceStorage.StorageType.Inventory);
             this.ToolStorage = new PieceStorage(width: toolbarWidth, height: toolbarHeight, storagePiece: this, storageType: PieceStorage.StorageType.Tools, allowedPieceNames: allowedToolbarPieces);
@@ -107,7 +107,7 @@ namespace SonOfRobin
             this.recipeToBuild = null;
             this.simulatedPieceToBuild = null;
 
-            BoardPiece handTool = PieceTemplate.Create(templateName: PieceTemplate.Name.Hand, world: this.world);
+            BoardPiece handTool = PieceTemplate.Create(templateName: PieceTemplate.Name.KnifeSimple, world: this.world);
 
             StorageSlot handSlot = this.ToolStorage.FindCorrectSlot(handTool);
             this.ToolStorage.AddPiece(handTool);

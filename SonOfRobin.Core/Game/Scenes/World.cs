@@ -178,7 +178,7 @@ namespace SonOfRobin
             this.craftStats = new CraftStats();
             this.cookStats = new KitchenStats();
             this.brewStats = new KitchenStats();
-            this.identifiedPieces = new List<PieceTemplate.Name> { PieceTemplate.Name.Hand };
+            this.identifiedPieces = new List<PieceTemplate.Name> { PieceTemplate.Name.KnifeSimple };
             if (this.demoMode) this.solidColorManager.Add(new SolidColor(color: Color.White, viewOpacity: 0.4f, clearScreen: false, priority: 1));
             this.soundPaused = false;
 

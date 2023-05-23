@@ -101,7 +101,7 @@ namespace SonOfRobin
             new Tutorial(type: Type.BreakThing, name: "destroying items without tools", title: "How to destroy field item without any tools.",
                 messages: new List<HintMessage> {
                 new HintMessage(text: "1. Make sure that the | hand tool is selected on toolbar.",
-                imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.Hand) }, boxType: messageTextType),
+                imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.KnifeSimple) }, boxType: messageTextType),
                 new HintMessage(text:"2. Walk next to the item and press |.", imageList: new List<Texture2D> {InputMapper.GetTexture(InputMapper.Action.WorldUseToolbarPiece)}, boxType: messageTextType)});
 
             new Tutorial(type: Type.GetWood, name: "acquiring wood", title: "How to acquire wood.",

@@ -203,8 +203,17 @@ namespace SonOfRobin
             var durabilityTypeList = new List<Type> { typeof(Tool), typeof(PortableLight), typeof(Projectile) };
             if (durabilityTypeList.Contains(pieceInfo.type))
             {
-                extInfoTextList.Add($"| {Math.Round(pieceInfo.maxHitPoints)}");
                 extInfoImageList.Add(TextureBank.GetTexture("simple_icons/heart"));
+
+                if (pieceInfo.indestructibleTool)
+                {
+                    extInfoTextList.Add($"|  |");
+                    extInfoImageList.Add(TextureBank.GetTexture("simple_icons/infinity"));
+                }
+                else
+                {
+                    extInfoTextList.Add($"| {Math.Round(pieceInfo.maxHitPoints)}");
+                }
             }
 
             if (pieceInfo.cookerFoodMassMultiplier > 0)

@@ -167,7 +167,7 @@ namespace SonOfRobin
             Leather,
 
 
-            Hand,
+            KnifeSimple,
 
             AxeWood,
             AxeStone,
@@ -987,7 +987,7 @@ namespace SonOfRobin
             AddFrameList(animPackage: PkgName.ArrowCrystal, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "arrow_crystal", layer: 0, scale: 0.75f));
             AddFrameList(animPackage: PkgName.DebrisStone, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "stone_small", layer: 0, scale: 0.25f));
             AddFrameList(animPackage: PkgName.DebrisPlant, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "grass_blade", layer: 0, scale: 0.25f));
-            AddFrameList(animPackage: PkgName.Hand, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "hand", layer: 1, scale: 0.1f));
+            AddFrameList(animPackage: PkgName.KnifeSimple, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "knife_simple", layer: 1, scale: 1f));
             AddFrameList(animPackage: PkgName.BeltSmall, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "belt_small", layer: 0, scale: 1f));
             AddFrameList(animPackage: PkgName.BeltMedium, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "belt_medium", layer: 0, scale: 0.12f));
             AddFrameList(animPackage: PkgName.BeltBig, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "belt_big", layer: 0, scale: 0.06f));

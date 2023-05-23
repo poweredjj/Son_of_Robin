@@ -153,7 +153,7 @@ namespace SonOfRobin
                             throw new ArgumentException($"Unsupported targetCategory - {currentTarget.category}.");
                     }
 
-                    if (this.name == PieceTemplate.Name.Hand) this.world.HintEngine.Disable(Tutorials.Type.BreakThing);
+                    if (this.name == PieceTemplate.Name.KnifeSimple) this.world.HintEngine.Disable(Tutorials.Type.BreakThing);
                     if (currentTarget.name == PieceTemplate.Name.CoalDeposit)
                     {
                         this.world.HintEngine.Disable(PieceHint.Type.CoalDepositNegative);

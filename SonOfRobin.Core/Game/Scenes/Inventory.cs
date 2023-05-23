@@ -354,8 +354,17 @@ namespace SonOfRobin
             var durabilityTypeList = new List<System.Type> { typeof(Tool), typeof(PortableLight), typeof(Projectile) };
             if (durabilityTypeList.Contains(selectedPiece.GetType()))
             {
-                extInfoTextList.Add($"| { Math.Round(selectedPiece.hitPoints)}/{Math.Round(selectedPiece.maxHitPoints) }");
                 extInfoImageList.Add(TextureBank.GetTexture("simple_icons/heart"));
+
+                if (PieceInfo.GetInfo(selectedPiece.name).indestructibleTool)
+                {
+                    extInfoTextList.Add($"|  |");
+                    extInfoImageList.Add(TextureBank.GetTexture("simple_icons/infinity"));
+                }
+                else
+                {
+                    extInfoTextList.Add($"| { Math.Round(selectedPiece.hitPoints)}/{Math.Round(selectedPiece.maxHitPoints) }");
+                }
             }
 
             if (selectedPiece.stackSize > 1 && !slot.locked)

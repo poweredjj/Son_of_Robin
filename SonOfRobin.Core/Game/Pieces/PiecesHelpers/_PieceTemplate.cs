@@ -169,7 +169,7 @@ namespace SonOfRobin
             FireplaceTriggerOn,
             FireplaceTriggerOff,
 
-            Hand,
+            KnifeSimple,
             AxeWood,
             AxeStone,
             AxeIron,
@@ -2158,12 +2158,12 @@ namespace SonOfRobin
                        minDistance: 5, maxDistance: 30, maxHitPoints: 150, mass: 10, maxMass: 1200, massBurnedMultiplier: 1, awareness: 100, matureAge: 1200, maxAge: 30000, pregnancyDuration: 2000, maxChildren: 8, maxStamina: 200, sightRange: 200, eats: new List<Name> { Name.WaterLily, Name.Rushes }, strength: 30, maxMassForSize: maxMassForSize, generation: generation, yield: yield, readableName: "frog", description: "A water animal.", soundPack: soundPack, fireAffinity: 0.15f);
                     }
 
-                case Name.Hand:
+                case Name.KnifeSimple:
                     {
                         var multiplierByCategory = new Dictionary<BoardPiece.Category, float> { { BoardPiece.Category.Wood, 0.5f } };
 
-                        return new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Hand, allowedTerrain: shallowWaterToVolcano, category: BoardPiece.Category.Indestructible,
-                            floatsOnWater: false, minDistance: 0, maxDistance: 100, maxMassForSize: null, generation: generation, hitPower: 1, indestructible: true, multiplierByCategory: multiplierByCategory, maxHitPoints: 1, readableName: "hand", description: "Can be used to break wooden stuff.", fireAffinity: 0f);
+                        return new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.KnifeSimple, allowedTerrain: shallowWaterToVolcano, category: BoardPiece.Category.Indestructible,
+                            floatsOnWater: false, minDistance: 0, maxDistance: 100, maxMassForSize: null, generation: generation, hitPower: 1, indestructible: true, multiplierByCategory: multiplierByCategory, maxHitPoints: 1, readableName: "simple knife", description: "An old knife.", fireAffinity: 0f);
                     }
 
                 case Name.AxeWood:

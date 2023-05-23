@@ -184,7 +184,7 @@ namespace SonOfRobin
                 new PieceHint(
                     type: PieceHint.Type.WoodNegative, fieldPiecesNearby: new List<PieceTemplate.Name> {PieceTemplate.Name.TreeBig, PieceTemplate.Name.TreeSmall},
                     message: "I could get some wood using my | bare hands,\nbut an | axe would be better.",
-                    imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.Hand),  PieceInfo.GetTexture(PieceTemplate.Name.AxeStone) },
+                    imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.KnifeSimple),  PieceInfo.GetTexture(PieceTemplate.Name.AxeStone) },
                     playerDoesNotOwnAnyOfThesePieces: new List<PieceTemplate.Name> {PieceTemplate.Name.AxeWood, PieceTemplate.Name.AxeStone, PieceTemplate.Name.AxeIron, PieceTemplate.Name.AxeCrystal }),
 
                 new PieceHint(
