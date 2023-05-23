@@ -23,7 +23,7 @@ namespace SonOfRobin
         {
             var dataList = new List<PieceCreationData>
             {
-                new PieceCreationData(name: PieceTemplate.Name.GrassRegular, multiplier: 1.7f, maxAmount: 500),
+                new PieceCreationData(name: PieceTemplate.Name.GrassRegular, multiplier: 1.7f, maxAmount: 1000),
                 new PieceCreationData(name: PieceTemplate.Name.GrassGlow, multiplier: 0.1f, maxAmount: 40),
                 new PieceCreationData(name: PieceTemplate.Name.GrassDesert, multiplier: 2.0f),
                 new PieceCreationData(name: PieceTemplate.Name.PlantPoison, multiplier: 1.0f),
