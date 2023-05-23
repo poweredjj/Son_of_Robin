@@ -223,6 +223,8 @@ namespace SonOfRobin
             }
 
             int fatigue = (int)(recipe.GetRealFatigue(craftStats: world.craftStats, player: world.Player) / world.Player.maxFatigue * 100);
+            if (world.Player.buffEngine.HasBuff(BuffEngine.BuffType.Heat)) fatigue *= Player.heatFatigueMultiplier; // applied in Player.Fatigue, must be taken into account
+
             extInfoTextList.Add($"| {fatigue}%");
             extInfoImageList.Add(TextureBank.GetTexture("simple_icons/sleep"));
 

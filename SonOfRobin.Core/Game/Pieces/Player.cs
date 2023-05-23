@@ -15,6 +15,7 @@ namespace SonOfRobin
         private const int maxShootingPower = 90;
         public const int maxLastStepsCount = 100;
         public const int maxCraftLevel = 5;
+        public const int heatFatigueMultiplier = 2;
 
         public int maxFedLevel;
         public int fedLevel;
@@ -299,7 +300,7 @@ namespace SonOfRobin
                 if (Preferences.DebugGodMode) return;
 
                 float fatigueDifference = value - this.fatigue;
-                if (fatigueDifference > 0 && this.buffEngine.HasBuff(BuffEngine.BuffType.Heat)) fatigueDifference *= 2;
+                if (fatigueDifference > 0 && this.buffEngine.HasBuff(BuffEngine.BuffType.Heat)) fatigueDifference *= heatFatigueMultiplier;
 
                 this.fatigue = Math.Min(Math.Max(this.fatigue + fatigueDifference, 0), this.maxFatigue);
 
