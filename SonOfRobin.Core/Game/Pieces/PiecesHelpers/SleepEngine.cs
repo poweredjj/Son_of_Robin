@@ -1,12 +1,19 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace SonOfRobin
 {
     [Serializable]
     public struct SleepEngine
     {
-        public static SleepEngine OutdoorSleepDry = new SleepEngine(minFedPercent: 0.2f, fatigueRegen: 0.4f, hitPointsChange: -0.1f, islandClockMultiplier: 2, waitingAfterSleepPossible: false, canBeAttacked: true);
-        public static SleepEngine OutdoorSleepWet = new SleepEngine(minFedPercent: 0.1f, fatigueRegen: 0.2f, hitPointsChange: -0.2f, islandClockMultiplier: 2, waitingAfterSleepPossible: false, canBeAttacked: true);
+        public static SleepEngine OutdoorSleepDry = new SleepEngine(minFedPercent: 0.2f, fatigueRegen: 0.4f, hitPointsChange: -0.1f, islandClockMultiplier: 2, waitingAfterSleepPossible: false, canBeAttacked: true, wakeUpBuffs: new List<Buff> {
+                            new Buff(type: BuffEngine.BuffType.MaxHP, value: -100f, sleepMinutesNeededForActivation: (int)IslandClock.ConvertUpdatesCountToTimeSpan(1 * 60 * 60).TotalMinutes, autoRemoveDelay: 5 * 60 * 60, increaseIDAtEveryUse: true),
+                            new Buff(type: BuffEngine.BuffType.MaxStamina, value: -100f, sleepMinutesNeededForActivation: (int)IslandClock.ConvertUpdatesCountToTimeSpan(1 * 60 * 60).TotalMinutes, autoRemoveDelay: 5 * 60 * 60, increaseIDAtEveryUse: true)});
+
+        public static SleepEngine OutdoorSleepWet = new SleepEngine(minFedPercent: 0.1f, fatigueRegen: 0.2f, hitPointsChange: -0.2f, islandClockMultiplier: 2, waitingAfterSleepPossible: false, canBeAttacked: true, wakeUpBuffs: new List<Buff> {
+                            new Buff(type: BuffEngine.BuffType.Strength, value: -1, sleepMinutesNeededForActivation: (int)IslandClock.ConvertUpdatesCountToTimeSpan(1 * 60 * 60).TotalMinutes, autoRemoveDelay: 5 * 60 * 60, increaseIDAtEveryUse: true),
+                            new Buff(type: BuffEngine.BuffType.MaxHP, value: -150f, sleepMinutesNeededForActivation: (int)IslandClock.ConvertUpdatesCountToTimeSpan(1 * 60 * 60).TotalMinutes, autoRemoveDelay: 5 * 60 * 60, increaseIDAtEveryUse: true),
+                            new Buff(type: BuffEngine.BuffType.MaxStamina, value: -150f, sleepMinutesNeededForActivation: (int)IslandClock.ConvertUpdatesCountToTimeSpan(1 * 60 * 60).TotalMinutes, autoRemoveDelay: 5 * 60 * 60, increaseIDAtEveryUse: true) });
 
         private readonly float minFedPercent;
         private readonly float fatigueRegen;
@@ -14,8 +21,9 @@ namespace SonOfRobin
         public readonly bool canBeAttacked;
         public readonly int islandClockMultiplier;
         public readonly bool waitingAfterSleepPossible;
+        public readonly List<Buff> wakeUpBuffs;
 
-        public SleepEngine(float minFedPercent, float fatigueRegen, int islandClockMultiplier, bool canBeAttacked, bool waitingAfterSleepPossible, float hitPointsChange = 0f)
+        public SleepEngine(float minFedPercent, float fatigueRegen, int islandClockMultiplier, bool canBeAttacked, bool waitingAfterSleepPossible, float hitPointsChange = 0f, List<Buff> wakeUpBuffs = null)
         {
             this.minFedPercent = minFedPercent;
             this.hitPointsChange = hitPointsChange;
@@ -23,6 +31,7 @@ namespace SonOfRobin
             this.canBeAttacked = canBeAttacked;
             this.islandClockMultiplier = islandClockMultiplier;
             this.waitingAfterSleepPossible = waitingAfterSleepPossible;
+            this.wakeUpBuffs = wakeUpBuffs;
         }
 
         public void Execute(Player player)

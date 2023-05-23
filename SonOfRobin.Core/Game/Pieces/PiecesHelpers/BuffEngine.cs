@@ -12,8 +12,10 @@ namespace SonOfRobin
 
         private readonly Dictionary<string, Buff> buffDict;
         private readonly BoardPiece piece;
-        public List<Buff> BuffList { get { return this.buffDict.Values.ToList(); } }
-        public bool HasAnyBuff { get { return this.buffDict.Any(); } }
+        public List<Buff> BuffList
+        { get { return this.buffDict.Values.ToList(); } }
+        public bool HasAnyBuff
+        { get { return this.buffDict.Any(); } }
 
         public BuffEngine(BoardPiece piece)
         {
@@ -66,7 +68,7 @@ namespace SonOfRobin
 
             if (this.buffDict.ContainsKey(buff.id)) throw new ArgumentException($"Buff has been added twice - id {buff.id} type {buff.type}.");
 
-            if (buff.sleepFramesNeededForActivation > 0 && !buff.HadEnoughSleepForBuff(world)) return;
+            if (buff.sleepMinutesNeededForActivation > 0 && !buff.HadEnoughSleepForBuff(world)) return;
 
             bool hadThisBuffBefore = this.HasBuff(buff.type);
             bool buffHasBeenApplied = this.ProcessBuff(world: world, buff: buff, add: true, hadThisBuffBefore: hadThisBuffBefore);
@@ -306,7 +308,6 @@ namespace SonOfRobin
                 case BuffType.Heat:
                     {
                         if (this.HasBuff(BuffType.Heat) || this.HasBuff(BuffType.HeatProtection) || this.HasBuff(BuffType.Wet)) return false;
-
                         return true;
                     }
 
@@ -540,7 +541,7 @@ namespace SonOfRobin
 
             object value;
             int autoRemoveDelay = Math.Max(buff1.autoRemoveDelay, buff2.autoRemoveDelay);
-            int sleepFrames = Math.Max(buff1.sleepFramesNeededForActivation, buff2.sleepFramesNeededForActivation);
+            int sleepMinutesNeededForActivation = Math.Max(buff1.sleepMinutesNeededForActivation, buff2.sleepMinutesNeededForActivation);
             bool canKill = buff1.canKill || buff2.canKill;
             bool increaseIDAtEveryUse = buff1.increaseIDAtEveryUse || buff2.increaseIDAtEveryUse;
 
@@ -638,7 +639,7 @@ namespace SonOfRobin
                     throw new ArgumentException($"Unsupported buff type - {buffType}.");
             }
 
-            return new Buff(type: buffType, value: value, autoRemoveDelay: autoRemoveDelay, isPermanent: buff1.isPermanent, sleepFramesNeededForActivation: sleepFrames, canKill: canKill, increaseIDAtEveryUse: increaseIDAtEveryUse);
+            return new Buff(type: buffType, value: value, autoRemoveDelay: autoRemoveDelay, isPermanent: buff1.isPermanent, sleepMinutesNeededForActivation: sleepMinutesNeededForActivation, canKill: canKill, increaseIDAtEveryUse: increaseIDAtEveryUse);
         }
     }
 }

@@ -829,7 +829,7 @@ namespace SonOfRobin
                             }
                             else sleepEngine = SleepEngine.OutdoorSleepDry;
 
-                            player.GoToSleep(sleepEngine: sleepEngine, zzzPos: player.sprite.position, wakeUpBuffs: new List<Buff> { });
+                            player.GoToSleep(sleepEngine: sleepEngine, zzzPos: player.sprite.position);
                             return;
                         }
 
@@ -844,7 +844,7 @@ namespace SonOfRobin
                         {
                             Shelter shelterPiece = (Shelter)this.ExecuteHelper;
                             SleepEngine sleepEngine = shelterPiece.sleepEngine;
-                            World.GetTopWorld()?.Player.GoToSleep(sleepEngine: sleepEngine, zzzPos: new Vector2(shelterPiece.sprite.gfxRect.Center.X, shelterPiece.sprite.gfxRect.Center.Y), wakeUpBuffs: shelterPiece.buffList);
+                            World.GetTopWorld()?.Player.GoToSleep(sleepEngine: sleepEngine, zzzPos: new Vector2(shelterPiece.sprite.gfxRect.Center.X, shelterPiece.sprite.gfxRect.Center.Y));
 
                             return;
                         }

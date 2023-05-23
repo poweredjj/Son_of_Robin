@@ -17,9 +17,9 @@ namespace SonOfRobin
         public int activationFrame;
         public int endFrame;
         public readonly bool isPermanent;
-        public readonly int sleepFramesNeededForActivation;
+        public readonly int sleepMinutesNeededForActivation;
 
-        public Buff(BuffEngine.BuffType type, object value, int autoRemoveDelay = 0, int sleepFramesNeededForActivation = 0, bool isPermanent = false, bool canKill = false, bool increaseIDAtEveryUse = false)
+        public Buff(BuffEngine.BuffType type, object value, int autoRemoveDelay = 0, int sleepMinutesNeededForActivation = 0, bool isPermanent = false, bool canKill = false, bool increaseIDAtEveryUse = false)
         {
             this.type = type;
             value = this.CastValueToCorrectType(value);
@@ -32,7 +32,7 @@ namespace SonOfRobin
             this.value = value;
             this.canKill = canKill;
             this.isPermanent = isPermanent;
-            this.sleepFramesNeededForActivation = sleepFramesNeededForActivation;
+            this.sleepMinutesNeededForActivation = sleepMinutesNeededForActivation;
             this.isPositive = this.GetIsPositive();
             this.description = this.GetDescription();
             this.iconText = this.GetIconText();
@@ -110,8 +110,8 @@ namespace SonOfRobin
 
         public bool HadEnoughSleepForBuff(World world)
         {
-            int framesSlept = world.CurrentUpdate - world.Player.wentToSleepFrame;
-            return framesSlept >= this.sleepFramesNeededForActivation;
+            TimeSpan sleepDuration = world.islandClock.IslandDateTime - world.Player.SleepStarted;
+            return sleepDuration.TotalMinutes >= this.sleepMinutesNeededForActivation;
         }
 
         private bool GetIsPositive()
@@ -299,7 +299,7 @@ namespace SonOfRobin
                     throw new ArgumentException($"Unsupported buff type - {this.type}.");
             }
 
-            if (this.sleepFramesNeededForActivation > 0) description = $"After a long sleep: {Helpers.FirstCharToLowerCase(description)}";
+            if (this.sleepMinutesNeededForActivation > 0) description = $"After sleeping for {Math.Round((float)((float)this.sleepMinutesNeededForActivation / 60), 1)} hours: {Helpers.FirstCharToLowerCase(description)}";
 
             return description;
         }

@@ -192,7 +192,9 @@ namespace SonOfRobin
             if (pieceInfo.buffList != null)
             {
                 foreach (Buff buff in pieceInfo.buffList)
-                { entryList.Add(new InfoWindow.TextEntry(text: buff.description, color: Color.Cyan, scale: 1f, animate: true, charsPerFrame: 2)); }
+                {
+                    entryList.Add(new InfoWindow.TextEntry(text: buff.description, color: buff.isPositive ? Color.Cyan : new Color(255, 120, 70), scale: 1f, animate: true, charsPerFrame: 2));
+                }
             }
 
             float smallScale = 0.7f;

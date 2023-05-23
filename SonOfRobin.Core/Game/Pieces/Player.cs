@@ -38,8 +38,7 @@ namespace SonOfRobin
         public BoardPiece simulatedPieceToBuild;
         public int buildDurationForOneFrame;
         public float buildFatigueForOneFrame;
-
-        public int wentToSleepFrame;
+        public DateTime SleepStarted { get; private set; }
         public bool sleepingInsideShelter;
         public SleepMode sleepMode;
         public PieceStorage ToolStorage { get; private set; }
@@ -102,7 +101,7 @@ namespace SonOfRobin
             this.ConfigureEquip();
             this.ShootingAngle = -100; // -100 == no real value
             this.shootingPower = 0;
-            this.wentToSleepFrame = 0;
+            this.SleepStarted = new DateTime(1900, 1, 1);
             this.sleepingInsideShelter = false;
             this.sleepMode = SleepMode.Awake;
             this.recipeToBuild = null;
@@ -445,7 +444,6 @@ namespace SonOfRobin
             pieceData["player_craftLevel"] = this.CraftLevel;
             pieceData["player_cookLevel"] = this.CookLevel;
             pieceData["player_brewLevel"] = this.BrewLevel;
-            pieceData["player_sleepEngine"] = this.sleepEngine;
             pieceData["player_distanceWalked"] = this.distanceWalked;
             pieceData["player_toolStorage"] = this.ToolStorage.Serialize();
             pieceData["player_equipStorage"] = this.EquipStorage.Serialize();
@@ -467,7 +465,6 @@ namespace SonOfRobin
             this.CraftLevel = (int)(Int64)pieceData["player_craftLevel"];
             this.CookLevel = (int)(Int64)pieceData["player_cookLevel"];
             this.BrewLevel = (int)(Int64)pieceData["player_brewLevel"];
-            this.sleepEngine = (SleepEngine)pieceData["player_sleepEngine"];
             this.distanceWalked = (float)(double)pieceData["player_distanceWalked"];
             this.ToolStorage = PieceStorage.Deserialize(storageData: pieceData["player_toolStorage"], storagePiece: this);
             this.EquipStorage = PieceStorage.Deserialize(storageData: pieceData["player_equipStorage"], storagePiece: this);
@@ -1071,16 +1068,13 @@ namespace SonOfRobin
             }
         }
 
-        public void GoToSleep(SleepEngine sleepEngine, Vector2 zzzPos, List<Buff> wakeUpBuffs)
+        public void GoToSleep(SleepEngine sleepEngine, Vector2 zzzPos)
         {
-            if (this.world.CurrentUpdate < this.wentToSleepFrame + 60) return; // to prevent going to sleep with max fatigue and with attacking enemies around
-
-            this.wentToSleepFrame = this.world.CurrentUpdate;
+            this.SleepStarted = this.world.islandClock.IslandDateTime;
             this.sleepingInsideShelter = !sleepEngine.canBeAttacked;
             this.sleepMode = SleepMode.Sleep;
             this.sleepEngine = sleepEngine;
             this.world.islandClock.multiplier = this.sleepEngine.islandClockMultiplier;
-            this.buffList.AddRange(wakeUpBuffs);
 
             if (this.visualAid != null) this.visualAid.Destroy();
             this.visualAid = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: zzzPos, templateName: PieceTemplate.Name.Zzz);
@@ -1111,9 +1105,10 @@ namespace SonOfRobin
 
             SonOfRobinGame.SmallProgressBar.TurnOff();
 
-            foreach (Buff buff in this.buffList)
-            { this.buffEngine.AddBuff(buff: buff, world: this.world); }
-            this.buffList.Clear();
+            foreach (Buff buff in this.sleepEngine.wakeUpBuffs)
+            {
+                this.buffEngine.AddBuff(buff: buff, world: this.world);
+            }
 
             if (this.visualAid != null) this.visualAid.Destroy();
             this.visualAid = null;
