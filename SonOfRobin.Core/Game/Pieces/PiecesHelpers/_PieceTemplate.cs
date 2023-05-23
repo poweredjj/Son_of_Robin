@@ -2460,7 +2460,7 @@ namespace SonOfRobin
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
                             { Terrain.Name.Height, new AllowedRange(min: Terrain.waterLevelMax, max: Terrain.volcanoEdgeMin) }});
 
-                        SleepEngine sleepEngine = new SleepEngine(minFedPercent: 0.2f, fatigueRegen: 0.56f, hitPointsChange: 0.05f, islandClockMultiplier: 3, canBeAttacked: false);
+                        SleepEngine sleepEngine = new SleepEngine(minFedPercent: 0.2f, fatigueRegen: 0.56f, hitPointsChange: 0.05f, islandClockMultiplier: 3, canBeAttacked: false, waitingAfterSleepPossible: false);
 
                         return new Shelter(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.TentSmall, allowedTerrain: allowedTerrain, category: BoardPiece.Category.Wood,
                             floatsOnWater: false, minDistance: 0, maxDistance: 500, maxMassForSize: null, maxHitPoints: 120, sleepEngine: sleepEngine, readableName: "small tent", description: "Basic shelter for sleeping.\nProtects against enemies.", fireAffinity: 1.0f);
@@ -2471,7 +2471,7 @@ namespace SonOfRobin
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
                             { Terrain.Name.Height, new AllowedRange(min: Terrain.waterLevelMax, max: Terrain.volcanoEdgeMin) }});
 
-                        SleepEngine sleepEngine = new SleepEngine(minFedPercent: 0.3f, fatigueRegen: 0.8f, hitPointsChange: 0.1f, islandClockMultiplier: 4, canBeAttacked: false);
+                        SleepEngine sleepEngine = new SleepEngine(minFedPercent: 0.3f, fatigueRegen: 0.8f, hitPointsChange: 0.1f, islandClockMultiplier: 4, canBeAttacked: false, waitingAfterSleepPossible: true);
                         var buffList = new List<Buff> {
                             new Buff(type: BuffEngine.BuffType.MaxHP, value: 100f, sleepFramesNeededForActivation: 1 * 60 * 60, autoRemoveDelay: 5 * 60 * 60, increaseIDAtEveryUse: true)};
 
@@ -2484,7 +2484,7 @@ namespace SonOfRobin
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
                             { Terrain.Name.Height, new AllowedRange(min: Terrain.waterLevelMax, max: Terrain.volcanoEdgeMin) }});
 
-                        SleepEngine sleepEngine = new SleepEngine(minFedPercent: 0.5f, fatigueRegen: 1.3f, hitPointsChange: 0.25f, islandClockMultiplier: 4, canBeAttacked: false);
+                        SleepEngine sleepEngine = new SleepEngine(minFedPercent: 0.5f, fatigueRegen: 1.3f, hitPointsChange: 0.25f, islandClockMultiplier: 4, canBeAttacked: false, waitingAfterSleepPossible: true);
 
                         var buffList = new List<Buff> {
                             new Buff(type: BuffEngine.BuffType.MaxHP, value: 100f,sleepFramesNeededForActivation: 1 * 60 * 60, autoRemoveDelay: 5 * 60 * 60, increaseIDAtEveryUse: true),

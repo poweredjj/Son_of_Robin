@@ -1015,16 +1015,26 @@ namespace SonOfRobin
                 this.visualAid.Destroy();
                 this.visualAid = null;
 
-                var optionList = new List<object>();
+                if (this.sleepEngine.waitingAfterSleepPossible)
+                {
+                    var optionList = new List<object>();
 
-                optionList.Add(new Dictionary<string, object> { { "label", "go out" }, { "taskName", Scheduler.TaskName.ForceWakeUp }, { "executeHelper", this } });
+                    optionList.Add(new Dictionary<string, object> { { "label", "go out" }, { "taskName", Scheduler.TaskName.ForceWakeUp }, { "executeHelper", this } });
 
-                if (this.world.islandClock.CurrentPartOfDay == IslandClock.PartOfDay.Night) optionList.Add(new Dictionary<string, object> { { "label", "wait until morning" }, { "taskName", Scheduler.TaskName.WaitUntilMorning }, { "executeHelper", this } });
-                optionList.Add(new Dictionary<string, object> { { "label", "wait indefinitely" }, { "taskName", Scheduler.TaskName.Empty }, { "executeHelper", null } });
+                    if (this.world.islandClock.CurrentPartOfDay == IslandClock.PartOfDay.Night) optionList.Add(new Dictionary<string, object> { { "label", "wait until morning" }, { "taskName", Scheduler.TaskName.WaitUntilMorning }, { "executeHelper", this } });
 
-                var confirmationData = new Dictionary<string, Object> { { "blocksUpdatesBelow", true }, { "question", "You are fully rested." }, { "customOptionList", optionList } };
+                    optionList.Add(new Dictionary<string, object> { { "label", "wait indefinitely" }, { "taskName", Scheduler.TaskName.Empty }, { "executeHelper", null } });
 
-                new Scheduler.Task(taskName: Scheduler.TaskName.OpenConfirmationMenu, executeHelper: confirmationData);
+                    var confirmationData = new Dictionary<string, Object> { { "blocksUpdatesBelow", true }, { "question", "You are fully rested." }, { "customOptionList", optionList } };
+
+                    new Scheduler.Task(taskName: Scheduler.TaskName.OpenConfirmationMenu, executeHelper: confirmationData);
+                }
+                else
+                {
+                    this.WakeUp();
+
+                    new TextWindow(text: "You are fully rested.", textColor: Color.White, bgColor: Color.Green, useTransition: true, animate: true, blocksUpdatesBelow: true);
+                }
 
                 return;
             }
