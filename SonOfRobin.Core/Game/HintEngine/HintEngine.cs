@@ -13,7 +13,7 @@ namespace SonOfRobin
         private const int hintDelay = 1 * 60 * 60; // 1 * 60 * 60
         public const int blockInputDuration = 80;
 
-        private static readonly List<Type> typesThatIgnoreShowHintSetting = new List<Type> { Type.CineIntroduction, Type.CineSmallBase, Type.VeryTired, Type.Starving, Type.BrokenItem, Type.BurntOutTorch, Type.Lava, Type.Lightning, Type.CantUseToolsInWater, Type.TooDarkToUseTools };
+        private static readonly List<Type> typesThatIgnoreShowHintSetting = new List<Type> { Type.CineIntroduction, Type.CineSmallBase, Type.VeryTired, Type.Starving, Type.BrokenItem, Type.BurntOutTorch, Type.Lava, Type.Lightning, Type.CantUseToolsInWater, Type.TooDarkToUseTools, Type.BadSleep };
 
         public List<Type> shownGeneralHints = new List<Type> { };
         public List<PieceHint.Type> shownPieceHints = new List<PieceHint.Type> { };

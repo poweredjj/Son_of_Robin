@@ -31,7 +31,7 @@ namespace SonOfRobin
             this.canBeAttacked = canBeAttacked;
             this.islandClockMultiplier = islandClockMultiplier;
             this.waitingAfterSleepPossible = waitingAfterSleepPossible;
-            this.wakeUpBuffs = wakeUpBuffs;
+            this.wakeUpBuffs = wakeUpBuffs == null ? new List<Buff>() : wakeUpBuffs;
         }
 
         public void Execute(Player player)

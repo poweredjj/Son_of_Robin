@@ -1105,9 +1105,12 @@ namespace SonOfRobin
 
             SonOfRobinGame.SmallProgressBar.TurnOff();
 
+            bool showBadSleepHint = false;
             foreach (Buff buff in this.sleepEngine.wakeUpBuffs)
             {
-                if (!buff.isPositive) this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.BadSleep, ignoreDelay: true);
+                if (!buff.isPositive &&
+                    !this.world.HintEngine.shownGeneralHints.Contains(HintEngine.Type.BadSleep) &&
+                    buff.HadEnoughSleepForBuff(this.world)) showBadSleepHint = true;
 
                 this.buffEngine.AddBuff(buff: buff, world: this.world);
             }
@@ -1128,6 +1131,8 @@ namespace SonOfRobin
             Scheduler.RemoveAllTasksOfName(Scheduler.TaskName.TempoFastForward); // to prevent fast forward, when waking up before this task was executed
 
             MessageLog.AddMessage(msgType: MsgType.Debug, message: "Waking up.");
+
+            if (showBadSleepHint) this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.BadSleep, ignoreDelay: true);
         }
 
         private Vector2 GetCenterOffset()
