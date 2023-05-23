@@ -353,16 +353,19 @@ namespace SonOfRobin
 
                 if (craftedPieces != null)
                 {
-                    foreach (BoardPiece craftedPiece in craftedPieces)
+                    BoardPiece firstCraftedPiece = craftedPieces[0];
+                    var pieceType = firstCraftedPiece.GetType();
+
+                    if ((pieceType == typeof(Tool) || pieceType == typeof(Projectile)) &&
+                        world.random.Next(14 - ((world.Player.CraftLevel - 1) * 3)) == 0)
                     {
-                        if ((craftedPiece.GetType() == typeof(Tool) || craftedPiece.GetType() == typeof(Projectile)) &&
-                            world.random.Next(14 - ((world.Player.CraftLevel - 1) * 3)) == 0)
+                        int bonusHitPoints = world.random.Next((int)(firstCraftedPiece.maxHitPoints * 0.2f), (int)(firstCraftedPiece.maxHitPoints * 0.7f));
+
+                        taskChain.Add(new HintMessage(text: $"| {Helpers.FirstCharToUpperCase(firstCraftedPiece.readableName)}\n| +{bonusHitPoints} bonus hit points!\n| {firstCraftedPiece.maxHitPoints} | {firstCraftedPiece.maxHitPoints + bonusHitPoints}", boxType: HintMessage.BoxType.GreenBox, delay: 0, blockInput: false, useTransition: true,
+                            imageList: new List<Texture2D> { firstCraftedPiece.sprite.frame.texture, TextureBank.GetTexture("simple_icons/arrow_up"), TextureBank.GetTexture("simple_icons/heart"), TextureBank.GetTexture("simple_icons/arrow_right") }, startingSound: SoundData.Name.Ding1).ConvertToTask());
+
+                        foreach (BoardPiece craftedPiece in craftedPieces)
                         {
-                            int bonusHitPoints = world.random.Next((int)(craftedPiece.maxHitPoints * 0.2f), (int)(craftedPiece.maxHitPoints * 0.7f));
-
-                            taskChain.Add(new HintMessage(text: $"| {Helpers.FirstCharToUpperCase(craftedPiece.readableName)}\n| +{bonusHitPoints} bonus hit points!\n| {craftedPiece.maxHitPoints} | {craftedPiece.maxHitPoints + bonusHitPoints}", boxType: HintMessage.BoxType.GreenBox, delay: 0, blockInput: false, useTransition: true,
-                                imageList: new List<Texture2D> { craftedPiece.sprite.frame.texture, TextureBank.GetTexture("simple_icons/arrow_up"), TextureBank.GetTexture("simple_icons/heart"), TextureBank.GetTexture("simple_icons/arrow_right") }, startingSound: SoundData.Name.Ding1).ConvertToTask());
-
                             craftedPiece.maxHitPoints += bonusHitPoints;
                             craftedPiece.hitPoints = craftedPiece.maxHitPoints;
                         }
