@@ -540,7 +540,6 @@ namespace SonOfRobin
         {
             var prefsData = new Dictionary<string, Object> { };
 
-            prefsData["debugMode"] = debugMode;
             prefsData["customizeWorld"] = customizeWorld;
             prefsData["newWorldResDivider"] = newWorldResDivider;
             prefsData["selectedWorldSize"] = SelectedWorldSize;
@@ -607,7 +606,6 @@ namespace SonOfRobin
             {
                 try
                 {
-                    debugMode = (bool)prefsData["debugMode"];
                     CustomizeWorld = (bool)prefsData["customizeWorld"];
                     SelectedWorldSize = (WorldSize)(Int64)prefsData["selectedWorldSize"];
                     newWorldResDivider = (int)(Int64)prefsData["newWorldResDivider"];
