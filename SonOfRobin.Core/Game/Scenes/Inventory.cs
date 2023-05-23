@@ -344,6 +344,8 @@ namespace SonOfRobin
             var extInfoTextList = new List<string>();
             var extInfoImageList = new List<Texture2D>();
 
+            PieceInfo.Info pieceInfo = PieceInfo.GetInfo(selectedPiece.name);
+
             if (selectedPiece.toolbarTask == Scheduler.TaskName.GetEaten)
             {
                 float fedPercent = (float)Math.Round(this.piece.world.Player.ConvertMassToFedPercent(selectedPiece.Mass) * 100, 2);
@@ -356,15 +358,18 @@ namespace SonOfRobin
             {
                 extInfoImageList.Add(TextureBank.GetTexture("simple_icons/heart"));
 
-                if (PieceInfo.GetInfo(selectedPiece.name).indestructibleTool)
+                if (PieceInfo.GetInfo(selectedPiece.name).toolIndestructible)
                 {
                     extInfoTextList.Add($"|  |");
                     extInfoImageList.Add(TextureBank.GetTexture("simple_icons/infinity"));
                 }
-                else
-                {
-                    extInfoTextList.Add($"| { Math.Round(selectedPiece.hitPoints)}/{Math.Round(selectedPiece.maxHitPoints) }");
-                }
+                else extInfoTextList.Add($"| { Math.Round(selectedPiece.hitPoints)}/{Math.Round(selectedPiece.maxHitPoints) }");
+            }
+
+            if (pieceInfo.toolRange > 0)
+            {
+                extInfoTextList.Add($"| {pieceInfo.toolRange}");
+                extInfoImageList.Add(TextureBank.GetTexture("simple_icons/area"));
             }
 
             if (selectedPiece.stackSize > 1 && !slot.locked)

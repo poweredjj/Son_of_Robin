@@ -40,7 +40,8 @@ namespace SonOfRobin
             public readonly bool hasFruit;
             public readonly float massTakenMultiplier;
             public readonly float maxHitPoints;
-            public readonly bool indestructibleTool;
+            public readonly bool toolIndestructible;
+            public readonly int toolRange;
             public readonly float startHitPoints;
             public readonly BoardPiece.State initialActiveState;
             public readonly int strength;
@@ -98,13 +99,15 @@ namespace SonOfRobin
                 }
 
                 this.shootsProjectile = false;
-                this.indestructibleTool = false;
+                this.toolIndestructible = false;
+                this.toolRange = 0;
                 if (piece.GetType() == typeof(Tool))
                 {
                     Tool tool = (Tool)piece;
                     this.shootsProjectile = tool.shootsProjectile;
                     this.strengthMultiplierByCategory = tool.multiplierByCategory;
-                    this.indestructibleTool = tool.indestructible;
+                    this.toolIndestructible = tool.indestructible;
+                    this.toolRange = tool.range;
                 }
 
                 if (piece.GetType() == typeof(Projectile))

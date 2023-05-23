@@ -205,15 +205,18 @@ namespace SonOfRobin
             {
                 extInfoImageList.Add(TextureBank.GetTexture("simple_icons/heart"));
 
-                if (pieceInfo.indestructibleTool)
+                if (pieceInfo.toolIndestructible)
                 {
                     extInfoTextList.Add($"|  |");
                     extInfoImageList.Add(TextureBank.GetTexture("simple_icons/infinity"));
                 }
-                else
-                {
-                    extInfoTextList.Add($"| {Math.Round(pieceInfo.maxHitPoints)}");
-                }
+                else extInfoTextList.Add($"| {Math.Round(pieceInfo.maxHitPoints)}");
+            }
+
+            if (pieceInfo.toolRange > 0)
+            {
+                extInfoTextList.Add($"| {pieceInfo.toolRange}");
+                extInfoImageList.Add(TextureBank.GetTexture("simple_icons/area"));
             }
 
             if (pieceInfo.cookerFoodMassMultiplier > 0)
