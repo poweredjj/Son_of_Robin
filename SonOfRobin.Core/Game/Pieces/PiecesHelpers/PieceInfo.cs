@@ -110,6 +110,13 @@ namespace SonOfRobin
                     this.toolRange = tool.range;
                 }
 
+                if (piece.GetType() == typeof(Shelter))
+                {
+                    Shelter shelter = (Shelter)piece;
+                    SleepEngine sleepEngine = shelter.sleepEngine;
+                    this.buffList.AddRange(sleepEngine.wakeUpBuffs);
+                }
+
                 if (piece.GetType() == typeof(Projectile))
                 {
                     // "emulating" tool multiplier list
