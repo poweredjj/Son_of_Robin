@@ -655,11 +655,14 @@ namespace SonOfRobin
                                 Craft.Recipe recipe = Craft.GetRecipe(name);
                                 if (recipe != null)
                                 {
-                                    foreach (PieceTemplate.Name ingredientName in recipe.ingredients.Keys)
+                                    foreach (var kvp in recipe.ingredients)
                                     {
-                                        if (!piecesForInventoryWithCount.ContainsKey(ingredientName))
+                                        PieceTemplate.Name ingredientName = kvp.Key;
+                                        int ingredientCount = kvp.Value;
+
+                                        if (!piecesForInventoryWithCount.ContainsKey(ingredientName) || piecesForInventoryWithCount[ingredientName] < ingredientCount)
                                         {
-                                            piecesForInventoryWithCount[ingredientName] = PieceInfo.GetInfo(ingredientName).stackSize * 1;
+                                            piecesForInventoryWithCount[ingredientName] = ingredientCount;
                                         }
                                     }
                                 }
