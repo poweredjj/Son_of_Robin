@@ -8,7 +8,7 @@ namespace SonOfRobin
     public class HintEngine
     {
         public enum Type
-        { Empty, Hungry, VeryHungry, Starving, Tired, VeryTired, CantUseToolsInWater, SmallInventory, MapNegative, Lava, BreakingItem, BrokenItem, BurntOutTorch, CineIntroduction, CineSmallBase, AnimalScaredOfFire, AnimalCounters, ZoomOutLocked, Lightning, TooDarkToUseTools };
+        { Empty, Hungry, VeryHungry, Starving, Tired, VeryTired, CantUseToolsInWater, SmallInventory, MapNegative, Lava, BreakingItem, BrokenItem, BurntOutTorch, CineIntroduction, CineSmallBase, AnimalScaredOfFire, AnimalCounters, ZoomOutLocked, Lightning, TooDarkToUseTools, BadSleep };
 
         private const int hintDelay = 1 * 60 * 60; // 1 * 60 * 60
         public const int blockInputDuration = 80;
@@ -172,6 +172,16 @@ namespace SonOfRobin
                         // no Disable(), because this hint should be shown every time
                         ShowMessageDuringPause(new List<HintMessage> {
                             new HintMessage(text: $"It's too dark to use my | {text}.", blockInput: true, imageList: new List<Texture2D> { texture }),
+                        });
+                        break;
+                    }
+
+                case Type.BadSleep:
+                    {
+                        this.Disable(type: type, delay: 0);
+
+                        ShowMessageDuringPause(new List<HintMessage> {
+                            new HintMessage(text: "Sleeping like this was really uncomfortable.\nI should build a | better place to sleep...", blockInput: true, imageList: new List<Texture2D> { PieceInfo.GetInfo(PieceTemplate.Name.TentMedium).texture }),
                         });
                         break;
                     }

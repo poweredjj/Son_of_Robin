@@ -1107,6 +1107,8 @@ namespace SonOfRobin
 
             foreach (Buff buff in this.sleepEngine.wakeUpBuffs)
             {
+                if (!buff.isPositive) this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.BadSleep, ignoreDelay: true);
+
                 this.buffEngine.AddBuff(buff: buff, world: this.world);
             }
 

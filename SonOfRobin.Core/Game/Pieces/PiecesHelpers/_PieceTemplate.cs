@@ -2461,8 +2461,8 @@ namespace SonOfRobin
                             { Terrain.Name.Height, new AllowedRange(min: Terrain.waterLevelMax, max: Terrain.volcanoEdgeMin) }});
 
                         var wakeUpBuffs = new List<Buff> {
-                            new Buff(type: BuffEngine.BuffType.MaxHP, value: -50f, sleepMinutesNeededForActivation: (int)IslandClock.ConvertUpdatesCountToTimeSpan(1 * 60 * 60).TotalMinutes, autoRemoveDelay: 5 * 60 * 60, increaseIDAtEveryUse: true),
-                            new Buff(type: BuffEngine.BuffType.MaxStamina, value: -50f, sleepMinutesNeededForActivation: (int)IslandClock.ConvertUpdatesCountToTimeSpan(1 * 60 * 60).TotalMinutes, autoRemoveDelay: 5 * 60 * 60, increaseIDAtEveryUse: true)};
+                            new Buff(type: BuffEngine.BuffType.MaxHP, value: -50f, sleepMinutesNeededForActivation: 90, autoRemoveDelay: 5 * 60 * 60, increaseIDAtEveryUse: true),
+                            new Buff(type: BuffEngine.BuffType.MaxStamina, value: -50f, sleepMinutesNeededForActivation: 90, autoRemoveDelay: 5 * 60 * 60, increaseIDAtEveryUse: true)};
 
                         SleepEngine sleepEngine = new SleepEngine(minFedPercent: 0.2f, fatigueRegen: 0.56f, hitPointsChange: 0.05f, islandClockMultiplier: 3, canBeAttacked: false, waitingAfterSleepPossible: false, wakeUpBuffs: wakeUpBuffs);
 
@@ -2476,7 +2476,7 @@ namespace SonOfRobin
                             { Terrain.Name.Height, new AllowedRange(min: Terrain.waterLevelMax, max: Terrain.volcanoEdgeMin) }});
 
                         var wakeUpBuffs = new List<Buff> {
-                            new Buff(type: BuffEngine.BuffType.MaxHP, value: 100f, sleepMinutesNeededForActivation: (int)IslandClock.ConvertUpdatesCountToTimeSpan(1 * 60 * 60).TotalMinutes, autoRemoveDelay: 5 * 60 * 60, increaseIDAtEveryUse: true)};
+                            new Buff(type: BuffEngine.BuffType.MaxHP, value: 100f, sleepMinutesNeededForActivation: 90, autoRemoveDelay: 5 * 60 * 60, increaseIDAtEveryUse: true)};
 
                         SleepEngine sleepEngine = new SleepEngine(minFedPercent: 0.3f, fatigueRegen: 0.8f, hitPointsChange: 0.1f, islandClockMultiplier: 4, canBeAttacked: false, waitingAfterSleepPossible: true, wakeUpBuffs: wakeUpBuffs);
 
@@ -2490,8 +2490,8 @@ namespace SonOfRobin
                             { Terrain.Name.Height, new AllowedRange(min: Terrain.waterLevelMax, max: Terrain.volcanoEdgeMin) }});
 
                         var wakeUpBuffs = new List<Buff> {
-                            new Buff(type: BuffEngine.BuffType.MaxHP, value: 100f, sleepMinutesNeededForActivation: (int)IslandClock.ConvertUpdatesCountToTimeSpan(1 * 60 * 60).TotalMinutes, autoRemoveDelay: 5 * 60 * 60, increaseIDAtEveryUse: true),
-                            new Buff(type: BuffEngine.BuffType.Strength, value: 1, sleepMinutesNeededForActivation: (int)IslandClock.ConvertUpdatesCountToTimeSpan(1 * 60 * 60).TotalMinutes, autoRemoveDelay: 5 * 60 * 60, increaseIDAtEveryUse: true)};
+                            new Buff(type: BuffEngine.BuffType.MaxHP, value: 100f, sleepMinutesNeededForActivation: 90, autoRemoveDelay: 5 * 60 * 60, increaseIDAtEveryUse: true),
+                            new Buff(type: BuffEngine.BuffType.Strength, value: 1, sleepMinutesNeededForActivation: 90, autoRemoveDelay: 5 * 60 * 60, increaseIDAtEveryUse: true)};
 
                         SleepEngine sleepEngine = new SleepEngine(minFedPercent: 0.5f, fatigueRegen: 1.3f, hitPointsChange: 0.25f, islandClockMultiplier: 4, canBeAttacked: false, waitingAfterSleepPossible: true, wakeUpBuffs: wakeUpBuffs);
 
