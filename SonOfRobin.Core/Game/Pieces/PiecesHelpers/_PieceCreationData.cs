@@ -23,7 +23,7 @@ namespace SonOfRobin
         {
             var dataList = new List<PieceCreationData>
             {
-                new PieceCreationData(name: PieceTemplate.Name.GrassRegular, multiplier: 2.0f, maxAmount: 1000),
+                new PieceCreationData(name: PieceTemplate.Name.GrassRegular, multiplier: 1.7f, maxAmount: 500),
                 new PieceCreationData(name: PieceTemplate.Name.GrassGlow, multiplier: 0.1f, maxAmount: 40),
                 new PieceCreationData(name: PieceTemplate.Name.GrassDesert, multiplier: 2.0f),
                 new PieceCreationData(name: PieceTemplate.Name.PlantPoison, multiplier: 1.0f),
@@ -39,9 +39,9 @@ namespace SonOfRobin
                 new PieceCreationData(name: PieceTemplate.Name.AppleTree, multiplier: 0.03f),
                 new PieceCreationData(name: PieceTemplate.Name.CherryTree, multiplier: 0.03f),
                 new PieceCreationData(name: PieceTemplate.Name.BananaTree, multiplier: 0.03f),
-                new PieceCreationData(name: PieceTemplate.Name.TomatoPlant, multiplier: 0.01f),
-                new PieceCreationData(name: PieceTemplate.Name.CarrotPlant, multiplier: 0.01f),
-                new PieceCreationData(name: PieceTemplate.Name.CoffeeShrub, multiplier: 0.01f),
+                new PieceCreationData(name: PieceTemplate.Name.TomatoPlant, multiplier: 0.005f, maxAmount: 100),
+                new PieceCreationData(name: PieceTemplate.Name.CarrotPlant, multiplier: 0.005f, maxAmount: 100),
+                new PieceCreationData(name: PieceTemplate.Name.CoffeeShrub, multiplier: 0.005f, maxAmount: 30),
                 new PieceCreationData(name: PieceTemplate.Name.PalmTree, multiplier: 1.0f),
                 new PieceCreationData(name: PieceTemplate.Name.Cactus, multiplier: 0.2f),
 
@@ -52,8 +52,6 @@ namespace SonOfRobin
                 new PieceCreationData(name: PieceTemplate.Name.IronDeposit, multiplier: 0.02f, maxAmount: 35),
                 new PieceCreationData(name: PieceTemplate.Name.CoalDeposit, multiplier: 0.02f, maxAmount: 35),
                 new PieceCreationData(name: PieceTemplate.Name.CrystalDepositBig, multiplier: 0.01f, maxAmount: 10),
-
-                // new PieceCreationData(name: PieceTemplate.Name.Shell, multiplier: 1f, maxAmount: 25), // turned off until it will be used in some recipe
                 new PieceCreationData(name: PieceTemplate.Name.Clam, multiplier: 1f, maxAmount: 25),
                 new PieceCreationData(name: PieceTemplate.Name.CrateRegular, multiplier: 0.1f, maxAmount: 2),
 
