@@ -2060,7 +2060,7 @@ namespace SonOfRobin
                         soundPack.AddAction(action: PieceSoundPack.Action.Eat, sound: new Sound(nameList: new List<SoundData.Name> { SoundData.Name.EatHerbivore1, SoundData.Name.EatHerbivore2, SoundData.Name.EatHerbivore3, SoundData.Name.EatHerbivore4, SoundData.Name.EatHerbivore5 }, maxPitchVariation: 0.25f, cooldown: 35));
 
                         return new Animal(name: templateName, world: world, id: id, maleAnimPkgName: maleAnimPkgName, femaleAnimPkgName: femaleAnimPkgName, allowedTerrain: allowedTerrain, speed: 1.5f,
-                       minDistance: 5, maxDistance: 30, maxHitPoints: 150, mass: 10, maxMass: 1200, massBurnedMultiplier: 1, awareness: 100, matureAge: 1200, maxAge: 30000, pregnancyDuration: 2000, maxChildren: 8, maxStamina: 200, sightRange: 200, eats: new List<Name> { Name.WaterLily, Name.Rushes }, strength: 30, maxMassForSize: maxMassForSize, generation: generation, yield: yield, readableName: "frog", description: "A water animal.", soundPack: soundPack, fireAffinity: 0.15f);
+                       minDistance: 5, maxDistance: 30, maxHitPoints: 150, mass: 10, maxMass: 1200, massBurnedMultiplier: 1, awareness: 100, matureAge: 1200, maxAge: 30000, pregnancyDuration: 2000, maxChildren: 8, maxStamina: 200, sightRange: 250, eats: new List<Name> { Name.WaterLily, Name.Rushes }, strength: 30, maxMassForSize: maxMassForSize, generation: generation, yield: yield, readableName: "frog", description: "A water animal.", soundPack: soundPack, fireAffinity: 0.15f);
                     }
 
                 case Name.KnifeSimple:

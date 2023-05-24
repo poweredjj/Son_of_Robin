@@ -250,7 +250,11 @@ namespace SonOfRobin
             // looking for mating partner
 
             BoardPiece matingPartner = null;
-            if (this.currentAge >= matureAge && this.pregnancyMass == 0 && enemyPiece == null)
+
+            if (this.currentAge >= matureAge &&
+                this.pregnancyMass == 0 &&
+                enemyPiece == null &&
+                seenPieces.Where(piece => piece.name == this.name).Count() <= 3) // will not mate in a crowded area
             {
                 var matingPartners = this.AssessAsMatingPartners(seenPieces);
                 if (matingPartners.Any())
@@ -723,7 +727,7 @@ namespace SonOfRobin
                 }
             }
 
-            if (childrenBorn > 0) MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{this.name} has been born ({childrenBorn}).");
+            if (childrenBorn > 0) MessageLog.AddMessage(msgType: MsgType.User, message: $"{this.name} has been born ({childrenBorn}).");
 
             if (this.pregnancyMass > this.startingMass)
             {
