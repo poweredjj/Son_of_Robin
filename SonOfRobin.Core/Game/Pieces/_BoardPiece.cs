@@ -103,7 +103,6 @@ namespace SonOfRobin
         public int currentAge;
         public float bioWear;
         public float efficiency;
-        public float hitPoints;
         public int strength;
         public int showStatBarsTillFrame;
         public float maxHitPoints;
@@ -131,6 +130,7 @@ namespace SonOfRobin
         public bool canBeHit;
         public bool isTemporaryDecoration;
         private readonly bool canShrink;
+        private float hitPoints;
 
         public BoardPiece(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, int[] maxMassForSize, string readableName, string description, Category category, State activeState, float fireAffinity,
             byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, bool blocksPlantGrowth = false, bool visible = true, bool ignoresCollisions = false, int destructionDelay = 0, int maxAge = 0, bool floatsOnWater = false, int generation = 0, int mass = 1, int staysAfterDeath = 800, float maxHitPoints = 1, byte stackSize = 1, Scheduler.TaskName boardTask = Scheduler.TaskName.Empty, Scheduler.TaskName toolbarTask = Scheduler.TaskName.Empty, bool canBePickedUp = false, Yield yield = null, Yield appearDebris = null, bool indestructible = false, bool rotatesWhenDropped = false, bool movesWhenDropped = true, bool serialize = true, List<Buff> buffList = null, AllowedDensity allowedDensity = null, int strength = 0, LightEngine lightEngine = null, int minDistance = 0, int maxDistance = 100, PieceSoundPack soundPack = null, bool isAffectedByWind = true, bool canShrink = false)
@@ -151,7 +151,7 @@ namespace SonOfRobin
             this.lastFrameSMProcessed = 0;
             this.indestructible = indestructible;
             this.maxHitPoints = maxHitPoints;
-            this.hitPoints = maxHitPoints;
+            this.HitPoints = maxHitPoints;
             this.showStatBarsTillFrame = 0;
             this.speed = speed;
             this.strength = strength;
@@ -193,6 +193,12 @@ namespace SonOfRobin
 
         public virtual bool ShowStatBars
         { get { return this.world.CurrentUpdate < this.showStatBarsTillFrame; } }
+
+        public float HitPoints
+        {
+            get { return this.hitPoints; }
+            set { this.hitPoints = Math.Min(Math.Max(value, 0), this.maxHitPoints); }
+        }
 
         public bool AreEnemiesNearby
         {
@@ -344,7 +350,7 @@ namespace SonOfRobin
         }
 
         public float HitPointsPercent
-        { get { return this.hitPoints / this.maxHitPoints; } }
+        { get { return this.HitPoints / this.maxHitPoints; } }
 
         private byte SpriteSize
         {
@@ -415,7 +421,7 @@ namespace SonOfRobin
             if (pieceInfo.initialActiveState != this.activeState) pieceData["base_activeState"] = this.activeState;
             if (this.PieceStorage != null) pieceData["base_pieceStorage"] = this.PieceStorage.Serialize();
             if (pieceInfo.maxHitPoints != this.maxHitPoints) pieceData["base_maxHitPoints"] = this.maxHitPoints;
-            if (pieceInfo.startHitPoints != this.hitPoints) pieceData["base_hitPoints"] = this.hitPoints;
+            if (pieceInfo.startHitPoints != this.HitPoints) pieceData["base_hitPoints"] = this.HitPoints;
             if (pieceInfo.strength != this.strength) pieceData["base_strength"] = this.strength;
             if (pieceInfo.speed != this.speed) pieceData["base_speed"] = this.speed;
             if (this.burnLevel > 0) pieceData["base_burnLevel"] = this.burnLevel;
@@ -433,7 +439,7 @@ namespace SonOfRobin
         public virtual void Deserialize(Dictionary<string, Object> pieceData)
         {
             if (pieceData.ContainsKey("base_mass")) this.mass = (float)(double)pieceData["base_mass"];
-            if (pieceData.ContainsKey("base_hitPoints")) this.hitPoints = (float)(double)pieceData["base_hitPoints"];
+            if (pieceData.ContainsKey("base_hitPoints")) this.HitPoints = (float)(double)pieceData["base_hitPoints"];
             if (pieceData.ContainsKey("base_speed")) this.speed = (float)(double)pieceData["base_speed"];
             if (pieceData.ContainsKey("base_strength")) this.strength = (int)(Int64)pieceData["base_strength"];
             if (pieceData.ContainsKey("base_maxHitPoints")) this.maxHitPoints = (float)(double)pieceData["base_maxHitPoints"];
@@ -459,7 +465,7 @@ namespace SonOfRobin
 
         public virtual void DrawStatBar()
         {
-            new StatBar(label: "", value: (int)this.hitPoints, valueMax: (int)this.maxHitPoints, colorMin: new Color(255, 0, 0), colorMax: new Color(0, 255, 0), posX: this.sprite.gfxRect.Center.X, posY: this.sprite.gfxRect.Bottom, ignoreIfAtMax: true, texture: AnimData.framesForPkgs[AnimData.PkgName.Heart].texture);
+            new StatBar(label: "", value: (int)this.HitPoints, valueMax: (int)this.maxHitPoints, colorMin: new Color(255, 0, 0), colorMax: new Color(0, 255, 0), posX: this.sprite.gfxRect.Center.X, posY: this.sprite.gfxRect.Bottom, ignoreIfAtMax: true, texture: AnimData.framesForPkgs[AnimData.PkgName.Heart].texture);
 
             if (Preferences.debugShowStatBars && this.BurnLevel > 0) new StatBar(label: "", value: (int)(this.BurnLevel * 100f), valueMax: 100, colorMin: new Color(255, 0, 0), colorMax: new Color(0, 255, 0), posX: this.sprite.gfxRect.Center.X, posY: this.sprite.gfxRect.Bottom, ignoreIfAtMax: true, texture: AnimData.framesForPkgs[AnimData.PkgName.Flame].texture);
 

@@ -230,11 +230,8 @@ namespace SonOfRobin
 
                 case BuffType.HP:
                     {
-                        if (add) this.piece.hitPoints += (float)buff.value;
-                        else this.piece.hitPoints -= (float)buff.value;
-
-                        this.piece.hitPoints = Math.Min(this.piece.hitPoints, this.piece.maxHitPoints);
-                        this.piece.hitPoints = Math.Max(this.piece.hitPoints, 0);
+                        if (add) this.piece.HitPoints += (float)buff.value;
+                        else this.piece.HitPoints -= (float)buff.value;
 
                         return true;
                     }
@@ -250,7 +247,7 @@ namespace SonOfRobin
                         }
                         else this.piece.maxHitPoints -= (float)buff.value;
 
-                        this.piece.hitPoints = Math.Min(this.piece.hitPoints, this.piece.maxHitPoints);
+                        this.piece.HitPoints = Math.Min(this.piece.HitPoints, this.piece.maxHitPoints);
 
                         return true;
                     }

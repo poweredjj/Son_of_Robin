@@ -152,11 +152,11 @@ namespace SonOfRobin
         {
             if (this.locked) return;
 
-            var brokenPieces = this.pieceList.Where(piece => piece.hitPoints <= 0).ToList();
+            var brokenPieces = this.pieceList.Where(piece => piece.HitPoints <= 0).ToList();
             foreach (BoardPiece piece in brokenPieces)
             { this.AddRemoveBuffs(piece: piece, add: false); }
 
-            this.pieceList = this.pieceList.Where(piece => piece.hitPoints > 0).ToList();
+            this.pieceList = this.pieceList.Where(piece => piece.HitPoints > 0).ToList();
         }
 
         public void DestroyPieceAndReplaceWithAnother(BoardPiece piece)
@@ -223,9 +223,9 @@ namespace SonOfRobin
             sprite.UpdateAnimation();
             sprite.DrawAndKeepInRectBounds(destRect: destRect, opacity: opacity);
 
-            if (piece.hitPoints < piece.maxHitPoints)
+            if (piece.HitPoints < piece.maxHitPoints)
             {
-                new StatBar(label: "", value: (int)piece.hitPoints, valueMax: (int)piece.maxHitPoints, colorMin: new Color(255, 0, 0), colorMax: new Color(0, 255, 0),
+                new StatBar(label: "", value: (int)piece.HitPoints, valueMax: (int)piece.maxHitPoints, colorMin: new Color(255, 0, 0), colorMax: new Color(0, 255, 0),
                     posX: destRect.Center.X, posY: destRect.Y + (int)(destRect.Width * 0.8f), width: (int)(destRect.Width * 0.8f), height: (int)(destRect.Height * 0.1f));
 
                 StatBar.FinishThisBatch();

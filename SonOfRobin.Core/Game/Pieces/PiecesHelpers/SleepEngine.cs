@@ -39,9 +39,8 @@ namespace SonOfRobin
             player.Fatigue -= this.fatigueRegen;
             if (player.FedPercent > this.minFedPercent) player.ExpendEnergy(energyAmount: 0.1f, addFatigue: false);
 
-            player.hitPoints += this.hitPointsChange;
-            if (this.hitPointsChange > 0) player.hitPoints = Math.Min(player.hitPoints, player.maxHitPoints);
-            else player.hitPoints = Math.Max(player.hitPoints, player.maxHitPoints * 0.15f);
+            player.HitPoints += this.hitPointsChange;
+            if (this.hitPointsChange < 0) player.HitPoints = Math.Max(player.HitPoints, player.maxHitPoints * 0.15f);
         }
     }
 }

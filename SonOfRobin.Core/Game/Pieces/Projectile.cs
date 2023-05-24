@@ -90,9 +90,9 @@ namespace SonOfRobin
 
                     if (!this.indestructible && !this.isBurning) // buring arrows should not be destroyed before exploding
                     {
-                        this.hitPoints = Math.Max(0, this.hitPoints - this.world.random.Next(10, 35));
+                        this.HitPoints = Math.Max(0, this.HitPoints - this.world.random.Next(10, 35));
                         this.showStatBarsTillFrame = world.CurrentUpdate + 1200;
-                        if (this.hitPoints == 0)
+                        if (this.HitPoints == 0)
                         {
                             this.Destroy();
                             return true;
@@ -113,9 +113,9 @@ namespace SonOfRobin
                 {
                     if (!this.indestructible && !this.isBurning) // buring arrows should not be destroyed before exploding
                     {
-                        this.hitPoints = Math.Max(0, this.hitPoints - this.world.random.Next(0, 15));
+                        this.HitPoints = Math.Max(0, this.HitPoints - this.world.random.Next(0, 15));
                         this.showStatBarsTillFrame = world.CurrentUpdate + 1200;
-                        if (this.hitPoints == 0)
+                        if (this.HitPoints == 0)
                         {
                             PieceTemplate.CreateAndPlaceOnBoard(world: world, position: this.sprite.position, templateName: PieceTemplate.Name.Attack);
                             this.Destroy();

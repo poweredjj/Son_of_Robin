@@ -363,7 +363,7 @@ namespace SonOfRobin
                     extInfoTextList.Add($"|  |");
                     extInfoImageList.Add(TextureBank.GetTexture("simple_icons/infinity"));
                 }
-                else extInfoTextList.Add($"| { Math.Round(selectedPiece.hitPoints)}/{Math.Round(selectedPiece.maxHitPoints) }");
+                else extInfoTextList.Add($"| { Math.Round(selectedPiece.HitPoints)}/{Math.Round(selectedPiece.maxHitPoints) }");
             }
 
             if (pieceInfo.toolRange > 0)
@@ -1197,9 +1197,9 @@ namespace SonOfRobin
 
                 shownPiece.sprite.DrawAndKeepInRectBounds(destRect: shownPieceRect, opacity: viewParams.drawOpacity);
 
-                if (shownPiece.sprite.boardPiece.hitPoints < shownPiece.sprite.boardPiece.maxHitPoints)
+                if (shownPiece.sprite.boardPiece.HitPoints < shownPiece.sprite.boardPiece.maxHitPoints)
                 {
-                    new StatBar(label: "", value: (int)shownPiece.sprite.boardPiece.hitPoints, valueMax: (int)shownPiece.sprite.boardPiece.maxHitPoints, colorMin: new Color(255, 0, 0), colorMax: new Color(0, 255, 0),
+                    new StatBar(label: "", value: (int)shownPiece.sprite.boardPiece.HitPoints, valueMax: (int)shownPiece.sprite.boardPiece.maxHitPoints, colorMin: new Color(255, 0, 0), colorMax: new Color(0, 255, 0),
                         posX: shownPieceRect.Center.X, posY: shownPieceRect.Y + (int)(shownPieceRect.Width * 0.8f), width: (int)(shownPieceRect.Width * 0.8f), height: (int)(shownPieceRect.Height * 0.1f));
 
                     StatBar.FinishThisBatch();

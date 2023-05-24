@@ -1052,7 +1052,7 @@ namespace SonOfRobin
                 if (nonPlant.isPregnant && nonPlant.alive) nonPlant.pregnancyFramesLeft = Math.Max(nonPlant.pregnancyFramesLeft - 1, 0);
                 if (this.CurrentUpdate % 10 == 0) nonPlant.ExpendEnergy(1);
 
-                if (nonPlant.alive && (nonPlant.hitPoints <= 0 || nonPlant.efficiency == 0 || nonPlant.currentAge >= nonPlant.maxAge))
+                if (nonPlant.alive && (nonPlant.HitPoints <= 0 || nonPlant.efficiency == 0 || nonPlant.currentAge >= nonPlant.maxAge))
                 {
                     nonPlant.Kill();
                     return;
@@ -1061,7 +1061,7 @@ namespace SonOfRobin
             else if (piece.GetType() == typeof(Player))
             {
                 Player player = (Player)piece;
-                if (player.hitPoints <= 0 && player.alive)
+                if (player.HitPoints <= 0 && player.alive)
                 {
                     player.Kill();
                     return;

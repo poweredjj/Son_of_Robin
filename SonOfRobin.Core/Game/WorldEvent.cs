@@ -263,8 +263,8 @@ namespace SonOfRobin
 
                         // MessageLog.AddMessage(msgType: MsgType.User, message: $"{this.boardPiece.readableName} HP {this.boardPiece.hitPoints} - {damage}"); // for testing
 
-                        this.boardPiece.hitPoints = Math.Max(this.boardPiece.hitPoints - damage, 0);
-                        if (this.boardPiece.hitPoints <= 0)
+                        this.boardPiece.HitPoints = Math.Max(this.boardPiece.HitPoints - damage, 0);
+                        if (this.boardPiece.HitPoints <= 0)
                         {
                             world.HintEngine.ShowGeneralHint(type: HintEngine.Type.BurntOutTorch, ignoreDelay: true, text: portableLight.readableName, texture: portableLight.sprite.frame.texture);
                             MessageLog.AddMessage(msgType: MsgType.User, message: $"{Helpers.FirstCharToUpperCase(this.boardPiece.readableName)} has burnt out.", color: Color.White);
@@ -326,9 +326,9 @@ namespace SonOfRobin
 
                         int minValue = canKill ? 0 : 1;
 
-                        this.boardPiece.hitPoints = Math.Min(this.boardPiece.hitPoints + hpChange, this.boardPiece.maxHitPoints);
-                        this.boardPiece.hitPoints = Math.Max(this.boardPiece.hitPoints, minValue);
-                        if (this.boardPiece.hitPoints == 0)
+                        this.boardPiece.HitPoints += hpChange;
+                        this.boardPiece.HitPoints = Math.Max(this.boardPiece.HitPoints, minValue);
+                        if (this.boardPiece.HitPoints == 0)
                         {
                             this.boardPiece.Kill();
                             return;

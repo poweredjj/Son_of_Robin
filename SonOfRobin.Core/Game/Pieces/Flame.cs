@@ -101,7 +101,7 @@ namespace SonOfRobin
                     if (!heatedPiece.IsBurning) // getting damage before burning
                     {
                         float hitPointsToSubtract = baseHitPointsVal * distanceMultiplier;
-                        heatedPiece.hitPoints = Math.Max(heatedPiece.hitPoints - hitPointsToSubtract, 0);
+                        heatedPiece.HitPoints = Math.Max(heatedPiece.HitPoints - hitPointsToSubtract, 0);
 
                         if (hitPointsToSubtract > 0.1f && SonOfRobinGame.CurrentUpdate % 15 == 0 && this.world.random.Next(0, 4) == 0)
                         {
@@ -130,8 +130,9 @@ namespace SonOfRobin
                 // affecting burningPiece
 
                 float hitPointsToTake = this.burningPiece.GetType() == typeof(Player) ? 0.6f : Math.Max(0.05f, this.burningPiece.maxHitPoints / 700f);
+                this.burningPiece.HitPoints -= hitPointsToTake;
 
-                this.burningPiece.hitPoints = Math.Max(this.burningPiece.hitPoints - hitPointsToTake, 0);
+                if (this.burningPiece.sprite.blocksMovement) this.burningPiece.showStatBarsTillFrame = this.world.CurrentUpdate + 600;
 
                 if (this.burningPiece.IsAnimalOrPlayer && !this.burningPiece.soundPack.IsPlaying(PieceSoundPack.Action.Cry))
                     this.burningPiece.soundPack.Play(PieceSoundPack.Action.Cry);
@@ -148,7 +149,7 @@ namespace SonOfRobin
                 if (isRaining) this.Mass *= 0.985f;
                 else this.Mass += baseBurnVal;
 
-                if (this.burningPiece.hitPoints == 0)
+                if (this.burningPiece.HitPoints == 0)
                 {
                     bool isAnimal = this.burningPiece.GetType() == typeof(Animal);
 

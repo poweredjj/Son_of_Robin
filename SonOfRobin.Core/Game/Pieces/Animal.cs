@@ -108,7 +108,7 @@ namespace SonOfRobin
             int posX = this.sprite.gfxRect.Center.X;
             int posY = this.sprite.gfxRect.Bottom;
 
-            new StatBar(label: "hp", value: (int)this.hitPoints, valueMax: (int)this.maxHitPoints, colorMin: new Color(255, 0, 0), colorMax: new Color(0, 255, 0), posX: posX, posY: posY, texture: AnimData.framesForPkgs[AnimData.PkgName.Heart].texture);
+            new StatBar(label: "hp", value: (int)this.HitPoints, valueMax: (int)this.maxHitPoints, colorMin: new Color(255, 0, 0), colorMax: new Color(0, 255, 0), posX: posX, posY: posY, texture: AnimData.framesForPkgs[AnimData.PkgName.Heart].texture);
 
             if (Preferences.debugShowStatBars)
             {
@@ -134,7 +134,7 @@ namespace SonOfRobin
                 if (this.Mass >= this.startingMass * 2)
                 { this.Mass = Math.Max(this.Mass - energyAmount, this.startingMass); }
                 else
-                { this.hitPoints = Math.Max(this.hitPoints - 0.05f, 0); }
+                { this.HitPoints = Math.Max(this.HitPoints - 0.05f, 0); }
             }
 
             this.stamina = Math.Max(this.stamina - Math.Max((energyAmount / 2), 1), 0);
@@ -145,7 +145,7 @@ namespace SonOfRobin
             energyAmount *= this.efficiency;
             int massGained = Math.Max(Convert.ToInt32(energyAmount / 4), 1);
 
-            if (this.world.CurrentUpdate >= this.regenCooldown) this.hitPoints = Math.Min(this.hitPoints + (energyAmount / 3), this.maxHitPoints);
+            if (this.world.CurrentUpdate >= this.regenCooldown) this.HitPoints += energyAmount / 3;
             this.fedLevel = Math.Min(this.fedLevel + Convert.ToInt16(energyAmount * 2), this.maxFedLevel);
             this.stamina = Math.Min(this.stamina + 1, this.maxStamina);
 
@@ -270,7 +270,7 @@ namespace SonOfRobin
 
             DecisionEngine decisionEngine = new DecisionEngine();
             decisionEngine.AddChoice(action: DecisionEngine.Action.Flee, piece: enemyPiece, priority: 1.2f - ((float)enemyDistance / this.sightRange));
-            decisionEngine.AddChoice(action: DecisionEngine.Action.Eat, piece: foodPiece, priority: (this.hitPoints / this.maxHitPoints) > 0.3f ? 1.2f - this.FedPercentage : 1.5f);
+            decisionEngine.AddChoice(action: DecisionEngine.Action.Eat, piece: foodPiece, priority: this.HitPointsPercent > 0.3f ? 1.2f - this.FedPercentage : 1.5f);
             decisionEngine.AddChoice(action: DecisionEngine.Action.Mate, piece: matingPartner, priority: 1f);
             var bestChoice = decisionEngine.GetBestChoice();
 
@@ -559,8 +559,8 @@ namespace SonOfRobin
                 if (target.HitPointsPercent < 0.4f || world.random.Next(0, 2) == 0) target.soundPack.Play(PieceSoundPack.Action.Cry);
 
                 int attackStrength = Convert.ToInt32(this.world.random.Next((int)(this.strength * 0.75f), (int)(this.strength * 1.5f)) * this.efficiency);
-                this.target.hitPoints = Math.Max(0, this.target.hitPoints - attackStrength);
-                if (this.target.hitPoints <= 0 && this.target.IsAnimalOrPlayer) this.target.Kill();
+                this.target.HitPoints = Math.Max(0, this.target.HitPoints - attackStrength);
+                if (this.target.HitPoints <= 0 && this.target.IsAnimalOrPlayer) this.target.Kill();
 
                 Vector2 movement = (this.sprite.position - this.target.sprite.position) * -0.3f * attackStrength;
                 this.target.AddPassiveMovement(movement: Helpers.VectorAbsMax(vector: movement, maxVal: 400f));
@@ -574,7 +574,7 @@ namespace SonOfRobin
 
                     this.world.transManager.AddMultipleTransitions(outTrans: true, duration: this.world.random.Next(4, 10), playCount: -1, replaceBaseValue: false, stageTransform: Transition.Transform.Sinus, pingPongCycles: false, cycleMultiplier: 0.02f, paramsToChange: new Dictionary<string, float> { { "PosX", screenShake.X }, { "PosY", screenShake.Y } });
 
-                    if (this.target.hitPoints > 0) // red screen flash if player is still alive
+                    if (this.target.HitPoints > 0) // red screen flash if player is still alive
                     {
                         SolidColor redOverlay = new SolidColor(color: Color.DarkRed, viewOpacity: 0.0f);
                         redOverlay.transManager.AddTransition(new Transition(transManager: redOverlay.transManager, outTrans: true, duration: 20, playCount: 1, stageTransform: Transition.Transform.Sinus, baseParamName: "Opacity", targetVal: 0.5f, endRemoveScene: true));
@@ -801,8 +801,6 @@ namespace SonOfRobin
                 return;
             }
 
-            this.showStatBarsTillFrame = this.world.CurrentUpdate + 1200; // to show health
-
             if (!this.aiData.targetPosIsSet)
             {
                 int searchRange = 0;
@@ -837,7 +835,7 @@ namespace SonOfRobin
 
             // ExpendEnergy is not used, because it is a desperate life-saving measure for an animal
 
-            float runSpeed =  Math.Min(Math.Max(this.speed * 1.7f, 1), 2.5f); // should not exceed these bounds
+            float runSpeed = Math.Min(Math.Max(this.speed * 1.7f, 1), 2.5f); // should not exceed these bounds
             bool successfullWalking = this.GoOneStepTowardsGoal(goalPosition: this.aiData.TargetPos, splitXY: false, walkSpeed: runSpeed);
             if (!successfullWalking) this.aiData.Reset();
         }

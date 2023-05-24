@@ -50,8 +50,8 @@ namespace SonOfRobin
 
             if (!this.indestructible)
             {
-                this.hitPoints = Math.Max(0, this.hitPoints - this.world.random.Next(1, 5));
-                if (this.hitPoints == 0) this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.BrokenItem, ignoreDelay: true, text: this.readableName, texture: this.sprite.frame.texture);
+                this.HitPoints = Math.Max(0, this.HitPoints - this.world.random.Next(1, 5));
+                if (this.HitPoints == 0) this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.BrokenItem, ignoreDelay: true, text: this.readableName, texture: this.sprite.frame.texture);
             }
 
             float angle = this.world.Player.ShootingAngle;
@@ -194,11 +194,11 @@ namespace SonOfRobin
                 this.hitCooldown = this.world.CurrentUpdate + 30;
                 if (!this.indestructible)
                 {
-                    this.hitPoints -= 1;
-                    this.hitPoints = Math.Max(0, this.hitPoints);
+                    this.HitPoints -= 1;
+                    this.HitPoints = Math.Max(0, this.HitPoints);
 
-                    if (this.HitPointsPercent < 0.4f && this.hitPoints > 0) this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.BreakingItem, ignoreDelay: true, text: this.readableName, texture: this.sprite.frame.texture);
-                    if (this.hitPoints == 0) this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.BrokenItem, ignoreDelay: true, text: this.readableName, texture: this.sprite.frame.texture);
+                    if (this.HitPointsPercent < 0.4f && this.HitPoints > 0) this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.BreakingItem, ignoreDelay: true, text: this.readableName, texture: this.sprite.frame.texture);
+                    if (this.HitPoints == 0) this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.BrokenItem, ignoreDelay: true, text: this.readableName, texture: this.sprite.frame.texture);
                 }
             }
         }
@@ -215,7 +215,7 @@ namespace SonOfRobin
                 if (target.Mass < ((Plant)target).adultSizeMass) hitPower *= 3; // making the impression of the plant being weaker, without messing with its max HP
             }
 
-            target.hitPoints -= hitPower;
+            target.HitPoints -= hitPower;
             if (buffList != null)
             {
                 foreach (Buff buff in buffList)
@@ -227,7 +227,7 @@ namespace SonOfRobin
             if (target.yield != null && !target.IsBurning) target.yield.DropFirstPieces(hitPower: hitPower);
             if (target.GetType() == typeof(Animal) && world.random.Next(0, 2) == 0) PieceTemplate.CreateAndPlaceOnBoard(world: world, position: target.sprite.position, templateName: PieceTemplate.Name.BloodSplatter);
 
-            if (target.hitPoints <= 0 || (!target.alive && target.GetType() == typeof(Animal)))
+            if (target.HitPoints <= 0 || (!target.alive && target.GetType() == typeof(Animal)))
             {
                 target.world.Grid.RemoveFromGroup(sprite: target.sprite, groupName: Cell.Group.ColMovement); // to ensure proper yield placement
                 if (target.yield != null && target.exists && !target.IsBurning)

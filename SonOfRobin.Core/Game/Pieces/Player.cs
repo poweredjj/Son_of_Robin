@@ -528,7 +528,7 @@ namespace SonOfRobin
                 if (this.FedPercent < 0.2f) this.world.HintEngine.ShowGeneralHint(HintEngine.Type.VeryHungry);
                 if (this.FedPercent < 0.01f) this.world.HintEngine.ShowGeneralHint(HintEngine.Type.Starving);
             }
-            else this.hitPoints = Math.Max(this.hitPoints - 0.02f, 0);
+            else this.HitPoints = Math.Max(this.HitPoints - 0.02f, 0);
 
             if (addFatigue) this.Fatigue += 0.01f;
         }
@@ -887,7 +887,7 @@ namespace SonOfRobin
             if (isOnLava)
             {
                 this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.Lava, ignoreDelay: true);
-                this.hitPoints -= 0.5f;
+                this.HitPoints -= 0.5f;
                 this.BurnLevel += 0.12f;
                 this.soundPack.Play(PieceSoundPack.Action.StepLava);
             }
@@ -897,7 +897,7 @@ namespace SonOfRobin
             if (gotHitWithLightning)
             {
                 this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.Lightning, ignoreDelay: true);
-                this.hitPoints -= 80;
+                this.HitPoints -= 80;
                 Sound.QuickPlay(SoundData.Name.ElectricShock);
             }
 

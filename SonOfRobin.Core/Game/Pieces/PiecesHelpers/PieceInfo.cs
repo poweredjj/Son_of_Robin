@@ -66,7 +66,7 @@ namespace SonOfRobin
                 this.allowedTerrain = piece.sprite.allowedTerrain;
                 this.canBePickedUp = piece.canBePickedUp;
                 this.maxHitPoints = piece.maxHitPoints;
-                this.startHitPoints = piece.hitPoints;
+                this.startHitPoints = piece.HitPoints;
                 this.strength = piece.strength;
                 this.mass = piece.Mass;
                 this.speed = piece.speed;

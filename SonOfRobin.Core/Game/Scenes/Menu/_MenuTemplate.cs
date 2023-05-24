@@ -442,7 +442,7 @@ namespace SonOfRobin
                             textLines.Add($"| Stamina: {Math.Round(player.stamina)} / {Math.Round(player.maxStamina)}");
                             imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.Biceps].texture);
 
-                            textLines.Add($"| HP: {Math.Round(player.hitPoints)} / {Math.Round(player.maxHitPoints)}");
+                            textLines.Add($"| HP: {Math.Round(player.HitPoints)} / {Math.Round(player.maxHitPoints)}");
                             imageList.Add(AnimData.framesForPkgs[AnimData.PkgName.Heart].texture);
 
                             textLines.Add($"| Food: {Math.Round(player.FedPercent * 100)}%");

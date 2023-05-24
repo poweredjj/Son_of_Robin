@@ -367,7 +367,7 @@ namespace SonOfRobin
                         foreach (BoardPiece craftedPiece in craftedPieces)
                         {
                             craftedPiece.maxHitPoints += bonusHitPoints;
-                            craftedPiece.hitPoints = craftedPiece.maxHitPoints;
+                            craftedPiece.HitPoints = craftedPiece.maxHitPoints;
                         }
                     }
                 }

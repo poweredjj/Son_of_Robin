@@ -509,7 +509,7 @@ namespace SonOfRobin
                             foreach (Buff buff in food.buffList)
                             { player.buffEngine.AddBuff(buff: buff, world: world); }
 
-                            food.hitPoints = 0;
+                            food.HitPoints = 0;
                             foreach (PieceStorage storage in player.CraftStoragesToPutInto)
                             {
                                 storage.DestroyBrokenPieces(); // to destroy "broken" food right now
@@ -816,7 +816,7 @@ namespace SonOfRobin
                             {
                                 if (player.sprite.CanDrownHere)
                                 {
-                                    player.hitPoints = 0;
+                                    player.HitPoints = 0;
                                     player.sprite.Visible = false;
                                     player.Kill();
 
