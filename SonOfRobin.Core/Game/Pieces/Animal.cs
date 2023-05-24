@@ -737,7 +737,7 @@ namespace SonOfRobin
                 }
             }
 
-            if (childrenBorn > 0) MessageLog.AddMessage(msgType: MsgType.User, message: $"{this.name} has been born ({childrenBorn}).");
+            if (childrenBorn > 0) MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{this.name} has been born ({childrenBorn}).");
 
             if (this.pregnancyMass > this.startingMass)
             {
@@ -801,6 +801,8 @@ namespace SonOfRobin
                 return;
             }
 
+            this.showStatBarsTillFrame = this.world.CurrentUpdate + 1200; // to show health
+
             if (!this.aiData.targetPosIsSet)
             {
                 int searchRange = 0;
@@ -808,30 +810,35 @@ namespace SonOfRobin
                 {
                     searchRange += this.sightRange;
 
-                    var cellsWithWaterWithinDistance = this.world.Grid.GetCellsWithinDistance(position: this.sprite.position, distance: searchRange)
-                      .Where(cell => cell.IsAllWater && cell != this.sprite.currentCell)
-                      .OrderBy(cell => Vector2.Distance(this.sprite.position, cell.center)); // sorting by distance
+                    var cellsWithinDistance = (IEnumerable<Cell>)this.world.Grid.GetCellsWithinDistance(position: this.sprite.position, distance: searchRange);
 
-                    if (cellsWithWaterWithinDistance.Any())
+                    bool canGoToWater = this.sprite.allowedTerrain.IsInRange(terrainName: Terrain.Name.Height, Terrain.waterLevelMax - 1);
+
+                    if (canGoToWater) cellsWithinDistance = cellsWithinDistance
+                            .Where(cell => cell.IsAllWater && cell != this.sprite.currentCell)
+                            .OrderBy(cell => Vector2.Distance(this.sprite.position, cell.center)); // sorting by distance
+
+                    if (cellsWithinDistance.Any())
                     {
                         Cell targetCell;
 
-                        if (this.world.random.Next(0, 3) == 0) // sometimes a random cell is chosen
+                        if (this.world.random.Next(0, 3) == 0 || !canGoToWater) // sometimes a random cell is chosen
                         {
-                            int randomCellNo = this.world.random.Next(0, cellsWithWaterWithinDistance.Count());
-                            targetCell = cellsWithWaterWithinDistance.ElementAt(randomCellNo);
+                            int randomCellNo = this.world.random.Next(0, cellsWithinDistance.Count());
+                            targetCell = cellsWithinDistance.ElementAt(randomCellNo);
                         }
-                        else targetCell = cellsWithWaterWithinDistance.First();
+                        else targetCell = cellsWithinDistance.First();
 
                         this.aiData.TargetPos = targetCell.center;
-
                         break;
                     }
                 }
             }
 
             // ExpendEnergy is not used, because it is a desperate life-saving measure for an animal
-            bool successfullWalking = this.GoOneStepTowardsGoal(goalPosition: this.aiData.TargetPos, splitXY: false, walkSpeed: Math.Max(this.speed * 1.7f, 1));
+
+            float runSpeed =  Math.Min(Math.Max(this.speed * 1.7f, 1), 2.5f); // should not exceed these bounds
+            bool successfullWalking = this.GoOneStepTowardsGoal(goalPosition: this.aiData.TargetPos, splitXY: false, walkSpeed: runSpeed);
             if (!successfullWalking) this.aiData.Reset();
         }
 

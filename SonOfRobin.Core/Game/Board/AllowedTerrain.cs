@@ -14,7 +14,8 @@ namespace SonOfRobin
 
         private readonly Dictionary<ExtBoardProps.Name, bool> initialExtPropertiesDict;
         private Dictionary<ExtBoardProps.Name, bool> currentExtPropertiesDict;
-        public bool HasBeenChanged { get { return this.currentRangesByTerrainName != null || this.currentExtPropertiesDict != null; } }
+        public bool HasBeenChanged
+        { get { return this.currentRangesByTerrainName != null || this.currentExtPropertiesDict != null; } }
 
         public AllowedTerrain(Dictionary<ExtBoardProps.Name, bool> extPropertiesDict = null)
         {
@@ -186,6 +187,13 @@ namespace SonOfRobin
             if (this.currentExtPropertiesDict is null) this.currentExtPropertiesDict = CopyExtPropertiesDict(this.initialExtPropertiesDict);
 
             this.currentExtPropertiesDict.Clear();
+        }
+
+        public bool IsInRange(Terrain.Name terrainName, byte fieldValue)
+        {
+            return this.currentRangesByTerrainName == null ?
+                this.initialRangesByTerrainName[terrainName].IsInRange(fieldValue) :
+                this.currentRangesByTerrainName[terrainName].IsInRange(fieldValue);
         }
 
         public bool CanStandHere(Vector2 position, World world)
