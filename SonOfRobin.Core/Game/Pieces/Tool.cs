@@ -269,7 +269,17 @@ namespace SonOfRobin
 
                     animalTarget.target = attacker;
                     animalTarget.aiData.Reset();
-                    animalTarget.activeState = (animalTarget.HitPointsPercent <= 0.38f && world.random.Next(6) == 0) ? State.AnimalCallForHelp : State.AnimalFlee;
+
+                    if (animalTarget.HitPointsPercent <= 0.38f && world.random.Next(6) == 0) animalTarget.activeState = State.AnimalCallForHelp;
+                    else
+                    {
+                        if (animalTarget.eats.Contains(world.Player.name))
+                        {
+                            if (animalTarget.HitPointsPercent <= 0.2f && world.random.Next(3) != 0) animalTarget.activeState = State.AnimalFlee;
+                            else animalTarget.activeState = State.AnimalChaseTarget;
+                        }
+                        else animalTarget.activeState = State.AnimalFlee;
+                    }
 
                     animalTarget.UpdateRegenCooldown(); // animal will not heal for a while
 
