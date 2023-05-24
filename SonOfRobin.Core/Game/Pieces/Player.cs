@@ -943,7 +943,9 @@ namespace SonOfRobin
 
             Vector2 moving = this.world.analogMovementLeftStick;
             Vector2 shooting = this.world.analogMovementRightStick;
-            if (Mouse.RightIsDown) shooting = (this.world.TranslateScreenToWorldPos(Mouse.Position) - this.sprite.position) / 20;
+
+            // right mouse button will be released when shooting and should be taken into account, to set the angle correctly
+            if (Mouse.RightIsDown || Mouse.RightHasBeenReleased) shooting = (this.world.TranslateScreenToWorldPos(Mouse.Position) - this.sprite.position) / 20;
 
             Vector2 directionVector = Vector2.Zero;
             if (moving != Vector2.Zero) directionVector = moving;
