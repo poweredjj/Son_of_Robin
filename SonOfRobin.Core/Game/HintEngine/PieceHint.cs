@@ -9,7 +9,7 @@ namespace SonOfRobin
     public struct PieceHint
     {
         public enum Type
-        { CrateStarting, CrateAnother, WoodNegative, WoodPositive, DigSiteNegative, DigSitePositive, StoneNegative, StonePositive, CrystalNegative, CrystalPositive, AnimalNegative, AnimalBow, AnimalSpear, AnimalAxe, BowNoAmmo, ClamField, ClamInventory, FruitTree, BananaTree, TomatoPlant, IronDepositNegative, IronDepositPositive, CoalDepositNegative, CoalDepositPositive, HotPlate, Cooker, LeatherPositive, BackpackPositive, BeltPositive, MapPositive, RedExclamation, Acorn, TorchNegative, TorchPositive, Fireplace, HerbsRed, HerbsYellow, HerbsViolet, HerbsCyan, HerbsBlue, HerbsBlack, GlassSand, CanBuildWorkshop, SmallBase, DangerousTiger, DigSiteGlass, CarrotPlant, ExplosiveGas, TreasureJar, CandleForLantern, CoffeeRaw, SharedChest, CanDestroyEssentialWorkshop, AlchemyLab, PoisonousMeat, MakeOilPositive, MakeOilNegative }
+        { CrateStarting, CrateAnother, WoodNegative, WoodPositive, DigSiteNegative, DigSitePositive, StoneNegative, StonePositive, CrystalNegative, CrystalPositive, AnimalNegative, AnimalBow, AnimalSpear, AnimalAxe, BowNoAmmo, ClamField, ClamInventory, FruitTree, BananaTree, TomatoPlant, IronDepositNegative, IronDepositPositive, CoalDepositNegative, CoalDepositPositive, HotPlate, Cooker, LeatherPositive, BackpackPositive, BeltPositive, MapPositive, RedExclamation, Acorn, TorchNegative, TorchPositive, Fireplace, HerbsRed, HerbsYellow, HerbsViolet, HerbsCyan, HerbsBlue, HerbsBlack, GlassSand, CanBuildWorkshop, SmallBase, DangerousTiger, DigSiteGlass, CarrotPlant, ExplosiveGas, TreasureJar, CandleForLantern, CoffeeRaw, SharedChest, CanDestroyEssentialWorkshop, AlchemyLab, PoisonousMeat, MakeOilPositive, MakeOilNegative, CineLookForSurvivors1, CineLookForSurvivors2, CineLookForSurvivors3 }
 
         public enum Comparison
         { Greater, GreaterOrEqual, Equal, LessOrEqual, Less }
@@ -24,6 +24,10 @@ namespace SonOfRobin
         private readonly List<PieceTemplate.Name> fieldPiecesNearby;
         private readonly List<Tutorials.Type> tutorialsToActivate;
         private readonly HintEngine.Type generalHintToActivate;
+        private readonly List<HintEngine.Type> shownGeneralHints;
+        private readonly List<Type> shownPieceHints;
+        private readonly List<Tutorials.Type> shownTutorials;
+        private readonly float distanceWalkedKilometers;
         private readonly bool fieldPieceHasNotEmptyStorage; // can be used for checking for fruits, etc.
         private readonly List<PieceTemplate.Name> playerOwnsAnyOfThesePieces;
         private readonly List<PieceTemplate.Name> playerOwnsAllOfThesePieces;
@@ -36,7 +40,7 @@ namespace SonOfRobin
         private readonly bool menuOnly;
         private readonly bool ignoreHintSetting;
 
-        public PieceHint(Type type, List<PieceTemplate.Name> fieldPiecesNearby = null, List<PieceTemplate.Name> playerOwnsAnyOfThesePieces = null, List<PieceTemplate.Name> playerDoesNotOwnAnyOfThesePieces = null, List<PieceTemplate.Name> playerOwnsAllOfThesePieces = null, List<Type> alsoDisables = null, bool fieldPieceHasNotEmptyStorage = false, string message = null, List<Texture2D> imageList = null, List<HintMessage> messageList = null, List<Tutorials.Type> tutorialsToActivate = null, HintEngine.Type generalHintToActivate = HintEngine.Type.Empty, List<IslandClock.PartOfDay> partsOfDay = null, List<CountComparison> piecesCraftedCount = null, Dictionary<PieceTemplate.Name, int> usedIngredientsCount = null, Dictionary<PieceTemplate.Name, int> existingPiecesCount = null, bool fieldOnly = false, bool menuOnly = false, bool ignoreHintSetting = false)
+        public PieceHint(Type type, List<PieceTemplate.Name> fieldPiecesNearby = null, List<PieceTemplate.Name> playerOwnsAnyOfThesePieces = null, List<PieceTemplate.Name> playerDoesNotOwnAnyOfThesePieces = null, List<PieceTemplate.Name> playerOwnsAllOfThesePieces = null, List<Type> alsoDisables = null, bool fieldPieceHasNotEmptyStorage = false, string message = null, List<Texture2D> imageList = null, List<HintMessage> messageList = null, List<Tutorials.Type> tutorialsToActivate = null, HintEngine.Type generalHintToActivate = HintEngine.Type.Empty, List<IslandClock.PartOfDay> partsOfDay = null, List<CountComparison> piecesCraftedCount = null, Dictionary<PieceTemplate.Name, int> usedIngredientsCount = null, Dictionary<PieceTemplate.Name, int> existingPiecesCount = null, List<HintEngine.Type> shownGeneralHints = null, List<Type> shownPieceHints = null, List<Tutorials.Type> shownTutorials = null, float distanceWalkedKilometers = 0, bool fieldOnly = false, bool menuOnly = false, bool ignoreHintSetting = false)
         {
             this.type = type;
             this.alsoDisables = alsoDisables == null ? new List<Type> { } : alsoDisables;
@@ -50,6 +54,10 @@ namespace SonOfRobin
             this.piecesCraftedCount = piecesCraftedCount;
             this.usedIngredientsCount = usedIngredientsCount;
             this.existingPiecesCount = existingPiecesCount;
+            this.shownGeneralHints = shownGeneralHints;
+            this.shownPieceHints = shownPieceHints;
+            this.shownTutorials = shownTutorials;
+            this.distanceWalkedKilometers = distanceWalkedKilometers;
 
             this.fieldOnly = fieldOnly || this.fieldPiecesNearby != null; // fieldPiecesNearby need to be shown on the field
             this.menuOnly = menuOnly;
@@ -162,8 +170,10 @@ namespace SonOfRobin
 
         private bool CheckIfConditionsAreMet(Player player, PieceTemplate.Name fieldPieceNameToCheck = PieceTemplate.Name.Empty, PieceTemplate.Name newOwnedPieceNameToCheck = PieceTemplate.Name.Empty)
         {
+            World world = player.world;
+
             if (!Preferences.showHints && !this.ignoreHintSetting) return false;
-            if (player.world.HintEngine.shownPieceHints.Contains(this.type)) return false;
+            if (world.HintEngine.shownPieceHints.Contains(this.type)) return false;
             if (this.menuOnly && Scene.GetTopSceneOfType(typeof(Menu)) == null) return false;
             if (this.fieldOnly && Scene.GetTopSceneOfType(typeof(Menu)) != null) return false;
 
@@ -186,7 +196,7 @@ namespace SonOfRobin
             if (this.fieldPiecesNearby != null && this.GetFirstCorrectFieldPieceNearby(player) == null) return false;
 
             // parts of day
-            if (this.partsOfDay != null && !this.partsOfDay.Contains(player.world.islandClock.CurrentPartOfDay)) return false;
+            if (this.partsOfDay != null && !this.partsOfDay.Contains(world.islandClock.CurrentPartOfDay)) return false;
 
             // player - owns single piece
 
@@ -232,7 +242,7 @@ namespace SonOfRobin
             {
                 foreach (CountComparison pieceCraftedCount in this.piecesCraftedCount)
                 {
-                    if (!pieceCraftedCount.Check(player.world.craftStats.HowManyHasBeenCrafted(pieceCraftedCount.name))) return false;
+                    if (!pieceCraftedCount.Check(world.craftStats.HowManyHasBeenCrafted(pieceCraftedCount.name))) return false;
                 }
             }
 
@@ -245,12 +255,33 @@ namespace SonOfRobin
                     PieceTemplate.Name ingredientName = kvp.Key;
                     int minimumUsedCount = kvp.Value;
 
-                    if (player.world.craftStats.HowManyIngredientHasBeenUsed(ingredientName) < minimumUsedCount) return false;
+                    if (world.craftStats.HowManyIngredientHasBeenUsed(ingredientName) < minimumUsedCount) return false;
                 }
             }
 
             // field pieces anywhere
-            if (this.existingPiecesCount != null && !player.world.SpecifiedPiecesCountIsMet(this.existingPiecesCount)) return false;
+            if (this.existingPiecesCount != null && !world.SpecifiedPiecesCountIsMet(this.existingPiecesCount)) return false;
+
+            // shown general hints
+            if (this.shownGeneralHints != null)
+            {
+                foreach (HintEngine.Type type in this.shownGeneralHints) if (!world.HintEngine.shownGeneralHints.Contains(type)) return false;
+            }
+
+            // shown piece hints
+            if (this.shownPieceHints != null)
+            {
+                foreach (Type type in this.shownPieceHints) if (!world.HintEngine.shownPieceHints.Contains(type)) return false;
+            }
+
+            // shown tutorials
+            if (this.shownTutorials != null)
+            {
+                foreach (Tutorials.Type type in this.shownTutorials) if (!world.HintEngine.shownTutorials.Contains(type)) return false;
+            }
+
+            // distance walked
+            if (this.distanceWalkedKilometers > 0 && player.DistanceWalkedKilometers < this.distanceWalkedKilometers) return false;
 
             return true;
         }
