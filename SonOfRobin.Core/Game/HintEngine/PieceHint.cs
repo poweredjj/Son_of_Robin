@@ -9,7 +9,7 @@ namespace SonOfRobin
     public struct PieceHint
     {
         public enum Type
-        { CrateStarting, CrateAnother, WoodNegative, WoodPositive, DigSiteNegative, DigSitePositive, StoneNegative, StonePositive, CrystalNegative, CrystalPositive, AnimalNegative, AnimalBow, AnimalSpear, AnimalAxe, BowNoAmmo, ClamField, ClamInventory, FruitTree, BananaTree, TomatoPlant, IronDepositNegative, IronDepositPositive, CoalDepositNegative, CoalDepositPositive, HotPlate, Cooker, LeatherPositive, BackpackPositive, BeltPositive, MapPositive, RedExclamation, Acorn, TorchNegative, TorchPositive, Fireplace, HerbsRed, HerbsYellow, HerbsViolet, HerbsCyan, HerbsBlue, HerbsBlack, GlassSand, CanBuildWorkshop, SmallBase, DangerousTiger, DigSiteGlass, CarrotPlant, ExplosiveGas, TreasureJar, CandleForLantern, CoffeeRaw, SharedChest, CanDestroyEssentialWorkshop, AlchemyLab, PoisonousMeat, MakeOilPositive, MakeOilNegative, CineLookForSurvivors1, CineLookForSurvivors2, CineLookForSurvivors3 }
+        { CrateStarting, CrateAnother, WoodNegative, WoodPositive, DigSiteNegative, DigSitePositive, StoneNegative, StonePositive, CrystalNegative, CrystalPositive, AnimalNegative, AnimalBow, AnimalSpear, AnimalAxe, BowNoAmmo, ClamField, ClamInventory, FruitTree, BananaTree, TomatoPlant, IronDepositNegative, IronDepositPositive, CoalDepositNegative, CoalDepositPositive, HotPlate, Cooker, LeatherPositive, BackpackPositive, BeltPositive, MapPositive, RedExclamation, Acorn, TorchNegative, TorchPositive, Fireplace, HerbsRed, HerbsYellow, HerbsViolet, HerbsCyan, HerbsBlue, HerbsBlack, GlassSand, CanBuildWorkshop, SmallBase, DangerousTiger, DigSiteGlass, CarrotPlant, ExplosiveGas, TreasureJar, CandleForLantern, CoffeeRaw, SharedChest, CanDestroyEssentialWorkshop, AlchemyLab, PoisonousMeat, MakeOilPositive, MakeOilNegative, CineLookForSurvivors1, CineLookForSurvivors2, CineLookForSurvivors3, CineDay2, CineDay3, CineDay4 }
 
         public enum Comparison
         { Greater, GreaterOrEqual, Equal, LessOrEqual, Less }
@@ -28,6 +28,8 @@ namespace SonOfRobin
         private readonly List<Type> shownPieceHints;
         private readonly List<Tutorials.Type> shownTutorials;
         private readonly float distanceWalkedKilometers;
+        private readonly float mapDiscoveredPercentage; // 0 - 1
+        private readonly int islandTimeElapsedHours;
         private readonly bool fieldPieceHasNotEmptyStorage; // can be used for checking for fruits, etc.
         private readonly List<PieceTemplate.Name> playerOwnsAnyOfThesePieces;
         private readonly List<PieceTemplate.Name> playerOwnsAllOfThesePieces;
@@ -40,7 +42,7 @@ namespace SonOfRobin
         private readonly bool menuOnly;
         private readonly bool ignoreHintSetting;
 
-        public PieceHint(Type type, List<PieceTemplate.Name> fieldPiecesNearby = null, List<PieceTemplate.Name> playerOwnsAnyOfThesePieces = null, List<PieceTemplate.Name> playerDoesNotOwnAnyOfThesePieces = null, List<PieceTemplate.Name> playerOwnsAllOfThesePieces = null, List<Type> alsoDisables = null, bool fieldPieceHasNotEmptyStorage = false, string message = null, List<Texture2D> imageList = null, List<HintMessage> messageList = null, List<Tutorials.Type> tutorialsToActivate = null, HintEngine.Type generalHintToActivate = HintEngine.Type.Empty, List<IslandClock.PartOfDay> partsOfDay = null, List<CountComparison> piecesCraftedCount = null, Dictionary<PieceTemplate.Name, int> usedIngredientsCount = null, Dictionary<PieceTemplate.Name, int> existingPiecesCount = null, List<HintEngine.Type> shownGeneralHints = null, List<Type> shownPieceHints = null, List<Tutorials.Type> shownTutorials = null, float distanceWalkedKilometers = 0, bool fieldOnly = false, bool menuOnly = false, bool ignoreHintSetting = false)
+        public PieceHint(Type type, List<PieceTemplate.Name> fieldPiecesNearby = null, List<PieceTemplate.Name> playerOwnsAnyOfThesePieces = null, List<PieceTemplate.Name> playerDoesNotOwnAnyOfThesePieces = null, List<PieceTemplate.Name> playerOwnsAllOfThesePieces = null, List<Type> alsoDisables = null, bool fieldPieceHasNotEmptyStorage = false, string message = null, List<Texture2D> imageList = null, List<HintMessage> messageList = null, List<Tutorials.Type> tutorialsToActivate = null, HintEngine.Type generalHintToActivate = HintEngine.Type.Empty, List<IslandClock.PartOfDay> partsOfDay = null, List<CountComparison> piecesCraftedCount = null, Dictionary<PieceTemplate.Name, int> usedIngredientsCount = null, Dictionary<PieceTemplate.Name, int> existingPiecesCount = null, List<HintEngine.Type> shownGeneralHints = null, List<Type> shownPieceHints = null, List<Tutorials.Type> shownTutorials = null, float distanceWalkedKilometers = 0, float mapDiscoveredPercentage = 0, int islandTimeElapsedHours = 0, bool fieldOnly = false, bool menuOnly = false, bool ignoreHintSetting = false)
         {
             this.type = type;
             this.alsoDisables = alsoDisables == null ? new List<Type> { } : alsoDisables;
@@ -58,6 +60,8 @@ namespace SonOfRobin
             this.shownPieceHints = shownPieceHints;
             this.shownTutorials = shownTutorials;
             this.distanceWalkedKilometers = distanceWalkedKilometers;
+            this.mapDiscoveredPercentage = mapDiscoveredPercentage;
+            this.islandTimeElapsedHours = islandTimeElapsedHours;
 
             this.fieldOnly = fieldOnly || this.fieldPiecesNearby != null; // fieldPiecesNearby need to be shown on the field
             this.menuOnly = menuOnly;
@@ -282,6 +286,12 @@ namespace SonOfRobin
 
             // distance walked
             if (this.distanceWalkedKilometers > 0 && player.DistanceWalkedKilometers < this.distanceWalkedKilometers) return false;
+
+            // map discovered percentage
+            if (this.mapDiscoveredPercentage > 0 && world.Grid.VisitedCellsPercentage < this.mapDiscoveredPercentage) return false;
+
+            // island time elapsed
+            if (this.islandTimeElapsedHours > 0 && world.islandClock.IslandTimeElapsed.TotalHours < this.islandTimeElapsedHours) return false;
 
             return true;
         }

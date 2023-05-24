@@ -526,6 +526,7 @@ namespace SonOfRobin
                             string timePlayedString = string.Format("{0:D2}:{1:D2}", (int)Math.Floor(world.TimePlayed.TotalHours), world.TimePlayed.Minutes);
                             textLines.Add($"Time played: {timePlayedString}");
                             textLines.Add($"Distance walked: {player.DistanceWalkedKilometers} km");
+                            textLines.Add($"Map discovered: {Math.Round(world.Grid.VisitedCellsPercentage * 100, 1)}%");
                             textLines.Add($"Island day: {world.islandClock.CurrentDayNo}");
 
                             var infoTextList = new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: String.Join("\n", textLines), imageList: imageList, color: Color.White, scale: 1f) };

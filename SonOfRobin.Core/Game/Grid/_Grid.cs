@@ -158,6 +158,9 @@ namespace SonOfRobin
         public List<Cell> CellsNotVisitedByPlayer
         { get { return this.allCells.Where(cell => !cell.VisitedByPlayer).ToList(); } }
 
+        public float VisitedCellsPercentage
+        { get { return (float)this.allCells.Where(cell => cell.VisitedByPlayer).Count() / (float)this.allCells.Count; } }
+
         public Dictionary<string, Object> Serialize()
         {
             // this data is included in save file (not in template)
