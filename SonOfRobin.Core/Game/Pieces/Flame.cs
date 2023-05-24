@@ -129,11 +129,12 @@ namespace SonOfRobin
             {
                 // affecting burningPiece
 
-                float hitPointsToTake = this.burningPiece.GetType() == typeof(Player) ? 0.6f : Math.Min(0.25f, this.burningPiece.maxHitPoints / 150);
+                float hitPointsToTake = this.burningPiece.GetType() == typeof(Player) ? 0.6f : Math.Max(0.05f, this.burningPiece.maxHitPoints / 700f);
 
                 this.burningPiece.hitPoints = Math.Max(this.burningPiece.hitPoints - hitPointsToTake, 0);
 
-                if (this.burningPiece.IsAnimalOrPlayer && SonOfRobinGame.CurrentUpdate % 40 == 0) this.burningPiece.soundPack.Play(PieceSoundPack.Action.Cry);
+                if (this.burningPiece.IsAnimalOrPlayer && !this.burningPiece.soundPack.IsPlaying(PieceSoundPack.Action.Cry))
+                    this.burningPiece.soundPack.Play(PieceSoundPack.Action.Cry);
 
                 if (this.burningPiece.GetType() == typeof(Player))
                 {
