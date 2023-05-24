@@ -283,8 +283,8 @@ namespace SonOfRobin
                 int offsetY = (int)centerOffset.Y;
 
                 var interestingPieces = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.All, mainSprite: this.sprite, distance: 35, offsetX: offsetX, offsetY: offsetY, compareWithBottom: true);
-                interestingPieces = interestingPieces.Where(piece => piece.canBePickedUp).ToList();
-                if (interestingPieces.Count == 0) return null;
+                interestingPieces = interestingPieces.Where(piece => piece.canBePickedUp);
+                if (!interestingPieces.Any()) return null;
 
                 BoardPiece closestPiece = FindClosestPiece(sprite: this.sprite, pieceList: interestingPieces, offsetX: offsetX, offsetY: offsetY);
                 return closestPiece;

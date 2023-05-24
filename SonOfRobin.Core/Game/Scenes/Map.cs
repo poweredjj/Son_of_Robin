@@ -400,13 +400,13 @@ namespace SonOfRobin
             float showDetailedMapAtZoom = (float)SonOfRobinGame.VirtualWidth / (float)this.world.width * 1.4f;
             bool showDetailedMap = this.camera.CurrentZoom >= showDetailedMapAtZoom;
 
-            List<Cell> cellsToDraw = new List<Cell>(); // to be replaced later
+            var cellsToDraw = (IEnumerable<Cell>)new List<Cell>(); // to be replaced later
             bool foundCellsWithMissingTextures = false;
 
             if (showDetailedMap)
             {
                 cellsToDraw = this.world.Grid.GetCellsInsideRect(viewRect: this.camera.viewRect, addPadding: false);
-                if (!Preferences.DebugShowWholeMap) cellsToDraw = cellsToDraw.Where(cell => cell.VisitedByPlayer).ToList();
+                if (!Preferences.DebugShowWholeMap) cellsToDraw = cellsToDraw.Where(cell => cell.VisitedByPlayer);
 
                 foreach (Cell cell in cellsToDraw)
                 {

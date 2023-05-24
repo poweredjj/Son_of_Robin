@@ -558,6 +558,21 @@ namespace SonOfRobin
             return null;
         }
 
+        public static BoardPiece FindClosestPiece(Sprite sprite, IEnumerable<BoardPiece> pieceList, int offsetX = 0, int offsetY = 0)
+        {
+            Vector2 center = sprite.position;
+            if (offsetX != 0 || offsetY != 0) center += new Vector2(offsetX, offsetY);
+
+            try
+            {
+                return pieceList.OrderBy(piece => Vector2.Distance(center, piece.sprite.position)).First();
+            }
+            catch (InvalidOperationException)
+            { }
+
+            return null;
+        }
+
         public void StateMachineWork()
         {
             // checking if state machine can be processed

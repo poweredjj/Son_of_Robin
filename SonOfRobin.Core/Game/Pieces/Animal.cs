@@ -155,7 +155,7 @@ namespace SonOfRobin
             { this.Mass = Math.Min(this.Mass + massGained, this.maxMass); }
         }
 
-        public List<BoardPiece> AssessAsMatingPartners(List<BoardPiece> pieces)
+        public IEnumerable<BoardPiece> AssessAsMatingPartners(IEnumerable<BoardPiece> pieces)
         {
             var sameSpecies = pieces.Where(piece =>
                 piece.name == this.name &&
@@ -171,10 +171,10 @@ namespace SonOfRobin
             animal.currentAge >= animal.matureAge
             );
 
-            return matingPartners.Cast<BoardPiece>().ToList();
+            return matingPartners;
         }
 
-        public List<BoardPiece> GetSeenPieces()
+        public IEnumerable<BoardPiece> GetSeenPieces()
         { return world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.Visible, mainSprite: this.sprite, distance: this.sightRange); }
 
         private void UpdateAttackCooldown()
@@ -227,8 +227,8 @@ namespace SonOfRobin
             float enemyDistance = 10000000;
             BoardPiece enemyPiece = null;
 
-            var enemyList = seenPieces.Where(piece => this.isEatenBy.Contains(piece.name)).ToList();
-            if (enemyList.Count > 0)
+            var enemyList = seenPieces.Where(piece => this.isEatenBy.Contains(piece.name));
+            if (enemyList.Any())
             {
                 enemyPiece = FindClosestPiece(sprite: this.sprite, pieceList: enemyList);
                 enemyDistance = Vector2.Distance(this.sprite.position, enemyPiece.sprite.position);
@@ -236,15 +236,15 @@ namespace SonOfRobin
 
             // looking for food
 
-            var foodList = seenPieces.Where(piece => this.eats.Contains(piece.name) && piece.Mass > 0 && this.sprite.allowedTerrain.CanStandHere(world: this.world, position: piece.sprite.position)).ToList();
+            var foodList = seenPieces.Where(piece => this.eats.Contains(piece.name) && piece.Mass > 0 && this.sprite.allowedTerrain.CanStandHere(world: this.world, position: piece.sprite.position));
 
             BoardPiece foodPiece = null;
 
-            if (foodList.Count > 0)
+            if (foodList.Any())
             {
-                var deadFoodList = foodList.Where(piece => !piece.alive).ToList();
-                if (deadFoodList.Count > 0) foodList = deadFoodList;
-                foodPiece = this.world.random.Next(0, 8) != 0 ? FindClosestPiece(sprite: this.sprite, pieceList: foodList) : foodList[world.random.Next(0, foodList.Count)];
+                var deadFoodList = foodList.Where(piece => !piece.alive);
+                if (deadFoodList.Any()) foodList = deadFoodList;
+                foodPiece = this.world.random.Next(0, 8) != 0 ? FindClosestPiece(sprite: this.sprite, pieceList: foodList) : foodList.ElementAt(world.random.Next(0, foodList.Count()));
             }
 
             // looking for mating partner
@@ -252,13 +252,13 @@ namespace SonOfRobin
             BoardPiece matingPartner = null;
             if (this.currentAge >= matureAge && this.pregnancyMass == 0 && enemyPiece == null)
             {
-                var matingPartners = this.AssessAsMatingPartners(seenPieces.ToList());
+                var matingPartners = this.AssessAsMatingPartners(seenPieces);
                 if (matingPartners.Any())
                 {
                     if (this.world.random.Next(0, 8) != 0)
                     { matingPartner = FindClosestPiece(sprite: this.sprite, pieceList: matingPartners); }
                     else
-                    { matingPartner = matingPartners[world.random.Next(0, matingPartners.Count)]; }
+                    { matingPartner = matingPartners.ElementAt(world.random.Next(0, matingPartners.Count())); }
                 }
             }
 

@@ -2,7 +2,6 @@
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace SonOfRobin
 {
@@ -233,13 +232,13 @@ namespace SonOfRobin
             this.spriteGroups[groupName].Remove(sprite.id);
         }
 
-        public List<Sprite> GetSpritesFromSurroundingCells(Group groupName)
+        public IEnumerable<Sprite> GetSpritesFromSurroundingCells(Group groupName)
         {
             List<Sprite> surroundingSprites = new List<Sprite>();
 
             foreach (Cell cell in this.surroundingCells)
             {
-                surroundingSprites.AddRange(cell.spriteGroups[groupName].Values.ToList());
+                surroundingSprites.AddRange(cell.spriteGroups[groupName].Values);
             }
 
             return surroundingSprites;

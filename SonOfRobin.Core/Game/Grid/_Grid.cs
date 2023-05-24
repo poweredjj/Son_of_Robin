@@ -152,11 +152,11 @@ namespace SonOfRobin
         public bool ProcessingStageComplete
         { get { return this.cellsToProcessOnStart.Count == 0; } }
 
-        public List<Cell> CellsVisitedByPlayer
-        { get { return this.allCells.Where(cell => cell.VisitedByPlayer).ToList(); } }
+        public IEnumerable<Cell> CellsVisitedByPlayer
+        { get { return this.allCells.Where(cell => cell.VisitedByPlayer); } }
 
-        public List<Cell> CellsNotVisitedByPlayer
-        { get { return this.allCells.Where(cell => !cell.VisitedByPlayer).ToList(); } }
+        public IEnumerable<Cell> CellsNotVisitedByPlayer
+        { get { return this.allCells.Where(cell => !cell.VisitedByPlayer); } }
 
         public float VisitedCellsPercentage
         { get { return (float)this.allCells.Where(cell => cell.VisitedByPlayer).Count() / (float)this.allCells.Count; } }
@@ -875,7 +875,7 @@ namespace SonOfRobin
             sprite.currentCell.RemoveSprite(sprite);
         }
 
-        public List<Sprite> GetSpritesFromSurroundingCells(Sprite sprite, Cell.Group groupName)
+        public IEnumerable<Sprite> GetSpritesFromSurroundingCells(Sprite sprite, Cell.Group groupName)
         {
             Cell cell = sprite.currentCell == null ? this.FindMatchingCell(sprite.position) : sprite.currentCell;
             return cell.GetSpritesFromSurroundingCells(groupName);
@@ -896,7 +896,7 @@ namespace SonOfRobin
             return collidingPieces;
         }
 
-        public List<Cell> GetCellsInsideRect(Rectangle viewRect, bool addPadding)
+        public IEnumerable<Cell> GetCellsInsideRect(Rectangle viewRect, bool addPadding)
         {
             // addPadding: +1 cell on each side, to ensure visibility of sprites, that cross their cells' boundaries
             int padding = addPadding ? 1 : 0;
@@ -956,7 +956,7 @@ namespace SonOfRobin
             return spritesWithinDistance;
         }
 
-        public List<BoardPiece> GetPiecesWithinDistance(Sprite mainSprite, int distance, Cell.Group groupName, int offsetX = 0, int offsetY = 0, bool compareWithBottom = false)
+        public IEnumerable<BoardPiece> GetPiecesWithinDistance(Sprite mainSprite, int distance, Cell.Group groupName, int offsetX = 0, int offsetY = 0, bool compareWithBottom = false)
         {
             var cellsWithinDistance = this.GetCellsWithinDistance(position: mainSprite.position, distance: distance);
             var spritesWithinDistance = new List<Sprite>();
@@ -970,7 +970,7 @@ namespace SonOfRobin
                     spritesWithinDistance.AddRange(
                         cell.spriteGroups[groupName].Values.Where(
                             currentSprite => Vector2.Distance(new Vector2(currentSprite.gfxRect.Center.X, currentSprite.gfxRect.Bottom), centerPos) <= distance &&
-                            currentSprite != mainSprite).ToList());
+                            currentSprite != mainSprite));
                 }
             }
             else
@@ -980,15 +980,15 @@ namespace SonOfRobin
                     spritesWithinDistance.AddRange(
                         cell.spriteGroups[groupName].Values.Where(
                             currentSprite => Vector2.Distance(currentSprite.position, centerPos) <= distance &&
-                            currentSprite != mainSprite).ToList());
+                            currentSprite != mainSprite));
                 }
             }
 
-            var piecesWithinDistance = spritesWithinDistance.Select(sprite => sprite.boardPiece).ToList();
+            var piecesWithinDistance = spritesWithinDistance.Select(sprite => sprite.boardPiece);
             return piecesWithinDistance;
         }
 
-        public List<BoardPiece> GetPiecesInsideTriangle(Point point1, Point point2, Point point3, Cell.Group groupName)
+        public IEnumerable<BoardPiece> GetPiecesInsideTriangle(Point point1, Point point2, Point point3, Cell.Group groupName)
         {
             int xMin = (int)Math.Min(Math.Min(point1.X, point2.X), point3.X);
             int xMax = (int)Math.Max(Math.Max(point1.X, point2.X), point3.X);
@@ -1003,10 +1003,10 @@ namespace SonOfRobin
             foreach (Cell cell in cellsInsideRect)
             {
                 spritesInsideTriangle.AddRange(cell.spriteGroups[groupName].Values.Where(
-                      currentSprite => rect.Contains(currentSprite.position) && Helpers.IsPointInsideTriangle(point: new Point((int)currentSprite.position.X, (int)currentSprite.position.Y), triangleA: point1, triangleB: point2, triangleC: point3)).ToList());
+                      currentSprite => rect.Contains(currentSprite.position) && Helpers.IsPointInsideTriangle(point: new Point((int)currentSprite.position.X, (int)currentSprite.position.Y), triangleA: point1, triangleB: point2, triangleC: point3)));
             }
 
-            var piecesInsideTriangle = spritesInsideTriangle.Select(sprite => sprite.boardPiece).ToList();
+            var piecesInsideTriangle = spritesInsideTriangle.Select(sprite => sprite.boardPiece);
             return piecesInsideTriangle;
         }
 
@@ -1046,8 +1046,8 @@ namespace SonOfRobin
 
         public ConcurrentBag<Sprite> GetSpritesFromAllCells(Cell.Group groupName, bool visitedByPlayerOnly = false)
         {
-            var cells = this.allCells;
-            if (visitedByPlayerOnly) cells = this.allCells.Where(cell => cell.VisitedByPlayer).ToList();
+            var cells = (IEnumerable<Cell>)this.allCells;
+            if (visitedByPlayerOnly) cells = this.allCells.Where(cell => cell.VisitedByPlayer);
 
             var allSprites = new ConcurrentBag<Sprite> { };
 
@@ -1065,7 +1065,7 @@ namespace SonOfRobin
         public ConcurrentBag<Sprite> GetSpritesForRect(Cell.Group groupName, Rectangle rectangle, bool visitedByPlayerOnly = false)
         {
             var cells = this.GetCellsInsideRect(viewRect: rectangle, addPadding: true);
-            if (visitedByPlayerOnly) cells = cells.Where(cell => cell.VisitedByPlayer).ToList();
+            if (visitedByPlayerOnly) cells = cells.Where(cell => cell.VisitedByPlayer);
 
             var allSprites = new ConcurrentBag<Sprite> { };
 
