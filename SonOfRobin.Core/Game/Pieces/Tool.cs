@@ -270,12 +270,22 @@ namespace SonOfRobin
                     animalTarget.target = attacker;
                     animalTarget.aiData.Reset();
 
-                    if (animalTarget.HitPointsPercent <= 0.38f && world.random.Next(6) == 0) animalTarget.activeState = State.AnimalCallForHelp;
+                    if (animalTarget.HitPointsPercent <= 0.4f && world.random.Next(6) == 0) animalTarget.activeState = State.AnimalCallForHelp;
                     else
                     {
-                        if (animalTarget.eats.Contains(world.Player.name))
+                        double hitPowerPercent = (double)hitPower / animalTarget.maxHitPoints;
+                        double fleeChance = hitPowerPercent * 1.6666;
+                        bool flee = world.random.NextDouble() <= fleeChance;
+
+                        MessageLog.AddMessage(msgType: MsgType.User, message: $"hitPowerPercent {hitPowerPercent} fleeChance {fleeChance} flee {flee}");
+
+                        if (!flee && animalTarget.eats.Contains(world.Player.name))
                         {
-                            if (animalTarget.HitPointsPercent <= 0.2f && world.random.Next(3) != 0) animalTarget.activeState = State.AnimalFlee;
+                            if (animalTarget.HitPointsPercent <= 0.2f && world.random.Next(3) != 0 ||
+                                world.random.Next(animalTarget.strength / 10) == 0)
+                            {
+                                animalTarget.activeState = State.AnimalFlee;
+                            }
                             else animalTarget.activeState = State.AnimalChaseTarget;
                         }
                         else animalTarget.activeState = State.AnimalFlee;
