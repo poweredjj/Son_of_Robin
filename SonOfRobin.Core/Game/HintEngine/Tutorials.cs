@@ -98,11 +98,11 @@ namespace SonOfRobin
         {
             tutorials.Clear();
 
-            new Tutorial(type: Type.BreakThing, name: "destroying items without tools", title: "How to destroy field item without any tools.",
+            new Tutorial(type: Type.BreakThing, name: "destroying items", title: "How to destroy an item on the field.",
                 messages: new List<HintMessage> {
-                new HintMessage(text: "1. Make sure that the | hand tool is selected on toolbar.",
+                new HintMessage(text: "1. Make sure that a | tool is selected on toolbar.",
                 imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.KnifeSimple) }, boxType: messageTextType),
-                new HintMessage(text:"2. Walk next to the item and press |.", imageList: new List<Texture2D> {InputMapper.GetTexture(InputMapper.Action.WorldUseToolbarPiece)}, boxType: messageTextType)});
+                new HintMessage(text:"2. Walk next to the item you want to destroy and press |.", imageList: new List<Texture2D> {InputMapper.GetTexture(InputMapper.Action.WorldUseToolbarPiece)}, boxType: messageTextType)});
 
             new Tutorial(type: Type.GetWood, name: "acquiring wood", title: "How to acquire wood.",
               messages: new List<HintMessage> {
