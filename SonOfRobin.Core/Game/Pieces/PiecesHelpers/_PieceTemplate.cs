@@ -1081,7 +1081,7 @@ namespace SonOfRobin
                                 new Yield.DroppedPiece(pieceName: Name.AxeStone, chanceToDrop: 50, maxNumberToDrop: 1),
                                 new Yield.DroppedPiece(pieceName: Name.PickaxeStone, chanceToDrop: 50, maxNumberToDrop: 1),
                                 new Yield.DroppedPiece(pieceName: Name.Burger, chanceToDrop: 100, maxNumberToDrop: 3),
-                                new Yield.DroppedPiece(pieceName: Name.EmptyBottle, chanceToDrop: 30, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: Name.EmptyBottle, chanceToDrop: 5, maxNumberToDrop: 1),
                                 new Yield.DroppedPiece(pieceName: Name.BackpackSmall, chanceToDrop: 15, maxNumberToDrop: 1),
                                 new Yield.DroppedPiece(pieceName: Name.BeltSmall, chanceToDrop: 15, maxNumberToDrop: 1),
                                 });
