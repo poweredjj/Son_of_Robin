@@ -1735,8 +1735,8 @@ namespace SonOfRobin
                 case Name.CoffeeRoasted:
                     {
                         var buffList = new List<Buff> {
-                             new Buff(type: BuffEngine.BuffType.Fatigue, value: (float)-800, isPermanent: true),
-                             new Buff(type: BuffEngine.BuffType.MaxStamina, value: 80f, autoRemoveDelay: 60 * 60 * 1),
+                             new Buff(type: BuffEngine.BuffType.Fatigue, value: (float)-350, isPermanent: true),
+                             new Buff(type: BuffEngine.BuffType.MaxStamina, value: 50f, autoRemoveDelay: 60 * 60 * 1),
                         };
 
                         return new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CoffeeRoasted, blocksMovement: false, allowedTerrain: shallowWaterToVolcano, category: BoardPiece.Category.Indestructible, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 12, floatsOnWater: false, rotatesWhenDropped: true, readableName: "roasted coffee", description: "Potion ingredient.", fireAffinity: 0f, buffList: buffList);
