@@ -37,9 +37,9 @@ namespace SonOfRobin
             { Stage.StartGame, "starting the game" },
         };
 
+        private Task task;
         private Stage currentStage;
         private DateTime stageStartTime;
-        private int stageStartFrame;
         public bool CreationInProgress { get; private set; }
 
         public readonly GridTemplate gridTemplate;
@@ -276,13 +276,17 @@ namespace SonOfRobin
 
         public void ProcessNextCreationStage()
         {
-            if (SonOfRobinGame.CurrentUpdate < this.stageStartFrame + 3)
-            {
-                // first frame of each stage should update progress bar
-                this.UpdateProgressBar();
-                return;
-            }
+            this.UpdateProgressBar();
 
+            if (this.world.demoMode) this.ProcessOneCreationStage(); // demo mode must be processed normally
+            else
+            {
+                if (this.task == null || this.task.IsCompleted) this.task = Task.Run(() => ProcessOneCreationStage());
+            }
+        }
+
+        private void ProcessOneCreationStage()
+        {
             List<Cell> cellProcessingQueue;
 
             switch (currentStage)
@@ -312,7 +316,7 @@ namespace SonOfRobin
                 case Stage.GenerateTerrain:
 
                     bool processedOneUpdateCycle = false;
-                    int processSegments = 1 + (int)Math.Log(this.width, 2) - 5;
+                    int processSegments = (1 + (int)Math.Log(this.width, 2) - 5) / 2;
 
                     foreach (Terrain currentTerrain in this.terrainByName.Values)
                     {
@@ -402,7 +406,7 @@ namespace SonOfRobin
 
                     cellProcessingQueue = new List<Cell> { };
 
-                    int noOfCellsToProcess = allTexturesFound ? this.allCells.Count : 70;
+                    int noOfCellsToProcess = allTexturesFound ? this.allCells.Count : 200;
                     for (int i = 0; i < noOfCellsToProcess; i++)
                     {
                         cellProcessingQueue.Add(this.cellsToProcessOnStart[0]);
@@ -462,8 +466,6 @@ namespace SonOfRobin
             }
 
             if (this.ProcessingStageComplete && (int)this.currentStage == allStagesCount - 1) this.CreationInProgress = false;
-
-            this.UpdateProgressBar();
 
             if (this.ProcessingStageComplete)
             {
@@ -792,7 +794,6 @@ namespace SonOfRobin
 
         private void PrepareNextStage()
         {
-            this.stageStartFrame = SonOfRobinGame.CurrentUpdate;
             this.stageStartTime = DateTime.Now;
             this.cellsToProcessOnStart.Clear();
             this.cellsToProcessOnStart.AddRange(this.allCells);
