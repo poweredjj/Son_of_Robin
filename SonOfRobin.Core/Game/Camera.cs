@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using MonoGame.Extended.Tweening;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -64,6 +65,8 @@ namespace SonOfRobin
         private Sprite trackedSprite;
         private bool trackedSpriteReached;
         private Vector2 trackedPos;
+        private Tweener tweener;
+        public Vector2 shakeVal;
 
         public Vector2 TrackedPos
         { get { return this.trackingMode == TrackingMode.Position ? this.trackedPos : this.trackedSprite.position; } }
@@ -163,6 +166,8 @@ namespace SonOfRobin
         public Camera(World world, bool useFluidMotionForMove, bool useFluidMotionForZoom, bool useWorldScale, bool keepInWorldBounds = true)
         {
             this.world = world;
+            this.tweener = new Tweener();
+            this.shakeVal = Vector2.Zero;
             this.keepInWorldBounds = keepInWorldBounds;
             this.useFluidMotionForMove = useFluidMotionForMove;
             this.useFluidMotionForZoom = useFluidMotionForZoom;
@@ -183,6 +188,8 @@ namespace SonOfRobin
         public void Update(Vector2 cameraCorrection)
         {
             if (Scene.ProcessingMode == Scene.ProcessingModes.Draw || this.lastUpdateFrame == SonOfRobinGame.CurrentUpdate) return;
+
+            this.tweener.Update((float)Scene.CurrentGameTime.ElapsedGameTime.TotalSeconds);
 
             if (this.useFluidMotionForZoom)
             {
@@ -222,7 +229,7 @@ namespace SonOfRobin
                 this.disableFluidMotionMoveForOneFrame = false;
             }
 
-            viewCenter += cameraCorrection;
+            viewCenter += cameraCorrection + this.shakeVal;
 
             float screenWidth = this.ScreenWidth;
             float screenHeight = this.ScreenHeight;
@@ -258,6 +265,15 @@ namespace SonOfRobin
 
             if (!this.trackedSpriteReached && Vector2.Distance(this.CurrentPos, currentTargetPos) < 30) this.trackedSpriteReached = true;
             this.lastUpdateFrame = SonOfRobinGame.CurrentUpdate;
+        }
+
+        public void AddShake(Vector2 movement, float durationSecs)
+        {
+            // TODO update calculations, to match effects of using World.ShakeScreen()
+
+            this.tweener.TweenTo(target: this, expression: camera => camera.shakeVal, toValue: movement, duration: durationSecs, delay: 0)
+                .AutoReverse()
+                .Easing(EasingFunctions.ExponentialInOut);
         }
 
         public void TrackPiece(BoardPiece trackedPiece, bool moveInstantly = false)
