@@ -20,7 +20,7 @@ namespace SonOfRobin
         private const string gridName = "grid.json";
         public const string tempPrefix = "_save_temp_";
 
-        private const int maxPiecesInPackage = 3000; // using small piece packages lowers ram usage during writing binary files
+        private const int maxPiecesInPackage = 3000;
 
         private readonly DateTime createdTime;
         private readonly bool quitGameAfterSaving;
@@ -61,9 +61,10 @@ namespace SonOfRobin
         private bool coolingSaved;
         private bool piecesSaved;
 
-        private string nextStepName;
+        private string currentStepName;
         private int processedSteps;
         private readonly int allSteps;
+        private Task task;
 
         private int PiecesFilesCount
         { get { return Directory.GetFiles(this.savePath).Where(path => path.Contains("pieces_")).Count(); } }
@@ -148,7 +149,7 @@ namespace SonOfRobin
             this.saveTempPath = this.GetSaveTempPath();
             this.savePath = Path.Combine(SonOfRobinGame.saveGamesPath, saveSlotName);
             this.ErrorOccured = false;
-            this.nextStepName = "";
+            this.currentStepName = "";
             this.directoryChecked = false;
             this.gridTemplateFound = false;
             this.headerSaved = false;
@@ -236,8 +237,25 @@ namespace SonOfRobin
                 return;
             }
 
-            if (this.saveMode) this.ProcessNextSavingStep();
-            else this.ProcessNextLoadingStep();
+            if (this.saveMode)
+            {
+                // saving
+                if (this.task == null || this.task.IsCompleted) this.task = Task.Run(() => this.ProcessNextSavingStep());
+            }
+            else
+            {
+                // loading
+                if (this.task == null || this.task.IsCompleted)
+                {
+                    this.task = Task.Run(() => this.ProcessNextLoadingStep());
+
+                    if (this.currentStepName == "creating world")
+                    {
+                        this.FinishLoading();
+                        this.processingComplete = true;
+                    }
+                }
+            }
 
             if (!this.ErrorOccured && !this.processingComplete) this.UpdateProgressBar();
             if (this.ErrorOccured) this.Remove();
@@ -248,10 +266,10 @@ namespace SonOfRobin
             int currentGlobalStep = 0;
             int totalGlobalSteps = this.saveMode || this.gridTemplateFound ? 1 : SonOfRobinGame.enteringIslandGlobalSteps;
 
-            float percentage = FullScreenProgressBar.CalculatePercentage(currentLocalStep: this.processedSteps, totalLocalSteps: this.allSteps, currentGlobalStep: currentGlobalStep, totalGlobalSteps: totalGlobalSteps);
+            float percentage = FullScreenProgressBar.CalculatePercentage(currentLocalStep: Math.Min(this.processedSteps, this.allSteps), totalLocalSteps: this.allSteps, currentGlobalStep: currentGlobalStep, totalGlobalSteps: totalGlobalSteps);
 
             string text = LoadingTips.GetTip();
-            string optionalText = Preferences.progressBarShowDetails ? $"{this.modeText} game - {this.nextStepName}..." : null;
+            string optionalText = Preferences.progressBarShowDetails ? $"{this.modeText} game - {this.currentStepName}..." : null;
 
             if (this.saveMode && !Preferences.progressBarShowDetails)
             {
@@ -275,16 +293,19 @@ namespace SonOfRobin
             // preparing save directory
             if (!this.directoryChecked)
             {
+                this.currentStepName = "directory";
+
                 Directory.CreateDirectory(this.saveTempPath);
 
                 this.directoryChecked = true;
-                this.nextStepName = "header";
                 return;
             }
 
             // saving header data
             if (!this.headerSaved)
             {
+                this.currentStepName = "header";
+
                 var headerData = new Dictionary<string, Object>
                 {
                     { "seed", this.world.seed },
@@ -313,49 +334,53 @@ namespace SonOfRobin
                 FileReaderWriter.Save(path: headerPath, savedObj: headerData, compress: false);
 
                 this.headerSaved = true;
-                this.nextStepName = "hints";
                 return;
             }
 
             // saving hints data
             if (!this.hintsSaved)
             {
+                this.currentStepName = "hints";
+
                 string hintsPath = Path.Combine(this.saveTempPath, hintsName);
                 var hintsData = this.world.HintEngine.Serialize();
                 FileReaderWriter.Save(path: hintsPath, savedObj: hintsData, compress: true);
 
                 this.hintsSaved = true;
-                this.nextStepName = "weather";
                 return;
             }
 
             // saving weather data
             if (!this.weatherSaved)
             {
+                this.currentStepName = "weather";
+
                 string weatherPath = Path.Combine(this.saveTempPath, weatherName);
                 var weatherData = this.world.weather.Serialize();
                 FileReaderWriter.Save(path: weatherPath, savedObj: weatherData, compress: true);
 
                 this.weatherSaved = true;
-                this.nextStepName = "grid";
                 return;
             }
 
             // saving grid data
             if (!this.gridSaved)
             {
+                this.currentStepName = "grid";
+
                 string gridPath = Path.Combine(this.saveTempPath, gridName);
                 var gridData = this.world.Grid.Serialize();
                 FileReaderWriter.Save(path: gridPath, savedObj: gridData, compress: true);
 
                 this.gridSaved = true;
-                this.nextStepName = "pieces 1";
                 return;
             }
 
             // saving pieces data
             if (!this.piecesSaved)
             {
+                this.currentStepName = $"pieces {currentPiecePackageNo + 1}";
+
                 var packagesToProcess = new List<List<BoardPiece>>();
 
                 for (int i = 0; i < Preferences.MaxThreadsToUse; i++)
@@ -387,50 +412,52 @@ namespace SonOfRobin
                 this.currentPiecePackageNo += packagesToProcess.Count;
                 this.processedSteps += packagesToProcess.Count - 1;
 
-                this.nextStepName = this.piecesSaved ? "tracking" : $"pieces {currentPiecePackageNo + 1}";
-
                 return;
             }
 
             // saving tracking data
             if (!this.trackingSaved)
             {
+                this.currentStepName = "tracking";
+
                 var trackingData = this.world.trackingManager.Serialize();
 
                 string trackingPath = Path.Combine(this.saveTempPath, trackingName);
                 FileReaderWriter.Save(path: trackingPath, savedObj: trackingData, compress: true);
 
                 this.trackingSaved = true;
-                this.nextStepName = "events";
                 return;
             }
 
             // saving world event data
             if (!this.eventsSaved)
             {
+                this.currentStepName = "events";
+
                 var eventData = this.world.worldEventManager.Serialize();
 
                 string eventPath = Path.Combine(this.saveTempPath, eventsName);
                 FileReaderWriter.Save(path: eventPath, savedObj: eventData, compress: true);
 
                 this.eventsSaved = true;
-                this.nextStepName = "cooling";
                 return;
             }
 
             // saving cooling data
             if (!this.coolingSaved)
             {
+                this.currentStepName = "cooling";
+
                 var coolingData = this.world.coolingManager.Serialize();
 
                 string coolingPath = Path.Combine(this.saveTempPath, coolingName);
                 FileReaderWriter.Save(path: coolingPath, savedObj: coolingData, compress: true);
 
                 this.coolingSaved = true;
-                this.nextStepName = "replacing save slot data";
                 return;
             }
 
+            this.currentStepName = "replacing save slot data";
             if (Directory.Exists(this.savePath))
             {
                 try
@@ -482,19 +509,22 @@ namespace SonOfRobin
             // checking directory
             if (!this.directoryChecked)
             {
+                this.currentStepName = "directory";
+
                 if (!Directory.Exists(this.savePath))
                 {
-                    new TextWindow(text: $"Directori for save slot {saveSlotName} does not exist.", textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false, closingTask: this.TextWindowTask);
+                    new TextWindow(text: $"Directory for save slot {saveSlotName} does not exist.", textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false, closingTask: this.TextWindowTask);
                     this.ErrorOccured = true;
                 }
                 this.directoryChecked = true;
-                this.nextStepName = "header";
                 return;
             }
 
             // loading header
             if (this.headerData == null)
             {
+                this.currentStepName = "header";
+
                 string headerPath = Path.Combine(this.savePath, headerName);
                 this.headerData = (Dictionary<string, Object>)FileReaderWriter.Load(path: headerPath);
 
@@ -510,13 +540,14 @@ namespace SonOfRobin
                     this.gridTemplateFound = templateGrid != null;
                 }
 
-                this.nextStepName = "grid";
                 return;
             }
 
             // loading grid
             if (this.gridData == null)
             {
+                this.currentStepName = "grid";
+
                 string gridPath = Path.Combine(this.savePath, gridName);
                 this.gridData = (Dictionary<string, Object>)FileReaderWriter.Load(path: gridPath);
 
@@ -525,13 +556,14 @@ namespace SonOfRobin
                     new TextWindow(text: $"Error while reading grid for slot {saveSlotName}.", textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false, closingTask: this.TextWindowTask);
                     this.ErrorOccured = true;
                 }
-                this.nextStepName = "hints";
                 return;
             }
 
             // loading hints
             if (this.hintsData == null)
             {
+                this.currentStepName = "hints";
+
                 string hintsPath = Path.Combine(this.savePath, hintsName);
                 this.hintsData = (Dictionary<string, Object>)FileReaderWriter.Load(path: hintsPath);
 
@@ -540,13 +572,14 @@ namespace SonOfRobin
                     new TextWindow(text: $"Error while reading hints for slot {saveSlotName}.", textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false, closingTask: this.TextWindowTask);
                     this.ErrorOccured = true;
                 }
-                this.nextStepName = "weather";
                 return;
             }
 
             // loading hints
             if (this.weatherData == null)
             {
+                this.currentStepName = "weather";
+
                 string weatherPath = Path.Combine(this.savePath, weatherName);
                 this.weatherData = (Dictionary<string, Object>)FileReaderWriter.Load(path: weatherPath);
 
@@ -555,13 +588,14 @@ namespace SonOfRobin
                     new TextWindow(text: $"Error while reading weather for slot {saveSlotName}.", textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false, closingTask: this.TextWindowTask);
                     this.ErrorOccured = true;
                 }
-                this.nextStepName = "tracking";
                 return;
             }
 
             // loading tracking
             if (this.trackingData == null)
             {
+                this.currentStepName = "tracking";
+
                 string trackingPath = Path.Combine(this.savePath, trackingName);
 
                 if (!FileReaderWriter.PathExists(trackingPath))
@@ -570,13 +604,14 @@ namespace SonOfRobin
                     this.ErrorOccured = true;
                 }
                 else this.trackingData = (List<Object>)FileReaderWriter.Load(path: trackingPath);
-                this.nextStepName = "events";
                 return;
             }
 
             // loading planned events
             if (this.eventsData == null)
             {
+                this.currentStepName = "events";
+
                 string eventPath = Path.Combine(this.savePath, eventsName);
                 if (!FileReaderWriter.PathExists(eventPath))
                 {
@@ -585,13 +620,14 @@ namespace SonOfRobin
                 }
                 else this.eventsData = (List<Object>)FileReaderWriter.Load(path: eventPath);
 
-                this.nextStepName = "cooling";
                 return;
             }
 
             // loading cooling data
             if (this.coolingData == null)
             {
+                this.currentStepName = "cooling";
+
                 string coolingPath = Path.Combine(this.savePath, coolingName);
                 if (!FileReaderWriter.PathExists(coolingPath))
                 {
@@ -600,14 +636,16 @@ namespace SonOfRobin
                 }
                 else this.coolingData = (Dictionary<string, Object>)FileReaderWriter.Load(path: coolingPath);
 
-                this.nextStepName = "pieces 1";
                 return;
             }
 
             // loading pieces
             if (!this.allPiecesProcessed)
             {
-                if (this.currentPiecePackageNo == 0 && !FileReaderWriter.PathExists(this.GetCurrentPiecesPath(this.currentPiecePackageNo))) // first check - this save file should exist
+                this.currentStepName = $"pieces {currentPiecePackageNo + 1}";
+
+                // first check - this save file should exist
+                if (this.currentPiecePackageNo == 0 && !FileReaderWriter.PathExists(this.GetCurrentPiecesPath(this.currentPiecePackageNo)))
                 {
                     new TextWindow(text: "Error while reading pieces data.", textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false, closingTask: this.TextWindowTask);
                     this.ErrorOccured = true;
@@ -636,10 +674,15 @@ namespace SonOfRobin
                 this.currentPiecePackageNo += Preferences.MaxThreadsToUse;
                 this.processedSteps = Math.Min(this.processedSteps + Preferences.MaxThreadsToUse - 1, this.allSteps);
 
-                this.nextStepName = this.allPiecesProcessed ? "creating world" : $"pieces {currentPiecePackageNo + 1}";
                 return;
             }
 
+            this.currentStepName = "creating world";
+            this.UpdateProgressBar(); // needed to properly display the last currentStepName
+        }
+
+        private void FinishLoading() // steps that cannot be run in another thread
+        {
             // creating new world (using header data)
             int seed = (int)(Int64)this.headerData["seed"];
             int width = (int)(Int64)this.headerData["width"];
@@ -658,8 +701,6 @@ namespace SonOfRobin
             {
                 if (currWorld != this.world && !currWorld.demoMode) currWorld.Remove();
             }
-
-            this.processingComplete = true;
         }
     }
 }

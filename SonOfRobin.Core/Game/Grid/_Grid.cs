@@ -283,6 +283,8 @@ namespace SonOfRobin
             {
                 if (this.task == null || this.task.IsCompleted) this.task = Task.Run(() => this.ProcessOneCreationStage());
             }
+
+            if (!this.CreationInProgress) this.task = null;
         }
 
         private void ProcessOneCreationStage()

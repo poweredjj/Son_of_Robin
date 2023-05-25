@@ -432,6 +432,8 @@ namespace SonOfRobin
                 }
             }
 
+            this.task = null;
+
             SonOfRobinGame.FullScreenProgressBar.TurnOff();
             this.touchLayout = TouchLayout.WorldMain;
             this.tipsLayout = ControlTips.TipsLayout.WorldMain;
