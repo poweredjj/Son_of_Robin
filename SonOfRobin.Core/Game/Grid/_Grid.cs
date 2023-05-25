@@ -281,7 +281,7 @@ namespace SonOfRobin
             if (this.world.demoMode) this.ProcessOneCreationStage(); // demo mode must be processed normally
             else
             {
-                if (this.task == null || this.task.IsCompleted) this.task = Task.Run(() => ProcessOneCreationStage());
+                if (this.task == null || this.task.IsCompleted) this.task = Task.Run(() => this.ProcessOneCreationStage());
             }
         }
 

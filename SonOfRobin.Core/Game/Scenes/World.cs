@@ -4,6 +4,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace SonOfRobin
 {
@@ -15,14 +16,15 @@ namespace SonOfRobin
         public bool WorldCreationInProgress { get; private set; }
 
         private bool plantsProcessing;
-        private const int initialPiecesCreationFramesTotal = 20;
         public const int buildDuration = (int)(60 * 2.5);
-        private int initialPiecesCreationFramesLeft;
+        private const int populatingFramesTotal = 20;
+        private int populatingFramesLeft;
         public readonly DateTime creationStart;
         public DateTime creationEnd;
         public TimeSpan creationDuration;
         public readonly bool demoMode;
 
+        private Task task;
         private Object saveGameData;
         public Dictionary<string, BoardPiece> piecesByOldID; // for deserialization only
         public bool createMissingPiecesOutsideCamera;
@@ -32,9 +34,7 @@ namespace SonOfRobin
         public bool BuildMode { get; private set; }
 
         private bool spectatorMode;
-
         private bool cineMode;
-
         public readonly int seed;
         public readonly int resDivider;
         public int maxAnimalsPerName;
@@ -107,7 +107,7 @@ namespace SonOfRobin
             this.lastSaved = DateTime.Now;
             this.WorldCreationInProgress = true;
             this.plantsProcessing = false;
-            this.initialPiecesCreationFramesLeft = initialPiecesCreationFramesTotal;
+            this.populatingFramesLeft = populatingFramesTotal;
             this.creationStart = DateTime.Now;
 
             if (seed < 0) throw new ArgumentException($"Seed value cannot be negative - {seed}.");
@@ -194,8 +194,8 @@ namespace SonOfRobin
             }
         }
 
-        public bool PiecesCreationInProgress
-        { get { return this.initialPiecesCreationFramesLeft > 0; } }
+        public bool PopulatingInProgress
+        { get { return this.populatingFramesLeft > 0; } }
 
         public bool MapEnabled
         {
@@ -412,28 +412,22 @@ namespace SonOfRobin
                 return;
             }
 
-            if (this.saveGameData == null && this.PiecesCreationInProgress)
+            if (this.saveGameData == null && this.PopulatingInProgress)
             {
                 if (this.demoMode)
                 {
                     CreateMissingPieces(initialCreation: true, outsideCamera: false, multiplier: 1f);
-                    this.initialPiecesCreationFramesLeft = 0;
+                    this.populatingFramesLeft = 0;
                 }
                 else
                 {
-                    float percentage = FullScreenProgressBar.CalculatePercentage(currentLocalStep: initialPiecesCreationFramesTotal - this.initialPiecesCreationFramesLeft, totalLocalSteps: initialPiecesCreationFramesTotal, currentGlobalStep: 1 + Grid.allStagesCount, totalGlobalSteps: SonOfRobinGame.enteringIslandGlobalSteps);
+                    float percentage = FullScreenProgressBar.CalculatePercentage(currentLocalStep: populatingFramesTotal - this.populatingFramesLeft, totalLocalSteps: populatingFramesTotal, currentGlobalStep: 1 + Grid.allStagesCount, totalGlobalSteps: SonOfRobinGame.enteringIslandGlobalSteps);
 
                     string detailedInfo = Preferences.progressBarShowDetails ? "populating..." : null;
 
                     SonOfRobinGame.FullScreenProgressBar.TurnOn(percentage: percentage, text: LoadingTips.GetTip(), optionalText: detailedInfo);
 
-                    if (this.initialPiecesCreationFramesLeft != initialPiecesCreationFramesTotal) // first iteration should only display progress bar
-                    {
-                        bool piecesCreated = CreateMissingPieces(initialCreation: true, maxAmountToCreateAtOnce: (uint)(300000 / initialPiecesCreationFramesTotal), outsideCamera: false, multiplier: 1f, addToDoNotCreateList: false);
-                        if (!piecesCreated) this.initialPiecesCreationFramesLeft = 0;
-                    }
-                    this.initialPiecesCreationFramesLeft--;
-
+                    if (this.task == null || this.task.IsCompleted) this.task = Task.Run(() => this.ProcessNextPopulatingStep());
                     return;
                 }
             }
@@ -483,6 +477,14 @@ namespace SonOfRobin
 
             if (!this.demoMode && newGameStarted) this.HintEngine.ShowGeneralHint(type: HintEngine.Type.CineIntroduction, ignoreDelay: true);
             GC.Collect();
+        }
+
+        private void ProcessNextPopulatingStep()
+        {
+            bool piecesCreated = CreateMissingPieces(initialCreation: true, maxAmountToCreateAtOnce: (uint)(300000 / populatingFramesTotal), outsideCamera: false, multiplier: 1f, addToDoNotCreateList: false);
+            if (!piecesCreated) this.populatingFramesLeft = 0;
+
+            this.populatingFramesLeft--;
         }
 
         public override void Remove()
