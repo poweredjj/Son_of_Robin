@@ -8,7 +8,7 @@ namespace SonOfRobin
     public class InitialLoader : Scene
     {
         public enum Step
-        { Initial, LoadEffects, LoadFonts, CreateControlTips, LoadSounds, LoadInitialTextures, CreateSeamless, LoadAnims, LoadKeysGfx, CreateScenes, MakeItemsInfo, MakeCraftRecipes, MakeDemoWorld, SetControlTips, DeleteObsoleteTemplates, OpenMainMenu }
+        { Initial, LoadEffects, LoadFonts, CreateControlTips, LoadSounds, LoadInitialTextures, CreateSeamless, LoadAnimsJson, LoadAnimsPlants, LoadAnimsChars, LoadAnimsMisc1, LoadAnimsMisc2, SaveAnimsJson, LoadKeysGfx, CreateScenes, MakeItemsInfo, MakeCraftRecipes, MakeDemoWorld, SetControlTips, DeleteObsoleteTemplates, OpenMainMenu }
 
         private static readonly int allStepsCount = ((Step[])Enum.GetValues(typeof(Step))).Length;
 
@@ -20,7 +20,12 @@ namespace SonOfRobin
             { Step.LoadSounds, "loading sounds" },
             { Step.LoadInitialTextures, "loading textures" },
             { Step.CreateSeamless, "creating seamless textures" },
-            { Step.LoadAnims, "loading animations" },
+            { Step.LoadAnimsJson, "loading animations (json)" },
+            { Step.LoadAnimsPlants, "loading animations (plants)" },
+            { Step.LoadAnimsChars, "loading animations (characters)" },
+            { Step.LoadAnimsMisc1, "loading animations (others 1)" },
+            { Step.LoadAnimsMisc2, "loading animations (others 2)" },
+            { Step.SaveAnimsJson, "saving animations (json)" },
             { Step.LoadKeysGfx, "loading keyboard textures" },
             { Step.CreateScenes, "creating helper scenes" },
             { Step.MakeItemsInfo, "creating items info" },
@@ -79,19 +84,31 @@ namespace SonOfRobin
                     RepeatingPattern.ConvertAllTexturesToPatterns();
                     break;
 
-                case Step.LoadAnims:
-                    DateTime startTime = DateTime.Now;
-
+                case Step.LoadAnimsJson:
                     if (!AnimData.LoadJsonDict()) AnimData.PurgeDiskCache();
-                    AnimData.CreateAllAnims();
+                    break;
+
+                case Step.LoadAnimsPlants:
+                    AnimData.CreateAnimsPlants();
+                    break;
+
+                case Step.LoadAnimsChars:
+                    AnimData.CreateAnimsCharacters();
+                    break;
+
+                case Step.LoadAnimsMisc1:
+                    AnimData.CreateAnimsMisc1();
+                    break;
+
+                case Step.LoadAnimsMisc2:
+                    AnimData.CreateAnimsMisc2();
+                    break;
+
+                case Step.SaveAnimsJson:
                     AnimData.SaveJsonDict();
                     AnimData.DeleteUsedAtlases();
                     AnimData.textureDict.Clear(); // not needed afterwards
                     AnimData.jsonDict.Clear(); // not needed afterwards
-
-                    TimeSpan duration = DateTime.Now - startTime;
-                    MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Anim creation time: {duration:\\:ss\\.fff}");
-
                     break;
 
                 case Step.LoadKeysGfx:
