@@ -1165,7 +1165,7 @@ namespace SonOfRobin
                                 new Yield.DroppedPiece(pieceName: Name.ShovelIron, chanceToDrop: 10, maxNumberToDrop: 1),
                                 new Yield.DroppedPiece(pieceName: Name.IronBar, chanceToDrop: 10, maxNumberToDrop: 1),
                                 new Yield.DroppedPiece(pieceName: Name.BowAdvanced, chanceToDrop: 15, maxNumberToDrop: 1),
-                                new Yield.DroppedPiece(pieceName: Name.PotionCoffee, chanceToDrop: 1, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: Name.EmptyBottle, chanceToDrop: 2, maxNumberToDrop: 1),
                                 new Yield.DroppedPiece(pieceName: Name.Crystal, chanceToDrop: 10, maxNumberToDrop: 1),
                             });
 
@@ -1213,7 +1213,7 @@ namespace SonOfRobin
                                 new Yield.DroppedPiece(pieceName: Name.ScytheIron, chanceToDrop: 10, maxNumberToDrop: 1),
                                 new Yield.DroppedPiece(pieceName: Name.ShovelIron, chanceToDrop: 10, maxNumberToDrop: 1),
                                 new Yield.DroppedPiece(pieceName: Name.IronBar, chanceToDrop: 10, maxNumberToDrop: 3),
-                                new Yield.DroppedPiece(pieceName: Name.PotionCoffee, chanceToDrop: 4, maxNumberToDrop: 2),
+                                new Yield.DroppedPiece(pieceName: Name.EmptyBottle, chanceToDrop: 4, maxNumberToDrop: 1),
                                 new Yield.DroppedPiece(pieceName: Name.Crystal, chanceToDrop: 10, maxNumberToDrop: 3),
                             });
 
