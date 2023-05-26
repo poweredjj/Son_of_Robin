@@ -1251,7 +1251,7 @@ namespace SonOfRobin
         private void CalculateSurroundingCells() // surrouding cells are calculated only once, because they do not change
         {
             foreach (Cell cell in this.allCells)
-            { cell.surroundingCells = GetCellsWithinDistance(cell: cell, distance: 1); }
+            { cell.surroundingCells = this.GetCellsWithinDistance(cell: cell, distance: 1); }
         }
 
         private static string TimeSpanToString(TimeSpan timeSpan)
@@ -1266,8 +1266,10 @@ namespace SonOfRobin
             return timeLeftString;
         }
 
-        private List<Cell> GetCellsWithinDistance(Cell cell, int distance)
+        public List<Cell> GetCellsWithinDistance(Cell cell, int distance)
         {
+            if (cell.grid != this) throw new ArgumentException("This cell is from another grid.");
+
             List<Cell> cellsWithinDistance = new List<Cell>();
 
             for (int offsetX = -distance; offsetX < distance + 1; offsetX++)

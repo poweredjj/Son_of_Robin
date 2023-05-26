@@ -366,9 +366,12 @@ namespace SonOfRobin
             Upgrade,
             WaterDrop,
             RainDrops,
+
             BubbleExclamationRed,
             BubbleExclamationBlue,
             BubbleCraftGreen,
+
+            SeaWave,
         }
 
         public static void AddFrameList(PkgName animPackage, byte animSize, List<AnimFrame> frameList, string animName = "default")
@@ -697,6 +700,7 @@ namespace SonOfRobin
             AddFrameList(animPackage: PkgName.PotionTransparent, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "potion_transparent", layer: 0, scale: 0.5f));
             AddFrameList(animPackage: PkgName.PotionLightYellow, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "bottle_oil", layer: 0, scale: 0.5f));
             AddFrameList(animPackage: PkgName.WaterDrop, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "water drops/water_drop_x1", layer: 0, scale: 0.5f));
+            AddFrameList(animPackage: PkgName.SeaWave, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "wave", layer: 0, scale: 0.5f));
             AddFrameList(animPackage: PkgName.RainDrops, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "water drops/water_drop_x1", layer: 2, scale: 0.06f));
             AddFrameList(animPackage: PkgName.RainDrops, animSize: 1, frameList: ConvertImageToFrameList(atlasName: "water drops/water_drop_x2", layer: 2, scale: 0.28f));
             AddFrameList(animPackage: PkgName.RainDrops, animSize: 2, frameList: ConvertImageToFrameList(atlasName: "water drops/water_drop_x3", layer: 2, scale: 0.28f));

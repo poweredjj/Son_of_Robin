@@ -110,6 +110,59 @@ namespace SonOfRobin
             }
         }
 
+        public override void SM_SeaWaveMove()
+        {
+            if (!this.sprite.IsInCameraRect) return;
+
+            if (this.tweener == null)
+            {
+                this.tweener = new Tweener();
+
+                this.sprite.opacity = 1f; // TODO add opacityFade
+
+                Vector2 currentCellXY = new Vector2(this.sprite.currentCell.cellNoX, this.sprite.currentCell.cellNoY);
+
+                var nearbyCells = this.world.Grid.GetCellsWithinDistance(cell: this.sprite.currentCell, distance: 3)
+                    .OrderByDescending(cell => Vector2.Distance(currentCellXY, new Vector2(cell.cellNoX, cell.cellNoY)));
+
+                Vector2 targetPos = this.sprite.position; // to be changed below
+
+                foreach (Cell cell in nearbyCells)
+                {
+                    if (cell.IsAllWater)
+                    {
+                        this.sprite.position = cell.center;
+                        break;
+                    }
+                }
+
+                this.tweener.TweenTo(target: this.sprite, expression: sprite => sprite.position, toValue: targetPos, duration: this.world.random.Next(6, 12), delay: 0)
+                    .AutoReverse()
+                    .Easing(EasingFunctions.QuadraticInOut);
+            }
+            else
+            {
+                Tween tweenPos = this.tweener.FindTween(target: this, memberName: "position");
+                if (tweenPos != null && tweenPos.Completion > 0.5f)
+                {
+
+                    // TODO make it work
+
+                    this.sprite.opacity = 0.3f;
+                    this.sprite.color = Color.Red;
+                }
+
+
+                // TODO add sound playing code here
+            }
+
+            if (this.tweener != null)
+            {
+                this.tweener.Update((float)Scene.CurrentGameTime.ElapsedGameTime.TotalSeconds);
+                this.sprite.SetNewPosition(this.sprite.position); // to update grid, because tweener will change the position directly
+            }
+        }
+
         public override void SM_FogMoveRandomly()
         {
             // Suitable only for passive temporary decorations, that will never be moved "manually".

@@ -267,6 +267,8 @@ namespace SonOfRobin
             SoundNightCrickets,
             SoundNoonCicadas,
             SoundLava,
+
+            SeaWave,
         }
 
         public static readonly Name[] allNames = (Name[])Enum.GetValues(typeof(Name));
@@ -2658,6 +2660,23 @@ namespace SonOfRobin
                         soundPack.AddAction(action: PieceSoundPack.Action.HasAppeared, sound: new Sound(name: SoundData.Name.ShootFire, maxPitchVariation: 0.6f));
 
                         VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Explosion, destructionDelay: -1, allowedTerrain: new AllowedTerrain(), minDistance: 0, maxDistance: 0, generation: generation, readableName: "explosion", description: "An explosion.", activeState: BoardPiece.State.Empty, serialize: false, ignoresCollisions: true, visible: true, fireAffinity: 0f, lightEngine: new LightEngine(size: 150, opacity: 1f, colorActive: true, color: Color.Orange * 0.3f, isActive: true, castShadows: true), soundPack: soundPack);
+
+                        return visualEffect;
+                    }
+
+                case Name.SeaWave:
+                    {
+                        var packageNames = new List<AnimData.PkgName> { AnimData.PkgName.SeaWave };
+                        var animPkg = packageNames[random.Next(0, packageNames.Count)];
+
+                        AllowedTerrain allowedTerrain = new AllowedTerrain(
+                            extPropertiesDict: new Dictionary<ExtBoardProps.Name, bool> { { ExtBoardProps.Name.OuterBeach, true } });
+
+                        AllowedDensity allowedDensity = new AllowedDensity(radious: 200, maxNoOfPiecesSameName: 1);
+
+                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: animPkg, destructionDelay: 0, allowedTerrain: allowedTerrain, allowedDensity: allowedDensity, minDistance: 0, maxDistance: 0, generation: generation, readableName: "sea wave", description: "Sea wave.", activeState: BoardPiece.State.SeaWaveMove, serialize: false, ignoresCollisions: false, visible: true, fireAffinity: 1.0f);
+
+                        visualEffect.sprite.opacity = 0f;
 
                         return visualEffect;
                     }

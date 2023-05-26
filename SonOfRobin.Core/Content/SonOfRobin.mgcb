@@ -7005,6 +7005,18 @@
 /processorParam:TextureFormat=Color
 /build:gfx/water drops/water_drop_x8.png
 
+#begin gfx/wave.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/wave.png
+
 #begin gfx/white_spot.png
 /importer:TextureImporter
 /processor:TextureProcessor

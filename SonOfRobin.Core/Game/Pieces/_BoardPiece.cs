@@ -44,6 +44,7 @@ namespace SonOfRobin
 
             AnimalRunForClosestWater,
             AnimalCallForHelp,
+            SeaWaveMove,
         }
 
         public static readonly Category[] allCategories = (Category[])Enum.GetValues(typeof(Category));
@@ -696,6 +697,12 @@ namespace SonOfRobin
                         return;
                     }
 
+                case State.SeaWaveMove:
+                    {
+                        this.SM_SeaWaveMove();
+                        return;
+                    }
+
                 case State.PlayerControlledBuilding:
                     {
                         this.SM_PlayerControlledBuilding();
@@ -958,6 +965,8 @@ namespace SonOfRobin
         { throw new DivideByZeroException("This method should not be executed."); }
 
         public virtual void SM_AnimalCallForHelp()
+        { throw new DivideByZeroException("This method should not be executed."); }
+        public virtual void SM_SeaWaveMove()
         { throw new DivideByZeroException("This method should not be executed."); }
     }
 }
