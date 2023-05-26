@@ -540,6 +540,7 @@ namespace SonOfRobin
         {
             var prefsData = new Dictionary<string, Object> { };
 
+            prefsData["debugMode"] = debugMode;
             prefsData["customizeWorld"] = customizeWorld;
             prefsData["newWorldResDivider"] = newWorldResDivider;
             prefsData["selectedWorldSize"] = SelectedWorldSize;
@@ -661,6 +662,7 @@ namespace SonOfRobin
                     highQualityWater = (bool)prefsData["highQualityWater"];
                     plantsSway = (bool)prefsData["plantsSway"];
                     cap30FPS = (bool)prefsData["cap30FPS"];
+                    debugMode = (bool)prefsData["debugMode"];
 
                     prefsLoaded = true;
                 }
