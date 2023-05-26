@@ -181,8 +181,6 @@ namespace SonOfRobin
             this.identifiedPieces = new List<PieceTemplate.Name> { PieceTemplate.Name.KnifeSimple };
             if (this.demoMode) this.solidColorManager.Add(new SolidColor(color: Color.White, viewOpacity: 0.4f, clearScreen: false, priority: 1));
             this.soundPaused = false;
-
-            SonOfRobinGame.Game.IsFixedTimeStep = false; // speeds up the creation process
         }
 
         public PieceTemplate.Name PlayerName
@@ -394,8 +392,6 @@ namespace SonOfRobin
         {
             if (InputMapper.IsPressed(InputMapper.Action.GlobalCancelReturnSkip))
             {
-                SonOfRobinGame.Game.IsFixedTimeStep = Preferences.FrameSkip;
-
                 SonOfRobinGame.FullScreenProgressBar.TurnOff();
 
                 bool menuFound = GetTopSceneOfType(typeof(Menu)) != null;
@@ -407,7 +403,6 @@ namespace SonOfRobin
 
             if (this.Grid.CreationInProgress)
             {
-                SonOfRobinGame.Game.IsFixedTimeStep = false; // speeds up the creation process
                 this.Grid.CompleteCreation();
                 return;
             }
@@ -474,8 +469,6 @@ namespace SonOfRobin
             this.Grid.LoadAllTexturesInCameraView();
             if (!this.demoMode) this.map.ForceRender();
             this.CreateTemporaryDecorations(ignoreDuration: true);
-
-            SonOfRobinGame.Game.IsFixedTimeStep = Preferences.FrameSkip;
 
             if (!this.demoMode && newGameStarted) this.HintEngine.ShowGeneralHint(type: HintEngine.Type.CineIntroduction, ignoreDelay: true);
             GC.Collect();

@@ -20,7 +20,7 @@ namespace SonOfRobin
         private const string gridName = "grid.json";
         public const string tempPrefix = "_save_temp_";
 
-        private const int maxPiecesInPackage = 3000;
+        private const int maxPiecesInPackage = 5000;
 
         private readonly DateTime createdTime;
         private readonly bool quitGameAfterSaving;
@@ -119,7 +119,6 @@ namespace SonOfRobin
         public LoaderSaver(bool saveMode, string saveSlotName, World world = null, bool showSavedMessage = false, bool quitGameAfterSaving = false) : base(inputType: InputTypes.Normal, priority: 1, blocksUpdatesBelow: true, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.QuitLoading, tipsLayout: ControlTips.TipsLayout.QuitLoading)
         {
             this.createdTime = DateTime.Now;
-            SonOfRobinGame.Game.IsFixedTimeStep = false; // if turned on, some screen updates will be missing
             this.drawActive = false;
             this.saveMode = saveMode;
             this.modeText = this.saveMode ? "Saving" : "Loading";
@@ -191,7 +190,6 @@ namespace SonOfRobin
 
         public override void Remove()
         {
-            if (Preferences.FrameSkip) SonOfRobinGame.Game.IsFixedTimeStep = true;
             if (this.saveMode || this.ErrorOccured) SonOfRobinGame.FullScreenProgressBar.TurnOff();
 
             base.Remove();
