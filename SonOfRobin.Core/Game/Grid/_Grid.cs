@@ -37,7 +37,7 @@ namespace SonOfRobin
             { Stage.StartGame, "starting the game" },
         };
 
-        private Task task;
+        private Task backgroundTask;
         private Stage currentStage;
         private DateTime stageStartTime;
         public bool CreationInProgress { get; private set; }
@@ -278,13 +278,13 @@ namespace SonOfRobin
         {
             this.UpdateProgressBar();
 
-            if (this.world.demoMode) this.ProcessOneCreationStage(); // demo mode must be processed normally
+            if (this.world.demoMode) this.ProcessAllCreationStages(); // demo mode must be processed normally
             else
             {
-                if (this.task == null) this.task = Task.Run(() => this.ProcessAllCreationStages());
+                if (this.backgroundTask == null) this.backgroundTask = Task.Run(() => this.ProcessAllCreationStages());
             }
 
-            if (!this.CreationInProgress) this.task = null;
+            if (!this.CreationInProgress) this.backgroundTask = null;
         }
 
         private void ProcessAllCreationStages()
