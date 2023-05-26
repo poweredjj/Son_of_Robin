@@ -238,6 +238,8 @@ namespace SonOfRobin
 
         private void UpdateProgressBar()
         {
+            if (this.HasBeenRemoved) return;
+
             int currentGlobalStep = 0;
             int totalGlobalSteps = this.saveMode || this.gridTemplateFound ? 1 : SonOfRobinGame.enteringIslandGlobalSteps;
 

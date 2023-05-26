@@ -810,7 +810,7 @@ namespace SonOfRobin
 
         private void UpdateProgressBar()
         {
-            if (this.world.demoMode) return;
+            if (this.world.demoMode || this.world.HasBeenRemoved) return;
 
             float percentage = FullScreenProgressBar.CalculatePercentage(currentLocalStep: this.allCells.Count - this.cellsToProcessOnStart.Count, totalLocalSteps: this.allCells.Count, currentGlobalStep: 1 + (int)this.currentStage, totalGlobalSteps: SonOfRobinGame.enteringIslandGlobalSteps);
 
