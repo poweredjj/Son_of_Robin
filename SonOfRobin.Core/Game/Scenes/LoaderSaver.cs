@@ -53,7 +53,7 @@ namespace SonOfRobin
         private string currentStepName;
         private int processedSteps;
         private readonly int allSteps;
-        private Task task;
+        private Task backgroundTask;
 
         private int PiecesFilesCount
         { get { return Directory.GetFiles(this.savePath).Where(path => path.Contains("pieces_")).Count(); } }
@@ -218,14 +218,14 @@ namespace SonOfRobin
             if (this.saveMode)
             {
                 // saving
-                if (this.task == null) this.task = Task.Run(() => this.ProcessNextSavingStep());
+                if (this.backgroundTask == null) this.backgroundTask = Task.Run(() => this.ProcessNextSavingStep());
             }
             else
             {
                 // loading
-                if (this.task == null) this.task = Task.Run(() => this.ProcessNextLoadingStep());
+                if (this.backgroundTask == null) this.backgroundTask = Task.Run(() => this.ProcessNextLoadingStep());
 
-                if (this.task != null && this.task.IsCompleted)
+                if (this.backgroundTask != null && this.backgroundTask.IsCompleted)
                 {
                     this.FinishLoading();
                     this.processingComplete = true;

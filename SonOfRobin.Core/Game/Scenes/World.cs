@@ -24,7 +24,7 @@ namespace SonOfRobin
         public TimeSpan creationDuration;
         public readonly bool demoMode;
 
-        private Task task;
+        private Task backgroundTask;
         private Object saveGameData;
         public Dictionary<string, BoardPiece> piecesByOldID; // for deserialization only
         public bool createMissingPiecesOutsideCamera;
@@ -422,12 +422,12 @@ namespace SonOfRobin
 
                     SonOfRobinGame.FullScreenProgressBar.TurnOn(percentage: percentage, text: LoadingTips.GetTip(), optionalText: detailedInfo);
 
-                    if (this.task == null) this.task = Task.Run(() => this.ProcessAllPopulatingSteps());
+                    if (this.backgroundTask == null) this.backgroundTask = Task.Run(() => this.ProcessAllPopulatingSteps());
                     return;
                 }
             }
 
-            this.task = null;
+            this.backgroundTask = null;
 
             SonOfRobinGame.FullScreenProgressBar.TurnOff();
             this.touchLayout = TouchLayout.WorldMain;
