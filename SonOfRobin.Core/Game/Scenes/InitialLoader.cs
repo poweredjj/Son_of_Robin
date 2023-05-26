@@ -2,23 +2,20 @@
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SonOfRobin
 {
     public class InitialLoader : Scene
     {
         public enum Step
-        { Initial, LoadEffects, LoadFonts, CreateControlTips, LoadSounds, LoadInitialTextures, CreateSeamless, LoadAnimsJson, LoadAnimsPlants, LoadAnimsChars, LoadAnimsMisc1, LoadAnimsMisc2, SaveAnimsJson, LoadKeysGfx, CreateScenes, MakeItemsInfo, MakeCraftRecipes, MakeDemoWorld, SetControlTips, DeleteObsoleteTemplates, OpenMainMenu }
+        { Initial, StartBgTask, CreateSeamless, LoadAnimsJson, LoadAnimsPlants, LoadAnimsChars, LoadAnimsMisc1, LoadAnimsMisc2, SaveAnimsJson, LoadKeysGfx, MakeItemsInfo, MakeCraftRecipes, CreateScenes, MakeDemoWorld, SetControlTips, WaitForBackgroundTasksToFinish, OpenMainMenu }
 
         private static readonly int allStepsCount = ((Step[])Enum.GetValues(typeof(Step))).Length;
 
         private static readonly Dictionary<Step, string> namesForSteps = new Dictionary<Step, string> {
             { Step.Initial, "starting" },
-            { Step.LoadEffects, "loading effects" },
-            { Step.LoadFonts, "loading fonts" },
-            { Step.CreateControlTips, "creating control tips" },
-            { Step.LoadSounds, "loading sounds" },
-            { Step.LoadInitialTextures, "loading textures" },
+            { Step.StartBgTask, "starting background tasks" },
             { Step.CreateSeamless, "creating seamless textures" },
             { Step.LoadAnimsJson, "loading animations (json)" },
             { Step.LoadAnimsPlants, "loading animations (plants)" },
@@ -32,10 +29,11 @@ namespace SonOfRobin
             { Step.MakeCraftRecipes, "preparing craft recipes" },
             { Step.MakeDemoWorld, "making demo world" },
             { Step.SetControlTips, "setting control tips" },
-            { Step.DeleteObsoleteTemplates, "deleting obsolete templates" },
+            { Step.WaitForBackgroundTasksToFinish, "waiting for background tasks to finish" },
             { Step.OpenMainMenu, "opening main menu" },
         };
 
+        private Task backgroundTask;
         private Step currentStep;
         private readonly SpriteFont font;
         private readonly Texture2D splashScreenTexture;
@@ -50,6 +48,14 @@ namespace SonOfRobin
             this.splashScreenTexture = SonOfRobinGame.SplashScreenTexture;
         }
 
+        private void ProcessBackgroundTasks()
+        {
+            SoundData.LoadAllSounds();
+            SonOfRobinGame.LoadEffects();
+            SonOfRobinGame.LoadFonts();
+            GridTemplate.DeleteObsolete();
+        }
+
         public override void Update(GameTime gameTime)
         {
             SonOfRobinGame.Game.IsFixedTimeStep = false; // if turned on, some screen updates will be missing
@@ -58,26 +64,12 @@ namespace SonOfRobin
             switch (this.currentStep)
             {
                 case Step.Initial:
-                    break;
-
-                case Step.LoadEffects:
-                    SonOfRobinGame.LoadEffects();
-                    break;
-
-                case Step.LoadFonts:
-                    SonOfRobinGame.LoadFonts();
-                    break;
-
-                case Step.CreateControlTips:
+                    SonOfRobinGame.LoadInitialTextures();
                     SonOfRobinGame.CreateControlTips();
                     break;
 
-                case Step.LoadSounds:
-                    SoundData.LoadAllSounds();
-                    break;
-
-                case Step.LoadInitialTextures:
-                    SonOfRobinGame.LoadInitialTextures();
+                case Step.StartBgTask:
+                    this.backgroundTask = Task.Run(() => this.ProcessBackgroundTasks());
                     break;
 
                 case Step.CreateSeamless:
@@ -116,20 +108,20 @@ namespace SonOfRobin
                     InputMapper.RebuildMappings();
                     break;
 
-                case Step.CreateScenes:
-                    SolidColor solidColor = new SolidColor(color: Color.RoyalBlue, viewOpacity: 1f, clearScreen: true);
-                    solidColor.MoveToBottom();
-                    new MessageLog();
-                    Preferences.DebugMode = Preferences.DebugMode; // to create debugMode scenes
-                    SonOfRobinGame.CreateHintAndProgressWindows();
-                    break;
-
                 case Step.MakeItemsInfo:
                     PieceInfo.CreateAllInfo();
                     break;
 
                 case Step.MakeCraftRecipes:
                     Craft.PopulateAllCategories();
+                    break;
+
+                case Step.CreateScenes:
+                    SolidColor solidColor = new SolidColor(color: Color.RoyalBlue, viewOpacity: 1f, clearScreen: true);
+                    solidColor.MoveToBottom();
+                    new MessageLog();
+                    Preferences.DebugMode = Preferences.DebugMode; // to create debugMode scenes
+                    SonOfRobinGame.CreateHintAndProgressWindows();
                     break;
 
                 case Step.MakeDemoWorld:
@@ -150,13 +142,16 @@ namespace SonOfRobin
 
                     break;
 
-                case Step.SetControlTips:
-                    Preferences.ControlTipsScheme = Preferences.ControlTipsScheme; // to load default control tips
+                case Step.WaitForBackgroundTasksToFinish:
+                    while (true)
+                    {
+                        if (this.backgroundTask.IsCompleted) break;
+                    }
+
                     break;
 
-                case Step.DeleteObsoleteTemplates:
-                    GridTemplate.DeleteObsolete();
-
+                case Step.SetControlTips:
+                    Preferences.ControlTipsScheme = Preferences.ControlTipsScheme; // to load default control tips
                     break;
 
                 case Step.OpenMainMenu:
@@ -171,7 +166,6 @@ namespace SonOfRobin
                         new TextWindow(text: "This version of 'Son of Robin' has expired.", textColor: Color.White, bgColor: Color.DarkBlue, useTransition: false, animate: true, blockInputDuration: 60, closingTask: Scheduler.TaskName.OpenMainMenuIfSpecialKeysArePressed);
                     }
                     Preferences.ShowFpsCounter = Preferences.ShowFpsCounter; // to display fps counter (if set)
-                    this.splashScreenTexture.Dispose();
                     break;
 
                 default:
