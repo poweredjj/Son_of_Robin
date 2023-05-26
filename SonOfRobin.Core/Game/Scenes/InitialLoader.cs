@@ -9,7 +9,7 @@ namespace SonOfRobin
     public class InitialLoader : Scene
     {
         public enum Step
-        { Initial, StartBgTasks, CreateSeamless, LoadAnimsJson, LoadAnimsPlants, LoadAnimsChars, LoadAnimsMisc1, LoadAnimsMisc2, SaveAnimsJson, LoadKeysGfx, MakeItemsInfo, MakeCraftRecipes, CreateScenes, MakeDemoWorld, SetControlTips, WaitForBackgroundTasksToFinish, OpenMainMenu }
+        { Initial, StartBgTasks, CreateSeamless, LoadAnimsJson, LoadAnimsPlants, LoadAnimsChars, LoadAnimsMisc1, LoadAnimsMisc2, SaveAnimsJson, LoadKeysGfx, MakeItemsInfo, MakeCraftRecipes, CreateScenes, WaitForBackgroundTasksToFinish, MakeDemoWorld, SetControlTips , OpenMainMenu }
 
         private static readonly int allStepsCount = ((Step[])Enum.GetValues(typeof(Step))).Length;
 
@@ -76,8 +76,17 @@ namespace SonOfRobin
                     break;
 
                 case Step.StartBgTasks:
-                    this.backgroundTask1 = Task.Run(() => this.ProcessBackgroundTasks1());
-                    this.backgroundTask2 = Task.Run(() => this.ProcessBackgroundTasks2());
+
+                    if (SonOfRobinGame.platform == Platform.Mobile) // background tasks are not processed correctly on mobile
+                    {
+                        this.ProcessBackgroundTasks1();
+                        this.ProcessBackgroundTasks2();
+                    }
+                    else
+                    {
+                        this.backgroundTask1 = Task.Run(() => this.ProcessBackgroundTasks1());
+                        this.backgroundTask2 = Task.Run(() => this.ProcessBackgroundTasks2());
+                    }
                     break;
 
                 case Step.CreateSeamless:
@@ -132,6 +141,14 @@ namespace SonOfRobin
                     SonOfRobinGame.CreateHintAndProgressWindows();
                     break;
 
+                case Step.WaitForBackgroundTasksToFinish:
+                    while (true)
+                    {
+                        if (SonOfRobinGame.platform == Platform.Mobile || (this.backgroundTask1.IsCompleted && this.backgroundTask2.IsCompleted)) break;
+                    }
+
+                    break;
+
                 case Step.MakeDemoWorld:
                     if (Preferences.showDemoWorld && SonOfRobinGame.LicenceValid)
                     {
@@ -146,14 +163,6 @@ namespace SonOfRobin
                             if (!demoWorld.WorldCreationInProgress && !demoWorld.PopulatingInProgress) break;
                             else SonOfRobinGame.CurrentUpdateAdvance(); // manually changing the counter, to avoid softlock
                         }
-                    }
-
-                    break;
-
-                case Step.WaitForBackgroundTasksToFinish:
-                    while (true)
-                    {
-                        if (this.backgroundTask1.IsCompleted && this.backgroundTask2.IsCompleted) break;
                     }
 
                     break;
