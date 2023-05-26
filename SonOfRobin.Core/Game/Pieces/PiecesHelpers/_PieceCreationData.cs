@@ -70,7 +70,8 @@ namespace SonOfRobin
                 new PieceCreationData(name: PieceTemplate.Name.SwampGas, temporaryDecoration: true, tempDecorMultiplier: 3),
                 new PieceCreationData(name: PieceTemplate.Name.LavaGas, temporaryDecoration: true, tempDecorMultiplier: 2),
 
-                new PieceCreationData(name: PieceTemplate.Name.SeaWave, temporaryDecoration: true, tempDecorMultiplier: 1),
+                // new PieceCreationData(name: PieceTemplate.Name.SeaWave, temporaryDecoration: true, tempDecorMultiplier: 1), // TODO turn off after completing SeaWave logic
+
                 new PieceCreationData(name: PieceTemplate.Name.SoundSeaWaves, temporaryDecoration: true, tempDecorMultiplier: 1),
                 new PieceCreationData(name: PieceTemplate.Name.SoundSeaWind, temporaryDecoration: true, tempDecorMultiplier: 1),
                 new PieceCreationData(name: PieceTemplate.Name.SoundLakeWaves, temporaryDecoration: true, tempDecorMultiplier: 2),
