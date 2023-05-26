@@ -39,7 +39,7 @@ namespace SonOfRobin
                     camera.world.Grid.GetSpritesInCameraViewAndPutIntoList(camera: camera, groupName: groupName, spriteListToFill: this.spriteList, compareWithCameraRect: compareWithCameraRect);
                     this.lastCheckedFrame = camera.world.CurrentUpdate;
                 }
-                // else MessageLog.AddMessage(msgType: MsgType.User, message: $"{camera.world.currentUpdate} reusing sprite search {groupName} - {compareWithCameraRect}");
+                // else MessageLog.AddMessage(msgType: MsgType.User, message: $"{camera.world.CurrentUpdate} reusing sprite search {groupName} - {compareWithCameraRect}");
 
                 return this.spriteList;
             }
