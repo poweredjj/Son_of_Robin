@@ -408,17 +408,18 @@ namespace SonOfRobin
                     break;
 
                 case Stage.ProcessTextures:
+
                     int texturesCount = Directory.GetFiles(this.gridTemplate.templatePath).Where(file => file.Contains("background_") && file.EndsWith(".png")).Count();
                     bool allTexturesFound = texturesCount == this.allCells.Count;
 
                     cellProcessingQueue = new List<Cell> { };
 
-                    int noOfCellsToProcess = allTexturesFound ? this.allCells.Count : 200;
+                    int noOfCellsToProcess = allTexturesFound ? this.allCells.Count : 300;
                     for (int i = 0; i < noOfCellsToProcess; i++)
                     {
                         cellProcessingQueue.Add(this.cellsToProcessOnStart[0]);
                         this.cellsToProcessOnStart.RemoveAt(0);
-                        if (this.cellsToProcessOnStart.Count == 0) break;
+                        if (!this.cellsToProcessOnStart.Any()) break;
                     }
 
                     Parallel.ForEach(cellProcessingQueue, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, cell =>
@@ -463,6 +464,7 @@ namespace SonOfRobin
 
                 case Stage.StartGame:
                     // to show "starting game" on progress bar
+                    this.UpdateProgressBar(); // otherwise, progress bar will not be updated
                     this.cellsToProcessOnStart.Clear();
 
                     break;
