@@ -436,7 +436,7 @@ namespace SonOfRobin
 
             currentlyProcessedScene = null;
 
-            foreach (Scene scene in UpdateStack)
+            foreach (Scene scene in UpdateStack.ToList())
             {
                 currentlyProcessedScene = scene;
                 Input.InputActive = scene.inputActive && SonOfRobinGame.Game.IsActive;
