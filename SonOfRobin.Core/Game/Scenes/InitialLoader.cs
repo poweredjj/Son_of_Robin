@@ -9,13 +9,13 @@ namespace SonOfRobin
     public class InitialLoader : Scene
     {
         public enum Step
-        { Initial, StartBgTask, CreateSeamless, LoadAnimsJson, LoadAnimsPlants, LoadAnimsChars, LoadAnimsMisc1, LoadAnimsMisc2, SaveAnimsJson, LoadKeysGfx, MakeItemsInfo, MakeCraftRecipes, CreateScenes, MakeDemoWorld, SetControlTips, WaitForBackgroundTasksToFinish, OpenMainMenu }
+        { Initial, StartBgTasks, CreateSeamless, LoadAnimsJson, LoadAnimsPlants, LoadAnimsChars, LoadAnimsMisc1, LoadAnimsMisc2, SaveAnimsJson, LoadKeysGfx, MakeItemsInfo, MakeCraftRecipes, CreateScenes, MakeDemoWorld, SetControlTips, WaitForBackgroundTasksToFinish, OpenMainMenu }
 
         private static readonly int allStepsCount = ((Step[])Enum.GetValues(typeof(Step))).Length;
 
         private static readonly Dictionary<Step, string> namesForSteps = new Dictionary<Step, string> {
             { Step.Initial, "starting" },
-            { Step.StartBgTask, "starting background tasks" },
+            { Step.StartBgTasks, "starting background tasks" },
             { Step.CreateSeamless, "creating seamless textures" },
             { Step.LoadAnimsJson, "loading animations (json)" },
             { Step.LoadAnimsPlants, "loading animations (plants)" },
@@ -33,7 +33,9 @@ namespace SonOfRobin
             { Step.OpenMainMenu, "opening main menu" },
         };
 
-        private Task backgroundTask;
+        private DateTime startTime;
+        private Task backgroundTask1;
+        private Task backgroundTask2;
         private Step currentStep;
         private readonly SpriteFont font;
         private readonly Texture2D splashScreenTexture;
@@ -43,15 +45,20 @@ namespace SonOfRobin
 
         public InitialLoader() : base(inputType: InputTypes.None, priority: 0, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty, alwaysUpdates: true)
         {
+            this.startTime = DateTime.Now;
             this.currentStep = 0;
             this.font = SonOfRobinGame.FontPressStart2P5;
             this.splashScreenTexture = SonOfRobinGame.SplashScreenTexture;
         }
 
-        private void ProcessBackgroundTasks()
+        private void ProcessBackgroundTasks1()
         {
             SoundData.LoadAllSounds();
             SonOfRobinGame.LoadEffects();
+        }
+
+        private void ProcessBackgroundTasks2()
+        {
             SonOfRobinGame.LoadFonts();
             GridTemplate.DeleteObsolete();
         }
@@ -68,8 +75,9 @@ namespace SonOfRobin
                     SonOfRobinGame.CreateControlTips();
                     break;
 
-                case Step.StartBgTask:
-                    this.backgroundTask = Task.Run(() => this.ProcessBackgroundTasks());
+                case Step.StartBgTasks:
+                    this.backgroundTask1 = Task.Run(() => this.ProcessBackgroundTasks1());
+                    this.backgroundTask2 = Task.Run(() => this.ProcessBackgroundTasks2());
                     break;
 
                 case Step.CreateSeamless:
@@ -145,7 +153,7 @@ namespace SonOfRobin
                 case Step.WaitForBackgroundTasksToFinish:
                     while (true)
                     {
-                        if (this.backgroundTask.IsCompleted) break;
+                        if (this.backgroundTask1.IsCompleted && this.backgroundTask2.IsCompleted) break;
                     }
 
                     break;
@@ -179,6 +187,9 @@ namespace SonOfRobin
 
             if (finish)
             {
+                TimeSpan loadingDuration = DateTime.Now - this.startTime;
+                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Initial loading time: {loadingDuration:hh\\:mm\\:ss\\.fff}.", color: Color.GreenYellow);
+
                 this.Remove();
                 GC.Collect();
             }
