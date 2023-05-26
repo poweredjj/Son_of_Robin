@@ -145,17 +145,6 @@ namespace SonOfRobin
                     new Tracking(world: world, targetSprite: world.Player.sprite, followingSprite: heart.sprite, offsetX: 0, offsetY: 0, targetXAlign: XAlign.Right, targetYAlign: YAlign.Top, followingXAlign: XAlign.Left, followingYAlign: YAlign.Bottom, followSlowDown: 5);
                 }
 
-                if (Keyboard.HasBeenPressed(Keys.D8))
-                {
-                    Rectangle extendedViewRect = world.camera.ExtendedViewRect;
-
-                    for (int i = 0; i < 30; i++)
-                    {
-                        Vector2 position = new Vector2(world.random.Next(extendedViewRect.Left, extendedViewRect.Right), world.camera.viewRect.Top);
-                        BoardPiece piece = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: position, templateName: PieceTemplate.Name.RainDrop, closestFreeSpot: true);
-                    }
-                }
-
                 if (Keyboard.HasBeenPressed(Keys.D9))
                 {
                     world.CreateMissingPieces(initialCreation: false, maxAmountToCreateAtOnce: 100, outsideCamera: true, multiplier: 0.1f, clearDoNotCreateList: true);

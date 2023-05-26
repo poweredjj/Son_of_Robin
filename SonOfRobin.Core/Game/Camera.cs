@@ -95,7 +95,7 @@ namespace SonOfRobin
         public Rectangle viewRect;
         public Vector2 viewPos;
 
-        public Rectangle ExtendedViewRect // to be used for whole screen effects, that does not show borders during transformations (position, scale)
+        public Rectangle ExtendedViewRect
         {
             get
             {
@@ -106,6 +106,20 @@ namespace SonOfRobin
                     y: this.viewRect.Y - (screenExtension / 2),
                     width: this.viewRect.Width + screenExtension,
                     height: this.viewRect.Height + screenExtension);
+            }
+        }
+
+        public Rectangle DarknessViewRect // to avoid edge flickering
+        {
+            get
+            {
+                int screenExtension = 2;
+
+                return new Rectangle(
+                    x: this.viewRect.X - screenExtension,
+                    y: this.viewRect.Y - screenExtension,
+                    width: this.viewRect.Width + (screenExtension * 2),
+                    height: this.viewRect.Height + (screenExtension * 2));
             }
         }
 
