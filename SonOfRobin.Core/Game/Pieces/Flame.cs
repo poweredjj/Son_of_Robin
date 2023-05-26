@@ -109,7 +109,7 @@ namespace SonOfRobin
 
                             if (heatedPiece.GetType() == typeof(Player) && !this.world.solidColorManager.AnySolidColorPresent)
                             {
-                                this.world.ShakeScreen();
+                                this.world.camera.AddRandomShake();
                                 this.world.FlashRedOverlay();
                             }
                         }
@@ -141,7 +141,7 @@ namespace SonOfRobin
                 {
                     if (!this.world.solidColorManager.AnySolidColorPresent)
                     {
-                        this.world.ShakeScreen();
+                        this.world.camera.AddRandomShake();
                         this.world.FlashRedOverlay();
                     }
                 }

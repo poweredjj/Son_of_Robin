@@ -571,8 +571,8 @@ namespace SonOfRobin
                     playerTarget.Fatigue += 15f;
 
                     Vector2 screenShake = movement * 0.02f;
-
-                    this.world.transManager.AddMultipleTransitions(outTrans: true, duration: this.world.random.Next(4, 10), playCount: -1, replaceBaseValue: false, stageTransform: Transition.Transform.Sinus, pingPongCycles: false, cycleMultiplier: 0.02f, paramsToChange: new Dictionary<string, float> { { "PosX", screenShake.X }, { "PosY", screenShake.Y } });
+                    float durationSecs = (float)(this.world.random.NextDouble() * 0.09f) + 0.12f;
+                    this.world.camera.AddShake(movement: screenShake, durationSecs: durationSecs);
 
                     if (this.target.HitPoints > 0) // red screen flash if player is still alive
                     {

@@ -205,7 +205,7 @@ namespace SonOfRobin
             Vector2 currentTargetPos = this.GetTargetCoords();
             Vector2 viewCenter = new Vector2(0, 0); // to be updated below
 
-            if (this.useFluidMotionForMove && !this.disableFluidMotionMoveForOneFrame)
+            if (this.useFluidMotionForMove && !this.disableFluidMotionMoveForOneFrame && this.shakeVal == Vector2.Zero)
             {
                 float cameraDistX = Math.Abs(this.viewRect.Center.X - currentTargetPos.X);
                 float cameraDistY = Math.Abs(this.viewRect.Center.Y - currentTargetPos.Y);
@@ -267,13 +267,22 @@ namespace SonOfRobin
             this.lastUpdateFrame = SonOfRobinGame.CurrentUpdate;
         }
 
+        public void AddRandomShake()
+        {
+            Vector2 movement = new Vector2(this.world.random.Next(-20, 20), this.world.random.Next(-20, 20));
+            float durationSecs = (float)(this.world.random.NextDouble() * 0.09f) + 0.12f;
+
+            this.AddShake(movement: movement, durationSecs: durationSecs);
+        }
+
         public void AddShake(Vector2 movement, float durationSecs)
         {
-            // TODO update calculations, to match effects of using World.ShakeScreen()
+            Tween tweenShake = this.tweener.FindTween(target: this, memberName: "shakeVal");
+            if (tweenShake != null && tweenShake.IsAlive) return;
 
-            this.tweener.TweenTo(target: this, expression: camera => camera.shakeVal, toValue: movement, duration: durationSecs, delay: 0)
-                .AutoReverse()
-                .Easing(EasingFunctions.ExponentialInOut);
+            this.tweener.TweenTo(target: this, expression: camera => camera.shakeVal, toValue: movement * 1.5f, duration: durationSecs * 0.7f, delay: 0)
+            .AutoReverse()
+            .Easing(EasingFunctions.BackInOut);
         }
 
         public void TrackPiece(BoardPiece trackedPiece, bool moveInstantly = false)

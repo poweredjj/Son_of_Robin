@@ -1230,13 +1230,6 @@ namespace SonOfRobin
             MenuTemplate.CreateMenuFromTemplate(templateName: MenuTemplate.Name.Stats);
         }
 
-        public void ShakeScreen()
-        {
-            Vector2 screenShake = new Vector2(this.random.Next(-20, 20), this.random.Next(-20, 20));
-
-            this.transManager.AddMultipleTransitions(outTrans: true, duration: this.random.Next(4, 10), playCount: -1, replaceBaseValue: false, stageTransform: Transition.Transform.Sinus, pingPongCycles: false, cycleMultiplier: 0.02f, paramsToChange: new Dictionary<string, float> { { "PosX", screenShake.X }, { "PosY", screenShake.Y } });
-        }
-
         public void FlashRedOverlay()
         {
             SolidColor redOverlay = new SolidColor(color: Color.Red, viewOpacity: 0.0f);

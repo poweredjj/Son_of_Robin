@@ -906,7 +906,7 @@ namespace SonOfRobin
                 if (!this.world.solidColorManager.AnySolidColorPresent)
                 {
                     this.soundPack.Play(PieceSoundPack.Action.Cry);
-                    this.world.ShakeScreen();
+                    this.world.camera.AddRandomShake();
                     this.world.FlashRedOverlay();
                 }
             }
