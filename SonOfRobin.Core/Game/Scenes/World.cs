@@ -17,7 +17,7 @@ namespace SonOfRobin
 
         private bool plantsProcessing;
         public const int buildDuration = (int)(60 * 2.5);
-        private const int populatingFramesTotal = 20;
+        private const int populatingFramesTotal = 8;
         private int populatingFramesLeft;
         public readonly DateTime creationStart;
         public DateTime creationEnd;
@@ -408,7 +408,7 @@ namespace SonOfRobin
             if (this.Grid.CreationInProgress)
             {
                 SonOfRobinGame.Game.IsFixedTimeStep = false; // speeds up the creation process
-                this.Grid.ProcessNextCreationStage();
+                this.Grid.CompleteCreation();
                 return;
             }
 
@@ -427,7 +427,7 @@ namespace SonOfRobin
 
                     SonOfRobinGame.FullScreenProgressBar.TurnOn(percentage: percentage, text: LoadingTips.GetTip(), optionalText: detailedInfo);
 
-                    if (this.task == null || this.task.IsCompleted) this.task = Task.Run(() => this.ProcessNextPopulatingStep());
+                    if (this.task == null) this.task = Task.Run(() => this.ProcessAllPopulatingSteps());
                     return;
                 }
             }
@@ -481,12 +481,21 @@ namespace SonOfRobin
             GC.Collect();
         }
 
-        private void ProcessNextPopulatingStep()
+        private void ProcessAllPopulatingSteps()
         {
-            bool piecesCreated = CreateMissingPieces(initialCreation: true, maxAmountToCreateAtOnce: (uint)(300000 / populatingFramesTotal), outsideCamera: false, multiplier: 1f, addToDoNotCreateList: false);
-            if (!piecesCreated) this.populatingFramesLeft = 0;
+            DateTime startTime = DateTime.Now;
 
-            this.populatingFramesLeft--;
+            while (true)
+            {
+                bool piecesCreated = CreateMissingPieces(initialCreation: true, maxAmountToCreateAtOnce: (uint)(300000 / populatingFramesTotal), outsideCamera: false, multiplier: 1f, addToDoNotCreateList: false);
+                if (!piecesCreated) this.populatingFramesLeft = 0;
+
+                this.populatingFramesLeft--;
+                if (!this.PopulatingInProgress) break;
+            }
+
+            TimeSpan populatingDuration = DateTime.Now - startTime;
+            MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Populating duration: {populatingDuration:hh\\:mm\\:ss\\.fff}.", color: Color.GreenYellow);
         }
 
         public override void Remove()

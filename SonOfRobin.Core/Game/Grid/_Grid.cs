@@ -274,17 +274,25 @@ namespace SonOfRobin
             return true;
         }
 
-        public void ProcessNextCreationStage()
+        public void CompleteCreation()
         {
             this.UpdateProgressBar();
 
             if (this.world.demoMode) this.ProcessOneCreationStage(); // demo mode must be processed normally
             else
             {
-                if (this.task == null || this.task.IsCompleted) this.task = Task.Run(() => this.ProcessOneCreationStage());
+                if (this.task == null) this.task = Task.Run(() => this.ProcessAllCreationStages());
             }
 
             if (!this.CreationInProgress) this.task = null;
+        }
+
+        private void ProcessAllCreationStages()
+        {
+            while (this.CreationInProgress)
+            {
+                this.ProcessOneCreationStage();
+            }
         }
 
         private void ProcessOneCreationStage()
@@ -400,9 +408,6 @@ namespace SonOfRobin
                     break;
 
                 case Stage.ProcessTextures:
-
-                    var testFiles = Directory.GetFiles(this.gridTemplate.templatePath);
-
                     int texturesCount = Directory.GetFiles(this.gridTemplate.templatePath).Where(file => file.Contains("background_") && file.EndsWith(".png")).Count();
                     bool allTexturesFound = texturesCount == this.allCells.Count;
 
@@ -813,7 +818,9 @@ namespace SonOfRobin
                 TimeSpan timeLeft = CalculateTimeLeft(startTime: this.stageStartTime, completeAmount: this.allCells.Count - this.cellsToProcessOnStart.Count, totalAmount: this.allCells.Count);
                 string timeLeftString = timeLeft == TimeSpan.FromSeconds(0) ? "" : $" (time left {TimeSpanToString(timeLeft + TimeSpan.FromSeconds(1))})";
 
-                detailedInfo = $"{namesForStages[this.currentStage]}{timeLeftString}...";
+                int stageNo = Math.Min(Convert.ToInt32(this.currentStage), namesForStages.Count - 1);
+
+                detailedInfo = $"{namesForStages[(Stage)stageNo]}{timeLeftString}...";
             }
 
             SonOfRobinGame.FullScreenProgressBar.TurnOn(percentage: percentage, text: LoadingTips.GetTip(), optionalText: detailedInfo);

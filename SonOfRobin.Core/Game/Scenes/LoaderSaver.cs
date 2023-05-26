@@ -34,9 +34,7 @@ namespace SonOfRobin
         private readonly string savePath;
         private readonly string saveTempPath;
         private int currentPiecePackageNo;
-        private bool allPiecesProcessed;
 
-        private bool directoryChecked;
         private bool gridTemplateFound;
 
         // loading mode uses data variables
@@ -51,15 +49,6 @@ namespace SonOfRobin
         private readonly ConcurrentBag<Object> piecesData;
 
         // saving mode uses flags instead of data variables - to save ram
-        private bool headerSaved;
-
-        private bool hintsSaved;
-        private bool weatherSaved;
-        private bool gridSaved;
-        private bool trackingSaved;
-        private bool eventsSaved;
-        private bool coolingSaved;
-        private bool piecesSaved;
 
         private string currentStepName;
         private int processedSteps;
@@ -150,17 +139,8 @@ namespace SonOfRobin
             this.savePath = Path.Combine(SonOfRobinGame.saveGamesPath, saveSlotName);
             this.ErrorOccured = false;
             this.currentStepName = "";
-            this.directoryChecked = false;
             this.gridTemplateFound = false;
-            this.headerSaved = false;
-            this.hintsSaved = false;
-            this.weatherSaved = false;
-            this.gridSaved = false;
-            this.trackingSaved = false;
-            this.eventsSaved = false;
-            this.piecesSaved = false;
             this.currentPiecePackageNo = 0;
-            this.allPiecesProcessed = false;
             this.piecesData = new ConcurrentBag<object> { };
             this.allSteps = this.saveMode ? 8 + this.piecePackagesToSave.Count : 7 + this.PiecesFilesCount;
 
@@ -240,20 +220,17 @@ namespace SonOfRobin
             if (this.saveMode)
             {
                 // saving
-                if (this.task == null || this.task.IsCompleted) this.task = Task.Run(() => this.ProcessNextSavingStep());
+                if (this.task == null) this.task = Task.Run(() => this.ProcessNextSavingStep());
             }
             else
             {
                 // loading
-                if (this.task == null || this.task.IsCompleted)
-                {
-                    this.task = Task.Run(() => this.ProcessNextLoadingStep());
+                if (this.task == null) this.task = Task.Run(() => this.ProcessNextLoadingStep());
 
-                    if (this.currentStepName == "creating world")
-                    {
-                        this.FinishLoading();
-                        this.processingComplete = true;
-                    }
+                if (this.task != null && this.task.IsCompleted)
+                {
+                    this.FinishLoading();
+                    this.processingComplete = true;
                 }
             }
 
@@ -291,18 +268,12 @@ namespace SonOfRobin
             this.processedSteps++;
 
             // preparing save directory
-            if (!this.directoryChecked)
             {
                 this.currentStepName = "directory";
-
                 Directory.CreateDirectory(this.saveTempPath);
-
-                this.directoryChecked = true;
-                return;
             }
 
             // saving header data
-            if (!this.headerSaved)
             {
                 this.currentStepName = "header";
 
@@ -332,91 +303,79 @@ namespace SonOfRobin
 
                 string headerPath = Path.Combine(this.saveTempPath, headerName);
                 FileReaderWriter.Save(path: headerPath, savedObj: headerData, compress: false);
-
-                this.headerSaved = true;
-                return;
             }
 
             // saving hints data
-            if (!this.hintsSaved)
             {
                 this.currentStepName = "hints";
 
                 string hintsPath = Path.Combine(this.saveTempPath, hintsName);
                 var hintsData = this.world.HintEngine.Serialize();
                 FileReaderWriter.Save(path: hintsPath, savedObj: hintsData, compress: true);
-
-                this.hintsSaved = true;
-                return;
             }
 
             // saving weather data
-            if (!this.weatherSaved)
             {
                 this.currentStepName = "weather";
 
                 string weatherPath = Path.Combine(this.saveTempPath, weatherName);
                 var weatherData = this.world.weather.Serialize();
                 FileReaderWriter.Save(path: weatherPath, savedObj: weatherData, compress: true);
-
-                this.weatherSaved = true;
-                return;
             }
 
             // saving grid data
-            if (!this.gridSaved)
             {
                 this.currentStepName = "grid";
 
                 string gridPath = Path.Combine(this.saveTempPath, gridName);
                 var gridData = this.world.Grid.Serialize();
                 FileReaderWriter.Save(path: gridPath, savedObj: gridData, compress: true);
-
-                this.gridSaved = true;
-                return;
             }
 
             // saving pieces data
-            if (!this.piecesSaved)
             {
-                this.currentStepName = $"pieces {currentPiecePackageNo + 1}";
+                bool piecesSaved = false;
 
-                var packagesToProcess = new List<List<BoardPiece>>();
-
-                for (int i = 0; i < Preferences.MaxThreadsToUse; i++)
+                while (true)
                 {
-                    packagesToProcess.Add(this.piecePackagesToSave[0]);
-                    this.piecePackagesToSave.RemoveAt(0);
+                    this.currentStepName = $"pieces {currentPiecePackageNo + 1}";
 
-                    if (this.piecePackagesToSave.Count == 0)
+                    var packagesToProcess = new List<List<BoardPiece>>();
+
+                    for (int i = 0; i < Preferences.MaxThreadsToUse; i++)
                     {
-                        this.piecesSaved = true;
-                        break;
+                        packagesToProcess.Add(this.piecePackagesToSave[0]);
+                        this.piecePackagesToSave.RemoveAt(0);
+
+                        if (this.piecePackagesToSave.Count == 0)
+                        {
+                            piecesSaved = true;
+                            break;
+                        }
                     }
+
+                    Parallel.For(0, packagesToProcess.Count, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, packageIndex =>
+                    {
+                        var package = packagesToProcess[packageIndex];
+
+                        var pieceDataPackage = new List<object> { };
+                        foreach (BoardPiece piece in package)
+                        {
+                            if (piece.sprite.opacityFade != null) piece.sprite.opacityFade.Finish(); // Finish() might destroy the piece...
+                            if (piece.exists) pieceDataPackage.Add(piece.Serialize()); // ...so "exists" must be checked afterwards
+                        }
+
+                        FileReaderWriter.Save(path: this.GetCurrentPiecesPath(this.currentPiecePackageNo + packageIndex), savedObj: pieceDataPackage, compress: true);
+                    });
+
+                    this.currentPiecePackageNo += packagesToProcess.Count;
+                    this.processedSteps += packagesToProcess.Count - 1;
+
+                    if (piecesSaved) break;
                 }
-
-                Parallel.For(0, packagesToProcess.Count, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, packageIndex =>
-                {
-                    var package = packagesToProcess[packageIndex];
-
-                    var pieceDataPackage = new List<object> { };
-                    foreach (BoardPiece piece in package)
-                    {
-                        if (piece.sprite.opacityFade != null) piece.sprite.opacityFade.Finish(); // Finish() might destroy the piece...
-                        if (piece.exists) pieceDataPackage.Add(piece.Serialize()); // ...so "exists" must be checked afterwards
-                    }
-
-                    FileReaderWriter.Save(path: this.GetCurrentPiecesPath(this.currentPiecePackageNo + packageIndex), savedObj: pieceDataPackage, compress: true);
-                });
-
-                this.currentPiecePackageNo += packagesToProcess.Count;
-                this.processedSteps += packagesToProcess.Count - 1;
-
-                return;
             }
 
             // saving tracking data
-            if (!this.trackingSaved)
             {
                 this.currentStepName = "tracking";
 
@@ -424,13 +383,9 @@ namespace SonOfRobin
 
                 string trackingPath = Path.Combine(this.saveTempPath, trackingName);
                 FileReaderWriter.Save(path: trackingPath, savedObj: trackingData, compress: true);
-
-                this.trackingSaved = true;
-                return;
             }
 
             // saving world event data
-            if (!this.eventsSaved)
             {
                 this.currentStepName = "events";
 
@@ -438,13 +393,9 @@ namespace SonOfRobin
 
                 string eventPath = Path.Combine(this.saveTempPath, eventsName);
                 FileReaderWriter.Save(path: eventPath, savedObj: eventData, compress: true);
-
-                this.eventsSaved = true;
-                return;
             }
 
             // saving cooling data
-            if (!this.coolingSaved)
             {
                 this.currentStepName = "cooling";
 
@@ -452,9 +403,6 @@ namespace SonOfRobin
 
                 string coolingPath = Path.Combine(this.saveTempPath, coolingName);
                 FileReaderWriter.Save(path: coolingPath, savedObj: coolingData, compress: true);
-
-                this.coolingSaved = true;
-                return;
             }
 
             this.currentStepName = "replacing save slot data";
@@ -507,7 +455,6 @@ namespace SonOfRobin
             this.processedSteps++;
 
             // checking directory
-            if (!this.directoryChecked)
             {
                 this.currentStepName = "directory";
 
@@ -515,13 +462,11 @@ namespace SonOfRobin
                 {
                     new TextWindow(text: $"Directory for save slot {saveSlotName} does not exist.", textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false, closingTask: this.TextWindowTask);
                     this.ErrorOccured = true;
+                    return;
                 }
-                this.directoryChecked = true;
-                return;
             }
 
             // loading header
-            if (this.headerData == null)
             {
                 this.currentStepName = "header";
 
@@ -532,6 +477,7 @@ namespace SonOfRobin
                 {
                     new TextWindow(text: $"Error while reading save header for slot {saveSlotName}.", textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false, closingTask: this.TextWindowTask);
                     this.ErrorOccured = true;
+                    return;
                 }
                 else
                 {
@@ -539,12 +485,9 @@ namespace SonOfRobin
 
                     this.gridTemplateFound = templateGrid != null;
                 }
-
-                return;
             }
 
             // loading grid
-            if (this.gridData == null)
             {
                 this.currentStepName = "grid";
 
@@ -555,12 +498,11 @@ namespace SonOfRobin
                 {
                     new TextWindow(text: $"Error while reading grid for slot {saveSlotName}.", textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false, closingTask: this.TextWindowTask);
                     this.ErrorOccured = true;
+                    return;
                 }
-                return;
             }
 
             // loading hints
-            if (this.hintsData == null)
             {
                 this.currentStepName = "hints";
 
@@ -571,12 +513,11 @@ namespace SonOfRobin
                 {
                     new TextWindow(text: $"Error while reading hints for slot {saveSlotName}.", textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false, closingTask: this.TextWindowTask);
                     this.ErrorOccured = true;
+                    return;
                 }
-                return;
             }
 
             // loading hints
-            if (this.weatherData == null)
             {
                 this.currentStepName = "weather";
 
@@ -587,12 +528,11 @@ namespace SonOfRobin
                 {
                     new TextWindow(text: $"Error while reading weather for slot {saveSlotName}.", textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false, closingTask: this.TextWindowTask);
                     this.ErrorOccured = true;
+                    return;
                 }
-                return;
             }
 
             // loading tracking
-            if (this.trackingData == null)
             {
                 this.currentStepName = "tracking";
 
@@ -602,13 +542,12 @@ namespace SonOfRobin
                 {
                     new TextWindow(text: "Error while reading tracking data.", textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false, closingTask: this.TextWindowTask);
                     this.ErrorOccured = true;
+                    return;
                 }
                 else this.trackingData = (List<Object>)FileReaderWriter.Load(path: trackingPath);
-                return;
             }
 
             // loading planned events
-            if (this.eventsData == null)
             {
                 this.currentStepName = "events";
 
@@ -617,14 +556,12 @@ namespace SonOfRobin
                 {
                     new TextWindow(text: "Error while reading events data.", textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false, closingTask: this.TextWindowTask);
                     this.ErrorOccured = true;
+                    return;
                 }
                 else this.eventsData = (List<Object>)FileReaderWriter.Load(path: eventPath);
-
-                return;
             }
 
             // loading cooling data
-            if (this.coolingData == null)
             {
                 this.currentStepName = "cooling";
 
@@ -633,48 +570,51 @@ namespace SonOfRobin
                 {
                     new TextWindow(text: "Error while reading cooling data.", textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false, closingTask: this.TextWindowTask);
                     this.ErrorOccured = true;
+                    return;
                 }
                 else this.coolingData = (Dictionary<string, Object>)FileReaderWriter.Load(path: coolingPath);
-
-                return;
             }
 
             // loading pieces
-            if (!this.allPiecesProcessed)
             {
-                this.currentStepName = $"pieces {currentPiecePackageNo + 1}";
+                bool allPiecesProcessed = false;
 
-                // first check - this save file should exist
-                if (this.currentPiecePackageNo == 0 && !FileReaderWriter.PathExists(this.GetCurrentPiecesPath(this.currentPiecePackageNo)))
+                while (true)
                 {
-                    new TextWindow(text: "Error while reading pieces data.", textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false, closingTask: this.TextWindowTask);
-                    this.ErrorOccured = true;
-                    return;
-                }
+                    this.currentStepName = $"pieces {currentPiecePackageNo + 1}";
 
-                Parallel.For(0, Preferences.MaxThreadsToUse, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, threadNo =>
-                {
-                    int packageToLoad = this.currentPiecePackageNo + threadNo;
-
-                    string currentPiecesPath = this.GetCurrentPiecesPath(this.currentPiecePackageNo + threadNo);
-                    if (FileReaderWriter.PathExists(currentPiecesPath))
+                    // first check - this save file should exist
+                    if (this.currentPiecePackageNo == 0 && !FileReaderWriter.PathExists(this.GetCurrentPiecesPath(this.currentPiecePackageNo)))
                     {
-                        var packageData = (List<Object>)FileReaderWriter.Load(path: currentPiecesPath);
-                        foreach (var item in packageData)
+                        new TextWindow(text: "Error while reading pieces data.", textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false, closingTask: this.TextWindowTask);
+                        this.ErrorOccured = true;
+                        return;
+                    }
+
+                    Parallel.For(0, Preferences.MaxThreadsToUse, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, threadNo =>
+                    {
+                        int packageToLoad = this.currentPiecePackageNo + threadNo;
+
+                        string currentPiecesPath = this.GetCurrentPiecesPath(this.currentPiecePackageNo + threadNo);
+                        if (FileReaderWriter.PathExists(currentPiecesPath))
                         {
-                            this.piecesData.Add(item);
+                            var packageData = (List<Object>)FileReaderWriter.Load(path: currentPiecesPath);
+                            foreach (var item in packageData)
+                            {
+                                this.piecesData.Add(item);
+                            }
                         }
-                    }
-                    else
-                    {
-                        this.allPiecesProcessed = true; // second check - if file is missing, then there are no more packages to load
-                    }
-                });
+                        else
+                        {
+                            allPiecesProcessed = true; // second check - if file is missing, then there are no more packages to load
+                        }
+                    });
 
-                this.currentPiecePackageNo += Preferences.MaxThreadsToUse;
-                this.processedSteps = Math.Min(this.processedSteps + Preferences.MaxThreadsToUse - 1, this.allSteps);
+                    this.currentPiecePackageNo += Preferences.MaxThreadsToUse;
+                    this.processedSteps = Math.Min(this.processedSteps + Preferences.MaxThreadsToUse - 1, this.allSteps);
 
-                return;
+                    if (allPiecesProcessed) break;
+                }
             }
 
             this.currentStepName = "creating world";
