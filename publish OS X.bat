@@ -35,7 +35,7 @@ copy bin\Release\net6.0\osx-x64\publish\Content bin\Release\osx-64\SonOfRobin.ap
 
 :: Copy all .dlls etx to the correct location
 
-xcopy "bin\Release\net6.0\osx-x64\publish" "bin\Release\osx-64\SonOfRobin.app\Contents\MacOS" /s /e
+robocopy "bin\Release\net6.0\osx-x64\publish" "bin\Release\osx-64\SonOfRobin.app\Contents\MacOS" /s /e
 
 ::
 :: NOTE If using additional native libs such as required for Steamworks.net these must be copied to Contents\MacOS
