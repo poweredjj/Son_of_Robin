@@ -925,7 +925,7 @@ namespace SonOfRobin
 
                 this.StateMachinesProcessCameraView();
 
-                if (!createMissingPieces && (!Preferences.Cap30FPS || this.CurrentFrame % 2 == 0))
+                if (!createMissingPieces && (!Preferences.HalfFramerate || this.CurrentFrame % 2 == 0))
                 {
                     this.StateMachinesProcessNonPlantQueue();
                     this.plantsProcessing = true;
@@ -1344,7 +1344,7 @@ namespace SonOfRobin
                 SonOfRobinGame.SpriteBatch.End();
             }
 
-            this.CurrentFrame += Preferences.Cap30FPS ? 2 : 1;
+            this.CurrentFrame += Preferences.HalfFramerate ? 2 : 1;
         }
 
         protected override void AdaptToNewSize()

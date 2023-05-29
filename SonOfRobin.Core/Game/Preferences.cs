@@ -98,7 +98,7 @@ namespace SonOfRobin
         private static bool vSync = true;
         public static bool loadWholeMap = false;
         private static bool frameSkip = true;
-        private static bool cap30FPS = false;
+        private static bool halfFramerate = false;
         public static bool progressBarShowDetails = false;
         public static bool showDemoWorld = true;
         private static bool pointToWalk = true;
@@ -416,16 +416,14 @@ namespace SonOfRobin
             }
         }
 
-        public static bool Cap30FPS
+        public static bool HalfFramerate
         {
-            get { return cap30FPS; }
+            get { return halfFramerate; }
             set
             {
-                if (cap30FPS == value) return;
+                if (halfFramerate == value) return;
 
-                cap30FPS = value;
-                if (cap30FPS && !FrameSkip) FrameSkip = true;
-
+                halfFramerate = value;
                 ShowAppliedAfterRestartMessage("FPS cap");
             }
         }
@@ -434,7 +432,7 @@ namespace SonOfRobin
         {
             SonOfRobinGame.GfxDevMgr.PreparingDeviceSettings += (sender, e) =>
             {
-                e.GraphicsDeviceInformation.PresentationParameters.PresentationInterval = cap30FPS ? PresentInterval.Two : PresentInterval.One;
+                e.GraphicsDeviceInformation.PresentationParameters.PresentationInterval = halfFramerate ? PresentInterval.Two : PresentInterval.One;
             };
         }
 
@@ -557,7 +555,7 @@ namespace SonOfRobin
             prefsData["loadWholeMap"] = loadWholeMap;
             prefsData["fullScreenMode"] = fullScreenMode;
             prefsData["frameSkip"] = frameSkip;
-            prefsData["cap30FPS"] = cap30FPS;
+            prefsData["cap30FPS"] = halfFramerate;
             prefsData["showDemoWorld"] = showDemoWorld;
             prefsData["displayResX"] = displayResX;
             prefsData["displayResY"] = displayResY;
@@ -661,7 +659,7 @@ namespace SonOfRobin
                     maxTexturesToLoad = (int)(Int64)prefsData["maxTexturesToLoad"];
                     highQualityWater = (bool)prefsData["highQualityWater"];
                     plantsSway = (bool)prefsData["plantsSway"];
-                    cap30FPS = (bool)prefsData["cap30FPS"];
+                    halfFramerate = (bool)prefsData["cap30FPS"];
                     debugMode = (bool)prefsData["debugMode"];
 
                     prefsLoaded = true;
