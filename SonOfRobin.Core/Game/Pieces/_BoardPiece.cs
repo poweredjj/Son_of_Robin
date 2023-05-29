@@ -808,7 +808,7 @@ namespace SonOfRobin
 
             if (Math.Abs(this.passiveMovement.X) < (passiveMovementMultiplier / 2f) && Math.Abs(this.passiveMovement.Y) < (passiveMovementMultiplier / 2f))
             {
-                this.soundPack.Play(PieceSoundPack.Action.IsDropped);
+                this.PlayPassiveMovementSound();
 
                 this.passiveMovement = Vector2.Zero;
                 this.passiveRotation = 0;
@@ -824,12 +824,18 @@ namespace SonOfRobin
             }
             else
             {
-                this.soundPack.Play(PieceSoundPack.Action.IsDropped);
+                this.PlayPassiveMovementSound();
 
                 this.passiveMovement *= -0.7f;// bounce off the obstacle and slow down a little
                 this.passiveRotation *= -1;
             }
             return true;
+        }
+
+        private void PlayPassiveMovementSound()
+        {
+            if (this.sprite.IsInWater) this.soundPack.Play(PieceSoundPack.Action.StepWater);
+            else this.soundPack.Play(PieceSoundPack.Action.IsDropped);
         }
 
         public bool GoOneStepTowardsGoal(Vector2 goalPosition, float walkSpeed, bool runFrom = false, bool splitXY = false, bool setOrientation = true, bool slowDownInWater = true, bool slowDownOnRocks = true)

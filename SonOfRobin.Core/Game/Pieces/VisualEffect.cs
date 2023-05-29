@@ -175,7 +175,7 @@ namespace SonOfRobin
                 {
                     BoardPiece collidingPiece = collidingSprite.boardPiece;
 
-                    if (collidingPiece.IsAnimalOrPlayer && !collidingPiece.HasPassiveMovement)
+                    if (collidingPiece.IsAnimalOrPlayer && !collidingPiece.HasPassiveMovement && Vector2.Distance(this.sprite.position, collidingSprite.position) <= 50)
                     {
                         collidingPiece.soundPack.Play(PieceSoundPack.Action.SwimShallow);
 
