@@ -114,56 +114,54 @@ namespace SonOfRobin
         {
             if (!this.sprite.IsInCameraRect) return;
 
-            if (this.tweener == null)
+            if (this.tweener == null) this.tweener = new Tweener();
+
+            Tween tweenPos = this.tweener.FindTween(target: this.sprite, memberName: "position");
+            if (tweenPos == null)
             {
-                this.tweener = new Tweener();
-
-                this.sprite.opacity = 1f; // TODO add opacityFade
-
                 float angle = Helpers.GetAngleBetweenTwoPoints(start: this.sprite.position, end: new Vector2(this.world.width / 2, this.world.height / 2));
 
+                this.sprite.opacity = 0f;
                 this.sprite.rotation = angle;
                 Vector2 beachPos = this.sprite.position;
 
-                int oneStepDistance = 100;
+                int oneStepDistance = 50;
+                int maxDistance = 600;
                 Vector2 oneStepOffset = new Vector2((int)Math.Round(oneStepDistance * Math.Cos(angle)), (int)Math.Round(oneStepDistance * Math.Sin(angle)));
 
-                for (int step = 0; step < 100; step++)
+                for (int distance = 0; distance < maxDistance; distance += oneStepDistance)
                 {
                     beachPos += oneStepOffset;
                     if (this.world.Grid.GetFieldValue(position: beachPos, terrainName: Terrain.Name.Height) > Terrain.waterLevelMax) break;
                 }
 
-                this.tweener.TweenTo(target: this.sprite, expression: sprite => sprite.position, toValue: beachPos, duration: this.world.random.Next(6, 12), delay: 0)
+                float delay = this.world.random.Next(0, 15);
+                float duration = this.world.random.Next(4, 8);
+
+                this.tweener.TweenTo(target: this.sprite, expression: sprite => sprite.position, toValue: beachPos, duration: duration, delay: delay)
                     .AutoReverse()
-                    .Easing(EasingFunctions.QuadraticInOut);
+                    .Easing(EasingFunctions.QuadraticOut);
+
+                this.tweener.TweenTo(target: this.sprite, expression: sprite => sprite.opacity, toValue: 0.7f, duration: duration / 5, delay: delay)
+                    .Easing(EasingFunctions.QuadraticIn);
             }
             else
             {
-                Tween tweenPos = this.tweener.FindTween(target: this.sprite, memberName: "position");
-
-                if (tweenPos != null)
+                if (tweenPos.Completion >= 0.7f || !this.sprite.IsInWater)
                 {
-                    if (tweenPos.Completion >= 0.7f)
+                    Tween tweenOpacity = this.tweener.FindTween(target: this.sprite, memberName: "opacity");
+                    if (tweenOpacity == null || tweenOpacity.IsComplete)
                     {
-                        Tween tweenOpacity = this.tweener.FindTween(target: this.sprite, memberName: "opacity");
-
-                        if (tweenOpacity == null)
-                        {
-                            this.tweener.TweenTo(target: this.sprite, expression: sprite => sprite.opacity, toValue: 0.3f, duration: tweenPos.Duration / 3, delay: 0)
-                                .Easing(EasingFunctions.QuadraticInOut);
-                        }
+                        this.tweener.TweenTo(target: this.sprite, expression: sprite => sprite.opacity, toValue: 0f, duration: tweenPos.Duration / 3, delay: 0)
+                            .Easing(EasingFunctions.QuadraticOut);
                     }
                 }
 
                 // TODO add sound playing code here
             }
 
-            if (this.tweener != null)
-            {
-                this.tweener.Update((float)Scene.CurrentGameTime.ElapsedGameTime.TotalSeconds);
-                this.sprite.SetNewPosition(this.sprite.position); // to update grid, because tweener will change the position directly
-            }
+            this.tweener.Update((float)Scene.CurrentGameTime.ElapsedGameTime.TotalSeconds);
+            this.sprite.SetNewPosition(this.sprite.position); // to update grid, because tweener will change the position directly
         }
 
         public override void SM_FogMoveRandomly()
