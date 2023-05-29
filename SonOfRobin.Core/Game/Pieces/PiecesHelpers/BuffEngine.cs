@@ -8,7 +8,7 @@ namespace SonOfRobin
     public class BuffEngine
     {
         public enum BuffType
-        { InvWidth, InvHeight, ToolbarWidth, ToolbarHeight, Speed, Strength, HP, MaxHP, MaxStamina, EnableMap, LightSource, RegenPoison, Haste, Fatigue, Sprint, SprintCooldown, LowHP, Tired, Hungry, Heat, HeatProtection, SwampProtection, Wet };
+        { InvWidth, InvHeight, ToolbarWidth, ToolbarHeight, Speed, Strength, HP, MaxHP, MaxStamina, EnableMap, NotUsedKeptForCompatibility1, RegenPoison, Haste, Fatigue, Sprint, SprintCooldown, LowHP, Tired, Hungry, Heat, HeatProtection, SwampProtection, Wet };
 
         private readonly Dictionary<string, Buff> buffDict;
         private readonly BoardPiece piece;
@@ -339,26 +339,6 @@ namespace SonOfRobin
                         return true;
                     }
 
-                case BuffType.LightSource:
-                    {
-                        if (!this.CheckIfPieceIsPlayer(buff)) return false;
-
-                        Player player = (Player)this.piece;
-                        LightEngine playerLightSource = player.sprite.lightEngine;
-
-                        if (add)
-                        {
-                            playerLightSource.Size = (int)buff.value * 100;
-                            playerLightSource.Activate();
-                        }
-                        else
-                        {
-                            if (!stillHasThisBuff) playerLightSource.Deactivate();
-                        }
-
-                        return true;
-                    }
-
                 case BuffType.RegenPoison:
                     {
                         if (add)
@@ -578,10 +558,6 @@ namespace SonOfRobin
 
                 case BuffType.MaxStamina:
                     value = (float)buff1.value + (float)buff2.value;
-                    break;
-
-                case BuffType.LightSource:
-                    value = (int)buff1.value + (int)buff2.value;
                     break;
 
                 case BuffType.RegenPoison:

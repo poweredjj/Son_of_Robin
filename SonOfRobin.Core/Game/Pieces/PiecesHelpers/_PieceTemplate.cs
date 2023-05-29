@@ -323,7 +323,7 @@ namespace SonOfRobin
                         var soundPack = new PieceSoundPack();
                         AddPlayerCommonSounds(soundPack: soundPack, female: false);
 
-                        return new Player(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PlayerBoy, allowedTerrain: CreatePlayerAllowedTerrain(), minDistance: 0, maxDistance: 65535, generation: generation, readableName: "boy", description: "This is you.", yield: CreatePlayerYield(), activeState: BoardPiece.State.PlayerControlledWalking, lightEngine: new LightEngine(size: 300, opacity: 0.9f, colorActive: true, color: Color.Orange * 0.2f, isActive: false, castShadows: true), soundPack: soundPack, strength: 2, speed: 3.5f, maxStamina: 400, maxHitPoints: 600, maxFatigue: 3000, craftLevel: 1, cookLevel: 1, brewLevel: 1, invWidth: 4, invHeight: 2, toolbarWidth: 3, toolbarHeight: 1, fireAffinity: 0.5f);
+                        return new Player(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PlayerBoy, allowedTerrain: CreatePlayerAllowedTerrain(), minDistance: 0, maxDistance: 65535, generation: generation, readableName: "boy", description: "This is you.", yield: CreatePlayerYield(), activeState: BoardPiece.State.PlayerControlledWalking, soundPack: soundPack, strength: 2, speed: 3.5f, maxStamina: 400, maxHitPoints: 600, maxFatigue: 3000, craftLevel: 1, cookLevel: 1, brewLevel: 1, invWidth: 4, invHeight: 2, toolbarWidth: 3, toolbarHeight: 1, fireAffinity: 0.5f);
                     }
 
                 case Name.PlayerGirl:
@@ -331,7 +331,7 @@ namespace SonOfRobin
                         var soundPack = new PieceSoundPack();
                         AddPlayerCommonSounds(soundPack: soundPack, female: true);
 
-                        return new Player(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PlayerGirl, allowedTerrain: CreatePlayerAllowedTerrain(), minDistance: 0, maxDistance: 65535, generation: generation, readableName: "girl", description: "This is you.", yield: CreatePlayerYield(), activeState: BoardPiece.State.PlayerControlledWalking, lightEngine: new LightEngine(size: 300, opacity: 0.9f, colorActive: true, color: Color.Orange * 0.2f, isActive: false, castShadows: true), soundPack: soundPack, strength: 1, speed: 3, maxStamina: 300, maxHitPoints: 400, maxFatigue: 2000, craftLevel: 2, cookLevel: 2, brewLevel: 1, invWidth: 4, invHeight: 3, toolbarWidth: 4, toolbarHeight: 1, fireAffinity: 0.5f);
+                        return new Player(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PlayerGirl, allowedTerrain: CreatePlayerAllowedTerrain(), minDistance: 0, maxDistance: 65535, generation: generation, readableName: "girl", description: "This is you.", yield: CreatePlayerYield(), activeState: BoardPiece.State.PlayerControlledWalking, soundPack: soundPack, strength: 1, speed: 3, maxStamina: 300, maxHitPoints: 400, maxFatigue: 2000, craftLevel: 2, cookLevel: 2, brewLevel: 1, invWidth: 4, invHeight: 3, toolbarWidth: 4, toolbarHeight: 1, fireAffinity: 0.5f);
                     }
 
                 case Name.PlayerTestDemoness:
@@ -339,7 +339,10 @@ namespace SonOfRobin
                         var soundPack = new PieceSoundPack();
                         AddPlayerCommonSounds(soundPack: soundPack, female: true);
 
-                        Player testDemoness = new Player(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PlayerTestDemoness, allowedTerrain: CreatePlayerAllowedTerrain(), minDistance: 0, maxDistance: 65535, generation: generation, readableName: "demoness", description: "This is you.", yield: CreatePlayerYield(), activeState: BoardPiece.State.PlayerControlledWalking, lightEngine: new LightEngine(size: 500, opacity: 1.0f, colorActive: true, color: Color.Red * 1f, isActive: false, castShadows: true), soundPack: soundPack, strength: 100, speed: 8, maxStamina: 50000, maxHitPoints: 100000, maxFatigue: 50000, craftLevel: 5, cookLevel: 5, brewLevel: 5, invWidth: 6, invHeight: 4, toolbarWidth: 5, toolbarHeight: 1, fireAffinity: 0f);
+                        Player testDemoness = new Player(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PlayerTestDemoness, allowedTerrain: CreatePlayerAllowedTerrain(), minDistance: 0, maxDistance: 65535, generation: generation, readableName: "demoness", description: "This is you.", yield: CreatePlayerYield(), activeState: BoardPiece.State.PlayerControlledWalking, soundPack: soundPack, strength: 100, speed: 8, maxStamina: 50000, maxHitPoints: 100000, maxFatigue: 50000, craftLevel: 5, cookLevel: 5, brewLevel: 5, invWidth: 6, invHeight: 4, toolbarWidth: 5, toolbarHeight: 1, fireAffinity: 0f);
+
+                        testDemoness.sprite.lightEngine = new LightEngine(size: 500, opacity: 1.0f, colorActive: true, color: Color.Red * 1f, isActive: false, castShadows: true);
+                        testDemoness.sprite.lightEngine.AssignSprite(testDemoness.sprite);
 
                         return testDemoness;
                     }
@@ -353,8 +356,10 @@ namespace SonOfRobin
                             soundPack.AddAction(action: action, sound: new Sound(name: SoundData.Name.StepGhost, cooldown: 30, ignore3DAlways: true, volume: 0.8f, maxPitchVariation: 0.2f));
                         }
 
-                        Player spectator = new Player(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.NoAnim, allowedTerrain: new AllowedTerrain(), minDistance: 0, maxDistance: 65535, generation: generation, readableName: "player ghost", description: "A metaphysical representation of player's soul.", blocksMovement: false, ignoresCollisions: true, floatsOnWater: true, activeState: BoardPiece.State.PlayerControlledGhosting, lightEngine: new LightEngine(size: 650, opacity: 1.4f, colorActive: true, color: Color.Blue * 5f, isActive: true, castShadows: true), soundPack: soundPack, strength: 2, speed: 3.5f, maxStamina: 400, maxHitPoints: 400, maxFatigue: 2000, craftLevel: 1, invWidth: 1, invHeight: 1, toolbarWidth: 1, toolbarHeight: 1, fireAffinity: 0f);
+                        Player spectator = new Player(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.NoAnim, allowedTerrain: new AllowedTerrain(), minDistance: 0, maxDistance: 65535, generation: generation, readableName: "player ghost", description: "A metaphysical representation of player's soul.", blocksMovement: false, ignoresCollisions: true, floatsOnWater: true, activeState: BoardPiece.State.PlayerControlledGhosting, soundPack: soundPack, strength: 2, speed: 3.5f, maxStamina: 400, maxHitPoints: 400, maxFatigue: 2000, craftLevel: 1, invWidth: 1, invHeight: 1, toolbarWidth: 1, toolbarHeight: 1, fireAffinity: 0f);
 
+                        spectator.sprite.lightEngine = new LightEngine(size: 650, opacity: 1.4f, colorActive: true, color: Color.Blue * 5f, isActive: true, castShadows: true);
+                        spectator.sprite.lightEngine.AssignSprite(spectator.sprite);
                         spectator.speed = 5;
                         spectator.sprite.opacity = 0.5f;
                         spectator.sprite.color = new Color(150, 255, 255);
@@ -2497,18 +2502,18 @@ namespace SonOfRobin
 
                 case Name.TorchSmall:
                     {
-                        var buffList = new List<Buff> { new Buff(type: BuffEngine.BuffType.LightSource, value: 4) };
+                        LightEngine storedLightEngine = new LightEngine(size: 400, opacity: 0.9f, colorActive: true, color: Color.Orange * 0.2f, isActive: false, castShadows: true);
 
-                        return new PortableLight(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.SmallTorch, blocksMovement: false, category: BoardPiece.Category.Wood, canBeUsedDuringRain: false,
-                            allowedTerrain: shallowWaterToVolcano, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 3, mass: 100, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 250, readableName: "small torch", description: "A portable light source.", fireAffinity: 1f);
+                        return new PortableLight(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.SmallTorch, blocksMovement: false, category: BoardPiece.Category.Wood, canBeUsedDuringRain: false, storedLightEngine: storedLightEngine,
+                            allowedTerrain: shallowWaterToVolcano, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 3, mass: 100, rotatesWhenDropped: true, maxHitPoints: 250, readableName: "small torch", description: "A portable light source.", fireAffinity: 1f);
                     }
 
                 case Name.TorchBig:
                     {
-                        var buffList = new List<Buff> { new Buff(type: BuffEngine.BuffType.LightSource, value: 6) };
+                        LightEngine storedLightEngine = new LightEngine(size: 600, opacity: 0.9f, colorActive: true, color: Color.Orange * 0.2f, isActive: false, castShadows: true);
 
-                        return new PortableLight(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BigTorch, blocksMovement: false, category: BoardPiece.Category.Wood, canBeUsedDuringRain: false,
-                            allowedTerrain: shallowWaterToVolcano, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 3, mass: 100, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 600, readableName: "big torch", description: "Burns for a long time.", fireAffinity: 1f);
+                        return new PortableLight(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BigTorch, blocksMovement: false, category: BoardPiece.Category.Wood, canBeUsedDuringRain: false, storedLightEngine: storedLightEngine,
+                            allowedTerrain: shallowWaterToVolcano, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 3, mass: 100, rotatesWhenDropped: true, maxHitPoints: 600, readableName: "big torch", description: "Burns for a long time.", fireAffinity: 1f);
                     }
 
                 case Name.LanternFull:
@@ -2516,10 +2521,10 @@ namespace SonOfRobin
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.MetalicClank, cooldown: 15, maxPitchVariation: 0.3f));
 
-                        var buffList = new List<Buff> { new Buff(type: BuffEngine.BuffType.LightSource, value: 8) };
+                        LightEngine storedLightEngine = new LightEngine(size: 800, opacity: 0.9f, colorActive: true, color: Color.Orange * 0.2f, isActive: false, castShadows: true);
 
-                        return new PortableLight(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Lantern, blocksMovement: true, category: BoardPiece.Category.Metal, canBeUsedDuringRain: true,
-                            allowedTerrain: shallowWaterToVolcano, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 100, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 500, readableName: "lantern", description: "Can be used during rain. Refillable.", convertsToWhenUsedUp: Name.LanternEmpty, soundPack: soundPack, fireAffinity: 0f);
+                        return new PortableLight(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Lantern, blocksMovement: true, category: BoardPiece.Category.Metal, canBeUsedDuringRain: true, storedLightEngine: storedLightEngine,
+                            allowedTerrain: shallowWaterToVolcano, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 100, rotatesWhenDropped: true, maxHitPoints: 500, readableName: "lantern", description: "Can be used during rain. Refillable.", convertsToWhenUsedUp: Name.LanternEmpty, soundPack: soundPack, fireAffinity: 0f);
                     }
 
                 case Name.LanternEmpty:

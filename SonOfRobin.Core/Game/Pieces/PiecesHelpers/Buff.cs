@@ -81,7 +81,7 @@ namespace SonOfRobin
                     value = Helpers.CastObjectToFloat(value);
                     break;
 
-                case BuffEngine.BuffType.LightSource:
+                case BuffEngine.BuffType.NotUsedKeptForCompatibility1:
                     value = Helpers.CastObjectToInt(value);
                     break;
 
@@ -145,7 +145,7 @@ namespace SonOfRobin
                 case BuffEngine.BuffType.MaxStamina:
                     return (float)this.value >= 0;
 
-                case BuffEngine.BuffType.LightSource:
+                case BuffEngine.BuffType.NotUsedKeptForCompatibility1:
                     return (int)this.value >= 0;
 
                 case BuffEngine.BuffType.RegenPoison:
@@ -271,7 +271,7 @@ namespace SonOfRobin
                     description = "Wet.";
                     break;
 
-                case BuffEngine.BuffType.LightSource:
+                case BuffEngine.BuffType.NotUsedKeptForCompatibility1:
                     description = $"Light source {sign}{this.value}.";
                     break;
 
@@ -361,7 +361,7 @@ namespace SonOfRobin
                 case BuffEngine.BuffType.Wet:
                     return "WET";
 
-                case BuffEngine.BuffType.LightSource:
+                case BuffEngine.BuffType.NotUsedKeptForCompatibility1:
                     return $"LIGHT\n{sign}{this.value}";
 
                 case BuffEngine.BuffType.RegenPoison:

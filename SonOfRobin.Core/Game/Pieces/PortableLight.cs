@@ -8,12 +8,15 @@ namespace SonOfRobin
         private bool isOn;
         public readonly bool canBeUsedDuringRain;
         public readonly PieceTemplate.Name convertsToWhenUsedUp;
+        private readonly LightEngine storedLightEngine;
 
-        public PortableLight(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, List<Buff> buffList, string readableName, string description, Category category, bool canBeUsedDuringRain, float fireAffinity,
+        public PortableLight(World world, string id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, Category category, bool canBeUsedDuringRain, float fireAffinity, LightEngine storedLightEngine,
             byte animSize = 0, string animName = "off", bool blocksMovement = false, ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = false, int generation = 0, byte stackSize = 1, Yield yield = null, int maxHitPoints = 1, int mass = 1, Scheduler.TaskName toolbarTask = Scheduler.TaskName.SwitchLightSource, Scheduler.TaskName boardTask = Scheduler.TaskName.Empty, bool rotatesWhenDropped = false, PieceTemplate.Name convertsToWhenUsedUp = PieceTemplate.Name.Empty, PieceSoundPack soundPack = null) :
 
-            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedTerrain: allowedTerrain, floatsOnWater: floatsOnWater, maxMassForSize: null, generation: generation, stackSize: stackSize, canBePickedUp: true, yield: yield, maxHitPoints: maxHitPoints, mass: mass, toolbarTask: toolbarTask, boardTask: boardTask, rotatesWhenDropped: rotatesWhenDropped, buffList: buffList, readableName: readableName, description: description, category: category, activeState: State.Empty, soundPack: soundPack, fireAffinity: fireAffinity)
+            base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedTerrain: allowedTerrain, floatsOnWater: floatsOnWater, maxMassForSize: null, generation: generation, stackSize: stackSize, canBePickedUp: true, yield: yield, maxHitPoints: maxHitPoints, mass: mass, toolbarTask: toolbarTask, boardTask: boardTask, rotatesWhenDropped: rotatesWhenDropped, readableName: readableName, description: description, category: category, activeState: State.Empty, soundPack: soundPack, fireAffinity: fireAffinity)
         {
+            this.storedLightEngine = storedLightEngine;
+
             this.soundPack.AddAction(action: PieceSoundPack.Action.TurnOn, sound: new Sound(name: SoundData.Name.StartFireSmall, ignore3DAlways: true));
             this.soundPack.AddAction(action: PieceSoundPack.Action.TurnOff, sound: new Sound(name: SoundData.Name.EndFire, ignore3DAlways: true));
             this.soundPack.AddAction(action: PieceSoundPack.Action.IsOn, sound: new Sound(name: SoundData.Name.Torch, maxPitchVariation: 0.5f, isLooped: true, ignore3DAlways: true));
@@ -46,7 +49,12 @@ namespace SonOfRobin
 
                     // turning on this piece
                     this.sprite.AssignNewName(animName: "on");
-                    this.world.Player.buffEngine.AddBuffs(world: this.world, this.buffList);
+
+                    Sprite playerSprite = this.world.Player.sprite;
+
+                    playerSprite.lightEngine = this.storedLightEngine;
+                    playerSprite.lightEngine.AssignSprite(playerSprite);
+                    playerSprite.lightEngine.Activate();
                     this.soundPack.Play(PieceSoundPack.Action.TurnOn);
                     this.soundPack.Play(action: PieceSoundPack.Action.IsOn);
 
@@ -56,7 +64,7 @@ namespace SonOfRobin
                 else
                 {
                     this.sprite.AssignNewName(animName: "off");
-                    this.world.Player.buffEngine.RemoveBuffs(this.buffList);
+                    this.world.Player.sprite.lightEngine.Deactivate();
                     this.soundPack.Stop(PieceSoundPack.Action.IsOn);
                     this.soundPack.Play(PieceSoundPack.Action.TurnOff);
                 }

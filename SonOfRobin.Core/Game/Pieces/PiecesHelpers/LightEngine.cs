@@ -97,8 +97,6 @@ namespace SonOfRobin
 
         public void AssignSprite(Sprite newSprite)
         {
-            if (this.sprite != null) throw new ArgumentException($"Trying to assign new sprite '({this.sprite.boardPiece.readableName})' to lightEngine that already has sprite '({newSprite.boardPiece.readableName}') ");
-
             this.sprite = newSprite;
             if (this.IsActive) this.Activate();
         }
