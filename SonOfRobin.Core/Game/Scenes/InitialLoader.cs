@@ -87,13 +87,13 @@ namespace SonOfRobin
                 case Step.StartBgTasks:
                     if (SonOfRobinGame.platform == Platform.Mobile) // background tasks are not processed correctly on mobile
                     {
-                        this.backgroundTask1 = Task.Run(() => this.ProcessBackgroundTasks1());
-                        this.backgroundTask2 = Task.Run(() => this.ProcessBackgroundTasks2());
+                        this.ProcessBackgroundTasks1();
+                        this.ProcessBackgroundTasks2();
                     }
                     else
                     {
-                        this.ProcessBackgroundTasks1();
-                        this.ProcessBackgroundTasks2();
+                        this.backgroundTask1 = Task.Run(() => this.ProcessBackgroundTasks1());
+                        this.backgroundTask2 = Task.Run(() => this.ProcessBackgroundTasks2());
                     }                
                     break;
 
