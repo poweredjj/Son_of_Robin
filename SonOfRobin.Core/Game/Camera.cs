@@ -113,13 +113,11 @@ namespace SonOfRobin
         {
             get
             {
-                int screenExtension = 2;
-
                 return new Rectangle(
-                    x: this.viewRect.X - screenExtension,
-                    y: this.viewRect.Y - screenExtension,
-                    width: this.viewRect.Width + (screenExtension * 2),
-                    height: this.viewRect.Height + (screenExtension * 2));
+                    x: this.viewRect.X,
+                    y: this.viewRect.Y,
+                    width: this.viewRect.Width + 3,
+                    height: this.viewRect.Height + 3);
             }
         }
 
