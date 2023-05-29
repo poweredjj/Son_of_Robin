@@ -9,7 +9,7 @@ namespace SonOfRobin
     public class InitialLoader : Scene
     {
         public enum Step
-        { Initial, StartBgTasks, CreateSeamless, LoadAnimsJson, LoadAnimsPlants, LoadAnimsChars, LoadAnimsMisc1, LoadAnimsMisc2, SaveAnimsJson, LoadKeysGfx, MakeItemsInfo, MakeCraftRecipes, CreateScenes, WaitForBackgroundTasksToFinish, MakeDemoWorld, SetControlTips , OpenMainMenu }
+        { Initial, StartBgTasks, CreateSeamless, LoadAnimsJson, LoadAnimsPlants, LoadAnimsChars, LoadAnimsMisc1, LoadAnimsMisc2, SaveAnimsJson, LoadKeysGfx, MakeItemsInfo, MakeCraftRecipes, CreateScenes, WaitForBackgroundTasksToFinish, MakeDemoWorld, SetControlTips, OpenMainMenu }
 
         private static readonly int allStepsCount = ((Step[])Enum.GetValues(typeof(Step))).Length;
 
@@ -76,13 +76,7 @@ namespace SonOfRobin
                     break;
 
                 case Step.StartBgTasks:
-
-                    if (SonOfRobinGame.platform == Platform.Mobile) // background tasks are not processed correctly on mobile
-                    {
-                        this.ProcessBackgroundTasks1();
-                        this.ProcessBackgroundTasks2();
-                    }
-                    else
+                    if (SonOfRobinGame.platform != Platform.Mobile) // background tasks are not processed correctly on mobile
                     {
                         this.backgroundTask1 = Task.Run(() => this.ProcessBackgroundTasks1());
                         this.backgroundTask2 = Task.Run(() => this.ProcessBackgroundTasks2());
@@ -144,7 +138,24 @@ namespace SonOfRobin
                 case Step.WaitForBackgroundTasksToFinish:
                     while (true)
                     {
-                        if (SonOfRobinGame.platform == Platform.Mobile || (this.backgroundTask1.IsCompleted && this.backgroundTask2.IsCompleted)) break;
+                        if (this.backgroundTask1 != null && this.backgroundTask1.IsCompleted) break;
+
+                        if (this.backgroundTask1 == null || this.backgroundTask1.IsFaulted)
+                        {
+                            this.ProcessBackgroundTasks1();
+                            break;
+                        }
+                    }
+
+                    while (true)
+                    {
+                        if (this.backgroundTask2 != null && this.backgroundTask2.IsCompleted) break;
+
+                        if (this.backgroundTask2 == null || this.backgroundTask2.IsFaulted)
+                        {
+                            this.ProcessBackgroundTasks2();
+                            break;
+                        }
                     }
 
                     break;
