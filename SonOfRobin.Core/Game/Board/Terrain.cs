@@ -17,6 +17,7 @@ namespace SonOfRobin
         public static readonly Name[] allTerrains = (Name[])Enum.GetValues(typeof(Name));
 
         public const byte waterLevelMax = 84;
+        public const byte rocksLevelMin = 160;
         public const byte volcanoEdgeMin = 210;
         public const byte lavaMin = 225;
         public const byte biomeMin = 156;

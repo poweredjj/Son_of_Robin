@@ -831,7 +831,7 @@ namespace SonOfRobin
             return true;
         }
 
-        public bool GoOneStepTowardsGoal(Vector2 goalPosition, float walkSpeed, bool runFrom = false, bool splitXY = false, bool setOrientation = true, bool slowDownInWater = true)
+        public bool GoOneStepTowardsGoal(Vector2 goalPosition, float walkSpeed, bool runFrom = false, bool splitXY = false, bool setOrientation = true, bool slowDownInWater = true, bool slowDownOnRocks = true)
         {
             if (this.sprite.position == goalPosition)
             {
@@ -840,7 +840,8 @@ namespace SonOfRobin
             }
 
             float realSpeed = walkSpeed;
-            if (this.sprite.IsInWater && slowDownInWater) realSpeed = Math.Max(1, walkSpeed * 0.75f);
+            if (slowDownInWater && this.sprite.IsInWater) realSpeed = Math.Max(1, walkSpeed * 0.75f);
+            if (slowDownOnRocks && this.sprite.IsOnRocks) realSpeed = Math.Max(1, walkSpeed * 0.65f);
 
             Vector2 positionDifference = goalPosition - this.sprite.position;
             if (runFrom) positionDifference = new Vector2(-positionDifference.X, -positionDifference.Y);

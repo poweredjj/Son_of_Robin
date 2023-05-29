@@ -371,7 +371,7 @@ namespace SonOfRobin
                 case Name.GrassRegular:
                     {
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
-                            { Terrain.Name.Height, new AllowedRange(min: 96, max: 160) },
+                            { Terrain.Name.Height, new AllowedRange(min: 96, max: Terrain.rocksLevelMin) },
                             { Terrain.Name.Humidity, new AllowedRange(min: 50, max: 255) },
                             { Terrain.Name.Biome, new AllowedRange(min: 0, max: (byte)(Terrain.biomeMin - 1)) },
                         });
@@ -392,7 +392,7 @@ namespace SonOfRobin
                 case Name.GrassGlow:
                     {
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
-                            { Terrain.Name.Height, new AllowedRange(min: 96, max: 160) },
+                            { Terrain.Name.Height, new AllowedRange(min: 96, max: Terrain.rocksLevelMin) },
                             { Terrain.Name.Humidity, new AllowedRange(min: 50, max: 255) }});
 
                         var yield = new Yield(debrisType: Yield.DebrisType.Plant,
@@ -412,7 +412,7 @@ namespace SonOfRobin
                 case Name.GrassDesert:
                     {
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
-                            { Terrain.Name.Height, new AllowedRange(min: 105, max: 160) },
+                            { Terrain.Name.Height, new AllowedRange(min: 105, max: Terrain.rocksLevelMin) },
                             { Terrain.Name.Humidity, new AllowedRange(min: 0, max: 115) },
                             { Terrain.Name.Biome, new AllowedRange(min: 0, max: (byte)(Terrain.biomeMin - 1)) },
                         });
@@ -498,7 +498,7 @@ namespace SonOfRobin
                         var animPkg = packageNames[random.Next(0, packageNames.Count)];
 
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
-                            { Terrain.Name.Height, new AllowedRange(min: Terrain.waterLevelMax, max: 160) },
+                            { Terrain.Name.Height, new AllowedRange(min: Terrain.waterLevelMax, max: Terrain.rocksLevelMin) },
                             { Terrain.Name.Humidity, new AllowedRange(min: 140, max: 255) },
                             { Terrain.Name.Biome, new AllowedRange(min: 0, max: (byte)(Terrain.biomeMin - 1)) },
                         });
@@ -518,7 +518,7 @@ namespace SonOfRobin
                 case Name.FlowersRed:
                     {
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
-                            { Terrain.Name.Height, new AllowedRange(min: Terrain.waterLevelMax, max: 160) },
+                            { Terrain.Name.Height, new AllowedRange(min: Terrain.waterLevelMax, max: Terrain.rocksLevelMin) },
                             { Terrain.Name.Humidity, new AllowedRange(min: 140, max: 255) },
                             { Terrain.Name.Biome, new AllowedRange(min: 0, max: (byte)(Terrain.biomeMin - 1)) },
                         });
@@ -538,7 +538,7 @@ namespace SonOfRobin
                 case Name.FlowersMountain:
                     {
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
-                            { Terrain.Name.Height, new AllowedRange(min:160, max: Terrain.volcanoEdgeMin) },
+                            { Terrain.Name.Height, new AllowedRange(min:Terrain.rocksLevelMin, max: Terrain.volcanoEdgeMin) },
                             { Terrain.Name.Biome, new AllowedRange(min: 0, max: (byte)(Terrain.biomeMin - 1)) }
                         });
 
@@ -560,7 +560,7 @@ namespace SonOfRobin
                         var animPkg = packageNames[random.Next(0, packageNames.Count)];
 
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
-                            { Terrain.Name.Height, new AllowedRange(min: 105, max: 160) },
+                            { Terrain.Name.Height, new AllowedRange(min: 105, max: Terrain.rocksLevelMin) },
                             { Terrain.Name.Humidity, new AllowedRange(min: 80, max: 255) },
                             { Terrain.Name.Biome, new AllowedRange(min: 0, max: (byte)(Terrain.biomeMin - 1)) }
                         });
@@ -771,7 +771,7 @@ namespace SonOfRobin
                 case Name.TomatoPlant:
                     {
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
-                            { Terrain.Name.Height, new AllowedRange(min: 100, max: 160) },
+                            { Terrain.Name.Height, new AllowedRange(min: 100, max: Terrain.rocksLevelMin) },
                             { Terrain.Name.Humidity, new AllowedRange(min: 100, max: 200) },
                             { Terrain.Name.Biome, new AllowedRange(min: 0, max: (byte)(Terrain.biomeMin - 1)) },
                         });
@@ -813,7 +813,7 @@ namespace SonOfRobin
                 case Name.CarrotPlant:
                     {
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
-                            { Terrain.Name.Height, new AllowedRange(min: 100, max: 160) },
+                            { Terrain.Name.Height, new AllowedRange(min: 100, max: Terrain.rocksLevelMin) },
                             { Terrain.Name.Humidity, new AllowedRange(min: 100, max: 200) },
                             { Terrain.Name.Biome, new AllowedRange(min: 0, max: (byte)(Terrain.biomeMin - 1)) },
                         });
@@ -833,7 +833,7 @@ namespace SonOfRobin
                 case Name.Cactus:
                     {
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
-                            { Terrain.Name.Height, new AllowedRange(min: Terrain.waterLevelMax, max: 160) },
+                            { Terrain.Name.Height, new AllowedRange(min: Terrain.waterLevelMax, max: Terrain.rocksLevelMin) },
                             { Terrain.Name.Humidity, new AllowedRange(min: 0, max: 90) },
                             { Terrain.Name.Biome, new AllowedRange(min: 0, max: (byte)(Terrain.biomeMin - 1)) }
                         });
@@ -1541,7 +1541,7 @@ namespace SonOfRobin
                 case Name.GlassDigSite:
                     {
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
-                            { Terrain.Name.Height, new AllowedRange(min: Terrain.waterLevelMax, max: 160) },
+                            { Terrain.Name.Height, new AllowedRange(min: Terrain.waterLevelMax, max: Terrain.rocksLevelMin) },
                             { Terrain.Name.Humidity, new AllowedRange(min: 0, max: 90) },
                             { Terrain.Name.Biome, new AllowedRange(min: 0, max: (byte)(Terrain.biomeMin - 1)) },
                         });
@@ -2028,7 +2028,7 @@ namespace SonOfRobin
                           finalDroppedPieces: new List<Yield.DroppedPiece> { new Yield.DroppedPiece(pieceName: Name.MeatRaw, chanceToDrop: 100, maxNumberToDrop: 3), new Yield.DroppedPiece(pieceName: Name.Fat, chanceToDrop: 100, maxNumberToDrop: 2), new Yield.DroppedPiece(pieceName: Name.Leather, chanceToDrop: 100, maxNumberToDrop: 2) });
 
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
-                            { Terrain.Name.Height, new AllowedRange(min: 160, max: Terrain.volcanoEdgeMin) },
+                            { Terrain.Name.Height, new AllowedRange(min: Terrain.rocksLevelMin, max: Terrain.volcanoEdgeMin) },
                             { Terrain.Name.Biome, new AllowedRange(min: 0, max: (byte)(Terrain.biomeMin - 1)) },
                         });
 

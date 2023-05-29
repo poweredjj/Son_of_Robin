@@ -349,7 +349,7 @@ namespace SonOfRobin
                 { RepeatingPattern.Name.water_supershallow, new List<byte>(){ Terrain.waterLevelMax - 1, Terrain.waterLevelMax} },
                 { RepeatingPattern.Name.beach_bright, new List<byte>(){Terrain.waterLevelMax, 95} },
                 { RepeatingPattern.Name.beach_dark, new List<byte>(){96, 105} },
-                { RepeatingPattern.Name.mountain_low, new List<byte>(){160, 178} },
+                { RepeatingPattern.Name.mountain_low, new List<byte>(){Terrain.rocksLevelMin, 178} },
                 { RepeatingPattern.Name.mountain_medium, new List<byte>(){178, 194} },
                 { RepeatingPattern.Name.mountain_high, new List<byte>(){194, Terrain.volcanoEdgeMin} },
                 { RepeatingPattern.Name.volcano_edge, new List<byte>(){Terrain.volcanoEdgeMin, Terrain.lavaMin} },
@@ -363,8 +363,8 @@ namespace SonOfRobin
                 { RepeatingPattern.Name.sand, new List<byte>(){0, 75} },
                 { RepeatingPattern.Name.ground_bad, new List<byte>(){75, 115} },
                 { RepeatingPattern.Name.ground_good, new List<byte>(){115, 120} },
-                { RepeatingPattern.Name.grass_bad, new List<byte>(){120, 160} },
-                { RepeatingPattern.Name.grass_good, new List<byte>(){160, 255} },
+                { RepeatingPattern.Name.grass_bad, new List<byte>(){120, Terrain.rocksLevelMin} },
+                { RepeatingPattern.Name.grass_good, new List<byte>(){Terrain.rocksLevelMin, 255} },
             };
         }
     }

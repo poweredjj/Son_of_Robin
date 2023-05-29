@@ -132,8 +132,8 @@ namespace SonOfRobin
         public bool IsOnSand
         { get { return !this.IsInWater && (this.GetFieldValue(Terrain.Name.Humidity) <= 80 || this.GetFieldValue(Terrain.Name.Height) < 105); } }
 
-        public bool IsOnRock
-        { get { return this.GetFieldValue(Terrain.Name.Height) > 160; } }
+        public bool IsOnRocks
+        { get { return this.GetFieldValue(Terrain.Name.Height) >= Terrain.rocksLevelMin; } }
 
         public bool IsOnLava
         { get { return this.GetFieldValue(Terrain.Name.Height) >= Terrain.lavaMin; } }
@@ -150,7 +150,7 @@ namespace SonOfRobin
             {
                 if (this.GetExtProperty(name: ExtBoardProps.Name.BiomeSwamp)) return PieceSoundPack.Action.StepMud;
                 if (this.IsOnLava) return PieceSoundPack.Action.StepLava;
-                if (this.IsOnRock) return PieceSoundPack.Action.StepRock;
+                if (this.IsOnRocks) return PieceSoundPack.Action.StepRock;
                 if (this.IsInWater)
                 {
                     if (this.CanDrownHere) return PieceSoundPack.Action.SwimDeep;

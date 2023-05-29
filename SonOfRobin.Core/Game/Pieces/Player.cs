@@ -648,14 +648,14 @@ namespace SonOfRobin
                 return;
             }
 
-            this.Walk(slowDownInWater: false);
+            this.Walk(slowDownInWater: false, slowDownOnRocks: false);
         }
 
         public override void SM_PlayerControlledByCinematic()
         {
             if (this.pointWalkTarget != Vector2.Zero)
             {
-                this.GoOneStepTowardsGoal(this.pointWalkTarget, splitXY: true, walkSpeed: this.speed);
+                this.GoOneStepTowardsGoal(this.pointWalkTarget, splitXY: true, walkSpeed: this.speed, slowDownInWater: true, slowDownOnRocks: true);
                 if (this.PointWalkTargetReached)
                 {
                     this.sprite.CharacterStand();
@@ -780,7 +780,7 @@ namespace SonOfRobin
             }
         }
 
-        private bool Walk(bool setOrientation = true, bool slowDownInWater = true)
+        private bool Walk(bool setOrientation = true, bool slowDownInWater = true, bool slowDownOnRocks = true)
         {
             Vector2 movement = this.world.analogMovementLeftStick;
             if (movement != Vector2.Zero) this.pointWalkTarget = Vector2.Zero;
@@ -826,7 +826,7 @@ namespace SonOfRobin
             movement *= currentSpeed;
 
             Vector2 goalPosition = this.sprite.position + movement;
-            bool hasBeenMoved = this.GoOneStepTowardsGoal(goalPosition, splitXY: true, walkSpeed: currentSpeed, setOrientation: setOrientation, slowDownInWater: slowDownInWater);
+            bool hasBeenMoved = this.GoOneStepTowardsGoal(goalPosition, splitXY: true, walkSpeed: currentSpeed, setOrientation: setOrientation, slowDownInWater: slowDownInWater, slowDownOnRocks: slowDownOnRocks);
 
             if (hasBeenMoved)
             {
