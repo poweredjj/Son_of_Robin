@@ -261,7 +261,7 @@ namespace SonOfRobin
             SwampGas,
             LavaGas,
 
-            SoundSeaWavesObsolete, // kept for compatibility
+            SoundSeaWavesObsolete, // kept for compatibility with old saves
             SoundLakeWaves,
             SoundSeaWind,
             SoundNightCrickets,

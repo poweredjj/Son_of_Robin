@@ -119,8 +119,9 @@ namespace SonOfRobin
         public readonly Scheduler.TaskName boardTask;
         public readonly Scheduler.TaskName toolbarTask;
         public readonly bool canBePickedUp;
-        protected Vector2 passiveMovement;
         protected int passiveRotation;
+        protected Vector2 passiveMovement;
+        public bool HasPassiveMovement { get { return this.passiveMovement != Vector2.Zero; } }
         public bool rotatesWhenDropped;
         public readonly bool movesWhenDropped;
         private readonly int destructionDelay;

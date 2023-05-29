@@ -644,7 +644,7 @@ namespace SonOfRobin
 
                 this.world.swayManager.AddSwayEvent(targetSprite: this.sprite, sourceSprite: null, targetRotation: finalRotation * 0.8f, playSound: true, rotationSlowdown: 2);
 
-                this.world.swayManager.AddSwayEvent(targetSprite: this.target.sprite, sourceSprite: null, targetRotation: finalRotation, playSound: true, rotationSlowdown: 3);
+                if (this.target.GetType() == typeof(Plant)) this.world.swayManager.AddSwayEvent(targetSprite: this.target.sprite, sourceSprite: null, targetRotation: finalRotation, playSound: true, rotationSlowdown: 3);
             }
 
             if ((this.Mass >= this.maxMass && this.pregnancyMass == 0) || this.world.random.Next(0, this.awareness) == 0)

@@ -38,6 +38,7 @@ namespace SonOfRobin
                 animal.activeState = State.AnimalFlee;
             }
         }
+
         public override void SM_MapMarkerShowAndCheck()
         {
             if (this.world.CurrentUpdate % 10 != 0) return;
@@ -163,6 +164,30 @@ namespace SonOfRobin
 
             this.tweener.Update((float)Scene.CurrentGameTime.ElapsedGameTime.TotalSeconds);
             this.sprite.SetNewPosition(this.sprite.position); // to update grid, because tweener will change the position directly
+
+            // pushing player / animals
+
+            if (this.sprite.opacity > 0.5f && this.world.CurrentUpdate % 15 == 0 && this.world.random.Next(0, 2) == 0)
+            {
+                List<Sprite> collidingSpritesList = this.sprite.GetCollidingSpritesAtPosition(positionToCheck: this.sprite.position, cellGroupsToCheck: new List<Cell.Group> { Cell.Group.ColMovement });
+
+                foreach (Sprite collidingSprite in collidingSpritesList)
+                {
+                    BoardPiece collidingPiece = collidingSprite.boardPiece;
+
+                    if (collidingPiece.IsAnimalOrPlayer && !collidingPiece.HasPassiveMovement)
+                    {
+                        float angle = Helpers.GetAngleBetweenTwoPoints(start: collidingSprite.position, end: new Vector2(this.world.width / 2, this.world.height / 2));
+                        int pushDistance = this.world.random.Next(400, 800);
+
+                        Vector2 pushMovement = new Vector2((int)Math.Round(pushDistance * Math.Cos(angle)), (int)Math.Round(pushDistance * Math.Sin(angle)));
+
+                        collidingPiece.AddPassiveMovement(movement: Helpers.VectorAbsMax(vector: pushMovement, maxVal: 400f));
+
+                        // MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Wave - adding movement {Math.Round(pushMovement.X, 1)},{Math.Round(pushMovement.Y, 1)} {collidingPiece.name}");
+                    }
+                }
+            }
         }
 
         public override void SM_FogMoveRandomly()
