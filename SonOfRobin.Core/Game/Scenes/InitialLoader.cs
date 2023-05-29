@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input.Touch;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -9,13 +10,14 @@ namespace SonOfRobin
     public class InitialLoader : Scene
     {
         public enum Step
-        { Initial, StartBgTasks, CreateSeamless, LoadAnimsJson, LoadAnimsPlants, LoadAnimsChars, LoadAnimsMisc1, LoadAnimsMisc2, SaveAnimsJson, LoadKeysGfx, MakeItemsInfo, MakeCraftRecipes, CreateScenes, WaitForBackgroundTasksToFinish, MakeDemoWorld, SetControlTips, OpenMainMenu }
+        { Initial, MobileWait, StartBgTasks, CreateSeamless, LoadAnimsJson, LoadAnimsPlants, LoadAnimsChars, LoadAnimsMisc1, LoadAnimsMisc2, SaveAnimsJson, LoadKeysGfx, MakeItemsInfo, MakeCraftRecipes, CreateScenes, WaitForBackgroundTasksToFinish, MakeDemoWorld, SetControlTips, OpenMainMenu }
 
         private static readonly int allStepsCount = ((Step[])Enum.GetValues(typeof(Step))).Length;
 
         private static readonly Dictionary<Step, string> namesForSteps = new Dictionary<Step, string> {
             { Step.Initial, "starting" },
             { Step.StartBgTasks, "starting background tasks" },
+            { Step.MobileWait, "adding mobile waiting time" },
             { Step.CreateSeamless, "creating seamless textures" },
             { Step.LoadAnimsJson, "loading animations (json)" },
             { Step.LoadAnimsPlants, "loading animations (plants)" },
@@ -24,12 +26,12 @@ namespace SonOfRobin
             { Step.LoadAnimsMisc2, "loading animations (others 2)" },
             { Step.SaveAnimsJson, "saving animations (json)" },
             { Step.LoadKeysGfx, "loading keyboard textures" },
+            { Step.WaitForBackgroundTasksToFinish, "waiting for background tasks to finish" },
             { Step.CreateScenes, "creating helper scenes" },
             { Step.MakeItemsInfo, "creating items info" },
             { Step.MakeCraftRecipes, "preparing craft recipes" },
             { Step.MakeDemoWorld, "making demo world" },
             { Step.SetControlTips, "setting control tips" },
-            { Step.WaitForBackgroundTasksToFinish, "waiting for background tasks to finish" },
             { Step.OpenMainMenu, "opening main menu" },
         };
 
@@ -39,6 +41,7 @@ namespace SonOfRobin
         private Step currentStep;
         private readonly SpriteFont font;
         private readonly Texture2D splashScreenTexture;
+        private int mobileWaitingTimes;
 
         private string NextStepName
         { get { return (int)this.currentStep == allStepsCount ? "opening main menu" : namesForSteps[this.currentStep]; } }
@@ -49,6 +52,7 @@ namespace SonOfRobin
             this.currentStep = 0;
             this.font = SonOfRobinGame.FontPressStart2P5;
             this.splashScreenTexture = SonOfRobinGame.SplashScreenTexture;
+            this.mobileWaitingTimes = SonOfRobinGame.platform == Platform.Mobile ? 11 : 0;
         }
 
         private void ProcessBackgroundTasks1()
@@ -75,12 +79,23 @@ namespace SonOfRobin
                     SonOfRobinGame.CreateControlTips();
                     break;
 
+                case Step.MobileWait:
+                    this.mobileWaitingTimes--;
+                    if (this.mobileWaitingTimes > 0) currentStep--;
+                    break;
+
                 case Step.StartBgTasks:
                     if (SonOfRobinGame.platform != Platform.Mobile) // background tasks are not processed correctly on mobile
+                    {
+                        this.ProcessBackgroundTasks1();
+                        this.ProcessBackgroundTasks2();
+                    }
+                    else
                     {
                         this.backgroundTask1 = Task.Run(() => this.ProcessBackgroundTasks1());
                         this.backgroundTask2 = Task.Run(() => this.ProcessBackgroundTasks2());
                     }
+                    
                     break;
 
                 case Step.CreateSeamless:
@@ -140,7 +155,7 @@ namespace SonOfRobin
                     {
                         if (this.backgroundTask1 != null && this.backgroundTask1.IsCompleted) break;
 
-                        if (this.backgroundTask1 == null || this.backgroundTask1.IsFaulted)
+                        if (this.backgroundTask1.IsFaulted)
                         {
                             this.ProcessBackgroundTasks1();
                             break;
@@ -151,7 +166,7 @@ namespace SonOfRobin
                     {
                         if (this.backgroundTask2 != null && this.backgroundTask2.IsCompleted) break;
 
-                        if (this.backgroundTask2 == null || this.backgroundTask2.IsFaulted)
+                        if (this.backgroundTask2.IsFaulted)
                         {
                             this.ProcessBackgroundTasks2();
                             break;
