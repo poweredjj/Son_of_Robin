@@ -522,7 +522,7 @@ namespace SonOfRobin
 
             if (this.fedLevel > 0)
             {
-                this.fedLevel = Convert.ToInt32(Math.Max(this.fedLevel - Math.Max(energyAmount / 2, 1), 0));
+                this.fedLevel = Convert.ToInt32(Math.Max(this.fedLevel - Math.Max((float)energyAmount * 0.6f, 1), 0));
 
                 if (this.FedPercent < 0.5f) this.world.HintEngine.ShowGeneralHint(HintEngine.Type.Hungry);
                 if (this.FedPercent < 0.2f) this.world.HintEngine.ShowGeneralHint(HintEngine.Type.VeryHungry);
