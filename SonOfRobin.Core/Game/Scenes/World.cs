@@ -420,15 +420,15 @@ namespace SonOfRobin
 
                     string detailedInfo = Preferences.progressBarShowDetails ? "populating..." : null;
 
-                    if (!this.HasBeenRemoved) SonOfRobinGame.FullScreenProgressBar.TurnOn(percentage: percentage, text: LoadingTips.GetTip(), optionalText: detailedInfo);
+                    SonOfRobinGame.FullScreenProgressBar.TurnOn(percentage: percentage, text: LoadingTips.GetTip(), optionalText: detailedInfo);
 
                     if (this.backgroundTask == null) this.backgroundTask = Task.Run(() => this.ProcessAllPopulatingSteps());
+                    if (this.backgroundTask != null && (this.backgroundTask.IsCompleted || this.backgroundTask.IsFaulted)) this.populatingFramesLeft = 0; // to avoid softlock
                     return;
                 }
             }
 
             this.backgroundTask = null;
-
             SonOfRobinGame.FullScreenProgressBar.TurnOff();
             this.touchLayout = TouchLayout.WorldMain;
             this.tipsLayout = ControlTips.TipsLayout.WorldMain;

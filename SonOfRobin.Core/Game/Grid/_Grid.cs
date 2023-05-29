@@ -284,7 +284,8 @@ namespace SonOfRobin
                 if (this.backgroundTask == null) this.backgroundTask = Task.Run(() => this.ProcessAllCreationStages());
             }
 
-            if (!this.CreationInProgress) this.backgroundTask = null;
+            // to avoid softlock in case of errors
+            if (this.backgroundTask != null && (this.backgroundTask.IsCompleted || this.backgroundTask.IsFaulted)) this.CreationInProgress = false;
         }
 
         private void ProcessAllCreationStages()
@@ -293,6 +294,8 @@ namespace SonOfRobin
             {
                 this.ProcessOneCreationStage();
             }
+
+            this.backgroundTask = null;
         }
 
         private void ProcessOneCreationStage()
@@ -440,14 +443,9 @@ namespace SonOfRobin
                             cell.boardGraphics.LoadTexture();
 
                             if (this.ProcessingStageComplete) break;
-
-                            if (Scene.UpdateTimeElapsed.Milliseconds > 600) break;
                         }
                     }
-                    else
-                    {
-                        this.cellsToProcessOnStart.Clear();
-                    }
+                    else this.cellsToProcessOnStart.Clear();
 
                     break;
 
@@ -464,8 +462,8 @@ namespace SonOfRobin
 
                 case Stage.StartGame:
                     // to show "starting game" on progress bar
-                    this.UpdateProgressBar(); // otherwise, progress bar will not be updated
                     this.cellsToProcessOnStart.Clear();
+                    this.CreationInProgress = false;
 
                     break;
 
@@ -473,8 +471,6 @@ namespace SonOfRobin
                     if ((int)this.currentStage < allStagesCount) throw new ArgumentException("Not all steps has been processed.");
                     break;
             }
-
-            if (this.ProcessingStageComplete && (int)this.currentStage == allStagesCount - 1) this.CreationInProgress = false;
 
             if (this.ProcessingStageComplete)
             {
@@ -810,7 +806,7 @@ namespace SonOfRobin
 
         private void UpdateProgressBar()
         {
-            if (this.world.demoMode || this.world.HasBeenRemoved) return;
+            if (this.world.demoMode) return;
 
             float percentage = FullScreenProgressBar.CalculatePercentage(currentLocalStep: this.allCells.Count - this.cellsToProcessOnStart.Count, totalLocalSteps: this.allCells.Count, currentGlobalStep: 1 + (int)this.currentStage, totalGlobalSteps: SonOfRobinGame.enteringIslandGlobalSteps);
 
@@ -825,7 +821,7 @@ namespace SonOfRobin
                 detailedInfo = $"{namesForStages[(Stage)stageNo]}{timeLeftString}...";
             }
 
-            SonOfRobinGame.FullScreenProgressBar.TurnOn(percentage: percentage, text: LoadingTips.GetTip(), optionalText: detailedInfo);
+            if (!this.world.HasBeenRemoved) SonOfRobinGame.FullScreenProgressBar.TurnOn(percentage: percentage, text: LoadingTips.GetTip(), optionalText: detailedInfo);
         }
 
         private static TimeSpan CalculateTimeLeft(DateTime startTime, int completeAmount, int totalAmount)

@@ -47,9 +47,6 @@ namespace SonOfRobin
         private List<Object> eventsData;
         private Dictionary<string, Object> coolingData;
         private readonly ConcurrentBag<Object> piecesData;
-
-        // saving mode uses flags instead of data variables - to save ram
-
         private string currentStepName;
         private int processedSteps;
         private readonly int allSteps;
@@ -199,6 +196,8 @@ namespace SonOfRobin
 
         public override void Update(GameTime gameTime)
         {
+            if (!this.ErrorOccured) this.UpdateProgressBar();
+
             if (this.processingComplete)
             {
                 this.Remove();
@@ -215,24 +214,20 @@ namespace SonOfRobin
                 return;
             }
 
-            if (this.saveMode)
+            if (this.backgroundTask == null)
             {
-                // saving
-                if (this.backgroundTask == null) this.backgroundTask = Task.Run(() => this.ProcessNextSavingStep());
+                this.backgroundTask = this.saveMode ? Task.Run(() => this.ProcessSaving()) : Task.Run(() => this.ProcessLoading());
             }
             else
             {
-                // loading
-                if (this.backgroundTask == null) this.backgroundTask = Task.Run(() => this.ProcessNextLoadingStep());
-
-                if (this.backgroundTask != null && this.backgroundTask.IsCompleted)
+                if (this.backgroundTask.IsCompleted)
                 {
-                    this.FinishLoading();
+                    if (!this.saveMode) this.FinishLoading();
                     this.processingComplete = true;
                 }
+                else if (this.backgroundTask.IsFaulted) this.ErrorOccured = true;
             }
 
-            if (!this.ErrorOccured && !this.processingComplete) this.UpdateProgressBar();
             if (this.ErrorOccured) this.Remove();
         }
 
@@ -263,18 +258,18 @@ namespace SonOfRobin
             { Directory.Delete(tempPath); }
         }
 
-        private void ProcessNextSavingStep()
+        private void ProcessSaving()
         {
-            this.processedSteps++;
-
             // preparing save directory
             {
+                this.processedSteps++;
                 this.currentStepName = "directory";
                 Directory.CreateDirectory(this.saveTempPath);
             }
 
             // saving header data
             {
+                this.processedSteps++;
                 this.currentStepName = "header";
 
                 var headerData = new Dictionary<string, Object>
@@ -307,6 +302,7 @@ namespace SonOfRobin
 
             // saving hints data
             {
+                this.processedSteps++;
                 this.currentStepName = "hints";
 
                 string hintsPath = Path.Combine(this.saveTempPath, hintsName);
@@ -316,6 +312,7 @@ namespace SonOfRobin
 
             // saving weather data
             {
+                this.processedSteps++;
                 this.currentStepName = "weather";
 
                 string weatherPath = Path.Combine(this.saveTempPath, weatherName);
@@ -325,6 +322,7 @@ namespace SonOfRobin
 
             // saving grid data
             {
+                this.processedSteps++;
                 this.currentStepName = "grid";
 
                 string gridPath = Path.Combine(this.saveTempPath, gridName);
@@ -338,6 +336,7 @@ namespace SonOfRobin
 
                 while (true)
                 {
+                    this.processedSteps++;
                     this.currentStepName = $"pieces {currentPiecePackageNo + 1}";
 
                     var packagesToProcess = new List<List<BoardPiece>>();
@@ -377,6 +376,7 @@ namespace SonOfRobin
 
             // saving tracking data
             {
+                this.processedSteps++;
                 this.currentStepName = "tracking";
 
                 var trackingData = this.world.trackingManager.Serialize();
@@ -387,6 +387,7 @@ namespace SonOfRobin
 
             // saving world event data
             {
+                this.processedSteps++;
                 this.currentStepName = "events";
 
                 var eventData = this.world.worldEventManager.Serialize();
@@ -397,6 +398,7 @@ namespace SonOfRobin
 
             // saving cooling data
             {
+                this.processedSteps++;
                 this.currentStepName = "cooling";
 
                 var coolingData = this.world.coolingManager.Serialize();
@@ -405,6 +407,7 @@ namespace SonOfRobin
                 FileReaderWriter.Save(path: coolingPath, savedObj: coolingData, compress: true);
             }
 
+            this.processedSteps++;
             this.currentStepName = "replacing save slot data";
             if (Directory.Exists(this.savePath))
             {
@@ -450,12 +453,11 @@ namespace SonOfRobin
             this.processingComplete = true;
         }
 
-        private void ProcessNextLoadingStep()
+        private void ProcessLoading()
         {
-            this.processedSteps++;
-
             // checking directory
             {
+                this.processedSteps++;
                 this.currentStepName = "directory";
 
                 if (!Directory.Exists(this.savePath))
@@ -468,6 +470,7 @@ namespace SonOfRobin
 
             // loading header
             {
+                this.processedSteps++;
                 this.currentStepName = "header";
 
                 string headerPath = Path.Combine(this.savePath, headerName);
@@ -489,6 +492,7 @@ namespace SonOfRobin
 
             // loading grid
             {
+                this.processedSteps++;
                 this.currentStepName = "grid";
 
                 string gridPath = Path.Combine(this.savePath, gridName);
@@ -504,6 +508,7 @@ namespace SonOfRobin
 
             // loading hints
             {
+                this.processedSteps++;
                 this.currentStepName = "hints";
 
                 string hintsPath = Path.Combine(this.savePath, hintsName);
@@ -519,6 +524,7 @@ namespace SonOfRobin
 
             // loading hints
             {
+                this.processedSteps++;
                 this.currentStepName = "weather";
 
                 string weatherPath = Path.Combine(this.savePath, weatherName);
@@ -534,6 +540,7 @@ namespace SonOfRobin
 
             // loading tracking
             {
+                this.processedSteps++;
                 this.currentStepName = "tracking";
 
                 string trackingPath = Path.Combine(this.savePath, trackingName);
@@ -549,6 +556,7 @@ namespace SonOfRobin
 
             // loading planned events
             {
+                this.processedSteps++;
                 this.currentStepName = "events";
 
                 string eventPath = Path.Combine(this.savePath, eventsName);
@@ -563,6 +571,7 @@ namespace SonOfRobin
 
             // loading cooling data
             {
+                this.processedSteps++;
                 this.currentStepName = "cooling";
 
                 string coolingPath = Path.Combine(this.savePath, coolingName);
@@ -581,6 +590,7 @@ namespace SonOfRobin
 
                 while (true)
                 {
+                    this.processedSteps++;
                     this.currentStepName = $"pieces {currentPiecePackageNo + 1}";
 
                     // first check - this save file should exist
@@ -617,8 +627,8 @@ namespace SonOfRobin
                 }
             }
 
+            this.processedSteps++;
             this.currentStepName = "creating world";
-            this.UpdateProgressBar(); // needed to properly display the last currentStepName
         }
 
         private void FinishLoading() // steps that cannot be run in another thread
