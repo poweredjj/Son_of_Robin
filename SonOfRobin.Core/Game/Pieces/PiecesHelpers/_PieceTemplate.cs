@@ -2674,7 +2674,7 @@ namespace SonOfRobin
                         var animPkg = packageNames[random.Next(0, packageNames.Count)];
 
                         AllowedTerrain allowedTerrain = new AllowedTerrain(
-                            extPropertiesDict: new Dictionary<ExtBoardProps.Name, bool> { { ExtBoardProps.Name.OuterBeach, true } });
+                            extPropertiesDict: new Dictionary<ExtBoardProps.Name, bool> { { ExtBoardProps.Name.Sea, true } });
 
                         AllowedDensity allowedDensity = new AllowedDensity(radious: 200, maxNoOfPiecesSameName: 1);
 

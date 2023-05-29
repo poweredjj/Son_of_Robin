@@ -120,38 +120,41 @@ namespace SonOfRobin
 
                 this.sprite.opacity = 1f; // TODO add opacityFade
 
-                Vector2 currentCellXY = new Vector2(this.sprite.currentCell.cellNoX, this.sprite.currentCell.cellNoY);
+                float angle = Helpers.GetAngleBetweenTwoPoints(start: this.sprite.position, end: new Vector2(this.world.width / 2, this.world.height / 2));
 
-                var nearbyCells = this.world.Grid.GetCellsWithinDistance(cell: this.sprite.currentCell, distance: 3)
-                    .OrderByDescending(cell => Vector2.Distance(currentCellXY, new Vector2(cell.cellNoX, cell.cellNoY)));
+                this.sprite.rotation = angle;
+                Vector2 beachPos = this.sprite.position;
 
-                Vector2 targetPos = this.sprite.position; // to be changed below
+                int oneStepDistance = 100;
+                Vector2 oneStepOffset = new Vector2((int)Math.Round(oneStepDistance * Math.Cos(angle)), (int)Math.Round(oneStepDistance * Math.Sin(angle)));
 
-                foreach (Cell cell in nearbyCells)
+                for (int step = 0; step < 100; step++)
                 {
-                    if (cell.IsAllWater)
-                    {
-                        this.sprite.position = cell.center;
-                        break;
-                    }
+                    beachPos += oneStepOffset;
+                    if (this.world.Grid.GetFieldValue(position: beachPos, terrainName: Terrain.Name.Height) > Terrain.waterLevelMax) break;
                 }
 
-                this.tweener.TweenTo(target: this.sprite, expression: sprite => sprite.position, toValue: targetPos, duration: this.world.random.Next(6, 12), delay: 0)
+                this.tweener.TweenTo(target: this.sprite, expression: sprite => sprite.position, toValue: beachPos, duration: this.world.random.Next(6, 12), delay: 0)
                     .AutoReverse()
                     .Easing(EasingFunctions.QuadraticInOut);
             }
             else
             {
-                Tween tweenPos = this.tweener.FindTween(target: this, memberName: "position");
-                if (tweenPos != null && tweenPos.Completion > 0.5f)
+                Tween tweenPos = this.tweener.FindTween(target: this.sprite, memberName: "position");
+
+                if (tweenPos != null)
                 {
+                    if (tweenPos.Completion >= 0.7f)
+                    {
+                        Tween tweenOpacity = this.tweener.FindTween(target: this.sprite, memberName: "opacity");
 
-                    // TODO make it work
-
-                    this.sprite.opacity = 0.3f;
-                    this.sprite.color = Color.Red;
+                        if (tweenOpacity == null)
+                        {
+                            this.tweener.TweenTo(target: this.sprite, expression: sprite => sprite.opacity, toValue: 0.3f, duration: tweenPos.Duration / 3, delay: 0)
+                                .Easing(EasingFunctions.QuadraticInOut);
+                        }
+                    }
                 }
-
 
                 // TODO add sound playing code here
             }
