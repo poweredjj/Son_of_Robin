@@ -38,7 +38,6 @@ namespace SonOfRobin
                 animal.activeState = State.AnimalFlee;
             }
         }
-
         public override void SM_MapMarkerShowAndCheck()
         {
             if (this.world.CurrentUpdate % 10 != 0) return;
@@ -144,11 +143,15 @@ namespace SonOfRobin
 
                 this.tweener.TweenTo(target: this.sprite, expression: sprite => sprite.opacity, toValue: 0.7f, duration: duration / 5, delay: delay)
                     .Easing(EasingFunctions.QuadraticIn);
+
+                this.soundPack.Play(PieceSoundPack.Action.Ambient);
             }
             else
             {
                 if (tweenPos.Completion >= 0.7f || !this.sprite.IsInWater)
                 {
+                    this.soundPack.Play(PieceSoundPack.Action.Ambient);
+
                     Tween tweenOpacity = this.tweener.FindTween(target: this.sprite, memberName: "opacity");
                     if (tweenOpacity == null || tweenOpacity.IsComplete)
                     {
@@ -156,8 +159,6 @@ namespace SonOfRobin
                             .Easing(EasingFunctions.QuadraticOut);
                     }
                 }
-
-                // TODO add sound playing code here
             }
 
             this.tweener.Update((float)Scene.CurrentGameTime.ElapsedGameTime.TotalSeconds);

@@ -261,7 +261,7 @@ namespace SonOfRobin
             SwampGas,
             LavaGas,
 
-            SoundSeaWaves,
+            SoundSeaWavesObsolete, // kept for compatibility
             SoundLakeWaves,
             SoundSeaWind,
             SoundNightCrickets,
@@ -2678,14 +2678,17 @@ namespace SonOfRobin
 
                         AllowedDensity allowedDensity = new AllowedDensity(radious: 200, maxNoOfPiecesSameName: 1);
 
-                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: animPkg, destructionDelay: 0, allowedTerrain: allowedTerrain, allowedDensity: allowedDensity, minDistance: 0, maxDistance: 0, generation: generation, readableName: "sea wave", description: "Sea wave.", activeState: BoardPiece.State.SeaWaveMove, serialize: false, ignoresCollisions: false, visible: true, fireAffinity: 1.0f);
+                        var soundPack = new PieceSoundPack();
+                        soundPack.AddAction(action: PieceSoundPack.Action.Ambient, sound: new Sound(nameList: new List<SoundData.Name> { SoundData.Name.SeaWave1, SoundData.Name.SeaWave2, SoundData.Name.SeaWave3, SoundData.Name.SeaWave4, SoundData.Name.SeaWave5, SoundData.Name.SeaWave6, SoundData.Name.SeaWave7, SoundData.Name.SeaWave8, SoundData.Name.SeaWave9, SoundData.Name.SeaWave10, SoundData.Name.SeaWave11, SoundData.Name.SeaWave12, SoundData.Name.SeaWave13 }, maxPitchVariation: 0.8f, volume: 0.8f));
+
+                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: animPkg, destructionDelay: 0, allowedTerrain: allowedTerrain, allowedDensity: allowedDensity, minDistance: 0, maxDistance: 0, generation: generation, readableName: "sea wave", description: "Sea wave.", activeState: BoardPiece.State.SeaWaveMove, serialize: false, ignoresCollisions: false, visible: true, fireAffinity: 1.0f, soundPack: soundPack);
 
                         visualEffect.sprite.opacity = 0f;
 
                         return visualEffect;
                     }
 
-                case Name.SoundSeaWaves:
+                case Name.SoundSeaWavesObsolete:
                     {
                         AllowedTerrain allowedTerrain = new AllowedTerrain(
                             rangeNameList: new List<AllowedTerrain.RangeName>() { AllowedTerrain.RangeName.WaterShallow, AllowedTerrain.RangeName.WaterMedium },
