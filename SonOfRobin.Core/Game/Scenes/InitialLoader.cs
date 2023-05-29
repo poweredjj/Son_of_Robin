@@ -85,17 +85,16 @@ namespace SonOfRobin
                     break;
 
                 case Step.StartBgTasks:
-                    if (SonOfRobinGame.platform != Platform.Mobile) // background tasks are not processed correctly on mobile
-                    {
-                        this.ProcessBackgroundTasks1();
-                        this.ProcessBackgroundTasks2();
-                    }
-                    else
+                    if (SonOfRobinGame.platform == Platform.Mobile) // background tasks are not processed correctly on mobile
                     {
                         this.backgroundTask1 = Task.Run(() => this.ProcessBackgroundTasks1());
                         this.backgroundTask2 = Task.Run(() => this.ProcessBackgroundTasks2());
                     }
-                    
+                    else
+                    {
+                        this.ProcessBackgroundTasks1();
+                        this.ProcessBackgroundTasks2();
+                    }                
                     break;
 
                 case Step.CreateSeamless:
@@ -153,9 +152,8 @@ namespace SonOfRobin
                 case Step.WaitForBackgroundTasksToFinish:
                     while (true)
                     {
-                        if (this.backgroundTask1 != null && this.backgroundTask1.IsCompleted) break;
-
-                        if (this.backgroundTask1.IsFaulted)
+                        if (this.backgroundTask1 == null || (this.backgroundTask1 != null && this.backgroundTask1.IsCompleted)) break;
+                        else if (this.backgroundTask1.IsFaulted)
                         {
                             this.ProcessBackgroundTasks1();
                             break;
@@ -164,9 +162,8 @@ namespace SonOfRobin
 
                     while (true)
                     {
-                        if (this.backgroundTask2 != null && this.backgroundTask2.IsCompleted) break;
-
-                        if (this.backgroundTask2.IsFaulted)
+                        if (this.backgroundTask2 == null || (this.backgroundTask2 != null && this.backgroundTask2.IsCompleted)) break;
+                        else if (this.backgroundTask2.IsFaulted)
                         {
                             this.ProcessBackgroundTasks2();
                             break;
