@@ -484,7 +484,7 @@ namespace SonOfRobin
                 if (!piecesCreated) this.populatingFramesLeft = 0;
 
                 this.populatingFramesLeft--;
-                if (!this.PopulatingInProgress) break;
+                if (!this.PopulatingInProgress || this.HasBeenRemoved) break;
             }
 
             TimeSpan populatingDuration = DateTime.Now - startTime;

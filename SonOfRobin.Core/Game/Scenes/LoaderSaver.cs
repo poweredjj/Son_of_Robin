@@ -222,7 +222,7 @@ namespace SonOfRobin
             {
                 if (this.backgroundTask.IsCompleted)
                 {
-                    if (!this.saveMode) this.FinishLoading();
+                    if (!this.saveMode && !this.HasBeenRemoved) this.FinishLoading();
                     this.processingComplete = true;
                 }
                 else if (this.backgroundTask.IsFaulted) this.ErrorOccured = true;

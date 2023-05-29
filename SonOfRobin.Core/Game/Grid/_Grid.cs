@@ -290,7 +290,7 @@ namespace SonOfRobin
 
         private void ProcessAllCreationStages()
         {
-            while (this.CreationInProgress)
+            while (this.CreationInProgress && !this.world.HasBeenRemoved)
             {
                 this.ProcessOneCreationStage();
             }
