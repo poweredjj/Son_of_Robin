@@ -19,7 +19,6 @@ namespace SonOfRobin
         Sprint,
         ZoomOut,
         PauseMenu,
-        StatsMenu,
         Return,
 
         InvDragSingle,
@@ -52,7 +51,6 @@ namespace SonOfRobin
             { VButName.Sprint, "sprint" },
             { VButName.ZoomOut, "zoom_out" },
             { VButName.PauseMenu, "pause_menu" },
-            { VButName.StatsMenu, "stats" },
             { VButName.Return, "return" },
             { VButName.InvDragSingle, "drag_single" },
             { VButName.InvSort, "sort" },

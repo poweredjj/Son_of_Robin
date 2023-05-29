@@ -693,12 +693,6 @@ namespace SonOfRobin
                 return;
             }
 
-            if (InputMapper.HasBeenPressed(InputMapper.Action.WorldStatsMenu))
-            {
-                this.world.OpenStatsMenu();
-                return;
-            }
-
             if (!this.buffEngine.HasBuff(BuffEngine.BuffType.Sprint) && !this.buffEngine.HasBuff(BuffEngine.BuffType.SprintCooldown))
             {
                 VirtButton.ButtonHighlightOnNextFrame(VButName.Sprint);

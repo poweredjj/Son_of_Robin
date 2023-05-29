@@ -440,11 +440,6 @@ namespace SonOfRobin
                         xPos += xShift;
                         new VirtButton(name: VButName.PauseMenu, label: "MENU", bgColorPressed: Color.Yellow, bgColorReleased: Color.White, textColor: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
 
-                        xPos = 0.06f;
-                        yPos += yShift;
-
-                        new VirtButton(name: VButName.StatsMenu, label: "STATS", bgColorPressed: Color.CornflowerBlue, bgColorReleased: Color.White, textColor: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
-
                         return;
                     }
 

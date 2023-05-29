@@ -232,7 +232,6 @@ namespace SonOfRobin
                         new ButtonTip(tipCollection: this.tipCollection, text: "inventory", textures: InputMapper.GetTextures(InputMapper.Action.WorldInventory));
                         new ButtonTip(tipCollection: this.tipCollection, text: "pick up", isHighlighted: false, textures: InputMapper.GetTextures(InputMapper.Action.WorldPickUp));
                         new ButtonTip(tipCollection: this.tipCollection, text: "craft", textures: InputMapper.GetTextures(InputMapper.Action.WorldFieldCraft));
-                        new ButtonTip(tipCollection: this.tipCollection, text: "stats", textures: InputMapper.GetTextures(InputMapper.Action.WorldStatsMenu));
                         new ButtonTip(tipCollection: this.tipCollection, text: "interact", isHighlighted: false, textures: InputMapper.GetTextures(InputMapper.Action.WorldInteract));
                         new ButtonTip(tipCollection: this.tipCollection, text: "map", highlightCoupledObj: world, highlightCoupledVarName: "MapEnabled", textures: InputMapper.GetTextures(InputMapper.Action.WorldMapToggle));
                         new ButtonTip(tipCollection: this.tipCollection, text: "zoom out", highlightCoupledObj: preferences, highlightCoupledVarName: "CanZoomOut", textures: InputMapper.GetTextures(InputMapper.Action.WorldCameraZoomOut));
