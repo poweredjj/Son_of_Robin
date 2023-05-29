@@ -177,6 +177,8 @@ namespace SonOfRobin
 
                     if (collidingPiece.IsAnimalOrPlayer && !collidingPiece.HasPassiveMovement)
                     {
+                        collidingPiece.soundPack.Play(PieceSoundPack.Action.SwimShallow);
+
                         float angle = Helpers.GetAngleBetweenTwoPoints(start: collidingSprite.position, end: new Vector2(this.world.width / 2, this.world.height / 2));
                         int pushDistance = this.world.random.Next(400, 800);
 
