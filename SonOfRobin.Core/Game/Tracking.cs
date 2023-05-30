@@ -248,15 +248,15 @@ namespace SonOfRobin
             switch (xAlign)
             {
                 case XAlign.Center:
-                    targetX = sprite.gfxRect.Center.X;
+                    targetX = sprite.GfxRect.Center.X;
                     break;
 
                 case XAlign.Left:
-                    targetX = sprite.gfxRect.Left;
+                    targetX = sprite.GfxRect.Left;
                     break;
 
                 case XAlign.Right:
-                    targetX = sprite.gfxRect.Right;
+                    targetX = sprite.GfxRect.Right;
                     break;
 
                 default:
@@ -266,15 +266,15 @@ namespace SonOfRobin
             switch (yAlign)
             {
                 case YAlign.Center:
-                    targetY = sprite.gfxRect.Center.Y;
+                    targetY = sprite.GfxRect.Center.Y;
                     break;
 
                 case YAlign.Top:
-                    targetY = sprite.gfxRect.Top;
+                    targetY = sprite.GfxRect.Top;
                     break;
 
                 case YAlign.Bottom:
-                    targetY = sprite.gfxRect.Bottom;
+                    targetY = sprite.GfxRect.Bottom;
                     break;
 
                 default:

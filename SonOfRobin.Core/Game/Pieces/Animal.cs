@@ -105,8 +105,8 @@ namespace SonOfRobin
         {
             if (!this.alive) return;
 
-            int posX = this.sprite.gfxRect.Center.X;
-            int posY = this.sprite.gfxRect.Bottom;
+            int posX = this.sprite.GfxRect.Center.X;
+            int posY = this.sprite.GfxRect.Bottom;
 
             new StatBar(label: "hp", value: (int)this.HitPoints, valueMax: (int)this.maxHitPoints, colorMin: new Color(255, 0, 0), colorMax: new Color(0, 255, 0), posX: posX, posY: posY, texture: AnimData.framesForPkgs[AnimData.PkgName.Heart].texture);
 

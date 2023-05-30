@@ -268,7 +268,7 @@ namespace SonOfRobin
                 var piecesInsideTriangle = world.Grid.GetPiecesInsideTriangle(groupName: Cell.Group.All, point1: point1, point2: point2, point3: point3);
                 foreach (BoardPiece piece in piecesInsideTriangle)
                 {
-                    piece.sprite.effectCol.AddEffect(new BorderInstance(outlineColor: Color.Red, textureSize: piece.sprite.animFrame.textureSize, priority: 0, framesLeft: 60));
+                    piece.sprite.effectCol.AddEffect(new BorderInstance(outlineColor: Color.Red, textureSize: piece.sprite.AnimFrame.textureSize, priority: 0, framesLeft: 60));
                     PieceTemplate.CreateAndPlaceOnBoard(world: world, position: piece.sprite.position, templateName: PieceTemplate.Name.Backlight);
                 }
             }
@@ -558,7 +558,7 @@ namespace SonOfRobin
             {
                 if (world == null) return;
 
-                AnimData.PkgName currentPackageName = world.Player.sprite.animPackage;
+                AnimData.PkgName currentPackageName = world.Player.sprite.AnimPackage;
 
                 while (true)
                 {

@@ -362,7 +362,7 @@ namespace SonOfRobin
                         int bonusHitPoints = world.random.Next((int)(firstCraftedPiece.maxHitPoints * 0.2f), (int)(firstCraftedPiece.maxHitPoints * 0.7f));
 
                         taskChain.Add(new HintMessage(text: $"| {Helpers.FirstCharToUpperCase(firstCraftedPiece.readableName)}\n| +{bonusHitPoints} bonus hit points!\n| {firstCraftedPiece.maxHitPoints} | {firstCraftedPiece.maxHitPoints + bonusHitPoints}", boxType: HintMessage.BoxType.GreenBox, delay: 0, blockInput: false, useTransition: true,
-                            imageList: new List<Texture2D> { firstCraftedPiece.sprite.animFrame.texture, TextureBank.GetTexture("simple_icons/arrow_up"), TextureBank.GetTexture("simple_icons/heart"), TextureBank.GetTexture("simple_icons/arrow_right") }, startingSound: SoundData.Name.Ding1).ConvertToTask());
+                            imageList: new List<Texture2D> { firstCraftedPiece.sprite.AnimFrame.texture, TextureBank.GetTexture("simple_icons/arrow_up"), TextureBank.GetTexture("simple_icons/heart"), TextureBank.GetTexture("simple_icons/arrow_right") }, startingSound: SoundData.Name.Ding1).ConvertToTask());
 
                         foreach (BoardPiece craftedPiece in craftedPieces)
                         {

@@ -314,7 +314,7 @@ namespace SonOfRobin
                     {
                         BoardPiece flame = PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: this.sprite.position, templateName: PieceTemplate.Name.BurningFlame, closestFreeSpot: true);
 
-                        int offsetY = this.IsAnimalOrPlayer ? 2 : this.sprite.gfxRect.Bottom - flame.sprite.gfxRect.Bottom + 2;
+                        int offsetY = this.IsAnimalOrPlayer ? 2 : this.sprite.GfxRect.Bottom - flame.sprite.GfxRect.Bottom + 2;
 
                         new Tracking(world: this.world, targetSprite: this.sprite, followingSprite: flame.sprite, offsetY: offsetY);
 
@@ -339,10 +339,10 @@ namespace SonOfRobin
 
                 if (this.world == null || (!this.sprite.IsInCameraRect || Preferences.debugShowAnimSizeChangeInCamera)) // size change should not be visible
                 {
-                    int previousSpriteSize = this.sprite.animSize;
+                    int previousSpriteSize = this.sprite.AnimSize;
                     this.SetSpriteSizeByMass();
 
-                    if (previousSpriteSize != this.sprite.animSize && this.PieceStorage != null && this.GetType() == typeof(Plant))
+                    if (previousSpriteSize != this.sprite.AnimSize && this.PieceStorage != null && this.GetType() == typeof(Plant))
                     {
                         Plant plant = (Plant)this;
                         plant.fruitEngine.SetAllFruitPosAgain();
@@ -466,9 +466,9 @@ namespace SonOfRobin
 
         public virtual void DrawStatBar()
         {
-            new StatBar(label: "", value: (int)this.HitPoints, valueMax: (int)this.maxHitPoints, colorMin: new Color(255, 0, 0), colorMax: new Color(0, 255, 0), posX: this.sprite.gfxRect.Center.X, posY: this.sprite.gfxRect.Bottom, ignoreIfAtMax: true, texture: AnimData.framesForPkgs[AnimData.PkgName.Heart].texture);
+            new StatBar(label: "", value: (int)this.HitPoints, valueMax: (int)this.maxHitPoints, colorMin: new Color(255, 0, 0), colorMax: new Color(0, 255, 0), posX: this.sprite.GfxRect.Center.X, posY: this.sprite.GfxRect.Bottom, ignoreIfAtMax: true, texture: AnimData.framesForPkgs[AnimData.PkgName.Heart].texture);
 
-            if (Preferences.debugShowStatBars && this.BurnLevel > 0) new StatBar(label: "", value: (int)(this.BurnLevel * 100f), valueMax: 100, colorMin: new Color(255, 0, 0), colorMax: new Color(0, 255, 0), posX: this.sprite.gfxRect.Center.X, posY: this.sprite.gfxRect.Bottom, ignoreIfAtMax: true, texture: AnimData.framesForPkgs[AnimData.PkgName.Flame].texture);
+            if (Preferences.debugShowStatBars && this.BurnLevel > 0) new StatBar(label: "", value: (int)(this.BurnLevel * 100f), valueMax: 100, colorMin: new Color(255, 0, 0), colorMax: new Color(0, 255, 0), posX: this.sprite.GfxRect.Center.X, posY: this.sprite.GfxRect.Bottom, ignoreIfAtMax: true, texture: AnimData.framesForPkgs[AnimData.PkgName.Flame].texture);
 
             StatBar.FinishThisBatch();
         }
@@ -500,8 +500,8 @@ namespace SonOfRobin
         private void SetSpriteSizeByMass()
         {
             byte newSpriteSize = this.SpriteSize;
-            if (this.sprite.animSize == newSpriteSize) return;
-            if (!this.canShrink && this.sprite.animSize > newSpriteSize) return;
+            if (this.sprite.AnimSize == newSpriteSize) return;
+            if (!this.canShrink && this.sprite.AnimSize > newSpriteSize) return;
 
             this.sprite.AssignNewSize(newSpriteSize);
         }

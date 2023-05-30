@@ -40,7 +40,7 @@ namespace SonOfRobin
 
             if (notEmptySlotsCount > 0)
             {
-                new StatBar(label: "", value: notEmptySlotsCount, valueMax: this.PieceStorage.AllSlotsCount, colorMin: new Color(0, 255, 255), colorMax: new Color(0, 128, 255), posX: this.sprite.gfxRect.Center.X, posY: this.sprite.gfxRect.Bottom, ignoreIfAtMax: false, texture: AnimData.framesForPkgs[AnimData.PkgName.ChestIron].texture);
+                new StatBar(label: "", value: notEmptySlotsCount, valueMax: this.PieceStorage.AllSlotsCount, colorMin: new Color(0, 255, 255), colorMax: new Color(0, 128, 255), posX: this.sprite.GfxRect.Center.X, posY: this.sprite.GfxRect.Bottom, ignoreIfAtMax: false, texture: AnimData.framesForPkgs[AnimData.PkgName.ChestIron].texture);
             }
 
             base.DrawStatBar();
@@ -66,14 +66,14 @@ namespace SonOfRobin
 
         public void Open()
         {
-            if (this.sprite.animName == "open") return; // "opening" animation is not used, because it won't complete before opening inventory
+            if (this.sprite.AnimName == "open") return; // "opening" animation is not used, because it won't complete before opening inventory
             this.soundPack.Play(PieceSoundPack.Action.Open);
             this.sprite.AssignNewName(newAnimName: "open");
         }
 
         public void Close()
         {
-            if (this.PieceStorage.OccupiedSlots.Count == 0 || this.sprite.animName == "closing") return;
+            if (this.PieceStorage.OccupiedSlots.Count == 0 || this.sprite.AnimName == "closing") return;
             this.soundPack.Play(PieceSoundPack.Action.Close);
             this.sprite.AssignNewName(newAnimName: "closing");
         }

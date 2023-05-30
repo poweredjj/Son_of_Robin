@@ -511,7 +511,7 @@ namespace SonOfRobin
 
             if (this.activeState == State.PlayerControlledShooting)
             {
-                new StatBar(width: 80, height: 5, label: "power", value: (int)this.shootingPower, valueMax: (int)maxShootingPower, colorMin: new Color(220, 255, 0), colorMax: new Color(255, 0, 0), posX: this.sprite.gfxRect.Center.X, posY: this.sprite.gfxRect.Bottom);
+                new StatBar(width: 80, height: 5, label: "power", value: (int)this.shootingPower, valueMax: (int)maxShootingPower, colorMin: new Color(220, 255, 0), colorMax: new Color(255, 0, 0), posX: this.sprite.GfxRect.Center.X, posY: this.sprite.GfxRect.Bottom);
                 StatBar.FinishThisBatch();
             }
         }
@@ -601,7 +601,7 @@ namespace SonOfRobin
                 }
             }
 
-            int pieceSize = Math.Max(this.simulatedPieceToBuild.sprite.animFrame.colWidth, this.simulatedPieceToBuild.sprite.animFrame.colHeight);
+            int pieceSize = Math.Max(this.simulatedPieceToBuild.sprite.AnimFrame.colWidth, this.simulatedPieceToBuild.sprite.AnimFrame.colHeight);
 
             float buildDistance = Vector2.Distance(this.sprite.position, newPos);
             if (buildDistance <= 200 + pieceSize) this.simulatedPieceToBuild.sprite.SetNewPosition(newPos: newPos, ignoreCollisions: true);
@@ -616,7 +616,7 @@ namespace SonOfRobin
             Color color = canBuildHere ? Color.Green : Color.Red;
 
             this.simulatedPieceToBuild.sprite.effectCol.AddEffect(new ColorizeInstance(color: color));
-            this.simulatedPieceToBuild.sprite.effectCol.AddEffect(new BorderInstance(outlineColor: Color.White, textureSize: this.simulatedPieceToBuild.sprite.animFrame.textureSize, priority: 0));
+            this.simulatedPieceToBuild.sprite.effectCol.AddEffect(new BorderInstance(outlineColor: Color.White, textureSize: this.simulatedPieceToBuild.sprite.AnimFrame.textureSize, priority: 0));
 
             if (InputMapper.HasBeenPressed(InputMapper.Action.GlobalCancelReturnSkip))
             {
@@ -627,7 +627,7 @@ namespace SonOfRobin
             if (InputMapper.HasBeenPressed(InputMapper.Action.GlobalConfirm))
             {
                 if (canBuildHere) this.world.BuildPiece();
-                else new TextWindow(text: $"|  {Helpers.FirstCharToUpperCase(this.simulatedPieceToBuild.readableName)} can't be placed here.", imageList: new List<Texture2D> { this.simulatedPieceToBuild.sprite.animFrame.texture }, textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false, checkForDuplicate: true, autoClose: false, inputType: Scene.InputTypes.Normal, priority: 1, blocksUpdatesBelow: false, startingSound: SoundData.Name.Error);
+                else new TextWindow(text: $"|  {Helpers.FirstCharToUpperCase(this.simulatedPieceToBuild.readableName)} can't be placed here.", imageList: new List<Texture2D> { this.simulatedPieceToBuild.sprite.AnimFrame.texture }, textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false, checkForDuplicate: true, autoClose: false, inputType: Scene.InputTypes.Normal, priority: 1, blocksUpdatesBelow: false, startingSound: SoundData.Name.Error);
             }
         }
 
@@ -732,7 +732,7 @@ namespace SonOfRobin
                 {
                     Tutorials.ShowTutorialOnTheField(type: Tutorials.Type.PickUp, world: this.world);
                     pieceToPickUp.sprite.effectCol.AddEffect(new ColorizeInstance(color: Color.DodgerBlue));
-                    pieceToPickUp.sprite.effectCol.AddEffect(new BorderInstance(outlineColor: Color.White, textureSize: pieceToPickUp.sprite.animFrame.textureSize, priority: 0));
+                    pieceToPickUp.sprite.effectCol.AddEffect(new BorderInstance(outlineColor: Color.White, textureSize: pieceToPickUp.sprite.AnimFrame.textureSize, priority: 0));
                     VirtButton.ButtonHighlightOnNextFrame(VButName.PickUp);
                     ControlTips.TipHighlightOnNextFrame(tipName: "pick up");
                     FieldTip.AddUpdateTip(world: this.world, texture: InputMapper.GetTexture(InputMapper.Action.WorldPickUp), targetSprite: pieceToPickUp.sprite, alignment: this.sprite.position.Y > pieceToPickUp.sprite.position.Y ? FieldTip.Alignment.TopOut : FieldTip.Alignment.BottomOut);
@@ -757,7 +757,7 @@ namespace SonOfRobin
             }
 
             bool pickUp = InputMapper.HasBeenPressed(InputMapper.Action.WorldPickUp) ||
-                (Preferences.PointToInteract && pieceToPickUp != null && pieceToPickUp.sprite.gfxRect.Contains(this.pointWalkTarget));
+                (Preferences.PointToInteract && pieceToPickUp != null && pieceToPickUp.sprite.GfxRect.Contains(this.pointWalkTarget));
 
             if (pickUp)
             {
@@ -767,7 +767,7 @@ namespace SonOfRobin
             }
 
             bool interact = !pickUp && (InputMapper.HasBeenPressed(InputMapper.Action.WorldInteract) ||
-                (Preferences.PointToInteract && pieceToInteract != null && pieceToInteract.sprite.gfxRect.Contains(this.pointWalkTarget)));
+                (Preferences.PointToInteract && pieceToInteract != null && pieceToInteract.sprite.GfxRect.Contains(this.pointWalkTarget)));
 
             if (interact)
             {
@@ -1204,14 +1204,14 @@ namespace SonOfRobin
             {
                 if (this.sprite.CanDrownHere)
                 {
-                    this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.CantUseToolsInWater, ignoreDelay: true, text: activeToolbarPiece.readableName, texture: activeToolbarPiece.sprite.animFrame.texture);
+                    this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.CantUseToolsInWater, ignoreDelay: true, text: activeToolbarPiece.readableName, texture: activeToolbarPiece.sprite.AnimFrame.texture);
 
                     return false;
                 }
 
                 if (activeTool.CheckForAmmo(removePiece: false) == null)
                 {
-                    new TextWindow(text: $"No ammo for | {activeToolbarPiece.readableName}.", imageList: new List<Texture2D> { activeToolbarPiece.sprite.animFrame.texture }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1, animSound: this.world.DialogueSound);
+                    new TextWindow(text: $"No ammo for | {activeToolbarPiece.readableName}.", imageList: new List<Texture2D> { activeToolbarPiece.sprite.AnimFrame.texture }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1, animSound: this.world.DialogueSound);
 
                     return false;
                 }
@@ -1237,13 +1237,13 @@ namespace SonOfRobin
                 activeToolbarPiece?.toolbarTask != Scheduler.TaskName.GetDrinked &&
                 activeToolbarPiece?.toolbarTask != Scheduler.TaskName.GetEaten)
             {
-                if (!highlightOnly) this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.TooDarkToUseTools, ignoreDelay: true, text: activeToolbarPiece.readableName, texture: activeToolbarPiece.sprite.animFrame.texture);
+                if (!highlightOnly) this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.TooDarkToUseTools, ignoreDelay: true, text: activeToolbarPiece.readableName, texture: activeToolbarPiece.sprite.AnimFrame.texture);
                 return false;
             }
 
             if (!highlightOnly && this.sprite.CanDrownHere)
             {
-                this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.CantUseToolsInWater, ignoreDelay: true, text: activeToolbarPiece.readableName, texture: activeToolbarPiece.sprite.animFrame.texture);
+                this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.CantUseToolsInWater, ignoreDelay: true, text: activeToolbarPiece.readableName, texture: activeToolbarPiece.sprite.AnimFrame.texture);
 
                 return false;
             }

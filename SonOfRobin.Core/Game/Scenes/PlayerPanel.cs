@@ -260,7 +260,7 @@ namespace SonOfRobin
                 Camera camera = this.world.camera;
                 BoardPiece markerPiece = this.world.map.MapMarker;
                 Vector2 markerPos = markerPiece.sprite.position;
-                Texture2D markerTexture = markerPiece.sprite.animFrame.texture;
+                Texture2D markerTexture = markerPiece.sprite.AnimFrame.texture;
 
                 float tipsHeight = 0; // to avoid drawing marker under ControlTips
                 if (Preferences.ShowControlTips)

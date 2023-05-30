@@ -897,7 +897,7 @@ namespace SonOfRobin
             {
                 foreach (Sprite sprite in cell.GetSpritesFromSurroundingCells(groupName))
                 {
-                    if (rectToCheck.Intersects(sprite.colRect)) collidingPieces.Add(sprite.boardPiece);
+                    if (rectToCheck.Intersects(sprite.ColRect)) collidingPieces.Add(sprite.boardPiece);
                 }
             }
 
@@ -977,7 +977,7 @@ namespace SonOfRobin
                 {
                     spritesWithinDistance.AddRange(
                         cell.spriteGroups[groupName].Values.Where(
-                            currentSprite => Vector2.Distance(new Vector2(currentSprite.gfxRect.Center.X, currentSprite.gfxRect.Bottom), centerPos) <= distance &&
+                            currentSprite => Vector2.Distance(new Vector2(currentSprite.GfxRect.Center.X, currentSprite.GfxRect.Bottom), centerPos) <= distance &&
                             currentSprite != mainSprite));
                 }
             }
@@ -1028,7 +1028,7 @@ namespace SonOfRobin
             {
                 foreach (Cell cell in visibleCells) // making sure that every piece is actually inside camera rect
                 {
-                    spriteListToFill.AddRange(cell.spriteGroups[groupName].Values.Where(sprite => camera.viewRect.Intersects(sprite.gfxRect)));
+                    spriteListToFill.AddRange(cell.spriteGroups[groupName].Values.Where(sprite => camera.viewRect.Intersects(sprite.GfxRect)));
                 }
             }
             else
@@ -1136,7 +1136,7 @@ namespace SonOfRobin
                         {
                             if (!shadowSprite.Visible) continue;
 
-                            Vector2 sunPos = new Vector2(shadowSprite.gfxRect.Center.X + sunLightData.sunPos.X, shadowSprite.gfxRect.Bottom + sunLightData.sunPos.Y);
+                            Vector2 sunPos = new Vector2(shadowSprite.GfxRect.Center.X + sunLightData.sunPos.X, shadowSprite.GfxRect.Bottom + sunLightData.sunPos.Y);
                             float shadowAngle = Helpers.GetAngleBetweenTwoPoints(start: sunPos, end: shadowSprite.position);
 
                             Sprite.DrawShadow(color: sunShadowsColor, shadowSprite: shadowSprite, lightPos: sunPos, shadowAngle: shadowAngle, yScaleForce: sunLightData.sunShadowsLength);
@@ -1150,7 +1150,7 @@ namespace SonOfRobin
 
             var visibleSprites = camera.GetVisibleSprites(groupName: Cell.Group.Visible, compareWithCameraRect: true);
 
-            foreach (Sprite sprite in visibleSprites.OrderBy(o => o.animFrame.layer).ThenBy(o => o.gfxRect.Bottom))
+            foreach (Sprite sprite in visibleSprites.OrderBy(o => o.AnimFrame.layer).ThenBy(o => o.GfxRect.Bottom))
             { sprite.Draw(); }
 
             StatBar.DrawAll();

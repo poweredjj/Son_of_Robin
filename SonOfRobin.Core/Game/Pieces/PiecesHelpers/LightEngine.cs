@@ -47,10 +47,10 @@ namespace SonOfRobin
         }
 
         public int Width
-        { get { return (int)(this.sprite.gfxRect.Width * this.addedGfxRectMultiplier) + width; } set { this.width = value; } }
+        { get { return (int)(this.sprite.GfxRect.Width * this.addedGfxRectMultiplier) + width; } set { this.width = value; } }
 
         public int Height
-        { get { return (int)(this.sprite.gfxRect.Height * this.addedGfxRectMultiplier) + height; } set { this.height = value; } }
+        { get { return (int)(this.sprite.GfxRect.Height * this.addedGfxRectMultiplier) + height; } set { this.height = value; } }
 
         public int Size
         {
@@ -90,7 +90,7 @@ namespace SonOfRobin
         {
             get
             {
-                Point centerPos = this.sprite.gfxRect.Center;
+                Point centerPos = this.sprite.GfxRect.Center;
                 return new Rectangle(x: centerPos.X - (this.Width / 2), y: centerPos.Y - (this.Height / 2), width: this.Width, height: this.Height);
             }
         }

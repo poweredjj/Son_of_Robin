@@ -51,7 +51,7 @@ namespace SonOfRobin
             if (!this.indestructible)
             {
                 this.HitPoints = Math.Max(0, this.HitPoints - this.world.random.Next(1, 5));
-                if (this.HitPoints == 0) this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.BrokenItem, ignoreDelay: true, text: this.readableName, texture: this.sprite.animFrame.texture);
+                if (this.HitPoints == 0) this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.BrokenItem, ignoreDelay: true, text: this.readableName, texture: this.sprite.AnimFrame.texture);
             }
 
             float angle = this.world.Player.ShootingAngle;
@@ -63,7 +63,7 @@ namespace SonOfRobin
             Vector2 movement = new Vector2((int)Math.Round(movementDist * Math.Cos(angle)), (int)Math.Round(movementDist * Math.Sin(angle)));
 
             Sprite playerSprite = this.world.Player.sprite;
-            Vector2 startingPos = playerSprite.position + new Vector2(offset.X * playerSprite.animFrame.colWidth * 1.5f, offset.Y * playerSprite.animFrame.colHeight * 1.5f);
+            Vector2 startingPos = playerSprite.position + new Vector2(offset.X * playerSprite.AnimFrame.colWidth * 1.5f, offset.Y * playerSprite.AnimFrame.colHeight * 1.5f);
             projectile.GetThrown(startPosition: startingPos, movement: movement, hitPowerMultiplier: this.hitPower + this.world.Player.strength, shootingPower: shootingPower);
         }
 
@@ -170,7 +170,7 @@ namespace SonOfRobin
                 if (highlightOnly)
                 {
                     Tutorials.ShowTutorialOnTheField(type: Tutorials.Type.Hit, world: this.world);
-                    currentTarget.sprite.effectCol.AddEffect(new BorderInstance(outlineColor: Color.Red, textureSize: currentTarget.sprite.animFrame.textureSize, priority: 0));
+                    currentTarget.sprite.effectCol.AddEffect(new BorderInstance(outlineColor: Color.Red, textureSize: currentTarget.sprite.AnimFrame.textureSize, priority: 0));
 
                     VirtButton.ButtonHighlightOnNextFrame(VButName.UseTool);
                     ControlTips.TipHighlightOnNextFrame(tipName: "use item");
@@ -197,8 +197,8 @@ namespace SonOfRobin
                     this.HitPoints -= 1;
                     this.HitPoints = Math.Max(0, this.HitPoints);
 
-                    if (this.HitPointsPercent < 0.4f && this.HitPoints > 0) this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.BreakingItem, ignoreDelay: true, text: this.readableName, texture: this.sprite.animFrame.texture);
-                    if (this.HitPoints == 0) this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.BrokenItem, ignoreDelay: true, text: this.readableName, texture: this.sprite.animFrame.texture);
+                    if (this.HitPointsPercent < 0.4f && this.HitPoints > 0) this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.BreakingItem, ignoreDelay: true, text: this.readableName, texture: this.sprite.AnimFrame.texture);
+                    if (this.HitPoints == 0) this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.BrokenItem, ignoreDelay: true, text: this.readableName, texture: this.sprite.AnimFrame.texture);
                 }
             }
         }
@@ -249,8 +249,8 @@ namespace SonOfRobin
                 if (target.category == Category.SmallPlant) numberOfExplosions = 0;
                 for (int i = 0; i < numberOfExplosions; i++)
                 {
-                    Vector2 posOffset = new Vector2(world.random.Next(0, target.sprite.animFrame.gfxWidth), world.random.Next(0, target.sprite.animFrame.gfxHeight));
-                    posOffset += target.sprite.animFrame.gfxOffset;
+                    Vector2 posOffset = new Vector2(world.random.Next(0, target.sprite.AnimFrame.gfxWidth), world.random.Next(0, target.sprite.AnimFrame.gfxHeight));
+                    posOffset += target.sprite.AnimFrame.gfxOffset;
 
                     var attack = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: target.sprite.position + posOffset, templateName: PieceTemplate.Name.Attack);
                     attack.sprite.color = Color.LightSteelBlue;

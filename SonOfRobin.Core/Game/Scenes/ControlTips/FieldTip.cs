@@ -88,7 +88,7 @@ namespace SonOfRobin
         private void ChangeOpacityIfObstructsTarget()
         {
             if (this.targetSprite == null) return;
-            if (inAlignment.Contains(this.alignment) && (targetSprite.gfxRect.Width < this.TextureWidth || targetSprite.gfxRect.Height < this.TextureHeight)) this.targetOpacity = 0.5f;
+            if (inAlignment.Contains(this.alignment) && (targetSprite.GfxRect.Width < this.TextureWidth || targetSprite.GfxRect.Height < this.TextureHeight)) this.targetOpacity = 0.5f;
         }
 
         private Rectangle CalculateDestRect(Vector2 position)
@@ -166,7 +166,7 @@ namespace SonOfRobin
         {
             List<Rectangle> rectsToCheck = new List<Rectangle>();
 
-            if (this.world.Player != null) rectsToCheck.Add(this.world.Player.sprite.gfxRect);
+            if (this.world.Player != null) rectsToCheck.Add(this.world.Player.sprite.GfxRect);
             foreach (FieldTip fieldTip in tipsDict.Values)
             {
                 if (fieldTip != this) rectsToCheck.Add(fieldTip.CalculateDestRect(fieldTip.currentPos));
@@ -198,7 +198,7 @@ namespace SonOfRobin
 
             int textureWidth = this.TextureWidth;
             int textureHeight = this.TextureHeight;
-            Rectangle targetRect = this.targetSprite.gfxRect;
+            Rectangle targetRect = this.targetSprite.GfxRect;
 
             Vector2 position;
             switch (this.alignment)

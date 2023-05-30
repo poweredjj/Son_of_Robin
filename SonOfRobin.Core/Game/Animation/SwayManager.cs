@@ -139,7 +139,7 @@ namespace SonOfRobin
             this.targetSprite = targetSprite;
 
             this.originalRotation = this.targetSprite.rotation;
-            this.targetSprite.rotationOriginOverride = new Vector2(targetSprite.animFrame.textureSize.X * 0.5f, targetSprite.animFrame.textureSize.Y);
+            this.targetSprite.rotationOriginOverride = new Vector2(targetSprite.AnimFrame.textureSize.X * 0.5f, targetSprite.AnimFrame.textureSize.Y);
             this.targetRotation = targetRotation;
             this.rotationSlowdown = rotationSlowdown;
 
@@ -161,11 +161,11 @@ namespace SonOfRobin
                 return;
             }
 
-            if (this.sourceSprite != null && this.targetSprite.colRect.Intersects(this.sourceSprite.colRect))
+            if (this.sourceSprite != null && this.targetSprite.ColRect.Intersects(this.sourceSprite.ColRect))
             {
                 Vector2 sourceOffset = sourceSprite.position - targetSprite.position;
                 float distance = Vector2.Distance(targetSprite.position, sourceSprite.position);
-                float maxDistance = (sourceSprite.colRect.Width / 2) + (targetSprite.colRect.Width / 2);
+                float maxDistance = (sourceSprite.ColRect.Width / 2) + (targetSprite.ColRect.Width / 2);
                 float distanceFactor = 1f - (distance / maxDistance);
 
                 float rotationChange = 1.2f * distanceFactor;

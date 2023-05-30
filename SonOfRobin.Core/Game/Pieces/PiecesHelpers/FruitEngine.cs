@@ -35,19 +35,19 @@ namespace SonOfRobin
         { get { return this.currentMass > this.oneFruitTargetMass && this.plant.Mass >= this.plant.adultSizeMass; } }
 
         public int MaxAreaWidth
-        { get { return (int)((float)this.plant.sprite.gfxRect.Width * (float)this.areaWidthPercent * 0.5f); } }
+        { get { return (int)((float)this.plant.sprite.GfxRect.Width * (float)this.areaWidthPercent * 0.5f); } }
 
         public int MaxAreaHeight
-        { get { return (int)((float)this.plant.sprite.gfxRect.Height * (float)this.areaHeightPercent * 0.5f); } }
+        { get { return (int)((float)this.plant.sprite.GfxRect.Height * (float)this.areaHeightPercent * 0.5f); } }
 
         public float XOffset
-        { get { return (float)this.plant.sprite.gfxRect.Width * (float)this.xOffsetPercent; } }
+        { get { return (float)this.plant.sprite.GfxRect.Width * (float)this.xOffsetPercent; } }
 
         public float YOffset
-        { get { return (float)this.plant.sprite.gfxRect.Height * (float)this.yOffsetPercent; } }
+        { get { return (float)this.plant.sprite.GfxRect.Height * (float)this.yOffsetPercent; } }
 
         private Vector2 FruitCenterPos
-        { get { return new Vector2(this.plant.sprite.gfxRect.Center.X + this.XOffset, this.plant.sprite.gfxRect.Center.Y + this.YOffset); } }
+        { get { return new Vector2(this.plant.sprite.GfxRect.Center.X + this.XOffset, this.plant.sprite.GfxRect.Center.Y + this.YOffset); } }
 
         public Rectangle FruitAreaRect
         {

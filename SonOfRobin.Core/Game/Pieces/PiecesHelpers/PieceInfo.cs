@@ -60,11 +60,11 @@ namespace SonOfRobin
 
             public Info(BoardPiece piece)
             {
-                this.animSize = piece.sprite.animSize;
+                this.animSize = piece.sprite.AnimSize;
                 this.mass = piece.Mass;
 
                 if (piece.maxMassForSize != null) piece.Mass = piece.maxMassForSize.Last(); // to show frame of biggest size
-                this.frame = piece.sprite.animFrame;
+                this.frame = piece.sprite.AnimFrame;
                 piece.Mass = this.mass; // reverting to original mass
 
                 this.name = piece.name;
@@ -90,7 +90,7 @@ namespace SonOfRobin
                 this.color = piece.sprite.color;
                 this.opacity = piece.sprite.opacity;
                 this.lightEngine = piece.sprite.lightEngine;
-                this.animName = piece.sprite.animName;
+                this.animName = piece.sprite.AnimName;
                 if (piece.GetType() == typeof(Animal)) this.eats = ((Animal)piece).eats;
                 this.equipType = piece.GetType() == typeof(Equipment) ? ((Equipment)piece).equipType : Equipment.EquipType.None;
                 this.cookerFoodMassMultiplier = piece.GetType() == typeof(Cooker) ? ((Cooker)piece).foodMassMultiplier : 0f;

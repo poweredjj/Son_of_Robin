@@ -183,7 +183,7 @@ namespace SonOfRobin
 
                             if (workshop.world.weather.IsRaining && !workshop.canBeUsedDuringRain)
                             {
-                                new TextWindow(text: $"I can't use | {workshop.readableName} during rain.", imageList: new List<Texture2D> { workshop.sprite.animFrame.texture }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1, animSound: workshop.world.DialogueSound);
+                                new TextWindow(text: $"I can't use | {workshop.readableName} during rain.", imageList: new List<Texture2D> { workshop.sprite.AnimFrame.texture }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1, animSound: workshop.world.DialogueSound);
 
                                 return;
                             }
@@ -441,21 +441,21 @@ namespace SonOfRobin
                                 switch (player.sprite.orientation)
                                 {
                                     case Sprite.Orientation.left:
-                                        areaRect.Width = player.sprite.gfxRect.Left;
+                                        areaRect.Width = player.sprite.GfxRect.Left;
                                         break;
 
                                     case Sprite.Orientation.right:
-                                        areaRect.X = player.sprite.gfxRect.Center.X;
-                                        areaRect.Width = world.width - player.sprite.gfxRect.Center.X;
+                                        areaRect.X = player.sprite.GfxRect.Center.X;
+                                        areaRect.Width = world.width - player.sprite.GfxRect.Center.X;
                                         break;
 
                                     case Sprite.Orientation.up:
-                                        areaRect.Height = player.sprite.gfxRect.Center.Y;
+                                        areaRect.Height = player.sprite.GfxRect.Center.Y;
                                         break;
 
                                     case Sprite.Orientation.down:
-                                        areaRect.Y = player.sprite.gfxRect.Center.Y;
-                                        areaRect.Height = world.height - player.sprite.gfxRect.Center.Y;
+                                        areaRect.Y = player.sprite.GfxRect.Center.Y;
+                                        areaRect.Height = world.height - player.sprite.GfxRect.Center.Y;
                                         break;
 
                                     default:
@@ -528,7 +528,7 @@ namespace SonOfRobin
                                 {
                                     new Task(taskName: TaskName.PlaySoundByName, delay: 15, executeHelper: SoundData.Name.Ding1);
 
-                                    new TextWindow(text: $"Acquired | seeds for | {PieceInfo.GetInfo(plantName).readableName}.", imageList: new List<Texture2D> { seeds.sprite.animFrame.texture, PieceInfo.GetTexture(plantName) }, textColor: Color.White, bgColor: Color.Green, useTransition: true, animate: true, checkForDuplicate: true, inputType: Scene.InputTypes.Normal, blocksUpdatesBelow: true, priority: 0);
+                                    new TextWindow(text: $"Acquired | seeds for | {PieceInfo.GetInfo(plantName).readableName}.", imageList: new List<Texture2D> { seeds.sprite.AnimFrame.texture, PieceInfo.GetTexture(plantName) }, textColor: Color.White, bgColor: Color.Green, useTransition: true, animate: true, checkForDuplicate: true, inputType: Scene.InputTypes.Normal, blocksUpdatesBelow: true, priority: 0);
                                 }
                                 else seeds.Destroy(); // seeds should not appear, if there is no room for them to be stored
                             }
@@ -844,7 +844,7 @@ namespace SonOfRobin
                         {
                             Shelter shelterPiece = (Shelter)this.ExecuteHelper;
                             SleepEngine sleepEngine = shelterPiece.sleepEngine;
-                            World.GetTopWorld()?.Player.GoToSleep(sleepEngine: sleepEngine, zzzPos: new Vector2(shelterPiece.sprite.gfxRect.Center.X, shelterPiece.sprite.gfxRect.Center.Y));
+                            World.GetTopWorld()?.Player.GoToSleep(sleepEngine: sleepEngine, zzzPos: new Vector2(shelterPiece.sprite.GfxRect.Center.X, shelterPiece.sprite.GfxRect.Center.Y));
 
                             return;
                         }
@@ -1447,7 +1447,7 @@ namespace SonOfRobin
 
                             Inventory.soundCombine.Play();
 
-                            new TextWindow(text: $"{piece1.readableName} | + {piece2.readableName} | = {combinedPiece.readableName} |", imageList: new List<Texture2D> { piece1.sprite.animFrame.texture, piece2.sprite.animFrame.texture, combinedPiece.sprite.animFrame.texture }, textColor: Color.White, bgColor: new Color(0, 214, 222), useTransition: true, animate: true);
+                            new TextWindow(text: $"{piece1.readableName} | + {piece2.readableName} | = {combinedPiece.readableName} |", imageList: new List<Texture2D> { piece1.sprite.AnimFrame.texture, piece2.sprite.AnimFrame.texture, combinedPiece.sprite.AnimFrame.texture }, textColor: Color.White, bgColor: new Color(0, 214, 222), useTransition: true, animate: true);
 
                             return;
                         }
@@ -1506,7 +1506,7 @@ namespace SonOfRobin
                             if (highlightOnly)
                             {
                                 var simulatedPlantTemp = PieceTemplate.CreateAndPlaceOnBoard(templateName: seeds.PlantToGrow, world: world, position: player.sprite.position, ignoreCollisions: true);
-                                bool canPlantHere = simulatedPlantTemp.sprite.SetNewPosition(newPos: player.sprite.position + new Vector2(0, -player.sprite.colRect.Height), ignoreDensity: true);
+                                bool canPlantHere = simulatedPlantTemp.sprite.SetNewPosition(newPos: player.sprite.position + new Vector2(0, -player.sprite.ColRect.Height), ignoreDensity: true);
                                 simulatedPlantTemp.Destroy();
 
                                 if (canPlantHere)

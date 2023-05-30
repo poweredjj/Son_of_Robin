@@ -249,7 +249,7 @@ namespace SonOfRobin
                         this.Disable(type: type, delay: 0);
 
                         ShowPieceDuringPause(world: world, pieceToShow: piece, messageList: new List<HintMessage> {
-                            new HintMessage($"This | {piece.readableName} is scared of | fire!", imageList: new List<Texture2D> { piece.sprite.animFrame.texture, AnimData.framesForPkgs[AnimData.PkgName.Flame].texture}, blockInput: true),
+                            new HintMessage($"This | {piece.readableName} is scared of | fire!", imageList: new List<Texture2D> { piece.sprite.AnimFrame.texture, AnimData.framesForPkgs[AnimData.PkgName.Flame].texture}, blockInput: true),
                             new HintMessage("I think that I'm safe | here.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Campfire)}, blockInput: true)
                         });
                         break;
@@ -260,7 +260,7 @@ namespace SonOfRobin
                         this.Disable(type: type, delay: 0);
 
                         ShowPieceDuringPause(world: world, pieceToShow: piece, messageList: new List<HintMessage> {
-                            new HintMessage($"This | {piece.readableName} had just attacked me!\nIt must be because I have | attacked it first...", imageList: new List<Texture2D> {piece.sprite.animFrame.texture, AnimData.framesForPkgs[AnimData.PkgName.BloodSplatter1].texture}, blockInput: true),
+                            new HintMessage($"This | {piece.readableName} had just attacked me!\nIt must be because I have | attacked it first...", imageList: new List<Texture2D> {piece.sprite.AnimFrame.texture, AnimData.framesForPkgs[AnimData.PkgName.BloodSplatter1].texture}, blockInput: true),
                         });
                         break;
                     }
@@ -458,7 +458,7 @@ namespace SonOfRobin
         {
             world.camera.TrackPiece(pieceToShow);
 
-            BoardPiece crossHair = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: new Vector2(pieceToShow.sprite.gfxRect.Center.X, pieceToShow.sprite.gfxRect.Center.Y), templateName: PieceTemplate.Name.Crosshair);
+            BoardPiece crossHair = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: new Vector2(pieceToShow.sprite.GfxRect.Center.X, pieceToShow.sprite.GfxRect.Center.Y), templateName: PieceTemplate.Name.Crosshair);
             new Tracking(world: world, targetSprite: pieceToShow.sprite, followingSprite: crossHair.sprite);
 
             var taskChain = HintMessage.ConvertToTasks(messageList: messageList);
