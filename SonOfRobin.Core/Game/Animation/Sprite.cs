@@ -108,11 +108,11 @@ namespace SonOfRobin
         {
             get
             {
-                if (this.lightEngine.IsActive) return true;
+                if (this.lightEngine != null && this.lightEngine.IsActive) return true;
 
                 foreach (BoardPiece lightPiece in this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.LightSource, mainSprite: this, distance: 500))
                 {
-                    if (lightPiece.sprite.lightEngine.Rect.Contains(this.position)) return true;
+                    if (lightPiece.sprite.lightEngine != null && lightPiece.sprite.lightEngine.Rect.Contains(this.position)) return true;
                 }
 
                 return false;
