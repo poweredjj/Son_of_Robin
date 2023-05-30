@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input.Touch;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -10,7 +9,7 @@ namespace SonOfRobin
     public class InitialLoader : Scene
     {
         public enum Step
-        { Initial, MobileWait, StartBgTasks, CreateSeamless, LoadAnimsJson, LoadAnimsPlants, LoadAnimsChars, LoadAnimsMisc1, LoadAnimsMisc2, SaveAnimsJson, LoadKeysGfx, MakeItemsInfo, MakeCraftRecipes, CreateScenes, WaitForBackgroundTasksToFinish, MakeDemoWorld, SetControlTips, OpenMainMenu }
+        { Initial, MobileWait, StartBgTasks, CreateSeamless, LoadAnimsJson, LoadAnimsPlants, LoadAnimsChars, LoadAnimsMisc1, LoadAnimsMisc2, SaveAnimsJson, LoadKeysGfx, MakeItemsInfo, MakeCraftRecipes, CreateScenes, WaitForBackgroundTasksToFinish1, WaitForBackgroundTasksToFinish2, MakeDemoWorld, SetControlTips, OpenMainMenu }
 
         private static readonly int allStepsCount = ((Step[])Enum.GetValues(typeof(Step))).Length;
 
@@ -26,7 +25,8 @@ namespace SonOfRobin
             { Step.LoadAnimsMisc2, "loading animations (others 2)" },
             { Step.SaveAnimsJson, "saving animations (json)" },
             { Step.LoadKeysGfx, "loading keyboard textures" },
-            { Step.WaitForBackgroundTasksToFinish, "waiting for background tasks to finish" },
+            { Step.WaitForBackgroundTasksToFinish1, "waiting for background tasks to finish (1/2)" },
+            { Step.WaitForBackgroundTasksToFinish2, "waiting for background tasks to finish (2/2)" },
             { Step.CreateScenes, "creating helper scenes" },
             { Step.MakeItemsInfo, "creating items info" },
             { Step.MakeCraftRecipes, "preparing craft recipes" },
@@ -42,6 +42,8 @@ namespace SonOfRobin
         private readonly SpriteFont font;
         private readonly Texture2D splashScreenTexture;
         private int mobileWaitingTimes;
+        private bool TimeoutReached
+        { get { return DateTime.Now - this.startTime > TimeSpan.FromSeconds(15); } }
 
         private string NextStepName
         { get { return (int)this.currentStep == allStepsCount ? "opening main menu" : namesForSteps[this.currentStep]; } }
@@ -94,7 +96,7 @@ namespace SonOfRobin
                     {
                         this.backgroundTask1 = Task.Run(() => this.ProcessBackgroundTasks1());
                         this.backgroundTask2 = Task.Run(() => this.ProcessBackgroundTasks2());
-                    }                
+                    }
                     break;
 
                 case Step.CreateSeamless:
@@ -149,28 +151,37 @@ namespace SonOfRobin
                     SonOfRobinGame.CreateHintAndProgressWindows();
                     break;
 
-                case Step.WaitForBackgroundTasksToFinish:
-                    while (true)
+                case Step.WaitForBackgroundTasksToFinish1:
                     {
-                        if (this.backgroundTask1 == null || (this.backgroundTask1 != null && this.backgroundTask1.IsCompleted)) break;
-                        else if (this.backgroundTask1.IsFaulted)
+                        bool tasksCompleted = false;
+
+                        if (this.backgroundTask1 == null || (this.backgroundTask1 != null && this.backgroundTask1.IsCompleted)) tasksCompleted = true;
+                        else if (this.backgroundTask1.IsFaulted || this.TimeoutReached)
                         {
                             this.ProcessBackgroundTasks1();
-                            break;
+                            tasksCompleted = true;
                         }
+
+                        if (!tasksCompleted) currentStep--;
+
+                        break;
                     }
 
-                    while (true)
+                case Step.WaitForBackgroundTasksToFinish2:
                     {
-                        if (this.backgroundTask2 == null || (this.backgroundTask2 != null && this.backgroundTask2.IsCompleted)) break;
-                        else if (this.backgroundTask2.IsFaulted)
+                        bool tasksCompleted = false;
+
+                        if (this.backgroundTask2 == null || (this.backgroundTask2 != null && this.backgroundTask2.IsCompleted)) tasksCompleted = true;
+                        else if (this.backgroundTask2.IsFaulted || this.TimeoutReached)
                         {
                             this.ProcessBackgroundTasks2();
-                            break;
+                            tasksCompleted = true;
                         }
-                    }
 
-                    break;
+                        if (!tasksCompleted) currentStep--;
+
+                        break;
+                    }
 
                 case Step.MakeDemoWorld:
                     if (Preferences.showDemoWorld && SonOfRobinGame.LicenceValid)
