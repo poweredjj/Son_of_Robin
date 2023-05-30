@@ -1208,12 +1208,47 @@ namespace SonOfRobin
                             var incorrectStoragePieces = new List<BoardPiece>();
                             var piecesByID = new Dictionary<string, List<BoardPiece>>();
                             var duplicatedPiecesByID = new Dictionary<string, List<BoardPiece>>();
+                            var blockedPieces = new List<BoardPiece>();
+
+                            var blockedIgnoredTypesForNonPlants = new List<Type> { };
 
                             foreach (Sprite sprite in world.Grid.GetSpritesFromAllCells(Cell.Group.All))
                             {
                                 if (sprite.boardPiece.exists && !sprite.IsOnBoard) incorrectBoardPieces.Add(sprite.boardPiece);
                                 if (piecesByID.ContainsKey(sprite.id)) piecesByID[sprite.id].Add(sprite.boardPiece);
                                 else piecesByID[sprite.id] = new List<BoardPiece> { sprite.boardPiece };
+
+                                if (sprite.boardPiece.exists && sprite.IsOnBoard && sprite.CheckForCollision(ignoreDensity: true))
+                                {
+                                    bool isPlant = sprite.boardPiece.GetType() == typeof(Plant);
+
+                                    if (!sprite.blocksMovement && !isPlant) continue;
+
+                                    var blockingSprites = sprite.GetCollidingSprites(new List<Cell.Group> { sprite.blocksMovement ? Cell.Group.ColMovement : Cell.Group.ColPlantGrowth });
+
+                                    bool pieceIsBlocked = false;
+
+                                    foreach (Sprite blockingSprite in blockingSprites)
+                                    {
+                                        if (isPlant && !sprite.blocksMovement &&
+                                            (blockingSprite.boardPiece.GetType() != typeof(Plant)) ||
+                                            blockingSprite.blocksMovement)
+                                        {
+                                            continue;
+                                        }
+
+                                        if (!blockedIgnoredTypesForNonPlants.Contains(blockingSprite.boardPiece.GetType()))
+                                        {
+                                            sprite.color = Color.Red;
+                                            blockingSprite.color = Color.Blue;
+                                            // world.camera.TrackPiece(sprite.boardPiece);
+
+                                            pieceIsBlocked = true;
+                                        }
+                                    }
+
+                                    if (pieceIsBlocked) blockedPieces.Add(sprite.boardPiece);
+                                }
 
                                 var storageList = new List<PieceStorage> { sprite.boardPiece.PieceStorage };
 
@@ -1251,6 +1286,7 @@ namespace SonOfRobin
                             var errorsFound = new List<string>();
                             if (incorrectBoardPieces.Any()) errorsFound.Add($"Pieces placed incorrectly on the field: {incorrectBoardPieces.Count}.");
                             if (incorrectStoragePieces.Any()) errorsFound.Add($"Pieces placed incorrectly in the storage: {incorrectStoragePieces.Count}.");
+                            if (blockedPieces.Any()) errorsFound.Add($"Pieces blocked: {blockedPieces.Count}.");
                             if (duplicatedPiecesByID.Any())
                             {
                                 errorsFound.Add($"Duplicated pieces ({duplicatedPiecesByID.Count}):");
