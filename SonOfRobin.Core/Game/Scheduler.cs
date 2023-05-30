@@ -1241,11 +1241,12 @@ namespace SonOfRobin
 
                                         if (!blockedIgnoredTypesForNonPlants.Contains(blockingSprite.boardPiece.GetType()))
                                         {
-                                            sprite.color = Color.Red;
-                                            blockingSprite.color = Color.Blue;
-                                            world.camera.TrackPiece(sprite.boardPiece);
+                                            // sprite.color = Color.Red;
+                                            // blockingSprite.color = Color.Blue;
+                                            // world.camera.TrackPiece(sprite.boardPiece);
 
                                             pieceIsBlocked = true;
+                                            break;
                                         }
                                     }
 

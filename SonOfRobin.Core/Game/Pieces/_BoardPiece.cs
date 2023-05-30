@@ -459,7 +459,12 @@ namespace SonOfRobin
 
             this.UpdateEfficiency();
 
-            if (pieceData.ContainsKey("base_alive") && !(bool)pieceData["base_alive"]) this.Kill();
+            if (pieceData.ContainsKey("base_alive") && !(bool)pieceData["base_alive"])
+            {
+                // Kill() should not be used here, because it may cause collision errors
+                this.alive = false;
+                this.RemoveFromStateMachines();
+            }
 
             this.world.piecesByOldID[(string)pieceData["base_id"]] = this;
         }
