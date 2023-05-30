@@ -459,6 +459,9 @@ namespace SonOfRobin
 
             this.UpdateEfficiency();
 
+            // Any code that changes AnimFrame or position should be avoided here.
+            // All boardPieces must be created and deserialized first, before running these kind of operations.
+
             if (pieceData.ContainsKey("base_alive") && !(bool)pieceData["base_alive"])
             {
                 // Kill() should not be used here, because it may cause collision errors
