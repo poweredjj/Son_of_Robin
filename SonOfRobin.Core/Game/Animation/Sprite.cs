@@ -679,7 +679,7 @@ namespace SonOfRobin
             catch (KeyNotFoundException) // placeholder frame if the animation was missing
             {
                 MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Anim frame not found {this.CompleteAnimID}.");
-                this.animFrame = AnimData.frameListById["NoAnim-0-default"][0];
+                this.animFrame = AnimData.framesForPkgs[AnimData.PkgName.NoAnim];
             }
 
             this.UpdateRects();
