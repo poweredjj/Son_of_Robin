@@ -48,7 +48,7 @@ namespace SonOfRobin
                     }
 
                     // turning on this piece
-                    this.sprite.AssignNewName(animName: "on");
+                    this.sprite.AssignNewName(newAnimName: "on");
 
                     Sprite playerSprite = this.world.Player.sprite;
 
@@ -63,7 +63,7 @@ namespace SonOfRobin
                 }
                 else
                 {
-                    this.sprite.AssignNewName(animName: "off");
+                    this.sprite.AssignNewName(newAnimName: "off");
                     this.world.Player.sprite.lightEngine.Deactivate();
                     this.soundPack.Stop(PieceSoundPack.Action.IsOn);
                     this.soundPack.Play(PieceSoundPack.Action.TurnOff);

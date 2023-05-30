@@ -183,7 +183,7 @@ namespace SonOfRobin
 
                             if (workshop.world.weather.IsRaining && !workshop.canBeUsedDuringRain)
                             {
-                                new TextWindow(text: $"I can't use | {workshop.readableName} during rain.", imageList: new List<Texture2D> { workshop.sprite.frame.texture }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1, animSound: workshop.world.DialogueSound);
+                                new TextWindow(text: $"I can't use | {workshop.readableName} during rain.", imageList: new List<Texture2D> { workshop.sprite.animFrame.texture }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1, animSound: workshop.world.DialogueSound);
 
                                 return;
                             }
@@ -528,7 +528,7 @@ namespace SonOfRobin
                                 {
                                     new Task(taskName: TaskName.PlaySoundByName, delay: 15, executeHelper: SoundData.Name.Ding1);
 
-                                    new TextWindow(text: $"Acquired | seeds for | {PieceInfo.GetInfo(plantName).readableName}.", imageList: new List<Texture2D> { seeds.sprite.frame.texture, PieceInfo.GetTexture(plantName) }, textColor: Color.White, bgColor: Color.Green, useTransition: true, animate: true, checkForDuplicate: true, inputType: Scene.InputTypes.Normal, blocksUpdatesBelow: true, priority: 0);
+                                    new TextWindow(text: $"Acquired | seeds for | {PieceInfo.GetInfo(plantName).readableName}.", imageList: new List<Texture2D> { seeds.sprite.animFrame.texture, PieceInfo.GetTexture(plantName) }, textColor: Color.White, bgColor: Color.Green, useTransition: true, animate: true, checkForDuplicate: true, inputType: Scene.InputTypes.Normal, blocksUpdatesBelow: true, priority: 0);
                                 }
                                 else seeds.Destroy(); // seeds should not appear, if there is no room for them to be stored
                             }
@@ -1230,6 +1230,8 @@ namespace SonOfRobin
 
                                     foreach (Sprite blockingSprite in blockingSprites)
                                     {
+                                        if (blockedPieces.Contains(blockingSprite.boardPiece)) continue;
+
                                         if (isPlant && !sprite.blocksMovement &&
                                             (blockingSprite.boardPiece.GetType() != typeof(Plant)) ||
                                             blockingSprite.blocksMovement)
@@ -1241,7 +1243,7 @@ namespace SonOfRobin
                                         {
                                             sprite.color = Color.Red;
                                             blockingSprite.color = Color.Blue;
-                                            // world.camera.TrackPiece(sprite.boardPiece);
+                                            world.camera.TrackPiece(sprite.boardPiece);
 
                                             pieceIsBlocked = true;
                                         }
@@ -1257,6 +1259,7 @@ namespace SonOfRobin
                                     Player player = (Player)sprite.boardPiece;
                                     storageList.Add(player.ToolStorage);
                                     storageList.Add(player.EquipStorage);
+                                    storageList.Add(player.GlobalChestStorage);
                                 }
 
                                 foreach (PieceStorage currentStorage in storageList)
@@ -1268,7 +1271,10 @@ namespace SonOfRobin
                                         else piecesByID[storedPiece.id] = new List<BoardPiece> { storedPiece };
 
                                         // fruits are in storage, but on board at the same time (but not on the grid) - to display correctly
-                                        if (storedPiece.sprite.IsOnBoard && storedPiece.GetType() != typeof(Fruit)) incorrectStoragePieces.Add(storedPiece);
+                                        if (storedPiece.sprite.IsOnBoard && (storedPiece.GetType() != typeof(Fruit) && storedPiece.GetType() != typeof(Seed)))
+                                        {
+                                            incorrectStoragePieces.Add(storedPiece);
+                                        }
                                     }
                                 }
                             }
@@ -1441,7 +1447,7 @@ namespace SonOfRobin
 
                             Inventory.soundCombine.Play();
 
-                            new TextWindow(text: $"{piece1.readableName} | + {piece2.readableName} | = {combinedPiece.readableName} |", imageList: new List<Texture2D> { piece1.sprite.frame.texture, piece2.sprite.frame.texture, combinedPiece.sprite.frame.texture }, textColor: Color.White, bgColor: new Color(0, 214, 222), useTransition: true, animate: true);
+                            new TextWindow(text: $"{piece1.readableName} | + {piece2.readableName} | = {combinedPiece.readableName} |", imageList: new List<Texture2D> { piece1.sprite.animFrame.texture, piece2.sprite.animFrame.texture, combinedPiece.sprite.animFrame.texture }, textColor: Color.White, bgColor: new Color(0, 214, 222), useTransition: true, animate: true);
 
                             return;
                         }

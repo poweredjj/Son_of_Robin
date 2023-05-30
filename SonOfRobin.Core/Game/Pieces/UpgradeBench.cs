@@ -94,7 +94,7 @@ namespace SonOfRobin
             {
                 if (pieceToUpgrade.buffList.Any())
                 {
-                    new TextWindow(text: $"This | {pieceToUpgrade.readableName} has already been upgraded.", imageList: new List<Texture2D> { pieceToUpgrade.sprite.frame.texture }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
+                    new TextWindow(text: $"This | {pieceToUpgrade.readableName} has already been upgraded.", imageList: new List<Texture2D> { pieceToUpgrade.sprite.animFrame.texture }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
                     return;
                 }
             }
@@ -125,7 +125,7 @@ namespace SonOfRobin
 
         public void TurnOn()
         {
-            this.sprite.AssignNewName(animName: "on");
+            this.sprite.AssignNewName(newAnimName: "on");
             this.sprite.lightEngine.Activate();
             this.soundPack.Play(PieceSoundPack.Action.TurnOn);
             this.soundPack.Play(PieceSoundPack.Action.IsOn);
@@ -133,7 +133,7 @@ namespace SonOfRobin
 
         public void TurnOff()
         {
-            this.sprite.AssignNewName(animName: "off");
+            this.sprite.AssignNewName(newAnimName: "off");
             this.sprite.lightEngine.Deactivate();
             this.soundPack.Stop(PieceSoundPack.Action.IsOn);
             this.soundPack.Play(PieceSoundPack.Action.TurnOff);

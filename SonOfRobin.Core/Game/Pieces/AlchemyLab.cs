@@ -125,7 +125,7 @@ namespace SonOfRobin
         public void TurnOn()
         {
             this.IsOn = true;
-            this.sprite.AssignNewName(animName: "on");
+            this.sprite.AssignNewName(newAnimName: "on");
             this.sprite.lightEngine.Activate();
             this.soundPack.Play(PieceSoundPack.Action.TurnOn);
             this.soundPack.Play(PieceSoundPack.Action.IsOn);
@@ -134,7 +134,7 @@ namespace SonOfRobin
         public void TurnOff()
         {
             this.IsOn = false;
-            this.sprite.AssignNewName(animName: "off");
+            this.sprite.AssignNewName(newAnimName: "off");
             this.sprite.lightEngine.Deactivate();
             this.soundPack.Stop(PieceSoundPack.Action.IsOn);
             this.soundPack.Play(PieceSoundPack.Action.TurnOff);
@@ -170,7 +170,7 @@ namespace SonOfRobin
                 BoardPiece bottle = BottleSlot.TopPiece;
                 if (bottle.name != PieceTemplate.Name.EmptyBottle)
                 {
-                    new TextWindow(text: "I have to take out previously brewed | potion first.", imageList: new List<Texture2D> { bottle.sprite.frame.texture }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
+                    new TextWindow(text: "I have to take out previously brewed | potion first.", imageList: new List<Texture2D> { bottle.sprite.animFrame.texture }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
                     return;
                 }
             }

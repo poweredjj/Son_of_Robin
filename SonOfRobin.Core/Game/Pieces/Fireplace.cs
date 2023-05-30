@@ -87,7 +87,7 @@ namespace SonOfRobin
                 {
                     this.activeState = State.FireplaceBurn;
                     this.AddToStateMachines();
-                    this.sprite.AssignNewName(animName: "on");
+                    this.sprite.AssignNewName(newAnimName: "on");
                     this.sprite.lightEngine.Activate();
                     this.world.HintEngine.Disable(Tutorials.Type.KeepingAnimalsAway);
                     this.soundPack.Play(PieceSoundPack.Action.TurnOn);
@@ -98,7 +98,7 @@ namespace SonOfRobin
                     this.activeState = State.Empty;
                     this.showStatBarsTillFrame = 0;
                     this.burnAllFuelEndFrame = 0;
-                    this.sprite.AssignNewName(animName: "off");
+                    this.sprite.AssignNewName(newAnimName: "off");
                     this.sprite.lightEngine.Deactivate();
                     this.soundPack.Stop(PieceSoundPack.Action.IsOn);
                     this.soundPack.Play(PieceSoundPack.Action.TurnOff);

@@ -78,7 +78,7 @@ namespace SonOfRobin
                 this.description = piece.description;
                 this.stackSize = piece.stackSize;
                 this.buffList = piece.buffList;
-                this.frame = piece.sprite.frame;
+                this.frame = piece.sprite.animFrame;
                 this.texture = this.frame.texture;
                 this.toolbarTask = piece.toolbarTask;
                 this.boardTask = piece.boardTask;

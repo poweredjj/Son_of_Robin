@@ -116,7 +116,7 @@ namespace SonOfRobin
         public void TurnOn()
         {
             this.IsOn = true;
-            this.sprite.AssignNewName(animName: "on");
+            this.sprite.AssignNewName(newAnimName: "on");
             this.sprite.lightEngine.Activate();
             this.soundPack.Play(PieceSoundPack.Action.TurnOn);
             this.soundPack.Play(PieceSoundPack.Action.IsOn);
@@ -125,7 +125,7 @@ namespace SonOfRobin
         public void TurnOff()
         {
             this.IsOn = false;
-            this.sprite.AssignNewName(animName: "off");
+            this.sprite.AssignNewName(newAnimName: "off");
             this.sprite.lightEngine.Deactivate();
             this.soundPack.Stop(PieceSoundPack.Action.IsOn);
             this.soundPack.Play(PieceSoundPack.Action.TurnOff);
@@ -153,7 +153,7 @@ namespace SonOfRobin
             {
                 BoardPiece mealLeftInside = MealSlot.TopPiece;
 
-                new TextWindow(text: "I have to take out previously cooked | meal first.", imageList: new List<Texture2D> { mealLeftInside.sprite.frame.texture }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
+                new TextWindow(text: "I have to take out previously cooked | meal first.", imageList: new List<Texture2D> { mealLeftInside.sprite.animFrame.texture }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
                 return;
             }
 

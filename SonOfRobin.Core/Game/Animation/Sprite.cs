@@ -28,7 +28,7 @@ namespace SonOfRobin
         public float opacity;
         public OpacityFade opacityFade;
 
-        public AnimFrame frame;
+        public AnimFrame animFrame;
         public Color color;
         private bool visible;
 
@@ -238,7 +238,6 @@ namespace SonOfRobin
                 { "posX", (int)this.position.X },
                 { "posY", (int)this.position.Y },
                 { "animPackage", this.animPackage },
-                { "colRect", this.colRect },
             };
 
             PieceInfo.Info pieceInfo = PieceInfo.GetInfo(this.boardPiece.name);
@@ -262,7 +261,6 @@ namespace SonOfRobin
             this.animPackage = (AnimData.PkgName)(Int64)spriteDict["animPackage"];
             if (spriteDict.ContainsKey("animName")) this.animName = (string)spriteDict["animName"];
             this.AssignFrame(checkForCollision: false);
-            this.colRect = (Rectangle)spriteDict["colRect"];
             if (spriteDict.ContainsKey("hasBeenDiscovered")) this.hasBeenDiscovered = (bool)spriteDict["hasBeenDiscovered"];
             if (spriteDict.ContainsKey("allowedTerrain")) this.allowedTerrain = AllowedTerrain.Deserialize(spriteDict["allowedTerrain"]);
             if (spriteDict.ContainsKey("lightSource")) this.lightEngine = LightEngine.Deserialize(lightData: spriteDict["lightSource"], sprite: this);
@@ -612,102 +610,117 @@ namespace SonOfRobin
 
         private void UpdateRects()
         {
-            this.gfxRect.X = (int)(position.X + this.frame.gfxOffset.X);
-            this.gfxRect.Y = (int)(position.Y + this.frame.gfxOffset.Y);
-            this.gfxRect.Width = this.frame.gfxWidth;
-            this.gfxRect.Height = this.frame.gfxHeight;
+            this.gfxRect.X = (int)(position.X + this.animFrame.gfxOffset.X);
+            this.gfxRect.Y = (int)(position.Y + this.animFrame.gfxOffset.Y);
+            this.gfxRect.Width = this.animFrame.gfxWidth;
+            this.gfxRect.Height = this.animFrame.gfxHeight;
 
-            this.colRect.X = (int)(position.X + this.frame.colOffset.X);
-            this.colRect.Y = (int)(position.Y + this.frame.colOffset.Y);
-            this.colRect.Width = this.frame.colWidth;
-            this.colRect.Height = this.frame.colHeight;
+            this.colRect.X = (int)(position.X + this.animFrame.colOffset.X);
+            this.colRect.Y = (int)(position.Y + this.animFrame.colOffset.Y);
+            this.colRect.Width = this.animFrame.colWidth;
+            this.colRect.Height = this.animFrame.colHeight;
         }
 
-        public void AssignNewPackage(AnimData.PkgName animPackage, bool setEvenIfMissing = true)
+        public void AssignNewPackage(AnimData.PkgName newAnimPackage, bool setEvenIfMissing = true)
         {
-            if (this.animPackage != animPackage)
+            if (this.animPackage == newAnimPackage) return;
+
+            AnimData.PkgName oldAnimPackage = this.animPackage;
+
+            if (setEvenIfMissing || CheckIfAnimPackageExists(newAnimPackage))
             {
-                if (CheckIfAnimPackageExists(animPackage) || setEvenIfMissing)
-                {
-                    this.animPackage = animPackage;
-                    AssignFrame(forceRewind: true);
-                }
+                this.animPackage = newAnimPackage;
+                bool frameAssignedCorrectly = this.AssignFrame(forceRewind: true);
+                if (!frameAssignedCorrectly) this.animPackage = oldAnimPackage;
             }
         }
 
-        public void AssignNewSize(byte animSize, bool setEvenIfMissing = true)
+        public void AssignNewSize(byte newAnimSize, bool setEvenIfMissing = true)
         {
-            if (this.animSize != animSize)
+            if (this.animSize == newAnimSize) return;
+
+            byte oldAnimSize = this.animSize;
+
+            if (setEvenIfMissing || CheckIfAnimSizeExists(newAnimSize))
             {
-                if (CheckIFAnimSizeExists(animSize) || setEvenIfMissing)
-                {
-                    this.animSize = animSize;
-                    AssignFrame(forceRewind: true);
-                }
+                this.animSize = newAnimSize;
+                bool frameAssignedCorrectly = this.AssignFrame(forceRewind: true);
+                if (!frameAssignedCorrectly) this.animSize = oldAnimSize;
             }
         }
 
-        public void AssignNewName(string animName, bool setEvenIfMissing = true)
+        public void AssignNewName(string newAnimName, bool setEvenIfMissing = true)
         {
-            if (this.animName != animName)
+            if (this.animName == newAnimName) return;
+
+            string oldAnimName = this.animName;
+
+            if (setEvenIfMissing || this.CheckIfAnimNameExists(newAnimName))
             {
-                if (this.CheckIfAnimNameExists(animName) || setEvenIfMissing)
-                {
-                    this.animName = animName;
-                    AssignFrame(forceRewind: true);
-                }
+                this.animName = newAnimName;
+                bool frameAssignedCorrectly = this.AssignFrame(forceRewind: true);
+                if (!frameAssignedCorrectly) this.animName = oldAnimName;
             }
         }
 
-        public bool CheckIfAnimPackageExists(AnimData.PkgName newAnimPackage)
+        public bool AssignFrame(bool forceRewind = false, bool checkForCollision = true)
         {
-            string newCompleteAnimID = GetCompleteAnimId(animPackage: newAnimPackage, animSize: this.animSize, animName: this.animName);
-            return AnimData.frameListById.ContainsKey(newCompleteAnimID);
-        }
-
-        public bool CheckIFAnimSizeExists(byte newAnimSize)
-        {
-            string newCompleteAnimID = GetCompleteAnimId(animPackage: this.animPackage, animSize: newAnimSize, animName: this.animName);
-            return AnimData.frameListById.ContainsKey(newCompleteAnimID);
-        }
-
-        public bool CheckIfAnimNameExists(string newAnimName)
-        {
-            string newCompleteAnimID = GetCompleteAnimId(animPackage: this.animPackage, animSize: this.animSize, animName: newAnimName);
-            return AnimData.frameListById.ContainsKey(newCompleteAnimID);
-        }
-
-        public void AssignFrame(bool forceRewind = false, bool checkForCollision = true)
-        {
-            Rectangle colRectCopy = this.colRect;
+            AnimFrame oldAnimFrame = this.animFrame;
 
             try
             {
                 if (forceRewind || this.currentFrameIndex >= AnimData.frameListById[this.CompleteAnimID].Count) this.RewindAnim();
-                this.frame = AnimData.frameListById[this.CompleteAnimID][this.currentFrameIndex];
+                this.animFrame = AnimData.frameListById[this.CompleteAnimID][this.currentFrameIndex];
             }
             catch (KeyNotFoundException) // placeholder frame if the animation was missing
             {
                 MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Anim frame not found {this.CompleteAnimID}.");
-                this.frame = AnimData.frameListById["NoAnim-0-default"][0];
+                this.animFrame = AnimData.frameListById["NoAnim-0-default"][0];
             }
 
-            this.currentFrameTimeLeft = this.frame.duration;
             this.UpdateRects();
 
-            // in case of collision - reverting to a previous, non-colliding colRect
-            if (this.blocksMovement && checkForCollision && this.CheckForCollision()) this.colRect = colRectCopy;
+            // in case of collision - reverting to a previous, non-colliding animFrame
+
+            bool collisionDetected = checkForCollision && this.CheckForCollision();
+            if (collisionDetected)
+            {
+                this.animFrame = oldAnimFrame;
+                this.UpdateRects();
+            }
+
+            this.currentFrameTimeLeft = this.animFrame.duration;
+
+            return !collisionDetected;
+        }
+
+        public bool CheckIfAnimPackageExists(AnimData.PkgName animPackageToCheck)
+        {
+            string completeAnimIdToCheck = GetCompleteAnimId(animPackage: animPackageToCheck, animSize: this.animSize, animName: this.animName);
+            return AnimData.frameListById.ContainsKey(completeAnimIdToCheck);
+        }
+
+        public bool CheckIfAnimSizeExists(byte animSizeToCheck)
+        {
+            string completeAnimIdToCheck = GetCompleteAnimId(animPackage: this.animPackage, animSize: animSizeToCheck, animName: this.animName);
+            return AnimData.frameListById.ContainsKey(completeAnimIdToCheck);
+        }
+
+        public bool CheckIfAnimNameExists(string animNameToCheck)
+        {
+            string completeAnimIdToCheck = GetCompleteAnimId(animPackage: this.animPackage, animSize: this.animSize, animName: animNameToCheck);
+            return AnimData.frameListById.ContainsKey(completeAnimIdToCheck);
         }
 
         public void RewindAnim()
         {
             this.currentFrameIndex = 0;
-            this.currentFrameTimeLeft = this.frame.duration;
+            this.currentFrameTimeLeft = this.animFrame.duration;
         }
 
         public void UpdateAnimation()
         {
-            if (this.frame.duration == 0) return; // duration == 0 will stop the animation
+            if (this.animFrame.duration == 0) return; // duration == 0 will stop the animation
 
             this.currentFrameTimeLeft--;
             if (this.currentFrameTimeLeft <= 0)
@@ -718,10 +731,10 @@ namespace SonOfRobin
         }
 
         public void CharacterStand(bool setEvenIfMissing = true)
-        { this.AssignNewName(animName: $"stand-{this.orientation}", setEvenIfMissing: setEvenIfMissing); }
+        { this.AssignNewName(newAnimName: $"stand-{this.orientation}", setEvenIfMissing: setEvenIfMissing); }
 
         public void CharacterWalk(bool setEvenIfMissing = true)
-        { this.AssignNewName(animName: $"walk-{this.orientation}", setEvenIfMissing: setEvenIfMissing); }
+        { this.AssignNewName(newAnimName: $"walk-{this.orientation}", setEvenIfMissing: setEvenIfMissing); }
 
         public void Draw(bool calculateSubmerge = true)
         {
@@ -780,14 +793,14 @@ namespace SonOfRobin
                 int submergeCorrection = 0;
                 if (!this.floatsOnWater && calculateSubmerge && this.IsInWater)
                 {
-                    submergeCorrection = (int)Helpers.ConvertRange(oldMin: 0, oldMax: Terrain.waterLevelMax, newMin: 4, newMax: this.frame.gfxHeight, oldVal: Terrain.waterLevelMax - this.GetFieldValue(Terrain.Name.Height), clampToEdges: true);
+                    submergeCorrection = (int)Helpers.ConvertRange(oldMin: 0, oldMax: Terrain.waterLevelMax, newMin: 4, newMax: this.animFrame.gfxHeight, oldVal: Terrain.waterLevelMax - this.GetFieldValue(Terrain.Name.Height), clampToEdges: true);
                 }
 
-                this.frame.Draw(destRect: destRect, color: this.color, submergeCorrection: submergeCorrection, opacity: this.opacity);
+                this.animFrame.Draw(destRect: destRect, color: this.color, submergeCorrection: submergeCorrection, opacity: this.opacity);
             }
             else
             {
-                this.frame.DrawWithRotation(position: new Vector2(destRect.Center.X, destRect.Center.Y), color: this.color, rotation: this.rotation, rotationOriginOverride: this.rotationOriginOverride, opacity: this.opacity);
+                this.animFrame.DrawWithRotation(position: new Vector2(destRect.Center.X, destRect.Center.Y), color: this.color, rotation: this.rotation, rotationOriginOverride: this.rotationOriginOverride, opacity: this.opacity);
             }
 
             if (this.boardPiece.PieceStorage != null && this.boardPiece.GetType() == typeof(Plant)) this.DrawFruits();
@@ -816,13 +829,13 @@ namespace SonOfRobin
                     Sprite fruitSprite = fruit.sprite;
 
                     Vector2 rotationOriginOverride = new Vector2(this.gfxRect.Left, this.gfxRect.Top) - new Vector2(fruitSprite.gfxRect.Left, fruitSprite.gfxRect.Top);
-                    rotationOriginOverride += new Vector2((float)this.frame.gfxWidth * 0.5f, this.frame.gfxHeight);
-                    rotationOriginOverride /= fruitSprite.frame.scale; // DrawWithRotation() will multiply rotationOriginOverride by target frame scale
+                    rotationOriginOverride += new Vector2((float)this.animFrame.gfxWidth * 0.5f, this.animFrame.gfxHeight);
+                    rotationOriginOverride /= fruitSprite.animFrame.scale; // DrawWithRotation() will multiply rotationOriginOverride by target frame scale
 
                     float originalFruitRotation = fruitSprite.rotation;
                     fruitSprite.rotation = this.rotation;
 
-                    fruitSprite.frame.DrawWithRotation(position: new Vector2(fruitSprite.gfxRect.Center.X, fruitSprite.gfxRect.Center.Y), color: fruitSprite.color, rotation: this.rotation, rotationOriginOverride: rotationOriginOverride, opacity: this.opacity);
+                    fruitSprite.animFrame.DrawWithRotation(position: new Vector2(fruitSprite.gfxRect.Center.X, fruitSprite.gfxRect.Center.Y), color: fruitSprite.color, rotation: this.rotation, rotationOriginOverride: rotationOriginOverride, opacity: this.opacity);
 
                     fruitSprite.rotation = originalFruitRotation;
                 }
@@ -831,7 +844,7 @@ namespace SonOfRobin
 
         public void DrawAndKeepInRectBounds(Rectangle destRect, float opacity)
         {
-            this.frame.DrawAndKeepInRectBounds(destBoundsRect: destRect, color: this.color * opacity);
+            this.animFrame.DrawAndKeepInRectBounds(destBoundsRect: destRect, color: this.color * opacity);
         }
 
         private void DrawState()
@@ -852,7 +865,7 @@ namespace SonOfRobin
         public static void DrawShadow(Color color, Sprite shadowSprite, Vector2 lightPos, float shadowAngle, int drawOffsetX = 0, int drawOffsetY = 0, float yScaleForce = 0f)
         {
             float distance = Vector2.Distance(lightPos, shadowSprite.position);
-            AnimFrame frame = shadowSprite.frame;
+            AnimFrame frame = shadowSprite.animFrame;
 
             var flatShadowNames = new List<AnimData.PkgName> {
                 AnimData.PkgName.WoodLogRegular, AnimData.PkgName.WoodLogHard, AnimData.PkgName.Stone, AnimData.PkgName.WoodPlank, AnimData.PkgName.IronBar, AnimData.PkgName.Clay, AnimData.PkgName.Hole, AnimData.PkgName.Granite, AnimData.PkgName.BeltBig, AnimData.PkgName.HumanSkeleton, AnimData.PkgName.Lantern, AnimData.PkgName.LanternFrame, AnimData.PkgName.Candle };

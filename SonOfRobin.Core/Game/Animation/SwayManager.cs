@@ -139,7 +139,7 @@ namespace SonOfRobin
             this.targetSprite = targetSprite;
 
             this.originalRotation = this.targetSprite.rotation;
-            this.targetSprite.rotationOriginOverride = new Vector2(targetSprite.frame.textureSize.X * 0.5f, targetSprite.frame.textureSize.Y);
+            this.targetSprite.rotationOriginOverride = new Vector2(targetSprite.animFrame.textureSize.X * 0.5f, targetSprite.animFrame.textureSize.Y);
             this.targetRotation = targetRotation;
             this.rotationSlowdown = rotationSlowdown;
 

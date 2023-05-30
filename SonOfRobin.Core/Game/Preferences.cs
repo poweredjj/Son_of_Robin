@@ -307,6 +307,7 @@ namespace SonOfRobin
         public static bool debugAllowMapAnimation = false;
         public static bool debugShowPlantGrowthInCamera = false;
         public static bool debugFastPlantGrowth = false;
+        public static bool debugShowAnimSizeChangeInCamera = false;
         public static bool debugEnableTestCharacters = false;
         public static bool debugEnableExtremeZoomLevels = false;
         public static bool debugInstantCookBrew = false;

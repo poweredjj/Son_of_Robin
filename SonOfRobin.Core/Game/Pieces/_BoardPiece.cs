@@ -337,7 +337,7 @@ namespace SonOfRobin
             {
                 this.mass = Math.Max(value, 0f);
 
-                if (this.world == null || !this.sprite.IsInCameraRect) // size change should not be visible
+                if (this.world == null || (!this.sprite.IsInCameraRect || Preferences.debugShowAnimSizeChangeInCamera)) // size change should not be visible
                 {
                     int previousSpriteSize = this.sprite.animSize;
                     this.SetSpriteSizeByMass();
@@ -501,7 +501,9 @@ namespace SonOfRobin
         private void SetSpriteSizeByMass()
         {
             byte newSpriteSize = this.SpriteSize;
+            if (this.sprite.animSize == newSpriteSize) return;
             if (!this.canShrink && this.sprite.animSize > newSpriteSize) return;
+
             this.sprite.AssignNewSize(newSpriteSize);
         }
 

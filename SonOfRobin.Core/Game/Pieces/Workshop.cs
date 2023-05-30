@@ -34,13 +34,13 @@ namespace SonOfRobin
 
         public void TurnOn()
         {
-            this.sprite.AssignNewName(animName: "on");
+            this.sprite.AssignNewName(newAnimName: "on");
             if (this.sprite.lightEngine != null) this.sprite.lightEngine.Activate();
         }
 
         public void TurnOff()
         {
-            this.sprite.AssignNewName(animName: "off");
+            this.sprite.AssignNewName(newAnimName: "off");
             if (this.sprite.lightEngine != null) this.sprite.lightEngine.Deactivate();
         }
     }

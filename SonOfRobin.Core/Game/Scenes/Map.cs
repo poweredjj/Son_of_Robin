@@ -511,7 +511,7 @@ namespace SonOfRobin
             if (this.MapMarker != null) spritesBag.Add(this.MapMarker.sprite);
 
             // regular "foreach", because spriteBatch is not thread-safe
-            foreach (Sprite sprite in spritesBag.OrderBy(o => o.frame.layer).ThenBy(o => o.gfxRect.Bottom))
+            foreach (Sprite sprite in spritesBag.OrderBy(o => o.animFrame.layer).ThenBy(o => o.gfxRect.Bottom))
             {
                 BoardPiece piece = sprite.boardPiece;
                 PieceTemplate.Name name = piece.name;
@@ -550,7 +550,7 @@ namespace SonOfRobin
                     }
 
                     if (Preferences.debugAllowMapAnimation) sprite.UpdateAnimation();
-                    sprite.frame.Draw(destRect: destRect, color: Color.White, opacity: opacity);
+                    sprite.animFrame.Draw(destRect: destRect, color: Color.White, opacity: opacity);
                 }
             }
 

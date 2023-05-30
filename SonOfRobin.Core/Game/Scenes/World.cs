@@ -1367,7 +1367,7 @@ namespace SonOfRobin
         {
             // searching for light sources
 
-            var lightSprites = this.camera.GetVisibleSprites(groupName: Cell.Group.LightSource).OrderBy(o => o.frame.layer).ThenBy(o => o.gfxRect.Bottom).ToList();
+            var lightSprites = this.camera.GetVisibleSprites(groupName: Cell.Group.LightSource).OrderBy(o => o.animFrame.layer).ThenBy(o => o.gfxRect.Bottom).ToList();
 
             // returning if darkness is transparent
 
