@@ -386,7 +386,7 @@ namespace SonOfRobin
                         var reproduction = new PlantReproductionData(massNeeded: 650, massLost: 180, bioWear: 0.3f);
 
                         return new Plant(name: templateName, world: world, id: id, blocksMovement: false, animPackage: AnimData.PkgName.GrassRegular, allowedTerrain: allowedTerrain, category: BoardPiece.Category.SmallPlant,
-                             minDistance: 0, maxDistance: 80, bestEnvironment: bestEnvironment, mass: 1, maxMassForSize: maxMassForSize, maxAge: 600, reproduction: reproduction, massToBurn: 5, massTakenMultiplier: 0.53f, generation: generation, staysAfterDeath: 0, readableName: "regular grass", description: "A regular grass.", allowedDensity: new AllowedDensity(radious: 130, maxNoOfPiecesSameName: 10), yield: yield, fireAffinity: 0.3f);
+                             minDistance: 0, maxDistance: 80, bestEnvironment: bestEnvironment, mass: 1, maxMassForSize: maxMassForSize, maxAge: 600, reproduction: reproduction, massToBurn: 5, massTakenMultiplier: 0.53f, generation: generation, staysAfterDeath: 0, readableName: "regular grass", description: "A regular grass.", allowedDensity: new AllowedDensity(radious: 75, maxNoOfPiecesSameName: 8), yield: yield, fireAffinity: 0.3f);
                     }
 
                 case Name.GrassGlow:
