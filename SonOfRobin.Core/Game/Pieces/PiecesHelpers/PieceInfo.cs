@@ -52,6 +52,7 @@ namespace SonOfRobin
             public readonly float opacity;
             public readonly LightEngine lightEngine;
             public readonly string animName;
+            public readonly byte animSize;
             public readonly PieceTemplate.Name fruitName;
             public PieceTemplate.Name isSpawnedBy;
             public Dictionary<BoardPiece.Category, float> strengthMultiplierByCategory;
@@ -59,7 +60,12 @@ namespace SonOfRobin
 
             public Info(BoardPiece piece)
             {
+                this.animSize = piece.sprite.animSize;
+                this.mass = piece.Mass;
+
                 if (piece.maxMassForSize != null) piece.Mass = piece.maxMassForSize.Last(); // to show frame of biggest size
+                this.frame = piece.sprite.animFrame;
+                piece.Mass = this.mass; // reverting to original mass
 
                 this.name = piece.name;
                 this.category = piece.category;
@@ -68,7 +74,6 @@ namespace SonOfRobin
                 this.maxHitPoints = piece.maxHitPoints;
                 this.startHitPoints = piece.HitPoints;
                 this.strength = piece.strength;
-                this.mass = piece.Mass;
                 this.speed = piece.speed;
                 this.type = piece.GetType();
                 this.serialize = piece.serialize;
@@ -78,7 +83,6 @@ namespace SonOfRobin
                 this.description = piece.description;
                 this.stackSize = piece.stackSize;
                 this.buffList = piece.buffList;
-                this.frame = piece.sprite.animFrame;
                 this.texture = this.frame.texture;
                 this.toolbarTask = piece.toolbarTask;
                 this.boardTask = piece.boardTask;

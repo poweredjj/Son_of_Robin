@@ -458,7 +458,6 @@ namespace SonOfRobin
             this.sprite.Deserialize(pieceData["base_sprite"]);
 
             this.UpdateEfficiency();
-            this.SetSpriteSizeByMass();
 
             if (pieceData.ContainsKey("base_alive") && !(bool)pieceData["base_alive"]) this.Kill();
 

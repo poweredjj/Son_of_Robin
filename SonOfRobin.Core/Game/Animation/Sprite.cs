@@ -248,6 +248,7 @@ namespace SonOfRobin
             if (this.color != pieceInfo.color) spriteDataDict["color"] = new byte[] { this.color.R, this.color.G, this.color.B, this.color.A };
             if (this.opacity != pieceInfo.opacity) spriteDataDict["opacity"] = this.opacity;
             if (this.animName != pieceInfo.animName) spriteDataDict["animName"] = this.animName;
+            if (this.animSize != pieceInfo.animSize) spriteDataDict["animSize"] = this.animSize;
 
             return spriteDataDict;
         }
@@ -257,13 +258,16 @@ namespace SonOfRobin
             var spriteDict = (Dictionary<string, Object>)spriteData;
 
             this.position = new Vector2((int)(Int64)spriteDict["posX"], (int)(Int64)spriteDict["posY"]);
-            if (spriteDict.ContainsKey("opacity")) this.opacity = (float)(double)spriteDict["opacity"];
+
             this.animPackage = (AnimData.PkgName)(Int64)spriteDict["animPackage"];
             if (spriteDict.ContainsKey("animName")) this.animName = (string)spriteDict["animName"];
+            if (spriteDict.ContainsKey("animSize")) this.animSize = (byte)(Int64)spriteDict["animSize"];
             this.AssignFrame(checkForCollision: false);
+
             if (spriteDict.ContainsKey("hasBeenDiscovered")) this.hasBeenDiscovered = (bool)spriteDict["hasBeenDiscovered"];
             if (spriteDict.ContainsKey("allowedTerrain")) this.allowedTerrain = AllowedTerrain.Deserialize(spriteDict["allowedTerrain"]);
             if (spriteDict.ContainsKey("lightSource")) this.lightEngine = LightEngine.Deserialize(lightData: spriteDict["lightSource"], sprite: this);
+            if (spriteDict.ContainsKey("opacity")) this.opacity = (float)(double)spriteDict["opacity"];
             if (spriteDict.ContainsKey("color"))
             {
                 var colorArray = (byte[])spriteDict["color"];
