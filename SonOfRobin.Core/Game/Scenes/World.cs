@@ -423,7 +423,16 @@ namespace SonOfRobin
                     SonOfRobinGame.FullScreenProgressBar.TurnOn(percentage: percentage, text: LoadingTips.GetTip(), optionalText: detailedInfo);
 
                     if (this.backgroundTask == null) this.backgroundTask = Task.Run(() => this.ProcessAllPopulatingSteps());
-                    if (this.backgroundTask != null && (this.backgroundTask.IsCompleted || this.backgroundTask.IsFaulted)) this.populatingFramesLeft = 0; // to avoid softlock
+                    else
+                    {
+                        if (this.backgroundTask.IsCompleted || this.backgroundTask.IsFaulted) this.populatingFramesLeft = 0;
+                        if (this.backgroundTask.IsFaulted)
+                        {
+                            new TextWindow(text: $"An error occured while populating:\n{this.backgroundTask.Exception}",
+                                textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false, priority: -1, inputType: InputTypes.Normal);
+                        }
+                    }
+
                     return;
                 }
             }

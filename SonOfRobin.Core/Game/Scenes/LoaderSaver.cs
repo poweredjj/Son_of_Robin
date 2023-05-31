@@ -199,6 +199,13 @@ namespace SonOfRobin
 
         public override void Update(GameTime gameTime)
         {
+            if (this.backgroundTask != null && this.backgroundTask.IsFaulted)
+            {
+                new TextWindow(text: $"An error occured while saving:\n{this.backgroundTask.Exception}",
+                    textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false, closingTask: this.TextWindowTask, priority: -1, inputType: InputTypes.Normal);
+                this.ErrorOccured = true;  
+            }
+
             if (!this.ErrorOccured) this.UpdateProgressBar();
 
             if (this.processingComplete)
@@ -228,7 +235,6 @@ namespace SonOfRobin
                     if (!this.saveMode && !this.HasBeenRemoved) this.FinishLoading();
                     this.processingComplete = true;
                 }
-                else if (this.backgroundTask.IsFaulted) this.ErrorOccured = true;
             }
 
             if (this.ErrorOccured) this.Remove();
@@ -417,11 +423,7 @@ namespace SonOfRobin
                 try
                 { Directory.Delete(path: this.savePath, recursive: true); }
                 catch (IOException)
-                {
-                    new TextWindow(text: "An error occured while deleting previous save directory.", textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false, closingTask: this.TextWindowTask, priority: -1, inputType: InputTypes.Normal);
-                    this.ErrorOccured = true;
-                    return;
-                }
+                { throw new ArgumentException("An error occured while deleting previous save directory."); }
             }
 
             bool movedCorrectly = false;
@@ -439,11 +441,7 @@ namespace SonOfRobin
             }
 
             if (!movedCorrectly)
-            {
-                new TextWindow(text: "An error occured during renaming temp save directory.", textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false, closingTask: this.TextWindowTask, priority: -1, inputType: InputTypes.Normal);
-                this.ErrorOccured = true;
-                return;
-            }
+            { throw new ArgumentException("An error occured during renaming temp save directory."); }
 
             if (this.showSavedMessage)
             {
@@ -463,12 +461,7 @@ namespace SonOfRobin
                 this.processedSteps++;
                 this.currentStepName = "directory";
 
-                if (!Directory.Exists(this.savePath))
-                {
-                    new TextWindow(text: $"Directory for save slot {saveSlotName} does not exist.", textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false, closingTask: this.TextWindowTask);
-                    this.ErrorOccured = true;
-                    return;
-                }
+                if (!Directory.Exists(this.savePath)) throw new ArgumentException($"Directory for save slot {saveSlotName} does not exist.");
             }
 
             // loading header
@@ -479,13 +472,7 @@ namespace SonOfRobin
                 string headerPath = Path.Combine(this.savePath, headerName);
                 this.headerData = (Dictionary<string, Object>)FileReaderWriter.Load(path: headerPath);
 
-                if (this.headerData == null)
-                {
-                    new TextWindow(text: $"Error while reading save header for slot {saveSlotName}.", textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false, closingTask: this.TextWindowTask);
-                    this.ErrorOccured = true;
-                    return;
-                }
-                else
+                if (this.headerData == null) throw new ArgumentException($"Error while reading save header for slot {saveSlotName}.");
                 {
                     Grid templateGrid = Grid.GetMatchingTemplateFromSceneStack(seed: (int)(Int64)this.headerData["seed"], width: (int)(Int64)this.headerData["width"], height: (int)(Int64)this.headerData["height"], ignoreCellSize: true);
 
@@ -501,12 +488,7 @@ namespace SonOfRobin
                 string gridPath = Path.Combine(this.savePath, gridName);
                 this.gridData = (Dictionary<string, Object>)FileReaderWriter.Load(path: gridPath);
 
-                if (this.gridData == null)
-                {
-                    new TextWindow(text: $"Error while reading grid for slot {saveSlotName}.", textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false, closingTask: this.TextWindowTask);
-                    this.ErrorOccured = true;
-                    return;
-                }
+                if (this.gridData == null) throw new ArgumentException($"Error while reading grid for slot {saveSlotName}.");
             }
 
             // loading hints
@@ -517,12 +499,7 @@ namespace SonOfRobin
                 string hintsPath = Path.Combine(this.savePath, hintsName);
                 this.hintsData = (Dictionary<string, Object>)FileReaderWriter.Load(path: hintsPath);
 
-                if (hintsData == null)
-                {
-                    new TextWindow(text: $"Error while reading hints for slot {saveSlotName}.", textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false, closingTask: this.TextWindowTask);
-                    this.ErrorOccured = true;
-                    return;
-                }
+                if (hintsData == null) throw new ArgumentException($"Error while reading hints for slot {saveSlotName}.");
             }
 
             // loading hints
@@ -533,12 +510,7 @@ namespace SonOfRobin
                 string weatherPath = Path.Combine(this.savePath, weatherName);
                 this.weatherData = (Dictionary<string, Object>)FileReaderWriter.Load(path: weatherPath);
 
-                if (weatherData == null)
-                {
-                    new TextWindow(text: $"Error while reading weather for slot {saveSlotName}.", textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false, closingTask: this.TextWindowTask);
-                    this.ErrorOccured = true;
-                    return;
-                }
+                if (weatherData == null) throw new ArgumentException($"Error while reading weather for slot {saveSlotName}.");
             }
 
             // loading tracking
@@ -548,13 +520,9 @@ namespace SonOfRobin
 
                 string trackingPath = Path.Combine(this.savePath, trackingName);
 
-                if (!FileReaderWriter.PathExists(trackingPath))
-                {
-                    new TextWindow(text: "Error while reading tracking data.", textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false, closingTask: this.TextWindowTask);
-                    this.ErrorOccured = true;
-                    return;
-                }
-                else this.trackingData = (List<Object>)FileReaderWriter.Load(path: trackingPath);
+                if (!FileReaderWriter.PathExists(trackingPath)) throw new ArgumentException($"Error while reading tracking data for slot {saveSlotName}.");
+
+                this.trackingData = (List<Object>)FileReaderWriter.Load(path: trackingPath);
             }
 
             // loading planned events
@@ -563,13 +531,9 @@ namespace SonOfRobin
                 this.currentStepName = "events";
 
                 string eventPath = Path.Combine(this.savePath, eventsName);
-                if (!FileReaderWriter.PathExists(eventPath))
-                {
-                    new TextWindow(text: "Error while reading events data.", textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false, closingTask: this.TextWindowTask);
-                    this.ErrorOccured = true;
-                    return;
-                }
-                else this.eventsData = (List<Object>)FileReaderWriter.Load(path: eventPath);
+                if (!FileReaderWriter.PathExists(eventPath)) throw new ArgumentException($"Error while reading events for slot {saveSlotName}.");
+
+                this.eventsData = (List<Object>)FileReaderWriter.Load(path: eventPath);
             }
 
             // loading cooling data
@@ -578,13 +542,9 @@ namespace SonOfRobin
                 this.currentStepName = "cooling";
 
                 string coolingPath = Path.Combine(this.savePath, coolingName);
-                if (!FileReaderWriter.PathExists(coolingPath))
-                {
-                    new TextWindow(text: "Error while reading cooling data.", textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false, closingTask: this.TextWindowTask);
-                    this.ErrorOccured = true;
-                    return;
-                }
-                else this.coolingData = (Dictionary<string, Object>)FileReaderWriter.Load(path: coolingPath);
+                if (!FileReaderWriter.PathExists(coolingPath)) throw new ArgumentException($"Error while reading cooling data for slot {saveSlotName}.");
+                
+                this.coolingData = (Dictionary<string, Object>)FileReaderWriter.Load(path: coolingPath);
             }
 
             // loading pieces
@@ -599,9 +559,7 @@ namespace SonOfRobin
                     // first check - this save file should exist
                     if (this.currentPiecePackageNo == 0 && !FileReaderWriter.PathExists(this.GetCurrentPiecesPath(this.currentPiecePackageNo)))
                     {
-                        new TextWindow(text: "Error while reading pieces data.", textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false, closingTask: this.TextWindowTask);
-                        this.ErrorOccured = true;
-                        return;
+                        throw new ArgumentException($"Error while reading pieces data for slot {saveSlotName}.");
                     }
 
                     Parallel.For(0, Preferences.MaxThreadsToUse, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, threadNo =>

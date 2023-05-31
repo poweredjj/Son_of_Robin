@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using static SonOfRobin.Scene;
 using Color = Microsoft.Xna.Framework.Color;
 using Point = Microsoft.Xna.Framework.Point;
 using Rectangle = Microsoft.Xna.Framework.Rectangle;
@@ -278,14 +279,20 @@ namespace SonOfRobin
         {
             this.UpdateProgressBar();
 
+            if (this.backgroundTask != null && this.backgroundTask.IsFaulted)
+            {
+                new TextWindow(text: $"An error occured while creating grid:\n{this.backgroundTask.Exception}",
+                    textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false, priority: -1, inputType: InputTypes.Normal);
+                this.CreationInProgress = false;
+            }
+
+            if (this.backgroundTask != null && this.backgroundTask.IsCompleted) this.CreationInProgress = false;
+
             if (this.world.demoMode) this.ProcessAllCreationStages(); // demo mode must be processed normally
             else
             {
                 if (this.backgroundTask == null) this.backgroundTask = Task.Run(() => this.ProcessAllCreationStages());
             }
-
-            // to avoid softlock in case of errors
-            if (this.backgroundTask != null && (this.backgroundTask.IsCompleted || this.backgroundTask.IsFaulted)) this.CreationInProgress = false;
         }
 
         private void ProcessAllCreationStages()
