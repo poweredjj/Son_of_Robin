@@ -34,6 +34,8 @@ namespace SonOfRobin
 
         public bool Equals(LightEngine lightEngine)
         {
+            if (lightEngine == null) return false;
+
             return
                 this.IsActive == lightEngine.IsActive &&
                 this.width == lightEngine.width &&
