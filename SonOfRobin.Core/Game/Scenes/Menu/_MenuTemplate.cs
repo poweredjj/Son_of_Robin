@@ -649,9 +649,44 @@ namespace SonOfRobin
                         Menu menu = new(templateName: templateName, name: "LOAD GAME", blocksUpdatesBelow: false, canBeClosedManually: true, templateExecuteHelper: executeHelper);
                         foreach (SaveHeaderInfo saveInfo in SaveHeaderManager.CorrectSaves)
                         {
-                            new Invoker(menu: menu, name: saveInfo.FullDescription, closesMenu: true, taskName: Scheduler.TaskName.LoadGame, executeHelper: saveInfo.folderName,
-                                 infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: $"| {saveInfo.AdditionalInfo}", imageList: new List<Texture2D> { saveInfo.AddInfoTexture }, color: Color.White, scale: 1f) }); // sound won't play here, because loading game stops all sounds
+                            Scheduler.TaskName taskName;
+                            Object saveExecuteHelper;
+                            bool playSound;
+                            SoundData.Name soundName;
+                            bool closeMenu;
+
+                            if (saveInfo.saveIsObsolete)
+                            {
+                                taskName = Scheduler.TaskName.ShowTextWindow;
+                                saveExecuteHelper = new Dictionary<string, Object> {
+                                    { "text", $"| This save version ({saveInfo.saveVersion}) is not compatible with current save version ({SaveHeaderManager.saveVersion})." },
+                                    { "imageList", new List<Texture2D> { AnimData.framesForPkgs[AnimData.PkgName.BubbleExclamationRed].texture } },
+                                    { "bgColor", new List<Byte> { 200, 0, 0 } },
+                                    { "animate", false },
+                                    };
+                                playSound = true;
+                                closeMenu = false;
+                                soundName = SoundData.Name.Error;
+                            }
+                            else
+                            {
+                                taskName = Scheduler.TaskName.LoadGame;
+                                saveExecuteHelper = saveInfo.folderName;
+                                playSound = false;
+                                closeMenu = false;
+                                soundName = SoundData.Name.Empty;
+                            }
+
+                            Invoker loadInvoker = new Invoker(menu: menu, name: saveInfo.FullDescription, closesMenu: closeMenu, taskName: taskName, playSound: playSound, sound: soundName, executeHelper: saveExecuteHelper,
+                                   infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: $"| {saveInfo.AdditionalInfo}", imageList: new List<Texture2D> { saveInfo.AddInfoTexture }, color: Color.White, scale: 1f) }); // sound won't play here, because loading game stops all sounds
+
+                            if (saveInfo.saveIsObsolete)
+                            {
+                                loadInvoker.rectColor = Color.DarkRed;
+                                loadInvoker.textColor = new Color(255, 116, 82);
+                            }
                         }
+
                         new Separator(menu: menu, name: "", isEmpty: true);
                         new Invoker(menu: menu, name: "return", closesMenu: true, taskName: Scheduler.TaskName.Empty);
                         return menu;
@@ -672,6 +707,7 @@ namespace SonOfRobin
                         {
                             saveParams = new Dictionary<string, Object> { { "world", world }, { "saveSlotName", saveInfo.folderName }, { "showMessage", true } };
                             var confirmationData = new Dictionary<string, Object> { { "question", "The save will be overwritten. Continue?" }, { "taskName", Scheduler.TaskName.SaveGame }, { "executeHelper", saveParams } };
+
                             new Invoker(menu: menu, name: saveInfo.FullDescription, taskName: Scheduler.TaskName.OpenConfirmationMenu, executeHelper: confirmationData, closesMenu: true, infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: $"| {saveInfo.AdditionalInfo}", imageList: new List<Texture2D> { saveInfo.AddInfoTexture }, color: Color.White, scale: 1f) });
                         }
 

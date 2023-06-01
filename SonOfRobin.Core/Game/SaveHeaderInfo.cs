@@ -8,6 +8,8 @@ namespace SonOfRobin
     public struct SaveHeaderInfo
     {
         public readonly bool saveIsCorrect;
+        public readonly bool saveIsObsolete;
+        public readonly float saveVersion;
         public readonly string folderName;
         public readonly string fullPath;
         public readonly int seed;
@@ -33,14 +35,25 @@ namespace SonOfRobin
         {
             get
             {
-                if (SonOfRobinGame.platform == Platform.Mobile)
-                    return $"{SaveDateString} time played: {this.ElapsedTimeString} day {this.frozenClock.CurrentDayNo} seed: {String.Format("{0:0000}", this.seed)} {this.width}x{this.height}";
-                else return $"{SaveDateString}   time played: {this.ElapsedTimeString}   day {this.frozenClock.CurrentDayNo}";
+                string fullDescription = SonOfRobinGame.platform == Platform.Mobile ?
+                    $"{SaveDateString} time played: {this.ElapsedTimeString} day {this.frozenClock.CurrentDayNo} seed: {String.Format("{0:0000}", this.seed)} {this.width}x{this.height}" : $"{SaveDateString}   time played: {this.ElapsedTimeString}   day {this.frozenClock.CurrentDayNo}";
+
+                if (this.saveIsObsolete) fullDescription += "   INCOMPATIBLE";
+
+                return fullDescription;
             }
         }
 
         public string AdditionalInfo
-        { get { return $"seed: {String.Format("{0:0000}", this.seed)}   {this.width}x{this.height}"; } }
+        {
+            get
+            {
+                string additionalInfo = $"seed: {String.Format("{0:0000}", this.seed)}   {this.width}x{this.height}";
+                if (this.saveIsObsolete) additionalInfo += "\nTHIS SAVE IS INCOMPATIBLE WITH CURRENT GAME VERSION";
+
+                return additionalInfo;
+            }
+        }
 
         public Texture2D AddInfoTexture
         { get { return PieceInfo.GetTexture(playerName); } }
@@ -52,10 +65,11 @@ namespace SonOfRobin
             this.fullPath = Path.Combine(SonOfRobinGame.saveGamesPath, folderName);
 
             string headerPath = Path.Combine(this.fullPath, "header.json");
-
             var headerData = (Dictionary<string, Object>)FileReaderWriter.Load(path: headerPath);
 
             this.saveIsCorrect = false;
+            this.saveIsObsolete = true;
+            this.saveVersion = 0;
             this.saveDate = DateTime.FromOADate(0d);
             this.seed = -1;
             this.width = -1;
@@ -66,10 +80,13 @@ namespace SonOfRobin
 
             if (!this.folderName.StartsWith(LoaderSaver.tempPrefix) && headerData != null && headerData.ContainsKey("saveVersion"))
             {
-                float saveVersion = (float)(double)headerData["saveVersion"];
-                if (saveVersion == SaveHeaderManager.saveVersion)
+                this.saveVersion = (float)(double)headerData["saveVersion"];
+
+                this.saveIsCorrect = true;
+                this.saveIsObsolete = this.saveVersion != SaveHeaderManager.saveVersion;
+
+                try
                 {
-                    this.saveIsCorrect = true;
                     this.saveDate = (DateTime)headerData["realDateTime"];
                     this.seed = (int)(Int64)headerData["seed"];
                     this.width = (int)(Int64)headerData["width"];
@@ -78,6 +95,7 @@ namespace SonOfRobin
                     this.timePlayed = TimeSpan.Parse((string)headerData["TimePlayed"]);
                     this.playerName = (PieceTemplate.Name)(Int64)headerData["playerName"];
                 }
+                catch (KeyNotFoundException) { this.saveIsCorrect = false; }
             }
         }
 
