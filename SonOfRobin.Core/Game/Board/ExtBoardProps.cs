@@ -200,16 +200,16 @@ namespace SonOfRobin
         {
             if (this.loadedFromTemplate) return;
 
-            foreach (var kvp in this.extDataByProperty)
+            Parallel.ForEach(this.extDataByProperty, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, kvp =>
             {
                 kvp.Value.SaveToPNG(this.extDataPNGPathByName[kvp.Key]);
-            }
+            });
 
-            foreach (Name name in allExtPropNames)
+            Parallel.ForEach(allExtPropNames, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, name =>
             {
                 this.containsPropertiesTrueGridCell[name].SaveToPNG(GetContainsPropertiesPNGPath(name: name, contains: true));
                 this.containsPropertiesFalseGridCell[name].SaveToPNG(GetContainsPropertiesPNGPath(name: name, contains: false));
-            }
+            });
         }
 
         private string GetContainsPropertiesPNGPath(Name name, bool contains)
