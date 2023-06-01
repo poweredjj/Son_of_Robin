@@ -17,7 +17,7 @@ namespace SonOfRobin
     public class Grid
     {
         public enum Stage
-        { LoadTerrain, GenerateTerrain, CheckExtData, SetExtDataSea, SetExtDataBeach, SetExtDataBiomes, SetExtDataBiomesConstrains, SetExtDataPropertiesGrid, SetExtDataFinish, FillAllowedNames, ProcessTextures, LoadTextures, MakeEntireMapImage, StartGame }
+        { LoadTerrain, GenerateTerrain, CheckExtData, SetExtDataSea, SetExtDataBeach, SetExtDataBiomes, SetExtDataBiomesConstrains, SetExtDataPropertiesGrid, SetExtDataFinish, FillAllowedNames, MakeEntireMapImage, StartGame }
 
         public static readonly int allStagesCount = ((Stage[])Enum.GetValues(typeof(Stage))).Length;
 
@@ -32,8 +32,6 @@ namespace SonOfRobin
             { Stage.SetExtDataPropertiesGrid, "setting extended data (properties grid)" },
             { Stage.SetExtDataFinish, "saving extended data" },
             { Stage.FillAllowedNames, "filling lists of allowed names" },
-            { Stage.ProcessTextures, "processing textures" },
-            { Stage.LoadTextures, "loading textures" },
             { Stage.MakeEntireMapImage, "making entire map image" },
             { Stage.StartGame, "starting the game" },
         };
@@ -414,45 +412,6 @@ namespace SonOfRobin
 
                     this.FillCellListsForPieceNames();
                     this.cellsToProcessOnStart.Clear();
-
-                    break;
-
-                case Stage.ProcessTextures:
-
-                    int texturesCount = Directory.GetFiles(this.gridTemplate.templatePath).Where(file => file.Contains("background_") && file.EndsWith(".png")).Count();
-                    bool allTexturesFound = texturesCount == this.allCells.Count;
-
-                    cellProcessingQueue = new List<Cell> { };
-
-                    int noOfCellsToProcess = allTexturesFound ? this.allCells.Count : 300;
-                    for (int i = 0; i < noOfCellsToProcess; i++)
-                    {
-                        cellProcessingQueue.Add(this.cellsToProcessOnStart[0]);
-                        this.cellsToProcessOnStart.RemoveAt(0);
-                        if (!this.cellsToProcessOnStart.Any()) break;
-                    }
-
-                    Parallel.ForEach(cellProcessingQueue, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, cell =>
-                    {
-                        cell.UpdateBoardGraphics();
-                    });
-
-                    break;
-
-                case Stage.LoadTextures:
-
-                    if (Preferences.loadWholeMap)
-                    {
-                        while (true)
-                        {
-                            Cell cell = this.cellsToProcessOnStart[0];
-                            this.cellsToProcessOnStart.RemoveAt(0);
-                            cell.boardGraphics.LoadTexture();
-
-                            if (this.ProcessingStageComplete) break;
-                        }
-                    }
-                    else this.cellsToProcessOnStart.Clear();
 
                     break;
 
@@ -1315,7 +1274,7 @@ namespace SonOfRobin
 
         public void LoadClosestTexturesInCameraView(Camera camera, bool visitedByPlayerOnly, bool loadMoreThanOne)
         {
-            if (Preferences.loadWholeMap || SonOfRobinGame.LastUpdateDelay > 20) return;
+            if (SonOfRobinGame.LastUpdateDelay > 20) return;
 
             while (true)
             {
@@ -1335,8 +1294,6 @@ namespace SonOfRobin
         public void LoadAllTexturesInCameraView()
         // cannot be processed using parallel (textures don't work in parallel processing)
         {
-            if (Preferences.loadWholeMap) return;
-
             foreach (Cell cell in this.GetCellsInsideRect(viewRect: this.world.camera.viewRect, addPadding: true))
             {
                 // MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Processing cell in camera view {cell.cellNoX},{cell.cellNoY}.", color: Color.White);
@@ -1346,7 +1303,7 @@ namespace SonOfRobin
 
         public void UnloadTexturesIfMemoryLow(Camera camera)
         {
-            if (Preferences.loadWholeMap || DateTime.Now - this.lastUnloadedTime < TimeSpan.FromSeconds(60)) return;
+            if (DateTime.Now - this.lastUnloadedTime < TimeSpan.FromSeconds(60)) return;
 
             if (SonOfRobinGame.os == OS.Windows)
             {

@@ -96,7 +96,6 @@ namespace SonOfRobin
 
         private static bool fullScreenMode = false;
         private static bool vSync = true;
-        public static bool loadWholeMap = false;
         private static bool frameSkip = true;
         private static bool halfFramerate = false;
         public static bool progressBarShowDetails = false;
@@ -553,7 +552,6 @@ namespace SonOfRobin
             prefsData["globalScale"] = globalScale;
             prefsData["menuScale"] = menuScale;
             prefsData["worldScale"] = worldScale;
-            prefsData["loadWholeMap"] = loadWholeMap;
             prefsData["fullScreenMode"] = fullScreenMode;
             prefsData["frameSkip"] = frameSkip;
             prefsData["cap30FPS"] = halfFramerate;
@@ -620,7 +618,6 @@ namespace SonOfRobin
                     menuScale = (float)(double)prefsData["menuScale"];
                     worldScale = (float)(double)prefsData["worldScale"];
                     fullScreenMode = (bool)prefsData["fullScreenMode"];
-                    loadWholeMap = (bool)prefsData["loadWholeMap"];
                     frameSkip = (bool)prefsData["frameSkip"];
                     showDemoWorld = (bool)prefsData["showDemoWorld"];
                     displayResX = (int)(Int64)prefsData["displayResX"];

@@ -21,13 +21,13 @@ namespace SonOfRobin
         public Texture2D Texture { get; private set; }
 
         private readonly string templatePath;
-        private bool savedToDisk;
+        private bool processedCorrectly;
 
         public BoardGraphics(Grid grid, Cell cell)
         {
             this.cell = cell;
             this.templatePath = Path.Combine(grid.gridTemplate.templatePath, $"background_{cell.cellNoX}_{cell.cellNoY}.png");
-            this.savedToDisk = File.Exists(this.templatePath);
+            this.processedCorrectly = false;
         }
 
         public void LoadTexture()
@@ -35,25 +35,23 @@ namespace SonOfRobin
             if (this.Texture != null) return;
 
             this.Texture = GfxConverter.LoadTextureFromPNG(this.templatePath);
-            if (this.Texture == null)
-            {
-                this.CreateBitmapFromTerrain(getColorGrid: false, saveAsPNG: true);
-                this.Texture = GfxConverter.LoadTextureFromPNG(this.templatePath); // trying to create texture on disk first...
-                if (this.Texture == null)
-                {
-                    // ...if this fails (disk error, locked file, etc.), get texture data directly
-                    Color[,] colorGrid = this.CreateBitmapFromTerrain(getColorGrid: true, saveAsPNG: false);
-                    this.Texture = GfxConverter.Convert2DColorArrayToTexture(colorGrid);
-                }
-            }
-
-            this.cell.grid.loadedTexturesCount++;
+            // if texture could not be loaded, it is missing and needs to be processed first
+            if (this.Texture == null) SonOfRobinGame.BoardTextureProcessor.AddCellToProcess(this.cell);
+            else this.cell.grid.loadedTexturesCount++;
         }
 
         public void ReplaceTexture(Texture2D texture)
         {
             if (this.Texture != null) this.Texture.Dispose();
             this.Texture = texture;
+        }
+
+        public void CreateAndSavePngTemplate()
+        {
+            if (this.processedCorrectly) return;
+
+            this.CreateBitmapFromTerrain(getColorGrid: false, saveAsPNG: true);
+            this.processedCorrectly = true;
         }
 
         public void UnloadTexture()
@@ -63,14 +61,6 @@ namespace SonOfRobin
             this.Texture.Dispose();
             this.Texture = null;
             this.cell.grid.loadedTexturesCount--;
-        }
-
-        public void CreateAndSavePngTemplate()
-        {
-            if (this.savedToDisk) return;
-
-            this.CreateBitmapFromTerrain(getColorGrid: false, saveAsPNG: true);
-            this.savedToDisk = true;
         }
 
         public static string GetWholeIslandMapPath(Grid grid)

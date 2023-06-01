@@ -70,6 +70,7 @@ namespace SonOfRobin
             this.rect = new Rectangle(this.xMin, this.yMin, this.width, this.height);
             float scale = this.grid.wholeIslandPreviewScale;
             this.previewRect = new Rectangle((int)(this.rect.X * scale), (int)(this.rect.Y * scale), width: (int)(this.width * scale), height: (int)(this.height * scale));
+            this.boardGraphics = new BoardGraphics(grid: this.grid, cell: this);
 
             this.xCenter = this.xMin + (this.width / 2);
             this.yCenter = this.yMin + (this.height / 2);
@@ -179,12 +180,6 @@ namespace SonOfRobin
             this.HasWater = templateCell.HasWater;
             this.IsAllWater = templateCell.IsAllWater;
             this.HasLava = templateCell.HasLava;
-        }
-
-        public void UpdateBoardGraphics()
-        {
-            this.boardGraphics = new BoardGraphics(grid: this.grid, cell: this);
-            this.boardGraphics.CreateAndSavePngTemplate();
         }
 
         public void RemoveSprite(Sprite sprite)
