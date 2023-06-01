@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Concurrent;
 using System.IO;
 using System.Linq;
@@ -9,12 +10,14 @@ namespace SonOfRobin
 {
     public class BoardTextureProcessor
     {
+        private int requestNo;
         private Task backgroundTask;
-        private ConcurrentBag<Cell> cellsToProcess;
+        private ConcurrentDictionary<int, Cell> cellsToProcessByRequestNo;
 
         public BoardTextureProcessor()
         {
-            this.cellsToProcess = new ConcurrentBag<Cell>();
+            this.requestNo = 0;
+            this.cellsToProcessByRequestNo = new ConcurrentDictionary<int, Cell>();
             this.StartBackgroundTask();
         }
 
@@ -25,14 +28,16 @@ namespace SonOfRobin
 
         public void AddCellToProcess(Cell cell)
         {
-            this.cellsToProcess.Add(cell);
+            this.requestNo++;
+
+            this.cellsToProcessByRequestNo[this.requestNo] = cell;
 
             if (this.backgroundTask != null && this.backgroundTask.IsFaulted)
             {
                 new TextWindow(text: $"An error occured while processing background task:\n{this.backgroundTask.Exception}",
                     textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false, priority: -1, inputType: Scene.InputTypes.Normal);
 
-                this.StartBackgroundTask(); // starting new task, if previous one has failed
+                this.StartBackgroundTask(); // starting new task, if previous one had failed
             }
         }
 
@@ -40,20 +45,24 @@ namespace SonOfRobin
         {
             while (true)
             {
-                if (!this.cellsToProcess.Any()) Thread.Sleep(1);
+                if (!this.cellsToProcessByRequestNo.Any()) Thread.Sleep(1); // to avoid high CPU usage
                 else
                 {
-                    foreach (Cell cell in this.cellsToProcess)
+                    // newest request always takes the priority
+                    int requestNoToUse = this.cellsToProcessByRequestNo.OrderByDescending(kvp => kvp.Key).First().Key;
+
+                    Cell cell;
+                    this.cellsToProcessByRequestNo.TryRemove(requestNoToUse, out cell);
+
+                    if (cell != null)
                     {
                         try
                         {
                             cell.boardGraphics.CreateAndSavePngTemplate();
                         }
-                        catch (System.AggregateException) { } // if main thread is using png file
+                        catch (AggregateException) { } // if main thread is using png file
                         catch (IOException) { } // if main thread is using png file
                     }
-
-                    this.cellsToProcess.Clear();
                 }
             }
         }

@@ -128,7 +128,7 @@ namespace SonOfRobin
             {
                 try
                 {
-                    imageWithTransparency.Save(fileStream, new PngEncoder() { CompressionLevel = PngCompressionLevel.Level9 });
+                    imageWithTransparency.Save(fileStream, new PngEncoder() { CompressionLevel = PngCompressionLevel.BestCompression });
                 }
                 catch (IOException ex) { MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Error saving imagee {mapImagePath}: {ex.Message}"); } // write error
             }
@@ -267,7 +267,7 @@ namespace SonOfRobin
                 {
                     try
                     {
-                        image.Save(fileStream, new PngEncoder() { CompressionLevel = PngCompressionLevel.Level6 });
+                        image.Save(fileStream, new PngEncoder() { CompressionLevel = PngCompressionLevel.BestCompression });
                     }
                     catch (IOException) { } // write error
                 }
