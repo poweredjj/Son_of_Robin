@@ -65,7 +65,7 @@ namespace SonOfRobin
 
         public readonly Cell[,] cellGrid;
         public readonly List<Cell> allCells;
-        public readonly List<Cell> cellsToProcessOnStart;
+        public bool ProcessingStageComplete { get; private set; }
 
         private readonly Dictionary<PieceTemplate.Name, List<Cell>> cellListsForPieceNames; // pieces and cells that those pieces can (initially) be placed into
 
@@ -127,7 +127,6 @@ namespace SonOfRobin
                 return;
             }
 
-            this.cellsToProcessOnStart = new List<Cell>();
             this.tempRawPointsForBiomeCreation = new ConcurrentBag<Point>();
             this.tempPointsForCreatedBiomes = new Dictionary<ExtBoardProps.Name, ConcurrentBag<Point>>();
             this.biomeCountByName = new Dictionary<ExtBoardProps.Name, int>();
@@ -148,9 +147,6 @@ namespace SonOfRobin
             if (this.WholeIslandPreviewTexture != null) this.WholeIslandPreviewTexture.Dispose();
             this.WholeIslandPreviewTexture = null;
         }
-
-        public bool ProcessingStageComplete
-        { get { return this.cellsToProcessOnStart.Count == 0; } }
 
         public IEnumerable<Cell> CellsVisitedByPlayer
         { get { return this.allCells.Where(cell => cell.VisitedByPlayer); } }
@@ -325,7 +321,7 @@ namespace SonOfRobin
                         });
                     }
 
-                    this.cellsToProcessOnStart.Clear();
+                    this.ProcessingStageComplete = true;
 
                     break;
 
@@ -344,59 +340,56 @@ namespace SonOfRobin
                         }
                     }
 
-                    int noOfCellsToRemove = Math.Min(this.allCells.Count / processSegments / this.terrainByName.Count, this.cellsToProcessOnStart.Count);
-                    if (noOfCellsToRemove > 0) this.cellsToProcessOnStart.RemoveRange(0, noOfCellsToRemove); // to update progress bar
-
-                    if (!processedOneUpdateCycle) this.cellsToProcessOnStart.Clear();
+                    if (!processedOneUpdateCycle) this.ProcessingStageComplete = true;
 
                     break;
 
                 case Stage.CheckExtData:
 
                     if (this.extBoardProps == null) this.extBoardProps = new ExtBoardProps(grid: this);
-                    this.cellsToProcessOnStart.Clear();
+                    this.ProcessingStageComplete = true;
 
                     break;
 
                 case Stage.SetExtDataSea:
 
                     if (this.extBoardProps.CreationInProgress) this.ExtCalculateSea();
-                    else this.cellsToProcessOnStart.Clear();
+                    else this.ProcessingStageComplete = true;
 
                     break;
 
                 case Stage.SetExtDataBeach:
 
                     if (this.extBoardProps.CreationInProgress) this.ExtCalculateOuterBeach();
-                    else this.cellsToProcessOnStart.Clear();
+                    else this.ProcessingStageComplete = true;
 
                     break;
 
                 case Stage.SetExtDataBiomes:
 
                     if (this.extBoardProps.CreationInProgress) this.ExtCalculateBiomes();
-                    else this.cellsToProcessOnStart.Clear();
+                    else this.ProcessingStageComplete = true;
 
                     break;
 
                 case Stage.SetExtDataBiomesConstrains:
 
                     if (this.extBoardProps.CreationInProgress) this.ExtApplyBiomeConstrains();
-                    else this.cellsToProcessOnStart.Clear();
+                    else this.ProcessingStageComplete = true;
 
                     break;
 
                 case Stage.SetExtDataPropertiesGrid:
 
                     if (this.extBoardProps.CreationInProgress) this.extBoardProps.CreateContainsPropertiesGrid();
-                    this.cellsToProcessOnStart.Clear(); // always needs to be invoked
+                    this.ProcessingStageComplete = true; // always needs to be invoked
 
                     break;
 
                 case Stage.SetExtDataFinish:
 
                     if (this.extBoardProps.CreationInProgress) this.ExtEndCreation();
-                    else this.cellsToProcessOnStart.Clear();
+                    else this.ProcessingStageComplete = true;
 
                     break;
 
@@ -409,7 +402,7 @@ namespace SonOfRobin
                     });
 
                     this.FillCellListsForPieceNames();
-                    this.cellsToProcessOnStart.Clear();
+                    this.ProcessingStageComplete = true;
 
                     break;
 
@@ -420,13 +413,13 @@ namespace SonOfRobin
 
                     this.WholeIslandPreviewTexture = GfxConverter.LoadTextureFromPNG(mapImagePath);
 
-                    this.cellsToProcessOnStart.Clear();
+                    this.ProcessingStageComplete = true;
 
                     break;
 
                 case Stage.StartGame:
                     // to show "starting game" on progress bar
-                    this.cellsToProcessOnStart.Clear();
+                    this.ProcessingStageComplete = true;
                     this.CreationInProgress = false;
 
                     break;
@@ -485,7 +478,7 @@ namespace SonOfRobin
                  nameToSetIfOutsideRange: ExtBoardProps.Name.OuterBeach
                  );
 
-            this.cellsToProcessOnStart.Clear();
+            this.ProcessingStageComplete = true;
         }
 
         private void ExtCalculateOuterBeach()
@@ -504,7 +497,7 @@ namespace SonOfRobin
                  nameToSetIfOutsideRange: ExtBoardProps.Name.OuterBeach // doesn't matter, if setNameIfOutsideRange is false
                  );
 
-            this.cellsToProcessOnStart.Clear();
+            this.ProcessingStageComplete = true;
         }
 
         private void ExtCalculateBiomes()
@@ -539,11 +532,8 @@ namespace SonOfRobin
                 {
                     this.tempPointsForCreatedBiomes[biomeName].Add(point);
                 });
-
-                int cellsToRemove = this.cellsToProcessOnStart.Count / 6;
-                if (cellsToRemove > 0) this.cellsToProcessOnStart.RemoveRange(0, cellsToRemove); // to update progress bar
             }
-            else this.cellsToProcessOnStart.Clear();
+            else this.ProcessingStageComplete = true;
         }
 
         private void ExtApplyBiomeConstrains()
@@ -564,7 +554,7 @@ namespace SonOfRobin
                 }
             }
 
-            this.cellsToProcessOnStart.Clear();
+            this.ProcessingStageComplete = true;
         }
 
         private void ExtEndCreation()
@@ -573,7 +563,7 @@ namespace SonOfRobin
 
             this.tempRawPointsForBiomeCreation = null;
             this.tempPointsForCreatedBiomes = null;
-            this.cellsToProcessOnStart.Clear();
+            this.ProcessingStageComplete = true;
         }
 
         private ConcurrentBag<Point> GetAllRawCoordinatesWithExtProperty(ExtBoardProps.Name nameToUse, bool value)
@@ -765,42 +755,24 @@ namespace SonOfRobin
         private void PrepareNextStage()
         {
             this.stageStartTime = DateTime.Now;
-            this.cellsToProcessOnStart.Clear();
-            this.cellsToProcessOnStart.AddRange(this.allCells);
+            this.ProcessingStageComplete = false;
         }
 
         private void UpdateProgressBar()
         {
             if (this.world.demoMode) return;
 
-            float percentage = FullScreenProgressBar.CalculatePercentage(currentLocalStep: this.allCells.Count - this.cellsToProcessOnStart.Count, totalLocalSteps: this.allCells.Count, currentGlobalStep: 1 + (int)this.currentStage, totalGlobalSteps: SonOfRobinGame.enteringIslandGlobalSteps);
+            float percentage = FullScreenProgressBar.CalculatePercentage(currentLocalStep: 0, totalLocalSteps: 1, currentGlobalStep: 1 + (int)this.currentStage, totalGlobalSteps: SonOfRobinGame.enteringIslandGlobalSteps);
 
             string detailedInfo = null;
             if (Preferences.progressBarShowDetails)
             {
-                TimeSpan timeLeft = CalculateTimeLeft(startTime: this.stageStartTime, completeAmount: this.allCells.Count - this.cellsToProcessOnStart.Count, totalAmount: this.allCells.Count);
-                string timeLeftString = timeLeft == TimeSpan.FromSeconds(0) ? "" : $" (time left {TimeSpanToString(timeLeft + TimeSpan.FromSeconds(1))})";
-
                 int stageNo = Math.Min(Convert.ToInt32(this.currentStage), namesForStages.Count - 1);
 
-                detailedInfo = $"{namesForStages[(Stage)stageNo]}{timeLeftString}...";
+                detailedInfo = $"{namesForStages[(Stage)stageNo]}...";
             }
 
             if (!this.world.HasBeenRemoved) SonOfRobinGame.FullScreenProgressBar.TurnOn(percentage: percentage, text: LoadingTips.GetTip(), optionalText: detailedInfo);
-        }
-
-        private static TimeSpan CalculateTimeLeft(DateTime startTime, int completeAmount, int totalAmount)
-        {
-            TimeSpan elapsedTime = DateTime.Now - startTime;
-            try
-            {
-                TimeSpan timePerCell = TimeSpan.FromSeconds(elapsedTime.TotalSeconds / completeAmount);
-                TimeSpan timeLeft = TimeSpan.FromSeconds(timePerCell.TotalSeconds * (totalAmount - completeAmount));
-
-                return timeLeft;
-            }
-            catch (OverflowException)
-            { return TimeSpan.FromMinutes(0); }
         }
 
         public static void AddToGroup(Sprite sprite, Cell.Group groupName)
