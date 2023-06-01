@@ -54,32 +54,17 @@ namespace SonOfRobin
 
         public static Texture2D GetTextureForCategory(Category category)
         {
-            switch (category)
+            return category switch
             {
-                case Category.Wood:
-                    return PieceInfo.GetTexture(PieceTemplate.Name.TreeBig);
-
-                case Category.Stone:
-                    return AnimData.framesForPkgs[AnimData.PkgName.MineralsSmall3].texture;
-
-                case Category.Metal:
-                    return PieceInfo.GetTexture(PieceTemplate.Name.Anvil);
-
-                case Category.SmallPlant:
-                    return PieceInfo.GetTexture(PieceTemplate.Name.GrassRegular);
-
-                case Category.Flesh:
-                    return AnimData.framesForPkgs[AnimData.PkgName.AnimalIcon].texture;
-
-                case Category.Dirt:
-                    return PieceInfo.GetTexture(PieceTemplate.Name.Hole);
-
-                case Category.Crystal:
-                    return PieceInfo.GetTexture(PieceTemplate.Name.CrystalDepositSmall);
-
-                default:
-                    return AnimData.framesForPkgs[AnimData.PkgName.NoAnim].texture;
-            }
+                Category.Wood => PieceInfo.GetTexture(PieceTemplate.Name.TreeBig),
+                Category.Stone => AnimData.framesForPkgs[AnimData.PkgName.MineralsSmall3].texture,
+                Category.Metal => PieceInfo.GetTexture(PieceTemplate.Name.Anvil),
+                Category.SmallPlant => PieceInfo.GetTexture(PieceTemplate.Name.GrassRegular),
+                Category.Flesh => AnimData.framesForPkgs[AnimData.PkgName.AnimalIcon].texture,
+                Category.Dirt => PieceInfo.GetTexture(PieceTemplate.Name.Hole),
+                Category.Crystal => PieceInfo.GetTexture(PieceTemplate.Name.CrystalDepositSmall),
+                _ => AnimData.framesForPkgs[AnimData.PkgName.NoAnim].texture,
+            };
         }
 
         protected const float passiveMovementMultiplier = 100f;
@@ -548,16 +533,16 @@ namespace SonOfRobin
         {
             // MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{this.world.currentUpdate} adding to state machines - '{this.readableName}'.");
 
-            if (this.GetType() == typeof(Plant)) this.world.Grid.AddToGroup(sprite: this.sprite, groupName: Cell.Group.StateMachinesPlants);
-            else this.world.Grid.AddToGroup(sprite: this.sprite, groupName: Cell.Group.StateMachinesNonPlants);
+            if (this.GetType() == typeof(Plant)) Grid.AddToGroup(sprite: this.sprite, groupName: Cell.Group.StateMachinesPlants);
+            else Grid.AddToGroup(sprite: this.sprite, groupName: Cell.Group.StateMachinesNonPlants);
         }
 
         public void RemoveFromStateMachines()
         {
             //  MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{this.world.currentUpdate} removing from state machines - '{this.readableName}'.");
 
-            if (this.GetType() == typeof(Plant)) this.world.Grid.RemoveFromGroup(sprite: this.sprite, groupName: Cell.Group.StateMachinesPlants);
-            else this.world.Grid.RemoveFromGroup(sprite: this.sprite, groupName: Cell.Group.StateMachinesNonPlants);
+            if (this.GetType() == typeof(Plant)) Grid.RemoveFromGroup(sprite: this.sprite, groupName: Cell.Group.StateMachinesPlants);
+            else Grid.RemoveFromGroup(sprite: this.sprite, groupName: Cell.Group.StateMachinesNonPlants);
         }
 
         public static BoardPiece FindClosestPiece(Sprite sprite, List<BoardPiece> pieceList, int offsetX = 0, int offsetY = 0)
@@ -863,7 +848,7 @@ namespace SonOfRobin
             if (runFrom) positionDifference = new Vector2(-positionDifference.X, -positionDifference.Y);
 
             // calculating "raw" direction (not taking speed into account)
-            Vector2 movement = new Vector2(
+            Vector2 movement = new(
                 Math.Max(Math.Min(positionDifference.X, 1), -1),
                 Math.Max(Math.Min(positionDifference.Y, 1), -1));
 

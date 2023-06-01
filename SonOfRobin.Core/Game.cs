@@ -18,7 +18,7 @@ namespace SonOfRobin
     public class SonOfRobinGame : Game
     {
         public const float version = 9.7f;
-        public static readonly DateTime lastChanged = new DateTime(2023, 06, 01);
+        public static readonly DateTime lastChanged = new(2023, 06, 01);
 
         public static readonly int enteringIslandGlobalSteps = 3 + Grid.allStagesCount;
         public static ContentManager ContentMgr { get; private set; } // for things other than textures (for textures use TextureBank)
@@ -57,8 +57,8 @@ namespace SonOfRobin
 
         public static List<RenderTarget2D> tempShadowMaskList;
         public static Texture2D lightSphere;
-        public static readonly SimpleFps fps = new SimpleFps();
-        public static readonly Random random = new Random();
+        public static readonly SimpleFps fps = new();
+        public static readonly Random random = new();
         public static int CurrentUpdate { get; private set; }
         public static int CurrentDraw { get; private set; }
         public static float LastUpdateDelay { get; private set; }

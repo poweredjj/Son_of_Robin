@@ -106,22 +106,22 @@ namespace SonOfRobin
             fruitPos.X += plant.world.random.Next(-maxAreaWidth, maxAreaWidth);
             fruitPos.Y += plant.world.random.Next(-maxAreaHeight, maxAreaHeight);
 
-            this.PutFruitOnBoard(fruit: fruit, position: fruitPos);
+            PutFruitOnBoard(fruit: fruit, position: fruitPos);
         }
 
-        private void PutFruitOnBoard(BoardPiece fruit, Vector2 position)
+        private static void PutFruitOnBoard(BoardPiece fruit, Vector2 position)
         {
             // Placing the fruit on board (to allow drawing), but not on the grid (to prevent direct interaction).
 
             fruit.sprite.PlaceOnBoard(randomPlacement: false, position: position, ignoreCollisions: true);
-            fruit.world.Grid.RemoveSprite(fruit.sprite); // the fruit should be on board, but not on the grid itself (to prevent direct interaction)
+            Grid.RemoveSprite(fruit.sprite); // the fruit should be on board, but not on the grid itself (to prevent direct interaction)
         }
 
         private void PutAllFruitsOnBoardAgain()
         {
             foreach (BoardPiece fruit in this.plant.PieceStorage.GetAllPieces())
             {
-                this.PutFruitOnBoard(fruit: fruit, position: fruit.sprite.position);
+                PutFruitOnBoard(fruit: fruit, position: fruit.sprite.position);
             }
         }
 

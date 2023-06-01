@@ -23,8 +23,8 @@ namespace SonOfRobin
         }
 
         public static GameTime CurrentGameTime { get; private set; }
-        public static List<Scene> sceneStack = new List<Scene> { };
-        public static List<Scene> waitingScenes = new List<Scene> { };
+        public static List<Scene> sceneStack = new() { };
+        public static List<Scene> waitingScenes = new() { };
         private static bool adaptScenesToNewSize = false;
 
         public readonly int priority;
@@ -56,7 +56,6 @@ namespace SonOfRobin
 
         public static DateTime startUpdateTime;
         public static DateTime startDrawTime;
-
         public static TimeSpan UpdateTimeElapsed
         { get { return DateTime.Now - startUpdateTime; } }
 
@@ -78,10 +77,10 @@ namespace SonOfRobin
         }
 
         private static int currentUpdateStackUpdateNo = -1;
-        private static List<Scene> currentUpdateStack = new List<Scene>();
+        private static readonly List<Scene> currentUpdateStack = new();
 
         private static int currentDrawStackDrawNo = -1;
-        private static List<Scene> currentDrawStack = new List<Scene>();
+        private static readonly List<Scene> currentDrawStack = new();
 
         public static List<Scene> UpdateStack
         {
@@ -329,13 +328,13 @@ namespace SonOfRobin
         public static Scene GetTopSceneOfType(Type type, bool includeEndingScenes = false, bool includeWaiting = false)
         {
             var foundScenes = GetAllScenesOfType(type: type, includeEnding: includeEndingScenes, includeWaiting: includeWaiting);
-            return foundScenes.Count > 0 ? foundScenes[foundScenes.Count - 1] : null;
+            return foundScenes.Count > 0 ? foundScenes[^1] : null;
         }
 
         public static Scene GetSecondTopSceneOfType(Type type, bool includeEndingScenes = false, bool includeWaiting = false)
         {
             var foundScenes = GetAllScenesOfType(type: type, includeEnding: includeEndingScenes, includeWaiting: includeWaiting);
-            return foundScenes.Count > 1 ? foundScenes[foundScenes.Count - 2] : null;
+            return foundScenes.Count > 1 ? foundScenes[^2] : null;
         }
 
         public static Scene GetBottomSceneOfType(Type type, bool includeEndingScenes = false, bool includeWaiting = false)
@@ -346,9 +345,9 @@ namespace SonOfRobin
 
         public static void RemoveTopScene()
         {
-            Scene scene = sceneStack[sceneStack.Count - 1];
+            Scene scene = sceneStack[^1];
             scene.Remove();
-            if (sceneStack.Count > 0) sceneStack[sceneStack.Count - 1].inputActive = true;
+            if (sceneStack.Count > 0) sceneStack[^1].inputActive = true;
         }
 
         public void MoveToTop()

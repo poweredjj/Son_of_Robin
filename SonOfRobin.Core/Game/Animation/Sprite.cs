@@ -168,8 +168,8 @@ namespace SonOfRobin
                 if (this.visible == value) return;
 
                 this.visible = value;
-                if (value) this.world.Grid.AddToGroup(sprite: this, groupName: Cell.Group.Visible);
-                else this.world.Grid.RemoveFromGroup(sprite: this, groupName: Cell.Group.Visible);
+                if (value) Grid.AddToGroup(sprite: this, groupName: Cell.Group.Visible);
+                else Grid.RemoveFromGroup(sprite: this, groupName: Cell.Group.Visible);
             }
         }
 
@@ -217,7 +217,7 @@ namespace SonOfRobin
 
         public void RemoveFromBoard()
         {
-            this.world.Grid.RemoveSprite(this);
+            Grid.RemoveSprite(this);
             this.position = new Vector2(-500, -500);  // to fail if trying to use in the future
             this.IsOnBoard = false;
         }
@@ -229,7 +229,7 @@ namespace SonOfRobin
 
         public Dictionary<string, object> Serialize()
         {
-            Dictionary<string, Object> spriteDataDict = new Dictionary<string, object>
+            Dictionary<string, Object> spriteDataDict = new()
             {
                 { "posX", (int)this.position.X },
                 { "posY", (int)this.position.Y },
@@ -420,30 +420,14 @@ namespace SonOfRobin
 
         public float GetAngleFromOrientation()
         {
-            float degrees;
-
-            switch (this.orientation)
+            var degrees = this.orientation switch
             {
-                case Orientation.left:
-                    degrees = 180;
-                    break;
-
-                case Orientation.right:
-                    degrees = 0;
-                    break;
-
-                case Orientation.up:
-                    degrees = -90;
-                    break;
-
-                case Orientation.down:
-                    degrees = 90;
-                    break;
-
-                default:
-                    throw new ArgumentException($"Unsupported orientation - {this.orientation}.");
-            }
-
+                Orientation.left => 180,
+                Orientation.right => 0,
+                Orientation.up => -90,
+                Orientation.down => 90,
+                _ => throw new ArgumentException($"Unsupported orientation - {this.orientation}."),
+            };
             float radians = (float)(degrees * Helpers.Deg2Rad);
             return radians;
         }
@@ -490,7 +474,7 @@ namespace SonOfRobin
 
         public bool Move(Vector2 movement, AdditionalMoveType additionalMoveType = AdditionalMoveType.Minimal)
         {
-            List<Vector2> movesToTest = new List<Vector2> { movement };
+            List<Vector2> movesToTest = new() { movement };
 
             switch (additionalMoveType)
             {
@@ -610,7 +594,7 @@ namespace SonOfRobin
 
         private void UpdateRects()
         {
-            Rectangle gfxRect = new Rectangle(
+            Rectangle gfxRect = new(
                 x: (int)(position.X + this.AnimFrame.gfxOffset.X),
                 y: (int)(position.Y + this.AnimFrame.gfxOffset.Y),
                 width: this.AnimFrame.gfxWidth,
@@ -618,7 +602,7 @@ namespace SonOfRobin
 
             this.GfxRect = gfxRect;
 
-            Rectangle colRect = new Rectangle(
+            Rectangle colRect = new(
                 x: (int)(position.X + this.AnimFrame.colOffset.X),
                 y: (int)(position.Y + this.AnimFrame.colOffset.Y),
                 width: this.AnimFrame.colWidth,
@@ -860,7 +844,7 @@ namespace SonOfRobin
 
             Vector2 textSize = stateFont.MeasureString(stateTxt);
             // text position should be integer, otherwise it would get blurry
-            Vector2 txtPos = new Vector2(
+            Vector2 txtPos = new(
                 (int)(this.position.X - (textSize.X / 2)),
                 (int)(this.position.Y - (textSize.Y / 2)));
 

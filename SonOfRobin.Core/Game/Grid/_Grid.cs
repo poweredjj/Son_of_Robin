@@ -21,7 +21,8 @@ namespace SonOfRobin
 
         public static readonly int allStagesCount = ((Stage[])Enum.GetValues(typeof(Stage))).Length;
 
-        private static readonly Dictionary<Stage, string> namesForStages = new Dictionary<Stage, string> {
+        private static readonly Dictionary<Stage, string> namesForStages = new()
+        {
             { Stage.LoadTerrain, "loading terrain" },
             { Stage.GenerateTerrain, "generating terrain" },
             { Stage.CheckExtData, "loading extended data" },
@@ -131,7 +132,7 @@ namespace SonOfRobin
             this.tempPointsForCreatedBiomes = new Dictionary<ExtBoardProps.Name, ConcurrentBag<Point>>();
             this.biomeCountByName = new Dictionary<ExtBoardProps.Name, int>();
 
-            Random tempRandom = new Random(this.world.seed); // separate from world.random, to avoid changing world.random state (difference when copying grid from template)
+            Random tempRandom = new(this.world.seed); // separate from world.random, to avoid changing world.random state (difference when copying grid from template)
             foreach (ExtBoardProps.Name name in ExtBoardProps.allBiomes.OrderBy(name => tempRandom.Next()).ToList()) // shuffled biome list
             {
                 this.biomeCountByName[name] = 0;
@@ -171,7 +172,7 @@ namespace SonOfRobin
                 cellData.Add(cell.Serialize());
             }
 
-            Dictionary<string, Object> gridData = new Dictionary<string, object>
+            Dictionary<string, Object> gridData = new()
             {
                 { "cellWidth", this.cellWidth },
                 { "cellHeight", this.cellHeight },
@@ -189,7 +190,7 @@ namespace SonOfRobin
             int cellHeight = (int)(Int64)gridData["cellHeight"];
             var cellData = (List<Object>)gridData["cellData"];
 
-            Grid grid = new Grid(world: world, cellWidth: cellWidth, cellHeight: cellHeight, resDivider: resDivider);
+            Grid grid = new(world: world, cellWidth: cellWidth, cellHeight: cellHeight, resDivider: resDivider);
 
             for (int i = 0; i < grid.allCells.Count; i++)
             {
@@ -305,8 +306,6 @@ namespace SonOfRobin
 
         private void ProcessOneCreationStage()
         {
-            List<Cell> cellProcessingQueue;
-
             switch (currentStage)
             {
                 case Stage.LoadTerrain:
@@ -688,7 +687,8 @@ namespace SonOfRobin
             int dividedWidth = this.world.width / this.resDivider;
             int dividedHeight = this.world.height / this.resDivider;
 
-            List<Point> offsetList = new List<Point> {
+            List<Point> offsetList = new()
+            {
                 new Point(-1, 0),
                 new Point(1, 0),
                 new Point(0, -1),
@@ -721,7 +721,7 @@ namespace SonOfRobin
 
                         foreach (Point currentOffset in offsetList)
                         {
-                            Point nextPoint = new Point(currentPoint.X + currentOffset.X, currentPoint.Y + currentOffset.Y);
+                            Point nextPoint = new(currentPoint.X + currentOffset.X, currentPoint.Y + currentOffset.Y);
 
                             if (nextPoint.X >= 0 && nextPoint.X < dividedWidth &&
                                 nextPoint.Y >= 0 && nextPoint.Y < dividedHeight &&
@@ -804,7 +804,7 @@ namespace SonOfRobin
             { return TimeSpan.FromMinutes(0); }
         }
 
-        public void AddToGroup(Sprite sprite, Cell.Group groupName)
+        public static void AddToGroup(Sprite sprite, Cell.Group groupName)
         {
             if (!sprite.gridGroups.Contains(groupName)) sprite.gridGroups.Add(groupName);
             if (sprite.currentCell == null) return;
@@ -812,7 +812,7 @@ namespace SonOfRobin
             sprite.currentCell.AddToGroup(sprite: sprite, groupName: groupName);
         }
 
-        public void RemoveFromGroup(Sprite sprite, Cell.Group groupName)
+        public static void RemoveFromGroup(Sprite sprite, Cell.Group groupName)
         {
             if (sprite.gridGroups.Contains(groupName)) sprite.gridGroups.Remove(groupName);
             if (sprite.currentCell == null) return;
@@ -843,7 +843,7 @@ namespace SonOfRobin
             sprite.currentCell = newCell;
         }
 
-        public void RemoveSprite(Sprite sprite)
+        public static void RemoveSprite(Sprite sprite)
         {
             if (sprite.currentCell == null) return;
             sprite.currentCell.RemoveSprite(sprite);
@@ -880,7 +880,7 @@ namespace SonOfRobin
             int yMinCellNo = Math.Max(FindMatchingCellInSingleAxis(position: viewRect.Top, cellLength: this.cellHeight) - padding, 0);
             int yMaxCellNo = Math.Min(FindMatchingCellInSingleAxis(position: viewRect.Bottom, cellLength: this.cellHeight) + padding, this.noOfCellsY - 1);
 
-            List<Cell> cellsInsideRect = new List<Cell>();
+            List<Cell> cellsInsideRect = new();
 
             for (int x = xMinCellNo; x <= xMaxCellNo; x++)
             {
@@ -893,7 +893,7 @@ namespace SonOfRobin
 
         public List<Cell> GetCellsWithinDistance(Vector2 position, int distance)
         {
-            List<Cell> cellsWithinDistance = new List<Cell>();
+            List<Cell> cellsWithinDistance = new();
 
             int xMin = Math.Min(Math.Max(Convert.ToInt32(position.X - distance), 0), this.world.width - 1);
             int xMax = Math.Min(Math.Max(Convert.ToInt32(position.X + distance), 0), this.world.width - 1);
@@ -969,7 +969,7 @@ namespace SonOfRobin
             int yMin = (int)Math.Min(Math.Min(point1.Y, point2.Y), point3.Y);
             int yMax = (int)Math.Max(Math.Max(point1.Y, point2.Y), point3.Y);
 
-            Rectangle rect = new Rectangle(x: xMin, y: yMin, width: xMax - xMin, height: yMax - yMin);
+            Rectangle rect = new(x: xMin, y: yMin, width: xMax - xMin, height: yMax - yMin);
 
             var cellsInsideRect = this.GetCellsInsideRect(viewRect: rect, addPadding: true);
 
@@ -1008,7 +1008,7 @@ namespace SonOfRobin
 
         private List<Cell> GetAllCells()
         {
-            List<Cell> allCells = new List<Cell>();
+            List<Cell> allCells = new();
 
             for (int x = 0; x < this.noOfCellsX; x++)
             {
@@ -1102,7 +1102,7 @@ namespace SonOfRobin
                         {
                             if (!shadowSprite.Visible) continue;
 
-                            Vector2 sunPos = new Vector2(shadowSprite.GfxRect.Center.X + sunLightData.sunPos.X, shadowSprite.GfxRect.Bottom + sunLightData.sunPos.Y);
+                            Vector2 sunPos = new(shadowSprite.GfxRect.Center.X + sunLightData.sunPos.X, shadowSprite.GfxRect.Bottom + sunLightData.sunPos.Y);
                             float shadowAngle = Helpers.GetAngleBetweenTwoPoints(start: sunPos, end: shadowSprite.position);
 
                             Sprite.DrawShadow(color: sunShadowsColor, shadowSprite: shadowSprite, lightPos: sunPos, shadowAngle: shadowAngle, yScaleForce: sunLightData.sunShadowsLength);
@@ -1232,7 +1232,7 @@ namespace SonOfRobin
         {
             if (cell.grid != this) throw new ArgumentException("This cell is from another grid.");
 
-            List<Cell> cellsWithinDistance = new List<Cell>();
+            List<Cell> cellsWithinDistance = new();
 
             for (int offsetX = -distance; offsetX < distance + 1; offsetX++)
             {

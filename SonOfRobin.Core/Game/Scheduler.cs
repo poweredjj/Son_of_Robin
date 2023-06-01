@@ -12,7 +12,7 @@ namespace SonOfRobin
         public enum TaskName
         { Empty, CreateNewWorld, CreateNewWorldNow, QuitGame, OpenMenuTemplate, OpenMainMenu, OpenConfirmationMenu, SaveGame, LoadGame, LoadGameNow, ReturnToMainMenu, SavePrefs, ProcessConfirmation, OpenCraftMenu, Craft, Hit, CreateNewPiece, CreateDebugPieces, OpenContainer, DeleteObsoleteSaves, DropFruit, GetEaten, GetDrinked, ExecuteTaskWithDelay, AddWorldEvent, ShowTextWindow, OpenShelterMenu, SleepInsideShelter, SleepOutside, ForceWakeUp, TempoFastForward, TempoStop, TempoPlay, CameraTrackPiece, CameraTrackCoords, CameraSetZoom, ShowCookingProgress, ShowBrewingProgress, RestoreHints, OpenMainMenuIfSpecialKeysArePressed, CheckForPieceHints, ShowHint, ExecuteTaskChain, ShowTutorialInMenu, ShowTutorialInGame, RemoveScene, ChangeSceneInputType, SetCineMode, AddTransition, SolidColorAddOverlay, SolidColorRemoveAll, SkipCinematics, SetSpectatorMode, SwitchLightSource, ResetControls, SaveControls, CheckForNonSavedControls, RebuildMenu, RebuildAllMenus, CheckForIncorrectPieces, RestartWorld, ResetNewWorldSettings, PlaySound, PlaySoundByName, AllowPieceToBeHit, SetPlayerPointWalkTarget, StopSound, RemoveAllScenesOfType, WaitUntilMorning, ActivateLightEngine, DeactivateLightEngine, AddPassiveMovement, AddFadeInAnim, InteractWithCooker, InteractWithLab, InventoryCombineItems, InventoryReleaseHeldPieces, Plant, RemoveBuffs }
 
-        private static readonly Dictionary<int, List<Task>> queue = new Dictionary<int, List<Task>>();
+        private static readonly Dictionary<int, List<Task>> queue = new();
         private static int inputTurnedOffUntilFrame = 0;
 
         public static bool HasTaskChainInQueue
@@ -335,18 +335,16 @@ namespace SonOfRobin
                     case TaskName.SaveGame:
                         {
                             // example executeHelper for this task
-                            // var saveParams = new Dictionary<string, Object> { { "world", world }, { "saveSlotName", "1" }, { "showMessage", false }, {"quitGameAfterSaving", false} };
+                            // var saveParams = new Dictionary<string, Object> { { "world", world }, { "saveSlotName", "1" }, { "showMessage", false } };
 
                             var saveParams = (Dictionary<string, Object>)this.ExecuteHelper;
                             world = (World)saveParams["world"];
                             string saveSlotName = (string)saveParams["saveSlotName"];
                             bool showMessage = false;
                             if (saveParams.ContainsKey("showMessage")) showMessage = (bool)saveParams["showMessage"];
-                            bool quitGameAfterSaving = false;
-                            if (saveParams.ContainsKey("quitGameAfterSaving")) quitGameAfterSaving = (bool)saveParams["quitGameAfterSaving"];
                             world.HintEngine.Disable(Tutorials.Type.HowToSave);
 
-                            new LoaderSaver(saveMode: true, saveSlotName: saveSlotName, world: world, showSavedMessage: showMessage, quitGameAfterSaving: quitGameAfterSaving);
+                            new LoaderSaver(saveMode: true, saveSlotName: saveSlotName, world: world, showSavedMessage: showMessage);
 
                             return;
                         }
@@ -436,7 +434,7 @@ namespace SonOfRobin
                             }
                             else
                             {
-                                Rectangle areaRect = new Rectangle(x: 0, y: 0, width: world.width, height: world.height);
+                                Rectangle areaRect = new(x: 0, y: 0, width: world.width, height: world.height);
 
                                 switch (player.sprite.orientation)
                                 {
@@ -977,7 +975,7 @@ namespace SonOfRobin
                     case TaskName.ExecuteTaskChain:
                         {
                             // making a copy of the original taskChain, to avoid modifying it - needed for menus
-                            List<Object> taskChain = new List<Object>((List<Object>)this.ExecuteHelper);
+                            List<Object> taskChain = new((List<Object>)this.ExecuteHelper);
 
                             Task currentTask = (Task)taskChain[0];
                             taskChain.RemoveAt(0);
@@ -1148,7 +1146,7 @@ namespace SonOfRobin
                             Color color = (Color)solidColorData["color"];
                             float opacity = (float)solidColorData["opacity"];
 
-                            SolidColor newOverlay = new SolidColor(color: color, viewOpacity: opacity);
+                            SolidColor newOverlay = new(color: color, viewOpacity: opacity);
                             world.solidColorManager.Add(newOverlay);
 
                             return;
@@ -1519,7 +1517,7 @@ namespace SonOfRobin
                                 return;
                             }
 
-                            Recipe plantRecipe = new Recipe(pieceToCreate: plantName, ingredients: new Dictionary<PieceTemplate.Name, byte> { { seeds.name, 1 } }, fatigue: PieceInfo.GetInfo(plantName).blocksMovement ? 100 : 50, maxLevel: 0, durationMultiplier: 1f, fatigueMultiplier: 1f, isReversible: false, isTemporary: true, useOnlyIngredientsWithID: seeds.id);
+                            Recipe plantRecipe = new(pieceToCreate: plantName, ingredients: new Dictionary<PieceTemplate.Name, byte> { { seeds.name, 1 } }, fatigue: PieceInfo.GetInfo(plantName).blocksMovement ? 100 : 50, maxLevel: 0, durationMultiplier: 1f, fatigueMultiplier: 1f, isReversible: false, isTemporary: true, useOnlyIngredientsWithID: seeds.id);
 
                             Inventory.SetLayout(newLayout: Inventory.LayoutType.Toolbar, player: player);
                             plantRecipe.TryToProducePieces(player: player, showMessages: false);

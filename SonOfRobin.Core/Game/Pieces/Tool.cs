@@ -59,8 +59,8 @@ namespace SonOfRobin
             int offsetDist = 1;
             int movementDist = 1000;
 
-            Vector2 offset = new Vector2((int)Math.Round(offsetDist * Math.Cos(angle)), (int)Math.Round(offsetDist * Math.Sin(angle)));
-            Vector2 movement = new Vector2((int)Math.Round(movementDist * Math.Cos(angle)), (int)Math.Round(movementDist * Math.Sin(angle)));
+            Vector2 offset = new((int)Math.Round(offsetDist * Math.Cos(angle)), (int)Math.Round(offsetDist * Math.Sin(angle)));
+            Vector2 movement = new((int)Math.Round(movementDist * Math.Cos(angle)), (int)Math.Round(movementDist * Math.Sin(angle)));
 
             Sprite playerSprite = this.world.Player.sprite;
             Vector2 startingPos = playerSprite.position + new Vector2(offset.X * playerSprite.AnimFrame.colWidth * 1.5f, offset.Y * playerSprite.AnimFrame.colHeight * 1.5f);
@@ -229,7 +229,7 @@ namespace SonOfRobin
 
             if (target.HitPoints <= 0 || (!target.alive && target.GetType() == typeof(Animal)))
             {
-                target.world.Grid.RemoveFromGroup(sprite: target.sprite, groupName: Cell.Group.ColMovement); // to ensure proper yield placement
+                Grid.RemoveFromGroup(sprite: target.sprite, groupName: Cell.Group.ColMovement); // to ensure proper yield placement
                 if (target.yield != null && target.exists && !target.IsBurning)
                 {
                     target.yield.DropFinalPieces();
@@ -249,7 +249,7 @@ namespace SonOfRobin
                 if (target.category == Category.SmallPlant) numberOfExplosions = 0;
                 for (int i = 0; i < numberOfExplosions; i++)
                 {
-                    Vector2 posOffset = new Vector2(world.random.Next(0, target.sprite.AnimFrame.gfxWidth), world.random.Next(0, target.sprite.AnimFrame.gfxHeight));
+                    Vector2 posOffset = new(world.random.Next(0, target.sprite.AnimFrame.gfxWidth), world.random.Next(0, target.sprite.AnimFrame.gfxHeight));
                     posOffset += target.sprite.AnimFrame.gfxOffset;
 
                     var attack = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: target.sprite.position + posOffset, templateName: PieceTemplate.Name.Attack);

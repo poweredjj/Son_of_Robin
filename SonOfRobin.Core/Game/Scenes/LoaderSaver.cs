@@ -23,7 +23,6 @@ namespace SonOfRobin
         private const int maxPiecesInPackage = 5000;
 
         private readonly DateTime createdTime;
-        private readonly bool quitGameAfterSaving;
         private readonly bool saveMode;
         private readonly string modeText;
         private readonly bool showSavedMessage;
@@ -60,7 +59,7 @@ namespace SonOfRobin
             get
             {
                 var tempNames = Directory.GetDirectories(SonOfRobinGame.saveGamesPath).Where(dir => dir.StartsWith(tempPrefix));
-                List<string> tempPaths = new List<string> { };
+                List<string> tempPaths = new() { };
                 foreach (string name in tempNames)
                 {
                     tempPaths.Add(Path.Combine(SonOfRobinGame.saveGamesPath, name));
@@ -113,14 +112,13 @@ namespace SonOfRobin
             }
         }
 
-        public LoaderSaver(bool saveMode, string saveSlotName, World world = null, bool showSavedMessage = false, bool quitGameAfterSaving = false) : base(inputType: InputTypes.Normal, priority: 1, blocksUpdatesBelow: true, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.QuitLoading, tipsLayout: ControlTips.TipsLayout.QuitLoading)
+        public LoaderSaver(bool saveMode, string saveSlotName, World world = null, bool showSavedMessage = false) : base(inputType: InputTypes.Normal, priority: 1, blocksUpdatesBelow: true, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.QuitLoading, tipsLayout: ControlTips.TipsLayout.QuitLoading)
         {
             this.createdTime = DateTime.Now;
             this.drawActive = false;
             this.saveMode = saveMode;
             this.modeText = this.saveMode ? "Saving" : "Loading";
             this.showSavedMessage = showSavedMessage;
-            this.quitGameAfterSaving = quitGameAfterSaving;
             this.processingComplete = false;
             this.world = world;
             if (this.world != null)
@@ -147,7 +145,7 @@ namespace SonOfRobin
         {
             var piecePackages = new List<List<BoardPiece>>();
 
-            List<BoardPiece> currentPieceList = new List<BoardPiece>();
+            List<BoardPiece> currentPieceList = new();
             piecePackages.Add(currentPieceList);
 
             foreach (Sprite sprite in this.world.Grid.GetSpritesFromAllCells(Cell.Group.All))
@@ -193,7 +191,6 @@ namespace SonOfRobin
             if (this.saveMode || this.ErrorOccured) SonOfRobinGame.FullScreenProgressBar.TurnOff();
 
             base.Remove();
-            if (this.saveMode && this.quitGameAfterSaving) SonOfRobinGame.quitGame = true;
             Menu.RebuildAllMenus();
         }
 
@@ -203,7 +200,7 @@ namespace SonOfRobin
             {
                 new TextWindow(text: $"An error occured while saving:\n{this.backgroundTask.Exception}",
                     textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false, closingTask: this.TextWindowTask, priority: -1, inputType: InputTypes.Normal);
-                this.ErrorOccured = true;  
+                this.ErrorOccured = true;
             }
 
             if (!this.ErrorOccured) this.UpdateProgressBar();
@@ -543,7 +540,7 @@ namespace SonOfRobin
 
                 string coolingPath = Path.Combine(this.savePath, coolingName);
                 if (!FileReaderWriter.PathExists(coolingPath)) throw new ArgumentException($"Error while reading cooling data for slot {saveSlotName}.");
-                
+
                 this.coolingData = (Dictionary<string, Object>)FileReaderWriter.Load(path: coolingPath);
             }
 

@@ -44,7 +44,7 @@ namespace SonOfRobin
 
         public static Menu CreateMenuFromTemplate(Name templateName, object executeHelper = null)
         {
-            Preferences preferences = new Preferences();
+            Preferences preferences = new();
 
             // Range example - valueList: Enumerable.Range(-1, 300).Cast<object>().ToList()
 
@@ -52,7 +52,7 @@ namespace SonOfRobin
             {
                 case Name.Main:
                     {
-                        Menu menu = new Menu(templateName: templateName, name: "Son of Robin", blocksUpdatesBelow: false, canBeClosedManually: false, templateExecuteHelper: executeHelper);
+                        Menu menu = new(templateName: templateName, name: "Son of Robin", blocksUpdatesBelow: false, canBeClosedManually: false, templateExecuteHelper: executeHelper);
                         new Separator(menu: menu, name: "", isEmpty: true);
 
                         if (SaveHeaderManager.AnySavesExist) new Invoker(menu: menu, name: "load game", taskName: Scheduler.TaskName.OpenMenuTemplate, executeHelper: new Dictionary<string, Object> { { "templateName", Name.Load } });
@@ -61,19 +61,20 @@ namespace SonOfRobin
                         new Invoker(menu: menu, name: "options", taskName: Scheduler.TaskName.OpenMenuTemplate, new Dictionary<string, Object> { { "templateName", Name.Options } },
                             infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: "options, settings, etc.", color: Color.White, scale: 1f) });
 
-                        var aboutTaskChain = new List<object>();
-
-                        aboutTaskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ShowTextWindow, turnOffInputUntilExecution: true, delay: 0, executeHelper: new Dictionary<string, Object> {
+                        var aboutTaskChain = new List<object>
+                        {
+                            new Scheduler.Task(taskName: Scheduler.TaskName.ShowTextWindow, turnOffInputUntilExecution: true, delay: 0, executeHelper: new Dictionary<string, Object> {
                             { "text", $"Son of Robin {SonOfRobinGame.version.ToString().Replace(",", ".")}\nLast updated: {SonOfRobinGame.lastChanged:yyyy-MM-dd.}\n\nThis is a very early alpha version of the game.\nCode: Marcin Smidowicz.\nFastNoiseLite: Jordan Peck.\nSounds: | freesound.org.\nController icons: | Nicolae (Xelu) Berbece.\nStudies.Joystick: Luiz Ossinho.\nImageSharp library: Six Labors.\nVarious free graphics assets used." },
                             { "imageList", new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.MusicNote), ButtonScheme.dpad } },
                             { "bgColor", new List<Byte> { 63, 167, 212 } }
-                            }, storeForLaterUse: true));
+                            }, storeForLaterUse: true),
 
-                        aboutTaskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ShowTextWindow, turnOffInputUntilExecution: true, delay: 0, executeHelper: new Dictionary<string, Object> {
+                            new Scheduler.Task(taskName: Scheduler.TaskName.ShowTextWindow, turnOffInputUntilExecution: true, delay: 0, executeHelper: new Dictionary<string, Object> {
                             { "text", $"| Testers |\n\nFaye\nGlonfindel\nHellwoman\nKolowskyyy\nRetro Marek\nShaobell" },
                             { "imageList", new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.DebrisStar), PieceInfo.GetTexture(PieceTemplate.Name.DebrisStar) } },
                             { "bgColor", new List<Byte> { 85, 189, 113 } }
-                            }, storeForLaterUse: true));
+                            }, storeForLaterUse: true)
+                        };
 
                         new Invoker(menu: menu, name: "about", taskName: Scheduler.TaskName.ExecuteTaskChain, executeHelper: aboutTaskChain,
                             infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: "information about the game", color: Color.White, scale: 1f) });
@@ -85,7 +86,7 @@ namespace SonOfRobin
 
                 case Name.Options:
                     {
-                        Menu menu = new Menu(templateName: templateName, name: "OPTIONS", blocksUpdatesBelow: false, canBeClosedManually: true, closingTask: Scheduler.TaskName.SavePrefs, templateExecuteHelper: executeHelper);
+                        Menu menu = new(templateName: templateName, name: "OPTIONS", blocksUpdatesBelow: false, canBeClosedManually: true, closingTask: Scheduler.TaskName.SavePrefs, templateExecuteHelper: executeHelper);
 
                         new Invoker(menu: menu, name: "controls", taskName: Scheduler.TaskName.OpenMenuTemplate, executeHelper: new Dictionary<string, Object> { { "templateName", Name.Controls } }, infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: "controls settings", color: Color.White, scale: 1f) });
 
@@ -107,7 +108,7 @@ namespace SonOfRobin
 
                 case Name.Scale:
                     {
-                        Menu menu = new Menu(templateName: templateName, name: "SCALE", blocksUpdatesBelow: false, canBeClosedManually: true, closingTask: Scheduler.TaskName.SavePrefs, templateExecuteHelper: executeHelper);
+                        Menu menu = new(templateName: templateName, name: "SCALE", blocksUpdatesBelow: false, canBeClosedManually: true, closingTask: Scheduler.TaskName.SavePrefs, templateExecuteHelper: executeHelper);
 
                         var worldScaleList = new List<Object> { 0.75f, 1f, 1.25f, 1.5f, 2f };
                         if (Preferences.debugEnableExtremeZoomLevels || SonOfRobinGame.ThisIsWorkMachine || SonOfRobinGame.ThisIsHomeMachine)
@@ -130,7 +131,7 @@ namespace SonOfRobin
                     {
                         World world = World.GetTopWorld();
 
-                        Menu menu = new Menu(templateName: templateName, name: "OTHER OPTIONS", blocksUpdatesBelow: false, canBeClosedManually: true, closingTask: Scheduler.TaskName.SavePrefs, templateExecuteHelper: executeHelper);
+                        Menu menu = new(templateName: templateName, name: "OTHER OPTIONS", blocksUpdatesBelow: false, canBeClosedManually: true, closingTask: Scheduler.TaskName.SavePrefs, templateExecuteHelper: executeHelper);
 
                         new Selector(menu: menu, name: "show hints", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "showHints");
                         new Selector(menu: menu, name: "progress bar info", valueDict: new Dictionary<object, object> { { true, "detailed" }, { false, "simple" } }, targetObj: preferences, propertyName: "progressBarShowDetails");
@@ -154,7 +155,7 @@ namespace SonOfRobin
                     {
                         World world = World.GetTopWorld();
 
-                        Menu menu = new Menu(templateName: templateName, name: "GRAPHICS", blocksUpdatesBelow: false, canBeClosedManually: true, closingTask: Scheduler.TaskName.SavePrefs, templateExecuteHelper: executeHelper);
+                        Menu menu = new(templateName: templateName, name: "GRAPHICS", blocksUpdatesBelow: false, canBeClosedManually: true, closingTask: Scheduler.TaskName.SavePrefs, templateExecuteHelper: executeHelper);
 
                         new Selector(menu: menu, name: "FPS counter", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "ShowFpsCounter", rebuildsMenu: true);
 
@@ -197,9 +198,9 @@ namespace SonOfRobin
 
                 case Name.Sound:
                     {
-                        Menu menu = new Menu(templateName: templateName, name: "SOUND", blocksUpdatesBelow: false, canBeClosedManually: true, closingTask: Scheduler.TaskName.SavePrefs, templateExecuteHelper: executeHelper);
+                        Menu menu = new(templateName: templateName, name: "SOUND", blocksUpdatesBelow: false, canBeClosedManually: true, closingTask: Scheduler.TaskName.SavePrefs, templateExecuteHelper: executeHelper);
 
-                        Sound sound = new Sound(SoundData.Name.Empty); // sound name doesn't really matter
+                        Sound sound = new(SoundData.Name.Empty); // sound name doesn't really matter
 
                         new Selector(menu: menu, name: "sound", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: sound, propertyName: "GlobalOn", rebuildsMenu: true);
 
@@ -226,7 +227,7 @@ namespace SonOfRobin
 
                 case Name.Controls:
                     {
-                        Menu menu = new Menu(templateName: templateName, name: "CONTROLS", blocksUpdatesBelow: false, canBeClosedManually: true, closingTask: Scheduler.TaskName.SavePrefs, templateExecuteHelper: executeHelper);
+                        Menu menu = new(templateName: templateName, name: "CONTROLS", blocksUpdatesBelow: false, canBeClosedManually: true, closingTask: Scheduler.TaskName.SavePrefs, templateExecuteHelper: executeHelper);
 
                         new Invoker(menu: menu, name: "configure gamepad", taskName: Scheduler.TaskName.OpenMenuTemplate, executeHelper: new Dictionary<string, Object> { { "templateName", Name.Gamepad } }, infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: "set all gamepad controls", color: Color.White, scale: 1f) });
                         new Invoker(menu: menu, name: "configure keyboard", taskName: Scheduler.TaskName.OpenMenuTemplate, executeHelper: new Dictionary<string, Object> { { "templateName", Name.Keyboard } }, infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: "set all keyboard controls", color: Color.White, scale: 1f) });
@@ -262,7 +263,7 @@ namespace SonOfRobin
                 case Name.Gamepad:
                     {
                         bool gamepad = true;
-                        Menu menu = new Menu(templateName: templateName, name: "CONFIGURE GAMEPAD", blocksUpdatesBelow: false, canBeClosedManually: true, closingTask: Scheduler.TaskName.CheckForNonSavedControls, closingTaskHelper: gamepad, templateExecuteHelper: executeHelper);
+                        Menu menu = new(templateName: templateName, name: "CONFIGURE GAMEPAD", blocksUpdatesBelow: false, canBeClosedManually: true, closingTask: Scheduler.TaskName.CheckForNonSavedControls, closingTaskHelper: gamepad, templateExecuteHelper: executeHelper);
 
                         var allButtonsList = new List<Buttons> { Buttons.A, Buttons.B, Buttons.X, Buttons.Y, Buttons.LeftShoulder, Buttons.RightShoulder, Buttons.LeftTrigger, Buttons.RightTrigger, Buttons.Start, Buttons.Back, Buttons.LeftStick, Buttons.RightStick, Buttons.DPadLeft, Buttons.DPadRight, Buttons.DPadUp, Buttons.DPadDown };
 
@@ -284,7 +285,7 @@ namespace SonOfRobin
                 case Name.Keyboard:
                     {
                         bool gamepad = false;
-                        Menu menu = new Menu(templateName: templateName, name: "CONFIGURE KEYBOARD", blocksUpdatesBelow: false, canBeClosedManually: true, closingTask: Scheduler.TaskName.CheckForNonSavedControls, closingTaskHelper: gamepad, templateExecuteHelper: executeHelper);
+                        Menu menu = new(templateName: templateName, name: "CONFIGURE KEYBOARD", blocksUpdatesBelow: false, canBeClosedManually: true, closingTask: Scheduler.TaskName.CheckForNonSavedControls, closingTaskHelper: gamepad, templateExecuteHelper: executeHelper);
 
                         Dictionary<object, object> allKeysDict = KeyboardScheme.KeyTextures.ToDictionary(k => (object)new StoredInput(k.Key), k => (object)k.Value);
                         CreateControlsMappingEntries(menu: menu, gamepad: false, analogSticksDict: null, keysOrButtonsDict: allKeysDict);
@@ -294,7 +295,7 @@ namespace SonOfRobin
 
                 case Name.CreateNewIsland:
                     {
-                        Menu menu = new Menu(templateName: templateName, name: "CREATE NEW ISLAND", blocksUpdatesBelow: false, canBeClosedManually: true, closingTask: Scheduler.TaskName.SavePrefs, templateExecuteHelper: executeHelper);
+                        Menu menu = new(templateName: templateName, name: "CREATE NEW ISLAND", blocksUpdatesBelow: false, canBeClosedManually: true, closingTask: Scheduler.TaskName.SavePrefs, templateExecuteHelper: executeHelper);
 
                         new Invoker(menu: menu, name: "start game", closesMenu: true, taskName: Scheduler.TaskName.CreateNewWorld, sound: SoundData.Name.NewGameStart);
                         new Invoker(menu: menu, name: "reset settings", closesMenu: false, taskName: Scheduler.TaskName.ResetNewWorldSettings, rebuildsMenu: true);
@@ -307,7 +308,7 @@ namespace SonOfRobin
 
                         if (Preferences.CustomizeWorld)
                         {
-                            List<Object> sizeList = new List<Object> { 10000, 15000, 20000, 25000, 30000, 40000 };
+                            List<Object> sizeList = new() { 10000, 15000, 20000, 25000, 30000, 40000 };
                             if (SonOfRobinGame.platform == Platform.Desktop) sizeList.AddRange(new List<Object> { 50000, 60000 });
 
                             if (SonOfRobinGame.ThisIsWorkMachine || SonOfRobinGame.ThisIsHomeMachine)
@@ -325,7 +326,7 @@ namespace SonOfRobin
                         }
                         else
                         {
-                            List<Object> sizeList = new List<Object> { Preferences.WorldSize.small, Preferences.WorldSize.medium, Preferences.WorldSize.large };
+                            List<Object> sizeList = new() { Preferences.WorldSize.small, Preferences.WorldSize.medium, Preferences.WorldSize.large };
                             if (SonOfRobinGame.platform == Platform.Desktop)
                             {
                                 sizeList.Add(Preferences.WorldSize.gigantic);
@@ -349,7 +350,7 @@ namespace SonOfRobin
 
                 case Name.SetSeed:
                     {
-                        Menu menu = new Menu(templateName: templateName, name: "ENTER SEED", blocksUpdatesBelow: false, canBeClosedManually: true, templateExecuteHelper: executeHelper);
+                        Menu menu = new(templateName: templateName, name: "ENTER SEED", blocksUpdatesBelow: false, canBeClosedManually: true, templateExecuteHelper: executeHelper);
                         new Separator(menu: menu, name: "", isEmpty: true);
 
                         var digitList = new List<Object> { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
@@ -368,7 +369,7 @@ namespace SonOfRobin
 
                 case Name.OpenIslandTemplate:
                     {
-                        Menu menu = new Menu(templateName: templateName, name: "CREATE ISLAND FROM TEMPLATE", blocksUpdatesBelow: false, canBeClosedManually: true, templateExecuteHelper: executeHelper);
+                        Menu menu = new(templateName: templateName, name: "CREATE ISLAND FROM TEMPLATE", blocksUpdatesBelow: false, canBeClosedManually: true, templateExecuteHelper: executeHelper);
 
                         CreateCharacterSelection(menu);
 
@@ -390,7 +391,7 @@ namespace SonOfRobin
                     {
                         World world = World.GetTopWorld();
 
-                        Menu menu = new Menu(templateName: templateName, name: "PAUSE", blocksUpdatesBelow: true, canBeClosedManually: true, templateExecuteHelper: executeHelper, soundOpen: SoundData.Name.PaperMove1, soundClose: SoundData.Name.PaperMove2);
+                        Menu menu = new(templateName: templateName, name: "PAUSE", blocksUpdatesBelow: true, canBeClosedManually: true, templateExecuteHelper: executeHelper, soundOpen: SoundData.Name.PaperMove1, soundClose: SoundData.Name.PaperMove2);
                         new Invoker(menu: menu, name: "return to game", closesMenu: true, taskName: Scheduler.TaskName.Empty);
 
                         if ((Preferences.debugSaveEverywhere || Preferences.DebugMode) && !world.SpectatorMode && world.Player?.activeState == BoardPiece.State.PlayerControlledWalking && world.Player.alive) new Invoker(menu: menu, name: "save game", taskName: Scheduler.TaskName.OpenMenuTemplate, executeHelper: new Dictionary<string, Object> { { "templateName", Name.Save } });
@@ -420,8 +421,10 @@ namespace SonOfRobin
                     {
                         World world = World.GetTopWorld();
 
-                        Menu menu = new Menu(templateName: templateName, name: "STATS", blocksUpdatesBelow: true, canBeClosedManually: true, templateExecuteHelper: executeHelper, soundClose: SoundData.Name.PaperMove2, alwaysShowSelectedEntry: true, soundNavigate: SoundData.Name.Tick, soundInvoke: SoundData.Name.Tick);
-                        menu.bgColor = new Color(75, 37, 110) * 0.75f;
+                        Menu menu = new(templateName: templateName, name: "STATS", blocksUpdatesBelow: true, canBeClosedManually: true, templateExecuteHelper: executeHelper, soundClose: SoundData.Name.PaperMove2, alwaysShowSelectedEntry: true, soundNavigate: SoundData.Name.Tick, soundInvoke: SoundData.Name.Tick)
+                        {
+                            bgColor = new Color(75, 37, 110) * 0.75f
+                        };
 
                         Player player = world.Player;
 
@@ -498,8 +501,8 @@ namespace SonOfRobin
                                 infoTextList.Add(new InfoWindow.TextEntry(text: String.Join("\n", negativeBuffTextLines), color: new Color(255, 120, 70), scale: 0.75f));
                             }
 
-                            Invoker invoker = new Invoker(menu: menu, name: "player", taskName: Scheduler.TaskName.Empty, infoTextList: infoTextList);
-                            Color color = new Color(31, 197, 219);
+                            Invoker invoker = new(menu: menu, name: "player", taskName: Scheduler.TaskName.Empty, infoTextList: infoTextList);
+                            Color color = new(31, 197, 219);
                             invoker.rectColor = color;
                             invoker.outlineColor = color;
                         }
@@ -533,8 +536,8 @@ namespace SonOfRobin
 
                             var infoTextList = new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: String.Join("\n", textLines), imageList: imageList, color: Color.White, scale: 1f) };
 
-                            Invoker invoker = new Invoker(menu: menu, name: "island", taskName: Scheduler.TaskName.Empty, infoTextList: infoTextList);
-                            Color color = new Color(148, 115, 55);
+                            Invoker invoker = new(menu: menu, name: "island", taskName: Scheduler.TaskName.Empty, infoTextList: infoTextList);
+                            Color color = new(148, 115, 55);
                             invoker.rectColor = color;
                             invoker.outlineColor = color;
                         }
@@ -558,8 +561,8 @@ namespace SonOfRobin
 
                             var infoTextList = new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: String.Join("\n", textLines), imageList: imageList, color: Color.White, scale: 1f) };
 
-                            Invoker invoker = new Invoker(menu: menu, name: "craft general", taskName: Scheduler.TaskName.Empty, infoTextList: infoTextList);
-                            Color color = new Color(168, 74, 145);
+                            Invoker invoker = new(menu: menu, name: "craft general", taskName: Scheduler.TaskName.Empty, infoTextList: infoTextList);
+                            Color color = new(168, 74, 145);
                             invoker.rectColor = color;
                             invoker.outlineColor = color;
                         }
@@ -589,8 +592,8 @@ namespace SonOfRobin
 
                             var infoTextList = new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: String.Join("\n", textLines), imageList: imageList, color: Color.White, scale: 1f) };
 
-                            Invoker invoker = new Invoker(menu: menu, name: "cooking stats", taskName: Scheduler.TaskName.Empty, infoTextList: infoTextList);
-                            Color color = new Color(181, 22, 83);
+                            Invoker invoker = new(menu: menu, name: "cooking stats", taskName: Scheduler.TaskName.Empty, infoTextList: infoTextList);
+                            Color color = new(181, 22, 83);
                             invoker.rectColor = color;
                             invoker.outlineColor = color;
                         }
@@ -616,8 +619,8 @@ namespace SonOfRobin
 
                             var infoTextList = new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: String.Join("\n", textLines), imageList: imageList, color: Color.White, scale: 1f) };
 
-                            Invoker invoker = new Invoker(menu: menu, name: "potion brewing stats", taskName: Scheduler.TaskName.Empty, infoTextList: infoTextList);
-                            Color color = new Color(102, 212, 157);
+                            Invoker invoker = new(menu: menu, name: "potion brewing stats", taskName: Scheduler.TaskName.Empty, infoTextList: infoTextList);
+                            Color color = new(102, 212, 157);
                             invoker.rectColor = color;
                             invoker.outlineColor = color;
                         }
@@ -627,7 +630,7 @@ namespace SonOfRobin
 
                 case Name.GameOver:
                     {
-                        Menu menu = new Menu(templateName: templateName, name: "GAME OVER", blocksUpdatesBelow: false, canBeClosedManually: false, layout: Menu.Layout.Middle, templateExecuteHelper: executeHelper);
+                        Menu menu = new(templateName: templateName, name: "GAME OVER", blocksUpdatesBelow: false, canBeClosedManually: false, layout: Menu.Layout.Middle, templateExecuteHelper: executeHelper);
                         if (SaveHeaderManager.AnySavesExist) new Invoker(menu: menu, name: "load game", taskName: Scheduler.TaskName.OpenMenuTemplate, executeHelper: new Dictionary<string, Object> { { "templateName", Name.Load } });
                         new Invoker(menu: menu, name: "enter spectator mode", closesMenu: true, taskName: Scheduler.TaskName.SetSpectatorMode, executeHelper: true);
                         new Invoker(menu: menu, name: "restart this island", closesMenu: true, taskName: Scheduler.TaskName.RestartWorld, executeHelper: World.GetTopWorld());
@@ -643,7 +646,7 @@ namespace SonOfRobin
 
                 case Name.Load:
                     {
-                        Menu menu = new Menu(templateName: templateName, name: "LOAD GAME", blocksUpdatesBelow: false, canBeClosedManually: true, templateExecuteHelper: executeHelper);
+                        Menu menu = new(templateName: templateName, name: "LOAD GAME", blocksUpdatesBelow: false, canBeClosedManually: true, templateExecuteHelper: executeHelper);
                         foreach (SaveHeaderInfo saveInfo in SaveHeaderManager.CorrectSaves)
                         {
                             new Invoker(menu: menu, name: saveInfo.FullDescription, closesMenu: true, taskName: Scheduler.TaskName.LoadGame, executeHelper: saveInfo.folderName,
@@ -656,7 +659,7 @@ namespace SonOfRobin
 
                 case Name.Save:
                     {
-                        Menu menu = new Menu(templateName: templateName, name: "SAVE GAME", blocksUpdatesBelow: false, canBeClosedManually: true, templateExecuteHelper: executeHelper);
+                        Menu menu = new(templateName: templateName, name: "SAVE GAME", blocksUpdatesBelow: false, canBeClosedManually: true, templateExecuteHelper: executeHelper);
 
                         World world = World.GetTopWorld();
 
@@ -679,7 +682,7 @@ namespace SonOfRobin
 
                 case Name.CreateAnyPiece:
                     {
-                        Menu menu = new Menu(templateName: templateName, name: "CREATE ANY ITEM", blocksUpdatesBelow: false, canBeClosedManually: true, templateExecuteHelper: executeHelper);
+                        Menu menu = new(templateName: templateName, name: "CREATE ANY ITEM", blocksUpdatesBelow: false, canBeClosedManually: true, templateExecuteHelper: executeHelper);
                         World world = World.GetTopWorld();
                         if (world == null) return menu;
                         var pieceCounterDict = new Dictionary<PieceTemplate.Name, int> { };
@@ -695,7 +698,7 @@ namespace SonOfRobin
                             if (PieceInfo.GetInfo(pieceName).type == typeof(Player)) continue; // creating these pieces would cause many glitches
 
                             var imageList = new List<Texture2D> { PieceInfo.GetTexture(pieceName) };
-                            Dictionary<string, Object> createData = new Dictionary<string, Object> { { "position", world.Player.sprite.position }, { "templateName", pieceName } };
+                            Dictionary<string, Object> createData = new() { { "position", world.Player.sprite.position }, { "templateName", pieceName } };
 
                             new Invoker(menu: menu, name: $"{PieceInfo.GetInfo(pieceName).readableName} | ({pieceCounterDict[pieceName]})", imageList: imageList, taskName: Scheduler.TaskName.CreateDebugPieces, executeHelper: createData, rebuildsMenu: true);
                         }
@@ -708,7 +711,7 @@ namespace SonOfRobin
 
                 case Name.Debug:
                     {
-                        Menu menu = new Menu(templateName: templateName, name: "DEBUG MENU", blocksUpdatesBelow: false, canBeClosedManually: true, templateExecuteHelper: executeHelper);
+                        Menu menu = new(templateName: templateName, name: "DEBUG MENU", blocksUpdatesBelow: false, canBeClosedManually: true, templateExecuteHelper: executeHelper);
 
                         World world = World.GetTopWorld();
                         bool nonDemoWorldActive = world != null && !world.demoMode;
@@ -756,9 +759,10 @@ namespace SonOfRobin
 
                 case Name.Shelter:
                     {
-                        Menu menu = new Menu(templateName: templateName, name: "SHELTER", blocksUpdatesBelow: true, canBeClosedManually: true, layout: Menu.Layout.Right, templateExecuteHelper: executeHelper, soundOpen: SoundData.Name.ClothRustle1, soundClose: SoundData.Name.ClothRustle2);
-
-                        menu.bgColor = Color.DarkBlue * 0.7f;
+                        Menu menu = new(templateName: templateName, name: "SHELTER", blocksUpdatesBelow: true, canBeClosedManually: true, layout: Menu.Layout.Right, templateExecuteHelper: executeHelper, soundOpen: SoundData.Name.ClothRustle1, soundClose: SoundData.Name.ClothRustle2)
+                        {
+                            bgColor = Color.DarkBlue * 0.7f
+                        };
 
                         new Invoker(menu: menu, name: "rest", closesMenu: true, taskName: Scheduler.TaskName.SleepInsideShelter, executeHelper: executeHelper, taskDelay: 15);
                         new Invoker(menu: menu, name: "save game", taskName: Scheduler.TaskName.OpenMenuTemplate, executeHelper: new Dictionary<string, Object> { { "templateName", Name.Save } });
@@ -803,7 +807,7 @@ namespace SonOfRobin
                 case Name.Tutorials:
                     {
                         World world = World.GetTopWorld();
-                        Menu menu = new Menu(templateName: templateName, name: "TUTORIALS", blocksUpdatesBelow: true, canBeClosedManually: true, templateExecuteHelper: executeHelper);
+                        Menu menu = new(templateName: templateName, name: "TUTORIALS", blocksUpdatesBelow: true, canBeClosedManually: true, templateExecuteHelper: executeHelper);
 
                         foreach (Tutorials.Tutorial tutorial in Tutorials.TutorialsInMenu)
                         {
@@ -821,7 +825,7 @@ namespace SonOfRobin
 
                 case Name.SoundTest:
                     {
-                        Menu menu = new Menu(templateName: templateName, name: "SOUND TEST", blocksUpdatesBelow: true, canBeClosedManually: true, templateExecuteHelper: executeHelper, soundNavigate: SoundData.Name.Empty);
+                        Menu menu = new(templateName: templateName, name: "SOUND TEST", blocksUpdatesBelow: true, canBeClosedManually: true, templateExecuteHelper: executeHelper, soundNavigate: SoundData.Name.Empty);
 
                         foreach (SoundData.Name soundName in (SoundData.Name[])Enum.GetValues(typeof(SoundData.Name)))
                         {
@@ -835,7 +839,7 @@ namespace SonOfRobin
 
                 case Name.GfxListTest:
                     {
-                        Menu menu = new Menu(templateName: templateName, name: "GRAPHICS LIST", blocksUpdatesBelow: true, canBeClosedManually: true, templateExecuteHelper: executeHelper);
+                        Menu menu = new(templateName: templateName, name: "GRAPHICS LIST", blocksUpdatesBelow: true, canBeClosedManually: true, templateExecuteHelper: executeHelper);
 
                         foreach (AnimData.PkgName pkgName in (AnimData.PkgName[])Enum.GetValues(typeof(AnimData.PkgName)))
                         {
@@ -873,7 +877,7 @@ namespace SonOfRobin
 
             Color rectColor, textColor;
 
-            List<string> descriptionTextList = new List<string>();
+            List<string> descriptionTextList = new();
 
             switch (Preferences.newWorldPlayerName)
             {
@@ -965,7 +969,7 @@ namespace SonOfRobin
 
             List<PieceStorage> storageList = player.GetCraftStoragesToTakeFrom(showCraftMarker: true);
 
-            Menu menu = new Menu(templateName: templateName, name: label, blocksUpdatesBelow: true, canBeClosedManually: true, layout: SonOfRobinGame.platform == Platform.Mobile ? Menu.Layout.Right : Menu.Layout.Left, alwaysShowSelectedEntry: true, templateExecuteHelper: null, soundOpen: soundOpen);
+            Menu menu = new(templateName: templateName, name: label, blocksUpdatesBelow: true, canBeClosedManually: true, layout: SonOfRobinGame.platform == Platform.Mobile ? Menu.Layout.Right : Menu.Layout.Left, alwaysShowSelectedEntry: true, templateExecuteHelper: null, soundOpen: soundOpen);
             menu.bgColor = Color.LemonChiffon * 0.5f;
 
             var recipeList = Craft.GetRecipesForCategory(category: category, includeHidden: false, discoveredRecipes: world.discoveredRecipesForPieces);
