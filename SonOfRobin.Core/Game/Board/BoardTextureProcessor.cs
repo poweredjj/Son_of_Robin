@@ -52,20 +52,24 @@ namespace SonOfRobin
                 else
                 {
                     // newest request always takes the priority
-                    DateTime requestTimeToUse = this.cellsToProcessByRequestTime.OrderByDescending(kvp => kvp.Key).First().Key;
-
-                    Cell cell;
-                    this.cellsToProcessByRequestTime.TryRemove(requestTimeToUse, out cell);
-
-                    if (cell != null)
+                    var cellsToProcessByRequestTimeDescending = this.cellsToProcessByRequestTime.OrderByDescending(kvp => kvp.Key);
+                    if (cellsToProcessByRequestTimeDescending.Any())
                     {
-                        try
+                        DateTime requestTimeToUse = cellsToProcessByRequestTimeDescending.First().Key;
+
+                        Cell cell;
+                        this.cellsToProcessByRequestTime.TryRemove(requestTimeToUse, out cell);
+
+                        if (cell != null)
                         {
-                            if (!cell.grid.world.HasBeenRemoved) cell.boardGraphics.CreateAndSavePngTemplate();
+                            try
+                            {
+                                if (!cell.grid.world.HasBeenRemoved) cell.boardGraphics.CreateAndSavePngTemplate();
+                            }
+                            catch (AggregateException) { } // if main thread is using png file
+                            catch (IOException) { } // if main thread is using png file
                         }
-                        catch (AggregateException) { } // if main thread is using png file
-                        catch (IOException) { } // if main thread is using png file
-                    }
+                    }                 
                 }
             }
         }

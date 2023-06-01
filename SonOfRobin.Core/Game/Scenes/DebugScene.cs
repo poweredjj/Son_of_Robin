@@ -343,9 +343,15 @@ namespace SonOfRobin
             //    world.camera.AddRandomShake();
             //}
 
-            if (Keyboard.HasBeenPressed(Keys.F1))
+            if (VirtButton.HasButtonBeenPressed(VButName.DebugExportSave) || Keyboard.HasBeenPressed(Keys.F1))
             {
-                new Scheduler.Task(taskName: Scheduler.TaskName.ExportSave, executeHelper: "78");
+                var correctSaves = SaveHeaderManager.CorrectSaves;
+
+                if (correctSaves.Any())
+                {
+                    new Scheduler.Task(taskName: Scheduler.TaskName.ExportSave, executeHelper: correctSaves[0].folderName);
+                }
+
             }
 
             //if (Keyboard.HasBeenPressed(Keys.F1))
@@ -384,7 +390,7 @@ namespace SonOfRobin
             //    world.weather.AddEvent(new WeatherEvent(type: Weather.WeatherType.Rain, intensity: 0.05f, startTime: world.islandClock.IslandDateTime, duration: TimeSpan.FromMinutes(30), transitionLength: TimeSpan.FromMinutes(3)));
             //}
 
-            if (Keyboard.HasBeenPressed(Keys.F3) || VirtButton.HasButtonBeenPressed(VButName.DebugClockAdvance))
+            if (Keyboard.HasBeenPressed(Keys.F3))
             {
                 if (world == null) return;
 

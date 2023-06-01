@@ -670,6 +670,11 @@ namespace SonOfRobin
 
             xPos += xShift;
             new VirtButton(name: VButName.DebugClockAdvance, label: "clock\nadvance", bgColorPressed: Color.Violet, bgColorReleased: Color.White, textColor: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: width, height0to1: height);
+
+            xPos = 0.32f;
+            yPos += yShift;
+
+            new VirtButton(name: VButName.DebugExportSave, label: "export\nsave", bgColorPressed: Color.Violet, bgColorReleased: Color.White, textColor: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: width, height0to1: height);
         }
     }
 }
