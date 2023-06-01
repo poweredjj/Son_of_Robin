@@ -731,7 +731,7 @@ namespace SonOfRobin
 
                     case TaskName.DeleteObsoleteSaves:
                         {
-                            SaveHeaderManager.DeleteObsoleteSaves();
+                            SaveHeaderManager.DeleteIncompatibleSaves();
                             return;
                         }
 

@@ -42,7 +42,7 @@ namespace SonOfRobin
                 foreach (string folder in saveFolders)
                 {
                     var saveInfo = new SaveHeaderInfo(Path.GetFileName(folder));
-                    if (!saveInfo.saveIsCorrect) incorrectSaves.Add(saveInfo);
+                    if (!saveInfo.saveIsCorrect || saveInfo.saveIsObsolete) incorrectSaves.Add(saveInfo);
                 }
 
                 return incorrectSaves;
@@ -68,13 +68,13 @@ namespace SonOfRobin
             }
         }
 
-        public static void DeleteObsoleteSaves()
+        public static void DeleteIncompatibleSaves()
         {
             List<SaveHeaderInfo> incorrectSaves = IncorrectSaves;
 
             if (!incorrectSaves.Any())
             {
-                new TextWindow(text: "No obsolete saves were found.", textColor: Color.White, bgColor: Color.Blue, useTransition: true, animate: true);
+                new TextWindow(text: "No incompatible saves were found.", textColor: Color.White, bgColor: Color.Blue, useTransition: true, animate: true);
                 return;
             }
 

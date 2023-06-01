@@ -187,10 +187,11 @@ namespace SonOfRobin
                 this.containsPropertiesFalseGridCell[name] = BitArrayWrapper.LoadFromPNG(GetContainsPropertiesPNGPath(name: name, contains: false));
             });
 
+           
             foreach (Name name in allExtPropNames)
             {
-                if (this.containsPropertiesTrueGridCell[name] == null) return false;
-                if (this.containsPropertiesFalseGridCell[name] == null) return false;
+                if (!this.containsPropertiesTrueGridCell.ContainsKey(name) || this.containsPropertiesTrueGridCell[name] == null) return false;
+                if (!this.containsPropertiesFalseGridCell.ContainsKey(name) || this.containsPropertiesFalseGridCell[name] == null) return false;
             }
 
             return true;
