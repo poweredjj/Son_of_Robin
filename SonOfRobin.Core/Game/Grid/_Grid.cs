@@ -319,11 +319,10 @@ namespace SonOfRobin
                         this.terrainByName[Terrain.Name.Biome] = new Terrain(
                             grid: this, name: Terrain.Name.Biome, frequency: 7f, octaves: 3, persistence: 0.7f, lacunarity: 1.4f, gain: 0.3f, addBorder: true);
 
-                        foreach (Terrain terrain in this.terrainByName.Values)
+                        Parallel.ForEach(this.terrainByName.Values, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, terrain =>
                         {
-                            // cannot be read in parallel, because textures are loading with graphicsDevice
                             terrain.TryToLoadSavedTerrain();
-                        }
+                        });
                     }
 
                     this.cellsToProcessOnStart.Clear();
