@@ -1272,31 +1272,33 @@ namespace SonOfRobin
             return new Vector2(frameMaxWidth, frameMaxHeight);
         }
 
-        public void LoadClosestTexturesInCameraView(Camera camera, bool visitedByPlayerOnly, bool loadMoreThanOne)
+        public void LoadClosestTexturesInCameraView(Camera camera, bool visitedByPlayerOnly, int maxNoToLoad)
         {
             if (SonOfRobinGame.LastUpdateDelay > 20) return;
 
-            while (true)
+            var cellsInCameraViewWithNoTextures = this.GetCellsInsideRect(viewRect: camera.viewRect, addPadding: true).Where(cell => cell.boardGraphics.Texture == null);
+            if (visitedByPlayerOnly) cellsInCameraViewWithNoTextures = cellsInCameraViewWithNoTextures.Where(cell => cell.VisitedByPlayer);
+            if (!cellsInCameraViewWithNoTextures.Any()) return;
+
+            Vector2 cameraCenter = camera.CurrentPos;
+            var cellsByDistance = cellsInCameraViewWithNoTextures.OrderBy(cell => cell.GetDistance(cameraCenter));
+
+            // to check how much textures has really been loaded (and allow scheduling rendering of as much background textures as possible)
+            int noOfLoadedTexturesAtTheStart = this.loadedTexturesCount;
+            foreach (Cell cell in cellsByDistance)
             {
-                var cellsInCameraViewWithNoTextures = this.GetCellsInsideRect(viewRect: camera.viewRect, addPadding: true).Where(cell => cell.boardGraphics.Texture == null);
-                if (visitedByPlayerOnly) cellsInCameraViewWithNoTextures = cellsInCameraViewWithNoTextures.Where(cell => cell.VisitedByPlayer);
-                if (!cellsInCameraViewWithNoTextures.Any()) return;
-
-                Vector2 cameraCenter = camera.CurrentPos;
-
-                var cellsByDistance = cellsInCameraViewWithNoTextures.OrderBy(cell => cell.GetDistance(cameraCenter));
-                cellsByDistance.First().boardGraphics.LoadTexture();
-
-                if (!loadMoreThanOne || Scene.UpdateTimeElapsed.Milliseconds > 10) return;
+                cell.boardGraphics.LoadTexture();
+                if (this.loadedTexturesCount - noOfLoadedTexturesAtTheStart >= maxNoToLoad || Scene.UpdateTimeElapsed.Milliseconds > 10) return;
             }
         }
 
         public void LoadAllTexturesInCameraView()
-        // cannot be processed using parallel (textures don't work in parallel processing)
         {
             foreach (Cell cell in this.GetCellsInsideRect(viewRect: this.world.camera.viewRect, addPadding: true))
             {
                 // MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Processing cell in camera view {cell.cellNoX},{cell.cellNoY}.", color: Color.White);
+
+                cell.boardGraphics.CreateAndSavePngTemplate(ignoreIfFileExists: true); // assuming that png files will be correct
                 cell.boardGraphics.LoadTexture();
             }
         }

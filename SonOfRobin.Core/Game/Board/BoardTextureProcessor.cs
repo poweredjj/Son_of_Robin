@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using System.Collections.Concurrent;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -44,7 +45,12 @@ namespace SonOfRobin
                 {
                     foreach (Cell cell in this.cellsToProcess)
                     {
-                        cell.boardGraphics.CreateAndSavePngTemplate();
+                        try
+                        {
+                            cell.boardGraphics.CreateAndSavePngTemplate();
+                        }
+                        catch (System.AggregateException) { } // if main thread is using png file
+                        catch (IOException) { } // if main thread is using png file
                     }
 
                     this.cellsToProcess.Clear();

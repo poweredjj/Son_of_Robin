@@ -422,7 +422,7 @@ namespace SonOfRobin
                     // loading and unloading textures should be done during "foundCellsWithMissingTextures" only, to avoid unnecessary texture loading
 
                     this.world.Grid.UnloadTexturesIfMemoryLow(this.camera);
-                    this.world.Grid.LoadClosestTexturesInCameraView(camera: this.camera, visitedByPlayerOnly: !Preferences.DebugShowWholeMap, loadMoreThanOne: true);
+                    this.world.Grid.LoadClosestTexturesInCameraView(camera: this.camera, visitedByPlayerOnly: !Preferences.DebugShowWholeMap, maxNoToLoad: 200);
                 }
             }
 

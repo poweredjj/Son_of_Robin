@@ -35,7 +35,7 @@ namespace SonOfRobin
             if (this.Texture != null) return;
 
             this.Texture = GfxConverter.LoadTextureFromPNG(this.templatePath);
-            // if texture could not be loaded, it is missing and needs to be processed first
+
             if (this.Texture == null) SonOfRobinGame.BoardTextureProcessor.AddCellToProcess(this.cell);
             else this.cell.grid.loadedTexturesCount++;
         }
@@ -46,9 +46,10 @@ namespace SonOfRobin
             this.Texture = texture;
         }
 
-        public void CreateAndSavePngTemplate()
+        public void CreateAndSavePngTemplate(bool ignoreIfFileExists = false)
         {
             if (this.processedCorrectly) return;
+            if (ignoreIfFileExists && File.Exists(this.templatePath)) return;
 
             this.CreateBitmapFromTerrain(getColorGrid: false, saveAsPNG: true);
             this.processedCorrectly = true;
