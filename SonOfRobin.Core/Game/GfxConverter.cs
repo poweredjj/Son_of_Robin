@@ -143,9 +143,9 @@ namespace SonOfRobin
                 return loadedTexture;
             }
             catch (FileNotFoundException)
-            { MessageLog.AddMessage(msgType: MsgType.Debug, message: $"FileNotFoundException while trying to read {Path.GetFileName(path)}."); }
+            { if (!path.Contains("background")) MessageLog.AddMessage(msgType: MsgType.Debug, message: $"FileNotFoundException while trying to read {Path.GetFileName(path)}."); }
             catch (IOException) // png file corrupted
-            { MessageLog.AddMessage(msgType: MsgType.Debug, message: $"IOException while trying to read {Path.GetFileName(path)}."); }
+            { if (!path.Contains("background")) MessageLog.AddMessage(msgType: MsgType.Debug, message: $"IOException while trying to read {Path.GetFileName(path)}."); }
             catch (InvalidOperationException) // png file corrupted
             { MessageLog.AddMessage(msgType: MsgType.Debug, message: $"InvalidOperationException while trying to read {Path.GetFileName(path)}."); }
 

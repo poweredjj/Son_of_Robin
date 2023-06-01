@@ -10,14 +10,17 @@ namespace SonOfRobin
 {
     public class BoardTextureProcessor
     {
-        private int requestNo;
         private Task backgroundTask;
-        private ConcurrentDictionary<int, Cell> cellsToProcessByRequestNo;
+        private ConcurrentDictionary<DateTime, Cell> cellsToProcessByRequestTime;
+        private DateTime lastClearTime;
+
+        public int RequestsInQueueCount
+        { get { return this.cellsToProcessByRequestTime.Count; } }
 
         public BoardTextureProcessor()
         {
-            this.requestNo = 0;
-            this.cellsToProcessByRequestNo = new ConcurrentDictionary<int, Cell>();
+            this.lastClearTime = DateTime.Now;
+            this.cellsToProcessByRequestTime = new ConcurrentDictionary<DateTime, Cell>();
             this.StartBackgroundTask();
         }
 
@@ -28,9 +31,7 @@ namespace SonOfRobin
 
         public void AddCellToProcess(Cell cell)
         {
-            this.requestNo++;
-
-            this.cellsToProcessByRequestNo[this.requestNo] = cell;
+            this.cellsToProcessByRequestTime[DateTime.Now] = cell;
 
             if (this.backgroundTask != null && this.backgroundTask.IsFaulted)
             {
@@ -45,26 +46,49 @@ namespace SonOfRobin
         {
             while (true)
             {
-                if (!this.cellsToProcessByRequestNo.Any()) Thread.Sleep(1); // to avoid high CPU usage
+                this.RemoveOldRequests();
+
+                if (!this.cellsToProcessByRequestTime.Any()) Thread.Sleep(1); // to avoid high CPU usage
                 else
                 {
                     // newest request always takes the priority
-                    int requestNoToUse = this.cellsToProcessByRequestNo.OrderByDescending(kvp => kvp.Key).First().Key;
+                    DateTime requestTimeToUse = this.cellsToProcessByRequestTime.OrderByDescending(kvp => kvp.Key).First().Key;
 
                     Cell cell;
-                    this.cellsToProcessByRequestNo.TryRemove(requestNoToUse, out cell);
+                    this.cellsToProcessByRequestTime.TryRemove(requestTimeToUse, out cell);
 
                     if (cell != null)
                     {
                         try
                         {
-                            cell.boardGraphics.CreateAndSavePngTemplate();
+                            if (!cell.grid.world.HasBeenRemoved) cell.boardGraphics.CreateAndSavePngTemplate();
                         }
                         catch (AggregateException) { } // if main thread is using png file
                         catch (IOException) { } // if main thread is using png file
                     }
                 }
             }
+        }
+
+        private void RemoveOldRequests()
+        {
+            if (DateTime.Now - this.lastClearTime < TimeSpan.FromSeconds(10) || this.RequestsInQueueCount == 0) return;
+
+            int requestCountBefore = this.RequestsInQueueCount;
+
+            TimeSpan requestTimeout = TimeSpan.FromSeconds(30);
+            var recentCellsToProcess = this.cellsToProcessByRequestTime.Where(kvp => DateTime.Now - kvp.Key < requestTimeout);
+
+            this.cellsToProcessByRequestTime.Clear();
+            foreach (var kvp in recentCellsToProcess)
+            {
+                this.cellsToProcessByRequestTime[kvp.Key] = kvp.Value;
+            }
+
+            int requestCountAfter = recentCellsToProcess.Count();
+            MessageLog.AddMessage(msgType: MsgType.Debug, message: $"BgTxProcessor - removing old: {requestCountBefore} -> {requestCountAfter}", color: Color.LimeGreen);
+
+            this.lastClearTime = DateTime.Now;
         }
     }
 }
