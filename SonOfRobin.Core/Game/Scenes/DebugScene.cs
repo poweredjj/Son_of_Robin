@@ -336,11 +336,16 @@ namespace SonOfRobin
             //    world.HintEngine.ShowGeneralHint(type: HintEngine.Type.Lava, ignoreDelay: true);
             //}
 
+            //if (Keyboard.HasBeenPressed(Keys.F1))
+            //{
+            //    if (world == null) return;
+
+            //    world.camera.AddRandomShake();
+            //}
+
             if (Keyboard.HasBeenPressed(Keys.F1))
             {
-                if (world == null) return;
-
-                world.camera.AddRandomShake();
+                new Scheduler.Task(taskName: Scheduler.TaskName.ExportSave, executeHelper: "78");
             }
 
             //if (Keyboard.HasBeenPressed(Keys.F1))

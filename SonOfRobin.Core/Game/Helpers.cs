@@ -2,6 +2,8 @@
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
@@ -440,6 +442,30 @@ namespace SonOfRobin
             }
 
             return new Point(width, height);
+        }
+
+        public static void ZipFiles(string sourcePath, string zipPath)
+        {
+            try
+            {
+                // Create a new zip archive
+                using (ZipArchive archive = ZipFile.Open(zipPath, ZipArchiveMode.Create))
+                {
+                    // Get a list of all files in the source path
+                    string[] files = Directory.GetFiles(sourcePath);
+
+                    foreach (string file in files)
+                    {
+                        // Add each file to the archive
+                        string fileName = Path.GetFileName(file);
+                        archive.CreateEntryFromFile(file, fileName);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageLog.AddMessage(msgType: MsgType.User, message: $"An error occurred while compressing files:\n{ex.Message}", color: Color.Orange);
+            }
         }
     }
 }
