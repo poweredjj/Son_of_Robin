@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace SonOfRobin
 {
@@ -169,19 +170,26 @@ namespace SonOfRobin
 
         private bool LoadTemplate()
         {
-            foreach (Name name in allExtPropNames)
+            Parallel.ForEach(allExtPropNames, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, name =>
             {
                 BitArrayWrapper bitArrayWrapper = BitArrayWrapper.LoadFromPNG(extDataPNGPathByName[name]);
-                if (bitArrayWrapper == null) return false;
-
-                this.extDataByProperty[name] = bitArrayWrapper;
-            }
+                if (bitArrayWrapper != null) this.extDataByProperty[name] = bitArrayWrapper;
+            });
 
             foreach (Name name in allExtPropNames)
             {
+                if (!this.extDataByProperty.ContainsKey(name)) return false;
+            }
+
+            Parallel.ForEach(allExtPropNames, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, name =>
+            {
                 this.containsPropertiesTrueGridCell[name] = BitArrayWrapper.LoadFromPNG(GetContainsPropertiesPNGPath(name: name, contains: true));
-                if (this.containsPropertiesTrueGridCell[name] == null) return false;
                 this.containsPropertiesFalseGridCell[name] = BitArrayWrapper.LoadFromPNG(GetContainsPropertiesPNGPath(name: name, contains: false));
+            });
+
+            foreach (Name name in allExtPropNames)
+            {
+                if (this.containsPropertiesTrueGridCell[name] == null) return false;
                 if (this.containsPropertiesFalseGridCell[name] == null) return false;
             }
 
