@@ -138,7 +138,7 @@ namespace SonOfRobin
                 this.tempPointsForCreatedBiomes[name] = new ConcurrentBag<Point>();
             }
 
-            this.PrepareNextStage();
+            this.PrepareNextStage(incrementCurrentStage: false);
         }
 
         public void Destroy()
@@ -434,8 +434,7 @@ namespace SonOfRobin
                 TimeSpan creationDuration = DateTime.Now - this.stageStartTime;
                 MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{namesForStages[this.currentStage]} - time: {creationDuration:hh\\:mm\\:ss\\.fff}.", color: Color.GreenYellow);
 
-                this.currentStage++;
-                this.PrepareNextStage();
+                this.PrepareNextStage(incrementCurrentStage: true);
             }
         }
 
@@ -752,8 +751,9 @@ namespace SonOfRobin
             return cellList[this.world.random.Next(0, cellList.Count)];
         }
 
-        private void PrepareNextStage()
+        private void PrepareNextStage(bool incrementCurrentStage)
         {
+            if (incrementCurrentStage) this.currentStage++;
             this.stageStartTime = DateTime.Now;
             this.ProcessingStageComplete = false;
         }
