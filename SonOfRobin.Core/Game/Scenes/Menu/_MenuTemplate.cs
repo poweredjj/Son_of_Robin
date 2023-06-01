@@ -137,8 +137,6 @@ namespace SonOfRobin
 
                         new Selector(menu: menu, name: "map marker size", valueDict: Preferences.namesForMapMarkerScale, targetObj: preferences, propertyName: "mapMarkerScale");
 
-                        if (world == null || world.demoMode) new Selector(menu: menu, name: "load whole map", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "loadWholeMap", rebuildsMenu: true);
-
                         new Selector(menu: menu, name: "use multiple CPU cores", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "useMultipleThreads", infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: "use all available CPU cores for some operations", color: Color.White, scale: 1f) });
 
                         if (SonOfRobinGame.os != OS.Windows) new Selector(menu: menu, name: "max map textures to load", valueDict: new Dictionary<object, object> { { 1000, "1000" }, { 2000, "2000" }, { 4000, "4000" }, { 8000, "8000" }, { 2147483647, "no limit" } }, targetObj: preferences, propertyName: "maxTexturesToLoad");
