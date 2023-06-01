@@ -111,9 +111,7 @@ namespace SonOfRobin
 
                 for (int x = 0; x < width; x++)
                 {
-                    int sourceX = (int)(x / scaleMultiplier);
-                    Color pixel = CreateTexturedPixel(grid: grid, x: sourceX, y: sourceY);
-                    rowColors[x] = pixel;
+                    rowColors[x] = CreateTexturedPixel(grid: grid, x: (int)(x / scaleMultiplier), y: sourceY);
                 }
 
                 for (int x = 0; x < width; x++)
