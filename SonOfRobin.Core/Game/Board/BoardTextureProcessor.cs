@@ -35,8 +35,7 @@ namespace SonOfRobin
 
             if (this.backgroundTask != null && this.backgroundTask.IsFaulted)
             {
-                new TextWindow(text: $"An error occured while processing background task:\n{this.backgroundTask.Exception}",
-                    textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false, priority: -1, inputType: Scene.InputTypes.Normal);
+                MessageLog.AddMessage(msgType: MsgType.Debug, message: "An error occured while processing background task.", color: Color.Orange);
 
                 this.StartBackgroundTask(); // starting new task, if previous one had failed
             }
@@ -46,32 +45,26 @@ namespace SonOfRobin
         {
             while (true)
             {
-                this.RemoveOldRequests();
-
-                if (!this.cellsToProcessByRequestTime.Any()) Thread.Sleep(1); // to avoid high CPU usage
-                else
+                try
                 {
-                    // newest request always takes the priority
-                    var cellsToProcessByRequestTimeDescending = this.cellsToProcessByRequestTime.OrderByDescending(kvp => kvp.Key);
-                    if (cellsToProcessByRequestTimeDescending.Any())
+                    this.RemoveOldRequests();
+
+                    if (!this.cellsToProcessByRequestTime.Any()) Thread.Sleep(1); // to avoid high CPU usage
+                    else
                     {
-                        DateTime requestTimeToUse = cellsToProcessByRequestTimeDescending.First().Key;
+                        // newest request always takes the priority
+                        // 
+                        DateTime requestTimeToUse = this.cellsToProcessByRequestTime.OrderByDescending(kvp => kvp.Key).First().Key;
 
                         Cell cell;
                         this.cellsToProcessByRequestTime.TryRemove(requestTimeToUse, out cell);
 
-                        if (cell != null)
-                        {
-                            try
-                            {
-                                if (!cell.grid.world.HasBeenRemoved) cell.boardGraphics.CreateAndSavePngTemplate();
-                            }
-                            catch (AggregateException) { } // if main thread is using png file
-                            catch (IOException) { } // if main thread is using png file
-                        }
-                    }                 
+                        if (cell != null && !cell.grid.world.HasBeenRemoved) cell.boardGraphics.CreateAndSavePngTemplate();                           
+                    }
                 }
-            }
+                catch (AggregateException) { } // if main thread is using png file
+                catch (IOException) { } // if main thread is using png file   
+            }           
         }
 
         private void RemoveOldRequests()

@@ -57,7 +57,7 @@ namespace SonOfRobin
             this.templateFolder = this.Grid.gridTemplate.templatePath;
 
             this.extDataPNGPathByName = new Dictionary<Name, string>();
-            this.extDataByProperty = this.MakeArrayCollection();
+            this.extDataByProperty = new Dictionary<Name, BitArrayWrapper>();
             this.containsPropertiesTrueGridCell = new Dictionary<Name, BitArrayWrapper>();
             this.containsPropertiesFalseGridCell = new Dictionary<Name, BitArrayWrapper>();
 
@@ -70,6 +70,8 @@ namespace SonOfRobin
             if (!loadedCorrectly)
             {
                 MessageLog.AddMessage(msgType: MsgType.Debug, message: "ext - creating new", color: Color.Yellow);
+
+                this.extDataByProperty = this.MakeArrayCollection(); // need to be repeated
 
                 foreach (Name name in allExtPropNames)
                 {
@@ -170,6 +172,14 @@ namespace SonOfRobin
 
         private bool LoadTemplate()
         {
+            foreach (Name name in allExtPropNames)
+            {
+                // creating dictionary entries (will get corrupted sometimes if created in parallel)
+                this.extDataByProperty[name] = null; 
+                this.containsPropertiesTrueGridCell[name] = null;
+                this.containsPropertiesFalseGridCell[name] = null;
+            }
+
             Parallel.ForEach(allExtPropNames, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, name =>
             {
                 BitArrayWrapper bitArrayWrapper = BitArrayWrapper.LoadFromPNG(extDataPNGPathByName[name]);
@@ -178,7 +188,7 @@ namespace SonOfRobin
 
             foreach (Name name in allExtPropNames)
             {
-                if (!this.extDataByProperty.ContainsKey(name)) return false;
+                if (this.extDataByProperty[name] == null) return false;
             }
 
             Parallel.ForEach(allExtPropNames, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, name =>
@@ -190,8 +200,8 @@ namespace SonOfRobin
            
             foreach (Name name in allExtPropNames)
             {
-                if (!this.containsPropertiesTrueGridCell.ContainsKey(name) || this.containsPropertiesTrueGridCell[name] == null) return false;
-                if (!this.containsPropertiesFalseGridCell.ContainsKey(name) || this.containsPropertiesFalseGridCell[name] == null) return false;
+                if (this.containsPropertiesTrueGridCell[name] == null) return false;
+                if (this.containsPropertiesFalseGridCell[name] == null) return false;
             }
 
             return true;
