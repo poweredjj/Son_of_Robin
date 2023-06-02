@@ -137,6 +137,13 @@ namespace SonOfRobin
             }
         }
 
+        public void AddUpdateTerrain(Terrain.Name terrainName, AllowedRange allowedRange)
+        {
+            if (this.currentRangesByTerrainName is null) this.currentRangesByTerrainName = CopyRangeDict(this.initialRangesByTerrainName);
+
+            this.currentRangesByTerrainName[terrainName] = allowedRange;
+        }
+
         public void RemoveTerrain(Terrain.Name terrainName)
         {
             if (this.currentRangesByTerrainName is null) this.currentRangesByTerrainName = CopyRangeDict(this.initialRangesByTerrainName);
@@ -167,6 +174,7 @@ namespace SonOfRobin
 
             return newExtPropertiesDict;
         }
+
 
         public void AddUpdateNameInExtProperties(ExtBoardProps.Name name, bool value)
         {
