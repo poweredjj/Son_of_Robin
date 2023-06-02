@@ -310,7 +310,7 @@ namespace SonOfRobin
         public static bool debugEnableTestCharacters = false;
         public static bool debugEnableExtremeZoomLevels = false;
         public static bool debugInstantCookBrew = false;
-
+        public static bool EnableTestCharacters { get { return debugEnableTestCharacters || SonOfRobinGame.ThisIsHomeMachine || SonOfRobinGame.ThisIsWorkMachine; } }
         public static bool DebugShowWholeMap
         {
             get { return debugShowWholeMap; }
@@ -527,8 +527,6 @@ namespace SonOfRobin
             {
                 showControlTips = true;
             }
-
-            if (!debugEnableTestCharacters && (SonOfRobinGame.ThisIsHomeMachine || SonOfRobinGame.ThisIsWorkMachine)) debugEnableTestCharacters = true;
 
             EnableTouchButtons = SonOfRobinGame.platform == Platform.Mobile;
             MouseGesturesEmulateTouch = true; // mouse input is used through touch emulation

@@ -327,7 +327,9 @@ namespace SonOfRobin
                 {
                     int previousSpriteSize = this.sprite.AnimSize;
                     bool spriteSizeSetCorrectly = this.SetSpriteSizeByMass();
-                    if (!spriteSizeSetCorrectly) this.mass = this.maxMassForSize[this.sprite.AnimSize]; // cannot change mass, if there is no room to expand
+
+                    // cannot change mass, if there is no room to expand
+                    if (!spriteSizeSetCorrectly && previousSpriteSize < this.sprite.AnimSize) this.mass = this.maxMassForSize[this.sprite.AnimSize];
 
                     if (previousSpriteSize != this.sprite.AnimSize && this.PieceStorage != null && this.GetType() == typeof(Plant))
                     {

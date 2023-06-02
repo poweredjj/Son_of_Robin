@@ -963,6 +963,12 @@ namespace SonOfRobin
 
             List<string> descriptionTextList = new();
 
+            if (!Preferences.EnableTestCharacters && Preferences.newWorldPlayerName == PieceTemplate.Name.PlayerTestDemoness)
+            {
+                // to avoid showing wrong description at the start
+                Preferences.newWorldPlayerName = PieceTemplate.Name.PlayerBoy;
+            }
+
             switch (Preferences.newWorldPlayerName)
             {
                 case PieceTemplate.Name.PlayerBoy:
@@ -1005,7 +1011,7 @@ namespace SonOfRobin
             var selectorValueDict = new Dictionary<object, object>();
 
             List<PieceTemplate.Name> playerNames = PieceInfo.GetPlayerNames();
-            if (!Preferences.debugEnableTestCharacters) playerNames.Remove(PieceTemplate.Name.PlayerTestDemoness); // add every test character here
+            if (!Preferences.EnableTestCharacters) playerNames.Remove(PieceTemplate.Name.PlayerTestDemoness); // add every test character here
 
             foreach (PieceTemplate.Name playerName in playerNames)
             {
