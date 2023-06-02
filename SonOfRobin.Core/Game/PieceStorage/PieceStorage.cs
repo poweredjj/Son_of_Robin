@@ -335,7 +335,7 @@ namespace SonOfRobin
             if (piece.GetType() == typeof(Player)) MessageLog.AddMessage(msgType: MsgType.Debug, message: "Dropping piece...", color: Color.White);
 
             // the piece should fall naturally to places, where player can go to
-            piece.sprite.allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.WaterShallow, AllowedTerrain.RangeName.WaterMedium, AllowedTerrain.RangeName.GroundAll });
+            piece.sprite.allowedTerrain.AddUpdateTerrain(terrainName: Terrain.Name.Height, allowedRange: new AllowedRange(min: Terrain.waterLevelMax / 2, max: (byte)(Terrain.volcanoEdgeMin - 1)));
 
             piece.PlaceOnBoard(randomPlacement: false, position: this.storagePiece.sprite.position, closestFreeSpot: true, addPlannedDestruction: false);
 
