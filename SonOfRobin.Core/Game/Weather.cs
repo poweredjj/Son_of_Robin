@@ -418,9 +418,9 @@ namespace SonOfRobin
 
             float minVal = 0.2f;
             float maxVal = 0.8f;
-            float addChanceFactor = 0.3f; // minimum value in 0 - 1 range, that will generate a single event
+            float addChanceFactor = 0.2f; // minimum value in 0 - 1 range, that will generate a single event
 
-            if (this.world.random.Next(0, 3) == 0)
+            if (this.world.random.Next(0, 6) == 0)
             {
                 // bad weather happens from time to time
                 minVal += Helpers.GetRandomFloatForRange(random: this.world.random, minVal: 0.0f, maxVal: 0.5f);
