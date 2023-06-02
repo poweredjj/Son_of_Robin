@@ -17,7 +17,7 @@ namespace SonOfRobin
     public class Grid
     {
         public enum Stage
-        { LoadTerrain, GenerateTerrain, CheckExtData, SetExtDataSea, SetExtDataBeach, SetExtDataBiomes, SetExtDataBiomesConstrains, SetExtDataPropertiesGrid, SetExtDataFinish, FillAllowedNames, MakeEntireMapImage, StartGame }
+        { LoadTerrain, GenerateTerrain, SaveTerrain, CheckExtData, SetExtDataSea, SetExtDataBeach, SetExtDataBiomes, SetExtDataBiomesConstrains, SetExtDataPropertiesGrid, SetExtDataFinish, FillAllowedNames, MakeEntireMapImage, StartGame }
 
         public static readonly int allStagesCount = ((Stage[])Enum.GetValues(typeof(Stage))).Length;
 
@@ -25,6 +25,7 @@ namespace SonOfRobin
         {
             { Stage.LoadTerrain, "loading terrain" },
             { Stage.GenerateTerrain, "generating terrain" },
+            { Stage.SaveTerrain, "saving terrain" },
             { Stage.CheckExtData, "loading extended data" },
             { Stage.SetExtDataSea, "setting extended data (sea)" },
             { Stage.SetExtDataBeach, "setting extended data (beach)" },
@@ -322,27 +323,28 @@ namespace SonOfRobin
                     }
 
                     this.ProcessingStageComplete = true;
-
                     break;
 
                 case Stage.GenerateTerrain:
-
-                    bool processedOneUpdateCycle = false;
-                    int processSegments = (1 + (int)Math.Log(this.width, 2) - 5) / 2;
-
                     foreach (Terrain currentTerrain in this.terrainByName.Values)
                     {
-                        if (currentTerrain.CreationInProgress)
-                        {
-                            currentTerrain.UpdateNoiseMap(this.dividedHeight / processSegments);
-                            processedOneUpdateCycle = true;
-                            break;
-                        }
+                        // different terrain types cannot be processed in parallel, because noise generator settings would get corrupted
+                        currentTerrain.UpdateNoiseMap();
                     }
 
-                    if (!processedOneUpdateCycle) this.ProcessingStageComplete = true;
-
+                    this.ProcessingStageComplete = true;
                     break;
+
+
+                case Stage.SaveTerrain:
+                    Parallel.ForEach(this.terrainByName.Values, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, terrain =>
+                    {
+                        terrain.SaveTemplate();
+                    });
+
+                    this.ProcessingStageComplete = true;
+                    break;
+
 
                 case Stage.CheckExtData:
 

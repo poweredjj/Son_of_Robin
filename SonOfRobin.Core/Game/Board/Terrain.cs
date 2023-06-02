@@ -27,7 +27,6 @@ namespace SonOfRobin
         private Byte[,] mapData;
         public Grid Grid { get; private set; }
         public bool CreationInProgress { get; private set; }
-        private int nextUpdateStartingRow;
 
         private readonly string terrainPngPath;
         private readonly string minValPngPath;
@@ -52,7 +51,6 @@ namespace SonOfRobin
         public Terrain(Grid grid, Name name, float frequency, int octaves, float persistence, float lacunarity, float gain, bool addBorder = false)
         {
             this.CreationInProgress = true;
-            this.nextUpdateStartingRow = 0;
 
             this.name = name;
             this.Grid = grid;
@@ -106,7 +104,7 @@ namespace SonOfRobin
             }
         }
 
-        public void UpdateNoiseMap(int rowsToCalculate)
+        public void UpdateNoiseMap()
         {
             if (!this.CreationInProgress) return;
 
@@ -120,17 +118,7 @@ namespace SonOfRobin
 
             int resDivider = this.Grid.resDivider;
 
-            bool lastUpdate = false;
-
-            int yMin = this.nextUpdateStartingRow;
-            int yMax = this.nextUpdateStartingRow + rowsToCalculate;
-            if (yMax >= this.Grid.dividedHeight)
-            {
-                yMax = this.Grid.dividedHeight;
-                lastUpdate = true;
-            }
-
-            Parallel.For(yMin, yMax, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, y =>
+            Parallel.For(0, this.Grid.dividedHeight, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, y =>
             {
                 int realY = y * resDivider;
 
@@ -145,14 +133,17 @@ namespace SonOfRobin
                 }
             });
 
-            if (lastUpdate) this.FinishUpdating();
-            else this.nextUpdateStartingRow = yMax;
+            this.UpdateMinMaxGridCell();
         }
 
-        private void FinishUpdating()
+        public void SaveTemplate()
         {
-            this.UpdateMinMaxGridCell();
-            this.SaveTemplate();
+            if (!this.CreationInProgress) return;
+
+            GfxConverter.Save2DByteArrayToPNG(array2D: this.mapData, path: this.terrainPngPath);
+            GfxConverter.Save2DByteArrayToPNG(array2D: this.minValGridCell, path: this.minValPngPath);
+            GfxConverter.Save2DByteArrayToPNG(array2D: this.maxValGridCell, path: this.maxValPngPath);
+
             this.CreationInProgress = false;
         }
 
@@ -186,13 +177,6 @@ namespace SonOfRobin
         public byte GetMaxValueForCell(int cellNoX, int cellNoY)
         {
             return this.maxValGridCell[cellNoX, cellNoY];
-        }
-
-        public void SaveTemplate()
-        {
-            GfxConverter.Save2DByteArrayToPNG(array2D: this.mapData, path: this.terrainPngPath);
-            GfxConverter.Save2DByteArrayToPNG(array2D: this.minValGridCell, path: this.minValPngPath);
-            GfxConverter.Save2DByteArrayToPNG(array2D: this.maxValGridCell, path: this.maxValPngPath);
         }
 
         private (double[], double[]) CreateGradientLines()
