@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Concurrent;
-using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -35,7 +34,7 @@ namespace SonOfRobin
 
             if (this.backgroundTask != null && this.backgroundTask.IsFaulted)
             {
-                MessageLog.AddMessage(msgType: MsgType.Debug, message: "An error occured while processing background task.", color: Color.Orange);
+                MessageLog.AddMessage(msgType: MsgType.Debug, message: "An error occured while processing background task. Restarting.", color: Color.Orange);
 
                 this.StartBackgroundTask(); // starting new task, if previous one had failed
             }
@@ -53,18 +52,20 @@ namespace SonOfRobin
                     else
                     {
                         // newest request always takes the priority
-                        // 
+
                         DateTime requestTimeToUse = this.cellsToProcessByRequestTime.OrderByDescending(kvp => kvp.Key).First().Key;
 
                         Cell cell;
                         this.cellsToProcessByRequestTime.TryRemove(requestTimeToUse, out cell);
 
-                        if (cell != null && !cell.grid.world.HasBeenRemoved) cell.boardGraphics.CreateAndSavePngTemplate();                           
+                        if (cell != null && !cell.grid.world.HasBeenRemoved) cell.boardGraphics.CreateAndSavePngTemplate();
                     }
                 }
-                catch (AggregateException) { } // if main thread is using png file
-                catch (IOException) { } // if main thread is using png file   
-            }           
+                catch (Exception ex)
+                {
+                    MessageLog.AddMessage(msgType: MsgType.Debug, message: $"An error occured while processing background task: {ex.Message}");
+                }
+            }
         }
 
         private void RemoveOldRequests()
