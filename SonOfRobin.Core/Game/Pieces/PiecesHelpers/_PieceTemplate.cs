@@ -1723,7 +1723,7 @@ namespace SonOfRobin
                 case Name.Acorn:
                     {
                         BoardPiece acorn = new Seed(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Acorn, blocksMovement: false, allowedTerrain: shallowWaterToVolcano, stackSize: 6,
-                            minDistance: 0, maxDistance: 1000, generation: generation, mass: 5, readableName: "acorn", description: "Can be planted or cooked.", fireAffinity: 0.6f);
+                            minDistance: 0, maxDistance: 1000, generation: generation, mass: 50, readableName: "acorn", description: "Can be planted or cooked.", fireAffinity: 0.6f);
 
                         ((Seed)acorn).PlantToGrow = Name.Oak; // every "non-generic" seed must have its PlantToGrow attribute set
 

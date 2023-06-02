@@ -83,6 +83,7 @@ namespace SonOfRobin
             fuelSlot.hidden = false;
             fuelSlot.allowedPieceNames = fuelNames;
             fuelSlot.label = "fuel";
+            fuelSlot.stackLimit = 255;
 
             for (int x = 0; x < this.ingredientSpace; x++)
             {
@@ -181,6 +182,8 @@ namespace SonOfRobin
                 return;
             }
 
+            storedFuel.RemoveRange(1, storedFuel.Count - 1); // removing all fuel pieces, except for the first
+
             if (storedIngredients.Count == 0)
             {
                 string ingredientMarkers = "";
@@ -208,13 +211,14 @@ namespace SonOfRobin
                 cookedMass += ingredient.Mass;
             }
             int cookingTime = (int)(cookedMass * (7 - cookLevel));
-            cookedMass *= this.foodMassMultiplier + (0.2f * ((float)cookLevel - 1));
+            cookedMass *= this.foodMassMultiplier + (0.15f * ((float)cookLevel - 1));
 
             if (Preferences.debugInstantCookBrew) cookingTime = 30;
 
             // creating meal
 
             BoardPiece meal = PieceTemplate.Create(templateName: PieceTemplate.Name.Meal, world: this.world);
+            meal.Mass = cookedMass;
             this.PieceStorage.AddPiece(piece: meal, dropIfDoesNotFit: true);
 
             // adding buffs
