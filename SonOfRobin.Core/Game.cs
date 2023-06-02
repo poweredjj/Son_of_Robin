@@ -4,7 +4,6 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using Xamarin.Essentials;
 
@@ -42,6 +41,7 @@ namespace SonOfRobin
         public static TouchOverlay touchOverlay;
         public static FpsCounter fpsCounter;
         public static BoardTextureProcessor BoardTextureProcessor { get; private set; }
+        public static ErrorLog ErrorLog { get; private set; }
         public static SpriteFont FontPixelMix5 { get; private set; }
         public static SpriteFont FontPressStart2P5 { get; private set; }
         public static SpriteFont FontFreeSansBold10 { get; private set; }
@@ -69,6 +69,7 @@ namespace SonOfRobin
         public static readonly string worldTemplatesPath = Path.Combine(gameDataPath, "world_templates");
         public static readonly string saveGamesPath = Path.Combine(gameDataPath, "savegames");
         public static readonly string animCachePath = Path.Combine(gameDataPath, "graphics_cache");
+        public static readonly string errorsPath = Path.Combine(gameDataPath, "errors");
         public static readonly string prefsPath = Path.Combine(gameDataPath, "preferences.json");
 
         public static bool ThisIsWorkMachine
@@ -140,11 +141,13 @@ namespace SonOfRobin
 
             SplashScreenTexture = TextureBank.GetTexturePersistent("loading_gfx");
             BoardTextureProcessor = new BoardTextureProcessor();
+            ErrorLog = new ErrorLog();
 
             if (!Directory.Exists(gameDataPath)) Directory.CreateDirectory(gameDataPath);
             if (!Directory.Exists(worldTemplatesPath)) Directory.CreateDirectory(worldTemplatesPath);
             if (!Directory.Exists(saveGamesPath)) Directory.CreateDirectory(saveGamesPath);
             if (!Directory.Exists(animCachePath)) Directory.CreateDirectory(animCachePath);
+            if (!Directory.Exists(errorsPath)) Directory.CreateDirectory(errorsPath);
 
             Preferences.Initialize(); // to set some default values
             Preferences.Load();

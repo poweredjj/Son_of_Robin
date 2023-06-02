@@ -428,6 +428,8 @@ namespace SonOfRobin
                         if (this.backgroundTask.IsCompleted || this.backgroundTask.IsFaulted) this.populatingFramesLeft = 0;
                         if (this.backgroundTask.IsFaulted)
                         {
+                            SonOfRobinGame.ErrorLog.AddEntry(type: this.GetType(), exception: this.backgroundTask.Exception);
+
                             new TextWindow(text: $"An error occured while populating:\n{this.backgroundTask.Exception}",
                                 textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false, priority: -1, inputType: InputTypes.Normal);
                         }

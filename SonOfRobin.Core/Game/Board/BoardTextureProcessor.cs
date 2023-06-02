@@ -34,6 +34,8 @@ namespace SonOfRobin
 
             if (this.backgroundTask != null && this.backgroundTask.IsFaulted)
             {
+                if (SonOfRobinGame.platform != Platform.Mobile) SonOfRobinGame.ErrorLog.AddEntry(type: this.GetType(), exception: this.backgroundTask.Exception);
+
                 MessageLog.AddMessage(msgType: MsgType.Debug, message: "An error occured while processing background task. Restarting task.", color: Color.Orange);
 
                 this.StartBackgroundTask(); // starting new task, if previous one had failed
