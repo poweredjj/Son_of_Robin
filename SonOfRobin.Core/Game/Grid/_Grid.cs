@@ -17,7 +17,7 @@ namespace SonOfRobin
     public class Grid
     {
         public enum Stage
-        { LoadTerrain, GenerateTerrain, SaveTerrain, CheckExtData, SetExtDataSea, SetExtDataBeach, SetExtDataBiomes, SetExtDataBiomesConstrains, SetExtDataPropertiesGrid, SetExtDataFinish, FillAllowedNames, MakeEntireMapImage, StartGame }
+        { LoadTerrain, GenerateTerrain, SaveTerrain, CheckExtData, SetExtDataSea, SetExtDataBeach, SetExtDataBiomes, SetExtDataBiomesConstrains, SetExtDataPropertiesGrid, SetExtDataFinish, FillAllowedNames, MakeEntireMapImage }
 
         public static readonly int allStagesCount = ((Stage[])Enum.GetValues(typeof(Stage))).Length;
 
@@ -35,7 +35,6 @@ namespace SonOfRobin
             { Stage.SetExtDataFinish, "saving extended data" },
             { Stage.FillAllowedNames, "filling lists of allowed names" },
             { Stage.MakeEntireMapImage, "making entire map image" },
-            { Stage.StartGame, "starting the game" },
         };
 
         private Task backgroundTask;
@@ -286,6 +285,8 @@ namespace SonOfRobin
             {
                 if (this.backgroundTask == null) this.backgroundTask = Task.Run(() => this.ProcessAllCreationStages());
             }
+
+            this.UpdateProgressBar(); // repeated
         }
 
         private void ProcessAllCreationStages()
@@ -389,14 +390,10 @@ namespace SonOfRobin
                     if (!File.Exists(mapImagePath)) BoardGraphics.CreateAndSaveEntireMapImage(this);
 
                     this.WholeIslandPreviewTexture = GfxConverter.LoadTextureFromPNG(mapImagePath);
-
-                    break;
-
-                case Stage.StartGame:
-                    // to show "starting game" on progress bar
                     this.CreationInProgress = false;
 
                     break;
+
 
                 default:
                     if ((int)this.currentStage < allStagesCount) throw new ArgumentException("Not all steps has been processed.");
