@@ -849,7 +849,7 @@ namespace SonOfRobin
 
             bool targetIsPlayer = this.target.GetType() == typeof(Player);
 
-            bool willFollowPlayerAnywhere = targetIsPlayer && !this.sprite.IsInWater && this.world.random.Next(2) == 0;
+            bool willFollowPlayerAnywhere = targetIsPlayer && !this.sprite.IsInWater && this.world.random.Next(4) == 0;
 
             if (willFollowPlayerAnywhere)
             {
