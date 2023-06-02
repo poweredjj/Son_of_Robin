@@ -399,6 +399,11 @@ namespace SonOfRobin
                                     importCorrect = false;
                                     message = "Imported save is obsolete.";
                                 }
+                                if (!saveInfo.saveIsObsolete && saveInfo.saveIsCorrupted)
+                                {
+                                    importCorrect = false;
+                                    message = "Imported save is corrupted.";
+                                }
                             }
 
                             new TextWindow(text: message, textColor: Color.White, bgColor: importCorrect ? Color.DarkGreen : Color.DarkRed, useTransition: false, animate: false);

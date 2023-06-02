@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace SonOfRobin
 {
@@ -9,6 +10,7 @@ namespace SonOfRobin
     {
         public readonly bool saveIsCorrect;
         public readonly bool saveIsObsolete;
+        public readonly bool saveIsCorrupted;
         public readonly float saveVersion;
         public readonly string folderName;
         public readonly string fullPath;
@@ -39,6 +41,7 @@ namespace SonOfRobin
                     $"{SaveDateString} time played: {this.ElapsedTimeString} day {this.frozenClock.CurrentDayNo} seed: {String.Format("{0:0000}", this.seed)} {this.width}x{this.height}" : $"{SaveDateString}   time played: {this.ElapsedTimeString}   day {this.frozenClock.CurrentDayNo}";
 
                 if (this.saveIsObsolete) fullDescription += "   INCOMPATIBLE";
+                if (!this.saveIsObsolete && this.saveIsCorrupted) fullDescription += "   CORRUPTED";
 
                 return fullDescription;
             }
@@ -50,6 +53,7 @@ namespace SonOfRobin
             {
                 string additionalInfo = $"seed: {String.Format("{0:0000}", this.seed)}   {this.width}x{this.height}";
                 if (this.saveIsObsolete) additionalInfo += "\nTHIS SAVE IS INCOMPATIBLE WITH CURRENT GAME VERSION";
+                if (!this.saveIsObsolete && this.saveIsCorrupted) additionalInfo += "\nTHIS SAVE IS CORRUPTED";
 
                 return additionalInfo;
             }
@@ -64,11 +68,12 @@ namespace SonOfRobin
 
             this.fullPath = Path.Combine(SonOfRobinGame.saveGamesPath, folderName);
 
-            string headerPath = Path.Combine(this.fullPath, "header.json");
+            string headerPath = Path.Combine(this.fullPath, LoaderSaver.headerName);
             var headerData = (Dictionary<string, Object>)FileReaderWriter.Load(path: headerPath);
 
             this.saveIsCorrect = false;
             this.saveIsObsolete = true;
+            this.saveIsCorrupted = false;
             this.saveVersion = 0;
             this.saveDate = DateTime.FromOADate(0d);
             this.seed = -1;
@@ -80,9 +85,10 @@ namespace SonOfRobin
 
             if (!this.folderName.StartsWith(LoaderSaver.tempPrefix) && headerData != null && headerData.ContainsKey("saveVersion"))
             {
+                this.saveIsCorrect = true;
+
                 this.saveVersion = (float)(double)headerData["saveVersion"];
 
-                this.saveIsCorrect = true;
                 this.saveIsObsolete = this.saveVersion != SaveHeaderManager.saveVersion;
 
                 try
@@ -96,6 +102,22 @@ namespace SonOfRobin
                     this.playerName = (PieceTemplate.Name)(Int64)headerData["playerName"];
                 }
                 catch (KeyNotFoundException) { this.saveIsCorrect = false; }
+
+                if (this.saveIsCorrect)
+                {
+                    var necessaryFileList = new List<string> { LoaderSaver.hintsName, LoaderSaver.trackingName, LoaderSaver.eventsName, LoaderSaver.coolingName, LoaderSaver.weatherName, LoaderSaver.gridName, $"{LoaderSaver.piecesPrefix}0.json" };
+
+                    var saveFileNames = Directory.GetFiles(this.fullPath).Select(path => Path.GetFileName(path).Replace(".gzip", ""));
+
+                    foreach (string fileName in necessaryFileList)
+                    {
+                        if (!saveFileNames.Contains(fileName))
+                        {
+                            this.saveIsCorrupted = true;
+                            break;
+                        }
+                    }
+                }
             }
         }
 

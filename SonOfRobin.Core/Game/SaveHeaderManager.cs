@@ -42,7 +42,7 @@ namespace SonOfRobin
                 foreach (string folder in saveFolders)
                 {
                     var saveInfo = new SaveHeaderInfo(Path.GetFileName(folder));
-                    if (!saveInfo.saveIsCorrect || saveInfo.saveIsObsolete) incorrectSaves.Add(saveInfo);
+                    if (!saveInfo.saveIsCorrect || saveInfo.saveIsObsolete || saveInfo.saveIsCorrupted) incorrectSaves.Add(saveInfo);
                 }
 
                 return incorrectSaves;

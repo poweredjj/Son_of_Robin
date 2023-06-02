@@ -687,7 +687,7 @@ namespace SonOfRobin
                             Invoker loadInvoker = new Invoker(menu: menu, name: saveInfo.FullDescription, closesMenu: closeMenu, taskName: taskName, playSound: playSound, sound: soundName, executeHelper: saveExecuteHelper,
                                    infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: $"| {saveInfo.AdditionalInfo}", imageList: new List<Texture2D> { saveInfo.AddInfoTexture }, color: Color.White, scale: 1f) }); // sound won't play here, because loading game stops all sounds
 
-                            if (saveInfo.saveIsObsolete)
+                            if (saveInfo.saveIsObsolete || saveInfo.saveIsCorrupted)
                             {
                                 loadInvoker.rectColor = Color.DarkRed;
                                 loadInvoker.textColor = new Color(255, 116, 82);

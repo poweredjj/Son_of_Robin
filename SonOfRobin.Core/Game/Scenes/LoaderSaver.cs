@@ -11,13 +11,14 @@ namespace SonOfRobin
 {
     public class LoaderSaver : Scene
     {
-        private const string headerName = "header.json";
-        private const string hintsName = "hints.json";
-        private const string trackingName = "tracking.json";
-        private const string eventsName = "events.json";
-        private const string coolingName = "cooling.json";
-        private const string weatherName = "weather.json";
-        private const string gridName = "grid.json";
+        public const string headerName = "header.json";
+        public const string hintsName = "hints.json";
+        public const string trackingName = "tracking.json";
+        public const string eventsName = "events.json";
+        public const string coolingName = "cooling.json";
+        public const string weatherName = "weather.json";
+        public const string gridName = "grid.json";
+        public const string piecesPrefix = "pieces_";
         public const string tempPrefix = "_save_temp_";
 
         private const int maxPiecesInPackage = 5000;
@@ -52,7 +53,7 @@ namespace SonOfRobin
         private Task backgroundTask;
 
         private int PiecesFilesCount
-        { get { return Directory.GetFiles(this.savePath).Where(path => path.Contains("pieces_")).Count(); } }
+        { get { return Directory.GetFiles(this.savePath).Where(path => path.Contains(piecesPrefix)).Count(); } }
 
         private static List<string> SaveTempPaths
         {
@@ -183,7 +184,7 @@ namespace SonOfRobin
 
         private string GetCurrentPiecesPath(int packageNo)
         {
-            return Path.Combine(this.saveMode ? saveTempPath : savePath, $"pieces_{packageNo}.json");
+            return Path.Combine(this.saveMode ? saveTempPath : savePath, $"{piecesPrefix}{packageNo}.json");
         }
 
         public override void Remove()
