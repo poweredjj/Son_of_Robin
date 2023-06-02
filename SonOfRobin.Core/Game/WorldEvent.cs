@@ -91,7 +91,7 @@ namespace SonOfRobin
         public readonly Object eventHelper;
 
         public bool CanBeSerialized
-        { get { return nonSerializedEvents.Contains(this.eventName); } }
+        { get { return !nonSerializedEvents.Contains(this.eventName); } }
 
         public WorldEvent(EventName eventName, World world, int delay, BoardPiece boardPiece, Object eventHelper = null, bool addToQueue = true)
         {
