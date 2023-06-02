@@ -10,7 +10,7 @@ namespace SonOfRobin
     public class MenuTemplate
     {
         public enum Name
-        { Main, Options, Sound, Graphics, Controls, Gamepad, Keyboard, Scale, OtherOptions, CreateNewIsland, SetSeed, OpenIslandTemplate, Pause, Stats, Load, Save, Tutorials, GameOver, Debug, SoundTest, GfxListTest, Shelter, CreateAnyPiece, GenericConfirm, CraftField, CraftEssential, CraftBasic, CraftAdvanced, CraftMaster, CraftFurnace, CraftAnvil, CraftLeatherBasic, CraftLeatherAdvanced }
+        { Main, Options, Sound, Graphics, Controls, Gamepad, Keyboard, Scale, OtherOptions, CreateNewIsland, SetSeed, OpenIslandTemplate, Pause, Stats, Load, Save, Tutorials, GameOver, Debug, SoundTest, GfxListTest, Shelter, CreateAnyPiece, GenericConfirm, CraftField, CraftEssential, CraftBasic, CraftAdvanced, CraftMaster, CraftFurnace, CraftAnvil, CraftLeatherBasic, CraftLeatherAdvanced, ExportSave }
 
         public static Menu CreateConfirmationMenu(Object confirmationData)
         {
@@ -132,6 +132,8 @@ namespace SonOfRobin
                         World world = World.GetTopWorld();
 
                         Menu menu = new(templateName: templateName, name: "OTHER OPTIONS", blocksUpdatesBelow: false, canBeClosedManually: true, closingTask: Scheduler.TaskName.SavePrefs, templateExecuteHelper: executeHelper);
+
+                        if (SaveHeaderManager.AnySavesExist) new Invoker(menu: menu, name: "export save", taskName: Scheduler.TaskName.OpenMenuTemplate, executeHelper: new Dictionary<string, Object> { { "templateName", Name.ExportSave } });
 
                         new Selector(menu: menu, name: "show hints", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "showHints");
                         new Selector(menu: menu, name: "progress bar info", valueDict: new Dictionary<object, object> { { true, "detailed" }, { false, "simple" } }, targetObj: preferences, propertyName: "progressBarShowDetails");
@@ -395,7 +397,9 @@ namespace SonOfRobin
                         new Invoker(menu: menu, name: "return to game", closesMenu: true, taskName: Scheduler.TaskName.Empty);
 
                         if ((Preferences.debugSaveEverywhere || Preferences.DebugMode) && !world.SpectatorMode && world.Player?.activeState == BoardPiece.State.PlayerControlledWalking && world.Player.alive) new Invoker(menu: menu, name: "save game", taskName: Scheduler.TaskName.OpenMenuTemplate, executeHelper: new Dictionary<string, Object> { { "templateName", Name.Save } });
+
                         if (SaveHeaderManager.AnySavesExist) new Invoker(menu: menu, name: "load game", taskName: Scheduler.TaskName.OpenMenuTemplate, executeHelper: new Dictionary<string, Object> { { "templateName", Name.Load } });
+
                         new Invoker(menu: menu, name: "options", taskName: Scheduler.TaskName.OpenMenuTemplate, executeHelper: new Dictionary<string, Object> { { "templateName", Name.Options } });
 
                         new Invoker(menu: menu, name: "stats", taskName: Scheduler.TaskName.OpenMenuTemplate, new Dictionary<string, Object> { { "templateName", Name.Stats } },
@@ -709,6 +713,22 @@ namespace SonOfRobin
                             var confirmationData = new Dictionary<string, Object> { { "question", "The save will be overwritten. Continue?" }, { "taskName", Scheduler.TaskName.SaveGame }, { "executeHelper", saveParams } };
 
                             new Invoker(menu: menu, name: saveInfo.FullDescription, taskName: Scheduler.TaskName.OpenConfirmationMenu, executeHelper: confirmationData, closesMenu: true, infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: $"| {saveInfo.AdditionalInfo}", imageList: new List<Texture2D> { saveInfo.AddInfoTexture }, color: Color.White, scale: 1f) });
+                        }
+
+                        new Separator(menu: menu, name: "", isEmpty: true);
+                        new Invoker(menu: menu, name: "return", closesMenu: true, taskName: Scheduler.TaskName.Empty);
+                        return menu;
+                    }
+
+                case Name.ExportSave:
+                    {
+                        Menu menu = new(templateName: templateName, name: "EXPORT SAVE", blocksUpdatesBelow: false, canBeClosedManually: true, templateExecuteHelper: executeHelper);
+
+                        World world = World.GetTopWorld();
+
+                        foreach (SaveHeaderInfo saveInfo in SaveHeaderManager.CorrectSaves)
+                        {
+                            new Invoker(menu: menu, name: saveInfo.FullDescription, taskName: Scheduler.TaskName.ExportSave, executeHelper: saveInfo.folderName, infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: $"| {saveInfo.AdditionalInfo}", imageList: new List<Texture2D> { saveInfo.AddInfoTexture }, color: Color.White, scale: 1f) });
                         }
 
                         new Separator(menu: menu, name: "", isEmpty: true);

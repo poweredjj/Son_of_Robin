@@ -444,7 +444,7 @@ namespace SonOfRobin
             return new Point(width, height);
         }
 
-        public static void ZipFiles(string sourcePath, string zipPath)
+        public static bool ZipFiles(string sourcePath, string zipPath)
         {
             try
             {
@@ -461,10 +461,13 @@ namespace SonOfRobin
                         archive.CreateEntryFromFile(file, fileName);
                     }
                 }
+
+                return true;
             }
             catch (Exception ex)
             {
                 MessageLog.AddMessage(msgType: MsgType.User, message: $"An error occurred while compressing files:\n{ex.Message}", color: Color.Orange);
+                return false;
             }
         }
     }

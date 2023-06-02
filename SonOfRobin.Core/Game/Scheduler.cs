@@ -340,18 +340,30 @@ namespace SonOfRobin
 
                             SaveHeaderInfo saveInfo = new SaveHeaderInfo(Path.GetFileName(savePath));
 
-                            string downloadsPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads");
+                            string exportPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Down_loads");
+                            if (!Directory.Exists(exportPath)) exportPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
                             string zipPath;
                             int index = 0;
                             while (true)
                             {
-                                zipPath = Path.Combine(downloadsPath, $"Son_of_Robin_save_{saveInfo.width}x{saveInfo.height}_{saveInfo.seed}_{saveSlotName}_{index}.zip");
+                                zipPath = Path.Combine(exportPath, $"Son_of_Robin_save_{saveInfo.width}x{saveInfo.height}_{saveInfo.seed}_{saveSlotName}_{index}.zip");
                                 if (File.Exists(zipPath)) index++;
                                 else break;
                             }
 
-                            Helpers.ZipFiles(savePath, zipPath);
+                            bool savedCorrectly = Helpers.ZipFiles(savePath, zipPath);
+
+                            if (savedCorrectly)
+                            {
+                                new TextWindow(text: $"Save has been exported to {zipPath}.", textColor: Color.White, bgColor: Color.DarkGreen, useTransition: false, animate: false);
+                                Sound.QuickPlay(name: SoundData.Name.Ding2, volume: 1f);
+                            }
+                            else
+                            {
+                                new TextWindow(text: "Cannot export save.", textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false);
+                                Sound.QuickPlay(name: SoundData.Name.Error, volume: 1f);
+                            }
 
                             return;
                         }
