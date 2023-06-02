@@ -60,7 +60,7 @@ namespace SonOfRobin
             foreach (var eventList in this.eventQueue.Values)
             {
                 foreach (var plannedEvent in eventList)
-                { eventData.Add(plannedEvent.Serialize()); }
+                { if (plannedEvent.CanBeSerialized) eventData.Add(plannedEvent.Serialize()); }
             }
 
             return eventData;
@@ -81,11 +81,17 @@ namespace SonOfRobin
         public enum EventName
         { Birth, Death, Destruction, TurnOffWorkshop, FinishCooking, RestorePieceCreation, FadeOutSprite, RestoreHint, RemoveBuff, BurnOutLightSource, RegenPoison, ChangeActiveState, FinishBuilding, PlaySoundByName, YieldDropDebris, AnimalCallForHelp, FinishBrewing }
 
+        // some events can't be serialized properly (cannot serialize some eventHelpers - like BoardPiece), but can safely be ignored
+        private readonly List<EventName> nonSerializedEvents = new() { EventName.AnimalCallForHelp };
+
         public readonly BoardPiece boardPiece;
         public readonly int startUpdateNo;
         public readonly int delay;
         public readonly EventName eventName;
         public readonly Object eventHelper;
+
+        public bool CanBeSerialized
+        { get { return nonSerializedEvents.Contains(this.eventName); } }
 
         public WorldEvent(EventName eventName, World world, int delay, BoardPiece boardPiece, Object eventHelper = null, bool addToQueue = true)
         {
