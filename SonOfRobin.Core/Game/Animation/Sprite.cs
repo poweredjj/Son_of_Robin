@@ -561,7 +561,7 @@ namespace SonOfRobin
 
         public bool CheckForCollision(bool ignoreDensity = false)
         {
-            if (this.world == null) return false;
+            if (this.world == null || !this.IsOnBoard) return false;
             if (this.GfxRect.Left <= 0 || this.GfxRect.Right >= this.world.width || this.GfxRect.Top <= 0 || this.GfxRect.Bottom >= this.world.height) return true;
             if (this.ignoresCollisions) return false;
             if (this.allowedDensity != null && !ignoreDensity && !this.allowedDensity.CanBePlacedHere()) return true;
