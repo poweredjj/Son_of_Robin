@@ -66,11 +66,9 @@ namespace SonOfRobin
 
         public readonly Cell[,] cellGrid;
         public readonly List<Cell> allCells;
-        public bool ProcessingStageComplete { get; private set; }
 
         private readonly Dictionary<PieceTemplate.Name, List<Cell>> cellListsForPieceNames; // pieces and cells that those pieces can (initially) be placed into
 
-        private ConcurrentBag<Point> tempRawPointsForBiomeCreation;
         private Dictionary<ExtBoardProps.Name, ConcurrentBag<Point>> tempPointsForCreatedBiomes;
         private readonly Dictionary<ExtBoardProps.Name, int> biomeCountByName; // to ensure biome diversity
         public int loadedTexturesCount;
@@ -128,7 +126,6 @@ namespace SonOfRobin
                 return;
             }
 
-            this.tempRawPointsForBiomeCreation = new ConcurrentBag<Point>();
             this.tempPointsForCreatedBiomes = new Dictionary<ExtBoardProps.Name, ConcurrentBag<Point>>();
             this.biomeCountByName = new Dictionary<ExtBoardProps.Name, int>();
 
@@ -322,7 +319,6 @@ namespace SonOfRobin
                         });
                     }
 
-                    this.ProcessingStageComplete = true;
                     break;
 
                 case Stage.GenerateTerrain:
@@ -332,9 +328,7 @@ namespace SonOfRobin
                         currentTerrain.UpdateNoiseMap();
                     }
 
-                    this.ProcessingStageComplete = true;
                     break;
-
 
                 case Stage.SaveTerrain:
                     Parallel.ForEach(this.terrainByName.Values, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, terrain =>
@@ -342,61 +336,44 @@ namespace SonOfRobin
                         terrain.SaveTemplate();
                     });
 
-                    this.ProcessingStageComplete = true;
                     break;
 
-
                 case Stage.CheckExtData:
-
                     if (this.extBoardProps == null) this.extBoardProps = new ExtBoardProps(grid: this);
-                    this.ProcessingStageComplete = true;
 
                     break;
 
                 case Stage.SetExtDataSea:
-
                     if (this.extBoardProps.CreationInProgress) this.ExtCalculateSea();
-                    else this.ProcessingStageComplete = true;
 
                     break;
 
                 case Stage.SetExtDataBeach:
-
                     if (this.extBoardProps.CreationInProgress) this.ExtCalculateOuterBeach();
-                    else this.ProcessingStageComplete = true;
 
                     break;
 
                 case Stage.SetExtDataBiomes:
-
                     if (this.extBoardProps.CreationInProgress) this.ExtCalculateBiomes();
-                    else this.ProcessingStageComplete = true;
 
                     break;
 
                 case Stage.SetExtDataBiomesConstrains:
-
                     if (this.extBoardProps.CreationInProgress) this.ExtApplyBiomeConstrains();
-                    else this.ProcessingStageComplete = true;
 
                     break;
 
                 case Stage.SetExtDataPropertiesGrid:
-
                     if (this.extBoardProps.CreationInProgress) this.extBoardProps.CreateContainsPropertiesGrid();
-                    this.ProcessingStageComplete = true; // always needs to be invoked
 
                     break;
 
                 case Stage.SetExtDataFinish:
-
                     if (this.extBoardProps.CreationInProgress) this.ExtEndCreation();
-                    else this.ProcessingStageComplete = true;
 
                     break;
 
                 case Stage.FillAllowedNames:
-
                     Parallel.ForEach(this.allCells, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, cell =>
                     {
                         cell.FillAllowedNames(); // needs to be invoked after calculating final terrain and ExtProps
@@ -404,24 +381,19 @@ namespace SonOfRobin
                     });
 
                     this.FillCellListsForPieceNames();
-                    this.ProcessingStageComplete = true;
 
                     break;
 
                 case Stage.MakeEntireMapImage:
-
                     string mapImagePath = BoardGraphics.GetWholeIslandMapPath(this);
                     if (!File.Exists(mapImagePath)) BoardGraphics.CreateAndSaveEntireMapImage(this);
 
                     this.WholeIslandPreviewTexture = GfxConverter.LoadTextureFromPNG(mapImagePath);
 
-                    this.ProcessingStageComplete = true;
-
                     break;
 
                 case Stage.StartGame:
                     // to show "starting game" on progress bar
-                    this.ProcessingStageComplete = true;
                     this.CreationInProgress = false;
 
                     break;
@@ -431,13 +403,10 @@ namespace SonOfRobin
                     break;
             }
 
-            if (this.ProcessingStageComplete)
-            {
-                TimeSpan creationDuration = DateTime.Now - this.stageStartTime;
-                MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{namesForStages[this.currentStage]} - time: {creationDuration:hh\\:mm\\:ss\\.fff}.", color: Color.GreenYellow);
+            TimeSpan creationDuration = DateTime.Now - this.stageStartTime;
+            MessageLog.AddMessage(msgType: MsgType.Debug, message: $"{namesForStages[this.currentStage]} - time: {creationDuration:hh\\:mm\\:ss\\.fff}.", color: Color.GreenYellow);
 
-                this.PrepareNextStage(incrementCurrentStage: true);
-            }
+            this.PrepareNextStage(incrementCurrentStage: true);
         }
 
         private void FillCellListsForPieceNames()
@@ -478,8 +447,6 @@ namespace SonOfRobin
                  setNameIfOutsideRange: true,
                  nameToSetIfOutsideRange: ExtBoardProps.Name.OuterBeach
                  );
-
-            this.ProcessingStageComplete = true;
         }
 
         private void ExtCalculateOuterBeach()
@@ -497,44 +464,47 @@ namespace SonOfRobin
                  setNameIfOutsideRange: false,
                  nameToSetIfOutsideRange: ExtBoardProps.Name.OuterBeach // doesn't matter, if setNameIfOutsideRange is false
                  );
-
-            this.ProcessingStageComplete = true;
         }
 
         private void ExtCalculateBiomes()
         {
-            byte minVal = Terrain.biomeMin;
-            byte maxVal = 255;
+            var tempRawPointsForBiomeCreation = new ConcurrentBag<Point>();
 
-            if (!tempRawPointsForBiomeCreation.Any())
+            while (true)
             {
-                this.tempRawPointsForBiomeCreation = this.GetAllRawCoordinatesWithRangeAndWithoutSpecifiedExtProps(terrainName: Terrain.Name.Biome, minVal: minVal, maxVal: maxVal, extPropNames: ExtBoardProps.allBiomes);
-            }
-            else
-            {
-                this.tempRawPointsForBiomeCreation = this.FilterPointsWithoutSpecifiedExtProps(oldPointBag: this.tempRawPointsForBiomeCreation, extPropNames: ExtBoardProps.allBiomes, xyRaw: true);
-            }
+                byte minVal = Terrain.biomeMin;
+                byte maxVal = 255;
 
-            if (this.tempRawPointsForBiomeCreation.Any())
-            {
-                var biomeName = this.biomeCountByName.OrderBy(kvp => kvp.Value).First().Key;
-                this.biomeCountByName[biomeName]++;
-
-                ConcurrentBag<Point> biomePoints = this.FloodFillExtProps(
-                      startingPoints: new ConcurrentBag<Point> { this.tempRawPointsForBiomeCreation.First() },
-                      terrainName: Terrain.Name.Biome,
-                      minVal: minVal, maxVal: maxVal,
-                      nameToSetIfInRange: biomeName,
-                      setNameIfOutsideRange: false,
-                      nameToSetIfOutsideRange: biomeName // doesn't matter, if setNameIfOutsideRange is false
-                      );
-
-                Parallel.ForEach(biomePoints, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, point =>
+                if (!tempRawPointsForBiomeCreation.Any())
                 {
-                    this.tempPointsForCreatedBiomes[biomeName].Add(point);
-                });
+                    tempRawPointsForBiomeCreation = this.GetAllRawCoordinatesWithRangeAndWithoutSpecifiedExtProps(terrainName: Terrain.Name.Biome, minVal: minVal, maxVal: maxVal, extPropNames: ExtBoardProps.allBiomes);
+                }
+                else
+                {
+                    tempRawPointsForBiomeCreation = this.FilterPointsWithoutSpecifiedExtProps(oldPointBag: tempRawPointsForBiomeCreation, extPropNames: ExtBoardProps.allBiomes, xyRaw: true);
+                }
+
+                if (tempRawPointsForBiomeCreation.Any())
+                {
+                    var biomeName = this.biomeCountByName.OrderBy(kvp => kvp.Value).First().Key;
+                    this.biomeCountByName[biomeName]++;
+
+                    ConcurrentBag<Point> biomePoints = this.FloodFillExtProps(
+                          startingPoints: new ConcurrentBag<Point> { tempRawPointsForBiomeCreation.First() },
+                          terrainName: Terrain.Name.Biome,
+                          minVal: minVal, maxVal: maxVal,
+                          nameToSetIfInRange: biomeName,
+                          setNameIfOutsideRange: false,
+                          nameToSetIfOutsideRange: biomeName // doesn't matter, if setNameIfOutsideRange is false
+                          );
+
+                    Parallel.ForEach(biomePoints, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, point =>
+                    {
+                        this.tempPointsForCreatedBiomes[biomeName].Add(point);
+                    });
+                }
+                else break;
             }
-            else this.ProcessingStageComplete = true;
         }
 
         private void ExtApplyBiomeConstrains()
@@ -554,17 +524,12 @@ namespace SonOfRobin
                     });
                 }
             }
-
-            this.ProcessingStageComplete = true;
         }
 
         private void ExtEndCreation()
         {
             this.extBoardProps.EndCreationAndSave();
-
-            this.tempRawPointsForBiomeCreation = null;
             this.tempPointsForCreatedBiomes = null;
-            this.ProcessingStageComplete = true;
         }
 
         private ConcurrentBag<Point> GetAllRawCoordinatesWithExtProperty(ExtBoardProps.Name nameToUse, bool value)
@@ -757,7 +722,6 @@ namespace SonOfRobin
         {
             if (incrementCurrentStage) this.currentStage++;
             this.stageStartTime = DateTime.Now;
-            this.ProcessingStageComplete = false;
         }
 
         private void UpdateProgressBar()
