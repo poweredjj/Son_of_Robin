@@ -131,7 +131,7 @@ namespace SonOfRobin
             this.viewParams.Width = width; // it does not need to be updated, because world size is constant
             this.viewParams.Height = height; // it does not need to be updated, because world size is constant
 
-            this.maxAnimalsPerName = (int)(this.width * this.height * 0.0000004);
+            this.maxAnimalsPerName = Math.Min((int)((float)this.width * (float)this.height * 0.0000008), 1000);
             MessageLog.AddMessage(msgType: MsgType.Debug, message: $"maxAnimalsPerName {maxAnimalsPerName}");
 
             var creationDataList = PieceCreationData.CreateDataList(maxAnimalsPerName: this.maxAnimalsPerName);
