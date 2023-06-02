@@ -11,7 +11,7 @@ namespace SonOfRobin
     public class Scheduler
     {
         public enum TaskName
-        { Empty, CreateNewWorld, CreateNewWorldNow, QuitGame, OpenMenuTemplate, OpenMainMenu, OpenConfirmationMenu, SaveGame, LoadGame, LoadGameNow, ReturnToMainMenu, SavePrefs, ProcessConfirmation, OpenCraftMenu, Craft, Hit, CreateNewPiece, CreateDebugPieces, OpenContainer, DeleteObsoleteSaves, DropFruit, GetEaten, GetDrinked, ExecuteTaskWithDelay, AddWorldEvent, ShowTextWindow, OpenShelterMenu, SleepInsideShelter, SleepOutside, ForceWakeUp, TempoFastForward, TempoStop, TempoPlay, CameraTrackPiece, CameraTrackCoords, CameraSetZoom, ShowCookingProgress, ShowBrewingProgress, RestoreHints, OpenMainMenuIfSpecialKeysArePressed, CheckForPieceHints, ShowHint, ExecuteTaskChain, ShowTutorialInMenu, ShowTutorialInGame, RemoveScene, ChangeSceneInputType, SetCineMode, AddTransition, SolidColorAddOverlay, SolidColorRemoveAll, SkipCinematics, SetSpectatorMode, SwitchLightSource, ResetControls, SaveControls, CheckForNonSavedControls, RebuildMenu, RebuildAllMenus, CheckForIncorrectPieces, RestartWorld, ResetNewWorldSettings, PlaySound, PlaySoundByName, AllowPieceToBeHit, SetPlayerPointWalkTarget, StopSound, RemoveAllScenesOfType, WaitUntilMorning, ActivateLightEngine, DeactivateLightEngine, AddPassiveMovement, AddFadeInAnim, InteractWithCooker, InteractWithLab, InventoryCombineItems, InventoryReleaseHeldPieces, Plant, RemoveBuffs, ExportSave }
+        { Empty, CreateNewWorld, CreateNewWorldNow, QuitGame, OpenMenuTemplate, OpenMainMenu, OpenConfirmationMenu, SaveGame, LoadGame, LoadGameNow, ReturnToMainMenu, SavePrefs, ProcessConfirmation, OpenCraftMenu, Craft, Hit, CreateNewPiece, CreateDebugPieces, OpenContainer, DeleteIncompatibleSaves, DropFruit, GetEaten, GetDrinked, ExecuteTaskWithDelay, AddWorldEvent, ShowTextWindow, OpenShelterMenu, SleepInsideShelter, SleepOutside, ForceWakeUp, TempoFastForward, TempoStop, TempoPlay, CameraTrackPiece, CameraTrackCoords, CameraSetZoom, ShowCookingProgress, ShowBrewingProgress, RestoreHints, OpenMainMenuIfSpecialKeysArePressed, CheckForPieceHints, ShowHint, ExecuteTaskChain, ShowTutorialInMenu, ShowTutorialInGame, RemoveScene, ChangeSceneInputType, SetCineMode, AddTransition, SolidColorAddOverlay, SolidColorRemoveAll, SkipCinematics, SetSpectatorMode, SwitchLightSource, ResetControls, SaveControls, CheckForNonSavedControls, RebuildMenu, RebuildAllMenus, CheckForIncorrectPieces, RestartWorld, ResetNewWorldSettings, PlaySound, PlaySoundByName, AllowPieceToBeHit, SetPlayerPointWalkTarget, StopSound, RemoveAllScenesOfType, WaitUntilMorning, ActivateLightEngine, DeactivateLightEngine, AddPassiveMovement, AddFadeInAnim, InteractWithCooker, InteractWithLab, InventoryCombineItems, InventoryReleaseHeldPieces, Plant, RemoveBuffs, ExportSave, ImportSave }
 
         private static readonly Dictionary<int, List<Task>> queue = new();
         private static int inputTurnedOffUntilFrame = 0;
@@ -340,7 +340,7 @@ namespace SonOfRobin
 
                             SaveHeaderInfo saveInfo = new SaveHeaderInfo(Path.GetFileName(savePath));
 
-                            string exportPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Down_loads");
+                            string exportPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads");
                             if (!Directory.Exists(exportPath)) exportPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
                             string zipPath;
@@ -364,6 +364,45 @@ namespace SonOfRobin
                                 new TextWindow(text: "Cannot export save.", textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false);
                                 Sound.QuickPlay(name: SoundData.Name.Error, volume: 1f);
                             }
+
+                            return;
+                        }
+
+                    case TaskName.ImportSave:
+                        {
+                            string zipPath = (string)this.ExecuteHelper;
+
+                            string saveSlotName = SaveHeaderManager.NewSaveSlotName;
+                            string extractPath = Path.Combine(SonOfRobinGame.saveGamesPath, saveSlotName);
+
+                            bool importCorrect = true;
+                            string message = "Save has been imported correctly.";
+
+                            bool extractedCorrectly = Helpers.ExtractZipFile(zipPath: zipPath, extractPath: extractPath);
+                            if (!extractedCorrectly)
+                            {
+                                importCorrect = false;
+                                message = "Error occured while extracting zip file.";
+                            }
+                            else
+                            {
+                                SaveHeaderInfo saveInfo = new SaveHeaderInfo(Path.GetFileName(saveSlotName));
+                                if (!saveInfo.saveIsCorrect)
+                                {
+                                    Directory.Delete(path: extractPath, recursive: true);
+
+                                    importCorrect = false;
+                                    message = "Imported save is incorrect.";
+                                }
+                                if (saveInfo.saveIsObsolete)
+                                {
+                                    importCorrect = false;
+                                    message = "Imported save is obsolete.";
+                                }
+                            }
+
+                            new TextWindow(text: message, textColor: Color.White, bgColor: importCorrect ? Color.DarkGreen : Color.DarkRed, useTransition: false, animate: false);
+                            Sound.QuickPlay(name: importCorrect ? SoundData.Name.Ding2 : SoundData.Name.Error, volume: 1f);
 
                             return;
                         }
@@ -741,7 +780,7 @@ namespace SonOfRobin
                             return;
                         }
 
-                    case TaskName.DeleteObsoleteSaves:
+                    case TaskName.DeleteIncompatibleSaves:
                         {
                             SaveHeaderManager.DeleteIncompatibleSaves();
                             return;

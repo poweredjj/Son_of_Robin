@@ -470,5 +470,36 @@ namespace SonOfRobin
                 return false;
             }
         }
+
+        public static bool ExtractZipFile(string zipPath, string extractPath)
+        {
+            try
+            {
+                // Create the extraction directory if it doesn't exist
+                Directory.CreateDirectory(extractPath);
+
+                // Extract the zip file
+                using (ZipArchive archive = ZipFile.OpenRead(zipPath))
+                {
+                    foreach (ZipArchiveEntry entry in archive.Entries)
+                    {
+                        string entryPath = Path.Combine(extractPath, entry.FullName);
+
+                        // Ensure the entry's parent directory exists
+                        Directory.CreateDirectory(Path.GetDirectoryName(entryPath));
+
+                        // Extract the entry
+                        entry.ExtractToFile(entryPath, overwrite: true);
+                    }
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                MessageLog.AddMessage(msgType: MsgType.User, message: $"An error occurred while extracting files:\n{ex.Message}", color: Color.Orange);
+                return false;
+            }
+        }
     }
 }

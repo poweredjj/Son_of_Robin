@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace SonOfRobin
@@ -10,7 +11,7 @@ namespace SonOfRobin
     public class MenuTemplate
     {
         public enum Name
-        { Main, Options, Sound, Graphics, Controls, Gamepad, Keyboard, Scale, OtherOptions, CreateNewIsland, SetSeed, OpenIslandTemplate, Pause, Stats, Load, Save, Tutorials, GameOver, Debug, SoundTest, GfxListTest, Shelter, CreateAnyPiece, GenericConfirm, CraftField, CraftEssential, CraftBasic, CraftAdvanced, CraftMaster, CraftFurnace, CraftAnvil, CraftLeatherBasic, CraftLeatherAdvanced, ExportSave }
+        { Main, Options, Sound, Graphics, Controls, Gamepad, Keyboard, Scale, OtherOptions, CreateNewIsland, SetSeed, OpenIslandTemplate, Pause, Stats, Load, Save, Tutorials, GameOver, Debug, SoundTest, GfxListTest, Shelter, CreateAnyPiece, GenericConfirm, CraftField, CraftEssential, CraftBasic, CraftAdvanced, CraftMaster, CraftFurnace, CraftAnvil, CraftLeatherBasic, CraftLeatherAdvanced, ExportSave, ImportSave }
 
         public static Menu CreateConfirmationMenu(Object confirmationData)
         {
@@ -135,6 +136,8 @@ namespace SonOfRobin
 
                         if (SaveHeaderManager.AnySavesExist) new Invoker(menu: menu, name: "export save", taskName: Scheduler.TaskName.OpenMenuTemplate, executeHelper: new Dictionary<string, Object> { { "templateName", Name.ExportSave } });
 
+                        new Invoker(menu: menu, name: "import save", taskName: Scheduler.TaskName.OpenMenuTemplate, executeHelper: new Dictionary<string, Object> { { "templateName", Name.ImportSave } });
+
                         new Selector(menu: menu, name: "show hints", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "showHints");
                         new Selector(menu: menu, name: "progress bar info", valueDict: new Dictionary<object, object> { { true, "detailed" }, { false, "simple" } }, targetObj: preferences, propertyName: "progressBarShowDetails");
 
@@ -145,7 +148,7 @@ namespace SonOfRobin
                         if (SonOfRobinGame.os != OS.Windows) new Selector(menu: menu, name: "max map textures to load", valueDict: new Dictionary<object, object> { { 1000, "1000" }, { 2000, "2000" }, { 4000, "4000" }, { 8000, "8000" }, { 2147483647, "no limit" } }, targetObj: preferences, propertyName: "maxTexturesToLoad");
 
                         new Selector(menu: menu, name: "show demo world", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "showDemoWorld");
-                        new Invoker(menu: menu, name: "delete incompatible saves", taskName: Scheduler.TaskName.DeleteObsoleteSaves);
+                        new Invoker(menu: menu, name: "delete incompatible saves", taskName: Scheduler.TaskName.DeleteIncompatibleSaves);
 
                         new Separator(menu: menu, name: "", isEmpty: true);
                         new Invoker(menu: menu, name: "return", closesMenu: true, taskName: Scheduler.TaskName.SavePrefs);
@@ -724,11 +727,36 @@ namespace SonOfRobin
                     {
                         Menu menu = new(templateName: templateName, name: "EXPORT SAVE", blocksUpdatesBelow: false, canBeClosedManually: true, templateExecuteHelper: executeHelper);
 
-                        World world = World.GetTopWorld();
-
                         foreach (SaveHeaderInfo saveInfo in SaveHeaderManager.CorrectSaves)
                         {
                             new Invoker(menu: menu, name: saveInfo.FullDescription, taskName: Scheduler.TaskName.ExportSave, executeHelper: saveInfo.folderName, infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: $"| {saveInfo.AdditionalInfo}", imageList: new List<Texture2D> { saveInfo.AddInfoTexture }, color: Color.White, scale: 1f) });
+                        }
+
+                        new Separator(menu: menu, name: "", isEmpty: true);
+                        new Invoker(menu: menu, name: "return", closesMenu: true, taskName: Scheduler.TaskName.Empty);
+                        return menu;
+                    }
+
+                case Name.ImportSave:
+                    {
+                        Menu menu = new(templateName: templateName, name: "IMPORT SAVE", blocksUpdatesBelow: false, canBeClosedManually: true, templateExecuteHelper: executeHelper);
+
+                        string importPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads");
+                        if (!Directory.Exists(importPath)) importPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+
+                        var saveZipPaths = Directory.GetFiles(importPath).Where(file => file.Contains("Son_of_Robin_save_") && file.EndsWith(".zip"));
+                        if (saveZipPaths.Any())
+                        {
+                            foreach (string saveZipFile in saveZipPaths)
+                            {
+                                new Invoker(menu: menu, name: Path.GetFileName(saveZipFile), taskName: Scheduler.TaskName.ImportSave, executeHelper: saveZipFile);
+                            }
+                        }
+                        else
+                        {
+                            Separator separator = new Separator(menu: menu, name: "no saves to import");
+                            separator.rectColor = Color.DarkRed;
+                            separator.textColor = new Color(255, 116, 82);
                         }
 
                         new Separator(menu: menu, name: "", isEmpty: true);
