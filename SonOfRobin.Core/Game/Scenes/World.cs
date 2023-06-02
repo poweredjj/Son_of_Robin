@@ -1251,7 +1251,7 @@ namespace SonOfRobin
         {
             foreach (var sprite in this.camera.GetVisibleSprites(groupName: Cell.Group.Visible, compareWithCameraRect: true))
             {
-                if (this.stateMachineTypesManager.CanBeProcessed(sprite.boardPiece)) sprite.UpdateAnimation();
+                if (this.stateMachineTypesManager.CanBeProcessed(sprite.boardPiece)) sprite.UpdateAnimation(checkForCollision: true);
             }
         }
 
