@@ -106,7 +106,8 @@ namespace SonOfRobin
         public readonly bool canBePickedUp;
         protected int passiveRotation;
         protected Vector2 passiveMovement;
-        public bool HasPassiveMovement { get { return this.passiveMovement != Vector2.Zero; } }
+        public bool HasPassiveMovement
+        { get { return this.passiveMovement != Vector2.Zero; } }
         public bool rotatesWhenDropped;
         public readonly bool movesWhenDropped;
         private readonly int destructionDelay;
@@ -322,10 +323,11 @@ namespace SonOfRobin
             {
                 this.mass = Math.Max(value, 0f);
 
-                if (this.world == null || (!this.sprite.IsInCameraRect || Preferences.debugShowAnimSizeChangeInCamera)) // size change should not be visible
+                if (this.world == null || !this.sprite.IsInCameraRect || Preferences.debugShowAnimSizeChangeInCamera) // size change should not be visible
                 {
                     int previousSpriteSize = this.sprite.AnimSize;
-                    this.SetSpriteSizeByMass();
+                    bool spriteSizeSetCorrectly = this.SetSpriteSizeByMass();
+                    if (!spriteSizeSetCorrectly) this.mass = this.maxMassForSize[this.sprite.AnimSize]; // cannot change mass, if there is no room to expand
 
                     if (previousSpriteSize != this.sprite.AnimSize && this.PieceStorage != null && this.GetType() == typeof(Plant))
                     {
@@ -334,6 +336,16 @@ namespace SonOfRobin
                     }
                 }
             }
+        }
+
+        private bool SetSpriteSizeByMass()
+        {
+            byte newSpriteSize = this.SpriteSize;
+            if (this.sprite.AnimSize == newSpriteSize) return true;
+            if (!this.canShrink && this.sprite.AnimSize > newSpriteSize) return true;
+
+            this.sprite.AssignNewSize(newSpriteSize);
+            return this.sprite.AnimSize == newSpriteSize;
         }
 
         public float HitPointsPercent
@@ -345,9 +357,9 @@ namespace SonOfRobin
             {
                 if (this.maxMassForSize == null) return 0;
 
-                for (int s = 0; s < this.maxMassForSize.Length; s++)
+                for (int size = 0; size < this.maxMassForSize.Length; size++)
                 {
-                    if (this.Mass < this.maxMassForSize[s]) return (byte)s;
+                    if (this.Mass < this.maxMassForSize[size]) return (byte)size;
                 }
 
                 return (byte)this.maxMassForSize.Length;
@@ -488,15 +500,6 @@ namespace SonOfRobin
         private void UpdateEfficiency()
         {
             this.efficiency = Math.Max(1 - (this.currentAge / (float)this.maxAge) - this.bioWear, 0);
-        }
-
-        private void SetSpriteSizeByMass()
-        {
-            byte newSpriteSize = this.SpriteSize;
-            if (this.sprite.AnimSize == newSpriteSize) return;
-            if (!this.canShrink && this.sprite.AnimSize > newSpriteSize) return;
-
-            this.sprite.AssignNewSize(newSpriteSize);
         }
 
         public virtual void Kill(bool addDestroyEvent = true)
@@ -968,6 +971,7 @@ namespace SonOfRobin
 
         public virtual void SM_AnimalCallForHelp()
         { throw new DivideByZeroException("This method should not be executed."); }
+
         public virtual void SM_SeaWaveMove()
         { throw new DivideByZeroException("This method should not be executed."); }
     }
