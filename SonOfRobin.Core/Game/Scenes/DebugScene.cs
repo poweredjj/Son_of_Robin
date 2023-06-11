@@ -78,6 +78,10 @@ namespace SonOfRobin
                 // debugLines.Add($"time until morning: {world.islandClock.TimeUntilPartOfDay(IslandClock.PartOfDay.Morning).TotalMinutes}");
             }
 
+            RumbleManager rumbleMan = SonOfRobinGame.RumbleManager;
+
+            debugLines.Add($"rumble: leftMotor {Math.Round(rumbleMan.leftMotor, 1)} rightMotor {Math.Round(rumbleMan.rightMotor, 1)}");
+
             SimpleFps fps = SonOfRobinGame.fps;
             debugLines.Add($"FPS: {fps.FPS} updates: {fps.Updates} frames: {fps.Frames}");
 
@@ -336,16 +340,31 @@ namespace SonOfRobin
             //    world.HintEngine.ShowGeneralHint(type: HintEngine.Type.Lava, ignoreDelay: true);
             //}
 
+            //if (Keyboard.HasBeenPressed(Keys.F1))
+            //{
+            //    if (world == null) return;
+
+            //    world.camera.AddRandomShake();
+            //}
+
             if (Keyboard.HasBeenPressed(Keys.F1))
             {
-                if (world == null) return;
+                SonOfRobinGame.RumbleManager.AddRumble(bigMotor: true, value: 1f, durationSeconds: 0.5f);
+            }
 
-                world.camera.AddRandomShake();
+            if (Keyboard.HasBeenPressed(Keys.F2))
+            {
+                SonOfRobinGame.RumbleManager.AddRumble(bigMotor: true, value: 0.25f, durationSeconds: 0.1f);
+            }
+
+            if (Keyboard.HasBeenPressed(Keys.F3))
+            {
+                SonOfRobinGame.RumbleManager.AddRumble(bigMotor: true, smallMotor: true, value: 1f, durationSeconds: 0.5f);
             }
 
             //if (Keyboard.HasBeenPressed(Keys.F1))
             //{
-            //    if (world == null) return;
+            //    if (` == null) return;
             //    world.SpectatorMode = !world.SpectatorMode;
             //}
 
@@ -379,12 +398,12 @@ namespace SonOfRobin
             //    world.weather.AddEvent(new WeatherEvent(type: Weather.WeatherType.Rain, intensity: 0.05f, startTime: world.islandClock.IslandDateTime, duration: TimeSpan.FromMinutes(30), transitionLength: TimeSpan.FromMinutes(3)));
             //}
 
-            if (Keyboard.HasBeenPressed(Keys.F3))
-            {
-                if (world == null) return;
+            //if (Keyboard.HasBeenPressed(Keys.F3))
+            //{
+            //    if (world == null) return;
 
-                world.weather.AddEvent(new WeatherEvent(type: Weather.WeatherType.Wind, intensity: 1.0f, startTime: world.islandClock.IslandDateTime, duration: TimeSpan.FromMinutes(60), transitionLength: TimeSpan.FromMinutes(4)));
-            }
+            //    world.weather.AddEvent(new WeatherEvent(type: Weather.WeatherType.Wind, intensity: 1.0f, startTime: world.islandClock.IslandDateTime, duration: TimeSpan.FromMinutes(60), transitionLength: TimeSpan.FromMinutes(4)));
+            //}
 
             //if (Keyboard.HasBeenPressed(Keys.F2))
             //{

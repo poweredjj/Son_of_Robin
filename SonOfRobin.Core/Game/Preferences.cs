@@ -102,6 +102,7 @@ namespace SonOfRobin
         public static bool showDemoWorld = true;
         private static bool pointToWalk = true;
         public static bool swapMouseButtons = false;
+        public static bool rumbleEnabled = true;
 
         public static bool PointToWalk
         {
@@ -587,6 +588,7 @@ namespace SonOfRobin
             prefsData["maxTexturesToLoad"] = maxTexturesToLoad;
             prefsData["highQualityWater"] = highQualityWater;
             prefsData["plantsSway"] = plantsSway;
+            prefsData["rumbleEnabled"] = rumbleEnabled;
 
             FileReaderWriter.Save(path: SonOfRobinGame.prefsPath, savedObj: prefsData, compress: false);
 
@@ -657,6 +659,7 @@ namespace SonOfRobin
                     plantsSway = (bool)prefsData["plantsSway"];
                     halfFramerate = (bool)prefsData["cap30FPS"];
                     debugMode = (bool)prefsData["debugMode"];
+                    rumbleEnabled = (bool)prefsData["rumbleEnabled"];
 
                     prefsLoaded = true;
                 }
