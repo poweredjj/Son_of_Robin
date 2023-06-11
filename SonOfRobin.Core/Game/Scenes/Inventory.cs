@@ -852,6 +852,7 @@ namespace SonOfRobin
                 if (pickedUpPieces.Count > 0)
                 {
                     soundPickUp.Play();
+                    SonOfRobinGame.RumbleManager.AddRumble(smallMotor: true, value: 0.17f, durationSeconds: 0.07f);
                     this.draggedPieces = pickedUpPieces;
                 }
             }
@@ -1013,7 +1014,11 @@ namespace SonOfRobin
 
             PieceTemplate.Name topPieceName = this.draggedPieces.Any() ? this.draggedPieces[0].name : PieceTemplate.Name.Empty;
             if (this.draggedPieces.Count == initialDraggedCount && topPieceName == initialTopPieceName) Sound.QuickPlay(SoundData.Name.Error);
-            else firstPieceSoundPack.Play(action: PieceSoundPack.Action.IsDropped, ignore3D: true, ignoreCooldown: true);
+            else
+            {
+                firstPieceSoundPack.Play(action: PieceSoundPack.Action.IsDropped, ignore3D: true, ignoreCooldown: true);
+                SonOfRobinGame.RumbleManager.AddRumble(bigMotor: true, value: 0.12f, durationSeconds: 0.07f);
+            }
         }
 
         private bool TryToCombinePieces(StorageSlot slot)
@@ -1047,6 +1052,8 @@ namespace SonOfRobin
                 { slot.AddPiece(piece); }
 
                 this.draggedPieces[0].soundPack.Play(action: PieceSoundPack.Action.IsDropped, ignore3D: true, ignoreCooldown: true);
+                SonOfRobinGame.RumbleManager.AddRumble(bigMotor: true, value: 0.12f, durationSeconds: 0.07f);
+
                 this.draggedPieces = slotPieces;
             }
             else

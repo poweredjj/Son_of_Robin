@@ -10,20 +10,31 @@ namespace SonOfRobin
         private Tweener tweener;
         public float leftMotor;
         public float rightMotor;
+        private DateTime lastRumbleAdded;
+
+        private TimeSpan TimeSinceLastRumble { get { return DateTime.Now - lastRumbleAdded; } }
 
         public RumbleManager()
         {
             this.tweener = new Tweener();
             this.leftMotor = 0f;
             this.rightMotor = 0f;
+            this.lastRumbleAdded = DateTime.MinValue;
         }
 
-        public void AddRumble(float value, float durationSeconds, bool bigMotor = false, bool smallMotor = false)
+        public void AddRumble(float value, float durationSeconds, bool bigMotor = false, bool smallMotor = false, float minSecondsSinceLastRumble = 0)
         {
-            if (!Preferences.rumbleEnabled || (!bigMotor && !smallMotor)) return;
+            if (!Preferences.rumbleEnabled ||
+                (!bigMotor && !smallMotor) ||
+                (SonOfRobinGame.platform != Platform.Mobile && Input.currentControlType != Input.ControlType.Gamepad)) return;
+
+            if (minSecondsSinceLastRumble > 0 && this.TimeSinceLastRumble < TimeSpan.FromSeconds(minSecondsSinceLastRumble)) return;
+
+            this.lastRumbleAdded = DateTime.Now;
 
             if (SonOfRobinGame.platform == Platform.Mobile)
             {
+                if (value < 0.65f) return; // to avoid making strong vibration for small values (mobile has no value setting)
                 Vibration.Vibrate(TimeSpan.FromSeconds(durationSeconds));
                 return;
             }
