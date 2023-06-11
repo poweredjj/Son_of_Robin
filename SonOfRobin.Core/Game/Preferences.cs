@@ -523,6 +523,7 @@ namespace SonOfRobin
                 menuScale = 1.25f;
                 showControlTips = false;
                 enableTouchJoysticks = true;
+                rumbleEnabled = false;
             }
             else
             {

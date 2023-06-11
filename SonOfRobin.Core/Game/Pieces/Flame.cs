@@ -111,6 +111,7 @@ namespace SonOfRobin
                             {
                                 this.world.camera.AddRandomShake();
                                 this.world.FlashRedOverlay();
+                                SonOfRobinGame.RumbleManager.AddRumble(bigMotor: true, value: 0.03f, durationSeconds: 0.6f);
                             }
                         }
 
@@ -143,6 +144,7 @@ namespace SonOfRobin
                     {
                         this.world.camera.AddRandomShake();
                         this.world.FlashRedOverlay();
+                        SonOfRobinGame.RumbleManager.AddRumble(smallMotor: true, bigMotor: true, value: 1f, durationSeconds: 1.5f);
                     }
                 }
 

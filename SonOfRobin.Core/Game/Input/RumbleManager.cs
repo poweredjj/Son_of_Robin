@@ -50,6 +50,13 @@ namespace SonOfRobin
             }
         }
 
+        public void StopAll()
+        {
+            this.tweener.CancelAndCompleteAll();
+            this.leftMotor = 0f;
+            this.rightMotor = 0f;
+        }
+
         public void Update()
         {
             this.tweener.Update((float)Scene.CurrentGameTime.ElapsedGameTime.TotalSeconds);

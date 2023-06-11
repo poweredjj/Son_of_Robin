@@ -349,12 +349,12 @@ namespace SonOfRobin
 
             if (Keyboard.HasBeenPressed(Keys.F1))
             {
-                SonOfRobinGame.RumbleManager.AddRumble(bigMotor: true, value: 1f, durationSeconds: 0.5f);
+                SonOfRobinGame.RumbleManager.AddRumble(bigMotor: true, smallMotor: true, value: 1f, durationSeconds: 0.5f);
             }
 
             if (Keyboard.HasBeenPressed(Keys.F2))
             {
-                SonOfRobinGame.RumbleManager.AddRumble(bigMotor: true, value: 0.25f, durationSeconds: 0.1f);
+                SonOfRobinGame.RumbleManager.AddRumble(smallMotor: true, value: 1f, durationSeconds: 0.5f);
             }
 
             if (Keyboard.HasBeenPressed(Keys.F3))

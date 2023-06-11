@@ -506,6 +506,7 @@ namespace SonOfRobin
         {
             this.Grid.Destroy();
             Sound.StopAll();
+            SonOfRobinGame.RumbleManager.StopAll();
             base.Remove();
         }
 
@@ -1230,6 +1231,7 @@ namespace SonOfRobin
         public void OpenPauseMenu()
         {
             ManagedSoundInstance.PauseAll();
+            SonOfRobinGame.RumbleManager.StopAll();
             this.soundPaused = true;
             MenuTemplate.CreateMenuFromTemplate(templateName: MenuTemplate.Name.Pause);
         }
@@ -1237,6 +1239,7 @@ namespace SonOfRobin
         public void OpenStatsMenu()
         {
             ManagedSoundInstance.PauseAll();
+            SonOfRobinGame.RumbleManager.StopAll();
             this.soundPaused = true;
             MenuTemplate.CreateMenuFromTemplate(templateName: MenuTemplate.Name.Stats);
         }

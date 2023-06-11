@@ -243,6 +243,7 @@ namespace SonOfRobin
                 }
 
                 target.soundPack.Play(PieceSoundPack.Action.IsDestroyed);
+                SonOfRobinGame.RumbleManager.AddRumble(bigMotor: true, value: 0.3f, durationSeconds: 0.25f);
                 target.Destroy();
 
                 int numberOfExplosions = world.random.Next(5, 12);
@@ -259,6 +260,7 @@ namespace SonOfRobin
             else
             {
                 target.soundPack.Play(PieceSoundPack.Action.IsHit);
+                SonOfRobinGame.RumbleManager.AddRumble(bigMotor: true, value: 0.25f, durationSeconds: 0.1f);
                 target.showStatBarsTillFrame = world.CurrentUpdate + 1200;
 
                 if (target.GetType() == typeof(Animal))

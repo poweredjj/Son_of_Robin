@@ -574,6 +574,9 @@ namespace SonOfRobin
                     float durationSecs = (float)(this.world.random.NextDouble() * 0.09f) + 0.12f;
                     this.world.camera.AddShake(movement: screenShake, durationSecs: durationSecs);
 
+                    float attackPercent = (float)attackStrength / this.target.maxHitPoints;
+                    SonOfRobinGame.RumbleManager.AddRumble(bigMotor: true, smallMotor: true, value: Math.Min(attackPercent * 1.1f, 1), durationSeconds: 0.17f + (attackPercent * 1.5f));
+
                     if (this.target.HitPoints > 0) // red screen flash if player is still alive
                     {
                         SolidColor redOverlay = new SolidColor(color: Color.DarkRed, viewOpacity: 0.0f);

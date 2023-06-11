@@ -148,6 +148,8 @@ namespace SonOfRobin
                 bool isPlayer = this.sourceSprite != null && this.sourceSprite.boardPiece.GetType() == typeof(Player);
 
                 new Sound(nameList: new List<SoundData.Name> { SoundData.Name.HitSmallPlant1, SoundData.Name.HitSmallPlant2, SoundData.Name.HitSmallPlant3 }, boardPiece: this.targetSprite.boardPiece, ignore3DAlways: isPlayer, maxPitchVariation: 0.3f, volume: isPlayer ? 0.35f : 0.2f).Play();
+
+                if (isPlayer) SonOfRobinGame.RumbleManager.AddRumble(smallMotor: true, value: 0.008f, durationSeconds: 0.02f);
             }
 
             this.Update(world);
