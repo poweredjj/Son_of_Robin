@@ -55,6 +55,8 @@ namespace SonOfRobin
             this.font = SonOfRobinGame.FontPressStart2P5;
             this.splashScreenTexture = SonOfRobinGame.SplashScreenTexture;
             this.mobileWaitingTimes = SonOfRobinGame.platform == Platform.Mobile ? 11 : 0;
+
+            SonOfRobinGame.Game.IsFixedTimeStep = false; // if turned on, some screen updates will be missing
         }
 
         private void ProcessBackgroundTasks1()
@@ -71,7 +73,6 @@ namespace SonOfRobin
 
         public override void Update(GameTime gameTime)
         {
-            SonOfRobinGame.Game.IsFixedTimeStep = false; // if turned on, some screen updates will be missing
             bool finish = false;
 
             switch (this.currentStep)
@@ -210,7 +211,7 @@ namespace SonOfRobin
                     break;
 
                 case Step.OpenMainMenu:
-                    if (Preferences.FrameSkip) SonOfRobinGame.Game.IsFixedTimeStep = true;
+                    Preferences.FrameSkip = Preferences.FrameSkip; // to apply valid FrameSkip value
 
                     if (SonOfRobinGame.LicenceValid)
                     {
