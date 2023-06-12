@@ -115,14 +115,16 @@ namespace SonOfRobin
 
                 foreach (Terrain.Name terrainName in Terrain.allTerrains)
                 {
-                    AllowedRange allowedRange = allowedTerrain.GetInitialRangeForTerrainName(terrainName);
-                    if (allowedRange != null)
+                    byte allowedMinVal = allowedTerrain.GetMinValForTerrainName(terrainName);
+                    byte allowedMaxVal = allowedTerrain.GetMaxValForTerrainName(terrainName);
+
+                    if (allowedMinVal > 0 || allowedMaxVal < 255)
                     {
                         byte minVal = this.grid.GetMinValueForCell(terrainName: terrainName, cellNoX: cellNoX, cellNoY: cellNoY);
                         byte maxVal = this.grid.GetMaxValueForCell(terrainName: terrainName, cellNoX: cellNoX, cellNoY: cellNoY);
 
-                        if ((allowedRange.Min < minVal && allowedRange.Max < minVal) ||
-                            (allowedRange.Min > maxVal && allowedRange.Max > maxVal))
+                        if ((allowedMinVal < minVal && allowedMaxVal < minVal) ||
+                            (allowedMinVal > maxVal && allowedMaxVal > maxVal))
                         {
                             cellCanContainThisPiece = false;
                             break;
@@ -132,7 +134,7 @@ namespace SonOfRobin
 
                 if (cellCanContainThisPiece)
                 {
-                    foreach (var kvp in allowedTerrain.GetInitialExtPropertiesDict())
+                    foreach (var kvp in allowedTerrain.GetExtPropertiesDict())
                     {
                         ExtBoardProps.Name name = kvp.Key;
                         bool value = kvp.Value;

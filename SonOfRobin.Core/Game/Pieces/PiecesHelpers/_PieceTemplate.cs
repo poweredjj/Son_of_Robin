@@ -316,6 +316,8 @@ namespace SonOfRobin
             AllowedTerrain beachToVolcano = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
                 { Terrain.Name.Height, new AllowedRange(min: Terrain.waterLevelMax, max: Terrain.volcanoEdgeMin) }});
 
+            AllowedTerrain canGoAnywhere = new AllowedTerrain();
+
             switch (templateName)
             {
                 case Name.PlayerBoy:
@@ -356,7 +358,7 @@ namespace SonOfRobin
                             soundPack.AddAction(action: action, sound: new Sound(name: SoundData.Name.StepGhost, cooldown: 30, ignore3DAlways: true, volume: 0.8f, maxPitchVariation: 0.2f));
                         }
 
-                        Player spectator = new Player(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.NoAnim, allowedTerrain: new AllowedTerrain(), minDistance: 0, maxDistance: 65535, generation: generation, readableName: "player ghost", description: "A metaphysical representation of player's soul.", blocksMovement: false, ignoresCollisions: true, floatsOnWater: true, activeState: BoardPiece.State.PlayerControlledGhosting, soundPack: soundPack, strength: 2, speed: 3.5f, maxStamina: 400, maxHitPoints: 400, maxFatigue: 2000, craftLevel: 1, invWidth: 1, invHeight: 1, toolbarWidth: 1, toolbarHeight: 1, fireAffinity: 0f);
+                        Player spectator = new Player(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.NoAnim, allowedTerrain: canGoAnywhere, minDistance: 0, maxDistance: 65535, generation: generation, readableName: "player ghost", description: "A metaphysical representation of player's soul.", blocksMovement: false, ignoresCollisions: true, floatsOnWater: true, activeState: BoardPiece.State.PlayerControlledGhosting, soundPack: soundPack, strength: 2, speed: 3.5f, maxStamina: 400, maxHitPoints: 400, maxFatigue: 2000, craftLevel: 1, invWidth: 1, invHeight: 1, toolbarWidth: 1, toolbarHeight: 1, fireAffinity: 0f);
 
                         spectator.sprite.lightEngine = new LightEngine(size: 650, opacity: 1.4f, colorActive: true, color: Color.Blue * 5f, isActive: true, castShadows: true);
                         spectator.sprite.lightEngine.AssignSprite(spectator.sprite);
@@ -936,13 +938,13 @@ namespace SonOfRobin
 
                 case Name.Backlight:
                     {
-                        var allowedTerrain = new AllowedTerrain();
+                        var allowedTerrain = canGoAnywhere;
                         return new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Backlight, minDistance: 0, maxDistance: 0, destructionDelay: -1, allowedTerrain: allowedTerrain, generation: generation, readableName: "backlight", description: "A visual effect.", activeState: BoardPiece.State.Empty, serialize: false, fireAffinity: 0f);
                     }
 
                 case Name.BloodSplatter:
                     {
-                        var allowedTerrain = new AllowedTerrain();
+                        var allowedTerrain = canGoAnywhere;
                         var packageNames = new List<AnimData.PkgName> { AnimData.PkgName.BloodSplatter1, AnimData.PkgName.BloodSplatter2, AnimData.PkgName.BloodSplatter3 };
                         var animPkg = packageNames[random.Next(0, packageNames.Count)];
                         return new VisualEffect(name: templateName, world: world, id: id, animPackage: animPkg, destructionDelay: 250, allowedTerrain: allowedTerrain,
@@ -951,31 +953,31 @@ namespace SonOfRobin
 
                 case Name.Attack:
                     {
-                        var allowedTerrain = new AllowedTerrain();
+                        var allowedTerrain = canGoAnywhere;
                         return new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Attack, minDistance: 0, maxDistance: 3, destructionDelay: -1, allowedTerrain: allowedTerrain, generation: generation, readableName: "attack", description: "A visual effect.", activeState: BoardPiece.State.Empty, serialize: false, fireAffinity: 0f);
                     }
 
                 case Name.MapMarker:
                     {
-                        var allowedTerrain = new AllowedTerrain();
+                        var allowedTerrain = canGoAnywhere;
                         return new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.MapMarker, minDistance: 0, maxDistance: 0, allowedTerrain: allowedTerrain, generation: generation, readableName: "map marker", description: "Map marker.", activeState: BoardPiece.State.MapMarkerShowAndCheck, visible: false, serialize: false, fireAffinity: 0f);
                     }
 
                 case Name.Empty:
                     {
-                        var allowedTerrain = new AllowedTerrain();
+                        var allowedTerrain = canGoAnywhere;
                         return new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.NoAnim, minDistance: 0, maxDistance: 3, destructionDelay: 0, allowedTerrain: allowedTerrain, generation: generation, readableName: "empty", description: "Should not be used.", activeState: BoardPiece.State.Empty, serialize: false, fireAffinity: 0f);
                     }
 
                 case Name.Miss:
                     {
-                        var allowedTerrain = new AllowedTerrain();
+                        var allowedTerrain = canGoAnywhere;
                         return new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Miss, minDistance: 0, maxDistance: 3, destructionDelay: 60, allowedTerrain: allowedTerrain, generation: generation, readableName: "miss", description: "A visual effect.", activeState: BoardPiece.State.Empty, serialize: false, fireAffinity: 0f);
                     }
 
                 case Name.Zzz:
                     {
-                        var allowedTerrain = new AllowedTerrain();
+                        var allowedTerrain = canGoAnywhere;
                         VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Zzz, minDistance: 0, maxDistance: 0, destructionDelay: 0, allowedTerrain: allowedTerrain, generation: generation, serialize: false, readableName: "zzz", description: "A visual effect.", activeState: BoardPiece.State.Empty, fireAffinity: 0f);
 
                         return visualEffect;
@@ -983,25 +985,25 @@ namespace SonOfRobin
 
                 case Name.Heart:
                     {
-                        var allowedTerrain = new AllowedTerrain();
+                        var allowedTerrain = canGoAnywhere;
                         return new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Heart, destructionDelay: 40, allowedTerrain: allowedTerrain, minDistance: 0, maxDistance: 2, generation: generation, readableName: "heart", description: "A visual effect.", activeState: BoardPiece.State.Empty, serialize: false, fireAffinity: 0f);
                     }
 
                 case Name.MusicNote:
                     {
-                        var allowedTerrain = new AllowedTerrain();
+                        var allowedTerrain = canGoAnywhere;
                         return new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.MusicNoteSmall, destructionDelay: 0, allowedTerrain: allowedTerrain, minDistance: 0, maxDistance: 2, generation: generation, readableName: "music note", description: "Sound visual.", activeState: BoardPiece.State.Empty, serialize: false, fireAffinity: 0f);
                     }
 
                 case Name.Crosshair:
                     {
-                        var allowedTerrain = new AllowedTerrain();
+                        var allowedTerrain = canGoAnywhere;
                         return new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Crosshair, destructionDelay: 0, allowedTerrain: allowedTerrain, minDistance: 0, maxDistance: 2, generation: generation, serialize: false, readableName: "crosshair", description: "A visual effect.", activeState: BoardPiece.State.Empty, fireAffinity: 0f);
                     }
 
                 case Name.BubbleExclamationRed:
                     {
-                        var allowedTerrain = new AllowedTerrain();
+                        var allowedTerrain = canGoAnywhere;
                         VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BubbleExclamationRed, destructionDelay: 0, allowedTerrain: allowedTerrain, minDistance: 0, maxDistance: 2, generation: generation, serialize: false, readableName: "red exclamation", description: "A visual effect.", activeState: BoardPiece.State.Empty, fireAffinity: 0f);
 
                         return visualEffect;
@@ -1009,7 +1011,7 @@ namespace SonOfRobin
 
                 case Name.BubbleExclamationBlue:
                     {
-                        var allowedTerrain = new AllowedTerrain();
+                        var allowedTerrain = canGoAnywhere;
                         VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BubbleExclamationBlue, destructionDelay: 0, allowedTerrain: allowedTerrain, minDistance: 0, maxDistance: 2, generation: generation, serialize: false, readableName: "blue exclamation", description: "A visual effect.", activeState: BoardPiece.State.Empty, fireAffinity: 0f);
 
                         return visualEffect;
@@ -1017,7 +1019,7 @@ namespace SonOfRobin
 
                 case Name.BubbleCraftGreen:
                     {
-                        var allowedTerrain = new AllowedTerrain();
+                        var allowedTerrain = canGoAnywhere;
                         VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BubbleCraftGreen, destructionDelay: 0, allowedTerrain: allowedTerrain, minDistance: 0, maxDistance: 2, generation: generation, serialize: false, readableName: "green exclamation with plus", description: "A visual effect.", activeState: BoardPiece.State.Empty, fireAffinity: 0f);
 
                         return visualEffect;
@@ -1025,31 +1027,31 @@ namespace SonOfRobin
 
                 case Name.CookingTrigger:
                     {
-                        var allowedTerrain = new AllowedTerrain();
+                        var allowedTerrain = canGoAnywhere;
                         return new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Flame, destructionDelay: 0, allowedTerrain: allowedTerrain, minDistance: 0, maxDistance: 2, generation: generation, serialize: true, canBePickedUp: true, readableName: "cooking starter", description: "Starts cooking.", activeState: BoardPiece.State.Empty, fireAffinity: 0f);
                     }
 
                 case Name.BrewTrigger:
                     {
-                        var allowedTerrain = new AllowedTerrain();
+                        var allowedTerrain = canGoAnywhere;
                         return new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Flame, destructionDelay: 0, allowedTerrain: allowedTerrain, minDistance: 0, maxDistance: 2, generation: generation, serialize: true, canBePickedUp: true, readableName: "brewing starter", description: "Starts brewing.", activeState: BoardPiece.State.Empty, fireAffinity: 0f);
                     }
 
                 case Name.UpgradeTrigger:
                     {
-                        var allowedTerrain = new AllowedTerrain();
+                        var allowedTerrain = canGoAnywhere;
                         return new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Upgrade, destructionDelay: 0, allowedTerrain: allowedTerrain, minDistance: 0, maxDistance: 2, generation: generation, serialize: true, canBePickedUp: true, readableName: "upgrade", description: "Upgrades item.", activeState: BoardPiece.State.Empty, fireAffinity: 0f);
                     }
 
                 case Name.FireplaceTriggerOn:
                     {
-                        var allowedTerrain = new AllowedTerrain();
+                        var allowedTerrain = canGoAnywhere;
                         return new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Flame, destructionDelay: 0, allowedTerrain: allowedTerrain, minDistance: 0, maxDistance: 2, generation: generation, serialize: true, canBePickedUp: true, readableName: "fireplace on", description: "Ignites the fireplace.", activeState: BoardPiece.State.Empty, fireAffinity: 0f);
                     }
 
                 case Name.FireplaceTriggerOff:
                     {
-                        var allowedTerrain = new AllowedTerrain();
+                        var allowedTerrain = canGoAnywhere;
                         return new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WaterDrop, destructionDelay: 0, allowedTerrain: allowedTerrain, minDistance: 0, maxDistance: 2, generation: generation, serialize: true, canBePickedUp: true, readableName: "fireplace off", description: "Extinginguishes fire.", activeState: BoardPiece.State.Empty, fireAffinity: 0f);
                     }
 
@@ -2532,7 +2534,7 @@ namespace SonOfRobin
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.MetalicClank, cooldown: 15, maxPitchVariation: 0.3f));
 
-                        return new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.LanternFrame, allowedTerrain: new AllowedTerrain(), category: BoardPiece.Category.Metal,
+                        return new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.LanternFrame, allowedTerrain: canGoAnywhere, category: BoardPiece.Category.Metal,
                             minDistance: 0, maxDistance: 500, maxMassForSize: null, generation: generation, maxHitPoints: 400, readableName: "empty lantern", description: "Needs a candle to be put inside.", movesWhenDropped: true, rotatesWhenDropped: true, isAffectedByWind: true, canBePickedUp: true, soundPack: soundPack, fireAffinity: 0f);
                     }
 
@@ -2541,7 +2543,7 @@ namespace SonOfRobin
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(name: SoundData.Name.DropGeneric, cooldown: 15, maxPitchVariation: 0.4f));
 
-                        Decoration decoration = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Candle, allowedTerrain: new AllowedTerrain(), category: BoardPiece.Category.Wood,
+                        Decoration decoration = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Candle, allowedTerrain: canGoAnywhere, category: BoardPiece.Category.Wood,
                             minDistance: 0, maxDistance: 500, maxMassForSize: null, generation: generation, stackSize: 6, maxHitPoints: 100, readableName: "candle", description: "Can be put inside lantern.", movesWhenDropped: true, rotatesWhenDropped: true, isAffectedByWind: true, canBePickedUp: true, soundPack: soundPack, fireAffinity: 0.2f);
 
                         return decoration;
@@ -2559,7 +2561,7 @@ namespace SonOfRobin
 
                 case Name.PredatorRepellant:
                     {
-                        var allowedTerrain = new AllowedTerrain();
+                        var allowedTerrain = canGoAnywhere;
 
                         return new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.SkullAndBones, minDistance: 0, maxDistance: 0, destructionDelay: 60 * 60 * 5, allowedTerrain: allowedTerrain, generation: generation, readableName: "predator repellent", description: "Scares predators and is invisible.", activeState: BoardPiece.State.ScareAnimalsAway, visible: false, serialize: false, fireAffinity: 0f);
                     }
@@ -2585,7 +2587,7 @@ namespace SonOfRobin
 
                 case Name.HumanSkeleton:
                     {
-                        return new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HumanSkeleton, allowedTerrain: new AllowedTerrain(), category: BoardPiece.Category.Flesh,
+                        return new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HumanSkeleton, allowedTerrain: canGoAnywhere, category: BoardPiece.Category.Flesh,
                             minDistance: 0, maxDistance: 500, maxMassForSize: null, generation: generation, yield: null, maxHitPoints: 100, readableName: "skeleton", description: "Human remains.", movesWhenDropped: false, isAffectedByWind: false, fireAffinity: 0.3f);
                     }
 
@@ -2651,7 +2653,7 @@ namespace SonOfRobin
 
                 case Name.RainDrop:
                     {
-                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.RainDrops, destructionDelay: 0, allowedTerrain: new AllowedTerrain(), minDistance: 0, maxDistance: 0, generation: generation, readableName: "rain drop", description: "A single drop of rain.", activeState: BoardPiece.State.RainInitialize, serialize: false, ignoresCollisions: true, visible: true, fireAffinity: 0f);
+                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.RainDrops, destructionDelay: 0, allowedTerrain: canGoAnywhere, minDistance: 0, maxDistance: 0, generation: generation, readableName: "rain drop", description: "A single drop of rain.", activeState: BoardPiece.State.RainInitialize, serialize: false, ignoresCollisions: true, visible: true, fireAffinity: 0f);
 
                         visualEffect.sprite.opacity = 0.75f;
 
@@ -2663,7 +2665,7 @@ namespace SonOfRobin
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.HasAppeared, sound: new Sound(name: SoundData.Name.ShootFire, maxPitchVariation: 0.6f));
 
-                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Explosion, destructionDelay: -1, allowedTerrain: new AllowedTerrain(), minDistance: 0, maxDistance: 0, generation: generation, readableName: "explosion", description: "An explosion.", activeState: BoardPiece.State.Empty, serialize: false, ignoresCollisions: true, visible: true, fireAffinity: 0f, lightEngine: new LightEngine(size: 150, opacity: 1f, colorActive: true, color: Color.Orange * 0.3f, isActive: true, castShadows: true), soundPack: soundPack);
+                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Explosion, destructionDelay: -1, allowedTerrain: canGoAnywhere, minDistance: 0, maxDistance: 0, generation: generation, readableName: "explosion", description: "An explosion.", activeState: BoardPiece.State.Empty, serialize: false, ignoresCollisions: true, visible: true, fireAffinity: 0f, lightEngine: new LightEngine(size: 150, opacity: 1f, colorActive: true, color: Color.Orange * 0.3f, isActive: true, castShadows: true), soundPack: soundPack);
 
                         return visualEffect;
                     }
