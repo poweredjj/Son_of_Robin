@@ -468,6 +468,7 @@ namespace SonOfRobin
                         SonOfRobinGame.ErrorLog.AddEntry(type: this.GetType(), exception: this.backgroundTask.Exception, showTextWindow: true);
                         SonOfRobinGame.FullScreenProgressBar.TurnOff();
                         bool menuFound = GetTopSceneOfType(typeof(Menu)) != null;
+                        if (!menuFound) MenuTemplate.CreateMenuFromTemplate(templateName: MenuTemplate.Name.Main);
                         this.Remove();
                         return;
                     }
