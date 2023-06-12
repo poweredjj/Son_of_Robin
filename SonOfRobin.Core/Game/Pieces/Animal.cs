@@ -729,6 +729,7 @@ namespace SonOfRobin
                 BoardPiece child = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: this.sprite.position, templateName: this.name, generation: this.generation + 1);
                 if (child.sprite.IsOnBoard)
                 {
+                    if (this.sprite.allowedTerrain.HasBeenChanged) child.sprite.allowedTerrain.CopyTerrainFromTemplate(this.sprite.allowedTerrain);
                     childrenBorn++;
                     this.pregnancyMass -= (int)this.startingMass;
 

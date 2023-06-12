@@ -95,6 +95,23 @@ namespace SonOfRobin
             else rangeDict[terrainName].ExpandRange(expandedMin: min, expandedMax: max);
         }
 
+        public void CopyTerrainFromTemplate(AllowedTerrain allowedTerrainTemplate)
+        {
+            this.rangesByTerrainName.Clear();
+            foreach (var kvp in allowedTerrainTemplate.rangesByTerrainName)
+            {
+                this.AddUpdateTerrain(terrainName: kvp.Key, allowedRange: kvp.Value);
+            }
+
+            this.extPropertiesDict.Clear();
+            foreach (var kvp in allowedTerrainTemplate.extPropertiesDict)
+            {
+                this.AddUpdateNameInExtProperties(name: kvp.Key, value: kvp.Value);
+            }
+
+            this.HasBeenChanged = true;
+        }
+
         public void AddUpdateTerrain(Terrain.Name terrainName, AllowedRange allowedRange)
         {
             this.rangesByTerrainName[terrainName] = allowedRange;
