@@ -94,14 +94,10 @@ namespace SonOfRobin
 
         public static int EventsCount { get { return rumbleEventsList.Count; } }
 
-        //public static bool RumbleIsActive
-        //{
-        //    get { return Preferences.rumbleEnabled && (Input.currentControlType == Input.ControlType.Gamepad || SonOfRobinGame.platform == Platform.Mobile); }
-        //}
-
         public static bool RumbleIsActive
         {
-            get { return true; } // for testing
+            get { return Preferences.rumbleEnabled && (Input.currentControlType == Input.ControlType.Gamepad || SonOfRobinGame.platform == Platform.Mobile); }
+            //get { return true; } // for testing
         }
 
         public static void AddSimpleRumble(float force, float durationSeconds, bool bigMotor = false, bool smallMotor = false)

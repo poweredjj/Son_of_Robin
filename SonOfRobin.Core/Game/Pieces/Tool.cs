@@ -243,7 +243,7 @@ namespace SonOfRobin
                 }
 
                 target.soundPack.Play(PieceSoundPack.Action.IsDestroyed);
-                new RumbleEvent(force: 0.3f, bigMotor: true, fadeInSeconds: 0, durationSeconds: 0, fadeOutSeconds: 0.25f);
+                new RumbleEvent(force: 0.3f, bigMotor: true, fadeInSeconds: 0, durationSeconds: 0, fadeOutSeconds: 0.55f);
 
                 target.Destroy();
 
@@ -261,7 +261,7 @@ namespace SonOfRobin
             else
             {
                 target.soundPack.Play(PieceSoundPack.Action.IsHit);
-                new RumbleEvent(force: 0.25f, bigMotor: true, fadeInSeconds: 0, durationSeconds: 0, fadeOutSeconds: 0.1f);
+                new RumbleEvent(force: 0.25f, bigMotor: true, fadeInSeconds: 0, durationSeconds: 0, fadeOutSeconds: 0.2f);
 
                 target.showStatBarsTillFrame = world.CurrentUpdate + 1200;
 

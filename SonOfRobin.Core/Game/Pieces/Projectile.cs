@@ -45,6 +45,7 @@ namespace SonOfRobin
             }
 
             this.world.Player.soundPack.Play(PieceSoundPack.Action.PlayerBowRelease);
+            new RumbleEvent(force: 0.25f, bigMotor: true, fadeInSeconds: 0, durationSeconds: 0, fadeOutSeconds: 0.6f);
 
             float angle = Helpers.GetAngleBetweenTwoPoints(start: this.sprite.position, end: this.sprite.position + movement);
             this.sprite.rotation = angle + (float)(Math.PI * 2f * 0.375f);

@@ -576,7 +576,7 @@ namespace SonOfRobin
 
                     float attackPercent = (float)attackStrength / this.target.maxHitPoints;
 
-                    new RumbleEvent(force: Math.Min(attackPercent * 1.1f, 1), durationSeconds: attackPercent * 1.5f, bigMotor: true, smallMotor: true, fadeInSeconds: 0, fadeOutSeconds: 0.17f);
+                    new RumbleEvent(force: Math.Min(attackPercent * 1.1f, 1), durationSeconds: attackPercent * 1.5f, bigMotor: true, smallMotor: true, fadeInSeconds: 0, fadeOutSeconds: 0.34f);
 
                     if (this.target.HitPoints > 0) // red screen flash if player is still alive
                     {

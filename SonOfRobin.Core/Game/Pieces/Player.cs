@@ -907,8 +907,8 @@ namespace SonOfRobin
 
                     if (gotHitWithLightning)
                     {
-                        new RumbleEvent(force: 1f, smallMotor: true, fadeInSeconds: 0, durationSeconds: 0, fadeOutSeconds: 0.25f);
-                        new RumbleEvent(force: 1f, bigMotor: true, fadeInSeconds: 0, durationSeconds: 0, fadeOutSeconds: 0.3f);
+                        new RumbleEvent(force: 1f, smallMotor: true, fadeInSeconds: 0, durationSeconds: 0, fadeOutSeconds: 0.5f);
+                        new RumbleEvent(force: 1f, bigMotor: true, fadeInSeconds: 0, durationSeconds: 0, fadeOutSeconds: 0.6f);
                     }
                 }
             }
@@ -933,6 +933,7 @@ namespace SonOfRobin
             this.CheckLowHP();
 
             this.shootingPower = Math.Min(this.shootingPower + 1, maxShootingPower);
+            new RumbleEvent(force: (float)this.shootingPower / maxShootingPower, smallMotor: true, fadeInSeconds: 0, durationSeconds: 1f / 60f, fadeOutSeconds: 0);
 
             this.Stamina = Math.Max(this.Stamina - 1, 0);
 
@@ -973,7 +974,6 @@ namespace SonOfRobin
                 this.UseToolbarPiece(isInShootingMode: true, buttonHeld: false);
                 this.shootingPower = 0;
                 this.soundPack.Stop(PieceSoundPack.Action.PlayerBowDraw);
-                this.soundPack.Play(PieceSoundPack.Action.PlayerBowDraw);
             }
 
             if (!this.ShootingModeInputPressed || !this.ActiveToolbarWeaponHasAmmo || this.sprite.CanDrownHere)
