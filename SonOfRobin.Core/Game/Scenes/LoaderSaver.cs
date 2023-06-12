@@ -235,7 +235,12 @@ namespace SonOfRobin
                 }
             }
 
-            if (this.ErrorOccured) this.Remove();
+            if (this.ErrorOccured)
+            {
+                this.Remove();
+                bool menuFound = GetTopSceneOfType(typeof(Menu)) != null;
+                if (!menuFound) MenuTemplate.CreateMenuFromTemplate(templateName: MenuTemplate.Name.Main);
+            }
         }
 
         private void UpdateProgressBar()
