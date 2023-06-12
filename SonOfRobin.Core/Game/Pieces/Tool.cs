@@ -243,7 +243,7 @@ namespace SonOfRobin
                 }
 
                 target.soundPack.Play(PieceSoundPack.Action.IsDestroyed);
-                new RumbleEvent(force: 0.3f, bigMotor: true, fadeInSeconds: 0, durationSeconds: 0, fadeOutSeconds: 0.55f);
+                new RumbleEvent(force: 0.3f, bigMotor: true, fadeInSeconds: 0, durationSeconds: 0, fadeOutSeconds: 0.5f);
 
                 target.Destroy();
 

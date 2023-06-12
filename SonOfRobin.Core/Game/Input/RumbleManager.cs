@@ -53,6 +53,7 @@ namespace SonOfRobin
             if (fadeInFrames > 0) this.fadeInValChangePerFrame = force / fadeInFrames;
             if (fadeOutFrames > 0) this.fadeOutValChangePerFrame = force / fadeOutFrames;
 
+            this.CurrentForce = this.fadeInFramesLeft == 0 ? this.targetForce : 0;
             this.HasEnded = false;
 
             RumbleManager.AddEvent(this);
@@ -96,8 +97,11 @@ namespace SonOfRobin
 
         public static bool RumbleIsActive
         {
-            get { return Preferences.rumbleEnabled && (Input.currentControlType == Input.ControlType.Gamepad || SonOfRobinGame.platform == Platform.Mobile); }
-            //get { return true; } // for testing
+            get
+            {
+                return Preferences.DebugMode ||
+                       (Preferences.rumbleEnabled && (Input.currentControlType == Input.ControlType.Gamepad || SonOfRobinGame.platform == Platform.Mobile));
+            }
         }
 
         public static void AddSimpleRumble(float force, float durationSeconds, bool bigMotor = false, bool smallMotor = false)

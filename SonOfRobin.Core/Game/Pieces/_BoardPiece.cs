@@ -789,6 +789,12 @@ namespace SonOfRobin
         {
             if (!this.movesWhenDropped && !force) return;
 
+            if (this.GetType() == typeof(Player) && this.alive)
+            {
+                float movementPower = (Math.Abs(movement.X) + Math.Abs(movement.Y)) / 2500f;
+                new RumbleEvent(force: Math.Min(movementPower * 1.1f, 1), durationSeconds: movementPower * 3.0f, bigMotor: true, smallMotor: true, fadeInSeconds: 0, fadeOutSeconds: 0.34f);
+            }
+
             // activeState should not be changed ("empty" will be removed from state machines, other states will run after the movement stops)
             this.passiveMovement += movement;
 
