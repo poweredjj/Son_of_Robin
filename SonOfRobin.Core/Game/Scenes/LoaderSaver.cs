@@ -199,10 +199,8 @@ namespace SonOfRobin
         {
             if (this.backgroundTask != null && this.backgroundTask.IsFaulted)
             {
-                SonOfRobinGame.ErrorLog.AddEntry(type: this.GetType(), exception: this.backgroundTask.Exception);
+                SonOfRobinGame.ErrorLog.AddEntry(type: this.GetType(), exception: this.backgroundTask.Exception, showTextWindow: true);
 
-                new TextWindow(text: $"An error occured while saving:\n{this.backgroundTask.Exception}",
-                    textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false, closingTask: this.TextWindowTask, priority: -1, inputType: InputTypes.Normal);
                 this.ErrorOccured = true;
             }
 

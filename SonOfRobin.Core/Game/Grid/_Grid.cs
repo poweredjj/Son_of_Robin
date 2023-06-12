@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using static SonOfRobin.Scene;
 using Color = Microsoft.Xna.Framework.Color;
 using Point = Microsoft.Xna.Framework.Point;
 using Rectangle = Microsoft.Xna.Framework.Rectangle;
@@ -273,10 +272,8 @@ namespace SonOfRobin
 
             if (this.backgroundTask != null && this.backgroundTask.IsFaulted)
             {
-                SonOfRobinGame.ErrorLog.AddEntry(type: this.GetType(), exception: this.backgroundTask.Exception);
+                SonOfRobinGame.ErrorLog.AddEntry(type: this.GetType(), exception: this.backgroundTask.Exception, showTextWindow: true);
 
-                new TextWindow(text: $"An error occured while creating grid:\n{this.backgroundTask.Exception}",
-                    textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false, priority: -1, inputType: InputTypes.Normal);
                 this.CreationInProgress = false;
             }
 

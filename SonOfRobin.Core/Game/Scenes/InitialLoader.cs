@@ -159,7 +159,7 @@ namespace SonOfRobin
                         if (this.backgroundTask1 == null || (this.backgroundTask1 != null && this.backgroundTask1.IsCompleted)) tasksCompleted = true;
                         else if (this.backgroundTask1.IsFaulted || this.TimeoutReached)
                         {
-                            SonOfRobinGame.ErrorLog.AddEntry(type: this.GetType(), exception: this.backgroundTask1.Exception);
+                            SonOfRobinGame.ErrorLog.AddEntry(type: this.GetType(), exception: this.backgroundTask1.Exception, showTextWindow: false);
 
                             this.ProcessBackgroundTasks1();
                             tasksCompleted = true;
@@ -177,7 +177,7 @@ namespace SonOfRobin
                         if (this.backgroundTask2 == null || (this.backgroundTask2 != null && this.backgroundTask2.IsCompleted)) tasksCompleted = true;
                         else if (this.backgroundTask2.IsFaulted || this.TimeoutReached)
                         {
-                            SonOfRobinGame.ErrorLog.AddEntry(type: this.GetType(), exception: this.backgroundTask2.Exception);
+                            SonOfRobinGame.ErrorLog.AddEntry(type: this.GetType(), exception: this.backgroundTask2.Exception, showTextWindow: false);
 
                             this.ProcessBackgroundTasks2();
                             tasksCompleted = true;

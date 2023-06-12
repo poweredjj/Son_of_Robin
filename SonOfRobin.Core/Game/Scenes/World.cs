@@ -416,11 +416,9 @@ namespace SonOfRobin
                 }
                 else
                 {
-                    float percentage = FullScreenProgressBar.CalculatePercentage(currentLocalStep: populatingFramesTotal - this.populatingFramesLeft, totalLocalSteps: populatingFramesTotal, currentGlobalStep: 1 + Grid.allStagesCount, totalGlobalSteps: SonOfRobinGame.enteringIslandGlobalSteps);
+                    float percentage = FullScreenProgressBar.CalculatePercentage(currentLocalStep: populatingFramesTotal - this.populatingFramesLeft, totalLocalSteps: populatingFramesTotal, currentGlobalStep: Grid.allStagesCount + 1, totalGlobalSteps: SonOfRobinGame.enteringIslandGlobalSteps);
 
-                    string detailedInfo = Preferences.progressBarShowDetails ? "populating..." : null;
-
-                    SonOfRobinGame.FullScreenProgressBar.TurnOn(percentage: percentage, text: LoadingTips.GetTip(), optionalText: detailedInfo);
+                    SonOfRobinGame.FullScreenProgressBar.TurnOn(percentage: percentage, text: LoadingTips.GetTip(), optionalText: Preferences.progressBarShowDetails ? "populating..." : null);
 
                     if (this.backgroundTask == null) this.backgroundTask = Task.Run(() => this.ProcessAllPopulatingSteps());
                     else
@@ -428,27 +426,14 @@ namespace SonOfRobin
                         if (this.backgroundTask.IsCompleted || this.backgroundTask.IsFaulted) this.populatingFramesLeft = 0;
                         if (this.backgroundTask.IsFaulted)
                         {
-                            SonOfRobinGame.ErrorLog.AddEntry(type: this.GetType(), exception: this.backgroundTask.Exception);
-
-                            new TextWindow(text: $"An error occured while populating:\n{this.backgroundTask.Exception}",
-                                textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false, priority: -1, inputType: InputTypes.Normal);
+                            SonOfRobinGame.ErrorLog.AddEntry(type: this.GetType(), exception: this.backgroundTask.Exception, showTextWindow: true);
+                            this.populatingFramesLeft = 0;
                         }
                     }
 
                     return;
                 }
             }
-
-            this.backgroundTask = null;
-            SonOfRobinGame.FullScreenProgressBar.TurnOff();
-            this.touchLayout = TouchLayout.WorldMain;
-            this.tipsLayout = ControlTips.TipsLayout.WorldMain;
-            this.WorldCreationInProgress = false;
-            this.creationEnd = DateTime.Now;
-            this.creationDuration = this.creationEnd - this.creationStart;
-            this.lastSaved = DateTime.Now;
-
-            MessageLog.AddMessage(msgType: MsgType.Debug, message: $"World creation time: {creationDuration:hh\\:mm\\:ss\\.fff}.", color: Color.GreenYellow);
 
             bool newGameStarted = this.saveGameData == null;
 
@@ -466,7 +451,42 @@ namespace SonOfRobin
                     PieceTemplate.CreateAndPlaceOnBoard(world: this, position: this.Player.sprite.position, templateName: PieceTemplate.Name.PredatorRepellant, closestFreeSpot: true);
                 }
             }
-            else this.Deserialize(gridOnly: false);
+            else
+            {
+                if (this.backgroundTask == null)
+                {
+                    this.backgroundTask = Task.Run(() => this.Deserialize(gridOnly: false));
+
+                    float percentage = FullScreenProgressBar.CalculatePercentage(currentLocalStep: populatingFramesTotal - this.populatingFramesLeft, totalLocalSteps: populatingFramesTotal, currentGlobalStep: Grid.allStagesCount + 2, totalGlobalSteps: SonOfRobinGame.enteringIslandGlobalSteps);
+
+                    SonOfRobinGame.FullScreenProgressBar.TurnOn(percentage: percentage, text: LoadingTips.GetTip(), optionalText: Preferences.progressBarShowDetails ? "entering island..." : null);
+                }
+                else
+                {
+                    if (this.backgroundTask.IsFaulted)
+                    {
+                        SonOfRobinGame.ErrorLog.AddEntry(type: this.GetType(), exception: this.backgroundTask.Exception, showTextWindow: true);
+                        SonOfRobinGame.FullScreenProgressBar.TurnOff();
+                        bool menuFound = GetTopSceneOfType(typeof(Menu)) != null;
+                        this.Remove();
+                        return;
+                    }
+                    if (this.backgroundTask.IsCompleted) this.saveGameData = null;
+                }
+            }
+
+            if (this.saveGameData != null) return; // waiting for background task to finish
+
+            this.backgroundTask = null;
+            SonOfRobinGame.FullScreenProgressBar.TurnOff();
+            this.touchLayout = TouchLayout.WorldMain;
+            this.tipsLayout = ControlTips.TipsLayout.WorldMain;
+            this.WorldCreationInProgress = false;
+            this.creationEnd = DateTime.Now;
+            this.creationDuration = this.creationEnd - this.creationStart;
+            this.lastSaved = DateTime.Now;
+
+            MessageLog.AddMessage(msgType: MsgType.Debug, message: $"World creation time: {creationDuration:hh\\:mm\\:ss\\.fff}.", color: Color.GreenYellow);
 
             if (!this.demoMode)
             {
@@ -524,6 +544,8 @@ namespace SonOfRobin
                 }
             }
 
+            if (this.HasBeenRemoved) return; // to avoid processing if cancelled
+
             // deserializing header
             {
                 var headerData = (Dictionary<string, Object>)saveGameDataDict["header"];
@@ -543,17 +565,23 @@ namespace SonOfRobin
                 this.identifiedPieces = (List<PieceTemplate.Name>)headerData["identifiedPieces"];
             }
 
+            if (this.HasBeenRemoved) return; // to avoid processing if cancelled
+
             // deserializing hints
             {
                 var hintsData = (Dictionary<string, Object>)saveGameDataDict["hints"];
                 this.HintEngine.Deserialize(hintsData);
             }
 
+            if (this.HasBeenRemoved) return; // to avoid processing if cancelled
+
             // deserializing weather
             {
                 var weatherData = (Dictionary<string, Object>)saveGameDataDict["weather"];
                 this.weather.Deserialize(weatherData);
             }
+
+            if (this.HasBeenRemoved) return; // to avoid processing if cancelled
 
             // deserializing pieces
             {
@@ -581,29 +609,33 @@ namespace SonOfRobin
                     }
                 }
 
+                if (this.HasBeenRemoved) return; // to avoid processing if cancelled
+
                 // deserializing tracking
 
                 var trackingDataList = (List<Object>)saveGameDataDict["tracking"];
                 this.trackingManager.Deserialize(trackingDataList);
+
+                if (this.HasBeenRemoved) return; // to avoid processing if cancelled
 
                 // deserializing planned events
 
                 var eventDataList = (List<Object>)saveGameDataDict["events"];
                 this.worldEventManager.Deserialize(eventDataList);
 
+                if (this.HasBeenRemoved) return; // to avoid processing if cancelled
+
                 // deserializing cooling data
 
                 var coolingData = (Dictionary<string, Object>)saveGameDataDict["cooling"];
                 this.coolingManager.Deserialize(coolingData);
 
+                if (this.HasBeenRemoved) return; // to avoid processing if cancelled
+
                 // removing not needed data
 
                 this.piecesByOldID = null; // not needed anymore, "null" will make any attempt to access it afterwards crash the game
             }
-
-            // finalizing
-
-            this.saveGameData = null;
         }
 
         private void CreateAndPlacePlayer()
