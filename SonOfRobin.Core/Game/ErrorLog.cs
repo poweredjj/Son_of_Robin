@@ -24,14 +24,10 @@ namespace SonOfRobin
 
             File.AppendAllText(this.logPath, stringToSave);
 
-            if (showTextWindow) new TextWindow(text: $"{type.Name} - an error occured:\n{exception}", textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false, priority: -1, inputType: Scene.InputTypes.Normal);
-        }
+            string windowText = $"{type.Name} - an error occured:\n{exception}";
+            if (windowText.Length > 1000) windowText = windowText.Substring(0, 1000);
 
-        public void AddEntry(string message)
-        {
-            string stringToSave = $"{this.DateString} error occured (no class info):\n\n{message}";
-
-            File.AppendAllText(this.logPath, stringToSave);
+            if (showTextWindow) new TextWindow(text: windowText, textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false, priority: -1, inputType: Scene.InputTypes.Normal);
         }
     }
 }
