@@ -204,7 +204,7 @@ namespace SonOfRobin
 
                 BoardPiece explosion = PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: this.sprite.position, templateName: PieceTemplate.Name.Explosion, closestFreeSpot: true);
                 explosion.sprite.AssignNewSize(3);
-                new RumbleEvent(force: 0.25f, bigMotor: true, fadeInSeconds: 0.15f, durationSeconds: 0, fadeOutSeconds: 0.15f);
+                new RumbleEvent(force: 1f, bigMotor: true, fadeInSeconds: 0.25f, durationSeconds: 0, fadeOutSeconds: 0.25f);
 
                 var ignoredTypesList = new List<Type> { typeof(Debris), typeof(Flame) };
 

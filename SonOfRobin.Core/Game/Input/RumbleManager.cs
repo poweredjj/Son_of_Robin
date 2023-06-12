@@ -21,7 +21,7 @@ namespace SonOfRobin
         public float CurrentForce { get; private set; }
         public bool HasEnded { get; private set; }
 
-        public RumbleEvent(float force, float durationSeconds, bool bigMotor = false, bool smallMotor = false, float fadeInSeconds = 0, float fadeOutSeconds = 0, float minSecondsSinceLastRumble = 0f)
+        public RumbleEvent(float force, float durationSeconds, bool bigMotor = false, bool smallMotor = false, float fadeInSeconds = 0, float fadeOutSeconds = 0, float minSecondsSinceLastRumble = 0f, float minSecondsSinceLastRumbleSmallMotor = 0f, float minSecondsSinceLastRumbleBigMotor = 0f)
         {
             if (!RumbleManager.RumbleIsActive || (!bigMotor && !smallMotor)) return;
 
@@ -29,6 +29,8 @@ namespace SonOfRobin
             if (this.targetForce == 0) return;
 
             if (minSecondsSinceLastRumble > 0 && RumbleManager.TimeSinceLastRumbleEvent < TimeSpan.FromSeconds(minSecondsSinceLastRumble)) return;
+            if (minSecondsSinceLastRumbleSmallMotor > 0 && RumbleManager.TimeSinceLastRumbleEventSmallMotor < TimeSpan.FromSeconds(minSecondsSinceLastRumbleSmallMotor)) return;
+            if (minSecondsSinceLastRumbleBigMotor > 0 && RumbleManager.TimeSinceLastRumbleEventBigMotor < TimeSpan.FromSeconds(minSecondsSinceLastRumbleBigMotor)) return;
 
             durationSeconds = Math.Max(Math.Min(durationSeconds, 10), 0);
             fadeInSeconds = Math.Max(Math.Min(fadeInSeconds, 5), 0);
@@ -91,15 +93,16 @@ namespace SonOfRobin
     public class RumbleManager
     {
         private static List<RumbleEvent> rumbleEventsList = new List<RumbleEvent>();
-
         public static float SmallMotorCurrentForce { get; private set; }
         public static float BigMotorCurrentForce { get; private set; }
-
         public static int EventsCount { get { return rumbleEventsList.Count; } }
 
         private static DateTime lastEventTime = DateTime.MinValue;
-
+        private static DateTime lastEventTimeSmallMotor = DateTime.MinValue;
+        private static DateTime lastEventTimeBigMotor = DateTime.MinValue;
         public static TimeSpan TimeSinceLastRumbleEvent { get { return DateTime.Now - lastEventTime; } }
+        public static TimeSpan TimeSinceLastRumbleEventSmallMotor { get { return DateTime.Now - lastEventTimeSmallMotor; } }
+        public static TimeSpan TimeSinceLastRumbleEventBigMotor { get { return DateTime.Now - lastEventTimeBigMotor; } }
 
         public static bool RumbleIsActive
         {
@@ -121,6 +124,8 @@ namespace SonOfRobin
         {
             rumbleEventsList.Add(rumbleEvent);
             lastEventTime = DateTime.Now;
+            if (rumbleEvent.bigMotor) lastEventTimeBigMotor = DateTime.Now;
+            if (rumbleEvent.smallMotor) lastEventTimeSmallMotor = DateTime.Now;
         }
 
         public static void StopAll()

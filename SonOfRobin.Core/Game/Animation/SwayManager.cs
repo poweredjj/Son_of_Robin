@@ -149,7 +149,12 @@ namespace SonOfRobin
 
                 new Sound(nameList: new List<SoundData.Name> { SoundData.Name.HitSmallPlant1, SoundData.Name.HitSmallPlant2, SoundData.Name.HitSmallPlant3 }, boardPiece: this.targetSprite.boardPiece, ignore3DAlways: isPlayer, maxPitchVariation: 0.3f, volume: isPlayer ? 0.35f : 0.2f).Play();
 
-                if (isPlayer) RumbleManager.AddSimpleRumble(smallMotor: true, force: 0.008f, durationSeconds: 0.02f);
+                if (isPlayer)
+                {
+                    float rumbleMagnifier = 0;
+                    if (targetSprite.GfxRect.Height >= sourceSprite.GfxRect.Height * 0.85f) rumbleMagnifier = 1.8f;
+                    new RumbleEvent(force: 0.012f + (rumbleMagnifier * 0.025f), smallMotor: true, fadeInSeconds: 0, durationSeconds: 0, fadeOutSeconds: 0.035f + (rumbleMagnifier * 0.04f));
+                }
             }
 
             this.Update(world);

@@ -111,7 +111,7 @@ namespace SonOfRobin
                             {
                                 this.world.camera.AddRandomShake();
                                 this.world.FlashRedOverlay();
-                                RumbleManager.AddSimpleRumble(bigMotor: true, force: 0.03f, durationSeconds: 0.6f);
+                                new RumbleEvent(force: 0.07f, bigMotor: true, fadeInSeconds: 0.25f, durationSeconds: 0, fadeOutSeconds: 0.25f, minSecondsSinceLastRumbleBigMotor: 0.7f);
                             }
                         }
 
@@ -144,7 +144,7 @@ namespace SonOfRobin
                     {
                         this.world.camera.AddRandomShake();
                         this.world.FlashRedOverlay();
-                        RumbleManager.AddSimpleRumble(smallMotor: true, bigMotor: true, force: 1f, durationSeconds: 1.5f);
+                        new RumbleEvent(force: 1f, bigMotor: true, fadeInSeconds: 0.25f, durationSeconds: 0, fadeOutSeconds: 0.25f, minSecondsSinceLastRumbleBigMotor: 0.4f);
                     }
                 }
 

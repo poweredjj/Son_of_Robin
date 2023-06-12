@@ -350,11 +350,6 @@ namespace SonOfRobin
                 new RumbleEvent(force: 0.35f, bigMotor: true, fadeInSeconds: 0, durationSeconds: 0, fadeOutSeconds: 0.6f);
             }
 
-            if (Keyboard.HasBeenPressed(Keys.F2))
-            {
-                RumbleManager.AddSimpleRumble(smallMotor: true, force: 1f, durationSeconds: 0.5f);
-            }
-
             //if (Keyboard.HasBeenPressed(Keys.F1))
             //{
             //    if (world == null) return;
@@ -391,11 +386,18 @@ namespace SonOfRobin
             //    world.weather.AddEvent(new WeatherEvent(type: Weather.WeatherType.Rain, intensity: 0.05f, startTime: world.islandClock.IslandDateTime, duration: TimeSpan.FromMinutes(30), transitionLength: TimeSpan.FromMinutes(3)));
             //}
 
+            if (Keyboard.HasBeenPressed(Keys.F2))
+            {
+                if (world == null) return;
+
+                world.weather.AddEvent(new WeatherEvent(type: Weather.WeatherType.Rain, intensity: 0.5f, startTime: world.islandClock.IslandDateTime, duration: TimeSpan.FromMinutes(10), transitionLength: TimeSpan.FromMinutes(2f)));
+            }
+
             if (Keyboard.HasBeenPressed(Keys.F3))
             {
                 if (world == null) return;
 
-                world.weather.AddEvent(new WeatherEvent(type: Weather.WeatherType.Wind, intensity: 1.0f, startTime: world.islandClock.IslandDateTime, duration: TimeSpan.FromMinutes(60), transitionLength: TimeSpan.FromMinutes(4)));
+                world.weather.AddEvent(new WeatherEvent(type: Weather.WeatherType.Rain, intensity: 1f, startTime: world.islandClock.IslandDateTime, duration: TimeSpan.FromMinutes(10), transitionLength: TimeSpan.FromMinutes(2f)));
             }
 
             //if (Keyboard.HasBeenPressed(Keys.F2))

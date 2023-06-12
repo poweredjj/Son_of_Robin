@@ -457,9 +457,7 @@ namespace SonOfRobin
                 {
                     this.backgroundTask = Task.Run(() => this.Deserialize(gridOnly: false));
 
-                    float percentage = FullScreenProgressBar.CalculatePercentage(currentLocalStep: populatingFramesTotal - this.populatingFramesLeft, totalLocalSteps: populatingFramesTotal, currentGlobalStep: Grid.allStagesCount + 2, totalGlobalSteps: SonOfRobinGame.enteringIslandGlobalSteps);
-
-                    SonOfRobinGame.FullScreenProgressBar.TurnOn(percentage: percentage, text: LoadingTips.GetTip(), optionalText: Preferences.progressBarShowDetails ? "entering island..." : null);
+                    SonOfRobinGame.FullScreenProgressBar.TurnOn(percentage: 1, text: LoadingTips.GetTip(), optionalText: Preferences.progressBarShowDetails ? "entering island..." : null);
                 }
                 else
                 {

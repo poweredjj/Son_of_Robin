@@ -470,7 +470,7 @@ namespace SonOfRobin
                 taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.CheckForPieceHints, delay: 0, storeForLaterUse: true, executeHelper: executeHelper));
 
                 new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteTaskChain, executeHelper: taskChain);
-                new RumbleEvent(force: 0.4f, bigMotor: true, fadeInSeconds: 0.2f, durationSeconds: 0, fadeOutSeconds: 0.6f);
+                new RumbleEvent(force: 0.15f, bigMotor: true, fadeInSeconds: 0.2f, durationSeconds: 0, fadeOutSeconds: 0.2f);
             }
         }
 

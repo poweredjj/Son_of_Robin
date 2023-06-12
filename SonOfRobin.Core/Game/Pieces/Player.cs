@@ -641,8 +641,8 @@ namespace SonOfRobin
             this.Fatigue += this.buildFatigueForOneFrame;
             world.Player.Fatigue = Math.Min(world.Player.Fatigue, world.Player.maxFatigue - 20); // to avoid falling asleep just after crafting
 
-            new RumbleEvent(force: 0.15f, smallMotor: true, fadeInSeconds: 0.35f, durationSeconds: 0, fadeOutSeconds: 0.35f, minSecondsSinceLastRumble: 0.8f);
-            new RumbleEvent(force: 0.25f, bigMotor: true, fadeInSeconds: 0, durationSeconds: 0, fadeOutSeconds: 0.2f, minSecondsSinceLastRumble: 0.55f);
+            new RumbleEvent(force: 0.08f, smallMotor: true, fadeInSeconds: 0.25f, durationSeconds: 0, fadeOutSeconds: 0.25f, minSecondsSinceLastRumbleSmallMotor: 0.51f);
+            new RumbleEvent(force: 0.85f, bigMotor: true, fadeInSeconds: 0, durationSeconds: 0, fadeOutSeconds: 0.15f, minSecondsSinceLastRumbleBigMotor: 0.35f);
         }
 
         public override void SM_PlayerControlledGhosting()
@@ -840,10 +840,21 @@ namespace SonOfRobin
                 if (this.sprite.IsInWater && slowDownInWater)
                 {
                     this.Stamina--;
-                    new RumbleEvent(force: 0.2f, bigMotor: true, fadeInSeconds: 0.25f, durationSeconds: 0.15f, fadeOutSeconds: 0.25f, minSecondsSinceLastRumble: 0.65f);
+
+                    float submergePower = (float)Helpers.ConvertRange(oldMin: 0, oldMax: Terrain.waterLevelMax, newMin: 0, newMax: 0.45, oldVal: Terrain.waterLevelMax - this.sprite.GetFieldValue(Terrain.Name.Height), clampToEdges: true);
+
+                    new RumbleEvent(force: submergePower, smallMotor: true, fadeInSeconds: 0.16f, durationSeconds: 0f, fadeOutSeconds: 0.16f, minSecondsSinceLastRumbleSmallMotor: 0.52f);
+                    new RumbleEvent(force: submergePower, bigMotor: true, fadeInSeconds: 0.06f, durationSeconds: 0.15f, fadeOutSeconds: 0.06f, minSecondsSinceLastRumbleBigMotor: 0.62f);
                 }
 
-                if (this.sprite.IsOnRocks && slowDownOnRocks) this.Stamina--;
+                if (this.sprite.IsOnRocks && slowDownOnRocks)
+                {
+                    this.Stamina--;
+
+                    float randomAddedForce = (float)this.world.random.NextDouble() * 0.16f;
+                    float randomAddedDelay = (float)this.world.random.NextDouble() * 0.21f;
+                    new RumbleEvent(force: 0.04f + randomAddedForce, smallMotor: true, fadeInSeconds: 0f, durationSeconds: 0f, fadeOutSeconds: 0.12f, minSecondsSinceLastRumbleSmallMotor: 0.18f + randomAddedDelay);
+                }
             }
 
             return hasBeenMoved;
@@ -852,11 +863,12 @@ namespace SonOfRobin
         private void CheckGround()
         {
             bool isInWater = this.sprite.IsInWater;
+            bool isRaining = this.world.weather.IsRaining;
 
             // adding and removing heat
             if (this.world.CurrentUpdate % 65 == 0)
             {
-                if (this.world.islandClock.CurrentPartOfDay == IslandClock.PartOfDay.Noon && this.world.weather.SunVisibility >= 0.8f && !this.world.weather.IsRaining)
+                if (this.world.islandClock.CurrentPartOfDay == IslandClock.PartOfDay.Noon && this.world.weather.SunVisibility >= 0.8f && !isRaining)
                 {
                     this.buffEngine.AddBuff(buff: new Buff(type: BuffEngine.BuffType.Heat, value: null), world: this.world);
                 }
@@ -865,7 +877,23 @@ namespace SonOfRobin
                 if (this.buffEngine.HasBuff(BuffEngine.BuffType.Heat)) Tutorials.ShowTutorialOnTheField(type: Tutorials.Type.Heat, world: this.world, ignoreDelay: true);
             }
 
-            if (isInWater || this.world.weather.IsRaining) this.buffEngine.AddBuff(buff: new Buff(type: BuffEngine.BuffType.Wet, value: null, autoRemoveDelay: 40 * 60), world: this.world);
+            if (isInWater || isRaining) this.buffEngine.AddBuff(buff: new Buff(type: BuffEngine.BuffType.Wet, value: null, autoRemoveDelay: 40 * 60), world: this.world);
+
+            if (isRaining)
+            {
+                {
+                    float addedForce = this.world.weather.RainPercentage * 0.12f;
+                    float delaySeconds = 1f - (this.world.weather.RainPercentage * 0.8f);
+                    float randomAddedDelay = (float)this.world.random.NextDouble() * 0.21f;
+                    new RumbleEvent(force: 0.14f + addedForce, smallMotor: true, fadeInSeconds: 0f, durationSeconds: 0f, fadeOutSeconds: 0.12f, minSecondsSinceLastRumbleSmallMotor: delaySeconds + randomAddedDelay);
+                }
+                {
+                    float addedForce = this.world.weather.RainPercentage * 0.1f;
+                    float delaySeconds = 1.3f - (this.world.weather.RainPercentage * 0.5f);
+                    float randomAddedDelay = (float)this.world.random.NextDouble() * 0.21f;
+                    new RumbleEvent(force: 0.15f + addedForce, bigMotor: true, fadeInSeconds: 0f, durationSeconds: 0f, fadeOutSeconds: 0.12f, minSecondsSinceLastRumbleBigMotor: delaySeconds + randomAddedDelay);
+                }
+            }
 
             if (this.sprite.IsInBiome)
             {
@@ -903,8 +931,7 @@ namespace SonOfRobin
                 this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.Lightning, ignoreDelay: true);
                 this.HitPoints -= 80;
                 Sound.QuickPlay(SoundData.Name.ElectricShock);
-                new RumbleEvent(force: 1f, smallMotor: true, fadeInSeconds: 0, durationSeconds: 0, fadeOutSeconds: 0.5f);
-                new RumbleEvent(force: 1f, bigMotor: true, fadeInSeconds: 0, durationSeconds: 0, fadeOutSeconds: 0.6f);
+                new RumbleEvent(force: 1f, smallMotor: true, bigMotor: true, fadeInSeconds: 0, durationSeconds: 0.45f);
             }
 
             if (isOnLava || struckWithLightning)
@@ -937,7 +964,7 @@ namespace SonOfRobin
             this.CheckLowHP();
 
             this.shootingPower = Math.Min(this.shootingPower + 1, maxShootingPower);
-            new RumbleEvent(force: (float)this.shootingPower / maxShootingPower, smallMotor: true, fadeInSeconds: 0, durationSeconds: 1f / 60f, fadeOutSeconds: 0);
+            if (this.shootingPower < maxShootingPower) new RumbleEvent(force: (float)this.shootingPower / maxShootingPower * 0.1f, smallMotor: true, fadeInSeconds: 0, durationSeconds: 1f / 60f, fadeOutSeconds: 0);
 
             this.Stamina--;
 
@@ -1184,7 +1211,7 @@ namespace SonOfRobin
             if (piecePickedUp)
             {
                 Sound.QuickPlay(name: SoundData.Name.PickUpItem, volume: 0.6f);
-                RumbleManager.AddSimpleRumble(smallMotor: true, force: 0.17f, durationSeconds: 0.07f);
+                RumbleManager.AddSimpleRumble(smallMotor: true, force: 0.32f, durationSeconds: 0.13f);
 
                 closestPiece.sprite.rotation = 0f;
                 MessageLog.AddMessage(msgType: MsgType.User, message: $"Picked up {closestPiece.readableName}.");
