@@ -903,12 +903,12 @@ namespace SonOfRobin
                     this.world.camera.AddRandomShake();
                     this.world.FlashRedOverlay();
 
-                    if (isOnLava) SonOfRobinGame.RumbleManager.AddRumble(smallMotor: true, bigMotor: true, value: 1f, durationSeconds: 1.5f);
+                    if (isOnLava) RumbleManager.AddSimpleRumble(smallMotor: true, bigMotor: true, force: 1f, durationSeconds: 1.5f);
 
                     if (gotHitWithLightning)
                     {
-                        SonOfRobinGame.RumbleManager.AddRumble(smallMotor: true, bigMotor: false, value: 1f, durationSeconds: 0.25f);
-                        SonOfRobinGame.RumbleManager.AddRumble(smallMotor: false, bigMotor: true, value: 1f, durationSeconds: 0.3f);
+                        new RumbleEvent(force: 1f, smallMotor: true, fadeInSeconds: 0, durationSeconds: 0, fadeOutSeconds: 0.25f);
+                        new RumbleEvent(force: 1f, bigMotor: true, fadeInSeconds: 0, durationSeconds: 0, fadeOutSeconds: 0.3f);
                     }
                 }
             }
@@ -1180,6 +1180,7 @@ namespace SonOfRobin
             if (piecePickedUp)
             {
                 Sound.QuickPlay(name: SoundData.Name.PickUpItem, volume: 0.6f);
+                RumbleManager.AddSimpleRumble(smallMotor: true, force: 0.17f, durationSeconds: 0.07f);
 
                 closestPiece.sprite.rotation = 0f;
                 MessageLog.AddMessage(msgType: MsgType.User, message: $"Picked up {closestPiece.readableName}.");

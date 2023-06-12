@@ -575,7 +575,8 @@ namespace SonOfRobin
                     this.world.camera.AddShake(movement: screenShake, durationSecs: durationSecs);
 
                     float attackPercent = (float)attackStrength / this.target.maxHitPoints;
-                    SonOfRobinGame.RumbleManager.AddRumble(bigMotor: true, smallMotor: true, value: Math.Min(attackPercent * 1.1f, 1), durationSeconds: 0.17f + (attackPercent * 1.5f));
+
+                    new RumbleEvent(force: Math.Min(attackPercent * 1.1f, 1), durationSeconds: attackPercent * 1.5f, bigMotor: true, smallMotor: true, fadeInSeconds: 0, fadeOutSeconds: 0.17f);
 
                     if (this.target.HitPoints > 0) // red screen flash if player is still alive
                     {

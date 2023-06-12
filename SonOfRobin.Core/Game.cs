@@ -4,7 +4,6 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using Xamarin.Essentials;
 
@@ -19,7 +18,7 @@ namespace SonOfRobin
     public class SonOfRobinGame : Game
     {
         public const float version = 9.7f;
-        public static readonly DateTime lastChanged = new(2023, 06, 11);
+        public static readonly DateTime lastChanged = new(2023, 06, 12);
 
         public static readonly int enteringIslandGlobalSteps = 3 + Grid.allStagesCount;
         public static ContentManager ContentMgr { get; private set; } // for things other than textures (for textures use TextureBank)
@@ -43,7 +42,6 @@ namespace SonOfRobin
         public static FpsCounter fpsCounter;
         public static BoardTextureProcessor BoardTextureProcessor { get; private set; }
         public static ErrorLog ErrorLog { get; private set; }
-        public static RumbleManager RumbleManager { get; private set; }
         public static SpriteFont FontPixelMix5 { get; private set; }
         public static SpriteFont FontPressStart2P5 { get; private set; }
         public static SpriteFont FontFreeSansBold10 { get; private set; }
@@ -106,7 +104,7 @@ namespace SonOfRobin
 
         private static void MoveWindowOnWorkMachine(Game game) // method used, to make the code to be commented closer
         {
-            // if (ThisIsWorkMachine) game.Window.Position = new Point(0, 788); // COMMENT THIS LINE on ANDROID
+            if (ThisIsWorkMachine) game.Window.Position = new Point(0, 788); // COMMENT THIS LINE on ANDROID
         }
 
         public static bool WindowsMemoryLow
@@ -144,7 +142,6 @@ namespace SonOfRobin
             SplashScreenTexture = TextureBank.GetTexturePersistent("loading_gfx");
             BoardTextureProcessor = new BoardTextureProcessor();
             ErrorLog = new ErrorLog();
-            RumbleManager = new RumbleManager();
 
             if (!Directory.Exists(gameDataPath)) Directory.CreateDirectory(gameDataPath);
             if (!Directory.Exists(worldTemplatesPath)) Directory.CreateDirectory(worldTemplatesPath);

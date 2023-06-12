@@ -78,9 +78,7 @@ namespace SonOfRobin
                 // debugLines.Add($"time until morning: {world.islandClock.TimeUntilPartOfDay(IslandClock.PartOfDay.Morning).TotalMinutes}");
             }
 
-            RumbleManager rumbleMan = SonOfRobinGame.RumbleManager;
-
-            debugLines.Add($"rumble: leftMotor {Math.Round(rumbleMan.leftMotor, 1)} rightMotor {Math.Round(rumbleMan.rightMotor, 1)}");
+            debugLines.Add($"rumble (events {RumbleManager.EventsCount}): BigMotor {Math.Round(RumbleManager.BigMotor, 1)} SmallMotor {Math.Round(RumbleManager.SmallMotor, 1)}");
 
             SimpleFps fps = SonOfRobinGame.fps;
             debugLines.Add($"FPS: {fps.FPS} updates: {fps.Updates} frames: {fps.Frames}");
@@ -349,22 +347,22 @@ namespace SonOfRobin
 
             if (Keyboard.HasBeenPressed(Keys.F1))
             {
-                SonOfRobinGame.RumbleManager.AddRumble(bigMotor: true, smallMotor: true, value: 1f, durationSeconds: 0.5f);
+                new RumbleEvent(force: 1, durationSeconds: 1, bigMotor: true, smallMotor: false, fadeInSeconds: 0, fadeOutSeconds: 0);
             }
 
             if (Keyboard.HasBeenPressed(Keys.F2))
             {
-                SonOfRobinGame.RumbleManager.AddRumble(smallMotor: true, value: 1f, durationSeconds: 0.5f);
+                RumbleManager.AddSimpleRumble(smallMotor: true, force: 1f, durationSeconds: 0.5f);
             }
 
             if (Keyboard.HasBeenPressed(Keys.F3))
             {
-                SonOfRobinGame.RumbleManager.AddRumble(bigMotor: true, smallMotor: true, value: 1f, durationSeconds: 0.5f);
+                RumbleManager.AddSimpleRumble(bigMotor: true, smallMotor: true, force: 1f, durationSeconds: 1f);
             }
 
             //if (Keyboard.HasBeenPressed(Keys.F1))
             //{
-            //    if (` == null) return;
+            //    if (world == null) return;
             //    world.SpectatorMode = !world.SpectatorMode;
             //}
 

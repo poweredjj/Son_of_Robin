@@ -149,7 +149,7 @@ namespace SonOfRobin
 
                 new Sound(nameList: new List<SoundData.Name> { SoundData.Name.HitSmallPlant1, SoundData.Name.HitSmallPlant2, SoundData.Name.HitSmallPlant3 }, boardPiece: this.targetSprite.boardPiece, ignore3DAlways: isPlayer, maxPitchVariation: 0.3f, volume: isPlayer ? 0.35f : 0.2f).Play();
 
-                if (isPlayer) SonOfRobinGame.RumbleManager.AddRumble(smallMotor: true, value: 0.008f, durationSeconds: 0.02f);
+                if (isPlayer) RumbleManager.AddSimpleRumble(smallMotor: true, force: 0.008f, durationSeconds: 0.02f);
             }
 
             this.Update(world);

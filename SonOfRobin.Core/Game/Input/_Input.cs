@@ -38,7 +38,7 @@ namespace SonOfRobin
             GamePad.GetPreviousState(PlayerIndex.One);
             TouchInput.GetState(gameTime: gameTime);
             RefreshControlType();
-            SonOfRobinGame.RumbleManager.Update();
+            RumbleManager.Update();
             SonOfRobinGame.Game.IsMouseVisible = currentControlType != ControlType.Gamepad;
 
             globalInputActive = savedGlobalInput;
