@@ -329,8 +329,10 @@ namespace SonOfRobin
             get { return this.stamina; }
             set
             {
-                float staminaDifference = value - this.stamina;
-                this.stamina = value;
+                float oldVal = this.stamina;
+                this.stamina = Math.Min(Math.Max(value, 0), this.maxStamina);
+
+                float staminaDifference = oldVal - this.stamina;
                 if (staminaDifference < 0) this.Fatigue -= staminaDifference / 10f;
             }
         }
@@ -703,7 +705,7 @@ namespace SonOfRobin
             if (this.world.CurrentUpdate % 121 == 0) this.world.HintEngine.CheckForPieceHintToShow();
 
             this.ExpendEnergy(0.1f);
-            if (!this.Walk()) this.Stamina = Math.Min(this.Stamina + 1, this.maxStamina);
+            if (!this.Walk()) this.Stamina++;
 
             this.CheckGround();
             this.CheckLowHP();
@@ -832,10 +834,13 @@ namespace SonOfRobin
             {
                 this.ExpendEnergy(0.2f);
 
-                int staminaUsed = 0;
+                if (this.sprite.IsInWater && slowDownInWater)
+                {
+                    this.Stamina--;
+                    new RumbleEvent(force: 0.2f, bigMotor: true, fadeInSeconds: 0.25f, durationSeconds: 0.15f, fadeOutSeconds: 0.25f, minSecondsSinceLastRumble: 0.65f);
+                }
 
-                if (this.sprite.IsInWater) staminaUsed = 1;
-                if (staminaUsed > 0) this.Stamina = Math.Max(this.Stamina - staminaUsed, 0);
+                if (this.sprite.IsOnRocks && slowDownOnRocks) this.Stamina--;
             }
 
             return hasBeenMoved;
@@ -843,6 +848,8 @@ namespace SonOfRobin
 
         private void CheckGround()
         {
+            bool isInWater = this.sprite.IsInWater;
+
             // adding and removing heat
             if (this.world.CurrentUpdate % 65 == 0)
             {
@@ -855,7 +862,7 @@ namespace SonOfRobin
                 if (this.buffEngine.HasBuff(BuffEngine.BuffType.Heat)) Tutorials.ShowTutorialOnTheField(type: Tutorials.Type.Heat, world: this.world, ignoreDelay: true);
             }
 
-            if (this.sprite.IsInWater || this.world.weather.IsRaining) this.buffEngine.AddBuff(buff: new Buff(type: BuffEngine.BuffType.Wet, value: null, autoRemoveDelay: 40 * 60), world: this.world);
+            if (isInWater || this.world.weather.IsRaining) this.buffEngine.AddBuff(buff: new Buff(type: BuffEngine.BuffType.Wet, value: null, autoRemoveDelay: 40 * 60), world: this.world);
 
             if (this.sprite.IsInBiome)
             {
@@ -884,32 +891,26 @@ namespace SonOfRobin
                 this.HitPoints -= 0.5f;
                 this.BurnLevel += 0.12f;
                 this.soundPack.Play(PieceSoundPack.Action.StepLava);
+                new RumbleEvent(force: 1f, bigMotor: true, smallMotor: true, fadeInSeconds: 0, durationSeconds: 1f / 60f, fadeOutSeconds: 0);
             }
 
-            bool gotHitWithLightning = this.world.weather.LightningJustStruck && this.sprite.IsInWater && this.world.random.Next(2) == 0;
-
-            if (gotHitWithLightning)
+            bool struckWithLightning = this.world.weather.LightningJustStruck && isInWater && this.world.random.Next(2) == 0;
+            if (struckWithLightning)
             {
                 this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.Lightning, ignoreDelay: true);
                 this.HitPoints -= 80;
                 Sound.QuickPlay(SoundData.Name.ElectricShock);
+                new RumbleEvent(force: 1f, smallMotor: true, fadeInSeconds: 0, durationSeconds: 0, fadeOutSeconds: 0.5f);
+                new RumbleEvent(force: 1f, bigMotor: true, fadeInSeconds: 0, durationSeconds: 0, fadeOutSeconds: 0.6f);
             }
 
-            if (isOnLava || gotHitWithLightning)
+            if (isOnLava || struckWithLightning)
             {
                 if (!this.world.solidColorManager.AnySolidColorPresent)
                 {
                     this.soundPack.Play(PieceSoundPack.Action.Cry);
                     this.world.camera.AddRandomShake();
                     this.world.FlashRedOverlay();
-
-                    if (isOnLava) RumbleManager.AddSimpleRumble(smallMotor: true, bigMotor: true, force: 1f, durationSeconds: 1.5f);
-
-                    if (gotHitWithLightning)
-                    {
-                        new RumbleEvent(force: 1f, smallMotor: true, fadeInSeconds: 0, durationSeconds: 0, fadeOutSeconds: 0.5f);
-                        new RumbleEvent(force: 1f, bigMotor: true, fadeInSeconds: 0, durationSeconds: 0, fadeOutSeconds: 0.6f);
-                    }
                 }
             }
         }
@@ -935,7 +936,7 @@ namespace SonOfRobin
             this.shootingPower = Math.Min(this.shootingPower + 1, maxShootingPower);
             new RumbleEvent(force: (float)this.shootingPower / maxShootingPower, smallMotor: true, fadeInSeconds: 0, durationSeconds: 1f / 60f, fadeOutSeconds: 0);
 
-            this.Stamina = Math.Max(this.Stamina - 1, 0);
+            this.Stamina--;
 
             if (this.visualAid == null) this.visualAid = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: this.sprite.position, templateName: PieceTemplate.Name.Crosshair);
 

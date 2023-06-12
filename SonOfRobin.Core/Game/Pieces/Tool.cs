@@ -190,7 +190,7 @@ namespace SonOfRobin
 
             if (!highlightOnly && anyTargetHit)
             {
-                player.Stamina = Math.Max(player.Stamina - 50, 0);
+                player.Stamina -= 50;
                 this.hitCooldown = this.world.CurrentUpdate + 30;
                 if (!this.indestructible)
                 {

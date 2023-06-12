@@ -21,12 +21,14 @@ namespace SonOfRobin
         public float CurrentForce { get; private set; }
         public bool HasEnded { get; private set; }
 
-        public RumbleEvent(float force, float durationSeconds, bool bigMotor = false, bool smallMotor = false, float fadeInSeconds = 0, float fadeOutSeconds = 0)
+        public RumbleEvent(float force, float durationSeconds, bool bigMotor = false, bool smallMotor = false, float fadeInSeconds = 0, float fadeOutSeconds = 0, float minSecondsSinceLastRumble = 0f)
         {
             if (!RumbleManager.RumbleIsActive || (!bigMotor && !smallMotor)) return;
 
             this.targetForce = Math.Max(Math.Min(force, 1f), 0);
             if (this.targetForce == 0) return;
+
+            if (minSecondsSinceLastRumble > 0 && RumbleManager.TimeSinceLastRumbleEvent < TimeSpan.FromSeconds(minSecondsSinceLastRumble)) return;
 
             durationSeconds = Math.Max(Math.Min(durationSeconds, 10), 0);
             fadeInSeconds = Math.Max(Math.Min(fadeInSeconds, 5), 0);
@@ -90,10 +92,14 @@ namespace SonOfRobin
     {
         private static List<RumbleEvent> rumbleEventsList = new List<RumbleEvent>();
 
-        public static float SmallMotor { get; private set; }
-        public static float BigMotor { get; private set; }
+        public static float SmallMotorCurrentForce { get; private set; }
+        public static float BigMotorCurrentForce { get; private set; }
 
         public static int EventsCount { get { return rumbleEventsList.Count; } }
+
+        private static DateTime lastEventTime = DateTime.MinValue;
+
+        public static TimeSpan TimeSinceLastRumbleEvent { get { return DateTime.Now - lastEventTime; } }
 
         public static bool RumbleIsActive
         {
@@ -114,6 +120,7 @@ namespace SonOfRobin
         public static void AddEvent(RumbleEvent rumbleEvent)
         {
             rumbleEventsList.Add(rumbleEvent);
+            lastEventTime = DateTime.Now;
         }
 
         public static void StopAll()
@@ -125,22 +132,22 @@ namespace SonOfRobin
         {
             var newRumbleEventsList = new List<RumbleEvent>();
 
-            SmallMotor = 0;
-            BigMotor = 0;
+            SmallMotorCurrentForce = 0;
+            BigMotorCurrentForce = 0;
 
             foreach (RumbleEvent rumbleEvent in rumbleEventsList)
             {
                 rumbleEvent.Update();
                 if (!rumbleEvent.HasEnded)
                 {
-                    if (rumbleEvent.smallMotor) SmallMotor = Math.Max(rumbleEvent.CurrentForce, SmallMotor);
-                    if (rumbleEvent.bigMotor) BigMotor = Math.Max(rumbleEvent.CurrentForce, BigMotor);
+                    if (rumbleEvent.smallMotor) SmallMotorCurrentForce = Math.Max(rumbleEvent.CurrentForce, SmallMotorCurrentForce);
+                    if (rumbleEvent.bigMotor) BigMotorCurrentForce = Math.Max(rumbleEvent.CurrentForce, BigMotorCurrentForce);
 
                     newRumbleEventsList.Add(rumbleEvent);
                 }
             }
 
-            Microsoft.Xna.Framework.Input.GamePad.SetVibration(playerIndex: PlayerIndex.One, leftMotor: BigMotor, rightMotor: SmallMotor);
+            Microsoft.Xna.Framework.Input.GamePad.SetVibration(playerIndex: PlayerIndex.One, leftMotor: BigMotorCurrentForce, rightMotor: SmallMotorCurrentForce);
 
             rumbleEventsList = newRumbleEventsList;
         }
