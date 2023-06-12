@@ -251,11 +251,11 @@ namespace SonOfRobin
 
             // copying cell data
 
-            for (int x = 0; x < templateGrid.noOfCellsX; x++)
+            Parallel.For(0, templateGrid.noOfCellsX, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, x =>
             {
                 for (int y = 0; y < templateGrid.noOfCellsY; y++)
                     this.cellGrid[x, y].CopyFromTemplate(templateGrid.cellGrid[x, y]);
-            }
+            });
 
             // finishing
 
@@ -393,7 +393,6 @@ namespace SonOfRobin
 
                     break;
 
-
                 default:
                     if ((int)this.currentStage < allStagesCount) throw new ArgumentException("Not all steps has been processed.");
                     break;
@@ -407,14 +406,23 @@ namespace SonOfRobin
 
         private void FillCellListsForPieceNames()
         {
-            foreach (PieceTemplate.Name pieceName in PieceTemplate.allNames)
+            var concurrentCellListsForPieceNames = new ConcurrentDictionary<PieceTemplate.Name, List<Cell>>(); // for parallel processing
+
+            Parallel.ForEach(PieceTemplate.allNames, pieceName =>
             {
-                this.cellListsForPieceNames[pieceName] = new List<Cell>();
+                var cellList = new List<Cell>();
 
                 foreach (Cell cell in this.allCells)
                 {
-                    if (cell.allowedNames.Contains(pieceName)) this.cellListsForPieceNames[pieceName].Add(cell);
+                    if (cell.allowedNames.Contains(pieceName)) cellList.Add(cell);
                 }
+
+                concurrentCellListsForPieceNames[pieceName] = cellList;
+            });
+
+            foreach (var kvp in concurrentCellListsForPieceNames)
+            {
+                this.cellListsForPieceNames[kvp.Key] = kvp.Value;
             }
         }
 

@@ -248,11 +248,11 @@ namespace SonOfRobin
             float percentage = FullScreenProgressBar.CalculatePercentage(currentLocalStep: Math.Min(this.processedSteps, this.allSteps), totalLocalSteps: this.allSteps, currentGlobalStep: currentGlobalStep, totalGlobalSteps: totalGlobalSteps);
 
             string text = LoadingTips.GetTip();
-            string optionalText = Preferences.progressBarShowDetails ? $"{this.modeText} game - {this.currentStepName}..." : null;
+            string optionalText = Preferences.progressBarShowDetails ? $"{this.modeText.ToLower()} game - {this.currentStepName}..." : null;
 
             if (this.saveMode && !Preferences.progressBarShowDetails)
             {
-                text = "Saving game...";
+                text = "saving game...";
                 optionalText = null;
             }
 
