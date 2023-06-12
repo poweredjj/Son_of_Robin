@@ -640,6 +640,9 @@ namespace SonOfRobin
             this.world.islandClock.Advance(amount: this.buildDurationForOneFrame, ignorePause: true);
             this.Fatigue += this.buildFatigueForOneFrame;
             world.Player.Fatigue = Math.Min(world.Player.Fatigue, world.Player.maxFatigue - 20); // to avoid falling asleep just after crafting
+
+            new RumbleEvent(force: 0.15f, smallMotor: true, fadeInSeconds: 0.35f, durationSeconds: 0, fadeOutSeconds: 0.35f, minSecondsSinceLastRumble: 0.8f);
+            new RumbleEvent(force: 0.25f, bigMotor: true, fadeInSeconds: 0, durationSeconds: 0, fadeOutSeconds: 0.2f, minSecondsSinceLastRumble: 0.55f);
         }
 
         public override void SM_PlayerControlledGhosting()
