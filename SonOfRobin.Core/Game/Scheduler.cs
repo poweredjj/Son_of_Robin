@@ -260,8 +260,9 @@ namespace SonOfRobin
                     case TaskName.RestartWorld:
                         {
                             Scene.RemoveAllScenesOfType(typeof(Menu));
+                            Scene.RemoveAllScenesOfType(typeof(TextWindow));
                             World oldWorld = (World)this.ExecuteHelper;
-                            PieceTemplate.Name playerName = oldWorld.PlayerName;
+                            PieceTemplate.Name playerName = oldWorld.initialPlayerName;
 
                             new World(width: oldWorld.width, height: oldWorld.height, seed: oldWorld.seed, resDivider: oldWorld.resDivider, playerName: playerName);
                             oldWorld.Remove();

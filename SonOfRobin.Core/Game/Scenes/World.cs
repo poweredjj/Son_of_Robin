@@ -35,6 +35,7 @@ namespace SonOfRobin
 
         private bool spectatorMode;
         private bool cineMode;
+        public readonly PieceTemplate.Name initialPlayerName;
         public readonly int seed;
         public readonly int resDivider;
         public int maxAnimalsPerName;
@@ -162,12 +163,9 @@ namespace SonOfRobin
             this.MapEnabled = false;
             this.map = new Map(world: this, touchLayout: TouchLayout.Map);
             this.playerPanel = new PlayerPanel(world: this);
+            this.initialPlayerName = playerName;
             this.debugText = "";
-            if (saveGameData == null)
-            {
-                this.Player = (Player)PieceTemplate.Create(templateName: playerName, world: this); // temporary boardPiece, to store playerName only
-                this.Grid = new Grid(world: this, resDivider: resDivider);
-            }
+            if (saveGameData == null) this.Grid = new Grid(world: this, resDivider: resDivider);
             else this.Deserialize(gridOnly: true);
 
             this.AddLinkedScene(this.map);
@@ -187,8 +185,7 @@ namespace SonOfRobin
         {
             get
             {
-                Player player = this.Player;
-                return player == null ? PieceTemplate.Name.Empty : this.Player.name;
+                return this.Player == null ? this.initialPlayerName : this.Player.name;
             }
         }
 
@@ -300,7 +297,8 @@ namespace SonOfRobin
                         "What happened? Why I'm floating in the air?\nOh, I see. I'm dead.",
                         "This is not the endgame I was hoping for.\nAt least the weather is fine.",
                         "I was trying to escape this island, not this life.\nDamn..."
-                    };
+                        };
+
                         text = textList[this.random.Next(0, textList.Count)];
                     }
 
@@ -641,7 +639,7 @@ namespace SonOfRobin
         {
             for (int tryIndex = 0; tryIndex < 65535; tryIndex++)
             {
-                PieceTemplate.Name playerName = this.PlayerName; // taken from a temporary Player boardPiece
+                PieceTemplate.Name playerName = this.initialPlayerName; // taken from a temporary Player boardPiece
 
                 this.Player = (Player)PieceTemplate.CreateAndPlaceOnBoard(world: this, randomPlacement: true, position: Vector2.Zero, templateName: playerName);
 

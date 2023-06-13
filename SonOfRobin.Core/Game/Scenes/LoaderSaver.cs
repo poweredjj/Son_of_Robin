@@ -290,7 +290,7 @@ namespace SonOfRobin
                     { "width", this.world.width },
                     { "height", this.world.height },
                     { "maxAnimalsPerName", this.world.maxAnimalsPerName },
-                    { "playerName", this.world.PlayerName },
+                    { "playerName", this.world.initialPlayerName },
                     { "resDivider", this.world.resDivider },
                     { "currentFrame", this.world.CurrentFrame },
                     { "currentUpdate", this.world.CurrentUpdate },
