@@ -95,14 +95,18 @@ namespace SonOfRobin
         private static List<RumbleEvent> rumbleEventsList = new List<RumbleEvent>();
         public static float SmallMotorCurrentForce { get; private set; }
         public static float BigMotorCurrentForce { get; private set; }
-        public static int EventsCount { get { return rumbleEventsList.Count; } }
+        public static int EventsCount
+        { get { return rumbleEventsList.Count; } }
 
         private static DateTime lastEventTime = DateTime.MinValue;
         private static DateTime lastEventTimeSmallMotor = DateTime.MinValue;
         private static DateTime lastEventTimeBigMotor = DateTime.MinValue;
-        public static TimeSpan TimeSinceLastRumbleEvent { get { return DateTime.Now - lastEventTime; } }
-        public static TimeSpan TimeSinceLastRumbleEventSmallMotor { get { return DateTime.Now - lastEventTimeSmallMotor; } }
-        public static TimeSpan TimeSinceLastRumbleEventBigMotor { get { return DateTime.Now - lastEventTimeBigMotor; } }
+        public static TimeSpan TimeSinceLastRumbleEvent
+        { get { return DateTime.Now - lastEventTime; } }
+        public static TimeSpan TimeSinceLastRumbleEventSmallMotor
+        { get { return DateTime.Now - lastEventTimeSmallMotor; } }
+        public static TimeSpan TimeSinceLastRumbleEventBigMotor
+        { get { return DateTime.Now - lastEventTimeBigMotor; } }
 
         public static bool RumbleIsActive
         {
@@ -111,13 +115,6 @@ namespace SonOfRobin
                 return Preferences.DebugMode ||
                        (Preferences.rumbleEnabled && (Input.currentControlType == Input.ControlType.Gamepad || SonOfRobinGame.platform == Platform.Mobile));
             }
-        }
-
-        public static void AddSimpleRumble(float force, float durationSeconds, bool bigMotor = false, bool smallMotor = false)
-        {
-            if (!bigMotor && !smallMotor) return;
-
-            new RumbleEvent(force: force, durationSeconds: 0, bigMotor: bigMotor, smallMotor: smallMotor, fadeInSeconds: durationSeconds / 2, fadeOutSeconds: durationSeconds / 2);
         }
 
         public static void AddEvent(RumbleEvent rumbleEvent)

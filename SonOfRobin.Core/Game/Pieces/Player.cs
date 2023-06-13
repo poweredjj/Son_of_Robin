@@ -1212,7 +1212,7 @@ namespace SonOfRobin
             if (piecePickedUp)
             {
                 Sound.QuickPlay(name: SoundData.Name.PickUpItem, volume: 0.6f);
-                RumbleManager.AddSimpleRumble(smallMotor: true, force: 0.32f, durationSeconds: 0.13f);
+                new RumbleEvent(force: 0.32f, durationSeconds: 0, smallMotor: true, fadeInSeconds: 0.065f, fadeOutSeconds: 0.065f);
 
                 closestPiece.sprite.rotation = 0f;
                 MessageLog.AddMessage(msgType: MsgType.User, message: $"Picked up {closestPiece.readableName}.");

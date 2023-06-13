@@ -1526,7 +1526,7 @@ namespace SonOfRobin
                             else activeSlot.storage.AddPiece(piece: combinedPiece, dropIfDoesNotFit: true);
 
                             Inventory.soundCombine.Play();
-                            RumbleManager.AddSimpleRumble(bigMotor: true, force: 0.27f, durationSeconds: 0.17f);
+                            new RumbleEvent(force: 0.27f, durationSeconds: 0, bigMotor: true, fadeInSeconds: 0.085f, fadeOutSeconds: 0.085f);
 
                             new TextWindow(text: $"{piece1.readableName} | + {piece2.readableName} | = {combinedPiece.readableName} |", imageList: new List<Texture2D> { piece1.sprite.AnimFrame.texture, piece2.sprite.AnimFrame.texture, combinedPiece.sprite.AnimFrame.texture }, textColor: Color.White, bgColor: new Color(0, 214, 222), useTransition: true, animate: true);
 

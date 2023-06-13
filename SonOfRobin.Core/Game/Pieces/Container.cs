@@ -69,6 +69,7 @@ namespace SonOfRobin
             if (this.sprite.AnimName == "open") return; // "opening" animation is not used, because it won't complete before opening inventory
             this.soundPack.Play(PieceSoundPack.Action.Open);
             this.sprite.AssignNewName(newAnimName: "open");
+            if (this.PieceStorage.storageType == PieceStorage.StorageType.Chest) new RumbleEvent(force: 0.4f, bigMotor: true, fadeInSeconds: 0.5f, durationSeconds: 0, fadeOutSeconds: 0);
         }
 
         public void Close()
@@ -76,6 +77,7 @@ namespace SonOfRobin
             if (this.PieceStorage.OccupiedSlots.Count == 0 || this.sprite.AnimName == "closing") return;
             this.soundPack.Play(PieceSoundPack.Action.Close);
             this.sprite.AssignNewName(newAnimName: "closing");
+            if (this.PieceStorage.storageType == PieceStorage.StorageType.Chest) new RumbleEvent(force: 0.7f, bigMotor: true, fadeInSeconds: 0, durationSeconds: 0, fadeOutSeconds: 0.4f);
         }
     }
 }

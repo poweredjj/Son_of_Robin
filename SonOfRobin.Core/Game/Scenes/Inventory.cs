@@ -852,7 +852,8 @@ namespace SonOfRobin
                 if (pickedUpPieces.Count > 0)
                 {
                     soundPickUp.Play();
-                    RumbleManager.AddSimpleRumble(smallMotor: true, force: 0.17f, durationSeconds: 0.07f);
+                    new RumbleEvent(force: 0.17f, durationSeconds: 0, smallMotor: true, fadeInSeconds: 0.035f, fadeOutSeconds: 0.035f);
+
                     this.draggedPieces = pickedUpPieces;
                 }
             }
@@ -1017,7 +1018,7 @@ namespace SonOfRobin
             else
             {
                 firstPieceSoundPack.Play(action: PieceSoundPack.Action.IsDropped, ignore3D: true, ignoreCooldown: true);
-                RumbleManager.AddSimpleRumble(bigMotor: true, force: 0.12f, durationSeconds: 0.07f);
+                new RumbleEvent(force: 0.12f, durationSeconds: 0, bigMotor: true, fadeInSeconds: 0.06f, fadeOutSeconds: 0.06f);
             }
         }
 
@@ -1052,7 +1053,7 @@ namespace SonOfRobin
                 { slot.AddPiece(piece); }
 
                 this.draggedPieces[0].soundPack.Play(action: PieceSoundPack.Action.IsDropped, ignore3D: true, ignoreCooldown: true);
-                RumbleManager.AddSimpleRumble(bigMotor: true, force: 0.12f, durationSeconds: 0.07f);
+                new RumbleEvent(force: 0.12f, durationSeconds: 0, bigMotor: true, fadeInSeconds: 0.035f, fadeOutSeconds: 0.035f);
 
                 this.draggedPieces = slotPieces;
             }
