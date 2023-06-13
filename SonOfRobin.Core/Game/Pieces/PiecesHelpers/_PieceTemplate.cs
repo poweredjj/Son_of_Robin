@@ -2038,7 +2038,7 @@ namespace SonOfRobin
                         soundPack.AddAction(action: PieceSoundPack.Action.Cry, sound: new Sound(name: SoundData.Name.TigerRoar, maxPitchVariation: 0.3f));
                         soundPack.AddAction(action: PieceSoundPack.Action.Eat, sound: new Sound(nameList: new List<SoundData.Name> { SoundData.Name.EatPredator1, SoundData.Name.EatPredator2, SoundData.Name.EatPredator3, SoundData.Name.EatPredator4 }, maxPitchVariation: 0.25f, cooldown: 60));
 
-                        var eats = new List<Name> { Name.Rabbit, Name.MeatRaw, Name.Fat, Name.Burger, Name.MeatDried, Name.Fox, Name.Meal };
+                        var eats = new List<Name> { Name.Rabbit, Name.MeatRaw, Name.Fat, Name.Burger, Name.MeatDried, Name.Fox, Name.Meal, Name.Frog };
                         eats.AddRange(PieceInfo.GetPlayerNames());
 
                         return new Animal(name: templateName, world: world, id: id, maleAnimPkgName: maleAnimPkgName, femaleAnimPkgName: femaleAnimPkgName, allowedTerrain: allowedTerrain, speed: 2.4f,

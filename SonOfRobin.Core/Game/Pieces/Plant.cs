@@ -161,7 +161,10 @@ namespace SonOfRobin
                 bool canReproduce = this.maxExistingNumber == 0 || this.world.pieceCountByName[this.name] < this.maxExistingNumber;
                 if (canReproduce && this.Mass > this.reproduction.massNeeded + this.startingMass)
                 {
-                    BoardPiece newPlant = PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: this.sprite.position, templateName: this.name, generation: this.generation + 1);
+                    BoardPiece newPlant = PieceTemplate.Create(world: world, templateName: this.name, generation: this.generation + 1);
+                    if (this.sprite.allowedTerrain.HasBeenChanged) newPlant.sprite.allowedTerrain.CopyTerrainFromTemplate(this.sprite.allowedTerrain);
+                    newPlant.PlaceOnBoard(randomPlacement: false, position: this.sprite.position);
+
                     if (newPlant.sprite.IsOnBoard)
                     {
                         this.Mass -= this.reproduction.massLost;
