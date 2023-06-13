@@ -119,7 +119,14 @@ namespace SonOfRobin
             Tween tweenPos = this.tweener.FindTween(target: this.sprite, memberName: "position");
             if (tweenPos == null)
             {
-                float angle = Helpers.GetAngleBetweenTwoPoints(start: this.sprite.position, end: new Vector2(this.world.width / 2, this.world.height / 2));
+                Vector2 waveTarget = new Vector2(this.world.width / 2, this.world.height / 2);
+                if (this.world.weather.WindPercentage > 0)
+                {
+                    Vector2 windTarget = new Vector2(this.world.width * this.world.weather.WindOriginX, this.world.height * this.world.weather.WindOriginY);
+                    waveTarget = Vector2.Lerp(waveTarget, windTarget, this.world.weather.WindPercentage);
+                }
+
+                float angle = Helpers.GetAngleBetweenTwoPoints(start: this.sprite.position, end: waveTarget);
 
                 this.sprite.opacity = 0f;
                 this.sprite.rotation = angle;
