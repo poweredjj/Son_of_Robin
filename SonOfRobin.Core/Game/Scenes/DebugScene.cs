@@ -111,7 +111,7 @@ namespace SonOfRobin
             {
                 if (Keyboard.HasBeenPressed(Keys.D1))
                 {
-                    BoardPiece piece = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: world.Player.sprite.position, templateName: PieceTemplate.Name.ShovelIron, closestFreeSpot: true);
+                    BoardPiece piece = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: world.Player.sprite.position, templateName: PieceTemplate.Name.HumanSkeleton, closestFreeSpot: true);
                 }
 
                 if (Keyboard.HasBeenPressed(Keys.D2))
