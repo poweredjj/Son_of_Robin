@@ -2464,7 +2464,7 @@ namespace SonOfRobin
                     {
                         var buffList = new List<Buff> { new Buff(type: BuffEngine.BuffType.EnableMap, value: null) };
 
-                        return new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Map, blocksMovement: false, category: BoardPiece.Category.Flesh, equipType: Equipment.EquipType.Accessory,
+                        return new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Map, blocksMovement: false, category: BoardPiece.Category.Flesh, equipType: Equipment.EquipType.Map,
                             allowedTerrain: shallowWaterToVolcano, minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 100, rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "map", description: "Keeps track of visited places.", fireAffinity: 0.8f);
                     }
 

@@ -384,6 +384,7 @@ namespace SonOfRobin
                 { new Point(2,1), Equipment.EquipType.Belt },
                 { new Point(0,0), Equipment.EquipType.Accessory },
                 { new Point(2,0), Equipment.EquipType.Accessory },
+                { new Point(0,2), Equipment.EquipType.Map },
             };
 
             foreach (var kvp in equipTypeBySlotCoords)

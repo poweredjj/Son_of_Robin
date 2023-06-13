@@ -5,7 +5,7 @@ namespace SonOfRobin
 {
     public class Equipment : BoardPiece
     {
-        public enum EquipType { None, Head, Chest, Legs, Backpack, Belt, Accessory }; // None for compatibility with PieceInfo
+        public enum EquipType { None, Head, Chest, Legs, Backpack, Belt, Accessory, Map }; // None for compatibility with PieceInfo
 
         public readonly EquipType equipType;
 
