@@ -1158,7 +1158,7 @@ namespace SonOfRobin
                 if (currentPlant.sprite.IsInCameraRect && !Preferences.debugShowPlantGrowthInCamera) continue;
 
                 currentPlant.StateMachineWork();
-                if (currentPlant.currentAge >= currentPlant.maxAge || currentPlant.efficiency < 0.2 || currentPlant.Mass < 1) currentPlant.Kill();
+                if (currentPlant.currentAge >= currentPlant.maxAge || currentPlant.efficiency < 0.15 || currentPlant.Mass < 1) currentPlant.Destroy();
                 this.ProcessedPlantsCount++;
 
                 if (!this.CanProcessMorePlantsNow)
