@@ -160,7 +160,7 @@ namespace SonOfRobin
 
                 if (Keyboard.HasBeenPressed(Keys.OemMinus))
                 {
-                    foreach (var sprite in world.camera.GetVisibleSprites(groupName: Cell.Group.All))
+                    foreach (var sprite in world.Grid.GetSpritesInCameraView(groupName: Cell.Group.All))
                     {
                         if (sprite.boardPiece != world.Player) Tool.HitTarget(attacker: world.Player, target: sprite.boardPiece, hitPower: 99999, targetPushMultiplier: 1f);
                     }
@@ -296,7 +296,7 @@ namespace SonOfRobin
             {
                 if (world == null) return;
 
-                foreach (var sprite in world.camera.GetVisibleSprites(groupName: Cell.Group.All))
+                foreach (var sprite in world.Grid.GetSpritesInCameraView(groupName: Cell.Group.All))
                 {
                     if (sprite.boardPiece != world.Player)
                     {

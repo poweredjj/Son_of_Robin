@@ -217,8 +217,7 @@ namespace SonOfRobin
                         cameraRect.Y + (this.LightningPosMultiplier.Y * cameraRect.Height)
                         );
 
-                    var plantSpriteList = new List<Sprite>();
-                    world.Grid.GetSpritesInCameraViewAndPutIntoList(camera: world.camera, groupName: Cell.Group.ColPlantGrowth, spriteListToFill: plantSpriteList);
+                    var plantSpriteList = this.world.Grid.GetSpritesInCameraView(groupName: Cell.Group.ColPlantGrowth);
 
                     foreach (Sprite sprite in plantSpriteList)
                     {
@@ -234,8 +233,7 @@ namespace SonOfRobin
                 // setting fire to a tree
                 if (this.world.random.Next(15) == 0)
                 {
-                    var blockingSpriteList = new List<Sprite>();
-                    this.world.Grid.GetSpritesInCameraViewAndPutIntoList(camera: this.world.camera, groupName: Cell.Group.ColMovement, spriteListToFill: blockingSpriteList);
+                    var blockingSpriteList = this.world.Grid.GetSpritesInCameraView(groupName: Cell.Group.ColMovement);
                     var blockingSpritesShuffled = blockingSpriteList.OrderBy(item => this.world.random.Next());
                     foreach (Sprite sprite in blockingSpritesShuffled)
                     {
@@ -333,8 +331,7 @@ namespace SonOfRobin
             int y = cameraRect.Y + (int)(cameraRect.Height * WindOriginY);
             Vector2 windOriginLocation = new Vector2(x, y);
 
-            var affectedSpriteList = new List<Sprite>();
-            this.world.Grid.GetSpritesInCameraViewAndPutIntoList(camera: this.world.camera, groupName: Cell.Group.Visible, spriteListToFill: affectedSpriteList);
+            var affectedSpriteList = this.world.Grid.GetSpritesInCameraView(groupName: Cell.Group.Visible);
 
             float targetRotation = 0.38f * this.WindPercentage;
 
@@ -397,8 +394,7 @@ namespace SonOfRobin
 
             this.NextLocalizedWindBlow = islandDateTime + windCooldown;
 
-            var affectedSpriteList = new List<Sprite>();
-            this.world.Grid.GetSpritesInCameraViewAndPutIntoList(camera: this.world.camera, groupName: Cell.Group.ColPlantGrowth, spriteListToFill: affectedSpriteList);
+            var affectedSpriteList = this.world.Grid.GetSpritesInCameraView(groupName: Cell.Group.ColPlantGrowth);
 
             float targetRotation = 0.2f;
 

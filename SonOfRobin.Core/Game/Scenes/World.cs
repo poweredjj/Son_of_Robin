@@ -1043,7 +1043,7 @@ namespace SonOfRobin
                 return;
             }
 
-            foreach (Sprite sprite in this.camera.GetVisibleSprites(groupName: Cell.Group.StateMachinesNonPlants, compareWithCameraRect: true))
+            foreach (Sprite sprite in this.Grid.GetSpritesInCameraView(groupName: Cell.Group.StateMachinesNonPlants, compareWithCameraRect: true))
             {
                 this.ProcessOneNonPlant(sprite.boardPiece);
 
@@ -1283,7 +1283,7 @@ namespace SonOfRobin
 
         public void UpdateAllAnims()
         {
-            foreach (var sprite in this.camera.GetVisibleSprites(groupName: Cell.Group.Visible, compareWithCameraRect: true))
+            foreach (var sprite in this.Grid.GetSpritesInCameraView(groupName: Cell.Group.Visible, compareWithCameraRect: true))
             {
                 if (this.stateMachineTypesManager.CanBeProcessed(sprite.boardPiece)) sprite.UpdateAnimation(checkForCollision: true);
             }
@@ -1346,7 +1346,7 @@ namespace SonOfRobin
             if ((Preferences.drawSunShadows && AmbientLight.SunLightData.CalculateSunLight(currentDateTime: this.islandClock.IslandDateTime, weather: this.weather).sunShadowsColor != Color.Transparent) ||
                 (Preferences.drawShadows && AmbientLight.CalculateLightAndDarknessColors(currentDateTime: this.islandClock.IslandDateTime, weather: this.weather).darknessColor != Color.Transparent))
             {
-                this.blockingLightSpritesList.AddRange(this.camera.GetVisibleSprites(groupName: Cell.Group.ColMovement).OrderBy(o => o.GfxRect.Bottom));
+                this.blockingLightSpritesList.AddRange(this.Grid.GetSpritesInCameraView(groupName: Cell.Group.ColMovement).OrderBy(o => o.GfxRect.Bottom));
             }
 
             var lightSpritesToAdd = this.UpdateDarknessMask(blockingLightSpritesList: blockingLightSpritesList);
@@ -1410,7 +1410,7 @@ namespace SonOfRobin
         {
             // searching for light sources
 
-            var lightSprites = this.camera.GetVisibleSprites(groupName: Cell.Group.LightSource).OrderBy(o => o.AnimFrame.layer).ThenBy(o => o.GfxRect.Bottom).ToList();
+            var lightSprites = this.Grid.GetSpritesInCameraView(groupName: Cell.Group.LightSource).OrderBy(o => o.AnimFrame.layer).ThenBy(o => o.GfxRect.Bottom).ToList();
 
             // returning if darkness is transparent
 

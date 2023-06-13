@@ -1,60 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
 using MonoGame.Extended.Tweening;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace SonOfRobin
 {
     public class Camera
     {
-        public struct BufferedSpriteSearch
-        {
-            // Prevents from repeating the same search in one frame.
-            // Also, prevents from creating multiple List<Sprite> every frame.
-
-            private static Dictionary<string, BufferedSpriteSearch> searchByID = new Dictionary<string, BufferedSpriteSearch>();
-
-            private readonly string id;
-            private readonly bool compareWithCameraRect;
-            private readonly List<Sprite> spriteList;
-            private readonly Cell.Group groupName;
-            private int lastCheckedFrame;
-
-            private BufferedSpriteSearch(string id, Cell.Group groupName, bool compareWithCameraRect)
-            {
-                this.id = id;
-                this.groupName = groupName;
-                this.compareWithCameraRect = compareWithCameraRect;
-                this.spriteList = new List<Sprite>();
-                this.lastCheckedFrame = -1;
-
-                searchByID[this.id] = this;
-            }
-
-            private List<Sprite> GetSprites(Camera camera)
-            {
-                if (this.lastCheckedFrame != camera.world.CurrentUpdate)
-                {
-                    camera.world.Grid.GetSpritesInCameraViewAndPutIntoList(camera: camera, groupName: groupName, spriteListToFill: this.spriteList, compareWithCameraRect: compareWithCameraRect);
-                    this.lastCheckedFrame = camera.world.CurrentUpdate;
-                }
-                // else MessageLog.AddMessage(msgType: MsgType.User, message: $"{camera.world.CurrentUpdate} reusing sprite search {groupName} - {compareWithCameraRect}");
-
-                return this.spriteList;
-            }
-
-            public static List<Sprite> SearchSprites(Camera camera, Cell.Group groupName, bool compareWithCameraRect)
-            {
-                string id = $"{groupName}-{compareWithCameraRect}";
-                if (!searchByID.ContainsKey(id)) searchByID[id] = new BufferedSpriteSearch(id: id, groupName: groupName, compareWithCameraRect: compareWithCameraRect);
-
-                BufferedSpriteSearch currentSearch = searchByID[id];
-
-                return currentSearch.GetSprites(camera);
-            }
-        }
-
         private readonly World world;
         private readonly bool keepInWorldBounds;
         private readonly bool useFluidMotionForMove;
@@ -357,11 +309,6 @@ namespace SonOfRobin
             if (animals.Count() == 0) return;
             var index = BoardPiece.Random.Next(0, animals.Count());
             this.TrackPiece(trackedPiece: animals.ElementAt(index).boardPiece, moveInstantly: !fluidMotion);
-        }
-
-        public List<Sprite> GetVisibleSprites(Cell.Group groupName, bool compareWithCameraRect = false)
-        {
-            return BufferedSpriteSearch.SearchSprites(camera: this, groupName: groupName, compareWithCameraRect: compareWithCameraRect);
         }
     }
 }

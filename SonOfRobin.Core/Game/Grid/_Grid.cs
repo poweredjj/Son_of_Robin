@@ -925,26 +925,29 @@ namespace SonOfRobin
             return piecesInsideTriangle;
         }
 
-        public void GetSpritesInCameraViewAndPutIntoList(List<Sprite> spriteListToFill, Camera camera, Cell.Group groupName, bool compareWithCameraRect = false)
+        public List<Sprite> GetSpritesInCameraView(Cell.Group groupName, bool compareWithCameraRect = false)
         {
-            spriteListToFill.Clear();
+            var spritesInCameraView = new List<Sprite>();
 
+            Camera camera = this.world.camera;
             var visibleCells = this.GetCellsInsideRect(viewRect: camera.viewRect, addPadding: true);
 
             if (compareWithCameraRect)
             {
                 foreach (Cell cell in visibleCells) // making sure that every piece is actually inside camera rect
                 {
-                    spriteListToFill.AddRange(cell.spriteGroups[groupName].Values.Where(sprite => camera.viewRect.Intersects(sprite.GfxRect)));
+                    spritesInCameraView.AddRange(cell.spriteGroups[groupName].Values.Where(sprite => camera.viewRect.Intersects(sprite.GfxRect)));
                 }
             }
             else
             {
                 foreach (Cell cell in visibleCells) // visibleCells area is larger than camera view
                 {
-                    spriteListToFill.AddRange(cell.spriteGroups[groupName].Values);
+                    spritesInCameraView.AddRange(cell.spriteGroups[groupName].Values);
                 }
             }
+
+            return spritesInCameraView;
         }
 
         private List<Cell> GetAllCells()
@@ -1055,7 +1058,7 @@ namespace SonOfRobin
             // Sprites should be drawn all at once, because cell-based drawing causes Y sorting order incorrect
             // in cases of sprites overlapping cell boundaries.
 
-            var visibleSprites = camera.GetVisibleSprites(groupName: Cell.Group.Visible, compareWithCameraRect: true);
+            var visibleSprites = world.Grid.GetSpritesInCameraView(groupName: Cell.Group.Visible, compareWithCameraRect: true);
 
             foreach (Sprite sprite in visibleSprites.OrderBy(o => o.AnimFrame.layer).ThenBy(o => o.GfxRect.Bottom))
             { sprite.Draw(); }
