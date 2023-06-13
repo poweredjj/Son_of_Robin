@@ -1224,28 +1224,19 @@ namespace SonOfRobin
             if (!cellsInCameraViewWithNoTextures.Any()) return;
 
             Vector2 cameraCenter = camera.CurrentPos;
-            var cellsByDistance = cellsInCameraViewWithNoTextures.OrderBy(cell => cell.GetDistance(cameraCenter));
+            var cellsWithNoTexturesByDistance = cellsInCameraViewWithNoTextures
+                .Where(cell => cell.boardGraphics.Texture == null)
+                .OrderByDescending(cell => cell.GetDistance(cameraCenter)); // farthest textures first, because newest rendering orders are processed in the first place
+            if (!cellsWithNoTexturesByDistance.Any()) return;
 
             // to check how much textures has really been loaded (and allow scheduling rendering of as much background textures as possible)
             int noOfLoadedTexturesAtTheStart = this.loadedTexturesCount;
-            foreach (Cell cell in cellsByDistance)
+            foreach (Cell cell in cellsWithNoTexturesByDistance)
             {
                 cell.boardGraphics.LoadTexture();
                 if (this.loadedTexturesCount - noOfLoadedTexturesAtTheStart >= maxNoToLoad || Scene.UpdateTimeElapsed.Milliseconds > 10) return;
             }
         }
-
-        public void LoadAllTexturesInCameraView()
-        {
-            foreach (Cell cell in this.GetCellsInsideRect(viewRect: this.world.camera.viewRect, addPadding: true))
-            {
-                // MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Processing cell in camera view {cell.cellNoX},{cell.cellNoY}.", color: Color.White);
-
-                cell.boardGraphics.CreateAndSavePngTemplate(ignoreIfFileExists: true); // assuming that png files will be correct
-                cell.boardGraphics.LoadTexture();
-            }
-        }
-
         public void UnloadTexturesIfMemoryLow(Camera camera)
         {
             if (DateTime.Now - this.lastUnloadedTime < TimeSpan.FromSeconds(60)) return;

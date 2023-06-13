@@ -18,9 +18,10 @@ namespace SonOfRobin
         public static readonly Dictionary<RepeatingPattern.Name, List<byte>> patternNamesByHumidity = GetColorsByHumidity();
 
         private readonly Cell cell;
+        public FileStream filestream;
         public Texture2D Texture { get; private set; }
 
-        private readonly string templatePath;
+        public readonly string templatePath;
         private bool processedCorrectly;
 
         public BoardGraphics(Grid grid, Cell cell)
@@ -34,7 +35,11 @@ namespace SonOfRobin
         {
             if (this.Texture != null) return;
 
-            this.Texture = GfxConverter.LoadTextureFromPNG(this.templatePath);
+            if (this.filestream != null)
+            {
+                this.Texture = GfxConverter.LoadTextureFromFileStream(this.filestream);
+                this.filestream = null;
+            }
 
             if (this.Texture == null) SonOfRobinGame.BoardTextureProcessor.AddCellToProcess(this.cell);
             else this.cell.grid.loadedTexturesCount++;

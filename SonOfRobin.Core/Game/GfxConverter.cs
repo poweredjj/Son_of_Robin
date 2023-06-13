@@ -135,12 +135,16 @@ namespace SonOfRobin
 
         public static Texture2D LoadTextureFromPNG(string path)
         {
+            FileStream fileStream = OpenFileStream(path);
+            return LoadTextureFromFileStream(fileStream);
+        }
+
+        public static FileStream OpenFileStream(string path)
+        {
             try
             {
                 FileStream fileStream = new FileStream(path, FileMode.Open);
-                Texture2D loadedTexture = Texture2D.FromStream(SonOfRobinGame.GfxDev, fileStream);
-                fileStream.Dispose();
-                return loadedTexture;
+                return fileStream;
             }
             catch (FileNotFoundException)
             { if (!path.Contains("background")) MessageLog.AddMessage(msgType: MsgType.Debug, message: $"FileNotFoundException while trying to read {Path.GetFileName(path)}."); }
@@ -150,6 +154,15 @@ namespace SonOfRobin
             { if (!path.Contains("background")) MessageLog.AddMessage(msgType: MsgType.Debug, message: $"InvalidOperationException while trying to read {Path.GetFileName(path)}."); }
 
             return null;
+        }
+
+        public static Texture2D LoadTextureFromFileStream(FileStream fileStream)
+        {
+            if (fileStream == null) return null;
+
+            Texture2D loadedTexture = Texture2D.FromStream(SonOfRobinGame.GfxDev, fileStream);
+            fileStream.Dispose();
+            return loadedTexture;
         }
 
         public static Texture2D ConvertColorArray2DToTexture(Color[,] array2D)

@@ -60,7 +60,11 @@ namespace SonOfRobin
                         Cell cell;
                         this.cellsToProcessByRequestTime.TryRemove(requestTimeToUse, out cell);
 
-                        if (cell != null && !cell.grid.world.HasBeenRemoved) cell.boardGraphics.CreateAndSavePngTemplate();
+                        if (cell != null && !cell.grid.world.HasBeenRemoved)
+                        {
+                            cell.boardGraphics.CreateAndSavePngTemplate();
+                            cell.boardGraphics.filestream = GfxConverter.OpenFileStream(cell.boardGraphics.templatePath);
+                        }
                     }
                 }
                 catch (Exception ex)

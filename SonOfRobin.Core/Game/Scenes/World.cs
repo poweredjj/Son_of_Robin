@@ -494,7 +494,6 @@ namespace SonOfRobin
             }
 
             this.CreateNewDarknessMask();
-            this.Grid.LoadAllTexturesInCameraView();
             if (!this.demoMode) this.map.ForceRender();
             this.CreateTemporaryDecorations(ignoreDuration: true);
 
