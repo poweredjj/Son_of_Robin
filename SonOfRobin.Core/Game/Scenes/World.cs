@@ -455,7 +455,7 @@ namespace SonOfRobin
                 {
                     this.backgroundTask = Task.Run(() => this.Deserialize(gridOnly: false));
 
-                    SonOfRobinGame.FullScreenProgressBar.TurnOn(percentage: 1, text: LoadingTips.GetTip(), optionalText: Preferences.progressBarShowDetails ? "entering island..." : null);
+                    SonOfRobinGame.FullScreenProgressBar.TurnOn(percentage: 1, text: LoadingTips.GetTip(), optionalText: Preferences.progressBarShowDetails ? "entering the island..." : null);
                 }
                 else
                 {

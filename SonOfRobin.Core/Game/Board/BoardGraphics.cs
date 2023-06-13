@@ -6,6 +6,7 @@ using SixLabors.ImageSharp.Processing;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using Color = Microsoft.Xna.Framework.Color;
 using Point = Microsoft.Xna.Framework.Point;
@@ -18,7 +19,7 @@ namespace SonOfRobin
         public static readonly Dictionary<RepeatingPattern.Name, List<byte>> patternNamesByHumidity = GetColorsByHumidity();
 
         private readonly Cell cell;
-        public FileStream filestream;
+        public FileStream fileStream;
         public Texture2D Texture { get; private set; }
 
         public readonly string templatePath;
@@ -33,11 +34,11 @@ namespace SonOfRobin
         {
             if (this.Texture != null) return;
 
-            if (this.filestream == null) this.filestream = GfxConverter.OpenFileStream(cell.boardGraphics.templatePath);
-            if (this.filestream != null)
+            if (this.fileStream == null) this.fileStream = GfxConverter.OpenFileStream(cell.boardGraphics.templatePath);
+            if (this.fileStream != null)
             {
-                this.Texture = GfxConverter.LoadTextureFromFileStream(this.filestream);
-                this.filestream = null;
+                this.Texture = GfxConverter.LoadTextureFromFileStream(this.fileStream);
+                this.fileStream = null;
             }
 
             if (this.Texture == null) SonOfRobinGame.BoardTextureProcessor.AddCellToProcess(this.cell);
@@ -117,13 +118,13 @@ namespace SonOfRobin
 
             // saving image
 
-            using (var fileStream = new FileStream(mapImagePath, FileMode.Create))
+            using (var fileStreamToSave = new FileStream(mapImagePath, FileMode.Create))
             {
                 try
                 {
-                    imageWithTransparency.Save(fileStream, new PngEncoder() { CompressionLevel = PngCompressionLevel.BestCompression });
+                    imageWithTransparency.Save(fileStreamToSave, new PngEncoder() { CompressionLevel = PngCompressionLevel.BestCompression });
                 }
-                catch (IOException ex) { MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Error saving imagee {mapImagePath}: {ex.Message}"); } // write error
+                catch (IOException ex) { MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Error saving image {mapImagePath}: {ex.Message}"); } // write error
             }
 
             return imageWithTransparency;
@@ -155,7 +156,7 @@ namespace SonOfRobin
             return texture;
         }
 
-        public bool CreateBitmapFromTerrainAndSaveAsPNG()
+        public void CreateBitmapFromTerrainAndSaveAsPNG()
         {
             // can be run in parallel, because it does not use graphicsDevice
 
@@ -250,16 +251,30 @@ namespace SonOfRobin
             }
 
             // saving as PNG
-            try
+
+            bool savedCorrectly = false;
+
+            for (int tryNo = 0; tryNo < 5; tryNo++)
             {
-                using (var fileStream = new FileStream(this.templatePath, FileMode.Create))
+                try
                 {
-                    image.Save(fileStream, new PngEncoder() { CompressionLevel = PngCompressionLevel.BestCompression });
-                    return true;
+                    using (var fileStreamToSave = new FileStream(this.templatePath, FileMode.Create))
+                    {
+                        image.Save(fileStreamToSave, new PngEncoder() { CompressionLevel = PngCompressionLevel.BestCompression });
+                        savedCorrectly = true;
+                        break;
+                    }      
+                }
+                catch (IOException)
+                {
+                    Thread.Sleep(2);
                 }
             }
-            catch (IOException)
-            { return false; }
+
+            if (savedCorrectly)
+            {
+                this.fileStream = GfxConverter.OpenFileStream(cell.boardGraphics.templatePath);
+            }    
         }
 
         private static RepeatingPattern.Name FindPatternNameForPixel(Grid grid, int x, int y)

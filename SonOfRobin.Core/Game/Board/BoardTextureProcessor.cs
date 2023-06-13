@@ -58,16 +58,13 @@ namespace SonOfRobin
                     else
                     {
                         // newest request always takes the priority
-
-                        cellsToProcess.Clear();
-
                         while (true)
                         {
                             DateTime requestTimeToUse = this.cellsToProcessByRequestTime.OrderByDescending(kvp => kvp.Key).First().Key;
 
                             Cell cell;
                             bool removedCorrectly = this.cellsToProcessByRequestTime.TryRemove(requestTimeToUse, out cell);
-                            if (removedCorrectly && !cellsToProcess.Contains(cell)) cellsToProcess.Add(cell);
+                            if (removedCorrectly && cell != null && !cell.grid.world.HasBeenRemoved &&!cellsToProcess.Contains(cell)) cellsToProcess.Add(cell);
 
                             if (!removedCorrectly || cellsToProcess.Count > 32 || !this.cellsToProcessByRequestTime.Any()) break;
                         }
@@ -85,27 +82,22 @@ namespace SonOfRobin
 
         private void ProcessCellsBatch(List<Cell> cellsToProcess)
         {
-            Parallel.ForEach(cellsToProcess, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, cell =>
+            if (cellsToProcess.Count >= 8)
             {
-                if (cell != null && !cell.grid.world.HasBeenRemoved)
+                Parallel.ForEach(cellsToProcess, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse / 2 }, cell =>
                 {
-                    bool processedCorrectly = false;
-
-                    for (int tryNo = 0; tryNo < 6; tryNo++)
-                    {
-                        processedCorrectly = cell.boardGraphics.CreateBitmapFromTerrainAndSaveAsPNG();
-                        if (processedCorrectly) break;
-                        else Thread.Sleep(2);
-                    }
-
-                    try
-                    {
-                        if (processedCorrectly) cell.boardGraphics.filestream = GfxConverter.OpenFileStream(cell.boardGraphics.templatePath);
-                    }
-                    catch (IOException)
-                    { }
+                    cell.boardGraphics.CreateBitmapFromTerrainAndSaveAsPNG();
+                });
+            }
+            else
+            {
+                foreach (Cell cell in cellsToProcess)
+                {
+                    cell.boardGraphics.CreateBitmapFromTerrainAndSaveAsPNG();
                 }
-            });
+            }
+
+            cellsToProcess.Clear();
         }
 
         private void RemoveOldRequests()

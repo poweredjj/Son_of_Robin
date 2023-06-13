@@ -160,7 +160,19 @@ namespace SonOfRobin
         {
             if (fileStream == null) return null;
 
-            Texture2D loadedTexture = Texture2D.FromStream(SonOfRobinGame.GfxDev, fileStream);
+            Texture2D loadedTexture;
+            try
+            {
+                loadedTexture = Texture2D.FromStream(SonOfRobinGame.GfxDev, fileStream);
+            }
+            catch (InvalidOperationException)
+            {
+                MessageLog.AddMessage(msgType: MsgType.Debug, message: "InvalidOperationException while trying to read texture from fileStream.");
+
+                fileStream.Dispose();
+                return null;
+            }
+
             fileStream.Dispose();
             return loadedTexture;
         }
