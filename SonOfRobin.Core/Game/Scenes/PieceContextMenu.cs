@@ -284,6 +284,7 @@ namespace SonOfRobin
                         if (piecesToMove.Count == 0) return;
 
                         piecesToMove[0].soundPack.Play(action: PieceSoundPack.Action.IsDropped, ignore3D: true, ignoreCooldown: true);
+                        new RumbleEvent(force: 0.20f, durationSeconds: 0, bigMotor: true, fadeInSeconds: 0.06f, fadeOutSeconds: 0.06f);
 
                         foreach (BoardPiece piece in piecesToMove)
                         {
