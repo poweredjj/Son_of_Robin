@@ -207,10 +207,9 @@ namespace SonOfRobin
             {
                 thunderSound.Play();
 
+                // making a shockwave
                 if (this.world.random.Next(3) == 0)
                 {
-                    // making a shockwave
-
                     Rectangle cameraRect = this.world.camera.viewRect;
 
                     Vector2 lightningOriginLocation = new Vector2(
@@ -228,6 +227,28 @@ namespace SonOfRobin
                             float distance = Vector2.Distance(lightningOriginLocation, sprite.position);
 
                             world.swayManager.AddSwayEvent(targetSprite: sprite, sourceSprite: null, targetRotation: (sprite.position - lightningOriginLocation).X > 0 ? 0.15f : -0.15f, playSound: false, delayFrames: 20 + ((int)distance / 120));
+                        }
+                    }
+                }
+
+                // setting fire to a tree
+                if (this.world.random.Next(15) == 0)
+                {
+                    var blockingSpriteList = new List<Sprite>();
+                    this.world.Grid.GetSpritesInCameraViewAndPutIntoList(camera: this.world.camera, groupName: Cell.Group.ColMovement, spriteListToFill: blockingSpriteList);
+                    var blockingSpritesShuffled = blockingSpriteList.OrderBy(item => this.world.random.Next());
+                    foreach (Sprite sprite in blockingSpritesShuffled)
+                    {
+                        if (sprite.boardPiece.GetType() == typeof(Plant))
+                        {
+                            var nearbyPieces = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.All, mainSprite: sprite, distance: 800, compareWithBottom: true);
+
+                            foreach (BoardPiece nearbyPiece in nearbyPieces)
+                            {
+                                if (!nearbyPiece.canBeHit) return; // it's better to not strike anywhere near player's pieces (workshops, plants, etc.)
+                            }
+                            sprite.boardPiece.BurnLevel += 1;
+                            break;
                         }
                     }
                 }
