@@ -140,9 +140,17 @@ namespace SonOfRobin
             SonOfRobinGame.SpriteBatch.DrawString(font, text, position: new Vector2(rectangle.X + xOffset, rectangle.Y + yOffset), color: color, origin: Vector2.Zero, scale: scale, rotation: 0, effects: SpriteEffects.None, layerDepth: 0);
         }
 
-        public static Rectangle DrawTextureInsideRect(Texture2D texture, Rectangle rectangle, Color color, AlignX alignX = AlignX.Center, AlignY alignY = AlignY.Center, bool drawTestRect = false)
+        public static Rectangle DrawTextureInsideRect(Texture2D texture, Rectangle rectangle, Color color, AlignX alignX = AlignX.Center, AlignY alignY = AlignY.Center, bool drawTestRect = false, float rotation = 0)
         {
             float scale = Math.Min((float)rectangle.Width / (float)texture.Width, (float)rectangle.Height / (float)texture.Height);
+
+            if (rotation != 0)
+            {
+                // rotated textured must fit inside the rect too
+                float rotatedScale = Math.Min((float)rectangle.Width / (float)texture.Height, (float)rectangle.Height / (float)texture.Width);
+                if (rotatedScale < scale) scale = rotatedScale;
+            }
+
             Vector2 scaledTexture = new Vector2(texture.Width * scale, texture.Height * scale);
 
             if (drawTestRect) DrawRectangleOutline(rect: rectangle, color: Color.White, borderWidth: 1);
@@ -186,7 +194,15 @@ namespace SonOfRobin
 
             Rectangle destRect = new Rectangle(x: rectangle.X + xOffset, y: rectangle.Y + yOffset, width: (int)(texture.Width * scale), height: (int)(texture.Height * scale));
             if (drawTestRect) DrawRectangleOutline(rect: destRect, color: Color.Green, borderWidth: 1);
-            SonOfRobinGame.SpriteBatch.Draw(texture: texture, destinationRectangle: destRect, color: color);
+
+            if (rotation == 0) SonOfRobinGame.SpriteBatch.Draw(texture: texture, destinationRectangle: destRect, color: color);
+            else
+            {
+                destRect.X += destRect.Width / 2;
+                destRect.Y += destRect.Height / 2;
+
+                SonOfRobinGame.SpriteBatch.Draw(texture: texture, sourceRectangle: new Rectangle(x: 0, y: 0, width: texture.Width, height: texture.Height), origin: new Vector2(texture.Width * 0.5f, texture.Height * 0.5f), destinationRectangle: destRect, color: color, rotation: rotation, effects: SpriteEffects.None, layerDepth: 0);
+            }
 
             return destRect;
         }

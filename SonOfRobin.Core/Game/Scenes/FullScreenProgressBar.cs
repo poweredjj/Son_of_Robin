@@ -13,16 +13,24 @@ namespace SonOfRobin
             .Concat(new List<string> { }) // "original" names can be placed here
             .ToList();
 
+        private static readonly Color bgColor = new Color(252, 252, 246);
+        private static readonly Color primaryTextColor = new Color(105, 215, 252);
+        private static readonly Color optionalTextColor = new Color(156, 181, 252);
         public float ProgressBarPercentage { get; private set; }
         private bool isActive;
         private string progressBarText;
         private string optionalText;
         private string textureName;
         private Texture2D texture;
+        private Texture2D loadingWheel;
+        private float loadingWheelRotation;
 
         public FullScreenProgressBar() : base(inputType: InputTypes.None, priority: 0, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty)
         {
             this.TurnOff(force: true);
+
+            this.loadingWheel = TextureBank.GetTexture("loading_wheel");
+            this.loadingWheelRotation = 0;
         }
 
         public void TurnOn(string text, string optionalText = null, string textureName = null, float percentage = -1f)
@@ -63,6 +71,7 @@ namespace SonOfRobin
             this.ProgressBarPercentage = 0.005f;
             this.progressBarText = "";
             this.optionalText = null;
+            this.loadingWheelRotation = 0;
 
             this.isActive = false;
 
@@ -118,15 +127,18 @@ namespace SonOfRobin
 
             SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
 
-            Color bgColor = new Color(252, 252, 246);
-
             SonOfRobinGame.GfxDev.Clear(bgColor);
 
             int progressRectHeight = (int)(SonOfRobinGame.VirtualHeight * 0.17f);
-
             Rectangle imageRect = new Rectangle(x: 0, y: 0, width: SonOfRobinGame.VirtualWidth, height: SonOfRobinGame.VirtualHeight - progressRectHeight);
             Rectangle progressRect = new Rectangle(x: 0, y: imageRect.Height, width: SonOfRobinGame.VirtualWidth, height: progressRectHeight);
             progressRect.Offset(0, -progressRectHeight * 0.35f); // should be slightly above the "correct" position
+
+            int wheelRectWidth = (int)(progressRectHeight * 1.3f);
+            Rectangle wheelRect = new Rectangle(x: progressRect.X + progressRect.Width - wheelRectWidth, y: progressRect.Y, width: wheelRectWidth, height: progressRectHeight);
+            wheelRect.Offset(0, (int)(wheelRect.Height * 0.25f));
+            wheelRect.Height -= (int)(wheelRect.Height * 0.25f);
+            progressRect.Width -= wheelRect.Width;
 
             Rectangle offScreenImageRect = imageRect; // imageRect wider than the screen
             offScreenImageRect.Inflate(offScreenImageRect.Width, 0);
@@ -161,12 +173,10 @@ namespace SonOfRobin
 
             textRect.Inflate(-textRect.Width * 0.05f, 0);
 
-            Color primaryTextColor = new Color(105, 215, 252);
             Color barColor = primaryTextColor;
 
             if (this.optionalText != null)
             {
-                Color optionalTextColor = new Color(156, 181, 252);
                 barColor = optionalTextColor;
 
                 Rectangle optionalTextRect = textRect;
@@ -189,10 +199,14 @@ namespace SonOfRobin
 
             SonOfRobinGame.SpriteBatch.Draw(texture: SonOfRobinGame.WhiteRectangle, destinationRectangle: progressBarRect, color: barColor);
 
+            Helpers.DrawTextureInsideRect(texture: this.loadingWheel, rectangle: wheelRect, color: Color.White * 0.8f, rotation: this.loadingWheelRotation, drawTestRect: false);
+            this.loadingWheelRotation += 0.01f;
+
             // Helpers.DrawRectangleOutline(rect: progressRect, color: Color.Green, borderWidth: 1); // for testing
             // Helpers.DrawRectangleOutline(rect: bottomGradRect, color: Color.Pink, borderWidth: 1); // for testing
             // Helpers.DrawRectangleOutline(rect: textRect, color: Color.Blue, borderWidth: 1); // for testing
             // Helpers.DrawRectangleOutline(rect: progressBarRect, color: Color.Cyan, borderWidth: 1); // for testing
+            // Helpers.DrawRectangleOutline(rect: wheelRect, color: Color.Lime, borderWidth: 1); // for testing
 
             SonOfRobinGame.SpriteBatch.End();
         }

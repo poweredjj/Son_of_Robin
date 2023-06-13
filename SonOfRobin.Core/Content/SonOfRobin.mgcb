@@ -5169,6 +5169,18 @@
 /processorParam:TextureFormat=Color
 /build:gfx/loading_gfx.png
 
+#begin gfx/loading_wheel.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/loading_wheel.png
+
 #begin gfx/map_marker.png
 /importer:TextureImporter
 /processor:TextureProcessor
