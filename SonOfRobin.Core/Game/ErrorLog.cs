@@ -18,9 +18,11 @@ namespace SonOfRobin
         private string DateString
         { get { return DateTime.Now.ToString("HH:mm:ss"); } }
 
-        public void AddEntry(Type type, Exception exception, bool showTextWindow)
+        public void AddEntry(Object obj, Exception exception, bool showTextWindow)
         {
-            string stringToSave = $"{this.DateString} error occured ({type.Name}):\n\n{exception}";
+            Type type = obj.GetType();
+
+            string stringToSave = $"\n\n\n{this.DateString} error occured ({type.Name}):\n\n{exception}";
 
             File.AppendAllText(this.logPath, stringToSave);
 

@@ -22,19 +22,18 @@ namespace SonOfRobin
         public Texture2D Texture { get; private set; }
 
         public readonly string templatePath;
-        private bool processedCorrectly;
 
         public BoardGraphics(Grid grid, Cell cell)
         {
             this.cell = cell;
             this.templatePath = Path.Combine(grid.gridTemplate.templatePath, $"background_{cell.cellNoX}_{cell.cellNoY}.png");
-            this.processedCorrectly = false;
         }
 
         public void LoadTexture()
         {
             if (this.Texture != null) return;
 
+            if (this.filestream == null) this.filestream = GfxConverter.OpenFileStream(cell.boardGraphics.templatePath);
             if (this.filestream != null)
             {
                 this.Texture = GfxConverter.LoadTextureFromFileStream(this.filestream);
@@ -49,15 +48,6 @@ namespace SonOfRobin
         {
             if (this.Texture != null) this.Texture.Dispose();
             this.Texture = texture;
-        }
-
-        public void CreateAndSavePngTemplate(bool ignoreIfFileExists = false)
-        {
-            if (this.processedCorrectly) return;
-            if (ignoreIfFileExists && File.Exists(this.templatePath)) return;
-
-            this.CreateBitmapFromTerrain(getColorGrid: false, saveAsPNG: true);
-            this.processedCorrectly = true;
         }
 
         public void UnloadTexture()
@@ -165,7 +155,7 @@ namespace SonOfRobin
             return texture;
         }
 
-        private Color[,] CreateBitmapFromTerrain(bool getColorGrid, bool saveAsPNG)
+        public bool CreateBitmapFromTerrainAndSaveAsPNG()
         {
             // can be run in parallel, because it does not use graphicsDevice
 
@@ -243,9 +233,6 @@ namespace SonOfRobin
             }
 
             // putting upscaled color grid into image
-
-            Color[,] upscaledColorGrid = getColorGrid ? new Color[targetWidth, targetHeight] : new Color[1, 1];
-
             var image = new Image<Rgba32>(targetWidth, targetHeight);
 
             double multiplier = (float)resDivider / (float)BoardTextureUpscaler3x.resizeFactor;
@@ -258,25 +245,21 @@ namespace SonOfRobin
                         x: this.cell.xMin + (int)((float)x * multiplier),
                         y: this.cell.yMin + (int)((float)y * multiplier));
 
-                    if (getColorGrid) upscaledColorGrid[x, y] = pixel;
-                    if (saveAsPNG) image[x, y] = new Rgba32(pixel.R, pixel.G, pixel.B, pixel.A);
+                    image[x, y] = new Rgba32(pixel.R, pixel.G, pixel.B, pixel.A);
                 }
             }
 
             // saving as PNG
-            if (saveAsPNG)
+            try
             {
                 using (var fileStream = new FileStream(this.templatePath, FileMode.Create))
                 {
-                    try
-                    {
-                        image.Save(fileStream, new PngEncoder() { CompressionLevel = PngCompressionLevel.BestCompression });
-                    }
-                    catch (IOException) { } // write error
+                    image.Save(fileStream, new PngEncoder() { CompressionLevel = PngCompressionLevel.BestCompression });
+                    return true;
                 }
             }
-
-            return upscaledColorGrid;
+            catch (IOException)
+            { return false; }
         }
 
         private static RepeatingPattern.Name FindPatternNameForPixel(Grid grid, int x, int y)

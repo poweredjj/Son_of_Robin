@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -34,7 +36,7 @@ namespace SonOfRobin
 
             if (this.backgroundTask != null && this.backgroundTask.IsFaulted)
             {
-                if (SonOfRobinGame.platform != Platform.Mobile) SonOfRobinGame.ErrorLog.AddEntry(type: this.GetType(), exception: this.backgroundTask.Exception, showTextWindow: false);
+                if (SonOfRobinGame.platform != Platform.Mobile) SonOfRobinGame.ErrorLog.AddEntry(obj: this, exception: this.backgroundTask.Exception, showTextWindow: false);
 
                 MessageLog.AddMessage(msgType: MsgType.Debug, message: "An error occured while processing background task. Restarting task.", color: Color.Orange);
 
@@ -44,6 +46,8 @@ namespace SonOfRobin
 
         private void ProcessingLoop()
         {
+            var cellsToProcess = new List<Cell>();
+
             while (true)
             {
                 try
@@ -55,23 +59,53 @@ namespace SonOfRobin
                     {
                         // newest request always takes the priority
 
-                        DateTime requestTimeToUse = this.cellsToProcessByRequestTime.OrderByDescending(kvp => kvp.Key).First().Key;
+                        cellsToProcess.Clear();
 
-                        Cell cell;
-                        this.cellsToProcessByRequestTime.TryRemove(requestTimeToUse, out cell);
-
-                        if (cell != null && !cell.grid.world.HasBeenRemoved)
+                        while (true)
                         {
-                            cell.boardGraphics.CreateAndSavePngTemplate();
-                            cell.boardGraphics.filestream = GfxConverter.OpenFileStream(cell.boardGraphics.templatePath);
+                            DateTime requestTimeToUse = this.cellsToProcessByRequestTime.OrderByDescending(kvp => kvp.Key).First().Key;
+
+                            Cell cell;
+                            bool removedCorrectly = this.cellsToProcessByRequestTime.TryRemove(requestTimeToUse, out cell);
+                            if (removedCorrectly && !cellsToProcess.Contains(cell)) cellsToProcess.Add(cell);
+
+                            if (!removedCorrectly || cellsToProcess.Count > 32 || !this.cellsToProcessByRequestTime.Any()) break;
                         }
+
+                        if (cellsToProcess.Any()) this.ProcessCellsBatch(cellsToProcess);
                     }
                 }
                 catch (Exception ex)
                 {
+                    SonOfRobinGame.ErrorLog.AddEntry(obj: this, exception: ex, showTextWindow: false);
                     MessageLog.AddMessage(msgType: MsgType.Debug, message: $"An error occured while processing background task: {ex.Message}");
                 }
             }
+        }
+
+        private void ProcessCellsBatch(List<Cell> cellsToProcess)
+        {
+            Parallel.ForEach(cellsToProcess, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse }, cell =>
+            {
+                if (cell != null && !cell.grid.world.HasBeenRemoved)
+                {
+                    bool processedCorrectly = false;
+
+                    for (int tryNo = 0; tryNo < 6; tryNo++)
+                    {
+                        processedCorrectly = cell.boardGraphics.CreateBitmapFromTerrainAndSaveAsPNG();
+                        if (processedCorrectly) break;
+                        else Thread.Sleep(2);
+                    }
+
+                    try
+                    {
+                        if (processedCorrectly) cell.boardGraphics.filestream = GfxConverter.OpenFileStream(cell.boardGraphics.templatePath);
+                    }
+                    catch (IOException)
+                    { }
+                }
+            });
         }
 
         private void RemoveOldRequests()

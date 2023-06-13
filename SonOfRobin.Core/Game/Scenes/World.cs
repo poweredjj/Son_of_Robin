@@ -424,7 +424,7 @@ namespace SonOfRobin
                         if (this.backgroundTask.IsCompleted || this.backgroundTask.IsFaulted) this.populatingFramesLeft = 0;
                         if (this.backgroundTask.IsFaulted)
                         {
-                            SonOfRobinGame.ErrorLog.AddEntry(type: this.GetType(), exception: this.backgroundTask.Exception, showTextWindow: true);
+                            SonOfRobinGame.ErrorLog.AddEntry(obj: this, exception: this.backgroundTask.Exception, showTextWindow: true);
                             this.populatingFramesLeft = 0;
                         }
                     }
@@ -461,7 +461,7 @@ namespace SonOfRobin
                 {
                     if (this.backgroundTask.IsFaulted)
                     {
-                        SonOfRobinGame.ErrorLog.AddEntry(type: this.GetType(), exception: this.backgroundTask.Exception, showTextWindow: true);
+                        SonOfRobinGame.ErrorLog.AddEntry(obj: this, exception: this.backgroundTask.Exception, showTextWindow: true);
                         SonOfRobinGame.FullScreenProgressBar.TurnOff();
                         bool menuFound = GetTopSceneOfType(typeof(Menu)) != null;
                         if (!menuFound) MenuTemplate.CreateMenuFromTemplate(templateName: MenuTemplate.Name.Main);

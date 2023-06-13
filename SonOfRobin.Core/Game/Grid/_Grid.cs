@@ -272,7 +272,7 @@ namespace SonOfRobin
 
             if (this.backgroundTask != null && this.backgroundTask.IsFaulted)
             {
-                SonOfRobinGame.ErrorLog.AddEntry(type: this.GetType(), exception: this.backgroundTask.Exception, showTextWindow: true);
+                SonOfRobinGame.ErrorLog.AddEntry(obj: this, exception: this.backgroundTask.Exception, showTextWindow: true);
 
                 this.CreationInProgress = false;
             }
