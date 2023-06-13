@@ -217,10 +217,11 @@ namespace SonOfRobin
                         cameraRect.Y + (this.LightningPosMultiplier.Y * cameraRect.Height)
                         );
 
-                    var plantSpriteList = this.world.Grid.GetSpritesInCameraView(groupName: Cell.Group.ColPlantGrowth);
-
-                    foreach (Sprite sprite in plantSpriteList)
+                    var plantPieceList = this.world.Grid.GetPiecesInCameraView(groupName: Cell.Group.ColPlantGrowth);
+                    foreach (BoardPiece piece in plantPieceList)
                     {
+                        Sprite sprite = piece.sprite;
+
                         if (IsSpriteAffectedByWind(sprite: sprite, strongWind: true))
                         {
                             float distance = Vector2.Distance(lightningOriginLocation, sprite.position);
@@ -233,19 +234,18 @@ namespace SonOfRobin
                 // setting fire to a tree
                 if (this.world.random.Next(15) == 0)
                 {
-                    var blockingSpriteList = this.world.Grid.GetSpritesInCameraView(groupName: Cell.Group.ColMovement);
-                    var blockingSpritesShuffled = blockingSpriteList.OrderBy(item => this.world.random.Next());
-                    foreach (Sprite sprite in blockingSpritesShuffled)
+                    var blockingSpritesShuffled = this.world.Grid.GetPiecesInCameraView(groupName: Cell.Group.ColMovement).OrderBy(item => this.world.random.Next());
+                    foreach (BoardPiece piece in blockingSpritesShuffled)
                     {
-                        if (sprite.boardPiece.GetType() == typeof(Plant))
+                        if (piece.GetType() == typeof(Plant))
                         {
-                            var nearbyPieces = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.All, mainSprite: sprite, distance: 800, compareWithBottom: true);
+                            var nearbyPieces = this.world.Grid.GetPiecesWithinDistance(groupName: Cell.Group.All, mainSprite: piece.sprite, distance: 800, compareWithBottom: true);
 
                             foreach (BoardPiece nearbyPiece in nearbyPieces)
                             {
                                 if (!nearbyPiece.canBeHit) return; // it's better to not strike anywhere near player's pieces (workshops, plants, etc.)
                             }
-                            sprite.boardPiece.BurnLevel += 1;
+                            piece.BurnLevel += 1;
                             break;
                         }
                     }
@@ -331,8 +331,6 @@ namespace SonOfRobin
             int y = cameraRect.Y + (int)(cameraRect.Height * WindOriginY);
             Vector2 windOriginLocation = new Vector2(x, y);
 
-            var affectedSpriteList = this.world.Grid.GetSpritesInCameraView(groupName: Cell.Group.Visible);
-
             float targetRotation = 0.38f * this.WindPercentage;
 
             int rotationSlowdown = this.world.random.Next(10, 25);
@@ -340,8 +338,11 @@ namespace SonOfRobin
 
             bool strongWind = this.WindPercentage >= 0.75f;
 
-            foreach (Sprite sprite in affectedSpriteList)
+            var affectedPiecesList = this.world.Grid.GetPiecesInCameraView(groupName: Cell.Group.Visible);
+            foreach (BoardPiece piece in affectedPiecesList)
             {
+                Sprite sprite = piece.sprite;
+
                 if (IsSpriteAffectedByWind(sprite: sprite, strongWind: strongWind))
                 {
                     float distance = Vector2.Distance(windOriginLocation, sprite.position);
@@ -354,17 +355,18 @@ namespace SonOfRobin
 
             if (strongWind && !this.world.BuildMode && !this.world.CineMode) // moving pieces
             {
-                foreach (Sprite sprite in affectedSpriteList)
+                foreach (BoardPiece piece in affectedPiecesList)
                 {
-                    Type pieceType = sprite.boardPiece.GetType();
+                    Type pieceType = piece.GetType();
+                    Sprite sprite = piece.sprite;
 
-                    if (sprite.boardPiece.canBePickedUp || pieceType == typeof(Animal) || pieceType == typeof(Debris) || (pieceType == typeof(Player) && sprite.boardPiece.name != PieceTemplate.Name.PlayerGhost))
+                    if (piece.canBePickedUp || pieceType == typeof(Animal) || pieceType == typeof(Debris) || (pieceType == typeof(Player) && piece.name != PieceTemplate.Name.PlayerGhost))
                     {
                         float distance = Vector2.Distance(windOriginLocation, sprite.position);
 
                         Vector2 movement = (sprite.position - windOriginLocation) / this.world.random.Next(1, 3);
 
-                        var movementData = new Dictionary<string, Object> { { "boardPiece", sprite.boardPiece }, { "movement", movement } };
+                        var movementData = new Dictionary<string, Object> { { "boardPiece", piece }, { "movement", movement } };
                         new Scheduler.Task(taskName: Scheduler.TaskName.AddPassiveMovement, delay: (int)distance / 20, executeHelper: movementData);
                     }
                 }
@@ -393,13 +395,12 @@ namespace SonOfRobin
             TimeSpan windCooldown = TimeSpan.FromTicks((long)(this.world.random.NextDouble() * (maxCooldown - minCooldown).Ticks) + minCooldown.Ticks);
 
             this.NextLocalizedWindBlow = islandDateTime + windCooldown;
-
-            var affectedSpriteList = this.world.Grid.GetSpritesInCameraView(groupName: Cell.Group.ColPlantGrowth);
-
             float targetRotation = 0.2f;
 
-            foreach (Sprite sprite in affectedSpriteList)
+            foreach (BoardPiece piece in this.world.Grid.GetPiecesInCameraView(groupName: Cell.Group.ColPlantGrowth))
             {
+                Sprite sprite = piece.sprite;
+
                 if (!sprite.blocksMovement)
                 {
                     float distance = Vector2.Distance(windOriginLocation, sprite.position);

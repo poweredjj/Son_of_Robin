@@ -160,9 +160,9 @@ namespace SonOfRobin
 
                 if (Keyboard.HasBeenPressed(Keys.OemMinus))
                 {
-                    foreach (var sprite in world.Grid.GetSpritesInCameraView(groupName: Cell.Group.All))
+                    foreach (BoardPiece piece in world.Grid.GetPiecesInCameraView(groupName: Cell.Group.All))
                     {
-                        if (sprite.boardPiece != world.Player) Tool.HitTarget(attacker: world.Player, target: sprite.boardPiece, hitPower: 99999, targetPushMultiplier: 1f);
+                        if (piece != world.Player) Tool.HitTarget(attacker: world.Player, target: piece, hitPower: 99999, targetPushMultiplier: 1f);
                     }
                 }
             }
@@ -296,14 +296,12 @@ namespace SonOfRobin
             {
                 if (world == null) return;
 
-                foreach (var sprite in world.Grid.GetSpritesInCameraView(groupName: Cell.Group.All))
+                foreach (BoardPiece piece in world.Grid.GetPiecesInCameraView(groupName: Cell.Group.All))
                 {
-                    if (sprite.boardPiece != world.Player)
+                    if (piece != world.Player)
                     {
-                        BoardPiece boardPiece = sprite.boardPiece;
-
-                        if (boardPiece != null && boardPiece.exists && boardPiece.yield != null) boardPiece.yield.DropFinalPieces();
-                        boardPiece.Destroy();
+                        if (piece != null && piece.exists && piece.yield != null) piece.yield.DropFinalPieces();
+                        piece.Destroy();
                     }
                 }
             }

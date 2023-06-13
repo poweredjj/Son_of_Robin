@@ -925,12 +925,11 @@ namespace SonOfRobin
             return piecesInsideTriangle;
         }
 
-        public List<Sprite> GetSpritesInCameraView(Cell.Group groupName, bool compareWithCameraRect = false)
+        public IEnumerable<BoardPiece> GetPiecesInCameraView(Cell.Group groupName, bool compareWithCameraRect = false)
         {
-            var spritesInCameraView = new List<Sprite>();
-
             Camera camera = this.world.camera;
             var visibleCells = this.GetCellsInsideRect(viewRect: camera.viewRect, addPadding: true);
+            var spritesInCameraView = new List<Sprite>();
 
             if (compareWithCameraRect)
             {
@@ -947,7 +946,7 @@ namespace SonOfRobin
                 }
             }
 
-            return spritesInCameraView;
+            return spritesInCameraView.Select(sprite => sprite.boardPiece);
         }
 
         private List<Cell> GetAllCells()
@@ -1058,14 +1057,14 @@ namespace SonOfRobin
             // Sprites should be drawn all at once, because cell-based drawing causes Y sorting order incorrect
             // in cases of sprites overlapping cell boundaries.
 
-            var visibleSprites = world.Grid.GetSpritesInCameraView(groupName: Cell.Group.Visible, compareWithCameraRect: true);
+            var visiblePieces = world.Grid.GetPiecesInCameraView(groupName: Cell.Group.Visible, compareWithCameraRect: true);
 
-            foreach (Sprite sprite in visibleSprites.OrderBy(o => o.AnimFrame.layer).ThenBy(o => o.GfxRect.Bottom))
-            { sprite.Draw(); }
+            foreach (BoardPiece piece in visiblePieces.OrderBy(o => o.sprite.AnimFrame.layer).ThenBy(o => o.sprite.GfxRect.Bottom))
+            { piece.sprite.Draw(); }
 
             StatBar.DrawAll();
 
-            return visibleSprites.Count;
+            return visiblePieces.Count();
         }
 
         public void DrawDebugData(bool drawCellData, bool drawPieceData)

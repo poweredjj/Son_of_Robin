@@ -1043,9 +1043,9 @@ namespace SonOfRobin
                 return;
             }
 
-            foreach (Sprite sprite in this.Grid.GetSpritesInCameraView(groupName: Cell.Group.StateMachinesNonPlants, compareWithCameraRect: true))
+            foreach (BoardPiece piece in this.Grid.GetPiecesInCameraView(groupName: Cell.Group.StateMachinesNonPlants, compareWithCameraRect: true))
             {
-                this.ProcessOneNonPlant(sprite.boardPiece);
+                this.ProcessOneNonPlant(piece);
 
                 if (!this.CanProcessMoreCameraRectPiecesNow)
                 {
@@ -1283,9 +1283,9 @@ namespace SonOfRobin
 
         public void UpdateAllAnims()
         {
-            foreach (var sprite in this.Grid.GetSpritesInCameraView(groupName: Cell.Group.Visible, compareWithCameraRect: true))
+            foreach (BoardPiece piece in this.Grid.GetPiecesInCameraView(groupName: Cell.Group.Visible, compareWithCameraRect: true))
             {
-                if (this.stateMachineTypesManager.CanBeProcessed(sprite.boardPiece)) sprite.UpdateAnimation(checkForCollision: true);
+                if (this.stateMachineTypesManager.CanBeProcessed(piece)) piece.sprite.UpdateAnimation(checkForCollision: true);
             }
         }
 
@@ -1346,7 +1346,7 @@ namespace SonOfRobin
             if ((Preferences.drawSunShadows && AmbientLight.SunLightData.CalculateSunLight(currentDateTime: this.islandClock.IslandDateTime, weather: this.weather).sunShadowsColor != Color.Transparent) ||
                 (Preferences.drawShadows && AmbientLight.CalculateLightAndDarknessColors(currentDateTime: this.islandClock.IslandDateTime, weather: this.weather).darknessColor != Color.Transparent))
             {
-                this.blockingLightSpritesList.AddRange(this.Grid.GetSpritesInCameraView(groupName: Cell.Group.ColMovement).OrderBy(o => o.GfxRect.Bottom));
+                this.blockingLightSpritesList.AddRange(this.Grid.GetPiecesInCameraView(groupName: Cell.Group.ColMovement).OrderBy(o => o.sprite.GfxRect.Bottom).Select(o => o.sprite));
             }
 
             var lightSpritesToAdd = this.UpdateDarknessMask(blockingLightSpritesList: blockingLightSpritesList);
@@ -1377,7 +1377,7 @@ namespace SonOfRobin
             // drawing light and darkness
             SonOfRobinGame.SpriteBatch.End();
 
-            this.DrawLightAndDarkness(lightSprites);
+            this.DrawLightAndDarkness(this.lightSprites);
 
             // drawing field tips
             if (Preferences.showFieldControlTips)
@@ -1410,7 +1410,7 @@ namespace SonOfRobin
         {
             // searching for light sources
 
-            var lightSprites = this.Grid.GetSpritesInCameraView(groupName: Cell.Group.LightSource).OrderBy(o => o.AnimFrame.layer).ThenBy(o => o.GfxRect.Bottom).ToList();
+            var lightSprites = this.Grid.GetPiecesInCameraView(groupName: Cell.Group.LightSource).OrderBy(o => o.sprite.AnimFrame.layer).ThenBy(o => o.sprite.GfxRect.Bottom).Select(o => o.sprite).ToList();
 
             // returning if darkness is transparent
 
