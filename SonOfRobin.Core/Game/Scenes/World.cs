@@ -489,7 +489,6 @@ namespace SonOfRobin
             {
                 this.camera.TrackPiece(trackedPiece: this.Player, moveInstantly: true);
                 this.UpdateViewParams();
-                this.camera.Update(cameraCorrection: Vector2.Zero); // to render cells in camera view correctly
                 Inventory.SetLayout(newLayout: Inventory.LayoutType.Toolbar, player: this.Player);
             }
 
@@ -1391,6 +1390,7 @@ namespace SonOfRobin
 
         protected override void AdaptToNewSize()
         {
+            this.UpdateViewParams();
             this.CreateNewDarknessMask();
         }
 
