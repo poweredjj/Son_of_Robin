@@ -1219,19 +1219,23 @@ namespace SonOfRobin
         {
             if (SonOfRobinGame.LastUpdateDelay > 20) return;
 
-            var cellsInCameraViewWithNoTextures = this.GetCellsInsideRect(viewRect: camera.viewRect, addPadding: true).Where(cell => cell.boardGraphics.Texture == null);
-            if (visitedByPlayerOnly) cellsInCameraViewWithNoTextures = cellsInCameraViewWithNoTextures.Where(cell => cell.VisitedByPlayer);
+            var cellsInCameraViewWithNoTexturesSearch = this.GetCellsInsideRect(viewRect: camera.viewRect, addPadding: true).Where(cell => cell.boardGraphics.Texture == null);
+            if (visitedByPlayerOnly) cellsInCameraViewWithNoTexturesSearch = cellsInCameraViewWithNoTexturesSearch.Where(cell => cell.VisitedByPlayer);
+
+            var cellsInCameraViewWithNoTextures = cellsInCameraViewWithNoTexturesSearch.ToList();
             if (!cellsInCameraViewWithNoTextures.Any()) return;
 
-            Vector2 cameraCenter = camera.CurrentPos;
-            var cellsWithNoTexturesByDistance = cellsInCameraViewWithNoTextures
-                .Where(cell => cell.boardGraphics.Texture == null)
-                .OrderByDescending(cell => cell.GetDistance(cameraCenter)); // farthest textures first, because newest rendering orders are processed in the first place
-            if (!cellsWithNoTexturesByDistance.Any()) return;
+            var cellsToProcess = cellsInCameraViewWithNoTextures.Where(cell => !cell.boardGraphics.PNGTemplateExists);
+            SonOfRobinGame.BoardTextureProcessor.AddCellsToProcess(cellsToProcess);
 
-            // to check how much textures has really been loaded (and allow scheduling rendering of as much background textures as possible)
+            Vector2 cameraCenter = camera.CurrentPos;
+
+            var cellsWithPNGByDistance = cellsInCameraViewWithNoTextures
+                .Where(cell => cell.boardGraphics.PNGTemplateExists)
+                .OrderBy(cell => cell.GetDistance(cameraCenter));
+
             int noOfLoadedTexturesAtTheStart = this.loadedTexturesCount;
-            foreach (Cell cell in cellsWithNoTexturesByDistance)
+            foreach (Cell cell in cellsWithPNGByDistance)
             {
                 cell.boardGraphics.LoadTexture();
                 if (this.loadedTexturesCount - noOfLoadedTexturesAtTheStart >= maxNoToLoad || Scene.UpdateTimeElapsed.Milliseconds > 10) return;

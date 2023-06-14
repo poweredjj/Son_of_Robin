@@ -10,17 +10,31 @@ namespace SonOfRobin
 {
     public class BoardTextureProcessor
     {
-        private Task backgroundTask;
-        private ConcurrentDictionary<DateTime, Cell> cellsToProcessByRequestTime;
-        private DateTime lastClearTime;
+        public struct ProcessingTask
+        {
+            private static readonly TimeSpan requestTimeout = TimeSpan.FromSeconds(8);
+            public readonly Cell cell;
+            private readonly DateTime addedTime;
+            public bool IsTimedOut { get { return DateTime.Now - this.addedTime > requestTimeout; } }
 
-        public int RequestsInQueueCount
-        { get { return this.cellsToProcessByRequestTime.Count; } }
+            public ProcessingTask(Cell cell)
+            {
+                this.cell = cell;
+                this.addedTime = DateTime.Now;
+            }
+
+            public void Process()
+            {
+                if (!this.IsTimedOut && this.cell.boardGraphics.Texture == null) this.cell.boardGraphics.CreateBitmapFromTerrainAndSaveAsPNG();
+            }
+        }
+
+        private Task backgroundTask;
+        private readonly ConcurrentBag<ProcessingTask> tasksToProcess;
 
         public BoardTextureProcessor()
         {
-            this.lastClearTime = DateTime.Now;
-            this.cellsToProcessByRequestTime = new ConcurrentDictionary<DateTime, Cell>();
+            this.tasksToProcess = new ConcurrentBag<ProcessingTask>();
             this.StartBackgroundTask();
         }
 
@@ -29,14 +43,28 @@ namespace SonOfRobin
             this.backgroundTask = Task.Run(() => this.ProcessingLoop());
         }
 
+        public void AddCellsToProcess(IEnumerable<Cell> cellList)
+        {
+            foreach (Cell cell in cellList)
+            {
+                this.tasksToProcess.Add(new ProcessingTask(cell));
+            }
+
+            this.CheckAndRunBackgroundTask();
+        }
+
         public void AddCellToProcess(Cell cell)
         {
-            this.cellsToProcessByRequestTime[DateTime.Now] = cell;
+            this.tasksToProcess.Add(new ProcessingTask(cell));
 
+            this.CheckAndRunBackgroundTask();
+        }
+
+        private void CheckAndRunBackgroundTask()
+        {
             if (this.backgroundTask != null && this.backgroundTask.IsFaulted)
             {
                 if (SonOfRobinGame.platform != Platform.Mobile) SonOfRobinGame.ErrorLog.AddEntry(obj: this, exception: this.backgroundTask.Exception, showTextWindow: false);
-
                 MessageLog.AddMessage(msgType: MsgType.Debug, message: "An error occured while processing background task. Restarting task.", color: Color.Orange);
 
                 this.StartBackgroundTask(); // starting new task, if previous one had failed
@@ -45,30 +73,16 @@ namespace SonOfRobin
 
         private void ProcessingLoop()
         {
-            var cellsToProcess = new List<Cell>();
-
             while (true)
             {
                 try
                 {
-                    this.RemoveOldRequests();
-
-                    if (!this.cellsToProcessByRequestTime.Any()) Thread.Sleep(1); // to avoid high CPU usage
+                    if (!this.tasksToProcess.Any()) Thread.Sleep(1); // to avoid high CPU usage
                     else
                     {
-                        // newest request always takes the priority
-                        while (true)
-                        {
-                            DateTime requestTimeToUse = this.cellsToProcessByRequestTime.OrderByDescending(kvp => kvp.Key).First().Key;
-
-                            Cell cell;
-                            bool removedCorrectly = this.cellsToProcessByRequestTime.TryRemove(requestTimeToUse, out cell);
-                            if (removedCorrectly && cell != null && !cell.grid.world.HasBeenRemoved && !cellsToProcess.Contains(cell)) cellsToProcess.Add(cell);
-
-                            if (!removedCorrectly || cellsToProcess.Count > 32 || !this.cellsToProcessByRequestTime.Any()) break;
-                        }
-
-                        if (cellsToProcess.Any()) this.ProcessCellsBatch(cellsToProcess);
+                        var tasksBatch = this.tasksToProcess.ToList();
+                        this.tasksToProcess.Clear();
+                        this.ProcessCellsBatch(tasksBatch);
                     }
                 }
                 catch (Exception ex)
@@ -79,45 +93,33 @@ namespace SonOfRobin
             }
         }
 
-        private void ProcessCellsBatch(List<Cell> cellsToProcess)
+        private void ProcessCellsBatch(List<ProcessingTask> tasksToProcess)
         {
-            if (cellsToProcess.Count >= 8)
+            if (!tasksToProcess.Any()) return;
+
+            Vector2 cameraCenter = tasksToProcess[0].cell.grid.world.camera.CurrentPos;
+
+            var tasksByDistance = tasksToProcess
+                .Where(task => !task.IsTimedOut)
+                .Distinct()
+                .OrderBy(task => task.cell.GetDistance(cameraCenter))
+                .Take(64) // to avoid taking too much time processing one batch
+                .ToList();
+
+            if (tasksByDistance.Count() >= 8)
             {
-                Parallel.ForEach(cellsToProcess, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse / 2 }, cell =>
+                Parallel.ForEach(tasksByDistance, new ParallelOptions { MaxDegreeOfParallelism = Preferences.MaxThreadsToUse / 2 }, task =>
                 {
-                    cell.boardGraphics.CreateBitmapFromTerrainAndSaveAsPNG();
+                    task.Process();
                 });
             }
             else
             {
-                foreach (Cell cell in cellsToProcess)
+                foreach (ProcessingTask task in tasksByDistance)
                 {
-                    cell.boardGraphics.CreateBitmapFromTerrainAndSaveAsPNG();
+                    task.Process();
                 }
             }
-
-            cellsToProcess.Clear();
-        }
-
-        private void RemoveOldRequests()
-        {
-            if (DateTime.Now - this.lastClearTime < TimeSpan.FromSeconds(10) || this.RequestsInQueueCount == 0) return;
-
-            int requestCountBefore = this.RequestsInQueueCount;
-
-            TimeSpan requestTimeout = TimeSpan.FromSeconds(30);
-            var recentCellsToProcess = this.cellsToProcessByRequestTime.Where(kvp => DateTime.Now - kvp.Key < requestTimeout);
-
-            this.cellsToProcessByRequestTime.Clear();
-            foreach (var kvp in recentCellsToProcess)
-            {
-                this.cellsToProcessByRequestTime[kvp.Key] = kvp.Value;
-            }
-
-            int requestCountAfter = recentCellsToProcess.Count();
-            MessageLog.AddMessage(msgType: MsgType.Debug, message: $"BgTxProcessor - removing old: {requestCountBefore} -> {requestCountAfter}", color: Color.LimeGreen);
-
-            this.lastClearTime = DateTime.Now;
         }
     }
 }

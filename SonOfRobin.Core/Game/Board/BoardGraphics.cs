@@ -6,7 +6,6 @@ using SixLabors.ImageSharp.Processing;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Threading;
 using System.Threading.Tasks;
 using Color = Microsoft.Xna.Framework.Color;
 using Point = Microsoft.Xna.Framework.Point;
@@ -23,6 +22,9 @@ namespace SonOfRobin
         public Texture2D Texture { get; private set; }
 
         public readonly string templatePath;
+
+        public bool PNGTemplateExists
+        { get { return File.Exists(templatePath); } }
 
         public BoardGraphics(Grid grid, Cell cell)
         {
@@ -251,30 +253,16 @@ namespace SonOfRobin
             }
 
             // saving as PNG
-
-            bool savedCorrectly = false;
-
-            for (int tryNo = 0; tryNo < 5; tryNo++)
+            try
             {
-                try
+                using (var fileStreamToSave = new FileStream(this.templatePath, FileMode.Create))
                 {
-                    using (var fileStreamToSave = new FileStream(this.templatePath, FileMode.Create))
-                    {
-                        image.Save(fileStreamToSave, new PngEncoder() { CompressionLevel = PngCompressionLevel.BestCompression });
-                        savedCorrectly = true;
-                        break;
-                    }
+                    image.Save(fileStreamToSave, new PngEncoder() { CompressionLevel = PngCompressionLevel.BestCompression });
                 }
-                catch (IOException)
-                {
-                    Thread.Sleep(2);
-                }
-            }
-
-            if (savedCorrectly)
-            {
                 this.fileStream = GfxConverter.OpenFileStream(cell.boardGraphics.templatePath);
             }
+            catch (IOException)
+            { }
         }
 
         private static RepeatingPattern.Name FindPatternNameForPixel(Grid grid, int x, int y)
