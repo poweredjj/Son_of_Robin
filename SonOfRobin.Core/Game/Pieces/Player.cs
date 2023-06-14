@@ -365,6 +365,9 @@ namespace SonOfRobin
         public bool IsVeryTired
         { get { return this.FatiguePercent > 0.75f; } }
 
+        private bool HasLowHP
+        { get { return this.HitPointsPercent < 0.15f; } }
+
         public bool CanWakeNow
         { get { return this.sleepingInsideShelter || this.FatiguePercent < 0.85f; } }
 
@@ -883,16 +886,16 @@ namespace SonOfRobin
             if (isRaining)
             {
                 {
-                    float addedForce = this.world.weather.RainPercentage * 0.12f;
+                    float addedForce = this.world.weather.RainPercentage * 0.1f;
                     float delaySeconds = 1f - (this.world.weather.RainPercentage * 0.8f);
                     float randomAddedDelay = (float)this.world.random.NextDouble() * 0.21f;
-                    new RumbleEvent(force: 0.14f + addedForce, smallMotor: true, fadeInSeconds: 0f, durationSeconds: 0f, fadeOutSeconds: 0.12f, minSecondsSinceLastRumbleSmallMotor: delaySeconds + randomAddedDelay);
+                    new RumbleEvent(force: 0.14f + addedForce, smallMotor: true, fadeInSeconds: 0f, durationSeconds: 0f, fadeOutSeconds: 0.08f, minSecondsSinceLastRumbleSmallMotor: delaySeconds + randomAddedDelay);
                 }
                 {
                     float addedForce = this.world.weather.RainPercentage * 0.1f;
-                    float delaySeconds = 1.3f - (this.world.weather.RainPercentage * 0.5f);
+                    float delaySeconds = 1f - (this.world.weather.RainPercentage * 0.4f);
                     float randomAddedDelay = (float)this.world.random.NextDouble() * 0.21f;
-                    new RumbleEvent(force: 0.15f + addedForce, bigMotor: true, fadeInSeconds: 0f, durationSeconds: 0f, fadeOutSeconds: 0.12f, minSecondsSinceLastRumbleBigMotor: delaySeconds + randomAddedDelay);
+                    new RumbleEvent(force: 0.11f + addedForce, bigMotor: true, fadeInSeconds: 0f, durationSeconds: 0f, fadeOutSeconds: 0.08f, minSecondsSinceLastRumbleBigMotor: delaySeconds + randomAddedDelay);
                 }
             }
 
@@ -948,9 +951,10 @@ namespace SonOfRobin
 
         public void CheckLowHP()
         {
-            if (this.HitPointsPercent < 0.15f)
+            if (this.HasLowHP)
             {
                 if (!this.buffEngine.HasBuff(BuffEngine.BuffType.LowHP)) this.buffEngine.AddBuff(world: this.world, buff: new Buff(type: BuffEngine.BuffType.LowHP, value: 0, autoRemoveDelay: 0));
+                new RumbleEvent(force: 0.3f, durationSeconds: 0, bigMotor: true, fadeInSeconds: 0.065f, fadeOutSeconds: 0.065f, minSecondsSinceLastRumbleBigMotor: 1f);
             }
             else
             {

@@ -206,6 +206,7 @@ namespace SonOfRobin
             if (this.LightningJustStruck)
             {
                 thunderSound.Play();
+                new RumbleEvent(force: 0.1f, smallMotor: true, bigMotor: true, fadeInSeconds: 0.14f, durationSeconds: 0.14f);
 
                 // making a shockwave
                 if (this.world.random.Next(3) == 0)
