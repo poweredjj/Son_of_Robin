@@ -310,6 +310,7 @@ namespace SonOfRobin
         public static bool debugShowAnimSizeChangeInCamera = false;
         public static bool debugEnableTestCharacters = false;
         public static bool debugEnableExtremeZoomLevels = false;
+        public static bool debugEnableExtremeMapSizes = false;
         public static bool debugInstantCookBrew = false;
         public static bool EnableTestCharacters { get { return debugEnableTestCharacters || SonOfRobinGame.ThisIsHomeMachine || SonOfRobinGame.ThisIsWorkMachine; } }
         public static bool DebugShowWholeMap
