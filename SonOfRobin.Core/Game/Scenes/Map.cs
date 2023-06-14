@@ -396,9 +396,8 @@ namespace SonOfRobin
             SonOfRobinGame.SpriteBatch.End();
 
             // drawing background
-
-            float showDetailedMapAtZoom = (float)SonOfRobinGame.VirtualWidth / (float)this.world.width * 1.4f;
-            bool showDetailedMap = this.camera.CurrentZoom >= showDetailedMapAtZoom;
+            bool showDetailedMap = this.camera.CurrentZoom >= 0.3f;
+            // MessageLog.AddMessage(msgType: MsgType.User, message: $"{SonOfRobinGame.CurrentUpdate} zoom {this.camera.CurrentZoom} showDetailedMap {showDetailedMap}");
 
             var cellsToDraw = (IEnumerable<Cell>)new List<Cell>(); // to be replaced later
             bool foundCellsWithMissingTextures = false;

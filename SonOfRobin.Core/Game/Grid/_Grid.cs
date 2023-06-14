@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Xml;
 using Color = Microsoft.Xna.Framework.Color;
 using Point = Microsoft.Xna.Framework.Point;
 using Rectangle = Microsoft.Xna.Framework.Rectangle;
@@ -1247,7 +1248,7 @@ namespace SonOfRobin
 
         public void UnloadTexturesIfMemoryLow(Camera camera)
         {
-            if (DateTime.Now - this.lastUnloadedTime < TimeSpan.FromSeconds(60)) return;
+            if (SonOfRobinGame.CurrentUpdate % 60 != 0 || DateTime.Now - this.lastUnloadedTime < TimeSpan.FromSeconds(60)) return; 
 
             if (SonOfRobinGame.os == OS.Windows)
             {
