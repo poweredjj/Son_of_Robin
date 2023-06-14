@@ -1225,8 +1225,11 @@ namespace SonOfRobin
             var cellsInCameraViewWithNoTextures = cellsInCameraViewWithNoTexturesSearch.ToList();
             if (!cellsInCameraViewWithNoTextures.Any()) return;
 
-            var cellsToProcess = cellsInCameraViewWithNoTextures.Where(cell => !cell.boardGraphics.PNGTemplateExists);
-            SonOfRobinGame.BoardTextureProcessor.AddCellsToProcess(cellsToProcess);
+            if (SonOfRobinGame.BoardTextureProcessor.CanTakeNewCellsNow)
+            {
+                var cellsToProcess = cellsInCameraViewWithNoTextures.Where(cell => !cell.boardGraphics.PNGTemplateExists);
+                SonOfRobinGame.BoardTextureProcessor.AddCellsToProcess(cellsToProcess);
+            }
 
             Vector2 cameraCenter = camera.CurrentPos;
 

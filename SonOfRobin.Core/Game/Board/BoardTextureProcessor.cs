@@ -12,10 +12,11 @@ namespace SonOfRobin
     {
         public struct ProcessingTask
         {
-            private static readonly TimeSpan requestTimeout = TimeSpan.FromSeconds(8);
+            private static readonly TimeSpan maxWaitingTime = TimeSpan.FromSeconds(5);
+
             public readonly Cell cell;
             private readonly DateTime addedTime;
-            public bool IsTimedOut { get { return DateTime.Now - this.addedTime > requestTimeout; } }
+            public bool IsTimedOut { get { return DateTime.Now - this.addedTime > maxWaitingTime; } }
 
             public ProcessingTask(Cell cell)
             {
@@ -29,11 +30,21 @@ namespace SonOfRobin
             }
         }
 
+        private static readonly TimeSpan cooldownTime = TimeSpan.FromMilliseconds(300);
+
         private Task backgroundTask;
         private readonly ConcurrentBag<ProcessingTask> tasksToProcess;
+        private DateTime lastCellAddedTime;
+
+        public TimeSpan TimeSinceLastCellAdded
+        { get { return DateTime.Now - lastCellAddedTime; } }
+
+        public bool CanTakeNewCellsNow // information about being in a "cooldown" phase (new cells can be added, if that's really needed)
+        { get { return this.TimeSinceLastCellAdded > cooldownTime; } }
 
         public BoardTextureProcessor()
         {
+            this.lastCellAddedTime = DateTime.MinValue;
             this.tasksToProcess = new ConcurrentBag<ProcessingTask>();
             this.StartBackgroundTask();
         }
@@ -50,6 +61,7 @@ namespace SonOfRobin
                 this.tasksToProcess.Add(new ProcessingTask(cell));
             }
 
+            this.lastCellAddedTime = DateTime.Now;
             this.CheckAndRunBackgroundTask();
         }
 
@@ -57,6 +69,7 @@ namespace SonOfRobin
         {
             this.tasksToProcess.Add(new ProcessingTask(cell));
 
+            this.lastCellAddedTime = DateTime.Now;
             this.CheckAndRunBackgroundTask();
         }
 
@@ -103,7 +116,7 @@ namespace SonOfRobin
                 .Where(task => !task.IsTimedOut)
                 .Distinct()
                 .OrderBy(task => task.cell.GetDistance(cameraCenter))
-                .Take(64) // to avoid taking too much time processing one batch
+                .Take(100) // to avoid taking too much time processing one batch
                 .ToList();
 
             if (tasksByDistance.Count() >= 8)
