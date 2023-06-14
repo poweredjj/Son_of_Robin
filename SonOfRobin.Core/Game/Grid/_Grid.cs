@@ -1237,6 +1237,7 @@ namespace SonOfRobin
                 if (this.loadedTexturesCount - noOfLoadedTexturesAtTheStart >= maxNoToLoad || Scene.UpdateTimeElapsed.Milliseconds > 10) return;
             }
         }
+
         public void UnloadTexturesIfMemoryLow(Camera camera)
         {
             if (DateTime.Now - this.lastUnloadedTime < TimeSpan.FromSeconds(60)) return;

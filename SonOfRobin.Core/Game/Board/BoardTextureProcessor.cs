@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -64,7 +63,7 @@ namespace SonOfRobin
 
                             Cell cell;
                             bool removedCorrectly = this.cellsToProcessByRequestTime.TryRemove(requestTimeToUse, out cell);
-                            if (removedCorrectly && cell != null && !cell.grid.world.HasBeenRemoved &&!cellsToProcess.Contains(cell)) cellsToProcess.Add(cell);
+                            if (removedCorrectly && cell != null && !cell.grid.world.HasBeenRemoved && !cellsToProcess.Contains(cell)) cellsToProcess.Add(cell);
 
                             if (!removedCorrectly || cellsToProcess.Count > 32 || !this.cellsToProcessByRequestTime.Any()) break;
                         }

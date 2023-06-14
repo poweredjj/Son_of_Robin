@@ -263,7 +263,7 @@ namespace SonOfRobin
                         image.Save(fileStreamToSave, new PngEncoder() { CompressionLevel = PngCompressionLevel.BestCompression });
                         savedCorrectly = true;
                         break;
-                    }      
+                    }
                 }
                 catch (IOException)
                 {
@@ -274,7 +274,7 @@ namespace SonOfRobin
             if (savedCorrectly)
             {
                 this.fileStream = GfxConverter.OpenFileStream(cell.boardGraphics.templatePath);
-            }    
+            }
         }
 
         private static RepeatingPattern.Name FindPatternNameForPixel(Grid grid, int x, int y)
