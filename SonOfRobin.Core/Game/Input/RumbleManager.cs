@@ -38,7 +38,7 @@ namespace SonOfRobin
 
             if (SonOfRobinGame.platform == Platform.Mobile)
             {
-                if (this.targetForce < 0.3f) return; // to avoid making strong vibration for small values (mobile has no value setting)
+                if (this.targetForce < 0.3f || RumbleManager.EventsCount > 0) return; // to avoid making strong vibration for small values (mobile has no value setting)
                 Vibration.Vibrate(TimeSpan.FromSeconds(durationSeconds + fadeInSeconds + fadeOutSeconds)); // vibration on mobile is generally very crude
                 return;
             }
