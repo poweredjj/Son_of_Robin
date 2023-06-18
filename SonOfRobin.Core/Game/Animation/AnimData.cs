@@ -160,7 +160,6 @@ namespace SonOfRobin
             Clam,
 
             MeatRawRegular,
-            MeatRawPrime,
             MeatDried,
             Fat,
             Burger,
@@ -373,6 +372,7 @@ namespace SonOfRobin
             BubbleCraftGreen,
 
             SeaWave,
+            MeatRawPrime,
         }
 
         public static void AddFrameList(PkgName animPackage, byte animSize, List<AnimFrame> frameList, string animName = "default")
