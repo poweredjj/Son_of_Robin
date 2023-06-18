@@ -341,14 +341,14 @@ namespace SonOfRobin
 
                             SaveHeaderInfo saveInfo = new SaveHeaderInfo(Path.GetFileName(savePath));
 
-                            string exportPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads");
+                            string exportPath = SonOfRobinGame.downloadsPath;
                             if (!Directory.Exists(exportPath)) exportPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
                             string zipPath;
                             int index = 0;
                             while (true)
                             {
-                                zipPath = Path.Combine(exportPath, $"Son_of_Robin_save_{saveInfo.width}x{saveInfo.height}_{saveInfo.seed}_{saveSlotName}_{index}.zip");
+                                zipPath = Path.Combine(exportPath, $"Son_of_Robin_save_{saveInfo.width}x{saveInfo.height}_{saveInfo.seed}_{saveSlotName}_{index}.jpg");
                                 if (File.Exists(zipPath)) index++;
                                 else break;
                             }

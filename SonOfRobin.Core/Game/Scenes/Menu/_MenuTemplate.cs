@@ -743,15 +743,18 @@ namespace SonOfRobin
                     {
                         Menu menu = new(templateName: templateName, name: "IMPORT SAVE", blocksUpdatesBelow: false, canBeClosedManually: true, templateExecuteHelper: executeHelper);
 
-                        string importPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads");
+                        string importPath = SonOfRobinGame.downloadsPath;
                         if (!Directory.Exists(importPath)) importPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
-                        var saveZipPaths = Directory.GetFiles(importPath).Where(file => file.Contains("Son_of_Robin_save_") && file.EndsWith(".zip"));
+                        var saveZipPaths = Directory.GetFiles(importPath)
+                            .Where(file => file.ToLower().Contains("son_of_robin_save_") &&
+                            (file.EndsWith(".zip") || file.EndsWith(".jpg"))); // workaround - media files are always shown on mobile
+
                         if (saveZipPaths.Any())
                         {
                             foreach (string saveZipFile in saveZipPaths)
                             {
-                                new Invoker(menu: menu, name: Path.GetFileName(saveZipFile), taskName: Scheduler.TaskName.ImportSave, executeHelper: saveZipFile);
+                                new Invoker(menu: menu, name: Path.GetFileName(Path.GetFileNameWithoutExtension(saveZipFile)), taskName: Scheduler.TaskName.ImportSave, executeHelper: saveZipFile);
                             }
                         }
                         else

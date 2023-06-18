@@ -1,9 +1,14 @@
+using Android;
 using Android.App;
+using Android.Content;
 using Android.Content.PM;
 using Android.OS;
+using Android.Runtime;
 using Android.Views;
+using AndroidX.Core.App;
+using AndroidX.Core.Content;
 using Microsoft.Xna.Framework;
-using System.Reflection.Emit;
+using System.IO;
 
 namespace SonOfRobin.Android
 {
@@ -38,9 +43,14 @@ namespace SonOfRobin.Android
             SonOfRobinGame.os = OS.Android;
             SonOfRobinGame.fakeMobileMode = false;
 
+            ActivityCompat.RequestPermissions(this, new string[] { Manifest.Permission.WriteExternalStorage }, 1);
+            ActivityCompat.RequestPermissions(this, new string[] { Manifest.Permission.ReadExternalStorage }, 1);
+            SonOfRobinGame.downloadsPath = Environment.GetExternalStoragePublicDirectory(Environment.DirectoryDownloads).AbsolutePath;
+
             _view = _game.Services.GetService(typeof(View)) as View;
 
             SetContentView(_view);
+
 
             _game.Run();
         }
@@ -50,7 +60,6 @@ namespace SonOfRobin.Android
             base.OnWindowFocusChanged(true);
             GoTrueFullScreen();
         }
-
 
         protected override void OnResume()
         {

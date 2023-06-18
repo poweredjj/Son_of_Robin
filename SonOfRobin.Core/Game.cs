@@ -4,7 +4,6 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using Xamarin.Essentials;
 
@@ -19,7 +18,7 @@ namespace SonOfRobin
     public class SonOfRobinGame : Game
     {
         public const float version = 9.7f;
-        public static readonly DateTime lastChanged = new(2023, 06, 16);
+        public static readonly DateTime lastChanged = new(2023, 06, 18);
 
         public static readonly int enteringIslandGlobalSteps = 4 + Grid.allStagesCount;
         public static ContentManager ContentMgr { get; private set; } // for things other than textures (for textures use TextureBank)
@@ -72,6 +71,7 @@ namespace SonOfRobin
         public static readonly string animCachePath = Path.Combine(gameDataPath, "graphics_cache");
         public static readonly string errorsPath = Path.Combine(gameDataPath, "errors");
         public static readonly string prefsPath = Path.Combine(gameDataPath, "preferences.json");
+        public static string downloadsPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads");
 
         public static bool ThisIsWorkMachine
         { get { return gameDataPath.Contains("msmidowi"); } }
