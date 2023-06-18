@@ -159,7 +159,8 @@ namespace SonOfRobin
 
             Clam,
 
-            MeatRaw,
+            MeatRawRegular,
+            MeatRawPrime,
             MeatDried,
             Fat,
             Burger,
@@ -751,14 +752,15 @@ namespace SonOfRobin
             AddFrameList(animPackage: PkgName.SpearStone, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "spear_stone", layer: 0, scale: 0.5f));
             AddFrameList(animPackage: PkgName.SpearIron, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "spear_iron", layer: 0, scale: 0.5f));
             AddFrameList(animPackage: PkgName.SpearCrystal, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "spear_crystal", layer: 0, scale: 0.5f));
-            AddFrameList(animPackage: PkgName.Fat, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "piece_of_fat", layer: 0, scale: 0.25f));
+            AddFrameList(animPackage: PkgName.Fat, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "fat", layer: 0, scale: 0.08f));
             AddFrameList(animPackage: PkgName.ShovelStone, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "shovel_stone", layer: 0, scale: 0.7f));
             AddFrameList(animPackage: PkgName.ShovelIron, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "shovel_iron", layer: 0, scale: 0.7f));
             AddFrameList(animPackage: PkgName.ShovelCrystal, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "shovel_crystal", layer: 0, scale: 0.7f));
             AddFrameList(animPackage: PkgName.Clay, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "clay", layer: 0, scale: 0.7f));
             AddFrameList(animPackage: PkgName.Hole, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "hole", layer: 0, scale: 1f));
-            AddFrameList(animPackage: PkgName.MeatRaw, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "meat_raw", layer: 0, scale: 0.75f));
-            AddFrameList(animPackage: PkgName.MeatDried, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "meat_dried", layer: 0, scale: 0.75f));
+            AddFrameList(animPackage: PkgName.MeatRawRegular, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "meat_raw_regular", layer: 0, scale: 0.1f));
+            AddFrameList(animPackage: PkgName.MeatRawPrime, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "meat_raw_prime", layer: 0, scale: 0.1f));
+            AddFrameList(animPackage: PkgName.MeatDried, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "meat_dried", layer: 0, scale: 0.1f));
             AddFrameList(animPackage: PkgName.JarWhole, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "jar_sealed", layer: 1, scale: 0.6f));
             AddFrameList(animPackage: PkgName.JarBroken, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "jar_broken", layer: 1, scale: 0.6f));
             AddFrameList(animPackage: PkgName.TreeStump, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "tree_stump", layer: 1, scale: 1f));

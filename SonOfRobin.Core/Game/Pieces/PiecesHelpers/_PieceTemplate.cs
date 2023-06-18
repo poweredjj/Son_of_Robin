@@ -64,7 +64,7 @@ namespace SonOfRobin
             Tomato,
             Carrot,
             Acorn,
-            MeatRaw,
+            MeatRawRegular,
             MeatDried,
             Fat,
             Leather,
@@ -112,7 +112,6 @@ namespace SonOfRobin
             HotPlate,
             CookingPot,
             UpgradeBench,
-
 
             Stick,
             WoodLogRegular,
@@ -269,6 +268,8 @@ namespace SonOfRobin
             SoundLava,
 
             SeaWave,
+
+            MeatRawPrime,
         }
 
         public static readonly Name[] allNames = (Name[])Enum.GetValues(typeof(Name));
@@ -1909,7 +1910,7 @@ namespace SonOfRobin
                             minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 1, mass: 200, toolbarTask: Scheduler.TaskName.Empty, rotatesWhenDropped: true, floatsOnWater: false, readableName: "bottle of oil", description: "Crafting material.", buffList: null, convertsToWhenUsed: Name.EmptyBottle, soundPack: soundPack, fireAffinity: 1.0f);
                     }
 
-                case Name.MeatRaw:
+                case Name.MeatRawRegular:
                     {
                         var buffList = new List<Buff> {
                             new Buff(type: BuffEngine.BuffType.RegenPoison, value: (int)-30, autoRemoveDelay: 16 * 60, canKill: true, increaseIDAtEveryUse: true)};
@@ -1917,9 +1918,22 @@ namespace SonOfRobin
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(nameList: new List<SoundData.Name> { SoundData.Name.DropMeat1, SoundData.Name.DropMeat2, SoundData.Name.DropMeat3 }, cooldown: 15, maxPitchVariation: 0.8f));
 
-                        return new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.MeatRaw, blocksMovement: false, category: BoardPiece.Category.Indestructible,
+                        return new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.MeatRawRegular, blocksMovement: false, category: BoardPiece.Category.Indestructible,
                             allowedTerrain: beachToVolcano, buffList: buffList,
                             minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 6, mass: 100, toolbarTask: Scheduler.TaskName.GetEaten, rotatesWhenDropped: true, readableName: "raw meat", description: "Poisonous, but safe after cooking.", soundPack: soundPack, fireAffinity: 0.2f);
+                    }
+
+                case Name.MeatRawPrime:
+                    {
+                        var buffList = new List<Buff> {
+                            new Buff(type: BuffEngine.BuffType.RegenPoison, value: (int)-30, autoRemoveDelay: 16 * 60, canKill: true, increaseIDAtEveryUse: true)};
+
+                        var soundPack = new PieceSoundPack();
+                        soundPack.AddAction(action: PieceSoundPack.Action.IsDropped, sound: new Sound(nameList: new List<SoundData.Name> { SoundData.Name.DropMeat1, SoundData.Name.DropMeat2, SoundData.Name.DropMeat3 }, cooldown: 15, maxPitchVariation: 0.8f));
+
+                        return new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.MeatRawPrime, blocksMovement: false, category: BoardPiece.Category.Indestructible,
+                            allowedTerrain: beachToVolcano, buffList: buffList,
+                            minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 6, mass: 250, toolbarTask: Scheduler.TaskName.GetEaten, rotatesWhenDropped: true, readableName: "prime raw meat", description: "Poisonous, but safe after cooking.", soundPack: soundPack, fireAffinity: 0.2f);
                     }
 
                 case Name.MeatDried:
@@ -1976,7 +1990,12 @@ namespace SonOfRobin
 
                         var yield = new Yield(debrisType: Yield.DebrisType.Blood,
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
-                            finalDroppedPieces: new List<Yield.DroppedPiece> { new Yield.DroppedPiece(pieceName: Name.MeatRaw, chanceToDrop: 70, maxNumberToDrop: 1), new Yield.DroppedPiece(pieceName: Name.Fat, chanceToDrop: 50, maxNumberToDrop: 1), new Yield.DroppedPiece(pieceName: Name.Leather, chanceToDrop: 50, maxNumberToDrop: 1) });
+                            finalDroppedPieces: new List<Yield.DroppedPiece> {
+                                new Yield.DroppedPiece(pieceName: Name.MeatRawRegular, chanceToDrop: 70, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: Name.MeatRawPrime, chanceToDrop: 1, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: Name.Fat, chanceToDrop: 50, maxNumberToDrop: 1),
+                                new Yield.DroppedPiece(pieceName: Name.Leather, chanceToDrop: 50, maxNumberToDrop: 1)
+                            });
 
                         var soundPack = new PieceSoundPack();
                         soundPack.AddAction(action: PieceSoundPack.Action.Cry, sound: new Sound(nameList: new List<SoundData.Name> { SoundData.Name.CrySmallAnimal1, SoundData.Name.CrySmallAnimal2, SoundData.Name.CrySmallAnimal3, SoundData.Name.CrySmallAnimal4 }, maxPitchVariation: 0.3f));
@@ -1999,7 +2018,12 @@ namespace SonOfRobin
 
                         var yield = new Yield(debrisType: Yield.DebrisType.Blood,
                           firstDroppedPieces: new List<Yield.DroppedPiece> { },
-                          finalDroppedPieces: new List<Yield.DroppedPiece> { new Yield.DroppedPiece(pieceName: Name.MeatRaw, chanceToDrop: 70, maxNumberToDrop: 2), new Yield.DroppedPiece(pieceName: Name.Fat, chanceToDrop: 60, maxNumberToDrop: 1), new Yield.DroppedPiece(pieceName: Name.Leather, chanceToDrop: 80, maxNumberToDrop: 1) });
+                          finalDroppedPieces: new List<Yield.DroppedPiece> {
+                              new Yield.DroppedPiece(pieceName: Name.MeatRawRegular, chanceToDrop: 70, maxNumberToDrop: 2),
+                              new Yield.DroppedPiece(pieceName: Name.MeatRawPrime, chanceToDrop: 5, maxNumberToDrop: 1),
+                              new Yield.DroppedPiece(pieceName: Name.Fat, chanceToDrop: 60, maxNumberToDrop: 1),
+                              new Yield.DroppedPiece(pieceName: Name.Leather, chanceToDrop: 80, maxNumberToDrop: 1) }
+                          );
 
                         var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.GroundAll, AllowedTerrain.RangeName.WaterShallow });
 
@@ -2007,7 +2031,7 @@ namespace SonOfRobin
                         soundPack.AddAction(action: PieceSoundPack.Action.Cry, sound: new Sound(nameList: new List<SoundData.Name> { SoundData.Name.CrySmallAnimal1, SoundData.Name.CrySmallAnimal2, SoundData.Name.CrySmallAnimal3, SoundData.Name.CrySmallAnimal4 }, maxPitchVariation: 0.3f, pitchChange: -0.5f));
                         soundPack.AddAction(action: PieceSoundPack.Action.Eat, sound: new Sound(nameList: new List<SoundData.Name> { SoundData.Name.EatPredator1, SoundData.Name.EatPredator2, SoundData.Name.EatPredator3, SoundData.Name.EatPredator4 }, maxPitchVariation: 0.25f, cooldown: 60));
 
-                        var eats = new List<Name> { Name.Rabbit, Name.MeatRaw, Name.Fat, Name.Burger, Name.MeatDried, Name.Meal };
+                        var eats = new List<Name> { Name.Rabbit, Name.MeatRawRegular, Name.MeatRawPrime, Name.Fat, Name.Burger, Name.MeatDried, Name.Meal };
                         eats.AddRange(PieceInfo.GetPlayerNames());
 
                         return new Animal(name: templateName, world: world, id: id, maleAnimPkgName: maleAnimPkgName, femaleAnimPkgName: femaleAnimPkgName, allowedTerrain: allowedTerrain, speed: 1.5f,
@@ -2027,7 +2051,11 @@ namespace SonOfRobin
 
                         var yield = new Yield(debrisType: Yield.DebrisType.Blood,
                           firstDroppedPieces: new List<Yield.DroppedPiece> { },
-                          finalDroppedPieces: new List<Yield.DroppedPiece> { new Yield.DroppedPiece(pieceName: Name.MeatRaw, chanceToDrop: 100, maxNumberToDrop: 3), new Yield.DroppedPiece(pieceName: Name.Fat, chanceToDrop: 100, maxNumberToDrop: 2), new Yield.DroppedPiece(pieceName: Name.Leather, chanceToDrop: 100, maxNumberToDrop: 2) });
+                          finalDroppedPieces: new List<Yield.DroppedPiece> {
+                              new Yield.DroppedPiece(pieceName: Name.MeatRawPrime, chanceToDrop: 100, maxNumberToDrop: 3),
+                              new Yield.DroppedPiece(pieceName: Name.Fat, chanceToDrop: 100, maxNumberToDrop: 2),
+                              new Yield.DroppedPiece(pieceName: Name.Leather, chanceToDrop: 100, maxNumberToDrop: 2)
+                          });
 
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
                             { Terrain.Name.Height, new AllowedRange(min: Terrain.rocksLevelMin, max: Terrain.volcanoEdgeMin) },
@@ -2038,7 +2066,7 @@ namespace SonOfRobin
                         soundPack.AddAction(action: PieceSoundPack.Action.Cry, sound: new Sound(name: SoundData.Name.TigerRoar, maxPitchVariation: 0.3f));
                         soundPack.AddAction(action: PieceSoundPack.Action.Eat, sound: new Sound(nameList: new List<SoundData.Name> { SoundData.Name.EatPredator1, SoundData.Name.EatPredator2, SoundData.Name.EatPredator3, SoundData.Name.EatPredator4 }, maxPitchVariation: 0.25f, cooldown: 60));
 
-                        var eats = new List<Name> { Name.Rabbit, Name.MeatRaw, Name.Fat, Name.Burger, Name.MeatDried, Name.Fox, Name.Meal, Name.Frog };
+                        var eats = new List<Name> { Name.Rabbit, Name.MeatRawRegular, Name.MeatRawPrime, Name.Fat, Name.Burger, Name.MeatDried, Name.Fox, Name.Meal };
                         eats.AddRange(PieceInfo.GetPlayerNames());
 
                         return new Animal(name: templateName, world: world, id: id, maleAnimPkgName: maleAnimPkgName, femaleAnimPkgName: femaleAnimPkgName, allowedTerrain: allowedTerrain, speed: 2.4f,
@@ -2056,7 +2084,10 @@ namespace SonOfRobin
 
                         var yield = new Yield(debrisType: Yield.DebrisType.Blood,
                         firstDroppedPieces: new List<Yield.DroppedPiece> { },
-                        finalDroppedPieces: new List<Yield.DroppedPiece> { new Yield.DroppedPiece(pieceName: Name.MeatRaw, chanceToDrop: 40, maxNumberToDrop: 1), new Yield.DroppedPiece(pieceName: Name.Fat, chanceToDrop: 60, maxNumberToDrop: 1), });
+                        finalDroppedPieces: new List<Yield.DroppedPiece> {
+                            new Yield.DroppedPiece(pieceName: Name.MeatRawRegular, chanceToDrop: 40, maxNumberToDrop: 1),
+                            new Yield.DroppedPiece(pieceName: Name.Fat, chanceToDrop: 60, maxNumberToDrop: 1),
+                        });
 
                         var allowedTerrain = new AllowedTerrain(
                             rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.WaterShallow, AllowedTerrain.RangeName.WaterMedium, AllowedTerrain.RangeName.GroundSand }
