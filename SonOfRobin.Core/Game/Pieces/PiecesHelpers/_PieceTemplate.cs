@@ -1967,7 +1967,7 @@ namespace SonOfRobin
                     {
                         return new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Burger, blocksMovement: false, category: BoardPiece.Category.Indestructible,
                             allowedTerrain: beachToVolcano,
-                            minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 5, mass: 300, toolbarTask: Scheduler.TaskName.GetEaten, rotatesWhenDropped: true, floatsOnWater: false, readableName: "hamburger", description: "Synthetic food, that will remain fresh forever.", fireAffinity: 0.2f);
+                            minDistance: 0, maxDistance: 1000, generation: generation, stackSize: 5, mass: 280, toolbarTask: Scheduler.TaskName.GetEaten, rotatesWhenDropped: true, floatsOnWater: false, readableName: "burger", description: "Will remain fresh forever.", fireAffinity: 0.2f);
                     }
 
                 case Name.Meal:
