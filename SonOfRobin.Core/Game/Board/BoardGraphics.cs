@@ -20,6 +20,7 @@ namespace SonOfRobin
         private readonly Cell cell;
         public FileStream fileStream;
         public Texture2D Texture { get; private set; }
+        public bool hasBeenCopiedElsewhere;
 
         public readonly string templatePath;
 
@@ -30,6 +31,8 @@ namespace SonOfRobin
         {
             this.cell = cell;
             this.templatePath = Path.Combine(grid.gridTemplate.templatePath, $"background_{cell.cellNoX}_{cell.cellNoY}.png");
+            this.Texture = null;
+            this.hasBeenCopiedElsewhere = false;
         }
 
         public void LoadTexture()
