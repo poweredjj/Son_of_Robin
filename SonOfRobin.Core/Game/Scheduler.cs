@@ -348,7 +348,7 @@ namespace SonOfRobin
                             int index = 0;
                             while (true)
                             {
-                                zipPath = Path.Combine(exportPath, $"Son_of_Robin_save_{saveInfo.width}x{saveInfo.height}_{saveInfo.seed}_{saveSlotName}_{index}.jpg");
+                                zipPath = Path.Combine(exportPath, $"Son_of_Robin_save_{saveInfo.width}x{saveInfo.height}_{saveInfo.seed}_{saveSlotName}_{index}.zip.jpg");
                                 if (File.Exists(zipPath)) index++;
                                 else break;
                             }
