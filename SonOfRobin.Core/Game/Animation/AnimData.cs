@@ -654,7 +654,7 @@ namespace SonOfRobin
             AddFrameList(animPackage: PkgName.Apple, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "apple", layer: 0, scale: 0.075f));
             AddFrameList(animPackage: PkgName.BowBasic, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "bow_basic", layer: 0, scale: 0.25f));
             AddFrameList(animPackage: PkgName.BowAdvanced, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "bow_advanced", layer: 0, scale: 0.25f));
-            AddFrameList(animPackage: PkgName.SeedBag, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "seed_bag", layer: 0, scale: 0.6f));
+            AddFrameList(animPackage: PkgName.SeedBag, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "seed_bag", layer: 0, scale: 0.08f));
             AddFrameList(animPackage: PkgName.CoffeeRaw, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "coffee_raw", layer: 0, scale: 1f));
             AddFrameList(animPackage: PkgName.CoffeeRoasted, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "coffee_roasted", layer: 0, scale: 1f));
             AddFrameList(animPackage: PkgName.WoodLogRegular, animSize: 0, frameList: ConvertImageToFrameList(atlasName: "wood_regular", layer: 1, scale: 0.75f));
