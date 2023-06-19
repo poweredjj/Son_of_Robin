@@ -281,10 +281,16 @@ namespace SonOfRobin
                         double fleeChance = hitPowerPercent * 1.6666;
                         bool flee = world.random.NextDouble() <= fleeChance;
 
+                        bool willAttackPlayer = !flee &&
+                            (animalTarget.Eats.Contains(world.PlayerName) ||
+                            animalTarget.world.random.NextDouble() < animalTarget.retaliateChance);
+
                         // MessageLog.AddMessage(msgType: MsgType.User, message: $"hitPowerPercent {hitPowerPercent} fleeChance {fleeChance} flee {flee}"); // for testing
 
-                        if (!flee && animalTarget.eats.Contains(world.Player.name))
+                        if (willAttackPlayer)
                         {
+                            animalTarget.MakeAnimalEatNewName(world.PlayerName);
+
                             if (animalTarget.HitPointsPercent <= 0.2f && world.random.Next(3) != 0 ||
                                 world.random.Next(animalTarget.strength / 10) == 0)
                             {

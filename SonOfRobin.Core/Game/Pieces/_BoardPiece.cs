@@ -199,7 +199,7 @@ namespace SonOfRobin
                     if (piece.GetType() == typeof(Animal) && piece.alive)
                     {
                         Animal animal = (Animal)piece;
-                        if (animal.eats.Contains(this.name)) return true;
+                        if (animal.Eats.Contains(this.name)) return true;
                     }
                 }
 

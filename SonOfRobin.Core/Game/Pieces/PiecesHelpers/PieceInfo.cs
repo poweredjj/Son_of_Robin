@@ -91,7 +91,7 @@ namespace SonOfRobin
                 this.opacity = piece.sprite.opacity;
                 this.lightEngine = piece.sprite.lightEngine;
                 this.animName = piece.sprite.AnimName;
-                if (piece.GetType() == typeof(Animal)) this.eats = ((Animal)piece).eats;
+                if (piece.GetType() == typeof(Animal)) this.eats = ((Animal)piece).Eats;
                 this.equipType = piece.GetType() == typeof(Equipment) ? ((Equipment)piece).equipType : Equipment.EquipType.None;
                 this.cookerFoodMassMultiplier = piece.GetType() == typeof(Cooker) ? ((Cooker)piece).foodMassMultiplier : 0f;
 

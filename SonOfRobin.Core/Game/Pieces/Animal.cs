@@ -16,6 +16,8 @@ namespace SonOfRobin
         private readonly int matureAge;
         private readonly uint pregnancyDuration;
         private readonly byte maxChildren;
+        public readonly float retaliateChance; // 0 - 1, used only for animals that do not eat player
+
         private int pregnancyMass;
         public int pregnancyFramesLeft;
         public bool isPregnant;
@@ -29,10 +31,11 @@ namespace SonOfRobin
         public readonly ushort sightRange;
         public AiData aiData;
         public BoardPiece target;
-        public readonly List<PieceTemplate.Name> eats;
-        private readonly List<PieceTemplate.Name> isEatenBy;
 
-        public Animal(World world, string id, AnimData.PkgName maleAnimPkgName, AnimData.PkgName femaleAnimPkgName, PieceTemplate.Name name, AllowedTerrain allowedTerrain, int[] maxMassForSize, int mass, int maxMass, byte awareness, int maxAge, int matureAge, uint pregnancyDuration, byte maxChildren, float maxStamina, int maxHitPoints, ushort sightRange, string readableName, string description, List<PieceTemplate.Name> eats, int strength, float massBurnedMultiplier, float fireAffinity,
+        public List<PieceTemplate.Name> Eats { get; private set; }
+        public List<PieceTemplate.Name> IsEatenBy { get; private set; }
+
+        public Animal(World world, string id, AnimData.PkgName maleAnimPkgName, AnimData.PkgName femaleAnimPkgName, PieceTemplate.Name name, AllowedTerrain allowedTerrain, int[] maxMassForSize, int mass, int maxMass, byte awareness, int maxAge, int matureAge, uint pregnancyDuration, byte maxChildren, float maxStamina, int maxHitPoints, ushort sightRange, string readableName, string description, List<PieceTemplate.Name> eats, int strength, float massBurnedMultiplier, float fireAffinity, float retaliateChance,
             byte animSize = 0, string animName = "default", float speed = 1, bool blocksMovement = true, ushort minDistance = 0, ushort maxDistance = 100, int destructionDelay = 0, bool floatsOnWater = false, int generation = 0, Yield yield = null, PieceSoundPack soundPack = null) :
 
             base(world: world, id: id, animPackage: maleAnimPkgName, mass: mass, animSize: animSize, animName: animName, blocksMovement: blocksMovement, minDistance: minDistance, maxDistance: maxDistance, name: name, destructionDelay: destructionDelay, allowedTerrain: allowedTerrain, floatsOnWater: floatsOnWater, maxMassForSize: maxMassForSize, generation: generation, speed: speed, maxAge: maxAge, maxHitPoints: maxHitPoints, yield: yield, readableName: readableName, description: description, staysAfterDeath: 30 * 60, strength: strength, category: Category.Flesh, activeState: State.AnimalAssessSituation, soundPack: soundPack, isAffectedByWind: false, fireAffinity: fireAffinity)
@@ -49,6 +52,7 @@ namespace SonOfRobin
             this.pregnancyFramesLeft = 0;
             this.isPregnant = false;
             this.maxChildren = maxChildren;
+            this.retaliateChance = retaliateChance;
             this.attackCooldown = 0; // earliest world.currentUpdate, when attacking will be possible
             this.regenCooldown = 0; // earliest world.currentUpdate, when increasing hit points will be possible
             this.maxFedLevel = 1000;
@@ -56,8 +60,8 @@ namespace SonOfRobin
             this.maxStamina = maxStamina;
             this.stamina = maxStamina;
             this.sightRange = sightRange;
-            this.eats = eats;
-            this.isEatenBy = PieceInfo.GetIsEatenBy(this.name);
+            this.Eats = eats;
+            this.IsEatenBy = PieceInfo.GetIsEatenBy(this.name);
             this.aiData = new AiData(this);
             this.aiData.Reset();
             this.strength = strength;
@@ -187,6 +191,12 @@ namespace SonOfRobin
             this.regenCooldown = this.world.CurrentUpdate + (60 * 60);
         }
 
+        public void MakeAnimalEatNewName(PieceTemplate.Name name)
+        {
+            if (!this.Eats.Contains(name)) this.Eats.Add(name);
+            if (this.IsEatenBy.Contains(name)) this.IsEatenBy.Remove(name);
+        }
+
         public override void SM_AnimalAssessSituation()
         {
             this.target = null;
@@ -227,7 +237,7 @@ namespace SonOfRobin
             float enemyDistance = 10000000;
             BoardPiece enemyPiece = null;
 
-            var enemyList = seenPieces.Where(piece => this.isEatenBy.Contains(piece.name));
+            var enemyList = seenPieces.Where(piece => this.IsEatenBy.Contains(piece.name));
             if (enemyList.Any())
             {
                 enemyPiece = FindClosestPiece(sprite: this.sprite, pieceList: enemyList);
@@ -236,7 +246,7 @@ namespace SonOfRobin
 
             // looking for food
 
-            var foodList = seenPieces.Where(piece => this.eats.Contains(piece.name) && piece.Mass > 0 && this.sprite.allowedTerrain.CanStandHere(world: this.world, position: piece.sprite.position));
+            var foodList = seenPieces.Where(piece => this.Eats.Contains(piece.name) && piece.Mass > 0 && this.sprite.allowedTerrain.CanStandHere(world: this.world, position: piece.sprite.position));
 
             BoardPiece foodPiece = null;
 
@@ -580,7 +590,7 @@ namespace SonOfRobin
                         redOverlay.transManager.AddTransition(new Transition(transManager: redOverlay.transManager, outTrans: true, duration: 20, playCount: 1, stageTransform: Transition.Transform.Sinus, baseParamName: "Opacity", targetVal: 0.5f, endRemoveScene: true));
                         this.world.solidColorManager.Add(redOverlay);
 
-                        if (!PieceInfo.ContainsPlayer(this.eats)) this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.AnimalCounters, ignoreDelay: true, piece: this);
+                        if (!PieceInfo.ContainsPlayer(this.Eats)) this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.AnimalCounters, ignoreDelay: true, piece: this);
                     }
                 }
             }
@@ -866,7 +876,8 @@ namespace SonOfRobin
                 allyAnimal.target = this.target;
                 allyAnimal.aiData.Reset();
                 allyAnimal.activeState = State.AnimalChaseTarget;
-                if (!allyAnimal.eats.Contains(this.target.name)) allyAnimal.eats.Add(this.target.name); // the point is to kill the attacker
+
+                allyAnimal.MakeAnimalEatNewName(this.target.name); // the point is to kill the attacker
 
                 if (allyAnimal.visualAid != null) this.visualAid.Destroy();
 
@@ -879,7 +890,7 @@ namespace SonOfRobin
                 }
             }
 
-            if (!this.eats.Contains(this.target.name)) this.eats.Add(this.target.name);
+            this.MakeAnimalEatNewName(this.target.name);
 
             if (this.visualAid != null) this.visualAid.Destroy();
 

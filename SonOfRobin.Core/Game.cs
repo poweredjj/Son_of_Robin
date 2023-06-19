@@ -18,7 +18,7 @@ namespace SonOfRobin
     public class SonOfRobinGame : Game
     {
         public const float version = 9.7f;
-        public static readonly DateTime lastChanged = new(2023, 06, 18);
+        public static readonly DateTime lastChanged = new(2023, 06, 19);
 
         public static readonly int enteringIslandGlobalSteps = 4 + Grid.allStagesCount;
         public static ContentManager ContentMgr { get; private set; } // for things other than textures (for textures use TextureBank)
@@ -105,7 +105,7 @@ namespace SonOfRobin
 
         private static void MoveWindowOnWorkMachine(Game game) // method used, to make the code to be commented closer
         {
-            // if (ThisIsWorkMachine) game.Window.Position = new Point(0, 788); // COMMENT THIS LINE on ANDROID
+            if (ThisIsWorkMachine) game.Window.Position = new Point(0, 788); // COMMENT THIS LINE on ANDROID
         }
 
         public static bool WindowsMemoryLow
