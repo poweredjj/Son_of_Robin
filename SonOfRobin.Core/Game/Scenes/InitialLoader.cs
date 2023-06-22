@@ -239,7 +239,6 @@ namespace SonOfRobin
                 MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Initial loading time: {loadingDuration:hh\\:mm\\:ss\\.fff}.", color: Color.GreenYellow);
 
                 this.Remove();
-                GC.Collect();
             }
         }
 

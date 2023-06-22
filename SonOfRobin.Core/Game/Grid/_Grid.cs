@@ -1296,7 +1296,6 @@ namespace SonOfRobin
                 MessageLog.AddMessage(msgType: MsgType.Debug, message: $"Unloaded texture from cell {cell.cellNoX},{cell.cellNoY}.", color: Color.Pink);
             }
             MessageLog.AddMessage(msgType: MsgType.Debug, message: "Finished unloading textures.", color: Color.Pink);
-            GC.Collect();
             this.lastUnloadedTime = DateTime.Now;
         }
 
